@@ -112,7 +112,7 @@ typedef struct {
 
 } anon_auth_config_rec;
 
-void *create_anon_auth_dir_config(pool *p, char *d)
+static void *create_anon_auth_dir_config(pool *p, char *d)
 {
     anon_auth_config_rec *sec = (anon_auth_config_rec *)
     pcalloc(p, sizeof(anon_auth_config_rec));
@@ -131,39 +131,39 @@ void *create_anon_auth_dir_config(pool *p, char *d)
     return sec;
 }
 
-const char *anon_set_passwd_flag(cmd_parms *cmd,
+static const char *anon_set_passwd_flag(cmd_parms *cmd,
 				 anon_auth_config_rec * sec, int arg)
 {
     sec->auth_anon_mustemail = arg;
     return NULL;
 }
 
-const char *anon_set_userid_flag(cmd_parms *cmd,
+static const char *anon_set_userid_flag(cmd_parms *cmd,
 				 anon_auth_config_rec * sec, int arg)
 {
     sec->auth_anon_nouserid = arg;
     return NULL;
 }
-const char *anon_set_logemail_flag(cmd_parms *cmd,
+static const char *anon_set_logemail_flag(cmd_parms *cmd,
 				   anon_auth_config_rec * sec, int arg)
 {
     sec->auth_anon_logemail = arg;
     return NULL;
 }
-const char *anon_set_verifyemail_flag(cmd_parms *cmd,
+static const char *anon_set_verifyemail_flag(cmd_parms *cmd,
 				      anon_auth_config_rec * sec, int arg)
 {
     sec->auth_anon_verifyemail = arg;
     return NULL;
 }
-const char *anon_set_authoritative_flag(cmd_parms *cmd,
+static const char *anon_set_authoritative_flag(cmd_parms *cmd,
 					anon_auth_config_rec * sec, int arg)
 {
     sec->auth_anon_authoritative = arg;
     return NULL;
 }
 
-const char *anon_set_string_slots(cmd_parms *cmd,
+static const char *anon_set_string_slots(cmd_parms *cmd,
 				  anon_auth_config_rec * sec, char *arg)
 {
 
@@ -187,7 +187,7 @@ const char *anon_set_string_slots(cmd_parms *cmd,
     return NULL;
 }
 
-command_rec anon_auth_cmds[] =
+static command_rec anon_auth_cmds[] =
 {
     {"Anonymous", anon_set_string_slots, NULL, OR_AUTHCFG, ITERATE,
      "a space-separated list of user IDs"},
@@ -207,7 +207,7 @@ command_rec anon_auth_cmds[] =
 
 module MODULE_VAR_EXPORT anon_auth_module;
 
-int anon_authenticate_basic_user(request_rec *r)
+static int anon_authenticate_basic_user(request_rec *r)
 {
     anon_auth_config_rec *sec =
     (anon_auth_config_rec *) get_module_config(r->per_dir_config,
@@ -267,7 +267,7 @@ int anon_authenticate_basic_user(request_rec *r)
     return DECLINED;
 }
 
-int check_anon_access(request_rec *r)
+static int check_anon_access(request_rec *r)
 {
 #ifdef NOTYET
     conn_rec *c = r->connection;

@@ -70,7 +70,7 @@ typedef struct {
     int agent_fd;
 } agent_log_state;
 
-void *make_agent_log_state(pool *p, server_rec *s)
+static void *make_agent_log_state(pool *p, server_rec *s)
 {
     agent_log_state *cls =
     (agent_log_state *) palloc(p, sizeof(agent_log_state));
@@ -78,11 +78,10 @@ void *make_agent_log_state(pool *p, server_rec *s)
     cls->fname = "";
     cls->agent_fd = -1;
 
-
     return (void *) cls;
 }
 
-const char *set_agent_log(cmd_parms *parms, void *dummy, char *arg)
+static const char *set_agent_log(cmd_parms *parms, void *dummy, char *arg)
 {
     agent_log_state *cls = get_module_config(parms->server->module_config,
                                              &agent_log_module);
@@ -91,7 +90,7 @@ const char *set_agent_log(cmd_parms *parms, void *dummy, char *arg)
     return NULL;
 }
 
-command_rec agent_log_cmds[] =
+static command_rec agent_log_cmds[] =
 {
     {"AgentLog", set_agent_log, NULL, RSRC_CONF, TAKE1,
      "the filename of the agent log"},
@@ -122,7 +121,7 @@ static int agent_log_child(void *cmd)
     return (child_pid);
 }
 
-void open_agent_log(server_rec *s, pool *p)
+static void open_agent_log(server_rec *s, pool *p)
 {
     agent_log_state *cls = get_module_config(s->module_config,
                                              &agent_log_module);
@@ -153,13 +152,13 @@ void open_agent_log(server_rec *s, pool *p)
     }
 }
 
-void init_agent_log(server_rec *s, pool *p)
+static void init_agent_log(server_rec *s, pool *p)
 {
     for (; s; s = s->next)
         open_agent_log(s, p);
 }
 
-int agent_log_transaction(request_rec *orig)
+static int agent_log_transaction(request_rec *orig)
 {
     agent_log_state *cls = get_module_config(orig->server->module_config,
                                              &agent_log_module);

@@ -78,12 +78,12 @@ typedef struct digest_header_struct {
     char *digest;
 } digest_header_rec;
 
-void *create_digest_dir_config(pool *p, char *d)
+static void *create_digest_dir_config(pool *p, char *d)
 {
     return pcalloc(p, sizeof(digest_config_rec));
 }
 
-const char *set_digest_slot(cmd_parms *cmd, void *offset, char *f, char *t)
+static const char *set_digest_slot(cmd_parms *cmd, void *offset, char *f, char *t)
 {
     if (t && strcmp(t, "standard"))
 	return pstrcat(cmd->pool, "Invalid auth file type: ", t, NULL);
@@ -91,7 +91,7 @@ const char *set_digest_slot(cmd_parms *cmd, void *offset, char *f, char *t)
     return set_string_slot(cmd, offset, f);
 }
 
-command_rec digest_cmds[] =
+static command_rec digest_cmds[] =
 {
     {"AuthDigestFile", set_digest_slot,
   (void *) XtOffsetOf(digest_config_rec, pwfile), OR_AUTHCFG, TAKE12, NULL},
@@ -100,7 +100,7 @@ command_rec digest_cmds[] =
 
 module MODULE_VAR_EXPORT digest_module;
 
-char *get_hash(request_rec *r, char *user, char *auth_pwfile)
+static char *get_hash(request_rec *r, char *user, char *auth_pwfile)
 {
     configfile_t *f;
     char l[MAX_STRING_LEN];
@@ -130,13 +130,13 @@ char *get_hash(request_rec *r, char *user, char *auth_pwfile)
 
 /* Parse the Authorization header, if it exists */
 
-int get_digest_rec(request_rec *r, digest_header_rec * response)
+static int get_digest_rec(request_rec *r, digest_header_rec * response)
 {
     const char *auth_line = table_get(r->headers_in,
                                     r->proxyreq ? "Proxy-Authorization"
                                     : "Authorization");
     int l;
-    int s = 0, vk = 0, vv = 0;
+    int s, vk = 0, vv = 0;
     char *t, *key, *value;
 
     if (!(t = auth_type(r)) || strcasecmp(t, "Digest"))
@@ -163,6 +163,10 @@ int get_digest_rec(request_rec *r, digest_header_rec * response)
 
     l = strlen(auth_line);
 
+    /* Note we don't allocate l + 1 bytes for these deliberately, because
+     * there has to be at least one '=' character for either of these two
+     * new strings to be terminated.  That takes care of the need for +1.
+     */
     key = palloc(r->pool, l);
     value = palloc(r->pool, l);
 
@@ -173,6 +177,7 @@ int get_digest_rec(request_rec *r, digest_header_rec * response)
 #define D_STRING 2
 #define D_EXIT -1
 
+    s = D_KEY;
     while (s != D_EXIT) {
 	switch (s) {
 	case D_STRING:
@@ -246,7 +251,7 @@ int get_digest_rec(request_rec *r, digest_header_rec * response)
 
 /* The actual MD5 code... whee */
 
-char *find_digest(request_rec *r, digest_header_rec * h, char *a1)
+static char *find_digest(request_rec *r, digest_header_rec * h, char *a1)
 {
     return ap_md5(r->pool,
 		  (unsigned char *)pstrcat(r->pool, a1, ":", h->nonce, ":",
@@ -270,7 +275,7 @@ char *find_digest(request_rec *r, digest_header_rec * h, char *a1)
  * basic authentication...
  */
 
-int authenticate_digest_user(request_rec *r)
+static int authenticate_digest_user(request_rec *r)
 {
     digest_config_rec *sec =
     (digest_config_rec *) get_module_config(r->per_dir_config,
@@ -304,7 +309,7 @@ int authenticate_digest_user(request_rec *r)
 
 /* Checking ID */
 
-int digest_check_auth(request_rec *r)
+static int digest_check_auth(request_rec *r)
 {
     char *user = r->connection->user;
     int m = r->method_number;

@@ -123,7 +123,7 @@ static const char month_names[12][4] = {
 
 #define COOKIE_NAME "Apache="
 
-void make_cookie(request_rec *r)
+static void make_cookie(request_rec *r)
 {
     cookie_log_state *cls = get_module_config(r->server->module_config,
                                               &usertrack_module);
@@ -205,7 +205,7 @@ void make_cookie(request_rec *r)
     return;
 }
 
-int spot_cookie(request_rec *r)
+static int spot_cookie(request_rec *r)
 {
     int *enable = (int *) get_module_config(r->per_dir_config,
                                             &usertrack_module);
@@ -234,7 +234,7 @@ int spot_cookie(request_rec *r)
     return OK;                  /* We set our cookie */
 }
 
-void *make_cookie_log_state(pool *p, server_rec *s)
+static void *make_cookie_log_state(pool *p, server_rec *s)
 {
     cookie_log_state *cls =
     (cookie_log_state *) palloc(p, sizeof(cookie_log_state));
@@ -244,18 +244,18 @@ void *make_cookie_log_state(pool *p, server_rec *s)
     return (void *) cls;
 }
 
-void *make_cookie_dir(pool *p, char *d)
+static void *make_cookie_dir(pool *p, char *d)
 {
     return (void *) pcalloc(p, sizeof(int));
 }
 
-const char *set_cookie_enable(cmd_parms *cmd, int *c, int arg)
+static const char *set_cookie_enable(cmd_parms *cmd, int *c, int arg)
 {
     *c = arg;
     return NULL;
 }
 
-const char *set_cookie_exp(cmd_parms *parms, void *dummy, const char *arg)
+static const char *set_cookie_exp(cmd_parms *parms, void *dummy, const char *arg)
 {
     cookie_log_state *cls = get_module_config(parms->server->module_config,
                                               &usertrack_module);
@@ -322,7 +322,7 @@ const char *set_cookie_exp(cmd_parms *parms, void *dummy, const char *arg)
     return NULL;
 }
 
-command_rec cookie_log_cmds[] = {
+static command_rec cookie_log_cmds[] = {
     {"CookieExpires", set_cookie_exp, NULL, RSRC_CONF, TAKE1,
     "an expiry date code"},
     {"CookieTracking", set_cookie_enable, NULL, OR_FILEINFO, FLAG,

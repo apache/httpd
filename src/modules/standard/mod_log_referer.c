@@ -72,7 +72,7 @@ typedef struct {
     array_header *referer_ignore_list;
 } referer_log_state;
 
-void *make_referer_log_state(pool *p, server_rec *s)
+static void *make_referer_log_state(pool *p, server_rec *s)
 {
     referer_log_state *cls =
     (referer_log_state *) palloc(p, sizeof(referer_log_state));
@@ -83,7 +83,7 @@ void *make_referer_log_state(pool *p, server_rec *s)
     return (void *) cls;
 }
 
-const char *set_referer_log(cmd_parms *parms, void *dummy, char *arg)
+static const char *set_referer_log(cmd_parms *parms, void *dummy, char *arg)
 {
     referer_log_state *cls = get_module_config(parms->server->module_config,
                                                &referer_log_module);
@@ -92,7 +92,7 @@ const char *set_referer_log(cmd_parms *parms, void *dummy, char *arg)
     return NULL;
 }
 
-const char *add_referer_ignore(cmd_parms *parms, void *dummy, char *arg)
+static const char *add_referer_ignore(cmd_parms *parms, void *dummy, char *arg)
 {
     char **addme;
     referer_log_state *cls = get_module_config(parms->server->module_config,
@@ -103,7 +103,7 @@ const char *add_referer_ignore(cmd_parms *parms, void *dummy, char *arg)
     return NULL;
 }
 
-command_rec referer_log_cmds[] =
+static command_rec referer_log_cmds[] =
 {
     {"RefererLog", set_referer_log, NULL, RSRC_CONF, TAKE1,
      "the filename of the referer log"},
@@ -137,7 +137,7 @@ static int referer_log_child(void *cmd)
     return (child_pid);
 }
 
-void open_referer_log(server_rec *s, pool *p)
+static void open_referer_log(server_rec *s, pool *p)
 {
     referer_log_state *cls = get_module_config(s->module_config,
                                                &referer_log_module);
@@ -168,13 +168,13 @@ void open_referer_log(server_rec *s, pool *p)
     }
 }
 
-void init_referer_log(server_rec *s, pool *p)
+static void init_referer_log(server_rec *s, pool *p)
 {
     for (; s; s = s->next)
         open_referer_log(s, p);
 }
 
-int referer_log_transaction(request_rec *orig)
+static int referer_log_transaction(request_rec *orig)
 {
     char **ptrptr, **ptrptr2;
     referer_log_state *cls = get_module_config(orig->server->module_config,

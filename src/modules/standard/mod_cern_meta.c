@@ -166,7 +166,7 @@ typedef struct {
     char *metafiles;
 } cern_meta_dir_config;
 
-void *create_cern_meta_dir_config(pool *p, char *dummy)
+static void *create_cern_meta_dir_config(pool *p, char *dummy)
 {
     cern_meta_dir_config *new =
     (cern_meta_dir_config *) palloc(p, sizeof(cern_meta_dir_config));
@@ -178,7 +178,7 @@ void *create_cern_meta_dir_config(pool *p, char *dummy)
     return new;
 }
 
-void *merge_cern_meta_dir_configs(pool *p, void *basev, void *addv)
+static void *merge_cern_meta_dir_configs(pool *p, void *basev, void *addv)
 {
     cern_meta_dir_config *base = (cern_meta_dir_config *) basev;
     cern_meta_dir_config *add = (cern_meta_dir_config *) addv;
@@ -192,26 +192,26 @@ void *merge_cern_meta_dir_configs(pool *p, void *basev, void *addv)
     return new;
 }
 
-const char *set_metadir(cmd_parms *parms, cern_meta_dir_config * dconf, char *arg)
+static const char *set_metadir(cmd_parms *parms, cern_meta_dir_config * dconf, char *arg)
 {
     dconf->metadir = arg;
     return NULL;
 }
 
-const char *set_metasuffix(cmd_parms *parms, cern_meta_dir_config * dconf, char *arg)
+static const char *set_metasuffix(cmd_parms *parms, cern_meta_dir_config * dconf, char *arg)
 {
     dconf->metasuffix = arg;
     return NULL;
 }
 
-const char *set_metafiles(cmd_parms *parms, cern_meta_dir_config * dconf, char *arg)
+static const char *set_metafiles(cmd_parms *parms, cern_meta_dir_config * dconf, char *arg)
 {
     dconf->metafiles = arg;
     return NULL;
 }
 
 
-command_rec cern_meta_cmds[] =
+static command_rec cern_meta_cmds[] =
 {
     {"MetaFiles", set_metafiles, NULL, DIR_CMD_PERMS, FLAG, NULL},
     {"MetaDir", set_metadir, NULL, DIR_CMD_PERMS, TAKE1,
@@ -221,7 +221,7 @@ command_rec cern_meta_cmds[] =
     {NULL}
 };
 
-int scan_meta_file(request_rec *r, FILE *f)
+static int scan_meta_file(request_rec *r, FILE *f)
 {
     char w[MAX_STRING_LEN];
     char *l;
@@ -276,7 +276,7 @@ int scan_meta_file(request_rec *r, FILE *f)
     return OK;
 }
 
-int add_cern_meta_data(request_rec *r)
+static int add_cern_meta_data(request_rec *r)
 {
     char *metafilename;
     char *last_slash;
