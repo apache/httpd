@@ -79,6 +79,7 @@ always available.
 <LI><A HREF="#startservers">StartServers</A>
 <LI><A HREF="#threadsperchild">ThreadsPerChild</A>
 <LI><A HREF="#timeout">TimeOut</A>
+<LI><A HREF="#usecanonicalname">UseCanonicalName</A>
 <LI><A HREF="#user">User</A>
 <LI><A HREF="#virtualhost">&lt;VirtualHost&gt;</A>
 </UL>
@@ -1788,7 +1789,9 @@ listens at.
 sets the <CODE>SERVER_PORT</CODE> environment variable (for
 <A HREF="mod_cgi.html">CGI</A> and <A HREF="mod_include.html">SSI</A>),
 and is used when the server must generate a URL that refers to itself
-(for example when creating an external redirect to itself).
+(for example when creating an external redirect to itself).  This
+behaviour is modified by
+<a href="#usecanonicalname">UseCanonicalName</a>.
 </UL>
 
 In no event does a Port setting affect
@@ -1798,7 +1801,8 @@ VirtualHost directive itself is used for that.<P>
 The primary behaviour of Port should be considered to be similar to that of
 the <A HREF="#servername">ServerName</A> directive.  The ServerName
 and Port together specify what you consider to be the <EM>canonical</EM>
-address of the server.<P>
+address of the server.
+(See also <a href="#usecanonicalname">UseCanonicalName</a>.)<P>
 
 Port 80 is one of Unix's special ports. All ports numbered
 below 1024 are reserved for system use, i.e. regular (non-root) users cannot
@@ -2186,8 +2190,10 @@ not work reliably, or may not return the preferred hostname. For example:
 <BLOCKQUOTE><CODE>ServerName www.wibble.com</CODE></BLOCKQUOTE>
 would be used if the canonical (main) name of the actual machine
 were <CODE>monster.wibble.com</CODE>.<P>
-<P><STRONG>See Also</STRONG>:
-<A HREF="../dns-caveats.html">DNS Issues</A></P>
+<P><STRONG>See Also</STRONG>:<br>
+<A HREF="../dns-caveats.html">DNS Issues</A><br>
+<A HREF="#usecanonicalname">UseCanonicalName</A><br>
+</P>
 <HR>
 
 <H2><A name="serverpath">ServerPath directive</A></H2>
@@ -2432,6 +2438,59 @@ still be odd places in the code where the timer is not reset when
 a packet is sent.
 
 <P><HR>
+
+<H2><A name="usecanonicalname">UseCanonicalName directive</A></H2>
+<!--%plaintext &lt;?INDEX {\tt UseCanonicalName} directive&gt; -->
+<A HREF="directive-dict.html#Syntax" REL="Help">
+<STRONG>Syntax:</STRONG></A> UseCanonicalName <EM>on|off</EM><BR>
+<A HREF="directive-dict.html#Default" REL="Help">
+<STRONG>Default:</STRONG></A> <CODE>UseCanonicalName on</CODE><BR>
+<A HREF="directive-dict.html#Context" REL="Help">
+<STRONG>Context:</STRONG></A> server config, virtual host, directory, .htaccess<BR>
+<A HREF="directive-dict.html#Override" REL="Help">
+<STRONG>Override:</STRONG></A> AuthConfig<BR>
+<A HREF="directive-dict.html#Compatibility" REL="Help">
+<STRONG>Compatibility:</STRONG></A> UseCanonicalName is only available in Apache 1.3 and later<P>
+
+In many situations Apache has to construct a <i>self-referential</i>
+URL.  That is, a URL which refers back to the same server.
+With <code>UseCanonicalName on</code> (and in all versions prior to
+1.3) Apache will use the <a href="#servername">ServerName</a> and <a
+href="#port">Port</a> directives to construct a canonical name for the
+server.  This name is used in all self-referential URLs, and for the
+values of <code>SERVER_NAME</code> and <code>SERVER_PORT</code> in CGIs.
+
+<p>With <code>UseCanonicalName off</code> Apache will form
+self-referential URLs using the hostname and port supplied
+by the client if any are supplied (otherwise it will use the
+canonical name).  These values are the same that are used to
+implement <a href="../vhosts/name-based.html">name based virtual
+hosts</a>, and are available with the same clients.  The CGI variables
+<code>SERVER_NAME</code> and <code>SERVER_PORT</code> will be constructed
+from the client supplied values as well.
+
+<p>An example where this may be useful is on an intranet server where
+you have users connecting to the machine using short names such as
+<code>www</code>.  You'll notice that if the users type a shortname,
+and a URL which is a directory, such as <code>http://www/splat</code>,
+<i>without the trailing slash</i> then Apache will redirect them to
+<code>http://www.domain.com/splat/</code>.  If you have authentication
+enabled, this will cause the user to have to reauthenticate twice (once
+for <code>www</code> and once again for <code>www.domain.com</code>).
+But if <code>UseCanonicalName</code> is set off, then Apache will redirect
+to <code>http://www/splat/</code>.
+
+<p><b>Warning:</b> if CGIs make assumptions about the values of
+<code>SERVER_NAME</code> they may be broken by this option.  The client
+is essentially free to give whatever value they want as a hostname.
+But if the CGI is only using <code>SERVER_NAME</code> to construct
+self-referential URLs then it should be just fine.
+
+<p><strong>See also:</strong>
+<a href="#servername">ServerName</a>,
+<a href="#port">Port</a>
+
+<p><hr>
 
 <H2><A name="user">User directive</A></H2>
 <!--%plaintext &lt;?INDEX {\tt User} directive&gt; -->
