@@ -423,7 +423,7 @@ case "$PLAT" in
 	;;
     *-sni-sysv4*)
 	OS='SVR4'
-	CFLAGS="$CFLAGS -DSVR4"
+	CFLAGS="$CFLAGS -DSVR4 -D_XPG_IV -DHAVE_MMAP"
 	DEF_WANTHSREGEX=yes
 	LIBS="$LIBS -lsocket -lnsl -lc"
 	;;
