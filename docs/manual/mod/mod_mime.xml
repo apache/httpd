@@ -548,6 +548,7 @@ onto the specified content type</description>
 searching for a matching file with MultiViews</description>
 <syntax>MultiviewsMatch
     <em>[NegotiatedOnly] [Handlers] [Filters] [Any]</em></syntax>
+<default>MultiviewsMatch NegotiatedOnly</default>
 <contextlist>
 <context>server config</context>
 <context>virtual host</context>
