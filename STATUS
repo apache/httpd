@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/06/23 20:21:06 $]
+Last modified at [$Date: 2003/06/24 20:13:09 $]
 
 Release:
 
@@ -244,7 +244,7 @@ PATCHES TO PORT FROM 2.1
 
     * mod_cgid: Restart the cgid daemon if it crashes.  PR 19849
         modules/generators/mod_cgid.c 1.152
-        +1: trawick
+        +1: trawick, gregames
 
 CURRENT RELEASE NOTES:
 
