@@ -39,6 +39,7 @@ AC_DEFUN(APACHE_GEN_CONFIG_VARS,[
   APACHE_SUBST(exec_prefix)
   APACHE_SUBST(datadir)
   APACHE_SUBST(localstatedir)
+  APACHE_SUBST(mandir)
   APACHE_SUBST(libexecdir)
   APACHE_SUBST(htdocsdir)
   APACHE_SUBST(includedir)
@@ -301,6 +302,7 @@ if test -z "$LAYOUT"; then
   logfiledir='$(prefix)/logs'
   sysconfdir='${prefix}/conf'
   libexecdir='${prefix}/modules'
+  mandir='${prefix}/man'
   layout_name=Apache
 else 
   APACHE_LAYOUT($srcdir/config.layout, $LAYOUT)
