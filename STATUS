@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/07/08 20:53:35 $]
+Last modified at [$Date: 2003/07/08 22:42:11 $]
 
 Release:
 
@@ -64,11 +64,17 @@ PATCHES TO PORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
 
+    * ap_get_mime_headers_core(): Remove LWS between header token and ':'
+      delimeter. (2616 compliance)
+      server/protocol.c: r1.133
+      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/protocol.c.diff?r1=1.132&r2=1.133
+      +1: rederpj
+
     * ap_get_mime_headers(): eliminate the temporary table used to
       combine duplicate headers (performance enhancement)
       server/protocol.c: r1.132
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/protocol.c.diff?r1=1.131&r2=1.132&diff_format=h
-      +1: brianp, jerenkrantz
+      +1: brianp, jerenkrantz, rederpj
 
     * Replace some of the mutex locking in the worker MPM with
       atomic operations for higher concurrency.
