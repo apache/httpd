@@ -34,6 +34,7 @@
 #include "apr_hash.h"
 #include "httpd.h"
 #include "http_config.h"
+#include "http_request.h"
 #include "http_log.h"
 #include "util_filter.h"
 
@@ -108,8 +109,6 @@ static int filter_init(ap_filter_t *f)
 {
     ap_filter_provider_t *p;
     int err = OK;
-    mod_filter_cfg *cfg
-        = ap_get_module_config(f->r->per_dir_config, &filter_module);
     ap_filter_rec_t *filter = f->frec;
 
     f->ctx = apr_pcalloc(f->r->pool, sizeof(harness_ctx));
@@ -129,7 +128,7 @@ static int filter_init(ap_filter_t *f)
 static ap_out_filter_func filter_lookup(request_rec *r, ap_filter_rec_t *filter)
 {
     ap_filter_provider_t *provider;
-    const char *str;
+    const char *str = NULL;
     char *str1;
     int match;
     unsigned int proto_flags;
@@ -373,7 +372,7 @@ static const char *filter_protocol(cmd_parms *cmd, void *CFG, const char *fname,
          arg; arg = apr_strtok(NULL, sep, &tok)) {
 
         if (!strcasecmp(arg, "change=yes")) {
-            flags != AP_FILTER_PROTO_CHANGE | AP_FILTER_PROTO_CHANGE_LENGTH;
+            flags |= AP_FILTER_PROTO_CHANGE | AP_FILTER_PROTO_CHANGE_LENGTH;
         }
         else if (!strcasecmp(arg, "change=1:1")) {
             flags |= AP_FILTER_PROTO_CHANGE;
@@ -524,7 +523,7 @@ static const char *filter_provider(cmd_parms *cmd, void *CFG,
             break;
         case '/':
             provider->match_type = REGEX_MATCH;
-            rxend = strchr(match+1, '/');
+            rxend = ap_strchr_c(match+1, '/');
             if (!rxend) {
                   return "Bad regexp syntax";
             }
@@ -641,7 +640,7 @@ static const char *filter_debug(cmd_parms *cmd, void *CFG, const char *fname,
     return NULL;
 }
 
-static int filter_insert(request_rec *r)
+static void filter_insert(request_rec *r)
 {
     mod_filter_chain *p;
     ap_filter_rec_t *filter;
@@ -665,7 +664,7 @@ static int filter_insert(request_rec *r)
 #endif
     }
 
-    return OK;
+    return;
 }
 
 static void filter_hooks(apr_pool_t *pool)
