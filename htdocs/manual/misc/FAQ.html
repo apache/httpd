@@ -1,22 +1,43 @@
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
 <HTML>
-<HEAD>
-<TITLE>Apache Server Frequently Asked Questions</TITLE>
-</HEAD>
+ <HEAD>
+  <TITLE>Apache Server Frequently Asked Questions</TITLE>
+ </HEAD>
 
-<BODY>
-<!--#include virtual="header.html" -->
-<H1>Apache Server Frequently Asked Questions</H1>
-<P>
-$Revision: 1.38 $ ($Date: 1997/04/22 10:26:39 $)
-</P>
-<P>
-If you are reading a text-only version of this FAQ, you may find numbers
-enclosed in brackets (such as &quot;[12]&quot;).  These refer to the list of
-reference URLs to be found at the end of the document.  These references
-do not appear, and are not needed, for the hypertext version.
-</P>
-<H2>The Questions</H2>
+ <BODY>
+  <!--#include virtual="header.html" -->
+  <H1>Apache Server Frequently Asked Questions</H1>
+  <P>
+  $Revision: 1.39 $ ($Date: 1997/04/22 11:20:04 $)
+  </P>
+  <P>
+  The latest version of this FAQ is always available from the main
+  Apache web site, at
+  &lt;<A
+       HREF="http://www.apache.org/docs/misc/FAQ"
+       REL="Help"
+      ><SAMP>http://www.apache.org/docs/misc/FAQ</SAMP></A>&gt;.
+  </P>
+<!-- Notes about changes:					    -->
+<!--  - If adding a relative link to another part of the	    -->
+<!--    documentation, *do* include the ".html" portion.  There's a -->
+<!--	good chance that the user will be reading the documentation -->
+<!--	on his own system, which may not be configured for	    -->
+<!--	multiviews.   Leave off the ".html" extension for absolute  -->
+<!--	links to sites which are known to run multiviews (e.g.,	    -->
+<!--	apache.or or apacheweek.com).				    -->
+<!--  - When adding items, make sure they're put in the right place -->
+<!--    - verify that the numbering matches up.			    -->
+<!--  - Don't forget to include an HR tag after the last /P tag	    -->
+<!--    but before the /LI in an item.				    -->
+  </P>
+  <P>
+  If you are reading a text-only version of this FAQ, you may find numbers
+  enclosed in brackets (such as &quot;[12]&quot;).  These refer to the list of
+  reference URLs to be found at the end of the document.  These references
+  do not appear, and are not needed, for the hypertext version.
+  </P>
+  <H2>The Questions</H2>
 <!-- Stuff to Add:                                                  -->
 <!-- - can't bind to port 80                                        -->
 <!--   - permission denied                                          -->
@@ -109,7 +130,7 @@ do not appear, and are not needed, for the hypertext version.
    <LI><A HREF="#cookies2">Why don't my cookies work, I even compiled in 
     mod_cookies?</A>
    </LI>
-   <LI><A HREF="#jdk102">Why do my Java app[let]s give me plain text
+   <LI><A HREF="#jdk1-and-http1.1">Why do my Java app[let]s give me plain text
     when I request an URL from an Apache server?</A>
    </LI>
    <LI><A HREF="#putsupport">Why can't I publish to my Apache server
@@ -133,12 +154,12 @@ do not appear, and are not needed, for the hypertext version.
 
 <HR>
 
-<H2>The Answers</H2>
-<P>
-</P>
-<H3>
- Background
-</H3>
+  <H2>The Answers</H2>
+  <P>
+  </P>
+  <H3>
+   Background
+  </H3>
 <OL START=1>
  <LI><A NAME="what">
       <STRONG>What is Apache?</STRONG>
@@ -160,9 +181,9 @@ do not appear, and are not needed, for the hypertext version.
   </P>
   <HR>
  </LI>
- <LI><A
-      NAME="why"
-     ><STRONG>Why was Apache created?</STRONG></A>
+ <LI><A NAME="why">
+      <STRONG>Why was Apache created?</STRONG>
+     </A>
   <P>
   To address the concerns of a group of WWW providers and part-time httpd
   programmers that httpd didn't behave as they wanted it to behave.
@@ -171,10 +192,10 @@ do not appear, and are not needed, for the hypertext version.
   <HR>
   </P>
  </LI>
- <LI><A
-      NAME="relate"
-     ><STRONG>How does The Apache Group's work relate to other
-      server efforts, such as NCSA's?</STRONG></A>
+ <LI><A NAME="relate">
+      <STRONG>How does The Apache Group's work relate to other
+      server efforts, such as NCSA's?</STRONG>
+     </A>
   <P>
   We, of course, owe a great debt to NCSA and their programmers for
   making the server Apache was based on. We now, however, have our own
@@ -183,9 +204,9 @@ do not appear, and are not needed, for the hypertext version.
   </P>
   <HR>
  </LI>
- <LI><A
-      NAME="name"
-     ><STRONG>Why the name &quot;Apache&quot;?</STRONG></A>
+ <LI><A NAME="name">
+      <STRONG>Why the name &quot;Apache&quot;?</STRONG>
+      </A>
   <P>
   A cute name which stuck. Apache is &quot;<STRONG>A
   PA</STRONG>t<STRONG>CH</STRONG>y server&quot;.  It was
@@ -193,9 +214,9 @@ do not appear, and are not needed, for the hypertext version.
   </P>
   <HR>
  </LI>
- <LI><A
-      NAME="compare"
-     ><STRONG>OK, so how does Apache compare to other servers?</STRONG></A>
+ <LI><A NAME="compare">
+      <STRONG>OK, so how does Apache compare to other servers?</STRONG>
+     </A>
   <P>
   For an independent assessment, see
   <A
@@ -215,9 +236,9 @@ do not appear, and are not needed, for the hypertext version.
   </P>
   <HR>
  </LI>
- <LI><A
-      NAME="tested"
-     ><STRONG>How thoroughly tested is Apache?</STRONG></A>
+ <LI><A NAME="tested">
+      <STRONG>How thoroughly tested is Apache?</STRONG>
+     </A>
   <P>
   Apache is run on over 400,000 Internet servers (as of April 1997). It has
   been tested thoroughly by both developers and users. The Apache Group
@@ -234,9 +255,9 @@ do not appear, and are not needed, for the hypertext version.
   </P>
   <HR>
  </LI>
- <LI><A
-      NAME="future"
-     ><STRONG>What are the future plans for Apache?</STRONG></A>
+ <LI><A NAME="future">
+      <STRONG>What are the future plans for Apache?</STRONG>
+     </A>
   <P>
   <UL>
    <LI>to continue as a public domain HTTP server,
@@ -253,9 +274,9 @@ do not appear, and are not needed, for the hypertext version.
   </P>
   <HR>
  </LI>
- <LI><A
-      NAME="support"
-     ><STRONG>Whom do I contact for support?</STRONG></A>
+ <LI><A NAME="support">
+      <STRONG>Whom do I contact for support?</STRONG>
+     </A>
   <P>
   There is no official support for Apache. None of the developers want to
   be swamped by a flood of trivial questions that can be resolved elsewhere.
@@ -277,9 +298,10 @@ do not appear, and are not needed, for the hypertext version.
   </P>
   <HR>
  </LI>
- <LI><A
-      NAME="more"
-     ><STRONG>Is there any more information available on Apache?</STRONG></A>
+ <LI><A NAME="more">
+      <STRONG>Is there any more information available on
+      Apache?</STRONG>
+     </A>
   <P>
   Indeed there is.  See the main
   <A
@@ -294,9 +316,9 @@ do not appear, and are not needed, for the hypertext version.
   </P>
   <HR>
  </LI>
- <LI><A
-      NAME="where"
-     ><STRONG>Where can I get Apache?</STRONG></A>
+ <LI><A NAME="where">
+      <STRONG>Where can I get Apache?</STRONG>
+     </A>
   <P>
   You can find out how to download the source for Apache at the
   project's
@@ -307,14 +329,14 @@ do not appear, and are not needed, for the hypertext version.
   <HR>
  </LI>
 </OL>
-<H3>
- Technical Questions
-</H3>
+  <H3>
+   Technical Questions
+  </H3>
 <OL START=11>
- <LI><A
-      NAME="what2do"
-     ><STRONG>&quot;Why can't I ...?  Why won't ... work?&quot;  What to
-     do in case of problems</STRONG></A>
+ <LI><A NAME="what2do">
+      <STRONG>&quot;Why can't I ...?  Why won't ... work?&quot;  What to
+      do in case of problems</STRONG>
+     </A>
   <P>
   If you are having trouble with your Apache server software, you should
   take the following steps:
@@ -409,10 +431,10 @@ do not appear, and are not needed, for the hypertext version.
   </OL>
   <HR>
  </LI>
- <LI><A
-      NAME="compatible"
-     ><STRONG>How compatible is Apache with my existing NCSA 1.3
-      setup?</STRONG></A>
+ <LI><A NAME="compatible">
+      <STRONG>How compatible is Apache with my existing NCSA 1.3
+      setup?</STRONG>
+     </A>
   <P>
   Apache attempts to offer all the features and configuration options
   of NCSA httpd 1.3, as well as many of the additional features found in
@@ -431,12 +453,10 @@ do not appear, and are not needed, for the hypertext version.
   </P>
   <HR>
  </LI>
- <LI><A
-      NAME="CGIoutsideScriptAlias"
-     ><STRONG>How do I enable CGI execution in directories other than
-      the ScriptAlias?</STRONG></A>
-  <P>
-  </P>
+ <LI><A NAME="CGIoutsideScriptAlias">
+      <STRONG>How do I enable CGI execution in directories other than
+      the ScriptAlias?</STRONG>
+     </A>
   <P>
   Apache recognises all files in a directory named as a
   <A
@@ -511,9 +531,9 @@ do not appear, and are not needed, for the hypertext version.
   </P>
   <HR>
  </LI>
- <LI><A
-      NAME="ssi-part-i"
-     ><STRONG>How do I enable SSI (parsed HTML)?</STRONG></A>
+ <LI><A NAME="ssi-part-i">
+      <STRONG>How do I enable SSI (parsed HTML)?</STRONG>
+     </A>
   <P>
   SSI (an acronym for Server-Side Include) directives allow static HTML
   documents to be enhanced at run-time (<EM>e.g.</EM>, when delivered to
@@ -565,9 +585,9 @@ do not appear, and are not needed, for the hypertext version.
   </UL>
   <HR>
  </LI>
- <LI><A
-      NAME="ssi-part-ii"
-     ><STRONG>Why don't my parsed files get cached?</STRONG></A>
+ <LI><A NAME="ssi-part-ii">
+      <STRONG>Why don't my parsed files get cached?</STRONG>
+     </A>
   <P>
   Since the server is performing run-time processing of your SSI
   directives, which may change the content shipped to the client, it
@@ -602,9 +622,9 @@ do not appear, and are not needed, for the hypertext version.
   </P>
   <HR>
  </LI>
- <LI><A
-      NAME="ssi-part-iii"
-     ><STRONG>How can I have my script output parsed?</STRONG></A>
+ <LI><A NAME="ssi-part-iii">
+      <STRONG>How can I have my script output parsed?</STRONG>
+     </A>
   <P>
   So you want to include SSI directives in the output from your CGI
   script, but can't figure out how to do it?
@@ -613,20 +633,24 @@ do not appear, and are not needed, for the hypertext version.
   what the SSIs would be doing.  After all, it's generating the
   rest of the content.
   </P>
+  <P>
+  This is a feature The Apache Group hopes to add in the next major
+  release after 1.2.
+  </P>
   <HR>
  </LI>
- <LI><A
-      NAME="proxy"
-     ><STRONG>Does or will Apache act as a Proxy server?</STRONG></A>
+ <LI><A NAME="proxy">
+      <STRONG>Does or will Apache act as a Proxy server?</STRONG>
+     </A>
   <P>
   Apache version 1.1 and above comes with a proxy module. If compiled
   in, this will make Apache act as a caching-proxy server.
   </P>
   <HR>
  </LI>
- <LI><A
-      NAME="multiviews"
-     ><STRONG>What are &quot;multiviews&quot;?</STRONG></A>
+ <LI><A NAME="multiviews">
+      <STRONG>What are &quot;multiviews&quot;?</STRONG>
+     </A>
   <P>
   &quot;Multiviews&quot; is the general name given to the Apache
   server's ability to provide language-specific document variants in
@@ -639,10 +663,10 @@ do not appear, and are not needed, for the hypertext version.
   </P>
   <HR>
  </LI>
- <LI><A
-      NAME="fdlim"
-     ><STRONG>Why can't I run more than &lt;<EM>n</EM>&gt;
-      virtual hosts?</STRONG></A>
+ <LI><A NAME="fdlim">
+      <STRONG>Why can't I run more than &lt;<EM>n</EM>&gt;
+      virtual hosts?</STRONG>
+     </A>
   <P>
   The Apache server can behave unpredictably when it encounters some
   resource limitations.  One of these is the <EM>per</EM>-process limit
@@ -861,7 +885,7 @@ do not appear, and are not needed, for the hypertext version.
   </P>
   <HR>
  </LI>
- <LI><A NAME="jdk102">
+ <LI><A NAME="jdk1-and-http1.1">
       <STRONG>Why do my Java app[let]s give me plain text when I request
       an URL from an Apache server?</STRONG>
      </A>
