@@ -62,21 +62,21 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r);
 /**
  * Create a sub request from the given URI.  This sub request can be
  * inspected to find information about the requested URI
- * @param new_file The URI to lookup
+ * @param new_uri The URI to lookup
  * @param r The current request
  * @param next_filter The first filter the sub_request should use.  If this is
  *                    NULL, it defaults to the first filter for the main request
  * @return The new request record
- * @deffunc request_rec * ap_sub_req_lookup_uri(const char *new_file, const request_rec *r)
+ * @deffunc request_rec * ap_sub_req_lookup_uri(const char *new_uri, const request_rec *r)
  */
-AP_DECLARE(request_rec *) ap_sub_req_lookup_uri(const char *new_file,
+AP_DECLARE(request_rec *) ap_sub_req_lookup_uri(const char *new_uri,
                                                 const request_rec *r,
                                                 ap_filter_t *next_filter);
 
 /**
  * Create a sub request for the given file.  This sub request can be
  * inspected to find information about the requested file
- * @param new_file The URI to lookup
+ * @param new_file The file to lookup
  * @param r The current request
  * @param next_filter The first filter the sub_request should use.  If this is
  *                    NULL, it defaults to the first filter for the main request
@@ -113,15 +113,15 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *finfo,
  * Create a sub request for the given URI using a specific method.  This
  * sub request can be inspected to find information about the requested URI
  * @param method The method to use in the new sub request
- * @param new_file The URI to lookup
+ * @param new_uri The URI to lookup
  * @param r The current request
  * @param next_filter The first filter the sub_request should use.  If this is
  *                    NULL, it defaults to the first filter for the main request
  * @return The new request record
- * @deffunc request_rec * ap_sub_req_method_uri(const char *method, const char *new_file, const request_rec *r)
+ * @deffunc request_rec * ap_sub_req_method_uri(const char *method, const char *new_uri, const request_rec *r)
  */
 AP_DECLARE(request_rec *) ap_sub_req_method_uri(const char *method,
-                                                const char *new_file,
+                                                const char *new_uri,
                                                 const request_rec *r,
                                                 ap_filter_t *next_filter);
 /**
@@ -289,8 +289,8 @@ AP_DECLARE_HOOK(int,translate_name,(request_rec *r))
  * @param r The current request
  * @return DONE (or HTTP_) if this contextless request was just fulfilled 
  * (such as TRACE), OK if this is not a file, and DECLINED if this is a file.
- * The core map_to_storage (HOOK_RUN_LAST) will directory_walk and file_walk
- * the r->filename.
+ * The core map_to_storage (HOOK_RUN_REALLY_LAST) will directory_walk
+ * and file_walk the r->filename.
  * 
  * @ingroup hooks
  */
