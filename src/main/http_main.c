@@ -208,8 +208,7 @@ static void expand_lock_fname(pool *p)
 {
     char buf[20];
 
-    ap_snprintf( buf, sizeof(buf)-1, ".%u", getpid() );
-    buf[sizeof(buf)-1] = 0;
+    ap_snprintf( buf, sizeof(buf), ".%u", getpid() );
     lock_fname = pstrcat (p, server_root_relative (p, lock_fname), buf, NULL);
 }
 #endif
