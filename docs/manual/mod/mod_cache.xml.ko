@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="EUC-KR" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
-<!-- English Revision: 1.17 -->
+<!-- English Revision: 1.18 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -316,6 +316,58 @@
 
     <note type="warning"><title>주의:</title>
       이 기능은 현재 구현되지 <em>않았다</em>.
+    </note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheIgnoreHeaders</name>
+<description>캐쉬에 지정한 HTTP 헤더(들)를 저장하지 않는다
+</description>
+<syntax>CacheIgnoreHeaders <var>header-string</var> [<var>header-string</var>] ...</syntax>
+<default>CacheIgnoreHeaders None</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>RFC 2616에 따르면 홉간(hop-by-hop) HTTP 헤더는 캐쉬에
+    저장하지 않는다. 홉간 HTTP 헤더에는 다음과 같은 것이 있으며,
+    <directive>CacheIgnoreHeaders</directive> 설정과 관계없이
+    <em>어떤</em> 경우에도 캐쉬에 저장되지 않는다.</p>
+
+    <ul>
+      <li><code>Connection</code></li>
+      <li><code>Keep-Alive</code></li>
+      <li><code>Proxy-Authenticate</code></li>
+      <li><code>Proxy-Authorization</code></li>
+      <li><code>TE</code></li>
+      <li><code>Trailers</code></li>
+      <li><code>Transfer-Encoding</code></li>
+      <li><code>Upgrade</code></li>
+    </ul>
+
+    <p><directive>CacheIgnoreHeaders</directive>는 캐쉬에 저장하면
+    안되는 HTTP 헤더를 추가로 지정한다. 예를 들어, 쿠키(cookie)를
+    캐쉬에 저장하면 안되는 경우가 있다.</p>
+
+    <p><directive>CacheIgnoreHeaders</directive>는 캐쉬에 저장하지
+    않을 HTTP 헤더들을 공백으로 구분한 목록을 받는다. (RFC 2616에
+    따라) 캐쉬에 홉간 헤더만 저장하지 않으려면,
+    <directive>CacheIgnoreHeaders</directive>를
+    <code>None</code>으로 설정한다.</p>
+
+    <example><title>예제 1</title>
+      CacheIgnoreHeaders Set-Cookie
+    </example>
+
+    <example><title>예제 2</title>
+      CacheIgnoreHeaders None
+    </example>
+
+    <note type="warning"><title>경고:</title>
+      <directive>CacheIgnoreHeaders</directive> 설정을 사용하여
+      <code>Expires</code> 같이 캐쉬 관리에 필요한 헤더를 저장하지
+      않으면, mod_cache는 비정상적으로 동작한다.
     </note>
 </usage>
 </directivesynopsis>

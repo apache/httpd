@@ -64,6 +64,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#cacheenable">CacheEnable</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cacheforcecompletion">CacheForceCompletion</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cacheignorecachecontrol">CacheIgnoreCacheControl</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#cacheignoreheaders">CacheIgnoreHeaders</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cacheignorenolastmod">CacheIgnoreNoLastMod</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cachelastmodifiedfactor">CacheLastModifiedFactor</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cachemaxexpire">CacheMaxExpire</a></li>
@@ -234,6 +235,58 @@
     <div class="example"><p><code>
       CacheIgnoreCacheControl On
     </code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CacheIgnoreHeaders" id="CacheIgnoreHeaders">CacheIgnoreHeaders</a> <a name="cacheignoreheaders" id="cacheignoreheaders">지시어</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>캐쉬에 지정한 HTTP 헤더(들)를 저장하지 않는다
+</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>CacheIgnoreHeaders <var>header-string</var> [<var>header-string</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">기본값:</a></th><td><code>CacheIgnoreHeaders None</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트</td></tr>
+<tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_cache</td></tr>
+</table>
+    <p>RFC 2616에 따르면 홉간(hop-by-hop) HTTP 헤더는 캐쉬에
+    저장하지 않는다. 홉간 HTTP 헤더에는 다음과 같은 것이 있으며,
+    <code class="directive">CacheIgnoreHeaders</code> 설정과 관계없이
+    <em>어떤</em> 경우에도 캐쉬에 저장되지 않는다.</p>
+
+    <ul>
+      <li><code>Connection</code></li>
+      <li><code>Keep-Alive</code></li>
+      <li><code>Proxy-Authenticate</code></li>
+      <li><code>Proxy-Authorization</code></li>
+      <li><code>TE</code></li>
+      <li><code>Trailers</code></li>
+      <li><code>Transfer-Encoding</code></li>
+      <li><code>Upgrade</code></li>
+    </ul>
+
+    <p><code class="directive">CacheIgnoreHeaders</code>는 캐쉬에 저장하면
+    안되는 HTTP 헤더를 추가로 지정한다. 예를 들어, 쿠키(cookie)를
+    캐쉬에 저장하면 안되는 경우가 있다.</p>
+
+    <p><code class="directive">CacheIgnoreHeaders</code>는 캐쉬에 저장하지
+    않을 HTTP 헤더들을 공백으로 구분한 목록을 받는다. (RFC 2616에
+    따라) 캐쉬에 홉간 헤더만 저장하지 않으려면,
+    <code class="directive">CacheIgnoreHeaders</code>를
+    <code>None</code>으로 설정한다.</p>
+
+    <div class="example"><h3>예제 1</h3><p><code>
+      CacheIgnoreHeaders Set-Cookie
+    </code></p></div>
+
+    <div class="example"><h3>예제 2</h3><p><code>
+      CacheIgnoreHeaders None
+    </code></p></div>
+
+    <div class="warning"><h3>경고:</h3>
+      <code class="directive">CacheIgnoreHeaders</code> 설정을 사용하여
+      <code>Expires</code> 같이 캐쉬 관리에 필요한 헤더를 저장하지
+      않으면, mod_cache는 비정상적으로 동작한다.
+    </div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
