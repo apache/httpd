@@ -1,6 +1,7 @@
 Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
+
   *) Fix segfault in mod_mem_cache cache_insert() due to cache size
      becoming negative.  PR: 21285, 21287
      [Bill Stoddard, Massimo Torquati, Jean-Jacques Clar]
@@ -254,6 +255,13 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.49
+
+  *) Add AP_MPMQ_MPM_STATE function code for ap_mpm_query. (Not yet
+     supported for BeOS, OS/2, or Win32 MPMs.)  [Jeff Trawick,
+     Brad Nicholes]
+
+  *) Add mod_status hook to allow modules to add to the mod_status
+     report.  [Joe Orton]
 
   *) Fix htdbm to generate comment fields in DBM files correctly.
      [Justin Erenkrantz]
