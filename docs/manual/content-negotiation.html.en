@@ -86,7 +86,7 @@ A type map is a document which is associated with the handler
 named <code>type-map</code> (or, for backwards-compatibility with
 older Apache configurations, the mime type
 <code>application/x-type-map</code>).  Note that to use this feature,
-you've got to have an <code>SetHandler</code> some place which defines a
+you've got to have a <code>SetHandler</code> some place which defines a
 file suffix as <code>type-map</code>; this is best done with a
 <pre>
 
