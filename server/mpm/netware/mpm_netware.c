@@ -276,6 +276,7 @@ static void mpm_term(void)
 {
     RemoveConsoleHandler();
     wait_to_finish = 0;
+    NXThreadYield();
 }
 
 static void sig_term(int sig)
@@ -319,12 +320,11 @@ int nlmUnloadSignaled()
 {
     shutdown_pending = 1;
 
-/* Hold off on this change for now */
-/*    while (wait_to_finish) {
+    while (wait_to_finish) {
         NXThreadYield();
     }
-*/
-    return 1;
+
+    return 0;
 }
 
 /*****************************************************************
