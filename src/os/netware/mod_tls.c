@@ -99,6 +99,7 @@ struct seclisten_rec {
     int fd;
     int used;			            /* Only used during restart */
     char key[MAX_KEY];
+    int mutual;
 };
 
 struct TLSSrvConfigRec {
@@ -125,14 +126,14 @@ static int find_secure_listener(seclisten_rec *lr)
 
 
 static int make_secure_socket(pool *p, const struct sockaddr_in *server,
-                              char* key, server_rec *server_conf)
+                              char* key, int mutual, server_rec *server_conf)
 {
     int s;
     int one = 1;
     char addr[MAX_ADDRESS];
     struct sslserveropts opts;
     struct linger li;
-    unsigned short optParam;
+    unsigned int optParam;
     WSAPROTOCOL_INFO SecureProtoInfo;
     int no = 1;
     
@@ -162,15 +163,17 @@ static int make_secure_socket(pool *p, const struct sockaddr_in *server,
         return -1;
     }
         
-    optParam = SO_SSL_ENABLE | SO_SSL_SERVER;
-		
-    if (WSAIoctl(s, SO_SSL_SET_FLAGS, (char *)&optParam,
-        sizeof(unsigned short), NULL, 0, NULL, NULL, NULL)) {
-        errno = WSAGetLastError();
-        ap_log_error(APLOG_MARK, APLOG_CRIT, server_conf,
-            "make_secure_socket: for %s, WSAIoctl: (SO_SSL_SET_FLAGS)", addr);
-        ap_unblock_alarms();
-        return -1;
+    if (!mutual) {
+        optParam = SO_SSL_ENABLE | SO_SSL_SERVER;
+		    
+        if (WSAIoctl(s, SO_SSL_SET_FLAGS, (char *)&optParam,
+            sizeof(optParam), NULL, 0, NULL, NULL, NULL)) {
+            errno = WSAGetLastError();
+            ap_log_error(APLOG_MARK, APLOG_CRIT, server_conf,
+                "make_secure_socket: for %s, WSAIoctl: (SO_SSL_SET_FLAGS)", addr);
+            ap_unblock_alarms();
+            return -1;
+        }
     }
 
     opts.cert = key;
@@ -186,6 +189,19 @@ static int make_secure_socket(pool *p, const struct sockaddr_in *server,
             "make_secure_socket: for %s, WSAIoctl: (SO_SSL_SET_SERVER)", addr);
         ap_unblock_alarms();
         return -1;
+    }
+
+    if (mutual) {
+        optParam = 0x07;               // SO_SSL_AUTH_CLIENT
+
+        if(WSAIoctl(s, SO_SSL_SET_FLAGS, (char*)&optParam,
+            sizeof(optParam), NULL, 0, NULL, NULL, NULL)) {
+            errno = WSAGetLastError();
+            ap_log_error( APLOG_MARK, APLOG_CRIT, server_conf,
+                "make_secure_socket: for %s, WSAIoctl: (SO_SSL_SET_FLAGS)", addr );
+            ap_unblock_alarms();
+            return -1;
+        }
     }
 
     if (setsockopt(s, SOL_SOCKET, SO_REUSEADDR, (char *) &one, sizeof(int)) < 0) {
@@ -245,7 +261,7 @@ static int make_secure_socket(pool *p, const struct sockaddr_in *server,
     return s;
 }
 
-static const char *set_secure_listener(cmd_parms *cmd, void *dummy, char *ips, char* key)
+static const char *set_secure_listener(cmd_parms *cmd, void *dummy, char *ips, char* key, char* mutual)
 {
     TLSSrvConfigRec* sc = get_tls_cfg(cmd->server);
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
@@ -291,6 +307,7 @@ static const char *set_secure_listener(cmd_parms *cmd, void *dummy, char *ips, c
     new->used = 0;
     new->next = ap_seclisteners;
     strcpy(new->key, key);
+    new->mutual = (mutual) ? 1 : 0;
     ap_seclisteners = new;
     return NULL;
 }
@@ -304,7 +321,7 @@ static void InitTLS(server_rec *s, pool *p)
         sl->fd = find_secure_listener(sl);
 
         if (sl->fd < 0)
-            sl->fd = make_secure_socket(p, &sl->local_addr, sl->key, s);            
+            sl->fd = make_secure_socket(p, &sl->local_addr, sl->key, sl->mutual, s);            
         else
             ap_note_cleanups_for_socket(p, sl->fd);
             
@@ -367,8 +384,9 @@ int tls_hook_Fixup(request_rec *r)
 }
 
 static const command_rec tls_module_cmds[] = {
-    { "SecureListen", set_secure_listener, NULL, RSRC_CONF, TAKE2,
-      "specify an address and/or port with a key pair name"},
+    { "SecureListen", set_secure_listener, NULL, RSRC_CONF, TAKE23,
+      "specify an address and/or port with a key pair name.\n"
+      "Optional third parameter of MUTUAL configures the port for mutual authentication."},
     { NULL }
 };
 
