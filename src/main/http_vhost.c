@@ -657,22 +657,51 @@ void ap_fini_vhost_config(pool *p, server_rec *main_s)
  * run-time vhost matching functions
  */
 
-/* Remove :port and optionally a single trailing . from the hostname, this
- * canonicalizes it somewhat.
+/* Lowercase and remove any trailing dot and/or :port from the hostname,
+ * and check that it is sane.
  */
 static void fix_hostname(request_rec *r)
 {
-    const char *hostname = r->hostname;
-    char *host = ap_getword(r->pool, &hostname, ':');	/* get rid of port */
-    size_t l;
+    char *host = ap_palloc(r->pool, strlen(r->hostname) + 1);
+    const char *src;
+    char *dst;
 
-    /* trim a trailing . */
-    l = strlen(host);
-    if (l > 0 && host[l-1] == '.') {
-        host[l-1] = '\0';
+    /* check and copy the host part */
+    src = r->hostname;
+    dst = host;
+    while (*src) {
+	if (!isalnum(*src) && *src != '.' && *src != '-') {
+	    if (*src == ':')
+		break;
+	    else
+		goto bad;
+	} else {
+	    *dst++ = tolower(*src++);
+	}
+    }
+    /* check the port part */
+    if (*src++ == ':') {
+	while (*src) {
+	    if (!isdigit(*src++)) {
+		goto bad;
+	    }
+	}
+    }
+    /* strip trailing gubbins */
+    if (dst > host && dst[-1] == '.') {
+	dst[-1] = '\0';
+    } else {
+	dst[0] = '\0';
     }
 
     r->hostname = host;
+    return;
+
+bad:
+    r->status = HTTP_BAD_REQUEST;
+    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+		  "Client sent malformed Host header");
+    return;
 }
 
 
@@ -874,6 +903,8 @@ void ap_update_vhost_from_headers(request_rec *r)
     /* must set this for HTTP/1.1 support */
     if (r->hostname || (r->hostname = ap_table_get(r->headers_in, "Host"))) {
 	fix_hostname(r);
+	if (r->status != HTTP_OK)
+	    return;
     }
     /* check if we tucked away a name_chain */
     if (r->connection->vhost_lookup_data) {

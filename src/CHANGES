@@ -1,5 +1,10 @@
 Changes with Apache 1.3.10
 
+  *) More rigorous checking of Host: headers to fix security problems
+     with mass name-based virtual hosting (whether using mod_rewrite
+     or mod_vhost_alias).
+     [Ben Hyde, Tony Finch]
+
   *) Updated README.config to reflect current APACI state.
      [Brian Slesinsky <bslesins@best.com>] PR#5397
 
