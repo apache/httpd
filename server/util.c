@@ -1720,24 +1720,20 @@ AP_DECLARE(int) ap_is_url(const char *u)
 
 AP_DECLARE(int) ap_ind(const char *s, char c)
 {
-    register int x;
+    const char *p = ap_strchr_c(s, c);
 
-    for (x = 0; s[x]; x++)
-	if (s[x] == c)
-	    return x;
-
-    return -1;
+    if (p == NULL)
+        return -1;
+    return p - s;
 }
 
 AP_DECLARE(int) ap_rind(const char *s, char c)
 {
-    register int x;
+    const char *p = ap_strrchr_c(s, c);
 
-    for (x = strlen(s) - 1; x != -1; x--)
-	if (s[x] == c)
-	    return x;
-
-    return -1;
+    if (p == NULL)
+        return -1;
+    return p - s;
 }
 
 AP_DECLARE(void) ap_str_tolower(char *str)
