@@ -316,7 +316,7 @@ static void usage(process_rec *process)
                  pad);
 #endif
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                 "       %s [-v] [-V] [-h] [-l] [-L] [-t] [-T]", pad);
+                 "       %s [-v] [-V] [-h] [-l] [-L] [-t]", pad);
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                  "Options:");
 
@@ -382,11 +382,7 @@ static void usage(process_rec *process)
                  "  -t -D DUMP_VHOSTS : show parsed settings (currently only "
                  "vhost settings)");
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                 "  -t                : run syntax check for config files "
-                 "(with docroot check)");
-    ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                 "  -T                : run syntax check for config files "
-                 "(without docroot check)");
+                 "  -t                : run syntax check for config files");
 
     destroy_and_exit_process(process, 1);
 }
