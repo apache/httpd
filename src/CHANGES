@@ -1,5 +1,8 @@
 Changes with Apache 1.3.4
 
+  *) PORT: Added the Cyberguard V2 port [Richard Stagg <stagg@lentil.org>]
+     PR#3336
+
   *) Update APXS manual page: some -q option arguments were missing
      and another was incorrect. [Mark Anderson <mda@discerning.com>] PR#3553
 
