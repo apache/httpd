@@ -779,6 +779,11 @@ API_EXPORT(int) cfg_getline(char *buf, size_t bufsize, configfile_t *cfp)
 
 	if (c == EOF)
 	    return 1;
+	
+	if(bufsize < 2) {
+	    /* too small, assume caller is crazy */
+	    return 1;
+	}
 
 	while (1) {
 	    if ((c == '\t') || (c == ' ')) {
@@ -793,7 +798,7 @@ API_EXPORT(int) cfg_getline(char *buf, size_t bufsize, configfile_t *cfp)
 		/* increase line number and return on LF */
 		++cfp->line_number;
 	    }
-	    if (c == EOF || c == 0x4 || c == LF || i == (bufsize - 1)) {
+	    if (c == EOF || c == 0x4 || c == LF || i >= (bufsize - 2)) {
 		/* blast trailing whitespace */
 		while (i > 0 && isspace(buf[i - 1]))
 		    --i;
