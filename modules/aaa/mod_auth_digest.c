@@ -325,6 +325,8 @@ static void log_error_and_cleanup(char *msg, apr_status_t sts, server_rec *s)
     cleanup_tables(NULL);
 }
 
+#if APR_HAS_SHARED_MEMORY
+
 static void initialize_tables(server_rec *s, apr_pool_t *ctx)
 {
     unsigned long idx;
@@ -391,6 +393,9 @@ static void initialize_tables(server_rec *s, apr_pool_t *ctx)
     /* success */
     return;
 }
+
+#endif /* APR_HAS_SHARED_MEMORY */
+
 
 static void initialize_module(apr_pool_t *p, apr_pool_t *plog,
 			      apr_pool_t *ptemp, server_rec *s)

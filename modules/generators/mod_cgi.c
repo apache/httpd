@@ -158,8 +158,8 @@ static void *merge_cgi_config(apr_pool_t *p, void *basev, void *overridesv)
 static const char *set_scriptlog(cmd_parms *cmd, void *dummy, const char *arg)
 {
     server_rec *s = cmd->server;
-    cgi_server_conf *conf =
-    (cgi_server_conf *) ap_get_module_config(s->module_config, &cgi_module);
+    cgi_server_conf *conf = ap_get_module_config(s->module_config,
+                                                 &cgi_module);
 
     conf->logname = arg;
     return NULL;
@@ -169,8 +169,8 @@ static const char *set_scriptlog_length(cmd_parms *cmd, void *dummy,
 					const char *arg)
 {
     server_rec *s = cmd->server;
-    cgi_server_conf *conf =
-    (cgi_server_conf *) ap_get_module_config(s->module_config, &cgi_module);
+    cgi_server_conf *conf = ap_get_module_config(s->module_config,
+                                                 &cgi_module);
 
     conf->logbytes = atol(arg);
     return NULL;
@@ -180,8 +180,8 @@ static const char *set_scriptlog_buffer(cmd_parms *cmd, void *dummy,
 					const char *arg)
 {
     server_rec *s = cmd->server;
-    cgi_server_conf *conf =
-    (cgi_server_conf *) ap_get_module_config(s->module_config, &cgi_module);
+    cgi_server_conf *conf = ap_get_module_config(s->module_config,
+                                                 &cgi_module);
 
     conf->bufbytes = atoi(arg);
     return NULL;
@@ -371,10 +371,12 @@ static apr_status_t run_cgi_child(apr_file_t **script_out,
     apr_procattr_t *procattr;
     apr_proc_t *procnew;
     apr_status_t rc = APR_SUCCESS;
+
 #if defined(RLIMIT_CPU)  || defined(RLIMIT_NPROC) || \
     defined(RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined (RLIMIT_AS)
-    core_dir_config *conf;
-    conf = (core_dir_config *) ap_get_module_config(r->per_dir_config, &core_module);
+
+    core_dir_config *conf = ap_get_module_config(r->per_dir_config,
+                                                 &core_module);
 #endif
 
 

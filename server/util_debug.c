@@ -60,42 +60,61 @@
 #include "apr_want.h"
 
 #include "httpd.h"
+#include "http_config.h"
 
 #ifdef AP_DEBUG
-# undef strchr
+
+/* get rid of the macros we defined in httpd.h */
+#undef strchr
+#undef strrchr
+#undef strstr
 
 char *ap_strchr(char *s, int c)
 {
     return strchr(s,c);
 }
-
 const char *ap_strchr_c(const char *s, int c)
 {
     return strchr(s,c);
 }
-
-# undef strrchr
-
 char *ap_strrchr(char *s, int c)
 {
     return strrchr(s,c);
 }
-
 const char *ap_strrchr_c(const char *s, int c)
 {
     return strrchr(s,c);
 }
-
-#undef strstr
-
 char *ap_strstr(char *s, char *c)
 {
     return strstr(s,c);
 }
-
 const char *ap_strstr_c(const char *s, const char *c)
 {
     return strstr(s,c);
 }
+
+
+AP_DECLARE(void *) ap_get_module_config(const ap_conf_vector_t *cv,
+                                        const module *m)
+{
+    return ((void **)cv)[m->module_index];
+}
+
+/**
+ * Generic accessors for other modules to set at their own module-specific
+ * data
+ * @param conf_vector The vector in which the modules configuration is stored.
+ *        usually r->per_dir_config or s->module_config
+ * @param m The module to set the data for.
+ * @param val The module-specific data to set
+ * @deffunc void ap_set_module_config(ap_conf_vector_t *cv, const module *m, void *val)
+ */
+AP_DECLARE(void) ap_set_module_config(ap_conf_vector_t *cv, const module *m,
+                                      void *val)
+{
+    ((void **)cv)[m->module_index] = val;
+}
+
 
 #endif /* AP_DEBUG */
