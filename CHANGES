@@ -1,5 +1,9 @@
 Changes with Apache 2.0.16-dev
 
+  *) Add a ScriptSock directive to the default config file.  This is
+     only enabled when mod_cgid is used.  
+     [Taketo Kabe <kabe@sra-tohoku.co.jp>]
+
 Changes with Apache 2.0.15
 
   *) Untangled the buildconf script and eliminated the need for build's
