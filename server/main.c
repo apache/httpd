@@ -289,6 +289,15 @@ API_EXPORT_NONSTD(int)        main(int argc, char *argv[])
     ap_context_t *ptemp;		/* Pool for temporary config stuff */
     ap_context_t *pcommands;		/* Pool for -C and -c switches */
 
+#ifndef WIN32
+    if ((ap_server_argv0 = strrchr(argv[0], '/')) != NULL)
+#else
+    if ((ap_server_argv0 = strrchr(argv[0], '\\')) != NULL)
+#endif
+        ++ap_server_argv0;
+    else
+	ap_server_argv0 = argv[0];
+
     ap_util_uri_init();
 
     g_pHookPool=pglobal;
