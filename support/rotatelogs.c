@@ -58,25 +58,30 @@
  * Contributed by Ben Laurie <ben@algroup.co.uk>
  *
  * 12 Mar 1996
+ *
+ * Ported to APR by Mladen Turk <mturk@mappingsoft.com>
+ *
+ * 23 Sep 2001
  */
 
 
 #include "apr.h"
-#include <string.h>
+#include "apr_lib.h"
+#include "apr_strings.h"
+#include "apr_errno.h"
+#include "apr_file_io.h"
+#include "apr_file_info.h"
+#include "apr_general.h"
+#include "apr_time.h"
+
+#if APR_HAVE_STDLIB_H
 #include <stdlib.h>
-#include <time.h>
-#include <errno.h>
-#if APR_HAVE_STDIO_H
-#include <stdio.h>
 #endif
-#if APR_HAVE_UNISTD_H
-#include <unistd.h>
+#if APR_HAVE_STRING_H
+#include <string.h>
 #endif
-#if APR_HAVE_IO_H
-#include <io.h>
-#endif
-#if APR_HAVE_FCNTL_H
-#include <fcntl.h>
+#if APR_HAVE_STRINGS_H
+#include <strings.h>
 #endif
 
 #define BUFSIZE         65536
@@ -89,13 +94,19 @@
 int main (int argc, char *argv[])
 {
     char buf[BUFSIZE], buf2[MAX_PATH], errbuf[ERRMSGSZ];
-    time_t tLogEnd = 0, tRotation;
-    int nLogFD = -1, nLogFDprev = -1, nMessCount = 0, nRead, nWrite;
-    int utc_offset = 0;
+    int tLogEnd = 0, tRotation, utc_offset = 0;
+    int nMessCount = 0;
+    apr_size_t nRead, nWrite;
     int use_strftime = 0;
-    time_t now;
+    int now;
     char *szLogRoot;
+    apr_file_t *f_stdin, *nLogFD = NULL, *nLogFDprev = NULL;
+    apr_pool_t *pool;
 
+    apr_initialize();
+    atexit(apr_terminate);
+
+    apr_pool_create(&pool, NULL);
     if (argc < 3) {
         fprintf(stderr,
                 "Usage: %s <logfile> <rotation time in seconds> "
@@ -130,36 +141,44 @@ int main (int argc, char *argv[])
     }
 
     use_strftime = (strstr(szLogRoot, "%") != NULL);
+    if (apr_file_open_stdin(&f_stdin, pool) != APR_SUCCESS) {
+        fprintf(stderr, "Unable to open stdin\n");
+        exit(1);
+    }
+
     for (;;) {
-        nRead = read(0, buf, sizeof buf);
-        now = time(NULL) + utc_offset;
+        nRead = sizeof(buf);
+        if (apr_file_read(f_stdin, buf, &nRead) != APR_SUCCESS)
+            exit(3);
+        now = (int)(apr_time_now() / APR_USEC_PER_SEC) + utc_offset;
         if (nRead == 0)
             exit(3);
-        if (nRead < 0)
-            if (errno != EINTR)
-                exit(4);
-        if (nLogFD >= 0 && (now >= tLogEnd || nRead < 0)) {
+        if (nLogFD != NULL && (now >= tLogEnd || nRead < 0)) {
             nLogFDprev = nLogFD;
-            nLogFD = -1;
+            nLogFD = NULL;
         }
-        if (nLogFD < 0) {
-            time_t tLogStart = (now / tRotation) * tRotation;
+        if (nLogFD == NULL) {
+            int tLogStart = (now / tRotation) * tRotation;
             if (use_strftime) {
-                struct tm *tm_now;
-                tm_now = gmtime(&tLogStart);
-                strftime(buf2, sizeof(buf2), szLogRoot, tm_now);
+		apr_time_t tNow = tLogStart * APR_USEC_PER_SEC;
+                apr_exploded_time_t e;
+                apr_size_t rs;
+
+                apr_explode_gmt(&e, tNow);
+                apr_strftime(buf2, &rs, sizeof(buf2), szLogRoot, &e);
             }
             else {
-                sprintf(buf2, "%s.%010d", szLogRoot, (int) tLogStart);
+                sprintf(buf2, "%s.%010d", szLogRoot, tLogStart);
             }
             tLogEnd = tLogStart + tRotation;
-            nLogFD = open(buf2, O_WRONLY | O_CREAT | O_APPEND, 0666);
-            if (nLogFD < 0) {
+            apr_file_open(&nLogFD, buf2, APR_READ | APR_WRITE | APR_CREATE | APR_APPEND,
+                          APR_OS_DEFAULT, pool);
+            if (nLogFD == NULL) {
                 /* Uh-oh. Failed to open the new log file. Try to clear
                  * the previous log file, note the lost log entries,
                  * and keep on truckin'. */
-                if (nLogFDprev == -1) {
-                    perror(buf2);
+                if (nLogFDprev == NULL) {
+                    fprintf(stderr, "1 Previous file handle doesn't exists %s\n", buf2);
                     exit(2);
                 }
                 else {
@@ -169,21 +188,21 @@ int main (int argc, char *argv[])
                             "new log file. %10d messages lost.\n",
                             nMessCount);
                     nWrite = strlen(errbuf);
-#ifdef WIN32
-                    chsize(nLogFD, 0);
-#else
-                    ftruncate(nLogFD, 0);
-#endif
-                    write(nLogFD, errbuf, nWrite);
+                    apr_file_trunc(nLogFD, 0);
+                    if (apr_file_write(nLogFD, errbuf, &nWrite) != APR_SUCCESS) {
+                        fprintf(stderr, "Error witing to the file %s\n", buf2);
+                        exit(2);
+                    }
                 }
             }
-            else {
-                close(nLogFDprev);
+            else if (nLogFDprev) {
+                apr_file_close(nLogFDprev);
             }
             nMessCount = 0;
         }
         do {
-            nWrite = write(nLogFD, buf, nRead);
+            nWrite = nRead;
+            apr_file_write(nLogFD, buf, &nWrite);
         } while (nWrite < 0 && errno == EINTR);
         if (nWrite != nRead) {
             nMessCount++;
@@ -192,12 +211,11 @@ int main (int argc, char *argv[])
                     "%10d messages lost.\n",
                     nMessCount);
             nWrite = strlen(errbuf);
-#ifdef WIN32
-            chsize(nLogFD, 0);
-#else
-            ftruncate(nLogFD, 0);
-#endif
-            write (nLogFD, errbuf, nWrite);
+            apr_file_trunc(nLogFD, 0);
+            if (apr_file_write(nLogFD, errbuf, &nWrite) != APR_SUCCESS) {
+                fprintf(stderr, "Error witing to the file %s\n", buf2);
+                exit(2);
+            }
         }
         else {
             nMessCount++;
