@@ -223,7 +223,7 @@ static ap_filter_rec_t *register_filter(const char *name,
         frec = node->frec;
     }
     else {
-        frec = apr_palloc(FILTER_POOL, sizeof(*frec));
+        frec = apr_pcalloc(FILTER_POOL, sizeof(*frec));
         node->frec = frec;
         frec->name = normalized_name;
     }
@@ -247,15 +247,29 @@ AP_DECLARE(ap_filter_rec_t *) ap_register_input_filter(const char *name,
                            &registered_input_filters);
 }                                                                    
 
+/* Prepare to make this a #define in 2.2 */
 AP_DECLARE(ap_filter_rec_t *) ap_register_output_filter(const char *name,
                                            ap_out_filter_func filter_func,
                                            ap_init_filter_func filter_init,
                                            ap_filter_type ftype)
 {
+    return ap_register_output_filter_protocol(name, filter_func,
+                                              filter_init, ftype, 0) ;
+}
+AP_DECLARE(ap_filter_rec_t *) ap_register_output_filter_protocol(
+                                           const char *name,
+                                           ap_out_filter_func filter_func,
+                                           ap_init_filter_func filter_init,
+                                           ap_filter_type ftype,
+                                           unsigned int proto_flags)
+{
+    ap_filter_rec_t* ret ;
     ap_filter_func f;
     f.out_func = filter_func;
-    return register_filter(name, f, filter_init, ftype,
-                           &registered_output_filters);
+    ret = register_filter(name, f, filter_init, ftype,
+                          &registered_output_filters);
+    ret->proto_flags = proto_flags ;
+    return ret ;
 }
 
 static ap_filter_t *add_any_filter_handle(ap_filter_rec_t *frec, void *ctx, 
@@ -584,4 +598,8 @@ AP_DECLARE_NONSTD(apr_status_t) ap_fprintf(ap_filter_t *f,
     rv = apr_brigade_vprintf(bb, ap_filter_flush, f, fmt, args);
     va_end(args);
     return rv;
+}
+AP_DECLARE(void) ap_filter_protocol(ap_filter_t *f, unsigned int flags)
+{
+    f->frec->proto_flags = flags ;
 }

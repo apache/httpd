@@ -19,6 +19,13 @@
  * httpd 2.2, but is also back-compatible with 2.0.  It is likely
  * that the 2.0 and 2.2 versions may diverge in future, as additional
  * capabilities for 2.2 are added, including updates to util_filter.
+ *
+ * 21/9/04: Unifying data structures with util_filter.
+ * From now on, until and unless we backport, mod_filter requires
+ * util_filter.h from CVS or httpd-2.1+ to compile.  Nevertheless,
+ * the compiled code remains binary-compatible with httpd-2.0.
+ * I'll keep a minimal patch for httpd-2.0 users to compile mod_filter
+ * at http://www.apache.org/~niq/
  */
 
 #include <ctype.h>
@@ -32,65 +39,13 @@
 #include "http_log.h"
 #include "util_filter.h"
 
-#ifndef NO_PROTOCOL
-#define PROTO_CHANGE 0x1
-#define PROTO_CHANGE_LENGTH 0x2
-#define PROTO_NO_BYTERANGE 0x4
-#define PROTO_NO_PROXY 0x8
-#define PROTO_NO_CACHE 0x10
-#define PROTO_TRANSFORM 0x20
-#endif
-
 module AP_MODULE_DECLARE_DATA filter_module ;
-
-typedef apr_status_t (*filter_func_t)(ap_filter_t*, apr_bucket_brigade*) ;
 
 typedef struct {
     const char* name ;
-    filter_func_t func ;
+    ap_out_filter_func func ;
     void* fctx ;
 } harness_ctx ;
-
-typedef struct mod_filter_provider {
-    enum {
-        STRING_MATCH,
-        STRING_CONTAINS,
-        REGEX_MATCH,
-        INT_EQ,
-        INT_LT,
-        INT_GT,
-        DEFINED
-    } match_type ;
-    int not ;        /* negation on match_type */
-    union {
-        const char* c ;
-        regex_t* r ;
-        int i ;
-    } match ;
-    ap_filter_rec_t* frec ;
-    struct mod_filter_provider* next ;
-#ifndef NO_PROTOCOL
-    unsigned int proto_flags ;
-#endif
-} mod_filter_provider ;
-
-typedef struct {
-    ap_filter_rec_t frec ;
-    enum {
-        HANDLER,
-        REQUEST_HEADERS,
-        RESPONSE_HEADERS,
-        SUBPROCESS_ENV,
-        CONTENT_TYPE
-    } dispatch ;
-    const char* value ;
-    mod_filter_provider* providers ;
-    int debug ;
-#ifndef NO_PROTOCOL
-    unsigned int proto_flags ;
-    const char* range ;
-#endif
-} mod_filter_rec ;
 
 typedef struct mod_filter_chain {
     const char* fname ;
@@ -105,7 +60,7 @@ typedef struct {
 static const char* filter_bucket_type(apr_bucket* b)
 {
     static struct {
-        const void* fn ;
+        const apr_bucket_type_t* fn ;
         const char* desc ;
     } types[] = {
         { &apr_bucket_type_heap, "HEAP" } ,
@@ -151,25 +106,27 @@ static void filter_trace(apr_pool_t* pool, int debug, const char* fname,
 
 static int filter_init(ap_filter_t* f)
 {
-    mod_filter_provider* p ;
+    ap_filter_provider_t* p ;
     int err = OK ;
     harness_ctx* ctx = f->ctx ;
     mod_filter_cfg* cfg
         = ap_get_module_config(f->r->per_dir_config, &filter_module);
-    mod_filter_rec* filter
+    ap_filter_rec_t* filter
         = apr_hash_get(cfg->live_filters, ctx->name, APR_HASH_KEY_STRING) ;
     for ( p = filter->providers ; p ; p = p->next ) {
         if ( p->frec->filter_init_func ) {
             if ( err =  p->frec->filter_init_func(f), err != OK ) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, f->r,
+                              "filter_init for %s failed", p->frec->name) ;
                 break ;        /* if anyone errors out here, so do we */
             }
         }
     }
     return err ;
 }
-static filter_func_t filter_lookup(request_rec* r, mod_filter_rec* filter)
+static ap_out_filter_func filter_lookup(request_rec* r, ap_filter_rec_t* filter)
 {
-    mod_filter_provider* provider ;
+    ap_filter_provider_t* provider ;
     const char* str ;
     char* str1 ;
     int match ;
@@ -261,15 +218,15 @@ static filter_func_t filter_lookup(request_rec* r, mod_filter_rec* filter)
              * toes of filters which want to do it themselves.
              * 
              */
-            proto_flags = filter->proto_flags | provider->proto_flags ;
+            proto_flags = filter->proto_flags | provider->frec->proto_flags ;
 
             /* some specific things can't happen in a proxy */
             if ( r->proxyreq ) {
-                if ( proto_flags & PROTO_NO_PROXY ) {
+                if ( proto_flags & AP_FILTER_PROTO_NO_PROXY ) {
                     /* can't use this provider; try next */
                     continue ;
                 }
-                if ( proto_flags & PROTO_TRANSFORM ) {
+                if ( proto_flags & AP_FILTER_PROTO_TRANSFORM ) {
                     str = apr_table_get(r->headers_out, "Cache-Control") ;
                     if ( str ) {
                         str1 = apr_pstrdup(r->pool, str) ;
@@ -284,19 +241,19 @@ static filter_func_t filter_lookup(request_rec* r, mod_filter_rec* filter)
                 }
             }
             /* things that are invalidated if the filter transforms content */
-            if ( proto_flags & PROTO_CHANGE ) {
+            if ( proto_flags & AP_FILTER_PROTO_CHANGE ) {
                 apr_table_unset(r->headers_out, "Content-MD5") ;
                 apr_table_unset(r->headers_out, "ETag") ;
-                if ( proto_flags & PROTO_CHANGE_LENGTH ) {
+                if ( proto_flags & AP_FILTER_PROTO_CHANGE_LENGTH ) {
                     apr_table_unset(r->headers_out, "Content-Length") ;
                 }
             }
             /* no-cache is for a filter that has different effect per-hit */
-            if ( proto_flags & PROTO_NO_CACHE ) {
+            if ( proto_flags & AP_FILTER_PROTO_NO_CACHE ) {
                 apr_table_unset(r->headers_out, "Last-Modified") ;
                 apr_table_addn(r->headers_out, "Cache-Control", "no-cache") ;
             }
-            if ( proto_flags & PROTO_NO_BYTERANGE ) {
+            if ( proto_flags & AP_FILTER_PROTO_NO_BYTERANGE ) {
                 apr_table_unset(r->headers_out, "Accept-Ranges") ;
             } else if ( filter->range ) {
                 apr_table_setn(r->headers_in, "Range", filter->range) ;
@@ -315,7 +272,7 @@ static apr_status_t filter_harness(ap_filter_t* f, apr_bucket_brigade* bb)
     const char* cachecontrol ;
     char* str ;
     harness_ctx* ctx = f->ctx ;
-    mod_filter_rec* filter = (mod_filter_rec*)f->frec ;
+    ap_filter_rec_t* filter = f->frec ;
 
     if ( f->r->status != 200 ) {
         ap_remove_output_filter(f) ;
@@ -328,11 +285,11 @@ static apr_status_t filter_harness(ap_filter_t* f, apr_bucket_brigade* bb)
 
 #ifndef NO_PROTOCOL
         if ( f->r->proxyreq ) {
-            if ( filter->proto_flags & PROTO_NO_PROXY ) {
+            if ( filter->proto_flags & AP_FILTER_PROTO_NO_PROXY ) {
                 ap_remove_output_filter(f) ;
                 return ap_pass_brigade(f->next, bb) ;
             }
-            if ( filter->proto_flags & PROTO_TRANSFORM ) {
+            if ( filter->proto_flags & AP_FILTER_PROTO_TRANSFORM ) {
                 cachecontrol = apr_table_get(f->r->headers_out, "Cache-Control") ;
                 if ( cachecontrol ) {
                     str = apr_pstrdup(f->r->pool,  cachecontrol) ;
@@ -370,8 +327,8 @@ static const char* filter_protocol(cmd_parms* cmd, void* CFG,
     char* tok = 0 ;
     unsigned int flags = 0 ;
     mod_filter_cfg* cfg = CFG ;
-    mod_filter_provider* provider = NULL ;
-    mod_filter_rec* filter
+    ap_filter_provider_t* provider = NULL ;
+    ap_filter_rec_t* filter
         = apr_hash_get(cfg->live_filters, fname, APR_HASH_KEY_STRING) ;
 
     if ( !provider ) {
@@ -396,21 +353,21 @@ static const char* filter_protocol(cmd_parms* cmd, void* CFG,
     for ( arg = apr_strtok(apr_pstrdup(cmd->pool, proto), sep, &tok) ;
         arg ; arg = apr_strtok(NULL, sep, &tok) ) {
         if ( !strcasecmp(arg, "change=yes") ) {
-            flags != PROTO_CHANGE | PROTO_CHANGE_LENGTH ;
+            flags != AP_FILTER_PROTO_CHANGE | AP_FILTER_PROTO_CHANGE_LENGTH ;
         } else if ( !strcasecmp(arg, "change=1:1") ) {
-            flags |= PROTO_CHANGE ;
+            flags |= AP_FILTER_PROTO_CHANGE ;
         } else if ( !strcasecmp(arg, "byteranges=no") ) {
-            flags |= PROTO_NO_BYTERANGE ;
+            flags |= AP_FILTER_PROTO_NO_BYTERANGE ;
         } else if ( !strcasecmp(arg, "proxy=no") ) {
-            flags |= PROTO_NO_PROXY ;
+            flags |= AP_FILTER_PROTO_NO_PROXY ;
         } else if ( !strcasecmp(arg, "proxy=transform") ) {
-            flags |= PROTO_TRANSFORM ;
+            flags |= AP_FILTER_PROTO_TRANSFORM ;
         } else if ( !strcasecmp(arg, "cache=no") ) {
-            flags |= PROTO_NO_CACHE ;
+            flags |= AP_FILTER_PROTO_NO_CACHE ;
         }
     }
     if ( pname ) {
-        provider->proto_flags = flags ;
+        provider->frec->proto_flags = flags ;
     } else {
         filter->proto_flags = flags ;
     }
@@ -426,16 +383,16 @@ static const char* filter_declare(cmd_parms* cmd, void* CFG,
     char* tmpname = "" ;
 
     mod_filter_cfg* cfg = (mod_filter_cfg*)CFG ;
-    mod_filter_rec* filter ;
+    ap_filter_rec_t* filter ;
 
-    filter = apr_pcalloc(cmd->pool, sizeof(mod_filter_rec)) ;
+    filter = apr_pcalloc(cmd->pool, sizeof(ap_filter_rec_t)) ;
     apr_hash_set(cfg->live_filters, fname, APR_HASH_KEY_STRING, filter) ;
 
-    filter->frec.name = fname ;
-    filter->frec.filter_init_func = filter_init ;
-    filter->frec.filter_func.out_func = filter_harness ;
-    filter->frec.ftype = AP_FTYPE_RESOURCE ;
-    filter->frec.next = NULL ;
+    filter->name = fname ;
+    filter->filter_init_func = filter_init ;
+    filter->filter_func.out_func = filter_harness ;
+    filter->ftype = AP_FTYPE_RESOURCE ;
+    filter->next = NULL ;
 
     /* determine what this filter will dispatch on */
     eq = strchr(condition, '=') ;
@@ -467,13 +424,13 @@ static const char* filter_declare(cmd_parms* cmd, void* CFG,
 
     if ( place ) {
         if ( !strcasecmp(place, "CONTENT_SET") ) {
-            filter->frec.ftype = AP_FTYPE_CONTENT_SET ;
+            filter->ftype = AP_FTYPE_CONTENT_SET ;
         } else if ( !strcasecmp(place, "PROTOCOL") ) {
-            filter->frec.ftype = AP_FTYPE_PROTOCOL ;
+            filter->ftype = AP_FTYPE_PROTOCOL ;
         } else if ( !strcasecmp(place, "CONNECTION") ) {
-            filter->frec.ftype = AP_FTYPE_CONNECTION ;
+            filter->ftype = AP_FTYPE_CONNECTION ;
         } else if ( !strcasecmp(place, "NETWORK") ) {
-            filter->frec.ftype = AP_FTYPE_NETWORK ;
+            filter->ftype = AP_FTYPE_NETWORK ;
         }
     }
 
@@ -484,14 +441,14 @@ static const char* filter_provider(cmd_parms* cmd, void* CFG,
         const char* fname, const char* pname, const char* match)
 {
     int flags ;
-    mod_filter_provider* provider ;
+    ap_filter_provider_t* provider ;
     const char* rxend ;
     const char* c ;
     char* str ;
 
     /* fname has been declared with DeclareFilter, so we can look it up */
     mod_filter_cfg* cfg = CFG ;
-    mod_filter_rec* frec = apr_hash_get(cfg->live_filters, fname, APR_HASH_KEY_STRING) ;
+    ap_filter_rec_t* frec = apr_hash_get(cfg->live_filters, fname, APR_HASH_KEY_STRING) ;
     /* provider has been registered, so we can look it up */
     ap_filter_rec_t* provider_frec = ap_get_output_filter_handle(pname) ;
     if ( ! frec ) {
@@ -499,10 +456,12 @@ static const char* filter_provider(cmd_parms* cmd, void* CFG,
     } else if ( !provider_frec ) {
         return apr_psprintf(cmd->pool, "Unknown filter provider %s", pname) ;
     } else {
-        provider = apr_palloc(cmd->pool, sizeof(mod_filter_provider) ) ;
+        provider = apr_palloc(cmd->pool, sizeof(ap_filter_provider_t) ) ;
         if ( match[0] == '!' ) {
             provider->not = 1 ;
             ++match ;
+        } else {
+            provider->not = 0 ;
         }
         switch ( match[0] ) {
             case '<':
@@ -531,7 +490,7 @@ static const char* filter_provider(cmd_parms* cmd, void* CFG,
                     }
                 }
                 provider->match.r = ap_pregcomp(cmd->pool,
-                apr_pstrndup(cmd->pool, match+1, rxend-match-1), flags) ;
+                    apr_pstrndup(cmd->pool, match+1, rxend-match-1), flags) ;
                 break ;
             case '*':
                 provider->match_type = DEFINED ;
@@ -614,7 +573,7 @@ static const char* filter_chain(cmd_parms* cmd, void* CFG, const char* arg)
 static const char* filter_debug(cmd_parms* cmd, void* CFG,
         const char* fname, const char* level){
     mod_filter_cfg* cfg = CFG ;
-    mod_filter_rec* frec = apr_hash_get(cfg->live_filters, fname,
+    ap_filter_rec_t* frec = apr_hash_get(cfg->live_filters, fname,
         APR_HASH_KEY_STRING) ;
     frec->debug = atoi(level) ;
     return NULL ;
@@ -627,7 +586,7 @@ static const command_rec filter_cmds[] = {
         "filter-name, provider-name, dispatch-match") ,
     AP_INIT_ITERATE("FilterChain", filter_chain, NULL, OR_ALL,
         "list of filter names with optional [+-=!@]") ,
-    AP_INIT_TAKE2("FilterDebug", filter_debug, NULL, OR_ALL, "Debug level") ,
+    AP_INIT_TAKE2("FilterTrace", filter_debug, NULL, OR_ALL, "Debug level") ,
 #ifndef NO_PROTOCOL
     AP_INIT_TAKE23("FilterProtocol", filter_protocol, NULL, OR_ALL,
         "filter-name [provider-name] protocol-args") ,
@@ -638,7 +597,7 @@ static const command_rec filter_cmds[] = {
 static int filter_insert(request_rec* r)
 {
     mod_filter_chain* p ;
-    mod_filter_rec* filter ;
+    ap_filter_rec_t* filter ;
     harness_ctx* fctx ;
     mod_filter_cfg* cfg = ap_get_module_config(r->per_dir_config, &filter_module) ;
 #ifndef NO_PROTOCOL
@@ -649,9 +608,9 @@ static int filter_insert(request_rec* r)
         filter = apr_hash_get(cfg->live_filters, p->fname, APR_HASH_KEY_STRING) ;
         fctx = apr_pcalloc(r->pool, sizeof(harness_ctx)) ;
         fctx->name = p->fname ;
-        ap_add_output_filter_handle(&filter->frec, fctx, r, r->connection) ;
+        ap_add_output_filter_handle(filter, fctx, r, r->connection) ;
 #ifndef NO_PROTOCOL
-        if ( ranges && (filter->proto_flags & (PROTO_NO_BYTERANGE|PROTO_CHANGE_LENGTH)) ) {
+        if ( ranges && (filter->proto_flags & (AP_FILTER_PROTO_NO_BYTERANGE|AP_FILTER_PROTO_CHANGE_LENGTH)) ) {
             filter->range = apr_table_get(r->headers_in, "Range") ;
             apr_table_unset(r->headers_in, "Range") ;
             ranges = 0 ;
@@ -714,4 +673,3 @@ module AP_MODULE_DECLARE_DATA filter_module = {
     filter_cmds,
     filter_hooks
 } ;
-
