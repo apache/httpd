@@ -21,7 +21,7 @@
 <div id="page-content">
 <div id="preamble"><h1>Apache モジュール mod_authz_host</h1>
 <div class="toplang">
-<p><span>Available Languages: </span><a href="../en/mod/mod_authz_host.html">&nbsp;en&nbsp;</a> | <a href="../ja/mod/mod_authz_host.html">&nbsp;ja&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="../en/mod/mod_authz_host.html" hreflang="en" title="English">&nbsp;en&nbsp;</a> | <a href="../ja/mod/mod_authz_host.html" hreflang="ja" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>ホスト (名前もしくは IP アドレス) に基づいたグループ承認</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
@@ -330,7 +330,7 @@ Deny が評価される順番を制御する</td></tr>
 </div>
 </div>
 <div class="bottomlang">
-<p><span>Available Languages: </span><a href="../en/mod/mod_authz_host.html">&nbsp;en&nbsp;</a> | <a href="../ja/mod/mod_authz_host.html">&nbsp;ja&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="../en/mod/mod_authz_host.html" hreflang="en" title="English">&nbsp;en&nbsp;</a> | <a href="../ja/mod/mod_authz_host.html" hreflang="ja" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
 <p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div>

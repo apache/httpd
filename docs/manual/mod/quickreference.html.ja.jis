@@ -20,7 +20,7 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.1</a> &gt; <a href="./">モジュール</a></div>
 <div id="preamble"><h1>ディレクティブ クイックリファレンス</h1>
 <div class="toplang">
-<p><span>Available Languages: </span><a href="../de/mod/quickreference.html">&nbsp;de&nbsp;</a> | <a href="../en/mod/quickreference.html">&nbsp;en&nbsp;</a> | <a href="../ja/mod/quickreference.html">&nbsp;ja&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="../de/mod/quickreference.html" hreflang="de" title="Deutsch">&nbsp;de&nbsp;</a> | <a href="../en/mod/quickreference.html" hreflang="en" title="English">&nbsp;en&nbsp;</a> | <a href="../ja/mod/quickreference.html" hreflang="ja" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
 
     <p>ディレクティブ クイックリファレンスでは、各 Apache 設定ディレクティブの
@@ -676,7 +676,7 @@ a given virtual host</td></tr>
 解析する</td></tr>
 </table></div>
 <div class="bottomlang">
-<p><span>Available Languages: </span><a href="../de/mod/quickreference.html">&nbsp;de&nbsp;</a> | <a href="../en/mod/quickreference.html">&nbsp;en&nbsp;</a> | <a href="../ja/mod/quickreference.html">&nbsp;ja&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="../de/mod/quickreference.html" hreflang="de" title="Deutsch">&nbsp;de&nbsp;</a> | <a href="../en/mod/quickreference.html" hreflang="en" title="English">&nbsp;en&nbsp;</a> | <a href="../ja/mod/quickreference.html" hreflang="ja" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
 <p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div>

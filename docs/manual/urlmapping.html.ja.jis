@@ -18,7 +18,7 @@
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.1</a></div><div id="page-content"><div id="preamble"><h1>URL からファイルシステム上の位置へのマップ</h1>
 <div class="toplang">
-<p><span>Available Languages: </span><a href="./en/urlmapping.html">&nbsp;en&nbsp;</a> | <a href="./ja/urlmapping.html">&nbsp;ja&nbsp;</a> | <a href="./ko/urlmapping.html">&nbsp;ko&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="./en/urlmapping.html" hreflang="en" title="English">&nbsp;en&nbsp;</a> | <a href="./ja/urlmapping.html" hreflang="ja" title="Japanese">&nbsp;ja&nbsp;</a> | <a href="./ko/urlmapping.html" hreflang="ko" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
 
     <p>この文書は Apache がリクエストの URL から送信するファイルの
@@ -265,7 +265,7 @@ ProxyPassReverse /foo/ http://internal.example.com/bar/
     説明されているように、柔軟な設定を行なうことができます。</p>
 </div></div>
 <div class="bottomlang">
-<p><span>Available Languages: </span><a href="./en/urlmapping.html">&nbsp;en&nbsp;</a> | <a href="./ja/urlmapping.html">&nbsp;ja&nbsp;</a> | <a href="./ko/urlmapping.html">&nbsp;ko&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="./en/urlmapping.html" hreflang="en" title="English">&nbsp;en&nbsp;</a> | <a href="./ja/urlmapping.html" hreflang="ja" title="Japanese">&nbsp;ja&nbsp;</a> | <a href="./ko/urlmapping.html" hreflang="ko" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
 <p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p></div>
