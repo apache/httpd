@@ -3356,6 +3356,16 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
             else if (APR_BUCKET_IS_FILE(e) && (e->length >= AP_MIN_SENDFILE_BYTES)) {
                 apr_bucket_shared *s = e->data;
                 apr_bucket_file *a = s->data;
+
+                /* We can't handle more than one file bucket at a time
+                 * so we split here and send the file we have already found.
+                 */
+                if (fd) {
+                    more = apr_brigade_split(b, APR_BUCKET_NEXT(e));
+                    ap_save_brigade(f, &ctx->b, &more);
+                    break;
+                }
+
                 fd = a->fd;
                 flen = e->length;
                 foffset = s->start;
