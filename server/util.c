@@ -333,6 +333,32 @@ API_EXPORT(char *) ap_strcasestr(const char *s1, const char *s2)
     }
     return((char *)s1);
 }
+
+/*
+ * Returns an offsetted pointer in bigstring immediately after
+ * prefix. Returns bigstring if bigstring doesn't start with
+ * prefix or if prefix is longer than bigstring while still matching.
+ * NOTE: pointer returned is relative to bigstring, so we
+ * can use standard pointer comparisons in the calling function
+ * (eg: test if ap_stripprefix(a,b) == a)
+ */
+API_EXPORT(char *) ap_stripprefix(const char *bigstring, const char *prefix)
+{
+    char *p1;
+    if (*prefix == '\0') {
+        return( (char *)bigstring);
+    }
+    p1 = (char *)bigstring;
+    while(*p1 && *prefix) {
+        if (*p1++ != *prefix++)
+            return( (char *)bigstring);
+    }
+    if (*prefix == '\0')
+        return(p1);
+    else /* hit the end of bigstring! */
+        return( (char *)bigstring);
+}
+
 /* 
  * Apache stub function for the regex libraries regexec() to make sure the
  * whole regex(3) API is available through the Apache (exported) namespace.
@@ -1647,6 +1673,16 @@ API_EXPORT(int) ap_is_directory(const char *path)
     apr_finfo_t finfo;
 
     if (apr_stat(&finfo, path, NULL) == -1)
+	return 0;		/* in error condition, just return no */
+
+    return (finfo.filetype == APR_DIR);
+}
+
+API_EXPORT(int) ap_is_rdirectory(const char *path)
+{
+    apr_finfo_t finfo;
+
+    if (apr_lstat(&finfo, path, NULL) == -1)
 	return 0;		/* in error condition, just return no */
 
     return (finfo.filetype == APR_DIR);

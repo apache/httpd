@@ -103,8 +103,26 @@ typedef struct info_cfg_lines {
     struct info_cfg_lines *next;
 } info_cfg_lines;
 
+typedef struct {                /* shamelessly lifted from http_config.c */
+    char *fname;
+} info_fnames;
+
+typedef struct {
+    info_cfg_lines *clines;
+    char *fname;
+} info_clines;
+
 module MODULE_VAR_EXPORT info_module;
 extern module *top_module;
+
+/* shamelessly lifted from http_config.c */
+static int fname_alphasort(const void *fn1, const void *fn2)
+{
+    const info_fnames *f1 = fn1;
+    const info_fnames *f2 = fn2;
+
+    return strcmp(f1->fname,f2->fname);
+}
 
 static void *create_info_config(apr_pool_t *p, server_rec *s)
 {
@@ -356,6 +374,53 @@ static char *find_more_info(server_rec *s, const char *module_name)
     return 0;
 }
 
+static void mod_info_dirwalk(pool *p, const char *fname,
+                             request_rec *r, apr_array_header_t *carray)
+{
+    info_clines *cnew = NULL;
+    info_cfg_lines *mod_info_cfg_tmp = NULL;
+
+    if (!ap_is_rdirectory(fname)) {
+        mod_info_cfg_tmp = mod_info_load_config(p, fname, r);
+        cnew = (info_clines *) apr_push_array(carray);
+        cnew->fname = ap_pstrdup(p, fname);
+        cnew->clines = mod_info_cfg_tmp;
+    } else {
+        apr_dir_t *dirp;
+        int current;
+        apr_array_header_t *candidates = NULL;
+        info_fnames *fnew;
+
+	if (apr_opendir(&dirp, fname, p) != APR_SUCCESS) {
+            ap_log_rerror(APLOG_MARK, APLOG_WARNING, r, 
+                    "mod_info: couldn't open config directory %s",
+                    fname);
+            return;
+	}
+	candidates = apr_make_array(p, 1, sizeof(info_fnames));
+        while (apr_readdir(dirp) == APR_SUCCESS) {
+            char *d_name;
+	    apr_get_dir_filename(&d_name, dirp);
+	    /* strip out '.' and '..' */
+	    if (strcmp(d_name, ".") &&
+		strcmp(d_name, "..")) {
+		fnew = (info_fnames *) apr_push_array(candidates);
+		fnew->fname = ap_make_full_path(p, fname, d_name);
+	    }
+	}
+	apr_closedir(dirp);
+        if (candidates->nelts != 0) {
+            qsort((void *) candidates->elts, candidates->nelts,
+              sizeof(info_fnames), fname_alphasort);
+            for (current = 0; current < candidates->nelts; ++current) {
+                fnew = &((info_fnames *) candidates->elts)[current];
+                mod_info_dirwalk(p, fnew->fname, r, carray);
+            }
+        }
+    }
+    return;
+}
+
 static int display_info(request_rec *r)
 {
     module *modp = NULL;
@@ -365,13 +430,14 @@ static int display_info(request_rec *r)
     const handler_rec *hand = NULL;
     server_rec *serv = r->server;
     int comma = 0;
-    info_cfg_lines *mod_info_cfg_httpd = NULL;
-    info_cfg_lines *mod_info_cfg_srm = NULL;
-    info_cfg_lines *mod_info_cfg_access = NULL;
+    apr_array_header_t *allconfigs = NULL;
+    info_clines *cnew = NULL;
+    int current;
+    char *relpath;
 
     r->allowed |= (1 << M_GET);
     if (r->method_number != M_GET)
-	return DECLINED;
+        return DECLINED;
 
     r->content_type = "text/html";
     ap_send_http_header(r);
@@ -383,8 +449,9 @@ static int display_info(request_rec *r)
 	     "<html><head><title>Server Information</title></head>\n", r);
     ap_rputs("<body><h1 align=center>Apache Server Information</h1>\n", r);
     if (!r->args || strcasecmp(r->args, "list")) {
+        allconfigs = apr_make_array(r->pool, 1, sizeof(info_clines));
         cfname = ap_server_root_relative(r->pool, ap_server_confname);
-        mod_info_cfg_httpd = mod_info_load_config(r->pool, cfname, r);
+	mod_info_dirwalk(r->pool, cfname, r, allconfigs);
         if (!r->args) {
             ap_rputs("<tt><a href=\"#server\">Server Settings</a>, ", r);
             for (modp = top_module; modp; modp = modp->next) {
@@ -595,12 +662,16 @@ static int display_info(request_rec *r)
                         cmd++;
                     }
                     ap_rputs("<dt><strong>Current Configuration:</strong>\n", r);
-                    mod_info_module_cmds(r, mod_info_cfg_httpd, modp->cmds,
-                                         "httpd.conf");
-                    mod_info_module_cmds(r, mod_info_cfg_srm, modp->cmds,
-                                         "srm.conf");
-                    mod_info_module_cmds(r, mod_info_cfg_access, modp->cmds,
-                                         "access.conf");
+                    for (current = 0; current < allconfigs->nelts; ++current) {
+                        cnew = &((info_clines *) allconfigs->elts)[current];
+                        /* get relative pathname with some safeguards */
+			relpath = ap_stripprefix(cnew->fname,ap_server_root);
+			if (*relpath != '\0' && relpath != cnew->fname &&
+                            *relpath == '/')
+                            relpath++;
+                        mod_info_module_cmds(r, cnew->clines, modp->cmds,
+                                             relpath);
+                    }
                 }
                 else {
                     ap_rputs("<tt> none</tt>\n", r);

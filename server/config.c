@@ -1318,6 +1318,18 @@ static void process_command_config(server_rec *s, apr_array_header_t *arr,
     ap_cfg_closefile(parms.config_file);
 }
 
+typedef struct {
+    char *fname;
+} fnames;
+
+static int fname_alphasort(const void *fn1, const void *fn2)
+{
+    const fnames *f1 = fn1;
+    const fnames *f2 = fn2;
+
+    return strcmp(f1->fname,f2->fname);
+}
+
 void ap_process_resource_config(server_rec *s, const char *fname, 
                                 ap_directive_t **conftree, apr_pool_t *p, 
                                 apr_pool_t *ptemp)
@@ -1337,6 +1349,58 @@ void ap_process_resource_config(server_rec *s, const char *fname,
 	    return;
     }
 
+    /* 
+     * here we want to check if the candidate file is really a
+     * directory, and most definitely NOT a symlink (to prevent
+     * horrible loops).  If so, let's recurse and toss it back into
+     * the function.
+     */
+    if (ap_is_rdirectory(fname)) {
+        apr_dir_t *dirp;
+	int current;
+	apr_array_header_t *candidates = NULL;
+	fnames *fnew;
+
+	/*
+	 * first course of business is to grok all the directory
+	 * entries here and store 'em away. Recall we need full pathnames
+	 * for this.
+	 */
+	fprintf(stderr, "Processing config directory: %s\n", fname);
+	if (apr_opendir(&dirp, fname, p) != APR_SUCCESS) {
+	    perror("fopen");
+	    fprintf(stderr, "%s: could not open config directory %s\n",
+		ap_server_argv0, fname);
+	    exit(1);
+	}
+	candidates = apr_make_array(p, 1, sizeof(fnames));
+        while (apr_readdir(dirp) == APR_SUCCESS) {
+            char *d_name;
+	    apr_get_dir_filename(&d_name, dirp);
+	    /* strip out '.' and '..' */
+	    if (strcmp(d_name, ".") &&
+		strcmp(d_name, "..")) {
+		fnew = (fnames *) apr_push_array(candidates);
+		fnew->fname = ap_make_full_path(p, fname, d_name);
+	    }
+	}
+	apr_closedir(dirp);
+	if (candidates->nelts != 0) {
+            qsort((void *) candidates->elts, candidates->nelts,
+              sizeof(fnames), fname_alphasort);
+	    /*
+	     * Now recurse these... we handle errors and subdirectories
+	     * via the recursion, which is nice
+	     */
+	    for (current = 0; current < candidates->nelts; ++current) {
+	        fnew = &((fnames *) candidates->elts)[current];
+		fprintf(stderr, " Processing config file: %s\n", fnew->fname);
+		ap_process_resource_config(s, fnew->fname, conftree, p, ptemp);
+	    }
+	}
+	return;
+    }
+    
     /* GCC's initialization extensions are soooo nice here... */
 
     parms = default_parms;
@@ -1471,7 +1535,6 @@ int ap_parse_htaccess(void **result, request_rec *r, int override,
 
     return OK;
 }
-
 
 CORE_EXPORT(const char *) ap_init_virtual_host(apr_pool_t *p, const char *hostname,
 			      server_rec *main_server, server_rec **ps)
