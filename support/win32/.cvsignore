@@ -1,7 +1,8 @@
 Release
 Debug
+ApacheMonitorVersion.rc
+wintty.rc
 *.plg
 *.aps
 *.dep
 *.mak
-*.rc
