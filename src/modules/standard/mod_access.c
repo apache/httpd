@@ -202,7 +202,7 @@ static const char *allow_cmd(cmd_parms *cmd, void *dv, char *from, char *where)
 	    mask = htonl(mask);
 	}
 	a->x.ip.mask = mask;
-
+        a->x.ip.net  = (a->x.ip.net & mask);   /* pjr - This fixes PR 4770 */
     }
     else if (ap_isdigit(*where) && is_ip(where)) {
 	/* legacy syntax for ip addrs: a.b.c. ==> a.b.c.0/24 for example */
