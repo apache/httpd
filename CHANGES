@@ -1,5 +1,8 @@
 Changes with Apache 2.0.46
 
+  *) Make mod_expires' ExpiresByType work properly, including for
+     dynamically-generated documents.  [Ken Coar]
+
   *) Add another check for already compressed content in mod_deflate.
      PR 19913. [Tsuyoshi SASAMOTO <nazonazo@super.win.ne.jp>]
 
