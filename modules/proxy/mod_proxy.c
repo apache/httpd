@@ -431,6 +431,7 @@ static int proxy_handler(request_rec *r)
         for (i = 0; i < proxies->nelts; i++) {
             p2 = ap_strchr_c(ents[i].scheme, ':');  /* is it a partial URL? */
             if (strcmp(ents[i].scheme, "*") == 0 ||
+                (ents[i].use_regex && ap_regexec(ents[i].regexp, url, 0,NULL, 0)) ||
                 (p2 == NULL && strcasecmp(scheme, ents[i].scheme) == 0) ||
                 (p2 != NULL &&
                  strncasecmp(url, ents[i].scheme, strlen(ents[i].scheme)) == 0)) {
@@ -548,7 +549,7 @@ static void *merge_proxy_dir_config(apr_pool_t *p, void *basev, void *addv)
 
 
 static const char *
-    add_proxy(cmd_parms *cmd, void *dummy, const char *f1, const char *r1)
+    add_proxy(cmd_parms *cmd, void *dummy, const char *f1, const char *r1, int regex)
 {
     server_rec *s = cmd->server;
     proxy_server_conf *conf =
@@ -556,6 +557,7 @@ static const char *
     struct proxy_remote *new;
     char *p, *q;
     char *r, *f, *scheme;
+    regex_t *reg = NULL;
     int port;
 
     r = apr_pstrdup(cmd->pool, r1);
@@ -563,22 +565,35 @@ static const char *
     f = apr_pstrdup(cmd->pool, f1);
     p = strchr(r, ':');
     if (p == NULL || p[1] != '/' || p[2] != '/' || p[3] == '\0') {
-        return "ProxyRemote: Bad syntax for a remote proxy server";
+        if (regex)
+            return "ProxyRemoteMatch: Bad syntax for a remote proxy server";
+        else
+            return "ProxyRemote: Bad syntax for a remote proxy server";
     }
     else {
         scheme[p-r] = 0;
     }
     q = strchr(p + 3, ':');
     if (q != NULL) {
-        if (sscanf(q + 1, "%u", &port) != 1 || port > 65535)
-            return "ProxyRemote: Bad syntax for a remote proxy server (bad port number)";
+        if (sscanf(q + 1, "%u", &port) != 1 || port > 65535) {
+            if (regex)
+                return "ProxyRemoteMatch: Bad syntax for a remote proxy server (bad port number)";
+            else
+                return "ProxyRemote: Bad syntax for a remote proxy server (bad port number)";
+        }
         *q = '\0';
     }
     else
         port = -1;
     *p = '\0';
-    if (strchr(f, ':') == NULL)
-        ap_str_tolower(f);		/* lowercase scheme */
+    if (regex) {
+        reg = ap_pregcomp(cmd->pool, f, REG_EXTENDED);
+        if (!reg)
+            return "Regular expression for ProxyRemoteMatch could not be compiled.";
+    }
+    else
+        if (strchr(f, ':') == NULL)
+            ap_str_tolower(f);		/* lowercase scheme */
     ap_str_tolower(p + 3);		/* lowercase hostname */
 
     if (port == -1) {
@@ -590,7 +605,21 @@ static const char *
     new->protocol = r;
     new->hostname = p + 3;
     new->port = port;
+    new->regexp = reg;
+    new->use_regex = regex;
     return NULL;
+}
+
+static const char *
+    add_proxy_noregex(cmd_parms *cmd, void *dummy, const char *f1, const char *r1)
+{
+    return add_proxy(cmd, dummy, f1, r1, 0);
+}
+
+static const char *
+    add_proxy_regex(cmd_parms *cmd, void *dummy, const char *f1, const char *r1)
+{
+    return add_proxy(cmd, dummy, f1, r1, 1);
 }
 
 static const char *
@@ -963,8 +992,10 @@ static const command_rec proxy_cmds[] =
     "location, in regular expression syntax"),
     AP_INIT_FLAG("ProxyRequests", set_proxy_req, NULL, RSRC_CONF,
      "on if the true proxy requests should be accepted"),
-    AP_INIT_TAKE2("ProxyRemote", add_proxy, NULL, RSRC_CONF,
+    AP_INIT_TAKE2("ProxyRemote", add_proxy_noregex, NULL, RSRC_CONF,
      "a scheme, partial URL or '*' and a proxy server"),
+    AP_INIT_TAKE2("ProxyRemoteMatch", add_proxy_regex, NULL, RSRC_CONF,
+     "a regex pattern and a proxy server"),
     AP_INIT_TAKE12("ProxyPass", add_pass, NULL, RSRC_CONF|ACCESS_CONF,
      "a virtual path and a URL"),
     AP_INIT_TAKE12("ProxyPassReverse", add_pass_reverse, NULL, RSRC_CONF|ACCESS_CONF,

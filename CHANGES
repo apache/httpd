@@ -1,5 +1,9 @@
 Changes with Apache 2.0.33-dev
 
+  *) New Directive for mod_proxy: ProxyRemoteMatch. This provides
+     regex pattern matching for the determination of which requests
+     to use the remote proxy for. [Jim Jagielski]
+
   *) Fix CustomLog bytes-sent with HTTP 0.9.  [Justin Erenkrantz]
 
   *) Prevent Apache from ignoring SIGHUP due to some lingering 1.3
