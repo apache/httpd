@@ -343,6 +343,8 @@ later.</compatibility>
     case-insensitive, and the extension may be specified with or
     without a leading dot.</p>
 </usage>
+<seealso><directive module="mod_mime">RemoveInputFilter</directive></seealso>
+<seealso><directive module="core">SetInputFilter</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -435,6 +437,7 @@ later.</compatibility>
     without a leading dot.</p>
 </usage>
 <seealso><directive module="mod_mime">RemoveOutputFilter</directive></seealso>
+<seealso><directive module="core">SetOutputFilter</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -724,6 +727,8 @@ later.</compatibility>
     <p>The <var>extension</var> argument is case-insensitive, and can
     be specified with or without a leading dot.</p>
 </usage>
+<seealso><directive module="mod_mime">AddInputFilter</directive></seealso>
+<seealso><directive module="core">SetInputFilter</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
