@@ -149,7 +149,7 @@ AP_CORE_DECLARE(void) ap_flush_conn(conn_rec *c)
  * all the response data has been sent to the client.
  */
 #define SECONDS_TO_LINGER  2
-static apr_status_t ap_lingering_close(void *dummy)
+apr_status_t ap_lingering_close(void *dummy)
 {
     char dummybuf[512];
     apr_size_t nbytes = sizeof(dummybuf);
