@@ -98,6 +98,8 @@ typedef struct {
 
 #define SCOREBOARD_SIZE		sizeof(scoreboard)
 
+API_VAR_EXPORT extern const char *ap_scoreboard_fname;
+
 #ifdef __cplusplus
 }
 #endif
