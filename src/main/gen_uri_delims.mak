@@ -67,8 +67,7 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\gen_uri_delims.bsc"
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib\
- advapi32.lib shell32.lib /nologo /subsystem:console /incremental:no\
+LINK32_FLAGS=/nologo /subsystem:console /incremental:no\
  /pdb:"$(OUTDIR)\gen_uri_delims.pdb" /machine:I386\
  /out:"$(OUTDIR)\gen_uri_delims.exe" 
 LINK32_OBJS= \
@@ -130,8 +129,7 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\gen_uri_delims.bsc"
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib\
- advapi32.lib shell32.lib /nologo /subsystem:console /incremental:no\
+LINK32_FLAGS=/nologo /subsystem:console /incremental:no\
  /pdb:"$(OUTDIR)\gen_uri_delims.pdb" /debug /machine:I386\
  /out:"$(OUTDIR)\gen_uri_delims.exe" 
 LINK32_OBJS= \

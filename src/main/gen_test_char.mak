@@ -57,8 +57,8 @@ CLEAN :
 "$(INTDIR)" :
     if not exist "$(INTDIR)/$(NULL)" mkdir "$(INTDIR)"
 
-CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "..\include" /D "WIN32" /D "NDEBUG" /D\
- "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "..\include" /I "..\os\win32" /D "WIN32" /D\
+ "NDEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 CPP_OBJS=.\gen_test_char_R/
 CPP_SBRS=.
 BSC32=bscmake.exe
@@ -66,8 +66,7 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\gen_test_char.bsc"
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib\
- advapi32.lib shell32.lib /nologo /subsystem:console /incremental:no\
+LINK32_FLAGS=/nologo /subsystem:console /incremental:no\
  /pdb:"$(OUTDIR)\gen_test_char.pdb" /machine:I386\
  /out:"$(OUTDIR)\gen_test_char.exe" 
 LINK32_OBJS= \
@@ -129,8 +128,7 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\gen_test_char.bsc"
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib\
- advapi32.lib shell32.lib /nologo /subsystem:console /incremental:no\
+LINK32_FLAGS=/nologo /subsystem:console /incremental:no\
  /pdb:"$(OUTDIR)\gen_test_char.pdb" /debug /machine:I386\
  /out:"$(OUTDIR)\gen_test_char.exe" 
 LINK32_OBJS= \
@@ -195,8 +193,8 @@ SOURCE=.\gen_test_char.c
 !IF  "$(CFG)" == "gen_test_char - Win32 Release"
 
 DEP_CPP_GEN_T=\
-	"..\include\ap_alloc.h"\
 	"..\include\ap.h"\
+	"..\include\ap_alloc.h"\
 	"..\include\ap_config.h"\
 	"..\include\ap_ctype.h"\
 	"..\include\ap_mmn.h"\
@@ -207,6 +205,11 @@ DEP_CPP_GEN_T=\
 	"..\os\win32\os.h"\
 	"..\os\win32\readdir.h"\
 	
+NODEP_CPP_GEN_T=\
+	"..\include\ap_config_auto.h"\
+	"..\include\ebcdic.h"\
+	"..\include\sfio.h"\
+	
 
 "$(INTDIR)\gen_test_char.obj" : $(SOURCE) $(DEP_CPP_GEN_T) "$(INTDIR)"
 
@@ -214,8 +217,8 @@ DEP_CPP_GEN_T=\
 !ELSEIF  "$(CFG)" == "gen_test_char - Win32 Debug"
 
 DEP_CPP_GEN_T=\
-	"..\include\ap_alloc.h"\
 	"..\include\ap.h"\
+	"..\include\ap_alloc.h"\
 	"..\include\ap_config.h"\
 	"..\include\ap_ctype.h"\
 	"..\include\ap_mmn.h"\
@@ -223,8 +226,13 @@ DEP_CPP_GEN_T=\
 	"..\include\hsregex.h"\
 	"..\include\httpd.h"\
 	"..\include\util_uri.h"\
-	"..\os\win32\os.h"\
 	"..\os\win32\readdir.h"\
+	
+NODEP_CPP_GEN_T=\
+	"..\include\ap_config_auto.h"\
+	"..\include\ebcdic.h"\
+	"..\include\os.h"\
+	"..\include\sfio.h"\
 	
 
 "$(INTDIR)\gen_test_char.obj" : $(SOURCE) $(DEP_CPP_GEN_T) "$(INTDIR)"

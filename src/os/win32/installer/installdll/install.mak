@@ -61,8 +61,9 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MT /W3 /GX /O2 /I "../../../../include" /D "WIN32" /D\
- "NDEBUG" /D "_WINDOWS" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MT /W3 /GX /O2 /I "..\..\..\..\include" /I\
+ "..\..\..\..\os\win32" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /Fo"$(INTDIR)\\"\
+ /Fd"$(INTDIR)\\" /FD /c 
 CPP_OBJS=.\Release/
 CPP_SBRS=.
 MTL_PROJ=/nologo /D "NDEBUG" /mktyplib203 /o NUL /win32 
@@ -182,9 +183,12 @@ LINK32_OBJS= \
 !IF "$(CFG)" == "install - Win32 Release" || "$(CFG)" ==\
  "install - Win32 Debug"
 SOURCE=..\..\..\..\ap\ap_snprintf.c
+
+!IF  "$(CFG)" == "install - Win32 Release"
+
 DEP_CPP_AP_SN=\
-	"..\..\..\..\include\ap_alloc.h"\
 	"..\..\..\..\include\ap.h"\
+	"..\..\..\..\include\ap_alloc.h"\
 	"..\..\..\..\include\ap_config.h"\
 	"..\..\..\..\include\ap_ctype.h"\
 	"..\..\..\..\include\ap_mmn.h"\
@@ -198,6 +202,30 @@ DEP_CPP_AP_SN=\
 NODEP_CPP_AP_SN=\
 	"..\..\..\..\include\ap_config_auto.h"\
 	"..\..\..\..\include\ebcdic.h"\
+	"..\..\..\..\include\sfio.h"\
+	
+
+"$(INTDIR)\ap_snprintf.obj" : $(SOURCE) $(DEP_CPP_AP_SN) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ELSEIF  "$(CFG)" == "install - Win32 Debug"
+
+DEP_CPP_AP_SN=\
+	"..\..\..\..\include\ap.h"\
+	"..\..\..\..\include\ap_alloc.h"\
+	"..\..\..\..\include\ap_config.h"\
+	"..\..\..\..\include\ap_ctype.h"\
+	"..\..\..\..\include\ap_mmn.h"\
+	"..\..\..\..\include\buff.h"\
+	"..\..\..\..\include\hsregex.h"\
+	"..\..\..\..\include\httpd.h"\
+	"..\..\..\..\include\util_uri.h"\
+	"..\..\readdir.h"\
+	
+NODEP_CPP_AP_SN=\
+	"..\..\..\..\include\ap_config_auto.h"\
+	"..\..\..\..\include\ebcdic.h"\
 	"..\..\..\..\include\os.h"\
 	"..\..\..\..\include\sfio.h"\
 	
@@ -206,7 +234,12 @@ NODEP_CPP_AP_SN=\
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
+!ENDIF 
+
 SOURCE=.\install.c
+
+!IF  "$(CFG)" == "install - Win32 Release"
+
 DEP_CPP_INSTA=\
 	"..\..\..\..\include\ap.h"\
 	"..\..\..\..\include\ap_config.h"\
@@ -218,11 +251,30 @@ DEP_CPP_INSTA=\
 	
 NODEP_CPP_INSTA=\
 	"..\..\..\..\include\ap_config_auto.h"\
+	
+
+"$(INTDIR)\install.obj" : $(SOURCE) $(DEP_CPP_INSTA) "$(INTDIR)"
+
+
+!ELSEIF  "$(CFG)" == "install - Win32 Debug"
+
+DEP_CPP_INSTA=\
+	"..\..\..\..\include\ap.h"\
+	"..\..\..\..\include\ap_config.h"\
+	"..\..\..\..\include\ap_ctype.h"\
+	"..\..\..\..\include\ap_mmn.h"\
+	"..\..\..\..\include\conf.h"\
+	"..\..\..\..\include\hsregex.h"\
+	
+NODEP_CPP_INSTA=\
+	"..\..\..\..\include\ap_config_auto.h"\
 	"..\..\..\..\include\os.h"\
 	
 
 "$(INTDIR)\install.obj" : $(SOURCE) $(DEP_CPP_INSTA) "$(INTDIR)"
 
+
+!ENDIF 
 
 
 !ENDIF 

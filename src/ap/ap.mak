@@ -1,11 +1,15 @@
-# Microsoft Developer Studio Generated NMAKE File, Based on ap.dsp
-!IF "$(CFG)" == ""
-CFG=ap - Win32 Debug
-!MESSAGE No configuration specified. Defaulting to ap - Win32 Debug.
-!ENDIF 
+# Microsoft Developer Studio Project File - Name="ap" - Package Owner=<4>
+# Microsoft Developer Studio Generated Build File, Format Version 5.00
+# ** DO NOT EDIT **
 
-!IF "$(CFG)" != "ap - Win32 Release" && "$(CFG)" != "ap - Win32 Debug"
-!MESSAGE Invalid configuration "$(CFG)" specified.
+# TARGTYPE "Win32 (x86) Static Library" 0x0104
+
+CFG=ap - Win32 Debug
+!MESSAGE This is not a valid makefile. To build this project using NMAKE,
+!MESSAGE use the Export Makefile command and run
+!MESSAGE 
+!MESSAGE NMAKE /f "ap.mak".
+!MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
@@ -16,410 +20,103 @@ CFG=ap - Win32 Debug
 !MESSAGE "ap - Win32 Release" (based on "Win32 (x86) Static Library")
 !MESSAGE "ap - Win32 Debug" (based on "Win32 (x86) Static Library")
 !MESSAGE 
-!ERROR An invalid configuration is specified.
-!ENDIF 
 
-!IF "$(OS)" == "Windows_NT"
-NULL=
-!ELSE 
-NULL=nul
-!ENDIF 
-
+# Begin Project
+# PROP Scc_ProjName ""
+# PROP Scc_LocalPath ""
 CPP=cl.exe
 
 !IF  "$(CFG)" == "ap - Win32 Release"
 
-OUTDIR=.\Release
-INTDIR=.\Release
-# Begin Custom Macros
-OutDir=.\Release
-# End Custom Macros
-
-!IF "$(RECURSE)" == "0" 
-
-ALL : "$(OUTDIR)\ap.lib"
-
-!ELSE 
-
-ALL : "$(OUTDIR)\ap.lib"
-
-!ENDIF 
-
-CLEAN :
-	-@erase "$(INTDIR)\ap_base64.obj"
-	-@erase "$(INTDIR)\ap_checkpass.obj"
-	-@erase "$(INTDIR)\ap_cpystrn.obj"
-	-@erase "$(INTDIR)\ap_fnmatch.obj"
-	-@erase "$(INTDIR)\ap_md5c.obj"
-	-@erase "$(INTDIR)\ap_sha1.obj"
-	-@erase "$(INTDIR)\ap_signal.obj"
-	-@erase "$(INTDIR)\ap_slack.obj"
-	-@erase "$(INTDIR)\ap_snprintf.obj"
-	-@erase "$(INTDIR)\vc50.idb"
-	-@erase "$(OUTDIR)\ap.lib"
-
-"$(OUTDIR)" :
-    if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
-
-CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "../include" /D "WIN32" /D "NDEBUG" /D\
- "_WINDOWS" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
-CPP_OBJS=.\Release/
-CPP_SBRS=.
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 0
+# PROP BASE Output_Dir "Release"
+# PROP BASE Intermediate_Dir "Release"
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 0
+# PROP Output_Dir "Release"
+# PROP Intermediate_Dir "Release"
+# PROP Target_Dir ""
+# ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /FD /c
+# ADD CPP /nologo /MD /W3 /GX /O2 /I "..\include" /I "..\os\win32" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /FD /c
 BSC32=bscmake.exe
-BSC32_FLAGS=/nologo /o"$(OUTDIR)\ap.bsc" 
-BSC32_SBRS= \
-	
+# ADD BASE BSC32 /nologo
+# ADD BSC32 /nologo
 LIB32=link.exe -lib
-LIB32_FLAGS=/nologo /out:"$(OUTDIR)\ap.lib" 
-LIB32_OBJS= \
-	"$(INTDIR)\ap_base64.obj" \
-	"$(INTDIR)\ap_checkpass.obj" \
-	"$(INTDIR)\ap_cpystrn.obj" \
-	"$(INTDIR)\ap_fnmatch.obj" \
-	"$(INTDIR)\ap_md5c.obj" \
-	"$(INTDIR)\ap_sha1.obj" \
-	"$(INTDIR)\ap_signal.obj" \
-	"$(INTDIR)\ap_slack.obj" \
-	"$(INTDIR)\ap_snprintf.obj"
-
-"$(OUTDIR)\ap.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
-    $(LIB32) @<<
-  $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
-<<
+# ADD BASE LIB32 /nologo
+# ADD LIB32 /nologo
 
 !ELSEIF  "$(CFG)" == "ap - Win32 Debug"
 
-OUTDIR=.\Debug
-INTDIR=.\Debug
-# Begin Custom Macros
-OutDir=.\Debug
-# End Custom Macros
-
-!IF "$(RECURSE)" == "0" 
-
-ALL : "$(OUTDIR)\ap.lib"
-
-!ELSE 
-
-ALL : "$(OUTDIR)\ap.lib"
-
-!ENDIF 
-
-CLEAN :
-	-@erase "$(INTDIR)\ap_base64.obj"
-	-@erase "$(INTDIR)\ap_checkpass.obj"
-	-@erase "$(INTDIR)\ap_cpystrn.obj"
-	-@erase "$(INTDIR)\ap_fnmatch.obj"
-	-@erase "$(INTDIR)\ap_md5c.obj"
-	-@erase "$(INTDIR)\ap_sha1.obj"
-	-@erase "$(INTDIR)\ap_signal.obj"
-	-@erase "$(INTDIR)\ap_slack.obj"
-	-@erase "$(INTDIR)\ap_snprintf.obj"
-	-@erase "$(INTDIR)\vc50.idb"
-	-@erase "$(OUTDIR)\ap.lib"
-
-"$(OUTDIR)" :
-    if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
-
-CPP_PROJ=/nologo /MDd /W3 /GX /Z7 /Od /I "../include" /D "WIN32" /D "_DEBUG" /D\
- "_WINDOWS" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
-CPP_OBJS=.\Debug/
-CPP_SBRS=.
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 1
+# PROP BASE Output_Dir "Debug"
+# PROP BASE Intermediate_Dir "Debug"
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 1
+# PROP Output_Dir "Debug"
+# PROP Intermediate_Dir "Debug"
+# PROP Target_Dir ""
+# ADD BASE CPP /nologo /W3 /GX /Z7 /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /FD /c
+# ADD CPP /nologo /MDd /W3 /GX /Z7 /Od /I "..\include" /I "..\os\win32" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /FD /c
 BSC32=bscmake.exe
-BSC32_FLAGS=/nologo /o"$(OUTDIR)\ap.bsc" 
-BSC32_SBRS= \
-	
+# ADD BASE BSC32 /nologo
+# ADD BSC32 /nologo
 LIB32=link.exe -lib
-LIB32_FLAGS=/nologo /out:"$(OUTDIR)\ap.lib" 
-LIB32_OBJS= \
-	"$(INTDIR)\ap_base64.obj" \
-	"$(INTDIR)\ap_checkpass.obj" \
-	"$(INTDIR)\ap_cpystrn.obj" \
-	"$(INTDIR)\ap_fnmatch.obj" \
-	"$(INTDIR)\ap_md5c.obj" \
-	"$(INTDIR)\ap_sha1.obj" \
-	"$(INTDIR)\ap_signal.obj" \
-	"$(INTDIR)\ap_slack.obj" \
-	"$(INTDIR)\ap_snprintf.obj"
-
-"$(OUTDIR)\ap.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
-    $(LIB32) @<<
-  $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
-<<
+# ADD BASE LIB32 /nologo
+# ADD LIB32 /nologo
 
 !ENDIF 
 
-.c{$(CPP_OBJS)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
+# Begin Target
 
-.cpp{$(CPP_OBJS)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
+# Name "ap - Win32 Release"
+# Name "ap - Win32 Debug"
+# Begin Group "Source Files"
 
-.cxx{$(CPP_OBJS)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(CPP_SBRS)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(CPP_SBRS)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(CPP_SBRS)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-
-!IF "$(CFG)" == "ap - Win32 Release" || "$(CFG)" == "ap - Win32 Debug"
-SOURCE=.\ap_cpystrn.c
-
-!IF  "$(CFG)" == "ap - Win32 Release"
-
-DEP_CPP_AP_CP=\
-	"..\include\ap_alloc.h"\
-	"..\include\ap.h"\
-	"..\include\ap_config.h"\
-	"..\include\ap_ctype.h"\
-	"..\include\ap_mmn.h"\
-	"..\include\buff.h"\
-	"..\include\hsregex.h"\
-	"..\include\httpd.h"\
-	"..\include\util_uri.h"\
-	"..\os\win32\os.h"\
-	"..\os\win32\readdir.h"\
-	
-
-"$(INTDIR)\ap_cpystrn.obj" : $(SOURCE) $(DEP_CPP_AP_CP) "$(INTDIR)"
-
-
-!ELSEIF  "$(CFG)" == "ap - Win32 Debug"
-
-DEP_CPP_AP_CP=\
-	"..\include\ap_alloc.h"\
-	"..\include\ap.h"\
-	"..\include\ap_config.h"\
-	"..\include\ap_ctype.h"\
-	"..\include\ap_mmn.h"\
-	"..\include\buff.h"\
-	"..\include\hsregex.h"\
-	"..\include\httpd.h"\
-	"..\include\util_uri.h"\
-	"..\os\win32\os.h"\
-	"..\os\win32\readdir.h"\
-	
-
-"$(INTDIR)\ap_cpystrn.obj" : $(SOURCE) $(DEP_CPP_AP_CP) "$(INTDIR)"
-
-
-!ENDIF 
-
-SOURCE=.\ap_fnmatch.c
-DEP_CPP_AP_FN=\
-	"..\include\ap_config.h"\
-	"..\include\ap_ctype.h"\
-	"..\include\ap_mmn.h"\
-	"..\include\fnmatch.h"\
-	"..\include\hsregex.h"\
-	"..\os\win32\os.h"\
-	
-
-"$(INTDIR)\ap_fnmatch.obj" : $(SOURCE) $(DEP_CPP_AP_FN) "$(INTDIR)"
-
-
-SOURCE=.\ap_signal.c
-
-!IF  "$(CFG)" == "ap - Win32 Release"
-
-DEP_CPP_AP_SI=\
-	"..\include\ap_alloc.h"\
-	"..\include\ap.h"\
-	"..\include\ap_config.h"\
-	"..\include\ap_ctype.h"\
-	"..\include\ap_mmn.h"\
-	"..\include\buff.h"\
-	"..\include\hsregex.h"\
-	"..\include\httpd.h"\
-	"..\include\util_uri.h"\
-	"..\os\win32\os.h"\
-	"..\os\win32\readdir.h"\
-	
-
-"$(INTDIR)\ap_signal.obj" : $(SOURCE) $(DEP_CPP_AP_SI) "$(INTDIR)"
-
-
-!ELSEIF  "$(CFG)" == "ap - Win32 Debug"
-
-DEP_CPP_AP_SI=\
-	"..\include\ap_alloc.h"\
-	"..\include\ap.h"\
-	"..\include\ap_config.h"\
-	"..\include\ap_ctype.h"\
-	"..\include\ap_mmn.h"\
-	"..\include\buff.h"\
-	"..\include\hsregex.h"\
-	"..\include\httpd.h"\
-	"..\include\util_uri.h"\
-	"..\os\win32\os.h"\
-	"..\os\win32\readdir.h"\
-	
-
-"$(INTDIR)\ap_signal.obj" : $(SOURCE) $(DEP_CPP_AP_SI) "$(INTDIR)"
-
-
-!ENDIF 
-
-SOURCE=.\ap_slack.c
-
-!IF  "$(CFG)" == "ap - Win32 Release"
-
-DEP_CPP_AP_SL=\
-	"..\include\ap_alloc.h"\
-	"..\include\ap.h"\
-	"..\include\ap_config.h"\
-	"..\include\ap_ctype.h"\
-	"..\include\ap_mmn.h"\
-	"..\include\buff.h"\
-	"..\include\hsregex.h"\
-	"..\include\http_log.h"\
-	"..\include\httpd.h"\
-	"..\include\util_uri.h"\
-	"..\os\win32\os.h"\
-	"..\os\win32\readdir.h"\
-	
-
-"$(INTDIR)\ap_slack.obj" : $(SOURCE) $(DEP_CPP_AP_SL) "$(INTDIR)"
-
-
-!ELSEIF  "$(CFG)" == "ap - Win32 Debug"
-
-DEP_CPP_AP_SL=\
-	"..\include\ap_alloc.h"\
-	"..\include\ap.h"\
-	"..\include\ap_config.h"\
-	"..\include\ap_ctype.h"\
-	"..\include\ap_mmn.h"\
-	"..\include\buff.h"\
-	"..\include\hsregex.h"\
-	"..\include\http_log.h"\
-	"..\include\httpd.h"\
-	"..\include\util_uri.h"\
-	"..\os\win32\os.h"\
-	"..\os\win32\readdir.h"\
-	
-
-"$(INTDIR)\ap_slack.obj" : $(SOURCE) $(DEP_CPP_AP_SL) "$(INTDIR)"
-
-
-!ENDIF 
-
-SOURCE=.\ap_snprintf.c
-
-!IF  "$(CFG)" == "ap - Win32 Release"
-
-DEP_CPP_AP_SN=\
-	"..\include\ap_alloc.h"\
-	"..\include\ap.h"\
-	"..\include\ap_config.h"\
-	"..\include\ap_ctype.h"\
-	"..\include\ap_mmn.h"\
-	"..\include\buff.h"\
-	"..\include\hsregex.h"\
-	"..\include\httpd.h"\
-	"..\include\util_uri.h"\
-	"..\os\win32\os.h"\
-	"..\os\win32\readdir.h"\
-	
-
-"$(INTDIR)\ap_snprintf.obj" : $(SOURCE) $(DEP_CPP_AP_SN) "$(INTDIR)"
-
-
-!ELSEIF  "$(CFG)" == "ap - Win32 Debug"
-
-DEP_CPP_AP_SN=\
-	"..\include\ap_alloc.h"\
-	"..\include\ap.h"\
-	"..\include\ap_config.h"\
-	"..\include\ap_ctype.h"\
-	"..\include\ap_mmn.h"\
-	"..\include\buff.h"\
-	"..\include\hsregex.h"\
-	"..\include\httpd.h"\
-	"..\include\util_uri.h"\
-	"..\os\win32\os.h"\
-	"..\os\win32\readdir.h"\
-	
-
-"$(INTDIR)\ap_snprintf.obj" : $(SOURCE) $(DEP_CPP_AP_SN) "$(INTDIR)"
-
-
-!ENDIF 
+# PROP Default_Filter ""
+# Begin Source File
 
 SOURCE=.\ap_base64.c
-DEP_CPP_AP_BA=\
-	"..\include\ap.h"\
-	"..\include\ap_config.h"\
-	"..\include\ap_ctype.h"\
-	"..\include\ap_mmn.h"\
-	"..\include\hsregex.h"\
-	"..\os\win32\os.h"\
-	
-
-"$(INTDIR)\ap_base64.obj" : $(SOURCE) $(DEP_CPP_AP_BA) "$(INTDIR)"
-
+# End Source File
+# Begin Source File
 
 SOURCE=.\ap_checkpass.c
-DEP_CPP_AP_CH=\
-	"..\include\ap.h"\
-	"..\include\ap_config.h"\
-	"..\include\ap_ctype.h"\
-	"..\include\ap_md5.h"\
-	"..\include\ap_mmn.h"\
-	"..\include\ap_sha1.h"\
-	"..\include\hsregex.h"\
-	"..\os\win32\os.h"\
-	
+# End Source File
+# Begin Source File
 
-"$(INTDIR)\ap_checkpass.obj" : $(SOURCE) $(DEP_CPP_AP_CH) "$(INTDIR)"
+SOURCE=.\ap_cpystrn.c
+# End Source File
+# Begin Source File
 
+SOURCE=.\ap_fnmatch.c
+# End Source File
+# Begin Source File
 
 SOURCE=.\ap_md5c.c
-DEP_CPP_AP_MD=\
-	"..\include\ap.h"\
-	"..\include\ap_config.h"\
-	"..\include\ap_ctype.h"\
-	"..\include\ap_md5.h"\
-	"..\include\ap_mmn.h"\
-	"..\include\hsregex.h"\
-	"..\os\win32\os.h"\
-	
-
-"$(INTDIR)\ap_md5c.obj" : $(SOURCE) $(DEP_CPP_AP_MD) "$(INTDIR)"
-
+# End Source File
+# Begin Source File
 
 SOURCE=.\ap_sha1.c
-DEP_CPP_AP_SH=\
-	"..\include\ap.h"\
-	"..\include\ap_config.h"\
-	"..\include\ap_ctype.h"\
-	"..\include\ap_mmn.h"\
-	"..\include\ap_sha1.h"\
-	"..\include\hsregex.h"\
-	"..\os\win32\os.h"\
-	
+# End Source File
+# Begin Source File
 
-"$(INTDIR)\ap_sha1.obj" : $(SOURCE) $(DEP_CPP_AP_SH) "$(INTDIR)"
+SOURCE=.\ap_signal.c
+# End Source File
+# Begin Source File
 
+SOURCE=.\ap_slack.c
+# End Source File
+# Begin Source File
 
+SOURCE=.\ap_snprintf.c
+# End Source File
+# End Group
+# Begin Group "Header Files"
 
-!ENDIF 
-
+# PROP Default_Filter ""
+# End Group
+# End Target
+# End Project

@@ -70,10 +70,9 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\Apache.bsc"
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=CoreR\ApacheCore.lib kernel32.lib user32.lib gdi32.lib\
- winspool.lib comdlg32.lib advapi32.lib shell32.lib /nologo /subsystem:console\
- /incremental:no /pdb:"$(OUTDIR)\Apache.pdb" /map:"$(INTDIR)\Apache.map"\
- /machine:I386 /out:"$(OUTDIR)\Apache.exe" 
+LINK32_FLAGS=/nologo /subsystem:console /incremental:no\
+ /pdb:"$(OUTDIR)\Apache.pdb" /map:"$(INTDIR)\Apache.map" /machine:I386\
+ /out:"$(OUTDIR)\Apache.exe" 
 LINK32_OBJS= \
 	"$(INTDIR)\apache.res" \
 	"$(INTDIR)\main_win32.obj" \
@@ -128,10 +127,9 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\Apache.bsc"
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=CoreD\ApacheCore.lib kernel32.lib user32.lib gdi32.lib\
- winspool.lib comdlg32.lib advapi32.lib shell32.lib /nologo /subsystem:console\
- /incremental:no /pdb:"$(OUTDIR)\Apache.pdb" /map:"$(INTDIR)\Apache.map" /debug\
- /machine:I386 /out:"$(OUTDIR)\Apache.exe" 
+LINK32_FLAGS=/nologo /subsystem:console /incremental:no\
+ /pdb:"$(OUTDIR)\Apache.pdb" /map:"$(INTDIR)\Apache.map" /debug /machine:I386\
+ /out:"$(OUTDIR)\Apache.exe" 
 LINK32_OBJS= \
 	"$(INTDIR)\apache.res" \
 	"$(INTDIR)\main_win32.obj" \

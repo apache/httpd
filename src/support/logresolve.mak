@@ -58,8 +58,8 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "../include" /I "../lib/apr/include" /D\
- "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "WIN32_LEAN_AND_MEAN" /Fo"$(INTDIR)\\"\
+CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "..\include" /I "..\os\win32" /D "NDEBUG"\
+ /D "WIN32" /D "_CONSOLE" /D "WIN32_LEAN_AND_MEAN" /Fo"$(INTDIR)\\"\
  /Fd"$(INTDIR)\\" /FD /c 
 CPP_OBJS=.\Release/
 CPP_SBRS=.
@@ -68,9 +68,9 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\logresolve.bsc"
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=kernel32.lib wsock32.lib ws2_32.lib /nologo /subsystem:console\
- /incremental:no /pdb:"$(OUTDIR)\logresolve.pdb" /map:"$(INTDIR)\logresolve.map"\
- /machine:I386 /out:"$(OUTDIR)\logresolve.exe" 
+LINK32_FLAGS=wsock32.lib /nologo /subsystem:console /incremental:no\
+ /pdb:"$(OUTDIR)\logresolve.pdb" /map:"$(INTDIR)\logresolve.map" /machine:I386\
+ /out:"$(OUTDIR)\logresolve.exe" 
 LINK32_OBJS= \
 	"$(INTDIR)\logresolve.obj"
 
@@ -108,9 +108,9 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MDd /W3 /Gm /GX /Zi /Od /I "../include" /I\
- "../lib/apr/include" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D\
- "WIN32_LEAN_AND_MEAN" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MDd /W3 /Gm /GX /Zi /Od /I "..\include" /I "..\os\win32" /D\
+ "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "WIN32_LEAN_AND_MEAN" /Fo"$(INTDIR)\\"\
+ /Fd"$(INTDIR)\\" /FD /c 
 CPP_OBJS=.\Debug/
 CPP_SBRS=.
 BSC32=bscmake.exe
@@ -118,9 +118,9 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\logresolve.bsc"
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=kernel32.lib wsock32.lib ws2_32.lib /nologo /subsystem:console\
- /incremental:no /pdb:"$(OUTDIR)\logresolve.pdb" /map:"$(INTDIR)\logresolve.map"\
- /debug /machine:I386 /out:"$(OUTDIR)\logresolve.exe" 
+LINK32_FLAGS=wsock32.lib /nologo /subsystem:console /incremental:no\
+ /pdb:"$(OUTDIR)\logresolve.pdb" /map:"$(INTDIR)\logresolve.map" /debug\
+ /machine:I386 /out:"$(OUTDIR)\logresolve.exe" 
 LINK32_OBJS= \
 	"$(INTDIR)\logresolve.obj"
 
@@ -165,9 +165,6 @@ LINK32_OBJS= \
 !IF "$(CFG)" == "logresolve - Win32 Release" || "$(CFG)" ==\
  "logresolve - Win32 Debug"
 SOURCE=.\logresolve.c
-
-!IF  "$(CFG)" == "logresolve - Win32 Release"
-
 DEP_CPP_LOGRE=\
 	"..\include\ap_config.h"\
 	"..\include\ap_ctype.h"\
@@ -175,24 +172,12 @@ DEP_CPP_LOGRE=\
 	"..\include\hsregex.h"\
 	"..\os\win32\os.h"\
 	
-
-"$(INTDIR)\logresolve.obj" : $(SOURCE) $(DEP_CPP_LOGRE) "$(INTDIR)"
-
-
-!ELSEIF  "$(CFG)" == "logresolve - Win32 Debug"
-
-DEP_CPP_LOGRE=\
-	"..\include\ap_config.h"\
-	"..\include\ap_ctype.h"\
-	"..\include\ap_mmn.h"\
-	"..\include\hsregex.h"\
-	"..\os\win32\os.h"\
+NODEP_CPP_LOGRE=\
+	"..\include\ap_config_auto.h"\
 	
 
 "$(INTDIR)\logresolve.obj" : $(SOURCE) $(DEP_CPP_LOGRE) "$(INTDIR)"
 
-
-!ENDIF 
 
 
 !ENDIF 
