@@ -176,6 +176,11 @@ _build:
 	cd modules\dav\fs
 	 $(MAKE) $(MAKEOPT) -f mod_dav_fs.mak      CFG="mod_dav_fs - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..\..
+	cd modules\experimental
+	 $(MAKE) $(MAKEOPT) -f mod_cache.mak       CFG="mod_cache - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_mem_cache.mak   CFG="mod_mem_cache - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_disk_cache.mak  CFG="mod_disk_cache - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	cd ..\..
 	cd modules\filters
 	 $(MAKE) $(MAKEOPT) -f mod_include.mak     CFG="mod_include - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
@@ -307,6 +312,9 @@ _install:
 	copy modules\cache\$(LONG)\mod_file_cache.so "$(INSTDIR)\modules" <.y
 	copy modules\dav\fs\$(LONG)\mod_dav_fs.so "$(INSTDIR)\modules" <.y
 	copy modules\dav\main\$(LONG)\mod_dav.so "$(INSTDIR)\modules" <.y
+	copy modules\experimental\$(LONG)\mod_cache.so "$(INSTDIR)\modules" <.y
+	copy modules\experimental\$(LONG)\mod_mem_cache.so "$(INSTDIR)\modules" <.y
+	copy modules\experimental\$(LONG)\mod_disk_cache.so "$(INSTDIR)\modules" <.y
 	copy modules\filters\$(LONG)\mod_include.so "$(INSTDIR)\modules" <.y
 	copy modules\generators\$(LONG)\mod_asis.so "$(INSTDIR)\modules" <.y
 	copy modules\generators\$(LONG)\mod_autoindex.so "$(INSTDIR)\modules" <.y
