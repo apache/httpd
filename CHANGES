@@ -1,5 +1,9 @@
 Changes with Apache 2.0.30-dev
 
+  *) Introduced the ForceLanguagePriority directive, to prevent
+     returning MULTIPLE_CHOICES or NONE_ACCEPTABLE in some cases,
+     when using Multiviews.  [William Rowe]
+
   *) Fix a problem which prevented mod_cgid and suexec from working
      together reliably [Greg Ames]
 

@@ -47,9 +47,8 @@
     <h2>Directives</h2>
 
     <ul>
-      <li><a
-      href="#cachenegotiateddocs">CacheNegotiatedDocs</a></li>
-
+      <li><a href="#cachenegotiateddocs">CacheNegotiatedDocs</a></li>
+      <li><a href="#forcelanguagepriority">ForceLanguagePriority</a></li>
       <li><a href="#languagepriority">LanguagePriority</a></li>
     </ul>
     <strong>See also</strong>: <a
@@ -181,6 +180,57 @@
     <p>Prior to version 2.0, CacheNegotiatedDocs did not take an
     argument; it was turned on by the presence of the directive by
     itself.</p>
+    <hr />
+
+    <h2><a id="forcelanguagepriority"
+    name="forcelanguagepriority">ForceLanguagePriority</a> directive</h2>
+    <!--%plaintext &lt;?INDEX {\tt ForceLanguagePriority} directive&gt; -->
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> ForceLanguagePriority
+    <em>None</em> | [<em>Prefer</em>] [<em>Fallback</em>]</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host, directory, .htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> FileInfo<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_negotiation 
+
+    <p>The <em>ForceLanguagePriority</em> directive uses the given
+    <em>LanguagePriority</em> to satisfy two common negotation results.</p>
+
+    <p><em>ForceLanguagePriority Prefer</em> uses <em>LanguagePriority</em>
+    to serve a one valid result, rather than returning an HTTP result 300,
+    MULTIPLE CHOICES, when there are several equally valid choices.  
+    If the directives below were given, and the user's Accept-Language 
+    header assigned en and de each as quality .500 (equally acceptable)
+    then then first matching variant, en, will be served;</p>
+
+    <blockquote>
+      <code>LanguagePriority en fr de</code>
+      <code>ForceLanguagePriority Prefer</code>
+    </blockquote>
+
+    <p><em>ForceLanguagePriority Fallback</em> uses <em>LanguagePriority</em>
+    to serve a valid result, rather than returning an HTTP result 406,
+    NOT ACCEPTABLE.  If the directives below were given, and the user's
+    Accept-Language only permitted an es langauge response, but such a
+    variant isn't found, then the first variant from the LanguagePriority 
+    list below will be served;</p>
+
+    <blockquote>
+      <code>LanguagePriority en fr de</code>
+      <code>ForceLanguagePriority Fallback</code>
+    </blockquote>
+
+    <p>Both options, Prefer and Fallback, may be specified, so either the
+    first matching variant from LanguagePriority will be served if more
+    that one variant is acceptable, or first available document will be
+    served if none of the variants matched the client's acceptable list of
+    languages.</p>
+
     <hr />
 
     <h2><a id="languagepriority"
