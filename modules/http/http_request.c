@@ -1357,7 +1357,8 @@ static void process_request_internal(request_rec *r)
 static void check_pipeline_flush(request_rec *r)
 {
     apr_bucket_brigade *bb = apr_brigade_create(r->pool);
-    if (ap_get_brigade(r->input_filters, bb, AP_MODE_PEEK) != APR_SUCCESS) {
+    if (!r->connection->keepalive || 
+        ap_get_brigade(r->input_filters, bb, AP_MODE_PEEK) != APR_SUCCESS) {
         apr_bucket *e = apr_bucket_create_flush();
 
         /* We just send directly to the connection based filters, because at
