@@ -200,6 +200,12 @@ int ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
     SSLSrvConfigRec *sc;
     server_rec *s;
 
+    /* We initialize mc->pid per-process in the child init,
+     * but it should be initialized for startup before we
+     * call ssl_rand_seed() below.
+     */
+    mc->pid = getpid(); 
+
     /*
      * Let us cleanup on restarts and exists
      */
