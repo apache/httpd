@@ -313,6 +313,9 @@ int ap_proxy_http_handler(request_rec *r, char *url,
 	origin = conf->connection;
 	new = 0;
 
+	/* reset the connection filters */
+	ap_proxy_reset_output_filters(origin);
+
 	/* XXX FIXME: If the socket has since closed, change new to 1 so
 	 * a new socket is opened */
     }
@@ -699,6 +702,7 @@ int ap_proxy_http_handler(request_rec *r, char *url,
 	    if ((buf = ap_proxy_removestr(r->pool, buf, "chunked"))) {
 		apr_table_set(r->headers_out, "Transfer-Encoding", buf);
 	    }
+/* FIXME: Make sure this filter is removed if this connection is reused */
 	    ap_add_input_filter("DECHUNK", NULL, rp, origin);
 	}
 

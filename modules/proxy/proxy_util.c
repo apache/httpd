@@ -1131,6 +1131,25 @@ apr_status_t ap_proxy_string_read(conn_rec *c, apr_bucket_brigade *bb, char *buf
 
 }
 
+/* remove other filters (like DECHUNK) from filter stack */
+void ap_proxy_reset_output_filters(conn_rec *c)
+{
+    ap_filter_t *f = c->output_filters;
+
+    while (f) {
+        if (!strcasecmp(f->frec->name, "CORE") ||
+            !strcasecmp(f->frec->name, "CONTENT_LENGTH") ||
+            !strcasecmp(f->frec->name, "HTTP_HEADER")) {
+            f = f->next;
+            continue;
+        }
+        else {
+            ap_remove_output_filter(f);
+            f = f->next;
+        }
+    }
+}
+
 #if defined WIN32
 
 static DWORD tls_index;
