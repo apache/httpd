@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: mod_access.c,v 1.5 1996/09/24 12:11:21 mjc Exp $  */
+/* $Id: mod_access.c,v 1.6 1996/10/08 20:34:07 brian Exp $  */
 
 /*
  * Security options etc.
@@ -178,6 +178,18 @@ int find_allowdeny (request_rec *r, array_header *a, int method)
     for (i = 0; i < a->nelts; ++i) {
         if (!(mmask & ap[i].limited))
 	    continue;
+        if (ap[i].from && !strcmp(ap[i].from, "user-agents")) {
+	    char * this_agent = table_get(r->headers_in, "User-Agent");
+	    int j;
+  
+	    if (!this_agent) return 0;
+  
+	    for (j = i+1; j < a->nelts; ++j) {
+	        if (strstr(this_agent, ap[j].from)) return 1;
+	    }
+	    return 0;
+	}
+	
 	if (!strcmp (ap[i].from, "all"))
 	    return 1;
 	if (!gothost)
