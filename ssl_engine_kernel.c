@@ -856,6 +856,14 @@ int ssl_hook_UserCheck(request_rec *r)
     }
 
     /*
+     * We decline when we are in a subrequest.  The Authorization header
+     * would already be present if it was added in the main request.
+     */
+    if (!ap_is_initial_req(r)) {
+        return DECLINED;
+    }
+
+    /*
      * Make sure the user is not able to fake the client certificate
      * based authentication by just entering an X.509 Subject DN
      * ("/XX=YYY/XX=YYY/..") as the username and "password" as the
