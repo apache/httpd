@@ -4,7 +4,7 @@ Changes with Apache 1.3.23
      'filter callback' function is added to the end of buff.h. 
      This function, if registered by a module, is called 
      at the top of buff_write() and writev_it_all().
-     [Kevin Mallory <kmallory@spidercache.com>
+     [Kevin Mallory <kmallory@spidercache.com>]
 
   *) When the default of 'Group #-1' was changed to 'Group "#-1"',
      the Makefile wasn't updated to recognise the quotation marks.
