@@ -1,5 +1,8 @@
 Changes with Apache 2.0.53
 
+  *) mod_rewrite: Fix 0 bytes write into random memory position.
+     PR 31036. [Andr� Malo]
+
   *) mod_disk_cache: Do not store aborted content.  PR 21492.
      [Rüiger Plü <r.pluem t-online.de>]
 
