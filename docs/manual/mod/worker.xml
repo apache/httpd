@@ -93,7 +93,7 @@ uses</a></seealso>
     be additional child processes which are terminating but where at
     least one server thread is still handling an existing client
     connection.  Up to <directive 
-    module="mpm_common">MaxClient</directive> terminating processes 
+    module="mpm_common">MaxClients</directive> terminating processes 
     may be present, though the actual number can be expected to be 
     much smaller.  This behavior can be avoided by disabling the 
     termination of individual child processes, which is achieved by 
