@@ -180,24 +180,20 @@ static void remove_any_filter(ap_filter_t *f, ap_filter_t **r_filt,
                                    ap_filter_t **c_filt)
 {
     ap_filter_t **curr = r_filt ? r_filt : c_filt;
+    ap_filter_t *fscan = *curr;
 
-    if ((*curr) == f) {
-        if (f->r) {
-            f->r->output_filters = f->r->output_filters->next;
-        }
-        else {
-            f->c->output_filters = f->c->output_filters->next;
-        }
+    if (*curr == f) {
+        *curr = (*curr)->next;
         return;
     }
 
-    while ((*curr) && (*curr)->next != f) {
-        (*curr) = (*curr)->next;
+    while (fscan->next != f) {
+        if (!(fscan = fscan->next)) {
+            return;
+        }
     }
-    if ((*curr) == NULL) {
-        return;
-    }
-    (*curr)->next = f->next;
+
+    fscan->next = f->next;
 }
 
 AP_DECLARE(void) ap_remove_input_filter(ap_filter_t *f)
