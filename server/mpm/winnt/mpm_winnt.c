@@ -2284,13 +2284,17 @@ void winnt_rewrite_args(process_rec *process)
 }
 
 
-static int winnt_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp) 
+static int winnt_pre_config(apr_pool_t *pconf_, apr_pool_t *plog, apr_pool_t *ptemp) 
 {
     /* Handle the following SCM aspects in this phase:
      *
      *   -k runservice [WinNT errors logged from rewrite_args]
      */
 
+    /* Initialize shared static objects. 
+     */
+    pconf = pconf_;
+    
     if (ap_exists_config_define("ONE_PROCESS") ||
         ap_exists_config_define("DEBUG"))
         one_process = -1;
@@ -2314,16 +2318,11 @@ static int winnt_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pte
     return OK;
 }
 
-static int winnt_post_config(apr_pool_t *pconf_, apr_pool_t *plog, apr_pool_t *ptemp, server_rec* s)
+static int winnt_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp, server_rec* s)
 {
     static int restart_num = 0;
     apr_status_t rv = 0;
 
-    /* Initialize shared static objects. 
-     */
-    pconf = pconf_;
-    ap_server_conf = s;
-    
     /* Handle the following SCM aspects in this phase:
      *
      *   -k install
@@ -2453,6 +2452,10 @@ static int winnt_post_config(apr_pool_t *pconf_, apr_pool_t *plog, apr_pool_t *p
  */
 static int winnt_open_logs(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s)
 {
+    /* Initialize shared static objects. 
+     */
+    ap_server_conf = s;
+
     if (parent_pid != my_pid) {
         return OK;
     }
