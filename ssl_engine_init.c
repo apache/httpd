@@ -696,6 +696,44 @@ static int ssl_server_import_cert(server_rec *s,
     return TRUE;
 }
 
+static int ssl_server_import_key(server_rec *s,
+                                 SSLSrvConfigRec *sc,
+                                 const char *id,
+                                 int idx)
+{
+    SSLModConfigRec *mc = myModConfig(s);
+    ssl_asn1_t *asn1;
+    unsigned char *ptr;
+    const char *type = ssl_asn1_keystr(idx);
+    int pkey_type = (idx == SSL_AIDX_RSA) ? EVP_PKEY_RSA : EVP_PKEY_DSA;
+    EVP_PKEY *pkey;
+
+    if (!(asn1 = ssl_asn1_table_get(mc->tPrivateKey, id))) {
+        return FALSE;
+    }
+
+    ssl_log(s, SSL_LOG_TRACE|SSL_INIT,
+            "Configuring %s server private key", type);
+
+    ptr = asn1->cpData;
+    if (!(pkey = d2i_PrivateKey(pkey_type, NULL, &ptr, asn1->nData)))
+    {
+        ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR|SSL_INIT,
+                "Unable to import %s server private key", type);
+        ssl_die();
+    }
+
+    if (SSL_CTX_use_PrivateKey(sc->pSSLCtx, pkey) <= 0) {
+        ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR|SSL_INIT,
+                "Unable to configure %s server private key", type);
+        ssl_die();
+    }
+
+    sc->pPrivateKey[idx] = pkey;
+
+    return TRUE;
+}
+
 static void ssl_check_public_cert(server_rec *s,
                                   apr_pool_t *ptemp,
                                   X509 *cert,
@@ -764,14 +802,10 @@ void ssl_init_ConfigureServer(server_rec *s,
                               apr_pool_t *ptemp,
                               SSLSrvConfigRec *sc)
 {
-    SSLModConfigRec *mc = myModConfig(s);
     const char *rsa_id, *dsa_id;
     const char *vhost_id = sc->szVHostID;
     EVP_PKEY *pkey;
     SSL_CTX *ctx;
-    ssl_asn1_t *asn1;
-    unsigned char *ptr;
-    BOOL ok = FALSE;
     int i;
 
     ssl_init_check_server(s, p, ptemp, sc);
@@ -817,56 +851,9 @@ void ssl_init_ConfigureServer(server_rec *s,
         ssl_check_public_cert(s, ptemp, sc->pPublicCert[i], i);
     }
 
-    /*
-     *  Configure server private key(s)
-     */
-    ok = FALSE;
-
-    if ((asn1 = ssl_asn1_table_get(mc->tPrivateKey, rsa_id))) {
-        ssl_log(s, SSL_LOG_TRACE|SSL_INIT,
-                "Configuring RSA server private key");
-
-        ptr = asn1->cpData;
-        if (!(sc->pPrivateKey[SSL_AIDX_RSA] = 
-              d2i_PrivateKey(EVP_PKEY_RSA, NULL, &ptr, asn1->nData)))
-        {
-            ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR|SSL_INIT,
-                    "Unable to import RSA server private key");
-            ssl_die();
-        }
-
-        if (SSL_CTX_use_PrivateKey(ctx, sc->pPrivateKey[SSL_AIDX_RSA]) <= 0) {
-            ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR|SSL_INIT,
-                    "Unable to configure RSA server private key");
-            ssl_die();
-        }
-
-        ok = TRUE;
-    }
-
-    if ((asn1 = ssl_asn1_table_get(mc->tPrivateKey, dsa_id))) {
-        ssl_log(s, SSL_LOG_TRACE|SSL_INIT,
-                "Configuring DSA server private key");
-
-        ptr = asn1->cpData;
-        if (!(sc->pPrivateKey[SSL_AIDX_DSA] = 
-              d2i_PrivateKey(EVP_PKEY_DSA, NULL, &ptr, asn1->nData)))
-        {
-            ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR|SSL_INIT,
-                    "Unable to import DSA server private key");
-            ssl_die();
-        }
-
-        if (SSL_CTX_use_PrivateKey(ctx, sc->pPrivateKey[SSL_AIDX_DSA]) <= 0) {
-            ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR|SSL_INIT,
-                    "Unable to configure DSA server private key");
-            ssl_die();
-        }
-
-        ok = TRUE;
-    }
-
-    if (!ok) {
+    if (!(ssl_server_import_key(s, sc, rsa_id, SSL_AIDX_RSA) ||
+          ssl_server_import_key(s, sc, dsa_id, SSL_AIDX_DSA)))
+    {
         ssl_log(s, SSL_LOG_ERROR|SSL_INIT,
                 "Oops, no RSA or DSA server private key found?!");
         ssl_die();
