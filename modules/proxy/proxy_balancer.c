@@ -63,8 +63,8 @@ static char *get_cookie_param(request_rec *r, const char *name)
     const char *start_cookie;
 
     if ((cookies = apr_table_get(r->headers_in, "Cookie"))) {
-        for (start_cookie = strstr(cookies, name); start_cookie; 
-             start_cookie = strstr(start_cookie + 1, name)) {
+        for (start_cookie = ap_strstr_c(cookies, name); start_cookie; 
+             start_cookie = ap_strstr_c(start_cookie + 1, name)) {
             if (start_cookie == cookies ||
                 start_cookie[-1] == ';' ||
                 start_cookie[-1] == ',' ||
@@ -244,7 +244,7 @@ static int rewrite_url(request_rec *r, proxy_worker *worker,
     const char *path = NULL;
     
     if (scheme)
-        path = strchr(scheme + 3, '/');
+        path = ap_strchr_c(scheme + 3, '/');
 
     /* we break the URL into host, port, uri */
     if (!worker) {
