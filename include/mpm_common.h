@@ -74,14 +74,55 @@
 extern "C" {
 #endif
 
+/**
+ * @package Multi-Processing Modules functions
+ */
+
 #ifdef HAVE_NETINET_TCP_H
 #include <netinet/tcp.h>    /* for TCP_NODELAY */
 #endif
         
+/**
+ * Make sure all child processes that have been spawned by the parent process
+ * have died.  This includes process registered as "other_children".
+ * @warning This is only defined if the MPM defines 
+ *          MPM_NEEDS_RECLAIM_CHILD_PROCESS
+ * @param terminate Either 1 or 0.  If 1, send the child processes SIGTERM
+ *        each time through the loop.  If 0, give the process time to die
+ *        on its own before signalling it.
+ * @tip This function requires that some macros are defined by the MPM: <PRE>
+ *  MPM_SYNC_CHILD_TABLE -- sync the scoreboard image between child and parent
+ *  MPM_CHILD_PID -- Get the pid from the specified spot in the scoreboard
+ *  MPM_NOTE_CHILD_KILLED -- Note the child died in the scoreboard
+ */
 void ap_reclaim_child_processes(int terminate);
+
+/**
+ * Determine if any child process has died.  If no child process died, then
+ * this process sleeps for the amount of time specified by the MPM defined
+ * macro SCOREBOARD_MAINTENANCE_INTERVAL.
+ * @param status The return code if a process has died
+ * @param ret The process id of the process that died
+ * @param p The pool to allocate out of
+ */
 void ap_wait_or_timeout(ap_wait_t *status, apr_proc_t *ret, apr_pool_t *p);
+
+/**
+ * Log why a child died to the error log, if the child died without the
+ * parent signalling it.
+ * @param pid The child that has died
+ * @param status The status returned from ap_wait_or_timeout
+ */
 void ap_process_child_status(apr_proc_t *pid, ap_wait_t status);
+
 #if defined(TCP_NODELAY) && !defined(MPE) && !defined(TPF)
+/**
+ * Turn off the nagle algorithm for the specified socket.  The nagle algorithm
+ * says that we should delay sending partial packets in the hopes of getting
+ * more data.  There are bad interactions between persistent connections and
+ * Nagle's algorithm that have severe performance penalties.
+ * @param s The socket to disable nagle for.
+ */
 void ap_sock_disable_nagle(int s);
 #else
 #define ap_sock_disable_nagle(s)        /* NOOP */
