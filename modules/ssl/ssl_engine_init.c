@@ -428,6 +428,15 @@ static void ssl_init_ctx_protocol(server_rec *s,
         SSL_CTX_set_options(ctx, SSL_OP_NO_TLSv1);
     }
 
+#ifdef SSL_OP_CIPHER_SERVER_PREFERENCE
+    {
+        SSLSrvConfigRec *sc = mySrvConfig(s);
+        if (sc->cipher_server_pref == TRUE) {
+            SSL_CTX_set_options(ctx, SSL_OP_CIPHER_SERVER_PREFERENCE);
+        }
+    }
+#endif
+
     SSL_CTX_set_app_data(ctx, s);
 
     /*
