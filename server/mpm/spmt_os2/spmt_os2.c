@@ -90,7 +90,7 @@ static int ap_daemons_to_start=0;
 static int ap_daemons_min_free=0;
 static int ap_daemons_max_free=0;
 static int ap_daemons_limit=0;
-static time_t ap_restart_time=0;
+static apr_time_t ap_restart_time=0;
 static int ap_extended_status = 0;
 
 /*
@@ -1358,7 +1358,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     }
 
     if (!is_graceful) {
-	ap_restart_time = time(NULL);
+	ap_restart_time = apr_now();
     }
 
     return 0;

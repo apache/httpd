@@ -97,7 +97,7 @@ static int ap_threads_to_start=0;
 static int min_spare_threads=0;
 static int max_spare_threads=0;
 static int ap_thread_limit=0;
-static time_t ap_restart_time=0;
+static apr_time_t ap_restart_time=0;
 AP_DECLARE_DATA int ap_extended_status = 0;
 static int num_listening_sockets = 0; /* set by open_listeners in ap_mpm_run */
 static apr_socket_t ** listening_sockets;
@@ -797,7 +797,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     }
     
     if (!is_graceful) {
-        ap_restart_time = time(NULL); 
+        ap_restart_time = apr_now();
     }
 
     /* just before we go, tidy up the locks we've created to prevent a 
