@@ -1055,7 +1055,7 @@ if [ "x$using_shlib" = "x1" ] ; then
 	    LDFLAGS_MOD_SHLIB=$LDFLAGS_SHLIB
 	    LDFLAGS_SHLIB_EXPORT="-rdynamic"
 	    ;;
-	*-linux2)
+	*-linux2*)
 		LD_SHLIB="gcc"
 	    CFLAGS_SHLIB="-fpic"
 	    LDFLAGS_SHLIB="-shared"
