@@ -77,3 +77,20 @@
     logfiledir:    $prefix/Logs
     proxycachedir: $prefix/ProxyCache
 </Layout>
+
+#   RedHat 5.x layout
+<Layout RedHat>
+    prefix:        /usr
+    exec_prefix:   $prefix
+    bindir:        $prefix/bin
+    sbindir:       $prefix/sbin
+    libexecdir:    $prefix/lib/apache
+    mandir:        $prefix/man
+    sysconfdir:    /etc/httpd/conf
+    datadir:       /home/httpd
+    includedir:    $prefix/include/apache
+    localstatedir: /var
+    runtimedir:    $localstatedir/run
+    logfiledir:    $localstatedir/log/httpd
+    proxycachedir: $localstatedir/cache/httpd
+</Layout>     
