@@ -106,6 +106,7 @@
 <!ATTLIST ol type CDATA  #IMPLIED>
 
 <!ELEMENT li %BlockOrInline;>
+<!ATTLIST li class    CDATA   #IMPLIED >
 
 <!ELEMENT dl (dd | dt)+>
 
