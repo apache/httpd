@@ -397,6 +397,15 @@ static request_rec *internal_internal_redirect(const char *new_uri,
     new->output_filters  = new->proto_output_filters;
     new->input_filters   = new->proto_input_filters;
 
+    if (new->main) {
+        /* Add back the subrequest filter, which we lost when
+         * we set output_filters to include only the protocol
+         * output filters from the original request.
+         */
+        ap_add_output_filter_handle(ap_subreq_core_filter_handle,
+                                    NULL, new, new->connection);
+    }
+    
     update_r_in_filters(new->input_filters, r, new);
     update_r_in_filters(new->output_filters, r, new);
 
