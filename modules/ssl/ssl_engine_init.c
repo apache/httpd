@@ -323,6 +323,7 @@ void ssl_init_Engine(server_rec *s, apr_pool_t *p)
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                          "Init: Failed to load Crypto Device API `%s'",
                          mc->szCryptoDevice);
+            ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, s);
             ssl_die();
         }
 
@@ -334,6 +335,7 @@ void ssl_init_Engine(server_rec *s, apr_pool_t *p)
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                          "Init: Failed to enable Crypto Device API `%s'",
                          mc->szCryptoDevice);
+            ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, s);
             ssl_die();
         }
 
