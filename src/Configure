@@ -609,6 +609,7 @@ case "$PLAT" in
        CFLAGS="$CFLAGS -DTPF -DCHARSET_EBCDIC -D_POSIX_SOURCE"
        DEF_WANTHSREGEX=yes
        LIBS="$LIBS"
+       SUBTARGET="target_compile_only"
        ;;
     *-sni-sysv4*)
 	OS='SVR4'

@@ -30,6 +30,9 @@ target_static: subdirs modules.o
 	$(CC) $(CFLAGS) $(LDFLAGS) $(LDFLAGS_SHLIB_EXPORT) \
 	      -o $(TARGET) buildmark.o $(OBJS) $(REGLIB) $(LIBS)
 
+target_compile_only: subdirs modules.o
+	$(CC) -c $(INCLUDES) $(CFLAGS) buildmark.c
+
 target_shared: lib$(TARGET).ep
 	$(CC) $(INCLUDES) $(CFLAGS) $(LDFLAGS) $(LDFLAGS_SHLIB_EXPORT) \
 	      -o $(TARGET) -DSHARED_CORE_BOOTSTRAP main/http_main.c

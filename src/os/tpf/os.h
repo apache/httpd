@@ -48,7 +48,7 @@ extern int ap_checkconv(struct request_rec *r);
 #undef __FD_MASK 
 #endif
 
-typedef int __FD_MASK;
+typedef long __FD_MASK;
 
 #ifdef __NBBY
 #undef __NBBY 
@@ -72,7 +72,7 @@ typedef struct fd_set {
 
 #define  FD_SET(n, p)((p)->fds_bits[(n)/__NFDBITS] |= (1 <<((n) % __NFDBITS)))
 
-#define  FD_CLR(n, p)((p)->fds_bits[(n)/__NFDBITS] &= ~(1 \ << ((n) % __NFDBITS)))
+#define  FD_CLR(n, p)((p)->fds_bits[(n)/__NFDBITS] &= ~(1 << ((n) % __NFDBITS)))
 
 #define  FD_ISSET(n, p)((p)->fds_bits[(n)/__NFDBITS] & (1 <<((n) % __NFDBITS)))
 
