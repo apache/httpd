@@ -3,10 +3,10 @@ Changes with Apache 2.0.30-dev
   *) Fix bug that could potentially prevent the perchild MPM from
      working with more than one vhost/uid.  [Aaron Bannert]
 
-  *) Change make install processing of DSO modules to perform special
-     handling on platforms where libtool doesn't install mod_foo.so.
-     This fixes some wonkiness on HP-UX, Tru64, and AIX which
-     prevented standard LoadModule statements from working.
+  *) Change make install and apxs -i processing of DSO modules to 
+     perform special handling on platforms where libtool doesn't install 
+     mod_foo.so.  This fixes some wonkiness on HP-UX, Tru64, and AIX 
+     which prevented standard LoadModule statements from working.
      [Jeff Trawick]
 
   *) Whenever mod_so is enabled (not just when there are DSOs for
