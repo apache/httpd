@@ -451,6 +451,7 @@ if ($opt_i or $opt_e) {
         my $dir = $CFG_LIBEXECDIR;
         $dir =~ s|^$CFG_PREFIX/?||;
         $dir =~ s|(.)$|$1/|;
+	$t =~ s|\.la$|.so|;
         push(@lmd, sprintf("LoadModule %-18s %s", "${name}_module", "$dir$t"));
         push(@amd, sprintf("AddModule %s", $filename));
     }
