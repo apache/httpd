@@ -349,7 +349,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
          * If we wish to populate in MTIME (as hinted in RFC 1952), do:
          * putLong(date_array, apr_time_now() / APR_USEC_PER_SEC);
          * where date_array is a char[4] and then print date_array in the
-         * MTIME position.
+         * MTIME position.  WARNING: ENDIANNESS ISSUE HERE.
          */
         buf = apr_psprintf(r->pool, "%c%c%c%c%c%c%c%c%c%c", deflate_magic[0],
                            deflate_magic[1], Z_DEFLATED, 0 /* flags */,
