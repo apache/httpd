@@ -116,23 +116,6 @@ extern "C" {
 #include <grp.h>
 #endif
 
-#ifdef HAVE_SYS_WAIT_H
-
-/* We have a POSIX wait interface */
-#include <sys/wait.h>
-
-#ifdef WEXITSTATUS
-#define ap_wait_t       int
-#else
-/* We don't have a POSIX wait interface. Assume we have the old-style. Is this
- * a bad assumption? */
-/* Yessiree bob, it was... but will this work instead? */
-#define ap_wait_t       union wait
-#define WEXITSTATUS(status)	(int)((status).w_retcode)
-#define WTERMSIG(status)	(int)((status).w_termsig)
-#endif /* !WEXITSTATUS */
-#endif /* HAVE_SYS_WAIT_H */
-
 /* ap_ versions of ctype macros to make sure they deal with 8-bit chars */
 #include "ap_ctype.h"
 

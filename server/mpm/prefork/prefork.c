@@ -1163,7 +1163,7 @@ static ap_proc_t *wait_or_timeout(ap_wait_t *status, ap_pool_t *p)
 	ap_probe_writable_fds();
 #endif
     }
-    rv = ap_wait_all_procs(&ret, APR_NOWAIT, p);
+    rv = ap_wait_all_procs(&ret, status, APR_NOWAIT, p);
     if (ap_canonical_error(rv) == APR_EINTR) {
 	return NULL;
     }

@@ -275,7 +275,7 @@ static void reclaim_child_processes(int terminate)
 #endif
 static int wait_or_timeout_counter;
 
-static ap_proc_t *wait_or_timeout(ap_pool_t *p)
+static ap_proc_t *wait_or_timeout(ap_wait_t *status, ap_pool_t *p)
 {
     struct timeval tv;
     ap_status_t rv;
@@ -288,7 +288,7 @@ static ap_proc_t *wait_or_timeout(ap_pool_t *p)
         ap_probe_writable_fds();
 #endif
     }
-    rv = ap_wait_all_procs(&ret, APR_NOWAIT, p);
+    rv = ap_wait_all_procs(&ret, status, APR_NOWAIT, p);
     if (ap_canonical_error(rv) == APR_EINTR) {
         return NULL;
     }
@@ -1085,7 +1085,7 @@ static void server_main_loop(int remaining_children_to_start)
     int i;
 
     while (!restart_pending && !shutdown_pending) {
-        pid = wait_or_timeout(pconf);
+        pid = wait_or_timeout(&status, pconf);
         
         if (pid != NULL) {
             int actual_pid;
