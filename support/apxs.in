@@ -604,9 +604,9 @@ APXS=apxs
 APACHECTL=apachectl
 
 #   additional defines, includes and libraries
-#DEF=-Dmy_define=my_value
-#INC=-Imy/include/dir
-#LIB=-Lmy/lib/dir -lmylib
+#DEFS=-Dmy_define=my_value
+#INCLUDES=-Imy/include/dir
+#LIBS=-Lmy/lib/dir -lmylib
 
 #   the default target
 all: local-shared-build
