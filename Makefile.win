@@ -50,10 +50,10 @@ SSLBIN=out32dll
 _tryssl:
 !IF EXIST("modules\ssl\mod_ssl.mak")
 	cd modules\ssl
-        $(MAKE) $(MAKEOPT) -f mod_ssl.mak CFG="mod_ssl - Win32 $(LONG)" RECURSE=0 $(LONG)\mod_ssl.so
+	$(MAKE) $(MAKEOPT) -f mod_ssl.mak CFG="mod_ssl - Win32 $(LONG)" RECURSE=0 $(LONG)\mod_ssl.so
 	cd ..\..
 	cd support
-        $(MAKE) $(MAKEOPT) -f abs.mak CFG="abs - Win32 $(LONG)" RECURSE=0 $(LONG)\abs.exe
+	$(MAKE) $(MAKEOPT) -f abs.mak CFG="abs - Win32 $(LONG)" RECURSE=0 $(LONG)\abs.exe
 	cd ..
 !ELSE
 	msdev Apache.dsw /MAKE\
@@ -117,85 +117,110 @@ _cleand:
 _build:
 	echo Building Win32 $(LONG) targets ($(SHORT) suffixes)
 	cd srclib\apr
-	 $(MAKE) $(MAKEOPT) -f apr.mak CFG="apr - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f libapr.mak CFG="libapr - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f apr.mak             CFG="apr - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f libapr.mak          CFG="libapr - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 	cd srclib\apr-util\uri
-	 $(MAKE) $(MAKEOPT) -f gen_uri_delims.mak CFG="gen_uri_delims - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f gen_uri_delims.mak  CFG="gen_uri_delims - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..\..
 	cd srclib\apr-util\xml\expat\lib
-	 $(MAKE) $(MAKEOPT) -f xml.mak CFG="xml - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-        cd ..\..\..
-	 $(MAKE) $(MAKEOPT) -f aprutil.mak CFG="aprutil - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f libaprutil.mak CFG="libaprutil - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f xml.mak             CFG="xml - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	cd ..\..\..
+	 $(MAKE) $(MAKEOPT) -f aprutil.mak         CFG="aprutil - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f libaprutil.mak      CFG="libaprutil - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 	cd srclib\pcre
-	 $(MAKE) $(MAKEOPT) -f dftables.mak CFG="dftables - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f pcre.mak CFG="pcre - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f pcreposix.mak CFG="pcreposix - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f dftables.mak        CFG="dftables - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f pcre.mak            CFG="pcre - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f pcreposix.mak       CFG="pcreposix - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 	cd server
-	 $(MAKE) $(MAKEOPT) -f gen_test_char.mak CFG="gen_test_char - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f gen_test_char.mak   CFG="gen_test_char - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..
 	 -del $(LONG)\buildmark.obj
-	 $(MAKE) $(MAKEOPT) -f libhttpd.mak CFG="libhttpd - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f Apache.mak CFG="Apache - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f libhttpd.mak        CFG="libhttpd - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f Apache.mak          CFG="Apache - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd modules\aaa
-	 $(MAKE) $(MAKEOPT) -f mod_auth_anon.mak CFG="mod_auth_anon - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-         $(MAKE) $(MAKEOPT) -f mod_auth_dbm.mak CFG="mod_auth_dbm - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_access.mak      CFG="mod_access - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_auth.mak        CFG="mod_auth - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_auth_anon.mak   CFG="mod_auth_anon - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_auth_dbm.mak    CFG="mod_auth_dbm - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_auth_digest.mak CFG="mod_auth_digest - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
+	cd modules\arch\win32
+	 $(MAKE) $(MAKEOPT) -f mod_isapi.mak       CFG="mod_isapi - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	cd ..\..\..
 	cd modules\cache
-	 $(MAKE) $(MAKEOPT) -f mod_file_cache.mak CFG="mod_file_cache - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_file_cache.mak  CFG="mod_file_cache - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 	cd modules\dav\main
-	 $(MAKE) $(MAKEOPT) -f mod_dav.mak CFG="mod_dav - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_dav.mak         CFG="mod_dav - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..\..
 	cd modules\dav\fs
-	 $(MAKE) $(MAKEOPT) -f mod_dav_fs.mak CFG="mod_dav_fs - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_dav_fs.mak      CFG="mod_dav_fs - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..\..
+	cd modules\filters
+	 $(MAKE) $(MAKEOPT) -f mod_include.mak     CFG="mod_include - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	cd ..\..
 	cd modules\generators
-         $(MAKE) $(MAKEOPT) -f mod_info.mak CFG"=mod_info - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-         $(MAKE) $(MAKEOPT) -f mod_status.mak CFG="mod_status - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_asis.mak        CFG="mod_asis - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_autoindex.mak   CFG="mod_autoindex - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_cgi.mak         CFG="mod_cgi - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_info.mak        CFG="mod_info - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_status.mak      CFG="mod_status - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	cd ..\..
+	cd modules\http
+	 $(MAKE) $(MAKEOPT) -f mod_mime.mak        CFG="mod_mime - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	cd ..\..
+	cd modules\loggers
+	 $(MAKE) $(MAKEOPT) -f mod_log_config.mak  CFG="mod_log_config - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 	cd modules\mappers
-         $(MAKE) $(MAKEOPT) -f mod_rewrite.mak CFG="mod_rewrite - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f mod_speling.mak CFG="mod_speling - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_actions.mak     CFG="mod_actions - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_alias.mak       CFG="mod_alias - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_dir.mak         CFG="mod_dir - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_imap.mak        CFG="mod_imap - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_negotiation.mak CFG="mod_negotiation - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_rewrite.mak     CFG="mod_rewrite - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_speling.mak     CFG="mod_speling - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_userdir.mak     CFG="mod_userdir - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_vhost_alias.mak CFG="mod_vhost_alias - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 	cd modules\metadata
-	 $(MAKE) $(MAKEOPT) -f mod_cern_meta.mak CFG="mod_cern_meta - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f mod_expires.mak CFG="mod_expires - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f mod_headers.mak CFG="mod_headers - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f mod_mime_magic.mak CFG="mod_mime_magic - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f mod_unique_id.mak CFG="mod_unique_id - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f mod_usertrack.mak CFG="mod_usertrack - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_cern_meta.mak   CFG="mod_cern_meta - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_env.mak         CFG="mod_env - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_expires.mak     CFG="mod_expires - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_headers.mak     CFG="mod_headers - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_mime_magic.mak  CFG="mod_mime_magic - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_setenvif.mak    CFG="mod_setenvif - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_unique_id.mak   CFG="mod_unique_id - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_usertrack.mak   CFG="mod_usertrack - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 	cd modules\proxy
-	 $(MAKE) $(MAKEOPT) -f mod_proxy.mak CFG="mod_proxy - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f proxy_connect.mak CFG="proxy_connect - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f proxy_ftp.mak CFG="proxy_ftp - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f proxy_http.mak CFG="proxy_http - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_proxy.mak       CFG="mod_proxy - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f proxy_connect.mak   CFG="proxy_connect - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f proxy_ftp.mak       CFG="proxy_ftp - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f proxy_http.mak      CFG="proxy_http - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 !IF EXIST("srclib\openssl")
 	cd modules\ssl
-        $(MAKE) $(MAKEOPT) -f mod_ssl.mak CFG="mod_ssl - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_ssl.mak         CFG="mod_ssl - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 	cd support
-         $(MAKE) $(MAKEOPT) -f abs.mak CFG="abs - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f abs.mak             CFG="abs - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..
 !ENDIF
 	cd support
-         $(MAKE) $(MAKEOPT) -f ab.mak CFG="ab - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-         $(MAKE) $(MAKEOPT) -f htdbm.mak CFG="htdbm - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-         $(MAKE) $(MAKEOPT) -f htdigest.mak CFG="htdigest - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-         $(MAKE) $(MAKEOPT) -f htpasswd.mak CFG="htpasswd - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f logresolve.mak CFG="logresolve - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f rotatelogs.mak CFG="rotatelogs - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f ab.mak              CFG="ab - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f htdbm.mak           CFG="htdbm - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f htdigest.mak        CFG="htdigest - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f htpasswd.mak        CFG="htpasswd - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f logresolve.mak      CFG="logresolve - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f rotatelogs.mak      CFG="rotatelogs - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..
 	cd support\win32
-         $(MAKE) $(MAKEOPT) -f ApacheMonitor.mak CFG="ApacheMonitor - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-         $(MAKE) $(MAKEOPT) -f wintty.mak CFG="wintty - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f ApacheMonitor.mak   CFG="ApacheMonitor - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f wintty.mak          CFG="wintty - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 
 !ELSE
@@ -214,7 +239,7 @@ _build:
 		"libapr - Win32 $(LONG)"\
 		"gen_uri_delims - Win32 $(LONG)"\
 		"xml - Win32 $(LONG)"\
-        	"aprutil - Win32 $(LONG)"\
+		"aprutil - Win32 $(LONG)"\
 		"libaprutil - Win32 $(LONG)"\
 		"dftables - Win32 $(LONG)"\
 		"pcre - Win32 $(LONG)"\
@@ -222,35 +247,52 @@ _build:
 		"gen_test_char - Win32 $(LONG)"\
 		"libhttpd - Win32 $(LONG)"\
 		"Apache - Win32 $(LONG)"\
+		"mod_access - Win32 $(LONG)"\
+		"mod_actions - Win32 $(LONG)"\
+		"mod_alias - Win32 $(LONG)"\
+		"mod_asis - Win32 $(LONG)"\
+		"mod_auth - Win32 $(LONG)"\
 		"mod_auth_anon - Win32 $(LONG)"\
-        	"mod_auth_dbm - Win32 $(LONG)"\
+		"mod_auth_dbm - Win32 $(LONG)"\
 		"mod_auth_digest - Win32 $(LONG)"\
-		"mod_file_cache - Win32 $(LONG)"\
+		"mod_autoindex - Win32 $(LONG)"\
+		"mod_cern_meta - Win32 $(LONG)"\
+		"mod_cgi - Win32 $(LONG)"\
 		"mod_dav - Win32 $(LONG)"\
 		"mod_dav_fs - Win32 $(LONG)"\
-		"mod_info - Win32 $(LONG)"\
-        	"mod_status - Win32 $(LONG)"\
-		"mod_rewrite - Win32 $(LONG)"\
-		"mod_speling - Win32 $(LONG)"\
-		"mod_vhost_alias - Win32 $(LONG)"\
-		"mod_cern_meta - Win32 $(LONG)"\
+		"mod_dir - Win32 $(LONG)"\
+		"mod_env - Win32 $(LONG)"\
 		"mod_expires - Win32 $(LONG)"\
+		"mod_file_cache - Win32 $(LONG)"\
 		"mod_headers - Win32 $(LONG)"\
+		"mod_imap - Win32 $(LONG)"\
+		"mod_include - Win32 $(LONG)"\
+		"mod_info - Win32 $(LONG)"\
+		"mod_isapi - Win32 $(LONG)"\
+		"mod_log_config - Win32 $(LONG)"\
+		"mod_mime - Win32 $(LONG)"\
 		"mod_mime_magic - Win32 $(LONG)"\
-		"mod_unique_id - Win32 $(LONG)"\
-		"mod_usertrack - Win32 $(LONG)"\
+		"mod_negotiation - Win32 $(LONG)"\
 		"mod_proxy - Win32 $(LONG)"\
+		"mod_rewrite - Win32 $(LONG)"\
+		"mod_setenvif - Win32 $(LONG)"\
+		"mod_status - Win32 $(LONG)"\
+		"mod_speling - Win32 $(LONG)"\
+		"mod_unique_id - Win32 $(LONG)"\
+		"mod_userdir - Win32 $(LONG)"\
+		"mod_usertrack - Win32 $(LONG)"\
+		"mod_vhost_alias - Win32 $(LONG)"\
 		"proxy_connect - Win32 $(LONG)"\
 		"proxy_ftp - Win32 $(LONG)"\
 		"proxy_http - Win32 $(LONG)"\
 		"ab - Win32 $(LONG)"\
-        	"htdbm - Win32 $(LONG)"\
-        	"htdigest - Win32 $(LONG)"\
-        	"htpasswd - Win32 $(LONG)"\
+		"htdbm - Win32 $(LONG)"\
+		"htdigest - Win32 $(LONG)"\
+		"htpasswd - Win32 $(LONG)"\
 		"logresolve - Win32 $(LONG)"\
 		"rotatelogs - Win32 $(LONG)"\
-        	"ApacheMonitor - Win32 $(LONG)"\
-        	"wintty - Win32 $(LONG)" /NORECURSE $(CTARGET)
+		"ApacheMonitor - Win32 $(LONG)"\
+		"wintty - Win32 $(LONG)" /NORECURSE $(CTARGET)
 !IF EXIST("srclib\openssl")
 	msdev Apache.dsw /MAKE\
 		"mod_ssl - Win32 $(LONG)"\
@@ -295,22 +337,39 @@ _install:
 	copy $(LONG)\Apache.exe "$(INSTDIR)\bin"
 	copy $(LONG)\libhttpd.dll "$(INSTDIR)\bin"
 	copy srclib\apr\$(LONG)\libapr.dll "$(INSTDIR)\bin"
-        copy srclib\apr-util\$(LONG)\libaprutil.dll "$(INSTDIR)\bin"
-        copy modules\aaa\$(LONG)\mod_auth_anon.so "$(INSTDIR)\modules"
+	copy srclib\apr-util\$(LONG)\libaprutil.dll "$(INSTDIR)\bin"
+	copy modules\aaa\$(LONG)\mod_access.so "$(INSTDIR)\modules"
+	copy modules\aaa\$(LONG)\mod_auth.so "$(INSTDIR)\modules"
+	copy modules\aaa\$(LONG)\mod_auth_anon.so "$(INSTDIR)\modules"
 	copy modules\aaa\$(LONG)\mod_auth_dbm.so "$(INSTDIR)\modules"
 	copy modules\aaa\$(LONG)\mod_auth_digest.so "$(INSTDIR)\modules"
+	copy modules\arch\win32\$(LONG)\mod_isapi.so "$(INSTDIR)\modules"
 	copy modules\cache\$(LONG)\mod_file_cache.so "$(INSTDIR)\modules"
-        copy modules\dav\fs\$(LONG)\mod_dav_fs.so "$(INSTDIR)\modules"
-        copy modules\dav\main\$(LONG)\mod_dav.so "$(INSTDIR)\modules"
-        copy modules\generators\$(LONG)\mod_info.so "$(INSTDIR)\modules"
-        copy modules\generators\$(LONG)\mod_status.so "$(INSTDIR)\modules"
-        copy modules\mappers\$(LONG)\mod_rewrite.so "$(INSTDIR)\modules"
+	copy modules\dav\fs\$(LONG)\mod_dav_fs.so "$(INSTDIR)\modules"
+	copy modules\dav\main\$(LONG)\mod_dav.so "$(INSTDIR)\modules"
+	copy modules\filters\$(LONG)\mod_include.so "$(INSTDIR)\modules"
+	copy modules\generators\$(LONG)\mod_asis.so "$(INSTDIR)\modules"
+	copy modules\generators\$(LONG)\mod_autoindex.so "$(INSTDIR)\modules"
+	copy modules\generators\$(LONG)\mod_cgi.so "$(INSTDIR)\modules"
+	copy modules\generators\$(LONG)\mod_info.so "$(INSTDIR)\modules"
+	copy modules\generators\$(LONG)\mod_status.so "$(INSTDIR)\modules"
+	copy modules\http\$(LONG)\mod_mime.so "$(INSTDIR)\modules"
+	copy modules\loggers\$(LONG)\mod_log_config.so "$(INSTDIR)\modules"
+	copy modules\mappers\$(LONG)\mod_actions.so "$(INSTDIR)\modules"
+	copy modules\mappers\$(LONG)\mod_alias.so "$(INSTDIR)\modules"
+	copy modules\mappers\$(LONG)\mod_dir.so "$(INSTDIR)\modules"
+	copy modules\mappers\$(LONG)\mod_imap.so "$(INSTDIR)\modules"
+	copy modules\mappers\$(LONG)\mod_negotiation.so "$(INSTDIR)\modules"
+	copy modules\mappers\$(LONG)\mod_rewrite.so "$(INSTDIR)\modules"
 	copy modules\mappers\$(LONG)\mod_speling.so "$(INSTDIR)\modules"
+	copy modules\mappers\$(LONG)\mod_userdir.so "$(INSTDIR)\modules"
 	copy modules\mappers\$(LONG)\mod_vhost_alias.so "$(INSTDIR)\modules"
 	copy modules\metadata\$(LONG)\mod_cern_meta.so "$(INSTDIR)\modules"
+	copy modules\metadata\$(LONG)\mod_env.so "$(INSTDIR)\modules"
 	copy modules\metadata\$(LONG)\mod_expires.so "$(INSTDIR)\modules"
 	copy modules\metadata\$(LONG)\mod_headers.so "$(INSTDIR)\modules"
 	copy modules\metadata\$(LONG)\mod_mime_magic.so "$(INSTDIR)\modules"
+	copy modules\metadata\$(LONG)\mod_setenvif.so "$(INSTDIR)\modules"
 	copy modules\metadata\$(LONG)\mod_unique_id.so "$(INSTDIR)\modules"
 	copy modules\metadata\$(LONG)\mod_usertrack.so "$(INSTDIR)\modules"
 	copy modules\proxy\$(LONG)\mod_proxy.so "$(INSTDIR)\modules"
@@ -368,36 +427,36 @@ _install:
 
 --------------------------------------------------------------------------------
 <<
-        copy support\$(LONG)\abs.exe "$(INSTDIR)\bin\ab.exe"
+	copy support\$(LONG)\abs.exe "$(INSTDIR)\bin\ab.exe"
 !ELSE
-        copy support\$(LONG)\ab.exe "$(INSTDIR)\bin"
+	copy support\$(LONG)\ab.exe "$(INSTDIR)\bin"
 !ENDIF
 	copy support\$(LONG)\htdbm.exe "$(INSTDIR)\bin"
 	copy support\$(LONG)\htdigest.exe "$(INSTDIR)\bin"
-        copy support\$(LONG)\htpasswd.exe "$(INSTDIR)\bin"
+	copy support\$(LONG)\htpasswd.exe "$(INSTDIR)\bin"
 	copy support\$(LONG)\logresolve.exe "$(INSTDIR)\bin"
 	copy support\$(LONG)\rotatelogs.exe "$(INSTDIR)\bin"
-        copy support\win32\$(LONG)\ApacheMonitor.exe "$(INSTDIR)\bin"
-        copy support\win32\$(LONG)\wintty.exe "$(INSTDIR)\bin"
-        copy docs\cgi-examples\printenv "$(INSTDIR)\cgi-bin\printenv.pl"
+	copy support\win32\$(LONG)\ApacheMonitor.exe "$(INSTDIR)\bin"
+	copy support\win32\$(LONG)\wintty.exe "$(INSTDIR)\bin"
+	copy docs\cgi-examples\printenv "$(INSTDIR)\cgi-bin\printenv.pl"
 	-awk -f <<script.awk "docs\cgi-examples\printenv" "$(INSTDIR)\cgi-bin\printenv.pl"
     BEGIN { 
-        srcfl = ARGV[1];
-        dstfl = ARGV[2];
-        if ( "perl -e \"print $$^X;\"" | getline perlroot ) {
-            gsub( /\\/, "/", perlroot );
-            print "#!" perlroot > dstfl;
-            getline < srcfl;
-        }
-        while ( ( getline < srcfl ) > 0 ) {
-            print $$0 > dstfl;
-        }
+	srcfl = ARGV[1];
+	dstfl = ARGV[2];
+	if ( "perl -e \"print $$^X;\"" | getline perlroot ) {
+	    gsub( /\\/, "/", perlroot );
+	    print "#!" perlroot > dstfl;
+	    getline < srcfl;
+	}
+	while ( ( getline < srcfl ) > 0 ) {
+	    print $$0 > dstfl;
+	}
     }
 <<
-        xcopy docs\cgi-examples\test-cgi.bat "$(INSTDIR)\cgi-bin" /d
-        xcopy docs\error "$(INSTDIR)\error" /s /d < .a
-        xcopy docs\docroot "$(INSTDIR)\htdocs" /d < .a
-        xcopy docs\manual "$(INSTDIR)\manual" /s /d < .a
+	xcopy docs\cgi-examples\test-cgi.bat "$(INSTDIR)\cgi-bin" /d
+	xcopy docs\error "$(INSTDIR)\error" /s /d < .a
+	xcopy docs\docroot "$(INSTDIR)\htdocs" /d < .a
+	xcopy docs\manual "$(INSTDIR)\manual" /s /d < .a
 
 	xcopy srclib\pcre\pcre*.h "$(INSTDIR)\include" /d < .a
 	xcopy srclib\apr-util\xml\expat\lib\expat.h "$(INSTDIR)\include" /d
@@ -417,7 +476,7 @@ _install:
 	xcopy modules\mappers\*.h "$(INSTDIR)\include" /d < .a
 	xcopy modules\ssl\*.h "$(INSTDIR)\include" /d < .a
 	xcopy modules\proxy\*.h "$(INSTDIR)\include" /d < .a
-        xcopy docs\icons "$(INSTDIR)\icons" /s /d < .a
+	xcopy docs\icons "$(INSTDIR)\icons" /s /d < .a
 	copy srclib\apr\Lib$(SHORT)\apr.lib "$(INSTDIR)\lib"
 	copy srclib\apr-util\Lib$(SHORT)\aprutil.lib "$(INSTDIR)\lib"
 	copy srclib\pcre\Lib$(SHORT)\pcre.lib "$(INSTDIR)\lib"
@@ -434,47 +493,47 @@ _install:
 	copy modules\dav\main\$(LONG)\mod_dav.exp "$(INSTDIR)\lib"
 	copy modules\dav\main\$(LONG)\mod_dav.lib "$(INSTDIR)\lib"
 	copy docs\conf\magic "$(INSTDIR)\conf\magic.default"
-        if not exist "$(INSTDIR)\conf\magic" \
-            copy "$(INSTDIR)\conf\magic.default" "$(INSTDIR)\conf\magic"
-        copy docs\conf\mime.types "$(INSTDIR)\conf\mime.types.default"
-        if not exist "$(INSTDIR)\conf\mime.types" \
-            copy "$(INSTDIR)\conf\mime.types.default" "$(INSTDIR)\conf\mime.types"
+	if not exist "$(INSTDIR)\conf\magic" \
+	    copy "$(INSTDIR)\conf\magic.default" "$(INSTDIR)\conf\magic"
+	copy docs\conf\mime.types "$(INSTDIR)\conf\mime.types.default"
+	if not exist "$(INSTDIR)\conf\mime.types" \
+	    copy "$(INSTDIR)\conf\mime.types.default" "$(INSTDIR)\conf\mime.types"
 	copy docs\conf\httpd-win.conf "$(INSTDIR)\conf\httpd.default.conf"
 	-awk -f <<script.awk "docs\conf\httpd-win.conf" "$(INSTDIR)\conf\httpd.default.conf" "$(INSTDIR)"
     BEGIN { 
-        srcfl = ARGV[1];
-        dstfl = ARGV[2];
-        serverroot = ARGV[3];
-        gsub( /\\/, "/", serverroot );
-        while ( ( getline < srcfl ) > 0 ) {
-            gsub( /@@ServerRoot@@/, serverroot );
-            print $$0 > dstfl;
-        }
+	srcfl = ARGV[1];
+	dstfl = ARGV[2];
+	serverroot = ARGV[3];
+	gsub( /\\/, "/", serverroot );
+	while ( ( getline < srcfl ) > 0 ) {
+	    gsub( /@@ServerRoot@@/, serverroot );
+	    print $$0 > dstfl;
+	}
     }
 <<
 	if not exist "$(INSTDIR)\conf\httpd.conf" \
-            copy "$(INSTDIR)\conf\httpd.default.conf" "$(INSTDIR)\conf\httpd.conf"
+	    copy "$(INSTDIR)\conf\httpd.default.conf" "$(INSTDIR)\conf\httpd.conf"
 	copy docs\conf\ssl-std.conf "$(INSTDIR)\conf\ssl.default.conf"
 	-awk -f <<script.awk "docs\conf\ssl-std.conf" "$(INSTDIR)\conf\ssl.default.conf" "$(INSTDIR)"
     BEGIN { 
-        srcfl = ARGV[1];
-        dstfl = ARGV[2];
-        serverroot = ARGV[3];
-        gsub( /\\/, "/", serverroot );
-        while ( ( getline < srcfl ) > 0 ) {
-            gsub( /@@ServerRoot@@/, serverroot );
-            print $$0 > dstfl;
-        }
+	srcfl = ARGV[1];
+	dstfl = ARGV[2];
+	serverroot = ARGV[3];
+	gsub( /\\/, "/", serverroot );
+	while ( ( getline < srcfl ) > 0 ) {
+	    gsub( /@@ServerRoot@@/, serverroot );
+	    print $$0 > dstfl;
+	}
     }
 <<
 	if not exist "$(INSTDIR)\conf\ssl.conf" \
-            copy "$(INSTDIR)\conf\ssl.default.conf" "$(INSTDIR)\conf\ssl.conf"
+	    copy "$(INSTDIR)\conf\ssl.default.conf" "$(INSTDIR)\conf\ssl.conf"
 	awk -f <<script.awk "support\dbmmanage.in" >"$(INSTDIR)\bin\dbmmanage.pl"
     { if ( $$0 ~ /^BEGIN \{ @AnyDBM_File::/ ) {
-          sub( /ISA = qw\(.*\)/, "ISA = qw(SDBM_File)" ); 
+	  sub( /ISA = qw\(.*\)/, "ISA = qw(SDBM_File)" ); 
       }
       if ( $$0 !~ /^#!@perlbin@/ )
-          print $$0;
+	  print $$0;
     }
 <<
 	del .a .y
