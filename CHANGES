@@ -1,5 +1,10 @@
 Changes with Apache 2.0.40
 
+  *) Fix a long-standing bug in 2.0, CGI scripts were being called
+     with relative paths instead of absolute paths.  Apache 1.3 used
+     absolute paths for everything except for SuExec, this brings back
+     that standard.  [Ryan Bloom]
+
   *) Fix infinite loop due to two HTTP_IN filters being present for
      internally redirected requests.  PR 10146.  [Justin Erenkrantz]
 
