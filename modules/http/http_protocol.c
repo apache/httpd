@@ -163,7 +163,12 @@ static const char * const status_lines[RESPONSE_CODES] =
     "422 Unprocessable Entity",
     "423 Locked",
     "424 Failed Dependency",
-#define LEVEL_500 44
+    /* This is a hack, but it is required for ap_index_of_response
+     * to work with 426.
+     */
+    "425 No code",
+    "426 Upgrade Required",
+#define LEVEL_500 46
     "500 Internal Server Error",
     "501 Method Not Implemented",
     "502 Bad Gateway",
@@ -2190,6 +2195,12 @@ static const char *get_canned_error_string(int status,
         return("<p>The method could not be performed on the resource\n"
                "because the requested action depended on another\n"
                "action and that other action failed.</p>\n");
+    case HTTP_UPGRADE_REQUIRED:
+        return("<p>The requested resource can only be retrieved\n"
+               "using SSL.  The server is willing to upgrade the current\n"
+               "connection to SSL, but your client doesn't support it.\n"
+               "Either upgrade your client, or try requesting the page\n"
+               "using https://\n");
     case HTTP_INSUFFICIENT_STORAGE:
         return("<p>The method could not be performed on the resource\n"
                "because the server is unable to store the\n"

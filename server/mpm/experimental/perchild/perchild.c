@@ -580,7 +580,7 @@ static void process_socket(apr_pool_t *p, apr_socket_t *sock, long conn_id,
     }
 }
 
-static perchild_process_connection(conn_rec *c)
+static int perchild_process_connection(conn_rec *c)
 {
     ap_filter_t *f;
     apr_bucket_brigade *bb;
@@ -684,7 +684,6 @@ static apr_status_t receive_from_other_child(void **csd, ap_listen_rec *lr,
     struct iovec iov[2];
     int ret, dp;
     apr_os_sock_t sd;
-    apr_socket_t *unix_sd = NULL;
     apr_bucket_alloc_t *alloc = apr_bucket_alloc_create(ptrans);
     apr_bucket_brigade *bb = apr_brigade_create(ptrans, alloc);
     apr_bucket *bucket;
@@ -1664,9 +1663,8 @@ static int pass_request(request_rec *r)
     h.p = r->pool;
     h.headers = apr_pstrcat(h.p, r->the_request, CRLF, "Host: ", r->hostname, 
                             CRLF, NULL);
-/* XXX  This REALLY needs to be uncommented, but it is causing problems.
     apr_table_do((int (*) (void *, const char *, const char *))
-                 perchild_header_field, (void *) &h, r->headers_in, NULL); */
+                 perchild_header_field, (void *) &h, r->headers_in, NULL); 
     h.headers = apr_pstrcat(h.p, h.headers, CRLF, NULL);
 
     iov[0].iov_base = h.headers;
@@ -1944,8 +1942,6 @@ static const char *set_child_per_uid(cmd_parms *cmd, void *dummy, const char *u,
     
 
     for (i = curr_child_num; i < max_this_time; i++, curr_child_num++) {
-        int uid = 0, gid = 0;
-
         if (i > num_daemons) {
             return "Trying to use more child ID's than NumServers.  Increase "
                    "NumServers in your config file.";

@@ -437,7 +437,7 @@ AP_DECLARE(const char *) ap_get_server_built(void);
  * all of the potential response status-lines (a sparse table).
  * A future version should dynamically generate the apr_table_t at startup.
  */
-#define RESPONSE_CODES 55
+#define RESPONSE_CODES 57
 
 #define HTTP_CONTINUE                      100
 #define HTTP_SWITCHING_PROTOCOLS           101
@@ -478,6 +478,7 @@ AP_DECLARE(const char *) ap_get_server_built(void);
 #define HTTP_UNPROCESSABLE_ENTITY          422
 #define HTTP_LOCKED                        423
 #define HTTP_FAILED_DEPENDENCY             424
+#define HTTP_UPGRADE_REQUIRED              426
 #define HTTP_INTERNAL_SERVER_ERROR         500
 #define HTTP_NOT_IMPLEMENTED               501
 #define HTTP_BAD_GATEWAY                   502
