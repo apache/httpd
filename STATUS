@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/06/21 19:11:56 $]
+Last modified at [$Date: 2004/06/21 19:36:04 $]
 
 Release:
 
@@ -75,7 +75,9 @@ PATCHES TO BACKPORT FROM 2.1
     *) initialize server arrays prior to calling ap_setup_prelinked_modules
        so that static modules can push Defines values when registering
        hooks just like DSO modules can ["Philippe M. Chiasson" <gozer cpan.org>]
-       +1: geoff
+         server/main.c: r1.158
+       +1: geoff, nd
+       nd adds: minor bump.
 
     *) mod_ssl: Remove some unused functions (after CAN-2004-0488 fix is applied)
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_util.c?r1=1.46&r2=1.47
@@ -166,7 +168,7 @@ PATCHES TO BACKPORT FROM 2.1
        from being logged for I_INSIST_ON_EXTRA_CYCLES_FOR_CLF_COMPLIANCE
        processing.  PR 29696.  [Alois Treindl <alois astro.ch>]
          http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/loggers/mod_log_config.c?r1=1.118&r2=1.119
-       +1: trawick
+       +1: trawick, nd
 
     *) (re-)add support for RewriteRules in <Proxy> containers. PR 27985
          modules/mappers/mod_rewrite.c: r1.254
