@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/11/20 19:42:30 $]
+Last modified at [$Date: 2003/11/20 19:52:41 $]
 
 Release:
 
@@ -61,10 +61,6 @@ Contributors looking for a mission:
     * just do an egrep on "TODO", "XXX" and see what's there
 
 RELEASE SHOWSTOPPERS:
-
-    * EBCDIC: Translate the protocol data...
-        modules/http/http_protocol.c: r1.469, r1.472
-      +1: trawick, nd, gregames
 
 PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
