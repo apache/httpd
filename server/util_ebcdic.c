@@ -106,17 +106,17 @@ apr_status_t ap_init_ebcdic(apr_pool_t *pool)
         return rv;
     }
     
-    rv = ap_base64init_ebcdic(ap_hdrs_to_ascii, ap_hdrs_from_ascii);
+    rv = apr_base64init_ebcdic(ap_hdrs_to_ascii, ap_hdrs_from_ascii);
     if (rv) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL,
-                     "ap_base64init_ebcdic() failed");
+                     "apr_base64init_ebcdic() failed");
         return rv;
     }
     
-    rv = ap_SHA1InitEBCDIC(ap_hdrs_to_ascii);
+    rv = apr_SHA1InitEBCDIC(ap_hdrs_to_ascii);
     if (rv) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL,
-                     "ap_SHA1InitEBCDIC() failed");
+                     "apr_SHA1InitEBCDIC() failed");
         return rv;
     }
     

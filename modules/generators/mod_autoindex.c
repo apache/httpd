@@ -1700,7 +1700,7 @@ static int handle_autoindex(request_rec *r)
 
 static void register_hooks(apr_pool_t *p)
 {
-    ap_hook_handler(handle_autoindex,NULL,NULL,AP_HOOK_MIDDLE);
+    ap_hook_handler(handle_autoindex,NULL,NULL,APR_HOOK_MIDDLE);
 }
 
 module AP_MODULE_DECLARE_DATA autoindex_module =

@@ -194,8 +194,8 @@ int ap_proxy_http_handler(request_rec *r, char *url,
     apr_file_t *cachefp = NULL;
     char *buf;
     conn_rec *origin;
-    ap_bucket *e;
-    ap_bucket_brigade *bb = ap_brigade_create(r->pool);
+    apr_bucket *e;
+    apr_bucket_brigade *bb = apr_brigade_create(r->pool);
 
     void *sconf = r->server->module_config;
     proxy_server_conf *conf =
@@ -283,17 +283,17 @@ int ap_proxy_http_handler(request_rec *r, char *url,
 
     buf = apr_pstrcat(r->pool, r->method, " ", proxyhost ? url : urlptr,
                       " HTTP/1.0" CRLF, NULL);
-    e = ap_bucket_create_pool(buf, strlen(buf), r->pool);
-    AP_BRIGADE_INSERT_TAIL(bb, e);
+    e = apr_bucket_create_pool(buf, strlen(buf), r->pool);
+    APR_BRIGADE_INSERT_TAIL(bb, e);
     if (destportstr != NULL && destport != DEFAULT_HTTP_PORT) {
         buf = apr_pstrcat(r->pool, "Host: ", desthost, ":", destportstr, CRLF, NULL);
-        e = ap_bucket_create_pool(buf, strlen(buf), r->pool);
-        AP_BRIGADE_INSERT_TAIL(bb, e);
+        e = apr_bucket_create_pool(buf, strlen(buf), r->pool);
+        APR_BRIGADE_INSERT_TAIL(bb, e);
     }
     else {
         buf = apr_pstrcat(r->pool, "Host: ", desthost, CRLF, NULL);
-        e = ap_bucket_create_pool(buf, strlen(buf), r->pool);
-        AP_BRIGADE_INSERT_TAIL(bb, e);
+        e = apr_bucket_create_pool(buf, strlen(buf), r->pool);
+        APR_BRIGADE_INSERT_TAIL(bb, e);
     }
 
     if (conf->viaopt == via_block) {
@@ -335,42 +335,42 @@ int ap_proxy_http_handler(request_rec *r, char *url,
 	    || !strcasecmp(reqhdrs[i].key, "Proxy-Authorization"))
 	    continue;
         buf = apr_pstrcat(r->pool, reqhdrs[i].key, ": ", reqhdrs[i].val, CRLF, NULL);
-        e = ap_bucket_create_pool(buf, strlen(buf), r->pool);
-        AP_BRIGADE_INSERT_TAIL(bb, e);
+        e = apr_bucket_create_pool(buf, strlen(buf), r->pool);
+        APR_BRIGADE_INSERT_TAIL(bb, e);
 
     }
 
-    e = ap_bucket_create_pool(CRLF, strlen(CRLF), r->pool);
-    AP_BRIGADE_INSERT_TAIL(bb, e);
-    e = ap_bucket_create_flush();
-    AP_BRIGADE_INSERT_TAIL(bb, e);
+    e = apr_bucket_create_pool(CRLF, strlen(CRLF), r->pool);
+    APR_BRIGADE_INSERT_TAIL(bb, e);
+    e = apr_bucket_create_flush();
+    APR_BRIGADE_INSERT_TAIL(bb, e);
 
     ap_pass_brigade(origin->output_filters, bb);
 /* send the request data, if any. */
 
     if (ap_should_client_block(r)) {
 	while ((i = ap_get_client_block(r, buffer, sizeof buffer)) > 0) {
-            e = ap_bucket_create_pool(buffer, i, r->pool);
-            AP_BRIGADE_INSERT_TAIL(bb, e);
+            e = apr_bucket_create_pool(buffer, i, r->pool);
+            APR_BRIGADE_INSERT_TAIL(bb, e);
         }
     }
     /* Flush the data to the origin server */
-    e = ap_bucket_create_flush();
-    AP_BRIGADE_INSERT_TAIL(bb, e);
+    e = apr_bucket_create_flush();
+    APR_BRIGADE_INSERT_TAIL(bb, e);
     ap_pass_brigade(origin->output_filters, bb);
 
     ap_add_input_filter("HTTP_IN", NULL, NULL, origin);
     ap_add_input_filter("CORE_IN", NULL, NULL, origin);
 
-    ap_brigade_destroy(bb);
-    bb = ap_brigade_create(r->pool);
+    apr_brigade_destroy(bb);
+    bb = apr_brigade_create(r->pool);
     
     /* Tell http_filter to grab the data one line at a time. */
     origin->remain = 0;
 
     ap_get_brigade(origin->input_filters, bb, AP_MODE_BLOCKING);
-    e = AP_BRIGADE_FIRST(bb);
-    ap_bucket_read(e, (const char **)&buffer2, &len, AP_BLOCK_READ);
+    e = APR_BRIGADE_FIRST(bb);
+    apr_bucket_read(e, (const char **)&buffer2, &len, APR_BLOCK_READ);
     if (len == -1) {
 	apr_close_socket(sock);
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
@@ -383,8 +383,8 @@ int ap_proxy_http_handler(request_rec *r, char *url,
 	return ap_proxyerror(r, HTTP_BAD_GATEWAY,
 			     "Document contains no data");
     }
-    AP_BUCKET_REMOVE(e);
-    ap_bucket_destroy(e);
+    APR_BUCKET_REMOVE(e);
+    apr_bucket_destroy(e);
 
 /* Is it an HTTP/1 response?  This is buggy if we ever see an HTTP/1.10 */
     if (ap_checkmask(buffer2, "HTTP/#.# ###*")) {
@@ -489,8 +489,8 @@ int ap_proxy_http_handler(request_rec *r, char *url,
 /* Is it an HTTP/0.9 response? If so, send the extra data */
     if (backasswards) {
         cntr = len;
-        e = ap_bucket_create_heap(buffer, cntr, 0, NULL);
-        AP_BRIGADE_INSERT_TAIL(bb, e);
+        e = apr_bucket_create_heap(buffer, cntr, 0, NULL);
+        APR_BRIGADE_INSERT_TAIL(bb, e);
         if (cachefp && apr_write(cachefp, buffer, &cntr) != APR_SUCCESS) {
 	    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
 		"proxy: error writing extra data to cache");
@@ -507,13 +507,13 @@ int ap_proxy_http_handler(request_rec *r, char *url,
  
         origin->remain = content_length;
         while (ap_get_brigade(origin->input_filters, bb, AP_MODE_BLOCKING) == APR_SUCCESS) {
-            if (AP_BUCKET_IS_EOS(AP_BRIGADE_LAST(bb))) {
+            if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(bb))) {
                 ap_pass_brigade(r->output_filters, bb);
                 break;
             }
             ap_pass_brigade(r->output_filters, bb);
-            ap_brigade_destroy(bb);
-            bb = ap_brigade_create(r->pool);
+            apr_brigade_destroy(bb);
+            bb = apr_brigade_create(r->pool);
         }
     }
 

@@ -1583,7 +1583,7 @@ static void prefork_hooks(apr_pool_t *p)
     (void) set42sig();
 #endif
 
-    ap_hook_pre_config(prefork_pre_config, NULL, NULL, AP_HOOK_MIDDLE);
+    ap_hook_pre_config(prefork_pre_config, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 static const char *set_pidfile(cmd_parms *cmd, void *dummy, const char *arg) 

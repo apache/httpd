@@ -55,7 +55,7 @@
 #ifndef APACHE_HTTP_CONNECTION_H
 #define APACHE_HTTP_CONNECTION_H
 
-#include "ap_hooks.h"
+#include "apr_hooks.h"
 #include "apr_network_io.h"
 
 #ifdef __cplusplus

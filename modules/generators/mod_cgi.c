@@ -75,7 +75,7 @@
 
 #define CORE_PRIVATE
 
-#include "ap_buckets.h"
+#include "apr_buckets.h"
 #include "util_filter.h"
 #include "ap_config.h"
 #include "httpd.h"
@@ -506,8 +506,8 @@ static int cgi_handler(request_rec *r)
     const char **argv;
     char *dbuf = NULL;
     apr_file_t *script_out = NULL, *script_in = NULL, *script_err = NULL;
-    ap_bucket_brigade *bb;
-    ap_bucket *b;
+    apr_bucket_brigade *bb;
+    apr_bucket *b;
     char argsbuffer[HUGE_STRING_LEN];
     int is_included = !strcmp(r->protocol, "INCLUDED");
     apr_pool_t *p;
@@ -696,11 +696,11 @@ static int cgi_handler(request_rec *r)
 
 	ap_send_http_header(r);
 	if (!r->header_only) {
-            bb = ap_brigade_create(r->pool);
-	    b = ap_bucket_create_pipe(script_in);
-	    AP_BRIGADE_INSERT_TAIL(bb, b);
-            b = ap_bucket_create_eos();
-	    AP_BRIGADE_INSERT_TAIL(bb, b);
+            bb = apr_brigade_create(r->pool);
+	    b = apr_bucket_create_pipe(script_in);
+	    APR_BRIGADE_INSERT_TAIL(bb, b);
+            b = apr_bucket_create_eos();
+	    APR_BRIGADE_INSERT_TAIL(bb, b);
 	    ap_pass_brigade(r->output_filters, bb);
 	}
 
@@ -709,11 +709,11 @@ static int cgi_handler(request_rec *r)
     }
 
     if (script_in && nph) {
-        bb = ap_brigade_create(r->pool);
-	b = ap_bucket_create_pipe(script_in);
-	AP_BRIGADE_INSERT_TAIL(bb, b);
-	b = ap_bucket_create_eos();
-	AP_BRIGADE_INSERT_TAIL(bb, b);
+        bb = apr_brigade_create(r->pool);
+	b = apr_bucket_create_pipe(script_in);
+	APR_BRIGADE_INSERT_TAIL(bb, b);
+	b = apr_bucket_create_eos();
+	APR_BRIGADE_INSERT_TAIL(bb, b);
         ap_pass_brigade(r->output_filters, bb);
     }
 
@@ -722,7 +722,7 @@ static int cgi_handler(request_rec *r)
 
 static void register_hooks(apr_pool_t *p)
 {
-    ap_hook_handler(cgi_handler, NULL, NULL, AP_HOOK_MIDDLE);
+    ap_hook_handler(cgi_handler, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 module AP_MODULE_DECLARE_DATA cgi_module =

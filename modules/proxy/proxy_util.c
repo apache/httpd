@@ -389,7 +389,7 @@ static request_rec *make_fake_req(conn_rec *c)
 
     r->request_config  = ap_create_request_config(r->pool);
     req_cfg = apr_pcalloc(r->pool, sizeof(core_request_config));
-    req_cfg->bb = ap_brigade_create(r->pool);
+    req_cfg->bb = apr_brigade_create(r->pool);
     ap_set_module_config(r->request_config, &core_module, req_cfg);
 
     return r;

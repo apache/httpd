@@ -747,11 +747,11 @@ static const command_rec proxy_cmds[] =
 static void register_hooks(apr_pool_t *p)
 {
     /* [2] filename-to-URI translation */
-    ap_hook_translate_name(proxy_trans, NULL, NULL, AP_HOOK_FIRST);
+    ap_hook_translate_name(proxy_trans, NULL, NULL, APR_HOOK_FIRST);
     /* [8] fixups */
-    ap_hook_fixups(proxy_fixup, NULL, NULL, AP_HOOK_FIRST);
+    ap_hook_fixups(proxy_fixup, NULL, NULL, APR_HOOK_FIRST);
     /* [1] post read_request handling */
-    ap_hook_post_read_request(proxy_detect, NULL, NULL, AP_HOOK_FIRST);
+    ap_hook_post_read_request(proxy_detect, NULL, NULL, APR_HOOK_FIRST);
 }
 
 module AP_MODULE_DECLARE_DATA proxy_module =

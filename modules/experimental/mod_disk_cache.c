@@ -67,8 +67,8 @@ module MODULE_VAR_EXPORT disk_cache_module;
 
 static int disk_serve(request_rec *r)
 {
-    ap_bucket *e;
-    ap_bucket_brigade *bb = ap_brigade_create(r->pool); 
+    apr_bucket *e;
+    apr_bucket_brigade *bb = apr_brigade_create(r->pool); 
     const char *filename;
     apr_file_t *fd = NULL;
     apr_status_t rv;
@@ -98,11 +98,11 @@ static int disk_serve(request_rec *r)
         }
     }
 
-    e = ap_bucket_create_file(fd, offset, r->finfo.size);
+    e = apr_bucket_create_file(fd, offset, r->finfo.size);
 
-    AP_BRIGADE_INSERT_HEAD(bb, e);
-    e = ap_bucket_create_eos();
-    AP_BRIGADE_INSERT_TAIL(bb, e);
+    APR_BRIGADE_INSERT_HEAD(bb, e);
+    e = apr_bucket_create_eos();
+    APR_BRIGADE_INSERT_TAIL(bb, e);
 
     ap_pass_brigade(r->output_filters, bb);
     return OK;
@@ -114,10 +114,10 @@ typedef struct cache_struct {
     int state;
 } cache_struct;
 
-static int disk_cache(request_rec *r, ap_bucket_brigade *bb, void **cf)
+static int disk_cache(request_rec *r, apr_bucket_brigade *bb, void **cf)
 {
     cache_struct *ctx = *cf;
-    ap_bucket *e;
+    apr_bucket *e;
     
     if (ctx == NULL) {
         *cf = ctx = apr_pcalloc(r->pool, sizeof(*ctx));
@@ -140,14 +140,14 @@ static int disk_cache(request_rec *r, ap_bucket_brigade *bb, void **cf)
             return DECLINED;
         }
     } 
-    AP_BRIGADE_FOREACH(e, bb) {
+    APR_BRIGADE_FOREACH(e, bb) {
         const char *str;
         apr_ssize_t length;
 
-        ap_bucket_read(e, &str, &length, 0);
+        apr_bucket_read(e, &str, &length, 0);
         apr_write(ctx->fd, str, &length);
     }
-    if (AP_BUCKET_IS_EOS(AP_BRIGADE_LAST(bb))) {
+    if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(bb))) {
         apr_close(ctx->fd);
     }
     return OK;	
@@ -155,8 +155,8 @@ static int disk_cache(request_rec *r, ap_bucket_brigade *bb, void **cf)
 
 static void disk_cache_register_hook(apr_pool_t *p)
 {
-    ap_hook_store_cache(disk_cache, NULL, NULL, AP_HOOK_MIDDLE);
-    ap_hook_serve_cache(disk_serve, NULL, NULL, AP_HOOK_MIDDLE);
+    ap_hook_store_cache(disk_cache, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_serve_cache(disk_serve, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 module MODULE_VAR_EXPORT disk_cache_module = {

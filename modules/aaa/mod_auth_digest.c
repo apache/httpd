@@ -108,8 +108,8 @@
 #include "http_protocol.h"
 #include "util_uri.h"
 #include "util_md5.h"
-#include "ap_sha1.h"
-#include "ap_base64.h"
+#include "apr_sha1.h"
+#include "apr_base64.h"
 #include "apr_lib.h"
 #include "apr_time.h"
 #include "apr_errno.h"
@@ -162,7 +162,7 @@ typedef struct digest_config_struct {
     const char  *grpfile;
     const char  *realm;
     const char **qop_list;
-    AP_SHA1_CTX  nonce_ctx;
+    apr_sha1_ctx_t  nonce_ctx;
     apr_time_t    nonce_lifetime;
     const char  *nonce_format;
     int          check_nc;
@@ -179,7 +179,7 @@ typedef struct digest_config_struct {
 
 
 #define NONCE_TIME_LEN	(((sizeof(apr_time_t)+2)/3)*4)
-#define NONCE_HASH_LEN	(2*SHA_DIGESTSIZE)
+#define NONCE_HASH_LEN	(2*APR_SHA1_DIGESTSIZE)
 #define NONCE_LEN	(NONCE_TIME_LEN + NONCE_HASH_LEN)
 
 #define	SECRET_LEN	20
@@ -475,9 +475,9 @@ static const char *set_realm(cmd_parms *cmd, void *config, const char *realm)
      * the host:port would be too, but that varies for .htaccess files
      * and directives outside a virtual host section)
      */
-    ap_SHA1Init(&conf->nonce_ctx);
-    ap_SHA1Update_binary(&conf->nonce_ctx, secret, sizeof(secret));
-    ap_SHA1Update_binary(&conf->nonce_ctx, (const unsigned char *) realm,
+    apr_SHA1Init(&conf->nonce_ctx);
+    apr_SHA1Update_binary(&conf->nonce_ctx, secret, sizeof(secret));
+    apr_SHA1Update_binary(&conf->nonce_ctx, (const unsigned char *) realm,
 			 strlen(realm));
 
     return DECLINE_CMD;
@@ -986,24 +986,24 @@ static void gen_nonce_hash(char *hash, const char *timestr, const char *opaque,
 			   const digest_config_rec *conf)
 {
     const char *hex = "0123456789abcdef";
-    unsigned char sha1[SHA_DIGESTSIZE];
-    AP_SHA1_CTX ctx;
+    unsigned char sha1[APR_SHA1_DIGESTSIZE];
+    apr_sha1_ctx_t ctx;
     int idx;
 
     memcpy(&ctx, &conf->nonce_ctx, sizeof(ctx));
     /*
-    ap_SHA1Update_binary(&ctx, (const unsigned char *) server->server_hostname,
+    apr_SHA1Update_binary(&ctx, (const unsigned char *) server->server_hostname,
 			 strlen(server->server_hostname));
-    ap_SHA1Update_binary(&ctx, (const unsigned char *) &server->port,
+    apr_SHA1Update_binary(&ctx, (const unsigned char *) &server->port,
 			 sizeof(server->port));
      */
-    ap_SHA1Update_binary(&ctx, (const unsigned char *) timestr, strlen(timestr));
+    apr_SHA1Update_binary(&ctx, (const unsigned char *) timestr, strlen(timestr));
     if (opaque)
-	ap_SHA1Update_binary(&ctx, (const unsigned char *) opaque,
+	apr_SHA1Update_binary(&ctx, (const unsigned char *) opaque,
 			     strlen(opaque));
-    ap_SHA1Final(sha1, &ctx);
+    apr_SHA1Final(sha1, &ctx);
 
-    for (idx=0; idx<SHA_DIGESTSIZE; idx++) {
+    for (idx=0; idx<APR_SHA1_DIGESTSIZE; idx++) {
 	*hash++ = hex[sha1[idx] >> 4];
 	*hash++ = hex[sha1[idx] & 0xF];
     }
@@ -1031,7 +1031,7 @@ static const char *gen_nonce(apr_pool_t *p, apr_time_t now, const char *opaque,
 	t.time = (*otn_counter)++;
     else
 	t.time = 42;
-    len = ap_base64encode_binary(nonce, t.arr, sizeof(t.arr));
+    len = apr_base64encode_binary(nonce, t.arr, sizeof(t.arr));
     gen_nonce_hash(nonce+NONCE_TIME_LEN, nonce, opaque, server, conf);
 
     return nonce;
@@ -1408,7 +1408,7 @@ static int check_nonce(request_rec *r, digest_header_rec *resp,
 
     tmp = resp->nonce[NONCE_TIME_LEN];
     resp->nonce[NONCE_TIME_LEN] = '\0';
-    len = ap_base64decode_binary(nonce_time.arr, resp->nonce);
+    len = apr_base64decode_binary(nonce_time.arr, resp->nonce);
     gen_nonce_hash(hash, resp->nonce, resp->opaque, r->server, conf);
     resp->nonce[NONCE_TIME_LEN] = tmp;
     resp->nonce_time = nonce_time.time;
@@ -2054,12 +2054,12 @@ static void register_hooks(apr_pool_t *p)
     static const char * const cfgPost[]={ "http_core.c", NULL };
     static const char * const parsePre[]={ "mod_proxy.c", NULL };
 
-    ap_hook_post_config(initialize_module, NULL, cfgPost, AP_HOOK_MIDDLE);
-    ap_hook_child_init(initialize_child, NULL, NULL, AP_HOOK_MIDDLE);
-    ap_hook_post_read_request(parse_hdr_and_update_nc, parsePre, NULL, AP_HOOK_MIDDLE);
-    ap_hook_check_user_id(authenticate_digest_user, NULL, NULL, AP_HOOK_MIDDLE);
-    ap_hook_auth_checker(digest_check_auth, NULL, NULL, AP_HOOK_MIDDLE);
-    ap_hook_fixups(add_auth_info, NULL, NULL, AP_HOOK_MIDDLE);
+    ap_hook_post_config(initialize_module, NULL, cfgPost, APR_HOOK_MIDDLE);
+    ap_hook_child_init(initialize_child, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_post_read_request(parse_hdr_and_update_nc, parsePre, NULL, APR_HOOK_MIDDLE);
+    ap_hook_check_user_id(authenticate_digest_user, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_auth_checker(digest_check_auth, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_fixups(add_auth_info, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 module AP_MODULE_DECLARE_DATA digest_auth_module =

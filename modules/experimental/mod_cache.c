@@ -69,17 +69,17 @@
 #include "util_script.h"
 #include "http_core.h" 
 #include "mod_cache.h"
-#include "ap_hooks.h"
+#include "apr_hooks.h"
 
 module MODULE_VAR_EXPORT cache_module;
 
-AP_HOOK_STRUCT(
-            AP_HOOK_LINK(serve_cache)
-            AP_HOOK_LINK(store_cache)
+APR_HOOK_STRUCT(
+            APR_HOOK_LINK(serve_cache)
+            APR_HOOK_LINK(store_cache)
 )
 
 AP_IMPLEMENT_HOOK_RUN_FIRST(int,serve_cache,(request_rec *r),(r),DECLINED)
-AP_IMPLEMENT_HOOK_RUN_FIRST(int,store_cache,(request_rec *r, ap_bucket_brigade *bb, void **cf),
+AP_IMPLEMENT_HOOK_RUN_FIRST(int,store_cache,(request_rec *r, apr_bucket_brigade *bb, void **cf),
                             (r, bb, cf),DECLINED)
 
 static int cache_handler(request_rec *r)
@@ -94,7 +94,7 @@ typedef struct cache_struct {
     void *cf;
 } cache_struct;
 
-static int cache_filter(ap_filter_t *f, ap_bucket_brigade *bb)
+static int cache_filter(ap_filter_t *f, apr_bucket_brigade *bb)
 {
     cache_struct *ctx = f->ctx;
     

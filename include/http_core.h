@@ -333,7 +333,7 @@ extern AP_DECLARE_DATA module core_module;
 typedef struct {
     /* bucket brigade used by getline for look-ahead and 
      * ap_get_client_block for holding left-over request body */
-    struct ap_bucket_brigade *bb;
+    struct apr_bucket_brigade *bb;
 } core_request_config;
 
 /* Per-directory configuration */

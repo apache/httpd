@@ -842,9 +842,9 @@ static void mime_insert_filter(request_rec *r)
 
 static void register_hooks(apr_pool_t *p)
 {
-    ap_hook_type_checker(find_ct,NULL,NULL,AP_HOOK_MIDDLE);
-    ap_hook_post_config(mime_post_config,NULL,NULL,AP_HOOK_MIDDLE);
-    ap_hook_insert_filter(mime_insert_filter, NULL, NULL, AP_HOOK_MIDDLE);
+    ap_hook_type_checker(find_ct,NULL,NULL,APR_HOOK_MIDDLE);
+    ap_hook_post_config(mime_post_config,NULL,NULL,APR_HOOK_MIDDLE);
+    ap_hook_insert_filter(mime_insert_filter, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 module AP_MODULE_DECLARE_DATA mime_module = {

@@ -56,10 +56,10 @@
  * University of Illinois, Urbana-Champaign.
  */
 
-#include "ap_buckets.h"
-#include "ap_hooks.h"
+#include "apr_buckets.h"
+#include "apr_hooks.h"
 #include "httpd.h"
 
 AP_DECLARE_HOOK(int,serve_cache,(request_rec *r));
-AP_DECLARE_HOOK(int,store_cache,(request_rec *r, ap_bucket_brigade *bb, void **cf));
+AP_DECLARE_HOOK(int,store_cache,(request_rec *r, apr_bucket_brigade *bb, void **cf));
 

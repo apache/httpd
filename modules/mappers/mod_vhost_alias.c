@@ -76,7 +76,7 @@
  */
 
 #include "apr_strings.h"
-#include "ap_hooks.h"
+#include "apr_hooks.h"
 #include "httpd.h"
 #include "http_config.h"
 #include "http_core.h"
@@ -471,7 +471,7 @@ static int mva_translate(request_rec *r)
 
 static void register_hooks(apr_pool_t *p)
 {
-    ap_hook_translate_name(mva_translate, NULL, NULL, AP_HOOK_MIDDLE);
+    ap_hook_translate_name(mva_translate, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 module AP_MODULE_DECLARE_DATA vhost_alias_module =

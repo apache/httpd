@@ -59,7 +59,7 @@
 #ifndef APACHE_HTTP_CONFIG_H
 #define APACHE_HTTP_CONFIG_H
 
-#include "ap_hooks.h"
+#include "apr_hooks.h"
 #include "util_cfgtree.h"
 
 #ifdef __cplusplus

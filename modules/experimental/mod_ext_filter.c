@@ -65,7 +65,7 @@
 #include "http_log.h"
 #define CORE_PRIVATE
 #include "http_core.h"
-#include "ap_buckets.h"
+#include "apr_buckets.h"
 #include "util_filter.h"
 #include "apr_strings.h"
 #include "apr_hash.h"
@@ -110,7 +110,7 @@ typedef struct ef_ctx_t {
 
 module ext_filter_module;
 
-static apr_status_t ef_output_filter(ap_filter_t *, ap_bucket_brigade *);
+static apr_status_t ef_output_filter(ap_filter_t *, apr_bucket_brigade *);
 
 #define DBGLVL_SHOWOPTIONS         1
 #define DBGLVL_GORY                9
@@ -536,8 +536,8 @@ static apr_status_t drain_available_output(ap_filter_t *f)
     apr_size_t len;
     char buf[4096];
     apr_status_t rv;
-    ap_bucket_brigade *bb;
-    ap_bucket *b;
+    apr_bucket_brigade *bb;
+    apr_bucket *b;
 
     while (1) {
         len = sizeof(buf);
@@ -553,9 +553,9 @@ static apr_status_t drain_available_output(ap_filter_t *f)
         if (rv != APR_SUCCESS) {
             return rv;
         }
-        bb = ap_brigade_create(f->r->pool);
-        b = ap_bucket_create_transient(buf, len);
-        AP_BRIGADE_INSERT_TAIL(bb, b);
+        bb = apr_brigade_create(f->r->pool);
+        b = apr_bucket_create_transient(buf, len);
+        APR_BRIGADE_INSERT_TAIL(bb, b);
         if ((rv = ap_pass_brigade(f->next, bb)) != APR_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, f->r,
                           "ap_pass_brigade()");
@@ -629,16 +629,16 @@ static apr_status_t pass_data_to_filter(ap_filter_t *f, const char *data,
     return rv;
 }
 
-static apr_status_t ef_output_filter(ap_filter_t *f, ap_bucket_brigade *bb)
+static apr_status_t ef_output_filter(ap_filter_t *f, apr_bucket_brigade *bb)
 {
     ef_ctx_t *ctx = f->ctx;
-    ap_bucket *b;
+    apr_bucket *b;
     ef_dir_t *dc;
     apr_size_t len;
     const char *data;
     apr_status_t rv;
     char buf[4096];
-    ap_bucket *eos = NULL;
+    apr_bucket *eos = NULL;
 
     if (!ctx) {
         if ((rv = init_filter_instance(f)) != APR_SUCCESS) {
@@ -652,16 +652,16 @@ static apr_status_t ef_output_filter(ap_filter_t *f, ap_bucket_brigade *bb)
     }
     dc = ctx->dc;
 
-    AP_BRIGADE_FOREACH(b, bb) {
+    APR_BRIGADE_FOREACH(b, bb) {
 
-        if (AP_BUCKET_IS_EOS(b)) {
+        if (APR_BUCKET_IS_EOS(b)) {
             eos = b;
             break;
         }
 
-        rv = ap_bucket_read(b, &data, &len, 1);
+        rv = apr_bucket_read(b, &data, &len, 1);
         if (rv != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, f->r, "ap_bucket_read()");
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, f->r, "apr_bucket_read()");
             return rv;
         }
 
@@ -671,7 +671,7 @@ static apr_status_t ef_output_filter(ap_filter_t *f, ap_bucket_brigade *bb)
         }
     }
 
-    ap_brigade_destroy(bb);
+    apr_brigade_destroy(bb);
 
     /* XXX What we *really* need to do once we've hit eos is create a pipe bucket
      * from the child output pipe and pass down the pipe bucket + eos.
@@ -717,9 +717,9 @@ static apr_status_t ef_output_filter(ap_filter_t *f, ap_bucket_brigade *bb)
         }
         
         if (rv == APR_SUCCESS) {
-            bb = ap_brigade_create(f->r->pool);
-            b = ap_bucket_create_transient(buf, len);
-            AP_BRIGADE_INSERT_TAIL(bb, b);
+            bb = apr_brigade_create(f->r->pool);
+            b = apr_bucket_create_transient(buf, len);
+            APR_BRIGADE_INSERT_TAIL(bb, b);
             if ((rv = ap_pass_brigade(f->next, bb)) != APR_SUCCESS) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, f->r,
                               "ap_pass_brigade(filtered buffer) failed");
@@ -734,9 +734,9 @@ static apr_status_t ef_output_filter(ap_filter_t *f, ap_bucket_brigade *bb)
 
     if (eos) {
         /* pass down eos */
-        bb = ap_brigade_create(f->r->pool);
-        b = ap_bucket_create_eos();
-        AP_BRIGADE_INSERT_TAIL(bb, b);
+        bb = apr_brigade_create(f->r->pool);
+        b = apr_bucket_create_eos();
+        APR_BRIGADE_INSERT_TAIL(bb, b);
         if ((rv = ap_pass_brigade(f->next, bb)) != APR_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, f->r,
                           "ap_pass_brigade(eos) failed");
@@ -748,11 +748,11 @@ static apr_status_t ef_output_filter(ap_filter_t *f, ap_bucket_brigade *bb)
 }
 
 #if 0
-static int ef_input_filter(ap_filter_t *f, ap_bucket_brigade *bb, 
+static int ef_input_filter(ap_filter_t *f, apr_bucket_brigade *bb, 
                            ap_input_mode_t mode)
 {
     apr_status_t rv;
-    ap_bucket *b;
+    apr_bucket *b;
     char *buf;
     apr_ssize_t len;
     char *zero;
@@ -762,13 +762,13 @@ static int ef_input_filter(ap_filter_t *f, ap_bucket_brigade *bb,
         return rv;
     }
 
-    AP_BRIGADE_FOREACH(b, bb) {
-        if (!AP_BUCKET_IS_EOS(b)) {
-            if ((rv = ap_bucket_read(b, (const char **)&buf, &len, 0)) != APR_SUCCESS) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, f->r, "ap_bucket_read() failed");
+    APR_BRIGADE_FOREACH(b, bb) {
+        if (!APR_BUCKET_IS_EOS(b)) {
+            if ((rv = apr_bucket_read(b, (const char **)&buf, &len, 0)) != APR_SUCCESS) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, f->r, "apr_bucket_read() failed");
                 return rv;
             }
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL, "ap_bucket_read -> %d bytes",
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL, "apr_bucket_read -> %d bytes",
                          len);
             while ((zero = memchr(buf, '0', len))) {
                 *zero = 'a';

@@ -79,7 +79,7 @@
 #include "rfc1413.h"
 #include "util_md5.h"
 #include "http_connection.h"
-#include "ap_buckets.h"
+#include "apr_buckets.h"
 #include "util_filter.h"
 #include "util_ebcdic.h"
 #include "mpm.h"
@@ -2974,8 +2974,8 @@ static int do_nothing(request_rec *r) { return OK; }
 
 static int default_handler(request_rec *r)
 {
-    ap_bucket_brigade *bb;
-    ap_bucket *e;
+    apr_bucket_brigade *bb;
+    apr_bucket *e;
     core_dir_config *d;
     int errstatus;
     apr_file_t *fd = NULL;
@@ -3053,12 +3053,12 @@ static int default_handler(request_rec *r)
                        ap_md5digest(r->pool, fd));
     }
 
-    bb = ap_brigade_create(r->pool);
-    e = ap_bucket_create_file(fd, 0, r->finfo.size);
+    bb = apr_brigade_create(r->pool);
+    e = apr_bucket_create_file(fd, 0, r->finfo.size);
 
-    AP_BRIGADE_INSERT_HEAD(bb, e);
-    e = ap_bucket_create_eos();
-    AP_BRIGADE_INSERT_TAIL(bb, e);
+    APR_BRIGADE_INSERT_HEAD(bb, e);
+    e = apr_bucket_create_eos();
+    APR_BRIGADE_INSERT_TAIL(bb, e);
 
     return ap_pass_brigade(r->output_filters, bb);
 }
@@ -3082,11 +3082,11 @@ typedef struct COALESCE_FILTER_CTX {
     apr_size_t avail;   /* Number of bytes available in the buf */
 } coalesce_filter_ctx_t;
 #define MIN_BUCKET_SIZE 200
-static apr_status_t coalesce_filter(ap_filter_t *f, ap_bucket_brigade *b)
+static apr_status_t coalesce_filter(ap_filter_t *f, apr_bucket_brigade *b)
 {
     apr_status_t rv;
     apr_pool_t *p = f->r->pool;
-    ap_bucket *e, *insert_before = NULL, *destroy_me = NULL;
+    apr_bucket *e, *insert_before = NULL, *destroy_me = NULL;
     coalesce_filter_ctx_t *ctx = f->ctx;
     int pass_the_brigade = 0, insert_first = 0;
 
@@ -3102,19 +3102,19 @@ static apr_status_t coalesce_filter(ap_filter_t *f, ap_bucket_brigade *b)
     /* Iterate across the buckets, coalescing the small buckets into a 
      * single buffer 
      */
-    AP_BRIGADE_FOREACH(e, b) {
+    APR_BRIGADE_FOREACH(e, b) {
         if (destroy_me) {
-            ap_bucket_destroy(destroy_me);
+            apr_bucket_destroy(destroy_me);
             destroy_me = NULL;
         }
-        if (AP_BUCKET_IS_EOS(e)  || AP_BUCKET_IS_FILE(e) ||
-            AP_BUCKET_IS_PIPE(e) || AP_BUCKET_IS_FLUSH(e)) {
+        if (APR_BUCKET_IS_EOS(e)  || APR_BUCKET_IS_FILE(e) ||
+            APR_BUCKET_IS_PIPE(e) || APR_BUCKET_IS_FLUSH(e)) {
             pass_the_brigade = 1;
         }
         else {
             const char *str;
             apr_size_t n;
-            rv = ap_bucket_read(e, &str, &n, AP_BLOCK_READ);
+            rv = apr_bucket_read(e, &str, &n, APR_BLOCK_READ);
             if (rv != APR_SUCCESS) {
                 /* XXX: log error */
                 return rv;
@@ -3135,7 +3135,7 @@ static apr_status_t coalesce_filter(ap_filter_t *f, ap_bucket_brigade *b)
                  * ctx->buf into the brigade when we're done.
                  */
                 if (insert_before || insert_first){
-                    AP_BUCKET_REMOVE(e);
+                    APR_BUCKET_REMOVE(e);
                     destroy_me = e;
                 }
                 else {
@@ -3160,20 +3160,20 @@ static apr_status_t coalesce_filter(ap_filter_t *f, ap_bucket_brigade *b)
     }
 
     if (destroy_me) {
-        ap_bucket_destroy(destroy_me);
+        apr_bucket_destroy(destroy_me);
         destroy_me = NULL;
     }
 
     if (pass_the_brigade) {
         /* Insert ctx->buf into the correct spot in the brigade */
-        e = ap_bucket_create_pool(ctx->buf, ctx->cnt, p);
+        e = apr_bucket_create_pool(ctx->buf, ctx->cnt, p);
         if (insert_first) {
-            AP_BRIGADE_INSERT_HEAD(b, e);
+            APR_BRIGADE_INSERT_HEAD(b, e);
         } 
         else if (insert_before) {
-            AP_BUCKET_INSERT_BEFORE(e, insert_before);
-            AP_BUCKET_REMOVE(insert_before);
-            ap_bucket_destroy(insert_before);
+            APR_BUCKET_INSERT_BEFORE(e, insert_before);
+            APR_BUCKET_REMOVE(insert_before);
+            apr_bucket_destroy(insert_before);
             insert_before = NULL;
         }
         rv = ap_pass_brigade(f->next, b);
@@ -3190,8 +3190,8 @@ static apr_status_t coalesce_filter(ap_filter_t *f, ap_bucket_brigade *b)
     }
     else {
         if (insert_before) {
-            AP_BUCKET_REMOVE(insert_before);
-            ap_bucket_destroy(insert_before);
+            APR_BUCKET_REMOVE(insert_before);
+            apr_bucket_destroy(insert_before);
         }
         /* The brigade should be empty now because all the buckets
          * were coalesced into the coalesce_filter buf
@@ -3203,21 +3203,21 @@ static apr_status_t coalesce_filter(ap_filter_t *f, ap_bucket_brigade *b)
 /*
  * HTTP/1.1 chunked transfer encoding filter.
  */
-static apr_status_t chunk_filter(ap_filter_t *f, ap_bucket_brigade *b)
+static apr_status_t chunk_filter(ap_filter_t *f, apr_bucket_brigade *b)
 {
 #define ASCII_CRLF  "\015\012"
 #define ASCII_ZERO  "\060"
-    ap_bucket_brigade *more = NULL;
-    ap_bucket *e;
+    apr_bucket_brigade *more = NULL;
+    apr_bucket *e;
     apr_status_t rv;
 
     for (more = NULL; b; b = more, more = NULL) {
 	apr_off_t bytes = 0;
-        ap_bucket *eos = NULL;
+        apr_bucket *eos = NULL;
         char chunk_hdr[20]; /* enough space for the snprintf below */
 
-	AP_BRIGADE_FOREACH(e, b) {
-	    if (AP_BUCKET_IS_EOS(e)) {
+	APR_BRIGADE_FOREACH(e, b) {
+	    if (APR_BUCKET_IS_EOS(e)) {
 		/* there shouldn't be anything after the eos */
 		eos = e;
 		break;
@@ -3227,7 +3227,7 @@ static apr_status_t chunk_filter(ap_filter_t *f, ap_bucket_brigade *b)
 		const char *data;
 		apr_size_t len;
 
-		rv = ap_bucket_read(e, &data, &len, AP_BLOCK_READ);
+		rv = apr_bucket_read(e, &data, &len, APR_BLOCK_READ);
 		if (rv != APR_SUCCESS) {
 		    return rv;
 		}
@@ -3238,7 +3238,7 @@ static apr_status_t chunk_filter(ap_filter_t *f, ap_bucket_brigade *b)
 		     * block so we pass down what we have so far.
 		     */
 		    bytes += len;
-                    more = ap_brigade_split(b, AP_BUCKET_NEXT(e));
+                    more = apr_brigade_split(b, APR_BUCKET_NEXT(e));
 		    break;
 		}
 		else {
@@ -3272,19 +3272,19 @@ static apr_status_t chunk_filter(ap_filter_t *f, ap_bucket_brigade *b)
             hdr_len = apr_snprintf(chunk_hdr, sizeof(chunk_hdr),
                                    "%qx" CRLF, (apr_uint64_t)bytes);
             ap_xlate_proto_to_ascii(chunk_hdr, hdr_len);
-            e = ap_bucket_create_transient(chunk_hdr, hdr_len);
-            AP_BRIGADE_INSERT_HEAD(b, e);
+            e = apr_bucket_create_transient(chunk_hdr, hdr_len);
+            APR_BRIGADE_INSERT_HEAD(b, e);
 
             /*
              * Insert the end-of-chunk CRLF before the EOS bucket, or
              * appended to the brigade
              */
-            e = ap_bucket_create_immortal(ASCII_CRLF, 2);
+            e = apr_bucket_create_immortal(ASCII_CRLF, 2);
             if (eos != NULL) {
-                AP_BUCKET_INSERT_BEFORE(eos, e);
+                APR_BUCKET_INSERT_BEFORE(eos, e);
             }
             else {
-                AP_BRIGADE_INSERT_TAIL(b, e);
+                APR_BRIGADE_INSERT_TAIL(b, e);
             }
         }
 
@@ -3303,8 +3303,8 @@ static apr_status_t chunk_filter(ap_filter_t *f, ap_bucket_brigade *b)
          */
         if (eos != NULL) {
             /* XXX: (2) trailers ... does not yet exist */
-            e = ap_bucket_create_immortal(ASCII_ZERO ASCII_CRLF /* <trailers> */ ASCII_CRLF, 5);
-            AP_BUCKET_INSERT_BEFORE(eos, e);
+            e = apr_bucket_create_immortal(ASCII_ZERO ASCII_CRLF /* <trailers> */ ASCII_CRLF, 5);
+            APR_BUCKET_INSERT_BEFORE(eos, e);
         }
 
         /* pass the brigade to the next filter. */
@@ -3317,14 +3317,14 @@ static apr_status_t chunk_filter(ap_filter_t *f, ap_bucket_brigade *b)
     return APR_SUCCESS;
 }
 
-static int core_input_filter(ap_filter_t *f, ap_bucket_brigade *b, ap_input_mode_t mode)
+static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode_t mode)
 {
-    ap_bucket *e;
+    apr_bucket *e;
     
     if (!f->ctx) {    /* If we haven't passed up the socket yet... */
         f->ctx = (void *)1;
-        e = ap_bucket_create_socket(f->c->client_socket);
-        AP_BRIGADE_INSERT_TAIL(b, e);
+        e = apr_bucket_create_socket(f->c->client_socket);
+        APR_BRIGADE_INSERT_TAIL(b, e);
         return APR_SUCCESS;
     }
     else {            
@@ -3341,15 +3341,15 @@ static int core_input_filter(ap_filter_t *f, ap_bucket_brigade *b, ap_input_mode
  * the actual data.
  */
 typedef struct CORE_OUTPUT_FILTER_CTX {
-    ap_bucket_brigade *b;
+    apr_bucket_brigade *b;
 } core_output_filter_ctx_t;
 #define MAX_IOVEC_TO_WRITE 16
-static apr_status_t core_output_filter(ap_filter_t *f, ap_bucket_brigade *b)
+static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
 {
     apr_status_t rv;
-    ap_bucket_brigade *more = NULL;
+    apr_bucket_brigade *more = NULL;
     apr_size_t bytes_sent = 0, nbytes;
-    ap_bucket *e;
+    apr_bucket *e;
     conn_rec *c = f->c;
     core_output_filter_ctx_t *ctx = f->ctx;
 
@@ -3367,7 +3367,7 @@ static apr_status_t core_output_filter(ap_filter_t *f, ap_bucket_brigade *b)
     }
     /* If we have a saved brigade, concatenate the new brigade to it */
     if (ctx->b) {
-        AP_BRIGADE_CONCAT(ctx->b, b);
+        APR_BRIGADE_CONCAT(ctx->b, b);
         b = ctx->b;
         ctx->b = NULL;
     }
@@ -3376,13 +3376,13 @@ static apr_status_t core_output_filter(ap_filter_t *f, ap_bucket_brigade *b)
     while (b) {
         nbytes = 0; /* in case more points to another brigade */
         more = NULL;
-        AP_BRIGADE_FOREACH(e, b) {
-            if (AP_BUCKET_IS_EOS(e) || AP_BUCKET_IS_FLUSH(e)) {
+        APR_BRIGADE_FOREACH(e, b) {
+            if (APR_BUCKET_IS_EOS(e) || APR_BUCKET_IS_FLUSH(e)) {
                 break;
             }
-            else if (AP_BUCKET_IS_FILE(e)) {
-                ap_bucket_file *a = e->data;
-                /* Assume there is at most one AP_BUCKET_FILE in the brigade */
+            else if (APR_BUCKET_IS_FILE(e)) {
+                apr_bucket_file *a = e->data;
+                /* Assume there is at most one APR_BUCKET_FILE in the brigade */
                 fd = a->fd;
                 flen = e->length;
                 foffset = a->offset;
@@ -3390,7 +3390,7 @@ static apr_status_t core_output_filter(ap_filter_t *f, ap_bucket_brigade *b)
             else {
                 const char *str;
                 apr_size_t n;
-                rv = ap_bucket_read(e, &str, &n, AP_BLOCK_READ);
+                rv = apr_bucket_read(e, &str, &n, APR_BLOCK_READ);
                 if (n) {
                     nbytes += n;
                     if (!fd) {
@@ -3409,8 +3409,8 @@ static apr_status_t core_output_filter(ap_filter_t *f, ap_bucket_brigade *b)
 
             if ((nvec == MAX_IOVEC_TO_WRITE) || (nvec_trailers == MAX_IOVEC_TO_WRITE)) {
                 /* Split the brigade and break */
-                if (AP_BUCKET_NEXT(e) != AP_BRIGADE_SENTINEL(b)) {
-                    more = ap_brigade_split(b, AP_BUCKET_NEXT(e));
+                if (APR_BUCKET_NEXT(e) != APR_BRIGADE_SENTINEL(b)) {
+                    more = apr_brigade_split(b, APR_BUCKET_NEXT(e));
                 }
                 break;
             }
@@ -3419,16 +3419,16 @@ static apr_status_t core_output_filter(ap_filter_t *f, ap_bucket_brigade *b)
         /* Completed iterating over the brigades, now determine if we want to
          * buffer the brigade or send the brigade out on the network
          */
-        if ((!fd && (!more) && (nbytes < AP_MIN_BYTES_TO_WRITE) && !AP_BUCKET_IS_FLUSH(e))
-            || (AP_BUCKET_IS_EOS(e) && c->keepalive)) {
+        if ((!fd && (!more) && (nbytes < AP_MIN_BYTES_TO_WRITE) && !APR_BUCKET_IS_FLUSH(e))
+            || (APR_BUCKET_IS_EOS(e) && c->keepalive)) {
             
             /* NEVER save an EOS in here.  If we are saving a brigade with an
              * EOS bucket, then we are doing keepalive connections, and we want
              * to process to second request fully.
              */
-            if (AP_BUCKET_IS_EOS(e)) {
-                AP_BUCKET_REMOVE(e);
-                ap_bucket_destroy(e);
+            if (APR_BUCKET_IS_EOS(e)) {
+                APR_BUCKET_REMOVE(e);
+                apr_bucket_destroy(e);
             }
             ap_save_brigade(f, &ctx->b, &b);
             return APR_SUCCESS;
@@ -3486,11 +3486,11 @@ static apr_status_t core_output_filter(ap_filter_t *f, ap_bucket_brigade *b)
                                nbytes, &bytes_sent);
         }
 
-        ap_brigade_destroy(b);
+        apr_brigade_destroy(b);
         if (rv != APR_SUCCESS) {
             /* XXX: log the error */
             if (more)
-                ap_brigade_destroy(more);
+                apr_brigade_destroy(more);
             return rv;
         }
         nvec = 0;
@@ -3504,7 +3504,7 @@ static apr_status_t core_output_filter(ap_filter_t *f, ap_bucket_brigade *b)
 
 static void core_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp)
 {
-    ap_init_bucket_types(pconf);
+    apr_init_bucket_types(pconf);
 }
 
 static void core_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s)
@@ -3545,25 +3545,25 @@ static void core_insert_filter(request_rec *r)
 
 static void register_hooks(apr_pool_t *p)
 {
-    ap_hook_pre_config(core_pre_config, NULL, NULL, AP_HOOK_REALLY_FIRST);
-    ap_hook_post_config(core_post_config,NULL,NULL,AP_HOOK_REALLY_FIRST);
-    ap_hook_translate_name(ap_core_translate,NULL,NULL,AP_HOOK_REALLY_LAST);
+    ap_hook_pre_config(core_pre_config, NULL, NULL, APR_HOOK_REALLY_FIRST);
+    ap_hook_post_config(core_post_config,NULL,NULL,APR_HOOK_REALLY_FIRST);
+    ap_hook_translate_name(ap_core_translate,NULL,NULL,APR_HOOK_REALLY_LAST);
     ap_hook_pre_connection(ap_pre_http_connection,NULL,NULL,
-			       AP_HOOK_REALLY_LAST);
+			       APR_HOOK_REALLY_LAST);
     ap_hook_process_connection(ap_process_http_connection,NULL,NULL,
-			       AP_HOOK_REALLY_LAST);
-    ap_hook_http_method(core_method,NULL,NULL,AP_HOOK_REALLY_LAST);
-    ap_hook_default_port(core_port,NULL,NULL,AP_HOOK_REALLY_LAST);
-    ap_hook_open_logs(core_open_logs,NULL,NULL,AP_HOOK_MIDDLE);
-    ap_hook_handler(default_handler,NULL,NULL,AP_HOOK_REALLY_LAST);
+			       APR_HOOK_REALLY_LAST);
+    ap_hook_http_method(core_method,NULL,NULL,APR_HOOK_REALLY_LAST);
+    ap_hook_default_port(core_port,NULL,NULL,APR_HOOK_REALLY_LAST);
+    ap_hook_open_logs(core_open_logs,NULL,NULL,APR_HOOK_MIDDLE);
+    ap_hook_handler(default_handler,NULL,NULL,APR_HOOK_REALLY_LAST);
     /* FIXME: I suspect we can eliminate the need for these - Ben */
-    ap_hook_type_checker(do_nothing,NULL,NULL,AP_HOOK_REALLY_LAST);
-    ap_hook_access_checker(do_nothing,NULL,NULL,AP_HOOK_REALLY_LAST);
+    ap_hook_type_checker(do_nothing,NULL,NULL,APR_HOOK_REALLY_LAST);
+    ap_hook_access_checker(do_nothing,NULL,NULL,APR_HOOK_REALLY_LAST);
 
     /* register the core's insert_filter hook and register core-provided
      * filters
      */
-    ap_hook_insert_filter(core_insert_filter, NULL, NULL, AP_HOOK_MIDDLE);
+    ap_hook_insert_filter(core_insert_filter, NULL, NULL, APR_HOOK_MIDDLE);
 
     ap_register_input_filter("HTTP_IN", ap_http_filter, AP_FTYPE_CONNECTION);
     ap_register_input_filter("DECHUNK", ap_dechunk_filter, AP_FTYPE_TRANSCODE);

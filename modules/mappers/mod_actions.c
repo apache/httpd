@@ -211,7 +211,7 @@ static int action_handler(request_rec *r)
 
 static void register_hooks(apr_pool_t *p)
 {
-    ap_hook_handler(action_handler,NULL,NULL,AP_HOOK_LAST);
+    ap_hook_handler(action_handler,NULL,NULL,APR_HOOK_LAST);
 }
 
 module action_module =

@@ -84,14 +84,14 @@
 #include <stdarg.h>
 #endif
 
-AP_HOOK_STRUCT(
-	    AP_HOOK_LINK(translate_name)
-	    AP_HOOK_LINK(check_user_id)
-	    AP_HOOK_LINK(fixups)
-	    AP_HOOK_LINK(type_checker)
-	    AP_HOOK_LINK(access_checker)
-	    AP_HOOK_LINK(auth_checker)
-	    AP_HOOK_LINK(insert_filter)
+APR_HOOK_STRUCT(
+	    APR_HOOK_LINK(translate_name)
+	    APR_HOOK_LINK(check_user_id)
+	    APR_HOOK_LINK(fixups)
+	    APR_HOOK_LINK(type_checker)
+	    APR_HOOK_LINK(access_checker)
+	    APR_HOOK_LINK(auth_checker)
+	    APR_HOOK_LINK(insert_filter)
 )
 
 AP_IMPLEMENT_HOOK_RUN_FIRST(int,translate_name,
@@ -792,13 +792,13 @@ static request_rec *make_sub_request(const request_rec *r)
 }
 
 AP_CORE_DECLARE_NONSTD(apr_status_t) ap_sub_req_output_filter(ap_filter_t *f,
-                                                        ap_bucket_brigade *bb)
+                                                        apr_bucket_brigade *bb)
 {
-    ap_bucket *e = AP_BRIGADE_LAST(bb);
+    apr_bucket *e = APR_BRIGADE_LAST(bb);
 
-    if (AP_BUCKET_IS_EOS(e)) {
-        AP_BUCKET_REMOVE(e);
-        ap_bucket_destroy(e);
+    if (APR_BUCKET_IS_EOS(e)) {
+        APR_BUCKET_REMOVE(e);
+        apr_bucket_destroy(e);
     }
     ap_pass_brigade(f->next, bb);
     return APR_SUCCESS;
@@ -1356,16 +1356,16 @@ static void process_request_internal(request_rec *r)
 
 static void check_pipeline_flush(request_rec *r)
 {
-    ap_bucket_brigade *bb = ap_brigade_create(r->pool);
+    apr_bucket_brigade *bb = apr_brigade_create(r->pool);
     if (ap_get_brigade(r->input_filters, bb, AP_MODE_PEEK) != APR_SUCCESS) {
-        ap_bucket *e = ap_bucket_create_flush();
+        apr_bucket *e = apr_bucket_create_flush();
 
         /* We just send directly to the connection based filters, because at
          * this point, we know that we have seen all of the data, so we just
          * want to flush the buckets if something hasn't been sent to the
          * network yet.
          */
-        AP_BRIGADE_INSERT_HEAD(bb, e);
+        APR_BRIGADE_INSERT_HEAD(bb, e);
         ap_pass_brigade(r->connection->output_filters, bb);
     }
 }
@@ -1426,7 +1426,7 @@ static request_rec *internal_internal_redirect(const char *new_uri,
 
     new->request_config = ap_create_request_config(r->pool);
     req_cfg = apr_pcalloc(r->pool, sizeof(core_request_config));
-    req_cfg->bb = ap_brigade_create(r->pool);
+    req_cfg->bb = apr_brigade_create(r->pool);
     ap_set_module_config(new->request_config, &core_module, req_cfg);
 
     new->per_dir_config = r->server->lookup_defaults;

@@ -4154,13 +4154,13 @@ static const command_rec command_table[] = {
 
 static void register_hooks(apr_pool_t *p)
 {
-    ap_hook_handler(handler_redirect, NULL, NULL, AP_HOOK_MIDDLE);
-    ap_hook_post_config(init_module,NULL,NULL,AP_HOOK_MIDDLE);
-    ap_hook_child_init(init_child,NULL,NULL,AP_HOOK_MIDDLE);
+    ap_hook_handler(handler_redirect, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_post_config(init_module,NULL,NULL,APR_HOOK_MIDDLE);
+    ap_hook_child_init(init_child,NULL,NULL,APR_HOOK_MIDDLE);
 
-    ap_hook_fixups(hook_fixup,NULL,NULL,AP_HOOK_FIRST);
-    ap_hook_translate_name(hook_uri2file,NULL,NULL,AP_HOOK_FIRST);
-    ap_hook_type_checker(hook_mimetype,NULL,NULL,AP_HOOK_MIDDLE);
+    ap_hook_fixups(hook_fixup,NULL,NULL,APR_HOOK_FIRST);
+    ap_hook_translate_name(hook_uri2file,NULL,NULL,APR_HOOK_FIRST);
+    ap_hook_type_checker(hook_mimetype,NULL,NULL,APR_HOOK_MIDDLE);
 }
 
     /* the main config structure */

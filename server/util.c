@@ -85,7 +85,7 @@
 #endif
 
 #include "ap_config.h"
-#include "ap_base64.h"
+#include "apr_base64.h"
 #include "httpd.h"
 #include "http_main.h"
 #include "http_log.h"
@@ -1908,15 +1908,15 @@ char *ap_get_local_host(apr_pool_t *a)
     return server_hostname;
 }
 
-/* simple 'pool' alloc()ing glue to ap_base64.c
+/* simple 'pool' alloc()ing glue to apr_base64.c
  */
 AP_DECLARE(char *) ap_pbase64decode(apr_pool_t *p, const char *bufcoded)
 {
     char *decoded;
     int l;
 
-    decoded = (char *) apr_palloc(p, 1 + ap_base64decode_len(bufcoded));
-    l = ap_base64decode(decoded, bufcoded);
+    decoded = (char *) apr_palloc(p, 1 + apr_base64decode_len(bufcoded));
+    l = apr_base64decode(decoded, bufcoded);
     decoded[l] = '\0'; /* make binary sequence into string */
 
     return decoded;
@@ -1927,8 +1927,8 @@ AP_DECLARE(char *) ap_pbase64encode(apr_pool_t *p, char *string)
     char *encoded;
     int l = strlen(string);
 
-    encoded = (char *) apr_palloc(p, 1 + ap_base64encode_len(l));
-    l = ap_base64encode(encoded, string, l);
+    encoded = (char *) apr_palloc(p, 1 + apr_base64encode_len(l));
+    l = apr_base64encode(encoded, string, l);
     encoded[l] = '\0'; /* make binary sequence into string */
 
     return encoded;
