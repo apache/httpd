@@ -28,6 +28,38 @@ in early versions have been fixed in 1.2.
 <H2>Apache 1.2 Bugs</H2>
 
 <OL>
+    <LI><b>Exists in 1.2.1 only.</b>
+    On Solaris 2.x the server will stop running after receiving a
+    SIGHUP.  Four workarounds exist (choose one):<p>
+    <ul>
+	<li>Retrieve <a href="http://www.apache.org/dist/patches/apply_to_1.2.1/solaris_hup.patch">this patch</a>.
+	<code>cd</code> to your <code>apache_1.2.1</code> directory, and
+	type <code>patch -s -p1 < /path/to/patchfile</code>.  Then rebuild
+	Apache.<p>
+	<li>Use SIGUSR1 instead of SIGHUP, see <a href="../stopping.html">
+	Stopping and Restarting Apache</a> for more details.<p>
+	<li>Add <code>-DNO_SLACK</code> to
+	<code>EXTRA_CFLAGS</code> in
+	your <code>Configuration</code> file, re-run <code>Configure</code>
+	and rebuild your server.  This disables the
+	<a href="descriptors.html">descriptor slack workaround</a><p>
+	<li>(Least preferable) Use Apache 1.2.0 instead of 1.2.1.<p>
+    </ul>
+    This problem will be tracked as
+    <a href="http://www.apache.org/bugdb.cgi/full/832">PR#832</a>.<p>
+    </li>
+
+    <LI>(Exists in 1.2.0 and in 1.2.1 after either of the
+    <code>NO_SLACK</code> or patch provided by the previous bug are applied.)
+    Solaris 2.5.1 (and probably other versions of Solaris) appear to have
+    a race condition completely unrelated to all the others.  It is possible
+    during a SIGHUP that the server will fail to start because it will not
+    be able to re-open its sockets.  To our knowledge this has only shown
+    up during testing when we pummel the server with as many SIGHUP requests
+    per second as we can.  This appears unrelated to the similar sounding bug
+    described in <a href="http://www.apache.org/bugdb.cgi/full/832">PR#832</a>.
+    <p>
+
     <LI><a name="listenbug">On some architectures</A>
     if your configuration uses multiple
     <a href="../mod/core.html#listen">Listen</a> directives then it is possible
