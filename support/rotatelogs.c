@@ -107,7 +107,7 @@ int main (int argc, char *argv[])
     atexit(apr_terminate);
 
     apr_pool_create(&pool, NULL);
-    if (argc < 3) {
+    if (argc < 3 || argc > 4) {
         fprintf(stderr,
                 "Usage: %s <logfile> <rotation time in seconds> "
                 "[offset minutes from UTC]\n\n",
@@ -140,7 +140,7 @@ int main (int argc, char *argv[])
         exit(6);
     }
 
-    use_strftime = (strstr(szLogRoot, "%") != NULL);
+    use_strftime = (strchr(szLogRoot, '%') != NULL);
     if (apr_file_open_stdin(&f_stdin, pool) != APR_SUCCESS) {
         fprintf(stderr, "Unable to open stdin\n");
         exit(1);
