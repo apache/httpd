@@ -18,6 +18,10 @@
     to invoke <code>httpd</code>.</p>
 </summary>
 
+<seealso><a href="stopping.html">Stopping Apache</a></seealso>
+<seealso><a href="programs/httpd.html">httpd</a></seealso>
+<seealso><a href="programs/apachectl.html">apachectl</a></seealso>
+
 <section id="startup"><title>How Apache Starts</title>
 
     <p>If the <directive module="mpm_common">Listen</directive>
@@ -32,6 +36,20 @@
     run as a less privileged user. This is controlled by the selected
     <a href="mpm.html">Multi-Processing Module</a>.</p>
 
+    <p>The recommended method of invoking the <code>httpd</code>
+    executable is to use the <a
+    href="programs/apachectl.html">apachectl</a> control script.  This
+    script sets certain environment variables that are necessary for
+    <code>httpd</code> to function correctly under some operating
+    systems, and then invokes the <code>httpd</code> binary.
+    <code>apachectl</code> will pass through any command line
+    arguments, so any <code>httpd</code> options may also be used with
+    <code>apachectl</code>.  You may also directly edit the
+    <code>apachectl</code> script by changing the <code>HTTPD</code>
+    variable near the top to specify the correct location of the
+    <code>httpd</code> binary and any command-line arguments that you
+    wish to be <em>always</em> present.</p>
+
     <p>The first thing that <code>httpd</code> does when it is
     invoked is to locate and read the <a
     href="configuring.html">configuration file</a>
@@ -39,15 +57,8 @@
     compile-time, but it is possible to specify its location at run
     time using the <code>-f</code> command-line option as in</p>
 
-<example>/usr/local/apache/bin/httpd -f
+<example>/usr/local/apache2/bin/apachectl -f
       /usr/local/apache/conf/httpd.conf</example>
-
-    <p>As an alternative to invoking the <code>httpd</code> binary
-    directly, a shell script called <a
-    href="programs/apachectl.html">apachectl</a> is provided which
-    can be used to control the daemon process with simple commands
-    such as <code>apachectl start</code> and <code>apachectl
-    stop</code>.</p>
 
     <p>If all goes well during startup, the server will detach from
     the terminal and the command prompt will return almost
@@ -84,15 +95,19 @@
 <section id="boot"><title>Starting at Boot-Time</title>
 
     <p>If you want your server to continue running after a system
-    reboot, you should add a call to <code>httpd</code> or
-    <code>apachectl</code> to your system startup files (typically
-    <code>rc.local</code> or a file in an <code>rc.N</code>
-    directory). This will start Apache as root. Before doing this
-    ensure that your server is properly configured for security and
-    access restrictions. The <code>apachectl</code> script is
-    designed so that it can often be linked directly as an init
-    script, but be sure to check the exact requirements of your
-    system.</p>
+    reboot, you should add a call to <code>apachectl</code> to your
+    system startup files (typically <code>rc.local</code> or a file in
+    an <code>rc.N</code> directory). This will start Apache as
+    root. Before doing this ensure that your server is properly
+    configured for security and access restrictions.</p>
+
+    <p>The <code>apachectl</code> script is designed to act like a
+    standard SysV init script; it can take the arguments
+    <code>start</code>, <code>restart</code>, and <code>stop</code>
+    and translate them into the appropriate signals to
+    <code>httpd</code>.  So you can often simply link
+    <code>apachectl</code> into the appropriate init directory. But be
+    sure to check the exact requirements of your system.</p>
 </section>
 
 <section id="info"><title>Additional Information</title>
