@@ -1,5 +1,9 @@
 Changes with Apache 1.3b4
 
+  *) The module structure was modified to include a *dynamic_load_handle
+     in the STANDARD_MODULE_STUFF portion, and the MODULE_MAGIC_NUMBER
+     has been bumped accordingly.  [Paul Sutton]
+
   *) HTTP/1.1 requires x-gzip and gzip encodings be treated
      equivalent, similarly for x-compress and compress.  Apache
      now ignores a leading x- when comparing encodings.  It also
