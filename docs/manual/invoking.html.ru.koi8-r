@@ -25,6 +25,8 @@
 <a href="./ko/invoking.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./ru/invoking.html" title="Russian">&nbsp;ru&nbsp;</a></p>
 </div>
+<div class="outofdate">This translation may be out of date. Check the
+            English version for recent changes.</div>
 
     <p>На Windows платформах Apache обычно работает как сервис Windows NT/2000/XP
     или как консольное приложение Windows 95/ME. Для получения более подробной
