@@ -488,11 +488,7 @@ static apr_status_t stream_reqbody_cl(apr_pool_t *p,
         b = input_brigade; /* empty now; pass_brigade() will add flush */
     }
     status = pass_brigade(bucket_alloc, r, conn, origin, b, 1);
-    if (status != APR_SUCCESS) {
-        return status;
-    }
-
-    return APR_SUCCESS;
+    return status;
 }
 
 #define MAX_MEM_SPOOL 16384
@@ -619,11 +615,7 @@ static apr_status_t spool_reqbody_cl(apr_pool_t *p,
         APR_BRIGADE_INSERT_TAIL(header_brigade, e);
     }
     status = pass_brigade(bucket_alloc, r, conn, origin, header_brigade, 1);
-    if (status != APR_SUCCESS) {
-        return status;
-    }
-
-    return APR_SUCCESS;
+    return status;
 }
 
 static apr_status_t send_request_body(apr_pool_t *p,
