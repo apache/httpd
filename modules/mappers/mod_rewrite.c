@@ -1105,7 +1105,6 @@ static int hook_uri2file(request_rec *r)
     char docroot[512];
     char *cp, *cp2;
     const char *ccp;
-    apr_finfo_t finfo;
     unsigned int port;
     int rulestatus;
     int n;
@@ -1335,7 +1334,7 @@ static int hook_uri2file(request_rec *r)
              * because we only do stat() on the first directory
              * and this gets cached by the kernel for along time!
              */
-            n = prefix_stat(r->filename, &finfo);
+            n = prefix_stat(r->filename, r->pool);
             if (n == 0) {
                 if ((ccp = ap_document_root(r)) != NULL) {
                     l = apr_cpystrn(docroot, ccp, sizeof(docroot)) - docroot;
@@ -4303,24 +4302,45 @@ static int subreq_ok(request_rec *r)
 **
 */
 
-static int prefix_stat(const char *path, apr_finfo_t *sb)
+static int prefix_stat(const char *path, apr_pool_t *pool)
 {
-    char curpath[LONG_STRING_LEN];
-    char *cp;
+    const char *curpath = path;
+    const char *root;
+    const char *slash;
+    char *statpath;
+    apr_status_t rv;
 
-    apr_cpystrn(curpath, path, sizeof(curpath));
-    if (curpath[0] != '/') {
+    rv = apr_filepath_root(&root, &curpath, APR_FILEPATH_TRUENAME, pool);
+
+    if (rv != APR_SUCCESS) {
         return 0;
     }
-    if ((cp = strchr(curpath+1, '/')) != NULL) {
-        *cp = '\0';
-    }
-    if (apr_stat(sb, curpath, APR_FINFO_MIN, NULL) == APR_SUCCESS) {
-        return 1;
+
+    /* let's recognize slashes only, the mod_rewrite semantics are opaque
+     * enough.
+     */
+    if ((slash = ap_strchr_c(curpath, '/')) != NULL) {
+        rv = apr_filepath_merge(&statpath, root,
+                                apr_pstrndup(pool, curpath,
+                                             (apr_size_t)(slash - curpath)),
+                                APR_FILEPATH_NOTABOVEROOT |
+                                APR_FILEPATH_NOTRELATIVE, pool);
     }
     else {
-        return 0;
+        rv = apr_filepath_merge(&statpath, root, curpath,
+                                APR_FILEPATH_NOTABOVEROOT |
+                                APR_FILEPATH_NOTRELATIVE, pool);
     }
+
+    if (rv == APR_SUCCESS) {
+        apr_finfo_t sb;
+        
+        if (apr_stat(&sb, statpath, APR_FINFO_MIN, pool) == APR_SUCCESS) {
+            return 1;
+        }
+    }
+
+    return 0;
 }
 
 
