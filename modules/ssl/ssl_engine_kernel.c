@@ -1342,11 +1342,8 @@ int ssl_callback_SSLVerify_CRL(
     X509 *xs;
     X509_CRL *crl;
     X509_REVOKED *revoked;
-    long serial;
     BIO *bio;
     int i, n, rc;
-    char *cp;
-    char *cp2;
 
     /*
      * Unless a revocation store for CRLs was created we
@@ -1407,6 +1404,9 @@ int ssl_callback_SSLVerify_CRL(
          * (A little bit complicated because of ASN.1 and BIOs...)
          */
         if (sc->nLogLevel >= SSL_LOG_TRACE) {
+            char *cp;
+            char *cp2;
+
             bio = BIO_new(BIO_s_mem());
             BIO_printf(bio, "lastUpdate: ");
             ASN1_UTCTIME_print(bio, X509_CRL_get_lastUpdate(crl));
@@ -1478,14 +1478,16 @@ int ssl_callback_SSLVerify_CRL(
 #endif
             if (ASN1_INTEGER_cmp(revoked->serialNumber, X509_get_serialNumber(xs)) == 0) {
 
-                serial = ASN1_INTEGER_get(revoked->serialNumber);
-                cp = X509_NAME_oneline(issuer, NULL, 0);
-                ssl_log(s, SSL_LOG_INFO,
-                        "Certificate with serial %ld (0x%lX) "
-                        "revoked per CRL from issuer %s",
-                        serial, serial, cp);
-                free(cp);
+                if (sc->nLogLevel >= SSL_LOG_INFO) {
+                    char *cp = X509_NAME_oneline(issuer, NULL, 0);
+                    long serial = ASN1_INTEGER_get(revoked->serialNumber);
 
+                    ssl_log(s, SSL_LOG_INFO,
+                            "Certificate with serial %ld (0x%lX) "
+                            "revoked per CRL from issuer %s",
+                            serial, serial, cp);
+                    free(cp);
+                }
                 X509_STORE_CTX_set_error(ctx, X509_V_ERR_CERT_REVOKED);
                 X509_OBJECT_free_contents(&obj);
                 return FALSE;
