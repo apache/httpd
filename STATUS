@@ -1,5 +1,5 @@
 APACHE 1.3 STATUS:						-*-text-*-
-  Last modified at [$Date: 2003/10/19 13:20:57 $]
+  Last modified at [$Date: 2003/10/19 18:00:34 $]
 
 Release:
 
@@ -44,15 +44,6 @@ Release:
     2.0  : Available for general use, see httpd-2.0 repository
 
 RELEASE SHOWSTOPPERS:
-
-   * Bugz: #22805
-       Jim is considering just the buff.c patches in addition
-       to cleanup of http_main.c where we wrap close/closesocket
-       around '#ifdef BEOS' which does not seem correct. Under
-       Unix, we define closesocket as close, and isn't closesocket
-       what we should be using for Win32 and Netware as well?
-       Message-Id: <E6C56E6C-FFFF-11D7-96F5-000393D76AB8@jagunet.com>.
-        +1: jim, bnicholes, jeff
 
    * isn't ap_die() broken with recognizing recursive errors
        Message-Id: <3F8C56E3.8050501@attglobal.net>

@@ -3703,11 +3703,7 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
 #ifndef _OSD_POSIX
 	ap_log_error(APLOG_MARK, APLOG_CRIT, server_conf,
 		    "make_sock: for %s, setsockopt: (SO_REUSEADDR)", addr);
-#ifdef BEOS
 	closesocket(s);
-#else
-	close(s);
-#endif
 	ap_unblock_alarms();
 	exit(1);
 #endif /*_OSD_POSIX*/
@@ -3717,11 +3713,7 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
     if (setsockopt(s, SOL_SOCKET, SO_KEEPALIVE, (char *) &one, sizeof(int)) < 0) {
 	ap_log_error(APLOG_MARK, APLOG_CRIT, server_conf,
 		    "make_sock: for %s, setsockopt: (SO_KEEPALIVE)", addr);
-#ifdef BEOS
 	closesocket(s);
-#else
-	close(s);
-#endif
 
 	ap_unblock_alarms();
 	exit(1);
@@ -3776,11 +3768,7 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
 	    GETUSERMODE();
 #endif
 
-#ifdef BEOS
 	closesocket(s);
-#else
-	close(s);
-#endif
 	ap_unblock_alarms();
 	exit(1);
     }
@@ -3792,11 +3780,7 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
     if (listen(s, ap_listenbacklog) == -1) {
 	ap_log_error(APLOG_MARK, APLOG_ERR, server_conf,
 	    "make_sock: unable to listen for connections on %s", addr);
-#ifdef BEOS
 	closesocket(s);
-#else
-	close(s);
-#endif
 	ap_unblock_alarms();
 	exit(1);
     }
@@ -3846,11 +3830,7 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
 	    "larger than FD_SETSIZE (%u) "
 	    "found, you probably need to rebuild Apache with a "
 	    "larger FD_SETSIZE", addr, s, FD_SETSIZE);
-#ifdef BEOS
 	closesocket(s);
-#else
-	close(s);
-#endif
 	exit(1);
     }
 #endif

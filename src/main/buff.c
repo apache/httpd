@@ -1497,24 +1497,6 @@ API_EXPORT(int) ap_bclose(BUFF *fb)
 	rc1 = ap_bflush(fb);
     else
 	rc1 = 0;
-#if defined(WIN32) || defined(NETWARE) || defined(CYGWIN_WINSOCK) 
-    if (fb->flags & B_SOCKET) {
-	rc2 = ap_pclosesocket(fb->pool, fb->fd);
-	if (fb->fd_in != fb->fd) {
-	    rc3 = ap_pclosesocket(fb->pool, fb->fd_in);
-	}
-	else {
-	    rc3 = 0;
-	}
-    }
-#if !defined(NETWARE) && !defined(CYGWIN_WINSOCK) 
-    else if (fb->hFH != INVALID_HANDLE_VALUE) {
-        rc2 = ap_pcloseh(fb->pool, fb->hFH);
-        rc3 = 0;
-    }
-#endif
-    else {
-#elif defined(BEOS)
     if (fb->flags & B_SOCKET) {
 	rc2 = ap_pclosesocket(fb->pool, fb->fd);
 	if (fb->fd_in != fb->fd) {
@@ -1524,6 +1506,12 @@ API_EXPORT(int) ap_bclose(BUFF *fb)
 	    rc3 = 0;
 	}
     } else {
+#if defined(WIN32)
+    if (fb->hFH != INVALID_HANDLE_VALUE) {
+        rc2 = ap_pcloseh(fb->pool, fb->hFH);
+        rc3 = 0;
+    }
+    else {
 #endif
 	rc2 = ap_pclosef(fb->pool, fb->fd);
 	if (fb->fd_in != fb->fd) {
@@ -1532,7 +1520,8 @@ API_EXPORT(int) ap_bclose(BUFF *fb)
 	else {
 	    rc3 = 0;
 	}
-#if defined(WIN32) || defined (BEOS) || defined(NETWARE) || defined(CYGWIN_WINSOCK) 
+    }
+#if defined(WIN32)
     }
 #endif
 
