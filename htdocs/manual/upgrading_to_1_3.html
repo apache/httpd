@@ -1,0 +1,131 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html><head>
+<title>Upgrading to 1.3 from 1.2</title>
+</head>
+
+<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+<BODY
+ BGCOLOR="#FFFFFF"
+ TEXT="#000000"
+ LINK="#0000FF"
+ VLINK="#000080"
+ ALINK="#FF0000"
+>
+<!--#include virtual="header.html" -->
+<h1 ALIGN="CENTER">Upgrading to 1.3 from 1.2</h1>
+
+<p>In order to assist folks upgrading we are now going to maintain a
+document describing information critical to existing Apache users.  Note
+that it only lists differences between recent major releases, so
+for example, folks using Apache 1.1 or earlier will have to figure out
+what changed up to Apache 1.2 before this document can be considered
+relevant.  Old users could look at the <code>src/CHANGES</code> file
+which tracks code changes.
+
+<p>These are intended to be brief notes, and you should be able to find
+more information in either the <a href="new_features_1_3.html">New Features</a>
+document, or in the <code>src/CHANGES</code> file.
+
+<h3>Compile-Time Configuration Changes</h3>
+
+<ul>
+  <LI>The source code has been <a href="sourcereorg.html">reorganized</a>,
+    which affects anyone with custom modules or modifications.  But also,
+    the <code>Module</code> directive has been changed to the
+    <code>AddModule</code> directive.
+
+  <LI>The <code>Configuration</code> variable <code>EXTRA_LFLAGS</code> has
+    been renamed <code>EXTRA_LDFLAGS</code>.
+  
+  <LI>The <code>-DMAXIMUM_DNS</code> definition has been obsoleted by
+    changes to <code>mod_access</code> enforcing double-reverse DNS lookups
+    all the time.
+  
+  <LI><code>mod_dir</code> has been split into two pieces
+    <code><a href="mod/mod_autoindex.html">mod_autoindex</a></code>, and
+    <code><a href="mod/mod_dir.html">mod_dir</a></code>.
+
+  <LI><a href="mod/mod_browser.html"><code>mod_browser</code></a> has been
+    replaced by <a href="mod/mod_setenvif.html"><code>mod_setenvif</code></a>.
+
+  <LI>IRIX systems with untrusted users who can write CGIs which execute
+    as the same uid as httpd should consider using <code>suexec</code>,
+    or adding <code>-DUSE_FCNTL_SERIALIZED_ACCEPT</code> to
+    <code>EXTRA_CFLAGS</code>.  This is slower, more information is available
+    on the <a href="misc/perf-tuning.html#serialize">performance tuning
+    page</a>.  There is a mild denial of service attack possible with the
+    default config, but the default config is an order of magnitude faster.
+
+  <li><code>mod_auth_msql</code> has been removed from the distribution.
+
+</ul>
+
+<h3>Run-Time Configuration Changes</h3>
+
+<ul>
+  <li><code>HostnameLookups</code> defaults to Off.
+
+  <li>The undocumented
+    <a href="mod/mod_access.html"><code>mod_access</code></a>
+    syntax "allow user-agents" was removed.  The replacement is the
+    more general "allow from env".
+
+  <li>When using wildcards in pathnames (such as * and ?) they no longer
+    match / (slash).  That is, they more closely behave how the shell
+    behaves.  This affects <code>&lt;Directory&gt;</code> directives,
+    for example.
+
+  <li>If no <code>TransferLog</code> directive is given then nothing will
+    be logged.
+    (Previously it would default to <code>logs/access_log</code>.)
+
+  <li>Apache now has <a href="mod/core.html#loglevel">configurable error
+    logging levels</a>, and the default eliminates some messages that
+    earlier versions always generated.
+
+  <li>When booting, Apache will now detach itself from stdin, stdout,
+     and stderr.  stderr will not be detached until after the config
+     files have been read so you will be able to see initial error
+     messages.  After that all errors are logged in the error_log.
+     This makes it more convenient to start Apache via rsh, ssh,
+     or crontabs.
+
+</ul>
+
+<h3>Misc Changes</h3>
+
+<ul>
+  <li><code>ServerType inetd</code> has been deprecated.  It still exists,
+    but bugs are unlikely to be fixed.
+
+  <li><code>httpd_monitor</code> has been deprecated.  The replacement is
+    to use <code>mod_status</code> and make a request to a URL such as
+    <code>http://myhost/server-status?refresh=10</code>.
+
+  <li>
+    Apache now provides an effectively unbuffered connection for
+    CGI scripts.  This means that data will be sent to the client
+    as soon as the CGI pauses or stops output; previously, Apache would
+    buffer the output up to a fixed buffer size before sending, which
+    could result in the user viewing an empty page until the CGI finished
+    or output a complete buffer.  It is no longer necessary to use an
+    "nph-" CGI to get unbuffered output.  Given that most CGIs are written
+    in a language that by default does buffering (e.g. perl) this
+    shouldn't have a detrimental effect on performance.
+
+    <p>"nph-" CGIs, which formerly provided a direct socket to the client
+    without any server post-processing, were not fully compatible with
+    HTTP/1.1 or SSL support.  As such they would have had to implement
+    the transport details, such as encryption or chunking, in order
+    to work properly in certain situations.  Now, the only difference
+    between nph and non-nph scripts is "non-parsed headers".
+
+  <li>
+    <code>dbmmanage</code> has been overhauled.
+
+</ul>
+
+<!--#include virtual="footer.html" -->
+</BODY>
+</HTML>
+
