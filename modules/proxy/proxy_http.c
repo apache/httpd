@@ -841,7 +841,6 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
             if ( (conf->error_override ==0) || r->status < 400 ) {
 
                 /* read the body, pass it to the output filters */
-                apr_bucket *e;
                 int finish = FALSE;
                 while (ap_get_brigade(rp->input_filters, 
                                       bb, 
@@ -873,12 +872,6 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                         ap_proxy_http_cleanup(r, p_conn, backend);
                         /* signal that we must leave */
                         finish = TRUE;
-                    }
-
-                    /* if no EOS yet, then we must flush */
-                    if (FALSE == finish) {
-                        e = apr_bucket_flush_create(c->bucket_alloc);
-                        APR_BRIGADE_INSERT_TAIL(bb, e);
                     }
 
                     /* try send what we read */
