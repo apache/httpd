@@ -215,7 +215,7 @@ CORE_EXPORT(void) ap_process_connection(conn_rec *c)
 }
 
 int ap_process_http_connection(conn_rec *c)
-    {
+{
     request_rec *r;
 
     /*
@@ -238,11 +238,8 @@ int ap_process_http_connection(conn_rec *c)
         ap_update_connection_status(c->id, "Status", "Keepalive");
 	ap_destroy_pool(r->pool);
 
-	if (ap_graceful_stop_signalled()) {
-	    /* XXX: hey wait, this should do a lingering_close! */
-	    ap_bclose(c->client);
-	    return OK;
-	}
+	if (ap_graceful_stop_signalled())
+            break;
     }
 
     ap_reset_connection_status(c->id);
