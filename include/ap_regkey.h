@@ -59,11 +59,11 @@
 #ifndef AP_REGKEY_H
 #define AP_REGKEY_H
 
+#if defined(WIN32) || defined(DOXYGEN)
+
 #include "apr.h"
 #include "apr_pools.h"
 #include "ap_config.h"      /* Just for AP_DECLARE */
-
-#if defined(WIN32) || defined(DOXYGEN)
 
 #ifdef __cplusplus
 extern "C" {
@@ -258,5 +258,7 @@ AP_DECLARE(apr_status_t) ap_regkey_value_remove(const ap_regkey_t *key,
 #ifdef __cplusplus
 }
 #endif
-#endif /* WIN32 || DOXYGEN */
+
+#endif /* def WIN32 || def DOXYGEN */
+
 #endif /* AP_REGKEY_H */

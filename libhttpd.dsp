@@ -100,6 +100,10 @@ SOURCE=.\include\ap_mmn.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\include\ap_regkey.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\include\ap_release.h
 # End Source File
 # Begin Source File
@@ -190,35 +194,6 @@ SOURCE=.\server\vhost.c
 # Begin Group "generated"
 
 # PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=.\os\win32\ap_regkey.h
-
-!IF  "$(CFG)" == "libhttpd - Win32 Release"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Creating include/ap_regkey.h
-InputPath=.\os\win32\ap_regkey.h
-
-".\include\ap_regkey.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	type .\os\win32\ap_regkey.h > .\include\ap_regkey.h
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Creating include/ap_regkey.h
-InputPath=.\os\win32\ap_regkey.h
-
-".\include\ap_regkey.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	type .\os\win32\ap_regkey.h > .\include\ap_regkey.h
-
-# End Custom Build
-
-!ENDIF 
-
-# End Source File
 # Begin Source File
 
 SOURCE=.\server\gen_test_char.exe
