@@ -88,6 +88,7 @@ always available.
 <LI><A HREF="#servertype">ServerType</A>
 <LI><A HREF="#startservers">StartServers</A>
 <LI><A HREF="#threadsperchild">ThreadsPerChild</A>
+<LI><A HREF="#threadstacksize">ThreadStackSize</A>
 <LI><A HREF="#timeout">TimeOut</A>
 <LI><A HREF="#usecanonicalname">UseCanonicalName</A>
 <LI><A HREF="#user">User</A>
@@ -3043,7 +3044,7 @@ See also <A HREF="#minspareservers">MinSpareServers</A> and
 <A
  HREF="directive-dict.html#Status"
  REL="Help"
-><STRONG>Status:</STRONG></A> core (Windows)<BR>
+><STRONG>Status:</STRONG></A> core (Windows, NetWare)<BR>
 <STRONG>Compatibility:</STRONG> Available only with Apache 1.3 and later
 with Windows
 
@@ -3057,6 +3058,38 @@ with Windows
    HREF="#maxrequestsperchild">MaxRequestsPerChild</A>.</P>
 
 <HR>
+
+<H2><A NAME="threadstacksize">ThreadStackSize</A></H2>
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> ThreadStackSize <EM>number</EM><BR>
+<A
+ HREF="directive-dict.html#Default"
+ REL="Help"
+><STRONG>Default:</STRONG></A> <CODE>ThreadStackSize 65536</CODE><BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> server config<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> core (NetWare)<BR>
+<STRONG>Compatibility:</STRONG> Available only with Apache 1.3 and later
+with NetWare
+
+<P>This directive tells the server what stack size to use for each of the
+   running threads. If you ever get a stack overflow you will need to bump
+   this number to a higher setting.
+   
+<P>This directive has no effect on other systems.
+<HR>
+
+
+
+
+
 
 <H2><A NAME="timeout">TimeOut directive</A></H2>
 <!--%plaintext &lt;?INDEX {\tt TimeOut} directive&gt; -->
@@ -3144,9 +3177,6 @@ is intended for use with mass IP-based virtual hosting to support
 ancient clients that do not provide a <CODE>Host:</CODE> header. With
 this option Apache does a reverse DNS lookup on the server IP address
 that the client connected to in order to work out self-referential URLs.
-This can have adverse performance implications, especially if you use
-<CODE>%V</CODE> in a <A HREF="mod_log_config.html#customlog">CustomLog</A> 
-directive.
 
 <P><STRONG>Warning:</STRONG> if CGIs make assumptions about the values of
 <CODE>SERVER_NAME</CODE> they may be broken by this option.  The client
