@@ -284,6 +284,9 @@ Win32 specific issues:
 
  Help:
 
+    * "Directory /", "Directory C:/" both fail to do anything, 
+      while "Directory *" SEGVs.
+
     * chdir() for CGI scripts and mod_include #exec needs to be 
       re-implemented now that CreateProcess is being used.
 
