@@ -544,7 +544,7 @@ static void child_main(int child_num_arg)
     apr_pool_t *ptrans;
     conn_rec *current_conn;
     apr_status_t stat = APR_EINIT;
-    int sockdes, i, n;
+    int sockdes, i;
     ap_listen_rec *lr;
     int curr_pollfd, last_pollfd = 0;
     apr_pollfd_t *pollset;
@@ -583,8 +583,8 @@ static void child_main(int child_num_arg)
         listensocks[i]=lr->sd;
 
     apr_poll_setup(&pollset, num_listensocks, pchild);
-    for(n=0 ; n < num_listensocks ; n++)
-        apr_poll_socket_add(pollset, listensocks[n], APR_POLLIN);
+    for (i = 0; i < num_listensocks; i++)
+        apr_poll_socket_add(pollset, listensocks[i], APR_POLLIN);
 
     while (!die_now) {
 	/*
@@ -612,6 +612,7 @@ static void child_main(int child_num_arg)
 	for (;;) {
             apr_status_t ret;
             apr_int16_t event;
+            apr_int32_t n;
 
             ret = apr_poll(pollset, &n, -1);
             if (ret != APR_SUCCESS) {
