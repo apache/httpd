@@ -1,4 +1,11 @@
 Changes with Apache 2.0.19-dev
+  *) Extend mod_setenvif to support specifying regular expressions
+     on the SetEnvIf (and SetEnvIfNoCase) directive attribute field.
+     Example:  SetEnvIf ^TS*  [a-z].* HAVE_TS 
+     will cause HAVE_TS to be set if any of the request headers begins 
+     with "TS" and has a value that begins with any character in the
+     set [a-z]. [Bill Stoddard]
+
   *) httpd children now re-bind themselves to a random CPU on
      multiprocessor systems on AIX via bindprocessor() in 2.0.
      [Victor J. Orlikowski]

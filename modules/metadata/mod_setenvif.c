@@ -75,9 +75,10 @@
  *   SetEnvIf name regex var ...
  *
  * where name is either a HTTP request header name, or one of the
- * special values (see below). The 'value' of the header (or the
- * value of the special value from below) are compared against the
- * regex argument. If this is a simple string, a simple sub-string
+ * special values (see below). 'name' may be a regex when it is used
+ * to specify an HTTP request header name. The 'value' of the header 
+ & (or the value of the special value from below) are compared against
+ * the regex argument. If this is a simple string, a simple sub-string
  * match is performed. Otherwise, a request expression match is
  * done. If the value matches the string or regular expression, the
  * environment variables listed as var ... are set. Each var can 
@@ -113,6 +114,11 @@
  * This could be written as:
  *
  *    SetEnvIf remote_addr (127.0.0.1|192.168.10.) LOCAL
+ *
+ * To set HAVE_TS if the client request contains any header beginning
+ * with "TS" with a value beginning with a lower case alphabet:
+ *
+ *    SetEnvIf ^TS* ^[a-z].* HAVE_TS
  */
 
 #include "apr.h"
