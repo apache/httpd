@@ -2191,7 +2191,8 @@ static int uncompress(request_rec *r, int method, const unsigned char *old,
     *newch = (unsigned char *) palloc(r->pool, n);
     if ((n = read(fileno(fout), *newch, n)) <= 0) {
 	destroy_pool(sub_pool);
-	aplog_error(APLOG_MARK, APLOG_ERR, r->server, MODNAME ": read failed");
+	aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+	    MODNAME ": read failed %s", r->filename);
 	return -1;
     }
     destroy_pool(sub_pool);
