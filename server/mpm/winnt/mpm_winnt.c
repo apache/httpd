@@ -1373,7 +1373,7 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
     HANDLE hNullOutput;
     HANDLE hShareError;
     HANDLE hCurrentProcess = GetCurrentProcess();
-    SECURITY_ATTRIBUTES sa = {sizeof(SECURITY_ATTRIBUTES), NULL, TRUE};
+    SECURITY_ATTRIBUTES sa;
 
     sa.nLength = sizeof(sa);
     sa.bInheritHandle = TRUE;
