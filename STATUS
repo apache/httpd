@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/03/01 18:05:05 $]
+Last modified at [$Date: 2004/03/01 18:06:43 $]
 
 Release:
 
@@ -105,10 +105,6 @@ PATCHES TO BACKPORT FROM 2.1
         modules/metadata/mod_setenvif.c: r1.50
       +1: nd
 
-    * mod_ldap: Fix segfault when shared memory caching is disabled 
-        modules/experimental/util_ldap_cache_mgr.c: r1.15 
-      +1: bnicholes, minfrin, trawick
-    
     * mod_ssl: Clear OpenSSL error stack during pphrase entry to prevent 
       spurious failures in SSL functions later.
       PR: 21160
