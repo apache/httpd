@@ -1,5 +1,5 @@
 Apache HTTP Server 2.0 Documentation Status File.
-Last modified: $Date: 2001/08/17 16:58:27 $
+Last modified: $Date: 2001/08/22 00:16:23 $
 
 If you are interested in helping accomplish some of the tasks on this
 list or otherwise improving the documentation, please join the
@@ -14,6 +14,7 @@ tutorial on how to get started with making your contribution.
               ------------------------------
 
 - modules docs
+    - mod_mime: has not kept pace with 1.3 docs
     - mod_suexec: very little documentation
     - mod_include: the "INCLUDES_MAGIC_TYPE" x-server-parsed-html
       appears to have been removed from mod_include, but it is still
@@ -43,24 +44,6 @@ tutorial on how to get started with making your contribution.
           - Non unix/windows MPMs still need to be completed.
           - worker has no docs
           - the perchild directives in threaded/worker need docs
-
-- Cleaning.
-   - The following docs WILL BE REMOVED from httpd-2.0 unless
-     someone objects shortly.  Most haven't been touched in
-     years.
-         platform/netware.html
-         platform/perf-bsd44.html
-         platform/perf-dec.html
-         platform/perf-hp.html
-         platform/perf.html
-         platform/readme-tpf.html
-         platform/unixware.html
-         misc/client_block_api.html
-         misc/compat_notes.html
-         misc/howto.html
-         location.html
-         install-tpf.html
-         process-model.html
 
    - Individual docs will need some cleanup. 
         Status:  What docs still need to be touched here?
