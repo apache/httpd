@@ -1,5 +1,10 @@
 Changes with Apache 2.0.25-dev
 
+  *) force OpenSSL to ignore process local-caching and to always
+     get/set/delete sessions using mod_ssl's callbacks
+     [Madhusudan Mathihalli <madhusudan_mathihalli@hp.com>,
+      Geoff Thorpe <geoff@geoffthorpe.net>]
+
   *) Make the worker MPM shutdown and restart cleanly.  This also
      cleans up some race conditions, and gets the worker using
      pools more cleanly.  [Aaron Bannert <aaron@clove.org>]
