@@ -2,6 +2,14 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Updated mod_ldap and mod_auth_ldap to support the Novell LDAP SDK 
+     and standardized the LDAP SSL support across the various LDAP SDKs.  
+     Isolated the SSL functionality to mod_ldap rather than speading it 
+     across mod_auth_ldap and mod_ldap.  Also added LDAPTrustedCA
+     and LDAPTrustedCAType directives to mod_ldap to allow for a more 
+     common method of specifying the SSL certificate.
+     [Dave Ward, Brad Nicholes]
+
   *) mod_log_config change optional hook to return previous handler
      [Ian Holsman]
 
