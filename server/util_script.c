@@ -556,6 +556,9 @@ AP_DECLARE(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
         else if (!strcasecmp(w, "Content-Length")) {
             apr_table_set(r->headers_out, w, l);
         }
+        else if (!strcasecmp(w, "Content-Range")) {
+            apr_table_set(r->headers_out, w, l);
+        }
         else if (!strcasecmp(w, "Transfer-Encoding")) {
             apr_table_set(r->headers_out, w, l);
         }
