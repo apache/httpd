@@ -59,8 +59,8 @@
 #ifdef WIN32
 
 #include "apr.h"
-#include "arch/win32/fileio.h"
-#include "arch/win32/misc.h"
+#include "arch/win32/apr_arch_file_io.h"
+#include "arch/win32/apr_arch_misc.h"
 #include "ap_regkey.h"
 
 struct ap_regkey_t {
