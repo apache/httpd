@@ -2576,6 +2576,11 @@ API_EXPORT(int) ap_update_child_status(int child_num, int status, request_rec *r
 	    ss->conn_count = (unsigned short) 0;
 	    ss->conn_bytes = (unsigned long) 0;
 	}
+        else if (status == SERVER_STARTING) {
+            /* clean out the start_time so that mod_status will print Req=0 */
+            /* Use memset to be independent from the type (struct timeval vs. clock_t) */
+            memset (&ss->start_time, '\0', sizeof ss->start_time);
+        }
 	if (r) {
 	    conn_rec *c = r->connection;
 	    ap_cpystrn(ss->client, ap_get_remote_host(c, r->per_dir_config,
