@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/07/13 18:44:20 $]
+Last modified at [$Date: 2004/07/14 21:45:40 $]
 
 Release:
 
@@ -72,6 +72,15 @@ RELEASE SHOWSTOPPERS:
 PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
+
+    *) mod_cgi: Added API call and overload of detached field in cgi_exec_info_t 
+       structure to support loading in current or new address space for CGIs.
+       The patch change how NetWare use cmdtype for processes. It was made
+       necessary by changes done to log.c r1.145.
+       The HTTP and the APR patches are available at:
+       <http://www.apache.org/~clar/detach-addrspace_HTTP_2_0.patch>
+       <http://www.apache.org/~clar/detach-addrspace_APR_0_9.patch>
+       +1: jjclar
 
     *) mod_dir: Backport DirectorySlash directive to work around problems
        with <Location>-SetHandler combinations and trailing slash redirects.
