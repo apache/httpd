@@ -119,9 +119,6 @@ static int get_rfc1413(apr_socket_t *sock, const char *local_ip,
     char *cp;
     char buffer[RFC1413_MAXDATA + 1];
     int buflen;
-#ifdef CHARSET_EBCDIC
-    apr_size_t inbytes_left, outbytes_left;
-#endif
 
     /*
      * Bind the local and remote ends of the query socket to the same
@@ -156,11 +153,7 @@ static int get_rfc1413(apr_socket_t *sock, const char *local_ip,
 /* send the data */
     buflen = apr_snprintf(buffer, sizeof(buffer), "%u,%u\r\n", sav_rmt_port,
 		sav_our_port);
-#ifdef CHARSET_EBCDIC
-    inbytes_left = outbytes_left = buflen;
-    apr_xlate_conv_buffer(ap_hdrs_to_ascii, buffer, &inbytes_left,
-                          buffer, &outbytes_left);
-#endif
+    ap_xlate_proto_to_ascii(buffer, buflen);
 
     /* send query to server. Handle short write. */
     i = 0;
@@ -180,7 +173,7 @@ static int get_rfc1413(apr_socket_t *sock, const char *local_ip,
 
     /*
      * Read response from server. - the response should be newline 
-     * terminated according to rfc - make sure it doesn't stomp it's
+     * terminated according to rfc - make sure it doesn't stomp its
      * way out of the buffer.
      */
 
@@ -209,11 +202,7 @@ static int get_rfc1413(apr_socket_t *sock, const char *local_ip,
     }
 
 /* RFC1413_USERLEN = 512 */
-#ifdef CHARSET_EBCDIC
-    inbytes_left = outbytes_left = i;
-    apr_xlate_conv_buffer(ap_hdrs_from_ascii, buffer, &inbytes_left,
-                          buffer, &outbytes_left);
-#endif
+    ap_xlate_proto_from_ascii(buffer, i);
     if (sscanf(buffer, "%u , %u : USERID :%*[^:]:%512s", &rmt_port, &our_port,
 	       user) != 3 || sav_rmt_port != rmt_port
 	|| sav_our_port != our_port)
