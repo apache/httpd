@@ -115,8 +115,6 @@ static int cache_url_handler(request_rec *r, int lookup)
     if (!(types = ap_cache_get_cachetype(r, conf, path))) {
         return DECLINED;
     }
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                 "cache: URL %s is being handled by %s", path, types);
 
     urllen = strlen(url);
     if (urllen > MAX_URL_LENGTH) {
