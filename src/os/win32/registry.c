@@ -38,7 +38,7 @@
 
 #define VENDOR   "Apache Group"
 #define SOFTWARE "Apache"
-#define VERSION  "1.3.7"
+#define VERSION  "1.3.8 dev"
 
 #define REGKEY "SOFTWARE\\" VENDOR "\\" SOFTWARE "\\" VERSION
 
