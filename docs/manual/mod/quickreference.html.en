@@ -256,9 +256,8 @@ server cannot determine a type in any other way</td></tr>
 <tr class="odd"><td><a href="mod_deflate.html#deflatefilternote">DeflateFilterNote <var>notename</var></a></td><td /><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Places the compression ratio in a note for logging</td></tr>
 <tr><td><a href="mod_deflate.html#deflatememlevel">DeflateMemLevel <var>value</var></a></td><td> 9 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">How much memory should be used by zlib for compression</td></tr>
 <tr class="odd"><td><a href="mod_deflate.html#deflatewindowsize">DeflateWindowSize <var>value</var></a></td><td> 15 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Zlib compression window size</td></tr>
-<tr><td><a href="mod_access.html#deny"> Deny from
-    all|<var>host</var>|env=<var>env-variable</var>
-    [<var>host</var>|env=<var>env-variable</var>] ...</a></td><td /><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Controls which hosts are denied access to the
+<tr><td><a href="mod_access.html#deny"> Deny from all|<var>host</var>|env=<var>env-variable</var>
+[<var>host</var>|env=<var>env-variable</var>] ...</a></td><td /><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Controls which hosts are denied access to the
 server</td></tr>
 <tr class="odd"><td><a href="core.html#directory">&lt;Directory <var>directory-path</var>&gt;
 ... &lt;/Directory&gt;</a></td><td /><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Enclose a group of directives that apply only to the

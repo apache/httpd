@@ -98,38 +98,52 @@ server</td></tr>
     <dl>
       <dt>A (partial) domain-name</dt>
 
-      <dd>Example: <code>Allow from apache.org</code><br />
-       Hosts whose names match, or end in, this string are allowed
+      <dd>
+      <div class="example"><h3>Example:</h3><p><code>
+        Allow from apache.org
+      </code></p></div>
+      <p>Hosts whose names match, or end in, this string are allowed
       access. Only complete components are matched, so the above
       example will match <code>foo.apache.org</code> but it will
       not match <code>fooapache.org</code>. This configuration will
       cause the server to perform a reverse DNS lookup on the
       client IP address, regardless of the setting of the <code class="directive"><a href="../mod/core.html#hostnamelookups">HostnameLookups</a></code>
-      directive.</dd>
+      directive.</p></dd>
 
       <dt>A full IP address</dt>
 
-      <dd>Example: <code>Allow from 10.1.2.3</code><br />
-       An IP address of a host allowed access</dd>
+      <dd>
+      <div class="example"><h3>Example:</h3><p><code>
+        Allow from 10.1.2.3
+      </code></p></div>
+      <p>An IP address of a host allowed access</p></dd>
 
       <dt>A partial IP address</dt>
 
-      <dd>Example: <code>Allow from 10.1</code><br />
-       The first 1 to 3 bytes of an IP address, for subnet
-      restriction.</dd>
+      <dd>
+      <div class="example"><h3>Example:</h3><p><code>
+        Allow from 10.1
+      </code></p></div>
+      <p>The first 1 to 3 bytes of an IP address, for subnet
+      restriction.</p></dd>
 
       <dt>A network/netmask pair</dt>
 
-      <dd>Example: <code>Allow from
-      10.1.0.0/255.255.0.0</code><br />
-       A network a.b.c.d, and a netmask w.x.y.z. For more
-      fine-grained subnet restriction.</dd>
+      <dd>
+      <div class="example"><h3>Example:</h3><p><code>
+        Allow from 10.1.0.0/255.255.0.0
+      </code></p></div>
+      <p>A network a.b.c.d, and a netmask w.x.y.z. For more
+      fine-grained subnet restriction.</p></dd>
 
       <dt>A network/nnn CIDR specification</dt>
 
-      <dd>Example: <code>Allow from 10.1.0.0/16</code><br />
-       Similar to the previous case, except the netmask consists of
-      nnn high-order 1 bits.</dd>
+      <dd>
+      <div class="example"><h3>Example:</h3><p><code>
+        Allow from 10.1.0.0/16
+      </code></p></div>
+      <p>Similar to the previous case, except the netmask consists of
+      nnn high-order 1 bits.</p></dd>
     </dl>
 
     <p>Note that the last three examples above match exactly the
@@ -177,9 +191,8 @@ server</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Controls which hosts are denied access to the
 server</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code> Deny from
-    all|<var>host</var>|env=<var>env-variable</var>
-    [<var>host</var>|env=<var>env-variable</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code> Deny from all|<var>host</var>|env=<var>env-variable</var>
+[<var>host</var>|env=<var>env-variable</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Limit</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
@@ -210,7 +223,7 @@ evaluated.</td></tr>
     <var>Ordering</var> is one of</p>
 
     <dl>
-      <dt>Deny,Allow</dt>
+      <dt><code>Deny,Allow</code></dt>
 
       <dd>The <code class="directive"><a href="#deny">Deny</a></code> directives
       are evaluated before the <code class="directive"><a href="#allow">Allow</a></code> directives. Access is
@@ -219,7 +232,7 @@ evaluated.</td></tr>
       match an <code class="directive"><a href="#allow">Allow</a></code>
       directive will be allowed access to the server.</dd>
 
-      <dt>Allow,Deny</dt>
+      <dt><code>Allow,Deny</code></dt>
 
       <dd>The <code class="directive"><a href="#allow">Allow</a></code>
       directives are evaluated before the <code class="directive"><a href="#deny">Deny</a></code> directives. Access is denied
@@ -227,7 +240,7 @@ evaluated.</td></tr>
       <code class="directive"><a href="#deny">Deny</a></code> directive will be
       denied access to the server.</dd>
 
-      <dt>Mutual-failure</dt>
+      <dt><code>Mutual-failure</code></dt>
 
       <dd>Only those hosts which appear on the <code class="directive"><a href="#allow">Allow</a></code> list and do not appear on
       the <code class="directive"><a href="#deny">Deny</a></code> list are
@@ -236,7 +249,7 @@ evaluated.</td></tr>
       configuration.</dd>
     </dl>
 
-    <p>Keywords may only be separated by a comma; no whitespace is
+    <p>Keywords may only be separated by a comma; <em>no whitespace</em> is
     allowed between them. Note that in all cases every <code class="directive"><a href="#allow">Allow</a></code> and <code class="directive"><a href="#deny">Deny</a></code> statement is evaluated.</p>
 
     <p>In the following example, all hosts in the apache.org domain

@@ -79,39 +79,53 @@ server</description>
     <dl>
       <dt>A (partial) domain-name</dt>
 
-      <dd>Example: <code>Allow from apache.org</code><br />
-       Hosts whose names match, or end in, this string are allowed
+      <dd>
+      <example><title>Example:</title>
+        Allow from apache.org
+      </example>
+      <p>Hosts whose names match, or end in, this string are allowed
       access. Only complete components are matched, so the above
       example will match <code>foo.apache.org</code> but it will
       not match <code>fooapache.org</code>. This configuration will
       cause the server to perform a reverse DNS lookup on the
       client IP address, regardless of the setting of the <directive
       module="core">HostnameLookups</directive>
-      directive.</dd>
+      directive.</p></dd>
 
       <dt>A full IP address</dt>
 
-      <dd>Example: <code>Allow from 10.1.2.3</code><br />
-       An IP address of a host allowed access</dd>
+      <dd>
+      <example><title>Example:</title>
+        Allow from 10.1.2.3
+      </example>
+      <p>An IP address of a host allowed access</p></dd>
 
       <dt>A partial IP address</dt>
 
-      <dd>Example: <code>Allow from 10.1</code><br />
-       The first 1 to 3 bytes of an IP address, for subnet
-      restriction.</dd>
+      <dd>
+      <example><title>Example:</title>
+        Allow from 10.1
+      </example>
+      <p>The first 1 to 3 bytes of an IP address, for subnet
+      restriction.</p></dd>
 
       <dt>A network/netmask pair</dt>
 
-      <dd>Example: <code>Allow from
-      10.1.0.0/255.255.0.0</code><br />
-       A network a.b.c.d, and a netmask w.x.y.z. For more
-      fine-grained subnet restriction.</dd>
+      <dd>
+      <example><title>Example:</title>
+        Allow from 10.1.0.0/255.255.0.0
+      </example>
+      <p>A network a.b.c.d, and a netmask w.x.y.z. For more
+      fine-grained subnet restriction.</p></dd>
 
       <dt>A network/nnn CIDR specification</dt>
 
-      <dd>Example: <code>Allow from 10.1.0.0/16</code><br />
-       Similar to the previous case, except the netmask consists of
-      nnn high-order 1 bits.</dd>
+      <dd>
+      <example><title>Example:</title>
+        Allow from 10.1.0.0/16
+      </example>
+      <p>Similar to the previous case, except the netmask consists of
+      nnn high-order 1 bits.</p></dd>
     </dl>
 
     <p>Note that the last three examples above match exactly the
@@ -154,19 +168,14 @@ server</description>
     with <code>KnockKnock/2.0</code> will be allowed access, and all
     others will be denied.</p>
 </usage>
-
 </directivesynopsis>
 
 <directivesynopsis>
-
 <name>Deny</name>
-
 <description>Controls which hosts are denied access to the
 server</description>
-
-<syntax> Deny from
-    all|<var>host</var>|env=<var>env-variable</var>
-    [<var>host</var>|env=<var>env-variable</var>] ...</syntax>
+<syntax> Deny from all|<var>host</var>|env=<var>env-variable</var>
+[<var>host</var>|env=<var>env-variable</var>] ...</syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>Limit</override>
@@ -185,7 +194,6 @@ server</description>
 <description>Controls the default access state and the order in which
 <directive>Allow</directive> and <directive>Deny</directive> are
 evaluated.</description>
-
 <syntax> Order <var>ordering</var></syntax>
 <default>Order Deny,Allow</default>
 <contextlist><context>directory</context><context>.htaccess</context>
@@ -201,7 +209,7 @@ evaluated.</description>
     <var>Ordering</var> is one of</p>
 
     <dl>
-      <dt>Deny,Allow</dt>
+      <dt><code>Deny,Allow</code></dt>
 
       <dd>The <directive module="mod_access">Deny</directive> directives
       are evaluated before the <directive
@@ -211,7 +219,7 @@ evaluated.</description>
       match an <directive module="mod_access">Allow</directive>
       directive will be allowed access to the server.</dd>
 
-      <dt>Allow,Deny</dt>
+      <dt><code>Allow,Deny</code></dt>
 
       <dd>The <directive module="mod_access">Allow</directive>
       directives are evaluated before the <directive
@@ -221,7 +229,7 @@ evaluated.</description>
       <directive module="mod_access">Deny</directive> directive will be
       denied access to the server.</dd>
 
-      <dt>Mutual-failure</dt>
+      <dt><code>Mutual-failure</code></dt>
 
       <dd>Only those hosts which appear on the <directive
       module="mod_access">Allow</directive> list and do not appear on
@@ -231,7 +239,7 @@ evaluated.</description>
       configuration.</dd>
     </dl>
 
-    <p>Keywords may only be separated by a comma; no whitespace is
+    <p>Keywords may only be separated by a comma; <em>no whitespace</em> is
     allowed between them. Note that in all cases every <directive
     module="mod_access">Allow</directive> and <directive
     module="mod_access">Deny</directive> statement is evaluated.</p>
