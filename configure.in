@@ -201,6 +201,7 @@ dnl See Comment #Spoon
 
 AC_CHECK_FUNCS( \
 initgroups \
+bindprocessor \
 )
 
 AC_CHECK_LIB(nsl, gethostbyname)
