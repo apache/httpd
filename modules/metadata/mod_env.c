@@ -56,49 +56,6 @@
  * University of Illinois, Urbana-Champaign.
  */
 
-/*
- * mod_env.c
- * version 0.0.5
- * status beta
- * Pass environment variables to CGI/SSI scripts.
- * 
- * Andrew Wilson <Andrew.Wilson@cm.cf.ac.uk> 06.Dec.95
- *
- * Change log:
- * 08.Dec.95 Now allows PassEnv directive to appear more than once in
- *           conf files.
- * 10.Dec.95 optimisation.  getenv() only called at startup and used 
- *           to build a fast-to-access table.  apr_table_t used to build 
- *           per-server environment for each request.
- *           robustness.  better able to handle errors in configuration
- *           files:
- *           1)  PassEnv directive present, but no environment variable listed
- *           2)  PassEnv FOO present, but $FOO not present in environment
- *           3)  no PassEnv directive present
- * 23.Dec.95 Now allows SetEnv directive with same semantics as 'sh' setenv:
- *              SetEnv Var      sets Var to the empty string
- *              SetEnv Var Val  sets Var to the value Val
- *           Values containing whitespace should be quoted, eg:
- *              SetEnv Var "this is some text"
- *           Environment variables take their value from the last instance
- *           of PassEnv / SetEnv to be reached in the configuration file.
- *           For example, the sequence:
- *              PassEnv FOO
- *              SetEnv FOO override
- *           Causes FOO to take the value 'override'.
- * 23.Feb.96 Added UnsetEnv directive to allow environment variables
- *           to be removed.
- *           Virtual hosts now 'inherit' parent server environment which
- *           they're able to overwrite with their own directives or
- *           selectively ignore with UnsetEnv.
- *       *** IMPORTANT - the way that virtual hosts inherit their ***
- *       *** environment variables from the default server's      ***
- *       *** configuration has changed.  You should test your     ***
- *       *** configuration carefully before accepting this        ***
- *       *** version of the module in a live webserver which used ***
- *       *** older versions of the module.                        ***
- */
-
 #include "apr.h"
 #include "apr_strings.h"
 
@@ -110,12 +67,11 @@
 #include "httpd.h"
 #include "http_config.h"
 #include "http_request.h"
-
+#include "http_log.h"
 
 typedef struct {
     apr_table_t *vars;
-    const char *unsetenv;
-    int vars_present;
+    apr_table_t *unsetenv;
 } env_dir_config_rec;
 
 module AP_MODULE_DECLARE_DATA env_module;
@@ -124,9 +80,8 @@ static void *create_env_dir_config(apr_pool_t *p, char *dummy)
 {
     env_dir_config_rec *conf = apr_palloc(p, sizeof(*conf));
 
-    conf->vars = apr_table_make(p, 50);
-    conf->unsetenv = "";
-    conf->vars_present = 0;
+    conf->vars = apr_table_make(p, 10);
+    conf->unsetenv = apr_table_make(p, 10);
 
     return conf;
 }
@@ -135,46 +90,41 @@ static void *merge_env_dir_configs(apr_pool_t *p, void *basev, void *addv)
 {
     env_dir_config_rec *base = basev;
     env_dir_config_rec *add = addv;
-    env_dir_config_rec *newconf = apr_palloc(p, sizeof(*newconf));
+    env_dir_config_rec *res = apr_palloc(p, sizeof(*res));
 
-    apr_table_t *new_table;
     apr_table_entry_t *elts;
     apr_array_header_t *arr;
 
     int i;
-    const char *uenv, *unset;
 
     /* 
-     * new_table = copy_table( p, base->vars );
-     * foreach $element ( @add->vars ) {
-     *     table_set( new_table, $element.key, $element.val );
-     * };
-     * foreach $unsetenv ( @UNSETENV ) {
-     *     table_unset( new_table, $unsetenv );
-     * }
+     * res->vars = copy_table( p, base->vars );
+     * foreach $unsetenv ( @add->unsetenv )
+     *     table_unset( res->vars, $unsetenv );
+     * foreach $element ( @add->vars )
+     *     table_set( res->vars, $element.key, $element.val );
+     *
+     * add->unsetenv already removed the vars from add->vars, 
+     * if they preceeded the UnsetEnv directive.
      */
+    res->vars = apr_table_copy(p, base->vars);
+    res->unsetenv = NULL;
 
-    new_table = apr_table_copy(p, base->vars);
+    arr = apr_table_elts(add->unsetenv);
+    elts = (apr_table_entry_t *)arr->elts;
+
+    for (i = 0; i < arr->nelts; ++i) {
+        apr_table_unset(res->vars, elts[i].key);
+    }
 
     arr = apr_table_elts(add->vars);
     elts = (apr_table_entry_t *)arr->elts;
 
     for (i = 0; i < arr->nelts; ++i) {
-        apr_table_setn(new_table, elts[i].key, elts[i].val);
+        apr_table_setn(res->vars, elts[i].key, elts[i].val);
     }
 
-    unset = add->unsetenv;
-    uenv = ap_getword_conf(p, &unset);
-    while (uenv[0] != '\0') {
-        apr_table_unset(new_table, uenv);
-        uenv = ap_getword_conf(p, &unset);
-    }
-
-    newconf->vars = new_table;
-
-    newconf->vars_present = base->vars_present || add->vars_present;
-
-    return newconf;
+    return res;
 }
 
 static const char *add_env_module_vars_passed(cmd_parms *cmd, void *sconf_,
@@ -182,41 +132,29 @@ static const char *add_env_module_vars_passed(cmd_parms *cmd, void *sconf_,
 {
     env_dir_config_rec *sconf = sconf_;
     apr_table_t *vars = sconf->vars;
-    char *env_var;
-    char *name_ptr;
-
-    while (*arg) {
-        name_ptr = ap_getword_conf(cmd->pool, &arg);
-        env_var = getenv(name_ptr);
-        if (env_var != NULL) {
-            sconf->vars_present = 1;
-            apr_table_setn(vars, name_ptr, apr_pstrdup(cmd->pool, env_var));
-        }
+    const char *env_var;
+    
+    env_var = getenv(arg);
+    if (env_var != NULL) {
+        apr_table_setn(vars, arg, apr_pstrdup(cmd->pool, env_var));
     }
+    else {
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, cmd->server,
+                     "PassEnv variable %s was undefined", arg);
+    }
+
     return NULL;
 }
 
 static const char *add_env_module_vars_set(cmd_parms *cmd, void *sconf_,
-                                           const char *arg)
+                                           const char *name, const char *value)
 {
     env_dir_config_rec *sconf = sconf_;
-    apr_table_t *vars = sconf->vars;
-    char *name, *value;
-
-    name = ap_getword_conf(cmd->pool, &arg);
-    value = ap_getword_conf(cmd->pool, &arg);
-
+    
     /* name is mandatory, value is optional.  no value means
      * set the variable to an empty string
      */
-
-
-    if ((*name == '\0') || (*arg != '\0')) {
-        return "SetEnv takes one or two arguments.  An environment variable name and an optional value to pass to CGI.";
-    }
-
-    sconf->vars_present = 1;
-    apr_table_setn(vars, name, value);
+    apr_table_setn(sconf->vars, name, value);
 
     return NULL;
 }
@@ -226,28 +164,23 @@ static const char *add_env_module_vars_unset(cmd_parms *cmd, void *sconf_,
 {
     env_dir_config_rec *sconf = sconf_;
 
-    sconf->unsetenv = sconf->unsetenv
-        ? apr_pstrcat(cmd->pool, sconf->unsetenv, " ", arg, NULL)
-        : arg;
-
-    if (sconf->vars_present && !cmd->path) {
-        /* if {Set,Pass}Env FOO, UnsetEnv FOO
-         * are in the base config, merge never happens,
-         * unset never happens, so just unset now
-         */
-        apr_table_unset(sconf->vars, arg);
-    }
+    /* Always UnsetEnv FOO in the same context as {Set,Pass}Env FOO
+     * only if this UnsetEnv follows the {Set,Pass}Env.  The merge
+     * will only apply unsetenv to the parent env (main server).
+     */
+    apr_table_set(sconf->unsetenv, arg, NULL);
+    apr_table_unset(sconf->vars, arg);
 
     return NULL;
 }
 
 static const command_rec env_module_cmds[] =
 {
-AP_INIT_RAW_ARGS("PassEnv", add_env_module_vars_passed, NULL,
+AP_INIT_ITERATE("PassEnv", add_env_module_vars_passed, NULL,
      OR_FILEINFO, "a list of environment variables to pass to CGI."),
-AP_INIT_RAW_ARGS("SetEnv", add_env_module_vars_set, NULL,
-     OR_FILEINFO, "an environment variable name and a value to pass to CGI."),
-AP_INIT_RAW_ARGS("UnsetEnv", add_env_module_vars_unset, NULL,
+AP_INIT_TAKE12("SetEnv", add_env_module_vars_set, NULL,
+     OR_FILEINFO, "an environment variable name and optional value to pass to CGI."),
+AP_INIT_ITERATE("UnsetEnv", add_env_module_vars_unset, NULL,
      OR_FILEINFO, "a list of variables to remove from the CGI environment."),
     {NULL},
 };
@@ -259,7 +192,7 @@ static int fixup_env_module(request_rec *r)
                                                      &env_module);
     apr_table_t *vars = sconf->vars;
 
-    if (!sconf->vars_present)
+    if (!apr_table_elts(sconf->vars)->nelts)
         return DECLINED;
 
     r->subprocess_env = apr_table_overlay(r->pool, e, vars);
