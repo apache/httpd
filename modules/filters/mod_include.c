@@ -701,7 +701,7 @@ static int include_cgi(char *s, request_rec *r, ap_filter_t *next,
     if ((rr->path_info && rr->path_info[0]) || rr->args) {
         return -1;
     }
-    if (rr->finfo.protection == 0) {
+    if (rr->finfo.filetype == 0) {
         return -1;
     }
 
@@ -1274,7 +1274,7 @@ static int find_file(request_rec *r, const char *directive, const char *tag,
                we never attempt to "run" this sub request. */
             rr = ap_sub_req_lookup_file(tag_val, r, NULL);
 
-            if (rr->status == HTTP_OK && rr->finfo.protection != 0) {
+            if (rr->status == HTTP_OK && rr->finfo.filetype != 0) {
                 to_send = rr->filename;
                 if ((rv = apr_stat(finfo, to_send, APR_FINFO_GPROT 
                                 | APR_FINFO_MIN, rr->pool)) != APR_SUCCESS
@@ -1304,7 +1304,7 @@ static int find_file(request_rec *r, const char *directive, const char *tag,
            we never attempt to "run" this sub request. */
         rr = ap_sub_req_lookup_uri(tag_val, r, NULL);
 
-        if (rr->status == HTTP_OK && rr->finfo.protection != 0) {
+        if (rr->status == HTTP_OK && rr->finfo.filetype != 0) {
             memcpy((char *) finfo, (const char *) &rr->finfo,
                    sizeof(rr->finfo));
             ap_destroy_sub_req(rr);
@@ -2970,12 +2970,10 @@ static int includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
         }
     }
 
+    /* Assure the platform supports Group protections */
     if ((*state == xbithack_full)
-#if !defined(OS2) && !defined(WIN32)
-    /*  OS/2 dosen't support Groups. */
-        && (r->finfo.protection & APR_GEXECUTE)
-#endif
-        ) {
+        && (r->finfo.valid & APR_FINFO_GPROT)
+        && (r->finfo.protection & APR_GEXECUTE)) {
         ap_update_mtime(r, r->finfo.mtime);
         ap_set_last_modified(r);
     }

@@ -816,7 +816,7 @@ static int cgid_handler(request_rec *r)
 #error mod_cgid does not work on this platform.  If you teach it to, look 
 #error at mod_cgi.c for required code in this path.
 #else 
-    if (r->finfo.protection == 0) 
+    if (r->finfo.filetype == 0) 
         return log_scripterror(r, conf, HTTP_NOT_FOUND, 0, 
                                "script not found or unable to stat"); 
 #endif 

@@ -550,7 +550,7 @@ static int cgi_handler(request_rec *r)
      *      entity until the sysadmin overrides that behavior.
      * Allow for cgi files without the .EXE extension on them under OS/2 
      */
-    if (r->finfo.protection == 0) {
+    if (r->finfo.filetype == 0) {
         apr_finfo_t finfo;
         char *newfile;
         apr_status_t rv;
@@ -565,7 +565,7 @@ static int cgi_handler(request_rec *r)
         }
     }
 #else
-    if (r->finfo.protection == 0)
+    if (r->finfo.filetype == 0)
 	return log_scripterror(r, conf, HTTP_NOT_FOUND, 0,
 			       "script not found or unable to stat");
 #endif

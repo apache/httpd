@@ -654,7 +654,7 @@ static dav_error * dav_fs_get_resource(
 	resource->uri = r->uri;
     }
 
-    if (r->finfo.protection != 0) {
+    if (r->finfo.filetype != 0) {
         resource->exists = 1;
         resource->collection = r->finfo.filetype == APR_DIR;
 
@@ -688,7 +688,7 @@ static dav_error * dav_fs_get_resource(
 
 	    /* retain proper integrity across the structures */
 	    if (!resource->exists) {
-		ctx->finfo.protection = 0;
+		ctx->finfo.filetype = 0;
 	    }
 	}
     }
@@ -765,7 +765,7 @@ static int dav_fs_is_same_resource(
 #ifdef WIN32
     return stricmp(ctx1->pathname, ctx2->pathname) == 0;
 #else
-    if (ctx1->finfo.protection != 0)
+    if (ctx1->finfo.filetype != 0)
         return ctx1->finfo.inode == ctx2->finfo.inode;
     else
         return strcmp(ctx1->pathname, ctx2->pathname) == 0;
@@ -1134,7 +1134,7 @@ static dav_error * dav_fs_move_resource(
     /* determine whether a simple rename will work.
      * Assume source exists, else we wouldn't get called.
      */
-    if (dstinfo->finfo.protection != 0) {
+    if (dstinfo->finfo.filetype != 0) {
 	if (dstinfo->finfo.device == srcinfo->finfo.device) {
 	    /* target exists and is on the same device. */
 	    can_rename = 1;
@@ -1692,7 +1692,7 @@ static const char *dav_fs_getetag(const dav_resource *resource)
     if (!resource->exists) 
 	return apr_pstrdup(ctx->pool, "");
 
-    if (ctx->finfo.protection != 0) {
+    if (ctx->finfo.filetype != 0) {
         return apr_psprintf(ctx->pool, "\"%lx-%lx-%lx\"",
 			   (unsigned long) ctx->finfo.inode,
 			   (unsigned long) ctx->finfo.size,
@@ -1788,21 +1788,20 @@ static dav_prop_insert dav_fs_insert_prop(const dav_resource *resource,
 	break;
 
     case DAV_PROPID_FS_executable:
-#ifdef WIN32
-        /* our property, but not defined on the Win32 platform */
-        return DAV_PROP_INSERT_NOTDEF;
-#else
 	/* our property, but not defined on collection resources */
 	if (resource->collection)
 	    return DAV_PROP_INSERT_NOTDEF;
 
-	/* the files are "ours" so we only need to check owner exec privs */
+        /* our property, but not defined on this platform */
+        if (!(resource->info->finfo.valid & APR_FINFO_UPROT))
+            return DAV_PROP_INSERT_NOTDEF;
+
+        /* the files are "ours" so we only need to check owner exec privs */
 	if (resource->info->finfo.protection & APR_UEXECUTE)
 	    value = "T";
 	else
 	    value = "F";
 	break;
-#endif /* WIN32 */
 
     default:
         /* ### what the heck was this property? */
