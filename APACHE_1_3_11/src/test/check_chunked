@@ -1,0 +1,42 @@
+#!/usr/bin/perl -w
+
+# This is meant to be used on the raw output of an HTTP/1.1 connection
+# to check that the chunks are all correctly laid out.  It's easiest
+# to use a tool like netcat to generate the output.  This script
+# *insists* that \r exist in the output.
+#
+# You can find netcat at avian.org:/src/hacks/nc110.tgz.
+
+use strict;
+
+my $is_chunked = 0;
+
+# must toss headers
+while(<>) {
+    if (/^Transfer-Encoding:\s+chunked/i) {
+	$is_chunked = 1;
+    }
+    last if ($_ eq "\r\n");
+}
+
+$is_chunked || die "wasn't chunked\n";
+
+for(;;) {
+    $_ = <> || die "unexpected end of file!\n";
+
+    m#^([0-9a-f]+) *\r$#i || die "bogus chunklen: $_";
+
+    my $chunklen = hex($1);
+
+    exit 0 if ($chunklen == 0);
+
+    chop; chop;
+    print "$_ ";
+
+    my $data = '';
+    read(ARGV, $data, $chunklen) == $chunklen || die "short read!\n";
+
+    $_ = <> || die "unexpected end of file!\n";
+
+    $_ eq "\r\n" || die "missing chunk trailer!\n";
+}

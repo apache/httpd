@@ -1,0 +1,12 @@
+Debug
+Release
+ApacheModuleProxy.dsw
+ApacheModuleProxy.mdp
+ApacheModuleProxy.ncb
+ApacheModuleProxy.opt
+ApacheModuleProxy.plg
+Makefile
+*.lo
+*.so
+*.dll
+*.def
