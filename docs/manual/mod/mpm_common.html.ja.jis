@@ -4,7 +4,7 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mpm_common - Apache HTTP サーバ</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p><p class="apache">Apache HTTP サーバ バージョン 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.0</a> &gt; <a href="./">モジュール</a></div><div id="page-content"><div id="preamble"><h1>Apache モジュール mpm_common</h1><table class="module"><tr><th><a href="module-dict.html#Description">説明:
+      --><title>mpm_common - Apache HTTP サーバ</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p><p class="apache">Apache HTTP サーバ バージョン 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.0</a> &gt; <a href="./">モジュール</a></div><div id="page-content"><div id="preamble"><h1>Apache モジュール mpm_common</h1><table class="module"><tr><th><a href="module-dict.html#Description">説明:
                   </a></th><td>二つ以上のマルチプロセッシングモジュール (MPM)
 で実装されているディレクティブのコレクション</td></tr><tr><th><a href="module-dict.html#Status">ステータス:
                   </a></th><td>MPM</td></tr></table></div><div id="quickview"><h3 class="directives">ディレクティブ</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#coredumpdirectory">CoreDumpDirectory</a></li><li><img alt="" src="../images/down.gif" /> <a href="#group">Group</a></li><li><img alt="" src="../images/down.gif" /> <a href="#listen">Listen</a></li><li><img alt="" src="../images/down.gif" /> <a href="#listenbacklog">ListenBackLog</a></li><li><img alt="" src="../images/down.gif" /> <a href="#lockfile">LockFile</a></li><li><img alt="" src="../images/down.gif" /> <a href="#maxclients">MaxClients</a></li><li><img alt="" src="../images/down.gif" /> <a href="#maxrequestsperchild">MaxRequestsPerChild</a></li><li><img alt="" src="../images/down.gif" /> <a href="#maxsparethreads">MaxSpareThreads</a></li><li><img alt="" src="../images/down.gif" /> <a href="#maxthreadsperchild">MaxThreadsPerChild</a></li><li><img alt="" src="../images/down.gif" /> <a href="#minsparethreads">MinSpareThreads</a></li><li><img alt="" src="../images/down.gif" /> <a href="#numservers">NumServers</a></li><li><img alt="" src="../images/down.gif" /> <a href="#pidfile">PidFile</a></li><li><img alt="" src="../images/down.gif" /> <a href="#scoreboardfile">ScoreBoardFile</a></li><li><img alt="" src="../images/down.gif" /> <a href="#sendbuffersize">SendBufferSize</a></li><li><img alt="" src="../images/down.gif" /> <a href="#serverlimit">ServerLimit</a></li><li><img alt="" src="../images/down.gif" /> <a href="#startservers">StartServers</a></li><li><img alt="" src="../images/down.gif" /> <a href="#startthreads">StartThreads</a></li><li><img alt="" src="../images/down.gif" /> <a href="#threadlimit">ThreadLimit</a></li><li><img alt="" src="../images/down.gif" /> <a href="#threadsperchild">ThreadsPerChild</a></li><li><img alt="" src="../images/down.gif" /> <a href="#user">User</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CoreDumpDirectory" id="CoreDumpDirectory">CoreDumpDirectory</a> <a name="coredumpdirectory" id="coredumpdirectory">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
@@ -104,7 +104,7 @@
 <div class="example"><p><code>
    Listen [fe80::a00:20ff:fea7:ccea]:80
 </code></p></div>
-<h3>参照</h3><ul><li><a href="../dns-caveats.html">DNS の問題</a></li><li><a href="../bind.html">Apache
+<h3>参照</h3><ul><li><a href="../dns-caveats.html">DNS の問題</a></li><li><a href="../bind.html">Apache
     が使用するアドレスとポートの設定</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ListenBackLog" id="ListenBackLog">ListenBackLog</a> <a name="listenbacklog" id="listenbacklog">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
               </a></th><td>保留状態のコネクションのキューの最大長</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
               </a></th><td>ListenBacklog <em>backlog</em></td></tr><tr><th><a href="directive-dict.html#Default">デフォルト: 
@@ -234,7 +234,7 @@
     この MPM はシングルプロセスで実行されますので、
     スペアスレッド数もサーバ全体で勘定します。</p>
 
-<h3>参照</h3><ul><li><code class="directive"><a href="#minsparethreads">MinSpareThreads</a></code></li><li><code class="directive"><a href="#startservers">StartServers</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="MaxThreadsPerChild" id="MaxThreadsPerChild">MaxThreadsPerChild</a> <a name="maxthreadsperchild" id="maxthreadsperchild">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
+<h3>参照</h3><ul><li><code class="directive"><a href="#minsparethreads">MinSpareThreads</a></code></li><li><code class="directive"><a href="#startservers">StartServers</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="MaxThreadsPerChild" id="MaxThreadsPerChild">MaxThreadsPerChild</a> <a name="maxthreadsperchild" id="maxthreadsperchild">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
               </a></th><td>子プロセス毎のスレッド数の最大数</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
               </a></th><td>MaxThreadsPerChild <em>number</em></td></tr><tr><th><a href="directive-dict.html#Default">デフォルト: 
               </a></th><td><code>MaxThreadsPerChild 64</code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
@@ -275,7 +275,7 @@
     デフォルトは <code>MinSpareThreads 10</code> で、
     シングルプロセス MPM ですので、サーバ全体で管理されます。</p>
 
-<h3>参照</h3><ul><li><code class="directive"><a href="#maxsparethreads">MaxSpareThreads</a></code></li><li><code class="directive"><a href="#startservers">StartServers</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="NumServers" id="NumServers">NumServers</a> <a name="numservers" id="numservers">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
+<h3>参照</h3><ul><li><code class="directive"><a href="#maxsparethreads">MaxSpareThreads</a></code></li><li><code class="directive"><a href="#startservers">StartServers</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="NumServers" id="NumServers">NumServers</a> <a name="numservers" id="numservers">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
               </a></th><td>同時に起動している子プロセスの総数</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
               </a></th><td>NumServers <em>number</em></td></tr><tr><th><a href="directive-dict.html#Default">デフォルト: 
               </a></th><td><code>NumServers 2</code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
@@ -342,7 +342,7 @@
     しかし、ログファイルの設置位置や
     <a href="../misc/security_tips.html">セキュリティ</a>
     と同様の注意点があるので、注意してください。</p>
-<h3>参照</h3><ul><li><a href="../stopping.html">Apache の停止と再起動</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="SendBufferSize" id="SendBufferSize">SendBufferSize</a> <a name="sendbuffersize" id="sendbuffersize">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
+<h3>参照</h3><ul><li><a href="../stopping.html">Apache の停止と再起動</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="SendBufferSize" id="SendBufferSize">SendBufferSize</a> <a name="sendbuffersize" id="sendbuffersize">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
               </a></th><td>TCP バッファサイズ</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
               </a></th><td>SendBufferSize <em>bytes</em></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
               </a></th><td>サーバ設定ファイル</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
@@ -408,7 +408,7 @@
     起動時に生成される子サーバプロセスの数を設定します。
     プロセス数は負荷に応じて動的に制御されますので、
     通常はこの値を調整する理由はあまりないでしょう。</p>
-<h3>参照</h3><ul><li><code class="directive"><a href="#minsparethreads">MinSpareThreads</a></code></li><li><code class="directive"><a href="#maxsparethreads">MaxSpareThreads</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="StartThreads" id="StartThreads">StartThreads</a> <a name="startthreads" id="startthreads">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
+<h3>参照</h3><ul><li><code class="directive"><a href="#minsparethreads">MinSpareThreads</a></code></li><li><code class="directive"><a href="#maxsparethreads">MaxSpareThreads</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="StartThreads" id="StartThreads">StartThreads</a> <a name="startthreads" id="startthreads">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
               </a></th><td>起動時に生成されるスレッドの数</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
               </a></th><td>StartThreads <em>number</em></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
               </a></th><td>サーバ設定ファイル</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
@@ -430,11 +430,10 @@
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ThreadLimit" id="ThreadLimit">ThreadLimit</a> <a name="threadlimit" id="threadlimit">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
               </a></th><td>設定可能な子プロセス毎のスレッド数の上限を
 設定します</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td>ThreadLimit <em>number</em></td></tr><tr><th><a href="directive-dict.html#Default">デフォルト: 
-              </a></th><td><code>ThreadLimit 64</code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
+              </a></th><td>ThreadLimit <em>number</em></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
               </a></th><td>サーバ設定ファイル</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
               </a></th><td>MPM</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
-              </a></th><td><code class="module"><a href="../mod/worker.html">worker</a></code></td></tr></table>
+              </a></th><td><code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr></table>
     <p>このディレクティブは
     Apache プロセス稼働中における
     <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code>
@@ -452,14 +451,15 @@
     <code class="directive">ThreadLimit</code> が
     <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code>
     の両方がシステムの扱える範囲を超えている場合は、
-    Apache は起動しないか、起動したとしても不安定になるでしょう。</p>
+    Apache は起動しないか、起動したとしても不安定になるでしょう。
+    このディレクティブの値は今使用している Apache の <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code> の予想上限値を
+    超えた値には設定しないでください。
+    </p>
 
-    <p>このディレクティブは
-    <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code>
-    を 64 よりも大きな値に設定する必要がある場合にのみ使用してください。
-    このディレクティブの値は、希望の
-    <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code>
-    よりも大きな値に設定しないでください。</p>
+    <p><code class="directive">ThreadLimit</code> のデフォルト値は
+    <code class="module"><a href="../mod/worker.html">worker</a></code> のときは 64 で、<code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code> のときは
+    1920 です。</p>
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ThreadsPerChild" id="ThreadsPerChild">ThreadsPerChild</a> <a name="threadsperchild" id="threadsperchild">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
               </a></th><td>子プロセスそれぞれに生成されるスレッド数</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
               </a></th><td>ThreadsPerChild <em>number</em></td></tr><tr><th><a href="directive-dict.html#Default">デフォルト: 
@@ -530,4 +530,4 @@
 <code class="directive">User</code>
 (や <code class="directive"><a href="#group">Group</a></code>)
 を <code>root</code> に設定しないでください。</p></div>
-</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div></body></html>
+</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div></body></html>
