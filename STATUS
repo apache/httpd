@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/06/09 22:32:49 $]
+Last modified at [$Date: 2004/06/10 23:31:30 $]
 
 Release:
 
@@ -365,6 +365,10 @@ PATCHES TO BACKPORT FROM 2.1
       fixed up as well as putting together a patch for httpd 2.0.next
       which integrates the two rounds of changes)
       +1 concept: trawick, nd
+
+    * Use the httpready accept filter
+        server/listen.c: r1.96
+      +1:
 
 CURRENT RELEASE NOTES:
 
