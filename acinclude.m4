@@ -7,19 +7,20 @@ dnl "modname" is the name of the modules/ subdir where the extension resides
 dnl "shared" can be set to "shared" or "yes" to build the extension as
 dnl a dynamically loadable library.
 dnl
+dnl XXX - for now, all modules using this function are in modules/standard
 AC_DEFUN(APACHE_MODULE,[
-  if test -d "$cwd/$srcdir/modules/$1" ; then
-    MOD_SUBDIRS="$MOD_SUBDIRS $1"
+  if test -d "$cwd/$srcdir/modules/standard" ; then
+dnl    MOD_SUBDIRS="$MOD_SUBDIRS $1"
     if test "$2" != "shared" -a "$2" != "yes"; then
       libname=$(basename $1)
       _extlib="libapachemod_${libname}.a"
-      MOD_LTLIBS="$MOD_LTLIBS modules/$1/libapachemod_${libname}.la"
-      MOD_LIBS="$MOD_LIBS $1/$_extlib"
+      MOD_LTLIBS="$MOD_LTLIBS modules/standard/libapachemod_${libname}.la"
+      MOD_LIBS="$MOD_LIBS standard/$_extlib"
       MOD_STATIC="$MOD_STATIC $1"
     else
       MOD_SHARED="$MOD_SHARED $1"
     fi
-    APACHE_OUTPUT(modules/$1/Makefile)
+dnl    APACHE_OUTPUT(modules/$1/Makefile)
   fi
 ])
 
