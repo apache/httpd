@@ -277,7 +277,7 @@ AP_DECLARE(int) find_child_by_pid(apr_proc_t *pid)
 
 AP_DECLARE(int) ap_update_child_status(int child_num, int thread_num, int status, request_rec *r)
 {
-    int old_status;
+    int old_status, i;
     worker_score *ws;
     process_score *ps;
 
@@ -293,8 +293,12 @@ AP_DECLARE(int) ap_update_child_status(int child_num, int thread_num, int status
     if (status == SERVER_READY
 	&& old_status == SERVER_STARTING) {
         ws->thread_num = child_num * HARD_SERVER_LIMIT + thread_num;
-        ps->generation = ap_my_generation;
-        ws->vhostrec = NULL;
+        if (ps->generation != ap_my_generation) {
+            for (i = 0; i < HARD_THREAD_LIMIT; i++) {
+                ap_scoreboard_image->servers[child_num][i].vhostrec = NULL;
+            }
+            ps->generation = ap_my_generation;
+        }
     }
 
     if (ap_extended_status) {
