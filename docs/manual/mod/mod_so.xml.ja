@@ -3,13 +3,15 @@
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <modulesynopsis>
 
-<!-- English revision: 1.5 -->
+<!-- English revision: 1.6 -->
 <name>mod_so</name>
 <description>起動時や再起動時に実行コードとモジュールをサーバにロードする
 </description>
-<status>Base (Windows); Optional (Unix)</status>
+<status>Extension</status>
 <sourcefile>mod_so.c</sourcefile>
 <identifier>so_module</identifier>
+<compatibility>このモジュールは Window では (常に含まれている) Base
+モジュールです</compatibility>
 
 <summary>
 

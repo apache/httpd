@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <modulesynopsis>
-<!-- English revision: 1.6 -->
+<!-- English revision: 1.8 -->
 
 <name>mod_alias</name>
 <description>ホストファイルシステム上のいろいろな違う場所を
@@ -67,14 +67,16 @@ href="../urlmapping.html">URL からファイルシステム上の位置へのマッピング</
     <code>/icons</code> という url はエイリアスされません。</p>
 
     <p>エイリアスの<em>行き先</em>を含んでいる <directive
-    module="core">&lt;Directory&gt;</directive>
+    type="section" module="core">Directory</directive>
     セクションを追加する必要があるかもしれないことに注意してください。
-    エイリアスの展開は <directive module="core">&lt;Directory&gt;</directive>
+    エイリアスの展開は <directive
+    type="section" module="core">Directory</directive>
     セクションを調べる前に行なわれますので、
-    エイリアスの行き先の <code>&lt;Directory&gt;</code> セクションのみ
+    エイリアスの行き先の <directive
+    type="section" module="core">Directory</directive> セクションのみ
     効果があります。
     (しかし、<directive
-    module="core">&lt;Location&gt;</directive>
+    type="section" module="core">Location</directive>
     セクションはエイリアスが処理される前に実行されますので、
     こちらは適用されます。)</p>
 
@@ -133,7 +135,8 @@ href="../urlmapping.html">URL からファイルシステム上の位置へのマッピング</
 <note><title>注意:</title><p>設定ファイル中の順番に関わらず、
 Redirect 系のディレクティブは Alias
 ディレクティブと ScriptAlias ディレクティブよりも優先されます。
-また、.htaccess ファイルや <directive module="core">&lt;Directory&gt;</directive>
+また、.htaccess ファイルや <directive
+type="section" module="core">Directory</directive>
 セクションの中で使われていたとしても、<em>URL-path</em>
 は相対パスではなく、絶対パスでなければなりません。</p></note>
 
@@ -185,8 +188,7 @@ Redirect 系のディレクティブは Alias
 <directivesynopsis>
 <name>RedirectMatch</name>
 <description>現在の URL への正規表現のマッチにより
-クライアントが違う URL を取得するように外部へのリダイレクトを
-送る</description>
+外部へのリダイレクトを送る</description>
 <syntax>RedirectMatch [<em>status</em>] <em>regex URL</em></syntax>
 <contextlist><context>サーバ設定ファイル</context>
 <context>バーチャルホスト</context>
