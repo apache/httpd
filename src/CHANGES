@@ -1,5 +1,8 @@
 Changes with Apache 1.3.1
 
+  *) PORT: Fix compilation problem on ARM Linux.
+     [Sam Kington <sam@illuminated.co.uk>] PR#2443
+
   *) Let APACI's configure script determine some configuration parameters
      (Group, Port, ServerAdmin, ServerName) via some intelligent tests to
      remove some of the classical hurdles for new users when setting up

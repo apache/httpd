@@ -1056,7 +1056,7 @@ extern int ap_execve(const char *filename, const char *argv[],
  * so we don't have to.  Sigh...
  */
 
-#if defined(CRAY) || defined(__arm)
+#if defined(CRAY) || (defined(__arm) && !defined(LINUX))
 #ifdef __STDC__
 #define XtOffset(p_type,field) _Offsetof(p_type,field)
 #else
