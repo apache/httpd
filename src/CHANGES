@@ -6689,11 +6689,11 @@ Changes with Apache 1.0.1
 
   *) Fix typo in license. [David Robinson]
 
-Changes with Apache 1.0.0
+Changes with Apache 1.0.0                                        23 Nov 1995
 
   *) Not listed. See <http://www.apache.org/docs/new_features_1_0.html>
 
-Changes with Apache 0.8.16
+Changes with Apache 0.8.16                                       05 Nov 1995
 
   *) New man page for 'httpd' added to support directory [David Robinson]
 
@@ -6732,7 +6732,7 @@ Changes with Apache 0.8.16
   *) Fixed bug involving handling URIs with escaped %-characters
      in redirects [David Robinson]
 
-Changes with Apache 0.8.15
+Changes with Apache 0.8.15                                       14 Oct 1995
 
   *) Switched to new, simpler license
 
@@ -6787,7 +6787,7 @@ Changes with Apache 0.8.15
   *) Doesn't send itself SIGHUP on startup when run in the -X debug-only mode
      [Ben Laurie]
 
-Changes with Apache 0.8.14
+Changes with Apache 0.8.14                                       19 Sep 1995
 
   *) Compiles on SCO ODT 3.0 [Ben Laurie]
 
@@ -6805,7 +6805,7 @@ Changes with Apache 0.8.14
 
   *) Nuked another compiler warning for -Wall on Linux [Aram Mirzadeh]
 
-Changes with Apache 0.8.13
+Changes with Apache 0.8.13                                       07 Sep 1995
 
   *) Make IndexIgnore *work* (ooops) [Jarkko Torppa]
 
@@ -6837,7 +6837,7 @@ Changes with Apache 0.8.13
   *) Suppress -Wall warning by initializing variable in negotiation code
      [Tobias Weingartner]
 
-Changes with Apache 0.8.12
+Changes with Apache 0.8.12                                       31 Aug 1995
 
   *) Doesn't pause three seconds after including a CGI script which is
      too slow to die off (this is done by not even trying to kill off
@@ -6875,7 +6875,7 @@ Changes with Apache 0.8.12
 
   *) Cleaned up comments in mod_cgi.c [Robert Thau]
 
-Changes with Apache 0.8.11
+Changes with Apache 0.8.11                                       24 Aug 1995
 
   *) Wildcard <Directory> specifications work.  [Robert Thau]
 
@@ -6920,7 +6920,7 @@ Changes with Apache 0.8.11
      NCSA code did not check Options ExecCGI in ScriptAlias directories).
      [Robert Thau]
 
-Changes with Apache 0.8.10
+Changes with Apache 0.8.10                                       18 Aug 1995
 
   *) AllowOverride applies to the named directory, and not just
      subdirectories.  [David Robinson]
@@ -6932,7 +6932,7 @@ Changes with Apache 0.8.10
      lot of "server hang" problems with Solaris.  [David Robinson;
      thanks to Merten Schumann for help diagnosing the problem].
 
-Changes with Apache 0.8.9
+Changes with Apache 0.8.9                                        12 Aug 1995
 
   *) Compiles with -DMAXIMUM_DNS ---- ooops! [Henrik Mortensen]
 
@@ -6995,7 +6995,7 @@ Changes with Apache 0.8.9
 
   *) Compiles clean on SGI [Robert Thau]
 
-Changes with Apache 0.8.8
+Changes with Apache 0.8.8                                        08 Aug 1995
 
   *) SunOS library prototypes now never included unless explicitly
      requested in the configuration (via -DSUNOS_LIB_PROTOTYPES);
@@ -7011,7 +7011,7 @@ Changes with Apache 0.8.8
   *) Strips trailing '/' characters off both args to the Alias command,
      to make 'Alias /foo/ /bar/' work.
 
-Changes with Apache 0.8.7
+Changes with Apache 0.8.7                                        03 Aug 1995
 
   *) Don't hang when restarting with a child from 'TransferLog "|..."' running
      [reported by David Robinson]
@@ -7022,7 +7022,7 @@ Changes with Apache 0.8.7
      experimental LogFormat support) to CHANGES file in distribution root
      directory
 
-Changes with Apache 0.8.6
+Changes with Apache 0.8.6                                        02 Aug 1995
 
   *) Deleted Netscape reload workaround --- it's in violation of HTTP specs.
      (If you actually wanted a conditional GET which bypassed the cache, you
@@ -7041,7 +7041,7 @@ Changes with Apache 0.8.6
 
   *) Scoreboard file (/tmp/htstatus.*) no longer publically writable.
 
-Changes with Apache 0.8.5
+Changes with Apache 0.8.5                                        01 Aug 1995
 
   *) Added last-minute configurable log experiment, as optional module
 
@@ -7130,7 +7130,7 @@ Changes with Apache 0.8.3
      deleted his old, and no doubt non-functional email address).  Would be
      nice to have examples of new features...
 
-Changes with Apache 0.8.2
+Changes with Apache 0.8.2                                        19 Jul 1995
 
   *) Added AddLanuage code [Florent Guillaume]
 
@@ -7171,7 +7171,7 @@ Changes with Apache 0.8.1
   *) Don't mung directory listings with very long filenames.
      [Florent Guillaume]
 
-Changes with Apache 0.8.0 (nee Shambhala 0.6.2)
+Changes with Apache 0.8.0 (nee Shambhala 0.6.2)                  16 Jul 1995
 
   *) New config script.  See INSTALL for info.  [Robert Thau]
 
@@ -7231,7 +7231,7 @@ Changes with Apache 0.8.0 (nee Shambhala 0.6.2)
   *) Another acc-related fix.  (It doesn't like const char
      in some places...). [Mark Cox]
 
-Changes with Shambhala 0.6.1
+Changes with Shambhala 0.6.1                                     13 Jul 1995
 
   *) Fixed auth_name-related typos in http_core.c [Brian Behlendorf]
      Also, fixed auth typo in http_protocol.c unmasked by this fix.
@@ -7252,7 +7252,7 @@ Changes with Shambhala 0.6.1
   *) No longer kills off nph- child processes before they are
      finished sending output. [Matthew Gray]
 
-Changes with Shambhala 0.6.0
+Changes with Shambhala 0.6.0                                     10 Jul 1995
 
   *) Two styles of timeout --- hard and soft.  soft_timeout()s just put
      the connection to the client in an "aborted" state, but otherwise
@@ -7501,12 +7501,11 @@ Changes with Apache 0.7.3                                        20 Jun 1995
       worked on the Shambhala rewrite above.  Most were merged into the
       Shambala architecture prior to Apache 0.8.0.
 
-Changes with Apache 0.6.4
+Changes with Apache 0.6.4                                        13 May 1995
 
    *) Patches by Hartill, Skolnick, Terbush, Thau, and others
 
 Changes with Apache 0.5.1                                        10 Apr 1995
-
 
 Changes with Apache 0.4                                          02 Apr 1995
 
