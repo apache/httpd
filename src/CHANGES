@@ -6,6 +6,12 @@ Changes with Apache 1.2b1:
       The wrapper program (suexec) is detected and configured at
       startup. [Randy Terbush, Jason Dour]
 
+  *) Centralize exec() code
+      Changed as a first step toward handling setuid()/setgid()
+      execution with a setuid wrapper program directly from Apache.
+      Modules requiring the use of exec() should probably do so
+      through a call to cal_exec(). [Randy Terbush]
+
   *) Supplemental POSIX regex package included in source
       for those platforms that require/want it. We start needing
       POSIX/regex...
@@ -22,7 +28,7 @@ Changes with Apache 1.2b1:
       changed #tmpXXXX to tmpXXXX in temp file template, for broken link/unlink
       changed Expire to Expires in cache_update()
       added appropriate #defines for Next compile
-      added $Id: CHANGES,v 1.47 1996/08/02 20:39:09 randy Exp $ for RCS/CVS [Chuck Murcko]
+      added $Id: CHANGES,v 1.48 1996/08/02 21:14:53 randy Exp $ for RCS/CVS [Chuck Murcko]
 
   *) Fix ErrorDocument handling.  When ErrorDocument failed it used to 
      display filename instead of error message. [Paul Sutton]
