@@ -282,15 +282,11 @@ int authenticate_digest_user (request_rec *r)
 /* Checking ID */
     
 int digest_check_auth (request_rec *r) {
-    digest_config_rec *sec =
-      (digest_config_rec *)get_module_config (r->per_dir_config,
-					      &digest_module);
     char *user = r->connection->user;
     int m = r->method_number;
     
     register int x;
     char *t, *w;
-    table *grpstatus;
     array_header *reqs_arr = requires (r);
     require_line *reqs;
 

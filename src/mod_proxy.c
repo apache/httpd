@@ -1627,7 +1627,7 @@ cache_update(struct cache_req *c, array_header *resp_hdrs,
 {
     request_rec *r=c->req;
     char *p;
-    int i, j;
+    int i;
     struct hdr_entry *expire, *dates, *lmods, *clen;
     time_t expc, date, lmod, now;
     char buff[46];

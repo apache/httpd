@@ -67,11 +67,11 @@
  *
  * UserDir public_html      -> ~bar/public_html/one/two.html
  * UserDir /usr/web         -> /usr/web/bar/one/two.html
- * UserDir /home/* /www     -> /home/bar/www/one/two.html
- *     NOTE: this ^ space only added allow it to work in a comment, ignore
+ * UserDir /home/ * /www     -> /home/bar/www/one/two.html
+ *  NOTE: theses ^ ^ space only added allow it to work in a comment, ignore
  * UserDir http://x/users   -> (302) http://x/users/bar/one/two.html
- * UserDir http://x/* /y     -> (302) http://x/bar/y/one/two.html
- *     NOTE: here also
+ * UserDir http://x/ * /y     -> (302) http://x/bar/y/one/two.html
+ *  NOTE: here also ^ ^
  *
  * In addition, you can use multiple entries, to specify alternate
  * user directories (a la Directory Index). For example:
@@ -163,7 +163,7 @@ int translate_userdir (request_rec *r)
       }
       else {
 	struct passwd *pw;
-	if(pw=getpwnam(w))
+	if((pw=getpwnam(w)))
 #ifdef __EMX__
 	  /* Need to manually add user name for OS/2 */
 	  filename = pstrcat (r->pool, pw->pw_dir, w, "/", userdir, NULL);
