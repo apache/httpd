@@ -844,25 +844,36 @@ static char* get_interpreter_from_win32_registry(pool *p, const char* ext)
         return NULL;
 
     /*
+     * The command entry may contain embedded %envvar% entries,
+     * e.g. %winsysdir%\somecommand.exe %1
+     *
+     * Resolve them here
+     */
+    size = ExpandEnvironmentStrings(buffer, NULL, 0);
+    if (size) {
+        s = ap_palloc(p, size);
+        if (ExpandEnvironmentStrings(buffer, s, size))
+            buffer = s;
+    }
+
+    /*
      * The canonical way shell command entries are entered in the Win32 
      * registry is as follows:
-     *   shell [options] "%1"
+     *   shell [options] "%1" [options] [%*]
      * where
      *   shell - full path name to interpreter or shell to run.
      *           E.g., c:\usr\local\ntreskit\perl\bin\perl.exe
      *   options - optional switches
-     *              E.g., \C
+     *              E.g., /C or -w
      *   "%1" - Place holder for file to run the shell against. 
-     *          Typically quoted.
+     *          Quoted for if long path names are accepted.
+     *          Not quoted if only short paths are acceptd
      *
-     * If we find a %1 or a quoted %1, lop it off. 
+     *   %* - additional arguments
+     *
+     * Effective in v. 1.3.15, the responsibility is the consumer's
+     * to make these substitutions.
      */
-    if (buffer && *buffer) {
-        if ((s = strstr(buffer, "\"%1")))
-            *s = '\0';
-        else if ((s = strstr(buffer, "%1"))) 
-            *s = '\0';
-    }
 
     return buffer;
 }
@@ -896,11 +907,28 @@ API_EXPORT (file_type_e) ap_get_win32_interpreter(const  request_rec *r,
     }
     ext = strrchr(exename, '.');
 
-    if (ext && (!strcasecmp(ext,".bat") || !strcasecmp(ext,".cmd"))) {
-        char *shellcmd = getenv("COMSPEC");
+    if (ext && (!strcasecmp(ext,".bat") || !strcasecmp(ext,".cmd")) &&
+        d->script_interpreter_source != INTERPRETER_SOURCE_REGISTRY) 
+    {
+        /* The registry does these for us unless INTERPRETER_SOURCE_REGISTRY
+         * was not enabled.
+         */
+        char *p, *shellcmd = getenv("COMSPEC");
         if (!shellcmd)
             shellcmd = SHELL_PATH;
-        *interpreter = ap_pstrcat(r->pool, "\"", shellcmd, "\" /C", NULL);
+        p = strchr(shellcmd, '\0');
+        if ((p - shellcmd >= 11) && !strcasecmp(p - 11, "command.com")) 
+        {
+            /* Command.com doesn't like long paths, doesn't do .cmd
+             */
+            if (!strcasecmp(ext,".cmd"))
+                return eFileTypeUNKNOWN;
+            *interpreter = ap_pstrcat(r->pool, "\"", shellcmd, "\" /C %1", NULL);
+        }
+        else
+            /* Assume any other likes long paths, and knows .cmd
+             */
+            *interpreter = ap_pstrcat(r->pool, "\"", shellcmd, "\" /C \"%1\"", NULL);
         return eFileTypeSCRIPT;
     }
 
