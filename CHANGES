@@ -1,7 +1,28 @@
 Changes with Apache 2.0.23-dev
 
+  *) Introduced new mod_autoindex IndexOptions flags; SuppressIcon to 
+     drop the icon column, SuppressRules to drop the <hr> elements, 
+     and HTMLTable to create rudimentary HTML table listings (implies 
+     FancyIndexing).  [William Rowe]
+
+  *) Re-Introduced the mod_autoindex IndexOptions flag TrackModified
+     from Apache 1.3.15.  This is needed for two reasons, first, given
+     multiple machines within a server farm, ETags and Last-Modified 
+     stamps won't correspond from machine to machine, and second, many 
+     Unixes don't capture changes to the date or time stamp of existing 
+     files, since these don't modify the dirent itself.  [William Rowe]
+
+  *) Re-Introduced the mod_autoindex InextOptions flag FoldersFirst 
+     and DirectoryWidth options from Apache 1.3.10. 
+     [William Rowe, Ken Coar]
+
+  *) Eliminated FancyIndexing directive, depricated early in Apache
+     1.3 by the IndexOptions FancyIndexing syntax.  [William Rowe]
+
   *) mod_autoindex now excludes any file names that would result in
-     an error, other than a success or redirect.  [William Rowe]
+     an error, other than a success or redirect.  Also optimized
+     the parent directory, always included except in the URI '/'.
+     [William Rowe]
 
   *) Refactored mod_negotiation and mod_mime to help mod_dir accept
      negotiated index pages, and prevent the server from defaulting
