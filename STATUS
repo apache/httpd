@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/08/20 22:51:23 $]
+Last modified at [$Date: 2003/08/24 19:16:45 $]
 
 Release:
 
@@ -337,7 +337,7 @@ PATCHES TO PORT FROM 2.1
     * Overhaul of mod_include's filter parser.
         modules/filters/mod_include.c: r1.235, r1.236
         modules/filters/mod_include.h: r1.35
-      +1: nd
+      +1: nd, brianp
 
     * Fix include_cmd in mod_cgid, not to treat the cmd output (partially)
       as CGI output.
