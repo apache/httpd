@@ -3481,7 +3481,7 @@ static void show_compile_settings(void)
  * some of it is #ifdef'd but was duplicated before anyhow.  This stuff
  * is still a mess.
  */
-void common_init(void)
+static void common_init(void)
 {
     INIT_SIGLIST()
 #ifdef AUX3
