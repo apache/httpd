@@ -2928,6 +2928,7 @@ static char *lookup_map_program(request_rec *r, apr_file_t *fpin,
     char c;
     int i;
     apr_size_t nbytes;
+    apr_status_t rv;
 
 #ifndef NO_WRITEV
     struct iovec iova[2];
@@ -2946,7 +2947,13 @@ static char *lookup_map_program(request_rec *r, apr_file_t *fpin,
     /* take the lock */
 
     if (rewrite_mapr_lock_acquire) {
-        apr_global_mutex_lock(rewrite_mapr_lock_acquire);
+        rv = apr_global_mutex_lock(rewrite_mapr_lock_acquire);
+        if (rv != APR_SUCCESS) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                          "apr_global_mutex_lock(rewrite_mapr_lock_acquire) "
+                          "failed");
+            return NULL; /* Maybe this should be fatal? */
+        }
     }
 
     /* write out the request key */
@@ -2981,7 +2988,13 @@ static char *lookup_map_program(request_rec *r, apr_file_t *fpin,
 
     /* give the lock back */
     if (rewrite_mapr_lock_acquire) {
-        apr_global_mutex_unlock(rewrite_mapr_lock_acquire);
+        rv = apr_global_mutex_unlock(rewrite_mapr_lock_acquire);
+        if (rv != APR_SUCCESS) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                          "apr_global_mutex_unlock(rewrite_mapr_lock_acquire) "
+                          "failed");
+            return NULL; /* Maybe this should be fatal? */
+        }
     }
 
     if (strcasecmp(buf, "NULL") == 0) {
@@ -3171,6 +3184,7 @@ static void rewritelog(request_rec *r, int level, const char *text, ...)
     request_rec *req;
     char *ruser;
     const char *rhost;
+    apr_status_t rv;
 
     va_start(ap, text);
     conf = ap_get_module_config(r->server->module_config, &rewrite_module);
@@ -3235,10 +3249,20 @@ static void rewritelog(request_rec *r, int level, const char *text, ...)
                 (unsigned long)(r->server), (unsigned long)r,
                 type, redir, level, str2);
 
-    apr_global_mutex_lock(rewrite_log_lock);
+    rv = apr_global_mutex_lock(rewrite_log_lock);
+    if (rv != APR_SUCCESS) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                      "apr_global_mutex_lock(rewrite_log_lock) failed");
+        /* XXX: Maybe this should be fatal? */
+    }
     nbytes = strlen(str3);
     apr_file_write(conf->rewritelogfp, str3, &nbytes);
-    apr_global_mutex_unlock(rewrite_log_lock);
+    rv = apr_global_mutex_unlock(rewrite_log_lock);
+    if (rv != APR_SUCCESS) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                      "apr_global_mutex_unlock(rewrite_log_lock) failed");
+        /* XXX: Maybe this should be fatal? */
+    }
 
     va_end(ap);
     return;
