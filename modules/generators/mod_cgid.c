@@ -119,8 +119,7 @@ module AP_MODULE_DECLARE_DATA cgid_module;
 
 static int cgid_start(apr_pool_t *p, server_rec *main_server, apr_proc_t *procnew);
 static int cgid_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *main_server); 
-static int handle_exec(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec *r,
-                       ap_filter_t *f, apr_bucket *head_ptr, apr_bucket **inserted_head);
+static int handle_exec(include_ctx_t *ctx, ap_filter_t *f, apr_bucket_brigade *bb);
 
 static APR_OPTIONAL_FN_TYPE(ap_register_include_handler) *cgid_pfn_reg_with_ssi;
 static APR_OPTIONAL_FN_TYPE(ap_ssi_get_tag_and_value) *cgid_pfn_gtv;
@@ -1523,31 +1522,29 @@ static int cgid_handler(request_rec *r)
  *   is the code required to handle the "exec" SSI directive.
  *============================================================================
  *============================================================================*/
-static int include_cgi(char *s, request_rec *r, ap_filter_t *next,
-                       apr_bucket *head_ptr, apr_bucket **inserted_head)
+static apr_status_t include_cgi(include_ctx_t *ctx, ap_filter_t *f,
+                                apr_bucket_brigade *bb, char *s)
 {
-    request_rec *rr = ap_sub_req_lookup_uri(s, r, next);
+    request_rec *r = f->r;
+    request_rec *rr = ap_sub_req_lookup_uri(s, r, f->next);
     int rr_status;
-    apr_bucket  *tmp_buck, *tmp2_buck;
 
     if (rr->status != HTTP_OK) {
         ap_destroy_sub_req(rr);
-        return -1;
+        return APR_EGENERAL;
     }
 
     /* No hardwired path info or query allowed */
-
     if ((rr->path_info && rr->path_info[0]) || rr->args) {
         ap_destroy_sub_req(rr);
-        return -1;
+        return APR_EGENERAL;
     }
     if (rr->finfo.filetype != APR_REG) {
         ap_destroy_sub_req(rr);
-        return -1;
+        return APR_EGENERAL;
     }
 
     /* Script gets parameters of the *document*, for back compatibility */
-
     rr->path_info = r->path_info;       /* hard to get right; see mod_cgi.c */
     rr->args = r->args;
 
@@ -1557,52 +1554,32 @@ static int include_cgi(char *s, request_rec *r, ap_filter_t *next,
     ap_set_content_type(rr, CGI_MAGIC_TYPE);
 
     /* Run it. */
-
     rr_status = ap_run_sub_req(rr);
     if (ap_is_HTTP_REDIRECT(rr_status)) {
-        apr_size_t len_loc;
         const char *location = apr_table_get(rr->headers_out, "Location");
-        conn_rec *c = r->connection;
 
-        location = ap_escape_html(rr->pool, location);
-        len_loc = strlen(location);
+        if (location) {
+            char *buffer;
 
-        /* XXX: if most of this stuff is going to get copied anyway,
-         * it'd be more efficient to pstrcat it into a single pool buffer
-         * and a single pool bucket */
+            location = ap_escape_html(rr->pool, location);
+            buffer = apr_pstrcat(ctx->pool, "<a href=\"", location, "\">",
+                                 location, "</a>", NULL);
 
-        tmp_buck = apr_bucket_immortal_create("<A HREF=\"",
-                                              sizeof("<A HREF=\"") - 1,
-                                              c->bucket_alloc);
-        APR_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
-        tmp2_buck = apr_bucket_heap_create(location, len_loc, NULL,
-                                           c->bucket_alloc);
-        APR_BUCKET_INSERT_BEFORE(head_ptr, tmp2_buck);
-        tmp2_buck = apr_bucket_immortal_create("\">", sizeof("\">") - 1,
-                                               c->bucket_alloc);
-        APR_BUCKET_INSERT_BEFORE(head_ptr, tmp2_buck);
-        tmp2_buck = apr_bucket_heap_create(location, len_loc, NULL,
-                                           c->bucket_alloc);
-        APR_BUCKET_INSERT_BEFORE(head_ptr, tmp2_buck);
-        tmp2_buck = apr_bucket_immortal_create("</A>", sizeof("</A>") - 1,
-                                               c->bucket_alloc);
-        APR_BUCKET_INSERT_BEFORE(head_ptr, tmp2_buck);
-
-        if (*inserted_head == NULL) {
-            *inserted_head = tmp_buck;
+            APR_BRIGADE_INSERT_TAIL(bb, apr_bucket_pool_create(buffer,
+                                    strlen(buffer), ctx->pool,
+                                    f->c->bucket_alloc));
         }
     }
 
     ap_destroy_sub_req(rr);
 
-    return 0;
+    return APR_SUCCESS;
 }
-
 
 /* This is the special environment used for running the "exec cmd="
  *   variety of SSI directives.
  */
-static void add_ssi_vars(request_rec *r, ap_filter_t *next)
+static void add_ssi_vars(request_rec *r)
 {
     apr_table_t *e = r->subprocess_env;
 
@@ -1628,30 +1605,23 @@ static void add_ssi_vars(request_rec *r, ap_filter_t *next)
     }
 }
 
-static int include_cmd(include_ctx_t *ctx, apr_bucket_brigade **bb, char *command,
-                       request_rec *r, ap_filter_t *f)
+static int include_cmd(include_ctx_t *ctx, ap_filter_t *f,
+                       apr_bucket_brigade *bb, char *command)
 {
     char **env; 
     int sd;
-    apr_status_t rc = APR_SUCCESS; 
     int retval;
-    apr_bucket_brigade *bcgi;
-    apr_bucket *b;
     apr_file_t *tempsock = NULL;
+    request_rec *r = f->r;
     cgid_server_conf *conf = ap_get_module_config(r->server->module_config,
                                                   &cgid_module); 
     struct cleanup_script_info *info;
 
-    add_ssi_vars(r, f->next);
+    add_ssi_vars(r);
     env = ap_create_environment(r->pool, r->subprocess_env);
 
     if ((retval = connect_to_daemon(&sd, r, conf)) != OK) {
         return retval;
-    }
-
-    SPLIT_AND_PASS_PRETAG_BUCKETS(*bb, ctx, f->next, rc);
-    if (rc != APR_SUCCESS) {
-        return rc;
     }
 
     send_req(sd, r, command, env, SSI_REQ); 
@@ -1667,6 +1637,7 @@ static int include_cmd(include_ctx_t *ctx, apr_bucket_brigade **bb, char *comman
     apr_pool_cleanup_register(r->pool, info,
                               cleanup_script,
                               apr_pool_cleanup_null);
+
     /* We are putting the socket discriptor into an apr_file_t so that we can
      * use a pipe bucket to send the data to the client.
      * Note that this does not register a cleanup for the socket.  We did
@@ -1680,75 +1651,90 @@ static int include_cmd(include_ctx_t *ctx, apr_bucket_brigade **bb, char *comman
      */
     apr_pool_cleanup_kill(r->pool, (void *)sd, close_unix_socket);
 
-    bcgi = apr_brigade_create(r->pool, r->connection->bucket_alloc);
-    b    = apr_bucket_pipe_create(tempsock, r->connection->bucket_alloc);
-    APR_BRIGADE_INSERT_TAIL(bcgi, b);
-    ap_pass_brigade(f->next, bcgi);
+    APR_BRIGADE_INSERT_TAIL(bb, apr_bucket_pipe_create(tempsock,
+                            f->c->bucket_alloc));
+    ctx->flush_now = 1;
 
-    return 0;
+    return APR_SUCCESS;
 }
 
-static int handle_exec(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec *r,
-                       ap_filter_t *f, apr_bucket *head_ptr, apr_bucket **inserted_head)
+static apr_status_t handle_exec(include_ctx_t *ctx, ap_filter_t *f,
+                                apr_bucket_brigade *bb)
 {
     char *tag     = NULL;
     char *tag_val = NULL;
+    request_rec *r = f->r;
     char *file = r->filename;
-    apr_bucket  *tmp_buck;
     char parsed_string[MAX_STRING_LEN];
 
-    *inserted_head = NULL;
-    if (ctx->flags & FLAG_PRINTING) {
-        if (ctx->flags & FLAG_NO_EXEC) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                      "exec used but not allowed in %s", r->filename);
-            CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, *inserted_head);
+    if (!ctx->argc) {
+        ap_log_rerror(APLOG_MARK,
+                      (ctx->flags & SSI_FLAG_PRINTING)
+                          ? APLOG_ERR : APLOG_WARNING,
+                      0, r, "missing argument for exec element in %s",
+                      r->filename);
+    }
+
+    if (!(ctx->flags & SSI_FLAG_PRINTING)) {
+        return APR_SUCCESS;
+    }
+
+    if (!ctx->argc) {
+        SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
+        return APR_SUCCESS;
+    }
+
+    if (ctx->flags & SSI_FLAG_NO_EXEC) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "exec used but not allowed "
+                      "in %s", r->filename);
+        SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
+        return APR_SUCCESS;
+    }
+
+    while (1) {
+        cgid_pfn_gtv(ctx, &tag, &tag_val, SSI_VALUE_DECODED);
+        if (!tag || !tag_val) {
+            break;
         }
-        else {
-            while (1) {
-                cgid_pfn_gtv(ctx, &tag, &tag_val, 1);
-                if (tag_val == NULL) {
-                    if (tag == NULL) {
-                        return (0);
-                    }
-                    else {
-                        return 1;
-                    }
-                }
-                if (!strcmp(tag, "cmd")) {
-                    cgid_pfn_ps(r, ctx, tag_val, parsed_string, sizeof(parsed_string), 1);
-                    if (include_cmd(ctx, bb, parsed_string, r, f) == -1) {
-                        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                                    "execution failure for parameter \"%s\" "
-                                    "to tag exec in file %s", tag, r->filename);
-                        CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, *inserted_head);
-                    }
-                    /* just in case some stooge changed directories */
-                }
-                else if (!strcmp(tag, "cgi")) {
-                    apr_status_t retval = APR_SUCCESS;
 
-                    cgid_pfn_ps(r, ctx, tag_val, parsed_string, sizeof(parsed_string), 0);
-                    SPLIT_AND_PASS_PRETAG_BUCKETS(*bb, ctx, f->next, retval);
-                    if (retval != APR_SUCCESS) {
-                        return retval;
-                    }
+        if (!strcmp(tag, "cmd")) {
+            apr_status_t rv;
 
-                    if (include_cgi(parsed_string, r, f->next, head_ptr, inserted_head) == -1) {
-                        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                                    "invalid CGI ref \"%s\" in %s", tag_val, file);
-                        CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, *inserted_head);
-                    }
-                }
-                else {
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                                "unknown parameter \"%s\" to tag exec in %s", tag, file);
-                    CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, *inserted_head);
-                }
+            cgid_pfn_ps(r, ctx, tag_val, parsed_string, sizeof(parsed_string),
+                        SSI_EXPAND_LEAVE_NAME);
+
+            rv = include_cmd(ctx, f, bb, parsed_string);
+            if (!APR_STATUS_IS_SUCCESS(rv)) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                              "execution failure for parameter \"%s\" "
+                              "to tag exec in file %s", tag, r->filename);
+                SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
+                break;
             }
         }
+        else if (!strcmp(tag, "cgi")) {
+            apr_status_t rv;
+
+            cgid_pfn_ps(r, ctx, tag_val, parsed_string, sizeof(parsed_string),
+                        SSI_EXPAND_DROP_NAME);
+
+            rv = include_cgi(ctx, f, bb, parsed_string);
+            if (!APR_STATUS_IS_SUCCESS(rv)) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "invalid CGI ref "
+                              "\"%s\" in %s", tag_val, file);
+                SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
+                break;
+            }
+        }
+        else {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "unknown parameter "
+                          "\"%s\" to tag exec in %s", tag, file);
+            SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
+            break;
+        }
     }
-    return 0;
+
+    return APR_SUCCESS;
 }
 /*============================================================================
  *============================================================================
