@@ -50,6 +50,12 @@
  *
  */
 
+#ifdef _POSIX_ARG_MAX
+#define APACHE_ARG_MAX _POSIX_ARG_MAX
+#else
+#define APACHE_ARG_MAX 512
+#endif
+
 char **create_argv(request_rec *r, char *av0, ...);
 #ifdef __EMX__
 char **create_argv_cmd(pool *p, char *av0, const char *args, char *path);
