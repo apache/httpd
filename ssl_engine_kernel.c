@@ -874,7 +874,8 @@ int ssl_hook_UserCheck(request_rec *r)
      * - ssl not enabled
      * - client did not present a certificate
      */
-    if (!((sc->enabled == SSL_ENABLED_TRUE || sc->enabled == SSL_ENABLED_OPTIONAL) && sslconn->ssl && sslconn->client_cert) ||
+    if (!((sc->enabled == SSL_ENABLED_TRUE || sc->enabled == SSL_ENABLED_OPTIONAL) 
+          && sslconn && sslconn->ssl && sslconn->client_cert) ||
         !(dc->nOptions & SSL_OPT_FAKEBASICAUTH) || r->user)
     {
         return DECLINED;
