@@ -68,6 +68,8 @@ $INDEX = "/export/pub/apache/manual-index.dat";
 #***
 #***
 
+$HTML = "";
+
 #
 # If we have a FILEPATH_INFO or PATH_INFO, it's there to remap the
 # documents to the manual root directory.  If this script is already in
@@ -102,17 +104,17 @@ $title .= ": Results for \"$word\"" if ($word);
 
 #
 # We'll re-use the HTML scalar several times; we use it with here
-# documents for multi-line statis HTML code.  Lets' do the standard page
+# documents for multi-line static HTML code.  Lets' do the standard page
 # header.
 #
 $HTML = <<EOHT;
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
 <HTML>
  <HEAD>
   <TITLE>$title
   </TITLE>
  </HEAD>
- <BODY BGCOLOR="white">
+ <BODY BGCOLOR="white" TEXT="black" LINK="blue" VLINK="navy" ALINK="red">
   <DIV ALIGN="CENTER">
    <IMG
     SRC="${prefix}images/sub.gif"
@@ -220,6 +222,12 @@ QUERY:
 # Back to common code - the exit path.  Display the page trailer.
 #
 $HTML = <<EOHT;
+  <A
+   HREF="./"
+  ><IMG
+    SRC="images/apache_home.gif"
+    ALT="Home"
+   ></A>
   <HR>
  </BODY>
 </HTML>
