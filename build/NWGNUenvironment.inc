@@ -44,6 +44,11 @@ endif
 # LDAPSDK = C:/novell/ndk/cldapsdk
 # endif
 
+# This is a placeholder
+# ifndef ZLIBSDK
+# ZLIBSDK = C:/novell/ndk/zlibsdk
+# endif
+
 ifndef METROWERKS
 METROWERKS = C:\Program Files\Metrowerks\CodeWarrior
 endif
@@ -116,6 +121,9 @@ NOVI	= $(NOVELLLIBC)\imports
 INCDIRS 	= $(NOVELLLIBC)\include;$(NOVELLLIBC)\include\nks;$(NOVELLLIBC)\include\winsock;
 ifneq "$(LDAPSDK)" ""
 INCDIRS := $(INCDIRS);$(LDAPSDK)/inc
+endif
+ifneq "$(ZLIBSDK)" ""
+INCDIRS := $(INCDIRS);$(ZLIBSDK)
 endif
 
 DEFINES		= -DNETWARE
