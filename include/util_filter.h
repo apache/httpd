@@ -402,7 +402,7 @@ AP_DECLARE(apr_status_t) ap_fflush(ap_filter_t *f, apr_bucket_brigade *bb);
  * @param nbyte The number of bytes in the data
  */
 #define ap_fwrite(f, bb, data, nbyte) \
-	apr_brigade_write(bb, ap_filter_flush, (f)->next, data, nbyte)
+	apr_brigade_write(bb, ap_filter_flush, f, data, nbyte)
 
 /**
  * Write a buffer for the current filter, buffering if possible.
@@ -411,7 +411,7 @@ AP_DECLARE(apr_status_t) ap_fflush(ap_filter_t *f, apr_bucket_brigade *bb);
  * @param str The string to write
  */
 #define ap_fputs(f, bb, str) \
-	apr_brigade_puts(bb, ap_filter_flush, (f)->next, str)
+	apr_brigade_puts(bb, ap_filter_flush, f, str)
 
 /**
  * Write a character for the current filter, buffering if possible.
@@ -420,7 +420,7 @@ AP_DECLARE(apr_status_t) ap_fflush(ap_filter_t *f, apr_bucket_brigade *bb);
  * @param c The character to write
  */
 #define ap_fputc(f, bb, c) \
-	apr_brigade_putc(bb, ap_filter_flush, (f)->next, c)
+	apr_brigade_putc(bb, ap_filter_flush, f, c)
 
 /**
  * Write an unspecified number of strings to the current filter

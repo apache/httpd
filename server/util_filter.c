@@ -279,7 +279,7 @@ AP_DECLARE(apr_status_t) ap_fflush(ap_filter_t *f, apr_bucket_brigade *bb)
 
     b = apr_bucket_flush_create();
     APR_BRIGADE_INSERT_TAIL(bb, b);
-    return ap_pass_brigade(f->next, bb);
+    return ap_pass_brigade(f, bb);
 }
 
 AP_DECLARE_NONSTD(int) ap_fputstrs(ap_filter_t *f, apr_bucket_brigade *bb, ...)
@@ -288,7 +288,7 @@ AP_DECLARE_NONSTD(int) ap_fputstrs(ap_filter_t *f, apr_bucket_brigade *bb, ...)
     int res;
 
     va_start(args, bb);
-    res = apr_brigade_vputstrs(bb, ap_filter_flush, f->next, args);
+    res = apr_brigade_vputstrs(bb, ap_filter_flush, f, args);
     va_end(args);
     return res;
 }
@@ -298,7 +298,7 @@ AP_DECLARE_NONSTD(int) ap_fprintf(ap_filter_t *f, apr_bucket_brigade *bb, const 
     int res;
 
     va_start(args, fmt);
-    res = apr_brigade_vprintf(bb, ap_filter_flush, f->next, fmt, args);
+    res = apr_brigade_vprintf(bb, ap_filter_flush, f, fmt, args);
     va_end(args);
     return res;
 }

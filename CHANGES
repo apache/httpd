@@ -1,5 +1,9 @@
 Changes with Apache 2.0.17-dev
 
+  *) The ap_f* functions should flush data to the filter that is passed
+     in, not the the filter after the one passed in.
+     [Ryan Morgan <rmorgan@covalent.net>]
+
   *) Make ab work again by changing its native types to apr types and formats.
      [Justin Erenkrantz <jerenkrantz@ebuilt.com>]
 
