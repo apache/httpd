@@ -279,10 +279,10 @@ $ apxs -i -a -n foo mod_foo.la
       pas le chargement dynamique de code dans l'espace d'adressage d'un 
       programme en marche.</li>
 
-      <li>Le serveur est à peu prêt 20% plus lent au démarrage, à cause de la
+      <li>Le serveur est à peu près 20% plus lent au démarrage, à cause de la
       charge prise par le "chargeur" Unix de la résolution des symboles.</li>
 
-      <li>Le serveur est à peu prêt 5% plus lent en fonctionnement sur 
+      <li>Le serveur est à peu près 5% plus lent en fonctionnement sur 
       certaines plates-formes parce que le code indépendant de la 
       position ("position independent code" - PIC) requiert parfois des 
       tours de passe-passe en assembleur pour l'adressage relatif, ce qui 
