@@ -346,6 +346,7 @@ AP_DECLARE(ap_filter_rec_t *) ap_register_output_filter(const char *name,
  * list of filters.  Take note of that when adding your filter to the chain.
  *
  * @param name The name of the filter to add
+ * @param ctx Context data to provide to the filter
  * @param r The request to add this filter for (or NULL if it isn't associated with a request)
  * @param c The connection to add the fillter for
  */
@@ -357,6 +358,7 @@ AP_DECLARE(ap_filter_t *) ap_add_input_filter(const char *name, void *ctx,
  * (as returned by ap_register_input_filter()) rather than a filter name
  *
  * @param name The filter to add
+ * @param ctx Context data to provide to the filter
  * @param r The request to add this filter for (or NULL if it isn't associated with a request)
  * @param c The connection to add the fillter for
  */
