@@ -1,5 +1,10 @@
 Changes with Apache 2.0.26-dev
 
+  *) Optimized location_walk, so subrequests, redirects and second passes
+     now reuse previous section merges on a <Location > by <Location >
+     basis, until we mismatch with the original location_walk. 
+     [William Rowe]
+
   *) Back out the 1.45 change to util_script.c.  This change made
      us set the environment variable REQUEST_URI to the redirected
      URI, instead of the originally requested URI.
