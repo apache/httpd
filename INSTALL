@@ -153,12 +153,14 @@
                                [--localstatedir=DIR]  
                                [--runtimedir=DIR]     [--enable-suexec]        
                                [--logfiledir=DIR]     [--suexec-caller=UID]    
-                               [--proxycachedir=DIR]  [--suexec-userdir=DIR]   
-                               [--compat]             [--suexec-uidmin=UID]    
-                                                      [--suexec-gidmin=GID]    
-                                                      [--suexec-safepath=PATH] 
-                                                                                
-                                                      [--with-perl=FILE]       
+                               [--proxycachedir=DIR]  [--suexec-docroot=DIR]
+                               [--compat]             [--suexec-logfile=FILE]
+                                                      [--suexec-userdir=DIR]
+                                                      [--suexec-uidmin=UID]
+                                                      [--suexec-gidmin=GID]
+                                                      [--suexec-safepath=PATH]
+
+                                                      [--with-perl=FILE]
                                                       [--without-support]      
                                                       [--without-confadjust]   
 
@@ -367,12 +369,14 @@
  
      Use the --enable-suexec option to enable the suEXEC feature by building
      and installing the "suexec" support program. Use --suexec-caller=UID to
-     set the allowed caller user id, the --suexec-userdir=DIR to set the user
-     subdirectory, the --suexec-uidmin=UID/--suexec-gidmin=GID to set the
-     minimal allowed UID/GID and --suexec-safepath=PATH to set the safe shell
-     PATH for the suEXEC feature. At least one --suexec-xxxxx option has
-     to be provided together with --enable-suexec option to let APACI accept
-     your request for using the suEXEC feature.
+     set the allowed caller user id, --suexec-userdir=DIR to set the user
+     subdirectory, --suexec-docroot=DIR to set the suexec root directory,
+     --suexec-uidmin=UID/--suexec-gidmin=GID to set the minimal allowed
+     UID/GID, --suexec-logfile=FILE to set the logfile and
+     --suexec-safepath=PATH to set the safe shell PATH for the suEXEC
+     feature. At least one --suexec-xxxxx option has to be provided together
+     with the --enable-suexec option to let APACI accept your request for
+     using the suEXEC feature.
 
      CAUTION: FOR DETAILS ABOUT THE SUEXEC FEATURE WE HIGHLY RECOMMEND YOU TO
               FIRST READ THE DOCUMENT htdocs/manual/suexec.html BEFORE USING
