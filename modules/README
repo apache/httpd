@@ -45,11 +45,10 @@ proxy/
   This houses the code for the proxy module for Apache.
 
 ssl/
+  This directory houses code for OpenSSL functionality.
 
 test/
   This directory houses modules which test various components 
   of Apache.  You should not compile these into a production
   server.  
 
-tls/
-  This directory houses code for OpenSSL functionality.
