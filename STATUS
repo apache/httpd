@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/01/29 03:20:14 $]
+Last modified at [$Date: 2004/01/29 09:50:19 $]
 
 Release:
 
@@ -76,7 +76,7 @@ RELEASE SHOWSTOPPERS:
 
   worker MPM parent process crash
     http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/mpm/worker/worker.c?r1=1.145&r2=1.146
-    +1: trawick, stoddard
+    +1: trawick, stoddard, jorton
 
 PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
@@ -317,7 +317,7 @@ PATCHES TO BACKPORT FROM 2.1
     * mod_usertrack: Use always the Cookie header to determine
       the cookie name (2.0 + 1.3). PR 11475.
         modules/metadata/mod_usertrack.c: r1.45
-      +1: nd, trawick
+      +1: nd, trawick, jorton
 
 CURRENT RELEASE NOTES:
 
