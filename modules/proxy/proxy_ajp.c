@@ -135,7 +135,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     }
 
     /* allocate an AJP message to store the data of the buckets */
-    status = ajp_alloc_data_msg(r, &buff, &bufsiz, &msg);
+    status = ajp_alloc_data_msg(r->pool, &buff, &bufsiz, &msg);
     if (status != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                      "proxy: ajp_alloc_data_msg failed");
@@ -183,7 +183,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                      "proxy: got %" APR_SIZE_T_FMT " bytes of data", bufsiz);
         if (bufsiz > 0) {
-            status = ajp_send_data_msg(conn->sock, r, msg, bufsiz);
+            status = ajp_send_data_msg(conn->sock, msg, bufsiz);
             if (status != APR_SUCCESS) {
                 apr_brigade_destroy(input_brigade);
                 ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
@@ -243,7 +243,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                     }
 
                     ajp_msg_reset(msg); /* will go in ajp_send_data_msg */
-                    status = ajp_send_data_msg(conn->sock, r, msg, bufsiz);
+                    status = ajp_send_data_msg(conn->sock, msg, bufsiz);
                     if (status != APR_SUCCESS) {
                         ap_log_error(APLOG_MARK, APLOG_DEBUG, status, r->server,
                                      "ajp_send_data_msg failed");
