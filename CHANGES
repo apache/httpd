@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_rewrite: Allow piped rewrite logs to be relative to ServerRoot.
+     [André Malo]
+
   *) mod_ssl: Fix segfaults after renegotiation failure. PR 21370
      [Hartmut Keil <Hartmut.Keil@adnovum.ch>]
 
