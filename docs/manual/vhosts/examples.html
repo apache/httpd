@@ -190,10 +190,11 @@
     The alias <SAMP>www.domain.tld</SAMP> should be used for the
     main server which should also catch any unspecified addresses. 
     We want to use a virtual host for the alias
-    <SAMP>www.otherdomain.tld</SAMP> and one virtual host should
+    <SAMP>www.otherdomain.tld</SAMP> and another virtual host, 
+    with server name <SAMP>www.sub.domain.tld</SAMP>, should
     catch any request to hostnames of the form
-    <SAMP>*.sub.domain.tld</SAMP> with <SAMP>www.sub.domain.tld</SAMP>
-    as its server name. The address <SAMP>111.22.33.55</SAMP> should be
+    <SAMP>*.sub.domain.tld</SAMP>. 
+    The address <SAMP>111.22.33.55</SAMP> should be
     used for the virtual hosts.
     <P>
     <STRONG>Server configuration:</STRONG>
