@@ -1,5 +1,9 @@
 Changes with Apache 1.2b5
 
+  *) Don't call can_exec() if suexec_enabled. Calling this requires
+     scripts executed by the suexec wrapper to be world executable, which
+     defeats one of the advantages of running the wrapper. [Randy Terbush]
+
   *) Portability Fix: IRIX complained with 'make clean' about *pure* (removed)
      [Jim Jagielski]
      

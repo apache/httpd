@@ -377,10 +377,12 @@ int cgi_handler (request_rec *r)
     if (r->finfo.st_mode == 0)
 	return log_scripterror(r, conf, NOT_FOUND,
 			       "script not found or unable to stat");
-    if(!can_exec(&r->finfo))
-	return log_scripterror(r, conf, FORBIDDEN,
-			       "file permissions deny server execution");
-    
+    if (!suexec_enabled) {
+        if (!can_exec(&r->finfo))
+            return log_scripterror(r, conf, FORBIDDEN,
+                                   "file permissions deny server execution");
+    }
+
     if ((retval = setup_client_block(r, REQUEST_CHUNKED_ERROR)))
 	return retval;
 
