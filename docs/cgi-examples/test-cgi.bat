@@ -5,7 +5,7 @@ echo Content-type: text/plain
 echo.
 echo CGI/1.0 test script report:
 echo.
-echo args are "%*".
+echo args are "%0 %*".
 echo.
 echo SERVER_SOFTWARE = %SERVER_SOFTWARE%
 echo SERVER_NAME = %SERVER_NAME%
