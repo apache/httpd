@@ -1,24 +1,24 @@
-# Microsoft Developer Studio Project File - Name="ApacheModuleAuthDBM" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="mod_auth_dbm" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Dynamic-Link Library" 0x0102
 
-CFG=ApacheModuleAuthDBM - Win32 Release
+CFG=mod_auth_dbm - Win32 Release
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
-!MESSAGE NMAKE /f "ApacheModuleAuthDBM.mak".
+!MESSAGE NMAKE /f "mod_auth_dbm.mak".
 !MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "ApacheModuleAuthDBM.mak" CFG="ApacheModuleAuthDBM - Win32 Release"
+!MESSAGE NMAKE /f "mod_auth_dbm.mak" CFG="mod_auth_dbm - Win32 Release"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "ApacheModuleAuthDBM - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
-!MESSAGE "ApacheModuleAuthDBM - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "mod_auth_dbm - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "mod_auth_dbm - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
 !MESSAGE 
 
 # Begin Project
@@ -29,7 +29,7 @@ CPP=cl.exe
 MTL=midl.exe
 RSC=rc.exe
 
-!IF  "$(CFG)" == "ApacheModuleAuthDBM - Win32 Release"
+!IF  "$(CFG)" == "mod_auth_dbm - Win32 Release"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
@@ -38,8 +38,8 @@ RSC=rc.exe
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 0
-# PROP Output_Dir ".\ApacheModuleAuthDBMR"
-# PROP Intermediate_Dir ".\ApacheModuleAuthDBMR"
+# PROP Output_Dir ".\mod_auth_dbmR"
+# PROP Intermediate_Dir ".\mod_auth_dbmR"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /YX /c
@@ -55,7 +55,7 @@ LINK32=link.exe
 # ADD BASE LINK32 ApacheCore.lib aprlib.lib kernel32.lib /nologo /subsystem:windows /dll /map /machine:I386 /libpath:"..\..\CoreR" /libpath:"..\..\lib\apr\Release" /base:@BaseAddr.ref,mod_auth_dbm
 # ADD LINK32 ApacheCore.lib aprlib.lib kernel32.lib /nologo /subsystem:windows /dll /map /machine:I386 /libpath:"..\..\CoreR" /libpath:"..\..\lib\apr\Release" /base:@BaseAddr.ref,mod_auth_dbm
 
-!ELSEIF  "$(CFG)" == "ApacheModuleAuthDBM - Win32 Debug"
+!ELSEIF  "$(CFG)" == "mod_auth_dbm - Win32 Debug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
@@ -64,8 +64,8 @@ LINK32=link.exe
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir ".\ApacheModuleAuthDBMD"
-# PROP Intermediate_Dir ".\ApacheModuleAuthDBMD"
+# PROP Output_Dir ".\mod_auth_dbmD"
+# PROP Intermediate_Dir ".\mod_auth_dbmD"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /YX /c
@@ -86,8 +86,8 @@ LINK32=link.exe
 
 # Begin Target
 
-# Name "ApacheModuleAuthDBM - Win32 Release"
-# Name "ApacheModuleAuthDBM - Win32 Debug"
+# Name "mod_auth_dbm - Win32 Release"
+# Name "mod_auth_dbm - Win32 Debug"
 # Begin Source File
 
 SOURCE=..\..\modules\standard\mod_auth_dbm.c
