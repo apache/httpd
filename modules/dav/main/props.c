@@ -184,6 +184,9 @@
 #if APR_HAVE_STDIO_H
 #include <stdio.h>              /* for sprintf() */
 #endif
+#if APR_HAVE_ARPA_INET_H
+#include <arpa/inet.h>          /* for ntohs(), htons() */
+#endif
 
 #include "mod_dav.h"
 
