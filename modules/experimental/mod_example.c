@@ -882,13 +882,14 @@ static int x_post_config(apr_pool_t *pconf, apr_pool_t *plog,
  * server will still call any remaining modules with an handler for this
  * phase.
  */
-static void x_open_logs(apr_pool_t *pconf, apr_pool_t *plog,
+static int x_open_logs(apr_pool_t *pconf, apr_pool_t *plog,
                         apr_pool_t *ptemp, server_rec *s)
 {
     /*
      * Log the call and exit.
      */
     trace_add(s, NULL, NULL, "x_open_logs()");
+    return OK;
 }
 
 /*

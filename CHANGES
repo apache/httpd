@@ -1,5 +1,8 @@
 Changes with Apache 2.0.29-dev
 
+  *) Change open_logs hook to return a value, allowing you
+     to flag a error while opening logs
+     [Ian Holsman, Doug MacEachern]
 
   *) Change post_config hook to return a value, allowing you
      to flag a error post config

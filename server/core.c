@@ -3264,9 +3264,10 @@ static int core_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pte
     return OK;
 }
 
-static void core_open_logs(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s)
+static int core_open_logs(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s)
 {
     ap_open_logs(s, pconf);
+    return OK;  
 }
 
 static void core_insert_filter(request_rec *r)

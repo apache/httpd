@@ -979,7 +979,7 @@ AP_DECLARE_HOOK(void,pre_config,(apr_pool_t *pconf,apr_pool_t *plog,apr_pool_t *
  * @param plog The logging streams pool
  * @param ptemp The temporary pool
  * @param s The list of server_recs
- * @return OK or a 
+ * @return OK or DECLINED on success anything else is a error
  */
 AP_DECLARE_HOOK(int,post_config,(apr_pool_t *pconf,apr_pool_t *plog,apr_pool_t *ptemp,server_rec *s))
 
@@ -989,8 +989,9 @@ AP_DECLARE_HOOK(int,post_config,(apr_pool_t *pconf,apr_pool_t *plog,apr_pool_t *
  * @param plog The logging streams pool
  * @param ptemp The temporary pool
  * @param s The list of server_recs
+ * @return OK or DECLINED on success anything else is a error
  */
-AP_DECLARE_HOOK(void,open_logs,(apr_pool_t *pconf,apr_pool_t *plog,apr_pool_t *ptemp,server_rec *s))
+AP_DECLARE_HOOK(int,open_logs,(apr_pool_t *pconf,apr_pool_t *plog,apr_pool_t *ptemp,server_rec *s))
 
 /**
  * Run the child_init functions for each module
