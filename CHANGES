@@ -1,5 +1,8 @@
 Changes with Apache 2.0.45
 
+  *) Use saner default config values for suexec. PR 15713.
+     [Thom May <thom@planetarytramp.net>]
+
   *) mod_rewrite: Allow "RewriteEngine Off" even if no "Options FollowSymlinks"
      (or SymlinksIfOwnermatch) is set. PR 12395.  [André Malo]
 

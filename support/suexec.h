@@ -62,6 +62,12 @@
 #define _SUEXEC_H
 
 /*
+ * Include ap_config_layout so we can work out where the default htdocsdir
+ * and logsdir are.
+ */
+#include "ap_config_layout.h"
+
+/*
  * HTTPD_USER -- Define as the username under which Apache normally
  *               runs.  This is the only user allowed to execute
  *               this program.
@@ -117,7 +123,7 @@
  *             debugging purposes.
  */
 #ifndef AP_LOG_EXEC
-#define AP_LOG_EXEC "/usr/local/apache2/logs/cgi.log"	/* Need me? */
+#define AP_LOG_EXEC DEFAULT_EXP_LOGFILEDIR "/suexec_log" /* Need me? */
 #endif
 
 /*
@@ -126,7 +132,7 @@
  *             that can be used for suEXEC behavior.
  */
 #ifndef AP_DOC_ROOT
-#define AP_DOC_ROOT "/usr/local/apache2/htdocs"
+#define AP_DOC_ROOT DEFAULT_EXP_HTDOCSDIR
 #endif
 
 /*

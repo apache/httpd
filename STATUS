@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/01/25 00:01:09 $]
+Last modified at [$Date: 2003/01/28 03:05:38 $]
 
 Release:
 
@@ -68,10 +68,6 @@ PATCHES TO PORT FROM 2.1
  
     * mod_file_cache segfault bugfix. PR 16313.
      +1: stoddard, orlikowski, striker
-
-    * Use saner default config values for suexec. PR 15713.
-      support/suexec.h r1.8
-      +1: nd, jerenkrantz, trawick
 
     * Rewrite how proxy sends its request to allow input bodies to 
       morph the request bodies.  Previously, if an input filter
