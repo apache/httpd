@@ -101,7 +101,7 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\mod_rewrite.bsc"
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=kernel32.lib /nologo /subsystem:windows /dll /incremental:no /pdb:"$(OUTDIR)\mod_rewrite.pdb" /debug /machine:I386 /out:"$(OUTDIR)\mod_rewrite.so" /implib:"$(OUTDIR)\mod_rewrite.lib" /base:@"BaseAddr.ref",mod_rewrite /opt:ref 
+LINK32_FLAGS=kernel32.lib ws2_32.lib /nologo /subsystem:windows /dll /incremental:no /pdb:"$(OUTDIR)\mod_rewrite.pdb" /debug /machine:I386 /out:"$(OUTDIR)\mod_rewrite.so" /implib:"$(OUTDIR)\mod_rewrite.lib" /base:@"BaseAddr.ref",mod_rewrite /opt:ref 
 LINK32_OBJS= \
 	"$(INTDIR)\mod_rewrite.obj" \
 	"$(INTDIR)\passwd.obj" \
@@ -188,7 +188,7 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\mod_rewrite.bsc"
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=kernel32.lib /nologo /subsystem:windows /dll /incremental:no /pdb:"$(OUTDIR)\mod_rewrite.pdb" /debug /machine:I386 /out:"$(OUTDIR)\mod_rewrite.so" /implib:"$(OUTDIR)\mod_rewrite.lib" /base:@"BaseAddr.ref",mod_rewrite 
+LINK32_FLAGS=kernel32.lib ws2_32.lib /nologo /subsystem:windows /dll /incremental:no /pdb:"$(OUTDIR)\mod_rewrite.pdb" /debug /machine:I386 /out:"$(OUTDIR)\mod_rewrite.so" /implib:"$(OUTDIR)\mod_rewrite.lib" /base:@"BaseAddr.ref",mod_rewrite 
 LINK32_OBJS= \
 	"$(INTDIR)\mod_rewrite.obj" \
 	"$(INTDIR)\passwd.obj" \
