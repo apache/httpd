@@ -143,7 +143,6 @@ typedef struct {
 } listen_socket_t;
 
 typedef struct {
-    apr_time_t restart_time;
     HMTX accept_mutex;
     listen_socket_t listeners[1];
 } parent_info_t;
@@ -174,7 +173,6 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
         ap_listen_rec *lr;
         int num_listeners = 0;
 
-        ap_restart_time = parent_info->restart_time;
         ap_mpm_accept_mutex = parent_info->accept_mutex;
 
         /* Set up a default listener if necessary */
@@ -291,8 +289,6 @@ static char master_main()
         return FALSE;
     }
 
-    ap_restart_time = apr_time_now();
-    parent_info->restart_time = ap_restart_time;
     parent_info->accept_mutex = ap_mpm_accept_mutex;
 
     /* Allocate shared memory for scoreboard */
@@ -311,6 +307,7 @@ static char master_main()
         ap_init_scoreboard(sb_mem);
     }
 
+    ap_scoreboard_image->global->restart_time = apr_time_now();
     ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, ap_server_conf,
 		"%s configured -- resuming normal operations",
 		ap_get_server_version());
