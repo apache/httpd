@@ -2737,6 +2737,7 @@ static apr_status_t sendfile_it_all(core_net_rec *c,
                                     apr_off_t   file_offset,
                                     apr_size_t  file_bytes_left,
                                     apr_size_t  total_bytes_left,
+                                    apr_size_t  *bytes_sent,
                                     apr_int32_t flags)
 {
     apr_status_t rv;
@@ -2748,11 +2749,15 @@ static apr_status_t sendfile_it_all(core_net_rec *c,
                          == APR_SUCCESS)
                     && timeout > 0);  /* socket must be in timeout mode */
 
+    /* Reset the bytes_sent field */
+    *bytes_sent = 0;
+
     do {
         apr_size_t tmplen = file_bytes_left;
 
         rv = apr_sendfile(c->client_socket, fd, hdtr, &file_offset, &tmplen,
                           flags);
+        *bytes_sent += tmplen;
         total_bytes_left -= tmplen;
         if (!total_bytes_left || rv != APR_SUCCESS) {
             return rv;        /* normal case & error exit */
@@ -3647,6 +3652,11 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
  */
 #define MAX_IOVEC_TO_WRITE 16
 
+/* Optional function coming from mod_logio, used for logging of output
+ * traffic
+ */
+static APR_OPTIONAL_FN_TYPE(ap_logio_add_bytes_out) *logio_add_bytes_out;
+
 static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
 {
     apr_status_t rv;
@@ -3908,6 +3918,8 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
 
         if (fd) {
             apr_hdtr_t hdtr;
+            apr_size_t bytes_sent;
+
 #if APR_HAS_SENDFILE
             apr_int32_t flags = 0;
 #endif
@@ -3938,25 +3950,35 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
                                                   sending from              */
                                      flen,     /* length of file            */
                                      nbytes + flen, /* total length including
-                                                       headers                */
+                                                       headers              */
+                                     &bytes_sent,   /* how many bytes were
+                                                       sent                 */
                                      flags);   /* apr_sendfile flags        */
+
+                if (logio_add_bytes_out && bytes_sent > 0)
+                    logio_add_bytes_out(c, bytes_sent);
             }
             else
 #endif
             {
-                apr_size_t unused_bytes_sent;
                 rv = emulate_sendfile(net, fd, &hdtr, foffset, flen,
-                                      &unused_bytes_sent);
+                                      &bytes_sent);
+
+                if (logio_add_bytes_out && bytes_sent > 0)
+                    logio_add_bytes_out(c, bytes_sent);
             }
 
             fd = NULL;
         }
         else {
-            apr_size_t unused_bytes_sent;
+            apr_size_t bytes_sent;
 
             rv = writev_it_all(net->client_socket,
                                vec, nvec,
-                               nbytes, &unused_bytes_sent);
+                               nbytes, &bytes_sent);
+
+            if (logio_add_bytes_out && bytes_sent > 0)
+                logio_add_bytes_out(c, bytes_sent);
         }
 
         apr_brigade_destroy(b);
@@ -3988,6 +4010,8 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
 
 static int core_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s)
 {
+    logio_add_bytes_out = APR_RETRIEVE_OPTIONAL_FN(ap_logio_add_bytes_out);
+
     ap_set_version(pconf);
     ap_setup_make_content_type(pconf);
     return OK;

@@ -79,6 +79,7 @@
 #include "ap_config.h"
 #include "mod_log_config.h"
 #include "httpd.h"
+#include "http_core.h"
 #include "http_config.h"
 #include "http_protocol.h"
 
@@ -94,6 +95,16 @@ typedef struct logio_config_t {
     apr_off_t bytes_in;
     apr_off_t bytes_out;
 } logio_config_t;
+
+/*
+ * Optional function for the core to add to bytes_out
+ */
+
+static void ap_logio_add_bytes_out(conn_rec *c, apr_off_t bytes){
+    logio_config_t *cf = ap_get_module_config(c->conn_config, &logio_module);
+
+    cf->bytes_out += bytes;
+}
 
 /*
  * Format items...
@@ -133,24 +144,6 @@ static int logio_transaction(request_rec *r)
  * Logging of input and output filters...
  */
 
-static apr_status_t logio_out_filter(ap_filter_t *f,
-                                     apr_bucket_brigade *bb) {
-    apr_off_t length;
-    logio_config_t *cf = ap_get_module_config(f->c->conn_config, &logio_module);
-
-    if (!cf) { /* Create config */
-        cf = apr_pcalloc(f->c->pool, sizeof(*cf));
-        ap_set_module_config(f->c->conn_config, &logio_module, cf);
-    }
-
-    apr_brigade_length (bb, 0, &length);
-
-    if (length > 0)
-        cf->bytes_out += length;
-
-    return ap_pass_brigade(f->next, bb);
-}
-
 static apr_status_t logio_in_filter(ap_filter_t *f,
                                     apr_bucket_brigade *bb,
                                     ap_input_mode_t mode,
@@ -162,11 +155,6 @@ static apr_status_t logio_in_filter(ap_filter_t *f,
 
     status = ap_get_brigade(f->next, bb, mode, block, readbytes);
 
-    if (!cf) { /* Create config */
-        cf = apr_pcalloc(f->c->pool, sizeof(*cf));
-        ap_set_module_config(f->c->conn_config, &logio_module, cf);
-    }
-
     apr_brigade_length (bb, 0, &length);
 
     if (length > 0)
@@ -175,11 +163,30 @@ static apr_status_t logio_in_filter(ap_filter_t *f,
     return status;
 }
 
+static apr_status_t logio_out_filter(ap_filter_t *f,
+                                     apr_bucket_brigade *bb) {
+    apr_bucket *b = APR_BRIGADE_LAST(bb);
+
+    /* End of data, make sure we flush */
+    if (APR_BUCKET_IS_EOS(b)) {
+        APR_BRIGADE_INSERT_TAIL(bb,
+                                apr_bucket_flush_create(f->c->bucket_alloc));
+        APR_BUCKET_REMOVE(b);
+        apr_bucket_destroy(b);
+    }
+
+    return ap_pass_brigade(f->next, bb);
+}
+
 /*
  * The hooks...
  */
 
 static int logio_pre_conn(conn_rec *c) {
+    logio_config_t *cf = apr_pcalloc(c->pool, sizeof(*cf));
+
+    ap_set_module_config(c->conn_config, &logio_module, cf);
+
     ap_add_input_filter(logio_filter_name, NULL, NULL, c);
     ap_add_output_filter(logio_filter_name, NULL, NULL, c);
 
@@ -212,6 +219,8 @@ static void register_hooks(apr_pool_t *p)
                              AP_FTYPE_NETWORK - 1);
     ap_register_output_filter(logio_filter_name, logio_out_filter, NULL,
                               AP_FTYPE_NETWORK - 1);
+
+    APR_REGISTER_OPTIONAL_FN(ap_logio_add_bytes_out);
 }
 
 module AP_MODULE_DECLARE_DATA logio_module =

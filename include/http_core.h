@@ -61,6 +61,7 @@
 
 #include "apr.h"
 #include "apr_hash.h"
+#include "apr_optional.h"
 #include "util_filter.h"
 
 #if APR_HAVE_STRUCT_RLIMIT
@@ -623,6 +624,16 @@ extern AP_DECLARE_DATA ap_filter_rec_t *ap_core_input_filter_handle;
  */
 AP_DECLARE_HOOK(int, get_mgmt_items,
                 (apr_pool_t *p, const char * val, apr_hash_t *ht))
+
+/* ---------------------------------------------------------------------- */
+
+/* ----------------------------------------------------------------------
+ *
+ * I/O logging with mod_logio
+ */
+
+APR_DECLARE_OPTIONAL_FN(void, ap_logio_add_bytes_out,
+                        (conn_rec *c, apr_off_t bytes));
 
 /* ---------------------------------------------------------------------- */
 

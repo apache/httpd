@@ -1,5 +1,9 @@
 Changes with Apache 2.0.44
 
+  *) More accurate logging of bytes sent in mod_logio when
+     the client terminates the connection before the response
+     is completely sent  [Bojan Smojver <bojan@rexursive.com>]
+
   *) Fix some problems in the perchild MPM.  
      [Jonas Eriksson <jonas@webkonsulterna.com>]
 
