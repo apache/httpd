@@ -71,5 +71,6 @@ extern server_rec *ap_server_conf;
 #define AP_MPM_WANT_SET_PIDFILE
 #define AP_MPM_WANT_SET_MAX_REQUESTS
 #define AP_MPM_DISABLE_NAGLE_ACCEPTED_SOCK
+#define AP_MPM_WANT_SET_MAX_MEM_FREE
 
 #endif /* APACHE_MPM_MPMT_OS2_H */
