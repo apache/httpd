@@ -613,16 +613,17 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
 
             headers_out = ap_cache_cacheable_hdrs_out(r->pool, r->headers_out);
 
+            if (!apr_table_get(headers_out, "Content-Type") &&
+                r->content_type) {
+                apr_table_setn(headers_out, "Content-Type",
+                               ap_make_content_type(r, r->content_type));
+            }
+
             rv = store_table(dobj->hfd, headers_out);
             if (rv != APR_SUCCESS) {
                 return rv;
             }
 
-            /* This case only occurs when the content is generated locally */
-            if (!apr_table_get(r->headers_out, "Content-Type") && r->content_type) {
-                apr_table_setn(r->headers_out, "Content-Type",
-                               ap_make_content_type(r, r->content_type));
-            }
         }
 
         /* Parse the vary header and dump those fields from the headers_in. */
