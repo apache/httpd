@@ -139,12 +139,12 @@ Example:
 </pre>
 
 <P>
-Then the document <samp>xxxx.ja.jis</samp> will be treated as being a
+Then the document <CODE>xxxx.ja.jis</CODE> will be treated as being a
 Japanese document whose charset is ISO-2022-JP (as will the document
-<samp>xxxx.jis.ja</samp>). Although the content charset is reported to
-the client, the browser is unlikely to use this information. The
-AddCharset directive is more useful for
-<A HREF="../content-negotiation.html">content negotiation</A>, where
+<CODE>xxxx.jis.ja</CODE>). The AddCharset directive is useful for both
+to inform the client about the character encoding of the document so
+that the document can be interpreted and displayed appropriately, and
+for <A HREF="../content-negotiation.html">content negotiation</A>, where
 the server returns one from several documents based on the client's
 charset preference.
 </P>
