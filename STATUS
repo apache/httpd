@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/01/12 14:30:13 $]
+Last modified at [$Date: 2004/01/12 14:37:47 $]
 
 Release:
 
@@ -251,19 +251,6 @@ PATCHES TO BACKPORT FROM 2.1
               Yes, I think, a useful error message is better than
               a coredump in this case.
           jerenkrantz: Oh, bah.  Let 'em segfault.  Use flood!
-
-    * mod_rewrite: more or less cosmetic fix. If a .htaccess in DocumentRoot
-      configures:
-        RewriteBase /
-        RewriteRule foo bar [R]
-      it will be redirected to http://host//bar (double slash).
-      In 2.1 this was fixed while I rewrote the subst_prefix_path function,
-      which is responsible for this behaviour. I'd suggest to backport that
-      function rewrite at all (it's even much better code :-). (2.0 + 1.3)
-        modules/mappers/mod_rewrite.c: r1.162
-      jerenkrantz: Committed to 2.0.  Will leave backport to 1.3 to someone
-                   else.  BTW, clever use of NULL terms (or lack of).  ;-)
-      +1: nd, trawick, jerenkrantz
 
     * mod_ssl: fix a link failure when the openssl-engine libraries are
       present but the engine headers are missing.
