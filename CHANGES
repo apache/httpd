@@ -1,4 +1,5 @@
 Changes with Apache 2.0.30-dev
+
   *) Win32: Made change to apr_sendfile() to return APR_ENOTIMPL
      if oslevel < WINNT.  This should fix several problems reported
      Against 2.0.28 on Windows 98 [Bill Stoddard]
@@ -7,8 +8,8 @@ Changes with Apache 2.0.30-dev
      to fail. [Bill Stoddard]
 
   *) Change core code to allow an MPM to set hard thread/server
-     limits at startup.  prefork and worker MPMs now have directives
-     to set these limits.  [Jeff Trawick]
+     limits at startup.  prefork, worker, and perchild MPMs now have 
+     directives to set these limits.  [Jeff Trawick]
 
   *) Win32: The async AcceptEx() event should be autoreset upon
      successful completion of a wait (WaitForSingleObject). This

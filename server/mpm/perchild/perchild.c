@@ -114,19 +114,23 @@
 #define AP_PERCHILD_THISCHILD -1
 #define AP_PERCHILD_OTHERCHILD -2
 
-#define AP_ID_FROM_CHILD_THREAD(c, t)    ((c * HARD_THREAD_LIMIT) + t)
-#define AP_CHILD_THREAD_FROM_ID(i)    (i / HARD_THREAD_LIMIT), (i % HARD_THREAD_LIMIT)
-
 /* Limit on the threads per process.  Clients will be locked out if more than
- * this  * HARD_SERVER_LIMIT are needed.
+ * this * server_limit are needed.
  *
  * We keep this for one reason it keeps the size of the scoreboard file small
  * enough that we can read the whole thing without worrying too much about
  * the overhead.
  */
-#ifndef HARD_THREAD_LIMIT
-#define HARD_THREAD_LIMIT 64 
+#ifndef DEFAULT_THREAD_LIMIT
+#define DEFAULT_THREAD_LIMIT 64 
 #endif
+
+/* Admin can't tune ThreadLimit beyond MAX_THREAD_LIMIT.  We want
+ * some sort of compile-time limit to help catch typos.
+ */
+#ifndef MAX_THREAD_LIMIT
+#define MAX_THREAD_LIMIT 20000
+#endif 
 
 /* Limit on the total --- clients will be locked out if more servers than
  * this are needed.  It is intended solely to keep the server from crashing
@@ -139,8 +143,15 @@
  * enough that we can read the whole thing without worrying too much about
  * the overhead.
  */
-#ifndef HARD_SERVER_LIMIT
-#define HARD_SERVER_LIMIT 8 
+#ifndef DEFAULT_SERVER_LIMIT
+#define DEFAULT_SERVER_LIMIT 8 
+#endif
+
+/* Admin can't tune ServerLimit beyond MAX_SERVER_LIMIT.  We want
+ * some sort of compile-time limit to help catch typos.
+ */
+#ifndef MAX_SERVER_LIMIT
+#define MAX_SERVER_LIMIT 20000
 #endif
 
 /*
@@ -151,6 +162,11 @@ static int threads_to_start = 0;         /* Worker threads per child */
 static int min_spare_threads = 0;
 static int max_spare_threads = 0;
 static int max_threads = 0;
+static int server_limit = DEFAULT_SERVER_LIMIT;
+static int first_server_limit;
+static int thread_limit = DEFAULT_THREAD_LIMIT;
+static int first_thread_limit;
+static int changed_limit_at_restart;
 static int max_requests_per_child = 0;
 static int num_daemons = 0;
 static int curr_child_num = 0;
@@ -179,11 +195,9 @@ typedef struct child_info_t child_info_t;
  * run as.  The hash table is used to correlate a server name with a child
  * process.
  */
-static child_info_t child_info_table[HARD_SERVER_LIMIT];
-static int          thread_socket_table[HARD_THREAD_LIMIT];
-
-
-struct ap_ctable    ap_child_table[HARD_SERVER_LIMIT];
+static child_info_t *child_info_table;
+static int          *thread_socket_table;
+struct ap_ctable    *ap_child_table;
 
 /*
  * The max child slot ever assigned, preserved across restarts.  Necessary
@@ -195,7 +209,7 @@ struct ap_ctable    ap_child_table[HARD_SERVER_LIMIT];
  * many child processes in this MPM.
  */
 int ap_max_daemons_limit = -1;
-int ap_threads_per_child = HARD_THREAD_LIMIT;
+int ap_threads_per_child; /* XXX not part of API!  axe it! */
 
 module AP_MODULE_DECLARE_DATA mpm_perchild_module;
 
@@ -235,7 +249,7 @@ static unsigned int my_pid; /* Linux getpid() doesn't work except in
 /* Keep track of the number of worker threads currently active */
 static int worker_thread_count;
 static apr_lock_t *worker_thread_count_mutex;
-static int worker_thread_free_ids[HARD_THREAD_LIMIT];
+static int *worker_thread_free_ids;
 static apr_threadattr_t *worker_thread_attr;
 
 /* Keep track of the number of idle worker threads */
@@ -264,10 +278,10 @@ AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result)
             *result = AP_MPMQ_STATIC;
             return APR_SUCCESS;
         case AP_MPMQ_HARD_LIMIT_DAEMONS:
-            *result = HARD_SERVER_LIMIT;
+            *result = server_limit;
             return APR_SUCCESS;
         case AP_MPMQ_HARD_LIMIT_THREADS:
-            *result = HARD_THREAD_LIMIT;
+            *result = thread_limit;
             return APR_SUCCESS;
         case AP_MPMQ_MAX_THREADS:
             *result = max_threads;
@@ -531,7 +545,7 @@ static void process_socket(apr_pool_t *p, apr_socket_t *sock, long conn_id)
     conn_rec *current_conn;
     int csd;
     apr_status_t rv;
-    int thread_num = conn_id % HARD_THREAD_LIMIT;
+    int thread_num = conn_id % thread_limit;
     void *sbh;
 
     if ((rv = apr_os_sock_get(&csd, sock)) != APR_SUCCESS) {
@@ -552,7 +566,7 @@ static void process_socket(apr_pool_t *p, apr_socket_t *sock, long conn_id)
         ap_sock_disable_nagle(sock);
     }
 
-    ap_create_sb_handle(&sbh, p, conn_id / HARD_THREAD_LIMIT, thread_num);
+    ap_create_sb_handle(&sbh, p, conn_id / thread_limit, thread_num);
     current_conn = ap_run_create_connection(p, ap_server_conf, sock, conn_id, sbh);
     if (current_conn) {
         ap_process_connection(current_conn);
@@ -641,7 +655,7 @@ static void *worker_thread(apr_thread_t *thd, void *arg)
     int srv;
     int curr_pollfd;
     int thread_num = *((int *) arg);
-    long conn_id = child_num * HARD_THREAD_LIMIT + thread_num;
+    long conn_id = child_num * thread_limit + thread_num;
     apr_pollfd_t *pollset;
     int n;
     apr_status_t rv;
@@ -992,6 +1006,7 @@ static void child_main(int child_num_arg)
     }
     idle_thread_count = threads_to_start;
     worker_thread_count = 0;
+    worker_thread_free_ids = (int *)apr_pcalloc(pchild, thread_limit * sizeof(int));
     for (i = 0; i < max_threads; i++) {
         worker_thread_free_ids[i] = i;
     }
@@ -1244,6 +1259,15 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
     pconf = _pconf;
     ap_server_conf = s;
+    first_server_limit = server_limit;
+    first_thread_limit = thread_limit;
+    if (changed_limit_at_restart) {
+        ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_NOERRNO, 0, s,
+                     "WARNING: Attempt to change ServerLimit or ThreadLimit "
+                     "ignored during restart");
+        changed_limit_at_restart = 0;
+    }
+
     if ((rv = apr_file_pipe_create(&pipe_of_death_in, &pipe_of_death_out,
                                    pconf)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv,
@@ -1285,7 +1309,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     }
     /* Initialize the child table */
     if (!is_graceful) {
-        for (i = 0; i < HARD_SERVER_LIMIT; i++) {
+        for (i = 0; i < server_limit; i++) {
             ap_child_table[i].pid = 0;
         }
     }
@@ -1402,7 +1426,10 @@ static void perchild_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *pte
 {
     static int restart_num = 0;
     int no_detach, debug;
+    ap_directive_t *pdir;
     int i;
+    int tmp_server_limit = DEFAULT_SERVER_LIMIT;
+    int tmp_thread_limit = DEFAULT_THREAD_LIMIT;
 
     debug = ap_exists_config_define("DEBUG");
 
@@ -1431,7 +1458,7 @@ static void perchild_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *pte
     threads_to_start = DEFAULT_START_THREAD;
     min_spare_threads = DEFAULT_MIN_SPARE_THREAD;
     max_spare_threads = DEFAULT_MAX_SPARE_THREAD;
-    max_threads = HARD_THREAD_LIMIT;
+    max_threads = thread_limit;
     ap_pid_fname = DEFAULT_PIDLOG;
     ap_scoreboard_fname = DEFAULT_SCOREBOARD;
     ap_lock_fname = DEFAULT_LOCKFILE;
@@ -1440,13 +1467,33 @@ static void perchild_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *pte
 
     apr_cpystrn(ap_coredump_dir, ap_server_root, sizeof(ap_coredump_dir));
 
-    for (i = 0; i < HARD_SERVER_LIMIT; i++) {
+    /* we need to know ServerLimit and ThreadLimit before we start processing
+     * the tree because we need to already have allocated child_info_table
+     */
+    for (pdir = ap_conftree; pdir != NULL; pdir = pdir->next) {
+        if (!strcasecmp(pdir->directive, "ServerLimit")) {
+            if (atoi(pdir->args) > tmp_server_limit) {
+                tmp_server_limit = atoi(pdir->args);
+                if (tmp_server_limit > MAX_SERVER_LIMIT) {
+                    tmp_server_limit = MAX_SERVER_LIMIT;
+                }
+            }
+        }
+        else if (!strcasecmp(pdir->directive, "ThreadLimit")) {
+            if (atoi(pdir->args) > tmp_thread_limit) {
+                tmp_thread_limit = atoi(pdir->args);
+                if (tmp_thread_limit > MAX_THREAD_LIMIT) {
+                    tmp_thread_limit = MAX_THREAD_LIMIT;
+                }
+            }
+        }
+    }
+
+    child_info_table = (child_info_t *)apr_pcalloc(p, tmp_server_limit * sizeof(child_info_t));
+    for (i = 0; i < tmp_server_limit; i++) {
         child_info_table[i].uid = -1;
         child_info_table[i].gid = -1;
         child_info_table[i].sd = -1;
-    }
-    for (i = 0; i < HARD_THREAD_LIMIT; i++) {
-        thread_socket_table[i] = AP_PERCHILD_THISCHILD;
     }
 }
 
@@ -1524,14 +1571,13 @@ static char *make_perchild_socket(const char *fullsockname, int sd[2])
     return NULL;
 }
 
-
 static int perchild_post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s)
 {
     int i;
     server_rec *sr;
     perchild_server_conf *sconf;
     int def_sd[2];
-    
+
     def_sd[0] = -1;
     def_sd[1] = -1;
 
@@ -1557,13 +1603,20 @@ static int perchild_post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *pte
             child_info_table[i].sd = def_sd[0];
         }
     }
+
+    thread_socket_table = (int *)apr_pcalloc(p, thread_limit * sizeof(int));
+    for (i = 0; i < thread_limit; i++) {
+        thread_socket_table[i] = AP_PERCHILD_THISCHILD;
+    }
+    ap_child_table = (ap_ctable *)apr_pcalloc(p, server_limit * sizeof(ap_ctable));
+
     return OK;
 }
 
 static int perchild_post_read(request_rec *r)
 {
     ap_filter_t *f = r->connection->input_filters;
-    int thread_num = r->connection->id % HARD_THREAD_LIMIT;
+    int thread_num = r->connection->id % thread_limit;
     perchild_server_conf *sconf = (perchild_server_conf *)
                             ap_get_module_config(r->server->module_config, 
                                                  &mpm_perchild_module);
@@ -1670,17 +1723,16 @@ static const char *set_num_daemons(cmd_parms *cmd, void *dummy,
     }
 
     num_daemons = atoi(arg);
-    if (num_daemons > HARD_SERVER_LIMIT) {
+    if (num_daemons > server_limit) {
        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
-                    "WARNING: NumServers of %d exceeds compile time limit "
-                    "of %d servers,", num_daemons, HARD_SERVER_LIMIT);
+                    "WARNING: NumServers of %d exceeds ServerLimit value "
+                    "of %d servers,", num_daemons, server_limit);
        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
                     " lowering NumServers to %d.  To increase, please "
-                    "see the", HARD_SERVER_LIMIT);
+                    "see the", server_limit);
        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
-                    " HARD_SERVER_LIMIT define in %s.",
-                    AP_MPM_HARD_LIMITS_FILE);
-       num_daemons = HARD_SERVER_LIMIT;
+                    " ServerLimit directive.");
+       num_daemons = server_limit;
     } 
     else if (num_daemons < 1) {
         ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
@@ -1699,17 +1751,16 @@ static const char *set_threads_to_start(cmd_parms *cmd, void *dummy,
     }
 
     threads_to_start = atoi(arg);
-    if (threads_to_start > HARD_THREAD_LIMIT) {
+    if (threads_to_start > thread_limit) {
         ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
-                     "WARNING: StartThreads of %d exceeds compile time"
-                     " limit of %d threads,", threads_to_start,
-                     HARD_THREAD_LIMIT);
+                     "WARNING: StartThreads of %d exceeds ThreadLimit value"
+                     " of %d threads,", threads_to_start,
+                     thread_limit);
         ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
                      " lowering StartThreads to %d. To increase, please"
-                     " see the", HARD_THREAD_LIMIT);
+                     " see the", thread_limit);
         ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
-                     " HARD_THREAD_LIMIT define in %s.",
-                     AP_MPM_HARD_LIMITS_FILE);
+                     " ThreadLimit directive.");
     }
     else if (threads_to_start < 1) {
         ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
@@ -1750,12 +1801,12 @@ static const char *set_max_spare_threads(cmd_parms *cmd, void *dummy,
     }
 
     max_spare_threads = atoi(arg);
-    if (max_spare_threads >= HARD_THREAD_LIMIT) {
+    if (max_spare_threads >= thread_limit) {
        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
                     "WARNING: detected MinSpareThreads set higher than");
        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
-                    "HARD_THREAD_LIMIT. Resetting to %d", HARD_THREAD_LIMIT);
-       max_spare_threads = HARD_THREAD_LIMIT;
+                    "ThreadLimit. Resetting to %d", thread_limit);
+       max_spare_threads = thread_limit;
     }
     return NULL;
 }
@@ -1768,12 +1819,12 @@ static const char *set_max_threads(cmd_parms *cmd, void *dummy, const char *arg)
     }
 
     max_threads = atoi(arg);
-    if (max_threads > HARD_THREAD_LIMIT) {
+    if (max_threads > thread_limit) {
        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
                     "WARNING: detected MaxThreadsPerChild set higher than");
        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
-                    "HARD_THREAD_LIMIT. Resetting to %d", HARD_THREAD_LIMIT);
-       max_threads = HARD_THREAD_LIMIT;
+                    "ThreadLimit. Resetting to %d", thread_limit);
+       max_threads = thread_limit;
     }
     return NULL;
 }
@@ -1783,6 +1834,7 @@ static const char *set_child_per_uid(cmd_parms *cmd, void *dummy, const char *u,
 {
     int i;
     int max_this_time = atoi(num) + curr_child_num;
+
     for (i = curr_child_num; i < max_this_time; i++, curr_child_num++) {
         child_info_t *ug = &child_info_table[i - 1];
 
@@ -1828,6 +1880,86 @@ static const char *assign_childuid(cmd_parms *cmd, void *dummy, const char *uid,
     return NULL;
 }
 
+static const char *set_server_limit (cmd_parms *cmd, void *dummy, const char *arg) 
+{
+    int tmp_server_limit;
+    
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+
+    tmp_server_limit = atoi(arg);
+    /* you cannot change ServerLimit across a restart; ignore
+     * any such attempts
+     */
+    if (first_server_limit &&
+        tmp_server_limit != server_limit) {
+        /* how do we log a message?  the error log is a bit bucket at this
+         * point; we'll just have to set a flag so that ap_mpm_run()
+         * logs a warning later
+         */
+        changed_limit_at_restart = 1;
+        return NULL;
+    }
+    server_limit = tmp_server_limit;
+    
+    if (server_limit > MAX_SERVER_LIMIT) {
+       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                    "WARNING: ServerLimit of %d exceeds compile time limit "
+                    "of %d servers,", server_limit, MAX_SERVER_LIMIT);
+       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                    " lowering ServerLimit to %d.", MAX_SERVER_LIMIT);
+       server_limit = MAX_SERVER_LIMIT;
+    } 
+    else if (server_limit < 1) {
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                     "WARNING: Require ServerLimit > 0, setting to 1");
+	server_limit = 1;
+    }
+    return NULL;
+}
+
+static const char *set_thread_limit (cmd_parms *cmd, void *dummy, const char *arg) 
+{
+    int tmp_thread_limit;
+    
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+
+    tmp_thread_limit = atoi(arg);
+    /* you cannot change ThreadLimit across a restart; ignore
+     * any such attempts
+     */
+    if (first_thread_limit &&
+        tmp_thread_limit != thread_limit) {
+        /* how do we log a message?  the error log is a bit bucket at this
+         * point; we'll just have to set a flag so that ap_mpm_run()
+         * logs a warning later
+         */
+        changed_limit_at_restart = 1;
+        return NULL;
+    }
+    thread_limit = tmp_thread_limit;
+    
+    if (thread_limit > MAX_THREAD_LIMIT) {
+       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                    "WARNING: ThreadLimit of %d exceeds compile time limit "
+                    "of %d servers,", thread_limit, MAX_THREAD_LIMIT);
+       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                    " lowering ThreadLimit to %d.", MAX_THREAD_LIMIT);
+       thread_limit = MAX_THREAD_LIMIT;
+    } 
+    else if (thread_limit < 1) {
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                     "WARNING: Require ThreadLimit > 0, setting to 1");
+	thread_limit = 1;
+    }
+    return NULL;
+}
+
 static const command_rec perchild_cmds[] = {
 UNIX_DAEMON_COMMANDS,
 LISTEN_COMMANDS,
@@ -1846,6 +1978,10 @@ AP_INIT_TAKE3("ChildperUserID", set_child_per_uid, NULL, RSRC_CONF,
               "Specify a User and Group for a specific child process."),
 AP_INIT_TAKE2("AssignUserID", assign_childuid, NULL, RSRC_CONF,
               "Tie a virtual host to a specific child process."),
+AP_INIT_TAKE1("ServerLimit", set_server_limit, NULL, RSRC_CONF,
+              "Maximum value of NumServers for this run of Apache"),
+AP_INIT_TAKE1("ThreadLimit", set_thread_limit, NULL, RSRC_CONF,
+              "Maximum worker threads in a server for this run of Apache"),
 { NULL }
 };
 
