@@ -2072,7 +2072,7 @@ API_EXPORT(long) ap_send_fb_length(BUFF *fb, request_rec *r, long length)
     char buf[IOBUFSIZE];
     long total_bytes_sent = 0;
     long zero_timeout = 0;
-    int n, w, rc, o;
+    int n, w, o;
 
     if (length == 0) {
         return 0;
@@ -2096,7 +2096,9 @@ API_EXPORT(long) ap_send_fb_length(BUFF *fb, request_rec *r, long length)
                 break;
             }
             /* next read will block, so flush the client now */
-            rc = ap_bflush(r->connection->client);
+            if (ap_rflush(r) == EOF) {
+                break;
+            }
 
             ap_bsetopt(fb, BO_TIMEOUT, &r->server->timeout);
             n = ap_bread(fb, buf, sizeof(buf));
