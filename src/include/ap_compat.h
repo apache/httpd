@@ -118,6 +118,7 @@ extern "C" {
 #define escape_html                    ap_escape_html
 #define escape_path_segment            ap_escape_path_segment
 #define escape_shell_cmd               ap_escape_shell_cmd
+#define escape_uri                     ap_escape_uri
 #define excess_requests_per_child      ap_excess_requests_per_child
 #define exists_scoreboard_image        ap_exists_scoreboard_image
 #define finalize_request_protocol      ap_finalize_request_protocol

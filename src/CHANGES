@@ -1,5 +1,8 @@
 Changes with Apache 1.3.5
 
+  *) Add a compatibility define for escape_uri() -> ap_escape_uri() to
+     ap_compat.h. [David White <david@persimmon.com>] PR#3725
+
   *) Make NDBM file suffix determination for mod_rewrite more accurate, i.e.
      use `.db' instead of `.pag' not only for FreeBSD, but also when
      the NDBM library looks like Berkeley-DB based.
