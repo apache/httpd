@@ -171,11 +171,11 @@ static int resolve_symlink(char *d, apr_finfo_t *lfi, int opts, apr_pool_t *p)
     apr_finfo_t fi;
     int res;
 
-    if (!(opts & OPT_SYM_OWNER | OPT_SYM_LINKS))
+    if (!(opts & (OPT_SYM_OWNER | OPT_SYM_LINKS)))
         return HTTP_FORBIDDEN;
 
     if (opts & OPT_SYM_LINKS) {
-        if (res = apr_stat(&fi, d, lfi->valid, p) != APR_SUCCESS)
+        if ((res = apr_stat(&fi, d, lfi->valid, p)) != APR_SUCCESS)
             return HTTP_FORBIDDEN;
         return OK;
     }
@@ -185,11 +185,11 @@ static int resolve_symlink(char *d, apr_finfo_t *lfi, int opts, apr_pool_t *p)
      * owner of the symlink, then get the info of the target.
      */
     if (!(lfi->valid & APR_FINFO_OWNER))
-        if (res = apr_lstat(&fi, d, lfi->valid | APR_FINFO_OWNER, p)
+        if ((res = apr_lstat(&fi, d, lfi->valid | APR_FINFO_OWNER, p))
                 != APR_SUCCESS)
             return HTTP_FORBIDDEN;
 
-    if (res = apr_stat(&fi, d, lfi->valid, p) != APR_SUCCESS)
+    if ((res = apr_stat(&fi, d, lfi->valid, p)) != APR_SUCCESS)
         return HTTP_FORBIDDEN;
 
     if (apr_compare_users(fi.user, lfi->user) != APR_SUCCESS) 
