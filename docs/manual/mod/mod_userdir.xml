@@ -32,10 +32,10 @@ above.</compatibility>
 
 <usage>
 
-    <p>The UserDir directive sets the real directory in a user's
-    home directory to use when a request for a document for a user
-    is received. <em>Directory-filename</em> is one of the
-    following:</p>
+    <p>The <directive>UserDir</directive> directive sets the real
+    directory in a user's home directory to use when a request for a
+    document for a user is received. <em>Directory-filename</em> is
+    one of the following:</p>
 
     <ul>
       <li>The name of a directory or a pattern such as those shown
@@ -87,7 +87,7 @@ http://www.foo.com/*/usr</td><td>http://www.foo.com/bob/usr/one/two.html</td></t
 http://www.foo.com/~*/</td><td>http://www.foo.com/~bob/one/two.html</td></tr>
 </table> 
 
-    <blockquote>
+<example>
       <strong>Be careful when using this directive; for instance,
       <code>"UserDir ./"</code> would map
       <code>"/~root"</code> to <code>"/"</code> - which is probably
@@ -97,7 +97,7 @@ http://www.foo.com/~*/</td><td>http://www.foo.com/~bob/one/two.html</td></tr>
       See also the <directive module="core">Directory</directive>
       directive and the <a href="../misc/security_tips.html">Security
       Tips</a> page for more information.</strong>
-    </blockquote>
+</example>
 
 </usage>
 
