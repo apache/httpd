@@ -62,8 +62,8 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "LibD"
 # PROP Target_Dir ""
 RSC=rc.exe
-# ADD BASE CPP /nologo /MDd /W3 /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /FD /c
-# ADD CPP /nologo /MDd /W3 /GX /ZI /Od /I "..\include" /I "..\os\win32" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /Fd"LibD\ap" /FD /c
+# ADD BASE CPP /nologo /MDd /W3 /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /FD /c
+# ADD CPP /nologo /MDd /W3 /GX /Zi /Od /I "..\include" /I "..\os\win32" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /Fd"LibD\ap" /FD /c
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
