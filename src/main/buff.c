@@ -263,7 +263,7 @@ static ap_inline int buff_read(BUFF *fb, void *buf, int nbyte)
     fd_set fds;
     struct timeval tv;
 
-    tpf_process_signals();
+    ap_check_signals();
     if (fb->flags & B_SOCKET) {
         alarm(rv = alarm(0));
         FD_ZERO(&fds);
@@ -271,11 +271,10 @@ static ap_inline int buff_read(BUFF *fb, void *buf, int nbyte)
         tv.tv_sec = rv+1;
         tv.tv_usec = 0;
         rv = ap_select(fb->fd_in + 1, &fds, NULL, NULL, &tv);
-        if (rv < 1) {
-            tpf_process_signals();
-            return(rv);
-        }
+        if (rv > 0)
+            rv = ap_read(fb, buf, nbyte);
     }
+    else
     rv = ap_read(fb, buf, nbyte);
 #else
     rv = ap_read(fb, buf, nbyte);

@@ -275,6 +275,9 @@ static int log_script(request_rec *r, cgi_server_conf * conf, int ret,
 
 
 struct cgi_child_stuff {
+#ifdef TPF
+    TPF_FORK_CHILD t;
+#endif
     request_rec *r;
     int nph;
     int debug;
@@ -325,6 +328,9 @@ static int cgi_child(void *child_stuff, child_info *pinfo)
      * NB only ISINDEX scripts get decoded arguments.
      */
 
+#ifdef TPF
+    return (0);
+#else
     ap_cleanup_for_exec();
 
     child_pid = ap_call_exec(r, pinfo, argv0, env, 0);
@@ -346,6 +352,7 @@ static int cgi_child(void *child_stuff, child_info *pinfo)
     /* NOT REACHED */
     return (0);
 #endif
+#endif  /* TPF */
 }
 
 static int cgi_handler(request_rec *r)
@@ -419,6 +426,11 @@ static int cgi_handler(request_rec *r)
     cld.r = r;
     cld.nph = nph;
     cld.debug = conf->logname ? 1 : 0;
+#ifdef TPF
+    cld.t.filename = r->filename;
+    cld.t.subprocess_env = r->subprocess_env;
+    cld.t.prog_type = FORK_FILE;
+#endif   /* TPF */
 
 #ifdef CHARSET_EBCDIC
     /* XXX:@@@ Is the generated/included output ALWAYS in text/ebcdic format? */

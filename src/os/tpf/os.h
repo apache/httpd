@@ -20,9 +20,6 @@
  * part of the header
  */
 #define INLINE extern ap_inline
-
-INLINE int ap_os_is_path_absolute(const char *file);
-
 #include "os-inline.c"
 #endif
 
@@ -30,7 +27,7 @@ INLINE int ap_os_is_path_absolute(const char *file);
 /* Compiler does not support inline, so prototype the inlineable functions
  * as normal
  */
-extern int ap_os_is_path_absolute(const char *file);
+extern int ap_os_is_path_absolute(const char *f);
 #endif
 
 /* Other ap_os_ routines not used by this platform */
@@ -42,70 +39,68 @@ extern int ap_os_is_path_absolute(const char *file);
 struct request_rec;
 extern int ap_checkconv(struct request_rec *r);
  
-#ifdef FD_SETSIZE
-#undef FD_SETSIZE 
-#endif
+#include <strings.h>
+#ifndef __strings_h
 
 #define FD_SETSIZE    2048 
  
-#ifdef __FD_MASK
-#undef __FD_MASK 
-#endif
+typedef long fd_mask;
 
-typedef long __FD_MASK;
+#define NBBY    8    /* number of bits in a byte */
+#define NFDBITS (sizeof(fd_mask) * NBBY)
+#define  howmany(x, y)  (((x)+((y)-1))/(y))
 
-#ifdef __NBBY
-#undef __NBBY 
-#endif
-
-#define __NBBY    8    /* number of bits in a byte */
-
-#ifdef __NFDBITS
-#undef __NFDBITS 
-#endif
-
-#define __NFDBITS (sizeof(__FD_MASK) * __NBBY)
-
-#ifndef __howmany
-#define  __howmany(x, y)  (((x)+((y)-1))/(y))
-#endif 
- 
 typedef struct fd_set { 
-        __FD_MASK fds_bits [__howmany(FD_SETSIZE, __NFDBITS)]; 
+        fd_mask fds_bits [howmany(FD_SETSIZE, NFDBITS)];
 } fd_set; 
 
-#define  FD_SET(n, p)((p)->fds_bits[(n)/__NFDBITS] |= (1 <<((n) % __NFDBITS)))
-
-#define  FD_CLR(n, p)((p)->fds_bits[(n)/__NFDBITS] &= ~(1 << ((n) % __NFDBITS)))
-
-#define  FD_ISSET(n, p)((p)->fds_bits[(n)/__NFDBITS] & (1 <<((n) % __NFDBITS)))
-
+#define FD_CLR(n, p)((p)->fds_bits[(n)/NFDBITS] &= ~(1 << ((n) % NFDBITS)))
+#define FD_ISSET(n, p)((p)->fds_bits[(n)/NFDBITS] & (1 <<((n) % NFDBITS)))
 #define  FD_ZERO(p)   memset((char *)(p), 0, sizeof(*(p)))
+#endif
     
+#ifdef FD_SET
+#undef FD_SET
+#define FD_SET(n, p) (0)
+#endif
 
-#define  SIGPIPE  13
-#define  SIGQUIT  24
-#define  SO_KEEPALIVE  0x0008
+#define  RESOURCE_KEY ((void*) 0xC1C2C1C3)
 
 /* TPF doesn't have, or need, tzset (it is used in mod_expires.c) */
 #define tzset()
 
-#include <stdarg.h>
-#undef va_list
-#undef va_start
-#undef va_arg
-#undef va_end
+#include <i$netd.h>
+struct apache_input {
+    INETD_SERVER_INPUT  inetd_server;
+    void                *scoreboard_heap;   /* scoreboard system heap address */
+    int                 scoreboard_fd;      /* scoreboard file descriptor */
+    int                 slot;               /* child number */
+    int                 generation;         /* server generation number */
+    int                 listeners[10];
+    time_t              restart_time;
+};
 
-typedef char *va_list;
+typedef struct apache_input APACHE_TPF_INPUT;
 
-#define __va_promote(type) (((sizeof(type) + sizeof(int) - 1) \
-                           / sizeof(int)) * sizeof(int))
+typedef struct tpf_fork_child {
+     char  *filename;
+     enum { FORK_NAME = 1, FORK_FILE = 2 } prog_type;
+     void  *subprocess_env;
+}TPF_FORK_CHILD;
 
-#define va_start(ap, last) (ap = ((char *)&(last) + __va_promote(last)))
+int tpf_accept(int sockfd, struct sockaddr *peer, int *paddrlen);
+extern int tpf_child;
 
-#define va_arg(ap, type) ((type *)(ap += sizeof(type) < sizeof(int) ? \
-                         (abort(), 0) : sizeof(type)))[-1]
-
-#define va_end(ap)
-
+struct server_rec;
+pid_t os_fork(struct server_rec *s, int slot);
+int os_check_server(char *server);
+extern char *ap_server_argv0;
+extern int scoreboard_fd;
+#include <signal.h>
+#ifndef SIGPIPE
+#define SIGPIPE 14
+#endif
+#ifdef NSIG
+#undef NSIG
+#endif
 #endif /*! APACHE_OS_H*/

@@ -343,6 +343,11 @@ static int APACHE_TLS my_pid;	/* it seems silly to call getpid all the time */
 static int my_child_num;
 #endif
 
+#ifdef TPF
+int tpf_child = 0;
+char tpf_server_name[INETD_SERVNAME_LENGTH+1];
+#endif /* TPF */
+
 scoreboard *ap_scoreboard_image = NULL;
 
 /*
@@ -947,6 +952,38 @@ static void accept_mutex_off(void)
     }
 }
 
+#elif defined(USE_TPF_CORE_SERIALIZED_ACCEPT)
+
+static int tpf_core_held;
+
+static void accept_mutex_cleanup(void *foo)
+{
+    if(tpf_core_held)
+        coruc(RESOURCE_KEY);
+}
+
+#define accept_mutex_init(x)
+
+static void accept_mutex_child_init(pool *p)
+{
+    ap_register_cleanup(p, NULL, accept_mutex_cleanup, ap_null_cleanup);
+    tpf_core_held = 0;
+}
+
+static void accept_mutex_on(void)
+{
+    corhc(RESOURCE_KEY);
+    tpf_core_held = 1;
+    ap_check_signals();
+}
+
+static void accept_mutex_off(void)
+{
+    coruc(RESOURCE_KEY);
+    tpf_core_held = 0;
+    ap_check_signals();
+}
+
 #else
 /* Default --- no serialization.  Other methods *could* go here,
  * as #elifs...
@@ -1184,6 +1221,7 @@ unsigned int ap_set_callback_and_alarm(void (*fn) (int), int x)
 	/* Just note the timeout in our scoreboard, no need to call the system.
 	 * We also note that the virtual time has gone forward.
 	 */
+	ap_check_signals();
 	old = ap_scoreboard_image->servers[my_child_num].timeout_len;
 	ap_scoreboard_image->servers[my_child_num].timeout_len = x;
 	++ap_scoreboard_image->servers[my_child_num].cur_vtime;
@@ -1269,6 +1307,7 @@ API_EXPORT(void) ap_soft_timeout(char *name, request_rec *r)
 
 API_EXPORT(void) ap_kill_timeout(request_rec *dummy)
 {
+    ap_check_signals();
     ap_set_callback_and_alarm(NULL, 0);
     timeout_req = NULL;
     timeout_name = NULL;
@@ -1899,6 +1938,37 @@ static void reopen_scoreboard(pool *p)
 {
 }
 
+#elif defined(USE_TPF_SCOREBOARD)
+
+static void cleanup_scoreboard_heap()
+{
+    int rv;
+    rv = rsysc(ap_scoreboard_image, SCOREBOARD_FRAMES, SCOREBOARD_NAME);
+    if(rv == RSYSC_ERROR) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, server_conf,
+            "rsysc() could not release scoreboard system heap");
+    }
+}
+
+static void setup_shared_mem(pool *p)
+{
+    cinfc(CINFC_WRITE, CINFC_CMMCTK2);
+    ap_scoreboard_image = (scoreboard *) gsysc(SCOREBOARD_FRAMES, SCOREBOARD_NAME);
+
+    if (!ap_scoreboard_image) {
+        fprintf(stderr, "httpd: Could not create scoreboard system heap storage.\n");
+        exit(APEXIT_INIT);
+    }
+
+    ap_register_cleanup(p, NULL, cleanup_scoreboard_heap, ap_null_cleanup);
+    ap_scoreboard_image->global.running_generation = 0;
+}
+
+static void reopen_scoreboard(pool *p)
+{
+    cinfc(CINFC_WRITE, CINFC_CMMCTK2);
+}
+
 #else
 #define SCOREBOARD_FILE
 static scoreboard _scoreboard_image;
@@ -1947,6 +2017,9 @@ void reopen_scoreboard(pool *p)
     if (scoreboard_fd != -1)
 	ap_pclosef(p, scoreboard_fd);
 
+#ifdef TPF
+    ap_scoreboard_fname = ap_server_root_relative(p, ap_scoreboard_fname);
+#endif /* TPF */
     scoreboard_fd = ap_popenf(p, ap_scoreboard_fname, O_CREAT | O_BINARY | O_RDWR, 0666);
     if (scoreboard_fd == -1) {
 	perror(ap_scoreboard_fname);
@@ -2038,6 +2111,8 @@ int ap_update_child_status(int child_num, int status, request_rec *r)
 
     if (child_num < 0)
 	return -1;
+
+    ap_check_signals();
 
     ap_sync_scoreboard_image();
     ss = &ap_scoreboard_image->servers[child_num];
@@ -2849,7 +2924,7 @@ static void detach(void)
 	exit(1);
     }
 #elif defined(OS2) || defined(TPF)
-    /* OS/2 don't support process group IDs */
+    /* OS/2 and TPF don't support process group IDs */
     pgrp = getpid();
 #elif defined(MPE)
     /* MPE uses negative pid for process group */
@@ -2915,8 +2990,8 @@ static void set_group_privs(void)
 	else
 	    name = ap_user_name;
 
-#ifndef OS2
-	/* OS/2 dosen't support groups. */
+#if !defined(OS2) && !defined(TPF)
+	/* OS/2 and TPF don't support groups. */
 
 	/* Reset `groups' attributes. */
 
@@ -2992,7 +3067,7 @@ static conn_rec *new_connection(pool *p, server_rec *server, BUFF *inout,
     return conn;
 }
 
-#if defined(TCP_NODELAY) && !defined(MPE)
+#if defined(TCP_NODELAY) && !defined(MPE) && !defined(TPF)
 static void sock_disable_nagle(int s)
 {
     /* The Nagle algorithm says that we should delay sending partial
@@ -3062,6 +3137,9 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
     s = ap_slack(s, AP_SLACK_HIGH);
 
     ap_note_cleanups_for_socket(p, s);	/* arrange to close on exec or restart */
+#ifdef TPF
+    os_note_additional_cleanups(p, s);
+#endif /* TPF */
 #endif
 
 #ifndef MPE
@@ -3076,8 +3154,7 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
     }
 #endif /*_OSD_POSIX*/
     one = 1;
-#ifndef BEOS
-/* BeOS does not support SO_KEEPALIVE */
+#ifdef SO_KEEPALIVE
     if (setsockopt(s, SOL_SOCKET, SO_KEEPALIVE, (char *) &one, sizeof(int)) < 0) {
 	ap_log_error(APLOG_MARK, APLOG_CRIT, server_conf,
 		    "make_sock: for %s, setsockopt: (SO_KEEPALIVE)", addr);
@@ -3158,7 +3235,7 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
 #endif
     ap_unblock_alarms();
 
-#ifndef WIN32
+#ifdef CHECK_FD_SETSIZE
     /* protect various fd_sets */
     if (s >= FD_SETSIZE) {
 	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, NULL,
@@ -3601,6 +3678,11 @@ static void child_main(int child_num_arg)
 #endif
 #endif
     signal(SIGALRM, alrm_handler);
+#ifdef TPF
+    signal(SIGHUP, just_die);
+    signal(SIGTERM, just_die);
+    signal(SIGUSR1, just_die);
+#endif /* TPF */
 
 #ifdef OS2
 /* Stop Ctrl-C/Ctrl-Break signals going to child processes */
@@ -3690,7 +3772,7 @@ static void child_main(int child_num_arg)
 	    usr1_just_die = 0;
 	    for (;;) {
 		clen = sizeof(sa_client);
-		csd = accept(sd, &sa_client, &clen);
+		csd = ap_accept(sd, &sa_client, &clen);
 		if (csd >= 0 || errno != EINTR)
 		    break;
 		if (deferred_die) {
@@ -3754,11 +3836,22 @@ static void child_main(int child_num_arg)
 		case ENETUNREACH:
 #endif
                     break;
-
+#ifdef TPF
+		case EINACT:
+		    ap_log_error(APLOG_MARK, APLOG_EMERG, server_conf,
+			"offload device inactive");
+		    clean_child_exit(APEXIT_CHILDFATAL);
+		    break;
+		default:
+		    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, server_conf,
+			"select/accept error (%u)", errno);
+		    clean_child_exit(APEXIT_CHILDFATAL);
+#else
 		default:
 		    ap_log_error(APLOG_MARK, APLOG_ERR, server_conf,
 				"accept: (client socket)");
 		    clean_child_exit(1);
+#endif
 		}
 	    }
 
@@ -3779,6 +3872,11 @@ static void child_main(int child_num_arg)
 
 	SAFE_ACCEPT(accept_mutex_off());	/* unlock after "accept" */
 
+#ifdef TPF
+	if (csd == 0)                       /* 0 is invalid socket for TPF */
+	    continue;
+#endif
+
 	/* We've got a socket, let's at least process one request off the
 	 * socket before we accept a graceful restart request.
 	 */
@@ -3787,6 +3885,7 @@ static void child_main(int child_num_arg)
 	ap_note_cleanups_for_fd(ptrans, csd);
 
 	/* protect various fd_sets */
+#ifdef CHECK_CSD_SETSIZE
 	if (csd >= FD_SETSIZE) {
 	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, NULL,
 		"[csd] filedescriptor (%u) larger than FD_SETSIZE (%u) "
@@ -3794,6 +3893,7 @@ static void child_main(int child_num_arg)
 		"larger FD_SETSIZE", csd, FD_SETSIZE);
 	    continue;
 	}
+#endif
 
 	/*
 	 * We now have a connection, so set it up with the appropriate
@@ -3833,6 +3933,7 @@ static void child_main(int child_num_arg)
 	ap_note_cleanups_for_fd(ptrans, dupped_csd);
 
 	/* protect various fd_sets */
+#ifdef CHECK_CSD_SETSIZE
 	if (dupped_csd >= FD_SETSIZE) {
 	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, NULL,
 		"[dupped_csd] filedescriptor (%u) larger than FD_SETSIZE (%u) "
@@ -3840,6 +3941,7 @@ static void child_main(int child_num_arg)
 		"larger FD_SETSIZE", dupped_csd, FD_SETSIZE);
 	    continue;
 	}
+#endif
 #endif
 	ap_bpushfd(conn_io, csd, dupped_csd);
 
@@ -3923,6 +4025,36 @@ static void child_main(int child_num_arg)
     }
 }
 
+#ifdef TPF
+static void reset_tpf_listeners(APACHE_TPF_INPUT *input_parms)
+{
+    int count;
+    listen_rec *lr;
+
+    count = 0;
+    listenmaxfd = -1;
+    FD_ZERO(&listenfds);
+    lr = ap_listeners;
+
+    for(;;) {
+        lr->fd = input_parms->listeners[count];
+        if(lr->fd >= 0) {
+            FD_SET(lr->fd, &listenfds);
+            if(lr->fd > listenmaxfd)
+                listenmaxfd = lr->fd;
+        }
+        if(lr->next == NULL)
+            break;
+        lr = lr->next;
+        count++;
+    }
+    lr->next = ap_listeners;
+    head_listener = ap_listeners;
+    close_unused_listeners();
+}
+
+#endif /* TPF */
+
 static int make_child(server_rec *s, int slot, time_t now)
 {
     int pid;
@@ -3934,7 +4066,9 @@ static int make_child(server_rec *s, int slot, time_t now)
     if (one_process) {
 	signal(SIGHUP, just_die);
 	signal(SIGINT, just_die);
+#ifdef SIGQUIT
 	signal(SIGQUIT, SIG_DFL);
+#endif
 	signal(SIGTERM, just_die);
 	child_main(slot);
     }
@@ -3946,12 +4080,14 @@ static int make_child(server_rec *s, int slot, time_t now)
     (void) ap_update_child_status(slot, SERVER_STARTING, (request_rec *) NULL);
 
 
-#ifndef _OSD_POSIX
-    if ((pid = fork()) == -1) {
-#else /*_OSD_POSIX*/
+#ifdef _OSD_POSIX
     /* BS2000 requires a "special" version of fork() before a setuid() call */
     if ((pid = os_fork(ap_user_name)) == -1) {
-#endif /*_OSD_POSIX*/
+#elif defined(TPF)
+    if ((pid = os_fork(s, slot)) == -1) {
+#else
+    if ((pid = fork()) == -1) {
+#endif
 	ap_log_error(APLOG_MARK, APLOG_ERR, s, "fork: Unable to fork new process");
 
 	/* fork didn't succeed. Fix the scoreboard or else
@@ -4385,6 +4521,11 @@ static void standalone_main(int argc, char **argv)
 	    }
 
 	    perform_idle_server_maintenance();
+#ifdef TPF
+        shutdown_pending = os_check_server(tpf_server_name);
+        ap_check_signals();
+        sleep(1);
+#endif /*TPF */
 	}
 
 	if (shutdown_pending) {
@@ -4497,6 +4638,12 @@ int REALMAIN(int argc, char *argv[])
     SOCKSinit(argv[0]);
 #endif
 
+#ifdef TPF
+    APACHE_TPF_INPUT input_parms;
+    ecbptr()->ebrout = PRIMECRAS;
+    input_parms = * (APACHE_TPF_INPUT *)(&(ecbptr()->ebw000));
+#endif
+
     MONCONTROL(0);
 
     common_init();
@@ -4513,9 +4660,8 @@ int REALMAIN(int argc, char *argv[])
 
     ap_setup_prelinked_modules();
 
-#ifndef TPF
     while ((c = getopt(argc, argv,
-				    "D:C:c:Xd:f:vVlLR:Sth"
+				    "D:C:c:xXd:f:vVlLR:Sth"
 #ifdef DEBUG_SIGSTOP
 				    "Z:"
 #endif
@@ -4558,6 +4704,12 @@ int REALMAIN(int argc, char *argv[])
 	case 'X':
 	    ++one_process;	/* Weird debugging mode. */
 	    break;
+#ifdef TPF
+	case 'x':
+	    os_tpf_child(&input_parms);
+	    set_signals();
+	    break;
+#endif
 #ifdef DEBUG_SIGSTOP
 	case 'Z':
 	    raise_sigstop_flags = atoi(optarg);
@@ -4584,7 +4736,6 @@ int REALMAIN(int argc, char *argv[])
 	    usage(argv[0]);
 	}
     }
-#endif /* TPF */
 
     ap_suexec_enabled = init_suexec();
     server_conf = ap_read_config(pconf, ptrans, ap_server_confname);
@@ -4599,6 +4750,7 @@ int REALMAIN(int argc, char *argv[])
 
     child_timeouts = !ap_standalone || one_process;
 
+#ifndef TPF
     if (ap_standalone) {
 	ap_open_logs(server_conf, pconf);
 	ap_set_version();
@@ -4606,6 +4758,32 @@ int REALMAIN(int argc, char *argv[])
 	version_locked++;
 	STANDALONE_MAIN(argc, argv);
     }
+#else
+    if (ap_standalone) {
+        if(!tpf_child) {
+            memcpy(tpf_server_name, input_parms.inetd_server.servname, INETD_SERVNAME_LENGTH);
+            tpf_server_name[INETD_SERVNAME_LENGTH+1] = '\0';
+            ap_open_logs(server_conf, pconf);
+        }
+        ap_set_version();
+        ap_init_modules(pconf, server_conf);
+        version_locked++;
+        if(tpf_child) {
+            copy_listeners(pconf);
+            reset_tpf_listeners(&input_parms);
+            server_conf->error_log = NULL;
+#ifdef SCOREBOARD_FILE
+            scoreboard_fd = input_parms.scoreboard_fd;
+            ap_scoreboard_image = &_scoreboard_image;
+#else /* must be USE_TPF_SCOREBOARD or USE_SHMGET_SCOREBOARD */
+            ap_scoreboard_image = (scoreboard *)input_parms.scoreboard_heap;
+#endif
+            child_main(input_parms.slot);
+        }
+        else
+            STANDALONE_MAIN(argc, argv);
+    }
+#endif
     else {
 	conn_rec *conn;
 	request_rec *r;
@@ -4646,15 +4824,12 @@ int REALMAIN(int argc, char *argv[])
 	}
 
 #ifdef TPF
-    signal(SIGALRM, alrm_handler);
-    ecbptr()->ebrout = PRIMECRAS;
-#endif /* TPF */
-
-#ifdef TPF
 /* TPF only passes the incoming socket number from the internet daemon
    in ebw000 */
     sock_in = * (int*)(&(ecbptr()->ebw000));
     sock_out = * (int*)(&(ecbptr()->ebw000));
+/* TPF also needs a signal set for alarm in inetd mode */
+    signal(SIGALRM, alrm_handler);
 #elif defined(MPE)
 /* HP MPE 5.5 inetd only passes the incoming socket as stdin (fd 0), whereas
    HPUX inetd passes the incoming socket as stdin (fd 0) and stdout (fd 1).

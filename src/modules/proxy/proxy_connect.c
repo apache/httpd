@@ -187,7 +187,7 @@ int ap_proxy_connect_handler(request_rec *r, cache_req *c, char *url,
 	return HTTP_INTERNAL_SERVER_ERROR;
     }
 
-#ifndef WIN32
+#ifdef CHECK_FD_SETSIZE
     if (sock >= FD_SETSIZE) {
 	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, NULL,
 	    "proxy_connect_handler: filedescriptor (%u) "

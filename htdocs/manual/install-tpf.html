@@ -53,8 +53,6 @@ are in /src.
 If you are using a product such as WinZip on your PC, verify that
 the <EM>"TAR File Smart CR/LF Conversion"</EM> option is NOT checked.
 You can find this in WinZip under Options, Configuration.
-Since you had to tar and unzip the file to read this document,
-you need to re-tar and -unzip if the CR/LF option was checked.
 This will save you lots of headaches later on.
 </P>
 <P>
@@ -212,8 +210,7 @@ HREF="http://www.apache.org/dist/contrib/modules/">http://www.apache.org/dist/co
   Apache requires a configuration file to initialize itself during activation.
   (Previously three configuration files were used.)
   Copy the distribution version, /conf/httpd.conf-dist, to /conf/httpd.conf and then
-  edit the /conf/httpd.conf copy with your site specific information.  This first release
-  of Apache for TPF only runs under the "inetd" model so you
+  edit the /conf/httpd.conf copy with your site specific information.  If your system is pre-PUT09 you
   <font color=red><STRONG>must</STRONG></FONT> change <TT>ServerType</TT> from <TT>standalone</TT>
   to <TT>inetd</TT>.
   <BR><BR>
@@ -226,7 +223,8 @@ HREF="http://www.apache.org/dist/contrib/modules/">http://www.apache.org/dist/co
     <BR><BR>
     <PRE>
     ZINET ADD S-TFTP   PGM-CTFT PORT-69 PROTOCOL-UDP MODEL-NOWAIT
-    ZINET ADD S-APACHE PGM-<EM>pppp</EM> PORT-80 PROTOCOL-TCP MODEL-NOWAIT</PRE>
+    ZINET ADD S-APACHE PGM-<EM>pppp</EM> PROTOCOL-TCP MODEL-NOWAIT PORT-80  (if inetd mode)
+    ZINET ADD S-APACHE PGM-<EM>pppp</EM> PROTOCOL-TCP MODEL-NOLISTEN        (if standalone mode)</PRE>
   Please refer to <EM>IBM Transaction Processing Facility Transmission Control
   Protocol/Internet Protocol Version 4 Release 1</EM> for more information
   on ZCLAW, INETD, and TFTP.

@@ -1,5 +1,8 @@
 Changes with Apache 1.3.7
   
+  *) Add support for standalone mode in TPF
+     [Joe Moenich <moenich@us.ibm.com>]
+
   *) Fix number of bytes copied by read_connection() in src/support/ab.c
      [Jim Cox <jc@superlink.net>] PR#4271
 

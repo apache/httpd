@@ -765,6 +765,9 @@ static int handle_include(FILE *in, request_rec *r, const char *error, int noexe
 }
 
 typedef struct {
+#ifdef TPF
+    TPF_FORK_CHILD t;
+#endif
     request_rec *r;
     char *s;
 } include_cmd_arg;
@@ -818,6 +821,9 @@ static int include_cmd_child(void *arg, child_info *pinfo)
 #ifdef DEBUG_INCLUDE_CMD
     fprintf(dbg, "Attempting to exec '%s'\n", s);
 #endif
+#ifdef TPF
+    return (0);
+#else
     ap_cleanup_for_exec();
     /* set shellcmd flag to pass arg to SHELL_PATH */
     child_pid = ap_call_exec(r, pinfo, s, ap_create_environment(r->pool, env),
@@ -840,6 +846,7 @@ static int include_cmd_child(void *arg, child_info *pinfo)
     /* NOT REACHED */
     return (child_pid);
 #endif /* WIN32 */
+#endif /* TPF */
 }
 
 static int include_cmd(char *s, request_rec *r)
@@ -849,6 +856,11 @@ static int include_cmd(char *s, request_rec *r)
 
     arg.r = r;
     arg.s = s;
+#ifdef TPF
+    arg.t.filename = r->filename;
+    arg.t.subprocess_env = r->subprocess_env;
+    arg.t.prog_type = FORK_FILE;
+#endif
 
     if (!ap_bspawn_child(r->pool, include_cmd_child, &arg,
 			 kill_after_timeout, NULL, &script_in, NULL)) {

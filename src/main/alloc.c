@@ -2240,6 +2240,9 @@ static pid_t spawn_child_core(pool *p, int (*func) (void *, child_info *),
             *pipe_err = err_fds[0];
         }
     }
+#elif defined(TPF)
+   return (pid = ap_tpf_spawn_child(p, func, data, kill_how,	
+                 pipe_in, pipe_out, pipe_err, out_fds, in_fds, err_fds));		
 #else
 
     if ((pid = fork()) < 0) {

@@ -849,10 +849,16 @@ typedef int rlim_t;
 #include <sysgtime.h>
 #define PRIMECRAS 0x010000
 #define JMP_BUF jmp_buf
+#define HAVE_SHMGET
+#undef  HAVE_SYS_RESOURCE_H
 #define NEED_INITGROUPS
+#define NEED_SIGNAL_INTERRUPT
+#include <strings.h>
+#ifndef __strings_h
 #define NEED_STRCASECMP
-#define NEED_STRDUP
 #define NEED_STRNCASECMP
+#endif
+#define NEED_STRDUP
 #define NO_DBM_REWRITEMAP
 #define NO_GETTIMEOFDAY
 #define NO_KILLPG
@@ -861,12 +867,16 @@ typedef int rlim_t;
 #define NO_OTHER_CHILD
 #define NO_RELIABLE_PIPED_LOGS
 #define NO_SETSID
-#define NO_SHMGET
 #define NO_SLACK
 #define NO_TIMES
 #define NO_USE_SIGACTION
 #define NO_WRITEV
 #define USE_LONGJMP
+/*#define USE_SHMGET_SCOREBOARD*/
+#define USE_TPF_ACCEPT
+#define USE_TPF_CORE_SERIALIZED_ACCEPT
+/*#define USE_TPF_DAEMON*/
+#define USE_TPF_SCOREBOARD
 #define USE_TPF_SELECT
 #undef  offsetof
 #define offsetof(s_type,field) ((size_t)&(((s_type*)0)->field))
@@ -993,6 +1003,9 @@ typedef int rlim_t;
 #define strftime(s,max,format,tm)  os_strftime(s,max,format,tm)
 #endif
 #include <signal.h>
+#if defined(TPF) && defined(NSIG)
+#undef NSIG
+#endif
 #include <errno.h>
 #if !defined(QNX) && !defined(CONVEXOS11) && !defined(NEXT) && !defined(TPF)
 #include <memory.h>
@@ -1095,13 +1108,36 @@ Sigfunc *signal(int signo, Sigfunc * func);
 #endif
 #endif
 
-#ifdef SELECT_NEEDS_CAST
+/* Majority of os's want to verify FD_SETSIZE */
+#if !defined(WIN32) && !defined(TPF)
+#define CHECK_FD_SETSIZE
+#endif
+/* and for client sockets */
+#if !defined(TPF)
+#define CHECK_CSD_SETSIZE
+#endif
+
+#ifdef USE_TPF_SELECT
 #define ap_select(_a, _b, _c, _d, _e)	\
+	tpf_select(_a, _b, _c, _d, _e)
+#elif defined(SELECT_NEEDS_CAST)
+#define ap_select(_a, _b, _c, _d, _e)   \
     select((_a), (int *)(_b), (int *)(_c), (int *)(_d), (_e))
-#elif defined(USE_TPF_SELECT)
-#define ap_select   tpf_select
 #else
-#define ap_select	select
+#define ap_select(_a, _b, _c, _d, _e)   \
+	select(_a, _b, _c, _d, _e)
+#endif
+
+#ifdef USE_TPF_ACCEPT
+#define ap_accept(_fd, _sa, _ln)	tpf_accept(_fd, _sa, _ln)
+#else
+#define ap_accept(_fd, _sa, _ln)	accept(_fd, _sa, _ln)
+#endif
+
+#ifdef NEED_SIGNAL_INTERRUPT
+#define ap_check_signals()	tpf_process_signals()
+#else
+#define ap_check_signals()
 #endif
 
 #ifdef ULTRIX_BRAIN_DEATH

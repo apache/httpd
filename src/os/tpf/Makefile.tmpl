@@ -3,7 +3,7 @@ LIBS=$(EXTRA_LIBS) $(LIBS1)
 INCLUDES=$(INCLUDES1) $(INCLUDES0) $(EXTRA_INCLUDES)
 LDFLAGS=$(LDFLAGS1) $(EXTRA_LDFLAGS)
 
-OBJS=   os.o os-inline.o ebcdic.o
+OBJS=   os.o os-inline.o ebcdic.o cgetop.o
 
 LIB=	libos.a
 
@@ -35,7 +35,8 @@ depend:
 	    && rm Makefile.new
 
 $(OBJS): Makefile
-os.o:	os.c os-inline.c
+os.o:	os.c os-inline.c $(INCDIR)/ap_config.h
 ebcdic.o: ebcdic.c
+cgetop.o: cgetop.c
 # DO NOT REMOVE
 os.o:	os.c

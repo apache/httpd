@@ -1972,9 +1972,11 @@ API_EXPORT(long) ap_send_fb_length(BUFF *fb, request_rec *r, long length)
 
     /* Make fb unbuffered and non-blocking */
     ap_bsetflag(fb, B_RD, 0);
+#ifndef TPF    
     ap_bnonblock(fb, B_RD);
+#endif
     fd = ap_bfileno(fb, B_RD);
-#ifndef WIN32
+#ifdef CHECK_FD_SETSIZE
     if (fd >= FD_SETSIZE) {
 	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, NULL,
 	    "send body: filedescriptor (%u) larger than FD_SETSIZE (%u) "
