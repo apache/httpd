@@ -711,7 +711,8 @@ static void check_hostalias (request_rec *r) {
 
     /* search all the names from <VirtualHost> directive */
     for( sar = s->addrs; sar; sar = sar->next ) {
-      if( !strcasecmp( sar->virthost, host ) ) {
+      if( !strcasecmp( sar->virthost, host ) &&
+       ( (sar->host_port == 0) || (port == sar->host_port) )) {
 	r->server = r->connection->server = s;
 	if( r->hostlen && !strncmp( r->uri, "http://", 7) ) {
 	  r->uri += r->hostlen;
@@ -789,6 +790,7 @@ request_rec *read_request (conn_rec *conn)
 				 * Only changed by die(), or (bletch!)
 				 * scan_script_header...
 				 */
+    r->method_number = M_NONE;  /* Until we finish reading a request */
 
     /* Get the request... */
     

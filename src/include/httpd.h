@@ -347,6 +347,7 @@
 
 
 #define METHODS 8
+#define M_NONE -1
 #define M_GET 0
 #define M_PUT 1
 #define M_POST 2
