@@ -828,7 +828,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
              * if we are overriding the errors, we cant put the content of the
              * page into the brigade
              */
-            if ( (conf->HTTPOverrideErrors ==0) || r->status < 400 ) {
+            if ( (conf->error_override ==0) || r->status < 400 ) {
             /* read the body, pass it to the output filters */
                 while (ap_get_brigade(rp->input_filters, 
                                        bb, 
@@ -860,7 +860,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
         }
     }
 
-    if ( conf->HTTPOverrideErrors ) {
+    if ( conf->error_override ) {
         /* the code above this checks for 'OK' which is what the hook expects */
         if ( r->status == HTTP_OK )
             return OK;

@@ -482,7 +482,7 @@ static void * create_proxy_config(apr_pool_t *p, server_rec *s)
     ps->recv_buffer_size_set = 0;
     ps->maxfwd = DEFAULT_MAX_FORWARDS;
     ps->maxfwd_set = 0;
-    ps->HTTPOverrideErrors=0; 
+    ps->error_override = 0; 
     return ps;
 }
 
@@ -761,12 +761,12 @@ static const char *
     return NULL;
 }
 static const char *
-    set_http_proxy_override_error(cmd_parms *parms, void *dummy, int flag)
+    set_proxy_error_override(cmd_parms *parms, void *dummy, int flag)
 {
     proxy_server_conf *psf =
     ap_get_module_config(parms->server->module_config, &proxy_module);
 
-    psf->HTTPOverrideErrors  = flag;
+    psf->error_override = flag;
     return NULL;
 }
 
@@ -940,7 +940,7 @@ static const command_rec proxy_cmds[] =
      "A list of ports which CONNECT may connect to"),
     AP_INIT_TAKE1("ProxyVia", set_via_opt, NULL, RSRC_CONF,
      "Configure Via: proxy header header to one of: on | off | block | full"),
-    AP_INIT_FLAG("ProxyErrorOverride", set_http_proxy_override_error, NULL, RSRC_CONF,
+    AP_INIT_FLAG("ProxyErrorOverride", set_proxy_error_override, NULL, RSRC_CONF,
      "use our error handling pages instead of the servers we are proxying"),
     {NULL}
 };
