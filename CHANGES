@@ -2,6 +2,11 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_authnz_ldap: Added the directive "Requires ldap-attribute" that
+     allows the module to only authorize a user if the attribute value
+     specified matches the value of the user object. PR 31913
+     [Ryan Morgan <rmorgan pobox.com>]
+     
   *) Allow mod_authnz_ldap authorization functionality to be used 
      without requiring the user to also be authenticated through 
      mod_authnz_ldap. This allows other authentication modules to 
