@@ -138,7 +138,7 @@ Available Patches:
     * Ken's change to helpers/UpdateHide and include/hide.h to adopt
       "appri_" as the "concealed private interface" prefix (replacing
       the placeholder "AP_")
-	Status: Ken +1
+	Status: Ken +1, Dean -1
 
 In progress:
 
