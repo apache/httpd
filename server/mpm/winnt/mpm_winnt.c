@@ -509,10 +509,10 @@ static int set_listeners_noninheritable(apr_pool_t *p)
     }
 
     if (my_pid == parent_pid) {
-        ap_log_error(APLOG_MARK, APLOG_INFO | APLOG_NOERRNO, 0, ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, ap_server_conf,
                      "Parent: Marked listeners as not inheritable.");
     } else {
-        ap_log_error(APLOG_MARK, APLOG_INFO | APLOG_NOERRNO, 0, ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, ap_server_conf,
                      "Child %d: Marked listeners as not inheritable.", my_pid);
     }
     return 1;
@@ -585,7 +585,7 @@ void get_handles_from_parent(server_rec *s)
     }
     ap_init_scoreboard(sb_shared);
 
-    ap_log_error(APLOG_MARK, APLOG_INFO | APLOG_NOERRNO, 0, ap_server_conf,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, ap_server_conf,
                  "Child %d: Retrieved our scoreboard from the parent.", my_pid);
 }
 
@@ -635,7 +635,7 @@ void get_listeners_from_parent(server_rec *s)
         apr_os_sock_put(&lr->sd, &nsd, pconf);
     }
 
-    ap_log_error(APLOG_MARK, APLOG_INFO | APLOG_NOERRNO, 0, ap_server_conf,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, ap_server_conf,
                  "Child %d: retrieved %d listeners from parent", my_pid, lcnt);
 
     if (!set_listeners_noninheritable(pconf)) {
@@ -1326,7 +1326,7 @@ static void child_main()
         TerminateThread(child_handles[i], 1);
         CloseHandle(child_handles[i]);
     }
-    ap_log_error(APLOG_MARK,APLOG_INFO, APR_SUCCESS, ap_server_conf, 
+    ap_log_error(APLOG_MARK,APLOG_DEBUG, APR_SUCCESS, ap_server_conf, 
                  "Child %d: All worker threads have ended.", my_pid);
 
     CloseHandle(allowed_globals.jobsemaphore);
@@ -1379,7 +1379,7 @@ static int send_handles_to_child(apr_pool_t *p, HANDLE child_exit_event, HANDLE 
         return -1;
     }
 
-    ap_log_error(APLOG_MARK, APLOG_INFO | APLOG_NOERRNO, 0, ap_server_conf,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, ap_server_conf,
                  "Parent: Sent the scoreboard to the child");
     return 0;
 }
@@ -1419,7 +1419,7 @@ static int send_listeners_to_child(apr_pool_t *p, DWORD dwProcessId, HANDLE hPip
         }
     }
 
-    ap_log_error(APLOG_MARK, APLOG_INFO | APLOG_NOERRNO, 0, ap_server_conf,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, ap_server_conf,
                  "Parent: Sent %d listeners to child %d", lcnt, dwProcessId);
     return 0;
 }
@@ -1755,7 +1755,7 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
         /* shutdown_event signalled */
         shutdown_pending = 1;
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, APR_SUCCESS, s, 
-                     "Parent: SHUTDOWN EVENT SIGNALED -- Shutting down the server.");
+                     "Parent: Received shutdown signal -- Shutting down the server.");
         if (ResetEvent(shutdown_event) == 0) {
             ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_os_error(), s,
                          "ResetEvent(shutdown_event)");
@@ -1768,7 +1768,7 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
          */
         restart_pending = 1;
         ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, s, 
-                     "Parent: RESTART EVENT SIGNALED -- Restarting the server.");
+                     "Parent: Received restart signal -- Restarting the server.");
         if (ResetEvent(restart_event) == 0) {
             ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_os_error(), s,
                          "Parent: ResetEvent(restart_event) failed.");
