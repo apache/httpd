@@ -126,7 +126,7 @@ static int fixup_dir(request_rec *r)
 
     /* only handle requests against directories */
     if (r->finfo.filetype != APR_DIR) {
-	    return DECLINED;
+        return DECLINED;
     }
     
     /* In case mod_mime wasn't present, and no handler was assigned. */
@@ -170,16 +170,16 @@ static int fixup_dir(request_rec *r)
     }
 
     d = (dir_config_rec *) ap_get_module_config(r->per_dir_config,
-						&dir_module);
+                                                &dir_module);
 
     if (d->index_names) {
-	names_ptr = (char **)d->index_names->elts;
-	num_names = d->index_names->nelts;
+        names_ptr = (char **)d->index_names->elts;
+        num_names = d->index_names->nelts;
     }
     else {
-	dummy_ptr[0] = AP_DEFAULT_INDEX;
-	names_ptr = dummy_ptr;
-	num_names = 1;
+        dummy_ptr[0] = AP_DEFAULT_INDEX;
+        names_ptr = dummy_ptr;
+        num_names = 1;
     }
 
     for (; num_names; ++names_ptr, --num_names) {
