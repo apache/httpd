@@ -38,7 +38,7 @@ EXPORT_FILES = $(top_srcdir)/include/*.h \
 
 delete-exports:
 	@if test -f exports.c; then \
-		    headers="`find $(top_srcdir)/include/*.h -newer exports.c`" ; \
+		    headers="`find $(EXPORT_FILES) -newer exports.c`" ; \
 		    if test -n "$$headers"; then \
 		        echo Found newer headers. Will rebuild exports.c. ; \
 		        echo rm -f exports.c ; \
