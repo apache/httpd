@@ -1,5 +1,9 @@
 Changes with Apache 2.0b1
 
+  *) Fix the AliasMatch directive in Apache 2.0.  When we brought a patch
+     forward from 1.3 to 2.0, we missed a single line, which broke regex
+     aliases.  [Ryan Bloom]
+
   *) We have a poor abstraction in the protocol.  This is a temporary
      hack to fix the bug, but it will need to be fixed for real.  If
      we find an error while sending out a custom error response, we back
