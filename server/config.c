@@ -900,67 +900,58 @@ static const char * ap_build_config_sub(ap_pool_t *p, ap_pool_t *temp_pool,
     return NULL;
 }
 
-static const char *ap_walk_config_sub(ap_directive_t *current,
+static const char *ap_walk_config_sub(const ap_directive_t *current,
 				      cmd_parms *parms, void *config)
 {
-    void *oldconfig;
-    const command_rec *cmd;
     module *mod = top_module;
-    const char *retval;
 
-    parms->directive = current;
+    while (1) {
+	const command_rec *cmd;
 
-    oldconfig = parms->context;
-    parms->context = config;
-    do {
 	if (!(cmd = ap_find_command_in_modules(current->directive, &mod))) {
-            retval = ap_pstrcat(parms->pool, "Invalid command '", 
-                           current->directive,
-                           "', perhaps mis-spelled or defined by a module "
-                           "not included in the server configuration", NULL);
+            return ap_pstrcat(parms->pool, "Invalid command '", 
+			      current->directive,
+			      "', perhaps mis-spelled or defined by a module "
+			      "not included in the server configuration",
+			      NULL);
 	}
 	else {
 	    void *mconfig = ap_set_config_vectors(parms,config, mod);
+	    const char *retval;
 
 	    retval = invoke_cmd(cmd, parms, mconfig, current->args);
+	    if (retval == NULL || strcmp(retval, DECLINE_CMD) != 0)
+		return retval;
+
 	    mod = mod->next;	/* Next time around, skip this one */
 	}
-    } while (retval && !strcmp(retval, DECLINE_CMD));
-    parms->context = oldconfig;
-
-    return retval;
+    }
+    /* NOTREACHED */
 }
 
-API_EXPORT(const char *) ap_walk_config(ap_directive_t *conftree,
-					cmd_parms *parms, void *config,
-					int container)
+API_EXPORT(const char *) ap_walk_config(ap_directive_t *current,
+					cmd_parms *parms, void *config)
 {
-    static ap_directive_t *current;
+    void *oldconfig = parms->context;
 
-    if (conftree != NULL) {
-        current = conftree;
-    }
-    if (container && current->first_child) {
-        current = current->first_child;
-    }
+    parms->context = config;
 
-    while (current != NULL) {
+    /* scan through all directives, executing each one */
+    for (; current != NULL; current = current->next) {
 	const char *errmsg;
+
+	parms->directive = current;
 
         /* actually parse the command and execute the correct function */
         errmsg = ap_walk_config_sub(current, parms, config);
-	if (errmsg != NULL)
+	if (errmsg != NULL) {
+	    /* restore the context (just in case) */
+	    parms->context = oldconfig;
 	    return errmsg;
-
-        if (current->next == NULL) {
-            current = current->parent;
-            break;
-        } else {
-            current = current->next;
-            continue;
-        }
+	}
     }
 
+    parms->context = oldconfig;
     return NULL;
 }
 
@@ -1135,7 +1126,7 @@ static void process_command_config(server_rec *s, ap_array_header_t *arr, ap_poo
 
     errmsg = ap_build_config(cfp, p, ptemp, &conftree);
     if (errmsg == NULL)
-	errmsg = ap_walk_config(conftree, &parms, s->lookup_defaults, 0);
+	errmsg = ap_walk_config(conftree, &parms, s->lookup_defaults);
     if (errmsg) {
         ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
                      "Syntax error in -C/-c directive:\n%s", errmsg);
@@ -1179,7 +1170,7 @@ void ap_process_resource_config(server_rec *s, const char *fname, ap_pool_t *p, 
 
     errmsg = ap_build_config(cfp, p, ptemp, &conftree);
     if (errmsg == NULL)
-	errmsg = ap_walk_config(conftree, &parms, s->lookup_defaults, 0);
+	errmsg = ap_walk_config(conftree, &parms, s->lookup_defaults);
 
     if (errmsg != NULL) {
 	/* ### wrong line number. need to pull from ap_directive_t */
@@ -1236,7 +1227,7 @@ int ap_parse_htaccess(void **result, request_rec *r, int override,
 
             errmsg = ap_build_config(f, r->pool, r->pool, &conftree);
 	    if (errmsg == NULL)
-		errmsg = ap_walk_config(conftree, &parms, dc, 0);
+		errmsg = ap_walk_config(conftree, &parms, dc);
 
             ap_cfg_closefile(f);
 

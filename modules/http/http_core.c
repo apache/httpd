@@ -1320,7 +1320,7 @@ CORE_EXPORT_NONSTD(const char *) ap_limit_section(cmd_parms *cmd, void *dummy,
      */
     cmd->limited = tog ? ~limited : limited;
 
-    errmsg = ap_walk_config(NULL, cmd, cmd->context, 1);
+    errmsg = ap_walk_config(cmd->directive->first_child, cmd, cmd->context);
 
     cmd->limited = -1;
 
@@ -1388,7 +1388,7 @@ static const char *dirsection(cmd_parms *cmd, void *dummy, const char *arg)
     conf = (core_dir_config *)ap_set_config_vectors(cmd, new_dir_conf,
 						    &core_module);
 
-    errmsg = ap_walk_config(NULL, cmd, new_dir_conf, 1);
+    errmsg = ap_walk_config(cmd->directive->first_child, cmd, new_dir_conf);
     if (errmsg != NULL)
 	return errmsg;
 
@@ -1446,7 +1446,7 @@ static const char *urlsection(cmd_parms *cmd, void *dummy, const char *arg)
     conf = (core_dir_config *)ap_set_config_vectors(cmd, new_url_conf,
 						    &core_module);
 
-    errmsg = ap_walk_config(NULL, cmd, new_url_conf, 1);
+    errmsg = ap_walk_config(cmd->directive->first_child, cmd, new_url_conf);
     if (errmsg != NULL)
 	return errmsg;
 
@@ -1513,7 +1513,7 @@ static const char *filesection(cmd_parms *cmd, core_dir_config *c,
     conf = (core_dir_config *)ap_set_config_vectors(cmd, new_file_conf,
 						    &core_module);
 
-    errmsg = ap_walk_config(NULL, cmd, new_file_conf, 1);
+    errmsg = ap_walk_config(cmd->directive->first_child, cmd, new_file_conf);
     if (errmsg != NULL)
 	return errmsg;
 
@@ -1553,7 +1553,7 @@ static const char *start_ifmod(cmd_parms *cmd, void *dummy, char *arg)
     found = ap_find_linked_module(arg);
 
     if ((!not && found) || (not && !found)) {
-        return ap_walk_config(NULL, cmd, cmd->context, 1);
+        return ap_walk_config(cmd->directive->first_child, cmd, cmd->context);
     }
 
     return NULL;
@@ -1594,7 +1594,7 @@ static const char *start_ifdefine(cmd_parms *cmd, void *dummy, char *arg)
     defined = ap_exists_config_define(arg);
 
     if ((!not && defined) || (not && !defined)) {
-        return ap_walk_config(NULL, cmd, cmd->context, 1);
+        return ap_walk_config(cmd->directive->first_child, cmd, cmd->context);
     }
 
     return NULL;
@@ -1642,7 +1642,8 @@ static const char *virtualhost_section(cmd_parms *cmd, void *dummy, char *arg)
 
     cmd->server = s;
 
-    errmsg = ap_walk_config(NULL, cmd, s->lookup_defaults, 1);
+    errmsg = ap_walk_config(cmd->directive->first_child, cmd,
+			    s->lookup_defaults);
 
     cmd->server = main_server;
 
