@@ -572,8 +572,9 @@ magic_set_config(request_rec * r)
         palloc(r->pool, sizeof(magic_req_rec));
 
     if (!req_dat) {
-	log_printf(r->server, "%s: memory allocation failure in "
-	    "magic_set_config()", MODNAME);
+	aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+		    "%s: memory allocation failure in magic_set_config()",
+		    MODNAME);
         return NULL;
     }
     req_dat->head = req_dat->tail = (magic_rsl *) NULL;
@@ -592,8 +593,9 @@ magic_rsl_add(request_rec * r, char *str)
 
     /* make sure we have a list to put it in */
     if (!req_dat) {
-	log_printf(r->server, "%s: request config should not be NULL",
-	    MODNAME);
+	aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+		    "%s: request config should not be NULL",
+		    MODNAME);
         if (!(req_dat = magic_set_config(r))) {
             /* failure */
             return -1;
@@ -602,8 +604,9 @@ magic_rsl_add(request_rec * r, char *str)
 
     /* allocate the list entry */
     if (!(rsl = (magic_rsl *) palloc(r->pool, sizeof(magic_rsl)))) {
-        log_printf(r->server, MODNAME ": "
-               "memory allocation failure in magic_rsl_add()");
+        aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+		    "%s: memory allocation failure in magic_rsl_add()",
+		    MODNAME);
         /* failure */
         return -1;
     }
@@ -676,8 +679,9 @@ rsl_strdup(request_rec * r, int start_frag, int start_pos, int len)
 
     /* allocate the result string */
     if (!(result = (char *) palloc(r->pool, len + 1))) {
-        log_printf(r->server, MODNAME ": "
-               "memory allocation failure in rsl_strdup()");
+        aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+		    "%s: memory allocation failure in rsl_strdup()",
+		    MODNAME);
         return NULL;
     }
 
@@ -708,8 +712,8 @@ rsl_strdup(request_rec * r, int start_frag, int start_pos, int len)
     /* clean up and return */
     result[res_pos] = 0;
 #if MIME_MAGIC_DEBUG
-    log_printf(r->server, MODNAME ": rsl_strdup() %d chars: %s",
-        res_pos - 1, result);
+    aplog_error(APLOG_MARK, APLOG_DEBUG, r->server,
+		"%s: rsl_strdup() %d chars: %s", MODNAME, res_pos - 1, result);
 #endif
     return result;
 }
@@ -781,9 +785,8 @@ magic_rsl_to_request(request_rec * r)
                 else {
                     /* should not be possible */
                     /* abandon malfunctioning module */
-                    log_printf(r->server,
-                           "%s: bad state %d (ws)",
-                           MODNAME);
+                    aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+				"%s: bad state %d (ws)", MODNAME);
                     return DECLINED;
                 }
                 /* NOTREACHED */
@@ -826,9 +829,8 @@ magic_rsl_to_request(request_rec * r)
                 else {
                     /* should not be possible */
                     /* abandon malfunctioning module */
-                    log_printf(r->server,
-                           "%s: bad state %d (ns)",
-                           MODNAME);
+                    aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+				"%s: bad state %d (ns)", MODNAME);
                     return DECLINED;
                 }
                 /* NOTREACHED */
@@ -892,8 +894,7 @@ magic_process(request_rec * r)
          * if (sb.st_mode & 0002) magic_rsl_puts(r,"writable, "); if
          * (sb.st_mode & 0111) magic_rsl_puts(r,"executable, ");
          */
-        log_printf(r->server, "can't read `%s' (%s).",
-               r->filename, strerror(errno));
+        aplog_error(APLOG_MARK, APLOG_ERR, r->server, "can't read `%s'", r->filename);
         return;
     }
 
@@ -901,7 +902,7 @@ magic_process(request_rec * r)
      * try looking at the first HOWMANY bytes
      */
     if ((nbytes = read(fd, (char *) buf, HOWMANY)) == -1) {
-        log_printf(r->server, "read failed (%s).", strerror(errno));
+        aplog_error(APLOG_MARK, APLOG_ERR, r->server, "read failed");
         /* NOTREACHED */
     }
 
@@ -957,8 +958,7 @@ tryit(request_rec * r, unsigned char *buf, int nb)
  * apprentice - load configuration from the magic file r
  *  API request record
  */
-static int 
-apprentice(server_rec * s, pool * p)
+static int apprentice (server_rec * s, pool * p)
 {
     FILE *f;
     char line[BUFSIZ + 1];
@@ -979,8 +979,8 @@ apprentice(server_rec * s, pool * p)
     fname = server_root_relative(p, conf->magicfile);
     f = pfopen(p, fname, "r");
     if (f == NULL) {
-	log_printf(s, "%s: can't read magic file %s: %s",
-            MODNAME, fname, strerror(errno));
+	aplog_error(APLOG_MARK, APLOG_ERR, s,
+		    "%s: can't read magic file %s", MODNAME, fname);
         return -1;
     }
 
@@ -1024,33 +1024,34 @@ apprentice(server_rec * s, pool * p)
     (void) pfclose(p, f);
 
 #if MIME_MAGIC_DEBUG
-    log_printf(s,
-        "%s: apprentice conf=%x file=%s m=%s m->next=%s last=%s",
-        MODNAME, conf,
-        conf->magicfile ? conf->magicfile : "NULL",
-        conf->magic ? "set" : "NULL",
-        (conf->magic && conf->magic->next) ? "set" : "NULL",
-        conf->last ? "set" : "NULL");
-    log_printf(s, "%s: apprentice read %d lines, %d rules, %d errors",
-        MODNAME, lineno, rule, errs);
+    aplog_error(APLOG_MARK, APLOG_DEBUG, s,
+		"%s: apprentice conf=%x file=%s m=%s m->next=%s last=%s",
+		MODNAME, conf,
+		conf->magicfile ? conf->magicfile : "NULL",
+		conf->magic ? "set" : "NULL",
+		(conf->magic && conf->magic->next) ? "set" : "NULL",
+		conf->last ? "set" : "NULL");
+    aplog_error(APLOG_MARK, APLOG_DEBUG, s,
+		"%s: apprentice read %d lines, %d rules, %d errors",
+		MODNAME, lineno, rule, errs);
 #endif
 
 #if MIME_MAGIC_DEBUG
     prevm = 0;
-    log_printf(s, "%s: apprentice test", MODNAME);
+    aplog_error(APLOG_MARK, APLOG_DEBUG, s, "%s: apprentice test", MODNAME);
     for (m = conf->magic; m; m = m->next) {
         if (isprint((((unsigned long) m) >> 24) & 255) &&
             isprint((((unsigned long) m) >> 16) & 255) &&
             isprint((((unsigned long) m) >> 8) & 255) &&
             isprint(((unsigned long) m) & 255)) {
-            log_printf(s, "%s: apprentice: "
-                "POINTER CLOBBERED! "
-                "m=\"%c%c%c%c\" line=%d", MODNAME,
-                (((unsigned long) m) >> 24) & 255,
-                (((unsigned long) m) >> 16) & 255,
-                (((unsigned long) m) >> 8) & 255,
-                ((unsigned long) m) & 255,
-                prevm ? prevm->lineno : -1);
+            aplog_error(APLOG_MARK, APLOG_DEBUG, s,
+			"%s: apprentice: POINTER CLOBBERED! "
+			"m=\"%c%c%c%c\" line=%d", MODNAME,
+			(((unsigned long) m) >> 24) & 255,
+			(((unsigned long) m) >> 16) & 255,
+			(((unsigned long) m) >> 8) & 255,
+			((unsigned long) m) & 255,
+			prevm ? prevm->lineno : -1);
             break;
         }
         prevm = m;
@@ -1063,8 +1064,7 @@ apprentice(server_rec * s, pool * p)
 /*
  * extend the sign bit if the comparison is to be signed
  */
-static unsigned long
-signextend(server_rec * s, struct magic * m, unsigned long v)
+static unsigned long signextend (server_rec * s, struct magic * m, unsigned long v)
 {
     if (!(m->flag & UNSIGNED))
         switch (m->type) {
@@ -1092,8 +1092,8 @@ signextend(server_rec * s, struct magic * m, unsigned long v)
         case STRING:
             break;
         default:
-            log_printf(s, "%s: can't happen: m->type=%d",
-                MODNAME, m->type);
+            aplog_error(APLOG_MARK, APLOG_ERR, s,
+			"%s: can't happen: m->type=%d", MODNAME, m->type);
             return -1;
         }
     return v;
@@ -1113,7 +1113,8 @@ parse(server_rec * serv, pool * p, char *l, int lineno)
 
     /* allocate magic structure entry */
     if ((m = (struct magic *) pcalloc(p, sizeof(struct magic))) == NULL) {
-        (void) log_printf(serv, "%s: Out of memory.", MODNAME);
+        (void) aplog_error(APLOG_MARK, APLOG_ERR, serv,
+			   "%s: Out of memory.", MODNAME);
         return -1;
     }
 
@@ -1145,7 +1146,8 @@ parse(server_rec * serv, pool * p, char *l, int lineno)
     /* get offset, then skip over it */
     m->offset = (int) strtol(l, &t, 0);
     if (l == t) {
-        log_printf(serv, "%s: offset %s invalid", MODNAME, l);
+        aplog_error(APLOG_MARK, APLOG_ERR, serv,
+		    "%s: offset %s invalid", MODNAME, l);
     }
     l = t;
 
@@ -1167,7 +1169,8 @@ parse(server_rec * serv, pool * p, char *l, int lineno)
                 m->in.type = BYTE;
                 break;
             default:
-                log_printf(serv, "%s: indirect offset type %c invalid", MODNAME, *l);
+                aplog_error(APLOG_MARK, APLOG_ERR, serv,
+			    "%s: indirect offset type %c invalid", MODNAME, *l);
                 break;
             }
             l++;
@@ -1183,8 +1186,8 @@ parse(server_rec * serv, pool * p, char *l, int lineno)
         else
             t = l;
         if (*t++ != ')') {
-            log_printf(serv, "%s: missing ')' in indirect offset",
-                MODNAME);
+            aplog_error(APLOG_MARK, APLOG_ERR, serv,
+			"%s: missing ')' in indirect offset", MODNAME);
         }
         l = t;
     }
@@ -1257,7 +1260,8 @@ parse(server_rec * serv, pool * p, char *l, int lineno)
         l += NLEDATE;
     }
     else {
-        log_printf(serv, "%s: type %s invalid", MODNAME, l);
+        aplog_error(APLOG_MARK, APLOG_ERR, serv,
+		    "%s: type %s invalid", MODNAME, l);
         return -1;
     }
     /* New-style anding: "0 byte&0x80 =0x80 dynamically linked" */
@@ -1320,9 +1324,10 @@ GetDesc:
          /* NULLBODY */ ;
 
 #if MIME_MAGIC_DEBUG
-    log_printf(serv, "%s: parse line=%d m=%x next=%x cont=%d desc=%s",
-        MODNAME, lineno, m, m->next, m->cont_level,
-        m->desc ? m->desc : "NULL");
+    aplog_error(APLOG_MARK, APLOG_DEBUG, serv,
+		"%s: parse line=%d m=%x next=%x cont=%d desc=%s",
+		MODNAME, lineno, m, m->next, m->cont_level,
+		m->desc ? m->desc : "NULL");
 #endif                /* MIME_MAGIC_DEBUG */
 
     return 0;
@@ -1365,7 +1370,7 @@ getstr(server_rec *serv, register char *s, register char *p,
         if (isspace((unsigned char) c))
             break;
         if (p >= pmax) {
-            log_printf(serv, "String too long: %s", origs);
+            aplog_error(APLOG_MARK, APLOG_ERR, serv, "String too long: %s", origs);
             break;
         }
         if (c == '\\') {
@@ -1594,8 +1599,8 @@ fsmagic(request_rec * r, const char *fn, struct stat * sb)
     case S_IFREG:
         break;
     default:
-        log_printf(r->server, "%s: invalid mode 0%o.", MODNAME,
-               sb->st_mode);
+        aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+		    "%s: invalid mode 0%o.", MODNAME, sb->st_mode);
         /* NOTREACHED */
     }
 
@@ -1663,13 +1668,13 @@ match(request_rec * r, unsigned char *s, int nbytes)
     struct magic *m;
 
 #if MIME_MAGIC_DEBUG
-    log_printf(r->server,
-        "%s: match conf=%x file=%s m=%s m->next=%s last=%s",
-        MODNAME, conf,
-        conf->magicfile ? conf->magicfile : "NULL",
-        conf->magic ? "set" : "NULL",
-        (conf->magic && conf->magic->next) ? "set" : "NULL",
-        conf->last ? "set" : "NULL");
+    aplog_error(APLOG_MARK, APLOG_DEBUG, r->server,
+		"%s: match conf=%x file=%s m=%s m->next=%s last=%s",
+		MODNAME, conf,
+		conf->magicfile ? conf->magicfile : "NULL",
+		conf->magic ? "set" : "NULL",
+		(conf->magic && conf->magic->next) ? "set" : "NULL",
+		conf->last ? "set" : "NULL");
 #endif
 
 #if MIME_MAGIC_DEBUG
@@ -1678,12 +1683,13 @@ match(request_rec * r, unsigned char *s, int nbytes)
             isprint((((unsigned long) m) >> 16) & 255) &&
             isprint((((unsigned long) m) >> 8) & 255) &&
             isprint(((unsigned long) m) & 255)) {
-            log_printf(r->server, "%s: match: POINTER CLOBBERED! "
-                "m=\"%c%c%c%c\"", MODNAME,
-                (((unsigned long) m) >> 24) & 255,
-                (((unsigned long) m) >> 16) & 255,
-                (((unsigned long) m) >> 8) & 255,
-                ((unsigned long) m) & 255);
+            aplog_error(APLOG_MARK, APLOG_DEBUG, r->server,
+			"%s: match: POINTER CLOBBERED! "
+			"m=\"%c%c%c%c\"", MODNAME,
+			(((unsigned long) m) >> 24) & 255,
+			(((unsigned long) m) >> 16) & 255,
+			(((unsigned long) m) >> 8) & 255,
+			((unsigned long) m) & 255);
             break;
         }
     }
@@ -1692,8 +1698,8 @@ match(request_rec * r, unsigned char *s, int nbytes)
     for (m = conf->magic; m; m = m->next) {
 #if MIME_MAGIC_DEBUG
         rule_counter++;
-        log_printf(r->server, "%s: line=%d desc=%s", MODNAME,
-            m->lineno, m->desc);
+        aplog_error(APLOG_MARK, APLOG_DEBUG, r->server,
+		    "%s: line=%d desc=%s", MODNAME, m->lineno, m->desc);
 #endif
 
         /* check if main entry matches */
@@ -1712,12 +1718,11 @@ match(request_rec * r, unsigned char *s, int nbytes)
             while (m_cont && (m_cont->cont_level != 0)) {
 #if MIME_MAGIC_DEBUG
                 rule_counter++;
-                log_printf(r->server,
-                    "%s: line=%d mc=%x mc->next=%x "
-                    "cont=%d desc=%s",
-                    MODNAME, m_cont->lineno, m_cont,
-                    m_cont->next, m_cont->cont_level,
-                      m_cont->desc ? m_cont->desc : "NULL");
+                aplog_error(APLOG_MARK, APLOG_DEBUG, r->server,
+			    "%s: line=%d mc=%x mc->next=%x cont=%d desc=%s",
+			    MODNAME, m_cont->lineno, m_cont,
+			    m_cont->next, m_cont->cont_level,
+			    m_cont->desc ? m_cont->desc : "NULL");
 #endif
                 /*
                  * this trick allows us to keep *m in sync
@@ -1732,9 +1737,10 @@ match(request_rec * r, unsigned char *s, int nbytes)
         /* if we get here, the main entry rule was a match */
         /* this will be the last run through the loop */
 #if MIME_MAGIC_DEBUG
-        log_printf(r->server, "%s: rule matched, line=%d type=%d %s",
-            MODNAME, m->lineno, m->type,
-            (m->type == STRING) ? m->value.s : "");
+        aplog_error(APLOG_MARK, APLOG_DEBUG, r->server,
+		    "%s: rule matched, line=%d type=%d %s",
+		    MODNAME, m->lineno, m->type,
+		    (m->type == STRING) ? m->value.s : "");
 #endif
 
         /* print the match */
@@ -1755,10 +1761,10 @@ match(request_rec * r, unsigned char *s, int nbytes)
         m = m->next;
         while (m && (m->cont_level != 0)) {
 #if MIME_MAGIC_DEBUG
-            log_printf(r->server,
-                "%s: match line=%d cont=%d type=%d %s",
-                MODNAME, m->lineno, m->cont_level, m->type,
-                (m->type == STRING) ? m->value.s : "");
+            aplog_error(APLOG_MARK, APLOG_DEBUG, r->server,
+			"%s: match line=%d cont=%d type=%d %s",
+			MODNAME, m->lineno, m->cont_level, m->type,
+			(m->type == STRING) ? m->value.s : "");
 #endif
             if (cont_level >= m->cont_level) {
                 if (cont_level > m->cont_level) {
@@ -1800,13 +1806,14 @@ match(request_rec * r, unsigned char *s, int nbytes)
             m = m->next;
         }
 #if MIME_MAGIC_DEBUG
-        log_printf(r->server, "%s: matched after %d rules",
-            MODNAME, rule_counter);
+        aplog_error(APLOG_MARK, APLOG_DEBUG, r->server,
+		    "%s: matched after %d rules", MODNAME, rule_counter);
 #endif
         return 1;    /* all through */
     }
 #if MIME_MAGIC_DEBUG
-    log_printf(r->server, "%s: failed after %d rules", MODNAME, rule_counter);
+    aplog_error(APLOG_MARK, APLOG_DEBUG, r->server,
+		"%s: failed after %d rules", MODNAME, rule_counter);
 #endif
     return 0;        /* no match at all */
 }
@@ -1853,8 +1860,9 @@ mprint(request_rec * r, union VALUETYPE * p, struct magic * m)
         (void) magic_rsl_printf(r, m->desc, pp);
         return;
     default:
-        log_printf(r->server, "%s: invalid m->type (%d) in mprint().",
-               MODNAME, m->type);
+        aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+		    "%s: invalid m->type (%d) in mprint().",
+		    MODNAME, m->type);
         return;
     }
 
@@ -1899,8 +1907,8 @@ mconvert(request_rec * r, union VALUETYPE * p, struct magic * m)
             ((p->hl[3] << 24) | (p->hl[2] << 16) | (p->hl[1] << 8) | (p->hl[0]));
         return 1;
     default:
-        log_printf(r->server, "%s: invalid type %d in mconvert().",
-               MODNAME, m->type);
+        aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+		    "%s: invalid type %d in mconvert().", MODNAME, m->type);
         return 0;
     }
 }
@@ -1953,7 +1961,7 @@ mcheck(request_rec * r, union VALUETYPE * p, struct magic * m)
     int matched;
 
     if ((m->value.s[0] == 'x') && (m->value.s[1] == '\0')) {
-        log_printf(r->server, "BOINK");
+        aplog_error(APLOG_MARK, APLOG_ERR, r->server, "BOINK");
         return 1;
     }
 
@@ -1997,8 +2005,8 @@ mcheck(request_rec * r, union VALUETYPE * p, struct magic * m)
         }
         break;
     default:
-        log_printf(r->server, "%s: invalid type %d in mcheck().",
-               MODNAME, m->type);
+        aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+		    "%s: invalid type %d in mcheck().", MODNAME, m->type);
         return 0;    /* NOTREACHED */
     }
 
@@ -2007,7 +2015,7 @@ mcheck(request_rec * r, union VALUETYPE * p, struct magic * m)
     switch (m->reln) {
     case 'x':
 #if MIME_MAGIC_DEBUG
-        log_printf(r->server, "%lu == *any* = 1", v);
+        aplog_error(APLOG_MARK, APLOG_DEBUG, r->server, "%lu == *any* = 1", v);
 #endif
         matched = 1;
         break;
@@ -2015,16 +2023,16 @@ mcheck(request_rec * r, union VALUETYPE * p, struct magic * m)
     case '!':
         matched = v != l;
 #if MIME_MAGIC_DEBUG
-        log_printf(r->server, "%lu != %lu = %d",
-                   v, l, matched);
+        aplog_error(APLOG_MARK, APLOG_DEBUG, r->server,
+		    "%lu != %lu = %d", v, l, matched);
 #endif
         break;
 
     case '=':
         matched = v == l;
 #if MIME_MAGIC_DEBUG
-        log_printf(r->server, "%lu == %lu = %d",
-                   v, l, matched);
+        aplog_error(APLOG_MARK, APLOG_DEBUG, r->server,
+		    "%lu == %lu = %d", v, l, matched);
 #endif
         break;
 
@@ -2032,15 +2040,15 @@ mcheck(request_rec * r, union VALUETYPE * p, struct magic * m)
         if (m->flag & UNSIGNED) {
             matched = v > l;
 #if MIME_MAGIC_DEBUG
-            log_printf(r->server, "%lu > %lu = %d",
-                       v, l, matched);
+            aplog_error(APLOG_MARK, APLOG_DEBUG, r->server,
+			"%lu > %lu = %d", v, l, matched);
 #endif
         }
         else {
             matched = (long) v > (long) l;
 #if MIME_MAGIC_DEBUG
-            log_printf(r->server, "%ld > %ld = %d",
-                       v, l, matched);
+            aplog_error(APLOG_MARK, APLOG_DEBUG, r->server,
+			"%ld > %ld = %d", v, l, matched);
 #endif
         }
         break;
@@ -2049,13 +2057,15 @@ mcheck(request_rec * r, union VALUETYPE * p, struct magic * m)
         if (m->flag & UNSIGNED) {
             matched = v < l;
 #if MIME_MAGIC_DEBUG
-                log_printf(r->server, "%lu < %lu = %d", v, l, matched);
+                aplog_error(APLOG_MARK, APLOG_DEBUG, r->server,
+			    "%lu < %lu = %d", v, l, matched);
 #endif
         }
         else {
             matched = (long) v < (long) l;
 #if MIME_MAGIC_DEBUG
-            log_printf(r->server, "%ld < %ld = %d", v, l, matched);
+            aplog_error(APLOG_MARK, APLOG_DEBUG, r->server,
+			"%ld < %ld = %d", v, l, matched);
 #endif
         }
         break;
@@ -2063,22 +2073,24 @@ mcheck(request_rec * r, union VALUETYPE * p, struct magic * m)
     case '&':
         matched = (v & l) == l;
 #if MIME_MAGIC_DEBUG
-        log_printf(r->server, "((%lx & %lx) == %lx) = %d",
-                   v, l, l, matched);
+        aplog_error(APLOG_MARK, APLOG_DEBUG, r->server,
+		    "((%lx & %lx) == %lx) = %d", v, l, l, matched);
 #endif
         break;
 
     case '^':
         matched = (v & l) != l;
 #if MIME_MAGIC_DEBUG
-        log_printf(r->server, "((%lx & %lx) != %lx) = %d",
-                   v, l, l, matched);
+        aplog_error(APLOG_MARK, APLOG_DEBUG, r->server,
+		    "((%lx & %lx) != %lx) = %d", v, l, l, matched);
 #endif
         break;
 
     default:
         matched = 0;
-        log_printf(r->server, "%s: mcheck: can't happen: invalid relation %d.", MODNAME, m->reln);
+        aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+		    "%s: mcheck: can't happen: invalid relation %d.",
+		    MODNAME, m->reln);
         break;        /* NOTREACHED */
     }
 
@@ -2239,8 +2251,8 @@ uncompress(request_rec *r, int method, const unsigned char *old,
     int fdin[2], fdout[2];
 
     if (pipe(fdin) == -1 || pipe(fdout) == -1) {
-        log_printf(r->server, "%s: cannot create pipe (%s).",
-               MODNAME, strerror(errno));
+        aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+		    "%s: cannot create pipe.", MODNAME);
         return -1;
     }
     switch (fork()) {
@@ -2258,31 +2270,31 @@ uncompress(request_rec *r, int method, const unsigned char *old,
             (void) close(STDERR_FILENO);
 
         execvp(compr[method].argv[0], compr[method].argv);
-        log_printf(r->server, "%s: could not execute `%s' (%s).", MODNAME,
-               compr[method].argv[0], strerror(errno));
+        aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+		    "%s: could not execute `%s'.", MODNAME, compr[method].argv[0]);
         return -1;
     case -1:
-        log_printf(r->server, "%s: could not fork (%s).", MODNAME,
-               strerror(errno));
+        aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+		    "%s: could not fork.", MODNAME);
         return -1;
 
     default:        /* parent */
         (void) close(fdin[0]);
         (void) close(fdout[1]);
         if (write(fdin[1], old, n) != n) {
-            log_printf(r->server, "%s: write failed (%s).", MODNAME,
-                   strerror(errno));
+            aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+			"%s: write failed.", MODNAME);
             return -1;
         }
         (void) close(fdin[1]);
         if ((*newch = (unsigned char *) palloc(r->pool, n)) == NULL) {
-            log_printf(r->server, "%s: out of memory in uncompress()",
-                   MODNAME);
+            aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+			"%s: out of memory in uncompress()", MODNAME);
             return -1;
         }
         if ((n = read(fdout[0], *newch, n)) <= 0) {
-            log_printf(r->server, "%s: read failed (%s).", MODNAME,
-                   strerror(errno));
+            aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+			"%s: read failed", MODNAME);
             return -1;
         }
         (void) close(fdout[0]);
@@ -2396,8 +2408,8 @@ revision_suffix(request_rec * r)
     request_rec *sub;
 
 #if MIME_MAGIC_DEBUG
-    log_printf(r->server, "%s: revision_suffix checking%s", MODNAME,
-        r->filename);
+    aplog_error(APLOG_MARK, APLOG_DEBUG, r->server,
+		"%s: revision_suffix checking%s", MODNAME, r->filename);
 #endif                /* MIME_MAGIC_DEBUG */
 
     /* check for recognized revision suffix */
@@ -2415,7 +2427,8 @@ revision_suffix(request_rec * r)
     result = 0;
     sub_filename = pstrndup(r->pool, r->filename, suffix_pos);
 #if MIME_MAGIC_DEBUG
-    log_printf(r->server, "%s: subrequest lookup for %s", MODNAME, sub_filename);
+    aplog_error(APLOG_MARK, APLOG_DEBUG, r->server,
+		"%s: subrequest lookup for %s", MODNAME, sub_filename);
 #endif                /* MIME_MAGIC_DEBUG */
     sub = sub_req_lookup_file(sub_filename, r);
 
@@ -2423,8 +2436,9 @@ revision_suffix(request_rec * r)
     if (sub->content_type) {
         r->content_type = pstrdup(r->pool, sub->content_type);
 #if MIME_MAGIC_DEBUG
-        log_printf(r->server, "%s: subrequest %s got %s", MODNAME,
-            sub_filename, r->content_type);
+        aplog_error(APLOG_MARK, APLOG_DEBUG, r->server,
+		    "%s: subrequest %s got %s",
+		    MODNAME, sub_filename, r->content_type);
 #endif                /* MIME_MAGIC_DEBUG */
         if (sub->content_encoding)
             r->content_encoding =
@@ -2462,20 +2476,20 @@ magic_init(server_rec * s, pool * p)
             return;
 #if MIME_MAGIC_DEBUG
         prevm = 0;
-        log_printf(s, "%s: magic_init 1 test", MODNAME);
+        aplog_error(APLOG_MARK, APLOG_DEBUG, s, "%s: magic_init 1 test", MODNAME);
         for (m = conf->magic; m; m = m->next) {
             if (isprint((((unsigned long) m) >> 24) & 255) &&
                 isprint((((unsigned long) m) >> 16) & 255) &&
                 isprint((((unsigned long) m) >> 8) & 255) &&
                 isprint(((unsigned long) m) & 255)) {
-                log_printf(s, "%s: magic_init 1: "
-                    "POINTER CLOBBERED! "
-                    "m=\"%c%c%c%c\" line=%d", MODNAME,
-                    (((unsigned long) m) >> 24) & 255,
-                    (((unsigned long) m) >> 16) & 255,
-                    (((unsigned long) m) >> 8) & 255,
-                    ((unsigned long) m) & 255,
-                    prevm ? prevm->lineno : -1);
+                aplog_error(APLOG_MARK, APLOG_DEBUG, s,
+			    "%s: magic_init 1: POINTER CLOBBERED! "
+			    "m=\"%c%c%c%c\" line=%d", MODNAME,
+			    (((unsigned long) m) >> 24) & 255,
+			    (((unsigned long) m) >> 16) & 255,
+			    (((unsigned long) m) >> 8) & 255,
+			    ((unsigned long) m) & 255,
+			    prevm ? prevm->lineno : -1);
                 break;
             }
             prevm = m;
