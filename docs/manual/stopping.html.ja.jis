@@ -24,7 +24,7 @@
     <p>この文書では Unix に類似したシステムでの
     Apache の停止と再起動について扱っています。
     Windows NT, 2000, XP ユーザは<a href="platform/windows.html#winsvc">サービスとして
-    Apache を実行する</a>を、Windows 9x, MEユーザは<a href="platform/windows.html#wincons">コンソールアプリケーションとして
+    Apache を実行する</a>で、Windows 9x, MEユーザは<a href="platform/windows.html#wincons">コンソールアプリケーションとして
     Apache を実行する</a>で、
     これらのプラットホームでの使用方法をご覧下さい。</p>
 </div>
@@ -51,9 +51,9 @@
     に書かれています。これはつまり、親以外のプロセスに
     シグナルを送る必要すらない、ということです。
     親プロセスに送ることができる 3 種類のシグナルがあります:
-    <a href="#term"><code>TERM</code></a>,
-    <a href="#hup"><code>HUP</code></a>, 
-    <a href="#usr1"><code>USR1</code></a>
+    <code><a href="#term">TERM</a></code>,
+    <code><a href="#hup">HUP</a></code>, 
+    <code><a href="#graceful">USR1</a></code>
     です。これらの説明については続きをご覧下さい。</p>
 
     <p>親プロセスにシグナルを送るには、
