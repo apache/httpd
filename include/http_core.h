@@ -321,7 +321,8 @@ extern AP_DECLARE_DATA module core_module;
 /* Per-request configuration */
 
 typedef struct {
-    /* bucket brigade used by getline for look-ahead */
+    /* bucket brigade used by getline for look-ahead and 
+     * ap_get_client_block for holding left-over request body */
     struct ap_bucket_brigade *bb;
 } core_request_config;
 
@@ -431,8 +432,6 @@ typedef struct {
 
     apr_array_header_t *output_filters;
     apr_array_header_t *input_filters;
-    /* bucket brigade held by ap_get_client_block() between calls */
-    struct ap_bucket_brigade *bb;
 } core_dir_config;
 
 /* Per-server core configuration */
