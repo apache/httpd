@@ -404,6 +404,16 @@ DefaultType text/plain
 HostnameLookups Off
 
 #
+# LogRotateDaily: If set to 'on' logfiles rotate daily.
+# LogRotateInterval s: If set, logfiles rotate after s seconds.
+# The LogRotateDaily and LogRotateInterval directives are mutually
+# exclusive.  The rotated log file name adds the date suffix of 
+# YYYYMMDD to identify when the log was rotated.
+#
+# LogRotateDaily on
+# LogRotateInterval 86400
+
+#
 # ErrorLog: The location of the error log file.
 # If you do not specify an ErrorLog directive within a <VirtualHost>
 # container, error messages relating to that virtual host will be
