@@ -1,9 +1,9 @@
   1.3 STATUS:
-  Last modified at [$Date: 2000/06/01 17:52:13 $]
+  Last modified at [$Date: 2000/06/02 19:41:57 $]
 
 Release:
 
-    1.3.13-dev: In development.
+    1.3.13-dev: In development - targeted to roll on or after June 9?
     1.3.12: Tagged and rolled Feb. 23, 2000. Released and
             announced on the 25th.
     1.3.11: Tagged and rolled Jan. 19, 2000. Released and
@@ -25,7 +25,28 @@ Release:
 
 RELEASE SHOWSTOPPERS:
 
-    * None at present
+    * Add a simple hold console open patch (wait for close or
+        the ESC key, with a nice message) if the server died a 
+        bad death (non-zero exit code) in console mode.  Add the
+        ConsoleHandler to deal with Ctrl+C/Ctrl+Break and, at
+        least under NT, shutdown, logoff and window close.
+        OtherBill is working on this
+
+    * Assure we haven't drifted too far between httpd.conf-dist
+        and httpd.conf-dist-win.
+
+    * Assure the windows.html and win_compiling.html reflect
+        reality, today.
+	- running the server without admin
+	- how CGIs work (?)
+	- short/long name handling (?)
+	- better status page on current state of NT for users
+        > Basic answer the the last one - 2.0 is coming
+
+    * Get a CHANGES entry from Mike on the NW commit of 6/1/00
+
+    * Get the mod_setenvif change in for 1.3.13
+        Ken Coar is working on this
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
@@ -145,10 +166,6 @@ Available Patches:
       to either the server UID or the file's owner.
 	Message-ID: <37306CB4.8EA9D76C@Golux.Com>
 	Status: Ken +1, Dean +1, Randy +1, Lars +0, Jim +1
-
-    * Keith Wannamaker's NT multiple services patch
-	Message-ID: <85256730.0073D841.00@d54mta06.raleigh.ibm.com>
-	Status: Bill +1 (on concept), Lars +1 (on concept)
 
     * Jun-ichiro itojun Hagino's [PATCH] IPv6 enable patch
       ftp://ftp.kame.net/pub/kame/misc/apache-139-v6-19991013a.diff.gz
@@ -417,14 +434,6 @@ Win32 specific issues:
       parent to wait for the child process to become fully active before
       proceeding with CGI I/O processing.
 
-    * should trap ^C when running not-as-service and do proper shutdown
-
-    * proxy module doesn't load on Win95.  Why?  Good question.  PR#1462.
-      David Whitmarsh <david.whitmarsh@dial.pipex.com> says it's because
-      you can't dynamically load a DLL that uses declspec(thread).  He
-      supplied a patch.
-	MID: <36f6e9bb.16134842@smtp.dial.pipex.com>
-    
     * chdir() for CGI scripts and mod_include #exec needs to be 
       re-implemented now that CreateProcess is being used.
 
@@ -459,13 +468,6 @@ Win32 specific issues:
 	    - we don't have a way to make non-blocking files on NT!
 
     * performance
-
-    * documentation:
-	- running the server without admin
-	- how CGIs work
-	- update README.NT
-	- short/long name handling
-	- better status page on current state of NT for users
 
     * http_main.c hell
 	- split into two files?
@@ -508,11 +510,6 @@ Win32 specific issues:
     * mod_include --> exec cgi, exec cmd, etc. don't work right.
       Looks like a code path that isn't run anywhere else that has
       something not quite right...  A PR or two on it.
-
-    * signal type handling
-    	- how to rotate logs from command line?
-	  (Point people to Andrew Ford's cronolog because it's "better"
-	   than ours?)
 
     * Currently if you double click on the conf files or the
       log files you get a useless dialog offering the set of all
