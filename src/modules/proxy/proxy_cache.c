@@ -651,8 +651,11 @@ static int rdcache(request_rec *r, BUFF *cachefp, cache_req *c)
 
     /* retrieve cachefile information values */
     len = ap_bgets(urlbuff, sizeof urlbuff, cachefp);
-    if (len == -1)
+    if (len == -1) {
+        /* Delete broken cache file */
+        unlink(c->filename);
         return -1;
+    }
     if (len == 0 || urlbuff[len - 1] != '\n')
         return 0;
     urlbuff[len - 1] = '\0';
@@ -671,8 +674,11 @@ static int rdcache(request_rec *r, BUFF *cachefp, cache_req *c)
 
     /* check that we have the same URL */
     len = ap_bgets(urlbuff, sizeof urlbuff, cachefp);
-    if (len == -1)
+    if (len == -1) {
+        /* Delete broken cache file */
+        unlink(c->filename);
         return -1;
+    }
     if (len == 0 || strncmp(urlbuff, "X-URL: ", 7) != 0 ||
         urlbuff[len - 1] != '\n')
         return 0;
@@ -682,13 +688,19 @@ static int rdcache(request_rec *r, BUFF *cachefp, cache_req *c)
 
     /* then the original request headers */
     c->req_hdrs = ap_proxy_read_headers(r, urlbuff, sizeof urlbuff, cachefp);
-    if (c->req_hdrs == NULL)
+    if (c->req_hdrs == NULL) {
+        /* Delete broken cache file */
+        unlink(c->filename);
         return -1;
+    }
 
     /* then the original response headers */
     len = ap_bgets(urlbuff, sizeof urlbuff, cachefp);
-    if (len == -1)
+    if (len == -1) {
+        /* Delete broken cache file */
+        unlink(c->filename);
         return -1;
+    }
     if (len == 0 || urlbuff[len - 1] != '\n')
         return 0;
     urlbuff[--len] = '\0';
@@ -700,8 +712,11 @@ static int rdcache(request_rec *r, BUFF *cachefp, cache_req *c)
 
     c->status = atoi(strp);
     c->hdrs = ap_proxy_read_headers(r, urlbuff, sizeof urlbuff, cachefp);
-    if (c->hdrs == NULL)
+    if (c->hdrs == NULL) {
+        /* Delete broken cache file */
+        unlink(c->filename);
         return -1;
+    }
     if (c->len != -1)           /* add a content-length header */
         if (ap_table_get(c->hdrs, "Content-Length") == NULL) {
             ap_table_set(c->hdrs, "Content-Length",
@@ -922,9 +937,8 @@ int ap_proxy_cache_check(request_rec *r, char *url, struct cache_conf * conf,
                              cache_req **cr)
 {
     const char *datestr, *pragma_req = NULL, *pragma_cresp = NULL, *cc_req = NULL,
-        *cc_cresp = NULL, *vary = NULL;
+        *cc_cresp = NULL;
     cache_req *c;
-    time_t now;
     BUFF *cachefp;
     int i;
     void *sconf = r->server->module_config;
@@ -1021,7 +1035,7 @@ int ap_proxy_cache_check(request_rec *r, char *url, struct cache_conf * conf,
 /* if the cache file exists, open it */
     cachefp = NULL;
     ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, r->server, "Request for %s, pragma_req=%s, ims=%ld", url,
-                 pragma_req, c->ims);
+                 (pragma_req == NULL) ? "(unset)" : pragma_req, c->ims);
 /* find out about whether the request can access the cache */
     if (c->filename != NULL && r->method_number == M_GET &&
         strlen(url) < 1024) {
@@ -1048,7 +1062,6 @@ int ap_proxy_cache_check(request_rec *r, char *url, struct cache_conf * conf,
         if (c->hdrs) {
             cc_cresp = ap_table_get(c->hdrs, "Cache-Control");
             pragma_cresp = ap_table_get(c->hdrs, "Pragma");
-            vary = ap_table_get(c->hdrs, "Vary");
             if ((agestr = ap_table_get(c->hdrs, "Age"))) {
                 age_c = atoi(agestr);
             }
@@ -1195,7 +1208,6 @@ int ap_proxy_cache_check(request_rec *r, char *url, struct cache_conf * conf,
     if (maxstale && ((cc_cresp && ap_proxy_liststr(cc_cresp, "must-revalidate", NULL)) || (cc_cresp && ap_proxy_liststr(cc_cresp, "proxy-revalidate", NULL))))
         maxstale = 0;
 
-    now = time(NULL);
     if (cachefp != NULL &&
 
     /* handle no-cache */
@@ -1760,7 +1772,7 @@ void ap_proxy_cache_tidy(cache_req *c)
                          "proxy: error renaming cache file %s to %s",
                          c->tempfile, c->filename);
             (void)unlink(c->tempfile);
-	}
+        }
 #else
 
         if (link(c->tempfile, c->filename) == -1)
