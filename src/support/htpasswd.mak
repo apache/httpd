@@ -52,6 +52,7 @@ CLEAN :
 	-@erase "$(INTDIR)\ap_cpystrn.obj"
 	-@erase "$(INTDIR)\ap_getpass.obj"
 	-@erase "$(INTDIR)\ap_md5c.obj"
+	-@erase "$(INTDIR)\ap_snprintf.obj"
 	-@erase "$(INTDIR)\htpasswd.obj"
 	-@erase "$(INTDIR)\vc50.idb"
 	-@erase "$(OUTDIR)\htpasswd.exe"
@@ -70,12 +71,13 @@ BSC32_SBRS= \
 	
 LINK32=link.exe
 LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib\
- advapi32.lib shell32.lib /nologo /subsystem:console /incremental:no\
+ advapi32.lib shell32.lib wsock32.lib /nologo /subsystem:console /incremental:no\
  /pdb:"$(OUTDIR)\htpasswd.pdb" /machine:I386 /out:"$(OUTDIR)\htpasswd.exe" 
 LINK32_OBJS= \
 	"$(INTDIR)\ap_cpystrn.obj" \
 	"$(INTDIR)\ap_getpass.obj" \
 	"$(INTDIR)\ap_md5c.obj" \
+	"$(INTDIR)\ap_snprintf.obj" \
 	"$(INTDIR)\htpasswd.obj"
 
 "$(OUTDIR)\htpasswd.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -105,6 +107,7 @@ CLEAN :
 	-@erase "$(INTDIR)\ap_cpystrn.obj"
 	-@erase "$(INTDIR)\ap_getpass.obj"
 	-@erase "$(INTDIR)\ap_md5c.obj"
+	-@erase "$(INTDIR)\ap_snprintf.obj"
 	-@erase "$(INTDIR)\htpasswd.obj"
 	-@erase "$(INTDIR)\vc50.idb"
 	-@erase "$(INTDIR)\vc50.pdb"
@@ -125,14 +128,15 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\htpasswd.bsc"
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib\
- advapi32.lib shell32.lib /nologo /subsystem:console /incremental:yes\
- /pdb:"$(OUTDIR)\htpasswd.pdb" /debug /machine:I386\
+LINK32_FLAGS=wsock32.lib kernel32.lib user32.lib gdi32.lib winspool.lib\
+ comdlg32.lib advapi32.lib shell32.lib /nologo /subsystem:console\
+ /incremental:yes /pdb:"$(OUTDIR)\htpasswd.pdb" /debug /machine:I386\
  /out:"$(OUTDIR)\htpasswd.exe" /pdbtype:sept 
 LINK32_OBJS= \
 	"$(INTDIR)\ap_cpystrn.obj" \
 	"$(INTDIR)\ap_getpass.obj" \
 	"$(INTDIR)\ap_md5c.obj" \
+	"$(INTDIR)\ap_snprintf.obj" \
 	"$(INTDIR)\htpasswd.obj"
 
 "$(OUTDIR)\htpasswd.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -176,9 +180,6 @@ LINK32_OBJS= \
 !IF "$(CFG)" == "htpasswd - Win32 Release" || "$(CFG)" ==\
  "htpasswd - Win32 Debug"
 SOURCE=..\ap\ap_cpystrn.c
-
-!IF  "$(CFG)" == "htpasswd - Win32 Release"
-
 DEP_CPP_AP_CP=\
 	"..\include\alloc.h"\
 	"..\include\ap.h"\
@@ -196,28 +197,6 @@ DEP_CPP_AP_CP=\
 "$(INTDIR)\ap_cpystrn.obj" : $(SOURCE) $(DEP_CPP_AP_CP) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ELSEIF  "$(CFG)" == "htpasswd - Win32 Debug"
-
-DEP_CPP_AP_CP=\
-	"..\include\alloc.h"\
-	"..\include\ap.h"\
-	"..\include\ap_config.h"\
-	"..\include\ap_ctype.h"\
-	"..\include\ap_mmn.h"\
-	"..\include\buff.h"\
-	"..\include\hsregex.h"\
-	"..\include\httpd.h"\
-	"..\include\util_uri.h"\
-	"..\os\win32\os.h"\
-	"..\os\win32\readdir.h"\
-	
-
-"$(INTDIR)\ap_cpystrn.obj" : $(SOURCE) $(DEP_CPP_AP_CP) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
 
 SOURCE=..\ap\ap_getpass.c
 DEP_CPP_AP_GE=\
@@ -234,6 +213,9 @@ DEP_CPP_AP_GE=\
 
 
 SOURCE=..\ap\ap_md5c.c
+
+!IF  "$(CFG)" == "htpasswd - Win32 Release"
+
 DEP_CPP_AP_MD=\
 	"..\include\ap.h"\
 	"..\include\ap_config.h"\
@@ -245,6 +227,43 @@ DEP_CPP_AP_MD=\
 	
 
 "$(INTDIR)\ap_md5c.obj" : $(SOURCE) $(DEP_CPP_AP_MD) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ELSEIF  "$(CFG)" == "htpasswd - Win32 Debug"
+
+DEP_CPP_AP_MD=\
+	"..\include\ap.h"\
+	"..\include\ap_config.h"\
+	"..\include\ap_ctype.h"\
+	"..\include\ap_md5.h"\
+	"..\include\ap_mmn.h"\
+	"..\include\hsregex.h"\
+	"..\os\win32\os.h"\
+	
+
+"$(INTDIR)\ap_md5c.obj" : $(SOURCE) $(DEP_CPP_AP_MD) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ENDIF 
+
+SOURCE=..\ap\ap_snprintf.c
+DEP_CPP_AP_SN=\
+	"..\include\alloc.h"\
+	"..\include\ap.h"\
+	"..\include\ap_config.h"\
+	"..\include\ap_ctype.h"\
+	"..\include\ap_mmn.h"\
+	"..\include\buff.h"\
+	"..\include\hsregex.h"\
+	"..\include\httpd.h"\
+	"..\include\util_uri.h"\
+	"..\os\win32\os.h"\
+	"..\os\win32\readdir.h"\
+	
+
+"$(INTDIR)\ap_snprintf.obj" : $(SOURCE) $(DEP_CPP_AP_SN) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
