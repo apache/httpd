@@ -1678,7 +1678,7 @@ Changes with Apache 2.0.43
 
 Changes with Apache 2.0.42
 
-  *) SECURITY: CVE-2002-1593 (cve.mitre.org) [CERT VU#406121]
+  *) SECURITY: CAN-2002-1593 (cve.mitre.org) [CERT VU#406121]
      mod_dav: Check for versioning hooks before using them.
      [Greg Stein]
 
