@@ -251,7 +251,7 @@ configuration directive?</title>
     SSL handshake. For a more general command line client which directly
     understands both the HTTP and HTTPS scheme, can perform GET and POST
     methods, can use a proxy, supports byte ranges, etc. you should have a
-    look at nifty <a href="http://curl.haxx.nu/">cURL</a>
+    look at nifty <a href="http://curl.haxx.se/">cURL</a>
     tool. With it you can directly check if your Apache is running fine on
     Port 80 and 443 as following:</p>
     
