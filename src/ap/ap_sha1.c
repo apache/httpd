@@ -240,7 +240,7 @@ API_EXPORT(void) ap_SHA1Update_binary(AP_SHA1_CTX *sha_info,
 				      const unsigned char *buffer,
 				      unsigned int count)
 {
-    int i;
+    unsigned int i;
 
     if ((sha_info->count_lo + ((AP_LONG) count << 3)) < sha_info->count_lo) {
 	++sha_info->count_hi;
