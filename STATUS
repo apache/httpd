@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/02/08 00:20:10 $]
+Last modified at [$Date: 2001/02/10 00:33:36 $]
 
 Release:
 
@@ -97,11 +97,6 @@ RELEASE SHOWSTOPPERS:
         Status: Greg volunteers
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
-
-    * The directives to setup output filters need to be re-visited.  These
-      directives aren't consistent with what we already have, and they don't
-      always make good sense.
-          Status:  rbb volunteers.
 
     * Combine log_child and piped_log_spawn. Clean up http_log.c.
       Common logging API.

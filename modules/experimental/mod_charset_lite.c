@@ -421,7 +421,7 @@ static void xlate_insert_filter(request_rec *r)
                           "xlate output filter not added implicitly because %s",
                           !reqinfo->output_ctx ? 
                           "no output configuration available" :
-                          "AddOutputFilter was used to add the filter");
+                          "SetOutputFilter was used to add the filter");
         }
 
         if (reqinfo->input_ctx && !configured_on_input(r, XLATEIN_FILTER_NAME)) {
@@ -433,7 +433,7 @@ static void xlate_insert_filter(request_rec *r)
                           "xlate input filter not added implicitly because %s",
                           !reqinfo->input_ctx ?
                           "no input configuration available" :
-                          "AddInputFilter was used to add the filter");
+                          "SetInputFilter was used to add the filter");
         }
     }
 }
@@ -848,7 +848,7 @@ static apr_status_t xlate_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     apr_status_t rv = APR_SUCCESS;
 
     if (!ctx) { 
-        /* this is AddOutputFilter path; grab the preallocated context,
+        /* this is SetOutputFilter path; grab the preallocated context,
          * if any; note that if we decided not to do anything in an earlier
          * handler, we won't even have a reqinfo
          */
@@ -1017,7 +1017,7 @@ static int xlate_in_filter(ap_filter_t *f, apr_bucket_brigade *bb,
     int hit_eos;
 
     if (!ctx) { 
-        /* this is AddInputFilter path; grab the preallocated context,
+        /* this is SetInputFilter path; grab the preallocated context,
          * if any; note that if we decided not to do anything in an earlier
          * handler, we won't even have a reqinfo
          */

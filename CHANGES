@@ -1,5 +1,10 @@
 Changes with Apache 2.0b1
 
+  *) Change AddInputFilter and AddOutputFilter to SetInputFilter and
+     SetOutputFilter.  This corresponds nicely with the other Set 
+     directives, which operate on containers while the Add* directives
+     tend to work directly on extensions.  [Ryan Bloom]
+
   *) Cleanup the header handling a bit.  This uses the apr_brigade_*
      functions for the buffering so that we don't need to compute
      the length of the headers before we actually create the header

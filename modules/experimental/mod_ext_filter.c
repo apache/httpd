@@ -330,7 +330,7 @@ static const command_rec cmds[] =
     AP_INIT_ITERATE("ExtFilterOptions",
                     add_options,
                     NULL,
-                    ACCESS_CONF, /* same as AddInputFilter/AddOutputFilter */
+                    ACCESS_CONF, /* same as SetInputFilter/SetOutputFilter */
                     "valid options: DebugLevel=n, LogStderr, NoLogStderr"),
     AP_INIT_RAW_ARGS("ExtFilterDefine",
                      define_filter,

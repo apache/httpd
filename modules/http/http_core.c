@@ -2889,9 +2889,9 @@ AP_INIT_TAKE12("RLimitNPROC", no_set_limit, NULL,
  * to leave it just in the conf file.  Other should feel free to disagree
  * with me.  Rbb.
  */
-AP_INIT_ITERATE("AddOutputFilter", add_filter, NULL, ACCESS_CONF,
+AP_INIT_ITERATE("SetOutputFilter", add_filter, NULL, ACCESS_CONF,
    "filters to be run"),
-AP_INIT_ITERATE("AddInputFilter", add_input_filter, NULL, ACCESS_CONF,
+AP_INIT_ITERATE("SetInputFilter", add_input_filter, NULL, ACCESS_CONF,
    "filters to be run on the request body"),
 { NULL }
 };
