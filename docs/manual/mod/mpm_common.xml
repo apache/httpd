@@ -63,7 +63,7 @@ accepting requests on network sockets</description>
     >AcceptMutex</directive> will be written into the <directive
     module="core">ErrorLog</directive>.</p>
 
-  <note type="warning"><strong>Warning:</strong>
+  <note type="warning"><title>Warning</title>
      <p>On most systems, when the <code>pthread</code> option
      is selected, if a child process terminates abnormally
      while holding the <code>AcceptCntl</code> mutex the
