@@ -23,8 +23,8 @@ Changes with Apache 1.3.10
      work. Fixed.
      [Manoj Kasichainula, Ben Laurie]
 
-  *) ProxyPass erroneously converted authentication requests to proxy
-     authentication requests. Fixed.
+  *) ProxyPass and mod_rewrite's proxy mode erroneously converted 
+     authentication requests to proxy authentication requests.
      [Ben Laurie]
 
   *) Reverse a patch which broke HPUX shared builds. Basically
