@@ -4210,7 +4210,6 @@ static int dav_method_merge(request_rec *r)
        is going to do something different (i.e. an error), then it must
        return a dav_error, and we'll reset these values properly. */
     r->status = HTTP_OK;
-    r->status_line = ap_get_status_line(HTTP_OK);	/* ### needed? */
     r->content_type = "text/xml";
 
     /* ### should we do any preliminary response generation? probably not,
