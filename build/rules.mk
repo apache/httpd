@@ -113,7 +113,6 @@ distclean-recursive depend-recursive clean-recursive all-recursive install-recur
 			ok=yes; \
 			target="$$target-p"; \
 		fi; \
-		if test ! -f $$i/.deps; then touch $$i/.deps; fi; \
 		(cd $$i && $(MAKE) $$target) || exit 1; \
 	done; \
 	if test "$$otarget" = "all" && test -z '$(targets)'; then ok=yes; fi;\
@@ -131,7 +130,7 @@ install-p: $(targets) $(install_targets)
 distclean-p depend-p clean-p:
 
 depend: depend-recursive
-	gcc -MM $(INCLUDES) $(EXTRA_INCLUDES) $(DEFS) $(CPPFLAGS) $(srcdir)/*.c > $(builddir)/.deps
+	gcc -MM $(INCLUDES) $(EXTRA_INCLUDES) $(DEFS) $(CPPFLAGS) $(srcdir)/*.c > $(builddir)/.deps || true
 #	test "`echo *.c`" = '*.c' || perl $(top_srcdir)/build/mkdep.perl $(CPP) $(INCLUDES) $(EXTRA_INCLUDES) *.c > .deps
 
 clean: clean-recursive clean-x

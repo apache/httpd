@@ -72,8 +72,7 @@ fi
 
 for makefile in $@; do
   echo "creating $makefile"
-# portable dirname
-  dir=`echo $makefile|sed -e 's%[^/][^/]*$%%' -e 's%/$%%'`
+  dir=`echo $makefile|sed 's%/*[^/][^/]*$%%'`
   test -d "$dir/" || $mkdir_p "$dir/"
 
   (cat <<EOF
@@ -84,5 +83,7 @@ builddir     = $top_builddir/$dir
 VPATH        = $top_srcdir/$dir
 EOF
 )| cat - $top_srcdir/$makefile.in > $makefile
+
+  touch "$top_builddir/$dir/.deps"
 
 done
