@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: mod_cookies.c,v 1.14 1996/08/24 14:41:32 ben Exp $ */
+/* $Id: mod_cookies.c,v 1.15 1996/09/08 12:25:30 ben Exp $ */
 
 /* User Tracking Module
  *
@@ -257,7 +257,7 @@ char *set_cookie_exp (cmd_parms *parms, void *dummy, char *arg)
     /* {<num> <type>}* */
     while ( word[0] ) {
         /* <num> */
-        if ( index("0123456789", word[0]) != NULL )
+        if ( strchr("0123456789", word[0]) != NULL )
 	  num = atoi( word );
 	else
 	  return "bad expires code, numeric value expected.";
