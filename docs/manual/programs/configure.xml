@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.13 $ -->
+<!-- $Revision: 1.14 $ -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -413,7 +413,7 @@
           <module>mod_auth_digest</module>. This module uses plain text files
           to store the credentials.</dd>
 
-        <dt><code>--enable-auth-ldap</code></dt>
+        <dt><code>--enable-authnz-ldap</code></dt>
         <dd>Enable LDAP based authentication provided by
           <module>mod_authnz_ldap</module>.</dd>
           
