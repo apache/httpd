@@ -211,6 +211,10 @@ dav_lookup_result dav_lookup_uri(const char *uri, request_rec * r)
     if (scheme == NULL)
 	scheme = ap_http_method(r);
 
+    /* insert a port if the URI did not contain one */
+    if (comp.port == 0)
+        comp.port = ap_default_port_for_scheme(comp.scheme);
+
     /* now, verify that the URI uses the same scheme as the current request.
        the port, must match our port.
        the URI must not have a query (args) or a fragment
