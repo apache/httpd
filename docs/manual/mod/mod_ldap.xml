@@ -245,7 +245,7 @@ by other LDAP modules</description>
 <section id="settingcerts"><title>SSL/TLS Certificates</title>
 
     <p>The different LDAP SDKs have widely different methods of setting
-    and handling both CA and client side certificates.<p>
+    and handling both CA and client side certificates.</p>
 
     <p>If you intend to use SSL or TLS, read this section CAREFULLY so as to
     understand the differences between configurations on the different LDAP
@@ -563,6 +563,21 @@ connection client certificates.</description>
 
     <p>If an ldaps:// URL is specified, the mode becomes SSL and the setting
     of LDAPTrustedMode is ignored.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>LDAPConnectionTimeout</name>
+<description>Specifies the socket connection timeout in seconds</description>
+<syntax>LDAPConnectionTimeout <var>seconds</var></syntax>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>Specifies the timeout value (in seconds) in which the module will
+    attempt to connect to the LDAP server.  If a connection is not
+    successful with the timeout period, either an error will be 
+    returned or the module will attempt to connect to a secondary LDAP 
+    server if one is specified. The default is 10 seconds.</p>
 </usage>
 </directivesynopsis>
 

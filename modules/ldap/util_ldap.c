@@ -1594,6 +1594,26 @@ static const char *util_ldap_set_trusted_mode(cmd_parms *cmd, void *dummy, const
     return(NULL);
 }
 
+static const char *util_ldap_set_connection_timeout(cmd_parms *cmd, void *dummy, const char *ttl)
+{
+    util_ldap_state_t *st = 
+        (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config, 
+						  &ldap_module);
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+
+    if (err != NULL) {
+        return err;
+    }
+
+    st->connectionTimeout = atol(ttl);
+
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, cmd->server, 
+                      "[%d] ldap connection: Setting connection timeout to %ld seconds.", 
+                      getpid(), st->connectionTimeout);
+
+    return NULL;
+}
+
 
 void *util_ldap_create_config(apr_pool_t *p, server_rec *s)
 {
@@ -1613,6 +1633,7 @@ void *util_ldap_create_config(apr_pool_t *p, server_rec *s)
     st->client_certs = apr_array_make(p, 10, sizeof(apr_ldap_opt_tls_cert_t));
     st->secure = APR_LDAP_NONE;
     st->secure_set = 0;
+    st->connectionTimeout = 10;
 
     return st;
 }
@@ -1669,6 +1690,7 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
     const char *userdata_key = "util_ldap_init";
     apr_ldap_err_t *result_err = NULL;
     int rc;
+    struct timeval timeOut = {10,0};    /* 10 second connection timeout */
 
     /* util_ldap_post_config() will be called twice. Don't bother
      * going through all of the initialization on the first call
@@ -1788,6 +1810,20 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
         ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s, 
                          "LDAP: SSL support unavailable" );
     }
+
+    if (st->connectionTimeout > 0) {
+        timeOut.tv_sec = st->connectionTimeout;
+    }
+
+    if (st->connectionTimeout >= 0) {
+        rc = apr_ldap_set_option(p, NULL, LDAP_OPT_NETWORK_TIMEOUT,
+                                 (void *)&timeOut, &(result_err));
+        if (APR_SUCCESS != rc) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+                             "LDAP: Could not set the connection timeout" );
+        }
+    }
+
     
     return(OK);
 }
@@ -1882,6 +1918,10 @@ command_rec util_ldap_cmds[] = {
                   "   NONE - no encryption enabled "
                   "   SSL - SSL encryption enabled (forced by ldaps://) "
                   "   STARTTLS - STARTTLS MUST be enabled "),
+
+    AP_INIT_TAKE1("LDAPConnectionTimeout", util_ldap_set_connection_timeout, NULL, RSRC_CONF,
+                  "Specifies the LDAP socket connection timeout in seconds. "
+                  "Default is 10 seconds. "),
 
     {NULL}
 };
