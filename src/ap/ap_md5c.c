@@ -32,7 +32,7 @@
  */
 
 /* ====================================================================
- * Copyright (c) 1996-1999 The Apache Group.  All rights reserved.
+ * Copyright (c) 1996-2000 The Apache Group.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions

@@ -96,7 +96,7 @@ BEGIN
     DEFPUSHBUTTON   "OK",IDOK,129,41,50,14
     LTEXT           "Apache post-install configuration tester",IDC_STATIC,7,
                     7,172,10,NOT WS_GROUP
-    LTEXT           "Copyright 1999 The Apache Group",IDC_STATIC,7,21,172,9
+    LTEXT           "Copyright 2000 The Apache Group",IDC_STATIC,7,21,172,9
 END
 
 IDD_SETDIRECTORY DIALOG DISCARDABLE  0, 0, 186, 63

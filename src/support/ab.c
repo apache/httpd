@@ -1,5 +1,5 @@
 /* ====================================================================
- * Copyright (c) 1998-1999 The Apache Group.  All rights reserved.
+ * Copyright (c) 1998-2000 The Apache Group.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -886,16 +886,16 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-	printf("This is ApacheBench, Version %s\n", VERSION " <$Revision: 1.41 $> apache-1.3");
+	printf("This is ApacheBench, Version %s\n", VERSION " <$Revision: 1.42 $> apache-1.3");
 	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
-	printf("Copyright (c) 1998-1999 The Apache Group, http://www.apache.org/\n");
+	printf("Copyright (c) 1998-2000 The Apache Group, http://www.apache.org/\n");
 	printf("\n");
     }
     else {
 	printf("<p>\n");
-	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-1.3<br>\n", VERSION, "$Revision: 1.41 $");
+	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-1.3<br>\n", VERSION, "$Revision: 1.42 $");
 	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
-	printf(" Copyright (c) 1998-1999 The Apache Group, http://www.apache.org/<br>\n");
+	printf(" Copyright (c) 1998-2000 The Apache Group, http://www.apache.org/<br>\n");
 	printf("</p>\n<p>\n");
     }
 }
