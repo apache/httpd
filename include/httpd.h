@@ -1091,7 +1091,7 @@ struct server_rec {
     /** Pathname for ServerPath */
     const char *path;
     /** Length of path */
-    int pathlen;
+    apr_size_t pathlen;
 
     /** Normal names for ServerAlias servers */
     apr_array_header_t *names;
@@ -1244,7 +1244,7 @@ AP_DECLARE(const char *) ap_resolve_env(apr_pool_t *p, const char * word);
  * address of field is shifted to the next non-comma, non-whitespace 
  * character.  len is the length of the item excluding any beginning whitespace.
  */
-AP_DECLARE(const char *) ap_size_list_item(const char **field, int *len);
+AP_DECLARE(const char *) ap_size_list_item(const char **field, apr_size_t *len);
 
 /**
  * Retrieve an HTTP header field list item, as separated by a comma,
@@ -1587,7 +1587,7 @@ AP_DECLARE(void) ap_str_tolower(char *s);
  * @param c The character to search for
  * @return The index of the first occurrence of c in str
  */
-AP_DECLARE(int) ap_ind(const char *str, char c);	/* Sigh... */
+AP_DECLARE(apr_ssize_t) ap_ind(const char *str, char c);	/* Sigh... */
 
 /**
  * Search a string from right to left for the first occurrence of a 
@@ -1596,7 +1596,7 @@ AP_DECLARE(int) ap_ind(const char *str, char c);	/* Sigh... */
  * @param c The character to search for
  * @return The index of the first occurrence of c in str
  */
-AP_DECLARE(int) ap_rind(const char *str, char c);
+AP_DECLARE(apr_ssize_t) ap_rind(const char *str, char c);
 
 /**
  * Given a string, replace any bare " with \" .
