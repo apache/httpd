@@ -130,24 +130,24 @@ Rule WANTHSREGEX=default
 ## passed to CGI/SSI scripts.  It is listed first (lowest priority) since
 ## it does not do per-request stuff.
 
-Module env_module          mod_env.o
+AddModule modules/standard/mod_env.o
 
 ## mod_dld defines commands that allow other modules to be loaded
 ## dynamically (at runtime).  This module is for experimental use only.
 
-# Module dld_module          mod_dld.o
+# AddModule modules/standard/mod_dld.o
 
 ##
 ## Request logging modules
 ##
 
-Module config_log_module   mod_log_config.o
+AddModule modules/standard/mod_log_config.o
 
 ## Optional modules for NCSA user-agent/referer logging compatibility
 ## We recommend, however, that you just use the configurable access_log.
 
-# Module agent_log_module    mod_log_agent.o
-# Module referer_log_module  mod_log_referer.o
+# AddModule modules/standard/mod_log_agent.o
+# AddModule modules/standard/mod_log_referer.o
 
 ##
 ## Type checking modules
@@ -160,9 +160,9 @@ Module config_log_module   mod_log_config.o
 ## don't confuse it with the previous module).
 ## mod_negotiation allows content selection based on the Accept* headers.
 
-# Module mime_magic_module   mod_mime_magic.o
-Module mime_module         mod_mime.o
-Module negotiation_module  mod_negotiation.o
+# AddModule modules/standard/mod_mime_magic.o
+AddModule modules/standard/mod_mime.o
+AddModule modules/standard/mod_negotiation.o
 
 ##
 ## Content delivery modules
@@ -172,22 +172,22 @@ Module negotiation_module  mod_negotiation.o
 ## STATUS=yes (see the Rules section near the start of this file) to allow
 ## full status information.  Check conf/access.conf on how to enable this.
 
-# Module status_module       mod_status.o
+# AddModule modules/standard/mod_status.o
 
 ## The Info module displays configuration information for the server and 
 ## all included modules. It's very useful for debugging.
 
-# Module info_module         mod_info.o
+# AddModule         modules/standard/mod_info.o
 
 ## mod_include translates server-side include (SSI) statements in text files.
 ## mod_autoindex handles requests for directories which have no index file
 ## mod_dir handles requests on directories and directory index files.
 ## mod_cgi handles CGI scripts.
 
-Module includes_module     mod_include.o
-Module autoindex_module    mod_autoindex.o
-Module dir_module	   mod_dir.o
-Module cgi_module          mod_cgi.o
+AddModule modules/standard/mod_include.o
+AddModule modules/standard/mod_autoindex.o
+AddModule modules/standard/mod_dir.o
+AddModule modules/standard/mod_cgi.o
 
 ## The asis module implemented ".asis" file types, which allow the embedding
 ## of HTTP headers at the beginning of the document.  mod_imap handles internal 
@@ -195,9 +195,9 @@ Module cgi_module          mod_cgi.o
 ## CGI scripts which act as "handlers" for particular files, for example to
 ## automatically convert every GIF to another file type.
 
-Module asis_module         mod_asis.o
-Module imap_module         mod_imap.o
-Module action_module       mod_actions.o
+AddModule modules/standard/mod_asis.o
+AddModule modules/standard/mod_imap.o
+AddModule modules/standard/mod_actions.o
 
 ##
 ## URL translation modules.
@@ -205,43 +205,43 @@ Module action_module       mod_actions.o
 ## The UserDir module for selecting resource directories by user name
 ## and a common prefix, e.g., /~<user> , /usr/web/<user> , etc.
 
-Module userdir_module      mod_userdir.o
+AddModule modules/standard/mod_userdir.o
 
 ## The proxy module enables the server to act as a proxy for outside
 ## http and ftp services. It's not as complete as it could be yet.
 ## NOTE: You do not want this module UNLESS you are running a proxy;
 ##       it is not needed for normal (origin server) operation.
 
-# Module proxy_module        modules/proxy/libproxy.a
+# AddModule modules/proxy/libproxy.a
 
 ## The Alias module provides simple URL translation and redirection.
 
-Module alias_module        mod_alias.o
+AddModule modules/standard/mod_alias.o
 
 ## The URL rewriting module allows for powerful URI-to-URI and 
 ## URI-to-filename mapping using a regular expression based 
 ## rule-controlled rewriting engine.
 
-# Module rewrite_module      mod_rewrite.o
+# AddModule modules/standard/mod_rewrite.o
 
 ##
 ## Access control and authentication modules. 
 ##
-Module access_module       mod_access.o
-Module auth_module         mod_auth.o
+AddModule modules/standard/mod_access.o
+AddModule modules/standard/mod_auth.o
 
 ## The anon_auth module allows for anonymous-FTP-style username/ 
 ## password authentication.
 
-# Module anon_auth_module    mod_auth_anon.o
+# AddModule modules/standard/mod_auth_anon.o
 
 ## db_auth and dbm_auth work with Berkeley DB files - make sure there
 ## is support for DBM files on your system.  You may need to grab the GNU
 ## "gdbm" package if not and possibly adjust EXTRA_LIBS. (This may be
 ## done by Configure at a later date)
 
-# Module db_auth_module      mod_auth_db.o
-# Module dbm_auth_module     mod_auth_dbm.o
+# AddModule modules/standard/mod_auth_db.o
+# AddModule modules/standard/mod_auth_dbm.o
 
 ## msql_auth checks against an mSQL database.  You must have mSQL installed
 ## and an "msql.h" available for this to even compile.  Additionally,
@@ -252,29 +252,29 @@ Module auth_module         mod_auth.o
 ## This depends on your installation of mSQL. (This may be done by Configure
 ## at a later date)
 
-# Module msql_auth_module    mod_auth_msql.o
+# AddModule    modules/standard/mod_auth_msql.o
 
 ## "digest" implements HTTP Digest Authentication rather than the less 
 ## secure Basic Auth used by the other modules.
 
-# Module digest_module       mod_digest.o
+# AddModule modules/standard/mod_digest.o
 
 ## Optional response header manipulation modules. 
 ##
 ## cern_meta mimics the behavior of the CERN web server with regards to 
 ## metainformation files.  
 
-# Module cern_meta_module    mod_cern_meta.o
+# AddModule modules/standard/mod_cern_meta.o
 
 ## The expires module can apply Expires: headers to resources,
 ## as a function of access time or modification time.
 
-# Module expires_module      mod_expires.o
+# AddModule modules/standard/mod_expires.o
 
 ## The headers module can set arbitrary HTTP response headers,
 ## as configured in server, vhost, access.conf or .htaccess configs
 
-# Module headers_module      mod_headers.o
+# AddModule modules/standard/mod_headers.o
 
 ## Miscellaneous modules
 ##
@@ -286,17 +286,17 @@ Module auth_module         mod_auth.o
 ## You do not need this, or any other module to allow your site
 ## to use Cookies.  This module is for user tracking only
 
-# Module usertrack_module    mod_usertrack.o
+# AddModule modules/standard/mod_usertrack.o
 
 ## The example module, which demonstrates the use of the API.  See
 ## the file modules/example/README for details.  This module should
 ## only be used for testing -- DO NOT ENABLE IT on a production server.
 
-# Module example_module      modules/example/mod_example.o
+# AddModule modules/example/mod_example.o
 
 ## mod_setenvif lets you set environment variables based on the HTTP header
 ## fields in the request; this is useful for conditional HTML, for example.
 ## Since it is also used to detect buggy browsers for workarounds, it
 ## should be the last (highest priority) module.
 
-Module setenvif_module     mod_setenvif.o
+AddModule modules/standard/mod_setenvif.o
