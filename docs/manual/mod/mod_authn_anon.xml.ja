@@ -86,7 +86,7 @@
         AuthType Basic<br />
         AuthBasicProvider file anon<br />
         AuthUserFile /path/to/your/.htpasswd<br />
-	<br />
+        <br />
         Anonymous_NoUserID off<br />
         Anonymous_MustGiveEmail on<br />
         Anonymous_VerifyEmail on<br />
@@ -113,8 +113,9 @@
 
 <usage>
     <p>パスワードの検査をしないでアクセスを許可する「魔法の」 userID を
-    設定します。userID 中に空白を許可するために、引用符 ' と " や
-    エスケープ文字 \ を使うことができます。</p>
+    設定します。userID 中に空白を使えるようにするため、
+    エスケープ文字 \ による方法と、引用符 ' と " によるクオーティング
+    を使うことができます。</p>
 
     <p>ユーザ名の比較は<strong>大文字小文字を区別しない</strong>ことに
     注意してください。<br />
@@ -126,11 +127,11 @@
     </example>
 
     <p>これは、userID "anonymous",
-    "AnonyMous", "Not Registered", "I Don't Know" のどれかを使って
-    パスワード無しでユーザがサイトに入るのを許可します。</p>
+    "AnonyMous", "Not Registered", "I Don't Know" のどれかを使っても
+    パスワード無しでユーザがサイトに入れるようにします。</p>
 
     <p>Apache 2.1 では userID に "<code>*</code>" を指定することができます。
-    これは、<em>すべての</em>userID を許可します。</p>
+    この場合、<em>すべての</em>userID を許可します。</p>
 </usage>
 </directivesynopsis>
 
