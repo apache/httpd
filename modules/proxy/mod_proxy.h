@@ -150,7 +150,7 @@ struct proxy_alias {
 struct dirconn_entry {
     char *name;
     struct in_addr addr, mask;
-    struct hostent *hostentry;
+    struct apr_sockaddr_t *hostaddr;
     int (*matcher) (struct dirconn_entry * This, request_rec *r);
 };
 
@@ -244,7 +244,6 @@ PROXY_DECLARE(int) ap_proxy_liststr(const char *list, const char *val);
 PROXY_DECLARE(char *)ap_proxy_removestr(apr_pool_t *pool, const char *list, const char *val);
 PROXY_DECLARE(int) ap_proxy_hex2sec(const char *x);
 PROXY_DECLARE(void) ap_proxy_sec2hex(int t, char *y);
-PROXY_DECLARE(const char *)ap_proxy_host2addr(const char *host, struct hostent *reqhp);
 PROXY_DECLARE(int) ap_proxyerror(request_rec *r, int statuscode, const char *message);
 PROXY_DECLARE(int) ap_proxy_is_ipaddr(struct dirconn_entry *This, apr_pool_t *p);
 PROXY_DECLARE(int) ap_proxy_is_domainname(struct dirconn_entry *This, apr_pool_t *p);

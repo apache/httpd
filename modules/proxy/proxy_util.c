@@ -64,7 +64,6 @@ static int proxy_match_ipaddr(struct dirconn_entry *This, request_rec *r);
 static int proxy_match_domainname(struct dirconn_entry *This, request_rec *r);
 static int proxy_match_hostname(struct dirconn_entry *This, request_rec *r);
 static int proxy_match_word(struct dirconn_entry *This, request_rec *r);
-static struct per_thread_data *get_per_thread_data(void);
 
 /* already called in the knowledge that the characters are hex digits */
 PROXY_DECLARE(int) ap_proxy_hex2c(const char *x)
@@ -595,42 +594,6 @@ PROXY_DECLARE(int) ap_proxyerror(request_rec *r, int statuscode, const char *mes
     return statuscode;
 }
 
-/*
- * This routine returns its own error message
- */
-PROXY_DECLARE(const char *)ap_proxy_host2addr(const char *host, struct hostent *reqhp)
-{
-    int i;
-    struct hostent *hp;
-    struct per_thread_data *ptd = get_per_thread_data();
-
-    for (i = 0; host[i] != '\0'; i++)
-	if (!apr_isdigit(host[i]) && host[i] != '.')
-	    break;
-
-    if (host[i] != '\0') {
-	hp = gethostbyname(host);
-	if (hp == NULL)
-	    return "Host not found";
-    }
-    else {
-	ptd->ipaddr = ap_inet_addr(host);
-	hp = gethostbyaddr((char *) &ptd->ipaddr, sizeof(ptd->ipaddr), AF_INET);
-	if (hp == NULL) {
-	    memset(&ptd->hpbuf, 0, sizeof(ptd->hpbuf));
-	    ptd->hpbuf.h_name = 0;
-	    ptd->hpbuf.h_addrtype = AF_INET;
-	    ptd->hpbuf.h_length = sizeof(ptd->ipaddr);
-	    ptd->hpbuf.h_addr_list = ptd->charpbuf;
-	    ptd->hpbuf.h_addr_list[0] = (char *) &ptd->ipaddr;
-	    ptd->hpbuf.h_addr_list[1] = 0;
-	    hp = &ptd->hpbuf;
-	}
-    }
-    *reqhp = *hp;
-    return NULL;
-}
-
 static const char *
      proxy_get_host_of_request(request_rec *r)
 {
@@ -766,12 +729,8 @@ PROXY_DECLARE(int) ap_proxy_is_ipaddr(struct dirconn_entry *This, apr_pool_t *p)
 /* Return TRUE if addr represents an IP address (or an IP network address) */
 static int proxy_match_ipaddr(struct dirconn_entry *This, request_rec *r)
 {
-    int i;
-    int ip_addr[4];
-    struct in_addr addr;
-    struct in_addr *ip_list;
-    char **ip_listptr;
-    const char *found;
+    int i, ip_addr[4];
+    struct in_addr addr, *ip;
     const char *host = proxy_get_host_of_request(r);
 
     if (host == NULL)   /* oops! */
@@ -807,48 +766,46 @@ static int proxy_match_ipaddr(struct dirconn_entry *This, request_rec *r)
 #endif
     }
     else {
-	struct hostent the_host;
+	struct apr_sockaddr_t *reqaddr;
 
-	memset(&the_host, '\0', sizeof the_host);
-	found = ap_proxy_host2addr(host, &the_host);
-
-	if (found != NULL) {
+        if (apr_sockaddr_info_get(&reqaddr, host, APR_UNSPEC, 0, 0, r->pool)
+	    != APR_SUCCESS) {
 #if DEBUGGING
-        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
-                         "2)IP-NoMatch: hostname=%s msg=%s", host, found);
+	    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+			 "2)IP-NoMatch: hostname=%s msg=Host not found", 
+			 host);
 #endif
 	    return 0;
 	}
 
-	if (the_host.h_name != NULL)
-	    found = the_host.h_name;
-	else
-	    found = host;
-
 	/* Try to deal with multiple IP addr's for a host */
-	for (ip_listptr = the_host.h_addr_list; *ip_listptr; ++ip_listptr) {
-	    ip_list = (struct in_addr *) *ip_listptr;
-	    if (This->addr.s_addr == (ip_list->s_addr & This->mask.s_addr)) {
+	/* FIXME: This needs to be able to deal with IPv6 */
+	while (reqaddr) {
+	    ip = (struct in_addr *) reqaddr->ipaddr_ptr;
+	    if (This->addr.s_addr == (ip->s_addr & This->mask.s_addr)) {
 #if DEBUGGING
-        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
-                       "3)IP-Match: %s[%s] <-> ", found, inet_ntoa(*ip_list));
-        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
-                       "%s/", inet_ntoa(This->addr));
-        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
-                       "%s", inet_ntoa(This->mask));
+		ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+			     "3)IP-Match: %s[%s] <-> ", host, 
+			     inet_ntoa(*ip));
+		ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+			     "%s/", inet_ntoa(This->addr));
+		ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+			     "%s", inet_ntoa(This->mask));
 #endif
 		return 1;
 	    }
 #if DEBUGGING
 	    else {
                 ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
-                       "3)IP-NoMatch: %s[%s] <-> ", found, inet_ntoa(*ip_list));
+			     "3)IP-NoMatch: %s[%s] <-> ", host, 
+			     inet_ntoa(*ip));
                 ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
-                       "%s/", inet_ntoa(This->addr));
+			     "%s/", inet_ntoa(This->addr));
                 ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
-                       "%s", inet_ntoa(This->mask));
+			     "%s", inet_ntoa(This->mask));
 	    }
 #endif
+	    reqaddr = reqaddr->next;
 	}
     }
 
@@ -909,80 +866,28 @@ static int proxy_match_domainname(struct dirconn_entry *This, request_rec *r)
 	&& strncasecmp(&host[h_len - d_len], This->name, d_len) == 0;
 }
 
-/* Create a copy of a "struct hostent" record; it was presumably returned
- * from a call to gethostbyname() and lives in static storage.
- * By creating a copy we can tuck it away for later use.
- */
-static struct hostent * pduphostent(apr_pool_t *p, const struct hostent *hp)
-{
-    struct hostent *newent;
-    char	  **ptrs;
-    char	  **aliases;
-    struct in_addr *addrs;
-    int		   i = 0, j = 0;
-
-    if (hp == NULL)
-	return NULL;
-
-    /* Count number of alias entries */
-    if (hp->h_aliases != NULL)
-	for (; hp->h_aliases[j] != NULL; ++j)
-	    continue;
-
-    /* Count number of in_addr entries */
-    if (hp->h_addr_list != NULL)
-	for (; hp->h_addr_list[i] != NULL; ++i)
-	    continue;
-
-    /* Allocate hostent structure, alias ptrs, addr ptrs, addrs */
-    newent = (struct hostent *) apr_palloc(p, sizeof(*hp));
-    aliases = (char **) apr_palloc(p, (j+1) * sizeof(char*));
-    ptrs = (char **) apr_palloc(p, (i+1) * sizeof(char*));
-    addrs  = (struct in_addr *) apr_palloc(p, (i+1) * sizeof(struct in_addr));
-
-    *newent = *hp;
-    newent->h_name = apr_pstrdup(p, hp->h_name);
-    newent->h_aliases = aliases;
-    newent->h_addr_list = (char**) ptrs;
-
-    /* Copy Alias Names: */
-    for (j = 0; hp->h_aliases[j] != NULL; ++j) {
-       aliases[j] = apr_pstrdup(p, hp->h_aliases[j]);
-    }
-    aliases[j] = NULL;
-
-    /* Copy address entries */
-    for (i = 0; hp->h_addr_list[i] != NULL; ++i) {
-	ptrs[i] = (char*) &addrs[i];
-	addrs[i] = *(struct in_addr *) hp->h_addr_list[i];
-    }
-    ptrs[i] = NULL;
-
-    return newent;
-}
-
-/* Return TRUE if addr represents a host name */
+/* Return TRUE if host represents a host name */
 PROXY_DECLARE(int) ap_proxy_is_hostname(struct dirconn_entry *This, apr_pool_t *p)
 {
-    struct hostent host;
-    char *addr = This->name;
+    struct apr_sockaddr_t *addr;
+    char *host = This->name;
     int i;
 
     /* Host names must not start with a '.' */
-    if (addr[0] == '.')
+    if (host[0] == '.')
 	return 0;
 
     /* rfc1035 says DNS names must consist of "[-a-zA-Z0-9]" and '.' */
-    for (i = 0; apr_isalnum(addr[i]) || addr[i] == '-' || addr[i] == '.'; ++i);
+    for (i = 0; apr_isalnum(host[i]) || host[i] == '-' || host[i] == '.'; ++i);
 
-    if (addr[i] != '\0' || ap_proxy_host2addr(addr, &host) != NULL)
+    if (host[i] != '\0' || apr_sockaddr_info_get(&addr, host, APR_UNSPEC, 0, 0, p) != APR_SUCCESS)
 	return 0;
-
-    This->hostentry = pduphostent (p, &host);
+    
+    This->hostaddr = addr;
 
     /* Strip trailing dots */
-    for (i = strlen(addr) - 1; i > 0 && addr[i] == '.'; --i)
-	addr[i] = '\0';
+    for (i = strlen(host) - 1; i > 0 && host[i] == '.'; --i)
+	host[i] = '\0';
 
     This->matcher = proxy_match_hostname;
     return 1;
@@ -1003,12 +908,14 @@ static int proxy_match_hostname(struct dirconn_entry *This, request_rec *r)
     h1_len = strlen(host);
 
 #if 0
-    unsigned long *ip_list;
+    struct apr_sockaddr_t *addr = *This->hostaddr;
 
     /* Try to deal with multiple IP addr's for a host */
-    for (ip_list = *This->hostentry->h_addr_list; *ip_list != 0UL; ++ip_list)
-	if (*ip_list == ? ? ? ? ? ? ? ? ? ? ? ? ?)
+    while (addr) {
+	if (addr->ipaddr_ptr == ? ? ? ? ? ? ? ? ? ? ? ? ?)
 	    return 1;
+	addr = addr->next;
+    }
 #endif
 
     /* Ignore trailing dots in host2 comparison: */
@@ -1182,8 +1089,3 @@ BOOL WINAPI DllMain (HINSTANCE dllhandle, DWORD reason, LPVOID reserved)
 }
 
 #endif
-
-static struct per_thread_data *get_per_thread_data(void)
-{
-    return NULL;
-}
