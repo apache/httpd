@@ -151,7 +151,6 @@ regex     : T_REGEX {
                                          REG_EXTENDED|REG_NOSUB)) == NULL) {
                     ssl_expr_error = "Failed to compile regular expression";
                     YYERROR;
-                    regex = NULL;
                 }
                 $$ = ssl_expr_make(op_Regex, regex, NULL);
             }
@@ -161,7 +160,6 @@ regex     : T_REGEX {
                                          REG_EXTENDED|REG_NOSUB|REG_ICASE)) == NULL) {
                     ssl_expr_error = "Failed to compile regular expression";
                     YYERROR;
-                    regex = NULL;
                 }
                 $$ = ssl_expr_make(op_Regex, regex, NULL);
             }

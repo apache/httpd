@@ -1,5 +1,7 @@
 Changes with Apache 2.0.42
 
+  *) Remove warnings with Sun's Forte compiler.  [Justin Erenkrantz]
+
   *) Fixed mod_disk_cache's generation of 304s
      [Kris Verbeeck <Kris.Verbeeck@ubizen.com>]
 
