@@ -8,11 +8,9 @@ Release:
 
     1.3.0: Tagged and rolled on June 1. Announced and Released on the 6th.
            
-    1.3b7: Tagged and Released 26/5/98.
-
     2.0  : In pre-alpha development, see apache-2.0 repository
 
-FINAL RELEASE SHOWSTOPPERS:
+RELEASE SHOWSTOPPERS:
 
     * Ralf: mod_so doesn't correctly initialise modules. For instance
       the handlers of mod_perl are not initialised. An ap_init_modules() could
@@ -23,7 +21,7 @@ FINAL RELEASE SHOWSTOPPERS:
       there are more modules which have the same problem. This should
       be fixed for 1.3.1!
 
-WIN32 1.3 FINAL RELEASE SHOWSTOPPERS:
+WIN32 1.3 RELEASE SHOWSTOPPERS:
 
     * SECURITY: numerous uses of strcpy and strcat have potential
 	for buffer overflow, someone should rewrite or verify
@@ -45,12 +43,6 @@ Available Patches:
       through two new core API functions.
       <19980611171746.A23845@engelschall.com>
       Status: Ralf +1
-
-    * Wilfredo Sanchez's port to Rhapsody 5.1 for 1.2.6 - forward port to
-      1.3?
-      <199804182347.QAA05438@scv2.apple.com>
-      Jim: Hmmm... Rhapsody is not really any longer in Apple's
-           game-plan. The focus is OS X now.
 
     * Ralf's "configure generates config.status":
       A tiny addition for the APACI configure script to provide an easy way
