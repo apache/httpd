@@ -190,7 +190,7 @@ int ssl_hook_Access(request_rec *r)
      * Support for SSLRequireSSL directive
      */
     if (dc->bSSLRequired && !ssl) {
-        if (sc->enabled == UNSET) {
+        if (sc->enabled == SSL_ENABLED_OPTIONAL) {
             /* This vhost was configured for optional SSL, just tell the
              * client that we need to upgrade.
              */
@@ -213,7 +213,7 @@ int ssl_hook_Access(request_rec *r)
     /*
      * Check to see if SSL protocol is on
      */
-    if (!(sc->enabled || ssl)) {
+    if (!((sc->enabled == SSL_ENABLED_TRUE) || (sc->enabled == SSL_ENABLED_OPTIONAL) || ssl)) {
         return DECLINED;
     }
     /*
@@ -860,7 +860,7 @@ int ssl_hook_UserCheck(request_rec *r)
      * - ssl not enabled
      * - client did not present a certificate
      */
-    if (!(sc->enabled && sslconn->ssl && sslconn->client_cert) ||
+    if (!((sc->enabled == SSL_ENABLED_TRUE || sc->enabled == SSL_ENABLED_OPTIONAL) && sslconn->ssl && sslconn->client_cert) ||
         !(dc->nOptions & SSL_OPT_FAKEBASICAUTH) || r->user)
     {
         return DECLINED;
@@ -1012,14 +1012,14 @@ int ssl_hook_Fixup(request_rec *r)
     SSL *ssl;
     int i;
 
-    if (sc->enabled == UNSET) {
+    if (sc->enabled == SSL_ENABLED_OPTIONAL) {
         apr_table_setn(r->headers_out, "Upgrade", "TLS/1.0, HTTP/1.1");
     }
 
     /*
      * Check to see if SSL is on
      */
-    if (!(sc->enabled && sslconn && (ssl = sslconn->ssl))) {
+    if (!(((sc->enabled == SSL_ENABLED_TRUE) || (sc->enabled == SSL_ENABLED_OPTIONAL)) && sslconn && (ssl = sslconn->ssl))) {
         return DECLINED;
     }
 
