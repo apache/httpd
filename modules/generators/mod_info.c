@@ -415,7 +415,7 @@ static int display_info(request_rec *r)
                         "<tt>connection: %d &nbsp;&nbsp; "
                         "keep-alive: %d</tt><br>",
                         serv->timeout, serv->keep_alive_timeout);
-            ap_mpm_query(AP_MPMQ_MAX_DAEMONS, &max_daemons);
+            ap_mpm_query(AP_MPMQ_MAX_DAEMON_USED, &max_daemons);
             ap_mpm_query(AP_MPMQ_IS_THREADED, &threaded);
             ap_mpm_query(AP_MPMQ_IS_FORKED, &forked);
             ap_rprintf(r, "MPM used is %s<br>\n", ap_show_mpm());

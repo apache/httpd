@@ -1,5 +1,10 @@
 Changes with Apache 2.0.21-dev
 
+  *) Changed AP_MPMQ_MAX_DAEMONS to refer to MaxClients and
+     added an AP_MPMQ_MAX_DAEMON_USED to refer to the highest
+     daemon index actually used in the scoreboard. I also
+     updated the pertinent calls. [Paul J. Reder]
+
   *) Win32: Prevent listening sockets from being inherited by
      the Apache child process, CGI scripts, rotatelog process
      etc.  If the Apache child process segfaults, any processes 

@@ -97,7 +97,7 @@ void ap_reclaim_child_processes(int terminate)
     int not_dead_yet;
     int max_daemons;
 
-    ap_mpm_query(AP_MPMQ_MAX_DAEMONS, &max_daemons);
+    ap_mpm_query(AP_MPMQ_MAX_DAEMON_USED, &max_daemons);
     MPM_SYNC_CHILD_TABLE();
 
     for (tries = terminate ? 4 : 1; tries <= 9; ++tries) {

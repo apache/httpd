@@ -158,17 +158,18 @@ AP_DECLARE(apr_status_t) ap_os_create_privileged_process(
                                       /* an MPM is using a dynamic #  */
                                       /* threads or daemons.          */
 
-#define AP_MPMQ_MAX_DAEMONS           1  /* Max # of daemons             */
+#define AP_MPMQ_MAX_DAEMON_USED       1  /* Max # of daemons used so far */
 #define AP_MPMQ_IS_THREADED           2  /* MPM can do threading         */
 #define AP_MPMQ_IS_FORKED             3  /* MPM can do forking           */
 #define AP_MPMQ_HARD_LIMIT_DAEMONS    4  /* The compiled max # deamons   */
 #define AP_MPMQ_HARD_LIMIT_THREADS    5  /* The compiled max # threads   */
-#define AP_MPMQ_MAX_THREADS           6  /* Max # of threads             */
+#define AP_MPMQ_MAX_THREADS           6  /* # of threads/child by config */
 #define AP_MPMQ_MIN_SPARE_DEAMONS     7  /* Min # of spare daemons       */
 #define AP_MPMQ_MIN_SPARE_THREADS     8  /* Min # of spare threads       */
 #define AP_MPMQ_MAX_SPARE_DAEMONS     9  /* Max # of spare daemons       */
 #define AP_MPMQ_MAX_SPARE_THREADS    10  /* Max # of spare threads       */
 #define AP_MPMQ_MAX_REQUESTS_DEAMON  11  /* Max # of requests per daemon */
+#define AP_MPMQ_MAX_DAEMONS          12  /* Max # of daemons by config   */
 
 
 /**

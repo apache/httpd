@@ -222,7 +222,7 @@ static apr_lock_t *thread_accept_mutex;
 AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result)
 {
     switch(query_code){
-        case AP_MPMQ_MAX_DAEMONS:
+        case AP_MPMQ_MAX_DAEMON_USED:
             *result = ap_max_daemons_limit;
             return APR_SUCCESS;
         case AP_MPMQ_IS_THREADED:
@@ -255,6 +255,9 @@ AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result)
         case AP_MPMQ_MAX_REQUESTS_DEAMON:
             *result = max_requests_per_child;
             return APR_SUCCESS; 
+        case AP_MPMQ_MAX_DAEMONS:
+            *result = num_daemons;
+            return APR_SUCCESS;
     }
     return APR_ENOTIMPL;
 }
