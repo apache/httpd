@@ -197,7 +197,9 @@ API_EXPORT(long) ap_strtol(const char *nptr, char **endptr, int base)
 			break;
 		if (any < 0 || acc > cutoff || (acc == cutoff && c > cutlim)) {
 			any = -1;
+#ifdef AP_STRTOL_OVERFLOW_IS_BAD_CHAR
 			break;
+#endif
 		} else {
 			any = 1;
 			acc *= base;
