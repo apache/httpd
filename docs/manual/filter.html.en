@@ -1,12 +1,14 @@
-<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><!--
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>Filters - Apache HTTP Server</title><link href="./style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="./images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Filters</h1>
+      --><title>Filters - Apache HTTP Server</title><link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="./images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="./images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="./">Version 2.0</a></div><div id="page-content"><div id="preamble"><h1>Filters</h1>
     <p>This document describes the use of filters in Apache.</p>
-  <hr><h2><a name="filters">Filters</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="filters" id="filters">Filters</a></h2>
     
-    <table border="1"><tr><td valign="top"><strong>Related Modules</strong><br><br><code><a href="./mod/mod_deflate.html">mod_deflate</a></code><br><code><a href="./mod/mod_ext_filter.html">mod_ext_filter</a></code><br><code><a href="./mod/mod_include.html">mod_include</a></code><br></td><td valign="top"><strong>Related Directives</strong><br><br><a href="./mod/mod_mime.html#addinputfilter" class="directive"><code class="directive">AddInputFilter</code></a><br><a href="./mod/mod_mime.html#addoutputfilter" class="directive"><code class="directive">AddOutputFilter</code></a><br><a href="./mod/mod_mime.html#removeinputfilter" class="directive"><code class="directive">RemoveInputFilter</code></a><br><a href="./mod/mod_mime.html#removeoutputfilter" class="directive"><code class="directive">RemoveOutputFilter</code></a><br><a href="./mod/mod_ext_filter.html#extfilterdefine" class="directive"><code class="directive">ExtFilterDefine</code></a><br><a href="./mod/mod_ext_filter.html#extfilteroptions" class="directive"><code class="directive">ExtFilterOptions</code></a><br><a href="./mod/core.html#setinputfilter" class="directive"><code class="directive">SetInputFilter</code></a><br><a href="./mod/core.html#setoutputfilter" class="directive"><code class="directive">SetOutputFilter</code></a><br></td></tr></table>
+    <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_deflate.html">mod_deflate</a></code></li><li><code class="module"><a href="./mod/mod_ext_filter.html">mod_ext_filter</a></code></li><li><code class="module"><a href="./mod/mod_include.html">mod_include</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_mime.html#addinputfilter">AddInputFilter</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#removeinputfilter">RemoveInputFilter</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#removeoutputfilter">RemoveOutputFilter</a></code></li><li><code class="directive"><a href="./mod/mod_ext_filter.html#extfilterdefine">ExtFilterDefine</a></code></li><li><code class="directive"><a href="./mod/mod_ext_filter.html#extfilteroptions">ExtFilterOptions</a></code></li><li><code class="directive"><a href="./mod/core.html#setinputfilter">SetInputFilter</a></code></li><li><code class="directive"><a href="./mod/core.html#setoutputfilter">SetOutputFilter</a></code></li></ul></td></tr></table>
     
     <p>A <em>filter</em> is a process that is applied to data that
     is sent or received by the server. Data sent by clients to the
@@ -20,12 +22,12 @@
     can provide filters that are selectable using run-time
     configuration directives. The set of filters that apply to data
     can be manipulated with the
-    <a href="./mod/core.html#setinputfilter" class="directive"><code class="directive">SetInputFilter</code></a>,
-    <a href="./mod/core.html#setoutputfilter" class="directive"><code class="directive">SetOutputFilter</code></a>,
-    <a href="./mod/mod_mime.html#addinputfilter" class="directive"><code class="directive">AddInputFilter</code></a>,
-    <a href="./mod/mod_mime.html#addoutputfilter" class="directive"><code class="directive">AddOutputFilter</code></a>,
-    <a href="./mod/mod_mime.html#removeinputfilter" class="directive"><code class="directive">RemoveInputFilter</code></a>, and
-    <a href="./mod/mod_mime.html#removeoutputfilter" class="directive"><code class="directive">RemoveOutputFilter</code></a>
+    <code class="directive"><a href="./mod/core.html#setinputfilter">SetInputFilter</a></code>,
+    <code class="directive"><a href="./mod/core.html#setoutputfilter">SetOutputFilter</a></code>,
+    <code class="directive"><a href="./mod/mod_mime.html#addinputfilter">AddInputFilter</a></code>,
+    <code class="directive"><a href="./mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code>,
+    <code class="directive"><a href="./mod/mod_mime.html#removeinputfilter">RemoveInputFilter</a></code>, and
+    <code class="directive"><a href="./mod/mod_mime.html#removeoutputfilter">RemoveOutputFilter</a></code>
     directives.</p>
 
     <p>The following user-selectable filters are currently provided
@@ -33,13 +35,13 @@
 
     <dl>
       <dt>INCLUDES</dt>
-      <dd>Server-Side Includes processing by <code><a href="./mod/mod_include.html">mod_include</a></code></dd>
+      <dd>Server-Side Includes processing by <code class="module"><a href="./mod/mod_include.html">mod_include</a></code></dd>
       <dt>DEFLATE</dt>
       <dd>Compress output before sending it to the client using
-          <code><a href="./mod/mod_deflate.html">mod_deflate</a></code>
+          <code class="module"><a href="./mod/mod_deflate.html">mod_deflate</a></code>
       </dd>
     </dl>
 
-    <p>In addition, the module <code><a href="./mod/mod_ext_filter.html">mod_ext_filter</a></code> allows
+    <p>In addition, the module <code class="module"><a href="./mod/mod_ext_filter.html">mod_ext_filter</a></code> allows
     for external programs to be defined as filters.</p>
-  <hr></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="./images/index.gif" alt="Index"></a><a href="./"><img src="./images/home.gif" alt="Home"></a></body></html>
+  </div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div></body></html>
