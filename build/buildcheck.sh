@@ -20,24 +20,6 @@ else
 echo "buildconf: autoconf version $ac_version (ok)"
 fi
 
-# automake 1.4 or newer
-am_version=`automake --version 2>/dev/null|head -1|sed -e 's/^[^0-9]*//' -e 's/[a-z]* *$//'`
-if test "$am_version" = ""; then
-echo "buildconf: automake not found."
-echo "           You need automake version 1.4 or newer installed"
-echo "           to build Apache from CVS."
-exit 1
-fi
-IFS=.; set $am_version; IFS=' '
-if test "$1" = "1" -a "$2" -lt "4" || test "$1" -lt "1"; then
-echo "buildconf: automake version $am_version found."
-echo "           You need automake version 1.4 or newer installed"
-echo "           to build Apache from CVS."
-exit 1
-else
-echo "buildconf: automake version $am_version (ok)"
-fi
-
 # libtool 1.3.3 or newer
 lt_pversion=`libtool --version 2>/dev/null|sed -e 's/^[^0-9]*//' -e 's/[- ].*//'`
 if test "$lt_pversion" = ""; then
@@ -56,14 +38,6 @@ echo "buildconf: libtool version $lt_pversion found."
 echo "           You need libtool version 1.3.3 or newer installed"
 echo "           to build Apache from CVS."
 exit 1
-fi
-
-am_prefix=`which automake | sed -e 's#/[^/]*/[^/]*$##'`
-lt_prefix=`which libtool | sed -e 's#/[^/]*/[^/]*$##'`
-if test "$am_prefix" != "$lt_prefix"; then
-    echo "WARNING: automake and libtool are installed in different"
-    echo "         directories.  This may cause aclocal to fail."
-    echo "         continuing anyway"
 fi
 
 exit 0
