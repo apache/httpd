@@ -384,7 +384,7 @@ static int32 worker_thread(void * dummy)
 
     apr_allocator_create(&allocator);
     apr_pool_create_ex(&ptrans, tpool, NULL, allocator);
-    apr_allocator_set_owner(allocator, ptrans);
+    apr_allocator_owner_set(allocator, ptrans);
 
     apr_pool_tag(ptrans, "transaction");
 
