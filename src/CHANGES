@@ -1,5 +1,11 @@
 Changes with Apache 1.3b6
 
+  *) Provide APACI --without-support option to be able to disable the build
+     and installation of the support tools from the src/support/ area.
+     Although its useful to have these installed per default we should provide
+     a way to compile and install without them for backward-compatibility.
+     [Ralf S. Engelschall]
+
   *) Add of the new APache eXtenSion (apxs) support tool for building and
      installing modules into an _already installed_ Apache package through the
      dynamic shared object (DSO) mechanism [mod_so.c]. The trick here is that

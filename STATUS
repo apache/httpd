@@ -132,6 +132,7 @@ Committed Code Changes:
     * Rainer Scherg's fix for CONNECT proxy support: #1326, #1573, #1942
     * Ken's reworking of the Apache LICENSE
     * Ralf's APache eXtenSion for easy "off-source" extending Apache via DSO
+    * Ralf's APACI --without-support option
 
 Available Patches:
 

@@ -105,6 +105,12 @@ suexec          = @suexec@
 suexec_caller   = @suexec_caller@
 suexec_userdir  = @suexec_userdir@
 
+#   usage of src/support stuff
+build-support     = @build_support@
+install-support   = @install_support@
+clean-support     = @clean_support@
+distclean-support = @distclean_support@
+
 #   list of shared objects which have to _ALWAYS_ be enabled
 #   per default in the config file because of the directives used
 #   in these default files.
@@ -129,18 +135,27 @@ all: build
 ##                           Build Target
 ## ------------------------------------------------------------------
 
-#   build the programs
-build:
+#   build the package
+build: 
+	@echo "===> $(SRC)"
+	@$(MAKE) -f $(MKF) $(MFLAGS) build-std $(build-support)
+	@touch $(SRC)/.build.ok
+	@echo "<=== $(SRC)"
+
+#   build the standard stuff
+build-std:
 	@cd $(SRC); $(MAKE) $(MFLAGS) all 2>&1 | sed -e 's:^\([=<]==[>=]\) :\1 $(SRC)/:'
+
+#   build the additional support stuff
+build-support:
 	@echo "===> $(SRC)/support"; \
 	cd $(SRC)/support; $(MAKE) $(MFLAGS) all; \
 	if [ ".$(suexec)" = .1 ]; then \
 	    $(MAKE) $(MFLAGS) \
-		    EXTRA_CFLAGS='-DHTTPD_USER=\"$(suexec_caller)\" -DUSERDIR_SUFFIX=\"$(suexec_userdir)\"' \
-			suexec; \
+	            EXTRA_CFLAGS='-DHTTPD_USER=\"$(suexec_caller)\" -DUSERDIR_SUFFIX=\"$(suexec_userdir)\"' \
+	            suexec; \
 	fi; \
 	echo "<=== $(SRC)/support"
-	@touch $(SRC)/.build.ok
 
 ## ------------------------------------------------------------------
 ##                       Installation Targets  
@@ -154,12 +169,9 @@ install:
 	    $(MAKE) -f $(MKF) $(MFLAGS) build; \
 	fi
 	@$(MAKE) -f $(MKF) $(MFLAGS) \
-		install-mktree   \
-		install-programs \
-		install-support  \
-		install-config   \
-		install-include  \
-		install-docroot 
+	    install-mktree install-programs $(install-support) \
+		install-config install-include \
+		install-docroot
 	-@rm -f .install.tmp
 	-@rm -f .install.conf
 	-@if [ ".$(QUIET)" != .1 ]; then \
@@ -327,7 +339,17 @@ install-docroot:
 #   cleanup the source tree by removing anything which was
 #   created by the build target
 clean:
+	@echo "===> $(SRC)"
+	@$(MAKE) -f $(MKF) $(MFLAGS) clean-std $(clean-support)
+	@rm -f $(SRC)/.build.ok
+	@echo "<=== $(SRC)"
+
+#   clean the standard stuff
+clean-std:
 	@cd $(SRC); $(MAKE) $(MFLAGS) clean | sed -e 's:^\([=<]==[>=]\) :\1 $(SRC)/:'
+
+#   clean additional support stuff
+clean-support:
 	@echo "===> $(SRC)/support"; \
 	    cd $(SRC)/support; $(MAKE) $(MFLAGS) clean; \
 	    if [ ".$(suexec)" = .1 ]; then \
@@ -335,7 +357,6 @@ clean:
 	        rm -f suexec; \
 	    fi; \
 	echo "<=== $(SRC)/support"
-	@rm -f $(SRC)/.build.ok
 
 #   first cleanup with the clean target and then additionally
 #   remove anything the "configure" script has created, i.e.
@@ -343,14 +364,18 @@ clean:
 #   we just remove the complete shadow tree.
 distclean:
 	@if [ ".$(SRC)" = .src ]; then \
-		$(MAKE) -f $(MKF) $(MFLAGS) distclean-std; \
+		$(MAKE) -f $(MKF) $(MFLAGS) distclean-normal; \
 	else \
 		$(MAKE) -f $(MKF) $(MFLAGS) distclean-shadow; \
 	fi
 
+distclean-normal:
+	@$(MAKE) -f $(MKF) $(MFLAGS) clean distclean-std $(distclean-support)
+	-rm -f $(SRC)/Configuration.apaci
+	-rm -f $(SRC)/apaci
+	-rm -f Makefile
+
 distclean-std:
-	@$(MAKE) -f $(MKF) $(MFLAGS) clean
-	-rm -f $(SRC)/support/Makefile
 	-rm -f $(SRC)/main/Makefile
 	-rm -f $(SRC)/ap/Makefile
 	-rm -f $(SRC)/regex/Makefile
@@ -360,11 +385,11 @@ distclean-std:
 	-rm -f $(SRC)/modules/standard/Makefile
 	-rm -f $(SRC)/modules/proxy/Makefile
 	-rm -f $(SRC)/modules/Makefile
-	-rm -f $(SRC)/Makefile
 	-rm -f $(SRC)/Makefile.config
-	-rm -f $(SRC)/Configuration.apaci
-	-rm -f $(SRC)/apaci
-	-rm -f Makefile
+	-rm -f $(SRC)/Makefile
+
+distclean-support:
+	-rm -f $(SRC)/support/Makefile
 
 distclean-shadow:
 	rm -rf $(SRC)

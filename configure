@@ -149,6 +149,9 @@ suexec=0
 suexec_caller=www
 suexec_userdir=public_html
 
+#   with support tools
+support=1
+
 #   determine rules
 rules=""
 rulelist=""
@@ -289,6 +292,7 @@ do
             echo " --enable-shared=NAME   enable  build of Module named 'NAME' as a shared object"
             echo " --disable-shared=NAME  disable build of Module named 'NAME' as a shared object"
             echo " --with-perl=FILE       set the path to the optional Perl interpreter to use"
+            echo " --without-support      disable the build and installation of support tools"
             echo ""
             echo "suEXEC options:"
             echo " --enable-suexec        enable the suEXEC feature"
@@ -549,6 +553,9 @@ do
         --with-perl=*)
             PERL="$apc_optarg"
             ;;
+        --without-support)
+            support=0
+            ;;
         --suexec-caller=*)
             suexec_caller="$apc_optarg"
             ;;
@@ -597,6 +604,21 @@ for var in prefix exec_prefix bindir sbindir \
            ;;
     esac
 done
+
+##
+##  determine special configurable Makefile targets
+##
+if [ ".$support" = .1 ]; then
+      build_support=build-support
+    install_support=install-support
+      clean_support=clean-support
+  distclean_support=distclean-support
+else
+      build_support=
+    install_support=
+      clean_support=
+  distclean_support=
+fi
 
 ##
 ##  determine prefix-relative paths for directories
@@ -671,7 +693,11 @@ sed <Makefile.tmpl >$mkf \
 -e "s%@includedir@%$includedir%g" \
 -e "s%@suexec@%$suexec%g" \
 -e "s%@suexec_caller@%$suexec_caller%g" \
--e "s%@suexec_userdir@%$suexec_userdir%g"
+-e "s%@suexec_userdir@%$suexec_userdir%g" \
+-e "s%@build_support@%$build_support%g" \
+-e "s%@install_support@%$install_support%g" \
+-e "s%@clean_support@%$clean_support%g" \
+-e "s%@distclean_support@%$distclean_support%g"
 
 ##
 ##  override default paths in $src/include/httpd.h

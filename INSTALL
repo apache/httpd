@@ -82,10 +82,10 @@
                                [--sysconfdir=DIR]     [--enable-shared=NAME]  
                                [--datadir=DIR]        [--disable-shared=NAME] 
                                [--localstatedir=DIR]  
-                               [--compat]             [--with-perl=FILE]    
-                                                      [--enable-suexec]
-                                                      [--suexec-caller=UID]
-                                                      [--suexec-userdir=DIR]
+                               [--compat]             [--enable-suexec]     
+                                                      [--suexec-caller=UID] 
+                               [--with-perl=FILE]     [--suexec-userdir=DIR]
+                               [--without-support]    
 
     Use the CC, OPTIM, CFLAGS, INCLUDES, LDFLAGS, LIBS, CFLAGS_SHLIB,
     LDFLAGS_SHLIB, LDFLAGS_SHLIB_EXPORT and RANLIB environment variables to
@@ -155,6 +155,11 @@
     executable to be used with Apache. Per default APACI tries to find it
     automatically. But if multiple Perl instances exist on your system you
     have to select the correct one manually.
+
+    Use the --without-support option to explicitly disable the build and
+    installation of support tools from the src/support/ area. This can be
+    useful when you have compilation problems with one or more of these not
+    programs on your platform or if you just don't need them.
 
     Use the --enable-suexec option to enable the suEXEC feature by building
     and installing the "suexec" support program. Use --suexec-caller=UID to
