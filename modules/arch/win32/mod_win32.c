@@ -457,8 +457,8 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
                       == INTERPRETER_SOURCE_REGISTRY_STRICT);
         interpreter = get_interpreter_from_win32_registry(r->pool, ext,
                                                           strict);
-        if (interpreter && e_info->prog_type != APR_SHELLCMD) {
-            e_info->prog_type = APR_PROGRAM_PATH;
+        if (interpreter && e_info->cmd_type != APR_SHELLCMD) {
+            e_info->cmd_type = APR_PROGRAM_PATH;
         }
         else {
             ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server,
@@ -499,8 +499,8 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
                 while (isspace(*interpreter)) {
                     ++interpreter;
                 }
-                if (e_info->prog_type != APR_SHELLCMD) {
-                    e_info->prog_type = APR_PROGRAM_PATH;
+                if (e_info->cmd_type != APR_SHELLCMD) {
+                    e_info->cmd_type = APR_PROGRAM_PATH;
                 }
             }
         }
