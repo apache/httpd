@@ -102,28 +102,16 @@ Committed Code Changes:
     * os-os2/1482: I cannot add a user in an existing password file
     * Martin's [PATCH] Improve implementation of -c/-C directive reading
       (take 2)
+    * Dean's [PATCH] MONCONTROL for profiling children
+    * Marc's [PATCH] don't log bogus errno when file doesn't exist
+    * Dean's [PATCH] OSF/1 serialized accept
+    * Marc's [PATCH] PR#1543: suexec logging exec failures
+    * Ben Hyde's [PATCH] WIN32 deserves a pid log file
+    * Paul Eggert's [PATCH] suexec/1343: year-2000 bug in suexec log
+    * Marc's [PATCH] define to allow passing of Authorization header
 
 Available Patches:
 
-    * Dean's [PATCH] MONCONTROL for profiling children
-	<Pine.LNX.3.95dg3.980111040040.25014C-100000@twinlark.arctic.org>
-	Status: Dean +1, Jim (in process)
-
-    * Marc's [PATCH] don't log bogus errno when file doesn't exist
-	<Pine.BSF.3.95.980110232826.3955E-100000@alive.znep.com>
-	Status: Marc +1, Dean +1, Jim +1
-
-    * Dean's [PATCH] OSF/1 serialized accept
-	<Pine.LNX.3.95dg3.980110002610.7757A-100000@twinlark.arctic.org>
-	Status: Dean +1, Jim +1 (on code)
-
-    * Marc's [PATCH] PR#1543: suexec logging exec failures
-	<Pine.BSF.3.95.971210202721.1361I-100000@alive.znep.com>
-	Status: Marc +1, Dean +1, Jim +1, Martin +1
-
-    * Ben Hyde's [PATCH] WIN32 deserves a pid log file
-	<9712092027.AA15722@gensym1.gensym.com>
-	Status: Jim +1, Martin +1, Dean +1
 
     * M.D.Parker's [PATCH] mod_status/1448: Status Information have version
 	<Pine.LNX.3.95dg3.971121113953.29532D-100000@twinlark.arctic.org>
@@ -133,18 +121,9 @@ Available Patches:
 	<9711141029.aa01965@paris.ics.uci.edu>
 	Status: Roy +1, Martin +1 (on code)
 
-    * Paul Eggert's [PATCH] suexec/1343: year-2000 bug in suexec log
-	<Pine.LNX.3.95dg3.971102202625.10533Y-100000@twinlark.arctic.org>
-	Status: Martin +1, Marc +1, Dean (Wants something more common), 
-	 Roy +1
-
     * Martin's [PATCH] "Signing" server generated pages
 	<19971122001602.03385@deejai.mch.sni.de>
 	Status: Martin +1, Roy 0, 
-
-    * Marc's [PATCH] define to allow passing of Authorization header
-	<Pine.BSF.3.95.971031204159.13113E-100000@alive.znep.com>
-	Status: Marc +1, Dean +1 (with note), Paul +1
 
 Concepts:
 
