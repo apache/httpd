@@ -722,29 +722,43 @@ const char *ssl_cmd_SSLCARevocationFile(cmd_parms *cmd, void *ctx,
     return NULL;
 }
 
+static const char *ssl_cmd_verify_parse(cmd_parms *parms,
+                                        const char *arg,
+                                        ssl_verify_t *id)
+{
+    if (strcEQ(arg, "none") || strcEQ(arg, "off")) {
+        *id = SSL_CVERIFY_NONE;
+    }
+    else if (strcEQ(arg, "optional")) {
+        *id = SSL_CVERIFY_OPTIONAL;
+    }
+    else if (strcEQ(arg, "require") || strcEQ(arg, "on")) {
+        *id = SSL_CVERIFY_REQUIRE;
+    }
+    else if (strcEQ(arg, "optional_no_ca")) {
+        *id = SSL_CVERIFY_OPTIONAL_NO_CA;
+    }
+    else {
+        return apr_pstrcat(parms->temp_pool, parms->cmd->name,
+                           ": Invalid argument '", arg, "'",
+                           NULL);
+    }
+
+    return NULL;
+}
+
 const char *ssl_cmd_SSLVerifyClient(cmd_parms *cmd, void *ctx,
-                                    const char *level)
+                                    const char *arg)
 {
     SSLDirConfigRec *dc = (SSLDirConfigRec *)ctx;
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
     ssl_verify_t id;
+    const char *err;
 
-    if (strEQ(level, "0") || strcEQ(level, "none")) {
-        id = SSL_CVERIFY_NONE;
+    if ((err = ssl_cmd_verify_parse(cmd, arg, &id))) {
+        return err;
     }
-    else if (strEQ(level, "1") || strcEQ(level, "optional")) {
-        id = SSL_CVERIFY_OPTIONAL;
-    }
-    else if (strEQ(level, "2") || strcEQ(level, "require")) {
-        id = SSL_CVERIFY_REQUIRE;
-    }
-    else if (strEQ(level, "3") || strcEQ(level, "optional_no_ca")) {
-        id = SSL_CVERIFY_OPTIONAL_NO_CA;
-    }
-    else {
-        return "SSLVerifyClient: Invalid argument";
-    }
-
+    
     if (!(cmd->path || dc)) {
         sc->nVerifyClient = id;
     }
