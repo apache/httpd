@@ -106,6 +106,9 @@ href="./">Version 2.0</a></div>
               
                 <tr><td><a href="configuring.html">Configuration
                 Files</a> </td></tr>
+
+                <tr><td><a href="sections.html">Configuration
+                Sections</a></td></tr>
               
                 <tr><td><a href="content-negotiation.html">Content
                 negotiation</a> </td></tr>
