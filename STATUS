@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/01/31 20:38:07 $]
+Last modified at [$Date: 2002/01/31 23:19:47 $]
 
 Release:
 
@@ -105,6 +105,14 @@ RELEASE SHOWSTOPPERS:
         Message-ID: <20020116000226.GA15991@ebuilt.com>
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
+
+    * If the parent process dies, should the remaining child processes
+      "gracefully" self-terminate.
+
+        Message-ID: <3C58232C.FE91F19F@Golux.Com>
+
+      +1:  Jim, Justin
+      -1:  
 
     * Modify the worker MPM so that it doesn't need to create and
       destroy a pool for each request--possibly by adopting a
