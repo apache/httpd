@@ -96,22 +96,4 @@ apr_xlate_t *ap_hdrs_to_ascii, *ap_hdrs_from_ascii;
 
 apr_xlate_t *ap_locale_to_ascii, *ap_locale_from_ascii;
 
-AP_DECLARE(apr_status_t) ap_set_content_xlate(request_rec *r, int output, 
-                                             apr_xlate_t *xlate)
-{
-    apr_status_t rv;
-
-    ap_assert(output == 0);
-
-    r->rrx->from_net = xlate;
-    rv = ap_bsetopt(r->connection->client, BO_RXLATE, &xlate);
-
-    if (rv) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-                      "BO_RXLATE failed");
-    }
-
-    return rv;
-}
-
 #endif /*APACHE_XLATE*/

@@ -117,16 +117,6 @@ extern apr_xlate_t *ap_locale_from_ascii;
 #define AP_POP_OUTPUTCONVERSION_STATE(_buff) \
         ap_bsetopt(_buff, BO_WXLATE, &saved_output_xlate)
 
-/**
- * set up character set translation (a.k.a. recoding) for content.
- * @param r The current request
- * @param output Is this content outgoing or incoming
- * @param The translation handle to use for the actual work
- * @deffunc apr_status_t ap_set_content_xlate(request_rec *r, int output, apr_xlate_t *xlate)
- */
-AP_DECLARE(apr_status_t) ap_set_content_xlate(request_rec *r, int output,
-                                             apr_xlate_t *xlate);
-
 #ifdef __cplusplus
 }
 #endif
