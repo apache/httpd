@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/09/17 10:39:43 $]
+Last modified at [$Date: 2003/09/17 10:47:38 $]
 
 Release:
 
@@ -332,11 +332,6 @@ PATCHES TO PORT FROM 2.1
     * mod_ssl: fix check for the plain-HTTP-request error
         modules/ssl/ssl_engine_io.c r1.111
       +1: jorton
-
-    * Fix EOS handling in ap_get_client_block.
-        modules/http/http_protocol.c: r1.471
-      See Message-ID: <3EC0B430.4010008@stason.org>
-      +1: jerenkrantz, trawick, fielding
 
 CURRENT RELEASE NOTES:
 

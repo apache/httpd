@@ -1890,6 +1890,10 @@ AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer,
     apr_status_t rv;
     apr_bucket_brigade *bb;
 
+    if (r->remaining < 0 || (!r->read_chunked && r->remaining == 0)) {
+        return 0;
+    }
+
     bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
     if (bb == NULL) {
         r->connection->keepalive = AP_CONN_CLOSE;
@@ -1916,7 +1920,21 @@ AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer,
      * returning data when requested.
      */
     AP_DEBUG_ASSERT(!APR_BRIGADE_EMPTY(bb));
- 
+
+    /* Check to see if EOS in the brigade.
+     *
+     * If so, we have to leave a nugget for the *next* ap_get_client_block
+     * call to return 0.
+     */
+    if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(bb))) {
+        if (r->read_chunked) {
+            r->remaining = -1;
+        }
+        else {
+            r->remaining = 0;
+        }
+    }
+
     rv = apr_brigade_flatten(bb, buffer, &bufsiz);
     if (rv != APR_SUCCESS) {
         apr_brigade_destroy(bb);

@@ -1,5 +1,8 @@
 Changes with Apache 2.0.48
 
+  *) Modify ap_get_client_block() to note if it has seen EOS.
+     [Justin Erenkrantz]
+
   *) Fix a bug, where mod_deflate sometimes unconditionally compressed the
      content if the Accept-Encoding header contained only other tokens than
      "gzip" (such as "deflate"). PR 21523.  [Joe Orton, André Malo]
