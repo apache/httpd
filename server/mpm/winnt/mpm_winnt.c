@@ -225,17 +225,11 @@ static const char *set_disable_acceptex(cmd_parms *cmd, void *dummy, char *arg)
     if (err != NULL) {
         return err;
     }
-    if (osver.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
-                     "Ignoring Win32EnableAcceptEx configuration directive. "
-                     "The directive is not valid on Windows 9x");
-        return NULL;
+    if (use_acceptex) {
+        use_acceptex = 0;
+        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, NULL, 
+                     "Disabled use of AcceptEx() WinSock2 API");
     }
-
-    use_acceptex = 0;
-
-    ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
-                         "Disabled use AcceptEx WinSock2 API");
     return NULL;
 }
 
