@@ -819,8 +819,8 @@ static const char *
         return "ProxyPass needs a path when not defined in a location";
 
     new = apr_array_push(conf->aliases);
-    new->fake = f;
-    new->real = r;
+    new->fake = apr_pstrdup(cmd->pool, f);
+    new->real = apr_pstrdup(cmd->pool, r);
     
     arr = apr_table_elts(params);
     elts = (const apr_table_entry_t *)arr->elts;
