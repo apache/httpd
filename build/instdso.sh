@@ -16,8 +16,9 @@ fi
 
 SH_LIBTOOL=`echo $1 | sed -e 's/^SH_LIBTOOL=//'`
 DSOARCHIVE=$2
+DSOARCHIVE_BASENAME=`basename $2`
 TARGETDIR=$3
-DSOBASE=`echo $DSOARCHIVE | sed -e 's/\.la$//'`
+DSOBASE=`echo $DSOARCHIVE_BASENAME | sed -e 's/\.la$//'`
 TARGET_NAME="$DSOBASE.so"
 
 SYS=`uname -s`
@@ -36,8 +37,8 @@ CMD="$SH_LIBTOOL --mode=install cp $DSOARCHIVE $TARGETDIR/"
 echo $CMD
 $CMD || exit $?
 
-DLNAME=`grep "^dlname" $TARGETDIR/$DSOARCHIVE | sed -e "s/dlname='\([^']*\)'/\1/"`
-LIBRARY_NAMES=`grep "library_names" $TARGETDIR/$DSOARCHIVE | sed -e "s/dlname='\([^']*\)'/\1/"`
+DLNAME=`grep "^dlname" $TARGETDIR/$DSOARCHIVE_BASENAME | sed -e "s/dlname='\([^']*\)'/\1/"`
+LIBRARY_NAMES=`grep "library_names" $TARGETDIR/$DSOARCHIVE_BASENAME | sed -e "s/dlname='\([^']*\)'/\1/"`
 LIBRARY_NAMES=`echo $LIBRARY_NAMES | sed -e "s/ *$DLNAME//g"`
 
 if test -n "$LIBRARY_NAMES"
@@ -53,7 +54,7 @@ then
     mv $TARGETDIR/$DLNAME $TARGETDIR/$TARGET_NAME
 fi
 
-rm -f $TARGETDIR/$DSOARCHIVE
+rm -f $TARGETDIR/$DSOARCHIVE_BASENAME
 rm -f $TARGETDIR/$DSOBASE.a
 rm -f $TARGETDIR/lib$DSOBASE.a
 rm -f $TARGETDIR/lib$TARGET_NAME
