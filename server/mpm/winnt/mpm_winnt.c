@@ -899,7 +899,7 @@ static void worker_main(int thread_num)
         sockinfo.family  = APR_INET;
         sockinfo.type    = SOCK_STREAM;
         /* ### is this correct?  Shouldn't be inheritable (at this point) */
-        apr_os_sock_make(&context->sock, &sockinfo, APR_NO_INHERIT, context->ptrans);
+        apr_os_sock_make(&context->sock, &sockinfo, context->ptrans);
 
         c = ap_new_connection(context->ptrans, server_conf, context->sock,
                               thread_num);
