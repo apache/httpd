@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/03/24 20:03:34 $]
+Last modified at [$Date: 2004/03/24 20:30:52 $]
 
 Release:
 
@@ -131,12 +131,6 @@ PATCHES TO BACKPORT FROM 2.1
          include/http_core.h: r1.81
          server/core.c: r1.266
        +1: nd
-
-    *) Win32: Tweak worker thread accounting routines to prevent
-       server hang when number of Listen directives is >=
-       ThreadsPerChild.
-           server/mpm/winnt/child.c?r1=1.32&r2=1.33
-       +1: stoddard, trawick, geoff
 
     *) Provide TLS/SSL upgrade functionality in mod_ssl allowing an unsecure
        connection to be upgraded to a secure connection upon request by the
