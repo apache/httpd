@@ -6,3 +6,5 @@ find_apu.m4
 ltconfig
 ltmain.sh
 PrintPath
+config.sub
+config.guess
