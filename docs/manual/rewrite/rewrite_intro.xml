@@ -56,7 +56,38 @@ follows is understood, rather than just copied blindly.
 </section>
 
 <section id="regex"><title>Regular Expressions</title>
-<p>Basic regex building blocks</p>
+
+<p>mod_rewrite uses the <a href="http://pcre.org/">Perl Compatible
+Regular Expression</a> vocabulary. In this document, we do not attempt
+to provide a detailed reference to regular expressions. For that, we
+recommend the <a href="http://pcre.org/pcre.txt">PCRE man pages</a>, the
+<a href="http://www.perldoc.com/perl5.8.0/pod/perlre.html">Perl regular
+expression man page</a>, and <a
+href="http://www.oreilly.com/catalog/regex2/index.html">Mastering
+Regular Expressions, by Jeffrey Friedl</a>.</p>
+
+<p>In this document, we attempt to provide enough of a regex vocabulary
+to get you started, without being overwhelming, in the hope that
+<directive module="mod_rewrite">RewriteRule</directive>s will be scientific
+formulae, rather than magical incantations.</p>
+
+<section id="regexvocab"><title>Regex vocabulary</title>
+
+<p>The following are the minimal building blocks you will need, in order
+to write regular expressions and <directive
+module="mod_rewrite">RewriteRule</directive>s.</p>
+
+<table>
+<tr>
+<th>Character</th>
+<th>Meaning</th>
+</tr>
+
+<tr><td><code>.</code></td><td>Matches any character</td></tr>
+
+</table>
+
+</section>
 
 <section id="InternalBackRefs"><title>Regex Back-Reference Availability</title>
 
@@ -76,8 +107,6 @@ follows is understood, rather than just copied blindly.
 </p>
 
 </section>
-
-
 </section>
 
 <section id="rewriterule"><title>RewriteRule basics</title>
