@@ -8,7 +8,7 @@
 <!--#include virtual="header.html" -->
 <H1>Apache Server Frequently Asked Questions</H1>
 <P>
-$Revision: 1.17 $ ($Date: 1997/04/11 03:36:58 $)
+$Revision: 1.18 $ ($Date: 1997/04/11 03:43:43 $)
 </P>
 <H2>The Questions</H2>
 <!-- Stuff to Add:						    -->
@@ -522,7 +522,7 @@ $Revision: 1.17 $ ($Date: 1997/04/11 03:36:58 $)
   <HR>
  </LI>
  <LI><A
-      NAME="multiviews"
+      NAME="fdlim"
      ><STRONG>Why can't I run more than &lt;<EM>n</EM>&gt;
       virtual hosts?</STRONG></A>
   <P>
@@ -530,30 +530,44 @@ $Revision: 1.17 $ ($Date: 1997/04/11 03:36:58 $)
   resource limitations.  One of these is the <EM>per</EM>-process limit
   on <STRONG>file descriptors</STRONG>, and that's almost always the
   cause of problems seen when adding virtual hosts.  In this
-  case, it is not actually Apache that's encountering the problem, but 
-  typically some library routine (such as <SAMP>gethostbyname()</SAMP>)
+  case, it is often not actually Apache that's encountering the problem, but 
+  some library routine (such as <SAMP>gethostbyname()</SAMP>)
   which needs file descriptors and doesn't complain intelligibly when it
   can't get them.
   </P>
   <P>
-  Each virtual host requires several file descriptors for housekeeping
-  functions, in addition to those actually used to serve files to
-  clients.
+  Each log file requires a file descriptor, which means that if you are
+  using seperate access and error logs for each virtual host each
+  virtual host  needs two file descriptors.  Each 
+  <A HREF="../mod/core.html#listen"> Listen</A> directive also needs 
+  a file descriptor.  
   </P>
   <P>
   Typical values for &lt;<EM>n</EM>&gt; that we've seen are in
   the neighbourhoods of 128 or 250.  When the server bumps into the file
   descriptor limit, it may dump core with a SIGSEGV, or it might just
   hang, or it may limp along and you'll see (possibly meaningful) errors
-  in the error log.
+  in the error log.  One common problem that occurs when you run into
+  a file descriptor limit is that CGI scripts stop being executed
+  properly at times.
   </P>
   <P>
   As to what you can do about this:
   </P>
   <OL>
+   <LI>Reduce the number of <A HREF="../mod/core.html#listen">Listen</A> 
+       directives.  If there are no other servers running on the machine 
+       and all of them are running on the same port, you normally don't 
+       need any Listen directives at all.
+   <LI>Reduce the number of log files.  You can use 
+       <A HREF="../mod/mod_log_config.html">log_mod_config</A> to log
+       all requests to a single log file while including the name
+       of the virtual host in the log file.
    <LI>Increase the number of file descriptors available to the server
-    (see your system's documentation on the <SAMP>limit</SAMP> or
-    <SAMP>ulimit</SAMP> commands)
+       (see your system's documentation on the <SAMP>limit</SAMP> or
+       <SAMP>ulimit</SAMP> commands).  For some systems, information on
+       how to do this is available in the <A HREF="perf.html">performance
+       hints</A> page.
    </LI>
    <LI>&quot;Don't do that&quot; - try to run with fewer virtual hosts
    </LI>
