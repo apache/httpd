@@ -117,7 +117,7 @@
 
 /* default completion is 60% */
 #define DEFAULT_CACHE_COMPLETION (60)
-
+#define MAX_URL_LENGTH 1024
 #define MSEC_ONE_DAY ((apr_time_t)(86400*APR_USEC_PER_SEC)) /* one day, in microseconds */
 #define MSEC_ONE_HR  ((apr_time_t)(3600*APR_USEC_PER_SEC))  /* one hour, in microseconds */
 #define MSEC_ONE_MIN  ((apr_time_t)(60*APR_USEC_PER_SEC))   /* one minute, in microseconds */
