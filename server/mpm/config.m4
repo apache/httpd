@@ -46,8 +46,6 @@ AC_DEFUN(APACHE_MPM_PTHREAD, [
 
 dnl XXX - We should be checking for the proper flags to use on a particular 
 dnl platform. This will cover a couple of them, anyway
-    CFLAGS="-pthread $CFLAGS"
-    CXXFLAGS="-pthread $CXXFLAGS"
 
     AC_CHECK_HEADER(pthread.h, [ ],[
         AC_MSG_ERROR(This MPM requires pthreads. Try --with-mpm=prefork.)
