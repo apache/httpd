@@ -781,7 +781,7 @@ VOID WINAPI service_ctrl(DWORD dwCtrlCode)
                          "Service Stop/Shutdown signaled, shutting down server.");
             ReportStatusToSCMgr(SERVICE_STOP_PENDING, NO_ERROR, 15000);
             ap_start_shutdown();
-            ReportStatusToSCMgr(SERVICE_STOPPED, NO_ERROR, 0);
+            // ReportStatusToSCMgr(SERVICE_STOPPED, NO_ERROR, 0);
             break;
 
         case SERVICE_APACHE_RESTART:
