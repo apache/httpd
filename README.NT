@@ -1,43 +1,57 @@
-                              Apache for Windows
-                             Version 1.3 (and up)
+                            Apache for Windows
+                           Version 1.3 (and up)
 
 What is it?
 -----------
 
 Apache is an HTTP server, originally designed for Unix systems. This
-is the first release of Apache for Windows systems.  Like the Unix
-version, it includes many frequently requested new features, and has
-an API which allows it to be extended to meet users' needs more
-easily. It also allows ISAPI extensions.
+is the first major release of Apache for Windows systems, including
+Microsoft Windows NT, 98, and 95.  Like the Unix version, it includes
+many frequently requested new features, and has an API that allows it
+to be extended to meet users' needs more easily. It also allows ISAPI
+extensions.
 
 Documentation
 -------------
 
 The documentation available as of the date of this release is also
-included, in HTML format, in the htdocs/manual/ directory. For the
-most up-to-date documentation, visit us on the WWW, at
-http://www.apache.org/. For Windows specific information, see
-http://www.apache.org/docs/windows.html.
+included, in HTML format, in the <./htdocs/manual/> directory.
+For the most up-to-date documentation, visit us on the WWW at
+<http://www.apache.org/>. For Windows specific information, see
+<http://www.apache.org/docs/windows.html>.
 
 WARNING
 -------
 
-Apache on NT has not yet been optimized for performance.  Apache still
+Apache on Win32 has not yet been optimized for performance.  Apache still
 performs best, and is most reliable on Unix platforms.  Over time we
-will improve NT performance. Folks doing comparative reviews of
-webserver performance are asked to compare against Apache on a Unix
+will improve performance for Windows NT. Folks doing comparative reviews
+of webserver performance are asked to compare against Apache on a Unix
 platform such as Solaris, FreeBSD, or Linux.
+
+Apache on Win32 should still be considered beta quality code.  It does not
+meet the normal standards of stability and security that Unix releases do.
+There is also a much greater chance of security holes being present in the
+Win32 version of Apache, due to the frequent discrepancies between the public
+documentation for the various Windows system calls and file system types
+and the reality of what is included in Windows system software.
 
 Installation or Compilation Instructions
 ----------------------------------------
 
-See the file http://www.apache.org/docs/windows.html for details of
+See the website <http://www.apache.org/docs/windows.html> for details of
 how to install Apache from a binary release or how to compile Apache
-from scratch. (This file is also available as
-htdocs/manual/windows.html in either a source or binary distribution).
+from scratch. This file is also included in the distribution as
+<./htdocs/manual/windows.html>.
 
 Known Problems
 --------------
+
+To get information about the current set of known problems, see our
+online bug reporting database at <http://www.apache.org/bug_report.html>.
+In particular, search for problem reports under the category "os-windows".
+
+This is a rough list of what we know has not been implemented on Win32.
 
 - The User directive is not supported. If you run apache as a service,
   you can change the user it runs as by going to 
@@ -45,17 +59,15 @@ Known Problems
 
 - suexec doesn't work
 
-- RFC 1413 not yet ported
+- RFC 1413 (IdentityCheck) is not yet ported
 
 - If you have a very busy server, when a server child process exits,
   any connections made to that child process that have not yet been
   accepted by it are aborted.
 
-- Problem with very long running cgi scripts (their output is garbled?)
+- The regex library build does not generate *.ih headers.
 
-- regex does not generate *.ih headers.
-
-- Multithreadng is not properly abstracted
+- Multithreading is not properly abstracted
 
 - htpasswd passwords are stored in plain text because Windows lacks a
   crypt() function
