@@ -144,6 +144,7 @@ static apr_status_t chunk_filter(ap_filter_t *f, apr_bucket_brigade *b)
     for (more = NULL; b; b = more, more = NULL) {
 	apr_off_t bytes = 0;
         apr_bucket *eos = NULL;
+        apr_bucket *flush = NULL;
         char chunk_hdr[20]; /* enough space for the snprintf below */
 
 	APR_BRIGADE_FOREACH(e, b) {
@@ -152,6 +153,9 @@ static apr_status_t chunk_filter(ap_filter_t *f, apr_bucket_brigade *b)
 		eos = e;
 		break;
 	    }
+            if (APR_BUCKET_IS_FLUSH(e)) {
+                flush = e;
+            }
 	    else if (e->length == -1) {
                 /* unknown amount of data (e.g. a pipe) */
 		const char *data;
@@ -206,12 +210,15 @@ static apr_status_t chunk_filter(ap_filter_t *f, apr_bucket_brigade *b)
             APR_BRIGADE_INSERT_HEAD(b, e);
 
             /*
-             * Insert the end-of-chunk CRLF before the EOS bucket, or
-             * appended to the brigade
+             * Insert the end-of-chunk CRLF before an EOS or
+             * FLUSH bucket, or appended to the brigade
              */
             e = apr_bucket_immortal_create(ASCII_CRLF, 2);
             if (eos != NULL) {
                 APR_BUCKET_INSERT_BEFORE(eos, e);
+            }
+            else if (flush != NULL) {
+                APR_BUCKET_INSERT_BEFORE(flush, e);
             }
             else {
                 APR_BRIGADE_INSERT_TAIL(b, e);
