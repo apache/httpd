@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/08/21 23:41:35 $]
+Last modified at [$Date: 2001/08/28 21:00:40 $]
 
 Release:
 
@@ -76,6 +76,19 @@ RELEASE SHOWSTOPPERS:
       Bill would be happy with changing MaxClients to MaxServers
       to make it agree with the operation of the StartServers
       directive.
+
+    * configure --enable-mods-shared=most and --enable-mods=most
+      options have issues.  Examples: 
+
+      ./configure --enable-mods-shared=most
+
+        This builds mod_headers as a DSO (good) but builds mod_mime
+        as a compiled-in module (bad, I think).
+
+      ./configure --enable-mods=most
+
+        This builds mod_mime(good) but doesn't build mod_headers at 
+        all (bad).
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
