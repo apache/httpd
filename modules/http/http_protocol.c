@@ -2479,8 +2479,6 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, apr_b
 	fixup_vary(r);
     }
 
-    ap_set_keepalive(r);
-
     if (r->chunked) {
         apr_table_mergen(r->headers_out, "Transfer-Encoding", "chunked");
         apr_table_unset(r->headers_out, "Content-Length");
@@ -2585,6 +2583,8 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, apr_b
     }
 
     terminate_header(buff);
+
+    ap_set_keepalive(r);
 
     r->sent_bodyct = 1;         /* Whatever follows is real body stuff... */
 
