@@ -120,6 +120,9 @@
 /* sslc does not support this function, OpenSSL has since 9.5.1 */
 #define RAND_status() 1
 
+/* sslc names this function a bit differently */
+#define CRYPTO_num_locks() CRYPTO_get_num_locks()
+
 #ifndef STACK_OF
 #define STACK_OF(type) STACK
 #endif
@@ -171,6 +174,7 @@
 #define sk_SSL_CIPHER_find(st, data) sk_find(st, (void *)data)
 #define sk_SSL_CIPHER_value (SSL_CIPHER *)sk_value
 #define sk_X509_num sk_num
+#define sk_X509_push sk_push
 #define sk_X509_value (X509 *)sk_value
 #define sk_X509_INFO_value (X509_INFO *)sk_value
 #define sk_X509_INFO_free sk_free
