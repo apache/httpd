@@ -186,13 +186,13 @@ static const command_rec ssl_config_cmds[] = {
      * Per-directory context configuration directives
      */
     SSL_CMD_DIR(Options, OPTIONS, RAW_ARGS,
-               "Set one of more options to configure the SSL engine"
+               "Set one or more options to configure the SSL engine"
                "(`[+-]option[=value] ...' - see manual)")
     SSL_CMD_DIR(RequireSSL, AUTHCFG, NO_ARGS,
                "Require the SSL protocol for the per-directory context "
                "(no arguments)")
     SSL_CMD_DIR(Require, AUTHCFG, RAW_ARGS,
-               "Require a boolean expresion to evaluate to true for granting access"
+               "Require a boolean expression to evaluate to true for granting access"
                "(arbitrary complex boolean expression - see manual)")
 
     AP_END_CMD
