@@ -1096,6 +1096,28 @@ static int x_translate_handler(request_rec *r)
 }
 
 /*
+ * This routine maps r->filename to a physical file on disk.  Useful for
+ * overriding default core behavior, including skipping mapping for
+ * requests that are not file based.
+ *
+ * The return value is OK, DECLINED, or HTTP_mumble.  If we return OK, no
+ * further modules are called for this phase.
+ */
+static int x_map_to_storage_handler(request_rec *r)
+{
+
+    x_cfg *cfg;
+
+    cfg = our_dconfig(r);
+    /*
+     * We don't actually *do* anything here, except note the fact that we were
+     * called.
+     */
+    trace_add(r->server, r, cfg, "x_map_to_storage_handler()");
+    return DECLINED;
+}
+
+/*
  * this routine gives our module another chance to examine the request
  * headers and to take special action. This is the first phase whose
  * hooks' configuration directives can appear inside the <Directory>
@@ -1298,6 +1320,7 @@ static void x_register_hooks(apr_pool_t *p)
     ap_hook_default_port(x_default_port, NULL, NULL, APR_HOOK_MIDDLE);
 #endif
     ap_hook_translate_name(x_translate_handler, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_map_to_storage(x_map_to_storage_handler, NULL,NULL, APR_HOOK_MIDDLE);
     ap_hook_header_parser(x_header_parser_handler, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_check_user_id(x_check_user_id, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_fixups(x_fixer_upper, NULL, NULL, APR_HOOK_MIDDLE);
