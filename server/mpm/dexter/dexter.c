@@ -649,7 +649,7 @@ static void *worker_thread(void *arg)
             srv = ap_poll(pollset, &n, -1);
 
             if (srv != APR_SUCCESS) {
-                if (errno == APR_EINTR) {
+                if (ap_canonical_error(srv) == APR_EINTR) {
                     continue;
                 }
 
@@ -796,7 +796,7 @@ static void child_main(int child_num_arg)
     requests_this_child = max_requests_per_child;
     
     /* Set up the pollfd array */
-    listenfds = ap_palloc(pchild, sizeof(*listenfds) * (num_listenfds + 1));
+    listenfds = ap_pcalloc(pchild, sizeof(*listenfds) * (num_listenfds + 1));
     ap_put_os_sock(&listenfds[0], &pipe_of_death[0], pchild);
     for (lr = ap_listeners, i = 1; i <= num_listenfds; lr = lr->next, ++i)
         listenfds[i]=lr->sd;

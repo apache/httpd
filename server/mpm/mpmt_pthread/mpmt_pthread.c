@@ -596,7 +596,7 @@ static void * worker_thread(void * dummy)
 
             ret = ap_poll(pollset, &n, -1);
             if (ret != APR_SUCCESS) {
-                if (ret == APR_EINTR) {
+                if (ap_canonical_error(ret) == APR_EINTR) {
                     continue;
                 }
 
@@ -734,9 +734,8 @@ static void child_main(int child_num_arg)
     requests_this_child = ap_max_requests_per_child;
     
     /* Set up the pollfd array */
-    listensocks = ap_palloc(pchild,
+    listensocks = ap_pcalloc(pchild,
 			    sizeof(*listensocks) * (num_listensocks + 1));
-    ap_create_tcp_socket(&listensocks[0], pchild);
     ap_put_os_sock(&listensocks[0], &pipe_of_death[0], pchild);
     for (lr = ap_listeners, i = 1; i <= num_listensocks; lr = lr->next, ++i)
 	listensocks[i]=lr->sd;
