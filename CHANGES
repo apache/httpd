@@ -386,7 +386,7 @@ Changes with Apache 2.1.0-dev
 Changes with Apache 2.0.51
 
   *) mod_include no longer checks for recursion, because that's done
-     in the core. This allows for carefully usage of recursive SSI.
+     in the core. This allows for careful usage of recursive SSI.
      [André Malo]
 
   *) Fix memory leak in the cache handling of mod_rewrite. PR 27862.
