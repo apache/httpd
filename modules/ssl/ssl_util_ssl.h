@@ -106,4 +106,7 @@ BOOL        SSL_load_CrtAndKeyInfo_path(apr_pool_t *, STACK_OF(X509_INFO) *, cha
 int         SSL_CTX_use_certificate_chain(SSL_CTX *, char *, int, int (*)(char*,int,int,void*));
 char       *SSL_SESSION_id2sz(unsigned char *, int, char *, int);
 
+DH *modssl_dh_configure(unsigned char *p, int plen,
+                        unsigned char *g, int glen);
+
 #endif /* __SSL_UTIL_SSL_H__ */
