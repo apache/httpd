@@ -661,7 +661,6 @@ static char *escape_absolute_uri(apr_pool_t *p, char *uri, unsigned scheme)
 static void splitout_queryargs(request_rec *r, int qsappend)
 {
     char *q;
-    char *olduri;
 
     /* don't touch, unless it's an http or mailto URL.
      * See RFC 1738 and RFC 2368.
@@ -673,8 +672,11 @@ static void splitout_queryargs(request_rec *r, int qsappend)
         return;
     }
 
-    q = strchr(r->filename, '?');
+    q = ap_strchr(r->filename, '?');
     if (q != NULL) {
+        char *olduri;
+        apr_size_t len;
+
         olduri = apr_pstrdup(r->pool, r->filename);
         *q++ = '\0';
         if (qsappend) {
@@ -683,18 +685,17 @@ static void splitout_queryargs(request_rec *r, int qsappend)
         else {
             r->args = apr_pstrdup(r->pool, q);
         }
-        if (strlen(r->args) == 0) {
+
+        len = strlen(r->args);
+        if (!len) {
             r->args = NULL;
-            rewritelog(r, 3, "split uri=%s -> uri=%s, args=<none>", olduri,
-                       r->filename);
         }
-        else {
-            if (r->args[strlen(r->args)-1] == '&') {
-                r->args[strlen(r->args)-1] = '\0';
-            }
-            rewritelog(r, 3, "split uri=%s -> uri=%s, args=%s", olduri,
-                       r->filename, r->args);
+        else if (r->args[len-1] == '&') {
+            r->args[len-1] = '\0';
         }
+
+        rewritelog(r, 3, "split uri=%s -> uri=%s, args=%s", olduri,
+                   r->filename, r->args ? r->args : "<none>");
     }
 
     return;
@@ -758,6 +759,7 @@ static void reduce_uri(request_rec *r)
             r->filename = apr_pstrdup(r->pool, url);
         }
     }
+
     return;
 }
 
