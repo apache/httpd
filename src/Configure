@@ -26,6 +26,7 @@ tmpfile2=$tmpfile.2
 tmpfile3=$tmpfile.3
 awkfile=$tmpfile.4
 SRCDIR=`pwd`
+SUBDIRS='main $(OSDIR) modules'
 
 ####################################################################
 ## Now handle any arguments, which, for now, is -file
@@ -658,6 +659,7 @@ esac
 #
 if [ "$RULE_WANTHSREGEX" = "yes" ]; then
     REGLIB="regex/libregex.a"
+    SUBDIRS="$SUBDIRS regex"
     INCLUDES="$INCLUDES -I${SRCDIR}/regex"
 fi
 
@@ -931,6 +933,7 @@ echo "RANLIB=$RANLIB">> Makefile.config
 echo "SHELL=$SHELL">> Makefile.config
 echo "OSOBJ=${SRCDIR}/$OSDIR/os.o">> Makefile.config
 echo "OSDIR=${SRCDIR}/$OSDIR">> Makefile.config
+echo "SUBDIRS=$SUBDIRS">> Makefile.config
 echo >> Makefile.config
 echo "#### End of Configure created section ####">> Makefile.config
 

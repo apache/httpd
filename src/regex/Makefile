@@ -35,12 +35,12 @@ JUNKLINT=possible pointer alignment|null effect
 .c.ih:
 	sh ./mkh $(MKHFLAGS) -p $< >$@
 
-default:	r
-
-lib:	purge $(OBJPRODN)
+all lib:	purge $(OBJPRODN)
 	rm -f libregex.a
 	ar crv libregex.a $(OBJPRODN)
 	$(RANLIB) libregex.a
+
+default:	r
 
 purge:
 	rm -f *.o

@@ -14,8 +14,6 @@ OBJS= \
   $(OSDIR)/libos.a \
   main/libmain.a
 
-SUBDIRS=main $(OSDIR) modules
-
 .c.o:
 	$(CC) -c $(INCLUDES) $(CFLAGS) $(SPACER) $<
 
@@ -28,7 +26,7 @@ all: @@Configuration@@ httpd
 	@echo "If not, you will at least have to touch @@Configuration@@."
 	@false
 
-httpd: $(REGLIB) modules.o subdirs
+httpd:  modules.o subdirs
 	rm -f buildmark.c
 	echo 'const char SERVER_BUILT[] = "'`date`'";' > buildmark.c
 	$(CC) -c $(CFLAGS) buildmark.c
@@ -38,9 +36,6 @@ subdirs:
 	for i in $(SUBDIRS); do \
 		( cd $$i; $(MAKE) CC='$(CC)' AUX_CFLAGS='$(CFLAGS)' RANLIB='$(RANLIB)') \
 	done
-
-$(REGLIB):
-	(cd regex; $(MAKE) lib CC='$(CC)' AUX_CFLAGS='$(CFLAGS)' RANLIB='$(RANLIB)')
 
 support: support-dir
 
