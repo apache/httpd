@@ -92,6 +92,7 @@
 #include "apr_strings.h"
 #include "apr_user.h"
 #include "apr_lib.h"
+#include "apr_signal.h"
 
 #define APR_WANT_STRFUNC
 #define APR_WANT_IOVEC
