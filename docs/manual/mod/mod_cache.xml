@@ -64,13 +64,12 @@
 <section><title>Sample Configuration</title>
 <example><title>Sample httpd.conf</title>
 # <br />
-# Sample Cache Configuration  <br />
+# Sample Cache Configuration <br />
 # <br />
-LoadModule cache_module modules/mod_cache.so  <br />
-&lt;IfModule mod_cache.c&gt;<br />
-   CacheOn On<br />
-<p />
-   #LoadModule disk_cache_module modules/mod_disk_cache.so <br />
+LoadModule cache_module modules/mod_cache.so <br />
+&lt;IfModule mod_cache.c&gt; <br />
+<br />
+#LoadModule disk_cache_module modules/mod_disk_cache.so <br />
    &lt;IfModule mod_disk_cache.c&gt; <br />
       CacheRoot c:/cacheroot <br />
       CacheSize 256 <br /> 
@@ -91,23 +90,6 @@ LoadModule cache_module modules/mod_cache.so  <br />
 &lt;/IfModule&gt; <br />
 </example>
 </section>
-
-<directivesynopsis>
-<name>CacheOn</name>
-<description></description>
-<syntax>CacheOn</syntax>
-<contextlist><context>server config</context></contextlist>
-
-<usage>
-    <p>
-    </p>
-
-
-<example>
-  CacheOn
-</example>
-</usage>
-</directivesynopsis>
 
 <directivesynopsis>
 <name>CacheEnable</name>
