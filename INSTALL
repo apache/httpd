@@ -100,11 +100,11 @@
   3. Configuring the source tree
      ---------------------------
 
-     NOTE: Although we'll often advice you to read the src/Configuration.tmpl
+     NOTE: Although we'll often advise you to read the src/Configuration.tmpl
            file parts to better understand the various options in this
            section, there is _AT NO TIME_ any need to _EDIT_ this file. The
            _COMPLETE_ configuration takes place via command line arguments and
-           loal shell variables for the ./configure script. The
+           local shell variables for the ./configure script. The
            src/Configuration.tmpl file is just a _READ-ONLY_ resource, here.
 
      Introduction:
