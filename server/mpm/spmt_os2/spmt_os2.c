@@ -100,7 +100,6 @@ static char ap_coredump_dir[MAX_STRING_LEN];
 /* *Non*-shared http_main globals... */
 
 static server_rec *server_conf;
-static int listenmaxfd;
 
 /* one_process --- debugging mode variable; can be set from the command line
  * with the -X flag.  If set, this gets you the child_main loop running
@@ -834,7 +833,7 @@ static void set_signals(void)
 }
 
 #if defined(TCP_NODELAY) && !defined(MPE) && !defined(TPF)
-static void sock_disable_nagle(int s)
+static void sock_disable_nagle(ap_socket_t *s)
 {
     /* The Nagle algorithm says that we should delay sending partial
      * packets in hopes of getting more data.  We don't want to do
@@ -846,10 +845,11 @@ static void sock_disable_nagle(int s)
      * In spite of these problems, failure here is not a shooting offense.
      */
     int just_say_no = 1;
+    ap_status_t status;
 
-    if (setsockopt(s, IPPROTO_TCP, TCP_NODELAY, (char *) &just_say_no,
-		   sizeof(int)) < 0) {
-	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, server_conf,
+    status = ap_setsockopt(s, IPPROTO_TCP, TCP_NODELAY, (char *) &just_say_no, sizeof(int));
+    if (status != APR_SUCCESS) {
+	ap_log_error(APLOG_MARK, APLOG_WARNING, status, server_conf,
 		    "setsockopt: (TCP_NODELAY)");
     }
 }
@@ -901,9 +901,6 @@ static int setup_listeners(ap_context_t *pchild, ap_pollfd_t **listen_poll)
 
 static void child_main(void *child_num_arg)
 {
-    NET_SIZE_T clen;
-    struct sockaddr sa_server;
-    struct sockaddr sa_client;
     ap_listen_rec *lr = NULL;
     ap_listen_rec *first_lr = NULL;
     ap_context_t *ptrans;
@@ -914,7 +911,7 @@ static void child_main(void *child_num_arg)
     int requests_this_child = 0;
     ap_pollfd_t *listen_poll;
     ap_socket_t *csd = NULL;
-    int nsds, rv, sockdes;
+    int nsds, rv;
 
     /* Disable the restart signal handlers and enable the just_die stuff.
      * Note that since restart() just notes that a restart has been
@@ -1133,29 +1130,13 @@ static void child_main(void *child_num_arg)
 	 * socket options, file descriptors, and read/write buffers.
 	 */
 
-        ap_get_os_sock(&sockdes, csd);
-	clen = sizeof(sa_server);
-	if (getsockname(sockdes, &sa_server, &clen) < 0) {
-	    ap_log_error(APLOG_MARK, APLOG_ERR, errno, server_conf, "getsockname");
-	    ap_close_socket(csd);
-	    continue;
-	}
+	sock_disable_nagle(csd);
 
-	sock_disable_nagle(sockdes);
-
-        iol = os2_attach_socket(sockdes);
+        iol = os2_attach_socket(csd);
 
 	if (iol == NULL) {
-	    if (errno == EBADF) {
-		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, NULL,
-		    "filedescriptor (%u) larger than FD_SETSIZE (%u) "
-		    "found, you probably need to rebuild Apache with a "
-		    "larger FD_SETSIZE", sockdes, FD_SETSIZE);
-	    }
-	    else {
-		ap_log_error(APLOG_MARK, APLOG_WARNING, errno, NULL,
-		    "error attaching to socket");
-	    }
+          ap_log_error(APLOG_MARK, APLOG_WARNING|APLOG_NOERRNO, 0, NULL,
+                       "error attaching to socket");
 	    ap_close_socket(csd);
 	    continue;
         }
