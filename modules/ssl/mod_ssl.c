@@ -105,7 +105,7 @@ static const command_rec ssl_config_cmds[] = {
     /*
      * Per-server context configuration directives
      */
-    SSL_CMD_SRV(Engine, FLAG,
+    SSL_CMD_SRV(Engine, TAKE1,
                 "SSL switch for the protocol engine "
                 "(`on', `off')")
     SSL_CMD_ALL(CipherSuite, TAKE1,
@@ -274,7 +274,7 @@ int ssl_engine_disable(conn_rec *c)
     return 1;
 }
 
-static int ssl_hook_pre_connection(conn_rec *c, void *csd)
+int ssl_init_ssl_connection(conn_rec *c)
 {
     SSLSrvConfigRec *sc = mySrvConfig(c->base_server);
     SSL *ssl;
@@ -283,39 +283,13 @@ static int ssl_hook_pre_connection(conn_rec *c, void *csd)
     modssl_ctx_t *mctx;
 
     /*
-     * Immediately stop processing if SSL is disabled for this connection
-     */
-    if (!(sc && (sc->enabled ||
-                 (sslconn && sslconn->is_proxy))))
-    {
-        return DECLINED;
-    }
-
-    /*
-     * Create SSL context
-     */
-    if (!sslconn) {
-        sslconn = ssl_init_connection_ctx(c);
-    }
-
-    if (sslconn->disabled) {
-        return DECLINED;
-    }
-
-    /*
-     * Remember the connection information for
-     * later access inside callback functions
-     */
-
-    ap_log_error(APLOG_MARK, APLOG_INFO, 0, c->base_server,
-                 "Connection to child %ld established "
-                 "(server %s, client %s)", c->id, sc->vhost_id, 
-                 c->remote_ip ? c->remote_ip : "unknown");
-
-    /*
      * Seed the Pseudo Random Number Generator (PRNG)
      */
     ssl_rand_seed(c->base_server, c->pool, SSL_RSCTX_CONNECT, "");
+
+    if (!sslconn) {
+        sslconn = ssl_init_connection_ctx(c);
+    }
 
     mctx = sslconn->is_proxy ? sc->proxy : sc->server;
 
@@ -390,6 +364,54 @@ static apr_port_t ssl_hook_default_port(const request_rec *r)
     return 443;
 }
 
+static int ssl_hook_pre_connection(conn_rec *c, void *csd)
+{
+    SSLSrvConfigRec *sc = mySrvConfig(c->base_server);
+    SSLConnRec *sslconn = myConnConfig(c);
+
+    /*
+     * Immediately stop processing if SSL is disabled for this connection
+     */
+    if (!(sc && (sc->enabled == TRUE ||
+                 (sslconn && sslconn->is_proxy))))
+    {
+        return DECLINED;
+    }
+
+    /*
+     * Create SSL context
+     */
+    if (!sslconn) {
+        sslconn = ssl_init_connection_ctx(c);
+    }
+
+    if (sslconn->disabled) {
+        return DECLINED;
+    }
+
+    /*
+     * Remember the connection information for
+     * later access inside callback functions
+     */
+
+    ap_log_error(APLOG_MARK, APLOG_INFO, 0, c->base_server,
+                 "Connection to child %ld established "
+                 "(server %s, client %s)", c->id, sc->vhost_id, 
+                 c->remote_ip ? c->remote_ip : "unknown");
+
+    return ssl_init_ssl_connection(c);
+}
+
+
+static void ssl_hook_Insert_Filter(request_rec *r)
+{
+    SSLSrvConfigRec *sc = mySrvConfig(r->server);
+
+    if (sc->enabled == UNSET) {
+        ap_add_output_filter("UPGRADE_FILTER", NULL, r, r->connection);
+    }
+}
+
 /*
  *  the module registration phase
  */
@@ -410,6 +432,8 @@ static void ssl_register_hooks(apr_pool_t *p)
     ap_hook_access_checker(ssl_hook_Access,        NULL,NULL, APR_HOOK_MIDDLE);
     ap_hook_auth_checker  (ssl_hook_Auth,          NULL,NULL, APR_HOOK_MIDDLE);
     ap_hook_post_read_request(ssl_hook_ReadReq,    NULL,NULL, APR_HOOK_MIDDLE);
+    ap_hook_insert_filter (ssl_hook_Insert_Filter, NULL,NULL, APR_HOOK_MIDDLE);
+/*    ap_hook_handler       (ssl_hook_Upgrade,       NULL,NULL, APR_HOOK_MIDDLE); */
 
     ssl_var_register();
 
