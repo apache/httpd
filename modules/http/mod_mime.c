@@ -529,8 +529,7 @@ static int is_quoted_pair(const char *s)
 
 static content_type *analyze_ct(request_rec *r, const char *s)
 {
-    const char *cp;
-    const char *mp;
+    const char *cp, *mp, *tmp;
     char *attribute, *value;
     int quoted = 0;
     server_rec * ss = r->server;
@@ -555,12 +554,17 @@ static content_type *analyze_ct(request_rec *r, const char *s)
 	return (NULL);
     }
     ctp->type = zap_sp_and_dup(p, mp, cp, NULL);
-    if (ctp->type == NULL || *(ctp->type) == '\0' ||
-	strchr(ctp->type, ';') || strchr(ctp->type, ' ') ||
-	strchr(ctp->type, '\t')) {
+    if (ctp->type == NULL || *(ctp->type) == '\0') {
 	ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss,
 		     "Cannot get media subtype.");
 	return (NULL);
+    }
+    for (tmp = ctp->type; *tmp; tmp++) {
+      if ((*tmp == ';') || (*tmp == ' ') || (*tmp == '\t')) {
+	ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss,
+		     "Cannot get media subtype.");
+	return (NULL);
+      }
     }
 
     /* getting a subtype */
@@ -570,11 +574,17 @@ static content_type *analyze_ct(request_rec *r, const char *s)
     for (; *cp != ';' && *cp != '\0'; cp++)
         continue;
     ctp->subtype = zap_sp_and_dup(p, mp, cp, NULL);
-    if ((ctp->subtype == NULL) || (*(ctp->subtype) == '\0') ||
-	strchr(ctp->subtype, ' ') || strchr(ctp->subtype, '\t')) {
+    if ((ctp->subtype == NULL) || (*(ctp->subtype) == '\0')) {
 	ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss,
 		     "Cannot get media subtype.");
 	return (NULL);
+    }
+    for (tmp = ctp->subtype; *tmp; tmp++) {
+      if ((*tmp == ' ') || (*tmp == '\t')) {
+	ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss,
+		     "Cannot get media subtype.");
+	return (NULL);
+      }
     }
     if (*cp == '\0') {
         return (ctp);
