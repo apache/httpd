@@ -56,14 +56,14 @@
  * University of Illinois, Urbana-Champaign.
  */
 
-#include "httpd.h"
-#include "mpm_default.h"
-#include "scoreboard.h"
-
 #ifndef APACHE_MPM_SPMT_OS2_H
 #define APACHE_MPM_SPMT_OS2_H
 
 #define SPMT_OS2_MPM
+
+#include "httpd.h"
+#include "mpm_default.h"
+#include "scoreboard.h"
 
 extern char ap_coredump_dir[MAX_STRING_LEN];
 extern server_rec *ap_server_conf;

@@ -70,7 +70,6 @@ extern "C" {
 #include <time.h>
 #endif
 
-#include "mpm.h"	        /* For MPM type */
 #include "mpm_default.h"	/* For HARD_.*_LIMIT */
 #include "apr_thread_proc.h"
 #include "apr_portable.h"
