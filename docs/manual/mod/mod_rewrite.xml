@@ -876,6 +876,8 @@ Result:
           from the following list: 
 
           <table>
+          <columnspec><column width=".3"/><column width=".3"/>
+           <column width=".3"/></columnspec>
             <tr>
               <th>HTTP headers:</th> <th>connection &amp; request:</th> <th></th>
 	    </tr>

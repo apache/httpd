@@ -141,6 +141,7 @@ for HTTP Basic authentication.</description>
     phase</p>
 
     <table>
+      <columnspec><column width=".3"/><column width=".7"/></columnspec>
       <tr>
         <td><directive module="mod_auth_ldap">AuthLDAPURL</directive></td>
 
@@ -203,6 +204,7 @@ for HTTP Basic authentication.</description>
     compare phase:</p>
 
     <table>
+      <columnspec><column width=".4"/><column width=".6"/></columnspec>
       <tr>
         <td><directive module="mod_auth_ldap">AuthLDAPURL</directive> </td>
 
