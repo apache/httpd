@@ -263,6 +263,9 @@ struct ap_filter_t {
     /** The next filter in the chain */
     ap_filter_t *next;
 
+    /** The previous filter in the chain */
+    ap_filter_t *prev;
+
     /** The request_rec associated with the current filter.  If a sub-request
      *  adds filters, then the sub-request is the request associated with the
      *  filter.
