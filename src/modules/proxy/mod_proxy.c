@@ -351,10 +351,8 @@ set_proxy_exclude(cmd_parms *parms, void *dummy, char *arg)
 	new = push_array (conf->noproxies);
 	new->name = arg;
 	/* Don't do name lookups on things that aren't dotted */
-	if (strchr(arg, '.') != NULL) {
-	    proxy_host2addr(new->name, &hp);
+	if (strchr(arg, '.') != NULL && proxy_host2addr(new->name, &hp) == NULL)
 	    memcpy(&new->addr, hp.h_addr, sizeof(struct in_addr));
-	}
 	else
 	    new->addr.s_addr = 0;
     }
@@ -492,8 +490,7 @@ set_cache_exclude(cmd_parms *parms, void *dummy, char *arg)
 	new = push_array (conf->nocaches);
 	new->name = arg;
 	/* Don't do name lookups on things that aren't dotted */
-	if (strchr(arg, '.') != NULL) {
-	    proxy_host2addr(new->name, &hp);
+	if (strchr(arg, '.') != NULL && proxy_host2addr(new->name, &hp) == NULL)
 	    memcpy(&new->addr, hp.h_addr, sizeof(struct in_addr));
 	}
 	else
