@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/12/02 14:11:19 $]
+Last modified at [$Date: 2003/12/02 14:21:26 $]
 
 Release:
 
@@ -365,7 +365,7 @@ PATCHES TO BACKPORT FROM 2.1
     * Fix htdbm to generate comment fields in the DBM files correctly.
       (This causes DBMAuthGroupFile to break)
         support/htdbm.c r1.11
-      +1: jerenkrantz, striker
+      +1: jerenkrantz, striker, trawick
 
 CURRENT RELEASE NOTES:
 
