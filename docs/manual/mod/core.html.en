@@ -877,8 +877,9 @@ the server configuration files</td></tr><tr><td nowrap="nowrap"><a href="directi
     from within the server configuration files.</p>
 
     <p>If <code class="directive">Include</code> points to a directory, rather than a
-    file, Apache will read all files in that directory, and any
-    subdirectory, and parse those as configuration files.</p>
+    file, Apache will read all files in that directory and any
+    subdirectory in alphabetical order, and parse those as configuration
+    files.</p>
 
     <p>The file path specified may be a fully qualified path (i.e.
     starting with a slash), or may be relative to the 
