@@ -1,0 +1,59 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<TITLE>Apache module mod_cookies</TITLE>
+</HEAD>
+
+<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+<BODY
+ BGCOLOR="#FFFFFF"
+ TEXT="#000000"
+ LINK="#0000FF"
+ VLINK="#000080"
+ ALINK="#FF0000"
+>
+<!--#include virtual="header.html" -->
+<H1 ALIGN="CENTER">Module mod_cookies</H1>
+
+<STRONG><FONT COLOR="red">This module is obsolete.  As of version
+1.2 of Apache, it has been replaced with <A HREF="mod_usertrack.html">
+mod_usertrack</A>.  </FONT></STRONG>
+
+<P>This module is contained in the <CODE>mod_cookies.c</CODE> file, and
+is not compiled in by default. It provides for Netscape(TM) cookies.
+There is no documentation available for this module.
+
+
+<MENU>
+<LI><A HREF="#cookielog">CookieLog</A>
+</MENU>
+<HR>
+
+
+<H2><A name="cookielog">CookieLog</A></H2>
+<!--%plaintext &lt;?INDEX {\tt CookieLog} directive&gt; -->
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> CookieLog <EM>filename</EM><BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> server config, virtual host<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Experimental<BR>
+<A
+ HREF="directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mod_cookies<P>
+
+The CookieLog directive sets the filename for logging of cookies.
+The filename is relative to the <A HREF="core.html#serverroot">ServerRoot</A>.
+<P>
+
+<!--#include virtual="footer.html" -->
+</BODY>
+</HTML>
+

@@ -1,0 +1,134 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<TITLE>Apache Multiple Log Files</TITLE>
+</HEAD>
+
+<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+<BODY
+ BGCOLOR="#FFFFFF"
+ TEXT="#000000"
+ LINK="#0000FF"
+ VLINK="#000080"
+ ALINK="#FF0000"
+>
+<!--#include virtual="header.html" -->
+<H1 ALIGN="CENTER">Multiple Log Files</H1>
+
+It is now possible to specify multiple log files, each with a fully
+customizable format. This is compatible with existing
+configurations.  Multiple log files are implemented as part of the <A
+HREF="mod/mod_log_config.html">mod_log_config</A> module which as of
+Apache 1.2 is the default log module.
+
+<HR>
+
+<H2>Using Multiple Log Files</H2>
+
+Multiple log files be created with either the <CODE>TransferLog</CODE>
+or <CODE>CustomLog</CODE> directive. These directives can be
+repeated to create more than one log file (in previous releases,
+only one logfile could be given per server configuration).
+The <CODE>TransferLog</CODE> directive creates a log file
+in the standard "common log format", although this can be customized
+with <CODE>LogFormat</CODE>. The syntax of these two
+directives is the same as for the config log module in previous
+Apache releases.
+<P>
+
+The real power of multiple log files come from the ability to
+create log files in different formats. For example, as well
+as a CLF transfer log, the server could log the user agent of
+each client, or the referrer information, or any other aspect of
+the request, such as the language preferences of the user.
+<P>
+
+The new <CODE>CustomLog</CODE> directive takes both a filename to log
+to, and a log file format.
+
+<HR>
+
+<A
+ HREF="mod/directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> CustomLog <EM>filename "format"</EM><BR>
+<A
+ HREF="mod/directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> server config, virtual host<BR>
+<A
+ HREF="mod/directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> base<BR>
+<A
+ HREF="mod/directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mod_log_config<P>
+
+The first argument is the filename to log to. This is used
+exactly like the argument to <CODE>TransferLog</CODE>, that is,
+it is either a file as a full path or relative to the current
+server root, or |programname.  Be aware that anyone who can write to
+the directory where a log file is written can gain access to the uid
+that starts the server.  See the <A HREF="misc/security_tips.html">
+security tips</A> document for details.<P>
+
+The format argument specifies a format for each line of the log file.
+The options available for the format are exactly the same as for
+the argument of the <CODE>LogFormat</CODE> directive. If the format
+includes any spaces (which it will do in almost all cases) it
+should be enclosed in double quotes.
+<P>
+
+<H3>Use with Virtual Hosts</H3>
+
+If a &lt;VirtualHost&gt; section does not contain any
+<CODE>TransferLog</CODE> or <CODE>CustomLog</CODE> directives, the
+logs defined for the main server will be used. If it does
+contain one or more of these directives, requests serviced by
+this virtual host will only be logged in the log files defined
+within its definition, not in any of the main server's log files.
+See the examples below.
+<P>
+
+<HR>
+
+<H3>Examples</H3>
+
+To create a normal (CLF) format log file in logs/access_log, and a
+log of user agents:
+
+<PRE>
+TransferLog logs/access_log
+CustomLog   logs/agents     "%{user-agent}i"
+</PRE>
+
+To define a CLF transfer log and a referrer log which log
+all accesses to both the main server and a virtual host:
+
+<PRE>
+TransferLog logs/access_log
+CustomLog   logs/referer    "%{referer}i"
+
+&lt;VirtualHost&gt;
+  DocumentRoot   /whatever
+  ServerName     my.virtual.host
+&lt;/VirtualHost&gt;
+</PRE>
+
+Since no TransferLog or CustomLog directives appear inside the
+&lt;VirtualHost&gt; section, any requests for this virtual host
+will be logged in the main server's log files. If however the
+directive
+
+<PRE>
+TransferLog logs/vhost_access_log
+</PRE>
+
+was added inside the virtual host definition, then accesses to this
+virtual host will be logged in vhost_access_log file (in common
+log format), and <EM>not</EM> in logs/access_log or logs/referer.
+
+<!--#include virtual="footer.html" -->
+</BODY>
+</HTML>

@@ -1,0 +1,28 @@
+CFLAGS=$(OPTIM) $(CFLAGS1) $(EXTRA_CFLAGS)
+LIBS=$(EXTRA_LIBS) $(LIBS1)
+INCLUDES=$(INCLUDES1) $(INCLUDES_DEPTH2) $(EXTRA_INCLUDES)
+LFLAGS=$(LFLAGS1) $(EXTRA_LFLAGS)
+INCDIR=../../include
+
+OBJS=   os.o os-inline.o ebcdic.o
+
+LIB=	libos.a
+
+all:	$(LIB)
+
+$(LIB): $(OBJS)
+	rm -f $@
+	ar cr $@ $(OBJS)
+	$(RANLIB) $@
+
+.c.o:
+	$(CC) -c $(INCLUDES) $(CFLAGS) $(SPACER) $<
+
+clean:
+	rm -f $(OBJS) $(LIB)
+
+$(OBJS): Makefile
+os.o:	os.c os-inline.c
+ebcdic.o: ebcdic.c
+# DO NOT REMOVE
+os.o:	os.c

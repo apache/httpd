@@ -1,0 +1,125 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<TITLE>Apache extra features</TITLE>
+</HEAD>
+
+<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+<BODY
+ BGCOLOR="#FFFFFF"
+ TEXT="#000000"
+ LINK="#0000FF"
+ VLINK="#000080"
+ ALINK="#FF0000"
+>
+<!--#include virtual="header.html" -->
+<H1 ALIGN="CENTER">Overview of new features</H1>
+
+<H2>New Features with Apache 1.0</H2>
+
+<P>New features with this release, as extensions of the Apache
+functionality (see also more detailed <CODE>CHANGES</CODE> file) in
+the source directory.  Because the core code has changed so
+significantly, there are certain liberties that earlier versions of
+Apache (and the NCSA daemon) took that Apache 1.0 is pickier about -
+please check the <A HREF="misc/compat_notes.html">compatibility notes</A> if you have any problems.
+
+<UL>
+
+<LI> API for server extensions --- see below for a brief sermon on
+philosophy, or see <A HREF="misc/API.html">src/API.html</A> for an actual
+overview.  Most server functionality (including includes, CGI, and
+most forms of access control) are actually implemented as
+API-conformant modules; you can also do other neat stuff (we've
+included a sample module, for instance, which one of us is using to
+track click-trails using the <A
+HREF="http://home.netscape.com/newsref/std/cookie_spec.html">Netscape
+cookie mechanism</A>, for visitors who come in through Netscape
+clients).  <A HREF="mod/mod_dld.html">Modules</A> can also be loaded dynamically using GNU DLD.
+
+<P>
+The API is not yet quite stable (see src/TODO for some possible
+changes), but anything done now will be easily adapted for future
+versions --- after all, we have more modules to adapt than you do.
+
+<P>
+
+<LI> <A HREF="process-model.html">New Process Model - much less forking, no fixed number of children.</A>
+
+We found that many people were using values for "MaxServers" either
+too high or too low, and were hanging themselves on it.  The model we
+adopted is still based on long-lived minimal-forking processes, but
+instead of specifying one number of persistent processes, the
+web-master specifies a maximum and minimum number of processes to be
+"spare" - every couple of seconds the parent checks the actual number
+of spare servers and adjusts accordingly.  This should keep the number
+of servers concurrently running relatively low while still ensuring
+minimal forking.
+
+<P>
+
+<LI> <A HREF="vhosts/index.html">&lt;VirtualHost&gt; (the configuration directive for
+multiple-homed servers)</A> is more general now.  Just about any srm.conf or
+httpd.conf command can go in a &lt;Virtualhost&gt; section, with the
+following specific exceptions: ServerType, UserId, GroupId,
+StartServers, MaxRequestsPerChild, BindAddress, PidFile, TypesConfig,
+ServerRoot.
+
+<P>
+
+<LI> <A HREF="content-negotiation.html">Support for content negotiation of languages through MultiViews</A>
+(*.fr, *.de, *.en suffixes), via the new AddLanguage and LanguagePriority
+commands (code written by Florent Guillaume, guillaum@clipper.ens.fr).
+
+<P>
+
+<LI> Significant internal cleanups and rearrangements.  The two externally
+   visible consequences of this are that just about all of the unchecked
+   fixed limits are gone, and that the server is somewhat pickier about
+   config file syntax (noting and complaining about extraneous command
+   arguments or other stuff at the end of command lines).
+
+<P>
+
+<LI> XBITHACK is a run-time option, and can be selectively enabled per
+   directory --- the -DXBITHACK compile-time option just changes the
+   default.  The command which configures it is "XBitHack", which is
+   allowed everywhere "Options" is; this takes an argument ---
+   "XBitHack Off" turns it off; "XBitHack On" gets you the NCSA
+   -DXBITHACK behavior; and "XBitHack Full" gets you the Apache GXBIT
+   stuff on top of that.  (-DXBITHACK makes "Full" the default;
+   otherwise, it defaults "Off").
+
+<P>
+
+<LI> TransferLog can specify a program which gets the log entries piped to it,
+   a la 'TransferLog "| /var/www/my-perl-script -arg valu"' --- this should
+   give the same SIGTERM/pause/SIGKILL treatment to the logging process on
+   server restarts that a CGI script gets on an aborted request.  NB the
+   server is counting on the logging process to work, and will probably hang
+   or worse if it dies.
+
+<P>
+
+<LI> <A HREF="mod/mod_log_config.html">Configurable logging module</A> --- this
+   is a replacement for the standard plane-jane Common Log Format code, which
+   supports a LogFormat directive which allows you to control the formatting of
+   entries in the TransferLog, and add some new items if you like (in
+   particular, Referer and User-Agent).  EXPERIMENTAL.
+</UL>
+<P><HR>
+
+
+<H2>Other features of Apache</H2>
+<UL>
+<LI><A HREF="mod/mod_dld.html">Dynamically loading modules using GNU DLD</A>
+<LI><A HREF="mod/mod_imap.html">Imagemap Module</A>
+<LI><A HREF="mod/mod_dir.html#directoryindex">Multiple DirectoryIndex filenames</A>
+<LI><A HREF="mod/mod_asis.html"> &quot;Send as is&quot; file types</A>
+<LI><A HREF="mod/mod_include.html#xbithack">XBITHACK last modified</A>
+</UL>
+
+<!--#include virtual="footer.html" -->
+</BODY>
+</HTML>
+

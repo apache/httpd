@@ -1,0 +1,80 @@
+#!/bin/sh
+#
+# This script installs Apache and is called from the top-level
+# Makefile
+#
+
+if [ $# != 1 ]; then
+  echo "Usage: $0 serverroot"
+  exit 1
+fi
+
+SERVERROOT=$1
+
+if [ ! -d $SERVERROOT ]; then
+  mkdir $SERVERROOT
+fi
+
+if [ ! -d $SERVERROOT/conf ]; then
+  mkdir $SERVERROOT/conf
+fi
+
+if [ ! -d $SERVERROOT/htdocs ]; then
+  cp -r htdocs $SERVERROOT
+fi
+
+if [ ! -d $SERVERROOT/logs ]; then
+  mkdir $SERVERROOT/logs
+fi
+
+if [ ! -d $SERVERROOT/icons ]; then
+  cp -r icons $SERVERROOT
+fi
+
+if [ ! -d $SERVERROOT/cgi-bin ]; then
+  cp -r cgi-bin $SERVERROOT
+fi
+
+if [ -f $SERVERROOT/httpd ]; then
+  mv $SERVERROOT/httpd $SERVERROOT/httpd.bak
+fi
+
+cp src/httpd $SERVERROOT
+
+for I in access.conf httpd.conf srm.conf
+do
+  if [ ! -f $SERVERROOT/conf/$I ]; then
+    sed -e "s#@@ServerRoot@@#${SERVERROOT}#g" < conf/${I}-dist \
+  	> $SERVERROOT/conf/$I
+  fi
+done
+cp conf/mime.types $SERVERROOT/conf
+
+if [ -d $SERVERROOT/src ]; then
+  mv $SERVERROOT/src $SERVERROOT/src.bak
+fi
+
+tar cf - src | (cd $SERVERROOT; tar xf - )
+
+cd $SERVERROOT
+
+if [ ! -f start -a ! -f stop -a ! -f reload ]; then
+  cat > start <<EOF
+#!/bin/sh
+cd $SERVERROOT
+./httpd -d $SERVERROOT -f conf/httpd.conf
+EOF
+
+  cat > stop <<EOF
+#!/bin/sh
+kill \`cat $SERVERROOT/logs/httpd.pid\`
+EOF
+
+  cat > reload <<EOF
+#!/bin/sh
+kill -HUP \`cat $SERVERROOT/logs/httpd.pid\`
+EOF
+
+  chmod a+x start stop reload
+fi
+
