@@ -74,6 +74,8 @@
 #include "apr_md5.h"
 #include "apr_pools.h"
 #include "apr_strings.h"
+#define APR_WANT_STRFUNC
+#include "apr_want.h"
 
 #include "httpd.h"
 #include "http_config.h"
