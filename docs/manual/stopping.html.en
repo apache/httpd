@@ -62,15 +62,19 @@ further requests are served.
 
 <H3>Graceful Restart</H3>
 
-<p><strong>Signal:</strong> WINCH<br>
+<p><strong>Signal:</strong> USR1<br>
 <code>apachectl graceful</code></p>
 
-<P>The <CODE>WINCH</CODE> signal causes the parent process to <EM>advise</EM>
+<P>The <CODE>USR1</CODE> signal causes the parent process to <EM>advise</EM>
 the children to exit after their current request (or to exit immediately
 if they're not serving anything).  The parent re-reads its configuration
 files and re-opens its log files.  As each child dies off the parent
 replaces it with a child from the new <EM>generation</EM> of the
 configuration, which begins serving new requests immediately.</p>
+
+<I>On certain platforms that do not allow USR1 to be used for a graceful
+restart, an alternative signal may be used (such as WINCH).  apachectl
+graceful will send the right signal for your platform.</I>
 
 <P>This code is designed to always respect the <A
 HREF="mod/mpm_common.html#maxclients">MaxClients</A>, <A
@@ -100,9 +104,9 @@ children which are still serving requests started before the graceful
 restart was given.
 
 <P>At present there is no way for a log rotation script using
-<CODE>WINCH</CODE> to know for certain that all children writing the
+<CODE>USR1</CODE> to know for certain that all children writing the
 pre-restart log have finished.  We suggest that you use a suitable delay
-after sending the <CODE>WINCH</CODE> signal before you do anything with the
+after sending the <CODE>USR1</CODE> signal before you do anything with the
 old log.  For example if most of your hits take less than 10 minutes to
 complete for users on low bandwidth links then you could wait 15 minutes
 before doing anything with the old log.

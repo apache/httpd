@@ -100,10 +100,6 @@ eliminating the need for these directives.</li>
 
 <UL>
 
-<li>Graceful restarts of the server are now executed by signaling the
-parent process with <code>WINCH</code> rather than
-<code>USR1</code>.</li>
-
 <li>The <code>httpd</code> command line option <code>-S</code>
 which was used for printing the virtual host configuration has
 been replaced by <code>-t -D DUMP_VHOSTS</code>.</li>
