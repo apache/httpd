@@ -26,16 +26,13 @@ Documentation that needs writing:
 
 Available Patches:
 
+    * Wilfredo Sanchez's [PATCH] Build outside of source tree
+        Message-ID: <199810020251.TAA20588@scv2.apple.com>
+        Status: Ralf +1 (conceptual, with question)
+
     * Patches for the DSO/mod_perl problem (see below for description):
 
       Ralf's "[PATCH] Fix module init"
-      This fixes the mod_so/mod_perl problems described under "FINAL RELEASE
-      SHOWSTOPPERS" by doing a more correct init of the modules after loading
-      through two new core API functions.
-	Message-ID: <19980611171746.A23845@engelschall.com>
-	Status: Ralf +1, Lars +1
-
-    * Ralf's "[PATCH] Fix module init"
       This fixes the mod_so/mod_perl problems described under "FINAL RELEASE
       SHOWSTOPPERS" by doing a more correct init of the modules after loading
       through two new core API functions.
@@ -52,16 +49,13 @@ Available Patches:
 	        Martin +1 (on concept; the restart switches could
 		           be added to the unix version, too)
 
-    * Lars' patch to work around a Navigator/Mozilla bug when mod_proxy
-      is used (broken images).
-      (Marc doesn't like it and I don't like it either, but people will
-       blame Apache for it, so...)
-	Message-ID: <XFMail.980802025055.sfx@unix-ag.org>
-
 In progress:
  
     * Ken's IndexFormat enhancement to mod_autoindex to allow
       CustomLog-like tailoring of directory listing formats
+
+    * Roy is working on the 100 Continue problem with calls to
+      ap_discard_request_body()
 
 Needs patch:
 
@@ -122,6 +116,13 @@ Needs patch:
 
     * proxy_*_canon routines use r->proxyreq incorrectly.  See
 	<Pine.LNX.3.96dg4.980304030057.13656O-100000@twinlark.arctic.org>
+
+    * work around a Navigator/Mozilla bug when mod_proxy is used
+      (broken images).
+	Message-ID: <XFMail.980802025055.sfx@unix-ag.org>
+        Status: Lars' patch was vetoed.  Roy and Dean think that it is
+                probably another buffer magic number error and should be
+                tested to find out and, if so, fixed like it was in core.
 
 Open issues:
 
@@ -274,6 +275,8 @@ Win32 specific issues:
 
  Help:
 
+    * proxy module doesn't load on Win95.  Why?  Good question.  PR#1462.
+
     * "Directory /", "Directory C:/" both fail to do anything, 
       while "Directory *" SEGVs.
 
@@ -382,16 +385,6 @@ Win32 specific issues:
 
 Delayed until after 1.3.2, unless someone happens to get to it:
 
-    * Arnt Gulbrandsen <agulbra@troll.no> 03 Apr 1998 21:28:17 +0200
-      <m3emzer9gu.fsf@lupinella.troll.no> mod_usertrack.c patch:
-      The patch provides per-domain cookies (which I use to share user-ids
-      among the *.troll.no web servers) and configurable cookie names.  It
-      also marginally increases the efficiency of Apache when the server
-      runs with DNS lookups turned off.
-
-      Update: Dean found one part of the patch unacceptable, Arnt is in
-        the process of updating it.  
-
     * TZ should not be dealt with specially any longer now that we have
       "PassEnv".  See
       <Pine.LNX.3.96dg4.980309224241.11283X-100000@twinlark.arctic.org>
@@ -402,9 +395,6 @@ Delayed until after 1.3.2, unless someone happens to get to it:
 	    unless we warn people in big nasty letters to add
 	    PassEnv TZ to their config files "just in case"
 	    and hope they do it :)
-
-    * proxy module doesn't load on Win95.  Why?  Good question.
-	PR#1462.
 
     * In ap_bclose() there's no test that (fb->fd != -1) -- so it's
       possible that it'll do something completely bogus when it's 
