@@ -5785,7 +5785,7 @@ static int create_process(pool *p, HANDLE *handles, HANDLE *events,
         return -1;
     }
     
-    pCommand = ap_psprintf(p, "%s -Z %s -f %s", buf, exit_event_name, ap_server_confname);  
+    pCommand = ap_psprintf(p, "\"%s\" -Z %s -f \"%s\"", buf, exit_event_name, ap_server_confname);  
 
     for (i = 1; i < argc; i++) {
         pCommand = ap_pstrcat(p, pCommand, " ", argv[i], NULL);
@@ -5807,10 +5807,6 @@ static int create_process(pool *p, HANDLE *handles, HANDLE *events,
     si.dwFlags     = STARTF_USESHOWWINDOW | STARTF_USESTDHANDLES;
     si.wShowWindow = SW_HIDE;
     si.hStdInput   = hPipeRead;
-    /*
-    si.hStdOutput  = NULL;
-    si.hStdError   = NULL;
-    */
 
     if (!CreateProcess(NULL, pCommand, NULL, NULL, 
                        TRUE,      /* Inherit handles */
@@ -5836,6 +5832,9 @@ static int create_process(pool *p, HANDLE *handles, HANDLE *events,
         handles[*processes] = pi.hProcess;
         events[*processes] = kill_event;
         (*processes)++;
+
+        /* We never store the thread's handle, so close it now. */
+        CloseHandle(pi.hThread);
 
         /* Run the chain of open sockets. For each socket, duplicate it 
          * for the target process then send the WSAPROTOCOL_INFO 
@@ -5866,6 +5865,7 @@ static int create_process(pool *p, HANDLE *handles, HANDLE *events,
                 break;
         }
     }
+    CloseHandle(hPipeRead);
     CloseHandle(hPipeWrite);        
 
     return 0;
