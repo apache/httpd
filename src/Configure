@@ -1170,7 +1170,7 @@ $(LIB): $(OBJS)
 	$(CC) -c $(INCLUDES) $(CFLAGS) $(SPACER) $<
 
 clean:
-	rm -f *.o $(LIB) $(SHLIB)
+	rm -f $(OBJS) $(SHLIBS) $(SHLIBS_OBJ) $(LIB) $(SHLIB)
 
 $(OBJS) $(SHLIBS) $(SHLIBS_OBJ): Makefile
 EOF
