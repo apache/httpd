@@ -2,7 +2,7 @@
 <!DOCTYPE messages [ <!ENTITY nbsp "&#160;"> ]>
 
 <!--
- Copyright 2002-2004 The Apache Software Foundation
+ Copyright 2004 The Apache Software Foundation
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -97,11 +97,13 @@
 
  <!-- footer line -->
  <message name="licensed">Licencia bajo los t&#233;rminos de la</message>
- <message name="langavail">Idiomas en los que est&#225; disponible este documento</message>
+ <message name="langavail">Idiomas disponibles</message>
 
  <!-- not up to date -->
- <message name="outofdate">This translation may be out of date. Check the
- English version for recent changes.</message>
+ <message name="outofdate">Esta traducci&#243;n podr&#237;a estar
+ obsoleta. Consulte la versi&#243;n en ingl&#233;s de la
+ documentaci&#243;n para comprobar si se han producido cambios
+ recientemente.</message>
 </messages>
 
 
