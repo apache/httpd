@@ -898,9 +898,6 @@ static int writev_it_all(BUFF *fb, struct iovec *vec, int nvec)
 		vec[i].iov_base = (char *) vec[i].iov_base + rv;
 		vec[i].iov_len -= rv;
 		rv = 0;
-		if (vec[i].iov_len == 0) {
-		    ++i;
-		}
 	    }
 	    else {
 		rv -= vec[i].iov_len;
