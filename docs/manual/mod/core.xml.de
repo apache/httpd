@@ -2247,7 +2247,7 @@ bestimmten Verzeichnis verf&uuml;gbar sind</description>
       <dd>Server Side Includes sind erlaubt, <code>#exec cmd</code>
       und <code>#exec cgi</code> sind jedoch deaktiviert. Es ist aber noch
       m&ouml;glich, CGI-Skripte aus
-      <directive module="mod_cgi">ScriptAlias</directive>-Verzeichnissen mittels
+      <directive module="mod_alias">ScriptAlias</directive>-Verzeichnissen mittels
       <code>#include virtual</code> einzubinden.</dd>
 
       <dt><code>Indexes</code></dt>
