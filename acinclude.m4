@@ -356,6 +356,7 @@ if test "x$ap_ssltk_configured" = "x"; then
   fi
   if test "x$ap_ssltk_type" = "x"; then
     AC_MSG_CHECKING(for OpenSSL version)
+    dnl First check for manditory headers
     AC_CHECK_HEADERS([openssl/opensslv.h openssl/ssl.h], [ap_ssltk_type="openssl"], [])
     if test "$ap_ssltk_type" = "openssl"; then
       dnl so it's OpenSSL - test for a good version
@@ -373,6 +374,8 @@ if test "x$ap_ssltk_configured" = "x"; then
        echo "WARNING: OpenSSL version may contain security vulnerabilities!"
        echo "         Ensure the latest security patches have been applied!"
       ])
+      dnl Look for additional, possibly missing headers
+      AC_CHECK_HEADERS(openssl/engine.h)
     else
       AC_MSG_RESULT([no OpenSSL headers found])
     fi
@@ -425,6 +428,7 @@ if test "x$ap_ssltk_configured" = "x"; then
     AC_CHECK_LIB(crypto, SSLeay_version, [], [liberrors="yes"])
     AC_CHECK_LIB(ssl, SSL_CTX_new, [], [liberrors="yes"])
     AC_CHECK_FUNCS(ENGINE_init)
+    AC_CHECK_FUNCS(ENGINE_load_builtin_engines)
   else
     AC_CHECK_LIB(sslc, SSLC_library_version, [], [liberrors="yes"])
     AC_CHECK_LIB(sslc, SSL_CTX_new, [], [liberrors="yes"])
