@@ -122,7 +122,7 @@ server</description>
     below:</p>
 
     <example>
-       Allow from fe80::a00:20ff:fea7:ccea
+       Allow from fe80::a00:20ff:fea7:ccea<br />
        Allow from fe80::a00:20ff:fea7:ccea/10
     </example>
 
