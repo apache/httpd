@@ -175,15 +175,15 @@ static int log_scripterror(request_rec *r, cgi_server_conf * conf, int ret,
 			   int show_errno, char *error)
 {
     ap_file_t *f = NULL;
-    struct stat finfo;
+    ap_finfo_t finfo;
     char time_str[AP_CTIME_LEN];
 
     ap_log_rerror(APLOG_MARK, show_errno|APLOG_ERR, errno, r, 
 		"%s: %s", error, r->filename);
 
     if (!conf->logname ||
-	((stat(ap_server_root_relative(r->pool, conf->logname), &finfo) == 0)
-	 &&   (finfo.st_size > conf->logbytes)) ||
+        ((ap_stat(&finfo, ap_server_root_relative(r->pool, conf->logname), r->pool) == APR_SUCCESS)
+         &&  (finfo.size > conf->logbytes)) ||
           (ap_open(&f, ap_server_root_relative(r->pool, conf->logname),
                    APR_APPEND, APR_OS_DEFAULT, r->pool) != APR_SUCCESS)) {
 	return ret;
@@ -210,12 +210,12 @@ static int log_script(request_rec *r, cgi_server_conf * conf, int ret,
     char argsbuffer[HUGE_STRING_LEN];
     ap_file_t *f = NULL;
     int i;
-    struct stat finfo;
+    ap_finfo_t finfo;
     char time_str[AP_CTIME_LEN];
 
     if (!conf->logname ||
-	((stat(ap_server_root_relative(r->pool, conf->logname), &finfo) == 0)
-	 &&   (finfo.st_size > conf->logbytes)) ||
+        ((ap_stat(&finfo, ap_server_root_relative(r->pool, conf->logname), r->pool) == APR_SUCCESS)
+         &&  (finfo.size > conf->logbytes)) ||
          (ap_open(&f, ap_server_root_relative(r->pool, conf->logname),
                   APR_APPEND, APR_OS_DEFAULT, r->pool) != APR_SUCCESS)) {
 	/* Soak up script output */
@@ -494,12 +494,12 @@ static int cgi_handler(request_rec *r)
 #if defined(OS2) || defined(WIN32)
     /* Allow for cgi files without the .EXE extension on them under OS/2 */
     if (r->finfo.protection == 0) {
-        struct stat statbuf;
+        ap_finfo_t finfo;
         char *newfile;
 
         newfile = ap_pstrcat(r->pool, r->filename, ".EXE", NULL);
-
-        if ((stat(newfile, &statbuf) != 0) || (!S_ISREG(statbuf.st_mode))) {
+        if ((ap_stat(&finfo, newfile, r->pool) != APR_SUCCESS) || 
+            (finfo.filetype != APR_REG)) {
             return log_scripterror(r, conf, NOT_FOUND, 0,
                                    "script not found or unable to stat");
         } else {
