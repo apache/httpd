@@ -1,7 +1,15 @@
 Changes with Apache 1.3.21
 
-  *) The Win32 Makefile.win build script failed if INSTDIR="c:\path\with spaces"
-     was given, this is now fixed.  PR 8184  [Jack Tan <jack_s_tan@yahoo.com>]
+  *) We have always used the obsolete/deprecated Netscape syntax
+     for our tracking cookies; now the CookieStyle directive
+     allows the Webmaster to choose the Netscape, RFC2109, or
+     RFC2965 format.  The new CookieDomain directive allows the
+     setting of the cookie's Domain= attribute, too.  PR #s 5006,
+     5023, 5920, 6140 [Ken Coar]
+
+  *) The Win32 Makefile.win build script failed if
+     INSTDIR="c:\path\with spaces" was given, this is now fixed.  PR 8184
+     [Jack Tan <jack_s_tan@yahoo.com>]
 
   *) EBCDIC: The proxy, when used in a proxy chain, "forgot" to
      convert the "CONNECT host:port HTTP/1.0" request line to ASCII
