@@ -218,7 +218,7 @@ AP_DECLARE(apr_status_t) ap_rgetline(char **s, apr_size_t n,
 
     b = apr_brigade_create(r->pool);
     rv = ap_get_brigade(r->input_filters, b, AP_MODE_GETLINE,
-                        APR_BLOCK_READ, &bytes_read);
+                        APR_BLOCK_READ, bytes_read);
 
     if (rv != APR_SUCCESS) {
         return rv;
@@ -381,7 +381,7 @@ AP_DECLARE(apr_status_t) ap_rgetline(char **s, apr_size_t n,
         /* We only care about the first byte. */
         bytes_read = 1;
         rv = ap_get_brigade(r->input_filters, b, AP_MODE_SPECULATIVE,
-                            APR_BLOCK_READ, &bytes_read);
+                            APR_BLOCK_READ, bytes_read);
 
         if (rv != APR_SUCCESS) {
             return rv;

@@ -86,7 +86,7 @@ extern "C" {
  * input filtering modes
  */
 typedef enum {
-    /** The filter should return at most *readbytes data. */
+    /** The filter should return at most readbytes data. */
     AP_MODE_READBYTES,
     /** The filter should return at most one line of CRLF data.
      *  (If a potential line is too long or no CRLF is found, the 
@@ -165,7 +165,7 @@ typedef struct ap_filter_t ap_filter_t;
  */
 typedef apr_status_t (*ap_out_filter_func)(ap_filter_t *f, apr_bucket_brigade *b);
 typedef apr_status_t (*ap_in_filter_func)(ap_filter_t *f, apr_bucket_brigade *b, 
-                                          ap_input_mode_t mode, apr_read_type_e block, apr_off_t *readbytes);
+                                          ap_input_mode_t mode, apr_read_type_e block, apr_off_t readbytes);
 
 typedef union ap_filter_func {
     ap_out_filter_func out_func;
@@ -290,7 +290,7 @@ AP_DECLARE(apr_status_t) ap_get_brigade(ap_filter_t *filter,
                                         apr_bucket_brigade *bucket, 
                                         ap_input_mode_t mode,
                                         apr_read_type_e block, 
-                                        apr_off_t *readbytes);
+                                        apr_off_t readbytes);
 
 /**
  * Pass the current bucket brigade down to the next filter on the filter

@@ -534,11 +534,12 @@ typedef struct http_filter_ctx {
  */
 apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                             ap_input_mode_t mode, apr_read_type_e block,
-                            apr_off_t *readbytes)
+                            apr_off_t readbytes)
 {
     apr_bucket *e;
     http_ctx_t *ctx = f->ctx;
     apr_status_t rv;
+    apr_off_t totalread;
 
     /* just get out of the way of things we don't want. */
     if (mode != AP_MODE_READBYTES && mode != AP_MODE_GETLINE) {
@@ -643,10 +644,10 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
 
     /* Ensure that the caller can not go over our boundary point. */
     if (ctx->state == BODY_LENGTH || ctx->state == BODY_CHUNK) {
-        if (ctx->remaining < *readbytes) {
-            *readbytes = ctx->remaining;
+        if (ctx->remaining < readbytes) {
+            readbytes = ctx->remaining;
         }
-        AP_DEBUG_ASSERT(*readbytes > 0); /* shouldn't be in getline mode */
+        AP_DEBUG_ASSERT(readbytes > 0);
     }
 
     rv = ap_get_brigade(f->next, b, mode, block, readbytes);
@@ -655,8 +656,15 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
         return rv;
     }
 
+    /* How many bytes did we just read? */
+    apr_brigade_length(b, 0, &totalread);
+
+    /* If this happens, we have a bucket of unknown length.  Die because
+     * it means our assumptions have changed. */
+    AP_DEBUG_ASSERT(totalread > 0);
+
     if (ctx->state != BODY_NONE) {
-        ctx->remaining -= *readbytes;
+        ctx->remaining -= totalread;
     }
 
     /* We have a limit in effect. */
@@ -664,7 +672,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
         /* FIXME: Note that we might get slightly confused on chunked inputs
          * as we'd need to compensate for the chunk lengths which may not
          * really count.  This seems to be up for interpretation.  */
-        ctx->limit_used += *readbytes;
+        ctx->limit_used += totalread;
         if (ctx->limit < ctx->limit_used) {
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, f->r,
                           "Read content-length of %" APR_OFF_T_FMT 
@@ -1479,9 +1487,8 @@ AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer,
 
     /* read until we get a non-empty brigade */
     while (APR_BRIGADE_EMPTY(bb)) {
-        apr_off_t len_read = bufsiz;
         if (ap_get_brigade(r->input_filters, bb, AP_MODE_READBYTES,
-                           APR_BLOCK_READ, &len_read) != APR_SUCCESS) {
+                           APR_BLOCK_READ, bufsiz) != APR_SUCCESS) {
             /* if we actually fail here, we want to just return and
              * stop trying to read data from the client.
              */

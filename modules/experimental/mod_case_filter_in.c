@@ -102,7 +102,7 @@ static apr_status_t CaseFilterInFilter(ap_filter_t *f,
                                        apr_bucket_brigade *pbbOut,
                                        ap_input_mode_t eMode,
                                        apr_read_type_e eBlock,
-                                       apr_off_t *nBytes)
+                                       apr_off_t nBytes)
 {
     request_rec *r = f->r;
     CaseFilterInContext *pCtx;
