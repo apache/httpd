@@ -75,6 +75,12 @@ PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
 
+    *) Fix the RPM spec file so that an RPM build now works. An RPM
+       build now requires system installations of APR and APR-util.
+       http://svn.apache.org/~minfrin/httpd-2.0.53-rpm.diff
+       svn rev 122711
+       +1: minfrin
+
     *) Add charset to the painfully old example CGI scripts.
        [These should really be replaced with proper encoding of the output.]
        svn rev 111580
