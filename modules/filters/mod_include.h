@@ -131,7 +131,17 @@
  * ssi_tag_brigade: The temporary brigade used by this filter to set aside
  *                  the buckets containing parts of the ssi tag and headers.
  */
-typedef enum {PRE_HEAD, PARSE_HEAD, PARSE_DIRECTIVE, PARSE_TAG, PARSE_TAIL, PARSED} states;
+
+/* I keep this stuff here, because of binary compat. It probably doesn't care,
+ * but who knows ...?
+ */
+#ifdef MOD_INCLUDE_REDESIGN
+typedef enum {PRE_HEAD, BLOW_PARSE_HEAD, BLOW_PARSE_DIRECTIVE, PARSE_TAG,
+              BLOW_PARSE_TAIL, PARSED} states;
+#else
+typedef enum {PRE_HEAD, PARSE_HEAD, PARSE_DIRECTIVE, PARSE_TAG, PARSE_TAIL,
+              PARSED} states;
+#endif
 
 /** forward referenced as it needs to be held on the context */
 typedef struct bndm_t bndm_t;
