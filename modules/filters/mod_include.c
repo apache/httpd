@@ -199,20 +199,19 @@ static void add_include_vars(request_rec *r, char *timefmt)
  */
 #define GET_CHAR(f,c,ret,r) \
  { \
-   int i = getc(f); \
-   if (i == EOF) { /* either EOF or error -- needs error handling if latter */ \
-       if (ferror(f)) { \
+   ap_status_t status = ap_getc(&c, f); \
+   if (status != APR_SUCCESS) { /* either EOF or error -- needs error handling if latter */ \
+       if (status != APR_EOF) { \
            fprintf(stderr, "encountered error in GET_CHAR macro, " \
                    "mod_include.\n"); \
        } \
        FLUSH_BUF(r); \
-       ap_pfclose(r->pool, f); \
+       ap_close(f); \
        return ret; \
    } \
-   c = (char)i; \
  }
 
-static int find_string(FILE *in, const char *str, request_rec *r, int printing)
+static int find_string(ap_file_t *in, const char *str, request_rec *r, int printing)
 {
     int x, l = strlen(str), p;
     char outbuf[OUTBUFSIZE];
@@ -245,16 +244,15 @@ static int find_string(FILE *in, const char *str, request_rec *r, int printing)
 #undef GET_CHAR
 #define GET_CHAR(f,c,r,p) \
  { \
-   int i = getc(f); \
-   if (i == EOF) { /* either EOF or error -- needs error handling if latter */ \
-       if (ferror(f)) { \
+   ap_status_t status = ap_getc(&c, f); \
+   if (status != APR_SUCCESS) { /* either EOF or error -- needs error handling if latter */ \
+       if (status != APR_EOF) { \
            fprintf(stderr, "encountered error in GET_CHAR macro, " \
                    "mod_include.\n"); \
        } \
-       ap_pfclose(p, f); \
+       ap_close(f); \
        return r; \
    } \
-   c = (char)i; \
  }
 
 /*
@@ -357,7 +355,7 @@ otilde\365oslash\370ugrave\371uacute\372yacute\375"     /* 6 */
  * the tag value is html decoded if dodecode is non-zero
  */
 
-static char *get_tag(ap_context_t *p, FILE *in, char *tag, int tagbuf_len, int dodecode)
+static char *get_tag(ap_context_t *p, ap_file_t *in, char *tag, int tagbuf_len, int dodecode)
 {
     char *t = tag, *tag_val, c, term;
 
@@ -403,7 +401,7 @@ static char *get_tag(ap_context_t *p, FILE *in, char *tag, int tagbuf_len, int d
         GET_CHAR(in, c, NULL, p);       /* space before = */
     }
     if (c != '=') {
-        ungetc(c, in);
+        ap_ungetc(c, in);
         return NULL;
     }
 
@@ -443,7 +441,7 @@ static char *get_tag(ap_context_t *p, FILE *in, char *tag, int tagbuf_len, int d
     return ap_pstrdup(p, tag_val);
 }
 
-static int get_directive(FILE *in, char *dest, size_t len, ap_context_t *p)
+static int get_directive(ap_file_t *in, char *dest, size_t len, ap_context_t *p)
 {
     char *d = dest;
     char c;
@@ -650,7 +648,7 @@ static int is_only_below(const char *path)
     return 1;
 }
 
-static int handle_include(FILE *in, request_rec *r, const char *error, int noexec)
+static int handle_include(ap_file_t *in, request_rec *r, const char *error, int noexec)
 {
     char tag[MAX_STRING_LEN];
     char parsed_string[MAX_STRING_LEN];
@@ -771,26 +769,61 @@ typedef struct {
     char *s;
 } include_cmd_arg;
 
-static int include_cmd_child(void *arg, child_info *pinfo)
-{
-    request_rec *r = ((include_cmd_arg *) arg)->r;
-    char *s = ((include_cmd_arg *) arg)->s;
-    ap_table_t *env = r->subprocess_env;
-    int child_pid = 0;
-#ifdef DEBUG_INCLUDE_CMD
-#ifdef OS2
-    /* under OS/2 /dev/tty is referenced as con */
-    FILE *dbg = fopen("con", "w");
-#else
-    FILE *dbg = fopen("/dev/tty", "w");
-#endif
-#endif
-#ifndef WIN32
-    char err_string[MAX_STRING_LEN];
-#endif
 
-#ifdef DEBUG_INCLUDE_CMD
-    fprintf(dbg, "Attempting to include command '%s'\n", s);
+
+static ap_status_t build_argv_list(char ***argv, request_rec *r, ap_context_t *p)
+{
+    int numwords, x, idx;
+    char *w;
+    const char *args = r->args;
+
+    if (!args || !args[0] || strchr(args, '=')) {
+       *argv = NULL;
+    }
+    else {
+        /* count the number of keywords */
+        for (x = 0, numwords = 1; args[x]; x++) {
+            if (args[x] == '+') {
+                ++numwords;
+            }
+        }
+        if (numwords > APACHE_ARG_MAX) {
+            numwords = APACHE_ARG_MAX;	/* Truncate args to prevent overrun */
+        }
+        *argv = (char **) ap_palloc(p, (numwords + 1) * sizeof(char *));
+
+        for (x = 1, idx = 0; x <= numwords; x++) {
+            w = ap_getword_nulls(p, &args, '+');
+            ap_unescape_url(w);
+            (*argv)[idx++] = ap_escape_shell_cmd(p, w);
+        }
+        (*argv)[idx] = NULL;
+    }
+
+    return APR_SUCCESS;
+}
+
+
+
+static int include_cmd(char *s, request_rec *r)
+{
+    include_cmd_arg arg;
+    BUFF *script_in;
+    ap_procattr_t *procattr;
+    ap_proc_t *procnew;
+    ap_status_t rc;
+    ap_table_t *env = r->subprocess_env;
+    char **argv;
+    ap_os_proc_t pid;
+    ap_file_t *file;
+    ap_iol *iol;
+
+    arg.r = r;
+    arg.s = s;
+#ifdef TPF
+    arg.t.filename = r->filename;
+    arg.t.subprocess_env = r->subprocess_env;
+    arg.t.prog_type = FORK_FILE;
 #endif
 
     if (r->path_info && r->path_info[0] != '\0') {
@@ -815,65 +848,49 @@ static int include_cmd_child(void *arg, child_info *pinfo)
                   ap_escape_shell_cmd(r->pool, arg_copy));
     }
 
-    ap_error_log2stderr(r->server);
+    if ((ap_createprocattr_init(&procattr, r->pool) != APR_SUCCESS) ||
+        (ap_setprocattr_io(procattr, 0, 1, 0) != APR_SUCCESS) ||
+        (ap_setprocattr_dir(procattr, ap_make_dirstr_parent(r->pool, r->filename)) != APR_SUCCESS) ||
+        (ap_setprocattr_cmdtype(procattr, APR_PROGRAM) != APR_SUCCESS)) {
+        /* Something bad happened, tell the world. */
+	ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
+		      "couldn't create child process: %s", r->filename);
+        rc = !APR_SUCCESS;
+    }
+    else {
+        build_argv_list(&argv, r, r->pool);
+        rc = ap_create_process(&procnew, r->filename, argv, ap_create_environment(r->pool, env), procattr, r->pool);
 
-#ifdef DEBUG_INCLUDE_CMD
-    fprintf(dbg, "Attempting to exec '%s'\n", s);
+        if (rc != APR_SUCCESS) {
+            /* Bad things happened. Everyone should have cleaned up. */
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
+                        "couldn't create child process: %d: %s", rc, r->filename);
+        }
+        else {
+#ifndef WIN32
+            /* pjr - this is a cheap hack for now to get the basics working in
+             *       stages. ap_note_subprocess and free_proc need to be redone
+             *       to make use of ap_proc_t instead of pid.
+             */
+            ap_get_os_proc(&pid, procnew);
+            ap_note_subprocess(r->pool, pid, kill_after_timeout);
 #endif
-#ifdef TPF
-    return (0);
-#else
-    ap_cleanup_for_exec();
-    /* set shellcmd flag to pass arg to SHELL_PATH */
-    child_pid = ap_call_exec(r, pinfo, s, ap_create_environment(r->pool, env),
-			     1);
-#if defined(WIN32) || defined(OS2)
-    return (child_pid);
-#else
-    /* Oh, drat.  We're still here.  The log file descriptors are closed,
-     * so we have to whimper a complaint onto stderr...
-     */
-
-#ifdef DEBUG_INCLUDE_CMD
-    fprintf(dbg, "Exec failed\n");
-#endif
-    ap_snprintf(err_string, sizeof(err_string),
-                "exec of %s failed, reason: %s (errno = %d)\n",
-                SHELL_PATH, strerror(errno), errno);
-    write(STDERR_FILENO, err_string, strlen(err_string));
-    exit(0);
-    /* NOT REACHED */
-    return (child_pid);
-#endif /* WIN32 */
-#endif /* TPF */
-}
-
-static int include_cmd(char *s, request_rec *r)
-{
-    include_cmd_arg arg;
-    BUFF *script_in;
-
-    arg.r = r;
-    arg.s = s;
-#ifdef TPF
-    arg.t.filename = r->filename;
-    arg.t.subprocess_env = r->subprocess_env;
-    arg.t.prog_type = FORK_FILE;
-#endif
-
-    if (!ap_bspawn_child(r->pool, include_cmd_child, &arg,
-			 kill_after_timeout, NULL, &script_in, NULL)) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
-		     "couldn't spawn include command");
-        return -1;
+            /* Fill in BUFF structure for parents pipe to child's stdout */
+            ap_get_childout(&file, procnew);
+            iol = ap_create_file_iol(file);
+            if (!iol)
+                return APR_EBADF;
+            script_in = ap_bcreate(r->pool, B_RD);
+            ap_bpush_iol(script_in, iol);
+            ap_send_fb(script_in, r);
+            ap_bclose(script_in);
+        }
     }
 
-    ap_send_fb(script_in, r);
-    ap_bclose(script_in);
     return 0;
 }
 
-static int handle_exec(FILE *in, request_rec *r, const char *error)
+static int handle_exec(ap_file_t *in, request_rec *r, const char *error)
 {
     char tag[MAX_STRING_LEN];
     char *tag_val;
@@ -918,7 +935,7 @@ static int handle_exec(FILE *in, request_rec *r, const char *error)
 
 }
 
-static int handle_echo(FILE *in, request_rec *r, const char *error)
+static int handle_echo(ap_file_t *in, request_rec *r, const char *error)
 {
     char tag[MAX_STRING_LEN];
     char *tag_val;
@@ -950,7 +967,7 @@ static int handle_echo(FILE *in, request_rec *r, const char *error)
 }
 
 #ifdef USE_PERL_SSI
-static int handle_perl(FILE *in, request_rec *r, const char *error)
+static int handle_perl(ap_file_t *in, request_rec *r, const char *error)
 {
     char tag[MAX_STRING_LEN];
     char parsed_string[MAX_STRING_LEN];
@@ -989,7 +1006,7 @@ static int handle_perl(FILE *in, request_rec *r, const char *error)
 /* error and tf must point to a string with room for at 
  * least MAX_STRING_LEN characters 
  */
-static int handle_config(FILE *in, request_rec *r, char *error, char *tf,
+static int handle_config(ap_file_t *in, request_rec *r, char *error, char *tf,
                          int *sizefmt)
 {
     char tag[MAX_STRING_LEN];
@@ -1106,7 +1123,7 @@ static int find_file(request_rec *r, const char *directive, const char *tag,
 }
 
 
-static int handle_fsize(FILE *in, request_rec *r, const char *error, int sizefmt)
+static int handle_fsize(ap_file_t *in, request_rec *r, const char *error, int sizefmt)
 {
     char tag[MAX_STRING_LEN];
     char *tag_val;
@@ -1146,7 +1163,7 @@ static int handle_fsize(FILE *in, request_rec *r, const char *error, int sizefmt
     }
 }
 
-static int handle_flastmod(FILE *in, request_rec *r, const char *error, const char *tf)
+static int handle_flastmod(ap_file_t *in, request_rec *r, const char *error, const char *tf)
 {
     char tag[MAX_STRING_LEN];
     char *tag_val;
@@ -1918,7 +1935,7 @@ static int parse_expr(request_rec *r, const char *expr, const char *error)
     return (retval);
 }
 
-static int handle_if(FILE *in, request_rec *r, const char *error,
+static int handle_if(ap_file_t *in, request_rec *r, const char *error,
                      int *conditional_status, int *printing)
 {
     char tag[MAX_STRING_LEN];
@@ -1961,7 +1978,7 @@ static int handle_if(FILE *in, request_rec *r, const char *error,
     }
 }
 
-static int handle_elif(FILE *in, request_rec *r, const char *error,
+static int handle_elif(ap_file_t *in, request_rec *r, const char *error,
                        int *conditional_status, int *printing)
 {
     char tag[MAX_STRING_LEN];
@@ -2012,7 +2029,7 @@ static int handle_elif(FILE *in, request_rec *r, const char *error,
     }
 }
 
-static int handle_else(FILE *in, request_rec *r, const char *error,
+static int handle_else(ap_file_t *in, request_rec *r, const char *error,
                        int *conditional_status, int *printing)
 {
     char tag[MAX_STRING_LEN];
@@ -2040,7 +2057,7 @@ static int handle_else(FILE *in, request_rec *r, const char *error,
     }
 }
 
-static int handle_endif(FILE *in, request_rec *r, const char *error,
+static int handle_endif(ap_file_t *in, request_rec *r, const char *error,
                         int *conditional_status, int *printing)
 {
     char tag[MAX_STRING_LEN];
@@ -2066,7 +2083,7 @@ static int handle_endif(FILE *in, request_rec *r, const char *error,
     }
 }
 
-static int handle_set(FILE *in, request_rec *r, const char *error)
+static int handle_set(ap_file_t *in, request_rec *r, const char *error)
 {
     char tag[MAX_STRING_LEN];
     char parsed_string[MAX_STRING_LEN];
@@ -2104,12 +2121,12 @@ static int handle_set(FILE *in, request_rec *r, const char *error)
     }
 }
 
-static int handle_printenv(FILE *in, request_rec *r, const char *error)
+static int handle_printenv(ap_file_t *in, request_rec *r, const char *error)
 {
     char tag[MAX_STRING_LEN];
     char *tag_val;
     ap_array_header_t *arr = ap_table_elts(r->subprocess_env);
-    table_entry *elts = (table_entry *) arr->elts;
+    ap_table_entry_t *elts = (ap_table_entry_t *)arr->elts;
     int i;
 
     if (!(tag_val = get_tag(r->pool, in, tag, sizeof(tag), 1))) {
@@ -2136,7 +2153,7 @@ static int handle_printenv(FILE *in, request_rec *r, const char *error)
 
 /* This is a stub which parses a file descriptor. */
 
-static void send_parsed_content(FILE *f, request_rec *r)
+static void send_parsed_content(ap_file_t *f, request_rec *r)
 {
     char directive[MAX_STRING_LEN], error[MAX_STRING_LEN];
     char timefmt[MAX_STRING_LEN];
@@ -2320,7 +2337,7 @@ static const char *set_xbithack(cmd_parms *cmd, void *xbp, char *arg)
 
 static int send_parsed_file(request_rec *r)
 {
-    FILE *f;
+    ap_file_t *f;
     enum xbithack *state =
     (enum xbithack *) ap_get_module_config(r->per_dir_config, &includes_module);
     int errstatus;
@@ -2342,8 +2359,10 @@ static int send_parsed_file(request_rec *r)
         return HTTP_NOT_FOUND;
     }
 
-    if (!(f = ap_pfopen(r->pool, r->filename, "r"))) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
+    errstatus = ap_open(&f, r->filename, APR_READ, 0, r->pool);
+
+    if (errstatus != APR_SUCCESS) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, errstatus, r,
                     "file permissions deny server access: %s", r->filename);
         return HTTP_FORBIDDEN;
     }
@@ -2364,7 +2383,7 @@ static int send_parsed_file(request_rec *r)
     ap_send_http_header(r);
 
     if (r->header_only) {
-        ap_pfclose(r->pool, f);
+        ap_close(f);
         return OK;
     }
 
@@ -2455,20 +2474,11 @@ static const handler_rec includes_handlers[] =
 module MODULE_VAR_EXPORT includes_module =
 {
     STANDARD20_MODULE_STUFF,
-    NULL,                       /* pre_config */
-    NULL,                       /* post_config */
-    NULL,                       /* open_logs */
-    NULL,                       /* child initializer */
     create_includes_dir_config, /* dir config creater */
     NULL,                       /* dir merger --- default is to override */
     NULL,                       /* server config */
     NULL,                       /* merge server config */
     includes_cmds,              /* command ap_table_t */
     includes_handlers,          /* handlers */
-    NULL,                       /* check auth */
-    NULL,                       /* check access */
-    NULL,                       /* type_checker */
-    NULL,                       /* fixups */
-    NULL,                       /* logger */
     NULL			/* register hooks */
 };
