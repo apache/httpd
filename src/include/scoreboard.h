@@ -160,6 +160,7 @@ typedef struct {
     char request[64];		/* We just want an idea... */
     server_rec *vhostrec;	/* What virtual host is being accessed? */
                                 /* SEE ABOVE FOR SAFE USAGE! */
+    char vhostname[32]; 	/* more useful status with mass vhosting */
 } short_score;
 
 typedef struct {
