@@ -277,8 +277,7 @@
 
 <div id="footer">&lf;
     <p class="apache">
-        <xsl:text>Copyright 1999-2004 The Apache Software </xsl:text>
-        <xsl:text>Foundation.</xsl:text><br />
+        <xsl:text>Copyright 1995-2005 The Apache Software Foundation or its licensors, as applicable.</xsl:text><br />
         <xsl:value-of select="$message[@id='licensed']"/>
         <xsl:text> </xsl:text>
 
