@@ -66,6 +66,7 @@ Committed Code Changes:
     * Ken's abstraction of SERVER_{BUILT,VERSION}
     * Ken's fix for os/unix/os.h and the new -DHIDE functionality
     * Ralf's Config File Line Continuation
+    * Ralf's Reanimation of DBM support for RewriteMap in mod_rewrite
 
 Available Patches:
 
