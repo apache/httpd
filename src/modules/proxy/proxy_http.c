@@ -544,7 +544,7 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
     }
 
     /* Setup the headers for our client from upstreams response-headers */
-    ap_overlap_tables(r->headers_out, resp_hdrs, AP_OVERLAP_TABLES_SET);
+    ap_proxy_table_replace(r->headers_out, resp_hdrs);
     /* Add X-Cache header - be careful not to obliterate any upstream headers */
     ap_table_mergen(r->headers_out, "X-Cache",
                     ap_pstrcat(r->pool, "MISS from ",

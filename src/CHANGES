@@ -1,5 +1,8 @@
 Changes with Apache 1.3.25
 
+  *) Another fix for the multiple-cookie header bug in proxy. With some
+     luck this bug is actually now dead. [Graham Leggett]
+
 Changes with Apache 1.3.24
 
   *) Fixed a segfault in mod_include when #if, #elif, #else, or #endif
