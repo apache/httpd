@@ -309,22 +309,6 @@ static int accessible(apr_pool_t *pool, char *fname, int mode)
 }
 
 /*
- * Return true if a file is readable.
- */
-static int readable(apr_pool_t *pool, char *fname)
-{
-    return accessible(pool, fname, APR_READ);
-}
-
-/*
- * Return true if the specified file can be opened for write access.
- */
-static int writable(apr_pool_t *pool, char *fname)
-{
-    return accessible(pool, fname, APR_APPEND);
-}
-
-/*
  * Return true if the named file exists, regardless of permissions.
  */
 static int exists(char *fname, apr_pool_t *pool)
@@ -465,6 +449,7 @@ int main(int argc, const char * const argv[])
     int alg = ALG_CRYPT;
     int mask = 0;
     apr_pool_t *pool;
+    int existing_file = 0;
 #if APR_CHARSET_EBCDIC
     apr_status_t rv;
     apr_xlate_t *to_ascii;
@@ -513,14 +498,14 @@ int main(int argc, const char * const argv[])
     }
 #endif
     if (!(mask & APHTP_NOFILE)) {
-        int file_exists = exists(pwfilename, pool);
+        existing_file = exists(pwfilename, pool);
         /*
          * Only do the file checks if we're supposed to frob it.
          *
          * Verify that the file exists if -c was omitted.  We give a special
          * message if it doesn't.
          */
-        if (!(mask & APHTP_NEWFILE) && !file_exists) {
+        if (!(mask & APHTP_NEWFILE) && !existing_file) {
             apr_file_printf(errfile,
                     "%s: cannot modify file %s; use '-c' to create it\n",
                     argv[0], pwfilename);
@@ -530,7 +515,7 @@ int main(int argc, const char * const argv[])
          * If the file exists, check that it's readable and writable.
          * If it doesn't exist, verify that we can create it.
          */
-        if (file_exists) {
+        if (existing_file) {
             if (!accessible(pool, pwfilename, APR_READ | APR_APPEND)) {
                 apr_file_printf(errfile, "%s: cannot open file %s for "
                                 "read/write access\n", argv[0], pwfilename);
@@ -569,7 +554,7 @@ int main(int argc, const char * const argv[])
      * to add or update.  Let's do it..
      */
     if (apr_file_mktemp(&ftemp, tn, 0, pool) != APR_SUCCESS) {
-        apr_file_printf(errfile, "%s: unable to create temporary file '%s'\n", 
+        apr_file_printf(errfile, "%s: unable to create temporary file %s\n", 
                         argv[0], tn);
         exit(ERR_FILEPERM);
     }
@@ -578,8 +563,13 @@ int main(int argc, const char * const argv[])
      * If we're not creating a new file, copy records from the existing
      * one to the temporary file until we find the specified user.
      */
-    if (apr_file_open(&fpw, pwfilename, APR_READ | APR_BUFFERED,
-                      APR_OS_DEFAULT, pool) == APR_SUCCESS) {
+    if (existing_file) {
+        if (apr_file_open(&fpw, pwfilename, APR_READ | APR_BUFFERED,
+                          APR_OS_DEFAULT, pool) != APR_SUCCESS) {
+            apr_file_printf(errfile, "%s: unable to read file %s\n", 
+                            argv[0], pwfilename);
+            exit(ERR_FILEPERM);
+        }
         while (apr_file_gets(line, sizeof(line), fpw) == APR_SUCCESS) {
             char *colon;
 
@@ -617,7 +607,12 @@ int main(int argc, const char * const argv[])
 
     /* The temporary file has all the data, just copy it to the new location.
      */
-    apr_file_copy(tn, pwfilename, APR_FILE_SOURCE_PERMS, pool);
+    if (apr_file_copy(tn, pwfilename, APR_FILE_SOURCE_PERMS, pool) !=
+        APR_SUCCESS) {
+        apr_file_printf(errfile, "%s: unable to update file %s\n", 
+                        argv[0], pwfilename);
+        exit(ERR_FILEPERM);
+    }
     apr_file_close(ftemp);
     return 0;
 }
