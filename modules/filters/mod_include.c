@@ -1335,7 +1335,7 @@ static const char *get_ptoken(request_rec *r, const char *string,
     token->value = apr_palloc(r->pool, strlen(string) + 2); /* 2 for ch plus
                                                                trailing null */
     if (!qs) {
-        token->value[next++] = ch;
+        --string;
     }
 
     /* 

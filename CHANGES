@@ -1,5 +1,8 @@
 Changes with Apache 2.0.49
 
+  *) Fix mod_include's expression parser to recognize strings correctly
+     even if they start with an escaped token.  [André Malo]
+
   *) Add fatal exception hook for use by diagnostic modules.  The hook
      is only available if the --enable-exception-hook configure parm 
      is used and the EnableExceptionHook directive has been set to 
