@@ -1,5 +1,5 @@
-DISTCLEAN_TARGETS = apxs apachectl dbmmanage log_server_status logresolve.pl \
-	phf_abuse_log.cgi split-logfile
+DISTCLEAN_TARGETS = apxs apachectl dbmmanage httpd.exp log_server_status \
+	logresolve.pl phf_abuse_log.cgi split-logfile
 
 PROGRAMS = htpasswd htdigest rotatelogs logresolve ab
 TARGETS  = $(PROGRAMS)
