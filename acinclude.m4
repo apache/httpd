@@ -318,7 +318,7 @@ AC_DEFUN(APACHE_MODULE,[
       fi
       shared="";;
     esac
-    ifelse($6,,:,$6)
+    ifelse([$6],,:,[$6])
     APACHE_MODPATH_ADD($1, $shared, $3)
   fi
 ])dnl
@@ -339,7 +339,7 @@ AC_DEFUN(APACHE_LAYOUT,[
       -e "s/[ 	]*$/'/g" \
       $1 > $pldconf
   changequote([,])
-  layout_name=$name
+  layout_name=$2
   . $pldconf
   rm $pldconf
   for var in prefix exec_prefix bindir sbindir libexecdir mandir \

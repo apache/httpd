@@ -1,7 +1,7 @@
 AC_MSG_CHECKING(for target platform)
 
 #PLATFORM=`${CONFIG_SHELL-/bin/sh} $ac_config_guess`
-PLATFORM=`$ac_config_guess`
+PLATFORM=$host
 LIBPRE=lib
 
 case "$PLATFORM" in
