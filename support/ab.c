@@ -278,7 +278,7 @@ int heartbeatres = 100;		/* How often do we say we're alive */
 int concurrency = 1;		/* Number of multiple requests to make */
 int percentile = 1;		/* Show percentile served */
 int confidence = 1;		/* Show confidence estimator and warnings */
-int tlimit = 0;			/* time limit in cs */
+int tlimit = 0;			/* time limit in secs */
 int keepalive = 0;		/* try and do keepalive connections */
 char servername[1024];		/* name that server reports */
 char *hostname;			/* host name from URL */
@@ -1639,8 +1639,9 @@ static void test(void)
 	/* check for time limit expiry */
 	now = apr_time_now();
 	timed = (apr_int32_t)apr_time_sec(now - start);
-	if (tlimit && timed > (tlimit * 1000)) {
+	if (tlimit && timed >= tlimit) {
 	    requests = done;	/* so stats are correct */
+	    break;		/* no need to do another round */
 	}
 
 	n = concurrency;
@@ -1726,14 +1727,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-	printf("This is ApacheBench, Version %s\n", AP_AB_BASEREVISION " <$Revision: 1.111 $> apache-2.0");
+	printf("This is ApacheBench, Version %s\n", AP_AB_BASEREVISION " <$Revision: 1.112 $> apache-2.0");
 	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
 	printf("Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/\n");
 	printf("\n");
     }
     else {
 	printf("<p>\n");
-	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_AB_BASEREVISION, "$Revision: 1.111 $");
+	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_AB_BASEREVISION, "$Revision: 1.112 $");
 	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
 	printf(" Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/<br>\n");
 	printf("</p>\n<p>\n");
