@@ -704,6 +704,13 @@
       http://127.0.0.1/
     </example>
 
+    <p>If you happen to be running Apache on an alternate port, you
+    need to explicitly put that in the URL:</p>
+   
+    <example>
+       http://127.0.0.1:8080/
+    </example>
+
     <p>Once your basic installation is working, you should configure it
     properly by editing the files in the <code>conf</code> subdirectory.
     Again, if you change the configuration of the Windows NT service

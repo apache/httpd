@@ -712,7 +712,7 @@ subdirectories</description>
     takes as an argument a regular expression. For example:</p>
 
     <example>
-      &lt;DirectoryMatch "^/www/.*/[0-9]{3}"&gt;
+      &lt;DirectoryMatch "^/www/(.+/)?[0-9]{3}"&gt;
     </example>
 
     <p>would match directories in <code>/www/</code> that consisted of three
