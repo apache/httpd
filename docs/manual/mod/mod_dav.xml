@@ -5,7 +5,7 @@
 
 <name>mod_dav</name> 
 <description>Distributed Authoring and Versioning
-(<a href="http://www.webdav.org/">WebDAV</a>) functionality.</description>
+(<a href="http://www.webdav.org/">WebDAV</a>) functionality</description>
 <status>Extension</status>
 <sourcefile>mod_dav.c</sourcefile>
 <identifier>dav_module</identifier>

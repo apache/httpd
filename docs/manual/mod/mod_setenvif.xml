@@ -1,15 +1,16 @@
 <?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.xsl"?>
 <modulesynopsis>
 
 <name>mod_setenvif</name>
-<status>Base</status>
-<identifier>setenvif_module</identifier>
-<sourcefile>mod_setenvif.c</sourcefile>
-<compatibility>Available in Apache 1.3 and later</compatibility>
-
 <description>Allows the setting of environment variables based
 on characteristics of the request</description>
+<status>Base</status>
+<sourcefile>mod_setenvif.c</sourcefile>
+<identifier>setenvif_module</identifier>
+<compatibility>Available in Apache 1.3 and later</compatibility>
+
 
 <summary>
 
@@ -38,7 +39,6 @@ on characteristics of the request</description>
 </description>
 <syntax>BrowserMatch <em>regex env-variable</em>[=<em>value</em>]
 [<em>env-variable</em>[=<em>value</em>]] ...</syntax>
-<default><i>none</i></default>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
@@ -103,7 +103,6 @@ on characteristics of the request</description>
 respect to case</description>
 <syntax>BrowserMatchNoCase  <em>regex env-variable</em>[=<em>value</em>]
     [<em>env-variable</em>[=<em>value</em>]] ...</syntax>
-<default><em>none</em></default>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
@@ -143,7 +142,6 @@ respect to case</description>
 <syntax>SetEnvIf <em>attribute
     regex env-variable</em>[=<em>value</em>]
     [<em>env-variable</em>[=<em>value</em>]] ...</syntax>
-<default><em>none</em></default>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
@@ -239,7 +237,6 @@ respect to case</description>
 without respect to case</description>
 <syntax>SetEnvIfNoCase <em>attribute regex env-variable</em>[=<em>value</em>]
     [<em>env-variable</em>[=<em>value</em>]] ...</syntax>
-<default><em>none</em></default>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
