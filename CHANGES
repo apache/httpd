@@ -1,3 +1,10 @@
+
+Changes with Apache 2.0.40
+
+  *) Improve ap_get_client_block implementation by using APR-util brigade
+     helper functions and relying on current filter assumptions.
+     [Justin Erenkrantz]
+
 Changes with Apache 2.0.39
 
   *) Fixed a build problem in htpasswd.c on Win32.
