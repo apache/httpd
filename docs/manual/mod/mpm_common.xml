@@ -220,34 +220,33 @@ listens to</description>
 <description>Maximum number of child processes that will be created
 to serve requests</description>
 <syntax>MaxClients <em>number</em></syntax>
-<default>MaxClients
-    8 (with threads) MaxClients 256</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>worker</module><module>prefork</module>
 </modulelist>
 
 <usage>
     <p>The <directive>MaxClients</directive> directive sets the limit
-    on the number of child processes that will be created to serve
-    requests. When the server is built without threading, no more than
-    this number of clients can be served simultaneously. To configure
-    more than 256 clients with the prefork MPM, you must use the
-    <directive module="mpm_common">ServerLimit</directive> directive.
-    To configure more than 1024 clients with the worker MPM, you must
-    use the <directive module="mpm_common">ServerLimit</directive> and
-    <directive module="mpm_common">ThreadLimit</directive> directives.</p>
+    on the number of simultaneous requests that will be served.  Any
+    connection attempts over the <directive>MaxClients</directive>
+    limit will normally be queued, up to a number based on the
+    <directive module="mpm_common">ListenBacklog</directive>
+    directive. Once a child process is freed at the end of a different
+    request, the connection will then be serviced.</p>
 
-    <p>Any connection attempts over the
-    <directive>MaxClients</directive> limit will normally be queued,
-    up to a number based on the <directive module="mpm_common"
-    >ListenBacklog</directive> directive. Once a child
-    process is freed at the end of a different request, the connection
-    will then be serviced.</p>
+    <p>For non-threaded servers (i.e., <module>prefork</module>),
+    <directive>MaxClients</directive> translates into the maximum
+    number of child processes that will be launched to serve requests.
+    The default value is 256; to increase it, you must also raise
+    <directive module="mpm_common">ServerLimit</directive>.</p>
 
-    <p>When the server is compiled with threading, then the maximum
-    number of simultaneous requests that can be served is obtained
-    from the value of this directive multiplied by
-    <directive module="mpm_common">ThreadsPerChild</directive>.</p>
+    <p>For threaded servers (i.e., <module>worker</module>),
+    <directive>MaxClients</directive> restricts the total
+    number of threads that will be available to serve clients.
+    The default value is 16 multiplied by the value of
+    <directive module="mpm_common">ThreadsPerChild</directive>.
+    To increase <directive>MaxClients</directive> to a value
+    that requires more than 16 processes, you must also
+    raise <directive module="mpm_common">ServerLimit</directive>.</p>
 </usage>
 </directivesynopsis>
 
