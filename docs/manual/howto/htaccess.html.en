@@ -60,13 +60,16 @@ changes on a per-directory basis.</p>
       </code></p></div>
     </div>
 
-    <p>What you can put in these files is determined by the <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code>
-    directive. This directive specifies, in categories, what directives
-    will be honored if they are found in a <code>.htaccess</code> file. If
-    a directive is permitted in a <code>.htaccess</code> file, the
+    <p>In general, <code>.htaccess</code> files use the same syntax as
+    the <a href="../configuring.html#syntax">main configuration
+    files</a>.  What you can put in these files is determined by the
+    <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> directive. This
+    directive specifies, in categories, what directives will be
+    honored if they are found in a <code>.htaccess</code> file. If a
+    directive is permitted in a <code>.htaccess</code> file, the
     documentation for that directive will contain an Override section,
-    specifying what value must be in <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> in order
-    for that directive to be permitted.</p>
+    specifying what value must be in <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> in order for that
+    directive to be permitted.</p>
 
     <p>For example, if you look at the documentation for the <code class="directive"><a href="../mod/core.html#adddefaultcharset">AddDefaultCharset</a></code>
     directive, you will find that it is permitted in <code>.htaccess</code>
