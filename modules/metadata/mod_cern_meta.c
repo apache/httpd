@@ -380,7 +380,7 @@ static int add_cern_meta_data(request_rec *r)
     }
     ap_destroy_sub_req(rr);
 
-    retcode = apr_file_open(&f, metafilename, APR_READ | APR_CREATE, APR_OS_DEFAULT, r->pool);
+    retcode = apr_file_open(&f, metafilename, APR_READ, APR_OS_DEFAULT, r->pool);
     if (retcode != APR_SUCCESS) {
 	if (APR_STATUS_IS_ENOENT(retcode)) {
 	    return DECLINED;
