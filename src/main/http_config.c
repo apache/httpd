@@ -866,7 +866,7 @@ int parse_htaccess(void **result, request_rec *r, int override,
     FILE *f = NULL;
     cmd_parms parms;
     const char *errmsg;
-    char *filename;
+    char *filename = NULL;
     const struct htaccess_result *cache;
     struct htaccess_result *new;
     void *dc;

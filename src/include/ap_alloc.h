@@ -247,11 +247,6 @@ enum kill_conditions { kill_never, kill_always, kill_after_timeout, just_wait,
 int spawn_child_err (pool *, int (*)(void *), void *,
 		 enum kill_conditions, FILE **pipe_in, FILE **pipe_out,
                  FILE **pipe_err);
-#if 0
-int spawn_child_err_buff (pool *, int (*)(void *), void *,
-           	  enum kill_conditions, BUFF **pipe_in, BUFF **pipe_out,
-                  BUFF **pipe_err);
-#endif
 #define spawn_child(p,f,v,k,in,out) spawn_child_err(p,f,v,k,in,out,NULL)
 
 /* magic numbers --- min free bytes to consider a free pool block useable,

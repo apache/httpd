@@ -53,7 +53,7 @@
 /*
  * mod_mime_magic: MIME type lookup via file magic numbers
  * Copyright (c) 1996-1997 Cisco Systems, Inc.
- * $Revision: 1.1 $
+ * $Revision: 1.2 $
  * 
  * This software was submitted by Cisco Systems to the Apache Group in July
  * 1997.  Future revisions and derivatives of this source code must
@@ -241,7 +241,6 @@ union record {
  */
 static int apprentice(server_rec *, pool *);
 static int ascmagic(request_rec *, unsigned char *, int);
-static int is_compress(const unsigned char *, int *);
 static int is_tar(unsigned char *, int);
 static void magic_process(request_rec *);
 static int softmagic(request_rec *, unsigned char *, int);

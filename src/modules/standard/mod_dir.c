@@ -108,7 +108,6 @@ static int handle_dir (request_rec *r)
       (dir_config_rec *)get_module_config (r->per_dir_config,
       &dir_module);
     const char *names_ptr = d->index_names ? d->index_names : DEFAULT_INDEX;
-    int allow_opts = allow_options (r);
     int error_notfound = 0;
 
     if (r->uri[0] == '\0' || r->uri[strlen(r->uri)-1] != '/') {
