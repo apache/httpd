@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/05/26 23:03:12 $]
+Last modified at [$Date: 2004/05/26 23:14:03 $]
 
 Release:
 
@@ -126,10 +126,6 @@ PATCHES TO BACKPORT FROM 2.1
        directive. PR 28553.
          modules/mappers/mod_actions.c: r1.32, r1.34
        +1: nd
-
-    *) htpasswd should not refuse to process files containing empty lines.
-         support/htpasswd.c: r1.76
-       +1: nd, trawick, bnicholes
 
     *) Disable AcceptEx on Win9x systems automatically. (broken in 2.0.49)
        PR 28529
