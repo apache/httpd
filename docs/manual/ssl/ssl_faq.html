@@ -133,7 +133,7 @@ author.
     <strong id="faq">
 What is the history of mod_ssl?
 </strong>&nbsp;&nbsp;
-    [<a href="http://httpd.apache.org/docs-2.0/ssl/ssl_faq.html#history"><b>L</b></a>]
+    [<a href="#history"><b>L</b></a>]
     <p>
     The mod_ssl v1 package was initially created in April 1998 by <a
     href="mailto:rse@engelschall.com">Ralf S. Engelschall</a> via porting <a
@@ -153,14 +153,17 @@ What is the history of mod_ssl?
     10.000 lines of ANSI C consisting of approx. 70% code and 30% code
     documentation. From the original Apache-SSL code currently approx. 5% is
     remaining only.
+    <p>
+    After the US export restrictions for cryptographic software were
+    opened, mod_ssl was integrated into the code base of Apache V2 in 2001.
 <p>
 <li><a name="ToC3"></a>
     <a name="apssl-diff"></a>
     <strong id="faq">
-What are the functional differences between mod_ssl and Apache-SSL, from where
+What are the functional differences between mod_ssl and Apache-SSL, from which
 it is originally derived?
 </strong>&nbsp;&nbsp;
-    [<a href="http://httpd.apache.org/docs-2.0/ssl/ssl_faq.html#apssl-diff"><b>L</b></a>]
+    [<a href="#apssl-diff"><b>L</b></a>]
     <p>
     This neither can be answered in short (there were too many code changes)
     nor can be answered at all by the author (there would immediately be flame
@@ -201,7 +204,7 @@ it is originally derived?
 What are the major differences between mod_ssl and
 the commercial alternatives like Raven or Stronghold?
 </strong>&nbsp;&nbsp;
-    [<a href="http://httpd.apache.org/docs-2.0/ssl/ssl_faq.html#apssl-diff"><b>L</b></a>]
+    [<a href="#apssl-diff"><b>L</b></a>]
     <p>
     In the past (until September 20th, 2000) the major difference was
     the RSA license which one received (very cheaply in contrast to
@@ -250,7 +253,7 @@ the commercial alternatives like Raven or Stronghold?
     <strong id="faq">
 How do I know which mod_ssl version is for which Apache version?
 </strong>&nbsp;&nbsp;
-    [<a href="http://httpd.apache.org/docs-2.0/ssl/ssl_faq.html#what-version"><b>L</b></a>]
+    [<a href="#what-version"><b>L</b></a>]
     <p>
     That's trivial: mod_ssl uses version strings of the syntax
     <em>&lt;mod_ssl-version&gt;</em>-<em>&lt;apache-version&gt;</em>, for
@@ -265,7 +268,7 @@ How do I know which mod_ssl version is for which Apache version?
     <strong id="faq">
 Is mod_ssl Year 2000 compliant?
 </strong>&nbsp;&nbsp;
-    [<a href="http://httpd.apache.org/docs-2.0/ssl/ssl_faq.html#y2k"><b>L</b></a>]
+    [<a href="#y2k"><b>L</b></a>]
     <p>
     Yes, mod_ssl is Year 2000 compliant.
     <p>
@@ -290,7 +293,7 @@ Is mod_ssl Year 2000 compliant?
     <strong id="faq">
 What about mod_ssl and the Wassenaar Arrangement?
 </strong>&nbsp;&nbsp;
-    [<a href="http://httpd.apache.org/docs-2.0/ssl/ssl_faq.html#wassenaar"><b>L</b></a>]
+    [<a href="#wassenaar"><b>L</b></a>]
     <p>
     First, let us explain what <i>Wassenaar</i> and its <i>Arrangement on
     Export Controls for Conventional Arms and Dual-Use Goods and
@@ -349,7 +352,7 @@ What about mod_ssl and the Wassenaar Arrangement?
     <strong id="faq">
 When I access my website the first time via HTTPS I get a core dump?
 </strong>&nbsp;&nbsp;
-    [<a href="http://httpd.apache.org/docs-2.0/ssl/ssl_faq.html#core-dbm"><b>L</b></a>]
+    [<a href="#core-dbm"><b>L</b></a>]
     <p>
     There can be a lot of reasons why a core dump can occur, of course.
     Ranging from buggy third-party modules, over buggy vendor libraries up to
@@ -365,20 +368,20 @@ When I access my website the first time via HTTPS I get a core dump?
     <strong id="faq">
 My Apache dumps core when I add both mod_ssl and PHP3?
 </strong>&nbsp;&nbsp;
-    [<a href="http://httpd.apache.org/docs-2.0/ssl/ssl_faq.html#core-php3"><b>L</b></a>]
+    [<a href="#core-php3"><b>L</b></a>]
     <p>
     Make sure you add mod_ssl to the Apache source tree first and then do a
     fresh configuration and installation of PHP3. For SSL support EAPI patches
     are required which have to change internal Apache structures. PHP3 needs
     to know about these in order to work correctly. Always make sure that
-    <tt>-DEAPI</tt> is contained in the compiler flags when PHP3 is build.
+    <tt>-DEAPI</tt> is contained in the compiler flags when PHP3 is built.
 <p>
 <li><a name="ToC11"></a>
     <a name="dso-sym"></a>
     <strong id="faq">
 When I startup Apache I get errors about undefined symbols like ap_global_ctx?
 </strong>&nbsp;&nbsp;
-    [<a href="http://httpd.apache.org/docs-2.0/ssl/ssl_faq.html#dso-sym"><b>L</b></a>]
+    [<a href="#dso-sym"><b>L</b></a>]
     <p>
     This actually means you installed mod_ssl as a DSO, but without rebuilding
     Apache with EAPI. Because EAPI is a requirement for mod_ssl, you need an
@@ -391,7 +394,7 @@ When I startup Apache I get errors about undefined symbols like ap_global_ctx?
     <strong id="faq">
 When I startup Apache I get permission errors related to SSLMutex?
 </strong>&nbsp;&nbsp;
-    [<a href="http://httpd.apache.org/docs-2.0/ssl/ssl_faq.html#mutex-perm"><b>L</b></a>]
+    [<a href="#mutex-perm"><b>L</b></a>]
     <p>
     When you receive entries like ``<code>mod_ssl: Child could not open
     SSLMutex lockfile /opt/apache/logs/ssl_mutex.18332 (System error follows)
@@ -408,7 +411,7 @@ When I startup Apache I get permission errors related to SSLMutex?
 When I use the MM library and the shared memory cache each process grows
 1.5MB according to `top' although I specified 512000 as the cache size?
 </strong>&nbsp;&nbsp;
-    [<a href="http://httpd.apache.org/docs-2.0/ssl/ssl_faq.html#mm"><b>L</b></a>]
+    [<a href="#mm"><b>L</b></a>]
     <p>
     The additional 1MB are caused by the global shared memory pool EAPI
     allocates for all modules and which is not used by mod_ssl for
@@ -427,7 +430,7 @@ Apache creates files in a directory declared by the internal
 EAPI_MM_CORE_PATH define. Is there a way to override the path using a
 configuration directive?
 </strong>&nbsp;&nbsp;
-    [<a href="http://httpd.apache.org/docs-2.0/ssl/ssl_faq.html#mmpath"><b>L</b></a>]
+    [<a href="#mmpath"><b>L</b></a>]
     <p>
     No, there is not configuration directive, because for technical
     bootstrapping reasons, a directive not possible at all. Instead
@@ -442,7 +445,7 @@ When I fire up the server, mod_ssl stops with the error
 "Failed to generate temporary 512 bit RSA private key", why?
 And a "PRNG not seeded" error occurs if I try "make certificate".
 </strong>&nbsp;&nbsp;
-    [<a href="http://httpd.apache.org/docs-2.0/ssl/ssl_faq.html#entropy"><b>L</b></a>]
+    [<a href="#entropy"><b>L</b></a>]
     <p>
     Cryptographic software needs a source of unpredictable data
     to work correctly. Many open source operating systems provide
@@ -471,7 +474,7 @@ And a "PRNG not seeded" error occurs if I try "make certificate".
     <strong id="faq">
 Is it possible to provide HTTP and HTTPS with a single server?</strong>
 </strong>&nbsp;&nbsp;
-    [<a href="http://httpd.apache.org/docs-2.0/ssl/ssl_faq.html#https-parallel"><b>L</b></a>]
+    [<a href="#https-parallel"><b>L</b></a>]
     <p>
     Yes, HTTP and HTTPS use different server ports, so there is no direct
     conflict between them. Either run two separate server instances (one binds
@@ -485,7 +488,7 @@ Is it possible to provide HTTP and HTTPS with a single server?</strong>
     <strong id="faq">
 I know that HTTP is on port 80, but where is HTTPS?
 </strong>&nbsp;&nbsp;
-    [<a href="http://httpd.apache.org/docs-2.0/ssl/ssl_faq.html#https-port"><b>L</b></a>]
+    [<a href="#https-port"><b>L</b></a>]
     <p>
     You can run HTTPS on any port, but the standards specify port 443, which
     is where any HTTPS compliant browser will look by default. You can force
@@ -497,7 +500,7 @@ I know that HTTP is on port 80, but where is HTTPS?
     <strong id="faq">
 How can I speak HTTPS manually for testing purposes?
 </strong>&nbsp;&nbsp;
-    [<a href="http://httpd.apache.org/docs-2.0/ssl/ssl_faq.html#https-test"><b>L</b></a>]
+    [<a href="#https-test"><b>L</b></a>]
     <p>
     While you usually just use
     <p>
@@ -528,7 +531,7 @@ How can I speak HTTPS manually for testing purposes?
     <strong id="faq">
 Why does the connection hang when I connect to my SSL-aware Apache server?
 </strong>&nbsp;&nbsp;
-    [<a href="http://httpd.apache.org/docs-2.0/ssl/ssl_faq.html#hang"><b>L</b></a>]
+    [<a href="#hang"><b>L</b></a>]
     <p>
     Because you connected with HTTP to the HTTPS port, i.e. you used an URL of
     the form ``<code>http://</code>'' instead of ``<code>https://</code>''.
@@ -544,7 +547,7 @@ Why does the connection hang when I connect to my SSL-aware Apache server?
 Why do I get ``Connection Refused'' messages when trying to access my freshly
 installed Apache+mod_ssl server via HTTPS?
 </strong>&nbsp;&nbsp;
-    [<a href="http://httpd.apache.org/docs-2.0/ssl/ssl_faq.html#hang"><b>L</b></a>]
+    [<a href="#hang"><b>L</b></a>]
     <p>
     There can be various reasons. Some of the common mistakes is that people
     start Apache with just ``<tt>apachectl start</tt>'' (or
@@ -559,9 +562,9 @@ installed Apache+mod_ssl server via HTTPS?
     <a name="env-vars"></a>
     <strong id="faq">
 In my CGI programs and SSI scripts the various documented
-<code>SSL_XXX</code> variables do not exists. Why?
+<code>SSL_XXX</code> variables do not exist. Why?
 </strong>&nbsp;&nbsp;
-    [<a href="http://httpd.apache.org/docs-2.0/ssl/ssl_faq.html#env-vars"><b>L</b></a>]
+    [<a href="#env-vars"><b>L</b></a>]
     <p>
     Just make sure you have ``<code>SSLOptions +StdEnvVars</code>''
     enabled for the context of your CGI/SSI requests.
@@ -571,7 +574,7 @@ In my CGI programs and SSI scripts the various documented
     <strong id="faq">
 How can I use relative hyperlinks to switch between HTTP and HTTPS?
 </strong>&nbsp;&nbsp;
-    [<a href="http://httpd.apache.org/docs-2.0/ssl/ssl_faq.html#relative-links"><b>L</b></a>]
+    [<a href="#relative-links"><b>L</b></a>]
     <p>
     Usually you have to use fully-qualified hyperlinks because
     you have to change the URL scheme. But with the help of some URL
@@ -597,7 +600,7 @@ How can I use relative hyperlinks to switch between HTTP and HTTPS?
     <strong id="faq">
 What are RSA Private Keys, CSRs and Certificates?</strong>
 </strong>&nbsp;&nbsp;
-    [<a href="http://httpd.apache.org/docs-2.0/ssl/ssl_faq.html#what-is"><b>L</b></a>]
+    [<a href="#what-is"><b>L</b></a>]
     <p>
     The RSA private key file is a digital file that you can use to decrypt
     messages sent to you. It has a public component which you distribute (via
@@ -617,7 +620,7 @@ What are RSA Private Keys, CSRs and Certificates?</strong>
     <strong id="faq">
 Seems like there is a difference on startup between the original Apache and an SSL-aware Apache?
 </strong>&nbsp;&nbsp;
-    [<a href="http://httpd.apache.org/docs-2.0/ssl/ssl_faq.html#startup"><b>L</b></a>]
+    [<a href="#startup"><b>L</b></a>]
     <p>
     Yes, in general, starting Apache with a built-in mod_ssl is just like
     starting an unencumbered Apache, except for the fact that when you have a
@@ -635,7 +638,7 @@ Seems like there is a difference on startup between the original Apache and an S
     <strong id="faq">
 How can I create a dummy SSL server Certificate for testing purposes?
 </strong>&nbsp;&nbsp;
-    [<a href="http://httpd.apache.org/docs-2.0/ssl/ssl_faq.html#cert-dummy"><b>L</b></a>]
+    [<a href="#cert-dummy"><b>L</b></a>]
     <p>
     A Certificate does not have to be signed by a public CA. You can use your
     private key to sign the Certificate which contains your public key. You
@@ -660,7 +663,7 @@ How can I create a dummy SSL server Certificate for testing purposes?
 Ok, I've got my server installed and want to create a real SSL
 server Certificate for it. How do I do it?
 </strong>&nbsp;&nbsp;
-    [<a href="http://httpd.apache.org/docs-2.0/ssl/ssl_faq.html#cert-real"><b>L</b></a>]
+    [<a href="#cert-real"><b>L</b></a>]
     <p>
     Here is a step-by-step description:
     <p>
@@ -757,7 +760,7 @@ server Certificate for it. How do I do it?
     <strong id="faq">
 How can I create and use my own Certificate Authority (CA)?
 </strong>&nbsp;&nbsp;
-    [<a href="http://httpd.apache.org/docs-2.0/ssl/ssl_faq.html#cert-ownca"><b>L</b></a>]
+    [<a href="#cert-ownca"><b>L</b></a>]
     <p>
     The short answer is to use the <code>CA.sh</code> or <code>CA.pl</code>
     script provided by OpenSSL. The long and manual answer is this:
@@ -809,7 +812,7 @@ How can I create and use my own Certificate Authority (CA)?
     <strong id="faq">
 How can I change the pass-phrase on my private key file?
 </strong>&nbsp;&nbsp;
-    [<a href="http://httpd.apache.org/docs-2.0/ssl/ssl_faq.html#change-passphrase"><b>L</b></a>]
+    [<a href="#change-passphrase"><b>L</b></a>]
     <p>
     You simply have to read it with the old pass-phrase and write it again
     by specifying the new pass-phrase. You can accomplish this with the following
@@ -827,7 +830,7 @@ How can I change the pass-phrase on my private key file?
     <strong id="faq">
 How can I get rid of the pass-phrase dialog at Apache startup time?
 </strong>&nbsp;&nbsp;
-    [<a href="http://httpd.apache.org/docs-2.0/ssl/ssl_faq.html#remove-passphrase"><b>L</b></a>]
+    [<a href="#remove-passphrase"><b>L</b></a>]
     <p>
     The reason why this dialog pops up at startup and every re-start
     is that the RSA private key inside your server.key file is stored in
@@ -864,7 +867,7 @@ How can I get rid of the pass-phrase dialog at Apache startup time?
     <strong id="faq">
 How do I verify that a private key matches its Certificate?
 </strong>&nbsp;&nbsp;
-    [<a href="http://httpd.apache.org/docs-2.0/ssl/ssl_faq.html#verify-key"><b>L</b></a>]
+    [<a href="#verify-key"><b>L</b></a>]
     <p>
     The private key contains a series of numbers. Two of those numbers form
     the "public key", the others are part of your "private key". The "public
@@ -897,7 +900,7 @@ How do I verify that a private key matches its Certificate?
 What does it mean when my connections fail with an "alert bad certificate"
 error?
 </strong>&nbsp;&nbsp;
-    [<a href="http://httpd.apache.org/docs-2.0/ssl/ssl_faq.html#keysize1"><b>L</b></a>]
+    [<a href="#keysize1"><b>L</b></a>]
     <p>
     Usually when you see errors like ``<tt>OpenSSL: error:14094412: SSL
     routines:SSL3_READ_BYTES:sslv3 alert bad certificate</tt>'' in the SSL
@@ -910,7 +913,7 @@ error?
     <strong id="faq">
 Why does my 2048-bit private key not work?
 </strong>&nbsp;&nbsp;
-    [<a href="http://httpd.apache.org/docs-2.0/ssl/ssl_faq.html#keysize2"><b>L</b></a>]
+    [<a href="#keysize2"><b>L</b></a>]
     <p>
     The private key sizes for SSL must be either 512 or 1024 for compatibility
     with certain web browsers. A keysize of 1024 bits is recommended because
@@ -924,7 +927,7 @@ Why does my 2048-bit private key not work?
 Why is client authentication broken after upgrading from
 SSLeay version 0.8 to 0.9?
 </strong>&nbsp;&nbsp;
-    [<a href="http://httpd.apache.org/docs-2.0/ssl/ssl_faq.html#hash-symlinks"><b>L</b></a>]
+    [<a href="#hash-symlinks"><b>L</b></a>]
     <p>
     The CA certificates under the path you configured with
     <code>SSLCACertificatePath</code> are found by SSLeay through hash
@@ -939,7 +942,7 @@ SSLeay version 0.8 to 0.9?
     <strong id="faq">
 How can I convert a certificate from PEM to DER format?
 </strong>&nbsp;&nbsp;
-    [<a href="http://httpd.apache.org/docs-2.0/ssl/ssl_faq.html#pem-to-der"><b>L</b></a>]
+    [<a href="#pem-to-der"><b>L</b></a>]
     <p>
     The default certificate format for SSLeay/OpenSSL is PEM, which actually
     is Base64 encoded DER with header and footer lines. For some applications
@@ -954,7 +957,7 @@ How can I convert a certificate from PEM to DER format?
 I try to install a Verisign certificate. Why can't I find neither the
 <code>getca</code> nor <code>getverisign</code> programs Verisign mentions?
 </strong>&nbsp;&nbsp;
-    [<a href="http://httpd.apache.org/docs-2.0/ssl/ssl_faq.html#verisign-getca"><b>L</b></a>]
+    [<a href="#verisign-getca"><b>L</b></a>]
     <p>
     This is because Verisign has never provided specific instructions
     for Apache+mod_ssl. Rather they tell you what you should do
@@ -974,7 +977,7 @@ I try to install a Verisign certificate. Why can't I find neither the
 Can I use the Server Gated Cryptography (SGC) facility (aka Verisign Global
 ID) also with mod_ssl?
 </strong>&nbsp;&nbsp;
-    [<a href="http://httpd.apache.org/docs-2.0/ssl/ssl_faq.html#gid"><b>L</b></a>]
+    [<a href="#gid"><b>L</b></a>]
     <p>
     Yes, mod_ssl since version 2.1 supports the SGC facility. You don't have
     to configure anything special for this, just use a Global ID as your
@@ -988,7 +991,7 @@ ID) also with mod_ssl?
 After I have installed my new Verisign Global ID server certificate, the
 browsers complain that they cannot verify the server certificate?
 </strong>&nbsp;&nbsp;
-    [<a href="http://httpd.apache.org/docs-2.0/ssl/ssl_faq.html#gid"><b>L</b></a>]
+    [<a href="#gid"><b>L</b></a>]
     <p>
     That is because Verisign uses an intermediate CA certificate between
     the root CA certificate (which is installed in the browsers) and
@@ -1009,7 +1012,7 @@ browsers complain that they cannot verify the server certificate?
     <strong id="faq">
 Why do I get lots of random SSL protocol errors under heavy server load?
 </strong>&nbsp;&nbsp;
-    [<a href="http://httpd.apache.org/docs-2.0/ssl/ssl_faq.html#random-errors"><b>L</b></a>]
+    [<a href="#random-errors"><b>L</b></a>]
     <p>
     There can be a number of reasons for this, but the main one
     is problems with the SSL session Cache specified by the
@@ -1022,7 +1025,7 @@ Why do I get lots of random SSL protocol errors under heavy server load?
     <strong id="faq">
 Why has my webserver a higher load now that I run SSL there?
 </strong>&nbsp;&nbsp;
-    [<a href="http://httpd.apache.org/docs-2.0/ssl/ssl_faq.html#load"><b>L</b></a>]
+    [<a href="#load"><b>L</b></a>]
     <p>
     Because SSL uses strong cryptographic encryption and this needs a lot of
     number crunching. And because when you request a webpage via HTTPS even
@@ -1035,7 +1038,7 @@ Why has my webserver a higher load now that I run SSL there?
 Often HTTPS connections to my server require up to 30 seconds for establishing
 the connection, although sometimes it works faster?
 </strong>&nbsp;&nbsp;
-    [<a href="http://httpd.apache.org/docs-2.0/ssl/ssl_faq.html#random"><b>L</b></a>]
+    [<a href="#random"><b>L</b></a>]
     <p>
     Usually this is caused by using a <code>/dev/random</code> device for
     <code>SSLRandomSeed</code> which is blocking in read(2) calls if not
@@ -1047,7 +1050,7 @@ the connection, although sometimes it works faster?
     <strong id="faq">
 What SSL Ciphers are supported by mod_ssl?
 </strong>&nbsp;&nbsp;
-    [<a href="http://httpd.apache.org/docs-2.0/ssl/ssl_faq.html#ciphers"><b>L</b></a>]
+    [<a href="#ciphers"><b>L</b></a>]
     <p>
     Usually just all SSL ciphers which are supported by the
     version of OpenSSL in use (can depend on the way you built
@@ -1074,7 +1077,7 @@ What SSL Ciphers are supported by mod_ssl?
 I want to use Anonymous Diffie-Hellman (ADH) ciphers, but I always get ``no
 shared cipher'' errors?
 </strong>&nbsp;&nbsp;
-    [<a href="http://httpd.apache.org/docs-2.0/ssl/ssl_faq.html#cipher-adh"><b>L</b></a>]
+    [<a href="#cipher-adh"><b>L</b></a>]
     <p>
     In order to use Anonymous Diffie-Hellman (ADH) ciphers, it is not enough
     to just put ``<code>ADH</code>'' into your <code>SSLCipherSuite</code>.
@@ -1089,7 +1092,7 @@ shared cipher'' errors?
 I always just get a 'no shared ciphers' error if
 I try to connect to my freshly installed server?
 </strong>&nbsp;&nbsp;
-    [<a href="http://httpd.apache.org/docs-2.0/ssl/ssl_faq.html#cipher-shared"><b>L</b></a>]
+    [<a href="#cipher-shared"><b>L</b></a>]
     <p>
     Either you have messed up your <code>SSLCipherSuite</code>
     directive (compare it with the pre-configured example in
@@ -1108,7 +1111,7 @@ I try to connect to my freshly installed server?
     <strong id="faq">
 Why can't I use SSL with name-based/non-IP-based virtual hosts?
 </strong>&nbsp;&nbsp;
-    [<a href="http://httpd.apache.org/docs-2.0/ssl/ssl_faq.html#vhosts"><b>L</b></a>]
+    [<a href="#vhosts"><b>L</b></a>]
     <p>
     The reason is very technical. Actually it's some sort of a chicken and
     egg problem: The SSL protocol layer stays below the HTTP protocol layer
@@ -1126,10 +1129,10 @@ Why can't I use SSL with name-based/non-IP-based virtual hosts?
     <a name="lock-icon"></a>
     <strong id="faq">
 When I use Basic Authentication over HTTPS the lock icon in Netscape browsers
-still show the unlocked state when the dialog pops up. Does this mean the
+still shows the unlocked state when the dialog pops up. Does this mean the
 username/password is still transmitted unencrypted?
 </strong>&nbsp;&nbsp;
-    [<a href="http://httpd.apache.org/docs-2.0/ssl/ssl_faq.html#lock-icon"><b>L</b></a>]
+    [<a href="#lock-icon"><b>L</b></a>]
     <p>
     No, the username/password is already transmitted encrypted. The icon in
     Netscape browsers is just not really synchronized with the SSL/TLS layer
@@ -1147,7 +1150,7 @@ username/password is still transmitted unencrypted?
 When I connect via HTTPS to an Apache+mod_ssl+OpenSSL server with Microsoft Internet
 Explorer (MSIE) I get various I/O errors. What is the reason?
 </strong>&nbsp;&nbsp;
-    [<a href="http://httpd.apache.org/docs-2.0/ssl/ssl_faq.html#io-ie"><b>L</b></a>]
+    [<a href="#io-ie"><b>L</b></a>]
     <p>
     The first reason is that the SSL implementation in some MSIE versions has
     some subtle bugs related to the HTTP keep-alive facility and the SSL close
@@ -1208,7 +1211,7 @@ When I connect via HTTPS to an Apache+mod_ssl server with Netscape Navigator I
 get I/O errors and the message "Netscape has encountered bad data from the
 server" What's the reason?
 </strong>&nbsp;&nbsp;
-    [<a href="http://httpd.apache.org/docs-2.0/ssl/ssl_faq.html#io-ns"><b>L</b></a>]
+    [<a href="#io-ns"><b>L</b></a>]
     <p>
     The problem usually is that you had created a new server certificate with
     the same DN, but you had told your browser to accept forever the old
@@ -1227,7 +1230,7 @@ server" What's the reason?
     <strong id="faq">
 What information resources are available in case of mod_ssl problems?
 </strong>&nbsp;&nbsp;
-    [<a href="http://httpd.apache.org/docs-2.0/ssl/ssl_faq.html#resources"><b>L</b></a>]
+    [<a href="#resources"><b>L</b></a>]
     <p>
 The following information resources are available.
 In case of problems you should search here first.
@@ -1258,7 +1261,7 @@ In case of problems you should search here first.
     <strong id="faq">
 What support contacts are available in case of mod_ssl problems?
 </strong>&nbsp;&nbsp;
-    [<a href="http://httpd.apache.org/docs-2.0/ssl/ssl_faq.html#contact"><b>L</b></a>]
+    [<a href="#contact"><b>L</b></a>]
     <p>
 The following lists all support possibilities for mod_ssl, in order of
 preference, i.e. start in this order and do not pick the support possibility
@@ -1295,7 +1298,7 @@ you just like most, please.
 What information and details I've to provide to
 the author when writing a bug report?
 </strong>&nbsp;&nbsp;
-    [<a href="http://httpd.apache.org/docs-2.0/ssl/ssl_faq.html#report-details"><b>L</b></a>]
+    [<a href="#report-details"><b>L</b></a>]
     <p>
 You have to at least always provide the following information:
 <p>
@@ -1334,7 +1337,7 @@ You have to at least always provide the following information:
     <strong id="faq">
 I got a core dump, can you help me?
 </strong>&nbsp;&nbsp;
-    [<a href="http://httpd.apache.org/docs-2.0/ssl/ssl_faq.html#core-dumped"><b>L</b></a>]
+    [<a href="#core-dumped"><b>L</b></a>]
     <p>
     In general no, at least not unless you provide more details about the code
     location where Apache dumped core. What is usually always required in
@@ -1347,7 +1350,7 @@ I got a core dump, can you help me?
     <strong id="faq">
 Ok, I got a core dump but how do I get a backtrace to find out the reason for it?
 </strong>&nbsp;&nbsp;
-    [<a href="http://httpd.apache.org/docs-2.0/ssl/ssl_faq.html#report-backtrace"><b>L</b></a>]
+    [<a href="#report-backtrace"><b>L</b></a>]
     <p>
 Follow the following steps:
 <p>
