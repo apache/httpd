@@ -41,13 +41,13 @@ ALL : "$(OUTDIR)\mod_info.so"
 
 !ELSE 
 
-ALL : "libapr - Win32 Release" "libhttpd - Win32 Release"\
+ALL : "libhttpd - Win32 Release" "libapr - Win32 Release"\
  "$(OUTDIR)\mod_info.so"
 
 !ENDIF 
 
 !IF "$(RECURSE)" == "1" 
-CLEAN :"libhttpd - Win32 ReleaseCLEAN" "libapr - Win32 ReleaseCLEAN" 
+CLEAN :"libapr - Win32 ReleaseCLEAN" "libhttpd - Win32 ReleaseCLEAN" 
 !ELSE 
 CLEAN :
 !ENDIF 
@@ -134,12 +134,12 @@ ALL : "$(OUTDIR)\mod_info.so"
 
 !ELSE 
 
-ALL : "libapr - Win32 Debug" "libhttpd - Win32 Debug" "$(OUTDIR)\mod_info.so"
+ALL : "libhttpd - Win32 Debug" "libapr - Win32 Debug" "$(OUTDIR)\mod_info.so"
 
 !ENDIF 
 
 !IF "$(RECURSE)" == "1" 
-CLEAN :"libhttpd - Win32 DebugCLEAN" "libapr - Win32 DebugCLEAN" 
+CLEAN :"libapr - Win32 DebugCLEAN" "libhttpd - Win32 DebugCLEAN" 
 !ELSE 
 CLEAN :
 !ENDIF 
@@ -147,15 +147,17 @@ CLEAN :
 	-@erase "$(INTDIR)\mod_info.obj"
 	-@erase "$(OUTDIR)\mod_info.exp"
 	-@erase "$(OUTDIR)\mod_info.lib"
+	-@erase "$(OUTDIR)\mod_info.map"
+	-@erase "$(OUTDIR)\mod_info.pdb"
 	-@erase "$(OUTDIR)\mod_info.so"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo /MDd /W3 /GX /Od /I "..\..\include" /I "..\..\os\win32" /I\
+CPP_PROJ=/nologo /MDd /W3 /GX /Zi /Od /I "..\..\include" /I "..\..\os\win32" /I\
  "..\..\srclib\apr\include" /I "../../srclib/apr-util/include" /D "_DEBUG" /D\
- "WIN32" /D "_WINDOWS" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\mod_info" /FD /ZI /c 
+ "WIN32" /D "_WINDOWS" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\mod_info" /FD /c 
 CPP_OBJS=.\Debug/
 CPP_SBRS=.
 
@@ -198,8 +200,8 @@ BSC32_SBRS= \
 	
 LINK32=link.exe
 LINK32_FLAGS=kernel32.lib /nologo /subsystem:windows /dll /incremental:no\
- /pdb:"$(OUTDIR)\mod_info.pdb" /machine:I386 /out:"$(OUTDIR)\mod_info.so"\
- /implib:"$(OUTDIR)\mod_info.lib" /map/debug\
+ /pdb:"$(OUTDIR)\mod_info.pdb" /map:"$(INTDIR)\mod_info.map" /debug\
+ /machine:I386 /out:"$(OUTDIR)\mod_info.so" /implib:"$(OUTDIR)\mod_info.lib"\
  /base:@..\..\os\win32\BaseAddr.ref,mod_info 
 LINK32_OBJS= \
 	"$(INTDIR)\mod_info.obj" \
@@ -219,41 +221,13 @@ LINK32_OBJS= \
 
 !IF  "$(CFG)" == "mod_info - Win32 Release"
 
-"libhttpd - Win32 Release" : 
-   cd "\clean\httpd-2.0"
-   $(MAKE) /$(MAKEFLAGS) /F ".\libhttpd.mak" CFG="libhttpd - Win32 Release" 
-   cd ".\modules\generators"
-
-"libhttpd - Win32 ReleaseCLEAN" : 
-   cd "\clean\httpd-2.0"
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libhttpd.mak"\
- CFG="libhttpd - Win32 Release" RECURSE=1 
-   cd ".\modules\generators"
-
-!ELSEIF  "$(CFG)" == "mod_info - Win32 Debug"
-
-"libhttpd - Win32 Debug" : 
-   cd "\clean\httpd-2.0"
-   $(MAKE) /$(MAKEFLAGS) /F ".\libhttpd.mak" CFG="libhttpd - Win32 Debug" 
-   cd ".\modules\generators"
-
-"libhttpd - Win32 DebugCLEAN" : 
-   cd "\clean\httpd-2.0"
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libhttpd.mak" CFG="libhttpd - Win32 Debug"\
- RECURSE=1 
-   cd ".\modules\generators"
-
-!ENDIF 
-
-!IF  "$(CFG)" == "mod_info - Win32 Release"
-
 "libapr - Win32 Release" : 
-   cd "\clean\httpd-2.0\srclib\apr"
+   cd "..\../..\httpd-2.0\srclib\apr"
    $(MAKE) /$(MAKEFLAGS) /F ".\libapr.mak" CFG="libapr - Win32 Release" 
    cd "..\..\modules\generators"
 
 "libapr - Win32 ReleaseCLEAN" : 
-   cd "\clean\httpd-2.0\srclib\apr"
+   cd "..\../..\httpd-2.0\srclib\apr"
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libapr.mak" CFG="libapr - Win32 Release"\
  RECURSE=1 
    cd "..\..\modules\generators"
@@ -261,15 +235,43 @@ LINK32_OBJS= \
 !ELSEIF  "$(CFG)" == "mod_info - Win32 Debug"
 
 "libapr - Win32 Debug" : 
-   cd "\clean\httpd-2.0\srclib\apr"
+   cd "..\../..\httpd-2.0\srclib\apr"
    $(MAKE) /$(MAKEFLAGS) /F ".\libapr.mak" CFG="libapr - Win32 Debug" 
    cd "..\..\modules\generators"
 
 "libapr - Win32 DebugCLEAN" : 
-   cd "\clean\httpd-2.0\srclib\apr"
+   cd "..\../..\httpd-2.0\srclib\apr"
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libapr.mak" CFG="libapr - Win32 Debug"\
  RECURSE=1 
    cd "..\..\modules\generators"
+
+!ENDIF 
+
+!IF  "$(CFG)" == "mod_info - Win32 Release"
+
+"libhttpd - Win32 Release" : 
+   cd "..\../..\httpd-2.0"
+   $(MAKE) /$(MAKEFLAGS) /F ".\libhttpd.mak" CFG="libhttpd - Win32 Release" 
+   cd ".\modules\generators"
+
+"libhttpd - Win32 ReleaseCLEAN" : 
+   cd "..\../..\httpd-2.0"
+   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libhttpd.mak"\
+ CFG="libhttpd - Win32 Release" RECURSE=1 
+   cd ".\modules\generators"
+
+!ELSEIF  "$(CFG)" == "mod_info - Win32 Debug"
+
+"libhttpd - Win32 Debug" : 
+   cd "..\../..\httpd-2.0"
+   $(MAKE) /$(MAKEFLAGS) /F ".\libhttpd.mak" CFG="libhttpd - Win32 Debug" 
+   cd ".\modules\generators"
+
+"libhttpd - Win32 DebugCLEAN" : 
+   cd "..\../..\httpd-2.0"
+   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libhttpd.mak" CFG="libhttpd - Win32 Debug"\
+ RECURSE=1 
+   cd ".\modules\generators"
 
 !ENDIF 
 
@@ -284,16 +286,18 @@ DEP_CPP_MOD_I=\
 	"..\..\include\http_log.h"\
 	"..\..\include\http_main.h"\
 	"..\..\include\http_protocol.h"\
+	"..\..\include\http_request.h"\
 	"..\..\include\httpd.h"\
 	"..\..\include\pcreposix.h"\
 	"..\..\include\util_cfgtree.h"\
 	"..\..\include\util_filter.h"\
 	"..\..\include\util_script.h"\
-	"..\..\include\util_uri.h"\
 	"..\..\os\win32\os.h"\
 	"..\..\srclib\apr-util\include\apr_buckets.h"\
 	"..\..\srclib\apr-util\include\apr_hooks.h"\
+	"..\..\srclib\apr-util\include\apr_optional_hooks.h"\
 	"..\..\srclib\apr-util\include\apr_ring.h"\
+	"..\..\srclib\apr-util\include\apr_uri.h"\
 	"..\..\srclib\apr-util\include\apu.h"\
 	"..\..\srclib\apr\include\apr.h"\
 	"..\..\srclib\apr\include\apr_dso.h"\
@@ -301,6 +305,7 @@ DEP_CPP_MOD_I=\
 	"..\..\srclib\apr\include\apr_file_info.h"\
 	"..\..\srclib\apr\include\apr_file_io.h"\
 	"..\..\srclib\apr\include\apr_general.h"\
+	"..\..\srclib\apr\include\apr_hash.h"\
 	"..\..\srclib\apr\include\apr_lib.h"\
 	"..\..\srclib\apr\include\apr_lock.h"\
 	"..\..\srclib\apr\include\apr_mmap.h"\

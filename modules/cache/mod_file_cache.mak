@@ -43,13 +43,14 @@ ALL : "$(OUTDIR)\mod_file_cache.so"
 
 !ELSE 
 
-ALL : "libhttpd - Win32 Release" "libapr - Win32 Release"\
- "$(OUTDIR)\mod_file_cache.so"
+ALL : "libaprutil - Win32 Release" "libhttpd - Win32 Release"\
+ "libapr - Win32 Release" "$(OUTDIR)\mod_file_cache.so"
 
 !ENDIF 
 
 !IF "$(RECURSE)" == "1" 
-CLEAN :"libapr - Win32 ReleaseCLEAN" "libhttpd - Win32 ReleaseCLEAN" 
+CLEAN :"libapr - Win32 ReleaseCLEAN" "libhttpd - Win32 ReleaseCLEAN"\
+ "libaprutil - Win32 ReleaseCLEAN" 
 !ELSE 
 CLEAN :
 !ENDIF 
@@ -116,6 +117,7 @@ LINK32_FLAGS=/nologo /subsystem:windows /dll /incremental:no\
 LINK32_OBJS= \
 	"$(INTDIR)\mod_file_cache.obj" \
 	"..\..\Release\libhttpd.lib" \
+	"..\..\srclib\apr-util\Release\libaprutil.lib" \
 	"..\..\srclib\apr\Release\libapr.lib"
 
 "$(OUTDIR)\mod_file_cache.so" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -137,13 +139,14 @@ ALL : "$(OUTDIR)\mod_file_cache.so"
 
 !ELSE 
 
-ALL : "libhttpd - Win32 Debug" "libapr - Win32 Debug"\
- "$(OUTDIR)\mod_file_cache.so"
+ALL : "libaprutil - Win32 Debug" "libhttpd - Win32 Debug"\
+ "libapr - Win32 Debug" "$(OUTDIR)\mod_file_cache.so"
 
 !ENDIF 
 
 !IF "$(RECURSE)" == "1" 
-CLEAN :"libapr - Win32 DebugCLEAN" "libhttpd - Win32 DebugCLEAN" 
+CLEAN :"libapr - Win32 DebugCLEAN" "libhttpd - Win32 DebugCLEAN"\
+ "libaprutil - Win32 DebugCLEAN" 
 !ELSE 
 CLEAN :
 !ENDIF 
@@ -211,6 +214,7 @@ LINK32_FLAGS=/nologo /subsystem:windows /dll /incremental:no\
 LINK32_OBJS= \
 	"$(INTDIR)\mod_file_cache.obj" \
 	"..\..\Debug\libhttpd.lib" \
+	"..\..\srclib\apr-util\Debug\libaprutil.lib" \
 	"..\..\srclib\apr\Debug\libapr.lib"
 
 "$(OUTDIR)\mod_file_cache.so" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -227,26 +231,26 @@ LINK32_OBJS= \
 !IF  "$(CFG)" == "mod_file_cache - Win32 Release"
 
 "libapr - Win32 Release" : 
-   cd "..\..\srclib\apr"
-   $(MAKE) /$(MAKEFLAGS) /F .\libapr.mak CFG="libapr - Win32 Release" 
+   cd "..\../..\httpd-2.0\srclib\apr"
+   $(MAKE) /$(MAKEFLAGS) /F ".\libapr.mak" CFG="libapr - Win32 Release" 
    cd "..\..\modules\cache"
 
 "libapr - Win32 ReleaseCLEAN" : 
-   cd "..\..\srclib\apr"
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F .\libapr.mak CFG="libapr - Win32 Release"\
+   cd "..\../..\httpd-2.0\srclib\apr"
+   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libapr.mak" CFG="libapr - Win32 Release"\
  RECURSE=1 
    cd "..\..\modules\cache"
 
 !ELSEIF  "$(CFG)" == "mod_file_cache - Win32 Debug"
 
 "libapr - Win32 Debug" : 
-   cd "..\..\srclib\apr"
-   $(MAKE) /$(MAKEFLAGS) /F .\libapr.mak CFG="libapr - Win32 Debug" 
+   cd "..\../..\httpd-2.0\srclib\apr"
+   $(MAKE) /$(MAKEFLAGS) /F ".\libapr.mak" CFG="libapr - Win32 Debug" 
    cd "..\..\modules\cache"
 
 "libapr - Win32 DebugCLEAN" : 
-   cd "..\..\srclib\apr"
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F .\libapr.mak CFG="libapr - Win32 Debug"\
+   cd "..\../..\httpd-2.0\srclib\apr"
+   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libapr.mak" CFG="libapr - Win32 Debug"\
  RECURSE=1 
    cd "..\..\modules\cache"
 
@@ -255,28 +259,57 @@ LINK32_OBJS= \
 !IF  "$(CFG)" == "mod_file_cache - Win32 Release"
 
 "libhttpd - Win32 Release" : 
-   cd "..\.."
-   $(MAKE) /$(MAKEFLAGS) /F .\libhttpd.mak CFG="libhttpd - Win32 Release" 
+   cd "..\../..\httpd-2.0"
+   $(MAKE) /$(MAKEFLAGS) /F ".\libhttpd.mak" CFG="libhttpd - Win32 Release" 
    cd ".\modules\cache"
 
 "libhttpd - Win32 ReleaseCLEAN" : 
-   cd "..\.."
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F .\libhttpd.mak CFG="libhttpd - Win32 Release"\
- RECURSE=1 
+   cd "..\../..\httpd-2.0"
+   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libhttpd.mak"\
+ CFG="libhttpd - Win32 Release" RECURSE=1 
    cd ".\modules\cache"
 
 !ELSEIF  "$(CFG)" == "mod_file_cache - Win32 Debug"
 
 "libhttpd - Win32 Debug" : 
-   cd "..\.."
-   $(MAKE) /$(MAKEFLAGS) /F .\libhttpd.mak CFG="libhttpd - Win32 Debug" 
+   cd "..\../..\httpd-2.0"
+   $(MAKE) /$(MAKEFLAGS) /F ".\libhttpd.mak" CFG="libhttpd - Win32 Debug" 
    cd ".\modules\cache"
 
 "libhttpd - Win32 DebugCLEAN" : 
-   cd "..\.."
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F .\libhttpd.mak CFG="libhttpd - Win32 Debug"\
+   cd "..\../..\httpd-2.0"
+   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libhttpd.mak" CFG="libhttpd - Win32 Debug"\
  RECURSE=1 
    cd ".\modules\cache"
+
+!ENDIF 
+
+!IF  "$(CFG)" == "mod_file_cache - Win32 Release"
+
+"libaprutil - Win32 Release" : 
+   cd "..\../..\httpd-2.0\srclib\apr-util"
+   $(MAKE) /$(MAKEFLAGS) /F ".\libaprutil.mak" CFG="libaprutil - Win32 Release"\
+ 
+   cd "..\..\modules\cache"
+
+"libaprutil - Win32 ReleaseCLEAN" : 
+   cd "..\../..\httpd-2.0\srclib\apr-util"
+   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libaprutil.mak"\
+ CFG="libaprutil - Win32 Release" RECURSE=1 
+   cd "..\..\modules\cache"
+
+!ELSEIF  "$(CFG)" == "mod_file_cache - Win32 Debug"
+
+"libaprutil - Win32 Debug" : 
+   cd "..\../..\httpd-2.0\srclib\apr-util"
+   $(MAKE) /$(MAKEFLAGS) /F ".\libaprutil.mak" CFG="libaprutil - Win32 Debug" 
+   cd "..\..\modules\cache"
+
+"libaprutil - Win32 DebugCLEAN" : 
+   cd "..\../..\httpd-2.0\srclib\apr-util"
+   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libaprutil.mak"\
+ CFG="libaprutil - Win32 Debug" RECURSE=1 
+   cd "..\..\modules\cache"
 
 !ENDIF 
 
@@ -294,11 +327,12 @@ DEP_CPP_MOD_F=\
 	"..\..\include\pcreposix.h"\
 	"..\..\include\util_cfgtree.h"\
 	"..\..\include\util_filter.h"\
-	"..\..\include\util_uri.h"\
 	"..\..\os\win32\os.h"\
 	"..\..\srclib\apr-util\include\apr_buckets.h"\
 	"..\..\srclib\apr-util\include\apr_hooks.h"\
+	"..\..\srclib\apr-util\include\apr_optional_hooks.h"\
 	"..\..\srclib\apr-util\include\apr_ring.h"\
+	"..\..\srclib\apr-util\include\apr_uri.h"\
 	"..\..\srclib\apr-util\include\apu.h"\
 	"..\..\srclib\apr\include\apr.h"\
 	"..\..\srclib\apr\include\apr_dso.h"\

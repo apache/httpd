@@ -93,7 +93,6 @@ CLEAN :
 	-@erase "$(INTDIR)\service.obj"
 	-@erase "$(INTDIR)\util.obj"
 	-@erase "$(INTDIR)\util_cfgtree.obj"
-	-@erase "$(INTDIR)\util_date.obj"
 	-@erase "$(INTDIR)\util_filter.obj"
 	-@erase "$(INTDIR)\util_md5.obj"
 	-@erase "$(INTDIR)\util_script.obj"
@@ -197,7 +196,6 @@ LINK32_OBJS= \
 	"$(INTDIR)\service.obj" \
 	"$(INTDIR)\util.obj" \
 	"$(INTDIR)\util_cfgtree.obj" \
-	"$(INTDIR)\util_date.obj" \
 	"$(INTDIR)\util_filter.obj" \
 	"$(INTDIR)\util_md5.obj" \
 	"$(INTDIR)\util_script.obj" \
@@ -280,7 +278,6 @@ CLEAN :
 	-@erase "$(INTDIR)\service.obj"
 	-@erase "$(INTDIR)\util.obj"
 	-@erase "$(INTDIR)\util_cfgtree.obj"
-	-@erase "$(INTDIR)\util_date.obj"
 	-@erase "$(INTDIR)\util_filter.obj"
 	-@erase "$(INTDIR)\util_md5.obj"
 	-@erase "$(INTDIR)\util_script.obj"
@@ -386,7 +383,6 @@ LINK32_OBJS= \
 	"$(INTDIR)\service.obj" \
 	"$(INTDIR)\util.obj" \
 	"$(INTDIR)\util_cfgtree.obj" \
-	"$(INTDIR)\util_date.obj" \
 	"$(INTDIR)\util_filter.obj" \
 	"$(INTDIR)\util_md5.obj" \
 	"$(INTDIR)\util_script.obj" \
@@ -470,6 +466,7 @@ DEP_CPP_CONFI=\
 	".\srclib\apr\include\apr_file_info.h"\
 	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_general.h"\
+	".\srclib\apr\include\apr_hash.h"\
 	".\srclib\apr\include\apr_lock.h"\
 	".\srclib\apr\include\apr_mmap.h"\
 	".\srclib\apr\include\apr_network_io.h"\
@@ -541,6 +538,67 @@ NODEP_CPP_CONNE=\
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
+SOURCE=.\server\core.c
+DEP_CPP_CORE_=\
+	".\include\ap_config.h"\
+	".\include\ap_mmn.h"\
+	".\include\ap_release.h"\
+	".\include\http_config.h"\
+	".\include\http_connection.h"\
+	".\include\http_core.h"\
+	".\include\http_log.h"\
+	".\include\http_main.h"\
+	".\include\http_protocol.h"\
+	".\include\http_request.h"\
+	".\include\http_vhost.h"\
+	".\include\httpd.h"\
+	".\include\pcreposix.h"\
+	".\include\rfc1413.h"\
+	".\include\util_cfgtree.h"\
+	".\include\util_charset.h"\
+	".\include\util_ebcdic.h"\
+	".\include\util_filter.h"\
+	".\include\util_md5.h"\
+	".\modules\http\mod_core.h"\
+	".\os\win32\os.h"\
+	".\server\mpm\winnt\mpm.h"\
+	".\srclib\apr-util\include\apr_buckets.h"\
+	".\srclib\apr-util\include\apr_hooks.h"\
+	".\srclib\apr-util\include\apr_optional_hooks.h"\
+	".\srclib\apr-util\include\apr_ring.h"\
+	".\srclib\apr-util\include\apr_uri.h"\
+	".\srclib\apr-util\include\apu.h"\
+	".\srclib\apr\include\apr.h"\
+	".\srclib\apr\include\apr_dso.h"\
+	".\srclib\apr\include\apr_errno.h"\
+	".\srclib\apr\include\apr_file_info.h"\
+	".\srclib\apr\include\apr_file_io.h"\
+	".\srclib\apr\include\apr_fnmatch.h"\
+	".\srclib\apr\include\apr_general.h"\
+	".\srclib\apr\include\apr_hash.h"\
+	".\srclib\apr\include\apr_lib.h"\
+	".\srclib\apr\include\apr_lock.h"\
+	".\srclib\apr\include\apr_md5.h"\
+	".\srclib\apr\include\apr_mmap.h"\
+	".\srclib\apr\include\apr_network_io.h"\
+	".\srclib\apr\include\apr_pools.h"\
+	".\srclib\apr\include\apr_portable.h"\
+	".\srclib\apr\include\apr_strings.h"\
+	".\srclib\apr\include\apr_tables.h"\
+	".\srclib\apr\include\apr_thread_proc.h"\
+	".\srclib\apr\include\apr_time.h"\
+	".\srclib\apr\include\apr_user.h"\
+	".\srclib\apr\include\apr_want.h"\
+	".\srclib\apr\include\apr_xlate.h"\
+	
+NODEP_CPP_CORE_=\
+	".\include\ap_config_auto.h"\
+	
+
+"$(INTDIR)\core.obj" : $(SOURCE) $(DEP_CPP_CORE_) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
 SOURCE=.\server\log.c
 DEP_CPP_LOG_C=\
 	".\include\ap_config.h"\
@@ -563,6 +621,7 @@ DEP_CPP_LOG_C=\
 	".\srclib\apr\include\apr_file_info.h"\
 	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_general.h"\
+	".\srclib\apr\include\apr_hash.h"\
 	".\srclib\apr\include\apr_lib.h"\
 	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_pools.h"\
@@ -616,6 +675,114 @@ NODEP_CPP_MODUL=\
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
+SOURCE=.\server\protocol.c
+DEP_CPP_PROTO=\
+	".\include\ap_config.h"\
+	".\include\ap_mmn.h"\
+	".\include\ap_release.h"\
+	".\include\http_config.h"\
+	".\include\http_core.h"\
+	".\include\http_log.h"\
+	".\include\http_main.h"\
+	".\include\http_protocol.h"\
+	".\include\http_request.h"\
+	".\include\http_vhost.h"\
+	".\include\httpd.h"\
+	".\include\pcreposix.h"\
+	".\include\util_cfgtree.h"\
+	".\include\util_charset.h"\
+	".\include\util_ebcdic.h"\
+	".\include\util_filter.h"\
+	".\os\win32\os.h"\
+	".\srclib\apr-util\include\apr_buckets.h"\
+	".\srclib\apr-util\include\apr_hooks.h"\
+	".\srclib\apr-util\include\apr_optional_hooks.h"\
+	".\srclib\apr-util\include\apr_ring.h"\
+	".\srclib\apr-util\include\apr_uri.h"\
+	".\srclib\apr-util\include\apu.h"\
+	".\srclib\apr\include\apr.h"\
+	".\srclib\apr\include\apr_dso.h"\
+	".\srclib\apr\include\apr_errno.h"\
+	".\srclib\apr\include\apr_file_info.h"\
+	".\srclib\apr\include\apr_file_io.h"\
+	".\srclib\apr\include\apr_general.h"\
+	".\srclib\apr\include\apr_hash.h"\
+	".\srclib\apr\include\apr_lib.h"\
+	".\srclib\apr\include\apr_lock.h"\
+	".\srclib\apr\include\apr_mmap.h"\
+	".\srclib\apr\include\apr_network_io.h"\
+	".\srclib\apr\include\apr_pools.h"\
+	".\srclib\apr\include\apr_portable.h"\
+	".\srclib\apr\include\apr_signal.h"\
+	".\srclib\apr\include\apr_strings.h"\
+	".\srclib\apr\include\apr_tables.h"\
+	".\srclib\apr\include\apr_thread_proc.h"\
+	".\srclib\apr\include\apr_time.h"\
+	".\srclib\apr\include\apr_user.h"\
+	".\srclib\apr\include\apr_want.h"\
+	".\srclib\apr\include\apr_xlate.h"\
+	
+NODEP_CPP_PROTO=\
+	".\include\ap_config_auto.h"\
+	
+
+"$(INTDIR)\protocol.obj" : $(SOURCE) $(DEP_CPP_PROTO) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\server\request.c
+DEP_CPP_REQUE=\
+	".\include\ap_config.h"\
+	".\include\ap_mmn.h"\
+	".\include\ap_release.h"\
+	".\include\http_config.h"\
+	".\include\http_core.h"\
+	".\include\http_log.h"\
+	".\include\http_main.h"\
+	".\include\http_protocol.h"\
+	".\include\http_request.h"\
+	".\include\httpd.h"\
+	".\include\pcreposix.h"\
+	".\include\util_cfgtree.h"\
+	".\include\util_charset.h"\
+	".\include\util_filter.h"\
+	".\modules\http\mod_core.h"\
+	".\os\win32\os.h"\
+	".\srclib\apr-util\include\apr_buckets.h"\
+	".\srclib\apr-util\include\apr_hooks.h"\
+	".\srclib\apr-util\include\apr_optional_hooks.h"\
+	".\srclib\apr-util\include\apr_ring.h"\
+	".\srclib\apr-util\include\apr_uri.h"\
+	".\srclib\apr-util\include\apu.h"\
+	".\srclib\apr\include\apr.h"\
+	".\srclib\apr\include\apr_dso.h"\
+	".\srclib\apr\include\apr_errno.h"\
+	".\srclib\apr\include\apr_file_info.h"\
+	".\srclib\apr\include\apr_file_io.h"\
+	".\srclib\apr\include\apr_fnmatch.h"\
+	".\srclib\apr\include\apr_general.h"\
+	".\srclib\apr\include\apr_hash.h"\
+	".\srclib\apr\include\apr_lock.h"\
+	".\srclib\apr\include\apr_mmap.h"\
+	".\srclib\apr\include\apr_network_io.h"\
+	".\srclib\apr\include\apr_pools.h"\
+	".\srclib\apr\include\apr_portable.h"\
+	".\srclib\apr\include\apr_strings.h"\
+	".\srclib\apr\include\apr_tables.h"\
+	".\srclib\apr\include\apr_thread_proc.h"\
+	".\srclib\apr\include\apr_time.h"\
+	".\srclib\apr\include\apr_user.h"\
+	".\srclib\apr\include\apr_want.h"\
+	".\srclib\apr\include\apr_xlate.h"\
+	
+NODEP_CPP_REQUE=\
+	".\include\ap_config_auto.h"\
+	
+
+"$(INTDIR)\request.obj" : $(SOURCE) $(DEP_CPP_REQUE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
 SOURCE=.\server\scoreboard.c
 DEP_CPP_SCORE=\
 	".\include\ap_config.h"\
@@ -643,6 +810,7 @@ DEP_CPP_SCORE=\
 	".\srclib\apr\include\apr_file_info.h"\
 	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_general.h"\
+	".\srclib\apr\include\apr_hash.h"\
 	".\srclib\apr\include\apr_lib.h"\
 	".\srclib\apr\include\apr_lock.h"\
 	".\srclib\apr\include\apr_network_io.h"\
@@ -691,6 +859,7 @@ DEP_CPP_VHOST=\
 	".\srclib\apr\include\apr_file_info.h"\
 	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_general.h"\
+	".\srclib\apr\include\apr_hash.h"\
 	".\srclib\apr\include\apr_lib.h"\
 	".\srclib\apr\include\apr_lock.h"\
 	".\srclib\apr\include\apr_mmap.h"\
@@ -803,12 +972,12 @@ DEP_CPP_HTTP_P=\
 	".\include\pcreposix.h"\
 	".\include\util_cfgtree.h"\
 	".\include\util_charset.h"\
-	".\include\util_date.h"\
 	".\include\util_ebcdic.h"\
 	".\include\util_filter.h"\
 	".\modules\http\mod_core.h"\
 	".\os\win32\os.h"\
 	".\srclib\apr-util\include\apr_buckets.h"\
+	".\srclib\apr-util\include\apr_date.h"\
 	".\srclib\apr-util\include\apr_hooks.h"\
 	".\srclib\apr-util\include\apr_optional_hooks.h"\
 	".\srclib\apr-util\include\apr_ring.h"\
@@ -820,6 +989,7 @@ DEP_CPP_HTTP_P=\
 	".\srclib\apr\include\apr_file_info.h"\
 	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_general.h"\
+	".\srclib\apr\include\apr_hash.h"\
 	".\srclib\apr\include\apr_lib.h"\
 	".\srclib\apr\include\apr_lock.h"\
 	".\srclib\apr\include\apr_mmap.h"\
@@ -874,6 +1044,7 @@ DEP_CPP_HTTP_R=\
 	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_fnmatch.h"\
 	".\srclib\apr\include\apr_general.h"\
+	".\srclib\apr\include\apr_hash.h"\
 	".\srclib\apr\include\apr_lock.h"\
 	".\srclib\apr\include\apr_mmap.h"\
 	".\srclib\apr\include\apr_network_io.h"\
@@ -920,6 +1091,7 @@ DEP_CPP_MOD_A=\
 	".\srclib\apr\include\apr_file_info.h"\
 	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_general.h"\
+	".\srclib\apr\include\apr_hash.h"\
 	".\srclib\apr\include\apr_lib.h"\
 	".\srclib\apr\include\apr_mmap.h"\
 	".\srclib\apr\include\apr_network_io.h"\
@@ -968,6 +1140,7 @@ DEP_CPP_MOD_AC=\
 	".\srclib\apr\include\apr_file_info.h"\
 	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_general.h"\
+	".\srclib\apr\include\apr_hash.h"\
 	".\srclib\apr\include\apr_lock.h"\
 	".\srclib\apr\include\apr_mmap.h"\
 	".\srclib\apr\include\apr_network_io.h"\
@@ -1105,6 +1278,7 @@ DEP_CPP_MOD_AU=\
 	".\srclib\apr\include\apr_file_info.h"\
 	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_general.h"\
+	".\srclib\apr\include\apr_hash.h"\
 	".\srclib\apr\include\apr_lib.h"\
 	".\srclib\apr\include\apr_lock.h"\
 	".\srclib\apr\include\apr_mmap.h"\
@@ -1157,6 +1331,7 @@ DEP_CPP_MOD_AUT=\
 	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_fnmatch.h"\
 	".\srclib\apr\include\apr_general.h"\
+	".\srclib\apr\include\apr_hash.h"\
 	".\srclib\apr\include\apr_lib.h"\
 	".\srclib\apr\include\apr_lock.h"\
 	".\srclib\apr\include\apr_mmap.h"\
@@ -1211,6 +1386,7 @@ DEP_CPP_MOD_C=\
 	".\srclib\apr\include\apr_file_info.h"\
 	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_general.h"\
+	".\srclib\apr\include\apr_hash.h"\
 	".\srclib\apr\include\apr_lock.h"\
 	".\srclib\apr\include\apr_mmap.h"\
 	".\srclib\apr\include\apr_network_io.h"\
@@ -1260,6 +1436,7 @@ DEP_CPP_MOD_D=\
 	".\srclib\apr\include\apr_file_info.h"\
 	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_general.h"\
+	".\srclib\apr\include\apr_hash.h"\
 	".\srclib\apr\include\apr_lock.h"\
 	".\srclib\apr\include\apr_mmap.h"\
 	".\srclib\apr\include\apr_network_io.h"\
@@ -1350,6 +1527,7 @@ DEP_CPP_MOD_I=\
 	".\srclib\apr\include\apr_file_info.h"\
 	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_general.h"\
+	".\srclib\apr\include\apr_hash.h"\
 	".\srclib\apr\include\apr_lib.h"\
 	".\srclib\apr\include\apr_lock.h"\
 	".\srclib\apr\include\apr_mmap.h"\
@@ -1456,6 +1634,7 @@ DEP_CPP_MOD_IS=\
 	".\srclib\apr\include\apr_file_info.h"\
 	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_general.h"\
+	".\srclib\apr\include\apr_hash.h"\
 	".\srclib\apr\include\apr_lock.h"\
 	".\srclib\apr\include\apr_mmap.h"\
 	".\srclib\apr\include\apr_network_io.h"\
@@ -1597,6 +1776,7 @@ DEP_CPP_MOD_N=\
 	".\srclib\apr\include\apr_file_info.h"\
 	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_general.h"\
+	".\srclib\apr\include\apr_hash.h"\
 	".\srclib\apr\include\apr_lib.h"\
 	".\srclib\apr\include\apr_lock.h"\
 	".\srclib\apr\include\apr_mmap.h"\
@@ -1644,6 +1824,7 @@ DEP_CPP_MOD_S=\
 	".\srclib\apr\include\apr_file_info.h"\
 	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_general.h"\
+	".\srclib\apr\include\apr_hash.h"\
 	".\srclib\apr\include\apr_lock.h"\
 	".\srclib\apr\include\apr_mmap.h"\
 	".\srclib\apr\include\apr_network_io.h"\
@@ -1743,66 +1924,6 @@ NODEP_CPP_MOD_U=\
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\server\core.c
-DEP_CPP_CORE_=\
-	".\include\ap_config.h"\
-	".\include\ap_mmn.h"\
-	".\include\ap_release.h"\
-	".\include\http_config.h"\
-	".\include\http_connection.h"\
-	".\include\http_core.h"\
-	".\include\http_log.h"\
-	".\include\http_main.h"\
-	".\include\http_protocol.h"\
-	".\include\http_request.h"\
-	".\include\http_vhost.h"\
-	".\include\httpd.h"\
-	".\include\pcreposix.h"\
-	".\include\rfc1413.h"\
-	".\include\util_cfgtree.h"\
-	".\include\util_charset.h"\
-	".\include\util_ebcdic.h"\
-	".\include\util_filter.h"\
-	".\include\util_md5.h"\
-	".\modules\http\mod_core.h"\
-	".\os\win32\os.h"\
-	".\server\mpm\winnt\mpm.h"\
-	".\srclib\apr-util\include\apr_buckets.h"\
-	".\srclib\apr-util\include\apr_hooks.h"\
-	".\srclib\apr-util\include\apr_optional_hooks.h"\
-	".\srclib\apr-util\include\apr_ring.h"\
-	".\srclib\apr-util\include\apr_uri.h"\
-	".\srclib\apr-util\include\apu.h"\
-	".\srclib\apr\include\apr.h"\
-	".\srclib\apr\include\apr_dso.h"\
-	".\srclib\apr\include\apr_errno.h"\
-	".\srclib\apr\include\apr_file_info.h"\
-	".\srclib\apr\include\apr_file_io.h"\
-	".\srclib\apr\include\apr_fnmatch.h"\
-	".\srclib\apr\include\apr_general.h"\
-	".\srclib\apr\include\apr_lib.h"\
-	".\srclib\apr\include\apr_lock.h"\
-	".\srclib\apr\include\apr_md5.h"\
-	".\srclib\apr\include\apr_mmap.h"\
-	".\srclib\apr\include\apr_network_io.h"\
-	".\srclib\apr\include\apr_pools.h"\
-	".\srclib\apr\include\apr_portable.h"\
-	".\srclib\apr\include\apr_strings.h"\
-	".\srclib\apr\include\apr_tables.h"\
-	".\srclib\apr\include\apr_thread_proc.h"\
-	".\srclib\apr\include\apr_time.h"\
-	".\srclib\apr\include\apr_user.h"\
-	".\srclib\apr\include\apr_want.h"\
-	".\srclib\apr\include\apr_xlate.h"\
-	
-NODEP_CPP_CORE_=\
-	".\include\ap_config_auto.h"\
-	
-
-"$(INTDIR)\core.obj" : $(SOURCE) $(DEP_CPP_CORE_) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
 SOURCE=.\server\error_bucket.c
 DEP_CPP_ERROR=\
 	".\include\ap_config.h"\
@@ -1842,113 +1963,6 @@ NODEP_CPP_ERROR=\
 	
 
 "$(INTDIR)\error_bucket.obj" : $(SOURCE) $(DEP_CPP_ERROR) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\server\protocol.c
-DEP_CPP_PROTO=\
-	".\include\ap_config.h"\
-	".\include\ap_mmn.h"\
-	".\include\ap_release.h"\
-	".\include\http_config.h"\
-	".\include\http_core.h"\
-	".\include\http_log.h"\
-	".\include\http_main.h"\
-	".\include\http_protocol.h"\
-	".\include\http_request.h"\
-	".\include\http_vhost.h"\
-	".\include\httpd.h"\
-	".\include\pcreposix.h"\
-	".\include\util_cfgtree.h"\
-	".\include\util_charset.h"\
-	".\include\util_date.h"\
-	".\include\util_ebcdic.h"\
-	".\include\util_filter.h"\
-	".\os\win32\os.h"\
-	".\srclib\apr-util\include\apr_buckets.h"\
-	".\srclib\apr-util\include\apr_hooks.h"\
-	".\srclib\apr-util\include\apr_optional_hooks.h"\
-	".\srclib\apr-util\include\apr_ring.h"\
-	".\srclib\apr-util\include\apr_uri.h"\
-	".\srclib\apr-util\include\apu.h"\
-	".\srclib\apr\include\apr.h"\
-	".\srclib\apr\include\apr_dso.h"\
-	".\srclib\apr\include\apr_errno.h"\
-	".\srclib\apr\include\apr_file_info.h"\
-	".\srclib\apr\include\apr_file_io.h"\
-	".\srclib\apr\include\apr_general.h"\
-	".\srclib\apr\include\apr_lib.h"\
-	".\srclib\apr\include\apr_lock.h"\
-	".\srclib\apr\include\apr_mmap.h"\
-	".\srclib\apr\include\apr_network_io.h"\
-	".\srclib\apr\include\apr_pools.h"\
-	".\srclib\apr\include\apr_portable.h"\
-	".\srclib\apr\include\apr_signal.h"\
-	".\srclib\apr\include\apr_strings.h"\
-	".\srclib\apr\include\apr_tables.h"\
-	".\srclib\apr\include\apr_thread_proc.h"\
-	".\srclib\apr\include\apr_time.h"\
-	".\srclib\apr\include\apr_user.h"\
-	".\srclib\apr\include\apr_want.h"\
-	".\srclib\apr\include\apr_xlate.h"\
-	
-NODEP_CPP_PROTO=\
-	".\include\ap_config_auto.h"\
-	
-
-"$(INTDIR)\protocol.obj" : $(SOURCE) $(DEP_CPP_PROTO) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\server\request.c
-DEP_CPP_REQUE=\
-	".\include\ap_config.h"\
-	".\include\ap_mmn.h"\
-	".\include\ap_release.h"\
-	".\include\http_config.h"\
-	".\include\http_core.h"\
-	".\include\http_log.h"\
-	".\include\http_main.h"\
-	".\include\http_protocol.h"\
-	".\include\http_request.h"\
-	".\include\httpd.h"\
-	".\include\pcreposix.h"\
-	".\include\util_cfgtree.h"\
-	".\include\util_charset.h"\
-	".\include\util_filter.h"\
-	".\modules\http\mod_core.h"\
-	".\os\win32\os.h"\
-	".\srclib\apr-util\include\apr_buckets.h"\
-	".\srclib\apr-util\include\apr_hooks.h"\
-	".\srclib\apr-util\include\apr_optional_hooks.h"\
-	".\srclib\apr-util\include\apr_ring.h"\
-	".\srclib\apr-util\include\apr_uri.h"\
-	".\srclib\apr-util\include\apu.h"\
-	".\srclib\apr\include\apr.h"\
-	".\srclib\apr\include\apr_dso.h"\
-	".\srclib\apr\include\apr_errno.h"\
-	".\srclib\apr\include\apr_file_info.h"\
-	".\srclib\apr\include\apr_file_io.h"\
-	".\srclib\apr\include\apr_fnmatch.h"\
-	".\srclib\apr\include\apr_general.h"\
-	".\srclib\apr\include\apr_lock.h"\
-	".\srclib\apr\include\apr_mmap.h"\
-	".\srclib\apr\include\apr_network_io.h"\
-	".\srclib\apr\include\apr_pools.h"\
-	".\srclib\apr\include\apr_portable.h"\
-	".\srclib\apr\include\apr_strings.h"\
-	".\srclib\apr\include\apr_tables.h"\
-	".\srclib\apr\include\apr_thread_proc.h"\
-	".\srclib\apr\include\apr_time.h"\
-	".\srclib\apr\include\apr_user.h"\
-	".\srclib\apr\include\apr_want.h"\
-	".\srclib\apr\include\apr_xlate.h"\
-	
-NODEP_CPP_REQUE=\
-	".\include\ap_config_auto.h"\
-	
-
-"$(INTDIR)\request.obj" : $(SOURCE) $(DEP_CPP_REQUE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -2068,31 +2082,6 @@ NODEP_CPP_UTIL_C=\
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\server\util_date.c
-DEP_CPP_UTIL_D=\
-	".\include\ap_config.h"\
-	".\include\util_date.h"\
-	".\os\win32\os.h"\
-	".\srclib\apr-util\include\apr_hooks.h"\
-	".\srclib\apr-util\include\apr_optional_hooks.h"\
-	".\srclib\apr-util\include\apu.h"\
-	".\srclib\apr\include\apr.h"\
-	".\srclib\apr\include\apr_errno.h"\
-	".\srclib\apr\include\apr_general.h"\
-	".\srclib\apr\include\apr_lib.h"\
-	".\srclib\apr\include\apr_pools.h"\
-	".\srclib\apr\include\apr_tables.h"\
-	".\srclib\apr\include\apr_time.h"\
-	".\srclib\apr\include\apr_want.h"\
-	
-NODEP_CPP_UTIL_D=\
-	".\include\ap_config_auto.h"\
-	
-
-"$(INTDIR)\util_date.obj" : $(SOURCE) $(DEP_CPP_UTIL_D) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
 SOURCE=.\server\util_filter.c
 DEP_CPP_UTIL_F=\
 	".\include\ap_config.h"\
@@ -2188,12 +2177,12 @@ DEP_CPP_UTIL_S=\
 	".\include\pcreposix.h"\
 	".\include\util_cfgtree.h"\
 	".\include\util_charset.h"\
-	".\include\util_date.h"\
 	".\include\util_ebcdic.h"\
 	".\include\util_filter.h"\
 	".\include\util_script.h"\
 	".\os\win32\os.h"\
 	".\srclib\apr-util\include\apr_buckets.h"\
+	".\srclib\apr-util\include\apr_date.h"\
 	".\srclib\apr-util\include\apr_hooks.h"\
 	".\srclib\apr-util\include\apr_optional_hooks.h"\
 	".\srclib\apr-util\include\apr_ring.h"\
@@ -2205,6 +2194,7 @@ DEP_CPP_UTIL_S=\
 	".\srclib\apr\include\apr_file_info.h"\
 	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_general.h"\
+	".\srclib\apr\include\apr_hash.h"\
 	".\srclib\apr\include\apr_lib.h"\
 	".\srclib\apr\include\apr_lock.h"\
 	".\srclib\apr\include\apr_mmap.h"\
@@ -2290,6 +2280,7 @@ DEP_CPP_UTIL_X=\
 	".\srclib\apr\include\apr_file_info.h"\
 	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_general.h"\
+	".\srclib\apr\include\apr_hash.h"\
 	".\srclib\apr\include\apr_lock.h"\
 	".\srclib\apr\include\apr_mmap.h"\
 	".\srclib\apr\include\apr_network_io.h"\
@@ -2381,6 +2372,7 @@ DEP_CPP_MPM_W=\
 	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_general.h"\
 	".\srclib\apr\include\apr_getopt.h"\
+	".\srclib\apr\include\apr_hash.h"\
 	".\srclib\apr\include\apr_lib.h"\
 	".\srclib\apr\include\apr_lock.h"\
 	".\srclib\apr\include\apr_network_io.h"\

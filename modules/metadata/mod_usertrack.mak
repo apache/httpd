@@ -227,26 +227,26 @@ LINK32_OBJS= \
 !IF  "$(CFG)" == "mod_usertrack - Win32 Release"
 
 "libapr - Win32 Release" : 
-   cd "..\..\srclib\apr"
-   $(MAKE) /$(MAKEFLAGS) /F .\libapr.mak CFG="libapr - Win32 Release" 
+   cd "..\../..\httpd-2.0\srclib\apr"
+   $(MAKE) /$(MAKEFLAGS) /F ".\libapr.mak" CFG="libapr - Win32 Release" 
    cd "..\..\modules\metadata"
 
 "libapr - Win32 ReleaseCLEAN" : 
-   cd "..\..\srclib\apr"
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F .\libapr.mak CFG="libapr - Win32 Release"\
+   cd "..\../..\httpd-2.0\srclib\apr"
+   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libapr.mak" CFG="libapr - Win32 Release"\
  RECURSE=1 
    cd "..\..\modules\metadata"
 
 !ELSEIF  "$(CFG)" == "mod_usertrack - Win32 Debug"
 
 "libapr - Win32 Debug" : 
-   cd "..\..\srclib\apr"
-   $(MAKE) /$(MAKEFLAGS) /F .\libapr.mak CFG="libapr - Win32 Debug" 
+   cd "..\../..\httpd-2.0\srclib\apr"
+   $(MAKE) /$(MAKEFLAGS) /F ".\libapr.mak" CFG="libapr - Win32 Debug" 
    cd "..\..\modules\metadata"
 
 "libapr - Win32 DebugCLEAN" : 
-   cd "..\..\srclib\apr"
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F .\libapr.mak CFG="libapr - Win32 Debug"\
+   cd "..\../..\httpd-2.0\srclib\apr"
+   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libapr.mak" CFG="libapr - Win32 Debug"\
  RECURSE=1 
    cd "..\..\modules\metadata"
 
@@ -255,26 +255,26 @@ LINK32_OBJS= \
 !IF  "$(CFG)" == "mod_usertrack - Win32 Release"
 
 "libhttpd - Win32 Release" : 
-   cd "..\.."
-   $(MAKE) /$(MAKEFLAGS) /F .\libhttpd.mak CFG="libhttpd - Win32 Release" 
+   cd "..\../..\httpd-2.0"
+   $(MAKE) /$(MAKEFLAGS) /F ".\libhttpd.mak" CFG="libhttpd - Win32 Release" 
    cd ".\modules\metadata"
 
 "libhttpd - Win32 ReleaseCLEAN" : 
-   cd "..\.."
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F .\libhttpd.mak CFG="libhttpd - Win32 Release"\
- RECURSE=1 
+   cd "..\../..\httpd-2.0"
+   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libhttpd.mak"\
+ CFG="libhttpd - Win32 Release" RECURSE=1 
    cd ".\modules\metadata"
 
 !ELSEIF  "$(CFG)" == "mod_usertrack - Win32 Debug"
 
 "libhttpd - Win32 Debug" : 
-   cd "..\.."
-   $(MAKE) /$(MAKEFLAGS) /F .\libhttpd.mak CFG="libhttpd - Win32 Debug" 
+   cd "..\../..\httpd-2.0"
+   $(MAKE) /$(MAKEFLAGS) /F ".\libhttpd.mak" CFG="libhttpd - Win32 Debug" 
    cd ".\modules\metadata"
 
 "libhttpd - Win32 DebugCLEAN" : 
-   cd "..\.."
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F .\libhttpd.mak CFG="libhttpd - Win32 Debug"\
+   cd "..\../..\httpd-2.0"
+   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libhttpd.mak" CFG="libhttpd - Win32 Debug"\
  RECURSE=1 
    cd ".\modules\metadata"
 
@@ -292,17 +292,19 @@ DEP_CPP_MOD_U=\
 	"..\..\include\pcreposix.h"\
 	"..\..\include\util_cfgtree.h"\
 	"..\..\include\util_filter.h"\
-	"..\..\include\util_uri.h"\
 	"..\..\os\win32\os.h"\
 	"..\..\srclib\apr-util\include\apr_buckets.h"\
 	"..\..\srclib\apr-util\include\apr_hooks.h"\
+	"..\..\srclib\apr-util\include\apr_optional_hooks.h"\
 	"..\..\srclib\apr-util\include\apr_ring.h"\
+	"..\..\srclib\apr-util\include\apr_uri.h"\
 	"..\..\srclib\apr-util\include\apu.h"\
 	"..\..\srclib\apr\include\apr.h"\
 	"..\..\srclib\apr\include\apr_errno.h"\
 	"..\..\srclib\apr\include\apr_file_info.h"\
 	"..\..\srclib\apr\include\apr_file_io.h"\
 	"..\..\srclib\apr\include\apr_general.h"\
+	"..\..\srclib\apr\include\apr_hash.h"\
 	"..\..\srclib\apr\include\apr_lib.h"\
 	"..\..\srclib\apr\include\apr_mmap.h"\
 	"..\..\srclib\apr\include\apr_network_io.h"\

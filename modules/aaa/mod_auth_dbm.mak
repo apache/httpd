@@ -233,26 +233,26 @@ LINK32_OBJS= \
 !IF  "$(CFG)" == "mod_auth_dbm - Win32 Release"
 
 "libapr - Win32 Release" : 
-   cd "..\..\srclib\apr"
-   $(MAKE) /$(MAKEFLAGS) /F .\libapr.mak CFG="libapr - Win32 Release" 
+   cd "..\../..\httpd-2.0\srclib\apr"
+   $(MAKE) /$(MAKEFLAGS) /F ".\libapr.mak" CFG="libapr - Win32 Release" 
    cd "..\..\modules\aaa"
 
 "libapr - Win32 ReleaseCLEAN" : 
-   cd "..\..\srclib\apr"
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F .\libapr.mak CFG="libapr - Win32 Release"\
+   cd "..\../..\httpd-2.0\srclib\apr"
+   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libapr.mak" CFG="libapr - Win32 Release"\
  RECURSE=1 
    cd "..\..\modules\aaa"
 
 !ELSEIF  "$(CFG)" == "mod_auth_dbm - Win32 Debug"
 
 "libapr - Win32 Debug" : 
-   cd "..\..\srclib\apr"
-   $(MAKE) /$(MAKEFLAGS) /F .\libapr.mak CFG="libapr - Win32 Debug" 
+   cd "..\../..\httpd-2.0\srclib\apr"
+   $(MAKE) /$(MAKEFLAGS) /F ".\libapr.mak" CFG="libapr - Win32 Debug" 
    cd "..\..\modules\aaa"
 
 "libapr - Win32 DebugCLEAN" : 
-   cd "..\..\srclib\apr"
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F .\libapr.mak CFG="libapr - Win32 Debug"\
+   cd "..\../..\httpd-2.0\srclib\apr"
+   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libapr.mak" CFG="libapr - Win32 Debug"\
  RECURSE=1 
    cd "..\..\modules\aaa"
 
@@ -261,13 +261,13 @@ LINK32_OBJS= \
 !IF  "$(CFG)" == "mod_auth_dbm - Win32 Release"
 
 "libaprutil - Win32 Release" : 
-   cd "..\..\srclib\apr-util"
+   cd "..\../..\httpd-2.0\srclib\apr-util"
    $(MAKE) /$(MAKEFLAGS) /F ".\libaprutil.mak" CFG="libaprutil - Win32 Release"\
  
    cd "..\..\modules\aaa"
 
 "libaprutil - Win32 ReleaseCLEAN" : 
-   cd "..\..\srclib\apr-util"
+   cd "..\../..\httpd-2.0\srclib\apr-util"
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libaprutil.mak"\
  CFG="libaprutil - Win32 Release" RECURSE=1 
    cd "..\..\modules\aaa"
@@ -275,12 +275,12 @@ LINK32_OBJS= \
 !ELSEIF  "$(CFG)" == "mod_auth_dbm - Win32 Debug"
 
 "libaprutil - Win32 Debug" : 
-   cd "..\..\srclib\apr-util"
+   cd "..\../..\httpd-2.0\srclib\apr-util"
    $(MAKE) /$(MAKEFLAGS) /F ".\libaprutil.mak" CFG="libaprutil - Win32 Debug" 
    cd "..\..\modules\aaa"
 
 "libaprutil - Win32 DebugCLEAN" : 
-   cd "..\..\srclib\apr-util"
+   cd "..\../..\httpd-2.0\srclib\apr-util"
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libaprutil.mak"\
  CFG="libaprutil - Win32 Debug" RECURSE=1 
    cd "..\..\modules\aaa"
@@ -290,26 +290,26 @@ LINK32_OBJS= \
 !IF  "$(CFG)" == "mod_auth_dbm - Win32 Release"
 
 "libhttpd - Win32 Release" : 
-   cd "..\.."
-   $(MAKE) /$(MAKEFLAGS) /F .\libhttpd.mak CFG="libhttpd - Win32 Release" 
+   cd "..\../..\httpd-2.0"
+   $(MAKE) /$(MAKEFLAGS) /F ".\libhttpd.mak" CFG="libhttpd - Win32 Release" 
    cd ".\modules\aaa"
 
 "libhttpd - Win32 ReleaseCLEAN" : 
-   cd "..\.."
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F .\libhttpd.mak CFG="libhttpd - Win32 Release"\
- RECURSE=1 
+   cd "..\../..\httpd-2.0"
+   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libhttpd.mak"\
+ CFG="libhttpd - Win32 Release" RECURSE=1 
    cd ".\modules\aaa"
 
 !ELSEIF  "$(CFG)" == "mod_auth_dbm - Win32 Debug"
 
 "libhttpd - Win32 Debug" : 
-   cd "..\.."
-   $(MAKE) /$(MAKEFLAGS) /F .\libhttpd.mak CFG="libhttpd - Win32 Debug" 
+   cd "..\../..\httpd-2.0"
+   $(MAKE) /$(MAKEFLAGS) /F ".\libhttpd.mak" CFG="libhttpd - Win32 Debug" 
    cd ".\modules\aaa"
 
 "libhttpd - Win32 DebugCLEAN" : 
-   cd "..\.."
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F .\libhttpd.mak CFG="libhttpd - Win32 Debug"\
+   cd "..\../..\httpd-2.0"
+   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libhttpd.mak" CFG="libhttpd - Win32 Debug"\
  RECURSE=1 
    cd ".\modules\aaa"
 
@@ -329,12 +329,13 @@ DEP_CPP_MOD_A=\
 	"..\..\include\pcreposix.h"\
 	"..\..\include\util_cfgtree.h"\
 	"..\..\include\util_filter.h"\
-	"..\..\include\util_uri.h"\
 	"..\..\os\win32\os.h"\
 	"..\..\srclib\apr-util\include\apr_buckets.h"\
 	"..\..\srclib\apr-util\include\apr_dbm.h"\
 	"..\..\srclib\apr-util\include\apr_hooks.h"\
+	"..\..\srclib\apr-util\include\apr_optional_hooks.h"\
 	"..\..\srclib\apr-util\include\apr_ring.h"\
+	"..\..\srclib\apr-util\include\apr_uri.h"\
 	"..\..\srclib\apr-util\include\apu.h"\
 	"..\..\srclib\apr\include\apr.h"\
 	"..\..\srclib\apr\include\apr_dso.h"\
@@ -342,6 +343,7 @@ DEP_CPP_MOD_A=\
 	"..\..\srclib\apr\include\apr_file_info.h"\
 	"..\..\srclib\apr\include\apr_file_io.h"\
 	"..\..\srclib\apr\include\apr_general.h"\
+	"..\..\srclib\apr\include\apr_hash.h"\
 	"..\..\srclib\apr\include\apr_lib.h"\
 	"..\..\srclib\apr\include\apr_lock.h"\
 	"..\..\srclib\apr\include\apr_mmap.h"\
