@@ -264,9 +264,6 @@ changes on a per-directory basis.</p>
     <code>.htaccess</code> file, you may find that a configuration such as
     what follows may work for you.</p>
 
-    <p>You must have "<code>AllowOverride AuthConfig</code>" in effect for
-    these directives to be honored.</p>
-
     <p><code>.htaccess</code> file contents:</p>
 
     <example>
