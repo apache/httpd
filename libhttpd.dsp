@@ -235,6 +235,10 @@ SOURCE=.\server\vhost.c
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\modules\http\error_bucket.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\modules\http\http_core.c
 # End Source File
 # Begin Source File
