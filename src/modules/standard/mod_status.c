@@ -322,8 +322,11 @@ int status_handler (request_rec *r)
     {
         rprintf(r,"Total Accesses: %lu\nTotal kBytes: %lu\n",count,kbcount);
 
+#ifndef __EMX__
+    /* Allow for OS/2 not having CPU stats */
 	if(ts || tu || tcu || tcs)
 	    rprintf(r,"CPULoad: %g\n",(tu+ts+tcu+tcs)/tick/up_time*100.);
+#endif
 
 	rprintf(r,"Uptime: %ld\n",(long)(up_time));
 	if (up_time>0)
@@ -338,12 +341,16 @@ int status_handler (request_rec *r)
     {
 	rprintf(r,"Total accesses: %lu - Total Traffic: ", count);
 	format_kbyte_out(r,kbcount);
+
+#ifndef __EMX__
+	/* Allow for OS/2 not having CPU stats */
 	rputs("<br>\n",r);
         rprintf(r,"CPU Usage: u%g s%g cu%g cs%g",
 		tu/tick,ts/tick,tcu/tick,tcs/tick);
 
 	if(ts || tu || tcu || tcs)
 	    rprintf(r," - %.3g%% CPU load",(tu+ts+tcu+tcs)/tick/up_time*100.);
+#endif
 
 	rputs("<br>\n",r);
 
@@ -406,7 +413,12 @@ int status_handler (request_rec *r)
     	if(no_table_report)
             rputs("<p><hr><h2>Server Details</h2>\n\n",r);
 	else
+#ifdef __EMX__
+            /* Allow for OS/2 not having CPU stats */
+            rputs("<p>\n\n<table border=0><tr><th>Srv<th>PID<th>Acc<th>M\n<th>SS<th>Conn<th>Child<th>Slot<th>Host<th>VHost<th>Request</tr>\n\n",r);
+#else
             rputs("<p>\n\n<table border=0><tr><th>Srv<th>PID<th>Acc<th>M<th>CPU\n<th>SS<th>Conn<th>Child<th>Slot<th>Host<th>VHost<th>Request</tr>\n\n",r);
+#endif
 
 
     for (i = 0; i<HARD_SERVER_LIMIT; ++i)
@@ -455,11 +467,17 @@ int status_handler (request_rec *r)
 		            rputs("Dead",r);
 		            break;
 		    }
+#ifdef __EMX__
+                    /* Allow for OS/2 not having CPU stats */
+                    rprintf(r,"]\n %s (",
+#else
+
 		    rprintf(r,"] u%g s%g cu%g cs%g\n %s (",
 			    score_record.times.tms_utime/tick,
 			    score_record.times.tms_stime/tick,
 			    score_record.times.tms_cutime/tick,
 			    score_record.times.tms_cstime/tick,
+#endif
 			    asctime(localtime(&score_record.last_used)));
 		    format_byte_out(r,conn_bytes);
 		    rputs("|",r);
@@ -502,11 +520,16 @@ int status_handler (request_rec *r)
 		            rputs("<td>.",r);
 		            break;
 		    }
+#ifdef __EMX__
+	            /* Allow for OS/2 not having CPU stats */
+        	    rprintf(r,"\n<td>%.0f",
+#else
 		    rprintf(r,"\n<td>%.2f<td>%.0f",
 			    (score_record.times.tms_utime +
 			    score_record.times.tms_stime +
 			    score_record.times.tms_cutime +
 			    score_record.times.tms_cstime)/tick,
+#endif
 			    difftime(nowtime, score_record.last_used));
 		    rprintf(r,"<td>%-1.1f<td>%-2.2f<td>%-2.2f\n",
 			(float)conn_bytes/KBYTE, (float)my_bytes/MBYTE,
@@ -521,6 +544,20 @@ int status_handler (request_rec *r)
 
     if (!(short_report || no_table_report))
     {
+#ifdef __EMX__
+	rputs("</table>\n \
+<hr> \
+<table>\n \
+<tr><th>Srv<td>Server number\n \
+<tr><th>PID<td>OS process ID\n \
+<tr><th>Acc<td>Number of accesses this connection / this child / this slot\n \
+<tr><th>M<td>Mode of operation\n \
+<tr><th>SS<td>Seconds since beginning of most recent request\n \
+<tr><th>Conn<td>Kilobytes transferred this connection\n \
+<tr><th>Child<td>Megabytes transferred this child\n \
+<tr><th>Slot<td>Total megabytes transferred this slot\n \
+</table>\n",r);
+#else
 	rputs("</table>\n \
 <hr> \
 <table>\n \
@@ -534,6 +571,7 @@ int status_handler (request_rec *r)
 <tr><th>Child<td>Megabytes transferred this child\n \
 <tr><th>Slot<td>Total megabytes transferred this slot\n \
 </table>\n",r);
+#endif
     }
 
 #else /* !defined(STATUS) */
