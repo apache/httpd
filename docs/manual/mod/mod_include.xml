@@ -15,7 +15,7 @@
     before they are sent to the client. The processing is
     controlled by specially formated SGML comments, referred to as
     <em>elements</em>. These elements allow conditional text, the
-    inclusion other files or programs, as well as the setting and
+    inclusion of other files or programs, as well as the setting and
     printing of environment variables.</p>
 
 </summary>
