@@ -1358,10 +1358,28 @@ static apr_status_t connection_destructor(void *resource, void *params,
     server_rec *s = (server_rec *)params;
     
     apr_pool_destroy(conn->pool);
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                 "proxy: socket is destructed");
+    if (s != NULL)
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+                     "proxy: socket is destructed");
 
     return APR_SUCCESS;
+}
+
+/* Destroy the connection */
+PROXY_DECLARE(apr_status_t) ap_proxy_destroy_connection(proxy_conn_rec *conn)
+{
+    return connection_destructor(conn, NULL, NULL);
+}
+
+/* Destroy the connection */
+PROXY_DECLARE(apr_status_t) ap_proxy_close_connection(proxy_conn_rec *conn)
+{
+    apr_status_t rv = APR_EOF;
+    /* Close the socket */
+    if (conn->sock)
+        rv = apr_socket_close(conn->sock);
+    conn->sock = NULL;
+    return rv;
 }
 
 /* low level connection acquire/release functions
@@ -1378,6 +1396,7 @@ static apr_status_t acquire_connection_low(proxy_conn_rec **conn, proxy_worker *
 #endif
     {
         *conn = worker->cp->conn;
+        worker->cp->conn = NULL;
         rv = APR_SUCCESS;
     }
     return rv;
@@ -1390,7 +1409,11 @@ static apr_status_t release_connection_low(proxy_conn_rec *conn, proxy_worker *w
     if (worker->hmax) {
         rv = apr_reslist_release(worker->cp->res, (void *)conn);
     }
+    else
 #endif
+    {
+        worker->cp->conn = conn;
+    }
     return rv;
 }
 
@@ -1414,18 +1437,8 @@ static apr_status_t init_conn_worker(proxy_worker *worker, server_rec *s)
     else
 #endif
     {
-        worker->cp->conn = apr_pcalloc(worker->cp->pool, sizeof(proxy_conn_rec));
-        /* register the pool cleanup.
-         * The cleanup is registered on conn_pool pool, so that
-         * the same mechanism (apr_pool_cleanup) can be used
-         * for both nonthreaded and threaded servers when closing
-         * the entire worker.
-         */
-        apr_pool_cleanup_register(worker->cp->pool, (void *)worker->cp->conn,
-                                  proxy_conn_cleanup, apr_pool_cleanup_null);      
-
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                     "proxy: socket is created");
+        
+        connection_constructor((void **)&(worker->cp->conn), s, worker->cp->pool);
         rv = APR_SUCCESS;
     }
     return rv;
@@ -1514,4 +1527,25 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
                              "Connect to remote machine blocked");
     }
     return OK;
+}
+
+static int is_socket_connected(apr_socket_t *sock)
+
+{
+    apr_size_t buffer_len = 1;
+    char test_buffer[1]; 
+    apr_status_t socket_status;
+    apr_interval_time_t current_timeout;
+
+    /* save timeout */
+    apr_socket_timeout_get(sock, &current_timeout);
+    /* set no timeout */
+    apr_socket_timeout_set(sock, 0);
+    socket_status = apr_socket_recv(sock, test_buffer, &buffer_len);
+    /* put back old timeout */
+    apr_socket_timeout_set(sock, current_timeout);
+    if (APR_STATUS_IS_EOF(socket_status))
+        return 0;
+    else
+        return 1;
 }
