@@ -424,6 +424,11 @@ void imap_url(request_rec *r, char *base, char *value, char *url)
 
   strncpy(my_base, base, sizeof(my_base)-1);  /* must be a relative URL to be combined with base */
   my_base[sizeof(my_base)-1] = '\0';
+  if (strchr(my_base, '/') == NULL && (!strncmp(value, "../", 3) || !strcmp(value, "..")) ) {
+    url[0] = '\0';
+    log_reason("invalid base directive in map file", r->uri, r);
+    return;
+  }
   string_pos = my_base; 
   while (*string_pos) {  
     if (*string_pos == '/' && *(string_pos+1) == '/') {
