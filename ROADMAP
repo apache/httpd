@@ -1,8 +1,124 @@
-APACHE 2.x ROADMAP:
+APACHE 2.x ROADMAP
+==================
+Last modified at [$Date: 2002/10/17 17:16:04 $]
 
-Last modified at [$Date: 2002/10/01 19:13:06 $]
 
-DEFERRRED FOR APACHE 2.1
+INTRODUCTION
+------------
+The Apache HTTP Server project must balance two competing and disjoint
+objectives; maintain stable code for third party authors, distributors and
+most importantly users so that bug and security fixes can be quickly adopted
+without significant hardship due to API changes; and continue the development
+process that requires ongoing redesign to work around earlier oversights in
+the implementation of a fluid and flexible API.
+
+The Apache HTTP Server versions, through 2.0, used the Module Magic Number
+to reflect the relatively frequent API changes.  This had the shortcoming
+of often leaving binary download users hunting to replace their loaded third
+party modules.  This left the third party module authors searching through
+the API change histories to determine the new declarations, APIs and side 
+effects of making the necessary code changes.  
+
+With the simultaneous release of Apache 2.1-stable and Apache 2.2-development,
+the Apache HTTP Server project is moving to a more predictable stable code
+branch, while opening the development to forward progress without concern
+for breaking the stable branch.  This document explains the rationale between
+the two versions and their behavior, going forward.
+
+
+STABLE RELEASES, 2.{odd}.{revision}
+------------------------------------
+All even numbered releases will be considered stable revisions.  That means;
+
+  * Forward Compatibility; users are not required to find new downloads of 
+    currently loaded modules to upgrade from other revisions of the same 
+    version.  To upgrade from 2.1.0 and 2.1.27 will require no new modules.  
+    However, the third party modules may break from buggy code, or code that 
+    used an undocumented side effect of an API call, which may be changed to 
+    close bugs or security vulnerabilities.  Modules should be retested.
+    Moreover, new APIs may be introduced within the lifespan of the release,
+    and it is up to the third party module author to call out what version
+    forward this module is compatible with (e.g. "Compatible with Apache
+    HTTP Server version 2.1.12 and foward.")  The next stable release that 
+    causes module incompatibility for 2.1.x users will be an upgrade to
+    either the current 2.2.x-development releases or the 2.3.0-stable release.
+
+  * No Deprecated modules; although new modules may be introduced within the
+    stable release, no loadable modules or their directives will be removed
+    within the lifetime of a given stable release version.  The next release 
+    that deprecates old modules for 2.1.x users will be an upgrade to either
+    the 2.2.x-development release or the 2.3.0-stable release.  
+
+  * Warnings should be provided in the documentation to give users a heads up
+    that a given module or directive will disappear in the future release,
+    and advise developers that a given API will change.  However, it is always
+    best to check the corresponding development release to determine the full
+    impact of such changes.
+
+  * No 'Experimental' modules; while it may be possible (based on API changes
+    required to support a given module) to load a 2.2-development module into
+    a 2.1-stable build of Apache, there are no guarantees.  Experimental 
+    modules will be introduced to the 2.2-development versions and either
+    added to 2.1-stable once they are proven and compatible, or deferred
+    to the 2.3-stable release if they cannot be incorporated in the current
+    stable release due to API change requirements.
+
+  * The stable CVS tree must not remain unstable at any time.  Atomic commits 
+    must be used to introduce code from the development version to the stable 
+    tree.  At any given time a security release may be in preparation, 
+    unbeknownst to other contributors.  At any given time, testers may be
+    checking out CVS head to confirm that a bug has been corrected.  And as
+    all code was well-tested in development prior to committing to the stable
+    tree, there is really no reason for this tree to be broken for more than 
+    a few minutes during a lengthy commit.
+
+
+DEVELOPMENT RELEASES, 2.{even}.{revision}
+-----------------------------------------
+All even numbered releases designate the 'next' possible stable release,
+therefore the current development version will always be one greater than
+the stable release.  Work proceeds on development releases, permitting
+the modification of the MMN at any time in order to correct deficiencies 
+or shortcomings in the API.  This means that third party modules from one 
+revision to another may not be binary compatible, and may not successfully
+compile without modification to accomodate the API changes.
+
+The only 'supported' development release at any time will be the most
+recently released version.  Developers will not be answering bug reports
+of older development releases once a new release is available, it becomes
+the resposibility of the reporter to use the latest development version
+to confirm that the bug still exists.
+
+Any new code, new API features or new ('experimental') modules may be
+promoted at any time to the next stable release, by a vote of the project
+contributors.  This vote is based on the technical stability of the new
+code and the stability of the interface.  Once moved to stable, that feature
+cannot change for the remainder of that lifetime of that stable verions,
+so the vote must reflect that the final decisions on the behavior and naming 
+of that new feature were reached.  Vetos continue to apply to this choice
+of introducing the new work to the stable version.
+
+At any given time, when the quality of changes to the development branch
+is considered release quality, that version may become a candidate for the
+next stable release.  This includes some or all of the API changes, promoting
+experimental modules to stable or deprecating and eliminating older modules
+from the last stable release.  All of these choices are considered by the
+project as a group in the interests of promoting the stable release, so that
+any given change may be 'deferred' for a future release by the group, rather 
+than introduce unacceptable risks to adopting the next stable release.
+
+Third party module authors are strongly encouraged to test with the latest
+development version.  This assures that the module will be ready for the next
+stable release, but more importantly, the author can react to shortcomings
+in the API early enough to warn the dev@httpd.apache.org community of the
+shortcomings so that they can be addressed before the stable release.  The
+entire onus is on the third party module author to anticipate the needs of
+their module before the stable release is created, once it has been released
+they will be stuck with that API for the lifetime of that stable release.
+
+
+WORKS IN PROGRESS
+-----------------
 
     * Source code should follow style guidelines.
       OK, we all agree pretty code is good.  Probably best to clean this
@@ -26,8 +142,9 @@ DEFERRRED FOR APACHE 2.1
           dislike a bit within that doc, bring it up on the dev@httpd
           list prior to the next branch.
 
-
-WORKS IN PROGRESS (PERHAPS DEFERRED FOR 2.1 or 3.0)
+      So Bill sums up ... let's get the code cleaned up in CVS head.
+      Remember, it just takes cvs diff -b (that is, --ignore-space-change)
+      to see the code changes and ignore that cruft.  Get editing Justin :)
 
     * revamp the input filter syntax to provide for ordering of
       filters created with the Set{Input|Output}Filter and the
