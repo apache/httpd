@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/02/02 09:10:32 $]
+Last modified at [$Date: 2002/02/02 20:10:44 $]
 
 Release:
 
@@ -39,7 +39,29 @@ on related projects:
     * srclib/apr-util/STATUS
     * docs/STATUS
 
+
 RELEASE SHOWSTOPPERS:
+    * 31 BETA STATUS:
+        running on Daedalus since  02-Feb-2002 7:58 PST (need 3 days)
+        Compiles on : AIX, Solaris, FreeBSD 3.5, Win32
+        for beta
+            +1 : Justin, Ian, Jeff Trawick
+            +0 : 
+            -1 :
+        bumps since original tag:
+            * mod-dir patch
+            * scoreboard x2 : 1 to fix gracefull restarts
+                              1 to fix netware
+            * win32/locks.c : to fix mod_rewrite on win32
+
+        problems with v31:
+            * libtool/binbuild on AIX -- possible addition of patched 
+                    binbuild.sh to 31-beta roll
+                +1: Ian
+                +0:
+                -1:
+            * hasn't run for 3 days on Daedalus 
+            * the release has underscores instead of periods.
 
     * Runtime startup failures don't reliably set the exit status.
       For instance, try listening to port 80 and starting as non-root;
@@ -96,7 +118,7 @@ RELEASE SHOWSTOPPERS:
       filename extensions.  At minimum, some sort of +-[0-10] syntax seems
       like the quickest fix for a 2.0 gold release.
         Justin says: "Could we delay this for a point release or 2.1?"
-        Not a showstopper: justin, wrowe, trawick, stoddard, Jim
+        Not a showstopper: justin, wrowe, trawick, stoddard, Jim, Ian
 
     * Convert all instances of the old apr_lock_t type to the new
       types (once they are fully supported in APR).
@@ -129,14 +151,14 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
         Message-ID: <20020129210006.B23512@Lithium.MeepZor.Com>
 
       +1:  
-      -1:  Justin
+      -1:  Justin, Ian
         
     * If the parent process dies, should the remaining child processes
       "gracefully" self-terminate.
         Message-ID: <3C58232C.FE91F19F@Golux.Com>
 
       +1:  Jim, Justin, Ken
-      -1:  BrianP
+      -1:  BrianP, Ian
 
     * Make some modifications to the scoreboard creation routines,
       prefer anonymous shared memory, and allow a configuration
@@ -151,7 +173,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
         Message-ID: <20020111115006.K1529@clove.org>
        Vote: Is a non-portable perchild going to hold up a GA release?
         Yes: Ken
-         No: Aaron, Justin, trawick, stoddard, Jim
+         No: Aaron, Justin, trawick, stoddard, Jim, Ian
 
     * Recent changes to ap_rgetline may have broken EBCDIC boxes.
         Message-ID: <20020122072605.GF28051@ebuilt.com>
