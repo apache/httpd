@@ -1019,27 +1019,28 @@ CORE_EXPORT_NONSTD(const char *) ap_limit_section(cmd_parms *cmd, void *dummy,
      */
     
     while (limited_methods[0]) {
-        char *method = ap_getword_conf (cmd->pool, &limited_methods);
-	if (!strcasecmp(method, "GET")) {
+        char *method = ap_getword_conf(cmd->pool, &limited_methods);
+	if (!strcmp(method, "GET")) {
 	    limited |= (1 << M_GET);
 	}
-	else if (!strcasecmp(method, "PUT")) {
+	else if (!strcmp(method, "PUT")) {
 	    limited |= (1 << M_PUT);
 	}
-	else if (!strcasecmp(method, "POST")) {
+	else if (!strcmp(method, "POST")) {
 	    limited |= (1 << M_POST);
 	}
-	else if (!strcasecmp(method, "DELETE")) {
+	else if (!strcmp(method, "DELETE")) {
 	    limited |= (1 << M_DELETE);
 	}
-        else if (!strcasecmp(method, "CONNECT")) {
+        else if (!strcmp(method, "CONNECT")) {
 	    limited |= (1 << M_CONNECT);
 	}
-	else if (!strcasecmp(method, "OPTIONS")) {
+	else if (!strcmp(method, "OPTIONS")) {
 	    limited |= (1 << M_OPTIONS);
 	}
 	else {
-	    return "unknown method in <Limit>";
+	    return ap_pstrcat(cmd->pool, "unknown method \"",
+			      method, "\" in <Limit>", NULL);
 	}
     }
 

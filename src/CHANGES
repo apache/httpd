@@ -1,5 +1,8 @@
 Changes with Apache 1.3.1
 
+  *) The <Limit> parsing routine was incorrectly treating methods in
+     a case-insensitive way.  [Ken Coar]
+
   *) The ap_bprintf() code neglected to test if there was an error on
      the connection.  ap_bflush() misdiagnosed a failure as a success.
      [Dean Gaudet]
