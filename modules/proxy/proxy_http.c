@@ -905,7 +905,7 @@ int ap_proxy_http_handler(request_rec *r, proxy_server_conf *conf,
     conn_rec *c = r->connection;
     apr_bucket_brigade *bb = apr_brigade_create(p);
     apr_uri_components *uri = apr_palloc(r->connection->pool, sizeof(*uri));
-    proxy_http_conn_t *p_conn = apr_palloc(r->connection->pool,
+    proxy_http_conn_t *p_conn = apr_pcalloc(r->connection->pool,
                                            sizeof(*p_conn));
 
     /* is it for us? */
