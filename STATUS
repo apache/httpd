@@ -1,5 +1,5 @@
 APACHE 2.1 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/03/07 20:24:07 $]
+Last modified at [$Date: 2003/05/13 03:40:28 $]
 
 Release [NOTE that only Alpha/Beta releases occur in 2.1 development]:
 
@@ -165,13 +165,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       get the content that had already been written and the socket at
       the same time.  This mode lets us do that, so the MPM can be
       fixed.
-
-    * htpasswd blindly processes the file you give it, and does no
-      sanity checking before totally corrupting whatever file it was
-      you thought you had. It should check the input file and bail
-      if it finds non-comment lines that do not contain exactly 1
-      ':' character.
-        Message-ID: <20020217150457.A31632@clove.org>
 
     * Can a static httpd be built reliably?
         Message-ID: <20020207142751.T31582@clove.org>
