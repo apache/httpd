@@ -172,31 +172,31 @@ AC_ARG_WITH(program-name,
 # SuExec parameters
 AC_ARG_WITH(suexec-caller,
 [  --with-suexec-caller=User allowed to call SuExec],[
-  AC_DEFINE_UNQUOTED(AP_HTTPD_USER, $withval, [User allowed to call SuExec] ) ] )
+  AC_DEFINE_UNQUOTED(AP_HTTPD_USER, "$withval", [User allowed to call SuExec] ) ] )
 
 AC_ARG_WITH(suexec-userdir,
 [  --with-suexec-userdir=User subdirectory],[
-  AC_DEFINE_UNQUOTED(AP_USERDIR_SUFFIX, $withval, [User subdirectory] ) ] )
+  AC_DEFINE_UNQUOTED(AP_USERDIR_SUFFIX, "$withval", [User subdirectory] ) ] )
 
 AC_ARG_WITH(suexec-docroot,
 [  --with-suexec-docroot=SuExec root directory],[
-  AC_DEFINE_UNQUOTED(AP_DOC_ROOT, $withval, [SuExec root directory] ) ] )
+  AC_DEFINE_UNQUOTED(AP_DOC_ROOT, "$withval", [SuExec root directory] ) ] )
 
 AC_ARG_WITH(suexec-uidmin,
 [  --with-suexec-uidmin=Minimal allowed UID],[
-  AC_DEFINE_UNQUOTED(AP_UID_MIN, $withval, [Minimal allowed UID] ) ] )
+  AC_DEFINE_UNQUOTED(AP_UID_MIN, "$withval", [Minimal allowed UID] ) ] )
 
 AC_ARG_WITH(suexec-gidmin,
 [  --with-suexec-gidmin=Minimal allowed GID],[
-  AC_DEFINE_UNQUOTED(AP_GID_MIN, $withval, [Minimal allowed GID] ) ] )
+  AC_DEFINE_UNQUOTED(AP_GID_MIN, "$withval", [Minimal allowed GID] ) ] )
 
 AC_ARG_WITH(suexec-logfile,
 [  --with-suexec-logfile=Set the logfile],[
-  AC_DEFINE_UNQUOTED(AP_LOG_EXEC, $withval, [SuExec log file] ) ] )
+  AC_DEFINE_UNQUOTED(AP_LOG_EXEC, "$withval", [SuExec log file] ) ] )
 
 AC_ARG_WITH(suexec-safepath,
 [  --with-suexec-safepath=Set the safepath],[
-  AC_DEFINE_UNQUOTED(AP_SAFE_PATH, $withval, [safe shell path for SuExec] ) ] )
+  AC_DEFINE_UNQUOTED(AP_SAFE_PATH, "$withval", [safe shell path for SuExec] ) ] )
 
 dnl ### util_xml is always included, so we always need Expat (for now)
 apache_need_expat=yes

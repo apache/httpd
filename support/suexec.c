@@ -73,7 +73,10 @@
 #include <sys/param.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <string.h>
+#include <time.h>
 
+#include <stdio.h>
 #include <stdarg.h>
 
 #include "suexec.h"
@@ -369,7 +372,7 @@ int main(int argc, char *argv[])
 	{
 	case -1:	/* Error */
 	    log_err("failed to setup bs2000 environment for user %s: %s\n",
-		    target_uname, apr_strerror(errno, buf, sizeof(buf)));
+		    target_uname, strerror(errno));
 	    exit(150);
 	case 0:	/* Child */
 	    break;
@@ -577,6 +580,6 @@ int main(int argc, char *argv[])
      * Oh well, log the failure and error out.
      */
     log_err("(%d)%s: exec failed (%s)\n", errno, 
-            apr_strerror(errno, buf, sizeof(buf)), cmd);
+            strerror(errno), cmd);
     exit(255);
 }
