@@ -90,20 +90,20 @@ int ap_proxy_http_canon(request_rec *r, char *url)
 
     /* ap_default_port_for_scheme() */
     if (strncasecmp(url, "http:", 5) == 0) {
-	url += 5;
-	scheme = "http";
+        url += 5;
+        scheme = "http";
     }
     else if (strncasecmp(url, "https:", 6) == 0) {
-	url += 6;
-	scheme = "https:";
+        url += 6;
+        scheme = "https:";
     }
     else {
-	return DECLINED;
+        return DECLINED;
     }
     def_port = apr_uri_default_port_for_scheme(scheme);
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
-		 "proxy: HTTP: canonicalising URL %s", url);
+             "proxy: HTTP: canonicalising URL %s", url);
 
     /* do syntatic check.
      * We break the URL into host, port, path, search
@@ -111,7 +111,7 @@ int ap_proxy_http_canon(request_rec *r, char *url)
     port = def_port;
     err = ap_proxy_canon_netloc(r->pool, &url, NULL, NULL, &host, &port);
     if (err)
-	return HTTP_BAD_REQUEST;
+        return HTTP_BAD_REQUEST;
 
     /* now parse path/search args, according to rfc1738 */
     /* N.B. if this isn't a true proxy request, then the URL _path_
@@ -119,25 +119,25 @@ int ap_proxy_http_canon(request_rec *r, char *url)
      * == r->unparsed_uri, and no others have that property.
      */
     if (r->uri == r->unparsed_uri) {
-	search = strchr(url, '?');
-	if (search != NULL)
-	    *(search++) = '\0';
+        search = strchr(url, '?');
+        if (search != NULL)
+            *(search++) = '\0';
     }
     else
-	search = r->args;
+        search = r->args;
 
     /* process path */
     path = ap_proxy_canonenc(r->pool, url, strlen(url), enc_path, r->proxyreq);
     if (path == NULL)
-	return HTTP_BAD_REQUEST;
+        return HTTP_BAD_REQUEST;
 
     if (port != def_port)
-	apr_snprintf(sport, sizeof(sport), ":%d", port);
+        apr_snprintf(sport, sizeof(sport), ":%d", port);
     else
-	sport[0] = '\0';
+        sport[0] = '\0';
 
-    r->filename = apr_pstrcat(r->pool, "proxy:", scheme, "://", host, sport, "/",
-		   path, (search) ? "?" : "", (search) ? search : "", NULL);
+    r->filename = apr_pstrcat(r->pool, "proxy:", scheme, "://", host, sport, 
+            "/", path, (search) ? "?" : "", (search) ? search : "", NULL);
     return OK;
 }
  
@@ -170,17 +170,18 @@ static void ap_proxy_clear_connection(apr_pool_t *p, apr_table_t *headers)
 
     apr_table_unset(headers, "Proxy-Connection");
     if (!next)
-		return;
+        return;
 
     while (*next) {
-	name = next;
-	while (*next && !apr_isspace(*next) && (*next != ','))
-	    ++next;
-	while (*next && (apr_isspace(*next) || (*next == ','))) {
-	    *next = '\0';
-	    ++next;
-	}
-	apr_table_unset(headers, name);
+        name = next;
+        while (*next && !apr_isspace(*next) && (*next != ',')) {
+            ++next;
+        }
+        while (*next && (apr_isspace(*next) || (*next == ','))) {
+            *next = '\0';
+            ++next;
+        }
+        apr_table_unset(headers, name);
     }
     apr_table_unset(headers, "Connection");
 }
@@ -574,15 +575,15 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
             || !apr_strnatcasecmp(headers_in[counter].key, "Transfer-Encoding")
             || !apr_strnatcasecmp(headers_in[counter].key, "Upgrade")
 
-	    /* XXX: @@@ FIXME: "Proxy-Authorization" should *only* be 
-	     * suppressed if THIS server requested the authentication,
-	     * not when a frontend proxy requested it!
+        /* XXX: @@@ FIXME: "Proxy-Authorization" should *only* be 
+         * suppressed if THIS server requested the authentication,
+         * not when a frontend proxy requested it!
          *
          * The solution to this problem is probably to strip out
          * the Proxy-Authorisation header in the authorisation
          * code itself, not here. This saves us having to signal
          * somehow whether this request was authenticated or not.
-	     */
+         */
             || !apr_strnatcasecmp(headers_in[counter].key,"Proxy-Authorization")
             || !apr_strnatcasecmp(headers_in[counter].key,"Proxy-Authenticate")) {
             continue;
@@ -590,8 +591,10 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
         /* for sub-requests, ignore freshness/expiry headers */
         if (r->main) {
                 if (headers_in[counter].key == NULL || headers_in[counter].val == NULL
-                     || !apr_strnatcasecmp(headers_in[counter].key, "Cache-Control")
+                     || !apr_strnatcasecmp(headers_in[counter].key, "If-Match")
                      || !apr_strnatcasecmp(headers_in[counter].key, "If-Modified-Since")
+                     || !apr_strnatcasecmp(headers_in[counter].key, "If-Range")
+                     || !apr_strnatcasecmp(headers_in[counter].key, "If-Unmodified-Since")                     
                      || !apr_strnatcasecmp(headers_in[counter].key, "If-None-Match")) {
                     continue;
                 }
@@ -803,11 +806,11 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
         }
 
         /* send body - but only if a body is expected */
-        if ((!r->header_only) &&			/* not HEAD request */
-            (r->status > 199) &&			/* not any 1xx response */
-            (r->status != HTTP_NO_CONTENT) &&	/* not 204 */
-            (r->status != HTTP_RESET_CONTENT) &&	/* not 205 */
-            (r->status != HTTP_NOT_MODIFIED)) {	/* not 304 */
+        if ((!r->header_only) &&                   /* not HEAD request */
+            (r->status > 199) &&                   /* not any 1xx response */
+            (r->status != HTTP_NO_CONTENT) &&      /* not 204 */
+            (r->status != HTTP_RESET_CONTENT) &&   /* not 205 */
+            (r->status != HTTP_NOT_MODIFIED)) {    /* not 304 */
 
             /* We need to copy the output headers and treat them as input
              * headers as well.  BUT, we need to do this before we remove
@@ -848,7 +851,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                     }
                     if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(bb))) {
                         ap_pass_brigade(r->output_filters, bb);
-                		break;
+                        break;
                     }
                     e = apr_bucket_flush_create();
                     APR_BRIGADE_INSERT_TAIL(bb, e);
@@ -948,7 +951,7 @@ int ap_proxy_http_handler(request_rec *r, proxy_server_conf *conf,
         return DECLINED; /* only interested in HTTP */
     }
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
-		 "proxy: HTTP: serving URL %s", url);
+             "proxy: HTTP: serving URL %s", url);
     
     
     /* only use stored info for top-level pages. Sub requests don't share 
@@ -1018,11 +1021,11 @@ static void ap_proxy_http_register_hook(apr_pool_t *p)
 
 module AP_MODULE_DECLARE_DATA proxy_http_module = {
     STANDARD20_MODULE_STUFF,
-    NULL,		/* create per-directory config structure */
-    NULL,		/* merge per-directory config structures */
-    NULL,		/* create per-server config structure */
-    NULL,		/* merge per-server config structures */
-    NULL,		/* command apr_table_t */
-    ap_proxy_http_register_hook	/* register hooks */
+    NULL,              /* create per-directory config structure */
+    NULL,              /* merge per-directory config structures */
+    NULL,              /* create per-server config structure */
+    NULL,              /* merge per-server config structures */
+    NULL,              /* command apr_table_t */
+    ap_proxy_http_register_hook/* register hooks */
 };
 
