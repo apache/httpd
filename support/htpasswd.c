@@ -152,6 +152,17 @@ static void putline(FILE *f, char *l)
     fputc('\n', f);
 }
 
+static void to64(char *s, unsigned long v, int n)
+{
+    static unsigned char itoa64[] =         /* 0 ... 63 => ASCII - 64 */
+	"./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+
+    while (--n >= 0) {
+	*s++ = itoa64[v&0x3f];
+	v >>= 6;
+    }
+}
+
 /*
  * Make a password record from the given information.  A zero return
  * indicates success; failure means that the output buffer contains an
@@ -192,7 +203,7 @@ static int mkrecord(char *user, char *record, size_t rlen, char *passwd,
 
     case ALG_APMD5: 
         (void) srand((int) time((time_t *) NULL));
-        ap_to64(&salt[0], rand(), 8);
+        to64(&salt[0], rand(), 8);
         salt[8] = '\0';
 
 	ap_MD5Encode((const unsigned char *)pw, (const unsigned char *)salt,
@@ -207,7 +218,7 @@ static int mkrecord(char *user, char *record, size_t rlen, char *passwd,
     case ALG_CRYPT:
     default:
         (void) srand((int) time((time_t *) NULL));
-        ap_to64(&salt[0], rand(), 8);
+        to64(&salt[0], rand(), 8);
         salt[8] = '\0';
 
 	ap_cpystrn(cpw, (char *)crypt(pw, salt), sizeof(cpw) - 1);
