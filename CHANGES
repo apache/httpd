@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) When using Redirect in directory context, append requested query
+     string if there's no one supplied by configuration. PR 10961.
+     [André Malo]
+
   *) Fix path handling of mod_rewrite, especially on non-unix systems.
      There was some confusion between local paths and URL paths.
      PR 12902.  [André Malo]
