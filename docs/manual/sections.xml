@@ -31,8 +31,8 @@ to change the scope of other configuration directives.</p>
 <directive type="section" module="core">IfModule</directive>
 <directive type="section" module="core">Location</directive>
 <directive type="section" module="core">LocationMatch</directive>
-<directive type="section" module="proxy">Proxy</directive>
-<directive type="section" module="proxy">ProxyMatch</directive>
+<directive type="section" module="mod_proxy">Proxy</directive>
+<directive type="section" module="mod_proxy">ProxyMatch</directive>
 <directive type="section" module="core">VirtualHost</directive>
 </directivelist>
 </related>
@@ -330,8 +330,8 @@ sections is also syntactically allowed in
 <directive type="section" module="core">FilesMatch</directive>,
 <directive type="section" module="core">Location</directive>,
 <directive type="section" module="core">LocationMatch</directive>,
-<directive type="section" module="proxy">Proxy</directive>,
-and <directive type="section" module="proxy">ProxyMatch</directive>
+<directive type="section" module="mod_proxy">Proxy</directive>,
+and <directive type="section" module="mod_proxy">ProxyMatch</directive>
 sections.  There are some exceptions, however.</p>
 
 <ul>
