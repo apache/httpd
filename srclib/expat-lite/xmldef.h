@@ -65,6 +65,13 @@ particular environments. */
 #ifdef APACHE
 
 #include "ap_config.h"
-#define XML_BYTE_ORDER AP_BYTE_ORDER
+
+#ifndef AP_UNKNOWN_BYTE_ORDER
+#ifdef WORDS_BIDENDIAN
+#define XML_BYTE_ORDER 21       /* big-endian */
+#else
+#define XML_BYTE_ORDER 12       /* little-endian */
+#endif
+#endif
 
 #endif /* APACHE */
