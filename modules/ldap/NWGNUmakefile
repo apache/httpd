@@ -226,6 +226,7 @@ FILES_nlm_exports = \
 	util_ldap_connection_unbind \
 	util_ldap_connection_cleanup \
 	util_ldap_cache_checkuserid \
+	util_ldap_cache_getuserdn \
 	util_ldap_cache_compare \
 	util_ldap_cache_comparedn \
 	util_ldap_ssl_supported \
