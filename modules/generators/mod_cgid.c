@@ -710,7 +710,7 @@ static int log_scripterror(request_rec *r, cgid_server_conf * conf, int ret,
 { 
     apr_file_t *f = NULL; 
     struct stat finfo; 
-    char time_str[AP_CTIME_LEN];
+    char time_str[APR_CTIME_LEN];
 
     ap_log_rerror(APLOG_MARK, show_errno|APLOG_ERR, errno, r, 
                 "%s: %s", error, r->filename); 
@@ -745,7 +745,7 @@ static int log_script(request_rec *r, cgid_server_conf * conf, int ret,
     apr_file_t *f = NULL; 
     int i; 
     struct stat finfo; 
-    char time_str[AP_CTIME_LEN];
+    char time_str[APR_CTIME_LEN];
 
     if (!conf->logname || 
         ((stat(ap_server_root_relative(r->pool, conf->logname), &finfo) == 0) 
