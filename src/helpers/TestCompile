@@ -51,7 +51,7 @@ cd ./helpers
 #
 # Handle "verbose", "silent" and "runit" flags
 #
-VERBOSE=no
+: ${VERBOSE:=no}
 RUNIT="no"
 case "$1" in
     "-v")
