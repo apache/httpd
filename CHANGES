@@ -513,6 +513,11 @@ Changes with Apache 2.1.1
 
 Changes with Apache 2.0.53
 
+  *) Allow for the use of --with-module=foo:bar where the ./modules/foo
+     directory is local only. Assumes, of course, that the required
+     files are in ./modules/foo, but makes it easier to statically
+     build/log "external" modules.  [Jim Jagielski]
+
   *) Util_ldap: Implemented the util_ldap_cache_getuserdn() API so that 
      ldap authorization only modules have access to the util_ldap 
      user cache without having to require ldap authentication as well.  
