@@ -15,6 +15,9 @@
  * part of the header
  */
 #define INLINE extern __inline__
+
+INLINE int ap_os_is_path_absolute(const char *file);
+
 #include "os-inline.c"
 #endif
 
@@ -22,7 +25,7 @@
 /* Compiler does not support inline, so prototype the inlineable functions
  * as normal
  */
-extern int ap_os_is_path_absolute(const char *f);
+extern int ap_os_is_path_absolute(const char *file);
 #endif
 
 /* OS/2 doesn't have symlinks so S_ISLNK is always false */
