@@ -55,14 +55,18 @@ static BOOL sub_canonical_filename(char *szCanon, unsigned nCanon, const char *s
 		if(*s == '\\')
 		    *s='/';
 	}
-        return;
+        return TRUE;
     }
     if (szFilePart != buf+3) {
         char b2[_MAX_PATH];
+	char b3[_MAX_PATH];
         ap_assert(szFilePart > buf+3);
 
-        szFilePart[-1]='\0';
-        sub_canonical_filename(b2, sizeof b2, buf);
+	memcpy(b3,szFile,s-szFile);
+	b3[s-szFile]='\0';
+
+//        szFilePart[-1]='\0';
+        sub_canonical_filename(b2, sizeof b2, b3);
 
 	ap_assert(strlen(b2)+1 < nCanon);
         strcpy(szCanon, b2);
@@ -124,8 +128,7 @@ API_EXPORT(char *) ap_os_canonical_filename(pool *pPool, const char *szFile)
 	;
     *d='\0';
 
-    if(sub_canonical_filename(buf, sizeof buf, b2) && nSlashes)
-	nSlashes=1;
+    sub_canonical_filename(buf, sizeof buf, b2);
 
     buf[0]=tolower(buf[0]);
 
