@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/07/23 21:53:41 $]
+Last modified at [$Date: 2003/07/23 23:49:14 $]
 
 Release:
 
@@ -254,7 +254,7 @@ PATCHES TO PORT FROM 2.1
       adds extensions for commonly used *+xml and calendar types, and
       lists image/x-icon ico.
         docs/conf/mime.types: r1.20
-      +1: fielding, nd, jerenkrantz, striker
+      +1: fielding, nd, jerenkrantz, striker, erikabele
 
     * httpd-std.conf: Try to be clearer in describing the connection
       between AddType and AddEncoding for defining the meaning of
@@ -264,7 +264,7 @@ PATCHES TO PORT FROM 2.1
       jerenkrantz asks: Why does httpd-std.conf.in have two copies of the
                         AddEncoding directives?  This is a typo, right?
             nd replies: Sure. 1.53 fixes that.
-      +1: fielding, nd, jerenkrantz
+      +1: fielding, nd, jerenkrantz, erikabele
 
     * mod_ext_filter: Set additional environment variables for use by
       the external filter.  PR 20944.
@@ -440,7 +440,8 @@ CURRENT VOTES:
 
       a) httpd-std.conf should be tailored by install (from src or
          binbuild) even if user has existing httpd.conf
-         +1:   trawick, slive, gregames, ianh, Ken, wrowe, jwoolley, jim, nd
+         +1:   trawick, slive, gregames, ianh, Ken, wrowe, jwoolley, jim, nd,
+               erikabele
            wrowe - prefer httpd.default.conf to avoid ambiguity with cvs,
                    note that win32 installer creates just that file
                    (.default.conf rather than .conf.default so that win32
@@ -452,7 +453,7 @@ CURRENT VOTES:
 
       c) tailored httpd-std.conf should be installed to
          sysconfdir/examples or manualdir/exampleconf/
-         +1:   slive, trawick, Ken, nd (prefer the latter)
+         +1:   slive, trawick, Ken, nd (prefer the latter), erikabele
 
       d) tailored httpd-std.conf should be installed as httpd-std-<version>.conf.
          +1:   striker
@@ -461,7 +462,7 @@ CURRENT VOTES:
          doesn't make ANY sense at all.
          +1:   ianh - medium/big sites don't use 'standard config' anyway, as it
                       usually needs major customizations
-         -1:   Ken, wrowe, jwoolley, jim, nd
+         -1:   Ken, wrowe, jwoolley, jim, nd, erikabele
            wrowe - diff is wonderful when comparing old/new default configs,
                    even for customized sites that ianh mentions
            jim - it makes sense assuming that the default configs
