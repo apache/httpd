@@ -494,6 +494,13 @@
       <dd>Choose the mpm <em>NAME</em>.</dd>
     </dl>
 
+    <p>To activate an MPM called <var>mpm_name</var>, you can use</p>
+
+<div class="example"><p><code>
+     ./configure --with-mpm=<var>mpm_name</var>
+</code></p></div>
+
+
 
 <h3><a name="dbm" id="dbm">DBM</a></h3>
 
