@@ -10,8 +10,9 @@
 <identifier>mpm_netware_module</identifier>
 
 <summary>
-    <p>This Multi-Processing Module (MPM) implements an exclusively threaded web server
-    that has been optimized for Novell NetWare.</p>
+    <p>This Multi-Processing Module (MPM) implements an exclusively
+    threaded web server that has been optimized for Novell
+    NetWare.</p>
 
     <p>The main thread is responsible for launching child
     worker threads which listen for connections and serve them when they
@@ -66,53 +67,16 @@
 </usage>
 </directivesynopsis>
 
-<directivesynopsis>
+<directivesynopsis location="mpm_common">
 <name>MaxSpareThreads</name>
-<syntax>MaxSpareThreads <em>number</em></syntax>
-<default>MaxSpareThreads 100</default>
-<contextlist><context>server config</context></contextlist>
-
-<usage>
-    <p>The <directive>MaxSpareThreads</directive> directive sets the
-    desired maximum number of <em>idle</em> worker threads. An idle
-    worker thread is one which is not handling a request. If there are
-    more than MaxSpareThreads idle, then the main thread will kill off
-    the excess worker threads.</p>
-
-    <p>Tuning of this parameter should only be necessary on very
-    busy sites. Setting this parameter to a large number is almost
-    always a bad idea.</p>
-</usage>
 </directivesynopsis>
 
-<directivesynopsis>
+<directivesynopsis location="mpm_common">
 <name>MinSpareThreads</name>
-<syntax>MinSpareThreads <em>number</em></syntax>
-<default>MinSpareThreads 10</default>
-<contextlist><context>server config</context></contextlist>
-
-<usage>
-<p>The <directive>MinSpareThreads</directive> directive sets the
-desired minimum number of <em>idle</em> worker threads. An idle worker
-thread is one which is not handling a request. If there are fewer than
-MinSpareThreads idle, then the main thread spawns new worker.</p>
-
-    <p>Tuning of this parameter should only be necessary on very
-    busy sites. Setting this parameter to a large number is almost
-    always a bad idea.</p>
-</usage>
 </directivesynopsis>
 
-<directivesynopsis>
+<directivesynopsis location="mpm_common">
 <name>StartThreads</name>
-<syntax>StartThreads <em>number</em></syntax>
-<default>StartThreads 50</default>
-<contextlist><context>server config</context></contextlist>
-
-<usage>
-<p>The StartThreads directive sets the desired
-    number of worker threads to spawn and startup</p>
-</usage>
 </directivesynopsis>
 
 <directivesynopsis>

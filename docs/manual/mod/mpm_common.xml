@@ -292,22 +292,30 @@ will handle during its life</description>
 <name>MaxSpareThreads</name>
 <description>Maximum number of idle threads</description>
 <syntax>MaxSpareThreads <em>number</em></syntax>
-<default>MaxSpareThreads 10 (Perchild) or 500 (worker)</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>worker</module><module>perchild</module>
+<modulelist><module>mpm_netware</module>
+<module>perchild</module><module>worker</module>
 </modulelist>
 
 <usage>
     <p>Maximum number of idle threads. Different MPMs deal with this
-    directive differently. <module>perchild</module> monitors the
-    number of idle threads on a per-child basis. If there are too many
-    idle threads in that child, the server will begin to kill threads
+    directive differently.</p>
+
+    <p>For <module>perchild</module> the default is
+    <code>MaxSpareThreads 10</code>.  This MPM monitors the number of
+    idle threads on a per-child basis. If there are too many idle
+    threads in that child, the server will begin to kill threads
     within that child.</p>
 
-    <p><module>worker</module> deals with idle threads on a
-    server-wide basis. If there are too many idle threads in the
+    <p>For <module>worker</module> the default is
+    <code>MaxSpareThreads 500</code>.  This MPM deals with idle threads
+    on a server-wide basis. If there are too many idle threads in the
     server then child processes are killed until the number of idle
     threads is less than this number.</p>
+
+    <p>For <module>mpm_netware</module> the default is
+    <code>MaxSpareThreads 100</code>.  Since this MPM runs a
+    single-process, the spare thread count is also server-wide.</p>
 
 </usage>
 <seealso><directive module="mpm_common">MinSpareThreads</directive></seealso>
@@ -338,23 +346,32 @@ will handle during its life</description>
 <description>Minimum number of idle threads available to handle request
 spikes</description>
 <syntax>MinSpareServers <em>number</em></syntax>
-<default>MinSpareThreads 5 (Perchild) or 250 (worker)</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>worker</module><module>perchild</module>
+<modulelist><module>mpm_netware</module>
+<module>perchild</module><module>worker</module>      
 </modulelist>
 
 <usage>
     <p>Minimum number of idle threads to handle request spikes.
     Different MPMs deal with this directive
-    differently. <module>perchild</module> monitors the number of idle
+    differently.</p>
+
+    <p><module>perchild</module> uses a default of
+    <code>MinSpareThreads 5</code> and monitors the number of idle
     threads on a per-child basis. If there aren't enough idle threads
     in that child, the server will begin to create new threads within
     that child.</p>
 
-    <p><module>worker</module> deals with idle threads on a
-    server-wide basis. If there aren't enough idle threads in the
-    server then child processes are created until the number of idle
-    threads is greater than number.</p>
+    <p><module>worker</module> uses a default of <code>MinSpareThreads
+    250</code> and deals with idle threads on a server-wide basis. If
+    there aren't enough idle threads in the server then child
+    processes are created until the number of idle threads is greater
+    than number.</p>
+
+    <p><module>mpm_netware</module> uses a default of
+    <code>MinSpareThreads 10</code> and, since it is a single-process
+    MPM, tracks this on a server-wide bases.</p>
+
 </usage>
 <seealso><directive module="mpm_common">MaxSpareThreads</directive></seealso>
 <seealso><directive module="mpm_common">StartServers</directive></seealso>
@@ -496,17 +513,26 @@ the child processes</description>
 
 <directivesynopsis>
 <name>StartThreads</name>
-<description>Nubmer of threads each child creates on startup</description>
+<description>Nubmer of threads created on startup</description>
 <syntax>StartThreads <em>number</em></syntax>
-<default>StartThreads 5</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>perchild</module></modulelist>
+<modulelist><module>mpm_netware</module><module>perchild</module></modulelist>
 
 <usage>
-    <p>Number of threads each child creates on startup. As the
+    <p>Number of threads created on startup. As the
     number of threads is dynamically controlled depending on the
     load, there is usually little reason to adjust this
     parameter.</p>
+
+    <p>For <module>perchild</module> the default is <code>StartThreads
+    5</code> and this directive tracks the number of threads per
+    process at startup.</p>
+
+    <p>For <module>mpm_netware</module> the default is
+    <code>StartThreads 50</code> and, since there is only a single
+    process, this is the total number of threads created at startup to
+    serve requests.</p>
+
 </usage>
 </directivesynopsis>
 
