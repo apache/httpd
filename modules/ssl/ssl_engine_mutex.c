@@ -28,9 +28,9 @@
                                              -- Unknown     */
 
 #include "ssl_private.h"
-#if !defined(OS2) && !defined(WIN32) && !defined(BEOS) && !defined(NETWARE)
+
+#ifdef AP_NEED_SET_MUTEX_PERMS
 #include "unixd.h"
-#define MOD_SSL_SET_MUTEX_PERMS /* XXX Apache should define something */
 #endif
 
 int ssl_mutex_init(server_rec *s, apr_pool_t *p)
@@ -57,7 +57,7 @@ int ssl_mutex_init(server_rec *s, apr_pool_t *p)
         return FALSE;
     }
 
-#ifdef MOD_SSL_SET_MUTEX_PERMS
+#ifdef AP_NEED_SET_MUTEX_PERMS
     rv = unixd_set_global_mutex_perms(mc->pMutex);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
