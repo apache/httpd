@@ -1683,10 +1683,10 @@ API_EXPORT(void) ap_copy_method_list(ap_method_list_t *dest,
 /*
  * Invoke a callback routine for each method in the specified list.
  */
-API_EXPORT(void) ap_method_list_do(int (*comp) (void *urec, const char *mname,
-						int mnum),
-				   void *rec,
-				   const ap_method_list_t *ml, ...)
+API_EXPORT_NONSTD(void) ap_method_list_do(int (*comp) (void *urec, const char *mname,
+						       int mnum),
+				          void *rec,
+				          const ap_method_list_t *ml, ...)
 {
     va_list vp;
     va_start(vp, ml);
