@@ -9,7 +9,7 @@
 OS=`./srclib/apr/build/config.guess`
 BUILD_DIR="`pwd`/bindist"
 DEFAULT_DIR="/usr/local/apache2"
-CONFIGPARAM="--with-layout=BinaryDistribution --prefix=$BUILD_DIR"
+CONFIGPARAM="--with-layout=BinaryDistribution --prefix=$BUILD_DIR --enable-mods-shared=most"
 APDIR=`pwd`
 APDIR=`basename $APDIR`
 VER=`echo $APDIR |sed s/httpd-//`
