@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/06/16 16:42:49 $]
+Last modified at [$Date: 2000/06/20 20:28:47 $]
 
 Release:
 
@@ -64,6 +64,9 @@ RELEASE SHOWSTOPPERS:
         Status: The best known candidate would be something from
 	BIND v9.
         Status: Greg asks, "why? doesn't gethostbyname_r() handle this?"
+
+    * Modify mod_cgi and mod_cgid to deal with directories.  This allows
+      a lot of directives to be removed from the core.
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
     * OS/2: Get loadable modules working again. Requires shared core support
