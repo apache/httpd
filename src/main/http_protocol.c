@@ -281,8 +281,9 @@ int set_keepalive(request_rec *r)
      *   and the response status does not require a close;
      *   and the response generator has not already indicated close;
      *   and the client did not request non-persistence (Connection: close);
+     *   and    we haven't been configured to ignore the buggy twit
+     *       or they're a buggy twit coming through a HTTP/1.1 proxy
      *   and    the client is requesting an HTTP/1.0-style keep-alive
-     *          and we haven't been configured to ignore the buggy twit,
      *       or the client claims to be HTTP/1.1 compliant (perhaps a proxy);
      *   THEN we can be persistent, which requires more headers be output.
      *
@@ -304,9 +305,10 @@ int set_keepalive(request_rec *r)
         !status_drops_connection(r->status) &&
         !wimpy &&
         !find_token(r->pool, conn, "close") &&
-        (((ka_sent = find_token(r->pool, conn, "keep-alive")) &&
-          !table_get(r->subprocess_env, "nokeepalive")) ||
-         (r->proto_num >= 1001))
+	(!table_get(r->subprocess_env, "nokeepalive") ||
+	 table_get(r->headers_in, "Via")) &&
+	((ka_sent = find_token(r->pool, conn, "keep-alive")) ||
+	   (r->proto_num >= 1001))
        ) {
 	char header[256];
 	int left = r->server->keep_alive_max - r->connection->keepalives;
@@ -1048,8 +1050,9 @@ void basic_http_header (request_rec *r)
     
     if (!r->status_line)
         r->status_line = status_lines[index_of_response(r->status)];
-    
-    if (table_get(r->subprocess_env,"force-response-1.0"))
+
+    if (r->proto_num == 1000
+	&& table_get(r->subprocess_env,"force-response-1.0"))
 	protocol = "HTTP/1.0";
     else
 	protocol = SERVER_PROTOCOL;

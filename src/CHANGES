@@ -1,5 +1,10 @@
 Changes with Apache 1.3
 
+  *) "force-response-1.0" now only applies to requests which are HTTP/1.0 to
+     begin with.  "nokeepalive" now works for HTTP/1.1 clients.  Added
+     "downgrade-1.0" which causes Apache to pretend it received a 1.0.
+     [Dean Gaudet] related PR#875
+
   *) API: Correct child_init() slot declaration from int to void, to
      match the init() declaration.  Update mod_example to use the new
      hook.  [Ken Coar]

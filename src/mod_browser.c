@@ -139,7 +139,7 @@ command_rec browser_module_cmds[] = {
 { NULL },
 };
 
-int parse_headers_browser_module(request_rec *r)
+static int browser_match(request_rec *r)
 {
     server_rec *s = r->server;
     browser_server_config_rec *sconf = get_module_config (s->module_config,
@@ -166,7 +166,7 @@ int parse_headers_browser_module(request_rec *r)
 	}
     }
 
-    return OK;  
+    return DECLINED;  
 }
 
 module MODULE_VAR_EXPORT browser_module = {
@@ -178,13 +178,13 @@ module MODULE_VAR_EXPORT browser_module = {
    merge_browser_config,     	/* merge server configs */
    browser_module_cmds,		/* command table */
    NULL,			/* handlers */
-   NULL,			/* filename translation */
+   browser_match,		/* filename translation */
    NULL,			/* check_user_id */
    NULL,			/* check auth */
    NULL,			/* check access */
    NULL,			/* type_checker */
    NULL,			/* fixups */
    NULL,			/* logger */
-   parse_headers_browser_module,/* header parser */
+   NULL				/* header parser */
    NULL				/* child_init */
 };

@@ -957,6 +957,10 @@ void process_request_internal (request_rec *r)
 	return;
     }
 
+    if (r->proto_num > 1000 && table_get (r->subprocess_env, "downgrade-1.0")) {
+	r->proto_num = 1000;
+    }
+
     /* NB: directory_walk() clears the per_dir_config, so we don't inherit from
        location_walk() above */
 
