@@ -281,10 +281,12 @@ static char *ssl_var_lookup_ssl(apr_pool_t *p, conn_rec *c, char *var)
     else if (ssl != NULL && strcEQ(var, "SESSION_ID")) {
         char buf[SSL_SESSION_ID_STRING_LEN];
         SSL_SESSION *pSession = SSL_get_session(ssl);
-        result = apr_pstrdup(p, SSL_SESSION_id2sz(
-                                SSL_SESSION_get_session_id(pSession),
-                                SSL_SESSION_get_session_id_length(pSession),
-                                buf, sizeof(buf)));
+        if (pSession) {
+            result = apr_pstrdup(p, SSL_SESSION_id2sz(
+                                     SSL_SESSION_get_session_id(pSession),
+                                     SSL_SESSION_get_session_id_length(pSession),
+                                     buf, sizeof(buf)));
+        }
     }
     else if (ssl != NULL && strlen(var) >= 6 && strcEQn(var, "CIPHER", 6)) {
         result = ssl_var_lookup_ssl_cipher(p, c, var+6);
