@@ -391,7 +391,6 @@ and Access Control</a></seealso>
 <description>Technique for locating the interpreter for CGI
 scripts</description>
 <syntax>CGIMapExtension <var>cgi-path</var> <var>.extension</var></syntax>
-<default>None</default>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>

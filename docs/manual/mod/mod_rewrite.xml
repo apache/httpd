@@ -309,7 +309,6 @@ SCRIPT_URI=http://en1.engelschall.com/u/rse/
 <name>RewriteOptions</name>
 <description>Sets some special options for the rewrite engine</description>
 <syntax>RewriteOptions <em>Options</em></syntax>
-<default>None</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
@@ -415,7 +414,6 @@ RewriteLogLevel 3
 module="mod_rewrite">RewriteMap</directive>
 synchronization</description>
 <syntax>RewriteLock <em>file-path</em></syntax>
-<default>None</default>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
@@ -435,7 +433,6 @@ synchronization</description>
 <description>Defines a mapping function for key-lookup</description>
 <syntax>RewriteMap <em>MapName</em> <em>MapType</em>:<em>MapSource</em>
 </syntax>
-<default>None</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 <compatibility>The choice of different dbm types is available in
@@ -783,7 +780,6 @@ Result:
 </description>
 <syntax> RewriteCond
       <em>TestString</em> <em>CondPattern</em></syntax>
-<default>None</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
@@ -1186,7 +1182,6 @@ RewriteRule  ^/$                 /homepage.std.html  [L]
 <description>Defines rules for the rewriting engine</description>
 <syntax>RewriteRule
       <em>Pattern</em> <em>Substitution</em></syntax>
-<default>None</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>

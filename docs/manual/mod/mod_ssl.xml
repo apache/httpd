@@ -1140,7 +1140,6 @@ SSL_VERSION_INTERFACE  SSL_CLIENT_S_DN_OU     SSL_SERVER_S_DN_OU
 <name>SSLProxyMachineCertificatePath</name>
 <description>Directory of PEM-encoded CA certificates for proxy server client certificates</description>
 <syntax>SSLProxyMachineCertificatePath <em>directory</em></syntax>
-<default>None</default>
 <contextlist><context>server config</context></contextlist>
 <override>Not applicable</override>
 
@@ -1169,7 +1168,6 @@ SSLProxyMachineCertificatePath /usr/local/apache/conf/ssl.crt/
 <name>SSLProxyMachineCertificateFile</name>
 <description>File of concatenated PEM-encoded CA certificates for proxy server client certificates</description>
 <syntax>SSLProxyMachineCertificateFile <em>filename</em></syntax>
-<default>None</default>
 <contextlist><context>server config</context></contextlist>
 <override>Not applicable</override>
 
@@ -1240,8 +1238,8 @@ SSLProxyVerify require
 <name>SSLProxyVerifyDepth</name>
 <description>Maximum depth of CA Certificates in Remote Server
 Certificate verification</description>
-<syntax>SSLVerifyDepth <em>number</em></syntax>
-<default>SSLVerifyDepth 1</default>
+<syntax>SSLProxyVerifyDepth <em>number</em></syntax>
+<default>SSLProxyVerifyDepth 1</default>
 <contextlist><context>server config</context>
 <context>virtual host</context>
 <context>directory</context>
