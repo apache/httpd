@@ -1361,6 +1361,7 @@ static struct ent *make_autoindex_entry(const apr_finfo_t *dirent,
             if (autoindex_opts & FOLDERS_FIRST) {
                 p->isdir = 1;
             }
+            rr->filename = ap_make_dirstr_parent (rr->pool, rr->filename);
             if (!(p->icon = find_icon(d, rr, 1))) {
                 p->icon = find_default_icon(d, "^^DIRECTORY^^");
             }

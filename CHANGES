@@ -1,5 +1,10 @@
 Changes with Apache 2.0.48
 
+  *) mod_autoindex: If a directory contains a file listed in the
+     DirectoryIndex directive, the folder icon is no longer replaced
+     by the icon of that file. PR 9587.
+     [David Shane Holden <dpejesh@yahoo.com>]
+
   *) Fixed mod_usertrack to not get false positive matches on the
      user-tracking cookie's name.  PR 16661.
      [Manni Wood <manniwood@planet-save.com>]
