@@ -96,7 +96,7 @@
     を使って強力な正規表現に基づいたマッチと置換を行なうことができます。
     たとえば、</p>
 
-<div class="example"><p><code>ScriptAliasMatch ^/~([a-zA-Z0-9]*)/cgi-bin/(.*)
+<div class="example"><p><code>ScriptAliasMatch ^/~([a-zA-Z0-9]+)/cgi-bin/(.+)
       /home/$1/cgi-bin/$2</code></p></div>
 
     <p>は <code>http://example.com/~user/cgi-bin/script.cgi</code> への
@@ -139,7 +139,7 @@
     <code>/home/user/public_html/file.html</code> にマップされるようにするには、
     以下のように <code>AliasMatch</code> ディレクティブを使います:</p>
 
-<div class="example"><p><code>AliasMatch ^/upages/([a-zA-Z0-9]*)/?(.*)
+<div class="example"><p><code>AliasMatch ^/upages/([a-zA-Z0-9]+)/?(.*)
       /home/$1/public_html/$2</code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">

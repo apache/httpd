@@ -109,10 +109,13 @@
       各部分が完全に合うものだけに適用されますので、上の例は
       <code>foo.apache.org</code> にはマッチしますが、
       <code>fooapache.org</code> にはマッチしません。
-      この設定をすると、サーバは
+      この設定をすると、Apache は
       <code class="directive"><a href="../mod/core.html#hostnamelookups">HostnameLookups</a></code>
       の設定に関わらず、クライアントの IP アドレスに対して
-      DNS の逆引きを行ないます。</p></dd>
+      DNS の 2 重逆引きを行ないます。
+      ホスト名からオリジナルの IP アドレスを順引きします。
+      順引きと逆引きが一致し、ホスト名が該当した場合にのみ、
+      アクセスが許可されます。</p></dd>
 
       <dt>完全な IP アドレス</dt>
 
@@ -137,7 +140,7 @@
       <div class="example"><h3>例</h3><p><code>
         Allow from 10.1.0.0/255.255.0.0
       </code></p></div>
-      <p>ネットワーク a.b.c.d とネットマスク w.x.y.z です。
+      <p>ネットワーク a.b.c.d とネットマスク w.x.y.z です。
       より細粒度のサブネット制限用です。</p></dd>
 
       <dt>ネットワーク/nnn CIDR 指定</dt>
@@ -188,7 +191,7 @@
 
     <p>この場合、user-agent の文字列が <code>KnockKnock/2.0</code>
     で始まるブラウザのみがアクセスを許可され、
-    他のものはアクセスを拒否されます。</p>
+    他のものはアクセスを拒否されます。</p>
 
 
 </div>
@@ -257,7 +260,7 @@ Deny が評価される順番を制御する</td></tr>
     </dl>
 
     <p>キーワードはコンマで分離することだけが可能です。
-    間に<em>空白があってはいけません</em>。どの場合でも、<code class="directive"><a href="#allow">Allow</a></code> と
+    間に<em>空白があってはいけません</em>。どの場合でも、<code class="directive"><a href="#allow">Allow</a></code> と
     <code class="directive"><a href="#deny">Deny</a></code> 文は
     全て評価されるということに注意してください。
     </p>
@@ -316,7 +319,7 @@ Deny が評価される順番を制御する</td></tr>
     <p><code class="directive">Order</code>
     ディレクティブはサーバの設定処理の各段階でだけ
     アクセスディレクティブの処理の順番を変更します。これは、たとえば、
-    <code class="directive">Order</code> ディレクティブの設定に関わらず、
+    <code class="directive">Order</code> ディレクティブの設定に関わらず、
     <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> セクションの
     <code class="directive"><a href="#allow">Allow</a></code> ディレクティブや
     <code class="directive"><a href="#deny">Deny</a></code> ディレクティブは、

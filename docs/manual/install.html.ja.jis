@@ -38,6 +38,10 @@
     するために <code>libtool</code> と <code>autoconf</code>
     を使うようになっています。</p>
 
+    <p>マイナーバージョンからその次のバージョンにアップグレードする
+    (2.0.50 から 2.0.51 へ等) 場合は、まず <a href="#upgrading">
+    アップグレード</a>をご覧下さい。</p>
+
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#overview">概要 (せっかちな人向け)</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#requirements">必要なもの</a></li>
@@ -48,6 +52,7 @@
 <li><img alt="" src="./images/down.gif" /> <a href="#install">インストール</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#customize">カスタマイズ</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#test">テスト</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#upgrading">アップグレード</a></li>
 </ul><h3>参照</h3><ul class="seealso"><li><a href="invoking.html">Apacheの起動</a></li><li><a href="stopping.html">Apacheの停止と再起動</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -58,8 +63,7 @@
       <tr>
         <td><a href="#download">ダウンロード</a></td>
 
-        <td><code>$ lynx
-        http://www.apache.org/dist/httpd/httpd-2_1_<em>NN</em>.tar.gz</code>
+        <td><code>$ lynx http://httpd.apache.org/download.cgi</code>
         </td>
       </tr>
 
@@ -103,7 +107,7 @@
       </tr>
     </table>
 
-    <p><em>NN</em> は最新のマイナーバージョンナンバーに、
+    <p><em>NN</em> は最新のマイナーバージョンナンバーに、
     <em>PREFIX</em> はインストールするサーバでのファイルシステムのパスに、
     置き換えてください。<em>PREFIX</em> を指定しなかった場合は、
     デフォルトの <code>/usr/local/apache2</code> になります。</p>
@@ -184,7 +188,7 @@
 
 <div class="example"><p><code>$ gpg --import KEYS</code></p></div>
 
-    <p>次のステップでは、tarball を PGP 署名でテストします。
+    <p>次のステップでは、tarball を PGP 署名でテストします。
     PGP 署名は必ず <a href="http://httpd.apache.org/download.cgi">メインの Apache
     ウェブサイト</a>から取得してください。
     署名ファイルへのリンクは対応するダウンロードリンクの隣にあり、また
@@ -236,7 +240,7 @@
     <p>次のステップは、あなたのプラットホームと
     個人的な要求に合うように Apache
     ソースツリーを設定することです。
-    これは配布ディレクトリのルートディレクトリにある、
+    これは配布ディレクトリのルートディレクトリにある、
     <code>configure</code> スクリプトで行ないます。
      (Apache ソースツリーの CVS
     版をダウンロードした開発者は、次のステップに進む前に
@@ -315,7 +319,7 @@
 
       <dd>ヘッダファイルの探索ディレクトリ ("<code>-I<em>dir</em></code>") 。</dd>
 
-      <dt><code>TARGET=...</code> [デフォルト値: <code>apache</code>]</dt>
+      <dt><code>TARGET=...</code> [デフォルト値: <code>httpd</code>]</dt>
 
       <dd>ビルドする実行ファイルの名前。</dd>
 
@@ -341,13 +345,13 @@
     </dl>
 
 
-<h3><a name="output" id="output"><code>autoconf</code> 出力オプション</a></h3>
+<h3><a name="output" id="output"><code>autoconf</code> 出力オプション</a></h3>
 
     <dl>
       <dt><code>--help</code></dt>
 
       <dd>使用可能な全オプションなど使い方をプリントします。
-      実際に設定はされません。</dd>
+      実際に設定はされません。</dd>
 
       <dt><code>--quiet</code></dt>
 
@@ -403,7 +407,7 @@
 
       <dd>インストールパスを指定するため、
       <code>config.layout</code> ファイル中での、
-      指定された名前のレイアウトを使用します。</dd>
+      指定された名前のレイアウトを使用します。</dd>
     </dl>
 
 
@@ -411,7 +415,7 @@
 <h3><a name="modules" id="modules">モジュール</a></h3>
 
     <p>Apache はモジュール化されたサーバです。
-    ごくごく基本的な機能だけが、コアサーバに含まれています。
+    ごくごく基本的な機能だけが、コアサーバに含まれています。
     拡張機能は様々なモジュールの形で提供されます。
     設定プロセス中では、どんなモジュールをサーバで使うように
     コンパイルするか選ばなければなりません。このマニュアルにある<a href="mod/">モジュールの一覧</a>を
@@ -452,7 +456,7 @@
 
       <dt><code>--disable-<em>MODULE</em></code></dt>
 
-      <dd>通常はコンパイルされてインクルードされる
+      <dd>通常はコンパイルされてインクルードされる
       <em>MODULE</em> モジュールを除去します。</dd>
 
       <dt><code>--enable-modules=<em>MODULE-LIST</em></code></dt>
@@ -499,9 +503,9 @@
     <a href="mpm.html">Multi-Processing Modules</a> (MPM)
     を選択してインクルードします。ただ一つだけの MPM
     をコンパイルのプロセスで含める必要があります。
-    個々のプラットホーム向けのデフォルトの MPM は <a href="mpm.html">MPM 文書</a>に一覧がありますが、
+    個々のプラットホーム向けのデフォルトの MPM は <a href="mpm.html">MPM 文書</a>に一覧がありますが、
     <code>configure</code> 
-    コマンドで置き換えることができます。</p>
+    コマンドで置き換えることができます。</p>
 
     <dl>
       <dt><code>--with-mpm=<em>NAME</em></code></dt>
@@ -566,7 +570,7 @@
     <p>基本的な設定をするのに、Pentium III/Linux 2.2 
     のシステムでおおよそ 3 分程度かかりますが、
     あらかじめご了承下さい。
-    また、時間はハードウェアや有効にしたモジュールの数に
+    また、時間はハードウェアや有効にしたモジュールの数に
     大きく依存するでしょう。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -610,6 +614,52 @@
     次のコマンドを実行します:</p>
 
 <div class="example"><p><code>$ <em>PREFIX</em>/bin/apachectl stop</code></p></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="upgrading" id="upgrading">アップグレード</a></h2>
+
+    <p>アップグレードでまず行なうべきことは、リリースアナウンスと
+    ソースディストリビューションに入っている <code>CHANGES</code> を読んで、
+    自身のサイトに対して影響を及ぼす変更点を探すことです。
+    メジャーリリース間の変更をする場合 (例えば 1.3 から 2.0 へ、2.0 から 2.2 へ)
+    は、コンパイル時や実行時の設定に大きな差異があるでしょうから、
+    手動の調整が必要になるでしょう。モジュールも全て、API
+    の変更に合わせるためにアップグレードが必要になるでしょう。</p>
+
+    <p>マイナーバージョンから次のバージョンにアップグレードする場合
+    (例えば 2.0.55 から 2.0.57 へ) は、もっと簡単です。
+    <code>make install</code> を実行しても今あるドキュメント、
+    ログファイル、設定ファイルは上書きされません。
+    さらに、マイナーバージョン間では <code>configure</code> オプション、
+    実行時の設定、モジュール API に不整合が起こらないように、
+    開発者は最大限の努力をしています。
+    大抵の場合、同一の <code>configure</code> コマンドライン、
+    同一の設定ファイル、モジュール全てが正常に動作するはずです。
+    (2.0.41 以降ではそのようになっています。それ以前のバージョンには
+    不整合が存在します。)</p>
+
+    <p>前回のインストール時のソースツリーが残されているのであれば、
+    アップグレードはさらに簡単です。古いソースツリーのルートに存在する
+    <code>config.nice</code> ファイルには、前回ソースツリーを設定した時の
+    <code>configure</code> コマンドラインが入っています。
+    次のバージョンにアップグレードする場合は、<code>config.nice</code>
+    ファイルを新しいバージョンのソースツリーにコピーし、
+    それを編集し必要な変更を行なって、次のように実行します。</p>
+
+    <div class="example"><p><code>
+    $ ./config.nice<br />
+    $ make<br />
+    $ make install<br />
+    $ <em>PREFIX</em>/bin/apachectl stop<br />
+    $ <em>PREFIX</em>/bin/apachectl start<br />
+    </code></p></div>
+
+    <div class="warning">新しいバージョンを使用する場合は、
+    実際に運用を始める前に、必ず自分用の環境でテストすべきです。
+    最終的にアップグレードする前に、非互換性がないかをテストするために、
+    例えば、異なる <code>--prefix</code> と異なるポート (<code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> ディレクティブで設定します) 
+    を使用することで、古いバージョンに影響を与えずに新しいバージョンを
+    インストールし、実行できます。</div>
 </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="./de/install.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
