@@ -546,9 +546,7 @@ do
                     ;;
             esac
             #   determine GNU platform triple
-            #   (the use of `awk' and not `$AWK' here is correct, because this
-            #   Makefile is for platform bootstrapping, so don't hardcode paths)
-            gnutriple=`$aux/GuessOS | sed -e 's:/:-:g' | awk '{ printf("%s",$1); }'`
+            gnutriple=`$aux/GuessOS | sed -e 's:/:-:g' | $AWK '{ printf("%s",$1); }'`
             #   create Makefile wrapper (the first time only)
             if [ "x`ls $top/src.* 2>/dev/null`" = "x" ]; then
                 if [ "x$quiet" = "xno" ]; then
@@ -563,7 +561,9 @@ do
                 else
                     echo "SHADOW=." >> Makefile
                 fi
-                echo "GNUTRIPLE=\`$aux/GuessOS | sed -e 's:/:-:g' | $AWK '{ printf(\"%s\",\$\$1); }'\`" >> Makefile
+                #   (the use of `awk' and not `$AWK' here is correct, because this
+                #   Makefile is for platform bootstrapping, so don't hardcode paths)
+                echo "GNUTRIPLE=\`$aux/GuessOS | sed -e 's:/:-:g' | awk '{ printf(\"%s\",\$\$1); }'\`" >> Makefile
                 echo "" >> Makefile
                 echo "all build install install-quiet clean distclean:" >> Makefile
                 echo "	@cd \$(SHADOW); \$(MAKE) -f Makefile.\$(GNUTRIPLE) \$(MFLAGS) \$@" >> Makefile
