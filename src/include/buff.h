@@ -206,6 +206,15 @@ struct child_info {
     HANDLE hPipeInputRead;
     HANDLE hPipeOutputWrite;
     HANDLE hPipeErrorWrite;
+#else
+    /* 
+     * We need to put a dummy member in here to avoid compilation
+     * errors under certain Unix compilers, like SGI's and HPUX's,
+     * which fail to compile a zero-sized struct.  Of course
+     * it would be much nicer if there was actually a use for this
+     * structure under Unix.  Aah the joys of x-platform code.
+     */
+    int dummy;
 #endif
 };
 API_EXPORT(int) ap_spawn_child_err_buff(pool *, int (*)(void *, child_info *), void *,
