@@ -31,8 +31,9 @@
 </xsl:choose>
 <xsl:text>}\label{</xsl:text>
 <xsl:value-of select="concat('/mod/',name)"/>
-<xsl:text>}
-</xsl:text>
+<xsl:text>}\hypertarget{</xsl:text>
+<xsl:value-of select="concat('/mod/',name)"/>
+<xsl:text>}{}</xsl:text>
 
 <xsl:text>
 \begin{tabular}{lp{.75\linewidth}}
@@ -164,13 +165,24 @@
 <xsl:template match="directivesynopsis/name">
 <xsl:text>\subsection*{</xsl:text>
 <xsl:call-template name="simpledirname"/>
-  <xsl:value-of select="$messages/message
-    [@name='directive']/@replace-space-with"/>
+  <xsl:choose>
+  <xsl:when test="$messages/message
+      [@name='directive']/@replace-space-with">
+    <xsl:value-of select="$messages/message
+        [@name='directive']/@replace-space-with"/>
+  </xsl:when>
+  <xsl:otherwise>
+    <xsl:text> </xsl:text>
+  </xsl:otherwise>
+  </xsl:choose>
+
 <xsl:value-of select="$messages/message[@name='directive']" />
 <xsl:text>}\label{</xsl:text>
 <xsl:value-of select="concat('/mod/', //modulesynopsis/name, ':', translate(., $uppercase, $lowercase))"/>
-<xsl:text>}
-</xsl:text>
+<xsl:text>}\hypertarget{</xsl:text>
+<xsl:value-of select="concat('/mod/', //modulesynopsis/name, ':', translate(., $uppercase, $lowercase))"/>
+<xsl:text>}{}</xsl:text>
+
 </xsl:template>
 
 <xsl:template match="directivesynopsis">
@@ -182,22 +194,22 @@
 \hline
 </xsl:text>
 <xsl:value-of select="$messages/message [@name='description']" />
-<xsl:text>: &amp; \begin{minipage}{.8\linewidth}</xsl:text>
+<xsl:text>: &amp; </xsl:text>
 <xsl:apply-templates select="description" />
-<xsl:text>\end{minipage} \\
+<xsl:text>\\
 </xsl:text>
 
 <xsl:value-of select="$messages/message[@name='syntax']" />
-<xsl:text>: &amp; \begin{minipage}{.8\linewidth}{\ttfamily </xsl:text>
+<xsl:text>: &amp; {\ttfamily </xsl:text>
 <xsl:apply-templates select="syntax" />
-<xsl:text>}\end{minipage} \\
+<xsl:text>}\\
 </xsl:text>
 
 <xsl:if test="default">
 <xsl:value-of select="$messages/message[@name='default']" />
-<xsl:text>: &amp; \begin{minipage}{.8\linewidth}{\ttfamily </xsl:text>
+<xsl:text>: &amp; {\ttfamily </xsl:text>
 <xsl:apply-templates select="default" />
-<xsl:text>}\end{minipage} \\
+<xsl:text>} \\
 </xsl:text>
 </xsl:if>
 
@@ -253,7 +265,6 @@
 <xsl:text>\textbf{</xsl:text>
 <xsl:value-of select="$messages/message[@name='seealso']" />
 <xsl:text>}
-
 \begin{itemize}
 </xsl:text>
 <xsl:for-each select="seealso">

@@ -63,7 +63,7 @@ select="$metafile/basename"/>
 <xsl:if test="not(pre)"><xsl:text>\fbox{</xsl:text></xsl:if>
 <xsl:text>\begin{minipage}{.8\textwidth}\begin{flushleft}</xsl:text>
 <xsl:apply-templates select="title" mode="print" />
-<xsl:if test="not(pre)"><xsl:text>{\ttfamily </xsl:text></xsl:if>
+<xsl:if test="not(pre)"><xsl:text>{\ttfamily\small </xsl:text></xsl:if>
 <xsl:text>\noindent </xsl:text><xsl:apply-templates/>
 <xsl:if test="not(pre)"><xsl:text>}</xsl:text></xsl:if>
 <xsl:text>\end{flushleft}\end{minipage}</xsl:text>
@@ -114,9 +114,15 @@ select="$metafile/basename"/>
 <!-- ==================================================================== -->
 <xsl:template match="directive" name="directive">
 <xsl:text>\textsc{</xsl:text>
-        <xsl:if test="@type='section'">\textless{}</xsl:if>
+   <xsl:if test="@type='section'"><xsl:text>\textless{}</xsl:text></xsl:if>
+   <xsl:text>\hyperlink{/mod/</xsl:text>
+   <xsl:value-of select="@module"/>
+   <xsl:text>:</xsl:text>
+   <xsl:value-of select="translate(.,$uppercase,$lowercase)"/>
+   <xsl:text>}{</xsl:text>
         <xsl:apply-templates/>
-        <xsl:if test="@type='section'">\textgreater{}</xsl:if>
+   <xsl:text>}</xsl:text>
+   <xsl:if test="@type='section'"><xsl:text>\textgreater{}</xsl:text></xsl:if>
 <xsl:text>}</xsl:text>
 </xsl:template>
 <!-- /directive -->
@@ -126,8 +132,11 @@ select="$metafile/basename"/>
 <!-- Inserts a link to refereed module                                    -->
 <!-- ==================================================================== -->
 <xsl:template match="module" name="module">
-<xsl:text>\textsc{</xsl:text>
+<xsl:text>\textsc{\hyperlink{/mod/</xsl:text>
+  <xsl:value-of select="."/>
+  <xsl:text>}{</xsl:text>
     <xsl:apply-templates/>
+  <xsl:text>}</xsl:text>
 <xsl:text>}</xsl:text>
 </xsl:template>
 <!-- /module -->
