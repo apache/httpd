@@ -1,5 +1,8 @@
 Changes with Apache 2.0.26-dev
 
+  *) Build mod_so even if no core modules are built shared.
+     [Aaron Bannert <aaron@clove.org>]
+
   *) Introduce ap_directory_walk rewrite (with further optimizations
      required) to adapt to the ap_process_request_internal() changes.
      Optimized so subrequests and redirects now reuse previous section 
