@@ -304,7 +304,9 @@ dnl
 dnl APACHE_MODULE(name, helptext[, objects[, structname[, default[, config]]]])
 AC_DEFUN(APACHE_MODULE,[
   AC_MSG_CHECKING(whether to enable mod_$1)
-  AC_ARG_ENABLE(translit($1,_,-),[  --]ifelse($5,yes,disable,enable)[-]translit($1,_,-)    $2,,enable_$1=ifelse($5,,no,$5))
+  define([optname],[  --]ifelse($5,yes,disable,enable)[-]translit($1,_,-))dnl
+  AC_ARG_ENABLE(translit($1,_,-),optname() substr([                         ],len(optname()))$2,,enable_$1=ifelse($5,,no,$5))
+  undefine([optname])dnl
   AC_MSG_RESULT($enable_$1)
   if test "$enable_$1" != "no"; then
     case "$enable_$1" in
