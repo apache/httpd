@@ -311,7 +311,6 @@ case "$PLAT" in
 	LDFLAGS="$LDFLAGS -lm"
 	RULE_SHARED_CORE=no
 	DEF_SHARED_CORE=no
-	using_shlib=0
 	;;
     *-ibm-aix*)
 	OS='IBM AIX'
