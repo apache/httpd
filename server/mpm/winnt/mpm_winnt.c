@@ -203,38 +203,38 @@ LISTEN_COMMANDS,
 };
 
 
-AP_DECLARE(void) mpm_recycle_completion_context(PCOMP_CONTEXT pCompContext)
+AP_DECLARE(void) mpm_recycle_completion_context(PCOMP_CONTEXT context)
 {
     /* Recycle the completion context.
      * - destroy the ptrans pool
      * - put the context on the queue to be consumed by the accept thread
      * Note: 
-     * pCompContext->accept_socket may be in a disconnected but reusable 
+     * context->accept_socket may be in a disconnected but reusable 
      * state so -don't- close it.
      */
-    if (pCompContext) {
-        apr_pool_clear(pCompContext->ptrans);
-        apr_pool_destroy(pCompContext->ptrans);
-        pCompContext->ptrans = NULL;
-        pCompContext->next = NULL;
+    if (context) {
+        apr_pool_clear(context->ptrans);
+        apr_pool_destroy(context->ptrans);
+        context->ptrans = NULL;
+        context->next = NULL;
         apr_thread_mutex_lock(qlock);
         if (qtail)
-            qtail->next = pCompContext;
+            qtail->next = context;
         else
-            qhead = pCompContext;
-        qtail = pCompContext;
+            qhead = context;
+        qtail = context;
         apr_thread_mutex_unlock(qlock);
     }
 }
 
 AP_DECLARE(PCOMP_CONTEXT) mpm_get_completion_context(void)
 {
-    PCOMP_CONTEXT pCompContext = NULL;
+    PCOMP_CONTEXT context = NULL;
 
     /* Grab a context off the queue */
     apr_thread_mutex_lock(qlock);
     if (qhead) {
-        pCompContext = qhead;
+        context = qhead;
         qhead = qhead->next;
         if (!qhead)
             qtail = NULL;
@@ -245,7 +245,7 @@ AP_DECLARE(PCOMP_CONTEXT) mpm_get_completion_context(void)
      * the child pool. There may be up to ap_threads_per_child contexts
      * in the system at once.
      */
-    if (!pCompContext) {
+    if (!context) {
         if (num_completion_contexts >= ap_threads_per_child) {
             static int reported = 0;
             if (!reported) {
@@ -256,28 +256,28 @@ AP_DECLARE(PCOMP_CONTEXT) mpm_get_completion_context(void)
             }
             return NULL;
         }
-        pCompContext = (PCOMP_CONTEXT) apr_pcalloc(pchild, sizeof(COMP_CONTEXT));
+        context = (PCOMP_CONTEXT) apr_pcalloc(pchild, sizeof(COMP_CONTEXT));
 
-        pCompContext->Overlapped.hEvent = CreateEvent(NULL, FALSE, FALSE, NULL); 
-        if (pCompContext->Overlapped.hEvent == NULL) {
+        context->Overlapped.hEvent = CreateEvent(NULL, FALSE, FALSE, NULL); 
+        if (context->Overlapped.hEvent == NULL) {
             /* Hopefully this is a temporary condition ... */
             ap_log_error(APLOG_MARK,APLOG_WARNING, apr_get_os_error(), ap_server_conf,
                          "mpm_get_completion_context: CreateEvent failed.");
             return NULL;
         }
-        pCompContext->accept_socket = INVALID_SOCKET;
-        pCompContext->ba = apr_bucket_alloc_create(pchild);
+        context->accept_socket = INVALID_SOCKET;
+        context->ba = apr_bucket_alloc_create(pchild);
         num_completion_contexts++;
     }
-    return pCompContext;
+    return context;
 }
 
-AP_DECLARE(apr_status_t) mpm_post_completion_context(PCOMP_CONTEXT pCompContext, 
+AP_DECLARE(apr_status_t) mpm_post_completion_context(PCOMP_CONTEXT context, 
                                                      io_state_e state)
 {
     LPOVERLAPPED pOverlapped;
-    if (pCompContext)
-        pOverlapped = &pCompContext->Overlapped;
+    if (context)
+        pOverlapped = &context->Overlapped;
     else
         pOverlapped = NULL;
 
@@ -891,7 +891,7 @@ static PCOMP_CONTEXT win9x_get_connection(PCOMP_CONTEXT context)
 static void winnt_accept(void *listen_socket) 
 {
 
-    PCOMP_CONTEXT pCompContext;
+    PCOMP_CONTEXT context;
     DWORD BytesRead;
     SOCKET nlsd;
     int lasterror;
@@ -899,8 +899,8 @@ static void winnt_accept(void *listen_socket)
     nlsd = (SOCKET) listen_socket;
 
     while (!shutdown_in_progress) {
-        pCompContext = mpm_get_completion_context();
-        if (!pCompContext) {
+        context = mpm_get_completion_context();
+        if (!context) {
             /* Hopefully whatever is preventing us from getting a 
              * completion context is a temporary resource constraint.
              */
@@ -910,9 +910,9 @@ static void winnt_accept(void *listen_socket)
 
     again:            
         /* Create and initialize the accept socket */
-        if (pCompContext->accept_socket == INVALID_SOCKET) {
-            pCompContext->accept_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-            if (pCompContext->accept_socket == INVALID_SOCKET) {
+        if (context->accept_socket == INVALID_SOCKET) {
+            context->accept_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+            if (context->accept_socket == INVALID_SOCKET) {
                 /* Hopefully another temporary condition. Be graceful. */
                 ap_log_error(APLOG_MARK,APLOG_WARNING, apr_get_netos_error(), ap_server_conf,
                              "winnt_accept: Failed to allocate an accept socket. "
@@ -925,21 +925,21 @@ static void winnt_accept(void *listen_socket)
         /* AcceptEx on the completion context. The completion context will be 
          * signaled when a connection is accepted. 
          */
-        if (!AcceptEx(nlsd, pCompContext->accept_socket,
-                      pCompContext->buff,
+        if (!AcceptEx(nlsd, context->accept_socket,
+                      context->buff,
                       0,
                       PADDED_ADDR_SIZE, 
                       PADDED_ADDR_SIZE,
                       &BytesRead,
-                      &pCompContext->Overlapped)) {
+                      &context->Overlapped)) {
             lasterror = apr_get_netos_error();
             if (lasterror == APR_FROM_OS_ERROR(WSAEINVAL)) {
                 /* Hack alert. Occasionally, TransmitFile will not recycle the 
                  * accept socket (usually when the client disconnects early). 
                  * Get a new socket and try the call again.
                  */
-                closesocket(pCompContext->accept_socket);
-                pCompContext->accept_socket = INVALID_SOCKET;
+                closesocket(context->accept_socket);
+                context->accept_socket = INVALID_SOCKET;
                 ap_log_error(APLOG_MARK, APLOG_DEBUG, lasterror, ap_server_conf,
                        "winnt_accept: AcceptEx failed due to early client "
                        "disconnect. Reallocate the accept socket and try again.");
@@ -951,14 +951,14 @@ static void winnt_accept(void *listen_socket)
             else if (lasterror != APR_FROM_OS_ERROR(ERROR_IO_PENDING)) {
                 ap_log_error(APLOG_MARK,APLOG_ERR, lasterror, ap_server_conf,
                              "winnt_accept: AcceptEx failed. Attempting to recover.");
-                closesocket(pCompContext->accept_socket);
-                pCompContext->accept_socket = INVALID_SOCKET;
+                closesocket(context->accept_socket);
+                context->accept_socket = INVALID_SOCKET;
                 Sleep(500);
                 goto again;
             }
 
             /* Wait for pending i/o */
-            WaitForSingleObject(pCompContext->Overlapped.hEvent, INFINITE);
+            WaitForSingleObject(context->Overlapped.hEvent, INFINITE);
         }
 
         /* ### There is a race condition here.  The mainline may hit 
@@ -971,7 +971,7 @@ static void winnt_accept(void *listen_socket)
         /* Inherit the listen socket settings. Required for 
          * shutdown() to work 
          */
-        if (setsockopt(pCompContext->accept_socket, SOL_SOCKET,
+        if (setsockopt(context->accept_socket, SOL_SOCKET,
                        SO_UPDATE_ACCEPT_CONTEXT, (char *)&nlsd,
                        sizeof(nlsd))) {
             ap_log_error(APLOG_MARK, APLOG_WARNING, apr_get_netos_error(), ap_server_conf,
@@ -980,21 +980,21 @@ static void winnt_accept(void *listen_socket)
         }
 
         /* Get the local & remote address */
-        GetAcceptExSockaddrs(pCompContext->buff,
+        GetAcceptExSockaddrs(context->buff,
                              0,
                              PADDED_ADDR_SIZE,
                              PADDED_ADDR_SIZE,
-                             &pCompContext->sa_server,
-                             &pCompContext->sa_server_len,
-                             &pCompContext->sa_client,
-                             &pCompContext->sa_client_len);
+                             &context->sa_server,
+                             &context->sa_server_len,
+                             &context->sa_client,
+                             &context->sa_client_len);
 
         /* When a connection is received, send an io completion notification to
          * the ThreadDispatchIOCP. This function could be replaced by
          * mpm_post_completion_context(), but why do an extra function call...
          */
         PostQueuedCompletionStatus(ThreadDispatchIOCP, 0, IOCP_CONNECTION_ACCEPTED,
-                                   &pCompContext->Overlapped);
+                                   &context->Overlapped);
     }
 
     if (!shutdown_in_progress) {
@@ -1002,14 +1002,14 @@ static void winnt_accept(void *listen_socket)
         SetEvent(exit_event);
     }
 }
-static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT pCompContext)
+static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT context)
 {
     int rc;
     DWORD BytesRead;
     DWORD CompKey;
     LPOVERLAPPED pol;
 
-    mpm_recycle_completion_context(pCompContext);
+    mpm_recycle_completion_context(context);
 
     g_blocked_threads++;        
     while (1) {
@@ -1028,7 +1028,7 @@ static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT pCompContext)
 
         switch (CompKey) {
         case IOCP_CONNECTION_ACCEPTED:
-            pCompContext = CONTAINING_RECORD(pol, COMP_CONTEXT, Overlapped);
+            context = CONTAINING_RECORD(pol, COMP_CONTEXT, Overlapped);
             break;
         case IOCP_SHUTDOWN:
             g_blocked_threads--;
@@ -1042,14 +1042,14 @@ static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT pCompContext)
 
     g_blocked_threads--;    
 
-    if ((rc = apr_pool_create(&pCompContext->ptrans, pconf)) != APR_SUCCESS) {
+    if ((rc = apr_pool_create(&context->ptrans, pconf)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK,APLOG_DEBUG, rc, ap_server_conf,
                      "Child %d: apr_pool_create failed with rc %d", my_pid, rc);
     } else {
-        apr_pool_tag(pCompContext->ptrans, "ptrans");
+        apr_pool_tag(context->ptrans, "ptrans");
     }
 
-    return pCompContext;
+    return context;
 }
 
 /*
