@@ -175,7 +175,7 @@ PSECURITY_ATTRIBUTES GetNullACL()
         return NULL;
     }
 
-    sa->bInheritHandle = TRUE;
+    sa->bInheritHandle = FALSE;
     return sa;
 }
 
