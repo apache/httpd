@@ -119,7 +119,10 @@ static apr_status_t bucketeer_out_filter(ap_filter_t *f,
         apr_table_unset(f->r->headers_out, "Content-Length");
     }
 
-    APR_BRIGADE_FOREACH(e, bb) {
+    for (e = APR_BRIGADE_FIRST(bb);
+         e != APR_BRIGADE_SENTINEL(bb);
+         e = APR_BUCKET_NEXT(e))
+    {
         const char *data;
         apr_size_t len, i, lastpos;
 

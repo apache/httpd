@@ -566,7 +566,10 @@ AP_DECLARE(apr_status_t) ap_save_brigade(ap_filter_t *f,
         *saveto = apr_brigade_create(p, f->c->bucket_alloc);
     }
     
-    APR_RING_FOREACH(e, &(*b)->list, apr_bucket, link) {
+    for (e = APR_BRIGADE_FIRST(*b);
+         e != APR_BRIGADE_SENTINEL(*b);
+         e = APR_BUCKET_NEXT(e))
+    {
         rv = apr_bucket_setaside(e, p);
         if (rv != APR_SUCCESS
             /* ### this ENOTIMPL will go away once we implement setaside

@@ -452,7 +452,10 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
         ctx->stream.avail_out = c->bufferSize;
     }
     
-    APR_BRIGADE_FOREACH(e, bb) {
+    for (e = APR_BRIGADE_FIRST(bb);
+         e != APR_BRIGADE_SENTINEL(bb);
+         e = APR_BUCKET_NEXT(e))
+    {
         const char *data;
         apr_bucket *b;
         apr_size_t len;
@@ -724,7 +727,10 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
             return rv;
         }
 
-        APR_BRIGADE_FOREACH(bkt, ctx->bb) {
+        for (bkt = APR_BRIGADE_FIRST(ctx->bb);
+             bkt != APR_BRIGADE_SENTINEL(ctx->bb);
+             bkt = APR_BUCKET_NEXT(bkt))
+        {
             const char *data;
             apr_size_t len;
 

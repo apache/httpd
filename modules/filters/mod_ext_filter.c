@@ -789,8 +789,10 @@ static int ef_unified_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     dc = ctx->dc;
     bb_tmp = apr_brigade_create(r->pool, c->bucket_alloc);
 
-    APR_BRIGADE_FOREACH(b, bb) {
-
+    for (b = APR_BRIGADE_FIRST(bb);
+         b != APR_BRIGADE_SENTINEL(bb);
+         b = APR_BUCKET_NEXT(b))
+    {
         if (APR_BUCKET_IS_EOS(b)) {
             eos = b;
             break;
