@@ -785,7 +785,6 @@ static int find_ct(request_rec *r)
     mime_dir_config *conf =
     (mime_dir_config *) ap_get_module_config(r->per_dir_config, &mime_module);
     char *ext;
-    const char *orighandler = r->handler;
     const char *type;
     const char *charset = NULL;
     apr_array_header_t *exception_list =
