@@ -864,6 +864,13 @@ CORE_EXPORT(const char *) ap_handle_command(cmd_parms *parms, void *config, cons
             current = ap_add_node(&curr_parent, current, newdir, 1);
         }
         else {
+            /* The next line needs to be removed once we have a validating
+             * tree building routine.
+             * It is left in for now, so that we can ensure that
+             * a container directive is followed by an appropriate closing
+             * directive.
+             */
+            current = ap_add_node(&curr_parent, current, newdir, 0);
             current = curr_parent;
             curr_parent = current->parent;
         }
