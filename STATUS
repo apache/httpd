@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/08/13 20:47:41 $]
+Last modified at [$Date: 2003/08/13 20:59:43 $]
 
 Release:
 
@@ -65,10 +65,10 @@ PATCHES TO PORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
 
-    * Fix bug in mod_deflate, which was passing calling deflate()
-      without checking first whether it has something to
-      deflate. (Currently this causes deflate to generate a fatal
-      error according to the zlib spec.)  PR 22259. [Stas Bekman]
+    * Fix mod_deflate so that does not call deflate() without checking
+      first whether it has something to deflate. (Currently this causes
+      deflate to generate a fatal error according to the zlib spec.)
+      PR 22259. [Stas Bekman]
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/filters/mod_deflate.c.diff?r1=1.35&r2=1.36
       +1: stas
 
