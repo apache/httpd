@@ -412,7 +412,7 @@ static apr_array_header_t *split_argv(apr_pool_t *p, const char *interp,
 
 
 static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
-                                         request_rec *r, apr_pool_t *p)
+                                         request_rec *r, apr_pool_t *p, int replace_cmd)
 {
     const char *ext = NULL;
     const char *interpreter = NULL;
@@ -524,7 +524,7 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
 
 APR_DECLARE_OPTIONAL_FN(apr_status_t, ap_cgi_build_command,
                         (const char **cmd, 
-                         const char ***argv, request_rec *r, apr_pool_t *p));
+                         const char ***argv, request_rec *r, apr_pool_t *p, int replace_cmd));
 
 static void register_hooks(apr_pool_t *p)
 {
