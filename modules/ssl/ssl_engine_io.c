@@ -97,15 +97,17 @@ static int ssl_io_hook_read(SSL *ssl, unsigned char *buf, int len)
         /*
          * read(2) returns only the generic error number -1
          */
-        if (rc < 0)
+        if (rc < 0) {
             /*
              * XXX - Just trying to reflect the behaviour in 
              * openssl_state_machine.c [mod_tls]. TBD
              */
             rc = -1;
+        }
     }
-    else
+    else {
         rc = -1;
+    }
     return rc;
 }
 
@@ -132,15 +134,17 @@ static int ssl_io_hook_write(SSL *ssl, unsigned char *buf, int len)
         /*
          * write(2) returns only the generic error number -1
          */
-        if (rc < 0)
+        if (rc < 0) {
             /*
              * XXX - Just trying to reflect the behaviour in 
              * openssl_state_machine.c [mod_tls]. TBD
              */
             rc = 0;
+        }
     }
-    else
+    else {
         rc = -1;
+    }
     return rc;
 }
 
