@@ -45,9 +45,20 @@ here it isn't reported or fixed.</FONT>
 <OL>
 <LI>CGI scripts that are called with information appended to the script
     name that does <STRONG>not</STRONG> have an "<CODE>=</CODE>" in it
-    do not work.
+    do not work. 
+    See <A HREF="http://bugs.apache.org/index/full/1030">PR#1030</A>
 <LI>Passwords stored in htpasswd files need to be stored in plain text,
     since we do not yet have a <CODE>crypt()</CODE> under Win32.
+<LI>On Windows 95, <CODE>DirectoryIndex</CODE> does not work.
+    See <A HREF="http://bugs.apache.org/index/full/1266">PR#1266</A>
+<LI>On some versions of Windows 95, CGI scripts fail and paths given
+    with "#!" must contains \ instead of /.
+<LI>When a CGI starts with "#!" to indicate an interpreter there must
+    be no space between the #! and the path.
+    See <A HREF="http://bugs.apache.org/index/full/1101">PR#1101</A>
+<LI>If the CGI program cannot be run Apache logs a "premature end-of-headers"
+    error instead of an error about running the program.
+    See <A HREF="http://bugs.apache.org/index/full/1257">PR#1257</A>
 </OL>
 <H3>Unix only</H3>
 <OL>
