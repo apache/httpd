@@ -1226,19 +1226,19 @@ RSA *ssl_callback_TmpRSA(SSL *ssl, int export, int keylen)
     if (export) {
         /* It's because an export cipher is used */
         if (keylen == 512) {
-            rsa = (RSA *)mc->pTmpKeys[SSL_TKPIDX_RSA512];
+            rsa = (RSA *)mc->pTmpKeys[SSL_TMP_KEY_RSA_512];
         }
         else if (keylen == 1024) {
-            rsa = (RSA *)mc->pTmpKeys[SSL_TKPIDX_RSA1024];
+            rsa = (RSA *)mc->pTmpKeys[SSL_TMP_KEY_RSA_1024];
         }
         else {
             /* it's too expensive to generate on-the-fly, so keep 1024bit */
-            rsa = (RSA *)mc->pTmpKeys[SSL_TKPIDX_RSA1024];
+            rsa = (RSA *)mc->pTmpKeys[SSL_TMP_KEY_RSA_1024];
         }
     }
     else {
         /* It's because a sign-only certificate situation exists */
-        rsa = (RSA *)mc->pTmpKeys[SSL_TKPIDX_RSA1024];
+        rsa = (RSA *)mc->pTmpKeys[SSL_TMP_KEY_RSA_1024];
     }
 
     return rsa;
@@ -1256,19 +1256,19 @@ DH *ssl_callback_TmpDH(SSL *ssl, int export, int keylen)
     if (export) {
         /* It's because an export cipher is used */
         if (keylen == 512) {
-            dh = (DH *)mc->pTmpKeys[SSL_TKPIDX_DH512];
+            dh = (DH *)mc->pTmpKeys[SSL_TMP_KEY_DH_512];
         }
         else if (keylen == 1024) {
-            dh = (DH *)mc->pTmpKeys[SSL_TKPIDX_DH1024];
+            dh = (DH *)mc->pTmpKeys[SSL_TMP_KEY_DH_1024];
         }
         else {
             /* it's too expensive to generate on-the-fly, so keep 1024bit */
-            dh = (DH *)mc->pTmpKeys[SSL_TKPIDX_DH1024];
+            dh = (DH *)mc->pTmpKeys[SSL_TMP_KEY_DH_1024];
         }
     }
     else {
         /* It's because a sign-only certificate situation exists */
-        dh = (DH *)mc->pTmpKeys[SSL_TKPIDX_DH1024];
+        dh = (DH *)mc->pTmpKeys[SSL_TMP_KEY_DH_1024];
     }
 
     return dh;

@@ -130,8 +130,8 @@ static void ssl_init_SSLLibrary(server_rec *s)
     }
 
 #define MODSSL_TMP_KEYS_FREE(mc, type) \
-    MODSSL_TMP_KEY_FREE(mc, type, SSL_TKPIDX_##type##512); \
-    MODSSL_TMP_KEY_FREE(mc, type, SSL_TKPIDX_##type##1024)
+    MODSSL_TMP_KEY_FREE(mc, type, SSL_TMP_KEY_##type##_512); \
+    MODSSL_TMP_KEY_FREE(mc, type, SSL_TMP_KEY_##type##_1024)
 
 static void ssl_tmp_keys_free(server_rec *s)
 {
@@ -153,7 +153,7 @@ static void ssl_tmp_keys_init(server_rec *s, apr_pool_t *p)
             "Init: Generating temporary RSA private keys (512/1024 bits)");
 
     /* generate 512 bit RSA key */
-    if (!(mc->pTmpKeys[SSL_TKPIDX_RSA512] = 
+    if (!(mc->pTmpKeys[SSL_TMP_KEY_RSA_512] = 
           RSA_generate_key(512, RSA_F4, NULL, NULL)))
     {
         ssl_log(s, SSL_LOG_ERROR,
@@ -163,7 +163,7 @@ static void ssl_tmp_keys_init(server_rec *s, apr_pool_t *p)
     }
 
     /* generate 1024 bit RSA key */
-    if (!(mc->pTmpKeys[SSL_TKPIDX_RSA1024] = 
+    if (!(mc->pTmpKeys[SSL_TMP_KEY_RSA_1024] = 
           RSA_generate_key(1024, RSA_F4, NULL, NULL)))
     {
         ssl_log(s, SSL_LOG_ERROR,
@@ -177,7 +177,7 @@ static void ssl_tmp_keys_init(server_rec *s, apr_pool_t *p)
             "DH parameters (512/1024 bits)");
 
     /* generate 512 bit DH param */
-    if (!(mc->pTmpKeys[SSL_TKPIDX_DH512] = 
+    if (!(mc->pTmpKeys[SSL_TMP_KEY_DH_512] = 
           ssl_dh_GetTmpParam(512)))
     {
         ssl_log(s, SSL_LOG_ERROR,
@@ -187,7 +187,7 @@ static void ssl_tmp_keys_init(server_rec *s, apr_pool_t *p)
     }
 
     /* generate 1024 bit DH param */
-    if (!(mc->pTmpKeys[SSL_TKPIDX_DH1024] = 
+    if (!(mc->pTmpKeys[SSL_TMP_KEY_DH_1024] = 
           ssl_dh_GetTmpParam(1024)))
     {
         ssl_log(s, SSL_LOG_ERROR,
