@@ -1058,10 +1058,6 @@ static void netware_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptem
     if (restart_num++ == 1) {
         is_graceful = 0;
 
-        if (!one_process && !no_detach) {
-            apr_proc_detach();
-        }
-
         parent_pid = ap_my_pid = getpid();
     }
 
