@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/08/26 16:58:28 $]
+Last modified at [$Date: 2004/08/26 17:26:07 $]
 
 Release:
 
@@ -108,46 +108,6 @@ PATCHES TO BACKPORT FROM 2.1
        http://www.apache.org/~jorton/mod_rewrite-2.0-sslvar.diff
        PR: 30464
        +1: jorton, stoddard
-
-    *) Proposal: Several folks want to aggressively backport changes
-       from mod_cache, mod_mem_cache and mod_file_cache from Apache
-       2.1 back into the 2.0 tree. Proposal is this: Lets drop the 
-       '3 vote' backport rule for mod_cache, mod_mem_cache and
-       mod_file cache (for xx days?). This is a very tightly scoped
-       easing of a rule that has served us well and we can even put an
-       expiration date on it if we like. I intentionally did not
-       include all exerimental modules out of respect for folks
-       working on ldap.
-       stoddard: +1
-       jwoolley: +0.5 (if we're going to backport, I don't mind us doing
-                       so aggressively since these are experimental. but
-                       i'm also of the opinion that these should not be
-                       backported at all, but rather be the 'key feature'
-                       motivating a 2.2 release.)
-       jerenkrantz: +0.5.  What Cliff said.  Plus, the changes aren't just
-                    scoped to mod_cache - there's a number of other fixes
-                    elsewhere (APR has some fixes too).  So, 2.2 bundled
-                    with APR 1.0 (or some variant of that) will be the first
-                    release to work 'correctly.'
-       trawick: uhh, within the scope of the httpd developers' normal 
-                oversight over 2.0 releases (ability to review code
-                going into a 2.0 release, preserving or enhancing
-                maintainability, preserving binary compatibility
-                with prior 2.0 releases, etc.), people ought to be
-                able to fix whatever ails them in 2.0; 2.2 be damned
-                if nobody would want to use it but for some fixes that
-                are artificially kept out of 2.0; and any 2.0/2.2
-                issues are not valid reasons for keeping APR 1+ fixes/
-                enhancements out of APR 0.9
-       clar: +1, IMO all enhancements and RFCs fixes should go in 2.0 in order
-                 to move the caching modules out of the exp area and then maybe
-                 have more sites using them.
-       jim: +1   Making people who want to have a viable caching
-                 capability wait for 2.2 is unfair I think. Agressive
-                 backporting will allow more feedback and a shorter
-                 dev. time.
-       minfrin: +1
-
 
     *) Remove LDAP toolkit specific code from util_ldap and mod_auth_ldap.
          modules/experimental/mod_auth_ldap.c: 1.28
