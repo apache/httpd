@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/06/13 20:28:20 $]
+Last modified at [$Date: 2002/06/13 21:10:39 $]
 
 Release:
 
@@ -55,10 +55,6 @@ CURRENT RELEASE NOTES:
             should be it.
 
 RELEASE SHOWSTOPPERS:
-
-    * graceful restart (at least on prefork) seems to be horribly broken
-      (the parent segfaulted).
-      Status: Cliff is attempting to verify this
 
 
 CURRENT VOTES:
