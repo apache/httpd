@@ -3,9 +3,9 @@ Last modified at [$Date$]
 
 Release [NOTE that only Alpha/Beta releases occur in 2.1 development]:
 
-    2.1.1   : Proposed roll on 11/14/2004 (around/after Hackathon).
-              Justin volunteers as RM.
-    2.1.0   : in development
+    2.1.2   : in development
+    2.1.1   : Released on 11/19/2004 as alpha.
+    2.1.0   : not released.
 
 Please consult the following STATUS files for information
 on related projects:
@@ -64,8 +64,7 @@ CURRENT VOTES:
       jerenkrantz: I think it's time.  We've done a *lot* of work to it, and
                    we think most of the blatant RFC violations are now gone.
                    mod_cache just belongs in cache/.  There may still be bugs,
-                   but not likely to be major ones.  Note that I'm not moving
-                   *anything* until we switch to SVN.
+                   but not likely to be major ones.
 
     * httpd-std.conf and friends
 
@@ -115,7 +114,7 @@ CURRENT VOTES:
       +0:   BrianP, Aaron (mutex contention is looking better with the
             latest code, let's continue tuning and testing), rederpj, jim
       -0:   Lars
-      
+
       pquerna: Do we want to change this for 2.2?
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
