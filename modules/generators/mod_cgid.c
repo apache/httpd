@@ -734,7 +734,7 @@ static int cgid_server(void *data)
                                   ap_make_dirstr_parent(r->pool, r->filename))) != APR_SUCCESS) ||
             ((rc = apr_procattr_cmdtype_set(procattr, cmd_type)) != APR_SUCCESS) ||
             ((rc = apr_procattr_child_errfn_set(procattr, cgid_child_errfn)) != APR_SUCCESS)) {
-            /* Something bad happened, tell the world. */
+            /* Something bad happened, tell the world.
              * ap_log_rerror() won't work because the header table used by
              * ap_log_rerror() hasn't been replicated in the phony r
              */
