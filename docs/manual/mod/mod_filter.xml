@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.6 $ -->
+<!-- $Revision: 1.7 $ -->
 
 <!--
  Copyright 2004 The Apache Software Foundation
@@ -23,7 +23,7 @@
 
 <name>mod_filter</name>
 <description>Context-sensitive smart filter configuration module</description>
-<status>Extension</status>
+<status>Experimental</status>
 <sourcefile>mod_filter.c</sourcefile>
 <identifier>filter_module</identifier>
 <compatibility>Version 2.1 and higher</compatibility>
@@ -221,6 +221,7 @@
     <var>[type]</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
+<override>Options</override>
 
 <usage>
     <p>This directive declares an output filter together with a
@@ -253,6 +254,7 @@
     <var>match</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
+<override>Options</override>
 
 <usage>
     <p>This directive registers a <em>provider</em> for the smart filter.
@@ -300,6 +302,7 @@
 <syntax>FilterChain [+=-@!]<var>filter-name</var> <var>...</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
+<override>Options</override>
 
 <usage>
     <p>This configures an actual filter chain, from declared filters.
@@ -336,6 +339,7 @@
     <var>proto-flags</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
+<override>Options</override>
 
 <usage>
     <p>This directs <module>mod_filter</module> to deal with ensuring the
@@ -383,7 +387,7 @@
     <module>mod_filter</module></description>
 <syntax>FilterTrace <var>filter-name</var> <var>level</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
-<context>directory</context><context>.htaccess</context></contextlist>
+<context>directory</context></contextlist>
 
 <usage>
     <p>This directive generates debug information from
