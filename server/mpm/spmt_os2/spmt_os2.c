@@ -72,6 +72,7 @@
 #include "iol_socket.h"
 
 #define INCL_DOS
+#define INCL_DOSERRORS
 #include <os2.h>
 #include <stdlib.h>
 
@@ -1759,7 +1760,7 @@ API_EXPORT(void) ap_thread_mutex_unlock(ap_thread_mutex *mtx)
 {
     ULONG rc;
     rc = DosReleaseMutexSem(mtx->mutex_handle);
-    ap_assert(rc == 0);
+    ap_assert(rc == 0 || rc == ERROR_NOT_OWNER);
 }
 
 API_EXPORT(void) ap_thread_mutex_destroy(ap_thread_mutex *mtx)
@@ -1806,6 +1807,5 @@ module MODULE_VAR_EXPORT mpm_spmt_os2_module = {
     NULL,			/* check access */
     NULL,			/* type_checker */
     NULL,			/* pre-run fixups */
-    NULL,			/* logger */
     NULL			/* register hooks */
 };
