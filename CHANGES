@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) change directive name from 'compressionlevel' to 'deflatecompressionlevel'
+     [Ian Holsman, André Malo]]
+
   *) mod_negotiation: quality values are now parsed independent from
      the current locale. level values are now really parsed as integers.
      PR 17564.  [André Malo]
@@ -19,10 +22,6 @@ Changes with Apache 2.1.0-dev
 
   *) Linux 2.4+: enable coredumps when Apache is started as root
      if CoreDumpDir is configured [Greg Ames]
-
-  *) you can now specify the compression level for mod_deflate. 
-     [Ian Holsman, Stephen Pierzchala <stephen@pierzchala.com>, 
-     Michael Schroepl <Michael.Schroepl@telekurs.de>]
 
   *) Added the WindowsSocketsWorkaround directive for Windows NT/2000/XP
      to work around problems with certain VPN and Firewall products that 
@@ -127,10 +126,6 @@ Changes with Apache 2.1.0-dev
   *) Replace some of the mutex locking in the worker MPM with
      atomic operations for higher concurrency.  [Brian Pane]
 
-  *) mod_deflate: Extend the DeflateFilterNote directive to
-     allow accurate logging of the filter's in- and outstream.
-     [André Malo]
-
   *) Allow 'make depend' to work with non-GCC compilers.
      [Justin Erenkrantz]
 
@@ -163,6 +158,14 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.45
+
+  *) you can now specify the compression level for mod_deflate. 
+     [Ian Holsman, Stephen Pierzchala <stephen@pierzchala.com>, 
+     Michael Schroepl <Michael.Schroepl@telekurs.de>]
+
+  *) mod_deflate: Extend the DeflateFilterNote directive to
+     allow accurate logging of the filter's in- and outstream.
+     [André Malo]
 
   *) Allow SSLMutex to select/use the full range of APR locking
      mechanisms available to it. Also, fix the bug that SSLMutex uses
