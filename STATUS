@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/08/01 08:41:44 $]
+Last modified at [$Date: 2003/08/06 14:58:30 $]
 
 Release:
 
@@ -286,6 +286,11 @@ PATCHES TO PORT FROM 2.1
       the key contains a newline. PR 14453. (2.0 + 1.3)
         modules/mappers/mod_rewrite.c: r1.199
       +1: nd, trawick
+
+    * mod_dav: Use bucket brigades when reading PUT data. This avoids
+      problems if the data stream is modified by an input filter. PR 22104.
+        modules/dav/main/mod_dav.c: r1.98
+      +1: nd
 
 CURRENT RELEASE NOTES:
 
