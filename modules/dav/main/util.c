@@ -1609,18 +1609,80 @@ void dav_add_vary_header(request_rec *in_req,
     }
 }
 
+/* dav_can_auto_checkout
+ *
+ * Determine whether auto-checkout is enabled for a resource.
+ * r - the request_rec
+ * resource - the resource
+ * auto_version - the value of the auto_versionable hook for the resource
+ * lockdb - pointer to lock database (opened if necessary)
+ * auto_checkout - set to 1 if auto-checkout enabled
+ */
+static dav_error * dav_can_auto_checkout(
+    request_rec *r,                                         
+    dav_resource *resource,
+    dav_auto_version auto_version,
+    dav_lockdb **lockdb,
+    int *auto_checkout)
+{
+    dav_error *err;
+    dav_lock *lock_list;
+
+    *auto_checkout = 0;
+
+    if (auto_version == DAV_AUTO_VERSION_ALWAYS) {
+        *auto_checkout = 1;
+    }
+    else if (auto_version == DAV_AUTO_VERSION_LOCKED) {
+        if (*lockdb == NULL) {
+            const dav_hooks_locks *locks_hooks = DAV_GET_HOOKS_LOCKS(r);
+
+            if (locks_hooks == NULL) {
+                return dav_new_error(r->pool, HTTP_INTERNAL_SERVER_ERROR, 0,
+                                     "Auto-checkout is only enabled for locked resources, "
+                                     "but there is no lock provider.");
+            }
+
+            if ((err = (*locks_hooks->open_lockdb)(r, 0, 0, lockdb)) != NULL) {
+                return dav_push_error(r->pool, HTTP_INTERNAL_SERVER_ERROR, 0,
+                                      "Cannot open lock database to determine "
+                                      "auto-versioning behavior.",
+                                      err);
+            }
+        }
+
+        if ((err = dav_lock_query(*lockdb, resource, &lock_list)) != NULL) {
+	    return dav_push_error(r->pool,
+				  HTTP_INTERNAL_SERVER_ERROR, 0,
+				  "The locks could not be queried for "
+				  "determining auto-versioning behavior.",
+				  err);
+        }
+
+        if (lock_list != NULL)
+            *auto_checkout = 1;
+    }
+
+    return NULL;
+}
+
 /* see mod_dav.h for docco */
-dav_error *dav_ensure_resource_writable(request_rec *r,
-					dav_resource *resource,
-                                        int parent_only,
-                                        dav_auto_version_info *av_info)
+dav_error *dav_auto_checkout(
+    request_rec *r,
+    dav_resource *resource,
+    int parent_only,
+    dav_auto_version_info *av_info)
 {
     const dav_hooks_vsn *vsn_hooks = DAV_GET_HOOKS_VSN(r);
-    const char *body;
-    dav_error *err;
+    dav_lockdb *lockdb = NULL;
+    dav_error *err = NULL;
 
     /* Initialize results */
     memset(av_info, 0, sizeof(*av_info));
+
+    /* if no versioning provider, just return */
+    if (vsn_hooks == NULL)
+        return NULL;
 
     /* check parent resource if requested or if resource must be created */
     if (!resource->exists || parent_only) {
@@ -1628,164 +1690,232 @@ dav_error *dav_ensure_resource_writable(request_rec *r,
 
         if ((err = (*resource->hooks->get_parent_resource)(resource,
                                                            &parent)) != NULL)
-            return err;
+            goto done;
 
         if (parent == NULL || !parent->exists) {
-	    body = apr_psprintf(r->pool,
-                                "Missing one or more intermediate collections. "
-                                "Cannot create resource %s.",
-                                ap_escape_html(r->pool, resource->uri));
-	    return dav_new_error(r->pool, HTTP_CONFLICT, 0, body);
+	    err = dav_new_error(r->pool, HTTP_CONFLICT, 0,
+	                        apr_psprintf(r->pool,
+		                            "Missing one or more intermediate "
+                                            "collections. Cannot create resource %s.",
+			                    ap_escape_html(r->pool, resource->uri)));
+            goto done;
         }
 
         av_info->parent_resource = parent;
 
-	/* if parent not versioned, assume child can be created */
-	if (!parent->versioned) {
-	    return NULL;
-	}
+        /* if parent versioned and not checked out, see if it can be */
+	if (parent->versioned && !parent->working) {
+            int checkout_parent;
 
-	/* if no versioning provider, something is terribly wrong */
-	if (vsn_hooks == NULL) {
-	    return dav_new_error(r->pool, HTTP_INTERNAL_SERVER_ERROR, 0,
-				 "INTERNAL ERROR: "
-                                 "versioned resource with no versioning "
-				 "provider?");
-	}
+            if ((err = dav_can_auto_checkout(r, parent,
+                                             (*vsn_hooks->auto_versionable)(parent),
+                                             &lockdb, &checkout_parent))
+                != NULL) {
+                goto done;
+            }
 
-	/* parent must be checked out */
-	if (!parent->working) {
-            /* if parent cannot be automatically checked out, fail */
-            if (!(*vsn_hooks->auto_version_enabled)(parent)) {
-		body = apr_psprintf(r->pool,
-                                    "Parent collection must be checked out. "
-                                    "Cannot create resource %s.",
-                                    ap_escape_html(r->pool, resource->uri));
-		return dav_new_error(r->pool, HTTP_CONFLICT, 0, body);
+            if (!checkout_parent) {
+		err = dav_new_error(r->pool, HTTP_CONFLICT, 0,
+		                    "<DAV:cannot-modify-checked-in-parent>");
+                goto done;
             }
 
             /* Try to checkout the parent collection.
              * Note that auto-versioning can only be applied to a version selector,
              * so no separate working resource will be created.
              */
-	    if ((err = (*vsn_hooks->checkout)(parent, 0, 0, 0, NULL, NULL))
+	    if ((err = (*vsn_hooks->checkout)(parent, 1 /*auto_checkout*/,
+                                              0, 0, 0, NULL, NULL))
                 != NULL)
             {
-		body = apr_psprintf(r->pool,
-                                    "Unable to checkout parent collection. "
-                                    "Cannot create resource %s.",
-                                    ap_escape_html(r->pool, resource->uri));
-		return dav_push_error(r->pool, HTTP_CONFLICT, 0, body, err);
+		err = dav_push_error(r->pool, HTTP_CONFLICT, 0,
+		                     apr_psprintf(r->pool,
+				                 "Unable to auto-checkout parent collection. "
+				                 "Cannot create resource %s.",
+				                 ap_escape_html(r->pool, resource->uri)),
+                                     err);
+                goto done;
 	    }
 
             /* remember that parent was checked out */
             av_info->parent_checkedout = 1;
 	}
+    }
 
-	/* if not just checking parent, create new child resource */
-        if (!parent_only) {
-	    if ((err = (*vsn_hooks->vsn_control)(resource, NULL)) != NULL) {
-	        body = apr_psprintf(r->pool,
-                                    "Unable to create versioned resource %s.",
-                                    ap_escape_html(r->pool, resource->uri));
-	        return dav_push_error(r->pool, HTTP_CONFLICT, 0, body, err);
-	    }
+    /* if only checking parent, we're done */
+    if (parent_only)
+        goto done;
 
-            /* remember that resource was created */
-            av_info->resource_created = 1;
+    /* if creating a new resource, see if it should be version-controlled */
+    if (!resource->exists
+        && (*vsn_hooks->auto_versionable)(resource) == DAV_AUTO_VERSION_ALWAYS) {
+
+	if ((err = (*vsn_hooks->vsn_control)(resource, NULL)) != NULL) {
+	    err = dav_push_error(r->pool, HTTP_CONFLICT, 0,
+	                         apr_psprintf(r->pool,
+		                             "Unable to create versioned resource %s.",
+			                     ap_escape_html(r->pool, resource->uri)),
+                                 err);
+            goto done;
+	}
+
+        /* remember that resource was created */
+        av_info->resource_versioned = 1;
+    }
+
+    /* if resource is versioned, make sure it is checked out */
+    if (resource->versioned && !resource->working) {
+        int checkout_resource;
+
+        if ((err = dav_can_auto_checkout(r, resource,
+                                         (*vsn_hooks->auto_versionable)(resource),
+                                         &lockdb, &checkout_resource)) != NULL) {
+            goto done;
         }
-    }
-    else if (!resource->versioned) {
-	/* resource exists and is not versioned; assume it is writable */
-	return NULL;
-    }
 
-    /* if not just checking parent, make sure child resource is checked out */
-    if (!parent_only && !resource->working) {
+        if (!checkout_resource) {
+	    err = dav_new_error(r->pool, HTTP_CONFLICT, 0,
+		                "<DAV:cannot-modify-version-controlled-content>");
+            goto done;
+        }
+
         /* Auto-versioning can only be applied to version selectors, so
          * no separate working resource will be created. */
-	if ((err = (*vsn_hooks->checkout)(resource, 0, 0, 0, NULL, NULL))
+	if ((err = (*vsn_hooks->checkout)(resource, 1 /*auto_checkout*/,
+                                          0, 0, 0, NULL, NULL))
             != NULL)
         {
-	    body = apr_psprintf(r->pool,
-                                "Unable to checkout resource %s.",
-                                ap_escape_html(r->pool, resource->uri));
-	    return dav_push_error(r->pool, HTTP_CONFLICT, 0, body, err);
+            err = dav_push_error(r->pool, HTTP_CONFLICT, 0,
+	                         apr_psprintf(r->pool,
+		                             "Unable to checkout resource %s.",
+			                     ap_escape_html(r->pool, resource->uri)),
+                                 err);
+            goto done;
 	}
 
         /* remember that resource was checked out */
         av_info->resource_checkedout = 1;
     }
 
+done:
+
+    /* make sure lock database is closed */
+    if (lockdb != NULL)
+        (*lockdb->hooks->close_lockdb)(lockdb);
+
+    /* if an error occurred, undo any auto-versioning operations already done */
+    if (err != NULL) {
+        dav_auto_checkin(r, resource, 1 /*undo*/, 0 /*unlock*/, av_info);
+        return err;
+    }
+
     return NULL;
 }
 
 /* see mod_dav.h for docco */
-dav_error *dav_revert_resource_writability(
+dav_error *dav_auto_checkin(
     request_rec *r,
     dav_resource *resource,
     int undo,
-    const dav_auto_version_info *av_info)
+    int unlock,
+    dav_auto_version_info *av_info)
 {
     const dav_hooks_vsn *vsn_hooks = DAV_GET_HOOKS_VSN(r);
-    const char *body;
-    dav_error *err;
+    dav_error *err = NULL;
+    dav_auto_version auto_version;
 
-    /* If a resource was provided, restore its writable state.
-     * Otherwise, only the parent must have been modified */
-    if (resource != NULL) {
-        if (av_info->resource_checkedout) {
+    /* If no versioning provider, this is a no-op */
+    if (vsn_hooks == NULL)
+        return NULL;
 
-            if (undo)
-                err = (*vsn_hooks->uncheckout)(resource);
-            else
-                err = (*vsn_hooks->checkin)(resource,
-                                            0 /*keep_checked_out*/, NULL);
+    /* If undoing auto-checkouts, then do uncheckouts */
+    if (undo) {
+        if (resource != NULL) {
+            if (av_info->resource_checkedout) {
+                if ((err = (*vsn_hooks->uncheckout)(resource)) != NULL) {
+                    return dav_push_error(r->pool, HTTP_INTERNAL_SERVER_ERROR, 0,
+	                                  apr_psprintf(r->pool,
+		                                      "Unable to undo auto-checkout "
+                                                      "of resource %s.",
+			                              ap_escape_html(r->pool, resource->uri)),
+                                          err);
+                }
+            }
 
-            if (err != NULL) {
-	        body = apr_psprintf(r->pool,
-                                    "Unable to %s resource %s.",
-                                    undo ? "uncheckout" : "checkin",
-                                    ap_escape_html(r->pool, resource->uri));
-                return dav_push_error(r->pool, HTTP_INTERNAL_SERVER_ERROR, 0,
-				      body, err);
+            if (av_info->resource_versioned) {
+	        dav_response *response;
+
+	        /* ### should we do anything with the response? */
+                if ((err = (*resource->hooks->remove_resource)(resource,
+							       &response)) != NULL) {
+                    return dav_push_error(r->pool, HTTP_INTERNAL_SERVER_ERROR, 0,
+	                                  apr_psprintf(r->pool,
+			                              "Unable to undo auto-version-control "
+                                                      "of resource %s.",
+			                              ap_escape_html(r->pool, resource->uri)),
+                                          err);
+                }
             }
         }
 
-        /* If undoing because of an error, and the resource was created,
-         * then remove it */
-        if (undo && av_info->resource_created) {
-	    dav_response *response;
+        if (av_info->parent_resource != NULL && av_info->parent_checkedout) {
+            if ((err = (*vsn_hooks->uncheckout)(av_info->parent_resource)) != NULL) {
+	        return dav_push_error(r->pool, HTTP_INTERNAL_SERVER_ERROR, 0,
+	                              apr_psprintf(r->pool,
+		                                  "Unable to undo auto-checkout "
+                                                  "of parent collection %s.",
+			                          ap_escape_html(r->pool, av_info->parent_resource->uri)),
+				      err);
+	    }
+        }
 
-	    /* ### should we do anything with the response? */
-            if ((err = (*resource->hooks->remove_resource)(resource,
-							   &response)) != NULL) {
-	        body = apr_psprintf(r->pool,
-                                    "Unable to undo creation of resource %s.",
-                                    ap_escape_html(r->pool, resource->uri));
+        return NULL;
+    }
+
+    /* If the resource was checked out, and auto-checkin is enabled,
+     * then check it in.
+     */
+    if (resource != NULL && resource->working
+        && (unlock || av_info->resource_checkedout)) {
+
+        auto_version = (*vsn_hooks->auto_versionable)(resource);
+
+        if (auto_version == DAV_AUTO_VERSION_ALWAYS ||
+            (unlock && (auto_version == DAV_AUTO_VERSION_LOCKED))) {
+
+            if ((err = (*vsn_hooks->checkin)(resource,
+                                             0 /*keep_checked_out*/, NULL))
+                != NULL) {
                 return dav_push_error(r->pool, HTTP_INTERNAL_SERVER_ERROR, 0,
-				      body, err);
+	                              apr_psprintf(r->pool,
+			                          "Unable to auto-checkin resource %s.",
+			                          ap_escape_html(r->pool, resource->uri)),
+				      err);
             }
         }
     }
 
-    /* If parent resource was made writable, restore its state */
-    if (av_info->parent_resource != NULL && av_info->parent_checkedout) {
+    /* If parent resource was checked out, and auto-checkin is enabled,
+     * then check it in.
+     */
+    if (av_info->parent_resource != NULL && av_info->parent_resource->working
+        && (unlock || av_info->parent_checkedout)) {
 
-	if (undo)
-	    err = (*vsn_hooks->uncheckout)(av_info->parent_resource);
-	else
-	    err = (*vsn_hooks->checkin)(av_info->parent_resource,
-                                        0 /*keep_checked_out*/, NULL);
+        auto_version = (*vsn_hooks->auto_versionable)(av_info->parent_resource);
 
-	if (err != NULL) {
-	    body = apr_psprintf(r->pool,
-                                "Unable to %s parent collection %s.",
-                                undo ? "uncheckout" : "checkin",
-                                ap_escape_html(r->pool, av_info->parent_resource->uri));
-	    return dav_push_error(r->pool, HTTP_INTERNAL_SERVER_ERROR, 0,
-				  body, err);
-	}
+        if (auto_version == DAV_AUTO_VERSION_ALWAYS ||
+            (unlock && (auto_version == DAV_AUTO_VERSION_LOCKED))) {
+
+	    if ((err = (*vsn_hooks->checkin)(av_info->parent_resource,
+                                             0 /*keep_checked_out*/, NULL))
+                != NULL) {
+	        return dav_push_error(r->pool, HTTP_INTERNAL_SERVER_ERROR, 0,
+	                              apr_psprintf(r->pool,
+			                          "Unable to auto-checkin parent collection %s.",
+			                          ap_escape_html(r->pool, av_info->parent_resource->uri)),
+				                  err);
+	    }
+        }
     }
 
     return NULL;

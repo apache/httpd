@@ -1737,8 +1737,12 @@ struct dav_hooks_repository
         dav_resource *resource
     );
 
-    /* Copy one resource to another. The destination must not exist.
+    /* Copy one resource to another. The destination may exist, if it is
+     * versioned.
      * Handles both files and collections. Properties are copied as well.
+     * If the destination exists and is versioned, the provider must update
+     * the destination to have identical content to the source,
+     * recursively for collections.
      * The depth argument is ignored for a file, and can be either 0 or
      * DAV_INFINITY for a collection.
      * If an error occurs in a child resource, then the return value is
@@ -1814,14 +1818,41 @@ void dav_add_vary_header(request_rec *in_req,
 			 const dav_resource *resource);
 
 /*
+** Flags specifying auto-versioning behavior, returned by
+** the auto_versionable hook. The value returned depends
+** on both the state of the resource and the value of the
+** DAV:auto-versioning property for the resource.
+**
+** If the resource does not exist (null or lock-null),
+** DAV_AUTO_VERSION_ALWAYS causes creation of a new version-controlled resource
+**
+** If the resource is checked in,
+** DAV_AUTO_VERSION_ALWAYS causes it to be checked out always,
+** DAV_AUTO_VERSION_LOCKED causes it to be checked out only when locked
+**
+** If the resource is checked out,
+** DAV_AUTO_VERSION_ALWAYS causes it to be checked in always,
+** DAV_AUTO_VERSION_LOCKED causes it to be checked in when unlocked
+** (note: a provider should allow auto-checkin only for resources which
+** were automatically checked out)
+**
+** In all cases, DAV_AUTO_VERSION_NEVER results in no auto-versioning behavior.
+*/
+typedef enum {
+    DAV_AUTO_VERSION_NEVER,
+    DAV_AUTO_VERSION_ALWAYS,
+    DAV_AUTO_VERSION_LOCKED
+} dav_auto_version;
+
+/*
 ** This structure is used to record what auto-versioning operations
 ** were done to make a resource writable, so that they can be undone
 ** at the end of a request.
 */
 typedef struct {
-    int resource_created;               /* 0 => resource existed previously */
-    int resource_checkedout;            /* 0 => resource was checked out */
-    int parent_checkedout;              /* 0 => parent was checked out */
+    int resource_versioned;             /* 1 => resource was auto-version-controlled */
+    int resource_checkedout;            /* 1 => resource was auto-checked-out */
+    int parent_checkedout;              /* 1 => parent was auto-checked-out */
     dav_resource *parent_resource;      /* parent resource, if it was needed */
 } dav_auto_version_info;
 
@@ -1836,14 +1867,18 @@ typedef struct {
  * child does not exist, then a new versioned resource is created and
  * checked out.
  *
+ * If auto-versioning is not enabled for a versioned resource, then an error is
+ * returned, since the resource cannot be modified.
+ *
  * The dav_auto_version_info structure is filled in with enough information
  * to restore both parent and child resources to the state they were in
  * before the auto-versioning operations occurred.
  */
-dav_error *dav_ensure_resource_writable(request_rec *r,
-					dav_resource *resource,
-                                        int parent_only,
-                                        dav_auto_version_info *av_info);
+dav_error *dav_auto_checkout(
+    request_rec *r,
+    dav_resource *resource,
+    int parent_only,
+    dav_auto_version_info *av_info);
 
 /* Revert the writability of resources back to what they were
  * before they were modified. If undo == 0, then the resource
@@ -1851,15 +1886,21 @@ dav_error *dav_ensure_resource_writable(request_rec *r,
  * If undo != 0, then resource modifications are discarded
  * (i.e. they are unchecked out).
  *
+ * Set the unlock flag to indicate that the resource is about
+ * to be unlocked; it will be checked in if the resource
+ * auto-versioning property indicates it should be. In this case,
+ * av_info is ignored, so it can be NULL.
+ *
  * The resource argument may be NULL if only the parent resource
- * was made writable (i.e. the parent_only was != 0 in the
- * dav_ensure_resource_writable call).
+ * was checked out (i.e. the parent_only was != 0 in the
+ * dav_auto_checkout call).
  */
-dav_error *dav_revert_resource_writability(
+dav_error *dav_auto_checkin(
     request_rec *r,
     dav_resource *resource,
     int undo,
-    const dav_auto_version_info *av_info);
+    int unlock,
+    dav_auto_version_info *av_info);
 
 /*
 ** This structure is used to describe available reports
@@ -1899,24 +1940,47 @@ struct dav_hooks_vsn
                               const ap_xml_elem *elem,
                               ap_text_header *option);
 
+    /* Determine whether a non-versioned (or non-existent) resource
+     * is versionable. Returns != 0 if resource can be versioned.
+     */
+    int (*versionable)(const dav_resource *resource);
+
+    /* Determine whether auto-versioning is enabled for a resource
+     * (which may not exist, or may not be versioned). If the resource
+     * is a checked-out resource, the provider must only enable
+     * auto-checkin if the resource was automatically checked out.
+     *
+     * The value returned depends on both the state of the resource
+     * and the value of its DAV:auto-version property. See the description
+     * of the dav_auto_version enumeration above for the details.
+     */
+    dav_auto_version (*auto_versionable)(const dav_resource *resource);
+
     /* Put a resource under version control. If the resource already
      * exists unversioned, then it becomes the initial version of the
      * new version history, and it is replaced by a version selector
      * which targets the new version.
      *
-     * If the resource does not exist, then a new version selector
-     * is created which either targets an existing version (if the
+     * If the resource does not exist, then a new version-controlled
+     * resource is created which either targets an existing version (if the
      * "target" argument is not NULL), or the initial, empty version
      * in a new history resource (if the "target" argument is NULL).
      *
      * If successful, the resource object state is updated appropriately
-     * (that is, changed to refer to the new version selector resource).
+     * (that is, changed to refer to the new version-controlled resource).
      */
     dav_error * (*vsn_control)(dav_resource *resource,
                                const char *target);
 
     /* Checkout a resource. If successful, the resource
      * object state is updated appropriately.
+     *
+     * The auto_checkout flag will be set if this checkout is being
+     * done automatically, as part of some method which modifies
+     * the resource. The provider must remember that the resource
+     * was automatically checked out, so it can determine whether it
+     * can be automatically checked in. (Auto-checkin should only be
+     * enabled for resources which were automatically checked out.)
      *
      * If the working resource has a different URL from the
      * target resource, a dav_resource descriptor is returned
@@ -1934,6 +1998,7 @@ struct dav_hooks_vsn
      * no DAV:activity-set was provided or when create_activity is set.
      */
     dav_error * (*checkout)(dav_resource *resource,
+                            int auto_checkout,
                             int is_unreserved, int is_fork_ok,
                             int create_activity,
                             apr_array_header_t *activities,
@@ -1959,17 +2024,6 @@ struct dav_hooks_vsn
                            int keep_checked_out,
                            dav_resource **version_resource);
 
-    /* Determine whether a non-versioned (or non-existent) resource
-     * is versionable. Returns != 0 if resource can be versioned.
-     */
-    int (*versionable)(const dav_resource *resource);
-
-    /* Determine whether auto-versioning is enabled for a resource
-     * (which may not exist, or may not be versioned).
-     * Returns != 0 if auto-versioning is enabled.
-     */
-    int (*auto_version_enabled)(const dav_resource *resource);
-
     /*
     ** Return the set of reports available at this resource.
     **
@@ -1982,12 +2036,12 @@ struct dav_hooks_vsn
                                  const dav_report_elem **reports);
 
     /*
-    ** Determine whether a Target-Selector header can be used
+    ** Determine whether a Label header can be used
     ** with a particular report. The dav_xml_doc structure
     ** contains the parsed report request body.
-    ** Returns 0 if Target-Selector is not allowed.
+    ** Returns 0 if the Label header is not allowed.
     */
-    int (*report_target_selector_allowed)(const ap_xml_doc *doc);
+    int (*report_label_header_allowed)(const ap_xml_doc *doc);
 
     /*
     ** Generate a report on a resource. Since a provider is free
