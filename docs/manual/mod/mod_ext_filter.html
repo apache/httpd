@@ -86,7 +86,7 @@ REL="Help"
     &lt;Directory "/export/home/trawick/apacheinst/htdocs/c"&gt;
 
     # core directive to cause the new filter to be run on output
-    AddOutputFilter c-to-heml
+    SetOutputFilter c-to-heml
 
     # mod_mime directive to set the type of .c files to text/c
     AddType text/c .c
@@ -108,7 +108,7 @@ REL="Help"
   &lt;Location /gzipped&gt;
 
   # core directive to cause the gzip filter to be run on output
-  AddOutputFilter gzip
+  SetOutputFilter gzip
 
   # mod_header directive to add "Content-Encoding: gzip" header field
   Header set Content-Encoding gzip
@@ -127,7 +127,7 @@ REL="Help"
 
   # core directive to cause the slowdown filter to be run several times on 
   # output
-  AddOutputFilter slowdown slowdown slowdown
+  SetOutputFilter slowdown slowdown slowdown
 
   &lt;/Location&gt;
   </PRE>
@@ -173,7 +173,7 @@ REL="Help"
 
   <P>
   <EM>filtername</EM> specifies the name of the filter being defined.  This name 
-  can then be used in AddOutputFilter directives.  It must be unique among all
+  can then be used in SetOutputFilter directives.  It must be unique among all
   registered filters.  <EM>At the present time, no error is reported by the
   register-filter API, so a problem with duplicate names isn't reported to the 
   user.</EM>
