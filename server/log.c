@@ -187,7 +187,7 @@ static int log_child(ap_context_t *p, const char *progname,
         rc = -1;
     }
     else {
-        rc = ap_create_process(&procnew, p, progname, NULL, NULL, procattr);
+        rc = ap_create_process(&procnew, progname, NULL, NULL, procattr, p);
     
         if (rc == APR_SUCCESS) {
 #ifndef WIN32
@@ -195,7 +195,7 @@ static int log_child(ap_context_t *p, const char *progname,
              *       stages. ap_note_subprocess and free_proc need to be redone
              *       to make use of ap_proc_t instead of pid.
              */
-            ap_get_os_proc(procnew, &fred);
+            ap_get_os_proc(&fred, procnew);
             ap_note_subprocess(p, fred, kill_after_timeout);
 #endif
             if (fpin) {
@@ -638,13 +638,13 @@ static int piped_log_spawn(piped_log *pl)
         rc = -1;
     }
     else {
-        rc = ap_create_process(pl->p, pl->program, NULL, NULL, procattr, &procnew);
+        rc = ap_create_process(&procnew, pl->program, NULL, NULL, procattr, pl->p);
     
         if (rc == APR_SUCCESS) {            /* pjr - This no longer happens inside the child, */
             RAISE_SIGSTOP(PIPED_LOG_SPAWN); /*   I am assuming that if ap_create_process was  */
                                             /*   successful that the child is running.        */
             pl->pid = procnew;
-            ap_get_os_proc(&procnew, &pid);
+            ap_get_os_proc(&pid, &procnew);
             ap_register_other_child(pid, piped_log_maintenance, pl, pl->fds[1]);
         }
     }
