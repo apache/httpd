@@ -277,12 +277,12 @@ _install:
 	-mkdir "$(INSTDIR)\logs"
 	-mkdir "$(INSTDIR)\modules"
 	-mkdir "$(INSTDIR)\proxy"
-	copy ABOUT_APACHE "$(INSTDIR)\ABOUT_APACHE.txt"
-	copy CHANGES "$(INSTDIR)\CHANGES.txt"
-	copy INSTALL "$(INSTDIR)\INSTALL.txt"
-	copy LICENSE "$(INSTDIR)\LICENSE.txt"
+	copy ABOUT_APACHE "$(INSTDIR)\ABOUT_APACHE.txt" <.y
+	copy CHANGES "$(INSTDIR)\CHANGES.txt" <.y
+	copy INSTALL "$(INSTDIR)\INSTALL.txt" <.y
+	copy LICENSE "$(INSTDIR)\LICENSE.txt" <.y
 !IF EXIST("srclib\openssl")
-	copy << + README "$(INSTDIR)\README.txt"
+	copy << + README "$(INSTDIR)\README.txt" <.y
 
   This product includes cryptographic software written by
   Eric Young (eay@cryptsoft.com).  This product includes software written
@@ -292,57 +292,57 @@ _install:
 <<
 !ELSE
 #	--- just a vanilla copy, in this case.
-	copy README "$(INSTDIR)\README.txt"
+	copy README "$(INSTDIR)\README.txt" <.y
 !ENDIF
-	copy $(LONG)\Apache.exe "$(INSTDIR)\bin"
-	copy $(LONG)\libhttpd.dll "$(INSTDIR)\bin"
-	copy srclib\apr\$(LONG)\libapr.dll "$(INSTDIR)\bin"
-	copy srclib\apr-util\$(LONG)\libaprutil.dll "$(INSTDIR)\bin"
-	copy modules\aaa\$(LONG)\mod_access.so "$(INSTDIR)\modules"
-	copy modules\aaa\$(LONG)\mod_auth.so "$(INSTDIR)\modules"
-	copy modules\aaa\$(LONG)\mod_auth_anon.so "$(INSTDIR)\modules"
-	copy modules\aaa\$(LONG)\mod_auth_dbm.so "$(INSTDIR)\modules"
-	copy modules\aaa\$(LONG)\mod_auth_digest.so "$(INSTDIR)\modules"
-	copy modules\arch\win32\$(LONG)\mod_isapi.so "$(INSTDIR)\modules"
-	copy modules\cache\$(LONG)\mod_file_cache.so "$(INSTDIR)\modules"
-	copy modules\dav\fs\$(LONG)\mod_dav_fs.so "$(INSTDIR)\modules"
-	copy modules\dav\main\$(LONG)\mod_dav.so "$(INSTDIR)\modules"
-	copy modules\filters\$(LONG)\mod_include.so "$(INSTDIR)\modules"
-	copy modules\generators\$(LONG)\mod_asis.so "$(INSTDIR)\modules"
-	copy modules\generators\$(LONG)\mod_autoindex.so "$(INSTDIR)\modules"
-	copy modules\generators\$(LONG)\mod_cgi.so "$(INSTDIR)\modules"
-	copy modules\generators\$(LONG)\mod_info.so "$(INSTDIR)\modules"
-	copy modules\generators\$(LONG)\mod_status.so "$(INSTDIR)\modules"
-	copy modules\http\$(LONG)\mod_mime.so "$(INSTDIR)\modules"
-	copy modules\loggers\$(LONG)\mod_log_config.so "$(INSTDIR)\modules"
-	copy modules\mappers\$(LONG)\mod_actions.so "$(INSTDIR)\modules"
-	copy modules\mappers\$(LONG)\mod_alias.so "$(INSTDIR)\modules"
-	copy modules\mappers\$(LONG)\mod_dir.so "$(INSTDIR)\modules"
-	copy modules\mappers\$(LONG)\mod_imap.so "$(INSTDIR)\modules"
-	copy modules\mappers\$(LONG)\mod_negotiation.so "$(INSTDIR)\modules"
-	copy modules\mappers\$(LONG)\mod_rewrite.so "$(INSTDIR)\modules"
-	copy modules\mappers\$(LONG)\mod_speling.so "$(INSTDIR)\modules"
-	copy modules\mappers\$(LONG)\mod_userdir.so "$(INSTDIR)\modules"
-	copy modules\mappers\$(LONG)\mod_vhost_alias.so "$(INSTDIR)\modules"
-	copy modules\metadata\$(LONG)\mod_cern_meta.so "$(INSTDIR)\modules"
-	copy modules\metadata\$(LONG)\mod_env.so "$(INSTDIR)\modules"
-	copy modules\metadata\$(LONG)\mod_expires.so "$(INSTDIR)\modules"
-	copy modules\metadata\$(LONG)\mod_headers.so "$(INSTDIR)\modules"
-	copy modules\metadata\$(LONG)\mod_mime_magic.so "$(INSTDIR)\modules"
-	copy modules\metadata\$(LONG)\mod_setenvif.so "$(INSTDIR)\modules"
-	copy modules\metadata\$(LONG)\mod_unique_id.so "$(INSTDIR)\modules"
-	copy modules\metadata\$(LONG)\mod_usertrack.so "$(INSTDIR)\modules"
-	copy modules\proxy\$(LONG)\mod_proxy.so "$(INSTDIR)\modules"
-	copy modules\proxy\$(LONG)\mod_proxy_connect.so "$(INSTDIR)\modules"
-	copy modules\proxy\$(LONG)\mod_proxy_ftp.so "$(INSTDIR)\modules"
-	copy modules\proxy\$(LONG)\mod_proxy_http.so "$(INSTDIR)\modules"
+	copy $(LONG)\Apache.exe "$(INSTDIR)\bin" <.y
+	copy $(LONG)\libhttpd.dll "$(INSTDIR)\bin" <.y
+	copy srclib\apr\$(LONG)\libapr.dll "$(INSTDIR)\bin" <.y
+	copy srclib\apr-util\$(LONG)\libaprutil.dll "$(INSTDIR)\bin" <.y
+	copy modules\aaa\$(LONG)\mod_access.so "$(INSTDIR)\modules" <.y
+	copy modules\aaa\$(LONG)\mod_auth.so "$(INSTDIR)\modules" <.y
+	copy modules\aaa\$(LONG)\mod_auth_anon.so "$(INSTDIR)\modules" <.y
+	copy modules\aaa\$(LONG)\mod_auth_dbm.so "$(INSTDIR)\modules" <.y
+	copy modules\aaa\$(LONG)\mod_auth_digest.so "$(INSTDIR)\modules" <.y
+	copy modules\arch\win32\$(LONG)\mod_isapi.so "$(INSTDIR)\modules" <.y
+	copy modules\cache\$(LONG)\mod_file_cache.so "$(INSTDIR)\modules" <.y
+	copy modules\dav\fs\$(LONG)\mod_dav_fs.so "$(INSTDIR)\modules" <.y
+	copy modules\dav\main\$(LONG)\mod_dav.so "$(INSTDIR)\modules" <.y
+	copy modules\filters\$(LONG)\mod_include.so "$(INSTDIR)\modules" <.y
+	copy modules\generators\$(LONG)\mod_asis.so "$(INSTDIR)\modules" <.y
+	copy modules\generators\$(LONG)\mod_autoindex.so "$(INSTDIR)\modules" <.y
+	copy modules\generators\$(LONG)\mod_cgi.so "$(INSTDIR)\modules" <.y
+	copy modules\generators\$(LONG)\mod_info.so "$(INSTDIR)\modules" <.y
+	copy modules\generators\$(LONG)\mod_status.so "$(INSTDIR)\modules" <.y
+	copy modules\http\$(LONG)\mod_mime.so "$(INSTDIR)\modules" <.y
+	copy modules\loggers\$(LONG)\mod_log_config.so "$(INSTDIR)\modules" <.y
+	copy modules\mappers\$(LONG)\mod_actions.so "$(INSTDIR)\modules" <.y
+	copy modules\mappers\$(LONG)\mod_alias.so "$(INSTDIR)\modules" <.y
+	copy modules\mappers\$(LONG)\mod_dir.so "$(INSTDIR)\modules" <.y
+	copy modules\mappers\$(LONG)\mod_imap.so "$(INSTDIR)\modules" <.y
+	copy modules\mappers\$(LONG)\mod_negotiation.so "$(INSTDIR)\modules" <.y
+	copy modules\mappers\$(LONG)\mod_rewrite.so "$(INSTDIR)\modules" <.y
+	copy modules\mappers\$(LONG)\mod_speling.so "$(INSTDIR)\modules" <.y
+	copy modules\mappers\$(LONG)\mod_userdir.so "$(INSTDIR)\modules" <.y
+	copy modules\mappers\$(LONG)\mod_vhost_alias.so "$(INSTDIR)\modules" <.y
+	copy modules\metadata\$(LONG)\mod_cern_meta.so "$(INSTDIR)\modules" <.y
+	copy modules\metadata\$(LONG)\mod_env.so "$(INSTDIR)\modules" <.y
+	copy modules\metadata\$(LONG)\mod_expires.so "$(INSTDIR)\modules" <.y
+	copy modules\metadata\$(LONG)\mod_headers.so "$(INSTDIR)\modules" <.y
+	copy modules\metadata\$(LONG)\mod_mime_magic.so "$(INSTDIR)\modules" <.y
+	copy modules\metadata\$(LONG)\mod_setenvif.so "$(INSTDIR)\modules" <.y
+	copy modules\metadata\$(LONG)\mod_unique_id.so "$(INSTDIR)\modules" <.y
+	copy modules\metadata\$(LONG)\mod_usertrack.so "$(INSTDIR)\modules" <.y
+	copy modules\proxy\$(LONG)\mod_proxy.so "$(INSTDIR)\modules" <.y
+	copy modules\proxy\$(LONG)\mod_proxy_connect.so "$(INSTDIR)\modules" <.y
+	copy modules\proxy\$(LONG)\mod_proxy_ftp.so "$(INSTDIR)\modules" <.y
+	copy modules\proxy\$(LONG)\mod_proxy_http.so "$(INSTDIR)\modules" <.y
 !IF EXIST("srclib\openssl")
-	-copy modules\ssl\$(LONG)\mod_ssl.so "$(INSTDIR)\modules"
-	-copy srclib\openssl\$(SSLBIN)\openssl.exe "$(INSTDIR)\bin"
-	-copy srclib\openssl\$(SSLBIN)\libeay32.dll "$(INSTDIR)\bin"
-	-copy srclib\openssl\$(SSLBIN)\ssleay32.dll "$(INSTDIR)\bin"
-	-copy srclib\openssl\LICENSE "$(INSTDIR)\OPENSSL-LICENSE.txt"
-	-copy << + srclib\openssl\NEWS "$(INSTDIR)\OPENSSL-NEWS.txt"
+	-copy modules\ssl\$(LONG)\mod_ssl.so "$(INSTDIR)\modules" <.y
+	-copy srclib\openssl\$(SSLBIN)\openssl.exe "$(INSTDIR)\bin" <.y
+	-copy srclib\openssl\$(SSLBIN)\libeay32.dll "$(INSTDIR)\bin" <.y
+	-copy srclib\openssl\$(SSLBIN)\ssleay32.dll "$(INSTDIR)\bin" <.y
+	-copy srclib\openssl\LICENSE "$(INSTDIR)\OPENSSL-LICENSE.txt" <.y
+	-copy << + srclib\openssl\NEWS "$(INSTDIR)\OPENSSL-NEWS.txt" <.y
 
  Apache HTTP Server 2.0 Limited OpenSSL Distribution  17 Aug 2001
 
@@ -358,7 +358,7 @@ _install:
 
 --------------------------------------------------------------------------------
 <<
-	-copy << + srclib\openssl\README "$(INSTDIR)\OPENSSL-README.txt"
+	-copy << + srclib\openssl\README "$(INSTDIR)\OPENSSL-README.txt" <.y
 
  Apache HTTP Server 2.0 Limited OpenSSL Distribution  19 Aug 2001
 
@@ -387,18 +387,18 @@ _install:
 
 --------------------------------------------------------------------------------
 <<
-	copy support\$(LONG)\abs.exe "$(INSTDIR)\bin\ab.exe"
+	copy support\$(LONG)\abs.exe "$(INSTDIR)\bin\ab.exe" <.y
 !ELSE
-	copy support\$(LONG)\ab.exe "$(INSTDIR)\bin"
+	copy support\$(LONG)\ab.exe "$(INSTDIR)\bin" <.y
 !ENDIF
-	copy support\$(LONG)\htdbm.exe "$(INSTDIR)\bin"
-	copy support\$(LONG)\htdigest.exe "$(INSTDIR)\bin"
-	copy support\$(LONG)\htpasswd.exe "$(INSTDIR)\bin"
-	copy support\$(LONG)\logresolve.exe "$(INSTDIR)\bin"
-	copy support\$(LONG)\rotatelogs.exe "$(INSTDIR)\bin"
-	copy support\win32\$(LONG)\ApacheMonitor.exe "$(INSTDIR)\bin"
-	copy support\win32\$(LONG)\wintty.exe "$(INSTDIR)\bin"
-	copy docs\cgi-examples\printenv "$(INSTDIR)\cgi-bin\printenv.pl"
+	copy support\$(LONG)\htdbm.exe "$(INSTDIR)\bin" <.y
+	copy support\$(LONG)\htdigest.exe "$(INSTDIR)\bin" <.y
+	copy support\$(LONG)\htpasswd.exe "$(INSTDIR)\bin" <.y
+	copy support\$(LONG)\logresolve.exe "$(INSTDIR)\bin" <.y
+	copy support\$(LONG)\rotatelogs.exe "$(INSTDIR)\bin" <.y
+	copy support\win32\$(LONG)\ApacheMonitor.exe "$(INSTDIR)\bin" <.y
+	copy support\win32\$(LONG)\wintty.exe "$(INSTDIR)\bin" <.y
+	copy docs\cgi-examples\printenv "$(INSTDIR)\cgi-bin\printenv.pl" <.y
 	-awk -f <<script.awk "docs\cgi-examples\printenv" "$(INSTDIR)\cgi-bin\printenv.pl"
     BEGIN { 
 	srcfl = ARGV[1];
@@ -413,39 +413,38 @@ _install:
 	}
     }
 <<
-	xcopy docs\cgi-examples\test-cgi.bat "$(INSTDIR)\cgi-bin" /d
+	copy docs\cgi-examples\test-cgi.bat "$(INSTDIR)\cgi-bin" <.y
 	xcopy docs\error "$(INSTDIR)\error" /s /d < .a
 	xcopy docs\docroot "$(INSTDIR)\htdocs" /d < .a
 	xcopy docs\manual "$(INSTDIR)\manual" /s /d < .a
-
 	xcopy srclib\pcre\pcre*.h "$(INSTDIR)\include" /d < .a
-	xcopy srclib\apr-util\xml\expat\lib\expat.h "$(INSTDIR)\include" /d
+	xcopy srclib\apr-util\xml\expat\lib\expat.h "$(INSTDIR)\include" /d < .a
 	xcopy srclib\apr\include\*.h "$(INSTDIR)\include" /d < .a
 	xcopy srclib\apr-util\include\*.h "$(INSTDIR)\include" /d < .a
 	xcopy include\*.h "$(INSTDIR)\include" /d < .a
 	xcopy docs\icons "$(INSTDIR)\icons" /s /d < .a
-	copy srclib\apr\Lib$(SHORT)\apr.lib "$(INSTDIR)\lib"
-	copy srclib\apr-util\Lib$(SHORT)\aprutil.lib "$(INSTDIR)\lib"
-	copy srclib\pcre\Lib$(SHORT)\pcre.lib "$(INSTDIR)\lib"
-	copy srclib\pcre\Lib$(SHORT)\pcreposix.lib "$(INSTDIR)\lib"
+	copy srclib\apr\Lib$(SHORT)\apr.lib "$(INSTDIR)\lib" <.y
+	copy srclib\apr-util\Lib$(SHORT)\aprutil.lib "$(INSTDIR)\lib" <.y
+	copy srclib\pcre\Lib$(SHORT)\pcre.lib "$(INSTDIR)\lib" <.y
+	copy srclib\pcre\Lib$(SHORT)\pcreposix.lib "$(INSTDIR)\lib" <.y
 #       ### until we determine if it's safe to change expat>libexpat and xml>expat
 #       within our cvs tree... at least remain consistent to our naming conventions;
-	copy srclib\apr-util\xml\expat\lib\Lib$(SHORT)\xml.lib "$(INSTDIR)\lib\expat.lib"
-	copy srclib\apr\$(LONG)\libapr.lib "$(INSTDIR)\lib"
-	copy srclib\apr\$(LONG)\libapr.exp "$(INSTDIR)\lib"
-	copy srclib\apr-util\$(LONG)\libaprutil.lib "$(INSTDIR)\lib"
-	copy srclib\apr-util\$(LONG)\libaprutil.exp "$(INSTDIR)\lib"
-	copy $(LONG)\libhttpd.exp "$(INSTDIR)\lib"
-	copy $(LONG)\libhttpd.lib "$(INSTDIR)\lib"
-	copy modules\dav\main\$(LONG)\mod_dav.exp "$(INSTDIR)\lib"
-	copy modules\dav\main\$(LONG)\mod_dav.lib "$(INSTDIR)\lib"
-	copy docs\conf\magic "$(INSTDIR)\conf\magic.default"
+	copy srclib\apr-util\xml\expat\lib\Lib$(SHORT)\xml.lib "$(INSTDIR)\lib\expat.lib" <.y
+	copy srclib\apr\$(LONG)\libapr.lib "$(INSTDIR)\lib" <.y
+	copy srclib\apr\$(LONG)\libapr.exp "$(INSTDIR)\lib" <.y
+	copy srclib\apr-util\$(LONG)\libaprutil.lib "$(INSTDIR)\lib" <.y
+	copy srclib\apr-util\$(LONG)\libaprutil.exp "$(INSTDIR)\lib" <.y
+	copy $(LONG)\libhttpd.exp "$(INSTDIR)\lib" <.y
+	copy $(LONG)\libhttpd.lib "$(INSTDIR)\lib" <.y
+	copy modules\dav\main\$(LONG)\mod_dav.exp "$(INSTDIR)\lib" <.y
+	copy modules\dav\main\$(LONG)\mod_dav.lib "$(INSTDIR)\lib" <.y
+	copy docs\conf\magic "$(INSTDIR)\conf\magic.default" <.y
 	if not exist "$(INSTDIR)\conf\magic" \
 	    copy "$(INSTDIR)\conf\magic.default" "$(INSTDIR)\conf\magic"
-	copy docs\conf\mime.types "$(INSTDIR)\conf\mime.types.default"
+	copy docs\conf\mime.types "$(INSTDIR)\conf\mime.types.default" <.y
 	if not exist "$(INSTDIR)\conf\mime.types" \
 	    copy "$(INSTDIR)\conf\mime.types.default" "$(INSTDIR)\conf\mime.types"
-	copy docs\conf\httpd-win.conf "$(INSTDIR)\conf\httpd.default.conf"
+	copy docs\conf\httpd-win.conf "$(INSTDIR)\conf\httpd.default.conf" <.y
 	-awk -f <<script.awk "docs\conf\httpd-win.conf" "$(INSTDIR)\conf\httpd.default.conf" "$(INSTDIR)"
     BEGIN { 
 	srcfl = ARGV[1];
@@ -462,7 +461,7 @@ _install:
 <<
 	if not exist "$(INSTDIR)\conf\httpd.conf" \
 	    copy "$(INSTDIR)\conf\httpd.default.conf" "$(INSTDIR)\conf\httpd.conf"
-	copy docs\conf\ssl-std.conf "$(INSTDIR)\conf\ssl.default.conf"
+	copy docs\conf\ssl-std.conf "$(INSTDIR)\conf\ssl.default.conf" <.y
 	-awk -f <<script.awk "docs\conf\ssl-std.conf" "$(INSTDIR)\conf\ssl.default.conf" "$(INSTDIR)"
     BEGIN { 
 	srcfl = ARGV[1];
