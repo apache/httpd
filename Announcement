@@ -8,7 +8,7 @@
 
    This version of Apache is principally a security fix release which
    closes some problems where a directory listing could be obtained
-   instead of the default index page. A summary of the bug fixs and major
+   instead of the default index page. A summary of the bug fixes and major
    new features is given at the end of this document.
 
    We consider Apache 1.3.22 to be the best version of Apache available
@@ -33,7 +33,7 @@
        http://www.apache.org/mirrors/
 
    As of Apache 1.3.17, Win32 binary distributions are now based on the
-   Microsoft Installer (.MSI) technology. This change occured in order to
+   Microsoft Installer (.MSI) technology. This change occurred in order to
    resolve the many problems WinME and Win2K users experienced with the
    older InstallShield-based installer.exe file.  While development
    continues to make this new installation method more robust, questions
