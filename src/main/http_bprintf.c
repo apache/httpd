@@ -14,11 +14,8 @@
  *
  */
 
-#include <assert.h>
+#include "httpd.h"
 #include <math.h>
-#include "conf.h"
-#include "alloc.h"
-#include "buff.h"
 
 #if !defined(max)
 #define max(a,b)	(a > b ? a : b)
@@ -254,7 +251,7 @@ int vbprintf(BUFF *bp, const char *format, va_list arg)
 		    }
                 op = *p;
                 CopyAndAdvance(&fmtBuffPtr, &p, 1);
-                assert(fmtBuffPtr - fmtBuff < FMT_BUFFLEN);
+                ap_assert(fmtBuffPtr - fmtBuff < FMT_BUFFLEN);
                 *fmtBuffPtr = '\0';
 		/*
 		bwrite(bp,"[",1);
@@ -578,7 +575,7 @@ int vbprintf(BUFF *bp, const char *format, va_list arg)
 		goto ErrorReturn;
             fastPath = FALSE;
 	    } /* for (;;) */
-        assert(buffCount < buffLen);
+        ap_assert(buffCount < buffLen);
         if(buffCount > 0)
 	    {
             if(bwrite(bp,buffPtr,buffCount) < 0)

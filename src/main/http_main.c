@@ -85,7 +85,6 @@
 #include "http_core.h"          /* for get_remote_host */
 #include "scoreboard.h"
 #include "multithread.h"
-#include <assert.h>
 #include <sys/stat.h>
 #ifdef HAVE_SHMGET
 #include <sys/types.h>
@@ -745,13 +744,13 @@ static scoreboard *scoreboard_image = NULL;
 
 void reinit_scoreboard (pool *p)
 {
-    assert(!scoreboard_image);
+    ap_assert(!scoreboard_image);
     scoreboard_image = (scoreboard *)calloc(HARD_SERVER_LIMIT, sizeof(short_score));
 }
 
 void cleanup_scoreboard ()
 {
-    assert(scoreboard_image);
+    ap_assert(scoreboard_image);
     free(scoreboard_image);
     scoreboard_image = NULL;
 }
@@ -1892,7 +1891,7 @@ static void copy_listeners(pool *p)
 {
     listen_rec *lr;
 
-    assert(old_listeners == NULL);
+    ap_assert(old_listeners == NULL);
     for (lr = listeners; lr; lr = lr->next) {
 	listen_rec *nr = malloc(sizeof *nr);
 	if (nr == NULL) {
@@ -1902,7 +1901,7 @@ static void copy_listeners(pool *p)
 	*nr = *lr;
 	kill_cleanups_for_socket(p, nr->fd);
 	nr->next = old_listeners;
-	assert(!nr->used);
+	ap_assert(!nr->used);
 	old_listeners = nr;
     }
 }
@@ -2746,7 +2745,7 @@ add_job(int sock)
 {
     joblist *new_job;
     
-    assert(allowed_globals.jobmutex);
+    ap_assert(allowed_globals.jobmutex);
     /* TODO: If too many jobs in queue, sleep, check for problems */
     acquire_mutex(allowed_globals.jobmutex);
     new_job = (joblist *)malloc(sizeof(joblist));
@@ -2768,7 +2767,7 @@ remove_job()
     joblist *job;
     int sock;
     
-    assert(allowed_globals.jobmutex);
+    ap_assert(allowed_globals.jobmutex);
     acquire_semaphore(allowed_globals.jobsemaphore);
     acquire_mutex(allowed_globals.jobmutex);
     if(allowed_globals.exit_now && !allowed_globals.jobhead)
@@ -2777,7 +2776,7 @@ remove_job()
         return(-1);
     }
     job = allowed_globals.jobhead;
-    assert(job);
+    ap_assert(job);
     allowed_globals.jobhead = job->next;
     if(allowed_globals.jobhead == NULL)
         allowed_globals.jobtail = NULL;
@@ -3100,7 +3099,7 @@ void worker_main()
 		for (lr=listeners; lr != NULL; lr=lr->next)
 		{
 		/* to prove a point - Ben */
-		    assert(!lr->used);
+		    ap_assert(!lr->used);
 		    if(lr->used)
 		    {
 			listen(lr->fd, 1);
@@ -3111,15 +3110,15 @@ void worker_main()
         if(!start_exit)
         {
             rv = WaitForSingleObject(exit_event, 0);
-            assert((rv == WAIT_TIMEOUT) || (rv == WAIT_OBJECT_0));
+            ap_assert((rv == WAIT_TIMEOUT) || (rv == WAIT_OBJECT_0));
             if(rv == WAIT_OBJECT_0)
                 break;
             rv = WaitForMultipleObjects(nthreads, child_handles, 0, 0);
-	    assert(rv != WAIT_FAILED);
+	    ap_assert(rv != WAIT_FAILED);
             if(rv != WAIT_TIMEOUT)
             {
                 rv = rv - WAIT_OBJECT_0;
-                assert((rv >= 0) && (rv < nthreads));
+                ap_assert((rv >= 0) && (rv < nthreads));
                 cleanup_thread(child_handles, &nthreads, rv);
                 break;
             }
@@ -3214,7 +3213,7 @@ void worker_main()
 	for (lr=listeners; lr != NULL; lr=lr->next)
 	{
 	/* prove the point again */
-	    assert(!lr->used);
+	    ap_assert(!lr->used);
 	    if(lr->used)
 	    {
 		closesocket(lr->fd);
@@ -3236,7 +3235,7 @@ void worker_main()
         if(rv != WAIT_TIMEOUT)
         {
             rv = rv - WAIT_OBJECT_0;
-            assert((rv >= 0) && (rv < nthreads));
+            ap_assert((rv >= 0) && (rv < nthreads));
             cleanup_thread(child_handles, &nthreads, rv);
             continue;
         }
@@ -3268,7 +3267,7 @@ create_event_and_spawn(int argc, char **argv, event **ev, int *child_num, char* 
     sprintf(buf, "%s_%d", prefix, ++(*child_num));
     _flushall();
     *ev = create_event(0, 0, buf);
-    assert(*ev);
+    ap_assert(*ev);
     pass_argv[0] = argv[0];
     pass_argv[1] = "-c";
     pass_argv[2] = buf;
@@ -3318,22 +3317,22 @@ master_main(int argc, char **argv)
     {
         service_set_status(SERVICE_START_PENDING);
         child[i] = create_event_and_spawn(argc, argv, &ev[i], &child_num, buf);
-        assert(child[i] >= 0);
+        ap_assert(child[i] >= 0);
     }
     service_set_status(SERVICE_RUNNING);
 
     for(;!service_stop;)
     {
         rv = WaitForMultipleObjects(nchild, (HANDLE *)child, FALSE, 2000);
-        assert(rv != WAIT_FAILED);
+        ap_assert(rv != WAIT_FAILED);
         if(rv == WAIT_TIMEOUT)
             continue;
         cld = rv - WAIT_OBJECT_0;
-        assert(rv < nchild);
+        ap_assert(rv < nchild);
         CloseHandle((HANDLE)child[rv]);
         CloseHandle(ev[rv]);
         child[rv] = create_event_and_spawn(argc, argv, &ev[rv], &child_num, buf);
-        assert(child[rv]);
+        ap_assert(child[rv]);
     }
 
     /*
@@ -3349,11 +3348,11 @@ master_main(int argc, char **argv)
     {
         service_set_status(SERVICE_STOP_PENDING);
         rv = WaitForMultipleObjects(nchild, (HANDLE *)child, FALSE, 2000);
-        assert(rv != WAIT_FAILED);
+        ap_assert(rv != WAIT_FAILED);
         if(rv == WAIT_TIMEOUT)
             continue;
         cld = rv - WAIT_OBJECT_0;
-        assert(rv < nchild);
+        ap_assert(rv < nchild);
         CloseHandle((HANDLE)child[rv]);
         CloseHandle(ev[rv]);
         for(i=rv; i<(nchild-1); i++)
@@ -3423,7 +3422,7 @@ main(int argc, char *argv[])
         case 'c':
             exit_event = open_event(optarg);
             cp = strchr(optarg, '_');
-            assert(cp);
+            ap_assert(cp);
             *cp = 0;
             start_mutex = open_mutex(optarg);
             child = 1;

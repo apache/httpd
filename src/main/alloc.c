@@ -62,7 +62,6 @@
 #include "multithread.h"
 
 #include <stdarg.h>
-#include <assert.h>
 
 /*****************************************************************
  *

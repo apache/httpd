@@ -96,7 +96,6 @@
  */
 
 #ifdef WIN32
-#include <assert.h>
 
 int
 sendwithtimeout(int sock, const char *buf, int len, int flags)
@@ -115,7 +114,7 @@ sendwithtimeout(int sock, const char *buf, int len, int flags)
     if(rv)
     {
         err = WSAGetLastError();
-        assert(0);
+        ap_assert(0);
     }
     rv = send(sock, buf, len, flags);
     if(rv == SOCKET_ERROR)
@@ -160,7 +159,7 @@ recvwithtimeout(int sock, char *buf, int len, int flags)
     
     rv = ioctlsocket(sock, FIONBIO, &iostate);
     iostate = 0;
-    assert(!rv);
+    ap_assert(!rv);
     rv = recv(sock, buf, len, flags);
     if(rv == SOCKET_ERROR)
     {

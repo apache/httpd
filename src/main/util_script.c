@@ -60,7 +60,6 @@
 #include "http_core.h"		/* For document_root.  Sigh... */
 #include "http_request.h"       /* for sub_req_lookup_uri() */
 #include "util_script.h"
-#include <assert.h>
 
 /*
  * Various utility functions which are common to a whole lot of
@@ -661,7 +660,7 @@ int call_exec (request_rec *r, char *argv0, char **env, int shellcmd)
             if (is_exe || is_binary) {
                 pid = spawnve(_P_NOWAIT, r->filename, create_argv(r->pool, argv0, NULL, NULL, r->args, (void *)NULL), env);
             } else if(is_script) {
-	        assert(0);
+	        ap_assert(0);
                 pid = spawnve(_P_NOWAIT, interpreter+2, create_argv(r->pool, interpreter+2, NULL, NULL, r->filename, r->args), env);
             } else {  
                 pid = spawnve(_P_NOWAIT, "CMD.EXE", create_argv_cmd(r->pool, argv0, r->args, r->filename), env);

@@ -208,10 +208,12 @@ void log_reason(const char *reason, const char *file, request_rec *r)
 
 void log_assert(const char *szExp,const char *szFile,int nLine)
 {
-    char buf[1000];
-
-    ap_snprintf(buf, sizeof(buf), 
-        "line %d, assertion \"%s\" failed",nLine,szExp);
-    log_unixerr("assert",szFile,buf,NULL);
+    fprintf(stderr, "[%s] file %s, line %d, assertion \"%s\" failed\n",
+	get_time(), szFile, nLine, szExp);
+#ifndef WIN32
+    /* unix assert does an abort leading to a core dump */
+    abort();
+#else
     exit(1);
+#endif
 }

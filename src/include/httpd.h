@@ -767,4 +767,4 @@ int ap_slack (int fd, int line);
  * Redefine assert() to something more useful for an Apache...
  */
 void log_assert(const char *szExp,const char *szFile,int nLine);
-#define assert(exp) (void)( (exp) || (log_assert(#exp, __FILE__, __LINE__), 0) )
+#define ap_assert(exp) (void)( (exp) || (log_assert(#exp, __FILE__, __LINE__), 0) )
