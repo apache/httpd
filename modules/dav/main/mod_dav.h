@@ -489,6 +489,25 @@ typedef struct
 
 dav_lookup_result dav_lookup_uri(const char *uri, request_rec *r);
 
+/* defines type of property info a provider is to return */
+typedef enum {
+    DAV_PROP_INSERT_NOTDEF,	/* property is defined by this provider,
+				   but nothing was inserted because the
+				   (live) property is not defined for this
+				   resource (it may be present as a dead
+				   property). */
+    DAV_PROP_INSERT_NOTSUPP,    /* property is recognized by this provider,
+                                 * but it is not supported, and cannot be
+                                 * treated as a dead property */
+    DAV_PROP_INSERT_NAME,	/* a property name (empty elem) was
+				   inserted into the text block */
+    DAV_PROP_INSERT_VALUE,	/* a property name/value pair was inserted
+				   into the text block */
+    DAV_PROP_INSERT_SUPPORTED   /* a supported live property was added to
+                                   the text block as a
+                                   <DAV:supported-live-property> element */
+} dav_prop_insert;
+
 /* ### this stuff is private to dav/fs/repos.c; move it... */
 /* format a time string (buf must be at least DAV_TIMEBUF_SIZE chars) */
 #define DAV_STYLE_ISO8601	1
@@ -578,7 +597,7 @@ APR_DECLARE_EXTERNAL_HOOK(dav, DAV, int, find_liveprop,
 */
 APR_DECLARE_EXTERNAL_HOOK(dav, DAV, void, insert_all_liveprops, 
                          (request_rec *r, const dav_resource *resource,
-                          int insvalue, ap_text_header *phdr))
+                          dav_prop_insert what, ap_text_header *phdr))
 
 /* ### make this internal to mod_dav.c ? */
 #define DAV_KEY_RESOURCE        "dav-resource"
@@ -670,35 +689,36 @@ dav_error * dav_get_locktoken_list(request_rec *r, dav_locktoken_list **ltl);
 ** LIVE PROPERTY HANDLING
 */
 
-typedef enum {
-    DAV_PROP_INSERT_NOTDEF,	/* property is defined by this provider,
-				   but nothing was inserted because the
-				   (live) property is not defined for this
-				   resource (it may be present as a dead
-				   property). */
-    DAV_PROP_INSERT_NAME,	/* a property name (empty elem) was
-				   inserted into the text block */
-    DAV_PROP_INSERT_VALUE	/* a property name/value pair was inserted
-				   into the text block */
-} dav_prop_insert;
-
 /* opaque type for PROPPATCH rollback information */
 typedef struct dav_liveprop_rollback dav_liveprop_rollback;
 
 struct dav_hooks_liveprop
 {
     /*
-    ** Insert a property name/value into a text block. The property to
-    ** insert is identified by the propid value. If insvalue is true,
-    ** then the property's value should be inserted; otherwise, an empty
-    ** element (ie. just the prop's name) should be inserted.
+    ** Insert property information into a text block. The property to
+    ** insert is identified by the propid value. The information to insert
+    ** is identified by the "what" argument, as follows:
+    **   DAV_PROP_INSERT_NAME
+    **      property name, as an empty XML element
+    **   DAV_PROP_INSERT_VALUE
+    **      property name/value, as an XML element
+    **   DAV_PROP_INSERT_SUPPORTED
+    **      if the property is defined on the resource, then
+    **      a DAV:supported-live-property element, as defined
+    **      by the DeltaV extensions to RFC2518.
+    **                      
+    ** Providers should return DAV_PROP_INSERT_NOTDEF if they do not define
+    ** the specified propid, but allow the property to be handled as a
+    ** dead property. If a provider recognizes, but does not support,
+    ** a property, and does not want it handled as a dead property, it should
+    ** return DAV_PROP_INSERT_NOTSUPP.
     **
     ** Returns one of DAV_PROP_INSERT_* based on what happened.
     **
     ** ### we may need more context... ie. the lock database
     */
     dav_prop_insert (*insert_prop)(const dav_resource *resource,
-				   int propid, int insvalue,
+				   int propid, dav_prop_insert what,
 				   ap_text_header *phdr);
 
     /*
@@ -840,7 +860,7 @@ int dav_core_find_liveprop(const dav_resource *resource,
                            const dav_hooks_liveprop **hooks);
 void dav_core_insert_all_liveprops(request_rec *r,
                                    const dav_resource *resource,
-                                   int insvalue, ap_text_header *phdr);
+                                   dav_prop_insert what, ap_text_header *phdr);
 void dav_core_register_uris(apr_pool_t *p);
 
 
@@ -880,9 +900,6 @@ enum {
     DAV_PROPID_resourcetype,
     DAV_PROPID_source,
     DAV_PROPID_supportedlock,
-    DAV_PROPID_supported_method_set,            /* from DeltaV I-D */
-    DAV_PROPID_supported_live_property_set,     /* from DeltaV I-D */
-    DAV_PROPID_supported_report_set,            /* from DeltaV I-D */
 
     /* DeltaV properties (from the I-D) */
     DAV_PROPID_activity_collection_set,
@@ -1351,7 +1368,13 @@ dav_get_props_result dav_get_props(
 
 dav_get_props_result dav_get_allprops(
     dav_propdb *db,
-    int getvals);
+    dav_prop_insert what);
+
+void dav_get_liveprop_supported(
+    dav_propdb *propdb,
+    const char *ns_uri,
+    const char *propname,
+    ap_text_header *body);
 
 /*
 ** 3-phase property modification.
@@ -1851,10 +1874,22 @@ struct dav_hooks_vsn
     ** they define the functionality needed to implement "core" versioning.
     */
 
-    /* Return supported versioning level
-     * for the Versioning header
+    /* Return supported versioning options.
+     * Each dav_text item in the list will be returned as a separate
+     * DAV header. Providers are advised to limit the length of an
+     * individual text item to 63 characters, to conform to the limit
+     * used by MS Web Folders.
      */
-    const char * (*get_vsn_header)(void);
+    void (*get_vsn_options)(apr_pool_t *p, ap_text_header *phdr);
+
+    /* Get the value of a specific option for an OPTIONS request.
+     * The option being requested is given by the parsed XML
+     * element object "elem". The value of the option should be
+     * appended to the "option" text object.
+     */
+    dav_error * (*get_option)(const dav_resource *resource,
+                              const ap_xml_elem *elem,
+                              ap_text_header *option);
 
     /* Put a resource under version control. If the resource already
      * exists unversioned, then it becomes the initial version of the
@@ -1947,7 +1982,7 @@ struct dav_hooks_vsn
     ** must be passed to this routine.
     **
     ** The dav_xml_doc structure contains the parsed report request
-    ** body. The report response is generated into the dav_text_header
+    ** body. The report response is generated into the ap_text_header
     ** structure.
     **
     ** ### shouldn't generate large responses to memory ###
