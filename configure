@@ -203,6 +203,19 @@ for module in `egrep '^[# ]*(Add|Shared)Module' $src/Configuration.tmpl`; do
     fi
 done
 
+#   backward compatibility from old src/Configuration.tmpl
+#   parameter names to the canonical Autoconf-style shell
+#   variable names.
+IFS='
+'
+for var in CFLAGS LDFLAGS LIBS INCLUDES; do
+    eval "val=\$EXTRA_$var"
+    if [ ".$val" != . ]; then
+        eval "$var=\$val"
+        echo " + Hint: please use $var instead of EXTRA_$var next time"
+    fi
+done
+
 ##
 ##  parse argument line options
 ##

@@ -1,4 +1,9 @@
 Changes with Apache 1.3b7
+
+  *) Provide backward compatibility from some old src/Configuration.tmpl
+     parameter names to the canonical Autoconf-style shell variable names. For
+     instance CFLAGS vs. EXTRA_CFLAGS. The EXTRA_xxx variants are accepted now
+     but a hint message is displayed. [Ralf S. Engelschall]
   
   *) Make sure that "make install" doesn't overwrite the DocumentRoot and
      CGI scripts from an existing Apache installation. 

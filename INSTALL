@@ -165,6 +165,13 @@
                system or use ``setenv KEY VALUE; ./configure ...'' if you use
                one of the C-shell variants (csh, tcsh).
 
+         Note: The above parameter names are the canonical ones used in
+               Autoconf-style interfaces. But because src/Configuration.tmpl
+               uses the prefix EXTRA_ for some variables (e.g. EXTRA_CFLAGS)
+               these variants are accepted for backward-compatibility reasons,
+               too. But please use the canonical Autoconf-style names and
+               don't rely on this.
+
      Use the --prefix=PREFIX and --exec-prefix=EPREFIX options to configure
      Apache to use a particular installation prefix. The default is
      PREFIX=/usr/local/apache and EPREFIX=PREFIX.
