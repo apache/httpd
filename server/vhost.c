@@ -967,13 +967,12 @@ void ap_update_vhost_given_ip(conn_rec *conn)
 {
     ipaddr_chain *trav;
     apr_port_t port;
-    apr_sockaddr_t *localsa;
 
-    apr_get_sockaddr(&localsa, APR_LOCAL, conn->client_socket);
-    apr_get_port(&port, localsa);
+    apr_get_port(&port, conn->local_addr);
 
     /* scan the hash apr_table_t for an exact match first */
-    trav = find_ipaddr(&conn->local_addr.sin_addr, port);
+    /* XXX IPv6 issues handled in an uncommitted patch */
+    trav = find_ipaddr(&conn->local_addr->sa.sin.sin_addr, port);
     if (trav) {
 	/* save the name_chain for later in case this is a name-vhost */
 	conn->vhost_lookup_data = trav->names;

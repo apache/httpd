@@ -183,7 +183,7 @@ dav_lookup_result dav_lookup_uri(const char *uri, request_rec * r)
 {
     dav_lookup_result result = { 0 };
     const char *scheme;
-    unsigned short port = ntohs(r->connection->local_addr.sin_port);
+    apr_port_t port;
     uri_components comp;
     char *new_file;
     const char *domain;
@@ -215,6 +215,7 @@ dav_lookup_result dav_lookup_uri(const char *uri, request_rec * r)
        the port, must match our port.
        the URI must not have a query (args) or a fragment
      */
+    apr_get_port(&port, r->connection->local_addr);
     if (strcasecmp(comp.scheme, scheme) != 0 ||
 	comp.port != port) {
 	result.err.status = HTTP_BAD_GATEWAY;
