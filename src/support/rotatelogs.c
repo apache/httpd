@@ -28,7 +28,11 @@ void main(int argc,char **argv)
     if(argc != 3)
 	{
 	fprintf(stderr,"%s <logfile> <rotation time in seconds>\n\n",argv[0]);
-	fprintf(stderr,"Add this:\n\nTransferLog \"|%s /some/where 86400\"\n\n",argv[0]);
+#ifdef __EMX__
+	fprintf(stderr,"Add this:\n\nTransferLog \"|%s.exe /some/where 86400\"\n\n",argv[0]);
+#else
+       	fprintf(stderr,"Add this:\n\nTransferLog \"|%s /some/where 86400\"\n\n",argv[0]);
+#endif
 	fprintf(stderr,"to httpd.conf. The generated name will be /some/where.nnnn where nnnn is the\n");
 	fprintf(stderr,"system time at which the log nominally starts (N.B. this time will always be a\n");
 	fprintf(stderr,"multiple of the rotation time, so you can synchronize cron scripts with it).\n");

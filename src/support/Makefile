@@ -9,6 +9,9 @@ CC= gcc
 CFLAGS= -g
 # For SCO ODT
 #EXTRA_LIBS= -lcrypt_i
+# For OS/2 port
+#EXTRA_LIBS= -llibufc
+
 
 INCLUDES= -I../src
 
