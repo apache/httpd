@@ -1,5 +1,10 @@
 Changes with Apache 2.0.53
 
+  *) Util_ldap: Implemented the util_ldap_cache_getuserdn() API so that 
+     ldap authorization only modules have access to the util_ldap 
+     user cache without having to require ldap authentication as well.  
+     [PR 31898] [Jari Ahonen jah progress.com, Brad Nicholes]
+
   *) SECURITY: CAN-2004-0942 (cve.mitre.org)
      Fix for memory consumption DoS in handling of MIME folded request
      headers.  [Joe Orton]

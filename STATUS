@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/11/10 13:11:39 $]
+Last modified at [$Date: 2004/11/10 16:35:21 $]
 
 Release:
 
@@ -75,13 +75,6 @@ PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
 
-    *) util_ldap: Add the util_ldap_cache_getuserdn() API to allow 
-       non-LDAP authentication modules the ability to use the util_ldap 
-       cache for authorization purposes only rather than authentication.  
-       PR #31898
-        http://www.apache.org/~bnicholes/apache_2.0_getuserdn.patch
-       +1:bnicholes, wrowe, jim
-       
     *) mod_authnz_ldap: Added the directive "Requires ldap-attribute" that
        allows the module to only authorize a user if the attribute value
        specified matches the value of the user object. PR 31913
