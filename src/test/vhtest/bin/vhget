@@ -1,0 +1,69 @@
+#!/usr/bin/perl -w
+
+require 5.002;
+use strict;
+use Socket;
+
+# vhget ipaddr port hostheader expect
+
+$#ARGV == 3 || die "usage: $0 ipaddr port hostheader expect\n";
+
+my ($remote,$port, $iaddr, $paddr, $proto, $line);
+
+$remote = shift;
+$port = shift;
+my $hostheader = shift;
+my $expect = shift;
+
+printf "%-20s %-20s %-15s: ", "$remote:$port", "'$hostheader'", "'$expect'";
+
+if ($port =~ /\D/) {
+    $port = getservbyname($port, 'tcp');
+}
+die "No port" unless $port;
+$iaddr   = inet_aton($remote) || die "no host: $remote";
+$paddr   = sockaddr_in($port, $iaddr);
+$proto   = getprotobyname('tcp');
+socket(SOCK, PF_INET, SOCK_STREAM, $proto)  || die "socket: $!";
+connect(SOCK, $paddr)    || die "connect: $!";
+
+my $oldfh = select(SOCK); $| = 1; select($oldfh);
+
+if ($hostheader ne '') {
+    print SOCK <<EOR;
+GET /vhost.txt HTTP/1.0\r
+Host: $hostheader\r
+Connection: close\r
+\r
+EOR
+} else {
+    print SOCK <<EOR;
+GET /vhost.txt HTTP/1.0\r
+Connection: close\r
+\r
+EOR
+}
+
+defined($line = <SOCK>) || die "error reading response: $!\n";
+
+($line =~ m#^HTTP/1\.1 200#) || die "HTTP error: $line\n";
+
+while (defined($line = <SOCK>)) {
+    last if $line =~ /^\r?$/;
+}
+
+defined($line = <SOCK>) || die "error reading response: $!\n";
+
+chomp($line);
+
+my $death = "$remote:$port with " .
+	( $hostheader eq '' ? "no Host:" : "Host: $hostheader" )
+	. " expected $expect, but got $line\n";
+if ($line eq $expect) {
+    print "passed\n";
+} else {
+    print "failed, got '$line'\n";
+}
+
+close (SOCK)            || die "close: $!";
+exit;
