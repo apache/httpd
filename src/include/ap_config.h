@@ -115,7 +115,7 @@ int gethostname(char *name, int namelen);
 
 #elif defined(HIUX)
 #define HAVE_SYS_RESOURCE_H
-#undef HAS_GMTOFF
+#undef HAVE_GMTOFF
 #define NO_KILLPG
 #undef NO_SETSID
 #ifndef _HIUX_SOURCE
@@ -431,7 +431,7 @@ int initgroups (char *, int);
 #undef NEED_STRCASECMP
 #undef NEED_STRNCASECMP
 #undef NEED_STRDUP
-#undef HAS_GMTOFF
+#undef HAVE_GMTOFF
 #define NO_KILLPG
 #undef NO_SETSID
 #define HAVE_RESOURCE 1

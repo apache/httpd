@@ -104,7 +104,7 @@ char *gm_timestr_822(pool *p, time_t sec) {
 }
 
 /* What a pain in the ass. */
-#if defined(HAS_GMTOFF)
+#if defined(HAVE_GMTOFF)
 struct tm *get_gmtoff(int *tz) {
     time_t tt = time(NULL);
     struct tm *t = localtime(&tt);
