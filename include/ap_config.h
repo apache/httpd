@@ -84,6 +84,10 @@ stat() properly */
 #include <sys/types.h>
 #include <sys/stat.h>
 
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+
 /* So that we can use inline on some critical functions, and use
  * GNUC attributes (such as to get -Wall warnings for printf-like
  * functions).  Only do this in gcc 2.7 or later ... it may work
@@ -272,7 +276,12 @@ typedef int rlim_t;
 #ifdef NEED_RLIM_T
 typedef int rlim_t;
 #endif
+/* Some versions of AIX support cross-process pthread mutexes; some don't. */
+#ifdef _POSIX_THREAD_PROCESS_SHARED
+#define USE_PTHREAD_SERIALIZED_ACCEPT
+#else
 #define USE_FCNTL_SERIALIZED_ACCEPT
+#endif
 #ifdef USEBCOPY
 #define memmove(a,b,c) bcopy(b,a,c)
 #endif
@@ -871,7 +880,6 @@ typedef int rlim_t;
 #define NO_SETSID
 #define NO_USE_SIGACTION
 #define NEED_WAITPID
-#define NO_OTHER_CHILD
 #define HAVE_SYSLOG 1
 #include <sys/time.h>
 #include <stdlib.h>
@@ -891,6 +899,9 @@ typedef int rlim_t;
 
 #elif defined(BEOS)
 #include <stddef.h>
+#include <kernel/OS.h>
+#include <kernel/image.h>
+#include <sys/uio.h>
 
 #define NO_WRITEV
 #define NO_KILLPG
@@ -928,7 +939,6 @@ typedef int rlim_t;
 #define NO_KILLPG
 #define NO_LINGCLOSE
 #define NO_MMAP
-#define NO_OTHER_CHILD
 #define NO_RELIABLE_PIPED_LOGS
 #define NO_SETSID
 #define NO_SLACK
@@ -1128,10 +1138,6 @@ int setrlimit(int, struct rlimit *);
 #define LOGNAME_MAX 25
 #endif
 
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
-
 #ifdef ultrix
 #define ULTRIX_BRAIN_DEATH
 #endif
@@ -1218,7 +1224,7 @@ Sigfunc *signal(int signo, Sigfunc * func);
 #define ap_inet_addr inet_addr
 #endif
 
-#ifdef NO_OTHER_CHILD
+#ifndef HAS_OTHER_CHILD
 #define NO_RELIABLE_PIPED_LOGS
 #endif
 
