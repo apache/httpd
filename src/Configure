@@ -194,6 +194,7 @@ case "$PLAT" in
     *-dg-dgux*)
 	OS='DG/UX 5.4'
 	CFLAGS="$CFLAGS -DDGUX"
+	DEF_WANTHSREGEX=yes
 	;;
     *OS/2*)
 	DEF_WANTHSREGEX=yes
