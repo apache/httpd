@@ -470,14 +470,14 @@ long ssl_print_cb(BIO *bio,int cmd,const char *argp,int argi,long argl,long ret)
     {
         BIO_printf(out,"read from %08X [%08lX] (%d bytes => %ld (0x%X))\n",
                 bio,argp,argi,ret,ret);
-        BIO_dump(out,argp,(int)ret);
+        BIO_dump(out,(char *)argp,(int)ret);
         return(ret);
     }
     else if (cmd == (BIO_CB_WRITE|BIO_CB_RETURN))
     {
         BIO_printf(out,"write to %08X [%08lX] (%d bytes => %ld (0x%X))\n",
             bio,argp,argi,ret,ret);
-        BIO_dump(out,argp,(int)ret);
+        BIO_dump(out,(char *)argp,(int)ret);
     }
     return(ret);
 }
@@ -588,7 +588,11 @@ void ssl_start_connect(struct connection * c)
 {
     BIO *bio;
     X509 *x509cert;
+#ifdef RSAREF
+    STACK *sk;
+#else
     STACK_OF(X509) *sk;
+#endif
     int i, count, hdone = 0;
     char ssl_hostname[80];
     
@@ -632,7 +636,7 @@ void ssl_start_connect(struct connection * c)
     if (verbosity >= 4)
     {
         BIO_set_callback(bio,ssl_print_cb);
-        BIO_set_callback_arg(bio,bio_err);
+        BIO_set_callback_arg(bio,(void*)bio_err);
     }
 
     while (!hdone)
@@ -673,11 +677,19 @@ void ssl_start_connect(struct connection * c)
     {
         BIO_printf(bio_err, "\n");
         sk = SSL_get_peer_cert_chain(c->ssl);
+#ifdef RSAREF
+        if ((count = sk_num(sk)) > 0)
+#else
         if ((count = sk_X509_num(sk)) > 0)
+#endif
         {
             for (i=1; i<count; i++)
             {
+#ifdef RSAREF
+                x509cert = (X509 *)sk_value(sk,i);
+#else
                 x509cert = (X509 *)sk_X509_value(sk,i);
+#endif
                 ssl_print_cert_info(bio_out,x509cert);
                 X509_free(x509cert);
             }
@@ -1727,14 +1739,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-	printf("This is ApacheBench, Version %s\n", AP_AB_BASEREVISION " <$Revision: 1.114 $> apache-2.0");
+	printf("This is ApacheBench, Version %s\n", AP_AB_BASEREVISION " <$Revision: 1.115 $> apache-2.0");
 	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
 	printf("Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/\n");
 	printf("\n");
     }
     else {
 	printf("<p>\n");
-	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_AB_BASEREVISION, "$Revision: 1.114 $");
+	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_AB_BASEREVISION, "$Revision: 1.115 $");
 	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
 	printf(" Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/<br>\n");
 	printf("</p>\n<p>\n");
@@ -2110,7 +2122,11 @@ int main(int argc, const char * const argv[])
 	heartbeatres = 0;
 
 #ifdef USE_SSL
-    CRYPTO_malloc_init();
+#ifdef RSAREF
+    R_malloc_init();
+#else
+    SSL_malloc_init();
+#endif
     SSL_load_error_strings();
     SSL_library_init();
     bio_out=BIO_new_fp(stdout,BIO_NOCLOSE);
