@@ -500,8 +500,8 @@ PROXY_DECLARE(int) ap_proxy_liststr(const char *list, const char *val)
 /*
  * list is a comma-separated list of case-insensitive tokens, with
  * optional whitespace around the tokens.
- * The return returns 1 if the token val is found in the list, or 0
- * otherwise.
+ * if val appears on the list of tokens, it is removed from the list,
+ * and the new list is returned.
  */
 PROXY_DECLARE(char *)ap_proxy_removestr(apr_pool_t *pool, const char *list, const char *val)
 {
