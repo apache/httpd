@@ -86,7 +86,7 @@ static void cleanup_tempfile_and_exit(int rc)
             filename = apr_pstrdup(cntxt, cfilename);
         }
 #endif
-	apr_file_close(tfp);
+        apr_file_close(tfp);
 
 #ifdef OMIT_DELONCLOSE
         if (filename) {
@@ -103,11 +103,11 @@ static void getword(char *word, char *line, char stop)
     int x = 0, y;
 
     for (x = 0; ((line[x]) && (line[x] != stop)); x++)
-	word[x] = line[x];
+        word[x] = line[x];
 
     word[x] = '\0';
     if (line[x])
-	++x;
+        ++x;
     y = 0;
 
     while ((line[y++] = line[x++]));
@@ -138,7 +138,7 @@ static void putline(apr_file_t *f, char *l)
     int x;
 
     for (x = 0; l[x]; x++)
-	apr_file_putc(l[x], f);
+        apr_file_putc(l[x], f);
 }
 
 
@@ -154,13 +154,13 @@ static void add_password(const char *user, const char *realm, apr_file_t *f)
     apr_size_t len = sizeof(pwin);
 
     if (apr_password_get("New password: ", pwin, &len) != APR_SUCCESS) {
-	fprintf(stderr, "password too long");
-	cleanup_tempfile_and_exit(5);
+        fprintf(stderr, "password too long");
+        cleanup_tempfile_and_exit(5);
     }
     len = sizeof(pwin);
     apr_password_get("Re-type new password: ", pwv, &len);
     if (strcmp(pwin, pwv) != 0) {
-	fprintf(stderr, "They don't match, sorry.\n");
+        fprintf(stderr, "They don't match, sorry.\n");
         cleanup_tempfile_and_exit(1);
     }
     pw = pwin;
@@ -177,7 +177,7 @@ static void add_password(const char *user, const char *realm, apr_file_t *f)
     apr_md5_final(digest, &context);
 
     for (i = 0; i < 16; i++)
-	apr_file_printf(f, "%02x", digest[i]);
+        apr_file_printf(f, "%02x", digest[i]);
 
     apr_file_printf(f, "\n");
 }
@@ -197,10 +197,10 @@ static void interrupted(void)
 
 static void terminate(void)
 {
+    apr_terminate();
 #ifdef NETWARE
     pressanykey();
 #endif
-    apr_terminate();
 }
 
 int main(int argc, const char * const argv[])
@@ -233,24 +233,24 @@ int main(int argc, const char * const argv[])
     
     apr_signal(SIGINT, (void (*)(int)) interrupted);
     if (argc == 5) {
-	if (strcmp(argv[1], "-c"))
-	    usage();
-	rv = apr_file_open(&f, argv[2], APR_WRITE | APR_CREATE, -1, cntxt);
+        if (strcmp(argv[1], "-c"))
+            usage();
+        rv = apr_file_open(&f, argv[2], APR_WRITE | APR_CREATE, -1, cntxt);
         if (rv != APR_SUCCESS) {
             char errmsg[120];
 
-	    fprintf(stderr, "Could not open passwd file %s for writing: %s\n",
-		    argv[2],
+            fprintf(stderr, "Could not open passwd file %s for writing: %s\n",
+                    argv[2],
                     apr_strerror(rv, errmsg, sizeof errmsg));
-	    exit(1);
-	}
-	printf("Adding password for %s in realm %s.\n", argv[4], argv[3]);
-	add_password(argv[4], argv[3], f);
-	apr_file_close(f);
-	exit(0);
+            exit(1);
+        }
+        printf("Adding password for %s in realm %s.\n", argv[4], argv[3]);
+        add_password(argv[4], argv[3], f);
+        apr_file_close(f);
+        exit(0);
     }
     else if (argc != 4)
-	usage();
+        usage();
 
     if (apr_temp_dir_get((const char**)&dirname, cntxt) != APR_SUCCESS) {
         fprintf(stderr, "%s: could not determine temp dir\n",
@@ -266,41 +266,41 @@ int main(int argc, const char * const argv[])
     0
 #endif
     , cntxt) != APR_SUCCESS) {
-	fprintf(stderr, "Could not open temp file.\n");
-	exit(1);
+        fprintf(stderr, "Could not open temp file.\n");
+        exit(1);
     }
 
     if (apr_file_open(&f, argv[1], APR_READ, -1, cntxt) != APR_SUCCESS) {
-	fprintf(stderr,
-		"Could not open passwd file %s for reading.\n", argv[1]);
-	fprintf(stderr, "Use -c option to create new one.\n");
-	cleanup_tempfile_and_exit(1);
+        fprintf(stderr,
+                "Could not open passwd file %s for reading.\n", argv[1]);
+        fprintf(stderr, "Use -c option to create new one.\n");
+        cleanup_tempfile_and_exit(1);
     }
     apr_cpystrn(user, argv[3], sizeof(user));
     apr_cpystrn(realm, argv[2], sizeof(realm));
 
     found = 0;
     while (!(get_line(line, MAX_STRING_LEN, f))) {
-	if (found || (line[0] == '#') || (!line[0])) {
-	    putline(tfp, line);
-	    continue;
-	}
-	strcpy(l, line);
-	getword(w, l, ':');
-	getword(x, l, ':');
-	if (strcmp(user, w) || strcmp(realm, x)) {
-	    putline(tfp, line);
-	    continue;
-	}
-	else {
-	    printf("Changing password for user %s in realm %s\n", user, realm);
-	    add_password(user, realm, tfp);
-	    found = 1;
-	}
+        if (found || (line[0] == '#') || (!line[0])) {
+            putline(tfp, line);
+            continue;
+        }
+        strcpy(l, line);
+        getword(w, l, ':');
+        getword(x, l, ':');
+        if (strcmp(user, w) || strcmp(realm, x)) {
+            putline(tfp, line);
+            continue;
+        }
+        else {
+            printf("Changing password for user %s in realm %s\n", user, realm);
+            add_password(user, realm, tfp);
+            found = 1;
+        }
     }
     if (!found) {
-	printf("Adding user %s in realm %s\n", user, realm);
-	add_password(user, realm, tfp);
+        printf("Adding user %s in realm %s\n", user, realm);
+        add_password(user, realm, tfp);
     }
     apr_file_close(f);
 #ifdef OMIT_DELONCLOSE
