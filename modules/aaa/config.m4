@@ -27,7 +27,11 @@ APACHE_CHECK_STANDARD_MODULE(actions, Action triggering on requests, action, yes
 APACHE_CHECK_STANDARD_MODULE(speling, correct common URL misspellings, , no)
 APACHE_CHECK_STANDARD_MODULE(userdir, mapping of user requests, , yes)
 APACHE_CHECK_STANDARD_MODULE(alias, translation of requests, , yes)
-APACHE_CHECK_STANDARD_MODULE(rewrite, regex URL translation, , no)
+
+APACHE_CHECK_STANDARD_MODULE(rewrite, regex URL translation, , no, [
+  EXTRA_CFLAGS="$EXTRA_CFLAGS -DNO_DBM_REWRITEMAP"
+])
+
 APACHE_CHECK_STANDARD_MODULE(access, host-based access control, , yes)
 APACHE_CHECK_STANDARD_MODULE(auth, user-based access control, , yes)
 APACHE_CHECK_STANDARD_MODULE(auth_anon, anonymous user access, , no)
