@@ -58,9 +58,9 @@ include $(top_builddir)/config_vars.mk
 
 # Compile commands
 
-COMMON_FLAGS = $(DEFS) $(INCLUDES) $(EXTRA_INCLUDES) $(CPPFLAGS)
-COMPILE      = $(CC)  $(COMMON_FLAGS) $(CFLAGS) $(EXTRA_CFLAGS) $(NOTEST_CFLAGS)
-CXX_COMPILE  = $(CXX) $(COMMON_FLAGS) $(CXXFLAGS) $(EXTRA_CXXFLAGS)
+COMMON_FLAGS = $(DEFS) $(INCLUDES) $(EXTRA_INCLUDES) $(EXTRA_CPPFLAGS) $(CPPFLAGS)
+COMPILE      = $(CC)  $(COMMON_FLAGS) $(EXTRA_CFLAGS) $(CFLAGS) $(NOTEST_CFLAGS)
+CXX_COMPILE  = $(CXX) $(COMMON_FLAGS) $(EXTRA_CXXFLAGS) $(CXXFLAGS)
 
 SH_COMPILE     = $(SH_LIBTOOL) --mode=compile $(COMPILE) -c $< && touch $@
 SH_CXX_COMPILE = $(SH_LIBTOOL) --mode=compile $(CXX_COMPILE) -c $< && touch $@
@@ -182,7 +182,7 @@ distclean-p depend-p clean-p:
 
 depend: depend-recursive
 	if test "`echo $(srcdir)/*.c`" != "$(srcdir)'/*.c'"; then \
-	    gcc -MM $(INCLUDES) $(EXTRA_INCLUDES) $(DEFS) $(CPPFLAGS) $(srcdir)/*.c | sed 's/\.o:/.lo:/' > $(builddir)/.deps || true;           \
+	    gcc -MM $(COMMON_FLAGS) $(srcdir)/*.c | sed 's/\.o:/.lo:/' > $(builddir)/.deps || true;           \
 	fi
 #	    test "`echo *.c`" = '*.c' || perl $(top_srcdir)/build/mkdep.perl $(CPP) $(INCLUDES) $(EXTRA_INCLUDES) *.c > .deps
 
