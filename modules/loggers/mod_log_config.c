@@ -206,7 +206,7 @@
 
 module AP_MODULE_DECLARE_DATA log_config_module;
 
-static int xfer_flags = (APR_WRITE | APR_APPEND | APR_CREATE | APR_INHERIT);
+static int xfer_flags = (APR_WRITE | APR_APPEND | APR_CREATE);
 static apr_fileperms_t xfer_perms = APR_OS_DEFAULT;
 static apr_hash_t *log_hash;
 
@@ -1051,6 +1051,7 @@ static config_log_state *open_config_log(server_rec *s, apr_pool_t *p,
                          "could not open transfer log file %s.", fname);
             exit(1);
         }
+        apr_file_set_inherit(cls->log_fd);
     }
 #ifdef BUFFERED_LOGS
     cls->outcnt = 0;
