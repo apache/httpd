@@ -458,6 +458,51 @@ static int resolve_symlink(char *d, apr_finfo_t *lfi, int opts, apr_pool_t *p)
 }
 
 
+/*
+ * As we walk the directory configuration, the merged config won't
+ * be 'rooted' to a specific vhost until the very end of the merge.
+ *
+ * We need a very fast mini-merge to a real, vhost-rooted merge
+ * of core.opts and core.override, the only options tested within
+ * directory_walk itself.
+ *
+ * See core.c::merge_core_dir_configs() for explanation.
+ */
+
+typedef struct core_opts_t {
+        allow_options_t opts;
+        allow_options_t add;
+        allow_options_t remove;
+        overrides_t override;
+} core_opts_t;
+
+void core_opts_merge(const ap_conf_vector_t *sec, core_opts_t *opts)
+{
+    core_dir_config *this_dir = ap_get_module_config(sec, &core_module);
+
+    if (!this_dir) {
+        return;
+    }
+
+    if (this_dir->opts & OPT_UNSET) {
+        opts->add = (opts->add & ~this_dir->opts_remove)
+                   | this_dir->opts_add;
+        opts->remove = (opts->remove & ~this_dir->opts_add)
+                      | this_dir->opts_remove;
+        opts->opts = (opts->opts & ~opts->remove) | opts->add;
+    }
+    else {
+        opts->opts = this_dir->opts;
+        opts->add = this_dir->opts_add;
+        opts->remove = this_dir->opts_remove;
+    }
+
+    if (!(this_dir->override & OR_UNSET)) {
+        opts->override = this_dir->override;
+    }
+}
+
+
 /*****************************************************************
  *
  * Getting and checking directory configuration.  Also checks the
@@ -593,11 +638,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
         int matches = cache->walked->nelts;
         walk_walked_t *last_walk = (walk_walked_t*)cache->walked->elts;
         core_dir_config *this_dir;
-        allow_options_t opts;
-        allow_options_t opts_add;
-        allow_options_t opts_remove;
-        overrides_t override;
-
+        core_opts_t opts;
         apr_finfo_t thisinfo;
         char *save_path_info;
         apr_size_t buflen;
@@ -619,10 +660,10 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
          * accumulate opts and override as we merge, from the globals.
          */
         this_dir = ap_get_module_config(r->per_dir_config, &core_module);
-        opts = this_dir->opts;
-        opts_add = this_dir->opts_add;
-        opts_remove = this_dir->opts_remove;
-        override = this_dir->override;
+        opts.opts = this_dir->opts;
+        opts.add = this_dir->opts_add;
+        opts.remove = this_dir->opts_remove;
+        opts.override = this_dir->override;
 
         /* Set aside path_info to merge back onto path_info later.
          * If r->filename is a directory, we must remerge the path_info,
@@ -725,6 +766,8 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
          * seg keeps track of which segment we've copied.
          * sec_idx keeps track of which section we're on, since sections are
          *     ordered by number of segments. See core_reorder_directories
+         * startseg tells us how many segments describe the root path
+         *     e.g. the complete path "//host/foo/" to a UNC share (4)
          */
         startseg = seg = ap_count_dirs(r->filename);
         sec_idx = 0;
@@ -779,6 +822,12 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
                     continue;
                 }
 
+                /* If we haven't continue'd above, we have a match.
+                 *
+                 * Calculate our full-context core opts & override.
+                 */
+                core_opts_merge(sec_ent[sec_idx], &opts);
+
                 /* If we merged this same section last time, reuse it
                  */
                 if (matches) {
@@ -786,7 +835,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
                         now_merged = last_walk->merged;
                         ++last_walk;
                         --matches;
-                        goto minimerge;
+                        continue;
                     }
 
                     /* We fell out of sync.  This is our own copy of walked,
@@ -808,124 +857,78 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
                 last_walk = (walk_walked_t*)apr_array_push(cache->walked);
                 last_walk->matched = sec_ent[sec_idx];
                 last_walk->merged = now_merged;
-
-                /* Do a mini-merge to our globally-based running calculations of
-                 * core_dir->override and core_dir->opts, since now_merged
-                 * never considered the global config.  Of course, if there is
-                 * no core config at this level, continue without a thought.
-                 * See core.c::merge_core_dir_configs() for explanation.
-                 */
-minimerge:
-                this_dir = ap_get_module_config(sec_ent[sec_idx], &core_module);
-
-                if (!this_dir) {
-                    continue;
-                }
-
-                if (this_dir->opts & OPT_UNSET) {
-                    opts_add = (opts_add & ~this_dir->opts_remove)
-                               | this_dir->opts_add;
-                    opts_remove = (opts_remove & ~this_dir->opts_add)
-                                  | this_dir->opts_remove;
-                    opts = (opts & ~opts_remove) | opts_add;
-                }
-                else {
-                    opts = this_dir->opts;
-                    opts_add = this_dir->opts_add;
-                    opts_remove = this_dir->opts_remove;
-                }
-
-                if (!(this_dir->override & OR_UNSET)) {
-                    override = this_dir->override;
-                }
             }
 
             /* If .htaccess files are enabled, check for one, provided we
              * have reached a real path.
              */
-            if (seg >= startseg && override) {
+            do {  /* Not really a loop, just a break'able code block */
+
                 ap_conf_vector_t *htaccess_conf = NULL;
 
-                res = ap_parse_htaccess(&htaccess_conf, r, override,
+                /* No htaccess in an incomplete root path, 
+                 * nor if it's disabled 
+                 */
+                if (seg < startseg || !opts.override) {
+                    break;
+                }
+
+                res = ap_parse_htaccess(&htaccess_conf, r, opts.override,
                                         apr_pstrdup(r->pool, r->filename),
                                         sconf->access_name);
                 if (res) {
                     return res;
                 }
 
-                if (htaccess_conf) {
-
-                    /* If we merged this same htaccess last time, reuse it...
-                     * this wouldn't work except that we cache the htaccess
-                     * sections for the lifetime of the request, so we match
-                     * the same conf.  Good planning (no, pure luck ;)
-                     */
-                    if (matches) {
-                        if (last_walk->matched == htaccess_conf) {
-                            now_merged = last_walk->merged;
-                            ++last_walk;
-                            --matches;
-                            goto minimerge2;
-                        }
-
-                        /* We fell out of sync.  This is our own copy of walked,
-                         * so truncate the remaining matches and reset
-                         * remaining.
-                         */
-                        cache->walked->nelts -= matches;
-                        matches = 0;
-                    }
-
-                    if (now_merged) {
-                        now_merged = ap_merge_per_dir_configs(r->pool,
-                                                              now_merged,
-                                                              htaccess_conf);
-                    }
-                    else {
-                        now_merged = htaccess_conf;
-                    }
-
-                    last_walk = (walk_walked_t*)apr_array_push(cache->walked);
-                    last_walk->matched = htaccess_conf;
-                    last_walk->merged = now_merged;
-
-                    /* Do a mini-merge to our globally-based running
-                     * calculations of core_dir->override and core_dir->opts,
-                     * since now_merged never considered the global config.
-                     * Of course, if there is no core config at this level,
-                     * continue without a thought.
-                     * See core.c::merge_core_dir_configs() for explanation.
-                     */
-minimerge2:
-                    this_dir = ap_get_module_config(htaccess_conf,
-                                                    &core_module);
-
-                    if (this_dir) {
-                        if (this_dir->opts & OPT_UNSET) {
-                            opts_add = (opts_add & ~this_dir->opts_remove)
-                                       | this_dir->opts_add;
-                            opts_remove = (opts_remove & ~this_dir->opts_add)
-                                          | this_dir->opts_remove;
-                            opts = (opts & ~opts_remove) | opts_add;
-                        }
-                        else {
-                            opts = this_dir->opts;
-                            opts_add = this_dir->opts_add;
-                            opts_remove = this_dir->opts_remove;
-                        }
-
-                        if (!(this_dir->override & OR_UNSET)) {
-                            override = this_dir->override;
-                        }
-                    }
+                if (!htaccess_conf) {
+                    break;
                 }
-            }
+
+                /* If we are still here, we found our htaccess.
+                 *
+                 * Calculate our full-context core opts & override.
+                 */
+                core_opts_merge(htaccess_conf, &opts);
+
+                /* If we merged this same htaccess last time, reuse it...
+                 * this wouldn't work except that we cache the htaccess
+                 * sections for the lifetime of the request, so we match
+                 * the same conf.  Good planning (no, pure luck ;)
+                 */
+                if (matches) {
+                    if (last_walk->matched == htaccess_conf) {
+                        now_merged = last_walk->merged;
+                        ++last_walk;
+                        --matches;
+                        break;
+                    }
+
+                    /* We fell out of sync.  This is our own copy of walked,
+                     * so truncate the remaining matches and reset
+                     * remaining.
+                     */
+                    cache->walked->nelts -= matches;
+                    matches = 0;
+                }
+
+                if (now_merged) {
+                    now_merged = ap_merge_per_dir_configs(r->pool,
+                                                          now_merged,
+                                                          htaccess_conf);
+                }
+                else {
+                    now_merged = htaccess_conf;
+                }
+
+                last_walk = (walk_walked_t*)apr_array_push(cache->walked);
+                last_walk->matched = htaccess_conf;
+                last_walk->merged = now_merged;
+
+            } while (0); /* Only one htaccess, not a real loop */
 
             /* That temporary trailing slash was useful, now drop it.
              */
             if (temp_slash) {
-                temp_slash = 0;
-                AP_DEBUG_ASSERT(r->filename[filename_len-1] == '/');
                 r->filename[--filename_len] = '\0';
             }
 
@@ -976,7 +979,7 @@ minimerge2:
 #ifdef CASE_BLIND_FILESYSTEM
                 && (filename_len <= canonical_len)
 #endif
-                && ((opts & (OPT_SYM_OWNER | OPT_SYM_LINKS)) == OPT_SYM_LINKS))
+                && ((opts.opts & (OPT_SYM_OWNER | OPT_SYM_LINKS)) == OPT_SYM_LINKS))
             {
 
                 thisinfo.filetype = APR_DIR;
@@ -1036,7 +1039,7 @@ minimerge2:
                 /* Is this a possibly acceptable symlink?
                  */
                 if ((res = resolve_symlink(r->filename, &thisinfo,
-                                           opts, r->pool)) != OK) {
+                                           opts.opts, r->pool)) != OK) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                                   "Symbolic link not allowed: %s",
                                   r->filename);
@@ -1098,6 +1101,12 @@ minimerge2:
                 continue;
             }
 
+            /* If we haven't already continue'd above, we have a match.
+             *
+             * Calculate our full-context core opts & override.
+             */
+            core_opts_merge(sec_ent[sec_idx], &opts);
+
             /* If we merged this same section last time, reuse it
              */
             if (matches) {
@@ -1105,7 +1114,7 @@ minimerge2:
                     now_merged = last_walk->merged;
                     ++last_walk;
                     --matches;
-                    goto minimerge;
+                    continue;
                 }
 
                 /* We fell out of sync.  This is our own copy of walked,
