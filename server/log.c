@@ -459,7 +459,14 @@ static void log_error_core(const char *file, int line, int level,
             }
             file = tmp;
         }
-#endif /*_OSD_POSIX*/
+#else /* _OSD_POSIX || WIN32 */
+        const char *p;
+        /* On Unix, __FILE__ may be an absolute path in a
+         * VPATH build. */
+        if (file[0] == '/' && (p = ap_strrchr_c(file, '/')) != NULL) {
+            file = p + 1;
+        }
+#endif /*_OSD_POSIX || WIN32 */
         len += apr_snprintf(errstr + len, MAX_STRING_LEN - len,
                             "%s(%d): ", file, line);
     }
