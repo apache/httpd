@@ -109,11 +109,14 @@
 #include <string.h>
 #include <sys/mman.h>
 
+#define CORE_PRIVATE
+
 #include "httpd.h"
 #include "http_config.h"
 #include "http_log.h"
 #include "http_protocol.h"
 #include "http_request.h"
+#include "http_core.h"
 
 module MODULE_VAR_EXPORT mmap_static_module;
 
@@ -265,7 +268,6 @@ static void mmap_init(server_rec *s, pool *p)
 /* If it's one of ours, fill in r->finfo now to avoid extra stat()... this is a
  * bit of a kludge, because we really want to run after core_translate runs.
  */
-extern int core_translate(request_rec *r);
 
 static int mmap_static_xlat(request_rec *r)
 {
@@ -275,7 +277,7 @@ static int mmap_static_xlat(request_rec *r)
     int res;
 
     /* we require other modules to first set up a filename */
-    res = core_translate(r);
+    res = core_module.translate_handler(r);
     if (res == DECLINED || !r->filename) {
 	return res;
     }
