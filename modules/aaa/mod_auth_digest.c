@@ -384,7 +384,7 @@ static int initialize_module(apr_pool_t *p, apr_pool_t *plog,
      * set up our static data on the second call. */
     apr_pool_userdata_get(&data, userdata_key, s->process->pool);
     if (!data) {
-        apr_pool_userdata_setn((const void *)1, userdata_key,
+        apr_pool_userdata_set((const void *)1, userdata_key,
                                apr_pool_cleanup_null, s->process->pool);
         return OK;
     }
