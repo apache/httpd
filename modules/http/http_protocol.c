@@ -2514,63 +2514,30 @@ API_EXPORT(int) ap_discard_request_body(request_rec *r)
     return OK;
 }
 
-#if APR_HAS_SENDFILE
-static apr_status_t static_send_file(apr_file_t *fd, request_rec *r, apr_off_t offset, 
-                                    apr_size_t length, apr_size_t *nbytes) 
-{
-    apr_int32_t flags = 0;
-    apr_status_t rv;
-    struct iovec iov;
-    apr_hdtr_t hdtr;
-
-    ap_bsetopt(r->connection->client, BO_TIMEOUT,
-               r->connection->keptalive
-               ? &r->server->keep_alive_timeout
-               : &r->server->timeout);
-
-    /*
-     * We want to send any data held in the client buffer on the
-     * call to apr_sendfile. So hijack it then set outcnt to 0
-     * to prevent the data from being sent to the client again
-     * when the buffer is flushed to the client at the end of the
-     * request.
-     */
-    iov.iov_base = r->connection->client->outbase;
-    iov.iov_len =  r->connection->client->outcnt;
-    r->connection->client->outcnt = 0;
-
-    /* initialize the apr_hdtr_t struct */
-    hdtr.headers = &iov;
-    hdtr.numheaders = 1;
-    hdtr.trailers = NULL;
-    hdtr.numtrailers = 0;
-
-    if (!r->connection->keepalive) {
-        /* Prepare the socket to be reused */
-        /* XXX fix me - byteranges? */
-        flags |= APR_SENDFILE_DISCONNECT_SOCKET;
-    }
-
-    rv = apr_sendfile(r->connection->client->bsock, 
-                      fd,      /* The file to send */
-                      &hdtr,   /* Header and trailer iovecs */
-                      &offset, /* Offset in file to begin sending from */
-                      &length,
-                      flags);
-
-    if (r->connection->keptalive) {
-        ap_bsetopt(r->connection->client, BO_TIMEOUT, 
-                   &r->server->timeout);
-    }
-
-    *nbytes = length;
-
-    return rv;
-}
-#endif
 /*
  * Send the body of a response to the client.
  */
+API_EXPORT(apr_status_t) ap_send_fd(apr_file_t *fd, request_rec *r, apr_off_t offset, 
+                                    apr_size_t len, apr_size_t *nbytes) 
+{
+    ap_bucket_brigade *bb = NULL;
+    ap_bucket *b;
+
+    bb = ap_brigade_create(r->pool);
+    b = ap_bucket_create_file(fd, offset, len);
+    AP_BRIGADE_INSERT_TAIL(bb, b);
+
+    /* Hummm, is this the right place to insert eos? */
+#if 0
+    b = ap_bucket_create_eos();
+    AP_BRIGADE_INSERT_TAIL(bb, b);
+#endif
+    ap_pass_brigade(r->output_filters, bb);
+
+    return len;
+}
+#if 0
+/* Leave the old implementation around temporarily for reference purposes */
 API_EXPORT(apr_status_t) ap_send_fd(apr_file_t *fd, request_rec *r, apr_off_t offset, 
                                    apr_size_t length, apr_size_t *nbytes) 
 {
@@ -2642,7 +2609,8 @@ API_EXPORT(apr_status_t) ap_send_fd(apr_file_t *fd, request_rec *r, apr_off_t of
     SET_BYTES_SENT(r);
     *nbytes = total_bytes_sent;
     return rv;
-}
+} 
+#endif
 
 /*
  * Send the body of a response to the client.

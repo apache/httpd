@@ -2525,6 +2525,61 @@ static const char *set_limit_nproc(cmd_parms *cmd, void *conf_,
 }
 #endif
 
+#if APR_HAS_SENDFILE
+static apr_status_t send_the_file(apr_file_t *fd, apr_off_t offset, apr_size_t length,  
+                                  request_rec *r, apr_size_t *nbytes) 
+{
+    apr_int32_t flags = 0;
+    apr_status_t rv;
+    struct iovec iov;
+    apr_hdtr_t hdtr;
+
+#if 0
+    ap_bsetopt(r->connection->client, BO_TIMEOUT,
+               r->connection->keptalive
+               ? &r->server->keep_alive_timeout
+               : &r->server->timeout);
+#endif
+    /*
+     * We want to send any data held in the client buffer on the
+     * call to apr_sendfile. So hijack it then set outcnt to 0
+     * to prevent the data from being sent to the client again
+     * when the buffer is flushed to the client at the end of the
+     * request.
+     */
+    iov.iov_base = r->connection->client->outbase;
+    iov.iov_len =  r->connection->client->outcnt;
+    r->connection->client->outcnt = 0;
+
+    /* initialize the apr_hdtr_t struct */
+    hdtr.headers = &iov;
+    hdtr.numheaders = 1;
+    hdtr.trailers = NULL;
+    hdtr.numtrailers = 0;
+
+    if (!r->connection->keepalive) {
+        /* Prepare the socket to be reused */
+        /* XXX fix me - byteranges? */
+        flags |= APR_SENDFILE_DISCONNECT_SOCKET;
+    }
+
+    rv = apr_sendfile(r->connection->client->bsock, 
+                      fd,      /* The file to send */
+                      &hdtr,   /* Header and trailer iovecs */
+                      &offset, /* Offset in file to begin sending from */
+                      &length,
+                      flags);
+#if 0
+    if (r->connection->keptalive) {
+        ap_bsetopt(r->connection->client, BO_TIMEOUT, 
+                   &r->server->timeout);
+    }
+#endif
+    *nbytes = length;
+
+    return rv;
+}
+#endif
 /* Note --- ErrorDocument will now work from .htaccess files.  
  * The AllowOverride of Fileinfo allows webmasters to turn it off
  */
@@ -3058,9 +3113,7 @@ static apr_status_t chunk_filter(ap_filter_t *f, ap_bucket_brigade *b)
  */
 static int core_filter(ap_filter_t *f, ap_bucket_brigade *b)
 {
-#if 0
     request_rec *r = f->r;
-#endif
     apr_status_t rv;
     apr_ssize_t bytes_sent = 0, len = 0, written;
     ap_bucket *e;
@@ -3087,25 +3140,51 @@ static int core_filter(ap_filter_t *f, ap_bucket_brigade *b)
     } 
     else {
 #endif
-    AP_BRIGADE_FOREACH(e, b) {
-	rv = e->read(e, &str, &len, 0);
-	if (rv != APR_SUCCESS) {
-            return rv;
-        }
-	if (len == AP_END_OF_BRIGADE) {
-	    break;
-	}
-        rv = ap_bwrite(f->r->connection->client, str, len, &written);
-	if (rv != APR_SUCCESS) {
-            return rv;
-        }
-        bytes_sent += written;
-    }
+
+     AP_BRIGADE_FOREACH(e, b) {
+         if (e->type == AP_BUCKET_EOS) {
+             /* there shouldn't be anything after the eos */
+             break;
+         }
+         else if (e->type == AP_BUCKET_FILE) {
+#if APR_HAS_SENDFILE
+             /* If a file bucket gets all the way down to the core filter,
+              * the bucket by definition represents the unfiltered contents
+              * of a file. Thus it is acceptable to use apr_sendfile().
+              */
+             rv = send_the_file(e->data, e->offset, e->length, r, &bytes_sent);
+          
+             if (rv == APR_SUCCESS) {
+                 ap_brigade_destroy(b);
+                 return APR_SUCCESS;
+             }
+
+             /* If apr_sendfile is not implemented (e.g. Win95/98), then
+              * continue to the read/write loop.
+              */
+             if (rv != APR_ENOTIMPL) {
+                 /* check_first_conn_error(r, "send_fd", rv); */
+                 return rv;
+             }
+#endif
+         }
+         rv = e->read(e, &str, &len, 0);
+         if (rv != APR_SUCCESS) {
+             return rv;
+         }
+         rv = ap_bwrite(r->connection->client, str, len, &written);
+         if (rv != APR_SUCCESS) {
+             return rv;
+         }
+         bytes_sent += written;
+     }
+
     ap_brigade_destroy(b);
     /* This line will go away as soon as the BUFFs are removed */
     if (len == AP_END_OF_BRIGADE) {
-        ap_bflush(f->r->connection->client);
+        ap_bflush(r->connection->client);
     }
+
     return APR_SUCCESS;
 #if 0
     }
