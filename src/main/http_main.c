@@ -1557,6 +1557,9 @@ main(int argc, char *argv[])
           r = read_request (conn);
           if (r) process_request (r);
         }
+
+	bflush(cio);
+	bclose(cio);
     }
     exit (0);
 }
