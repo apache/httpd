@@ -88,7 +88,7 @@ PATCHES TO BACKPORT FROM 2.1
        process a request again. Results in the 'Req' field in
        mod_status no longer being bogus.
        http://svn.apache.org/viewcvs.cgi?rev=149550&view=rev
-       +1: jim
+       +1: jim, stas
 
     *) LimitRequestFieldSize directive: Remove upper limit on the request
        field size.
