@@ -1087,12 +1087,18 @@ static const char *missing_endsection(cmd_parms *cmd, int nest)
 static const char *end_nested_section(cmd_parms *cmd, void *dummy)
 {
     if (cmd->end_token == NULL) {
-	return ap_pstrcat(cmd->pool, cmd->cmd->name,
-	    " without matching <", cmd->cmd->name + 2, " section", NULL);
+        return ap_pstrcat(cmd->pool, cmd->cmd->name,
+			  " without matching <", cmd->cmd->name + 2, 
+			  " section", NULL);
     }
+    /*
+     * This '!=' may look weird on a string comparison, but it's correct --
+     * it's been set up so that checking for two pointers to the same datum
+     * is valid here.  And faster.
+     */
     if (cmd->cmd->name != cmd->end_token) {
 	return ap_pstrcat(cmd->pool, "Expected ", cmd->end_token, " but saw ",
-	    cmd->cmd->name, NULL);
+			  cmd->cmd->name, NULL);
     }
     return cmd->end_token;
 }
