@@ -761,7 +761,8 @@ int level_cmp (var_rec *var1, var_rec *var2)
 
 /* Finding languages.  Note that we only match the substring specified
  * by the Accept: line --- this is to allow "en" to match all subvariants
- * of English.
+ * of English. We then do it in the other direction, so that all
+ * subvariants of English match "en".
  *
  * Again, strcmp() is legit because we've ditched case already.
  */
@@ -776,9 +777,12 @@ int find_lang_index (array_header *accept_langs, char *lang)
 
     accs = (accept_rec *)accept_langs->elts;
 
-    for (i = 0; i < accept_langs->nelts; ++i)
+    for (i = 0; i < accept_langs->nelts; ++i) {
 	if (!strncmp (lang, accs[i].type_name, strlen(accs[i].type_name)))
 	    return i;
+	if (!strncmp (lang, accs[i].type_name, strlen(lang)))
+	    return i;
+    }
 	    
     return -1;		
 }
