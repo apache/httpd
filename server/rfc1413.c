@@ -115,7 +115,7 @@ static int get_rfc1413(apr_socket_t *sock, apr_pool_t *p,
     apr_port_t rmt_port, our_port;
     apr_port_t sav_rmt_port, sav_our_port;
     apr_status_t status;
-    int i;
+    size_t i;
     char *cp;
     char buffer[RFC1413_MAXDATA + 1];
     int buflen;
