@@ -21,6 +21,7 @@
  <message name="topics">Themen</message>
  <message name="status">Status</message>
  <message name="moduleidentifier">Modulbezeichner</message>
+ <message name="sourcefile">Quelltext-Datei</message>
  <message name="compatibility">Kompatibilit&#228;t</message>
 
  <!-- Used in manualpage -->
