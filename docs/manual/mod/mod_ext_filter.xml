@@ -231,9 +231,10 @@ delivery to the client</description>
 
       <dt><code>mode=<var>mode</var></code></dt>
 
-      <dd><code>mode</code> should be <code>output</code> for now (the
-      default). In the future, <code>mode=input</code> will be used to
-      specify a filter for request bodies.</dd>
+      <dd>Use <code>mode=output</code> (the default) for filters which
+      process the response.  Use <code>mode=input</code> for filters
+      which process the request.  <code>mode=input</code> is new with
+      Apache 2.1.</dd>
 
       <dt><code>intype=<var>imt</var></code></dt>
 
