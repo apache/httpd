@@ -657,8 +657,15 @@ void proxy_hash(const char *it, char *val, int ndepth, int nlength)
     char tmp[22];
     int i, k, d;
     unsigned int x;
+#if defined(AIX) && defined(__ps2__)
+    /* Believe it or not, AIX 1.x does not allow you to name a file '@',
+     * so hack around it in the encoding. */
     static const char enc_table[64] =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_@";
+	"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_%";
+#else
+    static const char enc_table[64] =
+	"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_@";
+#endif
 
     MD5Init(&context);
     MD5Update(&context, (const unsigned char *) it, strlen(it));

@@ -1,5 +1,9 @@
 Changes with Apache 1.3b3
 
+  *) PORT: On AIX 1.x files can't be named '@', fix the proxy cache
+     to use '%' instead of '@' in its encodings.
+     [David Schuler <schuld@btv.ibm.com>] PR#1317
+
   *) Improve the warning message generated when the "server is busy".
      [Dean Gaudet] PR#1293
 
