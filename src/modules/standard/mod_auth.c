@@ -278,7 +278,7 @@ static int check_user_access(request_rec *r)
          * owner of the document.
          */
 	if (strcmp(w, "file-owner") == 0) {
-#if defined(WIN32) || defined(NETWARE)
+#if defined(WIN32) || defined(NETWARE) || defined(OS2)
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
                           "'Require file-user' not supported on this platform");
             return HTTP_UNAUTHORIZED;
@@ -313,7 +313,7 @@ static int check_user_access(request_rec *r)
 #endif
         }
 	if (strcmp(w, "file-group") == 0) {
-#if defined(WIN32) || defined(NETWARE)
+#if defined(WIN32) || defined(NETWARE) || defined(OS2)
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
                           "'Require file-group' not supported on this platform");
             return HTTP_UNAUTHORIZED;
