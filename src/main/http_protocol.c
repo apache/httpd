@@ -1376,9 +1376,10 @@ void send_error_response (request_rec *r, int recursive_error)
     }
     {
 	char *title = status_lines[idx];
+	char *h1 = 4 + status_lines[idx];
 	BUFF *fd = c->client;
 	
-        bvputs(fd,"<HEAD><TITLE>", title, "</TITLE></HEAD>\n<BODY><H1>", title,
+        bvputs(fd,"<HEAD><TITLE>", title, "</TITLE></HEAD>\n<BODY><H1>", h1,
 	       "</H1>\n", NULL);
 	
         switch (status) {
