@@ -1,3 +1,5 @@
+Changes with Apache 1.1b1. Also see http://www.apache.org/docs/1.1/
+
   *) Add new <Location> directive, similar to <Directory>, but protects
      URLs instead of directories. [Alexei Kosut]
 
