@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/02/04 04:03:19 $]
+Last modified at [$Date: 2002/02/04 17:37:00 $]
 
 Release:
 
@@ -45,7 +45,7 @@ RELEASE SHOWSTOPPERS:
         running on Daedalus since  02-Feb-2002 7:58 PST (need 3 days)
         Compiles on : AIX 4.3, Solaris, FreeBSD 3.4 & 4.5, Win32, Linux 2.2 & 2.4
         for beta
-            +1 : Justin, Ian, Jeff Trawick, BillS, BrianP
+            +1 : Justin, Ian, Jeff Trawick, BillS, BrianP, Aaron
             +0 : Lars
             -1 :
         bumps since original tag:
