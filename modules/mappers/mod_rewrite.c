@@ -454,8 +454,9 @@ static const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, const char *a1,
 #endif
     }
     else if (strncmp(a2, "prg:", 4) == 0) {
-        newmap->type = MAPTYPE_PRG;
+        newmap->type      = MAPTYPE_PRG;
         apr_tokenize_to_argv(a2 + 4, &newmap->argv, cmd->pool);
+        newmap->datafile  = NULL;
         newmap->checkfile = newmap->argv[0];
 
     }
@@ -3397,8 +3398,8 @@ static apr_status_t run_rewritemap_programs(server_rec *s, apr_pool_t *p)
         if (map->type != MAPTYPE_PRG) {
             continue;
         }
-        if (map->datafile == NULL
-            || *(map->datafile) == '\0'
+        if (map->argv[0] == NULL
+            || *(map->argv[0]) == '\0'
             || map->fpin  != NULL
             || map->fpout != NULL        ) {
             continue;
@@ -3429,10 +3430,8 @@ static apr_status_t rewritemap_program_child(apr_pool_t *p,
     apr_status_t rc;
     apr_procattr_t *procattr;
     apr_proc_t *procnew;
-    apr_finfo_t st;
 
-    if (((rc = apr_stat(&st, argv[0], APR_FINFO_MIN, p)) != APR_SUCCESS) ||
-        ((rc = apr_procattr_create(&procattr, p)) != APR_SUCCESS) ||
+    if (((rc = apr_procattr_create(&procattr, p)) != APR_SUCCESS) ||
         ((rc = apr_procattr_io_set(procattr, APR_FULL_BLOCK,
                                   APR_FULL_NONBLOCK,
                                   APR_FULL_NONBLOCK)) != APR_SUCCESS) ||
