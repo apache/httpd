@@ -2613,8 +2613,8 @@ static apr_status_t send_the_file(conn_rec *c, apr_file_t *fd,
 {
     apr_status_t rv = APR_SUCCESS;
     apr_int32_t togo;         /* Remaining number of bytes in the file to send */
-    apr_int32_t sendlen;
-    apr_int32_t bytes_sent;
+    apr_size_t sendlen = 0;
+    apr_size_t bytes_sent;
     apr_int32_t i;
     apr_off_t o;              /* Track the file offset for partial writes */
     char buffer[8192];
@@ -2626,7 +2626,6 @@ static apr_status_t send_the_file(conn_rec *c, apr_file_t *fd,
      * XXX: optimization... if headers are less than MIN_WRITE_SIZE, copy 
      * them into buffer
      */
-    sendlen = 0;
     if ( hdtr && hdtr->numheaders > 0 ) {
         for (i = 0; i < hdtr->numheaders; i++) {
             sendlen += hdtr->headers[i].iov_len;
