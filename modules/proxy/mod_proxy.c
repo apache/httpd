@@ -136,6 +136,8 @@ static int proxy_detect(request_rec *r)
 
     conf = (proxy_server_conf *) ap_get_module_config(sconf, &proxy_module);
 
+    /* Ick... msvc (perhaps others) promotes ternary short results to int */
+
     if (conf->req && r->parsed_uri.scheme) {
 	/* but it might be something vhosted */
        if (!(r->parsed_uri.hostname
