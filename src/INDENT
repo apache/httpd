@@ -84,8 +84,8 @@ AND don't forget to run expand on the file after it has been indent'd.
    mod_mime.h			DONE by Brian
    mod_mime_magic.c		DONE by Brian
    mod_negotiation.c		DONE by Ken
-   mod_rewrite.c
-   mod_rewrite.h
+   mod_rewrite.c                RESERVED by Roy
+   mod_rewrite.h                RESERVED by Roy
    mod_setenvif.c		DONE by Ken
    mod_speling.c		DONE by Brian
    mod_status.c			DONE by Dean
