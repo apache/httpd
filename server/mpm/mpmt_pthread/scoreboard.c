@@ -2,7 +2,10 @@
 #include "http_log.h"
 #include "http_main.h"
 #include "http_core.h"
+#include "http_config.h"
+#include "unixd.h"
 #include "http_conf_globals.h"
+#include "mpmt_pthread.h"
 #include "scoreboard.h"
 #ifdef USE_SHMGET_SCOREBOARD
 #include <sys/types.h>

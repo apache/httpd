@@ -182,6 +182,7 @@ static void alloc_listener(struct sockaddr_in *local_addr)
     new = malloc(sizeof(ap_listen_rec));
     new->local_addr = *local_addr;
     new->fd = -1;
+    new->index = -1;
     new->next = ap_listeners;
     ap_listeners = new;
 }
