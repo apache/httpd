@@ -42,10 +42,9 @@ decisions of the port to this machine.
 
 * This port therefore features a built-in protocol level conversion
   for the server-internal strings (which the compiler translated to
-  EBCDIC strings) and server-generated documents. The hard coded
-  ASCII escapes \012 and \015 which are ubiquitious in the server
-  code are an exception: they are not converted to ASCII a second
-  time.
+  EBCDIC strings) and server-generated documents. This presumes that
+  hard coded ASCII escapes \012 and \015 will not exist in the server
+  code; rather coders will use the CRLF, CR, and LF macros.
 
 * By examining the call hierarchy for the BUFF management routines,
   I added an "ebcdic/ascii conversion layer" which would be crossed

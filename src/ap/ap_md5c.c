@@ -232,12 +232,12 @@ API_EXPORT(void) ap_MD5Update(AP_MD5_CTX *context, const unsigned char *input,
     memcpy(&context->buffer[idx], &input[i], inputLen - i);
 #else /*CHARSET_EBCDIC*/
     if (inputLen >= partLen) {
-	ebcdic2ascii_strictly(&context->buffer[idx], input, partLen);
+	ebcdic2ascii(&context->buffer[idx], input, partLen);
 	MD5Transform(context->state, context->buffer);
 
 	for (i = partLen; i + 63 < inputLen; i += 64) {
 	    unsigned char inp_tmp[64];
-	    ebcdic2ascii_strictly(inp_tmp, &input[i], 64);
+	    ebcdic2ascii(inp_tmp, &input[i], 64);
 	    MD5Transform(context->state, inp_tmp);
 	}
 
@@ -248,7 +248,7 @@ API_EXPORT(void) ap_MD5Update(AP_MD5_CTX *context, const unsigned char *input,
     }
 
     /* Buffer remaining input */
-    ebcdic2ascii_strictly(&context->buffer[idx], &input[i], inputLen - i);
+    ebcdic2ascii(&context->buffer[idx], &input[i], inputLen - i);
 #endif /*CHARSET_EBCDIC*/
 }
 

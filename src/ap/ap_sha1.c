@@ -292,7 +292,7 @@ API_EXPORT(void) ap_SHA1Update(AP_SHA1_CTX *sha_info, const char *buf,
 	if (i > count) {
 	    i = count;
 	}
-	ebcdic2ascii_strictly(((AP_BYTE *) sha_info->data) + sha_info->local,
+	ebcdic2ascii(((AP_BYTE *) sha_info->data) + sha_info->local,
 			      buffer, i);
 	count -= i;
 	buffer += i;
@@ -306,13 +306,13 @@ API_EXPORT(void) ap_SHA1Update(AP_SHA1_CTX *sha_info, const char *buf,
 	}
     }
     while (count >= SHA_BLOCKSIZE) {
-	ebcdic2ascii_strictly((AP_BYTE *)sha_info->data, buffer, SHA_BLOCKSIZE);
+	ebcdic2ascii((AP_BYTE *)sha_info->data, buffer, SHA_BLOCKSIZE);
 	buffer += SHA_BLOCKSIZE;
 	count -= SHA_BLOCKSIZE;
 	maybe_byte_reverse(sha_info->data, SHA_BLOCKSIZE);
 	sha_transform(sha_info);
     }
-    ebcdic2ascii_strictly((AP_BYTE *)sha_info->data, buffer, count);
+    ebcdic2ascii((AP_BYTE *)sha_info->data, buffer, count);
     sha_info->local = count;
 #else
     ap_SHA1Update_binary(sha_info, (const unsigned char *) buf, count);
