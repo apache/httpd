@@ -403,6 +403,12 @@ case "$PLAT" in
 	CFLAGS="$CFLAGS -DUW"
 	LIBS="$LIBS -lsocket -lnsl -lcrypt"
 	;;
+    *-unixware212)
+	OS='Unixware 2.1.2'
+	CFLAGS="$CFLAGS -DUW"
+	LIBS="$LIBS -lsocket -lnsl -lcrypt"
+	DBM_LIB=""
+	;;
     maxion-*-sysv4*)
     	OS='SVR4'
 	CFLAGS="$CFLAGS -DSVR4"

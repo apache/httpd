@@ -7,6 +7,9 @@ Changes with Apache 1.3
   *) Added NT support [Ben Laurie and Ambarish Malpani <ambarish@valicert.com>]
 
 Changes with Apache 1.2.1
+
+  *) Update Unixware support for 2.1.2.  [Lawrence Rosenman <ler@lerctr.org>]
+     PR#511
   
   *) Port to NonStop-UX [Joachim Schmitz <schmitz_joachim@tandem.com>] PR#327
   
