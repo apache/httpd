@@ -71,7 +71,7 @@
 module MODULE_VAR_EXPORT dir_module;
 
 typedef struct dir_config_struct {
-    array_header *index_names;
+    ap_array_header_t *index_names;
 } dir_config_rec;
 
 #define DIR_CMD_PERMS OR_INDEXES
@@ -95,7 +95,7 @@ static const command_rec dir_cmds[] =
     {NULL}
 };
 
-static void *create_dir_config(pool *p, char *dummy)
+static void *create_dir_config(ap_context_t *p, char *dummy)
 {
     dir_config_rec *new =
     (dir_config_rec *) ap_pcalloc(p, sizeof(dir_config_rec));
@@ -104,7 +104,7 @@ static void *create_dir_config(pool *p, char *dummy)
     return (void *) new;
 }
 
-static void *merge_dir_configs(pool *p, void *basev, void *addv)
+static void *merge_dir_configs(ap_context_t *p, void *basev, void *addv)
 {
     dir_config_rec *new = (dir_config_rec *) ap_pcalloc(p, sizeof(dir_config_rec));
     dir_config_rec *base = (dir_config_rec *) basev;
@@ -228,7 +228,7 @@ module MODULE_VAR_EXPORT dir_module = {
     merge_dir_configs,		/* merge per-directory config structures */
     NULL,			/* create per-server config structure */
     NULL,			/* merge per-server config structures */
-    dir_cmds,			/* command table */
+    dir_cmds,			/* command ap_table_t */
     dir_handlers,		/* handlers */
     NULL			/* register hooks */
 };

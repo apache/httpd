@@ -100,7 +100,7 @@
 #include "http_log.h"
 #include "util_script.h"
 
-#define IMAP_MAGIC_TYPE "application/x-httpd-imap"
+#define IMAP_MAGIC_TYPE "application/x-httpd ap_context_t map"
 #define MAXVERTS 100
 #define X 0
 #define Y 1
@@ -121,7 +121,7 @@ typedef struct {
     char *imap_base;
 } imap_conf_rec;
 
-static void *create_imap_dir_config(pool *p, char *dummy)
+static void *create_imap_dir_config(ap_context_t *p, char *dummy)
 {
     imap_conf_rec *icr =
     (imap_conf_rec *) ap_palloc(p, sizeof(imap_conf_rec));
@@ -133,7 +133,7 @@ static void *create_imap_dir_config(pool *p, char *dummy)
     return icr;
 }
 
-static void *merge_imap_dir_configs(pool *p, void *basev, void *addv)
+static void *merge_imap_dir_configs(ap_context_t *p, void *basev, void *addv)
 {
     imap_conf_rec *new = (imap_conf_rec *) ap_pcalloc(p, sizeof(imap_conf_rec));
     imap_conf_rec *base = (imap_conf_rec *) basev;
@@ -901,7 +901,7 @@ module MODULE_VAR_EXPORT imap_module =
     merge_imap_dir_configs,     /* dir merger --- default is to override */
     NULL,                       /* server config */
     NULL,                       /* merge server config */
-    imap_cmds,                  /* command table */
+    imap_cmds,                  /* command ap_table_t */
     imap_handlers,              /* handlers */
     NULL                        /* register hooks */
 };

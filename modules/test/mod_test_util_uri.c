@@ -66,7 +66,7 @@
  * SetHandler test-util-uri
  * </Location>
  *
- * Then make a request to /test-util-uri.  An html table of errors will
+ * Then make a request to /test-util-uri.  An html ap_table_t of errors will
  * be output... and a total count of errors.
  */
 
@@ -138,7 +138,7 @@ static char *my_stpcpy(char *d, const char *s)
 static unsigned iterate_pieces(request_rec *r, const test_uri_t *pieces, int row)
 {
     unsigned u;
-    pool *sub;
+    ap_context_t *sub;
     char *input_uri;
     char *strp;
     uri_components result;
@@ -341,7 +341,7 @@ module test_util_uri_module = {
     NULL,                       /* dir merger --- default is to override */
     NULL,                       /* server config */
     NULL,                       /* merge server config */
-    NULL,			/* command table */
+    NULL,			/* command ap_table_t */
     test_util_uri_handlers,	/* handlers */
     NULL,                       /* filename translation */
     NULL,                       /* check_user_id */

@@ -59,14 +59,14 @@
  * Info Module.  Display configuration information for the server and
  * all included modules.
  *
- * <Location /server-info>
- * SetHandler server-info
+ * <Location /server ap_context_t nfo>
+ * SetHandler server ap_context_t nfo
  * </Location>
  *
- * GET /server-info - Returns full configuration page for server and all modules
- * GET /server-info?server - Returns server configuration only
- * GET /server-info?module_name - Returns configuration for a single module
- * GET /server-info?list - Returns quick list of included modules
+ * GET /server ap_context_t nfo - Returns full configuration page for server and all modules
+ * GET /server ap_context_t nfo?server - Returns server configuration only
+ * GET /server ap_context_t nfo?module_name - Returns configuration for a single module
+ * GET /server ap_context_t nfo?list - Returns quick list of included modules
  *
  * Rasmus Lerdorf <rasmus@vex.net>, May 1996
  *
@@ -93,7 +93,7 @@ typedef struct {
 } info_entry;
 
 typedef struct {
-    array_header *more_info;
+    ap_array_header_t *more_info;
 } info_svr_conf;
 
 typedef struct info_cfg_lines {
@@ -105,7 +105,7 @@ typedef struct info_cfg_lines {
 module MODULE_VAR_EXPORT info_module;
 extern module *top_module;
 
-static void *create_info_config(pool *p, server_rec *s)
+static void *create_info_config(ap_context_t *p, server_rec *s)
 {
     info_svr_conf *conf = (info_svr_conf *) ap_pcalloc(p, sizeof(info_svr_conf));
 
@@ -113,7 +113,7 @@ static void *create_info_config(pool *p, server_rec *s)
     return conf;
 }
 
-static void *merge_info_config(pool *p, void *basev, void *overridesv)
+static void *merge_info_config(ap_context_t *p, void *basev, void *overridesv)
 {
     info_svr_conf *new = (info_svr_conf *) ap_pcalloc(p, sizeof(info_svr_conf));
     info_svr_conf *base = (info_svr_conf *) basev;
@@ -161,7 +161,7 @@ static char *mod_info_html_cmd_string(const char *string, char *buf, size_t buf_
     return (buf);
 }
 
-static info_cfg_lines *mod_info_load_config(pool *p, const char *filename,
+static info_cfg_lines *mod_info_load_config(ap_context_t *p, const char *filename,
                                             request_rec *r)
 {
     char s[MAX_STRING_LEN];
@@ -660,7 +660,7 @@ static const command_rec info_cmds[] =
 
 static const handler_rec info_handlers[] =
 {
-    {"server-info", display_info},
+    {"server ap_context_t nfo", display_info},
     {NULL}
 };
 
@@ -672,7 +672,7 @@ module MODULE_VAR_EXPORT info_module =
     NULL,                       /* dir merger --- default is to override */
     create_info_config,         /* server config */
     merge_info_config,          /* merge server config */
-    info_cmds,                  /* command table */
+    info_cmds,                  /* command ap_table_t */
     info_handlers,              /* handlers */
     NULL,                       /* filename translation */
     NULL,                       /* check_user_id */

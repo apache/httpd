@@ -241,7 +241,7 @@ static int spot_cookie(request_rec *r)
     return OK;                  /* We set our cookie */
 }
 
-static void *make_cookie_log_state(pool *p, server_rec *s)
+static void *make_cookie_log_state(ap_context_t *p, server_rec *s)
 {
     cookie_log_state *cls =
     (cookie_log_state *) ap_palloc(p, sizeof(cookie_log_state));
@@ -251,7 +251,7 @@ static void *make_cookie_log_state(pool *p, server_rec *s)
     return (void *) cls;
 }
 
-static void *make_cookie_dir(pool *p, char *d)
+static void *make_cookie_dir(ap_context_t *p, char *d)
 {
     cookie_dir_rec *dcfg;
 
@@ -363,7 +363,7 @@ module MODULE_VAR_EXPORT usertrack_module = {
     NULL,                       /* dir merger --- default is to override */
     make_cookie_log_state,      /* server config */
     NULL,                       /* merge server configs */
-    cookie_log_cmds,            /* command table */
+    cookie_log_cmds,            /* command ap_table_t */
     NULL,                       /* handlers */
     register_hooks		/* register hooks */
 };

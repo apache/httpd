@@ -84,7 +84,7 @@
  * can also be used when compatibility mode is enabled.
  *
  * dirkx - Added Authoritative control to allow passing on to lower  
- *         modules if and only if the user-id is not known to this
+ *         modules if and only if the user ap_context_t d is not known to this
  *         module. A known user with a faulty or absent password still
  *         causes an AuthRequired. The default is 'Authoritative', i.e.
  *         no control is passed along.
@@ -108,7 +108,7 @@ typedef struct {
     int auth_dbauthoritative;
 } db_auth_config_rec;
 
-static void *create_db_auth_dir_config(pool *p, char *d)
+static void *create_db_auth_dir_config(ap_context_t *p, char *d)
 {
     db_auth_config_rec *sec
     = (db_auth_config_rec *) ap_pcalloc(p, sizeof(db_auth_config_rec));
@@ -268,7 +268,7 @@ static int db_check_auth(request_rec *r)
     char *user = r->user;
     int m = r->method_number;
 
-    const array_header *reqs_arr = ap_requires(r);
+    const ap_array_header_t *reqs_arr = ap_requires(r);
     require_line *reqs = reqs_arr ? (require_line *) reqs_arr->elts : NULL;
 
     register int x;
@@ -330,7 +330,7 @@ module db_auth_module =
     NULL,			/* dir merger --- default is to override */
     NULL,			/* server config */
     NULL,			/* merge server config */
-    db_auth_cmds,		/* command table */
+    db_auth_cmds,		/* command ap_table_t */
     NULL,			/* handlers */
     NULL,			/* filename translation */
     db_authenticate_basic_user,	/* check_user_id */

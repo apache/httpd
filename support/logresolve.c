@@ -61,7 +61,7 @@ static void stats(FILE *output);
 #define MAXDNAME 256
 #endif
 
-/* number of buckets in cache hash table */
+/* number of buckets in cache hash ap_table_t */
 #define BUCKETS 256
 
 #if defined(NEED_STRDUP)

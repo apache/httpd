@@ -64,6 +64,7 @@
 
 
 #define CORE_PRIVATE
+#include "apr_lib.h"
 #include "httpd.h"
 #include "http_config.h"
 #include "http_core.h"
@@ -154,7 +155,7 @@ static const TRANS priorities[] = {
     {NULL,	-1},
 };
 
-static int error_log_child(void *cmd, child_info *pinfo)
+static int error_log_child(void *cmd, ap_child_info_t *pinfo)
 {
     /* Child process code for 'ErrorLog "|..."';
      * may want a common framework for this, since I expect it will
@@ -183,7 +184,7 @@ static int error_log_child(void *cmd, child_info *pinfo)
     return(child_pid);
 }
 
-static void open_error_log(server_rec *s, pool *p)
+static void open_error_log(server_rec *s, ap_context_t *p)
 {
     const char *fname;
 
@@ -241,7 +242,7 @@ static void open_error_log(server_rec *s, pool *p)
     }
 }
 
-void ap_open_logs(server_rec *s_main, pool *p)
+void ap_open_logs(server_rec *s_main, ap_context_t *p)
 {
     server_rec *virt, *q;
     int replace_stderr;
@@ -493,7 +494,7 @@ API_EXPORT(void) ap_log_rerror(const char *file, int line, int level,
     va_end(args);
 }
 
-void ap_log_pid(pool *p, const char *fname)
+void ap_log_pid(ap_context_t *p, const char *fname)
 {
     FILE *pid_file;
     struct stat finfo;
@@ -677,7 +678,7 @@ static void piped_log_cleanup_for_exec(void *data)
 }
 
 
-API_EXPORT(piped_log *) ap_open_piped_log(pool *p, const char *program)
+API_EXPORT(piped_log *) ap_open_piped_log(ap_context_t *p, const char *program)
 {
     piped_log *pl;
 
@@ -709,7 +710,7 @@ API_EXPORT(void) ap_close_piped_log(piped_log *pl)
 }
 
 #else
-static int piped_log_child(void *cmd, child_info *pinfo)
+static int piped_log_child(void *cmd, ap_child_info_t *pinfo)
 {
     /* Child process code for 'TransferLog "|..."';
      * may want a common framework for this, since I expect it will
@@ -738,7 +739,7 @@ static int piped_log_child(void *cmd, child_info *pinfo)
 }
 
 
-API_EXPORT(piped_log *) ap_open_piped_log(pool *p, const char *program)
+API_EXPORT(piped_log *) ap_open_piped_log(ap_context_t *p, const char *program)
 {
     piped_log *pl;
     FILE *dummy;

@@ -170,7 +170,7 @@ typedef struct {
     char *metafiles;
 } cern_meta_dir_config;
 
-static void *create_cern_meta_dir_config(pool *p, char *dummy)
+static void *create_cern_meta_dir_config(ap_context_t *p, char *dummy)
 {
     cern_meta_dir_config *new =
     (cern_meta_dir_config *) ap_palloc(p, sizeof(cern_meta_dir_config));
@@ -182,7 +182,7 @@ static void *create_cern_meta_dir_config(pool *p, char *dummy)
     return new;
 }
 
-static void *merge_cern_meta_dir_configs(pool *p, void *basev, void *addv)
+static void *merge_cern_meta_dir_configs(ap_context_t *p, void *basev, void *addv)
 {
     cern_meta_dir_config *base = (cern_meta_dir_config *) basev;
     cern_meta_dir_config *add = (cern_meta_dir_config *) addv;
@@ -234,7 +234,7 @@ static int scan_meta_file(request_rec *r, FILE *f)
     char w[MAX_STRING_LEN];
     char *l;
     int p;
-    table *tmp_headers;
+    ap_table_t *tmp_headers;
 
     tmp_headers = ap_make_table(r->pool, 5);
     while (fgets(w, MAX_STRING_LEN - 1, f) != NULL) {
@@ -381,7 +381,7 @@ module MODULE_VAR_EXPORT cern_meta_module =
     merge_cern_meta_dir_configs,/* dir merger --- default is to override */
     NULL,			/* server config */
     NULL,			/* merge server configs */
-    cern_meta_cmds,		/* command table */
+    cern_meta_cmds,		/* command ap_table_t */
     NULL,			/* handlers */
     register_hooks		/* register hooks */
 };

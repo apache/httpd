@@ -168,7 +168,7 @@ static bs2_ForkType os_forktype(void)
 
 /* This routine is called by http_core for the BS2000Account directive */
 /* It stores the account name for later use */
-const char *os_set_account(pool *p, const char *account)
+const char *os_set_account(ap_context_t *p, const char *account)
 {
     char account_temp[ACCT_LEN+1];
 

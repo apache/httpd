@@ -133,8 +133,8 @@ static const char *proxy_location_reverse_map(request_rec *r, const char *url)
     return url;
 }
 
-/* Clear all connection-based headers from the incoming headers table */
-static void clear_connection(pool *p, table *headers)
+/* Clear all connection-based headers from the incoming headers ap_table_t */
+static void clear_connection(ap_context_t *p, ap_table_t *headers)
 {
     const char *name;
     char *next = ap_pstrdup(p, ap_table_get(headers, "Connection"));
@@ -172,8 +172,8 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
     char *strp2;
     const char *err, *desthost;
     int i, j, sock, len, backasswards;
-    array_header *reqhdrs_arr;
-    table *resp_hdrs;
+    ap_array_header_t *reqhdrs_arr;
+    ap_table_t *resp_hdrs;
     table_entry *reqhdrs;
     struct sockaddr_in server;
     struct in_addr destaddr;
@@ -181,7 +181,7 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
     BUFF *f;
     char buffer[HUGE_STRING_LEN];
     char portstr[32];
-    pool *p = r->pool;
+    ap_context_t *p = r->pool;
     const long int zero = 0L;
     int destport = 0;
     char *destportstr = NULL;

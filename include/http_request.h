@@ -81,7 +81,7 @@ extern "C" {
  * (e.g., for includes), a module may call for the request to be run
  * by calling run_sub_req.  The space allocated to create sub_reqs can be
  * reclaimed by calling destroy_sub_req --- be sure to copy anything you care
- * about which was allocated in its pool elsewhere before doing this.
+ * about which was allocated in its ap_context_t elsewhere before doing this.
  */
 
 API_EXPORT(request_rec *) ap_sub_req_lookup_uri(const char *new_file,

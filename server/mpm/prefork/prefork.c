@@ -165,8 +165,8 @@ struct other_child_rec {
 static other_child_rec *other_children;
 #endif
 
-static pool *pconf;		/* Pool for config stuff */
-static pool *pchild;		/* Pool for httpd child stuff */
+static ap_context_t *pconf;		/* Pool for config stuff */
+static ap_context_t *pchild;		/* Pool for httpd child stuff */
 
 static int my_pid;	/* it seems silly to call getpid all the time */
 #ifndef MULTITHREAD
@@ -228,7 +228,7 @@ static void clean_child_exit(int code)
 }
 
 #if defined(USE_FCNTL_SERIALIZED_ACCEPT) || defined(USE_FLOCK_SERIALIZED_ACCEPT)
-static void expand_lock_fname(pool *p)
+static void expand_lock_fname(ap_context_t *p)
 {
     /* XXXX possibly bogus cast */
     ap_lock_fname = ap_psprintf(p, "%s.%lu",
@@ -244,7 +244,7 @@ static ulock_t uslock = NULL;
 
 #define accept_mutex_child_init(x)
 
-static void accept_mutex_init(pool *p)
+static void accept_mutex_init(ap_context_t *p)
 {
     ptrdiff_t old;
     usptr_t *us;
@@ -321,7 +321,7 @@ static void accept_mutex_child_cleanup(void *foo)
     }
 }
 
-static void accept_mutex_child_init(pool *p)
+static void accept_mutex_child_init(ap_context_t *p)
 {
     ap_register_cleanup(p, NULL, accept_mutex_child_cleanup, ap_null_cleanup);
 }
@@ -335,7 +335,7 @@ static void accept_mutex_cleanup(void *foo)
     accept_mutex = (void *)(caddr_t)-1;
 }
 
-static void accept_mutex_init(pool *p)
+static void accept_mutex_init(ap_context_t *p)
 {
     pthread_mutexattr_t mattr;
     int fd;
@@ -454,7 +454,7 @@ static void accept_mutex_cleanup(void *foo)
 
 #define accept_mutex_child_init(x)
 
-static void accept_mutex_init(pool *p)
+static void accept_mutex_init(ap_context_t *p)
 {
     union semun ick;
     struct semid_ds buf;
@@ -485,7 +485,7 @@ static void accept_mutex_init(pool *p)
     }
     ap_register_cleanup(p, NULL, accept_mutex_cleanup, ap_null_cleanup);
 
-    /* pre-initialize these */
+    /* pre ap_context_t nitialize these */
     op_on.sem_num = 0;
     op_on.sem_op = -1;
     op_on.sem_flg = SEM_UNDO;
@@ -526,7 +526,7 @@ static int lock_fd = -1;
  * Initialize mutex lock.
  * Must be safe to call this on a restart.
  */
-static void accept_mutex_init(pool *p)
+static void accept_mutex_init(ap_context_t *p)
 {
 
     lock_it.l_whence = SEEK_SET;	/* from current point */
@@ -596,7 +596,7 @@ static void accept_mutex_cleanup(void *foo)
  * Initialize mutex lock.
  * Done by each child at it's birth
  */
-static void accept_mutex_child_init(pool *p)
+static void accept_mutex_child_init(ap_context_t *p)
 {
 
     lock_fd = ap_popenf(p, ap_lock_fname, O_WRONLY, 0600);
@@ -611,7 +611,7 @@ static void accept_mutex_child_init(pool *p)
  * Initialize mutex lock.
  * Must be safe to call this on a restart.
  */
-static void accept_mutex_init(pool *p)
+static void accept_mutex_init(ap_context_t *p)
 {
     expand_lock_fname(p);
     unlink(ap_lock_fname);
@@ -661,7 +661,7 @@ static void accept_mutex_cleanup(void *foo)
  * Initialize mutex lock.
  * Done by each child at it's birth
  */
-static void accept_mutex_child_init(pool *p)
+static void accept_mutex_child_init(ap_context_t *p)
 {
     int rc = DosOpenMutexSem(NULL, &lock_sem);
 
@@ -678,7 +678,7 @@ static void accept_mutex_child_init(pool *p)
  * Initialize mutex lock.
  * Must be safe to call this on a restart.
  */
-static void accept_mutex_init(pool *p)
+static void accept_mutex_init(ap_context_t *p)
 {
     int rc = DosCreateMutexSem(NULL, &lock_sem, DC_SEM_SHARED, FALSE);
 
@@ -725,7 +725,7 @@ static void accept_mutex_cleanup(void *foo)
 
 #define accept_mutex_init(x)
 
-static void accept_mutex_child_init(pool *p)
+static void accept_mutex_child_init(ap_context_t *p)
 {
     ap_register_cleanup(p, NULL, accept_mutex_cleanup, ap_null_cleanup);
     tpf_core_held = 0;
@@ -934,7 +934,7 @@ caddr_t get_shared_heap(const char *Name)
     return BaseAddress;
 }
 
-static void setup_shared_mem(pool *p)
+static void setup_shared_mem(ap_context_t *p)
 {
     caddr_t m;
 
@@ -957,7 +957,7 @@ static void setup_shared_mem(pool *p)
     ap_scoreboard_image->global.running_generation = 0;
 }
 
-static void reopen_scoreboard(pool *p)
+static void reopen_scoreboard(ap_context_t *p)
 {
     caddr_t m;
     int rc;
@@ -1009,7 +1009,7 @@ static void cleanup_shared_mem(void *d)
     shm_unlink(ap_scoreboard_fname);
 }
 
-static void setup_shared_mem(pool *p)
+static void setup_shared_mem(ap_context_t *p)
 {
     char buf[512];
     caddr_t m;
@@ -1044,13 +1044,13 @@ static void setup_shared_mem(pool *p)
     ap_scoreboard_image->global.running_generation = 0;
 }
 
-static void reopen_scoreboard(pool *p)
+static void reopen_scoreboard(ap_context_t *p)
 {
 }
 
 #elif defined(USE_MMAP_SCOREBOARD)
 
-static void setup_shared_mem(pool *p)
+static void setup_shared_mem(ap_context_t *p)
 {
     caddr_t m;
 
@@ -1124,7 +1124,7 @@ static void setup_shared_mem(pool *p)
     ap_scoreboard_image->global.running_generation = 0;
 }
 
-static void reopen_scoreboard(pool *p)
+static void reopen_scoreboard(ap_context_t *p)
 {
 }
 
@@ -1132,7 +1132,7 @@ static void reopen_scoreboard(pool *p)
 static key_t shmkey = IPC_PRIVATE;
 static int shmid = -1;
 
-static void setup_shared_mem(pool *p)
+static void setup_shared_mem(ap_context_t *p)
 {
     struct shmid_ds shmbuf;
 #ifdef MOVEBREAK
@@ -1216,7 +1216,7 @@ static void setup_shared_mem(pool *p)
     ap_scoreboard_image->global.running_generation = 0;
 }
 
-static void reopen_scoreboard(pool *p)
+static void reopen_scoreboard(ap_context_t *p)
 {
 }
 
@@ -1232,7 +1232,7 @@ static void cleanup_scoreboard_heap()
     }
 }
 
-static void setup_shared_mem(pool *p)
+static void setup_shared_mem(ap_context_t *p)
 {
     cinfc(CINFC_WRITE, CINFC_CMMCTK2);
     ap_scoreboard_image = (scoreboard *) gsysc(SCOREBOARD_FRAMES, SCOREBOARD_NAME);
@@ -1246,7 +1246,7 @@ static void setup_shared_mem(pool *p)
     ap_scoreboard_image->global.running_generation = 0;
 }
 
-static void reopen_scoreboard(pool *p)
+static void reopen_scoreboard(ap_context_t *p)
 {
     cinfc(CINFC_WRITE, CINFC_CMMCTK2);
 }
@@ -1294,7 +1294,7 @@ static void cleanup_scoreboard_file(void *foo)
     unlink(ap_scoreboard_fname);
 }
 
-void reopen_scoreboard(pool *p)
+void reopen_scoreboard(ap_context_t *p)
 {
     if (scoreboard_fd != -1)
 	ap_pclosef(p, scoreboard_fd);
@@ -1312,7 +1312,7 @@ void reopen_scoreboard(pool *p)
 #endif
 
 /* Called by parent process */
-static void reinit_scoreboard(pool *p)
+static void reinit_scoreboard(ap_context_t *p)
 {
     int running_gen = 0;
     if (ap_scoreboard_image)
@@ -1931,7 +1931,7 @@ static void child_main(int child_num_arg)
     ap_listen_rec *lr;
     ap_listen_rec *last_lr;
     ap_listen_rec *first_lr;
-    pool *ptrans;
+    ap_context_t *ptrans;
     conn_rec *current_conn;
     ap_iol *iol;
 
@@ -1941,12 +1941,12 @@ static void child_main(int child_num_arg)
     requests_this_child = 0;
     last_lr = NULL;
 
-    /* Get a sub pool for global allocations in this child, so that
+    /* Get a sub ap_context_t for global allocations in this child, so that
      * we can have cleanups occur when the child exits.
      */
-    pchild = ap_make_sub_pool(pconf);
+    ap_create_context(pconf, NULL, &pchild);
 
-    ptrans = ap_make_sub_pool(pchild);
+    ap_create_context(pchild, NULL, &ptrans);
 
     /* needs to be done before we switch UIDs so we have permissions */
     reopen_scoreboard(pchild);
@@ -2514,7 +2514,7 @@ static void process_child_status(int pid, ap_wait_t status)
 }
 
 
-static int setup_listeners(pool *p, server_rec *s)
+static int setup_listeners(ap_context_t *p, server_rec *s)
 {
     ap_listen_rec *lr;
 
@@ -2540,7 +2540,7 @@ static int setup_listeners(pool *p, server_rec *s)
  * Executive routines.
  */
 
-int ap_mpm_run(pool *_pconf, pool *plog, server_rec *s)
+int ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec *s)
 {
     int remaining_children_to_start;
 
@@ -2752,7 +2752,7 @@ int ap_mpm_run(pool *_pconf, pool *plog, server_rec *s)
     return 0;
 }
 
-static void prefork_pre_config(pool *p, pool *plog, pool *ptemp)
+static void prefork_pre_config(ap_context_t *p, ap_context_t *plog, ap_context_t *ptemp)
 {
     static int restart_num = 0;
 
@@ -2981,7 +2981,7 @@ module MODULE_VAR_EXPORT mpm_prefork_module = {
     NULL,			/* merge per-directory config structures */
     NULL,			/* create per-server config structure */
     NULL,			/* merge per-server config structures */
-    prefork_cmds,		/* command table */
+    prefork_cmds,		/* command ap_table_t */
     NULL,			/* handlers */
     prefork_hooks,		/* register hooks */
 };

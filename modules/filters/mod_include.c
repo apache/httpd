@@ -122,7 +122,7 @@ static void add_include_vars(request_rec *r, char *timefmt)
 #ifndef WIN32
     struct passwd *pw;
 #endif /* ndef WIN32 */
-    table *e = r->subprocess_env;
+    ap_table_t *e = r->subprocess_env;
     char *t;
     time_t date = r->request_time;
 
@@ -357,7 +357,7 @@ otilde\365oslash\370ugrave\371uacute\372yacute\375"     /* 6 */
  * the tag value is html decoded if dodecode is non-zero
  */
 
-static char *get_tag(pool *p, FILE *in, char *tag, int tagbuf_len, int dodecode)
+static char *get_tag(ap_context_t *p, FILE *in, char *tag, int tagbuf_len, int dodecode)
 {
     char *t = tag, *tag_val, c, term;
 
@@ -443,7 +443,7 @@ static char *get_tag(pool *p, FILE *in, char *tag, int tagbuf_len, int dodecode)
     return ap_pstrdup(p, tag_val);
 }
 
-static int get_directive(FILE *in, char *dest, size_t len, pool *p)
+static int get_directive(FILE *in, char *dest, size_t len, ap_context_t *p)
 {
     char *d = dest;
     char c;
@@ -775,7 +775,7 @@ static int include_cmd_child(void *arg, child_info *pinfo)
 {
     request_rec *r = ((include_cmd_arg *) arg)->r;
     char *s = ((include_cmd_arg *) arg)->s;
-    table *env = r->subprocess_env;
+    ap_table_t *env = r->subprocess_env;
     int child_pid = 0;
 #ifdef DEBUG_INCLUDE_CMD
 #ifdef OS2
@@ -995,7 +995,7 @@ static int handle_config(FILE *in, request_rec *r, char *error, char *tf,
     char tag[MAX_STRING_LEN];
     char *tag_val;
     char parsed_string[MAX_STRING_LEN];
-    table *env = r->subprocess_env;
+    ap_table_t *env = r->subprocess_env;
 
     while (1) {
         if (!(tag_val = get_tag(r->pool, in, tag, sizeof(tag), 0))) {
@@ -1367,7 +1367,7 @@ static int parse_expr(request_rec *r, const char *expr, const char *error)
     }         *root, *current, *new;
     const char *parse;
     char buffer[MAX_STRING_LEN];
-    pool *expr_pool;
+    ap_context_t *expr_pool;
     int retval = 0;
 
     if ((parse = expr) == (char *) NULL) {
@@ -2107,7 +2107,7 @@ static int handle_printenv(FILE *in, request_rec *r, const char *error)
 {
     char tag[MAX_STRING_LEN];
     char *tag_val;
-    array_header *arr = ap_table_elts(r->subprocess_env);
+    ap_array_header_t *arr = ap_table_elts(r->subprocess_env);
     table_entry *elts = (table_entry *) arr->elts;
     int i;
 
@@ -2290,7 +2290,7 @@ enum xbithack {
 #define DEFAULT_XBITHACK xbithack_off
 #endif
 
-static void *create_includes_dir_config(pool *p, char *dummy)
+static void *create_includes_dir_config(ap_context_t *p, char *dummy)
 {
     enum xbithack *result = (enum xbithack *) ap_palloc(p, sizeof(enum xbithack));
     *result = DEFAULT_XBITHACK;
@@ -2462,7 +2462,7 @@ module MODULE_VAR_EXPORT includes_module =
     NULL,                       /* dir merger --- default is to override */
     NULL,                       /* server config */
     NULL,                       /* merge server config */
-    includes_cmds,              /* command table */
+    includes_cmds,              /* command ap_table_t */
     includes_handlers,          /* handlers */
     NULL,                       /* check auth */
     NULL,                       /* check access */

@@ -246,7 +246,7 @@ same byte that represents that character in ASCII.
 3. All characters encoded must have Unicode scalar values <= 0xFFFF,
 (ie characters that would be encoded by surrogates in UTF-16
 are  not allowed).  Note that this restriction doesn't apply to
-the built-in support for UTF-8 and UTF-16.
+the built ap_context_t n support for UTF-8 and UTF-16.
 
 4. No Unicode character may be encoded by more than one distinct sequence
 of bytes. */

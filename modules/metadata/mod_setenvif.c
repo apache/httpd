@@ -133,7 +133,7 @@ typedef struct {
     char *name;                 /* header name */
     char *regex;                /* regex to match against */
     regex_t *preg;              /* compiled regex */
-    table *features;            /* env vars to set (or unset) */
+    ap_table_t *features;            /* env vars to set (or unset) */
     ENUM_BITFIELD(              /* is it a "special" header ? */
 	enum special,
 	special_type,4);
@@ -141,12 +141,12 @@ typedef struct {
 } sei_entry;
 
 typedef struct {
-    array_header *conditionals;
+    ap_array_header_t *conditionals;
 } sei_cfg_rec;
 
 module MODULE_VAR_EXPORT setenvif_module;
 
-static void *create_setenvif_config(pool *p, server_rec *dummy)
+static void *create_setenvif_config(ap_context_t *p, server_rec *dummy)
 {
     sei_cfg_rec *new = (sei_cfg_rec *) ap_palloc(p, sizeof(sei_cfg_rec));
 
@@ -154,7 +154,7 @@ static void *create_setenvif_config(pool *p, server_rec *dummy)
     return (void *) new;
 }
 
-static void *merge_setenvif_config(pool *p, void *basev, void *overridesv)
+static void *merge_setenvif_config(ap_context_t *p, void *basev, void *overridesv)
 {
     sei_cfg_rec *a = ap_pcalloc(p, sizeof(sei_cfg_rec));
     sei_cfg_rec *base = basev, *overrides = overridesv;
@@ -323,7 +323,7 @@ static int match_headers(request_rec *r)
     server_rec *s = r->server;
     sei_cfg_rec *sconf;
     sei_entry *entries;
-    table_entry *elts;
+    ap_table_entry_t *elts;
     const char *val;
     int i, j;
     char *last_name;
@@ -383,8 +383,8 @@ static int match_headers(request_rec *r)
         }
 
         if (!ap_regexec(b->preg, val, 0, NULL, 0)) {
-	    array_header *arr = ap_table_elts(b->features);
-            elts = (table_entry *) arr->elts;
+	    ap_array_header_t *arr = ap_table_elts(b->features);
+            elts = (ap_table_entry_t *) arr->elts;
 
             for (j = 0; j < arr->nelts; ++j) {
                 if (!strcmp(elts[j].val, "!")) {
@@ -412,7 +412,7 @@ module MODULE_VAR_EXPORT setenvif_module =
     NULL,                       /* dir merger --- default is to override */
     create_setenvif_config,     /* server config */
     merge_setenvif_config,      /* merge server configs */
-    setenvif_module_cmds,       /* command table */
+    setenvif_module_cmds,       /* command ap_table_t */
     NULL,                       /* handlers */
     register_hooks		/* register hooks */
 };

@@ -72,7 +72,7 @@ HOOK_STRUCT(
 IMPLEMENT_HOOK_VOID(pre_connection,(conn_rec *c),(c))
 IMPLEMENT_HOOK_RUN_FIRST(int,process_connection,(conn_rec *c),(c),DECLINED)
 
-/* TODO: re-implement the lingering close stuff */
+/* TODO: re ap_context_t mplement the lingering close stuff */
 #define NO_LINGCLOSE
 
 /*
@@ -256,7 +256,7 @@ int ap_process_http_connection(conn_rec *c)
    structure, but for now...
 */
 
-conn_rec *ap_new_connection(pool *p, server_rec *server, BUFF *inout,
+conn_rec *ap_new_connection(ap_context_t *p, server_rec *server, BUFF *inout,
 			    const struct sockaddr_in *remaddr,
 			    const struct sockaddr_in *saddr, long id)
 {

@@ -63,13 +63,13 @@ extern "C" {
 #endif
 
 /* called before any config is read */
-void ap_init_vhost_config(pool *p);
+void ap_init_vhost_config(ap_context_t *p);
 
 /* called after the config has been read */
-void ap_fini_vhost_config(pool *p, server_rec *main_server);
+void ap_fini_vhost_config(ap_context_t *p, server_rec *main_server);
 
 /* handle addresses in <VirtualHost> statement */
-const char *ap_parse_vhost_addrs(pool *p, const char *hostname, server_rec *s);
+const char *ap_parse_vhost_addrs(ap_context_t *p, const char *hostname, server_rec *s);
 
 /* handle NameVirtualHost directive */
 const char *ap_set_name_virtual_host (cmd_parms *cmd, void *dummy, char *arg);

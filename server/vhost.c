@@ -98,7 +98,7 @@ struct ipaddr_chain {
     				 * sharing this address */
 };
 
-/* This defines the size of the hash table used for hashing ip addresses
+/* This defines the size of the hash ap_table_t used for hashing ip addresses
  * of virtual hosts.  It must be a power of two.
  */
 #ifndef IPHASH_TABLE_SIZE
@@ -148,7 +148,7 @@ static server_addr_rec **name_vhost_list_tail;
 
 
 /* called at the beginning of the config */
-void ap_init_vhost_config(pool *p)
+void ap_init_vhost_config(ap_context_t *p)
 {
     memset(iphash_table, 0, sizeof(iphash_table));
     default_list = NULL;
@@ -164,7 +164,7 @@ void ap_init_vhost_config(pool *p)
  * *paddr is the variable used to keep track of **paddr between calls
  * port is the default port to assume
  */
-static const char *get_addresses(pool *p, char *w, server_addr_rec ***paddr,
+static const char *get_addresses(ap_context_t *p, char *w, server_addr_rec ***paddr,
 			    unsigned port)
 {
   /* ZZZ redesign to use AP funcs and types.  Will see what I can do to make it
@@ -244,7 +244,7 @@ static const char *get_addresses(pool *p, char *w, server_addr_rec ***paddr,
 
 
 /* parse the <VirtualHost> addresses */
-const char *ap_parse_vhost_addrs(pool *p, const char *hostname, server_rec *s)
+const char *ap_parse_vhost_addrs(ap_context_t *p, const char *hostname, server_rec *s)
 {
     server_addr_rec **addrs;
     const char *err;
@@ -278,7 +278,7 @@ const char *ap_set_name_virtual_host (cmd_parms *cmd, void *dummy, char *arg)
 }
 
 
-/* hash table statistics, keep this in here for the beta period so
+/* hash ap_table_t statistics, keep this in here for the beta period so
  * we can find out if the hash function is ok
  */
 #ifdef IPHASH_STATISTICS
@@ -349,7 +349,7 @@ static ap_inline unsigned hash_inaddr(unsigned key)
 
 
 
-static ipaddr_chain *new_ipaddr_chain(pool *p,
+static ipaddr_chain *new_ipaddr_chain(ap_context_t *p,
 				    server_rec *s, server_addr_rec *sar)
 {
     ipaddr_chain *new;
@@ -363,7 +363,7 @@ static ipaddr_chain *new_ipaddr_chain(pool *p,
 }
 
 
-static name_chain *new_name_chain(pool *p, server_rec *s, server_addr_rec *sar)
+static name_chain *new_name_chain(ap_context_t *p, server_rec *s, server_addr_rec *sar)
 {
     name_chain *new;
 
@@ -382,7 +382,7 @@ static ap_inline ipaddr_chain *find_ipaddr(struct in_addr *server_ip,
     ipaddr_chain *trav;
     unsigned addr;
 
-    /* scan the hash table for an exact match first */
+    /* scan the hash ap_table_t for an exact match first */
     addr = server_ip->s_addr;
     bucket = hash_inaddr(addr);
     for (trav = iphash_table[bucket]; trav; trav = trav->next) {
@@ -473,7 +473,7 @@ static void dump_vhost_config(APRFile fd)
 }
 
 /* compile the tables and such we need to do the run-time vhost lookups */
-void ap_fini_vhost_config(pool *p, server_rec *main_s)
+void ap_fini_vhost_config(ap_context_t *p, server_rec *main_s)
 {
   /* ZZZ need to redesign for use with AP funcs. will look into this later.
    */
@@ -498,7 +498,7 @@ void ap_fini_vhost_config(pool *p, server_rec *main_s)
 	iphash_table_tail[i] = &iphash_table[i];
     }
 
-    /* The first things to go into the hash table are the NameVirtualHosts
+    /* The first things to go into the hash ap_table_t are the NameVirtualHosts
      * Since name_vhost_list is in the same order that the directives
      * occured in the config file, we'll copy it in that order.
      */
@@ -514,7 +514,7 @@ void ap_fini_vhost_config(pool *p, server_rec *main_s)
 	 */
     }
 
-    /* The next things to go into the hash table are the virtual hosts
+    /* The next things to go into the hash ap_table_t are the virtual hosts
      * themselves.  They're listed off of main_s->next in the reverse
      * order they occured in the config file, so we insert them at
      * the iphash_table_tail but don't advance the tail.
@@ -687,7 +687,7 @@ static void fix_hostname(request_rec *r)
 static int matches_aliases(server_rec *s, const char *host)
 {
     int i;
-    array_header *names;
+    ap_array_header_t *names;
 
     /* match ServerName */
     if (!strcasecmp(host, s->server_hostname)) {
@@ -902,7 +902,7 @@ void ap_update_vhost_given_ip(conn_rec *conn)
     ipaddr_chain *trav;
     unsigned port = ntohs(conn->local_addr.sin_port);
 
-    /* scan the hash table for an exact match first */
+    /* scan the hash ap_table_t for an exact match first */
     trav = find_ipaddr(&conn->local_addr.sin_addr, port);
     if (trav) {
 	/* save the name_chain for later in case this is a name-vhost */

@@ -233,7 +233,7 @@ static int proxy_fixup(request_rec *r)
     return OK;		/* otherwise; we've done the best we can */
 }
 
-static void proxy_init(server_rec *r, pool *p)
+static void proxy_init(server_rec *r, ap_context_t *p)
 {
     ap_proxy_garbage_init(r, p);
 }
@@ -289,7 +289,7 @@ static int proxy_handler(request_rec *r)
     void *sconf = r->server->module_config;
     proxy_server_conf *conf =
     (proxy_server_conf *) ap_get_module_config(sconf, &proxy_module);
-    array_header *proxies = conf->proxies;
+    ap_array_header_t *proxies = conf->proxies;
     struct proxy_remote *ents = (struct proxy_remote *) proxies->elts;
     int i, rc;
     cache_req *cr;
@@ -404,7 +404,7 @@ static int proxy_handler(request_rec *r)
 /* Setup configurable data */
 
 static void *
-     create_proxy_config(pool *p, server_rec *s)
+     create_proxy_config(ap_context_t *p, server_rec *s)
 {
     proxy_server_conf *ps = ap_pcalloc(p, sizeof(proxy_server_conf));
 
@@ -882,7 +882,7 @@ module MODULE_VAR_EXPORT proxy_module =
     NULL,			/* merge per-directory config structures */
     create_proxy_config,	/* create per-server config structure */
     NULL,			/* merge per-server config structures */
-    proxy_cmds,			/* command table */
+    proxy_cmds,			/* command ap_table_t */
     proxy_handlers,		/* handlers */
     proxy_trans,		/* translate_handler */
     NULL,			/* check_user_id */

@@ -118,7 +118,7 @@ static int ftp_check_string(const char *x)
 int ap_proxy_ftp_canon(request_rec *r, char *url)
 {
     char *user, *password, *host, *path, *parms, *strp, sport[7];
-    pool *p = r->pool;
+    ap_context_t *p = r->pool;
     const char *err;
     int port;
 
@@ -415,7 +415,7 @@ static long int send_dir(BUFF *f, request_rec *r, cache_req *c, char *cwd)
  * with username and password (which was presumably queried from the user)
  * supplied in the Authorization: header.
  * Note that we "invent" a realm name which consists of the
- * ftp://user@host part of the reqest (sans password -if supplied but invalid-)
+ * ftp://user@host part of the reqest (sans password  ap_context_t f supplied but invalid-)
  */
 static int ftp_unauthorized (request_rec *r, int log_it)
 {
@@ -457,10 +457,10 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
     struct sockaddr_in server;
     struct hostent server_hp;
     struct in_addr destaddr;
-    table *resp_hdrs;
+    ap_table_t *resp_hdrs;
     BUFF *f;
     BUFF *data = NULL;
-    pool *p = r->pool;
+    ap_context_t *p = r->pool;
     int one = 1;
     const long int zero = 0L;
     NET_SIZE_T clen;

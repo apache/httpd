@@ -160,13 +160,14 @@ static int make_sock(const struct sockaddr_in *server)
 }
 
 
-static void close_listeners_on_exec(void *v)
+static ap_status_t close_listeners_on_exec(void *v)
 {
     ap_listen_rec *lr;
 
     for (lr = ap_listeners; lr; lr = lr->next) {
 	close(lr->fd);
     }
+    return APR_SUCCESS;
 }
 
 
@@ -196,7 +197,7 @@ static void alloc_listener(struct sockaddr_in *local_addr)
 }
 
 
-int ap_listen_open(pool *pconf, unsigned port)
+int ap_listen_open(ap_context_t *pconf, unsigned port)
 {
     ap_listen_rec *lr;
     ap_listen_rec *next;

@@ -1151,6 +1151,8 @@ int setrlimit(int, struct rlimit *);
 #define INADDR_NONE ((unsigned long) -1)
 #endif
 
+#if 0
+/* This stuff taken care of in APR XXXXX */
 /*
  * Replace signal function with sigaction equivalent
  */
@@ -1170,7 +1172,7 @@ typedef void Sigfunc(int);
 #define signal(s,f)	ap_signal(s,f)
 Sigfunc *signal(int signo, Sigfunc * func);
 #endif
-
+#endif
 #include <setjmp.h>
 
 #if defined(USE_LONGJMP)

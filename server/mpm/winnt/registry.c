@@ -59,7 +59,7 @@
 /*
  * Get the data for registry key value. This is a generic function that
  * can either get a value into a caller-supplied buffer, or it can
- * allocate space for the value from the pass-in pool. It will normally
+ * allocate space for the value from the pass ap_context_t n pool. It will normally
  * be used by other functions within this file to get specific key values
  * (e.g. registry_get_server_root()). This function returns a number of
  * different error statuses, allowing the caller to differentiate
@@ -69,13 +69,13 @@
  *
  * If ppValue is NULL, allocate space for the value and return it in
  * *pValue. The return value is the number of bytes in the value.
- * The first argument is the pool to use to allocate space for the value.
+ * The first argument is the ap_context_t to use to allocate space for the value.
  *
  * If pValue is not NULL, assume it is a buffer of nSizeValue bytes,
  * and write the value into the buffer. The return value is the number
  * of bytes in the value (so if the return value is greater than
  * the supplied nSizeValue, the caller knows that *pValue is truncated).
- * The pool argument is ignored.
+ * The ap_context_t argument is ignored.
  *
  * The return value is the number of bytes in the successfully retreived
  * key if everything worked, or:
@@ -92,7 +92,7 @@
  * message will be logged at priority "warning".
  */
 
-static int ap_registry_get_key_int(pool *p, char *key, char *name, char *pBuffer, int nSizeBuffer, char **ppValue)
+static int ap_registry_get_key_int(ap_context_t *p, char *key, char *name, char *pBuffer, int nSizeBuffer, char **ppValue)
 {
     long rv;
     HKEY hKey;
@@ -199,7 +199,7 @@ static int ap_registry_get_key_int(pool *p, char *key, char *name, char *pBuffer
  * an error getting the key.
  */
 
-int ap_registry_get_server_root(pool *p, char *dir, int size)
+int ap_registry_get_server_root(ap_context_t *p, char *dir, int size)
 {
     int rv;
 
@@ -222,7 +222,7 @@ char *ap_get_service_key(char *service_name)
     return(key);
 }
 
-int ap_registry_get_service_conf(pool *p, char *dir, int size, char *service_name)
+int ap_registry_get_service_conf(ap_context_t *p, char *dir, int size, char *service_name)
 {
     int rv;
     char *key = ap_get_service_key(service_name);

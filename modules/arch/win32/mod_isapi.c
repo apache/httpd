@@ -68,7 +68,7 @@
  * function as well).
  *
  * To load, simply place the ISA in a location in the document tree.
- * Then add an "AddHandler isapi-isa dll" into your config file.
+ * Then add an "AddHandler isapi ap_context_t sa dll" into your config file.
  * You should now be able to load ISAPI DLLs just be reffering to their
  * URLs. Make sure the ExecCGI option is active in the directory
  * the ISA is in.
@@ -129,7 +129,7 @@ int isapi_handler (request_rec *r) {
     BOOL (*isapi_term)(DWORD); /* optional entry point 3 */
 
     isapi_cid *cid = ap_pcalloc(r->pool, sizeof(isapi_cid));
-    table *e = r->subprocess_env;
+    ap_table_t *e = r->subprocess_env;
     int retval;
 
     /* Use similar restrictions as CGIs */
@@ -296,7 +296,7 @@ int isapi_handler (request_rec *r) {
 BOOL WINAPI GetServerVariable (HCONN hConn, LPSTR lpszVariableName,
 			       LPVOID lpvBuffer, LPDWORD lpdwSizeofBuffer) {
     request_rec *r = ((isapi_cid *)hConn)->r;
-    table *e = r->subprocess_env;
+    ap_table_t *e = r->subprocess_env;
     const char *result;
     
     /* Mostly, we just grab it from the environment, but there are
@@ -546,7 +546,7 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
 }
 
 handler_rec isapi_handlers[] = {
-{ "isapi-isa", isapi_handler },
+{ "isapi ap_context_t sa", isapi_handler },
 { NULL}
 };
 
@@ -557,7 +557,7 @@ module isapi_module = {
    NULL,			/* merge per-dir config */
    NULL,			/* server config */
    NULL,			/* merge server config */
-   NULL,			/* command table */
+   NULL,			/* command ap_table_t */
    isapi_handlers,	       	/* handlers */
    NULL,			/* filename translation */
    NULL,			/* check_user_id */

@@ -98,7 +98,7 @@ typedef struct {
     int pid;
     int tid;
     int sd;
-    pool *tpool; /* "pthread" would be confusing */
+    ap_context_t *tpool; /* "pthread" would be confusing */
 } proc_info;
 
 #if 0
@@ -153,8 +153,8 @@ struct other_child_rec {
 static other_child_rec *other_children;
 #endif
 
-static pool *pconf;		/* Pool for config stuff */
-static pool *pchild;		/* Pool for httpd child stuff */
+static ap_context_t *pconf;		/* Pool for config stuff */
+static ap_context_t *pchild;		/* Pool for httpd child stuff */
 
 static int my_pid; /* Linux getpid() doesn't work except in main thread. Use
                       this instead */
@@ -673,7 +673,7 @@ static void process_child_status(int pid, ap_wait_t status)
     }
 }
 
-static int setup_listeners(pool *pconf, server_rec *s)
+static int setup_listeners(ap_context_t *pconf, server_rec *s)
 {
     ap_listen_rec *lr;
     int num_listeners = 0;
@@ -726,7 +726,7 @@ int ap_graceful_stop_signalled(void)
  * Child process main loop.
  */
 
-static void process_socket(pool *p, struct sockaddr *sa_client, int csd, int my_child_num, int my_thread_num)
+static void process_socket(ap_context_t *p, struct sockaddr *sa_client, int csd, int my_child_num, int my_thread_num)
 {
     struct sockaddr sa_server; /* ZZZZ */
     size_t len = sizeof(struct sockaddr);
@@ -798,10 +798,10 @@ static void * worker_thread(void * dummy)
     proc_info * ti = dummy;
     int process_slot = ti->pid;
     int thread_slot = ti->tid;
-    pool *tpool = ti->tpool;
+    ap_context_t *tpool = ti->tpool;
     struct sockaddr sa_client;
     int csd = -1;
-    pool *ptrans;		/* Pool for per-transaction stuff */
+    ap_context_t *ptrans;		/* Pool for per-transaction stuff */
     int sd = -1;
     int srv;
     int curr_pollfd, last_pollfd = 0;
@@ -809,7 +809,7 @@ static void * worker_thread(void * dummy)
 
     free(ti);
 
-    ptrans = ap_make_sub_pool(tpool);
+    ap_create_context(tpool, NULL, &ptrans);
 
     pthread_mutex_lock(&worker_thread_count_mutex);
     worker_thread_count++;
@@ -917,7 +917,7 @@ static void child_main(int child_num_arg)
     ap_listen_rec *lr;
 
     my_pid = getpid();
-    pchild = ap_make_sub_pool(pconf);
+    ap_create_context(pconf, NULL, &pchild);
 
     /*stuff to do before we switch id's, so we have permissions.*/
     reopen_scoreboard(pchild);
@@ -971,7 +971,7 @@ static void child_main(int child_num_arg)
 	my_info->pid = my_child_num;
         my_info->tid = i;
 	my_info->sd = 0;
-	my_info->tpool = ap_make_sub_pool(pchild);
+	ap_create_context(pchild, NULL, &my_info->tpool);
 	
 	/* We are creating threads right now */
 	(void) ap_update_child_status(my_child_num, i, SERVER_STARTING, 
@@ -1276,7 +1276,7 @@ static void server_main_loop(int remaining_children_to_start)
     }
 }
 
-int ap_mpm_run(pool *_pconf, pool *plog, server_rec *s)
+int ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec *s)
 {
     int remaining_children_to_start;
 
@@ -1434,7 +1434,7 @@ int ap_mpm_run(pool *_pconf, pool *plog, server_rec *s)
     return 0;
 }
 
-static void mpmt_pthread_pre_config(pool *pconf, pool *plog, pool *ptemp)
+static void mpmt_pthread_pre_config(ap_context_t *pconf, ap_context_t *plog, ap_context_t *ptemp)
 {
     static int restart_num = 0;
 
@@ -1693,7 +1693,7 @@ module MODULE_VAR_EXPORT mpm_mpmt_pthread_module = {
     NULL,			/* merge per-directory config structures */
     NULL,			/* create per-server config structure */
     NULL,			/* merge per-server config structures */
-    mpmt_pthread_cmds,		/* command table */
+    mpmt_pthread_cmds,		/* command ap_table_t */
     NULL,			/* handlers */
     mpmt_pthread_hooks		/* register_hooks */
 };

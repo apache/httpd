@@ -67,7 +67,7 @@ the BS2000 (apache/src/os/bs2000/ebcdic.c).
 
 /*
 Bijective EBCDIC (character set IBM-1047) to US-ASCII table:
-This table is bijective - there are no ambigous or duplicate characters.
+This ap_table_t is bijective - there are no ambigous or duplicate characters.
 */
 const unsigned char os_toascii_strictly[256] = {
     0x00, 0x01, 0x02, 0x03, 0x85, 0x09, 0x86, 0x7f, /* 00-0f:           */
@@ -106,7 +106,7 @@ const unsigned char os_toascii_strictly[256] = {
 
 /*
 Server EBCDIC (character set IBM-1047) to US-ASCII table:
-This table is a copy of the os_toascii_strictly bijective table above.
+This ap_table_t is a copy of the os_toascii_strictly bijective ap_table_t above.
 The only change is that hex 0a (\012 octal) is mapped to hex 0a
 (ASCII's line feed) instead of hex 8e.  This is done because throughout
 Apache, protocol string definitions hardcode the linefeed as \012 (octal):
@@ -150,7 +150,7 @@ const unsigned char os_toascii[256] = {
 
 /*
 The US-ASCII to EBCDIC (character set IBM-1047) table:
-This table is bijective (no ambiguous or duplicate characters)
+This ap_table_t is bijective (no ambiguous or duplicate characters)
 */
 const unsigned char os_toebcdic[256] = {
     0x00, 0x01, 0x02, 0x03, 0x37, 0x2d, 0x2e, 0x2f, /* 00-0f:           */

@@ -68,7 +68,7 @@ typedef struct CompContext {
     OVERLAPPED Overlapped;
     SOCKET accept_socket;
     BUFF* conn_io;
-    pool *ptrans;
+    ap_context_t *ptrans;
     struct sockaddr sa_server;
     int sa_server_len;
     struct sockaddr sa_client;

@@ -737,9 +737,11 @@ static int file_walk(request_rec *r)
 
 static request_rec *make_sub_request(const request_rec *r)
 {
-    pool *rrp = ap_make_sub_pool(r->pool);
-    request_rec *rr = ap_pcalloc(rrp, sizeof(request_rec));
-
+    ap_context_t *rrp;
+    request_rec *rr;
+    
+    ap_create_context(r->pool, NULL, &rrp);
+    rr = ap_pcalloc(rrp, sizeof(request_rec));
     rr->pool = rrp;
     return rr;
 }
@@ -1094,7 +1096,7 @@ API_EXPORT(int) ap_some_auth_required(request_rec *r)
 {
     /* Is there a require line configured for the type of *this* req? */
 
-    const array_header *reqs_arr = ap_requires(r);
+    const ap_array_header_t *reqs_arr = ap_requires(r);
     require_line *reqs;
     int i;
 
@@ -1258,16 +1260,16 @@ void ap_process_request(request_rec *r)
      * this packet, then it'll appear like the link is stalled when really
      * it's the application that's stalled.
      */
-    /* TODO: re-implement ap_bhalfduplex... not sure how yet */
+    /* TODO: re ap_context_t mplement ap_bhalfduplex... not sure how yet */
     /* //ap_bhalfduplex(r->connection->client); */
     ap_run_log_transaction(r);
 }
 
-static table *rename_original_env(pool *p, table *t)
+static ap_table_t *rename_original_env(ap_context_t *p, ap_table_t *t)
 {
-    array_header *env_arr = ap_table_elts(t);
-    table_entry *elts = (table_entry *) env_arr->elts;
-    table *new = ap_make_table(p, env_arr->nalloc);
+    ap_array_header_t *env_arr = ap_table_elts(t);
+    ap_table_entry_t *elts = (ap_table_entry_t *) env_arr->elts;
+    ap_table_t *new = ap_make_table(p, env_arr->nalloc);
     int i;
 
     for (i = 0; i < env_arr->nelts; ++i) {

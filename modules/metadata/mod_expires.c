@@ -200,7 +200,7 @@
 typedef struct {
     int active;
     char *expiresdefault;
-    table *expiresbytype;
+    ap_table_t *expiresbytype;
 } expires_dir_config;
 
 /* from mod_dir, why is this alias used?
@@ -213,7 +213,7 @@ typedef struct {
 
 module MODULE_VAR_EXPORT expires_module;
 
-static void *create_dir_expires_config(pool *p, char *dummy)
+static void *create_dir_expires_config(ap_context_t *p, char *dummy)
 {
     expires_dir_config *new =
     (expires_dir_config *) ap_pcalloc(p, sizeof(expires_dir_config));
@@ -239,7 +239,7 @@ static const char *set_expiresactive(cmd_parms *cmd, expires_dir_config * dir_co
  * string.  If we return NULL then real_code contains code converted
  * to the cnnnn format.
  */
-static char *check_code(pool *p, const char *code, char **real_code)
+static char *check_code(ap_context_t *p, const char *code, char **real_code)
 {
     char *word;
     char base = 'X';
@@ -376,7 +376,7 @@ static const command_rec expires_cmds[] =
     {NULL}
 };
 
-static void *merge_expires_dir_configs(pool *p, void *basev, void *addv)
+static void *merge_expires_dir_configs(ap_context_t *p, void *basev, void *addv)
 {
     expires_dir_config *new = (expires_dir_config *) ap_pcalloc(p, sizeof(expires_dir_config));
     expires_dir_config *base = (expires_dir_config *) basev;
@@ -496,7 +496,7 @@ module MODULE_VAR_EXPORT expires_module =
     merge_expires_dir_configs,  /* dir merger --- default is to override */
     NULL,                       /* server config */
     NULL,                       /* merge server configs */
-    expires_cmds,               /* command table */
+    expires_cmds,               /* command ap_table_t */
     NULL,                       /* handlers */
     register_hooks		/* register hooks */
 };

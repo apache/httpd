@@ -103,7 +103,7 @@ API_EXPORT(unsigned short) ap_default_port_for_request(const request_rec *r)
  * from a call to gethostbyname() and lives in static storage.
  * By creating a copy we can tuck it away for later use.
  */
-API_EXPORT(struct hostent *) ap_pduphostent(pool *p, const struct hostent *hp)
+API_EXPORT(struct hostent *) ap_pduphostent(ap_context_t *p, const struct hostent *hp)
 {
     struct hostent *newent;
     char	  **ptrs;
@@ -156,7 +156,7 @@ API_EXPORT(struct hostent *) ap_pduphostent(pool *p, const struct hostent *hp)
  * COPY OF the hostent structure, intended to be stored and used later.
  * (gethostbyname() uses static storage that would be overwritten on each call)
  */
-API_EXPORT(struct hostent *) ap_pgethostbyname(pool *p, const char *hostname)
+API_EXPORT(struct hostent *) ap_pgethostbyname(ap_context_t *p, const char *hostname)
 {
     struct hostent *hp = gethostbyname(hostname);
     return (hp == NULL) ? NULL : ap_pduphostent(p, hp);
@@ -166,7 +166,7 @@ API_EXPORT(struct hostent *) ap_pgethostbyname(pool *p, const char *hostname)
 /* Unparse a uri_components structure to an URI string.
  * Optionally suppress the password for security reasons.
  */
-API_EXPORT(char *) ap_unparse_uri_components(pool *p, const uri_components *uptr, unsigned flags)
+API_EXPORT(char *) ap_unparse_uri_components(ap_context_t *p, const uri_components *uptr, unsigned flags)
 {
     char *ret = "";
 
@@ -298,7 +298,7 @@ void ap_util_uri_init(void)
  *  - fills in fields of uri_components *uptr
  *  - none on any of the r->* fields
  */
-API_EXPORT(int) ap_parse_uri_components(pool *p, const char *uri, uri_components *uptr)
+API_EXPORT(int) ap_parse_uri_components(ap_context_t *p, const char *uri, uri_components *uptr)
 {
     int ret;
     regmatch_t match[10];	/* This must have at least as much elements
@@ -400,7 +400,7 @@ API_EXPORT(int) ap_parse_uri_components(pool *p, const char *uri, uri_components
  * that fast memchr()s use.  But that would be way non-portable. -djg
  */
 
-/* We have a table that we can index by character and it tells us if the
+/* We have a ap_table_t that we can index by character and it tells us if the
  * character is one of the interesting delimiters.  Note that we even get
  * compares for NUL for free -- it's just another delimiter.
  */
@@ -440,7 +440,7 @@ void ap_util_uri_init(void)
  *  - fills in fields of uri_components *uptr
  *  - none on any of the r->* fields
  */
-API_EXPORT(int) ap_parse_uri_components(pool *p, const char *uri, uri_components *uptr)
+API_EXPORT(int) ap_parse_uri_components(ap_context_t *p, const char *uri, uri_components *uptr)
 {
     const char *s;
     const char *s1;
@@ -564,7 +564,7 @@ deal_with_host:
  * currently at http://www.mcom.com/newsref/std/tunneling_ssl.html
  * for the format of the "CONNECT host:port HTTP/1.0" request
  */
-API_EXPORT(int) ap_parse_hostinfo_components(pool *p, const char *hostinfo, uri_components *uptr)
+API_EXPORT(int) ap_parse_hostinfo_components(ap_context_t *p, const char *hostinfo, uri_components *uptr)
 {
     const char *s;
     char *endstr;

@@ -94,7 +94,7 @@
  * are handled in create_argv.
  *
  */
-static char **create_argv(pool *p, char *path, char *user, char *group,
+static char **create_argv(ap_context_t *p, char *path, char *user, char *group,
 			  char *av0, const char *args)
 {
     int x, numwords;
@@ -137,7 +137,7 @@ static char **create_argv(pool *p, char *path, char *user, char *group,
 }
 
 
-static char *http2env(pool *a, char *w)
+static char *http2env(ap_context_t *a, char *w)
 {
     char *res = ap_pstrcat(a, "HTTP_", w, NULL);
     char *cp = res;
@@ -154,10 +154,10 @@ static char *http2env(pool *a, char *w)
     return res;
 }
 
-API_EXPORT(char **) ap_create_environment(pool *p, table *t)
+API_EXPORT(char **) ap_create_environment(ap_context_t *p, ap_table_t *t)
 {
-    array_header *env_arr = ap_table_elts(t);
-    table_entry *elts = (table_entry *) env_arr->elts;
+    ap_array_header_t *env_arr = ap_table_elts(t);
+    ap_table_entry_t *elts = (ap_table_entry_t *) env_arr->elts;
     char **env = (char **) ap_palloc(p, (env_arr->nelts + 2) * sizeof(char *));
     int i, j;
     char *tz;
@@ -194,7 +194,7 @@ API_EXPORT(char **) ap_create_environment(pool *p, table *t)
 
 API_EXPORT(void) ap_add_common_vars(request_rec *r)
 {
-    table *e;
+    ap_table_t *e;
     server_rec *s = r->server;
     conn_rec *c = r->connection;
     const char *rem_logname;
@@ -203,11 +203,11 @@ API_EXPORT(void) ap_add_common_vars(request_rec *r)
     char *env_temp;
 #endif
     const char *host;
-    array_header *hdrs_arr = ap_table_elts(r->headers_in);
-    table_entry *hdrs = (table_entry *) hdrs_arr->elts;
+    ap_array_header_t *hdrs_arr = ap_table_elts(r->headers_in);
+    ap_table_entry_t *hdrs = (ap_table_entry_t *) hdrs_arr->elts;
     int i;
 
-    /* use a temporary table which we'll overlap onto
+    /* use a temporary ap_table_t which we'll overlap onto
      * r->subprocess_env later
      */
     e = ap_make_table(r->pool, 25 + hdrs_arr->nelts);
@@ -332,7 +332,7 @@ API_EXPORT(int) ap_find_path_info(const char *uri, const char *path_info)
 }
 
 /* Obtain the Request-URI from the original request-line, returning
- * a new string from the request pool containing the URI or "".
+ * a new string from the request ap_context_t containing the URI or "".
  */
 static char *original_uri(request_rec *r)
 {
@@ -361,7 +361,7 @@ static char *original_uri(request_rec *r)
 
 API_EXPORT(void) ap_add_cgi_vars(request_rec *r)
 {
-    table *e = r->subprocess_env;
+    ap_table_t *e = r->subprocess_env;
 
     ap_table_setn(e, "GATEWAY_INTERFACE", "CGI/1.1");
     ap_table_setn(e, "SERVER_PROTOCOL", r->protocol);
@@ -436,8 +436,8 @@ API_EXPORT(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
     char *w, *l;
     int p;
     int cgi_status = HTTP_OK;
-    table *merge;
-    table *cookie_table;
+    ap_table_t *merge;
+    ap_table_t *cookie_table;
 
     if (buffer) {
 	*buffer = '\0';
@@ -649,7 +649,7 @@ API_EXPORT(void) ap_send_size(size_t size, request_rec *r)
 }
 
 #if defined(OS2) || defined(WIN32)
-static char **create_argv_cmd(pool *p, char *av0, const char *args, char *path)
+static char **create_argv_cmd(ap_context_t *p, char *av0, const char *args, char *path)
 {
     register int x, n;
     char **av;
@@ -684,7 +684,7 @@ static char **create_argv_cmd(pool *p, char *av0, const char *args, char *path)
 /* ZZZ need to look at this in more depth and convert to an AP func so we 
    can get rid of OS specific code.
    */
-API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0,
+API_EXPORT(int) ap_call_exec(request_rec *r, ap_child_info_t *pinfo, char *argv0,
 			     char **env, int shellcmd)
 {
     int pid = 0;
@@ -996,7 +996,7 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0,
     }
 
 #else
-    /* TODO: re-implement suexec */
+    /* TODO: re ap_context_t mplement suexec */
 #if 0
     if (ap_suexec_enabled
 	&& ((r->server->server_uid != ap_user_id)

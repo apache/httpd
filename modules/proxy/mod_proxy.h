@@ -204,13 +204,13 @@ struct cache_conf {
 
 typedef struct {
     struct cache_conf cache;	/* cache configuration */
-    array_header *proxies;
-    array_header *aliases;
-    array_header *raliases;
-    array_header *noproxies;
-    array_header *dirconn;
-    array_header *nocaches;
-    array_header *allowed_connect_ports;
+    ap_array_header_t *proxies;
+    ap_array_header_t *aliases;
+    ap_array_header_t *raliases;
+    ap_array_header_t *noproxies;
+    ap_array_header_t *dirconn;
+    ap_array_header_t *nocaches;
+    ap_array_header_t *allowed_connect_ports;
     char *domain;		/* domain name to use in absence of a domain name in the request */
     int req;			/* true if proxy requests are enabled */
     enum {
@@ -247,7 +247,7 @@ typedef struct {
     unsigned int written;	/* total *content* bytes written to cache */
     float cache_completion;	/* specific to this request */
     char *resp_line;		/* the whole status like (protocol, code + message) */
-    table *hdrs;		/* the HTTP headers of the file */
+    ap_table_t *hdrs;		/* the HTTP headers of the file */
 } cache_req;
 
 /* Additional information passed to the function called by ap_table_do() */
@@ -263,7 +263,7 @@ struct tbl_do_args {
 void ap_proxy_cache_tidy(cache_req *c);
 int ap_proxy_cache_check(request_rec *r, char *url, struct cache_conf *conf,
 		      cache_req **cr);
-int ap_proxy_cache_update(cache_req *c, table *resp_hdrs,
+int ap_proxy_cache_update(cache_req *c, ap_table_t *resp_hdrs,
 		       const int is_HTTP1, int nocache);
 void ap_proxy_garbage_coll(request_rec *r);
 
@@ -288,14 +288,14 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
 
 int ap_proxy_hex2c(const char *x);
 void ap_proxy_c2hex(int ch, char *x);
-char *ap_proxy_canonenc(pool *p, const char *x, int len, enum enctype t,
+char *ap_proxy_canonenc(ap_context_t *p, const char *x, int len, enum enctype t,
 		     int isenc);
-char *ap_proxy_canon_netloc(pool *p, char **const urlp, char **userp,
+char *ap_proxy_canon_netloc(ap_context_t *p, char **const urlp, char **userp,
 			 char **passwordp, char **hostp, int *port);
-const char *ap_proxy_date_canon(pool *p, const char *x);
+const char *ap_proxy_date_canon(ap_context_t *p, const char *x);
 table *ap_proxy_read_headers(request_rec *r, char *buffer, int size, BUFF *f);
 long int ap_proxy_send_fb(BUFF *f, request_rec *r, cache_req *c);
-void ap_proxy_send_headers(request_rec *r, const char *respline, table *hdrs);
+void ap_proxy_send_headers(request_rec *r, const char *respline, ap_table_t *hdrs);
 int ap_proxy_liststr(const char *list, const char *val);
 void ap_proxy_hash(const char *it, char *val, int ndepth, int nlength);
 int ap_proxy_hex2sec(const char *x);
@@ -303,12 +303,12 @@ void ap_proxy_sec2hex(int t, char *y);
 cache_req *ap_proxy_cache_error(cache_req *r);
 int ap_proxyerror(request_rec *r, int statuscode, const char *message);
 const char *ap_proxy_host2addr(const char *host, struct hostent *reqhp);
-int ap_proxy_is_ipaddr(struct dirconn_entry *This, pool *p);
-int ap_proxy_is_domainname(struct dirconn_entry *This, pool *p);
-int ap_proxy_is_hostname(struct dirconn_entry *This, pool *p);
-int ap_proxy_is_word(struct dirconn_entry *This, pool *p);
+int ap_proxy_is_ipaddr(struct dirconn_entry *This, ap_context_t *p);
+int ap_proxy_is_domainname(struct dirconn_entry *This, ap_context_t *p);
+int ap_proxy_is_hostname(struct dirconn_entry *This, ap_context_t *p);
+int ap_proxy_is_word(struct dirconn_entry *This, ap_context_t *p);
 int ap_proxy_doconnect(int sock, struct sockaddr_in *addr, request_rec *r);
-int ap_proxy_garbage_init(server_rec *, pool *);
+int ap_proxy_garbage_init(server_rec *, ap_context_t *);
 /* This function is called by ap_table_do() for all header lines */
 int ap_proxy_send_hdr_line(void *p, const char *key, const char *value);
 unsigned ap_proxy_bputs2(const char *data, BUFF *client, cache_req *cache);

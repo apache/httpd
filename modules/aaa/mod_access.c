@@ -95,13 +95,13 @@ typedef struct {
 
 typedef struct {
     int order[METHODS];
-    array_header *allows;
-    array_header *denys;
+    ap_array_header_t *allows;
+    ap_array_header_t *denys;
 } access_dir_conf;
 
 module MODULE_VAR_EXPORT access_module;
 
-static void *create_access_dir_config(pool *p, char *dummy)
+static void *create_access_dir_config(ap_context_t *p, char *dummy)
 {
     access_dir_conf *conf =
     (access_dir_conf *) ap_pcalloc(p, sizeof(access_dir_conf));
@@ -291,7 +291,7 @@ static int in_domain(const char *domain, const char *what)
 	return 0;
 }
 
-static int find_allowdeny(request_rec *r, array_header *a, int method)
+static int find_allowdeny(request_rec *r, ap_array_header_t *a, int method)
 {
     allowdeny *ap = (allowdeny *) a->elts;
     int mmask = (1 << method);

@@ -70,7 +70,7 @@
  * http://your_server_name/server-status
  *
  * /server-status - Returns page using tables
- * /server-status?notable - Returns page for browsers without table support
+ * /server-status?notable - Returns page for browsers without ap_table_t support
  * /server-status?refresh - Returns page with 1 second refresh
  * /server-status?refresh=6 - Returns page with refresh every 6 seconds
  * /server-status?auto - Returns page with data for automatic parsing
@@ -202,7 +202,7 @@ static void show_time(request_rec *r, time_t tsecs)
 
 /* Main handler for x-httpd-status requests */
 
-/* ID values for command table */
+/* ID values for command ap_table_t */
 
 #define STAT_OPT_END		-1
 #define STAT_OPT_REFRESH	0
@@ -750,7 +750,7 @@ static int status_handler(request_rec *r)
 }
 
 
-static void status_init(server_rec *s, pool *p)
+static void status_init(server_rec *s, ap_context_t *p)
 {
     int i;
     for (i = 0; i < SERVER_NUM_STATUS; i++)
@@ -784,7 +784,7 @@ module MODULE_VAR_EXPORT status_module =
     NULL,			/* dir merger --- default is to override */
     NULL,			/* server config */
     NULL,			/* merge server config */
-    status_module_cmds,		/* command table */
+    status_module_cmds,		/* command ap_table_t */
     status_handlers,		/* handlers */
     NULL,			/* filename translation */
     NULL,			/* check_user_id */
