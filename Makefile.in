@@ -57,7 +57,7 @@ install-conf:
 						echo "<IfDefine SSL>"; \
 					fi; \
 					if test $$j != "^EOL^"; then \
-						echo "LoadModule $${j}_module modules/mod_$${j}.so"; \
+						echo "LoadModule $${j}_module $(rel_libexecdir)/mod_$${j}.so"; \
 					fi; \
 					if test "x$$j" = "xssl"; then \
 						echo "</IfDefine>"; \
