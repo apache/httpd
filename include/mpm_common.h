@@ -76,7 +76,7 @@
 #include <netinet/tcp.h>    /* for TCP_NODELAY */
 #endif
 
-#include "mpm.h" /* for AP_MPM_NEEDS_RECLAIM_CHILD_PROCESSES setting */
+#include "mpm.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -112,7 +112,7 @@ extern "C" {
  *  MPM_NOTE_CHILD_KILLED -- Note the child died in the scoreboard
  * </pre>
  */
-#if AP_MPM_NEEDS_RECLAIM_CHILD_PROCESSES
+#ifdef AP_MPM_WANT_RECLAIM_CHILD_PROCESSES
 void ap_reclaim_child_processes(int terminate);
 #endif
 

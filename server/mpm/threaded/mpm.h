@@ -65,6 +65,7 @@
 
 #define MPM_NAME "Threaded"
 
+#define AP_MPM_WANT_RECLAIM_CHILD_PROCESSES
 #define AP_MPM_WANT_WAIT_OR_TIMEOUT
 #define AP_MPM_WANT_PROCESS_CHILD_STATUS
 #define AP_MPM_WANT_SET_PIDFILE
@@ -74,7 +75,6 @@
 #define AP_MPM_WANT_SET_COREDUMPDIR
 #define AP_MPM_WANT_SET_ACCEPT_LOCK_MECH
 
-#define AP_MPM_NEEDS_RECLAIM_CHILD_PROCESSES 1
 #define MPM_SYNC_CHILD_TABLE() (ap_sync_scoreboard_image())
 #define MPM_CHILD_PID(i) (ap_scoreboard_image->parent[i].pid)
 #define MPM_NOTE_CHILD_KILLED(i) (MPM_CHILD_PID(i) = 0)
