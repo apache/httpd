@@ -1,5 +1,6 @@
 #include <windows.h>
 #include <assert.h>
+#include <sys/stat.h>
 
 #include "httpd.h"
 
@@ -60,4 +61,28 @@ API_EXPORT(char *) os_canonical_filename(pool *pPool,const char *szFile)
     sub_canonical_filename(buf,szFile);
     strlwr(buf);
     return pstrdup(pPool,buf);
+}
+
+/*
+Win95 doesn't like trailing /s. NT and Unix don't mind. This works around
+the problem
+*/
+
+#undef stat
+API_EXPORT(int) os_stat(const char *szPath,struct stat *pStat)
+{
+    int n;
+
+    n=strlen(szPath);
+    if(szPath[n-1] == '\\' || szPath[n-1] == '/')
+	{
+        char buf[_MAX_PATH];
+
+        ap_assert(n < _MAX_PATH);
+	strcpy(buf,szPath);
+	buf[n-1]='\0';
+
+        return stat(buf,pStat);
+	}
+    return stat(szPath,pStat);
 }

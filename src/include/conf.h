@@ -56,6 +56,10 @@
  */
 
 
+/* Have to include sys/stat.h before ../os/win32/os.h so we can override
+stat() properly */
+#include <sys/stat.h>
+
 #ifdef WIN32
 #include "../os/win32/os.h"
 #else
@@ -713,7 +717,6 @@ API_EXPORT(int) ap_vsnprintf(char *buf, size_t len, const char *format,
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/stat.h>
 #include <ctype.h>
 #if !defined(MPE) && !defined(WIN32)
 #include <sys/file.h>

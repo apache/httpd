@@ -80,3 +80,5 @@ __inline int os_is_path_absolute(char *file)
   return file && (file[0] == '/' || file[1] == ':');
 }
 
+#define stat(f,ps)  os_stat(f,ps)
+API_EXPORT(int) os_stat(const char *szPath,struct stat *pStat);
