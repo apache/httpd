@@ -355,9 +355,9 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
 
 static const command_rec so_cmds[] = {
     { "LoadModule", load_module, NULL, RSRC_CONF, TAKE2,
-      "a module name, and the name of a shared object file to load it from"},
+      "a module name and the name of a shared object file to load it from"},
     { "LoadFile", load_file, NULL, RSRC_CONF, ITERATE,
-      "share object files or libraries to link into the server at runtime"},
+      "shared object file or library to load into the server at runtime"},
     { NULL }
 };
 
