@@ -458,6 +458,7 @@ table#legend table th {
     vertical-align: middle;
     padding: 0.1ex 0.2em;
     line-height: 1em;
+    white-space: nowrap;
 }
 
 /* related modules & dir. */
