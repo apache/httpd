@@ -30,7 +30,7 @@ httpd:  subdirs modules.o
 	rm -f buildmark.c
 	echo 'const char SERVER_BUILT[] = "'`date`'";' > buildmark.c
 	$(CC) -c $(CFLAGS) buildmark.c
-	$(CC) $(LDFLAGS)  -o httpd buildmark.o $(OBJS) $(REGLIB) $(LIBS)
+	$(CC) $(CFLAGS) $(LDFLAGS)  -o httpd buildmark.o $(OBJS) $(REGLIB) $(LIBS)
 
 subdirs:
 	for i in $(SUBDIRS); do \
