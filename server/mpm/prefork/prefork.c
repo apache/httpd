@@ -81,7 +81,6 @@
 /* TODO: this is a cobbled together prefork MPM example... it should mostly
  * TODO: behave like apache-1.3... here's a short list of things I think
  * TODO: need cleaning up still:
- * TODO: - use ralf's mm stuff for the shared mem and mutexes
  * TODO: - clean up scoreboard stuff when we figure out how to do it in 2.0
  */
 
@@ -127,6 +126,7 @@ static int ap_daemons_max_free=0;
 static int ap_daemons_limit=0;
 static time_t ap_restart_time=0;
 static int ap_extended_status = 0;
+static int maintain_connection_status = 1;
 
 /*
  * The max child slot ever assigned, preserved across restarts.  Necessary
@@ -184,6 +184,7 @@ char tpf_server_name[INETD_SERVNAME_LENGTH+1];
 #endif /* TPF */
 
 static scoreboard *ap_scoreboard_image = NULL;
+static new_scoreboard *ap_new_scoreboard_image = NULL;
 
 #ifdef GPROF
 /* 
@@ -922,13 +923,14 @@ static void setup_shared_mem(ap_context_t *p)
     const char *fname;
 
     fname = ap_server_root_relative(p, ap_scoreboard_fname);
-    if (ap_shm_init(&scoreboard_shm, SCOREBOARD_SIZE + 40, fname, p) != APR_SUCCESS) {
+    if (ap_shm_init(&scoreboard_shm, SCOREBOARD_SIZE + NEW_SCOREBOARD_SIZE + 40, fname, p) != APR_SUCCESS) {
 	ap_snprintf(buf, sizeof(buf), "%s: could not open(create) scoreboard",
 		    ap_server_argv0);
 	perror(buf);
 	exit(APEXIT_INIT);
     }
     ap_scoreboard_image = ap_shm_malloc(scoreboard_shm, SCOREBOARD_SIZE); 
+    ap_new_scoreboard_image = ap_shm_malloc(scoreboard_shm, NEW_SCOREBOARD_SIZE); 
     if (ap_scoreboard_image == NULL) {
 	ap_snprintf(buf, sizeof(buf), "%s: cannot allocate scoreboard",
 		    ap_server_argv0);
@@ -2156,6 +2158,22 @@ static int setup_listeners(server_rec *s)
     return 0;
 }
 
+/* Useful to erase the status of children that might be from previous
+ * generations */
+static void ap_prefork_force_reset_connection_status(long conn_id)
+{
+    int i;
+
+    for (i = 0; i < STATUSES_PER_CONNECTION; i++) {
+        ap_new_scoreboard_image->table[conn_id][i].key[0] = '\0';
+    }                                                                           }
+
+void ap_reset_connection_status(long conn_id)
+{
+    if (maintain_connection_status) {
+        ap_prefork_force_reset_connection_status(conn_id);
+    }
+}
 
 /*****************************************************************
  * Executive routines.
@@ -2236,6 +2254,7 @@ int ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec *s)
 	    ap_sync_scoreboard_image();
 	    child_slot = find_child_by_pid(pid);
 	    if (child_slot >= 0) {
+                ap_prefork_force_reset_connection_status(child_slot);
 		(void) ap_update_child_status(child_slot, SERVER_DEAD,
 					    (request_rec *) NULL);
 		if (remaining_children_to_start
@@ -2551,22 +2570,128 @@ static const char *set_coredumpdir (cmd_parms *cmd, void *dummy, char *arg)
 }
 
 /* Stub functions until this MPM supports the connection status API */
-
-API_EXPORT(void) ap_update_connection_status(long conn_id, const char *key, \
-                                             const char *value)
+/* Don't mess with the string you get back from this function */
+const char *ap_get_connection_status(long conn_id, const char *key)
 {
-    /* NOP */
+    int i = 0;
+    status_table_entry *ss;
+
+    if (!maintain_connection_status) return "";
+    while (i < STATUSES_PER_CONNECTION) {
+        ss = &(ap_new_scoreboard_image->table[conn_id][i]);
+        if (ss->key[0] == '\0') {
+            break;
+        }
+        if (0 == strcmp(ss->key, key)) {
+            return ss->value;
+        }
+    }
+
+    return NULL;
+}
+
+ap_array_header_t *ap_get_connections(ap_context_t *p)
+{
+    int i;
+    ap_array_header_t *connection_list;
+    long *array_slot;
+
+    connection_list = ap_make_array(p, 0, sizeof(long));
+    /* We assume that there is a connection iff it has an entry in the status
+     * table. Connections without any status sound problematic to me, so this
+     * is probably for the best. - manoj */
+    for (i = 0; i < max_daemons_limit; i++) {
+         if (ap_new_scoreboard_image->table[i][0].key[0] != '\0') {
+            array_slot = ap_push_array(connection_list);
+            *array_slot = i;
+        }
+    }
+    return connection_list;
+}
+
+ap_array_header_t *ap_get_connection_keys(ap_context_t *p, long conn_id)
+{
+    int i = 0;
+    status_table_entry *ss;
+    ap_array_header_t *key_list;
+    char **array_slot;
+
+    key_list = ap_make_array(p, 0, KEY_LENGTH * sizeof(char));
+    while (i < STATUSES_PER_CONNECTION) {
+        ss = &(ap_new_scoreboard_image->table[conn_id][i]);
+        if (ss->key[0] == '\0') {
+            break;
+        }
+        array_slot = ap_push_array(key_list);
+        *array_slot = ap_pstrdup(p, ss->key);
+        i++;
+    }
+    return key_list;
+}
+
+/* Note: no effort is made here to prevent multiple threads from messing with
+ * a single connection at the same time. ap_update_connection_status should
+ * only be called by the thread that owns the connection */
+
+void ap_update_connection_status(long conn_id, const char *key,
+                                 const char *value)
+{
+    int i = 0;
+    status_table_entry *ss;
+
+    if (!maintain_connection_status) return;
+    while (i < STATUSES_PER_CONNECTION) {
+        ss = &(ap_new_scoreboard_image->table[conn_id][i]);
+        if (ss->key[0] == '\0') {
+            break;
+        }
+        if (0 == strcmp(ss->key, key)) {
+            ap_cpystrn(ss->value, value, VALUE_LENGTH);
+            return;
+        }
+        i++;
+    }
+    /* Not found. Add an entry for this value */
+    if (i >= STATUSES_PER_CONNECTION) {
+        /* No room. Oh well, not much anyone can do about it. */
+        return;
+    }
+    ap_cpystrn(ss->key, key, KEY_LENGTH);
+    ap_cpystrn(ss->value, value, VALUE_LENGTH);
+    return;
 }
 
 ap_array_header_t *ap_get_status_table(ap_context_t *p)
 {
-    /* NOP */
-    return NULL;
-}
+    int i, j;
+    ap_array_header_t *server_status;
+    ap_status_table_row_t *array_slot;
+    status_table_entry *ss;
 
-API_EXPORT(void) ap_reset_connection_status(long conn_id)
-{
-    /* NOP */
+    server_status = ap_make_array(p, 0, sizeof(ap_status_table_row_t));
+
+    /* Go ahead and return what's in the connection status table even if we
+     * aren't maintaining it. We can at least look at what children from
+     * previous generations are up to. */
+
+    for (i = 0; i < max_daemons_limit; i++) {
+        if (ap_new_scoreboard_image->table[i][0].key[0] == '\0')
+            continue;
+        array_slot = ap_push_array(server_status);
+        array_slot->data = ap_make_table(p, 0);
+        array_slot->conn_id = i;
+
+        for (j = 0; j < STATUSES_PER_CONNECTION; j++) {
+            ss = &(ap_new_scoreboard_image->table[i][j]);
+            if (ss->key[0] != '\0') {
+                ap_table_add(array_slot->data, ss->key, ss->value);
+            }
+            else {
+                break;
+            }
+        }
+    }
+    return server_status;
 }
 
 static const command_rec prefork_cmds[] = {

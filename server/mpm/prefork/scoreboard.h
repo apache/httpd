@@ -190,7 +190,21 @@ typedef struct {
     global_score global;
 } scoreboard;
 
+#define KEY_LENGTH 16
+#define VALUE_LENGTH 64
+typedef struct {
+    char key[KEY_LENGTH];
+    char value[VALUE_LENGTH];                                                   } status_table_entry;
+
+#define STATUSES_PER_CONNECTION 10
+
+typedef struct {
+    status_table_entry
+        table[HARD_SERVER_LIMIT][STATUSES_PER_CONNECTION];
+} new_scoreboard;
+
 #define SCOREBOARD_SIZE		sizeof(scoreboard)
+#define NEW_SCOREBOARD_SIZE		sizeof(new_scoreboard)
 #ifdef TPF
 #define SCOREBOARD_NAME		"SCOREBRD"
 #define SCOREBOARD_FRAMES		SCOREBOARD_SIZE/4095 + 1
