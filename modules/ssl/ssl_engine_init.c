@@ -871,16 +871,25 @@ STACK_OF(X509_NAME) *ssl_init_FindCAList(server_rec *s, apr_pool_t *pp, const ch
     skCAList = sk_X509_NAME_new(ssl_init_FindCAList_X509NameCmp);
 
     /*
+     * note that SSL_load_client_CA_file() checks for duplicates,
+     * but since we call it multiple times when reading a directory
+     * we must also check for duplicates ourselves.
+     */
+
+    /*
      * Process CA certificate bundle file
      */
     if (cpCAfile != NULL) {
         sk = (STACK_OF(X509_NAME) *)SSL_load_client_CA_file(cpCAfile);
         for(n = 0; sk != NULL && n < sk_X509_NAME_num(sk); n++) {
+            X509_NAME *name = sk_X509_NAME_value(sk, n);
             ssl_log(s, SSL_LOG_TRACE,
                     "CA certificate: %s",
-                    X509_NAME_oneline(sk_X509_NAME_value(sk, n), NULL, 0));
-            if (sk_X509_NAME_find(skCAList, sk_X509_NAME_value(sk, n)) < 0)
-                sk_X509_NAME_push(skCAList, sk_X509_NAME_value(sk, n));
+                    X509_NAME_oneline(name, NULL, 0));
+            if (sk_X509_NAME_find(skCAList, name) < 0)
+                sk_X509_NAME_push(skCAList, name); /* this will be freed when skCAList is */
+            else
+                X509_NAME_free(name);
         }
         sk_X509_NAME_free(sk);
     }
@@ -894,11 +903,14 @@ STACK_OF(X509_NAME) *ssl_init_FindCAList(server_rec *s, apr_pool_t *pp, const ch
             cp = apr_pstrcat(p, cpCApath, "/", direntry.name, NULL);
             sk = (STACK_OF(X509_NAME) *)SSL_load_client_CA_file(cp);
             for(n = 0; sk != NULL && n < sk_X509_NAME_num(sk); n++) {
+                X509_NAME *name = sk_X509_NAME_value(sk, n);
                 ssl_log(s, SSL_LOG_TRACE,
                         "CA certificate: %s",
-                        X509_NAME_oneline(sk_X509_NAME_value(sk, n), NULL, 0));
-                if (sk_X509_NAME_find(skCAList, sk_X509_NAME_value(sk, n)) < 0)
-                    sk_X509_NAME_push(skCAList, sk_X509_NAME_value(sk, n));
+                        X509_NAME_oneline(name, NULL, 0));
+                if (sk_X509_NAME_find(skCAList, name) < 0)
+                    sk_X509_NAME_push(skCAList, name); /* this will be freed when skCAList is */
+                else
+                    X509_NAME_free(name);
             }
             sk_X509_NAME_free(sk);
         }
