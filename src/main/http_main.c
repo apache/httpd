@@ -6101,7 +6101,7 @@ int main(int argc, char *argv[], char *envp[])
     /* 
      * create path to SHARED_CORE_EXECUTABLE_PROGRAM
      */
-    sprintf(prog, "%s/%s", llp_dir, SHARED_CORE_EXECUTABLE_PROGRAM);
+    ap_snprintf(prog, sizeof(prog), "%s/%s", llp_dir, SHARED_CORE_EXECUTABLE_PROGRAM);
 
     /* 
      * adjust process environment therewith the Unix loader 
@@ -6127,9 +6127,9 @@ int main(int argc, char *argv[], char *envp[])
 	envp[i] = NULL;
     }
     if (llp_existing != NULL)
-	 sprintf(llp_buf, "%s=%s:%s", VARNAME, llp_dir, llp_existing);
+	 ap_snprintf(llp_buf, sizeof(llp_buf), "%s=%s:%s", VARNAME, llp_dir, llp_existing);
     else
-	 sprintf(llp_buf, "%s=%s", VARNAME, llp_dir);
+	 ap_snprintf(llp_buf, sizeof(llp_buf), "%s=%s", VARNAME, llp_dir);
     *llp_slot = strdup(llp_buf);
 
     /* 

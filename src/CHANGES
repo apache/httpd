@@ -1,5 +1,9 @@
 Changes with Apache 1.3.5
 
+  *) Link the shared core bootstrap program (``Rule SHARED_CORE=yes'') also
+     against libap.a and use its ap_snprintf() instead of sprintf() to avoid
+     possible buffer overflows. [Ralf S. Engelschall]
+
   *) Remove no longer used non-API function ap_single_module_init().
      [Ralf S. Engelschall]
 
