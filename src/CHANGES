@@ -1,5 +1,8 @@
 Changes with Apache 1.3.10
 
+  *) The end_chunk() code forgot to convert the trailing CRLF pair
+     from EBCDIC to ASCII. Fixed. [Martin Kraemer]
+
   *) An Action set for a Location that didn't correspond to a file didn't
      work. Fixed.
      [Manoj Kasichainula, Ben Laurie]

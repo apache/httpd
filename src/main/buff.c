@@ -542,14 +542,16 @@ static void end_chunk(BUFF *fb)
     }
     *strp++ = CR;
     *strp = LF;
-#ifdef CHARSET_EBCDIC
-    /* Chunks are an HTTP/1.1 Protocol feature. They must ALWAYS be in ASCII */
-    ebcdic2ascii(&fb->outbase[fb->outchunk], &fb->outbase[fb->outchunk], CHUNK_HEADER_SIZE);
-#endif /*CHARSET_EBCDIC*/
 
     /* tack on the trailing CRLF, we've reserved room for this */
     fb->outbase[fb->outcnt++] = CR;
     fb->outbase[fb->outcnt++] = LF;
+
+#ifdef CHARSET_EBCDIC
+    /* Chunks are an HTTP/1.1 Protocol feature. They must ALWAYS be in ASCII */
+    ebcdic2ascii(&fb->outbase[fb->outchunk], &fb->outbase[fb->outchunk], CHUNK_HEADER_SIZE);
+    ebcdic2ascii(&fb->outbase[fb->outcnt-2], &fb->outbase[fb->outcnt-2], 2);
+#endif /*CHARSET_EBCDIC*/
 
     fb->outchunk = -1;
 }
