@@ -61,8 +61,8 @@
                                   trying to perfect the art of
                                   never finishing something.''
                                              -- Rob Hartill         */
-#ifndef MOD_SSL_H
-#define MOD_SSL_H 1
+#ifndef __MOD_SSL_H__
+#define __MOD_SSL_H__
 
 /* 
  * Optionally enable the experimental stuff, but allow the user to
@@ -702,4 +702,4 @@ void         ssl_util_thread_setup(void);
 
 #endif /* XXX */
 
-#endif /* MOD_SSL_H */
+#endif /* __MOD_SSL_H__ */

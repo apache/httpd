@@ -80,8 +80,8 @@
  * without express or implied warranty.
  */
 
-#ifndef SSL_UTIL_TABLE_H
-#define SSL_UTIL_TABLE_H
+#ifndef __SSL_UTIL_TABLE_H__
+#define __SSL_UTIL_TABLE_H__
 
 #if 0 /* XXX */
 
@@ -188,4 +188,4 @@ extern int             table_entry_info(table_t *table_p, table_entry_t *entry_p
 
 #endif /* XXX */
 
-#endif /* ! SSL_UTIL_TABLE_H */
+#endif /* __SSL_UTIL_TABLE_H__ */

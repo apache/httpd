@@ -58,8 +58,8 @@
  */
                              /* ``May all your PUSHes be POPed.'' */
 
-#ifndef SSL_EXPR_H
-#define SSL_EXPR_H
+#ifndef __SSL_EXPR_H__
+#define __SSL_EXPR_H__
 
 #ifndef FALSE
 #define FALSE 0
@@ -133,4 +133,4 @@ extern char     *ssl_expr_get_error(void);
 extern ssl_expr *ssl_expr_make(ssl_expr_node_op, void *, void *);
 extern BOOL      ssl_expr_eval(request_rec *, ssl_expr *);
 
-#endif /* SSL_EXPR_H */
+#endif /* __SSL_EXPR_H__ */
