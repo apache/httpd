@@ -358,7 +358,7 @@ if ($opt_q) {
     ##  QUERY INFORMATION 
     ##
     my $result = get_vars(@args);
-    print "$result\n";
+    print "$result";
 }
 
 if ($opt_c) {
