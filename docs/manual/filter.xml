@@ -24,8 +24,8 @@
         <directive module="mod_mime">AddOutputFilter</directive>
         <directive module="mod_ext_filter">ExtFilterDefine</directive>
         <directive module="mod_ext_filter">ExtFilterOptions</directive>
-        <directive module="core.html">SetInputFilter</directive>
-        <directive module="core.html">SetOutputFilter</directive>
+        <directive module="core">SetInputFilter</directive>
+        <directive module="core">SetOutputFilter</directive>
       </directivelist>
     </related>
     
@@ -40,10 +40,10 @@
     as chunking and byte-range request handling. In addition, modules
     can provide filters that are selectable using run-time
     configuration directives. The set of filters that apply to data
-    can be manipulated with the <directive module="core.html"
-    >SetInputFilter</directive>, <directive module="core.html"
+    can be manipulated with the <directive module="core"
+    >SetInputFilter</directive>, <directive module="core"
     >SetOutputFilter</directive>, <directive module="mod_mime"
-    >AddInputFilter</directive>, and <directive module="mod_mime"
+    >AddInputFilter</directive> and <directive module="mod_mime"
     >AddOutputFilter</directive> directives.</p>
 
     <p>The following user-selectable filters are currently provided
@@ -61,7 +61,3 @@
     for external programs to be defined as filters.</p>
   </section>
 </manualpage>
-
-
-
-
