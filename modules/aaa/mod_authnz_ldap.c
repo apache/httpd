@@ -89,6 +89,14 @@ struct mod_auth_ldap_groupattr_entry_t {
 
 module AP_MODULE_DECLARE_DATA authnz_ldap_module;
 
+static APR_OPTIONAL_FN_TYPE(uldap_connection_close) *util_ldap_connection_close;
+static APR_OPTIONAL_FN_TYPE(uldap_connection_find) *util_ldap_connection_find;
+static APR_OPTIONAL_FN_TYPE(uldap_cache_comparedn) *util_ldap_cache_comparedn;
+static APR_OPTIONAL_FN_TYPE(uldap_cache_compare) *util_ldap_cache_compare;
+static APR_OPTIONAL_FN_TYPE(uldap_cache_checkuserid) *util_ldap_cache_checkuserid;
+static APR_OPTIONAL_FN_TYPE(uldap_cache_getuserdn) *util_ldap_cache_getuserdn;
+static APR_OPTIONAL_FN_TYPE(uldap_ssl_supported) *util_ldap_ssl_supported;
+
 static apr_hash_t *charset_conversions = NULL;
 static char *to_charset = NULL;           /* UTF-8 identifier derived from the charset.conv file */
 
@@ -1136,6 +1144,17 @@ static const authn_provider authn_ldap_provider =
     &authn_ldap_check_password,
 };
 
+static void ImportULDAPOptFn(void)
+{
+    util_ldap_connection_close  = APR_RETRIEVE_OPTIONAL_FN(uldap_connection_close);
+    util_ldap_connection_find   = APR_RETRIEVE_OPTIONAL_FN(uldap_connection_find);
+    util_ldap_cache_comparedn   = APR_RETRIEVE_OPTIONAL_FN(uldap_cache_comparedn);
+    util_ldap_cache_compare     = APR_RETRIEVE_OPTIONAL_FN(uldap_cache_compare);
+    util_ldap_cache_checkuserid = APR_RETRIEVE_OPTIONAL_FN(uldap_cache_checkuserid);
+    util_ldap_cache_getuserdn   = APR_RETRIEVE_OPTIONAL_FN(uldap_cache_getuserdn);
+    util_ldap_ssl_supported     = APR_RETRIEVE_OPTIONAL_FN(uldap_ssl_supported);
+}
+
 static void register_hooks(apr_pool_t *p)
 {
     static const char * const aszPost[]={ "mod_authz_user.c", NULL };
@@ -1145,6 +1164,7 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_post_config(authnz_ldap_post_config,NULL,NULL,APR_HOOK_MIDDLE);
     ap_hook_auth_checker(authz_ldap_check_user_access, NULL, aszPost, APR_HOOK_MIDDLE);
 
+    ap_hook_optional_fn_retrieve(ImportULDAPOptFn,NULL,NULL,APR_HOOK_MIDDLE);
 }
 
 module AP_MODULE_DECLARE_DATA authnz_ldap_module =
