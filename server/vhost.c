@@ -409,16 +409,14 @@ static ipaddr_chain *find_default_server(unsigned port)
     return NULL;
 }
 
-
-static void dump_vhost_config(APRFile fd)
+static void dump_vhost_config(ap_file_t *f)
 {
     int i;
     ipaddr_chain *ic;
     name_chain *nc;
     char buf[MAX_STRING_LEN];
-    FILE * f = fdopen(fd, "w");
 
-    fprintf(f, "VirtualHost configuration:\n");
+    ap_fprintf(f, "VirtualHost configuration:\n");
     for (i = 0; i < IPHASH_TABLE_SIZE; ++i) {
 	for (ic = iphash_table[i]; ic; ic = ic->next) {
 	    if (ic->sar->host_port == 0) {
@@ -429,23 +427,23 @@ static void dump_vhost_config(APRFile fd)
 		    ic->sar->host_port);
 	    }
 	    if (ic->names == NULL) {
-		fprintf(f, "%-22s %s (%s:%u)\n", buf,
+		ap_fprintf(f, "%-22s %s (%s:%u)\n", buf,
 		    ic->server->server_hostname, ic->server->defn_name,
 		    ic->server->defn_line_number);
 		continue;
 	    }
-	    fprintf(f, "%-22s is a NameVirtualHost\n"
+	    ap_fprintf(f, "%-22s is a NameVirtualHost\n"
 	               "%22s default server %s (%s:%u)\n",
 		       buf, "", ic->server->server_hostname,
 		       ic->server->defn_name, ic->server->defn_line_number);
 	    for (nc = ic->names; nc; nc = nc->next) {
 		if (nc->sar->host_port) {
-		    fprintf(f, "%22s port %u ", "", nc->sar->host_port);
+		    ap_fprintf(f, "%22s port %u ", "", nc->sar->host_port);
 		}
 		else {
-		    fprintf(f, "%22s port * ", "");
+		    ap_fprintf(f, "%22s port * ", "");
 		}
-		fprintf(f, "namevhost %s (%s:%u)\n",
+		ap_fprintf(f, "namevhost %s (%s:%u)\n",
 			nc->server->server_hostname,
 			nc->server->defn_name,
 			nc->server->defn_line_number);
@@ -453,15 +451,15 @@ static void dump_vhost_config(APRFile fd)
 	}
     }
     if (default_list) {
-	fprintf(f, "_default_ servers:\n");
+	ap_fprintf(f, "_default_ servers:\n");
 	for (ic = default_list; ic; ic = ic->next) {
 	    if (ic->sar->host_port == 0) {
-		fprintf(f, "port * ");
+		ap_fprintf(f, "port * ");
 	    }
 	    else {
-		fprintf(f, "port %u ", ic->sar->host_port);
+		ap_fprintf(f, "port %u ", ic->sar->host_port);
 	    }
-	    fprintf(f, "server %s (%s:%u)\n",
+	    ap_fprintf(f, "server %s (%s:%u)\n",
 		ic->server->server_hostname, ic->server->defn_name,
 		ic->server->defn_line_number);
 	}
@@ -649,7 +647,11 @@ void ap_fini_vhost_config(ap_context_t *p, server_rec *main_s)
     dump_iphash_statistics(main_s);
 #endif
     if (getenv("DUMP_VHOSTS")) {
-	dump_vhost_config(STDERR_FILENO);
+        int errfileno = STDERR_FILENO;
+        ap_file_t *thefile = NULL;
+
+        ap_put_os_file(&thefile, &errfileno, p);
+	dump_vhost_config(thefile);
     }
 }
 

@@ -73,7 +73,6 @@ extern "C" {
 #include "apr_lib.h"
 #include "buff.h"
 #include "ap.h"
-#include "apr.h"
 
 /* ----------------------------- config dir ------------------------------ */
 
@@ -1081,6 +1080,8 @@ extern API_VAR_EXPORT time_t ap_restart_time;
 #endif
 /* #define HIGH_SLACK_LINE      255 */
 
+#if 0
+/*  Moved to APR now.*/
 /*
  * The ap_slack() function takes a fd, and tries to move it above the indicated
  * line.  It returns an fd which may or may not have moved above the line, and
@@ -1093,6 +1094,7 @@ extern API_VAR_EXPORT time_t ap_restart_time;
 APRFile ap_slack(APRFile fd, int line);
 #define AP_SLACK_LOW	1
 #define AP_SLACK_HIGH	2
+#endif
 #endif
 
 API_EXPORT(char *) ap_escape_quotes(ap_context_t *p, const char *instr);
