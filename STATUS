@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/04/19 11:34:33 $]
+Last modified at [$Date: 2003/04/22 19:00:00 $]
 
 Release:
 
@@ -142,12 +142,6 @@ PATCHES TO PORT FROM 2.1
       modules/mappers/mod_alias.c: r1.49
       +1: nd, trawick (this is simple...  look how query string is
           appended in the other situation)
-
-    * mod_autoindex emits and accepts modern query string parameter
-      delimiters (;). Thus column headers no longer contain unescaped
-      ampersands. PR 10880 
-      modules/generators/mod_autoindex.c: r1.117
-      +1: nd, wrowe, trawick
 
     * Unescape the supplied wildcard pattern in mod_autoindex. Otherwise
       the pattern will not always match as desired. PR 12596.

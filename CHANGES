@@ -1,5 +1,9 @@
 Changes with Apache 2.0.46
 
+  *) mod_autoindex now emits and accepts modern query string parameter
+     delimiters (;). Thus column headers no longer contain unescaped
+     ampersands. PR 10880  [André Malo]
+
   *) Enable ap_sock_disable_nagle for Windows. This along with the 
      addition of APR_TCP_NODELAY_INHERITED to apr.hw will cause Nagle 
      to be disabled for Windows. [Allan Edwards]

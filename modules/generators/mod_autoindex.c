@@ -1458,24 +1458,20 @@ static void emit_link(request_rec *r, const char *anchor, char column,
                       char curkey, char curdirection,
                       const char *colargs, int nosort)
 {
-    char qvalue[13];
-    int reverse;
-
     if (!nosort) {
-        reverse = ((curkey == column) && (curdirection == D_ASCENDING));
+        char qvalue[9];
+
         qvalue[0] = '?';
         qvalue[1] = 'C';
         qvalue[2] = '=';
         qvalue[3] = column;
-        qvalue[4] = '&';
-        qvalue[5] = 'a';
-        qvalue[6] = 'm';
-        qvalue[7] = 'p';
-        qvalue[8] = ';';
-        qvalue[9] = 'O';
-        qvalue[10] = '=';
-        qvalue[11] = reverse ? D_DESCENDING : D_ASCENDING;
-        qvalue[12] = '\0';
+        qvalue[4] = ';';
+        qvalue[5] = 'O';
+        qvalue[6] = '=';
+                    /* reverse? */
+        qvalue[7] = ((curkey == column) && (curdirection == D_ASCENDING))
+                      ? D_DESCENDING : D_ASCENDING;
+        qvalue[8] = '\0';
         ap_rvputs(r, "<a href=\"", qvalue, colargs ? colargs : "",
                      "\">", anchor, "</a>", NULL);
     }
@@ -2011,20 +2007,23 @@ static int index_directory(request_rec *r,
         while (qstring && *qstring) {
             if (qstring[0] == 'C' && qstring[1] == '='
                     && qstring[2] && strchr(K_VALID, qstring[2])
-                    && (qstring[3] == '&' || !qstring[3])) {
+                    && (qstring[3] == '&' || qstring[3] == ';'
+                        || !qstring[3])) {
                 keyid = qstring[2];
                 qstring += qstring[3] ? 4 : 3;
             }
             else if (qstring[0] == 'O' && qstring[1] == '='
                      && ((qstring[2] == D_ASCENDING)
                          || (qstring[2] == D_DESCENDING))
-                     && (qstring[3] == '&' || !qstring[3])) {
+                     && (qstring[3] == '&' || qstring[3] == ';'
+                         || !qstring[3])) {
                 direction = qstring[2];
                 qstring += qstring[3] ? 4 : 3;
             }
             else if (qstring[0] == 'F' && qstring[1] == '='
                      && qstring[2] && strchr("012", qstring[2])
-                     && (qstring[3] == '&' || !qstring[3])) {
+                     && (qstring[3] == '&' || qstring[3] == ';'
+                         || !qstring[3])) {
                 if (qstring[2] == '0') {
                     autoindex_opts &= ~(FANCY_INDEXING | TABLE_INDEXING);
                 }
@@ -2035,26 +2034,32 @@ static int index_directory(request_rec *r,
                 else if (qstring[2] == '2') {
                     autoindex_opts |= FANCY_INDEXING | TABLE_INDEXING;
                 }
-                strcpy(fval, "&F= ");
+                strcpy(fval, ";F= ");
                 fval[3] = qstring[2];
                 qstring += qstring[3] ? 4 : 3;
             }
             else if (qstring[0] == 'V' && qstring[1] == '='
                      && (qstring[2] == '0' || qstring[2] == '1')
-                     && (qstring[3] == '&' || !qstring[3])) {
+                     && (qstring[3] == '&' || qstring[3] == ';'
+                         || !qstring[3])) {
                 if (qstring[2] == '0') {
                     autoindex_opts &= ~VERSION_SORT;
                 }
                 else if (qstring[2] == '1') {
                     autoindex_opts |= VERSION_SORT;
                 }
-                strcpy(vval, "&V= ");
+                strcpy(vval, ";V= ");
                 vval[3] = qstring[2];
                 qstring += qstring[3] ? 4 : 3;
             }
             else if (qstring[0] == 'P' && qstring[1] == '=') {
-                const char *eos = ap_strchr_c(qstring, '&');
-                if (eos) {
+                const char *eos = qstring + 2;
+
+                while (*eos && *eos != '&' && *eos != ';') {
+                    ++eos;
+                }
+
+                if (*eos) {
                     pstring = apr_pstrndup(r->pool, qstring + 2,
                                            eos - qstring - 2);
                     qstring = eos + 1;
@@ -2064,7 +2069,7 @@ static int index_directory(request_rec *r,
                     qstring = NULL;
                 }
                 if (*pstring) {
-                    ppre = "&P=";
+                    ppre = ";P=";
                 }
                 else {
                     pstring = NULL;
