@@ -1338,39 +1338,6 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
     return NULL;
 }
 
-static const char *
-    set_sticky_session(cmd_parms *cmd, void *dummy, const char *f, const char *r)
-{
-    server_rec *s = cmd->server;
-    proxy_server_conf *conf =
-    ap_get_module_config(s->module_config, &proxy_module);
-    proxy_balancer *balancer;
-    const char *name, *sticky;
-
-    if (r != NULL && cmd->path == NULL ) {
-        name = f;
-        sticky = r;
-    } else if (r == NULL && cmd->path != NULL) {
-        name = cmd->path;
-        sticky = f;
-    } else {
-        if (r == NULL)
-            return "BalancerStickySession needs a path when not defined in a location";
-        else 
-            return "BalancerStickySession can not have a path when defined in a location";
-    }
-    /* Try to find the balancer */
-    balancer = ap_proxy_get_balancer(cmd->temp_pool, conf, name);
-    if (!balancer)
-        return apr_pstrcat(cmd->temp_pool, "BalancerStickySession: can not find a load balancer '",
-                           name, "'", NULL);
-    if (!strcasecmp(sticky, "nofailover"))
-        balancer->sticky_force = 1;   
-    else
-        balancer->sticky = sticky;
-    return NULL;
-}
-
 static void ap_add_per_proxy_conf(server_rec *s, ap_conf_vector_t *dir_config)
 {
     proxy_server_conf *sconf = ap_get_module_config(s->module_config,
@@ -1513,8 +1480,6 @@ static const command_rec proxy_cmds[] =
      "How to handle bad header line in response: IsError | Ignore | StartBody"),
     AP_INIT_RAW_ARGS("BalancerMember", add_member, NULL, RSRC_CONF|ACCESS_CONF,
      "A balancer name and scheme with list of params"), 
-    AP_INIT_TAKE12("BalancerStickySession", set_sticky_session, NULL, RSRC_CONF|ACCESS_CONF,
-     "A balancer and sticky session name"),
     AP_INIT_TAKE1("ProxyStatus", set_status_opt, NULL, RSRC_CONF,
      "Configure Status: proxy status to one of: on | off | full"),
     {NULL}
