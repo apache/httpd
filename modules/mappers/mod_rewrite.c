@@ -2665,10 +2665,10 @@ static const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, const char *a1,
     }
     else if (strncasecmp(a2, "dbm", 3) == 0) {
         const char *ignored_fname;
-        int bad = 0;
         apr_status_t rv;
 
         newmap->type = MAPTYPE_DBM;
+        fname = NULL;
 
         if (a2[3] == ':') {
             newmap->dbmtype = "default";
@@ -2682,15 +2682,9 @@ static const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, const char *a1,
                                                colon - (a2 + 3) - 1);
                 fname = colon + 1;
             }
-            else {
-                ++bad;
-            }
-        }
-        else {
-            ++bad;
         }
 
-        if (bad) {
+        if (!fname) {
             return apr_pstrcat(cmd->pool, "RewriteMap: bad map:",
                                a2, NULL);
         }
