@@ -1133,6 +1133,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(ap_filter_t *f,
     if (!ctx) { /* first time through */
         f->ctx = ctx = apr_pcalloc(r->pool, sizeof(struct content_length_ctx));
         ctx->compute_len = 1;   /* Assume we will compute the length */
+        ctx->saved = apr_brigade_create(r->pool, f->c->bucket_alloc);
     }
 
     /* Humm, is this check the best it can be?
@@ -1217,12 +1218,8 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(ap_filter_t *f,
         if (split) {
             ctx->compute_len = 0;  /* Ooops, can't compute the length now */
             ctx->curr_len = 0;
-            if (ctx->saved) {
-                APR_BRIGADE_CONCAT(ctx->saved, split);
-                apr_brigade_destroy(split);
-                split = ctx->saved;
-                ctx->saved = NULL;
-            }
+
+            APR_BRIGADE_PREPEND(split, ctx->saved);
 
             if (flush) {
                 rv = ap_fflush(f->next, split);
@@ -1252,12 +1249,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(ap_filter_t *f,
         ap_set_content_length(r, r->bytes_sent);
     }
 
-    if (ctx->saved) {
-        APR_BRIGADE_CONCAT(ctx->saved, b);
-        apr_brigade_destroy(b);
-        b = ctx->saved;
-        ctx->saved = NULL;
-    }
+    APR_BRIGADE_PREPEND(b, ctx->saved);
 
     ctx->curr_len = 0;
     return ap_pass_brigade(f->next, b);
