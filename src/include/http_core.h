@@ -238,9 +238,6 @@ typedef struct {
      */
     unsigned d_is_fnmatch : 1;
 
-    /* takes sense only if use_canonical_name is on */
-    unsigned use_canonical_port : 1;
-
     /* System Resource Control */
 #ifdef RLIMIT_CPU
     struct rlimit *limit_cpu;
