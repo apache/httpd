@@ -45,6 +45,7 @@ BEGIN {
     print "#LoadModule headers_module modules/headers.nlm"
     print "#LoadModule ident_module modules/modident.nlm"
     print "#LoadModule info_module modules/info.nlm"
+    print "#LoadModule log_forensic_module modules/forensic.nlm"
     print "#LoadModule logio_module modules/modlogio.nlm"
     print "#LoadModule mime_magic_module modules/mimemagi.nlm"
     print "#LoadModule proxy_module modules/proxy.nlm"
