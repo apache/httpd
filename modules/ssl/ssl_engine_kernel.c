@@ -563,7 +563,7 @@ int ssl_hook_Access(request_rec *r)
     if (renegotiate && !renegotiate_quick && (r->method_number == M_POST)) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                      "SSL Re-negotiation in conjunction "
-                     "with POST method not supported!\n"
+                     "with POST method not supported! "
                      "hint: try SSLOptions +OptRenegotiate");
 
         return HTTP_METHOD_NOT_ALLOWED;
@@ -1818,7 +1818,7 @@ void ssl_callback_LogTracingState(MODSSL_INFO_CB_ARG_TYPE ssl, int where, int rc
         else if (where & SSL_CB_ALERT) {
             char *str = (where & SSL_CB_READ) ? "read" : "write";
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                         "%s: Alert: %s:%s:%s\n",
+                         "%s: Alert: %s:%s:%s",
                          SSL_LIBRARY_NAME, str,
                          SSL_alert_type_string_long(rc),
                          SSL_alert_desc_string_long(rc));
