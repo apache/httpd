@@ -2709,7 +2709,7 @@ static int handle_multi(request_rec *r)
     avail_recs = (var_rec *) neg->avail_vars->elts;
     for (j = 0; j < neg->avail_vars->nelts; ++j) {
         var_rec *variant = &avail_recs[j];
-        if (variant != best && variant->rr) {
+        if (variant != best && variant->sub_req) {
             ap_destroy_sub_req(variant->sub_req);
         }
     }
