@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/15 06:30:53 $]
+Last modified at [$Date: 2003/05/15 14:03:48 $]
 
 Release:
 
@@ -258,7 +258,7 @@ CURRENT VOTES:
     * Promote mod_cache from experimental to non-experimental
       status (keep issues noted below in EXPERIMENTAL MODULES as
       items to be addressed as a supported module).
-      +1: jim, stoddard
+      +1: jim, stoddard, bnicholes
 
     * APACHE_2_0_BRANCH *has* to work with an official stable version 
       of APR (i.e., 1.0).
