@@ -5841,4 +5841,681 @@ int master_main(int argc, char **argv)
      * Apache process ID. Shutdown is signaled by 'apache -k shutdown'.
      */
     signal_shutdown_event = CreateEvent(sa, TRUE, FALSE, signal_shutdown_name);
-    if (!signal_shutd
+    if (!signal_shutdown_event) {
+	ap_log_error(APLOG_MARK, APLOG_EMERG|APLOG_WIN32ERROR, server_conf,
+		    "master_main: Cannot create shutdown event %s", signal_shutdown_name);
+        CleanNullACL((void *)sa);
+	exit(1);
+    }
+
+    /* Create restart event, apPID_restart, where PID is the parent 
+     * Apache process ID. Restart is signaled by 'apache -k restart'.
+     */
+    signal_restart_event = CreateEvent(sa, TRUE, FALSE, signal_restart_name);
+    if (!signal_restart_event) {
+	CloseHandle(signal_shutdown_event);
+	ap_log_error(APLOG_MARK, APLOG_EMERG|APLOG_WIN32ERROR, server_conf,
+		    "master_main: Cannot create restart event %s", signal_restart_name);
+        CleanNullACL((void *)sa);
+	exit(1);
+    }
+    CleanNullACL((void *)sa);
+
+    /* Create the start mutex, apPID, where PID is the parent Apache process ID.
+     * Ths start mutex is used during a restart to prevent more than one 
+     * child process from entering the accept loop at once.
+     */
+    start_mutex = ap_create_mutex(signal_prefix_string);
+    restart_pending = shutdown_pending = 0;
+
+    do { /* restart-pending */
+	if (!is_graceful) {
+	    ap_restart_time = time(NULL);
+	}
+	ap_clear_pool(pconf);
+	pparent = ap_make_sub_pool(pconf);
+
+	server_conf = ap_read_config(pconf, pparent, ap_server_confname);
+	ap_clear_pool(plog);
+	ap_open_logs(server_conf, plog);
+	ap_set_version();
+	ap_init_modules(pconf, server_conf);
+	version_locked++;
+        service_set_status(SERVICE_START_PENDING);
+        /* Create child processes */
+        while (processes_to_create--) {
+            if (create_process(process_handles, process_kill_events, 
+                               &current_live_processes, &child_num, signal_prefix_string, argc, argv) < 0) {
+                ap_log_error(APLOG_MARK, APLOG_ERR, server_conf,
+                             "master_main: create child process failed. Exiting.");
+                goto die_now;
+            }
+        }
+        service_set_status(SERVICE_RUNNING);
+	restart_pending = shutdown_pending = 0;
+
+        /* Wait for either the shutdown or restart events to be signaled */
+        process_handles[current_live_processes] = signal_shutdown_event;
+        process_handles[current_live_processes+1] = signal_restart_event;
+        rv = WaitForMultipleObjects(current_live_processes+2, (HANDLE *)process_handles, 
+                                    FALSE, INFINITE);
+        if (rv == WAIT_FAILED) {
+            /* Something serious is wrong */
+            ap_log_error(APLOG_MARK,APLOG_CRIT|APLOG_WIN32ERROR, server_conf,
+                         "WaitForMultipeObjects on process handles and apache-signal -- doing shutdown");
+            shutdown_pending = 1;
+            break;
+        }
+        if (rv == WAIT_TIMEOUT) {
+            /* Hey, this cannot happen */
+            ap_log_error(APLOG_MARK, APLOG_ERR, server_conf,
+                         "WaitForMultipeObjects with INFINITE wait exited with WAIT_TIMEOUT");
+            shutdown_pending = 1;
+        }
+
+        cld = rv - WAIT_OBJECT_0;
+        APD4("main process: wait finished, cld=%d handle %d (max=%d)", cld, process_handles[cld], current_live_processes);
+        if (cld == current_live_processes) {
+            /* apPID_shutdown event signalled, we should exit now */
+            shutdown_pending = 1;
+            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, server_conf, 
+                         "master_main: Shutdown event signaled. Shutting the server down.");
+            if (ResetEvent(signal_shutdown_event) == 0) {
+                ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, server_conf,
+                             "ResetEvent(signal_shutdown_event)");
+            }
+	    /* Signal each child processes to die */
+	    for (i = 0; i < current_live_processes; i++) {
+		APD3("master_main: signalling child %d, handle %d to die", i, process_handles[i]);
+		if (SetEvent(process_kill_events[i]) == 0)
+		    ap_log_error(APLOG_MARK,APLOG_ERR|APLOG_WIN32ERROR, server_conf,
+                                 "master_main: SetEvent for child process in slot #%d failed", i);
+	    }
+            break;
+        } else if (cld == current_live_processes+1) {
+            /* apPID_restart event signalled, restart the child process */
+            int children_to_kill = current_live_processes;
+            restart_pending = 1;
+            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, server_conf, 
+                         "master_main: Restart event signaled. Doing a graceful restart.");
+            if (ResetEvent(signal_restart_event) == 0) {
+                ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, server_conf,
+                             "ResetEvent(signal_restart_event) failed.");
+            }
+            /* Signal each child process to die */
+	    for (i = 0; i < children_to_kill; i++) {
+		APD3("master_main: signalling child #%d handle %d to die", i, process_handles[i]);
+		if (SetEvent(process_kill_events[i]) == 0)
+		    ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, server_conf,
+                                 "master_main: SetEvent for child process in slot #%d failed", i);
+                /* Remove the process (and event) from the process table */
+                cleanup_process(process_handles, process_kill_events, i, &current_live_processes);
+	    }
+	    processes_to_create = nchild;
+            ++ap_my_generation;
+            continue;
+        } else {
+            /* A child process must have exited because of MaxRequestPerChild being hit
+             * or a fatal error condition (seg fault, etc.). Remove the dead process 
+             * from the process_handles and process_kill_events table and create a new
+             * child process.
+             */
+            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, server_conf, 
+                         "master_main: Child processed exited (due to MaxRequestsPerChild?). Restarting the child process.");
+	    ap_assert(cld < current_live_processes);
+	    cleanup_process(process_handles, process_kill_events, cld, &current_live_processes);
+	    APD2("main_process: child in slot %d died", rv);
+            processes_to_create = 1;
+            continue;
+	}
+
+    } while (1);
+
+    /* If we dropped out of the loop we definitly want to die completely. We need to
+     * make sure we wait for all the child process to exit first.
+     */
+
+    APD2("*** main process shutdown, processes=%d ***", current_live_processes);
+
+die_now:
+
+    tmstart = time(NULL);
+    while (current_live_processes && ((tmstart+60) > time(NULL))) {
+	service_set_status(SERVICE_STOP_PENDING);
+	rv = WaitForMultipleObjects(current_live_processes, (HANDLE *)process_handles, FALSE, 2000);
+	if (rv == WAIT_TIMEOUT)
+	    continue;
+	ap_assert(rv != WAIT_FAILED);
+	cld = rv - WAIT_OBJECT_0;
+	ap_assert(rv < current_live_processes);
+	APD4("main_process: child in #%d handle %d died, left=%d", 
+	    rv, process_handles[rv], current_live_processes);
+	cleanup_process(process_handles, process_kill_events, cld, &current_live_processes);
+    }
+    for (i = 0; i < current_live_processes; i++) {
+	ap_log_error(APLOG_MARK,APLOG_ERR|APLOG_NOERRNO, server_conf,
+ 	    "forcing termination of child #%d (handle %d)", i, process_handles[i]);
+	TerminateProcess((HANDLE) process_handles[i], 1);
+    }
+
+    CloseHandle(signal_restart_event);
+    CloseHandle(signal_shutdown_event);
+
+    /* cleanup pid file on normal shutdown */
+    {
+	const char *pidfile = NULL;
+	pidfile = ap_server_root_relative (pparent, ap_pid_fname);
+	if ( pidfile != NULL && unlink(pidfile) == 0)
+	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO,
+			 server_conf,
+			 "removed PID file %s (pid=%ld)",
+			 pidfile, (long)getpid());
+    }
+
+    if (pparent) {
+	ap_destroy_pool(pparent);
+    }
+
+    ap_destroy_mutex(start_mutex);
+
+    service_set_status(SERVICE_STOPPED);
+    return (0);
+}
+
+/*
+ * Send signal to a running Apache. On entry signal should contain
+ * either "shutdown" or "restart"
+ */
+
+int send_signal(pool *p, char *signal)
+{
+    char prefix[20];
+    FILE *fp;
+    int nread;
+    char *fname;
+    int end;
+
+    fname = ap_server_root_relative (p, ap_pid_fname);
+
+    fp = fopen(fname, "r");
+    if (!fp) {
+	printf("Cannot read apache PID file %s\n", fname);
+        return FALSE;
+    }
+    prefix[0] = 'a';
+    prefix[1] = 'p';
+
+    nread = fread(prefix+2, 1, sizeof(prefix)-3, fp);
+    if (nread == 0) {
+	fclose(fp);
+	printf("PID file %s was empty\n", fname);
+        return FALSE;
+    }
+    fclose(fp);
+
+    /* Terminate the prefix string */
+    end = 2 + nread - 1;
+    while (end > 0 && (prefix[end] == '\r' || prefix[end] == '\n'))
+	end--;
+    prefix[end + 1] = '\0';
+
+    setup_signal_names(prefix);
+
+    if (!strcasecmp(signal, "shutdown"))
+	ap_start_shutdown();
+    else if (!strcasecmp(signal, "restart"))
+	ap_start_restart(1);
+    else {
+	printf("Unknown signal name \"%s\". Use either shutdown or restart.\n",
+	    signal);
+        return FALSE;
+    }
+    return TRUE;
+}
+
+void post_parse_init()
+{
+    ap_set_version();
+    ap_init_modules(pconf, server_conf);
+    ap_suexec_enabled = init_suexec();
+    version_locked++;
+    ap_open_logs(server_conf, plog);
+    set_group_privs();
+}
+
+int service_init()
+{
+    common_init();
+ 
+    ap_cpystrn(ap_server_root, HTTPD_ROOT, sizeof(ap_server_root));
+    if (ap_registry_get_service_conf(pconf, ap_server_confname, sizeof(ap_server_confname),
+                                     ap_server_argv0))
+        return FALSE;
+
+    ap_setup_prelinked_modules();
+    server_conf = ap_read_config(pconf, ptrans, ap_server_confname);
+    ap_log_pid(pconf, ap_pid_fname);
+    post_parse_init();
+    return TRUE;
+}
+
+#ifdef WIN32
+__declspec(dllexport)
+     int apache_main(int argc, char *argv[])
+#else
+int REALMAIN(int argc, char *argv[]) 
+#endif
+{
+    int c;
+    int child = 0;
+    char *cp;
+    char *s;
+    char *service_name = NULL;
+    int install = 0;
+    int conf_specified = 0;
+    char *signal_to_send = NULL;
+    char cwd[MAX_STRING_LEN];
+
+    /* Service application
+     * Configuration file in registry at:
+     * HKLM\System\CurrentControlSet\Services\[Svc name]\Parameters\ConfPath
+     */
+    if (isProcessService()) {
+        service_main(master_main, argc, argv);
+        clean_parent_exit(0);
+    }
+
+    /* Console application or a child process. */
+
+    if ((s = strrchr(argv[0], PATHSEPARATOR)) != NULL) {
+        ap_server_argv0 = ++s;
+    }
+    else {
+        ap_server_argv0 = argv[0];
+    }
+
+    common_init();
+    ap_setup_prelinked_modules();
+
+    if(!GetCurrentDirectory(sizeof(cwd),cwd)) {
+       ap_log_error(APLOG_MARK,APLOG_WIN32ERROR, NULL,
+       "GetCurrentDirectory() failure");
+       return -1;
+    }
+
+    ap_cpystrn(cwd, ap_os_canonical_filename(pcommands, cwd), sizeof(cwd));
+    ap_cpystrn(ap_server_root, cwd, sizeof(ap_server_root));
+
+    while ((c = getopt(argc, argv, "D:C:c:Xd:f:vVlLZ:iusStThk:n:")) != -1) {
+        char **new;
+	switch (c) {
+	case 'c':
+	    new = (char **)ap_push_array(ap_server_post_read_config);
+	    *new = ap_pstrdup(pcommands, optarg);
+	    break;
+	case 'C':
+	    new = (char **)ap_push_array(ap_server_pre_read_config);
+	    *new = ap_pstrdup(pcommands, optarg);
+	    break;
+	case 'D':
+	    new = (char **)ap_push_array(ap_server_config_defines);
+	    *new = ap_pstrdup(pcommands, optarg);
+	    break;
+#ifdef WIN32
+	case 'Z':
+	    exit_event = open_event(optarg);
+	    APD2("child: opened process event %s", optarg);
+	    cp = strchr(optarg, '_');
+	    ap_assert(cp);
+	    *cp = 0;
+	    setup_signal_names(optarg);
+	    start_mutex = ap_open_mutex(signal_name_prefix);
+	    ap_assert(start_mutex);
+	    child = 1;
+	    break;
+        case 'n':
+            service_name = ap_pstrdup(pcommands, optarg);
+            if (isValidService(optarg)) {
+                ap_registry_get_service_conf(pconf, ap_server_confname, sizeof(ap_server_confname),
+                                             optarg);
+                conf_specified = 1;
+            }
+            break;
+	case 'i':
+	    install = 1;
+	    break;
+	case 'u':
+	    install = -1;
+	    break;
+	case 'S':
+	    ap_dump_settings = 1;
+	    break;
+	case 'k':
+	    signal_to_send = optarg;
+	    break;
+#endif /* WIN32 */
+	case 'd':
+            optarg = ap_os_canonical_filename(pcommands, optarg);
+            if (!ap_os_is_path_absolute(optarg)) {
+	        optarg = ap_pstrcat(pcommands, cwd, optarg, NULL);
+                ap_getparents(optarg);
+            }
+            if (optarg[strlen(optarg)-1] != '/')
+                optarg = ap_pstrcat(pcommands, optarg, "/", NULL);
+            ap_cpystrn(ap_server_root,
+                       optarg,
+                       sizeof(ap_server_root));
+	    break;
+	case 'f':
+            ap_cpystrn(ap_server_confname,
+                       ap_os_canonical_filename(pcommands, optarg),
+                       sizeof(ap_server_confname));
+            conf_specified = 1;
+	    break;
+	case 'v':
+	    ap_set_version();
+	    printf("Server version: %s\n", ap_get_server_version());
+	    printf("Server built:   %s\n", ap_get_server_built());
+	    exit(0);
+	case 'V':
+	    ap_set_version();
+	    show_compile_settings();
+	    exit(0);
+	case 'l':
+	    ap_show_modules();
+	    exit(0);
+	case 'L':
+	    ap_show_directives();
+	    exit(0);
+	case 'X':
+	    ++one_process;	/* Weird debugging mode. */
+	    break;
+	case 't':
+	    ap_configtestonly = 1;
+	    ap_docrootcheck = 1;
+	    break;
+	case 'T':
+	    ap_configtestonly = 1;
+	    ap_docrootcheck = 0;
+	    break;
+	case 'h':
+	    usage(ap_server_argv0);
+	case '?':
+	    usage(ap_server_argv0);
+        }   /* switch */
+    }       /* while  */
+
+    /* ServerConfFile is found in this order:
+     * (1) -f or -n
+     * (2) [-d]/SERVER_CONFIG_FILE
+     * (3) ./SERVER_CONFIG_FILE
+     * (4) [Registry: HKLM\Software\[product]\ServerRoot]/SERVER_CONFIG_FILE
+     * (5) /HTTPD_ROOT/SERVER_CONFIG_FILE
+     */
+
+    if (!conf_specified) {
+        ap_cpystrn(ap_server_confname, SERVER_CONFIG_FILE, sizeof(ap_server_confname));
+        if (access(ap_server_root_relative(pcommands, ap_server_confname), 0)) {
+            ap_registry_get_server_root(pconf, ap_server_root, sizeof(ap_server_root));
+            if (!*ap_server_root)
+                ap_cpystrn(ap_server_root, HTTPD_ROOT, sizeof(ap_server_root));
+            ap_cpystrn(ap_server_root, ap_os_canonical_filename(pcommands, ap_server_root),
+                       sizeof(ap_server_root));
+        }
+    }
+
+    if (!ap_os_is_path_absolute(ap_server_confname)) {
+        char *full_conf_path;
+
+        full_conf_path = ap_pstrcat(pcommands, ap_server_root, "/", ap_server_confname, NULL);
+        full_conf_path = ap_os_canonical_filename(pcommands, full_conf_path);
+        ap_cpystrn(ap_server_confname, full_conf_path, sizeof(ap_server_confname));
+    }
+    ap_getparents(ap_server_confname);
+    ap_no2slash(ap_server_confname);
+
+#ifdef WIN32
+    if (install) {
+        if (!service_name)
+            service_name = ap_pstrdup(pconf, DEFAULTSERVICENAME);
+        if (install > 0) 
+            InstallService(service_name, ap_server_root_relative(pcommands, ap_server_confname));
+        else
+            RemoveService(service_name);
+        clean_parent_exit(0);
+    }
+    
+    if (service_name && signal_to_send) {
+        send_signal_to_service(service_name, signal_to_send);
+        clean_parent_exit(0);
+    }
+
+    if (service_name && !conf_specified) {
+        printf("Unknown service: %s\n", service_name);
+        clean_parent_exit(0);
+    }
+#endif
+    server_conf = ap_read_config(pconf, ptrans, ap_server_confname);
+
+    if (ap_configtestonly) {
+        fprintf(stderr, "%s: Syntax OK\n", ap_server_root_relative(pcommands, ap_server_confname));
+        clean_parent_exit(0);
+    }
+
+    if (ap_dump_settings) {
+        clean_parent_exit(0);
+    }
+
+    /* Treat -k start confpath as just -f confpath */
+    if (signal_to_send && strcasecmp(signal_to_send, "start")) {
+        send_signal(pconf, signal_to_send);
+        clean_parent_exit(0);
+    }
+
+    if (!child && !ap_dump_settings) { 
+        ap_log_pid(pconf, ap_pid_fname);
+    }
+
+    post_parse_init();
+
+#ifdef OS2
+    printf("%s running...\n", ap_get_server_version());
+#endif
+#ifdef WIN32
+    if (!child) {
+	printf("%s running...\n", ap_get_server_version());
+    }
+#endif
+    if (one_process && !exit_event)
+	exit_event = create_event(0, 0, NULL);
+    if (one_process && !start_mutex)
+	start_mutex = ap_create_mutex(NULL);
+    /*
+     * In the future, the main will spawn off a couple
+     * of children and monitor them. As soon as a child
+     * exits, it spawns off a new one
+     */
+    if (child || one_process) {
+	if (!exit_event || !start_mutex)
+	    exit(-1);
+	worker_main();
+	ap_destroy_mutex(start_mutex);
+	destroy_event(exit_event);
+    }
+    else 
+        master_main(argc, argv);
+
+    clean_parent_exit(0);
+    return 0;	/* purely to avoid a warning */
+}
+
+#endif /* ndef MULTITHREAD */
+
+#else  /* ndef SHARED_CORE_TIESTATIC */
+
+/*
+**  Standalone Tie Program for Shared Core support
+**
+**  It's purpose is to tie the static libraries and 
+**  the shared core library under link-time and  
+**  passing execution control to the real main function
+**  in the shared core library under run-time.
+*/
+
+extern int ap_main(int argc, char *argv[]);
+
+int main(int argc, char *argv[]) 
+{
+    return ap_main(argc, argv);
+}
+
+#endif /* ndef SHARED_CORE_TIESTATIC */
+#else  /* ndef SHARED_CORE_BOOTSTRAP */
+
+#ifdef OS2
+/* Shared core loader for OS/2 */
+
+int ap_main(int argc, char *argv[]); /* Load time linked from libhttpd.dll */
+
+int main(int argc, char *argv[])
+{
+    return ap_main(argc, argv);
+}
+
+#else
+
+/*
+**  Standalone Bootstrap Program for Shared Core support
+**
+**  It's purpose is to initialise the LD_LIBRARY_PATH
+**  environment variable therewith the Unix loader is able
+**  to start the Standalone Tie Program (see above)
+**  and then replacing itself with this program by
+**  immediately passing execution to it.
+*/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include "ap_config.h"
+#include "httpd.h"
+
+#if defined(HPUX) || defined(HPUX10) || defined(HPUX11)
+#define VARNAME "SHLIB_PATH"
+#else
+#define VARNAME "LD_LIBRARY_PATH"
+#endif
+
+#ifndef SHARED_CORE_DIR 
+#define SHARED_CORE_DIR HTTPD_ROOT "/libexec"
+#endif
+
+#ifndef SHARED_CORE_EXECUTABLE_PROGRAM
+#define SHARED_CORE_EXECUTABLE_PROGRAM "lib" TARGET ".ep"
+#endif
+
+extern char *optarg;
+extern int   optind;
+
+int main(int argc, char *argv[], char *envp[]) 
+{
+    char prog[MAX_STRING_LEN];
+    char llp_buf[MAX_STRING_LEN];
+    char **llp_slot;
+    char *llp_existing;
+    char *llp_dir;
+    char **envpnew;
+    int c, i, l;
+
+    /* 
+     * parse argument line, 
+     * but only handle the -L option 
+     */
+    llp_dir = SHARED_CORE_DIR;
+    while ((c = getopt(argc, argv, "D:C:c:Xd:f:vVlLR:SZ:tTh")) != -1) {
+	switch (c) {
+	case 'D':
+	case 'C':
+	case 'c':
+	case 'X':
+	case 'd':
+	case 'f':
+	case 'v':
+	case 'V':
+	case 'l':
+	case 'L':
+	case 'S':
+	case 'Z':
+	case 't':
+	case 'T':
+	case 'h':
+	case '?':
+	    break;
+	case 'R':
+	    llp_dir = strdup(optarg);
+	    break;
+	}
+    }
+
+    /* 
+     * create path to SHARED_CORE_EXECUTABLE_PROGRAM
+     */
+    ap_snprintf(prog, sizeof(prog), "%s/%s", llp_dir, SHARED_CORE_EXECUTABLE_PROGRAM);
+
+    /* 
+     * adjust process environment therewith the Unix loader 
+     * is able to start the SHARED_CORE_EXECUTABLE_PROGRAM.
+     */
+    llp_slot = NULL;
+    llp_existing = NULL;
+    l = strlen(VARNAME);
+    for (i = 0; envp[i] != NULL; i++) {
+	if (strncmp(envp[i], VARNAME "=", l+1) == 0) {
+	    llp_slot = &envp[i];
+	    llp_existing = strchr(envp[i], '=') + 1;
+	}
+    }
+    if (llp_slot == NULL) {
+	envpnew = (char **)malloc(sizeof(char *)*(i + 2));
+	if (envpnew == NULL) {
+	    fprintf(stderr, "Ouch!  Out of memory generating envpnew!\n");
+	}
+	memcpy(envpnew, envp, sizeof(char *)*i);
+	envp = envpnew;
+	llp_slot = &envp[i++];
+	envp[i] = NULL;
+    }
+    if (llp_existing != NULL)
+	 ap_snprintf(llp_buf, sizeof(llp_buf), "%s=%s:%s", VARNAME, llp_dir, llp_existing);
+    else
+	 ap_snprintf(llp_buf, sizeof(llp_buf), "%s=%s", VARNAME, llp_dir);
+    *llp_slot = strdup(llp_buf);
+
+    /* 
+     * finally replace our process with 
+     * the SHARED_CORE_EXECUTABLE_PROGRAM
+     */
+    if (execve(prog, argv, envp) == -1) {
+	fprintf(stderr, 
+		"%s: Unable to exec Shared Core Executable Program `%s'\n",
+		argv[0], prog);
+	return 1;
+    }
+    else
+	return 0;
+}
+
+#endif /* def OS2 */
+#endif /* ndef SHARED_CORE_BOOTSTRAP */
+
+/* force Expat to be linked into the server executable */
+#if defined(USE_EXPAT) && !defined(SHARED_CORE_BOOTSTRAP)
+#include "xmlparse.h"
+const XML_LChar *suck_in_expat(void);
+const XML_LChar *suck_in_expat(void)
+{
+    return XML_ErrorString(XML_ERROR_NONE);
+}
+#endif /* USE_EXPAT */
+
