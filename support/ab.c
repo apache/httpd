@@ -230,17 +230,24 @@ ap_xlate_t *from_ascii, *to_ascii;
 
 /* --------------------------------------------------------- */
 
-/* simple little function to perror and exit */
+/* simple little function to write an error string and exit */
 
 static void err(char *s)
 {
-    if (errno) {
-        perror(s);
-    }
-    else {
-        printf("%s", s);
-    }
-    exit(errno);
+    fprintf(stderr, "%s", s);
+    exit(1);
+}
+
+/* simple little function to write an APR error string and exit */
+
+static void apr_err(char *s, ap_status_t rv)
+{
+    char buf[120];
+
+    fprintf(stderr,
+            "%s: %s (%d)\n", 
+            s, ap_strerror(rv, buf, sizeof buf), rv);
+    exit(rv);
 }
 
 /* --------------------------------------------------------- */
@@ -483,11 +490,11 @@ static void start_connect(struct connection *c)
     c->cbx = 0;
     c->gotheader = 0;
 
-    if (ap_create_tcp_socket(&c->aprsock, cntxt) != APR_SUCCESS) {
-        err("Socket:");
+    if ((rv = ap_create_tcp_socket(&c->aprsock, cntxt)) != APR_SUCCESS) {
+        apr_err("Socket:", rv);
     }
-    if (ap_set_remote_port(c->aprsock, port) != APR_SUCCESS) {
-        err("Port:");
+    if ((rv = ap_set_remote_port(c->aprsock, port)) != APR_SUCCESS) {
+        apr_err("Port:", rv);
     }
     c->start = ap_now();
     if ((rv = ap_connect(c->aprsock, hostname)) != APR_SUCCESS) {
@@ -501,7 +508,9 @@ static void start_connect(struct connection *c)
             ap_close_socket(c->aprsock);
             err_conn++;
             if (bad++ > 10) {
-                err("\nTest aborted after 10 failures\n\n");
+                fprintf(stderr,
+                        "\nTest aborted after 10 failures\n\n");
+                apr_err("ap_connect()", rv);
             }
             start_connect(c);
             return;
@@ -725,8 +734,8 @@ static void test(void)
     ap_interval_time_t timeout;
     ap_int16_t rv;
     int i;
-#ifdef NOT_ASCII
     ap_status_t status;
+#ifdef NOT_ASCII
     ap_size_t inbytes_left, outbytes_left;
 #endif
 
@@ -814,13 +823,13 @@ static void test(void)
         timeout = 30 * AP_USEC_PER_SEC;
 
         n = concurrency;
-        ap_poll(readbits, &n, timeout);
+        status = ap_poll(readbits, &n, timeout);
+        if (status != APR_SUCCESS)
+            apr_err("ap_poll", status);
 
         if (!n) {
             err("\nServer timed out\n\n");
         }
-        if (n < 1)
-            err("ap_poll");
 
         for (i = 0; i < concurrency; i++) {
             ap_get_revents(&rv, con[i].aprsock, readbits);
@@ -853,14 +862,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-        printf("This is ApacheBench, Version %s\n", AB_VERSION " <$Revision: 1.19 $> apache-2.0");
+        printf("This is ApacheBench, Version %s\n", AB_VERSION " <$Revision: 1.20 $> apache-2.0");
         printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
         printf("Copyright (c) 1998-2000 The Apache Software Foundation, http://www.apache.org/\n");
         printf("\n");
     }
     else {
         printf("<p>\n");
-        printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AB_VERSION, "$Revision: 1.19 $");
+        printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AB_VERSION, "$Revision: 1.20 $");
         printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
         printf(" Copyright (c) 1998-2000 The Apache Software Foundation, http://www.apache.org/<br>\n");
         printf("</p>\n<p>\n");
