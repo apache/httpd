@@ -297,9 +297,23 @@ int set_last_modified(request_rec *r, time_t mtime)
      *    respond with a status of 412 (Precondition Failed).
      */
 
-    if (if_match &&
-        !((if_match[0] == '*') || find_token(r->pool, if_match, etag)))
-        return HTTP_PRECONDITION_FAILED;
+    if (if_match) {
+        if ((if_match[0] != '*') && !find_token(r->pool, if_match, etag))
+            return HTTP_PRECONDITION_FAILED;
+    }
+
+    /* Else if a valid If-Unmodified-Since request-header field was given
+     * and the requested resource has been modified since the time
+     * specified in this field, then the server MUST
+     *    respond with a status of 412 (Precondition Failed).
+     */
+
+    else if (if_unmodified) {
+        time_t ius = parseHTTPdate(if_unmodified);
+
+        if ((ius != BAD_DATE) && (mtime > ius))
+            return HTTP_PRECONDITION_FAILED;
+    }
 
     /* If an If-None-Match request-header field was given and
      * if our ETag matches any of the entity tags in that field or
@@ -310,32 +324,21 @@ int set_last_modified(request_rec *r, time_t mtime)
      *       respond with a status of 412 (Precondition Failed).
      */
 
-    if (if_nonematch &&
-        ((if_nonematch[0] == '*') || find_token(r->pool, if_nonematch, etag)))
-        return ((r->method_number == M_GET) || r->header_only) ?
-                   HTTP_NOT_MODIFIED : HTTP_PRECONDITION_FAILED;
-
-    /* If a valid If-Unmodified-Since request-header field was given
-     * and the requested resource has been modified since the time
-     * specified in this field, then the server MUST
-     *    respond with a status of 412 (Precondition Failed).
-     */
-
-    if (if_unmodified) {
-        time_t ius = parseHTTPdate(if_unmodified);
-
-        if ((ius != BAD_DATE) && (mtime > ius))
-            return HTTP_PRECONDITION_FAILED;
+    if (if_nonematch) {
+        if ((if_nonematch[0] == '*') || find_token(r->pool,if_nonematch,etag))
+            return (r->method_number == M_GET) ? HTTP_NOT_MODIFIED
+                                               : HTTP_PRECONDITION_FAILED;
     }
 
-    /* If a valid If-Modified-Since request-header field was given on a GET
+    /* Else if a valid If-Modified-Since request-header field was given
+     * and it is a GET or HEAD request
      * and the requested resource has not been modified since the time
      * specified in this field, then the server MUST
      *    respond with a status of 304 (Not Modified).
      * A date later than the server's current request time is invalid.
      */
 
-    if (if_modified_since && (r->method_number == M_GET)) {
+    else if (if_modified_since && (r->method_number == M_GET)) {
         time_t ims = parseHTTPdate(if_modified_since);
 
         if ((ims >= mtime) && (ims <= r->request_time))
