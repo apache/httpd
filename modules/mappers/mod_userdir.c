@@ -279,7 +279,7 @@ static int translate_userdir(request_rec *r)
         if (ap_strchr_c(userdir, '*'))
             x = ap_getword(r->pool, &userdir, '*');
 
-	if (userdir[0] == '\0' || ap_os_is_path_absolute(userdir)) {
+	if (userdir[0] == '\0' || ap_os_is_path_absolute(r->pool, userdir)) {
             if (x) {
 #ifdef HAVE_DRIVE_LETTERS
                 /*
