@@ -1,5 +1,8 @@
 Changes with Apache 1.3.15
 
+  *) Normalize all NetWare config directive paths and filespecs to
+     their canonical names.  [Brad Nicholes <bnicholes@novell.com>]
+
   *) Update the mime.types file to the registered media types as
      of 2000-10-19. PR#6613 [Carsten Klapp <carsten.klapp@home.net>,
      Tony Finch]

@@ -143,6 +143,7 @@ char *ap_os_canonical_filename(pool *pPool, const char *szFile)
     
     pNewName = ap_pstrdup(pPool, szFile);
     strlwr(pNewName);
+    bslash2slash(pNewName);
     return pNewName;
 }
 
