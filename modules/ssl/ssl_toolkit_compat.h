@@ -63,6 +63,31 @@
 
 #endif
 
+/* BEGIN GENERATED SECTION */
+#define sk_SSL_CIPHER_free sk_free
+#define sk_SSL_CIPHER_dup sk_dup
+#define sk_SSL_CIPHER_num sk_num
+#define sk_SSL_CIPHER_find(st, data) sk_find(st, (void *)data)
+#define sk_SSL_CIPHER_value (SSL_CIPHER *)sk_value
+#define sk_X509_num sk_num
+#define sk_X509_value (X509 *)sk_value
+#define sk_X509_INFO_value (X509_INFO *)sk_value
+#define sk_X509_INFO_num sk_num
+#define sk_X509_INFO_new_null sk_new_null
+#define sk_X509_NAME_num sk_num
+#define sk_X509_NAME_push(st, data) sk_push(st, (void *)data)
+#define sk_X509_NAME_value (X509_NAME *)sk_value
+#define sk_X509_NAME_free sk_free
+#define sk_X509_NAME_new sk_new
+#define sk_X509_NAME_find(st, data) sk_find(st, (void *)data)
+#define sk_X509_NAME_ENTRY_num sk_num
+#define sk_X509_NAME_ENTRY_value (X509_NAME_ENTRY *)sk_value
+#define sk_X509_NAME_set_cmp_func sk_set_cmp_func
+#define sk_X509_REVOKED_num sk_num
+#define sk_X509_REVOKED_value (X509_REVOKED *)sk_value
+#define sk_X509_pop_free sk_pop_free
+/* END GENERATED SECTION */
+
 #endif /* OPENSSL_VERSION_NUMBER */
 
 #endif /* SSL_TOOLKIT_COMPAT_H */
