@@ -1,5 +1,9 @@
 Changes with Apache 1.2.2
 
+  *) Enhanced the chunking and error handling inside the buffer functions.
+     This also reduces the pause on transfers under certain conditions.
+     [Dean Gaudet, Roy Fielding]
+
   *) When merging the main server's <Directory> and <Location> sections into
      a vhost, put the main server's first and the vhost's second.  Otherwise
      the vhost can't override the main server.  [Dean Gaudet] PR#717

@@ -624,6 +624,7 @@ write_it_all(BUFF *fb, const void *buf, int nbyte)
 	i = write(fb->fd, buf, nbyte);
 	if (i < 0) {
 	    if (errno != EAGAIN && errno != EINTR) {
+		doerror (fb, B_WR);
 		return -1;
 	    }
 	}
@@ -648,16 +649,28 @@ static int
 bcwrite(BUFF *fb, const void *buf, int nbyte)
 {
     char chunksize[16];	/* Big enough for practically anything */
+    int rv;
 #ifndef NO_WRITEV
     struct iovec vec[3];
-    int i, rv;
+    int i;
 #endif
 
     if (fb->flags & (B_WRERR|B_EOUT))
 	return -1;
 
-    if (!(fb->flags & B_CHUNK))
-	return write(fb->fd, buf, nbyte);
+    if (!(fb->flags & B_CHUNK)) {
+	do rv = write(fb->fd, buf, nbyte);
+	while (rv == -1 && errno == EINTR && !(fb->flags & B_EOUT));
+	if (rv == -1) {
+	    if (errno != EAGAIN) {
+		doerror (fb, B_WR);
+	    }
+	    return -1;
+	} else if (rv == 0) {
+	    errno = EAGAIN;
+	}
+	return rv;
+    }
 
 #ifdef NO_WRITEV
     /* without writev() this has poor performance, too bad */
@@ -685,10 +698,15 @@ bcwrite(BUFF *fb, const void *buf, int nbyte)
      * to deal with a partial writev()
      */
     for( i = 0; i < NVEC; ) {
-	do rv = writev( fb->fd, &vec[i], NVEC - i );
-	while (rv == -1 && errno == EINTR && !(fb->flags & B_EOUT));
-	if (rv == -1)
+	do {
+	    rv = writev( fb->fd, &vec[i], NVEC - i );
+	} while ((rv <= 0)
+	         && !(fb->flags & B_EOUT)
+	         && (errno == EINTR || errno == EAGAIN || rv == 0));
+	if (rv == -1) {
+	    doerror (fb, B_WR);
 	    return -1;
+	}
 	/* recalculate vec to deal with partial writes */
 	while (rv > 0) {
 	    if( rv <= vec[i].iov_len ) {
@@ -732,15 +750,8 @@ bwrite(BUFF *fb, const void *buf, int nbyte)
     {
 /* unbuffered write -- have to use bcwrite since we aren't taking care
  * of chunking any other way */
-	do i = bcwrite(fb, buf, nbyte);
-	while (i == -1 && errno == EINTR && !(fb->flags & B_EOUT));
-	if (i == 0) {  /* return of 0 means non-blocking */
-	    errno = EAGAIN;
-	    return -1;
-	}
-	else if (i < 0) {
-	    if (errno != EAGAIN)
-	        doerror(fb, B_WR);
+	i = bcwrite(fb, buf, nbyte);
+	if (i <= 0) {
 	    return -1;
 	}
 	fb->bytes_sent += i;
@@ -776,13 +787,17 @@ bwrite(BUFF *fb, const void *buf, int nbyte)
 	    /* it is just too painful to try to re-cram the buffer while
 	     * chunking
 	     */
-	    i = (write_it_all(fb, fb->outbase, fb->outcnt) == -1) ?
-	            -1 : fb->outcnt;
+	    if (write_it_all(fb, fb->outbase, fb->outcnt) == -1) {
+		/* we cannot continue after a chunked error */
+		return -1;
+	    }
+	    fb->bytes_sent += fb->outcnt;
+	    fb->outcnt = 0;
+	    break;
 	}
-	else {
-	    do i = write(fb->fd, fb->outbase, fb->outcnt);
-	    while (i == -1 && errno == EINTR && !(fb->flags & B_EOUT));
-	}
+	do {
+	    i = write(fb->fd, fb->outbase, fb->outcnt);
+	} while (i == -1 && errno == EINTR && !(fb->flags & B_EOUT));
 	if (i <= 0) {
 	    if (i == 0) /* return of 0 means non-blocking */
 	        errno = EAGAIN;
@@ -815,13 +830,9 @@ bwrite(BUFF *fb, const void *buf, int nbyte)
  */
     while (nbyte >= fb->bufsiz)
     {
-	do i = bcwrite(fb, buf, nbyte);
-	while (i == -1 && errno == EINTR && !(fb->flags & B_EOUT));
+	i = bcwrite(fb, buf, nbyte);
 	if (i <= 0) {
-	    if (i == 0) /* return of 0 means non-blocking */
-	        errno = EAGAIN;
 	    if (nwr == 0) {
-		if (errno != EAGAIN) doerror(fb, B_WR);
 		return -1;
 	    }
 	    else return nwr;
@@ -861,12 +872,15 @@ bflush(BUFF *fb)
 
     while (fb->outcnt > 0)
     {
-	/* the buffer must be full */
-	do i = write(fb->fd, fb->outbase, fb->outcnt);
-	while (i == -1 && errno == EINTR && !(fb->flags & B_EOUT));
+	do {
+	    i = write(fb->fd, fb->outbase, fb->outcnt);
+	} while ((i <= 0)
+	         && !(fb->flags & B_EOUT)
+	         && (errno == EINTR || errno == EAGAIN || i == 0));
+
 	if (i == 0) {
 	    errno = EAGAIN;
-	    return -1;  /* return of 0 means non-blocking */
+	    return -1;  /* return of 0 means B_EOUT and non-blocking */
 	}
 	else if (i < 0) {
 	    if (errno != EAGAIN) doerror(fb, B_WR);
