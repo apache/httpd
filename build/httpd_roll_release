@@ -53,6 +53,10 @@ echo >> $LOG_NAME
 echo "Running ./buildconf" >> $LOG_NAME
 ./buildconf >> $LOG_NAME
 
+echo >> $LOG_NAME
+echo "Fixup the timestamp on modules/ssl/ssl_expr_parse.c" >> $LOG_NAME
+touch modules/ssl/ssl_expr_parse.c >> $LOG_NAME
+
 # Remove any files we don't distribute with our code
 rm -f STATUS
 
