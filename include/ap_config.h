@@ -57,6 +57,7 @@
 
 #include "ap_mmn.h"		/* MODULE_MAGIC_NUMBER_ */
 #include "apr_lib.h"		/* apr_isfoo() macros */
+#include "ap_hooks.h"
 
 /**
  * AP_DECLARE_EXPORT is defined when building the Apache Core dynamic
@@ -135,6 +136,51 @@
 /* XXX: Must go away, perhaps into compat, maybe not even there.
  */
 #define MODULE_VAR_EXPORT    AP_MODULE_DECLARE_DATA
+
+#define AP_DECLARE_HOOK(ret,name,args) \
+AP_DECLARE_EXTERNAL_HOOK(AP,ret,name,args)
+
+#define AP_IMPLEMENT_HOOK_BASE(name) \
+AP_IMPLEMENT_EXTERNAL_HOOK_BASE(AP,name)
+
+/**
+ * Implement an Apache core hook that has no return code, and therefore 
+ * runs all of the registered functions
+ * @param name The name of the hook
+ * @param args_decl The declaration of the arguments for the hook
+ * @param args_used The names for the arguments for the hook
+ * @deffunc void AP_IMPLEMENT_HOOK_VOID(name, args_decl, args_use)
+ * @tip If IMPLEMENTing a hook that is not linked into the Apache core,
+ * (e.g. within a dso) see AP_IMPLEMENT_EXTERNAL_HOOK_HOOK_VOID.
+ */
+#define AP_IMPLEMENT_HOOK_VOID(name,args_decl,args_use) \
+AP_IMPLEMENT_EXTERNAL_HOOK_VOID(AP,name,args_decl,args_use)
+
+/**
+ * Implement an Apache core hook that runs until one of the functions 
+ * returns something other than OK or DECLINE
+ * @param name The name of the hook
+ * @param args_decl The declaration of the arguments for the hook
+ * @param args_used The names for the arguments for the hook
+ * @deffunc int AP_IMPLEMENT_HOOK_RUN_ALL(name, args_decl, args_use)
+ * @tip If IMPLEMENTing a hook that is not linked into the Apache core,
+ * (e.g. within a dso) see AP_IMPLEMENT_EXTERNAL_HOOK_RUN_ALL.
+ */
+#define AP_IMPLEMENT_HOOK_RUN_ALL(ret,name,args_decl,args_use,ok,decline) \
+AP_IMPLEMENT_EXTERNAL_HOOK_RUN_ALL(AP,ret,name,args_decl,args_use,ok,decline)
+
+/**
+ * Implement a hook that runs until the first function returns something
+ * other than DECLINE
+ * @param name The name of the hook
+ * @param args_decl The declaration of the arguments for the hook
+ * @param args_used The names for the arguments for the hook
+ * @deffunc int AP_IMPLEMENT_HOOK_RUN_FIRST(name, args_decl, args_use)
+ * @tip If IMPLEMENTing a hook that is not linked into the Apache core
+ * (e.g. within a dso) see AP_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST.
+ */
+#define AP_IMPLEMENT_HOOK_RUN_FIRST(ret,name,args_decl,args_use,decline) \
+AP_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(AP,ret,name,args_decl,args_use,decline)
 
 #ifdef WIN32
 #include "os.h"
