@@ -52,10 +52,6 @@
 
 /*
  * suexec.h -- user-definable variables for the suexec wrapper code.
- *
- * A MotherSoft Product for the Apache WWW server.
- * (http://www.louisville.edu/~jadour01/mothersoft/)
- *
  */
 
 
@@ -77,9 +73,9 @@
 #define LOG_EXEC "/usr/local/etc/httpd/logs/cgi.log" /* Need me? */
 
 /*
- * DOC_ROOT -- Define as the DocuemntRoot set for Apache.  This
+ * DOC_ROOT -- Define as the DocumentRoot set for Apache.  This
  *             will be the only hierarchy (aside from UserDirs)
- *             that can be used for suEXEC behaviour.
+ *             that can be used for suEXEC behavior.
  */
 #define DOC_ROOT "/usr/local/etc/httpd/htdocs"
 

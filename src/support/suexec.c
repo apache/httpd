@@ -63,9 +63,6 @@
  *
  ***********************************************************************
  *
- * A MotherSoft Product for the Apache WWW server.
- * (http://www.louisville.edu/~jadour01/mothersoft/)
- *
  * Codebase originally from Majordomo(v1.93) release.
  * Heavy modifications by:
  *    Jason A. Dour (jad@bcc.louisville.edu)
