@@ -1,78 +1,79 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<HTML><HEAD>
-<TITLE>Setting which addresses and ports Apache uses</TITLE>
-</HEAD>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
-<BODY
- BGCOLOR="#FFFFFF"
- TEXT="#000000"
- LINK="#0000FF"
- VLINK="#000080"
- ALINK="#FF0000"
->
-<!--#include virtual="header.html" -->
-<H1 ALIGN="CENTER">Setting which addresses and ports Apache uses</H1>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
 
-<p>When Apache starts, it connects to some port and address on the
-local machine and waits for incoming requests. By default, it
-listens to all addresses on the machine, and to the port
-as specified by the <code>Port</code> directive in the server configuration.
-However, it can be told to listen to more the one port, or to listen
-to only selected addresses, or a combination. This is often combined
-with the Virtual Host feature which determines how Apache
-responds to different IP addresses, hostnames and ports.</p>
+    <title>Setting which addresses and ports Apache uses</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
 
-<p>The <code>Listen</code> directive tells the server to accept
-incoming requests only on the specified port or address-and-port
-combinations. If only a port number is specified in the
-<code>Listen</code> directive, the server listens to the given port on
-all interfaces, instead of the port given by the <code>Port</code>
-directive. If an IP address is given as well as a port, the server
-will listen on the given port and interface.  Multiple Listen
-directives may be used to specify a number of addresses and ports to
-listen to. The server will respond to requests from any of the listed
-addresses and ports.</P>
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
 
-<p>For example, to make the server accept connections on both port
-80 and port 8000, use:
-<PRE>
+    <h1 align="CENTER">Setting which addresses and ports Apache
+    uses</h1>
+
+    <p>When Apache starts, it connects to some port and address on
+    the local machine and waits for incoming requests. By default,
+    it listens to all addresses on the machine, and to the port as
+    specified by the <code>Port</code> directive in the server
+    configuration. However, it can be told to listen to more the
+    one port, or to listen to only selected addresses, or a
+    combination. This is often combined with the Virtual Host
+    feature which determines how Apache responds to different IP
+    addresses, hostnames and ports.</p>
+
+    <p>The <code>Listen</code> directive tells the server to accept
+    incoming requests only on the specified port or
+    address-and-port combinations. If only a port number is
+    specified in the <code>Listen</code> directive, the server
+    listens to the given port on all interfaces, instead of the
+    port given by the <code>Port</code> directive. If an IP address
+    is given as well as a port, the server will listen on the given
+    port and interface. Multiple Listen directives may be used to
+    specify a number of addresses and ports to listen to. The
+    server will respond to requests from any of the listed
+    addresses and ports.</p>
+
+    <p>For example, to make the server accept connections on both
+    port 80 and port 8000, use:</p>
+<pre>
    Listen 80
    Listen 8000
-</PRE>
-
-To make the server accept connections on two specified
-interfaces and port numbers, use
-<PRE>
+</pre>
+    To make the server accept connections on two specified
+    interfaces and port numbers, use 
+<pre>
    Listen 192.170.2.1:80
    Listen 192.170.2.5:8000
-</PRE>
+</pre>
 
-<H2>How this works with Virtual Hosts</H2>
+    <h2>How this works with Virtual Hosts</h2>
 
-<p>Listen does not implement Virtual Hosts.  It only tells the
-main server what addresses and ports to listen to.  If no
-&lt;VirtualHost&gt; directives are used, the server will behave the
-same for all accepted requests. However, &lt;VirtualHost&gt; can be
-used to specify a different behavior for one or more of the addresses
-and ports. To implement a VirtualHost, the server must first be told
-to listen to the address and port to be used. Then a
-&lt;VirtualHost&gt; section should be created for a specified address
-and port to set the behavior of this virtual host. Note that if the
-&lt;VirtualHost&gt; is set for an address and port that the server is
-not listening to, it cannot be accessed.
+    <p>Listen does not implement Virtual Hosts. It only tells the
+    main server what addresses and ports to listen to. If no
+    &lt;VirtualHost&gt; directives are used, the server will behave
+    the same for all accepted requests. However,
+    &lt;VirtualHost&gt; can be used to specify a different behavior
+    for one or more of the addresses and ports. To implement a
+    VirtualHost, the server must first be told to listen to the
+    address and port to be used. Then a &lt;VirtualHost&gt; section
+    should be created for a specified address and port to set the
+    behavior of this virtual host. Note that if the
+    &lt;VirtualHost&gt; is set for an address and port that the
+    server is not listening to, it cannot be accessed.</p>
 
-<H2>See also</H2>
-
-See also the documentation on
-<a href="mod/mpm_common.html#listen">Listen directive</a>,
-<A HREF="vhosts/">Virtual Hosts</A>,
-<A HREF="mod/core.html#port">Port directive</A>,
-<A HREF="dns-caveats.html">DNS Issues</A>
-and
-<A HREF="mod/core.html#virtualhost">&lt;VirtualHost&gt; section</A>.
-
-<!--#include virtual="footer.html" -->
-</BODY>
-</HTML>
+    <h2>See also</h2>
+    See also the documentation on <a
+    href="mod/mpm_common.html#listen">Listen directive</a>, <a
+    href="vhosts/">Virtual Hosts</a>, <a
+    href="mod/core.html#port">Port directive</a>, <a
+    href="dns-caveats.html">DNS Issues</a> and <a
+    href="mod/core.html#virtualhost">&lt;VirtualHost&gt;
+    section</a>. <!--#include virtual="footer.html" -->
+  </body>
+</html>
 

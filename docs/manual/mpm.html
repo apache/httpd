@@ -1,90 +1,95 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<HTML>
-<HEAD>
-<TITLE>Apache Multi-Processing Modules (MPMs)</TITLE>
-</HEAD>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
-<BODY
- BGCOLOR="#FFFFFF"
- TEXT="#000000"
- LINK="#0000FF"
- VLINK="#000080"
- ALINK="#FF0000"
->
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
 
-<!--#include virtual="header.html" -->
+    <title>Apache Multi-Processing Modules (MPMs)</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
 
-<h1 align="center">Apache Multi-Processing Modules</h1>
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
 
-<p>The Apache HTTP Server is designed to be a powerful and flexible
-web server that can work on a very wide variety of platforms in a
-range of different environments.  Different platforms and different
-environments often require different features, or may have different
-ways of implementing the same feature most efficiently.  Apache has
-always accommodated a wide variety of environments through its modular
-design.  This design allows the webmaster to choose which features
-will be included in the server by selecting which modules to load
-either at compile-time or at run-time.</p>
+    <h1 align="center">Apache Multi-Processing Modules</h1>
 
-<p>Apache 2.0 extends this modular design to the most basic functions
-of a web server.  The server ships with a selection of
-Multi-Processing Modules (MPMs) which are responsible for binding to
-network ports on the machine, accepting requests, and dispatching
-children to handle the requests.</p>
+    <p>The Apache HTTP Server is designed to be a powerful and
+    flexible web server that can work on a very wide variety of
+    platforms in a range of different environments. Different
+    platforms and different environments often require different
+    features, or may have different ways of implementing the same
+    feature most efficiently. Apache has always accommodated a wide
+    variety of environments through its modular design. This design
+    allows the webmaster to choose which features will be included
+    in the server by selecting which modules to load either at
+    compile-time or at run-time.</p>
 
-<p>Extending the modular design to this level of the server 
-allows two important benefits:
-<ul>
-<li>Apache can more cleanly and efficiently support a wide variety of
-operating systems.  In particular, the Windows version of Apache is
-now much more efficient, since <a
-href="mod/mpm_winnt.html">mpm_winnt</a> can use native networking
-features in place of the POSIX layer used in Apache 1.3.  This benefit
-also extends to other operating systems that implement specialized
-MPMs.</li>
-<li>The server can be better customized for the needs of the
-particular site.  For example, sites that need a great deal of
-scalability can choose to use a threaded MPM like <a
-href="mod/threaded.html">threaded</a>, while sites requiring
-stability or compatibility with older software can use a <a
-href="mod/prefork.html">preforking MPM</a>.  In addition, special
-features like serving different hosts under different userids
-(<a href="mod/perchild.html">perchild</a>) can be provided.</li>
-</ul>
+    <p>Apache 2.0 extends this modular design to the most basic
+    functions of a web server. The server ships with a selection of
+    Multi-Processing Modules (MPMs) which are responsible for
+    binding to network ports on the machine, accepting requests,
+    and dispatching children to handle the requests.</p>
 
-<p>At the user level, MPMs appear much like other Apache modules.
-The main difference is that one and only one MPM must be loaded
-into the server at any time.  The list of available MPMs
-appears on the <a href="mod/">module index page</a>.</p>
+    <p>Extending the modular design to this level of the server
+    allows two important benefits:</p>
 
-<h2 align="center">Choosing an MPM</h2>
+    <ul>
+      <li>Apache can more cleanly and efficiently support a wide
+      variety of operating systems. In particular, the Windows
+      version of Apache is now much more efficient, since <a
+      href="mod/mpm_winnt.html">mpm_winnt</a> can use native
+      networking features in place of the POSIX layer used in
+      Apache 1.3. This benefit also extends to other operating
+      systems that implement specialized MPMs.</li>
 
-<p>MPMs must be chosen during configuration, and compiled into the server.
-Compilers are capable of optimizing a lot of functions if threads are used,
-but only if they know that threads are being used.  Because some MPMs use
-threads on Unix and others don't, Apache will always perform better if the
-MPM is chosen at configuration time and built into Apache.</p>
+      <li>The server can be better customized for the needs of the
+      particular site. For example, sites that need a great deal of
+      scalability can choose to use a threaded MPM like <a
+      href="mod/threaded.html">threaded</a>, while sites requiring
+      stability or compatibility with older software can use a <a
+      href="mod/prefork.html">preforking MPM</a>. In addition,
+      special features like serving different hosts under different
+      userids (<a href="mod/perchild.html">perchild</a>) can be
+      provided.</li>
+    </ul>
 
-<p>To actually choose the desired MPM, use the argument --with-mpm=
-<EM>NAME</EM> with the ./configure script.  <EM>NAME</EM> is the name of 
-the desired MPM.</p>
+    <p>At the user level, MPMs appear much like other Apache
+    modules. The main difference is that one and only one MPM must
+    be loaded into the server at any time. The list of available
+    MPMs appears on the <a href="mod/">module index page</a>.</p>
 
-<p>Once the server has been compiled, it is possible to determine which
-MPM was chosen by using <code>./httpd -l</code>.  This command will list
-every module that is compiled into the server, including the MPM.</p>
+    <h2 align="center">Choosing an MPM</h2>
 
-<h2 align="center">MPM Defaults</h2>
+    <p>MPMs must be chosen during configuration, and compiled into
+    the server. Compilers are capable of optimizing a lot of
+    functions if threads are used, but only if they know that
+    threads are being used. Because some MPMs use threads on Unix
+    and others don't, Apache will always perform better if the MPM
+    is chosen at configuration time and built into Apache.</p>
 
-<ul>
-  <li> BeOS:  mpmt_beos</li>
-  <li> OS/2:  mpmt_os2</li>
-  <li> Unix:  prefork </li>
-  <li> Windows:  winnt</li>
-</ul>
+    <p>To actually choose the desired MPM, use the argument
+    --with-mpm= <em>NAME</em> with the ./configure script.
+    <em>NAME</em> is the name of the desired MPM.</p>
 
-<!--#include virtual="footer.html" -->
+    <p>Once the server has been compiled, it is possible to
+    determine which MPM was chosen by using <code>./httpd
+    -l</code>. This command will list every module that is compiled
+    into the server, including the MPM.</p>
 
-</body>
+    <h2 align="center">MPM Defaults</h2>
+
+    <ul>
+      <li>BeOS: mpmt_beos</li>
+
+      <li>OS/2: mpmt_os2</li>
+
+      <li>Unix: prefork</li>
+
+      <li>Windows: winnt</li>
+    </ul>
+    <!--#include virtual="footer.html" -->
+  </body>
 </html>
 

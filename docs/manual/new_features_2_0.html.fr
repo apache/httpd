@@ -1,89 +1,115 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<HTML><HEAD>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<TITLE>Nouvelles fonctionnalités d'Apache 2.0</TITLE>
-</HEAD>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<!-- Background white, links blue (unvisited), navy (visited), 
-red (active) -->
-<BODY BGCOLOR="#FFFFFF" TEXT="#000000" LINK="#0000FF" 
-      VLINK="#000080" ALINK="#FF0000">
-<!--#include virtual="header.html" -->
-<H1 ALIGN="CENTER">Aperçu des nouvelles fonctionnalités 
-d'Apache 2.0</H1>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+    <meta http-equiv="Content-Type"
+    content="text/html; charset=iso-8859-1" />
 
-<P>Améliorations&nbsp;: <A HREF="#core">Noyau</A> 
-| <a href="#module">Module</a>
+    <title>Nouvelles fonctionnalit&eacute;s d'Apache 2.0</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), 
+      red (active) -->
 
-<P><HR>
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
 
-<H2><A NAME="core">Améliorations du noyau &nbsp;:</A></H2>
+    <h1 align="CENTER">Aper&ccedil;u des nouvelles
+    fonctionnalit&eacute;s d'Apache 2.0</h1>
 
-<DL>
-<DT><STRONG>Threads sur Unix</STRONG>
-<DD>Sur les systèmes Unix, Apache peut s'exécuter selon 
-un modèle hybride multi-processus et multi-threads, 
-en employant les threads selon la norme POSIX. Ceci devrait améliorer 
-les performances. 
+    <p>Am&eacute;liorations&nbsp;: <a href="#core">Noyau</a> | <a
+    href="#module">Module</a></p>
+    <hr />
 
-<DT><STRONG>Nouveau système de construction</STRONG>
-<DD>Le système de construction a été entièrement 
-réécrit et repose sur autoconf et libtool. Cela rend le 
-système de configuration plus semblable aux autres paquetages. 
+    <h2><a id="core" name="core">Am&eacute;liorations du noyau
+    &nbsp;:</a></h2>
 
-<DT><STRONG>Support multiprotocole</STRONG>
-<DD>Apache possède maintenant une infrastructure afin de servir de multiples 
-protocoles. mod_echo a été écrit comme exemple de ces 
-nouvelles fonctions. 
+    <dl>
+      <dt><strong>Threads sur Unix</strong></dt>
 
-<DT><STRONG>Meilleur support des plates-formes autres qu'Unix</STRONG>
-<DD>Apache 2.0 est plus rapide et plus stable sur les plates-formes non Unix
-telles que BeOS, OS/2, et Windows. Avec l'introduction des  
-<a href="mpm.html">modules multi traitements</a> (MPMs) spécifiques aux 
-plates-formes et l'exécuteur portable Apache (APR), le code pour ces 
-plates-formes est réalisé en employant leurs API natives, 
-permettant ainsi d'éviter les couches d'émulation POSIX 
-souvent boguées et peu performantes.  
+      <dd>Sur les syst&egrave;mes Unix, Apache peut
+      s'ex&eacute;cuter selon un mod&egrave;le hybride
+      multi-processus et multi-threads, en employant les threads
+      selon la norme POSIX. Ceci devrait am&eacute;liorer les
+      performances.</dd>
 
-<DT><STRONG>Nouvelle API Apache</STRONG>
-<DD>L'API pour les modules de la version 2.0 a changé de manière 
-importante. Beaucoup de problèmes d'ordonnancement des modules existants
-dans la version 1.3 devraient disparaître. La version 2.0 gère ceci de 
-manière automatique, et l'ordonnancement des modules s'effectue selon 
-une fonction d'accrochage afin de permettre une plus grande flexibilité.   
+      <dt><strong>Nouveau syst&egrave;me de
+      construction</strong></dt>
 
-</DL>
+      <dd>Le syst&egrave;me de construction a &eacute;t&eacute;
+      enti&egrave;rement r&eacute;&eacute;crit et repose sur
+      autoconf et libtool. Cela rend le syst&egrave;me de
+      configuration plus semblable aux autres paquetages.</dd>
 
-<P><HR>
-<H2><A NAME="module">Améliorations concernant les modules&nbsp;:</A></H2>
+      <dt><strong>Support multiprotocole</strong></dt>
 
-<dl>
+      <dd>Apache poss&egrave;de maintenant une infrastructure afin
+      de servir de multiples protocoles. mod_echo a
+      &eacute;t&eacute; &eacute;crit comme exemple de ces nouvelles
+      fonctions.</dd>
 
-<dt><strong>mod_auth_db</strong>
-<dd>Il accepte maintenant les bases Berkeley DB 3.0.
+      <dt><strong>Meilleur support des plates-formes autres
+      qu'Unix</strong></dt>
 
-<dt><strong>mod_auth_digest</strong>
-<dd>Il inclut une nouvelle gestion des sessions en utilisant un cache commun
-aux processus grâce à une mémoire partagée.
+      <dd>Apache 2.0 est plus rapide et plus stable sur les
+      plates-formes non Unix telles que BeOS, OS/2, et Windows.
+      Avec l'introduction des <a href="mpm.html">modules multi
+      traitements</a> (MPMs) sp&eacute;cifiques aux plates-formes
+      et l'ex&eacute;cuteur portable Apache (APR), le code pour ces
+      plates-formes est r&eacute;alis&eacute; en employant leurs
+      API natives, permettant ainsi d'&eacute;viter les couches
+      d'&eacute;mulation POSIX souvent bogu&eacute;es et peu
+      performantes.</dd>
 
-<dt><strong>mod_charset_lite</strong> <dd>Nouveau module dans Apache 2.0.
-Ce module expérimental permet la traduction des pages de caractères
-ou leur recodage.
+      <dt><strong>Nouvelle API Apache</strong></dt>
 
-<dt><strong>mod_dav</strong>
-<dd>Nouveau module dans Apache 2.0. Ce module met en oeuvre la spécification
-"HTTP Distributed Authoring and Versioning (DAV)" permettant de distribuer et
-maintenir le contenu d'un site web.
+      <dd>L'API pour les modules de la version 2.0 a chang&eacute;
+      de mani&egrave;re importante. Beaucoup de probl&egrave;mes
+      d'ordonnancement des modules existants dans la version 1.3
+      devraient dispara&icirc;tre. La version 2.0 g&egrave;re ceci
+      de mani&egrave;re automatique, et l'ordonnancement des
+      modules s'effectue selon une fonction d'accrochage afin de
+      permettre une plus grande flexibilit&eacute;.</dd>
+    </dl>
+    <hr />
 
-<dt><strong>mod_file_cache</strong>
-<dd>Nouveau module dans Apache 2.0. Ce module inclut les fonctionnalités 
-du module mod_mmap_static existant dans la version d'Apache 1.3, en ajoutant 
-davantage de possibilités de cache.
+    <h2><a id="module" name="module">Am&eacute;liorations
+    concernant les modules&nbsp;:</a></h2>
 
-</dl>
+    <dl>
+      <dt><strong>mod_auth_db</strong></dt>
 
-<!--#include virtual="footer.html" -->
-</BODY>
-</HTML>
+      <dd>Il accepte maintenant les bases Berkeley DB 3.0.</dd>
 
+      <dt><strong>mod_auth_digest</strong></dt>
+
+      <dd>Il inclut une nouvelle gestion des sessions en utilisant
+      un cache commun aux processus gr&acirc;ce &agrave; une
+      m&eacute;moire partag&eacute;e.</dd>
+
+      <dt><strong>mod_charset_lite</strong></dt>
+
+      <dd>Nouveau module dans Apache 2.0. Ce module
+      exp&eacute;rimental permet la traduction des pages de
+      caract&egrave;res ou leur recodage.</dd>
+
+      <dt><strong>mod_dav</strong></dt>
+
+      <dd>Nouveau module dans Apache 2.0. Ce module met en oeuvre
+      la sp&eacute;cification "HTTP Distributed Authoring and
+      Versioning (DAV)" permettant de distribuer et maintenir le
+      contenu d'un site web.</dd>
+
+      <dt><strong>mod_file_cache</strong></dt>
+
+      <dd>Nouveau module dans Apache 2.0. Ce module inclut les
+      fonctionnalit&eacute;s du module mod_mmap_static existant
+      dans la version d'Apache 1.3, en ajoutant davantage de
+      possibilit&eacute;s de cache.</dd>
+    </dl>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
 

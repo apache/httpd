@@ -1,130 +1,146 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<HTML><HEAD>
-<TITLE>Upgrading to 2.0 from 1.3</TITLE>
-</HEAD>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
-<BODY
- BGCOLOR="#FFFFFF"
- TEXT="#000000"
- LINK="#0000FF"
- VLINK="#000080"
- ALINK="#FF0000"
->
-<!--#include virtual="header.html" -->
-<H1 ALIGN="CENTER">Upgrading to 2.0 from 1.3</H1>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
 
-<P>In order to assist folks upgrading, we maintain a document
-describing information critical to existing Apache users.  These are
-intended to be brief notes, and you should be able to find more
-information in either the <A HREF="new_features_2_0.html">New
-Features</A> document, or in the <CODE>src/CHANGES</CODE> file.
+    <title>Upgrading to 2.0 from 1.3</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
 
-<H3>Compile-Time Configuration Changes</H3>
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
 
-<UL>
-<LI>Apache now uses an <code>autoconf</code> and <code>libtool</code>
-system for <a href="install.html">configuring the build processes</a>.
-Using this system is similar to, but not the same as, using the APACI
-system in Apache 1.3.</li>
+    <h1 align="CENTER">Upgrading to 2.0 from 1.3</h1>
 
-<li>In addition to the usual selection of modules which you can choose
-to compile, Apache 2.0 has moved the main part of request processing
-into <a href="mpm.html">Multi-Processing Modules</a> (MPMs).</li>
-</UL>
+    <p>In order to assist folks upgrading, we maintain a document
+    describing information critical to existing Apache users. These
+    are intended to be brief notes, and you should be able to find
+    more information in either the <a
+    href="new_features_2_0.html">New Features</a> document, or in
+    the <code>src/CHANGES</code> file.</p>
 
-<H3>Run-Time Configuration Changes</H3>
+    <h3>Compile-Time Configuration Changes</h3>
 
-<UL>
+    <ul>
+      <li>Apache now uses an <code>autoconf</code> and
+      <code>libtool</code> system for <a
+      href="install.html">configuring the build processes</a>.
+      Using this system is similar to, but not the same as, using
+      the APACI system in Apache 1.3.</li>
 
-<li>Many directives that were in the core server in Apache 1.3
-are now in the MPMs.  If you wish the behavior of the server
-to be as similar as possible to the behavior of Apache 1.3,
-you should select the <a href="mod/prefork.html">prefork</a>
-MPM.  Other MPMs will have different directives to control process
-creation and request processing.</li>
+      <li>In addition to the usual selection of modules which you
+      can choose to compile, Apache 2.0 has moved the main part of
+      request processing into <a href="mpm.html">Multi-Processing
+      Modules</a> (MPMs).</li>
+    </ul>
 
-<li>The <code>CacheNegotiatedDocs</code> directive now takes
-the argument <code>on</code> or <code>off</code>.  Existing
-instances of <code>CacheNegotiatedDocs</code> should be replaced
-with <code>CacheNegotiatedDocs on</code>.</li>
+    <h3>Run-Time Configuration Changes</h3>
 
-<li>The <code>ErrorDocument</code> directive no longer uses a quote at
-the beginning of the argument to indicate a text message.  Instead,
-you should enclose the message in double quotes.  For example,
-existing instances of <blockquote><code>ErrorDocument 403 "Some
-Message</code></blockquote> should be replaced with
-<blockquote><code>ErrorDocument 403 "Some
-Message"</code></blockquote>  As long as the second argument is not a
-valid URL or pathname, it will be treated as a text message.</li>
+    <ul>
+      <li>Many directives that were in the core server in Apache
+      1.3 are now in the MPMs. If you wish the behavior of the
+      server to be as similar as possible to the behavior of Apache
+      1.3, you should select the <a
+      href="mod/prefork.html">prefork</a> MPM. Other MPMs will have
+      different directives to control process creation and request
+      processing.</li>
 
-<li>The <code>AccessConfig</code> and <code>ResourceConfig</code>
-directives no longer exist.  Existing instances of these directives
-can be replaced with the <a
-href="mod/core.html#include"><code>Include</code></a> directive which
-has equivalent functionality.  If you were making use of the default
-values of these directives without including them in the configuration
-files, you may need to add <code>Include conf/access.conf</code> and
-<code>Include conf/srm.conf</code> to your httpd.conf.  In order to
-assure that Apache reads the configuration files in the same order as
-was implied by the older directives, the <code>Include</code>
-directives should be placed at the end of httpd.conf, with the one for
-<code>srm.conf</code> preceding the one for
-<code>access.conf</code>.</li>
+      <li>The <code>CacheNegotiatedDocs</code> directive now takes
+      the argument <code>on</code> or <code>off</code>. Existing
+      instances of <code>CacheNegotiatedDocs</code> should be
+      replaced with <code>CacheNegotiatedDocs on</code>.</li>
 
-<li>The <code>BindAddress</code> directive no longer exists.
-Equivalent functionality is provided with the more flexible <code><a
-href="mod/mpm_common.html#listen">Listen</a></code> directive.
+      <li>
+        The <code>ErrorDocument</code> directive no longer uses a
+        quote at the beginning of the argument to indicate a text
+        message. Instead, you should enclose the message in double
+        quotes. For example, existing instances of 
 
-<li>The <code>ServerType</code> directive no longer exists.
-The method used to serve requests is now determined by the selection
-of MPM.  There is currently no MPM designed to be launched by
-inetd.</li>
+        <blockquote>
+          <code>ErrorDocument 403 "Some Message</code>
+        </blockquote>
+        should be replaced with 
 
-<li>The mod_log_agent and mod_log_referer modules which provided the
-<code>AgentLog</code>, <code>RefererLog</code> and
-<code>RefererIgnore</code> directives have been removed.  Agent and
-referer logs are still available using the <a
-href="mod/mod_log_config.html#customlog">CustomLog</a> directive of
-mod_log_config.</li>
+        <blockquote>
+          <code>ErrorDocument 403 "Some Message"</code>
+        </blockquote>
+        As long as the second argument is not a valid URL or
+        pathname, it will be treated as a text message.
+      </li>
 
-<li>The <code>AddModule</code> and <code>ClearModuleList</code>
-directives no longer exist.  These directives where used to ensure
-that modules could be enabled in the correct order.  The new
-Apache 2.0 API allows modules to explicitly specify their ordering,
-eliminating the need for these directives.</li>
+      <li>The <code>AccessConfig</code> and
+      <code>ResourceConfig</code> directives no longer exist.
+      Existing instances of these directives can be replaced with
+      the <a href="mod/core.html#include"><code>Include</code></a>
+      directive which has equivalent functionality. If you were
+      making use of the default values of these directives without
+      including them in the configuration files, you may need to
+      add <code>Include conf/access.conf</code> and <code>Include
+      conf/srm.conf</code> to your httpd.conf. In order to assure
+      that Apache reads the configuration files in the same order
+      as was implied by the older directives, the
+      <code>Include</code> directives should be placed at the end
+      of httpd.conf, with the one for <code>srm.conf</code>
+      preceding the one for <code>access.conf</code>.</li>
 
-</UL>
+      <li>The <code>BindAddress</code> directive no longer exists.
+      Equivalent functionality is provided with the more flexible
+      <code><a href="mod/mpm_common.html#listen">Listen</a></code>
+      directive.</li>
 
-<H3>Misc Changes</H3>
+      <li>The <code>ServerType</code> directive no longer exists.
+      The method used to serve requests is now determined by the
+      selection of MPM. There is currently no MPM designed to be
+      launched by inetd.</li>
 
-<UL>
+      <li>The mod_log_agent and mod_log_referer modules which
+      provided the <code>AgentLog</code>, <code>RefererLog</code>
+      and <code>RefererIgnore</code> directives have been removed.
+      Agent and referer logs are still available using the <a
+      href="mod/mod_log_config.html#customlog">CustomLog</a>
+      directive of mod_log_config.</li>
 
-<li>The <code>httpd</code> command line option <code>-S</code>
-which was used for printing the virtual host configuration has
-been replaced by <code>-t -D DUMP_VHOSTS</code>.</li>
+      <li>The <code>AddModule</code> and
+      <code>ClearModuleList</code> directives no longer exist.
+      These directives where used to ensure that modules could be
+      enabled in the correct order. The new Apache 2.0 API allows
+      modules to explicitly specify their ordering, eliminating the
+      need for these directives.</li>
+    </ul>
 
-<li>The module mod_auth_digest, which was experimental in Apache 1.3
-is now a standard module.</li>
+    <h3>Misc Changes</h3>
 
-<li>The mod_mmap_static module, which was experimental in Apache 1.3
-has been replaced with mod_file_cache.</li>
+    <ul>
+      <li>The <code>httpd</code> command line option
+      <code>-S</code> which was used for printing the virtual host
+      configuration has been replaced by <code>-t -D
+      DUMP_VHOSTS</code>.</li>
 
-<li>The distribution has been completely reorganized so that it no
-longer contains an independent <code>src</code> directory.  Instead,
-the sources are logically organized under the main distribution 
-directory, and installations of the compiled server should be 
-directed to a separate directory.</li>
+      <li>The module mod_auth_digest, which was experimental in
+      Apache 1.3 is now a standard module.</li>
 
-</UL>
+      <li>The mod_mmap_static module, which was experimental in
+      Apache 1.3 has been replaced with mod_file_cache.</li>
 
-<H3>Third Party Modules</H3>
+      <li>The distribution has been completely reorganized so that
+      it no longer contains an independent <code>src</code>
+      directory. Instead, the sources are logically organized under
+      the main distribution directory, and installations of the
+      compiled server should be directed to a separate
+      directory.</li>
+    </ul>
 
-<p>Extensive changes were made to the server API in Apache 2.0.
-Existing modules designed for the Apache 1.3 API will <strong>not</strong>
-work in Apache 2.0 without modification.  Details are provided in
-the <a href="developer/">developer documentation</a>.</p>
+    <h3>Third Party Modules</h3>
 
-<!--#include virtual="footer.html" -->
-</BODY>
-</HTML>
+    <p>Extensive changes were made to the server API in Apache 2.0.
+    Existing modules designed for the Apache 1.3 API will
+    <strong>not</strong> work in Apache 2.0 without modification.
+    Details are provided in the <a href="developer/">developer
+    documentation</a>.</p>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+

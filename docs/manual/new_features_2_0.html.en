@@ -1,99 +1,121 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<HTML><HEAD>
-<TITLE>New features with Apache 2.0</TITLE>
-</HEAD>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
-<BODY BGCOLOR="#FFFFFF" TEXT="#000000" LINK="#0000FF" 
-      VLINK="#000080" ALINK="#FF0000">
-<!--#include virtual="header.html" -->
-<H1 ALIGN="CENTER">Overview of New Features in Apache 2.0</H1>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
 
-<P>Enhancements: <A HREF="#core">Core</A> | <a href="#module">Module</a>
+    <title>New features with Apache 2.0</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
 
-<P><HR>
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
 
-<H2><A NAME="core">Core Enhancements:</A></H2>
+    <h1 align="CENTER">Overview of New Features in Apache 2.0</h1>
 
-<DL>
-<DT><STRONG>Unix Threading</STRONG>
-<DD>On Unix systems with POSIX threads support, Apache can now run in a
-    hybrid multiprocess, multithreaded mode. This should improve
-    scalability. 
+    <p>Enhancements: <a href="#core">Core</a> | <a
+    href="#module">Module</a></p>
+    <hr />
 
-<DT><STRONG>New Build System</STRONG>
-<DD>The build system has been rewritten from scratch to be based on
-    autoconf and libtool. This makes Apache's configuration system more
-    similar to that of other packages.
+    <h2><a id="core" name="core">Core Enhancements:</a></h2>
 
-<DT><STRONG>Multiprotocol Support</STRONG>
-<DD>Apache now has some of the infrastructure in place to support serving
-    multiple protocols. mod_echo has been written as an example.
+    <dl>
+      <dt><strong>Unix Threading</strong></dt>
 
-<DT><STRONG>Better support for non-Unix platforms</STRONG> <DD>Apache
-    2.0 is faster and more stable on non-Unix platforms such as BeOS,
-    OS/2, and Windows. With the introduction of platform-specific <a
-    href="mpm.html">multi-processing modules</a> (MPMs) and the Apache
-    Portable Runtime (APR), these platforms are now implemented in their
-    native API, avoiding the often buggy and poorly performing
-    POSIX-emulation layers.
+      <dd>On Unix systems with POSIX threads support, Apache can
+      now run in a hybrid multiprocess, multithreaded mode. This
+      should improve scalability.</dd>
 
-<DT><STRONG>New Apache API</STRONG>
-<DD>The API for modules has changed significantly for 2.0. Many of the
-    module-ordering problems from 1.3 should be gone. 2.0 does much of
-    this automatically, and module ordering is now done per-hook to
-    allow more flexibility. Also, new calls have been added that provide
-    additional module capabilities without patching the core Apache server.
+      <dt><strong>New Build System</strong></dt>
 
-<DT><STRONG>IPv6 Support</STRONG></DT>
-<DD>On systems where IPv6 is supported by the underlying Apache
-    Portable Runtime library, Apache gets IPv6 listening sockets by
-    default.  Additionally, the Listen, NameVirtualHost, and
-    &lt;VirtualHost&gt; directives support IPv6 numeric address
-    strings (e.g., "Listen [fe80::1]:8080").</DD>
+      <dd>The build system has been rewritten from scratch to be
+      based on autoconf and libtool. This makes Apache's
+      configuration system more similar to that of other
+      packages.</dd>
 
-<DT><STRONG>Filtering</STRONG></DT>
-<DD>Apache modules may now be written as filters which act on the
-    stream of content as it is delivered to or from the server.  This
-    allows, for example, the output of CGI scripts to be parsed for
-    Server Side Include directive by mod_include.</DD>
+      <dt><strong>Multiprotocol Support</strong></dt>
 
-</DL>
+      <dd>Apache now has some of the infrastructure in place to
+      support serving multiple protocols. mod_echo has been written
+      as an example.</dd>
 
-<P><HR>
+      <dt><strong>Better support for non-Unix
+      platforms</strong></dt>
 
-<H2><A NAME="module">Module Enhancements:</A></H2>
+      <dd>Apache 2.0 is faster and more stable on non-Unix
+      platforms such as BeOS, OS/2, and Windows. With the
+      introduction of platform-specific <a
+      href="mpm.html">multi-processing modules</a> (MPMs) and the
+      Apache Portable Runtime (APR), these platforms are now
+      implemented in their native API, avoiding the often buggy and
+      poorly performing POSIX-emulation layers.</dd>
 
-<dl>
+      <dt><strong>New Apache API</strong></dt>
 
-<dt><strong>mod_auth_db</strong>
-<dd>Now supports Berkely DB 3.0
+      <dd>The API for modules has changed significantly for 2.0.
+      Many of the module-ordering problems from 1.3 should be gone.
+      2.0 does much of this automatically, and module ordering is
+      now done per-hook to allow more flexibility. Also, new calls
+      have been added that provide additional module capabilities
+      without patching the core Apache server.</dd>
 
-<dt><strong>mod_auth_digest</strong>
-<dd>Includes additional support for session caching across processes 
-using shared memory.
+      <dt><strong>IPv6 Support</strong></dt>
 
-<dt><strong>mod_charset_lite</strong> <dd>New module in Apache 2.0.
-This experimental module allows for character set translation
-or recoding.
+      <dd>On systems where IPv6 is supported by the underlying
+      Apache Portable Runtime library, Apache gets IPv6 listening
+      sockets by default. Additionally, the Listen,
+      NameVirtualHost, and &lt;VirtualHost&gt; directives support
+      IPv6 numeric address strings (e.g., "Listen
+      [fe80::1]:8080").</dd>
 
-<dt><strong>mod_dav</strong>
-<dd>New module in Apache 2.0.  This module implements the 
-HTTP Distributed Authoring and Versioning (DAV) specification for
-posting and maintaining web content.
+      <dt><strong>Filtering</strong></dt>
 
-<dt><strong>mod_file_cache</strong>
-<dd>New module in Apache 2.0.  This module includes the functionality
-of mod_mmap_static in Apache 1.3, plus adds further caching abilities.
+      <dd>Apache modules may now be written as filters which act on
+      the stream of content as it is delivered to or from the
+      server. This allows, for example, the output of CGI scripts
+      to be parsed for Server Side Include directive by
+      mod_include.</dd>
+    </dl>
+    <hr />
 
-<dt><strong>mod_headers</strong> 
-<dd>This module is much more flexible in Apache 2.0.  It can now
-modify request headers used by mod_proxy, and it can conditionally set
-response headers.
+    <h2><a id="module" name="module">Module Enhancements:</a></h2>
 
-</dl>
+    <dl>
+      <dt><strong>mod_auth_db</strong></dt>
 
-<!--#include virtual="footer.html" -->
-</BODY>
-</HTML>
+      <dd>Now supports Berkely DB 3.0</dd>
+
+      <dt><strong>mod_auth_digest</strong></dt>
+
+      <dd>Includes additional support for session caching across
+      processes using shared memory.</dd>
+
+      <dt><strong>mod_charset_lite</strong></dt>
+
+      <dd>New module in Apache 2.0. This experimental module allows
+      for character set translation or recoding.</dd>
+
+      <dt><strong>mod_dav</strong></dt>
+
+      <dd>New module in Apache 2.0. This module implements the HTTP
+      Distributed Authoring and Versioning (DAV) specification for
+      posting and maintaining web content.</dd>
+
+      <dt><strong>mod_file_cache</strong></dt>
+
+      <dd>New module in Apache 2.0. This module includes the
+      functionality of mod_mmap_static in Apache 1.3, plus adds
+      further caching abilities.</dd>
+
+      <dt><strong>mod_headers</strong></dt>
+
+      <dd>This module is much more flexible in Apache 2.0. It can
+      now modify request headers used by mod_proxy, and it can
+      conditionally set response headers.</dd>
+    </dl>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
 
