@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 100748 (outdated: 105989) -->
+<!-- English Revision: 105989 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -54,6 +54,28 @@
 
     <p>この順番の場合は、<code>MirrorID</code> ヘッダは設定されません。
     逆になっていると、MirrorID ヘッダは "mirror 12" に設定されます。</p>
+</section>
+
+<section id="early"><title>早期処理、後期処理</title>
+    <p><module>mod_headers</module> では、リクエストの早期か後期かの
+    どちらで適用するかを選べます。通常は後期モードで、
+    コンテンツ生成が実行される直前にリクエストヘッダがセットされ、
+    レスポンスとして送出される直前にレスポンスヘッダがセットされます。
+    運用中のサーバでは必ず後期モードを使ってください。</p>
+
+    <p>早期モードは開発者向けのテスト/デバッグ用に設計されています。
+    <code>early</code> キーワード指定されたディレクティブによって、
+    リクエスト処理の開始地点になります。
+    つまり、異なるリクエストを試したりテストケースをセットアップするのに
+    活用できる一方で、レスポンスを生成する前に他のモジュールによって
+    ヘッダが書き換えられてしまうかもしれないということを意味します。</p>
+
+    <p>early ディレクティブではリクエストパスの設定が解決される前に
+    処理されるので、メインサーバかバーチャルホストコンテキストでのみ、
+    早期ヘッダをセットできます。early ディレクティブはリクエストパスに
+    依存することはできませんので、<code>&lt;Directory&gt;</code> や
+    <code>&lt;Location&gt;</code> といったコンテキスト内では使用
+    できません。</p>
 </section>
 
 <section id="examples"><title>例</title>
@@ -121,7 +143,7 @@
 <name>RequestHeader</name>
 <description>HTTP リクエストヘッダの設定</description>
 <syntax>RequestHeader set|append|add|unset <var>header</var>
-[<var>value</var>]</syntax>
+[<var>value</var>] [early|env=[!]<var>variable</var>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
@@ -153,7 +175,8 @@
 
     <dt><code>unset</code></dt>
     <dd>もし指定された名前のリクエストヘッダが存在していれば、削除されます。
-    同じ名前の複数のヘッダがあるときは、すべて削除されます。</dd>
+    同じ名前の複数のヘッダがあるときは、すべて削除されます。
+    <var>value</var> をつけてはいけません。</dd>
     </dl>
 
     <p>この引数の後にはヘッダ名 (<em>header</em>) が続きます。
@@ -161,9 +184,24 @@
     大文字小文字は区別されません。<code>add</code>,
     <code>append</code>, <code>set</code> の場合は、<em>value</em> が三つ目の
     引数として指定されます。<em>value</em> に空白がある場合は二重引用符で
-    囲む必要があります。unset の場合は、<em>value</em> は指定しません。</p>
+    囲む必要があります。unset の場合は、<em>value</em> は指定しません。
+    <var>value</var> は文字列、フォーマット指定子、あるいは、その混合です。
+    使うことのできるフォーマット指定子は、<directive
+    module="mod_headers">Header</directive> と同じですので、
+    詳細はそちらをご覧ください。</p>
 
     <p><directive>RequestHeader</directive> ディレクティブは、
+    どういった条件下でアクションを行うかを指定する追加引数
+    あるいは、<a href="#early">早期処理</a> を指定する <code>early</code> 
+    キーワードを設定することができます。
+    <code>env=<var>...</var></code> の引数で設定されている
+    <a href="../env.html">環境変数</a> が存在している
+    (あるいは <code>env=!<var>...</var></code> で指定された環境変数が
+    存在しない) 場合、<directive>RequestHeader</directive> ディレクティブは
+    有効になります。それ以外の場合、ディレクティブは効力を持ちません。</p>
+
+    <p><a href="#early">early</a> モードでない場合に限り、
+    <directive>RequestHeader</directive> ディレクティブは
     fixup フェーズでリクエストがハンドラに扱われる直前に
     処理されます。これにより、ブラウザや Apache の入力フィルタにより
     生成されたヘッダを上書きしたり修正したりできるようになっています。</p>
@@ -173,17 +211,26 @@
 <directivesynopsis>
 <name>Header</name>
 <description>HTTP 応答ヘッダの設定</description>
-<syntax>Header set|append|add|unset|echo  <var>header</var>
-[<var>value</var> [env=[!]<var>variable</var>]]</syntax>
+<syntax>Header [<var>condition</var>] set|append|add|unset|echo
+<var>header</var> [<var>value</var>] [early|env=[!]<var>variable</var>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
 <usage>
     <p>このディレクティブは HTTP 応答ヘッダを置換、追加、削除できます。
     ヘッダはコンテントハンドラや出力フィルタが実行された直後に実行され、
-    出て行くヘッダを変更することが可能になっています。
-    行なう処理は最初の引数により決まります。これには以下の値を指定
-    することができます:</p>
+    出て行くヘッダを変更できるようになっています。</p>
+
+    <p>オプションの <var>condition</var> は <code>onsuccess</code> か
+    <code>always</code> のどちらかを指定できます。これは内部ヘッダテーブルのどれを
+    操作するかを決定します。<code>onsuccess</code> は <code>2<var>xx</var></code>
+    ステータスコードの、<code>always</code> は全てのステータスコード
+    (<code>2<var>xx</var></code> を含む) の意味になります。
+    あるモジュールでセットされるヘッダをアンセットしたい場合は特に、
+    どのテーブルが影響を受けるかを実際に試したほうがよいでしょう。</p>
+
+    <p>行なう処理は二番目のの引数で決まります。
+    この引数には次の値を指定できます:</p>
 
     <dl>
     <dt><code>set</code></dt>
@@ -206,11 +253,13 @@
 
     <dt><code>unset</code></dt>
     <dd>もし指定された名前の応答ヘッダが存在していれば、削除されます。
-    同じ名前のヘッダが複数あるときは、すべて削除されます。</dd>
+    同じ名前のヘッダが複数あるときは、すべて削除されます。
+    <var>value</var> をつけてはいけません。</dd>
 
     <dt><code>echo</code></dt>
     <dd>指定されたものと同じ名前のリクエストヘッダを応答ヘッダで
-    そのまま返します。<var>header</var> には正規表現も指定できます。</dd>
+    そのまま返します。<var>header</var> には正規表現も指定できます。
+    <var>value</var> をつけてはいけません。</dd>
     </dl>
 
     <p>この引数の後にはヘッダ名 (<var>header</var>) が続きます。
@@ -227,7 +276,12 @@
     フォーマット指示子を含む文字列、もしくは両方からなる文字列を指定できます。
     <var>value</var> は以下のフォーマット指示子をサポートします:</p>
 
-    <table>
+    <table border="1" style="zebra">
+    <columnspec><column width=".25"/><column width=".75"/></columnspec>
+    <tr><th>フォーマット</th><th>解説</th></tr>
+    <tr><td><code>%%</code></td>
+        <td>パーセント記号</td></tr>
+
     <tr><td><code>%t</code></td>
         <td>リクエストを受け取った時刻を、
         Universal Coordinated Time での始まりの時刻 (Jan. 1, 1970) から経過した
@@ -242,18 +296,35 @@
     <tr><td><code>%{FOOBAR}e</code></td>
         <td><a href="../env.html">環境変数</a>
         <code>FOOBAR</code> の値です。</td></tr>
+
+    <tr><td><code>%{FOOBAR}s</code></td>
+        <td><module>mod_ssl</module> が有効な場合、
+        <a href="mod_ssl.html#envvars">SSL 環境変数</a> <code>FOOBAR</code>
+        の内容</td></tr>
+
     </table>
 
-    <p><directive>Header</directive> ディレクティブが
-    <code>add</code>, <code>append</code>, <code>set</code> として
-    使われたときには、動作を行なう条件を四つ目の引数で指定することができます。
+    <note><title>注</title>
+      <p><code>%s</code> フォーマット指定子は 2.1 以降でのみ利用できます。
+      <code>SSLOptions +StdEnvVars</code> を有効にすることによるオーバーヘッドを
+      避けるため、<code>%e</code> の代わりとして使えます。
+      他の理由などがあって、どうしても <code>SSLOptions +StdEnvVars</code> 
+      を有効にしなければならない場合は、<code>%e</code> のほうが
+      <code>%s</code> よりも処理効率は良いです。</p>
+    </note> 
+
+    <p><directive>Header</directive> ディレクティブには追加の引数を持たせることが
+    できて、どういったアクションが行われたかの条件を指定したり、
+    <a href="#early">早期処理</a> を指定する <code>early</code> キーワードを
+    指定できます。
     <code>env=...</code> 引数で指定された <a
     href="../env.html">環境変数</a> が存在する (もしくは <code>env=!...</code>
     が指定されていて環境変数が存在しない) 場合は、<directive>Header</directive>
     ディレクティブで指定された動作が行なわれます。そうでない場合は、
     ディレクティブはそのリクエストには何もしません。</p>
 
-    <p><directive>Header</directive>
+    <p><a href="#early">早期処理</a>モードの場合以外では、
+    <directive>Header</directive>
     ディレクティブは応答がネットワークに送られる直前に
     処理されます。これは、ヘッダフィルタにより追加されるヘッダを
     除き、ほとんどのヘッダを設定したり上書きしたりすることが
