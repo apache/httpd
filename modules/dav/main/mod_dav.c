@@ -4429,8 +4429,8 @@ static int dav_handler(request_rec *r)
         return DECLINED;
     }
 
-    /* quickly ignore any HTTP/0.9 requests */
-    if (r->assbackwards) {
+    /* quickly ignore any HTTP/0.9 requests which aren't subreqs. */
+    if (r->assbackwards && !r->main) {
         return DECLINED;
     }
 
