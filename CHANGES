@@ -2,6 +2,12 @@ Changes with Apache 2.1.4
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) worker MPM/mod_status: Support per-worker tracking of pid and
+     generation in the scoreboard so that mod_status can accurately
+     represent workers in processes which are gracefully terminating.
+     (major MMN bump)
+     [Jeff Trawick]
+
   *) Correctly export all mod_dav public functions.
      [Branko Èibej <brane xbc.nu>]
 

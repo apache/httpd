@@ -92,6 +92,7 @@
  * 20050217.0 (2.1.3-dev) Axed find_child_by_pid, mpm_*_completion_context (winnt mpm)
  *                        symbols from the public sector, and decorated real_exit_code
  *                        with ap_ in the win32 os.h.
+ * 20050305.0 (2.1.4-dev) added pid and generation fields to worker_score
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503230UL /* "AP20" */

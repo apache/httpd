@@ -229,8 +229,9 @@ static int status_handler(request_rec *r)
     worker_score *ws_record;
     process_score *ps_record;
     char *stat_buffer;
-    pid_t *pid_buffer;
+    pid_t *pid_buffer, worker_pid;
     clock_t tu, ts, tcu, tcs;
+    ap_generation_t worker_generation;
 
     if (strcmp(r->handler, STATUS_MAGIC_TYPE) && 
         strcmp(r->handler, "server-status")) {
@@ -584,19 +585,27 @@ static int status_handler(request_rec *r)
                 bytes = ws_record->bytes_served;
                 my_bytes = ws_record->my_bytes_served;
                 conn_bytes = ws_record->conn_bytes;
-
+                if (ws_record->pid) { /* MPM sets per-worker pid and generation */
+                    worker_pid = ws_record->pid;
+                    worker_generation = ws_record->generation;
+                }
+                else {
+                    worker_pid = ps_record->pid;
+                    worker_generation = ps_record->generation;
+                }
+ 
                 if (no_table_report) {
                     if (ws_record->status == SERVER_DEAD)
                         ap_rprintf(r,
                                    "<b>Server %d-%d</b> (-): %d|%lu|%lu [",
-                                   i, (int)ps_record->generation,
+                                   i, (int)worker_generation,
                                    (int)conn_lres, my_lres, lres);
                     else
                         ap_rprintf(r,
                                    "<b>Server %d-%d</b> (%"
                                    APR_PID_T_FMT "): %d|%lu|%lu [",
-                                   i, (int) ps_record->generation,
-                                   ps_record->pid,
+                                   i, (int) worker_generation,
+                                   worker_pid,
                                    (int)conn_lres, my_lres, lres);
                     
                     switch (ws_record->status) {
@@ -672,15 +681,16 @@ static int status_handler(request_rec *r)
                     if (ws_record->status == SERVER_DEAD)
                         ap_rprintf(r,
                                    "<tr><td><b>%d-%d</b></td><td>-</td><td>%d/%lu/%lu",
-                                   i, (int)ps_record->generation,
+                                   i, (int)worker_generation,
                                    (int)conn_lres, my_lres, lres);
                     else
                         ap_rprintf(r,
                                    "<tr><td><b>%d-%d</b></td><td>%"
                                    APR_PID_T_FMT
                                    "</td><td>%d/%lu/%lu",
-                                   i, (int)ps_record->generation,
-                                   ps_record->pid, (int)conn_lres,
+                                   i, (int)worker_generation,
+                                   worker_pid,
+                                   (int)conn_lres,
                                    my_lres, lres);
                     
                     switch (ws_record->status) {
