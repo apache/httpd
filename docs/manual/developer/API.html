@@ -357,8 +357,8 @@ a few exceptions:
        order to figure out what icon to use.<P>
 
        Such handlers can construct a <EM>sub-request</EM>, using the
-       functions <CODE>sub_req_lookup_file</CODE> and
-       <CODE>sub_req_lookup_uri</CODE>; this constructs a new
+       functions <CODE>ap_sub_req_lookup_file</CODE> and
+       <CODE>ap_sub_req_lookup_uri</CODE>; this constructs a new
        <CODE>request_rec</CODE> structure and processes it as you
        would expect, up to but not including the point of actually
        sending a response.  (These functions skip over the access
@@ -405,9 +405,9 @@ do; they should return after that, without attempting any further
 output.  <P>
 
 Otherwise, they should produce a request body which responds to the
-client as appropriate.  The primitives for this are <CODE>rputc</CODE>
-and <CODE>rprintf</CODE>, for internally generated output, and
-<CODE>send_fd</CODE>, to copy the contents of some <CODE>FILE *</CODE>
+client as appropriate.  The primitives for this are <CODE>ap_rputc</CODE>
+and <CODE>ap_rprintf</CODE>, for internally generated output, and
+<CODE>ap_send_fd</CODE>, to copy the contents of some <CODE>FILE *</CODE>
 straight to the client.  <P>
 
 At this point, you should more or less understand the following piece
@@ -530,7 +530,7 @@ It should be noted that use of the pool machinery isn't generally
 obligatory, except for situations like logging handlers, where you
 really need to register cleanups to make sure that the log file gets
 closed when the server restarts (this is most easily done by using the
-function <CODE><A HREF="#pool-files">pfopen</A></CODE>, which also
+function <CODE><A HREF="#pool-files">ap_pfopen</A></CODE>, which also
 arranges for the underlying file descriptor to be closed before any
 child processes, such as for CGI scripts, are <CODE>exec</CODE>ed), or
 in case you are using the timeout machinery (which isn't yet even
@@ -772,17 +772,17 @@ to vanish when the pool is cleared, by registering a cleanup on the
 pool if necessary). <P>
 
 For the MIME module, the per-dir config creation function just
-<CODE>palloc</CODE>s the structure above, and a creates a couple of
+<CODE>ap_palloc</CODE>s the structure above, and a creates a couple of
 <CODE>table</CODE>s to fill it.  That looks like this:
 
 <PRE>
 void *create_mime_dir_config (pool *p, char *dummy)
 {
     mime_dir_config *new =
-      (mime_dir_config *) palloc (p, sizeof(mime_dir_config));
+      (mime_dir_config *) ap_palloc (p, sizeof(mime_dir_config));
 
-    new-&gt;forced_types = make_table (p, 4);
-    new-&gt;encoding_types = make_table (p, 4);
+    new-&gt;forced_types = ap_make_table (p, 4);
+    new-&gt;encoding_types = ap_make_table (p, 4);
 
     return new;
 }
@@ -846,7 +846,7 @@ the same, and won't be shown here):
 char *add_type(cmd_parms *cmd, mime_dir_config *m, char *ct, char *ext)
 {
     if (*ext == '.') ++ext;
-    table_set (m-&gt;forced_types, ext, ct);
+    ap_table_set (m-&gt;forced_types, ext, ct);
     return NULL;
 }
 </PRE>
@@ -927,15 +927,15 @@ ultimately done in the module's handlers, specifically for its
 file-typing handler, which looks more or less like this; note that the
 per-directory configuration structure is extracted from the
 <CODE>request_rec</CODE>'s per-directory configuration vector by using
-the <CODE>get_module_config</CODE> function.
+the <CODE>ap_get_module_config</CODE> function.
 
 <PRE>
 int find_ct(request_rec *r)
 {
     int i;
-    char *fn = pstrdup (r-&gt;pool, r-&gt;filename);
+    char *fn = ap_pstrdup (r-&gt;pool, r-&gt;filename);
     mime_dir_config *conf = (mime_dir_config *)
-             get_module_config(r-&gt;per_dir_config, &amp;mime_module);
+             ap_get_module_config(r-&gt;per_dir_config, &amp;mime_module);
     char *type;
 
     if (S_ISDIR(r-&gt;finfo.st_mode)) {
@@ -943,21 +943,21 @@ int find_ct(request_rec *r)
         return OK;
     }
 
-    if((i=rind(fn,'.')) &lt; 0) return DECLINED;
+    if((i=ap_rind(fn,'.')) &lt; 0) return DECLINED;
     ++i;
 
-    if ((type = table_get (conf-&gt;encoding_types, &amp;fn[i])))
+    if ((type = ap_table_get (conf-&gt;encoding_types, &amp;fn[i])))
     {
         r-&gt;content_encoding = type;
 
         /* go back to previous extension to try to use it as a type */
 
         fn[i-1] = '\0';
-        if((i=rind(fn,'.')) &lt; 0) return OK;
+        if((i=ap_rind(fn,'.')) &lt; 0) return OK;
         ++i;
     }
 
-    if ((type = table_get (conf-&gt;forced_types, &amp;fn[i])))
+    if ((type = ap_table_get (conf-&gt;forced_types, &amp;fn[i])))
     {
         r-&gt;content_type = type;
     }
@@ -991,10 +991,10 @@ char *add_redirect(cmd_parms *cmd, void *dummy, char *f, char *url)
 {
     server_rec *s = cmd-&gt;server;
     alias_server_conf *conf = (alias_server_conf *)
-            get_module_config(s-&gt;module_config,&amp;alias_module);
-    alias_entry *new = push_array (conf-&gt;redirects);
+            ap_get_module_config(s-&gt;module_config,&amp;alias_module);
+    alias_entry *new = ap_push_array (conf-&gt;redirects);
 
-    if (!is_url (url)) return "Redirect to non-URL";
+    if (!ap_is_url (url)) return "Redirect to non-URL";
 
     new-&gt;fake = f; new-&gt;real = url;
     return NULL;
