@@ -6,7 +6,7 @@
 <modulesynopsis metafile="mpm_winnt.xml.meta">
 
 <name>mpm_winnt</name>
-<description> Das Multi-Processing-Modul ist optimiert d&uuml;r
+<description> Das Multi-Processing-Modul ist optimiert f&uuml;r
   Windows NT.</description>
 <status>MPM</status>
 <sourcefile>mpm_winnt.c</sourcefile>
