@@ -469,8 +469,11 @@ char *util_ald_cache_display_stats(request_rec *r, util_ald_cache_t *cache, char
     for (i=0; i < cache->size; ++i) {
         if (cache->nodes[i] != NULL) {
             nchains++;
-            for (n = cache->nodes[i]; n != NULL; n = n->next)
-            totchainlen++;
+            for (n = cache->nodes[i];
+                 n != NULL && n != n->next;
+                 n = n->next) {
+            	totchainlen++;
+            }
         }
     }
     chainlen = nchains? (double)totchainlen / (double)nchains : 0;
