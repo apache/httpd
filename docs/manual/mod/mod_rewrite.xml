@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.11.2.10 $ -->
+<!-- $Revision: 1.11.2.11 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -941,6 +941,7 @@ Result:
                  REQUEST_URI<br />
                  REQUEST_FILENAME<br />
                  IS_SUBREQ<br />
+                 HTTPS<br />
               </td>
             </tr>
           </table>
@@ -992,6 +993,14 @@ Result:
 
                   <dd>The full local filesystem path to the file or
                   script matching the request.</dd>
+
+                  <dt><code>HTTPS</code></dt>
+
+                  <dd>Will contain the text "on" if the connection is
+                  using SSL/TLS, or "off" otherwise.  (This variable
+                  can be safely used regardless of whether
+                  <module>mod_ssl</module> is loaded).</dd>
+
                 </dl>
 </note>
         </li>
@@ -1014,6 +1023,15 @@ Result:
         any environment variable. This is looked-up via internal
         Apache structures and (if not found there) via
         <code>getenv()</code> from the Apache server process.</li>
+
+        <li>There is the special format: 
+        <code>%{SSL:variable}</code> where <em>variable</em> is the
+        name of an <a href="mod_ssl.html#envvars">SSL environment
+        variable</a>; this can be used whether or not
+        <module>mod_ssl</module> is loaded, but will always expand to
+        the empty string if it is not.  Example:
+        <code>%{SSL:SSL_CIPHER_USEKEYSIZE}</code> may expand to
+        <code>128</code>.</li>
 
         <li>There is the special format:
         <code>%{HTTP:header}</code> where <em>header</em> can be
