@@ -1,5 +1,8 @@
 Changes with Apache 1.3.21
 
+  *) Fix a storage leak (a strdup() call) in mod_mime_magic.  
+     [Jeff Trawick]
+
   *) We have always used the obsolete/deprecated Netscape syntax
      for our tracking cookies; now the CookieStyle directive
      allows the Webmaster to choose the Netscape, RFC2109, or
