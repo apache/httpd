@@ -1,8 +1,0 @@
-# envvars-std - default environment variables for apachectl
-#
-# This file is generated from envvars-std.in
-#
-@SHLIBPATH_VAR@="@exp_libdir@:$@SHLIBPATH_VAR@"
-export @SHLIBPATH_VAR@
-#
-@OS_SPECIFIC_VARS@
