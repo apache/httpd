@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/01/21 13:59:24 $]
+Last modified at [$Date: 2003/01/21 14:03:21 $]
 
 Release:
 
@@ -101,14 +101,9 @@ CURRENT VOTES:
         wrowe adds it's nice if we *can* compile against it, but as
         a matter of a practical tarball or binary release, don't.
 
-    * APACHE_2_0_BRANCH uses a level of APR code branched from the
-      APACHE_2_0_43 tag.
-      yes:   trawick, jerenkrantz
-      no:    wrowe
-        wrowe observes that we have already finished substantial
-        bug fixing in 0.9.2-dev since APACHE_2_0_43, so branching
-        there seems arbitrary.
-
+    * APACHE_2_0_BRANCH uses a level of apr and apr-util code branched
+      from the APACHE_2_0_44 tag.
+      yes:   trawick
 
     * APACHE_2_0_BRANCH uses a level of APR code versioned 0.9.2-dev
         or later (to 0.9.9), so long it remains binary compatible.
