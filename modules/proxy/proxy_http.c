@@ -705,6 +705,20 @@ PROXY_DECLARE (int) ap_proxy_http_handler(request_rec *r, proxy_server_conf *con
 	close += 1;
     }
 
+    /* we must accept 3 kinds of date, but generate only 1 kind of date */
+    {
+	const char *buf;
+        if ((buf = apr_table_get(r->headers_out, "Date")) != NULL) {
+	    apr_table_set(r->headers_out, "Date", ap_proxy_date_canon(p, buf));
+	}
+        if ((buf = apr_table_get(r->headers_out, "Expires")) != NULL) {
+	    apr_table_set(r->headers_out, "Expires", ap_proxy_date_canon(p, buf));
+	}
+        if ((buf = apr_table_get(r->headers_out, "Last-Modified")) != NULL) {
+	    apr_table_set(r->headers_out, "Last-Modified", ap_proxy_date_canon(p, buf));
+	}
+    }
+
     /* munge the Location and URI response headers according to ProxyPassReverse */
     {
 	const char *buf;
