@@ -58,7 +58,6 @@
 #ifndef MAX_PATH
 #define MAX_PATH        1024
 #endif
-int gmtoffset(void);
 
 int main (int argc, const char * const argv[])
 {
