@@ -363,7 +363,7 @@ static void reset_version(void *dummy)
     server_version = NULL;
 }
 
-API_EXPORT(const char *) ap_get_server_version()
+API_EXPORT(const char *) ap_get_server_version(void)
 {
     return (server_version ? server_version : SERVER_BASEVERSION);
 }
@@ -396,7 +396,7 @@ API_EXPORT(void) ap_add_version_component(const char *component)
  * This routine adds the real server base identity to the version string,
  * and then locks out changes until the next reconfig.
  */
-static void ap_set_version()
+static void ap_set_version(void)
 {
     if (ap_server_tokens == SrvTk_MIN) {
 	ap_add_version_component(SERVER_BASEVERSION);
@@ -422,7 +422,7 @@ static APACHE_TLS int volatile exit_after_unblock = 0;
  * GprofDir logs/   -> $ServerRoot/logs/gmon.out
  * GprofDir logs/%  -> $ServerRoot/logs/gprof.$pid/gmon.out
  */
-static void chdir_for_gprof()
+static void chdir_for_gprof(void)
 {
     core_server_config *sconf = 
 	ap_get_module_config(server_conf->module_config, &core_module);    
@@ -511,7 +511,7 @@ static void accept_mutex_init(pool *p)
     }
 }
 
-static void accept_mutex_on()
+static void accept_mutex_on(void)
 {
     switch (ussetlock(uslock)) {
     case 1:
@@ -526,7 +526,7 @@ static void accept_mutex_on()
     }
 }
 
-static void accept_mutex_off()
+static void accept_mutex_off(void)
 {
     if (usunsetlock(uslock) == -1) {
 	perror("usunsetlock");
@@ -608,7 +608,7 @@ static void accept_mutex_init(pool *p)
     ap_register_cleanup(p, NULL, accept_mutex_cleanup, ap_null_cleanup);
 }
 
-static void accept_mutex_on()
+static void accept_mutex_on(void)
 {
     int err;
 
@@ -624,7 +624,7 @@ static void accept_mutex_on()
     have_accept_mutex = 1;
 }
 
-static void accept_mutex_off()
+static void accept_mutex_off(void)
 {
     int err;
 
@@ -730,7 +730,7 @@ static void accept_mutex_init(pool *p)
     op_off.sem_flg = SEM_UNDO;
 }
 
-static void accept_mutex_on()
+static void accept_mutex_on(void)
 {
     if (semop(sem_id, &op_on, 1) < 0) {
 	perror("accept_mutex_on");
@@ -738,7 +738,7 @@ static void accept_mutex_on()
     }
 }
 
-static void accept_mutex_off()
+static void accept_mutex_off(void)
 {
     if (semop(sem_id, &op_off, 1) < 0) {
 	perror("accept_mutex_off");
@@ -1098,12 +1098,12 @@ static void timeout(int sig)
  * which is itself being cleared); we have to support that here.
  */
 
-API_EXPORT(void) ap_block_alarms()
+API_EXPORT(void) ap_block_alarms(void)
 {
     ++alarms_blocked;
 }
 
-API_EXPORT(void) ap_unblock_alarms()
+API_EXPORT(void) ap_unblock_alarms(void)
 {
     --alarms_blocked;
     if (alarms_blocked == 0) {
@@ -1541,14 +1541,14 @@ static void reinit_scoreboard(pool *p)
     memset(ap_scoreboard_image, 0, SCOREBOARD_SIZE);
 }
 
-void cleanup_scoreboard()
+void cleanup_scoreboard(void)
 {
     ap_assert(ap_scoreboard_image);
     free(ap_scoreboard_image);
     ap_scoreboard_image = NULL;
 }
 
-API_EXPORT(void) ap_sync_scoreboard_image()
+API_EXPORT(void) ap_sync_scoreboard_image(void)
 {
 }
 
@@ -4717,7 +4717,7 @@ void add_job(int sock)
     ap_release_mutex(allowed_globals.jobmutex);
 }
 
-int remove_job()
+int remove_job(void)
 {
     joblist *job;
     int sock;
@@ -5003,7 +5003,7 @@ mutex *start_mutex;
 
 #define MAX_SELECT_ERRORS 100
 
-void worker_main()
+void worker_main(void)
 {
     /*
      * I am writing this stuff specifically for NT.
