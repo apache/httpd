@@ -117,7 +117,7 @@
       &lt;Directory /home/*/cgi-bin/&gt;<br />
        Options ExecCGI<br />
        SetHandler cgi-script<br />
-       &lt;/DirectoryMatch&gt;
+       &lt;/Directory&gt;
     </example>
 
     </section>
