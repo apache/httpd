@@ -1889,16 +1889,6 @@ void standalone_main(int argc, char **argv)
 
 } /* standalone_main */
 
-void show_modules()
-{
-    extern char *preloaded_module_names[];
-    int t;
-
-    printf ("Compiled-in modules:\n");
-    for (t = 0; preloaded_module_names[t]; ++t)
-      printf ("  %s\n", preloaded_module_names[t]);
-}
-
 extern char *optarg;
 extern int optind;
 

@@ -399,27 +399,34 @@ void setup_prelinked_modules ()
     }
 }
 
-char *find_module_name (module *m)
+const char *find_module_name (module *m)
 {
-    extern char *preloaded_module_names[];
+    return m->name;
+}
 
-    if (m->module_index >= 0 && m->module_index < total_modules)
-      return preloaded_module_names[m->module_index];
+module *find_linked_module (const char *name)
+{
+    module *modp;
+
+    for (modp = top_module; modp; modp = modp->next) {
+        if (strcmp(modp->name, name) == 0)
+            return modp;
+    }
     return NULL;
 }
 
 /* Add a named module.  Returns 1 if module found, 0 otherwise.  */
-int add_named_module (char *name)
+int add_named_module (const char *name)
 {
     extern module *preloaded_modules[];
-    extern char *preloaded_module_names[];
-    int i;
+    module *modp;
+    int i = 0;
 
-    for (i = 0; preloaded_module_names[i]; ++i) {
-        if (strcmp (preloaded_module_names[i], name) == 0) {
+    for (modp = preloaded_modules[i]; modp; modp = preloaded_modules[++i]) {
+        if (strcmp(modp->name, name) == 0) {
 	    /* Only add modules that are not already enabled.  */
-	    if (preloaded_modules[i]->next == NULL) {
-	        add_module (preloaded_modules[i]);
+	    if (modp->next == NULL) {
+	        add_module(modp);
 	    }
 	    return 1;
 	}
@@ -428,8 +435,7 @@ int add_named_module (char *name)
     return 0;
 }
 
-/* Clear the internal list of modules, in preparation for starting
-   over.  */
+/* Clear the internal list of modules, in preparation for starting over. */
 void clear_module_list ()
 {
     module **m = &top_module;
@@ -1120,27 +1126,34 @@ void show_overrides(command_rec *pc, module *pm)
     printf("\n");
 }
 
-/* Show the prelinked configuration directives, the help string explaining
+/* Show the preloaded configuration directives, the help string explaining
  * the directive arguments, in what module they are handled, and in
  * what parts of the configuration they are allowed.  Used for httpd -h.
  */
 void show_directives()
 {
-    extern module *prelinked_modules[];
-    extern char *module_names[];
+    extern module *preloaded_modules[];
     command_rec *pc;
     int n;
-    int t;
     
-    for(t=0 ; prelinked_modules[t] ; ++t)
-        ;
-    for(n=0 ; prelinked_modules[n] ; ++n)
-        for(pc=prelinked_modules[n]->cmds ; pc && pc->name ; ++pc) {
+    for (n = 0; preloaded_modules[n]; ++n)
+        for (pc = preloaded_modules[n]->cmds; pc && pc->name; ++pc) {
             printf("%s\n", pc->name);
             if (pc->errmsg)
                 printf("\t%s\n", pc->errmsg);
-            printf("\t%s\n", module_names[t-n-1]);
-            show_overrides(pc, prelinked_modules[n]);
+            printf("\t%s\n", preloaded_modules[n]->name);
+            show_overrides(pc, preloaded_modules[n]);
         }
+}
+
+/* Show the preloaded module names.  Used for httpd -l. */
+void show_modules()
+{
+    extern module *preloaded_modules[];
+    int n;
+ 
+    printf ("Compiled-in modules:\n");
+    for (n = 0; preloaded_modules[n]; ++n)
+        printf ("  %s\n", preloaded_modules[n]->name);
 }
 

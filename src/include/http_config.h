@@ -249,9 +249,10 @@ char *server_root_relative (pool *p, char *fname);
 /* Finally, the hook for dynamically loading modules in... */
 
 void add_module (module *m);
-int add_named_module (char *name);
+int add_named_module (const char *name);
 void clear_module_list ();
-char *find_module_name (module *m);
+const char *find_module_name (module *m);
+module *find_linked_module (const char *name);
 
 #ifdef CORE_PRIVATE
 
@@ -260,6 +261,7 @@ char *find_module_name (module *m);
 server_rec *read_config (pool *conf_pool, pool *temp_pool, char *config_name);
 void setup_prelinked_modules();
 void show_directives();
+void show_modules();
 
 /* For http_request.c... */
 

@@ -63,8 +63,6 @@
 #include "util_md5.h"
 #include "scoreboard.h"
 
-extern char *module_names[];
-
 /* Server core module... This module provides support for really basic
  * server operations, including options and commands which control the
  * operation of other modules.  Consider this the bureaucracy module.
@@ -706,16 +704,14 @@ const char *start_ifmod (cmd_parms *cmd, void *dummy, char *arg)
 {
     char *endp = strrchr (arg, '>');
     char l[MAX_STRING_LEN];
-    int i, not = (arg[0] == '!');
-    int found = 0;
+    int not = (arg[0] == '!');
+    module *found;
     int nest = 1;
 
     if (endp) *endp = '\0';
     if (not) arg++;
 
-    for (i=0; module_names[i]; i++)
-      if (!strcasecmp(arg, module_names[i]))
-	found++;
+    found = find_linked_module(arg);
 
     if ((!not && found) || (not && !found))
       return NULL;
