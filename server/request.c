@@ -808,40 +808,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_sub_req_output_filter(ap_filter_t *f,
     apr_bucket *e = APR_BRIGADE_LAST(bb);
 
     if (APR_BUCKET_IS_EOS(e)) {
-        apr_bucket_brigade *tmpbb;
-
         apr_bucket_delete(e);
-
-        if (!APR_BRIGADE_EMPTY(bb)) { /* avoid brigade create/destroy */
-
-            /* We need to be certain that any data in a bucket is valid
-             * after the subrequest pool is cleared.
-             */ 
-            tmpbb = apr_brigade_create(f->r->main->pool);
-            
-            APR_BRIGADE_FOREACH(e, bb) {
-                const char *str;
-                apr_size_t n;
-                apr_status_t rv;
-                
-                rv = apr_bucket_read(e, &str, &n, APR_BLOCK_READ);
-                /* XXX handle rv! */
-                
-                /* This apr_brigade_write does not use a flush function
-                   because we assume that we will not write enough data
-                   into it to cause a flush. However, if we *do* write
-                   "too much", then we could end up with transient
-                   buckets which would suck. This works for now, but is
-                   a bit shaky if changes are made to some of the
-                   buffering sizes. Let's do an assert to prevent
-                   potential future problems... */
-                AP_DEBUG_ASSERT(AP_MIN_BYTES_TO_WRITE <=
-                                APR_BUCKET_BUFF_SIZE);
-                apr_brigade_write(tmpbb, NULL, NULL, str, n);
-            }
-            apr_brigade_destroy(bb);
-            bb = tmpbb;
-        }
     }
     return ap_pass_brigade(f->next, bb);
 }

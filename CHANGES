@@ -1,10 +1,5 @@
 Changes with Apache 2.0.19-dev
 
-  *) Fix a problem with subrequest buckets having private data in the
-     wrong (i.e., subrequest) pool.  This could lead to a segfault
-     later after the subrequest pool is cleaned up.  
-     [Ryan Bloom, Jeff Trawick]
-
   *) Add a new request hook, error_log.  This phase allows modules
      to act on the error log string _after_ it has been written
      to the error log.  The goal for this hook is to allow monitoring
