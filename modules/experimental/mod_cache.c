@@ -26,7 +26,7 @@ APR_OPTIONAL_FN_TYPE(ap_cache_generate_key) *cache_generate_key;
 /* Handles for cache filters, resolved at startup to eliminate
  * a name-to-function mapping on each request
  */
-static ap_filter_rec_t *cache_in_filter_handle;
+static ap_filter_rec_t *cache_save_filter_handle;
 static ap_filter_rec_t *cache_out_filter_handle;
 static ap_filter_rec_t *cache_conditional_filter_handle;
 
@@ -40,7 +40,7 @@ static ap_filter_rec_t *cache_conditional_filter_handle;
  * If no:
  *   check whether we're allowed to try cache it
  *   If yes:
- *     add CACHE_IN filter
+ *     add CACHE_SAVE filter
  *   If No:
  *     oh well.
  */
@@ -48,59 +48,52 @@ static ap_filter_rec_t *cache_conditional_filter_handle;
 static int cache_url_handler(request_rec *r, int lookup)
 {
     apr_status_t rv;
-    const char *cc_in, *pragma, *auth;
-    apr_uri_t uri = r->parsed_uri;
-    char *url = r->unparsed_uri;
-    apr_size_t urllen;
-    char *path = uri.path;
-    const char *types;
-    cache_info *info = NULL;
+    const char *pragma, *auth;
+    apr_uri_t uri;
+    char *url;
+    char *path;
+    cache_provider_list *providers;
+    cache_info *info;
     cache_request_rec *cache;
     cache_server_conf *conf;
+    apr_bucket_brigade *out;
 
-    conf = (cache_server_conf *) ap_get_module_config(r->server->module_config,
-                                                      &cache_module);
-
-    /* we don't handle anything but GET */
+    /* Delay initialization until we know we are handling a GET */
     if (r->method_number != M_GET) {
         return DECLINED;
     }
 
+    uri = r->parsed_uri;
+    url = r->unparsed_uri;
+    path = uri.path;
+    info = NULL;
+
+    conf = (cache_server_conf *) ap_get_module_config(r->server->module_config,
+                                                      &cache_module);
+
     /*
      * Which cache module (if any) should handle this request?
      */
-    if (!(types = ap_cache_get_cachetype(r, conf, path))) {
-        return DECLINED;
-    }
-
-    urllen = strlen(url);
-    if (urllen > MAX_URL_LENGTH) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                     "cache: URL exceeds length threshold: %s", url);
-        return DECLINED;
-    }
-    /* DECLINE urls ending in / ??? EGP: why? */
-    if (url[urllen-1] == '/') {
+    if (!(providers = ap_cache_get_providers(r, conf, path))) {
         return DECLINED;
     }
 
     /* make space for the per request config */
-    cache = (cache_request_rec *) ap_get_module_config(r->request_config, 
+    cache = (cache_request_rec *) ap_get_module_config(r->request_config,
                                                        &cache_module);
     if (!cache) {
         cache = apr_pcalloc(r->pool, sizeof(cache_request_rec));
         ap_set_module_config(r->request_config, &cache_module, cache);
     }
 
-    /* save away the type */
-    cache->types = types;
+    /* save away the possible providers */
+    cache->providers = providers;
 
     /*
      * Are we allowed to serve cached info at all?
      */
 
     /* find certain cache controlling headers */
-    cc_in = apr_table_get(r->headers_in, "Cache-Control");
     pragma = apr_table_get(r->headers_in, "Pragma");
     auth = apr_table_get(r->headers_in, "Authorization");
 
@@ -123,13 +116,11 @@ static int cache_url_handler(request_rec *r, int lookup)
                      "%s, but we know better and are ignoring it", url);
     }
     else {
-        if (ap_cache_liststr(NULL, cc_in, "no-store", NULL) ||
-            ap_cache_liststr(NULL, pragma, "no-cache", NULL) || (auth != NULL)) {
-            /* delete the previously cached file */
-            cache_remove_url(r, cache->types, url);
-
+        if (ap_cache_liststr(NULL, pragma, "no-cache", NULL) ||
+            auth != NULL) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                         "cache: no-store forbids caching of %s", url);
+                         "cache: no-cache or authorization forbids caching "
+                         "of %s", url);
             return DECLINED;
         }
     }
@@ -137,164 +128,106 @@ static int cache_url_handler(request_rec *r, int lookup)
     /*
      * Try to serve this request from the cache.
      *
-     * If no existing cache file
-     *   add cache_in filter
-     * If stale cache file
-     *   If conditional request
-     *     add cache_in filter
-     *   If non-conditional request
-     *     fudge response into a conditional
-     *     add cache_conditional filter
-     * If fresh cache file
-     *   clear filter stack
-     *   add cache_out filter
+     * If no existing cache file (DECLINED)
+     *   add cache_save filter
+     * If cached file (OK)
+     *   If fresh cache file
+     *     clear filter stack
+     *     add cache_out filter
+     *     return OK
+     *   If stale cache file
+     *       add cache_conditional filter (which updates cache)
      */
 
-    rv = cache_select_url(r, cache->types, url);
-    if (DECLINED == rv) {
-        if (!lookup) {
-            /* no existing cache file */
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                         "cache: no cache - add cache_in filter and DECLINE");
-            /* add cache_in filter to cache this request */
-            ap_add_output_filter_handle(cache_in_filter_handle, NULL, r,
-                                        r->connection);
-        }
-        return DECLINED;
-    }
-    else if (OK == rv) {
-        /* RFC2616 13.2 - Check cache object expiration */
-        cache->fresh = ap_cache_check_freshness(cache, r);
-        if (cache->fresh) {
-            /* fresh data available */
-            apr_bucket_brigade *out;
-            conn_rec *c = r->connection;
-
-            if (lookup) {
-                return OK;
+    rv = cache_select_url(r, url);
+    if (rv != OK) {
+        if (rv == DECLINED) {
+            if (!lookup) {
+                /* add cache_save filter to cache this request */
+                ap_add_output_filter_handle(cache_save_filter_handle, NULL, r,
+                                            r->connection);
             }
-            rv = ap_meets_conditions(r);
-            if (rv != OK) {
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                             "cache: fresh cache - returning status %d", rv);
-                return rv;
-            }
-
-            /*
-             * Not a conditionl request. Serve up the content 
-             */
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                         "cache: fresh cache - add cache_out filter and "
-                         "handle request");
-
-            /* We are in the quick handler hook, which means that no output
-             * filters have been set. So lets run the insert_filter hook.
-             */
-            ap_run_insert_filter(r);
-            ap_add_output_filter_handle(cache_out_filter_handle, NULL,
-                                        r, r->connection);
-
-            /* kick off the filter stack */
-            out = apr_brigade_create(r->pool, c->bucket_alloc);
-            if (APR_SUCCESS
-                != (rv = ap_pass_brigade(r->output_filters, out))) {
-                ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
-                             "cache: error returned while trying to return %s "
-                             "cached data", 
-                             cache->type);
-                return rv;
-            }
-            return OK;
         }
         else {
-            if (!r->err_headers_out) {
-                r->err_headers_out = apr_table_make(r->pool, 3);
-            }
-            /* stale data available */
-            if (lookup) {
-                return DECLINED;
-            }
-
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                         "cache: stale cache - test conditional");
-            /* if conditional request */
-            if (ap_cache_request_is_conditional(r)) {
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, 
-                             r->server,
-                             "cache: conditional - add cache_in filter and "
-                             "DECLINE");
-                /* Why not add CACHE_CONDITIONAL? */
-                ap_add_output_filter_handle(cache_in_filter_handle, NULL,
-                                            r, r->connection);
-
-                return DECLINED;
-            }
-            /* else if non-conditional request */
-            else {
-                /* Temporarily hack this to work the way it had been. Its broken,
-                 * but its broken the way it was before. I'm working on figuring
-                 * out why the filter add in the conditional filter doesn't work. pjr
-                 *
-                 * info = &(cache->handle->cache_obj->info);
-                 *
-                 * Uncomment the above when the code in cache_conditional_filter_handle
-                 * is properly fixed...  pjr
-                 */
-                
-                /* fudge response into a conditional */
-                if (info && info->etag) {
-                    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, 
-                                 r->server,
-                                 "cache: nonconditional - fudge conditional "
-                                 "by etag");
-                    /* if we have a cached etag */
-                    apr_table_set(r->headers_in, "If-None-Match", info->etag);
-                }
-                else if (info && info->lastmods) {
-                    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, 
-                                 r->server,
-                                 "cache: nonconditional - fudge conditional "
-                                 "by lastmod");
-                    /* if we have a cached IMS */
-                    apr_table_set(r->headers_in, 
-                                  "If-Modified-Since", 
-                                  info->lastmods);
-                }
-                else {
-                    /* something else - pretend there was no cache */
-                    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, 
-                                 r->server,
-                                 "cache: nonconditional - no cached "
-                                 "etag/lastmods - add cache_in and DECLINE");
-
-                    ap_add_output_filter_handle(cache_in_filter_handle, NULL,
-                                                r, r->connection);
-
-                    return DECLINED;
-                }
-                /* add cache_conditional filter */
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, 
-                             r->server,
-                             "cache: nonconditional - add cache_conditional "
-                             "and DECLINE");
-                ap_add_output_filter_handle(cache_conditional_filter_handle,
-                                            NULL, 
-                                            r, 
-                                            r->connection);
-
-                return DECLINED;
-            }
+            /* error */
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
+                         "cache: error returned while checking for cached "
+                         "file by %s cache", cache->provider_name);
         }
-    }
-    else {
-        /* error */
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv, 
-                     r->server,
-                     "cache: error returned while checking for cached file by "
-                     "%s cache", 
-                     cache->type);
         return DECLINED;
     }
+
+    /* We have located a suitable cache file now. */
+
+    /* RFC2616 13.2 - Check cache object expiration */
+    cache->fresh = ap_cache_check_freshness(cache, r);
+
+    /* What we have in our cache isn't fresh. */
+    if (!cache->fresh) {
+        /* If our stale cached response was conditional... */
+        if (!lookup && ap_cache_request_is_conditional(r)) {
+            info = &(cache->handle->cache_obj->info);
+
+            /* fudge response into a conditional */
+            if (info && info->etag) {
+                /* if we have a cached etag */
+                apr_table_set(r->headers_in, "If-None-Match", info->etag);
+            }
+            else if (info && info->lastmods) {
+                /* if we have a cached IMS */
+                apr_table_set(r->headers_in, "If-Modified-Since",
+                              info->lastmods);
+            }
+        }
+
+        /* Add cache_conditional_filter to see if we can salvage
+         * later.
+         */
+        ap_add_output_filter_handle(cache_conditional_filter_handle,
+                                    NULL, r, r->connection);
+        return DECLINED;
+    }
+
+    /* fresh data available */
+
+    info = &(cache->handle->cache_obj->info);
+
+    if (info && info->lastmod) {
+        ap_update_mtime(r, info->lastmod);
+    }
+
+    rv = ap_meets_conditions(r);
+    if (rv != OK) {
+        /* Return cached status. */
+        return rv;
+    }
+
+    /* If we're a lookup, we can exit now instead of serving the content. */
+    if (lookup) {
+        return OK;
+    }
+
+    /* Serve up the content */
+
+    /* We are in the quick handler hook, which means that no output
+     * filters have been set. So lets run the insert_filter hook.
+     */
+    ap_run_insert_filter(r);
+    ap_add_output_filter_handle(cache_out_filter_handle, NULL,
+                                r, r->connection);
+
+    /* kick off the filter stack */
+    out = apr_brigade_create(r->pool, r->connection->bucket_alloc);
+    rv = ap_pass_brigade(r->output_filters, out);
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
+                     "cache: error returned while trying to return %s "
+                     "cached data", 
+                     cache->provider_name);
+        return rv;
+    }
+
+    return OK;
 }
 
 /*
@@ -323,8 +256,8 @@ static int cache_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r->server,
                  "cache: running CACHE_OUT filter");
 
-    /* cache_read_entity_headers() was called in cache_select_url() */
-    cache_read_entity_body(cache->handle, r->pool, bb);
+    /* recall_body() was called in cache_select_url() */
+    cache->provider->recall_body(cache->handle, r->pool, bb);
 
     /* This filter is done once it has served up its content */
     ap_remove_output_filter(f);
@@ -344,7 +277,7 @@ static int cache_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
  * If response HTTP_NOT_MODIFIED
  *   replace ourselves with cache_out filter
  * Otherwise
- *   replace ourselves with cache_in filter
+ *   replace ourselves with cache_save filter
  */
 
 static int cache_conditional_filter(ap_filter_t *f, apr_bucket_brigade *in)
@@ -358,8 +291,8 @@ static int cache_conditional_filter(ap_filter_t *f, apr_bucket_brigade *in)
                                     f->r, f->r->connection);
     }
     else {
-        /* replace ourselves with CACHE_IN filter */
-        ap_add_output_filter_handle(cache_in_filter_handle, NULL,
+        /* replace ourselves with CACHE_SAVE filter */
+        ap_add_output_filter_handle(cache_save_filter_handle, NULL,
                                     f->r, f->r->connection);
     }
     ap_remove_output_filter(f);
@@ -369,7 +302,7 @@ static int cache_conditional_filter(ap_filter_t *f, apr_bucket_brigade *in)
 
 
 /*
- * CACHE_IN filter
+ * CACHE_SAVE filter
  * ---------------
  *
  * Decide whether or not this content should be cached.
@@ -381,7 +314,7 @@ static int cache_conditional_filter(ap_filter_t *f, apr_bucket_brigade *in)
  *
  */
 
-static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
+static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
 {
     int rv;
     int date_in_errhdr = 0;
@@ -389,7 +322,7 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
     cache_request_rec *cache;
     cache_server_conf *conf;
     char *url = r->unparsed_uri;
-    const char *cc_out, *cl;
+    const char *cc_in, *cc_out, *cl;
     const char *exps, *lastmods, *dates, *etag;
     apr_time_t exp, date, lastmod, now;
     apr_off_t size;
@@ -398,17 +331,20 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
     apr_pool_t *p;
 
     /* check first whether running this filter has any point or not */
-    if(r->no_cache) {
+    /* If the user has Cache-Control: no-store from RFC 2616, don't store! */
+    cc_in = apr_table_get(r->headers_in, "Cache-Control");
+    if (r->no_cache || ap_cache_liststr(NULL, cc_in, "no-store", NULL)) {
         ap_remove_output_filter(f);
         return ap_pass_brigade(f->next, in);
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                 "cache: running CACHE_IN filter");
-
     /* Setup cache_request_rec */
-    cache = (cache_request_rec *) ap_get_module_config(r->request_config, &cache_module);
+    cache = (cache_request_rec *) ap_get_module_config(r->request_config,
+                                                       &cache_module);
     if (!cache) {
+        /* user likely configured CACHE_SAVE manually; they should really use
+         * mod_cache configuration to do that
+         */
         cache = apr_pcalloc(r->pool, sizeof(cache_request_rec));
         ap_set_module_config(r->request_config, &cache_module, cache);
     }
@@ -429,7 +365,7 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
         /* pass the brigades into the cache, then pass them
          * up the filter stack
          */
-        rv = cache_write_entity_body(cache->handle, r, in);
+        rv = cache->provider->store_body(cache->handle, r, in);
         if (rv != APR_SUCCESS) {
             ap_remove_output_filter(f);
         }
@@ -573,7 +509,7 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
          * BillS Asks.. Why do we need to make this call to remove_url?
          * leave it in for now..
          */
-        cache_remove_url(r, cache->types, url);
+        cache_remove_url(r, url);
 
         /* remove this filter from the chain */
         ap_remove_output_filter(f);
@@ -590,9 +526,20 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
         cl = apr_table_get(r->headers_out, "Content-Length");
     }
     if (cl) {
+#if 0
+        char *errp;
+        if (apr_strtoff(&size, cl, &errp, 10) || *errp || size < 0) {
+            cl = NULL; /* parse error, see next 'if' block */
+        }
+#else
         size = apr_atoi64(cl);
+        if (size < 0) {
+            cl = NULL;
+        }
+#endif
     }
-    else {
+
+    if (!cl) {
         /* if we don't get the content-length, see if we have all the 
          * buckets and use their length to calculate the size 
          */
@@ -600,7 +547,10 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
         int all_buckets_here=0;
         int unresolved_length = 0;
         size=0;
-        APR_BRIGADE_FOREACH(e, in) {
+        for (e = APR_BRIGADE_FIRST(in);
+             e != APR_BRIGADE_SENTINEL(in);
+             e = APR_BUCKET_NEXT(e))
+        {
             if (APR_BUCKET_IS_EOS(e)) {
                 all_buckets_here=1;
                 break;
@@ -633,7 +583,7 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
      */
     /* no cache handle, create a new entity */
     if (!cache->handle) {
-        rv = cache_create_entity(r, cache->types, url, size);
+        rv = cache_create_entity(r, url, size);
     }
     /* pre-existing cache handle and 304, make entity fresh */
     else if (r->status == HTTP_NOT_MODIFIED) {
@@ -650,8 +600,8 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
      * with this one
      */
     else {
-        cache_remove_entity(r, cache->types, cache->handle);
-        rv = cache_create_entity(r, cache->types, url, size);
+        cache->provider->remove_entity(cache->handle);
+        rv = cache_create_entity(r, url, size);
     }
     
     if (rv != OK) {
@@ -761,9 +711,9 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
     /*
      * Write away header information to cache.
      */
-    rv = cache_write_entity_headers(cache->handle, r, info);
+    rv = cache->provider->store_headers(cache->handle, r, info);
     if (rv == APR_SUCCESS) {
-        rv = cache_write_entity_body(cache->handle, r, in);
+        rv = cache->provider->store_body(cache->handle, r, in);
     }
     if (rv != APR_SUCCESS) {
         ap_remove_output_filter(f);
@@ -877,6 +827,7 @@ static const char *add_cache_enable(cmd_parms *parms, void *dummy,
     new = apr_array_push(conf->cacheenable);
     new->type = type;
     new->url = url;
+    new->urllen = strlen(url);
     return NULL;
 }
 
@@ -891,6 +842,7 @@ static const char *add_cache_disable(cmd_parms *parms, void *dummy,
                                                   &cache_module);
     new = apr_array_push(conf->cachedisable);
     new->url = url;
+    new->urllen = strlen(url);
     return NULL;
 }
 
@@ -1014,9 +966,9 @@ static void register_hooks(apr_pool_t *p)
      * Make them AP_FTYPE_CONTENT for now.
      * XXX ianhH:they should run AFTER all the other content filters.
      */
-    cache_in_filter_handle = 
-        ap_register_output_filter("CACHE_IN", 
-                                  cache_in_filter, 
+    cache_save_filter_handle = 
+        ap_register_output_filter("CACHE_SAVE", 
+                                  cache_save_filter, 
                                   NULL,
                                   AP_FTYPE_CONTENT_SET-1);
     /* CACHE_OUT must go into the filter chain before SUBREQ_CORE to

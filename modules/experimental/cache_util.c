@@ -17,7 +17,7 @@
 
 #include "mod_cache.h"
 
-
+#include <ap_provider.h>
 
 /* -------------------------------------------------------------- */
 
@@ -28,76 +28,76 @@ CACHE_DECLARE(int) ap_cache_request_is_conditional(request_rec *r)
         apr_table_get(r->headers_in, "If-None-Match") ||
         apr_table_get(r->headers_in, "If-Modified-Since") ||
         apr_table_get(r->headers_in, "If-Unmodified-Since")) {
-
         return 1;
     }
     return 0;
 }
 
-
-/* remove other filters from filter stack */
-CACHE_DECLARE(void) ap_cache_reset_output_filters(request_rec *r)
-{
-    ap_filter_t *f = r->output_filters;
-
-    while (f) {
-        if (!strcasecmp(f->frec->name, "CORE") ||
-            !strcasecmp(f->frec->name, "CONTENT_LENGTH") ||
-            !strcasecmp(f->frec->name, "HTTP_HEADER")) {
-            f = f->next;
-            continue;
-        }
-        else {
-            ap_remove_output_filter(f);
-            f = f->next;
-        }
-    }
-}
-
-CACHE_DECLARE(const char *)ap_cache_get_cachetype(request_rec *r, 
+CACHE_DECLARE(cache_provider_list *)ap_cache_get_providers(request_rec *r,
                                                   cache_server_conf *conf, 
                                                   const char *url)
 {
-    const char *type = NULL;
+    cache_provider_list *providers = NULL;
     int i;
 
     /* we can't cache if there's no URL */
+    /* Is this case even possible?? */
     if (!url) return NULL;
 
     /* loop through all the cacheenable entries */
     for (i = 0; i < conf->cacheenable->nelts; i++) {
         struct cache_enable *ent = 
                                 (struct cache_enable *)conf->cacheenable->elts;
-        const char *thisurl = ent[i].url;
-        const char *thistype = ent[i].type;
-        if ((thisurl) && !strncasecmp(thisurl, url, strlen(thisurl))) {
-            if (!type) {
-                type = thistype;
+        if ((ent[i].url) && !strncasecmp(url, ent[i].url, ent[i].urllen)) {
+            /* Fetch from global config and add to the list. */
+            cache_provider *provider;
+            provider = ap_lookup_provider(CACHE_PROVIDER_GROUP, ent[i].type,
+                                          "0");
+            if (!provider) {
+                /* Log an error! */
             }
             else {
-                type = apr_pstrcat(r->pool, type, ",", thistype, NULL);
+                cache_provider_list *newp;
+                newp = apr_pcalloc(r->pool, sizeof(cache_provider_list));
+                newp->provider_name = ent[i].type;
+                newp->provider = provider;
+
+                if (!providers) {
+                    providers = newp;
+                }
+                else {
+                    cache_provider_list *last = providers;
+
+                    while (last->next) {
+                        last = last->next;
+                    }
+                    last->next = newp;
+                }
             }
         }
     }
 
-    /* then loop through all the cachedisable entries */
-    /* Looking for urls that contain the full cachedisable url and possibly more. */
-    /*   This means we are disabling cachedisable url and below... */
+    /* then loop through all the cachedisable entries
+     * Looking for urls that contain the full cachedisable url and possibly
+     * more.
+     * This means we are disabling cachedisable url and below...
+     */
     for (i = 0; i < conf->cachedisable->nelts; i++) {
         struct cache_disable *ent = 
                                (struct cache_disable *)conf->cachedisable->elts;
-        const char *thisurl = ent[i].url;
-        if ((thisurl) && !strncasecmp(thisurl, url, strlen(thisurl))) {
-            type = NULL;
+        if ((ent[i].url) && !strncasecmp(url, ent[i].url, ent[i].urllen)) {
+            /* Stop searching now. */
+            return NULL;
         }
     }
 
-    return type;
+    return providers;
 }
 
 
 /* do a HTTP/1.1 age calculation */
-CACHE_DECLARE(apr_int64_t) ap_cache_current_age(cache_info *info, const apr_time_t age_value,
+CACHE_DECLARE(apr_int64_t) ap_cache_current_age(cache_info *info,
+                                                const apr_time_t age_value,
                                                 apr_time_t now)
 {
     apr_time_t apparent_age, corrected_received_age, response_delay,
@@ -121,7 +121,8 @@ CACHE_DECLARE(apr_int64_t) ap_cache_current_age(cache_info *info, const apr_time
 CACHE_DECLARE(int) ap_cache_check_freshness(cache_request_rec *cache, 
                                             request_rec *r)
 {
-    apr_int64_t age, maxage_req, maxage_cresp, maxage, smaxage, maxstale, minfresh;
+    apr_int64_t age, maxage_req, maxage_cresp, maxage, smaxage, maxstale;
+    apr_int64_t minfresh;
     int age_in_errhdr = 0;
     const char *cc_cresp, *cc_ceresp, *cc_req;
     const char *agestr = NULL;
@@ -134,7 +135,7 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_request_rec *cache,
      * We now want to check if our cached data is still fresh. This depends
      * on a few things, in this order:
      *
-     * - RFC2616 14.9.4 End to end reload, Cache-Control: no-cache no-cache in
+     * - RFC2616 14.9.4 End to end reload, Cache-Control: no-cache. no-cache in
      * either the request or the cached response means that we must
      * revalidate the request unconditionally, overriding any expiration
      * mechanism. It's equivalent to max-age=0,must-revalidate.
@@ -182,50 +183,64 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_request_rec *cache,
     age = ap_cache_current_age(info, age_c, r->request_time);
 
     /* extract s-maxage */
-    if (cc_cresp && ap_cache_liststr(r->pool, cc_cresp, "s-maxage", &val))
+    if (cc_cresp && ap_cache_liststr(r->pool, cc_cresp, "s-maxage", &val)) {
         smaxage = apr_atoi64(val);
+    }
     else if (cc_ceresp && ap_cache_liststr(r->pool, cc_ceresp, "s-maxage", &val)) {
         smaxage = apr_atoi64(val);
     }
-    else
+    else {
         smaxage = -1;
+    }
 
     /* extract max-age from request */
-    if (cc_req && ap_cache_liststr(r->pool, cc_req, "max-age", &val))
+    if (cc_req && ap_cache_liststr(r->pool, cc_req, "max-age", &val)) {
         maxage_req = apr_atoi64(val);
-    else
+    }
+    else {
         maxage_req = -1;
+    }
 
     /* extract max-age from response */
-    if (cc_cresp && ap_cache_liststr(r->pool, cc_cresp, "max-age", &val))
+    if (cc_cresp && ap_cache_liststr(r->pool, cc_cresp, "max-age", &val)) {
         maxage_cresp = apr_atoi64(val);
+    }
     else if (cc_ceresp && ap_cache_liststr(r->pool, cc_ceresp, "max-age", &val)) {
         maxage_cresp = apr_atoi64(val);
     }
     else
+    {
         maxage_cresp = -1;
+    }
 
     /*
      * if both maxage request and response, the smaller one takes priority
      */
-    if (-1 == maxage_req)
+    if (-1 == maxage_req) {
         maxage = maxage_cresp;
-    else if (-1 == maxage_cresp)
+    }
+    else if (-1 == maxage_cresp) {
         maxage = maxage_req;
-    else
+    }
+    else {
         maxage = MIN(maxage_req, maxage_cresp);
+    }
 
     /* extract max-stale */
-    if (cc_req && ap_cache_liststr(r->pool, cc_req, "max-stale", &val))
+    if (cc_req && ap_cache_liststr(r->pool, cc_req, "max-stale", &val)) {
         maxstale = apr_atoi64(val);
-    else
+    }
+    else {
         maxstale = 0;
+    }
 
     /* extract min-fresh */
-    if (cc_req && ap_cache_liststr(r->pool, cc_req, "min-fresh", &val))
+    if (cc_req && ap_cache_liststr(r->pool, cc_req, "min-fresh", &val)) {
         minfresh = apr_atoi64(val);
-    else
+    }
+    else {
         minfresh = 0;
+    }
 
     /* override maxstale if must-revalidate or proxy-revalidate */
     if (maxstale && ((cc_cresp &&
@@ -275,7 +290,8 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_request_rec *cache,
         /* add warning if maxstale overrode freshness calculation */
         if (!(((smaxage != -1) && age < smaxage) ||
               ((maxage != -1) && age < maxage) ||
-              (info->expire != APR_DATE_BAD && (info->expire - info->date) > age))) {
+              (info->expire != APR_DATE_BAD &&
+               (info->expire - info->date) > age))) {
             /* make sure we don't stomp on a previous warning */
             if ((warn_head == NULL) ||
                 ((warn_head != NULL) && (ap_strstr_c(warn_head, "110") == NULL))) {
@@ -303,7 +319,8 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_request_rec *cache,
     }
     return 0;        /* Cache object is stale */
 }
-/* 
+
+/*
  * list is a comma-separated list of case-insensitive tokens, with
  * optional whitespace around the tokens.
  * The return returns 1 if the token val is found in the list, or 0
@@ -380,7 +397,8 @@ CACHE_DECLARE(int) ap_cache_liststr(apr_pool_t *p, const char *list,
 }
 
 /* return each comma separated token, one at a time */
-CACHE_DECLARE(const char *)ap_cache_tokstr(apr_pool_t *p, const char *list, const char **str)
+CACHE_DECLARE(const char *)ap_cache_tokstr(apr_pool_t *p, const char *list,
+                                           const char **str)
 {
     apr_size_t i;
     const char *s;
@@ -487,7 +505,8 @@ static void cache_hash(const char *it, char *val, int ndepth, int nlength)
     val[i + 22 - k] = '\0';
 }
 
-CACHE_DECLARE(char *)generate_name(apr_pool_t *p, int dirlevels, int dirlength, const char *name)
+CACHE_DECLARE(char *)generate_name(apr_pool_t *p, int dirlevels,
+                                   int dirlength, const char *name)
 {
     char hashfile[66];
     cache_hash(name, hashfile, dirlevels, dirlength);
