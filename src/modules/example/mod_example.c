@@ -89,7 +89,7 @@ typedef struct example_config {
 			/* server, or combination).			    */
 #define CONFIG_MODE_SERVER 1
 #define CONFIG_MODE_DIRECTORY 2
-#define CONFIG_MODE_COMBO 3
+#define CONFIG_MODE_COMBO 3  /* Shouldn't ever happen.			    */
     int	    local;	/* Boolean: was "Example" directive declared here?  */
     int	    congenital;	/* Boolean: did we inherit an "Example"?	    */
     char    *trace;	/* Pointer to trace string.			    */
@@ -122,78 +122,88 @@ module example_module;
 
 /*
  * Command handler for a NO_ARGS directive.
- */
-static const char *handle_NO_ARGS
-	(cmd_parms *cmd, void *mconfig);
-
+ *
+ * static const char *handle_NO_ARGS
+ *	(cmd_parms *cmd, void *mconfig);
+ *
+ 
 /*
  * Command handler for a RAW_ARGS directive.  The "args" argument is the text
  * of the commandline following the directive itself.
+ *
+ * static const char *handle_RAW_ARGS
+ *	(cmd_parms *cmd, void *mconfig, const char *args);
  */
-static const char *handle_RAW_ARGS
-	(cmd_parms *cmd, void *mconfig, const char *args);
 
 /*
  * Command handler for a TAKE1 directive.  The single parameter is passed in
  * "word1".
+ *
+ * static const char *handle_TAKE1
+ *	(cmd_parms *cmd, void *mconfig, char *word1);
  */
-static const char *handle_TAKE1
-	(cmd_parms *cmd, void *mconfig, char *word1);
 
 /*
  * Command handler for a TAKE2 directive.  TAKE2 commands must always have
  * exactly two arguments.
+ *
+ * static const char *handle_TAKE2
+ *	(cmd_parms *cmd, void *mconfig, char *word1, char *word2);
  */
-static const char *handle_TAKE2
-	(cmd_parms *cmd, void *mconfig, char *word1, char *word2);
 
 /*
  * Command handler for a TAKE3 directive.  Like TAKE2, these must have exactly
  * three arguments, or the parser complains and doesn't bother calling us.
+ *
+ * static const char *handle_TAKE3
+ *	(cmd_parms *cmd, void *mconfig, char *word1, char *word2, char *word3);
  */
-static const char *handle_TAKE3
-	(cmd_parms *cmd, void *mconfig, char *word1, char *word2, char *word3);
 
 /*
  * Command handler for a TAKE12 directive.  These can take either one or two
  * arguments.
  * - word2 is a NULL pointer if no second argument was specified.
+ *
+ * static const char *handle_TAKE12
+ *	(cmd_parms *cmd, void *mconfig, char *word1, char *word2);
  */
-static const char *handle_TAKE12
-	(cmd_parms *cmd, void *mconfig, char *word1, char *word2);
 
 /*
  * Command handler for a TAKE123 directive.  A TAKE123 directive can be given,
  * as might be expected, one, two, or three arguments.
  * - word2 is a NULL pointer if no second argument was specified.
  * - word3 is a NULL pointer if no third argument was specified.
+ *
+ * static const char *handle_TAKE123
+ *	(cmd_parms *cmd, void *mconfig, char *word1, char *word2, char *word3);
  */
-static const char *handle_TAKE123
-	(cmd_parms *cmd, void *mconfig, char *word1, char *word2, char *word3);
 
 /*
  * Command handler for a TAKE13 directive.  Either one or three arguments are
  * permitted - no two-parameters-only syntax is allowed.
  * - word2 and word3 are NULL pointers if only one argument was specified.
+ *
+ * static const char *handle_TAKE13
+ *	(cmd_parms *cmd, void *mconfig, char *word1, char *word2, char *word3);
  */
-static const char *handle_TAKE13
-	(cmd_parms *cmd, void *mconfig, char *word1, char *word2, char *word3);
 
 /*
  * Command handler for a TAKE23 directive.  At least two and as many as three
  * arguments must be specified.
  * - word3 is a NULL pointer if no third argument was specified.
+ *
+ * static const char *handle_TAKE23
+ *	(cmd_parms *cmd, void *mconfig, char *word1, char *word2, char *word3);
  */
-static const char *handle_TAKE23
-	(cmd_parms *cmd, void *mconfig, char *word1, char *word2, char *word3);
 
 /*
  * Command handler for a ITERATE directive.
  * - Handler is called once for each of n arguments given to the directive.
  * - word1 points to each argument in turn.
+ *
+ * static const char *handle_ITERATE
+ *	(cmd_parms *cmd, void *mconfig, char *word1);
  */
-static const char *handle_ITERATE
-	(cmd_parms *cmd, void *mconfig, char *word1);
 
 /*
  * Command handler for a ITERATE2 directive.
@@ -202,9 +212,10 @@ static const char *handle_ITERATE
  * - word1 is the same for each call for a particular directive instance (the
  *   first argument).
  * - word2 points to each of the second and subsequent arguments in turn.
+ *
+ * static const char *handle_ITERATE2
+ *	(cmd_parms *cmd, void *mconfig, char *word1, char *word2);
  */
-static const char *handle_ITERATE2
-	(cmd_parms *cmd, void *mconfig, char *word1, char *word2);
 
 /*--------------------------------------------------------------------------*/
 /*									    */
@@ -215,14 +226,27 @@ static const char *handle_ITERATE2
 /*--------------------------------------------------------------------------*/
 
 /*
- * Locate our configuration record for the current request.
+ * Locate our directory configuration record for the current request.
  */
-static example_config *our_config
+static example_config *our_dconfig
 	(request_rec *r) {
 
     return (example_config *) get_module_config
 				(
 				    r->per_dir_config,
+				    &example_module
+				);
+}
+
+/*
+ * Locate our server configuration record for the specified server.
+ */
+static example_config *our_sconfig
+	(server_rec *s) {
+
+    return (example_config *) get_module_config
+				(
+				    s->module_config,
 				    &example_module
 				);
 }
@@ -324,7 +348,8 @@ static const char *cmd_example
 /* mod_info and mod_status examples, for more details.)			    */
 /*									    */
 /* Since content handlers are dumping data directly into the connexion	    */
-/* without intervention by other parts of the server, they need to make	    */
+/* (using the r*() routines, such as rputs() and rprintf()) without	    */
+/* intervention by other parts of the server, they need to make		    */
 /* sure any accumulated HTTP headers are sent first.  This is done by	    */
 /* calling send_http_header().  Otherwise, no header will be sent at all,   */
 /* and the output sent to the client will actually be HTTP-uncompliant.	    */
@@ -345,7 +370,7 @@ static int example_handler
     example_config
 	    *cfg;
 
-    cfg = our_config (r);
+    cfg = our_dconfig (r);
     trace_add (r->server, r->pool, cfg, "example_handler()");
     /*
      * We're about to start sending content, so we need to force the HTTP
@@ -542,6 +567,8 @@ static void *example_dir_create
  * routine, the record for the closest ancestor location (that has one) is
  * used exclusively.
  *
+ * The routine MUST NOT modify any of its arguments!
+ *
  * The return value is a pointer to the created module-specific structure
  * containing the merged values.
  */
@@ -633,6 +660,8 @@ static void *example_server_create
  * appropriately.  If the module doesn't declare a merge routine, the more
  * specific existing record is used exclusively.
  *
+ * The routine MUST NOT modify any of its arguments!
+ *
  * The return value is a pointer to the created module-specific structure
  * containing the merged values.
  */
@@ -688,7 +717,7 @@ static int example_xlate
     example_config
 	    *cfg;
 
-    cfg = our_config (r);
+    cfg = our_dconfig (r);
     /*
      * We don't actually *do* anything here, except note the fact that we were
      * called.
@@ -712,7 +741,7 @@ static int example_ckuser
     example_config
 	    *cfg;
 
-    cfg = our_config (r);
+    cfg = our_dconfig (r);
     /*
      * Don't do anything except log the call.
      */
@@ -736,7 +765,7 @@ static int example_ckauth
     example_config
 	    *cfg;
 
-    cfg = our_config (r);
+    cfg = our_dconfig (r);
     /*
      * Log the call and return OK, or access will be denied (even though we
      * didn't actually do anything).
@@ -760,7 +789,7 @@ static int example_ckaccess
     example_config
 	    *cfg;
 
-    cfg = our_config (r);
+    cfg = our_dconfig (r);
     trace_add (r->server, r->pool, cfg, "example_ckaccess()");
     return OK;
 }
@@ -779,7 +808,7 @@ static int example_typer
     example_config
 	    *cfg;
 
-    cfg = our_config (r);
+    cfg = our_dconfig (r);
     /*
      * Log the call, but don't do anything else - and report truthfully that
      * we didn't do anything.
@@ -802,7 +831,7 @@ static int example_fixer
     example_config
 	    *cfg;
 
-    cfg = our_config (r);
+    cfg = our_dconfig (r);
     /*
      * Log the call and exit.
      */
@@ -823,7 +852,7 @@ static int example_logger
     example_config
 	    *cfg;
 
-    cfg = our_config (r);
+    cfg = our_dconfig (r);
     trace_add (r->server, r->pool, cfg, "example_logger()");
     return DECLINED;
 }
@@ -842,7 +871,7 @@ static int example_hparser
     example_config
 	    *cfg;
 
-    cfg = our_config (r);
+    cfg = our_dconfig (r);
     trace_add (r->server, r->pool, cfg, "example_hparser()");
     return DECLINED;
 }
@@ -878,10 +907,16 @@ command_rec example_commands[] = {
 /*									    */
 /*--------------------------------------------------------------------------*/
 /* 
- * List of handlers our module supplies.  Each handler is defined by two
- * parts: a name by which it can be referenced (such as by {Add,Set}Handler),
- * and the actual routine name.  The list is terminated by a NULL block, since
- * it can be of variable length.
+ * List of content handlers our module supplies.  Each handler is defined by
+ * two parts: a name by which it can be referenced (such as by
+ * {Add,Set}Handler), and the actual routine name.  The list is terminated by
+ * a NULL block, since it can be of variable length.
+ *
+ * Note that content-handlers are invoked on a most-specific to least-specific
+ * basis; that is, an handler that is declared for "text/plain" will be
+ * invoked before one that was declared for "text/*".  Note also that
+ * if a content-handler returns anything except DECLINED, no other
+ * content-handlers will be called.
  */
 handler_rec example_handlers[] = {
     { "example-handler", example_handler },
