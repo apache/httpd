@@ -2,11 +2,6 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
-  *) fix the config parser to support <Foo>..</Foo> containers (no
-     arguments in the opening tag) supported by httpd 1.3. Without
-     this change mod_perl 2.0's <Perl> sections are broken.
-     ["Philippe M. Chiasson" <gozer@cpan.org>]
-
   *) mod_cgid: fix a hash table corruption problem which could
      result in the wrong script being cleaned up at the end of a
      request.  [Jeff Trawick]
@@ -211,6 +206,11 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.48
+
+  *) fix the config parser to support <Foo>..</Foo> containers (no
+     arguments in the opening tag) supported by httpd 1.3. Without
+     this change mod_perl 2.0's <Perl> sections are broken.
+     ["Philippe M. Chiasson" <gozer@cpan.org>]
 
   *) Update httpd-*.conf to be clearer in describing the connection
      between AddType and AddEncoding for defining the meaning of
