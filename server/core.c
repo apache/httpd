@@ -2920,6 +2920,7 @@ static int default_handler(request_rec *r)
      *     when the charset is translated).
      */
     int bld_content_md5;
+    apr_pool_t *main_pool;
 
     /*
      * The old way of doing handlers meant that this handler would
@@ -2964,8 +2965,9 @@ static int default_handler(request_rec *r)
     if (r->method_number != M_GET && r->method_number != M_POST) {
         return HTTP_METHOD_NOT_ALLOWED;
     }
+    main_pool = (r->main) ? (r->main->pool) : (r->pool);
 	
-    if ((status = apr_file_open(&fd, r->filename, APR_READ | APR_BINARY, 0, r->pool)) != APR_SUCCESS) {
+    if ((status = apr_file_open(&fd, r->filename, APR_READ | APR_BINARY, 0, main_pool)) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
 		     "file permissions deny server access: %s", r->filename);
         return HTTP_FORBIDDEN;
