@@ -98,10 +98,10 @@
 
 
 APR_HOOK_STRUCT(
-	    APR_HOOK_LINK(post_read_request)
-	    APR_HOOK_LINK(log_transaction)
-	    APR_HOOK_LINK(http_method)
-	    APR_HOOK_LINK(default_port)
+    APR_HOOK_LINK(post_read_request)
+    APR_HOOK_LINK(log_transaction)
+    APR_HOOK_LINK(http_method)
+    APR_HOOK_LINK(default_port)
 )
 
 AP_DECLARE_DATA ap_filter_rec_t *ap_old_write_func = NULL;
@@ -117,38 +117,40 @@ AP_DECLARE_DATA ap_filter_rec_t *ap_old_write_func = NULL;
 AP_DECLARE(const char *)ap_make_content_type(request_rec *r, const char *type)
 {
     static const char *needcset[] = {
-	"text/plain",
-	"text/html",
-	NULL };
+        "text/plain",
+        "text/html",
+        NULL };
     const char **pcset;
     core_dir_config *conf =
-	(core_dir_config *)ap_get_module_config(r->per_dir_config,
-						&core_module);
+        (core_dir_config *)ap_get_module_config(r->per_dir_config,
+                                                &core_module);
 
     if (!type) {
-	type = ap_default_type(r);
+        type = ap_default_type(r);
     }
+
     if (conf->add_default_charset != ADD_DEFAULT_CHARSET_ON) {
-	return type;
+        return type;
     }
 
     if (ap_strcasestr(type, "charset=") != NULL) {
-	/* already has parameter, do nothing */
-	/* XXX we don't check the validity */
-	;
+        /* already has parameter, do nothing */
+        /* XXX we don't check the validity */
+        ;
     }
     else {
-    	/* see if it makes sense to add the charset. At present,
-	 * we only add it if the Content-type is one of needcset[]
-	 */
-	for (pcset = needcset; *pcset ; pcset++) {
-	    if (ap_strcasestr(type, *pcset) != NULL) {
-		type = apr_pstrcat(r->pool, type, "; charset=", 
-				   conf->add_default_charset_name, NULL);
-		break;
-	    }
-	}
+        /* see if it makes sense to add the charset. At present,
+         * we only add it if the Content-type is one of needcset[]
+         */
+        for (pcset = needcset; *pcset ; pcset++) {
+            if (ap_strcasestr(type, *pcset) != NULL) {
+                type = apr_pstrcat(r->pool, type, "; charset=",
+                                   conf->add_default_charset_name, NULL);
+                break;
+            }
+        }
     }
+
     return type;
 }
 
@@ -156,7 +158,7 @@ AP_DECLARE(void) ap_set_content_length(request_rec *r, apr_off_t clength)
 {
     r->clength = clength;
     apr_table_setn(r->headers_out, "Content-Length",
-		   apr_off_t_toa(r->pool, clength));
+                   apr_off_t_toa(r->pool, clength));
 }
 
 /*
@@ -198,14 +200,14 @@ AP_DECLARE(apr_time_t) ap_rationalize_mtime(request_rec *r, apr_time_t mtime)
  * The LF is *not* returned in the buffer.  Therefore, a *read of 0
  * indicates that an empty line was read.
  *
- * Notes: Because the buffer uses 1 char for NUL, the most we can return is 
- *        (n - 1) actual characters.  
+ * Notes: Because the buffer uses 1 char for NUL, the most we can return is
+ *        (n - 1) actual characters.
  *
- *        If no LF is detected on the last line due to a dropped connection 
+ *        If no LF is detected on the last line due to a dropped connection
  *        or a full buffer, that's considered an error.
  */
-AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n, 
-                                          apr_size_t *read, request_rec *r, 
+AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
+                                          apr_size_t *read, request_rec *r,
                                           int fold)
 {
     apr_status_t rv;
@@ -227,7 +229,7 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
     /* Something horribly wrong happened.  Someone didn't block! */
     if (APR_BRIGADE_EMPTY(b)) {
         apr_brigade_destroy(b);
-        return APR_EGENERAL; 
+        return APR_EGENERAL;
     }
 
     APR_BRIGADE_FOREACH(e, b) {
@@ -236,7 +238,7 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
 
         /* If we see an EOS, don't bother doing anything more. */
         if (APR_BUCKET_IS_EOS(e)) {
-            saw_eos = 1; 
+            saw_eos = 1;
             break;
         }
 
@@ -254,10 +256,10 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
              */
             continue;
         }
-        
+
         /* Would this overrun our buffer?  If so, we'll die. */
         if (n < bytes_handled + len) {
-            apr_brigade_destroy(b); 
+            apr_brigade_destroy(b);
             return APR_ENOSPC;
         }
 
@@ -272,16 +274,20 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
                 /* We resize to the next power of 2. */
                 apr_size_t new_size = current_alloc;
                 char *new_buffer;
+
                 do {
                     new_size *= 2;
                 } while (bytes_handled + len > new_size);
+
                 new_buffer = apr_palloc(r->pool, new_size);
+
                 /* Copy what we already had. */
                 memcpy(new_buffer, *s, bytes_handled);
                 current_alloc = new_size;
                 *s = new_buffer;
             }
         }
+
         /* Just copy the rest of the data to the end of the old buffer. */
         pos = *s + bytes_handled;
         memcpy(pos, str, len);
@@ -294,14 +300,14 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
     /* We no longer need the returned brigade. */
     apr_brigade_destroy(b);
 
-    /* We likely aborted early before reading anything or we read no 
+    /* We likely aborted early before reading anything or we read no
      * data.  Technically, this might be success condition.  But,
      * probably means something is horribly wrong.  For now, we'll
      * treat this as APR_SUCCESS, but it may be worth re-examining.
      */
     if (bytes_handled == 0) {
         *read = 0;
-        return APR_SUCCESS; 
+        return APR_SUCCESS;
     }
 
     /* If we didn't get a full line of input, try again. */
@@ -310,10 +316,10 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
         if (bytes_handled < n) {
             apr_size_t next_size, next_len;
             char *tmp;
-     
+
             /* If we're doing the allocations for them, we have to
              * give ourselves a NULL and copy it on return.
-             */ 
+             */
             if (do_alloc) {
                 tmp = NULL;
             } else {
@@ -339,8 +345,10 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
             if (do_alloc && next_len > 0) {
                 char *new_buffer;
                 apr_size_t new_size = bytes_handled + next_len;
+
                 /* Again we need to alloc an extra two bytes for LF, null */
                 new_buffer = apr_palloc(r->pool, new_size);
+
                 /* Copy what we already had. */
                 memcpy(new_buffer, *s, bytes_handled);
                 memcpy(new_buffer + bytes_handled, tmp, next_len);
@@ -373,20 +381,20 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
      * it much easier to check field values for exact matches, and
      * saves memory as well.
      */
-    while (pos > ((*s) + 1) && 
-           (*(pos - 1) == APR_ASCII_BLANK || *(pos - 1) == APR_ASCII_TAB)) {
+    while (pos > ((*s) + 1)
+           && (*(pos - 1) == APR_ASCII_BLANK || *(pos - 1) == APR_ASCII_TAB)) {
         --pos;
     }
 
     /* Since we want to remove the LF from the line, we'll go ahead
-     * and set this last character to be the term NULL and reset 
+     * and set this last character to be the term NULL and reset
      * bytes_handled accordingly.
      */
     *pos = '\0';
     last_char = pos;
     bytes_handled = pos - *s;
-   
-    /* If we're folding, we have more work to do. 
+
+    /* If we're folding, we have more work to do.
      *
      * Note that if an EOS was seen, we know we can't have another line.
      */
@@ -439,7 +447,7 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
         /* We no longer need the returned brigade. */
         apr_brigade_destroy(bb);
 
-        /* Found one, so call ourselves again to get the next line. 
+        /* Found one, so call ourselves again to get the next line.
          *
          * FIXME: If the folding line is completely blank, should we
          * stop folding?  Does that require also looking at the next
@@ -450,13 +458,13 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
             if (bytes_handled < n) {
                 apr_size_t next_size, next_len;
                 char *tmp;
-       
+
                 /* If we're doing the allocations for them, we have to
                  * give ourselves a NULL and copy it on return.
-                 */ 
+                 */
                 if (do_alloc) {
-                    tmp = NULL;           
-                } else { 
+                    tmp = NULL;
+                } else {
                     /* We're null terminated. */
                     tmp = last_char;
                 }
@@ -472,10 +480,13 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
                 if (do_alloc && next_len > 0) {
                     char *new_buffer;
                     apr_size_t new_size = bytes_handled + next_len + 1;
+
                     /* we need to alloc an extra byte for a null */
                     new_buffer = apr_palloc(r->pool, new_size);
+
                     /* Copy what we already had. */
                     memcpy(new_buffer, *s, bytes_handled);
+
                     /* copy the new line, including the trailing null */
                     memcpy(new_buffer + bytes_handled, tmp, next_len + 1);
                     *s = new_buffer;
@@ -493,17 +504,17 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
     *read = bytes_handled;
     return APR_SUCCESS;
 }
- 
+
 #if APR_CHARSET_EBCDIC
 AP_DECLARE(apr_status_t) ap_rgetline(char **s, apr_size_t n,
                                      apr_size_t *read, request_rec *r,
                                      int fold)
 {
-    /* on ASCII boxes, ap_rgetline is a macro which simply invokes 
+    /* on ASCII boxes, ap_rgetline is a macro which simply invokes
      * ap_rgetline_core with the same parms
      *
      * on EBCDIC boxes, each complete http protocol input line needs to be
-     * translated into the code page used by the compiler.  Since 
+     * translated into the code page used by the compiler.  Since
      * ap_rgetline_core uses recursion, we do the translation in a wrapper
      * function to insure that each input character gets translated only once.
      */
@@ -551,43 +562,47 @@ AP_CORE_DECLARE(void) ap_parse_uri(request_rec *r, const char *uri)
     r->unparsed_uri = apr_pstrdup(r->pool, uri);
 
     if (r->method_number == M_CONNECT) {
-	status = apr_uri_parse_hostinfo(r->pool, uri, &r->parsed_uri);
+        status = apr_uri_parse_hostinfo(r->pool, uri, &r->parsed_uri);
     }
     else {
-	/* Simple syntax Errors in URLs are trapped by parse_uri_components(). */
-	status = apr_uri_parse(r->pool, uri, &r->parsed_uri);
+        /* Simple syntax Errors in URLs are trapped by
+         * parse_uri_components().
+         */
+        status = apr_uri_parse(r->pool, uri, &r->parsed_uri);
     }
 
     if (status == APR_SUCCESS) {
-	/* if it has a scheme we may need to do absoluteURI vhost stuff */
-	if (r->parsed_uri.scheme
-	    && !strcasecmp(r->parsed_uri.scheme, ap_http_method(r))) {
-	    r->hostname = r->parsed_uri.hostname;
-	}
-	else if (r->method_number == M_CONNECT) {
-	    r->hostname = r->parsed_uri.hostname;
-	}
-	r->args = r->parsed_uri.query;
-	r->uri = r->parsed_uri.path ? r->parsed_uri.path
-				    : apr_pstrdup(r->pool, "/");
-#if defined(OS2) || defined(WIN32)
-	/* Handle path translations for OS/2 and plug security hole.
-	 * This will prevent "http://www.wherever.com/..\..\/" from
-	 * returning a directory for the root drive.
-	 */
-	{
-	    char *x;
+        /* if it has a scheme we may need to do absoluteURI vhost stuff */
+        if (r->parsed_uri.scheme
+            && !strcasecmp(r->parsed_uri.scheme, ap_http_method(r))) {
+            r->hostname = r->parsed_uri.hostname;
+        }
+        else if (r->method_number == M_CONNECT) {
+            r->hostname = r->parsed_uri.hostname;
+        }
 
-	    for (x = r->uri; (x = strchr(x, '\\')) != NULL; )
-		*x = '/';
-	}
-#endif  /* OS2 || WIN32 */
+        r->args = r->parsed_uri.query;
+        r->uri = r->parsed_uri.path ? r->parsed_uri.path
+                 : apr_pstrdup(r->pool, "/");
+
+#if defined(OS2) || defined(WIN32)
+        /* Handle path translations for OS/2 and plug security hole.
+         * This will prevent "http://www.wherever.com/..\..\/" from
+         * returning a directory for the root drive.
+         */
+        {
+            char *x;
+
+            for (x = r->uri; (x = strchr(x, '\\')) != NULL; )
+                *x = '/';
+        }
+#endif /* OS2 || WIN32 */
     }
     else {
-	r->args = NULL;
-	r->hostname = NULL;
-	r->status = HTTP_BAD_REQUEST;             /* set error status */
-	r->uri = apr_pstrdup(r->pool, uri);
+        r->args = NULL;
+        r->hostname = NULL;
+        r->status = HTTP_BAD_REQUEST;             /* set error status */
+        r->uri = apr_pstrdup(r->pool, uri);
     }
 }
 
@@ -629,7 +644,7 @@ static int read_request_line(request_rec *r)
                          &len, r, 0);
 
         if (rv != APR_SUCCESS) {
-	        r->request_time = apr_time_now();
+            r->request_time = apr_time_now();
             return 0;
         }
     } while (len <= 0);
@@ -642,10 +657,12 @@ static int read_request_line(request_rec *r)
 
 #if 0
 /* XXX If we want to keep track of the Method, the protocol module should do
- * it.  That support isn't in the scoreboard yet.  Hopefully next week 
+ * it.  That support isn't in the scoreboard yet.  Hopefully next week
  * sometime.   rbb */
-    ap_update_connection_status(AP_CHILD_THREAD_FROM_ID(conn->id), "Method", r->method); 
+    ap_update_connection_status(AP_CHILD_THREAD_FROM_ID(conn->id), "Method",
+                                r->method);
 #endif
+
     uri = ap_getword_white(r->pool, &ll);
 
     /* Provide quick information about the request method as soon as known */
@@ -682,16 +699,17 @@ static int read_request_line(request_rec *r)
     /* XXX ap_update_connection_status(conn->id, "Protocol", r->protocol); */
 
     /* Avoid sscanf in the common case */
-    if (len == 8 &&
-        pro[0] == 'H' && pro[1] == 'T' && pro[2] == 'T' && pro[3] == 'P' &&
-        pro[4] == '/' && apr_isdigit(pro[5]) && pro[6] == '.' &&
-        apr_isdigit(pro[7])) {
- 	r->proto_num = HTTP_VERSION(pro[5] - '0', pro[7] - '0');
-    } else if (2 == sscanf(r->protocol, "HTTP/%u.%u", &major, &minor)
-               && minor < HTTP_VERSION(1,0))	/* don't allow HTTP/0.1000 */
-	r->proto_num = HTTP_VERSION(major, minor);
+    if (len == 8
+        && pro[0] == 'H' && pro[1] == 'T' && pro[2] == 'T' && pro[3] == 'P'
+        && pro[4] == '/' && apr_isdigit(pro[5]) && pro[6] == '.'
+        && apr_isdigit(pro[7])) {
+        r->proto_num = HTTP_VERSION(pro[5] - '0', pro[7] - '0');
+    }
+    else if (2 == sscanf(r->protocol, "HTTP/%u.%u", &major, &minor)
+             && minor < HTTP_VERSION(1, 0)) /* don't allow HTTP/0.1000 */
+        r->proto_num = HTTP_VERSION(major, minor);
     else
-	r->proto_num = HTTP_VERSION(1,0);
+        r->proto_num = HTTP_VERSION(1, 0);
 
     return 1;
 }
@@ -718,20 +736,20 @@ static void get_mime_headers(request_rec *r)
         rv = ap_rgetline(&field, DEFAULT_LIMIT_REQUEST_FIELDSIZE + 2,
                          &len, r, 1);
 
-        /* ap_rgetline returns APR_ENOSPC if it fills up the buffer before 
-         * finding the end-of-line.  This is only going to happen if it 
+        /* ap_rgetline returns APR_ENOSPC if it fills up the buffer before
+         * finding the end-of-line.  This is only going to happen if it
          * exceeds the configured limit for a field size.
          */
-        if (rv == APR_ENOSPC ||
-            (rv == APR_SUCCESS && len > r->server->limit_req_fieldsize)) {
+        if (rv == APR_ENOSPC
+            || (rv == APR_SUCCESS && len > r->server->limit_req_fieldsize)) {
             r->status = HTTP_BAD_REQUEST;
             apr_table_setn(r->notes, "error-notes",
-                apr_pstrcat(r->pool,
-                            "Size of a request header field "
-                            "exceeds server limit.<br />\n"
-                            "<pre>\n",
-                            ap_escape_html(r->pool, field),
-                            "</pre>\n", NULL));
+                           apr_pstrcat(r->pool,
+                                       "Size of a request header field "
+                                       "exceeds server limit.<br />\n"
+                                       "<pre>\n",
+                                       ap_escape_html(r->pool, field),
+                                       "</pre>\n", NULL));
             return;
         }
 
@@ -745,24 +763,24 @@ static void get_mime_headers(request_rec *r)
             break;
         }
 
-        if (r->server->limit_req_fields &&
-            (++fields_read > r->server->limit_req_fields)) {
+        if (r->server->limit_req_fields
+            && (++fields_read > r->server->limit_req_fields)) {
             r->status = HTTP_BAD_REQUEST;
             apr_table_setn(r->notes, "error-notes",
-			   "The number of request header fields exceeds "
-			   "this server's limit.");
+                           "The number of request header fields exceeds "
+                           "this server's limit.");
             return;
         }
 
         if (!(value = strchr(field, ':'))) {    /* Find the colon separator */
             r->status = HTTP_BAD_REQUEST;       /* or abort the bad request */
             apr_table_setn(r->notes, "error-notes",
-			   apr_pstrcat(r->pool,
-				       "Request header field is missing "
-				       "colon separator.<br />\n"
-				       "<pre>\n",
-				       ap_escape_html(r->pool, field),
-				       "</pre>\n", NULL));
+                           apr_pstrcat(r->pool,
+                                       "Request header field is missing "
+                                       "colon separator.<br />\n"
+                                       "<pre>\n",
+                                       ap_escape_html(r->pool, field),
+                                       "</pre>\n", NULL));
             return;
         }
 
@@ -824,11 +842,12 @@ request_rec *ap_read_request(conn_rec *conn)
     if (!read_request_line(r)) {
         if (r->status == HTTP_REQUEST_URI_TOO_LARGE) {
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-			  "request failed: URI too long");
+                          "request failed: URI too long");
             ap_send_error_response(r, 0);
             ap_run_log_transaction(r);
             return r;
         }
+
         return NULL;
     }
 
@@ -836,7 +855,7 @@ request_rec *ap_read_request(conn_rec *conn)
         get_mime_headers(r);
         if (r->status != HTTP_REQUEST_TIME_OUT) {
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-			  "request failed: error reading the headers");
+                          "request failed: error reading the headers");
             ap_send_error_response(r, 0);
             ap_run_log_transaction(r);
             return r;
@@ -870,9 +889,9 @@ request_rec *ap_read_request(conn_rec *conn)
     /* we may have switched to another server */
     r->per_dir_config = r->server->lookup_defaults;
 
-    if ((!r->hostname && (r->proto_num >= HTTP_VERSION(1,1))) ||
-        ((r->proto_num == HTTP_VERSION(1,1)) &&
-         !apr_table_get(r->headers_in, "Host"))) {
+    if ((!r->hostname && (r->proto_num >= HTTP_VERSION(1, 1)))
+        || ((r->proto_num == HTTP_VERSION(1, 1))
+            && !apr_table_get(r->headers_in, "Host"))) {
         /*
          * Client sent us an HTTP/1.1 or later request without telling us the
          * hostname, either with a full URL or a Host: header. We therefore
@@ -885,13 +904,15 @@ request_rec *ap_read_request(conn_rec *conn)
                       "client sent HTTP/1.1 request without hostname "
                       "(see RFC2616 section 14.23): %s", r->uri);
     }
+
     if (r->status != HTTP_OK) {
         ap_send_error_response(r, 0);
         ap_run_log_transaction(r);
         return r;
     }
-    if (((expect = apr_table_get(r->headers_in, "Expect")) != NULL) &&
-        (expect[0] != '\0')) {
+
+    if (((expect = apr_table_get(r->headers_in, "Expect")) != NULL)
+        && (expect[0] != '\0')) {
         /*
          * The Expect header field was added to HTTP/1.1 after RFC 2068
          * as a means to signal when a 100 response is desired and,
@@ -971,7 +992,7 @@ static void end_output_stream(request_rec *r)
 
 void ap_finalize_sub_req_protocol(request_rec *sub)
 {
-    end_output_stream(sub); 
+    end_output_stream(sub);
 }
 
 /* finalize_request_protocol is called at completion of sending the
@@ -984,16 +1005,16 @@ AP_DECLARE(void) ap_finalize_request_protocol(request_rec *r)
     while (r->next) {
         r = r->next;
     }
+
     /* tell the filter chain there is no more content coming */
     if (!r->eos_sent) {
         end_output_stream(r);
     }
-} 
+}
 
 /*
  * Support for the Basic authentication protocol, and a bit for Digest.
  */
-
 AP_DECLARE(void) ap_note_auth_failure(request_rec *r)
 {
     const char *type = ap_auth_type(r);
@@ -1012,6 +1033,7 @@ AP_DECLARE(void) ap_note_auth_failure(request_rec *r)
 AP_DECLARE(void) ap_note_basic_auth_failure(request_rec *r)
 {
     const char *type = ap_auth_type(r);
+
     /* if there is no AuthType configure or it is something other than
      * Basic, let ap_note_auth_failure() deal with it
      */
@@ -1019,24 +1041,27 @@ AP_DECLARE(void) ap_note_basic_auth_failure(request_rec *r)
         ap_note_auth_failure(r);
     else
         apr_table_setn(r->err_headers_out,
-                  (PROXYREQ_PROXY == r->proxyreq) ? "Proxy-Authenticate" : "WWW-Authenticate",
-                  apr_pstrcat(r->pool, "Basic realm=\"", ap_auth_name(r), "\"",
-                          NULL));
+                       (PROXYREQ_PROXY == r->proxyreq) ? "Proxy-Authenticate"
+                                                       : "WWW-Authenticate",
+                       apr_pstrcat(r->pool, "Basic realm=\"", ap_auth_name(r),
+                                   "\"", NULL));
 }
 
 AP_DECLARE(void) ap_note_digest_auth_failure(request_rec *r)
 {
     apr_table_setn(r->err_headers_out,
-	    (PROXYREQ_PROXY == r->proxyreq) ? "Proxy-Authenticate" : "WWW-Authenticate",
-	    apr_psprintf(r->pool, "Digest realm=\"%s\", nonce=\"%llx\"",
-		ap_auth_name(r), r->request_time));
+                   (PROXYREQ_PROXY == r->proxyreq) ? "Proxy-Authenticate"
+                                                   : "WWW-Authenticate",
+                   apr_psprintf(r->pool, "Digest realm=\"%s\", nonce=\"%llx\"",
+                                ap_auth_name(r), r->request_time));
 }
 
 AP_DECLARE(int) ap_get_basic_auth_pw(request_rec *r, const char **pw)
 {
     const char *auth_line = apr_table_get(r->headers_in,
-                                      (PROXYREQ_PROXY == r->proxyreq) ? "Proxy-Authorization"
-                                                  : "Authorization");
+                                          (PROXYREQ_PROXY == r->proxyreq)
+                                              ? "Proxy-Authorization"
+                                              : "Authorization");
     const char *t;
 
     if (!(t = ap_auth_type(r)) || strcasecmp(t, "Basic"))
@@ -1044,7 +1069,7 @@ AP_DECLARE(int) ap_get_basic_auth_pw(request_rec *r, const char **pw)
 
     if (!ap_auth_name(r)) {
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR,
-		      0, r, "need AuthName: %s", r->uri);
+                      0, r, "need AuthName: %s", r->uri);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
@@ -1056,12 +1081,12 @@ AP_DECLARE(int) ap_get_basic_auth_pw(request_rec *r, const char **pw)
     if (strcasecmp(ap_getword(r->pool, &auth_line, ' '), "Basic")) {
         /* Client tried to authenticate using wrong auth scheme */
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-		      "client used wrong authentication scheme: %s", r->uri);
+                      "client used wrong authentication scheme: %s", r->uri);
         ap_note_basic_auth_failure(r);
         return HTTP_UNAUTHORIZED;
     }
 
-    while (*auth_line== ' ' || *auth_line== '\t') {
+    while (*auth_line == ' ' || *auth_line == '\t') {
         auth_line++;
     }
 
@@ -1086,10 +1111,10 @@ struct content_length_ctx {
 
 /* This filter computes the content length, but it also computes the number
  * of bytes sent to the client.  This means that this filter will always run
- * through all of the buckets in all brigades 
+ * through all of the buckets in all brigades
  */
 AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(ap_filter_t *f,
-                                                              apr_bucket_brigade *b)
+                                         apr_bucket_brigade *b)
 {
     request_rec *r = f->r;
     struct content_length_ctx *ctx;
@@ -1105,18 +1130,18 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(ap_filter_t *f,
         ctx->compute_len = 1;   /* Assume we will compute the length */
     }
 
-    /* Humm, is this check the best it can be? 
-     * - protocol >= HTTP/1.1 implies support for chunking 
+    /* Humm, is this check the best it can be?
+     * - protocol >= HTTP/1.1 implies support for chunking
      * - non-keepalive implies the end of byte stream will be signaled
      *    by a connection close
      * In both cases, we can send bytes to the client w/o needing to
-     * compute content-length. 
-     * Todo: 
+     * compute content-length.
+     * Todo:
      * We should be able to force connection close from this filter
-     * when we see we are buffering too much. 
+     * when we see we are buffering too much.
      */
-    if ((r->proto_num >= HTTP_VERSION(1,1)) ||
-        (!f->r->connection->keepalive)) {
+    if ((r->proto_num >= HTTP_VERSION(1, 1))
+        || (!f->r->connection->keepalive)) {
         partial_send_okay = 1;
     }
 
@@ -1141,9 +1166,9 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(ap_filter_t *f,
                     break;
                 }
             }
-            else if ((ctx->curr_len > 4*AP_MIN_BYTES_TO_WRITE)) {
-                /* If we've accumulated more than 4xAP_MIN_BYTES_TO_WRITE and 
-                 * the client supports chunked encoding, send what we have 
+            else if ((ctx->curr_len > 4 * AP_MIN_BYTES_TO_WRITE)) {
+                /* If we've accumulated more than 4xAP_MIN_BYTES_TO_WRITE and
+                 * the client supports chunked encoding, send what we have
                  * and come back for more.
                  */
                 if (partial_send_okay) {
@@ -1159,8 +1184,8 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(ap_filter_t *f,
                     eblock = APR_NONBLOCK_READ;
                 }
                 else if (APR_STATUS_IS_EAGAIN(rv)) {
-                    /* Make the next read blocking.  If the client supports chunked
-                     * encoding, flush the filter stack to the network.
+                    /* Make the next read blocking.  If the client supports
+                     * chunked encoding, flush the filter stack to the network.
                      */
                     eblock = APR_BLOCK_READ;
                     if (partial_send_okay) {
@@ -1171,14 +1196,16 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(ap_filter_t *f,
                     }
                 }
                 else if (rv != APR_EOF) {
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, 
-                        "ap_content_length_filter: apr_bucket_read() failed");
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                                  "ap_content_length_filter: "
+                                  "apr_bucket_read() failed");
                     return rv;
                 }
             }
             else {
                 len = e->length;
             }
+
             ctx->curr_len += len;
             r->bytes_sent += len;
         }
@@ -1192,19 +1219,22 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(ap_filter_t *f,
                 split = ctx->saved;
                 ctx->saved = NULL;
             }
+
             if (flush) {
                 rv = ap_fflush(f->next, split);
             }
             else {
                 rv = ap_pass_brigade(f->next, split);
             }
+
             if (rv != APR_SUCCESS)
                 return rv;
         }
     }
 
     if ((ctx->curr_len < AP_MIN_BYTES_TO_WRITE) && !eos) {
-        return ap_save_brigade(f, &ctx->saved, &b, (r->main) ? r->main->pool : r->pool);
+        return ap_save_brigade(f, &ctx->saved, &b,
+                               (r->main) ? r->main->pool : r->pool);
     }
 
     if (ctx->compute_len) {
@@ -1214,8 +1244,10 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(ap_filter_t *f,
         if (!eos) {
             return ap_save_brigade(f, &ctx->saved, &b, r->pool);
         }
+
         ap_set_content_length(r, r->bytes_sent);
     }
+
     if (ctx->saved) {
         APR_BRIGADE_CONCAT(ctx->saved, b);
         apr_brigade_destroy(b);
@@ -1230,8 +1262,9 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(ap_filter_t *f,
 /*
  * Send the body of a response to the client.
  */
-AP_DECLARE(apr_status_t) ap_send_fd(apr_file_t *fd, request_rec *r, apr_off_t offset, 
-                                    apr_size_t len, apr_size_t *nbytes) 
+AP_DECLARE(apr_status_t) ap_send_fd(apr_file_t *fd, request_rec *r,
+                                    apr_off_t offset, apr_size_t len,
+                                    apr_size_t *nbytes)
 {
     apr_bucket_brigade *bb = NULL;
     apr_bucket *b;
@@ -1255,7 +1288,7 @@ AP_DECLARE(apr_status_t) ap_send_fd(apr_file_t *fd, request_rec *r, apr_off_t of
 #if APR_HAS_MMAP
 /* send data from an in-memory buffer */
 AP_DECLARE(size_t) ap_send_mmap(apr_mmap_t *mm, request_rec *r, size_t offset,
-                             size_t length)
+                                size_t length)
 {
     apr_bucket_brigade *bb = NULL;
     apr_bucket *b;
@@ -1283,7 +1316,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_old_write_filter(
     if (ctx->bb != 0) {
         /* whatever is coming down the pipe (we don't care), we
          * can simply insert our buffered data at the front and
-         * pass the whole bundle down the chain. 
+         * pass the whole bundle down the chain.
          */
         APR_BRIGADE_CONCAT(ctx->bb, bb);
         bb = ctx->bb;
@@ -1307,9 +1340,11 @@ static apr_status_t buffer_output(request_rec *r,
      */
 
     /* this will typically exit on the first test */
-    for (f = r->output_filters; f != NULL; f = f->next)
+    for (f = r->output_filters; f != NULL; f = f->next) {
         if (ap_old_write_func == f->frec)
             break;
+    }
+
     if (f == NULL) {
         /* our filter hasn't been added yet */
         ctx = apr_pcalloc(r->pool, sizeof(*ctx));
@@ -1318,7 +1353,8 @@ static apr_status_t buffer_output(request_rec *r,
     }
 
     /* if the first filter is not our buffering filter, then we have to
-     * deliver the content through the normal filter chain */
+     * deliver the content through the normal filter chain
+     */
     if (f != r->output_filters) {
         apr_bucket_brigade *bb = apr_brigade_create(r->pool);
         apr_bucket *b = apr_bucket_transient_create(str, len);
@@ -1342,7 +1378,7 @@ AP_DECLARE(int) ap_rputc(int c, request_rec *r)
     char c2 = (char)c;
 
     if (r->connection->aborted) {
-	return -1;
+        return -1;
     }
 
     if (buffer_output(r, &c2, 1) != APR_SUCCESS)
@@ -1395,7 +1431,7 @@ static apr_status_t r_flush(apr_vformatter_buff_t *buff)
 
     /* r_flush is called when vbuff is completely full */
     if (buffer_output(vd->r, vd->buff, AP_IOBUFSIZE)) {
-	return -1;
+        return -1;
     }
 
     /* reset the buffer position */
@@ -1420,17 +1456,18 @@ AP_DECLARE(int) ap_vrprintf(request_rec *r, const char *fmt, va_list va)
         return -1;
 
     written = apr_vformatter(r_flush, &vd.vbuff, fmt, va);
+
     /* tack on null terminator on remaining string */
     *(vd.vbuff.curpos) = '\0';
 
     if (written != -1) {
-	int n = vd.vbuff.curpos - vrprintf_buf;
+        int n = vd.vbuff.curpos - vrprintf_buf;
 
-	/* last call to buffer_output, to finish clearing the buffer */
-	if (buffer_output(r, vrprintf_buf,n) != APR_SUCCESS)
-	    return -1;
+        /* last call to buffer_output, to finish clearing the buffer */
+        if (buffer_output(r, vrprintf_buf,n) != APR_SUCCESS)
+            return -1;
 
-	written += n;
+        written += n;
     }
 
     return written;
@@ -1462,8 +1499,9 @@ AP_DECLARE_NONSTD(int) ap_rvputs(request_rec *r, ...)
         return -1;
 
     /* ### TODO: if the total output is large, put all the strings
-       ### into a single brigade, rather than flushing each time we
-       ### fill the buffer */
+     * ### into a single brigade, rather than flushing each time we
+     * ### fill the buffer
+     */
     va_start(va, r);
     while (1) {
         s = va_arg(va, const char *);
@@ -1492,6 +1530,7 @@ AP_DECLARE(int) ap_rflush(request_rec *r)
     APR_BRIGADE_INSERT_TAIL(bb, b);
     if (ap_pass_brigade(r->output_filters, bb) != APR_SUCCESS)
         return -1;
+
     return 0;
 }
 
@@ -1505,16 +1544,17 @@ AP_DECLARE(void) ap_set_last_modified(request_rec *r)
     if (!r->assbackwards) {
         apr_time_t mod_time = ap_rationalize_mtime(r, r->mtime);
         char *datestr = apr_palloc(r->pool, APR_RFC822_DATE_LEN);
+
         apr_rfc822_date(datestr, mod_time);
         apr_table_setn(r->headers_out, "Last-Modified", datestr);
     }
 }
 
 AP_IMPLEMENT_HOOK_RUN_ALL(int,post_read_request,
-                          (request_rec *r),(r),OK,DECLINED)
+                          (request_rec *r), (r), OK, DECLINED)
 AP_IMPLEMENT_HOOK_RUN_ALL(int,log_transaction,
-                          (request_rec *r),(r),OK,DECLINED)
+                          (request_rec *r), (r), OK, DECLINED)
 AP_IMPLEMENT_HOOK_RUN_FIRST(const char *,http_method,
-                            (const request_rec *r),(r),NULL)
+                            (const request_rec *r), (r), NULL)
 AP_IMPLEMENT_HOOK_RUN_FIRST(unsigned short,default_port,
-                            (const request_rec *r),(r),0)
+                            (const request_rec *r), (r), 0)
