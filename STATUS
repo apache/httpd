@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/06/10 16:08:46 $]
+Last modified at [$Date: 2002/06/10 20:35:37 $]
 
 Release:
 
@@ -58,12 +58,6 @@ RELEASE SHOWSTOPPERS:
               We must set it before the handlers are run so that the
               appropriate handler can call ap_meets_conditions() before
               generating the data.
-
-    * mod_cgi[d] now fails to compile if mod_include is excluded from the
-      build due to the #include path change in mod_cgi.h.
-      Message-ID: <3D04BBBB.415B9AB5@apache.org>
-      Status: Cliff is going to revert the patch in question unless someone
-              has a better alternative soon.
 
 CURRENT VOTES:
 
