@@ -530,6 +530,48 @@ API_EXPORT(void) add_module(module *m)
     build_method_shortcuts();
 }
 
+/* 
+ * remove_module undoes what add_module did. There are some caveats:
+ * when the module is removed, its slot is lost so all the current
+ * per-dir and per-server configurations are invalid. So we should
+ * only ever call this function when you are invalidating almost
+ * all our current data. I.e. when doing a restart.
+ */
+
+API_EXPORT(void) remove_module(module *m)
+{
+    module *modp;
+
+    modp = top_module;
+    if (modp == m) {
+	/* We are the top module, special case */
+	top_module = modp->next;
+    }
+    else {
+	/* Not the top module, find use. When found modp will
+	 * point to the module _before_ us in the list
+	 */
+
+	while (modp && modp->next != m) {
+	    modp = modp->next;
+	}
+	if (!modp) {
+	    /* Uh-oh, this module doesn't exist */
+	    aplog_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, NULL,
+		"Cannot remove module %s: not found in module list",
+		m->name);
+	    return;
+	}
+	/* Eliminate us from the module list */
+	modp->next = modp->next->next;
+    }
+
+    m->module_index = -1;	/* simulate being unloaded, should
+				 * be unnecessary */
+    dynamic_modules--;
+}
+
+
 void setup_prelinked_modules()
 {
     module **m;
