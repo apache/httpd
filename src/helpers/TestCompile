@@ -145,13 +145,12 @@ eval "make $TARGET >/dev/null $ERRDIR"
 # Use our PrintPath helper script, knowing that we have
 # 2 versions of it though... Configure should set AP_PRINTPATH
 # but if not, just assume we use our "generic" version. We
-# also use the AP_PPSEARCHPATH "hack" to have PrintPath
-# just search this directory.
+# also use the "-p" option to have PrintPath just search this directory.
 
 if [ "x$AP_PRINTPATH" = "x" ] ; then
     AP_PRINTPATH=PrintPath
 fi
 
-if AP_PPSEARCHPATH=`pwd` ./$AP_PRINTPATH -s $TARGET ; then
+if ./$AP_PRINTPATH -s -p`pwd` $TARGET ; then
     exstat=0
 fi

@@ -1,18 +1,43 @@
 #!/bin/sh
-# Look for $1 somewhere in $PATH. As an extra bonus,
-#  if $AP_PPSEARCHPATH is set, this will look for $i
-#  in there instead. Will print out the full pathname unless
-#  called with the '-s' option
+# Look for program[s] somewhere in $PATH.
 #
+# Options:
+#  -s
+#    Do not print out full pathname. (silent)
+#  -pPATHNAME
+#    Look in PATHNAME instead of $PATH
+#
+# Usage:
+#  PrintPath [-s] [-pPATHNAME] program [program ...]
+#
+##
+# Some "constants"
+##
+pathname=$PATH
+echo="yes"
+
+##
+# Parse command line
+##
+for args in $*
+do
+    case $args in
+	-s  ) echo="no" ;;
+	-p* ) pathname="`echo $args | sed 's/^..//'`" ;;
+	*   ) programs="$programs $args" ;;
+    esac
+done
+
+##
 # We do some funny stuff to check to see
 # if test/[] knows about -x
-#
+##
 testfile="pp.t.$$"
 
 cat > $testfile <<ENDTEST
 #!/bin/sh
 if [ -x / ] || [ -x /bin ] || [ -x /bin/ls ]; then
- exit 0
+    exit 0
 fi
 exit 1
 ENDTEST
@@ -24,28 +49,21 @@ else
 fi
 rm -f $testfile
 
-if [ "x$1" = "x-s" ]; then
-    shift
-else
-    echo="yes"
-fi
-
-if [ "x$AP_PPSEARCHPATH" = "x" ] ; then
-    AP_PPSEARCHPATH=$PATH
-fi
-
-for path in `echo $AP_PPSEARCHPATH |
- sed 's/^:/.:/
-      s/::/:.:/g
-      s/:$/:./
-      s/:/ /g' `
+for program in $programs
 do
-    if [ $test_exec_flag $path/$1 ] && [ ! -d $path/$1 ]; then
-        if [ "$echo" = "yes" ]; then
-	    echo $path/$1
+    for path in `echo $pathname |
+     sed 's/^:/.:/
+	  s/::/:.:/g
+	  s/:$/:./
+	  s/:/ /g' `
+    do
+	if [ $test_exec_flag $path/$program ] && [ ! -d $path/$program ]; then
+	    if [ "$echo" = "yes" ]; then
+		echo $path/$program
+	    fi
+	    exit 0
 	fi
-	exit 0
-    fi
+    done
 done
 exit 1
 
