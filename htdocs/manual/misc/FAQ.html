@@ -8,16 +8,16 @@
 <!--#include virtual="header.html" -->
 <H1>Apache Server Frequently Asked Questions</H1>
 <P>
-$Revision: 1.25 $ ($Date: 1997/04/18 20:42:19 $)
+$Revision: 1.26 $ ($Date: 1997/04/20 02:43:12 $)
 </P>
 <P>
-Throughout the text of this FAQ you may find numbers enclosed in
-brackets (such as &quot;[12]&quot;).  These refer to the list of
-reference URLs to be found at the end of the document.
+If you are reading a text-only version of this FAQ, you may find numbers
+enclosed in brackets (such as &quot;[12]&quot;).  These refer to the list of
+reference URLs to be found at the end of the document.  These references
+do not appear, and are not needed, for the hypertext version.
 </P>
 <H2>The Questions</H2>
 <!-- Stuff to Add:						    -->
-<!-- - bad mod_rewrite included in 1.2b6			    -->
 <!-- - how-to PUT (publish, Netscape Gold)			    -->
 <!-- - can't bind to port 80					    -->
 <!--   - permission denied					    -->
@@ -102,10 +102,6 @@ reference URLs to be found at the end of the document.
    </LI>
   </OL>
  </LI>
- <LI><A
-      HREF="#References"
-     >References</A>
- </LI>
 </UL>
 
 <HR>
@@ -133,7 +129,7 @@ reference URLs to be found at the end of the document.
   the Internet, according to the
   <A
    HREF="http://www.netcraft.com/Survey/"
-  >Netcraft Survey</A><A HREF="#References">[1]</A>.
+  >Netcraft Survey</A>.
   </P>
   <HR>
  </LI>
@@ -177,7 +173,7 @@ reference URLs to be found at the end of the document.
   For an independent assessment, see
   <A
    HREF="http://webcompare.iworld.com/compare/chart.html"
-  >Web Compare</A><A HREF="#References">[2]</A>'s 
+  >Web Compare</A>'s 
   comparison chart.
   </P>
   <P>
@@ -207,7 +203,7 @@ reference URLs to be found at the end of the document.
   The Apache project's web site includes a page with a partial list of
   <A
    HREF="http://www.apache.org/info/apache_users.html"
-  >sites running Apache</A><A HREF="#References">[3]</A>.
+  >sites running Apache</A>.
   </P>
   <HR>
  </LI>
@@ -239,11 +235,11 @@ reference URLs to be found at the end of the document.
   Bug reports and suggestions should be sent <EM>via</EM>
   <A
    HREF="http://www.apache.org/bug_report.html"
-  >the bug report page</A><A HREF="#References">[4]</A>.
+  >the bug report page</A>.
   Other questions should be directed to the
   <A
    HREF="news:comp.infosystems.www.servers.unix"
-  ><SAMP>comp.infosystems.www.servers.unix</SAMP></A><A HREF="#References">[5]</A>
+  ><SAMP>comp.infosystems.www.servers.unix</SAMP></A>
   newsgroup, where some of the Apache team lurk,
   in the company of many other httpd gurus who should be able
   to help.
@@ -261,12 +257,12 @@ reference URLs to be found at the end of the document.
   Indeed there is.  See the main
   <A
    HREF="http://www.apache.org/"
-  >Apache web site</A><A HREF="#References">[6]</A>.
+  >Apache web site</A>.
   There is also a regular electronic publication called
   <A
-   HREF="http://www.apacheweek.com"
+   HREF="http://www.apacheweek.com/"
    REL="Help"
-  ><EM>Apache Week</EM></A><A HREF="#References">[7]</A>
+  ><EM>Apache Week</EM></A>
   available.
   </P>
   <HR>
@@ -279,7 +275,7 @@ reference URLs to be found at the end of the document.
   project's
   <A
    HREF="http://www.apache.org/"
-  >main web page</A><A HREF="#References">[6]</A>.
+  >main web page</A>.
   </P>
   <HR>
  </LI>
@@ -304,7 +300,7 @@ reference URLs to be found at the end of the document.
     the server error log (see the
     <A
      HREF="http:../mod/core.html#errorlog"
-    >ErrorLog</A><A HREF="#References">[8]</A>
+    ><SAMP>ErrorLog</SAMP></A>
     directive).  Somethimes this is enough for you to diagnose &amp;
     fix the problem yourself (such as file permissions or the like).
     </P>
@@ -315,7 +311,7 @@ reference URLs to be found at the end of the document.
     the
     <A
      HREF="http://www.apache.org/bugdb.cgi"
-    >bug database</A><A HREF="#References">[9]</A>).
+    >bug database</A>.
     <EM><STRONG>Please</STRONG> check the existing reports, open
     <STRONG>and</STRONG> closed, before adding one.</EM>  If you find
     that your issue has already been reported, please <EM>don't</EM> add
@@ -334,7 +330,6 @@ reference URLs to be found at the end of the document.
     <A
      HREF="news:comp.infosystems.www.servers.unix"
     ><SAMP>comp.infosystems.www.servers.unix</SAMP></A>
-    <A HREF="#References">[5]</A>
     newsgroup.  Many Apache users, and some of the developers, can be
     found roaming its virtual halls, so it is suggested that you seek
     wisdom there.  The chances are good that you'll get a faster answer
@@ -350,7 +345,7 @@ reference URLs to be found at the end of the document.
     Group know about the problem by
     <A
      HREF="http://www.apache.org/bugdb.cgi"
-    >logging a bug report</A><A HREF="#References">[9]</A>.
+    >logging a bug report</A>.
     </P>
     <P>
     If your problem involves the server crashing and generating a core
@@ -403,7 +398,7 @@ reference URLs to be found at the end of the document.
   Apache recognises all files in a directory named as a
   <A
    HREF="../mod/mod_alias.html#scriptalias"
-  >ScriptAlias</A><A HREF="#References">[10]</A>
+  ><SAMP>ScriptAlias</SAMP></A>
   as being eligible for execution rather than processing as normal
   documents.  This applies regardless of the file name, so scripts in a
   ScriptAlias directory don't need to be named
@@ -418,7 +413,7 @@ reference URLs to be found at the end of the document.
   this, you need to use something like the
   <A
    HREF="../mod/mod_mime.html#addhandler"
-  >AddHandler</A><A HREF="#References">[11]</A>
+  ><SAMP>AddHandler</SAMP></A>
   </P>
   directive.
   <OL>
@@ -434,7 +429,7 @@ reference URLs to be found at the end of the document.
    <LI>Make sure that the directory location is covered by an
     <A
      HREF="../mod/core.html#options"
-    >Options</A><A HREF="#References">[12]</A>
+    ><SAMP>Options</SAMP></A>
     declaration that includes the <SAMP>ExecCGI</SAMP> option.
    </LI>
   </OL>
@@ -488,13 +483,13 @@ reference URLs to be found at the end of the document.
    <LI>Build your server with the
     <A
      HREF="../mod/mod_include.html"
-    >mod_include</A><A HREF="#References">[13]</A>
+    ><CODE>mod_include</CODE></A>
     module.  This is normally compiled in by default.
    </LI>
    <LI>Make sure your server configuration files have an
     <A
      HREF="../mod/core.html#options"
-    >Options</A><A HREF="#References">[12]</A>
+    ><SAMP>Options</SAMP></A>
     directive which permits <SAMP>Includes</SAMP>.
    </LI>
    <LI>Make sure that the directory where you want the SSI documents to
@@ -503,7 +498,7 @@ reference URLs to be found at the end of the document.
     with the following
     <A
      HREF="../mod/mod_mime.html#addhandler"
-    >AddHandler</A><A HREF="#References">[11]</A>
+    ><SAMP>AddHandler</SAMP></A>
     directive:
     <PRE>
      AddHandler server-parsed .shtml
@@ -538,12 +533,12 @@ reference URLs to be found at the end of the document.
   <A
    HREF="../mod/mod_expires.html"
    REL="Help"
-  ><CODE>mod_expires</CODE></A><A HREF="#References">[14]</A>
+  ><CODE>mod_expires</CODE></A>
   documentation for more details.)  Another possibility is to use the
   <A
    HREF="../mod/mod_include.html#xbithack"
    REL="Help"
-  ><SAMP>XBitHack Full</SAMP></A><A HREF="#References">[15]</A>
+  ><SAMP>XBitHack Full</SAMP></A>
   mechanism, which tells Apache to send (under certain circumstances
   detailed in the XBitHack directive description) a
   <SAMP>Last-Modified</SAMP> header based upon the last modification
@@ -585,7 +580,7 @@ reference URLs to be found at the end of the document.
   <A
    HREF="http:../content-negotiation.html"
    REL="Help"
-  >content negotiation</A><A HREF="#References">[16]</A>
+  >content negotiation</A>
   description page.
   </P>
   <HR>
@@ -610,7 +605,7 @@ reference URLs to be found at the end of the document.
   virtual host  needs two file descriptors.  Each 
   <A
    HREF="../mod/core.html#listen"
-  >Listen</A><A HREF="#References">[17]</A>
+  ><SAMP>Listen</SAMP></A>
   directive also needs a file descriptor.  
   </P>
   <P>
@@ -629,7 +624,7 @@ reference URLs to be found at the end of the document.
    <LI>Reduce the number of
        <A
         HREF="../mod/core.html#listen"
-       >Listen</A><A HREF="#References">[17]</A>
+       ><SAMP>Listen</SAMP></A>
        directives.  If there are no other servers running on the machine 
        and all of them are running on the same port, you normally don't 
        need any Listen directives at all.
@@ -637,7 +632,7 @@ reference URLs to be found at the end of the document.
    <LI>Reduce the number of log files.  You can use 
        <A
         HREF="../mod/mod_log_config.html"
-       >mod_log_config</A><A HREF="#References">[18]</A>
+       ><CODE>mod_log_config</CODE></A>
        to log all requests to a single log file while including the name
        of the virtual host in the log file.
    </LI>
@@ -647,7 +642,7 @@ reference URLs to be found at the end of the document.
        how to do this is available in the
        <A
         HREF="perf.html"
-       >performance hints</A><A HREF="#References">[19]</A>
+       >performance hints</A>
        page.
    </LI>
    <LI>&quot;Don't do that&quot; - try to run with fewer virtual hosts
@@ -655,7 +650,7 @@ reference URLs to be found at the end of the document.
    <LI>Spread your operation across multiple server processes (using
        <A
         HREF="../mod/core.html#listen"
-       >Listen</A><A HREF="#References">[17]</A>
+       ><SAMP>Listen</SAMP></A>
        for example, but see the first point) and/or ports.
    </LI>
   </OL>
@@ -745,7 +740,7 @@ reference URLs to be found at the end of the document.
   with a method and hostname such as "http://host/foo/bar".  See the
   <A
    HREF="../mod/core.html#errordocument"
-  >ErrorDocument</A><A HREF="#References">[20]</A>
+  ><SAMP>ErrorDocument</SAMP></A>
   documentation for details.  This was incorrectly documented in the past.
   </P>
   <HR>
@@ -758,7 +753,7 @@ reference URLs to be found at the end of the document.
   Your
   <A
    HREF="../mod/core.html#group"
-  ><SAMP>Group</SAMP></A><A HREF="#References">[21]</A>
+  ><SAMP>Group</SAMP></A>
   directive (probably in <SAMP>conf/httpd.conf</SAMP>) needs to name a
   group that actually exists in the <SAMP>/etc/group</SAMP> file (or
   your system's equivalent).
@@ -768,190 +763,43 @@ reference URLs to be found at the end of the document.
  <LI><A NAME="cookies1">
       <STRONG>Why does Apache send a cookie on every response?</STRONG></A>
   <P>
-   Apache does <i>not</i> send automatically send a cookie on every
-   response, unless you have re-compiled it with the 
+  Apache does <EM>not</EM> send automatically send a cookie on every
+  response, unless you have re-compiled it with the 
   <A
-    HREF="../mod/mod_cookies">mod_cookies</A><A 
-    HREF="#References">[22]</A></SAMP> module.
-   This module was distributed with Apache prior to 1.2.
-   This module may help track users, and uses cookies to do this. If
-   you are not using the data generated by mod_cookies, do not compile
-   it into Apache. Note that in 1.2 this module was renamed to the
-   more correct name 
+   HREF="../mod/mod_cookies.html"
+  ><CODE>mod_cookies</CODE></A>
+  module.
+  This module was distributed with Apache prior to 1.2.
+  This module may help track users, and uses cookies to do this. If
+  you are not using the data generated by mod_cookies, do not compile
+  it into Apache. Note that in 1.2 this module was renamed to the
+  more correct name 
   <A
-    HREF="../mod/mod_usertrack">mod_usertrack</A><A 
-    HREF="#References">[23]</A></SAMP>, and cookies 
-   have to be specifically enabled with the <SAMP>
+   HREF="../mod/mod_usertrack.html"
+  ><CODE>mod_usertrack</CODE></A>,
+  and cookies 
+  have to be specifically enabled with the
   <A
-    HREF="../mod/mod_usertrack#cookietracking">CookieTracking</A><A 
-    HREF="#References">[24]</A></SAMP>
-   directive.
+    HREF="../mod/mod_usertrack.html#cookietracking"
+  ><SAMP>CookieTracking</SAMP></A>
+  directive.
   </P>
   <HR>
  </LI>
  <LI><A NAME="cookies2">
       <STRONG>Why don't my cookies work, I even compiled in mod_cookies?
       </STRONG></A>
-   <P>
-    Firstly, you do <i>not</i> need to compile in mod_cookies in order
-    for your scripts to work (see <A HREF="#cookies1">this question</A>
-    for more about mod_cookies). Apache passes on your Set-Cookie header
-    fine, with or without this module. If cookies do not work it will
-    be because your script does not work properly or your browser does
-    not use cookies or is not set-up to accept them.
-  </LI>
+  <P>
+  Firstly, you do <EM>not</EM> need to compile in mod_cookies in order
+  for your scripts to work (see the <A HREF="#cookies1">previous question</A>
+  for more about mod_cookies). Apache passes on your Set-Cookie header
+  fine, with or without this module. If cookies do not work it will
+  be because your script does not work properly or your browser does
+  not use cookies or is not set-up to accept them.
+  </P>
+ </LI>
 </OL>
- <HR>
- <A NAME="References">
-  <H3>
-   References
-  </H3>
- </A>
-  <DL COMPACT>
-   <DT>[1]
-   </DT>
-   <DD><A
-        HREF="http://www.netcraft.com/Survey/"
-       >http://www.netcraft.com/Survey/</A>
-   </DD>
-   <DT>[2]
-   </DT>
-   <DD><A
-        HREF="http://webcompare.iworld.com/compare/chart.html"
-       >http://webcompare.iworld.com/compare/chart.html</A>
-   </DD>
-   <DT>[3]
-   </DT>
-   <DD><A
-        HREF="http://www.apache.org/info/apache_users.html"
-       >http://www.apache.org/info/apache_users.html</A>
-   </DD>
-   <DT>[4]
-   </DT>
-   <DD><A
-        HREF="http://www.apache.org/bug_report.html"
-       >http://www.apache.org/bug_report.html</A>
-   </DD>
-   <DT>[5]
-   </DT>
-   <DD><A
-        HREF="news:comp.infosystems.www.servers.unix"
-       >news:comp.infosystems.www.servers.unix</A>
-   </DD>
-   <DT>[6]
-   </DT>
-   <DD><A
-        HREF="http://www.apache.org/"
-       >http://www.apache.org/</A>
-   </DD>
-   <DT>[7]
-   </DT>
-   <DD><A
-        HREF="http://www.apacheweek.com/"
-       >http://www.apacheweek.com/</A>
-   </DD>
-   <DT>[8]
-   </DT>
-   <DD><A
-        HREF="http://www.apache.org/docs/mod/core.html#errorlog"
-       >http://www.apache.org/docs/mod/core.html#errorlog</A>
-   </DD>
-   <DT>[9]
-   </DT>
-   <DD><A
-        HREF="http://www.apache.org/bugdb.cgi"
-       >http://www.apache.org/bugdb.cgi</A>
-   </DD>
-   <DT>[10]
-   </DT>
-   <DD><A
-        HREF="http://www.apache.org/docs/mod/mod_alias.html#scriptalias"
-       >http://www.apache.org/docs/mod/mod_alias.html#scriptalias</A>
-   </DD>
-   <DT>[11]
-   </DT>
-   <DD><A
-        HREF="http://www.apache.org/docs/mod/mod_mime.html#addhandler"
-       >http://www.apache.org/docs/mod/mod_mime.html#addhandler</A>
-   </DD>
-   <DT>[12]
-   </DT>
-   <DD><A
-        HREF="http://www.apache.org/docs/mod/core.html#options"
-       >http://www.apache.org/docs/mod/core.html#options</A>
-   </DD>
-   <DT>[13]
-   </DT>
-   <DD><A
-        HREF="http://www.apache.org/docs/mod/mod_include.html"
-       >http://www.apache.org/docs/mod/mod_include.html</A>
-   </DD>
-   <DT>[14]
-   </DT>
-   <DD><A
-        HREF="http://www.apache.org/docs/mod/mod_expires.html"
-       >http://www.apache.org/docs/mod/mod_expires.html</A>
-   </DD>
-   <DT>[15]
-   </DT>
-   <DD><A
-        HREF="http://www.apache.org/docs/mod/mod_include.html#xbithack"
-       >http://www.apache.org/docs/mod/mod_include.html#xbithack</A>
-   </DD>
-   <DT>[16]
-   </DT>
-   <DD><A
-        HREF="http://www.apache.org/docs/content-negotiation.html"
-       >http://www.apache.org/docs/content-negotiation.html</A>
-   </DD>
-   <DT>[17]
-   </DT>
-   <DD><A
-        HREF="http://www.apache.org/docs/mod/core.html#listen"
-       >http://www.apache.org/docs/mod/core.html#listen</A>
-   </DD>
-   <DT>[18]
-   </DT>
-   <DD><A
-        HREF="http://www.apache.org/docs/mod/mod_log_config.html"
-       >http://www.apache.org/docs/mod/mod_log_config.html</A>
-   </DD>
-   <DT>[19]
-   </DT>
-   <DD><A
-        HREF="http://www.apache.org/docs/misc/perf.html"
-       >http://www.apache.org/docs/misc/perf.html</A>
-   </DD>
-   <DT>[20]
-   </DT>
-   <DD><A
-        HREF="http://www.apache.org/docs/mod/core.html#errordocument"
-       >http://www.apache.org/docs/mod/core.html#errordocument</A>
-   </DD>
-   <DT>[21]
-   </DT>
-   <DD><A
-        HREF="http://www.apache.org/docs/mod/core.html#group"
-       >http://www.apache.org/docs/mod/core.html#group</A>
-   <DT>[22]
-   </DT>
-   <DD><A
-        HREF="http://www.apache.org/docs/mod/mod_cookies"
-       >http://www.apache.org/docs/mod/mod_cookies</A>
-   </DD>
-   <DT>[23]
-   </DT>
-   <DD><A
-        HREF="http://www.apache.org/docs/mod/mod_usertrack"
-       >http://www.apache.org/docs/mod/mod_usertrack</A>
-   </DD>
-   <DT>[24]
-   </DT>
-   <DD><A
-        HREF="http://www.apache.org/docs/mod/mod_usertrack#cookietracking"
-       >http://www.apache.org/docs/mod/mod_usertrack#cookietracking</A>
-   </DD>
-  </DL>
-<!--#include virtual="footer.html" -->
+<HR>
+ <!--#include virtual="footer.html" -->
 </BODY>
 </HTML>
