@@ -1,4 +1,4 @@
 
-SUBDIRS = apr
+SUBDIRS = apr pcre
 
 include $(top_srcdir)/build/rules.mk

@@ -1,5 +1,5 @@
 
-SUBDIRS = ap lib main modules os support $(REGEX_DIR)
+SUBDIRS = ap lib main modules os support
 
 PROGRAM_NAME         = $(progname)
 PROGRAM_SOURCES      = modules.c buildmark.c
@@ -11,7 +11,8 @@ PROGRAM_DEPENDENCIES = \
   os/$(OS_DIR)/libos.la \
   ap/libap.la \
   lib/apr/$(LIBPRE)apr.a \
-  $(REGEX_LIB)
+  lib/pcre/libpcre.la \
+  lib/pcre/libpcreposix.la
 
 PROGRAMS        = $(PROGRAM_NAME)
 targets         = $(PROGRAMS)

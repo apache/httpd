@@ -967,17 +967,12 @@ int strcasecmp(const char *a, const char *b);
 int strncasecmp(const char *a, const char *b, size_t n);
 #endif
 
-/* Regexes */
-#if defined(AP_USE_HSREGEX) || defined(WIN32)
-#include "hsregex.h"
-#else
-#include <regex.h>
-#endif
+#include "pcreposix.h"
 
 API_EXPORT(regex_t *) ap_pregcomp(ap_pool_t *p, const char *pattern,
 				   int cflags);
 API_EXPORT(void) ap_pregfree(ap_pool_t *p, regex_t *reg);
-API_EXPORT(int)    ap_regexec(const regex_t *preg, const char *string,
+API_EXPORT(int)    ap_regexec(regex_t *preg, const char *string,
                               size_t nmatch, regmatch_t pmatch[], int eflags);
 API_EXPORT(size_t) ap_regerror(int errcode, const regex_t *preg, 
                                char *errbuf, size_t errbuf_size);
