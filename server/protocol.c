@@ -290,6 +290,7 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
 
         /* Would this overrun our buffer?  If so, we'll die. */
         if (n < bytes_handled + len) {
+            *read = bytes_handled;
             return APR_ENOSPC;
         }
 
@@ -390,6 +391,7 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
             last_char = *s + bytes_handled - 1;
         }
         else {
+            *read = n;
             return APR_ENOSPC;
         }
     }
@@ -519,6 +521,7 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
                 return APR_SUCCESS;
             }
             else {
+                *read = n;
                 return APR_ENOSPC;
             }
         }
