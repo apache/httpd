@@ -800,6 +800,8 @@ struct conn_rec {
     long id;                    /* ID of this connection; unique at any
                                  * point in time */
     void *conn_config;		/* Notes on *this* connection */
+    ap_table_t *notes;  /* send note from one module to another, must
+                         * remain valid for all requests on this conn */
 };
 
 /* Per-vhost config... */

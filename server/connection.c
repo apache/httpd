@@ -260,6 +260,7 @@ conn_rec *ap_new_connection(ap_pool_t *p, server_rec *server, BUFF *inout,
      */
 
     conn->conn_config=ap_create_conn_config(p);
+    conn->notes = ap_make_table(p, 5);
 
     conn->pool = p;
     conn->local_addr = *saddr;
