@@ -1,5 +1,10 @@
 Changes with Apache 2.0.28-dev
 
+  *) Fixed a memory leak in the getline parsing code that could
+     be triggered by arbitrarily large header lines. Requests
+     from the core input filter for single lines are now limited
+     to HUGE_STRING_LEN (8192 bytes).  [Aaron Bannert]
+
   *) Introduce an Apache mod_ssl initial configuration template 
      (ssl.conf, generated from ssl-std.conf).  [Ralf S. Engelschall]
 
