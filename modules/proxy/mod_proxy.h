@@ -177,6 +177,16 @@ typedef struct {
     char recv_buffer_size_set;
     long maxfwd;
     char maxfwd_set;
+    /** 
+     * the following setting masks the error  page
+     * returned from the 'proxied server' and just 
+     * forwards the status code upwards.
+     * This allows the main server (us) to generate
+     * the error page, (so it will look like a error
+     * returned from the rest of the system 
+     */
+    int HTTPOverrideErrors;
+
 } proxy_server_conf;
 
 typedef struct {

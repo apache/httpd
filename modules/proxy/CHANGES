@@ -1,3 +1,11 @@
+mod_proxy changes for httpd 2.0.26-dev
+  *) Add New option 'HTTPProxyOverrideReturnedErrors'. By Turning the
+     Flag on, you will mask the error pages returned by the proxied
+     server, and will it will be handled as if your server generated
+     the error. This change was put in so that a 404 on a included
+     r-proxied component will act in the same manner as a 404 on a 
+     included file. [Ian Holsman <ianh@cnet.com>]
+
 mod_proxy changes for httpd 2.0.25-dev
 
   *) Split proxy: space using <Proxy[Match] > directive blocks from

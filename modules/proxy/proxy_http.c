@@ -824,24 +824,33 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
             ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
                          "proxy: start body send");
     
+            /*
+             * if we are overriding the errors, we cant put the content of the
+             * page into the brigade
+             */
+            if ( (conf->HTTPOverrideErrors ==0) || r->status < 400 ) {
             /* read the body, pass it to the output filters */
-            while (ap_get_brigade(rp->input_filters, bb, AP_MODE_NONBLOCKING, &readbytes) == APR_SUCCESS) {
+                while (ap_get_brigade(rp->input_filters, 
+                                       bb, 
+                                      AP_MODE_NONBLOCKING, 
+                                      &readbytes) == APR_SUCCESS) {
 #if DEBUGGING
-                ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0,
-                             r->server, "proxy (PID %d): readbytes: %#x",
-                             getpid(), readbytes);
+                    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0,
+                                 r->server, "proxy (PID %d): readbytes: %#x",
+                                 getpid(), readbytes);
 #endif
 
-                if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(bb))) {
-                    ap_pass_brigade(r->output_filters, bb);
-            		break;
+                    if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(bb))) {
+                        ap_pass_brigade(r->output_filters, bb);
+                		break;
+                    }
+                    if (ap_pass_brigade(r->output_filters, bb) != APR_SUCCESS) {
+                        /* Ack! Phbtt! Die! User aborted! */
+                        p_conn->close = 1;  /* this causes socket close below */
+                        break;
+                    }
+                    apr_brigade_cleanup(bb);
                 }
-                if (ap_pass_brigade(r->output_filters, bb) != APR_SUCCESS) {
-                    /* Ack! Phbtt! Die! User aborted! */
-                    p_conn->close = 1;  /* this causes socket close below */
-                    break;
-                }
-                apr_brigade_cleanup(bb);
             }
             ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
                          "proxy: end body send");
@@ -850,7 +859,11 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                          "proxy: header only");
         }
     }
-    return OK;
+
+    if ( conf->HTTPOverrideErrors )
+        return r->status;
+    else 
+        return OK;
 }
 
 static
@@ -954,6 +967,8 @@ int ap_proxy_http_handler(request_rec *r, proxy_server_conf *conf,
     status = ap_proxy_http_process_response(p, r, p_conn, origin, backend, conf,
                                             bb, server_portstr);
     if ( status != OK ) {
+        /* clean up even if there is an error */
+        ap_proxy_http_cleanup(r, p_conn, backend);
         return status;
     }
 
