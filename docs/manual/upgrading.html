@@ -24,9 +24,9 @@ Features</A> document, or in the <CODE>src/CHANGES</CODE> file.
 
 <UL>
 <LI>Apache now uses an <code>autoconf</code> and <code>libtool</code>
-system for configuring the build processes.  Using this system
-is similar to, but not the same as, using the APACI system in
-Apache 1.3.  Further documentation to follow.</li>
+system for <a href="install.html">configuring the build processes</a>.
+Using this system is similar to, but not the same as, using the APACI
+system in Apache 1.3.</li>
 
 <li>In addition to the usual selection of modules which you can choose
 to compile, Apache 2.0 has moved the main part of request processing
@@ -36,12 +36,29 @@ into <a href="mpm.html">Multi-Processing Modules</a> (MPMs).</li>
 <H3>Run-Time Configuration Changes</H3>
 
 <UL>
+
 <li>Many directives that were in the core server in Apache 1.3
 are now in the MPMs.  If you wish the behavior of the server
 to be as similar as possible to the behavior of Apache 1.3,
 you should select the <a href="mod/prefork.html">prefork</a>
 MPM.  Other MPMs will have different directives to control process
 creation and request processing.</li>
+
+<li>Server-Side Includes provided by <a
+href="mod/mod_include.html">mod_include</a> are now implemented using
+the new
+<a href="filter.html">filter system</a> rather than as a handler.
+This provides much more power and flexibility, but requires 
+the use of the <a href="mod/core.html#setoutputfilter">SetOutputFilter</a>
+to activate server-parsed content.  If you were using
+<code>AddHandler server-parsed .shtml</code>, you can get
+similar functionality using
+<blockquote><code>
+&lt;FilesMatch "\.shtml(\..+)?$"&gt;<br>
+&nbsp;&nbsp;SetOutputFilter INCLUDES<br>
+&lt;/FilesMatch&gt;
+</code></blockquote></li>
+
 
 <li>The <code>CacheNegotiatedDocs</code> directive now takes
 the argument <code>on</code> or <code>off</code>.  Existing

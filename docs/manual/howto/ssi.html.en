@@ -83,7 +83,7 @@ Tutorial: Introduction to Server Side Includes</a></h2>
  <a href="../mod/core.html#options">Options</a><br>
 <a href="../mod/mod_include.html#xbithack">XBitHack</a><br>
 <a href="../mod/mod_mime.html#addtype">AddType</a><br>
-<a href="../mod/mod_mime.html#addhandler">AddHandler</a><br>
+<a href="../mod/core.html.html#setoutputfilter">SetOutputFilter</a><br>
 <a href=
 "../mod/mod_setenvif.html#BrowserMatchNoCase">BrowserMatchNoCase</a><br>
 

@@ -49,7 +49,7 @@ variables.</p>
 </UL>
 
 <p>See also: <a href="core.html#options">Options</a>
-and <a href="mod_mime.html#addhandler">AddHandler</a>.</p>
+and <a href="core.html.html#SetOutputFilter">SetOutputFilter</a>.</p>
 
 
 <H2>Enabling Server-Side Includes</H2>
@@ -68,6 +68,16 @@ AddType text/html .shtml<br>
 &lt;/FilesMatch&gt;
 </code></blockquote>
 
+<p>Be careful to properly scope the INCLUDES filter to process only
+the correct files.  The filter is <strong>not</strong> restricted to
+processing only HTML files.  So, for example, if the INCLUDES filter
+is activated using a <code>&lt;Directory&gt;</code> section and that
+directory includes GIF files, mod_include will process the GIF files.
+This can have two adverse consequences: 1. there will be extra
+overhead in serving these files, and 2. these files could become
+corrupted if they happen to contain something that looks like an SSI
+element.</p>
+
 <p>The following directive must be given for the directories containing
 the shtml files (typically in a <CODE>&lt;Directory&gt;</CODE> section,
 but this directive is also valid .htaccess files if <CODE>AllowOverride
@@ -77,15 +87,8 @@ Options</CODE> is set):</p>
 Options +Includes
 </code></blockquote>
 
-<p>Alternatively the <A HREF="#xbithack"><CODE>XBitHack</CODE></A>
-directive can be used to parse normal (<CODE>text/html</CODE>) files,
-based on file permissions.</p>
-
-<p>For backwards compatibility, documents with mime type
-<CODE>text/x-server-parsed-html</CODE> or
-<CODE>text/x-server-parsed-html3</CODE> will also be parsed
-(and the resulting output given the mime type <CODE>text/html</CODE>)
-as will documents with the handler <code>server-parsed</code>.
+<p>For more information, see our <a href="../howto/ssi.html">Tutorial
+on Server Side Includes</a>.</p>
 
 <H2>Basic Elements</H2>
 
@@ -441,6 +444,12 @@ customized server error documents.
  HREF="directive-dict.html#Module"
  REL="Help"
 ><STRONG>Module:</STRONG></A> mod_include<P>
+
+<p><strong>Warning:</strong> This directive is not yet working in
+Apache 2.0.  The issue is being tracked in <a
+href="http://bugs.apache.org/index.cgi/full/7751">PR7751</a>.</p>
+
+
 
 The XBitHack directives controls the parsing of ordinary html documents.
 This directive only affects files associated with the MIME type
