@@ -673,11 +673,16 @@ LanguagePriority en da nl et fr de el it pt ltz es sv
 # AddType allows you to tweak mime.types without actually editing it, or to
 # make certain files to be certain types.
 #
-# For example, the PHP3 module (not part of the Apache distribution - see
+# For example, the PHP 3.x module (not part of the Apache distribution - see
 # http://www.php.net) will typically use:
 #
 #AddType application/x-httpd-php3 .php3
 #AddType application/x-httpd-php3-source .phps
+#
+# And for PHP 4.x, use:
+#
+#AddType application/x-httpd-php .php
+#AddType application/x-httpd-php-source .phps
 
 AddType application/x-tar .tgz
 
