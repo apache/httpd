@@ -97,8 +97,6 @@
 #include "util_script.h"
 
 #define IMAP_MAGIC_TYPE "application/x-httpd-imap"
-#define LARGEBUF 500
-#define SMALLBUF 256
 #define MAXVERTS 100
 #define X 0
 #define Y 1
@@ -159,7 +157,7 @@ static command_rec imap_cmds[] =
     {NULL}
 };
 
-static int pointinrect(double point[2], double coords[MAXVERTS][2])
+static int pointinrect(const double point[2], const double coords[MAXVERTS][2])
 {
     double max[2], min[2];
     if (coords[0][X] > coords[1][X]) {
@@ -184,7 +182,7 @@ static int pointinrect(double point[2], double coords[MAXVERTS][2])
             (point[Y] >= min[1] && point[Y] <= max[1]));
 }
 
-static int pointincircle(double point[2], double coords[MAXVERTS][2])
+static int pointincircle(const double point[2], const double coords[MAXVERTS][2])
 {
     double radius1, radius2;
 
@@ -197,11 +195,12 @@ static int pointincircle(double point[2], double coords[MAXVERTS][2])
     return (radius2 <= radius1);
 }
 
-static int pointinpoly(double point[2], double pgon[MAXVERTS][2])
+static int pointinpoly(const double point[2], const double pgon[MAXVERTS][2])
 {
     int i, numverts, inside_flag, xflag0;
     int crossings;
-    double *p, *stop;
+    double *p;
+    const double *stop;
     double tx, ty, y;
 
     for (i = 0; pgon[i][X] != -1 && i < MAXVERTS; i++);
@@ -271,7 +270,7 @@ static int pointinpoly(double point[2], double pgon[MAXVERTS][2])
 }
 
 
-static int is_closer(double point[2], double coords[MAXVERTS][2], double *closest)
+static int is_closer(const double point[2], const double coords[MAXVERTS][2], double *closest)
 {
     double dist_squared = ((point[X] - coords[0][X]) * (point[X] - coords[0][X]))
     + ((point[Y] - coords[0][Y]) * (point[Y] - coords[0][Y]));
@@ -289,7 +288,7 @@ static int is_closer(double point[2], double coords[MAXVERTS][2], double *closes
 
 }
 
-static double get_x_coord(char *args)
+static double get_x_coord(const char *args)
 {
     char *endptr;               /* we want it non-null */
     double x_coord = -1;        /* -1 is returned if no coordinate is given */
@@ -308,7 +307,7 @@ static double get_x_coord(char *args)
     return (-1);                /* else if no conversion was made, or if no args was given */
 }
 
-static double get_y_coord(char *args)
+static double get_y_coord(const char *args)
 {
     char *endptr;               /* we want it non-null */
     char *start_of_y = NULL;
@@ -336,107 +335,98 @@ static double get_y_coord(char *args)
 }
 
 
-static int read_quoted(char *string, char *quoted_part)
+/* See if string has a "quoted part", and if so set *quoted_part to
+ * the first character of the quoted part, then hammer a \0 onto the
+ * trailing quote, and set *string to point at the first character
+ * past the second quote.
+ *
+ * Otherwise set *quoted_part to NULL, and leave *string alone.
+ */
+static void read_quoted(char **string, char **quoted_part)
 {
-    char *starting_pos = string;
+    char *strp = *string;
 
-    while (isspace(*string))
-        string++;               /* go along string until non-whitespace */
+    /* assume there's no quoted part */
+    *quoted_part = NULL;
 
-    if (*string == '"') {       /* if that character is a double quote */
+    while (isspace(*strp))
+        strp++;               	/* go along string until non-whitespace */
 
-        string++;               /* step over it */
+    if (*strp == '"') {       	/* if that character is a double quote */
+        strp++;               	/* step over it */
+	*quoted_part = strp;  	/* note where the quoted part begins */
 
-        while (*string && *string != '"') {
-            *quoted_part++ = *string++;         /* copy the quoted portion */
+        while (*strp && *strp != '"') {
+	    ++strp;		/* skip the quoted portion */
         }
 
-        *quoted_part = '\0';    /* end the string with a SNUL */
+        *strp = '\0';    	/* end the string with a NUL */
 
-        string++;               /* step over the last double quote */
+        strp++;               	/* step over the last double quote */
+	*string = strp;
     }
-
-    return (string - starting_pos);     /* return the total characters read */
 }
 
 /*
- * url needs to point to a string with at least SMALLBUF memory allocated
+ * returns the mapped URL or NULL.
  */
-static void imap_url(request_rec *r, char *base, char *value, char *url)
+static char *imap_url(request_rec *r, const char *base, const char *value)
 {
 /* translates a value into a URL. */
     int slen, clen;
     char *string_pos = NULL;
+    const char *string_pos_const = NULL;
     char *directory = NULL;
     char *referer = NULL;
-    char my_base[SMALLBUF] =
-    {'\0'};
+    char *my_base;
 
     if (!strcasecmp(value, "map") || !strcasecmp(value, "menu")) {
-        if (r->server->port == DEFAULT_PORT) {
-            ap_snprintf(url, SMALLBUF,
-                        "http://%s%s", r->server->server_hostname, r->uri);
-        }
-        else {
-            ap_snprintf(url, SMALLBUF, "http://%s:%d%s", r->server->server_hostname,
-                        r->server->port, r->uri);
-        }
-        return;
+	return construct_url(r->pool, r->uri, r->server);
     }
 
     if (!strcasecmp(value, "nocontent") || !strcasecmp(value, "error")) {
-        strncpy(url, value, SMALLBUF - 1);
-        url[SMALLBUF - 1] = '\0';
-        return;                 /* these are handled elsewhere, so just copy them */
+        return pstrdup(r->pool, value);                 /* these are handled elsewhere, so just copy them */
     }
 
     if (!strcasecmp(value, "referer")) {
         referer = table_get(r->headers_in, "Referer");
         if (referer && *referer) {
-            strncpy(url, referer, SMALLBUF - 1);
-            url[SMALLBUF - 1] = '\0';
-            return;
+	    return pstrdup(r->pool, referer);
         }
         else {
-            *value = '\0';      /* if 'referer' but no referring page, null the value */
+	    /* XXX:  This used to do *value = '\0'; ... which is totally bogus
+	     * because it hammers the passed in value, which can be a string constant,
+	     * or part of a config, or whatever.  Total garbage.  This works around
+	     * that without changing the rest of this code much
+	     */
+            value = "";      /* if 'referer' but no referring page, null the value */
         }
     }
 
-    string_pos = value;
-    while (isalpha(*string_pos))
-        string_pos++;           /* go along the URL from the map until a non-letter */
-    if (*string_pos == ':') {
-        strncpy(url, value, SMALLBUF - 1);      /* if letters and then a colon (like http:) */
-        url[SMALLBUF - 1] = '\0';
-        return;                 /* it's an absolute URL, so use it! */
+    string_pos_const = value;
+    while (isalpha(*string_pos_const))
+	string_pos_const++;           /* go along the URL from the map until a non-letter */
+    if (*string_pos_const == ':') {
+	/* if letters and then a colon (like http:) */
+	/* it's an absolute URL, so use it! */
+	return pstrdup(r->pool, value);
     }
 
     if (!base || !*base) {
         if (value && *value) {
-            strncpy(url, value, SMALLBUF - 1);  /* no base: use what is given */
-            url[SMALLBUF - 1] = '\0';
+	    return pstrdup(r->pool, value); /* no base: use what is given */
         }
-        else {
-            if (r->server->port == DEFAULT_PORT) {
-                ap_snprintf(url, SMALLBUF, "http://%s/", r->server->server_hostname);
-            }
-            if (r->server->port != DEFAULT_PORT) {
-                ap_snprintf(url, SMALLBUF, "http://%s:%d/",
-                            r->server->server_hostname, r->server->port);
-            }                   /* no base, no value: pick a simple default */
-        }
-        return;
+	/* no base, no value: pick a simple default */
+	return construct_url(r->pool, "/", r->server);
     }
 
     /* must be a relative URL to be combined with base */
-    strncpy(my_base, base, sizeof(my_base) - 1);
-    my_base[sizeof(my_base) - 1] = '\0';
-    if (strchr(my_base, '/') == NULL && (!strncmp(value, "../", 3) || !strcmp(value, ".."))) {
-        url[0] = '\0';
+    if (strchr(base, '/') == NULL && (!strncmp(value, "../", 3) || !strcmp(value, ".."))) {
         aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
                     "invalid base directive in map file: %s", r->uri);
-        return;
+        return NULL;
     }
+    my_base = pstrdup(r->pool, base);
     string_pos = my_base;
     while (*string_pos) {
         if (*string_pos == '/' && *(string_pos + 1) == '/') {
@@ -486,10 +476,9 @@ static void imap_url(request_rec *r, char *base, char *value, char *url)
             value += 2;         /* jump over the '..' that we found in the value */
         }
         else if (directory) {
-            url[0] = '\0';
             aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
                         "invalid directory name in map file: %s", r->uri);
-            return;
+            return NULL;
         }
 
         if (!strncmp(value, "/../", 4) || !strcmp(value, "/.."))
@@ -500,12 +489,9 @@ static void imap_url(request_rec *r, char *base, char *value, char *url)
     }                           /* by this point, value does not start with '..' */
 
     if (value && *value) {
-        ap_snprintf(url, SMALLBUF, "%s%s", my_base, value);
+	return pstrcat(r->pool, my_base, value, NULL);
     }
-    else {
-        ap_snprintf(url, SMALLBUF, "%s", my_base);
-    }
-    return;
+    return my_base;
 }
 
 static int imap_reply(request_rec *r, char *redirect)
@@ -613,46 +599,29 @@ static void menu_footer(request_rec *r)
 
 static int imap_handler(request_rec *r)
 {
-    char input[LARGEBUF] =
-    {'\0'};
-    /* size of input can not be lowered without changing hard-coded
-     * checks
-     */
-    char href_text[SMALLBUF] =
-    {'\0'};
-    char base[SMALLBUF] =
-    {'\0'};
-    char redirect[SMALLBUF] =
-    {'\0'};
-    char directive[SMALLBUF] =
-    {'\0'};
-    char value[SMALLBUF] =
-    {'\0'};
-    char mapdflt[SMALLBUF] =
-    {'\0'};
-    char closest[SMALLBUF] =
-    {'\0'};
+    char input[MAX_STRING_LEN];
+    char *directive;
+    char *value;
+    char *href_text;
+    char *base;
+    char *redirect;
+    char *mapdflt;
+    char *closest = NULL;
     double closest_yet = -1;
 
-    double testpoint[2] =
-    {-1, -1};
-    double pointarray[MAXVERTS + 1][2] =
-    {
-        {-1, -1}};
-    int vertex = 0;
+    double testpoint[2];
+    double pointarray[MAXVERTS + 1][2];
+    int vertex;
 
-    char *string_pos = NULL;
-    int chars_read = 0;
+    char *string_pos;
     int showmenu = 0;
 
     imap_conf_rec *icr = get_module_config(r->per_dir_config, &imap_module);
 
-    char *imap_menu = icr->imap_menu ?
-    icr->imap_menu : IMAP_MENU_DEFAULT;
-    char *imap_default = icr->imap_default ?
-    icr->imap_default : IMAP_DEFAULT_DEFAULT;
-    char *imap_base = icr->imap_base ?
-    icr->imap_base : IMAP_BASE_DEFAULT;
+    char *imap_menu = icr->imap_menu ? icr->imap_menu : IMAP_MENU_DEFAULT;
+    char *imap_default = icr->imap_default
+			    ?  icr->imap_default : IMAP_DEFAULT_DEFAULT;
+    char *imap_base = icr->imap_base ? icr->imap_base : IMAP_BASE_DEFAULT;
 
     configfile_t *imap; 
 
@@ -664,8 +633,12 @@ static int imap_handler(request_rec *r)
     if (!imap)
         return NOT_FOUND;
 
-    imap_url(r, NULL, imap_base, base);         /* set base according to default */
-    imap_url(r, NULL, imap_default, mapdflt);   /* and default to global default */
+    base = imap_url(r, NULL, imap_base);         /* set base according to default */
+    if (!base)
+	return HTTP_INTERNAL_SERVER_ERROR;
+    mapdflt = imap_url(r, NULL, imap_default);   /* and default to global default */
+    if (!mapdflt)
+	return HTTP_INTERNAL_SERVER_ERROR;
 
     testpoint[X] = get_x_coord(r->args);
     testpoint[Y] = get_y_coord(r->args);
@@ -684,15 +657,7 @@ static int imap_handler(request_rec *r)
         menu_header(r, imap_menu);
     }
 
-    while (!cfg_getline(input, LARGEBUF, imap)) {
-        string_pos = input;     /* always start at the beginning of line */
-
-        directive[0] = '\0';
-        value[0] = '\0';
-        href_text[0] = '\0';
-        redirect[0] = '\0';
-        chars_read = 0;         /* clear these before using */
-
+    while (!cfg_getline(input, sizeof(input), imap)) {
         if (!input[0]) {
             if (showmenu) {
                 menu_blank(r, imap_menu);
@@ -707,35 +672,56 @@ static int imap_handler(request_rec *r)
             continue;
         }                       /* blank lines and comments are ignored if we aren't printing a menu */
 
+	/* find the first two space delimited fields, recall that
+	 * cfg_getline has removed leading/trailing whitespace and
+	 * compressed the other whitespace down to one space a piece
+	 *
+	 * note that we're tokenizing as we go... if we were to use the
+	 * getword() class of functions we would end up allocating extra
+	 * memory for every line of the map file
+	 */
+        string_pos = input;
+	if (!*string_pos)		/* need at least two fields */
+	    goto need_2_fields;
 
-        if (sscanf(input, "%255s %255s", directive, value) != 2) {
-            continue;           /* make sure we read two fields */
-        }
-        /* Now skip what we just read... we can't use ANSIism %n */
-        while (!(isspace(*string_pos)))         /* past directive */
-            string_pos++;
-        while (isspace(*string_pos))    /* and whitespace */
-            string_pos++;
-        while (!(isspace(*string_pos)))         /* and value... have to watch it */
-            string_pos++;       /* can have punctuation and stuff */
+	directive = string_pos;
+	while (*string_pos && *string_pos != ' ')	/* past directive */
+	    ++string_pos;
+	if (!*string_pos)		/* need at least two fields */
+	    goto need_2_fields;
+	*string_pos++ = '\0';
+
+	if (!*string_pos)		/* need at least two fields */
+	    goto need_2_fields;
+	value = string_pos;
+	while (*string_pos && *string_pos != ' ')	/* past value */
+	    ++string_pos;
+	if (*string_pos == ' ') {
+	    *string_pos++ = '\0';
+	}
+	else {
+	    /* end of input, don't advance past it */
+	    *string_pos = '\0';
+	}
 
         if (!strncasecmp(directive, "base", 4)) {       /* base, base_uri */
-            imap_url(r, NULL, value, base);
+            base = imap_url(r, NULL, value);
+	    if (!base)
+		goto menu_bail;
             continue;           /* base is never printed to a menu */
         }
 
-        chars_read = read_quoted(string_pos, href_text);
-        string_pos += chars_read;       /* read the quoted href text if present */
+        read_quoted(&string_pos, &href_text);
 
         if (!strcasecmp(directive, "default")) {        /* default */
-            imap_url(r, NULL, value, mapdflt);
+            mapdflt = imap_url(r, NULL, value);
+	    if (!mapdflt)
+		goto menu_bail;
             if (showmenu) {     /* print the default if there's a menu */
-                if (!*href_text) {      /* if we didn't find a "href text" */
-                    strncpy(href_text, mapdflt, sizeof(href_text) - 1);         /* use the href itself as text */
-                    href_text[sizeof(href_text) - 1] = '\0';
-                }
-                imap_url(r, base, mapdflt, redirect);
-                menu_default(r, imap_menu, redirect, href_text);
+                redirect = imap_url(r, base, mapdflt);
+		if (!redirect)
+		    goto menu_bail;
+                menu_default(r, imap_menu, redirect, href_text ? href_text : mapdflt);
             }
             continue;
         }
@@ -762,13 +748,13 @@ static int imap_handler(request_rec *r)
         pointarray[vertex][X] = -1;     /* signals the end of vertices */
 
         if (showmenu) {
-            read_quoted(string_pos, href_text);         /* href text could be here instead */
-            if (!*href_text) {  /* if we didn't find a "href text" */
-                strncpy(href_text, value, sizeof(href_text) - 1);       /* use the href itself in the menu */
-                href_text[sizeof(href_text) - 1] = '\0';
-            }
-            imap_url(r, base, value, redirect);
-            menu_directive(r, imap_menu, redirect, href_text);
+	    if (!href_text) {
+		read_quoted(&string_pos, &href_text);         /* href text could be here instead */
+	    }
+            redirect = imap_url(r, base, value);
+	    if (!redirect)
+		goto menu_bail;
+            menu_directive(r, imap_menu, redirect, href_text ? href_text : value);
             continue;
         }
         /* note that we don't make it past here if we are making a menu */
@@ -781,7 +767,9 @@ static int imap_handler(request_rec *r)
 
             if (pointinpoly(testpoint, pointarray)) {
 		cfg_closefile(imap);
-                imap_url(r, base, value, redirect);
+                redirect = imap_url(r, base, value);
+		if (!redirect)
+		    return HTTP_INTERNAL_SERVER_ERROR;
                 return (imap_reply(r, redirect));
             }
             continue;
@@ -791,7 +779,9 @@ static int imap_handler(request_rec *r)
 
             if (pointincircle(testpoint, pointarray)) {
 		cfg_closefile(imap);
-                imap_url(r, base, value, redirect);
+                redirect = imap_url(r, base, value);
+		if (!redirect)
+		    return HTTP_INTERNAL_SERVER_ERROR;
                 return (imap_reply(r, redirect));
             }
             continue;
@@ -801,7 +791,9 @@ static int imap_handler(request_rec *r)
 
             if (pointinrect(testpoint, pointarray)) {
 		cfg_closefile(imap);
-                imap_url(r, base, value, redirect);
+                redirect = imap_url(r, base, value);
+		if (!redirect)
+		    return HTTP_INTERNAL_SERVER_ERROR;
                 return (imap_reply(r, redirect));
             }
             continue;
@@ -810,8 +802,7 @@ static int imap_handler(request_rec *r)
         if (!strcasecmp(directive, "point")) {  /* point */
 
             if (is_closer(testpoint, pointarray, &closest_yet)) {
-                strncpy(closest, value, sizeof(closest) - 1);   /* if the closest point yet save it */
-                closest[sizeof(closest) - 1] = '\0';
+		closest = pstrdup(r->pool, value);
             }
 
             continue;
@@ -826,17 +817,38 @@ static int imap_handler(request_rec *r)
         return OK;
     }
 
-    if (*closest) {             /* if a 'point' directive has been seen */
-        imap_url(r, base, closest, redirect);
+    if (closest) {             /* if a 'point' directive has been seen */
+        redirect = imap_url(r, base, closest);
+	if (!redirect)
+	    return HTTP_INTERNAL_SERVER_ERROR;
         return (imap_reply(r, redirect));
     }
 
-    if (*mapdflt) {             /* a default should be defined, even if only 'nocontent' */
-        imap_url(r, base, mapdflt, redirect);
+    if (mapdflt) {             /* a default should be defined, even if only 'nocontent' */
+        redirect = imap_url(r, base, mapdflt);
+	if (!redirect)
+	    return HTTP_INTERNAL_SERVER_ERROR;
         return (imap_reply(r, redirect));
     }
 
     return SERVER_ERROR;        /* If we make it this far, we failed. They lose! */
+
+need_2_fields:
+    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+		"map file %s, line %d syntax error: requires at least two fields",
+		r->uri, imap->line_number);
+    /* fall through */
+menu_bail:
+    cfg_closefile(imap);
+    if (showmenu) {
+	/* There's not much else we can do ... we've already sent the headers
+	 * to the client.
+	 */
+	rputs("\n\n[an internal server error occured]\n", r);
+	menu_footer(r);
+	return OK;
+    }
+    return HTTP_INTERNAL_SERVER_ERROR;
 }
 
 
