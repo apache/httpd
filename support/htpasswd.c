@@ -80,6 +80,7 @@
  */
 
 #include "apr.h"
+#include "apr_lib.h"
 #include "apr_strings.h"
 #include "apr_errno.h"
 #include "apr_file_io.h"
@@ -89,7 +90,6 @@
 #include <stdio.h>
 #endif
 
-#include "ap_config.h"
 #include "apr_md5.h"
 #include "ap_sha1.h"
 #include <signal.h>
