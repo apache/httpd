@@ -46,6 +46,12 @@ and <A HREF="known_client_problems.html">our list of known client problems.</A><
     This will be corrected in a later beta.  A workaround for now is
     to edit <code>src/main/httpd.h</code> and remove the definition
     of <code>OPTIMIZE_TIMEOUTS</code> near the bottom.
+<LI><b>Win32 only:</b> Building from source may fail because the buildmark.obj
+    file does not exist. Edit <CODE>Makefile.nt</CODE> and replace the
+    line <CODE>del CoreR\buildmark.obj</CODE> with <CODE>-del
+    CoreR\buildmark.obj</CODE> (and similarly for <CODE>del
+    CoreD\buildmark.obj</CODE>). See 
+    <A HREF="http://bugs.apache.org/index/full/1473">PR#1473</A>.
 </OL>
 
 <H2>Apache 1.3b2 Bugs</H2>
