@@ -1,4 +1,9 @@
 Changes with Apache 2.0.31
+
+  *) Create the scoreboard (in the parent) in a global pool context,
+     so it survives graceful restarts. This fixes a SEGV during
+     graceful restarts.  [Aaron Bannert]
+
   *) Add a timeout option to the proxy code 'ProxyTimeout' 
      [Ian Holsman]
 
