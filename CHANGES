@@ -21,9 +21,6 @@ Changes with Apache 2.1.0-dev
   *) Fix some broken log messages in WinNT MPM.  
      [Juan Rivera <Juan.Rivera@citrix.com>]
 
-  *) Add support for "streamy" PROPFIND responses.
-     [Ben Collins-Sussman <sussman@collab.net>]
-
   *) Add support for IMT minor-type wildcards (e.g., text/*) to
      ExpiresByType.  PR#7991  [Ken Coar]
 
@@ -155,6 +152,9 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.47
+
+  *) Add support for "streamy" PROPFIND responses.
+     [Ben Collins-Sussman <sussman@collab.net>]
 
   *) mod_cgid: Eliminate a double-close of a socket.  This resolves
      various operational problems in a threaded MPM, since on the
