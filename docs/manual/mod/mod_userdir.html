@@ -33,42 +33,71 @@ is compiled in by default. It provides for user-specific directories.
 <strong>Status:</strong> Base<br>
 <strong>Module:</strong> mod_userdir<br>
 <strong>Compatibility:</strong> All forms except the <code>UserDir
-public_html</code> form are only available in Apache 1.1 or above.<p>
+public_html</code> form are only available in Apache 1.1 or above.  Use
+of the <SAMP>enabled</SAMP> keyword, or <SAMP>disabled</SAMP> with a
+list of usernames, is only available in Apache 1.3 and above.<p>
 
 The UserDir directive sets the real directory in a user's home directory
 to use when a request for a document for a user is received.
-<em>Directory</em> is either <code>disabled</code>, to disable this feature,
- or the name of a directory, following one of the following
-patterns. If not disabled, then a request for
+<em>Directory/filename</em> is one of the following:
+</P>
+<UL>
+ <LI>The name of a directory or a pattern such as those shown below.
+ </LI>
+ <LI>The keyword <SAMP>disabled</SAMP>.  This turns off <EM>all</EM>
+  username-to-directory translations except those explicitly named with
+  the <SAMP>enabled</SAMP> keyword (see below).
+ </LI>
+ <LI>The keyword <SAMP>disabled</SAMP> followed by a space-delimited
+  list of usernames.  Usernames that appear in such a list will
+  <EM>never</EM> have directory translation performed, even if they
+  appear in an <SAMP>enabled</SAMP> clause.
+ </LI>
+ <LI>The keyword <SAMP>enabled</SAMP> followed by a space-delimited list
+  of usernames.  These usernames will have directory translation
+  performed even if a global disable is in effect, but not if they also
+  appear in a <SAMP>disabled</SAMP> clause.
+ </LI>
+</UL>
+<P>
+If neither the <SAMP>enabled</SAMP> nor the <SAMP>disabled</SAMP>
+keywords appear in the <SAMP>Userdir</SAMP> directive, the argument is
+treated as a filename pattern, and is used to turn the name into a
+directory specification.  A request for
 <code>http://www.foo.com/~bob/one/two.html</code> will be translated to:
 <pre>
-UserDir public_html     -> ~bob/public_html/one/two.html
-UserDir /usr/web        -> /usr/web/bob/one/two.html
-UserDir /home/*/www     -> /home/bob/www/one/two.html
+UserDir public_html     -&gt; ~bob/public_html/one/two.html
+UserDir /usr/web        -&gt; /usr/web/bob/one/two.html
+UserDir /home/*/www     -&gt; /home/bob/www/one/two.html
 </pre>
 The following directives will send redirects to the client:
 <pre>
-UserDir http://www.foo.com/users   -> http//www.foo.com/users/bob/one/two.html
-UserDir http://www.foo.com/*/usr   -> http://www.foo.com/bob/usr/one/two.html
-UserDir http://www.foo.com/~*/     -> http://www.foo.com/~bob/one/two.html
+UserDir http://www.foo.com/users   -&gt; http//www.foo.com/users/bob/one/two.html
+UserDir http://www.foo.com/*/usr   -&gt; http://www.foo.com/bob/usr/one/two.html
+UserDir http://www.foo.com/~*/     -&gt; http://www.foo.com/~bob/one/two.html
 </pre>
-
-<P>
-<STRONG>
-Be careful when using this directive; for instance, <SAMP>&quot;UserDir
-./&quot;</SAMP> would map <SAMP>&quot;/~root&quot;</SAMP> to
-<SAMP>&quot;/&quot;</SAMP> - which is probably undesirable.  See also
-the
-<A
- HREF="core.html#directory"
->&lt;Directory&gt;</A>
-directive and the
-<A
- HREF="../misc/security_tips.html"
->Security Tips</A>
-page for more information.
-</STRONG>
 </P>
+<BLOCKQUOTE>
+ <STRONG>
+ Be careful when using this directive; for instance,
+ <SAMP>&quot;UserDir&nbsp;./&quot;</SAMP> would map
+ <SAMP>&quot;/~root&quot;</SAMP> to 
+ <SAMP>&quot;/&quot;</SAMP> - which is probably undesirable.  If you are
+ running Apache 1.3 or above, it is strongly recommended that your
+ configuration include a
+ &quot;<SAMP>UserDir&nbsp;disabled&nbsp;root</SAMP>&quot; declaration.
+ See also
+ the
+ <A
+  HREF="core.html#directory"
+ >&lt;Directory&gt;</A>
+ directive and the
+ <A
+  HREF="../misc/security_tips.html"
+ >Security Tips</A>
+ page for more information.
+ </STRONG>
+</BLOCKQUOTE>
 
 <!--#include virtual="footer.html" -->
 </BODY>
