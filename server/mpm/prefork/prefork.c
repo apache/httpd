@@ -633,7 +633,6 @@ static void child_main(int child_num_arg)
             /* multiple listening sockets - need to poll */
 	    for (;;) {
                 apr_status_t ret;
-                apr_int16_t event;
                 apr_int32_t n;
 
                 ret = apr_poll(pollset, num_listensocks, &n, -1);
