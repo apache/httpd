@@ -153,7 +153,7 @@ static int proxy_detect(request_rec *r)
 	    && !strcasecmp(r->parsed_uri.scheme, ap_http_method(r))
 	    && ap_matches_request_vhost(r, r->parsed_uri.hostname,
                r->parsed_uri.port_str ? r->parsed_uri.port : ap_default_port(r)))) {
-	    r->proxyreq = 1;
+	    r->proxyreq = STD_PROXY;
 	    r->uri = r->unparsed_uri;
 	    r->filename = ap_pstrcat(r->pool, "proxy:", r->uri, NULL);
 	    r->handler = "proxy-server";
@@ -163,7 +163,7 @@ static int proxy_detect(request_rec *r)
     else if (conf->req && r->method_number == M_CONNECT
 	     && r->parsed_uri.hostname
 	     && r->parsed_uri.port_str) {
-	    r->proxyreq = 1;
+	    r->proxyreq = STD_PROXY;
 	    r->uri = r->unparsed_uri;
 	    r->filename = ap_pstrcat(r->pool, "proxy:", r->uri, NULL);
 	    r->handler = "proxy-server";
@@ -179,7 +179,7 @@ static int proxy_trans(request_rec *r)
     int i, len;
     struct proxy_alias *ent = (struct proxy_alias *) conf->aliases->elts;
 
-    if (r->proxyreq) {
+    if (r->proxyreq != NOT_PROXY) {
 	/* someone has already set up the proxy, it was possibly ourselves
 	 * in proxy_detect
 	 */
@@ -198,7 +198,7 @@ static int proxy_trans(request_rec *r)
            r->filename = ap_pstrcat(r->pool, "proxy:", ent[i].real,
                                  r->uri + len, NULL);
            r->handler = "proxy-server";
-           r->proxyreq = 1;
+           r->proxyreq = PROXY_PASS;
            return OK;
 	}
     }
@@ -215,7 +215,7 @@ static int proxy_fixup(request_rec *r)
 {
     char *url, *p;
 
-    if (!r->proxyreq || strncmp(r->filename, "proxy:", 6) != 0)
+    if (r->proxyreq == NOT_PROXY || strncmp(r->filename, "proxy:", 6) != 0)
 	return DECLINED;
 
     url = &r->filename[6];
@@ -252,7 +252,7 @@ static int proxy_needsdomain(request_rec *r, const char *url, const char *domain
     const char *ref;
 
     /* We only want to worry about GETs */
-    if (!r->proxyreq || r->method_number != M_GET || !r->parsed_uri.hostname)
+    if (r->proxyreq == NOT_PROXY || r->method_number != M_GET || !r->parsed_uri.hostname)
 	return DECLINED;
 
     /* If host does contain a dot already, or it is "localhost", decline */
@@ -296,7 +296,7 @@ static int proxy_handler(request_rec *r)
     int direct_connect = 0;
     const char *maxfwd_str;
 
-    if (!r->proxyreq || strncmp(r->filename, "proxy:", 6) != 0)
+    if (r->proxyreq == NOT_PROXY || strncmp(r->filename, "proxy:", 6) != 0)
 	return DECLINED;
 
     if (r->method_number == M_TRACE &&
@@ -304,7 +304,7 @@ static int proxy_handler(request_rec *r)
 	int maxfwd = strtol(maxfwd_str, NULL, 10);
 	if (maxfwd < 1) {
 	    int access_status;
-	    r->proxyreq = 0;
+	    r->proxyreq = NOT_PROXY;
 	    if ((access_status = ap_send_http_trace(r)))
 		ap_die(access_status, r);
 	    else

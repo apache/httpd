@@ -983,7 +983,7 @@ API_EXPORT(void) ap_die(int type, request_rec *r)
      * about proxy authentication.  They treat it like normal auth, and then
      * we tweak the status.
      */
-    if (r->status == AUTH_REQUIRED && r->proxyreq) {
+    if (r->status == AUTH_REQUIRED && r->proxyreq == STD_PROXY) {
         r->status = HTTP_PROXY_AUTHENTICATION_REQUIRED;
     }
 
@@ -1088,7 +1088,7 @@ static void process_request_internal(request_rec *r)
     int access_status;
 
     /* Ignore embedded %2F's in path for proxy requests */
-    if (!r->proxyreq && r->parsed_uri.path) {
+    if (r->proxyreq == NOT_PROXY && r->parsed_uri.path) {
 	access_status = ap_unescape_url(r->parsed_uri.path);
 	if (access_status) {
 	    ap_die(access_status, r);
@@ -1108,7 +1108,7 @@ static void process_request_internal(request_rec *r)
         return;
     }
 
-    if (!r->proxyreq) {
+    if (r->proxyreq == NOT_PROXY) {
 	/*
 	 * We don't want TRACE to run through the normal handler set, we
 	 * handle it specially.
@@ -1176,8 +1176,9 @@ static void process_request_internal(request_rec *r)
     case SATISFY_ANY:
         if (((access_status = ap_check_access(r)) != 0) || !ap_auth_type(r)) {
             if (!ap_some_auth_required(r)) {
-                decl_die(access_status ? access_status : HTTP_INTERNAL_SERVER_ERROR, ap_auth_type(r)
-		    ? "check access"
+                decl_die(access_status ? access_status :
+			 HTTP_INTERNAL_SERVER_ERROR,
+			 ap_auth_type(r) ? "check access"
 		    : "perform authentication. AuthType not set!", r);
                 return;
             }
@@ -1197,7 +1198,7 @@ static void process_request_internal(request_rec *r)
         break;
     }
 
-    if (! (r->proxyreq 
+    if (! (r->proxyreq != NOT_PROXY
 	   && r->parsed_uri.scheme != NULL
 	   && strcmp(r->parsed_uri.scheme, "http") == 0) ) {
 	if ((access_status = ap_find_types(r)) != 0) {

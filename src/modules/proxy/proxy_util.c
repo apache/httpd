@@ -134,8 +134,8 @@ void ap_proxy_c2hex(int ch, char *x)
  * and encodes those which must be encoded, and does not touch
  * those which must not be touched.
  */
-char *
-     ap_proxy_canonenc(pool *p, const char *x, int len, enum enctype t, int isenc)
+char *ap_proxy_canonenc(pool *p, const char *x, int len, enum enctype t,
+			enum proxyreqtype isenc)
 {
     int i, j, ch;
     char *y;
@@ -177,7 +177,7 @@ char *
 	    continue;
 	}
 /* decode it if not already done */
-	if (isenc && ch == '%') {
+	if (isenc != NOT_PROXY && ch == '%') {
 	    if (!ap_isxdigit(x[i + 1]) || !ap_isxdigit(x[i + 2]))
 		return NULL;
 	    ch = ap_proxy_hex2c(&x[i + 1]);

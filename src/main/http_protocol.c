@@ -1162,7 +1162,8 @@ API_EXPORT(void) ap_note_basic_auth_failure(request_rec *r)
         ap_note_auth_failure(r);
     else
         ap_table_setn(r->err_headers_out,
-                  r->proxyreq ? "Proxy-Authenticate" : "WWW-Authenticate",
+                  r->proxyreq == STD_PROXY ? "Proxy-Authenticate"
+		      : "WWW-Authenticate",
                   ap_pstrcat(r->pool, "Basic realm=\"", ap_auth_name(r), "\"",
                           NULL));
 }
@@ -1170,7 +1171,8 @@ API_EXPORT(void) ap_note_basic_auth_failure(request_rec *r)
 API_EXPORT(void) ap_note_digest_auth_failure(request_rec *r)
 {
     ap_table_setn(r->err_headers_out,
-	    r->proxyreq ? "Proxy-Authenticate" : "WWW-Authenticate",
+	    r->proxyreq == STD_PROXY ? "Proxy-Authenticate"
+		  : "WWW-Authenticate",
 	    ap_psprintf(r->pool, "Digest realm=\"%s\", nonce=\"%lu\"",
 		ap_auth_name(r), r->request_time));
 }
@@ -1178,8 +1180,9 @@ API_EXPORT(void) ap_note_digest_auth_failure(request_rec *r)
 API_EXPORT(int) ap_get_basic_auth_pw(request_rec *r, const char **pw)
 {
     const char *auth_line = ap_table_get(r->headers_in,
-                                      r->proxyreq ? "Proxy-Authorization"
-                                                  : "Authorization");
+					 r->proxyreq == STD_PROXY
+					 ? "Proxy-Authorization"
+					 : "Authorization");
     const char *t;
 
     if (!(t = ap_auth_type(r)) || strcasecmp(t, "Basic"))
@@ -1352,7 +1355,7 @@ API_EXPORT(void) ap_basic_http_header(request_rec *r)
     /* mod_proxy is only HTTP/1.0, so avoid sending HTTP/1.1 error response;
      * kluge around broken browsers when indicated by force-response-1.0
      */
-    if (r->proxyreq
+    if (r->proxyreq != NOT_PROXY
         || (r->proto_num == HTTP_VERSION(1,0)
             && ap_table_get(r->subprocess_env, "force-response-1.0"))) {
 

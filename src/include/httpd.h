@@ -658,6 +658,12 @@ typedef struct listen_rec listen_rec;
 
 #include "util_uri.h"
 
+enum proxyreqtype {
+    NOT_PROXY=0,
+    STD_PROXY,
+    PROXY_PASS
+};
+
 struct request_rec {
 
     ap_pool *pool;
@@ -681,7 +687,7 @@ struct request_rec {
 
     char *the_request;		/* First line of request, so we can log it */
     int assbackwards;		/* HTTP/0.9, "simple" request */
-    int proxyreq;		/* A proxy request (calculated during
+    enum proxyreqtype proxyreq;/* A proxy request (calculated during
 				 * post_read_request or translate_name) */
     int header_only;		/* HEAD request, as opposed to GET */
     char *protocol;		/* Protocol, as given to us, or HTTP/0.9 */

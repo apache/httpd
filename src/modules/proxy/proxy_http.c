@@ -97,7 +97,8 @@ int ap_proxy_http_canon(request_rec *r, char *url, const char *scheme, int def_p
 	search = r->args;
 
 /* process path */
-    path = ap_proxy_canonenc(r->pool, url, strlen(url), enc_path, r->proxyreq);
+    path = ap_proxy_canonenc(r->pool, url, strlen(url), enc_path,
+			     r->proxyreq);
     if (path == NULL)
 	return HTTP_BAD_REQUEST;
 

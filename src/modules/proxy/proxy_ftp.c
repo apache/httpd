@@ -136,7 +136,8 @@ int ap_proxy_ftp_canon(request_rec *r, char *url)
     strp = strchr(url, ';');
     if (strp != NULL) {
 	*(strp++) = '\0';
-	parms = ap_proxy_canonenc(p, strp, strlen(strp), enc_parm, r->proxyreq);
+	parms = ap_proxy_canonenc(p, strp, strlen(strp), enc_parm,
+				  r->proxyreq);
 	if (parms == NULL)
 	    return HTTP_BAD_REQUEST;
     }
@@ -149,15 +150,15 @@ int ap_proxy_ftp_canon(request_rec *r, char *url)
     if (!ftp_check_string(path))
 	return HTTP_BAD_REQUEST;
 
-    if (!r->proxyreq && r->args != NULL) {
+    if (r->proxyreq == NOT_PROXY && r->args != NULL) {
 	if (strp != NULL) {
-	    strp = ap_proxy_canonenc(p, r->args, strlen(r->args), enc_parm, 1);
+	    strp = ap_proxy_canonenc(p, r->args, strlen(r->args), enc_parm, STD_PROXY);
 	    if (strp == NULL)
 		return HTTP_BAD_REQUEST;
 	    parms = ap_pstrcat(p, parms, "?", strp, NULL);
 	}
 	else {
-	    strp = ap_proxy_canonenc(p, r->args, strlen(r->args), enc_fpath, 1);
+	    strp = ap_proxy_canonenc(p, r->args, strlen(r->args), enc_fpath, STD_PROXY);
 	    if (strp == NULL)
 		return HTTP_BAD_REQUEST;
 	    path = ap_pstrcat(p, path, "?", strp, NULL);
@@ -416,7 +417,7 @@ static long int send_dir(BUFF *f, request_rec *r, cache_req *c, char *cwd)
  */
 static int ftp_unauthorized (request_rec *r, int log_it)
 {
-    r->proxyreq = 0;
+    r->proxyreq = NOT_PROXY;
     /* Log failed requests if they supplied a password
      * (log username/password guessing attempts)
      */

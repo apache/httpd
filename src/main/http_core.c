@@ -2956,7 +2956,7 @@ static int core_translate(request_rec *r)
     void *sconf = r->server->module_config;
     core_server_config *conf = ap_get_module_config(sconf, &core_module);
   
-    if (r->proxyreq) {
+    if (r->proxyreq != NOT_PROXY) {
         return HTTP_FORBIDDEN;
     }
     if ((r->uri[0] != '/') && strcmp(r->uri, "*")) {

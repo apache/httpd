@@ -293,7 +293,7 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
 int ap_proxy_hex2c(const char *x);
 void ap_proxy_c2hex(int ch, char *x);
 char *ap_proxy_canonenc(pool *p, const char *x, int len, enum enctype t,
-		     int isenc);
+			enum proxyreqtype isenc);
 char *ap_proxy_canon_netloc(pool *p, char **const urlp, char **userp,
 			 char **passwordp, char **hostp, int *port);
 const char *ap_proxy_date_canon(pool *p, const char *x);
