@@ -44,7 +44,38 @@ Documentation that needs writing:
 	virtualhosting.  (If it exists already I can't find it easily.)
 
 Available Patches:
-   
+  
+    * Filenames containing whitespace characters caused problems for directives
+      Bill Stoddard <wgstodda@us.ibm.com>
+	Message-ID: <3591353E.A5D07487@us.ibm.com>
+
+    * Fix mod_include #perl arg interpolation
+      Doug MacEachern <dougm@pobox.com>
+	Message-Id: <199806262010.QAA13262@postman.opengroup.org>
+
+    * PR#2483 reports that RewriteMap program still don't work under Win32 because
+      of a SIGSEGV. The reporter is right, ap_spawn_child_core() calls the child
+      function with NULL while in the child function the file handles have to be
+      available. I've assembled the above patch from the reporters description/patch
+      for testing by our Win32 folks. (I cannot test it myself).
+      "Ralf S. Engelschall" <rse@engelschall.com>
+	Message-ID: <19980629143312.A4552@engelschall.com>
+
+    * This patch makes some structural changes to ap_call_exec to make it more
+      readable and friendly to a couple of patches that will follow (capability to
+      query the Win32 registry for interpreter name and a fix for mod_include
+      exec=cmd processing). This patch does not change the function of ap_call_exec.
+      W G Stoddard <wgstodda@us.ibm.com>
+	Message-ID: <5040300017289790000002L002*@MHS>
+
+    * Configure tweaks to support building outside the source tree, and 
+      add more customizeability for installation layout, by 
+      Wilfredo Sanchez <wsanchez@apple.com>
+	Message-Id: <199806260405.VAA09682@scv4.apple.com>
+
+    * Rhapsody port, by Wilfredo Sanchez <wsanchez@apple.com>
+	Message-Id: <199806262218.PAA12490@scv2.apple.com>   
+
     * Ralf's "[PATCH] Fix module init"
       This fixes the mod_so/mod_perl problems described under "FINAL RELEASE
       SHOWSTOPPERS" by doing a more correct init of the modules after loading
