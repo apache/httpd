@@ -389,7 +389,7 @@
 
 <directivesynopsis>
 <name>TransferLog</name>
-<description>Specifly location of a log file</description>
+<description>Specify location of a log file</description>
 <syntax>TransferLog <var>file</var>|<var>pipe</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
