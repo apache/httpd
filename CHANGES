@@ -1,9 +1,5 @@
 Changes with Apache 2.0.46
 
-  *) mod_negotiation: Introduce "prefer-language" environment variable,
-     which allows to influence the negotiation process on request basis
-     to prefer a certain language.  [André Malo]
-
   *) Fix for mod_dav.  Call the 'can_be_activity' callback, if provided,
      when a MKACTIVITY request comes in.
      [Ben Collins-Sussman <sussman@collab.net>]
@@ -29,9 +25,6 @@ Changes with Apache 2.0.46
   *) Fix mod_rewrite's handling of absolute URIs. The escaping routines
      now work scheme dependent and the query string will only be
      appended if supported by the particular scheme.  [André Malo]
-
-  *) Make mod_expires' ExpiresByType work properly, including for
-     dynamically-generated documents.  [Ken Coar]
 
   *) Add another check for already compressed content in mod_deflate.
      PR 19913. [Tsuyoshi SASAMOTO <nazonazo@super.win.ne.jp>]
