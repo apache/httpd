@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/17 18:27:42 $]
+Last modified at [$Date: 2003/05/17 22:34:45 $]
 
 Release:
 
@@ -197,7 +197,12 @@ PATCHES TO PORT FROM 2.1
       Submitted by: David Deaves <David.Deaves@dd.id.au>, William Rowe
       modules/ssl/ssl_engine_io.c r1.106, r1.107 (minor breakage)
       +1: wrowe, jerenkrantz
-      
+
+    * mod_rewrite: Let LA-U look aheads in directory work with r->uri and not
+      r->filename. (related to) PR 8394.  (2.0 + 1.3)
+      modules/mappers/mod_rewrite.c:  1.151
+      +1: nd
+
 CURRENT RELEASE NOTES:
 
     * Backwards compatibility is expected of future Apache 2.0 releases,
