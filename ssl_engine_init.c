@@ -272,6 +272,7 @@ void ssl_init_TmpKeysHandle(int action, server_rec *s, apr_pool_t *p)
     SSLModConfigRec *mc = myModConfig(s);
     ssl_asn1_t *asn1;
     unsigned char *ucp;
+    long int length;
     RSA *rsa;
     DH *dh;
 
@@ -288,10 +289,10 @@ void ssl_init_TmpKeysHandle(int action, server_rec *s, apr_pool_t *p)
                     "Init: Failed to generate temporary 512 bit RSA private key");
             ssl_die();
         }
-        asn1 = (ssl_asn1_t *)ssl_ds_table_push(mc->tTmpKeys, "RSA:512");
-        asn1->nData  = i2d_RSAPrivateKey(rsa, NULL);
-        asn1->cpData = apr_palloc(mc->pPool, asn1->nData);
-        ucp = asn1->cpData; i2d_RSAPrivateKey(rsa, &ucp); /* 2nd arg increments */
+
+        length = i2d_RSAPrivateKey(rsa, NULL);
+        ucp = ssl_asn1_table_set(mc->tTmpKeys, "RSA:512", length);
+        (void)i2d_RSAPrivateKey(rsa, &ucp); /* 2nd arg increments */
         RSA_free(rsa);
 
         /* generate 1024 bit RSA key */
@@ -300,10 +301,10 @@ void ssl_init_TmpKeysHandle(int action, server_rec *s, apr_pool_t *p)
                     "Init: Failed to generate temporary 1024 bit RSA private key");
             ssl_die();
         }
-        asn1 = (ssl_asn1_t *)ssl_ds_table_push(mc->tTmpKeys, "RSA:1024");
-        asn1->nData  = i2d_RSAPrivateKey(rsa, NULL);
-        asn1->cpData = apr_palloc(mc->pPool, asn1->nData);
-        ucp = asn1->cpData; i2d_RSAPrivateKey(rsa, &ucp); /* 2nd arg increments */
+
+        length = i2d_RSAPrivateKey(rsa, NULL);
+        ucp = ssl_asn1_table_set(mc->tTmpKeys, "RSA:1024", length);
+        (void)i2d_RSAPrivateKey(rsa, &ucp); /* 2nd arg increments */
         RSA_free(rsa);
 
         ssl_log(s, SSL_LOG_INFO, "Init: Configuring temporary DH parameters (512/1024 bits)");
@@ -313,10 +314,10 @@ void ssl_init_TmpKeysHandle(int action, server_rec *s, apr_pool_t *p)
             ssl_log(s, SSL_LOG_ERROR, "Init: Failed to import temporary 512 bit DH parameters");
             ssl_die();
         }
-        asn1 = (ssl_asn1_t *)ssl_ds_table_push(mc->tTmpKeys, "DH:512");
-        asn1->nData  = i2d_DHparams(dh, NULL);
-        asn1->cpData = apr_palloc(mc->pPool, asn1->nData);
-        ucp = asn1->cpData; i2d_DHparams(dh, &ucp); /* 2nd arg increments */
+
+        length = i2d_DHparams(dh, NULL);
+        ucp = ssl_asn1_table_set(mc->tTmpKeys, "DH:512", length);
+        (void)i2d_DHparams(dh, &ucp); /* 2nd arg increments */
         /* no need to free dh, it's static */
 
         /* import 1024 bit DH param */
@@ -324,10 +325,10 @@ void ssl_init_TmpKeysHandle(int action, server_rec *s, apr_pool_t *p)
             ssl_log(s, SSL_LOG_ERROR, "Init: Failed to import temporary 1024 bit DH parameters");
             ssl_die();
         }
-        asn1 = (ssl_asn1_t *)ssl_ds_table_push(mc->tTmpKeys, "DH:1024");
-        asn1->nData  = i2d_DHparams(dh, NULL);
-        asn1->cpData = apr_palloc(mc->pPool, asn1->nData);
-        ucp = asn1->cpData; i2d_DHparams(dh, &ucp); /* 2nd arg increments */
+
+        length = i2d_DHparams(dh, NULL);
+        ucp = ssl_asn1_table_set(mc->tTmpKeys, "DH:1024", length);
+        (void)i2d_DHparams(dh, &ucp); /* 2nd arg increments */
         /* no need to free dh, it's static */
     }
 
@@ -337,7 +338,7 @@ void ssl_init_TmpKeysHandle(int action, server_rec *s, apr_pool_t *p)
         ssl_log(s, SSL_LOG_INFO, "Init: Configuring temporary RSA private keys (512/1024 bits)");
 
         /* allocate 512 bit RSA key */
-        if ((asn1 = (ssl_asn1_t *)ssl_ds_table_get(mc->tTmpKeys, "RSA:512")) != NULL) {
+        if ((asn1 = (ssl_asn1_t *)apr_hash_get(mc->tTmpKeys, "RSA:512", APR_HASH_KEY_STRING)) != NULL) {
             ucp = asn1->cpData;
             if ((mc->pTmpKeys[SSL_TKPIDX_RSA512] = 
                  (void *)d2i_RSAPrivateKey(NULL, SSL_UCP_CAST(&ucp), asn1->nData)) == NULL) {
@@ -347,7 +348,7 @@ void ssl_init_TmpKeysHandle(int action, server_rec *s, apr_pool_t *p)
         }
 
         /* allocate 1024 bit RSA key */
-        if ((asn1 = (ssl_asn1_t *)ssl_ds_table_get(mc->tTmpKeys, "RSA:1024")) != NULL) {
+        if ((asn1 = (ssl_asn1_t *)apr_hash_get(mc->tTmpKeys, "RSA:1024", APR_HASH_KEY_STRING)) != NULL) {
             ucp = asn1->cpData;
             if ((mc->pTmpKeys[SSL_TKPIDX_RSA1024] = 
                  (void *)d2i_RSAPrivateKey(NULL, SSL_UCP_CAST(&ucp), asn1->nData)) == NULL) {
@@ -359,7 +360,7 @@ void ssl_init_TmpKeysHandle(int action, server_rec *s, apr_pool_t *p)
         ssl_log(s, SSL_LOG_INFO, "Init: Configuring temporary DH parameters (512/1024 bits)");
 
         /* allocate 512 bit DH param */
-        if ((asn1 = (ssl_asn1_t *)ssl_ds_table_get(mc->tTmpKeys, "DH:512")) != NULL) {
+        if ((asn1 = (ssl_asn1_t *)apr_hash_get(mc->tTmpKeys, "DH:512", APR_HASH_KEY_STRING)) != NULL) {
             ucp = asn1->cpData;
             if ((mc->pTmpKeys[SSL_TKPIDX_DH512] = 
                  (void *)d2i_DHparams(NULL, SSL_UCP_CAST(&ucp), asn1->nData)) == NULL) {
@@ -369,7 +370,7 @@ void ssl_init_TmpKeysHandle(int action, server_rec *s, apr_pool_t *p)
         }
 
         /* allocate 1024 bit DH param */
-        if ((asn1 = (ssl_asn1_t *)ssl_ds_table_get(mc->tTmpKeys, "DH:1024")) != NULL) {
+        if ((asn1 = (ssl_asn1_t *)apr_hash_get(mc->tTmpKeys, "DH:512", APR_HASH_KEY_STRING)) != NULL) {
             ucp = asn1->cpData;
             if ((mc->pTmpKeys[SSL_TKPIDX_DH1024] = 
                  (void *)d2i_DHparams(NULL, SSL_UCP_CAST(&ucp), asn1->nData)) == NULL) {
