@@ -1,0 +1,205 @@
+<?xml version="1.0"?>
+<xsl:stylesheet version="1.0"
+              xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                  xmlns="http://www.w3.org/1999/xhtml">
+
+
+<!-- ==================================================================== -->
+<!-- Ordinary HTML that must be converted to latex                        -->
+<!-- ==================================================================== -->
+
+<xsl:template match="ul">
+<xsl:text>\begin{itemize}
+</xsl:text>
+<xsl:apply-templates/>
+<xsl:text>\end{itemize}
+</xsl:text>
+</xsl:template>
+
+<xsl:template match="ol">
+<xsl:text>\begin{enumerate}
+</xsl:text>
+<xsl:apply-templates/>
+<xsl:text>\end{enumerate}
+</xsl:text>
+</xsl:template>
+
+<xsl:template match="li">
+<xsl:text>\item </xsl:text>
+<xsl:apply-templates/>
+<xsl:text>
+</xsl:text>
+</xsl:template>
+
+<xsl:template match="dl">
+<xsl:text>\begin{description}
+</xsl:text>
+<xsl:apply-templates/>
+<xsl:text>\end{description}
+</xsl:text>
+</xsl:template>
+
+<xsl:template match="dt">
+<xsl:text>\item[</xsl:text><xsl:apply-templates/>
+<xsl:text>] </xsl:text>
+</xsl:template>
+
+<xsl:template match="dd">
+<xsl:apply-templates/>
+</xsl:template>
+
+<!-- Latex doesn't like successive line breaks, so replace any
+     sequence of two or more br separated only by white-space with
+     one line break followed by smallskips. -->
+<xsl:template match="br">
+<xsl:choose>
+<xsl:when test="name(preceding-sibling::node()[1])='br'">
+<xsl:text>\smallskip </xsl:text>
+</xsl:when>
+<xsl:when test="name(preceding-sibling::node()[2])='br'">
+  <xsl:choose>
+  <xsl:when test="normalize-space(preceding-sibling::node()[1])=''">
+    <xsl:text>\smallskip </xsl:text>
+  </xsl:when>
+  <xsl:otherwise>
+    <xsl:text>\\ </xsl:text>
+  </xsl:otherwise>
+  </xsl:choose>
+</xsl:when>
+<xsl:otherwise>
+<xsl:text>\\ </xsl:text>
+</xsl:otherwise>
+</xsl:choose>
+</xsl:template>
+
+<xsl:template match="p">
+<xsl:apply-templates/>
+<xsl:text>\par
+</xsl:text>
+</xsl:template>
+
+<xsl:template match="code">
+<xsl:text>\texttt{</xsl:text>
+<xsl:apply-templates/>
+<xsl:text>}</xsl:text>
+</xsl:template>
+
+<xsl:template match="strong">
+<xsl:text>\textbf{</xsl:text>
+<xsl:apply-templates/>
+<xsl:text>}</xsl:text>
+</xsl:template>
+
+<xsl:template match="em">
+<xsl:text>\textit{</xsl:text>
+<xsl:apply-templates/>
+<xsl:text>}</xsl:text>
+</xsl:template>
+
+<!-- Value-of used here explicitly because we don't wan't latex-escaping
+performed.  Of course, this will conflict with html where some tags are
+interpreted in pre -->
+<xsl:template match="pre">
+<xsl:text>\begin{verbatim}
+</xsl:text>
+<xsl:value-of select="."/>
+<xsl:text>\end{verbatim}
+</xsl:text>
+</xsl:template>
+
+<xsl:template match="blockquote">
+<xsl:text>\begin{quotation}
+</xsl:text>
+<xsl:apply-templates/>
+<xsl:text>\end{quotation}
+</xsl:text>
+</xsl:template>
+
+<xsl:template match="table">
+<xsl:text>\begin{tabular}{ll}</xsl:text>
+<xsl:for-each select="tr">
+  <xsl:for-each select="td">
+    <xsl:text>\begin{minipage}{.5\linewidth}</xsl:text>
+    <xsl:apply-templates/>
+    <xsl:text>\end{minipage}</xsl:text>
+    <xsl:if test="not(last())">
+      <xsl:text> &amp; </xsl:text>
+    </xsl:if>
+  </xsl:for-each>
+  <xsl:text>\\
+</xsl:text>
+</xsl:for-each>
+<xsl:text>\end{tabular}
+</xsl:text>
+</xsl:template>
+
+<xsl:template match="a">
+<xsl:apply-templates/>
+<xsl:if test="@href">
+<xsl:variable name="relpath" select="document(/*/@metafile)/metafile/relpath" />
+<xsl:variable name="path" select="document(/*/@metafile)/metafile/path" />
+<xsl:variable name="fileref">
+  <xsl:choose>
+  <xsl:when test="contains(@href, '.html')">
+    <xsl:value-of select="substring-before(@href, '.html')"/>
+  </xsl:when>
+  <xsl:otherwise>
+    <xsl:value-of select="concat(@href, 'index')"/>
+  </xsl:otherwise>
+  </xsl:choose>
+</xsl:variable>
+<xsl:choose>
+<xsl:when test="starts-with(@href, 'http:')">
+  <xsl:if test="not(.=@href)">
+    <xsl:text>\footnote{</xsl:text>
+      <xsl:call-template name="ltescape">
+        <xsl:with-param name="string">
+          <xsl:value-of select="string(@href)"/>
+        </xsl:with-param>
+      </xsl:call-template>
+    <xsl:text>}</xsl:text>
+  </xsl:if>
+</xsl:when>
+<xsl:when test="starts-with(@href, '#')">
+<!-- Don't do inter-section references -->
+</xsl:when>
+<xsl:otherwise>
+  <xsl:text> (p.\ \pageref{</xsl:text>
+    <xsl:call-template name="replace-string">
+      <xsl:with-param name="replace" select="'#'"/>
+      <xsl:with-param name="with" select="':'"/>
+      <xsl:with-param name="text">
+      <xsl:choose>
+      <xsl:when test="$relpath='.'">
+        <xsl:value-of select="concat('/',$fileref)"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:choose>
+        <xsl:when test="starts-with($fileref,'..')">
+          <xsl:value-of select="substring-after($fileref,'..')"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="concat($path,$fileref)"/>
+        </xsl:otherwise>
+        </xsl:choose>
+      </xsl:otherwise>
+      </xsl:choose>
+      </xsl:with-param>
+     </xsl:call-template>
+  <xsl:text>}) </xsl:text>
+</xsl:otherwise>
+</xsl:choose>
+</xsl:if>
+</xsl:template>
+
+<xsl:template match="img">
+<xsl:text>[Image not coverted]</xsl:text>
+<!--
+<xsl:variable name="path" select="document(/*/@metafile)/metafile/path" />
+<xsl:text>\includegraphics{</xsl:text>
+<xsl:value-of select="concat('.',$path,@src)"/>
+<xsl:text>}</xsl:text>
+-->
+</xsl:template>
+
+</xsl:stylesheet>
