@@ -119,13 +119,16 @@ int ap_proxy_http_canon(request_rec *r, char *url, const char *scheme, int def_p
     return OK;
 }
  
-static const char *proxy_location_reverse_map(request_rec *r, const char *url)
+static const char *ap_proxy_location_reverse_map(request_rec *r, const char *url)
 {
     void *sconf;
     proxy_server_conf *conf;
     struct proxy_alias *ent;
     int i, l1, l2;
     char *u;
+
+    /* XXX FIXME: Make sure this handled the ambiguous case of the :80
+     * after the hostname */
 
     sconf = r->server->module_config;
     conf = (proxy_server_conf *)ap_get_module_config(sconf, &proxy_module);
@@ -142,7 +145,7 @@ static const char *proxy_location_reverse_map(request_rec *r, const char *url)
 }
 
 /* Clear all connection-based headers from the incoming headers table */
-static void clear_connection(apr_pool_t *p, apr_table_t *headers)
+static void ap_proxy_clear_connection(apr_pool_t *p, apr_table_t *headers)
 {
     const char *name;
     char *next = apr_pstrdup(p, apr_table_get(headers, "Connection"));
@@ -185,6 +188,7 @@ int ap_proxy_http_handler(request_rec *r, char *url,
     apr_array_header_t *reqhdrs_arr;
     apr_table_t *resp_hdrs = NULL;
     apr_table_entry_t *reqhdrs;
+    const char *table_buf;
     struct sockaddr_in server;
     struct in_addr destaddr;
     char buffer[HUGE_STRING_LEN];
@@ -210,7 +214,7 @@ int ap_proxy_http_handler(request_rec *r, char *url,
     memset(&server, '\0', sizeof(server));
     server.sin_family = AF_INET;
 
-/* We break the URL into host, port, path-search */
+    /* We break the URL into host, port, path-search */
 
     urlptr = strstr(url, "://");
     if (urlptr == NULL)
@@ -239,7 +243,7 @@ int ap_proxy_http_handler(request_rec *r, char *url,
 	}
     }
 
-/* check if ProxyBlock directive on this host */
+    /* check if ProxyBlock directive on this host */
     destaddr.s_addr = apr_inet_addr(desthost);
     for (i = 0; i < conf->noproxies->nelts; i++) {
 	if ((npent[i].name != NULL
@@ -285,14 +289,19 @@ int ap_proxy_http_handler(request_rec *r, char *url,
         /* the peer reset the connection already; ap_new_connection() 
          * closed the socket */
         /* XXX somebody that knows what they're doing add an error path */
+	/* XXX how's this? */
+	return ap_proxyerror(r, HTTP_BAD_GATEWAY, apr_pstrcat(r->pool,
+			     "Connection reset by peer: ",
+			     desthost, NULL));
     }
 
     ap_add_output_filter("CORE", NULL, NULL, origin);
 
-    clear_connection(r->pool, r->headers_in);	/* Strip connection-based headers */
+    /* strip connection listed hop-by-hop headers from the request */
+    ap_proxy_clear_connection(r->pool, r->headers_in);
 
     buf = apr_pstrcat(r->pool, r->method, " ", proxyhost ? url : urlptr,
-                      " HTTP/1.0" CRLF, NULL);
+                      " HTTP/1.1" CRLF, NULL);
     e = apr_bucket_pool_create(buf, strlen(buf), r->pool);
     APR_BRIGADE_INSERT_TAIL(bb, e);
     if (destportstr != NULL && destport != DEFAULT_HTTP_PORT) {
@@ -306,6 +315,7 @@ int ap_proxy_http_handler(request_rec *r, char *url,
         APR_BRIGADE_INSERT_TAIL(bb, e);
     }
 
+    /* handle Via */
     if (conf->viaopt == via_block) {
 	/* Block all outgoing Via: headers */
 	apr_table_unset(r->headers_in, "Via");
@@ -318,7 +328,7 @@ int ap_proxy_http_handler(request_rec *r, char *url,
 	    apr_snprintf(portstr, sizeof portstr, ":%d", i);
 	}
 	/* Generate outgoing Via: header with/without server comment: */
-	ap_table_mergen(r->headers_in, "Via",
+	apr_table_mergen(r->headers_in, "Via",
 		    (conf->viaopt == via_full)
 			? apr_psprintf(p, "%d.%d %s%s (%s)",
 				HTTP_VERSION_MAJOR(r->proto_num),
@@ -332,32 +342,55 @@ int ap_proxy_http_handler(request_rec *r, char *url,
 			);
     }
 
+    /* send request headers */
     reqhdrs_arr = apr_table_elts(r->headers_in);
     reqhdrs = (apr_table_entry_t *) reqhdrs_arr->elts;
     for (i = 0; i < reqhdrs_arr->nelts; i++) {
 	if (reqhdrs[i].key == NULL || reqhdrs[i].val == NULL
-	/* Clear out headers not to send */
+
+	/* Clear out hop-by-hop request headers not to send
+	 * RFC2616 13.5.1 says we should strip these headers
+	 */
 	    || !strcasecmp(reqhdrs[i].key, "Host")	/* Already sent */
+            || !strcasecmp(reqhdrs[i].key, "Keep-Alive")
+            || !strcasecmp(reqhdrs[i].key, "TE")
+            || !strcasecmp(reqhdrs[i].key, "Trailer")
+            || !strcasecmp(reqhdrs[i].key, "Transfer-Encoding")
+            || !strcasecmp(reqhdrs[i].key, "Upgrade")
+
 	    /* XXX: @@@ FIXME: "Proxy-Authorization" should *only* be 
 	     * suppressed if THIS server requested the authentication,
 	     * not when a frontend proxy requested it!
+             *
+             * The solution to this problem is probably to strip out
+             * the Proxy-Authorisation header in the authorisation
+             * code itself, not here. This saves us having to signal
+             * somehow whether this request was authenticated or not.
 	     */
-	    || !strcasecmp(reqhdrs[i].key, "Proxy-Authorization"))
+	    || !strcasecmp(reqhdrs[i].key, "Proxy-Authorization")
+	    || !strcasecmp(reqhdrs[i].key, "Proxy-Authenticate"))
 	    continue;
+
         buf = apr_pstrcat(r->pool, reqhdrs[i].key, ": ", reqhdrs[i].val, CRLF, NULL);
         e = apr_bucket_pool_create(buf, strlen(buf), r->pool);
         APR_BRIGADE_INSERT_TAIL(bb, e);
 
     }
 
+    /* we don't yet support keepalives - but we will soon, I promise! */
+    buf = apr_pstrcat(r->pool, "Connection: close", CRLF, NULL);
+    e = apr_bucket_pool_create(buf, strlen(buf), r->pool);
+    APR_BRIGADE_INSERT_TAIL(bb, e);
+
+    /* add empty line at the end of the headers */
     e = apr_bucket_pool_create(CRLF, strlen(CRLF), r->pool);
     APR_BRIGADE_INSERT_TAIL(bb, e);
     e = apr_bucket_flush_create();
     APR_BRIGADE_INSERT_TAIL(bb, e);
 
     ap_pass_brigade(origin->output_filters, bb);
-/* send the request data, if any. */
 
+    /* send the request data, if any. */
     if (ap_should_client_block(r)) {
 	while ((i = ap_get_client_block(r, buffer, sizeof buffer)) > 0) {
             e = apr_bucket_pool_create(buffer, i, r->pool);
@@ -396,15 +429,15 @@ int ap_proxy_http_handler(request_rec *r, char *url,
     APR_BUCKET_REMOVE(e);
     apr_bucket_destroy(e);
 
-/* Is it an HTTP/1 response?  This is buggy if we ever see an HTTP/1.10 */
+    /* Is it an HTTP/1 response?  This is buggy if we ever see an HTTP/1.10 */
     if (ap_checkmask(buffer2, "HTTP/#.# ###*")) {
 	int major, minor;
 	if (2 != sscanf(buffer2, "HTTP/%u.%u", &major, &minor)) {
 	    major = 1;
-	    minor = 0;
+	    minor = 1;
 	}
 
-/* If not an HTTP/1 message or if the status line was > 8192 bytes */
+        /* If not an HTTP/1 message or if the status line was > 8192 bytes */
 	if (buffer2[5] != '1' || buffer2[len - 1] != '\n') {
 	    apr_socket_close(sock);
 	    return HTTP_BAD_GATEWAY;
@@ -418,9 +451,9 @@ int ap_proxy_http_handler(request_rec *r, char *url,
 	buffer2[12] = ' ';
 	r->status_line = apr_pstrdup(p, &buffer2[9]);
 
-/* read the headers. */
-/* N.B. for HTTP/1.0 clients, we have to fold line-wrapped headers */
-/* Also, take care with headers with multiple occurences. */
+        /* read the headers. */
+        /* N.B. for HTTP/1.0 clients, we have to fold line-wrapped headers */
+        /* Also, take care with headers with multiple occurences. */
 
 	resp_hdrs = ap_proxy_read_headers(r, buffer, HUGE_STRING_LEN, origin);
 	if (resp_hdrs == NULL) {
@@ -431,12 +464,14 @@ int ap_proxy_http_handler(request_rec *r, char *url,
 	}
         else
         {
-            clear_connection(p, resp_hdrs);    /* Strip Connection hdrs */
+	    /* strip connection listed hop-by-hop headers from response */
+            ap_proxy_clear_connection(p, resp_hdrs);
             if (apr_table_get(resp_hdrs, "Content-type")) {
                 r->content_type = apr_pstrdup(r->pool, apr_table_get(resp_hdrs, "Content-type"));
             }
         }
 
+        /* handle Via header in response */
 	if (conf->viaopt != via_off && conf->viaopt != via_block) {
 	    /* Create a "Via:" response header entry and merge it */
 	    i = ap_get_server_port(r);
@@ -448,23 +483,26 @@ int ap_proxy_http_handler(request_rec *r, char *url,
 	}
     }
     else {
-/* an http/0.9 response */
+        /* an http/0.9 response */
 	backasswards = 1;
 	r->status = 200;
 	r->status_line = "200 OK";
     }
 
-/*
- * HTTP/1.0 requires us to accept 3 types of dates, but only generate
- * one type
- */
+    /* munge the Location and URI response headers according to ProxyPassReverse */
+    if ((table_buf = apr_table_get(resp_hdrs, "Location")) != NULL)
+        apr_table_set(resp_hdrs, "Location", ap_proxy_location_reverse_map(r, buf));
+    if ((table_buf = apr_table_get(resp_hdrs, "Content-Location")) != NULL)
+        apr_table_set(resp_hdrs, "Content-Location", ap_proxy_location_reverse_map(r, buf));
+    if ((table_buf = apr_table_get(resp_hdrs, "URI")) != NULL)
+        apr_table_set(resp_hdrs, "URI", ap_proxy_location_reverse_map(r, buf));
 
 /*
     if (!r->assbackwards)
 	ap_rputs(CRLF, r);
 */
     r->sent_bodyct = 1;
-/* Is it an HTTP/0.9 response? If so, send the extra data */
+    /* Is it an HTTP/0.9 response? If so, send the extra data */
     if (backasswards) {
         cntr = len;
         e = apr_bucket_heap_create(buffer, cntr, 0, NULL);

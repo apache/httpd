@@ -450,7 +450,7 @@ apr_table_t *ap_proxy_read_headers(request_rec *r, char *buffer, int size, conn_
 	for (end = &value[strlen(value)-1]; end > value && apr_isspace(*end); --end)
 	    *end = '\0';
 
-        ap_table_add(resp_hdrs, buffer, value);
+        apr_table_add(resp_hdrs, buffer, value);
 
 	/* the header was too long; at the least we should skip extra data */
 	if (len >= size - 1) { 
@@ -482,7 +482,7 @@ void ap_proxy_send_headers(request_rec *r, const char *respline, apr_table_t *t)
 	apr_size_t len = strlen(temp);
 	apr_send(fp, temp, &len);
 
-	for (i = 0; i < ap_table_elts(t)->nelts; ++i) {
+	for (i = 0; i < apr_table_elts(t)->nelts; ++i) {
             if (elts[i].key != NULL) {
                 temp = apr_pstrcat(r->pool, elts[i].key, ": ", elts[i].val, CRLF, NULL);
                 apr_send(fp, temp, &len);
@@ -1046,7 +1046,7 @@ apr_status_t ap_proxy_doconnect(apr_socket_t *sock, char *host, apr_uint32_t por
     return rv;
 }
 
-/* This function is called by ap_table_do() for all header lines */
+/* This function is called by apr_table_do() for all header lines */
 /* (from proxy_http.c and proxy_ftp.c) */
 /* It is passed a table_do_args struct pointer and a MIME field and value pair */
 int ap_proxy_send_hdr_line(void *p, const char *key, const char *value)
@@ -1056,7 +1056,7 @@ int ap_proxy_send_hdr_line(void *p, const char *key, const char *value)
         return 1;
     if (!r->assbackwards)
         ap_rvputs(r, key, ": ", value, CRLF, NULL);
-    return 1; /* tell ap_table_do() to continue calling us for more headers */
+    return 1; /* tell apr_table_do() to continue calling us for more headers */
 }
 
 #if defined WIN32
