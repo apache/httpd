@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_nw_ssl: Added the directive NWSSLUpgradeable to mod_nw_ssl to 
+     allow a non-secure connection to be upgraded to secure connections
+     [Brad Nicholes]
+     
   *) core: Add Options= syntax to AllowOverride to specify which options
      may be overridden in .htaccess files. PR 29310.
      [Tom Alsberg <alsbergt cs.huji.ac.il>, Paul Querna]
