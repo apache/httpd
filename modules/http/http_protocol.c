@@ -122,8 +122,8 @@ static int parse_byterange(char *range, long clength, long *start, long *end)
     return (*start > 0 || *end < clength - 1);
 }
 
-static int internal_byterange(int, long *, request_rec *, const char **, long *,
-                              long *);
+static int internal_byterange(int, long *, request_rec *, const char **,
+			      ap_off_t *, long *);
 
 API_EXPORT(int) ap_set_byterange(request_rec *r)
 {
@@ -198,7 +198,8 @@ API_EXPORT(int) ap_set_byterange(request_rec *r)
     return 1;
 }
 
-API_EXPORT(int) ap_each_byterange(request_rec *r, long *offset, long *length)
+API_EXPORT(int) ap_each_byterange(request_rec *r, ap_off_t *offset,
+				  long *length)
 {
     return internal_byterange(1, NULL, r, &r->range, offset, length);
 }
@@ -214,7 +215,8 @@ API_EXPORT(int) ap_each_byterange(request_rec *r, long *offset, long *length)
  * when done.
  */
 static int internal_byterange(int realreq, long *tlength, request_rec *r,
-                              const char **r_range, long *offset, long *length)
+                              const char **r_range, ap_off_t *offset,
+			      long *length)
 {
     long range_start, range_end;
     char *range;
