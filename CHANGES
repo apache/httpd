@@ -1,5 +1,8 @@
 Changes with Apache 2.0.50
 
+  *) mod_headers no longer crashes if an empty header value should
+     be added.  [André Malo]
+
   *) Fix segfault in mod_expires, which occured under certain
      circumstances. PR 28047.  [André Malo]
 

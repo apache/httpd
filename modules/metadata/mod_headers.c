@@ -435,7 +435,7 @@ static char* process_tags(header_entry *hdr, request_rec *r)
         else
             str = apr_pstrcat(r->pool, str, s, NULL);
     }
-    return str;
+    return str ? str : "";
 }
 
 static int echo_header(echo_do *v, const char *key, const char *val)
