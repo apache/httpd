@@ -193,13 +193,6 @@ build for your OS.
       Define if the OS has and supports the getrlimit/setrlimit
       family. Apache uses this to determine if RLIMIT_CPU|VMEM|DATA|RLIMIT
       is found and used.
-
-    HAVE_SNPRINTF:
-      Apache makes extensive use of the snprintf() function. many
-      platforms do not provide this function. If your platform
-      does provide it _and_ it's reliable (most are not) then
-      define this to use the OS version. Otherwise, Apache will
-      use its own.
 --
 
  USE_*:

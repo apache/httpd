@@ -594,7 +594,6 @@ int initgroups(char *, int);
 #undef HAVE_CRYPT_H
 #undef HAVE_SYS_SELECT_H
 #define HAVE_SYS_RESOURCE_H 1
-#undef HAVE_SNPRINTF
 #undef USE_FCNTL_SERIALIZED_ACCEPT
 #undef USE_FLOCK_SERIALIZED_ACCEPT
 #define USE_LONGJMP
