@@ -340,6 +340,7 @@ apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *in)
 	ctx->buffer[0] = 0;
 
 	/* get a complete line */
+	/* if the buffer overruns - throw data away */
 	while (!found && !APR_BRIGADE_EMPTY(ctx->in)) {
 	    char *pos, *response;
 	    apr_size_t len, max;
@@ -354,7 +355,9 @@ apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *in)
 	    pos = memchr(response, APR_ASCII_LF, len);
 	    if (pos != NULL) {
 		if ((pos - response + 1) != len) {
+		    len = pos - response + 1;
 		    apr_bucket_split(e, pos - response + 1);
+		    
 		}
 		found = 1;
 	    }
@@ -362,7 +365,9 @@ apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *in)
 	    if (len > max) {
 		len = max;
 	    }
-	    apr_cpystrn(ctx->buffer+strlen(ctx->buffer), response, len);
+/* strncat works here, but apr_cpystrn does not - the last char gets chopped, dunno why */
+/*	    apr_cpystrn(ctx->buffer+strlen(ctx->buffer), response, len);*/
+	    strncat(ctx->buffer, response, len);
 	    APR_BUCKET_REMOVE(e);
 	    apr_bucket_destroy(e);
 	}
@@ -377,10 +382,6 @@ apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *in)
 	if (!found) {
 	    return APR_SUCCESS;
 	}
-
-ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                      "proxy: directory line: [%s]", ctx->buffer);
-
 
 	/* a symlink? */
 	if (ctx->buffer[0] == 'l' && (filename=strstr(ctx->buffer, " -> ")) != NULL) {
