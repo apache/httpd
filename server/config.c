@@ -362,7 +362,7 @@ AP_DECLARE(int) ap_method_is_limited(cmd_parms *cmd, const char *method) {
      * added by a module and registered.
      */
     if (methnum != M_INVALID) {
-	return !!(cmd->limited & (1<<methnum));
+	return !!(cmd->limited & (AP_METHOD_BIT << methnum));
     }
 
     return 0; /* not found */

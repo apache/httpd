@@ -141,7 +141,7 @@ static const char *order(cmd_parms *cmd, void *dv, const char *arg)
 	return "unknown order";
 
     for (i = 0; i < METHODS; ++i)
-	if (cmd->limited & (1 << i))
+	if (cmd->limited & (AP_METHOD_BIT << i))
 	    d->order[i] = o;
 
     return NULL;
@@ -239,7 +239,7 @@ static int find_allowdeny(request_rec *r, apr_array_header_t *a, int method)
 {
 
     allowdeny *ap = (allowdeny *) a->elts;
-    apr_int64_t mmask = (1 << method);
+    apr_int64_t mmask = (AP_METHOD_BIT << method);
     int i;
     int gothost = 0;
     const char *remotehost = NULL;

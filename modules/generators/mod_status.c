@@ -270,7 +270,7 @@ static int status_handler(request_rec *r)
 		    "Server status unavailable in inetd mode");
 	return HTTP_INTERNAL_SERVER_ERROR;
     }
-    r->allowed = (1 << M_GET);
+    r->allowed = (AP_METHOD_BIT << M_GET);
     if (r->method_number != M_GET)
 	return DECLINED;
 

@@ -586,8 +586,8 @@ static int cgi_handler(request_rec *r)
 
     if (r->method_number == M_OPTIONS) {
 	/* 99 out of 100 CGI scripts, this is all they support */
-	r->allowed |= (1 << M_GET);
-	r->allowed |= (1 << M_POST);
+	r->allowed |= (AP_METHOD_BIT << M_GET);
+	r->allowed |= (AP_METHOD_BIT << M_POST);
 	return DECLINED;
     }
 

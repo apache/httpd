@@ -1851,7 +1851,7 @@ static int digest_check_auth(request_rec *r)
 
     for (x = 0; x < reqs_arr->nelts; x++) {
 
-	if (!(reqs[x].method_mask & (1 << m)))
+	if (!(reqs[x].method_mask & (AP_METHOD_BIT << m)))
 	    continue;
 
 	method_restricted = 1;
