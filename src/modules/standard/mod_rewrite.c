@@ -2263,7 +2263,13 @@ static void do_expand(request_rec *r, char *input, char *buffer, int nbuf,
 	    if (endp == NULL) {
 		goto skip;
 	    }
-	    *endp = '\0';
+	    /*
+	     * These lookups may be recursive in a very convoluted
+	     * fashion -- see the LA-U and LA-F variable expansion
+	     * prefixes -- so we copy lookup keys to a separate buffer
+	     * rather than adding zero bytes in order to use them in
+	     * place.
+	     */
 	    if (inp[0] == '$') {
 		/* ${...} map lookup expansion */
 		/*
@@ -2278,43 +2284,39 @@ static void do_expand(request_rec *r, char *input, char *buffer, int nbuf,
 		 * looking at it is that the recursion is entirely
 		 * driven by the syntax of the nested curly brackets.
 		 */
-		char *key, *dflt, *result;
+		char *map, *key, *dflt, *result;
 		char xkey[MAX_STRING_LEN];
 		char xdflt[MAX_STRING_LEN];
-		char *empty = "";
-		key = strchr(inp, ':');
-		if (key == NULL) {
-		    *endp = '}';
+		key = find_char_in_brackts(inp, ':', '{', '}');
+		if (key == NULL)
 		    goto skip;
-		}
-		*key++ = '\0';
-		dflt = strchr(key, '|');
+		map  = ap_pstrndup(r->pool, inp+2, key-inp-2);
+		dflt = find_char_in_brackts(inp, '|', '{', '}');
 		if (dflt == NULL) {
-		    dflt = empty;
-		}
-		else {
-		    *dflt++ = '\0';
+		    key  = ap_pstrndup(r->pool, key+1, endp-key-1);
+		    dflt = "";
+		} else {
+		    key  = ap_pstrndup(r->pool, key+1, dflt-key-1);
+		    dflt = ap_pstrndup(r->pool, dflt+1, endp-dflt-1);
 		}
 		do_expand(r, key,  xkey,  sizeof(xkey),  briRR, briRC);
-		do_expand(r, dflt, xdflt, sizeof(xdflt), briRR, briRC);
-		result = lookup_map(r, inp+2, xkey);
-		if (result == NULL) {
-		    result = xdflt;
-		}
-		span = ap_cpystrn(outp, result, space) - outp;
-		key[-1] = ':';
-		if (dflt != empty) {
-		    dflt[-1] = '|';
+		result = lookup_map(r, map, xkey);
+		if (result) {
+		    span = ap_cpystrn(outp, result, space) - outp;
+		} else {
+		    do_expand(r, dflt, xdflt, sizeof(xdflt), briRR, briRC);
+		    span = ap_cpystrn(outp, xdflt, space) - outp;
 		}
 	    }
 	    else if (inp[0] == '%') {
 		/* %{...} variable lookup expansion */
-		span = ap_cpystrn(outp, lookup_variable(r, inp+2), space) - outp;
+		char *var;
+		var  = ap_pstrndup(r->pool, inp+2, endp-inp-2);
+		span = ap_cpystrn(outp, lookup_variable(r, var), space) - outp;
 	    }
 	    else {
 		span = 0;
 	    }
-	    *endp = '}';
 	    inp = endp+1;
 	    outp += span;
 	    space -= span;
@@ -4167,7 +4169,7 @@ static int compare_lexicography(char *cpNum1, char *cpNum2)
 
 /*
 **
-**  Find end of bracketed expression
+**  Bracketed expression handling
 **  s points after the opening bracket
 **
 */
@@ -4179,6 +4181,24 @@ static char *find_closing_bracket(char *s, int left, int right)
     for (depth = 1; *s; ++s) {
 	if (*s == right && --depth == 0) {
 	    return s;
+	}
+	else if (*s == left) {
+	    ++depth;
+	}
+    }
+    return NULL;
+}
+
+static char *find_char_in_brackets(char *s, int c, int left, int right)
+{
+    int depth;
+
+    for (depth = 1; *s; ++s) {
+	if (*s == c && depth == 1) {
+	    return s;
+	}
+	else if (*s == right && --depth == 0) {
+	    return NULL;
 	}
 	else if (*s == left) {
 	    ++depth;
