@@ -441,7 +441,7 @@ LDAP_DECLARE(util_ldap_connection_t *)util_ldap_connection_find(request_rec *r, 
     }
 
 /* artificially disable cache */
-//l = NULL;
+/* l = NULL; */
 
     /* If no connection what found after the second search, we
      * must create one.

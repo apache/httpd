@@ -155,7 +155,7 @@ static char* derive_codepage_from_lang (apr_pool_t *p, char *language)
     int check_short = 0;
     char *charset;
     
-    if (!language)          // our default codepage
+    if (!language)          /* our default codepage */
         return apr_pstrdup(p, "ISO-8859-1");
     else
         lang_len = strlen(language);
