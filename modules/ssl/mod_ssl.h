@@ -70,9 +70,6 @@
  * CFLAGS="-DSSL_EXPERIMENTAL_xxxx_IGNORE".
  */
 #ifdef SSL_EXPERIMENTAL
-#ifndef SSL_EXPERIMENTAL_PROXY_IGNORE
-#define SSL_EXPERIMENTAL_PROXY
-#endif
 #ifdef SSL_ENGINE
 #ifndef SSL_EXPERIMENTAL_ENGINE_IGNORE
 #define SSL_EXPERIMENTAL_ENGINE
@@ -503,19 +500,6 @@ typedef struct {
     const char  *szCARevocationPath;
     const char  *szCARevocationFile;
     X509_STORE  *pRevocationStore;
-#ifdef SSL_EXPERIMENTAL_PROXY
-    /* Configuration details for proxy operation */
-    ssl_proto_t  nProxyProtocol;
-    int          bProxyVerify;
-    int          nProxyVerifyDepth;
-    const char  *szProxyCACertificatePath;
-    const char  *szProxyCACertificateFile;
-    const char  *szProxyClientCertificateFile;
-    const char  *szProxyClientCertificatePath;
-    const char  *szProxyCipherSuite;
-    SSL_CTX     *pSSLProxyCtx;
-    STACK_OF(X509_INFO) *skProxyClientCerts;
-#endif
 } SSLSrvConfigRec;
 
 /*
@@ -700,11 +684,6 @@ APR_DECLARE_OPTIONAL_FN(char *, ssl_var_lookup,
                         (apr_pool_t *, server_rec *,
                          conn_rec *, request_rec *,
                          char *));
-
-/*  Proxy Extensions  */
-#if 0 /* XXX */
-void         ssl_ext_proxy_register(apr_pool_t *p);
-#endif /* -0- */
 
 /*  I/O  */
 void         ssl_io_filter_init(conn_rec *, SSL *);

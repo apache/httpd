@@ -165,18 +165,6 @@ void *ssl_config_server_create(apr_pool_t *p, server_rec *s)
     sc->szCARevocationFile     = NULL;
     sc->pRevocationStore       = NULL;
 
-#ifdef SSL_EXPERIMENTAL_PROXY
-    sc->nProxyVerifyDepth             = UNSET;
-    sc->szProxyCACertificatePath      = NULL;
-    sc->szProxyCACertificateFile      = NULL;
-    sc->szProxyClientCertificateFile  = NULL;
-    sc->szProxyClientCertificatePath  = NULL;
-    sc->szProxyCipherSuite            = NULL;
-    sc->nProxyProtocol                = SSL_PROTOCOL_ALL & ~SSL_PROTOCOL_TLSV1;
-    sc->bProxyVerify                  = UNSET;
-    sc->pSSLProxyCtx                  = NULL;
-#endif
-
     memset((void*)sc->szPublicCertFiles, 0, sizeof(sc->szPublicCertFiles));
     memset((void*)sc->szPrivateKeyFiles, 0, sizeof(sc->szPrivateKeyFiles));
     memset(sc->pPublicCert,       0, sizeof(sc->pPublicCert));
@@ -223,18 +211,6 @@ void *ssl_config_server_merge(apr_pool_t *p, void *basev, void *addv)
         cfgMerge(pPublicCert[i], NULL);
         cfgMerge(pPrivateKey[i], NULL);
     }
-
-#ifdef SSL_EXPERIMENTAL_PROXY
-    cfgMergeInt(nProxyVerifyDepth);
-    cfgMergeString(szProxyCACertificatePath);
-    cfgMergeString(szProxyCACertificateFile);
-    cfgMergeString(szProxyClientCertificateFile);
-    cfgMergeString(szProxyClientCertificatePath);
-    cfgMergeString(szProxyCipherSuite);
-    cfgMerge(nProxyProtocol, (SSL_PROTOCOL_ALL & ~SSL_PROTOCOL_TLSV1));
-    cfgMergeBool(bProxyVerify);
-    cfgMerge(pSSLProxyCtx, NULL);
-#endif
 
     return mrg;
 }
