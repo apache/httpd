@@ -1109,25 +1109,15 @@ apr_status_t ap_proxy_doconnect(apr_socket_t *sock, char *host, apr_uint32_t por
 {
     apr_status_t rv;
     int i;
+    apr_sockaddr_t *destsa;
 
-    for (i = 0; host[i] != '\0'; i++)
-        if (!apr_isdigit(host[i]) && host[i] != '.')
-            break;
-
-    apr_set_port(sock, APR_REMOTE, port);
-    if (host[i] == '\0') {
-        apr_set_ipaddr(sock, APR_REMOTE, host);
-        host = NULL;
+    rv = apr_getaddrinfo(&destsa, host, AF_INET, port, r->pool);
+    if (rv == APR_SUCCESS) {
+        rv = apr_connect(sock, destsa);
     }
-
-    do
-    {
-        rv = apr_connect(sock, host);
-    } while (APR_STATUS_IS_EINTR(rv));
-
     if (rv != APR_SUCCESS)
     {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
             "proxy connect to %s port %d failed", host, port);
     }
     return rv;
