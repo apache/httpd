@@ -2269,7 +2269,6 @@ static void send_parsed_content(ap_bucket_brigade *bb, request_rec *r,
     ap_bucket *tagbuck, *dptr2;
     ap_bucket *endsec;
     ap_bucket_brigade *before_tag = NULL;
-    ap_bucket *hackbucket = NULL;
     int ret;
 
     apr_cpystrn(error, DEFAULT_ERROR_MSG, sizeof(error));
@@ -2317,15 +2316,7 @@ static void send_parsed_content(ap_bucket_brigade *bb, request_rec *r,
 		ap_rputs(error, r);
                 return;
             }
-            hackbucket = AP_BRIGADE_FIRST(bb);
-            AP_BRIGADE_UNSPLICE(hackbucket, dptr);
-            before_tag = ap_brigade_create(r->pool);
-            while (hackbucket != dptr) {
-                ap_bucket *foo = AP_BUCKET_NEXT(hackbucket);
-
-                AP_BRIGADE_INSERT_TAIL(before_tag, hackbucket);
-                hackbucket = foo;
-            }
+            before_tag = ap_brigade_split(bb, dptr);
             ap_pass_brigade(f->next, before_tag);
             if (!strcmp(directive, "if")) {
                 if (!printing) {
