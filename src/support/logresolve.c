@@ -194,7 +194,9 @@ static void cgethost (struct in_addr ipnum, char *string, int check)
     else
 	cachehits++;
 
-    strcpy(string, (*current)->hostname);
+    /* size of string == MAXDNAME +1 */
+    strncpy(string, (*current)->hostname, MAXDNAME);
+    string[MAXDNAME] = '\0';
 }
 
 /*
