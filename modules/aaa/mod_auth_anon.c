@@ -288,27 +288,20 @@ static int check_anon_access(request_rec *r)
 #endif
     return DECLINED;
 }
-
+static void register_hooks(void)
+{
+    ap_hook_check_user_id(anon_authenticate_basic_user,NULL,NULL,HOOK_MIDDLE);
+    ap_hook_auth_checker(check_anon_access,NULL,NULL,HOOK_MIDDLE);
+}
 
 module MODULE_VAR_EXPORT anon_auth_module =
 {
-    STANDARD_MODULE_STUFF,
-    NULL,			/* initializer */
-    create_anon_auth_dir_config,	/* dir config creater */
+    STANDARD20_MODULE_STUFF,
+    create_anon_auth_dir_config,/* dir config creater */
     NULL,			/* dir merger ensure strictness */
     NULL,			/* server config */
     NULL,			/* merge server config */
     anon_auth_cmds,		/* command table */
     NULL,			/* handlers */
-    NULL,			/* filename translation */
-    anon_authenticate_basic_user,	/* check_user_id */
-    check_anon_access,		/* check auth */
-    NULL,			/* check access */
-    NULL,			/* type_checker */
-    NULL,			/* fixups */
-    NULL,			/* logger */
-    NULL,			/* header parser */
-    NULL,			/* child_init */
-    NULL,			/* child_exit */
-    NULL			/* post read-request */
+    register_hooks		/* register hooks */
 };
