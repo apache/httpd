@@ -429,7 +429,7 @@ AP_DECLARE(int) ap_update_child_status_from_indexes(int child_num,
     
     if (status == SERVER_READY
         && old_status == SERVER_STARTING) {
-        ws->thread_num = child_num * server_limit + thread_num;
+        ws->thread_num = child_num * thread_limit + thread_num;
         ps->generation = ap_my_generation;
     }
 
