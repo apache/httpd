@@ -85,7 +85,8 @@ int ap_checkconv(struct request_rec *r)
 
     /* Conversion is applied to text/ files only, if ever. */
     if (type && (strncasecmp(type, "text/", 5) == 0 ||
-		 strncasecmp(type, "message/", 8) == 0)) {
+		 strncasecmp(type, "message/", 8) == 0 ||
+		 strncasecmp(type, "multipart/", 10) == 0)) {
 	if (strncasecmp(type, ASCIITEXT_MAGIC_TYPE_PREFIX,
 			sizeof(ASCIITEXT_MAGIC_TYPE_PREFIX)-1) == 0)
 	    r->content_type = ap_pstrcat(r->pool, "text/",
