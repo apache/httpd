@@ -29,7 +29,7 @@
         <directive module="core">SetOutputFilter</directive>
       </directivelist>
     </related>
-    
+
     <p>A <em>filter</em> is a process that is applied to data that
     is sent or received by the server. Data sent by clients to the
     server is processed by <em>input filters</em> while data sent
