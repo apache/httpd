@@ -23,14 +23,14 @@ MPM</description>
     >http://deuce.doc.wustl.edu/doc/pspdfs/lf.pdf</a>.</p>
 
     <p>To use the <module>leader</module> MPM, add
-    <code>--with-mpm=leader</code> to the configure script's arguments
-    when building the httpd.</p>
+      <code>--with-mpm=leader</code> to the <code>configure</code> script's
+      arguments when building the <code>httpd</code>.</p>
   
     <p>This MPM depends on APR's atomic compare-and-swap operations for
     thread synchronization. If you are compiling for an x86 target
     and you don't need to support 386s, or you are compiling for a
     SPARC and you don't need to run on pre-UltraSPARC chips, add
-    <code>--enable-nonportable-atomics=yes</code> to the configure
+    <code>--enable-nonportable-atomics=yes</code> to the <code>configure</code>
     script's arguments. This will cause APR to implement atomic operations
     using efficient opcodes not available in older CPUs.</p>
 </summary>
