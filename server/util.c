@@ -115,6 +115,16 @@
  */
 #define TEST_CHAR(c, f)	(test_char_table[(unsigned)(c)] & (f))
 
+/* Win32/NetWare/OS2 need to check for both forward and back slashes
+ * in ap_getparents() and ap_escape_url.
+ */
+#ifdef CASE_BLIND_FILESYSTEM
+#define IS_SLASH(s) ((s == '/') || (s == '\\'))
+#else
+#define IS_SLASH(s) (s == '/')
+#endif
+
+
 /*
  * Examine a field value (such as a media-/content-type) string and return
  * it sans any parameters; e.g., strip off any ';charset=foo' and the like.
@@ -485,7 +495,7 @@ AP_DECLARE(void) ap_getparents(char *name)
     }
     l = w = first_dot = next - name;
     while (name[l] != '\0') {
-	if (name[l] == '.' && name[l + 1] == '/' && (l == 0 || name[l - 1] == '/'))
+	if (name[l] == '.' && IS_SLASH(name[l + 1]) && (l == 0 || IS_SLASH(name[l - 1])))
 	    l += 2;
 	else
 	    name[w++] = name[l++];
@@ -494,7 +504,7 @@ AP_DECLARE(void) ap_getparents(char *name)
     /* b) remove trailing . path, segment */
     if (w == 1 && name[0] == '.')
 	w--;
-    else if (w > 1 && name[w - 1] == '.' && name[w - 2] == '/')
+    else if (w > 1 && name[w - 1] == '.' && IS_SLASH(name[w - 2]))
 	w--;
     name[w] = '\0';
 
@@ -502,13 +512,13 @@ AP_DECLARE(void) ap_getparents(char *name)
     l = first_dot;
 
     while (name[l] != '\0') {
-	if (name[l] == '.' && name[l + 1] == '.' && name[l + 2] == '/' &&
-	    (l == 0 || name[l - 1] == '/')) {
+	if (name[l] == '.' && name[l + 1] == '.' && IS_SLASH(name[l + 2]) &&
+	    (l == 0 || IS_SLASH(name[l - 1]))) {
 	    register int m = l + 3, n;
 
 	    l = l - 2;
 	    if (l >= 0) {
-		while (l >= 0 && name[l] != '/')
+		while (l >= 0 && !IS_SLASH(name[l]))
 		    l--;
 		l++;
 	    }
@@ -525,10 +535,10 @@ AP_DECLARE(void) ap_getparents(char *name)
     /* d) remove trailing xx/.. segment. */
     if (l == 2 && name[0] == '.' && name[1] == '.')
 	name[0] = '\0';
-    else if (l > 2 && name[l - 1] == '.' && name[l - 2] == '.' && name[l - 3] == '/') {
+    else if (l > 2 && name[l - 1] == '.' && name[l - 2] == '.' && IS_SLASH(name[l - 3])) {
 	l = l - 4;
 	if (l >= 0) {
-	    while (l >= 0 && name[l] != '/')
+	    while (l >= 0 && !IS_SLASH(name[l]))
 		l--;
 	    l++;
 	}
@@ -1547,7 +1557,7 @@ AP_DECLARE(int) ap_unescape_url(char *url)
 	    else {
 		*x = x2c(y + 1);
 		y += 2;
-		if (*x == '/' || *x == '\0')
+		if (IS_SLASH(*x) || *x == '\0')
 		    badpath = 1;
 	    }
 	}

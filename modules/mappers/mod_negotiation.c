@@ -984,7 +984,7 @@ static int read_type_map(apr_file_t **map, negotiation_state *neg, request_rec *
                      break;
                 }
                 mime_info.bytes = len;
-                mime_info.file_name = rr->filename;
+                mime_info.file_name = apr_filename_of_pathname(rr->filename);
             }
         }
         else {
@@ -1048,15 +1048,15 @@ static int read_types_multi(negotiation_state *neg)
 
     clean_var_rec(&mime_info);
 
-    if (!(filp = strrchr(r->filename, '/'))) {
-        return DECLINED;        /* Weird... */
-    }
-
-    /* XXX this should be more general, and quit using 'specials' */
-    if (strncmp(r->filename, "proxy:", 6) == 0) {
+    if (r->proxyreq || !r->filename 
+                    || !ap_os_is_path_absolute(neg->pool, r->filename)) {
         return DECLINED;
     }
 
+    /* Only absolute paths here */
+    if (!(filp = strrchr(r->filename, '/'))) {
+        return DECLINED;
+    }
     ++filp;
     prefix_len = strlen(filp);
 
@@ -2685,8 +2685,15 @@ static int do_negotiation(request_rec *r, negotiation_state *neg,
              * non-neighboring variant.  We can have a non-neighboring
              * variant when processing a type map.  
              */
-            if (ap_strchr_c(variant->file_name, '/'))
+            if (ap_strchr(variant->file_name, '/'))
                 neg->is_transparent = 0;
+
+            /* We can't be transparent, because of the behavior
+             * of variant typemap bodies.  
+             */
+            if (variant->body) {
+                neg->is_transparent = 0;
+            }
         }
     }
 
@@ -2818,9 +2825,6 @@ static int handle_map_file(request_rec *r)
         apr_bucket *e;
 
         ap_allow_standard_methods(r, REPLACE_ALLOW, M_GET, M_OPTIONS, M_POST, -1);
-        if ((res = ap_discard_request_body(r)) != OK) {
-            return res;
-        }
         /*if (r->method_number == M_OPTIONS) {
          *    return ap_send_http_options(r);
          *}
@@ -2841,6 +2845,9 @@ static int handle_map_file(request_rec *r)
             return res;
         }
 
+        if ((res = ap_discard_request_body(r)) != OK) {
+            return res;
+        }
         bb = apr_brigade_create(r->pool, c->bucket_alloc);
         e = apr_bucket_file_create(map, best->body, 
                                    (apr_size_t)best->bytes, r->pool,
