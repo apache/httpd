@@ -56,60 +56,67 @@
  * University of Illinois, Urbana-Champaign.
  */
 
-#ifndef APACHE_UTIL_CHARSET_H
-#define APACHE_UTIL_CHARSET_H
+#include "ap_config.h"
 
 #ifdef APACHE_XLATE
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include "httpd.h"
+#include "http_log.h"
+#include "http_core.h"
+#include "util_charset.h"
 
-#include "apr_xlate.h"
+/* ap_hdrs_to_ascii, ap_hdrs_from_ascii
+ *
+ * These are the translation handles used to translate between the network
+ * format of protocol headers and the local machine format.
+ *
+ * For an EBCDIC machine, these are valid handles which are set up at
+ * initialization to translate between ISO-8859-1 and the code page of
+ * the source code.
+ *
+ * For an ASCII machine, these remain NULL so that when they are stored
+ * in the BUFF via ap_bsetop(BO_WXLATE or BO_RXLATE) it ensures that no
+ * translation is performed.
+ */
+ 
+ap_xlate_t *ap_hdrs_to_ascii, *ap_hdrs_from_ascii;
 
-extern ap_xlate_t *ap_hdrs_to_ascii, *ap_hdrs_from_ascii;
-extern ap_xlate_t *ap_locale_to_ascii, *ap_locale_from_ascii;
-
-/* Save & Restore the current conversion settings
+/* ap_locale_to_ascii, ap_locale_from_ascii
  *
- * On an EBCDIC machine:
+ * These handles are used for the translation of content, unless a
+ * configuration module overrides them.
  *
- * "input"  means: ASCII -> EBCDIC (when reading MIME Headers and
- *                                  PUT/POST data)
- * "output" means: EBCDIC -> ASCII (when sending MIME Headers and Chunks)
+ * For an EBCDIC machine, these are valid handles which are set up at
+ * initialization to translate between ISO-8859-1 and the code page of
+ * the httpd process's locale.
  *
- * On an ASCII machine:
- *
- *   no conversion of headers, so we need to set the translation handle
- *   to NULL
+ * For an ASCII machine, these remain NULL so that no translation is
+ * performed (unless a configuration module does something, of course).
  */
 
-#define AP_PUSH_INPUTCONVERSION_STATE(_buff, _newx) \
-        ap_xlate_t *saved_input_xlate; \
-        ap_bgetopt(_buff, BO_RXLATE, &saved_input_xlate); \
-        ap_bsetopt(_buff, BO_RXLATE, &(_newx))
+ap_xlate_t *ap_locale_to_ascii, *ap_locale_from_ascii;
 
-#define AP_POP_INPUTCONVERSION_STATE(_buff) \
-        ap_bsetopt(_buff, BO_RXLATE, &saved_input_xlate)
+API_EXPORT(ap_status_t) ap_set_content_xlate(request_rec *r, int output, 
+                                             ap_xlate_t *xlate)
+{
+    ap_status_t rv;
 
-#define AP_PUSH_OUTPUTCONVERSION_STATE(_buff, _newx) \
-        ap_xlate_t *saved_output_xlate; \
-        ap_bgetopt(_buff, BO_WXLATE, &saved_output_xlate); \
-        ap_bsetopt(_buff, BO_WXLATE, &(_newx))
+    if (output) {
+        r->rrx->to_net = xlate;
+        rv = ap_bsetopt(r->connection->client, BO_WXLATE, &xlate);
+    }
+    else {
+        r->rrx->from_net = xlate;
+        rv = ap_bsetopt(r->connection->client, BO_RXLATE, &xlate);
+    }
 
-#define AP_POP_OUTPUTCONVERSION_STATE(_buff) \
-        ap_bsetopt(_buff, BO_WXLATE, &saved_output_xlate)
+    if (rv) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                      "BO_%sXLATE failed",
+                      output ? "W" : "R");
+    }
 
-/* ap_set_content_xlate() is called by Apache core or a module to set
- * up character set translation (a.k.a. recoding) for content.
- */
-API_EXPORT(ap_status_t) ap_set_content_xlate(request_rec *r, int output,
-                                             ap_xlate_t *xlate);
-
-#ifdef __cplusplus
+    return rv;
 }
-#endif
 
-#endif  /* APACHE_XLATE */
-    
-#endif  /* !APACHE_UTIL_CHARSET_H */
+#endif /*APACHE_XLATE*/
