@@ -1661,10 +1661,11 @@ hosting</description>
  
 <example>NameVirtualHost [fe80::a00:20ff:fea7:ccea]:8080</example>
 
+</usage>
+
 <seealso>See also: <a href="../vhosts/">Virtual Hosts
 documentation</a></seealso>
 
-</usage>
 </directivesynopsis>
 
 <directivesynopsis>
