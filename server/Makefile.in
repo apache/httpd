@@ -36,7 +36,7 @@ EXPORT_FILES = ../srclib/apr/apr.exports ../srclib/apr-util/aprutil.exports apac
 
 delete-exports:
 	@if test -f $(TARGET_EXPORTS); then \
-		    headers="`find include/*.h -newer $(TARGET_EXPORTS)`" ; \
+		    headers="`find ../include/*.h -newer $(TARGET_EXPORTS)`" ; \
 		    if test -n "$$headers"; then \
 		        echo Found newer headers. Will rebuild $(TARGET_EXPORTS). ; \
 		        echo $(RM) -f $(TARGET_EXPORTS) ; \
