@@ -540,6 +540,11 @@ int ap_cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
         /* update headers */
 
         /* remove this filter ??? */
+
+        /* XXX is this right?  we must set rv to something other than OK 
+         * in this path
+         */
+        rv = HTTP_NOT_MODIFIED;
     }
     /* pre-existing cache handle and new entity, replace entity with this one */
     else {
@@ -584,8 +589,8 @@ int ap_cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
         ap_table_set(r->headers_out, "Date", dates);
         ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r->server,
                      "cache: Added date header");
+        info->date = date;
     }
-    info->date = date;
 
     /* set response_time for HTTP/1.1 age calculations */
     info->response_time = now;
