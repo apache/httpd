@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/03/19 19:48:07 $]
+Last modified at [$Date: 2001/03/21 19:09:22 $]
 
 Release:
 
@@ -17,15 +17,13 @@ Release:
 
 DAEDALUS 2.0 PROBLEMS:
 
-    * assert pops in ap_setup_client_block(). ap_getline() is
-      apparently failing to completely empty req_cfg->bb in some cases.
-      core dumps: /usr/local/apache2/corefiles/httpd.core.{4, 9, 12}
-      see message: <NEBBKBPPOLLGMBILHACFCEHGCBAA.cliffwoolley@yahoo.com>
-        Status: Cliff, Jeff, and Greg did some analysis of this
-
     * access log entries are sometimes split (multiple lines)
-      seems to be related to FrontPage and/or WebDAV enabled browsers
-        Status: Jeff suspects password hiding code in log_request_line()
+      seems to be related to FrontPage and/or WebDAV enabled clients
+        Status:  Jeff and Greg have an assert trap ready which checks
+                 for multiple \n's in a log record
+                 
+    * mod_cgid and suexec have a problem co-existing.  suexec sees a null
+      command string sometimes.
 
 RELEASE SHOWSTOPPERS:
 
