@@ -79,6 +79,11 @@ while ($log_line = <STDIN>) {
     #
     $vhost = lc ($vhost) or "access";
     #
+    # if the vhost contains a "/" or "\", it is illegal so just use 
+    # the default log to avoid any security issues due if it is interprted
+    # as a directory separator.
+    if ($vhost =~ m#[/\\]#) { $vhost = "access" }
+    #
     # If the log file for this virtual host isn't opened
     # yet, do it now.
     #
