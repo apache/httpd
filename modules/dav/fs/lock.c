@@ -845,8 +845,16 @@ static dav_error * dav_fs_load_locknull_list(apr_pool_t *p, const char *dirpath,
 	goto loaderror;
     }
 
-    dav_set_bufsize(p, pbuf, finfo.size);
-    amt = finfo.size;
+    if (finfo.size != (apr_size_t)finfo.size) {
+	err = dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0,
+			    apr_psprintf(p,
+					"Opened but rejected huge file %s",
+					pbuf->buf));
+	goto loaderror;
+    }
+
+    amt = (apr_size_t)finfo.size;
+    dav_set_bufsize(p, pbuf, amt);
     if (apr_file_read(file, pbuf->buf, &amt) != APR_SUCCESS
         || amt != finfo.size) {
 	err = dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0,
