@@ -2964,9 +2964,6 @@ static int default_handler(request_rec *r)
  * non-contiguous buckets. For example, if a brigade contains 10 small 
  * buckets followed by a large bucket (or a pipe or file bucket) followed 
  * by more small buckets, only the first 10 buckets will be coalesced.
- *
- * Yack... Using heap buckets which is really inefficient (multiple byte moves)
- * until we get heap bucket pooling in place.
  */
 typedef struct COALESCE_FILTER_CTX {
     char *buf;           /* Start of buffer */
@@ -3060,11 +3057,11 @@ static apr_status_t coalesce_filter(ap_filter_t *f, ap_bucket_brigade *b)
     if (pass_the_brigade) {
         /* Insert ctx->buf into the correct spot in the brigade */
         if (insert_first) {
-            e = ap_bucket_create_heap(ctx->buf, ctx->cnt, 1, NULL);
+            e = ap_bucket_create_pool(ctx->buf, ctx->cnt, 1, NULL);
             AP_BRIGADE_INSERT_HEAD(b, e);
         } 
         else if (insert_before) {
-            e = ap_bucket_create_heap(ctx->buf, ctx->cnt, 1, NULL);
+            e = ap_bucket_create_pool(ctx->buf, ctx->cnt, 1, NULL);
             AP_BUCKET_INSERT_BEFORE(e, insert_before);
             AP_BUCKET_REMOVE(insert_before);
             ap_bucket_destroy(insert_before);
