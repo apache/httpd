@@ -1,5 +1,9 @@
 Changes with Apache 2.0.37
 
+  *) Make apxs look in the correct directory for envvars.  It was
+     broken when sbindir != bindir.  PR 8869
+     [Andreas Sundström <sunkan@zappa.cx>]
+  
   *) Fix mod_deflate corruption when using multiple buckets.  PR 9014.
      [Asada Kazuhisa <kaz@asada.sytes.net>]
 

@@ -223,7 +223,7 @@ if (@opt_S) {
 my $httpd = get_vars("sbindir") . "/" . get_vars("progname");
 $httpd = eval qq("$httpd");
 $httpd = eval qq("$httpd");
-my $envvars = get_vars("bindir") . "/envvars";
+my $envvars = get_vars("sbindir") . "/envvars";
 $envvars = eval qq("$envvars");
 $envvars = eval qq("$envvars");
 
