@@ -139,7 +139,7 @@ AC_DEFUN(AC_TYPE_RLIM_T, [
     ],[ac_cv_type_rlim_t=no
     ])
   ])
-  if test "$ac_ac_type_rlim_t" = "no" ; then
+  if test "$ac_cv_type_rlim_t" = "no" ; then
       AC_DEFINE(rlim_t, int,
           [Define to 'int' if <sys/resource.h> doesn't define it for us])
   fi
