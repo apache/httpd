@@ -1,5 +1,11 @@
 Changes with Apache 2.0.40
 
+  *) Solved the reports of .pdf byterange failures on Win32 alone.
+     APR's sendfile for the win32 platform collapses header and trailer
+     buffers into a single buffer.  However, we destroyed the pointers
+     to the header buffer if a trailer buffer was present.  PR 10781
+     [William Rowe]
+
   *) mod_ext_filter: Add the ability to enable or disable a filter via
      an environment variable.  Add the ability to register a filter of
      type other than AP_FTYPE_RESOURCE.  [Jeff Trawick]
