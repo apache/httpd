@@ -185,13 +185,15 @@ ftp_getrc(BUFF *f)
 /* check format */
     if (len < 5 || !isdigit(linebuff[0]) || !isdigit(linebuff[1]) ||
 	!isdigit(linebuff[2]) || (linebuff[3] != ' ' && linebuff[3] != '-'))
-	return 0;
-    status = 100 * linebuff[0] + 10 * linebuff[1] + linebuff[2] - 111 * '0';
+	status = 0;
+    else
+	status = 100 * linebuff[0] + 10 * linebuff[1] + linebuff[2] - 111 * '0';
+
+    Explain1("FTP: ftp_getrc() status = %d", status);
     
     if (linebuff[len-1] != '\n')
     {
 	i = bskiplf(f);
-	if (i != 1) return i;
     }
 
 /* skip continuation lines */    
@@ -203,11 +205,9 @@ ftp_getrc(BUFF *f)
 	{
 	    len = bgets(linebuff, 100, f);
 	    if (len == -1) return -1;
-	    if (len < 5) return 0;
 	    if (linebuff[len-1] != '\n')
 	    {
 		i = bskiplf(f);
-		if (i != 1) return i;
 	    }
 	} while (memcmp(linebuff, buff, 4) != 0);
     }
@@ -564,16 +564,6 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
     }
     note_cleanups_for_fd(pool, dsock);
 
-    if (setsockopt(dsock, SOL_SOCKET, SO_DEBUG, (const char *)&one,
-      sizeof (int)) == -1)
-    {
-	proxy_log_uerror("setsockopt", NULL,
-	    "proxy: error setting PASV debug option", r->server);
-	pclosef(pool, dsock);
-	pclosef(pool, sock);
-	return SERVER_ERROR;
-    }
-
     bputs("PASV\015\012", f);
     bflush(f);
     Explain0("FTP: PASV command issued");
@@ -867,6 +857,7 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
         Explain1("FTP: returned status %d",i);
     }
 
+    kill_timeout(r);
     proxy_cache_tidy(c);
 
 /* finish */
