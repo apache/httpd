@@ -1345,7 +1345,7 @@ const char *ssl_cmd_SSLProxyCACertificatePath(cmd_parms *cmd,
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
     const char *err;
 
-    if ((err = ssl_cmd_check_file(cmd, &arg))) {
+    if ((err = ssl_cmd_check_dir(cmd, &arg))) {
         return err;
     }
 
@@ -1413,7 +1413,7 @@ const char *ssl_cmd_SSLProxyMachineCertificatePath(cmd_parms *cmd,
         return err;
     }
 
-    sc->proxy->pkp->cert_file = arg;
+    sc->proxy->pkp->cert_path = arg;
 
     return NULL;
 }
