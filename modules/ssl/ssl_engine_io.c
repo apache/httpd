@@ -655,7 +655,10 @@ static apr_status_t ssl_io_input_read(bio_filter_in_ctx_t *inctx,
             inctx->cbuf.value -= bytes;
             inctx->cbuf.length += bytes;
             return APR_SUCCESS;
-        } 
+        }
+        /* This could probably be *len == wanted, but be safe from stray
+         * photons.
+         */
         if (*len >= wanted) {
             return APR_SUCCESS;
         }
