@@ -867,6 +867,9 @@ const char *server_port (cmd_parms *cmd, void *dummy, char *arg) {
 
 const char *set_send_buffer_size (cmd_parms *cmd, void *dummy, char *arg) {
     int s = atoi (arg);
+    if (cmd->server->is_virtual) {
+        return "SendBufferSize directive can not be used in <VirtualHost>";
+    }
     if (s < 512 && s != 0) {
         return "SendBufferSize must be >= 512 bytes, or 0 for system default.";
     }
