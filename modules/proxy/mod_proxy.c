@@ -252,7 +252,7 @@ static int proxy_map_location(request_rec *r)
 {
     int access_status;
 
-    if (!r->proxyreq || strncmp(r->filename, "proxy:", 6) != 0)
+    if (!r->proxyreq || !r->filename || strncmp(r->filename, "proxy:", 6) != 0)
         return DECLINED;
 
     /* Don't let the core or mod_http map_to_storage hooks handle this,
