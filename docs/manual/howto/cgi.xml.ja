@@ -19,7 +19,7 @@
 -->
 
 <manualpage metafile="cgi.xml.meta">
-<!-- English Revision: 1.9 -->
+<!-- English Revision: 1.9 (outdated: 1.11) -->
   <parentdocument href="./">How-To / チュートリアル</parentdocument>
 
   <title>Apache Tutorial: CGI による動的コンテンツ</title>
