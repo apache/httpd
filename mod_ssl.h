@@ -364,6 +364,8 @@ typedef enum {
 
 #define SSL_set_state(ssl,val) (ssl)->state = val
 
+#define MODSSL_BIO_CB_ARG_TYPE const char
+
 #else
 
 /* support some OpenSSL-izms for compat with ssl */
@@ -371,6 +373,8 @@ typedef enum {
 #ifndef STACK_OF
 #define STACK_OF(type) STACK
 #endif
+
+#define MODSSL_BIO_CB_ARG_TYPE char
 
 #endif /* OPENSSL_VERSION_NUMBER */
 
@@ -753,7 +757,7 @@ void         ssl_ext_proxy_register(apr_pool_t *p);
 /*  I/O  */
 void         ssl_io_filter_init(conn_rec *, SSL *);
 void         ssl_io_filter_register(apr_pool_t *);
-long         ssl_io_data_cb(BIO *, int, const char *, int, long, long);
+long         ssl_io_data_cb(BIO *, int, MODSSL_BIO_CB_ARG_TYPE *, int, long, long);
 
 /*  PRNG  */
 int          ssl_rand_seed(server_rec *, apr_pool_t *, ssl_rsctx_t, char *);
