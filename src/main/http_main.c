@@ -216,6 +216,9 @@ pid_t pgrp;
 
 int one_process = 0;
 
+pool *pconf;			/* Pool for config stuff */
+pool *ptrans;			/* Pool for per-transaction stuff */
+
 /* small utility macros to make things easier to read */
 
 #ifdef WIN32
@@ -375,6 +378,7 @@ static APACHE_TLS request_rec *timeout_req;
 static APACHE_TLS const char *timeout_name = NULL;
 static APACHE_TLS int alarms_blocked = 0;
 static APACHE_TLS int alarm_pending = 0;
+static APACHE_TLS int exit_after_unblock = 0;
 
 #ifndef NO_USE_SIGACTION
 /*
@@ -469,9 +473,14 @@ API_EXPORT(void) block_alarms() {
 
 API_EXPORT(void) unblock_alarms() {
     --alarms_blocked;
-    if (alarms_blocked == 0 && alarm_pending) {
-	alarm_pending = 0;
-	timeout(0);
+    if (alarms_blocked == 0) {
+	if (exit_after_unblock) {
+	    child_exit_modules(pconf, server_conf);
+	}
+	if (alarm_pending) {
+	    alarm_pending = 0;
+	    timeout(0);
+	}
     }
 }
 
@@ -1475,15 +1484,17 @@ void seg_fault(int sig) {
 
 /*****************************************************************
  * Connection structures and accounting...
- * Should these be global?  Only to this file, at least...
  */
-
-pool *pconf;			/* Pool for config stuff */
-pool *ptrans;			/* Pool for per-transaction stuff */
 
 void just_die(int sig)			/* SIGHUP to child process??? */
 {
-    child_exit_modules(pconf, server_conf);
+    /* if alarms are blocked we have to wait to die otherwise we might
+     * end up with corruption in alloc.c's internal structures */
+    if (alarms_blocked) {
+	exit_after_unblock = 1;
+    } else {
+	child_exit_modules(pconf, server_conf);
+    }
 }
 
 static int deferred_die;
