@@ -221,29 +221,9 @@ void cache_pq_change_priority(cache_pqueue_t *q,
 
 apr_status_t cache_pq_remove(cache_pqueue_t *q, void *d)
 {
-    apr_ssize_t posn;
-    void *popped = NULL;
-    long pri_popped;
-    long pri_removed;
-
-    popped = cache_pq_pop(q);
-    posn  = q->get(d);
-
-    if (!popped)
-        return APR_EGENERAL;
-
-    if (d == popped) {
-        return APR_SUCCESS;
-    }
-    pri_popped = q->pri(popped);
-    pri_removed = q->pri(d);
-
-    q->d[posn] = popped;
-    q->set(popped,posn);
-    if (pri_popped > pri_removed)
-        cache_pq_bubble_up(q, posn);
-    else
-        cache_pq_percolate_down(q, posn);
+    apr_ssize_t posn = q->get(d);
+    q->d[posn] = q->d[--q->size];
+    cache_pq_percolate_down(q, posn);
 
     return APR_SUCCESS;
 }
