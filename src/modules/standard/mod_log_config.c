@@ -54,10 +54,59 @@
 
 /*
  * This is module implements the TransferLog directive (same as the
- * common log module), and an additional directive, LogFormat.
+ * common log module), and additional directives, LogFormat and CustomLog.
  *
- * The argument to LogFormat is a string, which can include literal
- * characters copied into the log files, and '%' directives as follows:
+ *
+ * Syntax:
+ *
+ *    TransferLog fn      Logs transfers to fn in standard log format, unless
+ *                        a custom format is set with LogFormat
+ *    LogFormat format    Set a log format from TransferLog files
+ *    CustomLog fn format
+ *                        Log to file fn with format given by the format
+ *                        argument
+ *
+ * There can be any number of TransferLog and CustomLog
+ * commands. Each request will be logged to _ALL_ the
+ * named files, in the appropriate format.
+ *
+ * If no TransferLog or CustomLog directive appears in a VirtualHost,
+ * the request will be logged to the log file(s) defined outside
+ * the virtual host section. If a TransferLog or CustomLog directive
+ * appears in the VirtualHost section, the log files defined outside
+ * the VirtualHost will _not_ be used. This makes this module compatable
+ * with the CLF and config log modules, where the use of TransferLog
+ * inside the VirtualHost section overrides its use outside.
+ * 
+ * Examples:
+ *
+ *    TransferLog    logs/access_log
+ *    <VirtualHost>
+ *    LogFormat      "... custom format ..."
+ *    TransferLog    log/virtual_only
+ *    CustomLog      log/virtual_useragents "%t %{user-agent}i"
+ *    </VirtualHost>
+ *
+ * This will log using CLF to access_log any requests handled by the
+ * main server, while any requests to the virtual host will be logged
+ * with the "... custom format..." to virtual_only _AND_ using
+ * the custom user-agent log to virtual_useragents.
+ *
+ * Note that the NCSA referer and user-agent logs are easily added with
+ * CustomLog:
+ *   CustomLog   logs/referer  "%{referer}i -> %U"
+ *   CustomLog   logs/agent    "%{user-agent}i"
+ *
+ * Except: no RefererIgnore functionality
+ *         logs '-' if no Referer or User-Agent instead of nothing
+ *
+ * But using this method allows much easier modification of the
+ * log format, e.g. to log hosts along with UA:
+ *   CustomLog   logs/referer "%{referer}i %U %h"
+ *
+ * The argument to LogFormat and CustomLog is a string, which can include
+ * literal characters copied into the log files, and '%' directives as
+ * follows:
  *
  * %...b:  bytes sent.
  * %...h:  remote host
@@ -116,6 +165,36 @@ static mode_t xfer_mode = ( S_IREAD | S_IWRITE );
 #else
 static mode_t xfer_mode = ( S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH );
 #endif
+
+/*
+ * multi_log_state is our per-(virtual)-server configuration. We store
+ * an array of the logs we are going to use, each of type config_log_state.
+ * If a default log format is given by LogFormat, store in default_format
+ * (backward compat. with mod_log_config). We also store a pointer to
+ * the logs specified for the main server for virtual servers, so that
+ * if this vhost has now logs defined, we can use the main server's
+ * logs instead.
+ *
+ * So, for the main server, config_logs contains a list of the log files
+ * and server_config_logs in empty. For a vhost, server_config_logs
+ * points to the same array as config_logs in the main server, and
+ * config_logs points to the array of logs defined inside this vhost,
+ * which might be empty.
+ */
+
+typedef struct {
+  array_header *default_format;
+  array_header *config_logs;    
+  array_header *server_config_logs;
+} multi_log_state;
+
+/*
+ * config_log_state holds the status of a single log file. fname cannot
+ * be NULL. format might be NULL, in which case the default_format from
+ * the multi_log_state should be used, or if that is NULL as well, use
+ * the CLF. log_fd is -1 before the log file is opened and set to a valid
+ * fd after it is opened.
+ */
 
 typedef struct {
     char *fname;
@@ -414,38 +493,68 @@ char *process_item(request_rec *r, request_rec *orig, log_format_item *item)
     return cp ? cp : "-";
 }
 
-int config_log_transaction(request_rec *r)
-{
-    config_log_state *cls = get_module_config (r->server->module_config,
-					       &config_log_module);
-  
-    array_header *strsa= make_array(r->pool, cls->format->nelts,sizeof(char*));
-    log_format_item *items = (log_format_item *)cls->format->elts;
+int config_log_transaction(request_rec *r, config_log_state *cls,
+			   array_header *default_format) {
+    array_header *strsa;
+    log_format_item *items;
     char *str, **strs, *s;
     request_rec *orig;
     int i;
     int len = 0;
+    array_header *format;
+
+    format = cls->format ? cls->format : default_format;
+
+    strsa= make_array(r->pool, format->nelts,sizeof(char*));
+    items = (log_format_item *)format->elts;
 
     orig = r;
     while (orig->prev) orig = orig->prev;
     while (r->next) r = r->next;
 
-    for (i = 0; i < cls->format->nelts; ++i)
-	*((char**)push_array (strsa)) = process_item (r, orig, &items[i]);
+    for (i = 0; i < format->nelts; ++i)
+        *((char**)push_array (strsa)) = process_item (r, orig, &items[i]);
 
     strs = (char **)strsa->elts;
     
-    for (i = 0; i < cls->format->nelts; ++i)
-	len += strlen (strs[i]);
+    for (i = 0; i < format->nelts; ++i)
+        len += strlen (strs[i]);
 
     str = palloc (r->pool, len + 1);
 
-    for (i = 0, s = str; i < cls->format->nelts; ++i) {
-	strcpy (s, strs[i]);
-	s += strlen (strs[i]);
+    for (i = 0, s = str; i < format->nelts; ++i) {
+        strcpy (s, strs[i]);
+        s += strlen (strs[i]);
     }
     
     write(cls->log_fd, str, strlen(str));
+
+    return OK;
+}
+
+int multi_log_transaction(request_rec *r)
+{
+    multi_log_state *mls = get_module_config (r->server->module_config,
+                                               &config_log_module);
+    config_log_state *clsarray;
+    int i;
+
+    if (mls->config_logs->nelts) {
+        clsarray = (config_log_state *)mls->config_logs->elts;
+        for (i = 0; i < mls->config_logs->nelts; ++i) {
+            config_log_state *cls = &clsarray[i];
+        
+            config_log_transaction(r, cls, mls->default_format);
+        }
+    }
+    else if (mls->server_config_logs) {
+        clsarray = (config_log_state *)mls->server_config_logs->elts;
+        for (i = 0; i < mls->server_config_logs->nelts; ++i) {
+            config_log_state *cls = &clsarray[i];
+        
+            config_log_transaction(r, cls, mls->default_format);
+        }
+    }
 
     return OK;
 }
@@ -457,40 +566,74 @@ int config_log_transaction(request_rec *r)
 
 void *make_config_log_state (pool *p, server_rec *s)
 {
-    config_log_state *cls =
-      (config_log_state *)palloc (p, sizeof (config_log_state));
-
-    cls->fname = NULL;
-    cls->format = NULL;
-    cls->log_fd = -1;
-
-    return (void *)cls;
+    multi_log_state *mls =
+	(multi_log_state *)palloc(p, sizeof (multi_log_state));
+    
+    mls->config_logs = 
+	make_array(p, 5, sizeof (config_log_state));
+    mls->default_format = NULL;
+    mls->server_config_logs = NULL;
+    
+    return mls;
 }
 
-char *set_config_log (cmd_parms *parms, void *dummy, char *arg)
+/*
+ * Use the merger to simply add a pointer from the vhost log state
+ * to the log of logs specified for the non-vhost configuration
+ */
+
+void *merge_config_log_state (pool *p, void *basev, void *addv)
 {
-    config_log_state *cls = get_module_config (parms->server->module_config,
-					       &config_log_module);
-  
-    cls->fname = arg;
-    return NULL;
+    multi_log_state *base = (multi_log_state *)basev;
+    multi_log_state *add = (multi_log_state *)addv;
+    multi_log_state *new = 
+	(multi_log_state *)palloc (p, sizeof(multi_log_state));
+    
+    add->server_config_logs = base->config_logs;
+    
+    return add;
 }
 
 char *log_format (cmd_parms *cmd, void *dummy, char *arg)
 {
     char *err_string = NULL;
-    config_log_state *cls = get_module_config (cmd->server->module_config,
+    multi_log_state *mls = get_module_config (cmd->server->module_config,
 					       &config_log_module);
   
-    cls->format = parse_log_string (cmd->pool, arg, &err_string);
+    mls->default_format = parse_log_string (cmd->pool, arg, &err_string);
     return err_string;
 }
 
+char *add_custom_log(cmd_parms *cmd, void *dummy, char *fn, char *fmt)
+{
+    char *err_string = NULL;
+    multi_log_state *mls = get_module_config (cmd->server->module_config,
+					      &config_log_module);
+    config_log_state *cls;
+
+    cls = (config_log_state*)push_array(mls->config_logs);
+    cls->fname = fn;
+    if (!fmt)
+	cls->format = NULL;
+    else
+	cls->format = parse_log_string (cmd->pool, fmt, &err_string);
+    cls->log_fd = -1;
+    
+    return err_string;
+}
+
+char *set_transfer_log(cmd_parms *cmd, void *dummy, char *fn)
+{
+    return add_custom_log(cmd, dummy, fn, NULL);
+}
+
 command_rec config_log_cmds[] = {
-{ "TransferLog", set_config_log, NULL, RSRC_CONF, TAKE1,
+{ "CustomLog", add_custom_log, NULL, RSRC_CONF, TAKE2,
+    "a file name and a custom log format string" },
+{ "TransferLog", set_transfer_log, NULL, RSRC_CONF, TAKE1,
     "the filename of the access log" },
 { "LogFormat", log_format, NULL, RSRC_CONF, TAKE1,
-      "a log format string (see docs)" },
+    "a log format string (see docs)" },
 { NULL }
 };
 
@@ -509,52 +652,65 @@ void config_log_child (void *cmd)
 }
 
 config_log_state *open_config_log (server_rec *s, pool *p,
-				   config_log_state *defaults)
-{
-    config_log_state *cls = get_module_config (s->module_config,
-					       &config_log_module);
-  
+				   config_log_state *cls,
+				   array_header *default_format) {
     if (cls->log_fd > 0) return cls; /* virtual config shared w/main server */
-    
-    if (cls->format == NULL) {
-	char *dummy;
-	
-	if (defaults) cls->format = defaults->format;
-	else cls->format = parse_log_string (p, DEFAULT_LOG_FORMAT, &dummy);
-    }
 
-    if (cls->fname == NULL) {
-	if (defaults) {
-	    cls->log_fd = defaults->log_fd;
-	    return cls;
-	}
-	else cls->fname = DEFAULT_XFERLOG;
-    }
-    
     if (*cls->fname == '|') {
-	FILE *dummy;
-	
-	spawn_child(p, config_log_child, (void *)(cls->fname+1),
-		    kill_after_timeout, &dummy, NULL);
+        FILE *dummy;
+        
+        spawn_child(p, config_log_child, (void *)(cls->fname+1),
+                    kill_after_timeout, &dummy, NULL);
 
-	if (dummy == NULL) {
-	    fprintf (stderr, "Couldn't fork child for TransferLog process\n");
-	    exit (1);
-	}
+        if (dummy == NULL) {
+            fprintf (stderr, "Couldn't fork child for TransferLog process\n");
+            exit (1);
+        }
 
-	cls->log_fd = fileno (dummy);
+        cls->log_fd = fileno (dummy);
     }
     else {
-	char *fname = server_root_relative (p, cls->fname);
-	if((cls->log_fd = popenf(p, fname, xfer_flags, xfer_mode)) < 0) {
-	    fprintf (stderr,
-		     "httpd: could not open transfer log file %s.\n", fname);
-	    perror("open");
-	    exit(1);
-	}
+        char *fname = server_root_relative (p, cls->fname);
+        if((cls->log_fd = popenf(p, fname, xfer_flags, xfer_mode)) < 0) {
+            fprintf (stderr,
+                     "httpd: could not open transfer log file %s.\n", fname);
+            perror("open");
+            exit(1);
+        }
     }
 
     return cls;
+}
+
+config_log_state *open_multi_logs (server_rec *s, pool *p)
+{
+    int i;
+    multi_log_state *mls = get_module_config(s->module_config,
+                                             &config_log_module);
+    config_log_state *clsarray;
+    char *dummy;
+
+    if (!mls->default_format)
+      mls->default_format = parse_log_string (p, DEFAULT_LOG_FORMAT, &dummy);
+
+    if (mls->config_logs->nelts) {
+        clsarray = (config_log_state *)mls->config_logs->elts;
+        for (i = 0; i < mls->config_logs->nelts; ++i) {
+            config_log_state *cls = &clsarray[i];
+
+            cls = open_config_log(s, p, cls, mls->default_format);
+                }
+    }
+    else if (mls->server_config_logs) {
+        clsarray = (config_log_state *)mls->server_config_logs->elts;
+        for (i = 0; i < mls->server_config_logs->nelts; ++i) {
+            config_log_state *cls = &clsarray[i];
+
+            cls = open_config_log(s, p, cls, mls->default_format);
+        }
+    }
+
+    return NULL;
 }
 
 void init_config_log (server_rec *s, pool *p)
@@ -563,11 +719,11 @@ void init_config_log (server_rec *s, pool *p)
      * for the virtual servers, if they don't override...
      */
     
-    config_log_state *default_conf = open_config_log (s, p, NULL);
+    open_multi_logs (s, p);
     
     /* Then, virtual servers */
     
-    for (s = s->next; s; s = s->next) open_config_log (s, p, default_conf);
+    for (s = s->next; s; s = s->next) open_multi_logs (s, p);
 }
 
 module config_log_module = {
@@ -576,7 +732,7 @@ module config_log_module = {
    NULL,			/* create per-dir config */
    NULL,			/* merge per-dir config */
    make_config_log_state,	/* server config */
-   NULL,			/* merge server config */
+   merge_config_log_state,     	/* merge server config */
    config_log_cmds,		/* command table */
    NULL,			/* handlers */
    NULL,			/* filename translation */
@@ -585,5 +741,5 @@ module config_log_module = {
    NULL,			/* check access */
    NULL,			/* type_checker */
    NULL,			/* fixups */
-   config_log_transaction	/* logger */
+   multi_log_transaction	/* logger */
 };
