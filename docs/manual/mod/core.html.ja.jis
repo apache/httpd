@@ -12,7 +12,7 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p>
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p>
 <p class="apache">Apache HTTP サーバ バージョン 2.1</p>
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
@@ -25,8 +25,6 @@
 <a href="../en/mod/core.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/core.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>常に使用可能な Apache HTTP サーバのコア機能</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Core</td></tr></table>
 </div>
@@ -137,7 +135,7 @@
     <a href="../handler.html">ハンドラ</a>で決まります。
     普通のファイルのためのコアハンドラのデフォルトは <code>PATH_INFO</code> を拒否します。
     <a href="mod_cgi.html">cgi-script</a> や <a href="mod_isapi.html">isapi-isa</a> のようにスクリプトを扱うハンドラは
-    一般的にデフォルトで <code>PATH_INFO</code> を受け付けます。</dd>
+    一般的にデフォルトで <code>PATH_INFO</code> を受け付けます。</dd>
     </dl>
 
     <p><code>AcceptPathInfo</code> の主な目的はハンドラの <code>PATH_INFO</code> を
@@ -305,7 +303,7 @@
     で拒否されます。</p>
 
     <p><code class="directive">AllowEncodedSlashes</code> <code>On</code> による
-    パス分離文字の使用は、<code>PATH_INFO</code> と合わせて
+    パス分離文字の使用は、<code>PATH_INFO</code> と合わせて
     使うときに一番役に立ちます。</p>
     <p>Turning <code class="directive">AllowEncodedSlashes</code> <code>On</code> is
     mostly useful when used in conjunction with <code>PATH_INFO</code>.</p>
@@ -338,10 +336,10 @@
     宣言されたどのディレクティブがより前に定義された設定ディレクティブを
     上書きできるかを知る必要があります。</p>
 
-    <div class="note"><h3>Only available in &lt;Directory&gt; sections</h3>
-    <code class="directive">AllowOverride</code> is valid only in
-    <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code>
-    sections, not in <code class="directive"><a href="#location">&lt;Location&gt;</a></code> or <code class="directive"><a href="#files">&lt;Files&gt;</a></code> sections.
+    <div class="note"><h3>&lt;Directory&gt; セクションでのみ使用可能</h3>
+    <code class="directive">AllowOverride</code> は正規表現無しの<code class="directive"><a href="#directory">&lt;Directory&gt;</a></code>
+    セクションでのみ有効で、<code class="directive"><a href="#location">&lt;Location&gt;</a></code> や <code class="directive"><a href="#directorymatch">&lt;DirectoryMatch&gt;</a></code>
+    や <code class="directive"><a href="#files">&lt;Files&gt;</a></code> セクションでは無効です。
     </div>
 
     <p>このディレクティブを None に設定すると、<a href="#accessfilename">.htaccess</a> ファイルは完全に
@@ -390,12 +388,14 @@
       <dd>
       ホストへのアクセス制御を行うためのディレクティブの使用を許可する (<code class="directive"><a href="../mod/mod_authz_host.html#allow">Allow</a></code>, <code class="directive"><a href="../mod/mod_authz_host.html#deny">Deny</a></code>, <code class="directive"><a href="../mod/mod_authz_host.html#order">Order</a></code>).</dd>
 
-      <dt>Options</dt>
+      <dt>Options[=<var>Option</var>,...]</dt>
 
       <dd>
       特定のディレクトリにおける機能を指定するためのディレクティブの使用を許可する
       (<code class="directive"><a href="#options">Options</a></code> と
-      <code class="directive"><a href="../mod/mod_include.html#xbithack">XBitHack</a></code>).</dd>
+      <code class="directive"><a href="../mod/mod_include.html#xbithack">XBitHack</a></code>)。
+      等号の後に、コンマで分割された(空白の入っていない)オプションのリストを
+      続けることでオプションを設定することができます。</dd>
     </dl>
 
     <p>例:</p>
@@ -403,6 +403,9 @@
     <div class="example"><p><code>
       AllowOverride AuthConfig Indexes
     </code></p></div>
+
+    <p>上の例では <code>AuthConfig</code> と <code>Indexes</code> のどちらにも
+    属さないディレクティブはすべて内部サーバエラーを引き起こします。</p>
 
 <h3>参照</h3>
 <ul>
@@ -422,7 +425,7 @@
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>core</td></tr>
 </table>
     <p>このディレクティブはディレクトリに対する認可領域 (訳注: realm)
-    の名前を指定します。
+    の名前を指定します。
     認可領域は、利用者がどのユーザ名とパスワードを送信すればよいのかを
     クライアントに教えるために利用します。
     <code class="directive">AuthName</code> は一つの引数をとり、
@@ -495,7 +498,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ContentDigest" id="ContentDigest">ContentDigest</a> <a name="contentdigest" id="contentdigest">ディレクティブ</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Content-MD5 HTTP 応答ヘッダの生成を有効にする</td></tr>
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Content-MD5 HTTP 応答ヘッダの生成を有効にする</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ContentDigest On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>ContentDigest Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
@@ -548,7 +551,7 @@
     <p>サーバは、MIME のタイプマップからは決定できない
     ドキュメントの送信を要求されることがあります。</p>
 
-    <p>サーバは、ドキュメントのコンテントタイプをクライアントに通知する必要が
+    <p>サーバは、ドキュメントのコンテントタイプをクライアントに通知する必要が
     ありますので、このようにタイプが未知の場合は
     <code>DefaultType</code> で指定されたタイプを利用します。
     例:</p>
@@ -653,7 +656,7 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
 
       <li><code>/home/.htaccess</code>, <code>/home/web/.htaccess</code>,
       <code>/home/web/.htaccess</code> の順にそれらのファイル中の
-       FileInfo ディレクティブが適用される。</li>
+       FileInfo ディレクティブが適用される。</li>
     </ul>
 
     <p>正規表現は、通常のセクションがすべて適用されるまで
@@ -773,7 +776,7 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
 
 <h3>参照</h3>
 <ul>
-<li><a href="../urlmapping.html">URL をファイルシステムの位置に
+<li><a href="../urlmapping.html">URL をファイルシステムの位置に
 マップする</a></li>
 </ul>
 </div>
@@ -930,9 +933,25 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
       ErrorDocument 403 "Sorry can't allow you access today"
     </code></p></div>
 
+    <p>加えて、特別な値 <code>default</code> を使って Apache に
+    ハードコードされている簡単なメッセージを指定することができます。
+    通常は必要ではありませんが、<code>default</code> を使うと
+    既存の <code class="directive">ErrorDocument</code> ディレクティブの設定を
+    継承するところで、Apache のハードコードされた簡単なメッセージに
+    戻すことができます。</p>
+
+    <div class="example"><p><code>
+      ErrorDocument 404 /cgi-bin/bad_urls.pl<br /><br />
+      &lt;Directory /web/docs&gt;<br />
+      <span class="indent">
+        ErrorDocument 404 default<br />
+      </span>
+      &lt;/Directory&gt;
+    </code></p></div>
+
     <p>リモート URL (例えば、頭に <code>http</code> と付与した方法) を
     <code class="directive">ErrorDocument</code> に指定するとき、
-    たとえ文書が同じサーバにあろうとも、ドキュメントがどこにあるかを通知するために、
+    たとえ文書が同じサーバにあろうとも、ドキュメントがどこにあるかを通知するために、
     Apache はリダイレクトをクライアントに送出するということに、注意してください。
     これにはいろいろと関連して起こる問題があります。
     中でも最も重要なのは、クライアントは元々のエラーステータスコードを受け取らず、
@@ -950,7 +969,7 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
     置換します。サイズのしきい値はエラーの種類によって異なりますが、
     一般的にはエラーの文書を 512 バイトよりも多きくすると、MSIE は
     サーバが生成したエラーを隠さずに表示します。詳しい情報は Microsoft
-    Knowledgebase の記事 <a href="http://support.microsoft.com/default.aspx?scid=kb;en-us;Q294807">Q294807</a>
+    Knowledge Base の記事 <a href="http://support.microsoft.com/default.aspx?scid=kb;en-us;Q294807">Q294807</a>
     にあります。</p>
 
     <p>2.0 より前のバージョンでは、対になっていない二重引用符を
@@ -973,7 +992,7 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>core</td></tr>
 </table>
-    <p><code class="directive">ErrorLog</code> ディレクティブは、
+    <p><code class="directive">ErrorLog</code> ディレクティブは、
     サーバに生じたさまざまなエラーを
     記録する為のファイルの名前を設定します。
     <var>file-path</var> が絶対パスでないときは、<code class="directive"><a href="#serverroot">ServerRoot</a></code> からの相対パスとみなされます。</p>
@@ -1240,7 +1259,7 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
     <p>ディレクティブのデフォルトは
     本当に逆引きを必要としているわけではないサイトの
     ネットワークトラフィックを低減させるために、<code>Off</code> になっています。
-    ルックアップによる余計な遅延がなくなるため、
+    ルックアップによる余計な遅延がなくなるため、
     エンドユーザにとっても良いでしょう。
     DNS のルックアップには、かなりの時間が必要となる場合が多く、
     負荷の高いサイトではこのディレクティブは <code>Off</code> にすべきです。
@@ -1292,7 +1311,7 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
     <code>-D<var>parameter-</var></code> という形で指定すると定義されます。 </p>
 
     <p><code class="directive">&lt;IfDefine&gt;</code> セクションは
-    入れ子にすることができ、複数のパラメータによるテストをするために使用できます。
+    入れ子にすることができ、複数のパラメータによるテストをするために使用できます。
     例:</p>
 
     <div class="example"><p><code>
@@ -1313,12 +1332,13 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>モジュールの存在するかしないかに応じて処理される
 ディレクティブを囲む</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>&lt;IfModule [!]<var>module-name</var>&gt; ...
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>&lt;IfModule [!]<var>module-file</var>|<var>module-identifier</var>&gt; ...
     &lt;/IfModule&gt;</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>モジュール識別子はバージョン 2.1 以降で使用可能。</td></tr>
 </table>
     <p><code>&lt;IfModule <var>test</var>&gt;...&lt;/IfModule&gt;</code>
     セクションは、モジュールが存在するときに処理されるディレクティブを
@@ -1334,23 +1354,24 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
     次の二つの形式のうちの一つをとります。</p>
 
     <ul>
-      <li><var>module name</var></li>
+      <li><var>module</var></li>
 
-      <li>!<var>module name</var></li>
+      <li>!<var>module</var></li>
     </ul>
 
-    <p>前者の場合は、<var>module name</var> と名付けられたモジュールが
+    <p>前者の場合は、<var>module</var> と名付けられたモジュールが
     Apache に組み込まれていれば
     (コンパイル済みのものと、<code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code> を利用して
     動的に読み込んだものの両方)、
     開始と終了の間のディレクティブが処理されます。
-    後者の場合は逆で、<var>module name</var> が組み込まれて<strong>いない</strong>
+    後者の場合は逆で、<var>module</var> が組み込まれて<strong>いない</strong>
     場合に処理されます。</p>
 
-    <p><var>module name</var> 引数は、
-    コンパイルをした時のモジュールのファイル名で、
-    例えば <code>mod_rewrite.c</code> といった形になります。
-    モジュールが複数のソースファイルから構成されている場合は、文字列
+    <p><var>module</var> 引数は、モジュール識別子か
+    コンパイルをした時のモジュールのファイル名です。
+    例えば、<code>rewrite_module</code> は識別子で
+    <code>mod_rewrite.c</code> はファイル名です。
+    モジュールが複数のソースファイルから構成されている場合は、文字列
     <code>STANDARD20_MODULE_STUFF</code> があるファイルの名前を
     使ってください。</p>
 
@@ -1615,7 +1636,7 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
     <p><code class="directive">LimitRequestBody</code> ディレクティブは、
     ディレクティブが書かれたコンテキスト
     (サーバ全体、ディレクトリ、ファイル、ロケーション) 内で
-    許容する  HTTP リクエストメッセージボディのサイズに制限をかけることができます。
+    許容する  HTTP リクエストメッセージボディのサイズに制限をかけることができます。
     クライアントのリクエストがその制限値を越えていれば、
     サーバはリクエストを処理せずにエラーを返します。
     普通のリクエストメッセージボディのサイズは、リソースの種類や
@@ -1664,7 +1685,7 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
     クライアントにより使われた要求ヘッダーフィールドの数が
     20 を超えることはほとんどありませんが、
     これは種々のクライアントの実装よって変わり、
-    詳細なコンテントネゴシエーションをするためのブラウザの設定までにも
+    詳細なコンテントネゴシエーションをするためのブラウザの設定までにも
     影響されることがあります。
     オプションの HTTP 拡張はリクエストヘッダフィールドを使って現される場合が
     多くあります。</p>
@@ -1829,7 +1850,7 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
     プロキシリクエストの場合には、<code>scheme://servername/path</code>
     という接頭辞を含む形でマッチし、接頭辞を含めて指定する必要があります。</p>
 
-    <p>URL にはワイルドカードを利用することができます。
+    <p>URL にはワイルドカードを利用することができます。
     <code>?</code> は任意の一文字、<code>*</code> は任意の文字列にマッチします。 </p>
 
     <p><code>~</code> という文字を追加することで、拡張正規表現を
@@ -2081,7 +2102,7 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
     <a href="../vhosts/">名前ベースのバーチャルホスト</a>の設定を行ないたい場合に
     必要となるものです。</p>
 
-    <p><var>addr</var> にはホスト名を指定できますが、
+    <p><var>addr</var> にはホスト名を指定できますが、
     常に IP アドレスを指定するのが推奨されます。
     例えば、</p>
 
@@ -2204,7 +2225,7 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
       <dt><code>Indexes</code></dt>
 
       <dd>
-      もし、URL がディレクトリにマップするリクエストであって、
+      もし、URL がディレクトリにマップするリクエストであって、
       且つ <code class="directive"><a href="../mod/mod_dir.html#directoryindex">DirectoryIndex</a></code> で指定したファイル (例えば、<code>index.html</code>) が
       ディレクトリ内に無ければ、<code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code> が
       ディレクトリ内の一覧を整形して返します。</dd>
@@ -2537,7 +2558,7 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
 
     <div class="warning"><h3>セキュリティ</h3> 
     <p><code>ScriptInterpreterSource Registry</code> を <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code> されたディレクトリで使うときは
-    注意してください。Apache はそのディレクトリ中の<em>すべての</em>ファイルを
+    注意してください。Apache はそのディレクトリ中の<em>すべての</em>ファイルを
     実行しようとします。<code>Registry</code> という設定は通常は実行されない
     ファイルに対して望ましくないプログラムの実行が発生する可能性があります。
     例えば、ほとんどの Windows システムで、
@@ -2561,14 +2582,22 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>サーバがクライアントに送るエラーメッセージに含める電子メールの
 アドレス</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ServerAdmin <var>email-address</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ServerAdmin <var>email-address</var>|<var>URL</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>core</td></tr>
 </table>
     <p><code class="directive">ServerAdmin</code> は、クライアントに返すさまざまな
     エラーメッセージ中に記述する、
-    電子メールのアドレスを設定します。</p>
+    問合せアドレスを設定します。与えられた引数を <code>httpd</code> が
+    URL と認識しない場合は、<var>email-address</var> だと解釈して、
+    ハイパーリンクのターゲットに <code>mailto:</code> を付けます。
+    実際には、ここには電子メールアドレスを使うことが推奨されています。
+    多くの CGI スクリプトはそうなっていることを仮定しています。
+    URL を使う場合は、あなたの管理下にある別サーバを指すようにしてください。
+    そうでないと、エラーが起こったときに連絡をすることができなくなって
+    しまいます。
+</p>
 
     <p>その際、これのために専用のアドレスを設定するのが良いでしょう。
     例えば、</p>
@@ -2592,7 +2621,7 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>core</td></tr>
 </table>
-    <p><code class="directive">ServerAlias</code> ディレクティブは、<a href="../vhosts/name-based.html">ネームベースのバーチャルホスト</a>において
+    <p><code class="directive">ServerAlias</code> ディレクティブは、<a href="../vhosts/name-based.html">ネームベースのバーチャルホスト</a>において
     使用するホストの別名を指定します。</p>
 
     <div class="example"><p><code>
@@ -2633,7 +2662,8 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
 
     <p><code class="directive">ServerName</code> が指定されていないときは、
     サーバは IP アドレスから逆引きを行なうことでホスト名を知ろうとします。
-    ServerName にポートが指定されていないときは、サーバはリクエストが来ている
+    <code class="directive">ServerName</code> にポートが指定されていないときは、
+    サーバはリクエストが来ている
     ポートを使います。最高の信頼性と確実性をもたらすためには、
     <code class="directive">ServerName</code> を使ってホスト名とポートを明示的に
     指定してください。</p>
@@ -2643,7 +2673,7 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
     <code class="directive">ServerName</code> はこのバーチャルホストにマッチするために
     何がリクエストの Host: ヘッダに現れる必要があるのかを指定します。</p>
 
-    <p>自己参照 URL (例えば <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code> モジュールによるものなど)
+    <p>自己参照 URL (例えば <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code> モジュールによるものなど)
     が指定されたポートを使うか、クライアントのリクエストのポート番号を使うかを
     決定する設定は <code class="directive"><a href="#usecanonicalname">UseCanonicalName</a></code> 
     ディレクティブを参照してください。</p>
@@ -2720,7 +2750,7 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
     (エラーメッセージ、<code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> における FTP のディレクトリリスト、
     <code class="module"><a href="../mod/mod_info.html">mod_info</a></code> の出力、等々)
     の最下行に付与するフッタの設定を行ないます。
-    そのようなフッタ行を有効にしたい理由には、
+    そのようなフッタ行を有効にしたい理由には、
     プロキシが複数連なっている場合に、ユーザはどのサーバが返した
     エラーメッセージかを知る手段がほとんど無いというものがあります。</p>
 
@@ -2915,7 +2945,7 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>core</td></tr>
 </table>
     <p><code class="directive">TimeOut</code> ディレクティブは、現在のところ
-    以下の三つの待ち時間についての定義を行います:</p>
+    以下の三つの待ち時間についての定義を行います:</p>
 
     <ol>
       <li>GET リクエストを受け取るのにかかる総時間</li>
@@ -2961,7 +2991,7 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
     と <code>SERVER_PORT</code> もクライアントから与えられた値から
     作成されます。</p>
 
-    <p>これが有用な場合の例は、イントラネットのサーバで、<code>www</code> の
+    <p>これが有用な場合の例は、イントラネットのサーバで、<code>www</code> の
     ような短い名前でユーザがマシンに接続しているときです。
     ユーザが短い名前を入力して、URL が<em>最後のスラッシュ無しの</em>ディレクトリ
     へのものであるときに、Apache はリクエストを
@@ -3009,7 +3039,7 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
 </table>
     <p><code class="directive">&lt;VirtualHost&gt;</code> 及び
     <code>&lt;/VirtualHost&gt;</code> は、
-    特定のバーチャルホストに対してのみ適用されるディレクティブ群を括る
+    特定のバーチャルホストに対してのみ適用されるディレクティブ群を括る
     ために使われます。
     バーチャルホストコンテキストで許可される全てのディレクティブを指定可能です。
     サーバが、指定されたバーチャルホストにあるドキュメントへの
@@ -3139,5 +3169,5 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
 <a href="../ja/mod/core.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 1999-2004 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div>
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div>
 </body></html>
