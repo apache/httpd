@@ -58,7 +58,7 @@ MODULES=proxy
 default:
 	(for dir in $(MODULES); do \
 		cd $$dir; \
-		$(MAKE) CC=$(CC) AUX_CFLAGS="$(AUX_CFLAGS)" RANLIB=$(RANLIB); \
+		$(MAKE) CC=$(CC) AUX_CFLAGS="$(AUX_CFLAGS)" RANLIB="$(RANLIB)"; \
 		cd ..; \
 	done)
 
