@@ -720,7 +720,8 @@ struct request_rec {
     /** Pointer to the previous request if this is an internal redirect */
     request_rec *prev;
 
-    /** Pointer to the main request if this is a sub-request (see request.h) */
+    /** Pointer to the main request if this is a sub-request
+     * (see http_request.h) */
     request_rec *main;
 
     /* Info about the request itself... we begin with stuff that only
