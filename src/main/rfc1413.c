@@ -193,7 +193,7 @@ rfc1413(conn_rec *conn, server_rec *srv)
 
     result = FROM_UNKNOWN;
 
-    sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    sock = psocket(conn->pool, AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (sock < 0)
     {
 	log_unixerr("socket", NULL, "rfc1413: error creating socket", srv);
@@ -214,7 +214,7 @@ rfc1413(conn_rec *conn, server_rec *srv)
 
 	set_callback_and_alarm(NULL, 0);
     }
-    closesocket(sock);
+    pclosesocket(conn->pool, sock);
     conn->remote_logname = result;
 
     return conn->remote_logname;

@@ -350,10 +350,9 @@ API_EXPORT(int) set_last_modified(request_rec *r, time_t mtime)
 {
     char *etag, weak_etag[MAX_STRING_LEN];
     char *if_match, *if_modified_since, *if_unmodified, *if_nonematch;
-    time_t now = time(NULL);
+    time_t now;
 
-    if (now < 0)
-        now = r->request_time;
+    now = r->request_time;
 
     table_set(r->headers_out, "Last-Modified",
               gm_timestr_822(r->pool, (mtime > now) ? now : mtime));

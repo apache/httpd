@@ -151,7 +151,7 @@ void make_cookie(request_rec *r)
     mpe_times=times(&mpe_tms);
 
     ap_snprintf(cookiebuf, 1024, "%s%d%ld%ld", rname, (int)getpid(),
-              (long)time(NULL), (long)mpe_tms.tms_utime);
+              (long)r->request_time, (long)mpe_tms.tms_utime);
 #elif defined(WIN32)
     /* We lack gettimeofday() and we lack times(). So we'll use
      * a combination of time() and GetTickCount(), which returns
@@ -160,7 +160,7 @@ void make_cookie(request_rec *r)
      */
 
      ap_snprintf(cookiebuf, 1024, "%s%d%ld%ld", rname, (int)getpid(),
-                 (long)time(NULL), (long)GetTickCount());
+                 (long)r->request_time, (long)GetTickCount());
 
 #else
     gettimeofday(&tv, &tz);
@@ -173,7 +173,7 @@ void make_cookie(request_rec *r)
       static const char *const days[7]=
           {"Sun","Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
       struct tm *tms;
-      time_t when = time(NULL) + cls->expires;
+      time_t when = r->request_time + cls->expires;
 
 #ifndef MILLENIAL_COOKIES      
       /* Only two-digit date string, so we can't trust "00" or more.

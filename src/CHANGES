@@ -1,5 +1,14 @@
 Changes with Apache 1.3a2
 
+  *) Added psocket() which is a pool form of socket(), various places within
+     the proxy weren't properly blocking alarms while registering the cleanup
+     for its sockets.  bclose() now uses pclose() and pclosesocket().  There
+     was a bug where the client socket was being close()d twice due a still
+     registered cleanup.  [Dean Gaudet]
+
+  *) A few cleanups were made to reduce unneeded time() and getpid()
+     calls.  [Dean Gaudet]
+
   *) PORT: AIX >= 4.2 requires -lm due to libc changes.
      [Jason Venner <jason@idiom.com>] PR#667
 

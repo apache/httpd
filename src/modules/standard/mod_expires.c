@@ -444,7 +444,7 @@ static int add_expires(request_rec *r)
 	    /* there's been some discussion and it's possible that 
 	     * 'access time' will be stored in request structure
 	     */
-	    base = time( NULL );
+	    base = r->request_time;
 	    additional = atoi( &code[1] );
 	    break;
 	default:
@@ -456,7 +456,7 @@ static int add_expires(request_rec *r)
     };
 
     expires = base + additional;
-    ap_snprintf(age, sizeof(age), "max-age=%d", (int)expires - (int)time(NULL));
+    ap_snprintf(age, sizeof(age), "max-age=%d", (int)expires - (int)r->request_time);
     table_set( r->headers_out, "Cache-Control", age);
     tzset();	/* redundant? called implicitly by localtime, at least 
 		 * under FreeBSD

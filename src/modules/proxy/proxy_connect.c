@@ -145,13 +145,12 @@ proxy_connect_handler(request_rec *r, struct cache_req *c, char *url)
     if (err != NULL)
 	return proxyerror(r, err); /* give up */
  
-    sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);  
+    sock = psocket(r->pool, PF_INET, SOCK_STREAM, IPPROTO_TCP);  
     if (sock == -1)
     {     
         log_error("proxy: error creating socket", r->server);
         return SERVER_ERROR;
     }     
-    note_cleanups_for_fd(r->pool, sock);
  
     j = 0;
     while (server_hp.h_addr_list[j] != NULL) {
@@ -162,8 +161,10 @@ proxy_connect_handler(request_rec *r, struct cache_req *c, char *url)
             break; 
         j++;
     }   
-    if (i == -1 )
+    if (i == -1) {
+	pclosesocket(r->pool, sock);
         return proxyerror(r, "Could not connect to remote machine");
+    }
  
     Explain0("Returning 200 OK Status");
  

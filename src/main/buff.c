@@ -1175,17 +1175,17 @@ API_EXPORT(int) bclose(BUFF *fb)
     else rc1 = 0;
 #ifdef WIN32
     if (fb->flags & B_SOCKET) {
-	rc2 = closesocket(fb->fd);
+	rc2 = pclosesocket(fb->pool, fb->fd);
 	if (fb->fd_in != fb->fd) {
-	    rc3 = closesocket(fb->fd_in);
+	    rc3 = pclosesocket(fb->pool, fb->fd_in);
 	} else {
 	    rc3 = 0;
 	}
     } else {
 #endif
-	rc2 = close(fb->fd);
+	rc2 = pclosef(fb->pool, fb->fd);
 	if (fb->fd_in != fb->fd) {
-	    rc3 = close(fb->fd_in);
+	    rc3 = pclosef(fb->pool, fb->fd_in);
 	} else {
 	    rc3 = 0;
 	}

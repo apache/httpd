@@ -219,6 +219,8 @@ int one_process = 0;
 pool *pconf;			/* Pool for config stuff */
 pool *ptrans;			/* Pool for per-transaction stuff */
 
+int APACHE_TLS my_pid;		/* it seems silly to call getpid all the time */
+
 /* small utility macros to make things easier to read */
 
 #ifdef WIN32
@@ -512,7 +514,9 @@ set_callback_and_alarm(void (*fn)(int), int x)
 #else
     if(x)
 	alarm_fn = fn;
-    signal(SIGALRM, fn);
+    if (alarm_fn != fn) {
+	signal(SIGALRM, fn);
+    }
     old = alarm(x);
 #endif
     return(old);
@@ -1154,8 +1158,8 @@ int update_child_status (int child_num, int status, request_rec *r)
     
     sync_scoreboard_image();
     new_score_rec = scoreboard_image->servers[child_num];
-    new_score_rec.x.pid = getpid();
     old_status = new_score_rec.status;
+    new_score_rec.x.pid = my_pid;
     new_score_rec.status = status;
 
 #if defined(STATUS)
@@ -1289,7 +1293,6 @@ static void reclaim_child_processes (void)
 {
 #ifndef MULTITHREAD
     int i, status;
-    int my_pid = getpid();
 
     sync_scoreboard_image();
     for (i = 0; i < max_daemons_limit; ++i) {
@@ -1897,19 +1900,23 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
     int s;
     int one = 1;
 
+    /* note that because we're about to slack we don't use psocket */
+    block_alarms();
     if ((s = socket(AF_INET,SOCK_STREAM,IPPROTO_TCP)) == -1) {
         log_unixerr("socket", NULL, "Failed to get a socket, exiting child",
                     server_conf);
+	unblock_alarms();
         exit(1);
     }
 
 #ifdef SOLARIS2
     sock_bind (s, server);
 #endif
-	
+
     s = ap_slack(s, AP_SLACK_HIGH);
 
     note_cleanups_for_socket(p, s); /* arrange to close on exec or restart */
+    unblock_alarms();
     
 #ifndef MPE
 /* MPE does not support SO_REUSEADDR and SO_KEEPALIVE */
@@ -2161,6 +2168,7 @@ void child_main(int child_num_arg)
     struct sockaddr sa_client;
     listen_rec *lr;
 
+    my_pid = getpid();
     csd = -1;
     dupped_csd = -1;
     child_num = child_num_arg;
@@ -2618,6 +2626,8 @@ void standalone_main(int argc, char **argv)
     ++generation;
 
     if (!one_process) detach (); 
+
+    my_pid = getpid();
 
     do {
 	copy_listeners(pconf);
@@ -3209,6 +3219,8 @@ child_main(int child_num_arg)
     int requests_this_child = 0;
     pool *ppool = NULL;
 
+    my_pid = getpid();
+
     /*
      * Only reason for this function, is to pass in
      * arguments to child_sub_main() on its stack so
@@ -3283,6 +3295,8 @@ void worker_main()
         max_jobs_after_exit_request = max_jobs_per_exe/10;
     
     if (!one_process) detach(); 
+
+    my_pid = getpid();
     
     ++generation;
   

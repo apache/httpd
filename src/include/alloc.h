@@ -220,6 +220,7 @@ API_EXPORT(void) kill_cleanups_for_fd (pool *p, int fd);
 
 API_EXPORT(void) note_cleanups_for_socket (pool *, int);
 API_EXPORT(void) kill_cleanups_for_socket (pool *p, int sock);
+API_EXPORT(int) psocket (pool *p, int, int, int);
 API_EXPORT(int) pclosesocket(pool *a, int sock);
 
 API_EXPORT(regex_t *) pregcomp (pool *p, const char *pattern, int cflags);

@@ -985,6 +985,23 @@ API_EXPORT(void) kill_cleanups_for_socket(pool *p,int sock)
     kill_cleanup(p,(void *)(long)sock,socket_cleanup);
 }
 
+API_EXPORT(int) psocket (pool *p, int domain, int type, int protocol)
+{
+    int fd;
+
+    block_alarms();
+    fd = socket (domain, type, protocol);
+    if (fd == -1) {
+	int save_errno = errno;
+	unblock_alarms();
+	errno = save_errno;
+	return -1;
+    }
+    note_cleanups_for_socket (p, fd);
+    unblock_alarms();
+    return fd;
+}
+
 API_EXPORT(int) pclosesocket(pool *a, int sock)
 {
   int res;
