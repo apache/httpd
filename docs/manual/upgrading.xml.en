@@ -1,0 +1,180 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
+<manualpage>
+<relativepath href="."/>
+
+<title>Upgrading to 2.0 from 1.3</title>
+
+<summary>
+  <p>In order to assist folks upgrading, we maintain a document
+  describing information critical to existing Apache users. These
+  are intended to be brief notes, and you should be able to find
+  more information in either the <a
+  href="new_features_2_0.html">New Features</a> document, or in
+  the <code>src/CHANGES</code> file.</p>
+</summary>
+
+  <section id="compile-time">
+    <title>Compile-Time Configuration Changes</title>
+
+    <ul>
+      <li>Apache now uses an <code>autoconf</code> and
+      <code>libtool</code> system for <a
+      href="install.html">configuring the build processes</a>.
+      Using this system is similar to, but not the same as, using
+      the APACI system in Apache 1.3.</li>
+
+      <li>In addition to the usual selection of modules which you
+      can choose to compile, Apache 2.0 has moved the main part of
+      request processing into <a href="mpm.html">Multi-Processing
+      Modules</a> (MPMs).</li>
+    </ul>
+  </section>
+
+  <section id="run-time">
+    <title>Run-Time Configuration Changes</title>
+
+    <ul>
+      <li>Many directives that were in the core server in Apache
+      1.3 are now in the MPMs. If you wish the behavior of the
+      server to be as similar as possible to the behavior of Apache
+      1.3, you should select the <a
+      href="mod/prefork.html">prefork</a> MPM. Other MPMs will have
+      different directives to control process creation and request
+      processing.</li>
+
+      <li>The <a href="mod/mod_proxy.html">proxy module</a> has been
+      revamped to bring it up to HTTP/1.1.  Among the important changes,
+      proxy access control is now placed inside a &lt;Proxy&gt; block
+      rather than a &lt;Directory proxy:&gt; block.</li>
+
+      <li>The handling of PATH_INFO (trailing path information after
+      the true filename) has changed for some modules.  Modules
+      that were previously implemented as a handler but are now
+      implemented as a filter may no longer accept requests with
+      PATH_INFO.  Filters such as <a
+      href="mod/mod_include.html">INCLUDES</a> are implemented on top
+      of the core handler, and therefore reject requests with
+      PATH_INFO.  You can use the <directive
+      module="core">AcceptPathInfo</directive> directive to
+      force the core handler to accept requests with PATH_INFO and
+      thereby restore the ability to use PATH_INFO in server-side
+      includes.</li>
+
+      <li>The <directive
+      module="mod_negotiation">CacheNegotiatedDocs</directive>
+      directive now takes the argument <code>on</code> or
+      <code>off</code>. Existing instances of
+      <code>CacheNegotiatedDocs</code> should be replaced with
+      <code>CacheNegotiatedDocs on</code>.</li>
+
+      <li>
+        The <directive module="core">ErrorDocument</directive>
+        directive no longer uses a quote at the beginning of the
+        argument to indicate a text message. Instead, you should
+        enclose the message in double quotes. For example, existing
+        instances of
+
+        <blockquote>
+          <code>ErrorDocument 403 "Some Message</code>
+        </blockquote>
+        should be replaced with
+
+        <blockquote>
+          <code>ErrorDocument 403 "Some Message"</code>
+        </blockquote>
+        As long as the second argument is not a valid URL or
+        pathname, it will be treated as a text message.
+      </li>
+
+      <li>The <code>AccessConfig</code> and
+      <code>ResourceConfig</code> directives no longer exist.
+      Existing instances of these directives can be replaced with
+      the <directive module="core">Include</directive>
+      directive which has equivalent functionality. If you were
+      making use of the default values of these directives without
+      including them in the configuration files, you may need to
+      add <code>Include conf/access.conf</code> and <code>Include
+      conf/srm.conf</code> to your httpd.conf. In order to assure
+      that Apache reads the configuration files in the same order
+      as was implied by the older directives, the
+      <code>Include</code> directives should be placed at the end
+      of httpd.conf, with the one for <code>srm.conf</code>
+      preceding the one for <code>access.conf</code>.</li>
+
+      <li>The <code>BindAddress</code> and <code>Port</code>
+      directives no longer exist.  Equivalent functionality is
+      provided with the more flexible
+      <directive module="mpm_common">Listen</directive>
+      directive.</li>
+
+      <li>Another use of the <code>Port</code>
+      directive in Apache-1.3 was setting the port number to be used
+      in self-referential URL's. The Apache-2.0 equivalent is
+      the new <directive module="core">ServerName</directive>
+      syntax: it has been changed to allow specifying both the
+      hostname <em>and</em> the port number for self-referential URL's
+      in one directive.</li>
+
+      <li>The <code>ServerType</code> directive no longer exists.
+      The method used to serve requests is now determined by the
+      selection of MPM. There is currently no MPM designed to be
+      launched by inetd.</li>
+
+      <li>The mod_log_agent and mod_log_referer modules which
+      provided the <code>AgentLog</code>, <code>RefererLog</code>
+      and <code>RefererIgnore</code> directives have been removed.
+      Agent and referer logs are still available using the
+      <directive module="mod_log_config">CustomLog</directive>
+      directive of mod_log_config.</li>
+
+      <li>The <code>AddModule</code> and
+      <code>ClearModuleList</code> directives no longer exist.
+      These directives where used to ensure that modules could be
+      enabled in the correct order. The new Apache 2.0 API allows
+      modules to explicitly specify their ordering, eliminating the
+      need for these directives.</li>
+
+      <li>The <code>FancyIndexing</code> directive has been removed.
+      The same functionality is available through the
+      <code>FancyIndexing</code> option to the <directive
+      module="mod_autoindex">IndexOptions</directive>
+      directive.</li>
+    </ul>
+  </section>
+
+  <section id="misc">
+    <title>Misc Changes</title>
+
+    <ul>
+      <li>The <code>httpd</code> command line option
+      <code>-S</code> which was used for printing the virtual host
+      configuration has been replaced by <code>-t -D
+      DUMP_VHOSTS</code>.</li>
+
+      <li>The module mod_auth_digest, which was experimental in
+      Apache 1.3, is now a standard module.</li>
+
+      <li>The mod_mmap_static module, which was experimental in
+      Apache 1.3, has been replaced with mod_file_cache.</li>
+
+      <li>The distribution has been completely reorganized so that
+      it no longer contains an independent <code>src</code>
+      directory. Instead, the sources are logically organized under
+      the main distribution directory, and installations of the
+      compiled server should be directed to a separate
+      directory.</li>
+    </ul>
+  </section>
+
+  <section id="third-party">
+    <title>Third Party Modules</title>
+
+    <p>Extensive changes were made to the server API in Apache 2.0.
+    Existing modules designed for the Apache 1.3 API will
+    <strong>not</strong> work in Apache 2.0 without modification.
+    Details are provided in the <a href="developer/">developer
+    documentation</a>.</p>
+  </section>
+</manualpage>
