@@ -296,7 +296,7 @@ static const char *mmapfile(cmd_parms *cmd, void *dummy, const char *filename)
                      filename);
 	return NULL;
     }
-    if ((rc = apr_mmap_create(&tmp.mm, fd, 0, tmp.finfo.size, cmd->pool)) != APR_SUCCESS) { 
+    if ((rc = apr_mmap_create(&tmp.mm, fd, 0, tmp.finfo.size, APR_MMAP_READ, cmd->pool)) != APR_SUCCESS) { 
 	apr_close(fd);
 	ap_log_error(APLOG_MARK, APLOG_WARNING, rc, cmd->server,
 	    "mod_file_cache: unable to mmap %s, skipping", filename);
