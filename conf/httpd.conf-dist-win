@@ -702,11 +702,6 @@ ServerSignature On
     # HeaderName is the name of a file which should be prepended to
     # directory indexes. 
     #
-    # If MultiViews are amongst the Options in effect, the server will
-    # first look for name.html and include it if found.  If name.html
-    # doesn't exist, the server will then look for name.txt and include
-    # it as plaintext if found.
-    #
     ReadmeName README
     HeaderName HEADER
 
