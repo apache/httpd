@@ -13,20 +13,11 @@ AC_CHECK_LIB(nsl, gethostbyaddr, [
 
 AC_CHECK_LIB(crypt, crypt, [
  AC_ADD_LIBRARY(crypt) 
- apache_have_crypt=1
 ], [
- AC_CHECK_LIB(c, crypt, [
-  apache_have_crypt=1
- ], [
   AC_CHECK_LIB(ufc, crypt, [
    AC_ADD_LIBRARY(ufc) 
-   apache_have_crypt=1
   ], [])
- ])
 ])
-if test "$apache_have_crypt" = "1" ; then
-    AC_DEFINE(HAVE_CRYPT,,[Define if this platform has crypt()])
-fi
 
 dnl ## Check for header files
 
