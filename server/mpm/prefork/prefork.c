@@ -205,7 +205,10 @@ static void chdir_for_gprof(void)
 	    apr_snprintf(buf, sizeof(buf), "%sgprof.%d", dir, (int)getpid());
 	} 
 	use_dir = ap_server_root_relative(pconf, buf[0] ? buf : dir);
-	res = apr_dir_make(use_dir, 0755, pconf);
+	res = apr_dir_make(use_dir,
+                           APR_UREAD | APR_UWRITE | APR_UEXECUTE |
+                           APR_GREAD | APR_GEXECUTE |
+                           APR_WREAD | APR_WEXECUTE, pconf);
 	if(res != APR_SUCCESS && !APR_STATUS_IS_EEXIST(res)) {
 	    ap_log_error(APLOG_MARK, APLOG_ERR, res, ap_server_conf,
 			 "gprof: error creating directory %s", dir);
