@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2000/12/20 15:07:12 $]
+Last modified at [$Date: 2000/12/20 16:21:08 $]
 
 Release:
 
@@ -64,10 +64,6 @@ RELEASE SHOWSTOPPERS:
       in a container, it is present in any subcontainers.  It can only be
       added to the filter chain after any filters specified in enclosing
       containers.
-
-    * The instructions for rolling a release need to be updated for
-      2.0.
-	Status: rbb volunteers
 
     * binbuild.sh may need to be updated.  I haven't looked into this, but I
       would be surprised if it works.
