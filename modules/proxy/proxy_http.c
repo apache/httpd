@@ -177,71 +177,67 @@ static void ap_proxy_clear_connection(apr_pool_t *p, apr_table_t *headers)
  * route.)
  */
 int ap_proxy_http_handler(request_rec *r, char *url,
-		       const char *proxyhost, int proxyport)
+		       const char *proxyname, int proxyport)
 {
-    apr_pool_t *p = r->pool;
-    char *desthost;
-    int destport = 0;
-    char *destportstr = NULL;
+    request_rec *rp;
+    apr_pool_t *p = r->connection->pool;
+    struct hostent *connecthost;
+    const char *connectname;
+    int connectport = 0;
+    apr_sockaddr_t *uri_addr;
+    apr_sockaddr_t *connect_addr;
     char server_portstr[32];
-    const char *uri = NULL;
     apr_socket_t *sock;
-    int i, len, backasswards;
+    int i, j, k, len, backasswards, close=0, failed=0, new=0;
     apr_status_t err;
     apr_array_header_t *headers_in_array;
     apr_table_entry_t *headers_in;
-    struct sockaddr_in server;
-    struct in_addr destaddr;
     char buffer[HUGE_STRING_LEN];
     char *response;
     char *buf;
     conn_rec *origin;
     apr_bucket *e;
     apr_bucket_brigade *bb = apr_brigade_create(p);
+    uri_components uri;
 
     void *sconf = r->server->module_config;
     proxy_server_conf *conf =
     (proxy_server_conf *) ap_get_module_config(sconf, &proxy_module);
-    struct noproxy_entry *npent = (struct noproxy_entry *) conf->noproxies->elts;
 
-    memset(&server, '\0', sizeof(server));
-    server.sin_family = AF_INET;
 
-    /* We break the URL into host, port, uri */
-    {
-        const char *buf;
+    /*
+     * Step One: Determine Who To Connect To
+     *
+     * Break up the URL to determine the host to connect to
+     */
 
-        uri = strstr(url, "://");
-        if (uri == NULL)
-	    return HTTP_BAD_REQUEST;
-        uri += 3;
-        destport = DEFAULT_HTTP_PORT;
-        buf = ap_strchr_c(uri, '/');
-        if (buf == NULL) {
-	    desthost = apr_pstrdup(p, uri);
-	    uri = "/";
-        }
-        else {
-	    char *q = apr_palloc(p, buf - uri + 1);
-	    memcpy(q, uri, buf - uri);
-	    q[buf - uri] = '\0';
-	    uri = buf;
-            desthost = q;
-        }
+    /* we break the URL into host, port, uri */
+    if (HTTP_OK != ap_parse_uri_components(p, url, &uri)) {
+	return ap_proxyerror(r, HTTP_BAD_REQUEST,
+			     apr_pstrcat(p,"URI cannot be parsed: ", url, NULL));
     }
 
-    /* Get the port number - put it in destport and destportstr */
-    {
-        char *buf;
-        buf = ap_strchr(desthost, ':');
-        if (buf != NULL) {
-	    *(buf++) = '\0';
-	    if (apr_isdigit(*buf)) {
-	        destport = atoi(buf);
-	        destportstr = buf;
-	    }
-        }
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+		 "proxy: connecting %s to %s:%d", url, uri.hostname, uri.port);
+
+    /* do a DNS lookup for the destination host */
+    err = apr_sockaddr_info_get(&uri_addr, uri.hostname, APR_UNSPEC, uri.port, 0, p);
+
+    /* are we connecting directly, or via a proxy? */
+    if (proxyname) {
+	connectname = proxyname;
+	connectport = proxyport;
+        err = apr_sockaddr_info_get(&connect_addr, proxyname, APR_UNSPEC, proxyport, 0, p);
     }
+    else {
+	connectname = uri.hostname;
+	connectport = uri.port;
+	connect_addr = uri_addr;
+	url = apr_pstrcat(p, uri.path, uri.query ? "?" : "",
+			  uri.query ? uri.query : "", uri.fragment ? "#" : "",
+			  uri.fragment ? uri.fragment : "", NULL);
+    }
+
 
     /* Get the server port for the Via headers */
     {
@@ -254,73 +250,195 @@ int ap_proxy_http_handler(request_rec *r, char *url,
     }
 
     /* check if ProxyBlock directive on this host */
-    destaddr.s_addr = apr_inet_addr(desthost);
-    for (i = 0; i < conf->noproxies->nelts; i++) {
-	if ((npent[i].name != NULL
-            && ap_strstr_c(desthost, npent[i].name) != NULL)
-	    || destaddr.s_addr == npent[i].addr.s_addr
-            || npent[i].name[0] == '*')
+    /* XXX FIXME: conf->noproxies->elts is part of an opaque structure */
+    for (j = 0; j < conf->noproxies->nelts; j++) {
+        struct noproxy_entry *npent = (struct noproxy_entry *) conf->noproxies->elts;
+	struct apr_sockaddr_t *conf_addr = npent[j].addr;
+	if ((npent[j].name && ap_strstr_c(uri.hostname, npent[j].name))
+            || npent[j].name[0] == '*') {
 	    return ap_proxyerror(r, HTTP_FORBIDDEN,
-				 "Connect to remote machine blocked");
+				 "Connect to remote machine blocked (by name)");
+	}
+	while (conf_addr) {
+	    while (uri_addr) {
+		char *conf_ip;
+		char *uri_ip;
+		apr_sockaddr_ip_get(&conf_ip, conf_addr);
+		apr_sockaddr_ip_get(&uri_ip, uri_addr);
+/*		ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+			     "Testing %s and %s", conf_ip, uri_ip); */
+		if (!apr_strnatcasecmp(conf_ip, uri_ip)) {
+		    return ap_proxyerror(r, HTTP_FORBIDDEN,
+					 "Connect to remote machine blocked (by IP address)");
+		}
+		uri_addr = uri_addr->next;
+	    }
+	    conf_addr = conf_addr->next;
+	}
     }
 
-    if ((apr_socket_create(&sock, APR_INET, SOCK_STREAM, p)) != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                      "proxy: error creating socket");
-        return HTTP_INTERNAL_SERVER_ERROR;
+
+    /*
+     * Step Two: Make the Connection
+     *
+     * We have determined who to connect to. Now make the connection, supporting
+     * a KeepAlive connection.
+     */
+
+    /* get all the possible IP addresses for the destname and loop through them
+     * until we get a successful connection
+     */
+    if (APR_SUCCESS != err) {
+	return ap_proxyerror(r, HTTP_BAD_GATEWAY, apr_pstrcat(p,
+                             "DNS lookup failure for: ",
+                             connectname, NULL));
     }
+
+    /* if a KeepAlive socket is already open, check whether it must stay
+     * open, or whether it should be closed and a new socket created.
+     */
+    if (conf->origin) {
+	struct apr_sockaddr_t *remote_addr;
+	apr_port_t port;
+	if ((remote_addr = conf->origin->remote_addr) &&
+	    (APR_SUCCESS == apr_sockaddr_port_get(&port, remote_addr)) &&
+            (port == connectport) &&
+            (!apr_strnatcasecmp(conf->origin->remote_addr->hostname,connectname))) {
+	    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+			 "proxy: keepalive address match (keep original socket)");
+        }
+	else {
+            ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+			 "proxy: keepalive address mismatch (close old socket (%s/%s, %d/%d))", connectname, conf->origin->remote_addr->hostname, connectport, port);
+            apr_socket_close(conf->origin->client_socket);
+            conf->origin = NULL;
+	}
+    }
+
+    /* get a socket - either a keepalive one, or a new one */
+    new = 1;
+    if (conf->origin) {
+
+	/* use previous keepalive socket */
+	origin = conf->origin;
+	sock = origin->client_socket;
+	origin->keepalives++;
+	new = 0;
+
+	/* XXX FIXME: If the socket has since closed, change new to 1 so
+	 * a new socket is opened */
+    }
+    if (new) {
+
+	/* create a new socket */
+	if ((apr_socket_create(&sock, APR_INET, SOCK_STREAM, p)) != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
+			 "proxy: error creating socket");
+	    return HTTP_INTERNAL_SERVER_ERROR;
+	}
 
 #if !defined(TPF) && !defined(BEOS)
-    if (conf->recv_buffer_size > 0 && apr_setsocketopt(sock, APR_SO_RCVBUF,
-       conf->recv_buffer_size)) {
+	if (conf->recv_buffer_size > 0 && apr_setsocketopt(sock, APR_SO_RCVBUF,
+	    conf->recv_buffer_size)) {
 	    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                "setsockopt(SO_RCVBUF): Failed to set ProxyReceiveBufferSize, using default");
-    }
+			  "setsockopt(SO_RCVBUF): Failed to set ProxyReceiveBufferSize, using default");
+	}
 #endif
 
-    if (proxyhost != NULL) {
-        err = ap_proxy_doconnect(sock, (char *)proxyhost, proxyport, r);
-    }
-    else {
-        err = ap_proxy_doconnect(sock, (char *)desthost, destport, r);
+	/*
+	 * At this point we have a list of one or more IP addresses of
+	 * the machine to connect to. If configured, reorder this
+	 * list so that the "best candidate" is first try. "best
+	 * candidate" could mean the least loaded server, the fastest
+	 * responding server, whatever.
+         *
+         * For now we do nothing, ie we get DNS round robin.
+	 * XXX FIXME
+	 */
+
+
+	/* try each IP address until we connect successfully */
+	failed = 1;
+	while (connect_addr) {
+
+	    /* make the connection out of the socket */
+	    err = apr_connect(sock, connect_addr);
+
+	    /* if an error occurred, loop round and try again */
+            if (err != APR_SUCCESS) {
+		ap_log_error(APLOG_MARK, APLOG_ERR, err, r->server,
+			     "proxy: attempt to connect to %pI (%s) failed", connect_addr, connectname);
+		connect_addr = connect_addr->next;
+		continue;
+            }
+
+	    /* the socket is now open, create a new connection */
+    	    origin = ap_new_connection(p, r->server, sock, 0);
+	    conf->origin = origin;
+    	    if (!origin) {
+		/* the peer reset the connection already; ap_new_connection() 
+		 * closed the socket */
+		ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+			     "proxy: an error occurred creating a new connection to %pI (%s)", connect_addr, connectname);
+		connect_addr = connect_addr->next;
+		continue;
+	    }
+
+	    /* we use keepalives unless later specified */
+	    origin->keepalive = 1;
+	    origin->keepalives = 1;
+
+	    /* set up the connection filters */
+	    ap_add_output_filter("CORE", NULL, NULL, origin);
+	    ap_add_input_filter("HTTP_IN", NULL, NULL, origin);
+	    ap_add_input_filter("CORE_IN", NULL, NULL, origin);
+
+	    /* if we get here, all is well */
+	    failed = 0;
+	    break;
+	}
+
+	/* handle a permanent error from the above loop */
+	if (failed) {
+	    if (proxyname) {
+		return DECLINED;
+	    }
+	    else {
+		return HTTP_BAD_GATEWAY;
+	    }
+	}
     }
 
-    if (err != APR_SUCCESS) {
-	if (proxyhost != NULL)
-	    return DECLINED;	/* try again another way */
-	else
-	    return ap_proxyerror(r, HTTP_BAD_GATEWAY, apr_pstrcat(p,
-				"Could not connect to remote machine: ",
-				desthost, NULL));
-    }
 
-    origin = ap_new_connection(p, r->server, sock, 0);
-    if (!origin) {
-        /* the peer reset the connection already; ap_new_connection() 
-         * closed the socket */
-        /* XXX somebody that knows what they're doing add an error path */
-	/* XXX how's this? */
-	return ap_proxyerror(r, HTTP_BAD_GATEWAY, apr_pstrcat(p,
-			     "Connection reset by peer: ",
-			     desthost, NULL));
-    }
-
-    ap_add_output_filter("CORE", NULL, NULL, origin);
+    /*
+     * Step Three: Send the Request
+     *
+     * Send the HTTP/1.1 request to the remote server
+     */
 
     /* strip connection listed hop-by-hop headers from the request */
+    /* even though in theory a connection: close coming from the client
+     * should not affect the connection to the server, it's unlikely
+     * that subsequent client requests will hit this thread/process, so
+     * we cancel server keepalive if the client does.
+     */
+    close += ap_proxy_liststr(apr_table_get(r->headers_in, "Connection"), "close");
     ap_proxy_clear_connection(p, r->headers_in);
+    if (close) {
+	apr_table_mergen(r->headers_in, "Connection", "close");
+	origin->keepalive = 0;
+    }
 
-    buf = apr_pstrcat(p, r->method, " ", proxyhost ? url : uri,
-                      " HTTP/1.1" CRLF, NULL);
+    buf = apr_pstrcat(p, r->method, " ", url, " HTTP/1.1" CRLF, NULL);
     e = apr_bucket_pool_create(buf, strlen(buf), p);
     APR_BRIGADE_INSERT_TAIL(bb, e);
-    if (destportstr != NULL && destport != DEFAULT_HTTP_PORT) {
-        buf = apr_pstrcat(p, "Host: ", desthost, ":", destportstr, CRLF, NULL);
+    if (uri.port_str && uri.port != DEFAULT_HTTP_PORT) {
+        buf = apr_pstrcat(p, "Host: ", uri.hostname, ":", uri.port_str, CRLF, NULL);
         e = apr_bucket_pool_create(buf, strlen(buf), p);
         APR_BRIGADE_INSERT_TAIL(bb, e);
     }
     else {
-        buf = apr_pstrcat(p, "Host: ", desthost, CRLF, NULL);
+        buf = apr_pstrcat(p, "Host: ", uri.hostname, CRLF, NULL);
         e = apr_bucket_pool_create(buf, strlen(buf), p);
         APR_BRIGADE_INSERT_TAIL(bb, e);
     }
@@ -399,12 +517,12 @@ int ap_proxy_http_handler(request_rec *r, char *url,
 	/* Clear out hop-by-hop request headers not to send
 	 * RFC2616 13.5.1 says we should strip these headers
 	 */
-	    || !strcasecmp(headers_in[i].key, "Host")	/* Already sent */
-            || !strcasecmp(headers_in[i].key, "Keep-Alive")
-            || !strcasecmp(headers_in[i].key, "TE")
-            || !strcasecmp(headers_in[i].key, "Trailer")
-            || !strcasecmp(headers_in[i].key, "Transfer-Encoding")
-            || !strcasecmp(headers_in[i].key, "Upgrade")
+	    || !apr_strnatcasecmp(headers_in[i].key, "Host")	/* Already sent */
+            || !apr_strnatcasecmp(headers_in[i].key, "Keep-Alive")
+            || !apr_strnatcasecmp(headers_in[i].key, "TE")
+            || !apr_strnatcasecmp(headers_in[i].key, "Trailer")
+            || !apr_strnatcasecmp(headers_in[i].key, "Transfer-Encoding")
+            || !apr_strnatcasecmp(headers_in[i].key, "Upgrade")
 
 	    /* XXX: @@@ FIXME: "Proxy-Authorization" should *only* be 
 	     * suppressed if THIS server requested the authentication,
@@ -415,8 +533,8 @@ int ap_proxy_http_handler(request_rec *r, char *url,
              * code itself, not here. This saves us having to signal
              * somehow whether this request was authenticated or not.
 	     */
-	    || !strcasecmp(headers_in[i].key, "Proxy-Authorization")
-	    || !strcasecmp(headers_in[i].key, "Proxy-Authenticate"))
+	    || !apr_strnatcasecmp(headers_in[i].key, "Proxy-Authorization")
+	    || !apr_strnatcasecmp(headers_in[i].key, "Proxy-Authenticate"))
 	    continue;
 
         buf = apr_pstrcat(p, headers_in[i].key, ": ", headers_in[i].val, CRLF, NULL);
@@ -424,11 +542,6 @@ int ap_proxy_http_handler(request_rec *r, char *url,
         APR_BRIGADE_INSERT_TAIL(bb, e);
 
     }
-
-    /* we don't yet support keepalives - but we will soon, I promise! */
-    buf = apr_pstrcat(p, "Connection: close", CRLF, NULL);
-    e = apr_bucket_pool_create(buf, strlen(buf), p);
-    APR_BRIGADE_INSERT_TAIL(bb, e);
 
     /* add empty line at the end of the headers */
     e = apr_bucket_pool_create(CRLF, strlen(CRLF), p);
@@ -445,13 +558,21 @@ int ap_proxy_http_handler(request_rec *r, char *url,
             APR_BRIGADE_INSERT_TAIL(bb, e);
         }
     }
+
     /* Flush the data to the origin server */
     e = apr_bucket_flush_create();
     APR_BRIGADE_INSERT_TAIL(bb, e);
     ap_pass_brigade(origin->output_filters, bb);
 
-    ap_add_input_filter("HTTP_IN", NULL, NULL, origin);
-    ap_add_input_filter("CORE_IN", NULL, NULL, origin);
+
+    /*
+     * Step Four: Receive the Response
+     *
+     * Get response from the remote server, and pass it up the
+     * filter chain
+     */
+
+    rp = make_fake_req(origin, r);
 
     apr_brigade_destroy(bb);
     bb = apr_brigade_create(p);
@@ -461,18 +582,28 @@ int ap_proxy_http_handler(request_rec *r, char *url,
 
     ap_get_brigade(origin->input_filters, bb, AP_MODE_BLOCKING);
     e = APR_BRIGADE_FIRST(bb);
-    apr_bucket_read(e, (const char **)&response, &len, APR_BLOCK_READ);
+    /* XXX FIXME: a bug exists where apr_bucket_read() is returning
+     * len=0 when the response line is expected... we try it up to
+     * 5 times - this has not fixed the problem though.
+     */
+    i = 5;
+    len = 0;
+    while (!len && i--) {
+	apr_bucket_read(e, (const char **)&response, &len, APR_BLOCK_READ);
+    }
     if (len == -1) {
+	conf->origin = NULL;
 	apr_socket_close(sock);
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-	     "ap_get_brigade() - proxy receive - Error reading from remote server %s (length %d)",
-	     proxyhost ? proxyhost : desthost, len);
+	     "proxy: error reading from remote server %s (length %d) using ap_get_brigade()",
+	     connectname, len);
 	return ap_proxyerror(r, HTTP_BAD_GATEWAY,
 			     "Error reading from remote server");
     } else if (len == 0) {
+	conf->origin = NULL;
 	apr_socket_close(sock);
 	return ap_proxyerror(r, HTTP_BAD_GATEWAY,
-			     "Document contains no data");
+			     "No response data from server");
     }
     APR_BUCKET_REMOVE(e);
     apr_bucket_destroy(e);
@@ -488,7 +619,9 @@ int ap_proxy_http_handler(request_rec *r, char *url,
         /* If not an HTTP/1 message or if the status line was > 8192 bytes */
 	if (response[5] != '1' || response[len - 1] != '\n') {
 	    apr_socket_close(sock);
-	    return HTTP_BAD_GATEWAY;
+	    conf->origin = NULL;
+	    return ap_proxyerror(r, HTTP_BAD_GATEWAY,
+				 apr_pstrcat(p, "Corrupt status line returned by remote server: ", response, NULL));
 	}
 	backasswards = 0;
 	response[--len] = '\0';
@@ -503,27 +636,29 @@ int ap_proxy_http_handler(request_rec *r, char *url,
         /* N.B. for HTTP/1.0 clients, we have to fold line-wrapped headers */
         /* Also, take care with headers with multiple occurences. */
 
-	r->headers_out = ap_proxy_read_headers(r, buffer, HUGE_STRING_LEN, origin);
+	r->headers_out = ap_proxy_read_headers(r, rp, buffer, HUGE_STRING_LEN, origin);
 	if (r->headers_out == NULL) {
 	    ap_log_error(APLOG_MARK, APLOG_WARNING|APLOG_NOERRNO, 0, r->server,
-		 "proxy: Bad HTTP/%d.%d header returned by %s (%s)",
-		 major, minor, r->uri, r->method);
+			 "proxy: bad HTTP/%d.%d header returned by %s (%s)",
+			 major, minor, r->uri, r->method);
+	    close += 1;
 	}
         else
         {
 	    /* strip connection listed hop-by-hop headers from response */
 	    const char *buf;
+            close += ap_proxy_liststr(apr_table_get(r->headers_out, "Connection"), "close");
             ap_proxy_clear_connection(p, r->headers_out);
-            if ((buf = apr_table_get(r->headers_out, "Content-type"))) {
+            if ((buf = apr_table_get(r->headers_out, "Content-Type"))) {
                 r->content_type = apr_pstrdup(p, buf);
             }
         }
 
         /* handle Via header in response */
 	if (conf->viaopt != via_off && conf->viaopt != via_block) {
-	    /* Create a "Via:" response header entry and merge it */
+	    /* create a "Via:" response header entry and merge it */
             ap_table_mergen(r->headers_out, "Via",
-                            (conf->viaopt == via_full)
+			    (conf->viaopt == via_full)
 			    ? apr_psprintf(p, "%d.%d %s%s (%s)",
 				    HTTP_VERSION_MAJOR(r->proto_num),
 				    HTTP_VERSION_MINOR(r->proto_num),
@@ -535,23 +670,30 @@ int ap_proxy_http_handler(request_rec *r, char *url,
 				    ap_get_server_name(r), server_portstr)
                             );
 	}
+
+	/* cancel keepalive if HTTP/1.0 or less */
+	if ((major < 1) || (minor < 1)) {
+	    close += 1;
+	    origin->keepalive = 0;
+	}
     }
     else {
-        /* an http/0.9 response */
+	/* an http/0.9 response */
 	backasswards = 1;
 	r->status = 200;
 	r->status_line = "200 OK";
+	close += 1;
     }
 
     /* munge the Location and URI response headers according to ProxyPassReverse */
     {
 	const char *buf;
         if ((buf = apr_table_get(r->headers_out, "Location")) != NULL)
-            apr_table_set(r->headers_out, "Location", ap_proxy_location_reverse_map(r, buf));
+	    apr_table_set(r->headers_out, "Location", ap_proxy_location_reverse_map(r, buf));
         if ((buf = apr_table_get(r->headers_out, "Content-Location")) != NULL)
-            apr_table_set(r->headers_out, "Content-Location", ap_proxy_location_reverse_map(r, buf));
+	    apr_table_set(r->headers_out, "Content-Location", ap_proxy_location_reverse_map(r, buf));
         if ((buf = apr_table_get(r->headers_out, "URI")) != NULL)
-            apr_table_set(r->headers_out, "URI", ap_proxy_location_reverse_map(r, buf));
+	    apr_table_set(r->headers_out, "URI", ap_proxy_location_reverse_map(r, buf));
     }
 
     r->sent_bodyct = 1;
@@ -563,21 +705,75 @@ int ap_proxy_http_handler(request_rec *r, char *url,
         APR_BRIGADE_INSERT_TAIL(bb, e);
     }
 
+/* XXX FIXME - what about 304 et al responses that have no body and no content-length? */
     /* send body */
-    /* HTTP/1.0 tells us to read to EOF, rather than content-length bytes */
     if (!r->header_only) {
-        origin->remain = -1;
-        while (ap_get_brigade(origin->input_filters, bb, AP_MODE_BLOCKING) == APR_SUCCESS) {
-            if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(bb))) {
-                ap_pass_brigade(r->output_filters, bb);
-                break;
-            }
-            ap_pass_brigade(r->output_filters, bb);
-            apr_brigade_destroy(bb);
-            bb = apr_brigade_create(p);
-        }
+	const char *buf;
+
+	/* if chunked - insert DECHUNK filter */
+	if (ap_proxy_liststr((buf = apr_table_get(r->headers_out, "Transfer-Encoding")), "chunked")) {
+	    rp->read_chunked = 1;
+	    apr_table_unset(r->headers_out, "Transfer-Encoding");
+	    if (buf = ap_proxy_removestr(r->pool, buf, "chunked")) {
+		apr_table_set(r->headers_out, "Transfer-Encoding", buf);
+	    }
+	    ap_add_input_filter("DECHUNK", NULL, rp, origin);
+	}
+
+	/* if content length - set the length to read */
+	else if ((buf = apr_table_get(r->headers_out, "Content-Length"))) {
+	    origin->remain = atol(buf);
+	}
+
+	/* no chunked / no length therefore read till EOF */
+	else {
+	    origin->remain = -1;
+	}
+
+	/* if keepalive cancelled, read to EOF */
+	if (close) {
+	    origin->remain = -1;
+	}
+
+	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+		     "proxy: start body send");
+
+	/* read the body, pass it to the output filters */
+	while (ap_get_brigade(rp->input_filters, bb, AP_MODE_BLOCKING) == APR_SUCCESS) {
+	    if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(bb))) {
+		ap_pass_brigade(r->output_filters, bb);
+		break;
+	    }
+	    ap_pass_brigade(r->output_filters, bb);
+	    apr_brigade_destroy(bb);
+	    bb = apr_brigade_create(p);
+	}
+	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+		     "proxy: end body send");
+    }
+    else {
+	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+		     "proxy: header only");
     }
 
-    apr_socket_close(sock);
+
+    /*
+     * Step Five: Clean Up
+     *
+     * If there are no KeepAlives, or if the connection has been signalled
+     * to close, close the socket and clean up
+     */
+
+    /* if the connection is < HTTP/1.1, or Connection: close,
+     * we close the socket, otherwise we leave it open for KeepAlive support
+     */
+    if (close) {
+        apr_socket_close(sock);
+        conf->origin = NULL;
+    }
+    else {
+	origin->keptalive = 1;
+    }
+
     return OK;
 }

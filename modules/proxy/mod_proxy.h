@@ -163,12 +163,12 @@ struct dirconn_entry {
 
 struct noproxy_entry {
     const char *name;
-    struct in_addr addr;
+    struct apr_sockaddr_t *addr;
 };
 
-struct nocache_entry {
-    const char *name;
-    struct in_addr addr;
+struct origin_entry {
+    conn_rec *origin;
+    struct origin_entry *next;
 };
 
 typedef struct {
@@ -177,12 +177,12 @@ typedef struct {
     apr_array_header_t *raliases;
     apr_array_header_t *noproxies;
     apr_array_header_t *dirconn;
-    apr_array_header_t *nocaches;
     apr_array_header_t *allowed_connect_ports;
+/*    apr_array_header_t *origin_array;*/
+    conn_rec *origin;
     const char *domain;		/* domain name to use in absence of a domain name in the request */
     int req;			/* true if proxy requests are enabled */
     char req_set;
-    float cache_completion;     /* Force cache completion after this point */
     enum {
       via_off,
       via_on,
@@ -229,6 +229,7 @@ int ap_proxy_http_handler(request_rec *r, char *url,
 
 /* proxy_util.c */
 
+request_rec *make_fake_req(conn_rec *c, request_rec *r);
 int ap_proxy_hex2c(const char *x);
 void ap_proxy_c2hex(int ch, char *x);
 char *ap_proxy_canonenc(apr_pool_t *p, const char *x, int len, enum enctype t,
@@ -236,9 +237,10 @@ char *ap_proxy_canonenc(apr_pool_t *p, const char *x, int len, enum enctype t,
 char *ap_proxy_canon_netloc(apr_pool_t *p, char **const urlp, char **userp,
 			 char **passwordp, char **hostp, int *port);
 const char *ap_proxy_date_canon(apr_pool_t *p, const char *x);
-apr_table_t *ap_proxy_read_headers(request_rec *r, char *buffer, int size, conn_rec *c);
+apr_table_t *ap_proxy_read_headers(request_rec *r, request_rec *rp, char *buffer, int size, conn_rec *c);
 void ap_proxy_send_headers(request_rec *r, const char *respline, apr_table_t *hdrs);
 int ap_proxy_liststr(const char *list, const char *val);
+char *ap_proxy_removestr(apr_pool_t *pool, const char *list, const char *val);
 void ap_proxy_hash(const char *it, char *val, int ndepth, int nlength);
 int ap_proxy_hex2sec(const char *x);
 void ap_proxy_sec2hex(int t, char *y);

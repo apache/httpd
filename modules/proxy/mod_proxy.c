@@ -430,9 +430,8 @@ static void * create_proxy_config(apr_pool_t *p, server_rec *s)
     ps->raliases = ap_make_array(p, 10, sizeof(struct proxy_alias));
     ps->noproxies = ap_make_array(p, 10, sizeof(struct noproxy_entry));
     ps->dirconn = ap_make_array(p, 10, sizeof(struct dirconn_entry));
-    ps->nocaches = ap_make_array(p, 10, sizeof(struct nocache_entry));
     ps->allowed_connect_ports = ap_make_array(p, 10, sizeof(int));
-    ps->cache_completion = DEFAULT_CACHE_COMPLETION;
+/*    pc->origin = ap_make_array(p, 10, sizeof(struct origin_entry));*/
     ps->domain = NULL;
     ps->viaopt = via_off; /* initially backward compatible with 1.3.1 */
     ps->viaopt_set = 0; /* 0 means default */
@@ -455,8 +454,8 @@ static void * merge_proxy_config(apr_pool_t *p, void *basev, void *overridesv)
     ps->raliases = ap_append_arrays(p, base->raliases, overrides->raliases);
     ps->noproxies = ap_append_arrays(p, base->noproxies, overrides->noproxies);
     ps->dirconn = ap_append_arrays(p, base->dirconn, overrides->dirconn);
-    ps->nocaches = ap_append_arrays(p, base->nocaches, overrides->nocaches);
     ps->allowed_connect_ports = ap_append_arrays(p, base->allowed_connect_ports, overrides->allowed_connect_ports);
+/*    ps->origin = base->origin;*/
 
     ps->domain = (overrides->domain == NULL) ? base->domain : overrides->domain;
     ps->viaopt = (overrides->viaopt_set == 0) ? base->viaopt : overrides->viaopt;
@@ -549,6 +548,7 @@ static const char *
     struct noproxy_entry *new;
     struct noproxy_entry *list = (struct noproxy_entry *) conf->noproxies->elts;
     struct hostent hp;
+    struct apr_sockaddr_t *addr;
     int found = 0;
     int i;
 
@@ -563,11 +563,12 @@ static const char *
 	new->name = arg;
 	/* Don't do name lookups on things that aren't dotted */
         if (ap_strchr_c(arg, '.') != NULL &&
-          ap_proxy_host2addr(new->name, &hp) == NULL)
-        /*@@@FIXME: This copies only the first of (possibly many) IP addrs */
-	    memcpy(&new->addr, hp.h_addr, sizeof(struct in_addr));
-	else
-	    new->addr.s_addr = 0;
+   	    apr_sockaddr_info_get(&addr, new->name, APR_UNSPEC, 0, 0, parms->pool)) {
+	    new->addr = addr;
+	}
+	else {
+	    new->addr = NULL;
+	}
     }
     return NULL;
 }
