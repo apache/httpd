@@ -8,7 +8,7 @@
 <!--#include virtual="header.html" -->
 <H1>Apache Server Frequently Asked Questions</H1>
 <P>
-$Revision: 1.35 $ ($Date: 1997/04/22 02:52:45 $)
+$Revision: 1.36 $ ($Date: 1997/04/22 02:55:43 $)
 </P>
 <P>
 If you are reading a text-only version of this FAQ, you may find numbers
@@ -62,8 +62,6 @@ do not appear, and are not needed, for the hypertext version.
    </LI>
    <LI><A HREF="#where">Where can I get Apache?</A>
    </LI>
-   <LI><A HREF="#linuxiovec">When compiling under Linux it complains
-   about redefinition of `struct iovec'.</A>
   </OL>
  </LI>
  <LI><STRONG>Technical Questions</STRONG>
@@ -124,6 +122,9 @@ do not appear, and are not needed, for the hypertext version.
    </LI>
    <LI><A HREF="#nph-scripts">How can I get my script's output without
     Apache buffering it?</A>
+   </LI>
+   <LI><A HREF="#linuxiovec">When compiling under Linux it complains
+   about redefinition of `struct iovec'.</A>
    </LI>
   </OL>
  </LI>
@@ -811,19 +812,6 @@ do not appear, and are not needed, for the hypertext version.
   </P>
   <HR>
  </LI>
- <LI><A NAME="linuxiovec">
-	<STRONG>When compiling under Linux it complains about redefinition 
-		of `struct iovec'.</STRONG>
-     </A>
-  <P>
-  This is a conflict between your C library includes and your kernel
-  includes.  You need to make sure that the versions of both are matched
-  properly.  There are two workarounds.  One is to remove the definition
-  of struct iovec from your C library includes.  Another is to add
-  <code>-DNO_WRITEV</code> to the <code>EXTRA_CFLAGS</code> line in
-  your <code>Configuration</code> and reconfigure/rebuild.
-  </P>
-  <HR>
  </LI>
  <LI><A NAME="cookies1">
       <STRONG>Why does Apache send a cookie on every response?</STRONG></A>
@@ -998,6 +986,20 @@ do not appear, and are not needed, for the hypertext version.
   and then follow with your normal non-<SAMP>nph</SAMP> headers.
   </P>
  </LI>
+ <HR>
+ <LI><A NAME="linuxiovec">
+	<STRONG>When compiling under Linux it complains about redefinition 
+		of `struct iovec'.</STRONG>
+     </A>
+  <P>
+  This is a conflict between your C library includes and your kernel
+  includes.  You need to make sure that the versions of both are matched
+  properly.  There are two workarounds.  One is to remove the definition
+  of struct iovec from your C library includes.  Another is to add
+  <code>-DNO_WRITEV</code> to the <code>EXTRA_CFLAGS</code> line in
+  your <code>Configuration</code> and reconfigure/rebuild.
+  </P>
+  </LI>
 </OL>
 <HR>
  <!--#include virtual="footer.html" -->
