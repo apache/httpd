@@ -82,12 +82,6 @@
 //PLKED.OBJ51  DD PATH='/<your-path-here>/src/regex/regerror.o'
 //PLKED.OBJ52  DD PATH='/<your-path-here>/src/regex/regexec.o'
 //PLKED.OBJ53  DD PATH='/<your-path-here>/src/regex/regfree.o'
-//PLKED.OBJ54  DD PATH='/<your-path-here>/src/lib/expat-lite/hashtable.\
-//             o'
-//PLKED.OBJ55  DD PATH='/<your-path-here>/src/lib/expat-lite/xmlparse.o\
-//             '
-//PLKED.OBJ56  DD PATH='/<your-path-here>/src/lib/expat-lite/xmlrole.o'
-//PLKED.OBJ57  DD PATH='/<your-path-here>/src/lib/expat-lite/xmltok.o'
 //PLKED.SYSIN DD *
  ORDER @@DLMHDR
  INCLUDE OBJLIB(CSTRTD40)
@@ -144,10 +138,6 @@
  INCLUDE OBJ51
  INCLUDE OBJ52
  INCLUDE OBJ53
- INCLUDE OBJ54
- INCLUDE OBJ55
- INCLUDE OBJ56
- INCLUDE OBJ57
  INCLUDE OBJLIB(CINET640)
 /*
 //*** WARNING *** NEVER change .LK to .OB in SYSLMOD!!!
