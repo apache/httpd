@@ -398,7 +398,31 @@ static int mmap_handler(request_rec *r, a_file *file, int rangestatus)
     return OK;
 }
 
+static int sendfile_handler(request_rec *r, a_file *file, int rangestatus)
+{
+#if APR_HAS_SENDFILE
+    ap_size_t length, nbytes;
+    ap_off_t offset = 0;
+    ap_status_t rv; 
 
+    if (!rangestatus) {
+        rv = ap_send_fd(file->file, r, 0, file->finfo.size, &nbytes);
+    }
+    else {
+        while (ap_each_byterange(r, &offset, &length)) {
+            if ((rv = ap_send_fd(file->file, r, offset, length, &nbytes)) != APR_SUCCESS)
+                break;
+        }
+    }
+    if (rv != APR_SUCCESS) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                      "mod_file_cache: sendfile_handler error serving file: %s", r->filename);
+        return HTTP_INTERNAL_SERVER_ERROR;
+    }
+#endif
+    return OK;
+}
+#if 0
 static int sendfile_handler(request_rec *r, a_file *file, int rangestatus)
 {
 #if APR_HAS_SENDFILE
@@ -447,7 +471,7 @@ static int sendfile_handler(request_rec *r, a_file *file, int rangestatus)
         if (rv != APR_SUCCESS) { 
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, 
                           "mod_file_cache: iol_sendfile failed."); 
-    }
+        }
     } 
     else {
         while (ap_each_byterange(r, &offset, &length)) {
@@ -467,6 +491,7 @@ static int sendfile_handler(request_rec *r, a_file *file, int rangestatus)
 #endif
     return OK;
 }
+#endif
 
 static int file_cache_handler(request_rec *r) 
 {

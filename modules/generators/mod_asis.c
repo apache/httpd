@@ -72,6 +72,7 @@ static int asis_handler(request_rec *r)
     ap_file_t *f = NULL;
     ap_status_t status;
     const char *location;
+    ap_size_t nbytes;
 
     r->allowed |= (1 << M_GET);
     if (r->method_number != M_GET)
@@ -112,7 +113,7 @@ static int asis_handler(request_rec *r)
 
     ap_send_http_header(r);
     if (!r->header_only) {
-	ap_send_fd(f, r);
+	ap_send_fd(f, r, 0, r->finfo.size, &nbytes);
     }
 
     ap_close(f);

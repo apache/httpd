@@ -2771,21 +2771,20 @@ static int default_handler(request_rec *r)
 	ap_send_http_header(r);
 	
 	if (!r->header_only) {
+            ap_size_t length = r->finfo.size;
+            ap_off_t  offset = 0;
+            ap_size_t nbytes = 0;
+
 	    if (!rangestatus) {
-		ap_send_fd(fd, r);
+		ap_send_fd(fd, r, offset, length, &nbytes);
 	    }
 	    else {
-		long     length;
-                ap_off_t offset;
-
 		while (ap_each_byterange(r, &offset, &length)) {
-                    if ((status = ap_seek(fd, APR_SET, &offset)) != APR_SUCCESS) {
+                    if ((status = ap_send_fd(fd, r, offset, length, &nbytes)) != APR_SUCCESS) {
 		        ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
 				  "error byteserving file: %s", r->filename);
-			ap_close(fd);
 			return HTTP_INTERNAL_SERVER_ERROR;
 		    }
-		    ap_send_fd_length(fd, r, length);
 		}
 	    }
 	}
