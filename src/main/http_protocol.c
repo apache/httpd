@@ -50,7 +50,7 @@
  *
  */
   
-/* $Id: http_protocol.c,v 1.43 1996/08/24 15:48:21 ben Exp $ */
+/* $Id: http_protocol.c,v 1.44 1996/08/24 16:04:54 ben Exp $ */
 
 /*
  * http_protocol.c --- routines which directly communicate with the
@@ -572,8 +572,7 @@ void get_mime_headers(request_rec *r)
     }
 }
 
-void check_hostalias (request_rec *r) {
-  char *savehost=r->hostname;
+static void check_hostalias (request_rec *r) {
   char *host = getword(r->pool, &r->hostname, ':');	/* Get rid of port */
   int port = (*r->hostname) ? atoi(r->hostname) : 80;
   server_rec *s;
@@ -587,7 +586,7 @@ void check_hostalias (request_rec *r) {
     host[l] = '\0';
   }
 
-  r->hostname = savehost;
+  r->hostname = host;
 
   for (s = r->server->next; s; s = s->next) {
     char *names = s->names;
