@@ -282,17 +282,19 @@ API_EXPORT(void) ap_SHA1Update(AP_SHA1_CTX *sha_info, const char *buf,
     int i;
     const AP_BYTE *buffer = (const AP_BYTE *) buf;
 
-    if ((sha_info->count_lo + ((LONG) count << 3)) < sha_info->count_lo) {
+    if ((sha_info->count_lo + ((AP_LONG) count << 3)) < sha_info->count_lo) {
 	++sha_info->count_hi;
     }
-    sha_info->count_lo += (LONG) count << 3;
-    sha_info->count_hi += (LONG) count >> 29;
+    sha_info->count_lo += (AP_LONG) count << 3;
+    sha_info->count_hi += (AP_LONG) count >> 29;
+    /* Is there a remainder of the previous Update operation? */
     if (sha_info->local) {
 	i = SHA_BLOCKSIZE - sha_info->local;
 	if (i > count) {
 	    i = count;
 	}
-	ebcdic2ascii_strictly(((AP_BYTE *) sha_info->data) + sha_info->local, ubuf, i);
+	ebcdic2ascii_strictly(((AP_BYTE *) sha_info->data) + sha_info->local,
+			      buffer, i);
 	count -= i;
 	buffer += i;
 	sha_info->local += i;
@@ -305,13 +307,13 @@ API_EXPORT(void) ap_SHA1Update(AP_SHA1_CTX *sha_info, const char *buf,
 	}
     }
     while (count >= SHA_BLOCKSIZE) {
-	ebcdic2ascii_strictly(sha_info->data, buffer, SHA_BLOCKSIZE);
+	ebcdic2ascii_strictly((AP_BYTE *)sha_info->data, buffer, SHA_BLOCKSIZE);
 	buffer += SHA_BLOCKSIZE;
 	count -= SHA_BLOCKSIZE;
 	maybe_byte_reverse(sha_info->data, SHA_BLOCKSIZE);
 	sha_transform(sha_info);
     }
-    ebcdic2ascii_strictly(sha_info->data, buffer, count);
+    ebcdic2ascii_strictly((AP_BYTE *)sha_info->data, buffer, count);
     sha_info->local = count;
 #else
     ap_SHA1Update_binary(sha_info, (const unsigned char *) buf, count);
