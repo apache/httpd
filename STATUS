@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 2000/02/25 19:06:23 $]
+  Last modified at [$Date: 2000/02/25 23:06:52 $]
 
 Release:
 
@@ -549,7 +549,7 @@ Binaries (1.3.12):
  i386-unknown-netBSD-1.3.2     no      Lars Eilebrecht, Randy Terbush
  i386-unknown-sco3             no      Ben Laurie
  i386-unknown-sco5             no      Ben Laurie
- i386-siemens-sinix5.4         no      Martin Kraemer
+ i386-siemens-sinix5.4         yes     Martin Kraemer
  i386-dg-dgux5.4R2.01          no      Randy Terbush
  x86-qnx-4.x                   no      Randy Terbush
  x86-bsdos-3.x                 no      Randy Terbush
@@ -563,7 +563,7 @@ Binaries (1.3.12):
  mips-sgi-irix5.3              no      Mark Imbrianco, Randy Terbush
  mips-sgi-irix6.2              no      Lars Eilebrecht, Randy Terbush
  mips-sgi-irix6.4              no      Lars Eilebrecht
- mips-siemens-reliantunix5.4   no      Martin Kraemer
+ mips-siemens-reliantunix5.4   yes     Martin Kraemer
  OS/2                          yes     Brian Havard
  powerpc-apple-rhapsody5.6     yes     Wilfredo Sanchez
  rs6000-ibm-aix3.2.5           no      Sameer Parekh
