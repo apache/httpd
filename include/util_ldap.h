@@ -90,6 +90,7 @@ typedef enum {
 /* Structure representing an LDAP connection */
 typedef struct util_ldap_connection_t {
     LDAP *ldap;
+    apr_pool_t *pool;			/* Pool from which this connection is created */
     apr_lock_t *lock;			/* Lock to indicate this connection is in use */
     int bound;				/* Flag to indicate whether this connection is bound yet */
 
@@ -145,13 +146,23 @@ int util_ldap_connection_open(util_ldap_connection_t *ldc);
 /**
  * Close a connection to an LDAP server
  * @param ldc A structure containing the expanded details of the server
-              that was connected.
+ *            that was connected.
  * @tip This function unbinds from the LDAP server, and clears ldc->ldap.
  *      It is possible to rebind to this server again using the same ldc
  *      structure, using apr_ldap_open_connection().
  * @deffunc util_ldap_close_connection(util_ldap_connection_t *ldc)
  */
 void util_ldap_connection_close(util_ldap_connection_t *ldc);
+
+/**
+ * Destroy a connection to an LDAP server
+ * @param ldc A structure containing the expanded details of the server
+ *            that was connected.
+ * @tip This function is registered with the pool cleanup to close down the
+ *      LDAP connections when the server is finished with them.
+ * @deffunc apr_status_t util_ldap_connection_destroy(util_ldap_connection_t *ldc)
+ */
+apr_status_t util_ldap_connection_destroy(void *param);
 
 /**
  * Find a connection in a list of connections
