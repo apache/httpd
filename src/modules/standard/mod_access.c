@@ -60,6 +60,7 @@
  */
 
 #include "httpd.h"
+#include "http_core.h"
 #include "http_config.h"
 #include "http_log.h"
 
@@ -137,7 +138,7 @@ command_rec access_cmds[] = {
 {NULL}
 };
 
-int in_domain(char *domain, char *what) {
+int in_domain(const char *domain, const char *what) {
     int dl=strlen(domain);
     int wl=strlen(what);
 
@@ -167,21 +168,28 @@ int in_ip(char *domain, char *what) {
     return (what[l] == '\0' || what[l] == '.');
 }
 
-int find_allowdeny (conn_rec *c, array_header *a, int method)
+int find_allowdeny (request_rec *r, array_header *a, int method)
 {
     allowdeny *ap = (allowdeny *)a->elts;
     int mmask = (1 << method);
-    int i;
+    int i, gothost=0;
+    const char *remotehost=NULL;
 
     for (i = 0; i < a->nelts; ++i) {
         if (!(mmask & ap[i].limited))
 	    continue;
 	if (!strcmp (ap[i].from, "all"))
 	    return 1;
-        if (c->remote_host && isalpha(c->remote_host[0]))
-            if (in_domain(ap[i].from, c->remote_host))
+	if (!gothost)
+	{
+	    remotehost = get_remote_host(r->connection, r->per_dir_config,
+					 REMOTE_HOST);
+	    gothost = 1;
+	}
+        if (remotehost != NULL && isalpha(remotehost[0]))
+            if (in_domain(ap[i].from, remotehost))
                 return 1;
-        if (in_ip (ap[i].from, c->remote_ip))
+        if (in_ip (ap[i].from, r->connection->remote_ip))
             return 1;
     }
 
@@ -196,23 +204,21 @@ int check_dir_access (request_rec *r)
 	   get_module_config (r->per_dir_config, &access_module);
     int ret = OK;
 						
-    conn_rec *c = r->connection;
-    
     if (a->order[method] == ALLOW_THEN_DENY) {
         ret = FORBIDDEN;
-        if (find_allowdeny (c, a->allows, method))
+        if (find_allowdeny (r, a->allows, method))
             ret = OK;
-        if (find_allowdeny (c, a->denys, method))
+        if (find_allowdeny (r, a->denys, method))
             ret = FORBIDDEN;
     } else if (a->order[method] == DENY_THEN_ALLOW) {
-        if (find_allowdeny (c, a->denys, method))
+        if (find_allowdeny (r, a->denys, method))
             ret = FORBIDDEN;
-        if (find_allowdeny (c, a->allows, method))
+        if (find_allowdeny (r, a->allows, method))
             ret = OK;
     }
     else {
-        if (find_allowdeny(c, a->allows, method) 
-	    && !find_allowdeny(c, a->denys, method))
+        if (find_allowdeny(r, a->allows, method) 
+	    && !find_allowdeny(r, a->denys, method))
 	    ret = OK;
 	else
 	    ret = FORBIDDEN;

@@ -54,6 +54,7 @@
 
 
 #include "httpd.h"
+#include "http_core.h"
 #include "http_config.h"
 
 module common_log_module;
@@ -190,7 +191,8 @@ int common_log_transaction(request_rec *orig)
     else
         strcat(status, "-\n");
 
-    str = pstrcat(orig->pool, c->remote_name, " ",
+    str = pstrcat(orig->pool,
+		  get_remote_host(c, r->per_dir_config, REMOTE_NAME), " ",
 		  (c->remote_logname != NULL ? c->remote_logname : "-"),
 		  " ",
 		  (c->user != NULL ? c->user : "-"),

@@ -651,7 +651,6 @@ server_rec *init_virtual_host (pool *p, char *hostname)
     }
 #endif
 
-    s->hostname_lookups = 2;  /* binary, but will use 2 as an "unset = on" */
     s->server_admin = NULL;
     s->server_hostname = NULL; 
     s->error_fname = NULL;
@@ -689,9 +688,6 @@ void fixup_virtual_hosts (pool *p, server_rec *main_server)
 	if (virt->port == 0)
 	    virt->port = main_server->port;
 
-	if (virt->hostname_lookups == 2)
-	    virt->hostname_lookups = main_server->hostname_lookups;
-	    
 	if (virt->server_admin == NULL)
 	    virt->server_admin = main_server->server_admin;
 
@@ -738,7 +734,6 @@ server_rec *init_server_config(pool *p)
     server_rec *s = (server_rec *)pcalloc (p, sizeof (server_rec));
 
     s->port = DEFAULT_PORT;
-    s->hostname_lookups = 1;
     s->server_admin = DEFAULT_ADMIN;
     s->server_hostname = NULL; 
     s->error_fname = DEFAULT_ERRORLOG;

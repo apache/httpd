@@ -85,6 +85,7 @@
 #include "http_protocol.h"	/* for read_request */
 #include "http_request.h"	/* for process_request */
 #include "http_conf_globals.h"
+#include "http_core.h"          /* for get_remote_host */
 #include "scoreboard.h"
 #include <setjmp.h>
 #ifdef HAVE_SHMGET
@@ -231,6 +232,7 @@ void timeout(sig)			/* Also called on SIGPIPE */
 int sig;
 {
     char errstr[MAX_STRING_LEN];
+    void *dirconf;
 
     if (alarms_blocked) {
 	alarm_pending = 1;
@@ -245,14 +247,16 @@ int sig;
 #endif
     }
     
+    if (timeout_req != NULL) dirconf = timeout_req->per_dir_config;
+    else dirconf = current_conn->server->lookup_defaults;
     if (sig == SIGPIPE) {
         sprintf(errstr,"%s lost connection to client %s",
 	    timeout_name ? timeout_name : "request",
-	    current_conn->remote_name);
+	    get_remote_host(current_conn, dirconf, REMOTE_NAME));
     } else {
         sprintf(errstr,"%s timed out for %s",
 	    timeout_name ? timeout_name : "request",
-	    current_conn->remote_name);
+	    get_remote_host(current_conn, dirconf, REMOTE_NAME));
     }
     
     if (!current_conn->keptalive) 
@@ -891,6 +895,7 @@ void abort_connection (conn_rec *c)
 }
 
 conn_rec *new_connection (pool *p, server_rec *server, BUFF *inout,
+			  const struct sockaddr_in *remaddr,
 			  const struct sockaddr_in *saddr)
 {
     conn_rec *conn = (conn_rec *)pcalloc (p, sizeof(conn_rec));
@@ -906,8 +911,9 @@ conn_rec *new_connection (pool *p, server_rec *server, BUFF *inout,
 				       server);
     conn->client = inout;
     
-    get_remote_host(conn);
-    
+    conn->remote_addr = *remaddr;
+    conn->remote_ip = pstrdup (conn->pool,
+			       inet_ntoa(conn->remote_addr.sin_addr));
     return conn;
 }
 
@@ -1019,6 +1025,7 @@ void child_main(int child_num_arg)
 	bpushfd(conn_io, csd, csd);
 
 	current_conn = new_connection (ptrans, server_conf, conn_io,
+				       (struct sockaddr_in *)&sa_client,
 				       (struct sockaddr_in *)&sa_server);
 
 	if (current_conn->server->do_rfc931)
@@ -1270,7 +1277,7 @@ main(int argc, char *argv[])
     else {
         conn_rec *conn;
 	request_rec *r;
-	struct sockaddr sa_server;
+	struct sockaddr sa_server, sa_client;
 	BUFF *cio;
       
 	open_logs(server_conf, pconf);
@@ -1280,8 +1287,16 @@ main(int argc, char *argv[])
         user_id = getuid();
         group_id = getgid();
 
+	c = sizeof(sa_client);
+	if ((getpeername(fileno(stdin), &sa_client, &c)) < 0)
+	{
+/* get peername will fail if the input isn't a socket */
+	    perror("getpeername");
+	    memset(&sa_client, '\0', sizeof(sa_client));
+	}
+
 	c = sizeof(sa_server);
-	if(getsockname(csd, &sa_server, &c) < 0) {
+	if(getsockname(fileno(stdin), &sa_server, &c) < 0) {
 	    perror("getsockname");
 	    fprintf(stderr, "Error getting local address\n");
 	    exit(1);
@@ -1290,6 +1305,7 @@ main(int argc, char *argv[])
 	cio = bcreate(ptrans, B_RDWR);
 	bpushfd(cio, fileno(stdin), fileno(stdout));
 	conn = new_connection (ptrans, server_conf, cio,
+			       (struct sockaddr_in *)&sa_client,
 			       (struct sockaddr_in *)&sa_server);
 	r = read_request (conn);
 	if (r) process_request (r); /* else premature EOF (ignore) */

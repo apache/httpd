@@ -554,7 +554,7 @@ char *table_get (table *t, char *key)
     return NULL;
 }
 
-void table_set (table *t, char *key, char *val)
+void table_set (table *t, const char *key, const char *val)
 {
     table_entry *elts = (table_entry *)t->elts;
     int i;

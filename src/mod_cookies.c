@@ -73,6 +73,7 @@
 
 #include "httpd.h"
 #include "http_config.h"
+#include "http_core.h"
 #include <sys/time.h>
 
 module cookies_module;
@@ -85,7 +86,8 @@ void make_cookie(request_rec *r)
     struct timeval tv;
     char new_cookie[100];	/* blurgh */
     char *dot;
-    char *rname = pstrdup(r->pool,r->connection->remote_name);
+    char *rname = get_remote_host(r->connection, r->per_dir_config,
+				  REMOTE_NAME);
     struct timezone tz = { 0 , 0 };
 
     if ((dot = strchr(rname,'.'))) *dot='\0';	/* First bit of hostname */

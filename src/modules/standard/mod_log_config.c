@@ -165,7 +165,7 @@ static char *pfmt(pool *p, int i)
 char *constant_item (request_rec *dummy, char *stuff) { return stuff; }
 
 char *log_remote_host (request_rec *r, char *a)
-{ return r->connection->remote_name; }
+{ return get_remote_host(r->connection, r->per_dir_config, REMOTE_NAME); }
 
 char *log_remote_logname(request_rec *r, char *a)
 {return r->connection->remote_logname;}

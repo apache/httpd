@@ -62,6 +62,7 @@
 
 #include "httpd.h"
 #include "http_config.h"
+#include "http_core.h"
 #include "http_log.h"
 
 #include <stdarg.h>
@@ -157,7 +158,9 @@ log_printf(const server_rec *s, const char *fmt, ...)
 void log_reason(char *reason, char *file, request_rec *r) {
     fprintf (r->server->error_log,
 	     "[%s] access to %s failed for %s, reason: %s\n",
-	     get_time(), file, r->connection->remote_name, reason);
+	     get_time(), file,
+	     get_remote_host(r->connection, r->per_dir_config, REMOTE_NAME),
+	     reason);
     fflush (r->server->error_log);
 }
 

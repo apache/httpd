@@ -86,6 +86,7 @@ void *create_core_dir_config (pool *a, char *dir)
     conf->opts = dir ? OPT_UNSET : OPT_ALL;
     conf->override = dir ? OR_UNSET : OR_ALL;
 
+    conf->hostname_lookups = 2;/* binary, but will use 2 as an "unset = on" */
     return (void *)conf;
 }
 
@@ -112,6 +113,8 @@ void *merge_core_dir_configs (pool *a, void *basev, void *newv)
     for (i = 0; i <= RESPONSE_CODES; ++i)
         if (new->response_code_strings[i] != NULL)
 	   conf->response_code_strings[i] = new->response_code_strings[i];
+    if (new->hostname_lookups != 2)
+	conf->hostname_lookups = new->hostname_lookups;
 
     return (void*)conf;
 }
@@ -234,6 +237,59 @@ char *response_code_string (request_rec *r, int error_index)
       (core_dir_config *)get_module_config(r->per_dir_config, &core_module); 
 
     return conf->response_code_strings[error_index];
+}
+
+const char *
+get_remote_host(conn_rec *conn, void *dir_config, int type)
+{
+    struct in_addr *iaddr;
+    struct hostent *hptr;
+    char **haddr;
+    core_dir_config *dir_conf;
+
+/* If we haven't checked the host name, and we want to */
+    dir_conf = (core_dir_config *)get_module_config(dir_config, &core_module);
+
+    if (conn->remote_host == NULL && dir_conf->hostname_lookups)
+    {
+	iaddr = &(conn->remote_addr.sin_addr);
+	hptr = gethostbyaddr((char *)iaddr, sizeof(struct in_addr), AF_INET);
+	if (hptr != NULL)
+	{
+	    conn->remote_host = pstrdup(conn->pool, (void *)hptr->h_name);
+	    str_tolower (conn->remote_host);
+	   
+#ifdef MAXIMUM_DNS
+    /* Grrr. Check THAT name to make sure it's really the name of the addr. */
+    /* Code from Harald Hanche-Olsen <hanche@imf.unit.no> */
+
+	    hptr = gethostbyname(conn->remote_host);
+	    if (hptr)
+	    {
+		for(haddr=hptr->h_addr_list; *haddr; haddr++)
+		    if(((struct in_addr *)(*haddr))->s_addr == iaddr->s_addr)
+			break;
+	    }
+	    if((!hptr) || (!(*haddr)))
+		conn->remote_host = NULL;
+#endif
+	}
+/* if failed, set it to the NULL string to indicate error */
+	if (conn->remote_host == NULL) conn->remote_host = "";
+    }
+
+/*
+ * Return the desired information; either the remote DNS name, if found,
+ * or either NULL (if the hostname was requested) or the IP address
+ * (if any identifier was requested).
+ */
+    if (conn->remote_host != NULL && conn->remote_host[0] != '\0')
+	return conn->remote_host;
+    else
+    {
+	if (type == REMOTE_HOST) return NULL;
+	else return conn->remote_ip;
+    }
 }
 
 /*****************************************************************
@@ -539,8 +595,8 @@ char *set_idcheck (cmd_parms *cmd, void *dummy, int arg) {
     return NULL;
 }
 
-char *set_hostname_lookups (cmd_parms *cmd, void *dummy, int arg) {
-    cmd->server->hostname_lookups = (short) arg;
+char *set_hostname_lookups (cmd_parms *cmd, core_dir_config *d, int arg) {
+    d->hostname_lookups = arg;
     return NULL;
 }
 
@@ -643,7 +699,7 @@ command_rec core_cmds[] = {
 
 { "ServerType", server_type, NULL, RSRC_CONF, TAKE1,"'inetd' or 'standalone'"},
 { "Port", server_port, NULL, RSRC_CONF, TAKE1, "a TCP port number"},
-{ "HostnameLookups", set_hostname_lookups, NULL, RSRC_CONF, FLAG, NULL },
+{ "HostnameLookups", set_hostname_lookups, NULL, ACCESS_CONF|RSRC_CONF, FLAG, NULL },
 { "User", set_user, NULL, RSRC_CONF, TAKE1, "a username"},
 { "Group", set_group, NULL, RSRC_CONF, TAKE1, "a group name"},
 { "ServerAdmin", set_server_string_slot,

@@ -396,11 +396,13 @@ struct conn_rec {
   
   /* Who is the client? */
   
+  struct sockaddr_in remote_addr;/* remote address */
   char *remote_ip;		/* Client's IP address */
-  char *remote_host;		/* Client's DNS name, if known */
-  char *remote_name;		/* Host ID --- same as remote_host, if known;
-				 * otherwise same as remote_ip.
-				 */
+  char *remote_host;		/* Client's DNS name, if known.
+                                 * NULL if DNS hasn't been checked,
+                                 * "" if it has and no address was found.
+                                 * N.B. Only access this though
+				 * get_remote_host() */
   char *remote_logname;		/* Only ever set if doing_rfc931 */
   
   char *user;			/* If an authentication check was made,
@@ -446,7 +448,6 @@ struct server_rec {
 				 * checking per-directory info.
 				 */
   /* Transaction handling */
-  short hostname_lookups;
 
   struct in_addr host_addr;	/* The bound address, for this server */
   short host_port;              /* The bound port, for this server */
@@ -514,9 +515,4 @@ int can_exec(struct stat *);
 void chdir_file(char *file);
      
 char *get_local_host(pool *);
-struct in_addr get_local_addr (int sd);
 unsigned long get_virthost_addr (char *hostname, short int *port);
-void get_remote_host(conn_rec *conn);
-int get_portnum(int sd);
-     
-

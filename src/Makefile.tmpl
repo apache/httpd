@@ -41,7 +41,8 @@ $(OBJS): Makefile httpd.h alloc.h buff.h conf.h
 http_config.o http_core.o http_main.o util.o: http_conf_globals.h
 http_config.o http_core.o http_main.o: http_config.h http_log.h
 http_log.o http_protocol.o http_request.o modules.o: http_config.h
-http_config.o http_core.o http_protocol.o http_request.o: http_core.h
+http_config.o http_core.o http_log.o http_main.o http_protocol.o: http_core.h
+http_request.o: http_core.h
 http_protocol.o http_request.o util_script.o: http_log.h
 http_core.o http_main.o http_protocol.o http_request.o: http_main.h
 http_core.o http_main.o http_protocol.o http_request.o: http_protocol.h
@@ -52,9 +53,10 @@ http_main.o: scoreboard.h
 $(MODULES): http_config.h
 mod_dld.o: http_conf_globals.h
 mod_ai_backcompat.o mod_auth.o mod_auth_dbm.o mod_cgi.o mod_dir.o: http_core.h
-mod_imap.o mod_include.o mod_negotiation.o: http_core.h
+mod_access.o mod_imap.o mod_include.o mod_negotiation.o: http_core.h
 mod_asis.o mod_auth.o mod_auth_dbm.o mod_cgi.o mod_dir.o: http_core.h
-mod_proxy.o mod_imap.o mod_include.o mod_negotiation.o: http_log.h
+mod_cookies.o mod_log_common.o: http_core.h
+mod_access.o mod_proxy.o mod_imap.o mod_include.o mod_negotiation.o: http_log.h
 mod_proxy.o mod_asis.o mod_cgi.o mod_dir.o mod_imap.o: http_main.h
 mod_include.o: http_main.h
 mod_proxy.o mod_asis.o mod_auth.o mod_auth_dbm.o mod_cgi.o: http_protocol.h

@@ -163,7 +163,8 @@ void add_common_vars(request_rec *r)
     table_set (e, "SERVER_SOFTWARE", SERVER_VERSION);
     table_set (e, "SERVER_NAME", s->server_hostname);
     table_set (e, "SERVER_PORT", port);
-    table_set (e, "REMOTE_HOST", c->remote_name);
+    table_set (e, "REMOTE_HOST",
+	       get_remote_host(c, r->per_dir_config, REMOTE_NAME));
     table_set (e, "REMOTE_ADDR", c->remote_ip);
     table_set (e, "DOCUMENT_ROOT", document_root(r)); /* Apache */
     table_set (e, "SERVER_ADMIN", s->server_admin); /* Apache */

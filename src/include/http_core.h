@@ -75,6 +75,10 @@
 #define OPT_MULTI 128
 #define OPT_ALL (OPT_INDEXES|OPT_INCLUDES|OPT_SYM_LINKS|OPT_EXECCGI)
 
+/* options for get_remote_host() */
+#define REMOTE_HOST (0)
+#define REMOTE_NAME (1)
+
 int allow_options (request_rec *);
 int allow_overrides (request_rec *);
 char *default_type (request_rec *);     
@@ -83,6 +87,7 @@ char *document_root (request_rec *); /* Don't use this!  If your request went
 				      * that, it'll screw you.  But it's
 				      * back-compatible...
 				      */
+extern const char *get_remote_host(conn_rec *conn, void *dir_config, int type);
      
 /* Authentication stuff.  This is one of the places where compatibility
  * with the old config files *really* hurts; they don't discriminate at
@@ -139,6 +144,10 @@ typedef struct {
      */
   
     char *response_code_strings[RESPONSE_CODES+1];
+
+    /* Hostname resolution etc */
+    int hostname_lookups;
+
 } core_dir_config;
 
 /* Per-server core configuration */
