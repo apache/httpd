@@ -119,7 +119,7 @@ fi
 ##
 
 PERL=no-perl-on-this-system
-perlpath="`$aux/findprg.sh perl5 perl miniperl`"
+perlpath="`$aux/PrintPath perl5 perl miniperl`"
 if [ ".$perlpath" != . ]; then
     PERL="$perlpath"
 fi
@@ -154,7 +154,7 @@ fi
 ##
 
 AWK=awk
-awkpath="`$aux/findprg.sh nawk gawk awk`"
+awkpath="`$aux/PrintPath nawk gawk awk`"
 if [ ".$awkpath" != . ]; then
     AWK="$awkpath"
 fi
