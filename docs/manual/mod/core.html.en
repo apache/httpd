@@ -117,41 +117,41 @@ response without an explicit character set</td></tr><tr><td nowrap="nowrap"><a h
 
       <dd>
 
-      Allow use of the authorization directives (<a href="mod_auth_dbm.html#authdbmgroupfile" class="directive"><code class="directive">AuthDBMGroupFile</code></a>,
-      <a href="mod_auth_dbm.html#authdbmuserfile" class="directive"><code class="directive">AuthDBMUserFile</code></a>,
-      <a href="mod_auth.html#authgroupfile" class="directive"><code class="directive">AuthGroupFile</code></a>,
+      Allow use of the authorization directives (<a href="../mod/mod_auth_dbm.html#authdbmgroupfile" class="directive"><code class="directive">AuthDBMGroupFile</code></a>,
+      <a href="../mod/mod_auth_dbm.html#authdbmuserfile" class="directive"><code class="directive">AuthDBMUserFile</code></a>,
+      <a href="../mod/mod_auth.html#authgroupfile" class="directive"><code class="directive">AuthGroupFile</code></a>,
       <a href="#authname" class="directive"><code class="directive">AuthName</code></a>, 
-      <a href="#authtype" class="directive"><code class="directive">AuthType</code></a>, <a href="mod_auth.html#authuserfile" class="directive"><code class="directive">AuthUserFile</code></a>, <a href="#require" class="directive"><code class="directive">Require</code></a>, <em>etc.</em>).</dd>
+      <a href="#authtype" class="directive"><code class="directive">AuthType</code></a>, <a href="../mod/mod_auth.html#authuserfile" class="directive"><code class="directive">AuthUserFile</code></a>, <a href="#require" class="directive"><code class="directive">Require</code></a>, <em>etc.</em>).</dd>
 
       <dt>FileInfo</dt>
 
       <dd>
-      Allow use of the directives controlling document types (<a href="#defaulttype" class="directive"><code class="directive">DefaultType</code></a>, <a href="#errordocument" class="directive"><code class="directive">ErrorDocument</code></a>, <a href="#forcetype" class="directive"><code class="directive">ForceType</code></a>, <a href="mod_negotiation.html#languagepriority" class="directive"><code class="directive">LanguagePriority</code></a>,
+      Allow use of the directives controlling document types (<a href="#defaulttype" class="directive"><code class="directive">DefaultType</code></a>, <a href="#errordocument" class="directive"><code class="directive">ErrorDocument</code></a>, <a href="#forcetype" class="directive"><code class="directive">ForceType</code></a>, <a href="../mod/mod_negotiation.html#languagepriority" class="directive"><code class="directive">LanguagePriority</code></a>,
       <a href="#sethandler" class="directive"><code class="directive">SetHandler</code></a>, <a href="#setinputfilter" class="directive"><code class="directive">SetInputFilter</code></a>, <a href="#setoutputfilter" class="directive"><code class="directive">SetOutputFilter</code></a>, and 
-      <code><a href="mod_mime.html">mod_mime</a></code> Add* and Remove*
+      <code><a href="../mod/mod_mime.html">mod_mime</a></code> Add* and Remove*
       directives, <em>etc.</em>).</dd>
 
       <dt>Indexes</dt>
 
       <dd>
       Allow use of the directives controlling directory indexing
-      (<a href="mod_autoindex.html#adddescription" class="directive"><code class="directive">AddDescription</code></a>,
-      <a href="mod_autoindex.html#addicon" class="directive"><code class="directive">AddIcon</code></a>, <a href="mod_autoindex.html#addiconbyencoding" class="directive"><code class="directive">AddIconByEncoding</code></a>,
-      <a href="mod_autoindex.html#addiconbytype" class="directive"><code class="directive">AddIconByType</code></a>,
-      <a href="mod_autoindex.html#defaulticon" class="directive"><code class="directive">DefaultIcon</code></a>, <a href="mod_dir.html#directoryindex" class="directive"><code class="directive">DirectoryIndex</code></a>, <a href="mod_autoindex.html#fancyindexing" class="directive"><code class="directive">FancyIndexing</code></a>, <a href="mod_autoindex.html#headername" class="directive"><code class="directive">HeaderName</code></a>, <a href="mod_autoindex.html#indexignore" class="directive"><code class="directive">IndexIgnore</code></a>, <a href="mod_autoindex.html#indexoptions" class="directive"><code class="directive">IndexOptions</code></a>, <a href="mod_autoindex.html#readmename" class="directive"><code class="directive">ReadmeName</code></a>,
+      (<a href="../mod/mod_autoindex.html#adddescription" class="directive"><code class="directive">AddDescription</code></a>,
+      <a href="../mod/mod_autoindex.html#addicon" class="directive"><code class="directive">AddIcon</code></a>, <a href="../mod/mod_autoindex.html#addiconbyencoding" class="directive"><code class="directive">AddIconByEncoding</code></a>,
+      <a href="../mod/mod_autoindex.html#addiconbytype" class="directive"><code class="directive">AddIconByType</code></a>,
+      <a href="../mod/mod_autoindex.html#defaulticon" class="directive"><code class="directive">DefaultIcon</code></a>, <a href="../mod/mod_dir.html#directoryindex" class="directive"><code class="directive">DirectoryIndex</code></a>, <a href="../mod/mod_autoindex.html#fancyindexing" class="directive"><code class="directive">FancyIndexing</code></a>, <a href="../mod/mod_autoindex.html#headername" class="directive"><code class="directive">HeaderName</code></a>, <a href="../mod/mod_autoindex.html#indexignore" class="directive"><code class="directive">IndexIgnore</code></a>, <a href="../mod/mod_autoindex.html#indexoptions" class="directive"><code class="directive">IndexOptions</code></a>, <a href="../mod/mod_autoindex.html#readmename" class="directive"><code class="directive">ReadmeName</code></a>,
       <em>etc.</em>).</dd>
 
       <dt>Limit</dt>
 
       <dd>
-      Allow use of the directives controlling host access (<a href="mod_access.html#allow" class="directive"><code class="directive">Allow</code></a>, <a href="mod_access.html#deny" class="directive"><code class="directive">Deny</code></a> and <a href="mod_access.html#order" class="directive"><code class="directive">Order</code></a>).</dd>
+      Allow use of the directives controlling host access (<a href="../mod/mod_access.html#allow" class="directive"><code class="directive">Allow</code></a>, <a href="../mod/mod_access.html#deny" class="directive"><code class="directive">Deny</code></a> and <a href="../mod/mod_access.html#order" class="directive"><code class="directive">Order</code></a>).</dd>
 
       <dt>Options</dt>
 
       <dd>
       Allow use of the directives controlling specific directory
       features (<a href="#options" class="directive"><code class="directive">Options</code></a> and
-      <a href="mod_include.html#xbithack" class="directive"><code class="directive">XBitHack</code></a>).</dd>
+      <a href="../mod/mod_include.html#xbithack" class="directive"><code class="directive">XBitHack</code></a>).</dd>
     </dl>
 
     <p>Example:</p>
@@ -165,8 +165,8 @@ authentication</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syn
     <code class="directive">AuthName</code> takes a single argument; if the
     realm name contains spaces, it must be enclosed in quotation
     marks.  It must be accompanied by <a href="#authtype" class="directive"><code class="directive">AuthType</code></a> and <a href="#require" class="directive"><code class="directive">Require</code></a> directives, and directives such
-    as <a href="mod_auth.html#authuserfile" class="directive"><code class="directive">AuthUserFile</code></a> and
-    <a href="mod_auth.html#authgroupfile" class="directive"><code class="directive">AuthGroupFile</code></a> to
+    as <a href="../mod/mod_auth.html#authuserfile" class="directive"><code class="directive">AuthUserFile</code></a> and
+    <a href="../mod/mod_auth.html#authgroupfile" class="directive"><code class="directive">AuthGroupFile</code></a> to
     work.</p>
 
    <p>For example:</p>
@@ -182,8 +182,8 @@ authentication</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syn
     currently implemented. 
 
      It must be accompanied by <a href="#authname" class="directive"><code class="directive">AuthName</code></a> and <a href="#require" class="directive"><code class="directive">Require</code></a> directives, and directives such
-     as <a href="mod_auth.html#authuserfile" class="directive"><code class="directive">AuthUserFile</code></a> and
-     <a href="mod_auth.html#authgroupfile" class="directive"><code class="directive">AuthGroupFile</code></a> to
+     as <a href="../mod/mod_auth.html#authuserfile" class="directive"><code class="directive">AuthUserFile</code></a> and
+     <a href="../mod/mod_auth.html#authgroupfile" class="directive"><code class="directive">AuthGroupFile</code></a> to
      work.</p>
 <p><strong>See also </strong></p><ul><li><a href="../howto/auth.html">Authentication, Authorization,
 and Access Control</a></li></ul><hr/><h2><a name="CGIMapExtension">CGIMapExtension</a> <a name="cgimapextension">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>Technique for locating the interpreter for CGI 
@@ -385,7 +385,7 @@ Location</a></li></ul><hr/><h2><a name="EnableMMAP">EnableMMAP</a> <a name="enab
     memory-mapping if it needs to read the contents of a file during
     delivery.  By default, when the handling of a request requires
     access to the data within a file-- for example, when delivering a
-    server-parsed file using <code><a href="mod_include.html">mod_include</a></code>-- Apache
+    server-parsed file using <code><a href="../mod/mod_include.html">mod_include</a></code>-- Apache
     memory-maps the file if the OS supports it.
     </p>
     <p>
@@ -608,7 +608,7 @@ MIME content-type</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#
     address. (In "tcpwrappers" terminology this is called
     <code>PARANOID</code>.)</p>
 
-    <p>Regardless of the setting, when <code><a href="mod_access.html">mod_access</a></code> is
+    <p>Regardless of the setting, when <code><a href="../mod/mod_access.html">mod_access</a></code> is
     used for controlling access by hostname, a double reverse lookup
     will be performed.  This is necessary for security. Note that the
     result of this double-reverse isn't generally available unless you
@@ -708,7 +708,7 @@ presence of absence of a specific module</td></tr><tr><td nowrap="nowrap"><a hre
     <p>In the former case, the directives between the start and end
     markers are only processed if the module named <em>module
     name</em> is included in Apache -- either compiled in or
-    dynamically loaded using <a href="mod_so.html#loadmodule" class="directive"><code class="directive">LoadModule</code></a>. The second format
+    dynamically loaded using <a href="../mod/mod_so.html#loadmodule" class="directive"><code class="directive">LoadModule</code></a>. The second format
     reverses the test, and only processes the directives if <em>module
     name</em> is <strong>not</strong> included.</p>
 
@@ -1368,8 +1368,8 @@ a resource</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax"
 
     <p><code class="directive">Require</code> must be accompanied by
     <a href="#authname" class="directive"><code class="directive">AuthName</code></a> and <a href="#authtype" class="directive"><code class="directive">AuthType</code></a> directives, and directives such
-    as <a href="mod_auth.html#authuserfile" class="directive"><code class="directive">AuthUserFile</code></a>
-    and <a href="mod_auth.html#authgroupfile" class="directive"><code class="directive">AuthGroupFile</code></a> (to
+    as <a href="../mod/mod_auth.html#authuserfile" class="directive"><code class="directive">AuthUserFile</code></a>
+    and <a href="../mod/mod_auth.html#authgroupfile" class="directive"><code class="directive">AuthGroupFile</code></a> (to
     define users and groups) in order to work correctly. Example:</p>
 
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
@@ -1387,7 +1387,7 @@ a resource</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax"
     place the <code class="directive">Require</code> statement into a
     <a href="#limit" class="directive"><code class="directive">&lt;Limit&gt;</code></a>
     section.</p>
-<p><strong>See also </strong></p><ul><li><a href="#satisfy" class="directive"><code class="directive">Satisfy</code></a></li><li><code><a href="mod_access.html">mod_access</a></code></li></ul><hr/><h2><a name="RLimitCPU">RLimitCPU</a> <a name="rlimitcpu">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>Limits the CPU consumption of processes launched
+<p><strong>See also </strong></p><ul><li><a href="#satisfy" class="directive"><code class="directive">Satisfy</code></a></li><li><code><a href="../mod/mod_access.html">mod_access</a></code></li></ul><hr/><h2><a name="RLimitCPU">RLimitCPU</a> <a name="rlimitcpu">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>Limits the CPU consumption of processes launched
 by Apache children</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>RLimitCPU <em>number</em>|max [<em>number</em>|max]</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>Unset; uses operating system defaults</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Core</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td>core</td></tr></table></td></tr></table>
     <p>Takes 1 or 2 parameters. The first parameter sets the soft
     resource limit for all processes and the second parameter sets
@@ -1475,7 +1475,7 @@ user authentication</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.htm
     Satisfy any
     </code></td></tr></table></blockquote>
    
-<p><strong>See also </strong></p><ul><li><a href="mod_access.html#allow" class="directive"><code class="directive">Allow</code></a></li><li><a href="#require" class="directive"><code class="directive">Require</code></a></li></ul><hr/><h2><a name="ScriptInterpreterSource">ScriptInterpreterSource</a> <a name="scriptinterpretersource">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>Technique for locating the interpreter for CGI 
+<p><strong>See also </strong></p><ul><li><a href="../mod/mod_access.html#allow" class="directive"><code class="directive">Allow</code></a></li><li><a href="#require" class="directive"><code class="directive">Require</code></a></li></ul><hr/><h2><a name="ScriptInterpreterSource">ScriptInterpreterSource</a> <a name="scriptinterpretersource">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>Technique for locating the interpreter for CGI 
 scripts</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>ScriptInterpreterSource registry|script</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>ScriptInterpreterSource script</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>directory, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">Override:</a></td><td>FileInfo</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Core</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td>core</td></tr><tr><td nowrap="nowrap" align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:</a></td><td>Win32 only</td></tr></table></td></tr></table>
     <p>This directive is used to control how Apache finds the
     interpreter used to run CGI scripts. The default technique is to
@@ -1537,7 +1537,7 @@ itself</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" cla
     <p>See the description of the
     <a href="#usecanonicalname" class="directive"><code class="directive">UseCanonicalName</code></a> directive for
     settings which determine whether self-referential URL's (e.g., by the
-    <code><a href="mod_dir.html">mod_dir</a></code> module) will refer to the
+    <code><a href="../mod/mod_dir.html">mod_dir</a></code> module) will refer to the
     specified port, or to the port number given in the client's request.
     </p>
 <p><strong>See also </strong></p><ul><li><a href="../dns-caveats.html">DNS Issues</a></li><li><a href="../vhosts/">Apache virtual host
@@ -1629,13 +1629,13 @@ handler</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" cl
     &lt;/Location&gt;
 </code></td></tr></table></blockquote>
 
-<p><strong>See also </strong></p><ul><li><a href="mod_mime.html#addhandler" class="directive"><code class="directive">AddHandler</code></a></li></ul><hr/><h2><a name="SetInputFilter">SetInputFilter</a> <a name="setinputfilter">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>Sets the filters that will process client requests and POST
+<p><strong>See also </strong></p><ul><li><a href="../mod/mod_mime.html#addhandler" class="directive"><code class="directive">AddHandler</code></a></li></ul><hr/><h2><a name="SetInputFilter">SetInputFilter</a> <a name="setinputfilter">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>Sets the filters that will process client requests and POST
 input</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>SetInputFilter <em>filter</em>[<em>;filter</em>...]</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">Override:</a></td><td>FileInfo</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Core</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td>core</td></tr></table></td></tr></table>
     <p>The <code class="directive">SetInputFilter</code> directive sets the
     filter or filters which will process client requests and POST
     input when they are received by the server. This is in addition to
     any filters defined elsewhere, including the
-    <a href="mod_mime.html#addinputfilter" class="directive"><code class="directive">AddInputFilter</code></a>
+    <a href="../mod/mod_mime.html#addinputfilter" class="directive"><code class="directive">AddInputFilter</code></a>
     directive.</p>
 
     <p>If more than one filter is specified, they must be separated
@@ -1647,7 +1647,7 @@ server</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" cla
     which will process responses from the server before they are
     sent to the client. This is in addition to any filters defined
     elsewhere, including the
-    <a href="mod_mime.html#addoutputfilter" class="directive"><code class="directive">AddOutputFilter</code></a>
+    <a href="../mod/mod_mime.html#addoutputfilter" class="directive"><code class="directive">AddOutputFilter</code></a>
     directive.</p>
 
     <p>For example, the following configuration will process all files
@@ -1730,7 +1730,7 @@ port</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class
     they want as a hostname. But if the CGI is only using
     <code>SERVER_NAME</code> to construct self-referential URLs
     then it should be just fine.</p>
-<p><strong>See also </strong></p><ul><li><a href="#servername" class="directive"><code class="directive">ServerName</code></a></li><li><a href="mpm_common.html#listen" class="directive"><code class="directive">Listen</code></a></li></ul><hr/><h2><a name="VirtualHost">&lt;VirtualHost&gt;</a> <a name="virtualhost">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>Contains directives that apply only to a specific
+<p><strong>See also </strong></p><ul><li><a href="#servername" class="directive"><code class="directive">ServerName</code></a></li><li><a href="../mod/mpm_common.html#listen" class="directive"><code class="directive">Listen</code></a></li></ul><hr/><h2><a name="VirtualHost">&lt;VirtualHost&gt;</a> <a name="virtualhost">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>Contains directives that apply only to a specific
 hostname or IP address</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>&lt;VirtualHost
     <em>addr</em>[:<em>port</em>] [<em>addr</em>[:<em>port</em>]]
     ...&gt; ... &lt;/VirtualHost&gt;</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Core</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td>core</td></tr></table></td></tr></table>
@@ -1803,7 +1803,7 @@ hostname or IP address</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.
 
     <p>You can specify a <code>:port</code> to change the port that is
     matched. If unspecified then it defaults to the same port as the
-    most recent <a href="mpm_common.html#listen" class="directive"><code class="directive">Listen</code></a>
+    most recent <a href="../mod/mpm_common.html#listen" class="directive"><code class="directive">Listen</code></a>
     statement of the main server. You may also specify <code>:*</code>
     to match all ports on that address. (This is recommended when used
     with <code>_default_</code>.)</p>
@@ -1815,7 +1815,7 @@ hostname or IP address</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.
 
     <p><strong>NOTE</strong>: The use of <code class="directive">&lt;VirtualHost&gt;</code> does <strong>not</strong>
     affect what addresses Apache listens on.  You may need to ensure
-    that Apache is listening on the correct addresses using <a href="mpm_common.html#listen" class="directive"><code class="directive">Listen</code></a>.</p>
+    that Apache is listening on the correct addresses using <a href="../mod/mpm_common.html#listen" class="directive"><code class="directive">Listen</code></a>.</p>
 <p><strong>See also </strong></p><ul><li><a href="../vhosts/">Apache Virtual Host documentation</a></li><li><a href="../dns-caveats.html">Warnings about DNS and
     Apache</a></li><li><a href="../bind.html">Setting
     which addresses and ports Apache uses</a></li><li><a href="../sections.html">How

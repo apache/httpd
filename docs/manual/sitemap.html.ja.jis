@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -5,7 +6,7 @@
   <head>
     <title>Site Map - Apache HTTP Server 2.0</title>
   </head>
-  <!-- English revision: 1.7 -->
+  <!-- English revision: 1.8 -->
   <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
 
   <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
@@ -195,6 +196,8 @@ Side Includes 入門</a></li>
 <li><a href="developer/request.html">Apache 2.0 のリクエスト処理</a></li>
 <li><a href="developer/filters.html">Apache 2.0 のフィルタの動作の仕方</a></li>
 </ul></li>
+
+<li><a href="glossary.html">用語集</a></li>
 
 </ul></li>
 

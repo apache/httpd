@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <modulesynopsis>
-<!-- English revision: 1.14 -->
+<!-- English revision: 1.15 -->
 
 <name>mpm_common</name>
 <description>二つ以上のマルチプロセッシングモジュール (MPM)
@@ -84,7 +84,7 @@
 <syntax>PidFile <em>filename</em></syntax>
 <default>PidFile logs/httpd.pid</default>
 <contextlist><context>サーバ設定ファイル</context></contextlist>
-<modulelist><module>worker</module><module>perchilde</module>
+<modulelist><module>worker</module><module>perchild</module>
 <module>prefork</module><module>mpm_winnt</module>
 </modulelist>
 
