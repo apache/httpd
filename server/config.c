@@ -986,7 +986,7 @@ const char *ap_build_cont_config(apr_pool_t *p, apr_pool_t *temp_pool,
     char l[MAX_STRING_LEN];
     char *bracket;
     const char *retval;
-    ap_directive_t *conftree = NULL;
+    ap_directive_t *sub_tree = NULL;
 
     bracket = apr_pstrcat(p, orig_directive + 1, ">", NULL);
     while (!(ap_cfg_getline(l, MAX_STRING_LEN, parms->config_file))) {
@@ -996,17 +996,17 @@ const char *ap_build_cont_config(apr_pool_t *p, apr_pool_t *temp_pool,
             break;
         } 
         retval = ap_build_config_sub(p, temp_pool, l, parms, current, 
-                                     curr_parent, &conftree);
+                                     curr_parent, &sub_tree);
         if (retval != NULL)
             return retval;
-        if (conftree == NULL && curr_parent != NULL) { 
-            conftree = *curr_parent;
+        if (sub_tree == NULL && curr_parent != NULL) { 
+            sub_tree = *curr_parent;
         }
-        if (conftree == NULL && current != NULL) {
-            conftree = *current;
+        if (sub_tree == NULL && current != NULL) {
+            sub_tree = *current;
         }
     }
-    *current = conftree;
+    *current = sub_tree;
     return NULL;
 }
 
@@ -1498,14 +1498,14 @@ int ap_parse_htaccess(void **result, request_rec *r, int override,
 
         if (status == APR_SUCCESS) {
 	    const char *errmsg;
-	    ap_directive_t *conftree = NULL;
+	    ap_directive_t *temptree = NULL;
 
             dc = ap_create_per_dir_config(r->pool);
 
             parms.config_file = f;
-            errmsg = ap_build_config(&parms, r->pool, r->pool, &conftree);
+            errmsg = ap_build_config(&parms, r->pool, r->pool, &temptree);
 	    if (errmsg == NULL)
-		errmsg = ap_walk_config(conftree, &parms, dc);
+		errmsg = ap_walk_config(temptree, &parms, dc);
 
             ap_cfg_closefile(f);
 

@@ -76,6 +76,11 @@
  * Lou Langholtz <ldl@usi.utah.edu>, July 1997
  *
  * 07.11.97 Addition of the AddModuleInfo directive
+ *
+ * Ryan Morgan <rmorgan@covalent.net>
+ * 
+ * 8.11.00 Port to Apache 2.0.  Read configuation from the configuration
+ * tree rather than reparse the entire configuation file.
  * 
  */
 
@@ -89,40 +94,18 @@
 #include "http_conf_globals.h"
 
 typedef struct {
-    char *name;                 /* matching module name */
-    char *info;                 /* additional info */
+    const char *name;                 /* matching module name */
+    const char *info;                 /* additional info */
 } info_entry;
 
 typedef struct {
     apr_array_header_t *more_info;
 } info_svr_conf;
 
-typedef struct info_cfg_lines {
-    char *cmd;
-    char *line;
-    struct info_cfg_lines *next;
-} info_cfg_lines;
-
-typedef struct {                /* shamelessly lifted from http_config.c */
-    char *fname;
-} info_fnames;
-
-typedef struct {
-    info_cfg_lines *clines;
-    char *fname;
-} info_clines;
-
 module AP_MODULE_DECLARE_DATA info_module;
+
 extern module *top_module;
-
-/* shamelessly lifted from http_config.c */
-static int fname_alphasort(const void *fn1, const void *fn2)
-{
-    const info_fnames *f1 = fn1;
-    const info_fnames *f2 = fn2;
-
-    return strcmp(f1->fname,f2->fname);
-}
+extern ap_directive_t *ap_conftree;
 
 static void *create_info_config(apr_pool_t *p, server_rec *s)
 {
@@ -142,7 +125,7 @@ static void *merge_info_config(apr_pool_t *p, void *basev, void *overridesv)
     return new;
 }
 
-static char *mod_info_html_cmd_string(const char *string, char *buf, size_t buf_len)
+static char *mod_info_html_cmd_string(const char *string, char *buf, size_t buf_len, int close)
 {
     const char *s;
     char *t;
@@ -154,8 +137,13 @@ static char *mod_info_html_cmd_string(const char *string, char *buf, size_t buf_
     end_buf = buf + buf_len - 1;
     while ((*s) && (t < end_buf)) {
         if (*s == '<') {
-            strncpy(t, "&lt;", end_buf - t);
-            t += 4;
+	    if (close) {
+	        strncpy(t, "&lt;/,", end_buf -t);
+	        t += 5;
+	    } else {
+                strncpy(t, "&lt;", end_buf - t);
+                t += 4;
+	    }
         }
         else if (*s == '>') {
             strncpy(t, "&gt;", end_buf - t);
@@ -165,7 +153,15 @@ static char *mod_info_html_cmd_string(const char *string, char *buf, size_t buf_
             strncpy(t, "&amp;", end_buf - t);
             t += 5;
         }
-        else {
+	else if (*s == ' ') {
+	    if (close) {
+	        strncpy(t, "&gt;", end_buf -t);
+	        t += 4;
+	        break;
+	    } else {
+	      *t++ = *s;
+            }
+	} else {
             *t++ = *s;
         }
         s++;
@@ -180,182 +176,69 @@ static char *mod_info_html_cmd_string(const char *string, char *buf, size_t buf_
     return (buf);
 }
 
-static info_cfg_lines *mod_info_load_config(apr_pool_t *p, const char *filename,
-                                            request_rec *r)
+static void mod_info_module_cmds(request_rec * r, const command_rec * cmds,
+				 ap_directive_t * conftree)
 {
-    char s[MAX_STRING_LEN];
-    configfile_t *fp;
-    info_cfg_lines *new, *ret, *prev;
-    const char *t;
-    apr_status_t rv;
+    const command_rec *cmd;
+    ap_directive_t *tmptree = conftree;
 
-    rv = ap_pcfg_openfile(&fp, p, filename);
-    if (rv != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_WARNING, rv, r,
-		    "mod_info: couldn't open config file %s",
-		    filename);
-        return NULL;
-    }
-    ret = NULL;
-    prev = NULL;
-    while (!ap_cfg_getline(s, MAX_STRING_LEN, fp)) {
-        if (*s == '#') {
-            continue;           /* skip comments */
-        }
-        new = apr_palloc(p, sizeof(struct info_cfg_lines));
-        new->next = NULL;
-        if (!ret) {
-            ret = new;
-        }
-        if (prev) {
-            prev->next = new;
-        }
-	t = s;
-	new->cmd = ap_getword_conf(p, &t);
-	if (*t) {
-	    new->line = apr_pstrdup(p, t);
-	}
-	else {
-	    new->line = NULL;
-	}
-        prev = new;
-    }
-    ap_cfg_closefile(fp);
-    return (ret);
-}
-
-static void mod_info_module_cmds(request_rec *r, info_cfg_lines *cfg,
-                                 const command_rec *cmds, char *label)
-{
-    const command_rec *cmd = cmds;
-    info_cfg_lines *li = cfg, *li_st = NULL, *li_se = NULL;
-    info_cfg_lines *block_start = NULL;
-    int lab = 0, nest = 0;
     char buf[MAX_STRING_LEN];
+    char htmlstring[MAX_STRING_LEN];
+    int block_start = 0;
+    int nest = 0;
 
-    while (li) {
-        if (!strncasecmp(li->cmd, "<directory", 10) ||
-            !strncasecmp(li->cmd, "<location", 9) ||
-            !strncasecmp(li->cmd, "<limit", 6) ||
-            !strncasecmp(li->cmd, "<files", 6)) {
-            if (nest) {
-                li_se = li;
-            }
-            else {
-                li_st = li;
-            }
-            li = li->next;
-            nest++;
-            continue;
-        }
-        else if (nest && (!strncasecmp(li->cmd, "</limit", 7) ||
-                          !strncasecmp(li->cmd, "</location", 10) ||
-                          !strncasecmp(li->cmd, "</directory", 11) ||
-                          !strncasecmp(li->cmd, "</files", 7))) {
-            if (block_start) {
-                if ((nest == 1 && block_start == li_st) ||
-                    (nest == 2 && block_start == li_se)) {
-                    ap_rputs("<dd><tt>", r);
-                    if (nest == 2) {
-                        ap_rputs("&nbsp;&nbsp;", r);
-                    }
-                    ap_rputs(mod_info_html_cmd_string(li->cmd, buf, sizeof(buf)), r);
-                    ap_rputs(" ", r);
-                    if (li->line) {
-                        ap_rputs(mod_info_html_cmd_string(li->line, buf, sizeof(buf)), r);
-                    }
-                    ap_rputs("</tt>\n", r);
-                    nest--;
-                    if (!nest) {
-                        block_start = NULL;
-                        li_st = NULL;
-                    }
-                    else {
-                        block_start = li_st;
-                    }
-                    li_se = NULL;
-                }
-                else {
-                    nest--;
-                    if (!nest) {
-                        li_st = NULL;
-                    }
-                    li_se = NULL;
-                }
-            }
-            else {
-                nest--;
-                if (!nest) {
-                    li_st = NULL;
-                }
-                li_se = NULL;
-            }
-            li = li->next;
-            continue;
-        }
-        cmd = cmds;
-        while (cmd) {
-            if (cmd->name) {
-                if (!strcasecmp(cmd->name, li->cmd)) {
-                    if (!lab) {
-                        ap_rputs("<dt><strong>", r);
-                        ap_rputs(label, r);
-                        ap_rputs("</strong>\n", r);
-                        lab = 1;
-                    }
-                    if (((nest && block_start == NULL) ||
-                         (nest == 2 && block_start == li_st)) &&
-                        (strncasecmp(li->cmd, "<directory", 10) &&
-                         strncasecmp(li->cmd, "<location", 9) &&
-                         strncasecmp(li->cmd, "<limit", 6) &&
-                         strncasecmp(li->cmd, "</limit", 7) &&
-                         strncasecmp(li->cmd, "</location", 10) &&
-                         strncasecmp(li->cmd, "</directory", 11) &&
-                         strncasecmp(li->cmd, "</files", 7))) {
-                        ap_rputs("<dd><tt>", r);
-                        ap_rputs(mod_info_html_cmd_string(li_st->cmd, buf, sizeof(buf)), r);
-                        ap_rputs(" ", r);
-                        if (li_st->line) {
-                            ap_rputs(mod_info_html_cmd_string(li_st->line, buf, sizeof(buf)), r);
-                        }
-                        ap_rputs("</tt>\n", r);
-                        block_start = li_st;
-                        if (li_se) {
-                            ap_rputs("<dd><tt>&nbsp;&nbsp;", r);
-                            ap_rputs(mod_info_html_cmd_string(li_se->cmd, buf, sizeof(buf)), r);
-                            ap_rputs(" ", r);
-                            if (li_se->line) {
-                                ap_rputs(mod_info_html_cmd_string(li_se->line, buf, sizeof(buf)), r);
-                            }
-                            ap_rputs("</tt>\n", r);
-                            block_start = li_se;
-                        }
-                    }
-                    ap_rputs("<dd><tt>", r);
-                    if (nest) {
-                        ap_rputs("&nbsp;&nbsp;", r);
-                    }
-                    if (nest == 2) {
-                        ap_rputs("&nbsp;&nbsp;", r);
-                    }
-                    ap_rputs(mod_info_html_cmd_string(li->cmd, buf, sizeof(buf)), r);
-                    if (li->line) {
-                        ap_rputs(" <i>", r);
-                        ap_rputs(mod_info_html_cmd_string(li->line, buf, sizeof(buf)), r);
-                        ap_rputs("</i>", r);
-                    }
-		    ap_rputs("</tt>", r);
-                }
-            }
-            else
-                break;
-            cmd++;
-        }
-        li = li->next;
+    while (tmptree != NULL) {
+	cmd = cmds;
+	while (cmd->name) {
+	    if (!strcasecmp(cmd->name, tmptree->directive)) {
+		if (nest > block_start) {
+		    block_start++;
+		    apr_snprintf(htmlstring, sizeof(htmlstring), "%s %s",
+				tmptree->parent->directive,
+				tmptree->parent->args);
+		    ap_rprintf(r, "<dd><tt>%s</tt><br>\n",
+			       mod_info_html_cmd_string(htmlstring, buf,
+							sizeof(buf), 0));
+		}
+		if (nest == 2) {
+		    ap_rprintf(r, "<dd><tt>&nbsp;&nbsp;&nbsp;&nbsp;%s "
+			       "<i>%s</i></tt><br>\n",
+			       tmptree->directive, tmptree->args);
+		} else if (nest == 1) {
+		    ap_rprintf(r,
+			       "<dd><tt>&nbsp;&nbsp;%s <i>%s</i></tt><br>\n",
+			       tmptree->directive, tmptree->args);
+		} else {
+		    ap_rprintf(r, "<dd><tt>%s <i>%s</i></tt><br>\n",
+			       mod_info_html_cmd_string(tmptree->directive,
+							buf, sizeof(buf),
+							0), tmptree->args);
+		}
+	    }
+	    ++cmd;
+	}
+	if (tmptree->first_child != NULL) {
+	    tmptree = tmptree->first_child;
+	    nest++;
+	} else if (tmptree->next != NULL) {
+	    tmptree = tmptree->next;
+	} else {
+	    if (block_start) {
+		apr_snprintf(htmlstring, sizeof(htmlstring), "%s %s",
+			    tmptree->parent->directive,
+			    tmptree->parent->args);
+		ap_rprintf(r, "<dd><tt>%s</tt><br>\n",
+			   mod_info_html_cmd_string(htmlstring, buf,
+						    sizeof(buf), 1));
+		block_start--;
+	    }
+	    tmptree = tmptree->parent->next;
+	    nest--;
+	}
+
     }
 }
-
-static char *find_more_info(server_rec *s, const char *module_name)
+static const char *find_more_info(server_rec *s, const char *module_name)
 {
     int i;
     info_svr_conf *conf = (info_svr_conf *) ap_get_module_config(s->module_config,
@@ -374,70 +257,20 @@ static char *find_more_info(server_rec *s, const char *module_name)
     return 0;
 }
 
-static void mod_info_dirwalk(pool *p, const char *fname,
-                             request_rec *r, apr_array_header_t *carray)
-{
-    info_clines *cnew = NULL;
-    info_cfg_lines *mod_info_cfg_tmp = NULL;
-
-    if (!ap_is_rdirectory(fname)) {
-        mod_info_cfg_tmp = mod_info_load_config(p, fname, r);
-        cnew = (info_clines *) apr_push_array(carray);
-        cnew->fname = ap_pstrdup(p, fname);
-        cnew->clines = mod_info_cfg_tmp;
-    } else {
-        apr_dir_t *dirp;
-        int current;
-        apr_array_header_t *candidates = NULL;
-        info_fnames *fnew;
-
-	if (apr_opendir(&dirp, fname, p) != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_WARNING, r, 
-                    "mod_info: couldn't open config directory %s",
-                    fname);
-            return;
-	}
-	candidates = apr_make_array(p, 1, sizeof(info_fnames));
-        while (apr_readdir(dirp) == APR_SUCCESS) {
-            char *d_name;
-	    apr_get_dir_filename(&d_name, dirp);
-	    /* strip out '.' and '..' */
-	    if (strcmp(d_name, ".") &&
-		strcmp(d_name, "..")) {
-		fnew = (info_fnames *) apr_push_array(candidates);
-		fnew->fname = ap_make_full_path(p, fname, d_name);
-	    }
-	}
-	apr_closedir(dirp);
-        if (candidates->nelts != 0) {
-            qsort((void *) candidates->elts, candidates->nelts,
-              sizeof(info_fnames), fname_alphasort);
-            for (current = 0; current < candidates->nelts; ++current) {
-                fnew = &((info_fnames *) candidates->elts)[current];
-                mod_info_dirwalk(p, fnew->fname, r, carray);
-            }
-        }
-    }
-    return;
-}
-
 static int display_info(request_rec *r)
 {
     module *modp = NULL;
-    char buf[MAX_STRING_LEN], *cfname;
-    char *more_info;
+    char buf[MAX_STRING_LEN];
+    const char *cfname;
+    const char *more_info;
     const command_rec *cmd = NULL;
     const handler_rec *hand = NULL;
     server_rec *serv = r->server;
     int comma = 0;
-    apr_array_header_t *allconfigs = NULL;
-    info_clines *cnew = NULL;
-    int current;
-    char *relpath;
 
     r->allowed |= (1 << M_GET);
     if (r->method_number != M_GET)
-        return DECLINED;
+	return DECLINED;
 
     r->content_type = "text/html";
     ap_send_http_header(r);
@@ -449,9 +282,7 @@ static int display_info(request_rec *r)
 	     "<html><head><title>Server Information</title></head>\n", r);
     ap_rputs("<body><h1 align=center>Apache Server Information</h1>\n", r);
     if (!r->args || strcasecmp(r->args, "list")) {
-        allconfigs = apr_make_array(r->pool, 1, sizeof(info_clines));
-        cfname = ap_server_root_relative(r->pool, ap_server_confname);
-	mod_info_dirwalk(r->pool, cfname, r, allconfigs);
+        cfname = ap_server_root_relative(r->pool, SERVER_CONFIG_FILE);
         if (!r->args) {
             ap_rputs("<tt><a href=\"#server\">Server Settings</a>, ", r);
             for (modp = top_module; modp; modp = modp->next) {
@@ -473,29 +304,9 @@ static int display_info(request_rec *r)
             ap_rprintf(r, "<strong>API Version:</strong> "
                         "<tt>%d:%d</tt><br>\n",
                         MODULE_MAGIC_NUMBER_MAJOR, MODULE_MAGIC_NUMBER_MINOR);
-            ap_rprintf(r, "<strong>User/Group:</strong> "
-                        "<tt>%s(%d)/%d</tt><br>\n",
-                        ap_user_name, (int) ap_user_id, (int) ap_group_id);
             ap_rprintf(r, "<strong>Hostname/port:</strong> "
                         "<tt>%s:%u</tt><br>\n",
                         serv->server_hostname, serv->port);
-            ap_rprintf(r, "<strong>Daemons:</strong> "
-                        "<tt>start: %d &nbsp;&nbsp; "
-                        "min idle: %d &nbsp;&nbsp; "
-                        "max idle: %d &nbsp;&nbsp; "
-                        "max: %d</tt><br>\n",
-                        ap_daemons_to_start, ap_daemons_min_free,
-                        ap_daemons_max_free, ap_daemons_limit);
-            ap_rprintf(r, "<strong>Max Requests:</strong> "
-                        "<tt>per child: %d &nbsp;&nbsp; "
-                        "keep alive: %s &nbsp;&nbsp; "
-                        "max per connection: %d</tt><br>\n",
-                        ap_max_requests_per_child,
-                        (serv->keep_alive ? "on" : "off"),
-                        serv->keep_alive_max);
-            ap_rprintf(r, "<strong>Threads:</strong> "
-                        "<tt>per child: %d &nbsp;&nbsp; </tt><br>\n",
-                        ap_threads_per_child);
             ap_rprintf(r, "<strong>Timeouts:</strong> "
                         "<tt>connection: %d &nbsp;&nbsp; "
                         "keep-alive: %d</tt><br>",
@@ -503,11 +314,7 @@ static int display_info(request_rec *r)
             ap_rprintf(r, "<strong>Server Root:</strong> "
                         "<tt>%s</tt><br>\n", ap_server_root);
             ap_rprintf(r, "<strong>Config File:</strong> "
-                        "<tt>%s</tt><br>\n", ap_server_confname);
-            ap_rprintf(r, "<strong>PID File:</strong> "
-                        "<tt>%s</tt><br>\n", ap_pid_fname);
-            ap_rprintf(r, "<strong>Scoreboard File:</strong> "
-                        "<tt>%s</tt><br>\n", ap_scoreboard_fname);
+		       "<tt>%s</tt><br>\n", SERVER_CONFIG_FILE);
         }
         ap_rputs("<hr><dl>", r);
         for (modp = top_module; modp; modp = modp->next) {
@@ -536,10 +343,6 @@ static int display_info(request_rec *r)
                 }
                 ap_rputs("<dt><strong>Configuration Phase Participation:</strong> \n",
                       r);
-                if (modp->child_init) {
-                    ap_rputs("<tt>Child Init</tt>", r);
-                    comma = 1;
-                }
                 if (modp->create_dir_config) {
                     if (comma) {
                         ap_rputs(", ", r);
@@ -568,78 +371,6 @@ static int display_info(request_rec *r)
                     ap_rputs("<tt>Merge Server Configs</tt>", r);
                     comma = 1;
                 }
-                if (modp->child_exit) {
-                    if (comma) {
-                        ap_rputs(", ", r);
-                    }
-                    ap_rputs("<tt>Child Exit</tt>", r);
-                    comma = 1;
-                }
-                if (!comma)
-                    ap_rputs("<tt> <EM>none</EM></tt>", r);
-                comma = 0;
-                ap_rputs("<dt><strong>Request Phase Participation:</strong> \n",
-                      r);
-                if (modp->post_read_request) {
-                    ap_rputs("<tt>Post-Read Request</tt>", r);
-                    comma = 1;
-                }
-                if (modp->header_parser) {
-                    if (comma) {
-                        ap_rputs(", ", r);
-                    }
-                    ap_rputs("<tt>Header Parse</tt>", r);
-                    comma = 1;
-                }
-                if (modp->translate_handler) {
-                    if (comma) {
-                        ap_rputs(", ", r);
-                    }
-                    ap_rputs("<tt>Translate Path</tt>", r);
-                    comma = 1;
-                }
-                if (modp->access_checker) {
-                    if (comma) {
-                        ap_rputs(", ", r);
-                    }
-                    ap_rputs("<tt>Check Access</tt>", r);
-                    comma = 1;
-                }
-                if (modp->ap_check_user_id) {
-                    if (comma) {
-                        ap_rputs(", ", r);
-                    }
-                    ap_rputs("<tt>Verify User ID</tt>", r);
-                    comma = 1;
-                }
-                if (modp->auth_checker) {
-                    if (comma) {
-                        ap_rputs(", ", r);
-                    }
-                    ap_rputs("<tt>Verify User Access</tt>", r);
-                    comma = 1;
-                }
-                if (modp->type_checker) {
-                    if (comma) {
-                        ap_rputs(", ", r);
-                    }
-                    ap_rputs("<tt>Check Type</tt>", r);
-                    comma = 1;
-                }
-                if (modp->fixer_upper) {
-                    if (comma) {
-                        ap_rputs(", ", r);
-                    }
-                    ap_rputs("<tt>Fixups</tt>", r);
-                    comma = 1;
-                }
-                if (modp->logger) {
-                    if (comma) {
-                        ap_rputs(", ", r);
-                    }
-                    ap_rputs("<tt>Logging</tt>", r);
-                    comma = 1;
-                }
                 if (!comma)
                     ap_rputs("<tt> <EM>none</EM></tt>", r);
                 comma = 0;
@@ -650,7 +381,7 @@ static int display_info(request_rec *r)
                         if (cmd->name) {
                             ap_rprintf(r, "<dd><tt>%s - <i>",
 				    mod_info_html_cmd_string(cmd->name,
-					buf, sizeof(buf)));
+					buf, sizeof(buf), 0));
                             if (cmd->errmsg) {
                                 ap_rputs(cmd->errmsg, r);
                             }
@@ -662,16 +393,7 @@ static int display_info(request_rec *r)
                         cmd++;
                     }
                     ap_rputs("<dt><strong>Current Configuration:</strong>\n", r);
-                    for (current = 0; current < allconfigs->nelts; ++current) {
-                        cnew = &((info_clines *) allconfigs->elts)[current];
-                        /* get relative pathname with some safeguards */
-			relpath = ap_stripprefix(cnew->fname,ap_server_root);
-			if (*relpath != '\0' && relpath != cnew->fname &&
-                            *relpath == '/')
-                            relpath++;
-                        mod_info_module_cmds(r, cnew->clines, modp->cmds,
-                                             relpath);
-                    }
+                    mod_info_module_cmds(r, modp->cmds, ap_conftree);
                 }
                 else {
                     ap_rputs("<tt> none</tt>\n", r);
@@ -707,8 +429,8 @@ static int display_info(request_rec *r)
     return 0;
 }
 
-static const char *add_module_info(cmd_parms *cmd, void *dummy, char *name,
-                                   char *info)
+static const char *add_module_info(cmd_parms *cmd, void *dummy, 
+                                   const char *name, const char *info)
 {
     server_rec *s = cmd->server;
     info_svr_conf *conf = (info_svr_conf *) ap_get_module_config(s->module_config,
@@ -722,8 +444,8 @@ static const char *add_module_info(cmd_parms *cmd, void *dummy, char *name,
 
 static const command_rec info_cmds[] =
 {
-    {"AddModuleInfo", add_module_info, NULL, RSRC_CONF, TAKE2,
-     "a module name and additional information on that module"},
+    AP_INIT_TAKE2("AddModuleInfo", add_module_info, NULL, RSRC_CONF,
+                  "a module name and additional information on that module"),
     {NULL}
 };
 
@@ -735,8 +457,7 @@ static const handler_rec info_handlers[] =
 
 module AP_MODULE_DECLARE_DATA info_module =
 {
-    STANDARD_MODULE_STUFF,
-    NULL,                       /* initializer */
+    STANDARD20_MODULE_STUFF,
     NULL,                       /* dir config creater */
     NULL,                       /* dir merger --- default is to override */
     create_info_config,         /* server config */
@@ -744,14 +465,4 @@ module AP_MODULE_DECLARE_DATA info_module =
     info_cmds,                  /* command apr_table_t */
     info_handlers,              /* handlers */
     NULL,                       /* filename translation */
-    NULL,                       /* check_user_id */
-    NULL,                       /* check auth */
-    NULL,                       /* check access */
-    NULL,                       /* type_checker */
-    NULL,                       /* fixups */
-    NULL,                       /* logger */
-    NULL,                       /* header parser */
-    NULL,                       /* child_init */
-    NULL,                       /* child_exit */
-    NULL                        /* post read-request */
 };
