@@ -2083,7 +2083,7 @@ static int ascmagic(request_rec *r, unsigned char *buf, apr_size_t nbytes)
 
 static struct {
     char *magic;
-    int maglen;
+    apr_size_t maglen;
     char *argv[3];
     int silent;
     char *encoding;	/* MUST be lowercase */
