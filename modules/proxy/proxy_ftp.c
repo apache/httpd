@@ -1593,6 +1593,11 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
 	}
 	ap_flush_conn(remote);
 	apr_socket_close(remote_sock);
+	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+		     "proxy: FTP: Closing Data connection.");
+	i = ftp_getrc_msg(origin, cbb, buffer, sizeof(buffer));
+	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+		     "proxy: FTP: %d %s", i, buffer);
 	apr_brigade_cleanup(bb);
 	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
 		     "proxy: FTP: end body send");
