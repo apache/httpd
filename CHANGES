@@ -126,10 +126,6 @@ Changes with Apache 2.1.0-dev
   *) Added new module mod_version, which provides version dependent
      configuration containers.  [André Malo]
 
-  *) Accept URLs for the ServerAdmin directive. If the supplied
-     argument is not recognized as an URL, assume it's a mail address.
-     PR 28174.  [André Malo]
-
   *) mod_rewrite no longer confuses the RewriteMap caches if
      different maps defined in different virtual hosts use the
      same map name. PR 26462.  [André Malo]
@@ -154,10 +150,6 @@ Changes with Apache 2.1.0-dev
   *) mod_cgid: Don't allow Scriptsock to be specified inside VirtualHost;
      Don't place script socket inside default server root instead of
      actual server root.  PR 27886.  [Jeff Trawick]
-
-  *) work around MSIE Digest auth bug - if AuthDigestEnableQueryStringHack
-     is set in r->subprocess_env allow mismatched query strings to pass.
-     PR 27758.  [Paul Querna <chip force-elite.com>, Geoffrey Young]
 
   *) Satisfy directives now can be influenced by a surrounding <Limit>
      container.  PR 14726.  [André Malo]
@@ -412,6 +404,14 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.51
+
+  *) work around MSIE Digest auth bug - if AuthDigestEnableQueryStringHack
+     is set in r->subprocess_env allow mismatched query strings to pass.
+     PR 27758.  [Paul Querna, Geoffrey Young]
+
+  *) Accept URLs for the ServerAdmin directive. If the supplied
+     argument is not recognized as an URL, assume it's a mail address.
+     PR 28174.  [André Malo, Paul Querna]
 
   *) initialize server arrays prior to calling ap_setup_prelinked_modules
      so that static modules can push Defines values when registering
