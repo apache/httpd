@@ -701,7 +701,7 @@ AddType application/x-tar .tgz
 #  these come in three flavors
 #
 #    1) plain text
-#ErrorDocument 500 "The server made a boo boo.
+#ErrorDocument 500 "The server made a boo boo."
 #  n.b.  the (") marks it as text, it does not get output
 #
 #    2) local redirects
