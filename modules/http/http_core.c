@@ -302,7 +302,7 @@ static int ap_process_http_connection(conn_rec *c)
     return OK;
 }
 
-static void ap_http_insert_filter(request_rec *r)
+static void http_create_request(request_rec *r)
 {
     if (!r->main && !r->prev) {
         ap_add_output_filter_handle(ap_byterange_filter_handle,
@@ -321,7 +321,7 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_map_to_storage(ap_send_http_trace,NULL,NULL,APR_HOOK_MIDDLE);
     ap_hook_http_method(http_method,NULL,NULL,APR_HOOK_REALLY_LAST);
     ap_hook_default_port(http_port,NULL,NULL,APR_HOOK_REALLY_LAST);
-    ap_hook_insert_filter(ap_http_insert_filter, NULL, NULL, APR_HOOK_REALLY_LAST);
+    ap_hook_create_request(http_create_request, NULL, NULL, APR_HOOK_REALLY_LAST);
     ap_http_input_filter_handle =
         ap_register_input_filter("HTTP_IN", ap_http_filter,
                                  AP_FTYPE_HTTP_HEADER);
