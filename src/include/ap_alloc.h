@@ -275,8 +275,12 @@ API_EXPORT(int) spawn_child_err(pool *, int (*)(void *), void *,
 /* magic numbers --- min free bytes to consider a free pool block useable,
  * and the min amount to allocate if we have to go to malloc() */
 
+#ifndef BLOCK_MINFREE
 #define BLOCK_MINFREE 4096
+#endif
+#ifndef BLOCK_MINALLOC
 #define BLOCK_MINALLOC 8192
+#endif
 
 /* Finally, some accounting */
 
