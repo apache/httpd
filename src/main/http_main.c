@@ -6517,7 +6517,8 @@ int main(int argc, char *argv[], char *envp[])
 /* force Expat to be linked into the server executable */
 #ifdef USE_EXPAT
 #include "xmlparse.h"
-const XML_LChar * suck_in_expat(void)
+const XML_LChar *suck_in_expat(void);
+const XML_LChar *suck_in_expat(void)
 {
     return XML_ErrorString(XML_ERROR_NONE);
 }
