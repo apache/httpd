@@ -2724,25 +2724,20 @@ static const handler_rec negotiation_handlers[] =
     {NULL}
 };
 
+static void register_hooks(void)
+{
+    ap_hook_fixups(fix_encoding,NULL,NULL,HOOK_MIDDLE);
+    ap_hook_type_checker(handle_multi,NULL,NULL,HOOK_MIDDLE);
+}
+
 module MODULE_VAR_EXPORT negotiation_module =
 {
-    STANDARD_MODULE_STUFF,
-    NULL,                       /* initializer */
+    STANDARD20_MODULE_STUFF,
     create_neg_dir_config,      /* dir config creator */
     merge_neg_dir_configs,      /* dir merger --- default is to override */
     NULL,                       /* server config */
     NULL,                       /* merge server config */
     negotiation_cmds,           /* command table */
     negotiation_handlers,       /* handlers */
-    NULL,                       /* filename translation */
-    NULL,                       /* check_user_id */
-    NULL,                       /* check auth */
-    NULL,                       /* check access */
-    handle_multi,               /* type_checker */
-    fix_encoding,               /* fixups */
-    NULL,                       /* logger */
-    NULL,                       /* header parser */
-    NULL,                       /* child_init */
-    NULL,                       /* child_exit */
-    NULL                        /* post read-request */
+    register_hooks              /* register hooks */
 };

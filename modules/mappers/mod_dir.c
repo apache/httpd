@@ -222,25 +222,13 @@ static const handler_rec dir_handlers[] =
     {NULL}
 };
 
-module MODULE_VAR_EXPORT dir_module =
-{
-    STANDARD_MODULE_STUFF,
-    NULL,                       /* initializer */
-    create_dir_config,          /* dir config creater */
-    merge_dir_configs,          /* dir merger --- default is to override */
-    NULL,                       /* server config */
-    NULL,                       /* merge server config */
-    dir_cmds,                   /* command table */
-    dir_handlers,               /* handlers */
-    NULL,                       /* filename translation */
-    NULL,                       /* check_user_id */
-    NULL,                       /* check auth */
-    NULL,                       /* check access */
-    NULL,                       /* type_checker */
-    NULL,                       /* fixups */
-    NULL,                       /* logger */
-    NULL,                       /* header parser */
-    NULL,                       /* child_init */
-    NULL,                       /* child_exit */
-    NULL                        /* post read-request */
+module MODULE_VAR_EXPORT dir_module = {
+    STANDARD20_MODULE_STUFF,
+    create_dir_config,		/* create per-directory config structure */
+    merge_dir_configs,		/* merge per-directory config structures */
+    NULL,			/* create per-server config structure */
+    NULL,			/* merge per-server config structures */
+    dir_cmds,			/* command table */
+    dir_handlers,		/* handlers */
+    NULL			/* register hooks */
 };

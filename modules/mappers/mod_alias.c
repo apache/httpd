@@ -65,6 +65,7 @@
 
 #include "httpd.h"
 #include "http_config.h"
+#include "http_request.h"
 
 typedef struct {
     char *real;
@@ -394,25 +395,22 @@ static int fixup_redir(request_rec *r)
     return DECLINED;
 }
 
+static void register_hooks(void)
+{
+    static const char * const aszPre[]={ "mod_userdir.c",NULL };
+
+    ap_hook_translate_name(translate_alias_redir,aszPre,NULL,HOOK_MIDDLE);
+    ap_hook_fixups(fixup_redir,NULL,NULL,HOOK_MIDDLE);
+}
+
 module MODULE_VAR_EXPORT alias_module =
 {
-    STANDARD_MODULE_STUFF,
-    NULL,			/* initializer */
+    STANDARD20_MODULE_STUFF,
     create_alias_dir_config,	/* dir config creater */
     merge_alias_dir_config,	/* dir merger --- default is to override */
     create_alias_config,	/* server config */
     merge_alias_config,		/* merge server configs */
     alias_cmds,			/* command table */
     NULL,			/* handlers */
-    translate_alias_redir,	/* filename translation */
-    NULL,			/* check_user_id */
-    NULL,			/* check auth */
-    NULL,			/* check access */
-    NULL,			/* type_checker */
-    fixup_redir,		/* fixups */
-    NULL,			/* logger */
-    NULL,			/* header parser */
-    NULL,			/* child_init */
-    NULL,			/* child_exit */
-    NULL			/* post read-request */
+    register_hooks		/* register hooks */
 };

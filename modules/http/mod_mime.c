@@ -67,6 +67,7 @@
 #include "httpd.h"
 #include "http_config.h"
 #include "http_log.h"
+#include "http_request.h"
 
 typedef struct handlers_info {
     char *name;
@@ -238,12 +239,12 @@ static const command_rec mime_cmds[] =
 
 static table *hash_buckets[MIME_HASHSIZE];
 
-static void init_mime(server_rec *s, pool *p)
+static void mime_post_config(pool *p, pool *plog, pool *ptemp, server_rec *s)
 {
     configfile_t *f;
     char l[MAX_STRING_LEN];
     int x;
-    char *types_confname = ap_get_module_config(s->module_config, &mime_module);
+    const char *types_confname = ap_get_module_config(s->module_config, &mime_module);
 
     if (!types_confname)
         types_confname = TYPES_CONFIG_FILE;
@@ -378,25 +379,19 @@ static int find_ct(request_rec *r)
     return OK;
 }
 
-module MODULE_VAR_EXPORT mime_module =
+static void register_hooks(void)
 {
-    STANDARD_MODULE_STUFF,
-    init_mime,                  /* initializer */
-    create_mime_dir_config,     /* dir config creator */
-    merge_mime_dir_configs,     /* dir config merger */
-    NULL,                       /* server config */
-    NULL,                       /* merge server config */
-    mime_cmds,                  /* command table */
-    NULL,                       /* handlers */
-    NULL,                       /* filename translation */
-    NULL,                       /* check_user_id */
-    NULL,                       /* check auth */
-    NULL,                       /* check access */
-    find_ct,                    /* type_checker */
-    NULL,                       /* fixups */
-    NULL,                       /* logger */
-    NULL,                       /* header parser */
-    NULL,                       /* child_init */
-    NULL,                       /* child_exit */
-    NULL                        /* post read-request */
+    ap_hook_type_checker(find_ct,NULL,NULL,HOOK_MIDDLE);
+    ap_hook_post_config(mime_post_config,NULL,NULL,HOOK_MIDDLE);
+}
+
+module MODULE_VAR_EXPORT mime_module = {
+    STANDARD20_MODULE_STUFF,
+    create_mime_dir_config,	/* create per-directory config structure */
+    merge_mime_dir_configs,	/* merge per-directory config structures */
+    NULL,			/* create per-server config structure */
+    NULL,			/* merge per-server config structures */
+    mime_cmds,			/* command table */
+    NULL,			/* handlers */
+    register_hooks		/* register hooks */
 };

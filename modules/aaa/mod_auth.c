@@ -74,6 +74,7 @@
 #include "http_core.h"
 #include "http_log.h"
 #include "http_protocol.h"
+#include "http_request.h"
 
 typedef struct auth_config_struct {
     char *auth_pwfile;
@@ -309,24 +310,19 @@ static int check_user_access(request_rec *r)
 }
 
 module MODULE_VAR_EXPORT auth_module =
+static void register_hooks(void)
+{
+    ap_hook_check_user_id(authenticate_basic_user,NULL,NULL,HOOK_MIDDLE);
+    ap_hook_auth_checker(check_user_access,NULL,NULL,HOOK_MIDDLE);
+}
+
 {
     STANDARD_MODULE_STUFF,
-    NULL,			/* initializer */
-    create_auth_dir_config,	/* dir config creater */
+    STANDARD20_MODULE_STUFF,
     NULL,			/* dir merger --- default is to override */
     NULL,			/* server config */
     NULL,			/* merge server config */
     auth_cmds,			/* command table */
     NULL,			/* handlers */
     NULL,			/* filename translation */
-    authenticate_basic_user,	/* check_user_id */
-    check_user_access,		/* check auth */
-    NULL,			/* check access */
-    NULL,			/* type_checker */
-    NULL,			/* fixups */
-    NULL,			/* logger */
-    NULL,			/* header parser */
-    NULL,			/* child_init */
-    NULL,			/* child_exit */
-    NULL			/* post read-request */
-};
+    register_hooks		/* register hooks */

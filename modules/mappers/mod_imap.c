@@ -897,23 +897,12 @@ static const handler_rec imap_handlers[] =
 
 module MODULE_VAR_EXPORT imap_module =
 {
-    STANDARD_MODULE_STUFF,
-    NULL,                       /* initializer */
+    STANDARD20_MODULE_STUFF,
     create_imap_dir_config,     /* dir config creater */
     merge_imap_dir_configs,     /* dir merger --- default is to override */
     NULL,                       /* server config */
     NULL,                       /* merge server config */
     imap_cmds,                  /* command table */
     imap_handlers,              /* handlers */
-    NULL,                       /* filename translation */
-    NULL,                       /* check_user_id */
-    NULL,                       /* check auth */
-    NULL,                       /* check access */
-    NULL,                       /* type_checker */
-    NULL,                       /* fixups */
-    NULL,                       /* logger */
-    NULL,                       /* header parser */
-    NULL,                       /* child_init */
-    NULL,                       /* child_exit */
-    NULL                        /* post read-request */
+    NULL                        /* register hooks */
 };

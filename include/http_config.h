@@ -58,6 +58,8 @@
 #ifndef APACHE_HTTP_CONFIG_H
 #define APACHE_HTTP_CONFIG_H
 
+#include "ap_hooks.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -209,24 +211,10 @@ typedef struct module_struct {
                                  * (see also mod_so).
                                  */
 
-    /* init() occurs after config parsing, but before any children are
-     * forked.
-     * Modules should not rely on the order in which create_server_config
-     * and create_dir_config are called.
-     */
-#ifdef ULTRIX_BRAIN_DEATH
-    void (*init) ();
-    void *(*create_dir_config) ();
-    void *(*merge_dir_config) ();
-    void *(*create_server_config) ();
-    void *(*merge_server_config) ();
-#else
-    void (*init) (server_rec *, pool *);
     void *(*create_dir_config) (pool *p, char *dir);
     void *(*merge_dir_config) (pool *p, void *base_conf, void *new_conf);
     void *(*create_server_config) (pool *p, server_rec *s);
     void *(*merge_server_config) (pool *p, void *base_conf, void *new_conf);
-#endif
 
     const command_rec *cmds;
     const handler_rec *handlers;
@@ -243,38 +231,9 @@ typedef struct module_struct {
      *                  supposed to handle this was configured wrong).
      * type_checker --- Determine MIME type of the requested entity;
      *                  sets content_type, _encoding and _language fields.
-     * logger --- log a transaction.
-     * post_read_request --- run right after read_request or internal_redirect,
-     *                  and not run during any subrequests.
      */
 
-    int (*translate_handler) (request_rec *);
-    int (*ap_check_user_id) (request_rec *);
-    int (*auth_checker) (request_rec *);
-    int (*access_checker) (request_rec *);
-    int (*type_checker) (request_rec *);
-    int (*fixer_upper) (request_rec *);
-    int (*logger) (request_rec *);
-    int (*header_parser) (request_rec *);
-
-    /* Regardless of the model the server uses for managing "units of
-     * execution", i.e. multi-process, multi-threaded, hybrids of those,
-     * there is the concept of a "heavy weight process".  That is, a
-     * process with its own memory space, file spaces, etc.  This method,
-     * child_init, is called once for each heavy-weight process before
-     * any requests are served.  Note that no provision is made yet for
-     * initialization per light-weight process (i.e. thread).  The
-     * parameters passed here are the same as those passed to the global
-     * init method above.
-     */
-#ifdef ULTRIX_BRAIN_DEATH
-    void (*child_init) ();
-    void (*child_exit) ();
-#else
-    void (*child_init) (server_rec *, pool *);
-    void (*child_exit) (server_rec *, pool *);
-#endif
-    int (*post_read_request) (request_rec *);
+    void (*register_hooks) (void);
 } module;
 
 /* Initializer for the first few module slots, which are only
@@ -337,6 +296,19 @@ API_EXPORT(module *) ap_find_linked_module(const char *name);
 /* for implementing subconfigs and customized config files */
 API_EXPORT(const char *) ap_srm_command_loop(cmd_parms *parms, void *config);
 
+/* ap_check_cmd_context() definitions: */
+API_EXPORT(const char *) ap_check_cmd_context(cmd_parms *cmd, unsigned forbidden);
+
+/* ap_check_cmd_context():              Forbidden in: */
+#define  NOT_IN_VIRTUALHOST     0x01 /* <Virtualhost> */
+#define  NOT_IN_LIMIT           0x02 /* <Limit> */
+#define  NOT_IN_DIRECTORY       0x04 /* <Directory> */
+#define  NOT_IN_LOCATION        0x08 /* <Location> */
+#define  NOT_IN_FILES           0x10 /* <Files> */
+#define  NOT_IN_DIR_LOC_FILE    (NOT_IN_DIRECTORY|NOT_IN_LOCATION|NOT_IN_FILES) /* <Directory>/<Location>/<Files>*/
+#define  GLOBAL_ONLY            (NOT_IN_VIRTUALHOST|NOT_IN_LIMIT|NOT_IN_DIR_LOC_FILE)
+
+
 #ifdef CORE_PRIVATE
 
 extern API_VAR_EXPORT module *top_module;
@@ -351,13 +323,12 @@ void ap_single_module_configure(pool *p, server_rec *s, module *m);
 
 /* For http_main.c... */
 
-server_rec *ap_read_config(pool *conf_pool, pool *temp_pool, char *config_name);
-void ap_init_modules(pool *p, server_rec *s);
-void ap_child_init_modules(pool *p, server_rec *s);
-void ap_child_exit_modules(pool *p, server_rec *s);
 void ap_setup_prelinked_modules(void);
 void ap_show_directives(void);
 void ap_show_modules(void);
+server_rec *ap_read_config(pool *conf_pool, pool *temp_pool, const char *config_name);
+void ap_post_config_hook(pool *pconf, pool *plog, pool *ptemp, server_rec *s);
+void ap_child_init_hook(pool *pchild, server_rec *s);
 
 /* For http_request.c... */
 
@@ -376,33 +347,13 @@ int ap_parse_htaccess(void **result, request_rec *r, int override,
 
 CORE_EXPORT(const char *) ap_init_virtual_host(pool *p, const char *hostname,
 				server_rec *main_server, server_rec **);
-void ap_process_resource_config(server_rec *s, char *fname, pool *p, pool *ptemp);
-
-/* ap_check_cmd_context() definitions: */
-API_EXPORT(const char *) ap_check_cmd_context(cmd_parms *cmd, unsigned forbidden);
-
-/* ap_check_cmd_context():              Forbidden in: */
-#define  NOT_IN_VIRTUALHOST     0x01 /* <Virtualhost> */
-#define  NOT_IN_LIMIT           0x02 /* <Limit> */
-#define  NOT_IN_DIRECTORY       0x04 /* <Directory> */
-#define  NOT_IN_LOCATION        0x08 /* <Location> */
-#define  NOT_IN_FILES           0x10 /* <Files> */
-#define  NOT_IN_DIR_LOC_FILE    (NOT_IN_DIRECTORY|NOT_IN_LOCATION|NOT_IN_FILES) /* <Directory>/<Location>/<Files>*/
-#define  GLOBAL_ONLY            (NOT_IN_VIRTUALHOST|NOT_IN_LIMIT|NOT_IN_DIR_LOC_FILE)
-
+void ap_process_resource_config(server_rec *s, const char *fname, pool *p, pool *ptemp);
 
 /* Module-method dispatchers, also for http_request.c */
 
 int ap_translate_name(request_rec *);
-int ap_check_access(request_rec *);	/* check access on non-auth basis */
 int ap_check_user_id(request_rec *);	/* obtain valid username from client auth */
-int ap_check_auth(request_rec *);	/* check (validated) user is authorized here */
-int ap_find_types(request_rec *);	/* identify MIME type */
-int ap_run_fixups(request_rec *);	/* poke around for other metainfo, etc.... */
 int ap_invoke_handler(request_rec *);
-int ap_log_transaction(request_rec *r);
-int ap_header_parse(request_rec *);
-int ap_run_post_read_request(request_rec *);
 
 /* for mod_perl */
 
@@ -412,6 +363,15 @@ CORE_EXPORT(void *) ap_set_config_vectors(cmd_parms *parms, void *config, module
 CORE_EXPORT(const char *) ap_handle_command(cmd_parms *parms, void *config, const char *l);
 
 #endif
+
+  /* Hooks */
+DECLARE_HOOK(int,header_parser,(request_rec *))
+DECLARE_HOOK(void,pre_config,(pool *pconf,pool *plog,pool *ptemp))
+DECLARE_HOOK(void,post_config,
+	     (pool *pconf,pool *plog,pool *ptemp,server_rec *s))
+DECLARE_HOOK(void,open_logs,
+	     (pool *pconf,pool *plog,pool *ptemp,server_rec *s))
+DECLARE_HOOK(void,child_init,(pool *pchild, server_rec *s))
 
 #ifdef __cplusplus
 }

@@ -75,6 +75,13 @@
 #include "util_date.h"          /* For parseHTTPdate and BAD_DATE */
 #include <stdarg.h>
 
+HOOK_STRUCT(
+	    HOOK_LINK(post_read_request)
+	    HOOK_LINK(log_transaction)
+	    HOOK_LINK(http_method)
+	    HOOK_LINK(default_port)
+);
+
 #define SET_BYTES_SENT(r) \
   do { if (r->sent_bodyct) \
           ap_bgetopt (r->connection->client, BO_BYTECT, &r->bytes_sent); \
@@ -949,7 +956,7 @@ request_rec *ap_read_request(conn_rec *conn)
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
                          "request failed: URI too long");
             ap_send_error_response(r, 0);
-            ap_log_transaction(r);
+            ap_run_log_transaction(r);
             return r;
         }
         return NULL;
@@ -964,7 +971,7 @@ request_rec *ap_read_request(conn_rec *conn)
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
                          "request failed: error reading the headers");
             ap_send_error_response(r, 0);
-            ap_log_transaction(r);
+            ap_run_log_transaction(r);
             return r;
         }
     }
@@ -981,7 +988,7 @@ request_rec *ap_read_request(conn_rec *conn)
             r->header_only = 0;
             r->status = HTTP_BAD_REQUEST;
             ap_send_error_response(r, 0);
-            ap_log_transaction(r);
+            ap_run_log_transaction(r);
             return r;
         }
     }
@@ -1013,7 +1020,7 @@ request_rec *ap_read_request(conn_rec *conn)
                       "client sent HTTP/1.1 request without hostname "
                       "(see RFC2068 section 9, and 14.23): %s", r->uri);
         ap_send_error_response(r, 0);
-        ap_log_transaction(r);
+        ap_run_log_transaction(r);
         return r;
     }
     if (((expect = ap_table_get(r->headers_in, "Expect")) != NULL) &&
@@ -1034,14 +1041,14 @@ request_rec *ap_read_request(conn_rec *conn)
                           "Expect: %s", expect);
             ap_send_error_response(r, 0);
             (void) ap_discard_request_body(r);
-            ap_log_transaction(r);
+            ap_run_log_transaction(r);
             return r;
         }
     }
 
     if ((access_status = ap_run_post_read_request(r))) {
         ap_die(access_status, r);
-        ap_log_transaction(r);
+        ap_run_log_transaction(r);
         return NULL;
     }
 
@@ -2740,3 +2747,10 @@ void ap_send_error_response(request_rec *r, int recursive_error)
     ap_finalize_request_protocol(r);
     ap_rflush(r);
 }
+
+IMPLEMENT_HOOK_RUN_ALL(int,post_read_request,(request_rec *r),(r),OK,DECLINED)
+IMPLEMENT_HOOK_RUN_ALL(int,log_transaction,(request_rec *r),(r),OK,DECLINED)
+IMPLEMENT_HOOK_RUN_FIRST(const char *,http_method,(const request_rec *r),(r),
+			 NULL)
+IMPLEMENT_HOOK_RUN_FIRST(unsigned short,default_port,(const request_rec *r),
+			 (r),0)

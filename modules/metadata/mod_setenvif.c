@@ -118,6 +118,7 @@
 #include "http_config.h"
 #include "http_core.h"
 #include "http_log.h"
+#include "http_protocol.h"
 
 enum special {
     SPECIAL_NOT,
@@ -399,25 +400,20 @@ static int match_headers(request_rec *r)
     return DECLINED;
 }
 
+static void register_hooks(void)
+{
+    ap_hook_post_read_request(match_headers,NULL,NULL,HOOK_MIDDLE);
+}
+
 module MODULE_VAR_EXPORT setenvif_module =
 {
-    STANDARD_MODULE_STUFF,
-    NULL,                       /* initializer */
+    STANDARD20_MODULE_STUFF,
     NULL,                       /* dir config creater */
     NULL,                       /* dir merger --- default is to override */
     create_setenvif_config,     /* server config */
     merge_setenvif_config,      /* merge server configs */
     setenvif_module_cmds,       /* command table */
     NULL,                       /* handlers */
-    NULL,                       /* filename translation */
-    NULL,                       /* check_user_id */
-    NULL,                       /* check auth */
-    NULL,                       /* check access */
-    NULL,                       /* type_checker */
-    NULL,                       /* fixups */
-    NULL,                       /* logger */
-    NULL,                       /* input header parse */
-    NULL,                       /* child (process) initialization */
-    NULL,                       /* child (process) rundown */
-    match_headers               /* post_read_request */
+    register_hooks		/* register hooks */
 };
+

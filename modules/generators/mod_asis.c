@@ -107,8 +107,10 @@ static int asis_handler(request_rec *r)
     }
 
     ap_send_http_header(r);
-    if (!r->header_only)
-	ap_send_fd(f, r);
+    if (!r->header_only) {
+	fseek(f, 0, SEEK_CUR);
+	ap_send_fd(fileno(f), r);
+    }
 
     ap_pfclose(r->pool, f);
     return OK;
@@ -123,23 +125,12 @@ static const handler_rec asis_handlers[] =
 
 module MODULE_VAR_EXPORT asis_module =
 {
-    STANDARD_MODULE_STUFF,
-    NULL,			/* initializer */
+    STANDARD20_MODULE_STUFF,
     NULL,			/* create per-directory config structure */
     NULL,			/* merge per-directory config structures */
     NULL,			/* create per-server config structure */
     NULL,			/* merge per-server config structures */
     NULL,			/* command table */
     asis_handlers,		/* handlers */
-    NULL,			/* translate_handler */
-    NULL,			/* check_user_id */
-    NULL,			/* check auth */
-    NULL,			/* check access */
-    NULL,			/* type_checker */
-    NULL,			/* pre-run fixups */
-    NULL,			/* logger */
-    NULL,			/* header parser */
-    NULL,			/* child_init */
-    NULL,			/* child_exit */
-    NULL			/* post read-request */
+    NULL			/* register hooks */
 };

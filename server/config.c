@@ -81,6 +81,25 @@
 #include "http_vhost.h"
 #include "explain.h"
 
+HOOK_STRUCT(
+	    HOOK_LINK(header_parser)
+	    HOOK_LINK(pre_config)
+	    HOOK_LINK(post_config)
+	    HOOK_LINK(open_logs)
+	    HOOK_LINK(child_init)
+)
+
+IMPLEMENT_HOOK_RUN_ALL(int,header_parser,(request_rec *r),(r),OK,DECLINED)
+IMPLEMENT_HOOK_VOID(pre_config,(pool *pconf,pool *plog,pool *ptemp),
+		    (pconf,plog,ptemp))
+IMPLEMENT_HOOK_VOID(post_config,
+		    (pool *pconf, pool *plog, pool *ptemp, server_rec *s),
+		    (pconf,plog,ptemp,s))
+IMPLEMENT_HOOK_VOID(open_logs,
+		    (pool *pconf, pool *plog, pool *ptemp, server_rec *s),
+		    (pconf,plog,ptemp,s))
+IMPLEMENT_HOOK_VOID(child_init,(pool *pchild, server_rec *s),(pchild,s))
+
 DEF_Explain
 
 /****************************************************************
@@ -214,207 +233,14 @@ void *ap_create_request_config(pool *p)
     return create_empty_config(p);
 }
 
-CORE_EXPORT(void *) ap_create_per_dir_config(pool *p)
+void *ap_create_conn_config(pool *p)
 {
     return create_empty_config(p);
 }
 
-#ifdef EXPLAIN
-
-struct {
-    int offset;
-    char *method;
-} aMethods[] =
-
+CORE_EXPORT(void *) ap_create_per_dir_config(pool *p)
 {
-#define m(meth)	{ XtOffsetOf(module,meth),#meth }
-    m(translate_handler),
-    m(ap_check_user_id),
-    m(auth_checker),
-    m(type_checker),
-    m(fixer_upper),
-    m(logger),
-    { -1, "?" },
-#undef m
-};
-
-char *ShowMethod(module *modp, int offset)
-{
-    int n;
-    static char buf[200];
-
-    for (n = 0; aMethods[n].offset >= 0; ++n)
-	if (aMethods[n].offset == offset)
-	    break;
-    ap_snprintf(buf, sizeof(buf), "%s:%s", modp->name, aMethods[n].method);
-    return buf;
-}
-#else
-#define ShowMethod(modp,offset)
-#endif
-
-/****************************************************************
- *
- * Dispatch through the modules to find handlers for various phases
- * of request handling.  These are invoked by http_request.c to actually
- * do the dirty work of slogging through the module structures.
- */
-
-/*
- * Optimized run_method routines.  The observation here is that many modules
- * have NULL for most of the methods.  So we build optimized lists of
- * everything.  If you think about it, this is really just like a sparse array
- * implementation to avoid scanning the zero entries.
- */
-static const int method_offsets[] =
-{
-    XtOffsetOf(module, translate_handler),
-    XtOffsetOf(module, ap_check_user_id),
-    XtOffsetOf(module, auth_checker),
-    XtOffsetOf(module, access_checker),
-    XtOffsetOf(module, type_checker),
-    XtOffsetOf(module, fixer_upper),
-    XtOffsetOf(module, logger),
-    XtOffsetOf(module, header_parser),
-    XtOffsetOf(module, post_read_request)
-};
-#define NMETHODS	(sizeof (method_offsets)/sizeof (method_offsets[0]))
-
-static struct {
-    int translate_handler;
-    int ap_check_user_id;
-    int auth_checker;
-    int access_checker;
-    int type_checker;
-    int fixer_upper;
-    int logger;
-    int header_parser;
-    int post_read_request;
-} offsets_into_method_ptrs;
-
-/*
- * This is just one big array of method_ptrs.  It's constructed such that,
- * for example, method_ptrs[ offsets_into_method_ptrs.logger ] is the first
- * logger function.  You go one-by-one from there until you hit a NULL.
- * This structure was designed to hopefully maximize cache-coolness.
- */
-static handler_func *method_ptrs;
-
-/* routine to reconstruct all these shortcuts... called after every
- * add_module.
- * XXX: this breaks if modules dink with their methods pointers
- */
-static void build_method_shortcuts(void)
-{
-    module *modp;
-    int how_many_ptrs;
-    int i;
-    int next_ptr;
-    handler_func fp;
-
-    if (method_ptrs) {
-	/* free up any previous set of method_ptrs */
-	free(method_ptrs);
-    }
-
-    /* first we count how many functions we have */
-    how_many_ptrs = 0;
-    for (modp = top_module; modp; modp = modp->next) {
-	for (i = 0; i < NMETHODS; ++i) {
-	    if (*(handler_func *) (method_offsets[i] + (char *) modp)) {
-		++how_many_ptrs;
-	    }
-	}
-    }
-    method_ptrs = malloc((how_many_ptrs + NMETHODS) * sizeof(handler_func));
-    if (method_ptrs == NULL) {
-	fprintf(stderr, "Ouch!  Out of memory in build_method_shortcuts()!\n");
-    }
-    next_ptr = 0;
-    for (i = 0; i < NMETHODS; ++i) {
-	/* XXX: This is an itsy bit presumptuous about the alignment
-	 * constraints on offsets_into_method_ptrs.  I can't remember if
-	 * ANSI says this has to be true... -djg */
-	((int *) &offsets_into_method_ptrs)[i] = next_ptr;
-	for (modp = top_module; modp; modp = modp->next) {
-	    fp = *(handler_func *) (method_offsets[i] + (char *) modp);
-	    if (fp) {
-		method_ptrs[next_ptr++] = fp;
-	    }
-	}
-	method_ptrs[next_ptr++] = NULL;
-    }
-}
-
-
-static int run_method(request_rec *r, int offset, int run_all)
-{
-    int i;
-
-    for (i = offset; method_ptrs[i]; ++i) {
-	handler_func mod_handler = method_ptrs[i];
-
-	if (mod_handler) {
-	    int result;
-
-	    result = (*mod_handler) (r);
-
-	    if (result != DECLINED && (!run_all || result != OK))
-		return result;
-	}
-    }
-
-    return run_all ? OK : DECLINED;
-}
-
-int ap_translate_name(request_rec *r)
-{
-    return run_method(r, offsets_into_method_ptrs.translate_handler, 0);
-}
-
-int ap_check_access(request_rec *r)
-{
-    return run_method(r, offsets_into_method_ptrs.access_checker, 1);
-}
-
-int ap_find_types(request_rec *r)
-{
-    return run_method(r, offsets_into_method_ptrs.type_checker, 0);
-}
-
-int ap_run_fixups(request_rec *r)
-{
-    return run_method(r, offsets_into_method_ptrs.fixer_upper, 1);
-}
-
-int ap_log_transaction(request_rec *r)
-{
-    return run_method(r, offsets_into_method_ptrs.logger, 1);
-}
-
-int ap_header_parse(request_rec *r)
-{
-    return run_method(r, offsets_into_method_ptrs.header_parser, 1);
-}
-
-int ap_run_post_read_request(request_rec *r)
-{
-    return run_method(r, offsets_into_method_ptrs.post_read_request, 1);
-}
-
-/* Auth stuff --- anything that defines one of these will presumably
- * want to define something for the other.  Note that check_auth is
- * separate from check_access to make catching some config errors easier.
- */
-
-int ap_check_user_id(request_rec *r)
-{
-    return run_method(r, offsets_into_method_ptrs.ap_check_user_id, 0);
-}
-
-int ap_check_auth(request_rec *r)
-{
-    return run_method(r, offsets_into_method_ptrs.auth_checker, 0);
+    return create_empty_config(p);
 }
 
 /*
@@ -532,6 +358,23 @@ int ap_invoke_handler(request_rec *r)
     return HTTP_INTERNAL_SERVER_ERROR;
 }
 
+int g_bDebugHooks;
+const char *g_szCurrentHookName;
+
+static void register_hooks(module *m)
+    {
+    if(m->register_hooks)
+	{
+	if(getenv("SHOW_HOOKS"))
+	    {
+	    printf("Registering hooks for %s\n",m->name);
+	    g_bDebugHooks=1;
+	    }
+	g_szCurrentHookName=m->name;
+	m->register_hooks();
+	}
+    }
+
 /* One-time setup for precompiled modules --- NOT to be done on restart */
 
 API_EXPORT(void) ap_add_module(module *m)
@@ -583,6 +426,9 @@ API_EXPORT(void) ap_add_module(module *m)
 	m->name = tmp;
     }
 #endif /*_OSD_POSIX*/
+
+    /* FIXME: is this the right place to call this? */
+    register_hooks(m);
 }
 
 /* 
@@ -709,6 +555,8 @@ void ap_setup_prelinked_modules()
      */
     for (m = ap_prelinked_modules; *m != NULL; m++)
         ap_add_module(*m);
+
+    ap_sort_hooks();
 }
 
 API_EXPORT(const char *) ap_find_module_name(module *m)
@@ -1272,7 +1120,6 @@ int ap_parse_htaccess(void **result, request_rec *r, int override,
                           "access to be safe");
             return HTTP_FORBIDDEN;
         }
-    }
 
 /* cache it */
     new = ap_palloc(r->pool, sizeof(struct htaccess_result));
@@ -1460,41 +1307,18 @@ void ap_single_module_configure(pool *p, server_rec *s, module *m)
                              (*m->create_dir_config)(p, NULL));
 }
 
-void ap_init_modules(pool *p, server_rec *s)
+void ap_post_config_hook(pool *pconf, pool *plog, pool *ptemp, server_rec *s)
 {
-    module *m;
-
-    for (m = top_module; m; m = m->next)
-	if (m->init)
-	    (*m->init) (s, p);
-    build_method_shortcuts();
-    init_handlers(p);
+    ap_run_post_config(pconf,plog,ptemp,s); 
+    init_handlers(pconf);
 }
 
-void ap_child_init_modules(pool *p, server_rec *s)
+void ap_child_init_hook(pool *pchild, server_rec *s)
 {
-    module *m;
+    /* TODO: uh this seems ugly, is there a better way? */
+    ap_child_init_alloc();
 
-    for (m = top_module; m; m = m->next)
-	if (m->child_init)
-	    (*m->child_init) (s, p);
-}
-
-void ap_child_exit_modules(pool *p, server_rec *s)
-{
-    module *m;
-
-#ifdef SIGHUP
-    signal(SIGHUP, SIG_IGN);
-#endif
-#ifdef SIGUSR1
-    signal(SIGUSR1, SIG_IGN);
-#endif
-
-    for (m = top_module; m; m = m->next)
-	if (m->child_exit)
-	    (*m->child_exit) (s, p);
-
+    ap_run_child_init(pchild,s);
 }
 
 /********************************************************************
@@ -1598,3 +1422,4 @@ void ap_show_modules()
     for (n = 0; ap_loaded_modules[n]; ++n)
 	printf("  %s\n", ap_loaded_modules[n]->name);
 }
+

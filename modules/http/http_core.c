@@ -2651,24 +2651,37 @@ static const handler_rec core_handlers[] = {
 { NULL, NULL }
 };
 
+static void core_open_logs(pool *pconf, pool *plog, pool *ptemp, server_rec *s)
+{
+    ap_open_logs(s, pconf);
+}
+
+static const char *core_method(const request_rec *r)
+    { return "http"; }
+
+static unsigned short core_port(const request_rec *r)
+    { return DEFAULT_HTTP_PORT; }
+
+static void register_hooks(void)
+{
+    ap_hook_translate_name(core_translate,NULL,NULL,HOOK_REALLY_LAST);
+    ap_hook_process_connection(ap_process_http_connection,NULL,NULL,
+			       HOOK_REALLY_LAST);
+    ap_hook_http_method(core_method,NULL,NULL,HOOK_REALLY_LAST);
+    ap_hook_default_port(core_port,NULL,NULL,HOOK_REALLY_LAST);
+    ap_hook_open_logs(core_open_logs,NULL,NULL,HOOK_MIDDLE);
+    /* FIXME: I suspect we can eliminate the need for these - Ben */
+    ap_hook_type_checker(do_nothing,NULL,NULL,HOOK_REALLY_LAST);
+    ap_hook_access_checker(do_nothing,NULL,NULL,HOOK_REALLY_LAST);
+}
+
 API_VAR_EXPORT module core_module = {
-    STANDARD_MODULE_STUFF,
-    NULL,			/* initializer */
+    STANDARD20_MODULE_STUFF,
     create_core_dir_config,	/* create per-directory config structure */
     merge_core_dir_configs,	/* merge per-directory config structures */
     create_core_server_config,	/* create per-server config structure */
     merge_core_server_configs,	/* merge per-server config structures */
     core_cmds,			/* command table */
     core_handlers,		/* handlers */
-    core_translate,		/* translate_handler */
-    NULL,			/* check_user_id */
-    NULL,			/* check auth */
-    do_nothing,			/* check access */
-    do_nothing,			/* type_checker */
-    NULL,			/* pre-run fixups */
-    NULL,			/* logger */
-    NULL,			/* header parser */
-    NULL,			/* child_init */
-    NULL,			/* child_exit */
-    NULL			/* post_read_request */
+    register_hooks		/* register hooks */
 };
