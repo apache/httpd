@@ -1180,7 +1180,7 @@ int ap_proxy_ftp_handler(request_rec *r, ap_cache_el *c, char *url)
           r->status_line, CRLF, NULL), cachefp) != APR_SUCCESS) {
 	    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
 		"proxy: error writing CRLF to cache");
-	    c = ap_proxy_cache_error(&c);
+	    ap_proxy_cache_error(&c);
             cachefp = NULL;
     }
 
@@ -1191,7 +1191,7 @@ int ap_proxy_ftp_handler(request_rec *r, ap_cache_el *c, char *url)
     if (cachefp && apr_puts(CRLF, cachefp) == -1) {
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
 	    "proxy: error writing CRLF to cache");
-	c = ap_proxy_cache_error(&c);
+	ap_proxy_cache_error(&c);
         cachefp = NULL;
     }
 
