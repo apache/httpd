@@ -7,7 +7,7 @@
     <title>Apache suEXEC Support</title>
 
   </head>
-  <!-- English revision: 1.27 -->
+  <!-- English revision: 1.29 -->
   <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
   <body bgcolor="#ffffff" text="#000000" link="#0000ff"
   vlink="#000080" alink="#ff0000">
@@ -385,29 +385,18 @@
       オプションにあわせて少なくとも一つは --with-suexec-xxxxx
       オプションが指定されなければなりません。</dd>
 
+      <dt><code>--with-suexec-bin=<em>PATH</em></code></dt>
+
+      <dd>セキュリティ上の理由により、suexec バイナリのパスはサーバに
+      ハードコードされている必要があります。デフォルトのパスを
+      変えたいときはこのオプションを使ってください。<em>例えば</em>、
+      <code>--with-suexec-bin=/usr/sbin/suexec</code> のように。</dd>
+
       <dt><code>--with-suexec-caller=<em>UID</em></code></dt>
 
       <dd>Apache を通常動作させる<a
       href="mod/mpm_common.html#user">ユーザ名</a>を指定します。
       このユーザだけが suexec の実行を許可されたユーザになります。</dd>
-
-      <dt><code>--with-suexec-docroot=<em>DIR</em></code></dt>
-
-      <dd>Apache のドキュメントルートを設定します。これが suEXEC
-      の動作で使用する唯一のディレクトリ階層になります (UserDir
-      の指定は別)。デフォルトでは --datedir に "/htdocs"
-      というサフィックスをつけたものです。
-      "<code>--datadir=/home/apache</code>" として設定すると、
-      suEXEC wrapper にとって "/home/apache/htdocs"
-      がドキュメントルートとして使われます。</dd>
-
-      <dt><code>--with-suexec-logfile=<em>FILE</em></code></dt>
-
-      <dd>suEXEC の処理とエラーが記録されるファイル名を指定します。
-      (監査やデバッグ目的に有用)
-      デフォルトではログファイルは "suexec_log" という名前で、
-      標準のログファイルディレクトリ (--logfiledir) に置かれます。
-      </dd>
 
       <dt><code>--with-suexec-userdir=<em>DIR</em></code></dt>
 
@@ -427,6 +416,16 @@
       <strong>このように指定されなければ "~userdir" cgi
       へのリクエストが動作しません。</strong></dd>
 
+      <dt><code>--with-suexec-docroot=<em>DIR</em></code></dt>
+
+      <dd>Apache のドキュメントルートを設定します。これが suEXEC
+      の動作で使用する唯一のディレクトリ階層になります (UserDir
+      の指定は別)。デフォルトでは --datedir に "/htdocs"
+      というサフィックスをつけたものです。
+      "<code>--datadir=/home/apache</code>" として設定すると、
+      suEXEC wrapper にとって "/home/apache/htdocs"
+      がドキュメントルートとして使われます。</dd>
+
       <dt><code>--with-suexec-uidmin=<em>UID</em></code></dt>
 
       <dd>suEXEC の対象ユーザとして許される UID の最小値を指定します。
@@ -438,6 +437,14 @@
       <dd>suEXEC の対象グループとして許される GID
       の最小値を指定します。大抵のシステムでは 100 が一般的なので、
       デフォルト値としても 100 が使われています。</dd>
+
+      <dt><code>--with-suexec-logfile=<em>FILE</em></code></dt>
+
+      <dd>suEXEC の処理とエラーが記録されるファイル名を指定します。
+      (監査やデバッグ目的に有用)
+      デフォルトではログファイルは "suexec_log" という名前で、
+      標準のログファイルディレクトリ (--logfiledir) に置かれます。
+      </dd>
 
       <dt><code>--with-suexec-safepath=<em>PATH</em></code></dt>
 
