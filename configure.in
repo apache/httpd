@@ -50,7 +50,7 @@ APR_CONFIG_NICE(config.nice)
 nl='
 '
 dnl Check that mkdir -p works
-APACHE_MKDIR_P_CHECK
+APR_MKDIR_P_CHECK($top_srcdir/build/mkdir.sh)
 
 dnl ## Run configure for packages Apache uses
 
