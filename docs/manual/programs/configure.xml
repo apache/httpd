@@ -8,7 +8,7 @@
 
 <summary>
     <p>The <code>configure</code> script configures the source tree
-    for compiling and installing the Apache HTTP Server at your
+    for compiling and installing the Apache HTTP Server on your
     particular platform. Various options allow the compilation of a
     server corresponding to your personal requirements.</p>
 
@@ -27,7 +27,7 @@
     <p><code><strong>./configure</strong> [<var>OPTION</var>]...
     [<var>VAR</var>=<var>VALUE</var>]...</code></p>
 
-    <p>To assign environment variables (e.g., <code>CC</code>,
+    <p>To assign environment variables (e.g. <code>CC</code>,
     <code>CFLAGS</code> ...), specify them as
     <code><var>VAR</var>=<var>VALUE</var></code>. See <a href="#env">below</a>
     for descriptions of some of the useful variables.</p>
@@ -262,7 +262,7 @@
         explicitly while other modules have to be enabled explicitly or by
         using the keywords <code>most</code> or <code>all</code> (see
         <code>--enable-mods-shared</code> below for further explanation) to be
-        available. Therefor use the options below.</p>
+        available. Therefore use the options below.</p>
 
       <dl>
         <dt><code>--disable-actions</code></dt>
@@ -319,7 +319,7 @@
         <dd>Disable the HTTP protocol handling. The <code>http</code> module is
           a basic one, enabling the server to function as an HTTP server. It is
           only useful to disable it if you want to use another protocol module
-          instead. <strong>Don't disable this module until you are really sure
+          instead. <strong>Don't disable this module unless you are really sure
             what you are doing.</strong><br/>
           Note: This module will always be linked statically.</dd> 
 
@@ -524,7 +524,7 @@
 
         <dt><code>--enable-so</code></dt>
         <dd>Enable DSO capability provided by <module>mod_so</module>. This
-          module will automatically enabled if you use the
+          module will be automatically enabled if you use the
           <code>--enable-mods-shared</code> option.</dd>
 
         <dt><code>--enable-speling</code></dt>
@@ -553,8 +553,8 @@
             <code>configure</code> is considering <var>module-file</var> to be a
             an absolute file path and tries to copy the source file into the
             <var>module-type</var> subdirectory.</p>
-          <p>This option is useful to add small external modules consiting of
-            one source file. For bigger modules you should read the vendors
+          <p>This option is useful to add small external modules consisting of
+            one source file. For bigger modules you should read the vendor's
             documentation.</p>
           <note><title>Note</title>
             If you want to build a DSO module instead of a statically linked use
@@ -619,7 +619,7 @@
           <code>httpd.conf</code>. The default is 80.</dd>
 
         <dt><code>--with-program-name</code></dt>
-        <dd>Define an alternate executable name.</dd>
+        <dd>Define an alternative executable name.</dd>
       </dl>
     </section>
   </section>
@@ -687,8 +687,8 @@
     <dl>
       <dt><code>--enable-static-support</code></dt>
       <dd>Build a statically linked version of the support binaries. This
-        means, a stand-alone executable will be build with all necessary
-        libraries are integrated. Otherwise the support binaries are linked
+        means, a stand-alone executable will be built with all the necessary
+        libraries integrated. Otherwise the support binaries are linked
         dynamically by default.</dd>
 
       <dt><code>--enable-suexec</code></dt>
@@ -781,7 +781,7 @@
 
         <dt><code>--with-suexec-umask</code></dt>
         <dd>Set <code>umask</code> for processes started by <code>suexec</code>.
-          It default to your system settings.</dd>
+          It defaults to your system settings.</dd>
       </dl>
     </section>
   </section>
