@@ -38,7 +38,7 @@
     sections.</p>
 
     <p>The directives <a
-    href="../mod/core.html#port"><samp>Port</samp></a>, <a
+    href="../mod/mpm_common.html#listen"><samp>Listen</samp></a>, <a
     href="../mod/core.html#servername"><samp>ServerName</samp></a>,
     <a
     href="../mod/core.html#serverpath"><samp>ServerPath</samp></a>,
@@ -48,18 +48,15 @@
     each appearance overrides the previous appearance (within that
     server).</p>
 
-    <p>The default value of the <code>Port</code> field for
+    <p>The default value of the <code>Listen</code> field for
     main_server is 80. The main_server has no default
     <code>ServerPath</code>, or <code>ServerAlias</code>. The
     default <code>ServerName</code> is deduced from the servers IP
     address.</p>
 
-    <p>The main_server Port directive has two functions due to
-    legacy compatibility with NCSA configuration files. One
+    <p>The main_server Listen directive has two functions.  One
     function is to determine the default network port Apache will
-    bind to. This default is overridden by the existence of any <a
-    href="../mod/mpm_common.html#listen"><code>Listen</code></a>
-    directives. The second function is to specify the port number
+    bind to.  The second function is to specify the port number
     which is used in absolute URIs during redirects.</p>
 
     <p>Unlike the main_server, vhost ports <em>do not</em> affect
@@ -68,7 +65,7 @@
     <p>Each address appearing in the <code>VirtualHost</code>
     directive can have an optional port. If the port is unspecified
     it defaults to the value of the main_server's most recent
-    <code>Port</code> statement. The special port <samp>*</samp>
+    <code>Listen</code> statement. The special port <samp>*</samp>
     indicates a wildcard that matches any port. Collectively the
     entire set of addresses (including multiple <samp>A</samp>
     record results from DNS lookups) are called the vhost's
@@ -102,23 +99,23 @@
                                 |
   NameVirtualHost 111.22.33.44  | &lt;VirtualHost 111.22.33.44&gt;
   &lt;VirtualHost 111.22.33.44&gt;    | # server A
-  # server A                | &lt;/VirtualHost&gt;
-  ...                   | &lt;VirtualHost 111.22.33.55&gt;
-  &lt;/VirtualHost&gt;          | # server C
+  # server A                    | &lt;/VirtualHost&gt;
+  ...                           | &lt;VirtualHost 111.22.33.55&gt;
+  &lt;/VirtualHost&gt;                | # server C
   &lt;VirtualHost 111.22.33.44&gt;    | ...
-  # server B                | &lt;/VirtualHost&gt;
-  ...                   | &lt;VirtualHost 111.22.33.44&gt;
-  &lt;/VirtualHost&gt;          | # server B
+  # server B                    | &lt;/VirtualHost&gt;
+  ...                           | &lt;VirtualHost 111.22.33.44&gt;
+  &lt;/VirtualHost&gt;                | # server B
                                 | ...
   NameVirtualHost 111.22.33.55  | &lt;/VirtualHost&gt;
   &lt;VirtualHost 111.22.33.55&gt;    | &lt;VirtualHost 111.22.33.55&gt;
-  # server C                | # server D
-  ...                   | ...
-  &lt;/VirtualHost&gt;          | &lt;/VirtualHost&gt;
+  # server C                    | # server D
+  ...                           | ...
+  &lt;/VirtualHost&gt;                | &lt;/VirtualHost&gt;
   &lt;VirtualHost 111.22.33.55&gt;    |
-  # server D                | NameVirtualHost 111.22.33.44
-  ...                   | NameVirtualHost 111.22.33.55
-  &lt;/VirtualHost&gt;          |
+  # server D                    | NameVirtualHost 111.22.33.44
+  ...                           | NameVirtualHost 111.22.33.55
+  &lt;/VirtualHost&gt;                |
                                 |
 </pre>
 
@@ -126,7 +123,7 @@
     prefer the left variant.)</p>
 
     <p>After parsing the <code>VirtualHost</code> directive, the
-    vhost server is given a default <code>Port</code> equal to the
+    vhost server is given a default <code>Listen</code> equal to the
     port assigned to the first name in its <code>VirtualHost</code>
     directive.</p>
 
@@ -134,7 +131,7 @@
     directive are treated just like a <code>ServerAlias</code> (but
     are not overridden by any <code>ServerAlias</code> statement)
     if all names resolve to the same address set. Note that
-    subsequent <code>Port</code> statements for this vhost will not
+    subsequent <code>Listen</code> statements for this vhost will not
     affect the ports assigned in the address set.</p>
 
     <p>During initialization a list for each IP address is
@@ -332,7 +329,7 @@
       request is only caught if the port number to which the client
       sent the request matches the port number of your
       <code>_default_</code> vhost which is your standard
-      <code>Port</code> by default. A wildcard port can be
+      <code>Listen</code> by default. A wildcard port can be
       specified (<em>i.e.</em>, <code>_default_:*</code>) to catch
       requests to any available port. This also applies to
       <code>NameVirtualHost *</code> vhosts.</li>
