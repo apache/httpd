@@ -1,5 +1,8 @@
 Changes with Apache 1.3.4
 
+  *) PORT: DSO support for UnixWare 7
+     [Ralf S. Engelschall]
+
   *) Merge the contents of the {srm,access}.conf-dist* files into the
      httpd.conf-dist* files.  The srm and access files now contain
      only comments, and httpd.conf has all the combined contents in

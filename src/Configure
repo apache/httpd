@@ -1013,15 +1013,7 @@ if [ "x$using_shlib" = "x1" ] ; then
             LDFLAGS_SHLIB="-shared -expect_unresolved '*' -s"
             LDFLAGS_SHLIB_EXPORT=""
             ;;
-        *-unixware2)
-            case $CC in
-                */gcc|gcc ) CFLAGS_SHLIB="-fpic" ;;
-                */cc|cc   ) CFLAGS_SHLIB="-KPIC" ;;
-            esac
-            LDFLAGS_SHLIB="-Bdynamic -G"
-            LDFLAGS_SHLIB_EXPORT="-Wl,-Bexport"
-            ;;
-        *-unixware21*)
+        *-unixware*)
             case $CC in
                 */gcc|gcc ) CFLAGS_SHLIB="-fpic" ;;
                 */cc|cc   ) CFLAGS_SHLIB="-KPIC" ;;
