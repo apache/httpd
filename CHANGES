@@ -1,5 +1,8 @@
 Changes with Apache 2.0.27-dev
 
+  *) Sync up documentation to remove all references to the now deprecated
+     Port directive.  [Justin Erenkrantz]
+
   *) Moved all ldap modules from the core to httpd-ldap sub-project
      [Ryan Bloom]
 
