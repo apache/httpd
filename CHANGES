@@ -1,8 +1,16 @@
 Changes with Apache 2.0.51
 
-  *) mod_log_config: Fix a bug which prevented request completion time
-     from being logged for I_INSIST_ON_EXTRA_CYCLES_FOR_CLF_COMPLIANCE
-     processing.  PR 29696.  [Alois Treindl <alois astro.ch>]
+  *) SECURITY: CAN-2004-0786 (cve.mitre.org)
+     Fix an input validation issue in apr-util which could be
+     triggered by malformed IPv6 literal addresses.  [Joe Orton]
+
+  *) SECURITY: CAN-2004-0747 (cve.mitre.org)
+     Fix buffer overflow in expansion of environment variables in
+     configuration file parsing.  [André Malo]
+
+  *) SECURITY: CAN-2004-0809 (cve.mitre.org)
+     mod_dav_fs: Fix a segfault in the handling of an indirect lock
+     refresh.  PR 31183.  [Joe Orton]
 
   *) mod_include no longer checks for recursion, because that's done
      in the core. This allows for careful usage of recursive SSI.

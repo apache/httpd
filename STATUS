@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/09/02 22:06:22 $]
+Last modified at [$Date: 2004/09/15 07:58:37 $]
 
 Release:
 
@@ -73,10 +73,32 @@ PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
 
-     *) mod_rewrite:Fix query string handling for proxied URLs. PR 14518.
-        (2.0 + 1.3)
-          modules/mappers/mod_rewrite.c: r1.259
-        +1: nd
+    *) mod_dav_fs: Fix indirect lock record handling on 64-bit platforms.
+       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/dav/fs/lock.c?r1=1.31&r2=1.32
+       jerenkrantz asks: Won't this break already existing lock DBs?
+                         (Joe comments in msg below they'd already be broken.)
+       Message-ID: <20040913161345.GD29591@redhat.com>
+       +1: jorton, jerenkrantz, striker
+
+    *) mod_dav_fs: Fix indirect lock refresh.
+       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/dav/fs/lock.c?r1=1.32&r2=1.33
+       +1: jorton, jerenkrantz, striker
+       PR: 31183 (yes, I will do a CHANGES entry too)
+
+    *) ap_rgetline_core correctness fix.
+       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/protocol.c?r1=1.151&r2=1.152
+       +1: jorton, jerenkrantz
+
+    *) mod_rewrite: Fix 0 bytes write into random memory position. PR 31036.
+       (2.0 + 1.3)
+         http://www.apache.org/~nd/dbmmap_1.3.patch
+         http://www.apache.org/~nd/dbmmap_2.0.patch
+       +1: nd
+
+    *) mod_rewrite:Fix query string handling for proxied URLs. PR 14518.
+       (2.0 + 1.3)
+         modules/mappers/mod_rewrite.c: r1.259
+       +1: nd
        
     *) Don't link suexec against APR/etc libraries.
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/support/Makefile.in?r1=1.38&r2=1.39
@@ -96,12 +118,10 @@ PATCHES TO BACKPORT FROM 2.1
        nd: two comments:
          (1) is the use of APR_ASCII_* ebcdic-safe? I.e. shouldn't we use the
              native chars here and it will be converted later? (I'm not sure)
+       jorton: I have no idea, let an EBCDIC-er complain if it breaks?
          (2) I'd put out (null) only if val is NULL, not if it's empty.
-
-    *) Add -l option to rotatelogs to let it use local time rather than
-       UTC.  PR 24417.  [Ken Coar, Uli Zappe <uli ritual.org>]
-         support/rotatelogs.c: r1.33, r1.34, r1.35
-       +1: trawick, nd, stoddard
+       jorton: ssl_var_lookup() returns "" in place of NULL, that was really
+          a deliberate choice... but maybe you're right.
 
     *) Fix the handling of URIs containing %2F when AllowEncodedSlashes
        is enabled.  Previously, such urls would still be rejected with

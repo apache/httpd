@@ -520,7 +520,7 @@ static const char *log_request_time(request_rec *r, char *a)
             char sign;
             int timz;
 
-            ap_explode_recent_localtime(&xt, request_time);
+            ap_explode_recent_localtime(&xt, r->request_time);
             timz = xt.tm_gmtoff;
             if (timz < 0) {
                 timz = -timz;
