@@ -76,6 +76,7 @@ static int disk_serve(request_rec *r)
     char str[256];
     apr_off_t offset = 0;
 
+    /* XXX Very expensive!!! */
     filename = ap_server_root_relative(r->pool, 
                         apr_pstrcat(r->pool, "proxy", r->uri, NULL));
     if ((rv = apr_file_open(&fd, filename, APR_READ, 
@@ -124,11 +125,13 @@ static int disk_cache(request_rec *r, apr_bucket_brigade *bb, void **cf)
     }
     if (ctx->filename == NULL) {
         apr_status_t rv;
+        /* XXX Very expensive!!! */
         apr_dir_make(ap_server_root_relative(r->pool, "proxy"), APR_UREAD | APR_UWRITE | APR_UEXECUTE | APR_GREAD | APR_GWRITE, r->pool);
 
         /* currently, we are using the uri as the cache key.  This is
          * probably wrong, but it is much better than a hard-coded filename.
          */
+        /* XXX Very expensive!!! */
         ctx->filename = ap_server_root_relative(r->pool, 
                             apr_pstrcat(r->pool, "proxy", r->uri, NULL));
         if ((rv = apr_file_open(&ctx->fd, ctx->filename, 
