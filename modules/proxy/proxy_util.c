@@ -1665,9 +1665,9 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
         !worker->is_address_reusable) {
         /* TODO: Check if the connection can be reused
          */
-        if (conn->connection) {
-            conn->close = 1;
-            ap_proxy_release_connection("*", conn, r->server);
+        if (conn->sock) {
+            apr_socket_close(conn->sock);
+            conn->sock = NULL;
         }
         err = apr_sockaddr_info_get(&(conn->addr),
                                     conn->hostname, APR_UNSPEC,
