@@ -25,5 +25,4 @@ mod_file_cache       0x6FE00000    0x00020000
 mod_auth_dbm         0x6FDF0000    0x00010000
 mod_dav_fs           0x6FDE0000    0x00010000
 mod_dav              0x6FDC0000    0x00020000
-xmltok               0x6FDA0000    0x00020000
-xmlparse             0x6FD90000    0x00010000
+expatlib             0x6FD00000    0x00030000

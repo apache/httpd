@@ -69,8 +69,7 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f aprlibdll.mak CFG="aprlibdll - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 	cd lib\expat-lite
-	 $(MAKE) $(MAKEOPT) -f xmltok.mak CFG="xmltok - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f xmlparse.mak CFG="xmlparse - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f expatlib.mak CFG="expatlib - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 	cd lib\pcre
 	 $(MAKE) $(MAKEOPT) -f dftables.mak CFG="dftables - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -123,9 +122,8 @@ _install:
 	copy Apache$(SHORT)\Apache.exe $(INSTDIR)
 	copy Core$(SHORT)\ApacheCore.dll $(INSTDIR)
 	copy lib\apr\$(LONG)\aprlib.dll $(INSTDIR)
-        copy lib\expat-lite\XMLParse$(SHORT)\xmlparse.dll $(INSTDIR)
-        copy lib\expat-lite\XMLTok$(SHORT)\xmltok.dll $(INSTDIR)
-	copy os\win32\mod_auth_anon$(SHORT)\mod_auth_anon.dll $(INSTDIR)\modules
+        copy lib\expat-lite\expatlib$(SHORT)\expatlib.dll $(INSTDIR)
+        copy os\win32\mod_auth_anon$(SHORT)\mod_auth_anon.dll $(INSTDIR)\modules
 	copy os\win32\mod_auth_dbm$(SHORT)\mod_auth_dbm.dll $(INSTDIR)\modules
 	copy os\win32\mod_auth_digest$(SHORT)\mod_auth_digest.dll $(INSTDIR)\modules
 	copy os\win32\mod_cern_meta$(SHORT)\mod_cern_meta.dll $(INSTDIR)\modules
