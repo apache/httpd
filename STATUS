@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/05/30 05:54:43 $]
+Last modified at [$Date: 2002/05/30 06:02:15 $]
 
 Release:
 
@@ -323,16 +323,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
         can't be caught unless we add some sort of apr_exit(rv) with
         registered apr_atexit() fn's that have the return code as an
         argument to the registered fn.
-
-    * Port of mod_ssl to Apache 2.0:
-
-      The current porting state is summarized in modules/ssl/README. The
-      remaining work includes:
-      (1) stablizing/optimizing the SSL filter logic
-      (2) Enabling SSL extentions
-      (3) Trying to seperate the https filter logic from mod_ssl -
-          This is to facilitate other modules that wish to use the https
-          filter or the mod_ssl logic or both as required.
 
     * Eliminate unnecessary creation of pipes in mod_cgid
 
