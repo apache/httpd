@@ -402,7 +402,7 @@ const char *ssl_asn1_table_keyfmt(apr_pool_t *p,
 static apr_thread_mutex_t **lock_cs;
 static int                  lock_num_locks;
 
-#ifdef SSLC_VERSION_NUMBER
+#ifdef HAVE_SSLC
 #if SSLC_VERSION_NUMBER >= 0x2000
 static int ssl_util_thr_lock(int mode, int type,
                               const char *file, int line)
@@ -423,7 +423,7 @@ static void ssl_util_thr_lock(int mode, int type,
             apr_thread_mutex_unlock(lock_cs[type]);
         }
 #ifdef HAVE_SSLC
-#if SSLC_VERSION_NUMBER > 0x2000
+#if SSLC_VERSION_NUMBER >= 0x2000
         return 1;
     }
     else {
