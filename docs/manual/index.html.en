@@ -264,6 +264,12 @@
               </tr>
 
               <tr>
+                <td align="left"><a
+                href="howto/htaccess.html"><code>.htaccess</code> files</a>
+                </td>
+              </tr>
+              
+              <tr>
                 <td align="left"><a href="logs.html">Log Files</a> </td>
               </tr>
 
@@ -304,6 +310,11 @@
               <tr>
                 <td align="left"><a href="misc/rewriteguide.html">URL Rewriting
                 Guide</a> </td>
+              </tr>
+
+              <tr>
+                <td align="left"><a href="howto/public_html.html">User web
+                directories (<code>public_html</code>)</a> </td>
               </tr>
 
               <tr>
