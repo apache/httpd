@@ -94,8 +94,8 @@
 int         SSL_get_app_data2_idx(void);
 void       *SSL_get_app_data2(SSL *);
 void        SSL_set_app_data2(SSL *, void *);
-X509       *SSL_read_X509(FILE *, X509 **, int (*)());
-EVP_PKEY   *SSL_read_PrivateKey(FILE *, EVP_PKEY **, int (*)());
+X509       *SSL_read_X509(FILE *, X509 **, int (*)(char*,int,int,void*));
+EVP_PKEY   *SSL_read_PrivateKey(FILE *, EVP_PKEY **, int (*)(char*,int,int,void*));
 int         SSL_smart_shutdown(SSL *ssl);
 X509_STORE *SSL_X509_STORE_create(char *, char *);
 int         SSL_X509_STORE_lookup(X509_STORE *, int, X509_NAME *, X509_OBJECT *);
@@ -107,7 +107,7 @@ BOOL        SSL_X509_getCN(apr_pool_t *, X509 *, char **);
 BOOL        SSL_load_CrtAndKeyInfo_file(apr_pool_t *, STACK_OF(X509_INFO) *, char *);
 BOOL        SSL_load_CrtAndKeyInfo_path(apr_pool_t *, STACK_OF(X509_INFO) *, char *);
 #endif /* SSL_EXPERIMENTAL_PROXY */
-int         SSL_CTX_use_certificate_chain(SSL_CTX *, char *, int, int (*)());
+int         SSL_CTX_use_certificate_chain(SSL_CTX *, char *, int, int (*)(char*,int,int,void*));
 char       *SSL_SESSION_id2sz(unsigned char *, int);
 
 #endif /* __SSL_UTIL_SSL_H__ */
