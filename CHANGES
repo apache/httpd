@@ -1,5 +1,9 @@
 Changes with Apache 2.0.34-dev
 
+  *) Stop installing libtool for APR and tell APR where it should place
+     its copy of libtool (via our installbuildpath layout variable).
+     [Justin Erenkrantz]
+
   *) New directive ProxyIOBufferSize. Sets the size of the buffer used
      when reading from a remote HTTP server in proxy. [Graham Leggett]
 

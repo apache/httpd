@@ -89,11 +89,7 @@ install-build:
 	@sed 's#LIBTOOL = \(.*\)#LIBTOOL = $(SHELL) $(installbuilddir)/libtool $(LTFLAGS)#' \
 	    config_vars.mk > $(installbuilddir)/config_vars.mk; \
 	cp build/*.mk $(installbuilddir); \
-	cp $(top_srcdir)/build/instdso.sh $(installbuilddir); \
-	cp srclib/apr/libtool $(installbuilddir); \
-	if test -f srclib/apr/shlibtool; then \
-	    cp srclib/apr/shlibtool $(installbuilddir); \
-	fi
+	cp $(top_srcdir)/build/instdso.sh $(installbuilddir);
 
 htdocs-srcdir = $(top_srcdir)/docs/docroot
 
