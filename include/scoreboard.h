@@ -214,7 +214,7 @@ void ap_sync_scoreboard_image(void);
 
 void update_scoreboard_global(void);
 AP_DECLARE(int) find_child_by_pid(apr_proc_t *pid);
-int ap_update_child_status(int child_num, int thread_num, int status, request_rec *r);
+AP_DECLARE(int) ap_update_child_status(int child_num, int thread_num, int status, request_rec *r);
 void ap_time_process_request(int child_num, int thread_num, int status);
 worker_score *ap_get_servers_scoreboard(int x, int y);
 process_score *ap_get_parent_scoreboard(int x);
