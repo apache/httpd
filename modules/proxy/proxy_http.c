@@ -75,6 +75,10 @@ typedef struct {
     int             close;
 } proxy_http_conn_t;
 
+static apr_status_t ap_proxy_http_cleanup(request_rec *r,
+                                          proxy_http_conn_t *p_conn,
+                                          proxy_conn_rec *backend);
+
 /*
  * Canonicalise http-like URLs.
  *  scheme is the scheme for the URL
@@ -813,17 +817,19 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                          "proxy: start body send");
              
             /*
-             * if we are overriding the errors, we cant put the content of the
-             * page into the brigade
+             * if we are overriding the errors, we can't put the content
+             * of the page into the brigade
              */
             if ( (conf->error_override ==0) || r->status < 400 ) {
-            /* read the body, pass it to the output filters */
+
+                /* read the body, pass it to the output filters */
                 apr_bucket *e;
+                int finish = FALSE;
                 while (ap_get_brigade(rp->input_filters, 
                                       bb, 
                                       AP_MODE_READBYTES, 
                                       APR_BLOCK_READ, 
-                                      AP_IOBUFSIZE) == APR_SUCCESS) {
+                                      conf->io_buffer_size) == APR_SUCCESS) {
 #if DEBUGGING
                     {
                     apr_off_t readbytes;
@@ -833,21 +839,44 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                                  getpid(), readbytes);
                     }
 #endif
+                    /* sanity check */
                     if (APR_BRIGADE_EMPTY(bb)) {
+                        apr_brigade_cleanup(bb);
                         break;
                     }
+
+                    /* found the last brigade? */
                     if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(bb))) {
-                        ap_pass_brigade(r->output_filters, bb);
-                        break;
+                        /* if this is the last brigade, cleanup the
+                         * backend connection first to prevent the
+                         * backend server from hanging around waiting
+                         * for a slow client to eat these bytes
+                         */
+                        ap_proxy_http_cleanup(r, p_conn, backend);
+                        /* signal that we must leave */
+                        finish = TRUE;
                     }
-                    e = apr_bucket_flush_create();
-                    APR_BRIGADE_INSERT_TAIL(bb, e);
+
+                    /* if no EOS yet, then we must flush */
+                    if (FALSE == finish) {
+                        e = apr_bucket_flush_create();
+                        APR_BRIGADE_INSERT_TAIL(bb, e);
+                    }
+
+                    /* try send what we read */
                     if (ap_pass_brigade(r->output_filters, bb) != APR_SUCCESS) {
                         /* Ack! Phbtt! Die! User aborted! */
                         p_conn->close = 1;  /* this causes socket close below */
+                        finish = TRUE;
+                    }
+
+                    /* make sure we always clean up after ourselves */
+                    apr_brigade_cleanup(bb);
+
+                    /* if we are done, leave */
+                    if (TRUE == finish) {
                         break;
                     }
-                    apr_brigade_cleanup(bb);
                 }
             }
             ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
@@ -886,8 +915,11 @@ apr_status_t ap_proxy_http_cleanup(request_rec *r, proxy_http_conn_t *p_conn,
      * we close the socket, otherwise we leave it open for KeepAlive support
      */
     if (p_conn->close || (r->proto_num < HTTP_VERSION(1,1))) {
-        apr_socket_close(p_conn->sock);
-        backend->connection = NULL;
+        if (p_conn->sock) {
+            apr_socket_close(p_conn->sock);
+            p_conn->sock = NULL;
+            backend->connection = NULL;
+        }
     }
     return OK;
 }

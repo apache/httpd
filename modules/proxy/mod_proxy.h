@@ -175,8 +175,10 @@ typedef struct {
       via_full
     } viaopt;                   /* how to deal with proxy Via: headers */
     char viaopt_set;
-    size_t recv_buffer_size;
+    apr_size_t recv_buffer_size;
     char recv_buffer_size_set;
+    apr_size_t io_buffer_size;
+    char io_buffer_size_set;
     long maxfwd;
     char maxfwd_set;
     /** 
