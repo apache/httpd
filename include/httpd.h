@@ -391,7 +391,10 @@ API_EXPORT(const char *) ap_get_server_built(void);
 				 *  - it's safe to die() with no more output
 				 */
 #define OK 0			/* Module has handled this stage. */
-
+#define RERUN_HANDLERS 1        /* Module has handled this request, but
+                                 * realizes others may also want to handle
+                                 * it.
+                                 */
 
 /* ----------------------- HTTP Status Codes  ------------------------- */
 
@@ -579,6 +582,13 @@ struct request_rec {
     ap_context_t *pool;
     conn_rec *connection;
     server_rec *server;
+
+    BUFF *input;                /* Where to get the data (usually a pipe
+                                 * or a file currently). 
+                                 */
+    BUFF *output;               /* Where to send the data (usually, a pipe
+                                 * or the socket currently).
+                                 */
 
     request_rec *next;		/* If we wind up getting redirected,
 				 * pointer to the request we redirected to.
