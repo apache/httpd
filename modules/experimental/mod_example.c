@@ -940,6 +940,7 @@ static void x_child_init(apr_pool_t *p, server_rec *s)
  * server will still call any remaining modules with an handler for this
  * phase.
  */
+#if 0
 static const char *x_http_method(const request_rec *r)
 {
     x_cfg *cfg;
@@ -971,6 +972,7 @@ static apr_port_t x_default_port(const request_rec *r)
     trace_add(r->server, NULL, cfg, "x_post_config()");
     return 80;
 }
+#endif /*0*/
 
 /*
  * This routine is called to perform any module-specific fixing of header
@@ -1253,8 +1255,10 @@ static void x_register_hooks(apr_pool_t *p)
     ap_hook_post_read_request(x_post_read_request, NULL, NULL,
                               APR_HOOK_MIDDLE);
     ap_hook_log_transaction(x_logger, NULL, NULL, APR_HOOK_MIDDLE);
+#if 0
     ap_hook_http_method(x_http_method, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_default_port(x_default_port, NULL, NULL, APR_HOOK_MIDDLE);
+#endif
     ap_hook_translate_name(x_translate_handler, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_check_user_id(x_check_user_id, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_fixups(x_fixer_upper, NULL, NULL, APR_HOOK_MIDDLE);
