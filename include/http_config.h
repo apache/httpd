@@ -184,7 +184,7 @@ typedef union {
 
 #else /* AP_HAVE_DESIGNATED_INITIALIZER */
 
-typedef const char *(*cmd_func) ();
+typedef const char *(*cmd_func) (void);
 
 # define AP_NO_ARGS  func
 # define AP_RAW_ARGS func
