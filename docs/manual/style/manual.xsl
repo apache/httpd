@@ -85,14 +85,24 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 <xsl:if test="directivesynopsis">
   <ul>
-     <xsl:for-each select="directivesynopsis/name">
+     <xsl:for-each select="directivesynopsis">
        <xsl:sort select="name"/>
        <xsl:variable name="name">
-         <xsl:value-of select="."/>
+         <xsl:value-of select="name"/>
        </xsl:variable>
        <xsl:variable name="lowername" 
          select="translate($name, $uppercase, $lowercase)" />
-       <li><a href="#{$lowername}"><xsl:value-of select="."/></a></li>
+       <xsl:if test="not(@location)">
+         <li><a href="#{$lowername}"><xsl:value-of select="name"/></a></li>
+       </xsl:if>
+       <xsl:if test="./@location">
+         <xsl:variable name="location">
+           <xsl:value-of select="./@location"/>
+         </xsl:variable>
+         <xsl:variable name="lowerlocation" 
+           select="translate($location, $uppercase, $lowercase)" />
+         <li><a href="{$lowerlocation}.html#{$lowername}"><xsl:value-of select="name"/></a></li>
+       </xsl:if>
      </xsl:for-each>
   </ul>
 </xsl:if>
@@ -165,6 +175,7 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
   <xsl:template match="directivesynopsis">
 
+  <xsl:if test="not(@location)">
   <xsl:variable name="name">
     <xsl:value-of select="./name"/>
   </xsl:variable>
@@ -200,7 +211,13 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
   <tr><td><a class="help" href="directive-dict.html#Status">Status:</a> </td>
     <td><xsl:value-of select="/modulesynopsis/status"/></td></tr>
   <tr><td><a class="help" href="directive-dict.html#Module">Module:</a> </td>
-    <td><xsl:value-of select="/modulesynopsis/name"/></td></tr>
+    <td>
+    <xsl:if test="modulelist"><xsl:apply-templates select="modulelist"/>
+      </xsl:if>
+    <xsl:if test="not(modulelist)">
+      <xsl:value-of select="/modulesynopsis/name"/>
+    </xsl:if>
+    </td></tr>
   <xsl:if test="compatibility">
     <tr><td><a class="help" href="directive-dict.html#Compatibility"
       >Compatibility:</a> </td>
@@ -221,6 +238,7 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 </xsl:if>
 
 <hr />
+</xsl:if> <!-- not(@location) -->
 </xsl:template> <!-- /directivesynopsis -->
 
   <xsl:template match="contextlist">
@@ -230,6 +248,10 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
   <xsl:template match="context">
     <xsl:value-of select="." />
     <xsl:if test="not(position()=last())">, </xsl:if>
+  </xsl:template>
+
+  <xsl:template match="modulelist">
+    <xsl:apply-templates select="module"/>
   </xsl:template>
 
   <xsl:template match="example">
@@ -287,6 +309,9 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     </xsl:variable>
     <a href="{$href}.html"><xsl:value-of select="."/></a>
     </code>
+    <xsl:if test="parent::modulelist">
+      <xsl:if test="not(position()=last())">, </xsl:if>
+    </xsl:if>
   </xsl:template>
 
   <!-- Process everything else by just passing it through -->
