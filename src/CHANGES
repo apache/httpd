@@ -1,5 +1,8 @@
 Changes with Apache 1.3.10
 
+  *) Fixed error handling in dbmmanage script.
+     [Andrew McRae <andrew@liquid.com>] PR#4973
+
   *) Fixed NEXT/OpenStep building by adding an fallback typedef for 
      rlim_t to ap_config.h.
      [Mark Miller <markm@swoon.net>] PR#4906

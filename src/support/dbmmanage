@@ -91,7 +91,7 @@ my @range = ();
 my($mode, $flags) = $command =~ 
     /^(?:view|check)$/ ? (0644, O_RDONLY) : (0644, O_RDWR|O_CREAT);
 
-tie %DB, "AnyDBM_File", $file, $flags, $mode || die "Can't tie $file: $!";
+tie (%DB, "AnyDBM_File", $file, $flags, $mode) || die "Can't tie $file: $!";
 dbmc->$command();
 untie %DB;
 
