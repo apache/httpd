@@ -1,5 +1,9 @@
 Changes with Apache 1.3.17
 
+  *) Fix an unlikely segfault provided a zero length string in the
+     translate_userdir() call on win32/os2, and accept backslashes
+     in the UserDir directive on those platforms [William Rowe]
+
   *) Fixed translate_userdir() in MOD_USERDIR.C so that it correctly
      recognizes NetWare absolute paths.  This fixes the problem where
      MOD_USERDIR was trying to redirect to an absolute NetWare path

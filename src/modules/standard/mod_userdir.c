@@ -170,6 +170,15 @@ static const char *set_user_dir(cmd_parms *cmd, void *dummy, char *arg)
          * the string to the userdir string.
          */
         s_cfg->userdir = ap_pstrdup(cmd->pool, arg);
+#if defined(WIN32) || defined(OS2) || defined(NETWARE)
+        /* This is an incomplete path, so we cannot canonicalize it yet.
+         * but any backslashes will confuse the parser, later, so simply
+         * change them to slash form.
+         */
+        arg = s_cfg->userdir;
+        while (arg = strchr(arg, '\\'))
+            *(arg++) = '/';
+#endif
         return NULL;
     }
     /*
@@ -268,21 +277,17 @@ static int translate_userdir(request_rec *r)
             if (x) {
 #ifdef NETWARE 
                 if (strchr(x, ':') && !is_absolute )
-#else
-#ifdef HAVE_DRIVE_LETTERS
+#elif defined(HAVE_DRIVE_LETTERS)
                 /*
                  * Crummy hack. Need to figure out whether we have been
                  * redirected to a URL or to a file on some drive. Since I
                  * know of no protocols that are a single letter, if the : is
                  * the second character, I will assume a file was specified
-                 *
-                 * Still no good for NETWARE, since : is embedded (sys:/home)
                  */
-                if (strchr(x + 2, ':'))
-#else
+                if ((strlen(x) > 1) && strchr(x + 2, ':'))
+#else /* !(NETWARE ||HAVE_DRIVE_LETTERS) */
                 if (strchr(x, ':'))
-#endif /* def HAVE_DRIVE_LETTERS */
-#endif /* NETWARE */
+#endif
 		{
                     redirect = ap_pstrcat(r->pool, x, w, userdir, dname, NULL);
                     ap_table_setn(r->headers_out, "Location", redirect);
@@ -296,7 +301,11 @@ static int translate_userdir(request_rec *r)
         }
 #ifdef NETWARE
         else if (strchr(userdir, ':') && !is_absolute ) {
-#else        
+#elif defined(HAVE_DRIVE_LETTERS)
+        /* Same Crummy hack here
+         */
+        else if ((strlen(userdir) > 1) && strchr(userdir + 2, ':')) {
+#else /* !(NETWARE ||HAVE_DRIVE_LETTERS) */
         else if (strchr(userdir, ':')) {
 #endif
             redirect = ap_pstrcat(r->pool, userdir, "/", w, dname, NULL);
