@@ -1,5 +1,8 @@
 Changes with Apache 2.0.45
 
+  *) mod_ext_filter: Fix a problem building argument lists which 
+     occasionally caused exec to fail.  PR 15491.  [Jeff Trawick]
+
 Changes with Apache 2.0.44
 
   *) mod_autoindex: Bring forward the IndexOptions IgnoreCase option
