@@ -478,9 +478,9 @@ if test "x$ap_ssltk_base" = "x"; then
     APR_ADDTO(INCLUDES, [-I$ap_ssltk_incdir])
   fi
   if test "x$ap_ssltk_libdir" != "x/usr/lib"; then
-    APR_ADDTO(LIBS, [-L$ap_ssltk_libdir])
+    APR_ADDTO(LDFLAGS, [-L$ap_ssltk_libdir])
     if test "x$ap_platform_runtime_link_flag" != "x"; then
-      APR_ADDTO(LIBS, [$ap_platform_runtime_link_flag$ap_ssltk_libdir])
+      APR_ADDTO(LDFLAGS, [$ap_platform_runtime_link_flag$ap_ssltk_libdir])
     fi
   fi
   APR_ADDTO(LIBS, [-lssl -lcrypto])
