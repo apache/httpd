@@ -1162,8 +1162,8 @@ long get_client_block (request_rec *r, char *buffer, int bufsiz)
     long c, len_read, len_to_read = r->remaining;
 
     if (!r->read_chunked) {	/* Content-length read */
-	if (len_to_read >= bufsiz)
-	    len_to_read = bufsiz - 1;
+	if (len_to_read > bufsiz)
+	    len_to_read = bufsiz;
 	len_read = bread(r->connection->client, buffer, len_to_read);
 	r->remaining -= len_read;
 	return len_read;
