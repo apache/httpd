@@ -484,7 +484,7 @@ AP_DECLARE(const char *) ap_method_name_of(int methnum)
 static long get_chunk_size(char *);
 
 typedef struct http_filter_ctx {
-    apr_size_t remaining;
+    apr_off_t remaining;
     enum {
         BODY_NONE,
         BODY_LENGTH,
