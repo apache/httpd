@@ -30,8 +30,8 @@ _apacher:
 	cd os\win32
 	 set CFG=ApacheModuleStatus - Win32 Release
 	 nmake /nologo -f ApacheModuleStatus.mak
-#	 set CFG=ApacheModuleInfo - Win32 Release
-#	 nmake /nologo -f ApacheModuleInfo.mak
+#        set CFG=ApacheModuleInfo - Win32 Release
+#        nmake /nologo -f ApacheModuleInfo.mak
 	 set CFG=ApacheModuleAuthAnon - Win32 Release
 	 nmake /nologo -f ApacheModuleAuthAnon.mak
 	 set CFG=ApacheModuleDigest - Win32 Release
@@ -75,8 +75,8 @@ _apached:
 	cd os\win32
 	 set CFG=ApacheModuleStatus - Win32 Debug
 	 nmake /nologo -f ApacheModuleStatus.mak
-#	 set CFG=ApacheModuleInfo - Win32 Debug
-#	 nmake /nologo -f ApacheModuleInfo.mak
+#        set CFG=ApacheModuleInfo - Win32 Debug
+#        nmake /nologo -f ApacheModuleInfo.mak
 	 set CFG=ApacheModuleAuthAnon - Win32 Debug
 	 nmake /nologo -f ApacheModuleAuthAnon.mak
 	 set CFG=ApacheModuleDigest - Win32 Debug
@@ -154,8 +154,8 @@ cleanr:
 	cd os\win32
 	 set CFG=ApacheModuleStatus - Win32 Release
 	 nmake /nologo -f ApacheModuleStatus.mak clean
-#	 set CFG=ApacheModuleInfo - Win32 Release
-#	 nmake /nologo -f ApacheModuleInfo.mak clean
+#        set CFG=ApacheModuleInfo - Win32 Release
+#        nmake /nologo -f ApacheModuleInfo.mak clean
 	 set CFG=ApacheModuleAuthAnon - Win32 Release
 	 nmake /nologo -f ApacheModuleAuthAnon.mak clean
 	 set CFG=ApacheModuleDigest - Win32 Release
@@ -196,8 +196,8 @@ cleand:
 	cd os\win32
 	 set CFG=ApacheModuleStatus - Win32 Debug
 	 nmake /nologo -f ApacheModuleStatus.mak clean
-#	 set CFG=ApacheModuleInfo - Win32 Debug
-#	 nmake /nologo -f ApacheModuleInfo.mak clean
+#        set CFG=ApacheModuleInfo - Win32 Debug
+#        nmake /nologo -f ApacheModuleInfo.mak clean
 	 set CFG=ApacheModuleAuthAnon - Win32 Debug
 	 nmake /nologo -f ApacheModuleAuthAnon.mak clean
 	 set CFG=ApacheModuleDigest - Win32 Debug
@@ -218,5 +218,19 @@ cleand:
 	 nmake /nologo -f ApacheModuleProxy.mak clean
 	cd ..\..
 
-clean: cleand cleanr
+clean: cleand cleanr installdll-clean
+
+installdll:
+ 	cd os\win32\installer\installdll
+	 set CFG=install - Win32 Release
+	 nmake /nologo -f install.mak
+	cd ..\..\..
+
+installdll-clean:
+ 	cd os\win32\installer\installdll
+	 set CFG=install - Win32 Release
+	 nmake /nologo -f install.mak clean
+	 set CFG=install - Win32 Debug
+	 nmake /nologo -f install.mak clean
+	cd ..\..\..
 
