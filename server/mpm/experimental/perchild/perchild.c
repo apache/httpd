@@ -1346,6 +1346,7 @@ static int pass_request(request_rec *r)
     struct cmsghdr *cmsg;
     int sfd;
     struct iovec iov;
+    ap_bucket_brigade *bb = ap_brigade_create(r->pool);
     perchild_server_conf *sconf = (perchild_server_conf *)
                             ap_get_module_config(r->server->module_config, 
                                                  &mpm_perchild_module);
@@ -1383,6 +1384,16 @@ static int pass_request(request_rec *r)
 
     write(sconf->sd2, foo, len);
    
+    while (ap_get_brigade(r->input_filters, bb, AP_MODE_NONBLOCKING) != APR_SUCCESS) {
+        ap_bucket *e;
+        AP_BRIGADE_FOREACH(e, bb) {
+            const char *str;
+
+            ap_bucket_read(e, &str, &len, AP_NONBLOCK_READ);
+            write(sconf->sd2, str, len);
+        }
+    }
+
     apr_destroy_pool(r->pool);
     return 1;
 }
@@ -1430,10 +1441,19 @@ static void perchild_post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *pt
 
 static int perchild_post_read(request_rec *r)
 {
+    ap_filter_t *f = r->connection->input_filters;
     int thread_num = r->connection->id % HARD_THREAD_LIMIT;
     perchild_server_conf *sconf = (perchild_server_conf *)
                             ap_get_module_config(r->server->module_config, 
                                                  &mpm_perchild_module);
+
+    while (f) {
+        if (!strcmp("PERCHILD_BUFFER", f->frec->name)) {
+            ap_remove_output_filter(f);
+            break;
+        }
+        f = f->next;
+    }
 
     if (thread_socket_table[thread_num] != -1) {
         apr_socket_t *csd = NULL;
@@ -1462,24 +1482,29 @@ static apr_status_t perchild_buffer(ap_filter_t *f, ap_bucket_brigade *b, ap_inp
 {
     ap_bucket *e;
     apr_status_t rv;
+    char *buffer = NULL;
+    const char *str;
+    apr_size_t len;
 
     if ((rv = ap_get_brigade(f->next, b, mode)) != APR_SUCCESS) {
         return rv;
     }
 
+    apr_get_userdata((void **)&buffer, "PERCHILD_BUFFER", f->c->pool);
 
     AP_BRIGADE_FOREACH(e, b) {
-        char *buffer = NULL;
-	const char *str;
-        apr_size_t len;
-
-        apr_get_userdata((void **)&buffer, "PERCHILD_BUFFER", f->c->pool);
-
-        ap_bucket_read(e, &str, &len, AP_NONBLOCK_READ);
-        apr_pstrcat(f->c->pool, buffer, str);
-
-        apr_set_userdata(&buffer, "PERCHILD_BUFFER", apr_null_cleanup, f->c->pool);
+        if (e->length != 0) {
+            ap_bucket_read(e, &str, &len, AP_NONBLOCK_READ);
+       
+            if (buffer == NULL) {
+                buffer = apr_pstrdup(f->c->pool, str);
+            }
+            else {
+               buffer = apr_pstrcat(f->c->pool, buffer, str, NULL);
+            } 
+        }
     }
+    apr_set_userdata(buffer, "PERCHILD_BUFFER", apr_null_cleanup, f->c->pool);
     
     return APR_SUCCESS;
 }
