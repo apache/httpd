@@ -682,7 +682,8 @@ foo-1.04
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="IndexOrderDefault" id="IndexOrderDefault">IndexOrderDefault</a> <a name="indexorderdefault" id="indexorderdefault">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Sets the default ordering of the directory index</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>IndexOrderDefault
-Ascending|Descending Name|Date|Size|Description</td></tr><tr><th><a href="directive-dict.html#Context">Context:
+Ascending|Descending Name|Date|Size|Description</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td><code>IndexOrderDefault Ascending Name</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>Indexes</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:

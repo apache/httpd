@@ -794,6 +794,7 @@ foo-1.04
 <description>Sets the default ordering of the directory index</description>
 <syntax>IndexOrderDefault
 Ascending|Descending Name|Date|Size|Description</syntax>
+<default>IndexOrderDefault Ascending Name</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
