@@ -570,32 +570,6 @@ API_EXPORT(char *) ap_make_dirstr_parent(apr_pool_t *p, const char *s)
 }
 
 
-/*
- * This function is deprecated.  Use one of the preceeding two functions
- * which are faster.
- */
-API_EXPORT(char *) ap_make_dirstr(apr_pool_t *p, const char *s, int n)
-{
-    register int x, f;
-    char *res;
-
-    for (x = 0, f = 0; s[x]; x++) {
-	if (s[x] == '/')
-	    if ((++f) == n) {
-		res = apr_palloc(p, x + 2);
-		memcpy(res, s, x);
-		res[x] = '/';
-		res[x + 1] = '\0';
-		return res;
-	    }
-    }
-
-    if (s[strlen(s) - 1] == '/')
-	return apr_pstrdup(p, s);
-    else
-	return apr_pstrcat(p, s, "/", NULL);
-}
-
 API_EXPORT(int) ap_count_dirs(const char *path)
 {
     register int x, n;
