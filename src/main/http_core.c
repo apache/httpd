@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: http_core.c,v 1.35 1996/10/10 12:12:00 fielding Exp $ */
+/* $Id: http_core.c,v 1.36 1996/10/14 00:18:46 jim Exp $ */
 
 #define CORE_PRIVATE
 #include "httpd.h"
@@ -879,8 +879,13 @@ char *set_max_free_servers (cmd_parms *cmd, void *dummy, char *arg) {
 
 char *set_server_limit (cmd_parms *cmd, void *dummy, char *arg) {
     daemons_limit = atoi (arg);
-    if (daemons_limit > HARD_SERVER_LIMIT)
-    	daemons_limit = HARD_SERVER_LIMIT;
+    if (daemons_limit > HARD_SERVER_LIMIT) {
+       fprintf(stderr, "WARNING: Compile-time limit of %d servers\n",
+        HARD_SERVER_LIMIT);
+       fprintf(stderr, " Adjusting as required (to increase, please read\n");
+       fprintf(stderr, " the documentation)\n");
+       daemons_limit = HARD_SERVER_LIMIT;
+    }
     return NULL;
 }
 
