@@ -97,6 +97,7 @@ static dav_error * dav_fs_dbm_error(dav_db *db, apr_pool_t *p,
     int errcode;
     const char *errstr;
     dav_error *err;
+    char errbuf[200];
 
     if (status == APR_SUCCESS)
         return NULL;
@@ -109,7 +110,8 @@ static dav_error * dav_fs_dbm_error(dav_db *db, apr_pool_t *p,
         errstr = "Could not open property database.";
     }
     else {
-        apr_dbm_geterror(db->file, &errcode, &errstr);
+        (void) apr_dbm_geterror(db->file, &errcode, errbuf, sizeof(errbuf));
+        errstr = apr_pstrdup(p, errbuf);
     }
 
     err = dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, errcode, errstr);
