@@ -1,12 +1,16 @@
 Changes with Apache 2.0.31-dev
 
+  *) Change the pre_config hook to return a value. Modules can now emit
+     an error message and then cause the server to quit gracefully during
+     startup. This required a bump to the MMN.  [Aaron Bannert]
+
   *) Fix some unix socket descriptor leaks in the handler side of
      mod_cgid (the part that runs in the server process).  Whack a
      silly "close(-1)" in the handler too.  [Jeff Trawick]
 
   *) Change the pre_mpm hook to return a value, so that scoreboard
      init errors percolate up to code that knows how to exit 
-     cleanly.  This required bump to the MMN.  [Jeff Trawick]
+     cleanly.  This required a bump to the MMN.  [Jeff Trawick]
 
   *) Add the socket back to the conn_rec and remove the create_connection
      hook. The create_connection hook had a design flaw that did not 
