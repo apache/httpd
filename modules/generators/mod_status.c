@@ -254,7 +254,7 @@ static int status_handler(request_rec *r)
     worker_score ws_record;
     process_score ps_record;
     char stat_buffer[HARD_SERVER_LIMIT * HARD_THREAD_LIMIT];
-    pid_t pid_buffer[HARD_SERVER_LIMIT * HARD_THREAD_LIMIT];
+    pid_t pid_buffer[HARD_SERVER_LIMIT];
     clock_t tu, ts, tcu, tcs;
     server_rec *vhost;
 
@@ -321,7 +321,6 @@ static int status_handler(request_rec *r)
 	    ps_record = ap_scoreboard_image->parent[i];
 	    res = ws_record.status;
 	    stat_buffer[indx] = status_flags[res];
-	    pid_buffer[indx] = ps_record.pid;
 	    if (res == SERVER_READY)
 	        ready++;
 	    else if (res != SERVER_DEAD && res != SERVER_IDLE_KILL)
@@ -345,6 +344,7 @@ static int status_handler(request_rec *r)
 	        }
 	    }
         }
+	pid_buffer[i] = ps_record.pid;
     }
 
     /* up_time in seconds */
