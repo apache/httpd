@@ -2218,7 +2218,7 @@ static void child_main(int child_num_arg)
 
 	sock_disable_nagle(sockdes);
 
-	iol = unix_attach_socket(sockdes);
+	iol = unix_attach_socket(csd);
 	if (iol == NULL) {
 	    if (errno == EBADF) {
 		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, NULL,
