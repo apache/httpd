@@ -58,7 +58,7 @@
 ##
 ##  configure -- Apache Autoconf-style Interface (APACI) 
 ##
-##  Written by Ralf S. Engelschall <rse@apache.org>
+##  Initially written by Ralf S. Engelschall <rse@apache.org>
 ##
 
 #   default input separator chars: <space><tab><cr>
@@ -68,7 +68,6 @@ DIFS='
 ##
 ##  the paths to the Apache source tree
 ##
-
 top=.
 mkf=Makefile
 src=src
@@ -84,7 +83,6 @@ shadow=''
 ##
 ##  pre-determine runtime modes
 ##
-
 help=no
 quiet=no
 verbose=no
@@ -98,7 +96,6 @@ esac
 ##
 ##  display version information
 ##
-
 if [ ".$quiet" = .no ]; then
     APV=`cat $src/include/httpd.h |\
          grep "#define SERVER_BASEVERSION" |\
@@ -109,7 +106,6 @@ fi
 ##
 ##  important hint for the first-time users
 ##
-
 if [ $# -eq 0 ]; then
     echo " + Warning: Configuring Apache with default settings."
     echo " + This is probably not what you really want."
@@ -121,7 +117,6 @@ fi
 ##
 ##  determine path to (optional) Perl interpreter
 ##
-
 PERL=no-perl-on-this-system
 perlpath="`$aux/PrintPath perl5 perl miniperl`"
 if [ ".$perlpath" != . ]; then
@@ -134,7 +129,6 @@ fi
 ##  and if it then is still broken we give a warning message.
 ##  If it works set the `Safe Echo Option' (SEO) variable.
 ##
-
 SEO='' # CHANGE THIS VARIABLE HERE IF YOU HAVE PROBLEMS WITH ECHO!
 bytes=`echo $SEO '\1' | wc -c | awk '{ printf("%s", $1); }'`
 if [ ".$bytes" != .3 ]; then
@@ -156,7 +150,6 @@ fi
 ##  standard Awks are really braindead and cause 
 ##  problems for our scripts under some platforms.
 ##
-
 AWK=awk
 awkpath="`$aux/PrintPath nawk gawk awk`"
 if [ ".$awkpath" != . ]; then
@@ -169,13 +162,6 @@ fi
 
 #   default paths
 prefix=UNSET
-
-#   customization flags for
-#   automatic "apache" suffix 
-customized_sysconfdir=0
-customized_datadir=0
-customized_localstatedir=0
-customized_includedir=0
 
 #   layout configuration
 with_layout=0
@@ -192,24 +178,20 @@ suexec_uidmin=100
 suexec_gidmin=100
 suexec_safepath="/usr/local/bin:/usr/bin:/bin"
 
-#   with support tools
+#   various other flags
 support=1
-
-#   with adjustments
 confadjust=1
-
-#   module ordering
 permute=''
 
 #   determine rules
-rules=""
-rulelist=""
+rules=''
+rulelist=''
 OIFS="$IFS" IFS='
 '
 for rule in `grep '^Rule' $src/Configuration.tmpl`; do
-    rule=`echo "$rule" | sed -e 's/^Rule[ ]*//'`
+    rule=`echo "$rule" | sed -e 's/^Rule[ 	]*//'`
     name=`echo "$rule" | sed -e 's/=.*$//'`
-    namelow=`echo "$name" | tr "A-Z" "a-z"`
+    namelow=`echo "$name" | tr 'A-Z' 'a-z'`
     arg=`echo "$rule" | sed -e 's/^.*=//'`
     eval "rule_$namelow=$arg"
     rules="$rules:$namelow"
@@ -219,11 +201,11 @@ IFS="$OIFS"
 rules=`echo $rules | sed -e 's/^://'`
 
 #   determine modules
-modules=""
-modulelist=""
+modules=''
+modulelist=''
 OIFS="$IFS" IFS='
 '
-for module in `egrep '^[# ]*(Add|Shared)Module' $src/Configuration.tmpl`; do
+for module in `egrep '^[# 	]*(Add|Shared)Module' $src/Configuration.tmpl`; do
     add=yes
     share=no
     if [ ".`echo $module | grep '^#'`" != . ]; then
@@ -234,7 +216,8 @@ for module in `egrep '^[# ]*(Add|Shared)Module' $src/Configuration.tmpl`; do
     fi
     module=`echo "$module" |\
             sed -e 's%^.*/\(.*\)$%\1%' \
-                -e 's/\.[oam].*$//' \
+                -e 's/\.[oa]$//' \
+                -e 's/\.module$//' \
                 -e 's/^mod_//' \
                 -e 's/^lib//'`
     eval "module_$module=$add"
@@ -248,7 +231,7 @@ done
 IFS="$OIFS"
 modules=`echo $modules | sed -e 's/^://'`
 
-#   backward compatibility from old src/Configuration.tmpl
+#   backward compatibility for old src/Configuration.tmpl
 #   parameter names to the canonical Autoconf-style shell
 #   variable names.
 OIFS="$IFS" IFS="$DIFS"
@@ -263,10 +246,24 @@ done
 IFS="$OIFS"
 
 ##
-## check for help option and preprocess path layout definititions so that
-## these can be overriden
+##  support for the default layout
 ##
-apc_prev=""
+case "$*" in
+    *--with-layout=* ) 
+        ;;
+    * ) 
+        set -- '--with-layout=Apache' "$@"
+        ;;
+esac
+
+##
+##  Iterate over the command line options the first time.
+##
+##  This time we pre-process options which need high priority 
+##  on the command line independent of their position, so they 
+##  can be overridden by others.
+##
+apc_prev=''
 OIFS1="$IFS" IFS="$DIFS"
 for apc_option
 do
@@ -281,7 +278,7 @@ do
         -*=*) apc_optarg=`echo "$apc_option" | sed 's/[-_a-zA-Z0-9]*=//'` ;;
            *) apc_optarg= ;;
     esac
-
+    #  pre-process only a few options now
     case "$apc_option" in
         --help | -h | -help )
             echo "Usage: configure [options]"
@@ -297,7 +294,7 @@ do
             echo ""
             echo "Installation layout options:"
             echo " --with-layout=[F:]ID   use installation path layout ID (from file F)"
-            echo " --target=TARGET        install server executable and associated files using basename TARGET"
+            echo " --target=TARGET        install name-associated files using basename TARGET"
             echo " --prefix=PREFIX        install architecture-independent files in PREFIX"
             echo " --exec-prefix=EPREFIX  install architecture-dependent files in EPREFIX"
             echo " --bindir=DIR           install user     executables in DIR"
@@ -316,17 +313,17 @@ do
             echo " --enable-rule=NAME     enable  a particular Rule named 'NAME'"
             echo " --disable-rule=NAME    disable a particular Rule named 'NAME'"
             $aux/ppl.sh $rulelist
-            echo " --add-module=FILE      on-the-fly copy & activate a third-party Module source"
-            echo " --activate-module=FILE on-the-fly activate existing third-party Module source"
-            echo " --permute-module=N1:N2 permute module 'N1' with module 'N2' in the configuration"
+            echo " --add-module=FILE      on-the-fly copy & activate a 3rd-party Module"
+            echo " --activate-module=FILE on-the-fly activate existing 3rd-party Module"
+            echo " --permute-module=N1:N2 on-the-fly permute module 'N1' with module 'N2'"
             echo " --enable-module=NAME   enable  a particular Module named 'NAME'"
             echo " --disable-module=NAME  disable a particular Module named 'NAME'"
             $aux/ppl.sh $modulelist
-            echo " --enable-shared=NAME   enable  build of Module named 'NAME' as a shared object"
-            echo " --disable-shared=NAME  disable build of Module named 'NAME' as a shared object"
-            echo " --with-perl=FILE       set the path to the optional Perl interpreter to use"
+            echo " --enable-shared=NAME   enable  build of Module named 'NAME' as a DSO"
+            echo " --disable-shared=NAME  disable build of Module named 'NAME' as a DSO"
+            echo " --with-perl=FILE       path to the optional Perl interpreter"
             echo " --without-support      disable the build and installation of support tools"
-            echo " --without-confadjust   disable some build user/situation adjustments to config files"
+            echo " --without-confadjust   disable the user/situation adjustments in config"
             echo ""
             echo "suEXEC options:"
             echo " --enable-suexec        enable the suEXEC feature"
@@ -368,6 +365,23 @@ do
                 -e "s/[ 	]*$/'/g" \
                 $file >$pldconf
             . $pldconf
+            OIFS="$IFS" IFS="$DIFS"
+            for var in prefix exec_prefix bindir sbindir libexecdir mandir \
+                       sysconfdir datadir includedir localstatedir runtimedir \
+                       logfiledir proxycachedir; do
+                eval "val=\"\$$var\""
+                case $val in
+                    *+ )
+                        val=`echo $val | sed -e 's;\+$;;'`
+                        eval "$var=\"\$val\""
+                        eval "autosuffix_$var=yes"
+                        ;;
+                    * )
+                        eval "autosuffix_$var=no"
+                        ;;
+                esac
+            done
+            IFS="$OIFS"
             rm -f $pldconf 2>/dev/null
             if [ ".$prefix" = .UNSET ]; then
                 echo "configure:Error: Path layout definition not found or incorrect" 1>&2
@@ -379,26 +393,19 @@ do
             with_layout=1
             ;;
         *)
-            args="$args $apc_option"
             ;;
     esac
 done
-IFS="$OIFS1"
-
-if [ ".$with_layout" = .0 ]; then
-    echo "configure:Error: Please select an installation path layout with"
-    echo "                 the --with-layout=[FILE:]ID option. Use 'Apache' or"
-    echo "                 'GNU' for ID to select the two predefined layouts."
-    exit 1
-fi
 
 ##
-##  parse argument line options
+##  Iterate over the command line options the second time.
+##
+##  This time we parse the standard options.
 ##
 addconf_created=0
-apc_prev=""
+apc_prev=''
 OIFS1="$IFS" IFS="$DIFS"
-for apc_option in $args
+for apc_option
 do
     #   if previous option needs an argument, assign it.
     if [ ".$apc_prev" != . ]; then
@@ -413,6 +420,9 @@ do
     esac
     #  accept only the most important GNU Autoconf-style options
     case "$apc_option" in
+        --help|-h|-help|--with-layout=*|-compat)
+            #   just ignore already parsed options
+            ;;
         --quiet | --silent) 
             quiet=yes
             ;;
@@ -491,46 +501,55 @@ do
             ;;
         --prefix=*)
             prefix="$apc_optarg"
+            autosuffix_prefix=no
             ;;
         --exec-prefix=*)
             exec_prefix="$apc_optarg"
+            autosuffix_exec_prefix=no
             ;;
         --bindir=*)       
             bindir="$apc_optarg"
+            autosuffix_bindir=no
             ;;
         --sbindir=*)       
             sbindir="$apc_optarg"
+            autosuffix_sbindir=no
             ;;
         --libexecdir=*)
             libexecdir="$apc_optarg"    
+            autosuffix_libexecdir=no
             ;;
         --mandir=*)        
             mandir="$apc_optarg"        
+            autosuffix_mandir=no
             ;;
         --sysconfdir=*)    
             sysconfdir="$apc_optarg"    
-            customized_sysconfdir=1
+            autosuffix_sysconfdir=no
             ;;
         --datadir=*)       
             datadir="$apc_optarg"       
-            customized_datadir=1
+            autosuffix_datadir=no
             ;;
         --includedir=*)       
             includedir="$apc_optarg"       
-            customized_includedir=1
+            autosuffix_includedir=no
             ;;
         --localstatedir=*) 
             localstatedir="$apc_optarg" 
-            customized_localstatedir=1
+            autosuffix_localstatedir=no
             ;;
         --runtimedir=*) 
             runtimedir="$apc_optarg" 
+            autosuffix_runtimedir=no
             ;;
         --logfiledir=*) 
             logfiledir="$apc_optarg" 
+            autosuffix_logfiledir=no
             ;;
         --proxycachedir=*) 
             proxycachedir="$apc_optarg" 
+            autosuffix_proxycachedir=no
             ;;
         --add-module=*) 
             file="$apc_optarg"
@@ -821,8 +840,10 @@ if [ ".$addconf_created" = .0 ]; then
     touch $addconf 2>/dev/null
 fi
 
-#   create a config status script for restoring
-#   the configuration via a simple shell script
+##
+##   create a config status script for restoring
+##   the configuration via a simple shell script
+##
 rm -f $configstatus 2>/dev/null
 echo "#!/bin/sh" >$configstatus
 echo "##" >>$configstatus
@@ -859,7 +880,7 @@ echo '' >>$configstatus
 chmod a+x $configstatus
 
 ##
-##  a few errors
+##  a few errors and warnings
 ##
 if [ ".$suexec" = .1 ]; then
     if [ ".$suexec_ok" = .0 ]; then
@@ -870,12 +891,6 @@ if [ ".$suexec" = .1 ]; then
         echo "                 and htdocs/manual/suexec.html documents first."
         exit 1
     fi
-fi
-
-##
-##  a few warnings
-##
-if [ ".$suexec" = .1 ]; then
     if [ ".`id | grep root`" = . ]; then
         echo " + Warning: You enabled the suEXEC feature. Be aware that you need" 1>&2
         echo " + root privileges for this, at the latest at the installation step." 1>&2
@@ -902,25 +917,21 @@ fi
 ##  they do not end with a backslash
 ##
 OIFS="$IFS" IFS="$DIFS"
-for var in prefix exec_prefix bindir sbindir libexecdir mandir sysconfdir \
+for var in prefix exec_prefix bindir sbindir libexecdir mandir \
            sysconfdir datadir includedir localstatedir runtimedir \
            logfiledir proxycachedir suexec_docroot suexec_logexec; do
     eval "val=\"\$$var\"";
     val=`echo $val | sed -e 's:/*$::'`
     eval "$var=\"$val\""
-    case $var in
-       libexecdir|sysconfdir|datadir|localstatedir|includedir ) 
-           eval "val=\$$var"
-           case $val in
-               *apache | *apache* ) ;;
-               * ) eval "customized=\$customized_$var"
-                   if [ ".$customized" = .0 ]; then
-                       eval "$var=\"\$$var/apache\""
-                   fi
-                   ;;
-           esac
-           ;;
-    esac
+    #   expand value
+    eval "val=\$$var"
+    #   add target suffix when requested
+    if [ ".`echo $val | grep $thetarget`" = . ]; then
+        eval "autosuffix=\$autosuffix_$var"
+        if [ ".$autosuffix" = .yes ]; then
+            eval "$var=\"\$$var/$thetarget\""
+        fi
+    fi
 done
 IFS="$OIFS"
 
@@ -928,15 +939,15 @@ IFS="$OIFS"
 ##  determine special configurable Makefile targets
 ##
 if [ ".$support" = .1 ]; then
-      build_support=build-support
-    install_support=install-support
-      clean_support=clean-support
-  distclean_support=distclean-support
+    build_support='build-support'
+    install_support='install-support'
+    clean_support='clean-support'
+    distclean_support='distclean-support'
 else
-      build_support=
-    install_support=
-      clean_support=
-  distclean_support=
+    build_support=''
+    install_support=''
+    clean_support=''
+    distclean_support=''
 fi
 
 ##
@@ -1161,7 +1172,8 @@ if [ ".$permute" != . ]; then
     for line in `cat src/Configuration.tmpl $addconf | egrep '^[# ]*(Add|Shared)Module'`; do
         name=`echo "$line" |\
               sed -e 's%^.*/\(.*\)$%\1%' \
-                  -e 's/\.[oam].*$//' \
+                  -e 's/\.[oa]$//' \
+                  -e 's/\.module$//' \
                   -e 's/^mod_//' \
                   -e 's/^lib//'`
         echo "${name}:${line}"
