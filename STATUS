@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/06/11 19:39:10 $]
+Last modified at [$Date: 2004/06/11 20:27:26 $]
 
 Release:
 
@@ -111,11 +111,6 @@ PATCHES TO BACKPORT FROM 2.1
        directive. PR 28553.
          modules/mappers/mod_actions.c: r1.32, r1.34
        +1: nd
-
-    *) Disable AcceptEx on Win9x systems automatically. (broken in 2.0.49)
-       PR 28529
-         server/mpm/winnt/mpm_winnt.c: 1.311
-       +1: nd, trawick, stoddard
 
     *) export ap_set_sub_req_protocol and ap_finalize_sub_req_protocol on Win32 and NetWare.
        (should be a minor MMN bump). PR 28523.

@@ -1361,6 +1361,11 @@ static int winnt_pre_config(apr_pool_t *pconf_, apr_pool_t *plog, apr_pool_t *pt
         exit(APEXIT_INIT);
     }
 
+    /* Win9x: disable AcceptEx */
+    if (osver.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) {
+        use_acceptex = 0;
+    }
+
     ap_listen_pre_config();
     ap_threads_per_child = DEFAULT_THREADS_PER_CHILD;
     ap_pid_fname = DEFAULT_PIDLOG;
