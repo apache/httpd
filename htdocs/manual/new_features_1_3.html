@@ -126,7 +126,7 @@ documentation</A> for more information.
 
 <DL>
 <DT><STRONG>Unified Server Configuration Files</STRONG></DT>
-<DD>As of the release following Apache 1.3.3, the contents of the three
+<DD><EM>(Apache 1.3.4)</EM> The contents of the three
     server configuration files (<SAMP>httpd.conf</SAMP>,
     <SAMP>srm.conf</SAMP>, and <SAMP>access.conf</SAMP>) have
     been merged into a single <SAMP>httpd.conf</SAMP> file.
@@ -153,7 +153,10 @@ documentation</A> for more information.
     <CODE>src/Configure</CODE> stuff in batch and additionally
     installs the package with a GNU-conforming directory layout.  Any
     options from the old configuration scheme are available plus a lot
-    of new options for flexibly customizing Apache.
+    of new options for flexibly customizing Apache.<BR>
+    <STRONG>Note:</STRONG> The default installation layout has changed
+    for Apache 1.3.4.  See the files <CODE>README.configure</CODE> and
+    <CODE>INSTALL</CODE> for more information.
 
 <DT><STRONG>APache eXtenSion (APXS) support tool</STRONG>
 <DD>Now that Apache provides full support for loading modules under
@@ -205,6 +208,13 @@ documentation</A> for more information.
 <H3><A NAME="mod">Module Enhancements</A></H3>
 
 <DL>
+<DT><A HREF="mod/mod_negotiation.html"><STRONG>Improved mod_negotiation
+    </STRONG></A><BR>
+<DD>The optional content negotiation (MultiViews) module has been completely
+    overhauled for Apache 1.3.4, incorporating the latest HTTP/1.1
+    revisions and the experimental Transparent Content Negotion features
+    of RFC 2295 and RFC 2296.
+
 <DT><A HREF="mod/mod_speling.html"><STRONG>NEW - Spelling correction 
     module</STRONG></A><BR>
 <DD>This optional module corrects frequently occurring spelling and
