@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/02/01 06:05:51 $]
+Last modified at [$Date: 2002/02/01 06:07:49 $]
 
 Release:
 
@@ -140,7 +140,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
         Message-ID: <20020111115006.K1529@clove.org>
        Vote: Is a non-portable perchild going to hold up a GA release?
         Yes:
-         No: Aaron
+         No: Aaron, Justin
 
     * Modify the worker MPM so that it doesn't need to create and
       destroy a pool for each request--possibly by adopting a
