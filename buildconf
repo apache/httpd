@@ -67,8 +67,6 @@ if test "$supplied_flag" = "--copy"; then
     automake_flags=--copy
 fi
 
-./helpers/build-acconfig-header
-
 mv aclocal.m4 aclocal.m4.old 2>/dev/null
 aclocal
 if test "$?" != "0" -a "$am_prefix" != "$lt_prefix"; then
