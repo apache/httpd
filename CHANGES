@@ -390,6 +390,12 @@ Changes with Apache 2.1.0-dev
 
 Changes with Apache 2.0.50
 
+  *) mod_ldap calls ldap_simple_bind_s() to validate the user
+     credentials.  If the bind fails, the connection is left
+     in an unbound state.  Make sure that the ldap connection
+     record is updated to show that the connection is no longer
+     bound. [Brad Nicholes]
+                                                                                
   *) Ensure that lines in the request which are too long are 
      properly terminated before logging.
      [Tsurutani Naoki <turutani scphys.kyoto-u.ac.jp>]
