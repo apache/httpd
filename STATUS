@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/02/18 00:29:18 $]
+Last modified at [$Date: 2003/02/18 01:12:03 $]
 
 Release:
 
@@ -132,11 +132,11 @@ PATCHES TO PORT FROM 2.1
 
     * Fix memory leak on input in mod_deflate.  PR 16046.
       modules/filters/mod_deflate.c: r1.30
-      +1: jerenkrantz
+      +1: jerenkrantz, nd
 
     * Rework ap_xml_parse_input to work with bucket brigades.  PR 16134.
-      server/util_xml.c: r1.22
-      +1: jerenkrantz, trawick
+      server/util_xml.c: r1.22, r1.23
+      +1: jerenkrantz, trawick, nd
 
     * While processing filters on internal redirects, remember seen EOS
       buckets also in the request structure of the redirect issuer(s). This
