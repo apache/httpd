@@ -143,6 +143,7 @@ requests which did <b>not</b> return some sort of normal status.
 Note that the common log format is defined by the string <code>"%h %l
 %u %t \"%r\" %s %b"</code>, which can be used as the basis for
 extending for format if desired (e.g. to add extra fields at the end).
+NCSA's extended/combined log format would be <code>"%h %l %u %t \"%r\" %s %b \"%{Referer}i\" \"%{Agent}i\""</code>.
 
 <h2>Using Multiple Log Files</h3>
 
