@@ -98,14 +98,6 @@ PATCHES TO BACKPORT FROM 2.1
        svn rev 124600
        +1: erikabele, jerenkrantz
 
-    *) modules/config5.m4: for a static module, use a filename with a
-       lib prefix, see also rev 102381 of acinclude.m4
-       svn rev 124599
-       jerenkrantz says: r102381 makes static modules follow this convention
-                         by not using mod_*.  This just makes the manual
-                         --with-module modules follow.
-       +1: erikabele, jerenkrantz
-
     *) win32: Handle PATH_INFO as opaque byte-wise data for cgi invocation,
               as handled for other variables originally fixed in bug 9223.
               PR: 32730 Submitted by: Richard Donkin <rd9 donkin.org>
