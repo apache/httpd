@@ -2940,9 +2940,14 @@ static int default_handler(request_rec *r)
     }
 
     if (!r->header_only) {
-        apr_size_t nbytes;
+        ap_bucket_brigade *bb = ap_brigade_create(r->pool);
+        ap_bucket *e = ap_bucket_create_file(fd, 0, r->finfo.size);
 
-        ap_send_fd(fd, r, 0, r->finfo.size, &nbytes);
+        AP_BRIGADE_INSERT_HEAD(bb, e);
+        e = ap_bucket_create_eos();
+        AP_BRIGADE_INSERT_TAIL(bb, e);
+
+        ap_pass_brigade(r->output_filters, bb);
     }
 
     return OK;
