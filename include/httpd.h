@@ -73,7 +73,6 @@
 #include "ap_mmn.h"
 
 #include "ap_release.h"
-#include "os.h"
 
 #include "apr_general.h"
 #include "apr_tables.h"
@@ -81,6 +80,8 @@
 #include "apr_time.h"
 #include "apr_network_io.h"
 #include "apr_buckets.h"
+
+#include "os.h"
 
 #include "pcreposix.h"
 
