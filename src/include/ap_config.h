@@ -526,6 +526,26 @@ typedef int rlim_t;
 #define HAVE_SYSLOG 1
 #undef HAVE_SYS_RESOURCE_H
 
+#elif defined(ATHEOS)
+
+#include <features.h>
+#include <crypt.h>
+#include <sys/time.h>
+
+#define HAVE_FCNTL_SERIALIZED_ACCEPT
+#define USE_FCNTL_SERIALIZED_ACCEPT
+
+#undef HAVE_GMTOFF
+#undef NO_KILLPG
+#undef NO_SETSID
+#undef NEED_STRDUP
+#define HAVE_SYSLOG 1
+
+#ifdef PLATFORM
+#undef PLATFORM
+#endif
+#define PLATFORM "AtheOS"
+
 #elif defined(SCO5)
 
 #define HAVE_FCNTL_SERIALIZED_ACCEPT

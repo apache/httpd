@@ -843,6 +843,12 @@ case "$PLAT" in
 	DBM_LIB="-lgdbm"
 	LIBS="$LIBS -lcrypt $DBM_LIB"
 	;;
+    *atheos*)
+	DEF_WANTSREGEX=yes
+	OS='AtheOS'
+	CFLAGS="$CFLAGS -DATHEOS"
+	LIBS="$LIBS -lcrypt"
+	;;
     *) # default: Catch systems we don't know about
 	OS='Unknown and unsupported OS'
     	echo Sorry, but we cannot grok \"$PLAT\"
@@ -1851,6 +1857,16 @@ fi
 ## version ('yes'), our version (expat-lite) ('no') or for Configure
 ## to choose for us ('default' - system is prefered if available).
 ##
+
+# set the default, based on whether expat-lite is bundled. if it is present,
+# then we can always include expat.
+if [ "x$RULE_EXPAT" = "xdefault" ]; then
+    if [ -d ./lib/expat-lite/ ]; then
+        RULE_EXPAT=yes
+    else
+        RULE_EXPAT=no
+    fi
+fi
 
 if ./helpers/TestCompile lib expat && [ "x$RULE_EXPAT" != "xno" ]; then
         echo " + using system Expat"

@@ -316,6 +316,9 @@ case "${SYSTEM}:${RELEASE}:${VERSION}:${MACHINE}" in
     CYGWIN*:*:*:*)
 	echo "${MACHINE}-whatever-cygwin"; exit 0
 	;;
+    atheos:*)
+	echo "${MACHINE}-whatever-atheos"; exit 0
+	;;
 esac
 
 #
