@@ -78,6 +78,9 @@
 #include "apr_buckets.h"
 #include "util_filter.h"
 #include "apr_strings.h"
+#include "apr_lib.h"
+#define APR_WANT_STRFUNC
+#include "apr_want.h"
 
 #ifndef APACHE_XLATE
 #error mod_charset_lite cannot work without APACHE_XLATE enabled

@@ -91,10 +91,9 @@
 #include "http_main.h"
 #include "http_protocol.h"
 #include "util_script.h"
-
-#if APR_HAVE_STRINGS_H
-#include <strings.h>
-#endif
+#include "apr_lib.h"
+#define APR_WANT_STRFUNC
+#include "apr_want.h"
 
 typedef struct {
     const char *name;                 /* matching module name */

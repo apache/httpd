@@ -69,9 +69,9 @@
 #include "util_filter.h"
 #include "apr_strings.h"
 #include "apr_hash.h"
-#if APR_HAVE_STRINGS_H
-#include <strings.h>
-#endif
+#include "apr_lib.h"
+#define APR_WANT_STRFUNC
+#include "apr_want.h"
 
 typedef struct ef_server_t {
     apr_pool_t *p;
