@@ -1407,6 +1407,149 @@ Changes with Apache 1.3a1
   *) PORT: Added Windows NT support
      [Ben Laurie and Ambarish Malpani <ambarish@valicert.com>]
 
+Changes with Apache 1.2.6
+
+  *) mod_include when using XBitHack Full would send ETags in addition to
+     sending Last-Modifieds.  This is incorrect HTTP/1.1 behaviour.
+     [Dean Gaudet] PR#1133
+
+  *) SECURITY: When a client connects to a particular port/addr, and
+     gives a Host: header ensure that the virtual host requested can
+     actually be reached via that port/addr.  [Ed Korthof <ed@organic.com>]
+
+  *) Support virtual hosts with wildcard port and/or multiple ports
+     properly.  [Ed Korthof <ed@organic.com>]
+
+  *) Fixed some case-sensitivity issues according to RFC2068.
+     [Dean Gaudet]
+
+  *) Set r->allowed properly in mod_asis.c, mod_dir.c, mod_info.c,
+     and mod_include.c.  [Dean Gaudet]
+
+  *) Variable 'cwd' was being used pointlessly before being set.
+     [Ken Coar] PR#1738
+
+  *) SIGURG doesn't exist on all platforms.
+     [Mark Andrew Heinrich <heinrich@tinderbox.Stanford.EDU>]
+
+  *) When an error occurs during a POST, or other operation with a
+     request body, the body has to be read from the net before allowing
+     a keepalive session to continue.  [Roy Fielding] PR#1399
+
+  *) When an error occurs in fcntl() locking suggest the user look up
+     the docs for LockFile.  [Dean Gaudet]
+
+  *) table_set() and table_unset() did not deal correctly with
+     multiple occurrences of the same key. [Stephen Scheck
+     <sscheck@infonex.net>, Ben Laurie] PR#1604
+  
+  *) send_fd_length() did not calculate total_bytes_sent properly in error
+     cases.  [Ben Reser <breser@regnow.com>] PR#1366
+
+  *) r->connection->user was allocated in the wrong pool causing corruption
+     in some cases when used with mod_cern_meta.  [Dean Gaudet] PR#1500
+
+  *) mod_proxy was sending HTTP/1.1 responses to ftp requests by mistake.
+     Also removed the auto-generated link to www.apache.org that was the
+     source of so many misdirected bug reports.  [Roy Fielding, Marc Slemko]
+
+  *) Multiple "close" tokens may have been set in the "Connection"
+     header, not an error, but a waste.
+     [Ronald.Tschalaer@psi.ch] PR#1683
+
+  *) "basic" and "digest" auth tokens should be tested case-insensitive.
+     [Ronald.Tschalaer@psi.ch] PR#1599, PR#1666
+
+  *) It appears the "257th byte" bug (see
+     htdocs/manual/misc/known_client_problems.html#257th-byte) can happen
+     at the 256th byte as well.  Fixed.  [Dean Gaudet]
+
+  *) mod_rewrite would not handle %3f properly in some situations.
+     [Ralf Engelschall]
+
+  *) Apache could generate improperly chunked HTTP/1.1 responses when
+     the bputc() or rputc() functions were used by modules (such as
+     mod_include).  [Dean Gaudet]
+
+  *) #ifdef wrap a few #defines in httpd.h to make life easier on
+     some ports.  [Ralf Engelschall]
+
+  *) Fix MPE compilation error in mod_usertrack.c.  [Mark Bixby]
+
+  *) Quote CC='$(CC)' to improve recurse make calls.  [Martin Kraemer]
+
+  *) Avoid B_ERROR redeclaration on sysvr4 systems.  [Martin Kraemer]
+
+Changes with Apache 1.2.5
+
+  *) SECURITY: Fix a possible buffer overflow in logresolve.  This is
+     only an issue on systems without a MAXDNAME define or where 
+     the resolver returns domain names longer than MAXDNAME.  [Marc Slemko]
+
+  *) Fix an improper length in an ap_snprintf call in proxy_date_canon().
+     [Marc Slemko]
+
+  *) Fix core dump in the ftp proxy when reading incorrectly formatted
+     directory listings.  [Marc Slemko]
+
+  *) SECURITY: Fix possible minor buffer overflow in the proxy cache.
+     [Marc Slemko]
+
+  *) SECURITY: Eliminate possible buffer overflow in cfg_getline, which
+     is used to read various types of files such as htaccess and 
+     htpasswd files.  [Marc Slemko]
+
+  *) SECURITY: Ensure that the buffer returned by ht_time is always
+     properly null terminated.  [Marc Slemko]
+
+  *) SECURITY: General mod_include cleanup, including fixing several
+     possible buffer overflows and a possible infinite loop.  This cleanup
+     was done against 1.3 code and then backported to 1.2, the result
+     is a large difference (due to indentation cleanup in 1.3 code).
+     Users interested in seeing a smaller set of relevant differences
+     should consider comparing against src/modules/standard/mod_include.c
+     from the 1.3b3 release.  Non-indentation changes to mod_include
+     between 1.2 and 1.3 were minimal.  [Dean Gaudet, Marc Slemko]
+
+  *) SECURITY: Numerous changes to mod_imap in a general cleanup
+     including fixing a possible buffer overflow.  This cleanup also
+     was done with 1.3 code as a basis, see the the previous note
+     about mod_include.  [Dean Gaudet]
+
+  *) SECURITY: If a htaccess file can not be read due to bad 
+     permissions, deny access to the directory with a HTTP_FORBIDDEN.  
+     The previous behavior was to ignore the htaccess file if it could not
+     be read.  This change may make some setups with unreadable
+     htaccess files stop working.  PR#817  [Marc Slemko]
+
+  *) SECURITY: no2slash() was O(n^2) in the length of the input.  
+     Make it O(n).  This inefficiency could be used to mount a denial 
+     of service attack against the Apache server.  Thanks to 
+     Michal Zalewski <lcamtuf@boss.staszic.waw.pl> for reporting
+     this.  [Dean Gaudet]
+
+  *) mod_include used uninitialized data for some uses of && and ||.
+     [Brian Slesinsky <bslesins@wired.com>] PR#1139
+
+  *) mod_imap should decline all non-GET methods.
+     [Jay Bloodworth <jay@pathways.sde.state.sc.us>]
+
+  *) suexec.c wouldn't build without -DLOG_EXEC. [Jason A. Dour]
+
+  *) mod_userdir was modifying r->finfo in cases where it wasn't setting
+     r->filename.  Since those two are meant to be in sync with each other
+     this is a bug.  ["Paul B. Henson" <henson@intranet.csupomona.edu>]
+
+  *) mod_include did not properly handle all possible redirects from sub-
+     requests.  [Ken Coar]
+
+  *) Inetd mode (which is buggy) uses timeouts without having setup the
+     jmpbuffer. [Dean Gaudet] PR#1064
+
+  *) Work around problem under Linux where a child will start looping
+     reporting a select error over and over.
+     [Rick Franchuk <rickf@transpect.net>] PR#1107
+
 Changes with Apache 1.2.4
 
   *) The ProxyRemote change in 1.2.3 introduced a bug resulting in the proxy
