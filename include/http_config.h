@@ -1001,6 +1001,14 @@ AP_DECLARE_HOOK(void,child_init,(apr_pool_t *pchild, server_rec *s))
  */
 AP_DECLARE_HOOK(int,handler,(request_rec *))
 
+/**
+ * Retrieve the optional functions for each module.
+ * This is run immediately before the server starts. Optional functions should
+ * be registered during the hook registration phase.
+ * @deffunc void ap_run_optional_fn_retrieve(void)
+ */
+AP_DECLARE_HOOK(void,optional_fn_retrieve,(void))
+
 #ifdef __cplusplus
 }
 #endif
