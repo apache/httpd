@@ -1569,7 +1569,7 @@ fi
 ####################################################################
 ## Add in the Expat library if needed/wanted.
 ##
-if [ -d ./lib/expat/ ]; then
+if [ -d ./lib/expat-lite/ ]; then
     if [ "x$RULE_EXPAT" = "xdefault" ]; then
         RULE_EXPAT=yes
     fi
@@ -1582,9 +1582,9 @@ else
     fi
 fi
 if [ "x$RULE_EXPAT" = "xyes" ]; then
-    EXPATLIB="lib/expat/libexpat.a"
-    APLIBDIRS="expat $APLIBDIRS"
-    CFLAGS="$CFLAGS -DUSE_EXPAT -I\$(SRCDIR)/lib/expat"
+    EXPATLIB="lib/expat-lite/libexpat.a"
+    APLIBDIRS="expat-lite $APLIBDIRS"
+    CFLAGS="$CFLAGS -DUSE_EXPAT -I\$(SRCDIR)/lib/expat-lite"
 fi
 
 ####################################################################
