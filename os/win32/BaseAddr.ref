@@ -22,3 +22,4 @@ mod_speling          0x6FE60000    0x00010000
 mod_status           0x6FE50000    0x00010000
 mod_usertrack        0x6FE40000    0x00010000
 mod_proxy            0x6FE20000    0x00020000
+mod_file_cache       0x6FE00000    0x00020000

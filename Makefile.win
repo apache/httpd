@@ -82,6 +82,7 @@ _build:
 	 nmake /nologo CFG="ApacheModuleAuthDigest - Win32 $(LONG)" -f ApacheModuleAuthDigest.mak RECURSE=0 $(CTARGET)
 	 nmake /nologo CFG="ApacheModuleCERNMeta - Win32 $(LONG)" -f ApacheModuleCERNMeta.mak RECURSE=0 $(CTARGET)
 	 nmake /nologo CFG="ApacheModuleExpires - Win32 $(LONG)" -f ApacheModuleExpires.mak RECURSE=0 $(CTARGET)
+	 nmake /nologo CFG="ApacheModuleFileCache - Win32 $(LONG)" -f ApacheModuleFileCache.mak RECURSE=0 $(CTARGET)
 	 nmake /nologo CFG="ApacheModuleHeaders - Win32 $(LONG)" -f ApacheModuleHeaders.mak RECURSE=0 $(CTARGET)
 	 nmake /nologo CFG="ApacheModuleSpeling - Win32 $(LONG)" -f ApacheModuleSpeling.mak RECURSE=0 $(CTARGET)
 	 nmake /nologo CFG="ApacheModuleUserTrack - Win32 $(LONG)" -f ApacheModuleUserTrack.mak RECURSE=0 $(CTARGET)
@@ -106,6 +107,7 @@ _install:
 	copy os\win32\ApacheModuleAuthDigest$(SHORT)\ApacheModuleAuthDigest.dll $(INSTDIR)\modules
 	copy os\win32\ApacheModuleCERNMeta$(SHORT)\ApacheModuleCERNMeta.dll $(INSTDIR)\modules
 	copy os\win32\ApacheModuleExpires$(SHORT)\ApacheModuleExpires.dll $(INSTDIR)\modules
+	copy os\win32\ApacheModuleFileCache$(SHORT)\ApacheModuleFileCache.dll $(INSTDIR)\modules
 	copy os\win32\ApacheModuleHeaders$(SHORT)\ApacheModuleHeaders.dll $(INSTDIR)\modules
         copy os\win32\ApacheModuleRewrite$(SHORT)\ApacheModuleRewrite.dll $(INSTDIR)\modules
 	copy os\win32\ApacheModuleSpeling$(SHORT)\ApacheModuleSpeling.dll $(INSTDIR)\modules
