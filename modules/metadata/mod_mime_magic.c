@@ -1448,7 +1448,7 @@ static int hextoint(int c)
  */
 static int fsmagic(request_rec *r, const char *fn)
 {
-    switch (r->finfo.st_mode & S_IFMT) {
+    switch (r->finfo.protection & S_IFMT) {
     case S_IFDIR:
 	magic_rsl_puts(r, DIR_MAGIC_TYPE);
 	return DONE;
@@ -1497,14 +1497,14 @@ static int fsmagic(request_rec *r, const char *fn)
 	break;
     default:
 	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, 0, r,
-		    MODNAME ": invalid mode 0%o.", (unsigned int)r->finfo.st_mode);
+		    MODNAME ": invalid mode 0%o.", (unsigned int)r->finfo.protection);
 	return HTTP_INTERNAL_SERVER_ERROR;
     }
 
     /*
      * regular file, check next possibility
      */
-    if (r->finfo.st_size == 0) {
+    if (r->finfo.size == 0) {
 	magic_rsl_puts(r, MIME_TEXT_UNKNOWN);
 	return DONE;
     }
@@ -2448,7 +2448,7 @@ static int magic_find_ct(request_rec *r)
     magic_server_config_rec *conf;
 
     /* the file has to exist */
-    if (r->finfo.st_mode == 0 || !r->filename) {
+    if (r->finfo.protection == 0 || !r->filename) {
 	return DECLINED;
     }
 

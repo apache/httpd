@@ -309,12 +309,12 @@ static int add_cern_meta_data(request_rec *r)
 
     /* if ./.web/$1.meta exists then output 'asis' */
 
-    if (r->finfo.st_mode == 0) {
+    if (r->finfo.protection == 0) {
 	return DECLINED;
     };
 
     /* is this a directory? */
-    if (S_ISDIR(r->finfo.st_mode) || r->uri[strlen(r->uri) - 1] == '/') {
+    if (S_ISDIR(r->finfo.protection) || r->uri[strlen(r->uri) - 1] == '/') {
 	return DECLINED;
     };
 
