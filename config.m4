@@ -150,6 +150,7 @@ dnl #  hook module into the Autoconf mechanism (--enable-ssl option)
 APACHE_MODULE(ssl, [SSL/TLS support (mod_ssl)], $ssl_objs, , no, [
     APACHE_CHECK_SSL_TOOLKIT
     CHECK_DISTCACHE
+    APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/$modpath_current])
 ])
 
 dnl #  end of module specific part
