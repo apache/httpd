@@ -14,18 +14,8 @@ Changes with Apache 2.1.0-dev
   *) Fix some compiler warnings in proxy
      [Geoffrey Young <geoff@modperlcookbook.org>]
 
-  *) suexec: Pass the SERVER_SIGNATURE envvar through to CGIs.
-     [Zvi Har'El <rl math.technion.ac.il>]
-
-  *) apachectl: Fix a problem finding envvars if sbindir != bindir.
-     PR 30723.  [Friedrich Haubensak <hsk imb-jena.de>]
-
   *) mod_ssl: Add SSL_CLIENT_V_REMAIN variable, representing the
      number of days until the client cert expires.  [Joe Orton]
-
-  *) mod_userdir: Ensure that the userdir identity is used for
-     suexec userdir access in a virtual host which has suexec configured.  
-     PR 18156.  [Joshua Slive]
 
   *) SECURITY: CAN-2004-0751 (cve.mitre.org)
      mod_ssl: Fix a segfault in the SSL input filter which could be
@@ -49,9 +39,6 @@ Changes with Apache 2.1.0-dev
   *) Added proxy_ajp.c module for proxy support to ajp:// backends.
      [Jean Frederic Clere]
 
-  *) SECURITY: CAN-2004-0748 (cve.mitre.org)
-     mod_ssl: Fix a potential infinite loop.  PR 29964.  [Joe Orton]
-
   *) mod_disk_cache: Implement binary format for on-disk header files.
      [Brian Akins <bakins web.turner.com>, Justin Erenkrantz]
 
@@ -69,8 +56,6 @@ Changes with Apache 2.1.0-dev
 
   *) Add load balancer support to the scoreboard in preparation for
      load balancing support in mod_proxy. [Mladen Turk]
-
-  *) mod_ssl: Build on RHEL 3.  PR 18989.  [Justin Erenkrantz]
 
   *) mod_nw_ssl: Added the directive NWSSLUpgradeable to mod_nw_ssl to 
      allow a non-secure connection to be upgraded to secure connections
@@ -120,10 +105,6 @@ Changes with Apache 2.1.0-dev
 
   *) <IfModule> now recognizes the module identifier in addition to the
      file name. PR 29003.  [Edward Rudd <eddie omegaware.com>, André Malo]
-
-  *) mod_ssl: Add "SSLUserName" directive to set r->user based on a
-     chosen SSL environment variable.  PR 20957. 
-     [Martin v. Loewis <martin v.loewis.de>]
 
   *) mod_ssl: Add "SSLHonorCipherOrder" directive to enable the
      OpenSSL 0.9.7 flag which uses the server's cipher order rather
@@ -437,6 +418,28 @@ Changes with Apache 2.1.0-dev
 
 Changes with Apache 2.0.51
 
+  *) mod_ssl: Add "SSLUserName" directive to set r->user based on a
+     chosen SSL environment variable.  PR 20957. 
+     [Martin v. Loewis <martin v.loewis.de>]
+
+  *) suexec: Pass the SERVER_SIGNATURE envvar through to CGIs.
+     [Zvi Har'El <rl math.technion.ac.il>]
+
+  *) apachectl: Fix a problem finding envvars if sbindir != bindir.
+     PR 30723.  [Friedrich Haubensak <hsk imb-jena.de>]
+
+  *) mod_ssl: Build on RHEL 3.  PR 18989.  [Justin Erenkrantz]
+
+  *) SECURITY: CAN-2004-0748 (cve.mitre.org)
+     mod_ssl: Fix a potential infinite loop.  PR 29964.  [Joe Orton]
+
+  *) mod_ssl: Avoid startup failure after unclean shutdown if using shmcb.
+     PR 18989.  [Joe Orton]
+
+  *) mod_userdir: Ensure that the userdir identity is used for
+     suexec userdir access in a virtual host which has suexec configured.  
+     PR 18156.  [Joshua Slive]
+
   *) mod_rewrite no longer confuses the RewriteMap caches if
      different maps defined in different virtual hosts use the
      same map name. PR 26462.  [André Malo]
@@ -519,6 +522,11 @@ Changes with Apache 2.0.50
      Close a denial of service vulnerability identified by Georgi
      Guninski which could lead to memory exhaustion with certain
      input data.  [Jeff Trawick]
+
+  *) mod_cgi: Handle output on stderr during script execution on Unix
+     platforms; preventing deadlock when stderr output fills pipe buffer.
+     Also fixes case where stderr from nph- scripts could be lost.
+     PR 22030, 18348.  [Joe Orton, Jeff Trawick]
 
   *) mod_alias now emits a warning if it detects overlapping *Alias*
      directives.  [André Malo]
