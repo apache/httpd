@@ -892,9 +892,19 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
          * leave it to the pool cleanup to dispose of our mutex.
          */
         if (cid->completed) {
-            apr_thread_mutex_unlock(cid->completed);
+            rv = apr_thread_mutex_create(&cid->completed, 
+                                         APR_THREAD_MUTEX_UNNESTED, 
+                                         r->pool);
+            return 1;
         }
-        return 1;
+        else if (cid->dconf.log_unsupported) {
+            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
+                          "ISAPI: ServerSupportFunction "
+                          "HSE_REQ_DONE_WITH_SESSION is not supported: %s",
+                          r->filename);
+        }
+        SetLastError(ERROR_INVALID_PARAMETER);
+        return 0;
 
     case HSE_REQ_MAP_URL_TO_PATH:
     {
@@ -1477,6 +1487,33 @@ apr_status_t isapi_handler (request_rec *r)
         cid->ecb->lpbData = NULL;
     }
 
+    /* To emulate async behavior...
+     *
+     * We create a cid->completed mutex and lock on it so that the
+     * app can believe is it running async.
+     *
+     * This request completes upon a notification through
+     * ServerSupportFunction(HSE_REQ_DONE_WITH_SESSION), which
+     * unlocks this mutex.  If the HttpExtensionProc() returns
+     * HSE_STATUS_PENDING, we will attempt to gain this lock again
+     * which may *only* happen once HSE_REQ_DONE_WITH_SESSION has
+     * unlocked the mutex.
+     */
+    if (cid->dconf.fake_async) {
+        rv = apr_thread_mutex_create(&cid->completed, 
+                                     APR_THREAD_MUTEX_UNNESTED, 
+                                     r->pool);
+        if (cid->completed && (rv == APR_SUCCESS)) {
+            rv = apr_thread_mutex_lock(comp);
+        }
+
+        if (!cid->completed || (rv != APR_SUCCESS)) {
+            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
+                          "ISAPI: Failed to create completion mutex");
+            return HTTP_INTERNAL_SERVER_ERROR;
+        }
+    }
+
     /* All right... try and run the sucker */
     rv = (*isa->HttpExtensionProc)(cid->ecb);
 
@@ -1501,32 +1538,15 @@ apr_status_t isapi_handler (request_rec *r)
 
         case HSE_STATUS_PENDING:
             /* emulating async behavior...
-             *
-             * Create a cid->completed mutex and wait on it for some timeout
-             * so that the app thinks is it running async.
-             *
-             * All async ServerSupportFunction calls will be handled through
-             * the registered IO_COMPLETION hook.
-             *
-             * This request completes upon a notification through
-             * ServerSupportFunction(HSE_REQ_DONE_WITH_SESSION)
              */
-            if (cid->dconf.fake_async) {
-                apr_thread_mutex_t *comp;
-
-                rv = apr_thread_mutex_create(&cid->completed, 
-                                             APR_THREAD_MUTEX_UNNESTED, 
-                                             r->pool);
-                comp = cid->completed;
-                if (cid->completed && (rv == APR_SUCCESS)) {
-                    rv = apr_thread_mutex_lock(comp);
-                }
-                /* The completion port is now locked.  When we regain the
-                 * lock, we may destroy the request.
+            if (cid->completed) {
+                /* The completion port was locked prior to invoking
+                 * HttpExtensionProc().  Once we can regain the lock,
+                 * when ServerSupportFunction(HSE_REQ_DONE_WITH_SESSION)
+                 * is called by the extension to release the lock,
+                 * we may finally destroy the request.
                  */
-                if (cid->completed && (rv == APR_SUCCESS)) {
-                    rv = apr_thread_mutex_lock(comp);
-                }
+                (void)apr_thread_mutex_lock(cid->completed);
                 break;
             }
             else if (cid->dconf.log_unsupported) {
