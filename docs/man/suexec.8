@@ -25,26 +25,26 @@
 suexec \- Switch user before executing external programs
 
 .SH "SYNOPSIS"
-
+ 
 .PP
 \fBsuexec\fR -\fBV\fR
-
+ 
 
 .SH "SUMMARY"
-
+ 
 .PP
 suexec is used by the Apache HTTP Server to switch to another user before executing CGI programs\&. In order to achieve this, it must run as root\&. Since the HTTP daemon normally doesn't run as root, the suexec executable needs the setuid bit set and must be owned by root\&. It should never be writable for any other person than root\&.
-
+ 
 .PP
 For further information about the concepts and and the security model of suexec please refer to the suexec documentation (http://httpd\&.apache\&.org/docs-2\&.1/suexec\&.html)\&.
-
+ 
 
 .SH "OPTIONS"
-
+ 
 .RS
-
+ 
 .TP
 -V
-If you are root, this option displays the compile options of suexec\&. For security reasons all configuration options are changable only at compile time\&.
+If you are root, this option displays the compile options of suexec\&. For security reasons all configuration options are changable only at compile time\&.  
 .RE
-
+ 
