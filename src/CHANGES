@@ -1,6 +1,9 @@
 Changes with Apache 1.3.14
 
-Changes with Apache 1.3.13
+  *) Fixes to allow compilation on NetWare [Brad Nicholes
+     <bnicholes@novell.com>]
+
+Changes with Apache 1.3.13 [not released]
 
   *) NOTE: A number of Win32 symbols were exported without explicit
      declaration in the ApacheCore.def file.  These are now exported
