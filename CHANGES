@@ -1,5 +1,9 @@
 Changes with Apache 2.0.17-dev
 
+  *) Fix errors in the renaming of the apr_threadattr_detach_xxx functions.
+     This may have been causing problems stopping processes in the threaded
+     mpm's. [Greg Ames]
+
   *) Fix content-length in mod_negotiation to a long int representation.
      [William Rowe]
 
