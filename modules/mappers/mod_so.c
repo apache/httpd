@@ -249,11 +249,11 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
      * Load the file into the Apache address space
      */
     if ((stat = ap_dso_load(&modhandle, szModuleFile, cmd->pool )) != APR_SUCCESS) {
-	    const char *my_error = ap_os_dso_error();
+        const char *my_error = ap_os_dso_error();
         return ap_pstrcat (cmd->pool, "Cannot load ", szModuleFile,
-			" into server: ", 
-			"(reason unknown)",
-			NULL);
+                           " into server: ", 
+                           my_error ? my_error : "(reason unknown)",
+                           NULL);
     }
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
 		"loaded module %s", modname);
