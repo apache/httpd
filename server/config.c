@@ -191,11 +191,11 @@ static ap_conf_vector_t *create_default_per_dir_config(apr_pool_t *p)
 
 ap_conf_vector_t *ap_merge_per_dir_configs(apr_pool_t *p,
                                            ap_conf_vector_t *base,
-                                           ap_conf_vector_t *new)
+                                           ap_conf_vector_t *new_conf)
 {
     void **conf_vector = apr_palloc(p, sizeof(void *) * total_modules);
     void **base_vector = (void **) base;
-    void **new_vector = (void **) new;
+    void **new_vector = (void **) new_conf;
     module *modp;
 
     for (modp = top_module; modp; modp = modp->next) {

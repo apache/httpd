@@ -845,11 +845,11 @@ AP_CORE_DECLARE(ap_conf_vector_t *) ap_create_per_dir_config(apr_pool_t *p);
  * Run all of the modules merge per dir config functions
  * @param p The pool to pass to the merge functions
  * @param base The base directory config structure
- * @param new The new directory config structure
+ * @param new_conf The new directory config structure
  */
 ap_conf_vector_t *ap_merge_per_dir_configs(apr_pool_t *p,
                                            ap_conf_vector_t *base,
-                                           ap_conf_vector_t *new);
+                                           ap_conf_vector_t *new_conf);
 
 /* For http_connection.c... */
 /**
