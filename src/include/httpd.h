@@ -462,6 +462,7 @@ struct server_rec {
   int keep_alive;		/* Maximum requests per connection */
 
   char *names;			/* Wildcarded names for HostAlias servers */
+  char *virthost;		/* The name given in <VirtualHost> */
 };
 
 /* These are more like real hosts than virtual hosts */

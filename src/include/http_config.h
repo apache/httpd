@@ -242,7 +242,6 @@ int parse_htaccess(void **result, request_rec *r, int override,
 char *srm_command_loop (cmd_parms *parms, void *config);
 
 server_rec *init_virtual_host (pool *p, char *hostname);
-server_rec *init_host_alias (pool *p, char *hostnames);
 int is_virtual_server (server_rec *);
 void process_resource_config(server_rec *s, char *fname, pool *p, pool *ptemp);
 

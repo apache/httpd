@@ -550,45 +550,6 @@ char *virtualhost_section (cmd_parms *cmd, void *dummy, char *arg)
     return errmsg;
 }
 
-char *end_hostalias_magic = "</HostAlias> out of place";
-
-char *end_hostalias_section (cmd_parms *cmd, void *dummy) {
-    return end_hostalias_magic;
-}
-
-char *hostalias_section (cmd_parms *cmd, void *dummy, char *arg)
-{
-    server_rec *main_server = cmd->server, *s;
-    char *errmsg, *endp = strrchr (arg, '>');
-    pool *p = cmd->pool, *ptemp = cmd->temp_pool;
-
-    if (endp) *endp = '\0';
-    
-    if (main_server->is_virtual)
-	return "<HostAlias> doesn't nest!";
-    
-    s = init_host_alias (p, arg);
-    s->next = main_server->next;
-    main_server->next = s;
-	
-    cmd->server = s;
-    errmsg = srm_command_loop (cmd, s->lookup_defaults);
-    cmd->server = main_server;
-
-    if (s->srm_confname)
-	process_resource_config (s, s->srm_confname, p, ptemp);
-
-    if (s->access_confname)
-	process_resource_config (s, s->access_confname, p, ptemp);
-    
-    if (errmsg == end_hostalias_magic) {
-      if (!s->server_hostname)
-	return "ServerName must be specified in a <HostAlias>";
-      return NULL;
-    }
-    return errmsg;
-}
-
 char *set_server_string_slot (cmd_parms *cmd, void *dummy, char *arg)
 {
     /* This one's pretty generic... */
@@ -793,6 +754,9 @@ command_rec core_cmds[] = {
 { "ResourceConfig", set_server_string_slot,
   (void *)XtOffsetOf (server_rec, srm_confname), RSRC_CONF, TAKE1,
   "the filename of the resource config file" },
+{ "ServerAlias", set_server_string_slot,
+   (void *)XtOffsetOf (server_rec, names), RSRC_CONF, RAW_ARGS,
+   "a name or names alternately used to access the server" },
 { "Timeout", set_timeout, NULL, RSRC_CONF, TAKE1, "timeout duration (sec)"},
 { "KeepAliveTimeout", set_keep_alive_timeout, NULL, RSRC_CONF, TAKE1, "Keep-Alive timeout duration (sec)"},
 { "KeepAlive", set_keep_alive, NULL, RSRC_CONF, TAKE1, "Maximum Keep-Alive requests per connection (0 to disable)" },
@@ -812,8 +776,6 @@ command_rec core_cmds[] = {
       "a port number or a numeric IP address and a port number"},
 { "<VirtualHost", virtualhost_section, NULL, RSRC_CONF, RAW_ARGS, NULL },
 { "</VirtualHost>", end_virtualhost_section, NULL, RSRC_CONF, NO_ARGS, NULL },
-{ "<HostAlias", hostalias_section, NULL, RSRC_CONF, RAW_ARGS, NULL },
-{ "</HostAlias>", end_hostalias_section, NULL, RSRC_CONF, NO_ARGS, NULL },
 { NULL },
 };
 

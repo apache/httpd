@@ -657,38 +657,8 @@ server_rec *init_virtual_host (pool *p, char *hostname)
     s->next = NULL;
 
     s->is_virtual = 1;
-
-    s->module_config = create_empty_config (p);
-    s->lookup_defaults = create_per_dir_config (p);
-    
-    return s;
-}
-
-server_rec *init_host_alias (pool *p, char *hostnames)
-{
-    server_rec *s = (server_rec *)pcalloc (p, sizeof (server_rec));
-
-#ifdef RLIMIT_NOFILE
-    struct rlimit limits;
-
-    getrlimit ( RLIMIT_NOFILE, &limits );
-    if ( limits.rlim_cur < limits.rlim_max ) {
-      limits.rlim_cur += 2;
-      if ( setrlimit ( RLIMIT_NOFILE, &limits ) < 0 )
-	fprintf (stderr, "Cannot exceed hard limit for open files");
-    }
-#endif
-
-    s->server_admin = NULL;
-    s->server_hostname = NULL; 
-    s->error_fname = NULL;
-    s->srm_confname = NULL;
-    s->access_confname = NULL;
-    s->timeout = 0;
-    s->names = pstrdup(p, hostnames);
-    s->next = NULL;
-
-    s->is_virtual = 2;
+    s->virthost = pstrdup(p, hostname);
+    s->names = NULL;
 
     s->module_config = create_empty_config (p);
     s->lookup_defaults = create_per_dir_config (p);

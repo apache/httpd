@@ -361,7 +361,15 @@ void check_hostalias (request_rec *r) {
   for (s = r->server->next; s; s = s->next) {
     char *names = s->names;
 
-    if (s->is_virtual != 2) continue;	/* No a HostAlias */
+    if (!strcasecmp(host, s->server_hostname)) {
+      r->server = r->connection->server = s;
+      if (r->hostlen && !strncmp(r->uri, "http://", 7)) {
+	r->uri += r->hostlen;
+	parse_uri(r, r->uri);
+      }
+    }
+
+    if (!names) continue;
 
     while (*names) {
       char *name = getword_conf (r->pool, &names);

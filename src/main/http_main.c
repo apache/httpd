@@ -976,20 +976,32 @@ server_rec *find_virtual_server (struct in_addr server_ip, int port,
 
 void default_server_hostnames(server_rec *s)
 {
-    struct hostent *h;
+    struct hostent *h, *main;
     char *def_hostname;
+    int n;
+
     /* Main host first */
     
     if (!s->server_hostname)
 	s->server_hostname = get_local_host(pconf);
 
     def_hostname = s->server_hostname;
+    main = gethostbyname(def_hostname);
 
     /* Then virtual hosts */
     
-    for (s = s->next; s; s = s->next)
-	if (!s->server_hostname) {
-	    if (s->host_addr.s_addr == htonl(INADDR_ANY))
+    for (s = s->next; s; s = s->next) {
+	/* Check to see if we might be a HTTP/1.1 virtual host - same IP */
+	for (n = 0; main->h_addr_list[n] != NULL; n++) {
+	  if (s->host_addr.s_addr ==
+	      (((struct in_addr *)(main->h_addr_list[n]))->s_addr))
+	    s->is_virtual = 2;
+	}
+
+        if (!s->server_hostname) {
+	    if (s->is_virtual == 2)
+	        s->server_hostname = s->virthost;
+	    else if (s->host_addr.s_addr == htonl(INADDR_ANY))
 		s->server_hostname = def_hostname;
 	    else
 	    {
@@ -999,6 +1011,7 @@ void default_server_hostnames(server_rec *s)
 		    s->server_hostname = pstrdup (pconf, (char *)h->h_name);
 	    }
 	}
+    }
 }
 	
 void abort_connection (conn_rec *c)
