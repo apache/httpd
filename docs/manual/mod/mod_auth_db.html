@@ -32,11 +32,26 @@ available in Apache 1.1 and later.
 
 <A name="authdbgroupfile"><h2>AuthDBGroupFile</h2></A>
 <!--%plaintext &lt;?INDEX {\tt AuthDBGroupFile} directive&gt; -->
-<STRONG>Syntax:</STRONG> AuthDBGroupFile <EM>filename</EM><BR>
-<Strong>Context:</STRONG> directory, .htaccess<BR>
-<Strong>Override:</STRONG> AuthConfig<BR>
-<STRONG>Status:</STRONG> Extension<BR>
-<STRONG>Module:</STRONG> mod_auth_db<P>
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> AuthDBGroupFile <EM>filename</EM><BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> directory, .htaccess<BR>
+<A
+ HREF="directive-dict.html#Override"
+ REL="Help"
+><STRONG>Override:</STRONG></A> AuthConfig<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Extension<BR>
+<A
+ HREF="directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mod_auth_db<P>
 
 The AuthDBGroupFile directive sets the name of a DB file containing the list
 of user groups for user authentication. <EM>Filename</EM> is the absolute path
@@ -80,11 +95,26 @@ See also <A HREF="core.html#authname">AuthName</A>,
 
 <A name="authdbuserfile"><h2>AuthDBUserFile</h2></A>
 <!--%plaintext &lt;?INDEX {\tt AuthDBUserFile} directive&gt; -->
-<STRONG>Syntax:</STRONG> AuthDBUserFile <EM>filename</EM><BR>
-<Strong>Context:</STRONG> directory, .htaccess<BR>
-<Strong>Override:</STRONG> AuthConfig<BR>
-<STRONG>Status:</STRONG> Extension<BR>
-<STRONG>Module:</STRONG> mod_auth_db<P>
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> AuthDBUserFile <EM>filename</EM><BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> directory, .htaccess<BR>
+<A
+ HREF="directive-dict.html#Override"
+ REL="Help"
+><STRONG>Override:</STRONG></A> AuthConfig<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Extension<BR>
+<A
+ HREF="directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mod_auth_db<P>
 
 The AuthDBUserFile directive sets the name of a DB file containing the list
 of users and passwords for user authentication. <EM>Filename</EM> is the
@@ -114,11 +144,26 @@ See also <A HREF="core.html#authname">AuthName</A>,
 <HR>
 <A name="authdbauthoritative"><h2>AuthDBAuthoritative</h2></A>
 <!--%plaintext &lt;?INDEX {\tt AuthDBAuthoritative} directive&gt; -->
-<STRONG>Syntax:</STRONG> AuthDBAuthoritative &lt; <STRONG> on</STRONG>(default) | off &gt; <BR>
-<Strong>Context:</STRONG> directory, .htaccess<BR>
-<Strong>Override:</STRONG> AuthConfig<BR>
-<STRONG>Status:</STRONG> Base<BR>
-<STRONG>Module:</STRONG> mod_auth<P>
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> AuthDBAuthoritative &lt; <STRONG> on</STRONG>(default) | off &gt; <BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> directory, .htaccess<BR>
+<A
+ HREF="directive-dict.html#Override"
+ REL="Help"
+><STRONG>Override:</STRONG></A> AuthConfig<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Base<BR>
+<A
+ HREF="directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mod_auth<P>
 
 Setting the AuthDBAuthoritative directive explicitly to <STRONG>'off'</STRONG>
 allows for both authentication and authorization to be passed on
@@ -139,7 +184,10 @@ Whereas this DB module supplies the bulk of the user credential
 checking; a few (administrator) related accesses fall through to
 a lower level with a well protected .htpasswd file.  <P>
 
-<STRONG>Default:</STRONG> By default; control is not passed on; and an unknown
+<A
+ HREF="directive-dict.html#Default"
+ REL="Help"
+><STRONG>Default:</STRONG></A> By default; control is not passed on; and an unknown
 userID or rule will result in an Authorization Required reply. Not
 setting it thus keeps the system secure; and forces an NSCA compliant
 behaviour.  <P>
