@@ -95,3 +95,46 @@ AC_DEFUN(APACHE_ONCE,[
   fi
 ])
 
+dnl
+dnl APACHE_CHECK_THREADS()
+dnl
+dnl Determine the best flags for linking against a threading library.
+dnl
+AC_DEFUN(THREAD_TEST, [
+AC_TRY_RUN( [
+#include <pthread.h>
+
+void *thread_routine(void *data) {
+    return data;
+}
+
+int main() {
+    pthread_t thd;
+    int data = 1;
+    return pthread_create(&thd, NULL, thread_routine, &data);
+} ], [ 
+  THREADS_WORKING="yes"
+  ], [
+  THREADS_WORKING="no"
+  ], THREADS_WORKING="no" ) ] )
+
+define(APACHE_CHECK_THREADS, [dnl
+  cflags_orig="$CFLAGS"
+  ldflags_orig="$LDFLAGS"
+  for test_cflag in $1; do
+    for test_ldflag in $2; do
+      CFLAGS="$test_cflag $cflags_orig"
+      LDFLAGS="$test_ldflag $ldflags_orig"
+      THREAD_TEST()
+      if test "$THREADS_WORKING" = "yes"; then
+        break
+      fi
+    done
+    if test "$THREADS_WORKING" = "yes"; then
+      threads_result="Updating CFLAGS and LDFLAGS"
+      break
+    fi
+      threads_result="Threads not found"
+  done
+] )
+        

@@ -73,6 +73,10 @@ AC_TYPE_PID_T
 
 dnl ## Check for library functions
 
+AC_MSG_CHECKING([for which threading library to use])
+APACHE_CHECK_THREADS('' -pthread -D_REENTRANT, '' -lpthread -lc_r)
+AC_MSG_RESULT("$threads_result")
+
 dnl See Comment #Spoon
 
 AC_CHECK_FUNCS( \
