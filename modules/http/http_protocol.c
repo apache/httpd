@@ -67,6 +67,7 @@
 #include "apr_strings.h"
 #include "apr_buckets.h"
 #include "apr_lib.h"
+#include "apr_signal.h"
 
 #define APR_WANT_STDIO          /* for sscanf */
 #define APR_WANT_STRFUNC

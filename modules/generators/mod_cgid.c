@@ -76,6 +76,7 @@
 #include "apr_portable.h"
 #include "apr_buckets.h"
 #include "apr_optional.h"
+#include "apr_signal.h"
 
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
