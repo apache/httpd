@@ -660,7 +660,7 @@ static void child_main(int child_num_arg)
 		    clean_child_exit(0);
 		}
 		stat = apr_accept(&csd, sd, ptrans);
-		if (stat == APR_SUCCESS || stat != APR_EINTR)
+		if (stat == APR_SUCCESS || !APR_STATUS_IS_EINTR(stat))
 		    break;
 	    }
 
