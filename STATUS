@@ -148,11 +148,6 @@ PATCHES TO BACKPORT FROM 2.1
        svn rev 106653
        +1: wrowe, nd, trawick
 
-    *) mod_ssl: Fix an possible NULL pointer dereference in some configs.
-       http://nagoya.apache.org/bugzilla/showattachment.cgi?attach_id=13182
-       PR: 31848
-       +1: jorton, wrowe, jim
-
     *) several changes to improve logging of connection-oriented errors, including
        ap_log_cerror() API (needs minor bump in addition to changes below)
          http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/core.c?r1=1.289&r2=1.291
