@@ -89,7 +89,6 @@
 #include "http_log.h" 
 #include "util_script.h" 
 #include "http_conf_globals.h" 
-#include "buff.h" 
 #include "ap_mpm.h"
 #include "unixd.h"
 #include <sys/stat.h>
@@ -148,9 +147,6 @@ typedef struct {
     const char *logname; 
     long logbytes; 
     int bufbytes; 
-    BUFF *bin; 
-    BUFF *bout; 
-    BUFF *berror; 
 } cgid_server_conf; 
 
 /* If a request includes query info in the URL (stuff after "?"), and
@@ -641,7 +637,6 @@ static void *create_cgid_config(apr_pool_t *p, server_rec *s)
     c->logbytes = DEFAULT_LOGBYTES; 
     c->bufbytes = DEFAULT_BUFBYTES; 
     c->sockname = ap_server_root_relative(p, DEFAULT_SOCKET); 
-    c->bin = c->bout = c->berror = NULL; 
     return c; 
 } 
 
