@@ -165,7 +165,7 @@
 #include "util_script.h"
 #include "http_log.h"
 #include "http_request.h"
-
+#include "apr_lib.h"
 
 #define DIR_CMD_PERMS OR_INDEXES
 
