@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+  <head>
+
+    <title>Apache サーバのバーチャルホストのサポート</title>
+    <!-- English revision: 1.4 -->
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#ffffff" text="#000000" link="#0000ff"
+  vlink="#000080" alink="#ff0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="center">ファイル記述子の限界</h1>
+
+    <p>たくさんのバーチャルホストを運用する場合、もし、
+    各バーチャルホストごとに異なるログファイルが指定してあると、
+    Apache がファイル記述子 (<cite>ファイルハンドル</cite>とも呼ばれます)
+    を使い切ってしまうことがあります。Apache が使用するファイル
+    記述子の数は、各エラーログファイルにつき 1 つ、他のログファイルの
+    ディレクティブにつき 1 つ、さらに内部で使用する 10 から 20、
+    の合計になります。Unix オペレーティングシステムではプロセスごとに
+    使用可能なファイル記述子の数を制限しています。たいていの場合は 64 で、
+    普通は大きな値のハードリミットまで増やすことができます。</p>
+
+    <p>Apache は必要に応じて上限を拡大しようと試みますが、
+    以下のような場合にはうまくいかないかもしれません。</p>
+
+    <ol>
+      <li>利用しているシステムで setrlimit()
+      システムコールが提供されていない。</li>
+
+      <li>システム上で setrlimit(RLIMIT_NOFILE) が動作しない
+      (たとえば Solaris 2.3 のように)。</li>
+
+      <li>要求されるファイル記述子の数が
+      ハードリミットを超えてしまう。</li>
+
+      <li>システムにファイル記述子に関して別の制限が存在してしまっている。
+      たとえば、stdio ストリームではファイル記述子を 256 以上使えない
+      (Solaris 2)、など。</li>
+    </ol>
+    問題が発生した時に取り得る対処方法は次のとおり:
+
+    <ul>
+      <li>ログファイルの数を減らす。VirtualHost
+      セクションでログファイルを指定せず、
+      メインのログファイルにのみ記録する。</li>
+
+      <li>
+        もし、前述の 1 または 2 の場合であれば、
+        Apache を起動する前にファイル記述子を増やします。
+        たとえば次のようなスクリプトを使います。
+
+        <blockquote>
+          <code>#!/bin/sh <br />
+           ulimit -S -n 100 <br />
+           exec httpd</code>
+        </blockquote>
+      </li>
+    </ul>
+
+    <p>ファイル記述子の問題についての詳細や、
+    オペレーティングシステムごとの解決方法については「<a
+    href="../misc/descriptors.html">ファイル記述子と
+    Apache</a>」の文書を参照してください。
+    </p>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
