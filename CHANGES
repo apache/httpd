@@ -2,6 +2,13 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_proxy: multiple bugfixes, principally support cookies in
+     ProxyPassReverse, and don't canonicalise URL passed to backend.
+     Documentation correspondingly updated. [Nick Kew <nick webthing.com>]
+
+  *) mod_deflate: support gzip flags in inflate_out_filter
+     [Nick Kew <nick webthing.com>]
+
   *) mod_log_config: Fix a bug which prevented request completion time
      from being logged for I_INSIST_ON_EXTRA_CYCLES_FOR_CLF_COMPLIANCE
      processing.  PR 29696.  [Alois Treindl <alois astro.ch>]
