@@ -1298,7 +1298,7 @@ static struct ent *make_autoindex_entry(const apr_finfo_t *dirent,
     }
 
     p = (struct ent *) apr_pcalloc(r->pool, sizeof(struct ent));
-    if (dirent->filetype == APR_DIR) {
+    if (rr->finfo.filetype == APR_DIR) {
         p->name = apr_pstrcat(r->pool, dirent->name, "/", NULL);
     }
     else {
@@ -1316,7 +1316,7 @@ static struct ent *make_autoindex_entry(const apr_finfo_t *dirent,
 
     if (autoindex_opts & (FANCY_INDEXING | TABLE_INDEXING)) {
         p->lm = rr->finfo.mtime;
-        if (dirent->filetype == APR_DIR) {
+        if (rr->finfo.filetype == APR_DIR) {
             if (autoindex_opts & FOLDERS_FIRST) {
                 p->isdir = 1;
             }
