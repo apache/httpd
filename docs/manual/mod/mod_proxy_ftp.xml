@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.5 $ -->
+<!-- $Revision: 1.6 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -31,7 +31,8 @@
 <summary>
     <p>This module <em>requires</em> the service of <module
     >mod_proxy</module>. It provides support for the proxying
-    FTP sites.</p>
+    FTP sites.  Note that FTP support is currently limited to
+    the GET method.</p>
 
     <p>Thus, in order to get the ability of handling FTP proxy requests,
     <module>mod_proxy</module> and <module>mod_proxy_ftp</module>
