@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Unix: Handle permissions settings for flock-based mutexes in 
+     unixd_set_global|proc_mutex_perms().  Allow the functions to be
+     called for any type of mutex.  PR 20312  [Jeff Trawick]
+
   *) mod_rewrite: Perform child initialization on the rewrite log lock.
      This fixes a log corruption issue when flock-based serialization
      is used (e.g., FreeBSD).  [Jeff Trawick]
