@@ -35,6 +35,7 @@ AC_CANONICAL_SYSTEM
 dnl
 dnl ## Preload our OS configuration
 APR_PRELOAD
+APACHE_PRELOAD
 
 dnl
 dnl Process command line arguments. This is done early in the process so the
