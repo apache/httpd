@@ -68,6 +68,7 @@
  *
  */
 
+#include "ap_config_auto.h"
 #include "ap_config.h"
 #include <sys/param.h>
 #include <sys/stat.h>
@@ -163,12 +164,12 @@ char *safe_env_lst[] =
 
 static void err_output(const char *fmt, va_list ap)
 {
-#ifdef LOG_EXEC
+#ifdef AP_LOG_EXEC
     time_t timevar;
     struct tm *lt;
 
     if (!log) {
-	if ((log = fopen(LOG_EXEC, "a")) == NULL) {
+	if ((log = fopen(AP_LOG_EXEC, "a")) == NULL) {
 	    fprintf(stderr, "failed to open log file\n");
 	    perror("fopen");
 	    exit(1);
@@ -185,19 +186,19 @@ static void err_output(const char *fmt, va_list ap)
     vfprintf(log, fmt, ap);
 
     fflush(log);
-#endif /* LOG_EXEC */
+#endif /* AP_LOG_EXEC */
     return;
 }
 
 static void log_err(const char *fmt,...)
 {
-#ifdef LOG_EXEC
+#ifdef AP_LOG_EXEC
     va_list ap;
 
     va_start(ap, fmt);
     err_output(fmt, ap);
     va_end(ap);
-#endif /* LOG_EXEC */
+#endif /* AP_LOG_EXEC */
     return;
 }
 
@@ -215,7 +216,7 @@ static void clean_env(void)
 	exit(120);
     }
 
-    sprintf(pathbuf, "PATH=%s", SAFE_PATH);
+    sprintf(pathbuf, "PATH=%s", AP_SAFE_PATH);
     cleanenv[cidx] = strdup(pathbuf);
     cidx++;
 
@@ -291,13 +292,13 @@ int main(int argc, char *argv[])
      */
 #ifdef _OSD_POSIX
     /* User name comparisons are case insensitive on BS2000/OSD */
-    if (strcasecmp(HTTPD_USER, pw->pw_name)) {
-        log_err("user mismatch (%s instead of %s)\n", pw->pw_name, HTTPD_USER);
+    if (strcasecmp(AP_HTTPD_USER, pw->pw_name)) {
+        log_err("user mismatch (%s instead of %s)\n", pw->pw_name, AP_HTTPD_USER);
 	exit(103);
     }
 #else  /*_OSD_POSIX*/
-    if (strcmp(HTTPD_USER, pw->pw_name)) {
-        log_err("user mismatch (%s instead of %s)\n", pw->pw_name, HTTPD_USER);
+    if (strcmp(AP_HTTPD_USER, pw->pw_name)) {
+        log_err("user mismatch (%s instead of %s)\n", pw->pw_name, AP_HTTPD_USER);
 	exit(103);
     }
 #endif /*_OSD_POSIX*/
@@ -401,18 +402,18 @@ int main(int argc, char *argv[])
 
     /*
      * Error out if attempt is made to execute as root or as
-     * a UID less than UID_MIN.  Tsk tsk.
+     * a UID less than AP_UID_MIN.  Tsk tsk.
      */
-    if ((uid == 0) || (uid < UID_MIN)) {
+    if ((uid == 0) || (uid < AP_UID_MIN)) {
 	log_err("cannot run as forbidden uid (%d/%s)\n", uid, cmd);
 	exit(107);
     }
 
     /*
      * Error out if attempt is made to execute as root group
-     * or as a GID less than GID_MIN.  Tsk tsk.
+     * or as a GID less than AP_GID_MIN.  Tsk tsk.
      */
-    if ((gid == 0) || (gid < GID_MIN)) {
+    if ((gid == 0) || (gid < AP_GID_MIN)) {
 	log_err("cannot run as forbidden gid (%d/%s)\n", gid, cmd);
 	exit(108);
     }
@@ -451,7 +452,7 @@ int main(int argc, char *argv[])
 
     if (userdir) {
 	if (((chdir(target_homedir)) != 0) ||
-	    ((chdir(USERDIR_SUFFIX)) != 0) ||
+	    ((chdir(AP_USERDIR_SUFFIX)) != 0) ||
 	    ((getcwd(dwd, AP_MAXPATH)) == NULL) ||
 	    ((chdir(cwd)) != 0)) {
 	    log_err("cannot get docroot information (%s)\n", target_homedir);
@@ -459,10 +460,10 @@ int main(int argc, char *argv[])
 	}
     }
     else {
-	if (((chdir(DOC_ROOT)) != 0) ||
+	if (((chdir(AP_DOC_ROOT)) != 0) ||
 	    ((getcwd(dwd, AP_MAXPATH)) == NULL) ||
 	    ((chdir(cwd)) != 0)) {
-	    log_err("cannot get docroot information (%s)\n", DOC_ROOT);
+	    log_err("cannot get docroot information (%s)\n", AP_DOC_ROOT);
 	    exit(113);
 	}
     }
@@ -543,10 +544,10 @@ int main(int argc, char *argv[])
      * Be sure to close the log file so the CGI can't
      * mess with it.  If the exec fails, it will be reopened 
      * automatically when log_err is called.  Note that the log
-     * might not actually be open if LOG_EXEC isn't defined.
+     * might not actually be open if AP_LOG_EXEC isn't defined.
      * However, the "log" cell isn't ifdef'd so let's be defensive
      * and assume someone might have done something with it
-     * outside an ifdef'd LOG_EXEC block.
+     * outside an ifdef'd AP_LOG_EXEC block.
      */
     if (log != NULL) {
 	fclose(log);
