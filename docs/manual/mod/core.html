@@ -1100,7 +1100,21 @@ of Apache.<p>
 If you have to use a ScoreBoardFile then you may see improved speed by
 placing it on a RAM disk.  But be careful that you heed the same warnings
 about log file placement and
-<a href="../misc/security_tips.html">security</a>.
+<a href="../misc/security_tips.html">security</a>.<p>
+
+Apache 1.2 and above:<p>
+
+Linux 2.x users should consider defining <code>Rules LINUX_TWEAK=yes</code>
+in the <code>Configuration</code> file which will cause the server to
+use shared memory instead of a scoreboard file.  This is known to cause
+compilation problems with some distributions and kernels, so we have not
+enabled it by default.  (Patches to conditionally determine the ability
+to set this option are quite welcome.)<p>
+
+SVR4 users should consider adding <code>-DHAVE_SHMGET</code> to the
+<code>EXTRA_CFLAGS</code> in your <code>Configuration</code>.  This
+is believed to work, but we were unable to test it in time for 1.2
+release.<p>
 
 <p><hr>
 
