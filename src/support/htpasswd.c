@@ -10,6 +10,7 @@
 #include <sys/signal.h>
 #include <stdlib.h>
 #include <time.h>
+#include <unistd.h>
 
 #define LF 10
 #define CR 13
@@ -36,7 +37,7 @@ void getword(char *word, char *line, char stop) {
     if(line[x]) ++x;
     y=0;
 
-    while(line[y++] = line[x++]);
+    while((line[y++] = line[x++]));
 }
 
 int getline(char *s, int n, FILE *f) {
@@ -68,18 +69,12 @@ void putline(FILE *f,char *l) {
 static unsigned char itoa64[] =         /* 0 ... 63 => ascii - 64 */
         "./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
-to64(s, v, n)
-  register char *s;
-  register long v;
-  register int n;
-{
+void to64(register char *s, register long v, register int n) {
     while (--n >= 0) {
         *s++ = itoa64[v&0x3f];
         v >>= 6;
     }
 }
-
-char *crypt(char *pw, char *salt); /* why aren't these prototyped in include */
 
 void add_password(char *user, FILE *f) {
     char *pw, *cpw, salt[3];
@@ -110,7 +105,7 @@ void interrupted() {
     exit(1);
 }
 
-main(int argc, char *argv[]) {
+void main(int argc, char *argv[]) {
     FILE *tfp,*f;
     char user[MAX_STRING_LEN];
     char line[MAX_STRING_LEN];
