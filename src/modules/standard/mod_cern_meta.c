@@ -52,17 +52,10 @@
 
 /*
  * mod_cern_meta.c
- * version 0.1.0
+ * version 0.0.5
  * status beta
  * 
  * Andrew Wilson <Andrew.Wilson@cm.cf.ac.uk> 25.Jan.96
- *
- * *** IMPORTANT ***
- * This version of mod_cern_meta.c controls Meta File behaviour on a
- * per-directory basis.  Previous versions of the module defined behaviour
- * on a per-server basis.  The upshot is that you'll need to revisit your 
- * configuration files in order to make use of the new module.
- * ***
  *
  * Emulate the CERN HTTPD Meta file semantics.  Meta files are HTTP
  * headers that can be output in addition to the normal range of
@@ -74,16 +67,8 @@
  * who can exploit this module.  It should be noted that there are probably
  * more sensitive ways of managing the Expires: header specifically.
  *
- * The module obeys the following directives, which can appear 
- * in the server's .conf files and in .htaccess files.
- *
- *  MetaFiles <on|off> 
- *
- *    turns on|off meta file processing for any directory.  
- *    Default value is off
- *
- *        # turn on MetaFiles in this directory
- *        MetaFiles on
+ * The module obeys the following directives, which can only appear 
+ * in the server's .conf files and not in any .htaccess file.
  *
  *  MetaDir <directory name>
  *      
@@ -137,10 +122,7 @@
  *           need to report missing ones as spurious errors. 
  * 31.Jan.96 log_error reports about a malformed .meta file, rather
  *           than a script error.
- * 20.Jun.96 MetaFiles <on|off> default off, added, so that module
- *           can be configured per-directory.  Prior to this the module
- *           was running for each request anywhere on the server, naughty..
- * 29.Jun.96 All directives made per-directory.
+ *
  */
 
 #include "httpd.h"
@@ -150,71 +132,51 @@
 #include "util_script.h"
 #include "http_log.h"
 
-#define DIR_CMD_PERMS OR_INDEXES
-
 #define DEFAULT_METADIR		".web"
 #define DEFAULT_METASUFFIX	".meta"
-#define DEFAULT_METAFILES	0
 
 module cern_meta_module;
 
 typedef struct {
 	char *metadir;
 	char *metasuffix;
-	char *metafiles;
-} cern_meta_dir_config;
+} cern_meta_config;
 
-void *create_cern_meta_dir_config (pool *p, char *dummy)
+void *create_cern_meta_config (pool *p, server_rec *dummy)
 {
-    cern_meta_dir_config *new =
-      (cern_meta_dir_config *) palloc (p, sizeof(cern_meta_dir_config));
-
-    new->metadir = NULL;
-    new->metasuffix = NULL;
-    new->metafiles = DEFAULT_METAFILES;
-
-    return new;
-}
-
-void *merge_cern_meta_dir_configs (pool *p, void *basev, void *addv) 
-{
-    cern_meta_dir_config *base = (cern_meta_dir_config *)basev;
-    cern_meta_dir_config *add = (cern_meta_dir_config *)addv; 
-    cern_meta_dir_config *new =
-      (cern_meta_dir_config *)palloc (p, sizeof(cern_meta_dir_config));
-    
-    new->metadir = add->metadir ? add->metadir : base->metadir;
-    new->metasuffix = add->metasuffix ? add->metasuffix : base->metasuffix;
-    new->metafiles = add->metafiles;
+    cern_meta_config *new =
+      (cern_meta_config *) palloc (p, sizeof(cern_meta_config)); 
+ 
+    new->metadir = DEFAULT_METADIR;
+    new->metasuffix = DEFAULT_METASUFFIX;
     
     return new;
 }   
 
-
-char *set_metadir (cmd_parms *parms, cern_meta_dir_config *dconf, char *arg)
+char *set_metadir (cmd_parms *parms, void *dummy, char *arg)
 {       
-    dconf->metadir = arg;
+    cern_meta_config *cmc ;
+
+    cmc = get_module_config (parms->server->module_config,
+                           &cern_meta_module); 
+    cmc->metadir = arg;
     return NULL;
 }
 
-char *set_metasuffix (cmd_parms *parms, cern_meta_dir_config *dconf, char *arg)
+char *set_metasuffix (cmd_parms *parms, void *dummy, char *arg)
 {       
-    dconf->metasuffix = arg;
+    cern_meta_config *cmc ;
+
+    cmc = get_module_config (parms->server->module_config,
+                           &cern_meta_module); 
+    cmc->metasuffix = arg;
     return NULL;
 }
-
-char *set_metafiles (cmd_parms *parms, cern_meta_dir_config *dconf, char *arg) 
-{
-    dconf->metafiles = arg;
-    return NULL;
-}
-
 
 command_rec cern_meta_cmds[] = {
-{ "MetaFiles", set_metafiles, NULL, DIR_CMD_PERMS, FLAG, NULL},
-{ "MetaDir", set_metadir, NULL, DIR_CMD_PERMS, TAKE1,
+{ "MetaDir", set_metadir, NULL, RSRC_CONF, TAKE1,
     "the name of the directory containing meta files"},
-{ "MetaSuffix", set_metasuffix, NULL, DIR_CMD_PERMS, TAKE1,
+{ "MetaSuffix", set_metasuffix, NULL, RSRC_CONF, TAKE1,
     "the filename suffix for meta files"},
 { NULL }
 };  
@@ -278,14 +240,11 @@ int add_cern_meta_data(request_rec *r)
     char *scrap_book;
     struct stat meta_stat;
     FILE *f;   
-    cern_meta_dir_config *dconf ;
+    cern_meta_config *cmc ;
     int rv;
 
-    dconf = get_module_config (r->per_dir_config, &cern_meta_module); 
-
-    if (!dconf->metafiles) {
-        return DECLINED;
-    };
+    cmc = get_module_config (r->server->module_config,
+                           &cern_meta_module); 
 
     /* if ./.web/$1.meta exists then output 'asis' */
 
@@ -315,11 +274,7 @@ int add_cern_meta_data(request_rec *r)
 	return DECLINED;
     };
 
-    metafilename = pstrcat(r->pool, "/", scrap_book, "/", 
-        dconf->metadir ? dconf->metadir : DEFAULT_METADIR, 
-        "/", real_file, 
-        dconf->metasuffix ? dconf->metasuffix : DEFAULT_METASUFFIX, 
-        NULL);
+    metafilename = pstrcat(r->pool, "/", scrap_book, "/", cmc->metadir, "/", real_file, cmc->metasuffix, NULL);
 
     /*
      * stat can legitimately fail for a bewildering number of reasons,
@@ -359,9 +314,9 @@ int add_cern_meta_data(request_rec *r)
 module cern_meta_module = {
    STANDARD_MODULE_STUFF,
    NULL,			/* initializer */
-   create_cern_meta_dir_config,	/* dir config creater */
-   merge_cern_meta_dir_configs,	/* dir merger --- default is to override */
-   NULL,			/* server config */
+   NULL,			/* dir config creater */
+   NULL,			/* dir merger --- default is to override */
+   create_cern_meta_config,	/* server config */
    NULL,			/* merge server configs */
    cern_meta_cmds,		/* command table */
    NULL,			/* handlers */
