@@ -28,13 +28,15 @@
   Installation
   ------------
 
-  Apache 2.0 uses autoconf for configuration and installation.  To use
+  Apache 2.0 uses autoconf for configuration and installation.  To create
   Apache's autoconf script, you will need libtool 1.3.3 or higher, and
-  autoconf 2.13 or newer.
+  autoconf 2.13 or newer.  Those tools will not be required if you are just
+  using a package downloaded from apache.org, they are only required for
+  developers.
 
   To configure Apache 2.0 run the following commands.
 
-  ./buildconf
+  ./buildconf  (not required unless you are a developer)
   ./configure [autoconf arguments] [apache arguments]
   make
   make install
