@@ -9,7 +9,8 @@ available</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" cla
                   </strong></td><td>Resources accept trailing pathname information</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>AcceptPathInfo On|Off|Default</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
                     </a></td><td><code>AcceptPathInfo Default</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
-                  </a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
+                  </a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">Override:
+                    </a></td><td>FileInfo</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
                   </a></td><td>Core</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
                   </a></td><td>core</td></tr><tr><td nowrap="nowrap" align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:
                     </a></td><td>Available in Apache 2.0.30 and later</td></tr></table></td></tr></table>
@@ -592,7 +593,8 @@ ErrorLog logs/error.log (Windows and OS/2)</code></td></tr><tr><td nowrap="nowra
 <p><strong>See also </strong></p><ul><li><a href="#loglevel" class="directive"><code class="directive">LogLevel</code></a></li><li><a href="../logs.html">Apache Log Files</a></li></ul><hr><h2><a name="FileETag">FileETag</a> <a name="fileetag">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>File attributes used to create the ETag
 HTTP response header</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
-                  </a></td><td>FileETag <em>component</em> ...</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
+                  </a></td><td>FileETag <em>component</em> ...</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
+                    </a></td><td><code>FileETag INode MTime Size</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
                   </a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">Override:
                     </a></td><td>FileInfo</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
                   </a></td><td>Core</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
@@ -922,7 +924,7 @@ the server configuration files</td></tr><tr><td nowrap="nowrap"><a href="directi
                   </strong></td><td>Enables HTTP persistent connections</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>KeepAlive on|off</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
                     </a></td><td><code>KeepAlive On</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
-                  </a></td><td>server config</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
+                  </a></td><td>server config, virtual host</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
                   </a></td><td>Core</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
                   </a></td><td>core</td></tr></table></td></tr></table>
     <p>The Keep-Alive extension to HTTP/1.0 and the persistent
@@ -949,7 +951,7 @@ the server configuration files</td></tr><tr><td nowrap="nowrap"><a href="directi
 requests on a persistent connection</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>KeepAliveTimeout <em>seconds</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
                     </a></td><td><code>KeepAliveTimeout 15</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
-                  </a></td><td>server config</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
+                  </a></td><td>server config, virtual host</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
                   </a></td><td>Core</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
                   </a></td><td>core</td></tr></table></td></tr></table>
     <p>The number of seconds Apache will wait for a subsequent
@@ -1174,7 +1176,8 @@ from the client</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Sy
                   </strong></td><td>Limits the size of an XML-based request body</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>LimitXMLRequestBody <em>number</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
                     </a></td><td><code>LimitXMLRequestBody 1000000</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
-                  </a></td><td>server config</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
+                  </a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">Override:
+                    </a></td><td>All</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
                   </a></td><td>Core</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
                   </a></td><td>core</td></tr></table></td></tr></table>
     <p>Limit (in bytes) on maximum size of an XML-based request
@@ -1392,7 +1395,7 @@ matching URLs</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Synt
 connection</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>MaxKeepAliveRequests <em>number</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
                     </a></td><td><code>MaxKeepAliveRequests 100</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
-                  </a></td><td>server config</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
+                  </a></td><td>server config, virtual host</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
                   </a></td><td>Core</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
                   </a></td><td>core</td></tr></table></td></tr></table>
     <p>The <code class="directive">MaxKeepAliveRequests</code> directive
@@ -1640,7 +1643,8 @@ a resource</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax"
 by Apache children</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>RLimitCPU <em>number</em>|max [<em>number</em>|max]</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
                     </a></td><td><code>Unset; uses operating system defaults</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
-                  </a></td><td>server config, virtual host</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
+                  </a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">Override:
+                    </a></td><td>All</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
                   </a></td><td>Core</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
                   </a></td><td>core</td></tr></table></td></tr></table>
     <p>Takes 1 or 2 parameters. The first parameter sets the soft
@@ -1665,7 +1669,8 @@ by Apache children</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html
 by Apache children</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>RLimitMEM <em>number</em>|max [<em>number</em>|max]</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
                     </a></td><td><code>Unset; uses operating system defaults</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
-                  </a></td><td>server config, virtual host</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
+                  </a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">Override:
+                    </a></td><td>All</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
                   </a></td><td>Core</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
                   </a></td><td>core</td></tr></table></td></tr></table>
     <p>Takes 1 or 2 parameters. The first parameter sets the soft
@@ -1690,7 +1695,8 @@ by Apache children</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html
 processes launched by Apache children</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>RLimitNPROC <em>number</em>|max [<em>number</em>|max]</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
                     </a></td><td><code>Unset; uses operating system defaults</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
-                  </a></td><td>server config, virtual host</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
+                  </a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">Override:
+                    </a></td><td>All</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
                   </a></td><td>Core</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
                   </a></td><td>core</td></tr></table></td></tr></table>
     <p>Takes 1 or 2 parameters. The first parameter sets the soft
@@ -1753,7 +1759,7 @@ user authentication</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.htm
 scripts</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>ScriptInterpreterSource registry|script</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
                     </a></td><td><code>ScriptInterpreterSource script</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
-                  </a></td><td>directory, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">Override:
+                  </a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">Override:
                     </a></td><td>FileInfo</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
                   </a></td><td>Core</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
                   </a></td><td>core</td></tr><tr><td nowrap="nowrap" align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:
@@ -1841,7 +1847,7 @@ itself</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" cla
     documentation</a></li><li><a href="#usecanonicalname" class="directive"><code class="directive">UseCanonicalName</code></a></li><li><a href="#namevirtualhost" class="directive"><code class="directive">NameVirtualHost</code></a></li><li><a href="#serveralias" class="directive"><code class="directive">ServerAlias</code></a></li></ul><hr><h2><a name="ServerPath">ServerPath</a> <a name="serverpath">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Legacy URL pathname for a name-virtual host that
 is accessed by an incompatible browser</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
-                  </a></td><td>ServerPath <em>directory-path</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
+                  </a></td><td>ServerPath <em>URL-path</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
                   </a></td><td>virtual host</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
                   </a></td><td>Core</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
                   </a></td><td>core</td></tr></table></td></tr></table>
@@ -1978,7 +1984,7 @@ input</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" clas
 <p><strong>See also </strong></p><ul><li><a href="../filter.html">Filters</a> documentation</li></ul><hr><h2><a name="SetOutputFilter">SetOutputFilter</a> <a name="setoutputfilter">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Sets the filters that will process responses from the
 server</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
-                  </a></td><td>SetOutputFilter <em>filter</em> [<em>filter</em>] ...</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
+                  </a></td><td>SetOutputFilter <em>filter</em>[<em>;filter</em>...]</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
                   </a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">Override:
                     </a></td><td>FileInfo</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
                   </a></td><td>Core</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
