@@ -16,8 +16,9 @@ PROGRAM_DEPENDENCIES = \
 PROGRAMS        = $(PROGRAM_NAME)
 TARGETS         = $(PROGRAMS) $(shared_build) $(other_targets)
 PHONY_TARGETS   = $(srcdir)/buildmark.c
-INSTALL_TARGETS = install-conf install-htdocs install-icons install-other \
-	install-cgi install-include install-suexec install-man install-build
+INSTALL_TARGETS = install-conf install-htdocs install-error install-icons \
+	install-other install-cgi install-include install-suexec install-man \
+	install-build
 
 DISTCLEAN_TARGETS  = include/ap_config_auto.h include/ap_config_path.h \
 	modules.c config.cache config.log config.status config_vars.mk
@@ -70,6 +71,12 @@ install-htdocs:
 	@test -d $(htdocsdir)/manual || $(MKINSTALLDIRS) $(htdocsdir)/manual
 	@test -d docs/manual && (cd docs/manual && cp -rp * $(htdocsdir)/manual)
 	@(cd $(htdocsdir) && find . -name "CVS" -print | xargs rm -rf {} \;)
+
+install-error:
+	@echo Installing error documents
+	@test -d $(errordir) || $(MKINSTALLDIRS) $(errordir)
+	@(cd docs/error && cp -rp * $(errordir))
+	@(cd $(errordir) && find . -name "CVS" -print | xargs rm -rf {} \;)
 
 install-icons:
 	@echo Installing icons
