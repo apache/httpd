@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/03/11 05:42:50 $]
+Last modified at [$Date: 2000/03/21 19:28:56 $]
 
 Release:
 
@@ -8,6 +8,7 @@ Release:
     2.0     : later in 2000
 
 RELEASE SHOWSTOPPERS:
+
     * Fix SAFEREAD
 
     * Fix lingering close
@@ -64,9 +65,8 @@ RELEASE SHOWSTOPPERS:
     * Modules.  Which modules do not work yet, can we get a list?
 
     * We need a thread-safe resolver, at least on Unix.
-        Status: The best known candidate would be something from BIND
-        (v8 or v9?) The only other option would be to mutex all the
-        resolver calls,
+        Status: The best known candidate would be something from
+	BIND v9.
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
@@ -187,7 +187,11 @@ Documentation that needs writing:
     * The concept of MPMs, especially if we ship more than one MPM for a
       given platform
 
-    * New directives in the various MPMs
+    * New directives in the various MPMs and appropriate links from
+	obsolete directives in core.html to the MPM documentation.
+
+    * Revise manual/stopping.html and the last part of
+	manual/misc/perf-tuning.html to take account of the MPMs.
 
     * API documentation
         Status: Ben Laurie has written some hooks documentation
