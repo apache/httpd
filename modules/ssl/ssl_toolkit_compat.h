@@ -103,8 +103,6 @@
 #define SSL_get_state(ssl) SSL_state(ssl)
 #endif
 
-#define SSL_set_state(ssl,val) (ssl)->state = val
-
 #define MODSSL_BIO_CB_ARG_TYPE const char
 #define MODSSL_CRYPTO_CB_ARG_TYPE const char
 #if (OPENSSL_VERSION_NUMBER < 0x00907000)
@@ -182,10 +180,6 @@ typedef int (modssl_read_bio_cb_fn)(char*,int,int);
 
 #define modssl_PEM_read_bio_PrivateKey(b, k, cb, arg) \
    PEM_read_bio_PrivateKey(b, k, cb)
-
-#ifndef HAVE_SSL_SET_STATE
-#define SSL_set_state(ssl, state) /* XXX: should throw an error */
-#endif
 
 #define modssl_set_cipher_list(ssl, l) \
    SSL_set_cipher_list(ssl, (char *)l)

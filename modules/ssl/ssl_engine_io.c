@@ -1257,7 +1257,7 @@ static apr_status_t ssl_io_filter_Upgrade(ap_filter_t *f,
     sslconn = myConnConfig(f->c);
     ssl = sslconn->ssl;
 
-    SSL_set_state(ssl, SSL_ST_ACCEPT);
+    SSL_renegotiate(ssl);
     SSL_do_handshake(ssl);
 
     if (SSL_get_state(ssl) != SSL_ST_OK) {
