@@ -639,7 +639,7 @@ const char *ssl_cmd_SSLSessionCache(
     cmd_parms *cmd, void *ctx, const char *arg)
 {
     SSLModConfigRec *mc = myModConfig(cmd->server);
-    const char *err;
+    const char *err, *colon;
     char *cp, *cp2;
     int maxsize;
 
@@ -664,9 +664,9 @@ const char *ssl_cmd_SSLSessionCache(
             return "SSLSessionCache: shared memory cache not useable on this platform";
 #endif
         mc->nSessionCacheMode      = SSL_SCMODE_SHMHT;
-        cp = ap_strchr_c(arg, ':');
+        colon = ap_strchr_c(arg, ':');
         mc->szSessionCacheDataFile = (char *)apr_pstrdup(mc->pPool,
-                                     ap_server_root_relative(cmd->pool, cp+1));
+                                     ap_server_root_relative(cmd->pool, colon+1));
         mc->tSessionCacheDataTable = NULL;
         mc->nSessionCacheDataSize  = 1024*512; /* 512KB */
         if ((cp = strchr(mc->szSessionCacheDataFile, '(')) != NULL) {

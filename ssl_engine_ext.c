@@ -108,8 +108,8 @@ void ssl_ext_unregister(void)
 **  _________________________________________________________________
 */
 
-static char *ssl_ext_mlc_log_c(request_rec *r, char *a);
-static char *ssl_ext_mlc_log_x(request_rec *r, char *a);
+static const char *ssl_ext_mlc_log_c(request_rec *r, char *a);
+static const char *ssl_ext_mlc_log_x(request_rec *r, char *a);
 
 /*
  * register us for the mod_log_config function registering phase
@@ -143,7 +143,7 @@ static void ssl_ext_mlc_unregister(void)
  * implement the %{..}c log function
  * (we are the only function)
  */
-static char *ssl_ext_mlc_log_c(request_rec *r, char *a)
+static const char *ssl_ext_mlc_log_c(request_rec *r, char *a)
 {
     char *result;
 
@@ -171,7 +171,7 @@ static char *ssl_ext_mlc_log_c(request_rec *r, char *a)
  * extend the implementation of the %{..}x log function
  * (there can be more functions)
  */
-static char *ssl_ext_mlc_log_x(request_rec *r, char *a)
+static const char *ssl_ext_mlc_log_x(request_rec *r, char *a)
 {
     char *result;
 
