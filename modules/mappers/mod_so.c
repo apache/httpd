@@ -173,7 +173,7 @@ static void *so_sconf_create(ap_pool_t *p, server_rec *s)
 
 static ap_status_t unload_module(void *data)
 {
-    ap_status_t stat;
+    ap_status_t status;
     moduleinfo *modi = (moduleinfo*)data;
 
     /* only unload if module information is still existing */
@@ -184,10 +184,10 @@ static ap_status_t unload_module(void *data)
     ap_remove_loaded_module(modi->modp);
 
     /* unload the module space itself */
-    if ((stat = ap_dso_unload(modi->modp->dynamic_load_handle)) != APR_SUCCESS) {
+    if ((status = ap_dso_unload(modi->modp->dynamic_load_handle)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_WARNING|APLOG_NOERRNO, 0, NULL,
-            "dso unload failure");
-        return stat;
+		     "dso unload failure");
+        return status;
     }
 
     /* destroy the module information */
@@ -205,10 +205,10 @@ static ap_status_t unload_module(void *data)
 
 static ap_status_t unload_file(void *handle)
 {
-    ap_status_t stat;
+    ap_status_t status;
     
-    if ((stat = ap_dso_unload((ap_dso_handle_t *)handle)) != APR_SUCCESS)
-        return stat;
+    if ((status = ap_dso_unload((ap_dso_handle_t *)handle)) != APR_SUCCESS)
+        return status;
     return APR_SUCCESS;
 }
 
@@ -256,14 +256,14 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
      */
     if ((status = ap_dso_load(&modhandle, szModuleFile, cmd->pool )) != APR_SUCCESS) {
         char my_error[256];
-        ap_strerror(status, my_error, sizeof(my_error));
-        return ap_pstrcat (cmd->pool, "Cannot load ", szModuleFile,
-                           " into server: ", 
-                           my_error ? my_error : "(reason unknown)",
-                           NULL);
+
+        return ap_pstrcat(cmd->pool, "Cannot load ", szModuleFile,
+			  " into server: ",
+			  ap_strerror(status, my_error, sizeof(my_error)),
+			  NULL);
     }
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
-		"loaded module %s", modname);
+		 "loaded module %s", modname);
 
     /*
      * Retrieve the pointer to the module structure through the module name:
@@ -271,10 +271,12 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
      * symbol name.
      */
     if ((status = ap_dso_sym(&modsym, modhandle, modname)) != APR_SUCCESS) {
-        char my_err[256];
-	return ap_pstrcat(cmd->pool, "Can't locate API module structure `", modname,
-		       "' in file ", szModuleFile, ": ", 
-                       ap_strerror(status, my_err, sizeof(my_error)), NULL);
+        char my_error[256];
+
+	return ap_pstrcat(cmd->pool, "Can't locate API module structure `",
+			  modname, "' in file ", szModuleFile, ": ", 
+			  ap_strerror(status, my_error, sizeof(my_error)),
+			  NULL);
     }
     modp = (module*) modsym;
     modp->dynamic_load_handle = (ap_dso_handle_t *)modhandle;
@@ -317,21 +319,23 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
 
 static const char *load_file(cmd_parms *cmd, void *dummy, char *filename)
 {
-    ap_status_t stat;
+    ap_status_t status;
     ap_dso_handle_t *handle;
     const char *file;
 
     file = ap_server_root_relative(cmd->pool, filename);
     
-    if ((stat = ap_dso_load(&handle, file, cmd->pool)) != APR_SUCCESS) {
-	return ap_pstrcat (cmd->pool, "Cannot load ", filename, 
-			" into server:", 
-			"(reason unknown)",
-			NULL);
+    if ((status = ap_dso_load(&handle, file, cmd->pool)) != APR_SUCCESS) {
+        char my_error[256];
+
+	return ap_pstrcat(cmd->pool, "Cannot load ", filename, 
+			  " into server: ", 
+			  ap_strerror(status, my_error, sizeof(my_error)),
+			  NULL);
     }
     
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
-		"loaded file %s", filename);
+		 "loaded file %s", filename);
 
     ap_register_cleanup(cmd->pool, (void *)handle, unload_file, ap_null_cleanup);
 
