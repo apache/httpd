@@ -133,6 +133,7 @@ ap_get_limit_req_body
 ap_get_limit_xml_body
 ap_get_list_item
 ap_get_local_host
+ap_get_module_config
 ap_get_remote_host
 ap_get_remote_logname
 ap_get_server_built
@@ -333,6 +334,7 @@ ap_set_keepalive
 ap_set_last_modified
 ap_set_listenbacklog
 ap_set_listener
+ap_set_module_config
 ap_set_name_virtual_host
 ap_set_send_buffer_size
 ap_set_string_slot
