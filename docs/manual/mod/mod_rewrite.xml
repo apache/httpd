@@ -991,6 +991,14 @@ Result:
 
                   <dd>The full local filesystem path to the file or
                   script matching the request.</dd>
+
+                  <dt><code>HTTPS</code></dt>
+
+                  <dd>Will contain the text "on" if the connection is
+                  using SSL/TLS, or "off" otherwise.  (This variable
+                  can be safely used regardless of whether
+                  <module>mod_ssl</module> is loaded).</dd>
+
                 </dl>
 </note>
         </li>
@@ -1014,10 +1022,14 @@ Result:
         Apache structures and (if not found there) via
         <code>getenv()</code> from the Apache server process.</li>
 
-        <li>There is the special format:
-        <code>%{SSL:variable}</code> where <em>variable</em> can be
-        any SSL environment variable. This is looked-up via internal
-        SSL structures from the Apache server process.</li>
+        <li>There is the special format: 
+        <code>%{SSL:variable}</code> where <em>variable</em> is the
+        name of an <a href="mod_ssl.html#envvars">SSL environment
+        variable</a>; this can be used whether or not
+        <module>mod_ssl</module> is loaded, but will always expand to
+        the empty string if it is not.  Example:
+        <code>%{SSL:SSL_CIPHER_USEKEYSIZE}</code> may expand to
+        <code>128</code>.</li>
 
         <li>There is the special format:
         <code>%{HTTP:header}</code> where <em>header</em> can be
