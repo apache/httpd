@@ -381,6 +381,13 @@ if test "x$ap_ssltk_configured" = "x"; then
       ])
       dnl Look for additional, possibly missing headers
       AC_CHECK_HEADERS(openssl/engine.h)
+      if test -n "$PKGCONFIG"; then
+        $PKGCONFIG openssl
+        if test $? -eq 0; then
+          ap_ssltk_inc="$ap_ssltk_inc `$PKGCONFIG --cflags-only-I openssl`"
+          CPPFLAGS="$CPPFLAGS $ap_ssltk_inc"
+        fi
+      fi
     else
       AC_MSG_RESULT([no OpenSSL headers found])
     fi
@@ -468,6 +475,13 @@ if test "x$ap_ssltk_configured" = "x"; then
   # Put SSL libraries in SSL_LIBS.
   if test "$ap_ssltk_type" = "openssl"; then
     APR_SETVAR(SSL_LIBS, [-lssl -lcrypto])
+    if test -n "$PKGCONFIG"; then
+      $PKGCONFIG openssl
+      if test $? -eq 0; then
+        ap_ssltk_libdep=`$PKGCONFIG --libs openssl`
+        APR_ADDTO(SSL_LIBS, $ap_ssltk_libdep)
+      fi
+    fi
   else
     APR_SETVAR(SSL_LIBS, [-lsslc])
   fi
