@@ -384,7 +384,7 @@ static const command_rec expires_cmds[] =
 {
     AP_INIT_FLAG("ExpiresActive", set_expiresactive, NULL, DIR_CMD_PERMS,
                  "Limited to 'on' or 'off'"),
-    AP_INIT_TAKE2("ExpiresBytype", set_expiresbytype, NULL, DIR_CMD_PERMS,
+    AP_INIT_TAKE2("ExpiresByType", set_expiresbytype, NULL, DIR_CMD_PERMS,
                   "a MIME type followed by an expiry date code"),
     AP_INIT_TAKE1("ExpiresDefault", set_expiresdefault, NULL, DIR_CMD_PERMS,
                   "an expiry date code"),
