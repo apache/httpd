@@ -361,7 +361,7 @@ case "$PLAT" in
 	CFLAGS="$CFLAGS -DSOLARIS2=$SOLVER"
 	LIBS="$LIBS -lsocket -lnsl"
 	case "$SOLVER" in
-	    25*)
+	    2[56789]*)
 	    	LIBS="$LIBS -lpthread"
 		;;
 	esac
