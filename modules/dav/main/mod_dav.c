@@ -774,7 +774,7 @@ static int dav_method_get(request_rec *r)
 	pathname = ap_os_case_canonical_filename(r->pool, pathname);
 
 	/* Create a sub-request with the new filename */
-	new_req = ap_sub_req_lookup_file(pathname, r);
+	new_req = ap_sub_req_lookup_file(pathname, r, NULL);
 	if (new_req == NULL) {
 	    (*resource->hooks->free_file)(fhandle);
 	    return HTTP_INTERNAL_SERVER_ERROR;
@@ -2077,7 +2077,7 @@ static int dav_method_mkcol(request_rec *r)
 static int dav_method_copymove(request_rec *r, int is_move)
 {
     dav_resource *resource;
-    dav_auto_version_info src_av_info;
+    dav_auto_version_info src_av_info = { 0 };
     dav_resource *resnew;
     dav_auto_version_info dst_av_info;
     const char *body;

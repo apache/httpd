@@ -275,7 +275,7 @@ dav_lookup_result dav_lookup_uri(const char *uri, request_rec * r)
      * same HTTP method on the destination. This allows the destination
      * to apply appropriate restrictions (e.g. readonly).
      */
-    result.rnew = ap_sub_req_method_uri(r->method, new_file, r);
+    result.rnew = ap_sub_req_method_uri(r->method, new_file, r, NULL);
 
     return result;
 }
