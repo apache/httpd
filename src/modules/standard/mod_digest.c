@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: mod_digest.c,v 1.8 1996/10/08 22:19:24 brian Exp $ */
+/* $Id: mod_digest.c,v 1.9 1996/10/31 00:09:37 brian Exp $ */
 
 /*
  * mod_digest: MD5 digest authentication
@@ -84,7 +84,7 @@ void *create_digest_dir_config (pool *p, char *d)
     return pcalloc (p, sizeof(digest_config_rec));
 }
 
-char *set_digest_slot (cmd_parms *cmd, void *offset, char *f, char *t)
+const char *set_digest_slot (cmd_parms *cmd, void *offset, char *f, char *t)
 {
     if (t && strcmp(t, "standard"))
 	return pstrcat(cmd->pool, "Invalid auth file type: ",  t, NULL);
@@ -104,7 +104,8 @@ char *get_hash(request_rec *r, char *user, char *auth_pwfile)
 {
     FILE *f;
     char l[MAX_STRING_LEN];
-    char *rpw, *w, *x;
+    const char *rpw;
+    char *w, *x;
 
     if(!(f=pfopen(r->pool, auth_pwfile, "r"))) {
         log_reason ("Could not open password file", auth_pwfile, r);
@@ -128,7 +129,7 @@ char *get_hash(request_rec *r, char *user, char *auth_pwfile)
 /* Parse the Authorization header, if it exists */
 
 int get_digest_rec(request_rec *r, digest_header_rec *response) {
-  char *auth_line = table_get(r->headers_in, "Authorization");
+  const char *auth_line = table_get(r->headers_in, "Authorization");
   int l;
   int s = 0, vk = 0, vv = 0;
   char *t, *key, *value;
@@ -300,7 +301,8 @@ int digest_check_auth (request_rec *r) {
     int m = r->method_number;
     int method_restricted = 0;    
     register int x;
-    char *t, *w;
+    const char *t;
+    char *w;
     array_header *reqs_arr;
     require_line *reqs;
 
