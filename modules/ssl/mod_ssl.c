@@ -288,7 +288,6 @@ static int ssl_hook_pre_connection(conn_rec *c)
     /*
      * Predefine some client verification results
      */
-    apr_table_setn(c->notes, "ssl::client::dn", NULL);
     apr_table_setn(c->notes, "ssl::verify::error", NULL);
     apr_table_setn(c->notes, "ssl::verify::info", NULL);
     SSL_set_verify_result(ssl, X509_V_OK);
@@ -339,6 +338,7 @@ int ssl_hook_process_connection(SSLFilterRec *pRec)
     X509 *xs;
     char *cp = NULL;
     conn_rec *c = (conn_rec*)SSL_get_app_data (pRec->pssl);
+    SSLConnRec *sslconn = myConnConfig(c);
     SSLSrvConfigRec *sc = mySrvConfig(c->base_server);
     long verify_result;
 
@@ -447,7 +447,7 @@ int ssl_hook_process_connection(SSLFilterRec *pRec)
          */
         if ((xs = SSL_get_peer_certificate(pRec->pssl)) != NULL) {
             cp = X509_NAME_oneline(X509_get_subject_name(xs), NULL, 0);
-            apr_table_setn(c->notes,"ssl::client::dn",apr_pstrdup(c->pool, cp));
+            sslconn->client_dn = apr_pstrdup(c->pool, cp);
             free(cp);
         }
 
@@ -456,7 +456,7 @@ int ssl_hook_process_connection(SSLFilterRec *pRec)
          * is required we really got one... (be paranoid)
          */
         if (sc->nVerifyClient == SSL_CVERIFY_REQUIRE
-            && apr_table_get(c->notes, "ssl::client::dn") == NULL) {
+            && sslconn->client_dn == NULL) {
             ssl_log(c->base_server, SSL_LOG_ERROR,
                     "No acceptable peer certificate available");
             return ssl_abort(pRec, c);

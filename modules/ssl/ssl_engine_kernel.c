@@ -75,12 +75,15 @@ apr_status_t ssl_hook_CloseConnection(SSLFilterRec *filter)
     SSL *ssl;
     char *cpType;
     conn_rec *conn;
-    
+    SSLConnRec *sslconn;
+
     ssl  = filter->pssl;
     conn = (conn_rec *)SSL_get_app_data(ssl);
 
     if (ssl == NULL)
         return APR_SUCCESS;
+
+    sslconn = myConnConfig(conn);
 
     /*
      * Now close the SSL layer of the connection. We've to take
@@ -775,8 +778,7 @@ int ssl_hook_Access(request_rec *r)
          */
         if ((cert = SSL_get_peer_certificate(ssl)) != NULL) {
             cp = X509_NAME_oneline(X509_get_subject_name(cert), NULL, 0);
-            apr_table_setn(r->connection->notes, "ssl::client::dn", 
-                           apr_pstrdup(r->connection->pool, cp));
+            sslconn->client_dn = apr_pstrdup(r->connection->pool, cp);
             free(cp);
         }
 
@@ -919,7 +921,7 @@ int ssl_hook_UserCheck(request_rec *r)
         return DECLINED;
     if (r->user)
         return DECLINED;
-    if ((clientdn = (char *)apr_table_get(r->connection->notes, "ssl::client::dn")) == NULL)
+    if ((clientdn = (char *)sslconn->client_dn) == NULL)
         return DECLINED;
 
     /*
@@ -1200,6 +1202,7 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
     request_rec *r;
     SSLSrvConfigRec *sc;
     SSLDirConfigRec *dc;
+    SSLConnRec *sslconn;
     apr_table_t *actx;
     X509 *xs;
     int errnum;
@@ -1214,6 +1217,7 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
      */
     ssl  = (SSL *)X509_STORE_CTX_get_app_data(ctx);
     conn = (conn_rec *)SSL_get_app_data(ssl);
+    sslconn = myConnConfig(conn);
     actx = (apr_table_t *)SSL_get_app_data2(ssl);
     r    = (request_rec *)apr_table_get(actx, "ssl::request_rec");
     s    = conn->base_server;
@@ -1273,7 +1277,7 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
     if (!ok) {
         ssl_log(s, SSL_LOG_ERROR, "Certificate Verification: Error (%d): %s",
                 errnum, X509_verify_cert_error_string(errnum));
-        apr_table_setn(conn->notes, "ssl::client::dn", NULL);
+        sslconn->client_dn = NULL;
         apr_table_setn(conn->notes, "ssl::verify::error",
                    (void *)X509_verify_cert_error_string(errnum));
     }
