@@ -372,6 +372,14 @@
       CustomLog gif-requests.log common env=gif-image<br />
       CustomLog nongif-requests.log common env=!gif-image
     </example>
+
+    <p>Or, to reproduce the behavior of the old RefererIgnore
+    directive, you might use the following:</p>
+
+    <example>
+    SetEnvIf Referer example\.com localreferer<br />
+    CustomLog referer.log referer env=!localreferer
+    </example>
 </usage>
 </directivesynopsis>
 
