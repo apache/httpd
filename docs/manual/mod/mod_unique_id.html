@@ -138,7 +138,7 @@ it with the time because time, at least at one second resolution, has
 repeated itself).  This is not a perfect defense.
 
 <P>
-How good a defense is it?  Well suppose that one of your machines serves
+How good a defense is it?  We'll suppose that one of your machines serves
 at most 500 requests per second (which is a very reasonable upper bound
 at this writing, because systems generally do more than just shovel out
 static files).  To do that it will require a number of children which
@@ -164,7 +164,7 @@ very shortly after reboot.
 <P>
 The <CODE>UNIQUE_ID</CODE> environment variable is constructed by
 encoding the 112-bit (32-bit IP address, 32 bit pid, 32 bit time stamp,
-16 bit counter) quadruple using the alphabet <CODE>[A-Za-z0-9@-]</CODE>
+16 bit counter quadruple) using the alphabet <CODE>[A-Za-z0-9@-]</CODE>
 in a manner similar to MIME base64 encoding, producing 19 characters.
 The MIME base64 alphabet is actually <CODE>[A-Za-z0-9+/]</CODE> however
 <CODE>+</CODE> and <CODE>/</CODE> need to be specially encoded in URLs,
