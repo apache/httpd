@@ -1,5 +1,10 @@
 Changes with Apache 2.0.40
 
+  *) Replace usage of atol() to parse strings when we might want a
+     larger-than-long value with apr_atoll(), which returns long long.
+     This allows HTTPD to deal with larger files correctly.
+     [Shantonu Sen <ssen@apple.com>]
+
   *) mod_ext_filter: Ignore any content-type parameters when checking if
      the response should be filtered.  Previously, "intype=text/html"
      wouldn't match something like "text/html;charset=8859_1".
