@@ -123,7 +123,10 @@ static void register_hooks(void)
 {
     ap_hook_get_resource(dav_fs_hook_get_resource, NULL, NULL, AP_HOOK_MIDDLE);
     ap_hook_get_lock_hooks(dav_fs_get_lock_hooks, NULL, NULL, AP_HOOK_MIDDLE);
-    ap_hook_get_propdb_hooks(dav_fs_get_propdb_hooks, NULL, NULL, AP_HOOK_MIDDLE);
+    ap_hook_get_propdb_hooks(dav_fs_get_propdb_hooks, NULL, NULL,
+                             AP_HOOK_MIDDLE);
+
+    dav_fs_register_uris(NULL /* ### pconf */);
 }
 
 module MODULE_VAR_EXPORT dav_fs_module =

@@ -52,54 +52,71 @@
  * <http://www.apache.org/>.
  */
 
-/*
-** Declarations for the filesystem repository implementation
-*/
+#include "apr_pools.h"
+#include "apr_hash.h"
+#include "apr_errno.h"
 
-#ifndef _DAV_FS_REPOS_H_
-#define _DAV_FS_REPOS_H_
+#include "ap_hooks.h"   /* ### for ap_global_hook_pool */
+#include "util_xml.h"   /* for ap_text_header */
 
-/* the subdirectory to hold all DAV-related information for a directory */
-#define DAV_FS_STATE_DIR		".DAV"
-#define DAV_FS_STATE_FILE_FOR_DIR	".state_for_dir"
-#define DAV_FS_LOCK_NULL_FILE	        ".locknull"
+#include "mod_dav.h"
 
 
-/* ensure that our state subdirectory is present */
-void dav_fs_ensure_state_dir(ap_pool_t *p, const char *dirname);
-
-/* return the storage pool associated with a resource */
-ap_pool_t *dav_fs_pool(const dav_resource *resource);
-
-/* return the full pathname for a resource */
-const char *dav_fs_pathname(const dav_resource *resource);
-
-/* return the directory and filename for a resource */
-void dav_fs_dir_file_name(const dav_resource *resource,
-			  const char **dirpath,
-			  const char **fname);
-
-/* return the list of locknull members in this resource's directory */
-dav_error * dav_fs_get_locknull_members(const dav_resource *resource,
-                                        dav_buffer *pbuf);
+static ap_hash_t *dav_liveprop_uris = NULL;
+static int dav_liveprop_count = 0;
 
 
-/* DBM functions used by the repository and locking providers */
-extern const dav_hooks_db dav_hooks_db_dbm;
+static ap_status_t dav_cleanup_liveprops(void *ctx)
+{
+    dav_liveprop_uris = NULL;
+    dav_liveprop_count = 0;
+    return APR_SUCCESS;
+}
 
-dav_error * dav_dbm_open_direct(ap_pool_t *p, const char *pathname, int ro,
-				dav_db **pdb);
-void dav_dbm_get_statefiles(ap_pool_t *p, const char *fname,
-			    const char **state1, const char **state2);
+void dav_register_liveprop_namespace(ap_pool_t *p, const char *uri)
+{
+    int value;
 
-/* where is the lock database located? */
-const char *dav_get_lockdb_path(const request_rec *r);
+    /* ### ignore the pool; it is NULL right now */
+    p = ap_global_hook_pool;
 
-int dav_fs_hook_get_resource(request_rec *r, const char *root_dir,
-                             const char *workspace);
-const dav_hooks_locks *dav_fs_get_lock_hooks(request_rec *r);
-const dav_hooks_propdb *dav_fs_get_propdb_hooks(request_rec *r);
+    if (dav_liveprop_uris == NULL) {
+        dav_liveprop_uris = ap_make_hash(p);
+        ap_register_cleanup(p, NULL, dav_cleanup_liveprops, ap_null_cleanup);
+    }
 
-void dav_fs_register_uris(ap_pool_t *p);
+    value = (int)ap_hash_get(dav_liveprop_uris, uri, 0);
+    if (value != 0) {
+        /* already registered */
+        return;
+    }
 
-#endif /* _DAV_FS_REPOS_H_ */
+    /* start at 1, and count up */
+    ap_hash_set(dav_liveprop_uris, uri, 0, (void *)++dav_liveprop_count);
+}
+
+int dav_get_liveprop_ns_index(const char *uri)
+{
+    return (int)ap_hash_get(dav_liveprop_uris, uri, 0);
+}
+
+int dav_get_liveprop_ns_count(void)
+{
+    return dav_liveprop_count;
+}
+
+void dav_add_all_liveprop_xmlns(ap_pool_t *p, ap_text_header *phdr)
+{
+    ap_hash_index_t *idx = ap_hash_first(dav_liveprop_uris);
+
+    for ( ; idx != NULL; idx = ap_hash_next(idx) ) {
+        const void *key;
+        void *val;
+        const char *s;
+
+        ap_hash_this(idx, &key, NULL, &val);
+
+        s = ap_psprintf(p, " xmlns:lp%d=\"%s\"", (int)val, key);
+        ap_text_append(p, phdr, s);
+    }
+}

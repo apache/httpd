@@ -1785,7 +1785,8 @@ static dav_prop_insert dav_fs_insert_prop(const dav_resource *resource,
     /* assert: scan->name != NULL */
 
     /* map our NS index into a global NS index */
-    ns = ns_map[scan->ns];
+    /* ns = ns_map[scan->ns]; */
+    ns = dav_get_liveprop_ns_index(dav_fs_namespace_uris[scan->ns]);
 
     /* DBG3("FS: inserting lp%d:%s  (local %d)", ns, scan->name, scan->ns); */
 
@@ -2069,4 +2070,13 @@ const dav_hooks_locks *dav_fs_get_lock_hooks(request_rec *r)
 const dav_hooks_propdb *dav_fs_get_propdb_hooks(request_rec *r)
 {
     return &dav_hooks_db_dbm;
+}
+
+void dav_fs_register_uris(ap_pool_t *p)
+{
+    const char * const * uris = dav_fs_namespace_uris;
+
+    for ( ; *uris != NULL; ++uris) {
+        dav_register_liveprop_namespace(p, *uris);
+    }
 }
