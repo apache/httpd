@@ -115,7 +115,9 @@
 
         &ul.start; &lf;&tab;
             <xsl:apply-templates select="page" />
-            <xsl:apply-templates select="modulefilelist" />
+            <xsl:if test="@id = 'modules'">
+                <xsl:apply-templates select="document($allmodules)/modulefilelist" />
+            </xsl:if>
         &ul.end; &lf;
         &li.end; &lf;&tab;
     </xsl:for-each>&lf;
@@ -244,7 +246,7 @@
 <!-- category/modulefilelist                                              -->
 <!-- process all listed module files                                      -->
 <!-- ==================================================================== -->
-<xsl:template match="category/modulefilelist">
+<xsl:template match="modulefilelist">
 <!-- create a module name translation list for sorting -->
 <xsl:variable name="translist">
     <xsl:text>-</xsl:text>
