@@ -105,26 +105,26 @@ typedef struct {
     table *vars;
     char *unsetenv;
     int vars_present;
-} env_server_config_rec;
+} env_dir_config_rec;
 
 module MODULE_VAR_EXPORT env_module;
 
-static void *create_env_server_config(pool *p, server_rec *dummy)
+static void *create_env_dir_config(pool *p, char *dummy)
 {
-    env_server_config_rec *new =
-    (env_server_config_rec *) ap_palloc(p, sizeof(env_server_config_rec));
+    env_dir_config_rec *new =
+    (env_dir_config_rec *) ap_palloc(p, sizeof(env_dir_config_rec));
     new->vars = ap_make_table(p, 50);
     new->unsetenv = "";
     new->vars_present = 0;
     return (void *) new;
 }
 
-static void *merge_env_server_configs(pool *p, void *basev, void *addv)
+static void *merge_env_dir_configs(pool *p, void *basev, void *addv)
 {
-    env_server_config_rec *base = (env_server_config_rec *) basev;
-    env_server_config_rec *add = (env_server_config_rec *) addv;
-    env_server_config_rec *new =
-    (env_server_config_rec *) ap_palloc(p, sizeof(env_server_config_rec));
+    env_dir_config_rec *base = (env_dir_config_rec *) basev;
+    env_dir_config_rec *add = (env_dir_config_rec *) addv;
+    env_dir_config_rec *new =
+    (env_dir_config_rec *) ap_palloc(p, sizeof(env_dir_config_rec));
 
     table *new_table;
     table_entry *elts;
@@ -166,11 +166,10 @@ static void *merge_env_server_configs(pool *p, void *basev, void *addv)
     return new;
 }
 
-static const char *add_env_module_vars_passed(cmd_parms *cmd, char *struct_ptr,
+static const char *add_env_module_vars_passed(cmd_parms *cmd,
+					      env_dir_config_rec *sconf,
                                               const char *arg)
 {
-    env_server_config_rec *sconf =
-    ap_get_module_config(cmd->server->module_config, &env_module);
     table *vars = sconf->vars;
     char *env_var;
     char *name_ptr;
@@ -186,11 +185,10 @@ static const char *add_env_module_vars_passed(cmd_parms *cmd, char *struct_ptr,
     return NULL;
 }
 
-static const char *add_env_module_vars_set(cmd_parms *cmd, char *struct_ptr,
+static const char *add_env_module_vars_set(cmd_parms *cmd,
+					   env_dir_config_rec *sconf,
                                            const char *arg)
 {
-    env_server_config_rec *sconf =
-    ap_get_module_config(cmd->server->module_config, &env_module);
     table *vars = sconf->vars;
     char *name, *value;
 
@@ -212,11 +210,10 @@ static const char *add_env_module_vars_set(cmd_parms *cmd, char *struct_ptr,
     return NULL;
 }
 
-static const char *add_env_module_vars_unset(cmd_parms *cmd, char *struct_ptr,
+static const char *add_env_module_vars_unset(cmd_parms *cmd,
+					     env_dir_config_rec *sconf,
                                              char *arg)
 {
-    env_server_config_rec *sconf =
-    ap_get_module_config(cmd->server->module_config, &env_module);
     sconf->unsetenv = sconf->unsetenv ?
         ap_pstrcat(cmd->pool, sconf->unsetenv, " ", arg, NULL) :
          arg;
@@ -226,19 +223,18 @@ static const char *add_env_module_vars_unset(cmd_parms *cmd, char *struct_ptr,
 static const command_rec env_module_cmds[] =
 {
     {"PassEnv", add_env_module_vars_passed, NULL,
-     RSRC_CONF, RAW_ARGS, "a list of environment variables to pass to CGI."},
+     OR_FILEINFO, RAW_ARGS, "a list of environment variables to pass to CGI."},
     {"SetEnv", add_env_module_vars_set, NULL,
-     RSRC_CONF, RAW_ARGS, "an environment variable name and a value to pass to CGI."},
+     OR_FILEINFO, RAW_ARGS, "an environment variable name and a value to pass to CGI."},
     {"UnsetEnv", add_env_module_vars_unset, NULL,
-     RSRC_CONF, RAW_ARGS, "a list of variables to remove from the CGI environment."},
+     OR_FILEINFO, RAW_ARGS, "a list of variables to remove from the CGI environment."},
     {NULL},
 };
 
 static int fixup_env_module(request_rec *r)
 {
     table *e = r->subprocess_env;
-    server_rec *s = r->server;
-    env_server_config_rec *sconf = ap_get_module_config(s->module_config,
+    env_dir_config_rec *sconf = ap_get_module_config(r->per_dir_config,
                                                      &env_module);
     table *vars = sconf->vars;
 
@@ -254,10 +250,10 @@ module MODULE_VAR_EXPORT env_module =
 {
     STANDARD_MODULE_STUFF,
     NULL,                       /* initializer */
-    NULL,                       /* dir config creater */
-    NULL,                       /* dir merger --- default is to override */
-    create_env_server_config,   /* server config */
-    merge_env_server_configs,   /* merge server configs */
+    create_env_dir_config,      /* dir config creater */
+    merge_env_dir_configs,      /* dir merger --- default is to override */
+    NULL,                       /* server config */
+    NULL,                       /* merge server configs */
     env_module_cmds,            /* command table */
     NULL,                       /* handlers */
     NULL,                       /* filename translation */

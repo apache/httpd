@@ -1,5 +1,8 @@
 Changes with Apache 1.3.7
 
+  *) Make {Set,Unset,Pass}Env per-directory instead of per-server.
+     [Ben Laurie]
+
   *) Correct an apparent typo: on the Windows and MPE platforms, the
      htpasswd utility was limiting passwords to only 8 characters.
      [Ken Coar]
