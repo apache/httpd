@@ -8,16 +8,16 @@ AND don't forget to run expand on the file after it has been indent'd.
    alloc.h			DONE by Dean
    buff.c			DONE by Dean
    buff.h			DONE by Dean
-   conf.h
+   conf.h			RESERVED by Dean
    dummy.c
    explain.c
    explain.h
    fnmatch.c
    fnmatch.h
    http_bprintf.c
-   http_conf_globals.h
-   http_config.c		RESERVED by Dean
-   http_config.h		RESERVED by Dean
+   http_conf_globals.h		RESERVED by Dean
+   http_config.c		DONE by Dean
+   http_config.h		DONE by Dean
    http_core.c			RESERVED by Randy
    http_core.h			RESERVED by Randy
    http_log.c			RESERVED by Randy
@@ -28,15 +28,13 @@ AND don't forget to run expand on the file after it has been indent'd.
    http_protocol.h		DONE by Roy
    http_request.c		DONE by Roy
    http_request.h		DONE by Roy
-   httpd.h
+   httpd.h			RESERVED by Dean
    md5.h
    md5c.c
    multithread.h
-   os-inline.c
-   os.h
    rfc1413.c
    rfc1413.h
-   scoreboard.h
+   scoreboard.h			RESERVED by Dean
    util.c			DONE by Randy
    util_date.c			DONE by Randy
    util_date.h			DONE by Randy

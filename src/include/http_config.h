@@ -57,36 +57,36 @@
 /* Command dispatch structures... */
 
 enum cmd_how {
-  RAW_ARGS,			/* cmd_func parses command line itself */
-  TAKE1,			/* one argument only */
-  TAKE2,			/* two arguments only */
-  ITERATE,			/* one argument, occuring multiple times
+    RAW_ARGS,			/* cmd_func parses command line itself */
+    TAKE1,			/* one argument only */
+    TAKE2,			/* two arguments only */
+    ITERATE,			/* one argument, occuring multiple times
 				 * (e.g., IndexIgnore)
 				 */
-  ITERATE2,			/* two arguments, 2nd occurs multiple times
+    ITERATE2,			/* two arguments, 2nd occurs multiple times
 				 * (e.g., AddIcon)
 				 */
-  FLAG,				/* One of 'On' or 'Off' */
-  NO_ARGS,			/* No args at all, e.g. </Directory> */
-  TAKE12,			/* one or two arguments */
-  TAKE3,			/* three arguments only */
-  TAKE23,			/* two or three arguments */
-  TAKE123,			/* one, two or three arguments */
-  TAKE13			/* one or three arguments */
+    FLAG,			/* One of 'On' or 'Off' */
+    NO_ARGS,			/* No args at all, e.g. </Directory> */
+    TAKE12,			/* one or two arguments */
+    TAKE3,			/* three arguments only */
+    TAKE23,			/* two or three arguments */
+    TAKE123,			/* one, two or three arguments */
+    TAKE13			/* one or three arguments */
 };
 
 typedef struct command_struct {
-  char *name;			/* Name of this command */
-  const char *(*func)();	/* Function invoked */
-  void *cmd_data;		/* Extra data, for functions which
+    char *name;			/* Name of this command */
+    const char *(*func) ();	/* Function invoked */
+    void *cmd_data;		/* Extra data, for functions which
 				 * implement multiple commands...
 				 */
-  int req_override;		/* What overrides need to be allowed to
+    int req_override;		/* What overrides need to be allowed to
 				 * enable this command.
 				 */
-  enum cmd_how args_how;	/* What the command expects as arguments */
-  
-  char *errmsg;			/* 'usage' message, in case of syntax errors */
+    enum cmd_how args_how;	/* What the command expects as arguments */
+
+    char *errmsg;		/* 'usage' message, in case of syntax errors */
 } command_rec;
 
 /* The allowed locations for a configuration directive are the union of
@@ -133,11 +133,11 @@ typedef struct {
     void *info;			/* Argument to command from cmd_table */
     int override;		/* Which allow-override bits are set */
     int limited;		/* Which methods are <Limit>ed */
-    
+
     char *config_file;		/* Filename cmd read from */
     int config_line;		/* Line cmd read from */
     FILE *infile;		/* fd for more lines (not currently used) */
-    
+
     pool *pool;			/* Pool to allocate new storage in */
     pool *temp_pool;		/* Pool for scratch memory; persists during
 				 * configuration, but wiped before the first
@@ -177,24 +177,24 @@ typedef struct module_struct {
     struct module_struct *next;
 
 #ifdef ULTRIX_BRAIN_DEATH
-    void (*init)();
-    void *(*create_dir_config)();
-    void *(*merge_dir_config)();
-    void *(*create_server_config)();
-    void *(*merge_server_config)();
+    void (*init) ();
+    void *(*create_dir_config) ();
+    void *(*merge_dir_config) ();
+    void *(*create_server_config) ();
+    void *(*merge_server_config) ();
 #else
-    void (*init)(server_rec *, pool *);
-    void *(*create_dir_config)(pool *p, char *dir);
-    void *(*merge_dir_config)(pool *p, void *base_conf, void *new_conf);
-    void *(*create_server_config)(pool *p, server_rec *s);
-    void *(*merge_server_config)(pool *p, void *base_conf, void *new_conf);
+    void (*init) (server_rec *, pool *);
+    void *(*create_dir_config) (pool *p, char *dir);
+    void *(*merge_dir_config) (pool *p, void *base_conf, void *new_conf);
+    void *(*create_server_config) (pool *p, server_rec *s);
+    void *(*merge_server_config) (pool *p, void *base_conf, void *new_conf);
 #endif
 
     command_rec *cmds;
     handler_rec *handlers;
 
     /* Hooks for getting into the middle of server ops...
-     *
+
      * translate_handler --- translate URI to filename
      * access_checker --- check access by host address, etc.   All of these
      *                    run; if all decline, that's still OK.
@@ -209,15 +209,15 @@ typedef struct module_struct {
      * post_read_request --- run right after read_request or internal_redirect,
      *                  and not run during any subrequests.
      */
-    
-    int (*translate_handler)(request_rec *);
-    int (*check_user_id)(request_rec *);
-    int (*auth_checker)(request_rec *);
-    int (*access_checker)(request_rec *);
-    int (*type_checker)(request_rec *);
-    int (*fixer_upper)(request_rec *);
-    int (*logger)(request_rec *);
-    int (*header_parser)(request_rec *);
+
+    int (*translate_handler) (request_rec *);
+    int (*check_user_id) (request_rec *);
+    int (*auth_checker) (request_rec *);
+    int (*access_checker) (request_rec *);
+    int (*type_checker) (request_rec *);
+    int (*fixer_upper) (request_rec *);
+    int (*logger) (request_rec *);
+    int (*header_parser) (request_rec *);
 
     /* Regardless of the model the server uses for managing "units of
      * execution", i.e. multi-process, multi-threaded, hybrids of those,
@@ -230,13 +230,13 @@ typedef struct module_struct {
      * init method above.
      */
 #ifdef ULTRIX_BRAIN_DEATH
-    void (*child_init)();
-    void (*child_exit)();
+    void (*child_init) ();
+    void (*child_exit) ();
 #else
-    void (*child_init)(server_rec *, pool *);
-    void (*child_exit)(server_rec *, pool *);
+    void (*child_init) (server_rec *, pool *);
+    void (*child_exit) (server_rec *, pool *);
 #endif
-    int (*post_read_request)(request_rec *);
+    int (*post_read_request) (request_rec *);
 } module;
 
 /* Initializer for the first few module slots, which are only
@@ -253,29 +253,29 @@ typedef struct module_struct {
  * data
  */
 
-API_EXPORT(void *) get_module_config (void *conf_vector, module *m);
-API_EXPORT(void) set_module_config (void *conf_vector, module *m, void *val);     
-     
+API_EXPORT(void *) get_module_config(void *conf_vector, module *m);
+API_EXPORT(void) set_module_config(void *conf_vector, module *m, void *val);
+
 /* Generic command handling function... */
 
-API_EXPORT_NONSTD(const char *) set_string_slot (cmd_parms *, char *, char *);
-API_EXPORT_NONSTD(const char *) set_flag_slot (cmd_parms *, char *, int);
-API_EXPORT_NONSTD(const char *) set_file_slot (cmd_parms *, char *, char *);
+API_EXPORT_NONSTD(const char *) set_string_slot(cmd_parms *, char *, char *);
+API_EXPORT_NONSTD(const char *) set_flag_slot(cmd_parms *, char *, int);
+API_EXPORT_NONSTD(const char *) set_file_slot(cmd_parms *, char *, char *);
 
 /* For modules which need to read config files, open logs, etc. ...
  * this returns the fname argument if it begins with '/'; otherwise
  * it relativizes it wrt server_root.
  */
 
-API_EXPORT(char *) server_root_relative (pool *p, char *fname);
-     
+API_EXPORT(char *) server_root_relative(pool *p, char *fname);
+
 /* Finally, the hook for dynamically loading modules in... */
 
-API_EXPORT(void) add_module (module *m);
-API_EXPORT(int) add_named_module (const char *name);
-API_EXPORT(void) clear_module_list (void);
-API_EXPORT(const char *) find_module_name (module *m);
-API_EXPORT(module *) find_linked_module (const char *name);
+API_EXPORT(void) add_module(module *m);
+API_EXPORT(int) add_named_module(const char *name);
+API_EXPORT(void) clear_module_list(void);
+API_EXPORT(const char *) find_module_name(module *m);
+API_EXPORT(module *) find_linked_module(const char *name);
 
 #ifdef CORE_PRIVATE
 
@@ -284,7 +284,7 @@ extern module *preloaded_modules[];
 
 /* For http_main.c... */
 
-server_rec *read_config (pool *conf_pool, pool *temp_pool, char *config_name);
+server_rec *read_config(pool *conf_pool, pool *temp_pool, char *config_name);
 void init_modules(pool *p, server_rec *s);
 void child_init_modules(pool *p, server_rec *s);
 void child_exit_modules(pool *p, server_rec *s);
@@ -294,34 +294,34 @@ void show_modules(void);
 
 /* For http_request.c... */
 
-void *create_request_config (pool *p);
-void *create_per_dir_config (pool *p);
-void *merge_per_dir_configs (pool *p, void *base, void *new);
+void *create_request_config(pool *p);
+void *create_per_dir_config(pool *p);
+void *merge_per_dir_configs(pool *p, void *base, void *new);
 
-void core_reorder_directories (pool *, server_rec *);
+void core_reorder_directories(pool *, server_rec *);
 
 /* For http_core.c... (<Directory> command and virtual hosts) */
 
 int parse_htaccess(void **result, request_rec *r, int override,
-		   const char *path, const char *access_name);
-const char *srm_command_loop (cmd_parms *parms, void *config);
+		const char *path, const char *access_name);
+const char *srm_command_loop(cmd_parms *parms, void *config);
 
-server_rec *init_virtual_host (pool *p, const char *hostname, server_rec *main_server);
-int is_virtual_server (server_rec *);
+server_rec *init_virtual_host(pool *p, const char *hostname, server_rec *main_server);
+int is_virtual_server(server_rec *);
 void process_resource_config(server_rec *s, char *fname, pool *p, pool *ptemp);
 
 /* Module-method dispatchers, also for http_request.c */
 
-int translate_name (request_rec *);
-int directory_walk (request_rec *); /* check symlinks, get per-dir config */
-int check_access (request_rec *); /* check access on non-auth basis */
-int check_user_id (request_rec *); /* obtain valid username from client auth */
-int check_auth (request_rec *); /* check (validated) user is authorized here */
-int find_types (request_rec *);	/* identify MIME type */
-int run_fixups (request_rec *);	/* poke around for other metainfo, etc.... */
-int invoke_handler (request_rec *);     
-int log_transaction (request_rec *r);
-int header_parse (request_rec *);
-int run_post_read_request (request_rec *);
+int translate_name(request_rec *);
+int directory_walk(request_rec *);		/* check symlinks, get per-dir config */
+int check_access(request_rec *);	/* check access on non-auth basis */
+int check_user_id(request_rec *);	/* obtain valid username from client auth */
+int check_auth(request_rec *);	/* check (validated) user is authorized here */
+int find_types(request_rec *);	/* identify MIME type */
+int run_fixups(request_rec *);	/* poke around for other metainfo, etc.... */
+int invoke_handler(request_rec *);
+int log_transaction(request_rec *r);
+int header_parse(request_rec *);
+int run_post_read_request(request_rec *);
 
 #endif
