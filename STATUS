@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/10/23 14:48:06 $]
+Last modified at [$Date: 2000/10/23 15:30:44 $]
 
 Release:
 
@@ -22,10 +22,6 @@ RELEASE SHOWSTOPPERS:
 
     * Some buff functionality is currently missing: translation of protocol 
       data for EBCDIC machines
-
-    * suEXEC doesn't work
-        Status: Manoj has posted an patch to fix this.
-        Message-ID: <20000825024943.A17578@manojk.users.mindspring.com>
 
     * Win32: Enable the Windows MPM to honor max_requests_per_child
         Status: Bill will fix this.

@@ -56,58 +56,105 @@
  * University of Illinois, Urbana-Champaign.
  */
 
-/*
- * This file will include OS specific functions which are not inlineable.
- * Any inlineable functions should be defined in os-inline.c instead.
- */
-
 #include "httpd.h"
+#include "http_config.h"
 #include "http_core.h"
-#include "os.h"
-#include "httpd.h"
+#include "http_request.h"
+#include "apr_strings.h"
+#include "suexec.h"
+#include "unixd.h"
 
-/* Check the Content-Type to decide if conversion is needed */
-int ap_checkconv(struct request_rec *r)
+module MODULE_VAR_EXPORT suexec_module;
+
+typedef struct {
+    ap_unix_identity_t ugid;
+    int active;
+} suexec_config_t;
+
+/*
+ * Create a configuration specific to this module for a server or directory
+ * location, and fill it with the default settings.
+ */
+static void *mkconfig(apr_pool_t *p)
 {
-    int convert_to_ascii;
-    const char *type;
+    suexec_config_t *cfg = apr_palloc(p, sizeof(suexec_config_t));
 
-    /* To make serving of "raw ASCII text" files easy (they serve faster 
-     * since they don't have to be converted from EBCDIC), a new
-     * "magic" type prefix was invented: text/x-ascii-{plain,html,...}
-     * If we detect one of these content types here, we simply correct
-     * the type to the real text/{plain,html,...} type. Otherwise, we
-     * set a flag that translation is required later on.
-     */
+    cfg->active = 0;
+    return cfg;
+}
 
-    type = (r->content_type == NULL) ? ap_default_type(r) : r->content_type;
+/*
+ * Respond to a callback to create configuration record for a server or
+ * vhost environment.
+ */
+static void *create_mconfig_for_server(apr_pool_t *p, server_rec *s)
+{
+    return mkconfig(p);
+}
 
-    /* If no content type is set then treat it as (ebcdic) text/plain */
-    convert_to_ascii = (type == NULL);
+/*
+ * Respond to a callback to create a config record for a specific directory.
+ */
+static void *create_mconfig_for_directory(apr_pool_t *p, char *dir)
+{
+    return mkconfig(p);
+}
 
-    /* Conversion is applied to text/ files only, if ever. */
-    if (type && (strncasecmp(type, "text/", 5) == 0 ||
-		 strncasecmp(type, "message/", 8) == 0)) {
-	if (strncasecmp(type, ASCIITEXT_MAGIC_TYPE_PREFIX,
-			sizeof(ASCIITEXT_MAGIC_TYPE_PREFIX)-1) == 0)
-	    r->content_type = apr_pstrcat(r->pool, "text/",
-					 type+sizeof(ASCIITEXT_MAGIC_TYPE_PREFIX)-1,
-					 NULL);
-        else
-	    /* translate EBCDIC to ASCII */
-	    convert_to_ascii = 1;
+static const char *set_suexec_ugid(cmd_parms *cmd, void *mconfig,
+                                   char *uid, char *gid)
+{
+    suexec_config_t *cfg = (suexec_config_t *) mconfig;
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+
+    if (err != NULL) {
+        return err;
     }
-    /* Enable conversion if it's a text document */
-    ap_bsetflag(r->connection->client, B_EBCDIC2ASCII, convert_to_ascii);
-
-    return convert_to_ascii;
+    if (unixd_config.suexec_enabled) {
+        cfg->ugid.uid = ap_uname2id(uid);
+        cfg->ugid.gid = ap_gname2id(gid);
+        cfg->active = 1;
+    }
+    else {
+        fprintf(stderr,
+                "Warning: SuexecUserGroup directive requires SUEXEC wrapper.\n");
+    }
+    return NULL;
 }
 
-AP_DECLARE(apr_status_t) ap_os_create_privileged_process(const request_rec *r,
-                              apr_proc_t *newproc, const char *progname,
-                              char *const *args, char **env,
-                              apr_procattr_t *attr, apr_pool_t *p)
+static ap_unix_identity_t *get_suexec_id_doer(const request_rec *r)
 {
-    return apr_create_process(newproc, progname, args, env, attr, p);
+    suexec_config_t *cfg =
+    (suexec_config_t *) ap_get_module_config(r->per_dir_config, &suexec_module);
+
+    return cfg->active ? &cfg->ugid : NULL;
 }
 
+/*
+ * Define the directives specific to this module.  This structure is referenced
+ * later by the 'module' structure.
+ */
+static const command_rec suexec_cmds[] =
+{
+    /* XXX - Another important reason not to allow this in .htaccess is that
+     * the ap_[ug]name2id() is not thread-safe */
+    AP_INIT_TAKE2("SuexecUserGroup", set_suexec_ugid, NULL, RSRC_CONF,
+      "User and group for spawned processes"),
+    { NULL }
+};
+
+static void suexec_hooks(void)
+{
+    ap_hook_get_suexec_identity(get_suexec_id_doer,NULL,NULL,AP_HOOK_MIDDLE);
+}
+
+module MODULE_VAR_EXPORT suexec_module =
+{
+    STANDARD20_MODULE_STUFF,
+    create_mconfig_for_directory,   /* create per-dir config */
+    NULL,                       /* merge per-dir config */
+    create_mconfig_for_server,  /* server config */
+    NULL,                       /* merge server config */
+    suexec_cmds,                /* command table */
+    NULL,                       /* handlers */
+    suexec_hooks		/* register hooks */
+};

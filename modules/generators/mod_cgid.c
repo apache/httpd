@@ -213,99 +213,19 @@ static int call_exec(request_rec *r, char *argv0, char **env, int shellcmd)
      * since that is better than allowing errors to go unnoticed. 
      */
     apr_put_os_file(&r->server->error_log, &errfileno, r->pool);
-    /* TODO: reimplement suexec */
-#if 0
-    if (ap_suexec_enabled
-        && ((r->server->server_uid != ap_user_id)
-            || (r->server->server_gid != ap_group_id)
-            || (!strncmp("/~", r->uri, 2)))) {
-
-        char *execuser, *grpname;
-        struct passwd *pw;
-        struct group *gr;
-
-        if (!strncmp("/~", r->uri, 2)) {
-            gid_t user_gid;
-            char *username = apr_pstrdup(r->pool, r->uri + 2);
-            char *pos = strchr(username, '/');
-
-            if (pos) {
-                *pos = '\0';
-            }
-
-            if ((pw = getpwnam(username)) == NULL) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
-                             "getpwnam: invalid username %s", username);
-                return (pid);
-            }
-            execuser = apr_pstrcat(r->pool, "~", pw->pw_name, NULL);
-            user_gid = pw->pw_gid;
-
-            if ((gr = getgrgid(user_gid)) == NULL) {
-                if ((grpname = apr_palloc(r->pool, 16)) == NULL) {
-                    return (pid);
-                }
-                else {
-                    apr_snprintf(grpname, 16, "%ld", (long) user_gid);
-                }
-            }
-            else {
-                grpname = gr->gr_name;
-            }
-        }
-        else {
-            if ((pw = getpwuid(r->server->server_uid)) == NULL) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
-                             "getpwuid: invalid userid %ld",
-                             (long) r->server->server_uid);
-                return (pid);
-            }
-            execuser = apr_pstrdup(r->pool, pw->pw_name);
-
-            if ((gr = getgrgid(r->server->server_gid)) == NULL) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
-                             "getgrgid: invalid groupid %ld",
-                             (long) r->server->server_gid);
-                return (pid);
-            }
-            grpname = gr->gr_name;
-        }
-
-        if (shellcmd) {
-            execle(SUEXEC_BIN, SUEXEC_BIN, execuser, grpname, argv0,
-                   NULL, env);
-        }
-
-        else if ((!r->args) || (!r->args[0]) || strchr(r->args, '=')) {
-            execle(SUEXEC_BIN, SUEXEC_BIN, execuser, grpname, argv0,
-                   NULL, env);
-        }
-
-        else {
-            execve(SUEXEC_BIN,
-                   create_argv(r->pool, SUEXEC_BIN, execuser, grpname,
-                               argv0, r->args),
-                   env);
-        }
+    if (shellcmd) {
+        execle(SHELL_PATH, SHELL_PATH, "-c", argv0, NULL, env);
     }
+
+    else if ((!r->args) || (!r->args[0]) || strchr(r->args, '=')) {
+        execle(r->filename, argv0, NULL, env);
+    }
+
     else {
-#endif
-        if (shellcmd) {
-            execle(SHELL_PATH, SHELL_PATH, "-c", argv0, NULL, env);
-        }
-
-        else if ((!r->args) || (!r->args[0]) || strchr(r->args, '=')) {
-            execle(r->filename, argv0, NULL, env);
-        }
-
-        else {
-            execve(r->filename,
-                   create_argv(r->pool, NULL, NULL, NULL, argv0, r->args),
-                   env);
-        }
-#if 0
+        execve(r->filename,
+               create_argv(r->pool, NULL, NULL, NULL, argv0, r->args),
+               env);
     }
-#endif
     return (pid);
 }
 
@@ -358,9 +278,6 @@ static void get_req(int fd, request_rec *r, char **filename, char **argv0, char 
     *env = environ; 
     r->args = ap_getword(r->pool, (const char **)&data, '\n'); 
   
-    read(fd, &r->server->server_uid, sizeof(uid_t)); 
-    read(fd, &r->server->server_gid, sizeof(gid_t)); 
-
     read(fd, &i, sizeof(int)); 
      
     /* add 1, so that if i == 0, we still malloc something. */ 
@@ -435,14 +352,6 @@ static void send_req(int fd, request_rec *r, char *argv0, char **env)
                      "write to cgi daemon process"); 
         }     
     if (write(fd, data, len) < 0) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r, 
-                     "write to cgi daemon process"); 
-        }     
-    if (write(fd, &r->server->server_uid, sizeof(uid_t)) < 0) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r, 
-                     "write to cgi daemon process"); 
-        }     
-    if (write(fd, &r->server->server_gid, sizeof(gid_t)) < 0) { 
         ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r, 
                      "write to cgi daemon process"); 
         }     

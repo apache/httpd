@@ -68,6 +68,8 @@
 #ifdef HAVE_SYS_RESOURCE_H
 #include <sys/resource.h>
 #endif
+/* XXX */
+#include <sys/stat.h>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
@@ -214,9 +216,22 @@ const char *unixd_set_group(cmd_parms *cmd, void *dummy, const char *arg)
 
 void unixd_pre_config(apr_pool_t *ptemp)
 {
+    apr_finfo_t wrapper;
+
     unixd_config.user_name = DEFAULT_USER;
     unixd_config.user_id = ap_uname2id(DEFAULT_USER);
     unixd_config.group_id = ap_gname2id(DEFAULT_GROUP);
+
+    /* Check for suexec */
+    unixd_config.suexec_enabled = 0;
+    if ((apr_stat(&wrapper, SUEXEC_BIN, ptemp)) != APR_SUCCESS) {
+        return;
+    }
+
+    /* XXX - apr_stat is incapable of checking suid bits (grumble) */
+    /* if ((wrapper.filetype & S_ISUID) && wrapper.user == 0) { */
+        unixd_config.suexec_enabled = 1;
+    /* } */
 }
 
 #ifdef NEED_AP_SYS_SIGLIST

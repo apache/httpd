@@ -77,6 +77,14 @@
 
 #include "suexec.h"
 
+#if HAVE_PWD_H
+#include <pwd.h>
+#endif
+
+#if HAVE_GRP_H
+#include <grp.h>
+#endif
+
 /*
  ***********************************************************************
  * There is no initgroups() in QNX, so I believe this is safe :-)
@@ -319,9 +327,17 @@ int main(int argc, char *argv[])
     /*
      * Error out if the target username is invalid.
      */
-    if ((pw = getpwnam(target_uname)) == NULL) {
-	log_err("invalid target user name: (%s)\n", target_uname);
-	exit(105);
+    if (strspn(target_uname, "1234567890") != strlen(target_uname)) {
+        if ((pw = getpwnam(target_uname)) == NULL) {
+    	    log_err("invalid target user name: (%s)\n", target_uname);
+    	    exit(105);
+        }
+    }
+    else {
+        if ((pw = getpwuid(atoi(target_uname))) == NULL) {
+            log_err("invalud target user id: (%s)\n", target_uname);
+            exit(121);
+        }
     }
 
     /*
