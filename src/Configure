@@ -763,7 +763,7 @@ MODDIRS=`awk < $tmpfile '
 for modfile in $MODFILES ; do
 #	echo Trying to find $modfile
 	rm -f $tmpfile2 $tmpfile3
-	modname=
+	modname=''
 
 	ext=`echo $modfile | sed 's/^.*\.//'`
 	modbase=`echo $modfile | sed 's/\.[^.]*$//'`
@@ -777,10 +777,11 @@ for modfile in $MODFILES ; do
 
 	if [ -r $modbase.module ] ; then
 		cat $modbase.module > $tmpfile2
-	elif [ -f $modbase.c ] ; then
+	else
+	    if [ -f $modbase.c ] ; then
 		# Guess module structure name in case there is not
 		# module definition in this file
-		modname=`grep '^module .*;' $modbase.c | head -1 |\
+		modname=`egrep '^module .*;' $modbase.c | head -1 |\
 			sed 's/^module.*[ 	][ 	]*//' | \
 			sed 's/[ 	]*;[ 	]*$//'`
 		# Get any module definition part
@@ -789,6 +790,7 @@ for modfile in $MODFILES ; do
 		sed '1,/MODULE-DEFINITION-START/d;/MODULE-DEFINITION-END/,$d' \
 			> $tmpfile2
 		fi
+	    fi
 	fi		
 	if [ -r $tmpfile2 ] ; then
 		# Read a module definition from .module or .c
