@@ -26,5 +26,5 @@ uri_delims.h: gen_uri_delims
 test_char.h: gen_test_char
 	./gen_test_char > test_char.h
 
-util_uri.o: uri_delims.h
-util.o: test_char.h
+util_uri.lo: uri_delims.h
+util.lo: test_char.h
