@@ -46,7 +46,8 @@ delete-exports:
 		    fi \
 	fi
 
-exports.c:
+# full path required to keep BSD make happy
+$(top_srcdir)/server/exports.c:
 	$(AWK) -f $(top_srcdir)/build/make_exports.awk $(EXPORT_FILES) > $@
 
 export_vars.h:
