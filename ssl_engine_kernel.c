@@ -1605,12 +1605,14 @@ int ssl_callback_NewSessionCacheEntry(SSL *ssl, SSL_SESSION *session)
     /*
      * Log this cache operation
      */
-    ssl_log(s, SSL_LOG_TRACE,
-            "Inter-Process Session Cache: "
-            "request=SET status=%s id=%s timeout=%ds (session caching)",
-            (rc == TRUE ? "OK" : "BAD"),
-            SSL_SESSION_id2sz(session_id, session_id_length),
-            (timeout - time(NULL)));
+    if (sc->nLogLevel >= SSL_LOG_TRACE) {
+        ssl_log(s, SSL_LOG_TRACE,
+                "Inter-Process Session Cache: "
+                "request=SET status=%s id=%s timeout=%ds (session caching)",
+                (rc == TRUE ? "OK" : "BAD"),
+                SSL_SESSION_id2sz(session_id, session_id_length),
+                (timeout - time(NULL)));
+    }
 
     /*
      * return 0 which means to OpenSSL that the session is still
@@ -1633,6 +1635,7 @@ SSL_SESSION *ssl_callback_GetSessionCacheEntry(SSL *ssl,
     /* Get Apache context back through OpenSSL context */
     conn_rec *conn = (conn_rec *)SSL_get_app_data(ssl);
     server_rec *s  = conn->base_server;
+    SSLSrvConfigRec *sc = mySrvConfig(s);
     SSL_SESSION *session;
 
     /*
@@ -1643,16 +1646,15 @@ SSL_SESSION *ssl_callback_GetSessionCacheEntry(SSL *ssl,
     /*
      * Log this cache operation
      */
-    if (session) {
+    if (sc->nLogLevel >= SSL_LOG_TRACE) {
+        const char *status = session ? "FOUND" : "MISSED";
+        const char *re     = session ? "reuse" : "renewal";
+
         ssl_log(s, SSL_LOG_TRACE, "Inter-Process Session Cache: "
-                "request=GET status=FOUND id=%s (session reuse)",
-                SSL_SESSION_id2sz(id, idlen));
+                "request=GET status=%s id=%s (session %s)",
+                status, SSL_SESSION_id2sz(id, idlen), re);
     }
-    else {
-        ssl_log(s, SSL_LOG_TRACE, "Inter-Process Session Cache: "
-                "request=GET status=MISSED id=%s (session renewal)",
-                SSL_SESSION_id2sz(id, idlen));
-    }
+
     /*
      * Return NULL or the retrieved SSL_SESSION. But indicate (by
      * setting do_copy to 0) that the reference count on the
@@ -1674,6 +1676,7 @@ void ssl_callback_DelSessionCacheEntry(SSL_CTX *ctx,
                                        SSL_SESSION *session)
 {
     server_rec *s;
+    SSLSrvConfigRec *sc;
     unsigned char *session_id;
     unsigned int session_id_length;
 
@@ -1683,6 +1686,8 @@ void ssl_callback_DelSessionCacheEntry(SSL_CTX *ctx,
     if (!(s = (server_rec *)SSL_CTX_get_app_data(ctx))) {
         return; /* on server shutdown Apache is already gone */
     }
+
+    sc = mySrvConfig(s);
 
     /*
      * Remove the SSL_SESSION from the inter-process cache
@@ -1695,9 +1700,11 @@ void ssl_callback_DelSessionCacheEntry(SSL_CTX *ctx,
     /*
      * Log this cache operation
      */
-    ssl_log(s, SSL_LOG_TRACE, "Inter-Process Session Cache: "
-            "request=REM status=OK id=%s (session dead)",
-            SSL_SESSION_id2sz(session_id, session_id_length));
+    if (sc->nLogLevel >= SSL_LOG_TRACE) {
+        ssl_log(s, SSL_LOG_TRACE, "Inter-Process Session Cache: "
+                "request=REM status=OK id=%s (session dead)",
+                SSL_SESSION_id2sz(session_id, session_id_length));
+    }
 
     return;
 }
