@@ -667,6 +667,13 @@ struct ap_bucket_error {
 AP_DECLARE_DATA extern const apr_bucket_type_t ap_bucket_type_error;
 
 /**
+ * Determine if a bucket is an error bucket
+ * @param e The bucket to inspect
+ * @return true or false
+ */
+#define AP_BUCKET_IS_ERROR(e)         (e->type == &ap_bucket_type_error)
+
+/**
  * Make the bucket passed in an error bucket
  * @param b The bucket to make into an error bucket
  * @param error The HTTP error code to put in the bucket. 
