@@ -78,6 +78,7 @@
 #include "mpm_default.h"
 #include "mpm.h"
 #include "scoreboard.h"
+#include "util_filter.h"
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
@@ -1710,7 +1711,8 @@ static const char *set_maintain_connection_status(cmd_parms *cmd,
     return NULL;
 }
 
-static const char *set_coredumpdir (cmd_parms *cmd, void *dummy, const char *arg) 
+static const char *set_coredumpdir (cmd_parms *cmd, void *dummy,
+				    const char *arg) 
 {
     apr_finfo_t finfo;
     const char *fname;
@@ -1720,7 +1722,7 @@ static const char *set_coredumpdir (cmd_parms *cmd, void *dummy, const char *arg
     }
 
     fname = ap_server_root_relative(cmd->pool, arg);
-    if ((apr_stat(&finfo, fname, cmd->pool) != APR_SUCCESS) 
+    if ((apr_stat(&finfo, fname, APR_FINFO_TYPE, cmd->pool) != APR_SUCCESS) 
         || (finfo.filetype != APR_DIR)) {
 	return apr_pstrcat(cmd->pool, "CoreDumpDirectory ", fname, 
 			  " does not exist or is not a directory", NULL);
