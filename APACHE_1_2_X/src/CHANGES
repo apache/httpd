@@ -20,6 +20,9 @@ Changes with Apache 1.2.1
      for the net if we require people that actually need this data to
      enable it.  [Linus Torvalds]
 
+  *) QUERY_STRING was unescaped in mod_include, it shouldn't be.
+     [Dean Gaudet] PR#644
+
   *) mod_include was not properly changing the current directory.
      [Marc Slemko] PR#742
 

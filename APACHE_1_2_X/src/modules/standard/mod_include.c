@@ -128,9 +128,11 @@ void add_include_vars(request_rec *r, char *timefmt)
     else
         table_set (e, "DOCUMENT_NAME", r->uri);
     if (r->args) {
-        unescape_url (r->args);
+	char *arg_copy = pstrdup (r->pool, r->args);
+
+        unescape_url (arg_copy);
 	  table_set (e, "QUERY_STRING_UNESCAPED",
-		   escape_shell_cmd (r->pool, r->args));
+		   escape_shell_cmd (r->pool, arg_copy));
     }
 }
 
@@ -625,10 +627,12 @@ void include_cmd_child (void *arg)
     }
 
     if (r->args) {
+	char *arg_copy = pstrdup (r->pool, r->args);
+
         table_set (env, "QUERY_STRING", r->args);
-	unescape_url (r->args);
+	unescape_url (arg_copy);
 	table_set (env, "QUERY_STRING_UNESCAPED",
-		   escape_shell_cmd (r->pool, r->args));
+		   escape_shell_cmd (r->pool, arg_copy));
     }
     
     error_log2stderr (r->server);
@@ -1666,10 +1670,12 @@ void send_parsed_content(FILE *f, request_rec *r)
 
     chdir_file (r->filename);
     if (r->args) { /* add QUERY stuff to env cause it ain't yet */
+	char *arg_copy = pstrdup (r->pool, r->args);
+
         table_set (r->subprocess_env, "QUERY_STRING", r->args);
-        unescape_url (r->args);
+        unescape_url (arg_copy);
         table_set (r->subprocess_env, "QUERY_STRING_UNESCAPED",
-                escape_shell_cmd (r->pool, r->args));
+                escape_shell_cmd (r->pool, arg_copy));
     }
 
     while(1) {
