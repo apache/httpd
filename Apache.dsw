@@ -15,7 +15,7 @@ Package=<4>
     Project_Dep_Name aprlibdll
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name ApacheCore
+    Project_Dep_Name ApacheCoreDll
     End Project Dependency
 }}}
 
@@ -30,19 +30,34 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name aprlibdll
-    End Project Dependency
-    Begin Project Dependency
     Project_Dep_Name gen_test_char
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name gen_uri_delims
     End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "ApacheCoreDll"=".\ApacheCoreDll.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name aprlibdll
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name pcre
+    End Project Dependency
     Begin Project Dependency
     Project_Dep_Name pcreposix
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name pcre
+    Project_Dep_Name ApacheCore
     End Project Dependency
 }}}
 
@@ -60,7 +75,7 @@ Package=<4>
     Project_Dep_Name aprlibdll
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name ApacheCore
+    Project_Dep_Name ApacheCoreDll
     End Project Dependency
 }}}
 
@@ -78,7 +93,7 @@ Package=<4>
     Project_Dep_Name aprlibdll
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name ApacheCore
+    Project_Dep_Name ApacheCoreDll
     End Project Dependency
 }}}
 
@@ -96,7 +111,7 @@ Package=<4>
     Project_Dep_Name aprlibdll
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name ApacheCore
+    Project_Dep_Name ApacheCoreDll
     End Project Dependency
 }}}
 
@@ -114,7 +129,7 @@ Package=<4>
     Project_Dep_Name aprlibdll
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name ApacheCore
+    Project_Dep_Name ApacheCoreDll
     End Project Dependency
 }}}
 
@@ -132,7 +147,7 @@ Package=<4>
     Project_Dep_Name aprlibdll
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name ApacheCore
+    Project_Dep_Name ApacheCoreDll
     End Project Dependency
 }}}
 
@@ -150,7 +165,7 @@ Package=<4>
     Project_Dep_Name aprlibdll
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name ApacheCore
+    Project_Dep_Name ApacheCoreDll
     End Project Dependency
 }}}
 
@@ -168,7 +183,7 @@ Package=<4>
     Project_Dep_Name aprlibdll
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name ApacheCore
+    Project_Dep_Name ApacheCoreDll
     End Project Dependency
 }}}
 
@@ -186,7 +201,7 @@ Package=<4>
     Project_Dep_Name aprlibdll
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name ApacheCore
+    Project_Dep_Name ApacheCoreDll
     End Project Dependency
 }}}
 
@@ -204,7 +219,7 @@ Package=<4>
     Project_Dep_Name aprlibdll
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name ApacheCore
+    Project_Dep_Name ApacheCoreDll
     End Project Dependency
 }}}
 
@@ -222,7 +237,7 @@ Package=<4>
     Project_Dep_Name aprlibdll
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name ApacheCore
+    Project_Dep_Name ApacheCoreDll
     End Project Dependency
 }}}
 
@@ -240,7 +255,7 @@ Package=<4>
     Project_Dep_Name aprlibdll
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name ApacheCore
+    Project_Dep_Name ApacheCoreDll
     End Project Dependency
 }}}
 
@@ -258,7 +273,7 @@ Package=<4>
     Project_Dep_Name aprlibdll
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name ApacheCore
+    Project_Dep_Name ApacheCoreDll
     End Project Dependency
 }}}
 
@@ -325,6 +340,9 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name ab
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name ApacheCoreDll
     End Project Dependency
 }}}
 

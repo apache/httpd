@@ -78,7 +78,9 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f gen_test_char.mak CFG="gen_test_char - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..
 	 -del Core$(SHORT)\buildmark.obj
+#	 ApacheCoreDll creates the dynamic ApacheCore.dll from the static library project ApacheCore
 	 $(MAKE) $(MAKEOPT) -f ApacheCore.mak CFG="ApacheCore - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f ApacheCoreDll.mak CFG="ApacheCoreDll - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f Apache.mak CFG="Apache - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd os\win32
          $(MAKE) $(MAKEOPT) -f ApacheModuleStatus.mak CFG="ApacheModuleStatus - Win32 $(LONG)" RECURSE=0 $(CTARGET)
