@@ -308,10 +308,15 @@ static int log_script(request_rec *r, cgi_server_conf * conf, int ret,
     apr_close(f);
     return ret;
 }
-static apr_status_t run_cgi_child(apr_file_t **script_out, apr_file_t **script_in, apr_file_t **script_err, 
-                                 char *command, char *const argv[], request_rec *r, apr_pool_t *p)
+
+static apr_status_t run_cgi_child(apr_file_t **script_out,
+                                  apr_file_t **script_in,
+                                  apr_file_t **script_err, 
+                                  const char *command,
+                                  const char * const argv[],
+                                  request_rec *r, apr_pool_t *p)
 {
-    char **env;
+    const char * const *env;
     apr_procattr_t *procattr;
     apr_proc_t *procnew = apr_pcalloc(p, sizeof(*procnew));
     apr_status_t rc = APR_SUCCESS;
@@ -339,7 +344,7 @@ static apr_status_t run_cgi_child(apr_file_t **script_out, apr_file_t **script_i
 #endif
 
     ap_add_cgi_vars(r);
-    env = ap_create_environment(p, r->subprocess_env);
+    env = (const char * const *)ap_create_environment(p, r->subprocess_env);
 
 #ifdef DEBUG_CGI
     fprintf(dbg, "Environment: \n");
@@ -404,7 +409,8 @@ static apr_status_t run_cgi_child(apr_file_t **script_out, apr_file_t **script_i
     return (rc);
 }
 
-static apr_status_t build_argv_list(char ***argv, request_rec *r, apr_pool_t *p)
+static apr_status_t build_argv_list(const char ***argv, request_rec *r,
+                                    apr_pool_t *p)
 {
     int numwords, x, idx;
     char *w;
@@ -427,7 +433,7 @@ static apr_status_t build_argv_list(char ***argv, request_rec *r, apr_pool_t *p)
     if (numwords > APACHE_ARG_MAX - 1) {
         numwords = APACHE_ARG_MAX - 1;	/* Truncate args to prevent overrun */
     }
-    *argv = (char **) apr_palloc(p, (numwords + 2) * sizeof(char *));
+    *argv = apr_palloc(p, (numwords + 2) * sizeof(char *));
  
     for (x = 1, idx = 1; x < numwords; x++) {
         w = ap_getword_nulls(p, &args, '+');
@@ -439,7 +445,8 @@ static apr_status_t build_argv_list(char ***argv, request_rec *r, apr_pool_t *p)
     return APR_SUCCESS;
 }
 
-static apr_status_t build_command_line(char **cmd, request_rec *r, apr_pool_t *p)
+static apr_status_t build_command_line(const char **cmd, request_rec *r,
+                                       apr_pool_t *p)
 {
 #ifdef WIN32
     char *quoted_filename = NULL;
@@ -447,7 +454,7 @@ static apr_status_t build_command_line(char **cmd, request_rec *r, apr_pool_t *p
     char *arguments = NULL;
     file_type_e fileType;
 #endif
-    char *argv0;
+    const char *argv0;
 
     /* Allow suexec's "/" check to succeed */
     if ((argv0 = strrchr(r->filename, '/')) != NULL)
@@ -493,19 +500,17 @@ static apr_status_t build_command_line(char **cmd, request_rec *r, apr_pool_t *p
 static int cgi_handler(request_rec *r)
 {
     int retval, nph, dbpos = 0;
-    char *argv0, *dbuf = NULL;
-    char *command;
-    char **argv = NULL;
-
+    const char *argv0;
+    const char *command;
+    const char **argv;
+    char *dbuf = NULL;
     apr_file_t *script_out = NULL, *script_in = NULL, *script_err = NULL;
     ap_bucket_brigade *bb;
     ap_bucket *b;
     char argsbuffer[HUGE_STRING_LEN];
     int is_included = !strcmp(r->protocol, "INCLUDED");
-    void *sconf = r->server->module_config;
     apr_pool_t *p;
-    cgi_server_conf *conf =
-    (cgi_server_conf *) ap_get_module_config(sconf, &cgi_module);
+    cgi_server_conf *conf;
 
     p = r->main ? r->main->pool : r->pool;
 
@@ -522,6 +527,7 @@ static int cgi_handler(request_rec *r)
 	argv0 = r->filename;
 
     nph = !(strncmp(argv0, "nph-", 4));
+    conf = ap_get_module_config(r->server->module_config, &cgi_module);
 
     if (!(ap_allow_options(r) & OPT_EXECCGI) && !is_scriptaliased(r))
         return log_scripterror(r, conf, HTTP_FORBIDDEN, APLOG_NOERRNO,
@@ -584,8 +590,10 @@ static int cgi_handler(request_rec *r)
         return HTTP_INTERNAL_SERVER_ERROR;
     }
     argv[0] = apr_pstrdup(p, command);
+
     /* run the script in its own process */
-    if (run_cgi_child(&script_out, &script_in, &script_err, command, argv, r, p) != APR_SUCCESS) {
+    if (run_cgi_child(&script_out, &script_in, &script_err,
+                      command, argv, r, p) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
                       "couldn't spawn child process: %s", r->filename);
         return HTTP_INTERNAL_SERVER_ERROR;
