@@ -711,7 +711,9 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0, cha
 	int is_exe = 0;
 	STARTUPINFO si;
 	PROCESS_INFORMATION pi;
-	char *pCommand;
+        char *pCommand;
+        char *pEnvBlock, *pNext;
+        int iEnvBlockLen;
 
 	memset(&si, 0, sizeof(si));
 	memset(&pi, 0, sizeof(pi));
@@ -861,16 +863,40 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0, cha
 				      r->filename, " ", arguments, NULL);
 	    }
 	}
-	
-	if (CreateProcess(NULL, pCommand, NULL, NULL, TRUE, 0, env, NULL, &si, &pi)) {
-	  pid = pi.dwProcessId;
-	  /*
-	   * We must close the handles to the new process and its main thread
-	   * to prevent handle and memory leaks.
-	   */ 
-	  CloseHandle(pi.hProcess);
-	  CloseHandle(pi.hThread);
-	}
+  
+        /*
+         * Win32's CreateProcess call requires that the environment
+         * be passed in an environment block, a null terminated block of
+         * null terminated strings.
+         */
+  
+        i = 0;
+        iEnvBlockLen = 1;
+        while (env[i]) {
+            iEnvBlockLen += strlen(env[i]) + 1;
+            i++;
+        }
+  
+        pEnvBlock = (char *)ap_pcalloc(r->pool,iEnvBlockLen);
+    
+        i = 0;
+        pNext = pEnvBlock;
+        while (env[i]) {
+            strcpy(pNext, env[i]);
+            pNext = pNext + strlen(pNext) + 1;
+            i++;
+        }
+
+        if (CreateProcess(NULL, pCommand, NULL, NULL, TRUE, 0, pEnvBlock,
+                          NULL, &si, &pi)) {
+            pid = pi.dwProcessId;
+            /*
+             * We must close the handles to the new process and its main thread
+             * to prevent handle and memory leaks.
+             */ 
+            CloseHandle(pi.hProcess);
+            CloseHandle(pi.hThread);
+        }
 #if 0
 	if ((!r->args) || (!r->args[0]) || strchr(r->args, '=')) {
 	    if (is_exe || is_binary) {
