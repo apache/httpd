@@ -1101,7 +1101,7 @@ static int cgid_handler(request_rec *r)
      * Note that this does not register a cleanup for the socket.  We did
      * that explicitly right after we created the socket.
      */
-    apr_os_file_put(&tempsock, &sd, 0, r->pool);
+    apr_os_pipe_put(&tempsock, &sd, r->pool);
 
     if ((argv0 = strrchr(r->filename, '/')) != NULL) 
         argv0++; 
@@ -1422,7 +1422,7 @@ static int include_cmd(include_ctx_t *ctx, apr_bucket_brigade **bb, char *comman
      * Note that this does not register a cleanup for the socket.  We did
      * that explicitly right after we created the socket.
      */
-    apr_os_file_put(&tempsock, &sd, 0, r->pool);
+    apr_os_pipe_put(&tempsock, &sd, r->pool);
 
     if ((retval = ap_setup_client_block(r, REQUEST_CHUNKED_ERROR))) 
         return retval; 

@@ -1,5 +1,8 @@
 Changes with Apache 2.0.44
 
+  *) Fix a problem with streaming script output and mod_cgid.
+     [Jeff Trawick]
+
   *) Add ap_register_provider/ap_lookup_provider API.
      [John K. Sterling <john@sterls.com>, Justin Erenkrantz]
 
