@@ -148,7 +148,7 @@ AP_DECLARE(char *) ap_ht_time(apr_pool_t *p, apr_time_t t, const char *fmt, int 
 	const char *f;
 	char *strp;
 
-        apr_explode_gmt(&xt, t);
+        apr_time_exp_gmt(&xt, t);
 	/* Convert %Z to "GMT" and %z to "+0000";
 	 * on hosts that do not have a time zone string in struct tm,
 	 * strftime must assume its argument is local time.

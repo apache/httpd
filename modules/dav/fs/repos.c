@@ -306,7 +306,7 @@ static void dav_format_time(int style, apr_time_t sec, char *buf)
     apr_time_exp_t tms;
     
     /* ### what to do if fails? */
-    (void) apr_explode_gmt(&tms, sec);
+    (void) apr_time_exp_gmt(&tms, sec);
 
     if (style == DAV_STYLE_ISO8601) {
 	/* ### should we use "-00:00" instead of "Z" ?? */

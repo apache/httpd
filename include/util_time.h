@@ -92,7 +92,7 @@ AP_DECLARE(apr_status_t) ap_explode_recent_localtime(apr_time_exp_t *tm,
  * @param tm the exploded time
  * @param t the time to explode: MUST be within the last
  *          AP_TIME_RECENT_THRESHOLD seconds
- * @note This is a faster alternative to apr_explode_gmt that uses
+ * @note This is a faster alternative to apr_time_exp_gmt that uses
  *       a cache of pre-exploded time structures.  It is useful for things
  *       that need to explode the current time multiple times per second,
  *       like loggers.

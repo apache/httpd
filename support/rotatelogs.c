@@ -164,7 +164,7 @@ int main (int argc, char *argv[])
                 apr_time_exp_t e;
                 apr_size_t rs;
 
-                apr_explode_gmt(&e, tNow);
+                apr_time_exp_gmt(&e, tNow);
                 apr_strftime(buf2, &rs, sizeof(buf2), szLogRoot, &e);
             }
             else {

@@ -130,7 +130,7 @@ static apr_status_t cached_explode(apr_time_exp_t *xt, apr_time_t t,
             (seconds != cache_element_snapshot.t_validate)) {
             /* Invalid snapshot */
             if (use_gmt) {
-                return apr_explode_gmt(xt, t);
+                return apr_time_exp_gmt(xt, t);
             }
             else {
                 return apr_explode_localtime(xt, t);
@@ -145,7 +145,7 @@ static apr_status_t cached_explode(apr_time_exp_t *xt, apr_time_t t,
     else {
         apr_status_t r;
         if (use_gmt) {
-            r = apr_explode_gmt(xt, t);
+            r = apr_time_exp_gmt(xt, t);
         }
         else {
             r = apr_explode_localtime(xt, t);
