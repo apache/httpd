@@ -141,8 +141,8 @@ static int suexec_post_config(apr_pool_t *p, apr_pool_t *plog,
         ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s,
                      "suEXEC mechanism enabled (wrapper: %s)", SUEXEC_BIN);
 
-        apr_pool_userdata_setn((void *)1, SUEXEC_POST_CONFIG_USERDATA,
-                               apr_pool_cleanup_null, s->process->pool);
+        apr_pool_userdata_set((void *)1, SUEXEC_POST_CONFIG_USERDATA,
+                              apr_pool_cleanup_null, s->process->pool);
     }
 
     return OK;
