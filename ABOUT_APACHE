@@ -1,7 +1,7 @@
 
                      The Apache HTTP Server Project
 
-                       http://www.apache.org/httpd
+                        http://httpd.apache.org/
 
                                July 2000
 
@@ -141,7 +141,7 @@ How to become involved in the Apache project
 
 There are several levels of contributing.  If you just want to send
 in an occasional suggestion/fix, then you can just use the bug reporting
-form at <http://www.apache.org/bug_report.html>.  You can also subscribe
+form at <http://httpd.apache.org/bug_report.html>.  You can also subscribe
 to the announcements mailing list (apache-announce@apache.org) which we
 use to broadcast information about new releases, bugfixes, and upcoming
 events.  There's a lot of information about the development process (much
@@ -202,7 +202,7 @@ changes and our development/coordination tools improve.
 
  ============================================================================
 
-The Apache Software Foundation (www.apache.org)
+The Apache Software Foundation (http://www.apache.org/)
 
 The Apache Software Foundation exists to provide organizational, legal,
 and financial support for the Apache open-source software projects.
