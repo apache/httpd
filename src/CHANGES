@@ -1,5 +1,9 @@
 Changes with Apache 1.3b6
 
+  *) Now mod_rewrite no longer makes problematic assumptions on the characters
+     a username can contain when trying to expand it via /etc/passwd. 
+     [Ralf S. Engelschall]
+
   *) The mod_setenvif BrowserMatch backwards compatibility command did not
      work properly with spaces in the regex.  [Ronald Tschalaer] PR#1825
 
