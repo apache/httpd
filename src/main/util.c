@@ -2020,18 +2020,44 @@ API_EXPORT(char *) ap_uuencode(pool *a, char *string)
 { 
     int i, len = strlen(string); 
     char *p; 
-    char *encoded = (char *) ap_pcalloc(a, (len+2) / 3 * 4); 
+    char *encoded = (char *) ap_palloc(a, (len+2) / 3 * 4); 
  
     p = encoded; 
-    for (i = 0; i < len; i += 3) { 
-        *p++ = basis_64[string[i] >> 2]; 
+#ifndef CHARSET_EBCDIC
+    for (i = 0; i < len-2; i += 3) { 
+        *p++ = basis_64[(string[i] >> 2) & 0x3F]; 
         *p++ = basis_64[((string[i] & 0x3) << 4) | ((int) (string[i + 1] & 0xF0) >> 4)]; 
         *p++ = basis_64[((string[i + 1] & 0xF) << 2) | ((int) (string[i + 2] & 0xC0) >> 6)]; 
         *p++ = basis_64[string[i + 2] & 0x3F]; 
     } 
-    *p-- = '\0'; 
-    *p-- = '='; 
-    *p-- = '='; 
+    if (i < len) {
+        *p++ = basis_64[(string[i] >> 2) & 0x3F]; 
+       *p++ = basis_64[((string[i] & 0x3) << 4) | ((int) (string[i + 1] & 0xF0) >> 4)]; 
+       if (i == (len-2))
+           *p++ = basis_64[((string[i + 1] & 0xF) << 2)]; 
+       else
+           *p++ = '='; 
+       *p++ = '='; 
+    }
+#else /*CHARSET_EBCDIC*/
+    for (i = 0; i < len-2; i += 3) { 
+        *p++ = basis_64[(os_toascii[string[i]] >> 2) & 0x3F]; 
+        *p++ = basis_64[((os_toascii[string[i]] & 0x3) << 4) | ((int) (os_toascii[string[i + 1]] & 0xF0) >> 4)]; 
+        *p++ = basis_64[((os_toascii[string[i + 1]] & 0xF) << 2) | ((int) (os_toascii[string[i + 2]] & 0xC0) >> 6)]; 
+        *p++ = basis_64[os_toascii[string[i + 2]] & 0x3F]; 
+    } 
+    if (i < len) {
+        *p++ = basis_64[(os_toascii[string[i]] >> 2) & 0x3F]; 
+       *p++ = basis_64[((os_toascii[string[i]] & 0x3) << 4) | ((int) (os_toascii[string[i + 1]] & 0xF0) >> 4)]; 
+       if (i == (len-2))
+           *p++ = basis_64[((os_toascii[string[i + 1]] & 0xF) << 2)]; 
+       else
+           *p++ = '='; 
+       *p++ = '='; 
+    }
+#endif /*CHARSET_EBCDIC*/
+
+    *p = '\0'; 
     return encoded; 
 } 
 
