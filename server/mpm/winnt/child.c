@@ -464,7 +464,7 @@ static PCOMP_CONTEXT win9x_get_connection(PCOMP_CONTEXT context)
  *    Worker threads block on the ThreadDispatch IOCompletionPort awaiting 
  *    connections to service.
  */
-#define MAX_ACCEPTEX_ERR_COUNT 1000
+#define MAX_ACCEPTEX_ERR_COUNT 100
 static void winnt_accept(void *lr_) 
 {
     ap_listen_rec *lr = (ap_listen_rec *)lr_;
@@ -524,11 +524,11 @@ static void winnt_accept(void *lr_)
                 closesocket(context->accept_socket);
                 context->accept_socket = INVALID_SOCKET;
                 if (err_count > MAX_ACCEPTEX_ERR_COUNT) {
-                    ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
+                    ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf,
                                  "Child %d: Encountered too many errors accepting client connections. "
                                  "Possible causes: dynamic address renewal, or incompatible VPN or firewall software. "
                                  "Try using the Win32DisableAcceptEx directive.", my_pid);
-                    exit(APEXIT_CHILDFATAL);
+                    err_count = 0;
                 }          
                 continue;
             }
@@ -536,14 +536,11 @@ static void winnt_accept(void *lr_)
                      (rv != APR_FROM_OS_ERROR(WSA_IO_PENDING))) {
                 ++err_count;
                 if (err_count > MAX_ACCEPTEX_ERR_COUNT) { 
-                    /* Critical error. The listening socket is not usable so we 
-                     * are going down.
-                     */
-                    ap_log_error(APLOG_MARK,APLOG_CRIT, rv, ap_server_conf,
+                    ap_log_error(APLOG_MARK,APLOG_ERR, rv, ap_server_conf,
                                  "Child %d: Encountered too many errors accepting client connections. "
                                  "Possible causes: Unknown. "
                                  "Try using the Win32DisableAcceptEx directive.", my_pid);
-                    exit(APEXIT_CHILDFATAL);
+                    err_count = 0;
                 }
                 closesocket(context->accept_socket);
                 context->accept_socket = INVALID_SOCKET;
