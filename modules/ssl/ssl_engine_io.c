@@ -736,7 +736,7 @@ static apr_status_t ssl_io_input_getline(ssl_io_input_ctx_t *ctx,
 }
 
 #define HTTP_ON_HTTPS_PORT \
-    "GET /mod_ssl:error:HTTP-request HTTP/1.0\r\n\r\n"
+    "GET /mod_ssl:error:HTTP-request HTTP/1.0"
 
 #define HTTP_ON_HTTPS_PORT_BUCKET(alloc) \
     apr_bucket_immortal_create(HTTP_ON_HTTPS_PORT, \
