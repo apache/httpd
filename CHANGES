@@ -1,10 +1,13 @@
 Changes with Apache 2.0.37
 
+  *) Added the "detached" attribute to the cgi_exec_info_t internals
+     so that Win32 and Netware won't create a new window or console
+     for each CGI invoked.  PR 8387
+     [Brad Nicholes, William Rowe]
+
   *) Consolidated the command line parameters and attributes that are 
-     manipulated by the optional function ap_cgi_build_command() in 
-	 mod_cgi into a single structure.  Also added a "detached" attribute 
-	 to the structure so that in addition to building the command
-	 line, each OS can specify how the CGI binary should be launched.
+     manipulated by the optional function ap_cgi_build_command() in
+     mod_cgi into a single structure.
      [Brad Nicholes]
 
   *) Get rid of uninitialized value errors with "apxs -q" on certain
