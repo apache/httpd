@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/03/25 11:51:27 $]
+Last modified at [$Date: 2003/03/27 01:10:59 $]
 
 Release:
 
@@ -58,7 +58,37 @@ Contributors looking for a mission:
 
 RELEASE SHOWSTOPPERS:
 
+    * Forward port: Escape special characters (especially control
+      characters) in mod_log_config to make a clear distinction between
+      client-supplied strings (with special characters) and server-side
+      strings. This was already introduced in version 1.3.25.
+      A ready-for-commit patch for 2.0 can be found under
+      <http://cvs.apache.org/~nd/logescape.patch>. Rev.# of HEAD:
+      include/ap_mmn.h: r1.57
+      include/httpd.h: r1.196
+      modules/loggers/mod_log_config.c: r1.100
+      server/gen_test_char.c: r1.16
+      server/util.c: r1.138
+      +1: nd
+      +0: mod_log_config.c has another change which requires mod_log_config.h
+         and a possible mmn bump
+         nd: but not in 2.0. AFAICS the MMNs don't conflict.
 
+    * Fix mod_rewrite's path handling. It's essentially broken for non-unices
+      for ages. PR 12902.
+      A summarized patch for 2.0 can be found under
+      <http://cvs.apache.org/~nd/rewrite.2.0.patch>.
+      A working patch for 1.3 is <http://cvs.apache.org/~nd/rewrite.1.3.patch>
+      modules/mappers/mod_rewrite.c: r1.142, r1.143, r1.144, r1.145
+                     (mod_rewrite.h: r1.41 for the changed prototype of
+                                           prefix_stat)
+      +1: nd, bnicholes (prefix_stat is currently broken on NetWare, Win32, OS/2)
+          nd: side note: prefix_stat is not really important since it's intended
+              to return in nearly all cases "false" (It is expected to return
+              "true" only if you want a server-context RewriteRule act like
+              Alias and map to file-path). I've added a long
+              comment into the fixup-hook code where the filesystem path is
+              (not) stripped about what mainly hurts.
 
 PATCHES TO PORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
@@ -117,17 +147,6 @@ PATCHES TO PORT FROM 2.1
       [ This one is under review.  Don't merge.  ]
       +1:
 
-    * Fix mod_rewrite's path handling. This should apply at least to 2.0.
-      A working patch (on my machine) for 1.3 is:
-      <http://cvs.apache.org/~nd/rewrite.1.3.patch>
-      I'm note sure, whether the prefix_stat function can be done more simple.
-      (not so familiar with the 1.3 API :))
-      PR 12902.
-      modules/mappers/mod_rewrite.c: r1.142, r1.143, r1.144, r1.145
-                     (mod_rewrite.h: r1.41 for the changed prototype of
-                                           prefix_stat)
-      +1: nd, bnicholes (prefix_stat is currently broken on NetWare, Win32, OS/2)
-
     * Fix mod_rewrite's handling of absolute URIs. (2.0 + 1.3)
       modules/mappers/mod_rewrite.c: r1.146
       +1: nd
@@ -149,19 +168,6 @@ PATCHES TO PORT FROM 2.1
       the pattern will not always match as desired. PR 12596.
       modules/generators/mod_autoindex.c: r1.119
       +1: nd, wrowe, trawick
-
-    * Forward port: Escape special characters (especially control
-      characters) in mod_log_config to make a clear distinction between
-      client-supplied strings (with special characters) and server-side
-      strings. This was already introduced in version 1.3.25.
-      include/ap_mmn.h: r1.57
-      include/httpd.h: r1.196
-      modules/loggers/mod_log_config.c: r1.100
-      server/gen_test_char.c: r1.16
-      server/util.c: r1.138
-      +1: nd
-      +0: mod_log_config.c has another change which requires mod_log_config.h
-         and a possible mmn bump
 
     * mod_deflate: Check also err_headers_out for an already set
       Content-Encoding: gzip header. This prevents gzip compressed content
