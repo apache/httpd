@@ -114,7 +114,7 @@ install-htdocs:
 	    echo Installing HTML documents ; \
 	    $(MKINSTALLDIRS) $(DESTDIR)$(htdocsdir) ; \
 	    test -d $(htdocs-srcdir) && (cd $(htdocs-srcdir) && cp -rp * $(DESTDIR)$(htdocsdir)) ; \
-	    cd $(DESTDIR)$(htdocsdir) && find . -name "CVS" -type d -print | xargs rm -rf 2>/dev/null || true; \
+	    cd $(DESTDIR)$(htdocsdir) && find . -name ".svn" -type d -print | xargs rm -rf 2>/dev/null || true; \
 	fi
 
 install-error:
@@ -124,7 +124,7 @@ install-error:
 	    echo Installing error documents ; \
 	    $(MKINSTALLDIRS) $(DESTDIR)$(errordir) ; \
 	    cd $(top_srcdir)/docs/error && cp -rp * $(DESTDIR)$(errordir) ; \
-	    test "x$(errordir)" != "x" && cd $(DESTDIR)$(errordir) && find . -name "CVS" -type d -print | xargs rm -rf 2>/dev/null || true; \
+	    test "x$(errordir)" != "x" && cd $(DESTDIR)$(errordir) && find . -name ".svn" -type d -print | xargs rm -rf 2>/dev/null || true; \
 	fi
 
 install-icons:
@@ -134,7 +134,7 @@ install-icons:
 	    echo Installing icons ; \
 	    $(MKINSTALLDIRS) $(DESTDIR)$(iconsdir) ; \
 	    cd $(top_srcdir)/docs/icons && cp -rp * $(DESTDIR)$(iconsdir) ; \
-	    test "x$(iconsdir)" != "x" && cd $(DESTDIR)$(iconsdir) && find . -name "CVS" -type d -print | xargs rm -rf 2>/dev/null || true; \
+	    test "x$(iconsdir)" != "x" && cd $(DESTDIR)$(iconsdir) && find . -name ".svn" -type d -print | xargs rm -rf 2>/dev/null || true; \
 	fi
 
 install-cgi:
@@ -144,7 +144,7 @@ install-cgi:
 	   echo Installing CGIs ; \
 	   $(MKINSTALLDIRS) $(DESTDIR)$(cgidir) ; \
 	   cd $(top_srcdir)/docs/cgi-examples && cp -rp * $(DESTDIR)$(cgidir) ; \
-	   test "x$(cgidir)" != "x" && cd $(DESTDIR)$(cgidir) && find . -name "CVS" -type d -print | xargs rm -rf 2>/dev/null || true; \
+	   test "x$(cgidir)" != "x" && cd $(DESTDIR)$(cgidir) && find . -name ".svn" -type d -print | xargs rm -rf 2>/dev/null || true; \
 	fi
 
 install-other:
@@ -192,7 +192,7 @@ install-man:
 	@cp -p $(top_srcdir)/docs/man/*.1 $(DESTDIR)$(mandir)/man1
 	@cp -p $(top_srcdir)/docs/man/*.8 $(DESTDIR)$(mandir)/man8
 	@(cd $(top_srcdir)/docs/manual && cp -rp * $(DESTDIR)$(manualdir))
-	@(cd $(DESTDIR)$(manualdir) && find . -name "CVS" -type d -print | xargs rm -rf 2>/dev/null ) || true
+	@(cd $(DESTDIR)$(manualdir) && find . -name ".svn" -type d -print | xargs rm -rf 2>/dev/null ) || true
 
 install-suexec:
 	@if test -f $(builddir)/support/suexec; then \

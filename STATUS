@@ -75,10 +75,6 @@ PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
 
-    *) s/CVS/.svn/ in Makefile.in
-       http://svn.apache.org/viewcvs.cgi?rev=106266&view=rev
-       +1: trawick, jerenkrantz, pquerna
-
     *) mod_ssl: Fix an possible NULL pointer dereference in some configs.
        http://nagoya.apache.org/bugzilla/showattachment.cgi?attach_id=13182
        PR: 31848
