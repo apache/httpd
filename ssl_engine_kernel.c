@@ -1601,7 +1601,7 @@ int ssl_callback_NewSessionCacheEntry(SSL *ssl, SSL_SESSION *session)
     id = SSL_SESSION_get_session_id(session);
     idlen = SSL_SESSION_get_session_id_length(session);
 
-    timeout += SSL_get_time(session);
+    timeout += modssl_session_get_time(session);
 
     rc = ssl_scache_store(s, id, idlen, timeout, session);
 
