@@ -741,8 +741,13 @@ PROXY_DECLARE (int) ap_proxy_http_handler(request_rec *r, proxy_server_conf *con
         APR_BRIGADE_INSERT_TAIL(bb, e);
     }
 
-    /* send body */
-    if (!r->header_only) {
+    /* send body - but only if a body is expected */
+    if ((!r->header_only) &&			/* not HEAD request */
+        (r->status > 199) &&			/* not any 1xx response */
+        (r->status != HTTP_NO_CONTENT) &&	/* not 204 */
+        (r->status != HTTP_RESET_CONTENT) &&	/* not 205 */
+        (r->status != HTTP_NOT_MODIFIED)) {	/* not 304 */
+
 	const char *buf;
 	apr_size_t readbytes;
 
