@@ -488,12 +488,14 @@ static int bio_filter_in_read(BIO *bio, char *in, int inlen)
                                    AP_MODE_READBYTES, block, 
                                    inl);
 
-        /* Not a problem, there was simply no data ready yet.
-         */
+        /* If the read returns EAGAIN or success with an empty
+         * brigade, return an error after setting the retry flag;
+         * SSL_read() will then return -1, and SSL_get_error() will
+         * indicate SSL_ERROR_WANT_READ. */
         if (APR_STATUS_IS_EAGAIN(inctx->rc) || APR_STATUS_IS_EINTR(inctx->rc)
                || (inctx->rc == APR_SUCCESS && APR_BRIGADE_EMPTY(inctx->bb))) {
             BIO_set_retry_read(bio);
-            return 0;
+            return -1;
         }
 
         if (inctx->rc != APR_SUCCESS) {
