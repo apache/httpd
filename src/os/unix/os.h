@@ -60,7 +60,11 @@
 
 #include "ap_config.h"
 
+#ifdef MAC_OS
+#define PLATFORM "Mac OS"
+#else
 #define PLATFORM "Unix"
+#endif
 
 /*
  * This file in included in all Apache source code. It contains definitions
