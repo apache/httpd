@@ -717,7 +717,8 @@ div.example {
  * so simply draw a border around
  * and keep it gray
  */
-div.note div.example {
+div.note div.example,
+div.warning div.example {
     border: 1px solid #aaa;
     background-color: transparent;
     color: inherit;
