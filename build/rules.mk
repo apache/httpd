@@ -108,20 +108,18 @@ install: install-recursive
 
 distclean-recursive depend-recursive clean-recursive all-recursive install-recursive:
 	@otarget=`echo $@|sed s/-recursive//`; \
-	if test '$(NO_RECURSION)' != "$$otarget"; then \
-		list='$(SUBDIRS)'; for i in $$list; do \
-			target="$$otarget"; \
-			echo "Making $$target in $$i"; \
-			if test "$$i" = "."; then \
-				ok=yes; \
-				target="$$target-p"; \
-			fi; \
-			if test ! -f $$i/.deps; then touch $$i/.deps; fi; \
-			(cd $$i && $(MAKE) $$target) || exit 1; \
-		done; \
-		if test "$$otarget" = "all" && test -z '$(targets)'; then ok=yes; fi;\
-		if test "$$ok" != "yes"; then $(MAKE) "$$otarget-p" || exit 1; fi;\
-	fi
+	list='$(SUBDIRS)'; for i in $$list; do \
+		target="$$otarget"; \
+		echo "Making $$target in $$i"; \
+		if test "$$i" = "."; then \
+			ok=yes; \
+			target="$$target-p"; \
+		fi; \
+		if test ! -f $$i/.deps; then touch $$i/.deps; fi; \
+		(cd $$i && $(MAKE) $$target) || exit 1; \
+	done; \
+	if test "$$otarget" = "all" && test -z '$(targets)'; then ok=yes; fi;\
+	if test "$$ok" != "yes"; then $(MAKE) "$$otarget-p" || exit 1; fi
 
 all-p: $(targets)
 install-p: $(targets) $(install_targets)
