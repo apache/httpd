@@ -318,6 +318,13 @@ char *ap_response_code_string (request_rec *r, int error_index);
 
 extern AP_DECLARE_DATA module core_module;
 
+/* Per-request configuration */
+
+typedef struct {
+    /* bucket brigade used by getline for look-ahead */
+    struct ap_bucket_brigade *bb;
+} core_request_config;
+
 /* Per-directory configuration */
 
 typedef unsigned char allow_options_t;

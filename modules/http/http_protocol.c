@@ -847,7 +847,7 @@ struct dechunk_ctx {
 };
 
 static long get_chunk_size(char *);
-static int getline(char *s, int n, conn_rec *c, int fold);
+static int getline(char *s, int n, request_rec *r, int fold);
 
 apr_status_t dechunk_filter(ap_filter_t *f, ap_bucket_brigade *bb,
                             apr_ssize_t length)
@@ -871,7 +871,7 @@ apr_status_t dechunk_filter(ap_filter_t *f, ap_bucket_brigade *bb,
              */
             char line[30];
             
-            if ((rv = getline(line, sizeof(line), f->c, 0)) < 0) {
+            if ((rv = getline(line, sizeof(line), f->r, 0)) < 0) {
                 return rv;
             }
             switch(ctx->state) {
@@ -1031,7 +1031,7 @@ apr_status_t http_filter(ap_filter_t *f, ap_bucket_brigade *b, apr_ssize_t lengt
  *       then the actual input line exceeded the buffer length,
  *       and it would be a good idea for the caller to puke 400 or 414.
  */
-static int getline(char *s, int n, conn_rec *c, int fold)
+static int getline(char *s, int n, request_rec *r, int fold)
 {
     char *pos = s;
     char *last_char;
@@ -1040,6 +1040,7 @@ static int getline(char *s, int n, conn_rec *c, int fold)
     int retval;
     int total = 0;
     apr_ssize_t length;
+    conn_rec *c = r->connection;
     ap_bucket_brigade *b;
     ap_bucket *e;
 
@@ -1200,7 +1201,7 @@ static int read_request_line(request_rec *r)
      */
     ap_bsetflag(conn->client, B_SAFEREAD, 1); 
     ap_bflush(conn->client);
-    while ((len = getline(l, sizeof(l), conn, 0)) <= 0) {
+    while ((len = getline(l, sizeof(l), r, 0)) <= 0) {
         if (len < 0) {             /* includes EOF */
 	    ap_bsetflag(conn->client, B_SAFEREAD, 0);
 	    /* this is a hack to make sure that request time is set,
@@ -1267,7 +1268,6 @@ static int read_request_line(request_rec *r)
 static void get_mime_headers(request_rec *r)
 {
     char field[DEFAULT_LIMIT_REQUEST_FIELDSIZE + 2]; /* getline's two extra */
-    conn_rec *c = r->connection;
     char *value;
     char *copy;
     int len;
@@ -1281,7 +1281,7 @@ static void get_mime_headers(request_rec *r)
      * Read header lines until we get the empty separator line, a read error,
      * the connection closes (EOF), reach the server limit, or we timeout.
      */
-    while ((len = getline(field, sizeof(field), c, 1)) > 0) {
+    while ((len = getline(field, sizeof(field), r, 1)) > 0) {
 
         if (r->server->limit_req_fields &&
             (++fields_read > r->server->limit_req_fields)) {
@@ -1339,6 +1339,7 @@ request_rec *ap_read_request(conn_rec *conn)
     apr_pool_t *p;
     const char *expect;
     int access_status;
+    core_request_config *req_cfg;
 
     apr_create_pool(&p, conn->pool);
     r = apr_pcalloc(p, sizeof(request_rec));
@@ -1361,6 +1362,9 @@ request_rec *ap_read_request(conn_rec *conn)
     r->notes           = apr_make_table(r->pool, 5);
 
     r->request_config  = ap_create_request_config(r->pool);
+    req_cfg = apr_pcalloc(r->pool, sizeof(core_request_config));
+    ap_set_module_config(r->request_config, &core_module, req_cfg);
+                    
     r->per_dir_config  = r->server->lookup_defaults;
 
     r->sent_bodyct     = 0;                      /* bytect isn't for body */
