@@ -42,8 +42,7 @@ MODLIST="$MODLIST mpm_${MPM_NAME}"
 
 dnl All the unix MPMs use shared memory; save a little duplication
 AC_DEFUN(APACHE_MPM_CHECK_SHMEM, [
-    AC_CHECK_FUNCS(shmget)
-    AC_FUNC_MMAP
+    AC_CHECK_FUNCS(shmget mmap)
     
     AC_MSG_CHECKING(which shared memory mechanism to use)
     if test "$ac_cv_func_shmget" = "yes" ; then
