@@ -286,7 +286,7 @@ install-programs:
 		sed	-e 's:SharedModule:AddModule:' \
 			-e 's:modules/[^/]*/::' \
 			-e 's:[ 	]lib: mod_:' \
-			-e 's:\.[soa]*$$:.c:' >>$(SRC)/.apaci.install.conf; \
+			-e 's:\.[soam].*$$:.c:' >>$(SRC)/.apaci.install.conf; \
 	fi
 	@echo "<=== [programs]"
 

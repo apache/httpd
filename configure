@@ -234,8 +234,7 @@ for module in `egrep '^[# ]*(Add|Shared)Module' $src/Configuration.tmpl`; do
     fi
     module=`echo "$module" |\
             sed -e 's%^.*/\(.*\)$%\1%' \
-                -e 's/\.[oa]$//' \
-                -e 's/\.module$//' \
+                -e 's/\.[oam].*$//' \
                 -e 's/^mod_//' \
                 -e 's/^lib//'`
     eval "module_$module=$add"
@@ -1161,7 +1160,7 @@ if [ ".$permute" != . ]; then
     for line in `cat src/Configuration.tmpl $addconf | egrep '^[# ]*(Add|Shared)Module'`; do
         name=`echo "$line" |\
               sed -e 's%^.*/\(.*\)$%\1%' \
-                  -e 's/\.[oa]$//' \
+                  -e 's/\.[oam].*$//' \
                   -e 's/^mod_//' \
                   -e 's/^lib//'`
         echo "${name}:${line}"
@@ -1239,7 +1238,7 @@ for module in $modules; do
     fi
     eval "share=\$shared_$module"
     if [ $share = yes ]; then
-        echo $SEO "s%^\\(.*\\)AddModule\\(.*[_b/]$module\\.\\)[oa]\\(.*\\)%\\1SharedModule\\2so\\3%g" >>$sedsubst
+        echo $SEO "s%^\\(.*\\)AddModule\\(.*[_b/]$module\\.\\)[oam].*\\(.*\\)%\\1SharedModule\\2so\\3%g" >>$sedsubst
         m="yes [shared]"
     fi
     if [ $verbose = yes ]; then
