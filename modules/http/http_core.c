@@ -2923,7 +2923,6 @@ static int chunk_filter(ap_filter_t *f, ap_bucket_brigade *b)
 {
     ap_bucket *dptr = b->head;
     int len = 0;
-    int tempint = 0;
     char lenstr[6];
     int hit_eos = 0;
 
@@ -2938,11 +2937,11 @@ static int chunk_filter(ap_filter_t *f, ap_bucket_brigade *b)
     }
 
     apr_snprintf(lenstr, 6, "%x\r\n", len);
-    dptr = ap_bucket_transient_create(lenstr, strlen(lenstr), &tempint);
+    dptr = ap_bucket_create_transient(lenstr, strlen(lenstr));
     b->head->prev = dptr;
     dptr->next = b->head;
     b->head = dptr;
-    dptr = ap_bucket_transient_create("\r\n", 2, &tempint);
+    dptr = ap_bucket_create_transient("\r\n", 2);
     if (hit_eos) {
         b->tail->prev->next = dptr;
         dptr->prev = b->tail->prev;
@@ -2954,7 +2953,7 @@ static int chunk_filter(ap_filter_t *f, ap_bucket_brigade *b)
     }
 
     if (hit_eos && len != 0) {
-        dptr = ap_bucket_transient_create("0\r\n\r\n", 5, &tempint);
+        dptr = ap_bucket_create_transient("0\r\n\r\n", 5);
         b->tail->prev->next = dptr;
         dptr->prev = b->tail->prev;
         b->tail->prev = dptr;
