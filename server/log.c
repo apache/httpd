@@ -387,7 +387,7 @@ static void log_error_core(const char *file, int line, int level,
                            const char *fmt, va_list args)
 {
     char errstr[MAX_STRING_LEN];
-    size_t len, errstrlen;
+    apr_size_t len, errstrlen;
     apr_file_t *logf = NULL;
     const char *referer;
     int level_and_mask = level & APLOG_LEVELMASK;

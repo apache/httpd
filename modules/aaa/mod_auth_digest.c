@@ -862,7 +862,7 @@ static client_entry *add_client(unsigned long key, client_entry *info,
 static int get_digest_rec(request_rec *r, digest_header_rec *resp)
 {
     const char *auth_line;
-    size_t l;
+    apr_size_t l;
     int vk = 0, vv = 0;
     char *key, *value;
 
@@ -1209,7 +1209,8 @@ static void clear_session(const digest_header_rec *resp)
 static const char *guess_domain(apr_pool_t *p, const char *uri,
                                 const char *filename, const char *dir)
 {
-    size_t u_len = strlen(uri), f_len = strlen(filename), d_len = strlen(dir);
+    apr_size_t u_len = strlen(uri), f_len = strlen(filename), 
+      d_len = strlen(dir);
     const char *u, *f;
 
 

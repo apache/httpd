@@ -2328,7 +2328,7 @@ static void do_expand(request_rec *r, char *input, char *buffer, int nbuf,
                       backrefinfo *briRR, backrefinfo *briRC)
 {
     char *inp, *outp;
-    size_t span, space;
+    apr_size_t span, space;
 
     /*
      * for security reasons this expansion must be performed in a
@@ -2907,7 +2907,7 @@ static char *lookup_map_txtfile(request_rec *r, const char *file, char *key)
     char line[1024];
     char *value = NULL;
     char *cpT;
-    size_t skip;
+    apr_size_t skip;
     char *curkey;
     char *curval;
 

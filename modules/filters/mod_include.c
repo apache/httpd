@@ -1066,7 +1066,7 @@ static char *ap_ssi_parse_string(request_rec *r, include_ctx_t *ctx,
                 char *end_of_var_name;        /* end of var name + 1 */
                 const char *expansion, *temp_end, *val;
                 char        tmp_store;
-                size_t l;
+                apr_size_t l;
 
                 /* guess that the expansion won't happen */
                 expansion = in - 1;

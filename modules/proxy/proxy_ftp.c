@@ -514,7 +514,7 @@ apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *in)
         }
 
         {
-            size_t n = strlen(ctx->buffer);
+            apr_size_t n = strlen(ctx->buffer);
             if (ctx->buffer[n-1] == CRLF[1])  /* strip trailing '\n' */
                 ctx->buffer[--n] = '\0';
             if (ctx->buffer[n-1] == CRLF[0])  /* strip trailing '\r' if present */

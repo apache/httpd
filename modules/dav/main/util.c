@@ -162,7 +162,7 @@ DAV_DECLARE(void) dav_buffer_init(apr_pool_t *p, dav_buffer *pbuf,
 DAV_DECLARE(void) dav_buffer_append(apr_pool_t *p, dav_buffer *pbuf, 
                                     const char *str)
 {
-    size_t len = strlen(str);
+    apr_size_t len = strlen(str);
 
     dav_check_bufsize(p, pbuf, len + 1);
     memcpy(pbuf->buf + pbuf->cur_len, str, len + 1);
@@ -173,7 +173,7 @@ DAV_DECLARE(void) dav_buffer_append(apr_pool_t *p, dav_buffer *pbuf,
 DAV_DECLARE(void) dav_buffer_place(apr_pool_t *p, dav_buffer *pbuf, 
                                    const char *str)
 {
-    size_t len = strlen(str);
+    apr_size_t len = strlen(str);
 
     dav_check_bufsize(p, pbuf, len + 1);
     memcpy(pbuf->buf + pbuf->cur_len, str, len + 1);
@@ -541,7 +541,7 @@ time_t dav_get_timeout(request_rec *r)
 /* add_if_resource returns a new if_header, linking it to next_ih.
  */
 static dav_if_header *dav_add_if_resource(apr_pool_t *p, dav_if_header *next_ih,
-					  const char *uri, size_t uri_len)
+					  const char *uri, apr_size_t uri_len)
 {
     dav_if_header *ih;
 
@@ -625,7 +625,7 @@ static dav_error * dav_process_if_header(request_rec *r, dav_if_header **p_ih)
     char *list;
     const char *state_token;
     const char *uri = NULL;	/* scope of current production; NULL=no-tag */
-    size_t uri_len = 0;
+    apr_size_t uri_len = 0;
     dav_if_header *ih = NULL;
     apr_uri_t parsed_uri;
     const dav_hooks_locks *locks_hooks = DAV_GET_HOOKS_LOCKS(r);
