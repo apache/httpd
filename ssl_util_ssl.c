@@ -486,11 +486,7 @@ int SSL_CTX_use_certificate_chain(
     }
     /* optionally skip a leading server certificate */
     if (skipfirst) {
-#if SSL_LIBRARY_VERSION < 0x00904000
-        if ((x509 = PEM_read_bio_X509(bio, NULL, cb)) == NULL) {
-#else
-        if ((x509 = PEM_read_bio_X509(bio, NULL, cb, NULL)) == NULL) {
-#endif
+        if ((x509 = modssl_PEM_read_bio_X509(bio, NULL, cb, NULL)) == NULL) {
             BIO_free(bio);
             return -1;
         }
