@@ -6,7 +6,8 @@ Changes with Apache 1.3b4
      to "typedef struct table table" module authors will receive compile
      time warnings that they're doing the wrong thing.  This change
      facilitates future changes with more sophisticated table
-     structures.  [Dean Gaudet]
+     structures.  Specifically, module authors should be using table_elts()
+     to get access to an array_header * for the table. [Dean Gaudet]
 
   *) Rename new_connection() to ap__new_connection() to avoid namespace
      collision with LDAP library routines.  The "ap__" prefix means

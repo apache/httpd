@@ -128,6 +128,7 @@ Committed Code Changes:
     * Jim's [PATCH] A/UX can use SINGLE_LISTEN_UNSERIALIZED_ACCEPT
     * Jim's [PATCH] force Unixware to use mmap() scoreboard (before
       was dependent on ordering of the #defines in http_main.c)
+    * table api cleanup
 
 Available Patches:
 
