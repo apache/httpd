@@ -1,4 +1,8 @@
 Changes with Apache 1.3b7
+ 
+  *) Make sure the referer_log and agent_log entries in the default httpd.conf
+     file are also adjusted for the actual relative installation paths.
+     [Ralf S. Engelschall] PR#2175
 
   *) WIN32: Extensive overhaul of the way UNCs are handled. [Ben Laurie]
 

@@ -373,6 +373,8 @@ install-config:
 			-e 's;logs/httpd.pid;$(runtimedir)/httpd.pid;' \
 			-e 's;logs/access_log;$(logfiledir)/access_log;' \
 			-e 's;logs/error_log;$(logfiledir)/error_log;' \
+			-e 's;logs/referer_log;$(logfiledir)/referer_log;' \
+			-e 's;logs/agent_log;$(logfiledir)/agent_log;' \
 			-e 's;conf/magic;$(sysconfdir)/magic;' \
         	> $(TOP)/$(SRC)/.apaci.install.tmp && \
 		echo "$(INSTALL_DATA) $(TOP)/conf/$$conf-dist[*] $(root)$(sysconfdir)/$$conf.default"; \
