@@ -137,6 +137,12 @@ documentation</A> for more information.
     to allow directives to appear in a hopefully more
     intuitive and meaningful order.
 </DD>
+<DT><STRONG>Continuation Lines in config files</STRONG></DT>
+<DD>Directive lines in the server configuration files may now be
+    split onto multiple lines by using the canonical Unix continuation
+    mechanism, namely a '\' as the last non-blank character on the
+    line to indicate that the next line should be concatenated.
+</DD>
 <DT><STRONG>Apache Autoconf-style Interface (APACI)</STRONG>
 <DD>Until Apache 1.3 there was no real out-of-the-box batch-capable
     build and installation procedure for the complete Apache
