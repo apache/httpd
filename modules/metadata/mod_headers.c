@@ -231,7 +231,7 @@ static const char *header_cmd(cmd_parms *cmd, void *indirconf,
 }
 
 /* handle RequestHeader directive */
-static const char *header_in_cmd(cmd_parms *cmd, void *indirconf,
+static const char *request_header_cmd(cmd_parms *cmd, void *indirconf,
                               const char *action, const char *inhdr,
                               const char *value)
 {
@@ -317,7 +317,7 @@ static const command_rec headers_cmds[] =
 {
     AP_INIT_TAKE23("Header", header_cmd, NULL, OR_FILEINFO,
                    "an action, header and value"),
-    AP_INIT_TAKE23("RequestHeader", header_in_cmd, NULL, OR_FILEINFO,
+    AP_INIT_TAKE23("RequestHeader", request_header_cmd, NULL, OR_FILEINFO,
                    "an action, header and value"),
     {NULL}
 };
@@ -326,7 +326,7 @@ static void register_hooks(apr_pool_t *p)
 {
     ap_hook_insert_filter(ap_headers_insert_output_filter, NULL, NULL, APR_HOOK_LAST);
     ap_hook_fixups(ap_headers_fixup, NULL, NULL, APR_HOOK_LAST);
-    ap_register_output_filter("FIXUP_HEADERS_OUT", ap_headers_output_filter, AP_FTYPE_CONTENT);
+    ap_register_output_filter("FIXUP_HEADERS_OUT", ap_headers_output_filter, AP_FTYPE_HTTP_HEADER);
 }
 
 module AP_MODULE_DECLARE_DATA headers_module =
