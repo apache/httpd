@@ -34,9 +34,9 @@
 **  _________________________________________________________________
 */
 
-static struct {
-    char *cpPattern;
-    char *cpAnnotation;
+static const struct {
+    const char *cpPattern;
+    const char *cpAnnotation;
 } ssl_log_annotate[] = {
     { "*envelope*bad*decrypt*", "wrong pass phrase!?" },
     { "*CLIENT_HELLO*unknown*protocol*", "speaking not SSL to HTTPS port!?" },
@@ -51,19 +51,15 @@ static struct {
     { NULL, NULL }
 };
 
-static char *ssl_log_annotation(char *error)
+static const char *ssl_log_annotation(char *error)
 {
-    char *errstr;
-    int i;
+    int i = 0;
 
-    errstr = NULL;
-    for (i = 0; ssl_log_annotate[i].cpPattern != NULL; i++) {
-        if (ap_strcmp_match(error, ssl_log_annotate[i].cpPattern) == 0) {
-            errstr = ssl_log_annotate[i].cpAnnotation;
-            break;
-        }
-    }
-    return errstr;
+    while (ssl_log_annotate[i].cpPattern != NULL 
+           && ap_strcmp_match(error, ssl_log_annotate[i].cpPattern) != 0)
+        i++;
+
+    return ssl_log_annotate[i].cpAnnotation;
 }
 
 void ssl_die(void)
@@ -84,7 +80,8 @@ void ssl_log_ssl_error(const char *file, int line, int level, server_rec *s)
     unsigned long e;
 
     while ((e = ERR_get_error())) {
-        char err[256], *annotation;
+        const char *annotation;
+        char err[256];
 
         ERR_error_string_n(e, err, sizeof err);
         annotation = ssl_log_annotation(err);
