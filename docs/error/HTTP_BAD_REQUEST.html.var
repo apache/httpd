@@ -139,3 +139,17 @@ Body:----------ro--
 
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
+
+Content-language: ko
+Content-type: text/html; charset=EUC-KR
+Body:----------ko--
+<!--#set var="CONTENT_LANGUAGE" value="ko"
+--><!--#set var="TITLE" value="잘못된 요청!"
+--><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+--><!--#include virtual="include/top.html" -->
+
+    브라우저 또는 프록시가
+    이 서버가 처리할 수 없는 잘못된 요청을 보냈습니다.
+
+<!--#include virtual="include/bottom.html" -->
+----------ko--

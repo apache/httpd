@@ -296,3 +296,30 @@ Body:----------ro--
 
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
+
+Content-language: ko
+Content-type: text/html; charset=EUC-KR
+Body:----------ko--
+<!--#set var="CONTENT_LANGUAGE" value="ko"
+--><!--#set var="TITLE" value="객체 없음!"
+--><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+--><!--#include virtual="include/top.html" -->
+
+    요청한 URL을 이 서버에서 찾을 수 없습니다.
+
+  <!--#if expr="$HTTP_REFERER" -->
+
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">이전
+    페이지</a>에 있는 링크가 잘못되었거나 오래되어 없어진 것 같습니다.
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">그 페이지</a>를
+    만든이에게 이 사실을 알려주시기 바랍니다.
+
+  <!--#else -->
+
+    URL을 직접 입력하셨다면 바르게 입력하셨는지 확인하시고 다시 시도하시기
+    바랍니다.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------ko--

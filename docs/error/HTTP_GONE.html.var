@@ -285,3 +285,29 @@ Body:----------ro--
 
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
+
+Content-language: ko
+Content-type: text/html; charset=EUC-KR
+Body:----------ko--
+<!--#set var="CONTENT_LANGUAGE" value="ko"
+--><!--#set var="TITLE" value="객체가 없어졌음!"
+--><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+--><!--#include virtual="include/top.html" -->
+
+   요청한 URL은 더 이상 이 서버에 남아있지 않으며,
+   그 객체가 옮겨진 다른 URL 역시 남아있지 않습니다.
+
+  <!--#if expr="$HTTP_REFERER" -->
+
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">이전
+    페이지</a>의 만든이에게 주소가 잘못되었다고 알려주시기 바랍니다.
+
+  <!--#else -->
+
+    다른 페이지의 링크를 따라오셨다면, 그 페이지의 만든이에게 연락을 하시기
+    바랍니다.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------ko--
