@@ -446,9 +446,9 @@ AP_DECLARE(apr_status_t) ap_fflush(ap_filter_t *f, apr_bucket_brigade *bb);
  * @param f the filter doing the writing
  * @param bb The brigade to buffer into
  * @param ... The strings to write
- * @deffunc int ap_fvputs(ap_filter_t *f, apr_bucket_brigade *bb, ...)
+ * @deffunc int ap_fputstrs(ap_filter_t *f, apr_bucket_brigade *bb, ...)
  */
-AP_DECLARE_NONSTD(int) ap_fvputs(ap_filter_t *f, apr_bucket_brigade *bb, ...);
+AP_DECLARE_NONSTD(int) ap_fputstrs(ap_filter_t *f, apr_bucket_brigade *bb, ...);
 
 /**
  * Output data to the filter in printf format
