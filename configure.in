@@ -24,7 +24,7 @@ dnl Something seems broken here.
 AC_PREFIX_DEFAULT(/usr/local/apache2)
 
 dnl Get the layout here, so we can pass the required variables to apr
-APACHE_ENABLE_LAYOUT
+APR_ENABLE_LAYOUT(Apache, [errordir iconsdir htdocsdir cgidir])
 
 dnl reparse the configure arguments.
 APR_PARSE_ARGUMENTS
