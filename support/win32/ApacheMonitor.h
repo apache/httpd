@@ -1,7 +1,3 @@
-//{{NO_DEPENDENCIES}}
-// Microsoft Developer Studio generated include file.
-// Used by ApSrvmon.rc
-//
 #define IDD_APSRVMON_DIALOG             101
 #define IDD_ABOUTBOX                    102
 #define IDS_APP_TITLE                   103
@@ -30,20 +26,10 @@
 #define IDB_BMPSTOP                     155
 #define IDB_BMPRUN                      156
 #define IDB_BMPHEADER                   158
-#define IDL_SERVICES                    1003
-#define IDC_SSTART                      1004
-#define IDC_SSTOP                       1005
-#define IDC_SRESTART                    1006
-#define IDC_SUNINSTALL                  1008
+#define IDL_SERVICES                    1001
+#define IDL_STDOUT                      1002
+#define IDC_SSTART                      1003
+#define IDC_SSTOP                       1004
+#define IDC_SRESTART                    1005
+#define IDC_SABOUT                      1006
 #define IDC_STATIC                      -1
-
-// Next default values for new objects
-// 
-#ifdef APSTUDIO_INVOKED
-#ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        159
-#define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1009
-#define _APS_NEXT_SYMED_VALUE           110
-#endif
-#endif
