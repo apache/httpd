@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Allow RequestHeader directives to be conditional. PR 27951.
+     [Vincent Deffontaines <vincent gryzor.com>, André Malo]
+
   *) Fix segfault in mod_expires, which occured under certain
      circumstances. PR 28047.  [André Malo]
 

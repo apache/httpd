@@ -424,10 +424,6 @@ static const char *header_inout_cmd(hdr_inout inout, cmd_parms *cmd,
 
     /* Handle the envclause on Header */
     if (envclause != NULL) {
-        if (inout == hdr_in) {
-            return "error: envclause (env=...) only valid on "
-                "Header and ErrorHeader directives";
-        }
         if (strncasecmp(envclause, "env=", 4) != 0) {
             return "error: envclause should be in the form env=envar";
         }
@@ -448,7 +444,7 @@ static const char *header_inout_cmd(hdr_inout inout, cmd_parms *cmd,
     return parse_format_string(cmd->pool, new, value);
 }
 
-/* Handle Header directive */
+/* Handle all (xxx)Header directives */
 static const char *header_cmd(cmd_parms *cmd, void *indirconf,
                               const char *args)
 {
@@ -464,17 +460,9 @@ static const char *header_cmd(cmd_parms *cmd, void *indirconf,
     hdr = ap_getword_conf(cmd->pool, &s);
     val = *s ? ap_getword_conf(cmd->pool, &s) : NULL;
     envclause = *s ? ap_getword_conf(cmd->pool, &s) : NULL;
-    outbl = (cmd->info == NULL) ? hdr_out : hdr_err;
+    outbl = (hdr_inout)cmd->info;
 
     return header_inout_cmd(outbl, cmd, indirconf, action, hdr, val, envclause);
-}
-
-/* handle RequestHeader directive */
-static const char *request_header_cmd(cmd_parms *cmd, void *indirconf,
-                              const char *action, const char *inhdr,
-                              const char *value)
-{
-    return header_inout_cmd(hdr_in, cmd, indirconf, action, inhdr, value, NULL);
 }
 
 /*
@@ -680,13 +668,15 @@ static apr_status_t ap_headers_fixup(request_rec *r)
                                         
 static const command_rec headers_cmds[] =
 {
-    AP_INIT_RAW_ARGS("Header", header_cmd, NULL, OR_FILEINFO,
-                   "an action, header and value followed by optional env clause"),
-    AP_INIT_RAW_ARGS("ErrorHeader", header_cmd, "", OR_FILEINFO,
-                     "an action, header and value "
-                     "followed by optional env clause"),
-    AP_INIT_TAKE23("RequestHeader", request_header_cmd, NULL, OR_FILEINFO,
-                   "an action, header and value"),
+    AP_INIT_RAW_ARGS("Header", header_cmd, (void *)hdr_out, OR_FILEINFO,
+                     "an action, header and value followed by optional env "
+                     "clause"),
+    AP_INIT_RAW_ARGS("RequestHeader", header_cmd, (void *)hdr_in, OR_FILEINFO,
+                     "an action, header and value followed by optional env "
+                     "clause"),
+    AP_INIT_RAW_ARGS("ErrorHeader", header_cmd, (void *)hdr_err, OR_FILEINFO,
+                     "an action, header and value followed by optional env "
+                     "clause"),
     {NULL}
 };
 
