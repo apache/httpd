@@ -472,9 +472,9 @@ static apr_status_t run_cgi_child(apr_file_t **script_out,
     
         if (rc != APR_SUCCESS) {
             /* Bad things happened. Everyone should have cleaned up. */
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rc, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_TOCLIENT, rc, r,
                           "couldn't create child process: %d: %s", rc,
-                          r->filename);
+                          apr_filename_of_pathname(r->filename));
         }
         else {
             apr_pool_note_subprocess(p, procnew, APR_KILL_AFTER_TIMEOUT);
