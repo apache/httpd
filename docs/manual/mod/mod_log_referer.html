@@ -1,4 +1,3 @@
-<!--%hypertext -->
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
 <HTML>
 <HEAD>
@@ -6,8 +5,7 @@
 </HEAD>
 
 <BODY>
-<IMG SRC="../images/apache_sub.gif" ALT="">
-<!--/%hypertext -->
+<!--#include virtual="header.html" -->
 <H1>Module mod_log_referer</h1>
 
 This module is contained in the <code>mod_log_referer.c</code> file, and is not
@@ -22,14 +20,14 @@ where <em>uri</em> is the (%-escaped) URI for the document that references
 the one requested by the client, and <em>document</em> is the (%-decoded)
 local URL to the document being referred to.
 
-<!--%hypertext -->
+
 <h2>Directives</h2>
 <ul>
 <li><A HREF="#refererignore">RefererIgnore</A>
 <li><A HREF="#refererlog">RefererLog</A>
 </ul>
 <hr>
-<!--/%hypertext -->
+
 
 <A name="refererignore"><h2>RefererIgnore</h2></A>
 <!--%plaintext &lt;?INDEX {\tt RefererIgnore} directive&gt; -->
@@ -70,11 +68,8 @@ run under the user who started httpd. This will be root if the server
 was started by root; be sure that the program is secure.<p>
 
 This directive is provided for compatibility with NCSA 1.4.<p>
-<!--%hypertext -->
-<hr>
-<A HREF="../"><IMG SRC="../images/apache_home.gif" ALT="Home"></A>
-<A HREF="./"><IMG SRC="../images/apache_index.gif" ALT="Index"></A>
 
+<!--#include virtual="footer.html" -->
 </BODY>
 </HTML>
-<!--/%hypertext -->
+

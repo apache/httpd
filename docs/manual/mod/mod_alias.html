@@ -1,4 +1,3 @@
-<!--%hypertext -->
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
 <HTML>
 <HEAD>
@@ -6,22 +5,22 @@
 </HEAD>
 
 <BODY>
-<IMG SRC="../images/apache_sub.gif" ALT="">
-<!--/%hypertext -->
+<!--#include virtual="header.html" -->
+
 <H1>Module mod_alias</h1>
 
 This module is contained in the <code>mod_alias.c</code> file, and
 is compiled in by default. It provides for mapping different parts of the
 host filesystem in the the document tree, and for URL redirection.
 
-<!--%hypertext -->
+
 <menu>
 <li><A HREF="#alias">Alias</A>
 <li><A HREF="#redirect">Redirect</A>
 <li><A HREF="#scriptalias">ScriptAlias</A>
 </menu>
 <hr>
-<!--/%hypertext -->
+
 
 <A name="alias"><h2>Alias</h2></A>
 <!--%plaintext &lt;?INDEX {\tt Alias} directive&gt; -->
@@ -82,12 +81,7 @@ Example:
 A request for http://myserver/cgi-bin/foo would cause the server to
 run the script /web/cgi-bin/foo.<p>
 
-<!--%hypertext -->
-<hr>
-
-<A HREF="../"><IMG SRC="../images/apache_home.gif" ALT="Home"></A>
-<A HREF="./"><IMG SRC="../images/apache_index.gif" ALT="Index"></A>
-
+<!--#include virtual="footer.html" -->
 </BODY>
 </HTML>
-<!--/%hypertext -->
+

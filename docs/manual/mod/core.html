@@ -1,4 +1,3 @@
-<!--%hypertext -->
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
 <HTML>
 <HEAD>
@@ -6,14 +5,14 @@
 </HEAD>
 
 <BODY>
-<IMG SRC="../images/apache_sub.gif" ALT="">
-<!--/%hypertext -->
+<!--#include virtual="header.html" -->
+
 <H1>Apache Core Features</h1>
 
 These configuration parameters control the core Apache features, and are
 always available.
 
-<!--%hypertext -->
+
 <ul>
 <li><A HREF="#accessconfig">AccessConfig</A>
 <li><A HREF="#accessfilename">AccessFileName</A>
@@ -54,7 +53,7 @@ always available.
 <li><A HREF="#virtualhost">&lt;VirtualHost&gt;</A>
 </ul>
 <hr>
-<!--/%hypertext -->
+
 
 <A name="accessconfig"><h2>AccessConfig directive</h2></A>
 <!--%plaintext &lt;?INDEX {\tt AccessConfig} directive&gt; -->
@@ -927,20 +926,15 @@ then this can be accomplished with the <code>ifconfig alias</code> command
 (if your OS supports it), or with kernel patches like
 <A HREF="vif.info.txt">VIF</A> (for SunOS(TM) 4.1.x).<p>
 
-<!--%hypertext -->
+
 <p><strong>See also:</strong>
 <A HREF="virtual-host.html">Information on Virtual Hosts.
 (multihome)</A><br>
 <strong>See also:</strong>
 <a href="host.html">Non-IP address-based Virtual Hosts</a>
-<!--/%hypertext --></p>
+</p>
 
-<hr>
-
-<!--%hypertext -->
-<A HREF="../"><IMG SRC="../images/apache_home.gif" ALT="Home"></A>
-<A HREF="./"><IMG SRC="../images/apache_index.gif" ALT="Index"></A>
-
+<!--#include virtual="footer.html" -->
 </BODY>
 </HTML>
-<!--/%hypertext -->
+
