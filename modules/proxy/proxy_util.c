@@ -1074,7 +1074,7 @@ PROXY_DECLARE(void) ap_proxy_reset_output_filters(conn_rec *c)
 }
 
 /* unmerge an element in the table */
-void ap_proxy_table_unmerge(apr_pool_t *p, apr_table_t *t, char *key)
+PROXY_DECLARE(void) ap_proxy_table_unmerge(apr_pool_t *p, apr_table_t *t, char *key)
 {
     apr_off_t offset = 0;
     apr_off_t count = 0;
