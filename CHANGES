@@ -20,9 +20,6 @@ Changes with Apache 2.1.0-dev
      integer to apr_pstrcat. Changed to apr_psprintf.
      [Paul J. Reder]
 
-  *) mod_mime: Workaround to prevent a segfault if r->filename=NULL
-     [Brian Pane]
- 
   *) Added character set support to mod_auth_LDAP to allow it to 
      convert extended characters used in the user ID to UTF-8 
      before authenticating against the LDAP directory. The new
@@ -57,6 +54,9 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.45
+
+  *) mod_mime: Workaround to prevent a segfault if r->filename=NULL
+     [Brian Pane]
 
   *) Reorder the definitions for mod_ldap and mod_auth_ldap within
      config.m4 to make sure the parent mod_ldap is defined first.
