@@ -281,6 +281,15 @@ static int gen_unique_id(request_rec *r)
     char str[19 + 1];
     const unsigned char *x;
     unsigned short counter;
+    char *e;
+
+    /* copy the unique_id if this is an internal redirect (we're never
+     * actually called for sub requests, so we don't need to test for
+     * them) */
+    if (r->prev && (e = table_get(r->subprocess_env, "REDIRECT_UNIQUE_ID"))) {
+	table_setn(r->subprocess_env, "UNIQUE_ID", e);
+	return DECLINED;
+    }
 
     cur_unique_id.stamp = htonl(r->request_time);
 

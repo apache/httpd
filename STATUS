@@ -137,6 +137,7 @@ Committed Code Changes:
     * [Port] Fix CGI-Execution for EBCDIC hosts.
     * Martin's [PATCH] "Signing" server generated pages
     * Dmitry's table_*n API addition
+    * mod_unique_id didn't deal with internal_redirect properly
 
 Available Patches:
 
