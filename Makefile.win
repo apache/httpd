@@ -371,7 +371,7 @@ _install:
     }
 <<
         copy docs\cgi-examples\test-cgi.bat "$(INSTDIR)\cgi-bin"
-        xcopy docs\error "$(INSTDIR)\error" /d < <<
+        xcopy docs\error "$(INSTDIR)\error" /s /d < <<
 A
 <<
         xcopy docs\docroot "$(INSTDIR)\htdocs" /d < <<
