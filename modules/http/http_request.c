@@ -1462,9 +1462,21 @@ API_EXPORT(void) ap_allow_methods(request_rec *r, int reset, ...) {
 	 * additional check of this array if it *is* invalid.
 	 */
 	if (mnum == M_INVALID) {
+	    int i;
+	    char **xmethods;
+
 	    if (r->allowed_xmethods == NULL) {
 		r->allowed_xmethods = apr_make_array(r->pool, 2,
 						     sizeof(char *));
+	    }
+	    /*
+	     * Don't add it to the array if it's already listed.
+	     */
+	    xmethods = (char **) r->allowed_xmethods->elts;
+	    for (i = 0; i < r->allowed_xmethods->nelts; ++i) {
+		if (strcmp(method, xmethods[i]) == 0) {
+		    return;
+		}
 	    }
 	    xmethod = (const char **) apr_push_array(r->allowed_xmethods);
 	    *xmethod = method;
