@@ -46,7 +46,7 @@ Options None
 # Allow server status reports, with the URL of http://servername/status
 # Change the ".your_domain.com" to match your domain to enable.
 
-#<Location /status>
+#<Location /server-status>
 #SetHandler server-status
 
 #order deny,allow
