@@ -91,6 +91,10 @@ static DWORD monitor_thread_id = 0;
 static DWORD (WINAPI *RegisterServiceProcess)(DWORD, DWORD);
 static HINSTANCE monitor_hkernel = NULL;
 static DWORD dos_child_procid = 0;
+static HHOOK catch_term_hook = NULL;
+static HWND  console_wnd = NULL;
+static int   is_service = -1;
+
 
 static void WINAPI service_main_fn(DWORD, LPTSTR *);
 static void WINAPI service_ctrl(DWORD ctrlCode);
@@ -169,37 +173,48 @@ void hold_console_open_on_error(void)
     while ((remains > 0) && WaitForSingleObject(hConIn, 1000) != WAIT_FAILED);
 }
 
-int service_main(int (*main_fn)(int, char **), int argc, char **argv )
+/* Console Control handler for processing Ctrl-C/Ctrl-Break and
+ * on Windows NT also user logoff and system shutdown,
+ * this is not used for the WinNT or Win9x hidden service processes
+ */
+static BOOL CALLBACK ap_control_handler(DWORD ctrl_type)
 {
-    SERVICE_TABLE_ENTRY dispatchTable[] =
+    switch (ctrl_type)
     {
-        { "", service_main_fn },
-        { NULL, NULL }
-    };
+        case CTRL_C_EVENT:
+        case CTRL_BREAK_EVENT:
+            real_exit_code = 0;
+            fprintf(stderr, "Apache server interrupted...\n");
+            /* for Interrupt signals, shut down the server.
+             * Tell the system we have dealt with the signal
+             * without waiting for Apache to terminate.
+             */
+            ap_start_shutdown();
+            return TRUE;
 
-    /* Prevent holding open the (nonexistant) console */
-    real_exit_code = 0;
-
-    globdat.main_fn = main_fn;
-    globdat.stop_event = create_event(0, 0, "apache-signal");
-    globdat.connected = 1;
-
-    if(!StartServiceCtrlDispatcher(dispatchTable))
-    {
-        /* This is a genuine failure of the SCM. */
-        ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL,
-        "Error starting service control dispatcher");
-        return(globdat.exit_status);
+        case CTRL_LOGOFF_EVENT:
+        case CTRL_CLOSE_EVENT:
+        case CTRL_SHUTDOWN_EVENT:
+            /* for Terminate signals, shut down the server.
+             * Wait for Apache to terminate, but respond
+             * after a reasonable time to tell the system
+             * that we have already tried to shut down.
+             */            
+            real_exit_code = 0;
+            fprintf(stderr, "Apache server shutdown initiated...\n");
+            ap_start_shutdown();
+            Sleep(30000);
+            return TRUE;
     }
-    else
-    {
-        return(globdat.exit_status);
-    }
+ 
+    /* We should never get here, but this is (mostly) harmless */
+    return FALSE;
 }
 
-static HHOOK catch_term_hook = NULL;
-static HWND  console_wnd = NULL;
-
+/* This is an experimental feature I'm playing with to intercept the
+ * messages to the console process on Win9x.  It does nothing at all
+ * so far (isn't even properly hooked yet).
+ */
 static LRESULT CALLBACK HookCatchTerm(int nCode, WPARAM wParam, LPARAM lParam)
 {
     LPMSG msg = (LPMSG) lParam;
@@ -221,7 +236,6 @@ static LRESULT CALLBACK HookCatchTerm(int nCode, WPARAM wParam, LPARAM lParam)
  * If a user logs off, the window is sent WM_QUERYENDSESSION 
  * as well, but with lParam != 0. We ignore this case.
  */
-
 LRESULT CALLBACK Service9xWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     if (message == WM_QUERYENDSESSION)
@@ -284,9 +298,9 @@ DWORD WINAPI WatchWindow(void *service_name)
 	wc.lpszClassName = "ApacheWin95ChildMonitor";
 
     /* hook window messages - ugly */
-    if (dos_child_procid)
-        catch_term_hook = SetWindowsHookEx(WH_GETMESSAGE, 
-                                           HookCatchTerm, NULL, 0);
+//  if (dos_child_procid)
+//      catch_term_hook = SetWindowsHookEx(WH_GETMESSAGE, 
+//                                         HookCatchTerm, NULL, 0);
 
     die_on_logoff = service_name ? FALSE : TRUE;
 
@@ -317,30 +331,16 @@ DWORD WINAPI WatchWindow(void *service_name)
     }
 
     /* unhook window messages - ugly */
-    if (catch_term_hook)
-        UnhookWindowsHookEx(catch_term_hook);
+//  if (catch_term_hook)
+//      UnhookWindowsHookEx(catch_term_hook);
 
     return 0;
 }
 
-void stop_service_monitor(void)
-{
-    if (monitor_thread_id)
-        PostThreadMessage(monitor_thread_id, WM_QUIT, 0, 0);
-
-    /* When the service quits, remove it from the 
-       system service table */
-    RegisterServiceProcess(0, 0);
-    
-    if (dos_child_procid) {
-        RegisterServiceProcess(dos_child_procid, 0);
-        dos_child_procid = 0;
-    }
-
-    /* Free the kernel library */
-    FreeLibrary(monitor_hkernel);
-}
-
+/* This function only works on Win9x, and only when this process
+ * is the active process (e.g. once it is running a child process,
+ * it can no longer determine which console window is its own.)
+ */
 static BOOL CALLBACK EnumttyWindow(HWND wnd, LPARAM retwnd)
 {
     char tmp[8];
@@ -355,20 +355,54 @@ static BOOL CALLBACK EnumttyWindow(HWND wnd, LPARAM retwnd)
     }
     return TRUE;
 }
+
+void stop_child_monitor(void)
+{
+    if (isWindowsNT()) {
+        SetConsoleCtrlHandler(ap_control_handler, FALSE);
+        return;
+    }
+
+    if (monitor_thread_id)
+        PostThreadMessage(monitor_thread_id, WM_QUIT, 0, 0);
+
+    if (dos_child_procid) {
+        RegisterServiceProcess(dos_child_procid, 0);
+        dos_child_procid = 0;
+    }
+
+    /* When the service quits, remove it from the 
+       system service table */
+    RegisterServiceProcess(0, 0);
+    
+    /* Free the kernel library */
+    FreeLibrary(monitor_hkernel);
+}
+
 /*
- * The WinNT child can simply free its console.
- * Win9x children cannot loose the console since 16bit cgi processes
- * will hang if they are not launched from a 32bit console app.
- * Instead, mark the Win9x child as a service process and let the
- * parent process clean it up as necessary.
+ * The Win32 Apache child cannot loose its console since 16bit cgi 
+ * processes will hang (9x) or fail (NT) if they are not launched 
+ * from a 32bit console app into that app's console window.  
+ * Mark the 9x child as a service process and let the parent process 
+ * clean it up as necessary.
  */
-void ap_prepare_child_console(void)
+void ap_start_child_console(int is_child_of_service)
 {
     HANDLE thread;
-    HWND console = NULL;
+
+    is_service = 0; /* The child is never exactly a service */
+
+    if (!is_child_of_service)
+        die_on_logoff = TRUE;
 
     if (isWindowsNT()) {
-        FreeConsole();
+        /* Apache/NT installs no child console handler, otherwise
+         * logoffs interfere with the service's child process!
+         * The child process must have a later shutdown priority
+         * than the parent, or the parent cannot shut down the
+         * child process properly.
+         */
+        SetProcessShutdownParameters(0x200, 0);
         return;
     }
 
@@ -389,12 +423,13 @@ void ap_prepare_child_console(void)
 
     /* Locate our winoldap process, and tag it as a service process */
     EnumWindows(EnumttyWindow, (long)(&console_wnd));
-    if (console)
+    if (console_wnd)
     {
-        console = GetWindow(console_wnd, GW_CHILD);
-        GetWindowThreadProcessId(console, &dos_child_procid);
-        if (!RegisterServiceProcess(dos_child_procid, 1))
-            return;
+        HWND console_child = GetWindow(console_wnd, GW_CHILD);
+        GetWindowThreadProcessId(console_child, &dos_child_procid);
+        if (dos_child_procid)
+            if (!RegisterServiceProcess(dos_child_procid, 1))
+                dos_child_procid = 0;
     }
 
     /* WatchWindow is NULL - that is - we are not the actual service,
@@ -406,7 +441,82 @@ void ap_prepare_child_console(void)
     if (thread)
         CloseHandle(thread);
 
-    atexit(stop_service_monitor);
+    atexit(stop_child_monitor);
+}
+
+
+void stop_console_monitor(void)
+{
+    if (!isWindowsNT() && monitor_thread_id)
+	PostThreadMessage(monitor_thread_id, WM_QUIT, 0, 0);
+
+    /* Remove the control handler at the end of the day. */
+    SetConsoleCtrlHandler(ap_control_handler, FALSE);
+}
+
+void ap_start_console_monitor(void)
+{
+    HANDLE console_input;
+ 
+    is_service = 0;
+
+    console_input = GetStdHandle(STD_INPUT_HANDLE);
+    /* Assure we properly accept Ctrl+C as an interrupt...
+     * Win/2000 definately makes some odd assumptions about 
+     * ctrl+c and the reserved console mode bits!
+     */
+    if (console_input != INVALID_HANDLE_VALUE)
+    {
+        /* The SetConsoleCtrlHandler(NULL... would fault under Win9x 
+         * WinNT also includes an undocumented 0x80 bit for console mode
+         * that preserves the console window behavior, and prevents the
+         * bogus 'selection' mode from being accedently triggered.
+         */
+        if (isWindowsNT()) {
+	    SetConsoleCtrlHandler(NULL, FALSE);
+            SetConsoleMode(console_input, ENABLE_LINE_INPUT 
+                                        | ENABLE_ECHO_INPUT 
+                                        | ENABLE_PROCESSED_INPUT
+                                        | 0x80);
+        }
+	else {
+            SetConsoleMode(console_input, ENABLE_LINE_INPUT 
+                                        | ENABLE_ECHO_INPUT 
+                                        | ENABLE_PROCESSED_INPUT);
+        }
+        SetConsoleCtrlHandler(ap_control_handler, TRUE);
+    }
+    
+    /* Under 95/98 create a monitor window to watch for session end,
+     * pass NULL to WatchWindow so we do not appear to be a service.
+     */
+    if (!isWindowsNT()) {
+        HANDLE thread;
+        thread = CreateThread(NULL, 0, WatchWindow, NULL, 0, 
+                              &monitor_thread_id);
+        if (thread)
+            CloseHandle(thread);
+    }
+
+    atexit(stop_console_monitor);
+}
+
+void stop_service_monitor(void)
+{
+    if (monitor_thread_id)
+        PostThreadMessage(monitor_thread_id, WM_QUIT, 0, 0);
+
+    /* When the service quits, remove it from the 
+       system service table */
+    RegisterServiceProcess(0, 0);
+    
+    if (dos_child_procid) {
+        RegisterServiceProcess(dos_child_procid, 0);
+        dos_child_procid = 0;
+    }
+
+    /* Free the kernel library */
+    FreeLibrary(monitor_hkernel);
 }
 
 int service95_main(int (*main_fn)(int, char **), int argc, char **argv, 
@@ -415,6 +525,11 @@ int service95_main(int (*main_fn)(int, char **), int argc, char **argv,
     /* Windows 95/98 */
     char *service_name;
     HANDLE thread;
+
+    is_service = 1; /* The child is never exactly a service */
+
+    /* Set up the Win9x server name, as WinNT would */
+    ap_server_argv0 = globdat.name = display_name;
 
     /* Remove spaces from display name to create service name */
     service_name = strdup(display_name);
@@ -450,9 +565,37 @@ int service95_main(int (*main_fn)(int, char **), int argc, char **argv,
         CloseHandle(thread);
 
     atexit(stop_service_monitor);
-
+    
     /* Run the service */
     globdat.exit_status = main_fn(argc, argv);
+}
+
+int service_main(int (*main_fn)(int, char **), int argc, char **argv )
+{
+    SERVICE_TABLE_ENTRY dispatchTable[] =
+    {
+        { "", service_main_fn },
+        { NULL, NULL }
+    };
+
+    /* Prevent holding open the (nonexistant) console */
+    real_exit_code = 0;
+
+    globdat.main_fn = main_fn;
+    globdat.stop_event = create_event(0, 0, "apache-signal");
+    globdat.connected = 1;
+
+    if(!StartServiceCtrlDispatcher(dispatchTable))
+    {
+        /* This is a genuine failure of the SCM. */
+        ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL,
+        "Error starting service control dispatcher");
+        return(globdat.exit_status);
+    }
+    else
+    {
+        return(globdat.exit_status);
+    }
 }
 
 void service_cd()
@@ -544,7 +687,9 @@ void __stdcall service_main_fn(DWORD argc, LPTSTR *argv)
     SECURITY_ATTRIBUTES sa = {0};  
     
     ap_server_argv0 = globdat.name = argv[0];
-    
+
+    is_service = 1;
+
     if(!(globdat.hServiceStatus = RegisterServiceCtrlHandler(globdat.name, 
                                                              service_ctrl)))
     {
@@ -972,9 +1117,14 @@ void RemoveService(char *display_name)
 
 BOOL isProcessService() 
 {
-    if (!isWindowsNT() || !AllocConsole())
+    if (is_service != -1)
+        return is_service;
+    if (!isWindowsNT() || !AllocConsole()) {
+        /* Don't assume anything, just yet */
         return FALSE;
+    }
     FreeConsole();
+    is_service = 1;
     return TRUE;
 }
 
@@ -1223,98 +1373,6 @@ int ap_restart_service(SC_HANDLE schService)
     if (globdat.ssStatus.dwCurrentState == SERVICE_RUNNING)
         return TRUE;
     return FALSE;
-}
-
-/* Control handler for processing Ctrl-C/Ctrl-Break and
- * on Windows NT also user logoff and system shutdown
- */
-
-static BOOL CALLBACK ap_control_handler(DWORD ctrl_type)
-{
-    switch (ctrl_type)
-    {
-        case CTRL_C_EVENT:
-        case CTRL_BREAK_EVENT:
-            real_exit_code = 0;
-            fprintf(stderr, "Apache server interrupted...\n");
-            /* for Interrupt signals, shut down the server.
-             * Tell the system we have dealt with the signal
-             * without waiting for Apache to terminate.
-             */
-            ap_start_shutdown();
-            return TRUE;
-
-        case CTRL_CLOSE_EVENT:
-        case CTRL_LOGOFF_EVENT:
-        case CTRL_SHUTDOWN_EVENT:
-            /* for Terminate signals, shut down the server.
-             * Wait for Apache to terminate, but respond
-             * after a reasonable time to tell the system
-             * that we have already tried to shut down.
-             */
-            real_exit_code = 0;
-            fprintf(stderr, "Apache server shutdown initiated...\n");
-            ap_start_shutdown();
-            Sleep(30000);
-            return TRUE;
-    }
- 
-    /* We should never get here, but this is (mostly) harmless */
-    return FALSE;
-}
-
-void stop_console_monitor(void)
-{
-    if (!isWindowsNT() && monitor_thread_id)
-	PostThreadMessage(monitor_thread_id, WM_QUIT, 0, 0);
-
-    /* Remove the control handler at the end of the day. */
-    SetConsoleCtrlHandler(ap_control_handler, FALSE);
-}
-
-void ap_start_console_monitor(void)
-{
-    HANDLE console_input;
-    
-    console_input = GetStdHandle(STD_INPUT_HANDLE);
-    /* Assure we properly accept Ctrl+C as an interrupt...
-     * Win/2000 definately makes some odd assumptions about 
-     * ctrl+c and the reserved console mode bits!
-     */
-    if (console_input != INVALID_HANDLE_VALUE)
-    {
-        /* The SetConsoleCtrlHandler(NULL... would fault under Win9x 
-         * WinNT also includes an undocumented 0x80 bit for console mode
-         * that preserves the console window behavior, and prevents the
-         * bogus 'selection' mode from being accedently triggered.
-         */
-        if (isWindowsNT()) {
-	    SetConsoleCtrlHandler(NULL, FALSE);
-            SetConsoleMode(console_input, ENABLE_LINE_INPUT 
-                                        | ENABLE_ECHO_INPUT 
-                                        | ENABLE_PROCESSED_INPUT
-                                        | 0x80);
-        }
-	else {
-            SetConsoleMode(console_input, ENABLE_LINE_INPUT 
-                                        | ENABLE_ECHO_INPUT 
-                                        | ENABLE_PROCESSED_INPUT);
-        }
-        SetConsoleCtrlHandler(ap_control_handler, TRUE);
-    }
-    
-    /* Under 95/98 create a monitor window to watch for session end,
-     * pass NULL to WatchWindow so we do not appear to be a service.
-     */
-    if (!isWindowsNT()) {
-        HANDLE thread;
-        thread = CreateThread(NULL, 0, WatchWindow, NULL, 0, 
-                              &monitor_thread_id);
-        if (thread)
-            CloseHandle(thread);
-    }
-
-    atexit(stop_console_monitor);
 }
 #endif /* WIN32 */
 

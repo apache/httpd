@@ -6181,7 +6181,13 @@ static int create_process(pool *p, HANDLE *handles, HANDLE *events,
         return -1;
     }
     
-    pCommand = ap_psprintf(p, "\"%s\" -Z %s -f \"%s\"", buf, exit_event_name, ap_server_confname);  
+	/* service children must be created with the -z option,
+	 * while console mode (interactive apache) children are created
+	 * with the -Z option
+	 */
+    pCommand = ap_psprintf(p, "\"%s\" -%c %s -f \"%s\"", buf, 
+		                   isProcessService() ? 'z' : 'Z',
+		                   exit_event_name, ap_server_confname);  
 
     for (i = 1; i < argc; i++) {
         if ((argv[i][0] == '-') && ((argv[i][1] == 'k') || (argv[i][1] == 'n')))
@@ -6198,7 +6204,7 @@ static int create_process(pool *p, HANDLE *handles, HANDLE *events,
     }
 
     /* Open a null handle to soak info from the child */
-    hNullOutput = CreateFile("null", GENERIC_READ | GENERIC_WRITE, 
+    hNullOutput = CreateFile("nul", GENERIC_READ | GENERIC_WRITE, 
                              FILE_SHARE_READ | FILE_SHARE_WRITE, 
                              &sa, OPEN_EXISTING, 0, NULL);
     if (hNullOutput == INVALID_HANDLE_VALUE) {
@@ -6208,7 +6214,7 @@ static int create_process(pool *p, HANDLE *handles, HANDLE *events,
     }
 
     /* Open a null handle to soak info from the child */
-    hNullError = CreateFile("null", GENERIC_READ | GENERIC_WRITE, 
+    hNullError = CreateFile("nul", GENERIC_READ | GENERIC_WRITE, 
                             FILE_SHARE_READ | FILE_SHARE_WRITE, 
                             &sa, OPEN_EXISTING, 0, NULL);
     if (hNullError == INVALID_HANDLE_VALUE) {
@@ -6681,6 +6687,7 @@ int REALMAIN(int argc, char *argv[])
 #ifdef WIN32
     char *service_name = NULL;
     int install = 0;
+    int is_child_of_service = 0;
     char *signal_to_send = NULL;
 
     /* Service application under WinNT */
@@ -6732,7 +6739,7 @@ int REALMAIN(int argc, char *argv[])
     ap_cpystrn(ap_server_root, cwd, sizeof(ap_server_root));
 #endif
 
-    while ((c = getopt(argc, argv, "D:C:c:Xd:f:vVlLZ:iusStThk:n:")) != -1) {
+    while ((c = getopt(argc, argv, "D:C:c:Xd:f:vVlLz:Z:iusStThk:n:")) != -1) {
         char **new;
 	switch (c) {
 	case 'c':
@@ -6748,7 +6755,13 @@ int REALMAIN(int argc, char *argv[])
 	    *new = ap_pstrdup(pcommands, optarg);
 	    break;
 #ifdef WIN32
-	case 'Z':
+	/* service children must be created with the -z option,
+	 * while console mode (interactive apache) children are created
+	 * with the -Z option
+	 */
+        case 'z':
+            is_child_of_service = 1;
+        case 'Z':
             /* Prevent holding open the (nonexistant) console */
             real_exit_code = 0;
 	    exit_event = open_event(optarg);
@@ -7017,7 +7030,7 @@ int REALMAIN(int argc, char *argv[])
 	    exit(-1);
 #ifdef WIN32
         if (child)
-            ap_prepare_child_console();
+            ap_start_child_console(is_child_of_service);
 #endif
 	worker_main();
 	ap_destroy_mutex(start_mutex);

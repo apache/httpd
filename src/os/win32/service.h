@@ -72,7 +72,6 @@
 extern int real_exit_code;
 void hold_console_open_on_error(void);
 
-void ap_prepare_child_console(void);
 int service_main(int (*main_fn)(int, char **), int argc, char **argv);
 int service95_main(int (*main_fn)(int, char **), int argc, char **argv,
 		   char *display_name);
@@ -86,6 +85,7 @@ int service_init();
 int send_signal_to_service(char *display_name, char *sig);
 BOOL isWindowsNT(void);
 void ap_start_console_monitor(void);
+void ap_start_child_console(int is_child_of_service);
 #endif /* WIN32 */
 
 #endif /* SERVICE_H */
