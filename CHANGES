@@ -4,7 +4,7 @@ Changes with Apache 2.0.46
      the server will accept encoded slashes ('%2f') in the URI path.
      Default condition is off (the historical behaviour).  This permits
      environments in which the path-info needs to contain encoded
-     slashes.  [Ken Coar]
+     slashes.  PR 543, 2389, 3581, 3589, 5687, 7066, 7865, 14639.  [Ken Coar]
 
   *) When using Redirect in directory context, append requested query
      string if there's no one supplied by configuration. PR 10961.
