@@ -50,11 +50,11 @@
     /icons/ /usr/local/apache/icons/</code> then the url
     <code>/icons</code> will not be aliased.</p>
 
-    <p>Note that you may need to specify additional <code class="directive"><a href="../mod/core.html#&lt;directory&gt;">&lt;Directory&gt;</a></code> sections which cover
-    the <em>destination</em> of aliases.  Aliasing occurs before
-    <code class="directive"><a href="../mod/core.html#&lt;directory&gt;">&lt;Directory&gt;</a></code> sections
+    <p>Note that you may need to specify additional <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> sections which
+    cover the <em>destination</em> of aliases.  Aliasing occurs before
+    <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> sections
     are checked, so only the destination of aliases are affected.
-    (Note however <code class="directive"><a href="../mod/core.html#&lt;location&gt;">&lt;Location&gt;</a></code>
+    (Note however <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>
     sections are run through once before aliases are performed, so
     they will apply.)</p>
 
@@ -103,7 +103,7 @@ a different URL</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
 Alias and ScriptAlias directives, irrespective of their ordering in
 the configuration file. Also, <em>URL-path</em> must be an absolute
 path, not a relative path, even when used with .htaccess files or
-inside of <code class="directive"><a href="../mod/core.html#&lt;directory&gt;">&lt;Directory&gt;</a></code>
+inside of <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>
 sections.</p></div>
 
     <p>If no <em>status</em> argument is given, the redirect will
