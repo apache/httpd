@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/07/23 18:04:23 $]
+Last modified at [$Date: 2002/07/24 00:09:34 $]
 
 Release:
 
@@ -66,7 +66,7 @@ CURRENT VOTES:
 
       a) httpd-std.conf should be tailored by install (from src or
          binbuild) even if user has existing httpd.conf
-         +1:   trawick, slive, gregames
+         +1:   trawick, slive, gregames, ianh
 
       b) tailored httpd-std.conf should be copied by install to
          sysconfdir/examples
@@ -78,13 +78,18 @@ CURRENT VOTES:
 
       d) Installing a set of default config files when upgrading a server
          doesn't make ANY sense at all.
-	 +1:   rbb
+	 +1:   rbb, 
+           ianh - medium/big sites don't use 'standard config' anyway, as it
+                  usually needs major customizations
 
     * apachectl should revert to just being an init script and
       httpd.sh should be the wrapper for httpd which sources envvars
       and allows any options to be passed through
 
-      +1:  trawick, gregames
+        +1:  trawick, gregames
+      -0.5:  ianh - a wrapper which calls another wrapper which then sources
+                    envvars ?? i'm not sure why calling apachectl -V is a bad
+                    thing.
 
     * Should we always build [support*] binaries statically unless otherwise
       indicated?
