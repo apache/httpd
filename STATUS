@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/02/04 20:07:52 $]
+Last modified at [$Date: 2002/02/04 22:19:39 $]
 
 Release:
 
@@ -83,7 +83,7 @@ RELEASE SHOWSTOPPERS:
               score is suspect.  OtherBill is investigating, definately
               a showstopper for a .31/.32 beta.  Progress report later today.
 
-            * Mahdu reports that the worker MPM doesn't shutdown nicely
+            * Madhu reports that the worker MPM doesn't shutdown nicely
               after a stress test.
 
     * ap_directory_walk skips some per-dir config merge functions
