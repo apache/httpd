@@ -63,7 +63,7 @@
 module MODULE_VAR_EXPORT nlm_module;
 static int been_there_done_that = 0; /* Loaded the modules yet? */
 
-char *load_module(cmd_parms *cmd, void *dummy, char *modname, char *filename)
+static const char *load_module(cmd_parms *cmd, void *dummy, char *modname, char *filename)
 {
     module *modp;
     int nlmHandle;
@@ -102,7 +102,7 @@ char *load_module(cmd_parms *cmd, void *dummy, char *modname, char *filename)
     return NULL;
 }
 
-char *load_file(cmd_parms *cmd, void *dummy, char *filename)
+static const char *load_file(cmd_parms *cmd, void *dummy, char *filename)
 {
     if (been_there_done_that)
         return NULL;

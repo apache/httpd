@@ -170,7 +170,7 @@ static const char *set_user_dir(cmd_parms *cmd, void *dummy, char *arg)
          * config 'word' for validity and copy the entire arg to the userdir 
          * if all paths are valid.
          */
-        char *userdirs = arg;
+        const char *userdirs = arg;
         while (*userdirs) {
             char *thisdir = ap_getword_conf(cmd->pool, &userdirs);
             if (!ap_os_is_path_absolute(thisdir) && !strchr(thisdir, ':'))
