@@ -214,6 +214,7 @@ static apr_lock_t *idle_thread_count_mutex;
 #else
 #define SAFE_ACCEPT(stmt) (stmt)
 static apr_lock_t *process_accept_mutex;
+static apr_lockmech_e_np accept_lock_mech = APR_LOCK_DEFAULT;
 #endif /* NO_SERIALIZED_ACCEPT */
 static const char *lock_fname;
 static apr_lock_t *thread_accept_mutex;
@@ -1182,8 +1183,9 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     lock_fname = apr_psprintf(_pconf, "%s.%u",
                              ap_server_root_relative(_pconf, lock_fname),
                              my_pid);
-    rv = SAFE_ACCEPT(apr_lock_create(&process_accept_mutex, APR_MUTEX,
-                                    APR_CROSS_PROCESS, lock_fname, _pconf));
+    rv = SAFE_ACCEPT(apr_lock_create_np(&process_accept_mutex, APR_MUTEX,
+                                        APR_CROSS_PROCESS, accept_lock_mech,
+                                        lock_fname, _pconf));
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s,
                      "Couldn't create cross-process lock");
@@ -1782,6 +1784,55 @@ static const char *assign_childuid(cmd_parms *cmd, void *dummy, const char *uid,
     return NULL;
 }
 
+static const char *set_accept_lock_mech(cmd_parms *cmd, void *dummy, const char *arg)
+{
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+
+    if (!strcasecmp(arg, "default")) {
+        accept_lock_mech = APR_LOCK_DEFAULT;
+    }
+#if APR_HAS_FLOCK_SERIALIZE
+    else if (!strcasecmp(arg, "flock")) {
+        accept_lock_mech = APR_LOCK_FLOCK;
+    }
+#endif
+#if APR_HAS_FCNTL_SERIALIZE
+    else if (!strcasecmp(arg, "fcntl")) {
+        accept_lock_mech = APR_LOCK_FCNTL;
+    }
+#endif
+#if APR_HAS_SYSVSEM_SERIALIZE
+    else if (!strcasecmp(arg, "sysvsem")) {
+        accept_lock_mech = APR_LOCK_SYSVSEM;
+    }
+#endif
+#if APR_HAS_PROC_PTHREAD_SERIALIZE
+    else if (!strcasecmp(arg, "proc_pthread")) {
+        accept_lock_mech = APR_LOCK_PROC_PTHREAD;
+    }
+#endif
+    else {
+        return apr_pstrcat(cmd->pool, arg, " is an invalid mutex mechanism; valid "
+                           "ones for this platform are: default"
+#if APR_HAS_FLOCK_SERIALIZE
+                           ", flock"
+#endif
+#if APR_HAS_FCNTL_SERIALIZE
+                           ", fcntl"
+#endif
+#if APR_HAS_SYSVSEM_SERIALIZE
+                           ", sysvsem"
+#endif
+#if APR_HAS_PROC_PTHREAD_SERIALIZE
+                           ", proc_pthread"
+#endif
+                           , NULL);
+    }
+    return NULL;
+}
 
 static const command_rec perchild_cmds[] = {
 UNIX_DAEMON_COMMANDS
@@ -1810,6 +1861,8 @@ AP_INIT_TAKE3("ChildperUserID", set_child_per_uid, NULL, RSRC_CONF,
               "Specify a User and Group for a specific child process."),
 AP_INIT_TAKE2("AssignUserID", assign_childuid, NULL, RSRC_CONF,
               "Tie a virtual host to a specific child process."),
+AP_INIT_TAKE1("AcceptMutex", set_accept_lock_mech, NULL, RSRC_CONF,
+              "The system mutex implementation to use for the accept mutex"),
 { NULL }
 };
 
