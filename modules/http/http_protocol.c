@@ -839,39 +839,6 @@ AP_DECLARE(const char *) ap_method_name_of(int methnum)
     return AP_HTTP_METHODS[methnum];
 }
 
-static apr_status_t brigade_bgets(ap_bucket_brigade *bb,
-                                  int remove_buckets,
-                                  char *line,
-                                  apr_ssize_t max_line_size)
-{
-    const char *buf;
-    apr_ssize_t len;
-    ap_bucket *e = AP_BRIGADE_FIRST(bb), *old;
-
-    while (e != AP_BRIGADE_SENTINEL(bb)) {
-        ap_bucket_read(e, &buf, &len, 0);
-        if (len + 2 >= max_line_size) { /* overflow */
-            return APR_EINVAL;          /* what a stupid choice */
-        }
-        memcpy(line, buf, len);
-        line += len;
-        max_line_size -= len;
-        old = e;
-        e = AP_BUCKET_NEXT(e);
-        if (remove_buckets) {
-            AP_BUCKET_REMOVE(old);
-            ap_bucket_destroy(old);
-        }
-    }
-    --line;            /* point at '\n' */
-    AP_DEBUG_ASSERT(*line == '\n');
-    if (*(line - 1) == '\r') {
-        --line;
-    }
-    *line = '\0';
-    return APR_SUCCESS;
-}
-
 struct dechunk_ctx {
     apr_ssize_t chunk_size;
     apr_ssize_t bytes_delivered;
@@ -880,6 +847,7 @@ struct dechunk_ctx {
 };
 
 static long get_chunk_size(char *);
+static int getline(char *s, int n, conn_rec *c, int fold);
 
 apr_status_t dechunk_filter(ap_filter_t *f, ap_bucket_brigade *bb,
                             apr_ssize_t length)
@@ -903,11 +871,7 @@ apr_status_t dechunk_filter(ap_filter_t *f, ap_bucket_brigade *bb,
              */
             char line[30];
             
-            if ((rv = ap_get_brigade(f->next, bb, AP_GET_LINE)) != APR_SUCCESS) {
-                return rv;
-            }
-            if ((rv = brigade_bgets(bb, ctx->remove_chunk_proto,
-                                    line, sizeof(line))) != APR_SUCCESS) {
+            if ((rv = getline(line, sizeof(line), f->c, 0)) < 0) {
                 return rv;
             }
             switch(ctx->state) {
