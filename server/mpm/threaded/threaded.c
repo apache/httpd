@@ -436,9 +436,11 @@ static void set_signals(void)
  */
 
 int ap_graceful_stop_signalled(void)
+        /* XXX this is really a bad confusing obsolete name
+         * maybe it should be ap_mpm_process_exiting?
+         */
 {
-    /* XXX - Does this really work? - Manoj */
-    return is_graceful;
+    return workers_may_exit;
 }
 
 /*****************************************************************
