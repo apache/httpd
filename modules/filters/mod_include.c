@@ -1365,50 +1365,51 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
                 *was_error = 1;
                 return retval;
             }
-            if (!current->left->done) {
-                switch (current->left->token.type) {
+
+            if (!current->right->done) {
+                switch (current->right->token.type) {
                 case TOKEN_STRING:
                     buffer = ap_ssi_parse_string(ctx,
-                                                 current->left->token.value,
+                                                 current->right->token.value,
                                                  NULL, 0, SSI_EXPAND_DROP_NAME);
 
-                    current->left->token.value = buffer;
-                    current->left->value = !!*current->left->token.value;
-                    current->left->done = 1;
+                    current->right->token.value = buffer;
+                    current->right->value = !!*current->right->token.value;
+                    current->right->done = 1;
                     break;
 
                 default:
-                    current = current->left;
+                    current = current->right;
                     continue;
                 }
             }
 
             /* short circuit evaluation */
-            if (!current->right->done && !regex &&
-                ((current->token.type == TOKEN_AND && !current->left->value) ||
-                (current->token.type == TOKEN_OR && current->left->value))) {
-                DEBUG_PRINTF((ctx, "     Left: %c\n", current->left->value
+            if (!current->left->done && !regex &&
+                ((current->token.type == TOKEN_AND && !current->right->value) ||
+                (current->token.type == TOKEN_OR && current->right->value))) {
+                DEBUG_PRINTF((ctx, "     Left: short circuited\n"));
+                DEBUG_PRINTF((ctx, "     Right: %c\n", current->right->value
                                                                   ? '1' : '0'));
-                DEBUG_PRINTF((ctx, "     Right: short circuited\n"));
 
-                current->value = current->left->value;
+                current->value = current->right->value;
             }
             else {
-                if (!current->right->done) {
-                    switch (current->right->token.type) {
+                if (!current->left->done) {
+                    switch (current->left->token.type) {
                     case TOKEN_STRING:
                         buffer = ap_ssi_parse_string(ctx,
-                                                     current->right->token.value,
+                                                     current->left->token.value,
                                                      NULL, 0,
                                                      SSI_EXPAND_DROP_NAME);
 
-                        current->right->token.value = buffer;
-                        current->right->value = !!*current->right->token.value;
-                        current->right->done = 1;
+                        current->left->token.value = buffer;
+                        current->left->value = !!*current->left->token.value;
+                        current->left->done = 1;
                         break;
 
                     default:
-                        current = current->right;
+                        current = current->left;
                         continue;
                     }
                 }
