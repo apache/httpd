@@ -127,12 +127,6 @@ command_rec negotiation_cmds[] = {
 { NULL }
 };
 
-/*
- * TO DO --- error code 406.  Unfortunately, the specification for
- *           a 406 reply in the current draft standard is unworkable;
- *           we return 404 for these pending a workable spec. 
- */
-
 /* Record of available info on a media type specified by the client
  * (we also use 'em for encodings and languages)
  */
@@ -1079,9 +1073,8 @@ int handle_map_file (request_rec *r)
     maybe_add_default_encodings(neg, 0);
     
     if (!(best = best_match(neg))) {
-      /* Should be a 406 */
       log_reason ("no acceptable variant", r->filename, r);
-      return NOT_FOUND;
+      return NOT_ACCEPTABLE;
     }
 
     /* Make sure caching works - Vary should handle HTTP/1.1, but for
@@ -1121,9 +1114,8 @@ int handle_multi (request_rec *r)
     if (neg->avail_vars->nelts == 0) return DECLINED;
     
     if (!(best = best_match(neg))) {
-      /* Should be a 406 */
       log_reason ("no acceptable variant", r->filename, r);
-      return NOT_FOUND;
+      return NOT_ACCEPTABLE;
     }
 
     if (! (sub_req = best->sub_req)) {

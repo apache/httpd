@@ -760,7 +760,7 @@ int get_basic_auth_pw (request_rec *r, char **pw)
     return OK;
 }
 
-#define RESPONSE_CODE_LIST " 200 206 301 302 304 400 401 403 404 405 411 412 500 503 501 502 "
+#define RESPONSE_CODE_LIST " 200 206 301 302 304 400 401 403 404 405 406 411 412 500 503 501 502 "
 
 /* New Apache routine to map error responses into array indicies 
  *  e.g.  400 -> 0,  500 -> 1,  502 -> 2 ...                     
@@ -778,6 +778,7 @@ char *status_lines[] = {
    "403 Forbidden",
    "404 Not found",
    "405 Method Not Allowed",
+   "406 Not Acceptable",
    "411 Length Required",
    "412 Precondition Failed",
    "500 Server error",
@@ -797,6 +798,7 @@ char *response_titles[] = {
    "Forbidden",
    "File Not found",
    "Method Not Allowed",
+   "Not Acceptable",
    "Length Required",
    "Precondition Failed",
    "Server Error",
@@ -1328,6 +1330,11 @@ void send_error_response (request_rec *r, int recursive_error)
 	    bvputs(fd, "The requested method ", r->method, " is not allowed "
 		   "for the URL ", escape_html(r->pool, r->uri),
 		   ".<P>\n", NULL);
+	    break;
+	case NOT_ACCEPTABLE:
+	    bvputs(fd, "An appropriate variant to the requested entity ",
+		   escape_html(r->pool, r->uri), " could not be found "
+		   "on this server.<P>\n", NULL);
 	    break;
 	case LENGTH_REQUIRED:
 	    bvputs(fd, "A request of the requested method ", r->method,
