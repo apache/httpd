@@ -1,5 +1,8 @@
 Changes with Apache 2.0.37
 
+  *) Allow mod_unique_id to work on systems with no IPv4 address
+     corresponding to their host name.  [Jeff Trawick]
+
 Changes with Apache 2.0.36
 
   *) Fix suexec behavior with user directories.  PR 7810.

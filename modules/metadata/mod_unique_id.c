@@ -213,16 +213,25 @@ static int unique_id_global_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *pt
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
-    /* XXX theoretically there are boxes out there which want to use
-     *     mod_unique_id but which have no IPv4 address...  send in a patch :)
-     */
-    if ((rv = apr_sockaddr_info_get(&sockaddr, str, AF_INET, 0, 0, p)) != APR_SUCCESS) {
+    if ((rv = apr_sockaddr_info_get(&sockaddr, str, AF_INET, 0, 0, p)) == APR_SUCCESS) {
+        global_in_addr = sockaddr->sa.sin.sin_addr.s_addr;
+    }
+    else {
         ap_log_error(APLOG_MARK, APLOG_ALERT, rv, main_server,
                     "mod_unique_id: unable to find IPv4 address of \"%s\"", str);
+#if APR_HAVE_IPV6
+        if ((rv = apr_sockaddr_info_get(&sockaddr, str, AF_INET6, 0, 0, p)) == APR_SUCCESS) {
+            memcpy(&global_in_addr,
+                   sockaddr->ipaddr_ptr + sockaddr->ipaddr_len - sizeof(global_in_addr),
+                   sizeof(global_in_addr));
+            ap_log_error(APLOG_MARK, APLOG_ALERT, rv, main_server,
+                         "mod_unique_id: using low-order bits of IPv6 address "
+                         "as if they were unique");
+        }
+        else
+#endif
         return HTTP_INTERNAL_SERVER_ERROR;
     }
-
-    global_in_addr = sockaddr->sa.sin.sin_addr.s_addr;
 
     apr_sockaddr_ip_get(&ipaddrstr, sockaddr);
     ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0, main_server,
