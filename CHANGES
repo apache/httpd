@@ -1,4 +1,7 @@
 Changes with Apache 2.0.25-dev
+  *) fix segv in mod_mime if no AddTypes are configured
+     [John Sterling <sterling@covalent.net>]
+
   *) Enable ssl client authentication at SSL_accept time
      [Madhusudan Mathihalli <madhusudan_mathihalli@hp.com>]
 

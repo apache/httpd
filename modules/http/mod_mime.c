@@ -812,7 +812,7 @@ static int find_ct(request_rec *r)
     /* Parse filename extensions which can be in any order 
      */
     while (*fn && (ext = ap_getword(r->pool, &fn, '.'))) {
-        extension_info *exinfo;
+        extension_info *exinfo = NULL;
         int found;
 
         if (*ext == '\0')  /* ignore empty extensions "bad..html" */
@@ -827,9 +827,11 @@ static int find_ct(request_rec *r)
         ap_str_tolower(ext);
 #endif
 
-        exinfo = (extension_info*) apr_hash_get(conf->extension_mappings,
-                                                ext, APR_HASH_KEY_STRING);
-        
+        if (conf->extension_mappings != NULL) {
+            exinfo = (extension_info*)apr_hash_get(conf->extension_mappings,
+                                                   ext, APR_HASH_KEY_STRING);
+        }
+
         if (exinfo == NULL) {
             if ((type = apr_hash_get(mime_type_extensions, ext,
                                      APR_HASH_KEY_STRING)) != NULL) {
