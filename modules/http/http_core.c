@@ -2582,11 +2582,11 @@ static apr_status_t send_the_file(conn_rec *c, apr_file_t *fd,
                                   apr_hdtr_t *hdtr, apr_off_t offset, 
                                   apr_size_t length, apr_size_t *nbytes) 
 {
-    apr_int32_t flags = 0;
-    apr_status_t rv;
+    apr_status_t rv = APR_EINIT;
     apr_size_t n = length;
 
 #if APR_HAS_SENDFILE
+    apr_int32_t flags = 0;
     if (!c->keepalive) {
         /* Prepare the socket to be reused */
         flags |= APR_SENDFILE_DISCONNECT_SOCKET;
@@ -2601,8 +2601,42 @@ static apr_status_t send_the_file(conn_rec *c, apr_file_t *fd,
         *nbytes = n;
         return rv;
     }
+#else
+    apr_int32_t sendlen = 0;
+    apr_int32_t togo;
+    char buffer[8192];
+
+    if ( hdtr && hdtr->numheaders > 0 ) {
+        rv = apr_sendv(c->client->bsock, hdtr->headers, hdtr->numheaders, 
+                       &sendlen);
+    }
+
+    if (offset != 0 && rv == APR_SUCCESS) {
+        rv = apr_seek(fd, APR_SET, &offset);
+    }
+
+    togo = n;
+    n = sendlen;
+
+    while (rv == APR_SUCCESS && togo > 0) {
+        sendlen = togo > sizeof(buffer) ? sizeof(buffer) : togo;
+        rv = apr_read(fd, buffer, &sendlen);
+
+        if (rv == APR_SUCCESS) {
+            togo -= sendlen;
+            rv = apr_send(c->client->bsock, buffer, &sendlen);
+            n += sendlen;
+        }
+    }
+
+    if ( rv == APR_SUCCESS && hdtr && hdtr->numtrailers > 0 ) {
+        rv = apr_sendv(c->client->bsock, hdtr->trailers, hdtr->numtrailers, 
+                       &sendlen);
+        n += sendlen;
+    }
+
+    return rv;
 #endif;
-    /* XXX: apr_sendfile is not available. Use apr_send/apr_sendv instead */
 
     return APR_SUCCESS;
 }
@@ -3377,13 +3411,7 @@ static int core_output_filter(ap_filter_t *f, ap_bucket_brigade *b)
         }
         if (fd) {
             apr_hdtr_t hdtr;
-#if APR_HAS_SENDFILE
-/*
- * TODO: fix the call to send_the_file somehow to remove the need for
- * the apr_hdtr_t paramater if !APR_HAS_SENDFILE. The way it is
- * now, we have to define a dummy apr_hdtr_t typedef and then
- * wrap sections anyway. -- jj
- */
+
             memset(&hdtr, '\0', sizeof(hdtr));
             if (nvec) {
                 hdtr.numheaders = nvec;
@@ -3393,7 +3421,6 @@ static int core_output_filter(ap_filter_t *f, ap_bucket_brigade *b)
                 hdtr.numtrailers = nvec_trailers;
                 hdtr.trailers = vec_trailers;
             }
-#endif
             rv = send_the_file(c, fd, &hdtr, foffset, flen, &bytes_sent);
         }
         else {
