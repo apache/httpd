@@ -1321,24 +1321,28 @@ applies.
  REL="Help"
 ><STRONG>Status:</STRONG></A> core<P>
 
-&lt;Limit&gt; and &lt;/Limit&gt; are used to enclose a group of
-access control directives which will then apply only to the specified
-access methods, where <EM>method</EM> is any valid HTTP method.
-Any directive except another &lt;Limit&gt; or
-<A HREF="#directory">&lt;Directory&gt;</A> may be used; the majority will be
-unaffected by the &lt;Limit&gt;. Example:
+Access controls are normally effective for <STRONG>all</STRONG> access
+methods, and this is the usual desired behaviour.  <STRONG>In the
+general case, access control directives should not be placed within a
+<CODE>&lt;limit&gt;</CODE> section.</STRONG> 
+
+<P>The purpose of the &lt;Limit&gt; directive is to restrict the effect
+of the access controls to the nominated HTTP methods.  For all other
+methods, the access restrictions that are enclosed in the
+&lt;Limit&gt; bracket <STRONG>will have no effect</STRONG>.  The
+following example applies the access control only to the methods POST,
+PUT, and DELETE, leaving all other methods unprotected:
+
 <BLOCKQUOTE><CODE>
-&lt;Limit GET POST&gt;<BR>
+&lt;Limit POST PUT DELETE&gt;<BR>
 require valid-user<BR>
 &lt;/Limit&gt;</CODE></BLOCKQUOTE>
 
-If an access control directive appears outside a &lt;Limit&gt;
-directive, then it applies to all access methods. The method names
-listed can be one or more of: GET, POST, PUT, DELETE, CONNECT or
-OPTIONS. <STRONG>The method name is case-sensitive.</STRONG>
-If GET is used it will also restrict HEAD requests.
-<STRONG>If you wish to limit all methods, do not include any
-&lt;Limit&gt; directive at all.</STRONG>
+The method names listed can be one or more of: GET, POST, PUT, DELETE,
+CONNECT, OPTIONS, TRACE, PATCH, PROPFIND, PROPPATCH, MKCOL, COPY,
+MOVE, LOCK, and UNLOCK. <STRONG>The method name is
+case-sensitive.</STRONG> If GET is used it will also restrict HEAD
+requests.  
 
 <P><HR>
 
@@ -2371,24 +2375,25 @@ Only users in the named groups can access the directory.<P>
 All valid users can access the directory.
 </UL>
 <P>
-If <CODE>require</CODE> appears in a <A HREF="#limit">&lt;Limit&gt;</A>
-section, then it restricts access to the named methods, otherwise
-it restricts access for all methods. Example:
-<BLOCKQUOTE><CODE>
-AuthType Basic<BR>
-AuthName somedomain<BR>
-AuthUserFile /web/users<BR>
-AuthGroupFile /web/groups<BR>
-&lt;Limit GET POST&gt;<BR>
-require group admin<BR>
-&lt;/Limit&gt;
-</CODE></BLOCKQUOTE>
-
 Require must be accompanied by <A HREF="#authname">AuthName</A> and
 <A HREF="#authtype">AuthType</A> directives, and directives such as
 <A HREF="mod_auth.html#authuserfile">AuthUserFile</A> and
 <A HREF="mod_auth.html#authgroupfile">AuthGroupFile</A> (to define users and
-groups) in order to work correctly.<P><HR>
+groups) in order to work correctly.  Example:
+<BLOCKQUOTE><CODE>
+AuthType Basic<BR>
+AuthName "Restricted Directory"<BR>
+AuthUserFile /web/users<BR>
+AuthGroupFile /web/groups<BR>
+require group admin<BR>
+</CODE></BLOCKQUOTE>
+
+Access controls which are applied in this way are effective for
+<STRONG>all</STRONG> methods. <STRONG>This is what is normally
+desired.</STRONG> If you wish to apply access controls only to
+specific methods, while leaving other methods unprotected, then place
+the <CODE>require</CODE> statement into a <A
+HREF="#limit">&lt;Limit&gt;</A> section<P><HR>
 
 <H2><A NAME="resourceconfig">ResourceConfig directive</A></H2>
 <!--%plaintext &lt;?INDEX {\tt ResourceConfig} directive&gt; -->
