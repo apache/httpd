@@ -302,7 +302,7 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
     ap_bpushfd(f, sock, sock);
 
     ap_hard_timeout("proxy send", r);
-    ap_bvputs(f, r->method, " ", proxyhost ? url : urlptr, " HTTP/1.0" CRLF,
+    ap_bvputs(f, r->method, " ", proxyhost ? url : urlptr, " HTTP/1.1" CRLF,
            NULL);
     /* Send Host: now, adding it to req_hdrs wouldn't be much better */
     if (destportstr != NULL && destport != DEFAULT_HTTP_PORT)
