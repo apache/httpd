@@ -1,5 +1,9 @@
 Changes with Apache 1.3b6
 
+  *) Linux 2.0 and above implement RLIMIT_AS, RLIMIT_DATA has almost no
+     effect.  Work around it by using RLIMIT_AS for the RLimitMEM
+     directive.  [Enrik Berkhan <enrik@inka.de>] PR#1816
+
   *) mod_mime_magic error message should indicate the filename when
      reads fail.  ["M.D.Parker" <mdpc@netcom.com>] PR#1827
 
