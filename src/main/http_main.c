@@ -423,7 +423,10 @@ API_EXPORT(void) ap_add_version_component(const char *component)
  */
 static void ap_set_version(void)
 {
-    if (ap_server_tokens == SrvTk_MIN) {
+    if (ap_server_tokens == SrvTk_PRODUCT_ONLY) {
+	ap_add_version_component(SERVER_PRODUCT);
+    }
+    else if (ap_server_tokens == SrvTk_MIN) {
 	ap_add_version_component(SERVER_BASEVERSION);
     }
     else {

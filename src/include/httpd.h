@@ -427,12 +427,14 @@ extern "C" {
  * Example: "Apache/1.1.0 MrWidget/0.1-alpha" 
  */
 
-#define SERVER_BASEVERSION "Apache/1.3.13-dev"	/* SEE COMMENTS ABOVE */
+#define SERVER_PRODUCT "Apache"
+#define SERVER_BASEVERSION SERVER_PRODUCT "/1.3.13-dev"	/* SEE COMMENTS ABOVE */
 #define SERVER_VERSION  SERVER_BASEVERSION
 enum server_token_type {
     SrvTk_MIN,		/* eg: Apache/1.3.0 */
     SrvTk_OS,		/* eg: Apache/1.3.0 (UNIX) */
-    SrvTk_FULL		/* eg: Apache/1.3.0 (UNIX) PHP/3.0 FooBar/1.2b */
+    SrvTk_FULL,		/* eg: Apache/1.3.0 (UNIX) PHP/3.0 FooBar/1.2b */
+    SrvTk_PRODUCT_ONLY	/* eg: Apache */
 };
 
 API_EXPORT(const char *) ap_get_server_version(void);

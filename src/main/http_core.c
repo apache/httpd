@@ -2643,8 +2643,15 @@ static const char *set_serv_tokens(cmd_parms *cmd, void *dummy, char *arg)
     else if (!strcasecmp(arg, "Min") || !strcasecmp(arg, "Minimal")) {
         ap_server_tokens = SrvTk_MIN;
     }
-    else {
+    else if (!strcasecmp(arg, "Full")) {
         ap_server_tokens = SrvTk_FULL;
+    }
+    else if (!strcasecmp(arg, "Prod") || !strcasecmp(arg, "ProductOnly")) {
+        ap_server_tokens = SrvTk_PRODUCT_ONLY;
+    }
+    else {
+	return ap_pstrcat(cmd->pool, "Unrecognised ServerTokens keyword: ",
+			  arg, NULL);
     }
     return NULL;
 }
