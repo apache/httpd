@@ -1001,6 +1001,7 @@ ServerSignature On
     BrowserMatch "^WebDrive" redirect-carefully
     BrowserMatch "^WebDAVFS/1.[012]" redirect-carefully
     BrowserMatch "^gnome-vfs/1.0" redirect-carefully
+    BrowserMatch "^XML Spy" redirect-carefully
 </IfModule>
 
 <IfModule mod_status.c>
