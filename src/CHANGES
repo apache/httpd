@@ -56,13 +56,16 @@ Changes with Apache 1.2b8
   *) Try to continue gracefully by disabling the vhost if a DNS lookup
      fails while parsing the configuration file.  [Dean Gaudet]
 
-  *) Workaround to a compiler bug that causes SunOS 4.1.x to panic.
-     [Roy Fielding]
+  *) Improved calls to setsockopt.  [Roy Fielding]
 
   *) Negotiation changes: Don't output empty content-type in variant list;
      Output charset in variant list; Return sooner from handle_multi() if
      no variants found; Add handling of '*' wildcard in Accept-Charset.
      [Petr Lampa and Paul Sutton]
+
+  *) If two variants' charset quality are equal and one is the default
+     charset (iso-8859-1), then prefer the variant that was specifically
+     listed in Accept-Charset instead of the default.  [Petr Lampa]
 
   *) Memory allocation problem in push_array() -- it would corrupt memory
      when nalloc==0.  [Kai Risku <krisku@tf.hut.fi> and Roy Fielding]
