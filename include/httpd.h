@@ -369,8 +369,25 @@ extern "C" {
 #define APEXIT_CHILDINIT	0x3
 #define APEXIT_CHILDFATAL	0xf
 
+/**
+ * Get the server version string
+ * @return The server version string
+ * @deffunc const char *ap_get_server_version(void)
+ */
 API_EXPORT(const char *) ap_get_server_version(void);
+
+/**
+ * Add a component to the version string
+ * @param pconf The pool to allocate the component out of
+ * @param component The string to add
+ * @deffunc void ap_add_version_component(apr_pool_t *pconf, const char *component)
+ */
 API_EXPORT(void) ap_add_version_component(apr_pool_t *pconf, const char *component);
+
+/**
+ * Get the date a time that the server was built
+ * @return The server build time string
+ */
 API_EXPORT(const char *) ap_get_server_built(void);
 
 /* Numeric release version identifier: MMNNFFRBB: major minor fix final beta
@@ -485,15 +502,18 @@ API_EXPORT(const char *) ap_get_server_built(void);
 
 #define METHODS     16
 
-/*
+typedef struct ap_method_list_t ap_method_list_t;
+/**
  * Structure for handling HTTP methods.  Methods known to the server are
  * accessed via a bitmask shortcut; extension methods are handled by
  * an array.
  */
-typedef struct {
+struct ap_method_list_t {
+    /* The bitmask used for known methods */
     int method_mask;
+    /* The array used for extension methods */
     apr_array_header_t *method_list;
-} ap_method_list_t;
+};
 
 #define CGI_MAGIC_TYPE "application/x-httpd-cgi"
 #define INCLUDES_MAGIC_TYPE "text/x-server-parsed-html"
@@ -673,9 +693,12 @@ struct request_rec {
      *  HTTP_METHOD_NOT_ALLOWED.  Unfortunately this means that a Script GET
      *  handler can't be installed by mod_actions. </PRE>
      */
-    int allowed;		/* Allowed methods - for 405, OPTIONS, etc */
-    apr_array_header_t *allowed_xmethods; /* Array of extension methods */
-    ap_method_list_t *allowed_methods; /* List of allowed methods */
+    /** Allowed methods - for 405, OPTIONS, etc */
+    int allowed;
+    /** Array of extension methods */
+    apr_array_header_t *allowed_xmethods; 
+    /** List of allowed methods */
+    ap_method_list_t *allowed_methods; 
 
     /** byte count in stream is for body */
     int sent_bodyct;
@@ -1402,11 +1425,6 @@ API_EXPORT(char *) ap_pbase64decode(apr_pool_t *p, const char *bufcoded);
  * @deffunc char *ap_pbase64encode(apr_pool_t *p, char *string)
  */
 API_EXPORT(char *) ap_pbase64encode(apr_pool_t *p, char *string); 
-
-/* The functions have been deprecated for the two above functions.
- */
-API_EXPORT(char *) ap_uudecode(apr_pool_t *p, const char *bufcoded);
-API_EXPORT(char *) ap_uuencode(apr_pool_t *p, char *string); 
 
 #include "pcreposix.h"
 
