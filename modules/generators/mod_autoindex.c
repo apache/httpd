@@ -690,7 +690,7 @@ struct ent {
 
 static char *find_item(request_rec *r, ap_array_header_t *list, int path_only)
 {
-    const char *content_type = r->content_type;
+    const char *content_type = ap_field_noparam(r->pool, r->content_type);
     const char *content_encoding = r->content_encoding;
     char *path = r->filename;
 

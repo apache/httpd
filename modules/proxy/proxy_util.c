@@ -822,11 +822,15 @@ int ap_proxyerror(request_rec *r, int statuscode, const char *message)
     ap_table_setn(r->notes, "error-notes",
 		  ap_pstrcat(r->pool, 
 			     "The proxy server could not handle the request "
-			     "<EM><A HREF=\"", r->uri, "\">",
-			     r->method, "&nbsp;", r->uri, "</A></EM>.<P>\n"
-			     "Reason: <STRONG>", message, "</STRONG>", NULL));
+			     "<EM><A HREF=\"", ap_escape_uri(r->pool, r->uri),
+			     "\">", ap_escape_html(r->pool, r->method),
+			     "&nbsp;", 
+			     ap_escape_html(r->pool, r->uri), "</A></EM>.<P>\n"
+			     "Reason: <STRONG>",
+			     ap_escape_html(r->pool, message), 
+			     "</STRONG>", NULL));
 
-    /* Allow the "error-notes" string to be printed by ap_send_error_response() */
+    /* Allow "error-notes" string to be printed by ap_send_error_response() */
     ap_table_setn(r->notes, "verbose-error-to", ap_pstrdup(r->pool, "*"));
 
     r->status_line = ap_psprintf(r->pool, "%3.3u Proxy Error", statuscode);
