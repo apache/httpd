@@ -678,7 +678,7 @@ static void winnt_accept(void *listen_socket)
 
     nlsd = (SOCKET) listen_socket;
 
-    while (1) {
+    while (!shutdown_in_progress) {
         pCompContext = NULL;
         /* Grab a context off the queue */
         apr_lock_acquire(qlock);
@@ -758,7 +758,10 @@ static void winnt_accept(void *listen_socket)
                 pCompContext->accept_socket = INVALID_SOCKET;
                 ap_log_error(APLOG_MARK, APLOG_DEBUG, lasterror, server_conf,
                              "winnt_accept: AcceptEx failed. Reallocate the accept socket and try again.");
-                goto again;
+                if (shutdown_in_progress)
+                    break;
+                else
+                    goto again;
             }
             else if (lasterror != APR_FROM_OS_ERROR(ERROR_IO_PENDING)) {
                 ap_log_error(APLOG_MARK,APLOG_ERR, lasterror, server_conf,
