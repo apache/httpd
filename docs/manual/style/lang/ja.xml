@@ -56,7 +56,7 @@
 
  <!-- Used in headers and footers -->
  <message name="apachetitle">- Apache HTTP サーバ</message>
- <message name="apachehttpserver">Apache HTTP サーバ バージョン 2.0</message>
+ <message name="apachehttpserver">Apache HTTP サーバ バージョン 2.1</message>
  <message name="apachedocalt">[APACHE DOCUMENTATION]</message>
  <message name="index">索引</message> <!-- deprecated -->
  <message name="home">ホーム</message> <!-- deprecated -->
@@ -65,7 +65,7 @@
  <message name="apache">Apache</message>
  <message name="http-server">HTTP サーバ</message>
  <message name="documentation">ドキュメンテーション</message>
- <message name="version">バージョン 2.0</message>
+ <message name="version">バージョン 2.1</message>
 
  <!-- super menu -->
  <message name="modules">モジュール</message>

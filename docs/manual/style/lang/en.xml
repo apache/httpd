@@ -57,7 +57,7 @@
 
  <!-- Used in headers and footers -->
  <message name="apachetitle">- Apache HTTP Server</message>
- <message name="apachehttpserver">Apache HTTP Server Version 2.0</message>
+ <message name="apachehttpserver">Apache HTTP Server Version 2.1</message>
  <message name="apachedocalt">[APACHE DOCUMENTATION]</message>
  <message name="index">Index</message> <!-- deprecated -->
  <message name="home">Home</message> <!-- deprecated -->
@@ -66,7 +66,7 @@
  <message name="apache">Apache</message>
  <message name="http-server">HTTP Server</message>
  <message name="documentation">Documentation</message>
- <message name="version">Version 2.0</message>
+ <message name="version">Version 2.1</message>
 
  <!-- super menu -->
  <message name="modules">Modules</message>
