@@ -264,8 +264,8 @@ static int authenticate_basic_user(request_rec *r)
 
         auth_result = provider->check_password(r, sent_user, sent_pw);
 
-        /* Access is granted.  Stop checking. */
-        if (auth_result == AUTH_GRANTED) {
+        /* Something occured. Stop checking. */
+        if (auth_result != AUTH_USER_NOT_FOUND) {
             break;
         }
 
@@ -281,7 +281,7 @@ static int authenticate_basic_user(request_rec *r)
         int return_code;
 
         /* If we're not authoritative, then any error is ignored. */
-        if (!(conf->authoritative)) {
+        if (!(conf->authoritative) && auth_result != AUTH_DENIED) {
             return DECLINED;
         }
 
