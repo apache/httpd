@@ -1747,7 +1747,8 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
 
     if (strncmp(rnew->filename, fdir, fdirlen) == 0
            && rnew->filename[fdirlen] 
-           && ap_strchr_c(rnew->filename + fdirlen, '/') == NULL) 
+           && ap_strchr_c(rnew->filename + fdirlen, '/') == NULL
+           && strlen(r->uri) != 0)
     {
         char *udir = ap_make_dirstr_parent(rnew->pool, r->uri);
 
