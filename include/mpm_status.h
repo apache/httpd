@@ -81,6 +81,21 @@ typedef struct {
 API_EXPORT(const char *) ap_get_connection_status(long conn_id, const char *key);
 
 /**
+ * Get an array of current connection IDs.
+ *
+ */
+API_EXPORT(ap_array_header_t *) ap_get_connections(ap_context_t *p);
+
+/**
+ * Get an array of keys from a given connection.
+ *
+ * conn_id = Connection ID
+ *
+ */
+API_EXPORT(ap_array_header_t *) ap_get_connection_keys(ap_context_t *p,
+                                                       long conn_id);
+
+/**
  *
  * Set a cell in the status table. No guarantees are made that long strings
  * won't be truncated.

@@ -483,6 +483,45 @@ const char *ap_get_connection_status(long conn_id, const char *key)
     return NULL;
 }
 
+ap_array_header_t *ap_get_connections(ap_context_t *p)
+{
+    int i;
+    ap_array_header_t *connection_list;
+    long *array_slot;
+
+    connection_list = ap_make_array(p, 0, sizeof(long));
+    /* We assume that there is a connection iff it has an entry in the status
+     * table. Connections without any status sound problematic to me, so this
+     * is probably for the best. - manoj */
+    for (i = 0; i < max_daemons_limit*HARD_THREAD_LIMIT; i++) {
+	if (ap_scoreboard_image->table[i][0].key[0] != '\0') {
+            array_slot = ap_push_array(connection_list);
+            *array_slot = i;
+        }
+    }
+    return connection_list;
+}
+
+ap_array_header_t *ap_get_connection_keys(ap_context_t *p, long conn_id)
+{
+    int i = 0;
+    status_table_entry *ss;
+    ap_array_header_t *key_list;
+    char **array_slot;
+
+    key_list = ap_make_array(p, 0, KEY_LENGTH * sizeof(char));
+    while (i < STATUSES_PER_CONNECTION) {
+        ss = &(ap_scoreboard_image->table[conn_id][i]);
+        if (ss->key[0] == '\0') {
+            break;
+        }
+        array_slot = ap_push_array(key_list);
+        *array_slot = ap_pstrdup(p, ss->key);
+        i++;
+    }
+    return key_list;
+}
+
 /* Note: no effort is made here to prevent multiple threads from messing with
  * a single connection at the same time. ap_update_connection_status should
  * only be called by the thread that owns the connection */
