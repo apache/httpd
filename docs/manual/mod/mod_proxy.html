@@ -84,6 +84,7 @@ into a new module, mod_cache.
 <li><a href="#proxyreceivebuffersize">ProxyReceiveBufferSize</a>
 <li><a href="#proxyremote">ProxyRemote</a>
 <li><a href="#proxyrequests">ProxyRequests</a>
+<li><a href="#proxytimeout">ProxyTimeout</a>
 <li><a href="#proxyvia">ProxyVia</a>
 
 </ul>
@@ -877,6 +878,45 @@ The arguments to the NoProxy directive are one of the following type list:
    </dl>
 
 <hr>
+
+<h2><a name="proxytimeout">ProxyTimeout</a> directive</h2>
+<a
+ href="directive-dict.html#Syntax"
+ REL="Help"
+><strong>Syntax:</strong></a> ProxyTimeout <em>n</em> seconds<br>
+<a
+ href="directive-dict.html#Default"
+ REL="Help"
+><strong>Default:</strong></a> <em>server default timeout</em><br>
+<a
+ href="directive-dict.html#Context"
+ REL="Help"
+><strong>Context:</strong></a> server config, virtual host<br>
+<a
+ href="directive-dict.html#Override"
+ REL="Help"
+><strong>Override:</strong></a> <em>Not applicable</em><br>
+<a
+ href="directive-dict.html#Status"
+ REL="Help"
+><strong>Status:</strong></a> Base<br>
+<a
+ href="directive-dict.html#Module"
+ REL="Help"
+><strong>Module:</strong></a> mod_proxy<br>
+<a
+ href="directive-dict.html#Compatibility"
+ REL="Help"
+><strong>Compatibility:</strong></a> ProxyDomain is only available in
+Apache 2.0.31 and later.<p>
+
+<p>This directive allows a user to specifiy a timeout on proxy requests.
+This is usefull when you have a slow/buggy appserver which hangs,
+and you would rather just return a timeout and fail gracefully instead
+of waiting however long it takes the server to return
+</p>
+<hr>
+
 
 <h2><a name="proxydomain">ProxyDomain</a> directive</h2>
 <a

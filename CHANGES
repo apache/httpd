@@ -1,4 +1,6 @@
 Changes with Apache 2.0.31-dev
+  *) Add a timeout option to the proxy code 'ProxyTimeout' 
+     [Ian Holsman]
 
   *) FTP directory listings are now always retrieved in ASCII mode.
      The FTP proxy properly escapes URI's and HTML in the generated
