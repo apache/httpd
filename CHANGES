@@ -1,3 +1,5 @@
+Changes with Apache 2.0.24-dev
+
 Changes with Apache 2.0.23
 
   *) Use the prefork MPM by default on Unix.  [various]
