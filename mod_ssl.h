@@ -64,20 +64,12 @@
 #ifndef MOD_SSL_H
 #define MOD_SSL_H 1
 
-#if 0 /* XXX */
-
-/* 
- * Check whether Extended API (EAPI) is enabled
- */
-#ifndef EAPI
-#error "mod_ssl requires Extended API (EAPI)"
-#endif
-
 /* 
  * Optionally enable the experimental stuff, but allow the user to
  * override the decision which experimental parts are included by using
  * CFLAGS="-DSSL_EXPERIMENTAL_xxxx_IGNORE".
  */
+#if 0 /* XXX */
 #ifdef SSL_EXPERIMENTAL
 #ifndef SSL_EXPERIMENTAL_PERDIRCA_IGNORE
 #define SSL_EXPERIMENTAL_PERDIRCA
@@ -91,6 +83,7 @@
 #endif
 #endif
 #endif /* SSL_EXPERIMENTAL */
+#endif /* XXX */
 
 /*
  * Power up our brain...
@@ -130,7 +123,6 @@
 #include "ap_config.h"
 #include "httpd.h"
 #include "http_config.h"
-#include "http_conf_globals.h"
 #include "http_protocol.h"
 #include "http_request.h"
 #include "http_main.h"
@@ -138,13 +130,15 @@
 #include "http_log.h"
 #include "scoreboard.h"
 #include "util_md5.h"
-#include "fnmatch.h"
+#include "apr_fnmatch.h"
 #undef CORE_PRIVATE
 
 /* mod_ssl headers */
+#if 0 /* XXX */
 #include "ssl_expr.h"
 #include "ssl_util_ssl.h"
 #include "ssl_util_table.h"
+#endif /* XXX */
 
 /*
  * Provide reasonable default for some defines
@@ -197,6 +191,7 @@
 
 #define strIsEmpty(s)    (s == NULL || s[0] == NUL)
 
+#if 0 /* XXX */
 #define cfgMerge(el,unset)  new->el = add->el == unset ? base->el : add->el
 #define cfgMergeArray(el)   new->el = ap_append_arrays(p, add->el, base->el)
 #define cfgMergeTable(el)   new->el = ap_overlay_tables(p, add->el, base->el)
@@ -211,6 +206,7 @@
 
 #define myCtxVarSet(mc,num,val)  mc->rCtx.pV##num = val
 #define myCtxVarGet(mc,num,type) (type)(mc->rCtx.pV##num)
+#endif /* XXX */
 
 #define AP_ALL_CMD(name, args, desc) \
         { "SSL"#name, ssl_cmd_SSL##name, NULL, RSRC_CONF|OR_AUTHCFG, args, desc },
@@ -221,6 +217,7 @@
 #define AP_END_CMD \
         { NULL }
 
+#if 0 /* XXX */
 /*
  * SSL Logging
  */
@@ -622,7 +619,9 @@ typedef struct {
  * (i.e. the local configuration for all <Directory>
  *  and .htaccess contexts)
  */
+#endif /* XXX */
 typedef struct {
+#if 0 /* XXX */
     BOOL          bSSLRequired;
     array_header *aRequirement;
     ssl_opt_t     nOptions;
@@ -638,7 +637,9 @@ typedef struct {
 #ifdef SSL_VENDOR
     ap_ctx       *ctx;
 #endif
+#endif /* XXX */
 } SSLDirConfigRec;
+#if 0 /* XXX */
 
 /*
  *  function prototypes
@@ -655,6 +656,7 @@ void        *ssl_config_server_create(pool *, server_rec *);
 void        *ssl_config_server_merge(pool *, void *, void *);
 void        *ssl_config_perdir_create(pool *, char *);
 void        *ssl_config_perdir_merge(pool *, void *, void *);
+#endif /* XXX */
 const char  *ssl_cmd_SSLMutex(cmd_parms *, char *, char *);
 const char  *ssl_cmd_SSLPassPhraseDialog(cmd_parms *, char *, char *);
 const char  *ssl_cmd_SSLCryptoDevice(cmd_parms *, char *, char *);
@@ -688,6 +690,7 @@ const char  *ssl_cmd_SSLProxyCACertificateFile(cmd_parms *, char *, char *);
 const char  *ssl_cmd_SSLProxyMachineCertificatePath(cmd_parms *, char *, char *);
 const char  *ssl_cmd_SSLProxyMachineCertificateFile(cmd_parms *, char *, char *);
 #endif
+#if 0 /* XXX */
 
 /*  module initialization  */
 void         ssl_init_Module(server_rec *, pool *);

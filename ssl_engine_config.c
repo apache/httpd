@@ -60,9 +60,9 @@
                                       /* ``Damned if you do,
                                            damned if you don't.''
                                                -- Unknown        */
-#if 0 /* XXX */
-
 #include "mod_ssl.h"
+
+#if 0 /* XXX */
 
 /*  _________________________________________________________________
 **
@@ -379,6 +379,8 @@ char *ssl_hook_RewriteCommand(cmd_parms *cmd, void *config, const char *cmd_line
 #endif
 }
 
+#endif /* XXX */
+
 /*
  *  Configuration functions for particular directives
  */
@@ -386,6 +388,7 @@ char *ssl_hook_RewriteCommand(cmd_parms *cmd, void *config, const char *cmd_line
 const char *ssl_cmd_SSLMutex(
     cmd_parms *cmd, char *struct_ptr, char *arg)
 {
+#if 0 /* XXX */
     const char *err;
     SSLModConfigRec *mc = myModConfig();
 
@@ -415,12 +418,14 @@ const char *ssl_cmd_SSLMutex(
     }
     else
         return "SSLMutex: Invalid argument";
+#endif /* XXX */
     return NULL;
 }
 
 const char *ssl_cmd_SSLPassPhraseDialog(
     cmd_parms *cmd, char *struct_ptr, char *arg)
 {
+#if 0 /* XXX */
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
     const char *err;
 
@@ -439,6 +444,7 @@ const char *ssl_cmd_SSLPassPhraseDialog(
     }
     else
         return "SSLPassPhraseDialog: Invalid argument";
+#endif /* XXX */
     return NULL;
 }
 
@@ -446,6 +452,7 @@ const char *ssl_cmd_SSLPassPhraseDialog(
 const char *ssl_cmd_SSLCryptoDevice(
     cmd_parms *cmd, char *struct_ptr, char *arg)
 {
+#if 0 /* XXX */
     SSLModConfigRec *mc = myModConfig();
     const char *err;
     ENGINE *e;
@@ -470,6 +477,7 @@ const char *ssl_cmd_SSLCryptoDevice(
     }
     else
         return "SSLCryptoDevice: Invalid argument";
+#endif /* XXX */
     return NULL;
 }
 #endif
@@ -477,6 +485,7 @@ const char *ssl_cmd_SSLCryptoDevice(
 const char *ssl_cmd_SSLRandomSeed(
     cmd_parms *cmd, char *struct_ptr, char *arg1, char *arg2, char *arg3)
 {
+#if 0 /* XXX */
     SSLModConfigRec *mc = myModConfig();
     const char *err;
     ssl_randseed_t *pRS;
@@ -529,33 +538,39 @@ const char *ssl_cmd_SSLRandomSeed(
         if (pRS->nBytes < 0)
             return "SSLRandomSeed: invalid number of bytes specified";
     }
+#endif /* XXX */
     return NULL;
 }
 
 const char *ssl_cmd_SSLEngine(
     cmd_parms *cmd, char *struct_ptr, int flag)
 {
+#if 0 /* XXX */
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
 
     sc->bEnabled = (flag ? TRUE : FALSE);
+#endif /* XXX */
     return NULL;
 }
 
 const char *ssl_cmd_SSLCipherSuite(
     cmd_parms *cmd, SSLDirConfigRec *dc, char *arg)
 {
+#if 0 /* XXX */
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
 
     if (cmd->path == NULL || dc == NULL)
         sc->szCipherSuite = arg;
     else
         dc->szCipherSuite = arg;
+#endif /* XXX */
     return NULL;
 }
 
 const char *ssl_cmd_SSLCertificateFile(
     cmd_parms *cmd, char *struct_ptr, char *arg)
 {
+#if 0 /* XXX */
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
     char *cpPath;
     int i;
@@ -571,12 +586,14 @@ const char *ssl_cmd_SSLCertificateFile(
                           "different certificates per virtual host allowed", 
                           SSL_AIDX_MAX);
     sc->szPublicCertFile[i] = cpPath;
+#endif /* XXX */
     return NULL;
 }
 
 const char *ssl_cmd_SSLCertificateKeyFile(
     cmd_parms *cmd, char *struct_ptr, char *arg)
 {
+#if 0 /* XXX */
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
     char *cpPath;
     int i;
@@ -592,12 +609,14 @@ const char *ssl_cmd_SSLCertificateKeyFile(
                           "different private keys per virtual host allowed", 
                           SSL_AIDX_MAX);
     sc->szPrivateKeyFile[i] = cpPath;
+#endif /* XXX */
     return NULL;
 }
 
 const char *ssl_cmd_SSLCertificateChainFile(
     cmd_parms *cmd, char *struct_ptr, char *arg)
 {
+#if 0 /* XXX */
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
     char *cpPath;
 
@@ -606,12 +625,14 @@ const char *ssl_cmd_SSLCertificateChainFile(
         return ap_pstrcat(cmd->pool, "SSLCertificateChainFile: file '",
                           cpPath, "' not exists or empty", NULL);
     sc->szCertificateChain = cpPath;
+#endif /* XXX */
     return NULL;
 }
 
 const char *ssl_cmd_SSLCACertificatePath(
     cmd_parms *cmd, SSLDirConfigRec *dc, char *arg)
 {
+#if 0 /* XXX */
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
     char *cpPath;
 
@@ -627,12 +648,14 @@ const char *ssl_cmd_SSLCACertificatePath(
 #else
     sc->szCACertificatePath = cpPath;
 #endif
+#endif /* XXX */
     return NULL;
 }
 
 const char *ssl_cmd_SSLCACertificateFile(
     cmd_parms *cmd, SSLDirConfigRec *dc, char *arg)
 {
+#if 0 /* XXX */
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
     char *cpPath;
 
@@ -648,12 +671,14 @@ const char *ssl_cmd_SSLCACertificateFile(
 #else
     sc->szCACertificateFile = cpPath;
 #endif
+#endif /* XXX */
     return NULL;
 }
 
 const char *ssl_cmd_SSLCARevocationPath(
     cmd_parms *cmd, SSLDirConfigRec *dc, char *arg)
 {
+#if 0 /* XXX */
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
     char *cpPath;
 
@@ -662,12 +687,14 @@ const char *ssl_cmd_SSLCARevocationPath(
         return ap_pstrcat(cmd->pool, "SSLCARecocationPath: directory '",
                           cpPath, "' not exists", NULL);
     sc->szCARevocationPath = cpPath;
+#endif /* XXX */
     return NULL;
 }
 
 const char *ssl_cmd_SSLCARevocationFile(
     cmd_parms *cmd, SSLDirConfigRec *dc, char *arg)
 {
+#if 0 /* XXX */
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
     char *cpPath;
 
@@ -676,12 +703,14 @@ const char *ssl_cmd_SSLCARevocationFile(
         return ap_pstrcat(cmd->pool, "SSLCARevocationFile: file '",
                           cpPath, "' not exists or empty", NULL);
     sc->szCARevocationFile = cpPath;
+#endif /* XXX */
     return NULL;
 }
 
 const char *ssl_cmd_SSLVerifyClient(
     cmd_parms *cmd, SSLDirConfigRec *dc, char *level)
 {
+#if 0 /* XXX */
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
     ssl_verify_t id;
 
@@ -699,12 +728,14 @@ const char *ssl_cmd_SSLVerifyClient(
         sc->nVerifyClient = id;
     else
         dc->nVerifyClient = id;
+#endif /* XXX */
     return NULL;
 }
 
 const char *ssl_cmd_SSLVerifyDepth(
     cmd_parms *cmd, SSLDirConfigRec *dc, char *arg)
 {
+#if 0 /* XXX */
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
     int d;
 
@@ -715,12 +746,14 @@ const char *ssl_cmd_SSLVerifyDepth(
         sc->nVerifyDepth = d;
     else
         dc->nVerifyDepth = d;
+#endif /* XXX */
     return NULL;
 }
 
 const char *ssl_cmd_SSLSessionCache(
     cmd_parms *cmd, char *struct_ptr, char *arg)
 {
+#if 0 /* XXX */
     const char *err;
     SSLModConfigRec *mc = myModConfig();
     char *cp, *cp2;
@@ -792,23 +825,27 @@ const char *ssl_cmd_SSLSessionCache(
              cmd, arg, mc))
 #endif
         return "SSLSessionCache: Invalid argument";
+#endif /* XXX */
     return NULL;
 }
 
 const char *ssl_cmd_SSLSessionCacheTimeout(
     cmd_parms *cmd, char *struct_ptr, char *arg)
 {
+#if 0 /* XXX */
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
 
     sc->nSessionCacheTimeout = atoi(arg);
     if (sc->nSessionCacheTimeout < 0)
         return "SSLSessionCacheTimeout: Invalid argument";
+#endif /* XXX */
     return NULL;
 }
 
 const char *ssl_cmd_SSLLog(
     cmd_parms *cmd, char *struct_ptr, char *arg)
 {
+#if 0 /* XXX */
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
     const char *err;
 
@@ -816,12 +853,14 @@ const char *ssl_cmd_SSLLog(
                                          |NOT_IN_LOCATION|NOT_IN_FILES )) != NULL)
         return err;
     sc->szLogFile = arg;
+#endif /* XXX */
     return NULL;
 }
 
 const char *ssl_cmd_SSLLogLevel(
     cmd_parms *cmd, char *struct_ptr, char *level)
 {
+#if 0 /* XXX */
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
     const char *err;
 
@@ -842,12 +881,14 @@ const char *ssl_cmd_SSLLogLevel(
         sc->nLogLevel = SSL_LOG_DEBUG;
     else
         return "SSLLogLevel: Invalid argument";
+#endif /* XXX */
     return NULL;
 }
 
 const char *ssl_cmd_SSLOptions(
     cmd_parms *cmd, SSLDirConfigRec *dc, const char *cpLine)
 {
+#if 0 /* XXX */
     ssl_opt_t opt;
     int first;
     char action;
@@ -897,19 +938,23 @@ const char *ssl_cmd_SSLOptions(
             dc->nOptionsDel = SSL_OPT_NONE;
         }
     }
+#endif /* XXX */
     return NULL;
 }
 
 const char *ssl_cmd_SSLRequireSSL(
     cmd_parms *cmd, SSLDirConfigRec *dc, char *cipher)
 {
+#if 0 /* XXX */
     dc->bSSLRequired = TRUE;
+#endif /* XXX */
     return NULL;
 }
 
 const char *ssl_cmd_SSLRequire(
     cmd_parms *cmd, SSLDirConfigRec *dc, char *cpExpr)
 {
+#if 0 /* XXX */
     ssl_expr *mpExpr;
     ssl_require_t *pReqRec;
 
@@ -918,12 +963,14 @@ const char *ssl_cmd_SSLRequire(
     pReqRec = ap_push_array(dc->aRequirement);
     pReqRec->cpExpr = ap_pstrdup(cmd->pool, cpExpr);
     pReqRec->mpExpr = mpExpr;
+#endif /* XXX */
     return NULL;
 }
 
 const char *ssl_cmd_SSLProtocol(
     cmd_parms *cmd, char *struct_ptr, const char *opt)
 {
+#if 0 /* XXX */
     SSLSrvConfigRec *sc;
     ssl_proto_t options, thisopt;
     char action;
@@ -957,6 +1004,7 @@ const char *ssl_cmd_SSLProtocol(
             options = thisopt;
     }
     sc->nProtocol = options;
+#endif /* XXX */
     return NULL;
 }
 
@@ -965,6 +1013,7 @@ const char *ssl_cmd_SSLProtocol(
 const char *ssl_cmd_SSLProxyProtocol(
     cmd_parms *cmd, char *struct_ptr, const char *opt)
 {
+#if 0 /* XXX */
     SSLSrvConfigRec *sc;
     ssl_proto_t options, thisopt;
     char action;
@@ -998,30 +1047,36 @@ const char *ssl_cmd_SSLProxyProtocol(
             options = thisopt;
     }
     sc->nProxyProtocol = options;
+#endif /* XXX */
     return NULL;
 }
 
 const char *ssl_cmd_SSLProxyCipherSuite(
     cmd_parms *cmd, char *struct_ptr, char *arg)
 {
+#if 0 /* XXX */
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
 
     sc->szProxyCipherSuite = arg;
+#endif /* XXX */
     return NULL;
 }
 
 const char *ssl_cmd_SSLProxyVerify(
     cmd_parms *cmd, char *struct_ptr, int flag)
 {
+#if 0 /* XXX */
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
 
     sc->bProxyVerify = (flag ? TRUE : FALSE);
+#endif /* XXX */
     return NULL;
 }
 
 const char *ssl_cmd_SSLProxyVerifyDepth(
     cmd_parms *cmd, char *struct_ptr, char *arg)
 {
+#if 0 /* XXX */
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
     int d;
 
@@ -1029,12 +1084,14 @@ const char *ssl_cmd_SSLProxyVerifyDepth(
     if (d < 0)
         return "SSLProxyVerifyDepth: Invalid argument";
     sc->nProxyVerifyDepth = d;
+#endif /* XXX */
     return NULL;
 }
 
 const char *ssl_cmd_SSLProxyCACertificateFile(
     cmd_parms *cmd, char *struct_ptr, char *arg)
 {
+#if 0 /* XXX */
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
     char *cpPath;
 
@@ -1043,12 +1100,14 @@ const char *ssl_cmd_SSLProxyCACertificateFile(
         return ap_pstrcat(cmd->pool, "SSLProxyCACertificateFile: file '",
                           cpPath, "' not exists or empty", NULL);
     sc->szProxyCACertificateFile = cpPath;
+#endif /* XXX */
     return NULL;
 }
 
 const char *ssl_cmd_SSLProxyCACertificatePath(
     cmd_parms *cmd, char *struct_ptr, char *arg)
 {
+#if 0 /* XXX */
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
     char *cpPath;
 
@@ -1057,12 +1116,14 @@ const char *ssl_cmd_SSLProxyCACertificatePath(
         return ap_pstrcat(cmd->pool, "SSLProxyCACertificatePath: directory '",
                           cpPath, "' does not exists", NULL);
     sc->szProxyCACertificatePath = cpPath;
+#endif /* XXX */
     return NULL;
 }
 
 const char *ssl_cmd_SSLProxyMachineCertificateFile(
     cmd_parms *cmd, char *struct_ptr, char *arg)
 {
+#if 0 /* XXX */
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
     char *cpPath;
 
@@ -1071,12 +1132,14 @@ const char *ssl_cmd_SSLProxyMachineCertificateFile(
         return ap_pstrcat(cmd->pool, "SSLProxyMachineCertFile: file '",
                           cpPath, "' not exists or empty", NULL);
     sc->szProxyClientCertificateFile = cpPath;
+#endif /* XXX */
     return NULL;
 }
 
 const char *ssl_cmd_SSLProxyMachineCertificatePath(
     cmd_parms *cmd, char *struct_ptr, char *arg)
 {
+#if 0 /* XXX */
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
     char *cpPath;
 
@@ -1085,10 +1148,9 @@ const char *ssl_cmd_SSLProxyMachineCertificatePath(
         return ap_pstrcat(cmd->pool, "SSLProxyMachineCertPath: directory '",
                           cpPath, "' does not exists", NULL);
     sc->szProxyClientCertificatePath = cpPath;
+#endif /* XXX */
     return NULL;
 }
 
 #endif /* SSL_EXPERIMENTAL_PROXY */
-
-#endif /* XXX */
 
