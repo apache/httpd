@@ -122,7 +122,10 @@
     多くのコマンドは属性-値 (訳注: attribute-value) の組を一つだけ指定できます。
     コメントの終わり (<code>--&gt;</code>)
     の前には、SSI の句の一部だと解釈されないようにするために空白を
-    入れてください。要素 (訳注: element) を以下の表に示します。</p>
+    入れてください。最初の <code>&lt;!--#</code> はまとめて<em>一つ</em>の
+    句で、空白をふくんではいけないこと注意してください。</p>
+
+    <p>要素 (訳注: element) を以下の表に示します。</p>
 
     <table class="bordered">
     <tr><th>要素</th><th>説明</th></tr>
@@ -191,8 +194,8 @@
       <dd>値は表示する変数の名前です。</dd>
 
       <dt><code>encoding</code></dt>
-      <dd><p>変数を出力する前に、変数中の特別文字をどのようにエンコードするかを
-      指定します。<code>none</code> に設定されていると、エンコードは行なわれません。
+      <dd><p>変数を出力する前に、変数中の特別文字をどのようにエンコードするかを
+      指定します。<code>none</code> に設定されていると、エンコードは行なわれません。
       <code>url</code> に設定されていると、URL エンコード (%-エンコードとも
       呼ばれています。これはリンク等の URL の使用に適切です) が
       行なわれます。<code>echo</code> 要素の開始時は、デフォルトは
@@ -317,8 +320,8 @@
       その他の場合は、クエリー文字列も含め、コマンドで指定された
       完全な URL を使って普通に CGI スクリプトが呼び出されます。</p>
 
-      <p>属性が文書の位置を指定します。include コマンドに与えられたそれぞれの
-      属性に対して挿入作業が行なわれます。有効な属性は次の通りです。</p>
+      <p>属性が文書の位置を指定します。include コマンドに与えられたそれぞれの
+      属性に対して挿入作業が行なわれます。有効な属性は次の通りです。</p>
 
       <dl>
       <dt><code>file</code></dt>
@@ -358,7 +361,7 @@
 
     <h3><a name="element.printenv" id="element.printenv">printenv 要素</a></h3>
       <p>これは、存在するすべての変数とその値を表示します。Apache 1.3.12 から、
-      特別な文字は出力される前にエンティティエンコード (詳細は <a href="#element.echo"><code>echo</code></a> 要素を参照)
+      特別な文字は出力される前にエンティティエンコード (詳細は <a href="#element.echo"><code>echo</code></a> 要素を参照)
       されるようになりました。属性はありません。</p>
 
       <div class="example"><h3>例</h3><p><code>
@@ -423,7 +426,7 @@
     <code>config</code>,
     <code>exec</code>, <code>flastmod</code>, <code>fsize</code>,
     <code>include</code>, <code>echo</code>, <code>set</code> の
-    各ディレクティブと、条件分岐用のオペレータへの引数があります。
+    各ディレクティブと、条件分岐用のオペレータへの引数があります。
     ドル記号はバックスラッシュを使うことで使うことができます:</p>
 
     <div class="example"><p><code>
@@ -476,9 +479,9 @@
     </code></p></div>
 
     <p><code>if</code> 要素はプログラミング言語の
-    if 文と同じように動作します。条件が評価され、結果が真であれば次の
+    if 文と同じように動作します。条件が評価され、結果が真であれば次の
     <code>elif</code> か <code>else</code> か <code>endif</code>
-    要素までの文字列が出力に挿入されます。</p>
+    要素までの文字列が出力に挿入されます。</p>
 
     <p><code>elif</code> や <code>else</code> 文は <var>test_condition</var> 
     が偽のときにテキストを出力に挿入するために使われます。
@@ -575,7 +578,7 @@
       になります。</p></div>
 
     <div class="note"><h3>真偽値表現の最適化</h3>
-      <p>式がもっと複雑になり、処理の速度低下が顕著になった場合は、
+      <p>式がもっと複雑になり、処理の速度低下が顕著になった場合は、
       評価ルールに従って最適化してみると良いでしょう。</p>
       <ul>
       <li>評価は左から右に向かって行われます。</li>
@@ -724,7 +727,7 @@ directive]"</code></td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>2.0.34 以降で利用可能</td></tr>
 </table>
     <p>このディレクティブは変数が定義されていないにも関わらず
-    "echo" されたときに <code class="module"><a href="../mod/mod_include.html">mod_include</a></code>
+    "echo" されたときに <code class="module"><a href="../mod/mod_include.html">mod_include</a></code>
     が表示する文字列を変更します。</p>
 
     <div class="example"><h3>例</h3><p><code>
@@ -762,7 +765,7 @@ directive]"</code></td></tr>
       もしそれが設定されていれば、返されるファイルの <code>Last-modified</code> の
       日付をファイルの最終修正時刻にします。それが設定されていないときは、
       last-modified の日付は送られません。このビットを設定すると、
-      クライアントやプロキシがリクエストをキャッシュできるようになります。
+      クライアントやプロキシがリクエストをキャッシュできるようになります。
 
       <div class="note"><strong>注意</strong> 他の CGI を <code>#include</code>
       するかもしれないものや、各アクセスに対して違う出力を生成する

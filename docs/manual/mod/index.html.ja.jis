@@ -118,7 +118,7 @@ delivery to the client</dd>
 <dt><a href="mod_isapi.html">mod_isapi</a></dt><dd>ISAPI Extensions within Apache for Windows</dd>
 <dt><a href="mod_ldap.html" id="L" name="L">mod_ldap</a></dt><dd>LDAP connection pooling and result caching services for use
 by other LDAP modules</dd>
-<dt><a href="mod_log_config.html">mod_log_config</a></dt><dd>Logging of the requests made to the server</dd>
+<dt><a href="mod_log_config.html">mod_log_config</a></dt><dd>サーバへのリクエストのロギング</dd>
 <dt><a href="mod_logio.html">mod_logio</a></dt><dd>リクエスト毎に入力バイト数と出力バイト数とをロギング</dd>
 <dt><a href="mod_mem_cache.html" id="M" name="M">mod_mem_cache</a></dt><dd>Content cache keyed to URIs</dd>
 <dt><a href="mod_mime.html">mod_mime</a></dt><dd>リクエストされたファイルの拡張子とファイルの振る舞い

@@ -25,7 +25,7 @@
 <a href="../ja/mod/mod_logio.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>リクエスト毎に入力バイト数と出力バイト数とをロギング</td></tr>
-<tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
+<tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>logio_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">ソースファイル:</a></th><td>mod_logio.c</td></tr></table>
 <h3>概要</h3>
