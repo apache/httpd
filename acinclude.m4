@@ -360,6 +360,7 @@ dnl and then AC_TRY_LINK to test the libraries directly for the version,
 dnl but that will require someone who knows how to program openssl.
 dnl
 AC_DEFUN(APACHE_CHECK_SSL_TOOLKIT,[
+if test "x$ap_ssltk_base" = "x"; then
   AC_MSG_CHECKING(for SSL/TLS toolkit base)
   ap_ssltk_base=""
   AC_ARG_WITH(ssl, [  --with-ssl[=DIR]        SSL/TLS toolkit (OpenSSL)], [
@@ -449,5 +450,6 @@ AC_DEFUN(APACHE_CHECK_SSL_TOOLKIT,[
   fi
   APR_ADDTO(LIBS, [-lssl -lcrypto])
   ap_cv_ssltk="$ap_ssltk_base"
+fi
 ])
 
