@@ -134,6 +134,8 @@ static const command_rec ssl_config_cmds[] = {
     SSL_CMD_SRV(Protocol, RAW_ARGS,
                 "Enable or disable various SSL protocols"
                 "(`[+-][SSLv2|SSLv3|TLSv1] ...' - see manual)")
+    SSL_CMD_SRV(HonorCipherOrder, FLAG,
+                "Use the server's cipher ordering preference")
 
     /* 
      * Proxy configuration for remote SSL connections

@@ -434,6 +434,7 @@ struct SSLSrvConfigRec {
     const char      *vhost_id;
     int              vhost_id_len;
     int              session_cache_timeout;
+    BOOL             cipher_server_pref;
     modssl_ctx_t    *server;
     modssl_ctx_t    *proxy;
 };
@@ -487,6 +488,7 @@ const char  *ssl_cmd_SSLCACertificatePath(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLCACertificateFile(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLCARevocationPath(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLCARevocationFile(cmd_parms *, void *, const char *);
+const char  *ssl_cmd_SSLHonorCipherOrder(cmd_parms *cmd, void *dcfg, int flag);
 const char  *ssl_cmd_SSLVerifyClient(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLVerifyDepth(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLSessionCache(cmd_parms *, void *, const char *);
