@@ -63,8 +63,6 @@
                                            -- Clifford Stoll     */
 #include "mod_ssl.h"
 
-#if 0 /* XXX */
-
 /*  _________________________________________________________________
 **
 **  Pass Phrase and Private Key Handling
@@ -75,9 +73,9 @@
 #define BUILTIN_DIALOG_BACKOFF 2
 #define BUILTIN_DIALOG_RETRIES 5
 
-void ssl_pphrase_Handle(server_rec *s, pool *p)
+void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
 {
-    SSLModConfigRec *mc = myModConfig();
+    SSLModConfigRec *mc = myModConfig(s);
     SSLSrvConfigRec *sc;
     server_rec *pServ;
     char *cpVHostID;
@@ -137,8 +135,12 @@ void ssl_pphrase_Handle(server_rec *s, pool *p)
         algoKey  = SSL_ALGO_UNKNOWN;
         for (i = 0, j = 0; i < SSL_AIDX_MAX && sc->szPublicCertFile[i] != NULL; i++) {
 
-            ap_cpystrn(szPath, sc->szPublicCertFile[i], sizeof(szPath));
+            apr_cpystrn(szPath, sc->szPublicCertFile[i], sizeof(szPath));
+#if 0 /* XXX */
             if ((fp = ap_pfopen(p, szPath, "r")) == NULL) {
+#else
+            if ((fp = fopen(szPath, "r")) == NULL) {
+#endif
                 ssl_log(s, SSL_LOG_ERROR|SSL_ADD_ERRNO,
                         "Init: Can't open server certificate file %s", szPath);
                 ssl_die();
@@ -148,7 +150,11 @@ void ssl_pphrase_Handle(server_rec *s, pool *p)
                         "Init: Unable to read server certificate from file %s", szPath);
                 ssl_die();
             }
+#if 0 /* XXX */
             ap_pfclose(p, fp);
+#else
+            fclose(fp);
+#endif
 
             /*
              * check algorithm type of certificate and make
@@ -170,10 +176,10 @@ void ssl_pphrase_Handle(server_rec *s, pool *p)
              * certificate is actually used to configure mod_ssl's per-server
              * configuration structures).
              */
-            cp = ap_psprintf(mc->pPool, "%s:%s", cpVHostID, an);
+            cp = apr_psprintf(mc->pPool, "%s:%s", cpVHostID, an);
             asn1 = (ssl_asn1_t *)ssl_ds_table_push(mc->tPublicCert, cp);
             asn1->nData  = i2d_X509(pX509Cert, NULL);
-            asn1->cpData = ap_palloc(mc->pPool, asn1->nData);
+            asn1->cpData = apr_palloc(mc->pPool, asn1->nData);
             ucp = asn1->cpData; i2d_X509(pX509Cert, &ucp); /* 2nd arg increments */
 
             /*
@@ -199,7 +205,7 @@ void ssl_pphrase_Handle(server_rec *s, pool *p)
              * by trying to re-use already known/entered pass phrases.
              */
             if (sc->szPrivateKeyFile[j] != NULL)
-                ap_cpystrn(szPath, sc->szPrivateKeyFile[j++], sizeof(szPath));
+                apr_cpystrn(szPath, sc->szPrivateKeyFile[j++], sizeof(szPath));
 
             /*
              * Try to read the private key file with the help of
@@ -230,15 +236,23 @@ void ssl_pphrase_Handle(server_rec *s, pool *p)
                  * the callback function which serves the pass
                  * phrases to OpenSSL
                  */
+#if 0 /* XXX */
                 if ((fp = ap_pfopen(p, szPath, "r")) == NULL) {
+#else
+                if ((fp = fopen(szPath, "r")) == NULL) {
+#endif
                     ssl_log(s, SSL_LOG_ERROR|SSL_ADD_ERRNO,
                             "Init: Can't open server private key file %s", szPath);
                     ssl_die();
                 }
                 cpPassPhraseCur = NULL;
                 bReadable = ((pPrivateKey = SSL_read_PrivateKey(fp, NULL,
-                             ssl_pphrase_Handle_CB)) != NULL ? TRUE : FALSE);
+		         ssl_pphrase_Handle_CB, s)) != NULL ? TRUE : FALSE);
+#if 0 /* XXX */
                 ap_pfclose(p, fp);
+#else
+                fclose(fp);
+#endif
 
                 /*
                  * when the private key file now was readable,
@@ -348,10 +362,10 @@ void ssl_pphrase_Handle(server_rec *s, pool *p)
              * because the SSL library uses static variables inside a
              * RSA structure which do not survive DSO reloads!)
              */
-            cp = ap_psprintf(mc->pPool, "%s:%s", cpVHostID, an);
+            cp = apr_psprintf(mc->pPool, "%s:%s", cpVHostID, an);
             asn1 = (ssl_asn1_t *)ssl_ds_table_push(mc->tPrivateKey, cp);
             asn1->nData  = i2d_PrivateKey(pPrivateKey, NULL);
-            asn1->cpData = ap_palloc(mc->pPool, asn1->nData);
+            asn1->cpData = apr_palloc(mc->pPool, asn1->nData);
             ucp = asn1->cpData; i2d_PrivateKey(pPrivateKey, &ucp); /* 2nd arg increments */
 
             /*
@@ -385,11 +399,11 @@ void ssl_pphrase_Handle(server_rec *s, pool *p)
     return;
 }
 
-int ssl_pphrase_Handle_CB(char *buf, int bufsize, int verify)
+int ssl_pphrase_Handle_CB(char *buf, int bufsize, int verify, void *srv)
 {
-    SSLModConfigRec *mc = myModConfig();
+    SSLModConfigRec *mc = myModConfig((server_rec *)srv);
     server_rec *s;
-    pool *p;
+    apr_pool_t *p;
     ssl_ds_array *aPassPhrase;
     SSLSrvConfigRec *sc;
     int *pnPassPhraseCur;
@@ -407,7 +421,7 @@ int ssl_pphrase_Handle_CB(char *buf, int bufsize, int verify)
      * Reconnect to the context of ssl_phrase_Handle()
      */
     s                      = myCtxVarGet(mc,  1, server_rec *);
-    p                      = myCtxVarGet(mc,  2, pool *);
+    p                      = myCtxVarGet(mc,  2, apr_pool_t *);
     aPassPhrase            = myCtxVarGet(mc,  3, ssl_ds_array *);
     pnPassPhraseCur        = myCtxVarGet(mc,  4, int *);
     cppPassPhraseCur       = myCtxVarGet(mc,  5, char **);
@@ -425,7 +439,7 @@ int ssl_pphrase_Handle_CB(char *buf, int bufsize, int verify)
      * When remembered pass phrases are available use them...
      */
     if ((cpp = (char **)ssl_ds_array_get(aPassPhrase, *pnPassPhraseCur)) != NULL) {
-        ap_cpystrn(buf, *cpp, bufsize);
+        apr_cpystrn(buf, *cpp, bufsize);
         len = strlen(buf);
         return len;
     }
@@ -472,7 +486,7 @@ int ssl_pphrase_Handle_CB(char *buf, int bufsize, int verify)
          */
         if (*pnPassPhraseDialog == 1) {
             fprintf(stderr, "%s mod_ssl/%s (Pass Phrase Dialog)\n",
-                    SERVER_BASEVERSION, MOD_SSL_VERSION);
+                    AP_SERVER_BASEVERSION, MOD_SSL_VERSION);
             fprintf(stderr, "Some of your private key files are encrypted for security reasons.\n");
             fprintf(stderr, "In order to read them you have to provide us with the pass phrases.\n");
         }
@@ -523,24 +537,22 @@ int ssl_pphrase_Handle_CB(char *buf, int bufsize, int verify)
                 sc->szPassPhraseDialogPath);
 
         if (strchr(sc->szPassPhraseDialogPath, ' ') != NULL)
-            cmd = ap_psprintf(p, "\"%s\" %s %s", sc->szPassPhraseDialogPath, cpVHostID, cpAlgoType);
+            cmd = apr_psprintf(p, "\"%s\" %s %s", sc->szPassPhraseDialogPath, cpVHostID, cpAlgoType);
         else
-            cmd = ap_psprintf(p, "%s %s %s", sc->szPassPhraseDialogPath, cpVHostID, cpAlgoType);
+            cmd = apr_psprintf(p, "%s %s %s", sc->szPassPhraseDialogPath, cpVHostID, cpAlgoType);
         result = ssl_util_readfilter(s, p, cmd);
-        ap_cpystrn(buf, result, bufsize);
+        apr_cpystrn(buf, result, bufsize);
         len = strlen(buf);
     }
 
     /*
      * Ok, we now have the pass phrase, so give it back
      */
-    *cppPassPhraseCur = ap_pstrdup(p, buf);
+    *cppPassPhraseCur = apr_pstrdup(p, buf);
 
     /*
      * And return it's length to OpenSSL...
      */
     return (len);
 }
-
-#endif /* XXX */
 

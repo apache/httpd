@@ -148,7 +148,7 @@ static EVP_PKEY *d2i_PrivateKey_bio(BIO *bio, EVP_PKEY **key)
 }
 #endif
 
-EVP_PKEY *SSL_read_PrivateKey(FILE *fp, EVP_PKEY **key, int (*cb)(char*,int,int,void*))
+EVP_PKEY *SSL_read_PrivateKey(FILE *fp, EVP_PKEY **key, int (*cb)(char*,int,int,void*), void *s)
 {
     EVP_PKEY *rc;
     BIO *bioS;
@@ -158,7 +158,7 @@ EVP_PKEY *SSL_read_PrivateKey(FILE *fp, EVP_PKEY **key, int (*cb)(char*,int,int,
 #if SSL_LIBRARY_VERSION < 0x00904000
     rc = PEM_read_PrivateKey(fp, key, cb);
 #else
-    rc = PEM_read_PrivateKey(fp, key, cb, NULL);
+    rc = PEM_read_PrivateKey(fp, key, cb, s);
 #endif
     if (rc == NULL) {
         /* 2. try DER+Base64 */

@@ -373,19 +373,23 @@ void ssl_hook_TimeoutConnection(int sig)
     ap_ctx_set(ap_global_ctx, "ssl::handshake::timeout", (void *)TRUE);
     return;
 }
+#endif /* XXX */
 
 /*
  *  Close the SSL part of the socket connection
  *  (called immediately _before_ the socket is closed)
  */
-void ssl_hook_CloseConnection(conn_rec *conn)
+apr_status_t ssl_hook_CloseConnection(SSLFilterRec *filter)
 {
     SSL *ssl;
     char *cpType;
+    conn_rec *conn;
+    
+    ssl  = filter->pssl;
+    conn = (conn_rec *)SSL_get_app_data(ssl);
 
-    ssl = ap_ctx_get(conn->client->ctx, "ssl");
     if (ssl == NULL)
-        return;
+        return APR_SUCCESS;
 
     /*
      * First make sure that no more data is pending in Apache's BUFF,
@@ -393,7 +397,7 @@ void ssl_hook_CloseConnection(conn_rec *conn)
      * calls of Apache it would lead to an I/O error in the browser due
      * to the fact that the SSL layer was already removed by us.
      */
-    ap_bflush(conn->client);
+    ap_flush_conn(conn);
 
     /*
      * Now close the SSL layer of the connection. We've to take
@@ -431,13 +435,13 @@ void ssl_hook_CloseConnection(conn_rec *conn)
      * exchange close notify messages, but allow the user
      * to force the type of handshake via SetEnvIf directive
      */
-    if (ap_ctx_get(conn->client->ctx, "ssl::flag::unclean-shutdown") == PTRUE) {
+    if (apr_table_get(conn->notes, "ssl::flag::unclean-shutdown") == PTRUE) {
         /* perform no close notify handshake at all
            (violates the SSL/TLS standard!) */
         SSL_set_shutdown(ssl, SSL_SENT_SHUTDOWN|SSL_RECEIVED_SHUTDOWN);
         cpType = "unclean";
     }
-    else if (ap_ctx_get(conn->client->ctx, "ssl::flag::accurate-shutdown") == PTRUE) {
+    else if (apr_table_get(conn->notes, "ssl::flag::accurate-shutdown") == PTRUE) {
         /* send close notify and wait for clients close notify
            (standard compliant, but usually causes connection hangs) */
         SSL_set_shutdown(ssl, 0);
@@ -451,16 +455,17 @@ void ssl_hook_CloseConnection(conn_rec *conn)
     }
     SSL_smart_shutdown(ssl);
 
+    /* and finally log the fact that we've closed the connection */
+    ssl_log(conn->base_server, SSL_LOG_INFO,
+            "Connection to child %d closed with %s shutdown (server %s, client %s)",
+            conn->id, cpType, ssl_util_vhostid(conn->pool, conn->base_server),
+            conn->remote_ip != NULL ? conn->remote_ip : "unknown");
+
     /* deallocate the SSL connection */
     SSL_free(ssl);
-    ap_ctx_set(conn->client->ctx, "ssl", NULL);
+    apr_table_setn(conn->notes, "ssl", NULL);
 
-    /* and finally log the fact that we've closed the connection */
-    ssl_log(conn->server, SSL_LOG_INFO,
-            "Connection to child %d closed with %s shutdown (server %s, client %s)",
-            conn->child_num, cpType, ssl_util_vhostid(conn->pool, conn->server),
-            conn->remote_ip != NULL ? conn->remote_ip : "unknown");
-    return;
+    return APR_SUCCESS;
 }
 
 /*
@@ -469,16 +474,16 @@ void ssl_hook_CloseConnection(conn_rec *conn)
 int ssl_hook_ReadReq(request_rec *r)
 {
     SSL *ssl;
-    ap_ctx *apctx;
+    apr_table_t *apctx;
 
     /*
      * Get the SSL connection structure and perform the
      * delayed interlinking from SSL back to request_rec
      */
-    ssl = ap_ctx_get(r->connection->client->ctx, "ssl");
+    ssl = (SSL *)apr_table_get(r->connection->notes, "ssl");
     if (ssl != NULL) {
         apctx = SSL_get_app_data2(ssl);
-        ap_ctx_set(apctx, "ssl::request_rec", r);
+        apr_table_setn(apctx, "ssl::request_rec", (const char *)r);
     }
 
     /*
@@ -487,12 +492,12 @@ int ssl_hook_ReadReq(request_rec *r)
     if (strEQn(r->uri, "/mod_ssl:", 9))
         r->handler = "mod_ssl:content-handler";
     if (ssl != NULL) {
-        ap_ctx_set(r->ctx, "ap::http::method",  "https");
-        ap_ctx_set(r->ctx, "ap::default::port", "443");
+        apr_table_setn(r->notes, "ap::http::method",  "https");
+        apr_table_setn(r->notes, "ap::default::port", "443");
     }
     else {
-        ap_ctx_set(r->ctx, "ap::http::method",  NULL);
-        ap_ctx_set(r->ctx, "ap::default::port", NULL);
+        apr_table_setn(r->notes, "ap::http::method",  NULL);
+        apr_table_setn(r->notes, "ap::default::port", NULL);
     }
     return DECLINED;
 }
@@ -502,7 +507,7 @@ int ssl_hook_ReadReq(request_rec *r)
  */
 int ssl_hook_Translate(request_rec *r)
 {
-    if (ap_ctx_get(r->connection->client->ctx, "ssl") == NULL)
+    if (apr_table_get(r->connection->notes, "ssl") == NULL)
         return DECLINED;
 
     /*
@@ -513,23 +518,23 @@ int ssl_hook_Translate(request_rec *r)
                 "%s HTTPS request received for child %d (server %s)",
                 r->connection->keepalives <= 0 ?
                     "Initial (No.1)" :
-                    ap_psprintf(r->pool, "Subsequent (No.%d)",
-                                r->connection->keepalives+1),
-                r->connection->child_num,
+                    apr_psprintf(r->pool, "Subsequent (No.%d)",
+                                 r->connection->keepalives+1),
+                r->connection->id,
                 ssl_util_vhostid(r->pool, r->server));
 
     /*
      * Move SetEnvIf information from request_rec to conn_rec/BUFF
      * to allow the close connection handler to use them.
      */
-    if (ap_table_get(r->subprocess_env, "ssl-unclean-shutdown") != NULL)
-        ap_ctx_set(r->connection->client->ctx, "ssl::flag::unclean-shutdown", PTRUE);
+    if (apr_table_get(r->subprocess_env, "ssl-unclean-shutdown") != NULL)
+        apr_table_setn(r->connection->notes, "ssl::flag::unclean-shutdown", PTRUE);
     else
-        ap_ctx_set(r->connection->client->ctx, "ssl::flag::unclean-shutdown", PFALSE);
-    if (ap_table_get(r->subprocess_env, "ssl-accurate-shutdown") != NULL)
-        ap_ctx_set(r->connection->client->ctx, "ssl::flag::accurate-shutdown", PTRUE);
+        apr_table_setn(r->connection->notes, "ssl::flag::unclean-shutdown", PFALSE);
+    if (apr_table_get(r->subprocess_env, "ssl-accurate-shutdown") != NULL)
+        apr_table_setn(r->connection->notes, "ssl::flag::accurate-shutdown", PTRUE);
     else
-        ap_ctx_set(r->connection->client->ctx, "ssl::flag::accurate-shutdown", PFALSE);
+        apr_table_setn(r->connection->notes, "ssl::flag::accurate-shutdown", PFALSE);
 
     return DECLINED;
 }
@@ -552,15 +557,15 @@ int ssl_hook_Handler(request_rec *r)
         thisport = "";
         port = ap_get_server_port(r);
         if (!ap_is_default_port(port, r))
-            thisport = ap_psprintf(r->pool, ":%u", port);
-        thisurl = ap_psprintf(r->pool, "https://%s%s/",
-                              ap_get_server_name(r), thisport);
+            thisport = apr_psprintf(r->pool, ":%u", port);
+        thisurl = apr_psprintf(r->pool, "https://%s%s/",
+                               ap_get_server_name(r), thisport);
 
-        ap_table_setn(r->notes, "error-notes", ap_psprintf(r->pool,
-                      "Reason: You're speaking plain HTTP to an SSL-enabled server port.<BR>\n"
-                      "Instead use the HTTPS scheme to access this URL, please.<BR>\n"
-                      "<BLOCKQUOTE>Hint: <A HREF=\"%s\"><B>%s</B></A></BLOCKQUOTE>",
-                      thisurl, thisurl));
+        apr_table_setn(r->notes, "error-notes", apr_psprintf(r->pool,
+                       "Reason: You're speaking plain HTTP to an SSL-enabled server port.<BR>\n"
+                       "Instead use the HTTPS scheme to access this URL, please.<BR>\n"
+                       "<BLOCKQUOTE>Hint: <A HREF=\"%s\"><B>%s</B></A></BLOCKQUOTE>",
+                       thisurl, thisurl));
     }
 
     return HTTP_BAD_REQUEST;
@@ -575,7 +580,7 @@ int ssl_hook_Access(request_rec *r)
     SSLSrvConfigRec *sc;
     SSL *ssl;
     SSL_CTX *ctx = NULL;
-    array_header *apRequirement;
+    apr_array_header_t *apRequirement;
     ssl_require_t *pRequirements;
     ssl_require_t *pRequirement;
     char *cp;
@@ -597,7 +602,7 @@ int ssl_hook_Access(request_rec *r)
     STACK_OF(SSL_CIPHER) *skCipherOld;
     STACK_OF(SSL_CIPHER) *skCipher;
     SSL_CIPHER *pCipher;
-    ap_ctx *apctx;
+    apr_table_t *apctx;
     int nVerifyOld;
     int nVerify;
     int n;
@@ -606,7 +611,7 @@ int ssl_hook_Access(request_rec *r)
 
     dc  = myDirConfig(r);
     sc  = mySrvConfig(r->server);
-    ssl = ap_ctx_get(r->connection->client->ctx, "ssl");
+    ssl = (SSL *)apr_table_get(r->connection->notes, "ssl");
     if (ssl != NULL)
         ctx = SSL_get_SSL_CTX(ssl);
 
@@ -614,10 +619,13 @@ int ssl_hook_Access(request_rec *r)
      * Support for SSLRequireSSL directive
      */
     if (dc->bSSLRequired && ssl == NULL) {
-        ap_log_reason("SSL connection required", r->filename, r);
+        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r, 
+            "access to %s failed for %s, reason: %s", r->filename,
+            ap_get_remote_host(r->connection, r->per_dir_config, REMOTE_NAME, NULL),
+            "SSL connection required");
         /* remember forbidden access for strict require option */
-        ap_table_setn(r->notes, "ssl-access-forbidden", (void *)1);
-        return FORBIDDEN;
+        apr_table_setn(r->notes, "ssl-access-forbidden", (void *)1);
+        return HTTP_FORBIDDEN;
     }
 
     /*
@@ -692,7 +700,7 @@ int ssl_hook_Access(request_rec *r)
                     "Unable to reconfigure (per-directory) permitted SSL ciphers");
             if (skCipherOld != NULL)
                 sk_SSL_CIPHER_free(skCipherOld);
-            return FORBIDDEN;
+            return HTTP_FORBIDDEN;
         }
         /* determine whether a renegotiation has to be forced */
         skCipher = SSL_get_ciphers(ssl);
@@ -745,12 +753,12 @@ int ssl_hook_Access(request_rec *r)
      */
     if (dc->nVerifyDepth != UNSET) {
         apctx = SSL_get_app_data2(ssl);
-        if ((vp = ap_ctx_get(apctx, "ssl::verify::depth")) != NULL)
+        if ((vp = (void *)apr_table_get(apctx, "ssl::verify::depth")) != NULL)
             n = (int)AP_CTX_PTR2NUM(vp);
         else
             n = sc->nVerifyDepth;
-        ap_ctx_set(apctx, "ssl::verify::depth",
-                   AP_CTX_NUM2PTR(dc->nVerifyDepth));
+        apr_table_setn(apctx, "ssl::verify::depth",
+                   (const char *)AP_CTX_NUM2PTR(dc->nVerifyDepth));
         /* determine whether a renegotiation has to be forced */
         if (dc->nVerifyDepth < n) {
             renegotiate = TRUE;
@@ -838,14 +846,14 @@ int ssl_hook_Access(request_rec *r)
             ssl_log(r->server, SSL_LOG_ERROR|SSL_ADD_SSLERR,
                     "Unable to reconfigure verify locations "
                     "for client authentication");
-            return FORBIDDEN;
+            return HTTP_FORBIDDEN;
         }
         if ((skCAList = ssl_init_FindCAList(r->server, r->pool,
                                             cpCAFile, cpCAPath)) == NULL) {
             ssl_log(r->server, SSL_LOG_ERROR,
                     "Unable to determine list of available "
                     "CA certificates for client authentication");
-            return FORBIDDEN;
+            return HTTP_FORBIDDEN;
         }
         SSL_set_client_CA_list(ssl, skCAList);
         renegotiate = TRUE;
@@ -918,7 +926,7 @@ int ssl_hook_Access(request_rec *r)
     if (renegotiate && r->method_number == M_POST) {
         ssl_log(r->server, SSL_LOG_ERROR,
                 "SSL Re-negotiation in conjunction with POST method not supported!");
-        return METHOD_NOT_ALLOWED;
+        return HTTP_METHOD_NOT_ALLOWED;
     }
 
     /*
@@ -944,12 +952,12 @@ int ssl_hook_Access(request_rec *r)
             certstore = SSL_CTX_get_cert_store(ctx);
             if (certstore == NULL) {
                 ssl_log(r->server, SSL_LOG_ERROR, "Cannot find certificate storage");
-                return FORBIDDEN;
+                return HTTP_FORBIDDEN;
             }
             certstack = SSL_get_peer_cert_chain(ssl);
             if (certstack == NULL || sk_X509_num(certstack) == 0) {
                 ssl_log(r->server, SSL_LOG_ERROR, "Cannot find peer certificate chain");
-                return FORBIDDEN;
+                return HTTP_FORBIDDEN;
             }
             cert = sk_X509_value(certstack, 0);
             X509_STORE_CTX_init(&certstorectx, certstore, cert, certstack);
@@ -976,7 +984,7 @@ int ssl_hook_Access(request_rec *r)
             SSL_do_handshake(ssl);
             if (SSL_get_state(ssl) != SSL_ST_OK) {
                 ssl_log(r->server, SSL_LOG_ERROR, "Re-negotiation request failed");
-                return FORBIDDEN;
+                return HTTP_FORBIDDEN;
             }
             ssl_log(r->server, SSL_LOG_INFO, "Awaiting re-negotiation handshake");
             SSL_set_state(ssl, SSL_ST_ACCEPT);
@@ -984,7 +992,7 @@ int ssl_hook_Access(request_rec *r)
             if (SSL_get_state(ssl) != SSL_ST_OK) {
                 ssl_log(r->server, SSL_LOG_ERROR,
                         "Re-negotiation handshake failed: Not accepted by client!?");
-                return FORBIDDEN;
+                return HTTP_FORBIDDEN;
             }
         }
 
@@ -993,8 +1001,8 @@ int ssl_hook_Access(request_rec *r)
          */
         if ((cert = SSL_get_peer_certificate(ssl)) != NULL) {
             cp = X509_NAME_oneline(X509_get_subject_name(cert), NULL, 0);
-            ap_ctx_set(r->connection->client->ctx, "ssl::client::dn", 
-                       ap_pstrdup(r->connection->pool, cp));
+            apr_table_setn(r->connection->notes, "ssl::client::dn", 
+                           apr_pstrdup(r->connection->pool, cp));
             free(cp);
         }
 
@@ -1006,13 +1014,13 @@ int ssl_hook_Access(request_rec *r)
                 && SSL_get_verify_result(ssl) != X509_V_OK  ) {
                 ssl_log(r->server, SSL_LOG_ERROR,
                         "Re-negotiation handshake failed: Client verification failed");
-                return FORBIDDEN;
+                return HTTP_FORBIDDEN;
             }
             if (   dc->nVerifyClient == SSL_CVERIFY_REQUIRE
                 && SSL_get_peer_certificate(ssl) == NULL   ) {
                 ssl_log(r->server, SSL_LOG_ERROR,
                         "Re-negotiation handshake failed: Client certificate missing");
-                return FORBIDDEN;
+                return HTTP_FORBIDDEN;
             }
         }
     }
@@ -1030,7 +1038,7 @@ int ssl_hook_Access(request_rec *r)
             ssl_log(r->server, SSL_LOG_ERROR|SSL_ADD_SSLERR,
                     "Unable to reconfigure verify locations "
                     "to per-server configuration parameters");
-            return FORBIDDEN;
+            return HTTP_FORBIDDEN;
         }
     }
 #endif /* SSL_EXPERIMENTAL_PERDIRCA */
@@ -1044,12 +1052,14 @@ int ssl_hook_Access(request_rec *r)
         pRequirement = &pRequirements[i];
         ok = ssl_expr_exec(r, pRequirement->mpExpr);
         if (ok < 0) {
-            cp = ap_psprintf(r->pool, "Failed to execute SSL requirement expression: %s",
-                             ssl_expr_get_error());
-            ap_log_reason(cp, r->filename, r);
+            cp = apr_psprintf(r->pool, "Failed to execute SSL requirement expression: %s",
+                              ssl_expr_get_error());
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r, 
+                          "access to %s failed for %s, reason: %s", r->filename,
+                          ap_get_remote_host(r->connection, r->per_dir_config, 1, NULL), cp);
             /* remember forbidden access for strict require option */
-            ap_table_setn(r->notes, "ssl-access-forbidden", (void *)1);
-            return FORBIDDEN;
+            apr_table_setn(r->notes, "ssl-access-forbidden", (void *)1);
+            return HTTP_FORBIDDEN;
         }
         if (ok != 1) {
             ssl_log(r->server, SSL_LOG_INFO,
@@ -1057,11 +1067,14 @@ int ssl_hook_Access(request_rec *r)
                     r->filename, r->connection->remote_ip);
             ssl_log(r->server, SSL_LOG_INFO,
                     "Failed expression: %s", pRequirement->cpExpr);
-            ap_log_reason("SSL requirement expression not fulfilled "
-                          "(see SSL logfile for more details)", r->filename, r);
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r, 
+                "access to %s failed for %s, reason: %s", r->filename,
+                ap_get_remote_host(r->connection, r->per_dir_config, 1, NULL),
+                "SSL requirement expression not fulfilled "
+                "(see SSL logfile for more details)");
             /* remember forbidden access for strict require option */
-            ap_table_setn(r->notes, "ssl-access-forbidden", (void *)1);
-            return FORBIDDEN;
+            apr_table_setn(r->notes, "ssl-access-forbidden", (void *)1);
+            return HTTP_FORBIDDEN;
         }
     }
 
@@ -1099,8 +1112,8 @@ int ssl_hook_Auth(request_rec *r)
      * when strict require option is used.
      */
     if (   (dc->nOptions & SSL_OPT_STRICTREQUIRE)
-        && (ap_table_get(r->notes, "ssl-access-forbidden") != NULL))
-        return FORBIDDEN;
+        && (apr_table_get(r->notes, "ssl-access-forbidden") != NULL))
+        return HTTP_FORBIDDEN;
 
     /*
      * Make sure the user is not able to fake the client certificate
@@ -1108,7 +1121,7 @@ int ssl_hook_Auth(request_rec *r)
      * ("/XX=YYY/XX=YYY/..") as the username and "password" as the
      * password.
      */
-    if ((cpAL = ap_table_get(r->headers_in, "Authorization")) != NULL) {
+    if ((cpAL = apr_table_get(r->headers_in, "Authorization")) != NULL) {
         if (strcEQ(ap_getword(r->pool, &cpAL, ' '), "Basic")) {
             while (*cpAL == ' ' || *cpAL == '\t')
                 cpAL++;
@@ -1116,7 +1129,7 @@ int ssl_hook_Auth(request_rec *r)
             cpUN = ap_getword_nulls(r->pool, &cpAL, ':');
             cpPW = cpAL;
             if (cpUN[0] == '/' && strEQ(cpPW, "password"))
-                return FORBIDDEN;
+                return HTTP_FORBIDDEN;
         }
     }
 
@@ -1125,13 +1138,13 @@ int ssl_hook_Auth(request_rec *r)
      */
     if (!sc->bEnabled)
         return DECLINED;
-    if (ap_ctx_get(r->connection->client->ctx, "ssl") == NULL)
+    if (apr_table_get(r->connection->notes, "ssl") == NULL)
         return DECLINED;
     if (!(dc->nOptions & SSL_OPT_FAKEBASICAUTH))
         return DECLINED;
-    if (r->connection->user)
+    if (r->user)
         return DECLINED;
-    if ((clientdn = (char *)ap_ctx_get(r->connection->client->ctx, "ssl::client::dn")) == NULL)
+    if ((clientdn = (char *)apr_table_get(r->connection->notes, "ssl::client::dn")) == NULL)
         return DECLINED;
 
     /*
@@ -1145,10 +1158,10 @@ int ssl_hook_Auth(request_rec *r)
      * adding the string "xxj31ZMTZzkVA" as the password in the user file.
      * This is just the crypted variant of the word "password" ;-)
      */
-    ap_snprintf(b1, sizeof(b1), "%s:password", clientdn);
+    apr_snprintf(b1, sizeof(b1), "%s:password", clientdn);
     ssl_util_uuencode(b2, b1, FALSE);
-    ap_snprintf(b1, sizeof(b1), "Basic %s", b2);
-    ap_table_set(r->headers_in, "Authorization", b1);
+    apr_snprintf(b1, sizeof(b1), "Basic %s", b2);
+    apr_table_set(r->headers_in, "Authorization", b1);
     ssl_log(r->server, SSL_LOG_INFO,
             "Faking HTTP Basic Auth header: \"Authorization: %s\"", b1);
 
@@ -1164,8 +1177,8 @@ int ssl_hook_UserCheck(request_rec *r)
      * when strict require option is used.
      */
     if (   (dc->nOptions & SSL_OPT_STRICTREQUIRE)
-        && (ap_table_get(r->notes, "ssl-access-forbidden") != NULL))
-        return FORBIDDEN;
+        && (apr_table_get(r->notes, "ssl-access-forbidden") != NULL))
+        return HTTP_FORBIDDEN;
 
     return DECLINED;
 }
@@ -1259,7 +1272,7 @@ int ssl_hook_Fixup(request_rec *r)
 {
     SSLSrvConfigRec *sc = mySrvConfig(r->server);
     SSLDirConfigRec *dc = myDirConfig(r);
-    table *e = r->subprocess_env;
+    apr_table_t *e = r->subprocess_env;
     char *var;
     char *val;
     STACK_OF(X509) *sk;
@@ -1271,21 +1284,23 @@ int ssl_hook_Fixup(request_rec *r)
      */
     if (!sc->bEnabled)
         return DECLINED;
-    if ((ssl = ap_ctx_get(r->connection->client->ctx, "ssl")) == NULL)
+    if ((ssl = (SSL *)apr_table_get(r->connection->notes, "ssl")) == NULL)
         return DECLINED;
 
     /*
      * Annotate the SSI/CGI environment with standard SSL information
      */
     /* the always present HTTPS (=HTTP over SSL) flag! */
-    ap_table_set(e, "HTTPS", "on"); 
+    apr_table_set(e, "HTTPS", "on"); 
     /* standard SSL environment variables */
     if (dc->nOptions & SSL_OPT_STDENVVARS) {
         for (i = 0; ssl_hook_Fixup_vars[i] != NULL; i++) {
             var = (char *)ssl_hook_Fixup_vars[i];
+#if 0 /* XXX */
             val = ssl_var_lookup(r->pool, r->server, r->connection, r, var);
+#endif
             if (!strIsEmpty(val))
-                ap_table_set(e, var, val);
+                apr_table_set(e, var, val);
         }
     }
 
@@ -1293,16 +1308,20 @@ int ssl_hook_Fixup(request_rec *r)
      * On-demand bloat up the SSI/CGI environment with certificate data
      */
     if (dc->nOptions & SSL_OPT_EXPORTCERTDATA) {
+#if 0 /* XXX */
         val = ssl_var_lookup(r->pool, r->server, r->connection, r, "SSL_SERVER_CERT");
-        ap_table_set(e, "SSL_SERVER_CERT", val);
+        apr_table_set(e, "SSL_SERVER_CERT", val);
         val = ssl_var_lookup(r->pool, r->server, r->connection, r, "SSL_CLIENT_CERT");
-        ap_table_set(e, "SSL_CLIENT_CERT", val);
+        apr_table_set(e, "SSL_CLIENT_CERT", val);
+#endif
         if ((sk = SSL_get_peer_cert_chain(ssl)) != NULL) {
             for (i = 0; i < sk_X509_num(sk); i++) {
-                var = ap_psprintf(r->pool, "SSL_CLIENT_CERT_CHAIN_%d", i);
+                var = apr_psprintf(r->pool, "SSL_CLIENT_CERT_CHAIN_%d", i);
+#if 0 /* XXX */
                 val = ssl_var_lookup(r->pool, r->server, r->connection, r, var);
+#endif
                 if (val != NULL)
-                     ap_table_set(e, var, val);
+                     apr_table_setn(e, var, val);
             }
         }
     }
@@ -1351,7 +1370,7 @@ int ssl_hook_Fixup(request_rec *r)
  */
 RSA *ssl_callback_TmpRSA(SSL *pSSL, int nExport, int nKeyLen)
 {
-    SSLModConfigRec *mc = myModConfig();
+    SSLModConfigRec *mc = ssl_util_getmodconfig_ssl(pSSL, "ssl_module");
     RSA *rsa;
 
     rsa = NULL;
@@ -1377,7 +1396,7 @@ RSA *ssl_callback_TmpRSA(SSL *pSSL, int nExport, int nKeyLen)
  */
 DH *ssl_callback_TmpDH(SSL *pSSL, int nExport, int nKeyLen)
 {
-    SSLModConfigRec *mc = myModConfig();
+    SSLModConfigRec *mc = ssl_util_getmodconfig_ssl(pSSL, "ssl_module");
     DH *dh;
 
     dh = NULL;
@@ -1410,7 +1429,7 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
     request_rec *r;
     SSLSrvConfigRec *sc;
     SSLDirConfigRec *dc;
-    ap_ctx *actx;
+    apr_table_t *actx;
     X509 *xs;
     int errnum;
     int errdepth;
@@ -1424,9 +1443,9 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
      */
     ssl  = (SSL *)X509_STORE_CTX_get_app_data(ctx);
     conn = (conn_rec *)SSL_get_app_data(ssl);
-    actx = (ap_ctx *)SSL_get_app_data2(ssl);
-    r    = (request_rec *)ap_ctx_get(actx, "ssl::request_rec");
-    s    = conn->server;
+    actx = (apr_table_t *)SSL_get_app_data2(ssl);
+    r    = (request_rec *)apr_table_get(actx, "ssl::request_rec");
+    s    = conn->base_server;
     sc   = mySrvConfig(s);
     dc   = (r != NULL ? myDirConfig(r) : NULL);
 
@@ -1469,7 +1488,7 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
         ssl_log(s, SSL_LOG_TRACE,
                 "Certificate Verification: Verifiable Issuer is configured as "
                 "optional, therefore we're accepting the certificate");
-        ap_ctx_set(conn->client->ctx, "ssl::verify::info", "GENEROUS");
+        apr_table_setn(conn->notes, "ssl::verify::info", "GENEROUS");
         ok = TRUE;
     }
 
@@ -1488,8 +1507,8 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
     if (!ok) {
         ssl_log(s, SSL_LOG_ERROR, "Certificate Verification: Error (%d): %s",
                 errnum, X509_verify_cert_error_string(errnum));
-        ap_ctx_set(conn->client->ctx, "ssl::client::dn", NULL);
-        ap_ctx_set(conn->client->ctx, "ssl::verify::error",
+        apr_table_setn(conn->notes, "ssl::client::dn", NULL);
+        apr_table_setn(conn->notes, "ssl::verify::error",
                    (void *)X509_verify_cert_error_string(errnum));
     }
 
@@ -1505,7 +1524,7 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
                 "Certificate Verification: Certificate Chain too long "
                 "(chain has %d certificates, but maximum allowed are only %d)",
                 errdepth, depth);
-        ap_ctx_set(conn->client->ctx, "ssl::verify::error",
+        apr_table_setn(conn->notes, "ssl::verify::error",
                    (void *)X509_verify_cert_error_string(X509_V_ERR_CERT_CHAIN_TOO_LONG));
         ok = FALSE;
     }
@@ -1698,7 +1717,7 @@ int ssl_callback_NewSessionCacheEntry(SSL *ssl, SSL_SESSION *pNew)
      * Get Apache context back through OpenSSL context
      */
     conn = (conn_rec *)SSL_get_app_data(ssl);
-    s    = conn->server;
+    s    = conn->base_server;
     sc   = mySrvConfig(s);
 
     /*
@@ -1749,7 +1768,7 @@ SSL_SESSION *ssl_callback_GetSessionCacheEntry(
      * Get Apache context back through OpenSSL context
      */
     conn = (conn_rec *)SSL_get_app_data(ssl);
-    s    = conn->server;
+    s    = conn->base_server;
 
     /*
      * Try to retrieve the SSL_SESSION from the inter-process cache
@@ -1829,7 +1848,7 @@ void ssl_callback_LogTracingState(SSL *ssl, int where, int rc)
      */
     if ((c = (conn_rec *)SSL_get_app_data(ssl)) == NULL)
         return;
-    s = c->server;
+    s = c->base_server;
     if ((sc = mySrvConfig(s)) == NULL)
         return;
 
@@ -1873,6 +1892,7 @@ void ssl_callback_LogTracingState(SSL *ssl, int where, int rc)
      * right after a finished handshake.
      */
     if (where & SSL_CB_HANDSHAKE_DONE) {
+#if 0 /* XXX */
         ssl_log(s, SSL_LOG_INFO,
                 "Connection: Client IP: %s, Protocol: %s, Cipher: %s (%s/%s bits)",
                 ssl_var_lookup(NULL, s, c, NULL, "REMOTE_ADDR"),
@@ -1880,10 +1900,9 @@ void ssl_callback_LogTracingState(SSL *ssl, int where, int rc)
                 ssl_var_lookup(NULL, s, c, NULL, "SSL_CIPHER"),
                 ssl_var_lookup(NULL, s, c, NULL, "SSL_CIPHER_USEKEYSIZE"),
                 ssl_var_lookup(NULL, s, c, NULL, "SSL_CIPHER_ALGKEYSIZE"));
+#endif
     }
 
     return;
 }
-
-#endif /* XXX */
 

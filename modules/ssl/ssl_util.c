@@ -298,3 +298,34 @@ char *ssl_util_ptxtsub(
     return cpResult;
 }
 
+apr_status_t
+ssl_util_setmodconfig(
+    server_rec *s, const char *key, SSLModConfigRec *mc)
+{
+    return apr_pool_userdata_set((void *)mc, key, apr_pool_cleanup_null, s->process->pool);
+}
+
+SSLModConfigRec *
+ssl_util_getmodconfig(
+    server_rec *s, const char *key)
+{
+    SSLModConfigRec *mc = NULL;
+
+    if (apr_pool_userdata_get((void **)&mc, key, s->process->pool) != APR_SUCCESS)
+        ssl_log(s, SSL_LOG_TRACE, "Unable to retrieve SSLModConfig from global pool");
+    return mc;
+}
+
+SSLModConfigRec *
+ssl_util_getmodconfig_ssl(
+    SSL *ssl, const char *key)
+{
+    conn_rec *c;
+    SSLModConfigRec *mc = NULL;
+     
+    c = SSL_get_app_data(ssl);
+    if (c != NULL)
+        mc = ssl_util_getmodconfig(c->base_server, key);
+    return mc;
+}
+

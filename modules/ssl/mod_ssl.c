@@ -58,6 +58,8 @@
  */
 
 #include "mod_ssl.h"
+#include "util_md5.h"
+#include <assert.h>
 
 /*
  *  the table of configuration directives we provide
@@ -202,73 +204,10 @@ static const command_rec ssl_config_cmds[] = {
  *  the various processing hooks
  */
 
-static void ssl_hook_pre_config(
+static int ssl_hook_pre_config(
     apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp)
 {
     /* unused */
-    return;
-}
-
-
-static void ssl_hook_post_config(
-    apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s)
-{
-    /* ssl_init_Module() */
-    return;
-}
-
-static int ssl_hook_pre_connection(conn_rec *r)
-{
-    /* unused */
-    return DECLINED;
-}
-
-static int ssl_hook_process_connection(conn_rec *r)
-{
-    /* call ssl_hook_NewConnection */
-    /* hook ssl_hook_CloseConnection() */
-    return DECLINED;
-}
-
-static int ssl_hook_handler(request_rec *r)
-{
-    /* ssl_hook_Handler() */
-    return DECLINED;
-}
-
-static int ssl_hook_translate_name(request_rec *r)
-{
-    /* ssl_hook_Translate() */
-    return DECLINED;
-}
-
-static void ssl_hook_init_child(apr_pool_t *pchild, server_rec *s)
-{
-    /* ssl_init_Child() */
-    return;
-}
-
-static int ssl_hook_auth_checker(request_rec *r)
-{
-    /* ssl_hook_Auth() */
-    return DECLINED;
-}
-
-static int ssl_hook_check_user_id(request_rec *r)
-{
-    /* ssl_hook_UserCheck */
-    return DECLINED;
-}
-
-static int ssl_hook_access_checker(request_rec *r)
-{
-    /* ssl_hook_Access() */
-    return DECLINED;
-}
-
-static int ssl_hook_fixups(request_rec *r)
-{
-    /* ssl_hook_Fixup() */
     return DECLINED;
 }
 
@@ -278,40 +217,305 @@ static int ssl_hook_post_read_request(request_rec *r)
     return DECLINED;
 }
 
-static void ssl_hook_child_init(apr_pool_t *pchild, server_rec *s)
+static int ssl_hook_pre_connection(conn_rec *c)
 {
-    /* ssl_init_Child() */
+    SSLSrvConfigRec *sc = mySrvConfig(c->base_server);
+    apr_table_t *apctx;
+    SSL *ssl;
+    unsigned char *cpVHostID;
+    char *cpVHostMD5;
+
+    /*
+     * Create SSL context
+     */
+    apr_table_setn(c->notes, "ssl", NULL);
+
+    /*
+     * Immediately stop processing if SSL is disabled for this connection
+     */
+    if (sc == NULL || !sc->bEnabled)
+        return DECLINED;
+
+    /*
+     * Remember the connection information for
+     * later access inside callback functions
+     */
+    cpVHostID = (unsigned char *)ssl_util_vhostid(c->pool,c->base_server);
+    ssl_log(c->base_server, SSL_LOG_INFO, "Connection to child %d established "
+            "(server %s, client %s)", c->id, cpVHostID, 
+            c->remote_ip != NULL ? c->remote_ip : "unknown");
+
+    /*
+     * Seed the Pseudo Random Number Generator (PRNG)
+     */
+    ssl_rand_seed(c->base_server, c->pool, SSL_RSCTX_CONNECT, "");
+
+    /*
+     * Create a new SSL connection with the configured server SSL context and
+     * attach this to the socket. Additionally we register this attachment
+     * so we can detach later.
+     */
+    if ((ssl = SSL_new(sc->pSSLCtx)) == NULL) {
+        ssl_log(c->base_server, SSL_LOG_ERROR|SSL_ADD_SSLERR,
+                "Unable to create a new SSL connection from the SSL context");
+        apr_table_setn(c->notes, "ssl", NULL);
+        c->aborted = 1;
+        return DECLINED; /* XXX */
+    }
+    SSL_clear(ssl);
+    cpVHostMD5 = ap_md5(c->pool, cpVHostID);
+    if (!SSL_set_session_id_context(ssl, (unsigned char *)cpVHostMD5,
+            strlen(cpVHostMD5))) {
+        ssl_log(c->base_server, SSL_LOG_ERROR|SSL_ADD_SSLERR,
+                "Unable to set session id context to `%s'", cpVHostMD5);
+        apr_table_setn(c->notes, "ssl", NULL);
+        c->aborted = 1;
+        return DECLINED; /* XXX */
+    }
+    SSL_set_app_data(ssl, c);
+    apctx = apr_table_make(c->pool, AP_CTX_MAX_ENTRIES);
+    apr_table_setn(apctx, "ssl::request_rec", NULL);
+    apr_table_setn(apctx, "ssl::verify::depth", AP_CTX_NUM2PTR(0));
+    SSL_set_app_data2(ssl, apctx);
+
+    apr_table_setn(c->notes, "ssl", (const char *)ssl);
+
+    /*
+     *  Configure callbacks for SSL connection
+     */
+    SSL_set_tmp_rsa_callback(ssl, ssl_callback_TmpRSA);
+    SSL_set_tmp_dh_callback(ssl,  ssl_callback_TmpDH);
+#if 0 /* XXX */
+    if (sc->nLogLevel >= SSL_LOG_DEBUG) {
+        BIO_set_callback(SSL_get_rbio(ssl), ssl_io_data_cb);
+        BIO_set_callback_arg(SSL_get_rbio(ssl), ssl);
+    }
+#endif
+    /*
+     * Predefine some client verification results
+     */
+    apr_table_setn(c->notes, "ssl::client::dn", NULL);
+    apr_table_setn(c->notes, "ssl::verify::error", NULL);
+    apr_table_setn(c->notes, "ssl::verify::info", NULL);
+    SSL_set_verify_result(ssl, X509_V_OK);
+
+    /*
+     * We have to manage a I/O timeout ourself, because Apache
+     * does it the first time when reading the request, but we're
+     * working some time before this happens.
+     */
+    ssl_util_setmodconfig(c->base_server, "ssl::handshake::timeout", (void *)FALSE);
+#if 0 /* XXX */
+    ap_set_callback_and_alarm(ssl_hook_TimeoutConnection, c->base_server->timeout);
+#endif
+    ssl_io_filter_init(c, ssl);
+
+    return APR_SUCCESS;
+}
+
+/*
+ * The hook is NOT registered with ap_hook_process_connection. Instead, it is
+ * called manually from the churn () before it tries to read any data.
+ * There is some problem if I accept conn_rec *. Still investigating..
+ * Adv. if conn_rec * can be accepted is we can hook this function using the
+ * ap_hook_process_connection hook.
+ */
+static int ssl_hook_process_connection(SSLFilterRec *pRec)
+{
+    int n, err;
+    conn_rec *c = SSL_get_app_data (pRec->pssl);
+
+    if (!SSL_is_init_finished(pRec->pssl))
+    {
+        if ((n = SSL_accept(pRec->pssl)) <= 0) {
+
+            if ((err = SSL_get_error(pRec->pssl, n)) == SSL_ERROR_ZERO_RETURN) {
+                /*
+                 * The case where the connection was closed before any data
+                 * was transferred. That's not a real error and can occur
+                 * sporadically with some clients.
+                 */
+                ssl_log(c->base_server, SSL_LOG_INFO,
+                        "SSL handshake stopped: connection was closed");
+            }
+            else if (err == SSL_ERROR_WANT_READ) {
+                /*
+                 * This is in addition to what was present earlier. It is 
+                 * borrowed from openssl_state_machine.c [mod_tls].
+                 * TBD.
+                 */
+                return 0;
+            }
+            else if (ERR_GET_REASON(ERR_peek_error()) == SSL_R_HTTP_REQUEST) {
+                /*
+                 * The case where OpenSSL has recognized a HTTP request:
+                 * This means the client speaks plain HTTP on our HTTPS port.
+                 * Hmmmm...  At least for this error we can be more friendly
+                 * and try to provide him with a HTML error page. We have only
+                 * one problem:OpenSSL has already read some bytes from the HTTP
+                 * request. So we have to skip the request line manually and
+                 * instead provide a faked one in order to continue the internal
+                 * Apache processing.
+                 *
+                 */
+
+#if 0 /* XXX */
+                /*
+                 * Still need to be ported to Apache 2.0 style
+                 */
+                char ca[2];
+                int rv;
+
+                /* log the situation */
+                ssl_log(c->base_server, SSL_LOG_ERROR|SSL_ADD_SSLERR,
+                        "SSL handshake failed: HTTP spoken on HTTPS port; "
+                        "trying to send HTML error page");
+                /* first: skip the remaining bytes of the request line */
+                do {
+                    do {
+                        rv = read(fb->fd, ca, 1);
+                    } while (rv == -1 && errno == EINTR);
+                } while (rv > 0 && ca[0] != '\012' /*LF*/);
+
+                /* second: fake the request line */
+                fb->inbase = ap_palloc(fb->pool, fb->bufsiz);
+                ap_cpystrn((char *)fb->inbase, "GET /mod_ssl:error:HTTP-request HTTP/1.0\r\n",
+                           fb->bufsiz);
+                fb->inptr = fb->inbase;
+                fb->incnt = strlen((char *)fb->inptr);
+#endif
+            }
+            else if (ssl_util_getmodconfig_ssl(pRec->pssl, "ssl::handshake::timeout")
+               == (void *)TRUE) {
+                ssl_log(c->base_server, SSL_LOG_ERROR,
+                        "SSL handshake timed out (client %s, server %s)",
+                        c->remote_ip != NULL ? c->remote_ip : "unknown", 
+                        ssl_util_vhostid(c->pool,c->base_server));
+            }
+            else if ((SSL_get_error(pRec->pssl, n) == SSL_ERROR_SYSCALL) 
+                && (errno != EINTR)) {
+                if (errno > 0)
+                    ssl_log(c->base_server,
+                             SSL_LOG_ERROR|SSL_ADD_SSLERR|SSL_ADD_ERRNO,
+                            "SSL handshake interrupted by system "
+                            "[Hint: Stop button pressed in browser?!]");
+                else
+                    ssl_log(c->base_server,
+                        SSL_LOG_INFO|SSL_ADD_SSLERR|SSL_ADD_ERRNO,
+                        "Spurious SSL handshake interrupt [Hint: "
+                        "Usually just one of those OpenSSL confusions!?]");
+            }
+            else {
+                /*
+                 * Ok, anything else is a fatal error
+                 */
+                ssl_log(c->base_server,
+                        SSL_LOG_ERROR|SSL_ADD_SSLERR|SSL_ADD_ERRNO,
+                        "SSL handshake failed (server %s, client %s)",
+                        ssl_util_vhostid(c->pool,c->base_server),
+                        c->remote_ip != NULL ? c->remote_ip : "unknown");
+            }
+            /*
+             * try to gracefully shutdown the connection:
+             * - send an own shutdown message (be gracefully)
+             * - don't wait for peer's shutdown message (deadloop)
+             * - kick away the SSL stuff immediately
+             * - block the socket, so Apache cannot operate any more
+             */
+            SSL_set_shutdown(pRec->pssl, SSL_RECEIVED_SHUTDOWN);
+            SSL_smart_shutdown(pRec->pssl);
+            SSL_free(pRec->pssl);
+            apr_table_setn(c->notes, "ssl", NULL);
+            c->aborted = 1;
+            return APR_EGENERAL;
+        }
+    }
+    return APR_SUCCESS;
+}
+
+static void ssl_hook_open_logs(apr_pool_t *p, apr_pool_t *plog,
+        apr_pool_t *ptemp, server_rec *s)
+{
     return;
+}
+
+static int ssl_hook_quick_handler (request_rec *r)
+{
+    /* ssl_hook_Auth() */
+    return DECLINED;
+}
+
+static int ssl_hook_fixer_upper (request_rec *r)
+{
+    /* ssl_hook_UserCheck */
+    return DECLINED;
+}
+
+static const char *ssl_hook_http_method (const request_rec *r)
+{
+    SSLSrvConfigRec *sc = mySrvConfig(r->server);
+
+    if (sc->bEnabled == FALSE)
+        return NULL;
+
+    return "https";
+}
+
+static apr_port_t ssl_hook_default_port (const request_rec *r)
+{
+    SSLSrvConfigRec *sc = mySrvConfig(r->server);
+
+    if (sc->bEnabled == FALSE)
+        return 0;
+    return 443;
+}
+
+static int ssl_hook_insert_filter (request_rec *r)
+{
+    /* ssl_hook_ReadReq() */
+    return DECLINED;
 }
 
 /*
  *  the module registration phase
  */
+
 static void ssl_register_hooks(apr_pool_t *p)
 {
-    ap_hook_pre_config        (ssl_hook_pre_config,         NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_post_config       (ssl_hook_post_config,        NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_handler           (ssl_hook_handler,            NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_translate_name    (ssl_hook_translate_name,     NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_child_init        (ssl_hook_child_init,         NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_auth_checker      (ssl_hook_auth_checker,       NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_check_user_id     (ssl_hook_check_user_id,      NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_access_checker    (ssl_hook_access_checker,     NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_fixups            (ssl_hook_fixups,             NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_post_read_request (ssl_hook_post_read_request,  NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_pre_connection    (ssl_hook_pre_connection,     NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_process_connection(ssl_hook_process_connection, NULL, NULL, APR_HOOK_MIDDLE);
+    ssl_io_filter_register(p);
+    ap_hook_pre_connection(ssl_hook_pre_connection,NULL,NULL, APR_HOOK_MIDDLE);
+    ap_hook_post_config   (ssl_init_Module,        NULL,NULL, APR_HOOK_MIDDLE);
+    ap_hook_http_method   (ssl_hook_http_method,   NULL,NULL, APR_HOOK_MIDDLE);
+    ap_hook_default_port  (ssl_hook_default_port,  NULL,NULL, APR_HOOK_MIDDLE);
+    ap_hook_handler       (ssl_hook_Handler,       NULL,NULL, APR_HOOK_MIDDLE);
 
+#if 0 /* XXX - Work in progress */
+    ap_hook_pre_config    (ssl_hook_pre_config,    NULL,NULL, APR_HOOK_MIDDLE);
+    ap_hook_child_init    (ssl_init_Child,         NULL,NULL, APR_HOOK_MIDDLE);
+    ap_hook_process_connection (ssl_hook_process_connection, 
+                                                   NULL,NULL, APR_HOOK_MIDDLE);
+    ap_hook_post_read_request  (ssl_hook_post_read_request, 
+                                                   NULL,NULL, APR_HOOK_MIDDLE);
+    ap_hook_translate_name(ssl_hook_Translate,     NULL,NULL, APR_HOOK_MIDDLE);
+    ap_hook_check_user_id (ssl_hook_UserCheck,     NULL,NULL, APR_HOOK_MIDDLE);
+    ap_hook_fixups        (ssl_hook_Fixup,         NULL,NULL, APR_HOOK_MIDDLE);
+    ap_hook_access_checker(ssl_hook_Access,        NULL,NULL, APR_HOOK_MIDDLE);
+    ap_hook_auth_checker  (ssl_hook_Auth,          NULL,NULL, APR_HOOK_MIDDLE);
+
+    ap_hook_open_logs     (ssl_hook_open_logs,     NULL,NULL, APR_HOOK_MIDDLE);
+    ap_hook_quick_handler (ssl_hook_quick_handler, NULL,NULL, APR_HOOK_MIDDLE);
+    ap_hook_log_transaction(ssl_hook_fixer_upper,  NULL,NULL, APR_HOOK_MIDDLE);
+    ap_hook_create_request(ssl_hook_fixer_upper,   NULL,NULL, APR_HOOK_MIDDLE);
+    ap_hook_type_checker  (ssl_hook_fixer_upper,   NULL,NULL, APR_HOOK_MIDDLE);
+    ap_hook_insert_filter (ssl_hook_insert_filter, NULL,NULL, APR_HOOK_MIDDLE);
+#endif
+#if 0 /* XXX */
     ssl_var_register();
     ssl_ext_register();
     ssl_io_register();
-
-    return;
+#endif
 }
 
-/*
- *  the main module structure
- */
 module AP_MODULE_DECLARE_DATA ssl_module = {
     STANDARD20_MODULE_STUFF,
     ssl_config_perdir_create,   /* create per-dir    config structures */
@@ -321,4 +525,3 @@ module AP_MODULE_DECLARE_DATA ssl_module = {
     ssl_config_cmds,            /* table of configuration directives   */
     ssl_register_hooks          /* register hooks */
 };
-
