@@ -251,12 +251,12 @@ static ap_filter_t *add_any_filter(const char *name, void *ctx,
             end = node->nchildren - 1;
             while (end >= start) {
                 int middle = (end + start) / 2;
-                char c = node->children[middle].c;
-                if (*n == c) {
+                char ch = node->children[middle].c;
+                if (*n == ch) {
                     node = node->children[middle].child;
                     break;
                 }
-                else if (*n < c) {
+                else if (*n < ch) {
                     end = middle - 1;
                 }
                 else {
