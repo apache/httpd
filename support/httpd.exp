@@ -7,6 +7,7 @@ ap_SHA1Final
 ap_SHA1Init
 ap_SHA1Update_binary
 ap_SHA1Update
+ap_acquire_mutex
 ap_add_cgi_vars
 ap_add_common_vars
 ap_add_module
@@ -84,6 +85,7 @@ ap_coredump_dir
 ap_count_dirs
 ap_cpystrn
 ap_create_environment
+ap_create_mutex
 ap_create_per_dir_config
 ap_create_request_config
 ap_daemons_limit
@@ -99,7 +101,6 @@ ap_destroy_sub_req
 ap_die
 ap_discard_request_body
 ap_document_root
-ap_dummy_mutex
 ap_each_byterange
 ap_error_log2stderr
 ap_escape_html
@@ -152,7 +153,6 @@ ap_gm_timestr_822
 ap_gname2id
 ap_group_id
 ap_handle_command
-ap_hard_timeout
 ap_header_parse
 ap_ht_time
 ap_ind
@@ -173,7 +173,6 @@ ap_keepalive_timeout
 ap_kill_cleanup
 ap_kill_cleanups_for_fd
 ap_kill_cleanups_for_socket
-ap_kill_timeout
 ap_limit_section
 ap_listenbacklog
 ap_listeners
@@ -265,9 +264,9 @@ ap_regerror
 ap_regexec
 ap_register_cleanup
 ap_register_other_child
+ap_release_mutex
 ap_remove_module
 ap_requires
-ap_reset_timeout
 ap_response_code_string
 ap_restart_time
 ap_rfc1413
@@ -332,6 +331,8 @@ ap_snprintf
 ap_soft_timeout
 ap_some_auth_required
 ap_spawn_child
+ap_spawnvp
+ap_sync_scoreboard_image
 ap_srm_command_loop
 ap_standalone
 ap_start_restart
@@ -343,7 +344,6 @@ ap_sub_req_lookup_file
 ap_sub_req_lookup_uri
 ap_sub_req_method_uri
 ap_suexec_enabled
-ap_sync_scoreboard_image
 ap_table_add
 ap_table_addn
 ap_table_do
