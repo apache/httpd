@@ -12,12 +12,6 @@ Changes with Apache 2.1.0-dev
   *) Fix mod_info to use the real config file name, not the default
      config file name.  [Aryeh Katz <aryeh@secured-services.com>]
 
-  *) This fixes the cache code so that responses can be cached
-     if they have an Expires header but no Etag or Last-Modified
-     headers. PR 23130.
-     [Submitted by: <bjorn@exoweb.net>]
-     [Reviewed by: Paul J. Reder]
-
   *) Fix a couple of AIX xlc_r compiler issues in the code I just
      committed. [Paul J. Reder]
 
@@ -242,6 +236,11 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.48
+
+  *) mod_cache: Fix the cache code so that responses can be cached
+     if they have an Expires header but no Etag or Last-Modified
+     headers. PR 23130.
+     [bjorn@exoweb.net]
 
   *) Modify ap_get_client_block() to note if it has seen EOS.
      [Justin Erenkrantz]
