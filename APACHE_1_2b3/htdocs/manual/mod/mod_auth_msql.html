@@ -1,0 +1,467 @@
+<html>
+<head>
+<title>Module mod_auth_msql</title>
+</head>
+<body>
+<!--#include virtual="header.html" -->
+<H1>Module mod_auth_msql</H1>
+
+This module is contained in the <code>mod_auth_msql.c</code> file and
+is compiled in by default.  It allows access control using the public
+domain mSQL database <code><a
+href="ftp://ftp.bond.edu.au/pub/Minerva/msql">ftp://ftp.bond.edu.au/pub/Minerva/msql</a></code>,
+a fast but limited SQL engine which can be contacted over an internal
+Unix domain protocol as well as over normal tcp/ip socket
+communication. It is only available in Apache 1.1 and later. <p>
+
+<a href="#FullDescription">Full description</a> /
+<a href="#Example">Example</a> /
+<a href="#CompileTimeOptions">Compile time options</a> /
+<a href="#RevisionHistory">RevisionHistory</a> /
+<a href="#Person">Person to blame</a> /
+<a href="#Sourcecode">Sourcecode</a>
+<p>
+
+<hr><h2><a name="FullDescription">Full description of all tokens</a></h2>
+<dl>
+
+<code><dt>
+Auth_MSQLhost &lt; FQHN | IP Address | localhost &gt
+</code></dt><dd>
+        Hostname of the machine running the mSQL demon. The effective uid
+        of the server should be allowed access. If not given, or if it is
+        the magic name <code>localhost</code>, it is passed to the mSQL library as a null
+        pointer. This effectively forces it to use /dev/msql rather than the
+        (slower) socket communication.
+</dd>
+
+<code><dt>
+Auth_MSQLdatabase &lt; mSQL database name &gt
+</code></dt><dd>
+        Name of the database in which the following table(s) are contained (Quick check: use the
+        mSQL command <code>relshow [&lt;hostname&gt dbase]</code> to verify the spelling of the
+        database name).
+</dd>
+
+<code><dt>
+Auth_MSQLpwd_table &lt; mSQL table name &gt
+</code></dt><dd>
+        Contains at least the fields with the username
+        and the (encrypted) password. Each uid should only occur once in this table and
+        for performance reasons should be a primary key.
+        Normally this table is compulsory, but it is
+        possible to use a fall-through to other methods
+        and use the mSQL module for group control only.
+        See the <a href="#Authorative"><code>Auth_MSQL_Authorative</code></a>
+        directive below.
+</dd>
+
+<code><dt>
+Auth_MSQLgrp_table &lt; mSQL table name in the above database &gt
+</code></dt><dd>
+        Contains at least the fields with the
+        username and the groupname. A user which
+        is in multiple groups has therefore
+        multiple entries. There might be some performance
+        problems associated with this and one
+        might consider to have separate tables for each
+        group (rather than all groups in one table) if
+        your directory structure allows for it.
+        One only need to specify this table when doing
+        group control.
+</dd>
+
+<code><dt>
+Auth_MSQLuid_field &lt; mSQL field name &gt
+</code></dt><dd>
+        Name of the field containing the username in the <code>
+        Auth_MSQLpwd_table</code> and optionally in the <code>
+        Auth_MSQLgrp_table</code> tables.
+</dd>
+
+<code><dt>
+Auth_MSQLpwd_field &lt; mSQL field name &gt
+</code></dt><dd>
+        Fieldname for the passwords in the <code>
+        Auth_MSQLpwd_table</code> table.
+</dd>
+
+<code><dt>
+Auth_MSQLgrp_field &lt; mSQL field name &gt
+</code></dt><dd>
+        Fieldname for the groupname<br>
+        Only the fields used need to be specified. When this
+        module is compiled with the
+        <a href="#VITEK"><code>BACKWARD_VITEK</code></a> option then
+        the uid and pwd field names default to 'user' and 'password'.
+        However you are strongly encouraged to always specify these values
+        explicitly given the security issues involved.
+</dd>
+
+<code><dt>
+Auth_MSQL_nopasswd &lt; on | off &gt
+</code></dt><dd>
+        Skip password comparison if passwd field is
+        empty, i.e. allow any password. This is 'off'
+        by default to ensure that an empty field
+        in the mSQL table does not allow people in by
+        default with a random password.
+</dd>
+
+<code><dt>
+<a name="Authorative">Auth_MSQL_Authorative &lt; on | off &gt</a>
+</code></dt><dd>
+        Default is 'on'. When set 'on', there is no
+        fall-through to other authorization methods. So if a
+        user is not in the mSQL dbase table (and perhaps
+        not in the right group) or has the password wrong, then
+        he or she is denied access. When this directive is set to
+        'off', control is passed on to any other authorization
+        modules, such as the basic auth module with the htpasswd
+        file or the Unix-(g)dbm modules. The default is 'on'
+        to avoid nasty 'fall-through' surprises. Be sure you
+        know what you are doing when you decide to switch it off.
+</dd>
+
+<code><dt>
+Auth_MSQL_EncryptedPasswords &lt; on | off &gt
+</code></dt><dd>
+        Default is 'on'. When set on, the values in the
+        pwd_field are assumed to be crypt-ed using *your*
+        machines 'crypt()' function and the incoming password
+        is 'crypt'ed before comparison. When this function is
+        'off', the comparison is done directly with the plaintext
+        entered password. (Yes, http-basic-auth does send the
+        password as plaintext over the wire :-( ). The default
+        is a sensible 'on', and I personally think that it is
+        a *very-bad-idea* to change this. However a multi
+        vendor or international environment (which sometimes
+        leads to different crypts functions) might force you to.
+</dd>
+</dl>
+
+
+<hr><a name="Example"><h2>Example</h2></a>
+
+An example mSQL table could be created with the following commands:
+<pre>
+     % msqladmin create www               <br>
+     % msql www                           <br>
+     -> create table user_records (       <br>
+     ->   User_id  char(32) primary key,  <br>
+     ->   Cpasswd  char(32),              <br>
+     ->   Xgroup   char(32)               <br>
+     ->   ) \g                            <br>
+     query OK                             <br>
+     -> \q                                <br>
+     %                                    <br>
+</pre><br>
+
+The <code>User_id</code> can be as long as desired. However some of the
+popular web browsers truncate names at or stop the user from entering
+names longer than 32 characters. Furthermore the 'crypt' function
+on your platform might impose further limits. Also use of
+the <code>require users uid [uid..]</code> directive in the
+<code>access.conf</code> file where the uid's are separated by
+spaces can possibly prohibit the use of spaces in your usernames.
+Also, please note the <a href="#MAX_FIELD_LEN"><code>MAX_FIELD_LEN</code></a>
+directive somewhere below.
+<p>
+To use the above, the following example could be in your
+<code>access.conf</code> file. Also there is a more elaborate description
+below this example.
+<p>
+
+<code>&lt;directory /web/docs/private&gt;</code>
+<p>
+
+<dl>
+<dt><code>
+Auth_MSQLhost        localhost<br>
+</code></dt>
+    <blockquote>or</blockquote>
+<dt><code>
+Auth_MSQLhost        datab.machine.your.org
+</code></dt><dd>
+                If this directive is ommited or set to <code>localhost</code>,
+                it is assumed that Apache and the mSQL
+                database run on the same (physical) machine and the faster
+                /dev/msql communication channel will be used. Otherwise,
+                it is the machine to contact by tcp/ip. Consult the mSQL
+                documentation for more information.
+</dd>
+<p>
+
+<dt><code>
+Auth_MSQLdatabase    www
+</code></dt><dd>
+                The name of the database on the above machine,
+                which contains *both* the tables for group and
+                for user/passwords. Currently it is not possible
+                to have these split over two databases. Make
+                sure that the <code>msql.acl</code> (access control file) of
+                mSQL does indeed allow the effective uid of the
+                web server read access to this database. Check the
+                httpd.conf file for this uid.
+</dd>
+
+<code><dt>
+Auth_MSQLpwd_table   user_records
+</code></dt><dd>
+                This is the table which contain the uid/password combination
+                is specified.
+</dd>
+
+<code><dt>
+Auth_MSQLuid_field   User_id <br>
+Auth_MSQLpwd_field   Cpasswd
+</code></dt><dd>
+                These two directive specify the field names in the <code>user_record</code>
+                table. If this module is compiled with the <a href="#VITEK"><code>BACKWARD_VITEK</code></a>
+                compatibility switch, the defaults <code>user</code> and <code>password</code> are
+                assumed if you do not specify them. Currently the user_id field
+                *MUST* be a primary key or one must ensure that each user only
+                occurs <b>once</b> in the table. If a uid occurs twice access is
+                denied by default; but see the <code><a href="#ONLY_ONCE">ONLY_ONCE</a></code>
+                compiler directive for more information.
+</dd>
+
+<code></dt>
+Auth_MSQLgrp_table   user_records <br>
+Auth_MSQLgrp_field   Xgroup       <br>
+</code></dt><dd>
+                Optionally one can also specify a table which contains the
+                user/group combinations. This can be the same table which
+                also contains the username/password combinations. However
+                if a user belongs to two or more groups, one will have to
+                use a different table with multiple entries.
+</dd>
+
+<code><dt>
+Auth_MSQL_nopasswd           off <br>
+Auth_MSQL_Authorative        on  <br>
+Auth_MSQL_EncryptedPasswords on  <br>
+</code></dt><dd>
+                These three optional fields (all set to the sensible defaults,
+                so you really do not have to enter them) are described in more
+                detail below. If you choose to set these to any other values then
+                the above, be very sure you understand the security implications and
+                do verify that Apache does what you expect it to do.
+</dd>
+
+<code><dt>
+AuthName                example mSQL realm <br>
+AuthType                basic
+</code></dt>
+<dd>
+                Normal Apache/NCSA tokens for access control
+                <p>
+                <code>&lt;limit get post head&gt</code><br>
+                <code>order deny,allow          </code><br>
+                <code>allow from all            </code><br>
+                <p>
+                <code>require valid-user        </code><br>
+                    <ul><code>valid-user</code>; allow in any user which has a valid uid/passwd
+                    pair in the above pwd_table.
+                    </ul>
+                or<br>
+                <code>require user smith jones  </code><br>
+                    <ul>Limit access to users who have a valid uid/passwd pair in the
+                    above pwd_table *and* whose uid is 'smith' or 'jones'. Do note that
+                    the uid's are separated by 'spaces' for historic (NCSA) reasons.
+                    So allowing uids with spaces might cause problems.
+                    </ul>
+                <code>require group has_paid</code><br>
+                    <ul>Optionally also ensure that the uid has the value 'has_paid' in
+                    the group field in the group table.
+                    </ul>
+                <code>&lt;limit&gt              </code><br>
+</dd>
+</dl>
+
+
+<hr><h2><a name="CompileTimeOptions">Compile Time Options</a></h2>
+
+<dl>
+<dt><code>
+<a name="ONLY_ONCE">#define ONLY_ONCE 1</a>
+</code></dt><dd>
+   If the mSQL table containing the uid/passwd combination does
+   not have the uid field as a primary key, it is possible for the
+   uid to occur more than once in the table with possibly different
+   passwords. When this module is compiled with the <code>ONLY_ONCE</code>
+   directive set, access is denied if the uid occurs more than once in the
+   uid/passwd table. If you choose not to set it, the software takes
+   the first pair returned and ignores any further pairs. The SQL
+   statement used for this is<br>
+   <p><code>"select password form pwd_table where user='uid'"</code><p>
+   this might lead to unpredictable results. For this reason as well
+   as for performance reasons you are strongly advised to make the
+   uid field a primary key. Use at your own peril :-)
+</dd>
+
+<dt><code>
+<a name="KEEP_MSQL_CONNECTION_OPEN">#define KEEP_MSQL_CONNECTION_OPEN</a>
+</code></dt><dd>
+   Normally the (tcp/ip) connection with the database is opened and
+   closed for each SQL query. When the Apache web-server and the database
+   are on the same machine, and /dev/msql is used this does not
+   cause a serious overhead. However when your platform does not
+   support this (see the mSQL documentation) or when the web server
+   and the database are on different machines the overhead can be
+   considerable. When the above directive is set defined the server leaves
+   the connection open, i.e. no call to <code>msqlClose()</code>.
+   If an error occurs an attempt is made to reopen the connection for
+   the next http request.
+   <p>
+   This has a number of very serious drawbacks
+   <ul><li> It costs 2 already rare file-descriptors for each child.
+       <li> It costs msql-connections, typically one per child. The (compiled in)
+            number of connections mSQL can handle is low, typically 6 or 12.
+            which might prohibit access to the mSQL database for later
+            processes.
+       <li> When a child dies, it might not free that connection properly
+            or quick enough.
+       <li> When errors start to occur, connection/file-descriptor resources
+            might become exhausted very quickly.
+   </ul>
+   <p>
+   In short, use this at your own peril and only in a highly controlled and
+   monitored environment.
+</dd>
+
+<dt><code>
+<a name="VITEK">
+#define BACKWARD_VITEK<br></a>
+#define VITEK_uid_name "user"<br>
+#define VITEK_gid_name "passwd"
+</code></dt><dd>
+   A second mSQL auth module for Apache has also been developed by Vivek Khera
+   &lt<a href="mailto:khera@kciLink.com"><code>khera@kciLink.com</code></a>&gt
+   and was subsequently distributed with some early versions of Apache. It
+   can be obtained from
+   <code><a href="ftp://ftp.kcilink.com/pub/">ftp://ftp.kcilink.com/pub/mod_auth_msql.c*</a></code>.
+   Older 'vitek' versions had the field/table names compiled in. Newer
+   versions, v.1.11 have more <code>access.conf</code> configuration
+   options. However these where chosen not to be in line the 'ewse'
+   version of this module. Also, the 'vitek' module does not give group
+   control or 'empty' password control.
+   <p>
+   To get things slightly more in line this version (0.9) should
+   be backward compatible with the 'vitek' module by:
+   <ul><li> Adding support for the <code>Auth_MSQL_EncryptedPasswords</code> on/off functionality
+       <li> Adding support for the different spelling of the 4 configuration
+            tokens for user-table-name, user/password-field-name and dbase-name.
+       <li> Setting some field names to a default which used to be hard
+            coded in in older 'vitek' modules.
+   </ul>
+   <p>
+   If this troubles you, remove the 'BACKWARD_VITEK' define.
+</dd>
+
+<dt><code>
+<a name="MAX_FIELD_LEN">
+#define MAX_FIELD_LEN (64)<br>
+#define MAX_QUERY_LEN (32+24+MAX_FIELD_LEN*2+3*MSQL_FIELD_NAME_LEN+1*MSQL_TABLE_NAME_LEN)<br></a>
+</code></dt><dd>
+   In order to avoid using the very large <code>HUGE_STRING_LENGTH</code>, the above two compile
+   time directives are supplies. The <code>MAX_FIELD_LEN</code> contains the maximum number of
+   characters in your user, password and group fields. The maximum query length is derived
+   from those values.
+   <p>
+   We only do the following two queries:
+   <ul><li>For the user/passwd combination
+           <p><code>"select PWDFIELD from PWDTABEL where USERFIELD='UID'"</code><br>
+       <li>Optionally for the user/group combination:
+           <p><code>"select GROUPFIELD from GROUPTABLE where USERFIELD='UID' and GROUPFIELD='GID'"</code><br>
+   </ul>
+   <p>
+   This leads to the above limit for the query string. We are ignoring escaping a wee bit here
+   assuming not more than 24 escapes.)
+</dd>
+</dl>
+
+
+<hr><h2><a name="RevisionHistory">Revision History</a></h2>
+
+This version: 23 Nov 1995, 24 Feb 1996, 16 May 1996.
+
+<dl>
+
+<dt>Version 0.0<br></dt>
+    <dd>First release
+    </dd>
+<dt>Version 0.1<br></dt>
+    <dd>Update to Apache 1.00
+    </dd>
+<dt>Version 0.2<br></dt>
+    <dd>Added lines which got missing God knows when
+        and which did the valid-user authentification no good at all !
+    </dd>
+<dt>Version 0.3<br></dt>
+    <dd>Added '<code>Auth_MSQL_nopasswd</code>' option
+    </dd>
+<dt>Version 0.4<br></dt>
+    <dd>Cleaned out the error messages mess.
+    </dd>
+<dt>Version 0.6<br></dt>
+    <dd>Inconsistency with gid/grp in comment/token/source
+ Make sure you really use '<code>Auth_MSQLgrp_field</code>'
+ as indicated above.
+    </dd>
+<dt>Version 0.7<br></dt>
+    <dd><code>*host</code> to <code>host</code> fixed. Credits
+        go to Rob Stout, <stout@lava.et.tudelft.nl> for
+        spotting this one.
+    </dd>
+<dt>Version 0.8<br></dt>
+    <dd>Authorative directive added. See above.
+    </dd>
+<dt>Version 0.9<br></dt>
+    <dd><code>palloc</code> return code check(s), should be
+        backward compatible with 1.11 version of Vivek Khera
+        <khera@kciLink.com> msql
+        module, fixed broken err msg in group control, changed
+        command table messages to make more sense when displayed
+        in that new module management tool. Added
+        <code>Auth_MSQL_EncryptedPasswords</code> on/off functionality.
+        msqlClose() statements added upon error. Support for
+        persistent connections with the mSQL database (riscy).
+        Escaping of ' and \. Replaced some
+        <code>MAX_STRING_LENGTH</code> claims.
+    </dd>
+</dl>
+
+
+<hr><h2><a name="Person">Contact/person to blame</a></h2>
+
+This module was written for the
+<a href="http://ewse.ceo.org">European Wide Service Exchange</a> by
+&lt<a href="mailto:Dirk.vanGulik@jrc.it"><code>Dirk.vanGulik@jrc.it</code></a>&gt.
+Feel free to contact me if you have any problems, ice-creams or bugs. This
+documentation, courtesy of Nick Himba, <a href="mailto:himba@cs.utwente.nl">
+<code>&lt;himba@cs.utwente.nl&gt;</code></a>.
+<p>
+
+
+<hr><h2><a NAME="Sourcecode">Sourcecode</a></h2>
+
+The source code can be found at <a href="http://www.apache.org"><code>
+http://www.apache.org</code></a>. A snapshot of a development version
+usually resides at <a href="http://me-www.jrc.it/~dirkx/mod_auth_msql.c"><code>
+http://me-www.jrc.it/~dirkx/mod_auth_msql.c</code></a>. Please make sure
+that you always quote the version you use when filing a bug report.
+<p>
+Furthermore a test/demonstration suite (which assumes that you have
+both mSQL and Apache compiled and installed) is avaible at the contrib
+section of <a href="ftp://ftp.apache.org/apache/dist/contrib"><code>
+ftp://ftp.apache.org/apache/dist/contrib</code></a> or
+<a href="http://me-www.jrc.it/~dirkx/apache-msql-demo.tar.gz"><code>
+http://me-www.jrc.it/~dirkx/apache-msql-demo.tar.gz</code></a> and
+its <a href="http://me-www.jrc.it/~dirkx/apache-msql-demo"><code>
+README</code></a> file.
+
+<!--#include virtual="footer.html" -->
+</body>
+</html>
+

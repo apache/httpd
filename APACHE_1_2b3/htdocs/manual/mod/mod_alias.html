@@ -1,0 +1,133 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<HTML>
+<HEAD>
+<TITLE>Apache module mod_alias</TITLE>
+</HEAD>
+
+<BODY>
+<!--#include virtual="header.html" -->
+
+<H1>Module mod_alias</h1>
+
+This module is contained in the <code>mod_alias.c</code> file, and
+is compiled in by default. It provides for mapping different parts of the
+host filesystem in the the document tree, and for URL redirection.
+
+
+<menu>
+<li><A HREF="#alias">Alias</A>
+<li><A HREF="#redirect">Redirect</A>
+<li><A HREF="#redirecttemp">RedirectTemp</A>
+<li><A HREF="#redirectperm">RedirectPermanent</A>
+<li><A HREF="#scriptalias">ScriptAlias</A>
+</menu>
+<hr>
+
+
+<A name="alias"><h2>Alias</h2></A>
+<!--%plaintext &lt;?INDEX {\tt Alias} directive&gt; -->
+<strong>Syntax:</strong> Alias <em>url-path directory-filename</em><br>
+<Strong>Context:</strong> server config, virtual host<br>
+<strong>Status:</strong> Base<br>
+<strong>Module:</strong> mod_alias<br>
+
+The Alias directive allows documents to be stored in the local filesystem
+other than under the <A HREF="core.html#documentroot">DocumentRoot</A>.
+URLs with a (%-decoded) path beginning with <em>url-path</em> will be
+mapped to local files beginning with <em>directory-filename</em>.
+Example:
+<blockquote><code>Alias /image /ftp/pub/image</code></blockquote>
+A request for http://myserver/image/foo.gif would cause the server to
+return the file /ftp/pub/image/foo.gif.<p>
+See also <A HREF="#scriptalias">ScriptAlias</A>.<p><hr>
+
+<A name="redirect"><h2>Redirect</h2></A>
+<!--%plaintext &lt;?INDEX {\tt Redirect} directive&gt; -->
+<strong>Syntax:</strong> Redirect [ <em>status</em> ] <em>url-path url</em><br>
+<Strong>Context:</strong> server config, virtual host, directory, .htaccess<br>
+<strong>Status:</strong> Base<br>
+<strong>Module:</strong> mod_alias<br>
+<strong>Compatibility:</strong> The directory and .htaccess context's
+are only available in versions 1.1 and later. The <em>status</em> argument is only available in Apache 1.2 or later.<p>
+
+The Redirect directive maps an old URL into a new one. The new URL is returned
+to the client which attempts to fetch it again with the new address.
+<em>Url-path</em> a (%-decoded) path; any requests for documents beginning with
+this path will be returned a redirect error to a new (%-encoded) url
+beginning with <em>url</em>. Example:
+<blockquote><code>Redirect /service
+http://foo2.bar.com/service</code></blockquote>
+If the client requests http://myserver/service/foo.txt, it will be told to
+access http://foo2.bar.com/service/foo.txt instead.<p>
+
+Note: Redirect directives take precedence over Alias and ScriptAlias
+directives, irrespective of their ordering in the configuration file.  Also,
+<em>Url-path</em> must be an absolute path, not a relative path, even when used with
+.htaccess files or inside of &lt;Directory&gt; sections.<p>
+
+If no <em>status</em> argument is given, the redirect will be
+"temporary" (HTTP status 302). This indicates to the client that the
+resources is has moved temporarily. The <em>status</em>
+argument can be used to return other HTTP status codes:
+<dl>
+<dt>permanent<dd>Returns a permanent redirect status (301) indicating that
+the resource has moved permanently.
+<dt>temp<dd>Returns a temporary redirect status (302). This is the
+default.
+<dt>seeother<dd>Returns a "See Other" status (303) indicating that
+the resource has been replaced.
+<dt>gone<dd>Returns a "Gone" status (410) indicating that the resource
+has been permanently removed. When this status is used the <em>url</em>
+argument should be omitted.
+</dl>
+
+Other status codes can be returned by giving the numeric status code
+as the value of <em>status</em>. If the status is between 300 and 399,
+the <em>url</em> argument must be present, otherwise it must be
+omitted. Note that the status must be known to the Apache code (see
+the function <code>send_error_response</code> in http_protocol.c).
+
+<A name="redirecttemp"><h2>RedirectTemp</h2></A>
+<!--%plaintext &lt;?INDEX {\tt Redirect} directive&gt; -->
+<strong>Syntax:</strong> RedirectTemp <em>url-path url</em><br>
+<Strong>Context:</strong> server config, virtual host, directory, .htaccess<br>
+<strong>Status:</strong> Base<br>
+<strong>Module:</strong> mod_alias<br>
+<strong>Compatibility:</strong> This directive is only available in 1.2<P>
+
+This directive makes the client know that the Redirect is only
+temporary. (Status 302). Exactly equivalent to <code>Redirect temporary </code><P>
+
+<A name="redirectperm"><h2>RedirectPermanent</h2></A>
+<!--%plaintext &lt;?INDEX {\tt Redirect} directive&gt; -->
+<strong>Syntax:</strong> RedirectPermanent <em>url-path url</em><br>
+<Strong>Context:</strong> server config, virtual host, directory, .htaccess<br>
+<strong>Status:</strong> Base<br>
+<strong>Module:</strong> mod_alias<br>
+<strong>Compatibility:</strong> This directive is only available in 1.2<P>
+
+This directive makes the client know that the Redirect is permanent.
+(Status 301). Exactly equivalent to <code>Redirect perm </code><P>
+
+<hr>
+<A name="scriptalias"><h2>ScriptAlias</h2></A>
+<!--%plaintext &lt;?INDEX {\tt ScriptAlias} directive&gt; -->
+<strong>Syntax:</strong> ScriptAlias <em>url-path directory-filename</em><br>
+<Strong>Context:</strong> server config, virtual host<br>
+<strong>Status:</strong> Base<br>
+<strong>Module:</strong> mod_alias<br>
+
+The ScriptAlias directive has the same behavior as the
+<A HREF="#alias">Alias</A> directive, except that in addition it
+marks the target directory as containing CGI scripts.
+URLs with a (%-decoded) path beginning with <em>url-path</em> will be
+mapped to scripts beginning with <em>directory-filename</em>.
+Example:
+<blockquote><code>ScriptAlias /cgi-bin/ /web/cgi-bin/</code></blockquote>
+A request for http://myserver/cgi-bin/foo would cause the server to
+run the script /web/cgi-bin/foo.<p>
+
+<!--#include virtual="footer.html" -->
+</BODY>
+</HTML>
+
