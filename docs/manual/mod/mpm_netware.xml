@@ -1,0 +1,131 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.xsl"?>
+<modulesynopsis>
+<name>mpm_netware</name>
+<description>Multi-Processing Module implementing an exclusively threaded web
+    server optimized for Novell NetWare</description>
+<status>MPM</status>
+<sourcefile>mpm_netware.c</sourcefile>
+<identifier>mpm_netware_module</identifier>
+
+<summary>
+    <p>This Multi-Processing Module (MPM) implements an exclusively threaded web server
+    that has been optimized for Novell NetWare.</p>
+
+    <p>The main thread is responsible for launching child
+    worker threads which listen for connections and serve them when they
+    arrive. Apache always tries to maintain several <em>spare</em>
+    or idle worker threads, which stand ready to serve incoming
+    requests. In this way, clients do not need to wait for a new
+    child threads to be spawned before their requests can be
+    served.</p>
+
+    <p>The <code>StartThreads</code>, <code>MinSpareThreads</code>,
+    <code>MaxSpareThreads</code>, and <code>MaxThreads</code>
+    regulate how the main thread creates worker threads to serve
+    requests. In general, Apache is very self-regulating, so most
+    sites do not need to adjust these directives from their default
+    values. Sites which need to serve more than 250 simultaneous
+    requests may need to increase <code>MaxThreads</code>, while
+    sites with limited memory may need to decrease
+    <code>MaxThreads</code> to keep the server from thrashing (spawning and
+    terminating idle threads). More information about
+    tuning process creation is provided in the <a
+    href="../misc/perf-tuning.html">performance hints</a>
+    documentation.</p>
+
+    <p><code>MaxRequestsPerChild</code> controls how frequently the
+    server recycles processes by killing old ones and launching new
+    ones.&nbsp; On the NetWare OS it is highly recommended that this directive
+    remain set to 0.&nbsp; This allows worker threads to continue servicing
+    requests indefinitely.</p>
+
+    <p>See also: <a href="../bind.html">Setting which addresses and
+    ports Apache uses</a>.</p>
+</summary>
+
+<directivesynopsis location="mpm_common"><name>Listen</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ListenBacklog</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>MaxRequestsPerChild</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>SendBufferSize</name>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>MaxThreads</name>
+<syntax>MaxThreads <em>number</em></syntax>
+<default>MaxThreads 250</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+<p>The MaxThreads directive sets the desired maximum
+    number worker threads allowable.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>MaxSpareThreads</name>
+<syntax>MaxSpareThreads <em>number</em></syntax>
+<default>MaxSpareThreads 100</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>The <directive>MaxSpareThreads</directive> directive sets the
+    desired maximum number of <em>idle</em> worker threads. An idle
+    worker thread is one which is not handling a request. If there are
+    more than MaxSpareThreads idle, then the main thread will kill off
+    the excess worker threads.</p>
+
+    <p>Tuning of this parameter should only be necessary on very
+    busy sites. Setting this parameter to a large number is almost
+    always a bad idea.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>MinSpareThreads</name>
+<syntax>MinSpareThreads <em>number</em></syntax>
+<default>MinSpareThreads 10</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+<p>The <directive>MinSpareThreads</directive> directive sets the
+desired minimum number of <em>idle</em> worker threads. An idle worker
+thread is one which is not handling a request. If there are fewer than
+MinSpareThreads idle, then the main thread spawns new worker.</p>
+
+    <p>Tuning of this parameter should only be necessary on very
+    busy sites. Setting this parameter to a large number is almost
+    always a bad idea.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>StartThreads</name>
+<syntax>StartThreads <em>number</em></syntax>
+<default>StartThreads 50</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+<p>The StartThreads directive sets the desired
+    number of worker threads to spawn and startup</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ThreadStackSize</name>
+<syntax>ThreadStackSize <em>number</em></syntax>
+<default>ThreadStackSize 65536</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>This directive tells the server what stack size to use for
+    each of the running threads. If you ever get a stack overflow
+    you will need to bump this number to a higher setting.</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
