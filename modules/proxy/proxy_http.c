@@ -380,7 +380,7 @@ static apr_status_t stream_reqbody_chunked(apr_pool_t *p,
             b = input_brigade;
         }
         
-        status = pass_brigade(bucket_alloc, r, conn, origin, b, 1);
+        status = pass_brigade(bucket_alloc, r, conn, origin, b, 0);
         if (status != APR_SUCCESS) {
             return status;
         }
@@ -466,7 +466,7 @@ static apr_status_t stream_reqbody_cl(apr_pool_t *p,
             b = input_brigade;
         }
         
-        status = pass_brigade(bucket_alloc, r, conn, origin, b, 1);
+        status = pass_brigade(bucket_alloc, r, conn, origin, b, 0);
         if (status != APR_SUCCESS) {
             return status;
         }
@@ -481,10 +481,15 @@ static apr_status_t stream_reqbody_cl(apr_pool_t *p,
             add_cl(p, bucket_alloc, header_brigade, old_cl_val);
         }
         terminate_headers(bucket_alloc, header_brigade);
-        status = pass_brigade(bucket_alloc, r, conn, origin, header_brigade, 1);
-        if (status != APR_SUCCESS) {
-            return status;
-        }
+        b = header_brigade;
+    }
+    else {
+        /* need to flush any pending data */
+        b = input_brigade; /* empty now; pass_brigade() will add flush */
+    }
+    status = pass_brigade(bucket_alloc, r, conn, origin, b, 1);
+    if (status != APR_SUCCESS) {
+        return status;
     }
 
     return APR_SUCCESS;
