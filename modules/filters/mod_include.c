@@ -429,7 +429,8 @@ static apr_bucket *find_start_sequence(apr_bucket *dptr, include_ctx_t *ctx,
         }
 
         if (len == 0) { /* end of pipe? */
-            break;
+            dptr = APR_BUCKET_NEXT(dptr);
+            continue;
         }
 
         /* Set our buffer to use. */
@@ -477,7 +478,7 @@ static apr_bucket *find_start_sequence(apr_bucket *dptr, include_ctx_t *ctx,
 
         if (len)
         {
-            pos = bndm(str, slen, c, len, ctx->start_seq_pat);
+            pos = bndm(str, slen, buf, len, ctx->start_seq_pat);
             if (pos != len)
             {
                 ctx->head_start_bucket = dptr;
@@ -600,7 +601,8 @@ static apr_bucket *find_end_sequence(apr_bucket *dptr, include_ctx_t *ctx,
         }
 
         if (len == 0) { /* end of pipe? */
-            break;
+            dptr = APR_BUCKET_NEXT(dptr);
+            continue;
         }
         if (dptr == ctx->tag_start_bucket) {
             c = buf + ctx->tag_start_index;
@@ -2956,14 +2958,19 @@ static apr_status_t send_parsed_content(apr_bucket_brigade **bb,
             /* If I am inside a conditional (if, elif, else) that is false
              *   then I need to throw away anything contained in it.
              */
-            if ((!(ctx->flags & FLAG_PRINTING)) && (tmp_dptr != NULL) &&
+            if ((!(ctx->flags & FLAG_PRINTING)) &&
                 (dptr != APR_BRIGADE_SENTINEL(*bb))) {
-                while ((dptr != APR_BRIGADE_SENTINEL(*bb)) &&
-                       (dptr != tmp_dptr)) {
+                apr_bucket *stop = (!tmp_dptr && ctx->state == PARSE_HEAD)
+                                   ? ctx->head_start_bucket
+                                   : tmp_dptr;
+
+                while ((dptr != APR_BRIGADE_SENTINEL(*bb)) && (dptr != stop)) {
                     apr_bucket *free_bucket = dptr;
 
-                    dptr = APR_BUCKET_NEXT (dptr);
-                    apr_bucket_delete(free_bucket);
+                    dptr = APR_BUCKET_NEXT(dptr);
+                    if (!APR_BUCKET_IS_METADATA(free_bucket)) {
+                        apr_bucket_delete(free_bucket);
+                    }
                 }
             }
 
@@ -3197,19 +3204,8 @@ static apr_status_t send_parsed_content(apr_bucket_brigade **bb,
      *   once the whole tag has been found.
      */
     if (ctx->state == PRE_HEAD) {
-        /* Inside a false conditional (if, elif, else), so toss it all... */
-        if ((dptr != APR_BRIGADE_SENTINEL(*bb)) &&
-            (!(ctx->flags & FLAG_PRINTING))) {
-            apr_bucket *free_bucket;
-            do {
-                free_bucket = dptr;
-                dptr = APR_BUCKET_NEXT (dptr);
-                apr_bucket_delete(free_bucket);
-            } while (dptr != APR_BRIGADE_SENTINEL(*bb));
-        }
-        else { 
-            /* Otherwise pass it along...
-             * No SSI tags in this brigade... */
+        if (!APR_BRIGADE_EMPTY(*bb)) {
+            /* pass it along... */
             rv = ap_pass_brigade(f->next, *bb);  
             if (rv != APR_SUCCESS) {
                 return rv;
