@@ -1805,6 +1805,7 @@ API_EXPORT(long) send_fb_length(BUFF *fb, request_rec *r, long length)
 
     soft_timeout("send body", r);
 
+    FD_ZERO(&fds);
     while (!r->connection->aborted) {
         if ((length > 0) && (total_bytes_sent + IOBUFSIZE) > length)
             len = length - total_bytes_sent;
@@ -1813,13 +1814,14 @@ API_EXPORT(long) send_fb_length(BUFF *fb, request_rec *r, long length)
 
         do {
             n = bread(fb, buf, len);
-            if (n >= 0)
+            if (n >= 0 || r->connection->aborted)
                 break;
             if (n < 0 && errno != EAGAIN)
                 break;
             /* we need to block, so flush the output first */
             bflush(r->connection->client);
-            FD_ZERO(&fds);
+            if (r->connection->aborted)
+                break;
             FD_SET(fd, &fds);
             /*
              * we don't care what select says, we might as well loop back

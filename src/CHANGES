@@ -1,5 +1,8 @@
 Changes with Apache 1.3b1
-  
+
+  *) send_fb would not detect aborted connections in some situations.
+     [Dean Gaudet]
+
   *) mod_include would use uninitialized data when parsing certain
      expressions involving && and ||. [Brian Slesinsky] PR#1139
 
