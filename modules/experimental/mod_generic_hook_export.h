@@ -57,6 +57,6 @@
 
 #include "apr_generic_hook.h"
 
-AP_DECLARE_HOOK(int,generic_hook_test,(const char *))
+APR_DECLARE_EXTERNAL_HOOK(ap,AP_MODULE,int,generic_hook_test,(const char *))
 
 #endif /* def MOD_GENERIC_HOOK_EXPORT_H */
