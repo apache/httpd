@@ -62,12 +62,6 @@
 
 module AP_MODULE_DECLARE_DATA cache_module;
 
-
-int ap_url_cache_handler(request_rec *r);
-int ap_cache_out_filter(ap_filter_t *f, apr_bucket_brigade *bb);
-int ap_cache_conditional_filter(ap_filter_t *f, apr_bucket_brigade *in);
-int ap_cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in);
-
 /* -------------------------------------------------------------- */
 
 
@@ -87,7 +81,7 @@ int ap_cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in);
  *     oh well.
  */
 
-int ap_url_cache_handler(request_rec *r)
+static int cache_url_handler(request_rec *r)
 {
     apr_status_t rv;
     const char *cc_in;
@@ -293,7 +287,7 @@ int ap_url_cache_handler(request_rec *r)
  *
  * Deliver cached content (headers and body) up the stack.
  */
-int ap_cache_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
+static int cache_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
 {
     request_rec *r = f->r;
     cache_request_rec *cache = 
@@ -333,7 +327,7 @@ int ap_cache_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
  *   replace ourselves with cache_in filter
  */
 
-int ap_cache_conditional_filter(ap_filter_t *f, apr_bucket_brigade *in)
+static int cache_conditional_filter(ap_filter_t *f, apr_bucket_brigade *in)
 {
     ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, f->r->server,
                  "cache: running CACHE_CONDITIONAL filter");
@@ -365,7 +359,7 @@ int ap_cache_conditional_filter(ap_filter_t *f, apr_bucket_brigade *in)
  *
  */
 
-int ap_cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
+static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
 {
     int rv;
     request_rec *r = f->r;
@@ -923,7 +917,7 @@ static const command_rec cache_cmds[] =
      "The default time in hours to cache a document"),
      AP_INIT_TAKE1("CacheDefaultExpireMin", set_cache_defex_min, NULL, RSRC_CONF,
      "The default time in Minutes to cache a document"),
-     AP_INIT_TAKE1("CacheIgnoreNoLastMod", set_cache_ignore_no_last_mod, NULL, 
+     AP_INIT_FLAG("CacheIgnoreNoLastMod", set_cache_ignore_no_last_mod, NULL, 
              RSRC_CONF, 
              "Ignore Responses where there is no Last Modified Header"),
 
@@ -939,7 +933,7 @@ register_hooks(apr_pool_t *p)
 {
     /* cache initializer */
     /* cache handler */
-    ap_hook_quick_handler(ap_url_cache_handler, NULL, NULL, APR_HOOK_FIRST);
+    ap_hook_quick_handler(cache_url_handler, NULL, NULL, APR_HOOK_FIRST);
     /* cache filters 
      * XXX The cache filters need to run right after the handlers and before
      * any other filters. Consider creating AP_FTYPE_CACHE for this purpose.
@@ -947,13 +941,13 @@ register_hooks(apr_pool_t *p)
      * XXX ianhH:they should run AFTER all the other content filters.
      */
     ap_register_output_filter("CACHE_IN", 
-                              ap_cache_in_filter, 
+                              cache_in_filter, 
                               AP_FTYPE_CONTENT+1);
     ap_register_output_filter("CACHE_OUT", 
-                              ap_cache_out_filter, 
+                              cache_out_filter, 
                               AP_FTYPE_CONTENT+1);
     ap_register_output_filter("CACHE_CONDITIONAL", 
-                              ap_cache_conditional_filter, 
+                              cache_conditional_filter, 
                               AP_FTYPE_CONTENT+1);
 }
 
