@@ -74,6 +74,7 @@ extern int suexec_enabled;
 
 extern char *pid_fname;
 extern char *scoreboard_fname;
+extern char *lock_fname;
 extern char *server_argv0;
 
 /* Trying to allocate these in the config pool gets us into some *nasty*
