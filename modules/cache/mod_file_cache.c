@@ -280,7 +280,6 @@ static void file_cache_post_config(apr_pool_t *p, apr_pool_t *plog,
 static int file_cache_xlat(request_rec *r)
 {
     a_server_config *sconf;
-    a_file tmp;
     a_file *match;
     int res;
 
