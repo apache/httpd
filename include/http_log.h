@@ -213,14 +213,14 @@ AP_DECLARE(void) ap_log_rerror(const char *file, int line, int level,
  * @param s The current server
  * @deffunc void ap_error_log2stderr(server_rec *s)
  */
-AP_DECLARE(void) ap_error_log2stderr (server_rec *s);
+AP_DECLARE(void) ap_error_log2stderr(server_rec *s);
 
 /**
  * Log the current pid of the parent process
  * @param p The pool to use for logging
  * @param fname The name of the file to log to
  */
-void ap_log_pid (apr_pool_t *p, const char *fname);
+void ap_log_pid(apr_pool_t *p, const char *fname);
 
 typedef struct piped_log piped_log;
 
