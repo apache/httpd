@@ -315,7 +315,11 @@ API_EXPORT(void) aplog_error (const char *file, int line, int level,
 	len += ap_snprintf(errstr + len, sizeof(errstr) - len,
 		"%s(%d): ", file, line);
     }
-    if (!(level & APLOG_NOERRNO)) {
+    if (!(level & APLOG_NOERRNO)
+#ifdef WIN32
+	&& !(level && APLOG_WIN32ERROR)
+#endif
+	) {
 	len += ap_snprintf(errstr + len, sizeof(errstr) - len,
 		"(%d)%s: ", save_errno, strerror(save_errno));
     }
