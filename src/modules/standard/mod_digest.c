@@ -98,15 +98,16 @@ command_rec digest_cmds[] = {
 
 module MODULE_VAR_EXPORT digest_module;
 
-char *get_hash(request_rec *r, char *user, char *auth_pwfile)
+char *get_hash (request_rec *r, char *user, char *auth_pwfile)
 {
     FILE *f;
     char l[MAX_STRING_LEN];
     const char *rpw;
     char *w, *x;
 
-    if(!(f=pfopen(r->pool, auth_pwfile, "r"))) {
-        log_reason ("Could not open password file", auth_pwfile, r);
+    if (!(f=pfopen(r->pool, auth_pwfile, "r"))) {
+        aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+		    "Could not open password file: %s", auth_pwfile);
 	return NULL;
     }
     while(!(cfg_getline(l,MAX_STRING_LEN,f))) {
@@ -126,113 +127,115 @@ char *get_hash(request_rec *r, char *user, char *auth_pwfile)
 
 /* Parse the Authorization header, if it exists */
 
-int get_digest_rec(request_rec *r, digest_header_rec *response) {
-  const char *auth_line = table_get(r->headers_in, "Authorization");
-  int l;
-  int s = 0, vk = 0, vv = 0;
-  char *t, *key, *value;
+int get_digest_rec (request_rec *r, digest_header_rec *response)
+{
+    const char *auth_line = table_get(r->headers_in, "Authorization");
+    int l;
+    int s = 0, vk = 0, vv = 0;
+    char *t, *key, *value;
 
-  if (!(t = auth_type(r)) || strcasecmp(t, "Digest"))
-    return DECLINED;
+    if (!(t = auth_type(r)) || strcasecmp(t, "Digest"))
+	return DECLINED;
 
-  if (!auth_name (r)) {
-    log_reason ("need AuthName", r->uri, r);
-    return SERVER_ERROR;
-  }
+    if (!auth_name (r)) {
+	aplog_error(APLOG_MARK, APLOG_ERR, r->server, "need AuthName: %s", r->uri);
+	return SERVER_ERROR;
+    }
 
-  if (!auth_line) {
-    note_digest_auth_failure (r);
-    return AUTH_REQUIRED;
-  }
+    if (!auth_line) {
+	note_digest_auth_failure (r);
+	return AUTH_REQUIRED;
+    }
 
-  if (strcmp(getword (r->pool, &auth_line, ' '), "Digest")) {
-    /* Client tried to authenticate using wrong auth scheme */
-    log_reason ("client used wrong authentication scheme", r->uri, r);
-    note_digest_auth_failure (r);
-    return AUTH_REQUIRED;
-  }
+    if (strcmp(getword(r->pool, &auth_line, ' '), "Digest")) {
+	/* Client tried to authenticate using wrong auth scheme */
+	aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+		    "client used wrong authentication scheme: %s", r->uri);
+	note_digest_auth_failure(r);
+	return AUTH_REQUIRED;
+    }
 
-  l = strlen(auth_line);
+    l = strlen(auth_line);
 
-  key=palloc(r->pool,l);
-  value=palloc(r->pool,l);
+    key = palloc(r->pool,l);
+    value = palloc(r->pool,l);
 
-  /* There's probably a better way to do this, but for the time being... */
+    /* There's probably a better way to do this, but for the time being... */
 
 #define D_KEY 0
 #define D_VALUE 1
 #define D_STRING 2
 #define D_EXIT -1
 
-  while (s != D_EXIT) {
-    switch (s) {
-    case D_STRING:
-      if (auth_line[0] == '\"') {
-	s = D_VALUE;
-      }
-      else {
-	value[vv] = auth_line[0];
-	vv++;
-      }
-      auth_line++;
-      break;
+    while (s != D_EXIT) {
+	switch (s) {
+	case D_STRING:
+	    if (auth_line[0] == '\"') {
+		s = D_VALUE;
+	    }
+	    else {
+		value[vv] = auth_line[0];
+		vv++;
+	    }
+	    auth_line++;
+	    break;
 
-    case D_VALUE:
-      if (isalnum(auth_line[0])) {
-	value[vv] = auth_line[0];
-	vv++;
-      }
-      else if (auth_line[0] == '\"') {
-	s = D_STRING;
-      }
-      else {
-	value[vv] = '\0';
+	case D_VALUE:
+	    if (isalnum(auth_line[0])) {
+		value[vv] = auth_line[0];
+		vv++;
+	    }
+	    else if (auth_line[0] == '\"') {
+		s = D_STRING;
+	    }
+	    else {
+		value[vv] = '\0';
 
-	if (!strcasecmp(key, "username"))
-	  response->username = pstrdup(r->pool, value);
-	else if (!strcasecmp(key, "realm"))
-	  response->realm = pstrdup(r->pool, value);
-	else if (!strcasecmp(key, "nonce"))
-	  response->nonce = pstrdup(r->pool, value);
-	else if (!strcasecmp(key, "uri"))
-	  response->requested_uri = pstrdup(r->pool, value);
-	else if (!strcasecmp(key, "response"))
-	  response->digest = pstrdup(r->pool, value);
+		if (!strcasecmp(key, "username"))
+		    response->username = pstrdup(r->pool, value);
+		else if (!strcasecmp(key, "realm"))
+		    response->realm = pstrdup(r->pool, value);
+		else if (!strcasecmp(key, "nonce"))
+		    response->nonce = pstrdup(r->pool, value);
+		else if (!strcasecmp(key, "uri"))
+		    response->requested_uri = pstrdup(r->pool, value);
+		else if (!strcasecmp(key, "response"))
+		    response->digest = pstrdup(r->pool, value);
+		
+		vv = 0;
+		s = D_KEY;
+	    }
+	    auth_line++;
+	    break;
 
-	vv = 0;
-	s = D_KEY;
-      }
-      auth_line++;
-      break;
+	case D_KEY:
+	    if (isalnum(auth_line[0])) {
+		key[vk] = auth_line[0];
+		vk++;
+	    }
+	    else if (auth_line[0] == '=') {
+		key[vk] = '\0';
+		vk = 0;
+		s = D_VALUE;
+	    }
+	    auth_line++;
+	    break;
+	}
 
-    case D_KEY:
-      if (isalnum(auth_line[0])) {
-	key[vk] = auth_line[0];
-	vk++;
-      }
-      else if (auth_line[0] == '=') {
-	key[vk] = '\0';
-	vk = 0;
-	s = D_VALUE;
-      }
-      auth_line++;
-      break;
+	if (auth_line[-1] == '\0')
+	    s = D_EXIT;
     }
 
-    if (auth_line[-1] == '\0')
-      s = D_EXIT;
-  }
+    if (!response->username || !response->realm || !response->nonce ||
+	!response->requested_uri || !response->digest) {
+	note_digest_auth_failure (r);
+	return AUTH_REQUIRED;
+    }
 
-  if (!response->username || !response->realm || !response->nonce ||
-      !response->requested_uri || !response->digest) {
-    note_digest_auth_failure (r);
-    return AUTH_REQUIRED;
-  }
+    r->connection->user = response->username;
+    r->connection->auth_type = "Digest";
 
-  r->connection->user = response->username;
-  r->connection->auth_type = "Digest";
-
-  return OK;
+    return OK;
 }
 
 /* The actual MD5 code... whee */
@@ -277,15 +280,15 @@ int authenticate_digest_user (request_rec *r)
         return DECLINED;
 	
     if (!(a1 = get_hash(r, c->user, sec->pwfile))) {
-        ap_snprintf(errstr, sizeof(errstr), "user %s not found",c->user);
-	log_reason (errstr, r->uri, r);
-	note_digest_auth_failure (r);
+        ap_snprintf(errstr, sizeof(errstr), "user %s not found", c->user);
+	aplog_error(APLOG_MARK, APLOG_ERR, r->server, "%s: %s", errstr, r->uri);
+	note_digest_auth_failure(r);
 	return AUTH_REQUIRED;
     }
     /* anyone know where the prototype for crypt is? */
-    if(strcmp(response->digest, find_digest(r, response, a1))) {
-        ap_snprintf(errstr, sizeof(errstr), "user %s: password mismatch",c->user);
-	log_reason (errstr, r->uri, r);
+    if (strcmp(response->digest, find_digest(r, response, a1))) {
+        ap_snprintf(errstr, sizeof(errstr), "user %s: password mismatch", c->user);
+	aplog_error(APLOG_MARK, APLOG_ERR, r->server, "%s: %s", errstr, r->uri);
 	note_digest_auth_failure (r);
 	return AUTH_REQUIRED;
     }
