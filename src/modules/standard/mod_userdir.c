@@ -137,13 +137,11 @@ static const char *set_user_dir(cmd_parms *cmd, void *dummy, char *arg)
         *usernames = arg;
     char *kw = getword_conf(cmd->pool, &usernames);
     table *usertable;
-    int optype = O_DEFAULT;
 
     /*
      * Let's do the comparisons once.
      */
     if ((!strcasecmp(kw, "disable")) || (!strcasecmp(kw, "disabled"))) {
-        optype = O_DISABLE;
         /*
          * If there are no usernames specified, this is a global disable - we
          * need do no more at this point than record the fact.
@@ -163,7 +161,6 @@ static const char *set_user_dir(cmd_parms *cmd, void *dummy, char *arg)
         if (strlen(usernames) == 0) {
             return "UserDir \"enable\" keyword requires a list of usernames";
         }
-        optype = O_ENABLE;
         usertable = s_cfg->enabled_users;
     }
     else {

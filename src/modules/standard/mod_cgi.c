@@ -358,7 +358,6 @@ static int cgi_handler(request_rec *r)
     (cgi_server_conf *) get_module_config(sconf, &cgi_module);
 
     struct cgi_child_stuff cld;
-    pid_t child_pid;
 
     if (r->method_number == M_OPTIONS) {
 	/* 99 out of 100 CGI scripts, this is all they support */
@@ -427,11 +426,10 @@ static int cgi_handler(request_rec *r)
      * waiting for free_proc_chain to cleanup in the middle of an
      * SSI request -djg
      */
-    if (!(child_pid =
-	  spawn_child_err_buff(r->main ? r->main->pool : r->pool, cgi_child,
+    if (!spawn_child_err_buff(r->main ? r->main->pool : r->pool, cgi_child,
 			            (void *) &cld,
 			       kill_after_timeout,
-			       &script_out, &script_in, &script_err))) {
+			       &script_out, &script_in, &script_err)) {
 	aplog_error(APLOG_MARK, APLOG_ERR, r->server,
 		    "couldn't spawn child process: %s", r->filename);
 	return SERVER_ERROR;

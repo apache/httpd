@@ -1138,7 +1138,7 @@ static void lingering_close(request_rec *r)
     char dummybuf[2048];
     struct timeval tv;
     fd_set lfds, fds_read, fds_err;
-    int select_rv = 0, read_rv = 0;
+    int select_rv = 0;
     int lsd;
 
     /* Prevent a slow-drip client from holding us here indefinitely */
@@ -1188,7 +1188,6 @@ static void lingering_close(request_rec *r)
 	 */
 	tv.tv_sec = 2;
 	tv.tv_usec = 0;
-	read_rv = 0;
 	fds_read = lfds;
 	fds_err = lfds;
 
@@ -1196,7 +1195,7 @@ static void lingering_close(request_rec *r)
     } while ((select_rv > 0) &&	/* Something to see on socket    */
 	     !FD_ISSET(lsd, &fds_err) &&	/* that isn't an error condition */
 	     FD_ISSET(lsd, &fds_read) &&	/* and is worth trying to read   */
-	     ((read_rv = read(lsd, dummybuf, sizeof dummybuf)) > 0));
+	     (read(lsd, dummybuf, sizeof dummybuf) > 0));
 
     /* Should now have seen final ack.  Safe to finally kill socket */
 

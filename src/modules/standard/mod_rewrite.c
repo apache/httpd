@@ -1630,7 +1630,6 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
 {
     char *uri;
     char *output;
-    int flags;
     char newuri[MAX_STRING_LEN];
     char env[MAX_STRING_LEN];
     regex_t *regexp;
@@ -1651,7 +1650,6 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
     uri     = r->filename;
     regexp  = p->regexp;
     output  = p->output;
-    flags   = p->flags;
 
     /*
      *  Add (perhaps splitted away) PATH_INFO postfix to URL to
@@ -3111,7 +3109,6 @@ static void rewritelock_free(request_rec *r)
 static void run_rewritemap_programs(server_rec *s, pool *p)
 {
     rewrite_server_conf *conf;
-    char *fname;
     FILE *fpin;
     FILE *fpout;
     array_header *rewritemaps;
@@ -3139,7 +3136,6 @@ static void run_rewritemap_programs(server_rec *s, pool *p)
             || map->fpin  != -1
             || map->fpout != -1        )
             continue;
-        fname = server_root_relative(p, map->datafile);
         fpin  = NULL;
         fpout = NULL;
         rc = spawn_child(p, rewritemap_program_child, (void *)map->datafile,

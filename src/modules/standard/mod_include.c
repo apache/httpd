@@ -1940,9 +1940,8 @@ static int handle_else(FILE *in, request_rec *r, const char *error,
                        int *conditional_status, int *printing)
 {
     char tag[MAX_STRING_LEN];
-    char *tag_val;
 
-    if (!(tag_val = get_tag(r->pool, in, tag, sizeof(tag), 1))) {
+    if (!get_tag(r->pool, in, tag, sizeof(tag), 1)) {
         return 1;
     }
     else if (!strcmp(tag, "done")) {
@@ -1969,9 +1968,8 @@ static int handle_endif(FILE *in, request_rec *r, const char *error,
                         int *conditional_status, int *printing)
 {
     char tag[MAX_STRING_LEN];
-    char *tag_val;
 
-    if (!(tag_val = get_tag(r->pool, in, tag, sizeof(tag), 1))) {
+    if (!get_tag(r->pool, in, tag, sizeof(tag), 1)) {
         return 1;
     }
     else if (!strcmp(tag, "done")) {

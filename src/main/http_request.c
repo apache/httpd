@@ -571,7 +571,7 @@ static int file_walk(request_rec *r)
     core_dir_config *conf = get_module_config(r->per_dir_config, &core_module);
     void *per_dir_defaults = r->per_dir_config;
     void **file = (void **) conf->sec->elts;
-    int len, num_files = conf->sec->nelts;
+    int num_files = conf->sec->nelts;
     char *test_file;
 
     /* get the basename */
@@ -601,8 +601,6 @@ static int file_walk(request_rec *r)
             entry_core = (core_dir_config *)
                          get_module_config(entry_config, &core_module);
             entry_file = entry_core->d;
-
-            len = strlen(entry_file);
 
             this_conf = NULL;
 
@@ -1220,6 +1218,8 @@ static request_rec *internal_internal_redirect(const char *new_uri, request_rec 
      * setting header_only, etc., here.
      */
 
+    new->method          = r->method;
+    new->method_number   = r->method_number;
     parse_uri(new, new_uri);
     new->request_config = create_request_config(r->pool);
     new->per_dir_config = r->server->lookup_defaults;
@@ -1231,8 +1231,6 @@ static request_rec *internal_internal_redirect(const char *new_uri, request_rec 
 
     new->the_request = r->the_request;
 
-    new->method          = r->method;
-    new->method_number   = r->method_number;
     new->allowed         = r->allowed;
 
     new->status          = r->status;
