@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: mod_log_config.c,v 1.12 1996/09/26 11:31:01 mjc Exp $  */
+/* $Id: mod_log_config.c,v 1.13 1996/09/26 12:04:00 mjc Exp $  */
 
 /*
  * This is module implements the TransferLog directive (same as the
@@ -65,6 +65,9 @@
  *    CustomLog fn format
  *                        Log to file fn with format given by the format
  *                        argument
+ *
+ *    CookieLog fn        For backwards compatability with old Cookie
+ *                        logging module - now deprecated.
  *
  * There can be any number of TransferLog and CustomLog
  * commands. Each request will be logged to _ALL_ the
@@ -646,6 +649,11 @@ char *set_transfer_log(cmd_parms *cmd, void *dummy, char *fn)
     return add_custom_log(cmd, dummy, fn, NULL);
 }
 
+char *set_cookie_log(cmd_parms *cmd, void *dummy, char *fn)
+{
+    return add_custom_log(cmd, dummy, fn, "%{Cookie}n \"%r\" %t");
+}
+
 command_rec config_log_cmds[] = {
 { "CustomLog", add_custom_log, NULL, RSRC_CONF, TAKE2,
     "a file name and a custom log format string" },
@@ -653,6 +661,8 @@ command_rec config_log_cmds[] = {
     "the filename of the access log" },
 { "LogFormat", log_format, NULL, RSRC_CONF, TAKE1,
     "a log format string (see docs)" },
+{ "CookieLog", set_cookie_log, NULL, RSRC_CONF, TAKE1,
+    "the filename of the cookie log" },
 { NULL }
 };
 

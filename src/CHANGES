@@ -1,10 +1,22 @@
-$Id: CHANGES,v 1.65 1996/09/24 12:45:00 mjc Exp $
+$Id: CHANGES,v 1.66 1996/09/26 12:04:02 mjc Exp $
 
 Changes with Apache 1.2b1:
 
+  *) Cookies module now logs initial transaction.  Logging for Cookies is
+     now handled by using %{Cookie}n directive in log module.  Old
+     "CookieLog" directive still works but isn't recommended; see 
+     mod_cookies.c for explanation [Mark Cox]
+
+  *) New logging directives, %U (URL path requested), %f filename, 
+     %P (Process ID), %{}n (item from notes table) [Alexei Kosut]
+
+  *) Requests can be logged to more than one log file, using multiple
+      TransferLog directives, and/or new CustomLog directives with a
+      configurable format. [Paul Sutton]
+
   *) Negotiation updated to implement all aspects of HTTP/1.1, including
       charset and encoding negotiation. Now server-driven negotiation
-      can return a list of variants (the MULTIPLE_CHOICE response).
+      can return a list of variants (the 406 response).
       Some code included for transparent negotiation (not compiled
       in by default). [Paul Sutton]
 
