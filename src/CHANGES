@@ -1,5 +1,8 @@
 Changes with Apache 1.3b4
 
+  *) Fix the spurious "(0)unknown error: mmap_handler: mmap failed"
+     error messages. [Ben Hyde]
+
 Changes with Apache 1.3b3
 
   *) WIN32: Work around brain-damaged spawn calls that can't deal

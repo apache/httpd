@@ -1864,21 +1864,20 @@ int default_handler (request_rec *r)
     block_alarms();
     if ((r->finfo.st_size >= MMAP_THRESHOLD)
 	&& ( !r->header_only || (d->content_md5 & 1))) {
-      /* we need to protect ourselves in case we die while we've got the
+	/* we need to protect ourselves in case we die while we've got the
  	 * file mmapped */
 	mm = mmap (NULL, r->finfo.st_size, PROT_READ, MAP_PRIVATE,
 		    fileno(f), 0);
+	if (mm == (caddr_t)-1) {
+	    aplog_error(APLOG_MARK, APLOG_CRIT, r->server,
+			"default_handler: mmap failed: %s", r->filename);
+	}
     } else {
 	mm = (caddr_t)-1;
     }
 
     if (mm == (caddr_t)-1) {
 	unblock_alarms();
-
-	if (r->finfo.st_size >= MMAP_THRESHOLD) {
-	    aplog_error(APLOG_MARK, APLOG_CRIT, r->server,
-			"mmap_handler: mmap failed: %s", r->filename);
-	}
 #endif
 
 	if (d->content_md5 & 1) {
