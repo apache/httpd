@@ -105,15 +105,7 @@ SOURCE=.\ApacheMonitor.ico
 # Begin Source File
 
 SOURCE=.\ApacheMonitor.rc
-
-!IF  "$(CFG)" == "ApacheMonitor - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "ApacheMonitor - Win32 Debug"
-
 # PROP Exclude_From_Build 1
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
@@ -141,8 +133,6 @@ SOURCE=.\ApacheMonitor.c
 SOURCE=.\ApacheMonitorVer.rc
 
 !IF  "$(CFG)" == "ApacheMonitor - Win32 Release"
-
-# PROP Exclude_From_Build 1
 
 !ELSEIF  "$(CFG)" == "ApacheMonitor - Win32 Debug"
 
