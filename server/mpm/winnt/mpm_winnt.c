@@ -1969,6 +1969,7 @@ LISTEN_COMMANDS
 
 module MODULE_EXPORT_VAR mpm_winnt_module = {
     MPM20_MODULE_STUFF,
+    NULL,                       /* hook run before arguments are parsed */
     winnt_pre_config,           /* hook run before configuration is read */
     NULL,			/* create per-directory config structure */
     NULL,			/* merge per-directory config structures */
