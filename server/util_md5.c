@@ -96,7 +96,7 @@ AP_DECLARE(char *) ap_md5_binary(apr_pool_t *p, const unsigned char *buf, int le
 {
     const char *hex = "0123456789abcdef";
     apr_md5_ctx_t my_md5;
-    unsigned char hash[MD5_DIGESTSIZE];
+    unsigned char hash[APR_MD5_DIGESTSIZE];
     char *r, result[33]; /* (MD5_DIGESTSIZE * 2) + 1 */
     int i;
 
@@ -111,13 +111,13 @@ AP_DECLARE(char *) ap_md5_binary(apr_pool_t *p, const unsigned char *buf, int le
     apr_md5_update(&my_md5, buf, (unsigned int)length);
     apr_md5_final(hash, &my_md5);
 
-    for (i = 0, r = result; i < MD5_DIGESTSIZE; i++) {
+    for (i = 0, r = result; i < APR_MD5_DIGESTSIZE; i++) {
 	*r++ = hex[hash[i] >> 4];
 	*r++ = hex[hash[i] & 0xF];
     }
     *r = '\0';
 
-    return apr_pstrndup(p, result, MD5_DIGESTSIZE*2);
+    return apr_pstrndup(p, result, APR_MD5_DIGESTSIZE*2);
 }
 
 AP_DECLARE(char *) ap_md5(apr_pool_t *p, const unsigned char *string)

@@ -64,7 +64,7 @@
 #include "util_ldap.h"
 #include "util_ldap_cache.h"
 
-#ifdef APU_HAS_LDAP
+#if APR_HAS_LDAP
 
 #if APR_HAS_SHARED_MEMORY
 #define MODLDAP_SHMEM_CACHE "/tmp/mod_ldap_cache"
@@ -331,4 +331,4 @@ apr_status_t util_ldap_cache_init(apr_pool_t *pool, util_ldap_state_t *st)
 }
 
 
-#endif /* APU_HAS_LDAP */
+#endif /* APR_HAS_LDAP */

@@ -164,7 +164,7 @@ typedef struct hash_entry {
     unsigned long      key;                     /* the key for this entry    */
     struct hash_entry *next;                    /* next entry in the bucket  */
     unsigned long      nonce_count;             /* for nonce-count checking  */
-    char               ha1[2*MD5_DIGESTSIZE+1]; /* for algorithm=MD5-sess    */
+    char               ha1[2*APR_MD5_DIGESTSIZE+1]; /* for algorithm=MD5-sess    */
     char               last_nonce[NONCE_LEN+1]; /* for one-time nonce's      */
 } client_entry;
 

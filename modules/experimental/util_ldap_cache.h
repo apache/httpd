@@ -61,7 +61,7 @@
  */
 
 /* this whole thing disappears if LDAP is not enabled */
-#ifdef APU_HAS_LDAP
+#if APR_HAS_LDAP
 
 
 /*
@@ -235,5 +235,5 @@ void util_ald_cache_remove(util_ald_cache_t *cache, void *payload);
 char *util_ald_cache_display_stats(apr_pool_t *p, util_ald_cache_t *cache,
                                  char *name);
 
-#endif /* APU_HAS_LDAP */
+#endif /* APR_HAS_LDAP */
 #endif /* APU_LDAP_CACHE_H */

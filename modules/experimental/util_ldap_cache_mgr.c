@@ -65,7 +65,7 @@
 #include "util_ldap_cache.h"
 #include <apr_strings.h>
 
-#ifdef APU_HAS_LDAP
+#if APR_HAS_LDAP
 
 /* only here until strdup is gone */
 #include <string.h>
@@ -552,4 +552,4 @@ char *util_ald_cache_display(apr_pool_t *pool, util_ldap_state_t *st)
     return buf;
 }
 
-#endif /* APU_HAS_LDAP */
+#endif /* APR_HAS_LDAP */
