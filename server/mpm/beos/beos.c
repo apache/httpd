@@ -316,7 +316,6 @@ static void process_socket(apr_pool_t *p, apr_socket_t *sock, int my_child_num)
 
     if (current_conn) {
         ap_process_connection(current_conn);
-        ap_lingering_close(current_conn);
     }
 }
 

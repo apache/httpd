@@ -411,7 +411,6 @@ static void worker_main(void *vpArg)
 
         if (current_conn) {
             ap_process_connection(current_conn);
-            ap_lingering_close(current_conn);
         }
 
         apr_pool_destroy(pconn);

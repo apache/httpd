@@ -149,13 +149,14 @@ AP_CORE_DECLARE(void) ap_flush_conn(conn_rec *c)
  * all the response data has been sent to the client.
  */
 #define SECONDS_TO_LINGER  2
-void ap_lingering_close(conn_rec *c)
+static apr_status_t ap_lingering_close(void *dummy)
 {
     char dummybuf[512];
     apr_size_t nbytes = sizeof(dummybuf);
     apr_status_t rc;
     apr_int32_t timeout;
     apr_int32_t total_linger_time = 0;
+    conn_rec *c = dummy;
 
     ap_update_child_status(AP_CHILD_THREAD_FROM_ID(c->id), SERVER_CLOSING, NULL);
 
@@ -175,7 +176,7 @@ void ap_lingering_close(conn_rec *c)
 
     if (c->aborted) {
         apr_socket_close(c->client_socket);
-        return;
+        return APR_SUCCESS;
     }
 
     /* Shut down the socket for write, which will send a FIN
@@ -185,7 +186,7 @@ void ap_lingering_close(conn_rec *c)
     if (apr_shutdown(c->client_socket, APR_SHUTDOWN_WRITE) != APR_SUCCESS || 
         c->aborted) {
         apr_socket_close(c->client_socket);
-        return;
+        return APR_SUCCESS;
     }
 
     /* Read all data from the peer until we reach "end-of-file" (FIN
@@ -208,6 +209,7 @@ void ap_lingering_close(conn_rec *c)
     }
 
     apr_socket_close(c->client_socket);
+    return APR_SUCCESS;
 }
 
 AP_CORE_DECLARE(void) ap_process_connection(conn_rec *c)
@@ -261,6 +263,8 @@ AP_CORE_DECLARE(conn_rec *)ap_new_connection(apr_pool_t *p, server_rec *server,
     conn->client_socket = inout;
 
     conn->id = id;
+
+    apr_pool_cleanup_register(p, conn, ap_lingering_close, apr_pool_cleanup_null);
 
     return conn;
 }
