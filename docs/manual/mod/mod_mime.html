@@ -72,14 +72,14 @@ encoding, and .Z files to be marked as encoded with x-compress.<p><hr>
 
 <h2><a name="addhandler">AddHandler</a></h2>
 
-<strong>Syntax:</strong> &lt;AddHandler <em>handler-name extension</em>&gt;<br>
+<strong>Syntax:</strong> AddHandler <em>handler-name extension extension...</em><br>
 <strong>Context:</strong> server config, virtual host, directory, .htaccess<br>
 <strong>Status:</strong> Base<br>
 <strong>Module:</strong> mod_mime<br>
 <strong>Compatibility:</strong> AddHandler is only available in Apache
 1.1 and later<p>
 
-<p>AddHandler maps the filename extension <em>extension</em> to the
+<p>AddHandler maps the filename extensions <em>extension</em> to the
 <a href="../handler.html">handler</a>
 <em>handler-name</em>. For example, to activate CGI scripts
 with the file extension "<code>.cgi</code>", you might use:
@@ -138,7 +138,7 @@ type of particular files.<p><hr>
 
 <h2><a name="forcetype">ForceType</a></h2>
 
-<strong>Syntax:</strong> &lt;ForceType <em>media type</em>&gt;<br>
+<strong>Syntax:</strong> ForceType <em>media type</em><br>
 <strong>Context:</strong> directory, .htaccess<br>
 <strong>Status:</strong> Base<br>
 <strong>Module:</strong> mod_mime<br>
@@ -159,7 +159,7 @@ media type.</p>
 
 <h2><a name="sethandler">SetHandler</a></h2>
 
-<strong>Syntax:</strong> &lt;SetHandler <em>handler-name</em>&gt;<br>
+<strong>Syntax:</strong> SetHandler <em>handler-name</em><br>
 <strong>Context:</strong> directory, .htaccess<br>
 <strong>Status:</strong> Base<br>
 <strong>Module:</strong> mod_mime<br>
