@@ -1,4 +1,8 @@
 Changes with Apache 1.3.13
+  *) Set default ServerName setting to 127.0.0.1 for the Windows
+     config file (httpd.conf-dist-win)
+     PR: 5509, 5783, 5953, 5903, 5983, 5259, 5515, 5858
+     [Oliver Wendemuth <owendemuth@ko.hbv.de>]
 
   *) [EBCDIC] Update mod_mmap_static so that an ebcdic box can use 
      MMapFile for files that shouldn't be converted from ebcdic->ascii.
