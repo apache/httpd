@@ -690,7 +690,9 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode
             ctx->b = apr_brigade_split(b, e);
         }
         else {
-            ctx->b = NULL;
+            if (!APR_BRIGADE_EMPTY(ctx->b)) {
+                ctx->b = NULL; /*XXX*/
+            }
         }
         apr_brigade_length(b, 1, &total);
         *readbytes -= total;
