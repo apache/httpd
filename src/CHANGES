@@ -1,5 +1,22 @@
 Changes with Apache 1.3a2
 
+  *) "HostnameLookups double" forces double-reverse DNS to succeed.
+     The old define MAXIMUM_DNS has been deprecated.  [Dean Gaudet]
+
+  *) mod_access overhaul:
+     - Now understands network/netmask syntax (i.e.  10.1.0.0/255.255.0.0)
+	and cidr syntax (i.e. 10.1.0.0/16).  PR#762
+     - Critical path was sped up by pre-computing a few things at config
+	time.
+     - The undocumented syntax "allow user-agents" was removed,
+	the replacement is "allow from env=foobar" combined with mod_browser.
+     - When used with hostnames it now forces a double-reverse lookup
+	no matter what the directory settings are.  This double-reverse
+	doesn't affect any of the other routines that use the remote
+	hostname.  In particular it's still passed to CGIs and the log
+	without the double-reverse check.  Related PR#860.
+     [Dean Gaudet]
+
   *) When a large bwrite() occurs (larger than the internal buffer size),
      while there is already something in the buffer, apache will combine
      the large write and the buffer into a single writev().  (This is

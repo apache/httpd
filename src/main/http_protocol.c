@@ -772,7 +772,7 @@ request_rec *read_request (conn_rec *conn)
     r->server = conn->server;
     r->pool = make_sub_pool(conn->pool);
 
-    conn->keptalive = conn->keepalive;
+    conn->keptalive = conn->keepalive == 1;
     conn->keepalive = 0;
 
     conn->user = NULL;

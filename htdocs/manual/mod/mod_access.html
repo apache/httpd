@@ -53,6 +53,12 @@ The allow directive affects which hosts can access a given directory.
 <dd>An IP address of a host allowed access
 <dt>A partial IP address
 <dd>The first 1 to 3 bytes of an IP address, for subnet restriction.
+<dt>A network/netmask pair
+<dd>A network a.b.c.d, and a netmask w.x.y.z.  For more fine-grained subnet
+    restriction.  (i.e. 10.1.0.0/255.255.0.0)
+<dt>A network/nnn CIDR specification
+<dd>Similar to the previous case, except the netmask consists of nnn 
+    high-order 1 bits.  (i.e. 10.1.0.0/16 is the same as 10.1.0.0/255.255.0.0)
 </dl>
 <P>
 Example:
@@ -121,6 +127,12 @@ The deny directive affects which hosts can access a given directory.
 <dd>An IP address of a host denied access
 <dt>A partial IP address
 <dd>The first 1 to 3 bytes of an IP address, for subnet restriction.
+<dt>A network/netmask pair
+<dd>A network a.b.c.d, and a netmask w.x.y.z.  For more fine-grained subnet
+    restriction.  (i.e. 10.1.0.0/255.255.0.0)
+<dt>A network/nnn CIDR specification
+<dd>Similar to the previous case, except the netmask consists of nnn 
+    high-order 1 bits.  (i.e. 10.1.0.0/16 is the same as 10.1.0.0/255.255.0.0)
 </dl>
 <P>
 Example:

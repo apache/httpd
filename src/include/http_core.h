@@ -77,6 +77,7 @@
 #define REMOTE_HOST (0)
 #define REMOTE_NAME (1)
 #define REMOTE_NOLOOKUP (2)
+#define REMOTE_DOUBLE_REV (3)
 
 #define SATISFY_ALL 0
 #define SATISFY_ANY 1
@@ -128,12 +129,8 @@ typedef unsigned char allow_options_t;
 typedef unsigned char overrides_t;
 
 typedef struct {
+    /* path of the directory/regex/etc.  see also d_is_matchexp below */
     char *d;
-    /* since is_matchexp(conf->d) was being called so frequently in
-     * directory_walk() and its relatives, this field was created and
-     * is set to the result of that call.
-     */
-    int d_is_matchexp;
 
     allow_options_t opts;
     allow_options_t opts_add;
@@ -154,8 +151,6 @@ typedef struct {
     char *auth_name;
     array_header *requires;
 
-    int content_md5;
-    
     /* Custom response config. These can contain text or a URL to redirect to.
      * if response_code_strings is NULL then there are none in the config,
      * if it's not null then it's allocated to sizeof(char*)*RESPONSE_CODES.
@@ -165,8 +160,21 @@ typedef struct {
     char **response_code_strings;
 
     /* Hostname resolution etc */
-    int hostname_lookups;
-    int do_rfc1413;   /* See if client is advertising a username? */
+#define HOSTNAME_LOOKUP_OFF	0
+#define HOSTNAME_LOOKUP_ON	1
+#define HOSTNAME_LOOKUP_DOUBLE	2
+#define HOSTNAME_LOOKUP_UNSET	3
+    int hostname_lookups : 4;
+
+    int do_rfc1413 : 2;   /* See if client is advertising a username? */
+
+    int content_md5 : 2;  /* calculate Content-MD5? */
+
+    /* since is_matchexp(conf->d) was being called so frequently in
+     * directory_walk() and its relatives, this field was created and
+     * is set to the result of that call.
+     */
+    int d_is_matchexp : 1;
 
     /* System Resource Control */
 #ifdef RLIMIT_CPU

@@ -63,9 +63,24 @@
 #include "http_log.h"
 #include "http_request.h"
 
+enum allowdeny_type {
+    T_ENV,
+    T_ALL,
+    T_IP,
+    T_HOST,
+    T_FAIL
+};
+
 typedef struct {
-    char *from;
     int limited;
+    union {
+	char *from;
+	struct {
+	    unsigned long net;
+	    unsigned long mask;
+	} ip;
+    } x;
+    enum allowdeny_type type;
 } allowdeny;
 
 /* things in the 'order' array */
@@ -111,17 +126,104 @@ static const char *order (cmd_parms *cmd, void *dv, char *arg)
     return NULL;
 }
 
+static int is_ip(const char *host)
+{
+    while ((*host == '.') || isdigit(*host))
+        host++;
+    return (*host == '\0');
+}
+
 static const char *allow_cmd (cmd_parms *cmd, void *dv, char *from, char *where)
 {
     access_dir_conf *d = (access_dir_conf *)dv;
     allowdeny *a;
+    char *s;
   
     if (strcasecmp (from, "from"))
         return "allow and deny must be followed by 'from'";
     
     a = (allowdeny *)push_array (cmd->info ? d->allows : d->denys);
-    a->from = pstrdup (cmd->pool, where);
+    a->x.from = where = pstrdup (cmd->pool, where);
     a->limited = cmd->limited;
+    
+    if (!strncmp (where, "env=", 4)) {
+	a->type = T_ENV;
+	a->x.from += 4;
+
+    } else if (!strcmp (where, "all")) {
+	a->type = T_ALL;
+
+    } else if ((s = strchr (where, '/'))) {
+	unsigned long mask;
+
+	a->type = T_IP;
+	/* trample on where, we won't be using it any more */
+	*s++ = '\0';
+
+	if (!is_ip (where)
+	    || (a->x.ip.net = ap_inet_addr (where)) == INADDR_NONE) {
+	    a->type = T_FAIL;
+	    return "syntax error in network portion of network/netmask";
+	}
+
+	/* is_ip just tests if it matches [\d.]+ */
+	if (!is_ip (s)) {
+	    a->type = T_FAIL;
+	    return "syntax error in mask portion of network/netmask";
+	}
+	/* is it in /a.b.c.d form? */
+	if (strchr (s, '.')) {
+	    mask = ap_inet_addr (s);
+	    if (mask == INADDR_NONE) {
+		a->type = T_FAIL;
+		return "syntax error in mask portion of network/netmask";
+	    }
+	} else {
+	    /* assume it's in /nnn form */
+	    mask = atoi (s);
+	    if (mask > 32 || mask <= 0) {
+		a->type = T_FAIL;
+		return "invalid mask in network/netmask";
+	    }
+	    mask = 0xFFFFFFFFUL << (32 - mask);
+	    mask = htonl (mask);
+	}
+	a->x.ip.mask = mask;
+
+    } else if (isdigit (*where) && is_ip (where)) {
+	/* legacy syntax for ip addrs: a.b.c. ==> a.b.c.0/24 for example */
+	int shift;
+	char *t;
+
+	a->type = T_IP;
+	/* parse components */
+	s = where;
+	a->x.ip.net = 0;
+	shift = 0;
+	while (*s) {
+	    t = s;
+	    if (!isdigit (*t)) {
+		a->type = T_FAIL;
+		return "invalid ip address";
+	    }
+	    while (isdigit (*t)) {
+		++t;
+	    }
+	    if (*t == '.') {
+		*t++ = 0;
+	    } else if (*t) {
+		a->type = T_FAIL;
+		return "invalid ip address";
+	    }
+	    a->x.ip.net |= atoi(s) << shift;
+	    a->x.ip.mask |= 0xFFUL << shift;
+	    shift += 8;
+	    s = t;
+	}
+    } else {
+	a->type = T_HOST;
+    }
+
     return NULL;
 }
 
@@ -155,25 +257,6 @@ static int in_domain(const char *domain, const char *what) {
         return 0;
 }
 
-static int in_ip(char *domain, char *what) {
-
-    /* Check a similar screw case to the one checked above ---
-     * "allow from 204.26.2" shouldn't let in people from 204.26.23
-     */
-    
-    int l = strlen(domain);
-    if (strncmp(domain,what,l) != 0) return 0;
-    if (domain[l - 1] == '.') return 1;
-    return (what[l] == '\0' || what[l] == '.');
-}
-
-static int is_ip(const char *host)
-{
-    while ((*host == '.') || isdigit(*host))
-        host++;
-    return (*host == '\0');
-}
-
 static int find_allowdeny (request_rec *r, array_header *a, int method)
 {
     allowdeny *ap = (allowdeny *)a->elts;
@@ -186,39 +269,43 @@ static int find_allowdeny (request_rec *r, array_header *a, int method)
         if (!(mmask & ap[i].limited))
 	    continue;
 
-	if (!strncmp(ap[i].from,"env=",4) && table_get(r->subprocess_env,ap[i].from+4))
-	    return 1;
-	    
-        if (ap[i].from && !strcmp(ap[i].from, "user-agents")) {
-	    char * this_agent = table_get(r->headers_in, "User-Agent");
-	    int j;
-  
-	    if (!this_agent) return 0;
-  
-	    for (j = i+1; j < a->nelts; ++j) {
-	        if (strstr(this_agent, ap[j].from)) return 1;
+	switch (ap[i].type) {
+	case T_ENV:
+	    if (table_get (r->subprocess_env, ap[i].x.from)) {
+		return 1;
 	    }
-	    return 0;
-	}
-	
-	if (!strcmp (ap[i].from, "all"))
+	    break;
+
+	case T_ALL:
 	    return 1;
 
-	if (!gothost) {
-	    remotehost = get_remote_host(r->connection, r->per_dir_config,
-	                                 REMOTE_HOST);
+	case T_IP:
+	    if (ap[i].x.ip.net != INADDR_NONE
+		&& (r->connection->remote_addr.sin_addr.s_addr
+		    & ap[i].x.ip.mask) == ap[i].x.ip.net) {
+		return 1;
+	    }
+	    break;
+	
+	case T_HOST:
+	    if (!gothost) {
+		remotehost = get_remote_host(r->connection, r->per_dir_config,
+					    REMOTE_DOUBLE_REV);
 
-	    if ((remotehost == NULL) || is_ip(remotehost))
-	        gothost = 1;
-	    else
-	        gothost = 2;
+		if ((remotehost == NULL) || is_ip(remotehost))
+		    gothost = 1;
+		else
+		    gothost = 2;
+	    }
+
+	    if ((gothost == 2) && in_domain(ap[i].x.from, remotehost))
+		return 1;
+	    break;
+
+	case T_FAIL:
+	    /* do nothing? */
+	    break;
 	}
-
-        if ((gothost == 2) && in_domain(ap[i].from, remotehost))
-            return 1;
-
-        if (in_ip (ap[i].from, r->connection->remote_ip))
-            return 1;
     }
 
     return 0;

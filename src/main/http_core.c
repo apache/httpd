@@ -84,7 +84,7 @@ void *create_core_dir_config (pool *a, char *dir)
     if (!dir || dir[strlen(dir) - 1] == '/') conf->d = dir;
     else if (strncmp(dir,"proxy:",6)==0) conf->d = pstrdup (a, dir);
     else conf->d = pstrcat (a, dir, "/", NULL);
-    conf->d_is_matchexp = conf->d ? is_matchexp( conf->d ) : 0;
+    conf->d_is_matchexp = conf->d ? (is_matchexp( conf->d ) != 0) : 0;
 
 
     conf->opts = dir ? OPT_UNSET : OPT_ALL;
@@ -93,7 +93,7 @@ void *create_core_dir_config (pool *a, char *dir)
 
     conf->content_md5 = 2;
 
-    conf->hostname_lookups = 2;/* binary, but will use 2 as an "unset = on" */
+    conf->hostname_lookups = HOSTNAME_LOOKUP_UNSET;
     conf->do_rfc1413 = DEFAULT_RFC1413 | 2;  /* set bit 1 to indicate default */
     conf->satisfy = SATISFY_NOSPEC;
 
@@ -155,7 +155,7 @@ void *merge_core_dir_configs (pool *a, void *basev, void *newv)
 		conf->response_code_strings[i] = new->response_code_strings[i];
 	}
     }
-    if (new->hostname_lookups != 2)
+    if (new->hostname_lookups != HOSTNAME_LOOKUP_UNSET)
 	conf->hostname_lookups = new->hostname_lookups;
     if ((new->do_rfc1413 & 2) == 0) conf->do_rfc1413 = new->do_rfc1413;
     if ((new->content_md5 & 2) == 0) conf->content_md5 = new->content_md5;
@@ -324,20 +324,46 @@ char *response_code_string (request_rec *r, int error_index)
     return conf->response_code_strings[error_index];
 }
 
+
+/* Code from Harald Hanche-Olsen <hanche@imf.unit.no> */
+static void inline do_double_reverse (conn_rec *conn)
+{
+    struct hostent *hptr;
+    char **haddr;
+
+    if (conn->double_reverse) {
+	/* already done */
+	return;
+    }
+    hptr = gethostbyname(conn->remote_host);
+    if (hptr) {
+	for (haddr = hptr->h_addr_list; *haddr; haddr++) {
+	    if (((struct in_addr *)(*haddr))->s_addr
+		== conn->remote_addr.sin_addr.s_addr) {
+		break;
+	    }
+	}
+    }
+    if (!hptr || !*haddr) {
+	conn->double_reverse = -1;
+    } else {
+	conn->double_reverse = 1;
+    }
+}
+
 API_EXPORT(const char *) get_remote_host(conn_rec *conn, void *dir_config, int type)
 {
     struct in_addr *iaddr;
     struct hostent *hptr;
-#ifdef MAXIMUM_DNS
-    char **haddr;
-#endif
     core_dir_config *dir_conf = NULL;
 
 /* If we haven't checked the host name, and we want to */
     if (dir_config) 
 	dir_conf = (core_dir_config *)get_module_config(dir_config, &core_module);
 
-   if ((!dir_conf) || (type != REMOTE_NOLOOKUP && conn->remote_host == NULL && dir_conf->hostname_lookups))
+   if ((!dir_conf) || (type != REMOTE_NOLOOKUP && conn->remote_host == NULL
+	&& (type == REMOTE_DOUBLE_REV
+	    || dir_conf->hostname_lookups != HOSTNAME_LOOKUP_OFF)))
     {
 #ifdef STATUS
 	int old_stat = update_child_status(conn->child_num,
@@ -346,31 +372,29 @@ API_EXPORT(const char *) get_remote_host(conn_rec *conn, void *dir_config, int t
 #endif /* STATUS */
 	iaddr = &(conn->remote_addr.sin_addr);
 	hptr = gethostbyaddr((char *)iaddr, sizeof(struct in_addr), AF_INET);
-	if (hptr != NULL)
-	{
+	if (hptr != NULL) {
 	    conn->remote_host = pstrdup(conn->pool, (void *)hptr->h_name);
 	    str_tolower (conn->remote_host);
 	   
-#ifdef MAXIMUM_DNS
-    /* Grrr. Check THAT name to make sure it's really the name of the addr. */
-    /* Code from Harald Hanche-Olsen <hanche@imf.unit.no> */
-
-	    hptr = gethostbyname(conn->remote_host);
-	    if (hptr)
-	    {
-		for(haddr=hptr->h_addr_list; *haddr; haddr++)
-		    if(((struct in_addr *)(*haddr))->s_addr == iaddr->s_addr)
-			break;
+	    if (dir_conf
+		&& dir_conf->hostname_lookups == HOSTNAME_LOOKUP_DOUBLE) {
+		do_double_reverse (conn);
+		if (conn->double_reverse != 1) {
+		    conn->remote_host = NULL;
+		}
 	    }
-	    if((!hptr) || (!(*haddr)))
-		conn->remote_host = NULL;
-#endif
 	}
 /* if failed, set it to the NULL string to indicate error */
 	if (conn->remote_host == NULL) conn->remote_host = "";
 #ifdef STATUS
 	(void)update_child_status(conn->child_num,old_stat,(request_rec*)NULL);
 #endif /* STATUS */
+    }
+    if (type == REMOTE_DOUBLE_REV) {
+	do_double_reverse (conn);
+	if (conn->double_reverse == -1) {
+	    return NULL;
+	}
     }
 
 /*
@@ -382,7 +406,7 @@ API_EXPORT(const char *) get_remote_host(conn_rec *conn, void *dir_config, int t
 	return conn->remote_host;
     else
     {
-	if (type == REMOTE_HOST) return NULL;
+	if (type == REMOTE_HOST || type == REMOTE_DOUBLE_REV) return NULL;
 	else return conn->remote_ip;
     }
 }
@@ -695,7 +719,7 @@ const char *urlsection (cmd_parms *cmd, void *dummy, const char *arg)
 
     conf = (core_dir_config *)get_module_config(new_url_conf, &core_module);
     conf->d = pstrdup(cmd->pool, cmd->path);	/* No mangling, please */
-    conf->d_is_matchexp = is_matchexp( conf->d );
+    conf->d_is_matchexp = is_matchexp( conf->d ) != 0;
     conf->r = r;
 
     add_per_url_conf (cmd->server, new_url_conf);
@@ -751,7 +775,7 @@ const char *filesection (cmd_parms *cmd, core_dir_config *c, const char *arg)
 
     conf = (core_dir_config *)get_module_config(new_file_conf, &core_module);
     conf->d = pstrdup(cmd->pool, cmd->path);
-    conf->d_is_matchexp = is_matchexp( conf->d );
+    conf->d_is_matchexp = is_matchexp( conf->d ) != 0;
     conf->r = r;
 
     add_file_conf (c, new_file_conf);
@@ -985,13 +1009,21 @@ const char *set_lockfile (cmd_parms *cmd, void *dummy, char *arg) {
 }
 
 const char *set_idcheck (cmd_parms *cmd, core_dir_config *d, int arg) {
-    d->do_rfc1413 = arg;
+    d->do_rfc1413 = arg != 0;
     return NULL;
 }
 
-const char *set_hostname_lookups (cmd_parms *cmd, core_dir_config *d, int arg)
+const char *set_hostname_lookups (cmd_parms *cmd, core_dir_config *d, char *arg)
 {
-    d->hostname_lookups = arg;
+    if (!strcasecmp (arg, "on")) {
+	d->hostname_lookups = HOSTNAME_LOOKUP_ON;
+    } else if (!strcasecmp (arg, "off")) {
+	d->hostname_lookups = HOSTNAME_LOOKUP_OFF;
+    } else if (!strcasecmp (arg, "double")) {
+	d->hostname_lookups = HOSTNAME_LOOKUP_DOUBLE;
+    } else {
+	return "parameter must be 'on', 'off', or 'double'";
+    }
     return NULL;
 }
 
@@ -1002,7 +1034,7 @@ const char *set_serverpath (cmd_parms *cmd, void *dummy, char *arg) {
 }
 
 const char *set_content_md5 (cmd_parms *cmd, core_dir_config *d, int arg) {
-    d->content_md5 = arg;
+    d->content_md5 = arg != 0;
     return NULL;
 }
 
@@ -1245,7 +1277,7 @@ command_rec core_cmds[] = {
 
 { "ServerType", server_type, NULL, RSRC_CONF, TAKE1,"'inetd' or 'standalone'"},
 { "Port", server_port, NULL, RSRC_CONF, TAKE1, "A TCP port number"},
-{ "HostnameLookups", set_hostname_lookups, NULL, ACCESS_CONF|RSRC_CONF, FLAG, "\"on\" to enable or \"off\" to disable reverse DNS lookups" },
+{ "HostnameLookups", set_hostname_lookups, NULL, ACCESS_CONF|RSRC_CONF, TAKE1, "\"on\" to enable, \"off\" to disable reverse DNS lookups, or \"double\" to enable double-reverse DNS lookups" },
 { "User", set_user, NULL, RSRC_CONF, TAKE1, "Effective user id for this server"},
 { "Group", set_group, NULL, RSRC_CONF, TAKE1, "Effective group id for this server"},
 { "ServerAdmin", set_server_string_slot,
