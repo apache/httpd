@@ -23,6 +23,7 @@
 <!-- Read the localized messages from the specified language file -->
 <xsl:variable name="message" select="document('lang/ja.xml')/language/messages/message"/>
 <xsl:variable name="doclang">ja</xsl:variable>
+<xsl:variable name="allmodules" select="document('xsl/util/allmodules.xml')/items/item[@lang=$doclang]"/>
 
 <!-- some meta information have to be passed to the transformation -->
 <xsl:variable name="output-encoding">ISO-2022-JP</xsl:variable>
