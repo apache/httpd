@@ -107,6 +107,7 @@
 
 #define MODSSL_BIO_CB_ARG_TYPE const char
 #define MODSSL_CRYPTO_CB_ARG_TYPE const char
+#define MODSSL_INFO_CB_ARG_TYPE const SSL*
 #define MODSSL_CLIENT_CERT_CB_ARG_TYPE X509
 #define MODSSL_PCHAR_CAST
 
@@ -161,6 +162,7 @@ typedef int (modssl_read_bio_cb_fn)(char*,int,int,void*);
 
 #define MODSSL_BIO_CB_ARG_TYPE char
 #define MODSSL_CRYPTO_CB_ARG_TYPE char
+#define MODSSL_INFO_CB_ARG_TYPE SSL*
 #define MODSSL_CLIENT_CERT_CB_ARG_TYPE void
 #define MODSSL_PCHAR_CAST (char *)
 

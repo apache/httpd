@@ -1754,7 +1754,7 @@ void ssl_callback_DelSessionCacheEntry(SSL_CTX *ctx,
  * SSL handshake and does SSL record layer stuff. We use it to
  * trace OpenSSL's processing in out SSL logfile.
  */
-void ssl_callback_LogTracingState(const SSL *ssl, int where, int rc)
+void ssl_callback_LogTracingState(MODSSL_INFO_CB_ARG_TYPE ssl, int where, int rc)
 {
     conn_rec *c;
     server_rec *s;
