@@ -102,7 +102,6 @@ static int init_runtime_score(apr_pool_t *pool, proxy_balancer *balancer)
         /* Update the status entires */
         workers[i].s->lbstatus = workers[i].s->lbfactor;
     }
-    balancer->status = 1;
     return 0;
 }
 
@@ -347,10 +346,6 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
     if (!(*balancer = ap_proxy_get_balancer(r->pool, conf, *url)))
         return DECLINED;
     
-    /* Initialize shared scoreboard data */ 
-    if (!((*balancer)->status))
-        init_runtime_score(conf->pool, *balancer);
-
     /* Step 2: find the session route */
     
     runtime = find_session_route(*balancer, r, &route, url);
@@ -560,9 +555,6 @@ static int balancer_handler(request_rec *r)
     /* First set the params */
     if (bsel) {
         const char *val;
-        if (!bsel->status)
-            init_runtime_score(conf->pool, bsel);
-
         if ((val = apr_table_get(params, "ss"))) {
             if (strlen(val))
                 bsel->sticky = apr_pstrdup(conf->pool, val);
@@ -645,8 +637,6 @@ static int balancer_handler(request_rec *r)
                   ap_get_server_built(), "\n</dt></dl>\n", NULL);
         balancer = (proxy_balancer *)conf->balancers->elts;
         for (i = 0; i < conf->balancers->nelts; i++) {
-            if (!balancer->status)
-                init_runtime_score(conf->pool, balancer);
 
             ap_rputs("<hr />\n<h3>LoadBalancer Status for ", r);
             ap_rvputs(r, "<a href=\"", r->uri, "?b=",
@@ -744,10 +734,28 @@ static int balancer_handler(request_rec *r)
     return OK;
 }
 
+static void child_init(apr_pool_t *p, server_rec *s)
+{
+    void *sconf = s->module_config;
+    proxy_server_conf *conf = (proxy_server_conf *)
+        ap_get_module_config(sconf, &proxy_module);
+    proxy_balancer *balancer;
+    int i;
+    
+    /* Initialize shared scoreboard data */ 
+    balancer = (proxy_balancer *)conf->balancers->elts;
+    for (i = 0; i < conf->balancers->nelts; i++) {
+        init_runtime_score(conf->pool, balancer);
+        balancer++;
+    }
+
+}
+
 static void ap_proxy_balancer_register_hook(apr_pool_t *p)
 {
     /* manager handler */
     ap_hook_handler(balancer_handler, NULL, NULL, APR_HOOK_FIRST);
+    ap_hook_child_init(child_init, NULL, NULL, APR_HOOK_MIDDLE); 
     proxy_hook_pre_request(proxy_balancer_pre_request, NULL, NULL, APR_HOOK_FIRST);    
     proxy_hook_post_request(proxy_balancer_post_request, NULL, NULL, APR_HOOK_FIRST);    
 }
