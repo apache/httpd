@@ -1056,6 +1056,7 @@ static int x_pre_connection(conn_rec *c, void *csd)
  */
 static int x_process_connection(conn_rec *c)
 {
+    return DECLINED;
 }
 
 /*
@@ -1267,10 +1268,7 @@ static void x_register_hooks(apr_pool_t *p)
     ap_hook_handler(x_handler, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_quick_handler(x_quick_handler, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_pre_connection(x_pre_connection, NULL, NULL, APR_HOOK_MIDDLE);
-/* This module doesn't have a process connection phase, but I am leaving
- * the code in, in-case somebody wants to add one.
- */
-/*    ap_hook_process_connection(x_fixer_upper, NULL, NULL, APR_HOOK_MIDDLE); */
+    ap_hook_process_connection(x_process_connection, NULL, NULL, APR_HOOK_MIDDLE);
     /* [1] post read_request handling */
     ap_hook_post_read_request(x_post_read_request, NULL, NULL,
                               APR_HOOK_MIDDLE);
