@@ -495,7 +495,7 @@ apr_status_t isapi_handler (request_rec *r)
              * ... so we were pat all this time
              */
             break;
-            
+
         case HSE_STATUS_PENDING:    
             /* emulating async behavior...
              *
@@ -658,7 +658,7 @@ BOOL WINAPI WriteClient (HCONN ConnID, LPVOID Buffer, LPDWORD lpwdwBytes,
     bb = apr_brigade_create(r->pool);
     b = apr_bucket_transient_create(Buffer, *lpwdwBytes);
     APR_BRIGADE_INSERT_TAIL(bb, b);
-    b = apr_bucket_eos_create();
+    b = apr_bucket_flush_create();
     APR_BRIGADE_INSERT_TAIL(bb, b);
     ap_pass_brigade(r->output_filters, bb);
 
@@ -806,7 +806,7 @@ BOOL WINAPI ServerSupportFunction(HCONN hConn, DWORD dwHSERequest,
 	    b = apr_bucket_transient_create((char*) lpdwDataType + ate, 
                                            headlen - ate);
 	    APR_BRIGADE_INSERT_TAIL(bb, b);
-            b = apr_bucket_eos_create();
+            b = apr_bucket_flush_create();
 	    APR_BRIGADE_INSERT_TAIL(bb, b);
 	    ap_pass_brigade(cid->r->output_filters, bb);
         }
@@ -953,7 +953,7 @@ BOOL WINAPI ServerSupportFunction(HCONN hConn, DWORD dwHSERequest,
             APR_BRIGADE_INSERT_TAIL(bb, b);
         }
         
-        b = apr_bucket_eos_create();
+        b = apr_bucket_flush_create();
         APR_BRIGADE_INSERT_TAIL(bb, b);
         ap_pass_brigade(r->output_filters, bb);
 
@@ -1109,7 +1109,7 @@ BOOL WINAPI ServerSupportFunction(HCONN hConn, DWORD dwHSERequest,
 	    b = apr_bucket_transient_create(shi->pszHeader + ate, 
                                            (apr_size_t)shi->cchHeader - ate);
 	    APR_BRIGADE_INSERT_TAIL(bb, b);
-            b = apr_bucket_eos_create();
+            b = apr_bucket_flush_create();
 	    APR_BRIGADE_INSERT_TAIL(bb, b);
 	    ap_pass_brigade(cid->r->output_filters, bb);
         }
