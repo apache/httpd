@@ -97,8 +97,14 @@
 #include "util_filter.h"
 #include "apr_poll.h"
 
-/* ### should be APR-ized */
+#ifdef HAVE_POLL_H
 #include <poll.h>
+#endif
+#ifdef HAVE_SYS_POLL_H
+#include <sys/poll.h>
+#endif
+
+/* ### should be APR-ized */
 #include <grp.h>
 #include <pwd.h>
 #include <sys/stat.h>
