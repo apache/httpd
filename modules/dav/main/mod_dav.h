@@ -523,11 +523,48 @@ typedef struct {
 
 } dav_provider;
 
+/*
+** gather_propsets: gather all live property propset-URIs
+**
+** The hook implementor should push one or more URIs into the specified
+** array. These URIs are returned in the DAV: header to let clients know
+** what sets of live properties are supported by the installation. mod_dav
+** will place open/close angle brackets around each value (much like
+** a Coded-URL); quotes and brackets should not be in the value.
+**
+** Example:    http://apache.org/dav/props/
+**
+** (of course, use your own domain to ensure a unique value)
+*/
 AP_DECLARE_EXTERNAL_HOOK(DAV, void, gather_propsets, 
                          (apr_array_header_t *uris))
+
+/*
+** find_liveprop: find a live property, returning a non-zero, unique,
+**                opaque identifier.
+**
+** If the hook implementor determines the specified URI/name refers to
+** one of its properties, then it should fill in HOOKS and return a
+** non-zero value. The returned value is the "property ID" and will
+** be passed to the various liveprop hook functions.
+**
+** Return 0 if the property is not defined by the hook implementor.
+*/
 AP_DECLARE_EXTERNAL_HOOK(DAV, int, find_liveprop,
                          (request_rec *r, const char *ns_uri, const char *name,
                           const dav_hooks_liveprop **hooks))
+
+/*
+** insert_all_liveprops: insert all (known) live property names/values.
+**
+** The hook implementor should append XML text to PHDR, containing liveprop
+** names. If INSVALUE is true, then the property values should also be
+** inserted into the output XML stream.
+**
+** The liveprop provider should insert *all* known and *defined* live
+** properties on the specified resource. If a particular liveprop is
+** not defined for this resource, then it should not be inserted.
+*/
 AP_DECLARE_EXTERNAL_HOOK(DAV, void, insert_all_liveprops, 
                          (request_rec *r, const dav_resource *resource,
                           int insvalue, ap_text_header *phdr))
@@ -653,31 +690,6 @@ typedef struct dav_liveprop_rollback dav_liveprop_rollback;
 struct dav_hooks_liveprop
 {
     /*
-    ** This URI is returned in the DAV: header to let clients know what
-    ** sets of live properties are supported by the installation. mod_dav
-    ** will place open/close angle brackets around this value (much like
-    ** a Coded-URL); quotes and brackets should not be in the value.
-    **
-    ** Example:    http://apache.org/dav/props/
-    **
-    ** (of course, use your own domain to ensure a unique value)
-    */
-    const char * propset_uri;
-
-    /*
-    ** Find a property, returning a non-zero, unique, opaque identifier.
-    **
-    ** NOTE: Providers must ensure this identifier is universally unique.
-    **       See the registration table below.
-    ** ### it would be nice to avoid this uniqueness constraint. however,
-    ** ### that would mean our xml_elem annotation concept would need to
-    ** ### change (w.r.t. the fact that it acts as a cache for find_prop).
-    **
-    ** Returns 0 if the property is not defined by this provider.
-    */
-    int (*find_prop)(const char *ns_uri, const char *name);
-
-    /*
     ** Insert a property name/value into a text block. The property to
     ** insert is identified by the propid value. Providers should return
     ** DAV_PROP_INSERT_NOTME if they do not define the specified propid.
@@ -692,14 +704,6 @@ struct dav_hooks_liveprop
     dav_prop_insert (*insert_prop)(const dav_resource *resource,
 				   int propid, int insvalue,
 				   ap_text_header *phdr);
-
-    /*
-    ** Insert all known/defined property names (and values). This is
-    ** similar to insert_prop, but *all* properties will be inserted
-    ** rather than specific, individual properties.
-    */
-    void (*insert_all)(const dav_resource *resource, int insvalue,
-		       ap_text_header *phdr);
 
     /*
     ** Determine whether a given property is writeable.
