@@ -192,6 +192,8 @@ apr_status_t ap_lingering_close(void *dummy)
      */
     if (apr_shutdown(net->client_socket, APR_SHUTDOWN_WRITE) != APR_SUCCESS || 
         net->c->aborted) {
+        apr_socket_close(c->client_socket);
+        return APR_SUCCESS;
     }
 
     /* Read all data from the peer until we reach "end-of-file" (FIN
