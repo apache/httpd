@@ -3389,7 +3389,7 @@ static void detach(void)
     }
 #endif
 #ifndef NO_SETSID
-    if (pgrp = setsid()) == -1) {
+    if ((pgrp = setsid()) == -1) {
 	perror("setsid");
 	fprintf(stderr, "%s: setsid failed\n", ap_server_argv0);
 	if (!do_detach) 
