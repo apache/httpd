@@ -1209,11 +1209,17 @@ AP_DECLARE_NONSTD(const char *) ap_set_file_slot(cmd_parms *cmd, void *struct_pt
      * This allows most args to be independent of server_root,
      * so the server can be moved or mirrored with less pain.
      */
-    const char *p;
+    const char *path;
     int offset = (int)(long)cmd->info;
 
-    p = ap_server_root_relative(cmd->pool, arg);
-    *(const char **) ((char*)struct_ptr + offset) = p;
+    path = ap_server_root_relative(cmd->pool, arg);
+
+    if (!path) {
+        return apr_pstrcat(cmd->pool, "Invalid file path ",
+                           arg, NULL);
+    }
+
+    *(const char **) ((char*)struct_ptr + offset) = path;
 
     return NULL;
 }
@@ -1756,6 +1762,13 @@ AP_DECLARE(server_rec*) ap_read_config(process_rec *process, apr_pool_t *ptemp,
      * compute this config file name afterwards.
      */
     confname = ap_server_root_relative(p, filename);
+
+    if (!confname) {
+        ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_CRIT,
+                     APR_EBADPATH, NULL, "Invalid config file path %s",
+                     filename);
+        exit(1);
+    }
 
     ap_process_resource_config(s, confname, conftree, p, ptemp);
 

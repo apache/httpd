@@ -1062,8 +1062,13 @@ static config_log_state *open_config_log(server_rec *s, apr_pool_t *p,
     }
     else {
         const char *fname = ap_server_root_relative(p, cls->fname);
-        if ((status = apr_file_open(&cls->log_fd, fname, xfer_flags, xfer_perms, p)) 
-            != APR_SUCCESS) {
+        if (!fname) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, APR_EBADPATH, s,
+                         "invalid transfer log path %s.", cls->fname);
+            exit(1);
+        }
+        if ((status = apr_file_open(&cls->log_fd, fname, xfer_flags,
+                                    xfer_perms, p)) != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, status, s,
                          "could not open transfer log file %s.", fname);
             exit(1);

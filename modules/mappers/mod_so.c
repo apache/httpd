@@ -200,7 +200,7 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
     apr_dso_handle_t *modhandle;
     apr_dso_handle_sym_t modsym;
     module *modp;
-    const char *szModuleFile=ap_server_root_relative(cmd->pool, filename);
+    const char *szModuleFile = ap_server_root_relative(cmd->pool, filename);
     so_server_conf *sconf;
     moduleinfo *modi;
     moduleinfo *modie;
@@ -212,11 +212,8 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
      */
     *(ap_directive_t **)dummy = NULL;
 
-    /* ap_server_root_relative returns NULL if the paths couldn't be
-     * merged (one is corrupt - dollars to donuts it's the named module
-     */
     if (!szModuleFile) {
-        return apr_pstrcat(cmd->pool, "Cannot parse module name ", 
+        return apr_pstrcat(cmd->pool, "Invalid LoadModule path ", 
                            filename, NULL);
     }
 
@@ -312,11 +309,8 @@ static const char *load_file(cmd_parms *cmd, void *dummy, const char *filename)
 
     file = ap_server_root_relative(cmd->pool, filename);
     
-    /* ap_server_root_relative returns NULL if the paths couldn't be
-     * merged (one is corrupt - dollars to donuts it's the named module
-     */
     if (!file) {
-        return apr_pstrcat(cmd->pool, "Cannot parse file name ", 
+        return apr_pstrcat(cmd->pool, "Invalid LoadFile path ", 
                            filename, NULL);
     }
 

@@ -370,7 +370,7 @@ apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *in)
 
         /* Copy path, strip (all except the last) trailing slashes */
         /* (the trailing slash is needed for the dir component loop below) */
-        path = dir = ap_pstrcat(p, path, "/", NULL);
+        path = dir = apr_pstrcat(p, path, "/", NULL);
         for (n = strlen(path); n > 1 && path[n - 1] == '/' && path[n - 2] == '/'; --n)
             path[n - 1] = '\0';
 
@@ -569,9 +569,9 @@ apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *in)
 
             filename = apr_pstrndup(p, &ctx->buffer[re_result[2].rm_so], re_result[2].rm_eo - re_result[2].rm_so);
 
-            str = ap_pstrcat(p, ap_escape_html(p, apr_pstrndup(p, ctx->buffer, re_result[2].rm_so)),
-                             "<a href=\"", ap_escape_uri(p, filename), "\">",
-                             ap_escape_html(p, filename), "</a>\n", NULL);
+            str = apr_pstrcat(p, ap_escape_html(p, apr_pstrndup(p, ctx->buffer, re_result[2].rm_so)),
+                              "<a href=\"", ap_escape_uri(p, filename), "\">",
+                              ap_escape_html(p, filename), "</a>\n", NULL);
         }
         else {
             strcat(ctx->buffer, "\n"); /* re-append the newline */
@@ -851,7 +851,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
 
         /* Check valid types, rather than ignoring invalid types silently: */
         if (strchr("AEI", xfer_type) == NULL)
-            return ap_proxyerror(r, HTTP_BAD_REQUEST, ap_pstrcat(r->pool,
+            return ap_proxyerror(r, HTTP_BAD_REQUEST, apr_pstrcat(r->pool,
                                     "ftp proxy supports only types 'a', 'i', or 'e': \"",
                                     type_suffix, "\" is invalid.", NULL));
     }

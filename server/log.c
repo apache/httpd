@@ -263,13 +263,18 @@ static void open_error_log(server_rec *s, apr_pool_t *p)
 #endif
     else {
         fname = ap_server_root_relative(p, s->error_fname);
-        rc = apr_file_open(&s->error_log, fname,
-                           APR_APPEND | APR_READ | APR_WRITE | APR_CREATE,
-                           APR_OS_DEFAULT, p);
-        if (rc != APR_SUCCESS) {
+        if (!fname) {
+            ap_log_error(APLOG_MARK, APLOG_STARTUP, APR_EBADPATH, NULL,
+                         "%s: Invalid error log path %s.",
+                         ap_server_argv0, s->error_fname);
+            exit(1);
+        }
+        if ((rc = apr_file_open(&s->error_log, fname,
+                               APR_APPEND | APR_READ | APR_WRITE | APR_CREATE,
+                               APR_OS_DEFAULT, p)) != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_STARTUP, rc, NULL,
                          "%s: could not open error log file %s.",
-            ap_server_argv0, fname);
+                         ap_server_argv0, s->error_fname);
             exit(1);
         }
 
@@ -535,18 +540,26 @@ AP_DECLARE(void) ap_log_rerror(const char *file, int line, int level,
     va_end(args);
 }
 
-AP_DECLARE(void) ap_log_pid(apr_pool_t *p, const char *fname)
+AP_DECLARE(void) ap_log_pid(apr_pool_t *p, const char *filename)
 {
     apr_file_t *pid_file = NULL;
     apr_finfo_t finfo;
     static pid_t saved_pid = -1;
     pid_t mypid;
     apr_status_t rv;
+    const char *fname;
 
-    if (!fname)
-    return;
+    if (!filename) {
+        return;
+    }
 
-    fname = ap_server_root_relative(p, fname);
+    fname = ap_server_root_relative(p, filename);
+    if (!fname) {
+        ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_CRIT, APR_EBADPATH, 
+                     NULL, "Invalid PID file path %s, ignoring.", filename);
+        return;
+    }
+
     mypid = getpid();
     if (mypid != saved_pid
         && apr_stat(&finfo, fname, APR_FINFO_MTIME, p) == APR_SUCCESS) {
