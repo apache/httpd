@@ -1,4 +1,19 @@
+Changes with Apache 2.1.0-dev
+
+  [Remove entries to the current 2.0 section below, when backported]
+
+
+
 Changes with Apache 2.0.44
+
+  *) mod_negotiation: Set the appropriate mime response headers
+     (Content-Type, charset, Content-Language and Content-Encoding)
+     for negotated type-map "Body:" responses (such as the error
+     pages.)  [André Malo <nd@perlig.de>]
+
+  *) mod_log_config: Allow '%%' escaping in CustomLog format
+     strings to insert a literal, single '%'.
+     [André Malo <nd@perlig.de>]
 
   *) Fix the building of cgi command lines when the query string
      contains '='.  PR 13914  [Ville Skyttä <ville.skytta@iki.fi>,
