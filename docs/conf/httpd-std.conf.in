@@ -768,6 +768,7 @@ ServerSignature On
     AddLanguage sv .sv
     AddLanguage cs .cz .cs
     AddLanguage ru .ru
+    AddLanguage zh-CN .zh-cn
     AddLanguage zh-TW .zh-tw
     AddLanguage hr .hr
 
