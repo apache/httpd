@@ -1,5 +1,5 @@
 APACHE 1.3 STATUS:						-*-text-*-
-  Last modified at [$Date: 2002/05/15 14:13:29 $]
+  Last modified at [$Date: 2002/05/15 14:15:28 $]
 
 Release:
 
@@ -273,8 +273,6 @@ Binaries (1.3.24):
  i386-sun-solaris2.6           no      Randy Terbush
  i386-sun-solaris2.7           no      Cliff Skolnick
  i386-unixware-svr4            no      Sameer Parekh, Randy Terbush
- i386-unknown-freebsd2.1       no      Andrew Wilson, Brian Tao
- i386-unknown-freebsd2.2.8     no      Jim Jagielski
  i386-unknown-linux(ELF)       no      Aram Mirzadeh, Michael Douglass
  i386-unknown-netBSD-1.3.2     no      Lars Eilebrecht, Randy Terbush
  i386-unknown-sco3             no      Ben Laurie
