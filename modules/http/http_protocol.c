@@ -898,6 +898,10 @@ static void basic_http_header_check(request_rec *r,
     else {
         *protocol = AP_SERVER_PROTOCOL;
     }
+
+    if (r->proto_num > HTTP_VERSION(1,0) && apr_table_get(r->subprocess_env, "downgrade-1.0")) {
+        r->proto_num = HTTP_VERSION(1,0);
+    }
 }
 
 /* fill "bb" with a barebones/initial HTTP response header */
