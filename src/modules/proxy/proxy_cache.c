@@ -777,7 +777,7 @@ int ap_proxy_cache_check(request_rec *r, char *url, struct cache_conf *conf,
 int ap_proxy_cache_update(cache_req *c, table *resp_hdrs,
 		       const int is_HTTP1, int nocache)
 {
-#ifdef ULTRIX_BRAIN_DEATH
+#if defined(ULTRIX_BRAIN_DEATH) || defined(SINIX_D_RESOLVER_BUG)
   extern char *mktemp(char *template);
 #endif 
     request_rec *r = c->req;
