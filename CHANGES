@@ -2,6 +2,13 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Update the header token parsing code to allow LWS between the
+     token word and the ':' seperator.  [PR 16520]
+     [submitted: Kris Verbeeck <kris.verbeeck@advalvas.be> and
+                 Nicel KM <mnicel@yahoo.com>]
+     [Reviewed: <coad@measurement-factory.com> and
+                Paul J. Reder]
+
   *) mod_ext_filter: Add the ability to filter request bodies.
      [Philipp Reisner <philipp.reisner@linbit.com>]
 
