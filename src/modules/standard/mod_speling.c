@@ -455,7 +455,7 @@ static int check_speling(request_rec *r)
 
 	    *(const char **)ap_push_array(t) =
 			  "The document name you requested (<code>";
-	    *(const char **)ap_push_array(t) = r->uri;
+	    *(const char **)ap_push_array(t) = ap_escape_html(sub_pool, r->uri);
 	    *(const char **)ap_push_array(t) =
 			   "</code>) could not be found on this server.\n"
 			   "However, we found documents with names similar "
@@ -474,15 +474,15 @@ static int check_speling(request_rec *r)
 				      ? r->parsed_uri.query : "",
 				  NULL);
 		*(const char **)ap_push_array(v) = "\"";
-		*(const char **)ap_push_array(v) = vuri;
+		*(const char **)ap_push_array(v) = ap_escape_uri(sub_pool, vuri);
 		*(const char **)ap_push_array(v) = "\";\"";
 		*(const char **)ap_push_array(v) = reason;
 		*(const char **)ap_push_array(v) = "\"";
 
 		*(const char **)ap_push_array(t) = "<li><a href=\"";
-		*(const char **)ap_push_array(t) = vuri;
+		*(const char **)ap_push_array(t) = ap_escape_uri(sub_pool, vuri);
 		*(const char **)ap_push_array(t) = "\">";
-		*(const char **)ap_push_array(t) = vuri;
+		*(const char **)ap_push_array(t) = ap_escape_html(sub_pool, vuri);
 		*(const char **)ap_push_array(t) = "</a> (";
 		*(const char **)ap_push_array(t) = reason;
 		*(const char **)ap_push_array(t) = ")\n";
@@ -509,7 +509,7 @@ static int check_speling(request_rec *r)
                 *(const char **)ap_push_array(t) =
 			       "Please consider informing the owner of the "
 			       "<a href=\"";
-                *(const char **)ap_push_array(t) = ref;
+		*(const char **)ap_push_array(t) = ap_escape_uri(sub_pool, ref);
                 *(const char **)ap_push_array(t) = "\">referring page</a> "
 			       "about the broken link.\n";
 	    }
