@@ -632,7 +632,7 @@ static void server_main_loop(int remaining_children_to_start)
         ap_wait_or_timeout(&status, &pid, pconf);
         
         if (pid.pid >= 0) {
-            ap_process_child_status(pid.pid, status);
+            ap_process_child_status(&pid, status);
             /* non-fatal death... note that it's gone in the scoreboard. */
             child_slot = -1;
             for (i = 0; i < ap_max_daemons_limit; ++i) {
