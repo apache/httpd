@@ -17,7 +17,7 @@
 The sections <a
 href="mod/core.html#directory"><code>&lt;Directory&gt;</code></a>, <a
 href="mod/core.html#location"><code>&lt;Location&gt;</code></a> and <a
-href="mode/core.html#files"><code>&lt;Files&gt;</code></a> can contain
+href="mod/core.html#files"><code>&lt;Files&gt;</code></a> can contain
 directives which only apply to specified directories, URLs or files
 respectively. Also htaccess files can be used inside a directory to
 apply directives to that directory. This document explains how these
