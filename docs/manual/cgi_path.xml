@@ -2,7 +2,7 @@
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
 
-<manualpage>
+<manualpage metafile="cgi_path.xml.meta">
   <relativepath href="."/>
 
   <title>PATH_INFO Changes in the CGI Environment</title>

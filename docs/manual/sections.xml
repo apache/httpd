@@ -2,7 +2,7 @@
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
 
-<manualpage>
+<manualpage metafile="sections.xml.meta">
   <relativepath href="."/>
 
 <title>Configuration Sections</title>

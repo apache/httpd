@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
 
-<modulesynopsis>
+<modulesynopsis metafile="threadpool.xml.meta">
 <name>threadpool</name>
 <description>Yet another experimental variant of the standard
 <module>worker</module> MPM</description>

@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
 <!-- English revision: 1.1 -->
 
-<manualpage>
+<manualpage metafile="cgi_path.xml.meta">
   <relativepath href="."/>
 
   <title>CGI 環境での PATH_INFO の変更</title>

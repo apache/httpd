@@ -11,7 +11,7 @@
 <!--***************************************************-->
 
 <?xml-stylesheet type="text/xsl" href="./style/manual.ru.xsl"?>
-<manualpage>
+<manualpage metafile="invoking.xml.meta">
 <relativepath href="."/>
 
   <title>Запуск Apache</title>

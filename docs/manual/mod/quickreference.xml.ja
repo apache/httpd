@@ -5,7 +5,7 @@
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English revision: 1.4 -->
 
-<quickreference>
+<quickreference metafile="quickreference.xml.meta">
   <title>ディレクティブ クイックリファレンス</title>
   <summary>
     <p>ディレクティブ クイックリファレンスでは、各 Apache 設定ディレクティブの

@@ -2,7 +2,7 @@
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
 <!-- English revision: 1.2.2.3 -->
-<manualpage>
+<manualpage metafile="stopping.xml.meta">
 <relativepath href="."/>
 
   <title>Beenden und Neustarten</title>

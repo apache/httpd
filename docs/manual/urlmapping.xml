@@ -2,7 +2,7 @@
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
 
-<manualpage>
+<manualpage metafile="urlmapping.xml.meta">
   <relativepath href="."/>
 
   <title>Mapping URLs to Filesystem Locations</title>

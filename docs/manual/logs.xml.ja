@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
 <!-- English revision: 1.6 -->
 
-<manualpage>
+<manualpage metafile="logs.xml.meta">
   <relativepath href="."/>
 
   <title>ログファイル</title>

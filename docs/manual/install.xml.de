@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
 <!-- English revision: 1.11.2.4 -->
 
-<manualpage>
+<manualpage metafile="install.xml.meta">
 <relativepath href="."/>
 
   <title>Kompilieren und Installieren</title>

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<modulesynopsis>
+<modulesynopsis metafile="worker.xml.meta">
 <name>worker</name>
 <description>Multi-Processing Module implementing a hybrid
     multi-threaded multi-process web server</description>

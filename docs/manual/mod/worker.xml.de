@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
 <!-- English revision: 1.8.2.2 -->
 
-<modulesynopsis>
+<modulesynopsis metafile="worker.xml.meta">
 <name>worker</name>
 <description>Multi-Processing-Modul, das einen Hybrid-Webserver mit
   Multi-Thread und Multi-Prozess-Unterst&uuml;tzung implementiert</description>

@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English revision: 1.1 -->
-<modulesynopsis>
+<modulesynopsis metafile="mod_dav_fs.xml.meta">
 
 <name>mod_dav_fs</name> 
 <description><module>mod_dav</module> のためのファイルシステムプロバイダ</description>

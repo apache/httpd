@@ -4,7 +4,7 @@
 >
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
 
-<directiveindex>
+<directiveindex metafile="directives.xml.meta">
   <title>Directive Index</title>
   <summary>
     <p>

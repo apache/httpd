@@ -5,7 +5,7 @@
 <?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
 <!-- English revision: 1.4.2.1 -->
 
-<quickreference>
+<quickreference metafile="quickreference.xml.meta">
   <title>Kurzreferenz der Direktiven</title>
   <summary>
     <p>Die Kurzreferenz der Direktiven zeigt die Verwendung,

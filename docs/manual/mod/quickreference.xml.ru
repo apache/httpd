@@ -14,7 +14,7 @@
 >
 <?xml-stylesheet type="text/xsl" href="../style/manual.ru.xsl"?>
 
-<quickreference>
+<quickreference metafile="quickreference.xml.meta">
   <title>Краткое руководство по директивам</title>
   <summary>
     <p>В кратком руководстве по директивам Вы найдете информацию

@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
 <!-- English revision: 1.4.2.1 -->
 
-<modulesynopsis>
+<modulesynopsis metafile="mpm_winnt.xml.meta">
 
 <name>mpm_winnt</name>
 <description> Das Multi-Processing-Modul ist optimiert d&uuml;r

@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
 
-<modulesynopsis>
+<modulesynopsis metafile="mpmt_os2.xml.meta">
 
 <name>mpmt_os2</name>
 <description>Hybrid multi-process, multi-threaded MPM for OS/2</description>

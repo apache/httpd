@@ -14,7 +14,7 @@
 >
 <?xml-stylesheet type="text/xsl" href="../style/manual.ru.xsl"?>
 
-<directiveindex>
+<directiveindex metafile="directives.xml.meta">
   <title>Алфавитный указатель директив</title>
   <summary>
     <p>Здесь приводится список всех директив, которые доступны
