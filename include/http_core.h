@@ -424,6 +424,8 @@ typedef struct {
 
     apr_array_header_t *filters;
     apr_array_header_t *input_filters;
+    /* bucket brigade held by ap_get_client_block() between calls */
+    struct ap_bucket_brigade *bb;
 } core_dir_config;
 
 /* Per-server core configuration */
