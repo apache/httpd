@@ -75,15 +75,13 @@ for makefile in $@; do
   dir=`echo $makefile|sed 's%/*[^/][^/]*$%%'`
   test -d "$dir/" || $mkdir_p "$dir/"
 
-  (cat <<EOF
+  cat - $top_srcdir/$makefile.in <<EOF >$makefile
 top_srcdir   = $top_srcdir
 top_builddir = $top_builddir
 srcdir       = $top_srcdir/$dir
 builddir     = $top_builddir/$dir
 VPATH        = $top_srcdir/$dir
 EOF
-)| cat - $top_srcdir/$makefile.in > $makefile
 
   touch "$top_builddir/$dir/.deps"
-
 done
