@@ -1,0 +1,123 @@
+#!/usr/local/bin/perl
+
+# ====================================================================
+# Copyright (c) 1995 The Apache Group.  All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+#
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer. 
+#
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+#
+# 3. All advertising materials mentioning features or use of this
+#    software must display the following acknowledgment:
+#    "This product includes software developed by the Apache Group
+#    for use in the Apache HTTP server project (http://www.apache.org/)."
+#
+# 4. The names "Apache Server" and "Apache Group" must not be used to
+#    endorse or promote products derived from this software without
+#    prior written permission.
+#
+# 5. Redistributions of any form whatsoever must retain the following
+#    acknowledgment:
+#    "This product includes software developed by the Apache Group
+#    for use in the Apache HTTP server project (http://www.apache.org/)."
+#
+# THIS SOFTWARE IS PROVIDED BY THE APACHE GROUP ``AS IS'' AND ANY
+# EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+# PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE APACHE GROUP OR
+# ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+# NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+# HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+# STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+# OF THE POSSIBILITY OF SUCH DAMAGE.
+# ====================================================================
+#
+# This software consists of voluntary contributions made by many
+# individuals on behalf of the Apache Group and was originally based
+# on public domain software written at the National Center for
+# Supercomputing Applications, University of Illinois, Urbana-Champaign.
+# For more information on the Apache Group and the Apache HTTP server
+# project, please see <http://www.apache.org/>.
+
+
+# usage: dbmmanage <DBMfile> <command> <key> <value> <group>
+#
+# commands: add, delete, view, adduser
+#
+# no values needed for delete, no keys or values needed for view.
+# to change a value, simply use "add".
+# adduser encrypts the password:
+# dbmmanage <dbm file> adduser <person> <password>
+#
+# <group> is optional, and may also be supplied to add the user
+# to a specified group:
+# dbmmanage <dbm file> adduser <person> <password> <group>
+
+if (scalar(@ARGV) < 2) {
+	print "Too few arguments.\n";
+	exit;
+}
+
+# ugly - this should be changed to be random.
+$salt="XX";
+$file=$ARGV[0];
+$command=$ARGV[1];
+$key=$ARGV[2];
+$value=$ARGV[3];
+$group=$ARGV[4];
+
+if ($command eq "add") {
+        dbmopen(%DB, $file, 0664) || die "Error: $!\n";
+        $value .= ":$group" if $group ne "";
+        $DB{$key} = $value;
+        dbmclose(%DB);
+	print "Entry $key added with value $value.\n";
+	exit;
+}
+
+if ($command eq "adduser") {
+	$hash = crypt($value, "$salt");
+        dbmopen(%DB, $file, 0664) || die "Error: $!\n";
+        $hash .= ":$group" if $group ne "";
+        $value .= ":$group" if $group ne "";
+        $DB{$key} = $hash;
+        dbmclose(%DB);
+	print "User $key added with password $value, encrypted to $hash\n";
+	exit;
+}
+
+if ($command eq "delete") {
+        dbmopen(%DB, $file, 0664) || die "Error: $!\n";
+        delete($DB{$key});
+        dbmclose(%DB);
+	exit;
+}
+
+if ($command eq "view") {
+        dbmopen(%DB, $file, undef) || die "Error: $!\n";
+        $return_status = 1;
+        unless ($key) {
+                while (($nkey,$val) = each %DB) {
+                        print "$nkey = $val\n";
+                }
+        } else {
+                $return_status = 0 if defined $DB{$key};
+                print "$key = $DB{$key}\n";
+        } 
+        dbmclose(%DB);
+	exit($return_status);
+}
+
+print "Command unrecognized - must be one of: view, add, adduser, delete.\n";
+
