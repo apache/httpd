@@ -405,10 +405,10 @@ static int                  lock_num_locks;
 #ifdef HAVE_SSLC
 #if SSLC_VERSION_NUMBER >= 0x2000
 static int ssl_util_thr_lock(int mode, int type,
-                              const char *file, int line)
+                             char *file, int line)
 #else
 static void ssl_util_thr_lock(int mode, int type,
-                              const char *file, int line)
+                              char *file, int line)
 #endif
 #else
 static void ssl_util_thr_lock(int mode, int type,
