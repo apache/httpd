@@ -853,8 +853,10 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0,
          * file this is by now..
          */
         if (!is_exe && !is_script && !is_binary) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
-			 "%s is not executable", r->filename);
+            ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, r->server,
+		"%s is not executable; ensure interpreted scripts have "
+		"\"#!\" first line", 
+		r->filename);
             return (pid);
 	}
 
