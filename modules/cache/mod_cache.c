@@ -47,7 +47,7 @@ static ap_filter_rec_t *cache_out_filter_handle;
 static int cache_url_handler(request_rec *r, int lookup)
 {
     apr_status_t rv;
-    const char *pragma, *auth;
+    const char *auth;
     apr_uri_t uri;
     char *url;
     char *path;
@@ -93,21 +93,23 @@ static int cache_url_handler(request_rec *r, int lookup)
      */
 
     /* find certain cache controlling headers */
-    pragma = apr_table_get(r->headers_in, "Pragma");
     auth = apr_table_get(r->headers_in, "Authorization");
 
     /* first things first - does the request allow us to return
      * cached information at all? If not, just decline the request.
      *
      * Note that there is a big difference between not being allowed
-     * to cache a request (no-store) and not being allowed to return
+     * to cache a response (no-store) and not being allowed to return
      * a cached request without revalidation (max-age=0).
      *
-     * Caching is forbidden under the following circumstances:
+     * Serving from a cache is forbidden under the following circumstances:
      *
-     * - RFC2616 14.9.2 Cache-Control: no-store
+     * - RFC2616 14.9.1 Cache-Control: no-cache
      * - Pragma: no-cache
      * - Any requests requiring authorization.
+     *
+     * Updating a cache is forbidden under the following circumstances:
+     * - RFC2616 14.9.2 Cache-Control: no-store
      */
     if (conf->ignorecachecontrol == 1 && auth == NULL) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
@@ -115,8 +117,14 @@ static int cache_url_handler(request_rec *r, int lookup)
                      "%s, but we know better and are ignoring it", url);
     }
     else {
-        if (ap_cache_liststr(NULL, pragma, "no-cache", NULL) ||
-            auth != NULL) {
+        const char *pragma, *cc_in;
+
+        pragma = apr_table_get(r->headers_in, "Pragma");
+        cc_in = apr_table_get(r->headers_in, "Cache-Control");
+
+        if (auth != NULL ||
+            ap_cache_liststr(NULL, pragma, "no-cache", NULL) ||
+            ap_cache_liststr(NULL, cc_in, "no-cache", NULL)) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                          "cache: no-cache or authorization forbids caching "
                          "of %s", url);
@@ -263,10 +271,16 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
     char *reason;
     apr_pool_t *p;
 
-    /* check first whether running this filter has any point or not */
-    /* If the user has Cache-Control: no-store from RFC 2616, don't store! */
+    conf = (cache_server_conf *) ap_get_module_config(r->server->module_config,
+                                                      &cache_module);
+
+    /* If the request has Cache-Control: no-store from RFC 2616, don't store
+     * unless CacheStoreNoStore is active.
+     */
     cc_in = apr_table_get(r->headers_in, "Cache-Control");
-    if (r->no_cache || ap_cache_liststr(NULL, cc_in, "no-store", NULL)) {
+    if (r->no_cache ||
+        (!conf->store_nostore &&
+         ap_cache_liststr(NULL, cc_in, "no-store", NULL))) {
         ap_remove_output_filter(f);
         return ap_pass_brigade(f->next, in);
     }
@@ -349,7 +363,6 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         lastmod = APR_DATE_BAD;
     }
 
-    conf = (cache_server_conf *) ap_get_module_config(r->server->module_config, &cache_module);
     /* read the etag and cache-control from the entity */
     etag = apr_table_get(r->err_headers_out, "Etag");
     if (etag == NULL) {
@@ -410,14 +423,16 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         /* HEAD requests */
         reason = "HTTP HEAD request";
     }
-    else if (ap_cache_liststr(NULL, cc_out, "no-store", NULL)) {
+    else if (!conf->store_nostore &&
+             ap_cache_liststr(NULL, cc_out, "no-store", NULL)) {
         /* RFC2616 14.9.2 Cache-Control: no-store response
          * indicating do not cache, or stop now if you are
          * trying to cache it */
         reason = "Cache-Control: no-store present";
     }
-    else if (ap_cache_liststr(NULL, cc_out, "private", NULL)) {
-        /* RFC2616 14.9.1 Cache-Control: private
+    else if (!conf->store_private &&
+             ap_cache_liststr(NULL, cc_out, "private", NULL)) {
+        /* RFC2616 14.9.1 Cache-Control: private response
          * this object is marked for this user's eyes only. Behave
          * as a tunnel.
          */
@@ -705,7 +720,11 @@ static void * create_cache_config(apr_pool_t *p, server_rec *s)
     ps->no_last_mod_ignore_set = 0;
     ps->no_last_mod_ignore = 0;
     ps->ignorecachecontrol = 0;
-    ps->ignorecachecontrol_set = 0 ;
+    ps->ignorecachecontrol_set = 0;
+    ps->store_private = 0;
+    ps->store_private_set = 0;
+    ps->store_nostore = 0;
+    ps->store_nostore_set = 0;
     /* array of headers that should not be stored in cache */
     ps->ignore_headers = apr_array_make(p, 10, sizeof(char *));
     ps->ignore_headers_set = CACHE_IGNORE_HEADERS_UNSET;
@@ -742,6 +761,14 @@ static void * merge_cache_config(apr_pool_t *p, void *basev, void *overridesv)
         (overrides->ignorecachecontrol_set == 0)
         ? base->ignorecachecontrol
         : overrides->ignorecachecontrol;
+    ps->store_private  =
+        (overrides->store_private_set == 0)
+        ? base->store_private
+        : overrides->store_private;
+    ps->store_nostore  =
+        (overrides->store_nostore_set == 0)
+        ? base->store_nostore
+        : overrides->store_nostore;
     ps->ignore_headers =
         (overrides->ignore_headers_set == CACHE_IGNORE_HEADERS_UNSET)
         ? base->ignore_headers
@@ -772,6 +799,32 @@ static const char *set_cache_ignore_cachecontrol(cmd_parms *parms,
                                                   &cache_module);
     conf->ignorecachecontrol = flag;
     conf->ignorecachecontrol_set = 1;
+    return NULL;
+}
+
+static const char *set_cache_store_private(cmd_parms *parms, void *dummy,
+                                           int flag)
+{
+    cache_server_conf *conf;
+
+    conf =
+        (cache_server_conf *)ap_get_module_config(parms->server->module_config,
+                                                  &cache_module);
+    conf->store_private = flag;
+    conf->store_private_set = 1;
+    return NULL;
+}
+
+static const char *set_cache_store_nostore(cmd_parms *parms, void *dummy,
+                                           int flag)
+{
+    cache_server_conf *conf;
+
+    conf =
+        (cache_server_conf *)ap_get_module_config(parms->server->module_config,
+                                                  &cache_module);
+    conf->store_nostore = flag;
+    conf->store_nostore_set = 1;
     return NULL;
 }
 
@@ -909,15 +962,20 @@ static const command_rec cache_cmds[] =
                   "A partial URL prefix below which caching is disabled"),
     AP_INIT_TAKE1("CacheMaxExpire", set_cache_maxex, NULL, RSRC_CONF,
                   "The maximum time in seconds to cache a document"),
-     AP_INIT_TAKE1("CacheDefaultExpire", set_cache_defex, NULL, RSRC_CONF,
-                   "The default time in seconds to cache a document"),
-     AP_INIT_FLAG("CacheIgnoreNoLastMod", set_cache_ignore_no_last_mod, NULL, 
-                  RSRC_CONF, 
-                  "Ignore Responses where there is no Last Modified Header"),
-     AP_INIT_FLAG("CacheIgnoreCacheControl", set_cache_ignore_cachecontrol,
-                  NULL, 
-                  RSRC_CONF, 
-                  "Ignore requests from the client for uncached content"),
+    AP_INIT_TAKE1("CacheDefaultExpire", set_cache_defex, NULL, RSRC_CONF,
+                  "The default time in seconds to cache a document"),
+    AP_INIT_FLAG("CacheIgnoreNoLastMod", set_cache_ignore_no_last_mod, NULL,
+                 RSRC_CONF,
+                 "Ignore Responses where there is no Last Modified Header"),
+    AP_INIT_FLAG("CacheIgnoreCacheControl", set_cache_ignore_cachecontrol,
+                 NULL, RSRC_CONF,
+                 "Ignore requests from the client for uncached content"),
+    AP_INIT_FLAG("CacheStorePrivate", set_cache_store_private,
+                 NULL, RSRC_CONF,
+                 "Ignore 'Cache-Control: private' and store private content"),
+    AP_INIT_FLAG("CacheStoreNoStore", set_cache_store_nostore,
+                 NULL, RSRC_CONF,
+                 "Ignore 'Cache-Control: no-store' and store sensitive content"),
     AP_INIT_ITERATE("CacheIgnoreHeaders", add_ignore_header, NULL, RSRC_CONF,
                     "A space separated list of headers that should not be "
                     "stored by the cache"),

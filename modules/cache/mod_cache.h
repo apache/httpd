@@ -115,13 +115,16 @@ struct cache_disable {
 
 /* static information about the local cache */
 typedef struct {
-    apr_array_header_t *cacheenable;	/* URLs to cache */
-    apr_array_header_t *cachedisable;	/* URLs not to cache */
-    apr_time_t maxex;			/* Maximum time to keep cached files in msecs */
+    apr_array_header_t *cacheenable;    /* URLs to cache */
+    apr_array_header_t *cachedisable;   /* URLs not to cache */
+    /* Maximum time to keep cached files in msecs */
+    apr_time_t maxex;
     int maxex_set;
-    apr_time_t defex;           /* default time to keep cached file in msecs */
+    /* default time to keep cached file in msecs */
+    apr_time_t defex;
     int defex_set;
-    double factor;              /* factor for estimating expires date */
+    /* factor for estimating expires date */
+    double factor;
     int factor_set;
     /** ignore the last-modified header when deciding to cache this request */
     int no_last_mod_ignore_set;
@@ -129,6 +132,12 @@ typedef struct {
     /** ignore client's requests for uncached responses */
     int ignorecachecontrol;
     int ignorecachecontrol_set;
+    /** ignore Cache-Control: private header from server */
+    int store_private;
+    int store_private_set;
+    /** ignore Cache-Control: no-store header from client or server */
+    int store_nostore;
+    int store_nostore_set;
     /** store the headers that should not be stored in the cache */
     apr_array_header_t *ignore_headers;
     /* flag if CacheIgnoreHeader has been set */
@@ -144,7 +153,7 @@ struct cache_info {
     char *content_type;
     char *etag;
     char *lastmods;         /* last modified of cache entity */
-    char *filename;   
+    char *filename;
     apr_time_t date;
     apr_time_t lastmod;
     char lastmod_str[APR_RFC822_DATE_LEN];
