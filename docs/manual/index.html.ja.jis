@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
-<!-- English revision: 1.43 -->
+<!-- English revision: 1.44 -->
 
 <title>Apache HTTP サーバ バージョン 2.0 ドキュメント</title><link
 href="./style/css/manual.css" rel="stylesheet" media="all"
@@ -111,6 +111,8 @@ href="./">バージョン 2.0</a></div>
 <tr>
 <th>ユーザの手引</th>
 </tr>
+
+                <tr><td><a href="bind.html">アドレスとポートのバインド</a></td></tr>
               
                 <tr><td><a href="configuring.html">設定ファイル
                 </a> </td></tr>

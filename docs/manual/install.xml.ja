@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
 <manualpage>
 <relativepath href="."/>
-<!-- English revision: 1.6 -->
+<!-- English revision: 1.8 -->
 
   <title>コンパイルとインストール</title>
 
@@ -248,7 +248,8 @@
     <p>ちょっとどんなことができるかを見せましょう。
     ここで典型的な例として、<code>/sw/pkg/apache</code> 
     というインストールツリーでコンパイラとフラグを指定して、
-    さらに二つの追加モジュール mod_rewrite と mod_speling を後で DSO 
+    さらに二つの追加モジュール <module>mod_rewrite</module> と
+    <module>mod_speling</module> を後で DSO 
     メカニズムでロードするようにコンパイルしてみます:</p>
 
 <example>
@@ -501,7 +502,7 @@
 
 <section id="dbm"><title>DBM</title>
 
-    <p><module>mod_auth_dbm</module> と <module>mod_rewrite</module>
+    <p><module>mod_authn_dbm</module> と <module>mod_rewrite</module>
     の DBM <directive module="mod_rewrite">RewriteMap</directive> 
     等、 Apache 機能の幾つかでは情報の検索に単純な key/value
     データベースを使用します。Apache には SDBM がソースコードごと
