@@ -4,69 +4,110 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>停止と再起動 - Apache HTTP サーバ</title><link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="./images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p><p class="apache">Apache HTTP サーバ バージョン 2.0</p><img alt="" src="./images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.0</a></div><div id="page-content"><div id="preamble"><h1>停止と再起動</h1>
-    <p>この文書では Unix に類似したシステムでの
-    Apache の停止と再起動について扱っています。Windows
-    ユーザ (Windows で Apache を使う場合) は、<a href="platform/windows.html#signal">実行中の Apache
-    にシグナルを送る</a>もご覧下さい。</p>
-</div><div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#introduction">イントロダクション</a></li><li><img alt="" src="./images/down.gif" /> <a href="#term">急な停止</a></li><li><img alt="" src="./images/down.gif" /> <a href="#graceful">緩やかな再起動</a></li><li><img alt="" src="./images/down.gif" /> <a href="#hup">急な再起動</a></li><li><img alt="" src="./images/down.gif" /> <a href="#race">付録: シグナルと競合状態</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="introduction" id="introduction">イントロダクション</a></h2>
-    <p>たくさんの実行形式 <code>httpd</code> がシステム上で
+      -->
+<title>停止と再起動 - Apache HTTP サーバ</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p>
+<p class="apache">Apache HTTP サーバ バージョン 2.1</p>
+<img alt="" src="./images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.1</a></div><div id="page-content"><div id="preamble"><h1>停止と再起動</h1>
+    <p>この文書では Unix に類似したシステムでの
+    Apache の停止と再起動について扱っています。
+    Windows NT, 2000, XP ユーザは<a href="platform/windows.html#winsvc">サービスとして
+    Apache を実行する</a>を、Windows 9x, MEユーザは<a href="platform/windows.html#wincons">コンソールアプリケーションとして
+    Apache を実行する</a>で、
+    これらのプラットホームでの使用方法をご覧下さい。</p>
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#introduction">イントロダクション</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#term">急な停止</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#graceful">緩やかな再起動</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#hup">急な再起動</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#race">付録: シグナルと競合状態</a></li>
+</ul><h3>参照</h3><ul class="seealso"><li><a href="programs/httpd.html">httpd</a></li><li><a href="programs/apachectl.html">apachectl</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="introduction" id="introduction">イントロダクション</a></h2>
+
+    <p>Apache を停止したり再起動したりするためには、実行されている
+    <code>httpd</code> プロセスにシグナルを送る必要があります。
+    シグナルを送るには二つの方法があります。
+    一つ目はプロセスに直接シグナルを送る unix の <code>kill</code>
+    コマンドを使用する方法です。
+    システムを見ればたくさんの <code>httpd</code> が
     実行されているのに気が付くでしょうが、シグナルを送るのは
     親プロセスだけで、それ以外の個々のプロセスには
-    シグナルを送らないで下さい。その親プロセスの pid は
+    シグナルを送らないで下さい。その親プロセスの pid は
     <code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code>
     に書かれています。これはつまり、親以外のプロセスに
     シグナルを送る必要すらない、ということです。
     親プロセスに送ることができる 3 種類のシグナルがあります:
-    <code>TERM</code>, <code>HUP</code>, <code>USR1</code>
+    <a href="#term"><code>TERM</code></a>,
+    <a href="#hup"><code>HUP</code></a>, 
+    <a href="#usr1"><code>USR1</code></a>
     です。これらの説明については続きをご覧下さい。</p>
 
     <p>親プロセスにシグナルを送るには、
     次のようなコマンドを発行して下さい:</p>
 
-<div class="example"><p><code>kill -TERM `cat /usr/local/apache/logs/httpd.pid`</code></p></div>
+<div class="example"><p><code>kill -TERM `cat /usr/local/apache2/logs/httpd.pid`</code></p></div>
 
-    <p>これの実行状況は次のコマンドで読むことができます:</p>
+    <p><code>httpd</code> プロセスにシグナルを送る 2 番目の方法は
+    <code>-k</code> というコマンドライン引数を使用することです。
+    下で説明されているように、<code>stop</code>, <code>restart</code>, 
+    <code>graceful</code> を指定できます。
+    これらは <a href="programs/httpd.html">httpd</a> の引数ですが、
+    制御用のスクリプト <a href="programs/apachectl.html">apachectl</a> を
+    使うことをお薦めします。<a href="programs/apachectl.html">apachectl</a> はそれらの引数をそのまま
+    <code>httpd</code> に渡します。</p>
 
-<div class="example"><p><code>tail -f /usr/local/apache/logs/error_log</code></p></div>
+    <p><code>httpd</code> にシグナルを送った後、
+    実行状況を次のコマンドで読むことができます:</p>
+
+<div class="example"><p><code>tail -f /usr/local/apache2/logs/error_log</code></p></div>
     <p>ここに挙げた例は、各自の
     <code class="directive"><a href="./mod/core.html#serverroot">ServerRoot</a></code>
     と
     <code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code>
     の設定に適合するように適宜修正して下さい。</p>
-
-    <p><a href="programs/apachectl.html">apachectl</a>
-    と呼ばれるシェルスクリプトで、Apache にシグナルを送る手順を
-    自動化することができます。このスクリプトの詳細に関しては、
-    <a href="invoking.html">Apache の起動</a>の文書をご覧下さい。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="term" id="term">急な停止</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="term" id="term">急な停止</a></h2>
 
 <dl><dt>シグナル: TERM</dt>
-<dd><code>apachectl stop</code></dd>
+<dd><code>apachectl -k stop</code></dd>
 </dl>
 
-    <p><code>TERM</code> シグナルを親プロセスに送ると、
-    即座に子プロセス全てを kill しようとします。
+    <p><code>TERM</code> あるいは <code>stop</code> 
+    シグナルを親プロセスに送ると、即座に子プロセス全てを kill しようとします。
     子プロセスを完全に kill し終わるまでに数秒かかるかもしれません。
     その後、親プロセス自身が終了します。
     処理中のリクエストは全て停止され、もはやリクエストに対する
     応答はされません。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="graceful" id="graceful">緩やかな再起動</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="graceful" id="graceful">緩やかな再起動</a></h2>
 
 <dl><dt>シグナル: USR1</dt>
-<dd><code>apachectl graceful</code></dd>
+<dd><code>apachectl -k graceful</code></dd>
 </dl>
 
-    <p>親プロセスは <code>USR1</code> シグナルを受け取ると、
-    子プロセスに現在のリクエストの処理の後に終了する
+    <p>親プロセスは <code>USR1</code> あるいは <code>graceful</code>
+    シグナルを受け取ると、子プロセスに現在のリクエストの処理の後に終了する
     (あるいは何もしていなければすぐに終了する)
     ように<em>助言</em>します。
     親プロセスは設定ファイルを再読込して、ログファイルを開き直します。
     子プロセスが徐々になくなるに従って、
     新しい<em>世代</em>の設定による子プロセスに置き換えていきます。
     そして、これらが新たなリクエストに即座に応答し始めます。</p>
-    <div class="note">特定のプラットホームでは USR1 を緩やかな再起動のために
-    使うことができませんが、代わりのシグナル
+
+    <div class="note">特定のプラットホームでは <code>USR1</code>
+    を緩やかな再起動のために使うことができませんが、代わりのシグナル
     (例えば WINCH) が使用できるでしょう。
     <code>apachectl graceful</code>
     というコマンドはプラットホームに合ったシグナルを送ります。</div>
@@ -95,7 +136,7 @@
     <em>スコアボード</em>を維持しなければなりません。</p>
 
     <p>status モジュールは、緩やかな再起動以前から開始して
-    リクエストに応答し続けている子プロセスを特定するために、
+    リクエストに応答し続けている子プロセスを特定するために、
     <code>G</code> を使うこともします。</p>
 
     <p>現在、<code>USR1</code> を使うログ移動スクリプトでは、
@@ -119,21 +160,24 @@
     (<a href="programs/httpd.html">httpd</a> をご覧下さい)
     を使って検証することができます。
     設定ファイルの意味的な内容を構文と同様に検証したい場合は、
-    非 root ユーザで httpd を起動しようとすればわかります。
+    非 root ユーザで <code>httpd</code> を起動しようとすればわかります。
     もしエラーがなければ、ソケットやログを開こうとして
     root でないため
-    (もしくは httpd が既に必要なポートにバインドしているため)
+    (もしくは実行中の <code>httpd</code>
+    が既に必要なポートにバインドしているため)
     に失敗するでしょう。
     これ以外の理由で起動に失敗したのであれば、
     それは設定ファイルのエラーで、
     緩やかな再起動を行う前にその誤りを修正しなければなりません。</div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="hup" id="hup">急な再起動</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="hup" id="hup">急な再起動</a></h2>
 
 <dl><dt>シグナル: HUP</dt>
-<dd><code>apachectl restart</code></dd>
+<dd><code>apachectl -k restart</code></dd>
 </dl>
 
-    <p><code>HUP</code> シグナルを親プロセスに送ると、
+    <p><code>HUP</code> あるいは <code>restart</code> シグナルを親プロセスに送ると、
     <code>TERM</code> と同様に子プロセスを kill しますが、
     親プロセスは終了しません。
     設定ファイルを再読込して、ログファイル全てを開き直します。
@@ -146,7 +190,9 @@
     <div class="note">再起動時に設定ファイルに誤りがあると、
     親プロセスは再起動せずにエラーとともに終了します。
     これを避けるには次の方法をご覧下さい。</div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="race" id="race">付録: シグナルと競合状態</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="race" id="race">付録: シグナルと競合状態</a></h2>
 
     <p>Apache 1.2b9 以前は、再起動や停止のシグナルを含む<em>競合状態</em>
     (競合状態を簡単に説明すると: タイミンにグよる問題で、
@@ -188,4 +234,8 @@
     -- テストケースでサーバを 1 秒間に 20 回再起動しても
     クライアントは壊れた画像や空のドキュメントを受け取ることなく
     正常に閲覧できています。</p>
-</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p></div></body></html>
+</div></div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p></div>
+</body></html>

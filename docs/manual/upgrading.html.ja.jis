@@ -4,18 +4,38 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>1.3 から 2.0 へのアップグレード - Apache HTTP サーバ</title><link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="./images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p><p class="apache">Apache HTTP サーバ バージョン 2.0</p><img alt="" src="./images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.0</a></div><div id="page-content"><div id="preamble"><h1>1.3 から 2.0 へのアップグレード</h1>
-  <p>アップグレードを簡単にするために、既存の Apache ユーザに
+      -->
+<title>1.3 から 2.0 へのアップグレード - Apache HTTP サーバ</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p>
+<p class="apache">Apache HTTP サーバ バージョン 2.1</p>
+<img alt="" src="./images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.1</a></div><div id="page-content"><div id="preamble"><h1>1.3 から 2.0 へのアップグレード</h1>
+  <p>アップグレードを簡単にするために、既存の Apache ユーザに
   非常に重要な情報をこの文書にまとめています。これは短い
-  注意書きとして書かれています。より詳しい情報は
+  注意書きとして書かれています。より詳しい情報は
   <a href="new_features_2_0.html">新機能</a>の文書や
   <code>src/CHANGES</code> ファイルで見つけられると思います。</p>
-</div><div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#compile-time">コンパイル時の設定の変更</a></li><li><img alt="" src="./images/down.gif" /> <a href="#run-time">実行時の設定の変更</a></li><li><img alt="" src="./images/down.gif" /> <a href="#misc">その他の変更</a></li><li><img alt="" src="./images/down.gif" /> <a href="#third-party">サードパーティモジュール</a></li></ul><h3>参照</h3><ul class="seealso"><li><a href="new_features_2_0.html">Apache 2.0 の新機能</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="compile-time" id="compile-time">コンパイル時の設定の変更</a></h2>
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#compile-time">コンパイル時の設定の変更</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#run-time">実行時の設定の変更</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#misc">その他の変更</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#third-party">サードパーティモジュール</a></li>
+</ul><h3>参照</h3><ul class="seealso"><li><a href="new_features_2_0.html">Apache 2.0 新機能の概要</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="compile-time" id="compile-time">コンパイル時の設定の変更</a></h2>
     
 
     <ul>
       <li>Apache は <a href="install.html">ビルド処理の設定</a>
-      に <code>autoconf</code> と <code>libtool</code> を使うようになりました。
+      に <code>autoconf</code> と <code>libtool</code> を使うようになりました。
       このシステムは Apache 1.3 の APACI システムと似ていますが、
       まったく同じというわけではありません。</li>
 
@@ -24,11 +44,13 @@
       リクエスト処理の主な部分を <a href="mpm.html">マルチプロセッシング
       モジュール</a> (MPM) に移動しました。</li>
     </ul>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="run-time" id="run-time">実行時の設定の変更</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="run-time" id="run-time">実行時の設定の変更</a></h2>
     
 
     <ul>
-      <li>Apache 1.3 の時にコアサーバにあった多くのディレクティブは
+      <li>Apache 1.3 の時にコアサーバにあった多くのディレクティブは
       MPM に移動しました。サーバに Apache 1.3 とできるだけ同じ振る舞いを
       させたい場合は、<code class="module"><a href="./mod/prefork.html">prefork</a></code> MPM を
       選んでください。他の MPM はプロセスの作成やリクエストの処理の
@@ -43,12 +65,13 @@
       <li>モジュールの中には、<code>PATH_INFO</code> (本当のファイル名の後に続く
       パス情報) の扱いが変わったものがあります。以前はハンドラとして
       実装されていたものがフィルタとして実装されるようになったものは
-      <code>PATH_INFO</code> のあるリクエストを受け付けません。<a href="mod/mod_include.html">INCLUDES</a> などのフィルタは
-      コアハンドラの上に実装されていますので、<code>PATH_INFO</code>
+      <code>PATH_INFO</code> のあるリクエストを受け付けません。<a href="mod/mod_include.html">INCLUDES</a> や
+      <a href="http://www.php.net/">PHP</a> などのフィルタは
+      コアハンドラの上に実装されていますので、<code>PATH_INFO</code>
       付きのリクエストを拒否します。
       <code class="directive"><a href="./mod/core.html#acceptpathinfo">AcceptPathInfo</a></code>
       ディレクティブを使ってコアハンドラが <code>PATH_INFO</code>
-      付きのリクエストを受け付けるようにでき、それによって SSI で
+      付きのリクエストを受け付けるようにでき、それによって SSI 等で
       <code>PATH_INFO</code> を使う機能を復活させることができます。</li>
 
       <li><code class="directive"><a href="./mod/mod_negotiation.html#cachenegotiateddocs">CacheNegotiatedDocs</a></code>
@@ -88,7 +111,7 @@
       <code>httpd.conf</code> に <code>Include conf/access.conf</code> と
       <code>Include conf/srm.conf</code> を追加する必要があるでしょう。
       以前のディレクティブによる順番のように Apache が設定ファイルを
-      読み込むようにするためには、<code>httpd.conf</code> の最後に
+      読み込むようにするためには、<code>httpd.conf</code> の最後に
       <code>srm.conf</code>、<code>access.conf</code> の順にそれぞれ
       <code class="directive"><a href="./mod/core.html#include">Include</a></code>
       ディレクティブを書いてください。</li>
@@ -128,15 +151,21 @@
       同じ機能は <code class="directive"><a href="./mod/mod_autoindex.html#indexoptions">IndexOptions</a></code>
       ディレクティブの <code>FancyIndexing</code> オプションで
       実現できます。</li>
+
+      <li><code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code> による MultiViews 
+      コンテントネゴシエーション技術は、
+      デフォルトのファイルマッチングがより厳密なものに変更されました。
+      <em>ネゴシエート可能な</em>ファイルの場合にのみ選択されます。
+      以前の挙動は、<code class="directive"><a href="./mod/mod_mime.html#multiviewsmatch">MultiviewsMatch</a></code>
+      ディレクティブを使用することで復活できます。</li>
+
     </ul>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="misc" id="misc">その他の変更</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="misc" id="misc">その他の変更</a></h2>
     
 
     <ul>
-      <li>バーチャルホストの設定を出力するために使われていた
-      <code>httpd</code> のコマンドラインオプション <code>-S</code> は
-      <code>-t -D DUMP_VHOSTS</code> に置き換えられました。</li>
-
       <li>Apache 1.3 で実験的なモジュールだった
       <code class="directive">mod_auth_digest</code> は
       標準モジュールになりました。</li>
@@ -150,10 +179,16 @@
       コンパイルされたサーバのインストールは別ディレクトリへ
       行なうようになりました。</li>
     </ul>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="third-party" id="third-party">サードパーティモジュール</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="third-party" id="third-party">サードパーティモジュール</a></h2>
     
 
     <p>Apache 2.0 のサーバ API には多くの変更が加えられました。
     Apache 1.3 用の既存のモジュールは Apache 2.0 では修正なしでは
     動き<strong>ません</strong>。詳細は <a href="developer/">開発者向け文書</a> にあります。</p>
-  </div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p></div></body></html>
+  </div></div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p></div>
+</body></html>

@@ -4,10 +4,28 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>Apache 2.0 の新機能の概要 - Apache HTTP サーバ</title><link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="./images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p><p class="apache">Apache HTTP サーバ バージョン 2.0</p><img alt="" src="./images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.0</a></div><div id="page-content"><div id="preamble"><h1>Apache 2.0 の新機能の概要</h1>
-  <p>この文書では、Apache HTTP サーババージョン 1.3 と 2.0
+      -->
+<title>Apache 2.0 の新機能の概要 - Apache HTTP サーバ</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p>
+<p class="apache">Apache HTTP サーバ バージョン 2.1</p>
+<img alt="" src="./images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.1</a></div><div id="page-content"><div id="preamble"><h1>Apache 2.0 の新機能の概要</h1>
+  <p>この文書では、Apache HTTP サーババージョン 1.3 と 2.0
      の主な違いについて記述しています。</p>
-</div><div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#core">コア機能の拡張</a></li><li><img alt="" src="./images/down.gif" /> <a href="#module">モジュールの拡張</a></li></ul><h3>参照</h3><ul class="seealso"><li><a href="upgrading.html">Apache 2.0 へのアップグレード</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="core" id="core">コア機能の拡張</a></h2>
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#core">コア機能の拡張</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#module">モジュールの拡張</a></li>
+</ul><h3>参照</h3><ul class="seealso"><li><a href="upgrading.html">1.3 から 2.0 へのアップグレード</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="core" id="core">コア機能の拡張</a></h2>
     
 
     <dl>
@@ -15,14 +33,14 @@
 
       <dd>POSIX スレッドをサポートしている Unix システム上では、
       Apache はマルチプロセス、マルチスレッドのハイブリッドモードで
-      実行できるようになりました。これにより
+      実行できるようになりました。これにより
       多くの設定においてスケーラビリティが向上します。</dd>
 
       <dt>新しいビルドシステム</dt>
 
       <dd>ビルドシステムは <code>autoconf</code> と <code>libtool</code>
       に基づいたものになるように、
-      新しく書き直されました。これにより、Apache の configure のシステムは
+      新しく書き直されました。これにより、Apache の configure のシステムは
       他のパッケージと似たものになりました。</dd>
 
       <dt>マルチプロトコルサポート</dt>
@@ -46,7 +64,7 @@
       1.3 にあったモジュールの順番/優先度の問題の多くは
       なくなっているはずです。2.0 は優先度の選択をほとんどを自動的に行ない、
       モジュールの順番はより柔軟性を高めるためにフック毎に行なわれるように
-      なりました。また、コア Apache サーバにパッチをあてることなく
+      なりました。また、コア Apache サーバにパッチをあてることなく
       追加のモジュール機能を提供することができるように新しい関数が
       追加されました。</dd>
 
@@ -108,7 +126,9 @@
       構文を使用します。</dd>
 
     </dl>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="module" id="module">モジュールの拡張</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="module" id="module">モジュールの拡張</a></h2>
     
 
     <dl>
@@ -178,7 +198,7 @@
       <dd>クライアントが NOT ACCEPTABLE や MULTIPLE CHOICES 応答の
       代わりに常に単独の文書を受けとるようにするために、新しいディレクティブ
       <code class="directive"><a href="./mod/mod_negotiation.html#forcelanguagepriority">ForceLanguagePriority</a></code>
-      を使うことができるようになりました。
+      を使うことができるようになりました。
       さらに、より一貫性のある結果を提供するために
       ネゴシエーションと MultiViews のアルゴリズムが改善され、
       文書の内容を含めることのできる、新しい形式のタイプマップが
@@ -208,4 +228,8 @@
       ようになりました。</dd>
 
     </dl>
-  </div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p></div></body></html>
+  </div></div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p></div>
+</body></html>

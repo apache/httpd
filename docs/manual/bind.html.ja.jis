@@ -4,24 +4,43 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>バインド - Apache HTTP サーバ</title><link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="./images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p><p class="apache">Apache HTTP サーバ バージョン 2.0</p><img alt="" src="./images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.0</a></div><div id="page-content"><div id="preamble"><h1>バインド</h1>
-    <p>Apache が使用するアドレスとポートの設定をします。</p>
-  </div><div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#overview">概要</a></li><li><img alt="" src="./images/down.gif" /> <a href="#ipv6">IPv6 の特記事項</a></li><li><img alt="" src="./images/down.gif" /> <a href="#virtualhost">バーチャルホストに対してどう働くのか</a></li></ul><h3>参照</h3><ul class="seealso"><li><a href="vhosts/">バーチャルホスト</a></li><li><a href="dns-caveats.html">DNS の問題</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="overview" id="overview">概要</a></h2>
+      -->
+<title>バインド - Apache HTTP サーバ</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p>
+<p class="apache">Apache HTTP サーバ バージョン 2.1</p>
+<img alt="" src="./images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.1</a></div><div id="page-content"><div id="preamble"><h1>バインド</h1>
+    <p>Apache が使用するアドレスとポートの設定をします。</p>
+  </div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#overview">概要</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#ipv6">IPv6 の特記事項</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#virtualhost">バーチャルホストに対してどう働くのか</a></li>
+</ul><h3>参照</h3><ul class="seealso"><li><a href="vhosts/">バーチャルホスト</a></li><li><a href="dns-caveats.html">DNS の問題</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="overview" id="overview">概要</a></h2>
     
     
     <table class="related"><tr><th>関連モジュール</th><th>関連ディレクティブ</th></tr><tr><td><ul><li><code class="module"><a href="./mod/core.html">core</a></code></li><li><code class="module"><a href="./mod/mpm_common.html">mpm_common</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#virtualhost">VirtualHost</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code></li></ul></td></tr></table>
     
     
     <p>Apache は起動時に、ローカルマシンのあるポートあよびアドレス
-    に対して接続し、リクエストが来るのを待ちます。
+    に対して接続し、リクエストが来るのを待ちます。
     デフォルトではマシンのすべてのアドレスに対して listen します。
     しかしながら、特定のポートか、特定のアドレスのみか、
-    またはそれらの組み合わせのいずれかを listen するようにする必要があります。
+    またはそれらの組み合わせのいずれかを listen するようにする必要があります。
     これは、異なる IP アドレス、ホスト名、ポートに対する Apache
     の応答方法を決定するバーチャルホスト機能と組み合わせて使われます。</p>
 
     <p><code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>
-    ディレクティブで、特定のポートやアドレス・ポートの組からのみ入ってくる
+    ディレクティブで、特定のポートやアドレス・ポートの組からのみ入ってくる
     リクエストを受け付けるようにできます。
     もしポート番号のみが <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>
     ディレクティブで指定された場合は、
@@ -55,51 +74,77 @@
     <div class="example"><p><code>
       Listen [fe80::a00:20ff:fea7:ccea]:80
     </code></p></div>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="ipv6" id="ipv6">IPv6 の特記事項</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="ipv6" id="ipv6">IPv6 の特記事項</a></h2>
     
 
-    <p>APR が IPv6 をサポートする場合は、Apache はデフォルトで IPv6
-    を listen するソケットを作ります (例えば Listen ディレクティブで
-    IP アドレスが無指定の場合)。
-    つまり、APR が IPv6 をサポートしている場合、</p>
+    <p>多くのプラットホームで IPv6 がサポートされてきていて、
+    APR はこれらのほとんどで IPv6 をサポートしているので、
+    Apache は IPv6 ソケットを割り当てて IPv6
+    経由で送られてきたリクエストを扱うことができます。</p>
+
+    <p>IPv6 ソケットが IPv4 と IPv6 コネクションの両方を扱うことができるか
+    どうかは、Apache 管理者にとって厄介な問題です。
+    IPv4 コネクションを IPv6 ソケットで扱う場合は、
+    IPv4 マップされた IPv6 アドレスを使用していて、
+    ほとんどのプラットホームではデフォルトで使用可能ですが、
+    FreeBSD, NetBSD, OpenBSD では、システム全体としてのポリシーとの整合性から、
+    デフォルトでは使用不可に設定されています。
+    これらのデフォルトで使用不可のプラットホームであっても、
+    特別な設定パラメータで Apache の挙動を変化させることができます。</p>
+
+    <p>IPv4 と IPv6 のコネクションを最小限のソケットで扱いたいのであれば、
+    IPv4 マップの IPv6 アドレスを使用する必要があり、
+    <code>--enable-v4-mapped</code> configure オプションを指定して、単純に
+    <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> 
+    ディレクティブで次のように設定します。</p>
 
     <div class="example"><p><code>
       Listen 80
     </code></p></div>
 
-    <p>は、次と同じ意味になります。</p>
+    <p><code>--enable-v4-mapped</code> では、Apache
+    の生成するデフォルトの設定ファイル中の
+    <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>
+    ディレクティブはこの形式を使用しています。
+    <code>--enable-v4-mapped</code> は、
+    FreeBSD, NetBSD, OpenBSD 以外の全てのプラットホームでのデフォルトです。
+    ですから、おそらくお手元の Apache はこの設定でビルドされているでしょう。</p>
 
-    <div class="example"><p><code>
-      Listen [::]:80
-    </code></p></div>
-
-    <p>APR が IPv6 をサポートしていない場合は、</p>
-
-    <div class="example"><p><code>
-      Listen 80
-    </code></p></div>
-
-    <p>は、次と同じ意味になります。</p>
-
-    <div class="example"><p><code>
-      Listen 0.0.0.0:80
-    </code></p></div>
-
-    <p>NetBSD 等のいくつかのプラットホームでは、IPv6
-    のワイルドカードアドレス (「::」) のバインドでは IPv4
-    インターフェースにコネクションを張れません。
-    このような状況では、次のように複数の Listen ディレクティブが必要になります。
-    </p>
+    <p>プラットフォームや APR が何をサポートするかに関わらず、
+    IPv4 コネクションのみを扱うようにしたい場合は、
+    次の例のように全ての
+    <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> ディレクティブで
+    IPv4 アドレスを指定してください。</p>
 
     <div class="example"><p><code>
       Listen 0.0.0.0:80<br />
-      Listen [::]:0
+      Listen 192.170.2.1:80
     </code></p></div>
 
-    <p>Apache は現在これを自動検出することができないので、
-    そのような場合は
-    Listen 命令文は管理者が手動で編集しないといけません。</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="virtualhost" id="virtualhost">バーチャルホストに対してどう働くのか</a></h2>
+    <p>IPv4 と IPv6 のコネクションを個別のソケットで扱うようにしたい場合
+    (つまり IPv4 マップのアドレスを無効にしたい場合)
+    は、<code>--disable-v4-mapped</code> configure
+    オプションを指定して、次のように個別指定の
+    <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>
+    ディレクティブを使用してください。</p>
+
+    <div class="example"><p><code>
+       Listen [::]:80<br />
+       Listen 0.0.0.0:80
+    </code></p></div>
+
+    <p><code>--disable-v4-mapped</code> では、Apache
+    の生成するデフォルトの設定ファイル中の
+    <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>
+    ディレクティブはこの形式を使用しています。
+    <code>--disable-v4-mapped</code> は、
+    FreeBSD, NetBSD, OpenBSD プラットホームでのデフォルトです。</p>
+
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="virtualhost" id="virtualhost">バーチャルホストに対してどう働くのか</a></h2>
     
 
     <p>Listen でバーチャルホストが実装されるわけではありません。
@@ -123,4 +168,8 @@
     が listen していないアドレスとポートに対して
     設定されてしまうと、
     それにはアクセスできないということに注意してください。</p>
-  </div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p></div></body></html>
+  </div></div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p></div>
+</body></html>

@@ -4,22 +4,47 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>コンパイルとインストール - Apache HTTP サーバ</title><link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="./images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p><p class="apache">Apache HTTP サーバ バージョン 2.0</p><img alt="" src="./images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.0</a></div><div id="page-content"><div id="preamble"><h1>コンパイルとインストール</h1>
+      -->
+<title>コンパイルとインストール - Apache HTTP サーバ</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p>
+<p class="apache">Apache HTTP サーバ バージョン 2.1</p>
+<img alt="" src="./images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.1</a></div><div id="page-content"><div id="preamble"><h1>コンパイルとインストール</h1>
 
-    <p>この文書で扱う範囲は、Unix や Unix に類似したシステムでの
+    <p>この文書で扱う範囲は、Unix や Unix に類似したシステムでの
     Apache のコンパイルとインストールです。 Windows における
     コンパイルとインストールに関しては「<a href="platform/windows.html">Microsoft
     Windows で Apache を使う</a>」をご覧下さい。
     その他のプラットホームに関しては「<a href="platform/">プラットホーム</a>」をご覧下さい。</p>
 
     <p> Apache 2.0 の設定とインストールの環境は、Apache 1.3 とは
-    完全に異なるものになりました。簡単にインストールできるように、
+    完全に異なるものになりました。簡単にインストールできるように、
     Apache 1.3 では特製スクリプトを使っていました。
     Apache 2.0 では他の Open Source プロジェクトと同様の環境に
     するために <code>libtool</code> と <code>autoconf</code>
     を使うようになっています。</p>
 
-</div><div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#overview">概要 (せっかちな人向け)</a></li><li><img alt="" src="./images/down.gif" /> <a href="#requirements">必要なもの</a></li><li><img alt="" src="./images/down.gif" /> <a href="#download">ダウンロード</a></li><li><img alt="" src="./images/down.gif" /> <a href="#extract">展開</a></li><li><img alt="" src="./images/down.gif" /> <a href="#configure">ソースツリーを設定する</a></li><li><img alt="" src="./images/down.gif" /> <a href="#compile">ビルド</a></li><li><img alt="" src="./images/down.gif" /> <a href="#install">インストール</a></li><li><img alt="" src="./images/down.gif" /> <a href="#customize">カスタマイズ</a></li><li><img alt="" src="./images/down.gif" /> <a href="#test">テスト</a></li></ul><h3>参照</h3><ul class="seealso"><li><a href="invoking.html">起動</a></li><li><a href="stopping.html">停止と再起動</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="overview" id="overview">概要 (せっかちな人向け)</a></h2>
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#overview">概要 (せっかちな人向け)</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#requirements">必要なもの</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#download">ダウンロード</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#extract">展開</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#configure">ソースツリーを設定する</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#compile">ビルド</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#install">インストール</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#customize">カスタマイズ</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#test">テスト</a></li>
+</ul><h3>参照</h3><ul class="seealso"><li><a href="invoking.html">Apacheの起動</a></li><li><a href="stopping.html">Apacheの停止と再起動</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="overview" id="overview">概要 (せっかちな人向け)</a></h2>
 
     <table>
       <tr>
@@ -78,7 +103,9 @@
     <p>Apache HTTPD のコンパイルとインストールに必要なものをはじめとして、
     編集とインストールプロセスでのそれぞれの項は
     次に詳しく記述されています。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="requirements" id="requirements">必要なもの</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="requirements" id="requirements">必要なもの</a></h2>
 
     <p>Apache のビルドには次のものが必要です:</p>
 
@@ -106,7 +133,7 @@
       サーバに関する詳細は、Usenet ニュースグループ <a href="news:comp.protocols.time.ntp">comp.protocols.time.ntp</a> や <a href="http://www.eecis.udel.edu/~ntp/">NTP ホームページ</a> をご覧下さい。</dd>
 
       <dt><a href="http://www.perl.org/">Perl 5</a>
-      [オプション]</dt>
+      [オプション]</dt>
       <dd>提供されているスクリプト幾つか、例えば <a href="programs/apxs.html">apxs</a> や <a href="programs/dbmmanage.html">dbmmanage</a> は
       Perl で書かれているので、Perl 
       5 インタプリタが必要になります (5.003 以降)。
@@ -119,21 +146,14 @@
       --with-perl オプション (下記参照) を使って ./configure
       が適切なものを確実に選ぶようにすると良いでしょう。</dd>
     </dl>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="download" id="download">ダウンロード</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="download" id="download">ダウンロード</a></h2>
 
     <p>Apache は <a href="http://www.apache.org/dist/httpd/">Apache Software
-    Foundation ダウンロードサイト</a>や<a href="http://www.apache.org/dyn/closer.cgi/httpd/">近くの
-    ミラーサイト</a>からダウンロードできます。</p>
-
-    <p><code>alpha</code> で終わるバージョン番号は、
-    動くか動かないかよく分からない、
-    早期のプリテストバージョンであることを示しています。
-    <code>beta</code> で終わるバージョンはそれよりは信頼性のある
-    リリースですが、テストとバグフィックスを重ねる段階のものです。
-    Apache HTTP サーバの入手可能な中で最高の製品リリースを
-    ダウンロードしたいのであれば、ファイル名に <code>alpha</code>
-    も <code>beta</code>
-    も付かない最新のバージョンを選んでください。</p>
+    Foundation ダウンロードサイト</a>からダウンロードできますし、
+    同じ場所に幾つかのミラーサイトもリストしています。
+    ここから最新の安定版が手に入ります。</p>
 
     <p>ダウンロード後、特にミラーサイトを使った場合は、
     ダウンロードしたものが Apache HTTP 
@@ -141,7 +161,8 @@
     検証することが重要です。これはダウンロードした tarball の PGP 署名を
     テストすることによって検証します。
     これは二つの段階があります。
-    まず <code>KEYS</code> ファイルを <a href="http://www.apache.org/dist/httpd/">Apache 配布サイト</a>
+    まず <a href="http://www.apache.org/dist/httpd/KEYS"><code>KEYS</code></a>
+    ファイルを <a href="http://www.apache.org/dist/httpd/">Apache 配布サイト</a>
     からダウンロードしてください。(<code>KEYS</code> ファイル自体が
     改竄されていないことを確実にするために、以前の Apache 
     配布から取り出したファイルを使ったり、
@@ -156,8 +177,11 @@
 <div class="example"><p><code>$ gpg --import KEYS</code></p></div>
 
     <p>次のステップでは、tarball を PGP 署名でテストします。
-    PGP 署名は必ず <a href="http://www.apache.org/dist/httpd/">メインの Apache
+    PGP 署名は必ず <a href="http://httpd.apache.org/download.cgi">メインの Apache
     ウェブサイト</a>から取得してください。
+    署名ファイルへのリンクは対応するダウンロードリンクの隣にあり、また
+    <a href="http://www.apache.org/dist/httpd/">Apache
+    配布サイト</a>の特定のディレクトリで見つけることもできるでしょう。
     署名ファイルの名前は、ソースファイルの tarball と同じ名前に
     <code>.asc</code> を付加したものになっています。
     以下のコマンド (やっぱり pgp のバージョンに依存) のどれか一つで、
@@ -180,7 +204,9 @@
     しかし、<code>KEYS</code> 
     ファイルの信憑性を受け入れるならば問題ではありません。</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="extract" id="extract">展開</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="extract" id="extract">展開</a></h2>
 
     <p>Apache HTTPD の tarball
     からソースファイルを展開して取り出すとは、
@@ -195,10 +221,12 @@
     新しいディレクトリが作られます。
     サーバをコンパイルする段階に進む前に、そのディレクトリに
     <code>cd</code> で移動してください。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="configure" id="configure">ソースツリーを設定する</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="configure" id="configure">ソースツリーを設定する</a></h2>
 
     <p>次のステップは、あなたのプラットホームと
-    個人的な要求に合うように Apache
+    個人的な要求に合うように Apache
     ソースツリーを設定することです。
     これは配布ディレクトリのルートディレクトリにある、
     <code>configure</code> スクリプトで行ないます。
@@ -300,7 +328,7 @@
 
       <dt><code>SHLIB_PATH=...</code></dt>
 
-      <dd>コンパイラとリンカに渡す、共有ライブラリへのパスを指定する
+      <dd>コンパイラとリンカに渡す、共有ライブラリへのパスを指定する
       オプション。</dd>
     </dl>
 
@@ -473,6 +501,13 @@
       <dd>MPM モジュール <em>NAME</em> を選択します。</dd>
     </dl>
 
+    <p><var>mpm_name</var> という MPM を有効にするには次のようにします。</p>
+
+<div class="example"><p><code>
+     ./configure --with-mpm=<var>mpm_name</var>
+</code></p></div>
+
+
 
 <h3><a name="dbm" id="dbm">DBM</a></h3>
 
@@ -511,7 +546,9 @@
     そのため、この機能を実装する前に <a href="suexec.html">suexec
     文書</a>をよく読んで一考しておきましょう。</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="compile" id="compile">ビルド</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="compile" id="compile">ビルド</a></h2>
 
     <p>これで Apache の様々なパーツをビルドすることができます。
     次のコマンドを単純に実行するだけです:</p>
@@ -523,7 +560,9 @@
     あらかじめご了承下さい。
     また、時間はハードウェアや有効にしたモジュールの数に
     大きく依存するでしょう。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="install" id="install">インストール</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="install" id="install">インストール</a></h2>
 
     <p>さて、設定したインストール <em>PREFIX</em> 
      (前述の <code>--prefix</code> オプションを参照) 
@@ -534,7 +573,9 @@
 
     <p>アップグレードする場合は、インストールでは設定ファイルや
     ドキュメントファイルの上書きは行いません。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="customize" id="customize">カスタマイズ</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="customize" id="customize">カスタマイズ</a></h2>
 
     <p>次に <code><em>PREFIX</em>/conf/</code> 以下にある <a href="configuring.html">設定ファイル</a>を編集して、
     Apache HTTP サーバをカスタマイズします。</p>
@@ -544,7 +585,9 @@
     <p><a href="./">docs/manual/</a> の Apache マニュアルをざっと見てください。
     または、<a href="http://httpd.apache.org/docs-2.1/">http://httpd.apache.org/docs-2.1/</a>
     にあるマニュアル最新版、<a href="mod/directives.html">設定ディレクティブ</a>に当たってみてください。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="test" id="test">テスト</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="test" id="test">テスト</a></h2>
 
     <p>次のコマンドを実行して Apache HTTP サーバを<a href="invoking.html">開始</a>できます:</p>
 
@@ -559,4 +602,8 @@
     次のコマンドを実行します:</p>
 
 <div class="example"><p><code>$ <em>PREFIX</em>/bin/apachectl stop</code></p></div>
-</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p></div></body></html>
+</div></div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p></div>
+</body></html>
