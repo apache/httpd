@@ -66,7 +66,7 @@
 #endif
 
 static void cgethost(struct in_addr ipnum, char *string, int check);
-static int getline(char *s, int n);
+static int get_line(char *s, int n);
 static void stats(FILE *output);
 
 #ifdef BEOS
@@ -282,7 +282,7 @@ static void stats (FILE *output)
  * gets a line from stdin
  */
 
-static int getline (char *s, int n)
+static int get_line (char *s, int n)
 {
     char *cp;
 
@@ -332,7 +332,7 @@ int main (int argc, char *argv[])
     for (i = 0; i < MAX_ERR + 2; i++)
 	errors[i] = 0;
 
-    while (getline(line, MAXLINE)) {
+    while (get_line(line, MAXLINE)) {
 	if (line[0] == '\0')
 	    continue;
 	entries++;
