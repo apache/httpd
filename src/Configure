@@ -1217,7 +1217,7 @@ echo "#define APACHE_CONF_AUTO_H 1" >>$CONF_AUTO_H
 echo "" >>$CONF_AUTO_H
 for header in $CHECK_FOR_HEADERS; do
     echo "/* <$header> */" >>$CONF_AUTO_H
-    name="`echo $header | sed -e 's:/:_:g' -e 's:\.:_:g' | tr 'a-z' 'A-Z'`"
+    name="`echo $header | sed -e 's:/:_:g' -e 's:\.:_:g' | tr '[a-z]' '[A-Z]'`"
     if ./helpers/TestCompile header $header; then
         eval "HAVE_${name}=1"
         echo "#ifndef HAVE_${name}" >>$CONF_AUTO_H
