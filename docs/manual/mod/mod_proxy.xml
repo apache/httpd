@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.34 $ -->
+<!-- $Revision: 1.35 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -36,14 +36,16 @@
     </note>
 
     <p>This module implements a proxy/gateway for Apache. It implements
-    proxying capability for <code>FTP</code>, <code>CONNECT</code> (for SSL),
+    proxying capability for <code>AJP13</code> (Apache JServe Protocol
+    version 1.3), <code>FTP</code>, <code>CONNECT</code> (for SSL),
     <code>HTTP/0.9</code>, <code>HTTP/1.0</code>, and <code>HTTP/1.1</code>.
     The module can be configured to connect to other proxy modules for these
     and other protocols.</p>
 
     <p>Apache's proxy features are divided into several modules in
     addition to <module>mod_proxy</module>:
-    <module>mod_proxy_http</module>, <module>mod_proxy_ftp</module>
+    <module>mod_proxy_http</module>, <module>mod_proxy_ftp</module>,
+    <module>mod_proxy_ajp</module>, <module>mod_proxy_balancer</module>,
     and <module>mod_proxy_connect</module>.  Thus, if you want to use
     one or more of the particular proxy functions, load
     <module>mod_proxy</module> <em>and</em> the appropriate module(s)
