@@ -6,10 +6,11 @@
   -----------
 
   Apache is an HTTP server, originally designed for Unix systems. This
-  is the version of Apache for Microsoft Windows NT, 98, and 95
+  is the version of Apache for Microsoft Windows 2000, NT, 98, and 95
   systems.  Like the Unix version, it includes many frequently
   requested new features, and has an API that allows it to be extended
-  to meet users' needs more easily. It also allows ISAPI extensions.
+  to meet users' needs more easily. It also allows limited support for
+  ISAPI extensions.
 
 
   The Latest Version
@@ -39,7 +40,10 @@
 
   Apache on Win32 should still be considered beta quality code.  It
   does not meet the normal standards of stability and security that
-  Unix releases do.
+  Unix releases do.  The Win32 code for Apache 2.0 was entirely 
+  revised and large segments have been rewritten.  When Apache 2.0
+  is released, we strongly encourage all Win32 users to move to
+  that platform to reduce these risks.
 
   Installation
   ------------
