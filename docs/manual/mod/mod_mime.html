@@ -226,34 +226,51 @@ multiple extensions</A>
 <A
  HREF="directive-dict.html#Module"
  REL="Help"
-><STRONG>Module:</STRONG></A> mod_mime<P>
+><STRONG>Module:</STRONG></A> mod_mime
 
+<P>
 The AddLanguage directive maps the given filename extensions to the
 specified content language. <EM>MIME-lang</EM> is the MIME language of
 filenames containing <EM>extension</EM>.  This mapping is added to any
 already in force, overriding any mappings that already exist for the
 same <EM>extension</EM>.
-
+</P>
+<P>
 Example: <BLOCKQUOTE><CODE>
 AddEncoding x-compress Z<BR> AddLanguage en .en<BR> AddLanguage fr
 .fr<BR> </CODE></BLOCKQUOTE>
-
+</P>
+<P>
 Then the document <CODE>xxxx.en.Z</CODE> will be treated as being a
 compressed English document (as will the document
 <CODE>xxxx.Z.en</CODE>). Although the content language is reported to
 the client, the browser is unlikely to use this information. The
-AddLanguage directive is more useful for <A
-HREF="../content-negotiation.html">content negotiation</A>, where
+AddLanguage directive is more useful for
+<A HREF="../content-negotiation.html">content negotiation</A>, where
 the server returns one from several documents based on the client's
-language preference.<P>
-
+language preference.
+</P>
 <P>
-
+If multiple language assignments are made for the same extension,
+the last one encountered is the one that is used.  That is, for the
+case of:
+</P>
+<PRE>
+    AddLanguage en .en
+    AddLanguage en-uk .en
+    AddLanguage en-us .en
+</PRE>
+<P>
+documents with the extension "<CODE>.en</CODE>" would be treated as
+being "<CODE>en-us</CODE>".
+</P>
+<P>
 <STRONG>See also</STRONG>: <A HREF="#multipleext">Files with
 multiple extensions</A>
 <BR>
 <STRONG>See also</STRONG>: <A
 HREF="./mod_negotiation.html">mod_negotiation</A>
+</P>
 
 <HR>
 
