@@ -1271,14 +1271,14 @@ AP_DECLARE(char *) ap_get_list_item(apr_pool_t *p, const char **field);
 AP_DECLARE(int) ap_find_list_item(apr_pool_t *p, const char *line, const char *tok);
 
 /**
- * Retrieve a token, spacing over it and returning a pointer to
+ * Retrieve a token, spacing over it and adjusting the pointer to
  * the first non-white byte afterwards.  Note that these tokens
  * are delimited by semis and commas and can also be delimited
  * by whitespace at the caller's option.
  * @param p The pool to allocate from
- * @param accept_line The line to retrieve the token from
+ * @param accept_line The line to retrieve the token from (adjusted afterwards)
  * @param accept_white Is it delimited by whitespace
- * @return the first non-white byte after the token
+ * @return the token
  */
 AP_DECLARE(char *) ap_get_token(apr_pool_t *p, const char **accept_line, int accept_white);
 
