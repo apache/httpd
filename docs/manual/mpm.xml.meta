@@ -9,5 +9,6 @@
     <variant>en</variant>
     <variant>ja</variant>
     <variant htmlonly="yes">ko</variant>
+    <variant>ru</variant>
   </variants>
 </metafile>

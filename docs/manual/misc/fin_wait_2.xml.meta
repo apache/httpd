@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <metafile>
-  <basename>worker</basename>
-  <path>/mod/</path>
+  <basename>fin_wait_2</basename>
+  <path>/misc/</path>
   <relpath>..</relpath>
 
   <variants>
-    <variant>de</variant>
     <variant>en</variant>
-    <variant>ja</variant>
   </variants>
 </metafile>

@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <metafile>
-  <basename>worker</basename>
+  <basename>mod_auth_dbm</basename>
   <path>/mod/</path>
   <relpath>..</relpath>
 
   <variants>
-    <variant>de</variant>
     <variant>en</variant>
-    <variant>ja</variant>
   </variants>
 </metafile>
