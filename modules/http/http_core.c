@@ -2919,14 +2919,14 @@ static int default_handler(request_rec *r)
  * smart about when it actually sends the data, but this implements some sort
  * of chunking for right now.
  */
-static int chunk_filter(ap_filter_t *f, ap_bucket_brigade *b)
+static apr_status_t chunk_filter(ap_filter_t *f, ap_bucket_brigade *b)
 {
     ap_bucket *dptr = b->head, *lb, *next, *tail;
     int len = 0, cur_len;
     char lenstr[sizeof("ffffffff\r\n")];
     const char *cur_str;
     int hit_eos = 0;
-    apr_status_t rv = 0; /* currently bytes written, will be APR_* */
+    apr_status_t rv = APR_SUCCESS;
 
     while (dptr) {
         if (dptr->type == AP_BUCKET_EOS) {
@@ -2948,7 +2948,10 @@ static int chunk_filter(ap_filter_t *f, ap_bucket_brigade *b)
                 b->tail = ap_bucket_create_transient("\r\n", 2);
                 dptr->next = b->tail;
                 b->tail->prev = dptr;
-                rv += ap_pass_brigade(f->next, b);
+                rv = ap_pass_brigade(f->next, b);
+                if (rv != APR_SUCCESS) {
+                    return rv;
+                }
                 /* start a new brigade */
                 len = 0;
                 b = ap_brigade_create(f->r->pool);
@@ -2994,8 +2997,7 @@ static int chunk_filter(ap_filter_t *f, ap_bucket_brigade *b)
             b->head = lb;
         }
     }
-    rv += ap_pass_brigade(f->next, b);
-    return rv;
+    return ap_pass_brigade(f->next, b);
 }
 
 /* Default filter.  This filter should almost always be used.  Its only job
@@ -3014,6 +3016,7 @@ static int core_filter(ap_filter_t *f, ap_bucket_brigade *b)
 #if 0
     request_rec *r = f->r;
 #endif
+    apr_status_t rv;
     apr_ssize_t bytes_sent = 0;
     ap_bucket *dptr = b->head;
     int len = 0, written;
@@ -3041,7 +3044,10 @@ static int core_filter(ap_filter_t *f, ap_bucket_brigade *b)
     else {
 #endif
     while (dptr->read(dptr, &str, &len, 0) != AP_END_OF_BRIGADE) {
-        ap_bwrite(f->r->connection->client, str, len, &written);
+        if ((rv = ap_bwrite(f->r->connection->client, str, len, &written))
+            != APR_SUCCESS) {
+            return rv;
+        }
         dptr = dptr->next;
         bytes_sent += written;
         if (!dptr) {
@@ -3053,7 +3059,7 @@ static int core_filter(ap_filter_t *f, ap_bucket_brigade *b)
     if (len == AP_END_OF_BRIGADE) {
         ap_bflush(f->r->connection->client);
     }
-    return bytes_sent;
+    return APR_SUCCESS;
 #if 0
     }
 #endif

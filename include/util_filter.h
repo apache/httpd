@@ -120,6 +120,8 @@ typedef struct ap_filter_t ap_filter_t;
  * should be considered "const". The filter is allowed to modify the
  * next/prev to insert/remove/replace elements in the bucket list, but
  * the types and values of the individual buckets should not be altered.
+ *
+ * The return value of a filter should be an APR status value.
  */
 typedef apr_status_t (*ap_filter_func)(ap_filter_t *f, ap_bucket_brigade *b);
 
@@ -211,15 +213,14 @@ struct ap_filter_t {
  */
 /**
  * Pass the current bucket brigade down to the next filter on the filter
- * stack.  The filter should return the number of bytes written by the
- * next filter.  If the bottom-most filter doesn't write to the next work,
- * then AP_NOBODY_WROTE is returned.
+ * stack.  The filter should return an apr_status_t value.  If the bottom-most 
+ * filter doesn't write to the network, then AP_NOBODY_WROTE is returned.
  * @param filter The next filter in the chain
  * @param bucket The current bucket brigade
- * @return The number of bytes written
- * @deffunc int ap_pass_brigade(ap_filter_t *filter, ap_bucket_brigade *bucket)
+ * @return apr_status_t value
+ * @deffunc apr_status_t ap_pass_brigade(ap_filter_t *filter, ap_bucket_brigade *bucket)
  */
-API_EXPORT(int) ap_pass_brigade(ap_filter_t *filter, ap_bucket_brigade *bucket);
+API_EXPORT(apr_status_t) ap_pass_brigade(ap_filter_t *filter, ap_bucket_brigade *bucket);
 
 /*
  * ap_register_filter():

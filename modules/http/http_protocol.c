@@ -2512,7 +2512,6 @@ API_EXPORT(long) ap_send_fb_length(BUFF *fb, request_rec *r, long length)
 API_EXPORT(size_t) ap_send_mmap(apr_mmap_t *mm, request_rec *r, size_t offset,
                              size_t length)
 {
-    apr_ssize_t bytes_sent = 0;
     ap_bucket_brigade *bb = NULL;
     
     /* WE probably need to do something to make sure we are respecting the
@@ -2521,9 +2520,9 @@ API_EXPORT(size_t) ap_send_mmap(apr_mmap_t *mm, request_rec *r, size_t offset,
      */
     bb = ap_brigade_create(r->pool);
     ap_brigade_append_buckets(bb, ap_bucket_create_mmap(mm, 0, mm->size));
-    bytes_sent = ap_pass_brigade(r->filters, bb);
+    ap_pass_brigade(r->filters, bb);
 
-    return bytes_sent;
+    return mm->size; /* XXX - change API to report apr_status_t? */
 }
 #endif /* USE_MMAP_FILES */
 
