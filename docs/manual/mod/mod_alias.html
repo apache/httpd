@@ -17,6 +17,8 @@ host filesystem in the the document tree, and for URL redirection.
 <menu>
 <li><A HREF="#alias">Alias</A>
 <li><A HREF="#redirect">Redirect</A>
+<li><A HREF="#redirecttemp">RedirectTemp</A>
+<li><A HREF="#redirectperm">RedirectPermanent</A>
 <li><A HREF="#scriptalias">ScriptAlias</A>
 </menu>
 <hr>
@@ -60,8 +62,31 @@ http://foo2.bar.com/service</code></blockquote>
 If the client requests http://myserver/service/foo.txt, it will be told to
 access http://foo2.bar.com/service/foo.txt instead.<p>
 Note: Redirect directives take precedence over Alias and ScriptAlias
-directives, irrespective of their ordering in the configuration file.<p><hr>
+directives, irrespective of their ordering in the configuration file.<p>
 
+<A name="redirecttemp"><h2>RedirectTemp</h2></A>
+<!--%plaintext &lt;?INDEX {\tt Redirect} directive&gt; -->
+<strong>Syntax:</strong> RedirectTemp <em>url-path url</em><br>
+<Strong>Context:</strong> server config, virtual host, directory, .htaccess<br>
+<strong>Status:</strong> Base<br>
+<strong>Module:</strong> mod_alias<br>
+<strong>Compatibility:</strong> This directive is only available in 1.2<P>
+
+This directive makes the client know that the Redirect is only
+temporary. (Status 302).<P>
+
+<A name="redirectperm"><h2>RedirectPermanent</h2></A>
+<!--%plaintext &lt;?INDEX {\tt Redirect} directive&gt; -->
+<strong>Syntax:</strong> RedirectPermanent <em>url-path url</em><br>
+<Strong>Context:</strong> server config, virtual host, directory, .htaccess<br>
+<strong>Status:</strong> Base<br>
+<strong>Module:</strong> mod_alias<br>
+<strong>Compatibility:</strong> This directive is only available in 1.2<P>
+
+This directive makes the client know that the Redirect is permanent.
+(Status 301).<P>
+
+<hr>
 <A name="scriptalias"><h2>ScriptAlias</h2></A>
 <!--%plaintext &lt;?INDEX {\tt ScriptAlias} directive&gt; -->
 <strong>Syntax:</strong> ScriptAlias <em>url-path directory-filename</em><br>
