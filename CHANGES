@@ -2,6 +2,11 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) SECURITY: CAN-2004-0885 (cve.mitre.org)
+     mod_ssl: Fix a bug which allowed an SSLCipherSuite setting to be
+     bypassed during an SSL renegotiation.  PR 31505.  
+     [Hartmut Keil <Hartmut.Keil adnovum.ch>, Joe Orton]
+
   *) mod_auth_ldap: Handle the inconsistent way in which the MS LDAP
      library handles special characters. PR 24437 [Jess Holle]
 
