@@ -60,7 +60,7 @@
 ##  Written by Ralf S. Engelschall <rse@apache.org>
 ##
 
-require 5.004;
+require 5.003;
 use strict;
 package apxs;
 
