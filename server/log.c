@@ -473,9 +473,14 @@ static void log_error_core(const char *file, int line, int level,
 
 #ifndef TPF
     if (file && level_and_mask == APLOG_DEBUG) {
-#ifdef _OSD_POSIX
+#if defined(_OSD_POSIX) || defined(WIN32)
         char tmp[256];
         char *e = strrchr(file, '/');
+#ifdef WIN32
+        if (!e) {
+            e = strrchr(file, '\\');
+        }
+#endif
 
         /* In OSD/POSIX, the compiler returns for __FILE__
          * a string like: __FILE__="*POSIX(/usr/include/stdio.h)"
