@@ -254,6 +254,11 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
     request_rec *r = f->r;
     deflate_ctx *ctx = f->ctx;
     int zRC;
+    char* buf;
+    int eos_only = 1;
+    apr_bucket *bkt;
+    char *token;
+    const char *encoding;
     deflate_filter_config *c = ap_get_module_config(r->server->module_config,
                                                     &deflate_module);
 
@@ -264,10 +269,6 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
      * we're in better shape.
      */
     if (!ctx) {
-        int eos_only = 1;
-        apr_bucket *bkt;
-        char *buf, *token;
-        const char *encoding;
 
         /* only work on main request/no subrequests */
         if (r->main) {
@@ -384,6 +385,15 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
 
         /* don't deflate responses with zero length e.g. proxied 304's but
          * we do set the header on eos_only at this point for headers_filter
+         *
+         * if we get eos_only and come round again, we want to avoid redoing
+         * what we've already done, so set f->ctx to a flag here
+         */
+        f->ctx = ctx = (void*)-1;
+    }
+    if (ctx == (void*)-1) {
+        /* deal with the pathological case of lots of empty brigades and
+         * no knowledge of whether content will follow
          */
         for (bkt = APR_BRIGADE_FIRST(bb);
              bkt != APR_BRIGADE_SENTINEL(bb);
@@ -404,6 +414,8 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
             apr_table_unset(r->headers_out, "Content-Length");
             return ap_pass_brigade(f->next, bb);
         }
+    }
+    if (!ctx || (ctx==(void*)-1)) {
 
         /* We're cool with filtering this. */
         ctx = f->ctx = apr_pcalloc(r->pool, sizeof(*ctx));
