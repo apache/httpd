@@ -134,7 +134,6 @@ static int get_rfc1413(ap_socket_t *sock, const char *local_ip,
 		    "bind: rfc1413: Error binding to local port");
 	return -1;
     }
-    ap_get_local_port(&sav_our_port, sock);
 
 /*
  * errors from connect usually imply the remote machine doesn't support
@@ -145,6 +144,7 @@ static int get_rfc1413(ap_socket_t *sock, const char *local_ip,
                     
     if (ap_connect(sock, NULL) != APR_SUCCESS)
         return -1;
+    ap_get_local_port(&sav_our_port, sock);
     ap_get_remote_port(&sav_rmt_port, sock);
 
 /* send the data */
@@ -194,6 +194,10 @@ static int get_rfc1413(ap_socket_t *sock, const char *local_ip,
 	else if (j > 0) {
 	    i+=j; 
 	}
+        else if (status == APR_SUCCESS && j == 0) {
+            /* Oops... we ran out of data before finding newline */
+            return -1;
+        }
     }
 
 /* RFC1413_USERLEN = 512 */
