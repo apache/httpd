@@ -340,7 +340,7 @@ static void nwssl_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
     ap_seclisteners = NULL;
 }
 
-static void nwssl_post_config(apr_pool_t *pconf, apr_pool_t *plog,
+static int nwssl_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                           apr_pool_t *ptemp, server_rec *s)
 {
     seclisten_rec* sl;
@@ -373,16 +373,17 @@ static void nwssl_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                                               pconf)) != APR_SUCCESS) {
                     ap_log_perror(APLOG_MARK, APLOG_CRIT, status, pconf,
                                  "alloc_listener: failed to set up sockaddr for %s:%d", sl->addr, sl->port);
-                    exit(1);
+                    return HTTP_INTERNAL_SERVER_ERROR;
                 }
                 lr->next = ap_listeners;
                 ap_listeners = lr;
                 apr_pool_cleanup_register(pconf, lr, nwssl_socket_cleanup, apr_pool_cleanup_null);
             }                        
         } else {
-            exit(1);
+            return HTTP_INTERNAL_SERVER_ERROR;
         }
     } 
+    return OK;
 }
 
 static void *nwssl_config_server_create(apr_pool_t *p, server_rec *s)

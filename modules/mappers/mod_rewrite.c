@@ -920,7 +920,7 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, rewriterule_entry *cfg
 **
 */
 
-static void init_module(apr_pool_t *p,
+static int init_module(apr_pool_t *p,
                         apr_pool_t *plog,
                         apr_pool_t *ptemp,
                         server_rec *s)
@@ -945,7 +945,7 @@ static void init_module(apr_pool_t *p,
                                NULL, p)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
                      "mod_rewrite: could not create rewrite_log_lock");
-        exit(1);
+        return HTTP_INTERNAL_SERVER_ERROR;
     }
 
     rewritelock_create(s, p);
@@ -960,6 +960,7 @@ static void init_module(apr_pool_t *p,
         if (!first_time)
            run_rewritemap_programs(s, p);
     }
+    return OK;
 }
 
 

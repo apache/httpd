@@ -929,7 +929,7 @@ static int handle_exec(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec 
  *============================================================================*/
 
 
-static void cgi_post_config(apr_pool_t *p, apr_pool_t *plog,
+static int cgi_post_config(apr_pool_t *p, apr_pool_t *plog,
                                 apr_pool_t *ptemp, server_rec *s)
 {
     cgi_pfn_reg_with_ssi = APR_RETRIEVE_OPTIONAL_FN(ap_register_include_handler);
@@ -950,6 +950,7 @@ static void cgi_post_config(apr_pool_t *p, apr_pool_t *plog,
     if (!cgi_build_command) {
         cgi_build_command = default_build_command;
     }
+    return OK;
 }
 
 static void register_hooks(apr_pool_t *p)

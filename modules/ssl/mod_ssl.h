@@ -605,7 +605,7 @@ const char  *ssl_cmd_SSLProxyMachineCertificateFile(cmd_parms *, char *, char *)
 #endif
 
 /*  module initialization  */
-void         ssl_init_Module(apr_pool_t *, apr_pool_t *, apr_pool_t *, server_rec *);
+int          ssl_init_Module(apr_pool_t *, apr_pool_t *, apr_pool_t *, server_rec *);
 void         ssl_init_SSLLibrary(void);
 void         ssl_init_Engine(server_rec *, apr_pool_t *);
 void         ssl_init_TmpKeysHandle(int, server_rec *, apr_pool_t *);

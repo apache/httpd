@@ -121,9 +121,9 @@ AP_IMPLEMENT_HOOK_RUN_ALL(int,header_parser,
 AP_IMPLEMENT_HOOK_VOID(pre_config,
 		       (apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp),
                        (pconf,plog,ptemp))
-AP_IMPLEMENT_HOOK_VOID(post_config,
+AP_IMPLEMENT_HOOK_RUN_ALL(int,post_config,
 		       (apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp,
-                        server_rec *s),(pconf,plog,ptemp,s))
+                        server_rec *s),(pconf,plog,ptemp,s),OK,DECLINED)
 /* During the course of debugging I expanded this macro out, so
  * rather than remove all the useful information there is in the
  * following lines, I'm going to leave it here in case anyone
@@ -131,7 +131,7 @@ AP_IMPLEMENT_HOOK_VOID(post_config,
  *
  * Ben has looked at it and thinks it correct :)
  *
-AP_DECLARE(void) ap_hook_post_config(ap_HOOK_post_config_t *pf,
+AP_DECLARE(int) ap_hook_post_config(ap_HOOK_post_config_t *pf,
                                      const char * const *aszPre,
                                      const char * const *aszSucc,
                                      int nOrder)
@@ -159,7 +159,7 @@ AP_DECLARE(apr_array_header_t *) ap_hook_get_post_config(void) {
     return _hooks.link_post_config;
 }
 
-AP_DECLARE(void) ap_run_post_config (apr_pool_t *pconf,
+AP_DECLARE(int) ap_run_post_config (apr_pool_t *pconf,
                                      apr_pool_t *plog,
                                      apr_pool_t *ptemp,
                                      server_rec *s)

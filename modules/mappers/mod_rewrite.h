@@ -385,7 +385,7 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, rewriterule_entry *cfg
                                            char *key, char *val);
 
     /* initialisation */
-static void init_module(apr_pool_t *p,
+static int init_module(apr_pool_t *p,
                         apr_pool_t *plog,
                         apr_pool_t *ptemp,
                         server_rec *s);

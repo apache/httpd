@@ -2395,7 +2395,7 @@ static int revision_suffix(request_rec *r)
 /*
  * initialize the module
  */
-static void magic_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *main_server)
+static int magic_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *main_server)
 {
     int result;
     magic_server_config_rec *conf;
@@ -2415,7 +2415,7 @@ static void magic_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, serve
 	else if (conf->magicfile) {
 	    result = apprentice(s, p);
 	    if (result == -1)
-		return;
+		return OK;
 #if MIME_MAGIC_DEBUG
 	    prevm = 0;
 	    ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, 0, s,
@@ -2440,6 +2440,7 @@ static void magic_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, serve
 #endif
 	}
     }
+    return OK;
 }
 
 /*

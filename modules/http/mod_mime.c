@@ -428,7 +428,7 @@ AP_INIT_TAKE1("TypesConfig", set_types_config, NULL, RSRC_CONF,
 
 static apr_hash_t *mime_type_extensions;
 
-static void mime_post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s)
+static int mime_post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s)
 {
     ap_configfile_t *f;
     char l[MAX_STRING_LEN];
@@ -443,7 +443,7 @@ static void mime_post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
     if ((status = ap_pcfg_openfile(&f, ptemp, types_confname)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, status, s,
 		     "could not open mime types config file %s.", types_confname);
-        exit(1);
+        return HTTP_INTERNAL_SERVER_ERROR;
     }
 
     mime_type_extensions = apr_hash_make(p);
@@ -462,6 +462,7 @@ static void mime_post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
         }
     }
     ap_cfg_closefile(f);
+    return OK;
 }
 
 static char *zap_sp(char *s)

@@ -3121,7 +3121,7 @@ static void ap_register_include_handler(char *tag, include_handler_fn_t *func)
     apr_hash_set(include_hash, tag, strlen(tag) + 1, (const void *)func);
 }
 
-static void include_post_config(apr_pool_t *p, apr_pool_t *plog,
+static int include_post_config(apr_pool_t *p, apr_pool_t *plog,
                                 apr_pool_t *ptemp, server_rec *s)
 {
     include_hash = apr_hash_make(p);
@@ -3145,6 +3145,7 @@ static void include_post_config(apr_pool_t *p, apr_pool_t *plog,
         ssi_pfn_register("flastmod", handle_flastmod);
         ssi_pfn_register("printenv", handle_printenv);
     }
+    return OK;
 }
 
 static const char *set_default_error_msg(cmd_parms *cmd, void *mconfig, const char *msg)

@@ -864,13 +864,14 @@ static void x_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
  * server will still call any remaining modules with an handler for this
  * phase.
  */
-static void x_post_config(apr_pool_t *pconf, apr_pool_t *plog,
+static int x_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                           apr_pool_t *ptemp, server_rec *s)
 {
     /*
      * Log the call and exit.
      */
     trace_add(NULL, NULL, NULL, "x_post_config()");
+    return OK;
 }
 
 /*

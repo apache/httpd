@@ -587,7 +587,7 @@ static int cgid_server(void *data)
     return -1; 
 } 
 
-static void cgid_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, 
+static int cgid_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, 
                       server_rec *main_server) 
 { 
     pid_t pid; 
@@ -613,6 +613,7 @@ static void cgid_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
         if ((pid = fork()) < 0) {
             ap_log_error(APLOG_MARK, APLOG_ERR, errno, main_server, 
                          "Couldn't spawn cgid daemon process"); 
+            /* XXX should we return a failure here ? */
         }
         else if (pid == 0) {
             apr_pool_create(&pcgi, p); 
@@ -638,6 +639,7 @@ static void cgid_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
             cgid_pfn_reg_with_ssi("exec", handle_exec);
         }
     }
+    return OK;
 } 
 
 static void *create_cgid_config(apr_pool_t *p, server_rec *s) 

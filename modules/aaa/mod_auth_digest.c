@@ -407,14 +407,14 @@ static void initialize_tables(server_rec *s, apr_pool_t *ctx)
 #endif /* APR_HAS_SHARED_MEMORY */
 
 
-static void initialize_module(apr_pool_t *p, apr_pool_t *plog,
+static int initialize_module(apr_pool_t *p, apr_pool_t *plog,
 			      apr_pool_t *ptemp, server_rec *s)
 {
     /* keep from doing the init more than once at startup, and delay
      * the init until the second round
      */
     if (++call_cnt < 2)
-	return;
+	return OK;
 
     /* only initialize the secret on startup, not on restarts */
     if (call_cnt == 2)
@@ -434,6 +434,7 @@ static void initialize_module(apr_pool_t *p, apr_pool_t *plog,
     initialize_tables(s, p);
     apr_pool_cleanup_register(p, NULL, cleanup_tables, apr_pool_cleanup_null);
 #endif	/* APR_HAS_SHARED_MEMORY */
+    return OK;
 }
 
 static void initialize_child(apr_pool_t *p, server_rec *s)
