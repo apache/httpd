@@ -55,8 +55,8 @@
       data except via the web. In this case you would need two
       daemons, each running with different <code class="directive"><a href="../mod/mpm_common.html#user">User</a></code>, <code class="directive"><a href="../mod/mpm_common.html#group">Group</a></code>, <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code>, and <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code> settings.</li>
 
-      <li>You can afford the memory and <a href="../misc/descriptors.html">file descriptor
-      requirements</a> of listening to every IP alias on the
+      <li>You can afford the memory and file descriptor
+      requirements of listening to every IP alias on the
       machine. It's only possible to <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code> to the "wildcard"
       address, or to specific addresses. So if you have a need to
       listen to a specific address for whatever reason, then you

@@ -76,7 +76,6 @@
 <page href="howto/ssi.html">Introduction to Server Side Includes</page>
 <page href="howto/htaccess.html">.htaccess files</page>
 <page href="howto/public_html.html">Per-user web directories</page>
-<page href="misc/tutorials.html">Apache Tutorials</page>
 </category>
 
 <category id="platform">
@@ -111,10 +110,6 @@ Server on HPUX</page>
 <category id="misc">
 <title>Apache Miscellaneous Documentation</title>
 <page separate="yes" href="misc/">Overview</page>
-<page href="misc/custom_errordocs.html">International Customized Server Error Messages</page>
-<page href="misc/fin_wait_2.html">Connections in FIN_WAIT_2 and Apache</page>
-<page href="misc/known_client_problems.html">Known Client Problems</page>
-<page href="misc/descriptors.html">Descriptors and Apache</page>
 <page href="cgi_path.html">PATH_INFO Changes in the CGI Environment</page>
 </category>
 

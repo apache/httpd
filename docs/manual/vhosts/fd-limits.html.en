@@ -67,11 +67,6 @@
       </li>
     </ul>
 
-    <p>Please see the <a href="../misc/descriptors.html">Descriptors and Apache</a>
-    document containing further details about file descriptor
-    problems and how they can be solved on your operating
-    system.</p>
-
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">

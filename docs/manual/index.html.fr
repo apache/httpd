@@ -242,11 +242,6 @@
               </tr>
 
               <tr>
-                <td><a href="misc/tutorials.html">Tutoriels</a>
-                </td>
-              </tr>
-
-              <tr>
                 <td><a href="developer/">Documentation pour les
                 d&eacute;veloppeurs</a> </td>
               </tr>

@@ -21,8 +21,6 @@
 </summary>
 <seealso><directive module="core">Options</directive></seealso>
 <seealso><directive module="core">AcceptPathInfo</directive></seealso>
-<seealso><a href="../misc/custom_errordocs.html">International Customized
-Server Error Messages</a></seealso>
 <seealso><a href="../filter.html">Filters</a></seealso>
 <seealso><a href="../howto/ssi.html">SSI Tutorial</a></seealso>
 
