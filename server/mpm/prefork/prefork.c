@@ -1956,17 +1956,19 @@ int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
 	int child_slot;
 	ap_wait_t status;
         /* this is a memory leak, but I'll fix it later. */
-	ap_proc_t *pid = ap_wait_or_timeout(&status, pconf);
+	ap_proc_t pid;
+
+        ap_wait_or_timeout(&status, &pid, pconf);
 
 	/* XXX: if it takes longer than 1 second for all our children
 	 * to start up and get into IDLE state then we may spawn an
 	 * extra child
 	 */
-	if (pid != NULL) {
-	    process_child_status(pid, status);
+	if (pid.pid != -1) {
+	    process_child_status(&pid, status);
 	    /* non-fatal death... note that it's gone in the scoreboard. */
 	    ap_sync_scoreboard_image();
-	    child_slot = find_child_by_pid(pid);
+	    child_slot = find_child_by_pid(&pid);
 	    if (child_slot >= 0) {
                 ap_prefork_force_reset_connection_status(child_slot);
 		(void) ap_update_child_status(child_slot, SERVER_DEAD,
@@ -1981,7 +1983,7 @@ int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
 		}
 #ifdef APR_HAS_OTHER_CHILD
 	    }
-	    else if (ap_reap_other_child(pid, status) == 0) {
+	    else if (ap_reap_other_child(&pid, status) == 0) {
 		/* handled */
 #endif
 	    }
@@ -1992,7 +1994,7 @@ int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
 		    */
 		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 
                             0, ap_server_conf,
-			    "long lost child came home! (pid %d)", pid->pid);
+			    "long lost child came home! (pid %d)", pid.pid);
 	    }
 	    /* Don't perform idle maintenance when a child dies,
 		* only do it when there's a timeout.  Remember only a
