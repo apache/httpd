@@ -3013,7 +3013,9 @@ static void AMCSocketCleanup(void)
 static void show_compile_settings(void)
 {
     printf("Server base version: %s\n", SERVER_BASEVERSION);
+#ifdef SERVER_SUBVERSION
     printf("Server sub-version:  %s\n", SERVER_SUBVERSION);
+#endif
     printf("Server Full version: %s\n", ap_get_server_version());
     printf("Server built:        %s\n", ap_get_server_built());
     printf("Server's Module Magic Number: %u\n", MODULE_MAGIC_NUMBER);
