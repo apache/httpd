@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/01/28 19:47:28 $]
+Last modified at [$Date: 2004/01/28 20:13:35 $]
 
 Release:
 
@@ -160,8 +160,8 @@ PATCHES TO BACKPORT FROM 2.1
           jerenkrantz (should be fixed, but I don't have time to do this)
 
     * Extend the SetEnvIf directive to capture subexpressions of the
-      matched value. This is related to the backport proposal below ... ;-)
-      modules/metadata/mod_setenvif.c r1.42
+      matched value.
+        modules/metadata/mod_setenvif.c r1.42
       +1: nd
 
     * Allow mod_dav to do weak entity comparison functions.
