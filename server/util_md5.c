@@ -203,6 +203,7 @@ API_EXPORT(char *) ap_md5digest(ap_pool_t *p, ap_file_t *infile,
     unsigned char buf[1000];
     long length = 0;
     int nbytes;
+    ap_off_t offset = 0L;
 
     ap_MD5Init(&context);
     if (xlate) {
@@ -213,7 +214,7 @@ API_EXPORT(char *) ap_md5digest(ap_pool_t *p, ap_file_t *infile,
 	length += nbytes;
 	ap_MD5Update(&context, buf, nbytes);
     }
-    ap_seek(infile, 0L, APR_SET);
+    ap_seek(infile, APR_SET, &offset);
     return ap_md5contextTo64(p, &context);
 }
 
@@ -225,6 +226,7 @@ API_EXPORT(char *) ap_md5digest(ap_pool_t *p, ap_file_t *infile)
     unsigned char buf[1000];
     long length = 0;
     ap_ssize_t nbytes;
+    ap_off_t offset = 0L;
 
     ap_MD5Init(&context);
     nbytes = sizeof(buf);
@@ -232,7 +234,7 @@ API_EXPORT(char *) ap_md5digest(ap_pool_t *p, ap_file_t *infile)
 	length += nbytes;
 	ap_MD5Update(&context, buf, nbytes);
     }
-    ap_seek(infile, 0L, APR_SET);
+    ap_seek(infile, APR_SET, &offset);
     return ap_md5contextTo64(p, &context);
 }
 
