@@ -47,16 +47,16 @@ the modes available and gives instructions on activating them.</p>
 <h3>POOL_DEBUG</h3>
 <p><em>This is intended to detect cases where the wrong pool is used when assigning data to an object in another pool.</em></p>
 
-<p>In particular, it causes the table_{set,add,merge}n routines to check that their arguments are safe for the ap_table_t they're being placed in.  It currently only works with the unix multiprocess model, but could be extended to others.</p>
+<p>In particular, it causes the table_{set,add,merge}n routines to check that their arguments are safe for the apr_table_t they're being placed in.  It currently only works with the unix multiprocess model, but could be extended to others.</p>
 
 <h2>Table Debugging</h2>
 <h3>MAKE_TABLE_PROFILE</h3>
 <p><em>Provide diagnostic information about make_table() calls which are possibly too small.</em></p>
 
 <p>This requires a recent gcc which supports __builtin_return_address().  The error_log output will be a message such as: </p>
-<pre>table_push: ap_table_t created by 0x804d874 hit limit of 10</pre>
+<pre>table_push: apr_table_t created by 0x804d874 hit limit of 10</pre>
 <p>Use "<em><strong>l *0x804d874</strong></em>" to find the source that corresponds to.  It
- indicates that a ap_table_t allocated by a call at that address has possibly too small an initial ap_table_t size guess.</p>
+ indicates that a apr_table_t allocated by a call at that address has possibly too small an initial apr_table_t size guess.</p>
 
 <h2>Allocation Statistics</h2>
 <h3>ALLOC_STATS</h3>
