@@ -191,7 +191,7 @@ PATCHES TO BACKPORT FROM TRUNK:
         modules/experimental/mod_cache.h: 1.52
         modules/experimental/mod_disk_cache.c: 1.67
         modules/experimental/mod_mem_cache.c: 1.119
-      +1: jerenkrantz, stoddard
+      +1: jerenkrantz, stoddard, striker
       +0: sounds like a nice 'feature' v.s. rfc-required behavior, great for 2.2
 
     * support/check_forensic: Fix tempfile usage
