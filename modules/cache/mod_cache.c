@@ -863,6 +863,12 @@ static const char *add_cache_enable(cmd_parms *parms, void *dummy,
     cache_server_conf *conf;
     struct cache_enable *new;
 
+    if (*type == '/') {
+        return apr_psprintf(parms->pool,
+          "provider (%s) starts with a '/'.  Are url and provider switched?",
+          type);
+    }
+
     conf =
         (cache_server_conf *)ap_get_module_config(parms->server->module_config,
                                                   &cache_module);
