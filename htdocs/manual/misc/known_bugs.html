@@ -35,16 +35,7 @@ and <A HREF="known_client_problems.html">our list of known client problems.</A><
 <HR>
 
 <H2>Apache 1.3b2 Bugs</H2>
-<OL>
-<LI>There is no documentation for the <CODE>NameVirtualHost</CODE> 
-    directive.  Name based virtual hosts (ie. those that do not have
-    a separate IP) will not work unless you add a 
-    <CODE>NameVirtualHost x.x.x.x</CODE> directive to your config file
-    for each IP address you want name based virtual hosts to be used
-    on, where <CODE>x.x.x.x</CODE> is the IP address.  This must appear
-    before the related <A HREF="../mod/core.html#virtualhost">VirtualHost</A>
-    directive.  Documentation is being written for this.
-</OL>
+
 <H3>Win32 only</H3>
 <OL>
 <LI>CGI scripts that are called with information appended to the script
