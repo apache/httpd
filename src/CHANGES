@@ -1,5 +1,8 @@
 Changes with Apache 1.3.10
 
+  *) Fixed typo in htdocs/manual/install.html.
+     [Chris Pepper <pepper@tgg.com>] PR#5360
+
   *) Fix $AWK/awk usage in top-level configure script: We confused ourself and
      replaced the wrong "$AWK" with a plain "awk" in the last releases. So we
      now both fix this and move the comment which already tried to explain it
