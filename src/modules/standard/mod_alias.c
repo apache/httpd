@@ -411,6 +411,12 @@ static int fixup_redir(request_rec *r)
                               r->uri, ret);
             }
             else {
+                /* append requested query only, if the config didn't
+                 * supply its own.
+                 */
+                if (r->args && !strchr(ret, '?')) {
+                    ret = ap_pstrcat(r->pool, ret, "?", r->args, NULL);
+                }
                 ap_table_setn(r->headers_out, "Location", ret);
             }
         }
