@@ -218,7 +218,6 @@ struct proxy_conn_pool {
 #if APR_HAS_THREADS
     apr_reslist_t  *res;    /* Connection resource list */
 #endif
-    int            nfree;   /* Balancer free count number */
     proxy_conn_rec *conn;   /* Single connection for prefork mpm's */
 };
 
@@ -229,17 +228,30 @@ struct proxy_conn_pool {
 #define PROXY_WORKER_DISABLED       0x0020
 #define PROXY_WORKER_IN_ERROR       0x0040
 
-#define PROXY_WORKER_IS_USABLE(f)   (!((f)->status & 0x00F0))
+#define PROXY_WORKER_IS_USABLE(f)   (!((f)->s->status & 0x00F0))
 
 /* default worker retry timeout in seconds */
 #define PROXY_WORKER_DEFAULT_RETRY  60
+#define PROXY_WORKER_MAX_ROUTE_SIZ  63
+
+/* Runtime worker status informations. Shared in scoreboard */
+typedef struct {
+    int             status;
+    apr_time_t      error_time; /* time of the last error */
+    int             retries;    /* number of retries on this worker */
+    int             lbstatus;   /* Current lbstatus */
+    int             lbfactor;   /* dynamic lbfactor */
+    apr_off_t       transfered; /* Number of bytes transfered to remote */
+    apr_off_t       readed;     /* Number of bytes readed from remote */
+    apr_size_t      elected;    /* Number of times the worker was elected */
+    char            route[PROXY_WORKER_MAX_ROUTE_SIZ+1];
+    char            redirect[PROXY_WORKER_MAX_ROUTE_SIZ+1];
+} proxy_worker_stat;
 
 /* Worker configuration */
 struct proxy_worker {
-    int             status;
-    apr_time_t      error_time; /* time of the last error */
+    int             id;         /* scoreboard id */
     apr_interval_time_t retry;  /* retry interval */
-    int             retries;    /* number of retries on this worker */
     int             lbfactor;   /* initial load balancing factor */
     const char      *name;
     const char      *scheme;    /* scheme to use ajp|http|https */
@@ -262,29 +274,13 @@ struct proxy_worker {
     char                io_buffer_size_set;
     char                keepalive;
     char                keepalive_set;
-    proxy_conn_pool *cp;        /* Connection pool to use */
-    void            *opaque;    /* per scheme worker data */
+    proxy_conn_pool     *cp;        /* Connection pool to use */
+    proxy_worker_stat   *s;         /* Shared data */
+    void                *opaque;    /* per scheme worker data */
 };
 
-/* Runtime worker status informations. Shared in scoreboard */
-typedef struct {
-    double          lbstatus;   /* Current lbstatus */
-    double          lbfactor;   /* dynamic lbfactor */
-    apr_size_t      transfered; /* Number of bytes transfered to remote */
-    apr_size_t      readed;     /* Number of bytes readed from remote */
-    apr_size_t      elected;    /* Number of times the worker was elected */
-} proxy_runtime_stat;
-
-/* Runtime worker. */
-typedef struct {
-    int                id;      /* scoreboard id */
-    proxy_balancer     *b;      /* balancer containing this worker */
-    proxy_worker       *w;
-    proxy_runtime_stat *s;
-} proxy_runtime_worker;
-
 struct proxy_balancer {
-    apr_array_header_t *workers; /* array of proxy_runtime_workers */
+    apr_array_header_t *workers; /* array of proxy_workers */
     const char *name;            /* name of the load balancer */
     const char *sticky;          /* sticky session identifier */
     int         sticky_force;    /* Disable failover for sticky sessions */
@@ -422,8 +418,18 @@ PROXY_DECLARE(const char *) ap_proxy_add_worker(proxy_worker **worker,
 PROXY_DECLARE(proxy_worker *) ap_proxy_create_worker(apr_pool_t *p);
 
 /**
+ * Initize the worker's shared data
+ * @param conf   current proxy server configuration
+ * @param s      current server record
+ * @param worker worker to initialize
+ */
+PROXY_DECLARE(void) ap_proxy_initialize_worker_share(proxy_server_conf *conf,
+                                                     proxy_worker *worker);
+
+
+/**
  * Initize the worker
- * @param worker the new worker
+ * @param worker worker to initialize
  * @param p      memory pool to allocate worker from 
  * @param s      current server record
  * @return       APR_SUCCESS or error code

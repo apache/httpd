@@ -189,11 +189,15 @@ static const char *set_worker_param(apr_pool_t *p,
     else if (!strcasecmp(key, "route")) {
         /* Worker route.
          */
+        if (strlen(val) > PROXY_WORKER_MAX_ROUTE_SIZ)
+            return "Route length must be < 64 characters";
         worker->route = apr_pstrdup(p, val);
     }
     else if (!strcasecmp(key, "redirect")) {
         /* Worker redirection route.
          */
+        if (strlen(val) > PROXY_WORKER_MAX_ROUTE_SIZ)
+            return "Redirect length must be < 64 characters";
         worker->redirect = apr_pstrdup(p, val);
     }
     else {
@@ -1194,9 +1198,6 @@ static const char *
         psf->forward->name     = "proxy:forward";
         psf->forward->hostname = "*";
         psf->forward->scheme   = "*";
-
-        /* Do not disable worker in case of errors */
-        psf->forward->status = PROXY_WORKER_IGNORE_ERRORS;
     }
     return NULL;
 }
@@ -1663,23 +1664,9 @@ PROXY_DECLARE(int) ap_proxy_ssl_disable(conn_rec *c)
 static int proxy_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                              apr_pool_t *ptemp, server_rec *s)
 {
-    proxy_server_conf *conf =
-    (proxy_server_conf *) ap_get_module_config(s->module_config, &proxy_module);
-    proxy_worker *worker;
-    int i;
 
     proxy_ssl_enable = APR_RETRIEVE_OPTIONAL_FN(ssl_proxy_enable);
     proxy_ssl_disable = APR_RETRIEVE_OPTIONAL_FN(ssl_engine_disable);
-
-    /* Initialize workers */
-    worker = (proxy_worker *)conf->workers->elts;
-    for (i = 0; i < conf->workers->nelts; i++) {
-        ap_proxy_initialize_worker(worker, s);
-        worker++;
-    }
-    /* Initialize forward worker if defined */
-    if (conf->forward)
-        ap_proxy_initialize_worker(conf->forward, s);
 
     return OK;
 }
@@ -1713,7 +1700,7 @@ static int proxy_status_hook(request_rec *r, int flags)
     proxy_server_conf *conf = (proxy_server_conf *)
         ap_get_module_config(sconf, &proxy_module);
     proxy_balancer *balancer = NULL;
-    proxy_runtime_worker *worker = NULL;
+    proxy_worker *worker = NULL;
 
     if (flags & AP_STATUS_SHORT || conf->balancers->nelts == 0 ||
         conf->proxy_status == status_off)
@@ -1736,26 +1723,26 @@ static int proxy_status_hook(request_rec *r, int flags)
                  "<th>F</th><th>Acc</th><th>Wr</th><th>Rd</th>"
                  "</tr>\n", r);
 
-        worker = (proxy_runtime_worker *)balancer->workers->elts;
+        worker = (proxy_worker *)balancer->workers->elts;
         for (n = 0; n < balancer->workers->nelts; n++) {
 
-            ap_rvputs(r, "<tr>\n<td>", worker->w->scheme, "</td>", NULL);
-            ap_rvputs(r, "<td>", worker->w->hostname, "</td><td>", NULL);
-            if (worker->w->status & PROXY_WORKER_DISABLED)
+            ap_rvputs(r, "<tr>\n<td>", worker->scheme, "</td>", NULL);
+            ap_rvputs(r, "<td>", worker->hostname, "</td><td>", NULL);
+            if (worker->s->status & PROXY_WORKER_DISABLED)
                 ap_rputs("Dis", r);
-            else if (worker->w->status & PROXY_WORKER_IN_ERROR)
+            else if (worker->s->status & PROXY_WORKER_IN_ERROR)
                 ap_rputs("Err", r);
-            else if (worker->w->status & PROXY_WORKER_INITIALIZED)
+            else if (worker->s->status & PROXY_WORKER_INITIALIZED)
                 ap_rputs("Ok", r);
             else
                 ap_rputs("-", r);
-            ap_rvputs(r, "</td><td>", worker->w->route, NULL);
-            ap_rvputs(r, "</td><td>", worker->w->redirect, NULL);
-            ap_rprintf(r, "</td><td>%.2f</td>", worker->s->lbfactor);
+            ap_rvputs(r, "</td><td>", worker->s->route, NULL);
+            ap_rvputs(r, "</td><td>", worker->s->redirect, NULL);
+            ap_rprintf(r, "</td><td>%d</td>", worker->s->lbfactor);
             ap_rprintf(r, "<td>%d</td><td>", (int)(worker->s->elected));
             format_byte_out(r, worker->s->transfered);
             ap_rputs("</td><td>", r);
-            format_byte_out(r, worker->s->transfered);
+            format_byte_out(r, worker->s->readed);
             ap_rputs("</td>\n", r);
 
             /* TODO: Add the rest of dynamic worker data */
@@ -1783,6 +1770,31 @@ static int proxy_status_hook(request_rec *r, int flags)
     return OK;
 }
 
+static void child_init(apr_pool_t *p, server_rec *s)
+{
+    void *sconf = s->module_config;
+    proxy_server_conf *conf = (proxy_server_conf *)
+        ap_get_module_config(sconf, &proxy_module);
+    proxy_worker *worker;
+    int i;
+    
+    /* Initialize worker's shared scoreboard data */ 
+    worker = (proxy_worker *)conf->workers->elts;
+    for (i = 0; i < conf->workers->nelts; i++) {
+        ap_proxy_initialize_worker_share(conf, worker);
+        ap_proxy_initialize_worker(worker, s);
+        worker++;
+    }
+    /* Initialize forward worker if defined */
+    if (conf->forward) {
+        ap_proxy_initialize_worker_share(conf, conf->forward);
+        ap_proxy_initialize_worker(conf->forward, s);
+        /* Do not disable worker in case of errors */
+        conf->forward->s->status |= PROXY_WORKER_IGNORE_ERRORS;
+    }
+
+}
+
 /*
  * This routine is called before the server processes the configuration
  * files.  There is no return value.
@@ -1803,6 +1815,11 @@ static void register_hooks(apr_pool_t *p)
 #ifndef FIX_15207
     static const char * const aszSucc[]={ "mod_rewrite.c", NULL };
 #endif
+    /* Only the mpm_winnt has child init hook handler.
+     * make sure that we are called after the mpm
+     * initializes.
+     */
+    static const char *const aszPred[] = { "mpm_winnt.c", NULL};
     
     APR_REGISTER_OPTIONAL_FN(ap_proxy_lb_workers);
     /* handler */
@@ -1821,6 +1838,9 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_pre_config(proxy_pre_config, NULL, NULL, APR_HOOK_MIDDLE); 
     /* post config handling */
     ap_hook_post_config(proxy_post_config, NULL, NULL, APR_HOOK_MIDDLE);
+    /* child init handling */
+    ap_hook_child_init(child_init, aszPred, NULL, APR_HOOK_MIDDLE); 
+
 }
 
 module AP_MODULE_DECLARE_DATA proxy_module =
