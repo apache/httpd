@@ -78,8 +78,8 @@ my $CFG_INCLUDEDIR = eval qq("$includedir");
 my $CFG_CC         = get_vars("CC");
 my $libexecdir     = get_vars("libexecdir");
 my $CFG_LIBEXECDIR = eval qq("$libexecdir");
-my $bindir         = get_vars("bindir");
-my $CFG_SBINDIR    = eval qq("$bindir");
+my $sbindir        = get_vars("sbindir");
+my $CFG_SBINDIR    = eval qq("$sbindir");
 
 my %internal_vars = map {$_ => 1}
     qw(TARGET CC CFLAGS CFLAGS_SHLIB LD_SHLIB LDFLAGS_SHLIB LIBS_SHLIB
@@ -218,7 +218,7 @@ if (@opt_S) {
 ##
 ##  Initial shared object support check
 ##
-my $httpd = get_vars("bindir") . "/" . get_vars("progname");
+my $httpd = get_vars("sbindir") . "/" . get_vars("progname");
 $httpd = eval qq("$httpd");
 $httpd = eval qq("$httpd");
 
