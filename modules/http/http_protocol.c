@@ -2090,7 +2090,6 @@ AP_DECLARE(int) ap_send_http_trace(request_rec *r)
 
 int ap_send_http_options(request_rec *r)
 {
-    const long int zero = 0L;
     char *buff;
     ap_bucket *b;
     ap_bucket_brigade *bb;
