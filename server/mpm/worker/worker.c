@@ -123,7 +123,7 @@ static int dying = 0;
 static int workers_may_exit = 0;
 static int requests_this_child;
 static int num_listensocks = 0;
-static apr_socket_t **listensocks;
+static ap_listen_rec *listensocks;
 static fd_queue_t *worker_queue;
 
 /* The structure used to pass unique initialization info to each thread */
@@ -528,7 +528,7 @@ static void check_infinite_requests(void)
 }
 
 /* Sets workers_may_exit if we received a character on the pipe_of_death */
-static void check_pipe_of_death(void)
+static apr_status_t check_pipe_of_death(void **csd, ap_listen_rec *lr, apr_pool_t *ptrans)
 {
     apr_thread_mutex_lock(pipe_of_death_mutex);
     if (!workers_may_exit) {
@@ -536,7 +536,7 @@ static void check_pipe_of_death(void)
         char pipe_read_char;
 	apr_size_t n = 1;
 
-        ret = apr_recv(listensocks[0], &pipe_read_char, &n);
+        ret = apr_recv(lr->sd, &pipe_read_char, &n);
         if (APR_STATUS_IS_EAGAIN(ret)) {
             /* It lost the lottery. It must continue to suffer
              * through a life of servitude. */
@@ -548,6 +548,10 @@ static void check_pipe_of_death(void)
         }
     }
     apr_thread_mutex_unlock(pipe_of_death_mutex);
+    /* This is a hack to get us back to the top of the accept loop.
+     * we should probably have a better way to do this though.
+     */
+    return APR_EINTR;
 }
 
 static void *listener_thread(apr_thread_t *thd, void * dummy)
@@ -556,11 +560,11 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
     int process_slot = ti->pid;
     int thread_slot = ti->tid;
     apr_pool_t *tpool = apr_thread_pool_get(thd);
-    apr_socket_t *csd = NULL;
+    void *csd = NULL;
     apr_pool_t *ptrans;		/* Pool for per-transaction stuff */
-    apr_socket_t *sd = NULL;
     int n;
     int curr_pollfd, last_pollfd = 0;
+    int offset = 0;
     apr_pollfd_t *pollset;
     apr_status_t rv;
 
@@ -570,9 +574,9 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
     worker_thread_count++;
     apr_thread_mutex_unlock(worker_thread_count_mutex);
 
-    apr_poll_setup(&pollset, num_listensocks+1, tpool);
-    for(n=0 ; n <= num_listensocks ; ++n)
-	apr_poll_socket_add(pollset, listensocks[n], APR_POLLIN);
+    apr_poll_setup(&pollset, num_listensocks, tpool);
+    for(n=0 ; n < num_listensocks ; ++n)
+	apr_poll_socket_add(pollset, listensocks[n].sd, APR_POLLIN);
 
     /* TODO: Switch to a system where threads reuse the results from earlier
        poll calls - manoj */
@@ -610,16 +614,8 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
 
             if (workers_may_exit) break;
 
-	    apr_poll_revents_get(&event, listensocks[0], pollset);
-            if (event & APR_POLLIN) {
-                /* A process got a signal on the shutdown pipe. Check if we're
-                 * the lucky process to die. */
-                check_pipe_of_death();
-                continue;
-            }
-
             if (num_listensocks == 1) {
-                sd = ap_listeners->sd;
+                offset = 0;
                 goto got_fd;
             }
             else {
@@ -627,14 +623,14 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
                 curr_pollfd = last_pollfd;
                 do {
                     curr_pollfd++;
-                    if (curr_pollfd > num_listensocks) {
-                        curr_pollfd = 1;
+                    if (curr_pollfd >= num_listensocks) {
+                        curr_pollfd = 0;
                     }
                     /* XXX: Should we check for POLLERR? */
-		    apr_poll_revents_get(&event, listensocks[curr_pollfd], pollset);
+		    apr_poll_revents_get(&event, listensocks[curr_pollfd].sd, pollset);
                     if (event & APR_POLLIN) {
                         last_pollfd = curr_pollfd;
-			sd=listensocks[curr_pollfd];
+			offset = curr_pollfd;
                         goto got_fd;
                     }
                 } while (curr_pollfd != last_pollfd);
@@ -645,10 +641,10 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
             /* create a new transaction pool for each accepted socket */
             apr_pool_create(&ptrans, tpool);
 
-            if ((rv = apr_accept(&csd, sd, ptrans)) != APR_SUCCESS) {
-                csd = NULL;
-                ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf, 
-                             "apr_accept");
+            rv = listensocks[offset].accept_func(&csd, &listensocks[offset], ptrans);
+
+            if (rv == APR_EGENERAL) {
+                signal_workers();
             }
             if ((rv = SAFE_ACCEPT(apr_proc_mutex_unlock(accept_mutex)))
                 != APR_SUCCESS) {
@@ -866,12 +862,11 @@ static void child_main(int child_num_arg)
     
     /* Set up the pollfd array */
     listensocks = apr_pcalloc(pchild,
-			    sizeof(*listensocks) * (num_listensocks + 1));
-#if APR_FILES_AS_SOCKETS
-    apr_socket_from_file(&listensocks[0], pipe_of_death_in);
-#endif
-    for (lr = ap_listeners, i = 1; i <= num_listensocks; lr = lr->next, ++i)
-	listensocks[i]=lr->sd;
+			    sizeof(*listensocks) * (num_listensocks));
+    for (lr = ap_listeners, i = 0; i < num_listensocks; lr = lr->next, ++i) {
+	listensocks[i].sd=lr->sd;
+        listensocks[i].accept_func = lr->accept_func;
+    }
 
     /* Setup worker threads */
 
@@ -1250,15 +1245,14 @@ static void server_main_loop(int remaining_children_to_start)
     }
 }
 
-int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
+static void make_pipe_of_death(int *num_listeners, apr_pool_t *p)
 {
-    int remaining_children_to_start;
+    ap_listen_rec *lr = apr_palloc(p, sizeof(*lr));
+    int filedes;
+    apr_socket_t *sd = NULL;
     apr_status_t rv;
 
-    pconf = _pconf;
-    ap_server_conf = s;
-
-    rv = apr_file_pipe_create(&pipe_of_death_in, &pipe_of_death_out, pconf);
+    rv = apr_file_pipe_create(&pipe_of_death_in, &pipe_of_death_out, p);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv,
                      (const server_rec*) ap_server_conf,
@@ -1273,12 +1267,32 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         exit(1);
     }
 
+    apr_os_file_get(&filedes, pipe_of_death_in);
+    apr_os_sock_put(&sd, &filedes, p);
+
+    lr->sd = sd;
+    lr->active = 1;
+    lr->accept_func = check_pipe_of_death;
+    lr->next = ap_listeners;
+    ap_listeners = lr;
+    (*num_listeners)++;
+}
+
+int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
+{
+    int remaining_children_to_start;
+    apr_status_t rv;
+
+    pconf = _pconf;
+    ap_server_conf = s;
+
     if ((num_listensocks = ap_setup_listeners(ap_server_conf)) < 1) {
         /* XXX: hey, what's the right way for the mpm to indicate a fatal error? */
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT, 0, s,
             "no listening sockets available, shutting down");
         return 1;
     }
+    make_pipe_of_death(&num_listensocks, pconf);
     ap_log_pid(pconf, ap_pid_fname);
 
     /* Initialize cross-process accept lock */
