@@ -221,11 +221,10 @@ static const command_rec userdir_cmds[] = {
 
 static int translate_userdir(request_rec *r)
 {
-    ap_conf_vector_t *server_conf = r->server->module_config;
-    const userdir_config *s_cfg = ap_get_module_config(server_conf,
-                                                       &userdir_module);
+    ap_conf_vector_t *server_conf;
+    const userdir_config *s_cfg;
     char *name = r->uri;
-    const char *userdirs = s_cfg->userdir;
+    const char *userdirs;
     const char *w, *dname;
     char *redirect;
     char *x = NULL;
@@ -235,7 +234,13 @@ static int translate_userdir(request_rec *r)
      * If the URI doesn't match our basic pattern, we've nothing to do with
      * it.
      */
-    if (s_cfg->userdir == NULL || name[0] != '/' || name[1] != '~') {
+    if (name[0] != '/' || name[1] != '~') {
+        return DECLINED;
+    }
+    server_conf = r->server->module_config;
+    s_cfg = ap_get_module_config(server_conf, &userdir_module);
+    userdirs = s_cfg->userdir;
+    if (userdirs == NULL) {
         return DECLINED;
     }
 
