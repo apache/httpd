@@ -14,16 +14,19 @@
     <p>圧縮機能は <code>DEFLATE</code> <a href="../filter.html">フィルタ</a>
     により実装されています。以下のディレクティブはそのディレクティブのある
     コンテナ中のドキュメントを圧縮するようにします:</p>
-    <p><strong>ほとんどのよく使われているブラウザはすべてのコンテンツの
-        圧縮は扱えません。ですから、'gzip-only-text/html' を
-        有効にした方がよいかもしれません (以下参照)
+    <p><strong>よく使われているブラウザでは、すべてのコンテンツに対する
+        圧縮を扱えるわけではありません。ですから、'gzip-only-text/html' 
+	ノートを 1 にして、html ファイルに対してのみ
+	圧縮が働くようにした方がよいかもしれません (以下参照)
     </strong></p>
+    <p><strong>この値を 1 以外の値に設定した場合は無視されますので、
+       ネガティブマッチを行なうことができます。</strong></p>
 
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>SetEnv gzip-only-text/html 1<br>
 SetOutputFilter DEFLATE
 </code></td></tr></table></blockquote>
 
-    <p>これは Apache のドキュメンテーションに対して圧縮を有効にする設定です:</p>
+    <p>これは Apache のドキュメンテーションに対して圧縮を有効にする設定です:</p>
 
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
 &lt;Directory "/your-server-root/manual"&gt;<br>
@@ -35,7 +38,7 @@ SetOutputFilter DEFLATE
                   </strong></td><td>zlib が一度に圧縮する塊の大きさ</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:
                   </a></td><td>DeflateBufferSize <em>value</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">デフォルト: 
                     </a></td><td><code>DeflateBufferSize 8096</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">コンテキスト:
-                  </a></td><td>サーバ設定ファイル</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">ステータス:
+                  </a></td><td>サーバ設定ファイル, バーチャルホスト</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">ステータス:
                   </a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">モジュール:
                   </a></td><td>mod_deflate</td></tr></table></td></tr></table>
     <p><code class="directive">DeflateBufferSize</code> ディレクティブは
@@ -43,7 +46,7 @@ SetOutputFilter DEFLATE
 <hr><h2><a name="DeflateFilterNote">DeflateFilterNote</a> <a name="deflatefilternote">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
                   </strong></td><td>ロギング用に圧縮比をメモに追加</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:
                   </a></td><td>DeflateFilterNote <em>notename</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">コンテキスト:
-                  </a></td><td>サーバ設定ファイル</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">ステータス:
+                  </a></td><td>サーバ設定ファイル, バーチャルホスト</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">ステータス:
                   </a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">モジュール:
                   </a></td><td>mod_deflate</td></tr></table></td></tr></table>
     <p><code class="directive">DeflateFilterNote</code> ディレクティブは
@@ -53,7 +56,7 @@ SetOutputFilter DEFLATE
                   </strong></td><td>zlib が圧縮に使うメモリのレベルを指定</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:
                   </a></td><td>DeflateMemLevel <em>value</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">デフォルト: 
                     </a></td><td><code>DeflateMemLevel 9</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">コンテキスト:
-                  </a></td><td>サーバ設定ファイル</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">ステータス:
+                  </a></td><td>サーバ設定ファイル, バーチャルホスト</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">ステータス:
                   </a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">モジュール:
                   </a></td><td>mod_deflate</td></tr></table></td></tr></table>
     <p><code class="directive">DeflateMemLevel</code> ディレクティブは
@@ -61,10 +64,10 @@ SetOutputFilter DEFLATE
     (訳注: 2 を底とする対数の値になります。
     8 程度が良いでしょう。)</p>
 <hr><h2><a name="DeflateWindowSize">DeflateWindowSize</a> <a name="deflatewindowsize">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
-                  </strong></td><td>Zlib の圧縮用ウィンドウの大きさ</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:
+                  </strong></td><td>Zlib の圧縮用ウィンドウの大きさ</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:
                   </a></td><td>DeflateWindowSize <em>value</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">デフォルト: 
                     </a></td><td><code>DeflateWindowSize 15</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">コンテキスト:
-                  </a></td><td>サーバ設定ファイル</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">ステータス:
+                  </a></td><td>サーバ設定ファイル, バーチャルホスト</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">ステータス:
                   </a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">モジュール:
                   </a></td><td>mod_deflate</td></tr></table></td></tr></table>
     <p><code class="directive">DeflateWindowSize</code> ディレクティブは

@@ -148,35 +148,35 @@
 <hr><h2><a name="MaxClients">MaxClients</a> <a name="maxclients">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
                   </strong></td><td>リクエストに応答するために作成される
 子プロセスの最大個数</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:
-                  </a></td><td>MaxClients <em>number</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">デフォルト: 
-                    </a></td><td><code>MaxClients
-    8 (スレッドがある場合) MaxClients 256</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">コンテキスト:
+                  </a></td><td>MaxClients <em>number</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">コンテキスト:
                   </a></td><td>サーバ設定ファイル</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">ステータス:
                   </a></td><td>MPM</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">モジュール:
                   </a></td><td><code><a href="../mod/worker.html">worker</a></code>, <code><a href="../mod/prefork.html">prefork</a></code></td></tr></table></td></tr></table>
     <p><code class="directive">MaxClients</code> ディレクティブは、
-    リクエストに応答するために作成される、子プロセスの制限数を設定します。
-    スレッド処理不採用でサーバをビルドした場合は、
-    この数字以上のクライアントに同時に応答することはできません。
-    prefork MPM で 256 クライアントを越える設定にするのならば、
-    <a href="#serverlimit" class="directive"><code class="directive">ServerLimit</code></a>
-    ディレクティブを使用しなければなりません。
-    worker MPM で 1024 クライアントを越える設定にするのならば、
-    <a href="#serverlimit" class="directive"><code class="directive">ServerLimit</code></a>
-    ディレクティブと
-    <a href="#threadlimit" class="directive"><code class="directive">ThreadLimit</code></a>
-    ディレクティブを使用しなければなりません。</p>
+    応答することのできる同時リクエスト数を設定します。
+    <code class="directive">MaxClients</code> 制限数を越えるコネクションは通常、
+    <a href="#listenbacklog" class="directive"><code class="directive">ListenBacklog</code></a>
+    ディレクティブで設定した数までキューに入ります。
+    他のリクエストの最後まで達して子プロセスが空くと、
+    次のコネクションに応答します。</p>
 
-    <p><code class="directive">MaxClients</code> の制限を越えたコネクションは、
-    通常は <a href="#listenbacklog" class="directive"><code class="directive">ListenBacklog</code></a>
-    ディレクティブに基づいた数までキューされます。
-    子プロセスが他のリクエストの最後まで行って解放されたら、
-    キューに入ったこのコネクションに対して応答が行われます。</p>
+    <p>スレッドを用いないサーバ (すなわち <code><a href="../mod/prefork.html">prefork</a></code>)
+    では、<code class="directive">MaxClients</code>
+    は、リクエストに応答するために起動される
+    子プロセスの最大数となります。
+    デフォルト値は 256 で、これを増加させたい場合は、
+    <a href="#serverlimit" class="directive"><code class="directive">ServerLimit</code></a>
+    の値も増加させる必要があります。</p>
 
-    <p>サーバがスレッド処理採用でコンパイルされた場合は、
-    応答可能な同時リクエスト数の最大数は、このディレクティブの値を
+    <p>スレッドを用いるサーバ (すなわち <code><a href="../mod/worker.html">worker</a></code>)
+    では、<code class="directive">MaxClients</code> 
+    は、クライアントに応答できるスレッドの総数を制限します。
+    デフォルト値は
     <a href="#threadsperchild" class="directive"><code class="directive">ThreadsPerChild</code></a>
-    倍して得られます。</p>
+    を 16 倍した値になります。<code class="directive">MaxClients</code>
+    を 16 プロセス以上必要な値まで増加させたい場合は、
+    <a href="#serverlimit" class="directive"><code class="directive">ServerLimit</code></a>
+    も増加させる必要があります。</p>
 <hr><h2><a name="MaxRequestsPerChild">MaxRequestsPerChild</a> <a name="maxrequestsperchild">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
                   </strong></td><td>個々の子サーバが稼働中に扱うリクエスト数の上限</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:
                   </a></td><td>MaxRequestsPerChild <em>number</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">デフォルト: 
@@ -254,7 +254,7 @@
                   </a></td><td><code><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code><a href="../mod/perchild.html">perchild</a></code>, <code><a href="../mod/worker.html">worker</a></code></td></tr></table></td></tr></table>
     <p>リクエストに応答するスレッド数の最小値です。
     異なる MPM ではそれぞれ、
-    このディレクティブは異なる取り扱われ方をします。</p>
+    このディレクティブは異なる取り扱われ方をします。</p>
 
     <p><code><a href="../mod/perchild.html">perchild</a></code> では、
     デフォルトは <code>MinSpareThreads 5</code> で、
@@ -373,7 +373,7 @@
     は再起動中に修正することができます。</p>
 
     <p>このディレクティブを使用する際は特に注意してください。
-    <code class="directive">ServerLimit</code> が必要以上に大きな値に
+    <code class="directive">ServerLimit</code> が必要以上に大きな値に
     設定された場合は、余計な未使用共有メモリが割り当てられます。
     <code class="directive">ServerLimit</code> と
     <a href="#maxclients" class="directive"><code class="directive">MaxClients</code></a>
