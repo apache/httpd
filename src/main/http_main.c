@@ -4744,14 +4744,27 @@ int main(int argc, char *argv[])
     pconf = permanent_pool;
     ptrans = make_sub_pool(pconf);
 
+    pcommands = make_sub_pool(NULL);
+    server_pre_read_config  = make_array(pcommands, 1, sizeof(char *));
+    server_post_read_config = make_array(pcommands, 1, sizeof(char *));
+    
     server_argv0 = argv[0];
     ap_cpystrn(server_root, HTTPD_ROOT, sizeof(server_root));
     ap_cpystrn(server_confname, SERVER_CONFIG_FILE, sizeof(server_confname));
 
     setup_prelinked_modules();
 
-    while ((c = getopt(argc, argv, "Xd:f:vVhlZ:ius")) != -1) {
+    while ((c = getopt(argc, argv, "C:c:Xd:f:vVhlZ:ius")) != -1) {
+        char **new;
 	switch (c) {
+	case 'c':
+	    new = (char **)push_array(server_post_read_config);
+	    *new = pstrdup(pcommands, optarg);
+	    break;
+	case 'C':
+	    new = (char **)push_array(server_pre_read_config);
+	    *new = pstrdup(pcommands, optarg);
+	    break;
 #ifdef WIN32
 	case 'Z':
 	    exit_event = open_event(optarg);
