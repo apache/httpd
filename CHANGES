@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) logresolve: Allow size of log line buffer to be overridden at
+     build time (MAXLINE).  PR 27793.  [Jeff Trawick]
+
   *) Fix crash when Apache was started with no Listen directives.
      [Michael Corcoran <mcorcoran warpsolutions.com>]
 
