@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/07/24 22:30:37 $]
+Last modified at [$Date: 2003/07/28 02:09:31 $]
 
 Release:
 
@@ -171,14 +171,6 @@ PATCHES TO PORT FROM 2.1
           
           nd: thx.:)
 
-    * Assure that we block on the read BIO when we invoke the read BIO for both
-      first-use cases (via ssl_io_input_add_filter) and when we are writing and
-      need response from the client (via ssl_io_filter_output).  Both of these
-      cases are always blocking. PR: 19242
-      Submitted by: David Deaves <David.Deaves@dd.id.au>, William Rowe
-      modules/ssl/ssl_engine_io.c r1.106, r1.107 (fixed minor breakage)
-      +1: wrowe, jerenkrantz, trawick
-
     * mod_rewrite: Let LA-U look aheads in directory context work with r->uri
       and not r->filename. (related to) PR 8394.  (2.0 + 1.3)
       modules/mappers/mod_rewrite.c: r1.151
@@ -198,11 +190,6 @@ PATCHES TO PORT FROM 2.1
       +0: wrowe {Pending research into how to get AC to use -lsockets et. al.,
                  shows breakage on Solaris which can't -lcrypto -lssl without
                  the extra pkgconfig/openssl.pc Libs: * foo }
-
-    * handle switching between libtools and unwritable ltconfig/ltmain.sh
-        buildconf 1.36, 1.37
-        build/.cvsignore 1.4
-        +1: trawick, jerenkrantz, striker
 
     * Unix: Handle permissions settings for flock-based mutexes in 
       unixd_set_global|proc_mutex_perms().  Allow the functions to
@@ -250,13 +237,6 @@ PATCHES TO PORT FROM 2.1
               Yes, I think, a useful error message is better than
               a coredump in this case.
 
-    * mime.types: update to include IANA and W3C types.  Also switches
-      the handling of .xml from text/xml to application/xml (per RFCs),
-      adds extensions for commonly used *+xml and calendar types, and
-      lists image/x-icon ico.
-        docs/conf/mime.types: r1.20
-      +1: fielding, nd, jerenkrantz, striker, erikabele
-
     * httpd-std.conf: Try to be clearer in describing the connection
       between AddType and AddEncoding for defining the meaning of
       compressed file extensions.  Follows mime.types change above.
@@ -266,11 +246,6 @@ PATCHES TO PORT FROM 2.1
                         AddEncoding directives?  This is a typo, right?
             nd replies: Sure. 1.53 fixes that.
       +1: fielding, nd, jerenkrantz, erikabele
-
-    * mod_ext_filter: Set additional environment variables for use by
-      the external filter.  PR 20944.
-        modules/filters/mod_ext_filter.c:  r1.7
-      +1: trawick, nd, jerenkrantz
 
     * mod_ssl: Fix a problem setting variables that represent the
       client certificate chain.  PR 21397
@@ -294,13 +269,6 @@ PATCHES TO PORT FROM 2.1
     * ab: reject overlong credentials from command line (2.0 + 1.3)
         support/ab.c: r1.127
       +1: nd, jerenkrantz
-
-    * mod_deflate: Don't attempt to hold all of the response until we're done. 
-        modules/filters/mod_deflate.c: r1.35
-      jerenkrantz says: Ben Collins-Sussman confirms this fixes a problem
-                        with Subversion when mod_deflate is used where it'd
-                        hold on to the entire response until EOS.  That's bad.
-      +1: jerenkrantz, striker, nd
 
     * mod_rewrite: more or less cosmetic fix. If a .htaccess in DocumentRoot
       configures:
