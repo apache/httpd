@@ -217,7 +217,8 @@ static const char *set_metafiles(cmd_parms *parms, cern_meta_dir_config * dconf,
 
 static const command_rec cern_meta_cmds[] =
 {
-    {"MetaFiles", set_metafiles, NULL, DIR_CMD_PERMS, FLAG, NULL},
+    {"MetaFiles", set_metafiles, NULL, DIR_CMD_PERMS, FLAG,
+    "Limited to 'on' or 'off'"},
     {"MetaDir", set_metadir, NULL, DIR_CMD_PERMS, TAKE1,
      "the name of the directory containing meta files"},
     {"MetaSuffix", set_metasuffix, NULL, DIR_CMD_PERMS, TAKE1,
