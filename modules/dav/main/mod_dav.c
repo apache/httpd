@@ -132,12 +132,46 @@ typedef struct {
 /* forward-declare for use in configuration lookup */
 extern module DAV_DECLARE_DATA dav_module;
 
+/* DAV methods */
+enum {
+    DAV_M_VERSION_CONTROL = 0,
+    DAV_M_CHECKOUT,
+    DAV_M_UNCHECKOUT,
+    DAV_M_CHECKIN,
+    DAV_M_UPDATE,
+    DAV_M_LABEL,
+    DAV_M_REPORT,
+    DAV_M_MKWORKSPACE,
+    DAV_M_MKACTIVITY,
+    DAV_M_BASELINE_CONTROL,
+    DAV_M_MERGE,
+    DAV_M_BIND,
+    DAV_M_LAST
+};
+
+static int dav_methods[DAV_M_LAST];
+
 static int dav_init_handler(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
                              server_rec *s)
 {
     /* DBG0("dav_init_handler"); */
 
+    /* Register DAV methods */
+    dav_methods[DAV_M_VERSION_CONTROL] = ap_method_register(p, "VERSION-CONTROL");
+    dav_methods[DAV_M_CHECKOUT] = ap_method_register(p, "CHECKOUT");
+    dav_methods[DAV_M_UNCHECKOUT] = ap_method_register(p, "UNCHECKOUT");
+    dav_methods[DAV_M_CHECKIN] = ap_method_register(p, "CHECKIN");
+    dav_methods[DAV_M_UPDATE] = ap_method_register(p, "UPDATE");
+    dav_methods[DAV_M_LABEL] = ap_method_register(p, "LABEL");
+    dav_methods[DAV_M_REPORT] = ap_method_register(p, "REPORT");
+    dav_methods[DAV_M_MKWORKSPACE] = ap_method_register(p, "MKWORKSPACE");
+    dav_methods[DAV_M_MKACTIVITY] = ap_method_register(p, "MKACTIVITY");
+    dav_methods[DAV_M_BASELINE_CONTROL] = ap_method_register(p, "BASELINE-CONTROL");
+    dav_methods[DAV_M_MERGE] = ap_method_register(p, "MERGE");
+    dav_methods[DAV_M_BIND] = ap_method_register(p, "BIND");
+
     ap_add_version_component(p, "DAV/2");
+    
     return OK;
 }
 
@@ -4479,60 +4513,51 @@ static int dav_handler(request_rec *r)
 	return dav_method_unlock(r);
     }
 
-    /*
-     * NOTE: When Apache moves creates defines for the add'l DAV methods,
-     *       then it will no longer use M_INVALID. This code must be
-     *       updated each time Apache adds method defines.
-     */
-    if (r->method_number != M_INVALID) {
-	return DECLINED;
-    }
-
-    if (!strcmp(r->method, "VERSION-CONTROL")) {
+    if (r->method_number == dav_methods[DAV_M_VERSION_CONTROL]) {
 	return dav_method_vsn_control(r);
     }
 
-    if (!strcmp(r->method, "CHECKOUT")) {
+    if (r->method_number == dav_methods[DAV_M_CHECKOUT]) {
 	return dav_method_checkout(r);
     }
 
-    if (!strcmp(r->method, "UNCHECKOUT")) {
+    if (r->method_number == dav_methods[DAV_M_UNCHECKOUT]) {
 	return dav_method_uncheckout(r);
     }
 
-    if (!strcmp(r->method, "CHECKIN")) {
+    if (r->method_number == dav_methods[DAV_M_CHECKIN]) {
 	return dav_method_checkin(r);
     }
 
-    if (!strcmp(r->method, "UPDATE")) {
+    if (r->method_number == dav_methods[DAV_M_UPDATE]) {
 	return dav_method_update(r);
     }
 
-    if (!strcmp(r->method, "LABEL")) {
+    if (r->method_number == dav_methods[DAV_M_LABEL]) {
 	return dav_method_label(r);
     }
 
-    if (!strcmp(r->method, "REPORT")) {
+    if (r->method_number == dav_methods[DAV_M_REPORT]) {
 	return dav_method_report(r);
     }
 
-    if (!strcmp(r->method, "MKWORKSPACE")) {
+    if (r->method_number == dav_methods[DAV_M_MKWORKSPACE]) {
 	return dav_method_make_workspace(r);
     }
 
-    if (!strcmp(r->method, "MKACTIVITY")) {
+    if (r->method_number == dav_methods[DAV_M_MKACTIVITY]) {
 	return dav_method_make_activity(r);
     }
 
-    if (!strcmp(r->method, "BASELINE-CONTROL")) {
+    if (r->method_number == dav_methods[DAV_M_BASELINE_CONTROL]) {
 	return dav_method_baseline_control(r);
     }
 
-    if (!strcmp(r->method, "MERGE")) {
+    if (r->method_number == dav_methods[DAV_M_MERGE]) {
 	return dav_method_merge(r);
     }
 
-    if (!strcmp(r->method, "BIND")) {
+    if (r->method_number == dav_methods[DAV_M_BIND]) {
 	return dav_method_bind(r);
     }
 
