@@ -14,7 +14,7 @@ trap 'rm -f $tmpfile; exit' 0 1 2 3 15
 #	CutRule: Determines the value for a specified Rule
 #	GuessOS: Uses uname to determine OS/platform
 #	PrintPath: generic "type" or "whence" replacement
-#	TestLib: See if a specified library is available
+#	TestCompile: Can check for libs and if $(CC) is ANSI
 #
 ####################################################################
 ## Setup some defaults
@@ -702,26 +702,30 @@ echo "RANLIB=$RANLIB">> Makefile.config
 echo "SHELL=$SHELL">> Makefile.config
 
 ####################################################################
-# This would be the area to do any ./helpers/TestLib tests,
-# before we actually write LIBS to Makefile.config.
-# Punt for now...
+# Use TestCompile to see if $(CC) is ANSI
+#
+./helpers/TestCompile ansi
+
+####################################################################
+# Use TestCompile to look for various LIBS
+#
 
 case "$PLAT" in
     *-linux*)
 	# newer systems using glibc 2.x need -lcrypt
-	if ./helpers/TestLib crypt; then
+	if ./helpers/TestCompile lib crypt; then
 	    LIBS="$LIBS -lcrypt"
 	fi
 	# many systems have -ldb installed
 	DB_LIB=""
-	if ./helpers/TestLib db; then
+	if ./helpers/TestCompile lib db; then
 	    DB_LIB="-ldb"
 	fi;
 	# many systems don't have -ldbm
 	DBM_LIB=""
-	if ./helpers/TestLib dbm; then
+	if ./helpers/TestCompile lib dbm; then
 	    DBM_LIB="-ldbm"
-	elif ./helpers/TestLib ndbm; then
+	elif ./helpers/TestCompile lib ndbm; then
 	    DBM_LIB="-lndbm"
 	fi
 	;;
