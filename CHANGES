@@ -1,4 +1,8 @@
 Changes with Apache 2.0.29-dev
+
+  *) Bail out at configure time if an invalid MPM was specified.
+     [jean-frederic clere <jfrederic.clere@fujitsu-siemens.com>]
+
   *) Prevent segv in ap_note_basic_auth_failure() when no AuthName is
      configured [John Sterling <sterling@covalent.net>]
 
