@@ -8,7 +8,7 @@
 <BODY
  BGCOLOR="#FFFFFF"
  TEXT="#000000"
- LINK="#0000FF"
+l LINK="#0000FF"
  VLINK="#000080"
  ALINK="#FF0000"
 >
@@ -19,7 +19,7 @@ The most up-to-date resource for bug tracking and information is the
 <A HREF="http://www.apache.org/bugdb.cgi">Apache bug database</A>.
 All existing bugs will be noted there.  Below is a synopsis of
 significant outstanding bugs at release time.  In fact you really
-shouldn't trust anything this page says other than maybe the 1.2b8
+shouldn't trust anything this page says other than the 1.2
 information.
 
 <P>See Also: <A HREF="compat_notes.html">Compatibility notes</A></P>
@@ -41,6 +41,18 @@ information.
     source file <code>conf.h</code> for your architecture.
     <p>This will be tracked as
     <a href="http://www.apache.org/bugdb.cgi/full/467">PR#467</a>.
+    </LI>
+
+    <a name="cnegbug"></a>
+    <LI>Apache's <A HREF="../content-negotiation.html">Content
+    Negotiation</A> should pick the smallest variant if there
+    are several that are equally acceptable. A bug in 1.2 means it no
+    longer does this unless all the variants have character sets. 
+    This <A HREF="../../dist/contrib/patches/1.2/conneg-bug.patch">patch</A>
+    fixes this problem. It also fixes the problem which makes Apache
+    pick the last equally acceptable variant instead of the first.
+    <p>This will be tracked as
+    <a href="http://www.apache.org/bugdb.cgi/full/94">PR#94</a>.
     </LI>
 </OL>
 
