@@ -32,39 +32,43 @@ depend:
 $(OBJS): Makefile
 
 # DO NOT REMOVE
-mod_proxy.o: mod_proxy.c mod_proxy.h ../../include/httpd.h \
- ../../include/conf.h ../../os/unix/os.h ../../include/hsregex.h \
- ../../include/alloc.h ../../include/buff.h ../../include/ap.h \
- ../../include/http_config.h ../../include/http_protocol.h \
- ../../include/explain.h ../../include/http_log.h
-proxy_cache.o: proxy_cache.c mod_proxy.h ../../include/httpd.h \
- ../../include/conf.h ../../os/unix/os.h ../../include/hsregex.h \
- ../../include/alloc.h ../../include/buff.h ../../include/ap.h \
- ../../include/http_config.h ../../include/http_protocol.h \
- ../../include/explain.h ../../include/http_log.h \
- ../../include/http_main.h ../../include/util_date.h \
- ../../include/multithread.h ../../include/md5.h
-proxy_connect.o: proxy_connect.c mod_proxy.h ../../include/httpd.h \
- ../../include/conf.h ../../os/unix/os.h ../../include/hsregex.h \
- ../../include/alloc.h ../../include/buff.h ../../include/ap.h \
- ../../include/http_config.h ../../include/http_protocol.h \
- ../../include/explain.h ../../include/http_log.h \
- ../../include/http_main.h
-proxy_ftp.o: proxy_ftp.c mod_proxy.h ../../include/httpd.h \
- ../../include/conf.h ../../os/unix/os.h ../../include/hsregex.h \
- ../../include/alloc.h ../../include/buff.h ../../include/ap.h \
- ../../include/http_config.h ../../include/http_protocol.h \
- ../../include/explain.h ../../include/http_main.h \
- ../standard/mod_mime.h
-proxy_http.o: proxy_http.c mod_proxy.h ../../include/httpd.h \
- ../../include/conf.h ../../os/unix/os.h ../../include/hsregex.h \
- ../../include/alloc.h ../../include/buff.h ../../include/ap.h \
- ../../include/http_config.h ../../include/http_protocol.h \
- ../../include/explain.h ../../include/http_log.h \
- ../../include/http_main.h ../../include/util_date.h
-proxy_util.o: proxy_util.c mod_proxy.h ../../include/httpd.h \
- ../../include/conf.h ../../os/unix/os.h ../../include/hsregex.h \
- ../../include/alloc.h ../../include/buff.h ../../include/ap.h \
- ../../include/http_config.h ../../include/http_protocol.h \
- ../../include/explain.h ../../include/http_main.h ../../include/md5.h \
- ../../include/multithread.h ../../include/http_log.h
+mod_proxy.o: mod_proxy.c mod_proxy.h $(INCDIR)/httpd.h \
+ $(INCDIR)/conf.h ../../os/unix/os.h $(INCDIR)/hsregex.h \
+ $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/http_config.h \
+ $(INCDIR)/http_protocol.h $(INCDIR)/explain.h \
+ $(INCDIR)/http_log.h
+proxy_cache.o: proxy_cache.c mod_proxy.h $(INCDIR)/httpd.h \
+ $(INCDIR)/conf.h ../../os/unix/os.h $(INCDIR)/hsregex.h \
+ $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/http_config.h \
+ $(INCDIR)/http_protocol.h $(INCDIR)/explain.h \
+ $(INCDIR)/http_log.h $(INCDIR)/http_main.h \
+ $(INCDIR)/util_date.h $(INCDIR)/multithread.h \
+ $(INCDIR)/md5.h
+proxy_connect.o: proxy_connect.c mod_proxy.h $(INCDIR)/httpd.h \
+ $(INCDIR)/conf.h ../../os/unix/os.h $(INCDIR)/hsregex.h \
+ $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/http_config.h \
+ $(INCDIR)/http_protocol.h $(INCDIR)/explain.h \
+ $(INCDIR)/http_log.h $(INCDIR)/http_main.h
+proxy_ftp.o: proxy_ftp.c mod_proxy.h $(INCDIR)/httpd.h \
+ $(INCDIR)/conf.h ../../os/unix/os.h $(INCDIR)/hsregex.h \
+ $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/http_config.h \
+ $(INCDIR)/http_protocol.h $(INCDIR)/explain.h \
+ $(INCDIR)/http_main.h ../standard/mod_mime.h
+proxy_http.o: proxy_http.c mod_proxy.h $(INCDIR)/httpd.h \
+ $(INCDIR)/conf.h ../../os/unix/os.h $(INCDIR)/hsregex.h \
+ $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/http_config.h \
+ $(INCDIR)/http_protocol.h $(INCDIR)/explain.h \
+ $(INCDIR)/http_log.h $(INCDIR)/http_main.h \
+ $(INCDIR)/http_core.h $(INCDIR)/util_date.h
+proxy_util.o: proxy_util.c mod_proxy.h $(INCDIR)/httpd.h \
+ $(INCDIR)/conf.h ../../os/unix/os.h $(INCDIR)/hsregex.h \
+ $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/http_config.h \
+ $(INCDIR)/http_protocol.h $(INCDIR)/explain.h \
+ $(INCDIR)/http_main.h $(INCDIR)/md5.h \
+ $(INCDIR)/multithread.h $(INCDIR)/http_log.h

@@ -86,6 +86,7 @@
 #include "http_core.h"		/* for get_remote_host */
 #include "http_vhost.h"
 #include "util_script.h"	/* to force util_script.c linking */
+#include "util_uri.h"
 #include "scoreboard.h"
 #include "multithread.h"
 #include <sys/stat.h>
@@ -2892,6 +2893,43 @@ static void show_compile_settings(void)
     printf("\n");
 }
 
+
+/* Some init code that's common between win32 and unix... well actually
+ * some of it is #ifdef'd but was duplicated before anyhow.  This stuff
+ * is still a mess.
+ */
+static void common_init(void)
+{
+#ifdef AUX
+    (void) set42sig();
+#endif
+
+#ifdef SecureWare
+    if (set_auth_parameters(argc, argv) < 0)
+	perror("set_auth_parameters");
+    if (getluid() < 0)
+	if (setluid(getuid()) < 0)
+	    perror("setluid");
+    if (setreuid(0, 0) < 0)
+	perror("setreuid");
+#endif
+
+#ifdef WIN32
+    /* Initialize the stupid sockets */
+    AMCSocketInitialize();
+#endif /* WIN32 */
+
+    init_alloc();
+    pconf = permanent_pool;
+    ptrans = make_sub_pool(pconf);
+
+    util_uri_init();
+
+    pcommands = make_sub_pool(NULL);
+    server_pre_read_config  = make_array(pcommands, 1, sizeof(char *));
+    server_post_read_config = make_array(pcommands, 1, sizeof(char *));
+}
+
 #ifndef MULTITHREAD
 /*****************************************************************
  * Child process main loop.
@@ -3751,27 +3789,7 @@ int main(int argc, char *argv[])
 
     MONCONTROL(0);
 
-#ifdef AUX
-    (void) set42sig();
-#endif
-
-#ifdef SecureWare
-    if (set_auth_parameters(argc, argv) < 0)
-	perror("set_auth_parameters");
-    if (getluid() < 0)
-	if (setluid(getuid()) < 0)
-	    perror("setluid");
-    if (setreuid(0, 0) < 0)
-	perror("setreuid");
-#endif
-
-    init_alloc();
-    pconf = permanent_pool;
-    ptrans = make_sub_pool(pconf);
-
-    pcommands = make_sub_pool(NULL);
-    server_pre_read_config  = make_array(pcommands, 1, sizeof(char *));
-    server_post_read_config = make_array(pcommands, 1, sizeof(char *));
+    common_init();
     
     server_argv0 = argv[0];
     ap_cpystrn(server_root, HTTPD_ROOT, sizeof(server_root));
@@ -4879,34 +4897,9 @@ int main(int argc, char *argv[])
     char *cp;
     int run_as_service = 1;
     int install = 0;
-
-#ifdef AUX
-    (void) set42sig();
-#endif
-
-#ifdef SecureWare
-    if (set_auth_parameters(argc, argv) < 0)
-	perror("set_auth_parameters");
-    if (getluid() < 0)
-	if (setluid(getuid()) < 0)
-	    perror("setluid");
-    if (setreuid(0, 0) < 0)
-	perror("setreuid");
-#endif
-
-#ifdef WIN32
-    /* Initialize the stupid sockets */
-    AMCSocketInitialize();
-#endif /* WIN32 */
-
-    init_alloc();
-    pconf = permanent_pool;
-    ptrans = make_sub_pool(pconf);
-
-    pcommands = make_sub_pool(NULL);
-    server_pre_read_config  = make_array(pcommands, 1, sizeof(char *));
-    server_post_read_config = make_array(pcommands, 1, sizeof(char *));
     
+    common_init();
+
     server_argv0 = argv[0];
 
     /* Get the serverroot from the registry, if it exists. This can be

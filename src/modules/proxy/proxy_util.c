@@ -891,7 +891,7 @@ int proxy_is_ipaddr(struct dirconn_entry *This, pool *p)
 
     /* Iterate over up to 4 (dotted) quads. */
     for (quads = 0; quads < 4 && *addr != '\0'; ++quads) {
-	const char *tmp;
+	char *tmp;
 
 	if (*addr == '/' && quads > 0)	/* netmask starts here. */
 	    break;
@@ -919,7 +919,7 @@ int proxy_is_ipaddr(struct dirconn_entry *This, pool *p)
 	This->addr.s_addr |= htonl(ip_addr[i] << (24 - 8 * i));
 
     if (addr[0] == '/' && isdigit(addr[1])) {	/* net mask follows: */
-	const char *tmp;
+	char *tmp;
 
 	++addr;
 

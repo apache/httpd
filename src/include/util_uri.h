@@ -112,15 +112,18 @@ typedef struct {
 } uri_components;
 
 /* util_uri.c */
-extern unsigned short default_port_for_scheme(const char *scheme_str);
-extern unsigned short default_port_for_request(const request_rec *r);
-extern struct hostent *pduphostent(pool *p, struct hostent *hp);
-extern struct hostent *pgethostbyname(pool *p, const char *hostname);
-extern char *unparse_uri_components(pool *p, const uri_components *uptr,
+API_EXPORT(unsigned short) default_port_for_scheme(const char *scheme_str);
+API_EXPORT(unsigned short) default_port_for_request(const request_rec *r);
+API_EXPORT(struct hostent *) pduphostent(pool *p, struct hostent *hp);
+API_EXPORT(struct hostent *) pgethostbyname(pool *p, const char *hostname);
+API_EXPORT(char *) unparse_uri_components(pool *p, const uri_components *uptr,
 	int *pHostlen, unsigned flags);
-extern int parse_uri_components(pool *p, const char *uri, uri_components *uptr,
+API_EXPORT(int) parse_uri_components(pool *p, const char *uri, uri_components *uptr,
 	int *pHostlen);
-extern int parse_uri_components_regex(pool *p, const char *uri,
+API_EXPORT(int) parse_uri_components_regex(pool *p, const char *uri,
 	uri_components *uptr);
+
+/* called by the core in main() */
+extern void util_uri_init(void);
 
 #endif /*UTIL_URI_H*/

@@ -76,7 +76,7 @@ static schemes_t schemes[] =
 };
 
 
-unsigned short default_port_for_scheme(const char *scheme_str)
+API_EXPORT(unsigned short) default_port_for_scheme(const char *scheme_str)
 {
     schemes_t *scheme;
 
@@ -88,7 +88,7 @@ unsigned short default_port_for_scheme(const char *scheme_str)
 }
 
 #ifdef WITH_UTIL_URI
-unsigned short default_port_for_request(const request_rec *r)
+API_EXPORT(unsigned short) default_port_for_request(const request_rec *r)
 {
     return (r->parsed_uri.has_scheme)
 	? default_port_for_scheme(r->parsed_uri.scheme)
@@ -107,7 +107,7 @@ static unsigned short default_port_for_uri_components(const uri_components *uri_
  * from a call to gethostbyname() and lives in static storage.
  * By creating a copy we can tuck it away for later use.
  */
-struct hostent *pduphostent(pool *p, struct hostent *hp)
+API_EXPORT(struct hostent *) pduphostent(pool *p, struct hostent *hp)
 {
     struct hostent *newent;
     char	  **ptrs;
@@ -160,7 +160,7 @@ struct hostent *pduphostent(pool *p, struct hostent *hp)
  * COPY OF the hostent structure, intended to be stored and used later.
  * (gethostbyname() uses static storage that would be overwritten on each call)
  */
-struct hostent *pgethostbyname(pool *p, const char *hostname)
+API_EXPORT(struct hostent *) pgethostbyname(pool *p, const char *hostname)
 {
     struct hostent *hp = gethostbyname(hostname);
     return (hp == NULL) ? NULL : pduphostent(p, hp);
@@ -170,7 +170,7 @@ struct hostent *pgethostbyname(pool *p, const char *hostname)
 /* Unparse a uri_components structure to an URI string.
  * Optionally suppress the password for security reasons.
  */
-char *unparse_uri_components(pool *p, const uri_components *uptr, int *pHostlen, unsigned flags)
+API_EXPORT(char *) unparse_uri_components(pool *p, const uri_components *uptr, int *pHostlen, unsigned flags)
 {
     char *ret = "";
 
@@ -218,7 +218,7 @@ char *unparse_uri_components(pool *p, const uri_components *uptr, int *pHostlen,
  *  - fills in fields of uri_components *uptr
  *  - none on any of the r->* fields
  */
-int parse_uri_components(pool *p, const char *uri, uri_components *uptr, int *pHostlen)
+API_EXPORT(int) parse_uri_components(pool *p, const char *uri, uri_components *uptr, int *pHostlen)
 {
     const char *s;
     int ret = HTTP_OK;
@@ -383,6 +383,55 @@ int parse_uri_components(pool *p, const char *uri, uri_components *uptr, int *pH
     return ret;
 }
 
+static regex_t re_uri;
+static regex_t re_hostpart;
+
+void util_uri_init(void)
+{
+    int ret;
+    const char *re_str;
+
+    /* This is a modified version of the regex that appeared in
+     * http://www.ics.uci.edu/~fielding/url/url.txt
+     * It doesnt allow the uri to contain a scheme but no hostinfo
+     * or vice versa. 
+     * $       12            3          4       5   6        7 8     */
+    re_str = "^(([^:/?#]+)://([^/?#]+))?([^?#]*)(\\?([^#]*))?(#(.*))?";
+    /*          ^^scheme^^://^^site^^^  ^^path^^   ?^query^   #frag  */
+    if ((ret = regcomp(&re_uri, re_str, REG_EXTENDED)) != 0) {
+	char line[1024];
+
+	/* Make a readable error message */
+	ret = regerror(ret, &re_uri, line, sizeof line);
+	aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, NULL,
+		"Internal error: regcomp(\"%s\") returned non-zero (%s) - "
+		"possibly due to broken regex lib! "
+		"Did you define WANTHSREGEX=yes?",
+		re_str, line);
+
+	exit(1);
+    }
+
+    /* This is a sub-RE which will break down the hostinfo part,
+	* i.e., user, password, hostname and port.
+	* $          12       3       4       5 6    */
+    re_str    = "^(([^:]*):(.*)?@)?([^@:]*)(:(.*))?$";
+    /*             ^^user^ :pw      ^host^   port */
+    if ((ret = regcomp(&re_hostpart, re_str, REG_EXTENDED|REG_ICASE)) != 0) {
+	char line[1024];
+
+	/* Make a readable error message */
+	ret = regerror(ret, &re_hostpart, line, sizeof line);
+	aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, NULL,
+		"Internal error: regcomp(\"%s\") returned non-zero (%s) - "
+		"possibly due to broken regex lib! "
+		"Did you define WANTHSREGEX=yes?",
+		re_str, line);
+
+	exit(1);
+    }
+}
+
 /* parse_uri_components_regex():
  * Parse a given URI, fill in all supplied fields of a uri_components
  * structure. This eliminates the necessity of extracting host, port,
@@ -391,16 +440,11 @@ int parse_uri_components(pool *p, const char *uri, uri_components *uptr, int *pH
  *  - fills in fields of uri_components *uptr
  *  - none on any of the r->* fields
  */
-int parse_uri_components_regex(pool *p, const char *uri, uri_components *uptr)
+API_EXPORT(int) parse_uri_components_regex(pool *p, const char *uri, uri_components *uptr)
 {
-    int ret = HTTP_OK;
-    static struct {
-	regex_t uri;
-	regex_t hostpart;
-	regmatch_t match[10];	/* This must have at least as much elements
-				 * as there are braces in the re_strings */
-	unsigned is_initialized:1;
-    } re = { 0, 0, 0 };
+    int ret;
+    regmatch_t match[10];	/* This must have at least as much elements
+				* as there are braces in the re_strings */
 
     ap_assert (uptr != NULL);
 
@@ -410,55 +454,8 @@ int parse_uri_components_regex(pool *p, const char *uri, uri_components *uptr)
     memset (uptr, '\0', sizeof(*uptr));
     uptr->is_initialized = 1;
 
-    if (!re.is_initialized) {
-	const char *re_str;
 
-	re.is_initialized = 1;
-
-	/* This is a modified version of the regex that appeared in
-	 * http://www.ics.uci.edu/~fielding/url/url.txt
-	 * It doesnt allow the uri to contain a scheme but no hostinfo
-	 * or vice versa. 
-	 * $       12            3          4       5   6        7 8     */
-	re_str = "^(([^:/?#]+)://([^/?#]+))?([^?#]*)(\\?([^#]*))?(#(.*))?";
-	/*          ^^scheme^^://^^site^^^  ^^path^^   ?^query^   #frag  */
-	if ((ret = regcomp(&re.uri, re_str, REG_EXTENDED)) != 0)
-	{
-	    char line[1024];
-
-	    /* Make a readable error message */
-	    ret = regerror(ret, &re.uri, line, sizeof line);
-	    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, NULL,
-                    "Internal error: regcomp(\"%s\") returned non-zero (%s) - "
-		    "possibly due to broken regex lib! "
-		    "Did you define WANTHSREGEX=yes?",
-		    re_str, line);
-
-	    return HTTP_INTERNAL_SERVER_ERROR;
-	}
-
-	/* This is a sub-RE which will break down the hostinfo part,
-	 * i.e., user, password, hostname and port.
-	 * $          12       3       4       5 6    */
-	re_str    = "^(([^:]*):(.*)?@)?([^@:]*)(:(.*))?$";
-	/*             ^^user^ :pw      ^host^   port */
-	if ((ret = regcomp(&re.hostpart, re_str, REG_EXTENDED|REG_ICASE)) != 0)
-	{
-	    char line[1024];
-
-	    /* Make a readable error message */
-	    ret = regerror(ret, &re.hostpart, line, sizeof line);
-	    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, NULL,
-                    "Internal error: regcomp(\"%s\") returned non-zero (%s) - "
-		    "possibly due to broken regex lib! "
-		    "Did you define WANTHSREGEX=yes?",
-		    re_str, line);
-
-	    return HTTP_INTERNAL_SERVER_ERROR;
-	}
-    }
-
-    ret = regexec(&re.uri, uri, re.uri.re_nsub, re.match, 0);
+    ret = regexec(&re_uri, uri, re_uri.re_nsub, match, 0);
 
     if (ret != 0) {
 	aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, NULL,
@@ -469,30 +466,30 @@ int parse_uri_components_regex(pool *p, const char *uri, uri_components *uptr)
     }
 
     /* if hostlen is 0, it's not a proxy request */
-    uptr->hostlen = (re.match[1].rm_eo - re.match[1].rm_so);
+    uptr->hostlen = (match[1].rm_eo - match[1].rm_so);
 
-    uptr->has_scheme = (re.match[2].rm_so != re.match[2].rm_eo);
-    uptr->has_hostinfo = (re.match[3].rm_so != re.match[3].rm_eo);
-    uptr->has_path = (re.match[4].rm_so != re.match[4].rm_eo);
-    uptr->has_query = (re.match[5].rm_so != re.match[5].rm_eo);
-    uptr->has_fragment = (re.match[7].rm_so != re.match[7].rm_eo);
+    uptr->has_scheme = (match[2].rm_so != match[2].rm_eo);
+    uptr->has_hostinfo = (match[3].rm_so != match[3].rm_eo);
+    uptr->has_path = (match[4].rm_so != match[4].rm_eo);
+    uptr->has_query = (match[5].rm_so != match[5].rm_eo);
+    uptr->has_fragment = (match[7].rm_so != match[7].rm_eo);
 
     if (uptr->has_scheme)
-	uptr->scheme = pstrndup (p, uri+re.match[2].rm_so, re.match[2].rm_eo - re.match[2].rm_so);
+	uptr->scheme = pstrndup (p, uri+match[2].rm_so, match[2].rm_eo - match[2].rm_so);
     if (uptr->has_hostinfo)
-	uptr->hostinfo = pstrndup (p, uri+re.match[3].rm_so, re.match[3].rm_eo - re.match[3].rm_so);
+	uptr->hostinfo = pstrndup (p, uri+match[3].rm_so, match[3].rm_eo - match[3].rm_so);
     if (uptr->has_path)
-	uptr->path = pstrndup (p, uri+re.match[4].rm_so, re.match[4].rm_eo - re.match[4].rm_so);
+	uptr->path = pstrndup (p, uri+match[4].rm_so, match[4].rm_eo - match[4].rm_so);
     if (uptr->has_query)
-	uptr->query = pstrndup (p, uri+re.match[6].rm_so, re.match[6].rm_eo - re.match[6].rm_so);
+	uptr->query = pstrndup (p, uri+match[6].rm_so, match[6].rm_eo - match[6].rm_so);
     if (uptr->has_fragment)
-	uptr->fragment = pstrndup (p, uri+re.match[7].rm_so, re.match[7].rm_eo - re.match[7].rm_so);
+	uptr->fragment = pstrndup (p, uri+match[7].rm_so, match[7].rm_eo - match[7].rm_so);
 
 
     if (uptr->has_hostinfo) {
 
 	/* Parse the hostinfo part to extract user, password, host, and port */
-	ret = regexec(&re.hostpart, uptr->hostinfo, re.hostpart.re_nsub, re.match, 0);
+	ret = regexec(&re_hostpart, uptr->hostinfo, re_hostpart.re_nsub, match, 0);
 	if (ret != 0) {
 	    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, NULL,
                     "regexec() could not parse (\"%s\") as host part",
@@ -504,14 +501,14 @@ int parse_uri_components_regex(pool *p, const char *uri, uri_components *uptr)
 	/* $      12       3       4       5 6    */
 	/*    = "^(([^:]*):(.*)?@)?([^@:]*)(:([0-9]*))?$" */
 	/*         ^^user^ :pw      ^host^   port */
-	if (uptr->has_user = (re.match[2].rm_so != re.match[2].rm_eo))
-	    uptr->user = pstrndup (p, uptr->hostinfo+re.match[2].rm_so, re.match[2].rm_eo - re.match[2].rm_so);
-	if (uptr->has_password = (re.match[3].rm_so != re.match[3].rm_eo))
-	    uptr->password = pstrndup (p, uptr->hostinfo+re.match[3].rm_so, re.match[3].rm_eo - re.match[3].rm_so);
-	if (uptr->has_hostname = (re.match[4].rm_so != re.match[4].rm_eo))
-	    uptr->hostname = pstrndup (p, uptr->hostinfo+re.match[4].rm_so, re.match[4].rm_eo - re.match[4].rm_so);
-	if (uptr->has_port = (re.match[5].rm_so != re.match[5].rm_eo)) {
-	    uptr->port_str = pstrndup (p, uptr->hostinfo+re.match[5].rm_so+1, re.match[5].rm_eo - re.match[5].rm_so-1);
+	if ((uptr->has_user = (match[2].rm_so != match[2].rm_eo)))
+	    uptr->user = pstrndup (p, uptr->hostinfo+match[2].rm_so, match[2].rm_eo - match[2].rm_so);
+	if ((uptr->has_password = (match[3].rm_so != match[3].rm_eo)))
+	    uptr->password = pstrndup (p, uptr->hostinfo+match[3].rm_so, match[3].rm_eo - match[3].rm_so);
+	if ((uptr->has_hostname = (match[4].rm_so != match[4].rm_eo)))
+	    uptr->hostname = pstrndup (p, uptr->hostinfo+match[4].rm_so, match[4].rm_eo - match[4].rm_so);
+	if ((uptr->has_port = (match[5].rm_so != match[5].rm_eo))) {
+	    uptr->port_str = pstrndup (p, uptr->hostinfo+match[5].rm_so+1, match[5].rm_eo - match[5].rm_so-1);
 	    /* Note that the port string can be empty.
 	     * If it is, we use the default port associated with the scheme
 	     */
