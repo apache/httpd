@@ -1,0 +1,27 @@
+#!/bin/sh
+
+ARCHIE=/usr/local/bin/archie
+
+
+echo Content-type: text/html
+echo
+
+if [ -x $ARCHIE ]; then
+	if [ $# = 0 ]; then
+		cat << EOM
+<TITLE>Archie Gateway</TITLE>
+<H1>Archie Gateway</H1>
+
+<ISINDEX>
+
+This is a gateway to archie. Type search query in your browser's search 
+dialog.<P>
+EOM
+	else
+		echo \<PRE\>
+		$ARCHIE "$*"
+	fi
+else
+	echo Cannot find archie on this system.
+fi
+

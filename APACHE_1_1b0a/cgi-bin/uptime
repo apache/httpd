@@ -1,0 +1,14 @@
+#!/bin/sh
+
+UPTIME=/usr/ucb/uptime
+
+echo Content-type: text/plain
+echo
+
+if [ -x $UPTIME ];  then
+	$UPTIME
+else 
+	echo Cannot find uptime command on this system.
+fi
+
+

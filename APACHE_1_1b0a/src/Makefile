@@ -1,0 +1,90 @@
+# Makefile automatically generated from Makefile.tmpl
+# and configuration file by Apache config script. 
+# Hand-edited changes will be lost if the config script
+# is re-run.
+CC= gcc
+CFLAGS= -O2 -DNO_MMAP
+LFLAGS=
+EXTRA_LIBS=
+AUX_CFLAGS= -DHPUX
+MODULES=\
+  mod_mime.o \
+  mod_access.o \
+  mod_auth.o \
+  mod_negotiation.o \
+  mod_include.o \
+  mod_dir.o \
+  mod_cgi.o \
+  mod_userdir.o \
+  mod_alias.o \
+  mod_log_common.o \
+  mod_asis.o \
+  mod_imap.o \
+  mod_actions.o \
+  mod_proxy.o \
+  mod_cern_meta.o \
+  mod_auth_anon.o
+
+# Apache makefile template (well, suffix).
+
+# This is combined with the information in the "Configuration" file
+# by the configure script to make the actual Makefile.
+
+OBJS= alloc.o http_main.o http_core.o http_config.o http_request.o \
+  http_log.o http_protocol.o rfc931.o util.o util_script.o modules.o buff.o\
+  md5c.o $(MODULES)
+
+.c.o:
+	$(CC) -c $(CFLAGS) $(AUX_CFLAGS) $<
+
+all: httpd
+
+httpd: $(OBJS)
+	$(CC) $(LFLAGS) $(AUX_LFLAGS) -o httpd $(OBJS) $(EXTRA_LIBS) $(AUX_LIBS)
+
+clean:
+	rm -f httpd $(OBJS) *pure*
+
+dist.tar: 
+	# Assure a semi-sensible configuration going out...
+	cp Makefile.orig Makefile
+	cp modules.c.orig modules.c
+	tar cvf dist.tar README INSTALL CHANGES TODO API.html \
+		Configuration Configure Makefile.tmpl Makefile *.h *.c
+
+#Dependencies
+#Core code
+$(OBJS): Makefile httpd.h alloc.h conf.h
+
+http_config.o http_core.o http_main.o util.o: http_conf_globals.h
+http_config.o http_core.o http_main.o: http_config.h http_log.h
+http_log.o http_protocol.o http_request.o modules.o: http_config.h
+http_config.o http_core.o http_protocol.o http_request.o: http_core.h
+http_protocol.o http_request.o util_script.o: http_log.h
+http_core.o http_main.o http_protocol.o http_request.o: http_main.h
+http_core.o http_main.o http_protocol.o http_request.o: http_protocol.h
+http_config.o http_main.o http_request.o: http_request.h
+http_main.o: scoreboard.h
+
+#Modules
+$(MODULES): http_config.h
+mod_dld.o: http_conf_globals.h
+mod_ai_backcompat.o mod_auth.o mod_auth_dbm.o mod_cgi.o mod_dir.o: http_core.h
+mod_imap.o mod_include.o mod_negotiation.o: http_core.h
+mod_asis.o mod_auth.o mod_auth_dbm.o mod_cgi.o mod_dir.o: http_core.h
+mod_proxy.o mod_imap.o mod_include.o mod_negotiation.o: http_log.h
+mod_proxy.o mod_asis.o mod_cgi.o mod_dir.o mod_imap.o: http_main.h
+mod_include.o: http_main.h
+mod_proxy.o mod_asis.o mod_auth.o mod_auth_dbm.o mod_cgi.o: http_protocol.h
+mod_dir.o: http_protocol.h
+mod_imap.o mod_include.o: http_protocol.h
+mod_cgi.o mod_dir.o mod_imap.o mod_include.o mod_negotiation.o: http_request.h
+mod_proxy.o: buff.h
+mod_proxy.o: md5.h
+mod_asis.o mod_cgi.o mod_dir.o mod_imap.o mod_include.o: util_script.h
+
+#Utils
+buff.o: buff.h
+md5c.o: md5.h
+util.o: http_conf_globals.h
+util_script.o: http_core.h http_main.h http_protocol.h util_script.h
