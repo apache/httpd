@@ -1075,7 +1075,7 @@ API_EXPORT_NONSTD(const char *) ap_set_file_slot(cmd_parms *cmd, char *struct_pt
  */
 
 static cmd_parms default_parms =
-{NULL, 0, -1, NULL, NULL, NULL, NULL, NULL, NULL};
+{NULL, 0, -1, NULL, NULL, NULL, NULL, NULL, NULL, NULL};
 
 API_EXPORT(char *) ap_server_root_relative(pool *p, char *file)
 {

@@ -1902,7 +1902,7 @@ static const char *set_user(cmd_parms *cmd, void *dummy, char *arg)
 		"Error:\tApache has not been designed to serve pages while\n"
 		"\trunning as root.  There are known race conditions that\n"
 		"\twill allow any local user to read any file on the system.\n"
-		"\tShould you still desire to serve pages as root then\n"
+		"\tIf you still desire to serve pages as root then\n"
 		"\tadd -DBIG_SECURITY_HOLE to the EXTRA_CFLAGS line in your\n"
 		"\tsrc/Configuration file and rebuild the server.  It is\n"
 		"\tstrongly suggested that you instead modify the User\n"
@@ -2859,6 +2859,10 @@ static const command_rec core_cmds[] = {
 { "BS2000Account", set_bs2000_account, NULL, RSRC_CONF, TAKE1,
   "Name of server User's bs2000 logon account name" },
 #endif
+#ifdef WIN32
+{ "ScriptInterpreterSource", set_interpreter_source, NULL, OR_FILEINFO, TAKE1,
+  "Where to find interpreter to run Win32 scripts (Registry or script shebang line)" },
+#endif
 { "ServerTokens", set_serv_tokens, NULL, RSRC_CONF, TAKE1,
   "Determine tokens displayed in the Server: header - Min(imal), OS or Full" },
 { "LimitRequestLine", set_limit_req_line, NULL, RSRC_CONF, TAKE1,
@@ -2870,12 +2874,7 @@ static const command_rec core_cmds[] = {
 { "LimitRequestBody", set_limit_req_body,
   (void*)XtOffsetOf(core_dir_config, limit_req_body),
   OR_ALL, TAKE1,
-  "Limit (in bytes) on maximum size of request message body" },
-#ifdef WIN32
-{ "ScriptInterpreterSource", set_interpreter_source, NULL, OR_FILEINFO, TAKE1,
-  "Where to find interpreter to run Win32 scripts (Registry or script shebang line)" },
-#endif
-{ NULL },
+  "Limit (in bytes) on maximum size of request message body" }
 };
 
 /*****************************************************************
@@ -3116,7 +3115,7 @@ static int default_handler(request_rec *r)
 static const handler_rec core_handlers[] = {
 { "*/*", default_handler },
 { "default-handler", default_handler },
-{ NULL }
+{ NULL, NULL }
 };
 
 API_VAR_EXPORT module core_module = {
