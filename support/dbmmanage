@@ -130,7 +130,7 @@ my $newstyle_salt = $^O =~ /(?:$newstyle_salt_platforms)/;
 
 # Some platforms just can't crypt() for Apache
 #
-my $crypt_not_supported_platforms = join '|', qw{MSWin32 netware}; #others?
+my $crypt_not_supported_platforms = join '|', qw{MSWin32 NetWare}; #others?
 my $crypt_not_supported = $^O =~ /(?:$crypt_not_supported_platforms)/;
 
 my $crypt_method = "crypt";
@@ -141,7 +141,7 @@ if ($crypt_not_supported) {
 
 # Some platforms won't jump through our favorite hoops
 #
-my $not_unix_platforms = join '|', qw{MSWin32 netware}; #others?
+my $not_unix_platforms = join '|', qw{MSWin32 NetWare}; #others?
 my $not_unix = $^O =~ /(?:$not_unix_platforms)/;
 
 if ($crypt_not_supported) {
