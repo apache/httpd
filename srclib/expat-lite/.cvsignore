@@ -8,6 +8,8 @@ Makefile
 *.dll
 *.def
 *.plg
+expatlibD
+expatlibR
 XMLParseD
 XMLParseR
 XMLTokD
