@@ -206,7 +206,7 @@ int find_allowdeny (request_rec *r, array_header *a, int method)
 
 	if (!gothost) {
 	    remotehost = get_remote_host(r->connection, r->per_dir_config,
-	                                 REMOTE_HOST);
+	                                 REMOTE_FORCE_HOST);
 
 	    if ((remotehost == NULL) || is_ip(remotehost))
 	        gothost = 1;

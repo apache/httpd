@@ -77,6 +77,7 @@
 #define REMOTE_HOST (0)
 #define REMOTE_NAME (1)
 #define REMOTE_NOLOOKUP (2)
+#define REMOTE_FORCE_HOST (3)
 
 #define SATISFY_ALL 0
 #define SATISFY_ANY 1
