@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="iso-2022-jp" ?>
+<!DOCTYPE faq SYSTEM "../style/faq.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
+<!-- English Revision: 1.5 -->
+
+<!--
+ Copyright 2003-2004 The Apache Software Foundation
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<faq metafile="support.xml.meta">
+<parentdocument href="./">FAQ</parentdocument>
+
+<title>サポート ― よくある質問</title>
+<description>何か問題が起こったときにどうする?</description>
+
+<section id="support"><title>サポート</title>
+    <ul>
+    <li><a href="#support.what2do">「なんで…? どうして動作しない…?」問題が
+    起きたときにどうするか</a></li>
+
+    <li><a href="#support.support">誰にサポートを頼めばよい?</a></li>
+    </ul>
+
+    <section id="support.what2do">
+    <title>「なんで…? どうして動作しない…?」問題が
+    起きたときにどうするか</title>
+
+      <p>Apache のサーバソフトウェアに何か問題が起こったときは、以下の
+      手順に従ってください:</p>
+
+      <dl>
+      <dt>エラーログを調べる!</dt>
+      <dd>問題が発生したときは Apache はなるべく手助けをしようとします。
+      多くの場合、Apache はサーバのエラーログにメッセージを書くことで、詳細な
+      情報を提供します。場合によっては、これだけで問題を自分自身で分析し、
+      修正するために十分な情報を得ることができます (ファイルのパーミッションの
+      問題など)。エラーログのデフォルトの場所は
+      <code>/usr/local/apache2/logs/error_log</code> ですが、あなたのサーバ
+      での場所を知るためには設定ファイル中の <directive
+      module="core">ErrorLog</directive> を見てください。</dd>
+
+      <dt><a
+      href="http://httpd.apache.org/docs-2.1/faq/">FAQ</a> を調べる!</dt>
+      <dd>Apache のよくある質問の最新版は常に Apache の主ウェブサイトに
+      あります。</dd>
+
+      <dt>Apache バグデータベースを調べる</dt>
+      <dd>Apache グループに報告されるほとんどの問題は<a
+      href="http://httpd.apache.org/bug_report.html">バグデータベース</a>に
+      記録されます。Open <strong>も</strong> closed <strong>も</strong> 含めて、
+      既存のレポートにあるかどうかを調べて<strong>ください</strong>。
+      既に問題が報告されているとき、「私も」という報告は追加<em>しないで
+      ください</em>。元の報告が close されていないときは、定期的に
+      バグデータベースを調べることをお薦めします。また、元の提出者に
+      連絡を取ることも考慮に入れておくとよいでしょう。データベースに
+      記録されていない電子メールの交換が行なわれているかもしれません。</dd>
+
+      <dt><a id="support.what2do.user-support"
+      name="support.what2do.user-support">ユーザサポートフォーラムで質問する</a></dt>
+      <dd><p>Apache にはよろこんで知識を共有させてくれる活発な
+      ユーザのコミュニティがあります。このコミュニティに参加することが、
+      普通は質問や問題に対する回答を得る最善で最速の手段です。</p>
+
+      <p><a href="http://httpd.apache.org/userslist.html">ユーザ
+      メーリングリスト</a></p>
+
+      <p>USENET ニュースグループ:</p>
+
+      <ul>
+      <li>comp.infosystems.www.servers.unix
+      [<a href="news:comp.infosystems.www.servers.unix">ニュース</a>]
+      [<a href="http://groups.google.com/groups?group=comp.infosystems.www.servers.unix">google</a>]
+      </li>
+
+      <li>comp.infosystems.www.servers.ms-windows
+      [<a href="news:comp.infosystems.www.servers.ms-windows">ニュース</a>]
+      [<a href="http://groups.google.com/groups?group=comp.infosystems.www.servers.ms-windows">google</a>]
+      </li>
+
+      <li>comp.infosystems.www.authoring.cgi
+      [<a href="news:comp.infosystems.www.authoring.cgi">ニュース</a>]
+      [<a href="http://groups.google.com/groups?group=comp.infosystems.www.authoring.cgi">google</a>]
+      </li>
+      </ul></dd>
+
+      <dd>もし、全部失敗した場合は、問題をバグデータベースに報告してください</dd>
+      <dd><p>上記の手段の中で該当するものををすべて取って、
+      それでも問題の解決策を得られなかった場合は、<a
+      href="http://httpd.apache.org/bug_report.html">バグの報告</a>を
+      することにより、問題を<em>ぜひ</em> httpd 開発者に知らせてください。</p>
+
+      <p>サーバのクラッシュやコアダンプの発生する問題であれば、(可能であれば)
+      バックトレースを報告に含めてください。例えば、</p>
+
+      <example>
+        # cd <var>ServerRoot</var><br />
+        # dbx <var>httpd</var> <var>core</var><br />
+        (dbx) where
+      </example>
+
+      <p>(<var>ServerRoot</var> と <var>httpd</var> と <var>core</var> ファイル
+      の位置を適切なものに置き換えてください。<code>dbx</code> の代わりに
+      <code>gdb</code> を使う必要があるかもしれません。)</p>
+      </dd>
+      </dl>
+    </section>
+
+    <section id="support.support"><title>誰にサポートを頼めばよい?</title>
+      <p>数百万のユーザに対して、40未満のボランティア開発者しかいないため、
+      Apache の個人的なサポートを提供することはできません。無料の
+      サポートには、<a href="#support.what2do.user-support"
+      >ユーザのフォーラム</a>に参加するのが良いでしょう。</p>
+
+      <p>Apache のプロの、商用サポートも
+      <a href="http://www.apache.org/info/support.cgi">多くの会社</a>
+      から提供されています。</p>
+   </section>
+</section>
+
+</faq>
+
