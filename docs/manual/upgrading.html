@@ -94,7 +94,7 @@ mod_log_config.</li>
 <UL>
 
 <li>Graceful restarts of the server are now executed by signaling the
-parent process with <code>SIGWINCH</code> rather than
+parent process with <code>WINCH</code> rather than
 <code>USR1</code>.</li>
 
 <li>The <code>httpd</code> command line option <code>-S</code>
@@ -119,7 +119,8 @@ has been replaced with mod_file_cache.</li>
 
 <p>Extensive changes were made to the server API in Apache 2.0.
 Existing modules designed for the Apache 1.3 API will <strong>not</strong>
-work in Apache 2.0 without modification.  Details to follow.
+work in Apache 2.0 without modification.  Details are provided in
+the <a href="developer/">developer documentation</a>.</p>
 
 <!--#include virtual="footer.html" -->
 </BODY>
