@@ -104,4 +104,10 @@
 #define DEFAULT_MAX_REQUESTS_PER_CHILD 0
 #endif
 
+/* Default stack size allocated for each worker thread.
+ */
+#ifndef DEFAULT_THREAD_STACKSIZE
+#define DEFAULT_THREAD_STACKSIZE 65536
+#endif
+
 #endif /* AP_MPM_DEFAULT_H */
