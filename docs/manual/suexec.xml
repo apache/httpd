@@ -517,6 +517,11 @@
 
 <section id="usage"><title>Using suEXEC</title>
 
+    <p>Requests for CGI programs will call the suEXEC wrapper only if
+    they are for a virtual host containing a <directive
+    module="mod_suexec">SuexecUserGroup</directive> directive or if
+    they are processed by <module>mod_userdir</module>.</p>
+
     <p><strong>Virtual Hosts:</strong><br /> One way to use the suEXEC
     wrapper is through the <directive
     module="mod_suexec">SuexecUserGroup</directive> directive in
@@ -529,16 +534,15 @@
     type="section">VirtualHost</directive> then the main server userid
     is assumed.</p>
 
-    <p><strong>User directories:</strong><br />
-     The suEXEC wrapper can also be used to execute CGI programs as
-    the user to which the request is being directed. This is
-    accomplished by using the "<strong><code>~</code></strong>"
-    character prefixing the user ID for whom execution is desired.
-    The only requirement needed for this feature to work is for CGI
-    execution to be enabled for the user and that the script must
-    meet the scrutiny of the <a href="#model">security checks</a>
-    above.</p>
-</section>
+    <p><strong>User directories:</strong><br /> Requests that are
+     processed by <module>mod_userdir</module> will call the suEXEC
+     wrapper to execute CGI programs under the userid of the requested
+     user directory.  The only requirement needed for this feature to
+     work is for CGI execution to be enabled for the user and that the
+     script must meet the scrutiny of the <a href="#model">security
+     checks</a> above.  See also the
+     <code>--with-suexec-userdir</code> <a href="#install">compile
+     time option</a>.</p> </section>
 
 <section id="debug"><title>Debugging suEXEC</title>
 
