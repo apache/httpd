@@ -1519,7 +1519,7 @@ static void set_language_quality(negotiation_state *neg, var_rec *variant)
             float fiddle_q = 0.0f;
             int any_match_on_star = 0;
             int i, j;
-            size_t alen, longest_lang_range_len;
+            apr_size_t alen, longest_lang_range_len;
 
             for (j = 0; j < variant->content_languages->nelts; ++j) {
                 p = NULL;

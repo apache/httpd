@@ -1028,7 +1028,7 @@ PROXY_DECLARE(int) ap_proxy_pre_http_request(conn_rec *c, request_rec *r)
  * (EBCDIC) machines either.
  */
 PROXY_DECLARE(apr_status_t) ap_proxy_string_read(conn_rec *c, apr_bucket_brigade *bb,
-                                                 char *buff, size_t bufflen, int *eos)
+                                                 char *buff, apr_size_t bufflen, int *eos)
 {
     apr_bucket *e;
     apr_status_t rv;

@@ -184,7 +184,7 @@ main(int argc, char *argv[])
     fflush(f);
 
     {
-        ssize_t len;
+        apr_ssize_t len;
         char buff[512];
 
         while ((len = read(sd, buff, 512)) > 0)

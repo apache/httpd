@@ -162,7 +162,7 @@ static void putline(apr_file_t *f, const char *l)
  * indicates success; failure means that the output buffer contains an
  * error message instead.
  */
-static int mkrecord(char *user, char *record, size_t rlen, char *passwd,
+static int mkrecord(char *user, char *record, apr_size_t rlen, char *passwd,
                     int alg)
 {
     char *pw;
@@ -170,7 +170,7 @@ static int mkrecord(char *user, char *record, size_t rlen, char *passwd,
     char pwin[MAX_STRING_LEN];
     char pwv[MAX_STRING_LEN];
     char salt[9];
-    size_t bufsize;
+    apr_size_t bufsize;
 
     if (passwd != NULL) {
         pw = passwd;

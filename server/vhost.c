@@ -185,7 +185,7 @@ static const char *get_addresses(apr_pool_t *p, const char *w_,
     server_addr_rec *sar;
     char *w, *host, *scope_id;
     int wild_port;
-    size_t wlen;
+    apr_size_t wlen;
     apr_port_t port;
     apr_status_t rv;
 

@@ -156,7 +156,7 @@ static void add_password(const char *user, const char *realm, apr_file_t *f)
     char pwin[MAX_STRING_LEN];
     char pwv[MAX_STRING_LEN];
     unsigned int i;
-    size_t len = sizeof(pwin);
+    apr_size_t len = sizeof(pwin);
 
     if (apr_password_get("New password: ", pwin, &len) != APR_SUCCESS) {
 	fprintf(stderr, "password too long");

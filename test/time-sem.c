@@ -401,7 +401,7 @@ void accept_mutex_off()
 
 
 #ifndef USE_SHMGET_SCOREBOARD
-static void *get_shared_mem(size_t size)
+static void *get_shared_mem(apr_size_t size)
 {
     void *result;
 
@@ -419,7 +419,7 @@ static void *get_shared_mem(size_t size)
 #include <sys/ipc.h>
 #include <sys/shm.h>
 
-static void *get_shared_mem(size_t size)
+static void *get_shared_mem(apr_size_t size)
 {
     key_t shmkey = IPC_PRIVATE;
     int shmid = -1;

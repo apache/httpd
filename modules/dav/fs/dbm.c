@@ -331,8 +331,7 @@ struct dav_namespace_map {
 static apr_datum_t dav_build_key(dav_db *db, const dav_prop_name *name)
 {
     char nsbuf[20];
-    size_t l_ns;
-    size_t l_name = strlen(name->name);
+    apr_size_t l_ns, l_name = strlen(name->name);
     apr_datum_t key = { 0 };
 
     /*
