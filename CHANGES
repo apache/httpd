@@ -1,4 +1,7 @@
 Changes with Apache 2.0b1
+  *) Return HTTP_RANGE_NOT_SATISFIABLE if the every range requested starts
+     after the end of the response. [Ryan Bloom]
+
   *) Get byterange requests working with responses that do not have a
      content-length.  Because of the way byterange requests work, we have to
      have all of the data before we can actually do the byterange, so we

@@ -181,7 +181,7 @@ static int parse_byterange(char *range, apr_off_t clength,
         *end = clength - 1;
 
     if (*start > *end)
-	return 0;
+	return -1;
 
     return (*start > 0 || *end < clength - 1);
 }
@@ -224,10 +224,16 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
     char *current;
     const char *bound_head;
     int clength = 0;
+    apr_status_t rv;
+    int found = 0;
 
     if (!ctx) {
         int num_ranges = ap_set_byterange(r);
  
+        if (num_ranges == -1) {
+            ap_remove_output_filter(f);
+            return HTTP_RANGE_NOT_SATISFIABLE;
+        }
         if (num_ranges == 0) {
             ap_remove_output_filter(f);
             return ap_pass_brigade(f->next, bb);
@@ -287,7 +293,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
     bsend = ap_brigade_create(r->pool);
 
     while ((current = ap_getword(r->pool, &r->range, ',')) &&
-           parse_byterange(current, clength, &range_start, &range_end)) {
+           (rv = parse_byterange(current, clength, &range_start, &range_end))) {
         const char *str;
         apr_size_t n;
         const char *range;
@@ -296,6 +302,13 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
         apr_size_t curr_length = range_length;
         apr_size_t segment_length;
         apr_off_t curr_offset = 0;
+
+        if (rv == -1) {
+            continue;
+        }        
+        else {
+            found = 1;
+        }
 
         /* ### this is so bogus, but not dealing with it right now */
         range = loc = apr_pcalloc(r->pool, range_length + 1);
@@ -371,6 +384,12 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
         
         e = ap_bucket_create_pool(range, range_length, r->pool);
         AP_BRIGADE_INSERT_TAIL(bsend, e);
+    }
+
+    if (found == 0) {
+        ap_remove_output_filter(f);
+        r->status = HTTP_OK;
+        return HTTP_RANGE_NOT_SATISFIABLE;
     }
 
     if (ctx->num_ranges > 1) {
@@ -2398,12 +2417,13 @@ static int ap_set_byterange(request_rec *r)
     ct = make_content_type(r, r->content_type);
 
     if (!ap_strchr_c(range, ',')) {
+        int rv;
         /* A single range */
 
-        /* parse_byterange() modifies the contents, so make a copy */
-        if (!parse_byterange(apr_pstrdup(r->pool, range + 6), r->clength,
-                             &range_start, &range_end)) {
-            return 0;
+        /* rvarse_byterange() modifies the contents, so make a copy */
+        if ((rv = parse_byterange(apr_pstrdup(r->pool, range + 6), r->clength,
+                             &range_start, &range_end)) <= 0) {
+            return rv;
         }
         apr_table_setn(r->headers_out, "Content-Range",
                        apr_psprintf(r->pool, "bytes " BYTERANGE_FMT,
@@ -3339,6 +3359,11 @@ AP_DECLARE(void) ap_send_error_response(request_rec *r, int recursive_error)
     int idx = ap_index_of_response(status);
     char *custom_response;
     const char *location = apr_table_get(r->headers_out, "Location");
+
+    /* At this point, we are starting the response over, so we have to reset
+     * this value.
+     */
+    r->eos_sent = 0;
 
     /*
      * It's possible that the Location field might be in r->err_headers_out
