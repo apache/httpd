@@ -15,7 +15,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.108 $ ($Date: 1998/02/18 21:07:25 $)
+  $Revision: 1.109 $ ($Date: 1998/03/24 02:58:49 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -109,7 +109,7 @@
         work?&quot;  What to do in case of problems</A>
    </LI>
    <LI><A HREF="#compatible">How compatible is Apache with my existing
-    NCSA 1.3 setup?</A>
+        NCSA 1.3 setup?</A>
    </LI>
    <LI><A HREF="#CGIoutsideScriptAlias">How do I enable CGI execution
         in directories other than the ScriptAlias?</A>
@@ -129,149 +129,155 @@
    <LI><A HREF="#multiviews">What are &quot;multiviews&quot;?</A>
    </LI>
    <LI><A HREF="#fdlim">Why can't I run more than &lt;<EM>n</EM>&gt;
-    virtual hosts?</A>
+        virtual hosts?</A>
    </LI>
-   <LI><A HREF="#freebsd-setsize">Can I increase FD_SETSIZE on FreeBSD?</A>
+   <LI><A HREF="#freebsd-setsize">Can I increase <SAMP>FD_SETSIZE</SAMP>
+    on FreeBSD?</A>
    </LI>
    <LI><A HREF="#limitGET">Why do I keep getting &quot;access denied&quot; for
-    form POST requests?</A>
+        form POST requests?</A>
    </LI>
    <LI><A HREF="#passwdauth">Can I use my <SAMP>/etc/passwd</SAMP> file
-    for Web page authentication?</A>
+        for Web page authentication?</A>
    </LI>
    <LI><A HREF="#errordoc401">Why doesn't my <CODE>ErrorDocument
-    401</CODE> work?</A>
+        401</CODE> work?</A>
    </LI>
    <LI><A HREF="#errordocssi">How can I use <CODE>ErrorDocument</CODE>
-   and SSI to simplify customized error messages?</A>
+        and SSI to simplify customized error messages?</A>
    </LI>
    <LI><A HREF="#setgid">Why do I get &quot;<SAMP>setgid: Invalid
-    argument</SAMP>&quot; at startup?</A>
+        argument</SAMP>&quot; at startup?</A>
    </LI>
    <LI><A HREF="#cookies1">Why does Apache send a cookie on every response?</A>
    </LI>
    <LI><A HREF="#cookies2">Why don't my cookies work, I even compiled in
-    <SAMP>mod_cookies</SAMP>?</A>
+        <SAMP>mod_cookies</SAMP>?</A>
    </LI>
    <LI><A HREF="#jdk1-and-http1.1">Why do my Java app[let]s give me plain text
-    when I request an URL from an Apache server?</A>
+        when I request an URL from an Apache server?</A>
    </LI>
    <LI><A HREF="#putsupport">Why can't I publish to my Apache server
-    using PUT on Netscape Gold and other programs?</A>
+        using PUT on Netscape Gold and other programs?</A>
    </LI>
    <LI><A HREF="#fastcgi">Why isn't FastCGI included with Apache any
-    more?</A>
+        more?</A>
    </LI>
    <LI><A HREF="#nodelay">Why am I getting &quot;<SAMP>httpd: could not
-    set socket option TCP_NODELAY</SAMP>&quot; in my error log?</A>
+        set socket option TCP_NODELAY</SAMP>&quot; in my error log?</A>
    </LI>
    <LI><A HREF="#peerreset">Why am I getting &quot;<SAMP>connection
-    reset by peer</SAMP>&quot; in my error log?</A>
+        reset by peer</SAMP>&quot; in my error log?</A>
    </LI>
    <LI><A HREF="#nph-scripts">How can I get my script's output without
-    Apache buffering it?  Why doesn't my server push work?</A>
+        Apache buffering it?  Why doesn't my server push work?</A>
    </LI>
    <LI><A HREF="#linuxiovec">Why do I get complaints about redefinition
-    of &quot;<CODE>struct iovec</CODE>&quot; when compiling under Linux?</A>
+        of &quot;<CODE>struct iovec</CODE>&quot; when compiling under Linux?</A>
    </LI>
    <LI><A HREF="#wheres-the-dump">The errorlog says Apache dumped core,
-    but where's the dump file?</A>
+        but where's the dump file?</A>
    </LI>
    <LI><A HREF="#dnsauth">Why isn't restricting access by host or domain name
-    working correctly?</A>
+        working correctly?</A>
    </LI>
    <LI><A HREF="#SSL-i">Why doesn't Apache include SSL?</A>
    </LI>
    <LI><A HREF="#HPUX-core">Why do I get core dumps under HPUX using
-    HP's ANSI C compiler?</A>
+        HP's ANSI C compiler?</A>
    </LI>
    <LI><A HREF="#midi">How do I get Apache to send a MIDI file so the
-    browser can play it?</A>
+        browser can play it?</A>
    </LI>
    <LI><A HREF="#cantbuild">Why won't Apache compile with my
-    system's <SAMP>cc</SAMP>?</A>
+        system's <SAMP>cc</SAMP>?</A>
    </LI>
-   <LI><A HREF="#addlog">How do I add browsers and referrers to my
-    logs?</A>
+   <LI><A HREF="#addlog">How do I add browsers and referrers to my logs?</A>
    </LI>
    <LI><A HREF="#bind8.1">Why do I get an error about an undefined
-    reference to &quot;<SAMP>__inet_ntoa</SAMP>&quot; or other
-    <SAMP>__inet_*</SAMP> symbols?</A>
+        reference to &quot;<SAMP>__inet_ntoa</SAMP>&quot; or other
+        <SAMP>__inet_*</SAMP> symbols?</A>
    </LI>
    <LI><A HREF="#set-servername">Why does accessing directories only work
-    when I include the trailing "/"
-    (<EM>e.g.</EM>,&nbsp;<SAMP>http://foo.domain.com/~user/</SAMP>) but
-    not when I omit it
-    (<EM>e.g.</EM>,&nbsp;<SAMP>http://foo.domain.com/~user</SAMP>)?</A>
+        when I include the trailing &quot;/&quot;
+        (<EM>e.g.</EM>,&nbsp;<SAMP>http://foo.domain.com/~user/</SAMP>) but
+        not when I omit it
+        (<EM>e.g.</EM>,&nbsp;<SAMP>http://foo.domain.com/~user</SAMP>)?</A>
    </LI>
    <LI><A HREF="#user-authentication">How do I set up Apache to require
-    a username and password to access certain documents?</A>
+        a username and password to access certain documents?</A>
    </LI>
    <LI><A HREF="#remote-user-var">Why is the environment variable
-   <SAMP>REMOTE_USER</SAMP> not set?</A>
+        <SAMP>REMOTE_USER</SAMP> not set?</A>
    </LI>
    <LI><A HREF="#remote-auth-only">How do I set up Apache to allow access
-    to certain documents only if a site is either a local site
-    <EM>or</EM> the user supplies a password and username?</A>
+        to certain documents only if a site is either a local site
+        <EM>or</EM> the user supplies a password and username?</A>
    </LI>
    <LI><A HREF="#no-info-directives">Why doesn't mod_info list any
-    directives?</A>
-   <LI><A HREF="#linux-shmget">When I run it under Linux I get "shmget:
-    function not found", what should I do?</A>
+        directives?</A>
+   </LI>
+   <LI><A HREF="#linux-shmget">When I run it under Linux I get &quot;shmget:
+        function not found&quot;, what should I do?</A>
    </LI>
    <LI><A HREF="#authauthoritative">Why does my authentication give
-    me a server error?</A>
+        me a server error?</A>
+   </LI>
    <LI><A HREF="#auth-on-same-machine">Do I have to keep the (mSQL)
-    authentication information on the same machine?</A>
+        authentication information on the same machine?</A>
    </LI>
    <LI><A HREF="#msql-slow">Why is my mSQL authentication terribly slow?</A>
    </LI>
    <LI><A HREF="#rewrite-more-config">Where can I find mod_rewrite rulesets
-    which already solve particular URL-related problems?</A>
+        which already solve particular URL-related problems?</A>
    </LI>
-   <LI><A HREF="#rewrite-article">Where can I find any published information about
-    URL-manipulations and mod_rewrite?</A>
+   <LI><A HREF="#rewrite-article">Where can I find any published information
+        about URL-manipulations and mod_rewrite?</A>
    </LI>
    <LI><A HREF="#rewrite-complexity">Why is mod_rewrite so difficult to learn
-    and seems so complicated?</A>
+        and seems so complicated?</A>
    </LI>
    <LI><A HREF="#rewrite-dontwork">What can I do if my RewriteRules don't work
-    as expected?</A>
+        as expected?</A>
    </LI>
    <LI><A HREF="#rewrite-prefixdocroot">Why don't some of my URLs get
-    prefixed with DocumentRoot when using mod_rewrite?</A>
+        prefixed with DocumentRoot when using mod_rewrite?</A>
    </LI>
    <LI><A HREF="#rewrite-nocase">How can I make all my URLs case-insensitive
-    with mod_rewrite?</A>
+        with mod_rewrite?</A>
    </LI>
    <LI><A HREF="#rewrite-virthost">Why are RewriteRules in my VirtualHost
-    parts ignored?</A>
+        parts ignored?</A>
    </LI>
    <LI><A HREF="#rewrite-envwhitespace">How can I use strings with whitespaces
-    in RewriteRule's ENV flag?</A>
+        in RewriteRule's ENV flag?</A>
    </LI>
    <LI><A HREF="#cgi-spec">Where can I find the &quot;CGI
-    specification&quot;?</A>
+        specification&quot;?</A>
    </LI>
    <LI><A HREF="#year2000">Is Apache Year 2000 compliant?</A>
    </LI>
    <LI><A HREF="#namevhost">I upgraded to Apache 1.3b and now my
-    virtual hosts don't work!</A>
+        virtual hosts don't work!</A>
    </LI>
    <LI><A HREF="#redhat">I'm using RedHat Linux and I have problems with httpd
-    dying randomly or not restarting properly</A>
+        dying randomly or not restarting properly</A>
    </LI>
-   <li><a href="#stopping">I upgraded from an Apache version earlier
-    than 1.2.0 and suddenly I have problems with Apache dying randomly
-    or not restarting properly</a>
-   </li>
-   <li><a href="#redhat-htm">I'm using RedHat Linux and my .htm files are showing
-    up as html source rather than being formatted!</a>
-   </li>
-   <li><a href="#glibc-crypt">I'm using RedHat Linux 5.0, or some other glibc
-     based Linux system, and I get errors with the <code>crypt</code> function when
-     I attempt to build Apache 1.2.</a>
-    </li>
+   <LI><A HREF="#stopping">I upgraded from an Apache version earlier
+        than 1.2.0 and suddenly I have problems with Apache dying randomly
+        or not restarting properly</A>
+   </LI>
+   <LI><A HREF="#redhat-htm">I'm using RedHat Linux and my .htm files are
+        showing up as HTML source rather than being formatted!</A>
+   </LI>
+   <LI><A HREF="#glibc-crypt">I'm using RedHat Linux 5.0, or some other
+        <SAMP>glibc</SAMP>-based Linux system, and I get errors with the
+        <CODE>crypt</CODE> function when I attempt to build Apache 1.2.</A>
+   </LI>
+   <LI><A HREF="#nfslocking">Server hangs, or fails to start, and/or error log
+        fills with &quot;<SAMP>fcntl: F_SETLKW: No record locks
+        available</SAMP>&quot; or similar messages</A>
+   </LI>
   </OL>
  </LI>
 </UL>
@@ -297,12 +303,11 @@
   Since it began, it has been completely rewritten, and includes many new
   features. Apache is, as of January 1997, the most popular WWW server on
   the Internet, according to the
-  <A
-   HREF="http://www.netcraft.com/Survey/"
-  >Netcraft Survey</A>.
+  <A HREF="http://www.netcraft.com/Survey/">Netcraft Survey</A>.
   </P>
   <HR>
  </LI>
+
  <LI><A NAME="why">
       <STRONG>Why was Apache created?</STRONG>
      </A>
@@ -314,6 +319,7 @@
   </P>
   <HR>
  </LI>
+
  <LI><A NAME="relate">
       <STRONG>How does The Apache Group's work relate to other
       server efforts, such as NCSA's?</STRONG>
@@ -326,6 +332,7 @@
   </P>
   <HR>
  </LI>
+
  <LI><A NAME="name">
       <STRONG>Why the name &quot;Apache&quot;?</STRONG>
       </A>
@@ -336,14 +343,13 @@
   </P>
   <HR>
  </LI>
+
  <LI><A NAME="compare">
       <STRONG>OK, so how does Apache compare to other servers?</STRONG>
      </A>
   <P>
   For an independent assessment, see
-  <A
-   HREF="http://webcompare.internet.com/chart.html"
-  >Web Compare</A>'s
+  <A HREF="http://webcompare.internet.com/chart.html">Web Compare</A>'s
   comparison chart.
   </P>
   <P>
@@ -358,6 +364,7 @@
   </P>
   <HR>
  </LI>
+
  <LI><A NAME="tested">
       <STRONG>How thoroughly tested is Apache?</STRONG>
      </A>
@@ -371,12 +378,12 @@
   </P>
   <P>
   The Apache project's web site includes a page with a partial list of
-  <A
-   HREF="http://www.apache.org/info/apache_users.html"
-  >sites running Apache</A>.
+  <A HREF="http://www.apache.org/info/apache_users.html">sites running
+  Apache</A>.
   </P>
   <HR>
  </LI>
+
  <LI><A NAME="future">
       <STRONG>What are the future plans for Apache?</STRONG>
      </A>
@@ -396,6 +403,7 @@
   </P>
   <HR>
  </LI>
+
  <LI><A NAME="support">
       <STRONG>Whom do I contact for support?</STRONG>
      </A>
@@ -403,12 +411,9 @@
   There is no official support for Apache. None of the developers want to
   be swamped by a flood of trivial questions that can be resolved elsewhere.
   Bug reports and suggestions should be sent <EM>via</EM>
-  <A
-   HREF="http://www.apache.org/bug_report.html"
-  >the bug report page</A>.
+  <A HREF="http://www.apache.org/bug_report.html">the bug report page</A>.
   Other questions should be directed to the
-  <A
-   HREF="news:comp.infosystems.www.servers.unix"
+  <A HREF="news:comp.infosystems.www.servers.unix"
   ><SAMP>comp.infosystems.www.servers.unix</SAMP></A>
   newsgroup, where some of the Apache team lurk,
   in the company of many other httpd gurus who should be able
@@ -420,44 +425,36 @@
   </P>
   <HR>
  </LI>
+
  <LI><A NAME="more">
       <STRONG>Is there any more information available on
       Apache?</STRONG>
      </A>
   <P>
   Indeed there is.  See the main
-  <A
-   HREF="http://www.apache.org/"
-  >Apache web site</A>.
+  <A HREF="http://www.apache.org/">Apache web site</A>.
   There is also a regular electronic publication called
-  <A
-   HREF="http://www.apacheweek.com/"
-   REL="Help"
-  ><CITE>Apache Week</CITE></A>
+  <A HREF="http://www.apacheweek.com/" REL="Help"><CITE>Apache Week</CITE></A>
   available.  Links to relevant <CITE>Apache Week</CITE> articles are
   included below where appropriate. There are also some 
-  <A
-   HREF="http://www.apache.org/info/apache_books.html"
+  <A HREF="http://www.apache.org/info/apache_books.html"
   >Apache-specific books</A> available.
   </P>
   <HR>
  </LI>
+
  <LI><A NAME="where">
       <STRONG>Where can I get Apache?</STRONG>
      </A>
   <P>
   You can find out how to download the source for Apache at the
   project's
-  <A
-   HREF="http://www.apache.org/"
-  >main web page</A>.
+  <A HREF="http://www.apache.org/">main web page</A>.
   </P>
   <HR>
  </LI>
 </OL>
-  <H3>
-   Technical Questions
-  </H3>
+  <H3>Technical Questions</H3>
 <OL START=11>
  <LI><A NAME="what2do">
       <STRONG>&quot;Why can't I ...?  Why won't ... work?&quot;  What to
@@ -476,16 +473,12 @@
     &amp; fix the problem yourself (such as file permissions or the like).
     The default location of the error log is
     <SAMP>/usr/local/apache/logs/error_log</SAMP>, but see the
-    <A
-     HREF="../mod/core.html#errorlog"
-    ><SAMP>ErrorLog</SAMP></A>
+    <A HREF="../mod/core.html#errorlog"><SAMP>ErrorLog</SAMP></A>
     directive in your config files for the location on your server.
     </P>
    </LI>
    <LI><STRONG>Check the
-    <A
-     HREF="http://www.apache.org/docs/misc/FAQ.html"
-    >FAQ</A>!</STRONG>
+    <A HREF="http://www.apache.org/docs/misc/FAQ.html">FAQ</A>!</STRONG>
     <P>
     The latest version of the Apache Frequently-Asked Questions list can
     always be found at the main Apache web site.
@@ -495,9 +488,7 @@
     <P>
     Most problems that get reported to The Apache Group are recorded in
     the
-    <A
-     HREF="http://bugs.apache.org/"
-    >bug database</A>.
+    <A HREF="http://bugs.apache.org/">bug database</A>.
     <EM><STRONG>Please</STRONG> check the existing reports, open
     <STRONG>and</STRONG> closed, before adding one.</EM>  If you find
     that your issue has already been reported, please <EM>don't</EM> add
@@ -513,8 +504,7 @@
     <P>
     A lot of common problems never make it to the bug database because
     there's already high Q&amp;A traffic about them in the
-    <A
-     HREF="news:comp.infosystems.www.servers.unix"
+    <A HREF="news:comp.infosystems.www.servers.unix"
     ><SAMP>comp.infosystems.www.servers.unix</SAMP></A>
     newsgroup.  Many Apache users, and some of the developers, can be
     found roaming its virtual halls, so it is suggested that you seek
@@ -529,9 +519,7 @@
     If you've gone through those steps above that are appropriate and
     have obtained no relief, then please <EM>do</EM> let The Apache
     Group know about the problem by
-    <A
-     HREF="http://www.apache.org/bug_report.html"
-    >logging a bug report</A>.
+    <A HREF="http://www.apache.org/bug_report.html">logging a bug report</A>.
     </P>
     <P>
     If your problem involves the server crashing and generating a core
@@ -555,6 +543,7 @@
   </OL>
   <HR>
  </LI>
+
  <LI><A NAME="compatible">
       <STRONG>How compatible is Apache with my existing NCSA 1.3
       setup?</STRONG>
@@ -577,15 +566,14 @@
   </P>
   <HR>
  </LI>
+
  <LI><A NAME="CGIoutsideScriptAlias">
       <STRONG>How do I enable CGI execution in directories other than
       the ScriptAlias?</STRONG>
      </A>
   <P>
   Apache recognizes all files in a directory named as a
-  <A
-   HREF="../mod/mod_alias.html#scriptalias"
-  ><SAMP>ScriptAlias</SAMP></A>
+  <A HREF="../mod/mod_alias.html#scriptalias"><SAMP>ScriptAlias</SAMP></A>
   as being eligible for execution rather than processing as normal
   documents.  This applies regardless of the file name, so scripts in a
   ScriptAlias directory don't need to be named
@@ -598,9 +586,7 @@
   directories where normal documents may also live, you must tell it how
   to recognize them - and also that it's okay to execute them.  For
   this, you need to use something like the
-  <A
-   HREF="../mod/mod_mime.html#addhandler"
-  ><SAMP>AddHandler</SAMP></A>
+  <A HREF="../mod/mod_mime.html#addhandler"><SAMP>AddHandler</SAMP></A>
   directive.
   </P>
   <P>
@@ -620,9 +606,7 @@
     </P>
    </LI>
    <LI>Make sure that the directory location is covered by an
-    <A
-     HREF="../mod/core.html#options"
-    ><SAMP>Options</SAMP></A>
+    <A HREF="../mod/core.html#options"><SAMP>Options</SAMP></A>
     declaration that includes the <SAMP>ExecCGI</SAMP> option.
    </LI>
   </OL>
@@ -632,16 +616,13 @@
   allow all files named &quot;<SAMP>*.cgi</SAMP>&quot; to be executable.
   Perhaps all you want is to enable a particular file in a normal directory to
   be executable. This can be alternatively accomplished 
-  <EM>via</EM>
-  <A
-   HREF="../mod/mod_rewrite.html"
-  ><SAMP>mod_rewrite</SAMP></A> 
+  <EM>via</EM> <A HREF="../mod/mod_rewrite.html"><SAMP>mod_rewrite</SAMP></A> 
   and the following steps:
   </P>
   <P>
   <OL>
    <LI>Locally add to the corresponding <SAMP>.htaccess</SAMP> file a ruleset
-       similar to this one:
+    similar to this one:
     <P>
     <DL>
      <DD><CODE>RewriteEngine on
@@ -654,16 +635,15 @@
     </P>
    </LI>
    <LI>Make sure that the directory location is covered by an
-    <A
-     HREF="../mod/core.html#options"
-    ><SAMP>Options</SAMP></A>
-        declaration that includes the <SAMP>ExecCGI</SAMP> and
-        <SAMP>FollowSymLinks</SAMP> option.
+    <A HREF="../mod/core.html#options"><SAMP>Options</SAMP></A>
+    declaration that includes the <SAMP>ExecCGI</SAMP> and
+    <SAMP>FollowSymLinks</SAMP> option.
    </LI>
   </OL>
   </P>
   <HR>
  </LI>
+
  <LI><A NAME="premature-script-headers">
       <STRONG>What does it mean when my CGIs fail with
       &quot;<SAMP>Premature end of script headers</SAMP>&quot;?</STRONG>
@@ -720,6 +700,7 @@
   </P>
   <HR>
  </LI>
+
  <LI><A NAME="ssi-part-i">
       <STRONG>How do I enable SSI (parsed HTML)?</STRONG>
      </A>
@@ -738,34 +719,25 @@
   resource-consumptive, and is not enabled by default.  It can also
   interfere with the cachability of your documents, which can put a
   further load on your server.  (see the
-  <A
-   HREF="#ssi-part-ii"
-  >next question</A>
-  for more information about this.)
+  <A HREF="#ssi-part-ii">next question</A> for more information about this.)
   </P>
   <P>
   To enable SSI processing, you need to
   </P>
   <UL>
    <LI>Build your server with the
-    <A
-     HREF="../mod/mod_include.html"
-    ><SAMP>mod_include</SAMP></A>
+    <A HREF="../mod/mod_include.html"><SAMP>mod_include</SAMP></A>
     module.  This is normally compiled in by default.
    </LI>
    <LI>Make sure your server configuration files have an
-    <A
-     HREF="../mod/core.html#options"
-    ><SAMP>Options</SAMP></A>
+    <A HREF="../mod/core.html#options"><SAMP>Options</SAMP></A>
     directive which permits <SAMP>Includes</SAMP>.
    </LI>
    <LI>Make sure that the directory where you want the SSI documents to
     live is covered by the &quot;server-parsed&quot; content handler,
     either explicitly or in some ancestral location.  That can be done
     with the following
-    <A
-     HREF="../mod/mod_mime.html#addhandler"
-    ><SAMP>AddHandler</SAMP></A>
+    <A HREF="../mod/mod_mime.html#addhandler"><SAMP>AddHandler</SAMP></A>
     directive:
     <P>
     <DL>
@@ -773,22 +745,22 @@
      </DD>
     </DL>
     </P>
+    <P>
     This indicates that all files ending in &quot;.shtml&quot; in that
     location (or its descendants) should be parsed.  Note that using
     &quot;.html&quot; will cause all normal HTML files to be parsed,
     which may put an inordinate load on your server.
+    </P>
    </LI>
   </UL>
   <P>
-  For additional information, see the <CITE>Apache Week</CITE> article
-  on
-  <A
-   HREF="http://www.apacheweek.com/features/ssi"
-   REL="Help"
+  For additional information, see the <CITE>Apache Week</CITE> article on
+  <A HREF="http://www.apacheweek.com/features/ssi" REL="Help"
   ><CITE>Using Server Side Includes</CITE></A>.
   </P>
   <HR>
  </LI>
+
  <LI><A NAME="ssi-part-ii">
       <STRONG>Why don't my parsed files get cached?</STRONG>
      </A>
@@ -808,14 +780,9 @@
   <P>
   You can work around this in some cases by causing an
   <SAMP>Expires</SAMP> header to be generated.  (See the
-  <A
-   HREF="../mod/mod_expires.html"
-   REL="Help"
-  ><SAMP>mod_expires</SAMP></A>
+  <A HREF="../mod/mod_expires.html" REL="Help"><SAMP>mod_expires</SAMP></A>
   documentation for more details.)  Another possibility is to use the
-  <A
-   HREF="../mod/mod_include.html#xbithack"
-   REL="Help"
+  <A HREF="../mod/mod_include.html#xbithack" REL="Help"
   ><SAMP>XBitHack Full</SAMP></A>
   mechanism, which tells Apache to send (under certain circumstances
   detailed in the XBitHack directive description) a
@@ -827,6 +794,7 @@
   </P>
   <HR>
  </LI>
+
  <LI><A NAME="ssi-part-iii">
       <STRONG>How can I have my script output parsed?</STRONG>
      </A>
@@ -845,19 +813,18 @@
   </P>
   <HR>
  </LI>
+
  <LI><A NAME="proxy">
       <STRONG>Does or will Apache act as a Proxy server?</STRONG>
      </A>
   <P>
   Apache version 1.1 and above comes with a
-  <A
-   HREF="../mod/mod_proxy.html"
-  >proxy module</A>.
-  If compiled
-  in, this will make Apache act as a caching-proxy server.
+  <A HREF="../mod/mod_proxy.html">proxy module</A>.
+  If compiled in, this will make Apache act as a caching-proxy server.
   </P>
   <HR>
  </LI>
+
  <LI><A NAME="multiviews">
       <STRONG>What are &quot;multiviews&quot;?</STRONG>
      </A>
@@ -865,19 +832,15 @@
   &quot;Multiviews&quot; is the general name given to the Apache
   server's ability to provide language-specific document variants in
   response to a request.  This is documented quite thoroughly in the
-  <A
-   HREF="../content-negotiation.html"
-   REL="Help"
-  >content negotiation</A>
+  <A HREF="../content-negotiation.html" REL="Help">content negotiation</A>
   description page.  In addition, <CITE>Apache Week</CITE> carried an
   article on this subject entitled
-  &quot;<A
-         HREF="http://www.apacheweek.com/features/negotiation"
-         REL="Help"
+  &quot;<A HREF="http://www.apacheweek.com/features/negotiation" REL="Help"
         ><CITE>Content Negotiation Explained</CITE></A>&quot;.
   </P>
   <HR>
  </LI>
+
  <LI><A NAME="fdlim">
       <STRONG>Why can't I run more than &lt;<EM>n</EM>&gt;
       virtual hosts?</STRONG>
@@ -896,9 +859,7 @@
   Each log file requires a file descriptor, which means that if you are
   using separate access and error logs for each virtual host, each
   virtual host needs two file descriptors.  Each
-  <A
-   HREF="../mod/core.html#listen"
-  ><SAMP>Listen</SAMP></A>
+  <A HREF="../mod/core.html#listen"><SAMP>Listen</SAMP></A>
   directive also needs a file descriptor.
   </P>
   <P>
@@ -915,39 +876,31 @@
   </P>
   <OL>
    <LI>Reduce the number of
-       <A
-        HREF="../mod/core.html#listen"
-       ><SAMP>Listen</SAMP></A>
-       directives.  If there are no other servers running on the machine
-       on the same port then you normally don't
-       need any Listen directives at all.  By default Apache listens to
-       all addresses on port 80.
+    <A HREF="../mod/core.html#listen"><SAMP>Listen</SAMP></A>
+    directives.  If there are no other servers running on the machine
+    on the same port then you normally don't
+    need any Listen directives at all.  By default Apache listens to
+    all addresses on port 80.
    </LI>
    <LI>Reduce the number of log files.  You can use
-       <A
-        HREF="../mod/mod_log_config.html"
-       ><SAMP>mod_log_config</SAMP></A>
-       to log all requests to a single log file while including the name
-       of the virtual host in the log file.  You can then write a
-       script to split the logfile into separate files later if
-       necessary.
+    <A HREF="../mod/mod_log_config.html"><SAMP>mod_log_config</SAMP></A>
+    to log all requests to a single log file while including the name
+    of the virtual host in the log file.  You can then write a
+    script to split the logfile into separate files later if
+    necessary.  Such a script is provided with the Apache 1.3 distribution
+    in the <SAMP>src/support/split-logfile</SAMP> file.
    </LI>
    <LI>Increase the number of file descriptors available to the server
-       (see your system's documentation on the <CODE>limit</CODE> or
-       <CODE>ulimit</CODE> commands).  For some systems, information on
-       how to do this is available in the
-       <A
-        HREF="perf.html"
-       >performance hints</A>
-       page.  There is a specific note for
-       <A HREF="#freebsd-setsize">FreeBSD</A> below.
+    (see your system's documentation on the <CODE>limit</CODE> or
+    <CODE>ulimit</CODE> commands).  For some systems, information on
+    how to do this is available in the
+    <A HREF="perf.html">performance hints</A> page.  There is a specific
+    note for <A HREF="#freebsd-setsize">FreeBSD</A> below.
    </LI>
    <LI>&quot;Don't do that&quot; - try to run with fewer virtual hosts
    </LI>
    <LI>Spread your operation across multiple server processes (using
-    <A
-     HREF="../mod/core.html#listen"
-    ><SAMP>Listen</SAMP></A>
+    <A HREF="../mod/core.html#listen"><SAMP>Listen</SAMP></A>
     for example, but see the first point) and/or ports.
    </LI>
   </OL>
@@ -971,9 +924,10 @@
   defaults to 256.  This means that you will have trouble usefully using
   more than 256 file descriptors in Apache.  This can be increased, but
   doing so can be tricky.
-
+  </P>
+  <P>
   If you are using a version prior to 2.2, you need to recompile your
-  kernel with a larger FD_SETSIZE.  This can be done by adding a 
+  kernel with a larger <SAMP>FD_SETSIZE</SAMP>.  This can be done by adding a 
   line such as:
   </P>
   <DL>
@@ -981,18 +935,19 @@
    </DD>
   </DL>
   <P>
-  To your kernel config file.  Starting at version 2.2, this is no
+  to your kernel config file.  Starting at version 2.2, this is no
   longer necessary.
   </P>
   <P>
   If you are using a version of 2.1-stable from after 1997/03/10 or
   2.2 or 3.0-current from before 1997/06/28, there is a limit in
   the resolver library that prevents it from using more file descriptors
-  than what FD_SETSIZE is set to when libc is compiled.  To increase
-  this, you have to recompile libc with a higher FD_SETSIZE.
+  than what <SAMP>FD_SETSIZE</SAMP> is set to when libc is compiled.  To
+  increase this, you have to recompile libc with a higher
+  <SAMP>FD_SETSIZE</SAMP>.
   </P>
   <P>
-  In FreeBSD 3.0, the default FD_SETSIZE has been increased to
+  In FreeBSD 3.0, the default <SAMP>FD_SETSIZE</SAMP> has been increased to
   1024 and the above limitation in the resolver library
   has been removed.
   </P>
@@ -1034,6 +989,7 @@
   </P>
   <HR>
  </LI>
+
  <LI><A NAME="passwdauth">
       <STRONG>Can I use my <SAMP>/etc/passwd</SAMP> file
       for Web page authentication?</STRONG>
@@ -1088,6 +1044,7 @@
   </P>
   <HR>
  </LI>
+
  <LI><A NAME="errordoc401">
       <STRONG>Why doesn't my <CODE>ErrorDocument 401</CODE> work?</STRONG>
      </A>
@@ -1095,16 +1052,15 @@
   You need to use it with a URL in the form
   &quot;<SAMP>/foo/bar</SAMP>&quot; and not one with a method and
   hostname such as &quot;<SAMP>http://host/foo/bar</SAMP>&quot;.  See the
-  <A
-   HREF="../mod/core.html#errordocument"
-  ><SAMP>ErrorDocument</SAMP></A>
+  <A HREF="../mod/core.html#errordocument"><SAMP>ErrorDocument</SAMP></A>
   documentation for details.  This was incorrectly documented in the past.
   </P>
   <HR>
  </LI>
+
  <LI><A NAME="errordocssi">
       <STRONG>How can I use <CODE>ErrorDocument</CODE>
-   and SSI to simplify customized error messages?</STRONG>
+      and SSI to simplify customized error messages?</STRONG>
      </A>
   <P>
   Have a look at <A HREF="custom_errordocs.html">this document</A>.
@@ -1115,48 +1071,44 @@
   </P>
   <HR>
  </LI>
+
  <LI><A NAME="setgid">
       <STRONG>Why do I get &quot;<SAMP>setgid: Invalid
       argument</SAMP>&quot; at startup?</STRONG>
      </A>
   <P>
   Your
-  <A
-   HREF="../mod/core.html#group"
-  ><SAMP>Group</SAMP></A>
+  <A HREF="../mod/core.html#group"><SAMP>Group</SAMP></A>
   directive (probably in <SAMP>conf/httpd.conf</SAMP>) needs to name a
   group that actually exists in the <SAMP>/etc/group</SAMP> file (or
   your system's equivalent).
   </P>
   <HR>
  </LI>
+
  <LI><A NAME="cookies1">
       <STRONG>Why does Apache send a cookie on every response?</STRONG>
      </A>
   <P>
   Apache does <EM>not</EM> send automatically send a cookie on every
   response, unless you have re-compiled it with the
-  <A
-   HREF="../mod/mod_cookies.html"
-  ><SAMP>mod_cookies</SAMP></A>
+  <A HREF="../mod/mod_cookies.html"><SAMP>mod_cookies</SAMP></A>
   module.
   This module was distributed with Apache prior to 1.2.
   This module may help track users, and uses cookies to do this. If
   you are not using the data generated by <SAMP>mod_cookies</SAMP>, do
   not compile it into Apache. Note that in 1.2 this module was renamed
   to the more correct name
-  <A
-   HREF="../mod/mod_usertrack.html"
-  ><SAMP>mod_usertrack</SAMP></A>,
+  <A HREF="../mod/mod_usertrack.html"><SAMP>mod_usertrack</SAMP></A>,
   and cookies
   have to be specifically enabled with the
-  <A
-    HREF="../mod/mod_usertrack.html#cookietracking"
+  <A HREF="../mod/mod_usertrack.html#cookietracking"
   ><SAMP>CookieTracking</SAMP></A>
   directive.
   </P>
   <HR>
  </LI>
+
  <LI><A NAME="cookies2">
       <STRONG>Why don't my cookies work, I even compiled in
       <SAMP>mod_cookies</SAMP>?
@@ -1165,9 +1117,7 @@
   <P>
   Firstly, you do <EM>not</EM> need to compile in
   <SAMP>mod_cookies</SAMP> in order for your scripts to work (see the
-  <A
-   HREF="#cookies1"
-  >previous question</A>
+  <A HREF="#cookies1">previous question</A>
   for more about <SAMP>mod_cookies</SAMP>). Apache passes on your
   <SAMP>Set-Cookie</SAMP> header fine, with or without this module. If
   cookies do not work it will be because your script does not work
@@ -1176,7 +1126,8 @@
   </P>
   <HR>
  </LI>
- <LI><A NAME="jdk1-and-http1.1">
+
+ <LI><A name="jdk1-and-http1.1">
       <STRONG>Why do my Java app[let]s give me plain text when I request
       an URL from an Apache server?</STRONG>
      </A>
@@ -1221,13 +1172,13 @@
   </P>
   <P>
   More information about this issue can be found in the
-  <A
-   HREF="http://www.apache.org/info/jdk-102.html"
+  <A HREF="http://www.apache.org/info/jdk-102.html"
   ><CITE>Java and HTTP/1.1</CITE></A>
   page at the Apache web site.
   </P>
   <HR>
  </LI>
+
  <LI><A NAME="putsupport">
       <STRONG>Why can't I publish to my Apache server using PUT on
       Netscape Gold and other programs?</STRONG>
@@ -1238,12 +1189,12 @@
   There are several available, but they may have security problems.
   Using FTP uploads may be easier and more secure, at least for now.
   For more information, see the <CITE>Apache Week</CITE> article
-  <A
-   HREF="http://www.apacheweek.com/features/put"
+  <A HREF="http://www.apacheweek.com/features/put"
   ><CITE>Publishing Pages with PUT</CITE></A>.
   </P>
   <HR>
  </LI>
+
  <LI><A NAME="fastcgi">
       <STRONG>Why isn't FastCGI included with Apache any more?</STRONG>
      </A>
@@ -1251,8 +1202,7 @@
   The simple answer is that it was becoming too difficult to keep the
   version being included with Apache synchronized with the master copy
   at the
-  <A
-   HREF="http://www.fastcgi.com/servers/apache/"
+  <A HREF="http://www.fastcgi.com/servers/apache/"
   >FastCGI web site</A>.  When a new version of Apache was released, the
   version of the FastCGI module included with it would soon be out of date.
   </P>
@@ -1262,6 +1212,7 @@
   </P>
   <HR>
  </LI>
+
  <LI><A NAME="nodelay">
       <STRONG>Why am I getting &quot;<SAMP>httpd: could not set socket
       option TCP_NODELAY</SAMP>&quot; in my error log?</STRONG>
@@ -1274,6 +1225,7 @@
   </P>
   <HR>
  </LI>
+
  <LI><A NAME="peerreset">
       <STRONG>Why am I getting &quot;<SAMP>connection reset by
       peer</SAMP>&quot; in my error log?</STRONG>
@@ -1288,6 +1240,7 @@
   </P>
   <HR>
  </LI>
+
  <LI><A NAME="nph-scripts">
       <STRONG>How can I get my script's output without Apache buffering
       it?  Why doesn't my server push work?</STRONG>
@@ -1350,6 +1303,7 @@
   </P>
   <HR>
  </LI>
+
  <LI><A NAME="linuxiovec">
       <STRONG>Why do I get complaints about redefinition
       of &quot;<CODE>struct iovec</CODE>&quot; when
@@ -1374,6 +1328,7 @@
   </P>
   <HR>
  </LI>
+
  <LI><A NAME="wheres-the-dump">
       <STRONG>The errorlog says Apache dumped core, but where's the dump
       file?</STRONG>
@@ -1400,8 +1355,7 @@
   <A HREF="../mod/core.html#serverroot">ServerRoot</A>
   directory. As of Apache version 1.3, the location can be set <EM>via</EM>
   the
-  <A
-   HREF="../mod/core.html#coredumpdirectory"
+  <A HREF="../mod/core.html#coredumpdirectory"
   ><SAMP>CoreDumpDirectory</SAMP></A>
   directive to a different directory. Make sure that this directory is
   writable by the user the server runs as (as opposed to the user the server
@@ -1409,6 +1363,7 @@
   </P>
   <HR>
  </LI>
+
  <LI><A NAME="dnsauth">
       <STRONG>Why isn't restricting access by host or domain name
       working correctly?</STRONG>
@@ -1455,6 +1410,7 @@
   </OL>
   <HR>
  </LI>
+
  <LI><A NAME="SSL-i">
       <STRONG>Why doesn't Apache include SSL?</STRONG>
      </A>
@@ -1470,24 +1426,22 @@
   </P>
   <P>
   Some SSL implementations of Apache are available, however; see the
-  &quot;<A
-         HREF="http://www.apache.org/related_projects.html"
+  &quot;<A HREF="http://www.apache.org/related_projects.html"
         >related projects</A>&quot;
   page at the main Apache web site.
   </P>
   <P>
   You can find out more about this topic in the <CITE>Apache Week</CITE>
   article about
-  <A
-   HREF="http://www.apacheweek.com/features/ssl"
-   REL="Help"
+  <A HREF="http://www.apacheweek.com/features/ssl" REL="Help"
   ><CITE>Apache and Secure Transactions</CITE></A>.
   </P>
   <HR>
  </LI>
+
  <LI><A NAME="HPUX-core">
        <STRONG>Why do I get core dumps under HPUX using HP's ANSI
-               C compiler?</STRONG>
+       C compiler?</STRONG>
       </A>
   <P>
   We have had numerous reports of Apache dumping core when compiled
@@ -1496,6 +1450,7 @@
   </P>
   <HR>
  </LI>
+
  <LI><A NAME="midi">
       <STRONG>How do I get Apache to send a MIDI file so the browser can
       play it?</STRONG>
@@ -1531,9 +1486,10 @@
   </OL>
   <HR>
  </LI>
+
  <LI><A NAME="cantbuild">
-       <STRONG>Why won't Apache compile with my system's
-       <SAMP>cc</SAMP>?</STRONG>
+      <STRONG>Why won't Apache compile with my system's
+      <SAMP>cc</SAMP>?</STRONG>
      </A>
   <P>
   If the server won't compile on your system, it is probably due to one
@@ -1577,27 +1533,22 @@
   platforms there are.  If you have verified that none of the above
   issues is the cause of your problem, and it hasn't been reported
   before, please submit a
-  <A
-   HREF="http://www.apache.org/bug_report.html"
-  >problem report</A>.
+  <A HREF="http://www.apache.org/bug_report.html">problem report</A>.
   Be sure to include <EM>complete</EM> details, such as the compiler
   &amp; OS versions and exact error messages.
   </P>
   <HR>
  </LI>
+
  <LI><A NAME="addlog">
       <STRONG>How do I add browsers and referrers to my logs?</STRONG>
      </A>
   <P>
   Apache provides a couple of different ways of doing this.  The
   recommended method is to compile the
-  <A
-   HREF="../mod/mod_log_config.html"
-  ><SAMP>mod_log_config</SAMP></A>
+  <A HREF="../mod/mod_log_config.html"><SAMP>mod_log_config</SAMP></A>
   module into your configuration and use the
-  <A
-   HREF="../mod/mod_log_config.html#customlog"
-  ><SAMP>CustomLog</SAMP></A>
+  <A HREF="../mod/mod_log_config.html#customlog"><SAMP>CustomLog</SAMP></A>
   directive.
   </P>
   <P>
@@ -1619,14 +1570,13 @@
   <P>
   You may want to check out the <CITE>Apache Week</CITE> article
   entitled:
-  &quot;<A
-         HREF="http://www.apacheweek.com/features/logfiles"
-         REL="Help"
+  &quot;<A HREF="http://www.apacheweek.com/features/logfiles" REL="Help"
         ><CITE>Gathering Visitor Information: Customising Your
          Logfiles</CITE></A>&quot;.
   </P>
   <HR>
  </LI>
+
  <LI><A NAME="bind8.1">
       <STRONG>Why do I get an error about an undefined reference to
       &quot;<SAMP>__inet_ntoa</SAMP>&quot; or other
@@ -1670,15 +1620,16 @@
   </P>
   <HR>
  </LI>
+
  <LI><A NAME="set-servername">
       <STRONG>Why does accessing directories only work when I include
-      the trailing "/"
+      the trailing &quot;/&quot;
       (<EM>e.g.</EM>,&nbsp;<SAMP>http://foo.domain.com/~user/</SAMP>)
       but not when I omit it
       (<EM>e.g.</EM>,&nbsp;<SAMP>http://foo.domain.com/~user</SAMP>)?</STRONG>
      </A>
   <P>
-  When you access a directory without a trailing "/", Apache needs
+  When you access a directory without a trailing &quot;/&quot;, Apache needs
   to send what is called a redirect to the client to tell it to
   add the trailing slash.  If it did not do so, relative URLs would
   not work properly.  When it sends the redirect, it needs to know
@@ -1694,6 +1645,7 @@
   </P>
   <HR>
  </LI>
+
  <LI><A NAME="user-authentication">
       <STRONG>How do I set up Apache to require a username and
       password to access certain documents?</STRONG>
@@ -1706,39 +1658,32 @@
   </P>
   <P>
   For an explanation on how to implement these restrictions, see
-  <A
-   HREF="http://www.apacheweek.com/"
-  ><CITE>Apache Week</CITE></A>'s
+  <A HREF="http://www.apacheweek.com/"><CITE>Apache Week</CITE></A>'s
   articles on
-  <A
-   HREF="http://www.apacheweek.com/features/userauth"
+  <A HREF="http://www.apacheweek.com/features/userauth"
   ><CITE>Using User Authentication</CITE></A>
   or
-  <A
-   HREF="http://www.apacheweek.com/features/dbmauth"
+  <A HREF="http://www.apacheweek.com/features/dbmauth"
   ><CITE>DBM User Authentication</CITE></A>.
   </P>
   <HR>
  </LI>
+
  <LI><A NAME="remote-user-var">
-         <STRONG>Why is the environment variable 
-         <SAMP>REMOTE_USER</SAMP> not set?</STRONG>
-         </A>
+      <STRONG>Why is the environment variable 
+      <SAMP>REMOTE_USER</SAMP> not set?</STRONG>
+     </A>
   <P>
   This variable is set and thus available in SSI or CGI scripts <STRONG>if and
   only if</STRONG> the requested document was protected by access
   authentication.  For an explanation on how to implement these restrictions,
   see
-  <A
-   HREF="http://www.apacheweek.com/"
-  ><CITE>Apache Week</CITE></A>'s
+  <A HREF="http://www.apacheweek.com/"><CITE>Apache Week</CITE></A>'s
   articles on
-  <A
-   HREF="http://www.apacheweek.com/features/userauth"
+  <A HREF="http://www.apacheweek.com/features/userauth"
   ><CITE>Using User Authentication</CITE></A>
   or
-  <A
-   HREF="http://www.apacheweek.com/features/dbmauth"
+  <A HREF="http://www.apacheweek.com/features/dbmauth"
   ><CITE>DBM User Authentication</CITE></A>.
   </P>
   <P>
@@ -1750,6 +1695,7 @@
   </P>
   <HR>
  </LI>
+
  <LI><A NAME="remote-auth-only">
       <STRONG>How do I set up Apache to allow access to certain
       documents only if a site is either a local site <EM>or</EM>
@@ -1789,14 +1735,12 @@
   </P>
   <HR>
  </LI>
+
  <LI><A NAME="no-info-directives">
       <STRONG>Why doesn't mod_info list any directives?</STRONG>
      </A>
   <P>
-  The
-  <A
-   HREF="../mod/mod_info.html"
-  ><SAMP>mod_info</SAMP></A>
+  The <A HREF="../mod/mod_info.html"><SAMP>mod_info</SAMP></A>
   module allows you to use a Web browser to see how your server is
   configured.  Among the information it displays is the list modules and
   their configuration directives.  The &quot;current&quot; values for
@@ -1806,18 +1750,17 @@
   reloaded, the display will will not match the values actively in use.
   If the files and the path to the files are not readable by the user as
   which the server is running (see the
-  <A
-   HREF="../mod/core.html#user"
-  ><SAMP>User</SAMP></A>
+  <A HREF="../mod/core.html#user"><SAMP>User</SAMP></A>
   directive), then <SAMP>mod_info</SAMP> cannot read them in order to
   list their values.  An entry <EM>will</EM> be made in the error log in
   this event, however.
   </P>
   <HR>
  </LI>
+
  <LI><A NAME="linux-shmget">
-      <STRONG>When I run it under Linux I get "shmget:
-      function not found", what should I do?</STRONG>
+      <STRONG>When I run it under Linux I get &quot;shmget:
+      function not found&quot;, what should I do?</STRONG>
      </A>
   <P>
   Your kernel has been built without SysV IPC support.  You will have to
@@ -1840,6 +1783,7 @@
   </P>
   <HR>
  </LI>
+
  <LI><A NAME="authauthoritative">
       <STRONG>Why does my authentication give me a server error?</STRONG>
      </A>
@@ -1896,6 +1840,7 @@
   </P>
   <HR>
  </LI>
+
  <LI><A NAME="auth-on-same-machine">
       <STRONG>Do I have to keep the (mSQL) authentication information
       on the same machine?</STRONG>
@@ -1916,6 +1861,7 @@
   </P>
   <HR>
  </LI>
+
  <LI><A NAME="msql-slow">
       <STRONG>Why is my mSQL authentication terribly slow?</STRONG>
      </A>
@@ -1930,66 +1876,60 @@
   </P>
   <HR>
  </LI>
+
  <LI><A NAME="rewrite-more-config">
-          <STRONG>Where can I find mod_rewrite rulesets which already solve
-          particular URL-related problems?</STRONG>
+      <STRONG>Where can I find mod_rewrite rulesets which already solve
+      particular URL-related problems?</STRONG>
      </A>
   <P>
   There is a collection of 
-  <A
-      HREF="http://www.engelschall.com/pw/apache/rewriteguide/"
+  <A HREF="http://www.engelschall.com/pw/apache/rewriteguide/"
   >Practical Solutions for URL-Manipulation</A>
   where you can
   find all typical solutions the author of 
-  <A
-   HREF="../mod/mod_rewrite.html"
-  ><SAMP>mod_rewrite</SAMP></A> 
+  <A HREF="../mod/mod_rewrite.html"><SAMP>mod_rewrite</SAMP></A> 
   currently knows of. If you have more
   interesting rulesets which solve particular problems not currently covered in
   this document, send it to 
-  <A
-      HREF="mailto:rse@apache.org"
-  >Ralf S. Engelschall</A>
+  <A HREF="mailto:rse@apache.org">Ralf S. Engelschall</A>
   for inclusion. The
   other webmasters will thank you for avoiding the reinvention of the wheel.
   </P>
   <HR>
  </LI>
+
  <LI><A NAME="rewrite-article">
-          <STRONG>Where can I find any published information about URL-manipulations and
-          mod_rewrite?</STRONG>
+      <STRONG>Where can I find any published information about
+      URL-manipulations and mod_rewrite?</STRONG>
      </A>
   <P>
   There is an article from 
-  <A
-      HREF="mailto:rse@apache.org"
+  <A HREF="mailto:rse@apache.org"
   >Ralf S. Engelschall</A>
   about URL-manipulations based on
-  <A
-   HREF="../mod/mod_rewrite.html"
-  ><SAMP>mod_rewrite</SAMP></A> 
+  <A HREF="../mod/mod_rewrite.html"><SAMP>mod_rewrite</SAMP></A> 
   in the &quot;iX Multiuser Multitasking Magazin&quot; issue #12/96. The
   german (original) version
   can be read online at 
-  <A
-      HREF="http://www.heise.de/ix/artikel/9612149/"
-  >http://www.heise.de/ix/artikel/9612149/</A>,
+  &lt;<A HREF="http://www.heise.de/ix/artikel/9612149/"
+      >http://www.heise.de/ix/artikel/9612149/</A>&gt;,
   the English (translated) version can be found at 
-  <A
-      HREF="http://www.heise.de/ix/artikel/E/9612149/"
-  >http://www.heise.de/ix/artikel/E/9612149/</A>.
+  &lt;<A HREF="http://www.heise.de/ix/artikel/E/9612149/"
+      >http://www.heise.de/ix/artikel/E/9612149/</A>&gt;.
   </P>
   <HR>
  </LI>
+
  <LI><A NAME="rewrite-complexity">
-          <STRONG>Why is mod_rewrite so difficult to learn and seems so
-          complicated?</STRONG>
+      <STRONG>Why is mod_rewrite so difficult to learn and seems so
+      complicated?</STRONG>
      </A>
   <P>
   Hmmm... there are a lot of reasons. First, mod_rewrite itself is a powerful
-  module which can help you in really <STRONG>all</STRONG> aspects of URL rewriting, so
-  it can be no trivial module per definition. To accomplish its hard job it
-  uses software leverage and makes use of a powerful regular expression
+  module which can help you in really <STRONG>all</STRONG> aspects of URL
+  rewriting, so it can be no trivial module per definition. To accomplish
+  its hard job it uses software leverage and makes use of a powerful regular
+  expression
   library by Henry Spencer which is an integral part of Apache since its
   version 1.2.  And regular expressions itself can be difficult to newbies,
   while providing the most flexible power to the advanced hacker. 
@@ -2007,9 +1947,10 @@
   </P>
   <HR>
  </LI>
+
  <LI><A NAME="rewrite-dontwork">
-          <STRONG>What can I do if my RewriteRules don't work as expected?
-          </STRONG>
+      <STRONG>What can I do if my RewriteRules don't work as expected?
+      </STRONG>
      </A>
   <P>
   Use &quot;<SAMP>RewriteLog somefile</SAMP>&quot; and
@@ -2019,6 +1960,7 @@
   </P>
   <HR>
  </LI>
+
  <LI><A NAME="rewrite-prefixdocroot"><STRONG>Why don't some of my URLs
       get prefixed with DocumentRoot when using mod_rewrite?</STRONG>
      </A>
@@ -2033,9 +1975,10 @@
   </P>
   <HR>
  </LI>
+
  <LI><A NAME="rewrite-nocase">
-          <STRONG>How can I make all my URLs case-insensitive with mod_rewrite?
-          </STRONG>
+      <STRONG>How can I make all my URLs case-insensitive with mod_rewrite?
+      </STRONG>
      </A>
   <P>
   You can't! The reason is: First, case translations for arbitrary length URLs
@@ -2055,9 +1998,9 @@
   </P>
   <HR>
  </LI>
+
  <LI><A NAME="rewrite-virthost">
-          <STRONG> Why are RewriteRules in my VirtualHost parts ignored?
-          </STRONG>
+      <STRONG> Why are RewriteRules in my VirtualHost parts ignored?</STRONG>
      </A>
   <P>
   Because you have to enable the engine for every virtual host explicitly due
@@ -2066,9 +2009,10 @@
   </P>
   <HR>
  </LI>
+
  <LI><A NAME="rewrite-envwhitespace">
-          <STRONG> How can I use strings with whitespaces in RewriteRule's ENV
-          flag?</STRONG>
+      <STRONG> How can I use strings with whitespaces in RewriteRule's ENV
+      flag?</STRONG>
      </A>
   <P>
   There is only one ugly solution: You have to surround the complete flag
@@ -2079,8 +2023,10 @@
   </P>
   <HR>
  </LI>
- <LI><A NAME="cgi-spec"><STRONG>Where can I find the &quot;CGI
-      specification&quot;?</STRONG></A>
+
+ <LI><A NAME="cgi-spec">
+      <STRONG>Where can I find the &quot;CGI specification&quot;?</STRONG>
+     </A>
   <P>
   The Common Gateway Interface (CGI) specification can be found at
   the original NCSA site 
@@ -2089,8 +2035,15 @@
   This version hasn't been updated since 1995, and there have been
   some efforts to update it.  
   </P>
+  <P>
+  A new draft is being worked on with the intent of making it an informational
+  RFC; you can find out more about this project at
+  &lt;<A HREF="http://web.golux.com/coar/cgi/"
+      ><SAMP>http://web.golux.com/coar/cgi/</SAMP></A>&gt;.
+  </P>
   <HR>
  </LI>
+
  <LI><A NAME="year2000">
       <STRONG>Is Apache Year 2000 compliant?</STRONG>
      </A>
@@ -2112,12 +2065,9 @@
   <P>
   Some aspects of Apache's output may use two-digit years, such as the
   automatic listing of directory contents provided by
-  <A
-   HREF="../mod/mod_autoindex.html"
-  ><SAMP>mod_autoindex</SAMP></A>
+  <A HREF="../mod/mod_autoindex.html"><SAMP>mod_autoindex</SAMP></A>
   with the
-  <A
-   HREF="../mod/mod_autoindex.html#indexoptions"
+  <A HREF="../mod/mod_autoindex.html#indexoptions"
   ><SAMP>FancyIndexing</SAMP></A>
   option enabled, but it is improper to depend upon such displays for
   specific syntax.  And even that issue is being addressed by the
@@ -2136,6 +2086,7 @@
   </P>
   <HR>
  </LI>
+
  <LI><A NAME="namevhost">
       <STRONG>I upgraded to Apache 1.3b and now my virtual hosts don't
       work!</STRONG>
@@ -2149,8 +2100,7 @@
   </P>
   <P>
   Apache 1.3b2 introduced a new directive,
-  <A
-   HREF="http://www.apache.org/docs/mod/core.html#namevirtualhost"
+  <A HREF="http://www.apache.org/docs/mod/core.html#namevirtualhost"
   ><SAMP>NameVirtualHost</SAMP></A>,
   which simplifies the rules quite a bit.  However, changing the rules
   like this means that your existing name-based
@@ -2184,91 +2134,148 @@
   <HR>
  </LI>
 
- <li><a name="redhat"><strong>I'm using RedHat Linux and I have problems with httpd
-    dying randomly or not restarting properly</strong></a>
+ <LI><A NAME="redhat">
+      <STRONG>I'm using RedHat Linux and I have problems with httpd
+      dying randomly or not restarting properly</STRONG>
+     </A>
 
-    <p>RedHat Linux versions 4.x (and possibly earlier) rpms contain
-    various nasty scripts which do not stop or restart Apache properly.
-    These can affect you even if you're not running the RedHat supplied
-    rpms.
+  <P>
+  RedHat Linux versions 4.x (and possibly earlier) rpms contain
+  various nasty scripts which do not stop or restart Apache properly.
+  These can affect you even if you're not running the RedHat supplied
+  rpms.
+  </P>
+  <P>
+  If you're using the default install then you're probably running
+  Apache 1.1.3, which is outdated.  From RedHat's ftp site you can
+  pick up a more recent RPM for Apache 1.2.x.  This will solve one of
+  the problems.
+  </P>
+  <P>
+  If you're using a custom built Apache rather than the RedHat rpms
+  then you should <CODE>rpm -e apache</CODE>.  In particular you want
+  the mildly broken <CODE>/etc/logrotate.d/apache</CODE> script to be
+  removed, and you want the broken <CODE>/etc/rc.d/init.d/httpd</CODE>
+  (or <CODE>httpd.init</CODE>) script to be removed.  The latter is
+  actually fixed by the apache-1.2.5 rpms but if you're building your
+  own Apache then you probably don't want the RedHat files.
+  </P>
+  <P>
+  We can't stress enough how important it is for folks, <EM>especially
+  vendors</EM> to follow the <A HREF="../stopping.html">stopping Apache
+  directions</A> given in our documentation.  In RedHat's defense,
+  the broken scripts were necessary with Apache 1.1.x because the
+  Linux support in 1.1.x was very poor, and there were various race
+  conditions on all platforms.  None of this should be necessary with
+  Apache 1.2 and later.
+  </P>
+  <HR>
+ </LI>
 
-    <p> If you're using the default install then you're probably running
-    Apache 1.1.3, which is outdated.  From RedHat's ftp site you can
-    pick up a more recent RPM for Apache 1.2.x.  This will solve one of
-    the problems.
+ <LI><A NAME="stopping">
+      <STRONG>I upgraded from an Apache version earlier
+      than 1.2.0 and suddenly I have problems with Apache dying randomly
+      or not restarting properly</STRONG>
+     </A>
 
-    <p> If you're using a custom built Apache rather than the RedHat rpms
-    then you should <code>rpm -e apache</code>.  In particular you want
-    the mildly broken <code>/etc/logrotate.d/apache</code> script to be
-    removed, and you want the broken <code>/etc/rc.d/init.d/httpd</code>
-    (or <code>httpd.init</code>) script to be removed.  The latter is
-    actually fixed by the apache-1.2.5 rpms but if you're building your
-    own Apache then you probably don't want the RedHat files.
+  <P>
+  You should read <A HREF="#redhat">the previous note</A> about
+  problems with RedHat installations.  It is entirely likely that your
+  installation has start/stop/restart scripts which were built for
+  an earlier version of Apache.  Versions earlier than 1.2.0 had
+  various race conditions that made it necessary to use
+  <CODE>kill -9</CODE> at times to take out all the httpd servers.
+  But that should not be necessary any longer.  You should follow
+  the <A HREF="../stopping.html">directions on how to stop
+  and restart Apache</A>.
+  </P>
+  <P>As of Apache 1.3 there is a script
+  <CODE>src/support/apachectl</CODE> which, after a bit of
+  customization, is suitable for starting, stopping, and restarting
+  your server.
+  </P>
+  <HR>
+ </LI>
 
-    <p>We can't stress enough how important it is for folks, <i>especially
-    vendors</i> to follow the <a href="../stopping.html">stopping Apache
-    directions</a> given in our documentation.  In RedHat's defense,
-    the broken scripts were necessary with Apache 1.1.x because the
-    Linux support in 1.1.x was very poor, and there were various race
-    conditions on all platforms.  None of this should be necessary with
-    Apache 1.2 and later.
-    </p>
-    <hr>
-  </li>
+ <LI><A NAME="redhat-htm">
+      <STRONG>I'm using RedHat Linux and my .htm files are showing
+      up as HTML source rather than being formatted!</STRONG>
+     </A>
 
-  <li><a name="stopping"><strong>I upgraded from an Apache version earlier
-    than 1.2.0 and suddenly I have problems with Apache dying randomly
-    or not restarting properly</strong></a>
+  <P>
+  RedHat messed up and forgot to put a content type for <CODE>.htm</CODE>
+  files into <CODE>/etc/mime.types</CODE>.  Edit <CODE>/etc/mime.types</CODE>,
+  find the line containing <CODE>html</CODE> and add <CODE>htm</CODE> to it.
+  Then restart your httpd server:
+  </P>
+  <DL>
+   <DD><CODE>kill -HUP `cat /var/run/httpd.pid`</CODE>
+   </DD>
+  </DL>
+  <P>
+  Then <STRONG>clear your browsers' caches</STRONG>.  (Many browsers won't
+  re-examine the content type after they've reloaded a page.)
+  </P>
+  <HR>
+ </LI>
 
-    <p>You should read <a href="#redhat">the previous note</a> about
-    problems with RedHat installations.  It is entirely likely that your
-    installation has start/stop/restart scripts which were built for
-    an earlier version of Apache.  Versions earlier than 1.2.0 had
-    various race conditions that made it necessary to use
-    <code>kill -9</code> at times to take out all the httpd servers.
-    But that should not be necessary any longer.  You should follow
-    the <a href="../stopping.html">directions on how to stop
-    and restart Apache</a>.
+ <LI><A NAME="glibc-crypt">
+      <STRONG>I'm using RedHat Linux 5.0, or some other 
+      <SAMP>glibc</SAMP>-based Linux system, and I get errors with the
+      <CODE>crypt</CODE> function when I attempt to build Apache 1.2.</STRONG>
+     </A>
 
-    <p>As of Apache 1.3 there is a script
-    <code>src/support/apachectl</code> which, after a bit of
-    customization, is suitable for starting, stopping, and restarting
-    your server.
-    </p>
-    <hr>
+  <P>
+  <SAMP>glibc</SAMP> puts the <CODE>crypt</CODE> function into a separate
+  library.  Edit your <CODE>src/Configuration</CODE> file and set this:
+  </P>
+  <DL>
+   <DD><CODE>EXTRA_LIBS=-lcrypt</CODE>
+   </DD>
+  </DL>
+  <P>
+  Then re-run <SAMP>src/Configure</SAMP> and re-execute the make.
+  </P>
+  <HR>
+ </LI>
 
-  </li>
+ <LI><A NAME="nfslocking">
+      <STRONG>Server hangs, or fails to start, and/or error log
+      fills with &quot;<SAMP>fcntl: F_SETLKW: No record locks
+      available</SAMP>&quot; or similar messages</STRONG>
+     </A>
 
-  <li><a name="redhat-htm"><strong>I'm using RedHat Linux and my .htm files are showing
-    up as html source rather than being formatted!</strong></a>
-
-    <p>RedHat messed up and forgot to put a content type for <code>.htm</code>
-    files into <code>/etc/mime.types</code>.  Edit <code>/etc/mime.types</code>,
-    find the line containing <code>html</code> and add <code>htm</code> to it.
-    Then restart your httpd server:
-    <pre>
-	kill -HUP `cat /var/run/httpd.pid`
-    </pre>
-    Then <b>clear your browsers' caches</b>.  (Many browsers won't re-examine
-    the content type after they've reloaded a page.)
-    </p>
-    <hr>
-
-  <li><a name="glibc-crypt"><strong>I'm using RedHat Linux 5.0, or some other glibc
-    based Linux system, and I get errors with the <code>crypt</code> function when
-    I attempt to build Apache 1.2.</strong></a>
-
-    <p>glibc puts the crypt function into a separate library.  Edit your
-    <code>src/Configuration</code> file and set this:
-    <pre>
-	EXTRA_LIBS=-lcrypt
-    </pre>
-    </p>
-    <hr>
-
+  <P>
+  These are symptoms of a fine locking problem, which usually means that
+  the server is trying to use a synchronisation file on an NFS filesystem.
+  </P>
+  <P>
+  Because of its parallel-operation model, the Apache Web server needs to
+  provide some form of synchronisation when accessing certain resources.
+  One of these synchronisation methods involves taking out locks on a file,
+  which means that the filesystem whereon the lockfile resides must support
+  locking.  In many cases this means it <EM>can't</EM> be kept on an
+  NFS-mounted filesystem.
+  </P>
+  <P>
+  To cause the Web server to work around the NFS locking limitations, include
+  a line such as the following in your server configuration files:
+  </P>
+  <DL>
+   <DD><CODE>LockFile /var/run/apache-lock</CODE>
+   </DD>
+  </DL>
+  <P>
+  The directory should not be generally writable (<EM>e.g.</EM>, don't use
+  <SAMP>/var/tmp</SAMP>).
+  See the <A HREF="../mod/core.html#lockfile"><SAMP>LockFile</SAMP></A>
+  documentation for more information.
+  </P>
+  <HR>
+ </LI>
   <!-- Don't forget to add HR tags at the end of each list item.. -->
 
 </OL>
- <!--#include virtual="footer.html" -->
+<!--#include virtual="footer.html" -->
 </BODY>
 </HTML>
