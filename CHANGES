@@ -49,6 +49,9 @@ Changes with Apache 2.0.23
 
   *) Use the prefork MPM by default on Unix.  [various]
 
+  *) Added a systray icon monitor application for Win32.
+     [Mladen Turk <mturk@mappingsoft.com>]
+
   *) mod_rewrite: Fix the line ending on some non-Unix systems for 
      messages written to the rewrite log.  
      [Richard Labennett <rlabenn@us.ibm.com>]
@@ -71,23 +74,23 @@ Changes with Apache 2.0.23
      caused #if, #elif, and #else expressions containing backslashes
      to be improperly evaluated.  [Cliff Woolley]
 
-  *) Introduced new mod_autoindex IndexOptions flags; SuppressIcon to 
+  *) Introduced new mod_autoindex IndexOptions flags: SuppressIcon to 
      drop the icon column, SuppressRules to drop the <hr> elements, 
      and HTMLTable to create rudimentary HTML table listings (implies 
      FancyIndexing).  [William Rowe]
 
-  *) Re-Introduced the mod_autoindex IndexOptions flag TrackModified
+  *) Re-introduced the mod_autoindex IndexOptions flag TrackModified
      from Apache 1.3.15.  This is needed for two reasons, first, given
      multiple machines within a server farm, ETags and Last-Modified 
      stamps won't correspond from machine to machine, and second, many 
      Unixes don't capture changes to the date or time stamp of existing 
      files, since these don't modify the dirent itself.  [William Rowe]
 
-  *) Re-Introduced the mod_autoindex InextOptions flag FoldersFirst 
+  *) Re-introduced the mod_autoindex IndexOptions flag FoldersFirst 
      and DirectoryWidth options from Apache 1.3.10. 
      [William Rowe, Ken Coar]
 
-  *) Eliminated FancyIndexing directive, depricated early in Apache
+  *) Eliminated FancyIndexing directive, deprecated early in Apache
      1.3 by the IndexOptions FancyIndexing syntax.  [William Rowe]
 
   *) mod_autoindex now excludes any file names that would result in
