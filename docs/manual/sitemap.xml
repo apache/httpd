@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE sitemap SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
-<!-- $Revision: 1.37 $ -->
+<!-- $Revision: 1.38 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -130,7 +130,6 @@ Server on HPUX</page>
 <category id="misc">
 <title>Apache Miscellaneous Documentation</title>
 <page separate="yes" href="misc/">Overview</page>
-<page href="cgi_path.html">PATH_INFO Changes in the CGI Environment</page>
 <page href="misc/relevant_standards.html">Relevant Standards</page>
 </category>
 
