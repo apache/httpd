@@ -1,5 +1,9 @@
 Changes with Apache 2.0.50
 
+  *) mod_isapi: GetServerVariable returned improperly terminated header 
+     fields given "ALL_HTTP" or "ALL_RAW".  PR 20656.
+     [Jesse Pelton <jsp pkc.com>]
+
   *) mod_isapi: GetServerVariable("ALL_RAW") returned the wrong buffer
      size.  PR 20617.  [Jesse Pelton <jsp pkc.com>]
 

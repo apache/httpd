@@ -495,7 +495,7 @@ int APR_THREAD_FUNC GetServerVariable (isapi_cid    *cid,
 
     if (!strcmp(variable_name, "ALL_HTTP")) 
     {
-        /* lf delimited, colon split, comma seperated and 
+        /* crlf delimited, colon split, comma separated and 
          * null terminated list of HTTP_ vars 
          */
         const apr_array_header_t *arr = apr_table_elts(r->subprocess_env);
@@ -504,7 +504,7 @@ int APR_THREAD_FUNC GetServerVariable (isapi_cid    *cid,
 
         for (len = 0, i = 0; i < arr->nelts; i++) {
             if (!strncmp(elts[i].key, "HTTP_", 5)) {
-                len += strlen(elts[i].key) + strlen(elts[i].val) + 2;
+                len += strlen(elts[i].key) + strlen(elts[i].val) + 3;
             }
         }
   
@@ -521,6 +521,7 @@ int APR_THREAD_FUNC GetServerVariable (isapi_cid    *cid,
                 *(((char*)buf_data)++) = ':';
                 strcpy(buf_data, elts[i].val);
                 ((char*)buf_data) += strlen(elts[i].val);
+                *(((char*)buf_data)++) = '\r';
                 *(((char*)buf_data)++) = '\n';
             }
         }
@@ -532,7 +533,7 @@ int APR_THREAD_FUNC GetServerVariable (isapi_cid    *cid,
     
     if (!strcmp(variable_name, "ALL_RAW")) 
     {
-        /* lf delimited, colon split, comma seperated and 
+        /* crlf delimited, colon split, comma separated and 
          * null terminated list of the raw request header
          */
         const apr_array_header_t *arr = apr_table_elts(r->headers_in);
@@ -540,7 +541,7 @@ int APR_THREAD_FUNC GetServerVariable (isapi_cid    *cid,
         int i;
 
         for (len = 0, i = 0; i < arr->nelts; i++) {
-            len += strlen(elts[i].key) + strlen(elts[i].val) + 3;
+            len += strlen(elts[i].key) + strlen(elts[i].val) + 4;
         }
   
         if (*buf_size < len + 1) {
@@ -556,6 +557,7 @@ int APR_THREAD_FUNC GetServerVariable (isapi_cid    *cid,
             *(((char*)buf_data)++) = ' ';
             strcpy(buf_data, elts[i].val);
             ((char*)buf_data) += strlen(elts[i].val);
+            *(((char*)buf_data)++) = '\r';
             *(((char*)buf_data)++) = '\n';
         }
         *(((char*)buf_data)++) = '\0';
