@@ -1140,7 +1140,7 @@ if [ "x$using_shlib" = "x1" ] ; then
 		*/gcc|gcc ) CFLAGS_SHLIB="-fpic" ;;
 		*/cc|cc   ) CFLAGS_SHLIB="" ;;
 	    esac
-	    LDFLAGS_SHLIB="-shared -expect_unresolved '*' -s"
+	    LDFLAGS_SHLIB='-shared -expect_unresolved "*" -s'
 	    LDFLAGS_MOD_SHLIB=$LDFLAGS_SHLIB
 	    LDFLAGS_SHLIB_EXPORT=""
 	    ;;
