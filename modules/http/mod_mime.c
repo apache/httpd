@@ -191,6 +191,24 @@ static void overlay_extension_mappings(apr_pool_t *p,
             if (overlay_info->charset_type) {
                 base_info->charset_type = overlay_info->charset_type;
             }
+            if (overlay_info->input_filters) {
+                /* We need to concat the filters */
+                if (base_info->input_filters)
+                    base_info->input_filters = apr_pstrcat(p, 
+                                            base_info->input_filters, ";", 
+                                            overlay_info->input_filters, NULL);
+                else
+                    base_info->input_filters = overlay_info->input_filters;
+            }
+            if (overlay_info->output_filters) {
+                /* We need to concat the filters */
+                if (base_info->output_filters)
+                    base_info->output_filters = apr_pstrcat(p, 
+                                           base_info->output_filters, ";", 
+                                           overlay_info->output_filters, NULL);
+                else
+                    base_info->output_filters = overlay_info->output_filters;
+            }
         }
         else {
             apr_hash_set(base, key, klen, overlay_info);
