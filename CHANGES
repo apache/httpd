@@ -2,6 +2,15 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_proxy.c and proxy_util.c: Enable compiling on 2.0-HEAD 
+     (for backwards compatibility):
+     Avoids mod_ssl.h (not included in 2.0-HEAD) and
+     use apr_socket_create_ex for 0.9.x 
+     [Mladen Turk]
+
+  *) Added proxy_ajp.c module for proxy support to ajp:// backends.
+     [Jean Frederic Clere]
+
   *) SECURITY: CAN-2004-0748 (cve.mitre.org)
      mod_ssl: Fix a potential infinite loop.  PR 29964.  [Joe Orton]
 

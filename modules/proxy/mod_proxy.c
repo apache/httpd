@@ -20,7 +20,13 @@
 #include "mod_core.h"
 
 #include "apr_optional.h"
+
+#if (MODULE_MAGIC_NUMBER_MAJOR > 20020903)
 #include "mod_ssl.h"
+#else
+APR_DECLARE_OPTIONAL_FN(int, ssl_proxy_enable, (conn_rec *));
+APR_DECLARE_OPTIONAL_FN(int, ssl_engine_disable, (conn_rec *));
+#endif
 
 #ifndef MAX
 #define MAX(x,y) ((x) >= (y) ? (x) : (y))
