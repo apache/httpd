@@ -12,5 +12,9 @@ html: $(htmlfiles)
 #	xsl-c -HTML -OUT $@ -IN ./manual.xsl 
 
 # Xalan-C++ users use this:
+#%.html : %.xml
+#	Xalan -v -o $@ $< ./manual.xsl 
+
+# Xalan-J users use this:
 %.html : %.xml
-	Xalan -v -o $@ $< ./manual.xsl 
+	java org.apache.xalan.xslt.Process -in $< -out $@ -xsl manual.xsl
