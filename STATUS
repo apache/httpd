@@ -27,7 +27,8 @@ Available Patches:
 
     * M.D.Parker's [PATCH] mod_status/1448: Status Information have version
 	<Pine.LNX.3.95dg3.971121113953.29532D-100000@twinlark.arctic.org>
-	Status: Dean +1, Martin +1, Alexei -1 (shared lib concerns)
+	Status: Dean +1, Martin +0 (duplicates /server-info?server),
+		Alexei -1 (shared lib concerns)
 
     * Ralf's [PATCH] New RewriteMap types for mod_rewrite
       <199802121518.QAA27349@en1.engelschall.com>
@@ -39,7 +40,7 @@ Available Patches:
 
     * Doug's [PATCH] unbind cpu option for aix
       <34EA1E72.E79AA3D2@telebusiness.co.nz>
-      Status: Doug +1, Jim +1
+      Status: Doug +1, Jim +1, Martin +1
 
 Concepts:
 
@@ -105,10 +106,10 @@ Open issues:
     * Provide consistant prefixes; suggestions:
 
       Apache provided general functions (e.g., ap_cpystrn)
-	ap_xxx: Ken +1, Brian +1, Ralf +1
+	ap_xxx: Ken +1, Brian +1, Ralf +1, Martin +1
 
       Public API functions (e.g., palloc)
-	apapi_xxx: Ken +1, Brian +1, Ralf +1
+	apapi_xxx: Ken +1, Brian +1, Ralf +1, Martin +1
 	appublic_xxx:
 	appub_xxx:
 
@@ -154,8 +155,9 @@ Open issues:
     * root's environment is inherited by the Apache server. Jim, Ken &
       Dean thinks we should recommend using 'env' to build the
       appropriate environment. Marc and Alexei don't see any
-      big deal.
+      big deal. Martin says that not every "env" has a -u flag.
 
+    * Ken suggests that new check_cmd_context() and related defines
       should be non-static and in util_* so modules can use 'em.  (He
       didn't notice this flaw during the review.)
 
