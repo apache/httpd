@@ -700,3 +700,32 @@ API_EXPORT(int) ap_os_is_filename_valid(const char *file)
 
     return 1;
 }
+
+
+API_EXPORT(ap_os_dso_handle_t) ap_os_dso_load(const char *module_name)
+{
+    ap_os_dso_handle_t dsoh;
+    char path[MAX_PATH], *p;
+    /* Load the module...
+     * per PR2555, the LoadLibraryEx function is very picky about slashes.
+     * Debugging on NT 4 SP 6a reveals First Chance Exception within NTDLL.
+     * LoadLibrary in the MS PSDK also reveals that it -explicitly- states
+     * that backslashes must be used.
+     *
+     * Transpose '\' for '/' in the filename.
+     */
+    ap_cpystrn(path, module_name, MAX_PATH);
+    p = path;
+    while (p = strchr(p, '/'))
+        *p = '\\';
+    
+    /* First assume the dso/dll's required by -this- dso are sitting in the 
+     * same path or can be found in the usual places.  Failing that, let's
+     * let that dso look in the apache root.
+     */
+    dsoh = LoadLibraryEx(path, NULL, LOAD_WITH_ALTERED_SEARCH_PATH);
+    if (!dsoh) {
+        dsoh = LoadLibraryEx(path, NULL, 0);
+    }
+    return dsoh;
+}

@@ -85,7 +85,6 @@
 #include "http_log.h"
 #include "util_script.h"
 #include <stdlib.h>
-
 /* We use the exact same header file as the original */
 #include <HttpExt.h>
 
@@ -140,7 +139,6 @@ int isapi_handler (request_rec *r) {
     isapi_cid *cid = ap_pcalloc(r->pool, sizeof(isapi_cid));
     table *e = r->subprocess_env;
     DWORD read;
-    char *fspec;
     char *p;
     int retval;
     int res;
@@ -156,56 +154,38 @@ int isapi_handler (request_rec *r) {
     if (S_ISDIR(r->finfo.st_mode))
         return FORBIDDEN;
 
-    /* Load the module...
-     * per PR2555, the LoadLibraryEx function is very picky about slashes.
-     * Debugging on NT 4 SP 6a reveals First Chance Exception within NTDLL.
-     * LoadLibrary in the MS PSDK also reveals that it -explicitly- states
-     * that backslashes must be used.
-     *
-     * Transpose '\' for '/' in the filename.
-     */
-    p = fspec = ap_pstrdup(r->pool, r->filename);
-    while (*p) {
-        if (*p == '/')
-            *p = '\\';
-        ++p;
-    }
-
-    if (!(isapi_handle = LoadLibraryEx(fspec, NULL,
-                                       LOAD_WITH_ALTERED_SEARCH_PATH))) {
-        if (!(isapi_handle = LoadLibraryEx(fspec, NULL, 0))) {
-            ap_log_rerror(APLOG_MARK, APLOG_ALERT, r,
-                          "Could not load DLL: %s", r->filename);
-            return SERVER_ERROR;
-        }
+    if (!(isapi_handle = ap_os_dso_load(r->filename))) {
+        ap_log_rerror(APLOG_MARK, APLOG_ALERT, r,
+                      "ISAPI Could not load DLL: %s", r->filename);
+        return SERVER_ERROR;
     }
 
     if (!(isapi_version =
-          (void *)(GetProcAddress(isapi_handle, "GetExtensionVersion")))) {
+          (void *)(ap_os_dso_sym(isapi_handle, "GetExtensionVersion")))) {
         ap_log_rerror(APLOG_MARK, APLOG_ALERT, r,
                       "DLL could not load GetExtensionVersion(): %s", 
                       r->filename);
-        FreeLibrary(isapi_handle);
+        ap_os_dso_unload(isapi_handle);
         return SERVER_ERROR;
     }
 
     if (!(isapi_entry =
-          (void *)(GetProcAddress(isapi_handle, "HttpExtensionProc")))) {
+          (void *)(ap_os_dso_sym(isapi_handle, "HttpExtensionProc")))) {
         ap_log_rerror(APLOG_MARK, APLOG_ALERT, r,
                       "DLL could not load HttpExtensionProc(): %s", 
                       r->filename);
-        FreeLibrary(isapi_handle);
+        ap_os_dso_unload(isapi_handle);
         return SERVER_ERROR;
     }
 
-    isapi_term = (void *)(GetProcAddress(isapi_handle, "TerminateExtension"));
+    isapi_term = (void *)(ap_os_dso_sym(isapi_handle, "TerminateExtension"));
 
     /* Run GetExtensionVersion() */
 
     if (!(*isapi_version)(pVer)) {
         ap_log_rerror(APLOG_MARK, APLOG_ALERT, r,
                       "ISAPI GetExtensionVersion() failed: %s", r->filename);
-        FreeLibrary(isapi_handle);
+        ap_os_dso_unload(isapi_handle);
         return SERVER_ERROR;
     }
 
@@ -238,7 +218,7 @@ int isapi_handler (request_rec *r) {
     /* Set up client input */
     if ((retval = ap_setup_client_block(r, REQUEST_CHUNKED_ERROR))) {
         if (isapi_term) (*isapi_term)( 2 /* HSE_TERM_MUST_UNLOAD */);
-        FreeLibrary(isapi_handle);
+        ap_os_dso_unload(isapi_handle);
         return retval;
     }
 
@@ -272,7 +252,7 @@ int isapi_handler (request_rec *r) {
 
         if (res < 0) {
             if (isapi_term) (*isapi_term)(HSE_TERM_MUST_UNLOAD);
-            FreeLibrary(isapi_handle);
+            ap_os_dso_unload(isapi_handle);
             return SERVER_ERROR;
         }
 
@@ -321,7 +301,7 @@ int isapi_handler (request_rec *r) {
 
     /* All done with the DLL... get rid of it */
     if (isapi_term) (*isapi_term)(HSE_TERM_MUST_UNLOAD);
-    FreeLibrary(isapi_handle);
+    ap_os_dso_unload(isapi_handle);
 
     switch(retval) {
     case HSE_STATUS_SUCCESS:

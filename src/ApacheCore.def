@@ -387,3 +387,4 @@ EXPORTS
         ap_start_shutdown @378
 	ap_start_restart @379
 	ap_stripprefix @380
+        ap_os_dso_load @381
