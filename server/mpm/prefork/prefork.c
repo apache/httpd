@@ -275,7 +275,7 @@ static void accept_mutex_init(apr_pool_t *p)
 
 static void accept_mutex_on(void)
 {
-    apr_status_t rv = apr_lock_aquire(accept_lock);
+    apr_status_t rv = apr_lock_acquire(accept_lock);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, rv, NULL, "couldn't grab the accept mutex");
         exit(APEXIT_CHILDFATAL);

@@ -596,10 +596,10 @@ static void *worker_thread(void *arg)
             pthread_mutex_unlock(&thread_accept_mutex);
             break;
         }
-        if ((rv = SAFE_ACCEPT(apr_lock_aquire(process_accept_mutex)))
+        if ((rv = SAFE_ACCEPT(apr_lock_acquire(process_accept_mutex)))
             != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf,
-                         "apr_lock_aquire failed. Attempting to shutdown "
+                         "apr_lock_acquire failed. Attempting to shutdown "
                          "process gracefully.");
             workers_may_exit = 1;
         }

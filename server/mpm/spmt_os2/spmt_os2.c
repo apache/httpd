@@ -184,7 +184,7 @@ static void accept_mutex_init(apr_pool_t *p)
 
 static void accept_mutex_on(void)
 {
-    apr_status_t rc = apr_lock_aquire(accept_mutex);
+    apr_status_t rc = apr_lock_acquire(accept_mutex);
 
     if (rc != APR_SUCCESS) {
 	ap_log_error(APLOG_MARK, APLOG_EMERG, rc, ap_server_conf,

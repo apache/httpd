@@ -724,7 +724,7 @@ static client_entry *get_client(unsigned long key, const request_rec *r)
     bucket = key % client_list->tbl_len;
     entry  = client_list->table[bucket];
 
-    apr_lock_aquire(client_lock /*, MM_LOCK_RD */);
+    apr_lock_acquire(client_lock /*, MM_LOCK_RD */);
 
     while(entry && key != entry->key) {
 	prev  = entry;
@@ -801,7 +801,7 @@ static client_entry *add_client(unsigned long key, client_entry *info,
     bucket = key % client_list->tbl_len;
     entry  = client_list->table[bucket];
 
-    apr_lock_aquire(client_lock /*, MM_LOCK_RW */);
+    apr_lock_acquire(client_lock /*, MM_LOCK_RW */);
 
     /* try to allocate a new entry */
 
@@ -1056,7 +1056,7 @@ static client_entry *gen_client(const request_rec *r)
 
     if (!opaque_cntr)  return NULL;
 
-    apr_lock_aquire(opaque_lock /*, MM_LOCK_RW */);
+    apr_lock_acquire(opaque_lock /*, MM_LOCK_RW */);
     op = (*opaque_cntr)++;
     apr_lock_release(opaque_lock);
 
