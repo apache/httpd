@@ -66,7 +66,7 @@
  * this free when the caretaker checks, it will spawn more.
  */
 #ifndef DEFAULT_START_DAEMON
-#define DEFAULT_START_DAEMON 5
+#define DEFAULT_START_DAEMON 3
 #endif
 
 /* Maximum number of *free* server processes --- more than this, and
@@ -80,7 +80,7 @@
 /* Minimum --- fewer than this, and more will be created */
 
 #ifndef DEFAULT_MIN_FREE_DAEMON
-#define DEFAULT_MIN_FREE_DAEMON 5
+#define DEFAULT_MIN_FREE_DAEMON 3
 #endif
 
 /* Limit on the total --- clients will be locked out if more servers than
@@ -119,7 +119,7 @@
 #define DEFAULT_THREADS_PER_CHILD 1
 #endif
 #ifndef DEFAULT_THREADS_PER_CHILD
-#define DEFAULT_THREADS_PER_CHILD 50
+#define DEFAULT_THREADS_PER_CHILD 25
 #endif
 
 /* File used for accept locking, when we use a file */
