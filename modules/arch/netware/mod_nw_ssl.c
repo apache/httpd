@@ -86,6 +86,7 @@
 #include "http_log.h"
 #include "ap_listen.h"
 #include "apr_strings.h"
+#include "apr_portable.h"
 
 module AP_MODULE_DECLARE_DATA nwssl_module;
 
