@@ -320,18 +320,23 @@ const char *ssl_cmd_SSLMutex(cmd_parms *cmd, void *ctx,
         mc->nMutexMode  = SSL_MUTEXMODE_NONE;
     }
     else if (strlen(arg) > 5 && strcEQn(arg, "file:", 5)) {
+        const char *file = ap_server_root_relative(cmd->pool, arg+5);
+        if (!file) {
+            return apr_pstrcat(cmd->pool, "Invalid SSLMutex file: path ", 
+                               arg+5, NULL);
+        }
         mc->nMutexMode  = SSL_MUTEXMODE_USED;
         mc->szMutexFile =
             (char *)apr_psprintf(mc->pPool, "%s.%lu",
-                                 ap_server_root_relative(cmd->pool, arg+5),
-                                 (unsigned long)getpid());
+                                 file, (unsigned long)getpid());
     }
     else if (strcEQ(arg, "sem") || strcEQ(arg, "yes")) {
         mc->nMutexMode  = SSL_MUTEXMODE_USED;
         mc->szMutexFile = NULL; /* APR determines temporary filename */
     }
     else {
-        return "SSLMutex: Invalid argument";
+        return apr_pstrcat(cmd->pool, "Invalid SSLMutex argument ", 
+                           arg, NULL);
     }
 
     return NULL;
@@ -354,10 +359,14 @@ const char *ssl_cmd_SSLPassPhraseDialog(cmd_parms *cmd, void *ctx,
     }
     else if ((arglen > 5) && strEQn(arg, "exec:", 5)) {
         sc->nPassPhraseDialogType  = SSL_PPTYPE_FILTER;
-        /* XXX This is broken, exec: may contain args! */
+        /* ### This is broken, exec: may contain args, no? */
         sc->szPassPhraseDialogPath =
             ap_server_root_relative(cmd->pool, arg+5);
-        
+        if (!sc->szPassPhraseDialogPath) {
+            return apr_pstrcat(cmd->pool,
+                               "Invalid SSLPassPhraseDialog exec: path ",
+                               arg+5, NULL);
+        }
         if (!ssl_util_path_check(SSL_PCM_EXISTS,
                                  sc->szPassPhraseDialogPath,
                                  cmd->pool))
@@ -470,6 +479,11 @@ const char *ssl_cmd_SSLRandomSeed(cmd_parms *cmd, void *ctx,
     }
 
     if (seed->nSrc != SSL_RSSRC_BUILTIN) {
+        if (!seed->cpPath) {
+            return apr_pstrcat(cmd->pool,
+                               "Invalid SSLRandomSeed path ",
+                               arg2, NULL);
+        }
         if (!ssl_util_path_check(SSL_PCM_EXISTS, seed->cpPath, cmd->pool)) {
             return apr_pstrcat(cmd->pool,
                                "SSLRandomSeed: source path '",
@@ -530,7 +544,13 @@ const char *ssl_cmd_SSLCipherSuite(cmd_parms *cmd, void *ctx,
 static const char *ssl_cmd_check_file(cmd_parms *parms,
                                       const char **file)
 {
-    *file = ap_server_root_relative(parms->pool, *file);
+    const char *filepath = ap_server_root_relative(parms->pool, *file);
+
+    if (!filepath) {
+        return apr_pstrcat(parms->pool, parms->cmd->name,
+                           ": Invalid file path ", *file, NULL);
+    }
+    *file = filepath;
 
     if (ssl_util_path_check(SSL_FLAGS_CHECK_FILE, *file, parms->pool)) {
         return NULL;
@@ -545,7 +565,13 @@ static const char *ssl_cmd_check_file(cmd_parms *parms,
 static const char *ssl_cmd_check_dir(cmd_parms *parms,
                                      const char **dir)
 {
-    *dir = ap_server_root_relative(parms->pool, *dir);
+    const char *dirpath = ap_server_root_relative(parms->pool, *dir);
+
+    if (!dirpath) {
+        return apr_pstrcat(parms->pool, parms->cmd->name,
+                           ": Invalid dir path ", *dir, NULL);
+    }
+    *dir = dirpath;
 
     if (ssl_util_path_check(SSL_FLAGS_CHECK_DIR, *dir, parms->pool)) {
         return NULL;
@@ -829,6 +855,11 @@ const char *ssl_cmd_SSLSessionCache(cmd_parms *cmd, void *ctx,
     else if ((arglen > 4) && strcEQn(arg, "dbm:", 4)) {
         mc->nSessionCacheMode      = SSL_SCMODE_DBM;
         mc->szSessionCacheDataFile = ap_server_root_relative(mc->pPool, arg+4);
+        if (!mc->szSessionCacheDataFile) {
+            return apr_psprintf(cmd->pool,
+                                "SSLSessionCache: Invalid cache file path ",
+                                arg+4);
+        }
     }
     else if ((arglen > 6) && strcEQn(arg, "shmht:", 6)) {
 #if !APR_HAS_SHARED_MEMORY
@@ -838,6 +869,11 @@ const char *ssl_cmd_SSLSessionCache(cmd_parms *cmd, void *ctx,
         colon = ap_strchr_c(arg, ':');
         mc->szSessionCacheDataFile =
             ap_server_root_relative(mc->pPool, colon+1);
+        if (!mc->szSessionCacheDataFile) {
+            return apr_psprintf(cmd->pool,
+                                "SSLSessionCache: Invalid cache file path ",
+                                colon+1);
+        }
         mc->tSessionCacheDataTable = NULL;
         mc->nSessionCacheDataSize  = 1024*512; /* 512KB */
 
@@ -875,6 +911,11 @@ const char *ssl_cmd_SSLSessionCache(cmd_parms *cmd, void *ctx,
         colon = ap_strchr_c(arg, ':');
         mc->szSessionCacheDataFile =
             ap_server_root_relative(mc->pPool, colon+1);
+        if (!mc->szSessionCacheDataFile) {
+            return apr_psprintf(cmd->pool,
+                                "SSLSessionCache: Invalid cache file path ",
+                                colon+1);
+        }
         mc->tSessionCacheDataTable = NULL;
         mc->nSessionCacheDataSize  = 1024*512; /* 512KB */
 
