@@ -180,7 +180,7 @@
       werden.</li>
 
       <li>(<em>Ab Version 2.0.51</em>)
-        <p><code>ErrorHeader</code> war eine Fehlbennung, weshalb die
+        <p><code>ErrorHeader</code> war eine Fehlbenennung, weshalb die
           Funktionalit&auml;t dieser Direktive mit der
           <directive module="mod_headers">Header</directive>-Anweisung
           zusammengelegt wurde. Verwenden Sie stattdessen</p>

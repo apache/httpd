@@ -174,7 +174,7 @@
       werden.</li>
 
       <li>(<em>Ab Version 2.0.51</em>)
-        <p><code>ErrorHeader</code> war eine Fehlbennung, weshalb die
+        <p><code>ErrorHeader</code> war eine Fehlbenennung, weshalb die
           Funktionalität dieser Direktive mit der
           <code class="directive"><a href="./mod/mod_headers.html#header">Header</a></code>-Anweisung
           zusammengelegt wurde. Verwenden Sie stattdessen</p>
