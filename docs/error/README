@@ -22,10 +22,11 @@
   | French (fr)           | Cecile de Crecy                          |
   | German (de)           | Lars Eilebrecht                          |
   | Italian (it)          | Luigi Rosa                               |
+  | Korean (ko)           | Jaeho Shin                               |
   | Polish (pl)           | Tomasz Kepczynski                        |
   | Romanian (ro)         | Andrei Besleaga                          |
   | Spanish (es)          | Karla Quintero                           |
-  | Swedish (sv)          | Thomas Sjögren                           |
+  | Swedish (sv)          | Thomas Sjgren                           |
   +-----------------------+------------------------------------------+
   (Please see http://httpd.apache.org/docs-project/ if you would
    like to contribute the pages in an additional language.)
