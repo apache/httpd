@@ -98,7 +98,7 @@ AP_DECLARE_DATA const apr_bucket_type_t ap_bucket_type_error = {
     "ERROR", 5,
     free,
     error_read,
-    apr_bucket_notimpl_setaside,
-    apr_bucket_notimpl_split,
-    apr_bucket_notimpl_copy
+    apr_bucket_setaside_notimpl,
+    apr_bucket_split_notimpl,
+    apr_bucket_copy_notimpl
 };
