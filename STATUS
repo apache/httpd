@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/03/05 16:42:02 $]
+Last modified at [$Date: 2003/03/06 17:16:42 $]
 
 Release:
 
@@ -198,6 +198,11 @@ PATCHES TO PORT FROM 2.1
       more than one user. PR 12910.
       support/htdigest.c: r1.35
       +1: nd
+
+    * Allow builds to work with out of tree apr and apr-util
+      buildconf: r1.30
+      configure.in: r1.239, r1.240
+      +1: thommay
 
 CURRENT RELEASE NOTES:
 
