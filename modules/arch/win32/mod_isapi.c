@@ -963,7 +963,12 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
             return 0;
         }
         
-        if ((rv = apr_os_file_put(&fd, &tf->hFile, 0, r->pool)) != APR_SUCCESS) {
+        /* Presume the handle was opened with the CORRECT semantics
+         * for TransmitFile 
+         */
+        if ((rv = apr_os_file_put(&fd, &tf->hFile, 
+                                  APR_READ | APR_XTHREAD, r->pool)) 
+                != APR_SUCCESS) {
             return 0;
         }
         if (tf->BytesToWrite) {
