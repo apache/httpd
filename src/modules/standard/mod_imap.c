@@ -686,7 +686,7 @@ int imap_handler(request_rec *r)
     } /* blank lines and comments are ignored if we aren't printing a menu */
 
 
-    if (sscanf(input, "%.200s %.200s", directive, value) != 2) {
+    if (sscanf(input, "%255s %255s", directive, value) != 2) {
       continue;                           /* make sure we read two fields */
     }
     /* Now skip what we just read... we can't use ANSIism %n */
