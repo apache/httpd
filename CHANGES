@@ -1,5 +1,8 @@
 Changes with Apache 2.0.50
 
+  *) mod_ssl: Fix potential segfaults when performing SSL shutdown from
+     a pool cleanup.  PR 27945.  [Joe Orton]
+
   *) Add forensic logging module (mod_log_forensic).
      [Ben Laurie]
 
