@@ -7,7 +7,7 @@ ConfigStart
 	    *-linux*)
 		# many systems have -ldb installed
 		DB_LIB=""
-		if ./helpers/TestCompile lib db; then
+		if ./helpers/TestCompile lib db dbopen; then
 		    DB_LIB="-ldb"
 		fi
 		;;

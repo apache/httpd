@@ -133,7 +133,8 @@
      * MODULE-DEFINITION-START
      * Name: rewrite_module
      * ConfigStart
-    if ./helpers/TestCompile func dbm_open; then
+    . ./helpers/find-dbm-lib
+    if [ "$found_dbm" = "1" ]; then
         echo "      enabling DBM support for mod_rewrite"
     else
         echo "      disabling DBM support for mod_rewrite"

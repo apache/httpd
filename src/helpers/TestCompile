@@ -9,6 +9,10 @@ trap 'rm -f Makefile dummy testfunc.c testfunc; exit $exstat' 0 1 2 3 15
 # ./helpers/TestCompile lib <libname>
 #    Which checks to see if <libname> exists on this system
 #
+# ./helpers/TestCompile lib <libname> <func>
+#    Which checks to see if <libname> exists on this system and
+#    contains func.
+#
 # ./helpers/TestCompile func <function>
 #    Which checks to see if <function> exists
 #
@@ -57,7 +61,12 @@ case "$1" in
 	else
 	    ERRDIR='2>/dev/null'
 	fi
-	TARGET='dummy'
+	if [ "x$3" = "x" ]; then
+	    TARGET='dummy'
+	else
+	    TARGET='testfunc'
+	    echo "void main(void) { $3(); }" > testfunc.c
+	fi
 	;;
     "sanity")
 	TLIB=""
@@ -105,7 +114,7 @@ dummy:
 	cd ..; \$(CC) \$(CFLAGS) \$(INCLUDES) \$(LDFLAGS) helpers/dummy.c -o helpers/dummy $TLIB \$(LIBS)
 
 testfunc:
-	cd ..; \$(CC) \$(CFLAGS) \$(INCLUDES) \$(LDFLAGS) helpers/testfunc.c -o helpers/testfunc \$(LIBS)
+	cd ..; \$(CC) \$(CFLAGS) \$(INCLUDES) \$(LDFLAGS) helpers/testfunc.c -o helpers/testfunc $TLIB \$(LIBS)
 EOF
 
 # Now run that Makefile
