@@ -120,8 +120,6 @@
 #include "unixd.h"
 #endif
 
-#define DBM_MAP_TYPE "SDBM"
-
 /*
 ** +-------------------------------------------------------+
 ** |                                                       |
@@ -428,13 +426,41 @@ static const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, const char *a1,
         newmap->datafile  = a2+4;
         newmap->checkfile = a2+4;
     }
-    else if (strncmp(a2, "dbm:", 4) == 0) {
+    else if (strncmp(a2, "dbm", 3) == 0) {
         const char *ignored_fname;
+        int bad = 0;
+        apr_status_t rv;
 
-        newmap->type      = MAPTYPE_DBM;
-        newmap->datafile  = a2+4;
-        apr_dbm_get_usednames_ex(cmd->pool, DBM_MAP_TYPE, newmap->datafile, 
-                                 &newmap->checkfile, &ignored_fname);
+        if (a2[3] == ':') {
+            newmap->dbmtype    = "default";
+            newmap->datafile   = a2+4;
+        }
+        else if (a2[3] == '=') {
+            const char *colon = ap_strchr_c(a2 + 4, ':');
+            
+            if (colon) {
+                newmap->dbmtype = apr_pstrndup(cmd->pool, a2 + 4, colon - (a2 + 3) - 1);
+                newmap->datafile = colon + 1;
+            }
+            else {
+                ++bad;
+            }
+        }
+        else {
+            ++bad;
+        }
+
+        if (bad) {
+            return apr_pstrcat(cmd->pool, "RewriteMap: bad map:",
+                               a2, NULL);
+        }
+    
+        rv = apr_dbm_get_usednames_ex(cmd->pool, newmap->dbmtype, newmap->datafile,
+                                      &newmap->checkfile, &ignored_fname);
+        if (rv != APR_SUCCESS) {
+            return apr_pstrcat(cmd->pool, "RewriteMap: dbm type ", newmap->dbmtype,
+                               " is invalid", NULL);
+        }
     }
     else if (strncmp(a2, "prg:", 4) == 0) {
         newmap->type      = MAPTYPE_PRG;
@@ -466,8 +492,8 @@ static const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, const char *a1,
         && (apr_stat(&st, newmap->checkfile, APR_FINFO_MIN, 
                      cmd->pool) != APR_SUCCESS)) {
         return apr_pstrcat(cmd->pool,
-                          "RewriteMap: map file not found:",
-                          newmap->checkfile, NULL);
+                          "RewriteMap: file for map ", newmap->name,
+                           " not found:", newmap->checkfile, NULL);
     }
 
     return NULL;
@@ -2787,7 +2813,7 @@ static char *lookup_map(request_rec *r, char *name, char *key)
                     rewritelog(r, 6,
                                "cache lookup FAILED, forcing new map lookup");
                     if ((value =
-                         lookup_map_dbmfile(r, s->datafile, key)) != NULL) {
+                         lookup_map_dbmfile(r, s->datafile, s->dbmtype, key)) != NULL) {
                         rewritelog(r, 5, "map lookup OK: map=%s[dbm] key=%s "
                                    "-> val=%s", s->name, key, value);
                         set_cache_string(cachep, s->name, CACHEMODE_TS,
@@ -2925,7 +2951,8 @@ static char *lookup_map_txtfile(request_rec *r, const char *file, char *key)
     return value;
 }
 
-static char *lookup_map_dbmfile(request_rec *r, const char *file, char *key)
+static char *lookup_map_dbmfile(request_rec *r, const char *file, 
+                                const char *dbmtype, char *key)
 {
     apr_dbm_t *dbmfp = NULL;
     apr_datum_t dbmkey;
@@ -2936,7 +2963,7 @@ static char *lookup_map_dbmfile(request_rec *r, const char *file, char *key)
 
     dbmkey.dptr  = key;
     dbmkey.dsize = strlen(key);
-    if ((rv = apr_dbm_open_ex(&dbmfp, DBM_MAP_TYPE, file, APR_DBM_READONLY, 
+    if ((rv = apr_dbm_open_ex(&dbmfp, dbmtype, file, APR_DBM_READONLY, 
                               0 /* irrelevant when reading */, r->pool)) == APR_SUCCESS) {
         rv = apr_dbm_fetch(dbmfp, dbmkey, &dbmval);
         if (rv == APR_SUCCESS) {
