@@ -15,7 +15,7 @@
 <!--#include virtual="header.html" -->
 <h1 align="center">Server-Wide Configuration</h1>
 
-<p>This document explains some of the directives provided by
+<p>This document explains some of the directives provided by the
 <a href="mod/core.html">core</A> server which are used to configure
 the basic operations of the server.</p>
 
@@ -118,7 +118,9 @@ these directives from their default values.  Sites which need to serve
 more than 256 simultaneous requests may need to increase
 <code>MaxClients</code>, while sites with limited memory may need to
 decrease <code>MaxClients</code> to keep the server from thrashing
-(swapping memory to disk and back).</p>
+(swapping memory to disk and back).  More information about tuning
+process creation is provided in the <a
+href="misc/perf-tuning.html">performance hints</a> documentation.</p>
 
 <p>While the parent process is usually started as root under Unix
 in order to bind to port 80, the child processes are launched
@@ -197,7 +199,7 @@ configure how Apache handles persistent connections.</p>
 <a href="mod/core.html#threadstacksize">ThreadStackSize</a><br>
 </td></tr></table>
 
-<p>The <code>Limit</code>* directives are used to place limits
+<p>The <code>LimitRequest</code>* directives are used to place limits
 on the amount of resources Apache will use in reading requests
 from clients.  By limiting these values, some kinds of denial
 of service attacks can be mitigated.</p>
@@ -208,7 +210,7 @@ the Apache children.  In particular, this will control
 resources used by CGI scripts and SSI exec commands.</p>
 
 <p>The <code>ThreadStackSize</code> directive is used only
-on Netware to control the stock size.</p>
+on Netware to control the stack size.</p>
 
 <!--#include virtual="footer.html" -->
 </BODY>

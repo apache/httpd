@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
 <HTML>
 <HEAD>
-<TITLE>Configuring Apache</TITLE>
+<TITLE>Configuration Files</TITLE>
 </HEAD>
 
 <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
@@ -13,7 +13,7 @@
  ALINK="#FF0000"
 >
 <!--#include virtual="header.html" -->
-<H1 ALIGN="CENTER">Configuring Apache</H1>
+<H1 ALIGN="CENTER">Configuration Files</H1>
 
 <ul>
 <li><a href="#main">Main Configuration Files</a></li>
@@ -68,8 +68,7 @@ filename is set by the <A HREF="mod/mod_mime.html#typesconfig"
 back-slash "\" may be used as the last character on a line to indicate
 that the directive continues onto the next line.  There must be no
 other characters or white space between the back-slash and the end of
-the line.  To end a line with a literal back-slash, you can escape it
-by preceding it with a second back-slash "\\".
+the line.
 
 <P>Directives in the configuration files are case-insensitive, but
 arguments to directives are often case sensitive.  Lines which begin
@@ -102,7 +101,7 @@ or the <CODE>-t</CODE> command line option.
 functionality is included in the core server.  Extended features are
 available through <A HREF="mod/index-bytype.html">modules</A> which
 can be loaded into Apache.  By default, a <A
-HREF="mod/directive-dict.html#Status">base</A> set of modules is
+HREF="mod/module-dict.html#Status">base</A> set of modules is
 included in the server at compile-time.  If the server is compiled to
 use <A HREF="dso.html">dynamically loaded</A> modules, then modules
 can be compiled separately and added at any time using the <A
@@ -180,9 +179,8 @@ in the <A HREF="mod/core.html#accessfilename"><CODE
 <CODE>.htaccess</CODE> files apply to the directory where you place
 the file, and all sub-directories.  The <CODE>.htaccess</CODE> files
 follow the same syntax as the main configuration files.  Since
-<CODE>.htaccess</CODE> files are read on every request, rather than
-only at server startup, changes made in these files take immediate
-effect.
+<CODE>.htaccess</CODE> files are read on every request, changes made
+in these files take immediate effect.
 
 <P>To find which directives can be placed in <CODE>.htaccess</CODE>
 files, check the <A HREF="mod/directive-dict.html#Context">Context</A>
