@@ -1,5 +1,10 @@
 Changes with Apache 2.0.31-dev
 
+  *) Add FileETag directive to allow configurable control of what
+     data are used to form ETag values for file-based URIs.  MMN
+     bumped to 20020111 because of fields added to the end of
+     the core_dir_config structure.  [Ken Coar]
+
   *) Fix a segfault in mod_rewrite's logging code caused by passing the
      wrong config to ap_get_remote_host().  [Jeff Trawick]
 

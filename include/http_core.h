@@ -382,6 +382,22 @@ AP_DECLARE(void **) ap_get_request_note(request_rec *r, apr_size_t note_num);
 typedef unsigned char allow_options_t;
 typedef unsigned char overrides_t;
 
+/*
+ * Bits of info that go into making an ETag for a file
+ * document.  Why a long?  Because char historically
+ * proved too short for Options, and int can be different
+ * sizes on different platforms.
+ */
+typedef unsigned long etag_components_t;
+
+#define ETAG_UNSET 0
+#define ETAG_NONE  (1 << 0)
+#define ETAG_MTIME (1 << 1)
+#define ETAG_INODE (1 << 2)
+#define ETAG_SIZE  (1 << 3)
+#define ETAG_BACKWARD (ETAG_MTIME | ETAG_INODE | ETAG_SIZE)
+#define ETAG_ALL   (ETAG_MTIME | ETAG_INODE | ETAG_SIZE)
+
 typedef enum {
     srv_sig_unset,
     srv_sig_off,
@@ -489,6 +505,13 @@ typedef struct {
     const char *output_filters;  /* forced with SetOutputFilters */
     const char *input_filters;   /* forced with SetInputFilters */
     int accept_path_info;        /* forced with AcceptPathInfo */
+
+    /*
+     * What attributes/data should be included in ETag generation?
+     */
+    etag_components_t etag_bits;
+    etag_components_t etag_add;
+    etag_components_t etag_remove;
 } core_dir_config;
 
 /* Per-server core configuration */
