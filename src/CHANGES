@@ -14,7 +14,9 @@
      Content-type: at all. [Ben Laurie]
 
   *) Long overdue revamp of the Cookies module to stop Apache cookies
-     colliding with other cookies a site may be using [Mark Cox]
+     colliding with other cookies a site may be using.  Cookies are now
+     always generated for every browser, not just Netscape (and clones)
+     [Mark Cox]
 
   *) Clean up strings.h warning for SGI [Mark Cox]
 

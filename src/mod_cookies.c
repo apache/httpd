@@ -1,6 +1,6 @@
 
 /* ====================================================================
- * Copyright (c) 1995 The Apache Group.  All rights reserved.
+ * Copyright (c) 1995, 1996 The Apache Group.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -70,17 +70,17 @@
  * "CookieLog somefilename" in one of the config files to enable the Cookie
  * module.
  *
- * Bugs:
- * 
- *   This code is lazy and doesn't bother creating cookies for browsers other
- *       than those that report to be "Mozilla". It saves time on requests.
+ * Note:
  *   This code doesn't log the initial transaction (the one that created
- *       the cookie to start with).
+ *   the cookie to start with).
  *
  * Mark Cox, mark@ukweb.com, 6 July 95
  *
  * 6.12.95 MJC Now be more friendly.  Allow our cookies to overlap with
  * others the site may be using.  Use a more descriptive cookie name.
+ *
+ * 18.3.96 MJC Generate cookies for EVERY request no matter what the 
+ * browser.
  */
 
 #include "httpd.h"
@@ -90,7 +90,13 @@
 
 module cookies_module;
 
-/* Now we have to generate something that is going to be
+typedef struct {
+    char *fname;
+    int log_fd;
+    int always;
+} cookie_log_state;
+
+/* Make Cookie: Now we have to generate something that is going to be
  * pretty unique.  We can base it on the pid, time, hostip */
 
 #define COOKIE_NAME "Apache="
@@ -117,12 +123,8 @@ void make_cookie(request_rec *r)
 
 int spot_cookie(request_rec *r)
 {
-    char *cookie, *agent;
+    char *cookie;
 
-    if (!(agent = table_get(r->headers_in,"User-Agent")))
-        return DECLINED;              /* No user-agent = No cookie */
-    if (strncmp(agent,"Mozilla",7))   /* Don't bother creating a cookie */
-        return DECLINED;              /* unless browser is Netscape fudge */
     if ((cookie = table_get (r->headers_in, "Cookie")))
         if (strstr(cookie,COOKIE_NAME))
             return DECLINED;          /* Theres already a cookie, no new one */
@@ -138,11 +140,6 @@ static mode_t cookie_mode = ( S_IREAD | S_IWRITE );
 #else
 static mode_t cookie_mode = ( S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH );
 #endif
-
-typedef struct {
-    char *fname;
-    int log_fd;
-} cookie_log_state;
 
 void *make_cookie_log_state (pool *p, server_rec *s)
 {
