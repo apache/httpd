@@ -477,6 +477,7 @@ void ssl_init_ConfigureServer(server_rec *s, apr_pool_t *p, SSLSrvConfigRec *sc)
      * Create the server host:port string because we need it a lot
      */
     sc->szVHostID = cpVHostID = ssl_util_vhostid(p, s);
+    sc->nVHostID_length = strlen(sc->szVHostID);
 
     /*
      * Now check for important parameters and the
