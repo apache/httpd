@@ -781,13 +781,23 @@ static void winnt_accept(void *listen_socket)
                          "setsockopt(SO_UPDATE_ACCEPT_CONTEXT) failed.");
             /* Not a failure condition. Keep running. */
         }
+
+        /* Get the local & remote address */
+        GetAcceptExSockaddrs(pCompContext->buff,
+                             0,
+                             PADDED_ADDR_SIZE,
+                             PADDED_ADDR_SIZE,
+                             &pCompContext->sa_server,
+                             &pCompContext->sa_server_len,
+                             &pCompContext->sa_client,
+                             &pCompContext->sa_client_len);
+
         /* When a connection is received, send an io completion notification to
          * the ThreadDispatchIOCP. This function could be replaced by
          * mpm_post_completion_context(), but why do an extra function call...
          */
         PostQueuedCompletionStatus(ThreadDispatchIOCP, 0, IOCP_CONNECTION_ACCEPTED,
                                    &pCompContext->Overlapped);
-
     }
 
     if (!shutdown_in_progress) {
@@ -840,18 +850,7 @@ static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT pCompContext)
                      "Child %d: apr_pool_create failed with rc %d", my_pid, rc);
     }
 
-    /* Get the local & remote address */
-    GetAcceptExSockaddrs(pCompContext->buff,
-                         0,
-                         PADDED_ADDR_SIZE,
-                         PADDED_ADDR_SIZE,
-                         &pCompContext->sa_server,
-                         &pCompContext->sa_server_len,
-                         &pCompContext->sa_client,
-                         &pCompContext->sa_client_len);
-
     return pCompContext;
-
 }
 
 /*
