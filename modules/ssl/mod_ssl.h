@@ -109,9 +109,8 @@
 
 #define MOD_SSL_VERSION AP_SERVER_BASEREVISION
 
-#include "ssl_toolkit_compat.h"
-
 /* mod_ssl headers */
+#include "ssl_toolkit_compat.h"
 #include "ssl_expr.h"
 #include "ssl_util_ssl.h"
 #include "ssl_util_table.h"
