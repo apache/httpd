@@ -117,7 +117,7 @@
 
 module AP_MODULE_DECLARE_DATA cgid_module; 
 
-static void cgid_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *main_server); 
+static int cgid_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *main_server); 
 static int handle_exec(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec *r,
                        ap_filter_t *f, apr_bucket *head_ptr, apr_bucket **inserted_head);
 
