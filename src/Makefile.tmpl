@@ -9,12 +9,12 @@ INCLUDES=$(INCLUDES1) $(EXTRA_INCLUDES)
 LDFLAGS=$(LDFLAGS1) $(EXTRA_LDFLAGS)
 
 OBJS= \
-  core/alloc.o core/http_main.o core/http_core.o \
-  core/http_config.o core/http_request.o core/http_log.o \
-  core/http_protocol.o core/rfc1413.o core/util.o \
-  core/util_script.o core/buff.o core/md5c.o \
-  core/util_md5.o core/explain.o core/http_bprintf.o \
-  core/util_date.o core/util_snprintf.o core/fnmatch.o \
+  main/alloc.o main/http_main.o main/http_core.o \
+  main/http_config.o main/http_request.o main/http_log.o \
+  main/http_protocol.o main/rfc1413.o main/util.o \
+  main/util_script.o main/buff.o main/md5c.o \
+  main/util_md5.o main/explain.o main/http_bprintf.o \
+  main/util_date.o main/util_snprintf.o main/fnmatch.o \
   modules.o \
   $(OSOBJ) \
   $(MODULES)
@@ -47,14 +47,14 @@ support-dir:
 	cd support; $(MAKE) CC='$(CC)' AUX_CFLAGS='$(CFLAGS)' RANLIB='$(RANLIB)'
 
 core-dir:
-	cd core; $(MAKE) CC='$(CC)' AUX_CFLAGS='$(CFLAGS)' RANLIB='$(RANLIB)'
+	cd main; $(MAKE) CC='$(CC)' AUX_CFLAGS='$(CFLAGS)' RANLIB='$(RANLIB)'
 
 os-dir:	
 	cd $(OSDIR); $(MAKE) CC='$(CC)' AUX_CFLAGS='$(CFLAGS)' RANLIB='$(RANLIB)'
 
 clean:
 	rm -f httpd *.o $(OBJS) 
-	cd core; $(MAKE) clean
+	cd main; $(MAKE) clean
 	cd regex; $(MAKE) clean
 	cd modules; $(MAKE) clean
 	cd support; $(MAKE) clean
@@ -81,5 +81,5 @@ depend:
 $(OBJS): Makefile
 
 # DO NOT REMOVE
-modules.o: modules.c core/httpd.h core/conf.h core/alloc.h core/buff.h \
- core/http_config.h
+modules.o: modules.c main/httpd.h main/conf.h main/alloc.h main/buff.h \
+ main/http_config.h
