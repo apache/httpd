@@ -1834,22 +1834,31 @@ fi
 ####################################################################
 ## Add in the Expat library if needed/wanted.
 ##
-if [ -d ./lib/expat-lite/ ]; then
-    if [ "x$RULE_EXPAT" = "xdefault" ]; then
+
+# set the default, based on whether expat-lite is bundled. if it is present,
+# then we can always include expat.
+if [ "x$RULE_EXPAT" = "xdefault" ]; then
+    if [ -d ./lib/expat-lite/ ]; then
         RULE_EXPAT=yes
-    fi
-else
-    if [ "$xRULE_EXPAT" = "xyes" ]; then
-        echo "ERROR: RULE_EXPAT set to \"yes\" but is not available."
-	exit 1
     else
         RULE_EXPAT=no
     fi
 fi
+
 if [ "x$RULE_EXPAT" = "xyes" ]; then
-    EXPATLIB="lib/expat-lite/libexpat.a"
-    APLIBDIRS="expat-lite $APLIBDIRS"
-    CFLAGS="$CFLAGS -DUSE_EXPAT -I\$(SRCDIR)/lib/expat-lite"
+    if ./helpers/TestCompile lib expat; then
+        echo " + using system Expat"
+        LIBS="$LIBS -lexpat"
+    else
+        if [ "$xRULE_EXPAT" = "xyes" ]; then
+            echo "ERROR: RULE_EXPAT set to \"yes\" but is not available."
+	    exit 1
+        fi
+        echo " + using builtin Expat"
+        EXPATLIB="lib/expat-lite/libexpat.a"
+        APLIBDIRS="expat-lite $APLIBDIRS"
+        CFLAGS="$CFLAGS -DUSE_EXPAT -I\$(SRCDIR)/lib/expat-lite"
+    fi
 fi
 
 ####################################################################
