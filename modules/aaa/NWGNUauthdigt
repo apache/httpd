@@ -100,7 +100,7 @@ NLM_NAME		= authdigt
 # This is used by the link '-desc ' directive. 
 # If left blank, NLM_NAME will be used.
 #
-NLM_DESCRIPTION	= Apache Digest Authentication Module
+NLM_DESCRIPTION	= Apache $(VERSION_STR) Digest Authentication Module
 
 #
 # This is used by the '-threadname' directive.  If left blank,

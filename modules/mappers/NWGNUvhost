@@ -99,7 +99,7 @@ NLM_NAME		= vhost
 # This is used by the link '-desc ' directive. 
 # If left blank, NLM_NAME will be used.
 #
-NLM_DESCRIPTION	= Apache Vhost Alias Module
+NLM_DESCRIPTION	= Apache $(VERSION_STR) Vhost Alias Module
 
 #
 # This is used by the '-threadname' directive.  If left blank,
