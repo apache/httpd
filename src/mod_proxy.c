@@ -903,6 +903,7 @@ add_header(array_header *hdrs_arr, char *field, char *value,
     return hdrs;
 }
 
+#ifdef NEEDED
 static void
 del_header(array_header *hdrs_arr, const char *field)
 {
@@ -915,6 +916,7 @@ del_header(array_header *hdrs_arr, const char *field)
 	if (hdrs[i].field != NULL && strcasecmp(field, hdrs[i].field) == 0)
 	    hdrs[i].value = NULL;
 }
+#endif
 
 /*
  * Sends response line and headers
