@@ -114,6 +114,24 @@
 </example>
 </section>
 
+<section><title>Using sed to replace text in the response</title>
+<example>
+<pre>
+  # mod_ext_filter directive to define a filter which replaces text in
+  # the response
+  ExtFilterDefine fixtext mode=output cmd="/bin/sed s/verdana/arial/g" intype=text/html
+
+  &lt;Location /&gt;
+
+  # core directive to cause the fixtext filter to be run on output
+  # output
+  SetOutputFilter fixtext
+
+  &lt;/Location&gt;
+</pre>
+</example>
+</section>
+
 </section> <!-- Examples -->
 
 <directivesynopsis>
@@ -144,7 +162,9 @@
       <dd>The <code>cmd=</code> keyword allows you to specify the
       external command to run. If there are arguments after the
       program name, the command line should be surrounded in
-      quotation marks.</dd>
+      quotation marks (e.g., <em>cmd="/bin/mypgm arg1 arg2"</em>.
+      Normal shell quoting is not necessary since the program is
+      run directly, bypassing the shell.</dd>
 
       <dt>mode=<em>mode</em></dt>
 
