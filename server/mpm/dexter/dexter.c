@@ -934,7 +934,7 @@ static void *worker_thread(void *arg)
         }
     got_fd:
         if (!workers_may_exit) {
-            ap_accept(&csd, sd);
+            ap_accept(&csd, sd, ptrans);
             SAFE_ACCEPT(accept_mutex_off(0));
             SAFE_ACCEPT(intra_mutex_off(0));
 	    pthread_mutex_lock(&idle_thread_count_mutex);

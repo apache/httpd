@@ -1046,7 +1046,7 @@ static void child_main(void *child_num_arg)
 		    /* we didn't get a socket, and we were told to die */
 		    clean_child_exit(0);
 		}
-		rv = ap_accept(&csd, sd);
+		rv = ap_accept(&csd, sd, ptrans);
 		if (rv != APR_EINTR)
 		    break;
 	    }

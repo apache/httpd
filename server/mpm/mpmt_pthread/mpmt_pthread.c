@@ -763,10 +763,7 @@ static void process_socket(ap_context_t *p, struct sockaddr *sa_client, int csd,
     conn_io = ap_bcreate(p, B_RDWR);
     ap_bpush_iol(conn_io, iol);
 
-    current_conn = ap_new_connection(p, server_conf, conn_io,
-                                  (const struct sockaddr_in *) sa_client, 
-                                  (const struct sockaddr_in *) &sa_server,
-                                  conn_id);
+    current_conn = ap_new_apr_connection(p, server_conf, conn_io, csd, conn_id);
 
     ap_process_connection(current_conn);
 }
@@ -885,7 +882,7 @@ static void * worker_thread(void * dummy)
         }
     got_fd:
         if (!workers_may_exit) {
-            ap_accept(&csd, sd);
+            ap_accept(&csd, sd, ptrans);
             SAFE_ACCEPT(accept_mutex_off(0));
             SAFE_ACCEPT(intra_mutex_off(0));
         }
