@@ -320,15 +320,14 @@ static dav_error * dav_fs_copymove_file(
     /* Determine permissions to use for destination */
     if (src_finfo && src_finfo->valid & APR_FINFO_PROT
         && src_finfo->protection & APR_UEXECUTE) {
+        perms = src_finfo->protection;
+
         if (dst_finfo != NULL) {
             /* chmod it if it already exist */
-            if (apr_file_perms_set(dst, src_finfo->protection)) {
+            if (apr_file_perms_set(dst, perms)) {
                 return dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0,
                                      "Could not set permissions on destination");
             }
-        } 
-        else {
-            perms = src_finfo->protection;
         }
     } 
     else {
