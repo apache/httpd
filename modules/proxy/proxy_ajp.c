@@ -16,6 +16,7 @@
 /* HTTP routines for Apache proxy */
 
 #include "mod_proxy.h"
+#include "ajp.h"
 
 module AP_MODULE_DECLARE_DATA proxy_ajp_module;
 
@@ -379,10 +380,9 @@ apr_status_t ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     }
 
     if (1) { /* XXXX only when something to send ? */
-        void *msg;
+        ajp_msg_t *msg;
         apr_size_t bufsiz;
         char *buff;
-        long len;
         status = ajp_alloc_data_msg(r, &buff, &bufsiz, &msg);
         if (status != APR_SUCCESS) {
             return status;
@@ -412,7 +412,8 @@ apr_status_t ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     }
 
     /* read the response */
-    status = ajp_read_header(p_conn->sock, r, &(p_conn->data));
+    status = ajp_read_header(p_conn->sock, r,
+                             (ajp_msg_t **)&(p_conn->data));
     if (status != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
                      "proxy: request failed to %pI (%s)",
@@ -472,7 +473,7 @@ apr_status_t ap_proxy_ajp_process_response(apr_pool_t * p, request_rec *r,
             }
         } else if  (type == 3) {
             /* AJP13_SEND_BODY_CHUNK: piece of data */
-            apr_size_t size;
+            apr_uint16_t size;
             char *buff;
 
             status = ajp_parse_data(r, p_conn->data, &size, &buff);
@@ -483,7 +484,8 @@ apr_status_t ap_proxy_ajp_process_response(apr_pool_t * p, request_rec *r,
             break;
         }
         /* Read the next message */
-        status = ajp_read_header(p_conn->sock, r, &(p_conn->data));
+        status = ajp_read_header(p_conn->sock, r,
+                                 (ajp_msg_t **)&(p_conn->data));
         if (status != APR_SUCCESS) {
             break;
         }
