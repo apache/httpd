@@ -1,0 +1,6 @@
+EXPORT  ldap_module
+EXPORT  util_ldap_connection_find
+EXPORT  util_ldap_connection_close
+EXPORT  util_ldap_cache_checkuserid
+EXPORT  util_ldap_cache_compare
+EXPORT  util_ldap_cache_comparedn
