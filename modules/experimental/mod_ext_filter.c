@@ -606,7 +606,7 @@ static apr_status_t pass_data_to_filter(ap_filter_t *f, const char *data,
                     ap_log_rerror(APLOG_MARK, APLOG_DEBUG,
                                   rv, f->r, "apr_poll()");
                 }
-                if (rv != APR_SUCCESS && rv != APR_EINTR) { 
+                if (rv != APR_SUCCESS && !APR_STATUS_IS_EINTR(rv)) { 
                     /* some error such as APR_TIMEUP */
                     return rv;
                 }
