@@ -24,8 +24,6 @@
 <p><span>Available Languages: </span><a href="../en/mod/mod_include.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/mod_include.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>サーバがパースする html ドキュメント (Server Side Includes)</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>include_module</td></tr>
@@ -668,17 +666,18 @@ directive]"</code></td></tr>
     <p>このディレクティブは <code class="module"><a href="../mod/mod_include.html">mod_include</a></code> が探す、include
     要素の開始を示す文字列を変更します。</p>
 
-    <p>二つのサーバが (もしかすると違うときに) ファイルの出力を解析していて、
+    <p>2 つのサーバで (もしかすると別々の段階で) ファイルの出力を解析していて、
     それぞれに違うコマンドを処理させたい、
     というようなときにこのオプションを使います。</p>
 
     <div class="example"><h3>例</h3><p><code>
-      SSIStartTag "&lt;%"
+      SSIStartTag "&lt;%"<br />
+      SSIEndTag   "%&gt;"
     </code></p></div>
 
-    <p>上の例と、それに対応する
-    <code class="directive"><a href="#ssiendtag">SSIEndTag</a></code> を使うと、
-    下の例の様にして SSI ディレクティブを使うことができます:</p>
+    <p>上の例のように対応する
+    <code class="directive"><a href="#ssiendtag">SSIEndTag</a></code> を併せて使うと、
+    下に示す例のように SSI ディレクティブを使えます:</p>
 
     <div class="example"><h3>違う開始と終了のタグを使った SSI ディレクティブ</h3><p><code>
       &lt;%printenv %&gt;
@@ -765,7 +764,7 @@ directive]"</code></td></tr>
       <dt><code>full</code></dt>
       <dd><code>on</code> と同様ですが、グループ実行ビットもテストします。
       もしそれが設定されていれば、返されるファイルの <code>Last-modified</code> の
-      日付をファイルの最終修正時刻にします。それが設定されていないときは、
+      日付をファイルの最終修正時刻にします。それが設定されていないときは、
       last-modified の日付は送られません。このビットを設定すると、
       クライアントやプロキシがリクエストをキャッシュできるようになります。
 
