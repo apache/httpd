@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: http_main.c,v 1.70 1996/09/23 20:38:52 jim Exp $ */
+/* $Id: http_main.c,v 1.71 1996/09/24 12:21:14 mjc Exp $ */
 
 /*
  * httpd.c: simple http daemon for answering WWW file requests
@@ -1263,6 +1263,7 @@ void default_server_hostnames(server_rec *s)
     int n;
     server_addr_rec *sar;
     int has_inaddr_any;
+    int mainport = s->port;
 
     /* Main host first */
     
@@ -1287,7 +1288,8 @@ void default_server_hostnames(server_rec *s)
 	for (n = 0; main->h_addr_list[n] != NULL; n++) {
 	    for(sar = s->addrs; sar; sar = sar->next) {
 		if (sar->host_addr.s_addr ==
-		    (((struct in_addr *)(main->h_addr_list[n]))->s_addr))
+		    (((struct in_addr *)(main->h_addr_list[n]))->s_addr) &&
+		    s->port == mainport)
 		    s->is_virtual = 2;
 		if( sar->host_addr.s_addr == htonl(INADDR_ANY) ) {
 		    has_inaddr_any = 1;
