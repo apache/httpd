@@ -1824,6 +1824,7 @@ void winnt_rewrite_args(process_rec *process)
     int fixed_args;
     char *pid;
     apr_getopt_t *opt;
+    int running_as_service = 1;
 
     osver.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
     GetVersionEx(&osver);
@@ -1931,7 +1932,10 @@ void winnt_rewrite_args(process_rec *process)
 
     /* Provide a default 'run' -k arg to simplify signal_arg tests */
     if (!signal_arg)
+    {
         signal_arg = "run";
+        running_as_service = 0;
+    }
 
     if (!strcasecmp(signal_arg, "runservice")) 
     {
@@ -1955,7 +1959,7 @@ void winnt_rewrite_args(process_rec *process)
         }
     }
 
-    if (service_named == SERVICE_UNNAMED) {
+    if (service_named == SERVICE_UNNAMED && running_as_service) {
         service_named = mpm_service_set_name(process->pool, 
                                              DEFAULT_SERVICE_NAME);
     }
@@ -1969,7 +1973,7 @@ void winnt_rewrite_args(process_rec *process)
             exit(1);
         }
     }
-    else
+    else if (running_as_service)
     {
         if (service_named == APR_SUCCESS) 
         {
