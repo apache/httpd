@@ -282,7 +282,7 @@ static int ap_process_http_connection(conn_rec *c)
  
         /* process the request if it was read without error */
  
-        ap_update_child_status(AP_CHILD_THREAD_FROM_ID(c->id), SERVER_BUSY_WRITE, NULL);
+        ap_update_child_status(AP_CHILD_THREAD_FROM_ID(c->id), SERVER_BUSY_WRITE, r);
         if (r->status == HTTP_OK)
             ap_process_request(r);
  
@@ -292,7 +292,7 @@ static int ap_process_http_connection(conn_rec *c)
         if (!c->keepalive || c->aborted)
             break;
  
-        ap_update_child_status(AP_CHILD_THREAD_FROM_ID(c->id), SERVER_BUSY_KEEPALIVE, NULL);
+        ap_update_child_status(AP_CHILD_THREAD_FROM_ID(c->id), SERVER_BUSY_KEEPALIVE, r);
         apr_pool_destroy(r->pool);
  
         if (ap_graceful_stop_signalled())
