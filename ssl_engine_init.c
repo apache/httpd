@@ -536,12 +536,7 @@ static void ssl_init_ctx_verify(server_rec *s,
         verify |= SSL_VERIFY_PEER;
     }
 
-    if (mctx->pkp) {
-        /* XXX proxy */
-    }
-    else {
-        SSL_CTX_set_verify(ctx, verify, ssl_callback_SSLVerify);
-    }
+    SSL_CTX_set_verify(ctx, verify, ssl_callback_SSLVerify);
 
     /*
      * Configure Client Authentication details
