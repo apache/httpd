@@ -302,12 +302,10 @@ Win32 specific issues:
 	- how CGIs work
 	- update README.NT
 	- short/long name handling
+	- better status page on current state of NT for users
 
     * http_main.c hell
-
-    * mod_example isn't multithreadreded
-
-    * mod_info
+	- split into two files?
 
     * who should run the service?  Who exactly is the "system account"?
 
@@ -330,8 +328,13 @@ Win32 specific issues:
     That _really_ sucks.  Can we recommend running Apache as some 
     other user?
 
-    * mod_example isn't multithreadreded
 
-    * mod_info
+    * need a crypt() of some sort.
+	- sources are easy; problem is export restrictions on DES
+	- if we don't do DES, can do md5
 
+    * modules that need to be made to work on win32
+    	- mod_info
+        - mod_example isn't multithreadreded
 
+    * do something to disable bogus warnings
