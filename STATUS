@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/01/12 14:37:47 $]
+Last modified at [$Date: 2004/01/12 14:44:46 $]
 
 Release:
 
@@ -99,13 +99,6 @@ PATCHES TO BACKPORT FROM 2.1
       32/64 bit type mismatches in the file size.
       server/core.c r1.255, r1.256
       +1: bnicholes, nd
-      
-    * mod_ssl: Fix ssl_var_lookup for non-SSL requests, and logging of SSL
-      variables from non-SSL connections.
-      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_engine_vars.c?r1=1.24&r2=1.25
-      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_engine_vars.c?r1=1.26&r2=1.28
-      PR: 22741, 20852  (<= not 23956 as the commit message says)
-      +1: jorton, nd, trawick
 
     * mod_ssl: Determine library version string at run-time rather than compile-time.
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_engine_vars.c?r1=1.25&r2=1.26
