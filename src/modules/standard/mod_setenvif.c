@@ -176,48 +176,39 @@ static const char *add_setenvif(cmd_parms *cmd, void *mconfig, const char *args)
                         cmd->cmd->name, NULL);
         return error;
     }
+
+    /*
+     * First, try to merge into an existing entry
+     */
+
+    for (i = 0; i < sconf->conditionals->nelts; ++i) {
+        new = &entries[i];
+        if (!strcmp(new->name, fname) && !strcmp(new->regex, regex))
+	    goto gotit;
+    }
+
+    /*
+     * If none was found, create a new entry
+     */
+
+    new = push_array(sconf->conditionals);
+    new->name = fname;
+    new->regex = regex;
+    new->preg = pregcomp(cmd->pool, regex,
+                         (REG_EXTENDED | REG_NOSUB | cflags));
+    if (new->preg == NULL) {
+        error = pstrcat(cmd->pool, cmd->cmd->name,
+                        " regex could not be compiled.", NULL);
+        return error;
+    }
+    new->features = make_table(cmd->pool, 5);
+
+gotit:
     for( ; ; ) {
 	feature = getword_conf(cmd->pool, &cmdline);
 	if(!*feature)
 	    break;
         beenhere++;
-
-        /*
-         * First, try to merge into an existing entry
-         */
-
-        for (i = 0; i < sconf->conditionals->nelts; ++i) {
-            sei_entry *b = &entries[i];
-            if (!strcmp(b->name, fname) && !strcmp(b->regex, regex)) {
-                var = getword(cmd->pool, &feature, '=');
-                if (*feature) {
-                    table_set(b->features, var, feature);
-                }
-                else if (*var == '!') {
-                    table_set(b->features, var + 1, "!");
-                }
-                else {
-                    table_set(b->features, var, "1");
-                }
-		goto next;
-            }
-        }
-
-        /*
-         * If none was found, create a new entry
-         */
-
-        new = push_array(sconf->conditionals);
-        new->name = fname;
-        new->regex = regex;
-        new->preg = pregcomp(cmd->pool, regex,
-                             (REG_EXTENDED | REG_NOSUB | cflags));
-        if (new->preg == NULL) {
-            error = pstrcat(cmd->pool, cmd->cmd->name,
-                            " regex could not be compiled.", NULL);
-            return error;
-        }
-        new->features = make_table(cmd->pool, 5);
 
         var = getword(cmd->pool, &feature, '=');
         if (*feature) {
@@ -229,8 +220,6 @@ static const char *add_setenvif(cmd_parms *cmd, void *mconfig, const char *args)
         else {
             table_set(new->features, var, "1");
         }
-    next:
-	continue;
     }
 
     if (!beenhere) {
