@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/03/08 23:34:48 $]
+Last modified at [$Date: 2004/03/08 23:35:51 $]
 
 Release:
 
@@ -85,6 +85,7 @@ PATCHES TO BACKPORT FROM 2.1
           modules/ssl/ssl_util.c: r1.36
           modules/ssl/ssl_private.h: r1.2
        +1: bnicholes
+       -0: jerenkrantz (should wait for 2.2)
 
     * mod_setenvif: remove support for remote_user variable which never
       worked at all. PR 25725 (2.0 + 1.3)
