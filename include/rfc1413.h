@@ -63,6 +63,14 @@
 extern "C" {
 #endif
 
+/**
+ * Retrieve the remote user name, given socket structures.  This implements the
+ * rfc1413, identd.
+ * @param conn The current connection
+ * @param srv The current server
+ * @return The remote user name
+ * @deffunc char *ap_rfc1413(conn_rec *conn, server_rec *srv)
+ */
 extern char *ap_rfc1413(conn_rec *conn, server_rec *srv);
 
 #ifdef __cplusplus
