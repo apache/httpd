@@ -2,15 +2,15 @@
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
      This file is generated from xml source: DO NOT EDIT
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
---><title>mod_rewrite - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img alt="[APACHE DOCUMENTATION]" src="../images/sub.gif"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_rewrite</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td valign="top"><span class="help">Description:</span></td><td>Provides a rule-based rewriting engine to rewrite requested
-URLs on the fly</td></tr><tr><td><a href="module-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:</a></td><td>rewrite_module</td></tr><tr><td align="left" valign="top"><a href="module-dict.html#Compatibility" class="help">Compatibility:</a></td><td><compatibility>Available in Apache 1.3 and later</compatibility></td></tr></table></td></tr></table><h2>Summary</h2>
+--><title>mod_rewrite - Apache HTTP Server</title><link rel="stylesheet" type="text/css" href="../style/manual.css"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_rewrite</h1><table bgcolor="#cccccc" cellpadding="0" cellspacing="1"><tr><td><table bgcolor="#ffffff"><tr><td valign="top"><span class="help">Description:</span></td><td>Provides a rule-based rewriting engine to rewrite requested
+URLs on the fly</td></tr><tr><td><a class="help" href="module-dict.html#Status">Status:</a></td><td>Extension</td></tr><tr><td><a class="help" href="module-dict.html#ModuleIdentifier">Module&nbsp;Identifier:</a></td><td>rewrite_module</td></tr><tr><td valign="top" align="left"><a class="help" href="module-dict.html#Compatibility">Compatibility:</a></td><td><compatibility>Available in Apache 1.3 and later</compatibility></td></tr></table></td></tr></table><h2>Summary</h2>
       <blockquote>
             <em>``The great thing about mod_rewrite is it gives you
             all the configurability and flexibility of Sendmail.
             The downside to mod_rewrite is that it gives you all
-            the configurability and flexibility of Sendmail.''</em><br>
+            the configurability and flexibility of Sendmail.''</em><br/>
 
-            &nbsp;&nbsp;&nbsp;&nbsp;  -- Brian Behlendorf<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;  -- Brian Behlendorf<br/>
             &nbsp;&nbsp;&nbsp;&nbsp;   Apache Group
 
       </blockquote>
@@ -18,9 +18,9 @@ URLs on the fly</td></tr><tr><td><a href="module-dict.html#Status" class="help">
       <blockquote>
             <em>`` Despite the tons of examples and docs,
             mod_rewrite is voodoo. Damned cool voodoo, but still
-            voodoo. ''</em> <br>
+            voodoo. ''</em> <br/>
 
-              &nbsp;&nbsp;&nbsp;&nbsp;-- Brian Moore<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;-- Brian Moore<br/>
               &nbsp;&nbsp;&nbsp;&nbsp; bem@news.cmc.net
 
           </blockquote>
@@ -58,8 +58,8 @@ URLs on the fly</td></tr><tr><td><a href="module-dict.html#Status" class="help">
 
       <blockquote>
         <a href="http://www.engelschall.com/"><code>Ralf S.
-        Engelschall</code></a><br>
-         <a href="mailto:rse@engelschall.com"><code>rse@engelschall.com</code></a><br>
+        Engelschall</code></a><br/>
+         <a href="mailto:rse@engelschall.com"><code>rse@engelschall.com</code></a><br/>
          <a href="http://www.engelschall.com/"><code>www.engelschall.com</code></a>
       </blockquote>
 <h2>Directives</h2><ul><li><a href="#rewritebase">RewriteBase</a></li><li><a href="#rewritecond">RewriteCond</a></li><li><a href="#rewriteengine">RewriteEngine</a></li><li><a href="#rewritelock">RewriteLock</a></li><li><a href="#rewritelog">RewriteLog</a></li><li><a href="#rewriteloglevel">RewriteLogLevel</a></li><li><a href="#rewritemap">RewriteMap</a></li><li><a href="#rewriteoptions">RewriteOptions</a></li><li><a href="#rewriterule">RewriteRule</a></li></ul><h2><a name="Internal">Interal Processing</a></h2>
@@ -154,14 +154,14 @@ URLs on the fly</td></tr><tr><td><a href="module-dict.html#Status" class="help">
       <p>The order of rules in the ruleset is important because the
       rewriting engine processes them in a special (and not very
       obvious) order. The rule is this: The rewriting engine loops
-      through the ruleset rule by rule (<a href="#rewriterule" class="directive"><code class="directive">RewriteRule</code></a> directives) and
+      through the ruleset rule by rule (<a class="directive" href="#rewriterule"><code class="directive">RewriteRule</code></a> directives) and
       when a particular rule matches it optionally loops through
       existing corresponding conditions (<code>RewriteCond</code>
       directives). For historical reasons the conditions are given
       first, and so the control flow is a little bit long-winded. See
       Figure 1 for more details.</p>
 <h3/>
-      <img src="../images/mod_rewrite_fig1.gif" border="1" width="428" height="385" alt="[Needs graphics capability to display]">
+      <img src="../images/mod_rewrite_fig1.gif" border="1" width="428" height="385" alt="[Needs graphics capability to display]"/>
       <p><strong>Figure 1:</strong>The control flow through the rewriting ruleset</p>
 
       <p>As you can see, first the URL is matched against the
@@ -211,7 +211,7 @@ URLs on the fly</td></tr><tr><td><a href="module-dict.html#Status" class="help">
       transfered for expansion.</p>
 
 <h3/>
-      <img src="../images/mod_rewrite_fig2.gif" border="1" width="381" height="179" alt="[Needs graphics capability to display]">
+      <img src="../images/mod_rewrite_fig2.gif" border="1" width="381" height="179" alt="[Needs graphics capability to display]"/>
       <p><strong>Figure 2:</strong> The back-reference flow through a rule.</p>
 
       <p>We know this was a crash course on mod_rewrite's internal
@@ -254,10 +254,10 @@ SCRIPT_URI=http://en1.engelschall.com/u/rse/
       practical solutions for URL-based problems. There you can
       find real-life rulesets and additional information about
       mod_rewrite.</p>
-<hr/><h2><a name="RewriteBase">RewriteBase</a> <a name="rewritebase">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Sets the base URL for per-directory rewrites</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>RewriteBase <em>URL-path</em></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>See usage for information.</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>FileInfo</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_rewrite</td></tr></table></td></tr></table>
+<hr/><h2><a name="RewriteBase">RewriteBase</a> <a name="rewritebase">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Sets the base URL for per-directory rewrites</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>RewriteBase <em>URL-path</em></td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code>See usage for information.</code></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>directory, .htaccess</td></tr><tr><td><a class="help" href="directive-dict.html#Override">Override:</a></td><td>FileInfo</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Extension</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_rewrite</td></tr></table></td></tr></table>
       <p>The <code class="directive">RewriteBase</code> directive explicitly
       sets the base URL for per-directory rewrites. As you will see
-      below, <a href="#rewriterule" class="directive"><code class="directive">RewriteRule</code></a>
+      below, <a class="directive" href="#rewriterule"><code class="directive">RewriteRule</code></a>
       can be used in per-directory config files
       (<code>.htaccess</code>). There it will act locally,
       <em>i.e.</em>, the local directory prefix is stripped at this
@@ -278,7 +278,7 @@ SCRIPT_URI=http://en1.engelschall.com/u/rse/
 <blockquote><table><tr><td bgcolor="#e0e5f5"> If your webserver's URLs are <strong>not</strong> directly
 related to physical file paths, you have to use
 <code class="directive">RewriteBase</code> in every <code>.htaccess</code>
-files where you want to use <a href="#rewriterule" class="directive"><code class="directive">RewriteRule</code></a> directives.
+files where you want to use <a class="directive" href="#rewriterule"><code class="directive">RewriteRule</code></a> directives.
 </td></tr></table></blockquote>
 
         <p> For example, assume the following per-directory config file:</p>
@@ -335,11 +335,11 @@ Result:
               implementation is correct.</p>
 </td></tr></table></blockquote>
 
-<hr/><h2><a name="RewriteCond">RewriteCond</a> <a name="rewritecond">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Defines a condition under which rewriting will take place
-</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td> RewriteCond
-      <em>TestString</em> <em>CondPattern</em></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>None</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>FileInfo</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_rewrite</td></tr></table></td></tr></table>
+<hr/><h2><a name="RewriteCond">RewriteCond</a> <a name="rewritecond">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Defines a condition under which rewriting will take place
+</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td> RewriteCond
+      <em>TestString</em> <em>CondPattern</em></td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code>None</code></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a class="help" href="directive-dict.html#Override">Override:</a></td><td>FileInfo</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Extension</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_rewrite</td></tr></table></td></tr></table>
       <p>The <code class="directive">RewriteCond</code> directive defines a
-      rule condition. Precede a <a href="#rewriterule" class="directive"><code class="directive">RewriteRule</code></a> directive with one
+      rule condition. Precede a <a class="directive" href="#rewriterule"><code class="directive">RewriteRule</code></a> directive with one
       or more <code class="directive">RewriteCond</code> directives. The following
       rewriting rule is only used if its pattern matches the current
       state of the URI <strong>and</strong> if these additional
@@ -403,28 +403,28 @@ Result:
               <td>
                 <strong>HTTP headers:</strong> 
 
-                <p>HTTP_USER_AGENT<br>
-                 HTTP_REFERER<br>
-                 HTTP_COOKIE<br>
-                 HTTP_FORWARDED<br>
-                 HTTP_HOST<br>
-                 HTTP_PROXY_CONNECTION<br>
-                 HTTP_ACCEPT<br>
+                <p>HTTP_USER_AGENT<br/>
+                 HTTP_REFERER<br/>
+                 HTTP_COOKIE<br/>
+                 HTTP_FORWARDED<br/>
+                 HTTP_HOST<br/>
+                 HTTP_PROXY_CONNECTION<br/>
+                 HTTP_ACCEPT<br/>
                 </p>
               </td>
 
               <td>
                 <strong>connection &amp; request:</strong> 
 
-                <p>REMOTE_ADDR<br>
-                 REMOTE_HOST<br>
-                 REMOTE_USER<br>
-                 REMOTE_IDENT<br>
-                 REQUEST_METHOD<br>
-                 SCRIPT_FILENAME<br>
-                 PATH_INFO<br>
-                 QUERY_STRING<br>
-                 AUTH_TYPE<br>
+                <p>REMOTE_ADDR<br/>
+                 REMOTE_HOST<br/>
+                 REMOTE_USER<br/>
+                 REMOTE_IDENT<br/>
+                 REQUEST_METHOD<br/>
+                 SCRIPT_FILENAME<br/>
+                 PATH_INFO<br/>
+                 QUERY_STRING<br/>
+                 AUTH_TYPE<br/>
                 </p>
               </td>
             </tr>
@@ -433,38 +433,38 @@ Result:
               <td>
                 <strong>server internals:</strong> 
 
-                <p>DOCUMENT_ROOT<br>
-                 SERVER_ADMIN<br>
-                 SERVER_NAME<br>
-                 SERVER_ADDR<br>
-                 SERVER_PORT<br>
-                 SERVER_PROTOCOL<br>
-                 SERVER_SOFTWARE<br>
+                <p>DOCUMENT_ROOT<br/>
+                 SERVER_ADMIN<br/>
+                 SERVER_NAME<br/>
+                 SERVER_ADDR<br/>
+                 SERVER_PORT<br/>
+                 SERVER_PROTOCOL<br/>
+                 SERVER_SOFTWARE<br/>
                 </p>
               </td>
 
               <td>
                 <strong>system stuff:</strong> 
 
-                <p>TIME_YEAR<br>
-                 TIME_MON<br>
-                 TIME_DAY<br>
-                 TIME_HOUR<br>
-                 TIME_MIN<br>
-                 TIME_SEC<br>
-                 TIME_WDAY<br>
-                 TIME<br>
+                <p>TIME_YEAR<br/>
+                 TIME_MON<br/>
+                 TIME_DAY<br/>
+                 TIME_HOUR<br/>
+                 TIME_MIN<br/>
+                 TIME_SEC<br/>
+                 TIME_WDAY<br/>
+                 TIME<br/>
                 </p>
               </td>
 
               <td>
                 <strong>specials:</strong> 
 
-                <p>API_VERSION<br>
-                 THE_REQUEST<br>
-                 REQUEST_URI<br>
-                 REQUEST_FILENAME<br>
-                 IS_SUBREQ<br>
+                <p>API_VERSION<br/>
+                 THE_REQUEST<br/>
+                 REQUEST_URI<br/>
+                 REQUEST_FILENAME<br/>
+                 IS_SUBREQ<br/>
                 </p>
               </td>
             </tr>
@@ -594,21 +594,21 @@ Result:
 
           <ul>
             <li>'<strong>&lt;CondPattern</strong>' (is lexically
-            lower)<br>
+            lower)<br/>
              Treats the <em>CondPattern</em> as a plain string and
             compares it lexically to <em>TestString</em>. True if
             <em>TestString</em> is lexically lower than
             <em>CondPattern</em>.</li>
 
             <li>'<strong>&gt;CondPattern</strong>' (is lexically
-            greater)<br>
+            greater)<br/>
              Treats the <em>CondPattern</em> as a plain string and
             compares it lexically to <em>TestString</em>. True if
             <em>TestString</em> is lexically greater than
             <em>CondPattern</em>.</li>
 
             <li>'<strong>=CondPattern</strong>' (is lexically
-            equal)<br>
+            equal)<br/>
              Treats the <em>CondPattern</em> as a plain string and
             compares it lexically to <em>TestString</em>. True if
             <em>TestString</em> is lexically equal to
@@ -618,28 +618,28 @@ Result:
             compares <em>TestString</em> to the empty string.</li>
 
             <li>'<strong>-d</strong>' (is
-            <strong>d</strong>irectory)<br>
+            <strong>d</strong>irectory)<br/>
              Treats the <em>TestString</em> as a pathname and tests
             if it exists and is a directory.</li>
 
             <li>'<strong>-f</strong>' (is regular
-            <strong>f</strong>ile)<br>
+            <strong>f</strong>ile)<br/>
              Treats the <em>TestString</em> as a pathname and tests
             if it exists and is a regular file.</li>
 
             <li>'<strong>-s</strong>' (is regular file with
-            <strong>s</strong>ize)<br>
+            <strong>s</strong>ize)<br/>
              Treats the <em>TestString</em> as a pathname and tests
             if it exists and is a regular file with size greater
             than zero.</li>
 
             <li>'<strong>-l</strong>' (is symbolic
-            <strong>l</strong>ink)<br>
+            <strong>l</strong>ink)<br/>
              Treats the <em>TestString</em> as a pathname and tests
             if it exists and is a symbolic link.</li>
 
             <li>'<strong>-F</strong>' (is existing file via
-            subrequest)<br>
+            subrequest)<br/>
              Checks if <em>TestString</em> is a valid file and
             accessible via all the server's currently-configured
             access controls for that path. This uses an internal
@@ -647,7 +647,7 @@ Result:
             because it decreases your servers performance!</li>
 
             <li>'<strong>-U</strong>' (is existing URL via
-            subrequest)<br>
+            subrequest)<br/>
              Checks if <em>TestString</em> is a valid URL and
             accessible via all the server's currently-configured
             access controls for that path. This uses an internal
@@ -676,7 +676,7 @@ Result:
 
       <ul>
         <li>'<strong><code>nocase|NC</code></strong>'
-        (<strong>n</strong>o <strong>c</strong>ase)<br>
+        (<strong>n</strong>o <strong>c</strong>ase)<br/>
          This makes the test case-insensitive, <em>i.e.</em>, there
         is no difference between 'A-Z' and 'a-z' both in the
         expanded <em>TestString</em> and the <em>CondPattern</em>.
@@ -686,7 +686,7 @@ Result:
 
         <li>
           '<strong><code>ornext|OR</code></strong>'
-          (<strong>or</strong> next condition)<br>
+          (<strong>or</strong> next condition)<br/>
            Use this to combine rule conditions with a local OR
           instead of the implicit AND. Typical example: 
 
@@ -730,7 +730,7 @@ RewriteRule  ^/$                 /homepage.std.html  [L]
         tables, <em>etc.</em> If you use any other browser you get
         the standard homepage.</p>
 
-<hr/><h2><a name="RewriteEngine">RewriteEngine</a> <a name="rewriteengine">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Enables or disables runtime rewriting engine</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>RewriteEngine on|off</td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>RewriteEngine off</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>FileInfo</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_rewrite</td></tr></table></td></tr></table>       
+<hr/><h2><a name="RewriteEngine">RewriteEngine</a> <a name="rewriteengine">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Enables or disables runtime rewriting engine</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>RewriteEngine on|off</td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code>RewriteEngine off</code></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a class="help" href="directive-dict.html#Override">Override:</a></td><td>FileInfo</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Extension</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_rewrite</td></tr></table></td></tr></table>       
 
       <p>The <code class="directive">RewriteEngine</code> directive enables or
       disables the runtime rewriting engine. If it is set to
@@ -739,22 +739,22 @@ RewriteRule  ^/$                 /homepage.std.html  [L]
       environment variables.</p>
 
       <p>Use this directive to disable the module instead of
-      commenting out all the <a href="#rewriterule" class="directive"><code class="directive">RewriteRule</code></a> directives!</p>
+      commenting out all the <a class="directive" href="#rewriterule"><code class="directive">RewriteRule</code></a> directives!</p>
 
       <p>Note that, by default, rewrite configurations are not
       inherited. This means that you need to have a
       <code>RewriteEngine on</code> directive for each virtual host
       in which you wish to use it.</p>
-<hr/><h2><a name="RewriteLock">RewriteLock</a> <a name="rewritelock">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Sets the name of the lock file used for RewriteMap
-synchronization</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>RewriteLock <em>file-path</em></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>None</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_rewrite</td></tr></table></td></tr></table>
+<hr/><h2><a name="RewriteLock">RewriteLock</a> <a name="rewritelock">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Sets the name of the lock file used for RewriteMap
+synchronization</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>RewriteLock <em>file-path</em></td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code>None</code></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Extension</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_rewrite</td></tr></table></td></tr></table>
       <p>This directive sets the filename for a synchronization
-      lockfile which mod_rewrite needs to communicate with <a href="#rewritemap" class="directive"><code class="directive">RewriteMap</code></a>
+      lockfile which mod_rewrite needs to communicate with <a class="directive" href="#rewritemap"><code class="directive">RewriteMap</code></a>
       <em>programs</em>. Set this lockfile to a local path (not on a
       NFS-mounted device) when you want to use a rewriting
       map-program. It is not required for other types of rewriting
       maps.</p>
-<hr/><h2><a name="RewriteLog">RewriteLog</a> <a name="rewritelog">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Sets the name of the file used for logging rewrite engine
-processing</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>RewriteLog <em>file-path</em></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_rewrite</td></tr></table></td></tr></table>
+<hr/><h2><a name="RewriteLog">RewriteLog</a> <a name="rewritelog">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Sets the name of the file used for logging rewrite engine
+processing</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>RewriteLog <em>file-path</em></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Extension</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_rewrite</td></tr></table></td></tr></table>
       <p>The <code class="directive">RewriteLog</code> directive sets the name
       of the file to which the server logs any rewriting actions it
       performs. If the name does not begin with a slash
@@ -785,8 +785,8 @@ the user that starts the server.
 RewriteLog "/usr/local/var/apache/logs/rewrite.log"
 </code></td></tr></table></blockquote>
 
-<hr/><h2><a name="RewriteLogLevel">RewriteLogLevel</a> <a name="rewriteloglevel">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Sets the verbosity of the log file used by the rewrite
-engine</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>RewriteLogLevel <em>Level</em></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>RerwiteLogLevel 0</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_rewrite</td></tr></table></td></tr></table>
+<hr/><h2><a name="RewriteLogLevel">RewriteLogLevel</a> <a name="rewriteloglevel">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Sets the verbosity of the log file used by the rewrite
+engine</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>RewriteLogLevel <em>Level</em></td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code>RerwiteLogLevel 0</code></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Extension</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_rewrite</td></tr></table></td></tr></table>
       <p>The <code class="directive">RewriteLogLevel</code> directive sets the
       verbosity level of the rewriting logfile. The default level 0
       means no logging, while 9 or more means that practically all
@@ -806,8 +806,8 @@ engine</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax
 RewriteLogLevel 3
 </code></td></tr></table></blockquote>
 
-<hr/><h2><a name="RewriteMap">RewriteMap</a> <a name="rewritemap">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Defines a mapping function for key-lookup</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>RewriteMap <em>MapName</em> <em>MapType</em>:<em>MapSource</em>
-</td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>None</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_rewrite</td></tr></table></td></tr></table>
+<hr/><h2><a name="RewriteMap">RewriteMap</a> <a name="rewritemap">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Defines a mapping function for key-lookup</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>RewriteMap <em>MapName</em> <em>MapType</em>:<em>MapSource</em>
+</td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code>None</code></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Extension</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_rewrite</td></tr></table></td></tr></table>
       <p>The <code class="directive">RewriteMap</code> directive defines a
       <em>Rewriting Map</em> which can be used inside rule
       substitution strings by the mapping-functions to
@@ -821,7 +821,7 @@ RewriteLogLevel 3
 
       <blockquote>
         <strong><code>${</code> <em>MapName</em> <code>:</code>
-        <em>LookupKey</em> <code>}</code><br>
+        <em>LookupKey</em> <code>}</code><br/>
          <code>${</code> <em>MapName</em> <code>:</code>
         <em>LookupKey</em> <code>|</code> <em>DefaultValue</em>
         <code>}</code></strong>
@@ -839,7 +839,7 @@ RewriteLogLevel 3
 
       <ul>
         <li>
-          <strong>Standard Plain Text</strong><br>
+          <strong>Standard Plain Text</strong><br/>
            MapType: <code>txt</code>, MapSource: Unix filesystem
           path to valid regular file 
 
@@ -871,7 +871,7 @@ RewriteMap real-to-user txt:/path/to/file/map.txt
         </li>
 
         <li>
-          <strong>Randomized Plain Text</strong><br>
+          <strong>Randomized Plain Text</strong><br/>
            MapType: <code>rnd</code>, MapSource: Unix filesystem
           path to valid regular file 
 
@@ -903,7 +903,7 @@ RewriteMap servers rnd:/path/to/file/map.txt
         </li>
 
         <li>
-          <strong>Hash File</strong><br>
+          <strong>Hash File</strong><br/>
            MapType: <code>dbm</code>, MapSource: Unix filesystem
           path to valid regular file 
 
@@ -945,7 +945,7 @@ $ txt2dbm map.txt map.db
         </li>
 
         <li>
-          <strong>Internal Function</strong><br>
+          <strong>Internal Function</strong><br/>
            MapType: <code>int</code>, MapSource: Internal Apache
           function 
 
@@ -954,24 +954,24 @@ $ txt2dbm map.txt map.db
           functions already exists:</p>
 
           <ul>
-            <li><strong>toupper</strong>:<br>
+            <li><strong>toupper</strong>:<br/>
              Converts the looked up key to all upper case.</li>
 
-            <li><strong>tolower</strong>:<br>
+            <li><strong>tolower</strong>:<br/>
              Converts the looked up key to all lower case.</li>
 
-            <li><strong>escape</strong>:<br>
+            <li><strong>escape</strong>:<br/>
              Translates special characters in the looked up key to
             hex-encodings.</li>
 
-            <li><strong>unescape</strong>:<br>
+            <li><strong>unescape</strong>:<br/>
              Translates hex-encodings in the looked up key back to
             special characters.</li>
           </ul>
         </li>
 
         <li>
-          <strong>External Rewriting Program</strong><br>
+          <strong>External Rewriting Program</strong><br/>
            MapType: <code>prg</code>, MapSource: Unix filesystem
           path to valid regular file 
 
@@ -1017,7 +1017,7 @@ while (&lt;STDIN&gt;) {
             <code>stdout</code>! This will cause a deadloop! Hence
             the ``<code>$|=1</code>'' in the above example...</li>
 
-            <li>Use the <a href="#rewritelock" class="directive"><code class="directive">RewriteLock</code></a> directive to
+            <li>Use the <a class="directive" href="#rewritelock"><code class="directive">RewriteLock</code></a> directive to
             define a lockfile mod_rewrite can use to synchronize the
             communication to the program. By default no such
             synchronization takes place.</li>
@@ -1039,7 +1039,7 @@ request.  This is no problem, because the external lookup only happens
 once!
 </td></tr></table></blockquote>
 
-<hr/><h2><a name="RewriteOptions">RewriteOptions</a> <a name="rewriteoptions">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Sets some special options for the rewrite engine</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>RewriteOptions <em>Options</em></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>None</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_rewrite</td></tr></table></td></tr></table>
+<hr/><h2><a name="RewriteOptions">RewriteOptions</a> <a name="rewriteoptions">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Sets some special options for the rewrite engine</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>RewriteOptions <em>Options</em></td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code>None</code></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Extension</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_rewrite</td></tr></table></td></tr></table>
 
       <p>The <code class="directive">RewriteOptions</code> directive sets some
       special options for the current per-server or per-directory
@@ -1047,7 +1047,7 @@ once!
       following:</p>
 
       <ul>
-        <li>'<strong><code>inherit</code></strong>'<br>
+        <li>'<strong><code>inherit</code></strong>'<br/>
          This forces the current configuration to inherit the
         configuration of the parent. In per-virtual-server context
         this means that the maps, conditions and rules of the main
@@ -1055,8 +1055,8 @@ once!
         that conditions and rules of the parent directory's
         <code>.htaccess</code> configuration are inherited.</li>
       </ul>
-<hr/><h2><a name="RewriteRule">RewriteRule</a> <a name="rewriterule">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Defines rules for the rewriting engine</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>RewriteRule
-      <em>Pattern</em> <em>Substitution</em></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>None</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>FileInfo</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_rewrite</td></tr></table></td></tr></table>
+<hr/><h2><a name="RewriteRule">RewriteRule</a> <a name="rewriterule">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Defines rules for the rewriting engine</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>RewriteRule
+      <em>Pattern</em> <em>Substitution</em></td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code>None</code></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a class="help" href="directive-dict.html#Override">Override:</a></td><td>FileInfo</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Extension</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_rewrite</td></tr></table></td></tr></table>
       <p>The <code class="directive">RewriteRule</code> directive is the real
       rewriting workhorse. The directive can occur more than once.
       Each directive then defines one single rewriting rule. The
@@ -1117,11 +1117,11 @@ once!
       following dedicated book on this topic:</p>
 
       <blockquote>
-        <em>Mastering Regular Expressions</em><br>
-         Jeffrey E.F. Friedl<br>
-         Nutshell Handbook Series<br>
-         O'Reilly &amp; Associates, Inc. 1997<br>
-         ISBN 1-56592-257-3<br>
+        <em>Mastering Regular Expressions</em><br/>
+         Jeffrey E.F. Friedl<br/>
+         Nutshell Handbook Series<br/>
+         O'Reilly &amp; Associates, Inc. 1997<br/>
+         ISBN 1-56592-257-3<br/>
       </blockquote>
 
       <p>Additionally in mod_rewrite the NOT character
@@ -1229,7 +1229,7 @@ There is a special feature:
       <ul>
         <li>
           '<strong><code>redirect|R</code>
-          [=<em>code</em>]</strong>' (force <a id="redirect" name="redirect"><strong>r</strong>edirect</a>)<br>
+          [=<em>code</em>]</strong>' (force <a id="redirect" name="redirect"><strong>r</strong>edirect</a>)<br/>
            Prefix <em>Substitution</em> with
           <code>http://thishost[:thisport]/</code> (which makes the
           new URL a URI) to force a external redirection. If no
@@ -1242,7 +1242,7 @@ There is a special feature:
           canonicalize the URL and give it back to the client,
           <em>e.g.</em>, translate ``<code>/~</code>'' into
           ``<code>/u/</code>'' or always append a slash to
-          <code>/u/</code><em>user</em>, etc.<br>
+          <code>/u/</code><em>user</em>, etc.<br/>
            
 
           <p><strong>Note:</strong> When you use this flag, make
@@ -1256,7 +1256,7 @@ There is a special feature:
         </li>
 
         <li>'<strong><code>forbidden|F</code></strong>' (force URL
-        to be <strong>f</strong>orbidden)<br>
+        to be <strong>f</strong>orbidden)<br/>
          This forces the current URL to be forbidden,
         <em>i.e.</em>, it immediately sends back a HTTP response of
         403 (FORBIDDEN). Use this flag in conjunction with
@@ -1264,14 +1264,14 @@ There is a special feature:
         URLs.</li>
 
         <li>'<strong><code>gone|G</code></strong>' (force URL to be
-        <strong>g</strong>one)<br>
+        <strong>g</strong>one)<br/>
          This forces the current URL to be gone, <em>i.e.</em>, it
         immediately sends back a HTTP response of 410 (GONE). Use
         this flag to mark pages which no longer exist as gone.</li>
 
         <li>
           '<strong><code>proxy|P</code></strong>' (force
-          <strong>p</strong>roxy)<br>
+          <strong>p</strong>roxy)<br/>
            This flag forces the substitution part to be internally
           forced as a proxy request and immediately (<em>i.e.</em>,
           rewriting rule processing stops here) put through the <a href="mod_proxy.html">proxy module</a>. You have to make
@@ -1295,7 +1295,7 @@ There is a special feature:
         </li>
 
         <li>'<strong><code>last|L</code></strong>'
-        (<strong>l</strong>ast rule)<br>
+        (<strong>l</strong>ast rule)<br/>
          Stop the rewriting process here and don't apply any more
         rewriting rules. This corresponds to the Perl
         <code>last</code> command or the <code>break</code> command
@@ -1306,19 +1306,19 @@ There is a special feature:
         '<code>/e/www/</code>'.</li>
 
         <li>'<strong><code>next|N</code></strong>'
-        (<strong>n</strong>ext round)<br>
+        (<strong>n</strong>ext round)<br/>
          Re-run the rewriting process (starting again with the
         first rewriting rule). Here the URL to match is again not
         the original URL but the URL from the last rewriting rule.
         This corresponds to the Perl <code>next</code> command or
         the <code>continue</code> command from the C language. Use
         this flag to restart the rewriting process, <em>i.e.</em>,
-        to immediately go to the top of the loop.<br>
+        to immediately go to the top of the loop.<br/>
          <strong>But be careful not to create an infinite
         loop!</strong></li>
 
         <li>'<strong><code>chain|C</code></strong>'
-        (<strong>c</strong>hained with next rule)<br>
+        (<strong>c</strong>hained with next rule)<br/>
          This flag chains the current rule with the next rule
         (which itself can be chained with the following rule,
         <em>etc.</em>). This has the following effect: if a rule
@@ -1332,7 +1332,7 @@ There is a special feature:
 
         <li>
         '<strong><code>type|T</code></strong>=<em>MIME-type</em>'
-        (force MIME <strong>t</strong>ype)<br>
+        (force MIME <strong>t</strong>ype)<br/>
          Force the MIME-type of the target file to be
         <em>MIME-type</em>. For instance, this can be used to
         simulate the <code>mod_alias</code> directive
@@ -1343,7 +1343,7 @@ There is a special feature:
         <li>
           '<strong><code>nosubreq|NS</code></strong>' (used only if
           <strong>n</strong>o internal
-          <strong>s</strong>ub-request)<br>
+          <strong>s</strong>ub-request)<br/>
            This flag forces the rewriting engine to skip a
           rewriting rule if the current request is an internal
           sub-request. For instance, sub-requests occur internally
@@ -1352,7 +1352,7 @@ There is a special feature:
           (<code>index.xxx</code>). On sub-requests it is not
           always useful and even sometimes causes a failure to if
           the complete set of rules are applied. Use this flag to
-          exclude some rules.<br>
+          exclude some rules.<br/>
            
 
           <p>Use the following rule for your decision: whenever you
@@ -1363,7 +1363,7 @@ There is a special feature:
         </li>
 
         <li>'<strong><code>nocase|NC</code></strong>'
-        (<strong>n</strong>o <strong>c</strong>ase)<br>
+        (<strong>n</strong>o <strong>c</strong>ase)<br/>
          This makes the <em>Pattern</em> case-insensitive,
         <em>i.e.</em>, there is no difference between 'A-Z' and
         'a-z' when <em>Pattern</em> is matched against the current
@@ -1371,7 +1371,7 @@ There is a special feature:
 
         <li>'<strong><code>qsappend|QSA</code></strong>'
         (<strong>q</strong>uery <strong>s</strong>tring
-        <strong>a</strong>ppend)<br>
+        <strong>a</strong>ppend)<br/>
          This flag forces the rewriting engine to append a query
         string part in the substitution string to the existing one
         instead of replacing it. Use this when you want to add more
@@ -1380,7 +1380,7 @@ There is a special feature:
         <li>
           '<strong><code>noescape|NE</code></strong>'
           (<strong>n</strong>o URI <strong>e</strong>scaping of
-          output)<br>
+          output)<br/>
            This flag keeps mod_rewrite from applying the usual URI
           escaping rules to the result of a rewrite. Ordinarily,
           special characters (such as '%', '$', ';', and so on)
@@ -1399,7 +1399,7 @@ There is a special feature:
         <li>
           '<strong><code>passthrough|PT</code></strong>'
           (<strong>p</strong>ass <strong>t</strong>hrough to next
-          handler)<br>
+          handler)<br/>
            This flag forces the rewriting engine to set the
           <code>uri</code> field of the internal
           <code>request_rec</code> structure to the value of the
@@ -1415,7 +1415,7 @@ There is a special feature:
           <code>/def</code> to <code>/ghi</code> with
           <code>mod_alias</code>: 
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-    RewriteRule ^/abc(.*)  /def$1 [PT]<br>
+    RewriteRule ^/abc(.*)  /def$1 [PT]<br/>
     Alias       /def       /ghi
 </code></td></tr></table></blockquote>
           If you omit the <code>PT</code> flag then
@@ -1443,7 +1443,7 @@ There is a special feature:
         </li>
 
         <li>'<strong><code>skip|S</code></strong>=<em>num</em>'
-        (<strong>s</strong>kip next rule(s))<br>
+        (<strong>s</strong>kip next rule(s))<br/>
          This flag forces the rewriting engine to skip the next
         <em>num</em> rules in sequence when the current rule
         matches. Use this to make pseudo if-then-else constructs:
@@ -1454,7 +1454,7 @@ There is a special feature:
 
         <li>
         '<strong><code>env|E=</code></strong><em>VAR</em>:<em>VAL</em>'
-        (set <strong>e</strong>nvironment variable)<br>
+        (set <strong>e</strong>nvironment variable)<br/>
          This forces an environment variable named <em>VAR</em> to
         be set to the value <em>VAL</em>, where <em>VAL</em> can
         contain regexp backreferences <code>$N</code> and
@@ -1502,9 +1502,9 @@ directory which is not always possible.
       meanings:</p>
 
       <p><strong>Inside per-server configuration
-      (<code>httpd.conf</code>)<br>
+      (<code>httpd.conf</code>)<br/>
        for request ``<code>GET
-      /somepath/pathinfo</code>'':</strong><br>
+      /somepath/pathinfo</code>'':</strong><br/>
       </p>
 
       <table bgcolor="#F0F0F0" cellspacing="0" cellpadding="5">
@@ -1548,12 +1548,12 @@ directory which is not always possible.
       </table>
 
       <p><strong>Inside per-directory configuration for
-      <code>/somepath</code><br>
+      <code>/somepath</code><br/>
        (<em>i.e.</em>, file <code>.htaccess</code> in dir
       <code>/physical/path/to/somepath</code> containing
-      <code>RewriteBase /somepath</code>)<br>
+      <code>RewriteBase /somepath</code>)<br/>
        for request ``<code>GET
-      /somepath/localpath/pathinfo</code>'':</strong><br> 
+      /somepath/localpath/pathinfo</code>'':</strong><br/> 
      </p>
 
       <table bgcolor="#F0F0F0" cellspacing="0" cellpadding="5">
@@ -1625,4 +1625,4 @@ RewriteMap   real-to-user               txt:/path/to/file/map.txt
 RewriteRule  ^/([^/]+)/~([^/]+)/(.*)$   /u/${real-to-user:$2|nobody}/$3.$1
 </pre>
    </code></td></tr></table></blockquote>
-  <hr/><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img alt="Index" src="../images/index.gif"/></a><a href="../"><img alt="Home" src="../images/home.gif"/></a></blockquote></body></html>
+  <hr/><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"/></a><a href="../"><img src="../images/home.gif" alt="Home"/></a></blockquote></body></html>

@@ -2,7 +2,7 @@
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
      This file is generated from xml source: DO NOT EDIT
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
---><title>mod_example - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img alt="[APACHE DOCUMENTATION]" src="../images/sub.gif"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_example</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td valign="top"><span class="help">Description:</span></td><td>Illustrates the Apache module API</td></tr><tr><td><a href="module-dict.html#Status" class="help">Status:</a></td><td>Experimental</td></tr><tr><td><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:</a></td><td>example_module</td></tr></table></td></tr></table><h2>Summary</h2>
+--><title>mod_example - Apache HTTP Server</title><link rel="stylesheet" type="text/css" href="../style/manual.css"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_example</h1><table bgcolor="#cccccc" cellpadding="0" cellspacing="1"><tr><td><table bgcolor="#ffffff"><tr><td valign="top"><span class="help">Description:</span></td><td>Illustrates the Apache module API</td></tr><tr><td><a class="help" href="module-dict.html#Status">Status:</a></td><td>Experimental</td></tr><tr><td><a class="help" href="module-dict.html#ModuleIdentifier">Module&nbsp;Identifier:</a></td><td>example_module</td></tr></table></td></tr></table><h2>Summary</h2>
 <blockquote><table><tr><td bgcolor="#ffe5f5">
       This document has not been updated
       to take into account changes made in the 2.0 version of the
@@ -68,8 +68,8 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     <p>To activate the example module, include a block similar to
     the following in your <code>srm.conf</code> file:</p>
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-   &lt;Location /example-info&gt;<br>
-       SetHandler example-handler<br>
+   &lt;Location /example-info&gt;<br/>
+       SetHandler example-handler<br/>
    &lt;/Location&gt;
 </code></td></tr></table></blockquote>
 
@@ -82,8 +82,8 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     <p>After reloading/restarting your server, you should be able
     to browse to this location and see the brief display mentioned
     earlier.</p>
-<hr/><h2><a name="Example">Example</a> <a name="example">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Demonstration directive to illustrate the Apache module
-API</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>Example</td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Experimental</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_example</td></tr></table></td></tr></table>
+<hr/><h2><a name="Example">Example</a> <a name="example">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Demonstration directive to illustrate the Apache module
+API</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>Example</td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Experimental</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_example</td></tr></table></td></tr></table>
     <p>The <code class="directive">Example</code> directive just sets a demonstration
     flag which the example module's content handler displays. It
     takes no arguments. If you browse to an URL to which the
@@ -92,4 +92,4 @@ API</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</
     called to service the document request. The effect of this
     directive one can observe under the point "<code>Example
     directive declared here: YES/NO</code>".</p>
-<hr/><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img alt="Index" src="../images/index.gif"/></a><a href="../"><img alt="Home" src="../images/home.gif"/></a></blockquote></body></html>
+<hr/><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"/></a><a href="../"><img src="../images/home.gif" alt="Home"/></a></blockquote></body></html>

@@ -2,10 +2,10 @@
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
      This file is generated from xml source: DO NOT EDIT
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
---><title>mod_mime - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img alt="[APACHE DOCUMENTATION]" src="../images/sub.gif"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_mime</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td valign="top"><span class="help">Description:</span></td><td>Associates the request filename's extensions
+--><title>mod_mime - Apache HTTP Server</title><link rel="stylesheet" type="text/css" href="../style/manual.css"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_mime</h1><table bgcolor="#cccccc" cellpadding="0" cellspacing="1"><tr><td><table bgcolor="#ffffff"><tr><td valign="top"><span class="help">Description:</span></td><td>Associates the request filename's extensions
     (e.g. .html) with the file's behavior (handlers and filters)
     and content (mime-type, language, character set and
-    encoding)</td></tr><tr><td><a href="module-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:</a></td><td>mime_module</td></tr></table></td></tr></table><h2>Summary</h2>
+    encoding)</td></tr><tr><td><a class="help" href="module-dict.html#Status">Status:</a></td><td>Base</td></tr><tr><td><a class="help" href="module-dict.html#ModuleIdentifier">Module&nbsp;Identifier:</a></td><td>mime_module</td></tr></table></td></tr></table><h2>Summary</h2>
     <p>This module is used to associate various bits of "meta
     information" with files by their filename extensions. This
     information relates the filename of the document to it's
@@ -61,7 +61,7 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     likely conflict later with the already crowded language and
     character set namespace.</td></tr></table></blockquote>
 
-    <p>The core directives <a href="core.html#forcetype" class="directive"><code class="directive">ForceType</code></a> and
+    <p>The core directives <a class="directive" href="core.html#forcetype"><code class="directive">ForceType</code></a> and
     <code class="directive">SetHandler</code> are used to
     associate all the files in a given container (<em>e.g.</em>,
     &lt;location&gt;, &lt;directory&gt;, or &lt;Files&gt;) with a
@@ -76,7 +76,7 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     encoding) you may need to 'touch' affected files (updating
     their last modified date) to ensure that all visitors are
     receive the corrected content headers.</p>
-<h2>Directives</h2><ul><li><a href="#addcharset">AddCharset</a></li><li><a href="#addencoding">AddEncoding</a></li><li><a href="#addhandler">AddHandler</a></li><li><a href="#addinputfilter">AddInputFilter</a></li><li><a href="#addlanguage">AddLanguage</a></li><li><a href="#addoutputfilter">AddOutputFilter</a></li><li><a href="#addtype">AddType</a></li><li><a href="#defaultlanguage">DefaultLanguage</a></li><li><a href="#multiviewsmatch">MultiviewsMatch</a></li><li><a href="#removecharset">RemoveCharset</a></li><li><a href="#removeencoding">RemoveEncoding</a></li><li><a href="#removehandler">RemoveHandler</a></li><li><a href="#removeinputfilter">RemoveInputFilter</a></li><li><a href="#removelanguage">RemoveLanguage</a></li><li><a href="#removeoutputfilter">RemoveOutputFilter</a></li><li><a href="#removetype">RemoveType</a></li><li><a href="#typesconfig">TypesConfig</a></li></ul><p><strong>See also </strong></p><ul><li>See also: <a href="mod_mime_magic.html#mimemagicfile" class="directive"><code class="directive">MimeMagicFile</code></a></li></ul><h2><a name="multipleext">Files with Multiple Extensions</a></h2>
+<h2>Directives</h2><ul><li><a href="#addcharset">AddCharset</a></li><li><a href="#addencoding">AddEncoding</a></li><li><a href="#addhandler">AddHandler</a></li><li><a href="#addinputfilter">AddInputFilter</a></li><li><a href="#addlanguage">AddLanguage</a></li><li><a href="#addoutputfilter">AddOutputFilter</a></li><li><a href="#addtype">AddType</a></li><li><a href="#defaultlanguage">DefaultLanguage</a></li><li><a href="#multiviewsmatch">MultiviewsMatch</a></li><li><a href="#removecharset">RemoveCharset</a></li><li><a href="#removeencoding">RemoveEncoding</a></li><li><a href="#removehandler">RemoveHandler</a></li><li><a href="#removeinputfilter">RemoveInputFilter</a></li><li><a href="#removelanguage">RemoveLanguage</a></li><li><a href="#removeoutputfilter">RemoveOutputFilter</a></li><li><a href="#removetype">RemoveType</a></li><li><a href="#typesconfig">TypesConfig</a></li></ul><p><strong>See also </strong></p><ul><li>See also: <a class="directive" href="mod_mime_magic.html#mimemagicfile"><code class="directive">MimeMagicFile</code></a></li></ul><h2><a name="multipleext">Files with Multiple Extensions</a></h2>
 
 
     <p>Files can have more than one extension, and the order of the
@@ -182,7 +182,7 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     render the information.</p>
 
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-Content-Language: en, fr<br>
+Content-Language: en, fr<br/>
 Content-Type: text/plain; charset=ISO-8859-2
 </code></td></tr></table></blockquote>
 
@@ -190,9 +190,9 @@ Content-Type: text/plain; charset=ISO-8859-2
     for the language. The <code>charset</code> is the name of the
     particular character set which should be used.</p>
 
-<hr/><h2><a name="AddCharset">AddCharset</a> <a name="addcharset">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Maps the given filename extensions
-    to the specified content charset</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>AddCharset <em>charset extension</em> 
-[<em>extension</em>] ...</td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>None</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>FileInfo</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_mime</td></tr><tr><td align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:</a></td><td>AddCharset is only available in Apache 
+<hr/><h2><a name="AddCharset">AddCharset</a> <a name="addcharset">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Maps the given filename extensions
+    to the specified content charset</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>AddCharset <em>charset extension</em> 
+[<em>extension</em>] ...</td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code>None</code></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a class="help" href="directive-dict.html#Override">Override:</a></td><td>FileInfo</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Base</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_mime</td></tr><tr><td valign="top" align="left"><a class="help" href="directive-dict.html#Compatibility">Compatibility:</a></td><td>AddCharset is only available in Apache 
 1.3.10 and later</td></tr></table></td></tr></table>
     
     <p>The AddCharset directive maps the given filename extensions
@@ -203,9 +203,9 @@ Content-Type: text/plain; charset=ISO-8859-2
 
     <p>Example:</p>
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-    AddLanguage ja .ja<br>
-    AddCharset EUC-JP .euc<br>
-    AddCharset ISO-2022-JP .jis<br>
+    AddLanguage ja .ja<br/>
+    AddCharset EUC-JP .euc<br/>
+    AddCharset ISO-2022-JP .jis<br/>
     AddCharset SHIFT_JIS .sjis
 </code></td></tr></table></blockquote>
 
@@ -221,9 +221,9 @@ Content-Type: text/plain; charset=ISO-8859-2
     <p>The <em>extension</em> argument is case-insensitive, and can
     be specified with or without a leading dot.</p>
 
-<p><strong>See also </strong></p><ul><li><code><a href="mod_negotiation.html">mod_negotiation</a></code></li></ul><hr/><h2><a name="AddEncoding">AddEncoding</a> <a name="addencoding">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Maps the given filename extensions
-    to the specified encoding type</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>AddEncoding
-    <em>MIME-enc extension</em> [<em>extension</em>] ...</td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>None</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>FileInfo</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_mime</td></tr></table></td></tr></table>
+<p><strong>See also </strong></p><ul><li><code><a href="mod_negotiation.html">mod_negotiation</a></code></li></ul><hr/><h2><a name="AddEncoding">AddEncoding</a> <a name="addencoding">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Maps the given filename extensions
+    to the specified encoding type</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>AddEncoding
+    <em>MIME-enc extension</em> [<em>extension</em>] ...</td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code>None</code></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a class="help" href="directive-dict.html#Override">Override:</a></td><td>FileInfo</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Base</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_mime</td></tr></table></td></tr></table>
 
     <p>The AddEncoding directive maps the given filename extensions
     to the specified encoding type. <em>MIME-enc</em> is the MIME
@@ -233,7 +233,7 @@ Content-Type: text/plain; charset=ISO-8859-2
     <em>extension</em>. Example:</p>
 
     <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-      AddEncoding x-gzip .gz<br>
+      AddEncoding x-gzip .gz<br/>
       AddEncoding x-compress .Z
     </code></td></tr></table></blockquote>
 
@@ -261,10 +261,10 @@ Content-Type: text/plain; charset=ISO-8859-2
     be specified with or without a leading dot.</p>
 
 <p><strong>See also </strong></p><ul><li><a href="#multipleext">Files with
-    multiple extensions</a></li></ul><hr/><h2><a name="AddHandler">AddHandler</a> <a name="addhandler">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>AddHandler maps the filename extensions
+    multiple extensions</a></li></ul><hr/><h2><a name="AddHandler">AddHandler</a> <a name="addhandler">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>AddHandler maps the filename extensions
 to the handler 
-handler-name</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>AddHandler
-    <em>handler-name extension</em> [<em>extension</em>] ...</td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>None</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>FileInfo</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_mime</td></tr><tr><td align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:</a></td><td/></tr></table></td></tr></table>
+handler-name</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>AddHandler
+    <em>handler-name extension</em> [<em>extension</em>] ...</td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code>None</code></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a class="help" href="directive-dict.html#Override">Override:</a></td><td>FileInfo</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Base</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_mime</td></tr><tr><td valign="top" align="left"><a class="help" href="directive-dict.html#Compatibility">Compatibility:</a></td><td/></tr></table></td></tr></table>
 <p>This mapping is added to any already in
     force, overriding any mappings that already exist for the same
     <em>extension</em>. For example, to activate CGI scripts with
@@ -282,11 +282,11 @@ handler-name</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">
     be specified with or without a leading dot.</p>
 
 <p><strong>See also </strong></p><ul><li><a href="#multipleext">Files with
-    multiple extensions</a></li></ul><hr/><h2><a name="AddInputFilter">AddInputFilter</a> <a name="addinputfilter">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Maps the filename extensions
+    multiple extensions</a></li></ul><hr/><h2><a name="AddInputFilter">AddInputFilter</a> <a name="addinputfilter">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Maps the filename extensions
     to the filter or filters which will process
-    client requests</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>AddInputFilter
+    client requests</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>AddInputFilter
     <em>filter</em>[<em>;filter</em>...] extension
-    [<em>extension</em> ...]</td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>None</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_mime</td></tr><tr><td align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:</a></td><td>AddInputFilter
+    [<em>extension</em> ...]</td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code>None</code></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Base</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_mime</td></tr><tr><td valign="top" align="left"><a class="help" href="directive-dict.html#Compatibility">Compatibility:</a></td><td>AddInputFilter
     is only available in Apache 2.0.26 and later.</td></tr></table></td></tr></table>
 
     <p>AddInputFilter maps the filename extensions
@@ -305,9 +305,9 @@ handler-name</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">
     without a leading dot.</p>
 
 <p><strong>See also </strong></p><ul><li><a href="../filter.html">Filters</a>
-    documentation.</li></ul><hr/><h2><a name="AddLanguage">AddLanguage</a> <a name="addlanguage">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Maps the given filename extension
-to the specified content language</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>AddLanguage
-    <em>MIME-lang extension</em> [<em>extension</em>] ...</td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>None</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>FileInfo</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_mime</td></tr></table></td></tr></table>
+    documentation.</li></ul><hr/><h2><a name="AddLanguage">AddLanguage</a> <a name="addlanguage">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Maps the given filename extension
+to the specified content language</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>AddLanguage
+    <em>MIME-lang extension</em> [<em>extension</em>] ...</td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code>None</code></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a class="help" href="directive-dict.html#Override">Override:</a></td><td>FileInfo</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Base</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_mime</td></tr></table></td></tr></table>
 
     <p>The AddLanguage directive maps the given filename extension
     to the specified content language. <em>MIME-lang</em> is the
@@ -319,8 +319,8 @@ to the specified content language</td></tr><tr><td><a href="directive-dict.html#
     <p>Example:</p>
 
     <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-      AddEncoding x-compress .Z<br>
-       AddLanguage en .en<br>
+      AddEncoding x-compress .Z<br/>
+       AddLanguage en .en<br/>
        AddLanguage fr .fr
     </code></td></tr></table></blockquote>
 
@@ -337,8 +337,8 @@ to the specified content language</td></tr><tr><td><a href="directive-dict.html#
     That is, for the case of:</p>
 
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-    AddLanguage en .en<br>
-    AddLanguage en-uk .en<br>
+    AddLanguage en .en<br/>
+    AddLanguage en-uk .en<br/>
     AddLanguage en-us .en
 </code></td></tr></table></blockquote>
 
@@ -349,18 +349,18 @@ to the specified content language</td></tr><tr><td><a href="directive-dict.html#
     be specified with or without a leading dot.</p>
 
 <p><strong>See also </strong></p><ul><li><a href="#multipleext">Files with
-    multiple extensions</a></li><li><code><a href="mod_negotiation.html">mod_negotiation</a></code></li></ul><hr/><h2><a name="AddOutputFilter">AddOutputFilter</a> <a name="addoutputfilter">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>maps the filename
+    multiple extensions</a></li><li><code><a href="mod_negotiation.html">mod_negotiation</a></code></li></ul><hr/><h2><a name="AddOutputFilter">AddOutputFilter</a> <a name="addoutputfilter">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>maps the filename
 extensions to the filters that will process
-responses from the server</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>AddOutputFilter
+responses from the server</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>AddOutputFilter
     <em>filter</em>[<em>;filter</em>...] extension
-    [<em>extension</em> ...]</td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>None</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td/></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_mime</td></tr><tr><td align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:</a></td><td>AddOutputFilter
+    [<em>extension</em> ...]</td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code>None</code></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a class="help" href="directive-dict.html#Override">Override:</a></td><td/></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Base</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_mime</td></tr><tr><td valign="top" align="left"><a class="help" href="directive-dict.html#Compatibility">Compatibility:</a></td><td>AddOutputFilter
     is only available in Apache 2.0.26 and later.</td></tr></table></td></tr></table>
 
     <p>The <code class="directive">AddOutputFilter</code> directive maps the filename
     extensions <em>extension</em> to the filters which will process
     responses from the server before they are sent to the client.
     This is in addition to any filters defined elsewhere, including
-    the <a href="core.html#setoutputfilter" class="directive"><code class="directive">SetOutputFilter</code></a>
+    the <a class="directive" href="core.html#setoutputfilter"><code class="directive">SetOutputFilter</code></a>
     directive. This mapping is merged over any already in force,
     overriding any mappings that already exist for the same
     <em>extension</em>.</p>
@@ -379,9 +379,9 @@ responses from the server</td></tr><tr><td><a href="directive-dict.html#Syntax" 
     case-insensitive, and the extension may be specified with or
     without a leading dot.</p>
 
-<p><strong>See also </strong></p><ul><li><a href="../filter.html">Filters</a> documentation</li></ul><hr/><h2><a name="AddType">AddType</a> <a name="addtype">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Maps the given filename extensions
-onto the specified content type</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>AddType <em>MIME-type
-    extension</em> [<em>extension</em>] ...</td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>None</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>FileInfo</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_mime</td></tr></table></td></tr></table>
+<p><strong>See also </strong></p><ul><li><a href="../filter.html">Filters</a> documentation</li></ul><hr/><h2><a name="AddType">AddType</a> <a name="addtype">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Maps the given filename extensions
+onto the specified content type</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>AddType <em>MIME-type
+    extension</em> [<em>extension</em>] ...</td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code>None</code></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a class="help" href="directive-dict.html#Override">Override:</a></td><td>FileInfo</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Base</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_mime</td></tr></table></td></tr></table>
 
     <p>The AddType directive maps the given filename extensions
     onto the specified content type. <em>MIME-type</em> is the MIME
@@ -409,9 +409,9 @@ onto the specified content type</td></tr><tr><td><a href="directive-dict.html#Sy
     be specified with or without a leading dot.</p>
 
 <p><strong>See also </strong></p><ul><li><a href="#multipleext">Files with
-    multiple extensions</a></li></ul><hr/><h2><a name="DefaultLanguage">DefaultLanguage</a> <a name="defaultlanguage">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Sets all files in the given scope to the 
-specified language</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>DefaultLanguage
-    <em>MIME-lang</em></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>None</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>FileInfo</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_mime</td></tr><tr><td align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:</a></td><td>DefaultLanguage
+    multiple extensions</a></li></ul><hr/><h2><a name="DefaultLanguage">DefaultLanguage</a> <a name="defaultlanguage">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Sets all files in the given scope to the 
+specified language</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>DefaultLanguage
+    <em>MIME-lang</em></td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code>None</code></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a class="help" href="directive-dict.html#Override">Override:</a></td><td>FileInfo</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Base</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_mime</td></tr><tr><td valign="top" align="left"><a class="help" href="directive-dict.html#Compatibility">Compatibility:</a></td><td>DefaultLanguage
     is only available in Apache 1.3.4 and later.</td></tr></table></td></tr></table>
 
     <p>The DefaultLanguage directive tells Apache that all files in
@@ -432,8 +432,8 @@ specified language</td></tr><tr><td><a href="directive-dict.html#Syntax" class="
     to have no language attribute.</p>
 
 <p><strong>See also </strong></p><ul><li><a href="#multipleext">Files with
-    multiple extensions</a></li><li><code><a href="mod_negotiation.html">mod_negotiation</a></code></li></ul><hr/><h2><a name="MultiviewsMatch">MultiviewsMatch</a> <a name="multiviewsmatch">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>MultiviewsMatch
-    <em>[NegotiatedOnly] [Handlers] [Filters] [Any]</em></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>None</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>FileInfo</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_mime</td></tr><tr><td align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:</a></td><td>only available 
+    multiple extensions</a></li><li><code><a href="mod_negotiation.html">mod_negotiation</a></code></li></ul><hr/><h2><a name="MultiviewsMatch">MultiviewsMatch</a> <a name="multiviewsmatch">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>MultiviewsMatch
+    <em>[NegotiatedOnly] [Handlers] [Filters] [Any]</em></td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code>None</code></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a class="help" href="directive-dict.html#Override">Override:</a></td><td>FileInfo</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Base</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_mime</td></tr><tr><td valign="top" align="left"><a class="help" href="directive-dict.html#Compatibility">Compatibility:</a></td><td>only available 
     in Apache 2.0.26 and later.</td></tr></table></td></tr></table>
 
     <p>MultiviewsMatch permits three different behaviors for
@@ -460,8 +460,8 @@ specified language</td></tr><tr><td><a href="directive-dict.html#Syntax" class="
     doesn't recognize the extension.  This was the behavior in Apache 1.3,
     and can cause unpredicatable results, such as serving .old or .bak
     files the webmaster never expected to be served.</p>
-<hr/><h2><a name="RemoveCharset">RemoveCharset</a> <a name="removecharset">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>RemoveCharset
-    <em>extension</em> [<em>extension</em>] ...</td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>None</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_mime</td></tr><tr><td align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:</a></td><td>RemoveCharset is
+<hr/><h2><a name="RemoveCharset">RemoveCharset</a> <a name="removecharset">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>RemoveCharset
+    <em>extension</em> [<em>extension</em>] ...</td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code>None</code></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>directory, .htaccess</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Base</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_mime</td></tr><tr><td valign="top" align="left"><a class="help" href="directive-dict.html#Compatibility">Compatibility:</a></td><td>RemoveCharset is
     only available in Apache 2.0.24 and later.</td></tr></table></td></tr></table>
     <p>The <code>RemoveCharset</code> directive removes any
     character set associations for files with the given extensions.
@@ -471,8 +471,8 @@ specified language</td></tr><tr><td><a href="directive-dict.html#Syntax" class="
 
     <p>The <em>extension</em> argument is case-insensitive, and can
     be specified with or without a leading dot.</p>
-<hr/><h2><a name="RemoveEncoding">RemoveEncoding</a> <a name="removeencoding">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>RemoveEncoding
-    <em>extension</em> [<em>extension</em>] ...</td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>None</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_mime</td></tr><tr><td align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:</a></td><td>RemoveEncoding
+<hr/><h2><a name="RemoveEncoding">RemoveEncoding</a> <a name="removeencoding">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>RemoveEncoding
+    <em>extension</em> [<em>extension</em>] ...</td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code>None</code></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>directory, .htaccess</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Base</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_mime</td></tr><tr><td valign="top" align="left"><a class="help" href="directive-dict.html#Compatibility">Compatibility:</a></td><td>RemoveEncoding
     is only available in Apache 1.3.13 and later.</td></tr></table></td></tr></table>
 
     <p>The <code>RemoveEncoding</code> directive removes any
@@ -485,11 +485,11 @@ specified language</td></tr><tr><td><a href="directive-dict.html#Syntax" class="
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
     <dl>
       <dt><code>/foo/.htaccess:</code></dt>
-      <dd><code>AddEncoding x-gzip .gz</code><br>
-       <code>AddType text/plain .asc</code><br>
-       <code>&lt;Files *.gz.asc&gt;</code><br>
+      <dd><code>AddEncoding x-gzip .gz</code><br/>
+       <code>AddType text/plain .asc</code><br/>
+       <code>&lt;Files *.gz.asc&gt;</code><br/>
        <code>&nbsp;&nbsp;&nbsp;&nbsp;RemoveEncoding
-      .gz</code><br>
+      .gz</code><br/>
        <code>&lt;/Files&gt;</code></dd>
     </dl>
 </code></td></tr></table></blockquote>
@@ -505,8 +505,8 @@ specified language</td></tr><tr><td><a href="directive-dict.html#Syntax" class="
 
     <p>The <em>extension</em> argument is case-insensitive, and can
     be specified with or without a leading dot.</p>
-<hr/><h2><a name="RemoveHandler">RemoveHandler</a> <a name="removehandler">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>RemoveHandler
-    <em>extension</em> [<em>extension</em>] ...</td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>None</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_mime</td></tr><tr><td align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:</a></td><td>RemoveHandler is
+<hr/><h2><a name="RemoveHandler">RemoveHandler</a> <a name="removehandler">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>RemoveHandler
+    <em>extension</em> [<em>extension</em>] ...</td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code>None</code></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>directory, .htaccess</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Base</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_mime</td></tr><tr><td valign="top" align="left"><a class="help" href="directive-dict.html#Compatibility">Compatibility:</a></td><td>RemoveHandler is
     only available in Apache 1.3.4 and later.</td></tr></table></td></tr></table>
 
     <p>The <code>RemoveHandler</code> directive removes any handler
@@ -534,8 +534,8 @@ specified language</td></tr><tr><td><a href="directive-dict.html#Syntax" class="
 
     <p>The <em>extension</em> argument is case-insensitive, and can
     be specified with or without a leading dot.</p>
-<hr/><h2><a name="RemoveInputFilter">RemoveInputFilter</a> <a name="removeinputfilter">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>RemoveInputFilter
-    <em>extension</em> [<em>extension</em>] ...</td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>None</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_mime</td></tr><tr><td align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:</a></td><td>RemoveInputFilter is only available in Apache 
+<hr/><h2><a name="RemoveInputFilter">RemoveInputFilter</a> <a name="removeinputfilter">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>RemoveInputFilter
+    <em>extension</em> [<em>extension</em>] ...</td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code>None</code></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>directory, .htaccess</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Base</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_mime</td></tr><tr><td valign="top" align="left"><a class="help" href="directive-dict.html#Compatibility">Compatibility:</a></td><td>RemoveInputFilter is only available in Apache 
 2.0.26 and later.</td></tr></table></td></tr></table>   
 
     <p>The <code>RemoveInputFilter</code> directive removes any
@@ -546,8 +546,8 @@ specified language</td></tr><tr><td><a href="directive-dict.html#Syntax" class="
 
     <p>The <em>extension</em> argument is case-insensitive, and can
     be specified with or without a leading dot.</p>
-<hr/><h2><a name="RemoveLanguage">RemoveLanguage</a> <a name="removelanguage">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>RemoveLanguage
-    <em>extension</em> [<em>extension</em>] ...</td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>None</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_mime</td></tr><tr><td align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:</a></td><td>RemoveLanguage
+<hr/><h2><a name="RemoveLanguage">RemoveLanguage</a> <a name="removelanguage">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>RemoveLanguage
+    <em>extension</em> [<em>extension</em>] ...</td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code>None</code></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>directory, .htaccess</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Base</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_mime</td></tr><tr><td valign="top" align="left"><a class="help" href="directive-dict.html#Compatibility">Compatibility:</a></td><td>RemoveLanguage
     is only available in Apache 2.0.24 and later.</td></tr></table></td></tr></table>
 
     <p>The <code>RemoveLanguage</code> directive removes any
@@ -558,8 +558,8 @@ specified language</td></tr><tr><td><a href="directive-dict.html#Syntax" class="
 
     <p>The <em>extension</em> argument is case-insensitive, and can
     be specified with or without a leading dot.</p>
-<hr/><h2><a name="RemoveOutputFilter">RemoveOutputFilter</a> <a name="removeoutputfilter">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>RemoveOutputFilter
-    <em>extension</em> [<em>extension</em>] ...</td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code/></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td/></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_mime</td></tr><tr><td align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:</a></td><td>RemoveOutputFilter is only available in Apache 
+<hr/><h2><a name="RemoveOutputFilter">RemoveOutputFilter</a> <a name="removeoutputfilter">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>RemoveOutputFilter
+    <em>extension</em> [<em>extension</em>] ...</td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code/></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>directory, .htaccess</td></tr><tr><td><a class="help" href="directive-dict.html#Override">Override:</a></td><td/></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Base</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_mime</td></tr><tr><td valign="top" align="left"><a class="help" href="directive-dict.html#Compatibility">Compatibility:</a></td><td>RemoveOutputFilter is only available in Apache 
 2.0.26 and later.</td></tr></table></td></tr></table>    
 
     <p>The <code>RemoveOutputFilter</code> directive removes any
@@ -570,8 +570,8 @@ specified language</td></tr><tr><td><a href="directive-dict.html#Syntax" class="
 
     <p>The <em>extension</em> argument is case-insensitive, and can
     be specified with or without a leading dot.</p>
-<hr/><h2><a name="RemoveType">RemoveType</a> <a name="removetype">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>RemoveType
-    <em>extension</em> [<em>extension</em>] ...</td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code/></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td/></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_mime</td></tr><tr><td align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:</a></td><td>RemoveType is
+<hr/><h2><a name="RemoveType">RemoveType</a> <a name="removetype">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>RemoveType
+    <em>extension</em> [<em>extension</em>] ...</td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code/></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>directory, .htaccess</td></tr><tr><td><a class="help" href="directive-dict.html#Override">Override:</a></td><td/></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Base</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_mime</td></tr><tr><td valign="top" align="left"><a class="help" href="directive-dict.html#Compatibility">Compatibility:</a></td><td>RemoveType is
     only available in Apache 1.3.13 and later.</td></tr></table></td></tr></table>
     <p>The <code class="directive">RemoveType</code> directive removes any MIME type
     associations for files with the given extensions. This allows
@@ -599,7 +599,7 @@ specified language</td></tr><tr><td><a href="directive-dict.html#Syntax" class="
 
     <p>The <em>extension</em> argument is case-insensitive, and can
     be specified with or without a leading dot.</p>
-<hr/><h2><a name="TypesConfig">TypesConfig</a> <a name="typesconfig">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>TypesConfig <em>file-path</em></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>TypesConfig conf/mime.types</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_mime</td></tr></table></td></tr></table>
+<hr/><h2><a name="TypesConfig">TypesConfig</a> <a name="typesconfig">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>TypesConfig <em>file-path</em></td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code>TypesConfig conf/mime.types</code></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Base</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_mime</td></tr></table></td></tr></table>
 
     <p>The TypesConfig directive sets the location of the MIME
     types configuration file. <em>Filename</em> is relative to the
@@ -617,4 +617,4 @@ specified language</td></tr><tr><td><a href="directive-dict.html#Syntax" class="
     <p>
     The extensions are lower-cased. Blank lines, and lines
     beginning with a hash character (`#') are ignored. </p>
-<hr/><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img alt="Index" src="../images/index.gif"/></a><a href="../"><img alt="Home" src="../images/home.gif"/></a></blockquote></body></html>
+<hr/><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"/></a><a href="../"><img src="../images/home.gif" alt="Home"/></a></blockquote></body></html>

@@ -2,19 +2,19 @@
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
      This file is generated from xml source: DO NOT EDIT
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
---><title>mpm_common - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img alt="[APACHE DOCUMENTATION]" src="../images/sub.gif"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mpm_common</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td valign="top"><span class="help">Description:</span></td><td>A collection of directives that are implemented by
-more than one multi-processing module (MPM)</td></tr><tr><td><a href="module-dict.html#Status" class="help">Status:</a></td><td>MPM</td></tr></table></td></tr></table><h2>Directives</h2><ul><li><a href="#coredumpdirectory">CoreDumpDirectory</a></li><li><a href="#group">Group</a></li><li><a href="#listen">Listen</a></li><li><a href="#listenbacklog">ListenBackLog</a></li><li><a href="#lockfile">LockFile</a></li><li><a href="#maxclients">MaxClients</a></li><li><a href="#maxrequestsperchild">MaxRequestsPerChild</a></li><li><a href="#maxsparethreads">MaxSpareThreads</a></li><li><a href="#maxthreadsperchild">MaxThreadsPerChild</a></li><li><a href="#minsparethreads">MinSpareThreads</a></li><li><a href="#numservers">NumServers</a></li><li><a href="#pidfile">PidFile</a></li><li><a href="#scoreboardfile">ScoreBoardFile</a></li><li><a href="#sendbuffersize">SendBufferSize</a></li><li><a href="#serverlimit">ServerLimit</a></li><li><a href="#startservers">StartServers</a></li><li><a href="#startthreads">StartThreads</a></li><li><a href="#threadlimit">ThreadLimit</a></li><li><a href="#threadsperchild">ThreadsPerChild</a></li><li><a href="#user">User</a></li></ul><hr/><h2><a name="CoreDumpDirectory">CoreDumpDirectory</a> <a name="coredumpdirectory">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Sets the directory where Apache attempts to
-switch before dumping core</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>CoreDumpDirectory <em>directory</em></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>See usage for the default setting</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>MPM</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td><code><a href="worker.html">worker</a></code>, <code><a href="perchild.html">perchild</a></code>, <code><a href="prefork.html">prefork</a></code>, <code><a href="mpm_winnt.html">mpm_winnt</a></code></td></tr></table></td></tr></table>
+--><title>mpm_common - Apache HTTP Server</title><link rel="stylesheet" type="text/css" href="../style/manual.css"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mpm_common</h1><table bgcolor="#cccccc" cellpadding="0" cellspacing="1"><tr><td><table bgcolor="#ffffff"><tr><td valign="top"><span class="help">Description:</span></td><td>A collection of directives that are implemented by
+more than one multi-processing module (MPM)</td></tr><tr><td><a class="help" href="module-dict.html#Status">Status:</a></td><td>MPM</td></tr></table></td></tr></table><h2>Directives</h2><ul><li><a href="#coredumpdirectory">CoreDumpDirectory</a></li><li><a href="#group">Group</a></li><li><a href="#listen">Listen</a></li><li><a href="#listenbacklog">ListenBackLog</a></li><li><a href="#lockfile">LockFile</a></li><li><a href="#maxclients">MaxClients</a></li><li><a href="#maxrequestsperchild">MaxRequestsPerChild</a></li><li><a href="#maxsparethreads">MaxSpareThreads</a></li><li><a href="#maxthreadsperchild">MaxThreadsPerChild</a></li><li><a href="#minsparethreads">MinSpareThreads</a></li><li><a href="#numservers">NumServers</a></li><li><a href="#pidfile">PidFile</a></li><li><a href="#scoreboardfile">ScoreBoardFile</a></li><li><a href="#sendbuffersize">SendBufferSize</a></li><li><a href="#serverlimit">ServerLimit</a></li><li><a href="#startservers">StartServers</a></li><li><a href="#startthreads">StartThreads</a></li><li><a href="#threadlimit">ThreadLimit</a></li><li><a href="#threadsperchild">ThreadsPerChild</a></li><li><a href="#user">User</a></li></ul><hr/><h2><a name="CoreDumpDirectory">CoreDumpDirectory</a> <a name="coredumpdirectory">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Sets the directory where Apache attempts to
+switch before dumping core</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>CoreDumpDirectory <em>directory</em></td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code>See usage for the default setting</code></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>MPM</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td><code><a href="worker.html">worker</a></code>, <code><a href="perchild.html">perchild</a></code>, <code><a href="prefork.html">prefork</a></code>, <code><a href="mpm_winnt.html">mpm_winnt</a></code></td></tr></table></td></tr></table>
 
     <p>This controls the directory to which Apache attempts to
     switch before dumping core. The default is in the 
-    <a href="core.html#serverroot" class="directive"><code class="directive">ServerRoot</code></a> directory, however
+    <a class="directive" href="core.html#serverroot"><code class="directive">ServerRoot</code></a> directory, however
     since this should not be writable by the user the server runs
     as, core dumps won't normally get written. If you want a core
     dump for debugging, you can use this directive to place it in a
     different location.</p>
-<hr/><h2><a name="Group">Group</a> <a name="group">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Sets the group under which the server will answer
-requests</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>Group <em>unix-group</em></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>Group #-1</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>MPM</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td><code><a href="worker.html">worker</a></code>, <code><a href="perchild.html">perchild</a></code>, <code><a href="prefork.html">prefork</a></code></td></tr></table></td></tr></table>
+<hr/><h2><a name="Group">Group</a> <a name="group">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Sets the group under which the server will answer
+requests</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>Group <em>unix-group</em></td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code>Group #-1</code></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>MPM</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td><code><a href="worker.html">worker</a></code>, <code><a href="perchild.html">perchild</a></code>, <code><a href="prefork.html">prefork</a></code></td></tr></table></td></tr></table>
     <p>The <code class="directive">Group</code> directive sets the group under
     which the server will answer requests. In order to use this
     directive, the stand-alone server must be run initially as root.
@@ -39,11 +39,11 @@ requests</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Synt
 
     <p>Special note: Use of this directive in &lt;VirtualHost&lt; is
     no longer supported. To implement the <a href="../suexec.html">suEXEC wrapper</a> with Apache 2.0, use the
-    <a href="mod_suexec.html#suexecusergroup" class="directive"><code class="directive">SuexecUserGroup</code></a>
-    directive. SECURITY: See <a href="#user" class="directive"><code class="directive">User</code></a> for a discussion of the
+    <a class="directive" href="mod_suexec.html#suexecusergroup"><code class="directive">SuexecUserGroup</code></a>
+    directive. SECURITY: See <a class="directive" href="#user"><code class="directive">User</code></a> for a discussion of the
     security considerations.</p>
-<hr/><h2><a name="Listen">Listen</a> <a name="listen">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Sets the IP addresses and ports that the server
-listens to</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>Listen [<em>IP-address</em>:]<em>portnumber</em></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>MPM</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td><code><a href="worker.html">worker</a></code>, <code><a href="perchild.html">perchild</a></code>, <code><a href="prefork.html">prefork</a></code>, <code><a href="mpm_winnt.html">mpm_winnt</a></code></td></tr></table></td></tr></table>
+<hr/><h2><a name="Listen">Listen</a> <a name="listen">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Sets the IP addresses and ports that the server
+listens to</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>Listen [<em>IP-address</em>:]<em>portnumber</em></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>MPM</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td><code><a href="worker.html">worker</a></code>, <code><a href="perchild.html">perchild</a></code>, <code><a href="prefork.html">prefork</a></code>, <code><a href="mpm_winnt.html">mpm_winnt</a></code></td></tr></table></td></tr></table>
     <p>The <code class="directive">Listen</code> directive instructs Apache to
     listen to only specific IP addresses or ports; by default it
     responds to requests on all IP interfaces. The Listen directive is
@@ -65,13 +65,13 @@ listens to</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Sy
     <p>For example, to make the server accept connections on both
     port 80 and port 8000, use:</p>
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-   Listen 80<br>
+   Listen 80<br/>
    Listen 8000
 </code></td></tr></table></blockquote>
     <p>To make the server accept connections on two specified
     interfaces and port numbers, use </p>
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-   Listen 192.170.2.1:80<br>
+   Listen 192.170.2.1:80<br/>
    Listen 192.170.2.5:8000
 </code></td></tr></table></blockquote>
     <p>IPv6 addresses must be surrounded in square brackets, as in the
@@ -80,7 +80,7 @@ listens to</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Sy
    Listen [fe80::a00:20ff:fea7:ccea]:80
 </code></td></tr></table></blockquote>
 <p><strong>See also </strong></p><ul><li><a href="../dns-caveats.html">DNS Issues</a></li><li><a href="../bind.html">Setting
-    which addresses and ports Apache uses</a></li></ul><hr/><h2><a name="ListenBackLog">ListenBackLog</a> <a name="listenbacklog">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Maximum length of the queue of pending connections</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>ListenBacklog <em>backlog</em></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>ListenBacklog 511</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>MPM</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td><code><a href="worker.html">worker</a></code>, <code><a href="perchild.html">perchild</a></code>, <code><a href="prefork.html">prefork</a></code>, <code><a href="mpm_winnt.html">mpm_winnt</a></code></td></tr></table></td></tr></table>
+    which addresses and ports Apache uses</a></li></ul><hr/><h2><a name="ListenBackLog">ListenBackLog</a> <a name="listenbacklog">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Maximum length of the queue of pending connections</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>ListenBacklog <em>backlog</em></td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code>ListenBacklog 511</code></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>MPM</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td><code><a href="worker.html">worker</a></code>, <code><a href="perchild.html">perchild</a></code>, <code><a href="prefork.html">prefork</a></code>, <code><a href="mpm_winnt.html">mpm_winnt</a></code></td></tr></table></td></tr></table>
     <p>The maximum length of the queue of pending connections.
     Generally no tuning is needed or desired, however on some
     systems it is desirable to increase this when under a TCP SYN
@@ -92,7 +92,7 @@ listens to</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Sy
     many OSes do not use exactly what is specified as the backlog,
     but use a number based on (but normally larger than) what is
     set.</p>
-<hr/><h2><a name="LockFile">LockFile</a> <a name="lockfile">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Location of the accept serialization lock file</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>LockFile <em>filename</em></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>LockFile logs/accept.lock</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>MPM</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td><code><a href="worker.html">worker</a></code>, <code><a href="perchild.html">perchild</a></code>, <code><a href="prefork.html">prefork</a></code></td></tr></table></td></tr></table>
+<hr/><h2><a name="LockFile">LockFile</a> <a name="lockfile">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Location of the accept serialization lock file</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>LockFile <em>filename</em></td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code>LockFile logs/accept.lock</code></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>MPM</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td><code><a href="worker.html">worker</a></code>, <code><a href="perchild.html">perchild</a></code>, <code><a href="prefork.html">prefork</a></code></td></tr></table></td></tr></table>
     <p>The <code class="directive">LockFile</code> directive sets the path to
     the lockfile used when Apache is compiled with either
     USE_FCNTL_SERIALIZED_ACCEPT or USE_FLOCK_SERIALIZED_ACCEPT. This
@@ -108,31 +108,31 @@ listens to</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Sy
     service attack and prevent the server from starting by creating
     a lockfile with the same name as the one the server will try to
     create.</p>
-<hr/><h2><a name="MaxClients">MaxClients</a> <a name="maxclients">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Maximum number of child processes that will be created
-to serve requests</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>MaxClients <em>number</em></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>&gt;MaxClients
-    8 (with threads) MaxClients 256</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>MPM</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td><code><a href="worker.html">worker</a></code>, <code><a href="prefork.html">prefork</a></code></td></tr></table></td></tr></table>
+<hr/><h2><a name="MaxClients">MaxClients</a> <a name="maxclients">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Maximum number of child processes that will be created
+to serve requests</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>MaxClients <em>number</em></td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code>&gt;MaxClients
+    8 (with threads) MaxClients 256</code></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>MPM</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td><code><a href="worker.html">worker</a></code>, <code><a href="prefork.html">prefork</a></code></td></tr></table></td></tr></table>
     <p>The <code class="directive">MaxClients</code> directive sets the limit
     on the number of child processes that will be created to serve
     requests. When the server is built without threading, no more than
     this number of clients can be served simultaneously. To configure
     more than 256 clients with the prefork MPM, you must use the
-    <a href="#serverlimit" class="directive"><code class="directive">ServerLimit</code></a> directive.
+    <a class="directive" href="#serverlimit"><code class="directive">ServerLimit</code></a> directive.
     To configure more than 1024 clients with the worker MPM, you must
-    use the <a href="#serverlimit" class="directive"><code class="directive">ServerLimit</code></a> and
-    <a href="#threadlimit" class="directive"><code class="directive">ThreadLimit</code></a> directives.</p>
+    use the <a class="directive" href="#serverlimit"><code class="directive">ServerLimit</code></a> and
+    <a class="directive" href="#threadlimit"><code class="directive">ThreadLimit</code></a> directives.</p>
 
     <p>Any connection attempts over the
     <code class="directive">MaxClients</code> limit will normally be queued,
-    up to a number based on the <a href="#listenbacklog" class="directive"><code class="directive">ListenBacklog</code></a> directive. Once a child
+    up to a number based on the <a class="directive" href="#listenbacklog"><code class="directive">ListenBacklog</code></a> directive. Once a child
     process is freed at the end of a different request, the connection
     will then be serviced.</p>
 
     <p>When the server is compiled with threading, then the maximum
     number of simultaneous requests that can be served is obtained
     from the value of this directive multiplied by
-    <a href="#threadsperchild" class="directive"><code class="directive">ThreadsPerChild</code></a>.</p>
-<hr/><h2><a name="MaxRequestsPerChild">MaxRequestsPerChild</a> <a name="maxrequestsperchild">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Limit on the number of requests that an individual child server
-will handle during its life</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>MaxRequestsPerChild <em>number</em></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>MaxRequestsPerChild 10000</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>MPM</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td><code><a href="worker.html">worker</a></code>, <code><a href="perchild.html">perchild</a></code>, <code><a href="prefork.html">prefork</a></code>, <code><a href="mpm_winnt.html">mpm_winnt</a></code></td></tr></table></td></tr></table>
+    <a class="directive" href="#threadsperchild"><code class="directive">ThreadsPerChild</code></a>.</p>
+<hr/><h2><a name="MaxRequestsPerChild">MaxRequestsPerChild</a> <a name="maxrequestsperchild">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Limit on the number of requests that an individual child server
+will handle during its life</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>MaxRequestsPerChild <em>number</em></td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code>MaxRequestsPerChild 10000</code></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>MPM</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td><code><a href="worker.html">worker</a></code>, <code><a href="perchild.html">perchild</a></code>, <code><a href="prefork.html">prefork</a></code>, <code><a href="mpm_winnt.html">mpm_winnt</a></code></td></tr></table></td></tr></table>
     <p>The <code class="directive">MaxRequestsPerChild</code> directive sets
     the limit on the number of requests that an individual child
     server process will handle. After
@@ -155,7 +155,7 @@ will handle during its life</td></tr><tr><td><a href="directive-dict.html#Syntax
     the first request is counted towards this limit. In effect, it
     changes the behavior to limit the number of
     <em>connections</em> per child.</p>
-<hr/><h2><a name="MaxSpareThreads">MaxSpareThreads</a> <a name="maxsparethreads">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Maximum number of idle threads</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>MaxSpareThreads <em>number</em></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>MaxSpareThreads 10 (Perchild) or 500 (worker)</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>MPM</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td><code><a href="worker.html">worker</a></code>, <code><a href="perchild.html">perchild</a></code></td></tr></table></td></tr></table>
+<hr/><h2><a name="MaxSpareThreads">MaxSpareThreads</a> <a name="maxsparethreads">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Maximum number of idle threads</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>MaxSpareThreads <em>number</em></td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code>MaxSpareThreads 10 (Perchild) or 500 (worker)</code></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>MPM</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td><code><a href="worker.html">worker</a></code>, <code><a href="perchild.html">perchild</a></code></td></tr></table></td></tr></table>
     <p>Maximum number of idle threads. Different MPMs deal with this
     directive differently. <code><a href="perchild.html">perchild</a></code> monitors the
     number of idle threads on a per-child basis. If there are too many
@@ -167,15 +167,15 @@ will handle during its life</td></tr><tr><td><a href="directive-dict.html#Syntax
     server then child processes are killed until the number of idle
     threads is less than this number.</p>
 
-<p><strong>See also </strong></p><ul><li><a href="#minsparethreads" class="directive"><code class="directive">MinSpareThreads</code></a></li><li><a href="#startservers" class="directive"><code class="directive">StartServers</code></a></li></ul><hr/><h2><a name="MaxThreadsPerChild">MaxThreadsPerChild</a> <a name="maxthreadsperchild">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Maximum number of threads per child process</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>MaxThreadsPerChild <em>number</em></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>MaxThreadsPerChild 64</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>MPM</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td><code><a href="worker.html">worker</a></code>, <code><a href="perchild.html">perchild</a></code></td></tr></table></td></tr></table>
+<p><strong>See also </strong></p><ul><li><a class="directive" href="#minsparethreads"><code class="directive">MinSpareThreads</code></a></li><li><a class="directive" href="#startservers"><code class="directive">StartServers</code></a></li></ul><hr/><h2><a name="MaxThreadsPerChild">MaxThreadsPerChild</a> <a name="maxthreadsperchild">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Maximum number of threads per child process</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>MaxThreadsPerChild <em>number</em></td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code>MaxThreadsPerChild 64</code></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>MPM</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td><code><a href="worker.html">worker</a></code>, <code><a href="perchild.html">perchild</a></code></td></tr></table></td></tr></table>
     <p>Maximum number of threads per child. For MPMs with a
     variable number of threads per child, this directive sets the
     maximum number of threads that will be created in each child
     process. To increase this value beyond its default, it is
     necessary to change the value of the compile-time define
     <code>HARD_THREAD_LIMIT</code> and recompile the server.</p>
-<hr/><h2><a name="MinSpareThreads">MinSpareThreads</a> <a name="minsparethreads">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Minimum number of idle threads available to handle request
-spikes</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>MinSpareServers <em>number</em></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>MinSpareThreads 5 (Perchild) or 250 (worker)</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>MPM</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td><code><a href="worker.html">worker</a></code>, <code><a href="perchild.html">perchild</a></code></td></tr></table></td></tr></table>
+<hr/><h2><a name="MinSpareThreads">MinSpareThreads</a> <a name="minsparethreads">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Minimum number of idle threads available to handle request
+spikes</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>MinSpareServers <em>number</em></td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code>MinSpareThreads 5 (Perchild) or 250 (worker)</code></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>MPM</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td><code><a href="worker.html">worker</a></code>, <code><a href="perchild.html">perchild</a></code></td></tr></table></td></tr></table>
     <p>Minimum number of idle threads to handle request spikes.
     Different MPMs deal with this directive
     differently. <code><a href="perchild.html">perchild</a></code> monitors the number of idle
@@ -187,103 +187,105 @@ spikes</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax
     server-wide basis. If there aren't enough idle threads in the
     server then child processes are created until the number of idle
     threads is greater than number.</p>
-<p><strong>See also </strong></p><ul><li><a href="#maxsparethreads" class="directive"><code class="directive">MaxSpareThreads</code></a></li><li><a href="#startservers" class="directive"><code class="directive">StartServers</code></a></li></ul><hr/><h2><a name="NumServers">NumServers</a> <a name="numservers">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Total number of children alive at the same time</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>NumServers <em>number</em></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>NumServers 2</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>MPM</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td><code><a href="perchild.html">perchild</a></code></td></tr></table></td></tr></table>
+<p><strong>See also </strong></p><ul><li><a class="directive" href="#maxsparethreads"><code class="directive">MaxSpareThreads</code></a></li><li><a class="directive" href="#startservers"><code class="directive">StartServers</code></a></li></ul><hr/><h2><a name="NumServers">NumServers</a> <a name="numservers">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Total number of children alive at the same time</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>NumServers <em>number</em></td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code>NumServers 2</code></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>MPM</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td><code><a href="perchild.html">perchild</a></code></td></tr></table></td></tr></table>
     <p>Number of children alive at the same time. MPMs that use
     this directive do not dynamically create new child processes so
     this number should be large enough to handle the requests for
     the entire site.</p>
-<hr/><h2><a name="PidFile">PidFile</a> <a name="pidfile">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Sets the file where the server records the process ID
-of the daemon</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>PidFile <em>filename</em></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>PidFile logs/httpd.pid</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>MPM</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td><code><a href="worker.html">worker</a></code>, <code><a href="perchilde.html">perchilde</a></code>, <code><a href="prefork.html">prefork</a></code>, <code><a href="mpm_winnt.html">mpm_winnt</a></code></td></tr></table></td></tr></table>
+<hr/><h2><a name="PidFile">PidFile</a> <a name="pidfile">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Sets the file where the server records the process ID
+of the daemon</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>PidFile <em>filename</em></td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code>PidFile logs/httpd.pid</code></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>MPM</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td><code><a href="worker.html">worker</a></code>, <code><a href="perchilde.html">perchilde</a></code>, <code><a href="prefork.html">prefork</a></code>, <code><a href="mpm_winnt.html">mpm_winnt</a></code></td></tr></table></td></tr></table>
     <p>The <code class="directive">PidFile</code> directive sets the file to
     which the server records the process id of the daemon. If the
     filename does not begin with a slash (/) then it is assumed to be
-    relative to the <a href="core.html#serverroot" class="directive"><code class="directive">ServerRoot</code></a>.</p>
+    relative to the <a class="directive" href="core.html#serverroot"><code class="directive">ServerRoot</code></a>.</p>
 
     <p>It is often useful to be able to send the server a signal,
-    so that it closes and then reopens its <a href="core.html#errorlog" class="directive"><code class="directive">ErrorLog</code></a> and TransferLog, and
+    so that it closes and then reopens its <a class="directive" href="core.html#errorlog"><code class="directive">ErrorLog</code></a> and TransferLog, and
     re-reads its configuration files. This is done by sending a
     SIGHUP (kill -1) signal to the process id listed in the
     PidFile.</p>
 
     <p>The PidFile is subject to the same warnings about log file
     placement and <a href="../misc/security_tips.html#serverroot">security</a>.</p>
-<hr/><h2><a name="ScoreBoardFile">ScoreBoardFile</a> <a name="scoreboardfile">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Location of the file used to store coordination data for
-the child processes</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>ScoreBoardFile <em>file-path</em></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>ScoreBoardFile logs/apache_status</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>MPM</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td><code><a href="worker.html">worker</a></code>, <code><a href="perchild.html">perchild</a></code>, <code><a href="prefork.html">prefork</a></code></td></tr></table></td></tr></table>
-    <p>The <code class="directive">ScoreBoardFile</code> directive is required
-    on some architectures to place a file that the server will use to
-    communicate between its children and the parent. The easiest way
-    to find out if your architecture requires a scoreboard file is to
-    run Apache and see if it creates the file named by the
-    directive. If your architecture requires it then you must ensure
-    that this file is not used at the same time by more than one
-    invocation of Apache.</p>
+<hr/><h2><a name="ScoreBoardFile">ScoreBoardFile</a> <a name="scoreboardfile">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Location of the file used to store coordination data for
+the child processes</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>ScoreBoardFile <em>file-path</em></td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code>ScoreBoardFile logs/apache_status</code></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>MPM</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td><code><a href="worker.html">worker</a></code>, <code><a href="perchild.html">perchild</a></code>, <code><a href="prefork.html">prefork</a></code></td></tr></table></td></tr></table>
+    <p>Apache uses a scoreboard to communicate between its parent
+    and child processes.  Some architectures require a file to facilitate
+    this communication. If the file is left unspecified, Apache first
+    attempts to create the scoreboard entirely in memory (using anonymous
+    shared memory) and, failing that, will attempt to create the file on
+    disk (using file-based shared memory). Specifying this directive causes
+    Apache to always create the file on the disk.</p>
 
-    <p>If you have to use a <code class="directive">ScoreBoardFile</code> then
+    <p>File-based shared memory is useful for third-party applications
+    that require direct access to the scoreboard.</p>
+
+    <p>If you use a <code class="directive">ScoreBoardFile</code> then
     you may see improved speed by placing it on a RAM disk. But be
     careful that you heed the same warnings about log file placement
     and <a href="../misc/security_tips.html">security</a>.</p>
-<p><strong>See also </strong></p><ul><li><a href="../stopping.html">Stopping and Restarting Apache</a></li></ul><hr/><h2><a name="SendBufferSize">SendBufferSize</a> <a name="sendbuffersize">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>TCP buffer size</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>SendBufferSize <em>bytes</em></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>MPM</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td><code><a href="worker.html">worker</a></code>, <code><a href="perchild.html">perchild</a></code>, <code><a href="prefork.html">prefork</a></code>, <code><a href="mpm_winnt.html">mpm_winnt</a></code></td></tr></table></td></tr></table>
+<p><strong>See also </strong></p><ul><li><a href="../stopping.html">Stopping and Restarting Apache</a></li></ul><hr/><h2><a name="SendBufferSize">SendBufferSize</a> <a name="sendbuffersize">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>TCP buffer size</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>SendBufferSize <em>bytes</em></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>MPM</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td><code><a href="worker.html">worker</a></code>, <code><a href="perchild.html">perchild</a></code>, <code><a href="prefork.html">prefork</a></code>, <code><a href="mpm_winnt.html">mpm_winnt</a></code></td></tr></table></td></tr></table>
     <p>The server will set the TCP buffer size to the number of bytes
     specified. Very useful to increase past standard OS defaults on
     high speed high latency (<em>i.e.</em>, 100ms or so, such as
     transcontinental fast pipes).</p>
-<hr/><h2><a name="ServerLimit">ServerLimit</a> <a name="serverlimit">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Upper limit on configurable number of processes</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>ServerLimit <em>number</em></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>ServerLimit 256 (prefork), ServerLimit 16 (worker)</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>MPM</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td><code><a href="worker.html">worker</a></code>, <code><a href="prefork.html">prefork</a></code></td></tr></table></td></tr></table>
+<hr/><h2><a name="ServerLimit">ServerLimit</a> <a name="serverlimit">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Upper limit on configurable number of processes</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>ServerLimit <em>number</em></td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code>ServerLimit 256 (prefork), ServerLimit 16 (worker)</code></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>MPM</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td><code><a href="worker.html">worker</a></code>, <code><a href="prefork.html">prefork</a></code></td></tr></table></td></tr></table>
     <p>For the <code><a href="prefork.html">prefork</a></code> MPM, this directive sets the
-    maximum configured value for <a href="#maxclients" class="directive"><code class="directive">MaxClients</code></a> for the lifetime of the
+    maximum configured value for <a class="directive" href="#maxclients"><code class="directive">MaxClients</code></a> for the lifetime of the
     Apache process.  For the worker MPM, this directive in combination
-    with <a href="#threadlimit" class="directive"><code class="directive">ThreadLimit</code></a> sets
-    the maximum configured value for <a href="#maxclients" class="directive"><code class="directive">MaxClients</code></a> for the lifetime of the
+    with <a class="directive" href="#threadlimit"><code class="directive">ThreadLimit</code></a> sets
+    the maximum configured value for <a class="directive" href="#maxclients"><code class="directive">MaxClients</code></a> for the lifetime of the
     Apache process.  Any attempts to change this directive during a
-    restart will be ignored, but <a href="#maxclients" class="directive"><code class="directive">MaxClients</code></a> can be modified during
+    restart will be ignored, but <a class="directive" href="#maxclients"><code class="directive">MaxClients</code></a> can be modified during
     a restart.</p>
 
     <p>Special care must be taken when using this directive.  If
     <code class="directive">ServerLimit</code> is set to a value much higher
     than necessary, extra, unused shared memory will be allocated.  If
-    both <code class="directive">ServerLimit</code> and <a href="#maxclients" class="directive"><code class="directive">MaxClients</code></a> are set to values
+    both <code class="directive">ServerLimit</code> and <a class="directive" href="#maxclients"><code class="directive">MaxClients</code></a> are set to values
     higher than the system can handle, Apache may not start or the
     system may become unstable.</p>
 
     <p>With the <code><a href="prefork.html">prefork</a></code> MPM, use this directive only
-    if you need to set <a href="#maxclients" class="directive"><code class="directive">MaxClients</code></a> higher higher than 256.
+    if you need to set <a class="directive" href="#maxclients"><code class="directive">MaxClients</code></a> higher higher than 256.
     Do not set the value of this directive any higher than what you
-    might want to set <a href="#maxclients" class="directive"><code class="directive">MaxClients</code></a> to.</p>
+    might want to set <a class="directive" href="#maxclients"><code class="directive">MaxClients</code></a> to.</p>
 
     <p>With the <code><a href="worker.html">worker</a></code> MPM, use this directive only
-    if your <a href="#maxclients" class="directive"><code class="directive">MaxClients</code></a> and
-    <a href="#threadsperchild" class="directive"><code class="directive">ThreadsPerChild</code></a>
+    if your <a class="directive" href="#maxclients"><code class="directive">MaxClients</code></a> and
+    <a class="directive" href="#threadsperchild"><code class="directive">ThreadsPerChild</code></a>
     settings require more than 16 server processes.  Do not set the
     value of this directive any higher than the number of server
-    processes required by what you may want for <a href="#maxclients " class="directive"><code class="directive">MaxClients </code></a> and <a href="#threadsperchild" class="directive"><code class="directive">ThreadsPerChild</code></a>.</p>
-<hr/><h2><a name="StartServers">StartServers</a> <a name="startservers">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Number of child server processes created at startup</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>StartServers <em>number</em></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>StartServers 5</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>MPM</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td><code><a href="worker.html">worker</a></code></td></tr></table></td></tr></table>
+    processes required by what you may want for <a class="directive" href="#maxclients "><code class="directive">MaxClients </code></a> and <a class="directive" href="#threadsperchild"><code class="directive">ThreadsPerChild</code></a>.</p>
+<hr/><h2><a name="StartServers">StartServers</a> <a name="startservers">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Number of child server processes created at startup</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>StartServers <em>number</em></td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code>StartServers 5</code></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>MPM</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td><code><a href="worker.html">worker</a></code></td></tr></table></td></tr></table>
     <p>The <code class="directive">StartServers</code> directive sets the
     number of child server processes created on startup. As the number
     of processes is dynamically controlled depending on the load,
     there is usually little reason to adjust this parameter.</p>
-<p><strong>See also </strong></p><ul><li><a href="#minsparethreads" class="directive"><code class="directive">MinSpareThreads</code></a></li><li><a href="#maxsparethreads" class="directive"><code class="directive">MaxSpareThreads</code></a></li></ul><hr/><h2><a name="StartThreads">StartThreads</a> <a name="startthreads">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Nubmer of threads each child creates on startup</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>StartThreads <em>number</em></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>StartThreads 5</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>MPM</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td><code><a href="perchild.html">perchild</a></code></td></tr></table></td></tr></table>
+<p><strong>See also </strong></p><ul><li><a class="directive" href="#minsparethreads"><code class="directive">MinSpareThreads</code></a></li><li><a class="directive" href="#maxsparethreads"><code class="directive">MaxSpareThreads</code></a></li></ul><hr/><h2><a name="StartThreads">StartThreads</a> <a name="startthreads">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Nubmer of threads each child creates on startup</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>StartThreads <em>number</em></td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code>StartThreads 5</code></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>MPM</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td><code><a href="perchild.html">perchild</a></code></td></tr></table></td></tr></table>
     <p>Number of threads each child creates on startup. As the
     number of threads is dynamically controlled depending on the
     load, there is usually little reason to adjust this
     parameter.</p>
-<hr/><h2><a name="ThreadLimit">ThreadLimit</a> <a name="threadlimit">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Sets the upper limit on the configurable number of threads
-per child process</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>ThreadLimit <em>number</em></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>ThreadLimit 64</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>MPM</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td><code><a href="worker.html">worker</a></code></td></tr></table></td></tr></table>
-    <p>This directive sets the maximum configured value for <a href="#threadsperchild" class="directive"><code class="directive">ThreadsPerChild</code></a> for the lifetime
+<hr/><h2><a name="ThreadLimit">ThreadLimit</a> <a name="threadlimit">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Sets the upper limit on the configurable number of threads
+per child process</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>ThreadLimit <em>number</em></td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code>ThreadLimit 64</code></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>MPM</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td><code><a href="worker.html">worker</a></code></td></tr></table></td></tr></table>
+    <p>This directive sets the maximum configured value for <a class="directive" href="#threadsperchild"><code class="directive">ThreadsPerChild</code></a> for the lifetime
     of the Apache process.  Any attempts to change this directive
-    during a restart will be ignored, but <a href="#threadsperchild" class="directive"><code class="directive">ThreadsPerChild</code></a> can be modified
+    during a restart will be ignored, but <a class="directive" href="#threadsperchild"><code class="directive">ThreadsPerChild</code></a> can be modified
     during a restart up to the value of this directive.</p>
 
     <p>Special care must be taken when using this directive.  If
     <code class="directive">ThreadLimit</code> is set to a value much higher
-    than <a href="#threadsperchild" class="directive"><code class="directive">ThreadsPerChild</code></a>,
+    than <a class="directive" href="#threadsperchild"><code class="directive">ThreadsPerChild</code></a>,
     extra unused shared memory will be allocated.  If both
-    <code class="directive">ThreadLimit</code> and <a href="#threadsperchild" class="directive"><code class="directive">ThreadsPerChild</code></a> are set to values
+    <code class="directive">ThreadLimit</code> and <a class="directive" href="#threadsperchild"><code class="directive">ThreadsPerChild</code></a> are set to values
     higher than the system can handle, Apache may not start or the
     system may become unstable.</p>
 
-    <p>Use this directive only if you need to set <a href="#threadsperchild" class="directive"><code class="directive">ThreadsPerChild</code></a> higher than 64.  Do
+    <p>Use this directive only if you need to set <a class="directive" href="#threadsperchild"><code class="directive">ThreadsPerChild</code></a> higher than 64.  Do
     not set the value of this directive any higher than what you might
-    want to set <a href="#threadsperchild" class="directive"><code class="directive">ThreadsPerChild</code></a> to.</p>
-<hr/><h2><a name="ThreadsPerChild">ThreadsPerChild</a> <a name="threadsperchild">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Number of threads created by each child process</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>ThreadsPerChild <em>number</em></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>ThreadsPerChild 50</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>MPM</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td><code><a href="worker.html">worker</a></code>, <code><a href="mpm_winnt.html">mpm_winnt</a></code></td></tr></table></td></tr></table>
+    want to set <a class="directive" href="#threadsperchild"><code class="directive">ThreadsPerChild</code></a> to.</p>
+<hr/><h2><a name="ThreadsPerChild">ThreadsPerChild</a> <a name="threadsperchild">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Number of threads created by each child process</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>ThreadsPerChild <em>number</em></td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code>ThreadsPerChild 50</code></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>MPM</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td><code><a href="worker.html">worker</a></code>, <code><a href="mpm_winnt.html">mpm_winnt</a></code></td></tr></table></td></tr></table>
     <p>This directive sets the number of threads created by each
     child process. The child creates these threads at startup and
     never creates more. if using an MPM like mpmt_winnt, where
@@ -292,8 +294,8 @@ per child process</td></tr><tr><td><a href="directive-dict.html#Syntax" class="h
     like worker, where there are multiple child processes, the
     total number of threads should be high enough to handle the
     common load on the server.</p>
-<hr/><h2><a name="User">User</a> <a name="user">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>The userid under which the server will answer
-requests</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>User <em>unix-userid</em></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>User #-1</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>MPM</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td><code><a href="worker.html">worker</a></code>, <code><a href="perchild.html">perchild</a></code>, <code><a href="prefork.html">prefork</a></code></td></tr></table></td></tr></table>
+<hr/><h2><a name="User">User</a> <a name="user">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>The userid under which the server will answer
+requests</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>User <em>unix-userid</em></td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code>User #-1</code></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>MPM</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td><code><a href="worker.html">worker</a></code>, <code><a href="perchild.html">perchild</a></code>, <code><a href="prefork.html">prefork</a></code></td></tr></table></td></tr></table>
     <p>The <code class="directive">User</code> directive sets the userid as
     which the server will answer requests. In order to use this
     directive, the standalone server must be run initially as
@@ -317,7 +319,7 @@ requests</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Synt
     running the server. Some admins use user <code>nobody</code>, but
     this is not always possible or desirable. For example
     <code><a href="mod_proxy.html">mod_proxy</a></code>'s cache, when enabled, must be
-    accessible to this user (see <a href="mod_proxy.html#cacheroot" class="directive"><code class="directive">CacheRoot</code></a>).</p>
+    accessible to this user (see <a class="directive" href="mod_proxy.html#cacheroot"><code class="directive">CacheRoot</code></a>).</p>
 
     <p>Notes: If you start the server as a non-root user, it will
     fail to change to the lesser privileged user, and will instead
@@ -325,12 +327,12 @@ requests</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Synt
     server as root, then it is normal for the parent process to
     remain running as root.</p>
 
-    <p>Special note: Use of this directive in <a href="core.html#virtualhost" class="directive"><code class="directive">&lt;VirtualHost&gt;</code></a> is no longer supported. To
+    <p>Special note: Use of this directive in <a class="directive" href="core.html#virtualhost"><code class="directive">&lt;VirtualHost&gt;</code></a> is no longer supported. To
     configure your server for <a href="mod_suexec.html">suexec</a> use
-    <a href="mod_suexec.html#suexecusergroup" class="directive"><code class="directive">SuexecUserGroup</code></a>.</p>
+    <a class="directive" href="mod_suexec.html#suexecusergroup"><code class="directive">SuexecUserGroup</code></a>.</p>
 
 <blockquote><table><tr><td bgcolor="#e0e5f5"><p align="center"><strong>Security</strong></p> <p>Don't set <code class="directive">User</code>
-(or <a href="#group" class="directive"><code class="directive">Group</code></a>) to
+(or <a class="directive" href="#group"><code class="directive">Group</code></a>) to
 <code>root</code> unless you know exactly what you are doing, and what
 the dangers are.</p></td></tr></table></blockquote>
-<hr/><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img alt="Index" src="../images/index.gif"/></a><a href="../"><img alt="Home" src="../images/home.gif"/></a></blockquote></body></html>
+<hr/><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"/></a><a href="../"><img src="../images/home.gif" alt="Home"/></a></blockquote></body></html>

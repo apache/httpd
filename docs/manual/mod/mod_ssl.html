@@ -2,8 +2,8 @@
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
      This file is generated from xml source: DO NOT EDIT
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
---><title>mod_ssl - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img alt="[APACHE DOCUMENTATION]" src="../images/sub.gif"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_ssl</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td valign="top"><span class="help">Description:</span></td><td>Strong cryptography using the Secure Sockets
-Layer (SSL) and Transport Layer Security (TLS) protocols</td></tr><tr><td><a href="module-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:</a></td><td>ssl_module</td></tr></table></td></tr></table><h2>Summary</h2>
+--><title>mod_ssl - Apache HTTP Server</title><link rel="stylesheet" type="text/css" href="../style/manual.css"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_ssl</h1><table bgcolor="#cccccc" cellpadding="0" cellspacing="1"><tr><td><table bgcolor="#ffffff"><tr><td valign="top"><span class="help">Description:</span></td><td>Strong cryptography using the Secure Sockets
+Layer (SSL) and Transport Layer Security (TLS) protocols</td></tr><tr><td><a class="help" href="module-dict.html#Status">Status:</a></td><td>Extension</td></tr><tr><td><a class="help" href="module-dict.html#ModuleIdentifier">Module&nbsp;Identifier:</a></td><td>ssl_module</td></tr></table></td></tr></table><h2>Summary</h2>
 <p>This module provides SSL v2/v3 and TLS v1 support for the Apache
 HTTP Server.  It was contributed by Ralf S. Engeschall based on his
 mod_ssl project and originally derived from work by Ben Laurie.</p>
@@ -22,7 +22,7 @@ be made available under different names, too. Look in the <a href="../ssl/ssl_co
 compatibility variables.</p>
 
 <div align="center">
-<a name="table4"></a>
+<a name="table4"/>
 <table width="600" cellspacing="0" cellpadding="1" border="0" summary="">
 <caption align="bottom" id="sf">SSI/CGI Environment Variables</caption>
 <tr><td bgcolor="#cccccc">
@@ -93,20 +93,20 @@ Example:</p>
 CustomLog logs/ssl_request_log \
           "%t %h %{SSL_PROTOCOL}x %{SSL_CIPHER}x \"%r\" %b"
 </code></td></tr></table></blockquote>
-<hr/><h2><a name="SSLCACertificateFile">SSLCACertificateFile</a> <a name="sslcacertificatefile">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>File of concatenated PEM-encoded CA Certificates 
-for Client Auth</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>SSLCACertificateFile <em>file-path</em></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table>
+<hr/><h2><a name="SSLCACertificateFile">SSLCACertificateFile</a> <a name="sslcacertificatefile">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>File of concatenated PEM-encoded CA Certificates 
+for Client Auth</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>SSLCACertificateFile <em>file-path</em></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Extension</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table>
 <p>
 This directive sets the <em>all-in-one</em> file where you can assemble the
 Certificates of Certification Authorities (CA) whose <em>clients</em> you deal
 with. These are used for Client Authentication. Such a file is simply the
 concatenation of the various PEM-encoded Certificate files, in order of
 preference. This can be used alternatively and/or additionally to 
-<a href="#sslcacertificatepath" class="directive"><code class="directive">SSLCACertificatePath</code></a>.</p>
+<a class="directive" href="#sslcacertificatepath"><code class="directive">SSLCACertificatePath</code></a>.</p>
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
 SSLCACertificateFile /usr/local/apache/conf/ssl.crt/ca-bundle-client.crt
 </code></td></tr></table></blockquote>
-<hr/><h2><a name="SSLCACertificatePath">SSLCACertificatePath</a> <a name="sslcacertificatepath">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Directory of PEM-encoded CA Certificates for 
-Client Auth</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>SSLCACertificatePath <em>directory-path</em></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table>
+<hr/><h2><a name="SSLCACertificatePath">SSLCACertificatePath</a> <a name="sslcacertificatepath">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Directory of PEM-encoded CA Certificates for 
+Client Auth</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>SSLCACertificatePath <em>directory-path</em></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Extension</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table>
 <p>
 This directive sets the directory where you keep the Certificates of
 Certification Authorities (CAs) whose clients you deal with. These are used to
@@ -121,20 +121,20 @@ comes with mod_ssl to accomplish this task.</p>
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
 SSLCACertificatePath /usr/local/apache/conf/ssl.crt/
 </code></td></tr></table></blockquote>
-<hr/><h2><a name="SSLCARevocationFile">SSLCARevocationFile</a> <a name="sslcarevocationfile">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>File of concatenated PEM-encoded CA CRLs for 
-Client Auth</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>SSLCARevocationFile <em>file-path</em></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table>
+<hr/><h2><a name="SSLCARevocationFile">SSLCARevocationFile</a> <a name="sslcarevocationfile">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>File of concatenated PEM-encoded CA CRLs for 
+Client Auth</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>SSLCARevocationFile <em>file-path</em></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Extension</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table>
 <p>
 This directive sets the <em>all-in-one</em> file where you can
 assemble the Certificate Revocation Lists (CRL) of Certification
 Authorities (CA) whose <em>clients</em> you deal with. These are used
 for Client Authentication.  Such a file is simply the concatenation of
 the various PEM-encoded CRL files, in order of preference. This can be
-used alternatively and/or additionally to <a href="#sslcarevocationpath" class="directive"><code class="directive">SSLCARevocationPath</code></a>.</p>
+used alternatively and/or additionally to <a class="directive" href="#sslcarevocationpath"><code class="directive">SSLCARevocationPath</code></a>.</p>
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
 SSLCARevocationFile /usr/local/apache/conf/ssl.crl/ca-bundle-client.crl
 </code></td></tr></table></blockquote>
-<hr/><h2><a name="SSLCARevocationPath">SSLCARevocationPath</a> <a name="sslcarevocationpath">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Directory of PEM-encoded CA CRLs for 
-Client Auth</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>SSLCARevocationPath <em>directory-path</em></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table>
+<hr/><h2><a name="SSLCARevocationPath">SSLCARevocationPath</a> <a name="sslcarevocationpath">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Directory of PEM-encoded CA CRLs for 
+Client Auth</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>SSLCARevocationPath <em>directory-path</em></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Extension</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table>
 <p>
 This directive sets the directory where you keep the Certificate Revocation
 Lists (CRL) of Certification Authorities (CAs) whose clients you deal with.
@@ -149,7 +149,7 @@ comes with <code><a href="mod_ssl.html">mod_ssl</a></code> to accomplish this ta
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
 SSLCARevocationPath /usr/local/apache/conf/ssl.crl/
 </code></td></tr></table></blockquote>
-<hr/><h2><a name="SSLCertificateChainFile">SSLCertificateChainFile</a> <a name="sslcertificatechainfile">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>File of PEM-encoded Server CA Certificates</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>SSLCertificateChainFile <em>file-path</em></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table>
+<hr/><h2><a name="SSLCertificateChainFile">SSLCertificateChainFile</a> <a name="sslcertificatechainfile">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>File of PEM-encoded Server CA Certificates</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>SSLCertificateChainFile <em>file-path</em></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Extension</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table>
 <p>
 This directive sets the optional <em>all-in-one</em> file where you can
 assemble the certificates of Certification Authorities (CA) which form the
@@ -158,12 +158,12 @@ certificate of of the server certificate and can range up to the root CA
 certificate. Such a file is simply the concatenation of the various
 PEM-encoded CA Certificate files, usually in certificate chain order.</p>
 <p>
-This should be used alternatively and/or additionally to <a href="#sslcacertificatepath" class="directive"><code class="directive">SSLCACertificatePath</code></a> for explicitly
+This should be used alternatively and/or additionally to <a class="directive" href="#sslcacertificatepath"><code class="directive">SSLCACertificatePath</code></a> for explicitly
 constructing the server certificate chain which is sent to the browser
 in addition to the server certificate. It is especially useful to
 avoid conflicts with CA certificates when using client
 authentication. Because although placing a CA certificate of the
-server certificate chain into <a href="#sslcacertificatepath" class="directive"><code class="directive">SSLCACertificatePath</code></a> has the same effect
+server certificate chain into <a class="directive" href="#sslcacertificatepath"><code class="directive">SSLCACertificatePath</code></a> has the same effect
 for the certificate chain construction, it has the side-effect that
 client certificates issued by this same CA certificate are also
 accepted on client authentication. That's usually not one expect.</p>
@@ -176,7 +176,7 @@ confused in this situation.</p>
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
 SSLCertificateChainFile /usr/local/apache/conf/ssl.crt/ca.crt
 </code></td></tr></table></blockquote>
-<hr/><h2><a name="SSLCertificateFile">SSLCertificateFile</a> <a name="sslcertificatefile">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Server PEM-encoded X.509 Certificate file</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>SSLCertificateFile <em>file-path</em></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table>
+<hr/><h2><a name="SSLCertificateFile">SSLCertificateFile</a> <a name="sslcertificatefile">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Server PEM-encoded X.509 Certificate file</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>SSLCertificateFile <em>file-path</em></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Extension</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table>
 <p>
 This directive points to the PEM-encoded Certificate file for the server and
 optionally also to the corresponding RSA or DSA Private Key file for it
@@ -187,7 +187,7 @@ server certificate is used in parallel.</p>
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
 SSLCertificateFile /usr/local/apache/conf/ssl.crt/server.crt
 </code></td></tr></table></blockquote>
-<hr/><h2><a name="SSLCertificateKeyFile">SSLCertificateKeyFile</a> <a name="sslcertificatekeyfile">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Server PEM-encoded Private Key file</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>SSLCertificateKeyFile <em>file-path</em></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table>
+<hr/><h2><a name="SSLCertificateKeyFile">SSLCertificateKeyFile</a> <a name="sslcertificatekeyfile">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Server PEM-encoded Private Key file</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>SSLCertificateKeyFile <em>file-path</em></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Extension</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table>
 <p>
 This directive points to the PEM-encoded Private Key file for the
 server. If the Private Key is not combined with the Certificate in the
@@ -204,8 +204,8 @@ private key is used in parallel.</p>
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
 SSLCertificateKeyFile /usr/local/apache/conf/ssl.key/server.key
 </code></td></tr></table></blockquote>
-<hr/><h2><a name="SSLCipherSuite">SSLCipherSuite</a> <a name="sslciphersuite">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Cipher Suite available for negotiation in SSL 
-handshake</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>SSLCipherSuite <em>cipher-spec</em></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>SSLCipherSuite ALL:!ADH:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>AuthConfig</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table>
+<hr/><h2><a name="SSLCipherSuite">SSLCipherSuite</a> <a name="sslciphersuite">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Cipher Suite available for negotiation in SSL 
+handshake</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>SSLCipherSuite <em>cipher-spec</em></td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code>SSLCipherSuite ALL:!ADH:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP</code></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a class="help" href="directive-dict.html#Override">Override:</a></td><td>AuthConfig</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Extension</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table>
 <p>
 This complex directive uses a colon-separated <em>cipher-spec</em> string
 consisting of OpenSSL cipher specifications to configure the Cipher Suite the
@@ -219,16 +219,16 @@ response is sent.</p>
 An SSL cipher specification in <em>cipher-spec</em> is composed of 4 major
 attributes plus a few extra minor ones:</p>
 <ul>
-<li><em>Key Exchange Algorithm</em>:<br>
+<li><em>Key Exchange Algorithm</em>:<br/>
     RSA or Diffie-Hellman variants.
 </li>
-<li><em>Authentication Algorithm</em>:<br>
+<li><em>Authentication Algorithm</em>:<br/>
     RSA, Diffie-Hellman, DSS or none.
 </li>
-<li><em>Cipher/Encryption Algorithm</em>:<br>
+<li><em>Cipher/Encryption Algorithm</em>:<br/>
     DES, Triple-DES, RC4, RC2, IDEA or none.
 </li>
-<li><em>MAC Digest Algorithm</em>:<br>
+<li><em>MAC Digest Algorithm</em>:<br/>
     MD5, SHA or SHA1.
 </li>
 </ul>
@@ -239,7 +239,7 @@ specify the preference and order for the ciphers (see <a href="#table1">Table
 1</a>).</p>
 
 <div align="center">
-<a name="table1"></a>
+<a name="table1"/>
 <table width="600" cellspacing="0" cellpadding="1" border="0" summary="">
 <caption align="bottom" id="sf">Table 1: OpenSSL Cipher Specification Tags</caption>
 <tr><td bgcolor="#cccccc">
@@ -328,7 +328,7 @@ EXP-RC4-MD5             SSLv2 Kx=RSA(512) Au=RSA  Enc=RC4(40)   Mac=MD5  export
 SSLCipherSuite RSA:!EXP:!NULL:+HIGH:+MEDIUM:-LOW
 </code></td></tr></table></blockquote>
 <div align="center">
-<a name="table2"></a>
+<a name="table2"/>
 <table width="600" cellspacing="0" cellpadding="1" border="0" summary="">
 <caption align="bottom" id="sf">Table 2: Particular SSL Ciphers</caption>
 <tr><td bgcolor="#cccccc">
@@ -372,19 +372,19 @@ SSLCipherSuite RSA:!EXP:!NULL:+HIGH:+MEDIUM:-LOW
 </tr></table>
 </td></tr></table>
 </div>
-<hr/><h2><a name="SSLEngine">SSLEngine</a> <a name="sslengine">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>SSL Engine Operation Switch</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>SSLEngine on|off</td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>SSLEngine off</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table>
+<hr/><h2><a name="SSLEngine">SSLEngine</a> <a name="sslengine">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>SSL Engine Operation Switch</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>SSLEngine on|off</td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code>SSLEngine off</code></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Extension</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table>
 <p>
 This directive toggles the usage of the SSL/TLS Protocol Engine. This
-is usually used inside a <a href="core.html#virtualhost" class="directive"><code class="directive">&lt;VirtualHost&gt;</code></a> section to enable SSL/TLS for a
+is usually used inside a <a class="directive" href="core.html#virtualhost"><code class="directive">&lt;VirtualHost&gt;</code></a> section to enable SSL/TLS for a
 particular virtual host. By default the SSL/TLS Protocol Engine is
 disabled for both the main server and all configured virtual hosts.</p>
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
-&lt;VirtualHost _default_:443&gt;<br>
-SSLEngine on<br>
-...<br>
+&lt;VirtualHost _default_:443&gt;<br/>
+SSLEngine on<br/>
+...<br/>
 &lt;/VirtualHost&gt;
 </code></td></tr></table></blockquote>
-<hr/><h2><a name="SSLLog">SSLLog</a> <a name="ssllog">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Where to write the dedicated SSL engine logfile</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>SSLLog <em>file-path</em></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table>
+<hr/><h2><a name="SSLLog">SSLLog</a> <a name="ssllog">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Where to write the dedicated SSL engine logfile</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>SSLLog <em>file-path</em></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Extension</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table>
 <p>
 This directive sets the name of the dedicated SSL protocol engine logfile.
 Error type messages are additionally duplicated to the general Apache error
@@ -399,35 +399,35 @@ virtual server config.</p>
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
 SSLLog /usr/local/apache/logs/ssl_engine_log
 </code></td></tr></table></blockquote>
-<hr/><h2><a name="SSLLogLevel">SSLLogLevel</a> <a name="sslloglevel">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Logging level for the dedicated SSL engine 
-logfile</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>SSLLogLevel <em>level</em></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>SSLLogLevel none</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table>
+<hr/><h2><a name="SSLLogLevel">SSLLogLevel</a> <a name="sslloglevel">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Logging level for the dedicated SSL engine 
+logfile</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>SSLLogLevel <em>level</em></td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code>SSLLogLevel none</code></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Extension</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table>
 <p>
 This directive sets the verbosity degree of the dedicated SSL protocol engine
 logfile. The <em>level</em> is one of the following (in ascending order where
 higher levels include lower levels):</p>
 <ul>
-<li><code>none</code><br>
+<li><code>none</code><br/>
     no dedicated SSL logging is done, but messages of level
     ``<code>error</code>'' are still written to the general Apache error
     logfile.
 </li>
-<li><code>error</code><br>
+<li><code>error</code><br/>
     log messages of error type only, i.e. messages which show fatal situations
     (processing is stopped). Those messages are also duplicated to the
     general Apache error logfile.
 </li>
-<li><code>warn</code><br>
+<li><code>warn</code><br/>
     log also warning messages, i.e. messages which show non-fatal problems
     (processing is continued).
 </li>
-<li><code>info</code><br>
+<li><code>info</code><br/>
     log also informational messages, i.e. messages which show major
     processing steps.
 </li>
-<li><code>trace</code><br>
+<li><code>trace</code><br/>
     log also trace messages, i.e. messages which show minor processing steps.
 </li>
-<li><code>debug</code><br>
+<li><code>debug</code><br/>
     log also debugging messages, i.e. messages which show development and
     low-level I/O information.
 </li>
@@ -435,8 +435,8 @@ higher levels include lower levels):</p>
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
 SSLLogLevel warn
 </code></td></tr></table></blockquote>
-<hr/><h2><a name="SSLMutex">SSLMutex</a> <a name="sslmutex">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Semaphore for internal mutual exclusion of 
-operations</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>SSLMutex <em>type</em></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>SSLMutex none</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table>
+<hr/><h2><a name="SSLMutex">SSLMutex</a> <a name="sslmutex">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Semaphore for internal mutual exclusion of 
+operations</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>SSLMutex <em>type</em></td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code>SSLMutex none</code></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Extension</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table>
 <p>
 This configures the SSL engine's semaphore (aka. lock) which is used for mutual
 exclusion of operations which have to be done in a synchronized way between the
@@ -473,7 +473,7 @@ The following Mutex <em>types</em> are available:</p>
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
 SSLMutex file:/usr/local/apache/logs/ssl_mutex
 </code></td></tr></table></blockquote>
-<hr/><h2><a name="SSLOptions">SSLOptions</a> <a name="ssloptions">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Configure various SSL engine run-time options</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>SSLOptions [+|-]<em>option</em> ...</td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>Options</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table>
+<hr/><h2><a name="SSLOptions">SSLOptions</a> <a name="ssloptions">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Configure various SSL engine run-time options</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>SSLOptions [+|-]<em>option</em> ...</td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a class="help" href="directive-dict.html#Override">Override:</a></td><td>Options</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Extension</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table>
 <p>
 This directive can be used to control various run-time options on a
 per-directory basis. Normally, if multiple <code>SSLOptions</code>
@@ -556,17 +556,17 @@ The available <em>option</em>s are:</p>
 </li>
 </ul>
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
-SSLOptions +FakeBasicAuth -StrictRequire<br>
-&lt;Files ~ "\.(cgi|shtml)$"&gt;<br>
-    SSLOptions +StdEnvVars +CompatEnvVars -ExportCertData<br>
+SSLOptions +FakeBasicAuth -StrictRequire<br/>
+&lt;Files ~ "\.(cgi|shtml)$"&gt;<br/>
+    SSLOptions +StdEnvVars +CompatEnvVars -ExportCertData<br/>
 &lt;Files&gt;
 </code></td></tr></table></blockquote>
-<hr/><h2><a name="SSLPassPhraseDialog">SSLPassPhraseDialog</a> <a name="sslpassphrasedialog">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Type of pass phrase dialog for encrypted private 
-keys</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>SSLPassPhraseDialog <em>type</em></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>SSLPassPhraseDialog builtin</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table>
+<hr/><h2><a name="SSLPassPhraseDialog">SSLPassPhraseDialog</a> <a name="sslpassphrasedialog">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Type of pass phrase dialog for encrypted private 
+keys</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>SSLPassPhraseDialog <em>type</em></td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code>SSLPassPhraseDialog builtin</code></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Extension</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table>
 <p>
 When Apache starts up it has to read the various Certificate (see
-<a href="#sslcertificatefile" class="directive"><code class="directive">SSLCertificateFile</code></a>) and
-Private Key (see <a href="#sslcertificatekeyfile" class="directive"><code class="directive">SSLCertificateKeyFile</code></a>) files of the
+<a class="directive" href="#sslcertificatefile"><code class="directive">SSLCertificateFile</code></a>) and
+Private Key (see <a class="directive" href="#sslcertificatekeyfile"><code class="directive">SSLCertificateKeyFile</code></a>) files of the
 SSL-enabled virtual servers. Because for security reasons the Private
 Key files are usually encrypted, mod_ssl needs to query the
 administrator for a Pass Phrase in order to decrypt those files. This
@@ -619,7 +619,7 @@ Example:</p>
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
 SSLPassPhraseDialog exec:/usr/local/apache/sbin/pp-filter
 </code></td></tr></table></blockquote>
-<hr/><h2><a name="SSLProtocol">SSLProtocol</a> <a name="sslprotocol">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Configure usable SSL protocol flavors</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>SSLProtocol [+|-]<em>protocol</em> ...</td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>SSLProtocol all</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>Options</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table>
+<hr/><h2><a name="SSLProtocol">SSLProtocol</a> <a name="sslprotocol">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Configure usable SSL protocol flavors</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>SSLProtocol [+|-]<em>protocol</em> ...</td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code>SSLProtocol all</code></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a class="help" href="directive-dict.html#Override">Override:</a></td><td>Options</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Extension</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table>
 <p>
 This directive can be used to control the SSL protocol flavors mod_ssl should
 use when establishing its server environment. Clients then can only connect
@@ -654,12 +654,12 @@ The available (case-insensitive) <em>protocol</em>s are:</p>
     shows.</p></li>
 </ul>
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
-#   enable SSLv3 and TLSv1, but not SSLv2<br>
+#   enable SSLv3 and TLSv1, but not SSLv2<br/>
 SSLProtocol all -SSLv2
 </code></td></tr></table></blockquote>
-<hr/><h2><a name="SSLRandomSeed">SSLRandomSeed</a> <a name="sslrandomseed">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Pseudo Random Number Generator (PRNG) seeding 
-source</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>SSLRandomSeed <em>context</em> <em>source</em> 
-[<em>bytes</em>]</td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table>
+<hr/><h2><a name="SSLRandomSeed">SSLRandomSeed</a> <a name="sslrandomseed">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Pseudo Random Number Generator (PRNG) seeding 
+source</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>SSLRandomSeed <em>context</em> <em>source</em> 
+[<em>bytes</em>]</td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Extension</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table>
 <p>
 This configures one or more sources for seeding the Pseudo Random Number
 Generator (PRNG) in OpenSSL at startup time (<em>context</em> is
@@ -734,16 +734,16 @@ The following <em>source</em> variants are available:</p>
     on your platform.</p></li>
 </ul>
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
-SSLRandomSeed startup builtin<br>
-SSLRandomSeed startup file:/dev/random<br>
-SSLRandomSeed startup file:/dev/urandom 1024<br>
-SSLRandomSeed startup exec:/usr/local/bin/truerand 16<br>
-SSLRandomSeed connect builtin<br>
-SSLRandomSeed connect file:/dev/random<br>
-SSLRandomSeed connect file:/dev/urandom 1024<br>
+SSLRandomSeed startup builtin<br/>
+SSLRandomSeed startup file:/dev/random<br/>
+SSLRandomSeed startup file:/dev/urandom 1024<br/>
+SSLRandomSeed startup exec:/usr/local/bin/truerand 16<br/>
+SSLRandomSeed connect builtin<br/>
+SSLRandomSeed connect file:/dev/random<br/>
+SSLRandomSeed connect file:/dev/urandom 1024<br/>
 </code></td></tr></table></blockquote>
-<hr/><h2><a name="SSLRequire">SSLRequire</a> <a name="sslrequire">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Allow access only when an arbitrarily complex 
-boolean expression is true</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>SSLRequire <em>expression</em></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>AuthConfig</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table>
+<hr/><h2><a name="SSLRequire">SSLRequire</a> <a name="sslrequire">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Allow access only when an arbitrarily complex 
+boolean expression is true</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>SSLRequire <em>expression</em></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>directory, .htaccess</td></tr><tr><td><a class="help" href="directive-dict.html#Override">Override:</a></td><td>AuthConfig</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Extension</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table>
 <p>
 This directive specifies a general access requirement which has to be
 fulfilled in order to allow access. It's a very powerful directive because the
@@ -802,15 +802,15 @@ at runtime only the machine representation is executed. For Per-Directory
 context this is different: here <em>expression</em> has to be parsed and
 immediately executed for every request.</p>
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
-SSLRequire (    %{SSL_CIPHER} !~ m/^(EXP|NULL)-/ \<br>
-            and %{SSL_CLIENT_S_DN_O} eq "Snake Oil, Ltd." \<br>
-            and %{SSL_CLIENT_S_DN_OU} in {"Staff", "CA", "Dev"} \<br>
-            and %{TIME_WDAY} &gt;= 1 and %{TIME_WDAY} &lt;= 5 \<br>
-            and %{TIME_HOUR} &gt;= 8 and %{TIME_HOUR} &lt;= 20       ) \<br>
+SSLRequire (    %{SSL_CIPHER} !~ m/^(EXP|NULL)-/ \<br/>
+            and %{SSL_CLIENT_S_DN_O} eq "Snake Oil, Ltd." \<br/>
+            and %{SSL_CLIENT_S_DN_OU} in {"Staff", "CA", "Dev"} \<br/>
+            and %{TIME_WDAY} &gt;= 1 and %{TIME_WDAY} &lt;= 5 \<br/>
+            and %{TIME_HOUR} &gt;= 8 and %{TIME_HOUR} &lt;= 20       ) \<br/>
            or %{REMOTE_ADDR} =~ m/^192\.76\.162\.[0-9]+$/
 </code></td></tr></table></blockquote>
 <div align="center">
-<a name="table3"></a>
+<a name="table3"/>
 <table width="600" cellspacing="0" cellpadding="1" border="0" summary="">
 <caption align="bottom" id="sf">Table 3: Available Variables for SSLRequire</caption>
 <tr><td bgcolor="#cccccc">
@@ -878,8 +878,8 @@ SSL_VERSION_INTERFACE  SSL_CLIENT_S_DN_OU     SSL_SERVER_S_DN_OU
 </tr></table>
 </td></tr></table>
 </div>
-<hr/><h2><a name="SSLRequireSSL">SSLRequireSSL</a> <a name="sslrequiressl">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Deny access when SSL is not used for the 
-HTTP request</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>SSLRequireSSL</td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>AuthConfig</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table>
+<hr/><h2><a name="SSLRequireSSL">SSLRequireSSL</a> <a name="sslrequiressl">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Deny access when SSL is not used for the 
+HTTP request</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>SSLRequireSSL</td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>directory, .htaccess</td></tr><tr><td><a class="help" href="directive-dict.html#Override">Override:</a></td><td>AuthConfig</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Extension</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table>
 <p>
 This directive forbids access unless HTTP over SSL (i.e. HTTPS) is enabled for
 the current connection. This is very handy inside the SSL-enabled virtual
@@ -889,8 +889,8 @@ are denied which are not using SSL.</p>
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
 SSLRequireSSL
 </code></td></tr></table></blockquote>
-<hr/><h2><a name="SSLSessionCache">SSLSessionCache</a> <a name="sslsessioncache">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Type of the global/inter-process SSL Session 
-Cache</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>SSLSessionCache <em>type</em></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>SSLSessionCache none</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table>
+<hr/><h2><a name="SSLSessionCache">SSLSessionCache</a> <a name="sslsessioncache">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Type of the global/inter-process SSL Session 
+Cache</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>SSLSessionCache <em>type</em></td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code>SSLSessionCache none</code></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Extension</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table>
 <p>
 This configures the storage type of the global/inter-process SSL Session
 Cache. This cache is an optional facility which speeds up parallel request
@@ -924,11 +924,11 @@ The following two storage <em>type</em>s are currently supported:</p>
     how to build Apache+EAPI with shared memory support.</p></li>
 </ul>
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Examples</strong></p><code>
-SSLSessionCache dbm:/usr/local/apache/logs/ssl_gcache_data<br>
+SSLSessionCache dbm:/usr/local/apache/logs/ssl_gcache_data<br/>
 SSLSessionCache shm:/usr/local/apache/logs/ssl_gcache_data(512000)
 </code></td></tr></table></blockquote>
-<hr/><h2><a name="SSLSessionCacheTimeout">SSLSessionCacheTimeout</a> <a name="sslsessioncachetimeout">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Number of seconds before an SSL session expires
-in the Session Cache</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>SSLSessionCacheTimeout <em>seconds</em></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>SSLSessionCacheTimeout 300</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table>
+<hr/><h2><a name="SSLSessionCacheTimeout">SSLSessionCacheTimeout</a> <a name="sslsessioncachetimeout">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Number of seconds before an SSL session expires
+in the Session Cache</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>SSLSessionCacheTimeout <em>seconds</em></td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code>SSLSessionCacheTimeout 300</code></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Extension</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table>
 <p>
 This directive sets the timeout in seconds for the information stored in the
 global/inter-process SSL Session Cache and the OpenSSL internal memory cache.
@@ -937,7 +937,7 @@ values like 300 in real life.</p>
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
 SSLSessionCacheTimeout 600
 </code></td></tr></table></blockquote>
-<hr/><h2><a name="SSLVerifyClient">SSLVerifyClient</a> <a name="sslverifyclient">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Type of Client Certificate verification</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>SSLVerifyClient <em>level</em></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>SSLVerifyClient none</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>AuthConfig</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table>
+<hr/><h2><a name="SSLVerifyClient">SSLVerifyClient</a> <a name="sslverifyclient">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Type of Client Certificate verification</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>SSLVerifyClient <em>level</em></td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code>SSLVerifyClient none</code></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a class="help" href="directive-dict.html#Override">Override:</a></td><td>AuthConfig</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Extension</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table>
 <p>
 This directive sets the Certificate verification level for the Client
 Authentication. Notice that this directive can be used both in per-server and
@@ -956,7 +956,7 @@ The following levels are available for <em>level</em>:</p>
 <li><strong>require</strong>:
      the client <em>has to</em> present a valid Certificate</li>
 <li><strong>optional_no_ca</strong>:
-     the client may present a valid Certificate<br>
+     the client may present a valid Certificate<br/>
      but it need not to be (successfully) verifiable.</li>
 </ul>
 <p>In practice only levels <strong>none</strong> and
@@ -967,8 +967,8 @@ authentication (but can be used to establish SSL test pages, etc.)</p>
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
 SSLVerifyClient require
 </code></td></tr></table></blockquote>
-<hr/><h2><a name="SSLVerifyDepth">SSLVerifyDepth</a> <a name="sslverifydepth">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Maximum depth of CA Certificates in Client 
-Certificate verification</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>SSLVerifyDepth <em>number</em></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>SSLVerifyDepth 1</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>AuthConfig</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table>
+<hr/><h2><a name="SSLVerifyDepth">SSLVerifyDepth</a> <a name="sslverifydepth">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Maximum depth of CA Certificates in Client 
+Certificate verification</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>SSLVerifyDepth <em>number</em></td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code>SSLVerifyDepth 1</code></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a class="help" href="directive-dict.html#Override">Override:</a></td><td>AuthConfig</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Extension</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table>
 <p>
 This directive sets how deeply mod_ssl should verify before deciding that the
 clients don't have a valid certificate. Notice that this directive can be
@@ -984,8 +984,8 @@ verifying the client certificate. A depth of 0 means that self-signed client
 certificates are accepted only, the default depth of 1 means the client
 certificate can be self-signed or has to be signed by a CA which is directly
 known to the server (i.e. the CA's certificate is under
-<a href="#sslcacertificatepath" class="directive"><code class="directive">SSLCACertificatePath</code></a>), etc.</p>
+<a class="directive" href="#sslcacertificatepath"><code class="directive">SSLCACertificatePath</code></a>), etc.</p>
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
 SSLVerifyDepth 10
 </code></td></tr></table></blockquote>
-<hr/><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img alt="Index" src="../images/index.gif"/></a><a href="../"><img alt="Home" src="../images/home.gif"/></a></blockquote></body></html>
+<hr/><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"/></a><a href="../"><img src="../images/home.gif" alt="Home"/></a></blockquote></body></html>

@@ -2,8 +2,8 @@
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
      This file is generated from xml source: DO NOT EDIT
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
---><title>mod_asis - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img alt="[APACHE DOCUMENTATION]" src="../images/sub.gif"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_asis</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td valign="top"><span class="help">Description:</span></td><td>Sends files that contain their own
-HTTP headers</td></tr><tr><td><a href="module-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:</a></td><td>asis_module</td></tr></table></td></tr></table><h2>Summary</h2>
+--><title>mod_asis - Apache HTTP Server</title><link rel="stylesheet" type="text/css" href="../style/manual.css"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_asis</h1><table bgcolor="#cccccc" cellpadding="0" cellspacing="1"><tr><td><table bgcolor="#ffffff"><tr><td valign="top"><span class="help">Description:</span></td><td>Sends files that contain their own
+HTTP headers</td></tr><tr><td><a class="help" href="module-dict.html#Status">Status:</a></td><td>Base</td></tr><tr><td><a class="help" href="module-dict.html#ModuleIdentifier">Module&nbsp;Identifier:</a></td><td>asis_module</td></tr></table></td></tr></table><h2>Summary</h2>
     <p>This module provides the handler <code>send-as-is</code>
     which causes Apache to send the document without adding most of
     the usual HTTP headers.</p>
@@ -33,22 +33,22 @@ HTTP headers</td></tr><tr><td><a href="module-dict.html#Status" class="help">Sta
     redirected.</p>
 
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>Status: 301 Now where did I leave that URL<br>
-       Location: http://xyz.abc.com/foo/bar.html<br>
-       Content-type: text/html<br>
-      <br>
-       &lt;HTML&gt;<br>
-       &lt;HEAD&gt;<br>
-       &lt;TITLE&gt;Lame excuses'R'us&lt;/TITLE&gt;<br>
-       &lt;/HEAD&gt;<br>
-       &lt;BODY&gt;<br>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>Status: 301 Now where did I leave that URL<br/>
+       Location: http://xyz.abc.com/foo/bar.html<br/>
+       Content-type: text/html<br/>
+      <br/>
+       &lt;HTML&gt;<br/>
+       &lt;HEAD&gt;<br/>
+       &lt;TITLE&gt;Lame excuses'R'us&lt;/TITLE&gt;<br/>
+       &lt;/HEAD&gt;<br/>
+       &lt;BODY&gt;<br/>
        &lt;H1&gt;Fred's exceptionally wonderful page has moved
-      to<br>
+      to<br/>
        &lt;A
       HREF="http://xyz.abc.com/foo/bar.html"&gt;Joe's&lt;/A&gt;
-      site.<br>
-       &lt;/H1&gt;<br>
-       &lt;/BODY&gt;<br>
+      site.<br/>
+       &lt;/H1&gt;<br/>
+       &lt;/BODY&gt;<br/>
        &lt;/HTML&gt;
 </code></td></tr></table></blockquote>
 
@@ -56,4 +56,4 @@ HTTP headers</td></tr><tr><td><a href="module-dict.html#Status" class="help">Sta
     the data returned to the client, so these should not be
     included in the file. The server does <em>not</em> add a
     Last-Modified header; it probably should. </p>
-<hr/><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img alt="Index" src="../images/index.gif"/></a><a href="../"><img alt="Home" src="../images/home.gif"/></a></blockquote></body></html>
+<hr/><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"/></a><a href="../"><img src="../images/home.gif" alt="Home"/></a></blockquote></body></html>
