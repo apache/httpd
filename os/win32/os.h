@@ -106,6 +106,7 @@
 #define USE_LONGJMP
 #define HAVE_CANONICAL_FILENAME
 #define HAVE_DRIVE_LETTERS
+#define HAVE_UNC_PATHS
 #define HAVE_SENDFILE
 
 typedef int uid_t;
