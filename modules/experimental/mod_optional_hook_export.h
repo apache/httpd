@@ -57,6 +57,6 @@
 
 #include "apr_optional_hooks.h"
 
-APR_DECLARE_EXTERNAL_HOOK(ap,AP_MODULE,int,optional_hook_test,(const char *))
+AP_DECLARE_HOOK(int,optional_hook_test,(const char *))
 
 #endif /* def MOD_OPTIONAL_HOOK_EXPORT_H */

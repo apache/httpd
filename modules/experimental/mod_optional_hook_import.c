@@ -67,8 +67,8 @@ static int ImportGenericHookTestHook(const char *szStr)
 
 static void ImportRegisterHooks(apr_pool_t *p)
 {
-    APR_OPTIONAL_HOOK(ap,optional_hook_test,ImportGenericHookTestHook,NULL,
-		      NULL,APR_HOOK_MIDDLE);
+    AP_OPTIONAL_HOOK(optional_hook_test,ImportGenericHookTestHook,NULL,
+		     NULL,APR_HOOK_MIDDLE);
 }
 
 module optional_hook_import_module=
