@@ -65,19 +65,21 @@ static int asis_handler (request_rec *r)
     
     if (r->method_number != M_GET) return DECLINED;
     if (r->finfo.st_mode == 0) {
-	log_reason("File does not exist", r->filename, r);
+	aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+		    "File does not exist", r->filename);
 	return NOT_FOUND;
     }
 	
-    f = pfopen (r->pool, r->filename, "r");
+    f = pfopen(r->pool, r->filename, "r");
 
     if (f == NULL) {
-        log_reason("file permissions deny server access", r->filename, r);
+        aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+		    "file permissions deny server access: %s", r->filename);
         return FORBIDDEN;
     }
       
-    scan_script_header (r, f);
-    location = table_get (r->headers_out, "Location");
+    scan_script_header(r, f);
+    location = table_get(r->headers_out, "Location");
 
     if (location && location[0] == '/' && 
         ((r->status == HTTP_OK) || is_HTTP_REDIRECT(r->status))) {
@@ -93,11 +95,11 @@ static int asis_handler (request_rec *r)
 	r->method = pstrdup(r->pool, "GET");
 	r->method_number = M_GET;
 
-	internal_redirect_handler (location, r);
+	internal_redirect_handler(location, r);
 	return OK;
     }
     
-    send_http_header (r);
+    send_http_header(r);
     if (!r->header_only) send_fd (f, r);
 
     pfclose(r->pool, f);
