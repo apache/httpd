@@ -3569,7 +3569,7 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
 
     /* Perform multiple passes over the brigade, sending batches of output
        to the connection. */
-    while (b) {
+    while (b && !APR_BRIGADE_EMPTY(b)) {
         apr_size_t nbytes = 0;
         apr_bucket *last_e = NULL; /* initialized for debugging */
         apr_bucket *e;
@@ -3597,7 +3597,11 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
         APR_BRIGADE_FOREACH(e, b) {
             /* keep track of the last bucket processed */
             last_e = e;
-            if (APR_BUCKET_IS_EOS(e) || APR_BUCKET_IS_FLUSH(e)) {
+            if (APR_BUCKET_IS_EOS(e)) {
+                break;
+            }
+            if (APR_BUCKET_IS_FLUSH(e)) {
+                more = apr_brigade_split(b, APR_BUCKET_NEXT(e));
                 break;
             }
 
