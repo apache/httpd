@@ -1,4 +1,6 @@
 Changes with Apache 1.3.4
+  *) mod_include.c:handle_perl() now properly tests for OPT_INCNOEXEC
+     rather than OPT_INCLUDES [Rainer Schoepf <schoepf@uni-mainz.de>]
 
   *) ap_md5_binary() was using sprintf() rather than a table lookup
      to convert binary bytes to hex digits.

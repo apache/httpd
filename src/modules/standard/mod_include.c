@@ -952,7 +952,7 @@ static int handle_perl(FILE *in, request_rec *r, const char *error)
     SV *sub = Nullsv;
     AV *av = newAV();
 
-    if (!(ap_allow_options(r) & OPT_INCLUDES)) {
+    if (ap_allow_options(r) & OPT_INCNOEXEC) {
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
                     "httpd: #perl SSI disallowed by IncludesNoExec in %s",
                     r->filename);
