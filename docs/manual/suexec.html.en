@@ -389,18 +389,22 @@ location.
 </P>
 
 <P ALIGN="LEFT">
-<EM>From src/httpd.h</EM>
+<EM>From src/include/httpd.h</EM>
 <PRE>
-     /* The path to the suEXEC wrapper */
-     #define SUEXEC_BIN "/usr/local/apache/sbin/suexec"
+     /* The path to the suExec wrapper, can be overridden in Configuration */
+     #ifndef SUEXEC_BIN
+     #define SUEXEC_BIN  HTTPD_ROOT "/sbin/suexec"
+     #endif
 </PRE>
 </P>
 
 <P ALIGN="LEFT">
 If your installation requires location of the wrapper program in a different
-directory, edit src/httpd.h and recompile your Apache server.
-See <A HREF="install.html">Compiling and Installing Apache</A> for more
-info on this process.
+directory, either add <CODE>-DSUEXEC_BIN=\"<EM>&lt;/your/path/to/suexec&gt;</EM>\"</CODE>
+to your CFLAGS (or edit src/include/httpd.h) and recompile your Apache server.
+See <A HREF="install.html">Compiling and Installing Apache</A>
+(and the <SAMP>INSTALL</SAMP> file in the source distribution)
+for more info on this process.
 </P>
 
 <P ALIGN="LEFT">
