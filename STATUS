@@ -318,6 +318,10 @@ Open issues:
       PR #1120
       Brian: +1
 
+    * un-static-ize ap_exists_config_define() in http_core.c for
+      everybody to use 
+      Doug: +1
+ 
 Win32 specific issues:
 
  Important
