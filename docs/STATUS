@@ -1,5 +1,5 @@
 Apache HTTP Server 2.1 Documentation Status File.
-Last modified: $Date: 2003/04/09 20:47:33 $
+Last modified: $Date: 2003/04/09 21:58:52 $
 
 For more information on how to contribute to the Apache Documentation
 Project, please see http://httpd.apache.org/docs-project/
@@ -18,21 +18,6 @@ Decisions pending
                 shouldn't be our default, and certainly wasn't in 1.3.
      - Backport to 2.0
        +1: wrowe, slive
-
-- Where to put docs checkout on website
-     - Leave it at /docs-x.y/
-       +1: slive, Erik, Kess, Mads
-        0: nd
-
-     - /manual/x.y/
-       +1: nd
-       -0: Kess, Mads
-
-     - /x.y/manual
-       -1: Erik, nd, Mads
-        0: Kess
-             though it's probably my suggestion, I don't like it
-             very well ;-) -- nd
 
 - Figure out what to do about the 2.0 FAQ
     - Copy important stuff from 1.3?
