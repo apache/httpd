@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/06/09 11:31:14 $]
+  Last modified at [$Date: 1999/06/09 18:23:38 $]
 
 Release:
 
@@ -64,7 +64,7 @@ Binaries (1.3.6):
 
 RELEASE SHOWSTOPPERS:
 
-    - graham legget has found that if he uses the 1.3.7-dev core, and
+    - Graham Legget has found that if he uses the 1.3.7-dev core, and
       the 1.3.6 proxy code (plus a small patch of his) he doesn't get
       the hangs he was reporting.  Something is broken in the 1.3.7-dev
       proxy.
@@ -72,19 +72,19 @@ RELEASE SHOWSTOPPERS:
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
     * mod_rewrite/3874: RewriteLock doesn't work for virtual hosts 
-      => When I find time, I can look at this. But I would appreciate
-         when someone other already can dive into this. My opinion
-         is already appended to the PR. -rse
+	Status: (Ralf): When I find time, I can look at this.  But
+		I would appreciate when someone other already can dive into
+		this. My opinion is already appended to the PR. -rse
 
     * The Vary header field stuff is still broken (multiple
       entries occur, etc.), for instance also in mod_rewrite.
-      => I've already started to work on this, but I've not 
-         finished it. I've less time... -rse
+	Status: (Ralf): I've already started to work on this, but
+		I've not finished it. I've less time...
 
     * long pathnames with many components and no AllowOverride None
-        Workaround is to define <Directory /> with AllowOverride None,
-        which is something all sites should do in any case.
-        Status: Marc was looking at it.
+      Workaround is to define <Directory /> with AllowOverride None,
+      which is something all sites should do in any case.
+	Status: Marc was looking at it.
 
 Documentation that needs writing:
 
@@ -92,7 +92,7 @@ Documentation that needs writing:
 Available Patches:
 
     * Stipe Tolj's Cygwin32 port
-        PR#: 2936
+	PR#: 2936
         Status: Lars +1 (on concept)
 
     * Salvador Ortiz Garcia <sog@msg.com.mx>' patch to allow DirectoryIndex
@@ -102,24 +102,29 @@ Available Patches:
 
     * Ralf's [PATCH] to add EAPI (ctx, hook, mm, etc.) to the base package
 	Message-ID: <19990414134729.A93825@engelschall.com>
-	Status: Jim +1, Mark +1, Dean +1, BenH +1, Randy +1 (please choose name other than "hook")
-                Doug +1 on concept (untested), Lars +1 on concept
+	Status: Jim +1, Mark +1, Dean +1, BenH +1,
+		Randy +1 (please choose name other than "hook")
+                Doug +1 on concept (untested), Lars +1 on concept,
+		Ken -1 for pre-2.0 if it will force a new release of
+		mod_perl or mod_php in order to maintain compatibility
 
     * Tony Finch's patch to support mass virtual hosting
 	Message-ID: <E10kXMV-00011I-00@fanf.noc.demon.net>
 	Message-ID: <E10qzDF-0005Ab-00@fanf.noc.demon.net>
 	Status: Dean +1, Randy +1, Lars +1 (if someone writes the docs)
                 Jim +1
+		(On hold until Tony revamps the mass-vhosting docco)
 
     * Brian Havard's patch to remove dependency of mod_auth_dbm on mod_auth.
       (PR#2598)
 	Message-ID: <199905170830.SAA31549@silk.apana.org.au>
-	Status: Lars +1 (on concept)
+	Status: Lars +1 (on concept), Ken +1 (on concept)
 
     * Aidan Cully's patch to allow assignment of 'ownership' of resources
       to either the server UID or the file's owner.
 	Message-ID: <37306CB4.8EA9D76C@Golux.Com>
 	Status: Ken +1, Dean +1, Randy +1, Lars +0, Jim +1
+		(On hold until Aidan submits an update)
 
     * Keith Wannamaker's NT multiple services patch
 	Message-ID: <85256730.0073D841.00@d54mta06.raleigh.ibm.com>
@@ -138,9 +143,9 @@ Available Patches:
       request, in milli-seconds.
         Message-ID: PR#2838
         Status: Jim +0 (as is, the patch requires rework since it needs
-	  to be aware of NO_GETTIMEOFDAY and NO_TIMES as well as
-	  implement a times() alternative. Not only that, but with
-	  extended_status, we calculate this anyway).
+		to be aware of NO_GETTIMEOFDAY and NO_TIMES as well as
+		implement a times() alternative. Not only that, but with
+		extended_status, we calculate this anyway).
 
     * Juan Gallego's patch to add CSH-style modifiers (:h, :r, :t, :e)
       to mod_include's variable processing.
@@ -151,8 +156,8 @@ Available Patches:
    * Eric Prud'hommeaux's mod_dir mods for file-level access control.
         Message-ID: <Pine.LNX.3.96.981111213739.1364E-200000@tux.w3.org>
         Status: Jim -0 (The current behavior seems logical to me. If there
-	was more universal interest in changing it, then that would be
-	a different matter).
+		was more universal interest in changing it, then that would be
+		a different matter).
 
     * Eric Prud'hommeaux's mods for practical negotiation with
       file level access control.
@@ -187,7 +192,7 @@ Needs patch:
       MaxConnectionsPerChild or really fix it to actually count
       the number of requests.
       Lars: I think we should really fix.
-      Ken: Definitely fix this, otherwise an massive series of
+      Ken: Definitely fix this, otherwise a massive series of
            requests on the same connection is possible, which
            defeats the purpose.
       Jim: The main idea behind this is to avoid problems with
@@ -201,7 +206,7 @@ Needs patch:
     * get_path_info bug; ap_get_remote_host should be ap_vformatter instead.
       See: <Pine.LNX.3.96dg4.980427034301.16648P-100000@twinlark.arctic.org>
 
-    * uri issues
+    * URI issues
 	- RFC2068 requires a server to recognize its own IP addr(s) in dot
 	notation, we do this fine if the user follows the dns-caveats
 	documentation... we should handle it in the case the user doesn't ever
@@ -237,6 +242,9 @@ Needs patch:
       See <Pine.LNX.3.96dg4.990107093844.14158A-100000@twinlark.arctic.org>
 
 Open issues:
+
+    * Should we provide a way to force CustomError responses past IE's
+      'prettify-if-less-than-N-bytes' bogosity?
 
     * there are still some PRs about inetd mode
       Should we deprecate "ServerType inetd" if the next release is 1.4.0?
@@ -470,4 +478,3 @@ Win32 specific issues:
 
     * apparently either "BrowserMatch" or the "nokeepalive" variable
       cause instability - see PR#1729.
-
