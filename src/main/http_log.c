@@ -313,7 +313,7 @@ static void log_error_core(const char *file, int line, int level,
 			   const server_rec *s, const request_rec *r,
 			   const char *fmt, va_list args)
 {
-    char errstr[MAX_STRING_LEN];
+    char errstr[MAX_STRING_LEN], scratch[MAX_STRING_LEN];
     size_t len;
     int save_errno = errno;
     FILE *logf;
@@ -445,7 +445,10 @@ static void log_error_core(const char *file, int line, int level,
     }
 #endif
 
-    len += ap_vsnprintf(errstr + len, sizeof(errstr) - len, fmt, args);
+    if (ap_vsnprintf(scratch, sizeof(scratch) - len, fmt, args)) {
+        len += ap_escape_errorlog_item(errstr + len, scratch,
+                                       sizeof(errstr) - len);
+    }
 
     /* NULL if we are logging to syslog */
     if (logf) {

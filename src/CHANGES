@@ -1,5 +1,8 @@
 Changes with Apache 1.3.30
 
+  *) SECURITY [CAN-2003-0020]: Escape arbitrary data before writing
+     into the errorlog.  [André Malo]
+
   *) '%X' is now accepted as an alias for '%c' in the
      LogFormat directive. This allows you to configure logging
      to still log the connection status even with mod_ssl
