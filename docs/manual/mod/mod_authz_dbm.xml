@@ -41,7 +41,7 @@
 <directivesynopsis>
 <name>AuthDBMGroupFile</name>
 <description>Sets the name of the database file containing the list
-of user groups for authentication</description>
+of user groups for authorization</description>
 <syntax>AuthDBMGroupFile <var>file-path</var></syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -50,7 +50,7 @@ of user groups for authentication</description>
 <usage>
     <p>The <directive>AuthDBMGroupFile</directive> directive sets the
     name of a DBM file containing the list of user groups for user
-    authentication.  <var>File-path</var> is the absolute path to the
+    authorization.  <var>File-path</var> is the absolute path to the
     group file.</p>
 
     <p>The group file is keyed on the username. The value for a
