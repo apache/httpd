@@ -179,6 +179,7 @@ static apr_pool_t *pconf;		/* Pool for config stuff */
 static apr_pool_t *pchild;		/* Pool for httpd child stuff */
 
 static pid_t ap_my_pid;	/* it seems silly to call getpid all the time */
+static pid_t parent_pid;
 #ifndef MULTITHREAD
 static int my_child_num;
 #endif
@@ -383,6 +384,12 @@ static void sig_coredump(int sig)
 {
     chdir(ap_coredump_dir);
     apr_signal(sig, SIG_DFL);
+    if (ap_my_pid == parent_pid) {
+            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE,
+                         0, ap_server_conf,
+                         "seg fault or similar nasty error detected "
+                         "in the parent process");
+    }
     kill(getpid(), sig);
     /* At this point we've got sig blocked, because we're still inside
      * the signal handler.  When we leave the signal handler it will
@@ -1314,7 +1321,7 @@ static void prefork_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptem
 	    apr_proc_detach();
 	}
 
-	ap_my_pid = getpid();
+	parent_pid = ap_my_pid = getpid();
     }
 
     unixd_pre_config(ptemp);
