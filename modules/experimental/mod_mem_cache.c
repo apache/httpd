@@ -477,10 +477,14 @@ static int remove_entity(cache_handle_t *h)
 {
     cache_object_t *obj = h->cache_obj;
 
-    /* Remove the cache object from the cache */
+    /* Remove the cache object from the cache under protection */
     if (sconf->lock) {
         apr_thread_mutex_lock(sconf->lock);
     }
+    /* Set the cleanup flag. Object will be cleaned up (be decrement_refcount)
+     * when the refcount drops to zero.
+     */
+    obj->cleanup = 1;
     obj = (cache_object_t *) apr_hash_get(sconf->cacheht, obj->key,
                                           APR_HASH_KEY_STRING);
     if (obj) {
@@ -489,35 +493,11 @@ static int remove_entity(cache_handle_t *h)
         sconf->object_cnt--;
         sconf->cache_size -= mobj->m_len;
     }
-    else {
-        /* If the object was removed from the cache prior to this function being
-         * called, then obj == NULL. Reinit obj with the object being cleaned up.
-         * Note: This code assumes that there is at most only one object in the
-         * cache per key.
-         */
-        obj = h->cache_obj;
-    }
-
-    /* Cleanup the cache object 
-     * Set obj->cleanup to ensure decrement_refcount cleans up the obj if it 
-     * is still being referenced by another thread
-     */
-    obj->cleanup = 1;
-#ifndef USE_ATOMICS
-    obj->refcount--;
-    if (!obj->refcount) {
-        cleanup_cache_object(obj);
-    }
-#endif
     if (sconf->lock) {
         apr_thread_mutex_unlock(sconf->lock);
-    }    
-#ifdef USE_ATOMICS
-    if (!apr_atomic_dec(&obj->refcount)) {
-        cleanup_cache_object(obj);
     }
-#endif
-    h->cache_obj = NULL;   
+
+    h->cache_obj = NULL;
     return OK;
 }
 static apr_status_t serialize_table(cache_header_tbl_t **obj, 
