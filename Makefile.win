@@ -251,11 +251,11 @@ _install:
 	-mkdir "$(INSTDIR)\logs"
 	-mkdir "$(INSTDIR)\modules"
 #	-mkdir "$(INSTDIR)\proxy"
-	copy ABOUT_APACHE "$(INSTDIR)"
-	copy CHANGES "$(INSTDIR)"
-	copy INSTALL "$(INSTDIR)"
-	copy LICENSE "$(INSTDIR)"
-	copy README "$(INSTDIR)"
+	copy ABOUT_APACHE "$(INSTDIR)\ABOUT_APACHE.txt"
+	copy CHANGES "$(INSTDIR)\CHANGES.txt"
+	copy INSTALL "$(INSTDIR)\INSTALL.txt"
+	copy LICENSE "$(INSTDIR)\LICENSE.txt"
+	copy README "$(INSTDIR)\README.txt"
 	copy $(LONG)\Apache.exe "$(INSTDIR)\bin"
 	copy $(LONG)\libhttpd.dll "$(INSTDIR)\bin"
 	copy srclib\apr\$(LONG)\libapr.dll "$(INSTDIR)\bin"
@@ -281,26 +281,26 @@ _install:
 	-copy srclib\openssl\$(SSLBIN)\openssl.exe "$(INSTDIR)\bin"
 	-copy srclib\openssl\$(SSLBIN)\libeay32.dll "$(INSTDIR)\bin"
 	-copy srclib\openssl\$(SSLBIN)\ssleay32.dll "$(INSTDIR)\bin"
-	-copy srclib\openssl\LICENSE "$(INSTDIR)\OPENSSL-LICENSE"
-	-copy << + srclib\openssl\NEWS "$(INSTDIR)\OPENSSL-NEWS"
+	-copy srclib\openssl\LICENSE "$(INSTDIR)\OPENSSL-LICENSE.txt"
+	-copy << + srclib\openssl\NEWS "$(INSTDIR)\OPENSSL-NEWS.txt"
 
  Apache HTTP Server 2.0 Limited OpenSSL Distribution  17 Aug 2001
 
  This binary distribution includes the minimal components of OpenSSL required
- to support mod_ssl and mod_tls for Apache HTTP Server version 2.0 (further
- details are available in OPENSSL-README.)  For the complete list of CHANGES 
- to this and later versions of OpenSSL, please refer to the definative source,
+ to support mod_ssl and mod_tls for Apache HTTP Server version 2.0 (details 
+ are listed in OPENSSL-README.txt.)  For the complete list of CHANGES to this 
+ and later versions of OpenSSL, please refer to the definative source,
  <http://www.openssl.org/news/changelog.html>, or see the CHANGES file in the
  full binary or source distribution package from <http://www.openssl.org/>.
 
 --------------------------------------------------------------------------------
 <<
-	-copy << + srclib\openssl\README "$(INSTDIR)\OPENSSL-README"
+	-copy << + srclib\openssl\README "$(INSTDIR)\OPENSSL-README.txt"
 
  Apache HTTP Server 2.0 Limited OpenSSL Distribution  17 Aug 2001
 
  This binary installation of OpenSSL is a limited distribution of the documents
- LICENSE, NEWS and README (prefixed by OPENSSL-), and the runtime files
+ OPENSSL-LICENSE.txt, OPENSSL-NEWS.txt and OPENSSL-README.txt, and the binaries
 
    libeay32.dll
    ssleay32.dll
