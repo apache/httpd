@@ -72,12 +72,12 @@ they are on separate IP addresses.</li>
 <tr><td align="top">
 <strong>Related Directives</strong><br><br>
 
-<a href="mod/core.html#documentroot">DocumentRoot</a><br />
-<a href="mod/core.html#namevirtualhost">NameVirtualHost</a><br />
-<a href="mod/core.html#serveralias">ServerAlias</a><br />
-<a href="mod/core.html#servername">ServerName</a><br />
-<a href="mod/core.html#serverpath">ServerPath</a><br />
-<a href="mod/core.html#virtualhost">VirtualHost</a><br />
+<a href="../mod/core.html#documentroot">DocumentRoot</a><br />
+<a href="../mod/core.html#namevirtualhost">NameVirtualHost</a><br />
+<a href="../mod/core.html#serveralias">ServerAlias</a><br />
+<a href="../mod/core.html#servername">ServerName</a><br />
+<a href="../mod/core.html#serverpath">ServerPath</a><br />
+<a href="../mod/core.html#virtualhost">VirtualHost</a><br />
 </td></tr></table>
 
 <p>To use name-based virtual hosting, you must designate the IP
@@ -89,7 +89,9 @@ be used, you can use <code>*</code> as the argument to
 <code>NameVirtualHost</code>.  Note that mentioning an IP address in a
 <code>NameVirtualHost</code> directive does not automatically make the
 server listen to that IP address.  See <a href="../bind.html">Setting
-which addresses and ports Apache uses</a> for more details.
+which addresses and ports Apache uses</a> for more details.  In addition,
+any IP address specified here must be associated with a network interface
+on the server.</p>
 
 <p>The next step is to create a <a
 href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a> block for
@@ -104,26 +106,27 @@ href="../mod/core.html#documentroot">DocumentRoot</a> directive to
 show where in the filesystem the content for that host lives.</p>
 
 <p>For example, suppose that both <samp>www.domain.tld</samp> and
-<samp>www.otherdomain.tld</samp> point at the IP address
-<samp>111.22.33.44</samp>. Then you simply add the following
+<samp>www.otherdomain.tld</samp> point at an IP address
+that the server is listening to.  Then you simply add the following
 to <code>httpd.conf</code>:</p>
 
 <pre>
-    NameVirtualHost 111.22.33.44
+    NameVirtualHost *
 
-    &lt;VirtualHost 111.22.33.44&gt;
+    &lt;VirtualHost *&gt;
     ServerName www.domain.tld
     DocumentRoot /www/domain
     &lt;/VirtualHost&gt;
 
-    &lt;VirtualHost 111.22.33.44&gt;
+    &lt;VirtualHost *&gt;
     ServerName www.otherdomain.tld
     DocumentRoot /www/otherdomain
     &lt;/VirtualHost&gt;
 </pre>
 
-<p>In the simplest case, the IP address <code>111.22.44.33</code> can be 
-replaced by <code>*</code> to match all IP addresses for your server.</p>
+<p>You can alternatively specify an explicit IP address in place of
+the * in both the <code>NameVirtualHost</code> and
+<code>&lt;VirtualHost&gt;</code> directives.</p>
 
 <p>Many servers want to be accessible by more than one name.  This is
 possible with the <a
@@ -141,8 +144,8 @@ will be served by the <code>www.domain.tld</code> virtual host.  The
 wildcard characters * and ? can be used to match names.  Of course,
 you can't just make up names and place them in <code>ServerName</code>
 or <code>ServerAlias</code>.  You must first have your DNS server
-properly configured to map those names to the IP address in the
-<code>NameVirtualHost</code> directive.</p>
+properly configured to map those names to an IP address associated
+with your server.</p>
 
 <p>Finally, you can fine-tune the configuration of the virtual hosts
 by placing other directives inside the
