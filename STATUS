@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/06/23 13:18:49 $]
+Last modified at [$Date: 2003/06/23 20:21:06 $]
 
 Release:
 
@@ -241,6 +241,10 @@ PATCHES TO PORT FROM 2.1
 
     * Backport wildcard ExpiresByType from 2.0.46
       +1: ken, stoddard
+
+    * mod_cgid: Restart the cgid daemon if it crashes.  PR 19849
+        modules/generators/mod_cgid.c 1.152
+        +1: trawick
 
 CURRENT RELEASE NOTES:
 
