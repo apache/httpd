@@ -23,7 +23,7 @@ cwd=`pwd`
 
 dnl ## Check for programs
 
-dnl AC_PROG_AWK
+AC_PROG_AWK
 AC_PROG_CC
 AC_PROG_CPP
 AC_PROG_INSTALL
@@ -120,5 +120,8 @@ AC_SUBST(MPM_LIB)
 AC_SUBST(OS)
 AC_SUBST(OS_DIR)
 
-AC_OUTPUT([Makefile ap/Makefile main/Makefile os/Makefile
+dnl ## Build modules.c
+rm -f $srcdir/modules.c
+echo $MODLIST | $AWK -f $srcdir/helpers/build-modules-c.awk > $srcdir/modules.c
+AC_OUTPUT([Makefile ap/Makefile main/Makefile modules/Makefile os/Makefile
           $APACHE_OUTPUT_FILES])
