@@ -266,6 +266,13 @@ int ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
 
     }
 
+    /*
+     * SSL external crypto device ("engine") support
+     */
+#ifdef SSL_EXPERIMENTAL_ENGINE
+    ssl_init_Engine(base_server, p);
+#endif
+
     ssl_init_SSLLibrary(base_server);
 
 #if APR_HAS_THREADS
@@ -290,13 +297,6 @@ int ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
     if (ssl_tmp_keys_init(base_server)) {
         return !OK;
     }
-
-    /*
-     * SSL external crypto device ("engine") support
-     */
-#ifdef SSL_EXPERIMENTAL_ENGINE
-    ssl_init_Engine(base_server, p);
-#endif
 
     /*
      * initialize the mutex handling
