@@ -56,6 +56,13 @@
  * University of Illinois, Urbana-Champaign.
  */
 
+/* The purpose of this MPM is to fix the design flaws in the threaded
+ * model.  Because of the way that pthreads and mutex locks interact,
+ * it is basically impossible to cleanly gracefully shutdown a child
+ * process if multiple threads are all blocked in accept.  This model
+ * fixes those problems.
+ */
+
 #include "apr.h"
 #include "apr_portable.h"
 #include "apr_strings.h"

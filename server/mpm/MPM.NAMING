@@ -10,4 +10,6 @@ The following MPMs currently exist:
                   threads/child (= Apache/thread)
   spmt_os2 ...... Single Process Model with Threading on OS/2
   winnt ......... Single Process Model with Threading on Windows NT
+  worker ........ Multi Process model with threads.  One acceptor thread,
+                  multiple worker threads.
 
