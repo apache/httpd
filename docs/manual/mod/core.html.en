@@ -2156,13 +2156,13 @@ directory</td></tr>
       Server-side includes are permitted, but the <code>#exec
       cmd</code> and <code>#exec cgi</code> are disabled. It is still
       possible to <code>#include virtual</code> CGI scripts from
-      <code class="directive"><a href="../mod/mod_cgi.html#scriptalias">ScriptAlias</a></code>ed
+      <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code>ed
       directories.</dd>
 
       <dt><code>Indexes</code></dt>
 
       <dd>
-      If a URL which maps to a directory is requested, and the there
+      If a URL which maps to a directory is requested, and there
       is no <code class="directive"><a href="../mod/mod_dir.html#directoryindex">DirectoryIndex</a></code>
       (<em>e.g.</em>, <code>index.html</code>) in that directory, then
       <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code> will return a formatted listing
