@@ -2287,11 +2287,11 @@ static void do_expand(request_rec *r, char *input, char *buffer, int nbuf,
 		char *map, *key, *dflt, *result;
 		char xkey[MAX_STRING_LEN];
 		char xdflt[MAX_STRING_LEN];
-		key = find_char_in_brackts(inp, ':', '{', '}');
+		key = find_char_in_brackets(inp, ':', '{', '}');
 		if (key == NULL)
 		    goto skip;
 		map  = ap_pstrndup(r->pool, inp+2, key-inp-2);
-		dflt = find_char_in_brackts(inp, '|', '{', '}');
+		dflt = find_char_in_brackets(inp, '|', '{', '}');
 		if (dflt == NULL) {
 		    key  = ap_pstrndup(r->pool, key+1, endp-key-1);
 		    dflt = "";
