@@ -162,12 +162,6 @@ void ssl_scache_dc_remove(server_rec *s, UCHAR *id, int idlen)
     }
 }
 
-void ssl_scache_dc_expire(server_rec *s)
-{
-    /* NOP */
-    return;
-}
-
 void ssl_scache_dc_status(request_rec *r, int flags, apr_pool_t *pool)
 {
     SSLModConfigRec *mc = myModConfig(r->server);

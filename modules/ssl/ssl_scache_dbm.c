@@ -25,6 +25,8 @@
 
 #include "ssl_private.h"
 
+static void ssl_scache_dbm_expire(server_rec *s);
+
 void ssl_scache_dbm_init(server_rec *s, apr_pool_t *p)
 {
     SSLModConfigRec *mc = myModConfig(s);
@@ -288,7 +290,7 @@ void ssl_scache_dbm_remove(server_rec *s, UCHAR *id, int idlen)
     return;
 }
 
-void ssl_scache_dbm_expire(server_rec *s)
+static void ssl_scache_dbm_expire(server_rec *s)
 {
     SSLModConfigRec *mc = myModConfig(s);
     SSLSrvConfigRec *sc = mySrvConfig(s);
