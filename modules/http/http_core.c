@@ -2526,60 +2526,69 @@ static const char *set_limit_nproc(cmd_parms *cmd, void *conf_,
 #endif
 
 #if APR_HAS_SENDFILE
-static apr_status_t send_the_file(apr_file_t *fd, apr_off_t offset, apr_size_t length,  
-                                  request_rec *r, apr_size_t *nbytes) 
+/* XXX handle partial writes */
+static apr_status_t send_the_file(request_rec *r, apr_file_t *fd, 
+                                  apr_hdtr_t *hdtr, apr_off_t offset, 
+                                  apr_size_t length, apr_size_t *nbytes) 
 {
     apr_int32_t flags = 0;
     apr_status_t rv;
-    struct iovec iov;
-    apr_hdtr_t hdtr;
-
-#if 0
-    ap_bsetopt(r->connection->client, BO_TIMEOUT,
-               r->connection->keptalive
-               ? &r->server->keep_alive_timeout
-               : &r->server->timeout);
-#endif
-    /*
-     * We want to send any data held in the client buffer on the
-     * call to apr_sendfile. So hijack it then set outcnt to 0
-     * to prevent the data from being sent to the client again
-     * when the buffer is flushed to the client at the end of the
-     * request.
-     */
-    iov.iov_base = r->connection->client->outbase;
-    iov.iov_len =  r->connection->client->outcnt;
-    r->connection->client->outcnt = 0;
-
-    /* initialize the apr_hdtr_t struct */
-    hdtr.headers = &iov;
-    hdtr.numheaders = 1;
-    hdtr.trailers = NULL;
-    hdtr.numtrailers = 0;
+    apr_size_t n = length;
 
     if (!r->connection->keepalive) {
         /* Prepare the socket to be reused */
-        /* XXX fix me - byteranges? */
         flags |= APR_SENDFILE_DISCONNECT_SOCKET;
     }
 
     rv = apr_sendfile(r->connection->client->bsock, 
                       fd,      /* The file to send */
-                      &hdtr,   /* Header and trailer iovecs */
+                      hdtr,    /* Header and trailer iovecs */
                       &offset, /* Offset in file to begin sending from */
-                      &length,
+                      &n,
                       flags);
-#if 0
-    if (r->connection->keptalive) {
-        ap_bsetopt(r->connection->client, BO_TIMEOUT, 
-                   &r->server->timeout);
-    }
-#endif
-    *nbytes = length;
+    *nbytes = n;
 
     return rv;
 }
 #endif
+static apr_status_t writev_it_all(apr_socket_t *s, struct iovec *vec, int nvec, 
+                                  apr_size_t len, apr_ssize_t *nbytes)
+{
+    apr_size_t bytes_written = 0;
+    apr_status_t rv;
+    apr_ssize_t n = len;
+    apr_ssize_t i = 0;
+
+    /* XXX handle checking for non-blocking socket */
+    while (bytes_written != len) {
+        rv = apr_sendv(s, vec + i, nvec - i, &n);
+        bytes_written += n;
+        if (rv != APR_SUCCESS)
+            return rv;
+
+        /* If the write did not complete, adjust the iovecs and issue
+         * apr_sendv again
+         */
+        if (bytes_written < len) {
+            /* Skip over the vectors that have already been written */
+            apr_size_t cnt = vec[i].iov_len;
+            while (n >= cnt) {
+                i++;
+                cnt += vec[i].iov_len;
+            }
+
+            if (n < cnt) {
+                /* Handle partial write of vec i */
+                vec[i].iov_base = (char *) vec[i].iov_base + 
+                    (vec[i].iov_len - (cnt - n));
+                vec[i].iov_len = cnt -n;
+            }
+        }
+        n = len - bytes_written;
+    }
+
+    return APR_SUCCESS;
+}
 /* Note --- ErrorDocument will now work from .htaccess files.  
  * The AllowOverride of Fileinfo allows webmasters to turn it off
  */
@@ -3102,22 +3111,16 @@ static apr_status_t chunk_filter(ap_filter_t *f, ap_bucket_brigade *b)
 
 /* Default filter.  This filter should almost always be used.  Its only job
  * is to send the headers if they haven't already been sent, and then send
- * the actual data.  To send the data, we create an iovec out of the bucket
- * brigade and then call the sendv function.  On platforms that don't
- * have writev, we have the problem of creating a lot of potentially small
- * packets that we are sending to the network.
- *
- * This can be solved later by making the buckets buffer everything into a
- * single memory block that can be written using write (on those systems
- * without writev only !)
+ * the actual data.
  */
 static int core_filter(ap_filter_t *f, ap_bucket_brigade *b)
 {
     request_rec *r = f->r;
+    apr_pool_t *p = r->pool;
     apr_status_t rv;
     apr_ssize_t bytes_sent = 0, len = 0, written;
     ap_bucket *e;
-    const char *str;
+
     
 #if 0 /* XXX: bit rot! */
     /* This will all be needed once BUFF is removed from the code */
@@ -3140,56 +3143,120 @@ static int core_filter(ap_filter_t *f, ap_bucket_brigade *b)
     } 
     else {
 #endif
+    struct iovec *iov;
+    apr_array_header_t *vec_trailers = NULL;
+    int  nvec_trailers= 0;
+    apr_array_header_t *vec;
+    int nvec = 0;
 
-     AP_BRIGADE_FOREACH(e, b) {
-         if (e->type == AP_BUCKET_EOS) {
-             /* there shouldn't be anything after the eos */
-             break;
-         }
-         else if (e->type == AP_BUCKET_FILE) {
-#if APR_HAS_SENDFILE
-             /* If a file bucket gets all the way down to the core filter,
-              * the bucket by definition represents the unfiltered contents
-              * of a file. Thus it is acceptable to use apr_sendfile().
-              */
-             rv = send_the_file(e->data, e->offset, e->length, r, &written);
-          
-             /* Returning on APR_SUCCESS is not the correct behaviour as there
-              * may be other buckets... Need to think about this awhile before
-              * I change it. wgs
-              */
-             if (rv == APR_SUCCESS) {
-                 ap_brigade_destroy(b);
-                 return APR_SUCCESS;
-             }
+    apr_file_t *fd = NULL;
+    apr_ssize_t flen = 0;
+    apr_off_t foffset = 0;
 
-             /* If apr_sendfile is not implemented (e.g. Win95/98), then
-              * continue to the read/write loop.
-              */
-             if (rv != APR_ENOTIMPL) {
-                 /* check_first_conn_error(r, "send_fd", rv); */
-                 return rv;
-             }
-#endif
-         }
-         rv = e->read(e, &str, &len, 0);
-         if (rv != APR_SUCCESS) {
-             return rv;
-         }
-         rv = ap_bwrite(r->connection->client, str, len, &written);
-         if (rv != APR_SUCCESS) {
-             return rv;
-         }
-         bytes_sent += written;
-     }
+    vec = apr_make_array(p, 1, sizeof(struct iovec));
 
-    ap_brigade_destroy(b);
-    /* This line will go away as soon as the BUFFs are removed */
-    if (len == AP_END_OF_BRIGADE) {
-        ap_bflush(r->connection->client);
+    /* Hijack the data in BUFF to send on apr_sendv */
+    iov = (struct iovec *) apr_push_array(vec);
+    iov->iov_base = r->connection->client->outbase;
+    iov->iov_len =  r->connection->client->outcnt;
+    r->connection->client->outcnt = 0;
+    len = iov->iov_len;
+    nvec++;
+
+    /* Iterate across the buckets and build an iovec array.
+     * XXX The chunk filter gives us some very small chunks to send.
+     * Consider buffering some of these chunks into a contiguous piece
+     * of memory
+     */
+    AP_BRIGADE_FOREACH(e, b) {
+        switch (e->type) {
+        case AP_BUCKET_EOS:
+            break;
+        case AP_BUCKET_FILE:
+            /* Assume there is at most one AP_BUCKET_FILE in the brigade */
+            fd = e->data;
+            flen = e->length;
+            foffset = e->offset;
+            break;
+        default: 
+        {
+            char *str;
+            apr_size_t n;
+            rv = e->read(e, &str, &n, 0);
+            if (n) {
+                len += n;
+
+                if (!fd) {
+                    nvec++;
+                    iov = (struct iovec *) apr_push_array(vec);
+                } 
+                else {
+                    /* The bucket is a trailer to a file bucket */
+                    nvec_trailers++;
+                    if (vec_trailers == NULL) {
+                        vec_trailers = apr_make_array(p, 1, sizeof(struct iovec));
+                    }
+                    iov = (struct iovec *) apr_push_array(vec_trailers);
+                }
+                iov->iov_base = str;
+                iov->iov_len = n;
+            }
+            break;
+        }
+        }
+
+        /* there shouldn't be anything after the eos */
+        if (e->type == AP_BUCKET_EOS) {
+            break;
+        }
     }
 
-    return APR_SUCCESS;
+    /* We're done iterating across the buckets. Time to do network i/o. 
+     * XXX Set socket i/o timeout and blocking characteristics.
+     * XXX We should consider eliminating ap_send_mmap and using ap_send_fd
+     * instead. Defer the decision on whether to use sendfile, mmap, or
+     * buffered file reads to the core filter.
+     */
+
+#if APR_HAS_SENDFILE
+     if (fd) {
+         apr_hdtr_t *hdtr =  apr_pcalloc(r->pool, sizeof(*hdtr));
+         if (nvec) {
+             hdtr->numheaders = nvec;
+             hdtr->headers = (struct iovec *) vec->elts;
+         }
+         if (nvec_trailers) {
+             hdtr->numtrailers = nvec_trailers;
+             hdtr->trailers = (struct iovec *) vec_trailers->elts;
+         }
+
+         rv = send_the_file(r, fd, hdtr, foffset, flen, &bytes_sent);
+
+         if (rv == APR_SUCCESS) {
+             ap_brigade_destroy(b);
+             return APR_SUCCESS;
+         }
+         /* If apr_sendfile is not implemented (e.g. Win95/98), then
+          * use apr_senv() to send the content.
+          */
+         if (rv != APR_ENOTIMPL) {
+             ap_brigade_destroy(b);
+             /* check_first_conn_error(r, "send_fd", rv); */
+             return rv;
+         }
+         /* XXX: If we made it this far, sendfile must have failed with 
+          * APR_ENOTIMPL. Read the file into an iovec array to prepare 
+          * for a writev.
+          */
+     }
+#endif
+     rv = writev_it_all(r->connection->client->bsock, 
+                        (struct iovec*) vec->elts, nvec, 
+                        len, &bytes_sent);
+
+     ap_brigade_destroy(b);
+
+     return rv;
 #if 0
     }
 #endif
