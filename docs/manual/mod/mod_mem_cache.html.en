@@ -44,6 +44,7 @@
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#mcachemaxobjectcount">MCacheMaxObjectCount</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mcachemaxobjectsize">MCacheMaxObjectSize</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mcachemaxstreamingbuffer">MCacheMaxStreamingBuffer</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mcacheminobjectsize">MCacheMinObjectSize</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mcacheremovalalgorithm">MCacheRemovalAlgorithm</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mcachesize">MCacheSize</a></li>
@@ -100,6 +101,48 @@ cache</td></tr>
       <p>The value of <code class="directive">MCacheMaxObjectSize</code> must be
       greater than the value specified by the <code class="directive"><a href="#mcacheminobjectsize">MCacheMinObjectSize</a></code> directive.</p>
     </div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="MCacheMaxStreamingBuffer" id="MCacheMaxStreamingBuffer">MCacheMaxStreamingBuffer</a> <a name="mcachemaxstreamingbuffer" id="mcachemaxstreamingbuffer">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum amount of a streamed response to buffer in memory
+before declaring the response uncacheable</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MCacheMaxStreamingBuffer <var>size_in_bytes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>MCacheMaxStreamingBuffer the smaller of 100000 or MCacheMaxObjectSize</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mem_cache</td></tr>
+</table>
+    <p>The <code class="directive">MCacheMaxStreamingBuffer</code> directive
+    specifies the maximum number of bytes of a streamed response to
+    buffer before deciding that the response is too big to cache.
+    A streamed response is one in which the entire content is not
+    immediately available and in which the <code>Content-Length</code>
+    may not be known. Sources of streaming responses include proxied
+    responses and the output of CGI scripts. By default, a streamed
+    response will <em>not</em> be cached unless it has a
+    <code>Content-Length</code> header. The reason for this is to
+    avoid using a large amount of memory to buffer a partial response
+    that might end up being too large to fit in the cache.
+    The <code class="directive">MCacheMaxStreamingBuffer</code> directive allows
+    buffering of streamed responses that don't contain a
+    <code>Content-Length</code> up to the specified maximum amount of
+    space. If the maximum buffer space is reached, the buffered
+    content is discarded and the attempt to cache is abandoned.</p>
+
+    <div class="note"><h3>Note:</h3>
+      <p>Using a nonzero value for <code class="directive">MCacheMaxStreamingBuffer</code> 
+      will not delay the transmission of the response to the client.
+      As soon as <code class="module"><a href="../mod/mod_mem_cache.html">mod_mem_cache</a></code> copies a block of streamed
+      content into a buffer, it sends the block on to the next output
+      filter for delivery to the client.</p>
+    </div>
+
+    <div class="example"><p><code>
+      # Enable caching of streamed responses up to 64KB:<br />
+      MCacheMaxStreamingBuffer 65536
+    </code></p></div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
