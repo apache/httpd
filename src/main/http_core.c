@@ -407,18 +407,16 @@ void ap_core_reorder_directories(pool *p, server_rec *s)
     int nelts;
     void **elts;
     int i;
+    pool *tmp;
 
-    /* XXX: we are about to waste some ram ... we will build a new array
-     * and we need some scratch space to do it.  The old array and the
-     * scratch space are never freed.
-     */
     sconf = ap_get_module_config(s->module_config, &core_module);
     sec = sconf->sec;
     nelts = sec->nelts;
     elts = (void **)sec->elts;
 
-    /* build our sorting space */
-    sortbin = ap_palloc(p, sec->nelts * sizeof(*sortbin));
+    /* we have to allocate tmp space to do a stable sort */
+    tmp = ap_make_sub_pool(p);
+    sortbin = ap_palloc(tmp, sec->nelts * sizeof(*sortbin));
     for (i = 0; i < nelts; ++i) {
 	sortbin[i].orig_index = i;
 	sortbin[i].elt = elts[i];
@@ -426,15 +424,12 @@ void ap_core_reorder_directories(pool *p, server_rec *s)
 
     qsort(sortbin, nelts, sizeof(*sortbin), reorder_sorter);
 
-    /* and now build a new array */
-    /* XXX: uh I don't see why we can't reuse the old array, what
-     * was I thinking? -djg */
-    sec = ap_make_array(p, nelts, sizeof(void *));
+    /* and now copy back to the original array */
     for (i = 0; i < nelts; ++i) {
-	*(void **)ap_push_array(sec) = sortbin[i].elt;
+      elts[i] = sortbin[i].elt;
     }
 
-    sconf->sec = sec;
+    ap_destroy_pool(tmp);
 }
 
 /*****************************************************************
