@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/07/07 22:24:55 $]
+Last modified at [$Date: 2004/07/10 04:05:51 $]
 
 Release:
 
@@ -375,7 +375,7 @@ PATCHES TO BACKPORT FROM 2.1
 
     * Use the httpready accept filter
         server/listen.c: r1.96
-      +1: trawick
+      +1: trawick, pquerna
 
 CURRENT RELEASE NOTES:
 
