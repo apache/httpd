@@ -166,52 +166,41 @@ static void *create_mime_dir_config(apr_pool_t *p, char *dummy)
 /*
  * Overlay one hash table of extension_mappings onto another
  */
-static void overlay_extension_mappings(apr_pool_t *p,
-                                       apr_hash_t *overlay, apr_hash_t *base)
+static void *overlay_extension_mappings(apr_pool_t *p,
+                                        const void *key,
+                                        apr_ssize_t klen,
+                                        const void *overlay_val,
+                                        const void *base_val,
+                                        const void *data)
 {
-    apr_hash_index_t *index;
-    for (index = apr_hash_first(p, overlay); index;
-         index = apr_hash_next(index)) {
-        char *key;
-        apr_ssize_t klen;
-        extension_info *overlay_info, *base_info;
-        
-        apr_hash_this(index, (const void**)&key, &klen, (void**)&overlay_info);
+    extension_info *new_info = apr_palloc(p, sizeof(extension_info));
+    const extension_info *overlay_info = (const extension_info *)overlay_val;
+    const extension_info *base_info = (const extension_info *)base_val;
 
-        base_info = (extension_info*)apr_hash_get(base, key, klen);
-
-        if (base_info) {
-            extension_info *copyinfo = base_info;
-            base_info = (extension_info*)apr_palloc(p, sizeof(*base_info));
-            apr_hash_set(base, key, klen, base_info);
-            memcpy(base_info, copyinfo, sizeof(*base_info));
-
-            if (overlay_info->forced_type) {
-                base_info->forced_type = overlay_info->forced_type;
-            }
-            if (overlay_info->encoding_type) {
-                base_info->encoding_type = overlay_info->encoding_type;
-            }
-            if (overlay_info->language_type) {
-                base_info->language_type = overlay_info->language_type;
-            }
-            if (overlay_info->handler) {
-                base_info->handler = overlay_info->handler;
-            }
-            if (overlay_info->charset_type) {
-                base_info->charset_type = overlay_info->charset_type;
-            }
-            if (overlay_info->input_filters) {
-                base_info->input_filters = overlay_info->input_filters;
-            }
-            if (overlay_info->output_filters) {
-                base_info->output_filters = overlay_info->output_filters;
-            }
-        }
-        else {
-            apr_hash_set(base, key, klen, overlay_info);
-        }
+    memcpy(new_info, base_info, sizeof(extension_info));
+    if (overlay_info->forced_type) {
+        new_info->forced_type = overlay_info->forced_type;
     }
+    if (overlay_info->encoding_type) {
+        new_info->encoding_type = overlay_info->encoding_type;
+    }
+    if (overlay_info->language_type) {
+        new_info->language_type = overlay_info->language_type;
+    }
+    if (overlay_info->handler) {
+        new_info->handler = overlay_info->handler;
+    }
+    if (overlay_info->charset_type) {
+        new_info->charset_type = overlay_info->charset_type;
+    }
+    if (overlay_info->input_filters) {
+        new_info->input_filters = overlay_info->input_filters;
+    }
+    if (overlay_info->output_filters) {
+        new_info->output_filters = overlay_info->output_filters;
+    }
+
+    return new_info;
 }
 
 /* Member is the offset within an extension_info of the pointer to reset 
@@ -244,11 +233,10 @@ static void *merge_mime_dir_configs(apr_pool_t *p, void *basev, void *addv)
     mime_dir_config *new = apr_palloc(p, sizeof(mime_dir_config));
 
     if (base->extension_mappings && add->extension_mappings) {
-        new->extension_mappings = apr_hash_make(p);
-        overlay_extension_mappings(p, base->extension_mappings,
-                                   new->extension_mappings);
-        overlay_extension_mappings(p, add->extension_mappings,
-                                   new->extension_mappings);
+        new->extension_mappings = apr_hash_merge(p, add->extension_mappings,
+                                                 base->extension_mappings,
+                                                 overlay_extension_mappings,
+                                                 NULL);
     }
     else {
         if (base->extension_mappings == NULL) {
@@ -262,9 +250,8 @@ static void *merge_mime_dir_configs(apr_pool_t *p, void *basev, void *addv)
          * We must have a copy for safety.
          */
         if (new->extension_mappings && add->remove_mappings) {
-            apr_hash_t *copyhash = new->extension_mappings;
-            new->extension_mappings = apr_hash_make(p);
-            overlay_extension_mappings(p, copyhash, new->extension_mappings);
+            new->extension_mappings =
+                apr_hash_copy(p, new->extension_mappings);
         }
     }
 
@@ -764,7 +751,7 @@ static int find_ct(request_rec *r)
     /* Parse filename extensions which can be in any order 
      */
     while (*fn && (ext = ap_getword(r->pool, &fn, '.'))) {
-        extension_info *exinfo = NULL;
+        const extension_info *exinfo = NULL;
         int found;
 
         if (*ext == '\0')  /* ignore empty extensions "bad..html" */

@@ -1,5 +1,8 @@
 Changes with Apache 2.0.29-dev
 
+  *) use new 'apr_hash_merge' function in mod_mime (performance fix)
+     [Brian Pane <bpane@pacbell.net>]
+
 Changes with Apache 2.0.28
 
   *) When no port is given in a "ServerName host" directive, the
