@@ -122,7 +122,7 @@
     with</p>
 
     <blockquote>
-      <code>Alias /docs /var/web/</code>
+      <code>Alias /docs /var/web</code>
     </blockquote>
 
     <p>the URL
