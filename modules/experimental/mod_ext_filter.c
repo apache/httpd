@@ -485,7 +485,7 @@ static apr_status_t init_filter_instance(ap_filter_t *f)
     /* look for the user-defined filter */
     ctx->filter = apr_hash_get(sc->h, f->frec->name, APR_HASH_KEY_STRING);
     if (!ctx->filter) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, f->r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, f->r,
                       "couldn't find definition of filter '%s'",
                       f->frec->name);
         return APR_EINVAL;
@@ -514,7 +514,7 @@ static apr_status_t init_filter_instance(ap_filter_t *f)
     }
 
     if (dc->debug >= DBGLVL_SHOWOPTIONS) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, f->r,
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, f->r,
                       "%sfiltering `%s' through `%s', cfg %s",
                       ctx->noop ? "skipping: " : "",
                       f->r->uri ? f->r->uri : f->r->filename,
@@ -619,7 +619,7 @@ static apr_status_t pass_data_to_filter(ap_filter_t *f, const char *data,
                  */
                 apr_sleep(100000); /* 100 milliseconds */
                 if (dc->debug >= DBGLVL_GORY) {
-                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 
+                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 
                                   0, f->r, "apr_sleep()");
                 }
 #endif /* APR_FILES_AS_SOCKETS */

@@ -214,13 +214,13 @@ static void *dav_merge_dir_config(apr_pool_t *p, void *base, void *overrides)
     newconf->provider = DAV_INHERIT_VALUE(parent, child, provider);
     if (parent->provider_name != NULL) {
         if (child->provider_name == NULL) {
-            ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, NULL,
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
                          "\"DAV Off\" cannot be used to turn off a subtree "
                          "of a DAV-enabled location.");
         }
         else if (strcasecmp(child->provider_name,
                             parent->provider_name) != 0) {
-            ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, NULL,
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
                          "A subtree cannot specify a different DAV provider "
                          "than its parent.");
         }
@@ -551,7 +551,7 @@ static void dav_log_err(request_rec *r, dav_error *err, int level)
                           errscan->desc, errscan->status, errscan->error_id);
         }
         else {
-            ap_log_rerror(APLOG_MARK, level | APLOG_NOERRNO, 0, r,
+            ap_log_rerror(APLOG_MARK, level, 0, r,
                           "%s  [%d, #%d]",
                           errscan->desc, errscan->status, errscan->error_id);
         }
@@ -655,7 +655,7 @@ int dav_get_depth(request_rec *r, int def_depth)
 
     /* The caller will return an HTTP_BAD_REQUEST. This will augment the
      * default message that Apache provides. */
-    ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                   "An invalid Depth header was specified.");
     return -1;
 }
@@ -678,7 +678,7 @@ static int dav_get_overwrite(request_rec *r)
 
     /* The caller will return an HTTP_BAD_REQUEST. This will augment the
      * default message that Apache provides. */
-    ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                   "An invalid Overwrite header was specified.");
     return -1;
 }
@@ -1106,14 +1106,14 @@ static int dav_method_delete(request_rec *r)
 
     if (resource->collection && depth != DAV_INFINITY) {
         /* This supplies additional information for the default message. */
-        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "Depth must be \"infinity\" for DELETE of a collection.");
         return HTTP_BAD_REQUEST;
     }
 
     if (!resource->collection && depth == 1) {
         /* This supplies additional information for the default message. */
-        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "Depth of \"1\" is not allowed for DELETE.");
         return HTTP_BAD_REQUEST;
     }
@@ -1528,7 +1528,7 @@ static int dav_method_options(request_rec *r)
     /* note: doc == NULL if no request body */
 
     if (doc && !dav_validate_root(doc, "options")) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "The \"options\" element was not found.");
         return HTTP_BAD_REQUEST;
     }
@@ -1922,7 +1922,7 @@ static int dav_method_propfind(request_rec *r)
 
     if (doc && !dav_validate_root(doc, "propfind")) {
         /* This supplies additional information for the default message. */
-        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "The \"propfind\" element was not found.");
         return HTTP_BAD_REQUEST;
     }
@@ -1944,7 +1944,7 @@ static int dav_method_propfind(request_rec *r)
         /* "propfind" element must have one of the above three children */
 
         /* This supplies additional information for the default message. */
-        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "The \"propfind\" element does not contain one of "
                       "the required child elements (the specific command).");
         return HTTP_BAD_REQUEST;
@@ -2165,7 +2165,7 @@ static int dav_method_proppatch(request_rec *r)
 
     if (doc == NULL || !dav_validate_root(doc, "propertyupdate")) {
         /* This supplies additional information for the default message. */
-        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "The request body does not contain "
                       "a \"propertyupdate\" element.");
         return HTTP_BAD_REQUEST;
@@ -2228,7 +2228,7 @@ static int dav_method_proppatch(request_rec *r)
             dav_auto_checkin(r, resource, 1 /*undo*/, 0 /*unlock*/, &av_info);
 
             /* This supplies additional information for the default message. */
-            ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "A \"prop\" element is missing inside "
                           "the propertyupdate command.");
             return HTTP_BAD_REQUEST;
@@ -2307,7 +2307,7 @@ static int process_mkcol_body(request_rec *r)
     if (tenc) {
         if (strcasecmp(tenc, "chunked")) {
             /* Use this instead of Apache's default error string */
-            ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "Unknown Transfer-Encoding %s", tenc);
             return HTTP_NOT_IMPLEMENTED;
         }
@@ -2323,7 +2323,7 @@ static int process_mkcol_body(request_rec *r)
 
         if (*pos != '\0') {
             /* This supplies additional information for the default message. */
-            ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "Invalid Content-Length %s", lenp);
             return HTTP_BAD_REQUEST;
         }
@@ -2519,7 +2519,7 @@ static int dav_method_copymove(request_rec *r, int is_move)
     }
     if (dest == NULL) {
         /* This supplies additional information for the default message. */
-        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "The request is missing a Destination header.");
         return HTTP_BAD_REQUEST;
     }
@@ -2528,7 +2528,7 @@ static int dav_method_copymove(request_rec *r, int is_move)
     if (lookup.rnew == NULL) {
         if (lookup.err.status == HTTP_BAD_REQUEST) {
             /* This supplies additional information for the default message. */
-            ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           lookup.err.desc);
             return HTTP_BAD_REQUEST;
         }
@@ -2593,13 +2593,13 @@ static int dav_method_copymove(request_rec *r, int is_move)
     }
     if (depth == 1) {
         /* This supplies additional information for the default message. */
-        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "Depth must be \"0\" or \"infinity\" for COPY or MOVE.");
         return HTTP_BAD_REQUEST;
     }
     if (is_move && is_dir && depth != DAV_INFINITY) {
         /* This supplies additional information for the default message. */
-        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "Depth must be \"infinity\" when moving a collection.");
         return HTTP_BAD_REQUEST;
     }
@@ -2887,7 +2887,7 @@ static int dav_method_lock(request_rec *r)
 
     depth = dav_get_depth(r, DAV_INFINITY);
     if (depth != 0 && depth != DAV_INFINITY) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "Depth must be 0 or \"infinity\" for LOCK.");
         return HTTP_BAD_REQUEST;
     }
@@ -3046,7 +3046,7 @@ static int dav_method_unlock(request_rec *r)
 
     if ((const_locktoken_txt = apr_table_get(r->headers_in,
                                              "Lock-Token")) == NULL) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "Unlock failed (%s):  "
                       "No Lock-Token specified in header", r->filename);
         return HTTP_BAD_REQUEST;
@@ -3156,7 +3156,7 @@ static int dav_method_vsn_control(request_rec *r)
         apr_size_t tsize;
 
         if (!dav_validate_root(doc, "version-control")) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "The request body does not contain "
                           "a \"version-control\" element.");
             return HTTP_BAD_REQUEST;
@@ -3164,14 +3164,14 @@ static int dav_method_vsn_control(request_rec *r)
 
         /* get the version URI */
         if ((child = dav_find_child(doc->root, "version")) == NULL) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "The \"version-control\" element does not contain "
                           "a \"version\" element.");
             return HTTP_BAD_REQUEST;
         }
 
         if ((child = dav_find_child(child, "href")) == NULL) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "The \"version\" element does not contain "
                           "an \"href\" element.");
             return HTTP_BAD_REQUEST;
@@ -3181,7 +3181,7 @@ static int dav_method_vsn_control(request_rec *r)
         ap_xml_to_text(r->pool, child, AP_XML_X2T_INNER, NULL, NULL,
                        &target, &tsize);
         if (tsize == 0) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "An \"href\" element does not contain a URI.");
             return HTTP_BAD_REQUEST;
         }
@@ -3333,7 +3333,7 @@ static int dav_method_checkout(request_rec *r)
 
         if (!dav_validate_root(doc, "checkout")) {
             /* This supplies additional information for the default msg. */
-            ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "The request body, if present, must be a "
                           "DAV:checkout element.");
             return HTTP_BAD_REQUEST;
@@ -3380,7 +3380,7 @@ static int dav_method_checkout(request_rec *r)
                     */
 
                     /* This supplies additional info for the default msg. */
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                                   "Within the DAV:activity-set element, the "
                                   "DAV:new element must be used, or at least "
                                   "one DAV:href must be specified.");
@@ -3533,7 +3533,7 @@ static int dav_method_checkin(request_rec *r)
     if (doc != NULL) {
         if (!dav_validate_root(doc, "checkin")) {
             /* This supplies additional information for the default msg. */
-            ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "The request body, if present, must be a "
                           "DAV:checkin element.");
             return HTTP_BAD_REQUEST;
@@ -3621,7 +3621,7 @@ static int dav_method_update(request_rec *r)
 
     if (doc == NULL || !dav_validate_root(doc, "update")) {
         /* This supplies additional information for the default message. */
-        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "The request body does not contain "
                       "an \"update\" element.");
         return HTTP_BAD_REQUEST;
@@ -3633,14 +3633,14 @@ static int dav_method_update(request_rec *r)
     else if ((child = dav_find_child(doc->root, "version")) != NULL) {
         /* get the href element */
         if ((child = dav_find_child(child, "href")) == NULL) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "The version element does not contain "
                           "an \"href\" element.");
             return HTTP_BAD_REQUEST;
         }
     }
     else {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "The \"update\" element does not contain "
                       "a \"label-name\" or \"version\" element.");
         return HTTP_BAD_REQUEST;
@@ -3648,7 +3648,7 @@ static int dav_method_update(request_rec *r)
 
     /* a depth greater than zero is only allowed for a label */
     if (!is_label && depth != 0) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "Depth must be zero for UPDATE with a version");
         return HTTP_BAD_REQUEST;
     }
@@ -3657,7 +3657,7 @@ static int dav_method_update(request_rec *r)
     ap_xml_to_text(r->pool, child, AP_XML_X2T_INNER, NULL, NULL,
                    &target, &tsize);
     if (tsize == 0) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "A \"label-name\" or \"href\" element does not contain "
                       "any content.");
         return HTTP_BAD_REQUEST;
@@ -3690,7 +3690,7 @@ static int dav_method_update(request_rec *r)
         if (lookup.rnew == NULL) {
             if (lookup.err.status == HTTP_BAD_REQUEST) {
                 /* This supplies additional information for the default message. */
-                ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                               lookup.err.desc);
                 return HTTP_BAD_REQUEST;
             }
@@ -3837,7 +3837,7 @@ static int dav_method_label(request_rec *r)
 
     if (doc == NULL || !dav_validate_root(doc, "label")) {
         /* This supplies additional information for the default message. */
-        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "The request body does not contain "
                       "a \"label\" element.");
         return HTTP_BAD_REQUEST;
@@ -3854,7 +3854,7 @@ static int dav_method_label(request_rec *r)
         ctx.label_op = DAV_LABEL_REMOVE;
     }
     else {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "The \"label\" element does not contain "
                       "an \"add\", \"set\", or \"remove\" element.");
         return HTTP_BAD_REQUEST;
@@ -3862,7 +3862,7 @@ static int dav_method_label(request_rec *r)
 
     /* get the label string */
     if ((child = dav_find_child(child, "label-name")) == NULL) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "The label command element does not contain "
                       "a \"label-name\" element.");
         return HTTP_BAD_REQUEST;
@@ -3871,7 +3871,7 @@ static int dav_method_label(request_rec *r)
     ap_xml_to_text(r->pool, child, AP_XML_X2T_INNER, NULL, NULL,
                    &ctx.label, &tsize);
     if (tsize == 0) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "A \"label-name\" element does not contain "
                       "a label name.");
         return HTTP_BAD_REQUEST;
@@ -3938,7 +3938,7 @@ static int dav_method_report(request_rec *r)
         return result;
     if (doc == NULL) {
         /* This supplies additional information for the default msg. */
-        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "The request body must specify a report.");
         return HTTP_BAD_REQUEST;
     }
@@ -4000,7 +4000,7 @@ static int dav_method_make_workspace(request_rec *r)
 
     if (doc == NULL
         || !dav_validate_root(doc, "mkworkspace")) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "The request body does not contain "
                       "a \"mkworkspace\" element.");
         return HTTP_BAD_REQUEST;
@@ -4125,7 +4125,7 @@ static int dav_method_merge(request_rec *r)
 
     if (doc == NULL || !dav_validate_root(doc, "merge")) {
         /* This supplies additional information for the default msg. */
-        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "The request body must be present and must be a "
                       "DAV:merge element.");
         return HTTP_BAD_REQUEST;
@@ -4133,14 +4133,14 @@ static int dav_method_merge(request_rec *r)
 
     if ((source_elem = dav_find_child(doc->root, "source")) == NULL) {
         /* This supplies additional information for the default msg. */
-        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "The DAV:merge element must contain a DAV:source "
                       "element.");
         return HTTP_BAD_REQUEST;
     }
     if ((href_elem = dav_find_child(source_elem, "href")) == NULL) {
         /* This supplies additional information for the default msg. */
-        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "The DAV:source element must contain a DAV:href "
                       "element.");
         return HTTP_BAD_REQUEST;
@@ -4153,7 +4153,7 @@ static int dav_method_merge(request_rec *r)
     if (lookup.rnew == NULL) {
         if (lookup.err.status == HTTP_BAD_REQUEST) {
             /* This supplies additional information for the default message. */
-            ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           lookup.err.desc);
             return HTTP_BAD_REQUEST;
         }
@@ -4266,7 +4266,7 @@ static int dav_method_bind(request_rec *r)
     dest = apr_table_get(r->headers_in, "Destination");
     if (dest == NULL) {
         /* This supplies additional information for the default message. */
-        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "The request is missing a Destination header.");
         return HTTP_BAD_REQUEST;
     }
@@ -4275,7 +4275,7 @@ static int dav_method_bind(request_rec *r)
     if (lookup.rnew == NULL) {
         if (lookup.err.status == HTTP_BAD_REQUEST) {
             /* This supplies additional information for the default message. */
-            ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           lookup.err.desc);
             return HTTP_BAD_REQUEST;
         }

@@ -231,7 +231,7 @@ static int dbm_authenticate_basic_user(request_rec *r)
                                conf->auth_dbmtype))) {
         if (!(conf->auth_dbmauthoritative))
             return DECLINED;
-        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "DBM user %s not found: %s", r->user, r->filename);
         ap_note_basic_auth_failure(r);
         return HTTP_UNAUTHORIZED;
@@ -243,7 +243,7 @@ static int dbm_authenticate_basic_user(request_rec *r)
     }
     invalid_pw = apr_password_validate(sent_pw, real_pw);
     if (invalid_pw != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "DBM user %s: authentication failure for \"%s\": "
                       "Password Mismatch",
                       r->user, r->uri);
@@ -290,7 +290,7 @@ static int dbm_check_auth(request_rec *r)
                                        conf->auth_dbmtype))) {
                 if (!(conf->auth_dbmauthoritative))
                     return DECLINED;
-                ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                             "user %s not in DBM group file %s: %s",
                             user, conf->auth_dbmgrpfile, r->filename);
                 ap_note_basic_auth_failure(r);
@@ -306,7 +306,7 @@ static int dbm_check_auth(request_rec *r)
                         return OK;
                 }
             }
-            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "user %s not in right group: %s",
                           user, r->filename);
             ap_note_basic_auth_failure(r);

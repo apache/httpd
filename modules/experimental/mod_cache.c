@@ -106,12 +106,12 @@ static int cache_url_handler(request_rec *r, int lookup)
     if (!(types = ap_cache_get_cachetype(r, conf, path))) {
         return DECLINED;
     }
-    ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r->server,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                  "cache: URL %s is being handled by %s", path, types);
 
     urllen = strlen(url);
     if (urllen > MAX_URL_LENGTH) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r->server,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                      "cache: URL exceeds length threshold: %s", url);
         return DECLINED;
     }
@@ -156,7 +156,7 @@ static int cache_url_handler(request_rec *r, int lookup)
      * - TODO: Make MAX_URL_LENGTH a config directive?
      */
     if (conf->ignorecachecontrol_set == 1 && conf->ignorecachecontrol == 1 && auth == NULL) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r->server,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
             "incoming request is asking for a uncached version of %s, but we know better and are ignoring it", url);
     }
     else {
@@ -165,7 +165,7 @@ static int cache_url_handler(request_rec *r, int lookup)
             /* delete the previously cached file */
             cache_remove_url(r, cache->types, url);
 
-            ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r->server,
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                         "cache: no-store forbids caching of %s", url);
             return DECLINED;
         }
@@ -191,7 +191,7 @@ static int cache_url_handler(request_rec *r, int lookup)
     if (DECLINED == rv) {
         if (!lookup) {
             /* no existing cache file */
-            ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r->server,
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                          "cache: no cache - add cache_in filter and DECLINE");
             /* add cache_in filter to cache this request */
             ap_add_output_filter("CACHE_IN", NULL, r, r->connection);
@@ -208,7 +208,7 @@ static int cache_url_handler(request_rec *r, int lookup)
             if (lookup) {
                 return OK;
             }
-            ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r->server,
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                          "cache: fresh cache - add cache_out filter and "
                          "handle request");
 
@@ -244,11 +244,11 @@ static int cache_url_handler(request_rec *r, int lookup)
                 return DECLINED;
             }
 
-            ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r->server,
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                          "cache: stale cache - test conditional");
             /* if conditional request */
             if (ap_cache_request_is_conditional(r)) {
-                ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, 
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, 
                              r->server,
                              "cache: conditional - add cache_in filter and "
                              "DECLINE");
@@ -261,7 +261,7 @@ static int cache_url_handler(request_rec *r, int lookup)
             else {
                 /* fudge response into a conditional */
                 if (info && info->etag) {
-                    ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, 
+                    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, 
                                  r->server,
                                  "cache: nonconditional - fudge conditional "
                                  "by etag");
@@ -269,7 +269,7 @@ static int cache_url_handler(request_rec *r, int lookup)
                     apr_table_set(r->headers_in, "If-None-Match", info->etag);
                 }
                 else if (info && info->lastmods) {
-                    ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, 
+                    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, 
                                  r->server,
                                  "cache: nonconditional - fudge conditional "
                                  "by lastmod");
@@ -280,7 +280,7 @@ static int cache_url_handler(request_rec *r, int lookup)
                 }
                 else {
                     /* something else - pretend there was no cache */
-                    ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, 
+                    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, 
                                  r->server,
                                  "cache: nonconditional - no cached "
                                  "etag/lastmods - add cache_in and DECLINE");
@@ -290,7 +290,7 @@ static int cache_url_handler(request_rec *r, int lookup)
                     return DECLINED;
                 }
                 /* add cache_conditional filter */
-                ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, 
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, 
                              r->server,
                              "cache: nonconditional - add cache_conditional and"
                              " DECLINE");
@@ -368,7 +368,7 @@ static int cache_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
 
 static int cache_conditional_filter(ap_filter_t *f, apr_bucket_brigade *in)
 {
-    ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, f->r->server,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, f->r->server,
                  "cache: running CACHE_CONDITIONAL filter");
 
     if (f->r->status == HTTP_NOT_MODIFIED) {
@@ -416,7 +416,7 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
     (cache_request_rec *) ap_get_module_config(scache, &cache_module);
 
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, f->r->server,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, f->r->server,
                  "cache: running CACHE_IN filter");
 
     /* check first whether running this filter has any point or not */
@@ -551,7 +551,7 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
     /* or we've been asked not to cache it above */
         r->no_cache) {
 
-        ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r->server,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                  "cache: response is not cachable");
 
         /* remove this object from the cache 
@@ -647,7 +647,7 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
         return ap_pass_brigade(f->next, in);
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r->server,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                  "cache: Caching url: %s", url);
 
     /*
@@ -678,7 +678,7 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
         dates = apr_pcalloc(r->pool, MAX_STRING_LEN);
         apr_rfc822_date(dates, now);
         ap_table_set(r->headers_out, "Date", dates);
-        ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r->server,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                      "cache: Added date header");
         info->date = date;
     }
@@ -699,7 +699,7 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
         /* if its in the future, then replace by date */
         lastmod = date;
         lastmods = dates;
-        ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, 
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, 
                      r->server,
                      "cache: Last modified is in the future, "
                      "replacing with now");

@@ -142,7 +142,7 @@ static bs2_ForkType os_forktype(void)
 	strcmp(os_version.release, "02.0A") == 0 ||
 	strcmp(os_version.release, "02.1A") == 0)
     {
-	ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, NULL,
+	ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
 		     "Error: unsupported OS version. "
 		     "You may encounter problems.");
 	forktype = bs2_FORK;
@@ -217,7 +217,7 @@ int os_init_job_environment(server_rec *server, const char *user_name, int one_p
 
 	type = forktype = bs2_noFORK;
 
-	ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, server,
+	ap_log_error(APLOG_MARK, APLOG_ERR, 0, server,
 		     "The debug mode of Apache should only "
 		     "be started by an unprivileged user!");
 	return 0;
@@ -230,7 +230,7 @@ int os_init_job_environment(server_rec *server, const char *user_name, int one_p
     /* An Account is required for _rini() */
     if (bs2000_account == NULL)
     {
-	ap_log_error(APLOG_MARK, APLOG_ALERT|APLOG_NOERRNO, 0, server,
+	ap_log_error(APLOG_MARK, APLOG_ALERT, 0, server,
 		     "No BS2000Account configured - cannot switch to User %s",
 		     user_name);
 	exit(APEXIT_CHILDFATAL);

@@ -244,7 +244,7 @@ static int find_code_page(request_rec *r)
     const char *mime_type;
 
     if (dc->debug >= DBGLVL_FLOW) {
-        ap_log_rerror(APLOG_MARK,APLOG_DEBUG|APLOG_NOERRNO, 0, r,
+        ap_log_rerror(APLOG_MARK,APLOG_DEBUG, 0, r,
                       "uri: %s file: %s method: %d "
                       "imt: %s flags: %s%s%s %s->%s",
                       r->uri, r->filename, r->method_number,
@@ -259,7 +259,7 @@ static int find_code_page(request_rec *r)
      */
     if (!dc->charset_source || !dc->charset_default) {
         if (dc->debug >= DBGLVL_PMC) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                           "incomplete configuration: src %s, dst %s",
                           dc->charset_source ? dc->charset_source : "unspecified",
                           dc->charset_default ? dc->charset_default : "unspecified");
@@ -303,7 +303,7 @@ static int find_code_page(request_rec *r)
 #endif
         strncasecmp(mime_type, "message/", 8)) {
         if (dc->debug >= DBGLVL_GORY) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                           "mime type is %s; no translation selected",
                           mime_type);
         }
@@ -311,7 +311,7 @@ static int find_code_page(request_rec *r)
     }
 
     if (dc->debug >= DBGLVL_GORY) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                       "charset_source: %s charset_default: %s",
                       dc && dc->charset_source ? dc->charset_source : "(none)",
                       dc && dc->charset_default ? dc->charset_default : "(none)");
@@ -406,7 +406,7 @@ static void xlate_insert_filter(request_rec *r)
                                  r->connection);
         }
         else if (dc->debug >= DBGLVL_FLOW) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                           "xlate output filter not added implicitly because %s",
                           !reqinfo->output_ctx ? 
                           "no output configuration available" :
@@ -418,7 +418,7 @@ static void xlate_insert_filter(request_rec *r)
                                 r->connection);
         }
         else if (dc->debug >= DBGLVL_FLOW) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                           "xlate input filter not added implicitly because %s",
                           !reqinfo->input_ctx ?
                           "no input configuration available" :
@@ -548,22 +548,22 @@ static void log_xlate_error(ap_filter_t *f, apr_status_t rv)
     const char *msg;
     char msgbuf[100];
     int cur;
-    int flags = APLOG_ERR;
 
     switch(ctx->ees) {
     case EES_LIMIT:
-        flags |= APLOG_NOERRNO;
+        rv = 0;
         msg = "xlate filter - a built-in restriction was encountered";
         break;
     case EES_BAD_INPUT:
-        flags |= APLOG_NOERRNO;
+        rv = 0;
         msg = "xlate filter - an input character was invalid";
         break;
     case EES_BUCKET_READ:
+        rv = 0;
         msg = "xlate filter - bucket read routine failed";
         break;
     case EES_INCOMPLETE_CHAR:
-        flags |= APLOG_NOERRNO;
+        rv = 0;
         strcpy(msgbuf, "xlate filter - incomplete char at end of input - ");
         cur = 0;
         while (cur < ctx->saved) {
@@ -579,7 +579,7 @@ static void log_xlate_error(ap_filter_t *f, apr_status_t rv)
     default:
         msg = "xlate filter - returning error";
     }
-    ap_log_rerror(APLOG_MARK, flags, rv, f->r,
+    ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, f->r,
                   "%s", msg);
 }
 
@@ -655,7 +655,7 @@ static void chk_filter_chain(ap_filter_t *f)
                         if (debug >= DBGLVL_PMC) {
                             const char *symbol = output ? "->" : "<-";
 
-                            ap_log_rerror(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO,
+                            ap_log_rerror(APLOG_MARK, APLOG_DEBUG,
                                           0, f->r,
                                           "%s %s - disabling "
                                           "translation %s%s%s; existing "
@@ -673,7 +673,7 @@ static void chk_filter_chain(ap_filter_t *f)
                     else {
                         const char *symbol = output ? "->" : "<-";
 
-                        ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO,
+                        ap_log_rerror(APLOG_MARK, APLOG_ERR,
                                       0, f->r,
                                       "chk_filter_chain() - can't disable "
                                       "translation %s%s%s; existing "
@@ -859,7 +859,7 @@ static apr_status_t xlate_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     }
 
     if (dc->debug >= DBGLVL_GORY) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, f->r,
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, f->r,
                      "xlate_out_filter() - "
                      "charset_source: %s charset_default: %s",
                      dc && dc->charset_source ? dc->charset_source : "(none)",
@@ -1017,7 +1017,7 @@ static int xlate_in_filter(ap_filter_t *f, apr_bucket_brigade *bb,
     }
 
     if (dc->debug >= DBGLVL_GORY) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, f->r,
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, f->r,
                      "xlate_in_filter() - "
                      "charset_source: %s charset_default: %s",
                      dc && dc->charset_source ? dc->charset_source : "(none)",

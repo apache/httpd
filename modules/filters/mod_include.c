@@ -1075,7 +1075,7 @@ static char *ap_ssi_parse_string(request_rec *r, include_ctx_t *ctx,
                     start_of_var_name = in;
                     in = ap_strchr_c(in, '}');
                     if (in == NULL) {
-                        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR,
+                        ap_log_rerror(APLOG_MARK, APLOG_ERR,
                                       0, r, "Missing '}' on variable \"%s\"",
                                       expansion);
                         *next = '\0';
@@ -1336,7 +1336,7 @@ static int handle_include(include_ctx_t *ctx, apr_bucket_brigade **bb,
                     error_fmt = "unable to include \"%s\" in parsed file %s";
                 }
                 if (error_fmt) {
-                    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|loglevel,
+                    ap_log_rerror(APLOG_MARK, loglevel,
                                   0, r, error_fmt, tag_val, r->filename);
                     CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, 
                                         *inserted_head);
@@ -1348,7 +1348,7 @@ static int handle_include(include_ctx_t *ctx, apr_bucket_brigade **bb,
                 }
             }
             else {
-                ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                             "unknown parameter \"%s\" to tag include in %s",
                             tag, r->filename);
                 CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, *inserted_head);
@@ -1425,7 +1425,7 @@ static int handle_echo(include_ctx_t *ctx, apr_bucket_brigade **bb,
                 else if (!strcasecmp(tag_val, "url")) encode = E_URL;
                 else if (!strcasecmp(tag_val, "entity")) encode = E_ENTITY;
                 else {
-                    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                            "unknown value \"%s\" to parameter \"encoding\" of "
                            "tag echo in %s", tag_val, r->filename);
                     CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, 
@@ -1433,7 +1433,7 @@ static int handle_echo(include_ctx_t *ctx, apr_bucket_brigade **bb,
                 }
             }
             else {
-                ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                             "unknown parameter \"%s\" in tag echo of %s",
                             tag, r->filename);
                 CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, *inserted_head);
@@ -1508,7 +1508,7 @@ static int handle_config(include_ctx_t *ctx, apr_bucket_brigade **bb,
             else {
                 apr_bucket *tmp_buck;
 
-                ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                               "unknown parameter \"%s\" to tag config in %s",
                               tag, r->filename);
                 CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, *inserted_head);
@@ -1560,7 +1560,7 @@ static int find_file(request_rec *r, const char *directive, const char *tag,
 
         if (error_fmt) {
             ret = -1;
-            ap_log_rerror(APLOG_MARK, APLOG_ERR | (rv ? 0 : APLOG_NOERRNO),
+            ap_log_rerror(APLOG_MARK, APLOG_ERR,
                           rv, r, error_fmt, to_send, r->filename);
         }
 
@@ -1580,7 +1580,7 @@ static int find_file(request_rec *r, const char *directive, const char *tag,
             return 0;
         }
         else {
-            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                         "unable to get information about \"%s\" "
                         "in parsed file %s",
                         tag_val, r->filename);
@@ -1589,7 +1589,7 @@ static int find_file(request_rec *r, const char *directive, const char *tag,
         }
     }
     else {
-        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                     "unknown parameter \"%s\" to tag %s in %s",
                     tag, directive, r->filename);
         return -1;
@@ -1726,7 +1726,7 @@ static int re_check(request_rec *r, include_ctx_t *ctx,
 
     compiled = ap_pregcomp(r->pool, rexp, REG_EXTENDED | REG_NOSUB);
     if (compiled == NULL) {
-        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "unable to compile pattern \"%s\"", rexp);
         return -1;
     }
@@ -1981,7 +1981,7 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
                 current = current->right = new;
                 break;
             default:
-                ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                             "Invalid expression \"%s\" in file %s",
                             expr, r->filename);
                 *was_error = 1;
@@ -2010,7 +2010,7 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
                 current = current->right = new;
                 break;
             default:
-                ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                             "Invalid expression \"%s\" in file %s",
                             expr, r->filename);
                 *was_error = 1;
@@ -2026,7 +2026,7 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
             debug_pos += sizeof ("     Token: and/or\n");
 #endif
             if (current == (struct parse_node *) NULL) {
-                ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                             "Invalid expression \"%s\" in file %s",
                             expr, r->filename);
                 *was_error = 1;
@@ -2052,7 +2052,7 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
                 case token_lbrace:
                     break;
                 default:
-                    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                                 "Invalid expression \"%s\" in file %s",
                                 expr, r->filename);
                     *was_error = 1;
@@ -2099,7 +2099,7 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
                 case token_lt:
                     break;
                 default:
-                    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                                   "Invalid expression \"%s\" in file %s",
                                   expr, r->filename);
                     *was_error = 1;
@@ -2133,7 +2133,7 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
             debug_pos += sizeof("     Token: eq/ne/ge/gt/le/lt\n");
 #endif
             if (current == (struct parse_node *) NULL) {
-                ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                               "Invalid expression \"%s\" in file %s",
                               expr, r->filename);
                 *was_error = 1;
@@ -2159,7 +2159,7 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
                 case token_le:
                 case token_lt:
                 default:
-                    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                                 "Invalid expression \"%s\" in file %s",
                                 expr, r->filename);
                     *was_error = 1;
@@ -2195,7 +2195,7 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
                 current = current->parent;
             }
             if (current == (struct parse_node *) NULL) {
-                ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                             "Unmatched ')' in \"%s\" in file %s",
                             expr, r->filename);
                 *was_error = 1;
@@ -2231,7 +2231,7 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
                 case token_re:
                 case token_group:
                 default:
-                    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                                 "Invalid expression \"%s\" in file %s",
                                 expr, r->filename);
                     *was_error = 1;
@@ -2276,7 +2276,7 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
             break;
 
         case token_re:
-            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "No operator before regex of expr \"%s\" in file %s",
                           expr, r->filename);
             *was_error = 1;
@@ -2291,7 +2291,7 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
 #endif
             if (current->left  == (struct parse_node *) NULL ||
                 current->right == (struct parse_node *) NULL) {
-                ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                               "Invalid expression \"%s\" in file %s",
                               expr, r->filename);
                 *was_error = 1;
@@ -2359,7 +2359,7 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
                 (current->left->token.type != token_string) ||
                 ((current->right->token.type != token_string) &&
                  (current->right->token.type != token_re))) {
-                ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                             "Invalid expression \"%s\" in file %s",
                             expr, r->filename);
                 *was_error = 1;
@@ -2416,7 +2416,7 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
                 (current->right == (struct parse_node *) NULL) ||
                 (current->left->token.type != token_string) ||
                 (current->right->token.type != token_string)) {
-                ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                             "Invalid expression \"%s\" in file %s",
                             expr, r->filename);
                 *was_error = 1;
@@ -2499,21 +2499,21 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
             break;
 
         case token_lbrace:
-            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                         "Unmatched '(' in \"%s\" in file %s",
                         expr, r->filename);
             *was_error = 1;
             return retval;
 
         case token_rbrace:
-            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                         "Unmatched ')' in \"%s\" in file %s",
                         expr, r->filename);
             *was_error = 1;
             return retval;
 
         default:
-            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "bad token type");
             *was_error = 1;
             return retval;
@@ -2586,7 +2586,7 @@ static int handle_if(include_ctx_t *ctx, apr_bucket_brigade **bb,
             ap_ssi_get_tag_and_value(ctx, &tag, &tag_val, 0);
             if (tag == NULL) {
                 if (expr == NULL) {
-                    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                                   "missing expr in if statement: %s", 
                                   r->filename);
                     CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, 
@@ -2635,7 +2635,7 @@ static int handle_if(include_ctx_t *ctx, apr_bucket_brigade **bb,
 #endif
             }
             else {
-                ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                             "unknown parameter \"%s\" to tag if in %s", tag, 
                             r->filename);
                 CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, *inserted_head);
@@ -2670,7 +2670,7 @@ static int handle_elif(include_ctx_t *ctx, apr_bucket_brigade **bb,
                     return (0);
                 }
                 if (expr == NULL) {
-                    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                                   "missing expr in elif statement: %s", 
                                   r->filename);
                     CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, 
@@ -2718,7 +2718,7 @@ static int handle_elif(include_ctx_t *ctx, apr_bucket_brigade **bb,
 #endif
             }
             else {
-                ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                                "unknown parameter \"%s\" to tag if in %s", tag, 
                                r->filename);
                 CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, *inserted_head);
@@ -2740,7 +2740,7 @@ static int handle_else(include_ctx_t *ctx, apr_bucket_brigade **bb,
     if (!ctx->if_nesting_level) {
         ap_ssi_get_tag_and_value(ctx, &tag, &tag_val, 1);
         if ((tag != NULL) || (tag_val != NULL)) {
-            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                         "else directive does not take tags in %s", r->filename);
             if (ctx->flags & FLAG_PRINTING) {
                 CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, *inserted_head);
@@ -2774,7 +2774,7 @@ static int handle_endif(include_ctx_t *ctx, apr_bucket_brigade **bb,
     if (!ctx->if_nesting_level) {
         ap_ssi_get_tag_and_value(ctx, &tag, &tag_val, 1);
         if ((tag != NULL) || (tag_val != NULL)) {
-            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                        "endif directive does not take tags in %s", r->filename);
             CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, *inserted_head);
             return -1;
@@ -2827,7 +2827,7 @@ static int handle_set(include_ctx_t *ctx, apr_bucket_brigade **bb,
             }
             else if (!strcmp(tag, "value")) {
                 if (var == (char *) NULL) {
-                    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                            "variable must precede value in set directive in %s",
                            r->filename);
                     CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, 
@@ -2840,7 +2840,7 @@ static int handle_set(include_ctx_t *ctx, apr_bucket_brigade **bb,
                                apr_pstrdup(p, parsed_string));
             }
             else {
-                ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                             "Invalid tag for set directive in %s", r->filename);
                 CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, *inserted_head);
                 return -1;
@@ -2899,7 +2899,7 @@ static int handle_printenv(include_ctx_t *ctx, apr_bucket_brigade **bb,
             return 0;
         }
         else {
-            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                         "printenv directive does not take tags in %s", 
                         r->filename);
             CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, *inserted_head);
@@ -3065,7 +3065,7 @@ static apr_status_t send_parsed_content(apr_bucket_brigade **bb,
              */
             if (get_combined_directive(ctx, r, *bb, tmp_buf,
                                         TMP_BUF_SIZE) != APR_SUCCESS) {
-                ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                             "mod_include: error copying directive in %s",
                             r->filename);
                 CREATE_ERROR_BUCKET(ctx, tmp_bkt, dptr, content_head);
@@ -3115,7 +3115,7 @@ static apr_status_t send_parsed_content(apr_bucket_brigade **bb,
                 }
             }
             else {
-                ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                               "unknown directive \"%s\" in parsed doc %s",
                               ctx->combined_tag, r->filename);
                 CREATE_ERROR_BUCKET(ctx, tmp_bkt, dptr, content_head);
@@ -3220,7 +3220,7 @@ static apr_status_t send_parsed_content(apr_bucket_brigade **bb,
     }
     else if (ctx->state == PARSED) {         /* Invalid internal condition... */
         apr_bucket *content_head = NULL, *tmp_bkt;
-        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "Invalid mod_include state during file %s", r->filename);
         CREATE_ERROR_BUCKET(ctx, tmp_bkt, APR_BRIGADE_FIRST(*bb), content_head);
     }

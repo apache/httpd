@@ -348,7 +348,7 @@ static int create_entity(cache_handle_t *h, request_rec *r,
     h->write_headers = &write_headers;
     h->remove_entity = &remove_entity;
 
-    ap_log_error(APLOG_MARK, APLOG_INFO|APLOG_NOERRNO, 0, r->server,
+    ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server,
                  "disk_cache: Caching URL %s",  key);
 
     return OK;
@@ -422,7 +422,7 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *type, cons
     h->write_headers = &write_headers;
     h->remove_entity = &remove_entity;
 
-    ap_log_error(APLOG_MARK, APLOG_INFO|APLOG_NOERRNO, 0, r->server,
+    ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server,
                  "disk_cache: Serving Cached URL %s",  dobj->name);
     return OK;
 }
@@ -495,7 +495,7 @@ static apr_status_t read_headers(cache_handle_t *h, request_rec *r)
 
     apr_file_close(dobj->hfd);
 
-    ap_log_error(APLOG_MARK, APLOG_INFO|APLOG_NOERRNO, 0, r->server,
+    ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server,
                  "disk_cache: Served headers for URL %s",  dobj->name);
     return APR_SUCCESS;
 }
@@ -598,7 +598,7 @@ static apr_status_t write_headers(cache_handle_t *h, request_rec *r, cache_info 
         /* XXX log message */
     }
 
-    ap_log_error(APLOG_MARK, APLOG_INFO|APLOG_NOERRNO, 0, r->server,
+    ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server,
                  "disk_cache: Caching headers for URL %s",  dobj->name);
     return APR_SUCCESS;
 }
@@ -625,7 +625,7 @@ static apr_status_t write_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
     }
     if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(b))) {
         file_cache_el_final(h, r);    /* Link to the perm file, and close the descriptor  */
-        ap_log_error(APLOG_MARK, APLOG_INFO|APLOG_NOERRNO, 0, r->server,
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server,
                      "disk_cache: Cached body for URL %s",  dobj->name);
     }
 
