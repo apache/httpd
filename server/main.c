@@ -147,9 +147,6 @@ static void show_compile_settings(void)
 	printf(" -D PIPE_BUF=%ld\n",(long)PIPE_BUF);
 #endif
 #endif
-#ifdef MULTITHREAD
-    printf(" -D MULTITHREAD\n");
-#endif
 #ifdef CHARSET_EBCDIC
     printf(" -D CHARSET_EBCDIC\n");
 #endif
@@ -205,8 +202,16 @@ static process_rec *create_process(int argc, const char **argv)
     
     {
 	ap_context_t *cntx;
+        ap_status_t stat;
 
-	ap_create_context(&cntx, NULL);
+	stat = ap_create_context(&cntx, NULL);
+        if (stat != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, NULL,
+                         "ap_create_context() failed to create "
+                         "initial context");
+            exit(1);
+        }
+
 	process = ap_palloc(cntx, sizeof(process_rec));
 	process->pool = cntx;
     }
