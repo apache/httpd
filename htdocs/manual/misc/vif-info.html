@@ -99,7 +99,7 @@ add this in the appropriate place in the headers of conf.c:
 
 --------------------
 #include "vif.h"
-#if NVIF > 0
+#if NVIF &gt; 0
 int     vifopen(), vifclose(), vifread(), vifwrite(), vifselect(), vifioctl();
 #else
 #define vifopen         nodev
@@ -187,15 +187,15 @@ vifattach()
 	register struct ifnet *ifp;
         int	vifoutput(), vififioctl();
 	
-	for (i=0; i<NVIF; i++)
+	for (i=0; i&lt;NVIF; i++)
 	{
 		ifp = &vif_softc[i].vif_if;
-		ifp->if_name = "vif";
-		ifp->if_unit = i;
-		ifp->if_mtu = VIFMTU;
-		ifp->if_flags = IFF_LOOPBACK | IFF_NOARP;
-		ifp->if_ioctl = vififioctl;
-		ifp->if_output = vifoutput;
+		ifp-&gt;if_name = "vif";
+		ifp-&gt;if_unit = i;
+		ifp-&gt;if_mtu = VIFMTU;
+		ifp-&gt;if_flags = IFF_LOOPBACK | IFF_NOARP;
+		ifp-&gt;if_ioctl = vififioctl;
+		ifp-&gt;if_output = vifoutput;
 		if_attach(ifp);
 	}
 }
@@ -213,7 +213,7 @@ int dev, flag;
 	}
 	
 	unit = minor(dev);
-	if ((unit < 0) || (unit >= NVIF))
+	if ((unit &lt; 0) || (unit &gt;= NVIF))
 	{
 		return ENXIO;
 	}
@@ -252,41 +252,41 @@ vifoutput(ifp, m0, dst)
 	struct mbuf *m;
 	struct sockaddr_in *din;
 	
-	if (dst->sa_family != AF_INET)
+	if (dst-&gt;sa_family != AF_INET)
 	{
 		printf("%s%d: can't handle af%d\n", 
-		       ifp->if_name, ifp->if_unit,
-		       dst->sa_family);
+		       ifp-&gt;if_name, ifp-&gt;if_unit,
+		       dst-&gt;sa_family);
 		m_freem(m0);
 		return (EAFNOSUPPORT);
 	}
 
 	din = (struct sockaddr_in *)dst;
 	
-	if (din->sin_addr.s_addr == IA_SIN(ifp->if_addrlist)->sin_addr.s_addr)
+	if (din-&gt;sin_addr.s_addr == IA_SIN(ifp-&gt;if_addrlist)-&gt;sin_addr.s_addr)
 	{
-		/* printf("%s%d: looping\n", ifp->if_name, ifp->if_unit); */
+		/* printf("%s%d: looping\n", ifp-&gt;if_name, ifp-&gt;if_unit); */
 		
 		/*
 		 * Place interface pointer before the data
 		 * for the receiving protocol.
 		 */
-		if (m0->m_off <= MMAXOFF &&
-		    m0->m_off >= MMINOFF + sizeof(struct ifnet *)) {
-			m0->m_off -= sizeof(struct ifnet *);
-			m0->m_len += sizeof(struct ifnet *);
+		if (m0-&gt;m_off &lt;= MMAXOFF &&
+		    m0-&gt;m_off &gt;= MMINOFF + sizeof(struct ifnet *)) {
+			m0-&gt;m_off -= sizeof(struct ifnet *);
+			m0-&gt;m_len += sizeof(struct ifnet *);
 		} else {
 			MGET(m, M_DONTWAIT, MT_HEADER);
 			if (m == (struct mbuf *)0)
 			  return (ENOBUFS);
-			m->m_off = MMINOFF;
-			m->m_len = sizeof(struct ifnet *);
-			m->m_next = m0;
+			m-&gt;m_off = MMINOFF;
+			m-&gt;m_len = sizeof(struct ifnet *);
+			m-&gt;m_next = m0;
 			m0 = m;
 		}
 		*(mtod(m0, struct ifnet **)) = ifp;
 		s = splimp();
-		ifp->if_opackets++;
+		ifp-&gt;if_opackets++;
 		ifq = &ipintrq;
 		if (IF_QFULL(ifq)) {
 			IF_DROP(ifq);
@@ -296,7 +296,7 @@ vifoutput(ifp, m0, dst)
 		}
 		IF_ENQUEUE(ifq, m0);
 		schednetisr(NETISR_IP);
-		ifp->if_ipackets++;
+		ifp-&gt;if_ipackets++;
 		splx(s);
 		return (0);
 	}
@@ -318,7 +318,7 @@ vififioctl(ifp, cmd, data)
 	switch (cmd) {
 
 	case SIOCSIFADDR:
-		ifp->if_flags |= IFF_UP;
+		ifp-&gt;if_flags |= IFF_UP;
 		/*
 		 * Everything else is done at a higher level.
 		 */
@@ -339,7 +339,7 @@ int mode;
 	int unit;
 	
 	unit = minor(dev);
-	if ((unit < 0) || (unit >= NVIF))
+	if ((unit &lt; 0) || (unit &gt;= NVIF))
 	  return ENXIO;
 	
 	return EINVAL;
@@ -354,7 +354,7 @@ device:
 (or whatever major number it ended up being), and echo something into
 it:
 
-# echo > /dev/vif
+# echo &gt; /dev/vif
 
 This will cause the device to be opened, which will if_attach the
 interfaces. If you feel like playing with the code, you may want to
