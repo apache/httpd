@@ -1,5 +1,9 @@
 Changes with Apache 1.3.24
 
+  *) Fix the longstanding bug that errors (returned by src/Configure)
+     would not be noticed by the top level configure script.
+     That was bad for automated configurations. [Martin Kraemer]
+
   *) Link with -lpthread on Solaris since we reference pthread
      functions for the accept mutex.  Previously, the link step
      would succeed but we would link to bogus versions of the

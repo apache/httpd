@@ -2398,7 +2398,7 @@ else
       echo "** Apache requires an ANSI C Compiler, such as gcc. "
       echo ""
       echo "======== Error Output for sanity check ========"
-      (./helpers/TestCompile -v sanity)
+      (./helpers/TestCompile -v sanity) 2>&1
       echo "============= End of Error Report ============="
       echo ""
       echo " Aborting!"

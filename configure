@@ -1582,14 +1582,15 @@ rm -f $tplconf 2>/dev/null
 if [ "x$verbose" = "xyes" ]; then
     vflag="-v";
 fi
-if [ "x$quiet" = "xyes" ]; then
-    (cd $src; ./Configure ${vflag} -file Configuration.apaci >/dev/null);
+rc=`if [ "x$quiet" = "xyes" ]; then
+    (cd $src; ./Configure ${vflag} -file Configuration.apaci >/dev/null; echo $? >&3; );
 else
-    (cd $src; ./Configure ${vflag} -file Configuration.apaci |\
+    (cd $src; ( ./Configure ${vflag} -file Configuration.apaci; echo $? >&3; ) |\
      sed -e '/^Using config file:.*/d' \
          -e "s:Makefile in :Makefile in $src\\/:" \
          -e "s:Makefile\$:Makefile in $src:")
-fi
+fi 3>&1 1>&2`
+[ $rc = 0 ] || exit 1
 
 ##
 ##  final hints
