@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/02/25 06:54:40 $]
+Last modified at [$Date: 2002/02/27 03:17:26 $]
 
 Release:
 
@@ -54,7 +54,7 @@ FINAL RELEASE SHOWSTOPPERS:
         to thread: <200202121332.IAA27467@web.turner.com>
       Solutions:
         Ditch fast_redirect, it was bogus in 1.3 and it's bogus now.
-          In Agreement? : Justin
+          In Agreement? : Justin, Aaron
         Fix [and *Maintain*] fast_redirect, it was useful to our redirects
         in negotiation and dir, and it's useful to 3rd parties.
           In Agreement? :
@@ -69,19 +69,6 @@ FINAL RELEASE SHOWSTOPPERS:
         we need to look at halting this in the 'default handler' case,
         and that implies pushing the 'handler election' into the request
         internal processing phase from the run request phase.
-
-    * Convert all instances of the old apr_lock_t type to the new
-      types (once they are fully supported in APR).
-        Status: Aaron is working on converting INTRAPROCESS
-                to apr_thread_mutex_t types. Full replacements for
-                LOCKALL and CROSS_PROCESS are not yet complete on all
-                platforms, and should only be used in MPMs like worker
-                with limited OS exposure.
-        BrianP asks: "Is this really a showstopper?"
-        IanH says: "If we don't do it before we go live we will have 2
-                    different API's to support in APR"
-        BrianP agrees: "Yes, let's clean up the remaining dependencies
-                        on the old lock API."
 
     * We need to find out the right place to add the AddOutputFilterByType
       directive.  mod_mime?  No.  core with fixups?  That's what it is now.
@@ -126,6 +113,14 @@ CURRENT VOTES:
       -0:   Aaron (premature decision, needs more discussion), Lars
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
+
+    * Convert all instances of the old apr_lock_t type to the new
+      types.
+        Status: Aaron has converted all but the perchild MPM to
+                use the new lock API. Since perchild has been put
+                on the back burner, this is no longer a showstopper.
+                Aaron will patch perchild as soon as it becomes
+                buildable again.
 
     * With AP_MODE_EXHAUSTIVE in the core, it is finally clear to me
       how the Perchild MPM should be re-written.  It hasn't worked

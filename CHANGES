@@ -1,5 +1,11 @@
 Changes with Apache 2.0.33-dev
 
+  *) All instances of apr_lock_t have been removed and converted
+     to one of the following new lock APIs: apr_thread_mutex.h,
+     apr_proc_mutex.h, or apr_global_mutex.h. No new code should
+     use the apr_lock.h API, as the old API will soon be deprecated.
+     [Aaron Bannert]
+
   *) Merged in changes to mod_ssl up through 2.8.7-1.3.23.
      [Ralf S. Engelschall, Cliff Woolley]
 
