@@ -15,7 +15,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.94 $ ($Date: 1997/11/11 23:47:15 $)
+  $Revision: 1.95 $ ($Date: 1997/12/02 04:45:55 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -1003,13 +1003,19 @@
   </P>
   <P>
   <DL>
-   <DD><CODE>&lt;Limit GET&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;:</CODE>
+   <DD><CODE>&lt;Limit GET&gt;
+    <BR>&nbsp;&nbsp;&nbsp;&nbsp;:</CODE>
    </DD>
   </DL>
   </P>
   <P>
-  Change that to <CODE>&lt;Limit GET POST&gt;</CODE> and the problem
-  will probably go away.
+  Change that to <CODE>&lt;Limit&nbsp;GET&nbsp;POST&gt;</CODE> and the problem
+  will probably go away.  Better yet, remove the
+  <CODE>&lt;Limit&gt;</CODE> and <CODE>&lt;/Limit&gt;</CODE> lines
+  altogether unless you're <EM>specifically</EM> trying to limit by
+  method (<SAMP>GET</SAMP>, <SAMP>PUT</SAMP>, <EM>et cetera</EM>).  If
+  you don't have a <CODE>&lt;Limit&gt;</CODE> container, the
+  restrictions apply equally to <EM>all</EM> methods.
   </P>
   <HR>
  </LI>
