@@ -213,13 +213,13 @@ module AP_MODULE_DECLARE_DATA log_config_module;
 static int xfer_flags = (APR_WRITE | APR_APPEND | APR_CREATE);
 static apr_fileperms_t xfer_perms = APR_OS_DEFAULT;
 static apr_hash_t *log_hash;
-static apr_status_t ap_default_log_writer(apr_pool_t *p,  
+static apr_status_t ap_default_log_writer(request_rec *r,
                            void *handle, 
                            const char **strs,
                            int *strl,
                            int nelts,
                            apr_size_t len);
-static apr_status_t ap_buffered_log_writer(apr_pool_t *p,  
+static apr_status_t ap_buffered_log_writer(request_rec *r,
                            void *handle, 
                            const char **strs,
                            int *strl,
@@ -895,7 +895,7 @@ static int config_log_transaction(request_rec *r, config_log_state *cls,
                 "log writer isn't correctly setup");
          return HTTP_INTERNAL_SERVER_ERROR;
     }
-    rv = log_writer(r->pool, cls->log_writer, strs, strl, format->nelts, len);
+    rv = log_writer(r, cls->log_writer, strs, strl, format->nelts, len);
     /* xxx: do we return an error on log_writer? */
     return OK;
 }
@@ -1233,7 +1233,7 @@ static void ap_log_set_writer(ap_log_writer *handle)
     log_writer = handle;
 }
 
-static apr_status_t ap_default_log_writer(apr_pool_t *p,  
+static apr_status_t ap_default_log_writer( request_rec *r,
                            void *handle, 
                            const char **strs,
                            int *strl,
@@ -1246,7 +1246,7 @@ static apr_status_t ap_default_log_writer(apr_pool_t *p,
     int i;
     apr_status_t rv;
 
-    str = apr_palloc(p, len + 1);
+    str = apr_palloc(r->pool, len + 1);
 
     for (i = 0, s = str; i < nelts; ++i) {
         memcpy(s, strs[i], strl[i]);
@@ -1302,7 +1302,7 @@ static void *ap_buffered_log_writer_init(apr_pool_t *p, server_rec *s,
     else
         return NULL;
 }
-static apr_status_t ap_buffered_log_writer(apr_pool_t *p,  
+static apr_status_t ap_buffered_log_writer(request_rec *r,
                                            void *handle, 
                                            const char **strs,
                                            int *strl,
@@ -1323,7 +1323,7 @@ static apr_status_t ap_buffered_log_writer(apr_pool_t *p,
     if (len >= LOG_BUFSIZE) {
         apr_size_t w;
 
-        str = apr_palloc(p, len + 1);
+        str = apr_palloc(r->pool, len + 1);
         for (i = 0, s = str; i < nelts; ++i) {
             memcpy(s, strs[i], strl[i]);
             s += strl[i];
