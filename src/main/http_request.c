@@ -300,12 +300,7 @@ int directory_walk(request_rec *r)
      * Fake filenames (i.e. proxy:) only match Directory sections.
      */
 
-#if defined(__EMX__) || defined(WIN32)
-    /* Add OS/2 drive name support */
-    if ((test_filename[0] != '/') && (test_filename[1] != ':'))
-#else
-    if (test_filename[0] != '/')
-#endif
+    if (!os_is_path_absolute(test_filename))
     {
         void *this_conf, *entry_config;
         core_dir_config *entry_core;
@@ -410,11 +405,7 @@ int directory_walk(request_rec *r)
             entry_dir = entry_core->d;
 
             if (entry_core->r
-#if defined(__EMX__) || defined(WIN32)
-                || (entry_dir[0] != '/' && entry_dir[1] != ':')
-#else
-                || entry_dir[0] != '/'
-#endif
+		|| !os_is_path_absolute(entry_dir)
                 || entry_core->d_components > i)
                 break;
 
