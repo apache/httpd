@@ -1267,12 +1267,9 @@ static void process_request_internal(request_rec *r)
         }
         break;
     case SATISFY_ANY:
-        if (((access_status = ap_check_access(r)) != 0) || !ap_auth_type(r)) {
+        if (((access_status = ap_check_access(r)) != 0)) {
             if (!ap_some_auth_required(r)) {
-                decl_die(access_status ? access_status :
-			 HTTP_INTERNAL_SERVER_ERROR,
-			 ap_auth_type(r) ? "check access"
-		    : "perform authentication. AuthType not set!", r);
+                decl_die(access_status, "check access", r);
                 return;
             }
             if (((access_status = ap_check_user_id(r)) != 0) || !ap_auth_type(r)) {

@@ -1,5 +1,8 @@
 Changes with Apache 1.3.28
 
+  *) Fix bug where 'Satisfy Any' without an AuthType resulted in an
+     "Internal Server Error" response. PR 9076.  [André Malo]
+
   *) mod_rewrite: Allow "RewriteEngine Off" even if no
      "Options FollowSymlinks" (or SymlinksIfOwnermatch) is set.
      PR 12395.  [André Malo]
