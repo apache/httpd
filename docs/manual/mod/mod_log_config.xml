@@ -31,7 +31,7 @@ user-specified format.</description>
 <seealso><strong>See also</strong>: 
 <a href="../logs.html">Apache Log Files</a>.</seealso>
 
-<section>
+<section id="formats">
 <title>Custom Log Formats</title>
 
     <p>The format argument to the <code>LogFormat</code> and
@@ -141,8 +141,9 @@ be in strftime(3) format. (potentially localized)</td></tr>
 '+' = connection may be kept alive after the response is sent.<br />
 '-' = connection will be closed after the response is sent.
 </example>
-(This directive was %...c in late versions of Apache 1.3, but
-this conflicted with the historical ssl %...{var}c syntax.)</td></tr>
+<note>(This directive was %...c in late versions of Apache 1.3, but
+this conflicted with the historical ssl %...{var}c syntax.)</note>
+</td></tr>
 
 </table>
 
