@@ -165,7 +165,7 @@ static void add_include_vars(request_rec *r, char *timefmt)
 static ap_bucket *find_start_sequence(ap_bucket *dptr, include_ctx_t *ctx,
                                       ap_bucket_brigade *bb, int *do_cleanup)
 {
-    apr_ssize_t len;
+    apr_size_t len;
     const char *c;
     const char *buf;
     const char *str = STARTING_SEQUENCE;
@@ -245,7 +245,7 @@ static ap_bucket *find_start_sequence(ap_bucket *dptr, include_ctx_t *ctx,
 
 static ap_bucket *find_end_sequence(ap_bucket *dptr, include_ctx_t *ctx, ap_bucket_brigade *bb)
 {
-    apr_ssize_t len;
+    apr_size_t len;
     const char *c;
     const char *buf;
     const char *str = ENDING_SEQUENCE;
@@ -344,7 +344,7 @@ static apr_status_t get_combined_directive (include_ctx_t *ctx,
     int         done = 0;
     ap_bucket  *dptr;
     const char *tmp_from;
-    apr_ssize_t tmp_from_len;
+    apr_size_t tmp_from_len;
 
     /* If the tag length is longer than the tmp buffer, allocate space. */
     if (ctx->tag_length > tmp_buf_size-1) {
@@ -770,7 +770,7 @@ static int include_cgi(char *s, request_rec *r, ap_filter_t *next,
 
     rr_status = ap_run_sub_req(rr);
     if (ap_is_HTTP_REDIRECT(rr_status)) {
-        apr_ssize_t len_loc, h_wrt;
+        apr_size_t len_loc, h_wrt;
         const char *location = apr_table_get(rr->headers_out, "Location");
 
         location = ap_escape_html(rr->pool, location);
@@ -1186,7 +1186,7 @@ static int handle_echo(include_ctx_t *ctx, request_rec *r, ap_bucket *head_ptr,
     char       *tag_val   = NULL;
     const char *echo_text = NULL;
     ap_bucket  *tmp_buck;
-    apr_ssize_t e_len, e_wrt;
+    apr_size_t e_len, e_wrt;
     enum {E_NONE, E_URL, E_ENTITY} encode;
 
     encode = E_ENTITY;
@@ -1455,7 +1455,7 @@ static int handle_fsize(include_ctx_t *ctx, request_rec *r, ap_bucket *head_ptr,
     char *tag     = NULL;
     char *tag_val = NULL;
     apr_finfo_t  finfo;
-    apr_ssize_t  s_len, s_wrt;
+    apr_size_t  s_len, s_wrt;
     ap_bucket   *tmp_buck;
     char parsed_string[MAX_STRING_LEN];
 
@@ -1517,7 +1517,7 @@ static int handle_flastmod(include_ctx_t *ctx, request_rec *r, ap_bucket *head_p
     char *tag     = NULL;
     char *tag_val = NULL;
     apr_finfo_t  finfo;
-    apr_ssize_t  t_len, t_wrt;
+    apr_size_t  t_len, t_wrt;
     ap_bucket   *tmp_buck;
     char parsed_string[MAX_STRING_LEN];
 
@@ -2647,7 +2647,7 @@ static int handle_printenv(include_ctx_t *ctx, request_rec *r, ap_bucket *head_p
             apr_table_entry_t *elts = (apr_table_entry_t *)arr->elts;
             int i;
             char *key_text, *val_text;
-            apr_ssize_t   k_len, v_len, t_wrt;
+            apr_size_t   k_len, v_len, t_wrt;
 
             *inserted_head = NULL;
             for (i = 0; i < arr->nelts; ++i) {

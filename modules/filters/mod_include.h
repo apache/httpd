@@ -183,7 +183,7 @@ typedef enum {TOK_UNKNOWN, TOK_IF, TOK_SET, TOK_ECHO, TOK_ELIF, TOK_ELSE,
 
 #define CREATE_ERROR_BUCKET(cntx, t_buck, h_ptr, ins_head)        \
 {                                                                 \
-    apr_ssize_t e_wrt;                                            \
+    apr_size_t e_wrt;                                             \
     t_buck = ap_bucket_create_heap(cntx->error_str,               \
                                    ctx->error_length, 1, &e_wrt); \
     AP_BUCKET_INSERT_BEFORE(h_ptr, t_buck);                       \
