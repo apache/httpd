@@ -915,7 +915,6 @@ apr_status_t http_filter(ap_filter_t *f, ap_bucket_brigade *b)
     }
 
     AP_BRIGADE_FOREACH(e, b) {
-
         if ((rv = e->read(e, (const char **)&buff, &length, 0)) != APR_SUCCESS) {
             return rv;
         }
@@ -953,7 +952,7 @@ apr_status_t http_filter(ap_filter_t *f, ap_bucket_brigade *b)
  */
 static int getline(char *s, int n, conn_rec *c, int fold)
 {
-    char *pos;
+    char *pos = s;
     const char *toss;
     const char *temp;
     int retval;
@@ -961,21 +960,6 @@ static int getline(char *s, int n, conn_rec *c, int fold)
     apr_ssize_t length;
     ap_bucket_brigade *b;
     ap_bucket *e;
-    
-    
-#ifdef APACHE_XLATE_XXX
-    /* When getline() is called, the HTTP protocol is in a state
-     * where we MUST be reading "plain text" protocol stuff,
-     * (Request line, MIME headers, Chunk sizes) regardless of
-     * the MIME type and conversion setting of the document itself.
-     * Save the current setting of the translation handle for
-     * uploads, then temporarily set it to the one used for headers
-     * (and restore it before returning).
-     */
-    AP_PUSH_INPUTCONVERSION_STATE(in, ap_hdrs_from_ascii);
-#endif /*APACHE_XLATE*/
-
-    pos = s;
 
     if (!c->input_data) {
         b = ap_brigade_create(c->pool);
@@ -984,31 +968,22 @@ static int getline(char *s, int n, conn_rec *c, int fold)
         b = c->input_data;
     }
 
-    if (AP_BRIGADE_EMPTY(b)) {
-        ap_get_brigade(c->input_filters, b);
-    }
-
-    if (AP_BRIGADE_EMPTY(b)) {
-        return -1;
-    }
     while (1) {
-        e = AP_BRIGADE_FIRST(b); 
-        while (e->length == 0) {
-            AP_BUCKET_REMOVE(e);
-            ap_bucket_destroy(e);
-
-            ap_get_brigade(c->input_filters, b);
-            if (!AP_BRIGADE_EMPTY(b)) {
-                e = AP_BRIGADE_FIRST(b); 
-            }
-            else {
+        if (AP_BRIGADE_EMPTY(b)) {
+            if (ap_get_brigade(c->input_filters, b) != APR_SUCCESS) {
                 return -1;
             }
         }
+        e = AP_BRIGADE_FIRST(b); 
+        if (e->length == 0) {
+            AP_BUCKET_REMOVE(e);
+            ap_bucket_destroy(e);
+            continue;
+        }
         retval = e->read(e, &temp, &length, 0);
-        /* retval == 0 on SUCCESS */
 
-        if (retval != 0) {
+        /* retval == APR_SUCCESS on SUCCESS */
+        if (retval != APR_SUCCESS) {
             total = ((length < 0) && (total == 0)) ? -1 : total;
             break;
         }
@@ -1016,12 +991,6 @@ static int getline(char *s, int n, conn_rec *c, int fold)
 	/* check for line end using ascii encoding, even on an ebcdic box
 	 * since this is raw protocol data fresh from the network
 	 */
-/*XXX This needs to be scrubbed, but Greg Ames is going to do a lot to this
-  *   code in a little while.  When he is done, it shouldn't need scrubbing
-  *   any more.
-  *
-  *   GREG, this is where the breakage is!!!!
-  */
         if ((toss = ap_strchr_c(temp, ASCII_LF)) != NULL) { 
             length = (toss - temp) + (pos - s) + 1;
             e->split(e, length + (temp[length] == '\0')); 
@@ -1075,11 +1044,6 @@ static int getline(char *s, int n, conn_rec *c, int fold)
 	    break;       /* if not, input line exceeded buffer size */
 	}
     }
-#ifdef APACHE_XLATE_XXX
-    /* restore translation handle */
-    AP_POP_INPUTCONVERSION_STATE(in);
-#endif /*APACHE_XLATE*/
-
     return total;
 }
 
