@@ -1,5 +1,14 @@
 Changes with Apache 1.3b6
 
+  *) Major cleanups to the Configure script to make it and its generated
+     Makefiles again readable and maintainable: add SRCDIR option, removed
+     INCLUDES_DEPTH[0-2] kludge, cleanup of TARGET option, cleanup of
+     generated sections, consequently added Makefile headers with inheritance
+     information, added subdir movement messages for easier following where
+     the build process currently stays (more verbose then standard Make, less
+     verbose than GNU make), same style to comments in the Configure script,
+     added Apache license header, fixed a few bugs, etc. [Ralf S. Engelschall]
+     
   *) The default for the HIDE rule is now "yes" to aid portability, and
      include/hide.h is always included.  It doesn't do anything if the
      rule is "no" but the dependencies don't change now regardless.

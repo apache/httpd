@@ -1,20 +1,22 @@
+
 # You probably want to take -DREDEBUG out of CFLAGS, and put something like
 # -O in, *after* testing (-DREDEBUG strengthens testing by enabling a lot of
 # internal assertion checking and some debugging facilities).
 # Put -Dconst= in for a pre-ANSI compiler.
 # Do not take -DPOSIX_MISTAKE out.
 # REGCFLAGS isn't important to you (it's for my use in some special contexts).
-CFLAGS=-I. -I../include -DPOSIX_MISTAKE $(AUX_CFLAGS)
+INCLUDES=$(INCLUDES1) $(INCLUDES0) $(EXTRA_INCLUDES)
+CFLAGS=-I. $(INCLUDES) $(OPTIM) $(CFLAGS1) $(EXTRA_CFLAGS) -DPOSIX_MISTAKE
 
 # If you have a pre-ANSI compiler, put -o into MKHFLAGS.  If you want
 # the Berkeley __P macro, put -b in.
 MKHFLAGS=
 
 # Flags for linking but not compiling, if any.
-LDFLAGS=
+LDFLAGS=$(LDFLAGS1) $(EXTRA_LDFLAGS) -L$(SRCDIR)/ap
 
 # Extra libraries for linking, if any.
-LIBS=
+LIBS=$(EXTRA_LIBS) $(LIBS1) -lap
 
 # Internal stuff, should not need changing.
 OBJPRODN=regcomp.o regexec.o regerror.o regfree.o
