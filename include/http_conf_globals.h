@@ -65,8 +65,6 @@ extern "C" {
 
 /* TODO: this file should be deleted after the other todos are dealt with */
 
-/* TODO: extern enum server_token_type ap_server_tokens; */
-
 /* TODO: extern int ap_configtestonly;  ... although it pains me because this breaks an abstraction */
 /* TODO: extern int ap_docrootcheck; */
 
