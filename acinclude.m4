@@ -20,26 +20,6 @@ AC_DEFUN(APACHE_FAST_OUTPUT,[
   APACHE_FAST_OUTPUT_FILES="$APACHE_FAST_OUTPUT_FILES $1"
 ])
 
-dnl APACHE_MKDIR_P_CHECK
-dnl checks whether mkdir -p works
-AC_DEFUN(APACHE_MKDIR_P_CHECK,[
-  AC_CACHE_CHECK(for working mkdir -p, ac_cv_mkdir_p,[
-    test -d conftestdir && rm -rf conftestdir
-    mkdir -p conftestdir/somedir >/dev/null 2>&1
-    if test -d conftestdir/somedir; then
-      ac_cv_mkdir_p=yes
-    else
-      ac_cv_mkdir_p=no
-    fi
-    rm -rf conftestdir
-  ])
-  if test "$ac_cv_mkdir_p" = "yes"; then
-      mkdir_p="mkdir -p"
-  else
-      mkdir_p="$top_srcdir/build/mkdir.sh"
-  fi
-])
-
 dnl APACHE_GEN_CONFIG_VARS
 dnl Creates config_vars.mk
 AC_DEFUN(APACHE_GEN_CONFIG_VARS,[
