@@ -1686,6 +1686,9 @@ API_EXPORT(void) ap_send_http_header(request_rec *r)
 API_EXPORT(void) ap_finalize_request_protocol(request_rec *r)
 {
     if (r->chunked && !r->connection->aborted) {
+#ifdef CHARSET_EBCDIC
+	PUSH_EBCDIC_OUTPUTCONVERSION_STATE(r->connection->client, 1);
+#endif
         /*
          * Turn off chunked encoding --- we can only do this once.
          */
@@ -1697,6 +1700,10 @@ API_EXPORT(void) ap_finalize_request_protocol(request_rec *r)
         /* If we had footer "headers", we'd send them now */
         ap_rputs(CRLF, r);
         ap_kill_timeout(r);
+
+#ifdef CHARSET_EBCDIC
+	POP_EBCDIC_OUTPUTCONVERSION_STATE(r->connection->client);
+#endif /*CHARSET_EBCDIC*/
     }
 }
 
