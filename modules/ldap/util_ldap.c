@@ -1605,11 +1605,16 @@ static const char *util_ldap_set_connection_timeout(cmd_parms *cmd, void *dummy,
         return err;
     }
 
+#ifdef LDAP_OPT_NETWORK_TIMEOUT
     st->connectionTimeout = atol(ttl);
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, cmd->server, 
                       "[%d] ldap connection: Setting connection timeout to %ld seconds.", 
                       getpid(), st->connectionTimeout);
+#else
+    ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s,
+                     "LDAP: Connection timout option not supported by the LDAP SDK in use." );
+#endif
 
     return NULL;
 }
@@ -1811,6 +1816,7 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
                          "LDAP: SSL support unavailable" );
     }
 
+#ifdef LDAP_OPT_NETWORK_TIMEOUT
     if (st->connectionTimeout > 0) {
         timeOut.tv_sec = st->connectionTimeout;
     }
@@ -1823,6 +1829,7 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
                              "LDAP: Could not set the connection timeout" );
         }
     }
+#endif
 
     
     return(OK);
