@@ -1,5 +1,12 @@
 Changes with Apache 1.3.29
 
+  *) If a request fails and the client will be redirected to another URL
+     due to ErrorDocument, see if we need to drop the connection after
+     sending the 302 response.  This fixes a problem where Apache treated
+     the body of the failed request as the next request on a keepalive
+     connection.  The subsequent 501 error sent to the browser prevented 
+     some browsers from fetching the error document.  [Jeff Trawick]
+
   *) Fixed mod_usertrack to not get false positive matches on the
      user-tracking cookie's name.  PR 16661.
      [Manni Wood <manniwood@planet-save.com>]

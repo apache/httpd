@@ -1117,7 +1117,15 @@ API_EXPORT(void) ap_die(int type, request_rec *r)
              * apache code, and continue with the usual REDIRECT handler.
              * But note that the client will ultimately see the wrong
              * status...
+             *
+             * Also, before updating r->status, we may need to ensure that
+             * the connection is dropped.  For example, there may be
+             * unread request body that would confuse us if we try
+             * to read another request.
              */
+            if (ap_status_drops_connection(r->status)) {
+                r->connection->keepalive = -1;
+            }
             r->status = REDIRECT;
             ap_table_setn(r->headers_out, "Location", custom_response);
         }
