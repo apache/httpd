@@ -2415,7 +2415,7 @@ static int send_parsed_file(request_rec *r)
     if ((*state == xbithack_full)
 #if !defined(OS2) && !defined(WIN32)
     /*  OS/2 dosen't support Groups. */
-        && (r->finfo.protection & S_IXGRP)
+        && (r->finfo.protection & APR_GEXECUTE)
 #endif
         ) {
         ap_update_mtime(r, r->finfo.mtime);
@@ -2487,7 +2487,7 @@ static int xbithack_handler(request_rec *r)
 #else
     enum xbithack *state;
 
-    if (!(r->finfo.protection & S_IXUSR)) {
+    if (!(r->finfo.protection & APR_UEXECUTE)) {
         return DECLINED;
     }
 

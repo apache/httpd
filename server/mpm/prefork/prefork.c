@@ -1744,7 +1744,7 @@ static const char *set_max_requests(cmd_parms *cmd, void *dummy, char *arg)
 
 static const char *set_coredumpdir (cmd_parms *cmd, void *dummy, char *arg) 
 {
-    struct stat finfo;
+    ap_finfo_t finfo;
     const char *fname;
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
@@ -1752,7 +1752,8 @@ static const char *set_coredumpdir (cmd_parms *cmd, void *dummy, char *arg)
     }
 
     fname = ap_server_root_relative(cmd->pool, arg);
-    if ((stat(fname, &finfo) == -1) || !S_ISDIR(finfo.st_mode)) {
+    if ((ap_stat(&finfo, fname, cmd->pool) != APR_SUCCESS) || 
+        (finfo.filetype != APR_DIR)) {
 	return ap_pstrcat(cmd->pool, "CoreDumpDirectory ", fname, 
 			  " does not exist or is not a directory", NULL);
     }

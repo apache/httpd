@@ -116,8 +116,6 @@ typedef char * caddr_t;
 
 #define HAVE_MEMMOVE
 
-#define HAVE_SYS_STAT_H
-#define lstat(x, y) stat(x, y)
 #define S_ISLNK(m) (0)
 #define S_ISREG(m) ((m & _S_IFREG) == _S_IFREG)
 #ifndef S_ISDIR

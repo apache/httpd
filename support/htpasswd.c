@@ -332,18 +332,10 @@ static int writable(char *fname)
  */
 static int exists(char *fname)
 {
-#ifdef WIN32
-    struct _stat sbuf;
-#else
-    struct stat sbuf;
-#endif
+    ap_finfo_t sbuf;
     int check;
 
-#ifdef WIN32
-    check = _stat(fname, &sbuf);
-#else
-    check = stat(fname, &sbuf);
-#endif
+    check = ap_stat(&sbuf, fname, NULL);
     return ((check == -1) && (errno == ENOENT)) ? 0 : 1;
 }
 
