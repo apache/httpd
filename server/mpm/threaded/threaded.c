@@ -683,7 +683,7 @@ static void *start_threads(apr_thread_t *thd, void * dummy)
     apr_status_t rv;
     int threads_created = 0;
 
-    while (1) {
+    while (!workers_may_exit) { /* give up when the process is told to terminate */
         for (i=0; i < ap_threads_per_child; i++) {
             int status = ap_scoreboard_image->servers[child_num_arg][i].status;
 
@@ -744,6 +744,7 @@ static void child_main(int child_num_arg)
     apr_status_t rv;
     thread_starter *ts;
     apr_threadattr_t *thread_attr;
+    apr_thread_t *start_thread_id;
 
     ap_my_pid = getpid();
     apr_pool_create(&pchild, pconf);
@@ -793,7 +794,10 @@ static void child_main(int child_num_arg)
 
     /* Setup worker threads */
 
-    threads = (apr_thread_t **)malloc(sizeof(apr_thread_t *) * ap_threads_per_child);
+    /* clear the storage; we may not create all our threads immediately, and we want
+     * a 0 entry to indicate a thread which was not created
+     */
+    threads = (apr_thread_t **)calloc(1, sizeof(apr_thread_t *) * ap_threads_per_child);
     if (threads == NULL) {
         ap_log_error(APLOG_MARK, APLOG_ALERT, errno, ap_server_conf,
                      "malloc: out of memory");
@@ -814,7 +818,7 @@ static void child_main(int child_num_arg)
     ts->child_num_arg = child_num_arg;
     ts->threadattr = thread_attr;
 
-    if ((rv = apr_thread_create(&threads[i], thread_attr, start_threads, ts, pchild))) {
+    if ((rv = apr_thread_create(&start_thread_id, thread_attr, start_threads, ts, pchild))) {
         ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf,
                      "apr_thread_create: unable to create worker thread");
         /* In case system resources are maxxed out, we don't want
@@ -835,8 +839,11 @@ static void child_main(int child_num_arg)
      *   If the worker already exited, then the join frees their resources and returns.
      *   If the worker hasn't exited, then this blocks until they have (then cleans up).
      */
+    apr_thread_join(&rv, start_thread_id);
     for (i = 0; i < ap_threads_per_child; i++) {
-        apr_thread_join(&rv, threads[i]);
+        if (threads[i]) { /* if we ever created this thread */
+            apr_thread_join(&rv, threads[i]);
+        }
     }
 
     free(threads);
