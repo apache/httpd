@@ -64,7 +64,6 @@ the <A HREF="upgrading_to_1_3.html">upgrade notes</A>.
     it.  This opens up more opportunities for log rotation, hit
     filtering, real-time splitting of multiple vhosts into separate
     logs, and asynchronous DNS resolving on the fly.
-
 </DL>
 
 <P><HR>
@@ -201,6 +200,12 @@ documentation</A> for more information.
     <CODE>VirtualHost</CODE> sections.  This is useful for folks
     trying to debug their virtual host configuration.
 
+<DT><STRONG>Control of HTTP methods</STRONG>
+<DD><A HREF="mod/core.html#limitexcept">&lt;LimitExcept&gt; and
+    &lt;/LimitExcept&gt;</A> are used to enclose a group of access control
+    directives which will then apply to any HTTP access method not listed in
+    the arguments; i.e., it is the opposite of a <Limit> section and can be
+    used to control both standard and nonstandard/unrecognized methods.
 </DL>
 
 <P><HR>
@@ -208,6 +213,13 @@ documentation</A> for more information.
 <H3><A NAME="mod">Module Enhancements</A></H3>
 
 <DL>
+<DT><STRONG>NEW - Pass all of the server's environment variables to
+    CGIs and SSIs.</STRONG><BR>
+<DD>With the <A HREF="mod/mod_env.html#passallenv">PassAllEnv</A> directive all
+    of the server's environment variables are made available to CGIs and SSIs
+    within the directive's scope. Please note that this directive is not
+    recommended for general use.
+
 <DT><A HREF="mod/mod_negotiation.html"><STRONG>Improved mod_negotiation
     </STRONG></A><BR>
 <DD>The optional content negotiation (MultiViews) module has been completely
@@ -394,6 +406,11 @@ MIME-typing</A></STRONG>
     HREF="mod/mod_log_config.html#customlog"
     ><CODE>CustomLog</CODE></A> directives, rather than having to
     spell out the complete log format string each time.
+
+<DT><STRONG>Conditional logging</STRONG>
+<DD><A HREF="mod/mod_log_config.html#customlog-conditional">mod_log_config</A>
+    now supports logging based upon environment variables.
+    mod_log_referer and mod_log_agent are now deprecated.
 
 <DT><STRONG>mod_cern_meta configurable per-directory</STRONG>
 <DD><A HREF="mod/mod_cern_meta.html">mod_cern_meta</A> is now
@@ -601,7 +618,7 @@ MIME-typing</A></STRONG>
     config files.  So you will see errors in the config file.  This
     should make it easier to start Apache via rsh or crontab.
 
-<DT><STRONG>Year-2000 Improvements</STRONG>
+<DT><A NAME="y2k"><STRONG>Year-2000 Improvements</STRONG></A>
 <DD>The default <CODE>timefmt</CODE> string used by <A
     HREF="mod/mod_include.html"><CODE>mod_include</CODE></A> has been
     modified to display the year using four digits rather than the
