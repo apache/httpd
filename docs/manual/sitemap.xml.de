@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
-<!-- English revision: 1.12.2.2 -->
+<!-- English revision: 1.12.2.3 -->
 
 <sitemap>
   <relativepath href="."/>
@@ -87,8 +87,6 @@
 Windows einsetzen</page>
 <page href="platform/win_compiling.html">Kompilieren des Apache f&#252;r
 Microsoft Windows</page>
-<page href="platform/win_service.html">Apache f&#252;r Windows als Dienst
-betreiben</page>
 <page href="platform/netware.html">Apache unter Novell NetWare einsetzen</page>
 <page href="platform/perf-hp.html">Einen Hochleistungs-Web-Server auf
 HPUX betreiben</page>
