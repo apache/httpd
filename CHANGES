@@ -1,5 +1,8 @@
 Changes with Apache 2.0.12-dev
 
+  *) Move the threaded MPM to use APR locks instead of pthread locks.
+     [Ryan Bloom]
+
   *) Rename mpmt_pthread to threaded.  This is more in line with the
      fact that mpmt_pthread shouldn't be using pthreads directly, and
      it is a smaller name that doesn't tie into anything.

@@ -92,8 +92,8 @@
 #include <netinet/tcp.h>
 #endif
 
-#include <pthread.h>
 #include <signal.h>
+#include <pthread.h>
 
 /*
  * Actual definitions of config globals
@@ -130,7 +130,7 @@ char ap_coredump_dir[MAX_STRING_LEN];
 
 static apr_file_t *pipe_of_death_in = NULL;
 static apr_file_t *pipe_of_death_out = NULL;
-static pthread_mutex_t pipe_of_death_mutex;
+static apr_lock_t *pipe_of_death_mutex;
 
 /* *Non*-shared http_main globals... */
 
@@ -160,7 +160,7 @@ unsigned int ap_my_pid; /* Linux getpid() doesn't work except in main
                            thread. Use this instead */
 /* Keep track of the number of worker threads currently active */
 static int worker_thread_count;
-static pthread_mutex_t worker_thread_count_mutex;
+static apr_lock_t *worker_thread_count_mutex;
 
 /* Locks for accept serialization */
 static apr_lock_t *accept_mutex;
@@ -423,7 +423,7 @@ static void process_socket(apr_pool_t *p, apr_socket_t *sock, int my_child_num, 
 /* Sets workers_may_exit if we received a character on the pipe_of_death */
 static void check_pipe_of_death(void)
 {
-    pthread_mutex_lock(&pipe_of_death_mutex);
+    apr_lock_acquire(pipe_of_death_mutex);
     if (!workers_may_exit) {
         apr_status_t ret;
         char pipe_read_char;
@@ -440,7 +440,7 @@ static void check_pipe_of_death(void)
             workers_may_exit = 1;
         }
     }
-    pthread_mutex_unlock(&pipe_of_death_mutex);
+    apr_lock_release(pipe_of_death_mutex);
 }
 
 static void * worker_thread(void * dummy)
@@ -461,9 +461,9 @@ static void * worker_thread(void * dummy)
 
     apr_pool_create(&ptrans, tpool);
 
-    pthread_mutex_lock(&worker_thread_count_mutex);
+    apr_lock_acquire(worker_thread_count_mutex);
     worker_thread_count++;
-    pthread_mutex_unlock(&worker_thread_count_mutex);
+    apr_lock_release(worker_thread_count_mutex);
 
     apr_poll_setup(&pollset, num_listensocks+1, tpool);
     for(n=0 ; n <= num_listensocks ; ++n)
@@ -569,14 +569,14 @@ static void * worker_thread(void * dummy)
     apr_pool_destroy(tpool);
     ap_update_child_status(process_slot, thread_slot, SERVER_DEAD,
         (request_rec *) NULL);
-    pthread_mutex_lock(&worker_thread_count_mutex);
+    apr_lock_acquire(worker_thread_count_mutex);
     worker_thread_count--;
     if (worker_thread_count == 0) {
         /* All the threads have exited, now finish the shutdown process
          * by signalling the sigwait thread */
         kill(ap_my_pid, SIGTERM);
     }
-    pthread_mutex_unlock(&worker_thread_count_mutex);
+    apr_lock_release(worker_thread_count_mutex);
 
     return NULL;
 }
@@ -647,8 +647,10 @@ static void child_main(int child_num_arg)
     /* Setup worker threads */
 
     worker_thread_count = 0;
-    pthread_mutex_init(&worker_thread_count_mutex, NULL);
-    pthread_mutex_init(&pipe_of_death_mutex, NULL);
+    apr_lock_create(&worker_thread_count_mutex, APR_MUTEX, APR_INTRAPROCESS,
+                    NULL, pchild);
+    apr_lock_create(&pipe_of_death_mutex, APR_MUTEX, APR_INTRAPROCESS, 
+                    NULL, pchild);
     pthread_attr_init(&thread_attr);
 #ifdef PTHREAD_ATTR_SETDETACHSTATE_ARG2_ADDR
     {
