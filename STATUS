@@ -17,13 +17,10 @@ WIN32 1.3 FINAL RELEASE SHOWSTOPPERS:
 	for buffer overflow, someone should rewrite or verify
 	they're safe
 
-	* SSI: mod_include has had "cmd" disabled pending rewrite to use
-	new Win32 spawning.
+    * CGI: chdir() needs to be reinstated for CGI.
 
-	* CGI: chdir() needs to be reinstated for CGI.
-
-	* Child process: eliminate spawn_child() and spawn_child_err() which
-	are unsafe.
+    * Child process: eliminate spawn_child() and spawn_child_err() which
+      are unsafe in mod_rewrite.c
 
 Documentation that needs writing:
 
@@ -218,8 +215,7 @@ Win32 specific issues:
 	really bad
 
     * chdir() for CGI scripts and mod_include #exec needs to be 
-      re-implemented.  This requires either serializing chdir/spawn 
-      or using a native Win32 CreateProcess(?) call.
+      re-implemented now that CreateProcess is being used.
 
     * process/thread model
 	- need dynamic thread creation/destruction, similar to 
@@ -247,8 +243,6 @@ Win32 specific issues:
     * we don't mmap on NT.  Use TransmitFile?
 
     * CGIs
-        - hangs on multiple CGI execution?  PR#1607,1129
-    	    Marc can't repeat...
 	- docs on how they work w/scripts
 	- use registry to find interpreter?
 	- WTF is the buffering coming from?
@@ -369,4 +363,9 @@ Delayed until after 1.3.0, unless someone happens to get to it:
         5) would be nice if the proxy used Via and Max-Forwards, even as HTTP/1.0
 
     * #ifdef __EMX__ --> #ifdef OS2.
+
+    * use of spawnvp in uncompress_child in mod_mime_magic - doesn't
+      use the new child_info structure, is this still safe?  Needs to be 
+      looked at.
+
 

@@ -786,7 +786,7 @@ static int include_cmd_child(void *arg, child_info *pinfo)
 #endif
     ap_cleanup_for_exec();
     /* set shellcmd flag to pass arg to SHELL_PATH */
-    child_pid = ap_call_exec(r, NULL, s, ap_create_environment(r->pool, env),
+    child_pid = ap_call_exec(r, pinfo, s, ap_create_environment(r->pool, env),
 			     1);
 #ifdef WIN32
     return (child_pid);
@@ -811,20 +811,18 @@ static int include_cmd_child(void *arg, child_info *pinfo)
 static int include_cmd(char *s, request_rec *r)
 {
     include_cmd_arg arg;
-    FILE *f;
+    BUFF *script_in;
 
     arg.r = r;
     arg.s = s;
 
-    if (!spawn_child(r->pool, include_cmd_child, &arg,
-                     kill_after_timeout, NULL, &f)) {
+    if (!ap_spawn_child_err_buff(r->pool, include_cmd_child, &arg,
+                     kill_after_timeout, NULL, &script_in, NULL)) {
         return -1;
     }
 
-    ap_send_fd(f, r);
-    ap_pfclose(r->pool, f);        /* will wait for zombie when
-                                 * r->pool is cleared
-                                 */
+    ap_send_fb(script_in, r);
+    ap_bclose(script_in);
     return 0;
 }
 #endif
@@ -841,10 +839,6 @@ static int handle_exec(FILE *in, request_rec *r, const char *error)
             return 1;
         }
         if (!strcmp(tag, "cmd")) {
-#ifdef WIN32
-            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
-                        "cmd in SSI temporarily disabled");
-#else
             parse_string(r, tag_val, parsed_string, sizeof(parsed_string), 1);
             if (include_cmd(parsed_string, r) == -1) {
                 ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
@@ -856,7 +850,6 @@ static int handle_exec(FILE *in, request_rec *r, const char *error)
             /* just in case some stooge changed directories */
 #ifndef WIN32
             ap_chdir_file(r->filename);
-#endif
 #endif
         }
         else if (!strcmp(tag, "cgi")) {

@@ -2171,8 +2171,7 @@ static int uncompress(request_rec *r, int method, const unsigned char *old,
 		      unsigned char **newch, int n)
 {
     struct uncompress_parms parm;
-    FILE *fin;
-    FILE *fout;
+    BUFF *bin, *bout;
     pool *sub_pool;
 
     parm.r = r;
@@ -2184,22 +2183,22 @@ static int uncompress(request_rec *r, int method, const unsigned char *old,
      */
     sub_pool = ap_make_sub_pool(r->pool);
 
-    if (!spawn_child(sub_pool, uncompress_child, &parm, kill_always,
-		     &fin, &fout)) {
+    if (!ap_spawn_child_err_buff(sub_pool, uncompress_child, &parm, kill_always,
+		     &bin, &bout, NULL)) {
 	ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
 		    MODNAME ": couldn't spawn uncompress process: %s", r->uri);
 	return -1;
     }
 
-    if (write(fileno(fin), old, n) != n) {
+    if (ap_bwrite(bin, old, n) != n) {
 	ap_destroy_pool(sub_pool);
 	ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
 		    MODNAME ": write failed.");
 	return -1;
     }
-    ap_pfclose(sub_pool, fin);
+    ap_bclose(bin);
     *newch = (unsigned char *) ap_palloc(r->pool, n);
-    if ((n = read(fileno(fout), *newch, n)) <= 0) {
+    if ((n = ap_bread(bout, *newch, n)) <= 0) {
 	ap_destroy_pool(sub_pool);
 	ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
 	    MODNAME ": read failed %s", r->filename);

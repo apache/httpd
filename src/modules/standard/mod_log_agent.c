@@ -58,6 +58,7 @@
 
 #include "httpd.h"
 #include "http_config.h"
+#include "http_log.h"
 
 module agent_log_module;
 
@@ -101,30 +102,6 @@ static const command_rec agent_log_cmds[] =
     {NULL}
 };
 
-static int agent_log_child(void *cmd, child_info *pinfo)
-{
-    /* Child process code for 'AgentLog "|..."';
-     * may want a common framework for this, since I expect it will
-     * be common for other foo-loggers to want this sort of thing...
-     */
-    int child_pid = 1;
-
-    ap_cleanup_for_exec();
-    signal(SIGHUP, SIG_IGN);
-#if defined(WIN32)
-    child_pid = spawnl(SHELL_PATH, SHELL_PATH, "/c", (char *) cmd, NULL);
-    return (child_pid);
-#elif defined(__EMX__)
-    /* For OS/2 we need to use a '/' */
-    execl(SHELL_PATH, SHELL_PATH, "/c", (char *) cmd, NULL);
-#else
-    execl(SHELL_PATH, SHELL_PATH, "-c", (char *) cmd, NULL);
-#endif
-    perror("exec");
-    fprintf(stderr, "Exec of shell for logging failed!!!\n");
-    return (child_pid);
-}
-
 static void open_agent_log(server_rec *s, pool *p)
 {
     agent_log_state *cls = ap_get_module_config(s->module_config,
@@ -136,16 +113,13 @@ static void open_agent_log(server_rec *s, pool *p)
         return;                 /* virtual log shared w/main server */
 
     if (*cls->fname == '|') {
-        FILE *dummy;
+        piped_log *pl;
 
-        if (!spawn_child(p, agent_log_child, (void *) (cls->fname + 1),
-                         kill_after_timeout, &dummy, NULL)) {
-            perror("spawn_child");
-            fprintf(stderr, "Couldn't fork child for AgentLog process\n");
+        pl = ap_open_piped_log(p, cls->fname + 1);
+        if (pl == NULL) {
             exit(1);
         }
-
-        cls->agent_fd = fileno(dummy);
+        cls->agent_fd = ap_piped_log_write_fd(pl);
     }
     else if (*cls->fname != '\0') {
         if ((cls->agent_fd = ap_popenf(p, fname, xfer_flags, xfer_mode)) < 0) {
