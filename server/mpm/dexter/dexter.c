@@ -187,9 +187,8 @@ API_EXPORT(const server_rec *) ap_get_server_conf(void)
     return (server_conf);
 }
 
-/* a clean exit from a child with proper cleanup 
-   static void ap_clean_child_exit(int code) __attribute__ ((noreturn)); */
-void ap_clean_child_exit(int code)
+/* a clean exit from a child with proper cleanup */
+static void clean_child_exit(int code)
 {
     if (pchild) {
 	ap_destroy_pool(pchild);
@@ -463,7 +462,7 @@ static void sig_coredump(int sig)
 
 static void just_die(int sig)
 {
-    ap_clean_child_exit(0);
+    clean_child_exit(0);
 }
 
 /*****************************************************************
@@ -1012,11 +1011,11 @@ static void child_main(int child_num_arg)
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, rv, server_conf,
                      "Couldn't initialize cross-process lock in child");
-        ap_clean_child_exit(APEXIT_CHILDFATAL);
+        clean_child_exit(APEXIT_CHILDFATAL);
     }
 
     if (unixd_setup_child()) {
-	ap_clean_child_exit(APEXIT_CHILDFATAL);
+	clean_child_exit(APEXIT_CHILDFATAL);
     }
 
     ap_child_init_hook(pchild, server_conf);
