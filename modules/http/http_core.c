@@ -297,9 +297,11 @@ static int ap_process_http_connection(conn_rec *c)
 
 static void ap_http_insert_filter(request_rec *r)
 {
-    ap_add_output_filter("BYTERANGE", NULL, r, r->connection);
-    ap_add_output_filter("CONTENT_LENGTH", NULL, r, r->connection);
-    ap_add_output_filter("HTTP_HEADER", NULL, r, r->connection);
+    if (!r->main) {
+        ap_add_output_filter("BYTERANGE", NULL, r, r->connection);
+        ap_add_output_filter("CONTENT_LENGTH", NULL, r, r->connection);
+        ap_add_output_filter("HTTP_HEADER", NULL, r, r->connection);
+    }
 }
 
 static void register_hooks(apr_pool_t *p)
