@@ -548,7 +548,8 @@ static apr_status_t expires_filter(ap_filter_t *f,
                 expiry = conf->expiresdefault;
             }
         }
-        if (expiry != NULL) {
+        /* != '\0' covers the case where ExpiresDefault is not user defined. */
+        if (expiry != NULL && expiry[0] != '\0') {
             set_expiration_fields(r, expiry, t);
         }
     }
