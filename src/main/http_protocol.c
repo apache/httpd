@@ -786,7 +786,7 @@ request_rec *read_request(conn_rec *conn)
 
     r->headers_in      = make_table(r->pool, 50);
     r->subprocess_env  = make_table(r->pool, 50);
-    r->headers_out     = make_table(r->pool, 5);
+    r->headers_out     = make_table(r->pool, 12);
     r->err_headers_out = make_table(r->pool, 5);
     r->notes           = make_table(r->pool, 5);
 

@@ -1162,7 +1162,7 @@ table *rename_original_env(pool *p, table *t)
 {
     array_header *env_arr = table_elts(t);
     table_entry *elts = (table_entry *) env_arr->elts;
-    table *new = make_table(p, env_arr->nelts);
+    table *new = make_table(p, env_arr->nalloc);
     int i;
 
     for (i = 0; i < env_arr->nelts; ++i) {
@@ -1217,7 +1217,7 @@ request_rec *internal_internal_redirect(const char *new_uri, request_rec *r)
     new->main            = r->main;
 
     new->headers_in      = r->headers_in;
-    new->headers_out     = make_table(r->pool, 5);
+    new->headers_out     = make_table(r->pool, 12);
     new->err_headers_out = r->err_headers_out;
     new->subprocess_env  = rename_original_env(r->pool, r->subprocess_env);
     new->notes           = make_table(r->pool, 5);
