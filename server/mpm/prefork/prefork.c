@@ -485,7 +485,8 @@ static void child_main(int child_num_arg)
     status = apr_proc_mutex_child_init(&accept_mutex, ap_lock_fname, pchild);
     if (status != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, status, ap_server_conf,
-                     "Couldn't initialize cross-process lock in child");
+                     "Couldn't initialize cross-process lock in child "
+                     "(%s) (%d)", ap_lock_fname, ap_accept_lock_mech);
         clean_child_exit(APEXIT_CHILDFATAL);
     }
 
@@ -898,7 +899,8 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
                                ap_accept_lock_mech, _pconf);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s,
-                     "Couldn't create accept lock");
+                     "Couldn't create accept lock (%s) (%d)",
+                     ap_lock_fname, ap_accept_lock_mech);
         mpm_state = AP_MPMQ_STOPPING;
         return 1;
     }
