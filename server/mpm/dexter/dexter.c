@@ -1444,15 +1444,15 @@ static const char *set_num_daemons (cmd_parms *cmd, void *dummy, char *arg)
 
     num_daemons = atoi(arg);
     if (num_daemons > HARD_SERVER_LIMIT) {
-       fprintf(stderr, "WARNING: MaxClients of %d exceeds compile time limit "
+       fprintf(stderr, "WARNING: NumServers of %d exceeds compile time limit "
            "of %d servers,\n", num_daemons, HARD_SERVER_LIMIT);
-       fprintf(stderr, " lowering MaxClients to %d.  To increase, please "
+       fprintf(stderr, " lowering NumServers to %d.  To increase, please "
            "see the\n", HARD_SERVER_LIMIT);
        fprintf(stderr, " HARD_SERVER_LIMIT define in src/include/httpd.h.\n");
        num_daemons = HARD_SERVER_LIMIT;
     } 
     else if (num_daemons < 1) {
-	fprintf(stderr, "WARNING: Require MaxClients > 0, setting to 1\n");
+	fprintf(stderr, "WARNING: Require NumServers > 0, setting to 1\n");
 	num_daemons = 1;
     }
     return NULL;
