@@ -113,6 +113,7 @@ installr: _apacher
 	copy os\win32\ApacheModuleCERNMetaR\ApacheModuleCERNMeta.dll \Apache\modules
 	copy os\win32\ApacheModuleExpiresR\ApacheModuleExpires.dll \Apache\modules
 	copy os\win32\ApacheModuleHeadersR\ApacheModuleHeaders.dll \Apache\modules
+	copy os\win32\ApacheModuleRewriteR\ApacheModuleRewrite.dll \Apache\modules
 	copy os\win32\ApacheModuleSpelingR\ApacheModuleSpeling.dll \Apache\modules
 	copy os\win32\ApacheModuleUserTrackR\ApacheModuleUserTrack.dll \Apache\modules
 	copy modules\proxy\Release\ApacheModuleProxy.dll \Apache\modules
@@ -130,6 +131,8 @@ installd: _apached
 	copy os\win32\ApacheModuleDigestD\ApacheModuleDigest.dll \Apache\modules
 	copy os\win32\ApacheModuleCERNMetaD\ApacheModuleCERNMeta.dll \Apache\modules
 	copy os\win32\ApacheModuleExpiresD\ApacheModuleExpires.dll \Apache\modules
+	copy os\win32\ApacheModuleHeadersD\ApacheModuleHeaders.dll \Apache\modules
+	copy os\win32\ApacheModuleRewriteD\ApacheModuleRewrite.dll \Apache\modules
 	copy os\win32\ApacheModuleSpelingD\ApacheModuleSpeling.dll \Apache\modules
 	copy os\win32\ApacheModuleUserTrackD\ApacheModuleUserTrack.dll \Apache\modules
 	copy modules\proxy\Debug\ApacheModuleProxy.dll \Apache\modules
