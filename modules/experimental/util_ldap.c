@@ -61,9 +61,6 @@
  */
 
 #include <apr_ldap.h>
-
-#ifdef APU_HAS_LDAP
-
 #include <apr_strings.h>
 
 #include "ap_config.h"
@@ -78,6 +75,10 @@
 
 #if APR_HAVE_UNISTD_H
 #include <unistd.h>
+#endif
+
+#ifndef APU_HAS_LDAP
+#error mod_ldap requires APR-util to have LDAP support built in
 #endif
 
 module AP_MODULE_DECLARE_DATA ldap_module;
@@ -905,8 +906,6 @@ start_over:
     ldc->reason = "Authentication successful";
     return LDAP_SUCCESS;
 }
-
-#endif /* APU_HAS_LDAP */
 
 
 
