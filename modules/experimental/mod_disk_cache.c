@@ -82,26 +82,14 @@ typedef struct disk_cache_object {
 #define DEFAULT_DIRLENGTH 2
 #define DEFAULT_MIN_FILE_SIZE 1
 #define DEFAULT_MAX_FILE_SIZE 1000000
-#define DEFAULT_CACHE_SIZE 1000000
 
 typedef struct {
     const char* cache_root;
     apr_size_t cache_root_len;
-    off_t space;                 /* Maximum cache size (in 1024 bytes) */
-    apr_time_t maxexpire;        /* Maximum time to keep cached files in msecs */
-    apr_time_t defaultexpire;    /* default time to keep cached file in msecs */
-    double lmfactor;             /* factor for estimating expires date */
-    apr_time_t gcinterval;       /* garbage collection interval, in msec */
     int dirlevels;               /* Number of levels of subdirectories */
     int dirlength;               /* Length of subdirectory names */
-    int        expirychk;               /* true if expiry time is observed for cached files */
     apr_size_t minfs;            /* minumum file size for cached files */
     apr_size_t maxfs;            /* maximum file size for cached files */
-    apr_time_t mintm;            /* minimum time margin for caching files */
-    /* dgc_time_t gcdt;            time of day for daily garbage collection */
-    apr_array_header_t *gcclnun; /* gc_retain_t entries for unused files */
-    apr_array_header_t *gcclean; /* gc_retain_t entries for all files */
-    int maxgcmem;                /* maximum memory used by garbage collection */
 } disk_cache_conf;
 
 module AP_MODULE_DECLARE_DATA disk_cache_module;
@@ -754,10 +742,8 @@ static void *create_config(apr_pool_t *p, server_rec *s)
     /* XXX: Set default values */
     conf->dirlevels = DEFAULT_DIRLEVELS;
     conf->dirlength = DEFAULT_DIRLENGTH;
-    conf->space = DEFAULT_CACHE_SIZE;
     conf->maxfs = DEFAULT_MAX_FILE_SIZE;
     conf->minfs = DEFAULT_MIN_FILE_SIZE;
-    conf->expirychk = 1;
 
     conf->cache_root = NULL;
     conf->cache_root_len = 0;
@@ -779,24 +765,7 @@ static const char
 
     return NULL;
 }
-static const char
-*set_cache_size(cmd_parms *parms, void *in_struct_ptr, const char *arg)
-{
-    disk_cache_conf *conf = ap_get_module_config(parms->server->module_config,
-                                                 &disk_cache_module);
-    conf->space = atoi(arg);
-    return NULL;
-}
-static const char
-*set_cache_gcint(cmd_parms *parms, void *in_struct_ptr, const char *arg)
-{
-/*
-    disk_cache_conf *conf = ap_get_module_config(parms->server->module_config,
-                                                 &disk_cache_module);
-*/
-    /* XXX */
-    return NULL;
-}
+
 /*
  * Consider eliminating the next two directives in favor of
  * Ian's prime number hash...
@@ -830,15 +799,7 @@ static const char
     conf->dirlength = val;
     return NULL;
 }
-static const char
-*set_cache_exchk(cmd_parms *parms, void *in_struct_ptr, int flag)
-{
-    disk_cache_conf *conf = ap_get_module_config(parms->server->module_config,
-                                                 &disk_cache_module);
-    conf->expirychk = flag;
 
-    return NULL;
-}
 static const char
 *set_cache_minfs(cmd_parms *parms, void *in_struct_ptr, const char *arg)
 {
@@ -855,80 +816,19 @@ static const char
     conf->maxfs = atoi(arg);
     return NULL;
 }
-static const char
-*set_cache_minetm(cmd_parms *parms, void *in_struct_ptr, const char *arg)
-{
-    /* XXX
-    disk_cache_conf *conf = ap_get_module_config(parms->server->module_config,
-                                                 &disk_cache_module);
-    */
-    return NULL;
-}
-static const char
-*set_cache_gctime(cmd_parms *parms, void *in_struct_ptr, const char *arg)
-{
-    /* XXX
-    disk_cache_conf *conf = ap_get_module_config(parms->server->module_config,
-                                                 &disk_cache_module);
-    */
-    return NULL;
-}
-static const char
-*add_cache_gcclean(cmd_parms *parms, void *in_struct_ptr, const char *arg, const char *arg1)
-{
-    /* XXX
-    disk_cache_conf *conf = ap_get_module_config(parms->server->module_config,
-                                                 &disk_cache_module);
-    */
-    return NULL;
-}
-static const char
-*add_cache_gcclnun(cmd_parms *parms, void *in_struct_ptr, const char *arg, const char *arg1)
-{
-    /* XXX
-    disk_cache_conf *conf = ap_get_module_config(parms->server->module_config,
-                                                 &disk_cache_module);
-    */
-    return NULL;
-}
-static const char
-*set_cache_maxgcmem(cmd_parms *parms, void *in_struct_ptr, const char *arg)
-{
-    /* XXX
-    disk_cache_conf *conf = ap_get_module_config(parms->server->module_config,
-                                                 &disk_cache_module);
-    */
-    return NULL;
-}
 
 static const command_rec disk_cache_cmds[] =
 {
     AP_INIT_TAKE1("CacheRoot", set_cache_root, NULL, RSRC_CONF,
                  "The directory to store cache files"),
-    AP_INIT_TAKE1("CacheSize", set_cache_size, NULL, RSRC_CONF,
-                  "The maximum disk space used by the cache in KB"),
-    AP_INIT_TAKE1("CacheGcInterval", set_cache_gcint, NULL, RSRC_CONF,
-                  "The interval between garbage collections, in hours"),
     AP_INIT_TAKE1("CacheDirLevels", set_cache_dirlevels, NULL, RSRC_CONF,
                   "The number of levels of subdirectories in the cache"),
     AP_INIT_TAKE1("CacheDirLength", set_cache_dirlength, NULL, RSRC_CONF,
                   "The number of characters in subdirectory names"),
-    AP_INIT_FLAG("CacheExpiryCheck", set_cache_exchk, NULL, RSRC_CONF,
-                 "on if cache observes Expires date when seeking files"),
     AP_INIT_TAKE1("CacheMinFileSize", set_cache_minfs, NULL, RSRC_CONF,
                   "The minimum file size to cache a document"),
     AP_INIT_TAKE1("CacheMaxFileSize", set_cache_maxfs, NULL, RSRC_CONF,
                   "The maximum file size to cache a document"),
-    AP_INIT_TAKE1("CacheTimeMargin", set_cache_minetm, NULL, RSRC_CONF,
-                  "The minimum time margin to cache a document"),
-    AP_INIT_TAKE1("CacheGcDaily", set_cache_gctime, NULL, RSRC_CONF,
-                  "The time of day for garbage collection (24 hour clock)"),
-    AP_INIT_TAKE2("CacheGcUnused", add_cache_gcclnun, NULL, RSRC_CONF,
-                  "The time in hours to retain unused file that match a url"),
-    AP_INIT_TAKE2("CacheGcClean", add_cache_gcclean, NULL, RSRC_CONF,
-                  "The time in hours to retain unchanged files that match a url"),
-    AP_INIT_TAKE1("CacheGcMemUsage", set_cache_maxgcmem, NULL, RSRC_CONF,
-                  "The maximum kilobytes of memory used for garbage collection"),
     {NULL}
 };
 
