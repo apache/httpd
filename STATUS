@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/08/18 12:11:48 $]
+Last modified at [$Date: 2004/08/18 14:46:02 $]
 
 Release:
 
@@ -76,7 +76,7 @@ PATCHES TO BACKPORT FROM 2.1
     *) Fix mod_userdir vs mod_suexec identity hook ordering.
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/mappers/mod_userdir.c?r1=1.58&r2=1.59
        PR: 18156
-       +1: jorton
+       +1: jorton, slive
 
     *) [SECURITY] mod_ssl: Fix potential input filter segfaults in SPECULATIVE mode.
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_engine_io.c?r1=1.125&r2=1.126
@@ -100,7 +100,7 @@ PATCHES TO BACKPORT FROM 2.1
 
     *) suexec: Pass the SERVER_SIGNATURE envvar through to CGIs.
          http://cvs.apache.org/viewcvs.cgi/httpd-2.0/support/suexec.c?r1=1.32&r2=1.33
-       +1: trawick, jorton
+       +1: trawick, jorton, slive
 
     *) Proposal: Several folks want to aggressively backport changes
        from mod_cache, mod_mem_cache and mod_file_cache from Apache
