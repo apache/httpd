@@ -62,6 +62,22 @@ accepting requests on network sockets</description>
     >LogLevel</directive> to <code>debug</code>. Then the default <directive
     >AcceptMutex</directive> will be written into the <directive
     module="core">ErrorLog</directive>.</p>
+
+  <note type="warning"><strong>Warning:</strong>
+     <p>On most systems, when the <code>pthread</code> option
+     is selected, if a child process terminates abnormally
+     while holding the <code>AcceptCntl</code> mutex the
+     server will stop responding to requests. When this
+     occurs, the server will require a manual restart to
+     recover.</p>
+     <p>Solaris is a notable exception as it provides a
+     mechanism, used by Apache, which usually allows the
+     mutex to be recovered after a child process terminates
+     abnormally while holding a mutex.</p>
+     <p>If your system implements the
+     <code>pthread_mutexattr_setrobust_np()</code> function,
+     you may be able to use the <code>pthread</code> option safely.</p>
+  </note>
 </usage>
 </directivesynopsis>
 
