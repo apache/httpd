@@ -48,27 +48,27 @@ install-conf:
 install-htdocs:
 	@echo Installing HTML documents
 	@test -d $(htdocsdir) || $(mkinstalldirs) $(htdocsdir)
-	@cp -rp $(srcdir)/../htdocs/* $(htdocsdir)
+	@(cd $(srcdir)/../htdocs && cp -rp * $(htdocsdir))
 
 install-icons:
 	@echo Installing icons
 	@test -d $(iconsdir) || $(mkinstalldirs) $(iconsdir)
-	@cp -rp $(srcdir)/../icons/* $(iconsdir)
+	@(cd $(srcdir)/../icons && cp -rp * $(iconsdir))
 
 install-cgi:
 	@echo Installing CGIs
 	@test -d $(cgidir) || $(mkinstalldirs) $(cgidir)
-	@cp -rp $(srcdir)/../cgi-bin/* $(cgidir)
+	@(cd $(srcdir)/../cgi-bin && cp -rp * $(cgidir))
 
 install-support:
 	@echo Installing Support Binaries
 	@test -d $(bindir) || $(mkinstalldirs) $(bindir)
-	@cp -rp $(srcdir)/support/httpd.exp $(bindir)
-	@cp -rp $(builddir)/support/htpasswd $(bindir)
-	@cp -rp $(builddir)/support/htdigest $(bindir)
-	@cp -rp $(builddir)/support/rotatelogs $(bindir)
-	@cp -rp $(builddir)/support/logresolve $(bindir)
-	@cp -rp $(builddir)/support/ab $(bindir)
+	@cp -p $(srcdir)/support/httpd.exp $(bindir)
+	@cp -p $(builddir)/support/htpasswd $(bindir)
+	@cp -p $(builddir)/support/htdigest $(bindir)
+	@cp -p $(builddir)/support/rotatelogs $(bindir)
+	@cp -p $(builddir)/support/logresolve $(bindir)
+	@cp -p $(builddir)/support/ab $(bindir)
 
 install-other:
 	@test -d $(logdir) || $(mkinstalldirs) $(logdir)
@@ -78,7 +78,7 @@ install-include:
 	@test -d $(includedir)     || $(mkinstalldirs) $(includedir)
 	@test -d $(includedir)/xml || $(mkinstalldirs) $(includedir)/xml
 	@test -d $(includedir)/apr || $(mkinstalldirs) $(includedir)/apr
-	@cp include/*.h $(srcdir)/include/*.h $(includedir)
-	@cp $(srcdir)/lib/expat-lite/*.h $(includedir)/xml
-	@cp lib/apr/include/*.h $(srcdir)/lib/apr/include/*.h $(includedir)/apr
+	@cp -p include/*.h $(srcdir)/include/*.h $(includedir)
+	@cp -p $(srcdir)/lib/expat-lite/*.h $(includedir)/xml
+	@cp -p lib/apr/include/*.h $(srcdir)/lib/apr/include/*.h $(includedir)/apr
 	@chmod 644 $(includedir)/*.h $(includedir)/xml/*.h $(includedir)/apr/*.h
