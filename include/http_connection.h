@@ -73,6 +73,7 @@ extern "C" {
  * @param server The server to create the connection for
  * @param inout The socket to use for all communication with the client
  * @param id ID of this connection; unique at any point in time.
+ * @return new conn_rec, or NULL if the connection has already been reset
  */
 conn_rec *ap_new_connection(apr_pool_t *p, server_rec *server, 
                             apr_socket_t *inout, long id);
