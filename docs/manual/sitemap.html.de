@@ -131,6 +131,7 @@ HPUX betreiben</a></li>
 <li><a href="programs/apxs.html">apxs</a></li>
 <li><a href="programs/configure.html">configure</a></li>
 <li><a href="programs/dbmmanage.html">dbmmanage</a></li>
+<li><a href="programs/htcacheclean.html">htcacheclean</a></li>
 <li><a href="programs/htdigest.html">htdigest</a></li>
 <li><a href="programs/htpasswd.html">htpasswd</a></li>
 <li><a href="programs/logresolve.html">logresolve</a></li>

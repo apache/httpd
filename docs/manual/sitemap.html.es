@@ -131,6 +131,7 @@ Apache</a></li>
 <li><a href="programs/apxs.html">Página de Ayuda: apxs</a></li>
 <li><a href="programs/configure.html">Página de Ayuda: configure</a></li>
 <li><a href="programs/dbmmanage.html">Página de Ayuda: dbmmanage</a></li>
+<li><a href="programs/htcacheclean.html">Página de Ayuda: htcacheclean</a></li>
 <li><a href="programs/htdigest.html">Página de Ayuda: htdigest</a></li>
 <li><a href="programs/htpasswd.html">Página de Ayuda: htpasswd</a></li>
 <li><a href="programs/logresolve.html">Página de Ayuda: logresolve</a></li>

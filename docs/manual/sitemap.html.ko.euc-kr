@@ -132,6 +132,7 @@
 <li><a href="programs/apxs.html">Manpage: apxs</a></li>
 <li><a href="programs/configure.html">Manpage: configure</a></li>
 <li><a href="programs/dbmmanage.html">Manpage: dbmmanage</a></li>
+<li><a href="programs/htcacheclean.html">Manpage: htcacheclean</a></li>
 <li><a href="programs/htdigest.html">Manpage: htdigest</a></li>
 <li><a href="programs/htpasswd.html">Manpage: htpasswd</a></li>
 <li><a href="programs/logresolve.html">Manpage: logresolve</a></li>

@@ -129,6 +129,7 @@ Server on HPUX</a></li>
 <li><a href="programs/apxs.html">Manual Page: apxs</a></li>
 <li><a href="programs/configure.html">Manual Page: configure</a></li>
 <li><a href="programs/dbmmanage.html">Manual Page: dbmmanage</a></li>
+<li><a href="programs/htcacheclean.html">Manual Page: htcacheclean</a></li>
 <li><a href="programs/htdigest.html">Manual Page: htdigest</a></li>
 <li><a href="programs/htpasswd.html">Manual Page: htpasswd</a></li>
 <li><a href="programs/logresolve.html">Manual Page: logresolve</a></li>

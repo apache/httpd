@@ -128,6 +128,7 @@
 <li><a href="programs/apxs.html">マニュアルページ: apxs</a></li>
 <li><a href="programs/configure.html">マニュアルページ: configure</a></li>
 <li><a href="programs/dbmmanage.html">マニュアルページ: dbmmanage</a></li>
+<li><a href="programs/htcacheclean.html">マニュアルページ: htcacheclean</a></li>
 <li><a href="programs/htdigest.html">マニュアルページ: htdigest</a></li>
 <li><a href="programs/htpasswd.html">マニュアルページ: htpasswd</a></li>
 <li><a href="programs/logresolve.html">マニュアルページ: logresolve</a></li>

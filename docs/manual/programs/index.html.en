@@ -56,6 +56,9 @@
       <dd>Create and update user authentication files in DBM format
       for basic authentication</dd>
 
+      <dt><a href="htcacheclean.html">htcacheclean</a></dt>
+      <dd>Clean up the disk cache</dd>
+
       <dt><a href="htdigest.html">htdigest</a></dt>
 
       <dd>Create and update user authentication files for digest
