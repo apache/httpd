@@ -5,12 +5,12 @@
 # what they do, if you are unsure consult the online docs. You have been
 # warned.  
 
+# Originally by Rob McCool
+
 # Note: Where filenames are specified, you must use forward slashes
 # instead of backslashes. e.g. "c:/apache" instead of "c:\apache". If
 # the drive letter is ommited, the drive where Apache.exe is located
 # will be assumed
-
-# Originally by Rob McCool
 
 # ServerType must be standalone.
 
@@ -42,6 +42,7 @@ Port 80
 #   e.g.   www.apache.org (on) or 204.62.129.132 (off)
 # The default is off because it'd be overall better for the net if people
 # had to knowingly turn this feature on.
+
 HostnameLookups off
 
 # If you wish httpd to run as a different user or group, you must run
@@ -183,7 +184,7 @@ ThreadsPerChild 50
 
 # To enable the cache as well, edit and uncomment the following lines:
 
-#CacheRoot /usr/local/apache/proxy
+#CacheRoot @@ServerRoot@@/proxy
 #CacheSize 5
 #CacheGcInterval 4
 #CacheMaxExpire 24

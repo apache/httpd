@@ -53,10 +53,10 @@ allow from all
 
 </Directory>
 
-# /apache/cgi-bin should be changed to whatever your ScriptAliased
+# @@ServerRoot@@/cgi-bin should be changed to whatever your ScriptAliased
 # CGI directory exists, if you have that configured.
 
-<Directory /apache/cgi-bin>
+<Directory @@ServerRoot@@/cgi-bin>
 AllowOverride None
 Options None
 </Directory>
