@@ -1133,11 +1133,21 @@ static int form_header_field(header_struct *h,
     ap_xlate_proto_to_ascii(headfield, len);
     apr_brigade_write(h->bb, NULL, NULL, headfield, len);
 #else
-    apr_brigade_puts(h->bb, NULL, NULL, fieldname);
-    apr_brigade_write(h->bb, NULL, NULL, ": ", sizeof(": ") - 1);
-    apr_brigade_puts(h->bb, NULL, NULL, fieldval);
-    apr_brigade_write(h->bb, NULL, NULL, CRLF, sizeof(CRLF) - 1);
-#endif /* APR_CHARSET_EBCDIC */
+    struct iovec vec[4];
+    struct iovec *v = vec;
+    v->iov_base = (void *)fieldname;
+    v->iov_len = strlen(fieldname);
+    v++;
+    v->iov_base = ": ";
+    v->iov_len = sizeof(": ") - 1;
+    v++;
+    v->iov_base = (void *)fieldval;
+    v->iov_len = strlen(fieldval);
+    v++;
+    v->iov_base = CRLF;
+    v->iov_len = sizeof(CRLF) - 1;
+    apr_brigade_writev(h->bb, NULL, NULL, vec, 4);
+#endif /* !APR_CHARSET_EBCDIC */
     return 1;
 }
 
@@ -1183,10 +1193,8 @@ static void basic_http_header(request_rec *r, apr_bucket_brigade *bb,
                               const char *protocol)
 {
     char *date;
-    char *tmp;
     const char *server;
     header_struct h;
-    apr_size_t len;
     struct iovec vec[4];
 
     if (r->assbackwards) {
@@ -1204,9 +1212,17 @@ static void basic_http_header(request_rec *r, apr_bucket_brigade *bb,
     vec[2].iov_len  = strlen(r->status_line);
     vec[3].iov_base = (void *)CRLF;
     vec[3].iov_len  = sizeof(CRLF) - 1;
-    tmp = apr_pstrcatv(r->pool, vec, 4, &len);
-    ap_xlate_proto_to_ascii(tmp, len);
-    apr_brigade_write(bb, NULL, NULL, tmp, len);
+#if APR_CHARSET_EBCDIC
+    {
+        char *tmp;
+        apr_size_t len;
+        tmp = apr_pstrcatv(r->pool, vec, 4, &len);
+        ap_xlate_proto_to_ascii(tmp, len);
+        apr_brigade_write(bb, NULL, NULL, tmp, len);
+    }
+#else
+    apr_brigade_writev(bb, NULL, NULL, vec, 4);
+#endif
 
     date = apr_palloc(r->pool, APR_RFC822_DATE_LEN);
     ap_recent_rfc822_date(date, r->request_time);
