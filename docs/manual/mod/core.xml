@@ -2456,9 +2456,10 @@ later</compatibility>
     cause the Windows Registry tree <code>HKEY_CLASSES_ROOT</code> to be
     searched using the script file extension (e.g., <code>.pl</code>) as a
     search key. The command defined by the registry subkey
+    <code>Shell\ExecCGI\Command</code> or if not exists by the subkey
     <code>Shell\Open\Command</code> is used to open the script file. In absence
-    of the file extension key or the <code>Shell\Open\Command</code> subkey
-    Apache uses the <code>Script</code> option.</p>
+    of the file extension key or both subkeys Apache uses the
+    <code>Script</code> option.</p>
 
     <note type="warning"><title>Security</title>
       <p>Be careful to use <code>ScriptInterpreterSource Registry</code> with 
@@ -2474,8 +2475,8 @@ later</compatibility>
     </note>
 
     <p>The option <code>Registry-Strict</code> which is new in Apache 2.0
-      does the same as <code>Registry</code> but uses the subkey
-      <code>Shell\ExecCGI\Command</code> instead. The <code>ExecCGI</code> key
+      does the same as <code>Registry</code> but uses only the subkey
+      <code>Shell\ExecCGI\Command</code>. The <code>ExecCGI</code> key
       is not a common one. It has to be configured manually and prevents your
       system from accidental program calls.</p>
 </usage>
