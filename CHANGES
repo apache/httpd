@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_ssl: Drop support for the CompatEnvVars argument to
+     SSLOptions, which was never actually implemented in 2.0.
+     [Joe Orton]
+
   *) Fix bug in mod_deflate that unconditionally sent deflate'd output
      even when Accept-Encoding is not present.  [Justin Erenkrantz]
 
