@@ -35,7 +35,7 @@
 \addtolength{\parskip}{1.2ex}
 
 % Shrink the inter-item spaces
-\AfterBegin{itemize}{\addtolength{\itemsep}{-.8\baselineskip}}
+\AfterBegin{itemize}{\addtolength{\itemsep}{-.6\baselineskip}}
 
 \pagestyle{headings}
 
