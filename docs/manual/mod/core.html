@@ -253,7 +253,8 @@
     </blockquote>
 
     <p><strong>See Also:</strong> <a
-    href="#allowoverride">AllowOverride</a></p>
+    href="#allowoverride">AllowOverride</a> and <a
+    href="../configuring.html">Configuration Files</a></p>
     <hr />
 
     <h2><a id="adddefaultcharset"
@@ -280,8 +281,13 @@
     Off</code> disables this functionality. <code>AddDefaultCharset
     On</code> enables Apache's internal default charset of
     <code>iso-8859-1</code> as required by the directive. You can
-    also specify an alternate <em>charset</em> to be used; e.g.
-    <code>AddDefaultCharset utf-8</code>.</p>
+    also specify an alternate <em>charset</em> to be used. For
+    example:</p>
+
+    <blockquote>
+    <code>AddDefaultCharset utf-8</code>
+    </blockquote>
+
     <hr />
 
     <h2><a id="addmodule" name="addmodule">AddModule
@@ -303,6 +309,13 @@
     of those modules. The server comes with a pre-loaded list of
     active modules; this list can be cleared with the <a
     href="#clearmodulelist">ClearModuleList</a> directive.</p>
+
+    <p>For example:</p>
+
+    <blockquote>
+    <code>AddDefaultCharset utf-8</code>
+    </blockquote>
+
     <hr />
 
     <h2><a id="allowoverride" name="allowoverride">AllowOverride
@@ -399,8 +412,13 @@
       href="mod_include.html#xbithack">XBitHack</a>).</dd>
     </dl>
 
+    <p>Example:</p>
+
+    <blockquote><code>AllowOverride AuthConfig Indexes</code></blockquote>
+
     <p><strong>See Also:</strong> <a
-    href="#accessfilename">AccessFileName</a></p>
+    href="#accessfilename">AccessFileName</a> and <a
+    href="configuring.html">Configuration Files</a></p>
     <hr />
 
     <h2><a id="authname" name="authname">AuthName
@@ -427,6 +445,18 @@
     as <a href="mod_auth.html#authuserfile">AuthUserFile</a> and <a
     href="mod_auth.html#authgroupfile">AuthGroupFile</a> to
     work.</p>
+
+   <p>For example:</p>
+
+   <blockquote><code>AuthName "Top Secret"</code></blockquote>
+
+    <p>The string provided for the <code>AuthRealm</code> is what will
+    appear in the password dialog provided by most browsers.</p>
+
+    <p><strong>See also:</strong> <a 
+    href="../howto/auth.html">Authentication, Authorization, and 
+    Access Control</a></p>
+
     <hr />
 
     <h2><a id="authtype" name="authtype">AuthType
@@ -452,6 +482,10 @@
     as <a href="mod_auth.html#authuserfile">AuthUserFile</a> and <a
     href="mod_auth.html#authgroupfile">AuthGroupFile</a> to
     work.</p>
+
+    <p><strong>See also:</strong> <a
+    href="../howto/auth.html">Authentication, Authorization, and
+    Access Control</a></p>
     <hr />
 
     <h2><a id="clearmodulelist"
@@ -1247,9 +1281,52 @@
     <p>If <code>Include</code> points to a directory, rather than a
     file, Apache will read all files in that directory, and any
     subdirectory, and parse those as configuration files.</p>
+
+    <p>The file path specified may be a fully qualified path (i.e.
+    starting with a slash), or may be relative to the 
+    <code>ServerRoot</code> directory.</p>
+
+    <p>Examples:</p>
+
+     <blockquote>
+     <code>Include /usr/local/apache/conf/ssl.conf<br />
+     Include /usr/local/apache/conf/vhosts/
+     </blockquote>
+
+     <p>Or, providing paths relative to your <code>ServerRoot</code>
+     directory:</p>
+
+     <blockquote>
+     <code>Include conf/ssl.conf<br />
+     Include conf/vhosts/
+     </blockquote>
+
+     <p>Make sure that an included directory does not contain any stray
+     files, such as editor temporary files, for example, as Apache will
+     attempt to read them in and use the contents as configuration
+     directives, which may cause the server to fail on start up.
+     Running <code>apachectl configtest</code> will give you a list of
+     the files that are being processed during the configuration
+     check:<p>
+
+ <pre>
+ root@host# apachectl configtest
+  Processing config directory: /usr/local/apache/conf/vhosts
+  Processing config file: /usr/local/apache/conf/vhosts/vhost1
+  Processing config file: /usr/local/apache/conf/vhosts/vhost2
+ Syntax OK
+ </pre>
+
+     <p>This will help in verifying that you are getting only the files
+     that you intended as part of your configuration.</p>
+
+     <p><strong>See also</strong>: <a
+     href="../programs/apachectl.html">apachectl</a></p>
+
+
     <hr />
 
-    <h2><a id="keepalive" name="keepalive">KeepAlive
+        <h2><a id="keepalive" name="keepalive">KeepAlive
     directive</a></h2>
     <strong>Syntax:</strong> KeepAlive on/off<br />
      <strong>Default:</strong> <code>KeepAlive On</code><br />
@@ -2327,6 +2404,15 @@
     host, for use with <a
     href="../vhosts/name-based.html">name-based virtual
     hosts</a>.</p>
+
+    <p>Example:</p>
+
+    <pre>
+    &lt;VirtualHost *&gt;
+    ServerName server.domain.com
+    ServerAlias server server2.domain.com server2
+    ...
+    &lt;/VirtualHost&gt;
 
     <p><strong>See also:</strong> <a href="../vhosts/">Apache
     Virtual Host documentation</a></p>
