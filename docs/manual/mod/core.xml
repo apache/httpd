@@ -1700,10 +1700,24 @@ URLs</description>
     <code>.htaccess</code> files are read, and after the <directive
     type="section" module="core">Files</directive> sections.</p>
 
-    <p>Note that URLs do not have to line up with the filesystem at
-    all, it should be emphasized that <directive
-    type="section">Location</directive> operates completely
-    outside the filesystem.</p>
+    <p><directive type="section">Location</directive> sections operate
+    completely outside the filesystem.  This has several consequences.
+    Most importantly, <directive type="section">Location</directive>
+    directives should not be used to control access to filesystem
+    locations.  Since several different URLs may map to the same
+    filesystem location, such access controls may by circumvented.</p>
+
+    <note><title>When to use <directive 
+    type="section">Location</directive></title>
+
+    <p>Use <directive type="section">Location</directive> to apply
+    directives to content that lives outside the filesystem.  For
+    content that lives in the filesystem, use <directive
+    type="section" module="core">Directory</directive> and <directive
+    type="section" module="core">Files</directive>.  An exception is
+    <code>&lt;Location /&gt;</code>, which is an easy way to 
+    apply a configuration to the entire server.</p>
+    </note>
 
     <p>For all origin (non-proxy) requests, the URL to be matched is a
     URL-path of the form <code>/path/</code>.  No scheme, hostname,
