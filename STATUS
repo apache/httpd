@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/03/27 23:03:24 $]
+Last modified at [$Date: 2003/03/28 00:07:37 $]
 
 Release:
 
@@ -186,6 +186,21 @@ PATCHES TO PORT FROM 2.1
       PR 17629.
       modules/http/http_request.c: r1.155
       +1: nd
+
+    * Keep the same SSLMutex for the lifetime of the parent process
+      (instead of having children using different mutexes and failing
+      to lock the session cache across restarts.)
+      modules/ssl/ssl_engine_mutex.c r1.21, r1.22
+      +1: wrowe
+
+    * Fix the SSLMutex config parser so that all 'mechanisms' can take
+      a filename, even if ignored, and they are rooted to the full path
+      to the server (except for posixsem locks).  This allows a very
+      cross-platform default:logs/ssl_mutex to be used everywhere.  Also
+      eliminates the '.pid' suffix so that the name given is the name.
+      Allows Win32 and other non-unicies to use named locks.
+      modules/ssl/ssl_engine_config.c r1.74, r1.75
+      +1: wrowe
 
 CURRENT RELEASE NOTES:
 
