@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 1999/11/04 18:59:39 $]
+Last modified at [$Date: 1999/11/11 13:21:10 $]
 
 Release:
 
@@ -48,7 +48,17 @@ RELEASE SHOWSTOPPERS:
       hook system. Switch completely to the new hook system
         Status: Ben Laurie is working on this.
 
+    * Modules.  Which modules do not work yet, can we get a list?
+
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
+
+    * Clean the code.  There are a lot of places we used APR but didn't 
+      remove the hacks that were required for the cross-platform code in
+      1.3.  We need to make the code look like APR was supposed to be there. 
+
+    * Go throught the Bug DB and research the bugs marked "suspended".  People
+      were told these would be considered for inclusion in Apache 2.0, it 
+      would be nice to actually do so.
 
     * Win32: Redirect stderr to the error log. This is tougher than it appears
       because Apache for Windows now uses native file I/O libraries rather than
