@@ -234,15 +234,33 @@
   The PHP language (http://www.php.net) is an HTML-embedded scripting language 
   which can be directly integrated into the Apache HTTP server for powerful HTML 
   scripting.  The package can be found at http://www.php.net/download-php.php3. 
-  Here is how you can install Apache with PHP:
 
-    $ cd php-3.0
+  1. How you can install Apache with a statically linked PHP:
+
+    $ cd apache-1.3
+    $ ./configure --prefix=/path/to/apache
+    $ cd ../php-3.0
     $ ./configure --with-apache=../apache-1.3
     $ make
     $ make install
     $ cd ../apache-1.3
     $ ./configure --prefix=/path/to/apache \
-                  --activate-module=src/modules/php3/mod_php3.c
+                  --activate-module=src/modules/php3/libphp3.a
     $ make 
     $ make install
     
+  2. How you can install Apache with a dynamically linked PHP:
+
+    $ cd apache-1.3
+    $ ./configure --prefix=/path/to/apache
+    $ cd ../php-3.0
+    $ ./configure --with-shared-apache=../apache-1.3
+    $ make
+    $ make install
+    $ cd ../apache-1.3
+    $ ./configure --prefix=/path/to/apache \
+                  --activate-module=src/modules/php3/libphp3.a \
+                  --enable-shared=php3
+    $ make 
+    $ make install
+
