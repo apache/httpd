@@ -120,7 +120,7 @@ enum cmd_how {
 
 typedef struct cmd_parms_struct cmd_parms;
 
-#ifdef AP_DEBUG
+#ifdef AP_DEBUG_HAVE_GCC
 
 typedef union {
     const char *(*no_args) (cmd_parms *parms, void *mconfig);
@@ -162,7 +162,7 @@ typedef union {
 # define AP_INIT_FLAG(directive, func, mconfig, where, help) \
     { directive, { .flag=func }, mconfig, where, FLAG, help }
 
-#else
+#else /* AP_DEBUG_HAVE_GCC */
 
 typedef const char *(*cmd_func) ();
 
@@ -194,7 +194,7 @@ typedef const char *(*cmd_func) ();
 # define AP_INIT_FLAG(directive, func, mconfig, where, help) \
     { directive, func, mconfig, where, FLAG, help }
 
-#endif
+#endif /* AP_DEBUG_HAVE_GCC */
 
 typedef struct command_struct command_rec; 
 /**
