@@ -113,6 +113,13 @@
 #include "http_log.h"
 #include "http_vhost.h"
 
+    /*
+     * The key in the r->notes table wherein we store our accumulated
+     * Vary values, and the one used for per-condition checks in a chain.
+     */
+#define VARY_KEY "rewrite-Vary"
+#define VARY_KEY_THIS "rewrite-Vary-this"
+
     /* The NDBM support:
      * We support only NDBM files.
      * But we have to stat the file for the mtime,
