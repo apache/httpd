@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/08/06 21:53:39 $]
+Last modified at [$Date: 2003/08/07 07:46:33 $]
 
 Release:
 
@@ -291,6 +291,13 @@ PATCHES TO PORT FROM 2.1
       problems if the data stream is modified by an input filter. PR 22104.
         modules/dav/main/mod_dav.c: r1.98, r1.99
       +1: nd
+
+    * mod_ssl: Fix FakeBasicAuth for subrequests, by declining check_user_id.
+      Otherwise it would run into the check that was to protect from externally
+      fabricated Authorization headers, which would choke on the one added
+      by mod_ssl itself.
+        modules/ssl/ssl_engine_kernel.c: r1.97
+      +1: striker
 
 CURRENT RELEASE NOTES:
 
