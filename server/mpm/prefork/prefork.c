@@ -216,6 +216,10 @@ static void chdir_for_gprof(void)
 #define chdir_for_gprof()
 #endif
 
+/* XXX - I don't know if TPF will ever use this module or not, so leave
+ * the ap_check_signals calls in but disable them - manoj */
+#define ap_check_signals() 
+
 /* a clean exit from a child with proper cleanup */
 static void clean_child_exit(int code) __attribute__ ((noreturn));
 static void clean_child_exit(int code)

@@ -1152,8 +1152,6 @@ static void perform_idle_server_maintenance(void)
     last_non_dead = -1;
     total_non_dead = 0;
 
-    ap_check_signals();
-
     ap_sync_scoreboard_image();
     for (i = 0; i < ap_daemons_limit; ++i) {
 	/* Initialization to satisfy the compiler. It doesn't know

@@ -948,8 +948,6 @@ static void perform_idle_server_maintenance(void)
     /* initialize the free_list */
     free_length = 0;
 
-    ap_check_signals();
-    
     for (i = 0; i < ap_daemons_limit; ++i) {
         if (child_table[i].status == SERVER_DEAD) {
             if (free_length < spawn_rate) {
