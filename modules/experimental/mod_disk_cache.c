@@ -87,6 +87,13 @@ typedef struct disk_cache_object {
 /*
  * mod_disk_cache configuration
  */
+/* TODO: Make defaults OS specific */
+#define MAX_DIRLEVELS 20
+#define MAX_DIRLENGTH 20
+#define MIN_FILE_SIZE 1
+#define MAX_FILE_SIZE 1000000
+#define MAX_CACHE_SIZE 1000000
+ 
 typedef struct {
     const char* cache_root;
     off_t space;                 /* Maximum cache size (in 1024 bytes) */
@@ -615,7 +622,12 @@ static void *create_config(apr_pool_t *p, server_rec *s)
     disk_cache_conf *conf = apr_pcalloc(p, sizeof(disk_cache_conf));
 
     /* XXX: Set default values */
-
+    conf->dirlevels = MAX_DIRLEVELS;
+    conf->dirlength = MAX_DIRLENGTH;
+    conf->space = MAX_CACHE_SIZE;
+    conf->maxfs = MAX_FILE_SIZE;
+    conf->minfs = MIN_FILE_SIZE;
+    
     return conf;
 }
 
@@ -635,7 +647,7 @@ static const char
 {
     disk_cache_conf *conf = ap_get_module_config(parms->server->module_config, 
                                                  &disk_cache_module);
-    /* XXX */
+    conf->space = atoi(arg);
     return NULL;
 }
 static const char
@@ -651,7 +663,9 @@ static const char
 {
     disk_cache_conf *conf = ap_get_module_config(parms->server->module_config, 
                                                  &disk_cache_module);
-    /* XXX */
+
+    /* TODO: Put some meaningful platform specific constraints on this */
+    conf->dirlevels = atoi(arg);
     return NULL;
 }
 static const char
@@ -659,7 +673,8 @@ static const char
 {
     disk_cache_conf *conf = ap_get_module_config(parms->server->module_config, 
                                                  &disk_cache_module);
-    /* XXX */
+    /* TODO: Put some meaningful platform specific constraints on this */
+    conf->dirlength = atoi(arg);
     return NULL;
 }
 static const char
@@ -675,7 +690,7 @@ static const char
 {
     disk_cache_conf *conf = ap_get_module_config(parms->server->module_config, 
                                                  &disk_cache_module);
-    /* XXX */
+    conf->minfs = atoi(arg);
     return NULL;
 }
 static const char
@@ -683,7 +698,7 @@ static const char
 {
     disk_cache_conf *conf = ap_get_module_config(parms->server->module_config, 
                                                  &disk_cache_module);
-    /* XXX */
+    conf->maxfs = atoi(arg);
     return NULL;
 }
 static const char
