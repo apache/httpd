@@ -20,53 +20,11 @@
     <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code> or
     <code class="directive"><a href="../mod/mod_auth_digest.html#authdigestprovider">AuthDigestProvider</a></code>
     with the 'dbm' value.</p>
-</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#authdbmauthoritative">AuthDBMAuthoritative</a></li><li><img alt="" src="../images/down.gif" /> <a href="#authdbmtype">AuthDBMType</a></li><li><img alt="" src="../images/down.gif" /> <a href="#authdbmuserfile">AuthDBMUserFile</a></li></ul><h3>See also</h3><ul class="seealso"><li><code class="directive"><a href="../mod/core.html#authname">AuthName</a></code></li><li><code class="directive"><a href="../mod/core.html#authtype">AuthType</a></code></li><li>
+</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#authdbmtype">AuthDBMType</a></li><li><img alt="" src="../images/down.gif" /> <a href="#authdbmuserfile">AuthDBMUserFile</a></li></ul><h3>See also</h3><ul class="seealso"><li><code class="directive"><a href="../mod/core.html#authname">AuthName</a></code></li><li><code class="directive"><a href="../mod/core.html#authtype">AuthType</a></code></li><li>
   <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code>
 </li><li>
   <code class="directive"><a href="../mod/mod_auth_digest.html#authdigestprovider">AuthDigestProvider</a></code>
-</li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthDBMAuthoritative" id="AuthDBMAuthoritative">AuthDBMAuthoritative</a> <a name="authdbmauthoritative" id="authdbmauthoritative">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>Sets whether authentication and authorization will be
-passwed on to lower level modules</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>AuthDBMAuthoritative on|off</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
-              </a></th><td><code>AuthDBMAuthoritative on</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
-              </a></th><td>AuthConfig</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_authn_dbm</td></tr></table>
-
-    <p>Setting the <code class="directive">AuthDBMAuthoritative</code>
-    directive explicitly to <strong>'off'</strong> allows for both
-    authentication and authorization to be passed on to lower level
-    modules (as defined in the <code>Configuration</code> and
-    <code>modules.c</code> file if there is <strong>no userID</strong>
-    or <strong>rule</strong> matching the supplied userID. If there is
-    a userID and/or rule specified; the usual password and access
-    checks will be applied and a failure will give an Authorization
-    Required reply.</p>
-
-    <p>So if a userID appears in the database of more than one module;
-    or if a valid <code class="directive"><a href="../mod/core.html#require">Require</a></code>
-    directive applies to more than one module; then the first module
-    will verify the credentials; and no access is passed on;
-    regardless of the <code class="directive">AuthAuthoritative</code> setting.</p>
-
-    <p>A common use for this is in conjunction with one of the
-    auth providers; such as <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code>. Whereas this
-    DBM module supplies the bulk of the user credential checking; a
-    few (administrator) related accesses fall through to a lower
-    level with a well protected .htpasswd file.</p>
-
-    <p>By default, control is not passed on and an unknown userID
-    or rule will result in an Authorization Required reply. Not
-    setting it thus keeps the system secure and forces an NCSA
-    compliant behaviour.</p>
-
-    <p>Security: Do consider the implications of allowing a user to
-    allow fall-through in his .htaccess file; and verify that this
-    is really what you want; Generally it is easier to just secure
-    a single .htpasswd file, than it is to secure a database which
-    might have more access interfaces.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthDBMType" id="AuthDBMType">AuthDBMType</a> <a name="authdbmtype" id="authdbmtype">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+</li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthDBMType" id="AuthDBMType">AuthDBMType</a> <a name="authdbmtype" id="authdbmtype">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Sets the type of database file that is used to
 store passwords</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>AuthDBMType default|SDBM|GDBM|NDBM|DB</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
