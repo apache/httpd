@@ -166,15 +166,9 @@ Changes with Apache 2.1.0-dev
      status and terminate the provider chain prior to checking the password.
      [Geoffrey Young]
 
-  *) mod_rewrite now officially supports RewriteRules in <Proxy> sections.
-     PR 27985.  [André Malo]
-
   *) mod_cgid: Don't allow Scriptsock to be specified inside VirtualHost;
      Don't place script socket inside default server root instead of
      actual server root.  PR 27886.  [Jeff Trawick]
-
-  *) Satisfy directives now can be influenced by a surrounding <Limit>
-     container.  PR 14726.  [André Malo]
 
   *) mod_proxy: Fix handling of non-200 success status codes when
      "ProxyErrorOverride On" is configured.  PR 20183.
@@ -414,6 +408,12 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.51
+
+  *) Satisfy directives now can be influenced by a surrounding <Limit>
+     container.  PR 14726.  [André Malo]
+
+  *) mod_rewrite now officially supports RewriteRules in <Proxy> sections.
+     PR 27985.  [André Malo]
 
   *) mod_disk_cache: Implement binary format for on-disk header files.
      [Brian Akins <bakins web.turner.com>, Justin Erenkrantz]
