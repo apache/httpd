@@ -59,6 +59,13 @@
 #ifndef CACHE_PQUEUE_H
 #define CACHE_PQUEUE_H
 
+#include <apr.h>
+#include <apr_errno.h>
+
+#if APR_HAVE_STDIO_H
+#include <stdio.h>
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -99,7 +106,7 @@ typedef void cache_pqueue_print_entry(FILE *out, void *a);
  * @Return the handle or NULL for insufficent memory
  */
 cache_pqueue_t *cache_pq_init(apr_ssize_t n,
-                              cache_pqueue_get_priority* pri,
+                              cache_pqueue_get_priority *pri,
                               cache_pqueue_getpos get,
                               cache_pqueue_setpos set);
 /**
@@ -119,7 +126,7 @@ apr_ssize_t cache_pq_size(cache_pqueue_t *q);
  * @param d the item
  * @return APR_SUCCESS on success
  */
-apr_status_t cache_pq_insert(cache_pqueue_t *q, void* d);
+apr_status_t cache_pq_insert(cache_pqueue_t *q, void *d);
 
 /*
  * move a existing entry to a different priority
