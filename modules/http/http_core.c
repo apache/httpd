@@ -2946,7 +2946,7 @@ static int core_filter(ap_filter_t *f, ap_bucket_brigade *b)
      */
     dptr = b->head; 
     while (dptr) { 
-        len += ap_get_bucket_len(dptr);
+        len += dptr->length;
         dptr = dptr->next;
     }
     if (len < MIN_SIZE_TO_WRITE && b->tail->color != AP_BUCKET_EOS) {
