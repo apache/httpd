@@ -75,6 +75,12 @@ PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
 
+    *) win32: Handle PATH_INFO as opaque byte-wise data for cgi invocation,
+              as handled for other variables originally fixed in bug 9223.
+              PR: 32730 Submitted by: Richard Donkin <rd9 donkin.org>
+       svn rev 124556
+       +1: wrowe
+
     *) modules: Include mod_dumpio to the modules/logger
        tree. Module included in 2.1:modules/debug.
        http://www.apache.org/~jim/mod_dumpio.c
