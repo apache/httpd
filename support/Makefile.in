@@ -4,7 +4,7 @@ DISTCLEAN_TARGETS = apxs apachectl dbmmanage log_server_status \
 PROGRAMS = htpasswd htdigest rotatelogs logresolve ab checkgid
 TARGETS  = $(PROGRAMS)
 
-PROGRAM_LDADD        = $(EXTRA_LDFLAGS) $(PROGRAM_DEPENDENCIES) $(EXTRA_LIBS)
+PROGRAM_LDADD        = $(EXTRA_LDFLAGS) $(UTIL_LDFLAGS) $(PROGRAM_DEPENDENCIES) $(EXTRA_LIBS)
 PROGRAM_DEPENDENCIES = \
 	$(top_builddir)/srclib/apr-util/libaprutil.la \
 	$(top_builddir)/srclib/apr/libapr.la
