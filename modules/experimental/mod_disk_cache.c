@@ -94,7 +94,7 @@ static int disk_serve(request_rec *r)
      * again.
      */
     for ((f = r->output_filters); (f = f->next);) {
-        if (!strcmp(f->frec->name, "CACHE")) {
+        if (!strcasecmp(f->frec->name, "CACHE")) {
             ap_remove_output_filter(f);
         }
     }

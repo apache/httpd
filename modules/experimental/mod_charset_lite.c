@@ -623,7 +623,7 @@ static void chk_filter_chain(ap_filter_t *f)
     charset_filter_ctx_t *curctx, *last_xlate_ctx = NULL,
         *ctx = f->ctx;
     int debug = ctx->dc->debug;
-    int output = !strcmp(f->frec->name, XLATEOUT_FILTER_NAME);
+    int output = !strcasecmp(f->frec->name, XLATEOUT_FILTER_NAME);
 
     if (ctx->noop) {
         return;
@@ -634,7 +634,7 @@ static void chk_filter_chain(ap_filter_t *f)
      */
     curf = output ? f->r->output_filters : f->r->input_filters;
     while (curf) {
-        if (!strcmp(curf->frec->name, f->frec->name) &&
+        if (!strcasecmp(curf->frec->name, f->frec->name) &&
             curf->ctx) {
             curctx = (charset_filter_ctx_t *)curf->ctx;
             if (!last_xlate_ctx) {

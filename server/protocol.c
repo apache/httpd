@@ -1064,7 +1064,7 @@ static apr_status_t buffer_output(request_rec *r,
 
     /* this will typically exit on the first test */
     for (f = r->output_filters; f != NULL; f = f->next)
-        if (strcmp("OLD_WRITE", f->frec->name) == 0)
+        if (strcasecmp("OLD_WRITE", f->frec->name) == 0)
             break;
     if (f == NULL) {
         /* our filter hasn't been added yet */
