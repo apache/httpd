@@ -20,10 +20,6 @@ Changes with Apache 2.1.0-dev
      httpd.conf file, which is necessary for mod_auth_ldap to load.
      PR 14256  [Graham Leggett]
 
-  *) Fix critical bug in new --enable-v4-mapped configure option
-     implementation which broke IPv4 listening sockets on some
-     systems.  [hiroyuki hanai <hanai@imgsrc.co.jp>]
-
 
   [Apache 2.1.0-dev includes those bug fixes and changes with the
    Apache 2.0.xx tree as documented, and except as noted, below.]
