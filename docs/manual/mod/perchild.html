@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
 <HTML>
 <HEAD>
-<TITLE>Apache MPM mpmt_pthread</TITLE>
+<TITLE>Apache MPM perchild</TITLE>
 </HEAD>
 
 <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
@@ -38,7 +38,13 @@ REL="Help"
 
 <H2>Summary</H2>
 
-<p>Some description on how this whole thing works with a couple examples.</p>
+<p>This module creates and controls processes and threads in a manner
+identical to <a href="dexter.html">dexter</a>.  However, it adds
+the extra ability to specify that specific processes should serve
+requests under different userids.  These processes can then be
+associated with specific virtual hosts.</p>
+
+<!-- XXX: This desperately needs more explanation. -->
 
 
 <H2>Directives</H2>
@@ -54,6 +60,7 @@ REL="Help"
 <li><a href="mpm_common.html#lockfile">LockFile</a></li>
 <li><a href="mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></li>
 <li><a href="mpm_common.html#maxsparethreads">MaxSpareThreads</a></li>
+<li><a href="mpm_common.html#maxthreadsperchild">MaxThreadsPerChild</a></li>
 <li><a href="mpm_common.html#minsparethreads">MinSpareThreads</a></li>
 <li><a href="mpm_common.html#numservers">NumServers</a></li>
 <li><a href="mpm_common.html#scoreboardfile">ScoreBoardFile</a></li>
