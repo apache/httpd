@@ -1,5 +1,9 @@
 Changes with Apache 2.0.12-dev
 
+  *) Remove the rest of the pthreads functions from the threaded MPM.
+     This requires the APR support for a signal thread that was just
+     added.  [Ryan Bloom]
+
   *) Make mod_dir use a fixup for sending a redirect to the browser.
      Before this, we were using a handler, which doesn't make much
      sense, because the handler wasn't generating any data, it would
