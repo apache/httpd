@@ -728,6 +728,7 @@ static apr_status_t write_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
     apr_read_type_e eblock = APR_BLOCK_READ;
     apr_bucket *e;
     char *cur;
+    int eos = 0;
 
     if (mobj->type == CACHE_TYPE_FILE) {
         apr_file_t *file = NULL;
@@ -741,7 +742,7 @@ static apr_status_t write_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
          */
         APR_BRIGADE_FOREACH(e, b) {
             if (APR_BUCKET_IS_EOS(e)) {
-                obj->complete = 1;
+                eos = 1;
             }
             else if (APR_BUCKET_IS_FILE(e)) {
                 apr_bucket_file *a = e->data;
@@ -752,7 +753,7 @@ static apr_status_t write_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
                 other++;
             }
         }
-        if (fd == 1 && !other && obj->complete) {
+        if (fd == 1 && !other && eos) {
             apr_file_t *tmpfile;
             /* Open a new XTHREAD handle to the file */
             rv = apr_file_open(&tmpfile, r->filename, 
