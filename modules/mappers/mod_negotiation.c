@@ -988,20 +988,22 @@ static int read_types_multi(negotiation_state *neg)
          * since the exceptions result is index.foo - this should be
          * fixed as part of a new match-parts logic here.
          */
-        char *base = apr_array_pstrcat(sub_req->pool, exception_list, '.');
-        int base_len = strlen(base);
-        if (base_len > prefix_len 
+        {
+            char *base = apr_array_pstrcat(sub_req->pool, exception_list, '.');
+            int base_len = strlen(base);
+            if (base_len > prefix_len 
 #ifdef CASE_BLIND_FILESYSTEM
-            || strncasecmp(base, filp, base_len)
+                || strncasecmp(base, filp, base_len)
 #else
-            || strncmp(base, filp, base_len)
+                || strncmp(base, filp, base_len)
 #endif
-            || (prefix_len > base_len && filp[base_len] != '.')) {
-            /* 
-             * Something you don't know is, something you don't know...
-             */
-            ap_destroy_sub_req(sub_req);
-            continue;
+                || (prefix_len > base_len && filp[base_len] != '.')) {
+                /* 
+                 * Something you don't know is, something you don't know...
+                 */
+                ap_destroy_sub_req(sub_req);
+                continue;
+            }
         }
 
         /* 
@@ -1009,7 +1011,7 @@ static int read_types_multi(negotiation_state *neg)
          * picked up here!  If we failed the subrequest, or don't 
          * know what we are serving, then continue.
          */
-        if (sub_req->status != HTTP_OK || (!sub_req->content_type) {
+        if (sub_req->status != HTTP_OK || (!sub_req->content_type)) {
             ap_destroy_sub_req(sub_req);
             continue;
         }
