@@ -2209,6 +2209,13 @@ static int winnt_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pt
     }
 
     if (!strcasecmp(signal_arg, "start")) {
+        ap_listen_rec *lr;
+
+        /* Close the listening sockets. */
+        for (lr = ap_listeners; lr; lr = lr->next) {
+            apr_socket_close(lr->sd);
+            lr->active = 0;
+        }
         rv = mpm_service_start(ptemp, inst_argc, inst_argv);
         exit (rv);
     }
@@ -2308,17 +2315,30 @@ static int winnt_open_logs(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, s
     pconf = p;
     ap_server_conf = s;
 
-    if ((parent_pid == my_pid) || one_process) {
-        if (ap_setup_listeners(ap_server_conf) < 1) {
-            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT|APLOG_STARTUP, 0, 
-                         NULL, "no listening sockets available, shutting down");
-            return DONE;
-        }
-
-        if (!set_listeners_noninheritable(pconf)) {
-            return 1;
-        }
+    if (parent_pid != my_pid) {
+        return OK;
     }
+
+    /* We cannot initialize our listeners if we are restarting
+     * (the parent process already has glomed on to them)
+     * nor should we do so for service reconfiguration 
+     * (since the service may already be running.)
+     */
+    if (!strcasecmp(signal_arg, "restart") 
+            || !strcasecmp(signal_arg, "config")) {
+        return OK;
+    }
+
+    if (ap_setup_listeners(ap_server_conf) < 1) {
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT|APLOG_STARTUP, 0, 
+                     NULL, "no listening sockets available, shutting down");
+        return DONE;
+    }
+
+    if (!set_listeners_noninheritable(pconf)) {
+        return 1;
+    }
+
     return OK;
 }
 
