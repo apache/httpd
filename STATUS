@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/04/23 07:38:41 $]
+Last modified at [$Date: 2004/04/23 20:38:49 $]
 
 Release:
 
@@ -375,6 +375,12 @@ PATCHES TO BACKPORT FROM 2.1
         server/mpm/experimental/threadpool/threadpool.c: r1.25
         server/mpm/worker/worker.c: r1.145
       +1: trawick
+
+    * ThreadStackSize for Win32 and threaded MPMs
+      (if there is sufficient interest I'll pursue getting APR 0.9
+      fixed up as well as putting together a patch for httpd 2.0.next
+      which integrates the two rounds of changes)
+      +1 concept: trawick
 
 CURRENT RELEASE NOTES:
 
