@@ -74,6 +74,7 @@ for makefile in $@; do
   echo "creating $makefile"
 # portable dirname
   dir=`echo $makefile|sed 's%[^/][^/]*$%%'`
+  test -d "$dir/" || $mkdir_p "$dir/"
 
   (cat <<EOF
 top_srcdir   = $top_srcdir
@@ -82,6 +83,6 @@ srcdir       = $top_srcdir/$dir
 builddir     = $top_builddir/$dir
 VPATH        = $top_srcdir/$dir
 EOF
-)| cat - $makefile.in > $makefile
+)| cat - $top_srcdir/$makefile.in > $makefile
 
 done
