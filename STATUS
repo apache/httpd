@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/03/27 22:12:43 $]
+Last modified at [$Date: 2003/03/27 22:38:08 $]
 
 Release:
 
@@ -61,9 +61,7 @@ RELEASE SHOWSTOPPERS:
     * fix seg faults in ap_get_mime_headers_core's error leg for overlength
       headers caused by using an uninitialized length returned by ap_rgetline.
       server/protocol.c: r1.129
-      +1: gregames, trawick
-	c.f. Jeff's Q Message-ID: <3E836B47.8010600@attglobal.net>
-        (but Jeff no longer objects)
+      +1: gregames, trawick, wrowe
 
     * Forward port: Escape special characters (especially control
       characters) in mod_log_config to make a clear distinction between
@@ -76,7 +74,7 @@ RELEASE SHOWSTOPPERS:
       modules/loggers/mod_log_config.c: r1.100
       server/gen_test_char.c: r1.16
       server/util.c: r1.138
-      +1: nd
+      +1: nd, wrowe (clean solution, mirrors our \0 escaping of %00)
       +0: mod_log_config.c has another change which requires mod_log_config.h
          and a possible mmn bump
          nd: but not in 2.0. AFAICS the MMNs don't conflict.
