@@ -61,6 +61,7 @@
 #include "http_log.h" 
 #include "http_config.h"
 #include "util_uri.h" 
+#include "apr_getopt.h"
 #include "ap_mpm.h"
 
 const char *ap_server_argv0;
