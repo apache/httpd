@@ -8,7 +8,7 @@ PROGRAM_DEPENDENCIES = \
   $(BUILTIN_LIBS) \
   $(MPM_LIB) \
   main/libmain.la \
-  $(OS_DIR)/libos.la \
+  os/$(OS_DIR)/libos.la \
   ap/libap.la \
   lib/apr/$(LIBPRE)apr.a \
   $(REGEX_LIB)

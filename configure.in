@@ -16,8 +16,16 @@ APACHE_SUBST(APACHE_VERSION)
 test "$exec_prefix" = "NONE" && exec_prefix='${prefix}'
 test "$prefix" = "NONE" && prefix='/usr/local'
 
-dnl Needed for APACHE_MODULE() to work
-cwd=`pwd`
+dnl Absolute source/build directory
+abs_srcdir=`(cd $srcdir && pwd)`
+abs_builddir=`pwd`
+
+dnl If the source dir is not equal to the build dir, 
+dnl then we are running in VPATH mode.
+
+if test "$abs_builddir" != "$abs_srcdir"; then
+  USE_VPATH=1
+fi
 
 dnl ## Run configure for packages Apache uses
 AC_CONFIG_SUBDIRS(lib/apr)
@@ -133,12 +141,14 @@ APACHE_ENABLE_MODULES
 APACHE_ENABLE_SHARED
 
 INCLUDES="-I\$(top_srcdir)/include -I\$(top_srcdir)/lib/apr/include"
-APACHE_SUBST(INCLUDES)
+if test -n "$USE_VPATH"; then
+  INCLUDES="$INCLUDES -I\$(top_builddir)/include -I\$(top_builddir)/lib/apr/include"
+fi
 
 dnl reading config stubs
 esyscmd(./helpers/config-stubs .)
 
-INCLUDES="$INCLUDES -I\$(top_srcdir)/\$(OS_DIR)"
+INCLUDES="$INCLUDES -I\$(top_srcdir)/os/\$(OS_DIR)"
 EXTRA_LIBS="$EXTRA_LIBS $LIBS"
 EXTRA_LDFLAGS="$LDFLAGS"
 LIBS=""
@@ -147,6 +157,7 @@ APACHE_SUBST(progname)
 APACHE_SUBST(EXTRA_CFLAGS)
 APACHE_SUBST(EXTRA_LDFLAGS)
 APACHE_SUBST(EXTRA_LIBS)
+APACHE_SUBST(INCLUDES)
 APACHE_SUBST(REGEX_DIR)
 APACHE_SUBST(REGEX_LIB)
 APACHE_SUBST(MPM_LIB)
@@ -172,7 +183,12 @@ APACHE_FAST_OUTPUT(Makefile ap/Makefile lib/Makefile main/Makefile
             modules/Makefile os/Makefile support/Makefile)
 
 APACHE_FAST_GENERATE
-	
+
+dnl There needs to be a .deps file in the top build directory.
+dnl All others are created dynamically by rules.mk.
+
+touch .deps
+
 dnl ## Build modules.c
 rm -f $srcdir/modules.c
 echo $MODLIST | $AWK -f $srcdir/helpers/build-modules-c.awk > $srcdir/modules.c
