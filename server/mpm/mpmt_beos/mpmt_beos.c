@@ -770,7 +770,7 @@ static int32 worker_thread(void * dummy)
             SAFE_ACCEPT(intra_mutex_off(0));
             break;
         }
-        ap_get_os_sock(csd, &thesock);
+        ap_get_os_sock(&thesock, csd);
         process_socket(ptrans, &sa_client, thesock, process_slot, thread_slot);
         ap_clear_pool(ptrans);
         requests_this_child--;
@@ -831,7 +831,7 @@ static int32 child_main(void * data)
     /* Set up the pollfd array */
     listenfds = ap_palloc(pchild, sizeof(struct pollfd) * (num_listenfds));
     for (lr = ap_listeners, i = 0; i < num_listenfds; lr = lr->next, ++i) {
-        ap_get_os_sock(lr->sd, &listenfds[i].fd);
+        ap_get_os_sock(&listenfds[i].fd , lr->sd);
         listenfds[i].events = POLLIN; /* should we add POLLPRI ?*/
         listenfds[i].revents = 0;
     }
