@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/12/27 20:14:49 $]
+Last modified at [$Date: 2001/12/27 20:20:21 $]
 
 Release:
 
@@ -85,8 +85,9 @@ RELEASE SHOWSTOPPERS:
         This can't wait until we have a 2.0-gold release, if folks need
         to move over to auth_dbm, we can't do that to them after 2.0 gold.
       Status: Ian says.. auth_dbm can now handle multiple DBM types,
-	    is this still an issue?
-              
+              is this still an issue?
+      Vote: Remove mod_auth_db
+            +1: Justin
 
     * Convert all instances of the old apr_lock_t type to the new
       types (once they are fully supported in APR).
