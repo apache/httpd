@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
-<!-- English revision: 1.27 -->
+<!-- English revision: 1.31 -->
 
 
 <modulesynopsis metafile="mpm_common.xml.meta">
@@ -69,6 +69,22 @@
     >LogLevel</directive> auf <code>debug</code> setzen. Dann wird der
     voreingestellte <directive>AcceptMutex</directive> ins <directive
     module="core">ErrorLog</directive> geschrieben.</p>
+
+    <note type="warning"><title>Warnung</title>
+      <p>Auf den meisten Systemen stoppt der Server mit der Beantwortung von
+        Anfragen, wenn die Option <code>pthread</code> ausgew&auml;hlt wurde und
+        ein Kindprozess unkontrolliert endet w&auml;hrend er den
+        <code>AcceptCntl</code>-Mutex h&auml;lt. In diesem Fall muss der Server
+        manuell neu gestartet werden, um wieder weiter zu arbeiten.</p>
+      <p>Eine Ausnahme stellt Solaris dar, da es einen Mechanismus anbietet, den
+        der Apache verwendet und der &uuml;blicherweise die Freigabe des Mutex
+        erlaubt, nachdem ein Kindprozess, der gerade einen Mutex h&auml;lt,
+        abgest&uuml;rzt ist.</p>
+      <p>Wenn Ihr System die Funktion
+        <code>pthread_mutexattr_setrobust_np()</code> bereitstellt, k&ouml;nnen
+        Sie wahrscheinlich die Option <code>pthread</code> problemlos
+        verwenden.</p>
+    </note>
 </usage>
 </directivesynopsis>
 
@@ -94,9 +110,14 @@
     einen Hauptspeicherausz&uuml;g haben m&ouml;chten, k&ouml;nnen Sie
     ihn mit dieser Direktive an einem anderen Ort ablegen lassen.</p>
 
-    <p>Wenn Sie den Apache als <code>root</code> starten und explizit
-    <directive>CoreDumpDirectory</directive> konfigurieren, aktiviert
-    der Apache ab Linux 2.4 Core-Dumps.</p>
+    <note><title>Hauptspeicherausz&uuml;ge unter Linux</title>
+      <p>Wenn Apache als <code>root</code> startet und zu einem anderen Benutzer 
+      wechselt, <em>deaktiviert</em> der Linux-Kernel Hauptspeicherausz&uuml;ge
+      auch dann, wenn der Prozess in dem Verzeichnis schreiben darf. Ab Linux
+      2.4 reaktiviert Apache (ab 2.0.46) Hauptspeicherausz&uuml;ge wieder,
+      jedoch nur dann, wenn Sie explizit
+      <directive>CoreDumpDirectory</directive> konfigurieren.</p>
+    </note>
 </usage>
 </directivesynopsis>
 
