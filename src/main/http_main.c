@@ -4812,7 +4812,7 @@ void add_job(int sock)
     /* TODO: If too many jobs in queue, sleep, check for problems */
     ap_acquire_mutex(allowed_globals.jobmutex);
     new_job = (joblist *) malloc(sizeof(joblist));
-    if (new_jobs == NULL) {
+    if (new_job == NULL) {
 	fprintf(stderr, "Ouch!  Out of memory in add_job()!\n");
     }
     new_job->next = NULL;
