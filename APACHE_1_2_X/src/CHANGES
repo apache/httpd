@@ -13,10 +13,13 @@ Changes with Apache 1.2.1
      (headers, readmes, titles), mod_negotiation (type maps), or
      mod_cern_meta (meta files).  [Dean Gaudet]
 
+  *) SECURITY: Apache will refuse to run as "User root" unless
+     BIG_SECURITY_HOLE is defined at compile time.  [Dean Gaudet]
+
   *) CONFIG: "HostnameLookups" now defaults to off because it is far better
      for the net if we require people that actually need this data to
      enable it.  [Linus Torvalds]
-  
+
   *) mod_include was not properly changing the current directory.
      [Marc Slemko] PR#742
 

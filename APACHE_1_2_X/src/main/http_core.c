@@ -886,9 +886,23 @@ const char *set_user (cmd_parms *cmd, void *dummy, char *arg)
 	else {
 	    cmd->server->server_uid = user_id;
 	    fprintf(stderr,
-		    "Warning: User directive in <VirtualHost> requires SUEXEC wrapper.\n");
+		"Warning: User directive in <VirtualHost> "
+		"requires SUEXEC wrapper.\n");
 	}
     }
+#if !defined (BIG_SECURITY_HOLE)
+    if (cmd->server->server_uid == 0) {
+	fprintf (stderr,
+"Error:\tApache has not been designed to serve pages while running\n"
+"\tas root.  There are known race conditions that will allow any\n"
+"\tlocal user to read any file on the system.  Should you still\n"
+"\tdesire to serve pages as root then add -DBIG_SECURITY_HOLE to\n"
+"\tthe EXTRA_CFLAGS line in your src/Configuration file and rebuild\n"
+"\tthe server.  It is strongly suggested that you instead modify the\n"
+"\tUser directive in your httpd.conf file to list a non-root user.\n");
+	exit (1);
+    }
+#endif
 
     return NULL;
 }
