@@ -80,13 +80,12 @@
  */
 
 #include "apr_lib.h"
+#include "apr_errno.h"
 #include "ap_config.h"
-#include <sys/types.h>
-#include <signal.h>
-#include <errno.h>
 #include "ap.h"
 #include "apr_md5.h"
 #include "ap_sha1.h"
+#include <signal.h>
 
 #ifdef WIN32
 #include <conio.h>

@@ -39,12 +39,10 @@
  * that one of these matches the original address.
  */
 
-#include "ap_config.h"
-#include <sys/types.h>
-
+#include "apr.h"
 #include <ctype.h>
 
-#if !defined(MPE) && !defined(BEOS) 
+#if !defined(MPE) && !defined(BEOS) && !defined(WIN32)
 #include <arpa/inet.h>
 #endif
 
@@ -279,6 +277,14 @@ int main (int argc, char *argv[])
     char *bar, hoststring[MAXDNAME + 1], line[MAXLINE], *statfile;
     int i, check;
 
+#ifdef WIN32
+    /*  If we apr'ify this code, ap_create_pool/ap_destroy_pool
+     *  should perform the WSAStartup/WSACleanup for us. 
+     */
+    WSADATA wsaData;
+    WSAStartup(0x101, &wsaData);
+#endif
+
     check = 0;
     statfile = NULL;
     for (i = 1; i < argc; i++) {
@@ -297,7 +303,6 @@ int main (int argc, char *argv[])
 	    exit(0);
 	}
     }
-
 
     for (i = 0; i < BUCKETS; i++)
 	nscache[i] = NULL;
@@ -333,6 +338,10 @@ int main (int argc, char *argv[])
 	else
 	    puts(hoststring);
     }
+
+#ifdef WIN32
+     WSACleanup();
+#endif
 
     if (statfile != NULL) {
 	FILE *fp;
