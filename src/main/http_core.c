@@ -1770,6 +1770,7 @@ static const char *set_coredumpdir (cmd_parms *cmd, void *dummy, char *arg)
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) return err;
 
+    arg = ap_server_root_relative(cmd->pool, arg);
     if ((stat(arg, &finfo) == -1) || !S_ISDIR(finfo.st_mode)) {
 	return ap_pstrcat(cmd->pool, "CoreDumpDirectory ", arg, 
 	    " does not exist or is not a directory", NULL);
