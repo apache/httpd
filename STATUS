@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/12/17 18:05:37 $]
+Last modified at [$Date: 2002/12/17 21:28:36 $]
 
 Release:
 
@@ -56,8 +56,12 @@ Contributors looking for a mission:
     * just do an egrep on "TODO", "XXX" and see what's there
 
 PATCHES TO PORT FROM 2.1
+
+    * mod_mime: Workaround to prevent a segfault if r->filename=NULL
+      +1: brianp
+
     * mod_cache lazy initialization
-      +1: stoddard
+      +1: stoddard, brianp
 
     * Rewrite how proxy sends its request to allow input bodies to 
       morph the request bodies.  Previously, if an input filter
