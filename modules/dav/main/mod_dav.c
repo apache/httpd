@@ -3329,7 +3329,7 @@ static int dav_method_checkout(request_rec *r)
             else {
                 const ap_xml_elem *child = aset->first_child;
 
-                activities = apr_make_array(r->pool, 1, sizeof(const char *));
+                activities = apr_array_make(r->pool, 1, sizeof(const char *));
 
                 for (; child != NULL; child = child->next) {
                     if (child->ns == AP_XML_NS_DAV_ID
