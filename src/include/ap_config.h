@@ -952,10 +952,6 @@ typedef int rlim_t;
 #define NO_KILLPG
 #define NEED_INITGROUPS
 #define NO_SLACK
-
-#elif defined(NETWARE)
-#define USE_HSREGEX
-/* Most all NetWare stuff is in os/NetWare/os.h */
 #else
 /* Unknown system - Edit these to match */
 #ifdef BSD
@@ -1072,15 +1068,6 @@ typedef int rlim_t;
 #define O_BINARY (0)
 #endif
 #endif /* ndef WIN32 */
-
-/* This block is added for NETWARE... Should be moved to os.h? */
-#ifdef NETWARE
-#include <ws2nlm.h>
-#include <winsock2.h>
-#include <malloc.h>
-#include <io.h>
-#include <fcntl.h>
-#endif
 
 #include <limits.h>
 #include <time.h>		/* for ctime */
