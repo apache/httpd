@@ -65,7 +65,7 @@
 
 #include <screen.h>
 
-extern int hold_screen_on_exit; /* Indicates whether the screen should be held open on exit*/
+AP_DECLARE_DATA extern int hold_screen_on_exit; /* Indicates whether the screen should be held open on exit*/
 
 #define CASE_BLIND_FILESYSTEM
 #define NO_WRITEV
@@ -73,6 +73,10 @@ extern int hold_screen_on_exit; /* Indicates whether the screen should be held o
 #define APACHE_MPM_DIR  "server/mpm/netware" /* generated on unix */
 
 #define getpid NXThreadGetId
-#define exit(s) {if(s||hold_screen_on_exit){pressanykey();}apr_terminate();exit(s);}
+
+/* Hold the screen open if there is an exit code and the hold_screen_on_exit flag >= 0 or the
+   hold_screen_on_exit > 0.  If the hold_screen_on_exit flag is < 0 then close the screen no 
+   matter what the exit code is. */
+#define exit(s) {if((s||hold_screen_on_exit)&&(hold_screen_on_exit>=0)){pressanykey();}apr_terminate();exit(s);}
 
 #endif   /* ! APACHE_OS_H */
