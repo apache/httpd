@@ -4711,9 +4711,9 @@ int REALMAIN(int argc, char *argv[])
 #endif
 
 #ifdef TPF
-    APACHE_TPF_INPUT input_parms;
+    EBW_AREA input_parms;
     ecbptr()->ebrout = PRIMECRAS;
-    input_parms = * (APACHE_TPF_INPUT *)(&(ecbptr()->ebw000));
+    input_parms = * (EBW_AREA *)(&(ecbptr()->ebw000));
 #endif
 
     MONCONTROL(0);
@@ -4778,7 +4778,7 @@ int REALMAIN(int argc, char *argv[])
 	    break;
 #ifdef TPF
 	case 'x':
-	    os_tpf_child(&input_parms);
+	    os_tpf_child(&input_parms.child);
 	    set_signals();
 	    break;
 #endif
@@ -4838,7 +4838,8 @@ int REALMAIN(int argc, char *argv[])
 #else
     if (ap_standalone) {
         if(!tpf_child) {
-            memcpy(tpf_server_name, input_parms.inetd_server.servname, INETD_SERVNAME_LENGTH);
+            memcpy(tpf_server_name, input_parms.parent.servname,
+                   INETD_SERVNAME_LENGTH);
             tpf_server_name[INETD_SERVNAME_LENGTH+1] = '\0';
             ap_open_logs(server_conf, pconf);
         }
@@ -4847,15 +4848,16 @@ int REALMAIN(int argc, char *argv[])
         version_locked++;
         if(tpf_child) {
             copy_listeners(pconf);
-            reset_tpf_listeners(&input_parms);
+            reset_tpf_listeners(&input_parms.child);
             server_conf->error_log = NULL;
 #ifdef SCOREBOARD_FILE
-            scoreboard_fd = input_parms.scoreboard_fd;
+            scoreboard_fd = input_parms.child.scoreboard_fd;
             ap_scoreboard_image = &_scoreboard_image;
 #else /* must be USE_TPF_SCOREBOARD or USE_SHMGET_SCOREBOARD */
-            ap_scoreboard_image = (scoreboard *)input_parms.scoreboard_heap;
+            ap_scoreboard_image =
+                (scoreboard *)input_parms.child.scoreboard_heap;
 #endif
-            child_main(input_parms.slot);
+            child_main(input_parms.child.slot);
         }
         else
             STANDALONE_MAIN(argc, argv);
@@ -4902,10 +4904,8 @@ int REALMAIN(int argc, char *argv[])
 	}
 
 #ifdef TPF
-/* TPF only passes the incoming socket number from the internet daemon
-   in ebw000 */
-    sock_in = * (int*)(&(ecbptr()->ebw000));
-    sock_out = * (int*)(&(ecbptr()->ebw000));
+/* TPF's Internet Daemon passes the incoming socket nbr (inetd mode only) */
+    sock_in = sock_out = input_parms.parent.socket;
 /* TPF also needs a signal set for alarm in inetd mode */
     signal(SIGALRM, alrm_handler);
 #elif defined(MPE)

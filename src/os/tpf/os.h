@@ -92,8 +92,7 @@ typedef struct tpf_fd_list {
 }TPF_FD_LIST;
 
 #include <i$netd.h>
-struct apache_input {
-    INETD_SERVER_INPUT  inetd_server;
+typedef struct apache_input {
     void                *scoreboard_heap;   /* scoreboard system heap address */
     int                 scoreboard_fd;      /* scoreboard file descriptor */
     int                 slot;               /* child number */
@@ -102,9 +101,12 @@ struct apache_input {
     time_t              restart_time;
     TPF_FD_LIST         *tpf_fds;           /* fd inheritance table ptr */
     void                *shm_static_ptr;    /* shm ptr for static pages */
-};
+}APACHE_TPF_INPUT;
 
-typedef struct apache_input APACHE_TPF_INPUT;
+typedef union ebw_area {
+    INETD_SERVER_INPUT parent;
+    APACHE_TPF_INPUT   child;
+}EBW_AREA;
  
 extern void *tpf_shm_static_ptr;            /* mod_tpf_shm_static */
 #define TPF_SHM_STATIC_SIZE 200000

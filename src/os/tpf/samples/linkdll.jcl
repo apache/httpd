@@ -20,7 +20,7 @@
 //PLKED.OBJ06  DD PATH='/<your-path-here>/src/ap/ap_getpass.o'
 //PLKED.OBJ07  DD PATH='/<your-path-here>/src/ap/ap_md5c.o'
 //PLKED.OBJ08  DD PATH='/<your-path-here>/src/ap/ap_sha1.o'
-//PLKED.OBJ09  DD PATH='/<your-path-here>/src/ap/ap_signal.o'	
+//PLKED.OBJ09  DD PATH='/<your-path-here>/src/ap/ap_signal.o'
 //PLKED.OBJ10  DD PATH='/<your-path-here>/src/ap/ap_slack.o'
 //PLKED.OBJ11  DD PATH='/<your-path-here>/src/ap/ap_snprintf.o'
 //PLKED.OBJ12  DD PATH='/<your-path-here>/src/buildmark.o'
