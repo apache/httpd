@@ -59,9 +59,9 @@ Committed:
 
 Available:
 
-    * Jim's [PATCH] ap_cpystrn() function (replace strncpy)
-	<199712261651.LAA09735@devsys.jaguNET.com>
-	Status: Jim +1
+    * Jim's [PATCH] ap_cpystrn() function (replace strncpy) Take II
+	<199712262015.PAA10624@devsys.jaguNET.com>
+	Status: Jim +1, Dirk +1, Marc wants to think about the name
 
     * [PATCH] mod_digest/1599: proxy authentication using the digest auth scheme never succeeds (fwd)
 	<Pine.LNX.3.95dg3.971225184830.17380C-100000@twinlark.arctic.org>
