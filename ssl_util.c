@@ -61,10 +61,10 @@
                                   name to the list of people
                                   who piss me off!''
                                             -- Calvin          */
-#include <apr_thread_mutex.h>
 
 #include "mod_ssl.h"
 #include "ap_mpm.h"
+#include "apr_thread_mutex.h"
 
 /*  _________________________________________________________________
 **
