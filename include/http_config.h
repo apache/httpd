@@ -287,7 +287,9 @@ typedef struct module_struct {
  * signal an error). See src/include/ap_mmn.h for MMN version history.
  */
 
-#define STANDARD_MODULE_STUFF	MODULE_MAGIC_NUMBER_MAJOR, \
+#define STANDARD_MODULE_STUFF	this_module_needs_to_be_ported_to_apache_2_0
+
+#define STANDARD20_MODULE_STUFF	MODULE_MAGIC_NUMBER_MAJOR, \
 				MODULE_MAGIC_NUMBER_MINOR, \
 				-1, \
 				__FILE__, \
@@ -319,7 +321,7 @@ API_EXPORT_NONSTD(const char *) ap_set_file_slot(cmd_parms *, char *, char *);
  * it relativizes it wrt server_root.
  */
 
-API_EXPORT(char *) ap_server_root_relative(pool *p, char *fname);
+API_EXPORT(const char *) ap_server_root_relative(pool *p, const char *fname);
 
 /* Finally, the hook for dynamically loading modules in... */
 
@@ -362,6 +364,10 @@ void ap_show_modules(void);
 void *ap_create_request_config(pool *p);
 CORE_EXPORT(void *) ap_create_per_dir_config(pool *p);
 void *ap_merge_per_dir_configs(pool *p, void *base, void *new);
+
+/* For http_connection.c... */
+
+void *ap_create_conn_config(pool *p);
 
 /* For http_core.c... (<Directory> command and virtual hosts) */
 

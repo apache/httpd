@@ -61,7 +61,6 @@
 
 #include "httpd.h"
 #include "http_log.h"
-#include "http_conf_globals.h"	/* for user_id & group_id */
 #include "util_uri.h"
 
 /* Some WWW schemes and their default ports; this is basically /etc/services */

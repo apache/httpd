@@ -86,7 +86,8 @@ extern "C" {
 #elif defined(WIN32)
 /* Set default for Windows file system */
 #define HTTPD_ROOT "/apache"
-#elif defined(BEOS)
+#elif defined (BEOS)
+/* Set the default for BeOS */
 #define HTTPD_ROOT "/boot/home/apache"
 #else
 #define HTTPD_ROOT "/usr/local/apache"
@@ -139,8 +140,8 @@ extern "C" {
 #define DEFAULT_HTTP_PORT	80
 #define DEFAULT_HTTPS_PORT	443
 #define ap_is_default_port(port,r)	((port) == ap_default_port(r))
-#define ap_http_method(r)	"http"
-#define ap_default_port(r)	DEFAULT_HTTP_PORT
+#define ap_http_method(r)	ap_run_http_method(r)
+#define ap_default_port(r)	ap_run_default_port(r)
 
 /* --------- Default user name and group name running standalone ---------- */
 /* --- These may be specified as numbers by placing a # before a number --- */
@@ -260,12 +261,12 @@ extern "C" {
 
 /* The timeout for waiting for messages */
 #ifndef DEFAULT_TIMEOUT
-#define DEFAULT_TIMEOUT 300
+#define DEFAULT_TIMEOUT 120000 
 #endif
 
 /* The timeout for waiting for keepalive timeout until next request */
 #ifndef DEFAULT_KEEPALIVE_TIMEOUT
-#define DEFAULT_KEEPALIVE_TIMEOUT 15
+#define DEFAULT_KEEPALIVE_TIMEOUT 300
 #endif
 
 /* The number of requests to entertain per connection */
@@ -275,46 +276,6 @@ extern "C" {
 
 /* The size of the server's internal read-write buffers */
 #define IOBUFSIZE 8192
-
-/* Number of servers to spawn off by default --- also, if fewer than
- * this free when the caretaker checks, it will spawn more.
- */
-#ifndef DEFAULT_START_DAEMON
-#define DEFAULT_START_DAEMON 5
-#endif
-
-/* Maximum number of *free* server processes --- more than this, and
- * they will die off.
- */
-
-#ifndef DEFAULT_MAX_FREE_DAEMON
-#define DEFAULT_MAX_FREE_DAEMON 10
-#endif
-
-/* Minimum --- fewer than this, and more will be created */
-
-#ifndef DEFAULT_MIN_FREE_DAEMON
-#define DEFAULT_MIN_FREE_DAEMON 5
-#endif
-
-/* Limit on the total --- clients will be locked out if more servers than
- * this are needed.  It is intended solely to keep the server from crashing
- * when things get out of hand.
- *
- * We keep a hard maximum number of servers, for two reasons --- first off,
- * in case something goes seriously wrong, we want to stop the fork bomb
- * short of actually crashing the machine we're running on by filling some
- * kernel table.  Secondly, it keeps the size of the scoreboard file small
- * enough that we can read the whole thing without worrying too much about
- * the overhead.
- */
-#ifndef HARD_SERVER_LIMIT
-#ifdef WIN32
-#define HARD_SERVER_LIMIT 1024
-#else
-#define HARD_SERVER_LIMIT 256
-#endif
-#endif
 
 /*
  * Special Apache error codes. These are basically used
@@ -358,12 +319,9 @@ extern "C" {
  */
 
 #ifndef DEFAULT_MAX_REQUESTS_PER_CHILD
-#define DEFAULT_MAX_REQUESTS_PER_CHILD 0
+#define DEFAULT_MAX_REQUESTS_PER_CHILD 10000
 #endif
 
-#ifndef DEFAULT_THREADS_PER_CHILD
-#define DEFAULT_THREADS_PER_CHILD 50
-#endif
 #ifndef DEFAULT_EXCESS_REQUESTS_PER_CHILD
 #define DEFAULT_EXCESS_REQUESTS_PER_CHILD 0
 #endif
@@ -420,16 +378,27 @@ extern "C" {
  * Example: "Apache/1.1.0 MrWidget/0.1-alpha" 
  */
 
-#define SERVER_BASEVERSION "Apache/1.3.9"	/* SEE COMMENTS ABOVE */
+#define SERVER_BASEVERSION "Apache/mpm-dev"       /* SEE COMMENTS ABOVE */
 #define SERVER_VERSION  SERVER_BASEVERSION
+
+/* TODO: re-implement the server token/version stuff -- it's part of http_core
+ * it should be possible to do without touching http_main at all. (or else
+ * we haven't got enough module hooks)
+ */
+
 enum server_token_type {
     SrvTk_MIN,		/* eg: Apache/1.3.0 */
     SrvTk_OS,		/* eg: Apache/1.3.0 (UNIX) */
     SrvTk_FULL		/* eg: Apache/1.3.0 (UNIX) PHP/3.0 FooBar/1.2b */
 };
 
+#if 0
 API_EXPORT(const char *) ap_get_server_version(void);
 API_EXPORT(void) ap_add_version_component(const char *component);
+#else
+#define ap_get_server_version()	(SERVER_BASEVERSION)
+#define ap_add_version_component(x) ((void)0)
+#endif
 API_EXPORT(const char *) ap_get_server_built(void);
 
 /* Numeric release version identifier: MMNNFFRBB: major minor fix final beta
@@ -649,7 +618,6 @@ struct htaccess_result {
 typedef struct conn_rec conn_rec;
 typedef struct server_rec server_rec;
 typedef struct request_rec request_rec;
-typedef struct listen_rec listen_rec;
 
 #include "util_uri.h"
 
@@ -765,6 +733,11 @@ struct request_rec {
     array_header *content_languages;	/* array of (char*) */
 
     char *vlist_validator;      /* variant list validator (if negotiated) */
+    
+    char *user;			/* If an authentication check was made,
+				 * this gets set to the user name.
+				 */
+    char *ap_auth_type;		/* Ditto. */
 
     int no_cache;
     int no_local_copy;
@@ -811,13 +784,11 @@ struct request_rec {
 struct conn_rec {
 
     ap_pool *pool;
-    server_rec *server;
     server_rec *base_server;	/* Physical vhost this conn come in on */
     void *vhost_lookup_data;	/* used by http_vhost.c */
 
     /* Information about the connection itself */
 
-    int child_num;		/* The number of the child handling conn_rec */
     BUFF *client;		/* Connection to the guy */
 
     /* Who is the client? */
@@ -833,11 +804,6 @@ struct conn_rec {
     char *remote_logname;	/* Only ever set if doing rfc1413 lookups.
 				 * N.B. Only access this through
 				 * get_remote_logname() */
-    char *user;			/* If an authentication check was made,
-				 * this gets set to the user name.  We assume
-				 * that there's only one user per connection(!)
-				 */
-    char *ap_auth_type;		/* Ditto. */
 
     unsigned aborted:1;		/* Are we still talking? */
     signed int keepalive:2;	/* Are we using HTTP Keep-Alive?
@@ -850,6 +816,9 @@ struct conn_rec {
     char *local_host;		/* used for ap_get_server_name when
 				 * UseCanonicalName is set to DNS
 				 * (ignores setting of HostnameLookups) */
+    long id;                    /* ID of this connection; unique at any
+                                 * point in time */
+    void *conn_config;		/* Notes on *this* connection */
 };
 
 /* Per-vhost config... */
@@ -908,7 +877,6 @@ struct server_rec {
     int keep_alive_timeout;	/* Seconds we'll wait for another request */
     int keep_alive_max;		/* Maximum requests per connection */
     int keep_alive;		/* Use persistent connections? */
-    int send_buffer_size;	/* size of TCP send buffer (in bytes) */
 
     char *path;			/* Pathname for ServerPath */
     int pathlen;		/* Length of path */
@@ -924,14 +892,6 @@ struct server_rec {
     int limit_req_fields;    /* limit on number of request header fields  */
 };
 
-/* These are more like real hosts than virtual hosts */
-struct listen_rec {
-    listen_rec *next;
-    struct sockaddr_in local_addr;	/* local IP address and port */
-    int fd;
-    int used;			/* Only used during restart */
-/* more stuff here, like which protocol is bound to the port */
-};
 
 /* Prototypes for utilities... util.c.
  */
