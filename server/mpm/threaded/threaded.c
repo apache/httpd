@@ -677,7 +677,6 @@ static void *start_threads(void * dummy)
     int i;
     int my_child_num = child_num_arg;
     proc_info *my_info = NULL;
-    ap_listen_rec *lr;
     apr_status_t rv;
     int threads_created = 0;
 
@@ -731,13 +730,13 @@ static void *start_threads(void * dummy)
      *  "life_status" is almost right, but it's in the worker's structure, and 
      *  the name could be clearer.   gla
      */
+    return NULL;
 }
 
 static void child_main(int child_num_arg)
 {
     apr_thread_t **threads;
     int i;
-    proc_info *my_info = NULL;
     ap_listen_rec *lr;
     apr_status_t rv;
     thread_starter *ts;
@@ -1253,8 +1252,6 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     wake_up_and_die();
     
     if (is_graceful) {
-        int i, j;
-
 	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, ap_server_conf,
 		    "SIGWINCH received.  Doing graceful restart");
 
