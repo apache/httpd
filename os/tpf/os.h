@@ -10,7 +10,7 @@
 /*
  * This file in included in all Apache source code. It contains definitions
  * of facilities available on _this_ operating system (HAVE_* macros),
- * and prototypes of OS specific functions defined in os.c or os ap_context_t nline.c
+ * and prototypes of OS specific functions defined in os.c or os-inline.c
  */
 
 #include "ap_config.h"
@@ -20,7 +20,7 @@
  * part of the header
  */
 #define INLINE extern ap_inline
-#include "os ap_context_t nline.c"
+#include "os-inline.c"
 #endif
 
 #ifndef INLINE
