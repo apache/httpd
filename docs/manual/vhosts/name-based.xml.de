@@ -1,0 +1,280 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- English revision: 1.10 -->
+
+<manualpage metafile="name-based.xml.meta">
+<parentdocument href="./">Virtual Hosts</parentdocument>
+<title>Unterst&uuml;tzung namensbasierter virtueller Hosts</title>
+
+<summary>
+  <p>Das Dokument beschreibt, wann und wie namensbasierte virtuelle Hosts zu
+    verwenden sind.</p>
+</summary>
+
+<seealso><a href="ip-based.html">Unterst&uuml;tzung IP-basierter virtueller
+    Hosts</a></seealso>
+<seealso><a href="details.html">Tiefergehende Er&ouml;rterung der Zuweisung
+    virtueller Hosts</a></seealso>
+<seealso><a href="mass.html">Dynamisch konfiguriertes
+    Massen-Virtual-Hosting</a></seealso>
+<seealso><a href="examples.html">Beispiele f&uuml;r virtuelle Hosts in typischen
+    Installationen</a></seealso>
+<seealso><a href="examples.html#serverpath"
+    >ServerPath-Beispielkonfiguration</a></seealso>
+
+<section id="namevip"><title>Namensbasierte gegen&uuml;ber IP-basierten
+    virtuellen Hosts</title>
+
+  <p>IP-basierte virtuelle Hosts verwenden die IP-Adresse der Verbindung, um den
+    korrekten virtuellen Host zur Bedienung einer Anfrage zu ermitteln. Folglich 
+    ben&ouml;tigen Sie eine IP-Adresse f&uuml;r jeden virtuellen Host. Bei der 
+    Verwendung von namensbasierten virtuellen Hosts verl&auml;&szlig;t sich der 
+    Server darauf, dass der Client den Hostnamen als Bestandteil der HTTP-Header 
+    angibt. Durch Anwendung dieser Technik k&ouml;nnen sich mehrere verschiedene 
+    Hosts die gleiche IP-Adresse teilen.</p>
+
+  <p>Die Verwendung von namensbasierten virtuellen Hosts ist gew&ouml;hnlich 
+    einfacher. Sie m&uuml;ssen lediglich Ihren DNS-Server darauf einstellen, 
+    jeden Hostnamen auf die richtige IP-Adresse abzubilden, und dann den Apache 
+    HTTP Server so konfigurieren, dass er die verschiedenen Hostnamen erkennt.
+    Namensbasierte virtuelle Hosts entsch&auml;rfen auch den Bedarf an 
+    knappen IP-Adressen. Daher sollten Sie namensbasierte virtuelle Hosts 
+    verwenden, sofern kein besonderer Grund daf&uuml;r existiert, IP-basierte 
+    virtuelle Hosts zu w&auml;hlen. M&ouml;gliche Gr&uuml;nde f&uuml;r die 
+    Verwendung IP-basierter virtueller Hosts sind:</p>
+
+  <ul>
+    <li>Einige antike Clients sind nicht kompatibel zu namensbasierten
+      virtuellen Hosts. Damit namensbasierte virtuelle Hosts funktionieren,
+      muss der Client den HTTP-Host-Header senden. Dies ist bei HTTP/1.1
+      vorgeschrieben und in allen modernen HTTP/1.0-Browsern als Erweiterung
+      implementiert. Wenn Sie Unterst&uuml;tzung f&uuml;r veraltete Clients
+      ben&ouml;tigen und dennoch namensbasierte virtuelle Hosts verwenden,
+      dann finden Sie eine m&ouml;gliche L&ouml;sung daf&uuml;r am Ende des
+      Dokuments.</li>
+
+    <li>Namensbasierte virtuelle Hosts k&ouml;nnen aufgrund der Natur des
+      SSL-Protokolls nicht mit SSL-gesicherten Servern verwendet werden.</li>
+
+    <li>Einige Betriebssysteme und Netzwerkanlagen setzen Techniken zum 
+      Bandbreiten-Management ein, die nicht zwischen Hosts unterscheiden
+      k&ouml;nnen, wenn diese nicht auf verschiedenen IP-Adressen liegen.</li>
+	</ul>
+
+</section>
+
+<section id="using"><title>Die Verwendung von namensbasierten virtuellen Hosts</title>
+
+  <related>
+    <modulelist>
+    <module>core</module>
+    </modulelist>
+
+    <directivelist>
+      <directive module="core">DocumentRoot</directive>
+    	<directive module="core">NameVirtualHost</directive>
+    	<directive module="core">ServerAlias</directive>
+    	<directive module="core">ServerName</directive>
+    	<directive module="core">ServerPath</directive>
+      <directive module="core" type="section">VirtualHost</directive>
+    </directivelist>
+  </related>
+
+  <p>Um namensbasierte virtuelle Hosts zu verwenden, m&uuml;ssen Sie die
+    IP-Adresse (und m&ouml;glicherweise den Port) des Servers benennen, an
+    der Anfragen f&uuml;r die Hosts entgegengenommen werden. Dies wird mit
+    der Direktive <directive module="core">NameVirtualHost</directive>
+    eingestellt. Im Normalfall, wenn alle IP-Adressen des Server verwendet
+    werden sollen, k&ouml;nnen Sie <code>*</code> als Argument f&uuml;r
+    <directive module="core">NameVirtualHost</directive> verwenden. Beachten Sie,
+    dass die Angabe einer IP-Adresse in einer <directive
+    module="core">NameVirtualHost</directive>-Anweisung den Server nicht
+    automatisch an dieser Adresse lauschen l&auml;&szlig;t. Lesen Sie bitte "<a
+    href="../bind.html">Bestimmen der vom Apache verwendeten Adressen und
+    Ports</a>" f&uuml;r weitere Details. Zus&auml;tzlich muss jede hier
+    angegebene IP-Adresse einer Netzwerkkarte des Servers zugeordnet sein.</p>
+ 
+  <p>Der n&auml;chste Schritt ist die Erstellung eines <directive type="section"
+    module="core">VirtualHost</directive>-Blocks f&uuml;r jeden einzelnen
+    Host, den Sie bedienen wollen. Das Argument der Direktive <directive
+    type="section" module="core">VirtualHost</directive> sollte das gleiche
+    sein wie das Argument der <directive
+    module="core">NameVirtualHost</directive>-Anweisung (d.h. eine IP-Adresse
+    oder <code>*</code> f&uuml;r alle Adressen). Innerhalb jedes <directive
+    type="section"	module="core">VirtualHost</directive>-Blocks ben&ouml;tigen
+    Sie zumindestens eine <directive
+    module="core">ServerName</directive>-Anweisung, um zu bestimmen, welcher
+    Host bedient wird, und eine <directive
+  	module="core">DocumentRoot</directive>-Anweisung, um anzugeben, wo im
+    Dateisystem der Inhalt des Hosts abgelegt ist.</p>
+
+  <note><title>Der Hauptserver verschwindet</title>
+    Wenn Sie virtuelle Hosts zu einem bestehenden Webserver hinzuf&uuml;gen,
+    m&uuml;ssen Sie auch einen <directive type="section"	
+    module="core">VirtualHost</directive>-Block f&uuml;r den bestehenden Host
+    <transnote>und bisherigen Hauptserver</transnote> erstellen. 
+    Die <directive module="core">ServerName</directive>- und
+    <directive module="core">DocumentRoot</directive>-Anweisungen zu diesem
+    virtuellen Host sollten die gleichen sein wie die globalen <directive 
+    module="core">ServerName</directive>- und <directive 
+    module="core">DocumentRoot</directive>-Anweisungen. F&uuml;hren Sie diesen
+    virtuellen Host als erstes in der Konfigurationsdatei auf, so dass er als
+    Standard-Host fungiert.
+  </note>
+
+  <p>Vorausgesetzt, Sie bedienen z.B. die Domain
+    <code>www.domain.tld</code> und m&ouml;chten den virtuellen Host
+    <code>www.otherdomain.tld</code> hinzuf&uuml;gen, welcher auf
+    die gleiche IP-Adresse zeigt. Dann f&uuml;gen Sie einfach Folgendes der
+    <code>httpd.conf</code> hinzu:</p>
+
+	<example>
+    NameVirtualHost *<br />
+    <br />
+    &lt;VirtualHost *&gt;<br />
+    <indent>
+    ServerName www.domain.tld<br />
+    ServerAlias domain.tld *.domain.tld<br />
+    DocumentRoot /www/domain<br />
+    </indent>
+    &lt;/VirtualHost&gt;<br />
+    <br />
+    &lt;VirtualHost *&gt;<br />
+    <indent>ServerName www.otherdomain.tld<br />
+    DocumentRoot /www/otherdomain<br />
+    </indent>
+    &lt;/VirtualHost&gt;<br />
+	</example>
+
+  <p>Sie k&ouml;nnen anstelle des <code>*</code> bei den beiden Anweisungen 
+    <directive module="core">NameVirtualHost</directive> und <directive 
+    type="section" module="core">VirtualHost</directive> alternativ eine 
+    eindeutige IP-Adresse angeben. Das kann man beispielsweise machen, um 
+    einige namensbasierte virtuelle Hosts auf einer IP-Adresse zu betreiben und 
+    entweder IP-basierte oder ein anderes Set von namensbasierten virtuellen 
+    Hosts auf einer anderen Adresse.</p>
+  
+  <p>Viele Server wollen unter mehr als einem Namen erreichbar sein. Die 
+    Direktive <directive module="core">ServerAlias</directive>, die innerhalb 
+    des <directive type="section" 
+    module="core">VirtualHost</directive>-Abschnittes angegeben wird,
+    erm&ouml;glicht dies. Zum Beispiel zeigt die <directive 
+    module="core">ServerAlias</directive>-Anweisung in dem ersten <directive 
+    type="section" module="core">VirtualHost</directive>-Block oben an, dass die
+    aufgef&uuml;hrten Namen alternative Namen sind, die man verwenden kann, um
+    das gleiche Webangebot zu erreichen:</p>
+
+	<example>
+    ServerAlias domain.tld *.domain.tld
+	</example>
+
+  <p>Anfragen f&uuml;r alle Hosts der Domain <code>domain.tld</code> werden
+    von dem virtuellen Host <code>www.domain.tld</code> bedient. Die
+    Platzhalter <code>*</code> und <code>?</code> k&ouml;nnen anstelle
+    entsprechender Namen verwendet werden. Nat&uuml;rlich k&ouml;nnen Sie nicht
+    einfach Namen erfinden und diese bei <directive 
+    module="core">ServerName</directive> oder <code>ServerAlias</code>
+    angeben, Sie m&uuml;ssen zun&auml;chst Ihren DNS Server entsprechend
+    konfigurieren, dass er diese Namen auf die mit Ihrem Server verkn&uuml;pfte
+    IP-Adresse abbildet.</p>
+
+  <p>Und schlu&szlig;endlich k&ouml;nnen Sie die Konfiguration der virtuellen
+    Hosts mittels Angabe weiterer Direktiven innherhalb der <directive 
+    type="section" module="core">VirtualHost</directive>-Container
+    feineinstellen. Die meisten Direktiven k&ouml;nnen in diesen Containern
+    angegeben werden und ver&auml;ndern dann ausschlie&szlig;lich die
+    Konfiguration des entsprechenden virtuellen Hosts. Pr&uuml;fen Sie den <a
+  	href="../mod/directive-dict.html#Context">Kontext</a> einer Direktive, um
+    herauszufinden, ob eine bestimmte Direktive zul&auml;ssig ist.
+    Im <em>Hauptserver-Kontext</em> (au&szlig;erhalb der <directive 
+    type="section" module="core">VirtualHost</directive>-Container) definierte
+    Konfigurationsanweisungen werden nur dann angewendet, wenn sie nicht durch
+    Einstellungen des virtuellen Hosts au&szlig;er Kraft gesetzt wurden.</p>
+
+  <p>Wenn nun eine Anfrage eintrifft, pr&uuml;ft der Server zuerst, ob sie eine
+    IP-Adresse verwendet, die der <directive
+    module="core">NameVirtualHost</directive>-Anweisung entspricht. Ist dies der
+    Fall, dann sieht er sich jeden <directive type="section"
+    module="core">VirtualHost</directive>-Abschnitt mit einer passenden
+    IP-Adresse an und versucht den einen zu finden, dessen <directive
+    module="core">ServerName</directive>- oder <directive
+    module="core">ServerAlias</directive>-Anweisung mit dem gew&uuml;nschten
+    Hostnamen &uuml;bereinstimmt. Findet er einen, dann verwendet er die
+    Konfiguration dieses Servers. Wird kein passender virtueller Host gefunden,
+    dann wird <strong>der erste angegeben virtuelle Host</strong> verwendet,
+    dessen IP-Adresse pa&szlig;t.</p>
+
+  <p>Die Folge davon ist, dass der erste aufgef&uuml;hrte virtuelle Host der
+    <em>Standard</em>-Virtual-Host ist. Die <directive
+    module="core">DocumentRoot</directive>-Anweisung des <em>Hauptservers</em>
+    wird <strong>niemals</strong> verwendet, wenn eine IP-Adresse mit einer 
+    <directive module="core">NameVirtualHost</directive>-Anweisung
+    &uuml;bereinstimmt. Wenn Sie eine spezielle Konfiguration f&uuml;r Anfragen
+    angeben m&ouml;chten, die keinem bestimmten virtuellen Host entsprechen,
+    packen Sie diese Konfiguration einfach in einen <directive type="section"
+    module="core">VirtualHost</directive>-Container und f&uuml;hren diesen als
+    erstes in der Konfigurationsdatei auf.</p>
+
+</section>
+
+<section id="compat"><title>Kompatibilit&auml;t mit &auml;lteren Browsern</title>
+  
+  <p>Wie zuvor erw&auml;hnt gibt es einige Clients, die nicht die notwendigen
+    Daten senden, mit denen namensbasierte virtuelle Hosts korrekt
+    funktionieren. Diesen Clients werden stets die Seiten des ersten, f&uuml;r
+    diese IP-Adresse aufgef&uuml;hrten virtuellen Hosts gesendet werden (des
+    <cite>prim&auml;ren</cite> namensbasierten virtuellen Hosts).</p>
+
+  <note><title>Was bedeutet &auml;lter?</title>
+    <p>Beachten Sie bitte, wenn wir von &auml;lter sprechen, meinen wir auch
+    &auml;lter. Es ist sehr unwahrscheinlich, dass sie einen dieser Browser
+    heutzutage in Verwendung finden werden. Alle aktuellen Browser-Versionen
+    senden den <code>Host</code>-Header, so wie er f&uuml;r namensbasierte
+    virtuelle Hosts ben&auml;&ouml;tigt wird.</p>
+  </note>
+
+  <p>Mit der Direktive <directive module="core">ServerPath</directive> existiert  
+    eine m&ouml;gliche Behelfskonstruktion, obgleich sie etwas schwerf&auml;llig
+    ist:</p>
+
+  <p>Beispielkonfiguration:</p>
+
+  <example>
+    NameVirtualHost 111.22.33.44<br />
+    <br />
+    &lt;VirtualHost 111.22.33.44&gt;<br />
+    <indent>
+    ServerName www.domain.tld<br />
+    ServerPath /domain<br />
+    DocumentRoot /web/domain<br />
+    </indent>
+    &lt;/VirtualHost&gt;<br />
+  </example>
+
+  <p>Was bedeutet das? Es bedeutet, dass eine Anfrage f&uuml;r eine mit
+    "<code>/domain</code>" beginnende URI von dem virtuellen Host
+    <code>www.domain.tld</code> bedient wird. Dies hei&szlig;t, dass die Seiten
+    f&uuml;r alle Clients unter <code>http://www.domain.tld/domain/</code>
+    abrufbar sind, wenngleich Clients, die den Header <code>Host:</code>
+    senden, auch &uuml;ber <code>http://www.domain.tld/</code> auf sie zugreifen
+    k&ouml;nnen.</p>
+
+  <p>Legen Sie einen Link auf der Seite Ihres prim&auml;ren virtuellen Hosts zu 
+    <code>http://www.domain.tld/domain/</code>, um die Behelfsl&ouml;sung
+    verf&uuml;gbar zu machen. Bei den Seiten der virtuellen Hosts m&uuml;ssen
+    Sie dann sicherstellen, entweder au&szlig;schlie&szlig;lich relative Links
+    (<em>z.B.</em> "<code>file.html</code>" oder
+    "<code>../icons/image.gif</code>") zu verwenden oder Links, die das
+    einleitende <code>/domain/</code> enthalten (<em>z.B.</em>,
+    "<code>http://www.domain.tld/domain/misc/file.html</code>" oder
+    "<code>/domain/misc/file.html</code>").</p>
+
+  <p>Dies erfordert etwas Disziplin, die Befolgung dieser Richtlinien stellt
+    jedoch gr&ouml;&szlig;tenteils sicher, dass Ihre Seiten mit allen Browsern
+    funktionieren, alten wie neuen.</p>
+
+</section>
+</manualpage>
+
+
