@@ -36,8 +36,8 @@ of virtual host support in Apache version 1.3 and later.</P>
 <H2>Virtual Host Support</H2>
 
 <UL>
-<LI><A HREF="ip-based.html">IP-based Virtual Hosts</A>
 <LI><A HREF="name-based.html">Name-based Virtual Hosts</A>
+<LI><A HREF="ip-based.html">IP-based Virtual Hosts</A>
 <LI><A HREF="examples.html">Virtual Host examples for common setups</A>
 <LI><A HREF="details.html">In-Depth Discussion of Virtual Host Matching</A>
 <LI><A HREF="fd-limits.html">File Descriptor Limits</A>
