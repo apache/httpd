@@ -70,7 +70,7 @@
   <modulefile>mpm_netware.xml</modulefile>
   <modulefile>mpmt_os2.xml</modulefile>
   <modulefile>perchild.xml</modulefile>
-  <modulefile>prefork.xml</modulefile>
+  <modulefile>prefork.xml.de</modulefile>
   <modulefile>threadpool.xml</modulefile>
   <modulefile>mpm_winnt.xml.de</modulefile>
   <modulefile>worker.xml</modulefile>

@@ -48,7 +48,8 @@ MPM</dd>
 <dt><a href="mpmt_os2.html">mpmt_os2</a></dt><dd>Hybrid multi-process, multi-threaded MPM for OS/2</dd>
 <dt><a href="perchild.html">perchild</a></dt><dd>Multi-Processing Module allowing for daemon processes serving
 requests to be assigned a variety of different userids</dd>
-<dt><a href="prefork.html">prefork</a></dt><dd>Implements a non-threaded, pre-forking web server</dd>
+<dt><a href="prefork.html">prefork</a></dt><dd>Implementiert einen im Voraus forkenden Webserver ohne
+  Thread-Unterstützung</dd>
 <dt><a href="threadpool.html">threadpool</a></dt><dd>Yet another experimental variant of the standard
 <code class="module"><a href="../mod/worker.html">worker</a></code> MPM</dd>
 <dt><a href="mpm_winnt.html">mpm_winnt</a></dt><dd> Das Multi-Processing-Modul ist optimiert dür
