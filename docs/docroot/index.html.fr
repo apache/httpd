@@ -1,6 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
 <HTML>
  <HEAD>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
   <TITLE>Page de test de l'installation d'Apache</TITLE>
  </HEAD>
 <!-- Background white, links blue (unvisited), navy (visited), red
@@ -14,22 +15,22 @@
  >
 
 
-<p>Si vous lisez cette page, c'est que les propri&eacute;taires de ce
+<p>Si vous lisez cette page, c'est que les propriétaires de ce
 domaine viennent d'installer le
 serveur web Apache
-avec succ&egrave;s. Ils doivent maintenant ajouter du contenu &agrave; ce
-r&eacute;pertoire et remplacer cette page, ou bien faire pointer le serveur
-vers l'endroit o&ugrave; se trouve le contenu r&eacute;el du site.</p>
+avec succès. Ils doivent maintenant ajouter du contenu à ce
+répertoire et remplacer cette page, ou bien faire pointer le serveur
+vers l'endroit où se trouve le contenu réel du site.</p>
 
 <HR WIDTH="50%" SIZE="8">
 
 <H2 ALIGN="CENTER">Vous voyez cette page au lieu du site attendu&nbsp;?</H2>
 
-<p>Vous voyez cette page parce que l'administrateur du site a modifi&eacute;
+<p>Vous voyez cette page parce que l'administrateur du site a modifié
 la configuration de ce serveur Web. Veuillez contacter
-<STRONG>l'administrateur du site concern&eacute;</STRONG>. La Fondation
+<STRONG>l'administrateur du site concerné</STRONG>. La Fondation
 Apache (Apache Software Foundation), qui produit le logiciel Apache
-utilis&eacute; par ce site, n'a rien &agrave; voir avec la maintenance de ce
+utilisé par ce site, n'a rien à voir avec la maintenance de ce
 site et ne peut intervenir sur sa configuration.</p>
 
 <HR WIDTH="50%" SIZE="8">
