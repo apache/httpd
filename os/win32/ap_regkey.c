@@ -535,7 +535,7 @@ AP_DECLARE(apr_status_t) ap_regkey_value_array_get(apr_array_header_t **result,
          * or single NULL terminated.  Avert.
          */
         buf = (char *)value;
-        if (size < 2 || buf[size - 1] != '\0' || buf[size - 1] != '\0') {
+        if (size < 2 || buf[size - 1] != '\0' || buf[size - 2] != '\0') {
             buf = apr_palloc(pool, size + 2);
             memcpy(buf, value, size);
             buf[size + 1] = '\0';
