@@ -2347,7 +2347,7 @@ static int default_handler(request_rec *r)
     ap_mmap_t *mm = NULL;
 #endif
 #ifdef CHARSET_EBCDIC
-    int convert_flag;
+    ap_xlate_t *xlate_to_net;
 #endif
 
     /* This handler has no use for a request body (yet), but we still
@@ -2406,7 +2406,7 @@ static int default_handler(request_rec *r)
      *
      * Note: convert_flag is not used in the MMAP path;
      */
-    convert_flag = ap_checkconv(r);
+    xlate_to_net = ap_checkconv(r);
 #endif  
 #ifdef USE_MMAP_FILES
     if ((r->finfo.size >= MMAP_THRESHOLD)
@@ -2432,8 +2432,7 @@ static int default_handler(request_rec *r)
 	if (d->content_md5 & 1) {
 	    ap_table_setn(r->headers_out, "Content-MD5",
 			  ap_md5digest(r->pool, fd,
-                                       convert_flag ?
-                                       ap_locale_to_ascii : NULL));
+                                       xlate_to_net));
 	}
 #else
 	if (d->content_md5 & 1) {
@@ -2477,8 +2476,8 @@ static int default_handler(request_rec *r)
 	    
 	    ap_MD5Init(&context);
 #ifdef CHARSET_EBCDIC
-            if (convert_flag) {
-                ap_MD5SetXlate(&context, ap_locale_to_ascii);
+            if (xlate_to_net) {
+                ap_MD5SetXlate(&context, xlate_to_net);
             }
 #endif
 	    ap_MD5Update(&context, addr, (unsigned int)r->finfo.size);

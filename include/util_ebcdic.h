@@ -72,6 +72,8 @@ extern ap_xlate_t *ap_locale_to_ascii, *ap_locale_from_ascii;
 
 ap_status_t ap_init_ebcdic(ap_pool_t *);
 
+ap_xlate_t *ap_checkconv(struct request_rec *);
+
 #ifdef __cplusplus
 }
 #endif

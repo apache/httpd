@@ -56,13 +56,13 @@
  * University of Illinois, Urbana-Champaign.
  */
 
-#define CORE_PRIVATE
 #include "ap_config.h"
 
 #ifdef CHARSET_EBCDIC
 
 #include "httpd.h"
 #include "http_log.h"
+#include "http_core.h"
 #include "util_ebcdic.h"
 
 ap_xlate_t *ap_hdrs_to_ascii, *ap_hdrs_from_ascii;
@@ -98,6 +98,51 @@ ap_status_t ap_init_ebcdic(ap_pool_t *pool)
     }
     
     return APR_SUCCESS;
+}
+
+#define ASCIITEXT_MAGIC_TYPE_PREFIX "text/x-ascii-" /* Text files whose content-type starts with this are passed thru unconverted */
+
+/* Check the Content-Type to decide if conversion is needed */
+ap_xlate_t *ap_checkconv(struct request_rec *r)
+{
+    int convert_to_ascii;
+    const char *type;
+    ap_xlate_t *zero = NULL;
+
+    /* To make serving of "raw ASCII text" files easy (they serve faster 
+     * since they don't have to be converted from EBCDIC), a new
+     * "magic" type prefix was invented: text/x-ascii-{plain,html,...}
+     * If we detect one of these content types here, we simply correct
+     * the type to the real text/{plain,html,...} type. Otherwise, we
+     * set a flag that translation is required later on.
+     */
+
+    type = (r->content_type == NULL) ? ap_default_type(r) : r->content_type;
+
+    /* If no content type is set then treat it as (ebcdic) text/plain */
+    convert_to_ascii = (type == NULL);
+
+    /* Conversion is applied to text/ files only, if ever. */
+    if (type && (strncasecmp(type, "text/", 5) == 0 ||
+		 strncasecmp(type, "message/", 8) == 0)) {
+	if (strncasecmp(type, ASCIITEXT_MAGIC_TYPE_PREFIX,
+			sizeof(ASCIITEXT_MAGIC_TYPE_PREFIX)-1) == 0)
+	    r->content_type = ap_pstrcat(r->pool, "text/",
+					 type+sizeof(ASCIITEXT_MAGIC_TYPE_PREFIX)-1,
+					 NULL);
+        else
+	    /* translate EBCDIC to ASCII */
+	    convert_to_ascii = 1;
+    }
+    /* Enable conversion if it's a text document */
+    if (convert_to_ascii) {
+        ap_bsetopt(r->connection->client, BO_WXLATE, &ap_locale_to_ascii);
+    }
+    else {
+        ap_bsetopt(r->connection->client, BO_WXLATE, &zero);
+    }
+
+    return convert_to_ascii ? ap_locale_to_ascii : NULL;
 }
 
 #endif /* CHARSET_EBCDIC */

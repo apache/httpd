@@ -67,6 +67,7 @@
 #include "http_request.h"	/* for sub_req_lookup_uri() */
 #include "util_script.h"
 #include "util_date.h"		/* For parseHTTPdate() */
+#include "util_ebcdic.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -537,21 +538,26 @@ API_EXPORT(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
 	     */
 	if (!(l = strchr(w, ':'))) {
 	    int maybeASCII = 0, maybeEBCDIC = 0;
-	    char *cp;
+	    unsigned char *cp, native;
+            ap_size_t inbytes_left, outbytes_left;
 
 	    for (cp = w; *cp != '\0'; ++cp) {
-		if (isprint(*cp) && !isprint(os_toebcdic[*cp]))
+                native = ap_xlate_conv_byte(ap_hdrs_from_ascii, *cp);
+		if (isprint(*cp) && !isprint(native))
 		    ++maybeEBCDIC;
-		if (!isprint(*cp) && isprint(os_toebcdic[*cp]))
+		if (!isprint(*cp) && isprint(native))
 		    ++maybeASCII;
-		}
+            }
 	    if (maybeASCII > maybeEBCDIC) {
-		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
-			 "CGI Interface Error: Script headers apparently ASCII: (CGI = %s)", r->filename);
-		ascii2ebcdic(w, w, cp - w);
+		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r->server,
+                             "CGI Interface Error: Script headers apparently ASCII: (CGI = %s)",
+                             r->filename);
+                inbytes_left = outbytes_left = cp - w;
+                ap_xlate_conv_buffer(ap_hdrs_from_ascii,
+                                     w, &inbytes_left, w, &outbytes_left);
 	    }
 	}
-#endif
+#endif /*CHARSET_EBCDIC*/
 	if (!(l = strchr(w, ':'))) {
 	    char malformed[(sizeof MALFORMED_MESSAGE) + 1
 			   + MALFORMED_HEADER_LENGTH_TO_SHOW];
