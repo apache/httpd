@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.5 $ -->
+<!-- $Revision: 1.6 $ -->
 
 <!--
  Copyright 2004 The Apache Software Foundation
@@ -34,12 +34,12 @@
     process different content-types through different filters, even
     when the content-type is not known in advance (e.g. in a proxy).</p>
 
-    <p>mod_filter works by introducing indirection into the filter
-    chain.  Instead of inserting filters in the chain, we insert
+    <p><module>mod_filter</module> works by introducing indirection into
+    the filter chain.  Instead of inserting filters in the chain, we insert
     a filter harness which in turn dispatches conditionally
     to a filter provider.  Any content filter may be used as a provider
-    to mod_filter; no change to existing filter modules is required
-    (although it may be possible to simplify them).</p>
+    to <module>mod_filter</module>; no change to existing filter modules is
+    required (although it may be possible to simplify them).</p>
 </summary>
 
 <section id="smart"><title>Smart Filtering</title>
@@ -49,11 +49,11 @@
     flexibility available for server admins to allow the chain to be
     configured dynamically.</p>
 
-    <p>mod_filter by contrast gives server administrators a great deal of
-    flexibility in configuring the filter chain.  In fact, filters can be
-    inserted based on any Request Header, Response Header or Environment
-    Variable.  This generalises the limited flexibility offered by
-    <directive module="core">AddOutputFilterByType</directive>, and fixes
+    <p><module>mod_filter</module> by contrast gives server administrators a
+    great deal of flexibility in configuring the filter chain.  In fact,
+    filters can be inserted based on any Request Header, Response Header
+    or Environment Variable.  This generalises the limited flexibility offered
+    by <directive module="core">AddOutputFilterByType</directive>, and fixes
     it to work correctly with dynamic content, regardless of the
     content generator.  The ability to dispatch based on Environment
     Variables offers the full flexibility of configuration with
@@ -77,12 +77,12 @@
     alt="[This image shows the mod_filter model]"/><br />
     <dfn>Figure 2:</dfn> The <module>mod_filter</module> model</p>
 
-    <p>mod_filter works by introducing indirection into the filter
-    chain.  Instead of inserting filters in the chain, we insert
+    <p><module>mod_filter</module> works by introducing indirection into
+    the filter chain.  Instead of inserting filters in the chain, we insert
     a filter harness which in turn dispatches conditionally
     to a filter provider.  Any content filter may be used as a provider
-    to mod_filter; no change to existing filter modules is required
-    (although it may be possible to simplify them).  There can be
+    to <module>mod_filter</module>; no change to existing filter modules
+    is required (although it may be possible to simplify them).  There can be
     multiple providers for one filter, but no more than one provider will
     run for any single request.</p>
 
@@ -93,36 +93,38 @@
 </section>
 
 <section id="config"><title>Configuring the Chain</title>
-    <p>There are three stages to configuring a filter chain with mod_filter.
-    For details of the directives, see below.</p>
+    <p>There are three stages to configuring a filter chain with
+    <module>mod_filter</module>. For details of the directives, see below.</p>
 
     <dl>
     <dt>Declare Filters</dt>
-    <dd>The <directive>FilterDeclare</directive> directive declares a filter,
-    assigning it a name and a dispatch criterion.</dd>
+    <dd>The <directive module="mod_filter">FilterDeclare</directive> directive
+    declares a filter, assigning it a name and a dispatch criterion.</dd>
 
     <dt>Register Providers</dt>
-    <dd>The <directive>FilterProvider</directive> directive registers a
-    provider with a filter. The filter must have been registered with
-    <directive>FilterDeclare</directive>. The provider must have been
+    <dd>The <directive module="mod_filter">FilterProvider</directive>
+    directive registers a provider with a filter. The filter must have
+    been registered with <directive module="mod_filter"
+    >FilterDeclare</directive>. The provider must have been
     registered with <code>ap_register_output_filter</code> by some module.
-    The final argument to <directive>FilterProvider</directive> is a match
-    string, that will be checked against the filter's dispatch criterion
-    to determine whether to run this provider.</dd>
+    The final argument to <directive module="mod_filter"
+    >FilterProvider</directive> is a match string, that will be checked
+    against the filter's dispatch criterion to determine whether to run
+    this provider.</dd>
 
     <dt>Configure the Chain</dt>
     <dd>The above directives build components of a smart filter chain,
-    but do not configure it to run.  The <directive>FilterChain</directive>
-    directive builds a filter chain from smart filters declared, offering the
-    flexibility to insert filters at the beginning or end of the chain,
-    remove a filter, or clear the chain.</dd>
+    but do not configure it to run.  The <directive module="mod_filter"
+    >FilterChain</directive> directive builds a filter chain from smart
+    filters declared, offering the flexibility to insert filters at the
+    beginning or end of the chain, remove a filter, or clear the chain.</dd>
 </dl>
 </section>
 
 <section id="examples"><title>Examples</title>
     <dl>
     <dt>Server side Includes (SSI)</dt>
-    <dd>A simple case of using mod_filter in place of
+    <dd>A simple case of using <module>mod_filter</module> in place of
     <directive module="core">AddOutputFilterByType</directive>
     <example>
       FilterDeclare SSI Content-Type<br/>
@@ -199,14 +201,16 @@
     <li>Filters may make responses uncacheable.</li>
     </ul>
 
-    <p>mod_filter aims to offer generic handling of these details of filter
-    implementation, reducing the complexity required of content filter modules.
-    This is work-in-progress; the <directive>FilterProtocol</directive>
-    implements some of this functionality, but there are no API calls yet.</p>
+    <p><module>mod_filter</module> aims to offer generic handling of these
+    details of filter implementation, reducing the complexity required of
+    content filter modules. This is work-in-progress; the
+    <directive module="mod_filter">FilterProtocol</directive> implements
+    some of this functionality, but there are no API calls yet.</p>
 
-    <p>At the same time, mod_filter should not interfere with a filter that
-    wants to handle all aspects of the protocol.  By default (i.e. in the
-    absence of any <directive>FilterProtocol</directive> directives), mod_filter
+    <p>At the same time, <module>mod_filter</module> should not interfere
+    with a filter that wants to handle all aspects of the protocol.  By
+    default (i.e. in the absence of any <directive module="mod_filter"
+    >FilterProtocol</directive> directives), <module>mod_filter</module>
     will leave the headers untouched.</p>
 </section>
 
@@ -214,31 +218,31 @@
 <name>FilterDeclare</name>
 <description>Declare a smart filter</description>
 <syntax>FilterDeclare <var>filter-name</var> [req|resp|env]=<var>dispatch</var>
-<var>[type]</var>
-</syntax>
+    <var>[type]</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 
 <usage>
     <p>This directive declares an output filter together with a
     header or environment variable that will determine runtime
-    configuration.  The first argument is a <code>filter-name</code>
-    for use in <directive>FilterProvider</directive>,
-    <directive>FilterChain</directive> and
-    <directive>FilterProtocol</directive> directives.</p>
+    configuration.  The first argument is a <var>filter-name</var>
+    for use in <directive module="mod_filter">FilterProvider</directive>,
+    <directive module="mod_filter">FilterChain</directive> and
+    <directive module="mod_filter">FilterProtocol</directive> directives.</p>
 
     <p>The second is a string with optional <code>req=</code>,
     <code>resp=</code> or <code>env=</code> prefix causing it
     to dispatch on (respectively) the request header, response
     header, or environment variable named.  In the absence of a
     prefix, it defaults to a response header.  A special case is the
-    word "handler", which causes mod_filter to dispatch on the handler.</p>
+    word <code>handler</code>, which causes <module>mod_filter</module>
+    to dispatch on the content handler.</p>
 
     <p>The final (optional) argument
-    is the type of filter, and takes values of <var>ap_filter_type</var>
-    - namely <var>RESOURCE</var> (the default), <var>CONTENT_SET</var>,
-    <var>PROTOCOL</var>, <var>TRANSCODE</var>, <var>CONNECTION</var>
-    or <var>NETWORK</var>.</p>
+    is the type of filter, and takes values of <code>ap_filter_type</code>
+    - namely <code>RESOURCE</code> (the default), <code>CONTENT_SET</code>,
+    <code>PROTOCOL</code>, <code>TRANSCODE</code>, <code>CONNECTION</code>
+    or <code>NETWORK</code>.</p>
 </usage>
 </directivesynopsis>
 
@@ -254,56 +258,46 @@
     <p>This directive registers a <em>provider</em> for the smart filter.
     The provider will be called if and only if the <var>match</var> declared
     here matches the value of the header or environment variable declared
-    as <var>dispatch</var> in the <directive>FilterDeclare</directive>
-    directive that declared <var>filter-name</var>.</p>
+    as <var>dispatch</var> in the <directive module="mod_filter"
+    >FilterDeclare</directive> directive that declared
+    <var>filter-name</var>.</p>
 
-    <p><var>filter-name</var> must have been declared with 
-    <directive>FilterDeclare</directive>.  <var>provider-name</var> must have
-    been registered by loading a module that registers the name with
+    <p><var>filter-name</var> must have been declared with
+    <directive module="mod_filter">FilterDeclare</directive>.
+    <var>provider-name</var> must have been registered by loading
+    a module that registers the name with
     <code>ap_register_output_filter</code>.</p>
 
     <p>The <var>match</var> argument specifies a match that will be applied to
-    the filter's <var>dispatch</var> criterion.  The match may be a string
-    match (exact match or substring), a regexp, an integer (greater, lessthan
-    or equals), or unconditional.  The first characters of the <var>match</var>
-    argument determines this:</p>
+    the filter's <var>dispatch</var> criterion.  The <var>match</var> may be
+    a string match (exact match or substring), a regexp, an integer (greater,
+    lessthan or equals), or unconditional.  The first characters of the
+    <var>match</var> argument determines this:</p>
 
     <p><strong>First</strong>, if the first character is an exclamation mark
-    <strong>!</strong>, this reverses the rule, so the provider will be used
+    (<code>!</code>), this reverses the rule, so the provider will be used
     if and only if the match <em>fails</em>.</p>
 
     <p><strong>Second</strong>, it interprets the first character excluding
-    any leading ! as follows:</p>
+    any leading <code>!</code> as follows:</p>
 
-    <dl>
-    <dt>default</dt>
-    <dd>exact match</dd>
-
-    <dt>$</dt>
-    <dd>substring match</dd>
-
-    <dt>/</dt>
-    <dd>regexp match</dd>
-
-    <dt>=</dt>
-    <dd>integer equality</dd>
-
-    <dt>&lt;</dt>
-    <dd>integer less-than</dd>
-
-    <dt>&gt;</dt>
-    <dd>integer greater-than</dd>
-
-    <dt>*</dt>
-    <dd>Unconditional match</dd>
-    </dl>
+    <table style="zebra" border="yes">
+    <tr><th>Character</th><th>Description</th></tr>
+    <tr><td><em>(none)</em></td><td>exact match</td></tr>
+    <tr><td><code>$</code></td><td>substring match</td></tr>
+    <tr><td><code>/</code></td><td>regexp match</td></tr>
+    <tr><td><code>=</code></td><td>integer equality</td></tr>
+    <tr><td><code>&lt;</code></td><td>integer less-than</td></tr>
+    <tr><td><code>&gt;</code></td><td>integer greater-than</td></tr>
+    <tr><td><code>*</code></td><td>Unconditional match</td></tr>
+    </table>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>FilterChain</name>
 <description>Configure the filter chain</description>
-<syntax>FilterChain ([+=-@!]<var>filter-name</var>)+</syntax>
+<syntax>FilterChain [+=-@!]<var>filter-name</var> <var>...</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 
@@ -314,23 +308,23 @@
     determines what to do:</p>
 
     <dl>
-    <dt>+filter-name</dt>
-    <dd>Add filter-name to the end of the filter chain</dd>
+    <dt><code>+<var>filter-name</var></code></dt>
+    <dd>Add <var>filter-name</var> to the end of the filter chain</dd>
 
-    <dt>@filter-name</dt>
-    <dd>Insert filter-name at the start of the filter chain</dd>
+    <dt><code>@<var>filter-name</var></code></dt>
+    <dd>Insert <var>filter-name</var> at the start of the filter chain</dd>
 
-    <dt>-filter-name</dt>
-    <dd>Remove filter-name from the filter chain</dd>
+    <dt><code>-<var>filter-name</var></code></dt>
+    <dd>Remove <var>filter-name</var> from the filter chain</dd>
 
-    <dt>=filter-name</dt>
-    <dd>Empty the filter chain and insert filter-name</dd>
+    <dt><code>=<var>filter-name</var></code></dt>
+    <dd>Empty the filter chain and insert <var>filter-name</var></dd>
 
-    <dt>!</dt>
+    <dt><code>!</code></dt>
     <dd>Empty the filter chain</dd>
 
-    <dt>filter-name</dt>
-    <dd>Equivalent to +filter-name</dd>
+    <dt><code><var>filter-name</var></code></dt>
+    <dd>Equivalent to <code>+<var>filter-name</var></code></dd>
     </dl>
 </usage>
 </directivesynopsis>
@@ -338,42 +332,45 @@
 <directivesynopsis>
 <name>FilterProtocol</name>
 <description>Deal with correct HTTP protocol handling</description>
-<syntax>FilterProtocol filter-name [provider-name] "proto-flags"</syntax>
+<syntax>FilterProtocol <var>filter-name</var> [<var>provider-name</var>]
+    <var>proto-flags</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 
 <usage>
-    <p>This directs mod_filter to deal with ensuring the filter doesn't run
-    when it shouldn't, and that the HTTP response headers are correctly set
-    taking into account the effects of the filter.</p>
+    <p>This directs <module>mod_filter</module> to deal with ensuring the
+    filter doesn't run when it shouldn't, and that the HTTP response
+    headers are correctly set taking into account the effects of the
+    filter.</p>
 
     <p>There are two forms of this directive.  With three arguments, it
-    applies specifically to a filter-name and a provider for that filter.
-    With two arguments it applies to a filter-name whenever the filter runs
-    <em>any</em> provider.</p>
+    applies specifically to a <var>filter-name</var> and a
+    <var>provider-name</var> for that filter.
+    With two arguments it applies to a <var>filter-name</var> whenever the
+    filter runs <em>any</em> provider.</p>
 
     <p><var>proto-flags</var> is one or more of</p>
 
     <dl>
-    <dt>change=yes</dt>
+    <dt><code>change=yes</code></dt>
     <dd>The filter changes the content, including possibly the content
     length</dd>
 
-    <dt>change=1:1</dt>
+    <dt><code>change=1:1</code></dt>
     <dd>The filter changes the content, but will not change the content
     length</dd>
 
-    <dt>byteranges=no</dt>
+    <dt><code>byteranges=no</code></dt>
     <dd>The filter cannot work on byteranges and requires complete input</dd>
 
-    <dt>proxy=no</dt>
+    <dt><code>proxy=no</code></dt>
     <dd>The filter should not run in a proxy context</dd>
 
-    <dt>proxy=transform</dt>
+    <dt><code>proxy=transform</code></dt>
     <dd>The filter transforms the response in a manner incompatible with
     the HTTP <code>Cache-Control: no-transform</code> header.</dd>
 
-    <dt>cache=no</dt>
+    <dt><code>cache=no</code></dt>
     <dd>The filter renders the output uncacheable (eg by introducing randomised
     content changes)</dd>
     </dl>
@@ -382,29 +379,31 @@
 
 <directivesynopsis>
 <name>FilterTrace</name>
-<description>Get debug/diagnostic information from mod_filter</description>
-<syntax>FilterTrace filter-name level</syntax>
+<description>Get debug/diagnostic information from
+    <module>mod_filter</module></description>
+<syntax>FilterTrace <var>filter-name</var> <var>level</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 
 <usage>
-    <p>This directive generates debug information from mod_filter.
+    <p>This directive generates debug information from
+    <module>mod_filter</module>.
     It is designed to help test and debug providers (filter modules), although
-    it may also help with mod_filter itself.</p>
+    it may also help with <module>mod_filter</module> itself.</p>
 
-    <p>The debug output depends on the level set:</p>
+    <p>The debug output depends on the <var>level</var> set:</p>
     <dl>
-    <dt>0 (default)</dt>
+    <dt><code>0</code> (default)</dt>
     <dd>No debug information is generated.</dd>
 
-    <dt>1</dt>
-    <dd>mod_filter will record buckets and brigades passing through the filter
-    to the error log, before the provider has processed them.
-    This is similar to the information generated by
+    <dt><code>1</code></dt>
+    <dd><module>mod_filter</module> will record buckets and brigades
+    passing through the filter to the error log, before the provider has
+    processed them. This is similar to the information generated by
     <a href="http://apache.webthing.com/mod_diagnostics/">mod_diagnostics</a>.
     </dd>
 
-    <dt>2 (not yet implemented)</dt>
+    <dt><code>2</code> (not yet implemented)</dt>
     <dd>Will dump the full data passing through to a tempfile before the
     provider. <strong>For single-user debug only</strong>; this will not
     support concurrent hits.</dd>
