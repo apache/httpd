@@ -460,7 +460,8 @@ API_EXPORT(const char *) apapi_get_server_built(void);
                                     ((x) == HTTP_REQUEST_ENTITY_TOO_LARGE) || \
                                     ((x) == HTTP_REQUEST_URI_TOO_LARGE) || \
                                     ((x) == HTTP_INTERNAL_SERVER_ERROR) || \
-                                    ((x) == HTTP_SERVICE_UNAVAILABLE))
+                                    ((x) == HTTP_SERVICE_UNAVAILABLE) || \
+				    ((x) == HTTP_NOT_IMPLEMENTED))
 
 
 #define METHODS 8

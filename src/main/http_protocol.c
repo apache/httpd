@@ -1323,7 +1323,7 @@ API_EXPORT(int) setup_client_block(request_rec *r, int read_policy)
         if (strcasecmp(tenc, "chunked")) {
             aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
                         "Unknown Transfer-Encoding %s", tenc);
-            return HTTP_BAD_REQUEST;
+            return HTTP_NOT_IMPLEMENTED;
         }
         if (r->read_body == REQUEST_CHUNKED_ERROR) {
             aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
