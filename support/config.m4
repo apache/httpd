@@ -81,9 +81,20 @@ fi
 ])
 APACHE_SUBST(checkgid_LTFLAGS)
 
-if TMP_ULIMIT=`ulimit -H -n` && ulimit -S -n $TMP_ULIMIT ; then
-  APACHECTL_ULIMIT="ulimit -S -n \`ulimit -H -n\`"
-else
-  APACHECTL_ULIMIT=""
-fi
+case $host in
+    *aix*)
+        # this works in any locale, unlike the command below, which
+        # fails in a non-English locale if the hard limit is unlimited
+        # since the display of the limit will translate "unlimited", but
+	# ulimit only accepts English "unlimited" on input
+        APACHECTL_ULIMIT="ulimit -S -n unlimited"
+        ;;
+    *)
+        if TMP_ULIMIT=`ulimit -H -n` && ulimit -S -n $TMP_ULIMIT ; then
+            APACHECTL_ULIMIT="ulimit -S -n \`ulimit -H -n\`"
+        else
+            APACHECTL_ULIMIT=""
+        fi
+        ;;
+esac
 APACHE_SUBST(APACHECTL_ULIMIT)
