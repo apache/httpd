@@ -1,5 +1,10 @@
 Changes with Apache 2.0.38
 
+  *) Fix install-bindist.sh so that it finds any perl instead of just
+     early perl 5.x versions.  This is consistent with a build/install
+     from source, and it allows the perl scripts installed by a bindist 
+     to work on systems with perl 5.6.  [Jeff Trawick]
+
   *) Fix apxs so that the makefile created by "apxs -g" works on AIX and
      Tru64 (and probably some other platforms).  [Jeff Trawick]
 

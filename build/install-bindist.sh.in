@@ -54,7 +54,7 @@ path=`echo $PATH | sed -e 's/:/ /g'`
 for dir in ${path} ;  do
   for pperl in ${perls} ; do
     if test -f "${dir}/${pperl}" ; then
-      if `${dir}/${pperl} -v | grep 'version 5\.' >/dev/null 2>&1` ; then
+      if `${dir}/${pperl} -v >/dev/null 2>&1` ; then
         PERL="${dir}/${pperl}"
         break
       fi
