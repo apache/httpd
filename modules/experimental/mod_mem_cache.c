@@ -992,6 +992,10 @@ static int mem_cache_post_config(apr_pool_t *p, apr_pool_t *plog,
         apr_thread_mutex_create(&sconf->lock, APR_THREAD_MUTEX_DEFAULT, p);
     }
 
+#ifdef USE_ATOMICS
+    apr_atomic_init(p);
+#endif
+    
     sconf->cache_cache = cache_init(sconf->max_object_cnt,
                                     sconf->max_cache_size,                                   
                                     memcache_get_priority,
