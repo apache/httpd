@@ -110,7 +110,7 @@ static ap_status_t make_sock(ap_context_t *p, ap_listen_rec *server)
      * If no size is specified, use the kernel default.
      */
     if (send_buffer_size) {
-	stat = ap_setsocketopt(s, SO_SNDBUF,  send_buffer_size);
+	stat = ap_setsocketopt(s, APR_SO_SNDBUF,  send_buffer_size);
         if (stat != APR_SUCCESS && stat != APR_ENOTIMPL) {
             ap_log_error(APLOG_MARK, APLOG_WARNING, NULL,
 			"make_sock: failed to set SendBufferSize for %s, "
