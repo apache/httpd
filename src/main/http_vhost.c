@@ -705,6 +705,10 @@ static void fix_hostname(request_rec *r)
 
     /* check and copy the host part */
     src = r->hostname;
+    /* unescape the hostname first */
+    if (ap_unescape_url(src) != OK) {
+	goto bad;
+    }
     dst = host;
     while (*src) {
 	if (*src == '.') {

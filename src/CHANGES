@@ -1,5 +1,8 @@
 Changes with Apache 1.3.18
 
+  *) Escapes in hostnames such as www.%61rctic.org were not handled
+     properly.  [Dean Gaudet]
+
   *) PORT: Allow for build under latest dev. version of NonStopUX
      on Compaq. [Tom Bates <tom.bates@compaq.com>]
 
