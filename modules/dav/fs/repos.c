@@ -348,7 +348,10 @@ static dav_error * dav_fs_copymove_file(
                                  "Could not read input file");
         }
 
-        /* write any bytes that were read (applies to APR_EOF, too) */
+        if (status == APR_EOF)
+            break;
+
+        /* write any bytes that were read */
         if (apr_file_write_full(outf, pbuf->buf, len, NULL) != APR_SUCCESS) {
             int save_errno = errno;
 
@@ -375,9 +378,6 @@ static dav_error * dav_fs_copymove_file(
             return dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0,
                                  "Could not write output file");
         }
-
-        if (status == APR_EOF)
-            break;
     }
 
     apr_file_close(inf);
