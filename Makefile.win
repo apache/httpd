@@ -410,7 +410,8 @@ _install:
   for use in the OpenSSL Toolkit <http://www.openssl.org/>.
 <<
 	-awk -f <<script.awk < "srclib\openssl\LICENSE" >> "$(INSTDIR)\LICENSE.txt"
-{   print "";
+BEGIN {
+    print "";
     print "For the libeay32.dll, ssleay32.dll and certtool.exe components:";
     print "";
     while ( getline > 0 ) {
@@ -476,19 +477,19 @@ _install:
   and Mark Adler (madler@alumni.caltech.edu) .
 <<
 	-awk -f <<script.awk < "srclib\zlib\README" >> "$(INSTDIR)\LICENSE.txt"
-    {
-      while ( getline > 0 ) {
+BEGIN {
+    while ( getline > 0 ) {
 	if ( $$0 ~ /Copyright notice:/ ) {
-	  print "";
-	  print "For the mod_deflate zlib compression component:";
-	  while ( getline > 0 && $$0 !~ /^[^ ]/ ) {
-	    print $$0;
-          }
-          exit 0;
+	    print "";
+	    print "For the mod_deflate zlib compression component:";
+	    while ( getline > 0 && $$0 !~ /^[^ ]/ ) {
+		print $$0;
+            }
+            exit 0;
         }
-      }
-      exit 1;
     }
+    exit 1;
+}
 <<
 	copy modules\filters\$(LONG)\mod_deflate.so "$(INSTDIR)\modules" <.y
 !ENDIF
@@ -500,7 +501,7 @@ _install:
 	copy support\win32\$(LONG)\ApacheMonitor.exe "$(INSTDIR)\bin" <.y
 	copy support\win32\$(LONG)\wintty.exe "$(INSTDIR)\bin" <.y
 	copy docs\cgi-examples\printenv "$(INSTDIR)\cgi-bin\printenv.pl" <.y
-	-awk -f <<script.awk "docs\cgi-examples\printenv" > "$(INSTDIR)\cgi-bin\printenv.pl"
+	-awk -f <<script.awk "docs/cgi-examples/printenv" > "$(INSTDIR)\cgi-bin\printenv.pl"
     BEGIN { 
 	if ( "perl -e \"print $$^X;\"" | getline perlroot ) {
 	    gsub( /\\/, "/", perlroot );
@@ -544,7 +545,7 @@ _install:
 	if not exist "$(INSTDIR)\conf\mime.types" \
 	    copy "$(INSTDIR)\conf\mime.types.default" "$(INSTDIR)\conf\mime.types"
 	copy docs\conf\httpd-win.conf "$(INSTDIR)\conf\httpd.default.conf" <.y
-	-awk -f <<script.awk "docs\conf\httpd-win.conf" "$(INSTDIR)" > "$(INSTDIR)\conf\httpd.default.conf"
+	-awk -f <<script.awk "docs/conf/httpd-win.conf" "$(INSTDIR)" > "$(INSTDIR)\conf\httpd.default.conf"
     BEGIN { 
 	serverroot = ARGV[2];
 	delete ARGV[2];
@@ -562,7 +563,7 @@ _install:
 	if not exist "$(INSTDIR)\conf\httpd.conf" \
 	    copy "$(INSTDIR)\conf\httpd.default.conf" "$(INSTDIR)\conf\httpd.conf"
 	copy docs\conf\ssl-std.conf "$(INSTDIR)\conf\ssl.default.conf" <.y
-	-awk -f <<script.awk "docs\conf\ssl-std.conf" "$(INSTDIR)" > "$(INSTDIR)\conf\ssl.default.conf"
+	-awk -f <<script.awk "docs/conf/ssl-std.conf" "$(INSTDIR)" > "$(INSTDIR)\conf\ssl.default.conf"
     BEGIN { 
 	serverroot = ARGV[2];
 	delete ARGV[2];
@@ -577,7 +578,7 @@ _install:
 <<
 	if not exist "$(INSTDIR)\conf\ssl.conf" \
 	    copy "$(INSTDIR)\conf\ssl.default.conf" "$(INSTDIR)\conf\ssl.conf"
-	-awk -f <<script.awk "support\dbmmanage.in" >"$(INSTDIR)\bin\dbmmanage.pl"
+	-awk -f <<script.awk "support/dbmmanage.in" >"$(INSTDIR)\bin\dbmmanage.pl"
     { if ( $$0 ~ /^BEGIN \{ @AnyDBM_File::/ ) {
 	  sub( /ISA = qw\(.*\)/, "ISA = qw(SDBM_File)" ); 
       }
