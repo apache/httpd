@@ -145,41 +145,6 @@
 #endif
 
 
-    /* The locking support:
-     * Try to determine whether we should use fcntl() or flock().
-     * Would be better ap_config.h could provide this... :-(
-     */
-#if defined(USE_FCNTL_SERIALIZED_ACCEPT)
-#define USE_FCNTL 1
-#include <fcntl.h>
-#endif
-#if defined(USE_FLOCK_SERIALIZED_ACCEPT)
-#define USE_FLOCK 1
-#include <sys/file.h>
-#endif
-#if !defined(USE_FCNTL) && !defined(USE_FLOCK)
-#define USE_FLOCK 1
-#if !defined(MPE) && !defined(WIN32) && !defined(__TANDEM) && !defined(NETWARE)
-#include <sys/file.h>
-#endif
-#ifndef LOCK_UN
-#undef USE_FLOCK
-#define USE_FCNTL 1
-#include <fcntl.h>
-#endif
-#endif
-#ifdef AIX
-#undef USE_FLOCK
-#define USE_FCNTL 1
-#include <fcntl.h>
-#endif
-#ifdef WIN32
-#undef USE_FCNTL
-#define USE_LOCKING
-#include <sys/locking.h>
-#endif
-
-
 /*
 **
 **  Some defines
@@ -459,10 +424,7 @@ static char *current_logtime(request_rec *r);
 
     /* rewriting lockfile support */
 static void rewritelock_create(server_rec *s, ap_context_t *p);
-static void rewritelock_open(server_rec *s, ap_context_t *p);
 static ap_status_t rewritelock_remove(void *data);
-static void rewritelock_alloc(request_rec *r);
-static void rewritelock_free(request_rec *r);
 
     /* program map support */
 static void  run_rewritemap_programs(server_rec *s, ap_context_t *p);
@@ -491,10 +453,6 @@ static char  *subst_prefix_path(request_rec *r, char *input, char *match,
 static int    parseargline(char *str, char **a1, char **a2, char **a3);
 static int    prefix_stat(const char *path, struct stat *sb);
 static void   add_env_variable(request_rec *r, char *s);
-
-    /* File locking */
-static void fd_lock(request_rec *r, ap_file_t *fd);
-static void fd_unlock(request_rec *r, ap_file_t *fd);
 
     /* Lexicographic Comparison */
 static int compare_lexicography(char *cpNum1, char *cpNum2);

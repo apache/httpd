@@ -230,7 +230,8 @@ static int proxy_available;
 static int once_through = 0;
 
 static const char *lockname;
-static ap_file_t *lockfd = NULL;
+static ap_lock_t *rewrite_map_lock = NULL;
+static ap_lock_t *rewrite_log_lock = NULL;
 
 /*
 ** +-------------------------------------------------------+
@@ -964,7 +965,12 @@ static void init_module(ap_context_t *p,
     /* check if proxy module is available */
     proxy_available = (ap_find_linked_module("mod_proxy.c") != NULL);
 
-    /* create the rewriting lockfile in the parent */
+    /* create the rewriting lockfiles in the parent */
+    if (ap_create_lock (&rewrite_log_lock, APR_MUTEX, APR_INTRAPROCESS,
+                        NULL, NULL) != APR_SUCCESS)
+        exit(1);    /* ugly but I can't log anything yet. This is what */
+                    /*   the pre-existing rewritelock_create code did. */
+
     rewritelock_create(s, p);
     ap_register_cleanup(p, (void *)s, rewritelock_remove, ap_null_cleanup);
 
@@ -991,11 +997,12 @@ static void init_module(ap_context_t *p,
 
 static void init_child(ap_context_t *p, server_rec *s)
 {
-     /* open the rewriting lockfile */
-     rewritelock_open(s, p);
 
-     /* create the lookup cache */
-     cachep = init_cache(p);
+    if (lockname != NULL && *(lockname) != '\0')
+        ap_child_init_lock (&rewrite_map_lock, lockname, p);
+
+    /* create the lookup cache */
+    cachep = init_cache(p);
 }
 
 
@@ -2978,7 +2985,8 @@ static char *lookup_map_program(request_rec *r, ap_file_t *fpin,
     }
 
     /* take the lock */
-    rewritelock_alloc(r);
+
+    ap_lock(rewrite_map_lock);
 
     /* write out the request key */
 #ifdef NO_WRITEV
@@ -3009,7 +3017,7 @@ static char *lookup_map_program(request_rec *r, ap_file_t *fpin,
     buf[i] = '\0';
 
     /* give the lock back */
-    rewritelock_free(r);
+    ap_unlock(rewrite_map_lock);
 
     if (strcasecmp(buf, "NULL") == 0) {
         return NULL;
@@ -3259,10 +3267,10 @@ static void rewritelog(request_rec *r, int level, const char *text, ...)
                 (unsigned long)(r->server), (unsigned long)r,
                 type, redir, level, str2);
 
-    fd_lock(r, conf->rewritelogfp);
+    ap_lock(rewrite_log_lock);
     nbytes = strlen(str3);
     ap_write(conf->rewritelogfp, str3, &nbytes);
-    fd_unlock(r, conf->rewritelogfp);
+    ap_unlock(rewrite_log_lock);
 
     va_end(ap);
     return;
@@ -3298,10 +3306,7 @@ static char *current_logtime(request_rec *r)
 
 static void rewritelock_create(server_rec *s, ap_context_t *p)
 {
-    rewrite_server_conf *conf;
     ap_status_t rc;
-
-    conf = ap_get_module_config(s->module_config, &rewrite_module);
 
     /* only operate if a lockfile is used */
     if (lockname == NULL || *(lockname) == '\0') {
@@ -3312,74 +3317,24 @@ static void rewritelock_create(server_rec *s, ap_context_t *p)
     lockname = ap_server_root_relative(p, lockname);
 
     /* create the lockfile */
-    unlink(lockname);
-    rc = ap_open(&lockfd, lockname, APR_WRITE | APR_CREATE, REWRITELOCK_MODE, p);
+    rc = ap_create_lock (&rewrite_map_lock, APR_MUTEX, APR_LOCKALL, lockname, p);
     if (rc != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                      "mod_rewrite: Parent could not create RewriteLock "
                      "file %s", lockname);
         exit(1);
     }
-#if !defined(OS2) && !defined(WIN32) && !defined(NETWARE)
-    /* make sure the childs have access to this file */
-    if (geteuid() == 0 /* is superuser */)
-        chown(lockname, unixd_config.user_id, -1 /* no gid change */);
-#endif
 
-    return;
-}
-
-static void rewritelock_open(server_rec *s, ap_context_t *p)
-{
-    rewrite_server_conf *conf;
-    ap_status_t rc;
-
-    conf = ap_get_module_config(s->module_config, &rewrite_module);
-
-    /* only operate if a lockfile is used */
-    if (lockname == NULL || *(lockname) == '\0') {
-        return;
-    }
-
-    /* open the lockfile (once per child) to get a unique fd */
-    rc = ap_open(&lockfd, lockname, APR_WRITE | APR_CREATE, REWRITELOCK_MODE, p);
-    if (rc != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
-                     "mod_rewrite: Child could not open RewriteLock "
-                     "file %s", lockname);
-        exit(1);
-    }
     return;
 }
 
 static ap_status_t rewritelock_remove(void *data)
 {
-    /* only operate if a lockfile is used */
-    if (lockname == NULL || *(lockname) == '\0') {
-        return(-1);
-    }
-
-    /* remove the lockfile */
-    unlink(lockname);
+    /* destroy the rewritelock */
+    ap_destroy_lock (rewrite_map_lock);
+    rewrite_map_lock = NULL;
     lockname = NULL;
-    lockfd = NULL;
     return(0);
-}
-
-static void rewritelock_alloc(request_rec *r)
-{
-    if (lockfd != NULL) {
-        fd_lock(r, lockfd);
-    }
-    return;
-}
-
-static void rewritelock_free(request_rec *r)
-{
-    if (lockfd != NULL) {
-        fd_unlock(r, lockfd);
-    }
-    return;
 }
 
 
@@ -4193,92 +4148,6 @@ static int prefix_stat(const char *path, struct stat *sb)
     }
 }
 
-
-/*
-**
-**  File locking
-**
-*/
-
-#ifdef USE_FCNTL
-static struct flock   lock_it;
-static struct flock unlock_it;
-#endif
-
-static void fd_lock(request_rec *r, ap_file_t *fd)
-{
-    int rc;
-    int sys_file;
-
-#ifdef USE_FCNTL
-    lock_it.l_whence = SEEK_SET; /* from current point */
-    lock_it.l_start  = 0;        /* -"- */
-    lock_it.l_len    = 0;        /* until end of file */
-    lock_it.l_type   = F_WRLCK;  /* set exclusive/write lock */
-    lock_it.l_pid    = 0;        /* pid not actually interesting */
-
-    ap_get_os_file(&sys_file, fd);
-    while (   ((rc = fcntl(sys_file, F_SETLKW, &lock_it)) < 0)
-              && (errno == EINTR)                               ) {
-        continue;
-    }
-#endif
-#ifdef USE_FLOCK
-    ap_get_os_file(fd, &sys_file);
-    while (   ((rc = flock(sys_file, LOCK_EX)) < 0)
-              && (errno == EINTR)               ) {
-        continue;
-    }
-#endif
-#ifdef USE_LOCKING
-    /* Lock the first byte, always, assume we want to append
-       and seek to the end afterwards */
-    ap_seek(fd, APR_SET, 0);
-    ap_get_os_file(&sys_file, fd);
-    rc = _locking(sys_file, _LK_LOCK, 1);
-    ap_seek(fd, APR_END, 0);
-#endif
-
-    if (rc < 0) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
-                     "mod_rewrite: failed to lock file descriptor");
-        exit(1);
-    }
-    return;
-}
-
-static void fd_unlock(request_rec *r, ap_file_t *fd)
-{
-    int rc;
-    int sys_file;
-
-#ifdef USE_FCNTL
-    unlock_it.l_whence = SEEK_SET; /* from current point */
-    unlock_it.l_start  = 0;        /* -"- */
-    unlock_it.l_len    = 0;        /* until end of file */
-    unlock_it.l_type   = F_UNLCK;  /* unlock */
-    unlock_it.l_pid    = 0;        /* pid not actually interesting */
-
-    ap_get_os_file(&sys_file, fd);
-    rc = fcntl(sys_file, F_SETLKW, &unlock_it);
-#endif
-#ifdef USE_FLOCK
-    ap_get_os_file(fd, &sys_file);
-    rc = flock(sys_file, LOCK_UN);
-#endif
-#ifdef USE_LOCKING
-    ap_seek(fd, APR_SET, 0);
-    ap_get_os_file(&sys_file, fd);
-    rc = _locking(sys_file, _LK_UNLCK, 1);
-    ap_seek(fd, APR_END, 0);
-#endif
-
-    if (rc < 0) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
-                     "mod_rewrite: failed to unlock file descriptor");
-        exit(1);
-    }
-}
 
 /*
 **
