@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/02/10 13:33:31 $]
+  Last modified at [$Date: 1999/02/10 20:48:34 $]
 
 Release:
 
@@ -47,6 +47,12 @@ Documentation that needs writing:
       TCN additions and when the RVSA algorithm is used.
 
 Available Patches:
+
+    * Ken's [PATCH] Merge RefererIgnore into mod_log_config
+      Allows mod_log_agent and mod_log_referer to be dropped from
+      distribution.
+	MID: <36C1EE94.E1E0D54E@Golux.Com>
+	Status: Ken +1
 
     * Tony Finch's [PATCH] mod_log_config: support for reliably parsable logs
       Allows use of C-style backslash escapes in mod_log_config format strings
@@ -204,17 +210,7 @@ Needs patch:
     * Should we disallow requests with bogus characters in the method?
       See <Pine.LNX.3.96dg4.990107093844.14158A-100000@twinlark.arctic.org>
 
-    * A mechanism is needed for applying access control to methods
-      that are not known by the server core, either using a Limit __unknown__
-      as in <<8B57882C41A0D1118F7100805F9F68B50631A7B2@RED-MSG-45>,
-      or via a LimitExcept directive.
-
 Open issues:
-
-    * Official retirement of 1.2; when?  Ken suggests as of 1.3.4.
-      'Retirement' to be interpreted as removing the verbiage from the
-      main Apache page, but leaving the kits in /dist/.
-	Status: Ken +1, Randy +1, Dean +1, Ralf +1, Jim +1
 
     * Someone other than Dean has to do a security/correctness review on
       psprintf(), bprintf(), and ap_snprintf().  In particular these routines
