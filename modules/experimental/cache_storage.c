@@ -253,6 +253,7 @@ apr_status_t cache_generate_key_default( request_rec *r, apr_pool_t*p, char**key
    *key = apr_pstrdup(p,r->uri);
    return APR_SUCCESS;
 }
+
 APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(cache, CACHE, int, create_entity, 
                                       (cache_handle_t *h, request_rec *r, const char *type, 
                                       const char *urlkey, apr_size_t len),
