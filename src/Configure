@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: Configure,v 1.23 1996/10/01 01:04:41 jim Exp $
+# $Id: Configure,v 1.24 1996/10/01 14:31:23 chuck Exp $
 trap 'rm $tmpfile; exit' 0 1 2 3 15
 
 # Apache configuration script, first cut --- rst.
@@ -312,10 +312,12 @@ echo "Configured for $OS platform"
 # set above. If so, then we honor that; if not, then we set some
 # defaults (gcc and -O2)
 #
+COMPILER=`./GuessCC`
+
 if grep "CC=" Makefile > /dev/null; then
     CC=""	# clear it just in case
 else
-    if [ "x$CC" = "x" ]; then CC=`GuessCC`; fi
+    if [ "x$CC" = "x" ]; then CC=$COMPILER; fi
     echo "Setting C compiler to $CC"
 fi
 
