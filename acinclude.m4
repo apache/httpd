@@ -430,7 +430,7 @@ if test "x$ap_ssltk_base" = "x"; then
         ap_ssltk_version="`$p/openssl version`"
         case "$ap_ssltk_version" in
             "OpenSSL "[[1-9]]* | \
-            "OpenSSL "0.9.[[6-9]]* | \
+            "OpenSSL "0.9.[[6-9]][[e-z]]* | \
             "OpenSSL "0.[[1-9]][[0-9]]* )
                 ap_cv_ssltk="`(cd $p/.. && pwd)`"
                 break
@@ -441,7 +441,7 @@ if test "x$ap_ssltk_base" = "x"; then
         esac
       done
       if test "x$ap_cv_ssltk" = "x"; then
-        AC_MSG_ERROR([requires OpenSSL 0.9.6 or higher])
+        AC_MSG_ERROR([requires OpenSSL 0.9.6e or higher])
       fi
     ])
     ap_ssltk_base="$ap_cv_ssltk"
