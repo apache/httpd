@@ -43,7 +43,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /FD /c
-# ADD CPP /nologo /MD /W3 /O2 /I "../../include" /I "../../os/win32" /I "../../server/mpm/winnt" /I "../../srclib/apr/include" /I "../../srclib/apr-util/include" /I "../../srclib/openssl/inc32" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "NOCRYPT" /Fd"Release\mod_ssl" /FD /c
+# ADD CPP /nologo /MD /W3 /O2 /I "../../include" /I "../../os/win32" /I "../../server/mpm/winnt" /I "../../srclib/apr/include" /I "../../srclib/apr-util/include" /I "../../srclib/openssl/inc32" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /Fd"Release\mod_ssl" /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x809 /d "NDEBUG"
@@ -69,7 +69,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /FD /c
-# ADD CPP /nologo /MDd /W3 /GX /ZI /Od /I "../../include" /I "../../os/win32" /I "../../server/mpm/winnt" /I "../../srclib/apr/include" /I "../../srclib/apr-util/include" /I "../../srclib/openssl/inc32" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "NOCRYPT" /Fd"Debug\mod_ssl" /FD /c
+# ADD CPP /nologo /MDd /W3 /GX /ZI /Od /I "../../include" /I "../../os/win32" /I "../../server/mpm/winnt" /I "../../srclib/apr/include" /I "../../srclib/apr-util/include" /I "../../srclib/openssl/inc32" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /Fd"Debug\mod_ssl" /FD /c
 # ADD BASE MTL /nologo /D "_DEBUG" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x809 /d "_DEBUG"
@@ -153,10 +153,12 @@ SOURCE=.\ssl_expr_eval.c
 # Begin Source File
 
 SOURCE=.\ssl_expr_parse.c
+# PROP Exclude_From_Build 1
 # End Source File
 # Begin Source File
 
 SOURCE=.\ssl_expr_scan.c
+# PROP Exclude_From_Build 1
 # End Source File
 # Begin Source File
 
@@ -209,94 +211,6 @@ SOURCE=.\ssl_util_ssl.h
 # Begin Source File
 
 SOURCE=.\ssl_util_table.h
-# End Source File
-# End Group
-# Begin Group "Generated Files"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=.\ssl_expr_parse.y .\ssl_expr_parse.h
-
-!IF  "$(CFG)" == "mod_ssl - Win32 Release"
-
-# Begin Custom Build - Generating ssl_expr_parse.c/.h from ssl_expr_parse.y
-InputPath=.\ssl_expr_parse.y
-
-BuildCmds= \
-	bison -y -d ssl_expr_parse.y \
-	sed -e "s;yy;ssl_expr_yy;g" -e\
- "/#if defined(c_plusplus) || defined(__cplusplus)/,/#endif/d" <y.tab.c\
- >ssl_expr_parse.c \
-	del y.tab.c \
-	sed -e "s;yy;ssl_expr_yy;g" <y.tab.h >ssl_expr_parse.h \
-	del y.tab.h \
-	
-
-"ssl_expr_parse.c" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-   $(BuildCmds)
-
-"ssl_expr_parse.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-   $(BuildCmds)
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "mod_ssl - Win32 Debug"
-
-# Begin Custom Build - Generating ssl_expr_parse.c/.h from ssl_expr_parse.y
-InputPath=.\ssl_expr_parse.y
-
-BuildCmds= \
-	bison -y -d ssl_expr_parse.y \
-	sed -e "s;yy;ssl_expr_yy;g" -e\
- "/#if defined(c_plusplus) || defined(__cplusplus)/,/#endif/d" <y.tab.c\
- >ssl_expr_parse.c \
-	del y.tab.c \
-	sed -e "s;yy;ssl_expr_yy;g" <y.tab.h >ssl_expr_parse.h \
-	del y.tab.h \
-	
-
-"ssl_expr_parse.c" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-   $(BuildCmds)
-
-"ssl_expr_parse.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-   $(BuildCmds)
-# End Custom Build
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=.\ssl_expr_scan.l
-
-!IF  "$(CFG)" == "mod_ssl - Win32 Release"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Generating ssl_expr_scan.c from ssl_expr_scan.l
-InputPath=.\ssl_expr_scan.l
-
-"ssl_expr_scan.c" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	flex -Pssl_expr_yy -s -B ssl_expr_scan.l 
-	sed -e "/$$Header:/d" <lex.ssl_expr_yy.c >ssl_expr_scan.c 
-	del lex.ssl_expr_yy.c 
-	
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "mod_ssl - Win32 Debug"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Generating ssl_expr_scan.c from ssl_expr_scan.l
-InputPath=.\ssl_expr_scan.l
-
-"ssl_expr_scan.c" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	flex -Pssl_expr_yy -s -B ssl_expr_scan.l 
-	sed -e "/$$Header:/d" <lex.ssl_expr_yy.c >ssl_expr_scan.c 
-	del lex.ssl_expr_yy.c 
-	
-# End Custom Build
-
-!ENDIF 
-
 # End Source File
 # End Group
 # End Target
