@@ -139,6 +139,7 @@ datadir='$prefix/share'
 localstatedir='$prefix/var'
 localstatesubdir_run='run'
 localstatesubdir_logs='logs'
+includedir='$prefix/include'
 
 #   check and debug
 layout=0
@@ -273,6 +274,7 @@ do
             echo " --sysconfdir=DIR       install configuration files in DIR   [PREFIX/etc]"
             echo " --datadir=DIR          install read-only  data files in DIR [PREFIX/share]"
             echo " --localstatedir=DIR    install modifiable data files in DIR [PREFIX/var]"
+            echo " --includedir=DIR       install includes files in DIR        [PREFIX/include]"
             echo " --compat               install with old Apache 1.2 installation paths"
             echo ""
             echo "Configuration options:"
@@ -325,6 +327,9 @@ do
         --localstatedir=*) 
             localstatedir="$apc_optarg" 
             ;;
+        --includedir=*)       
+            includedir="$apc_optarg"       
+            ;;
         --compat) 
             prefix='/usr/local/apache'
             exec_prefix='$prefix'
@@ -337,6 +342,7 @@ do
             localstatedir='$prefix'
             localstatesubdir_run='logs'
             localstatesubdir_logs='logs'
+            includedir='$prefix/include'
             ;;
         --add-module=*) 
             file="$apc_optarg"
@@ -576,7 +582,8 @@ fi
 ##
 IFS=' '
 for var in prefix exec_prefix bindir sbindir \
-           libexecdir mandir sysconfdir datadir localstatedir; do
+           libexecdir mandir sysconfdir datadir \
+           localstatedir includedir; do
     eval "val=\$$var";
     val=`echo $val | sed -e 's:/*$::'`
     eval "$var=\"$val\""
@@ -619,6 +626,7 @@ if [ ".$layout" = .1 ]; then
     echo "           sysconfdir: $sysconfdir" 
     echo "              datadir: $datadir" 
     echo "        localstatedir: $localstatedir" 
+    echo "           includedir: $includedir" 
     echo ""
     echo "Compilation paths:"
     echo "           HTTPD_ROOT: $prefix"
@@ -660,6 +668,7 @@ sed <Makefile.tmpl >$mkf \
 -e "s%@localstatedir@%$localstatedir%g" \
 -e "s%@localstatesubdir_run@%$localstatesubdir_run%g" \
 -e "s%@localstatesubdir_logs@%$localstatesubdir_logs%g" \
+-e "s%@includedir@%$includedir%g" \
 -e "s%@suexec@%$suexec%g" \
 -e "s%@suexec_caller@%$suexec_caller%g" \
 -e "s%@suexec_userdir@%$suexec_userdir%g"

@@ -1,5 +1,21 @@
 Changes with Apache 1.3b6
 
+  *) Add of the new APache eXtenSion (apxs) support tool for building and
+     installing modules into an _already installed_ Apache package through the
+     dynamic shared object (DSO) mechanism [mod_so.c]. The trick here is that
+     this approach actually doesn't need the Apache source tree.  The
+     (APACI-installed) server package is enough, because this now includes the
+     Apache C header files (PREFIX/include) and the new APXS tool
+     (SBINDIR/apxs).  The intend is to provide a handy tool for third-party
+     module authors to build their Apache modules _OUTSIDE_ the Apache source
+     tree while avoiding them to fiddle around with the totally platform
+     dependend way of compiling DSO files. The tool supports all ranges of
+     modules, from trivial ones (single mod_foo.c) to complex ones (like PHP3
+     which has a mod_php3.c plus a pre-built libmodphp3-so.a) and even can
+     on-the-fly generate a minimalistic Makefile and sample module for the
+     first step to provide both a quick success event and to demonstrate the
+     APXS mechanism to module authors. [Ralf S. Engelschall]
+
   *) Fix core dumps in use of CONNECT in proxy.  PR#1326, #1573, #1942
      [Rainer.Scherg@rexroth.de]
 

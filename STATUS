@@ -131,6 +131,7 @@ Committed Code Changes:
     * Ralf's add of the new Apache Autoconf-style Interface (APACI)
     * Rainer Scherg's fix for CONNECT proxy support: #1326, #1573, #1942
     * Ken's reworking of the Apache LICENSE
+    * Ralf's APache eXtenSion for easy "off-source" extending Apache via DSO
 
 Available Patches:
 

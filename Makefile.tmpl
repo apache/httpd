@@ -94,6 +94,7 @@ mandir          = @mandir@
 sysconfdir      = @sysconfdir@
 datadir         = @datadir@
 localstatedir   = @localstatedir@
+includedir      = @includedir@
 
 libexecdir_relative   = @libexecdir_relative@
 localstatesubdir_run  = @localstatesubdir_run@
@@ -157,6 +158,7 @@ install:
 		install-programs \
 		install-support  \
 		install-config   \
+		install-include  \
 		install-docroot 
 	-@rm -f .install.tmp
 	-@rm -f .install.conf
@@ -189,6 +191,7 @@ install-mktree:
 	@echo "===> [mktree: Creating Apache installation tree]"
 	$(MKDIR) $(bindir)
 	$(MKDIR) $(sbindir)
+	$(MKDIR) $(libexecdir)
 	$(MKDIR) $(mandir)/man1
 	$(MKDIR) $(mandir)/man8
 	$(MKDIR) $(sysconfdir)
@@ -198,6 +201,7 @@ install-mktree:
 	$(MKDIR) $(localstatedir)/$(localstatesubdir_logs)
 	$(MKDIR) $(localstatedir)/$(localstatesubdir_run)
 	$(MKDIR) $(localstatedir)/proxy
+	$(MKDIR) $(includedir)
 	@echo "<=== [mktree]"
 
 #   install the server program and optionally corresponding
@@ -208,8 +212,6 @@ install-programs:
 	$(INSTALL_DATA) $(SRC)/support/httpd.8 $(mandir)/man8/httpd.8
 	-@rm -f .install.conf; touch .install.conf
 	-@if [ ".`grep '^[ 	]*SharedModule' $(SRC)/Configuration.apaci`" != . ]; then \
-	    echo "$(MKDIR) $(libexecdir)"; \
-	    $(MKDIR) $(libexecdir); \
         for mod in `egrep '^[ 	]*SharedModule' $(SRC)/Configuration.apaci |\
 	                sed -e 's/^[ 	]*SharedModule[ 	]*//'`; do \
 	        file=`echo $$mod | sed -e 's;^.*/\([^/]*\);\1;'`; \
@@ -247,6 +249,15 @@ install-support:
 	$(INSTALL_DATA) $(SRC)/support/logresolve.8 $(mandir)/man8/logresolve.8
 	$(INSTALL_PROGRAM) $(SRC)/support/rotatelogs $(sbindir)/rotatelogs
 	$(INSTALL_DATA) $(SRC)/support/rotatelogs.8 $(mandir)/man8/rotatelogs.8
+	sed -e 's;^#!/.*;#!$(PERL);' \
+		-e 's;\@prefix\@;$(prefix);' \
+		-e 's;\@sbindir\@;$(sbindir);' \
+		-e 's;\@libexecdir\@;$(libexecdir);' \
+		-e 's;\@includedir\@;$(includedir);' \
+		-e 's;\@sysconfdir\@;$(sysconfdir);' \
+    	< $(SRC)/support/apxs > .install.tmp && \
+    	$(INSTALL_SCRIPT) .install.tmp $(sbindir)/apxs
+	$(INSTALL_DATA) $(SRC)/support/apxs.8 $(mandir)/man8/apxs.8
 	@if [ ".$(suexec)" = .1 ]; then \
 	    echo "$(INSTALL_PROGRAM) $(SRC)/support/suexec $(sbindir)/suexec"; \
 	    $(INSTALL_PROGRAM) $(SRC)/support/suexec $(sbindir)/suexec; \
@@ -291,6 +302,14 @@ install-config:
 	$(CP) $(ROOT)/conf/mime.types $(sysconfdir)/mime.types
 	$(CP) $(ROOT)/conf/magic $(sysconfdir)/magic
 	@echo "<=== [config]"
+
+#   install the Apache C header files 
+install-include:
+	@echo "===> [include: Installing Apache C header files]"
+	$(CP) $(SRC)/include/*.h $(includedir)/
+	osdir=`grep '^OSDIR' $(SRC)/Makefile.config | sed -e 's:^OSDIR=::'`; \
+	$(CP) $(SRC)/$$osdir/os.h $(includedir)/
+	@echo "<=== [include]"
 
 #   create an initial document root containing the Apache manual,
 #   icons and distributed CGI scripts.
