@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/04/03 23:14:29 $]
+Last modified at [$Date: 2003/04/04 00:40:57 $]
 
 Release:
 
@@ -157,12 +157,6 @@ PATCHES TO PORT FROM 2.1
       the pattern will not always match as desired. PR 12596.
       modules/generators/mod_autoindex.c: r1.119
       +1: nd, wrowe, trawick
-
-    * mod_deflate: Check also err_headers_out for an already set
-      Content-Encoding: gzip header. This prevents gzip compressed content
-      from a CGI script from being compressed once more. PR 17797.
-      modules/filters/mod_deflate.c: r1.32
-      +1: nd, ianh, trawick
 
     * mod_negotiation: parse quality values independent from
       the current locale and level values as integers. PR 17564.

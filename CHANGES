@@ -1,6 +1,9 @@
 Changes with Apache 2.0.46
 
-
+  *) mod_deflate: Check also err_headers_out for an already set
+     Content-Encoding: gzip header. This prevents gzip compressed content
+     from a CGI script from being compressed once more. PR 17797.
+     [André Malo]
 
 Changes with Apache 2.0.45
 
