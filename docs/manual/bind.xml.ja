@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English Revision: 105989 (outdated: 106803) -->
+<!-- English Revision: 106803 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -106,13 +106,14 @@
     FreeBSD, NetBSD, OpenBSD では、システム全体としてのポリシーとの整合性から、
     デフォルトでは使用不可に設定されています。
     これらのデフォルトで使用不可のプラットホームであっても、
-    特別な設定パラメータで Apache の挙動を変化させることができます。</p>
+    特別な <program>configure</program> の
+    設定パラメータで Apache の挙動を変化させることができます。</p>
 
     <p>一方で、Linux や Tru64 といったプラットホームで IPv4 と IPv6
     の両方を扱うには、マップトアドレスを使用する<strong>以外の方法はありません</strong>。
     IPv4 と IPv6 のコネクションを最小限のソケットで扱いたいのであれば、
     IPv4 マップの IPv6 アドレスを使用する必要があり、
-    <code>--enable-v4-mapped</code> <a href="programs/configure.html">configure</a>
+    <code>--enable-v4-mapped</code> <program>configure</program>
     オプションを指定します。</p>
 
     <p><code>--enable-v4-mapped</code> は、
@@ -134,7 +135,7 @@
     IPv4 と IPv6 のコネクションを個別のソケットで扱うようにしたい場合
     (つまり IPv4 マップのアドレスを無効にしたい場合)
     は、<code>--disable-v4-mapped</code>
-    <a href="programs/configure.html">configure</a>
+    <program>configure</program>
     オプションを指定して、次のように個別指定の
     <directive module="mpm_common">Listen</directive>
     ディレクティブを使用してください。

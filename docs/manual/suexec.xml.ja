@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English Revision: 105989 (outdated: 106803) -->
+<!-- English Revision: 106803 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -444,7 +444,7 @@
     </p>
 
     <p><strong>安全なパーミッションを設定する</strong><br />
-    suEXEC ラッパーは、<code>--with-suexec-caller</code> configure 
+    suEXEC ラッパーは、<code>--with-suexec-caller</code> <program>configure</program> 
     オプションで指定した正しいユーザで起動されていることを確認しますが、
     システム上でこのチェックが行なわれる前に、
     suEXEC が呼ぶシステムやライブラリが脆弱である可能性は残ります。対抗策として、
@@ -460,7 +460,7 @@
     Group webgroup<br />
 </example>
 
-    <p><code>suexec</code> が "/usr/local/apache2/sbin/suexec" 
+    <p><program>suexec</program> が "/usr/local/apache2/sbin/suexec" 
     にインストールされていた場合、次のように設定する必要があります。</p>
 
 <example>
@@ -484,7 +484,7 @@
     エラーログに以下のメッセージが出力されます。</p>
 
 <example>
-    [notice] suEXEC mechanism enabled (wrapper: <em>/path/to/suexec</em>)
+    [notice] suEXEC mechanism enabled (wrapper: <var>/path/to/suexec</var>)
 </example>
 
     <p>サーバ起動時にこのメッセージが出ない場合、

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 105989 (outdated: 106803) -->
+<!-- English Revision: 106803 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -47,8 +47,8 @@
 <seealso>
   <directive module="mod_auth_digest">AuthDigestProvider</directive>
 </seealso>
-<seealso><a href="../programs/htpasswd.html">htpasswd</a></seealso>
-<seealso><a href="../programs/htdigest.html">htdigest</a></seealso>
+<seealso><program>htpasswd</program></seealso>
+<seealso><program>htdigest</program></seealso>
  
 <directivesynopsis>
 <name>AuthUserFile</name>
@@ -76,7 +76,7 @@
 
     <p>バイナリ配布の一部としてインストールされるか、
     あるいは <code>src/support</code> にある
-    <a href="../programs/htpasswd.html">htpasswd</a>
+    <program>htpasswd</program>
     ユーティリティで、この <em>HTTP 基本認証</em>
     用パスワードファイルをメインテナンスします。
     詳細は <a href="../programs/htpasswd.html">man
@@ -106,7 +106,7 @@
     <p><em>HTTP ダイジェスト認証</em>を使用する場合は、
     <a href="../programs/htpasswd.html">htpasswd</a>
     プログラムでは不十分です。その代わりに
-    <a href="../programs/htdigest.html">htdigest</a>
+    <program>htdigest</program>
     を使用してください。ダイジェスト認証用のデータと
     基本認証用のデータを同一ファイルに混ぜて保存できない、
     ということに注意してください。</p>

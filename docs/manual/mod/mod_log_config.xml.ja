@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 105989 (outdated: 106803) -->
+<!-- English Revision: 106803 -->
 
 <!--
  Copyright 2004 The Apache Software Foundation
@@ -326,7 +326,7 @@
 
       <note type="warning"><title>セキュリティ</title>
       <p>もしプログラムが使用された場合、
-      httpd が起動されたユーザとして実行されます。これはサーバが
+      <program>httpd</program> が起動されたユーザとして実行されます。これはサーバが
       root によって起動された場合は root になります。プログラムが
       安全であるように留意してください。</p>
       </note>

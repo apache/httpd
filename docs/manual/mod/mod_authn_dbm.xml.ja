@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
+<!-- English Revision: 106803 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -19,7 +20,6 @@
 -->
 
 <modulesynopsis metafile="mod_authn_dbm.xml.meta">
-<!-- English Revision: 105989 (outdated: 106803) -->
 
 <name>mod_authn_dbm</name>
 <description>DBM ファイルを用いたユーザ認証</description>
@@ -87,7 +87,7 @@
     ものがあります。ですから、異なるアプリケーション間での DBM ファイルの
     使用に問題がある場合は、これが原因になっている可能性があります。</p>
 
-    <p>Apache には <a href="../programs/dbmmanage.html">dbmmanage</a> という
+    <p>Apache には <program>dbmmanage</program> という
     perl スクリプトが含まれています。このプログラムを使ってこの
     モジュールが使用する DBM フォーマットのパスワードファイルを作成したり
     更新したりすることができます。</p>

@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='iso-2022-jp' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 105989 (outdated: 106803) -->
+<!-- English Revision: 106803 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -92,8 +92,8 @@
     <p>このコマンドは Apache が設定ファイルをどう解析したかについて出力します。
     IP アドレスとサーバ名を注意深く調べれば、
     設定の間違いを見つける助けになるでしょう。
-    (他のコマンドラインのオプションは <a
-    href="../programs/httpd.html">httpd プログラムの説明文書</a>を見てください)</p>
+    (他のコマンドラインのオプションは <program>httpd</program>
+    プログラムの説明文書を見てください)</p>
 
 </section>
 </manualpage>

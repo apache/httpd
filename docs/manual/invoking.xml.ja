@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='iso-2022-jp' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English Revision: 105989 (outdated: 106803) -->
+<!-- English Revision: 106803 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -32,15 +32,15 @@
     href="platform/windows.html#wincons">
     コンソールアプリケーションとして実行する</a>」をご覧下さい。</p>
 
-    <p>Unixでは、<a href="programs/httpd.html">httpd</a> 
+    <p>Unixでは、<program>httpd</program> 
     プログラムが、バックグラウンドで常にリクエスト処理を行う
     デーモンとして実行されます。この文書ではどのように
-    <code>httpd</code> を起動するかについて記述しています。</p>
+    <program>httpd</program> を起動するかについて記述しています。</p>
 </summary>
 
 <seealso><a href="stopping.html">停止と再起動</a></seealso>
-<seealso><a href="programs/httpd.html">httpd</a></seealso>
-<seealso><a href="programs/apachectl.html">apachectl</a></seealso>
+<seealso><program>httpd</program></seealso>
+<seealso><program>apachectl</program></seealso>
 
 <section id="startup"><title>Apache の起動方法</title>
 
@@ -53,22 +53,22 @@
     起動して、一度ログファイルを開くといった準備のための
     動作を幾つか実行した後は、クライアントからのリクエストに対する
     listen と応答を実際に行う<em>子</em>プロセスを起動します。
-    メインの <code>httpd</code> プロセスは root 権限で走り続けますが、
+    メインの <program>httpd</program> プロセスは root 権限で走り続けますが、
     子プロセスはもっと低い権限で走ります。
     これは選択した<a 
     href="mpm.html">マルチプロセッシングモジュール</a>で制御されます。</p>
 
-    <p>推奨の <code>httpd</code> 実行プログラムの起動方法は、
-    <a href="programs/apachectl.html">apachectl</a>
-    制御スクリプトを使用する方法です。このスクリプトは、<code>httpd</code> 
+    <p>推奨の <program>httpd</program> 実行プログラムの起動方法は、
+    <program>apachectl</program>
+    制御スクリプトを使用する方法です。このスクリプトは、<program>httpd</program> 
     がオペレーティングシステム上で正常に動作するように必要な環境変数を
-    適切に設定して、<code>httpd</code> バイナリを起動します。
-    <code>apachectl</code> はどんなコマンドライン引数も通過させますので、
-    <code>httpd</code> のどのコマンドラインオプションも
-    <code>apchectl</code> のオプションとして使用できます。
-    また、<code>apchectl</code> スクリプトを直接編集し、
+    適切に設定して、<program>httpd</program> バイナリを起動します。
+    <program>apachectl</program> はどんなコマンドライン引数も通過させますので、
+    <program>httpd</program> のどのコマンドラインオプションも
+    <program>apchectl</program> のオプションとして使用できます。
+    また、<program>apchectl</program> スクリプトを直接編集し、
     スクリプト先頭付近の <code>HTTPD</code> 変数を変更することで、
-    <code>httpd</code> バイナリの正しい位置を指定したり、<em>常に</em>
+    <program>httpd</program> バイナリの正しい位置を指定したり、<em>常に</em>
     付加させるコマンドライン引数を指定したりすることができます。</p>
 
     <p><code>httpd</code> が起動されてまず最初にすることは、
@@ -117,7 +117,7 @@
 
     <p>システムがリブートした後でも
     サーバが実行され続けるようにしたい場合は、
-    <code>apachectl</code>
+    <program>apachectl</program>
     を呼び出すものをシステムスタートアップファイル
     (通常 <code>rc.local</code> や <code>rc.N</code>
     内のファイル) に追加しなければなりません。
@@ -125,21 +125,20 @@
     これをする前に、セキュリティやアクセス制限が
     適切に設定されていていることを確認してください。</p>
 
-    <p><code>apachectl</code> スクリプトは通常は、標準的な SysV init 
+    <p><program>apachectl</program> スクリプトは通常は、標準的な SysV init 
     スクリプトとして動作するように設計されています。
     <code>start</code>, <code>restart</code>, <code>stop</code>
-    といった引数をとって、<code>httpd</code> 
+    といった引数をとって、<program>httpd</program> 
     への適切なシグナルに変換します。
     ですから、通常は単に適切な init ディレクトリ内から
-    <code>apachectl</code> へリンクすることができます。しかし、
+    <program>apachectl</program> へリンクすることができます。しかし、
     念のためシステムの要求に合致していることを確認してください。</p>
 </section>
 
 <section id="info"><title>追加情報</title>
 
-    <p><a href="programs/httpd.html">httpd</a> や
-    <a href="programs/apachectl.html">apachectl</a>
-    、サーバに含まれていたその他補助プログラムの、
+    <p><program>httpd</program> や
+    <program>apachectl</program>、サーバに含まれていたその他補助プログラムの、
     コマンドラインオプションに関する追加情報は、
     <a href="programs/">サーバと補助プログラム</a>ページに
     記載されています。

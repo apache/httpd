@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 105989 (outdated: 106803) -->
+<!-- English Revision: 106803 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -134,7 +134,7 @@
     Apache の子プロセスの権限を設定するのに用いられます。
     子プロセスはクライアントに送るコンテンツ全てを読めないといけませんが、
     可能な限り必要最小限の権限のみを持っているようにするべきです。
-    さらに、<a href="../suexec.html">suexec</a>
+    さらに、<program>suexec</program>
     が使用されていない限り、これらのディレクティブは
     CGI スクリプトで継承される権限も設定します。</p>
 

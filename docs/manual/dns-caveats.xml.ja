@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English Revision: 105989 (outdated: 106803) -->
+<!-- English Revision: 106803 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -139,7 +139,7 @@
 
     <p>Apache 1.1 での <a href="vhost/name-based.html"
     >名前ベースのバーチャルホストのサポート</a> 追加の際に、
-    Apache は httpd の実行されているホストの IP
+    Apache は <program>httpd</program> の実行されているホストの IP
     アドレスを知る必要が出てきました。このアドレスを得るために、
     (もしあれば) グローバルな
     <directive module="core">ServerName</directive> を使用するか、
