@@ -16,10 +16,12 @@ extern "C" {
 #endif
 #endif
 
+#ifndef ap_private_extern
 #if defined(DARWIN)
 #define ap_private_extern __private_extern__
 #else
 #define ap_private_extern
+#endif
 #endif
 
 typedef off_t regoff_t;
