@@ -187,6 +187,7 @@ static void *create_core_dir_config(apr_pool_t *a, char *dir)
     conf->add_default_charset_name = DEFAULT_ADD_DEFAULT_CHARSET_NAME;
 
     conf->filters = apr_make_array(a, 2, sizeof(void *));
+    conf->input_filters = apr_make_array(a, 2, sizeof(void *));
     return (void *)conf;
 }
 
@@ -327,6 +328,8 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
 	}
     }
     conf->filters = apr_append_arrays(a, base->filters, new->filters);
+    conf->input_filters = apr_append_arrays(a, base->input_filters,
+                                            new->input_filters);
 
     return (void*)conf;
 }
@@ -1884,6 +1887,16 @@ static const char *add_filter(cmd_parms *cmd, void *dummy, const char *arg)
     return NULL;
 }
 
+static const char *add_input_filter(cmd_parms *cmd, void *dummy, const char *arg)
+{
+    core_dir_config *conf = dummy;
+    char **newfilter;
+    
+    newfilter = (char **)apr_push_array(conf->input_filters);
+    *newfilter = apr_pstrdup(cmd->pool, arg);
+    return NULL;
+}
+
 static const char *add_module_command(cmd_parms *cmd, void *dummy,
 				      const char *arg)
 {
@@ -2765,13 +2778,15 @@ AP_INIT_TAKE12("RLimitNPROC", set_limit_nproc,
 AP_INIT_TAKE12("RLimitNPROC", no_set_limit, NULL,
    OR_ALL, "soft/hard limits for max number of processes per uid"),
 #endif
-/* XXX This should be allowable in .htaccess files, but currently it won't
+/* XXX These should be allowable in .htaccess files, but currently it won't
  * play well with the Options stuff.  Until that is fixed, I would prefer
  * to leave it just in the conf file.  Other should feel free to disagree
  * with me.  Rbb.
  */
 AP_INIT_ITERATE("AddOutputFilter", add_filter, NULL, ACCESS_CONF,
    "filters to be run"),
+AP_INIT_ITERATE("AddInputFilter", add_input_filter, NULL, ACCESS_CONF,
+   "filters to be run on the request body"),
 { NULL }
 };
 
@@ -3435,6 +3450,12 @@ static void core_register_filter(request_rec *r)
     for (i = 0; i < conf->filters->nelts; i++) {
         char *foobar = items[i];
         ap_add_output_filter(foobar, NULL, r, r->connection);
+    }
+
+    items = (char **)conf->input_filters->elts;
+    for (i = 0; i < conf->input_filters->nelts; i++) {
+        char *foobar = items[i];
+        ap_add_input_filter(foobar, NULL, r, r->connection);
     }
 }
 

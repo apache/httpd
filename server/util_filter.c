@@ -118,25 +118,28 @@ API_EXPORT(void) ap_register_output_filter(const char *name,
                     &registered_output_filters);
 }
 
-API_EXPORT(void) ap_add_input_filter(const char *name, void *ctx, conn_rec *c)
+API_EXPORT(void) ap_add_input_filter(const char *name, void *ctx, 
+                                     request_rec *r, conn_rec *c)
 {
     ap_filter_rec_t *frec = registered_input_filters;
 
     for (; frec != NULL; frec = frec->next) {
         if (!strcasecmp(name, frec->name)) {
-            ap_filter_t *f = apr_pcalloc(c->pool, sizeof(*f));
+            apr_pool_t *p = r ? r->pool : c->pool;
+            ap_filter_t *f = apr_pcalloc(p, sizeof(*f));
+            ap_filter_t **outf = r ? &r->input_filters : &c->input_filters;
 
             f->frec = frec;
             f->ctx = ctx;
-            f->r = NULL;
+            f->r = r;
             f->c = c;
 
-            if (INSERT_BEFORE(f, c->input_filters)) {
-                f->next = c->input_filters;
-                c->input_filters = f;
+            if (INSERT_BEFORE(f, *outf)) {
+                f->next = *outf;
+                *outf = f;
             }
             else {
-                ap_filter_t *fscan = c->input_filters;
+                ap_filter_t *fscan = *outf;
                 while (!INSERT_BEFORE(f, fscan->next))
                     fscan = fscan->next;
                 f->next = fscan->next;

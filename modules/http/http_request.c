@@ -780,6 +780,7 @@ API_EXPORT(request_rec *) ap_sub_req_method_uri(const char *method,
 
     /* start with the same set of output filters */
     rnew->output_filters = r->output_filters;
+    /* no input filters for a subrequest */
 
     ap_set_sub_req_protocol(rnew, r);
 
@@ -875,6 +876,7 @@ API_EXPORT(request_rec *) ap_sub_req_lookup_file(const char *new_file,
 
     /* start with the same set of output filters */
     rnew->output_filters = r->output_filters;
+    /* no input filters for a subrequest */
 
     ap_set_sub_req_protocol(rnew, r);
     fdir = ap_make_dirstr_parent(rnew->pool, r->filename);
@@ -1374,6 +1376,7 @@ static request_rec *internal_internal_redirect(const char *new_uri,
     new->vlist_validator = r->vlist_validator;
 
     new->output_filters  = r->connection->output_filters;
+    new->input_filters   = r->connection->input_filters;
 
     apr_table_setn(new->subprocess_env, "REDIRECT_STATUS",
 	apr_psprintf(r->pool, "%d", r->status));

@@ -320,10 +320,11 @@ API_EXPORT(void) ap_register_output_filter(const char *name,
  * Add a filter to the current connection.  Filters are added in a FIFO manner.
  * The first filter added will be the first filter called.
  * @param name The name of the filter to add
+ * @param r The request to add this filter for (or NULL if it isn't associated with a request)
  * @param c The connection to add the fillter for
- * @deffunc void ap_add_input_filter(const char *name, void *ctx, conn_rec *r)
+ * @deffunc void ap_add_input_filter(const char *name, void *ctx, request_rec *r, conn_rec *c)
  */
-API_EXPORT(void) ap_add_input_filter(const char *name, void *ctx, conn_rec *r);
+API_EXPORT(void) ap_add_input_filter(const char *name, void *ctx, request_rec *r, conn_rec *c);
 
 /**
  * Add a filter to the current request.  Filters are added in a FIFO manner.
