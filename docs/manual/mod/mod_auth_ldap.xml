@@ -17,7 +17,8 @@ for HTTP Basic authentication.</description>
     <ul>
       <li>Known to support the <a
       href="http://www.openldap.org/">OpenLDAP SDK</a> (both 1.x
-      and 2.x), and the <a
+      and 2.x), <a href="http://developer.novell.com/ndk/cldap.htm">
+      Novell LDAP SDK</a> and the <a
       href="http://www.iplanet.com/downloads/developer/">iPlanet
       (Netscape)</a> SDK.</li>
 
@@ -32,7 +33,7 @@ for HTTP Basic authentication.</description>
       href="mod_ldap.html">mod_ldap</a>.</li>
 
       <li>Support for LDAP over SSL (requires the Netscape SDK) or
-      TLS (requires the OpenLDAP 2.x SDK).</li>
+      TLS (requires the OpenLDAP 2.x SDK or Novell LDAP SDK).</li>
     </ul>
 </summary>
 
@@ -413,24 +414,16 @@ require valid-user
 
 <section id="usingtls"><title>Using TLS</title>
 
-    <p>To use TLS, simply set the <directive
-    module="mod_auth_ldap">AuthLDAPStartTLS</directive> to on.
-    Nothing else needs to be done (other than ensure that your LDAP
-    server is configured for TLS).</p>
+    <p>To use TLS, see the <module>mod_ldap</module> directives <directive
+    module="mod_ldap">LDAPTrustedCA</directive> and <directive
+    module="mod_ldap">LDAPTrustedCAType</directive>.</p>
 </section>
 
 <section id="usingssl"><title>Using SSL</title>
 
-    <p>If <module>mod_auth_ldap</module> is linked against the
-    Netscape/iPlanet LDAP SDK, it will not talk to any SSL server
-    unless that server has a certificate signed by a known Certificate
-    Authority. As part of the configuration
-    <module>mod_auth_ldap</module> needs to be told where it can find
-    a database containing the known CAs. This database is in the same
-    format as Netscape Communicator's <code>cert7.db</code>
-    database. The easiest way to get this file is to start up a fresh
-    copy of Netscape, and grab the resulting
-    <code>$HOME/.netscape/cert7.db</code> file.</p>
+    <p>To use SSL, see the <module>mod_ldap</module> directives <directive
+    module="mod_ldap">LDAPTrustedCA</directive> and <directive
+    module="mod_ldap">LDAPTrustedCAType</directive>.</p>
 
     <p>To specify a secure LDAP server, use <em>ldaps://</em> in the
     <directive module="mod_auth_ldap">AuthLDAPURL</directive>
@@ -735,23 +728,6 @@ environment variable</description>
     distinguished name of the authenticated user, rather than just
     the username that was passed by the client. It is turned off by
     default.</p>
-</usage>
-</directivesynopsis>
-
-<directivesynopsis>
-<name>AuthLDAPStartTLS</name>
-<description>Use a secure TLS connection to the LDAP server</description>
-<syntax>AuthLDAPStartTLS on|off</syntax>
-<default>AuthLDAPStartTLS off</default>
-<contextlist><context>directory</context><context>.htaccess</context>
-</contextlist>
-<override>AuthConfig</override>
-
-<usage>
-    <p>If this directive is set to <code>on</code>,
-    <module>mod_auth_ldap</module> will start a secure TLS session
-    after connecting to the LDAP server. This requires your LDAP
-    server to support TLS.</p>
 </usage>
 </directivesynopsis>
 

@@ -22,6 +22,13 @@ by other LDAP modules</description>
     apr-util. This is achieved by adding the <code>--with-ldap</code>
     flag to the <code>./configure</code> script when building
     Apache.</p>
+
+    <p>SSL support requires that <module>mod_ldap</module> be linked
+    with one of the following LDAP SDKs: <a href="http://www.openldap.org/">
+    OpenLDAP SDK</a> (both 1.x and 2.x), <a href="http://developer.novell.com/ndk/cldap.htm">
+    Novell LDAP SDK</a> or the <a href="http://www.iplanet.com/downloads/developer/">
+    iPlanet(Netscape)</a> SDK.</p>
+
 </summary>
 
 <section id="exampleconfig"><title>Example Configuration</title>
@@ -156,6 +163,51 @@ by other LDAP modules</description>
     </section>
 </section>
 
+<section id="usingssltls"><title>Using SSL</title>
+
+    <p>The ability to create an SSL connections to an LDAP server 
+    is defined by the directives <directive module="mod_ldap">
+    LDAPTrustedCA</directive> and <directive module="mod_ldap">
+    LDAPTrustedCAType</directive>. These directives specify the certificate
+    file or database and the certificate type. Whenever the LDAP url
+    includes <em>ldaps://</em>, <module>mod_ldap</module> will establish
+    a secure connection to the LDAP server.
+
+    <example>
+      # Establish an SSL LDAP connection. Requires that <br />
+      # mod_ldap and mod_auth_ldap be loaded. Change the <br />
+      # "yourdomain.example.com" to match your domain.<br />
+      <br />
+      LDAPTrustedCA /certs/certfile.der<br />
+      LDAPTrustedCAType DER_FILE<br />
+      <br />
+      &lt;Location /ldap-status&gt;<br />
+      <indent>
+        SetHandler ldap-status<br />
+        Order deny,allow<br />
+        Deny from all<br />
+        Allow from yourdomain.example.com<br />
+        AuthLDAPEnabled on<br />
+        AuthLDAPURL ldaps://127.0.0.1/dc=example,dc=com?uid?one<br />
+        AuthLDAPAuthoritative on<br />
+        require valid-user<br />
+      </indent>
+      &lt;/Location&gt;
+    </example>
+
+    <p>If <module>mod_ldap</module> is linked against the
+    Netscape/iPlanet LDAP SDK, it will not talk to any SSL server
+    unless that server has a certificate signed by a known Certificate
+    Authority. As part of the configuration
+    <module>mod_ldap</module> needs to be told where it can find
+    a database containing the known CAs. This database is in the same
+    format as Netscape Communicator's <code>cert7.db</code>
+    database. The easiest way to get this file is to start up a fresh
+    copy of Netscape, and grab the resulting
+    <code>$HOME/.netscape/cert7.db</code> file.</p>
+
+</section>
+
 <directivesynopsis>
 <name>LDAPSharedCacheSize</name>
 <description>Size in bytes of the shared-memory cache</description>
@@ -228,19 +280,30 @@ valid</description>
 </directivesynopsis>
 
 <directivesynopsis>
-<name>LDAPCertDBPath</name>
-<description>Directory containing certificates for SSL support</description>
-<syntax>LDAPCertDBPath <var>directory-path</var></syntax>
+<name>LDAPTrustedCA</name>
+<description>Sets the file containing the trusted Certificate Authority certificate or database</description>
+<syntax>LDAPTrustedCA <var>directory-path/filename</var></syntax>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
-    <p>This directive is only valid if Apache has been linked
-    against the Netscape/iPlanet Directory SDK.</p>
+    <p>It specifies the directory path and file name of the trusted CA
+    <module>mod_ldap</module> should use when establishing an SSL
+    connection to an LDAP server. If using the Netscape/iPlanet Directory
+    SDK, the file name should be <code>cert7.db</code>.</p>
+</usage>
+</directivesynopsis>
 
-    <p>It specifies in which directory <module>mod_ldap</module>
-    should look for the certificate authorities database for SSL
-    support. There should be a file named <code>cert7.db</code> in that
-    directory.</p>
+<directivesynopsis>
+<name>LDAPTrustedCAType</name>
+<description>Specifies the type of the Certificate Authority file</description>
+<syntax>LDAPTrustedCAType <var>type</var></syntax>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>The following types are supported:<br />
+          DER_FILE      - file in binary DER format<br />
+          BASE64_FILE   - file in Base64 format<br />
+          CERT7_DB_PATH - Netscape certificate database file ")</p>
 </usage>
 </directivesynopsis>
 
