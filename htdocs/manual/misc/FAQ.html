@@ -8,7 +8,7 @@
 <!--#include virtual="header.html" -->
 <H1>Apache Server Frequently Asked Questions</H1>
 <P>
-$Revision: 1.30 $ ($Date: 1997/04/21 21:26:15 $)
+$Revision: 1.31 $ ($Date: 1997/04/21 21:40:15 $)
 </P>
 <P>
 If you are reading a text-only version of this FAQ, you may find numbers
@@ -120,6 +120,9 @@ do not appear, and are not needed, for the hypertext version.
    </LI>
    <LI><A HREF="#fastcgi">Why isn't FastCGI included with Apache any
     more?</A>
+   </LI>
+   <LI><A HREF="#nodelay">Why am I getting &quot;<SAMP>httpd: could not
+    set socket option TCP_NODELAY</SAMP>&quot; in my error log?</A>
    </LI>
   </OL>
  </LI>
@@ -908,6 +911,18 @@ do not appear, and are not needed, for the hypertext version.
   <P>
   You can still obtain the FastCGI module for Apache from the master
   FastCGI web site.
+  </P>
+  <HR>
+ </LI>
+ <LI><A NAME="fastcgi">
+      <STRONG>Why am I getting &quot;<SAMP>httpd: could not set socket
+      option TCP_NODELAY</SAMP>&quot; in my error log?</STRONG>
+     </A> 
+  <P>
+  This message almost always indicates that the client disconnected
+  before Apache reached the point of calling <CODE>setsockopt()</CODE>
+  for the connexion.  It shouldn't occur for more than about 1% of the
+  requests your server handles, and it's advisory only in any case.
   </P>
   <HR>
  </LI>
