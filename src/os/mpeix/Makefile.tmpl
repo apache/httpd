@@ -4,11 +4,11 @@ INCLUDES=$(INCLUDES1) $(INCLUDES0) $(EXTRA_INCLUDES)
 LDFLAGS=$(LDFLAGS1) $(EXTRA_LDFLAGS)
 
 LIBOBJS=	os.o os-inline.o dlopen.o gettimeofday.o
-OBJS=	$(LIBOBJS) mpe_dl_stub.o
+OBJS=	$(LIBOBJS)
 
 LIB=	libos.a
 
-all:	$(LIB) mpe_dl_stub.o
+all:	$(LIB)
 
 $(LIB): $(LIBOBJS)
 	rm -f $@
@@ -41,7 +41,6 @@ $(OBJS): Makefile
 # DO NOT REMOVE
 dlopen.o: dlopen.c
 gettimeofday.o: gettimeofday.c
-mpe_dl_stub.o: mpe_dl_stub.c
 os-inline.o: os-inline.c $(INCDIR)/ap_config.h \
  $(INCDIR)/ap_mmn.h $(INCDIR)/ap_config_auto.h \
  $(OSDIR)/os.h $(INCDIR)/ap_ctype.h $(INCDIR)/hsregex.h

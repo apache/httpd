@@ -740,7 +740,7 @@ void ap_proxy_hash(const char *it, char *val, int ndepth, int nlength)
     char tmp[22];
     int i, k, d;
     unsigned int x;
-#if defined(AIX) && defined(__ps2__)
+#if defined(MPE) || (defined(AIX) && defined(__ps2__))
     /* Believe it or not, AIX 1.x does not allow you to name a file '@',
      * so hack around it in the encoding. */
     static const char enc_table[64] =

@@ -1206,7 +1206,7 @@ void ap_proxy_cache_tidy(cache_req *c)
 	    *p = '/';
 	    ++p;
 	}
-#if defined(OS2) || defined(WIN32) || defined(NETWARE)
+#if defined(OS2) || defined(WIN32) || defined(NETWARE) || defined(MPE)
 	/* Under OS/2 use rename. */
 	if (rename(c->tempfile, c->filename) == -1)
 	    ap_log_error(APLOG_MARK, APLOG_ERR, s,

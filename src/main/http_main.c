@@ -3137,12 +3137,21 @@ static void set_group_privs(void)
 	 * Set the GID before initgroups(), since on some platforms
 	 * setgid() is known to zap the group list.
 	 */
+#ifdef MPE
+	GETPRIVMODE();
+#endif
 	if (setgid(ap_group_id) == -1) {
+#ifdef MPE
+	    GETUSERMODE();
+#endif
 	    ap_log_error(APLOG_MARK, APLOG_ALERT, server_conf,
 			"setgid: unable to set group id to Group %u",
 			(unsigned)ap_group_id);
 	    clean_child_exit(APEXIT_CHILDFATAL);
 	}
+#ifdef MPE
+	GETUSERMODE();
+#endif
 
 	/* Reset `groups' attributes. */
 
@@ -3843,17 +3852,15 @@ static void child_main(int child_num_arg)
 
     set_group_privs();
 #ifdef MPE
-    /* Only try to switch if we're running as MANAGER.SYS */
-    if (geteuid() == 1 && ap_user_id > 1) {
-	GETPRIVMODE();
-	if (setuid(ap_user_id) == -1) {
-	    GETUSERMODE();
-	    ap_log_error(APLOG_MARK, APLOG_ALERT, server_conf,
-			"setuid: unable to change to uid: %d", ap_user_id);
-	    exit(1);
-	}
+    /* No such thing as root on MPE, so try to switch unconditionally */
+    GETPRIVMODE();
+    if (setuid(ap_user_id) == -1) {
 	GETUSERMODE();
+	ap_log_error(APLOG_MARK, APLOG_ALERT, server_conf,
+		    "setuid: unable to change to uid: %d", ap_user_id);
+	exit(1);
     }
+    GETUSERMODE();
 #else
     /* Only try to switch if we're running as root */
     if (!geteuid() && (
@@ -5040,17 +5047,15 @@ int REALMAIN(int argc, char *argv[])
 	set_group_privs();
 
 #ifdef MPE
-	/* Only try to switch if we're running as MANAGER.SYS */
-	if (geteuid() == 1 && ap_user_id > 1) {
-	    GETPRIVMODE();
-	    if (setuid(ap_user_id) == -1) {
-		GETUSERMODE();
-		ap_log_error(APLOG_MARK, APLOG_ALERT, server_conf,
-			    "setuid: unable to change to uid: %d", ap_user_id);
-		exit(1);
-	    }
+	/* No such thing as root on MPE, so try to switch unconditionally */
+	GETPRIVMODE();
+	if (setuid(ap_user_id) == -1) {
 	    GETUSERMODE();
+	    ap_log_error(APLOG_MARK, APLOG_ALERT, server_conf,
+			"setuid: unable to change to uid: %d", ap_user_id);
+	    exit(1);
 	}
+	GETUSERMODE();
 #else
 	/* Only try to switch if we're running as root */
 	if (!geteuid() && setuid(ap_user_id) == -1) {
@@ -7132,6 +7137,14 @@ int main(int argc, char *argv[], char *envp[])
 	}
     }
 
+#ifdef MPE
+    /*
+     * MPE doesn't currently initialize the envp parameter.  Instead, we must
+     * use the global variable environ. 
+     */
+    envp = environ;
+#endif
+	
     /* 
      * create path to SHARED_CORE_EXECUTABLE_PROGRAM
      */

@@ -79,6 +79,8 @@ if (libname[0] != '/') {
 } else
 	ap_snprintf(library, sizeof(library), " %s ", libname);
 
+#define MPE_WITHOUT_MPELX44
+#ifdef MPE_WITHOUT_MPELX44
 /*
 Unfortunately if we simply tried to load the module structure data item
 directly in dlsym(), it would complain about unresolved function pointer 
@@ -86,6 +88,9 @@ references.
 
 However, if we first load an actual dummy procedure, we can then subsequently 
 load the data item without trouble.  Go figure.
+
+This bug is fixed by patch MPELX44A on MPE/iX 6.0 and patch MPELX44B on
+MPE/iX 6.5.
 */
 
 /* Load the dummy procedure mpe_dl_stub */
@@ -100,7 +105,10 @@ HPGETPROCPLABEL(
 	mpe_dl_symtype, &datalen, 1, 0, 0);
 
 /* We consider it to be a failure if the dummy procedure doesn't exist */
-if (mpe_dl_status != 0) return NULL;
+/* if (mpe_dl_status != 0) return NULL; */
+/* Or not.  If we failed to load mpe_dl_stub, press on and try to load the
+   real data item later in dlsym(). */
+#endif /* MPE_WITHOUT_MPELX44 */
 
 mpe_dl_symtype = 2;
 

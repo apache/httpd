@@ -1032,7 +1032,6 @@ if [ "x$using_shlib" = "x1" ] ; then
 	    LD_SHLIB=ld	
 	    LDFLAGS_SHLIB='-b -a archive'
 	    LDFLAGS_MOD_SHLIB=$LDFLAGS_SHLIB
-	    LIBS_SHLIB='$(OSDIR)/mpe_dl_stub.o'	
 	    ;;
 	*-linux1)
 	    CFLAGS_SHLIB="-fpic"
