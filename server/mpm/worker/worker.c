@@ -815,11 +815,16 @@ static void * APR_THREAD_FUNC worker_thread(apr_thread_t *thd, void * dummy)
         rv = ap_queue_pop(worker_queue, &csd, &ptrans, last_ptrans);
         last_ptrans = NULL;
 
-        /* We get APR_EINTR whenever ap_queue_pop() has been interrupted
-         * from an explicit call to ap_queue_interrupt_all(). This allows
-         * us to unblock threads stuck in ap_queue_pop() when a shutdown
-         * is pending. */
-        if (rv == APR_EINTR || !csd) {
+        if (rv != APR_SUCCESS) {
+            /* We get APR_EINTR whenever ap_queue_pop() has been interrupted
+             * from an explicit call to ap_queue_interrupt_all(). This allows
+             * us to unblock threads stuck in ap_queue_pop() when a shutdown
+             * is pending.
+             */
+            if (rv != APR_EINTR) {
+                ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
+                             "ap_queue_pop failed");
+            }
             continue;
         }
         process_socket(ptrans, csd, process_slot, thread_slot);
