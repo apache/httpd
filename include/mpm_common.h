@@ -107,7 +107,6 @@ extern "C" {
  *        each time through the loop.  If 0, give the process time to die
  *        on its own before signalling it.
  * @tip This function requires that some macros are defined by the MPM: <pre>
- *  MPM_SYNC_CHILD_TABLE -- sync the scoreboard image between child and parent
  *  MPM_CHILD_PID -- Get the pid from the specified spot in the scoreboard
  *  MPM_NOTE_CHILD_KILLED -- Note the child died in the scoreboard
  * </pre>
