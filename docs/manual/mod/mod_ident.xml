@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<modulesynopsis>
+
+<name>mod_ident</name>
+<description>RFC 1413 ident lookups</description>
+<status>Extension</status>
+<sourcefile>mod_ident.c</sourcefile>
+<identifier>ident_module</identifier>
+<compatibility>Available in Apache 2.1 and later</compatibility>
+
+<summary>
+    <p>This module queries an <a href="http://www.ietf.org/rfc/rfc1413.txt"
+    >RFC 1413</a> compatible daemon on a remote host to look up the owner of
+    a connection.</p>
+</summary>
+<seealso><module>mod_log_config</module></seealso>
+
+<directivesynopsis>
+<name>IdentityCheck</name>
+<description>Enables logging of the RFC 1413 identity of the remote
+user</description>
+<syntax>IdentityCheck On|Off</syntax>
+<default>IdentityCheck Off</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
+<compatibility>Moved out of core in Apache 2.1</compatibility>
+
+<usage>
+    <p>This directive enables <a href="http://www.ietf.org/rfc/rfc1413.txt"
+    >RFC 1413</a>-compliant logging of the remote user name for each
+    connection, where the client machine runs identd or something similar.
+    This information is logged in the access log using the <code>%...l</code>
+    <a href="mod_log_config.html#formats">format string</a>.</p>
+
+    <note>
+      The information should not be trusted in any way except for
+      rudimentary usage tracking.
+    </note>
+
+    <p>Note that this can cause serious latency problems accessing
+    your server since every request requires one of these lookups
+    to be performed. When firewalls or proxy servers are involved,
+    each lookup might possibly fail and add a latency duration as
+    defined by the <directive module="mod_ident"
+    >IdentityCheckTimeout</directive> directive to each hit. So in
+    general this is not very useful on public servers accessible from
+    the Internet.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>IdentityCheckTimeout</name>
+<description>Determines the timeout duration for ident requests</description>
+<syntax>IdentityCheckTimeout <var>seconds</var></syntax>
+<default>IdentityCheckTimeout 30</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
+<usage>
+    <p>This directive specifies the timeout duration of an ident
+    request. The default value of 30 seconds is recommended by <a
+    href="http://www.ietf.org/rfc/rfc1413.txt">RFC 1413</a>, mainly because
+    of possible network latency. However, you may want to adjust the
+    timeout value according to your local network speed.</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
+

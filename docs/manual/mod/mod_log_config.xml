@@ -88,7 +88,10 @@
         in the request sent to the server.</td></tr>
 
     <tr><td><code>%...l</code></td>
-        <td>Remote logname (from identd, if supplied)</td></tr>
+        <td>Remote logname (from identd, if supplied). This will return a
+        dash unless <module>mod_ident</module> is present and <directive
+        module="mod_ident">IdentityCheck</directive> is set
+        <code>On</code>.</td></tr>
 
     <tr><td><code>%...m</code></td>
         <td>The request method</td></tr>
