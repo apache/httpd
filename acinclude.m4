@@ -292,7 +292,7 @@ AC_DEFUN(APACHE_LAYOUT,[
         ;;
     esac
     val=`echo $val | sed -e 's:\(.\)/*$:\1:'`
-    val=`echo $val | sed -e 's:$\([a-z_]*\):$(\1):g'`
+    val=`echo $val | sed -e 's:[\$]\([a-z_]*\):$(\1):g'`
     if test "$autosuffix" = "yes"; then
       if echo $val | grep apache >/dev/null; then
         addtarget=no
