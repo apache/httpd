@@ -1466,6 +1466,11 @@ API_EXPORT(int) ap_index_of_response(int status)
     return LEVEL_500;           /* 600 or above is also illegal */
 }
 
+API_EXPORT(const char *) ap_get_status_line(int status)
+{
+    return status_lines[ap_index_of_response(status)];
+}
+
 /* Send a single HTTP header field to the client.  Note that this function
  * is used in calls to table_do(), so their interfaces are co-dependent.
  * In other words, don't change this one without checking table_do in alloc.c.

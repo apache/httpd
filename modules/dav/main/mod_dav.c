@@ -595,10 +595,12 @@ static void dav_send_multistatus(request_rec *r, int status,
 	ap_rputs("</D:href>" DEBUG_CR, r);
 
 	if (first->propresult.propstats == NULL) {
-	    /* ### it would be nice to get a status line from Apache */
+	    /* use the Status-Line text from Apache.  Note, this will
+	     * default to 500 Internal Server Error if first->status
+	     * is not a known (or valid) status code. */
 	    ap_rprintf(r,
-		       "<D:status>HTTP/1.1 %d status text goes here</D:status>"
-		       DEBUG_CR, first->status);
+		       "<D:status>HTTP/1.1 %s</D:status>" DEBUG_CR, 
+		       ap_get_status_line(first->status));
 	}
 	else {
 	    /* assume this includes <propstat> and is quoted properly */

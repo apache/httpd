@@ -165,6 +165,13 @@ API_EXPORT(int) ap_rflush(request_rec *r);
 
 API_EXPORT(int) ap_index_of_response(int status);
 
+/* 
+ * Return the Status-Line for a given status code (excluding the
+ * HTTP-Version field). If an invalid or unknown status code is
+ * passed, "500 Internal Server Error" will be returned. 
+ */
+API_EXPORT(const char *) ap_get_status_line(int status);
+
 /* Reading a block of data from the client connection (e.g., POST arg) */
 
 API_EXPORT(int) ap_setup_client_block(request_rec *r, int read_policy);
