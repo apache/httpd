@@ -1,7 +1,4 @@
-Changes with Apache 2.0.21-dev
-
 Changes with Apache 2.0.20
-
   *) Fix problem in content-length filter where the filter would
      buffer all the output from a CGI before sending any bytes
      down the filter stack to the network. This problem would cause
