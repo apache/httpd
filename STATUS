@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/06/13 18:07:58 $]
+Last modified at [$Date: 2002/06/13 18:37:00 $]
 
 Release:
 
@@ -94,9 +94,17 @@ CURRENT VOTES:
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
+    * All handlers should always send content down even if r->header_only
+      is set.  If not, it means that the HEAD requests don't generate the
+      same headers as a GET which is wrong.
+      Is this a showstopper?
+        +1: Justin
+        -1: 
+
     * 500 returned instead of 501 if a handler other than default_handler
       is invoked on a method with M_INVALID.
       Message-ID: <20020613001913.J22524@apache.org>
+      Proposed patch: <20020613111913.S22524@apache.org>
       Is this a showstopper?
         +1: Justin
         -1: Cliff, Aaron
