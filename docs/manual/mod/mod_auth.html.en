@@ -44,7 +44,7 @@ uses a different system for module ordering.</td></tr></table></blockquote>
     regardless of the AuthAuthoritative setting.</p>
 
     <p>A common use for this is in conjunction with one of the
-    database modules; such as <code><a href="../mod/auth_dbm.html">auth_dbm</a></code>,
+    database modules; such as <code><a href="../mod/mod_auth_dbm.html">mod_auth_dbm</a></code>,
     <code>mod_auth_msql</code>, and <code><a href="../mod/mod_auth_anon.html">mod_auth_anon</a></code>.
     These modules supply the bulk of the user credential checking; but
     a few (administrator) related accesses fall through to a lower
