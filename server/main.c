@@ -273,7 +273,7 @@ static void usage(process_rec *process)
 }
 
 #ifdef WIN32
-API_EXPORT(int) apache_main(int argc, char *argv[])
+API_EXPORT_NONSTD(int) apache_main(int argc, char *argv[])
 #else
 API_EXPORT(int)        main(int argc, char *argv[])
 #endif
