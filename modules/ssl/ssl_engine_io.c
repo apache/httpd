@@ -153,6 +153,8 @@ static int bio_filter_out_flush(BIO *bio)
 
     outctx->rc = ap_pass_brigade(outctx->filter_ctx->pOutputFilter->next,
                                  outctx->bb);
+    /* create new brigade ready for next time through */
+    outctx->bb = apr_brigade_create(outctx->c->pool, outctx->c->bucket_alloc);
     return (outctx->rc == APR_SUCCESS) ? 1 : -1;
 }
 
