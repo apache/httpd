@@ -298,6 +298,8 @@ int main(int argc, const char * const argv[])
     module **mod;
     const char *optarg;
 
+    AP_MONCONTROL(0); /* turn of profiling of startup */
+
     apr_initialize();
 
     process = create_process(argc, argv);

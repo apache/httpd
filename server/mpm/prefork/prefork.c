@@ -759,6 +759,7 @@ static int make_child(server_rec *s, int slot)
 	}
 #endif
 	RAISE_SIGSTOP(MAKE_CHILD);
+        AP_MONCONTROL(1);
         /* Disable the parent's signal handlers and set up proper handling in
          * the child.
 	 */
@@ -969,6 +970,10 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 #endif
 
     set_signals();
+
+    if (one_process) {
+        AP_MONCONTROL(1);
+    }
 
     if (ap_daemons_max_free < ap_daemons_min_free + 1)	/* Don't thrash... */
 	ap_daemons_max_free = ap_daemons_min_free + 1;
