@@ -75,14 +75,18 @@
      * A vulnerability was found in the Win32 port of Apache 1.3.20.  A
        client submitting a very long URI could cause a directory listing
        to be returned rather than the default index page. A 403 Forbidden
-       will now be returned
+       will now be returned.  CAN-2001-0729
      * A vulnerability was found in the split-logfile support program. A
        request with a specially crafted Host: header could allow any file
        with a .log extension on the system to be written to. PR#7848
+       CAN-2001-0730
      * A vulnerability was found when Multiviews are used to negotiate
        the directory index. In some configurations, requesting a URI with
        a QUERY_STRING of M=D could return a directory listing rather than
-       the expected index page.
+       the expected index page.  CAN-2001-0731
+
+     The security issues above have been assigned standardized names, CAN- 
+     by the Common Vulnerabilities and Exposures project (cve.mitre.org)
 
   New features
 
