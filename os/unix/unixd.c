@@ -390,7 +390,7 @@ AP_DECLARE(apr_status_t) unixd_set_lock_perms(apr_lock_t *lock)
         long val;
         struct semid_ds *buf;
         ushort *array;
-};
+    };
 #endif
     union semun ick;
     struct semid_ds buf;
@@ -402,6 +402,38 @@ AP_DECLARE(apr_status_t) unixd_set_lock_perms(apr_lock_t *lock)
         buf.sem_perm.mode = 0600;
         ick.buf = &buf;
         if (semctl(oslock.crossproc, 0, IPC_SET, ick) < 0) {
+            return errno;
+        }
+    }
+#endif
+    return APR_SUCCESS;
+}
+
+AP_DECLARE(apr_status_t) unixd_set_proc_mutex_perms(apr_proc_mutex_t *pmutex)
+{
+/* MPM shouldn't call us unless we're actually using a SysV sem;
+ * this is just to avoid compile issues on systems without that
+ * feature
+ */
+#if APR_HAS_SYSVSEM_SERIALIZE
+    apr_os_proc_mutex_t ospmutex;
+#if !APR_HAVE_UNION_SEMUN
+    union semun {
+        long val;
+        struct semid_ds *buf;
+        ushort *array;
+    };
+#endif
+    union semun ick;
+    struct semid_ds buf;
+
+    if (!geteuid()) {
+        apr_os_proc_mutex_get(&ospmutex, pmutex);
+        buf.sem_perm.uid = unixd_config.user_id;
+        buf.sem_perm.gid = unixd_config.group_id;
+        buf.sem_perm.mode = 0600;
+        ick.buf = &buf;
+        if (semctl(ospmutex.crossproc, 0, IPC_SET, ick) < 0) {
             return errno;
         }
     }
