@@ -3,7 +3,7 @@ Changes with Apache 2.0.49
   *) mod_ssl: Advertise SSL library version as determined at run-time rather
      than at compile-time.  PR 23956.  [Eric Seidel <seidel apple.com>]
 
-  *) mod_ssl: Fix segfault on a non-SSL request if the the 'c' log
+  *) mod_ssl: Fix segfault on a non-SSL request if the 'c' log
      format code is used.  PR 22741.  [Gary E. Miller <gem rellim.com>]
 
   *) Fix build with parallel make.  PR 24643.  [Joe Orton]
@@ -1631,7 +1631,7 @@ Changes with Apache 2.0.37
 
   *) Win32: During a graceful restart, threads in the new process
      were accessing scoreboard slots still in use by active threads in 
-     the the old process. [Bill Stoddard]
+     the old process. [Bill Stoddard]
 
 Changes with Apache 2.0.36
 
@@ -3802,7 +3802,7 @@ Changes with Apache 2.0.18
 
 Changes with Apache 2.0.17
 
-  *) If a higher-level filter handles the the byterange aspects of a
+  *) If a higher-level filter handles the byterange aspects of a
      request, then the byterange filter should not try to redo the
      work.  The most common case of this happening, is a byterange
      request going through the proxy, and the origin server handles
@@ -3824,7 +3824,7 @@ Changes with Apache 2.0.17
      [jun-ichiro hagino <itojun iijlab.net>]
 
   *) The ap_f* functions should flush data to the filter that is passed
-     in, not the the filter after the one passed in.
+     in, not the filter after the one passed in.
      [Ryan Morgan <rmorgan covalent.net>]
 
   *) Make ab work again by changing its native types to apr types and formats.
@@ -3957,7 +3957,7 @@ Changes with Apache 2.0.15
   *) Add a hook, create_request.  This hook allows modules to modify
      a request while it is being created.  This hook is called for all
      request_rec's, main request, sub request, and internal redirect.
-     When this hook is called, the the r->main, r->prev, r->next
+     When this hook is called, the r->main, r->prev, r->next
      pointers have been set, so modules can determine what kind of
      request this is.  [Ryan Bloom]
 
@@ -4769,7 +4769,7 @@ Changes with Apache 2.0a8
 
   *) Expand APR for WinNT to fully accept and return utf-8 encoded
      Unicode file names and paths for Win32, and tag the Content-Type 
-     from mod_autoindex to reflect that charset if the the feature
+     from mod_autoindex to reflect that charset if the feature
      macro APR_HAS_UNICODE_FS is true.  [William Rowe]
 
   *) Compute the content length (and add appropriate header field) for
@@ -11071,7 +11071,7 @@ Changes with Apache 1.2.5
 
   *) SECURITY: Numerous changes to mod_imap in a general cleanup
      including fixing a possible buffer overflow.  This cleanup also
-     was done with 1.3 code as a basis, see the the previous note
+     was done with 1.3 code as a basis, see the previous note
      about mod_include.  [Dean Gaudet]
 
   *) SECURITY: If a htaccess file can not be read due to bad 
