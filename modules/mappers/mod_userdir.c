@@ -160,6 +160,13 @@ static const char *set_user_dir(cmd_parms *cmd, void *dummy, const char *arg)
     char *kw = ap_getword_conf(cmd->pool, &usernames);
     apr_table_t *usertable;
 
+    /* Since we are a raw argument, it is possible for us to be called with
+     * zero arguments.  So that we aren't ambiguous, flat out reject this.
+     */
+    if (*kw == '\0') {
+        return "UserDir requires an argument.";
+    }
+
     /*
      * Let's do the comparisons once.
      */
