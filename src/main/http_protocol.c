@@ -590,8 +590,11 @@ int read_request_line (request_rec *r)
 	}
     }
     bsetflag( conn->client, B_SAFEREAD, 0 );
-    if (len == (HUGE_STRING_LEN - 1))
+    if (len == (HUGE_STRING_LEN - 1)) {
+        log_printf(r->server, "request failed for %s, reason: header too long",
+            get_remote_host(r->connection, r->per_dir_config, REMOTE_NAME));
         return 0;               /* Should be a 414 error status instead */
+    }
 
     r->request_time = time(NULL);
     r->the_request = pstrdup (r->pool, l);

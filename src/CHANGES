@@ -1,5 +1,8 @@
 Changes with Apache 1.2b8
 
+  *) Log an error message if we get a request header that is too long,
+     since it may indicate a buffer overflow attack. [Marc Slemko]
+
   *) Made is_url() allow "[-.+a-zA-Z0-9]+:" as a valid scheme and
      not reject URLs without a double-slash, as per RFC2068 section 3.2.
      [Ken Coar] PR #146, #187
