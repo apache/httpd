@@ -166,7 +166,7 @@
     displayed as such. This information, also, is transmitted in
     HTTP headers.</p>
 
-    <p>The character set, language encoding and mime type are all 
+    <p>The character set, language, encoding and mime type are all 
     used in the process of content negotiation (See 
     <module>mod_negotiation</module>) to determine
     which document to give to the client, when there are
