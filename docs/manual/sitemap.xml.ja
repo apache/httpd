@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!-- English revision: 1.29 -->
 <!DOCTYPE sitemap SYSTEM "./style/sitemap.dtd"  
-  [ <!ENTITY allmodules SYSTEM "./mod/allmodules.xml"> ]
+  [ <!ENTITY allmodules SYSTEM "./mod/allmodules.xml.ja"> ]
 >
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
 
