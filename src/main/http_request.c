@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: http_request.c,v 1.19 1996/10/19 10:07:43 ben Exp $ */
+/* $Id: http_request.c,v 1.20 1996/10/19 14:20:20 ben Exp $ */
 
 /*
  * http_request.c: functions to get and process requests
@@ -270,8 +270,12 @@ int directory_walk (request_rec *r)
 
     no2slash (test_filename);
     num_dirs = count_dirs(test_filename);
+
     get_path_info (r);
     
+    if (test_filename[strlen(test_filename)-1] == '/')
+	--num_dirs;
+
     if (S_ISDIR (r->finfo.st_mode)) ++num_dirs;
 
     for (i = 1; i <= num_dirs; ++i) {
