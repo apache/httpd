@@ -992,6 +992,8 @@ int ap_slack(int fd, int line);
 #define AP_SLACK_HIGH	2
 #endif
 
+API_EXPORT(char *) ap_escape_quotes(pool *p, const char *instr);
+
 /*
  * Redefine assert() to something more useful for an Apache...
  */

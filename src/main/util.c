@@ -1805,3 +1805,53 @@ API_EXPORT(void) ap_content_type_tolower(char *str)
 	*semi = ';';
     }
 }
+
+/*
+ * Given a string, replace any bare " with \" .
+ */
+API_EXPORT(char *) ap_escape_quotes (pool *p, const char *instring)
+{
+    int newlen = 0;
+    const char *inchr = instring;
+    char *outchr, *outstring;
+
+    /*
+     * Look through the input string, jogging the length of the output
+     * string up by an extra byte each time we find an unescaped ".
+     */
+    while (*inchr != '\0') {
+	newlen++;
+        if (*inchr == '"') {
+	    newlen++;
+	}
+	/*
+	 * If we find a slosh, and it's not the last byte in the string,
+	 * it's escaping something - advance past both bytes.
+	 */
+	if ((*inchr == '\\') && (inchr[1] != '\0')) {
+	    inchr++;
+	}
+	inchr++;
+    }
+    outstring = ap_palloc(p, newlen + 1);
+    inchr = instring;
+    outchr = outstring;
+    /*
+     * Now copy the input string to the output string, inserting a slosh
+     * in front of every " that doesn't already have one.
+     */
+    while (*inchr != '\0') {
+	if ((*inchr == '\\') && (inchr[1] != '\0')) {
+	    *outchr++ = *inchr++;
+	    *outchr++ = *inchr++;
+	}
+	if (*inchr == '"') {
+	    *outchr++ = '\\';
+	}
+	if (*inchr != '\0') {
+	    *outchr++ = *inchr++;
+	}
+    }
+    *outchr = '\0';
+    return outstring;
+}
