@@ -2411,8 +2411,8 @@ scripts</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Win32 only
-option Registry-Strict is available in Apache 2.0 and
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Win32 only<br />
+option <code>Registry-Strict</code> is available in Apache 2.0 and
 later</td></tr>
 </table>
     <p>This directive is used to control how Apache finds the
@@ -2488,7 +2488,7 @@ itself</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>In version 2.0, this
-     directive supersedes the functionality of the Port
+     directive supersedes the functionality of the <code class="directive">Port</code>
      directive from version 1.3.</td></tr>
 </table>
     <p>The <code class="directive">ServerName</code> directive sets the hostname and

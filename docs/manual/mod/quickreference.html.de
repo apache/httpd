@@ -164,11 +164,11 @@ authenticating the user if this one fails</td></tr>
 <tr class="odd"><td><a href="mod_auth_ldap.html#authldapcomparednonserver">AuthLDAPCompareDNOnServer on|off</a></td><td> on </td><td>dh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Use the LDAP server to compare the DNs</td></tr>
 <tr><td><a href="mod_auth_ldap.html#authldapdereferencealiases">AuthLDAPDereferenceAliases never|searching|finding|always</a></td><td> Always </td><td>dh</td><td>X</td></tr><tr><td class="descr" colspan="4">When will the module de-reference aliases</td></tr>
 <tr class="odd"><td><a href="mod_auth_ldap.html#authldapenabled"> AuthLDAPEnabled on|off</a></td><td> on </td><td>dh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Turn on or off LDAP authentication</td></tr>
-<tr><td><a href="mod_auth_ldap.html#authldapfrontpagehack">AuthLDAPFrontPageHack on|off</a></td><td /><td>dh</td><td>X</td></tr><tr><td class="descr" colspan="4">Allow LDAP authentication to work with MS FrontPage</td></tr>
+<tr><td><a href="mod_auth_ldap.html#authldapfrontpagehack">AuthLDAPFrontPageHack on|off</a></td><td> off </td><td>dh</td><td>X</td></tr><tr><td class="descr" colspan="4">Allow LDAP authentication to work with MS FrontPage</td></tr>
 <tr class="odd"><td><a href="mod_auth_ldap.html#authldapgroupattribute">AuthLDAPGroupAttribute <em>attribute</em></a></td><td /><td>dh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">LDAP attributes used to check for group membership</td></tr>
 <tr><td><a href="mod_auth_ldap.html#authldapgroupattributeisdn">AuthLDAPGroupAttributeIsDN on|off</a></td><td> on </td><td>dh</td><td>X</td></tr><tr><td class="descr" colspan="4">Use the DN of the client username when checking for
 group membership</td></tr>
-<tr class="odd"><td><a href="mod_auth_ldap.html#authldapremoteuserisdn">AuthLDAPRemoteUserIsDN on|off</a></td><td /><td>dh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Use the DN of the client username to set the REMOTE_USER
+<tr class="odd"><td><a href="mod_auth_ldap.html#authldapremoteuserisdn">AuthLDAPRemoteUserIsDN on|off</a></td><td> off </td><td>dh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Use the DN of the client username to set the REMOTE_USER
 environment variable</td></tr>
 <tr><td><a href="mod_auth_ldap.html#authldapstarttls">AuthLDAPStartTLS on|off</a></td><td> off </td><td>dh</td><td>X</td></tr><tr><td class="descr" colspan="4">Use a secure TLS connection to the LDAP server</td></tr>
 <tr class="odd"><td><a href="mod_auth_ldap.html#authldapurl">AuthLDAPUrl <em>url</em></a></td><td /><td>dh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">URL specifying the LDAP search parameters</td></tr>
@@ -475,7 +475,7 @@ proxy request</td></tr>
 <tr class="odd"><td><a href="mod_proxy.html#proxyreceivebuffersize">ProxyReceiveBufferSize <em>bytes</em></a></td><td /><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Network buffer size for outgoing HTTP and FTP 
 connections</td></tr>
 <tr><td><a href="mod_proxy.html#proxyremote">ProxyRemote <em>match remote-server</em></a></td><td /><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Remote proxy used to handle certain requests</td></tr>
-<tr class="odd"><td><a href="mod_proxy.html#proxyremotematch">ProxyRemote <em>regex remote-server</em></a></td><td /><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Remote proxy used to handle requests
+<tr class="odd"><td><a href="mod_proxy.html#proxyremotematch">ProxyRemoteMatch <em>regex remote-server</em></a></td><td /><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Remote proxy used to handle requests
 matched by regular expressions</td></tr>
 <tr><td><a href="mod_proxy.html#proxyrequests">ProxyRequests on|off</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Enables forward (standard) proxy requests</td></tr>
 <tr class="odd"><td><a href="mod_proxy.html#proxytimeout">ProxyTimeout <em>seconds</em></a></td><td> 300 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Network timeout for proxied requests</td></tr>
@@ -634,7 +634,7 @@ proxy handshake</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslproxymachinecertificatepath">SSLProxyMachineCertificatePath <em>directory</em></a></td><td /><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Directory of PEM-encoded CA certificates for proxy server client certificates</td></tr>
 <tr><td><a href="mod_ssl.html#sslproxyprotocol">SSLProxyProtocol [+|-]<em>protocol</em> ...</a></td><td> all </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Configure usable SSL protocol flavors for proxy usage</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslproxyverify">SSLProxyVerify <em>level</em></a></td><td> none </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Type of remote server Certificate verification</td></tr>
-<tr><td><a href="mod_ssl.html#sslproxyverifydepth">SSLVerifyDepth <em>number</em></a></td><td /><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum depth of CA Certificates in Remote Server
+<tr><td><a href="mod_ssl.html#sslproxyverifydepth">SSLProxyVerifyDepth <em>number</em></a></td><td> 1 </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum depth of CA Certificates in Remote Server
 Certificate verification</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslrandomseed">SSLRandomSeed <em>context</em> <em>source</em> 
 [<em>bytes</em>]</a></td><td /><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Pseudo Random Number Generator (PRNG) seeding 
