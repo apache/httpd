@@ -584,6 +584,16 @@ typedef struct request_rec request_rec;
 
 #include "util_uri.h"
 
+#ifdef APACHE_XLATE
+#include "apr_xlate.h"
+
+struct ap_rr_xlate {
+    /* contents are experimental! expect it to change! */
+    ap_xlate_t *to_net;
+    ap_xlate_t *from_net;
+};
+#endif /*APACHE_XLATE*/
+
 struct process_rec {
     ap_pool_t *pool;  /* Global pool. Please try to cleared on _all_ exits */
     ap_pool_t *pconf; /* aka configuration pool, cleared on restarts */
@@ -741,6 +751,10 @@ struct request_rec {
  */
     const struct htaccess_result *htaccess;
 
+#ifdef APACHE_XLATE
+    struct ap_rr_xlate *rrx;
+#endif /*APACHE_XLATE*/
+    
 /* Things placed at the end of the record to avoid breaking binary
  * compatibility.  It would be nice to remember to reorder the entire
  * record to improve 64bit alignment the next time we need to break

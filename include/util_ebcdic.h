@@ -66,9 +66,7 @@ extern "C" {
 #endif
 
 #include "apr_xlate.h"
-
-extern ap_xlate_t *ap_hdrs_to_ascii, *ap_hdrs_from_ascii;
-extern ap_xlate_t *ap_locale_to_ascii, *ap_locale_from_ascii;
+#include "util_charset.h"
 
 ap_status_t ap_init_ebcdic(ap_pool_t *);
 

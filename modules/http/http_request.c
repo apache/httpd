@@ -75,6 +75,7 @@
 #include "http_protocol.h"
 #include "http_log.h"
 #include "http_main.h"
+#include "util_charset.h"
 #include "apr_fnmatch.h"
 
 AP_HOOK_STRUCT(
@@ -949,14 +950,17 @@ API_EXPORT(request_rec *) ap_sub_req_lookup_file(const char *new_file,
 
 API_EXPORT(int) ap_run_sub_req(request_rec *r)
 {
-#ifndef CHARSET_EBCDIC
+#ifndef APACHE_XLATE
     int retval = ap_invoke_handler(r);
-#else /*CHARSET_EBCDIC*/
-    /* Save the EBCDIC conversion setting of the caller across subrequests */
-    int convert = ap_bgetflag(r->connection->client, B_EBCDIC2ASCII);
-    int retval  = ap_invoke_handler(r);
-    ap_bsetflag(r->connection->client, B_EBCDIC2ASCII, convert);
-#endif /*CHARSET_EBCDIC*/
+#else /*APACHE_XLATE*/
+    /* Save the output conversion setting of the caller across subrequests */
+    int retval;
+    ap_xlate_t *saved_xlate;
+
+    ap_bgetopt(r->connection->client, BO_WXLATE, &saved_xlate);
+    retval  = ap_invoke_handler(r);
+    ap_bsetopt(r->connection->client, BO_WXLATE, &saved_xlate);
+#endif /*APACHE_XLATE*/
     ap_finalize_sub_req_protocol(r);
     return retval;
 }
@@ -1341,6 +1345,13 @@ static request_rec *internal_internal_redirect(const char *new_uri, request_rec 
         ap_die(access_status, new);
         return NULL;
     }
+
+#ifdef APACHE_XLATE
+    new->rrx = ap_pcalloc(new->pool, sizeof(struct ap_rr_xlate));
+    new->rrx->to_net = ap_locale_to_ascii;
+    new->rrx->from_net = ap_locale_from_ascii;
+    /* QUESTION: should we bsetopt(BO_WXLATE) and bsetop(BO_RXLATE)? */
+#endif /*APACHE_XLATE*/
 
     return new;
 }
