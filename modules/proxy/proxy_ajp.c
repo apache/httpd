@@ -309,7 +309,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
 
     apr_brigade_length(output_brigade, 0, &bb_len);
     if (bb_len != -1)
-        conn->worker->s->readed += bb_len;
+        conn->worker->s->read += bb_len;
 
     if (!isok)
         apr_brigade_destroy(output_brigade);
