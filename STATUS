@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/04/24 19:00:01 $]
+Last modified at [$Date: 2004/04/24 19:17:33 $]
 
 Release:
 
@@ -183,7 +183,7 @@ PATCHES TO BACKPORT FROM 2.1
     *) Fixed mean and median calculations in ab, also changed where time values
        are set for start and connect when doing keep alive benchmarking.
            support/ab.c: r1.143
-       +1: jjclar
+       +1: jjclar, nd
 
     *) work around MSIE Digest auth bug - if AuthDigestEnableQueryStringHack
        is set in r->subprocess_env allow mismatched query strings to pass.
@@ -194,7 +194,7 @@ PATCHES TO BACKPORT FROM 2.1
     *) mod_dav: Fix a problem that could cause crashes when manipulating 
        locks on some platforms. (especially Sparc!!!)
            modules/dav/fs/lock.c: r1.31
-       +1: trawick, jorton
+       +1: trawick, jorton, nd
 
     *) mod_dav: Fix a 2617 compliance issue
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/dav/main/util.c?r1=1.53&r2=1.54
@@ -355,7 +355,7 @@ PATCHES TO BACKPORT FROM 2.1
     * mod_isapi: GetServerVariable("ALL_RAW") returned the wrong buffer
       size.  PR 20617  [Jesse Pelton <jsp pkc.com>]
         http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/arch/win32/mod_isapi.c?r1=1.96&r2=1.97
-      +1: trawick, stoddard
+      +1: trawick, stoddard, nd
 
     * mod_isapi: send_response_header() failed to copy status string's 
       last character.  PR 20619.  [Jesse Pelton <jsp pkc.com>]
@@ -366,7 +366,7 @@ PATCHES TO BACKPORT FROM 2.1
       fields given "ALL_HTTP" or "ALL_RAW".  PR 20656.
       [Jesse Pelton <jsp pkc.com>]
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/arch/win32/mod_isapi.c?r1=1.98&r2=1.99
-      +1: trawick, stoddard
+      +1: trawick, stoddard, nd
 
     * Unix MPMs: Stop dropping connections when the file descriptor
       is at least FD_SETSIZE
@@ -375,7 +375,7 @@ PATCHES TO BACKPORT FROM 2.1
         server/mpm/experimental/perchild/perchild.c: r1.143
         server/mpm/experimental/threadpool/threadpool.c: r1.25
         server/mpm/worker/worker.c: r1.145
-      +1: trawick
+      +1: trawick, nd
 
     * ThreadStackSize for Win32 and threaded MPMs
       (if there is sufficient interest I'll pursue getting APR 0.9
