@@ -95,8 +95,8 @@ typedef enum {
  * magic cmd->info values
  */
 static char hdr_in  = '0';  /* RequestHeader */
-static char hdr_out = '1';  /* Header */
-static char hdr_err = '2';  /* ErrorHeader */
+static char hdr_out = '1';  /* Header onsuccess */
+static char hdr_err = '2';  /* Header always */
 
 /*
  * There is an array of struct format_tag per Header/RequestHeader 
@@ -413,7 +413,7 @@ static APR_INLINE const char *header_inout_cmd(cmd_parms *cmd,
             value = NULL;
         }
         if (cmd->info != &hdr_out && cmd->info != &hdr_err)
-            return "Header echo only valid on Header and ErrorHeader "
+            return "Header echo only valid on Header "
                    "directives";
         else {
             regex = ap_pregcomp(cmd->pool, hdr, REG_EXTENDED | REG_NOSUB);
@@ -459,13 +459,22 @@ static const char *header_cmd(cmd_parms *cmd, void *indirconf,
     const char *envclause;
 
     action = ap_getword_conf(cmd->pool, &args);
+    if (cmd->info == &hdr_out) {
+        if (!strcasecmp(action, "always")) {
+            cmd->info = &hdr_err;
+            action = ap_getword_conf(cmd->pool, &args);
+        }
+        else if (!strcasecmp(action, "onsuccess")) {
+            action = ap_getword_conf(cmd->pool, &args);
+        }
+    }
     hdr = ap_getword_conf(cmd->pool, &args);
     val = *args ? ap_getword_conf(cmd->pool, &args) : NULL;
     envclause = *args ? ap_getword_conf(cmd->pool, &args) : NULL;
 
     if (*args) {
         return apr_pstrcat(cmd->pool, cmd->cmd->name,
-                           " takes only 4 arguments at max.", NULL);
+                           " has too many arguments", NULL);
     }
 
     return header_inout_cmd(cmd, indirconf, action, hdr, val, envclause);
@@ -599,7 +608,7 @@ static apr_status_t ap_headers_output_filter(ap_filter_t *f,
 }
 
 /*
- * Make sure we propagate any ErrorHeader settings on the error
+ * Make sure we propagate any "Header always" settings on the error
  * path through http_protocol.c.
  */
 static apr_status_t ap_headers_error_filter(ap_filter_t *f,
@@ -613,7 +622,7 @@ static apr_status_t ap_headers_error_filter(ap_filter_t *f,
                  "headers: ap_headers_error_filter()");
 
     /*
-     * Add any header fields defined by ErrorHeader to r->err_headers_out.
+     * Add any header fields defined by "Header always" to r->err_headers_out.
      * Server-wide first, then per-directory to allow overriding.
      */
     do_headers_fixup(f->r, f->r->err_headers_out, dirconf->fixup_err);
@@ -646,12 +655,9 @@ static apr_status_t ap_headers_fixup(request_rec *r)
 static const command_rec headers_cmds[] =
 {
     AP_INIT_RAW_ARGS("Header", header_cmd, &hdr_out, OR_FILEINFO,
-                     "an action, header and value followed by optional env "
-                     "clause"),
+                     "an optional condition, an action, header and value "
+                     "followed by optional env clause"),
     AP_INIT_RAW_ARGS("RequestHeader", header_cmd, &hdr_in, OR_FILEINFO,
-                     "an action, header and value followed by optional env "
-                     "clause"),
-    AP_INIT_RAW_ARGS("ErrorHeader", header_cmd, &hdr_err, OR_FILEINFO,
                      "an action, header and value followed by optional env "
                      "clause"),
     {NULL}

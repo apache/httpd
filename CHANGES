@@ -2,6 +2,11 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Drop the ErrorHeader directive which turned out to be a misnomer.
+     Instead there's a new optional flag for the Header directive
+     ('always'), which keeps the former ErrorHeader functionality.
+     [André Malo]
+
   *) mod_deflate: Don't deflate responses with zero length 
      e.g. proxied 304's [Allan Edwards]
 
