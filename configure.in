@@ -56,7 +56,15 @@ AC_PROG_LN_S
 AC_CHECK_TOOL(RANLIB, ranlib, true)
 dnl AC_PATH_PROG(PERL_PATH, perl)
 
-REENTRANCY_FLAGS
+#
+# Play with CPPFLAGS given what was learned from APR_PRELOAD.
+#
+# XXX: APR only sets this if threads are enabled.  Either APR should be
+# fixed to always set it (most likely), or we should test for threads.
+#
+if test -n "$THREAD_CPPFLAGS"; then
+    CPPFLAGS="$CPPFLAGS $THREAD_CPPFLAGS"
+fi
 
 dnl various OS checks that apparently set required flags
 AC_AIX
@@ -243,9 +251,9 @@ dnl ## or disable threads), while still allowing APR to run and generate
 dnl ## APRVARS before Apache generates it's Makefiles and the related files.
 dnl ## This allows APR to detect libraries like dl and tell Apache that it
 dnl ## needs to include or not include them.
-RUN_SUBDIR_CONFIG_NOW(srclib/apr, "$apache_apr_flags --disable-shared")
-RUN_SUBDIR_CONFIG_NOW(srclib/apr-util, "--with-apr=../apr --disable-shared")
-RUN_SUBDIR_CONFIG_NOW(srclib/pcre)
+APR_SUBDIR_CONFIG(srclib/apr, "$apache_apr_flags --disable-shared")
+APR_SUBDIR_CONFIG(srclib/apr-util, "--with-apr=../apr --disable-shared")
+APR_SUBDIR_CONFIG(srclib/pcre)
 . ./srclib/apr/APRVARS
 
 dnl get the exported vars from APRUTIL

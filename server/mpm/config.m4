@@ -13,7 +13,7 @@ AC_MSG_RESULT($APACHE_MPM)
 apache_cv_mpm=$APACHE_MPM
 	
 if test "$apache_cv_mpm" = "threaded" -o "$apache_cv_mpm" = "perchild"; then
-  PTHREADS_CHECK
+  APR_PTHREADS_CHECK
   AC_MSG_CHECKING([for which threading library to use])
   AC_MSG_RESULT($threads_result)
 
