@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE directiveindex SYSTEM "../style/modulesynopsis.dtd"
+  [ <!ENTITY allmodules SYSTEM "allmodules.xml.ja"> ]
+>
+<?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
+<!-- English revision: 1.3 -->
+
+<directiveindex>
+  <title>ディレクティブ一覧</title>
+  <summary>
+    <p>
+      標準 Apache 配布にあるすべての Apache のディレクティブの一覧です。
+      これらは一貫した形式で書かれていて、使われている用語の
+      <a href="directive-dict.html"
+      rel="Glossary">用語集</a> も用意されています。
+    </p>
+  </summary>
+  &allmodules;
+</directiveindex>
