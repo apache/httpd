@@ -374,8 +374,8 @@ API_EXPORT_NONSTD(const char *) ap_set_string_slot(cmd_parms *, void *,
 						   const char *);
 API_EXPORT_NONSTD(const char *) ap_set_string_slot_lower(cmd_parms *, 
 							 void *, const char *);
-API_EXPORT_NONSTD(const char *) ap_set_flag_slot(cmd_parms *, char *, int);
-API_EXPORT_NONSTD(const char *) ap_set_file_slot(cmd_parms *, char *, char *);
+API_EXPORT_NONSTD(const char *) ap_set_flag_slot(cmd_parms *, void *, int);
+API_EXPORT_NONSTD(const char *) ap_set_file_slot(cmd_parms *, char *, const char *);
 
 /* For modules which need to read config files, open logs, etc. ...
  * this returns the fname argument if it begins with '/'; otherwise

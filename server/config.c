@@ -1110,16 +1110,18 @@ API_EXPORT_NONSTD(const char *) ap_set_string_slot_lower(cmd_parms *cmd,
 }
 
 API_EXPORT_NONSTD(const char *) ap_set_flag_slot(cmd_parms *cmd,
-					      char *struct_ptr, int arg)
+                                                 void *struct_ptr_v, int arg)
 {
     /* This one's pretty generic too... */
 
     int offset = (int) (long) cmd->info;
+    char *struct_ptr = (char *)struct_ptr_v;
     *(int *) (struct_ptr + offset) = arg ? 1 : 0;
     return NULL;
 }
 
-API_EXPORT_NONSTD(const char *) ap_set_file_slot(cmd_parms *cmd, char *struct_ptr, char *arg)
+API_EXPORT_NONSTD(const char *) ap_set_file_slot(cmd_parms *cmd, char *struct_ptr, 
+                                                 const char *arg)
 {
     /* Prepend server_root to relative arg.
        This allows .htaccess to be independent of server_root,
@@ -1127,7 +1129,7 @@ API_EXPORT_NONSTD(const char *) ap_set_file_slot(cmd_parms *cmd, char *struct_pt
     char *p;
     int offset = (int) (long) cmd->info;
     if (ap_os_is_path_absolute(arg))
-	p = arg;
+	p = ap_pstrdup(cmd->pool, arg);
     else
 	p = ap_make_full_path(cmd->pool, ap_server_root, arg);
     *(char **) (struct_ptr + offset) = p;
