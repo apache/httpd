@@ -224,6 +224,16 @@ struct data *stats;		/* date for each request */
 fd_set readbits, writebits;	/* bits for select */
 struct sockaddr_in server;	/* server addr structure */
 
+#ifndef BEOS
+#define ab_close(s) close(s)
+#define ab_read(a,b,c) read(a,b,c)
+#define ab_write(a,b,c) write(a,b,c)
+#else
+#define ab_close(s) closesocket(s)
+#define ab_read(a,b,c) recv(a,b,c,0)
+#define ab_write(a,b,c) send(a,b,c,0)
+#endif
+
 /* --------------------------------------------------------- */
 
 /* simple little function to perror and exit */
@@ -262,9 +272,9 @@ static void write_request(struct connection * c)
     }
     writev(c->fd,out, outcnt);
 #else
-    write(c->fd,request,reqlen);
+    ab_write(c->fd,request,reqlen);
     if (posting>0) {
-        write(c->fd,postdata,postlen);
+        ab_write(c->fd,postdata,postlen);
         totalposted += (reqlen + postlen);
     }
 #endif
@@ -281,7 +291,11 @@ static void write_request(struct connection * c)
 static void nonblock(int fd)
 {
     int i = 1;
+#ifdef BEOS
+    setsockopt(fd, SOL_SOCKET, SO_NONBLOCK, &i, sizeof(i));
+#else
     ioctl(fd, FIONBIO, &i);
+#endif
 }
 
 /* --------------------------------------------------------- */
@@ -526,7 +540,7 @@ static void start_connect(struct connection * c)
 	    return;
 	}
 	else {
-	    close(c->fd);
+	    ab_close(c->fd);
 	    err_conn++;
 	    if (bad++ > 10) {
 		err("\nTest aborted after 10 failures\n\n");
@@ -570,7 +584,7 @@ static void close_connection(struct connection * c)
 	}
     }
 
-    close(c->fd);
+    ab_close(c->fd);
     FD_CLR(c->fd, &readbits);
     FD_CLR(c->fd, &writebits);
 
@@ -589,7 +603,8 @@ static void read_connection(struct connection * c)
     char *part;
     char respcode[4];		/* 3 digits and null */
 
-    r = read(c->fd, buffer, sizeof(buffer));
+    r = ab_read(c->fd, buffer, sizeof(buffer));
+
     if (r == 0 || (r < 0 && errno != EAGAIN)) {
 	good++;
 	close_connection(c);
@@ -635,7 +650,7 @@ static void read_connection(struct connection * c)
 		return;
 	    else {
 		/* header is in invalid or too big - close connection */
-		close(c->fd);
+		ab_close(c->fd);
 		if (bad++ > 10) {
 		    err("\nTest aborted after 10 failures\n\n");
 		}

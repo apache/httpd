@@ -52,6 +52,10 @@ static void cgethost(struct in_addr ipnum, char *string, int check);
 static int getline(char *s, int n);
 static void stats(FILE *output);
 
+#ifdef BEOS
+#define NO_ADDRESS NO_DATA
+#endif
+
 
 /* maximum line length */
 #define MAXLINE 1024
@@ -99,7 +103,8 @@ struct nsrec {
 extern int h_errno; /* some machines don't have this in their headers */
 #endif
 
-/* largeste value for h_errno */
+/* largest value for h_errno */
+
 #define MAX_ERR (NO_ADDRESS)
 #define UNKNOWN_ERR (MAX_ERR+1)
 #define NO_REVERSE  (MAX_ERR+2)
