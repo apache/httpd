@@ -985,8 +985,8 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
 	return OK;
     }
 
-    apr_pool_userdata_get(&entry_uri, "ap_location_walk::last_uri", r->pool);
-    apr_pool_userdata_get(&(void*)loc_done, "ap_location_walk::loc_done", r->pool);
+    apr_pool_userdata_get((void **)&entry_uri, "ap_location_walk::last_uri", r->pool);
+    apr_pool_userdata_get((void **)&loc_done, "ap_location_walk::loc_done", r->pool);
 
     /* If we have an ap_location_walk::last_uri that matches r->uri,
      * and the vhost's list of locations hasn't changed,
@@ -1064,7 +1064,7 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
          * with other walkers who reset to the vhost default, but we will
          * leave this escape in for simpler modules.
          */
-        apr_pool_userdata_get(&per_uri_defaults, "ap_location_walk::dir_merged",
+        apr_pool_userdata_get((void **)&per_uri_defaults, "ap_location_walk::dir_merged",
                               r->pool);
         if (per_uri_defaults == r->per_dir_config)
             return OK;
@@ -1072,7 +1072,7 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
         /* Well, we will need our per_uri_defaults from the last location walk. 
          * after all.
          */
-        apr_pool_userdata_get(&per_uri_defaults, "ap_location_walk::dir_conf",
+        apr_pool_userdata_get((void **)&per_uri_defaults, "ap_location_walk::dir_conf",
                               r->pool);
     }
 
