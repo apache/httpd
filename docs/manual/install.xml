@@ -30,6 +30,7 @@
     impatient</title>
 
     <table>
+      <columnspec><column width=".15"/><column width=".85"/></columnspec>
       <tr>
         <td><a href="#download">Download</a></td>
 
