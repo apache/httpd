@@ -89,6 +89,7 @@
 #include "apr_portable.h"
 #include "httpd.h"
 #include "util_md5.h"
+#include "util_ebcdic.h"
 
 API_EXPORT(char *) ap_md5_binary(ap_pool_t *p, const unsigned char *buf, int length)
 {
@@ -103,6 +104,9 @@ API_EXPORT(char *) ap_md5_binary(ap_pool_t *p, const unsigned char *buf, int len
      */
 
     ap_MD5Init(&my_md5);
+#ifdef CHARSET_EBCDIC
+    ap_MD5SetXlate(&my_md5, ap_hdrs_to_ascii);
+#endif
     ap_MD5Update(&my_md5, buf, (unsigned int)length);
     ap_MD5Final(hash, &my_md5);
 
@@ -192,20 +196,24 @@ API_EXPORT(char *) ap_md5contextTo64(ap_pool_t *a, ap_md5_ctx_t *context)
 
 #ifdef CHARSET_EBCDIC
 
-API_EXPORT(char *) ap_md5digest(ap_pool_t *p, ap_file_t *infile, int convert)
+API_EXPORT(char *) ap_md5digest(ap_pool_t *p, ap_file_t *infile,
+                                ap_xlate_t *xlate)
 {
     ap_md5_ctx_t context;
     unsigned char buf[1000];
     long length = 0;
     int nbytes;
+    ap_size_t inbytes_left, outbytes_left;
 
     ap_MD5Init(&context);
+#ifdef CHARSET_EBCDIC
+    if (xlate) {
+        ap_MD5SetXlate(&context, xlate);
+    }
+#endif
     nbytes = sizeof(buf);
     while (ap_read(infile, buf, &nbytes) == APR_SUCCESS) {
 	length += nbytes;
-        if (!convert) {
-            ascii2ebcdic(buf, buf, nbytes);
-        }
 	ap_MD5Update(&context, buf, nbytes);
     }
     ap_seek(infile, 0L, APR_SET);

@@ -71,6 +71,7 @@
 #include "util_md5.h"
 #include "apr_fnmatch.h"
 #include "http_connection.h"
+#include "util_ebcdic.h"
 
 /* Allow Apache to use ap_mmap */
 #ifdef USE_MMAP_FILES
@@ -2430,7 +2431,9 @@ static int default_handler(request_rec *r)
 #ifdef CHARSET_EBCDIC
 	if (d->content_md5 & 1) {
 	    ap_table_setn(r->headers_out, "Content-MD5",
-			  ap_md5digest(r->pool, fd, convert_flag));
+			  ap_md5digest(r->pool, fd,
+                                       convert_flag ?
+                                       ap_locale_to_ascii : NULL));
 	}
 #else
 	if (d->content_md5 & 1) {
@@ -2467,12 +2470,17 @@ static int default_handler(request_rec *r)
     }
     else {
 	char *addr;
-    ap_mmap_offset((void**)&addr, mm ,0);
+        ap_mmap_offset((void**)&addr, mm ,0);
 
 	if (d->content_md5 & 1) {
 	    ap_md5_ctx_t context;
 	    
 	    ap_MD5Init(&context);
+#ifdef CHARSET_EBCDIC
+            if (convert_flag) {
+                ap_MD5SetXlate(&context, ap_locale_to_ascii);
+            }
+#endif
 	    ap_MD5Update(&context, addr, (unsigned int)r->finfo.size);
 	    ap_table_setn(r->headers_out, "Content-MD5",
 			  ap_md5contextTo64(r->pool, &context));
