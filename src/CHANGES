@@ -1,15 +1,18 @@
 Changes with Apache 1.3b6
 
-  *)  As Ken suggested the check_cmd_context() function and related defines
-      are non-static now so modules can use 'em.  [Martin Kraemer]
+  *) ap_cpystrn() had an off-by-1 error.
+     [Charles Fu <ccwf@klab.caltech.edu>] PR#1847
 
-  *)  mod_info would occasionally produce an unpaired <tt> in its
-      output. Fixed. [Martin Kraemer]
+  *) As Ken suggested the check_cmd_context() function and related defines
+     are non-static now so modules can use 'em.  [Martin Kraemer]
 
-  *)  By default AIX binds a process (and it's children) to a single
-      processor.  httpd children now unbind themselves from that cpu
-      and re-bind to one selected at random via bindprocessor()
-      [Doug MacEachern]
+  *) mod_info would occasionally produce an unpaired <tt> in its
+     output. Fixed. [Martin Kraemer]
+
+  *) By default AIX binds a process (and it's children) to a single
+     processor.  httpd children now unbind themselves from that cpu
+     and re-bind to one selected at random via bindprocessor()
+     [Doug MacEachern]
       
   *) Linux 2.0 and above implement RLIMIT_AS, RLIMIT_DATA has almost no
      effect.  Work around it by using RLIMIT_AS for the RLimitMEM

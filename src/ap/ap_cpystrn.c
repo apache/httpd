@@ -77,8 +77,11 @@ API_EXPORT(char *) ap_cpystrn(char *dst, const char *src, size_t dst_size)
     d = dst;
     end = dst + dst_size - 1;
 
-    while ((d < end) && (*d++ = *src++))
-        ;	/* nop, the while does it all */
+    for (; d < end; ++d, ++src) {
+	if (!(*d = *src)) {
+	    return (d);
+	}
+    }
 
     *d = '\0';	/* always null terminate */
 
