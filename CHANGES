@@ -1,6 +1,7 @@
 Changes with Apache 2.0.31-dev
 
-  *) Fix SSLPassPhraseDialog exec: [Doug MacEachern]
+  *) Fix SSLPassPhraseDialog exec: and SSLRandomSeed exec:
+     [Doug MacEachern]
 
 Changes with Apache 2.0.30
 
