@@ -739,28 +739,70 @@ static const char *
 }
 
 static const char *
-    add_pass(cmd_parms *cmd, void *dummy, const char *f, const char *r)
+    add_pass(cmd_parms *cmd, void *dummy, const char *arg)
 {
     server_rec *s = cmd->server;
     proxy_server_conf *conf =
     (proxy_server_conf *) ap_get_module_config(s->module_config, &proxy_module);
     struct proxy_alias *new;
-    if (r!=NULL && cmd->path == NULL ) {
-        new = apr_array_push(conf->aliases);
-        new->fake = f;
-        new->real = r;
-    } else if (r==NULL && cmd->path != NULL) {
-        new = apr_array_push(conf->aliases);
-        new->fake = cmd->path;
-        new->real = f;
-    } else {
-        if ( r== NULL)
-            return "ProxyPass needs a path when not defined in a location";
-        else 
-            return "ProxyPass can not have a path when defined in a location";
-    }
+    char *f = cmd->path;
+    char *r = NULL;
+    char *word;
+    apr_table_t *params = apr_table_make(cmd->pool, 5);
+    const apr_array_header_t *arr;
+    const apr_table_entry_t *elts;
+    int i;
+    
+    while (*arg) {
+        word = ap_getword_conf(cmd->pool, &arg);
+        if (!f)
+            f = word;
+        else if (!r)
+            r = word;
+        else {
+            char *val = strchr(word, '=');
+            if (!val) {
+                if (cmd->path)
+                    return "Invalid ProxyPass parameter. Paramet must be in the form key=value";
+                else
+                    return "ProxyPass can not have a path when defined in a location"; 
+            }
+            else
+                *val++ = '\0';
+            apr_table_setn(params, word, val);
+        }
+    };
 
-     return NULL;
+    if (r == NULL)
+        return "ProxyPass needs a path when not defined in a location";
+
+    new = apr_array_push(conf->aliases);
+    new->fake = f;
+    new->real = r;
+    
+    arr = apr_table_elts(params);
+    elts = (const apr_table_entry_t *)arr->elts;
+    /* Distinguish the balancer from woker */
+    if (strncasecmp(r, "balancer:", 9) == 0) {
+        struct proxy_balancer *balancer = ap_proxy_get_balancer(cmd->pool, conf, r);
+        if (!balancer) {
+
+        }        
+    }
+    else {
+        proxy_worker *worker = ap_proxy_get_worker(cmd->pool, conf, r);
+        if (!worker) {
+            const char *err = ap_proxy_add_worker(&worker, cmd->pool, conf, r);
+            if (err)
+                return apr_pstrcat(cmd->temp_pool, "ProxyPass: ", err, NULL);
+        }
+        for (i = 0; i < arr->nelts; i++) {
+            const char *err = set_worker_param(worker, elts[i].key, elts[i].val);
+            if (err)
+                return apr_pstrcat(cmd->temp_pool, "ProxyPass: ", err, NULL);
+        }
+    }
+    return NULL;
 }
 
 static const char *
@@ -1081,9 +1123,8 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
     ap_get_module_config(s->module_config, &proxy_module);
     struct proxy_balancer *balancer;
     proxy_worker *worker;
-    char *path = NULL;
+    char *path = cmd->path;
     char *name = NULL;
-    char *args = apr_pstrdup(cmd->pool, arg);
     char *word;
     apr_table_t *params = apr_table_make(cmd->pool, 5);
     const apr_array_header_t *arr;
@@ -1092,8 +1133,8 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
     
     if (cmd->path)
         path = apr_pstrdup(cmd->pool, cmd->path);
-    while (*args) {
-        word = ap_getword_conf(cmd->pool, &args);
+    while (*arg) {
+        word = ap_getword_conf(cmd->pool, &arg);
         if (!path)
             path = word;
         else if (!name)
@@ -1101,7 +1142,10 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
         else {
             char *val = strchr(word, '=');
             if (!val)
-                return "Invalid BalancerMember parameter. Paramet must be in the form key=value";
+                if (cmd->path)
+                    return "BalancerMember can not have a balancer name when defined in a location";
+                else
+                    return "Invalid BalancerMember parameter. Paramet must be in the form key=value";
             else
                 *val++ = '\0';
             apr_table_setn(params, word, val);
@@ -1296,7 +1340,7 @@ static const command_rec proxy_cmds[] =
      "a scheme, partial URL or '*' and a proxy server"),
     AP_INIT_TAKE2("ProxyRemoteMatch", add_proxy_regex, NULL, RSRC_CONF,
      "a regex pattern and a proxy server"),
-    AP_INIT_TAKE12("ProxyPass", add_pass, NULL, RSRC_CONF|ACCESS_CONF,
+    AP_INIT_RAW_ARGS("ProxyPass", add_pass, NULL, RSRC_CONF|ACCESS_CONF,
      "a virtual path and a URL"),
     AP_INIT_TAKE12("ProxyPassReverse", add_pass_reverse, NULL, RSRC_CONF|ACCESS_CONF,
      "a virtual path and a URL for reverse proxy behaviour"),
@@ -1329,7 +1373,7 @@ static const command_rec proxy_cmds[] =
      "This overrides the server timeout"),
     AP_INIT_TAKE1("ProxyBadHeader", set_bad_opt, NULL, RSRC_CONF,
      "How to handle bad header line in response: IsError | Ignore | StartBody"),
-    AP_INIT_ITERATE("BalancerMember", add_member, NULL, RSRC_CONF|ACCESS_CONF,
+    AP_INIT_RAW_ARGS("BalancerMember", add_member, NULL, RSRC_CONF|ACCESS_CONF,
      "A balancer name and scheme with list of params"), 
     AP_INIT_TAKE12("BalancerStickySession", set_sticky_session, NULL, RSRC_CONF|ACCESS_CONF,
      "A balancer and sticky session name"),
