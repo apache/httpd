@@ -70,6 +70,21 @@ a response!
 two passes). Consider doing them the first time round.
 
 Ben Laurie <ben@algroup.co.uk> 30 Mar 96
+
+More changes:
+
+0) tested w/SOCKS proxy for httpd
+
+1) fixed IP address formation in host2addr()
+
+2) fixed SIGALRM on big cache cleanup
+
+3) fixed temp files #tmp not removed
+
+4) changed PF_INET to AF_INET in socket() calls
+
+Chuck Murcko <chuck@telebase.com> 27 May 96
+
 */
 
 #define TESTING	1
@@ -88,8 +103,15 @@ Ben Laurie <ben@algroup.co.uk> 30 Mar 96
 
 DEF_Explain
 
-#define DEFAULT_FTP_PORT 21
-#define DEFAULT_HTTPS_PORT 443
+#define	SEC_ONE_DAY		86400	/* one day, in seconds */
+#define	SEC_ONE_HR		3600	/* one hour, in seconds */
+
+#define	DEFAULT_FTP_PORT	21
+#define	DEFAULT_GOPHER_PORT	70
+#define	DEFAULT_NNTP_PORT	119
+#define	DEFAULT_WAIS_PORT	210
+#define	DEFAULT_HTTPS_PORT	443
+#define	DEFAULT_PROSPERO_PORT	1525	/* WARNING: conflict w/Oracle */
 
 /* Some WWW schemes and their default ports; this is basically /etc/services */
 static struct
@@ -97,13 +119,13 @@ static struct
     const char *scheme;
     int port;
 } defports[]={
-    { "ftp",      21},
-    { "gopher",   70},
+    { "ftp",      DEFAULT_FTP_PORT},
+    { "gopher",   DEFAULT_GOPHER_PORT},
     { "http",     DEFAULT_PORT},
-    { "https",    443},
-    { "nntp",     119},
-    { "wais",     210},
-    { "prospero", 1525},
+    { "nntp",     DEFAULT_NNTP_PORT},
+    { "wais",     DEFAULT_WAIS_PORT},
+    { "https",    DEFAULT_HTTPS_PORT},
+    { "prospero", DEFAULT_PROSPERO_PORT},
     { NULL, -1}  /* unknown port */
 };
 
@@ -112,7 +134,7 @@ static struct
 struct proxy_remote
 {
     const char *scheme;    /* the schemes handled by this proxy, or '*' */
-    const char *protocol;  /* the sceheme used to talk to this proxy */
+    const char *protocol;  /* the scheme used to talk to this proxy */
     const char *hostname;  /* the hostname of this proxy */
     int port;              /* the port for this proxy */
 };
@@ -124,8 +146,8 @@ struct proxy_alias {
 
 
 #define DEFAULT_CACHE_SPACE 5
-#define DEFAULT_CACHE_MAXEXPIRE 86400
-#define DEFAULT_CACHE_EXPIRE    3600
+#define DEFAULT_CACHE_MAXEXPIRE SEC_ONE_DAY
+#define DEFAULT_CACHE_EXPIRE    SEC_ONE_HR
 #define DEFAULT_CACHE_LMFACTOR (0.1)
 
 /* static information about the local cache */
@@ -154,7 +176,7 @@ typedef struct
  * A Web proxy module. Stages:
  *
  *  translate_name: set filename to proxy:<URL>
- *  type_checker:   set type to PROXY_PAGIC_TYPE if filename begins proxy:
+ *  type_checker:   set type to PROXY_MAGIC_TYPE if filename begins proxy:
  *  fix_ups:        convert the URL stored in the filename to the
  *                  canonical form.
  *  handler:        handle proxy requests
@@ -197,6 +219,8 @@ static int http_canon(request_rec *r, char *url, const char *scheme,
 static int ftp_canon(request_rec *r, char *url);
 
 static int http_handler(request_rec *r, struct cache_req *c, char *url,
+			const char *proxyhost, int proxyport);
+static int https_handler(request_rec *r, struct cache_req *c, char *url,
 			const char *proxyhost, int proxyport);
 static int ftp_handler(request_rec *r, struct cache_req *c, char *url);
 
@@ -301,8 +325,10 @@ proxy_fixup(request_rec *r)
 /* canonicalise each specific scheme */
     if (strncmp(url, "http:", 5) == 0)
 	return http_canon(r, url+5, "http", DEFAULT_PORT);
+# if 0
     else if (strncmp(url, "https:", 6) == 0)
 	return http_canon(r, url+6, "https", DEFAULT_HTTPS_PORT);
+#endif
     else if (strncmp(url, "ftp:", 4) == 0) return ftp_canon(r, url+4);
     else return OK; /* otherwise; we've done the best we can */
 }
@@ -1287,6 +1313,8 @@ static void garbage_coll(request_rec *r)
     now = time(NULL);
     if (now != -1 && lastcheck != -1 && now < lastcheck + every) return;
 
+    block_alarms();	/* avoid SIGALRM on big cache cleanup */
+
     filename = palloc(r->pool, strlen(cachedir) + HASH_LEN + 2);
     strcpy(filename, cachedir);
     strcat(filename, "/.time");
@@ -1351,7 +1379,8 @@ static void garbage_coll(request_rec *r)
 		break;
 	}
     }
-    }
+    unblock_alarms();
+}
 
 static int sub_garbage_coll(request_rec *r,array_header *files,
 			     const char *cachebasedir,const char *cachesubdir)
@@ -1387,8 +1416,8 @@ static int sub_garbage_coll(request_rec *r,array_header *files,
 	    {
 		if (errno != ENOENT)
 		    log_uerror("stat", filename, NULL, r->server);
-	    } else if (now != -1 && buf.st_atime > now + 86400 &&
-		       buf.st_mtime > now + 86400)
+	    } else if (now != -1 && buf.st_atime < now - SEC_ONE_DAY &&
+		       buf.st_mtime < now - SEC_ONE_DAY)
 		{
 		Explain1("GC unlink %s",filename);
 #if TESTING
@@ -1448,8 +1477,8 @@ static int sub_garbage_coll(request_rec *r,array_header *files,
 	if (!checkmask(line, "&&&&&&&& &&&&&&&& &&&&&&&&") || expire == -1)
 	{
 	    /* bad file */
-	    if (now != -1 && buf.st_atime > now + 86400 &&
-		buf.st_mtime > now + 86400)
+	    if (now != -1 && buf.st_atime > now + SEC_ONE_DAY &&
+		buf.st_mtime > now + SEC_ONE_DAY)
 	    {
 		log_error("proxy: deleting bad cache file", r->server);
 #if TESTING
@@ -2129,6 +2158,7 @@ proxy_handler(request_rec *r)
  * give up??
  */
     /* handle the scheme */
+    if (strcmp(scheme, "https") == 0) return https_handler(r, cr, url, NULL, 0);
     if (strcmp(scheme, "http") == 0) return http_handler(r, cr, url, NULL, 0);
     if (strcmp(scheme, "ftp") == 0) return ftp_handler(r, cr, url);
     else return NOT_IMPLEMENTED;
@@ -2166,17 +2196,14 @@ host2addr(const char *host, struct in_addr *addr)
     if (host[i] != '\0')
     {
 	struct hostent *hp;
+
 	hp = gethostbyname(host);
 	if (hp == NULL) return "Host not found";
 	memcpy(addr, hp->h_addr, sizeof(struct in_addr));
     } else
     {
-	unsigned long iaddr, inet;
-
-	iaddr = inet_addr(host);
-	inet = inet_network(host);
-	if (iaddr == -1 || inet == -1) return "Bad syntax for IP address";
-	*addr = inet_makeaddr(inet, iaddr);
+	if (!inet_aton(host, addr))
+	    return "Bad IP address";
     }
     return NULL;
 }
@@ -2233,7 +2260,7 @@ doconnect(int sock, struct sockaddr_in *addr, request_rec *r)
 
     hard_timeout ("proxy connect", r);
     do	i = connect(sock, (struct sockaddr *)addr, sizeof(struct sockaddr_in));
-    while (i == -1 && errno == EINTR);
+    while (i == -1 && errno == EINTR);	/* SHUDDER - cdm */
     if (i == -1) log_uerror("connect", NULL, NULL, r->server);
     kill_timeout(r);
 
@@ -2309,7 +2336,7 @@ ftp_handler(request_rec *r, struct cache_req *c, char *url)
     err = host2addr(host, &server.sin_addr);
     if (err != NULL) return proxyerror(r, err); /* give up */
 
-    sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
+    sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (sock == -1)
     {
 	log_uerror("socket", NULL, "proxy: error creating socket", r->server);
@@ -2421,7 +2448,7 @@ ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	return SERVER_ERROR;
     }
 
-    dsock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
+    dsock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (dsock == -1)
     {
 	log_uerror("socket", NULL, "proxy: error creating socket", r->server);
@@ -2567,6 +2594,21 @@ ftp_handler(request_rec *r, struct cache_req *c, char *url)
     return OK;
 }
 
+/*
+ * This handles http:// URLs, and other URLs using a remote proxy over http
+ * If proxyhost is NULL, then contact the server directly, otherwise
+ * go via the proxy.
+ * Note that if a proxy is used, then URLs other than http: can be accessed,
+ * also, if we have trouble which is clearly specific to the proxy, then
+ * we return DECLINED so that we can try another proxy. (Or the direct
+ * route.)
+ */
+static int
+https_handler(request_rec *r, struct cache_req *c, char *url,
+	     const char *proxyhost, int proxyport)
+{
+    return NOT_IMPLEMENTED;
+}
 
 /*
  * This handles http:// URLs, and other URLs using a remote proxy over http
@@ -2632,7 +2674,7 @@ http_handler(request_rec *r, struct cache_req *c, char *url,
 	if (err != NULL) return proxyerror(r, err); /* give up */
     }
 
-    sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
+    sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (sock == -1)
     {
 	log_error("proxy: error creating socket", r->server);
@@ -2944,7 +2986,7 @@ set_cache_maxex(cmd_parms *parms, void *dummy, char *arg)
     double val;
 
     if (sscanf(arg, "%lg", &val) != 1) return "Value must be a float";
-    psf->cache.maxexpire = (int)(val * 3600.);
+    psf->cache.maxexpire = (int)(val * (double)SEC_ONE_HR);
     return NULL;
 }
 
@@ -2956,7 +2998,7 @@ set_cache_defex(cmd_parms *parms, void *dummy, char *arg)
     double val;
 
     if (sscanf(arg, "%lg", &val) != 1) return "Value must be a float";
-    psf->cache.defaultexpire = (int)(val * 3600.);
+    psf->cache.defaultexpire = (int)(val * (double)SEC_ONE_HR);
     return NULL;
 }
 
@@ -2968,7 +3010,7 @@ set_cache_gcint(cmd_parms *parms, void *dummy, char *arg)
     double val;
 
     if (sscanf(arg, "%lg", &val) != 1) return "Value must be a float";
-    psf->cache.gcinterval = (int)(val * 3600.);
+    psf->cache.gcinterval = (int)(val * (double)SEC_ONE_HR);
     return NULL;
 }
 
