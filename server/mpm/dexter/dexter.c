@@ -120,7 +120,8 @@ int ap_max_daemons_limit = -1;
 
 static char ap_coredump_dir[MAX_STRING_LEN];
 
-static int pipe_of_death[2];
+static ap_file_t *pipe_of_death_in = NULL;
+static ap_file_t *pipe_of_death_out = NULL;
 static pthread_mutex_t pipe_of_death_mutex;
 
 /* *Non*-shared http_main globals... */
@@ -797,7 +798,9 @@ static void child_main(int child_num_arg)
     
     /* Set up the pollfd array */
     listenfds = ap_pcalloc(pchild, sizeof(*listenfds) * (num_listenfds + 1));
-    ap_put_os_sock(&listenfds[0], &pipe_of_death[0], pchild);
+#if APR_FILES_AS_SOCKETS
+    ap_socket_from_file(&listenfds[0], pipe_of_death_in);
+#endif
     for (lr = ap_listeners, i = 1; i <= num_listenfds; lr = lr->next, ++i)
         listenfds[i]=lr->sd;
 
@@ -1062,31 +1065,22 @@ static void server_main_loop(int remaining_children_to_start)
     }
 }
 
-static ap_status_t cleanup_fd(void *fdptr)
-{
-    if (close(*((int *) fdptr)) < 0) {
-        return APR_EBADF;
-    }
-    return APR_SUCCESS;
-}
-
 int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
 {
     int remaining_children_to_start;
     int i;
     ap_status_t rv;
+    int one = 1;
 
     pconf = _pconf;
     ap_server_conf = s;
-    if (pipe(pipe_of_death) == -1) {
+    if (ap_create_pipe(&pipe_of_death_in, &pipe_of_death_out, pconf) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, errno,
                      (const server_rec*) ap_server_conf,
                      "pipe: (pipe_of_death)");
         exit(1);
     }
-    ap_register_cleanup(pconf, &pipe_of_death[0], cleanup_fd, cleanup_fd);
-    ap_register_cleanup(pconf, &pipe_of_death[1], cleanup_fd, cleanup_fd);
-    if (fcntl(pipe_of_death[0], F_SETFL, O_NONBLOCK) == -1) {
+    if (ap_set_pipe_timeout(pipe_of_death_in, 0) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, errno,
                      (const server_rec*) ap_server_conf,
                      "fcntl: O_NONBLOCKing (pipe_of_death)");
@@ -1205,7 +1199,7 @@ int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
 	}
 	/* give the children the signal to die */
         for (i = 0; i < num_daemons;) {
-            if (write(pipe_of_death[1], &char_of_death, 1) == -1) {
+            if (ap_write(pipe_of_death_out, &char_of_death, &one) != APR_SUCCESS) {
                 if (errno == EINTR) continue;
                 ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf,
                              "write pipe_of_death");
