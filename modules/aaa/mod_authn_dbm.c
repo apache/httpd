@@ -63,11 +63,6 @@
  * 
  * Adapted to Apache by rst.
  *
- * dirkx - Added Authoritative control to allow passing on to lower  
- *         modules if and only if the userid is not known to this
- *         module. A known user with a faulty or absent password still
- *         causes an AuthRequired. The default is 'Authoritative', i.e.
- *         no control is passed along.
  */
 
 #define APR_WANT_STRFUNC
@@ -88,7 +83,6 @@
 typedef struct {
     char *pwfile;
     char *dbmtype;
-    int authoritative;
 } authn_dbm_config_rec;
 
 static void *create_authn_dbm_dir_config(apr_pool_t *p, char *d)
@@ -97,7 +91,6 @@ static void *create_authn_dbm_dir_config(apr_pool_t *p, char *d)
 
     conf->pwfile = NULL;
     conf->dbmtype = "default";
-    conf->authoritative = 1;  /* fortress is secure by default */
 
     return conf;
 }
@@ -120,9 +113,6 @@ static const command_rec authn_dbm_cmds[] =
     AP_INIT_TAKE1("AuthDBMType", set_dbm_type,
      NULL,
      OR_AUTHCFG, "what type of DBM file the user file is"),
-    AP_INIT_FLAG("AuthDBMAuthoritative", ap_set_flag_slot,
-     (void *)APR_OFFSETOF(authn_dbm_config_rec, authoritative),
-     OR_AUTHCFG, "Set to 'no' to allow access control to be passed along to lower modules, if the UserID is not known in this module"),
     {NULL}
 };
 
