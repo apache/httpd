@@ -1469,7 +1469,7 @@ API_EXPORT(char *) ap_construct_server(pool *p, const char *hostname,
 
 /* c2x takes an unsigned, and expects the caller has guaranteed that
  * 0 <= what < 256... which usually means that you have to cast to
- * unsigned char first, because (unsigned)(char)(x) fist goes through
+ * unsigned char first, because (unsigned)(char)(x) first goes through
  * signed extension to an int before the unsigned cast.
  *
  * The reason for this assumption is to assist gcc code generation --
@@ -1746,7 +1746,7 @@ char *strstr(char *s1, char *s2)
 #ifdef NEED_INITGROUPS
 int initgroups(const char *name, gid_t basegid)
 {
-#if defined(QNX) || defined(MPE) || defined(BEOS) || defined(_OSD_POSIX) || defined(TPF) || defined(__TANDEM) || defined(NETWARE)
+#if defined(QNX) || defined(MPE) || defined(BEOS) || defined(TPF) || defined(__TANDEM) || defined(NETWARE)
 /* QNX, MPE and BeOS do not appear to support supplementary groups. */
     return 0;
 #else /* ndef QNX */
