@@ -1065,7 +1065,7 @@ Changes with Apache 1.3b4
      calls that use too small an initial guess, see alloc.c.
      [Dean Gaudet]
 
-  *) Options and AllowOverrides weren't properly merging in the main
+  *) Options and AllowOverride weren't properly merging in the main
      server setting inside vhosts (only an issue when you have no
      <Directory> or other section containing an Options that affects
      a request).  Options +foo or -foo in the main_server wouldn't
