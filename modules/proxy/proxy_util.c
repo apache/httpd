@@ -374,6 +374,7 @@ PROXY_DECLARE(request_rec *)ap_proxy_make_fake_req(conn_rec *c, request_rec *r)
     rp->notes           = apr_table_make(c->pool, 5);
 
     rp->server = r->server;
+    rp->proxyreq = r->proxyreq;
     rp->request_time = r->request_time;
     rp->connection      = c;
     rp->output_filters  = c->output_filters;
