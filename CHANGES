@@ -67,11 +67,6 @@ Changes with Apache 2.1.0-dev
   *) mod_ssl: Fix segfaults after renegotiation failure. PR 21370
      [Hartmut Keil <Hartmut.Keil@adnovum.ch>]
 
-  *) mod_autoindex: If a directory contains a file listed in the
-     DirectoryIndex directive, the folder icon is no longer replaced
-     by the icon of that file. PR 9587.
-     [David Shane Holden <dpejesh@yahoo.com>] 
-
   *) mod_authz_groupfile: Strip trailing spaces of group names. This
      hopefully saves some hours of searching for typos. PR 12863.
      [André Malo]
@@ -232,6 +227,11 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.48
+  
+  *) mod_autoindex: If a directory contains a file listed in the
+     DirectoryIndex directive, the folder icon is no longer replaced
+     by the icon of that file. PR 9587.
+     [David Shane Holden <dpejesh@yahoo.com>] 
 
   *) Fixed mod_usertrack to not get false positive matches on the
      user-tracking cookie's name.  PR 16661.
