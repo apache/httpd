@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 2000/12/29 04:42:26 $]
+  Last modified at [$Date: 2000/12/29 17:11:46 $]
 
 Release:
 
@@ -36,6 +36,10 @@ RELEASE SHOWSTOPPERS:
       Status: See most recently revised patch, which adds 416 support:
         http://www.apache.org/~wrowe/http_protocol.patch
         Needs testing!!!  Jim?  Tony?  Anyone?
+
+    * mod_rewrite/7014+7018: Apache do not seem to receive response of
+        RewriteMap prg (already patched with apache_1.3.14-fix.diff)
+      Status: Needs confirmation.  Tony?
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
