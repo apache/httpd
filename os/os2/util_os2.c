@@ -67,7 +67,7 @@
 #include <sys/signal.h>
 #include <ctype.h>
 #include <string.h>
-#include <apr_strings.h>
+#include "apr_strings.h"
 
 
 AP_DECLARE(char *)ap_os_case_canonical_filename(apr_pool_t *pPool, const char *szFile)
