@@ -872,7 +872,7 @@ AP_CORE_DECLARE(int) ap_parse_htaccess(ap_conf_vector_t **result,
 AP_CORE_DECLARE(const char *) ap_init_virtual_host(apr_pool_t *p, 
                                                    const char *hostname,
                                                    server_rec *main_server, 
-                                                   server_rec **);
+                                                   server_rec **ps);
 
 /**
  * Process the config file for Apache
