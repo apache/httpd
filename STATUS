@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/09/23 16:58:17 $]
+Last modified at [$Date: 2004/09/23 17:08:25 $]
 
 Release:
 
@@ -91,11 +91,6 @@ PATCHES TO BACKPORT FROM 2.1
     *) Another ap_rgetline_core fix.
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/protocol.c?r1=1.152&r2=1.153
        +1: jorton, jerenkrantz, trawick
-
-    *) Fix the global mutex crash when the global mutex is never allocated
-       due to disabled/empty caches.
-         modules/ldap/util_ldap.c: 1.13
-       +1: minfrin, bnicholes, trawick
 
     *) Fix a segfault in the LDAP cache purge. PR 24801
          modules/ldap/util_ldap_cache_mgr.c: 1.9, 1.10

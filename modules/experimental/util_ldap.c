@@ -89,9 +89,11 @@ void *util_ldap_create_config(apr_pool_t *p, server_rec *s);
 #endif
 
 #define LDAP_CACHE_LOCK() \
-    apr_global_mutex_lock(st->util_ldap_cache_lock)
+    if (st->util_ldap_cache_lock) \
+      apr_global_mutex_lock(st->util_ldap_cache_lock)
 #define LDAP_CACHE_UNLOCK() \
-    apr_global_mutex_unlock(st->util_ldap_cache_lock)
+    if (st->util_ldap_cache_lock) \
+      apr_global_mutex_unlock(st->util_ldap_cache_lock)
 
 
 static void util_ldap_strdup (char **str, const char *newstr)

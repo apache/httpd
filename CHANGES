@@ -1,5 +1,8 @@
 Changes with Apache 2.0.52
 
+  *) Fix the global mutex crash when the global mutex is never allocated
+     due to disabled/empty caches. [Jess Holle <jessh ptc.com>]
+
   *) Fix a segfault in the LDAP cache when it is configured switched
      off. [Jess Holle <jessh ptc.com>]
 
