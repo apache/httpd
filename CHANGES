@@ -1,5 +1,9 @@
 Changes with Apache 2.0.50
 
+  *) Throw an error message if an attempt is made to use the LDAPTrustedCA
+     or LDAPTrustedCAType directives in a VirtualHost. PR 26390
+     [Brad Nicholes]
+
   *) Fix a potential segfault if the bind password in the LDAP cache
      is NULL. PR 28250 [Jari Ahonen <jah@progress.com>]
 
