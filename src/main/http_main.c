@@ -963,13 +963,25 @@ void restart() {
 }
 
 void set_signals() {
-	if(!one_process)
-	{
-	    signal(SIGSEGV,(void (*)())seg_fault);
+#ifndef NO_USE_SIGACTION
+    struct sigaction sa;
+#endif
+    if(!one_process) {
+	signal(SIGSEGV,(void (*)())seg_fault);
     	signal(SIGBUS,(void (*)())bus_error);
-	}
+    }
+#ifdef NO_USE_SIGACTION
     signal(SIGTERM,(void (*)())sig_term);
     signal(SIGHUP,(void (*)())restart);
+#else
+    memset(&sa,0,sizeof sa);
+    sa.sa_handler=(void (*)())sig_term;
+    if(sigaction(SIGTERM,&sa,NULL) < 0)
+	log_unixerr("sigaction(SIGTERM)", NULL, NULL, server_conf);
+    sa.sa_handler=(void (*)())restart;
+    if(sigaction(SIGHUP,&sa,NULL) < 0)
+	log_unixerr("sigaction(SIGHUP)", NULL, NULL, server_conf);
+#endif
 }
 
 /*****************************************************************
