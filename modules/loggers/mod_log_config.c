@@ -1155,7 +1155,6 @@ static void log_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
 {
     static APR_OPTIONAL_FN_TYPE(ap_register_log_handler) *log_pfn_register;
 
-    log_hash = apr_hash_make(p);
     log_pfn_register = APR_RETRIEVE_OPTIONAL_FN(ap_register_log_handler);
 
     if (log_pfn_register) {
@@ -1195,6 +1194,13 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_open_logs(init_config_log,NULL,NULL,APR_HOOK_MIDDLE);
     ap_hook_log_transaction(multi_log_transaction,NULL,NULL,APR_HOOK_MIDDLE);
 
+    /* Init log_hash before we register the optional function. It is 
+     * possible for the optional function, ap_register_log_handler,
+     * to be called before any other mod_log_config hooks are called.
+     * As a policy, we should init everything required by an optional function
+     * before calling APR_REGISTER_OPTIONAL_FN.
+     */ 
+    log_hash = apr_hash_make(p);
     APR_REGISTER_OPTIONAL_FN(ap_register_log_handler);
 }
 
