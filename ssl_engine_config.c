@@ -1228,7 +1228,8 @@ static const char *ssl_cmd_protocol_parse(cmd_parms *parms,
     return NULL;
 }
 
-const char *ssl_cmd_SSLProtocol(cmd_parms *cmd, void *ctx,
+const char *ssl_cmd_SSLProtocol(cmd_parms *cmd,
+                                void *dcfg,
                                 const char *opt)
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
@@ -1236,38 +1237,40 @@ const char *ssl_cmd_SSLProtocol(cmd_parms *cmd, void *ctx,
     return ssl_cmd_protocol_parse(cmd, opt, &sc->server->protocol);
 }
 
-#ifdef SSL_EXPERIMENTAL_PROXY
-
-const char *ssl_cmd_SSLProxyProtocol(cmd_parms *cmd, char *struct_ptr,
-                                     const char *opt)
+const char *ssl_cmd_SSLProxyProtocol(cmd_parms *cmd, 
+                                     void *dcfg,
+                                     const char *arg)
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
 
-    return ssl_cmd_protocol_parse(cmd, opt, &sc->nProxyProtocol);
+    return ssl_cmd_protocol_parse(cmd, arg, &sc->proxy->protocol);
 }
 
-const char *ssl_cmd_SSLProxyCipherSuite(cmd_parms *cmd, char *struct_ptr,
-                                        char *arg)
+const char *ssl_cmd_SSLProxyCipherSuite(cmd_parms *cmd,
+                                        void *dcfg,
+                                        const char *arg)
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
 
-    sc->szProxyCipherSuite = arg;
+    sc->proxy->auth.cipher_suite = arg;
 
     return NULL;
 }
 
-const char *ssl_cmd_SSLProxyVerify(cmd_parms *cmd, char *struct_ptr,
+const char *ssl_cmd_SSLProxyVerify(cmd_parms *cmd,
+                                   void *dcfg,
                                    int flag)
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
 
-    sc->bProxyVerify = flag ? TRUE : FALSE;
+    sc->proxy->auth.verify_mode = flag ? TRUE : FALSE;
 
     return NULL;
 }
 
-const char *ssl_cmd_SSLProxyVerifyDepth(cmd_parms *cmd, char *struct_ptr,
-                                        char *arg)
+const char *ssl_cmd_SSLProxyVerifyDepth(cmd_parms *cmd,
+                                        void *dcfg,
+                                        const char *arg)
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
     int depth;
@@ -1277,14 +1280,14 @@ const char *ssl_cmd_SSLProxyVerifyDepth(cmd_parms *cmd, char *struct_ptr,
         return err;
     }
 
-    sc->nProxyVerifyDepth = depth;
+    sc->proxy->auth.verify_depth = depth;
 
     return NULL;
 }
 
 const char *ssl_cmd_SSLProxyCACertificateFile(cmd_parms *cmd,
-                                              char *struct_ptr,
-                                              char *arg)
+                                              void *dcfg,
+                                              const char *arg)
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
     const char *err;
@@ -1293,14 +1296,14 @@ const char *ssl_cmd_SSLProxyCACertificateFile(cmd_parms *cmd,
         return err;
     }
 
-    sc->szProxyCACertificateFile = arg;
+    sc->proxy->auth.ca_cert_file = arg;
 
     return NULL;
 }
 
 const char *ssl_cmd_SSLProxyCACertificatePath(cmd_parms *cmd,
-                                              char *struct_ptr,
-                                              char *arg)
+                                              void *dcfg,
+                                              const char *arg)
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
     const char *err;
@@ -1309,14 +1312,14 @@ const char *ssl_cmd_SSLProxyCACertificatePath(cmd_parms *cmd,
         return err;
     }
 
-    sc->szProxyCACertificatePath = arg;
+    sc->proxy->auth.ca_cert_path = arg;
 
     return NULL;
 }
 
 const char *ssl_cmd_SSLProxyMachineCertificateFile(cmd_parms *cmd,
-                                                   char *struct_ptr,
-                                                   char *arg)
+                                                   void *dcfg,
+                                                   const char *arg)
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
     const char *err;
@@ -1325,14 +1328,14 @@ const char *ssl_cmd_SSLProxyMachineCertificateFile(cmd_parms *cmd,
         return err;
     }
 
-    sc->szProxyClientCertificateFile = arg;
+    sc->proxy->pkp->cert_file = arg;
 
     return NULL;
 }
 
 const char *ssl_cmd_SSLProxyMachineCertificatePath(cmd_parms *cmd,
-                                                   char *struct_ptr,
-                                                   char *arg)
+                                                   void *dcfg,
+                                                   const char *arg)
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
     const char *err;
@@ -1341,10 +1344,9 @@ const char *ssl_cmd_SSLProxyMachineCertificatePath(cmd_parms *cmd,
         return err;
     }
 
-    sc->szProxyClientCertificatePath = arg;
+    sc->proxy->pkp->cert_file = arg;
 
     return NULL;
 }
 
-#endif /* SSL_EXPERIMENTAL_PROXY */
 
