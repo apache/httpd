@@ -530,10 +530,11 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
         if (APR_BUCKET_IS_FLUSH(e)) {
             apr_bucket *bkt;
             apr_status_t rv;
-
-            zRC = deflate(&(ctx->stream), Z_SYNC_FLUSH);
-            if (zRC != Z_OK) {
-                return APR_EGENERAL;
+            if (ctx->stream.avail_in > 0) {
+                zRC = deflate(&(ctx->stream), Z_SYNC_FLUSH);
+                if (zRC != Z_OK) {
+                    return APR_EGENERAL;
+                }
             }
 
             ctx->stream.next_out = ctx->buffer;
