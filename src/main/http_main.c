@@ -88,6 +88,7 @@
 #include "http_core.h"          /* for get_remote_host */
 #include "scoreboard.h"
 #include <setjmp.h>
+#include <assert.h>
 #ifdef HAVE_SHMGET
 #include <sys/types.h>
 #include <sys/ipc.h>
@@ -165,7 +166,7 @@ static int lock_fd=-1;
  */
 void
 accept_mutex_init(pool *p)
-{
+    {
     char lock_fname[30];
 
     strcpy(lock_fname, "/usr/tmp/htlock.XXXXXX");
@@ -481,14 +482,14 @@ void reset_timeout (request_rec *r) {
  */
 
 #if defined(HAVE_MMAP)
-static short_score *scoreboard_image=NULL;
+static scoreboard *scoreboard_image=NULL;
 
 static void setup_shared_mem(void)
 {
     caddr_t m;
 #if defined(MAP_ANON) || defined(MAP_FILE)
 /* BSD style */
-    m = mmap((caddr_t)0, HARD_SERVER_LIMIT*sizeof(short_score),
+    m = mmap((caddr_t)0, SCOREBOARD_SIZE,
 	     PROT_READ | PROT_WRITE, MAP_ANON | MAP_SHARED, -1, 0);
     if (m == (caddr_t)-1)
     {
@@ -507,7 +508,7 @@ static void setup_shared_mem(void)
 	fprintf(stderr, "httpd: Could not open /dev/zero\n");
 	exit(1);
     }
-    m = mmap((caddr_t)0, HARD_SERVER_LIMIT*sizeof(short_score),
+    m = mmap((caddr_t)0, SCOREBOARD_SIZE,
 	     PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
     if (m == (caddr_t)-1)
     {
@@ -517,24 +518,24 @@ static void setup_shared_mem(void)
     }
     close(fd);
 #endif
-    scoreboard_image = (short_score *)m;
+    scoreboard_image = (scoreboard *)m;
+    scoreboard_image->global.exit_generation=0;
 }
 
 #elif defined(HAVE_SHMGET)
-static short_score *scoreboard_image=NULL;
+static scoreboard *scoreboard_image=NULL;
 static key_t shmkey = IPC_PRIVATE;
 static int shmid = -1;
 
 static void setup_shared_mem(void)
 {
-    int score_size = HARD_SERVER_LIMIT*sizeof(short_score);
     char errstr[MAX_STRING_LEN];
     struct shmid_ds shmbuf;
 #ifdef MOVEBREAK
     char *obrk;
 #endif
 
-    if ((shmid = shmget(shmkey, score_size, IPC_CREAT|SHM_R|SHM_W)) == -1)
+    if ((shmid = shmget(shmkey, SCOREBOARD_SIZE, IPC_CREAT|SHM_R|SHM_W)) == -1)
     {
 	perror("shmget");
 	fprintf(stderr, "httpd: Could not call shmget\n");
@@ -561,8 +562,8 @@ static void setup_shared_mem(void)
     }
 #endif
 
-#define BADSHMAT	((short_score*)(-1))
-    if ((scoreboard_image = (short_score*)shmat(shmid, 0, 0)) == BADSHMAT)
+#define BADSHMAT	((scoreboard *)(-1))
+    if ((scoreboard_image = (scoreboard *)shmat(shmid, 0, 0)) == BADSHMAT)
     {
 	perror("shmat");
 	fprintf(stderr, "httpd: Could not call shmat\n");
@@ -608,10 +609,12 @@ static void setup_shared_mem(void)
 	fprintf(stderr, "httpd: Could not move break back\n");
     }
 #endif
+    scoreboard_image->global.exit_generation=0;
 }
 
 #else
-static short_score scoreboard_image[HARD_SERVER_LIMIT];
+static scoreboard _scoreboard_image;
+static scoreboard *scoreboard_image=&_scoreboard_image;
 static int have_scoreboard_fname = 0;
 static int scoreboard_fd;
 
@@ -649,12 +652,17 @@ static int force_read (int fd, char *buffer, int bufsz)
 /* Called by parent process */
 void reinit_scoreboard (pool *p)
 {
+    int exit_gen=0;
+    if(scoreboard_image)
+	exit_gen=scoreboard_image->global.exit_generation;
+	
 #if defined(HAVE_SHMGET) || defined(HAVE_MMAP)
     if (scoreboard_image == NULL)
     {
 	setup_shared_mem();
     }
-    memset(scoreboard_image, 0, HARD_SERVER_LIMIT*sizeof(short_score));
+    memset(scoreboard_image, 0, SCOREBOARD_SIZE);
+    scoreboard_image->global.exit_generation=exit_gen;
 #else
     scoreboard_fname = server_root_relative (p, scoreboard_fname);
 
@@ -673,9 +681,10 @@ void reinit_scoreboard (pool *p)
 	exit (1);
     }
 
-    memset ((char*)scoreboard_image, 0, sizeof(scoreboard_image));
+    memset ((char*)scoreboard_image, 0, sizeof(*scoreboard_image));
+    scoreboard_image->global.exit_generation=exit_gen;
     force_write (scoreboard_fd, (char*)scoreboard_image,
-		 sizeof(scoreboard_image));
+		 sizeof(*scoreboard_image));
 #endif
 }
 
@@ -723,7 +732,7 @@ void sync_scoreboard_image ()
 #if !defined(HAVE_MMAP) && !defined(HAVE_SHMGET)
     lseek (scoreboard_fd, 0L, 0);
     force_read (scoreboard_fd, (char*)scoreboard_image,
-		sizeof(scoreboard_image));
+		sizeof(*scoreboard_image));
 #endif
 }
 
@@ -735,7 +744,7 @@ int update_child_status (int child_num, int status, request_rec *r)
     if (child_num < 0)
 	return -1;
     
-    memcpy(&new_score_rec,&scoreboard_image[child_num],sizeof new_score_rec);
+    memcpy(&new_score_rec,&scoreboard_image->servers[child_num],sizeof new_score_rec);
     new_score_rec.pid = getpid();
     old_status = new_score_rec.status;
     new_score_rec.status = status;
@@ -767,7 +776,7 @@ int update_child_status (int child_num, int status, request_rec *r)
 #endif
 
 #if defined(HAVE_MMAP) || defined(HAVE_SHMGET)
-    memcpy(&scoreboard_image[child_num], &new_score_rec, sizeof(short_score));
+    memcpy(&scoreboard_image->servers[child_num], &new_score_rec, sizeof new_score_rec);
 #else
     lseek (scoreboard_fd, (long)child_num * sizeof(short_score), 0);
     force_write (scoreboard_fd, (char*)&new_score_rec, sizeof(short_score));
@@ -776,12 +785,22 @@ int update_child_status (int child_num, int status, request_rec *r)
     return old_status;
 }
 
+void update_scoreboard_global()
+    {
+#if !defined(HAVE_MMAP) && !defined(HAVE_SHMGET)
+    lseek(scoreboard_fd,
+	  (char *)&scoreboard_image->global-(char *)scoreboard_image,0);
+    force_write(scoreboard_fd,(char *)&scoreboard_image->global,
+		sizeof scoreboard_image->global);
+#endif
+    }
+
 int get_child_status (int child_num)
 {
     if (child_num<0 || child_num>=HARD_SERVER_LIMIT)
     	return -1;
     else
-	return scoreboard_image[child_num].status;
+	return scoreboard_image->servers[child_num].status;
 }
 
 int count_busy_servers ()
@@ -790,18 +809,29 @@ int count_busy_servers ()
     int res = 0;
 
     for (i = 0; i < HARD_SERVER_LIMIT; ++i)
-      if (scoreboard_image[i].status == SERVER_BUSY_READ ||
-              scoreboard_image[i].status == SERVER_BUSY_WRITE ||
-              scoreboard_image[i].status == SERVER_BUSY_KEEPALIVE ||
-              scoreboard_image[i].status == SERVER_BUSY_LOG ||
-              scoreboard_image[i].status == SERVER_BUSY_DNS)
+      if (scoreboard_image->servers[i].status == SERVER_BUSY_READ ||
+              scoreboard_image->servers[i].status == SERVER_BUSY_WRITE ||
+              scoreboard_image->servers[i].status == SERVER_BUSY_KEEPALIVE ||
+              scoreboard_image->servers[i].status == SERVER_BUSY_LOG ||
+              scoreboard_image->servers[i].status == SERVER_BUSY_DNS)
           ++res;
     return res;
 }
 
+int count_live_servers()
+    {
+    int i;
+    int res = 0;
+
+    for (i = 0; i < HARD_SERVER_LIMIT; ++i)
+      if (scoreboard_image->servers[i].status != SERVER_DEAD)
+	  ++res;
+    return res;
+    }
+
 short_score get_scoreboard_info(int i)
 {
-    return (scoreboard_image[i]);
+    return (scoreboard_image->servers[i]);
 }
 
 #if defined(STATUS)
@@ -845,8 +875,8 @@ int count_idle_servers ()
     int res = 0;
 
     for (i = 0; i < HARD_SERVER_LIMIT; ++i)
-	if (scoreboard_image[i].status == SERVER_READY
-	  || scoreboard_image[i].status == SERVER_STARTING)
+	if (scoreboard_image->servers[i].status == SERVER_READY
+	  || scoreboard_image->servers[i].status == SERVER_STARTING)
 	    ++res;
 
     return res;
@@ -857,7 +887,7 @@ int find_free_child_num ()
     int i;
 
     for (i = 0; i < HARD_SERVER_LIMIT; ++i)
-	if (scoreboard_image[i].status == SERVER_DEAD)
+	if (scoreboard_image->servers[i].status == SERVER_DEAD)
 	    return i;
 
     return -1;
@@ -868,7 +898,7 @@ int find_child_by_pid (int pid)
     int i;
 
     for (i = 0; i < HARD_SERVER_LIMIT; ++i)
-	if (scoreboard_image[i].pid == pid)
+	if (scoreboard_image->servers[i].pid == pid)
 	    return i;
 
     return -1;
@@ -881,10 +911,10 @@ void reclaim_child_processes ()
 
     sync_scoreboard_image();
     for (i = 0; i < HARD_SERVER_LIMIT; ++i) {
-	int pid = scoreboard_image[i].pid;
+	int pid = scoreboard_image->servers[i].pid;
 
 	if (pid != my_pid && pid != 0)
-	    waitpid (scoreboard_image[i].pid, &status, 0);
+	    waitpid (scoreboard_image->servers[i].pid, &status, 0);
     }
 }
 
@@ -1053,15 +1083,31 @@ static void set_group_privs()
   }
 }
 
+static int is_graceful;
+static int generation;
+
 void restart() {
     signal (SIGALRM, SIG_IGN);
     alarm (0);
-#if defined(NEXT) || defined(USE_LONGJMP)
+    is_graceful=0;
+#ifdef NEXT
     longjmp(restart_buffer,1);
 #else
     siglongjmp(restart_buffer,1);
 #endif
 }
+
+void graceful_restart()
+    {
+    scoreboard_image->global.exit_generation=generation;
+    is_graceful=1;
+    update_scoreboard_global();
+#if defined(NEXT) || defined(USE_LONGJMP)
+    longjmp(restart_buffer,1);
+#else
+    siglongjmp(restart_buffer,1);
+#endif
+    }
 
 void set_signals() {
 #ifndef NO_USE_SIGACTION
@@ -1075,6 +1121,7 @@ void set_signals() {
 #ifdef NO_USE_SIGACTION
     signal(SIGTERM,(void (*)())sig_term);
     signal(SIGHUP,(void (*)())restart);
+    signal(SIGINT,(void (*)())graceful_restart);
 #else
     memset(&sa,0,sizeof sa);
     sa.sa_handler=(void (*)())sig_term;
@@ -1083,6 +1130,9 @@ void set_signals() {
     sa.sa_handler=(void (*)())restart;
     if(sigaction(SIGHUP,&sa,NULL) < 0)
 	log_unixerr("sigaction(SIGHUP)", NULL, NULL, server_conf);
+    sa.sa_handler=(void (*)())graceful_restart;
+    if(sigaction(SIGINT,&sa,NULL) < 0)
+	log_unixerr("sigaction(SIGINT)", NULL, NULL, server_conf);
 #endif
 }
 
@@ -1235,6 +1285,10 @@ void child_main(int child_num_arg)
 	clear_pool (ptrans);
 	
 	sync_scoreboard_image();
+
+	/*fprintf(stderr,"%d check %d %d\n",getpid(),scoreboard_image->global.exit_generation,generation);*/
+	if(scoreboard_image->global.exit_generation >= generation)
+	    exit(0);
 	
 	if ((count_idle_servers() >= daemons_max_free)
 	    || (max_requests_per_child > 0
@@ -1261,6 +1315,11 @@ void child_main(int child_num_arg)
 #endif
 		if (csd == -1 && errno != EINTR)
 		    log_unixerr("select",NULL,"select error", server_conf);
+
+		/*fprintf(stderr,"%d check(2a) %d %d\n",getpid(),scoreboard_image->global.exit_generation,generation);*/
+		if(scoreboard_image->global.exit_generation >= generation)
+		    exit(0);
+
 		if (csd <= 0) continue;
 		for (sd=listenmaxfd; sd >= 0; sd--)
 		    if (FD_ISSET(sd, &fds)) break;
@@ -1273,9 +1332,29 @@ void child_main(int child_num_arg)
 		log_unixerr("accept", "(client socket)", NULL, server_conf);
 	    }
 	} else
+	    {
+	    fd_set fds;
+
+	    memset(&fds,0,sizeof fds);
+	    FD_SET(sd,&fds);
+	    
+	    do
+		csd = select(sd+1, &fds, NULL, NULL, NULL);
+	    while(csd < 0 && errno == EINTR);
+
+	    if(csd < 0)
+		{
+		log_unixerr("select","(listen)",NULL,server_conf);
+		exit(0);
+		}
+	    /*fprintf(stderr,"%d check(2a) %d %d\n",getpid(),scoreboard_image->global.exit_generation,generation);*/
+	    if(scoreboard_image->global.exit_generation >= generation)
+		exit(0);
+
 	    while ((csd=accept(sd, &sa_client, &clen)) == -1) 
 		if (errno != EINTR) 
 		    log_unixerr("accept",NULL,"socket error: accept failed", server_conf);
+	    }
 
 	accept_mutex_off(); /* unlock after "accept" */
 
@@ -1318,6 +1397,11 @@ void child_main(int child_num_arg)
 #if defined(STATUS)
 	    if (r) increment_counts(child_num,r,0);
 #endif
+	  sync_scoreboard_image();
+	  if(scoreboard_image->global.exit_generation >= generation)
+	      exit(0);
+	  /*fprintf(stderr,"%d check(3) %d %d\n",getpid(),scoreboard_image->global.exit_generation,generation);*/
+
 	}
 #if 0	
 	if (bytes_in_pool (ptrans) > 80000)
@@ -1373,7 +1457,7 @@ make_sock(pool *pconf, const struct sockaddr_in *server)
         exit(1);
     }
 
-    note_cleanups_for_fd (pconf, s); /* arrange to close on exec or restart */
+    /*    note_cleanups_for_fd (pconf, s); /* arrange to close on exec or restart */
     
     if((setsockopt(s, SOL_SOCKET,SO_REUSEADDR,(char *)&one,sizeof(one)))
        == -1) {
@@ -1423,6 +1507,49 @@ make_sock(pool *pconf, const struct sockaddr_in *server)
     return s;
 }
 
+static listen_rec *old_listeners;
+
+static void copy_listeners()
+    {
+    listen_rec *lr;
+
+    assert(old_listeners == NULL);
+    for(lr=listeners ; lr ; lr=lr->next)
+	{
+	listen_rec *nr=malloc(sizeof *nr);
+	*nr=*lr;
+	nr->next=old_listeners;
+	assert(!nr->used);
+	old_listeners=nr;
+	}
+    }
+
+static int find_listener(listen_rec *lr)
+    {
+    listen_rec *or;
+
+    for(or=old_listeners ; or ; or=or->next)
+	if(!memcmp(&or->local_addr,&lr->local_addr,sizeof or->local_addr))
+	    {
+	    or->used=1;
+	    return or->fd;
+	    }
+    return -1;
+    }
+
+static void close_unused_listeners()
+    {
+    listen_rec *or,*next;
+
+    for(or=old_listeners ; or ; or=next)
+	{
+	next=or->next;
+	if(!or->used)
+	    close(or->fd);
+	free(or);
+	}
+    old_listeners=NULL;
+    }
 
 /*****************************************************************
  * Executive routines.
@@ -1433,6 +1560,7 @@ static int num_children = 0;
 void standalone_main(int argc, char **argv)
 {
     struct sockaddr_in sa_server;
+    int saved_sd;
 
     standalone = 1;
     sd = listenmaxfd = -1;
@@ -1445,9 +1573,11 @@ void standalone_main(int argc, char **argv)
     sigsetjmp(restart_buffer,1);
 #endif
 
+    ++generation;
+
     signal (SIGHUP, SIG_IGN);	/* Until we're done (re)reading config */
     
-    if(!one_process)
+    if(!one_process && !is_graceful)
     {
 #ifndef NO_KILLPG
       if (killpg(pgrp,SIGHUP) < 0)    /* Kill 'em off */
@@ -1457,11 +1587,15 @@ void standalone_main(int argc, char **argv)
         log_unixerr ("killpg SIGHUP", NULL, NULL, server_conf);
     }
     
-    if (sd != -1 || listenmaxfd != -1) {
+    if(is_graceful)
+	log_error("SIGINT received.  Doing graceful restart",server_conf);
+    else if (sd != -1 || listenmaxfd != -1) {
 	reclaim_child_processes(); /* Not when just starting up */
 	log_error ("SIGHUP received.  Attempting to restart", server_conf);
     }
     
+    copy_listeners();
+    saved_sd=sd;
     restart_time = time(NULL);
     clear_pool (pconf);
     ptrans = make_sub_pool (pconf);
@@ -1476,12 +1610,17 @@ void standalone_main(int argc, char **argv)
 
     if (listeners == NULL)
     {
-	memset((char *) &sa_server, 0, sizeof(sa_server));
-	sa_server.sin_family=AF_INET;
-	sa_server.sin_addr=bind_address;
-	sa_server.sin_port=htons(server_conf->port);
+        if(!is_graceful)
+	    {
+	    memset((char *) &sa_server, 0, sizeof(sa_server));
+	    sa_server.sin_family=AF_INET;
+	    sa_server.sin_addr=bind_address;
+	    sa_server.sin_port=htons(server_conf->port);
 
-	sd = make_sock(pconf, &sa_server);
+	    sd = make_sock(pconf, &sa_server);
+	    }
+	else
+	    sd=saved_sd;
     } else
     {
 	listen_rec *lr;
@@ -1491,10 +1630,14 @@ void standalone_main(int argc, char **argv)
 	FD_ZERO(&listenfds);
 	for (lr=listeners; lr != NULL; lr=lr->next)
 	{
-	    fd = make_sock(pconf, &lr->local_addr);
+	    fd=find_listener(lr);
+	    if(fd < 0)
+		fd = make_sock(pconf, &lr->local_addr);
 	    FD_SET(fd, &listenfds);
 	    if (fd > listenmaxfd) listenmaxfd = fd;
+	    lr->fd=fd;
 	}
+	close_unused_listeners();
 	sd = -1;
     }
 
@@ -1532,7 +1675,17 @@ void standalone_main(int argc, char **argv)
 	    (void)update_child_status(child_slot,SERVER_STARTING,
 	     (request_rec*)NULL);
 	    make_child(server_conf, child_slot);
+
 	}
+
+	/*
+	if(scoreboard_image->global.please_exit && !count_live_servers())
+#ifdef NEXT
+	    longjmp(restart_buffer,1);
+#else
+	    siglongjmp(restart_buffer,1);
+#endif
+	*/
     }
 
 } /* standalone_main */

@@ -75,6 +75,9 @@
 #include "http_log.h"		/* for errors in parse_htaccess */
 #include "http_request.h"	/* for default_handler (see invoke_handler) */
 #include "http_conf_globals.h"	/* Sigh... */
+#include "explain.h"
+
+DEF_Explain
 
 /****************************************************************
  *
@@ -206,6 +209,40 @@ void *create_per_dir_config (pool *p) {
     return create_empty_config (p);
 }
 
+#ifdef EXPLAIN
+
+struct
+    {
+    int offset;
+    char *method;
+    } aMethods[]=
+    {
+#define m(meth)	{ XtOffsetOf(module,meth),#meth }
+    m(translate_handler),
+    m(check_user_id),
+    m(auth_checker),
+    m(type_checker),
+    m(fixer_upper),
+    m(logger),
+    { -1,"?" },
+#undef m
+    };
+
+char *ShowMethod(module *modp,int offset)
+    {
+    int n;
+    static char buf[200];
+
+    for(n=0 ; aMethods[n].offset >= 0 ; ++n)
+	if(aMethods[n].offset == offset)
+	    break;
+    sprintf(buf,"%s:%s",modp->name,aMethods[n].method);
+    return buf;
+    }
+#else
+#define ShowMethod(modp,offset)
+#endif
+
 /****************************************************************
  *
  * Dispatch through the modules to find handlers for various phases
@@ -221,8 +258,12 @@ run_method (request_rec *r, int offset, int run_all)
        handler mod_handler = *(handler *)(offset + (char *)(modp));
 
        if (mod_handler) {
-	   int result = (*mod_handler)(r);
+           int result;
 
+           Explain1("Run %s",ShowMethod(modp,offset));
+	   result = (*mod_handler)(r);
+
+	   Explain2("%s returned %d",ShowMethod(modp,offset),result);
 	   if (result != DECLINED && (!run_all || result != OK))
 	       return result;
        }

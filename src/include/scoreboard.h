@@ -91,5 +91,20 @@ typedef struct {
 #endif
 } short_score;
 
+typedef struct
+    {
+    int exit_generation;	/* Set by the main process if a graceful
+				   restart is required */
+    } global_score;
+
+typedef struct
+    {
+    short_score servers[HARD_SERVER_LIMIT];
+    global_score global;
+    } scoreboard;
+
+#define SCOREBOARD_SIZE		sizeof(scoreboard)
+
 extern void sync_scoreboard_image(void);
 short_score get_scoreboard_info(int x);
+

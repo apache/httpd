@@ -146,6 +146,9 @@ typedef struct module_struct {
     int module_index;		/* Index to this modules structures in
 				 * config vectors.
 				 */
+
+    const char *name;
+
     struct module_struct *next;
 
 #ifdef ULTRIX_BRAIN_DEATH
@@ -198,7 +201,7 @@ typedef struct module_struct {
  */
 
 #define MODULE_MAGIC_NUMBER 19960526
-#define STANDARD_MODULE_STUFF MODULE_MAGIC_NUMBER, 0, NULL
+#define STANDARD_MODULE_STUFF MODULE_MAGIC_NUMBER, 0, __FILE__, NULL
 
 /* Generic accessors for other modules to get at their own module-specific
  * data

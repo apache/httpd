@@ -1,3 +1,8 @@
+Changes with Apache 1.2b1:
+
+  *) Graceful restart code added. This allows the server to restart without
+     losing current connections on receipt of signal 2 (SIGINT). [Ben Laurie]
+
 Changes with Apache 1.1.1:
 
   *) Fixed bug where Cookie module would make two entries in the

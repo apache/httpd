@@ -498,6 +498,8 @@ struct server_rec {
 struct listen_rec {
     listen_rec *next;
     struct sockaddr_in local_addr; /* local IP address and port */
+    int fd;
+    int used;	/* Only used during restart */
 /* more stuff here, like which protocol is bound to the port */
 };
 
