@@ -88,7 +88,9 @@
 #endif /* DOCUMENT_LOCATION */
 
 /* Max. number of dynamically loaded modules */
+#ifndef DYNAMIC_MODULE_LIMIT
 #define DYNAMIC_MODULE_LIMIT 64
+#endif
 
 /* Default administrator's address */
 #define DEFAULT_ADMIN "[no address given]"
