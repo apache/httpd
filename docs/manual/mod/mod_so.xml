@@ -1,16 +1,17 @@
 <?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.xsl"?>
 <modulesynopsis>
 
 <name>mod_so</name>
-<status>Base (Windows>; Optional (Unix)</status>
-<identifier>so_module</identifier>
-<sourcefile>mod_so.c</sourcefile>
-<compatibility>Available in Apache 1.3 and later.</compatibility>
-
 <description>
-This module provides for loading of executable code and
-modules into the server at start-up or restart time.</description>
+ This module provides for loading of executable code and
+ modules into the server at start-up or restart time.
+</description>
+<status>Base (Windows>; Optional (Unix)</status>
+<sourcefile>mod_so.c</sourcefile>
+<identifier>so_module</identifier>
+<compatibility>Available in Apache 1.3 and later.</compatibility>
 
 <summary>
 
@@ -20,8 +21,8 @@ modules into the server at start-up or restart time.</description>
     rather than requiring a recompilation.</p>
 
     <p>On Unix, the loaded code typically comes from shared object
-    files (usually with <samp>.so</samp> extension), on Windows
-    this may either the <samp>.so</samp> or <samp>.dll</samp>
+    files (usually with <code>.so</code> extension), on Windows
+    this may either the <code>.so</code> or <code>.dll</code>
     extension. This module is only available in Apache 1.3 and
     up.</p>
 
@@ -30,21 +31,23 @@ modules into the server at start-up or restart time.</description>
     Windows, mod_dll was used in beta release 1.3b1 through 1.3b5.
     mod_so combines these two modules into a single module for all
     operating systems.</p>
-
-    <p><strong>Warning: Apache 1.3 modules cannot be directly used
+    <note type="warning"><title>Warning</title>
+    <p>Apache 1.3 modules cannot be directly used
     with Apache 2.0 - the module must be modified to dynamically
-    load or compile into Apache 2.0</strong>.</p>
+    load or compile into Apache 2.0.</p>
+    </note>
 </summary>
 
-<section><title id="creating">Creating Loadable Modules
-for Windows</title>
+<section><title>Creating Loadable Modules for Windows</title>
 
-    <p><note>Note: the module name format changed for Windows
+    <note><title>Note</title>
+    <p>The module name format changed for Windows
     with Apache 1.3.15 and 2.0 - the modules are now named as
-    mod_foo.so</note>. While mod_so still loads modules with
+    mod_foo.so</p>
+    <p>While mod_so still loads modules with
     ApacheModuleFoo.dll names, the new naming convention is
     preferred; if you are converting your loadable module for 2.0,
-    please fix the name to this 2.0 convention.</p>
+    please fix the name to this 2.0 convention.</p></note>
 
     <p>The Apache module API is unchanged between the Unix and
     Windows versions. Many modules will run on Windows with no or
@@ -100,7 +103,7 @@ for Windows</title>
     .dsp.</p>
 
     <p>This should create a DLL version of your module. Now simply
-    place it in the <samp>modules</samp> directory of your server
+    place it in the <code>modules</code> directory of your server
     root, and use the <directive>LoadModule</directive>
     directive to load it.</p>
 
@@ -108,12 +111,12 @@ for Windows</title>
 
 <directivesynopsis>
 <name>LoadFile</name>
+<description>Link in the named object file or library</description>
 <syntax>LoadFile <em>filename</em> [<em>filename</em>] ...</syntax>
 <default>none</default>
 <contextlist>
 <context>server config</context>
 </contextlist>
-<description>Link in the named object file or library</description>
 
 <usage>
 
@@ -127,13 +130,13 @@ for Windows</title>
 
 <directivesynopsis>
 <name>LoadModule</name>
+<description>Links in the object file or library, and adds to the list
+of active modules</description>
 <syntax>LoadModule <em>module filename</em></syntax>
 <default>none</default>
 <contextlist>
 <context>server config</context>
 </contextlist>
-<description>Links in the object file or library, and adds to the list
-of active modules</description>
 
 <usage>
     <p>The LoadModule directive links in the object file or library
