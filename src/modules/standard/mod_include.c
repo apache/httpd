@@ -2030,14 +2030,15 @@ static int handle_printenv(FILE *in, request_rec *r, const char *error)
 {
     char tag[MAX_STRING_LEN];
     char *tag_val;
-    table_entry *elts = (table_entry *) r->subprocess_env->elts;
+    array_header *arr = table_elts(r->subprocess_env);
+    table_entry *elts = (table_entry *) arr->elts;
     int i;
 
     if (!(tag_val = get_tag(r->pool, in, tag, sizeof(tag), 1))) {
         return 1;
     }
     else if (!strcmp(tag, "done")) {
-        for (i = 0; i < r->subprocess_env->nelts; ++i) {
+        for (i = 0; i < arr->nelts; ++i) {
             rvputs(r, elts[i].key, "=", elts[i].val, "\n", NULL);
         }
         return 0;

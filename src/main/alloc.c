@@ -584,10 +584,8 @@ char *pstrcat(pool *a,...)
  * The 'array' functions...
  */
 
-API_EXPORT(array_header *) make_array(pool *p, int nelts, int elt_size)
+static void make_array_core(array_header *res, pool *p, int nelts, int elt_size)
 {
-    array_header *res = (array_header *) palloc(p, sizeof(array_header));
-
     if (nelts < 1)
 	nelts = 1;		/* Assure sanity if someone asks for
 				 * array of zero elts.
@@ -599,7 +597,13 @@ API_EXPORT(array_header *) make_array(pool *p, int nelts, int elt_size)
     res->elt_size = elt_size;
     res->nelts = 0;		/* No active elements yet... */
     res->nalloc = nelts;	/* ...but this many allocated */
+}
 
+API_EXPORT(array_header *) make_array(pool *p, int nelts, int elt_size)
+{
+    array_header *res = (array_header *) palloc(p, sizeof(array_header));
+
+    make_array_core(res, p, nelts, elt_size);
     return res;
 }
 
@@ -658,17 +662,21 @@ API_EXPORT(array_header *) copy_array(pool *p, const array_header *arr)
  * overhead of the full copy only where it is really needed.
  */
 
+static ap_inline void copy_array_hdr_core(array_header *res,
+    const array_header *arr)
+{
+    res->elts = arr->elts;
+    res->elt_size = arr->elt_size;
+    res->nelts = arr->nelts;
+    res->nalloc = arr->nelts;	/* Force overflow on push */
+}
+
 API_EXPORT(array_header *) copy_array_hdr(pool *p, const array_header *arr)
 {
     array_header *res = (array_header *) palloc(p, sizeof(array_header));
 
-    res->elts = arr->elts;
-
     res->pool = p;
-    res->elt_size = arr->elt_size;
-    res->nelts = arr->nelts;
-    res->nalloc = arr->nelts;	/* Force overflow on push */
-
+    copy_array_hdr_core(res, arr);
     return res;
 }
 
@@ -690,35 +698,50 @@ API_EXPORT(array_header *) append_arrays(pool *p,
  * The "table" functions.
  */
 
+/* XXX: if you tweak this you should look at is_empty_table() and table_elts()
+ * in alloc.h */
+struct table {
+    /* This has to be first to promote backwards compatibility with
+     * older modules which cast a table * to an array_header *...
+     * they should use the table_elts() function for most of the
+     * cases they do this for.
+     */
+    array_header a;
+};
+
+
 API_EXPORT(table *) make_table(pool *p, int nelts)
 {
-    return make_array(p, nelts, sizeof(table_entry));
+    table *t = palloc(p, sizeof(table));
+
+    make_array_core(&t->a, p, nelts, sizeof(table_entry));
+    return t;
 }
 
 API_EXPORT(table *) copy_table(pool *p, const table *t)
 {
-    return copy_array(p, t);
+    table *new = palloc(p, sizeof(table));
+
+    make_array_core(&new->a, p, t->a.nalloc, sizeof(table_entry));
+    memcpy(new->a.elts, t->a.elts, t->a.nelts * sizeof(table_entry));
+    new->a.nelts = t->a.nelts;
+    return new;
 }
 
 API_EXPORT(void) clear_table(table *t)
 {
-    t->nelts = 0;
-}
-
-API_EXPORT(array_header *) table_elts(table *t)
-{
-    return t;
+    t->a.nelts = 0;
 }
 
 API_EXPORT(char *) table_get(const table *t, const char *key)
 {
-    table_entry *elts = (table_entry *) t->elts;
+    table_entry *elts = (table_entry *) t->a.elts;
     int i;
 
     if (key == NULL)
 	return NULL;
 
-    for (i = 0; i < t->nelts; ++i)
+    for (i = 0; i < t->a.nelts; ++i)
 	if (!strcasecmp(elts[i].key, key))
 	    return elts[i].val;
 
@@ -728,22 +751,22 @@ API_EXPORT(char *) table_get(const table *t, const char *key)
 API_EXPORT(void) table_set(table *t, const char *key, const char *val)
 {
     register int i, j, k;
-    table_entry *elts = (table_entry *) t->elts;
+    table_entry *elts = (table_entry *) t->a.elts;
     int done = 0;
 
-    for (i = 0; i < t->nelts; ) {
+    for (i = 0; i < t->a.nelts; ) {
 	if (!strcasecmp(elts[i].key, key)) {
 	    if (!done) {
-		elts[i].val = pstrdup(t->pool, val);
+		elts[i].val = pstrdup(t->a.pool, val);
 		done = 1;
 		++i;
 	    }
 	    else {		/* delete an extraneous element */
-		for (j = i, k = i + 1; k < t->nelts; ++j, ++k) {
+		for (j = i, k = i + 1; k < t->a.nelts; ++j, ++k) {
 		    elts[j].key = elts[k].key;
 		    elts[j].val = elts[k].val;
 		}
-		--t->nelts;
+		--t->a.nelts;
 	    }
 	}
 	else {
@@ -752,18 +775,18 @@ API_EXPORT(void) table_set(table *t, const char *key, const char *val)
     }
 
     if (!done) {
-	elts = (table_entry *) push_array(t);
-	elts->key = pstrdup(t->pool, key);
-	elts->val = pstrdup(t->pool, val);
+	elts = (table_entry *) push_array(&t->a);
+	elts->key = pstrdup(t->a.pool, key);
+	elts->val = pstrdup(t->a.pool, val);
     }
 }
 
 API_EXPORT(void) table_unset(table *t, const char *key)
 {
     register int i, j, k;
-    table_entry *elts = (table_entry *) t->elts;
+    table_entry *elts = (table_entry *) t->a.elts;
 
-    for (i = 0; i < t->nelts; ) {
+    for (i = 0; i < t->a.nelts;) {
 	if (!strcasecmp(elts[i].key, key)) {
 
 	    /* found an element to skip over
@@ -771,11 +794,11 @@ API_EXPORT(void) table_unset(table *t, const char *key)
 	     * a contiguous block of memory.  I've chosen one that
 	     * doesn't do a memcpy/bcopy/array_delete, *shrug*...
 	     */
-	    for (j = i, k = i + 1; k < t->nelts; ++j, ++k) {
+	    for (j = i, k = i + 1; k < t->a.nelts; ++j, ++k) {
 		elts[j].key = elts[k].key;
 		elts[j].val = elts[k].val;
 	    }
-	    --t->nelts;
+	    --t->a.nelts;
 	}
 	else {
 	    ++i;
@@ -785,32 +808,41 @@ API_EXPORT(void) table_unset(table *t, const char *key)
 
 API_EXPORT(void) table_merge(table *t, const char *key, const char *val)
 {
-    table_entry *elts = (table_entry *) t->elts;
+    table_entry *elts = (table_entry *) t->a.elts;
     int i;
 
-    for (i = 0; i < t->nelts; ++i)
+    for (i = 0; i < t->a.nelts; ++i) {
 	if (!strcasecmp(elts[i].key, key)) {
-	    elts[i].val = pstrcat(t->pool, elts[i].val, ", ", val, NULL);
+	    elts[i].val = pstrcat(t->a.pool, elts[i].val, ", ", val, NULL);
 	    return;
 	}
+    }
 
-    elts = (table_entry *) push_array(t);
-    elts->key = pstrdup(t->pool, key);
-    elts->val = pstrdup(t->pool, val);
+    elts = (table_entry *) push_array(&t->a);
+    elts->key = pstrdup(t->a.pool, key);
+    elts->val = pstrdup(t->a.pool, val);
 }
 
 API_EXPORT(void) table_add(table *t, const char *key, const char *val)
 {
-    table_entry *elts = (table_entry *) t->elts;
+    table_entry *elts = (table_entry *) t->a.elts;
 
-    elts = (table_entry *) push_array(t);
-    elts->key = pstrdup(t->pool, key);
-    elts->val = pstrdup(t->pool, val);
+    elts = (table_entry *) push_array(&t->a);
+    elts->key = pstrdup(t->a.pool, key);
+    elts->val = pstrdup(t->a.pool, val);
 }
 
 API_EXPORT(table *) overlay_tables(pool *p, const table *overlay, const table *base)
 {
-    return append_arrays(p, overlay, base);
+    table *res;
+
+    res = palloc(p, sizeof(table));
+    /* behave like append_arrays */
+    res->a.pool = p;
+    copy_array_hdr_core(&res->a, &overlay->a);
+    array_cat(&res->a, &base->a);
+
+    return res;
 }
 
 /* And now for something completely abstract ...
@@ -840,7 +872,7 @@ void table_do(int (*comp) (void *, const char *, const char *), void *rec,
 {
     va_list vp;
     char *argp;
-    table_entry *elts = (table_entry *) t->elts;
+    table_entry *elts = (table_entry *) t->a.elts;
     int rv, i;
 
     va_start(vp, t);
@@ -848,7 +880,7 @@ void table_do(int (*comp) (void *, const char *, const char *), void *rec,
     argp = va_arg(vp, char *);
 
     do {
-	for (rv = 1, i = 0; rv && (i < t->nelts); ++i) {
+	for (rv = 1, i = 0; rv && (i < t->a.nelts); ++i) {
 	    if (elts[i].key && (!argp || !strcasecmp(elts[i].key, argp))) {
 		rv = (*comp) (rec, elts[i].key, elts[i].val);
 	    }

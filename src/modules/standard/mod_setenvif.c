@@ -302,9 +302,10 @@ static int match_headers(request_rec *r)
         }
 
         if (!regexec(b->preg, val, 0, NULL, 0)) {
-            elts = (table_entry *) b->features->elts;
+	    array_header *arr = table_elts(b->features);
+            elts = (table_entry *) arr->elts;
 
-            for (j = 0; j < b->features->nelts; ++j) {
+            for (j = 0; j < arr->nelts; ++j) {
                 if (!strcmp(elts[j].val, "!")) {
                     table_unset(r->subprocess_env, elts[j].key);
                 }

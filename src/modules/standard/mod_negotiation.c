@@ -1811,7 +1811,7 @@ static void set_neg_headers(request_rec *r, negotiation_state *neg,
     int vary_by_language = 0;
     int vary_by_charset = 0;
     int vary_by_encoding = 0;
-    array_header *hdrs;
+    table *hdrs;
 
     /* Put headers into err_headers_out, new send_http_header()
      * outputs both headers_out and err_headers_out */

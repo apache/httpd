@@ -109,13 +109,13 @@ API_EXPORT(char *) pstrcat(struct pool *,...);	/* all '...' must be char* */
  * Common enough to want common support code ...
  */
 
-     typedef struct {
-	 pool *pool;
-	 int elt_size;
-	 int nelts;
-	 int nalloc;
-	 char *elts;
-     } array_header;
+typedef struct {
+    pool *pool;
+    int elt_size;
+    int nelts;
+    int nalloc;
+    char *elts;
+} array_header;
 
 API_EXPORT(array_header *) make_array(pool *p, int nelts, int elt_size);
 API_EXPORT(void *) push_array(array_header *);
@@ -141,14 +141,14 @@ API_EXPORT(array_header *) copy_array_hdr(pool *p, const array_header *src);
  * currently being used...
  */
 
-     typedef array_header table;
+typedef struct table table;
 
-     typedef struct {
-	 char *key;		/* maybe NULL in future;
-				 * check when iterating thru table_elts
-				 */
-	 char *val;
-     } table_entry;
+typedef struct {
+    char *key;		/* maybe NULL in future;
+			 * check when iterating thru table_elts
+			 */
+    char *val;
+} table_entry;
 
 API_EXPORT(table *) make_table(pool *p, int nelts);
 API_EXPORT(table *) copy_table(pool *p, const table *);
@@ -163,9 +163,13 @@ API_EXPORT(void) table_do(int (*comp) (void *, const char *, const char *), void
 
 API_EXPORT(table *) overlay_tables(pool *p, const table *overlay, const table *base);
 
-API_EXPORT(array_header *) table_elts(table *);
-
-#define is_empty_table(t) (((t) == NULL)||((t)->nelts == 0))
+/* XXX: these know about the definition of struct table in alloc.c.  That
+ * definition is not here because it is supposed to be private, and by not
+ * placing it here we are able to get compile-time diagnostics from modules
+ * written which assume that a table is the same as an array_header. -djg
+ */
+#define table_elts(t) ((array_header *)(t))
+#define is_empty_table(t) (((t) == NULL)||(((array_header *)(t))->nelts == 0))
 
 /* routines to remember allocation of other sorts of things...
  * generic interface first.  Note that we want to have two separate

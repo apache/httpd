@@ -1,5 +1,13 @@
 Changes with Apache 1.3b4
 
+  *) "typedef array_header table" removed from alloc.h, folks should have
+     been writing to use table as if it were an opaque type, but even
+     some standard modules got this wrong.  By changing the definition
+     to "typedef struct table table" module authors will receive compile
+     time warnings that they're doing the wrong thing.  This change
+     facilitates future changes with more sophisticated table
+     structures.  [Dean Gaudet]
+
   *) Rename new_connection() to ap__new_connection() to avoid namespace
      collision with LDAP library routines.  The "ap__" prefix means
      it's a private non-API interface, as opposed to "ap_".

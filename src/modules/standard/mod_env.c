@@ -124,6 +124,7 @@ static void *merge_env_server_configs(pool *p, void *basev, void *addv)
 
     table *new_table;
     table_entry *elts;
+    array_header *arr;
 
     int i;
     const char *uenv, *unset;
@@ -140,9 +141,10 @@ static void *merge_env_server_configs(pool *p, void *basev, void *addv)
 
     new_table = copy_table(p, base->vars);
 
-    elts = (table_entry *) add->vars->elts;
+    arr = table_elts(add->vars);
+    elts = (table_entry *)arr->elts;
 
-    for (i = 0; i < add->vars->nelts; ++i) {
+    for (i = 0; i < arr->nelts; ++i) {
         table_set(new_table, elts[i].key, elts[i].val);
     }
 
