@@ -88,7 +88,7 @@
  * the overhead.
  */
 #ifndef HARD_THREAD_LIMIT
-#define HARD_THREAD_LIMIT 64 
+#define HARD_THREAD_LIMIT 4096
 #endif
 
 /* Number of servers to spawn off by default
