@@ -89,6 +89,7 @@
 #include "apr_date.h"           /* For apr_date_parse_http and APR_DATE_BAD */
 #include "util_charset.h"
 #include "util_ebcdic.h"
+#include "util_time.h"
 
 #include "mod_core.h"
 
@@ -1071,7 +1072,7 @@ static void basic_http_header(request_rec *r, apr_bucket_brigade *bb,
     apr_brigade_write(bb, NULL, NULL, tmp, len);
 
     date = apr_palloc(r->pool, APR_RFC822_DATE_LEN);
-    apr_rfc822_date(date, r->request_time);
+    ap_recent_rfc822_date(date, r->request_time);
 
     h.pool = r->pool;
     h.bb = bb;
@@ -1444,7 +1445,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
      */
     if (r->no_cache && !apr_table_get(r->headers_out, "Expires")) {
         char *date = apr_palloc(r->pool, APR_RFC822_DATE_LEN);
-        apr_rfc822_date(date, r->request_time);
+        ap_recent_rfc822_date(date, r->request_time);
         apr_table_addn(r->headers_out, "Expires", date);
     }
 

@@ -218,3 +218,63 @@ AP_DECLARE(apr_status_t) ap_recent_ctime(char *date_str, apr_time_t t)
 
     return APR_SUCCESS;
 }
+
+static const char month_snames[12][4] =
+{
+    "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+};
+static const char day_snames[7][4] =
+{
+    "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
+};
+
+AP_DECLARE(apr_status_t) ap_recent_rfc822_date(char *date_str, apr_time_t t)
+{
+    /* ### This code is a clone of apr_rfc822_date(), except that it
+     * uses ap_explode_recent_gmt() instead of apr_time_exp_gmt().
+     */
+    apr_time_exp_t xt;
+    const char *s;
+    int real_year;
+
+    ap_explode_recent_gmt(&xt, t);
+
+    /* example: "Sat, 08 Jan 2000 18:31:41 GMT" */
+    /*           12345678901234567890123456789  */
+
+    s = &day_snames[xt.tm_wday][0];
+    *date_str++ = *s++;
+    *date_str++ = *s++;
+    *date_str++ = *s++;
+    *date_str++ = ',';
+    *date_str++ = ' ';
+    *date_str++ = xt.tm_mday / 10 + '0';
+    *date_str++ = xt.tm_mday % 10 + '0';
+    *date_str++ = ' ';
+    s = &month_snames[xt.tm_mon][0];
+    *date_str++ = *s++;
+    *date_str++ = *s++;
+    *date_str++ = *s++;
+    *date_str++ = ' ';
+    real_year = 1900 + xt.tm_year;
+    /* This routine isn't y10k ready. */
+    *date_str++ = real_year / 1000 + '0';
+    *date_str++ = real_year % 1000 / 100 + '0';
+    *date_str++ = real_year % 100 / 10 + '0';
+    *date_str++ = real_year % 10 + '0';
+    *date_str++ = ' ';
+    *date_str++ = xt.tm_hour / 10 + '0';
+    *date_str++ = xt.tm_hour % 10 + '0';
+    *date_str++ = ':';
+    *date_str++ = xt.tm_min / 10 + '0';
+    *date_str++ = xt.tm_min % 10 + '0';
+    *date_str++ = ':';
+    *date_str++ = xt.tm_sec / 10 + '0';
+    *date_str++ = xt.tm_sec % 10 + '0';
+    *date_str++ = ' ';
+    *date_str++ = 'G';
+    *date_str++ = 'M';
+    *date_str++ = 'T';
+    *date_str++ = 0;
+    return APR_SUCCESS;
+}
