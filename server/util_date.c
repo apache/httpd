@@ -201,7 +201,7 @@ API_EXPORT(ap_time_t) ap_parseHTTPdate(const char *date)
     while (*date && ap_isspace(*date))	/* Find first non-whitespace char */
 	++date;
 
-    if (*date == '\0')
+    if (*date == '\0') 
 	return BAD_DATE;
 
     if ((date = strchr(date, ' ')) == NULL)	/* Find space after weekday */
@@ -234,7 +234,7 @@ API_EXPORT(ap_time_t) ap_parseHTTPdate(const char *date)
     }
     else if (ap_checkmask(date, "@$$ ~# ##:##:## ####*")) {	/* asctime format  */
 	ds.tm_year = ((date[16] - '0') * 10 + (date[17] - '0') - 19) * 100;
-	if (ds.tm_year < 0)
+	if (ds.tm_year < 0) 
 	    return BAD_DATE;
 
 	ds.tm_year += ((date[18] - '0') * 10) + (date[19] - '0');
@@ -249,7 +249,7 @@ API_EXPORT(ap_time_t) ap_parseHTTPdate(const char *date)
 	monstr = date;
 	timstr = date + 7;
     }
-    else
+    else 
 	return BAD_DATE;
 
     if (ds.tm_mday <= 0 || ds.tm_mday > 31)
@@ -259,7 +259,7 @@ API_EXPORT(ap_time_t) ap_parseHTTPdate(const char *date)
     ds.tm_min = ((timstr[3] - '0') * 10) + (timstr[4] - '0');
     ds.tm_sec = ((timstr[6] - '0') * 10) + (timstr[7] - '0');
 
-    if ((ds.tm_hour > 23) || (ds.tm_min > 59) || (ds.tm_sec > 61))
+    if ((ds.tm_hour > 23) || (ds.tm_min > 59) || (ds.tm_sec > 61)) 
 	return BAD_DATE;
 
     mint = (monstr[0] << 16) | (monstr[1] << 8) | monstr[2];
@@ -284,8 +284,19 @@ API_EXPORT(ap_time_t) ap_parseHTTPdate(const char *date)
 
     ds.tm_mon = mon;
 
-    if (ap_implode_time(&result, &ds) != APR_SUCCESS) {
+    /* ap_mplode_time uses tm_usec and tm_gmtoff fields, but they haven't 
+     * been set yet. 
+     * It should be safe to just zero out these values.
+     * tm_usec is the number of microseconds into the second.  HTTP only
+     * cares about second granularity.
+     * tm_gmtoff is the number of seconds off of GMT the time is.  By
+     * definition all times going through this function are in GMT, so this
+     * is zero. 
+     */
+    ds.tm_usec = 0;
+    ds.tm_gmtoff = 0;
+    if (ap_implode_time(&result, &ds) != APR_SUCCESS) 
 	return BAD_DATE;
-    }
+    
     return result;
 }
