@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.28 $ -->
+<!-- $Revision: 1.29 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -327,18 +327,16 @@ SCRIPT_URI=http://en1.engelschall.com/u/rse/
 <name>RewriteOptions</name>
 <description>Sets some special options for the rewrite engine</description>
 <syntax>RewriteOptions <var>Options</var></syntax>
-<default>RewriteOptions MaxRedirects=10</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility><code>MaxRedirects</code> is available in Apache 2.0.45 and
+<compatibility><code>MaxRedirects</code> is no longer available in version 2.1 and
 later</compatibility>
 <usage>
 
       <p>The <directive>RewriteOptions</directive> directive sets some
       special options for the current per-server or per-directory
-      configuration. The <em>Option</em> strings can be one of the
-      following:</p>
+      configuration. The <em>Option</em> string can be currently only one:</p>
 
       <dl>
       <dt><code>inherit</code></dt>
@@ -348,15 +346,6 @@ later</compatibility>
       server are inherited. In per-directory context this means
       that conditions and rules of the parent directory's
       <code>.htaccess</code> configuration are inherited.</dd>
-
-      <dt><code>MaxRedirects=<var>number</var></code></dt>
-      <dd>In order to prevent endless loops of internal redirects
-      issued by per-directory <directive module="mod_rewrite"
-      >RewriteRule</directive>s, <module>mod_rewrite</module> aborts
-      the request after reaching a maximum number of such redirects and
-      responds with an 500 Internal Server Error. If you really need
-      more internal redirects than 10 per request, you may increase
-      the default to the desired value.</dd>
       </dl>
 </usage>
 
