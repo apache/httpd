@@ -60,6 +60,15 @@
 
 #include "mod_proxy.h"
 
+APR_HOOK_STRUCT(
+	APR_HOOK_LINK(proxy_scheme_handler)
+	APR_HOOK_LINK(proxy_canon_handler)
+)
+
+AP_IMPLEMENT_HOOK_RUN_FIRST(int, proxy_scheme_handler, (request_rec *r, char *url, const char *proxyhost, apr_port_t proxyport),(r,url,proxyhost,proxyport),DECLINED)
+AP_IMPLEMENT_HOOK_RUN_FIRST(int, proxy_canon_handler, (request_rec *r, char *url, const char *scheme, apr_port_t def_port),(r,url,scheme,def_port),DECLINED)
+
+
 /*
  * A Web proxy module. Stages:
  *
@@ -206,7 +215,7 @@ static int proxy_fixup(request_rec *r)
     if (strncasecmp(url, "http:", 5) == 0)
 	return ap_proxy_http_canon(r, url + 5, "http", DEFAULT_HTTP_PORT);
     else if (strncasecmp(url, "ftp:", 4) == 0)
-	return ap_proxy_ftp_canon(r, url + 4);
+	return ap_proxy_ftp_canon(r, url + 4, NULL, 0);
 
     p = strchr(url, ':');
     if (p == NULL || p == url)
@@ -399,7 +408,7 @@ static int proxy_handler(request_rec *r)
     if (strcasecmp(scheme, "http") == 0)
 	return ap_proxy_http_handler(r, url, NULL, 0);
     if (strcasecmp(scheme, "ftp") == 0)
-	return ap_proxy_ftp_handler(r, url);
+	return ap_proxy_ftp_handler(r, url, NULL, 0);
     else {
         ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r->server,
 		     "Neither CONNECT, HTTP or FTP for %s",

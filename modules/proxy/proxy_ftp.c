@@ -62,6 +62,7 @@
 
 #define AUTODETECT_PWD
 
+module AP_MODULE_DECLARE_DATA proxy_ftp_module;
 
 /*
  * Decodes a '%' escaped string, and returns the number of characters
@@ -112,7 +113,7 @@ static int ftp_check_string(const char *x)
 /*
  * Canonicalise ftp URLs.
  */
-int ap_proxy_ftp_canon(request_rec *r, char *url)
+int ap_proxy_ftp_canon(request_rec *r, char *url, const char *scheme, apr_port_t def_port)
 {
     char *user, *password, *host, *path, *parms, *strp, sport[7];
     apr_pool_t *p = r->pool;
@@ -504,7 +505,7 @@ static int ftp_unauthorized (request_rec *r, int log_it)
  * PASV added by Chuck
  * Filters by [Graham Leggett <minfrin@sharp.fm>]
  */
-int ap_proxy_ftp_handler(request_rec *r, char *url)
+int ap_proxy_ftp_handler(request_rec *r, char *url, const char *proxyhost, apr_port_t proxyport)
 {
     apr_pool_t *p = r->pool;
     conn_rec *c = r->connection;
@@ -1607,3 +1608,19 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
     apr_brigade_destroy(bb);
     return OK;
 }
+
+static void ap_proxy_ftp_register_hook(apr_pool_t *p)
+{
+    ap_hook_proxy_scheme_handler(ap_proxy_ftp_handler, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_proxy_canon_handler(ap_proxy_ftp_canon, NULL, NULL, APR_HOOK_MIDDLE);
+}
+
+module AP_MODULE_DECLARE_DATA proxy_ftp_module = {
+    STANDARD20_MODULE_STUFF,
+    NULL,		/* create per-directory config structure */
+    NULL,		/* merge per-directory config structures */
+    NULL,		/* create per-server config structure */
+    NULL,		/* merge per-server config structures */
+    NULL,		/* command apr_table_t */
+    ap_proxy_ftp_register_hook	/* register hooks */
+};

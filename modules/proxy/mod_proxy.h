@@ -89,6 +89,7 @@
 #include "apr_md5.h"
 #include "apr_pools.h"
 #include "apr_strings.h"
+#include "apr_hooks.h"
 
 #include "httpd.h"
 #include "http_config.h"
@@ -119,9 +120,7 @@
 #include <arpa/inet.h>
 #endif
 
-
 extern module AP_MODULE_DECLARE_DATA proxy_module;
-
 
 /* for proxy_canonenc() */
 enum enctype {
@@ -208,12 +207,12 @@ typedef struct {
 /* proxy_connect.c */
 
 int ap_proxy_connect_handler(request_rec *r, char *url,
-			  const char *proxyhost, int proxyport);
+			  const char *proxyhost, apr_port_t proxyport);
 
 /* proxy_ftp.c */
 
-int ap_proxy_ftp_canon(request_rec *r, char *url);
-int ap_proxy_ftp_handler(request_rec *r, char *url);
+int ap_proxy_ftp_canon(request_rec *r, char *url, const char *scheme, apr_port_t def_port);
+int ap_proxy_ftp_handler(request_rec *r, char *url, const char *proxyhost, apr_port_t proxyport);
 apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f,
 				      apr_bucket_brigade *bb);
 
@@ -221,9 +220,9 @@ apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f,
 /* proxy_http.c */
 
 int ap_proxy_http_canon(request_rec *r, char *url, const char *scheme,
-		     int def_port);
+		     apr_port_t def_port);
 int ap_proxy_http_handler(request_rec *r, char *url,
-		       const char *proxyhost, int proxyport);
+		       const char *proxyhost, apr_port_t proxyport);
 
 /* proxy_util.c */
 
@@ -250,5 +249,13 @@ int ap_proxy_checkproxyblock(request_rec *r, proxy_server_conf *conf, apr_sockad
 int ap_proxy_pre_http_connection(conn_rec *c, request_rec *r);
 apr_status_t ap_proxy_string_read(conn_rec *c, apr_bucket_brigade *bb, char *buff, size_t bufflen, int *eos);
 void ap_proxy_reset_output_filters(conn_rec *c);
+
+
+/* hooks */
+
+
+AP_DECLARE_HOOK(int, proxy_scheme_handler, (request_rec *r, char *url, const char *proxyhost, apr_port_t proxyport))
+AP_DECLARE_HOOK(int, proxy_canon_handler, (request_rec *r, char *url, const char *scheme, apr_port_t def_port))
+
 
 #endif /*MOD_PROXY_H*/
