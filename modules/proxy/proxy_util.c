@@ -1569,17 +1569,20 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
      */
     /* are we connecting directly, or via a proxy? */
     if (proxyname) {
-        conn->hostname = apr_pstrdup(conn->pool, proxyname);
-        conn->port = proxyport;
-    } else {
-        conn->hostname = apr_pstrdup(conn->pool, uri->hostname);
-        conn->port = uri->port;
         *url = apr_pstrcat(p, uri->path, uri->query ? "?" : "",
                            uri->query ? uri->query : "",
                            uri->fragment ? "#" : "",
                            uri->fragment ? uri->fragment : "", NULL);
     }
-    
+    if (!conn->hostname) {
+        if (proxyname) {
+            conn->hostname = apr_pstrdup(conn->pool, proxyname);
+            conn->port = proxyport;
+        } else {
+            conn->hostname = apr_pstrdup(conn->pool, uri->hostname);
+            conn->port = uri->port;
+        }
+    }
     /* TODO: add address cache for forward proxies */
     conn->addr = worker->cp->addr;
     if (r->proxyreq == PROXYREQ_PROXY) {
