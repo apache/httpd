@@ -1446,27 +1446,55 @@ static int use_range_x(request_rec *r)
              && strstr(ua, "MSIE 3")));
 }
 
-/*
- * qsort comparison routine for fixup_vary().
+/* This routine is called by ap_table_do and merges all instances of
+ * the passed field values into a single array that will be further
+ * processed by some later routine.  Originally intended to help split
+ * and recombine multiple Vary fields, though it is generic to any field
+ * consisting of comma/space-separated tokens.
  */
-static int compare_vary(const void *va, const void *vb)
+static int uniq_field_values(void *d, const char *key, const char *val)
 {
-    return strcasecmp(*(const char **)va, *(const char **)vb);
-}
+    array_header *values;
+    char *start;
+    char *e;
+    char **strpp;
+    int  i;
 
-/*
- * ap_table_get() only picks up the first occurrence of a key,
- * which means that if there's a Vary in r->headers_out and another
- * in r->err_headers_out, one might get ignored.  This routine
- * is called by ap_table_do and merges all instances of Vary into
- * a temporary list in r->notes.
- */
-static int merge_vary_fields(void *d, const char *key, const char *val)
-{
-    request_rec *r;
+    values = (array_header *)d;
 
-    r = (request_rec *)d;
-    ap_table_merge(r->notes, "Vary-list", val);
+    e = ap_pstrdup(values->pool, val);
+
+    do {
+        /* Find a non-empty fieldname */
+
+        while (*e == ',' || ap_isspace(*e)) {
+            ++e;
+        }
+        if (*e == '\0') {
+            break;
+        }
+        start = e;
+        while (*e != '\0' && *e != ',' && !ap_isspace(*e)) {
+            ++e;
+        }
+        if (*e != '\0') {
+            *e++ = '\0';
+        }
+
+        /* Now add it to values if it isn't already represented.
+         * Could be replaced by a ap_array_strcasecmp() if we had one.
+         */
+        for (i = 0, strpp = (char **) values->elts; i < values->nelts;
+             ++i, ++strpp) {
+            if (*strpp && strcasecmp(*strpp, start) == 0) {
+                break;
+            }
+        }
+        if (i == values->nelts) {  /* if not found */
+           *(char **)ap_push_array(values) = start;
+        }
+    } while (*e != '\0');
+
     return 1;
 }
 
@@ -1477,80 +1505,23 @@ static int merge_vary_fields(void *d, const char *key, const char *val)
  */
 static void fixup_vary(request_rec *r)
 {
-    const char *vary;
-    array_header *arr;
-    char *start;
-    char *e;
-    char **ecur;
-    char **eend;
-    char **ekeep;
+    array_header *varies;
 
-    /* Don't do any unnecessary manipulations..
+    varies = ap_make_array(r->pool, 5, sizeof(char *));
+
+    /* Extract all Vary fields from the headers_out, separate each into
+     * its comma-separated fieldname values, and then add them to varies
+     * if not already present in the array.
      */
-    if (ap_table_get(r->headers_out, "Vary") == NULL) {
-	return;
+    ap_table_do((int (*)(void *, const char *, const char *))uniq_field_values,
+		(void *) varies, r->headers_out, "Vary", NULL);
+
+    /* If we found any, replace old Vary fields with unique-ified value */
+
+    if (varies->nelts > 0) {
+	ap_table_setn(r->headers_out, "Vary",
+		      ap_array_pstrcat(r->pool, varies, ','));
     }
-    ap_table_do((int (*)(void *, const char *, const char *))merge_vary_fields,
-		(void *) r, r->headers_out, "Vary", NULL);
-    vary = ap_table_get(r->notes, "Vary-list");
-
-    /* XXX: we could make things a lot better, by having r->vary,
-     * which is an array of char * -- which modules append to as they
-     * find things which the request varies on.  This is probably
-     * better than a table, because a table would require O(n^2)
-     * string comparisons... another option would be to use a table
-     * but indicate that folks should use ap_table_add...
-     * at any rate, if we had such an array, we would just set
-     * arr = r->vary here (or arr = ap_table_elts(r->vary)).
-     */
-    arr = ap_make_array(r->pool, 5, sizeof(char *));
-
-    /* XXX: this part could become a new routine which takes a string
-     * and breaks it up, appending to an array, spliting on /[,\s]+/.
-     */
-    e = ap_pstrdup(r->pool, vary);
-    start = e;
-    while (*e) {
-	while (ap_isspace(*e)) {
-	    ++e;
-	}
-	start = e;
-	e = strchr(e, ',');
-	if (!e) {
-	    break;
-	}
-	*e = '\0';
-	*(char **)ap_push_array(arr) = start;
-	++e;
-    }
-    if (*start) {
-	*(char **)ap_push_array(arr) = start;
-    }
-
-    /* XXX: this part could become a new routine which modifies an
-     * array of char * in place, eliminating duplicate entries
-     */
-    if (arr->nelts > 1) {
-	qsort(arr->elts, arr->nelts, sizeof(char *), compare_vary);
-
-	/* now pluck out the non-duplicates */
-	ekeep = (char **)arr->elts;
-	ecur = ekeep + 1;
-	eend = ekeep + arr->nelts - 1;
-	while (ecur <= eend) {
-	    if (strcasecmp(*ecur, *ekeep)) {
-		*++ekeep = *ecur;
-	    }
-	    ++ecur;
-	}
-	arr->nelts = ekeep - (char **)arr->elts + 1;
-    }
-
-    /* and finally we're done, we can just merge the array adding ,
-     * between entries
-     */
-    ap_table_setn(r->headers_out, "Vary",
-		  ap_array_pstrcat(r->pool, arr, ','));
 }
 
 API_EXPORT(void) ap_send_http_header(request_rec *r)
