@@ -53,6 +53,8 @@ be used multiple times in each server to cause each request to be
 logged to multiple files.
 </P>
 
+<p>See also: <a href="../logs.html">Apache Log Files</a>.</p>
+
 <H2>Directives</H2>
 
 <UL>
@@ -62,57 +64,7 @@ logged to multiple files.
 <LI><A HREF="#transferlog">TransferLog</A></LI>
 </UL>
 
-<H2>Log File Formats</H2>
-
-<p>Unless told otherwise with <TT>LogFormat</TT>, the log files
-created by <TT>TransferLog</TT> will be in standard "Common Log
-Format" (CLF). The contents of each line in a CLF file are explained
-below. Alternatively, the log file can be customized (and if multiple
-log files are used, each can have a different format). Custom formats
-are set with <CODE>LogFormat</CODE> and <CODE>CustomLog</CODE>.</p>
-
-<H3>Common Log Format</H3>
-
-<p>The Common Log Format (CLF) file contains a separate line for each
-request. A line is composed of several tokens separated by spaces:</p>
-
-<BLOCKQUOTE>
-host ident authuser date request status bytes
-</BLOCKQUOTE>
-If a token does not have a value then it is represented by a hyphen (-).
-The meanings and values of these tokens are as follows:
-<DL>
-<DT>host
-<DD>The fully-qualified domain name of the client, or its IP number if the
-name is not available.
-<DT>ident
-<DD>If <A HREF="core.html#identitycheck">IdentityCheck</A> is enabled and the
-client machine runs identd, then this is the identity information reported
-by the client.
-<DT>authuser
-<DD>If the request was for an password protected document, then this is
-the userid used in the request.
-<DT>date
-<DD>The date and time of the request, in the following format:
-<DL><DD><BLOCKQUOTE><CODE> date = [day/month/year:hour:minute:second zone] <BR>
-day = 2*digit<BR>
-month = 3*letter<BR>
-year = 4*digit<BR>
-hour = 2*digit<BR>
-minute = 2*digit<BR>
-second = 2*digit<BR>
-zone = (`+' | `-') 4*digit</CODE></BLOCKQUOTE></DL>
-<DT>request
-<DD>The request line from the client, enclosed in double quotes
-(<CODE>&quot;</CODE>).
-<DT>status
-<DD>The three digit status code returned to the client.
-<DT>bytes
-<DD>The number of bytes in the object returned to the client, not including
-any headers.
-</DL>
-
-<H3><A NAME="formats">Custom Log Formats</A></H3>
+<H2><A NAME="formats">Custom Log Formats</A></H2>
 
 <p>The format argument to the <CODE>LogFormat</CODE> and
 <CODE>CustomLog</CODE> directives is a string. This string is logged
@@ -210,54 +162,12 @@ otherwise log analysis programs would have to duplicate the entire
 vhost matching algorithm in order to decide what host really served
 the request.</p>
 
-<H2>Using Multiple Log Files</H2>
-
-<p>The <CODE>TransferLog</CODE> and <CODE>CustomLog</CODE> directives can
-be given more than once to log requests to multiple log files. Unless
-the conditional form of <code>CustomLog</code> is used, each
-request will be logged to all the log files defined by either of these
-directives.</p>
-
-<H3>Use with Virtual Hosts</H3>
-
-<p>If a &lt;VirtualHost&gt; section does not contain any
-<TT>TransferLog</TT> or <TT>CustomLog</TT> directives, the
-logs defined for the main server will be used. If it does
-contain one or more of these directives, requests serviced by
-this virtual host will only be logged in the log files defined
-within its definition, not in any of the main server's log files.
-See the examples below.</p>
-
 <H2>Security Considerations</H2>
 
 <p>See the <A HREF="../misc/security_tips.html#serverroot">security tips</A>
 document for details on why your security could be compromised if the
 directory where logfiles are stored is writable by anyone other than
 the user that starts the server.</p>
-
-<h2>Resetting the Log Files</h2>
-
-<p>The access log file typically grows 1MB or more for each 10,000
-requests.  It will probably be necessary to move or delete the log
-file on a regular basis.  This cannot be done while the server is
-still running, because Apache will continue writing to the old log
-file.  Instead, the server must be <a
-href="../stopping.html">restarted</a> after the log file is moved or
-deleted so that it will open a new log.</p>
-
-<p>A typical scenario is:</p>
-
-<pre>
-   mv access_log access_log.old
-   apachectl graceful
-   # wait for all requests to the old server to complete
-   # before doing anything with access_log.old
-</pre>
-
-<p>Alternatively, log files can be <a
-href="../misc/FAQ.html#rotate">rotated automatically</a> be writing
-them through a pipe to a program designed for that purpose such
-as <a href="../programs/rotatelogs.html">rotatelogs</a>.</p>
 
 <HR>
 
