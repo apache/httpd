@@ -1111,7 +1111,7 @@ apr_status_t ap_proxy_doconnect(apr_socket_t *sock, char *host, apr_uint32_t por
     int i;
     apr_sockaddr_t *destsa;
 
-    rv = apr_getaddrinfo(&destsa, host, AF_INET, port, r->pool);
+    rv = apr_getaddrinfo(&destsa, host, AF_INET, port, 0, r->pool);
     if (rv == APR_SUCCESS) {
         rv = apr_connect(sock, destsa);
     }
