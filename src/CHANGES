@@ -135,11 +135,8 @@ Changes with Apache 1.3.4
      [Ralf S. Engelschall]
 
   *) Added two new core API functions, ap_single_module_configure() and
-     ap_single_module_init(), which are now used by mod_so to correctly
-     initialize a module after loading. This fixes a problem with unusable
-     handlers, for instance mod_perl's perl-script handler was not found
-     when mod_perl was loaded as a DSO, and the same applied to other
-     similar modules. [Ralf S. Engelschall]
+     ap_single_module_init(), which are now used by mod_so to configure a module
+     after loading. [Ralf S. Engelschall]
 
   *) PORT: Add defines for USE_FLOCK_SERIALIZED_ACCEPT and
      SINGLE_LISTEN_UNSERIALIZED_ACCEPT to NetBSD/OpenBSD section

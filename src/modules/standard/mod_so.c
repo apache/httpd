@@ -277,11 +277,9 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
 		     (void (*)(void*))unload_module, ap_null_cleanup);
 
     /* 
-     * Finally we need to create the configuration for the
-     * module and initialize it
+     * Finally we need to run the configuration process for the module
      */
     ap_single_module_configure(cmd->pool, cmd->server, modp);
-    ap_single_module_init(cmd->pool, cmd->server, modp);
 
     return NULL;
 }
