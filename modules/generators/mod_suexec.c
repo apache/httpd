@@ -110,6 +110,7 @@ static const char *set_suexec_ugid(cmd_parms *cmd, void *mconfig,
     if (unixd_config.suexec_enabled) {
         cfg->ugid.uid = ap_uname2id(uid);
         cfg->ugid.gid = ap_gname2id(gid);
+        cfg->ugid.userdir = 0;
         cfg->active = 1;
     }
     else {

@@ -331,7 +331,12 @@ static apr_status_t ap_unix_create_privileged_process(
         return apr_proc_create(newproc, progname, args, env, attr, p);
     }
 
-    execuser = apr_psprintf(p, "%ld", (long) ugid->uid);
+    if (ugid->userdir) {
+        execuser = apr_psprintf(p, "~%ld", (long) ugid->uid);
+    }
+    else {
+        execuser = apr_psprintf(p, "%ld", (long) ugid->uid);
+    }
     execgroup = apr_psprintf(p, "%ld", (long) ugid->gid);
 
     if (!execuser || !execgroup) {

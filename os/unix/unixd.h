@@ -84,6 +84,7 @@
 typedef struct {
     uid_t uid;
     gid_t gid;
+    int userdir;
 } ap_unix_identity_t;
 
 AP_DECLARE_HOOK(ap_unix_identity_t *, get_suexec_identity,(const request_rec *r))
