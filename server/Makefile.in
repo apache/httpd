@@ -4,6 +4,8 @@ topsrcdir = @topsrcdir@
 srcdir    = @srcdir@
 VPATH     = @srcdir@
 
+CLEANFILES = gen_test_char gen_uri_delims test_char.h uri_delims.h
+
 LTLIBRARY_NAME    = libmain.la
 LTLIBRARY_SOURCES = \
     uri_delims.h test_char.h \
