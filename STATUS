@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/11/14 08:07:19 $]
+Last modified at [$Date: 2001/11/15 12:06:53 $]
 
 Release:
 
@@ -297,9 +297,9 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
     * callers of ap_run_create_request() should check the return value
       for failure (Doug volunteers)
 
-    * when prefork bails out due to an initialization error in the detached
-      process (e.g., mutex init failure), other children (cgid, at least) 
-      are left hanging around
+    * when a Unix MPM bails out due to an initialization error in the 
+      detached process (e.g., mutex init failure, pthread_create failure), 
+      other children (cgid, at least) are left hanging around
 
     * Win32: Get Apache working on Windows 95/98. The following work
 	(at least) needs to be done:
