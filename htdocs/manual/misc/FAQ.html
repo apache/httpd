@@ -21,7 +21,6 @@
 <!-- - disable Apache buffering of script output by using nph-	    -->
 <!-- - access control based on DNS name really needs MAXIMUM_DNS    -->
 <!--   and double-check that rDNS resolves to name expected	    -->
-<!-- - "I wanna use my /etc/passwd file for auth"		    -->
 <UL>
  <LI><STRONG>Background</STRONG>
   <OL START=1>
@@ -71,6 +70,12 @@
    </LI>
    <LI><A HREF="#fdlim">Why can't I run more than &lt;<EM>n</EM>&gt;
     virtual hosts?</A>
+   </LI>
+   <LI><A HREF="#limitGET">Why do I keep getting &quot;access denied&quot; for
+    form POST requests?</A>
+   </LI>
+   <LI><A HREF="#passwdauth">Can I use my <SAMP>/etc/passwd</SAMP> file
+    for Web page authentication?</A>
    </LI>
   </OL>
  </LI>
@@ -499,6 +504,80 @@
   available in the way of solutions.
   </P>
   <HR>
+ <LI><A NAME="limitGET">
+      <STRONG>Why do I keep getting &quot;access denied&quot; for form POST
+      requests?</STRONG>
+     </A>
+  <P>
+  The most common cause of this is a <SAMP>&lt;Limit&gt;</SAMP> section
+  that only names the <SAMP>GET</SAMP> method.  Look in your
+  configuration files for something that resembles the following and
+  would affect the location where the POST-handling script resides:
+  </P>
+  <PRE>
+   &lt;Limit GET&gt;
+      :
+  </PRE>
+  <P>
+  Change that to <SAMP>&lt;Limit GET POST&gt;</SAMP> and the problem
+  will probably go away.
+  </P>
+  <HR>
+ </LI>
+ <LI><A NAME="passwdauth">
+      <STRONG>Can I use my <SAMP>/etc/passwd</SAMP> file
+      for Web page authentication?</STRONG>
+     </A>
+  <P>
+  Yes, you can - but it's a <STRONG>very bad idea</STRONG>.  Here are
+  some of the reasons:
+  </P>
+  <UL>
+   <LI>The Web technology provides no governors on how often or how
+    rapidly password (authentication failure) retries can be made.  That
+    means that someone can hammer away at your system's
+    <SAMP>root</SAMP> password using the Web, using a dictionary or
+    similar mass attack, just as fast as the wire and your server can
+    handle the requests.  Most operating systems these days include
+    attack detection (such as <EM>n</EM> failed passwords for the same
+    account within <EM>m</EM> seconds) and evasion (breaking the
+    connexion, disabling the account under attack, disabling
+    <EM>all</EM> logins from that source, <EM>et cetera</EM>), but the
+    Web does not.
+   </LI>
+   <LI>An account under attack isn't notified (unless the server is
+    heavily modified); there's no &quot;You have 19483 login
+    failures&quot; message when the legitimate owner logs in.
+   </LI>
+   <LI>Without an exhaustive and error-prone examination of the server
+    logs, you can't tell whether an account has been compromised.
+    Detecting that an attack has occurred, or is in progress, is fairly
+    obvious, though - <EM>if</EM> you look at the logs.
+   </LI>
+   <LI>Web authentication passwords (at least for Basic authentication)
+    generally fly across the wire, and through intermediate proxy
+    systems, in what amounts to plaintext.  &quot;O'er the net we
+    go/Caching all the way;/O what fun it is to surf/Giving my password
+    away!&quot;
+   </LI>
+   <LI>Since HTTP is stateless, information about the authentication is
+    transmitted <EM>each and every time</EM> a request is made to the
+    server.  Essentially, the client caches it after the first
+    successful access, and transmits it without asking for all
+    subsequent requests to the same server.
+   </LI>
+   <LI>It's relatively trivial for someone on your system to put up a
+    page that will steal the cached password from a client's cache.  Can
+    you say &quot;password grabber&quot;?
+   </LI>
+  </UL>
+  <P>
+  If you still want to do this in light of the above disadvantages, the
+  method is left as an exercise for the reader.  It'll void your Apache
+  warranty, though, and you'll lose all accumulated UNIX guru points.
+  </P>
+  <HR>
+ </LI>
 </OL>
 
 <!--#include virtual="footer.html" -->
