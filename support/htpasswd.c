@@ -375,7 +375,7 @@ static void check_args(apr_pool_t *pool, int argc, const char *const argv[],
         }
     }
 
-    if (*mask & (APHTP_NEWFILE | APHTP_NOFILE)) {
+    if ((*mask & APHTP_NEWFILE) && (*mask & APHTP_NOFILE)) {
         apr_file_printf(errfile, "%s: -c and -n options conflict\n", argv[0]);
         exit(ERR_SYNTAX);
     }
