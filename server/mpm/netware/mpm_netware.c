@@ -91,6 +91,7 @@
 #include "apr_signal.h"
 #include "apr_tables.h"
 #include "apr_getopt.h"
+#include "apr_thread_mutex.h"
 
 #define APR_WANT_STDIO
 #define APR_WANT_STRFUNC
@@ -133,7 +134,7 @@
 
 int ap_threads_per_child=0;         /* Worker threads per child */
 int ap_thread_stack_size=65536;
-static apr_lock_t *accept_lock;
+static apr_thread_mutex_t *accept_lock;
 static int ap_threads_to_start=0;
 static int ap_threads_min_free=0;
 static int ap_threads_max_free=0;
@@ -176,11 +177,11 @@ static int my_child_num;
 #endif
 
 static int die_now = 0;
-static apr_lock_t *accept_mutex = NULL;
+static apr_thread_mutex_t *accept_mutex = NULL;
 
 /* Keep track of the number of worker threads currently active */
 static int worker_thread_count;
-static apr_lock_t *worker_thread_count_mutex;
+static apr_thread_mutex_t *worker_thread_count_mutex;
 
 
 #ifdef GPROF
@@ -860,8 +861,8 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     ap_log_pid(pconf, ap_pid_fname);
 
     worker_thread_count = 0;
-    apr_thread_mutex_create(&worker_thread_count_mutex, pconf);
-    apr_thread_mutex_create(&accept_mutex, pconf);
+    apr_thread_mutex_create(&worker_thread_count_mutex, APR_THREAD_MUTEX_DEFAULT, pconf);
+    apr_thread_mutex_create(&accept_mutex, APR_THREAD_MUTEX_DEFAULT, pconf);
     if (!is_graceful) {
         ap_run_pre_mpm(pconf, SB_NOT_SHARED);
     }
