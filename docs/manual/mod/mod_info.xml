@@ -23,9 +23,9 @@ SetHandler server-info<br />
 </example>
 
     <p>You may wish to add a 
-    <directive module="core">&lt;Limit&gt;</directive> 
+    <directive type="section" module="core">Limit</directive> 
     clause inside the 
-    <directive module="core">&lt;Location&gt;</directive>
+    <directive type="section" module="core">Location</directive>
     directive to limit access to your server configuration 
     information.</p>
 
