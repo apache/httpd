@@ -87,8 +87,18 @@
 #include "util_script.h"
 
 typedef struct {
+    char *method;
+    char *script;
+} xmethod_t;
+
+/*
+ * HTTP methods are case-sensitive, so we can't use a table structure to
+ * track extension method mappings -- table keys are case-INsensitive.
+ */
+typedef struct {
     table *action_types;       /* Added with Action... */
     char *scripted[METHODS];   /* Added with Script... */
+    array_header *xmethods;    /* Added with Script -- extension methods */
 } action_dir_config;
 
 module action_module;
@@ -96,11 +106,11 @@ module action_module;
 static void *create_action_dir_config(pool *p, char *dummy)
 {
     action_dir_config *new =
-    (action_dir_config *) ap_palloc(p, sizeof(action_dir_config));
+	(action_dir_config *) ap_palloc(p, sizeof(action_dir_config));
 
     new->action_types = ap_make_table(p, 4);
     memset(new->scripted, 0, sizeof(new->scripted));
-
+    new->xmethods = ap_make_array(p, 4, sizeof(xmethod_t));
     return new;
 }
 
@@ -119,29 +129,56 @@ static void *merge_action_dir_configs(pool *p, void *basev, void *addv)
         new->scripted[i] = add->scripted[i] ? add->scripted[i]
                                             : base->scripted[i];
     }
+    new->xmethods = ap_append_arrays(p, add->xmethods, base->xmethods);
     return new;
 }
 
-static const char *add_action(cmd_parms *cmd, action_dir_config * m, char *type,
+static const char *add_action(cmd_parms *cmd, action_dir_config *m, char *type,
 			      char *script)
 {
     ap_table_setn(m->action_types, type, script);
     return NULL;
 }
 
-static const char *set_script(cmd_parms *cmd, action_dir_config * m,
+static const char *set_script(cmd_parms *cmd, action_dir_config *m,
                               char *method, char *script)
 {
     int methnum;
 
     methnum = ap_method_number_of(method);
-    if (methnum == M_TRACE)
-        return "TRACE not allowed for Script";
-    else if (methnum == M_INVALID)
-        return "Unknown method type for Script";
-    else
+    if (methnum == M_TRACE) {
+	return "TRACE not allowed for Script";
+    }
+    else if (methnum != M_INVALID) {
         m->scripted[methnum] = script;
+    }
+    else {
+	/*
+	 * We used to return "Unknown method type for Script"
+	 * but now we actually handle unknown methods.
+	 */
+	xmethod_t *xm;
+	xmethod_t *list;
+	int i;
 
+	/*
+	 * Scan through the list; if the method already has a script
+	 * defined, overwrite it.  Otherwise, add it.
+	 */
+	list = (xmethod_t *) m->xmethods->elts;
+	for (i = 0; i < m->xmethods->nelts; ++i) {
+	    xm = &list[i];
+	    if (strcmp(method, xm->method) == 0) {
+		xm->script = script;
+		break;
+	    }
+	}
+	if (i <= m->xmethods->nelts) {
+	    xm = ap_push_array(m->xmethods);
+	    xm->method = method;
+	    xm->script = script;
+	}
+    }
     return NULL;
 }
 
@@ -164,41 +201,66 @@ static int action_handler(request_rec *r)
 
     /* Set allowed stuff */
     for (i = 0; i < METHODS; ++i) {
-        if (conf->scripted[i])
-            r->allowed |= (1 << i);
+	if (conf->scripted[i]) {
+	    r->allowed |= (1 << i);
+	}
     }
 
     /* First, check for the method-handling scripts */
     if (r->method_number == M_GET) {
-        if (r->args)
+        if (r->args) {
             script = conf->scripted[M_GET];
-        else
+	}
+        else {
             script = NULL;
+	}
     }
     else {
-        script = conf->scripted[r->method_number];
+	if (r->method_number != M_INVALID) {
+	    script = conf->scripted[r->method_number];
+	}
+	else {
+	    int j;
+	    xmethod_t *xm;
+	    xmethod_t *list;
+
+	    script = NULL;
+	    list = (xmethod_t *) conf->xmethods->elts;
+	    for (j = 0; j < conf->xmethods->nelts; ++j) {
+		xm = &list[j];
+		if (strcmp(r->method, xm->method) == 0) {
+		    script = xm->script;
+		    break;
+		}
+	    }
+	}
     }
 
     /* Check for looping, which can happen if the CGI script isn't */
-    if (script && r->prev && r->prev->prev)
+    if (script && r->prev && r->prev->prev) {
 	return DECLINED;
+    }
 
     /* Second, check for actions (which override the method scripts) */
     if ((t = ap_table_get(conf->action_types,
-		       action ? action : ap_default_type(r)))) {
+			  action ? action : ap_default_type(r)))) {
 	script = t;
 	if (r->finfo.st_mode == 0) {
 	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
-			"File does not exist: %s", r->filename);
+			  "File does not exist: %s", r->filename);
 	    return NOT_FOUND;
 	}
     }
 
-    if (script == NULL)
+    if (script == NULL) {
 	return DECLINED;
+    }
 
-    ap_internal_redirect_handler(ap_pstrcat(r->pool, script, ap_escape_uri(r->pool,
-			  r->uri), r->args ? "?" : NULL, r->args, NULL), r);
+    ap_internal_redirect_handler(ap_pstrcat(r->pool, script,
+					    ap_escape_uri(r->pool,
+							  r->uri),
+					    r->args ? "?" : NULL,
+					    r->args, NULL), r);
     return OK;
 }
 

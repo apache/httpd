@@ -1,5 +1,11 @@
 Changes with Apache 1.3.10
 
+  *) Enhance mod_actions' Script handling to be able to deal with
+     arbitrary methods and not just the well-known ones.  This allows
+     experimental or organisation-private methods to be used without
+     waiting for Apache to catch up.
+     [Ken Coar]
+
   *) Fix various compile time warnings in hashbang_emul code which
      prevent successful compilation on OS/390  [Ovies Brabson
      <oviesb@us.ibm.com>, Paul Gilmartin <pg@sweng.stortek.com>]
