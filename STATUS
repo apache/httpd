@@ -85,6 +85,11 @@ Committed Code Changes:
 
 Available Patches:
 
+    * John Van Essen <jve@gamers.org>'s fix for mod_autoindex <PRE>
+      misplacement.
+	<34C0805F.1CBE0DDA@Golux.Com>
+	Status: Ken +1
+
     * Dean's [PATCH] MONCONTROL for profiling children
 	<Pine.LNX.3.95dg3.980111040040.25014C-100000@twinlark.arctic.org>
 	Status: Dean +1
