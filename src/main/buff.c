@@ -221,7 +221,7 @@ static inline int buff_write (BUFF *fb, const void *buf, int nbyte)
     else
 	rv = write( fb->fd, buf, nbyte );
 #elif defined (B_SFIO)
-    i = sfwrite(fb->sf_out, buf, nbyte);
+    rv = sfwrite(fb->sf_out, buf, nbyte);
 #else
     rv = write(fb->fd, buf, nbyte);
 #endif /* WIN32 */
