@@ -203,12 +203,21 @@ static int show_settings = 0;
 #define DBPRINT2(s,v1,v2)
 #endif
 
+/* volatile just in case */
+static int volatile shutdown_pending;
+static int volatile restart_pending;
+static int volatile is_graceful;
+static int volatile wait_to_finish=1;
+ap_generation_t volatile ap_my_generation=0;
+
 /* a clean exit from a child with proper cleanup */
 static void clean_child_exit(int code, int worker_num, apr_pool_t *ptrans, apr_bucket_alloc_t *bucket_alloc) __attribute__ ((noreturn));
 static void clean_child_exit(int code, int worker_num, apr_pool_t *ptrans, apr_bucket_alloc_t *bucket_alloc)
 {
-    apr_bucket_alloc_destroy(bucket_alloc);
-    apr_pool_destroy(ptrans);
+    if (!shutdown_pending) {
+        apr_bucket_alloc_destroy(bucket_alloc);
+        apr_pool_destroy(ptrans);
+    }
 
     atomic_dec (&worker_thread_count);
     if (worker_num >=0)
@@ -264,13 +273,6 @@ AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result)
 /*****************************************************************
  * Connection structures and accounting...
  */
-
-/* volatile just in case */
-static int volatile shutdown_pending;
-static int volatile restart_pending;
-static int volatile is_graceful;
-static int volatile wait_to_finish=1;
-ap_generation_t volatile ap_my_generation=0;
 
 static void mpm_term(void)
 {
