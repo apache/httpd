@@ -109,6 +109,7 @@ module AP_MODULE_DECLARE_DATA cgid_module;
 static void cgid_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *main_server); 
 
 static apr_pool_t *pcgi; 
+static int total_modules = 0;
 
 /* KLUDGE --- for back-combatibility, we don't have to check Execcgid 
  * in ScriptAliased directories, which means we need to know if this 
@@ -148,6 +149,11 @@ typedef struct {
     int bufbytes; 
 } cgid_server_conf; 
 
+typedef struct {
+    ap_unix_identity_t ugid;
+    int active;
+} suexec_config_t;
+
 /* If a request includes query info in the URL (stuff after "?"), and
  * the query info does not contain "=" (indicative of a FORM submission),
  * then this routine is called to create the argument list to be passed
@@ -180,7 +186,7 @@ static char **create_argv(apr_pool_t *p, char *path, char *user, char *group,
     if (numwords > APACHE_ARG_MAX - 5) {
         numwords = APACHE_ARG_MAX - 5;  /* Truncate args to prevent overrun */
     }
-    av = (char **) apr_palloc(p, (numwords + 5) * sizeof(char *));
+    av = (char **) apr_pcalloc(p, (numwords + 5) * sizeof(char *));
 
     if (path) {
         av[idx++] = path;
@@ -190,14 +196,16 @@ static char **create_argv(apr_pool_t *p, char *path, char *user, char *group,
     }
     if (group) {
         av[idx++] = group;
-     }
+    }
 
-    av[idx++] = av0;
+    av[idx++] = apr_pstrdup(p, av0);
 
     for (x = 1; x <= numwords; x++) {
         w = ap_getword_nulls(p, &args, '+');
-        ap_unescape_url(w);
-        av[idx++] = ap_escape_shell_cmd(p, w);
+        if (strcmp(w, "")) {
+            ap_unescape_url(w);
+            av[idx++] = ap_escape_shell_cmd(p, w);
+        }
     }
     av[idx] = NULL;
     return av;
@@ -231,6 +239,7 @@ static void get_req(int fd, request_rec *r, char **filename, char **argv0, char 
     char **environ; 
     core_dir_config *temp_core; 
     void **dconf; 
+    module *suexec_mod = ap_find_linked_module("mod_suexec.c");
 
     r->server = apr_pcalloc(r->pool, sizeof(server_rec)); 
 
@@ -255,12 +264,28 @@ static void get_req(int fd, request_rec *r, char **filename, char **argv0, char 
     read(fd, &i, sizeof(int)); 
      
     /* add 1, so that if i == 0, we still malloc something. */ 
-    dconf = (void **)apr_palloc(r->pool, sizeof(void *) * i + 1); 
+
+    dconf = (void **) apr_pcalloc(r->pool, sizeof(void *) * (total_modules + DYNAMIC_MODULE_LIMIT));
+
     temp_core = (core_dir_config *)apr_palloc(r->pool, sizeof(core_module)); 
 
     dconf[i] = (void *)temp_core; 
-    r->per_dir_config = dconf; 
 
+    if (suexec_mod) {
+        suexec_config_t *suexec_cfg = apr_pcalloc(r->pool, sizeof(*suexec_cfg));
+        int temp;
+
+        read(fd, &i, sizeof(int));
+        read(fd, &temp, sizeof(uid_t));
+        suexec_cfg->ugid.uid = temp;
+        read(fd, &temp, sizeof(gid_t));
+        suexec_cfg->ugid.gid = temp;
+        read(fd, &temp, sizeof(int));
+        suexec_cfg->active = temp;
+        dconf[i] = (void *)suexec_cfg;
+    }
+
+    r->per_dir_config = dconf; 
 #if 0
 #ifdef RLIMIT_CPU 
     read(fd, &j, sizeof(int)); 
@@ -309,6 +334,7 @@ static void send_req(int fd, request_rec *r, char *argv0, char **env)
     int len; 
     int i = 0; 
     char *data; 
+    module *suexec_mod = ap_find_linked_module("mod_suexec.c");
 
     data = apr_pstrcat(r->pool, r->filename, "\n", argv0, "\n", r->uri, "\n", 
                      NULL); 
@@ -339,6 +365,16 @@ static void send_req(int fd, request_rec *r, char *argv0, char **env)
         ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r, 
                      "write to cgi daemon process"); 
         }     
+    if (suexec_mod) {
+        suexec_config_t *suexec_cfg = ap_get_module_config(r->per_dir_config,
+                                                           suexec_mod);
+
+        write(fd, &suexec_mod->module_index, sizeof(int));
+        write(fd, &suexec_cfg->ugid.uid, sizeof(uid_t));
+        write(fd, &suexec_cfg->ugid.gid, sizeof(gid_t));
+        write(fd, &suexec_cfg->active, sizeof(int));
+    }
+
 #if 0
 #ifdef RLIMIT_CPU 
     if (conf->limit_cpu) { 
@@ -432,7 +468,6 @@ static int cgid_server(void *data)
     }
     
     unixd_setup_child(); /* if running as root, switch to configured user/group */
-
     while (1) {
         int errfileno = STDERR_FILENO;
         char *argv0; 
@@ -506,6 +541,7 @@ static void cgid_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
     void *data;
     int first_time = 0;
     const char *userdata_key = "cgid_init";
+    module **m;
 
     apr_get_userdata(&data, userdata_key, main_server->process->pool);
     if (!data) {
@@ -516,6 +552,11 @@ static void cgid_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
 
     if (!first_time) {
         apr_create_pool(&pcgi, p); 
+
+        total_modules = 0;
+        for (m = ap_preloaded_modules; *m != NULL; m++)
+            total_modules++;
+
 
         if ((pid = fork()) < 0) {
             ap_log_error(APLOG_MARK, APLOG_ERR, errno, main_server, 

@@ -1,4 +1,5 @@
 Changes with Apache 2.0b1
+  *) Make mod_cgid work with SuExec.  [Ryan Bloom]
 
   *) Adopt apr user/group name features for mod_rewrite.  Eliminates some
      'extra' stat's for user/group since they should never occur, and now
