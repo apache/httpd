@@ -365,13 +365,6 @@ extern "C" {
 #define APEXIT_CHILDINIT	0x3
 #define APEXIT_CHILDFATAL	0xf
 
-enum server_token_type {
-    SrvTk_MIN,		/* eg: Apache/1.3.0 */
-    SrvTk_OS,		/* eg: Apache/1.3.0 (UNIX) */
-    SrvTk_FULL,		/* eg: Apache/1.3.0 (UNIX) PHP/3.0 FooBar/1.2b */
-    SrvTk_PRODUCT_ONLY	/* eg: Apache */
-};
-
 API_EXPORT(const char *) ap_get_server_version(void);
 API_EXPORT(void) ap_add_version_component(ap_pool_t *pconf, const char *component);
 API_EXPORT(const char *) ap_get_server_built(void);

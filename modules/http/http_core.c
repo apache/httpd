@@ -2209,6 +2209,13 @@ static const char *set_bs2000_account(cmd_parms *cmd, void *dummy, char *name)
 
 static char *server_version = NULL;
 static int version_locked = 0; 
+
+enum server_token_type {
+    SrvTk_MIN,          /* eg: Apache/1.3.0 */
+    SrvTk_OS,           /* eg: Apache/1.3.0 (UNIX) */
+    SrvTk_FULL,         /* eg: Apache/1.3.0 (UNIX) PHP/3.0 FooBar/1.2b */
+    SrvTk_PRODUCT_ONLY  /* eg: Apache */
+};
 static enum server_token_type ap_server_tokens = SrvTk_FULL;
 
 static ap_status_t reset_version(void *dummy)
