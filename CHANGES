@@ -67,8 +67,10 @@ Changes with Apache 2.0.49
   *) mod_dav: Return a WWW-auth header for MOVE/COPY requests where
      the destination resource gives a 401.  PR 15571.  [Joe Orton]
 
-  *) SECURITY [CAN-2003-0020]: Escape arbitrary data before writing
-     into the errorlog.  [André Malo]
+  *) SECURITY: CAN-2003-0020 (cve.mitre.org)
+     Escape arbitrary data before writing into the errorlog. Unescaped
+     errorlogs are still possible using the compile time switch
+     "-DAP_UNSAFE_ERROR_LOG_UNESCAPED".  [Geoffrey Young, André Malo]
 
   *) mod_autoindex / core: Don't fail to show filenames containing
      special characters like '%'. PR 13598.  [André Malo]
