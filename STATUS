@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2000/12/20 16:21:08 $]
+Last modified at [$Date: 2000/12/20 16:35:22 $]
 
 Release:
 
@@ -70,6 +70,11 @@ RELEASE SHOWSTOPPERS:
 	Status: rbb volunteers
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
+    * The directives to setup output filters need to be re-visited.  These
+      directives aren't consistent with what we already have, and they don't
+      always make good sense.
+          Status:  rbb volunteers.
+
     * FreeBSD has issues when sendfile is used.  Some images aren't sent
       completely.  The work around is to turn off sendfile support.
 
