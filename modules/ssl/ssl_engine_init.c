@@ -117,7 +117,6 @@ static void ssl_init_SSLLibrary(server_rec *s)
     CRYPTO_malloc_init();
     SSL_load_error_strings();
     SSL_library_init();
-    X509V3_add_standard_extensions();
 }
 
 /*
