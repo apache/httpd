@@ -317,10 +317,12 @@
 
     <p>The ScriptAlias directive has the same behavior as the <a
     href="#alias">Alias</a> directive, except that in addition it
-    marks the target directory as containing CGI scripts. URLs with
-    a (%-decoded) path beginning with <em>URL-path</em> will be
-    mapped to scripts beginning with the second argument which is a
-    full pathname in the local filesystem.</p>
+    marks the target directory as containing CGI scripts that will be
+    processed by <a href="mod_cgi.html">mod_cgi</a>'s cgi-script
+    handler. URLs with a (%-decoded) path beginning with
+    <em>URL-path</em> will be mapped to scripts beginning with the
+    second argument which is a full pathname in the local
+    filesystem.</p>
 
     <p>Example:</p>
 
