@@ -1454,7 +1454,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
                                   apr_pool_cleanup_null);
 
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-            "proxy: initialized worker %d in child %d for (%s) min=%d max=%d smax=%d",
+            "proxy: initialized worker %d in child %" APR_PID_T_FMT " for (%s) min=%d max=%d smax=%d",
              worker->id, getpid(), worker->hostname, worker->min,
              worker->hmax, worker->smax);
 
@@ -1470,7 +1470,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
         
         rv = connection_constructor((void **)&(worker->cp->conn), worker, worker->cp->pool);
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-             "proxy: initialized single connection worker %d in child %d for (%s)",
+             "proxy: initialized single connection worker %" APR_PID_T_FMT " in child %d for (%s)",
              worker->id, getpid(), worker->hostname);
     }
     if (rv == APR_SUCCESS)
