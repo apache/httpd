@@ -179,8 +179,10 @@
 <xsl:text>
 </xsl:text> <!-- insert line break -->
 
+          <xsl:if test="not($is-chm) or seealso">
           <div id="quickview">
 
+            <xsl:if test="not($is-chm)">
             <!-- Index of directives, automatically generated from
                  directivesynopsis/name -->
             <h3 class="directives">
@@ -267,9 +269,10 @@
                 <xsl:apply-templates select="section" mode="index"/>
               </ul>
             </xsl:if>
+            </xsl:if> <!-- /!is-chm -->
 
             <xsl:if test="seealso">
-	      <h3>
+	          <h3>
                   <xsl:value-of select="$messages/message[@name='seealso']"/>
               </h3>
 
@@ -294,6 +297,7 @@
             </xsl:if>
 
           </div> <!-- /quickview -->
+          </xsl:if> <!-- !is-chm -->
 
 <xsl:text>
 </xsl:text> <!-- insert line break -->

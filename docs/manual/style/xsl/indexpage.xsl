@@ -53,7 +53,12 @@
 <xsl:text>
 </xsl:text> <!-- insert line break -->
 
-          <form action="http://www.google.com/search" method="get"><p>
+          <form action="http://www.google.com/search" method="get">
+          <xsl:if test="$ext-target = '1'">
+            <xsl:attribute name="target">_blank</xsl:attribute>
+          </xsl:if>
+          
+          <p>
           <!-- search google: -->
           <!-- with all of the words -->
           <input type="text" value="" name="as_q" />
@@ -147,6 +152,10 @@
 
       <xsl:if test="@href">
         <a href="{@href}">
+          <xsl:call-template name="helper.uri.fix">
+            <xsl:with-param name="uri" select="@href"/>
+          </xsl:call-template>
+
           <xsl:value-of select="."/>
         </a>
       </xsl:if>

@@ -46,9 +46,9 @@
 <xsl:text>
 </xsl:text> <!-- insert line break -->
 
-          <xsl:if test="count(category) > 1 or seealso">
+          <xsl:if test="(not($is-chm) and count(category) > 1) or seealso">
             <div id="quickview">
-              <xsl:if test="count(category) > 1">
+              <xsl:if test="not($is-chm) and count(category) > 1">
 
                 <!-- category index -->
                 <ul id="toc">
@@ -152,6 +152,9 @@
 
       <xsl:if test="@href">
         <a href="{@href}">
+          <xsl:call-template name="helper.uri.fix">
+            <xsl:with-param name="uri" select="@href"/>
+          </xsl:call-template>
           <xsl:value-of select="."/>
         </a>
       </xsl:if>

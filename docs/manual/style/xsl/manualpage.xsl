@@ -37,9 +37,9 @@
 <xsl:text>
 </xsl:text> <!-- insert line break -->
 
-          <xsl:if test="count(section) > 1 or seealso">
+          <xsl:if test="(not($is-chm) and count(section) > 1) or seealso">
             <div id="quickview">
-              <xsl:if test="count(section) > 1">
+              <xsl:if test="not($is-chm) and count(section) > 1">
                 <ul id="toc">
                   <xsl:apply-templates select="section" mode="index"/>
                 </ul>

@@ -37,8 +37,9 @@
 <xsl:text>
 </xsl:text> <!-- insert line break -->
 
-          <xsl:if test="count(section) > 1 or (/faq/@all-in-one = 'yes') or seealso">
+          <xsl:if test="(not($is-chm) and (count(section) > 1 or (/faq/@all-in-one = 'yes'))) or seealso">
             <div id="quickview">
+              <xsl:if test="not($is-chm)">
               <xsl:if test="count(section) > 1">
                 <ul id="toc">
                   <xsl:apply-templates select="section" mode="index"/>
@@ -48,6 +49,8 @@
               <xsl:if test="/faq/@all-in-one = 'yes'">
                 <ul id="toc">
                   <li>
+                    <img src="{$path}/images/down.gif" alt="" />
+                    <xsl:text> </xsl:text>
                     <a href="#topics">
                       <xsl:value-of select="$messages/message[@name='topics']"/>
                     </a>
@@ -59,6 +62,7 @@
                   <xsl:apply-templates select="categories/categoryfile" mode="toc"/>
                 </ul>
               </xsl:if>
+              </xsl:if> <!-- chm -->
 
               <xsl:if test="seealso">
                 <h3>
@@ -162,6 +166,8 @@
     <xsl:variable name="current" select="document(.)/faq" />
 
     <li>
+      <img src="{$path}/images/down.gif" alt="" />
+      <xsl:text> </xsl:text>
       <a href="#{$current/section/@id}">
         <xsl:value-of select="$current/section/title" />
       </a>
