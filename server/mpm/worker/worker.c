@@ -874,7 +874,7 @@ static void child_main(int child_num_arg)
     apr_pool_create(&pchild, pconf);
 
     /*stuff to do before we switch id's, so we have permissions.*/
-    reopen_scoreboard(pchild, 0);
+    ap_reopen_scoreboard(pchild, NULL, 0);
 
     rv = SAFE_ACCEPT(apr_proc_mutex_child_init(&accept_mutex, ap_lock_fname,
                                                pchild));

@@ -73,6 +73,7 @@ extern "C" {
 #include "apr_hooks.h"
 #include "apr_thread_proc.h"
 #include "apr_portable.h"
+#include "apr_shm.h"
 
 /* Scoreboard info on a process is, for now, kept very brief --- 
  * just status value and pid (the latter so that the caretaker process
@@ -113,8 +114,7 @@ typedef int ap_generation_t;
  */
 typedef enum {
     SB_NOT_SHARED = 1,
-    SB_SHARED = 2,      /* PARENT */
-    SB_SHARED_CHILD = 3
+    SB_SHARED = 2
 } ap_scoreboard_e;
 
 #define SB_WORKING  0  /* The server is busy and the child is useful. */
@@ -185,7 +185,7 @@ AP_DECLARE(int) ap_exists_scoreboard_image(void);
 AP_DECLARE(void) ap_increment_counts(ap_sb_handle_t *sbh, request_rec *r);
 
 int ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e t);
-apr_status_t reopen_scoreboard(apr_pool_t *p, int detached);
+apr_status_t ap_reopen_scoreboard(apr_pool_t *p, apr_shm_t **shm, int detached);
 void ap_init_scoreboard(void *shared_score);
 int ap_calc_scoreboard_size(void);
 apr_status_t ap_cleanup_scoreboard(void *d);

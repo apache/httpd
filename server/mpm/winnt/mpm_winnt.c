@@ -67,6 +67,7 @@
 #include "apr_getopt.h"
 #include "apr_strings.h"
 #include "apr_lib.h"
+#include "apr_shm.h"
 #include "ap_mpm.h"
 #include "ap_config.h"
 #include "ap_listen.h"
@@ -280,6 +281,23 @@ static void CleanNullACL( void *sa ) {
         LocalFree( sa );
     }
 }
+
+static void winnt_child_init(apr_pool_t *pchild, struct server_rec *ap_server_conf)
+{
+    void *sb_shared;
+    int rv;
+
+    rv = ap_reopen_scoreboard(pchild, &ap_scoreboard_shm, 1);
+    if (rv || !(sb_shared = apr_shm_baseaddr_get(ap_scoreboard_shm))) {
+	ap_log_error(APLOG_MARK, APLOG_CRIT, 0, NULL, "Looks like we're gonna die %d %x", rv, ap_scoreboard_shm);
+        exit(APEXIT_INIT); /* XXX need to return an error from this function */
+    }
+    ap_init_scoreboard(sb_shared);
+
+    ap_scoreboard_image->parent[0].pid = parent_pid;
+    ap_scoreboard_image->parent[0].quiescing = 0;
+}
+
 
 /*
  * The Win32 call WaitForMultipleObjects will only allow you to wait for 
@@ -994,7 +1012,14 @@ static void child_main()
         exit_event = OpenEvent(EVENT_ALL_ACCESS, FALSE, exit_event_name);
         ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, ap_server_conf,
                      "Child %d: exit_event_name = %s", my_pid, exit_event_name);
+        /* Set up the scoreboard. */
+        ap_my_generation = atoi(getenv("AP_MY_GENERATION"));
+    ap_log_error(APLOG_MARK, APLOG_CRIT, APR_SUCCESS, ap_server_conf,
+                     "getting listeners child_main", my_pid);        
+        get_listeners_from_parent(ap_server_conf);
     }
+    ap_log_error(APLOG_MARK, APLOG_CRIT, APR_SUCCESS, ap_server_conf,
+                     "in child_main", my_pid);        
 
     /* Initialize the child_events */
     max_requests_per_child_event = CreateEvent(NULL, TRUE, FALSE, NULL);
@@ -2117,7 +2142,6 @@ AP_DECLARE(int) ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
             HANDLE sb_os_shm;
             DWORD BytesRead;
             apr_status_t rv;
-
             pipe = GetStdHandle(STD_INPUT_HANDLE);
             if (!ReadFile(pipe, &sb_os_shm, sizeof(sb_os_shm),
                           &BytesRead, (LPOVERLAPPED) NULL)
@@ -2135,18 +2159,14 @@ AP_DECLARE(int) ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
                 exit(1);
             }
 
-            if (ap_run_pre_mpm(pconf, SB_SHARED_CHILD) != OK) {
-                exit(1);
-            }
+
             ap_my_generation = atoi(getenv("AP_MY_GENERATION"));
-            get_listeners_from_parent(ap_server_conf);
         }
-        ap_scoreboard_image->parent[0].pid = parent_pid;
-        ap_scoreboard_image->parent[0].quiescing = 0;
-            
+
         if (!set_listeners_noninheritable(pconf)) {
             return 1;
         }
+
         child_main();
 
         ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, ap_server_conf,
@@ -2195,6 +2215,7 @@ static void winnt_hooks(apr_pool_t *p)
 {
     ap_hook_pre_config(winnt_pre_config, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_post_config(winnt_post_config, NULL, NULL, 0);
+    ap_hook_child_init(winnt_child_init, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 /* 

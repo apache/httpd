@@ -143,7 +143,8 @@ void ap_init_scoreboard(void *shared_score)
 {
     char *more_storage;
     int i;
-
+    
+	ap_calc_scoreboard_size();
     ap_scoreboard_image = 
         calloc(1, sizeof(scoreboard) + server_limit * sizeof(worker_score *));
     more_storage = shared_score;
@@ -200,7 +201,7 @@ static apr_status_t open_scoreboard(apr_pool_t *p)
 /* If detach is non-zero, this is a seperate child process,
  * if zero, it is a forked child.
  */
-apr_status_t reopen_scoreboard(apr_pool_t *p, int detached)
+apr_status_t ap_reopen_scoreboard(apr_pool_t *p, apr_shm_t **shm, int detached)
 {
 #if APR_HAS_SHARED_MEMORY
     if (!detached) {
@@ -215,6 +216,9 @@ apr_status_t reopen_scoreboard(apr_pool_t *p, int detached)
     }
     /* everything will be cleared shortly */
 #endif
+    if (*shm) {
+        *shm = ap_scoreboard_shm;
+    }
     return APR_SUCCESS;
 }
 
@@ -260,14 +264,6 @@ int ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e sb_type)
             memset(sb_shared, 0, scoreboard_size);
             ap_init_scoreboard(sb_shared);
         }
-        else if (sb_type == SB_SHARED_CHILD) {
-            void *sb_shared;
-            rv = reopen_scoreboard(p, 1);
-            if (rv || !(sb_shared = apr_shm_baseaddr_get(ap_scoreboard_shm))) {
-                return HTTP_INTERNAL_SERVER_ERROR;
-            }
-            ap_init_scoreboard(sb_shared);
-        }
         else 
 #endif
         {
@@ -282,14 +278,10 @@ int ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e sb_type)
             ap_init_scoreboard(sb_mem);
         }
     }
-    /* can't just memset() */
-    if (sb_type != SB_SHARED_CHILD) {
-        ap_scoreboard_image->global->sb_type = sb_type;
-        ap_scoreboard_image->global->running_generation = running_gen;
-        apr_pool_cleanup_register(p, NULL, ap_cleanup_scoreboard,
-                                  apr_pool_cleanup_null);
-    }
+    ap_scoreboard_image->global->sb_type = sb_type;
+    ap_scoreboard_image->global->running_generation = running_gen;
     ap_restart_time = apr_time_now();
+    apr_pool_cleanup_register(p, NULL, ap_cleanup_scoreboard, apr_pool_cleanup_null);
     return OK;
 }
 

@@ -594,7 +594,7 @@ static void child_main(int child_num_arg)
     apr_pool_tag(ptrans, "transaction");
 
     /* needs to be done before we switch UIDs so we have permissions */
-    reopen_scoreboard(pchild, 0);
+    ap_reopen_scoreboard(pchild, NULL, 0);
     SAFE_ACCEPT(accept_mutex_child_init(pchild));
 
     if (unixd_setup_child()) {
