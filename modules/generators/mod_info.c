@@ -129,55 +129,39 @@ static void *merge_info_config(apr_pool_t *p, void *basev, void *overridesv)
     return new;
 }
 
-static char *mod_info_html_cmd_string(const char *string, char *buf, size_t buf_len, int close)
+static void mod_info_html_cmd_string(request_rec *r, const char *string,
+                                     int close)
 {
     const char *s;
-    char *t;
-    char *end_buf;
 
     s = string;
-    t = buf;
     /* keep space for \0 byte */
-    end_buf = buf + buf_len - 1;
-    while ((*s) && (t < end_buf)) {
+    while (*s) {
         if (*s == '<') {
 	    if (close) {
-	        strncpy(t, "&lt;/,", end_buf -t);
-	        t += 5;
+                ap_rputs("&lt;/,", r);
 	    } else {
-                strncpy(t, "&lt;", end_buf - t);
-                t += 4;
+                ap_rputs("&lt;", r);
 	    }
         }
         else if (*s == '>') {
-            strncpy(t, "&gt;", end_buf - t);
-            t += 4;
+            ap_rputs("&gt;", r);
         }
         else if (*s == '&') {
-            strncpy(t, "&amp;", end_buf - t);
-            t += 5;
+            ap_rputs("&amp;", r);
         }
 	else if (*s == ' ') {
 	    if (close) {
-	        strncpy(t, "&gt;", end_buf -t);
-	        t += 4;
+	        ap_rputs("&gt;", r);
 	        break;
 	    } else {
-	      *t++ = *s;
+                ap_rputc(*s, r);
             }
 	} else {
-            *t++ = *s;
+            ap_rputc(*s, r);
         }
         s++;
     }
-    /* oops, overflowed... don't overwrite */
-    if (t > end_buf) {
-	*end_buf = '\0';
-    }
-    else {
-	*t = '\0';
-    }
-    return (buf);
 }
 
 static void mod_info_module_cmds(request_rec * r, const command_rec * cmds,
@@ -201,9 +185,9 @@ static void mod_info_module_cmds(request_rec * r, const command_rec * cmds,
 		    apr_snprintf(htmlstring, sizeof(htmlstring), "%s %s",
 				tmptree->parent->directive,
 				tmptree->parent->args);
-		    ap_rprintf(r, "<dd><tt>%s</tt></dd>\n",
-			       mod_info_html_cmd_string(htmlstring, buf,
-							sizeof(buf), 0));
+                    ap_rputs("<dd><tt>", r);
+                    mod_info_html_cmd_string(r, htmlstring, 0);
+                    ap_rputs("</tt></dd>\n", r);
 		}
 		if (nest == 2) {
 		    ap_rprintf(r, "<dd><tt>&nbsp;&nbsp;&nbsp;&nbsp;%s "
@@ -214,10 +198,9 @@ static void mod_info_module_cmds(request_rec * r, const command_rec * cmds,
 			       "<dd><tt>&nbsp;&nbsp;%s <i>%s</i></tt></dd>\n",
 			       tmptree->directive, tmptree->args);
 		} else {
-		    ap_rprintf(r, "<dd><tt>%s <i>%s</i></tt></dd>\n",
-			       mod_info_html_cmd_string(tmptree->directive,
-							buf, sizeof(buf),
-							0), tmptree->args);
+                    ap_rputs("<dd><tt>", r);
+                    mod_info_html_cmd_string(r, tmptree->directive, 0);
+                    ap_rprintf(r, " <i>%s</i></tt></dd>\n", tmptree->args);
 		}
 	    }
 	    ++cmd;
@@ -232,9 +215,9 @@ static void mod_info_module_cmds(request_rec * r, const command_rec * cmds,
 		apr_snprintf(htmlstring, sizeof(htmlstring), "%s %s",
 			    tmptree->parent->directive,
 			    tmptree->parent->args);
-		ap_rprintf(r, "<dd><tt>%s</tt></dd>\n",
-			   mod_info_html_cmd_string(htmlstring, buf,
-						    sizeof(buf), 1));
+		ap_rputs("<dd><tt>", r);
+                mod_info_html_cmd_string(r, htmlstring, 1);
+                ap_rputs("</tt></dd>\n", r);
 		block_start--;
 	    }
             if (tmptree->parent) {
@@ -361,7 +344,6 @@ static const char *find_more_info(server_rec *s, const char *module_name)
 static int display_info(request_rec *r)
 {
     module *modp = NULL;
-    char buf[MAX_STRING_LEN];
     const char *more_info;
     const command_rec *cmd = NULL;
 #ifdef NEVERMORE
@@ -506,9 +488,9 @@ static int display_info(request_rec *r)
                     ap_rputs("<dt><strong>Module Directives:</strong></dt>", r);
                     while (cmd) {
                         if (cmd->name) {
-                            ap_rprintf(r, "<dd><tt>%s - <i>",
-				    mod_info_html_cmd_string(cmd->name,
-					buf, sizeof(buf), 0));
+                            ap_rputs("<dd><tt>", r);
+                            mod_info_html_cmd_string(r, cmd->name, 0);
+                            ap_rputs(" - <i>", r);
                             if (cmd->errmsg) {
                                 ap_rputs(cmd->errmsg, r);
                             }
