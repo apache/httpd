@@ -857,7 +857,7 @@ static int cfg_getch(void *param)
 static void *cfg_getstr(void *buf, size_t bufsiz, void *param)
 {
     ap_file_t *cfp = (ap_file_t *) param;
-    if (ap_gets(cfp, buf, bufsiz) == APR_SUCCESS)
+    if (ap_fgets(cfp, buf, bufsiz) == APR_SUCCESS)
         return buf;
     return NULL;
 }
