@@ -1,5 +1,8 @@
 Changes with Apache 1.3.21
 
+  *) Update the mime.types file to the registered media types as
+     of 2001-09-25, and add xsl, so, dll extensions [Mark Cox]
+
   *) Resolved the build failure on Win32 using MSVC 5.0 (without the
      current SDK.)  PRs 7790, 7948.  [William Rowe]
 
