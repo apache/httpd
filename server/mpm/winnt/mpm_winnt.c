@@ -73,7 +73,6 @@
 #include "mpm_default.h"
 #include "mpm_winnt.h"
 #include "mpm_common.h"
-#include "scoreboard.h"
 
 typedef HANDLE thread;
 #ifdef CONTAINING_RECORD

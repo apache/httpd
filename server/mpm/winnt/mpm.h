@@ -64,6 +64,8 @@
  * move most of this stuff to mpm_common.h?
  */
 
+#include "scoreboard.h"
+
 #define MPM_NAME "WinNT"
 
 extern int ap_threads_per_child;
