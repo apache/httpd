@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Recognize QSA flag in mod_rewrite again.
+     [Jan Kratochvil <rcpt-dev.AT.httpd.apache.org jankratochvil.net>]
+
   *) Restructured mod_auth_ldap to fit the new authentication model.
      The module is now called authnz_ldap and has been moved out of
      the modules/experimental area and into modules/aaa with the other

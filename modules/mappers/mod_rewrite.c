@@ -3293,8 +3293,8 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, void *_cfg,
 
     case 'q':
     case 'Q':
-        if (   !strcasecmp(key, "QSA")
-            || !strcasecmp(key, "qsappend")) {             /* qsappend */
+        if (   !strcasecmp(key, "SA")
+            || !strcasecmp(key, "sappend")) {              /* qsappend */
             cfg->flags |= RULEFLAG_QSAPPEND;
         }
         else {
