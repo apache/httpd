@@ -406,6 +406,77 @@ static int ReportStatusToSCMgr(int currentState, int exitCode, int waitHint)
     return(rv);
 }
 
+/* Set the service description regardless of platform.
+ * We revert to set_service_description on NT/9x, the
+ * very long way so any Apache management program can grab the
+ * description.  This would be bad on Win2000, since it wouldn't
+ * notify the service control manager of the name change.
+ */
+
+/* ChangeServiceConfig2() prototype:
+ */
+typedef WINADVAPI BOOL (WINAPI *CSD_T)(SC_HANDLE, DWORD, LPCVOID);
+
+/* Windows 2000 alone supports ChangeServiceConfig2 in order to
+ * register our server_version string... so we need some fixups
+ * to avoid binding to that function if we are on WinNT/9x.
+ */
+static void set_service_description(void)
+{
+    const char *full_description;
+    SC_HANDLE schSCManager;
+    CSD_T ChangeServiceDescription = NULL;
+    HANDLE hwin2000scm;
+    BOOL ret = 0;
+
+    /* Nothing to do if we are a console
+     */
+    if (!mpm_service_name)
+        return;
+
+    /* Time to fix up the description, upon each successful restart
+     */
+    full_description = ap_get_server_version();
+
+    if ((osver.dwPlatformId == VER_PLATFORM_WIN32_NT)
+     && (hwin2000scm = GetModuleHandle("ADVAPI32.DLL"))
+     && (ChangeServiceDescription = (CSD_T) GetProcAddress(hwin2000scm, 
+                                                "ChangeServiceConfig2A"))
+     && (schSCManager = OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS)))
+    {    
+        SC_HANDLE schService = OpenService(schSCManager, mpm_service_name,
+                                               SERVICE_ALL_ACCESS);
+        if (schService) {
+            if (ChangeServiceDescription(schService,
+                                         SERVICE_CONFIG_DESCRIPTION,
+                                         &full_description))
+                full_description = NULL;
+            CloseServiceHandle(schService);
+        }
+        CloseServiceHandle(schSCManager);
+    }
+
+    if (full_description) 
+    {
+        char szPath[MAX_PATH];
+        HKEY hkey;
+
+        /* Create/Find the Service key that Monitor Applications iterate */
+        apr_snprintf(szPath, sizeof(szPath), 
+                     "SYSTEM\\CurrentControlSet\\Services\\%s", 
+                     mpm_service_name);
+        if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, szPath, 0, KEY_SET_VALUE, &hkey) 
+                != ERROR_SUCCESS) {
+            return;
+        }
+
+        /* Attempt to set the Description value for our service */
+        RegSetValueEx(hkey, "Description", 0, REG_SZ,  
+                      (unsigned char *) full_description, 
+                      strlen(full_description) + 1);
+        RegCloseKey(hkey);
+    }
+}
 
 /* handle the SCM's ControlService() callbacks to our service */
 
@@ -793,6 +864,7 @@ apr_status_t mpm_service_to_start(const char **display_name)
 
 apr_status_t mpm_service_started(void)
 {
+    set_service_description();
     if (osver.dwPlatformId == VER_PLATFORM_WIN32_NT)
     {
         ReportStatusToSCMgr(SERVICE_RUNNING,    // service state
@@ -900,6 +972,8 @@ apr_status_t mpm_service_install(apr_pool_t *ptemp, int argc,
             return (rv);
         }
     }
+
+    set_service_description();
 
     /* For both WinNT & Win9x store the service ConfigArgs in the registry...
      */
