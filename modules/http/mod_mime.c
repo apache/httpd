@@ -790,6 +790,10 @@ static int find_ct(request_rec *r)
         return OK;
     }
 
+    if (!r->filename) {
+        return DECLINED;
+    }
+
     conf = (mime_dir_config *)ap_get_module_config(r->per_dir_config,
                                                    &mime_module);
     exception_list = apr_array_make(r->pool, 2, sizeof(char *));

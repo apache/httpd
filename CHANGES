@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_mime: Workaround to prevent a segfault if r->filename=NULL
+     [Brian Pane]
+ 
   *) Added character set support to mod_auth_LDAP to allow it to 
      convert extended characters used in the user ID to UTF-8 
      before authenticating against the LDAP directory. The new
