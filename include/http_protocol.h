@@ -227,6 +227,40 @@ AP_DECLARE(size_t) ap_send_mmap(apr_mmap_t *mm, request_rec *r, size_t offset,
                              size_t length);
 #endif
 
+/* The index of the first bit field that is used to index into a limit
+ * bitmask. M_INVALID + 1 to METHOD_NUMBER_LAST.
+ */
+#define METHOD_NUMBER_FIRST M_INVALID + 1
+
+/* The max method number. Method numbers are used to shift bitmasks,
+ * so this cannot exceed 63, and all bits high is equal to -1, which is a
+ * special flag, so the last bit used has index 62.
+ */
+#define METHOD_NUMBER_LAST  62
+
+/**
+ * Register a new request method, and return the offset that will be
+ * associated with that method.
+ *
+ * @param p        The pool to create registered method numbers from.
+ * @param methname The name of the new method to register.
+ * @return         Ab int value representing an offset into a bitmask.
+ */
+AP_DECLARE(int) ap_method_register(apr_pool_t *p, char *methname);
+
+/**
+ * Initialize the method_registry and allocate memory for it.
+ *
+ * @param p Pool to allocate memory for the registry from.
+ */
+AP_DECLARE(void) ap_method_registry_init(apr_pool_t *p);
+
+/*
+ * This is a convenience macro to ease with checking a mask
+ * against a method name.
+ */
+#define AP_METHOD_CHECK_ALLOWED(mask, methname) ((mask) & (1 << ap_method_number_of((methname))))
+
 /**
  * Create a new method list with the specified number of preallocated
  * slots for extension methods.

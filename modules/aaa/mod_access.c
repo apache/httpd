@@ -91,7 +91,7 @@ enum allowdeny_type {
 };
 
 typedef struct {
-    int limited;
+    apr_int64_t limited;
     union {
 	char *from;
         apr_ipsubnet_t *ip;
@@ -237,8 +237,9 @@ static int in_domain(const char *domain, const char *what)
 
 static int find_allowdeny(request_rec *r, apr_array_header_t *a, int method)
 {
+
     allowdeny *ap = (allowdeny *) a->elts;
-    int mmask = (1 << method);
+    apr_int64_t mmask = (1 << method);
     int i;
     int gothost = 0;
     const char *remotehost = NULL;

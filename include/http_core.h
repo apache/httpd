@@ -277,7 +277,7 @@ typedef struct require_line require_line;
 /** A structure to keep track of authorization requirements */
 struct require_line {
     /** Where the require line is in the config file. */
-    int method_mask;
+    apr_int64_t method_mask;
     /** The complete string from the command line */
     char *requirement;
 };

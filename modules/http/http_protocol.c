@@ -299,6 +299,64 @@ AP_DECLARE(int) ap_meets_conditions(request_rec *r)
     return OK;
 }
 
+/**
+ * Singleton registry of additional methods. This maps new method names
+ * such as "MYGET" to methnums, which are int offsets into bitmasks.
+ *
+ * This follows the same technique as standard M_GET, M_POST, etc. These
+ * are dynamically assigned when modules are loaded and <Limit GET MYGET>
+ * directives are processed.
+ */
+static apr_hash_t *methods_registry=NULL;
+static int cur_method_number = METHOD_NUMBER_FIRST;
+
+/* This internal function is used to clear the method registry
+ * and reset the cur_method_number counter.
+ */
+static apr_status_t ap_method_registry_destroy(void *notused)
+{
+    methods_registry = NULL;
+    cur_method_number = METHOD_NUMBER_FIRST;
+    return APR_SUCCESS;
+}
+
+AP_DECLARE(void) ap_method_registry_init(apr_pool_t *p)
+{
+    methods_registry = apr_hash_make(p);
+    apr_pool_cleanup_register(p, NULL,
+			      ap_method_registry_destroy,
+			      apr_pool_cleanup_null);
+}
+
+AP_DECLARE(int) ap_method_register(apr_pool_t *p, char *methname)
+{
+    int *newmethnum;
+
+    if (methods_registry == NULL) {
+	ap_method_registry_init(p);
+    }
+
+    if (methname == NULL) {
+	return M_INVALID;
+    }
+
+    if (cur_method_number > METHOD_NUMBER_LAST) {
+	/* The method registry  has run out of dynamically
+	 * assignable method numbers. Log this and return M_INVALID.
+	 */
+	ap_log_perror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, p,
+		      "Maximum new request methods %d reached while registering method %s.",
+		      METHOD_NUMBER_LAST, methname);
+	return M_INVALID;
+    }
+
+    newmethnum  = (int*)apr_palloc(p,sizeof(int));
+    *newmethnum = cur_method_number++;
+    apr_hash_set(methods_registry, methname, APR_HASH_KEY_STRING, newmethnum);
+
+    return *newmethnum;
+}
+
 /* Get the method number associated with the given string, assumed to
  * contain an HTTP method.  Returns M_INVALID if not recognized.
  *
@@ -308,6 +366,8 @@ AP_DECLARE(int) ap_meets_conditions(request_rec *r)
  */
 AP_DECLARE(int) ap_method_number_of(const char *method)
 {
+    int *methnum = NULL;
+
     switch (*method) {
         case 'H':
            if (strcmp(method, "HEAD") == 0)
@@ -362,6 +422,16 @@ AP_DECLARE(int) ap_method_number_of(const char *method)
                return M_UNLOCK;
            break;
     }
+
+    /* check if the method has been dynamically registered */
+    if (methods_registry != NULL) {
+	methnum = (int*)apr_hash_get(methods_registry,
+				     method,
+				     APR_HASH_KEY_STRING);
+	if (methnum != NULL)
+	    return *methnum;
+    }
+
     return M_INVALID;
 }
 
@@ -904,7 +974,7 @@ static void terminate_header(apr_bucket_brigade *bb)
 static char *make_allow(request_rec *r)
 {
     char *list;
-    int mask;
+    apr_int64_t mask;
 
     mask = r->allowed_methods->method_mask;
     list = apr_pstrcat(r->pool,
@@ -2073,8 +2143,8 @@ AP_DECLARE(void) ap_method_list_remove(ap_method_list_t *l,
     char **methods;
  
     /*
-     * If it's one of our known methods, use the shortcut and use the
-     * bitmask.
+     * If it's a known methods, either builtin or registered
+     * by a module, use the bitmask.
      */
     methnum = ap_method_number_of(method);
     l->method_mask |= ~(1 << methnum);

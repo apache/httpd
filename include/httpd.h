@@ -498,7 +498,10 @@ AP_DECLARE(const char *) ap_get_server_built(void);
 #define M_UNLOCK    14
 #define M_INVALID   15
 
-#define METHODS     16
+/* METHODS needs to be equal to the number of bits
+ * we are using for limit masks.
+ */
+#define METHODS     64
 
 typedef struct ap_method_list_t ap_method_list_t;
 /**
@@ -508,8 +511,8 @@ typedef struct ap_method_list_t ap_method_list_t;
  */
 struct ap_method_list_t {
     /* The bitmask used for known methods */
-    int method_mask;
-    /* The array used for extension methods */
+    apr_int64_t method_mask;
+    /* the array used for extension methods */
     apr_array_header_t *method_list;
 };
 
@@ -679,7 +682,7 @@ struct request_rec {
      *  HTTP_METHOD_NOT_ALLOWED.  Unfortunately this means that a Script GET
      *  handler can't be installed by mod_actions.
      */
-    int allowed;
+    apr_int64_t allowed;
     /** Array of extension methods */
     apr_array_header_t *allowed_xmethods; 
     /** List of allowed methods */
