@@ -906,6 +906,12 @@ typedef int rlim_t;
 #define PF_INET AF_INET
 #define S_IEXEC S_IXUSR
 
+#elif defined(BONE)
+#define NO_KILLPG
+#define NEED_INITGROUPS
+#define PF_INET AF_INET
+#define S_IEXEC S_IXUSR
+
 #elif defined(_CX_SX)
 #define JMP_BUF sigjmp_buf
 #include <sys/types.h>

@@ -72,7 +72,7 @@
 #endif
 #include "ap.h"
 #include "ap_md5.h"
-#if defined(MPE) || defined(QNX) || defined(WIN32) || defined(__TANDEM) || defined(OS390) || defined(BEOS)
+#if defined(MPE) || defined(QNX) || defined(WIN32) || defined(__TANDEM) || defined(OS390) || defined(BEOS) || defined(BONE)
 #include <signal.h>
 #else
 #include <sys/signal.h>

@@ -3107,7 +3107,7 @@ static void detach(void)
 
 static void set_group_privs(void)
 {
-#if !defined(WIN32) && !defined(NETWARE) && !defined(BEOS)
+#if !defined(WIN32) && !defined(NETWARE) && !defined(BEOS) && !defined(BONE)
     if (!geteuid()) {
 	char *name;
 

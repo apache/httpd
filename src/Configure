@@ -777,8 +777,18 @@ case "$PLAT" in
 	DEF_WANTHSREGEX=yes
 	;;
     *-BeOS*)
-	OS='BeOS';
-	CFLAGS="$CFLAGS -DBEOS"
+	PLATOSVER=`uname -r`
+        case "$PLATOSVER" in
+            5.1*)
+                OS="BeOS BONE"
+                LIBS="-lbind -lsocket -lbe -lroot"
+                CFLAGS="$CFLAGS -DBONE"
+                ;;
+            *)
+                OS='BeOS';
+	        CFLAGS="$CFLAGS -DBEOS"
+                ;;
+        esac
 	DEF_WANTHSREGEX=yes
 	;;
     4850-*.*)
