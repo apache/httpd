@@ -64,12 +64,15 @@ config_h_in = include/ap_config_auto.h.in
 apr_private.h_in = lib/apr/include/apr_private.h.in
 apr_configure = lib/apr/configure
 mm_configure = lib/apr/shmem/unix/mm/configure
+pcre_configure = lib/pcre/configure
 
 APACHE_TARGETS = $(TOUCH_FILES) $(LT_TARGETS) configure $(config_h_in)
 
 APR_TARGETS = $(apr_configure) $(apr_private.h_in) $(mm_configure)
 
-targets = .deps aclocal.m4 $(APACHE_TARGETS) $(APR_TARGETS)
+PCRE_TARGETS = $(pcre_configure)
+
+targets = .deps aclocal.m4 $(APACHE_TARGETS) $(APR_TARGETS) $(PCRE_TARGETS)
 
 all: $(targets)
 
@@ -112,3 +115,7 @@ $(apr_configure): lib/apr/aclocal.m4 lib/apr/configure.in lib/apr/threads.m4
 $(mm_configure): lib/apr/shmem/unix/mm/configure.in
 	@echo rebuilding $@
 	(cd lib/apr/shmem/unix/mm && autoconf)
+
+$(pcre_configure): lib/pcre/configure.in
+	@echo rebuilding $@
+	(cd lib/pcre && autoconf)
