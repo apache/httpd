@@ -44,6 +44,8 @@ char *ap_os_error_message(int err);
 #define lstat(x, y) stat(x, y)
 
 #define isinf(n) (!isfinite(n))
+#define HAVE_ISINF
+#define HAVE_ISNAN
 
 /* Dynamic loading functions */
 #define     ap_os_dso_handle_t  unsigned long
