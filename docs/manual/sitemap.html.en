@@ -98,10 +98,13 @@ Server on HPUX</a></li>
 <li><a href="mod/mod_auth_ldap.html">Apache Module mod_auth_ldap</a></li>
 <li><a href="mod/mod_authn_anon.html">Apache Module mod_authn_anon</a></li>
 <li><a href="mod/mod_authn_dbm.html">Apache Module mod_authn_dbm</a></li>
+<li><a href="mod/mod_authn_default.html">Apache Module mod_authn_default</a></li>
 <li><a href="mod/mod_authn_file.html">Apache Module mod_authn_file</a></li>
 <li><a href="mod/mod_authz_dbm.html">Apache Module mod_authz_dbm</a></li>
+<li><a href="mod/mod_authz_default.html">Apache Module mod_authz_default</a></li>
 <li><a href="mod/mod_authz_groupfile.html">Apache Module mod_authz_groupfile</a></li>
 <li><a href="mod/mod_authz_host.html">Apache Module mod_authz_host</a></li>
+<li><a href="mod/mod_authz_user.html">Apache Module mod_authz_user</a></li>
 <li><a href="mod/mod_autoindex.html">Apache Module mod_autoindex</a></li>
 <li><a href="mod/mod_cache.html">Apache Module mod_cache</a></li>
 <li><a href="mod/mod_cern_meta.html">Apache Module mod_cern_meta</a></li>
