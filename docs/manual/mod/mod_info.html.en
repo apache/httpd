@@ -23,7 +23,7 @@ SetHandler server-info<br />
     <p>You may wish to add a 
     <code class="directive"><a href="../mod/core.html#&lt;limit&gt;">&lt;Limit&gt;</a></code> 
     clause inside the 
-    <code class="directive"><a href="../mod/core.html#&lt;location&gt;">&lt;location&gt;</a></code>
+    <code class="directive"><a href="../mod/core.html#&lt;location&gt;">&lt;Location&gt;</a></code>
     directive to limit access to your server configuration 
     information.</p>
 
@@ -69,8 +69,10 @@ information displayed by the server-info handler</td></tr><tr><th><a href="direc
     the module <em>module-name</em>. Example:</p>
 
 <div class="example"><p><code>
-AddModuleInfo mod_authn_file.c 'See &lt;A \<br />
-  HREF="http://www.apache.org/docs-2.0/mod/mod_authn_file.html"&gt;\<br />
-  http://www.apache.org/docs-2.0/mod/mod_authn_file.html&lt;/A&gt;'
+  AddModuleInfo mod_authn_file.c 'See &lt;a \<br />
+  <span class="indent">
+    href="http://www.apache.org/docs-2.0/mod/mod_authn_file.html"&gt;\<br />
+    http://www.apache.org/docs-2.0/mod/mod_authn_file.html&lt;/a&gt;'
+  </span>
 </code></p></div>
 </div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>
