@@ -137,8 +137,8 @@ Allow use of the authorization directives
 <A HREF="mod_auth_dbm.html#authdbmuserfile">AuthDBMUserFile</A>,
 <A HREF="mod_auth.html#authgroupfile">AuthGroupFile</A>,
 <A HREF="#authname">AuthName</A>, <A HREF="#authtype">AuthType</A>,
-<A HREF="mod_auth.html#authuserfile">AuthUserFile</A> and
-<A HREF="#require">require</A>).
+<A HREF="mod_auth.html#authuserfile">AuthUserFile</A>,
+<A HREF="#require">require</A>, etc.).
 <dt>FileInfo
 <dd>
 <!--%plaintext &lt;?INDEX {\tt FileInfo} override&gt; -->
@@ -146,8 +146,9 @@ Allow use of the directives controlling document types
 (<A HREF="mod_mime.html#addencoding">AddEncoding</A>,
 <A HREF="mod_mime.html#addlanguage">AddLanguage</A>,
 <A HREF="mod_mime.html#addtype">AddType</A>,
-<A HREF="#defaulttype">DefaultType</A> and
-<A HREF="mod_negotiation.html#languagepriority">LanguagePriority</A>).
+<A HREF="#defaulttype">DefaultType</A>,
+<A HREF="#errordocment">ErrorDocument</A>,
+<A HREF="mod_negotiation.html#languagepriority">LanguagePriority</A>, etc.).
 <dt>Indexes
 <dd>
 <!--%plaintext &lt;?INDEX {\tt Indexes} override&gt; -->
@@ -161,8 +162,8 @@ Allow use of the directives controlling directory indexing
 <A HREF="mod_dir.html#fancyindexing">FancyIndexing</A>,
 <A HREF="mod_dir.html#headername">HeaderName</A>,
 <A HREF="mod_dir.html#indexignore">IndexIgnore</A>,
-<A HREF="mod_dir.html#indexoptions">IndexOptions</A> and
-<A HREF="mod_dir.html#readmename">ReadmeName</A>).
+<A HREF="mod_dir.html#indexoptions">IndexOptions</A>,
+<A HREF="mod_dir.html#readmename">ReadmeName</A>, etc.).
 <dt>Limit
 <dd>
 <!--%plaintext &lt;?INDEX {\tt Limit} override&gt; -->
@@ -342,6 +343,7 @@ please avoid that.
 <strong>Syntax:</strong> ErrorDocument <em>error-code document</em><br>
 <strong>Context</strong> server config, virtual host, directory, .htaccess<br>
 <strong>Status:</strong> core<br>
+<strong>Override:</strong> FileInfo<br>
 <strong>Compatibility:</strong> The directory and .htaccess contexts
 are only available in Apache 1.1 and later.<p>
 
