@@ -32,7 +32,7 @@
    in it, so any prototype that use a macro in the return type declaration 
    is too complex for scandoc.  Those functions require a deffunc.</p>
 
-<p>An example (using &&gt; rather than &gt;):</p>
+<p>An example (using &amp;gt; rather than &gt;):</p>
 <pre>
 /**
  * return the final element of the pathname
@@ -40,10 +40,10 @@
  * @return the final element of the path
  * @tip Examples:
  * &lt;pre&gt;
- *                 "/foo/bar/gum"   -&&gt; "gum"
- *                 "/foo/bar/gum/"  -&&gt; ""
- *                 "gum"            -&&gt; "gum"
- *                 "wi\\n32\\stuff" -&&gt; "stuff"
+ *                 "/foo/bar/gum"   -&amp;gt; "gum"
+ *                 "/foo/bar/gum/"  -&amp;gt; ""
+ *                 "gum"            -&amp;gt; "gum"
+ *                 "wi\\n32\\stuff" -&amp;gt; "stuff"
  * &lt;/pre&gt;
  * @deffunc const char * ap_filename_of_pathname(const char *pathname)
  */
