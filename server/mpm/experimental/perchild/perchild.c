@@ -1092,7 +1092,7 @@ static void perform_child_maintenance(void)
 static void server_main_loop(int remaining_children_to_start)
 {
     int child_slot;
-    apr_exit_why exitwhy;
+    apr_exit_why_e exitwhy;
     int status;
     apr_proc_t pid;
     int i;
