@@ -980,12 +980,6 @@ PROXY_DECLARE(int) ap_proxy_checkproxyblock(request_rec *r, proxy_server_conf *c
 }
 
 /* set up the minimal filter set */
-PROXY_DECLARE(int) ap_proxy_pre_http_connection(conn_rec *c)
-{
-    ap_add_input_filter("CORE_IN", NULL, NULL, c);
-    ap_add_output_filter("CORE", NULL, NULL, c);
-    return OK;
-}
 PROXY_DECLARE(int) ap_proxy_pre_http_request(conn_rec *c, request_rec *r)
 {
     ap_add_input_filter("HTTP_IN", NULL, r, c);
