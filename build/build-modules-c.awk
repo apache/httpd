@@ -32,6 +32,7 @@ END {
     print ""
     print "#include \"ap_config.h\""
     print "#include \"httpd.h\""
+    print "#define CORE_PRIVATE"
     print "#include \"http_config.h\""
     print ""
     for (i = 0; i < pn; ++i) {
@@ -50,6 +51,17 @@ END {
         printf "  &%s_module,\n", modules[i]
     }
     print "  NULL"
+    print "};"
+    print ""
+    print "/*"
+    print " *  We need the symbols as strings for <IfModule> containers"
+    print " */"
+    print ""
+    print "ap_module_symbol_t ap_prelinked_module_symbols[] = {"
+    for (i = 0; i < n; ++i) {
+        printf ("  {\"%s_module\", &%s_module},\n", modules[i], modules[i])
+    }
+    print "  {NULL, NULL}"
     print "};"
     print ""
     print "/*"

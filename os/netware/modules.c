@@ -69,6 +69,31 @@ module *ap_prelinked_modules[] = {
   NULL
 };
 
+ap_module_symbol_t ap_prelinked_module_symbols[] = {
+  {"core_module", &core_module},
+  {"mpm_netware_module", &mpm_netware_module},
+  {"http_module", &http_module},
+  {"so_module", &so_module},
+  {"mime_module", &mime_module},
+  {"authz_host_module", &authz_host_module},
+  {"negotiation_module", &negotiation_module},
+  {"include_module", &include_module},
+  {"autoindex_module", &autoindex_module},
+  {"dir_module", &dir_module},
+  {"cgi_module", &cgi_module},
+  {"userdir_module", &userdir_module},
+  {"alias_module", &alias_module},
+  {"env_module", &env_module},
+  {"log_config_module", &log_config_module},
+  {"asis_module", &asis_module},
+  {"imap_module", &imap_module},
+  {"actions_module", &actions_module},
+  {"setenvif_module", &setenvif_module},
+  {"nwssl_module", &nwssl_module},
+  {"netware_module", &netware_module},
+  {NULL, NULL}
+};
+
 module *ap_preloaded_modules[] = {
   &core_module,
   &mpm_netware_module,
