@@ -43,14 +43,12 @@ POSSIBILITY OF SUCH DAMAGE.
 -----------------------------------------------------------------------------
 */
 
-#include "apr.h"
+#include "httpd.h"
 #include "apr_strings.h"
+#include "pcre.h"
 
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
-
-#include "ap_regex.h"
-#include "pcre.h"
 
 #ifndef POSIX_MALLOC_THRESHOLD
 #define POSIX_MALLOC_THRESHOLD (10)

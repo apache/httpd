@@ -43,7 +43,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MD /W3 /O2 /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /c
-# ADD CPP /nologo /MD /W3 /Zi /O2 /I "./include" /I "./srclib/apr/include" /I "./srclib/apr-util/include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /Fd"Release\libhttpd_cl" /FD /c
+# ADD CPP /nologo /MD /W3 /Zi /O2 /I "./include" /I "./srclib/apr/include" /I "./srclib/apr-util/include" /I "./srclib/pcre" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /Fd"Release\libhttpd_cl" /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
@@ -53,11 +53,11 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /machine:I386
-# ADD LINK32 kernel32.lib user32.lib advapi32.lib ws2_32.lib mswsock.lib "Release\buildmark.obj" /nologo /subsystem:windows /dll /incremental:no /debug /machine:I386 /base:@"os\win32\BaseAddr.ref",libhttpd.dll /opt:ref
+# ADD LINK32 kernel32.lib user32.lib advapi32.lib ws2_32.lib mswsock.lib "Release\buildmark.obj" /nologo /subsystem:windows /dll /debug /machine:I386 /base:@"os\win32\BaseAddr.ref",libhttpd.dll /opt:ref
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
 PreLink_Desc=Compiling buildmark
-PreLink_Cmds=cl.exe /nologo /MD /W3 /O2 /I "./include" /I "./srclib/apr/include" /I "./srclib/apr-util/include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /Fd"Release\libhttpd" /FD /c server\buildmark.c /Fo"Release\buildmark.obj"
+PreLink_Cmds=cl.exe /nologo /MD /W3 /O2 /I "./include" /I "./srclib/apr/include" /I "./srclib/apr-util/include" /I "./srclib/pcre" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /Fd"Release\libhttpd" /FD /c server\buildmark.c /Fo"Release\buildmark.obj"
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
@@ -74,7 +74,7 @@ PreLink_Cmds=cl.exe /nologo /MD /W3 /O2 /I "./include" /I "./srclib/apr/include"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /GX /Zi /Od /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /c
-# ADD CPP /nologo /MDd /W3 /GX /Zi /Od /I "./include" /I "./srclib/apr/include" /I "./srclib/apr-util/include" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /Fd"Debug\libhttpd_cl" /FD /c
+# ADD CPP /nologo /MDd /W3 /GX /Zi /Od /I "./include" /I "./srclib/apr/include" /I "./srclib/apr-util/include" /I "./srclib/pcre" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /Fd"Debug\libhttpd_cl" /FD /c
 # ADD BASE MTL /nologo /D "_DEBUG" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
@@ -88,7 +88,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
 PreLink_Desc=Compiling buildmark
-PreLink_Cmds=cl.exe /nologo /MDd /W3 /GX /Zi /Od /I "./include" /I "./srclib/apr/include" /I "./srclib/apr-util/include" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /Fd"Debug\libhttpd" /FD /c server\buildmark.c /Fo"Debug\buildmark.obj"
+PreLink_Cmds=cl.exe /nologo /MDd /W3 /GX /Zi /Od /I "./include" /I "./srclib/apr/include" /I "./srclib/apr-util/include" /I "./srclib/pcre" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /Fd"Debug\libhttpd" /FD /c server\buildmark.c /Fo"Debug\buildmark.obj"
 # End Special Build Tool
 
 !ENDIF 
@@ -241,35 +241,6 @@ InputPath=.\modules\dav\main\mod_dav.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\modules\mappers\mod_so.h
-
-!IF  "$(CFG)" == "libhttpd - Win32 Release"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Creating include/mod_so.h
-InputPath=.\modules\mappers\mod_so.h
-
-".\include\mod_so.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	type .\modules\mappers\mod_so.h > .\include\mod_so.h
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Creating include/mod_so.h
-InputPath=.\modules\mappers\mod_so.h
-
-".\include\mod_so.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	type .\modules\mappers\mod_so.h > .\include\mod_so.h
-
-# End Custom Build
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
 SOURCE=.\modules\filters\mod_include.h
 
 !IF  "$(CFG)" == "libhttpd - Win32 Release"
@@ -328,6 +299,35 @@ InputPath=.\modules\proxy\mod_proxy.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\modules\mappers\mod_so.h
+
+!IF  "$(CFG)" == "libhttpd - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Creating include/mod_so.h
+InputPath=.\modules\mappers\mod_so.h
+
+".\include\mod_so.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	type .\modules\mappers\mod_so.h > .\include\mod_so.h
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Creating include/mod_so.h
+InputPath=.\modules\mappers\mod_so.h
+
+".\include\mod_so.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	type .\modules\mappers\mod_so.h > .\include\mod_so.h
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
 SOURCE=.\os\win32\os.h
 
 !IF  "$(CFG)" == "libhttpd - Win32 Release"
@@ -370,6 +370,14 @@ SOURCE=.\server\buildmark.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\modules\http\byterange_filter.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\modules\http\chunk_filter.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\server\config.c
 # End Source File
 # Begin Source File
@@ -390,27 +398,19 @@ SOURCE=.\modules\http\http_core.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\modules\http\http_protocol.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\modules\http\http_request.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\modules\http\byterange_filter.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\modules\http\chunk_filter.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\modules\http\http_etag.c
 # End Source File
 # Begin Source File
 
 SOURCE=.\modules\http\http_filters.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\modules\http\http_protocol.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\modules\http\http_request.c
 # End Source File
 # Begin Source File
 
@@ -448,6 +448,10 @@ SOURCE=.\os\win32\modules.c
 # Begin Group "util"
 
 # PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\include\ap_regex.h
+# End Source File
 # Begin Source File
 
 SOURCE=.\server\eoc_bucket.c
@@ -491,6 +495,10 @@ SOURCE=.\server\util_md5.c
 # Begin Source File
 
 SOURCE=.\include\util_md5.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\server\util_pcre.c
 # End Source File
 # Begin Source File
 

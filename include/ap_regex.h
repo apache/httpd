@@ -89,10 +89,6 @@ typedef struct {
     int rm_eo;
 } ap_regmatch_t;
 
-#ifndef AP_DECLARE
-#define AP_DECLARE(x) x
-#endif /* AP_DECLARE */
-
 /* The functions */
 
 /**
