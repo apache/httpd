@@ -1,5 +1,8 @@
 Changes with Apache 2.0.38
 
+  *) Fixed the handling of nested if-statements in shtml files.
+     PR 9866  [Brian Pane]
+
   *) Allow 'make install DESTDIR=/path'.  This allows packagers to install
      into a directory different from the one that was configured.  This 
      also mirrors the root= feature from 1.3.  We cannot use prefix=,
