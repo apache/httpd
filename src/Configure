@@ -1,5 +1,4 @@
 #!/bin/sh
-# $Id: Configure,v 1.36 1996/11/20 05:12:57 brian Exp $
 trap 'rm -f $tmpfile; exit' 0 1 2 3 15
 
 # Apache configuration script, first cut --- rst.
