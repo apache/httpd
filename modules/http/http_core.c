@@ -815,7 +815,7 @@ static DWORD get_win32_registry_default_value(ap_pool_t *p, HKEY hkey,
 }
 
 static char* get_interpreter_from_win32_registry(ap_pool_t *p, const char* ext,
-                                                 char** arguments) 
+                                                 char** arguments, int strict)
 {
     char execcgi_path[] = "SHELL\\EXECCGI\\COMMAND";
     char execopen_path[] = "SHELL\\OPEN\\COMMAND";
@@ -828,7 +828,7 @@ static char* get_interpreter_from_win32_registry(ap_pool_t *p, const char* ext,
     int result;
     char *buffer;
     char *s;
-
+    
     if (!ext)
         return NULL;
     /* 
@@ -859,16 +859,31 @@ static char* get_interpreter_from_win32_registry(ap_pool_t *p, const char* ext,
 
     /* Open the key for the script command path by:
      * 
-     *   1) the 'named' filetype key for Open/Command
-     *   2) the extension's type key for Open/Command
+     *   1) the 'named' filetype key for ExecCGI/Command
+     *   2) the extension's type key for ExecCGI/Command
+     *
+     * and if the strict arg is false, then continue trying:
+     *
+     *   3) the 'named' filetype key for Open/Command
+     *   4) the extension's type key for Open/Command
      */
-    
+
     if (cmdOfName) {
+        result = get_win32_registry_default_value(p, hkeyName, 
+                                                  execcgi_path, &buffer);
+    }
+
+    if (!cmdOfName || (result != ERROR_SUCCESS)) {
+        result = get_win32_registry_default_value(p, hkeyType, 
+                                                  execcgi_path, &buffer);
+    }
+
+    if (!strict && cmdOfName && (result != ERROR_SUCCESS)) {
         result = get_win32_registry_default_value(p, hkeyName, 
                                                   execopen_path, &buffer);
     }
 
-    if (result != ERROR_SUCCESS) {
+    if (!strict && (result != ERROR_SUCCESS)) {
         result = get_win32_registry_default_value(p, hkeyType, 
                                                   execopen_path, &buffer);
     }
@@ -895,7 +910,7 @@ static char* get_interpreter_from_win32_registry(ap_pool_t *p, const char* ext,
      *   options - additional arguments
      *              E.g., /silent
      *
-     * If we find a %1 or a quoted %1, lop it off. 
+     * If we find a %1 or a quoted %1, lop off the remainder to arguments. 
      */
     if (buffer && *buffer) {
         if ((s = strstr(buffer, "\"%1")))
@@ -964,16 +979,27 @@ API_EXPORT (file_type_e) ap_get_win32_interpreter(const  request_rec *r,
      * we've been instructed to search the registry, then do it!
      */
     if (ext && strcasecmp(ext,".exe") && strcasecmp(ext,".com") &&
-        d->script_interpreter_source == INTERPRETER_SOURCE_REGISTRY) {
+        (d->script_interpreter_source == INTERPRETER_SOURCE_REGISTRY ||
+         d->script_interpreter_source == INTERPRETER_SOURCE_REGISTRY_STRICT)) {
          /* Check the registry */
+        int strict = (d->script_interpreter_source 
+                            == INTERPRETER_SOURCE_REGISTRY_STRICT);
         *interpreter = get_interpreter_from_win32_registry(r->pool, ext, 
-                                                           arguments);
+                                                           arguments, strict);
         if (*interpreter)
             return eFileTypeSCRIPT;
-        else {
+        else if (d->script_interpreter_source == INTERPRETER_SOURCE_REGISTRY_STRICT) {
+            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0, r->server,
+             "ScriptInterpreterSource config directive set to \"registry-strict\".\n\t"
+             "Interpreter not found for files of type '%s'.", ext);
+             return eFileTypeUNKNOWN;
+        }
+        else
+        {
             ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0, r->server,
              "ScriptInterpreterSource config directive set to \"registry\".\n\t"
-             "Registry was searched but interpreter not found. Trying the shebang line.");
+             "Interpreter not found for files of type '%s', "
+             "trying \"script\" method...", ext);
         }
     }        
 
@@ -2346,6 +2372,8 @@ static const char *set_interpreter_source(cmd_parms *cmd, core_dir_config *d,
 {
     if (!strcasecmp(arg, "registry")) {
         d->script_interpreter_source = INTERPRETER_SOURCE_REGISTRY;
+    } else if (!strcasecmp(arg, "registry-strict")) {
+        d->script_interpreter_source = INTERPRETER_SOURCE_REGISTRY_STRICT;
     } else if (!strcasecmp(arg, "script")) {
         d->script_interpreter_source = INTERPRETER_SOURCE_SHEBANG;
     } else {
