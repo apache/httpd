@@ -46,8 +46,8 @@ RSC=rc.exe
 # ADD CPP /nologo /MD /W3 /O2 /I "../../include" /I "../../os/win32" /I "../../srclib/apr/include" /I "../../srclib/apr-util/include" /I "../../srclib/openssl/inc32" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /Fd"Release\mod_tls" /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
-# ADD BASE RSC /l 0x809 /d "NDEBUG"
-# ADD RSC /l 0x809 /d "NDEBUG"
+# ADD BASE RSC /l 0x409 /d "NDEBUG"
+# ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -72,8 +72,8 @@ LINK32=link.exe
 # ADD CPP /nologo /MDd /W3 /GX /ZI /Od /I "../../include" /I "../../os/win32" /I "../../srclib/apr/include" /I "../../srclib/apr-util/include" /I "../../srclib/openssl/inc32" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /Fd"Debug\mod_tls" /FD /c
 # ADD BASE MTL /nologo /D "_DEBUG" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
-# ADD BASE RSC /l 0x809 /d "_DEBUG"
-# ADD RSC /l 0x809 /d "_DEBUG"
+# ADD BASE RSC /l 0x409 /d "_DEBUG"
+# ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -98,6 +98,41 @@ SOURCE=.\openssl_state_machine.c
 # Begin Source File
 
 SOURCE=.\openssl_state_machine.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\mod_tls.rc
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\build\win32\win32ver.awk
+
+!IF  "$(CFG)" == "mod_tls - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Creating Version Resource
+InputPath=..\..\build\win32\win32ver.awk
+
+".\mod_tls.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	awk -f ../../build/win32/win32ver.awk mod_tls\
+ "tls_module for Apache" ../../include/ap_release.h > .\mod_tls.rc
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "mod_tls - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Creating Version Resource
+InputPath=..\..\build\win32\win32ver.awk
+
+".\mod_tls.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	awk -f ../../build/win32/win32ver.awk mod_tls\
+ "tls_module for Apache" ../../include/ap_release.h > .\mod_tls.rc
+
+# End Custom Build
+
+!ENDIF 
+
 # End Source File
 # End Target
 # End Project

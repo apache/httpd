@@ -91,5 +91,40 @@ LINK32=link.exe
 
 SOURCE=.\mod_auth_digest.c
 # End Source File
+# Begin Source File
+
+SOURCE=.\mod_auth_digest.rc
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\build\win32\win32ver.awk
+
+!IF  "$(CFG)" == "mod_auth_digest - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Creating Version Resource
+InputPath=..\..\build\win32\win32ver.awk
+
+".\mod_auth_digest.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	awk -f ../../build/win32/win32ver.awk mod_auth_digest\
+ "auth_digest_module for Apache" ../../include/ap_release.h > .\mod_auth_digest.rc
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "mod_auth_digest - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Creating Version Resource
+InputPath=..\..\build\win32\win32ver.awk
+
+".\mod_auth_digest.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	awk -f ../../build/win32/win32ver.awk mod_auth_digest\
+ "auth_digest_module for Apache" ../../include/ap_release.h > .\mod_auth_digest.rc
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
 # End Target
 # End Project
