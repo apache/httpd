@@ -57,6 +57,7 @@ dnl Creates config_vars.mk
 AC_DEFUN(APACHE_GEN_CONFIG_VARS,[
   APACHE_SUBST(abs_srcdir)
   APACHE_SUBST(bindir)
+  APACHE_SUBST(sbindir)
   APACHE_SUBST(cgidir)
   APACHE_SUBST(logdir)
   APACHE_SUBST(exec_prefix)
