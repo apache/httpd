@@ -6,6 +6,4 @@ APACHE_MODPATH_INIT(cache)
 
 APACHE_MODULE(file_cache, File cache, , , no)
 
-APR_ADDTO(LT_LDFLAGS,-export-dynamic)
-
 APACHE_MODPATH_FINISH
