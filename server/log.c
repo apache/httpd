@@ -409,7 +409,7 @@ static void log_error_core(const char *file, int line, int level,
 		"%s(%d): ", file, line);
     }
 #endif /* TPF */
-    if (r) {
+    if (r && r->connection) {
 	/* XXX: TODO: add a method of selecting whether logged client
 	 * addresses are in dotted quad or resolved form... dotted
 	 * quad is the most secure, which is why I'm implementing it
