@@ -59,21 +59,6 @@ AC_CANONICAL_SYSTEM
 
 orig_prefix="$prefix"
 
-dnl apr and apr-util don't handle Apache layouts, so build a version
-dnl of the configure args without the --enable-layout= arg
-
-no_layout_configure_args=
-ap_sep=
-for ac_configure_arg in $ac_configure_args
-do
-  case "$ac_configure_arg" in
-    --enable-layout=*)
-      continue ;;
-  esac
-  no_layout_configure_args="$no_layout_configure_args$ap_sep'$ac_configure_arg'"
-  ap_sep=" "
-done
-
 echo $ac_n "${nl}Configuring Apache Portable Runtime library ...${nl}"
 
 APR_FIND_APR("$srcdir/srclib/apr", "./srclib/apr", 1)
@@ -83,10 +68,9 @@ if test "$apr_found" = "no"; then
 fi
 
 if test "$apr_found" = "reconfig"; then
-  orig_ac_configure_args=$ac_configure_args
-  ac_configure_args=$no_layout_configure_args
-  APR_SUBDIR_CONFIG(srclib/apr, [$apache_apr_flags --prefix=$prefix --exec-prefix=$exec_prefix --libdir=$libdir --includedir=$includedir --bindir=$bindir --datadir=$datadir --with-installbuilddir=$installbuilddir])
-  ac_configure_args=$orig_ac_configure_args
+  APR_SUBDIR_CONFIG(srclib/apr,
+                    [$apache_apr_flags --prefix=$prefix --exec-prefix=$exec_prefix --libdir=$libdir --includedir=$includedir --bindir=$bindir --datadir=$datadir --with-installbuilddir=$installbuilddir],
+                    [--enable-layout=*|\'--enable-layout=*])
   dnl We must be the first to build and the last to be cleaned
   AP_BUILD_SRCLIB_DIRS="apr $AP_BUILD_SRCLIB_DIRS"
   AP_CLEAN_SRCLIB_DIRS="$AP_CLEAN_SRCLIB_DIRS apr"
@@ -109,10 +93,9 @@ if test "$apu_found" = "no"; then
 fi
 
 if test "$apu_found" = "reconfig"; then
-  orig_ac_configure_args=$ac_configure_args
-  ac_configure_args=$no_layout_configure_args
-  APR_SUBDIR_CONFIG(srclib/apr-util, [--with-apr=../apr --prefix=$prefix --exec-prefix=$exec_prefix --libdir=$libdir --includedir=$includedir --bindir=$bindir])
-  ac_configure_args=$orig_ac_configure_args
+  APR_SUBDIR_CONFIG(srclib/apr-util,
+                    [--with-apr=../apr --prefix=$prefix --exec-prefix=$exec_prefix --libdir=$libdir --includedir=$includedir --bindir=$bindir],
+                    [--enable-layout=*|\'--enable-layout=*])
   dnl We must be the last to build and the first to be cleaned
   AP_BUILD_SRCLIB_DIRS="$AP_BUILD_SRCLIB_DIRS apr-util"
   AP_CLEAN_SRCLIB_DIRS="apr-util $AP_CLEAN_SRCLIB_DIRS"
@@ -125,7 +108,8 @@ APU_INCLUDEDIR=`$apu_config --includedir`
 
 echo $ac_n "${nl}Configuring PCRE regular expression library ...${nl}"
 
-APR_SUBDIR_CONFIG(srclib/pcre, [--prefix=$prefix --exec-prefix=$exec_prefix --libdir=$libdir --includedir=$includedir --bindir=$bindir])
+APR_SUBDIR_CONFIG(srclib/pcre,
+                  [--prefix=$prefix --exec-prefix=$exec_prefix --libdir=$libdir --includedir=$includedir --bindir=$bindir])
 
 echo $ac_n "${nl}Configuring Apache httpd ...${nl}"
 
