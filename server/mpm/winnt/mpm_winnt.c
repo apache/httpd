@@ -327,44 +327,6 @@ static void setup_signal_names(char *prefix)
 /*
  * Routines that deal with sockets, some are WIN32 specific...
  */
-static int s_iInitCount = 0;
-static int AMCSocketInitialize(void)
-{
-    int iVersionRequested;
-    WSADATA wsaData;
-    int err;
-
-    if (s_iInitCount > 0) {
-	s_iInitCount++;
-	return (0);
-    }
-    else if (s_iInitCount < 0)
-	return (s_iInitCount);
-
-    /* s_iInitCount == 0. Do the initailization */
-    iVersionRequested = MAKEWORD(2, 0);
-    err = WSAStartup((WORD) iVersionRequested, &wsaData);
-    if (err) {
-	s_iInitCount = -1;
-	return (s_iInitCount);
-    }
-    if (LOBYTE(wsaData.wVersion) != 1 ||
-	HIBYTE(wsaData.wVersion) != 1) {
-	s_iInitCount = -2;
-	WSACleanup();
-	return (s_iInitCount);
-    }
-
-    s_iInitCount++;
-    return (s_iInitCount);
-
-}
-static void AMCSocketCleanup(void)
-{
-    if (--s_iInitCount == 0)
-	WSACleanup();
-    return;
-}
 
 static void sock_disable_nagle(int s) 
 {
@@ -1744,8 +1706,6 @@ static void winnt_post_config(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptem
             ap_log_pid(pconf, ap_pid_fname);
             service_set_status(SERVICE_START_PENDING);
 
-            AMCSocketInitialize();
-        
             /* Create shutdown event, apPID_shutdown, where PID is the parent 
              * Apache process ID. Shutdown is signaled by 'apache -k shutdown'.
              */
@@ -1791,9 +1751,7 @@ API_EXPORT(int) ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s )
         /* Running as Child process or in one_process (debug) mode */
         ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, server_conf,
                      "Child %d: Child process is running", my_pid);
-        AMCSocketInitialize();
         child_main();
-        AMCSocketCleanup();
         ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, server_conf,
                      "Child %d: Child process is exiting", my_pid);        
 
@@ -1815,7 +1773,6 @@ API_EXPORT(int) ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s )
 
             CloseHandle(restart_event);
             CloseHandle(shutdown_event);
-            AMCSocketCleanup();
 
             service_set_status(SERVICE_STOPPED);
 
