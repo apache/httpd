@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/05/29 15:37:40 $]
+Last modified at [$Date: 2002/05/29 22:15:44 $]
 
 Release:
 
@@ -47,9 +47,9 @@ on related projects:
 
 CURRENT RELEASE NOTES:
 
-    * 37 status: Cliff tagged JCW_PRE_2037 on Saturday as a preliminary
-      tag with the understanding that showstoppers remain and must be
-      addressed.
+    * 37 status: Cliff tagged JCW_PRE2_2037 on Wednesday.  Some
+      showstoppers remain, so there will be a PRE3 as well, probably
+      Friday.  Just wanted an intermediate milestone.
 
 RELEASE SHOWSTOPPERS:
 
@@ -77,6 +77,10 @@ RELEASE SHOWSTOPPERS:
     * CWD issues
       Message-ID: <5.1.0.14.2.20020524115533.02785e28@pop3.rowe-clan.net>
                   <COEELENBBCHBFEPPGDOPCEPPGPAA.ake@meepzor.com>
+
+    * To high-free patch or not to high-free patch?
+      Status: Cliff is waiting until the recently uncovered bugs
+      in this code get sorted out before including in 2.0.37.
 
     * Find a better name for ap_signal_server()
       Message-ID: <m37kltilb3.fsf@rdu88-251-253.nc.rr.com>
