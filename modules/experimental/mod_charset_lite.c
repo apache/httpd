@@ -820,6 +820,9 @@ static apr_status_t xlate_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
         }
     }
 
+    /* catch proxy requests */
+    if (f->r->proxyreq) return DECLINED;
+
     /* Opening the output translation (this used to be done in the fixup hook,
      * but that was too early: a subsequent type modification, e.g., by a
      * CGI script, would go unnoticed. Now we do it in the filter itself.)
