@@ -113,7 +113,7 @@ API_EXPORT(void) ap_register_filter(const char *name,
     frec->next = registered_filters;
     registered_filters = frec;
 
-    apr_register_cleanup(FILTER_POOL, NULL, filter_cleanup, NULL);
+    apr_register_cleanup(FILTER_POOL, NULL, filter_cleanup, apr_null_cleanup);
 }
 
 API_EXPORT(void) ap_add_filter(const char *name, void *ctx, request_rec *r)
