@@ -375,6 +375,7 @@ static const char *cmd_rewriterule_setflag(pool *p, rewriterule_entry *cfg,
 
     /* initialisation */
 static void init_module(server_rec *s, pool *p);
+static void init_child(server_rec *s, pool *p);
 
     /* runtime hooks */
 static int hook_uri2file   (request_rec *r);
@@ -425,7 +426,9 @@ static void  rewritelog(request_rec *r, int level, const char *text, ...)
 static char *current_logtime(request_rec *r);
 
     /* rewriting lockfile support */
-static void open_rewritelock(server_rec *s, pool *p);
+static void rewritelock_create(server_rec *s, pool *p);
+static void rewritelock_open(server_rec *s, pool *p);
+static void rewritelock_remove(void *data);
 static void rewritelock_alloc(request_rec *r);
 static void rewritelock_free(request_rec *r);
 

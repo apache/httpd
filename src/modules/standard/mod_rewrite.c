@@ -193,7 +193,7 @@ module MODULE_VAR_EXPORT rewrite_module = {
    hook_fixup,                  /* [#7] pre-run fixups                 */
    NULL,                        /* [#9] log a transaction              */
    NULL,                        /* [#3] header parser                  */
-   NULL,                        /* child_init                          */
+   init_child,                  /* child_init                          */
    NULL,                        /* child_exit                          */
    NULL                         /* [#0] post read-request              */
 };
@@ -869,7 +869,7 @@ static const char *cmd_rewriterule_setflag(pool *p, rewriterule_entry *cfg,
 
 /*
 **
-**  module initialisation
+**  Global Module Initialization
 **  [called from read_config() after all
 **  config commands were already called]
 **
@@ -877,26 +877,42 @@ static const char *cmd_rewriterule_setflag(pool *p, rewriterule_entry *cfg,
 
 static void init_module(server_rec *s, pool *p)
 {
-    /* step through the servers and
-     * - open each rewriting logfile
-     * - open each rewriting lockfile
-     * - open the RewriteMap prg:xxx programs
-     */
-    for (; s; s = s->next) {
-        open_rewritelog(s, p);
-        open_rewritelock(s, p);
-        run_rewritemap_programs(s, p);
-    }
-
-    /* create the lookup cache */
-    cachep = init_cache(p);
-
     /* check if proxy module is available */
     proxy_available = is_proxy_available(s);
 
     /* precompile a static pattern
        for the txt mapfile parsing */
     lookup_map_txtfile_regexp = pregcomp(p, MAPFILE_PATTERN, REG_EXTENDED);
+
+    /* create the rewriting lockfile in the parent */
+    rewritelock_create(s, p);
+    register_cleanup(p, (void *)s, rewritelock_remove, null_cleanup);
+
+    /* step through the servers and
+     * - open each rewriting logfile
+     * - open the RewriteMap prg:xxx programs
+     */
+    for (; s; s = s->next) {
+        open_rewritelog(s, p);
+        run_rewritemap_programs(s, p);
+    }
+}
+
+
+/*
+**
+**  Per-Child Module Initialization
+**  [called after a child process is spawned]
+**
+*/
+
+static void init_child(server_rec *s, pool *p)
+{
+     /* open the rewriting lockfile */
+     rewritelock_open(s, p);
+
+     /* create the lookup cache */
+     cachep = init_cache(p);
 }
 
 
@@ -2984,37 +3000,78 @@ static char *current_logtime(request_rec *r)
 ** +-------------------------------------------------------+
 */
 
-static void open_rewritelock(server_rec *s, pool *p)
+#ifdef WIN32
+#define REWRITELOCK_MODE ( _S_IREAD|_S_IWRITE )
+#else
+#define REWRITELOCK_MODE ( S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH )
+#endif
+
+static void rewritelock_create(server_rec *s, pool *p)
 {
     rewrite_server_conf *conf;
-    char *fname;
-    int    rewritelock_flags = ( O_WRONLY|O_APPEND|O_CREAT );
-#ifdef WIN32
-    mode_t rewritelock_mode  = ( _S_IREAD|_S_IWRITE );
-#else
-    mode_t rewritelock_mode  = ( S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH );
-#endif
 
     conf = get_module_config(s->module_config, &rewrite_module);
 
-    if (conf->rewritelockfile == NULL)
+    /* only operate if a lockfile is used */
+    if (conf->rewritelockfile == NULL 
+        || *(conf->rewritelockfile) == '\0')
         return;
-    if (*(conf->rewritelockfile) == '\0')
-        return;
-    if (conf->rewritelockfp > 0)
-        return; /* virtual log shared w/ main server */
 
-    fname = server_root_relative(p, conf->rewritelockfile);
+    /* fixup the path, especially for rewritelock_remove() */
+    conf->rewritelockfile = server_root_relative(p, conf->rewritelockfile);
 
-    if ((conf->rewritelockfp = popenf(p, fname, rewritelock_flags,
-                                      rewritelock_mode)) < 0) {
+    /* create the lockfile */
+    unlink(conf->rewritelockfile);
+    if ((conf->rewritelockfp = popenf(p, conf->rewritelockfile, 
+                                      O_WRONLY|O_CREAT,
+                                      REWRITELOCK_MODE)) < 0) {
         perror("open");
-        fprintf(stderr,
-                "mod_rewrite: could not open RewriteLock file %s.\n",
-                fname);
+        fprintf(stderr, "mod_rewrite: Parent could not create RewriteLock"
+                " file %s.\n", conf->rewritelockfile);
         exit(1);
     }
     return;
+}
+
+static void rewritelock_open(server_rec *s, pool *p)
+{
+    rewrite_server_conf *conf;
+
+    conf = get_module_config(s->module_config, &rewrite_module);
+
+    /* only operate if a lockfile is used */
+    if (conf->rewritelockfile == NULL 
+        || *(conf->rewritelockfile) == '\0')
+        return;
+
+    /* open the lockfile (once per child) to get a unique fd */
+    if ((conf->rewritelockfp = popenf(p, conf->rewritelockfile, 
+                                      O_WRONLY,
+                                      REWRITELOCK_MODE)) < 0) {
+        perror("open");
+        fprintf(stderr, "mod_rewrite: Child could not open RewriteLock"
+                " file %s.\n", conf->rewritelockfile);
+        exit(1);
+    }
+    return;
+}
+
+static void rewritelock_remove(void *data)
+{
+    server_rec *s;
+    rewrite_server_conf *conf;
+
+    /* the data is really the server_rec */
+    s = (server_rec *)data;
+    conf = get_module_config(s->module_config, &rewrite_module);
+
+    /* only operate if a lockfile is used */
+    if (conf->rewritelockfile == NULL 
+        || *(conf->rewritelockfile) == '\0')
+        return;
+
+    /* remove the lockfile */
+    unlink(conf->rewritelockfile);
 }
 
 static void rewritelock_alloc(request_rec *r)

@@ -1,5 +1,16 @@
 Changes with Apache 1.3b6
 
+  *) Fix one more special locking problem for RewriteMap programs in
+     mod_rewrite: According to the documentation of flock(), "Locks are on
+     files, not file descriptors.  That is, file descriptors duplicated
+     through dup(2) or fork(2) do not result in multiple instances of a lock,
+     but rather multiple references to a single lock. If a process holding a
+     lock on a file forks and the child explicitly unlocks the file, the
+     parent will lose its lock.". To overcome this we have to make sure the
+     RewriteLock file is opened _AFTER_ the childs were spawned which is now
+     the case by opening it in the child_init instead of the module_init API
+     hook. [Ralf S. Engelschall, PR#1029]
+
   *) Change to Location and LocationMatch semantics.  LocationMatch no
      longer lets a single slash match multiple adjacent slashes in the
      URL.  This change is for consistency with RewriteRule and
