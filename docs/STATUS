@@ -1,5 +1,5 @@
 Apache HTTP Server 2.0 Documentation Status File.
-Last modified: $Date: 2002/09/22 20:55:39 $
+Last modified: $Date: 2002/09/29 01:12:54 $
 
 If you are interested in helping accomplish some of the tasks on this
 list or otherwise improving the documentation, please join the
@@ -102,9 +102,16 @@ Documentation improvements
   - Use a tag like <var> in place of <em> for things like the 
     <syntax> listing.
     - nd volunteers
-  - Handle more levels of sub<section>s.
   - add letter links to glossary and quickreference, 
     perhaps also a term overview (sidebar)
+  - cross references between the different languages,
+    at least links from non-en docs to the originals.
+    - Javascript?
+    - post processing (s&r, XML::Parser, ...)?
+    - pre processing ([kind of] type maps
+      generated from sitemap entries like:
+      <page><variant lang="en" href="">title</variant>)?
+    - looking for other good ideas ;-)
 
 * Autogeneration of PDF
   - FOP?
@@ -149,12 +156,6 @@ misc/descriptors.html              # obsolete?
 misc/fin_wait_2.html               # obsolete?
 misc/known_client_problems.html    # obsolete?
 misc/tutorials.html                # obsolete?
-ssl/index.html.en
-ssl/ssl_compat.html
-ssl/ssl_faq.html
-ssl/ssl_glossary.html              # delete.  replaced by ../glossary.html
-ssl/ssl_howto.html
-ssl/ssl_intro.html
 vhosts/details.html
 vhosts/examples.html
 vhosts/ip-based.html
