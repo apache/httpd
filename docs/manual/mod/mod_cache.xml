@@ -10,10 +10,9 @@
 <identifier>cache_module</identifier>
 
 <summary>
-
-<note type="warning">
-This module is experimental. Documentation is still under development...
-</note>
+    <note type="warning">
+    This module is experimental. Documentation is still under development...
+    </note>
     <p>mod_cache implements an RFC 2616 compliant HTTP content
     cache that can be used to cache either local or proxied content.
     mod_cache requires the services of one or more storage
@@ -31,7 +30,9 @@ This module is experimental. Documentation is still under development...
     </dl>
     <p>Content stored and retrived keyed to the URL. Content with
     access protections is not cached.</p>
+</summary>
 
+<section id="related"><title>Related Modules and Directives</title>
     <related>
       <modulelist>
         <module>mod_disk_cache</module>
@@ -58,12 +59,10 @@ This module is experimental. Documentation is still under development...
         <directive module="mod_mem_cache">MCacheRemovalAlgorithm</directive>
       </directivelist>
     </related>
-</summary>
+</section>
 
 <section><title>Sample Configuration</title>
-
 <example><title>Sample httpd.conf</title>
-
 # <br />
 # Sample Cache Configuration  <br />
 # <br />
@@ -90,9 +89,7 @@ LoadModule cache_module modules/mod_cache.so  <br />
    &lt;/IfModule&gt; <br />
 <p />
 &lt;/IfModule&gt; <br />
-
 </example>
-
 </section>
 
 <directivesynopsis>
@@ -156,7 +153,7 @@ LoadModule cache_module modules/mod_cache.so  <br />
 <name>CacheMaxExpire</name>
 <description>The maximum time in seconds to cache a document</description>
 <syntax>CacheMaxExpire <em>seconds</em></syntax>
-<default>CacheMaxExpire 86400 <em>(one day)</em></default>
+<default>CacheMaxExpire 86400 (one day)</default>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
@@ -170,7 +167,7 @@ LoadModule cache_module modules/mod_cache.so  <br />
 <directivesynopsis>
 <name>CacheDefaultExpire</name>
 <syntax>CacheDefaultExpire <em>seconds</em></syntax>
-<default>CacheDefaultExpire 3600 <em>(one hour)</em></default>
+<default>CacheDefaultExpire 3600 (one hour)</default>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
