@@ -221,7 +221,7 @@ int find_ct(request_rec *r)
     char *fn = strrchr(r->filename, '/');
     mime_dir_config *conf =
       (mime_dir_config *)get_module_config(r->per_dir_config, &mime_module);
-    char *ext, *type;
+    char *ext, *type, *orighandler = r->handler;
 
     if (S_ISDIR(r->finfo.st_mode)) {
         r->content_type = DIR_MAGIC_TYPE;
@@ -263,13 +263,14 @@ int find_ct(request_rec *r)
 
       /* This is to deal with cases such as foo.gif.bak, which we want
        * to not have a type. So if we find an unknown extension, we
-       * zap the type/language/encoding (but not the handler)
+       * zap the type/language/encoding and reset the handler
        */
 
       if (!found) {
 	r->content_type = NULL;
 	r->content_language = NULL;
 	r->content_encoding = NULL;
+	r->handler = orighandler;
       }
 
     }
@@ -280,6 +281,8 @@ int find_ct(request_rec *r)
         r->content_type = pstrdup(r->pool, conf->type);
     if (conf->handler && strcmp(conf->handler, "none"))
         r->handler = pstrdup(r->pool, conf->handler);
+
+    if (!r->content_type) return DECLINED;
 
     return OK;
 }
