@@ -78,10 +78,10 @@
 #include <sys/time.h> /* for timeval definitions */
 #endif
 
-#if defined(DEXTER_MPM) || defined(MPMT_BEOS_MPM) || defined(BEOS_MPM)
+#if defined(DEXTER) || defined(MPMT_BEOS_MPM) || defined(BEOS_MPM)
 #define CHILD_TABLE 1
 #define CHILD_INFO_TABLE     ap_child_table
-#elif defined(MPMT_PTHREAD_MPM) || defined (PREFORK_MPM)
+#elif defined(MPMT_PTHREAD) || defined (NO_THREADS)
 #define SCOREBOARD 1
 #define CHILD_INFO_TABLE     ap_scoreboard_image->parent
 #endif 
