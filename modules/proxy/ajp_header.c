@@ -704,7 +704,6 @@ apr_status_t  ajp_alloc_data_msg(request_rec *r, char **ptr, apr_size_t *len,
 apr_status_t  ajp_send_data_msg(apr_socket_t *sock, request_rec  *r,
                                 ajp_msg_t *msg, apr_size_t len)
 {
-    apr_status_t rc;
 
     msg->buf[4] = (apr_byte_t)((len >> 8) & 0xFF);
     msg->buf[5] = (apr_byte_t)(len & 0xFF);
@@ -714,12 +713,6 @@ apr_status_t  ajp_send_data_msg(apr_socket_t *sock, request_rec  *r,
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                "ajp_send_data_msg: sending %" APR_SIZE_T_FMT, len);
 
-    rc = ajp_ilink_send(sock, msg);
-    if (rc != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-               "ajp_send_data_msg: ajp_ilink_send failed");
-        return rc;
-    }
+    return ajp_ilink_send(sock, msg);
 
-    return APR_SUCCESS;
 }
