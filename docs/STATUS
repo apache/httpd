@@ -1,5 +1,5 @@
 Apache HTTP Server 2.1 Documentation Status File.
-Last modified: $Date: 2003/07/25 10:54:59 $
+Last modified: $Date: 2003/10/31 08:05:42 $
 
 For more information on how to contribute to the Apache Documentation
 Project, please see http://httpd.apache.org/docs-project/
@@ -87,6 +87,8 @@ Things That Need Fixing
 
 Documentation improvements
 ==========================
+
+* Missing documentation for the support programs htdbm and checkgid
 
 * New user docs: Directory Handling (mod_dir/mod_autoindex/etc)
 
