@@ -188,11 +188,11 @@ struct nocache_entry {
 /* static information about the local cache */
 struct cache_conf {
     const char *root;		/* the location of the cache directory */
-    int space;			/* Maximum cache size (in 1024 bytes) */
-    int maxexpire;		/* Maximum time to keep cached files in secs */
-    int defaultexpire;		/* default time to keep cached file in secs */
+    off_t space;			/* Maximum cache size (in 1024 bytes) */
+    time_t maxexpire;		/* Maximum time to keep cached files in secs */
+    time_t defaultexpire;	/* default time to keep cached file in secs */
     double lmfactor;		/* factor for estimating expires date */
-    int gcinterval;		/* garbage collection interval, in seconds */
+    time_t gcinterval;		/* garbage collection interval, in seconds */
     int dirlevels;		/* Number of levels of subdirectories */
     int dirlength;		/* Length of subdirectory names */
 };
@@ -207,7 +207,7 @@ typedef struct {
     array_header *nocaches;
     char *domain;		/* domain name to use in absence of a domain name in the request */
     int req;			/* true if proxy requests are enabled */
-    int recv_buffer_size;
+    size_t recv_buffer_size;
 } proxy_server_conf;
 
 struct hdr_entry {
@@ -229,7 +229,7 @@ struct cache_req {
     time_t lmod;		/* last-modified date of cached entity */
     time_t date;		/* the date the cached file was last touched */
     int version;		/* update count of the file */
-    unsigned int len;		/* content length */
+    off_t len;			/* content length */
     char *protocol;		/* Protocol, and major/minor number, e.g. HTTP/1.1 */
     int status;			/* the status of the cached file */
     char *resp_line;		/* the whole status like (protocol, code + message) */

@@ -71,33 +71,37 @@
 
 DEF_Explain
 
-#ifndef abs
-#define	abs(c)	((c) >= 0 ? (c) : -(c))
-#endif
-
 struct gc_ent {
     unsigned long int len;
     time_t expire;
     char file[HASH_LEN + 1];
-
 };
 
-static int gcdiff(const void *ap, const void *bp)
-{
-    const struct gc_ent *a = *(const struct gc_ent * const *) ap;
-    const struct gc_ent *b = *(const struct gc_ent * const *) bp;
+/* Poor man's 61 bit arithmetic */
+typedef struct {
+    long lower;	/* lower 30 bits of result */
+    long upper; /* upper 31 bits of result */
+} long61_t;
 
-    if (a->expire > b->expire)
-	return 1;
-    else if (a->expire < b->expire)
-	return -1;
-    else
-	return 0;
-}
+/* FIXME: The block size can be different on a `per file system' base.
+ * This would make automatic detection highly OS specific.
+ * In the GNU fileutils code for du(1), you can see how complicated it can
+ * become to detect the block size. And, with BSD-4.x fragments, it
+ * it even more difficult to get precise results.
+ * As a compromise (and to improve on the incorrect counting of cache
+ * size on byte level, omitting directory sizes entirely, which was
+ * used up to apache-1.3b7) we're rounding to multiples of 512 here.
+ * Your file system may be using larger blocks (I certainly hope so!)
+ * but it will hardly use smaller blocks.
+ * (So this approximation is still closer to reality than the old behavior).
+ * The best solution would be automatic detection, the next best solution
+ * IMHO is a sensible default and the possibility to override it.
+ */
 
-static int curbytes, cachesize, every;
-static unsigned long int curblocks;
-static time_t garbage_now, garbage_expire;
+#define ROUNDUP2BLOCKS(_bytes) (((_bytes)+block_size-1) & ~(block_size-1))
+static long block_size = 512;	/* this must be a power of 2 */
+static long61_t curbytes, cachesize;
+static time_t every, garbage_now, garbage_expire;
 static char *filename;
 static mutex *garbage_mutex = NULL;
 
@@ -114,6 +118,10 @@ int ap_proxy_garbage_init(server_rec *r, pool *p)
 static int sub_garbage_coll(request_rec *r, array_header *files,
 			    const char *cachedir, const char *cachesubdir);
 static void help_proxy_garbage_coll(request_rec *r);
+#if !defined(WIN32) && !defined(MPE) && !defined(__EMX__)
+static void detached_proxy_garbage_coll(request_rec *r);
+#endif
+
 
 void ap_proxy_garbage_coll(request_rec *r)
 {
@@ -128,13 +136,129 @@ void ap_proxy_garbage_coll(request_rec *r)
 	inside = 1;
     (void) ap_release_mutex(garbage_mutex);
 
+    ap_block_alarms();		/* avoid SIGALRM on big cache cleanup */
+#if !defined(WIN32) && !defined(MPE) && !defined(__EMX__)
+    detached_proxy_garbage_coll(r);
+#else
     help_proxy_garbage_coll(r);
+#endif
+    ap_unblock_alarms();
 
     (void) ap_acquire_mutex(garbage_mutex);
     inside = 0;
     (void) ap_release_mutex(garbage_mutex);
 }
 
+
+static void
+add_long61 (long61_t *accu, long val)
+{
+    /* Add in lower 30 bits */
+    accu->lower += (val & 0x3FFFFFFFL);
+    /* add in upper bits, and carry */
+    accu->upper += (val >> 30) + ((accu->lower & ~0x3FFFFFFFL) != 0L);
+    /* Clear carry */
+    accu->lower &= 0x3FFFFFFFL;
+}
+
+static void
+sub_long61 (long61_t *accu, long val)
+{
+    int carry = (val & 0x3FFFFFFFL) > accu->lower;
+    /* Subtract lower 30 bits */
+    accu->lower = accu->lower - (val & 0x3FFFFFFFL) + ((carry) ? 0x40000000 : 0);
+    /* add in upper bits, and carry */
+    accu->upper -= (val >> 30) + carry;
+}
+
+/* Compare two long61's:
+ * return <0 when left < right
+ * return  0 when left == right
+ * return >0 when left > right
+ */
+static long
+cmp_long61 (long61_t *left, long61_t *right)
+{
+    return (left->upper == right->upper) ? (left->lower - right->lower)
+					 : (left->upper - right->upper);
+}
+
+/* Compare two gc_ent's, sort them by expiration date */
+static int gcdiff(const void *ap, const void *bp)
+{
+    const struct gc_ent *a = (const struct gc_ent * const) ap;
+    const struct gc_ent *b = (const struct gc_ent * const) bp;
+
+    if (a->expire > b->expire)
+	return 1;
+    else if (a->expire < b->expire)
+	return -1;
+    else
+	return 0;
+}
+
+#if !defined(WIN32) && !defined(MPE) && !defined(__EMX__)
+static void detached_proxy_garbage_coll(request_rec *r)
+{
+    pid_t pid;
+    int status;
+    pid_t pgrp;
+
+    switch (pid = fork()) {
+	case -1:
+	    ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+			 "proxy: fork() for cache cleanup failed");
+	    return;
+
+	case 0:	/* Child */
+
+	    /* close all sorts of things, including the socket fd */
+	    ap_cleanup_for_exec();
+
+	    /* Fork twice to disassociate from the child */
+	    switch (pid = fork()) {
+		case -1:
+		    ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+			 "proxy: fork(2nd) for cache cleanup failed");
+		    exit(1);
+
+		case 0:	/* Child */
+		    /* The setpgrp() stuff was snarfed from http_main.c */
+#ifndef NO_SETSID
+		    if ((pgrp = setsid()) == -1) {
+			perror("setsid");
+			fprintf(stderr, "httpd: setsid failed\n");
+			exit(1);
+		    }
+#elif defined(NEXT) || defined(NEWSOS)
+		    if (setpgrp(0, getpid()) == -1 || (pgrp = getpgrp(0)) == -1) {
+			perror("setpgrp");
+			fprintf(stderr, "httpd: setpgrp or getpgrp failed\n");
+			exit(1);
+		    }
+#else
+		    if ((pgrp = setpgrp(getpid(), 0)) == -1) {
+			perror("setpgrp");
+			fprintf(stderr, "httpd: setpgrp failed\n");
+			exit(1);
+		    }
+#endif
+		    help_proxy_garbage_coll(r);
+		    exit(0);
+
+		default:    /* Father */
+		    /* After grandson has been forked off, */
+		    /* there's nothing else to do. */
+		    exit(0);		    
+	    }
+	default:
+	    /* Wait until grandson has been forked off */
+	    /* (without wait we'd leave a zombie) */
+	    waitpid(pid, &status, 0);
+	    return;
+    }
+}
+#endif /* ndef WIN32 */
 
 static void help_proxy_garbage_coll(request_rec *r)
 {
@@ -145,17 +269,24 @@ static void help_proxy_garbage_coll(request_rec *r)
     const struct cache_conf *conf = &pconf->cache;
     array_header *files;
     struct stat buf;
-    struct gc_ent *fent, **elts;
+    struct gc_ent *fent;
     int i, timefd;
-    static time_t lastcheck = BAD_DATE;		/* static data!!! */
+    static time_t lastcheck = BAD_DATE;		/* static (per-process) data!!! */
 
     cachedir = conf->root;
-    cachesize = conf->space;
+    /* configured size is given in kB. Make it bytes, convert to long61_t: */
+    cachesize.lower = cachesize.upper = 0;
+    add_long61(&cachesize, conf->space << 10);
     every = conf->gcinterval;
 
     if (cachedir == NULL || every == -1)
 	return;
     garbage_now = time(NULL);
+    /* Usually, the modification time of <cachedir>/.time can only increase.
+     * Thus, even with several child processes having their own copy of
+     * lastcheck, if time(NULL) still < lastcheck then it's not time
+     * for GC yet.
+     */
     if (garbage_now != -1 && lastcheck != BAD_DATE && garbage_now < lastcheck + every)
 	return;
 
@@ -176,7 +307,7 @@ static void help_proxy_garbage_coll(request_rec *r)
 		ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
 			     "proxy: creat(%s)", filename);
 	    else
-		lastcheck = abs(garbage_now);	/* someone else got in there */
+		lastcheck = garbage_now;	/* someone else got in there */
 	    ap_unblock_alarms();
 	    return;
 	}
@@ -192,22 +323,24 @@ static void help_proxy_garbage_coll(request_rec *r)
 	    ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
 			 "proxy: utimes(%s)", filename);
     }
-    files = ap_make_array(r->pool, 100, sizeof(struct gc_ent *));
-    curblocks = 0;
-    curbytes = 0;
+    files = ap_make_array(r->pool, 100, sizeof(struct gc_ent));
+    curbytes.upper = curbytes.lower = 0L;
 
     sub_garbage_coll(r, files, cachedir, "/");
 
-    if (curblocks < cachesize || curblocks + curbytes <= cachesize) {
+    if (cmp_long61(&curbytes, &cachesize) < 0L) {
+	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server,
+			 "proxy GC: Cache is %ld%% full (nothing deleted)",
+			 ((curbytes.upper<<20)|(curbytes.lower>>10))*100/conf->space);
 	ap_unblock_alarms();
 	return;
     }
 
-    qsort(files->elts, files->nelts, sizeof(struct gc_ent *), gcdiff);
+    /* sort the files we found by expiration date */
+    qsort(files->elts, files->nelts, sizeof(struct gc_ent), gcdiff);
 
-    elts = (struct gc_ent **) files->elts;
     for (i = 0; i < files->nelts; i++) {
-	fent = elts[i];
+	fent = &((struct gc_ent *) files->elts)[i];
 	sprintf(filename, "%s%s", cachedir, fent->file);
 	Explain3("GC Unlinking %s (expiry %ld, garbage_now %ld)", filename, fent->expire, garbage_now);
 #if TESTING
@@ -221,16 +354,15 @@ static void help_proxy_garbage_coll(request_rec *r)
 	else
 #endif
 	{
-	    curblocks -= fent->len >> 10;
-	    curbytes -= fent->len & 0x3FF;
-	    if (curbytes < 0) {
-		curbytes += 1024;
-		curblocks--;
-	    }
-	    if (curblocks < cachesize || curblocks + curbytes <= cachesize)
+	    sub_long61(&curbytes, ROUNDUP2BLOCKS(fent->len));
+	    if (cmp_long61(&curbytes, &cachesize) < 0)
 		break;
 	}
     }
+
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server,
+			 "proxy GC: Cache is %ld%% full (%d deleted)",
+			 ((curbytes.upper<<20)|(curbytes.lower>>10))*100/conf->space, i);
     ap_unblock_alarms();
 }
 
@@ -342,6 +474,9 @@ static int sub_garbage_coll(request_rec *r, array_header *files,
 		rmdir(newcachedir);
 #endif
 		--nfiles;
+	    } else {
+		/* Directory is not empty. Account for its size: */
+		add_long61(&curbytes, ROUNDUP2BLOCKS(buf.st_size));
 	    }
 	    continue;
 	}
@@ -378,22 +513,14 @@ static int sub_garbage_coll(request_rec *r, array_header *files,
  * file.
  *
  */
-	/* FIXME: We should make the array an array of gc_ents, not gc_ent *s
-	 */
-	fent = ap_palloc(r->pool, sizeof(struct gc_ent));
+	fent = (struct gc_ent *) ap_push_array(files);
 	fent->len = buf.st_size;
 	fent->expire = garbage_expire;
 	strcpy(fent->file, cachesubdir);
 	strcat(fent->file, ent->d_name);
-	*(struct gc_ent **) ap_push_array(files) = fent;
 
 /* accumulate in blocks, to cope with directories > 4Gb */
-	curblocks += buf.st_size >> 10;		/* Kbytes */
-	curbytes += buf.st_size & 0x3FF;
-	if (curbytes >= 1024) {
-	    curbytes -= 1024;
-	    curblocks++;
-	}
+	add_long61(&curbytes, ROUNDUP2BLOCKS(buf.st_size));
     }
 
     closedir(dir);
@@ -467,7 +594,7 @@ static int rdcache(pool *p, BUFF *cachefp, struct cache_req *c)
 	q = ap_proxy_get_header(c->hdrs, "Content-Length");
 	if (q == NULL) {
 	    strp = ap_palloc(p, 15);
-	    ap_snprintf(strp, 15, "%u", c->len);
+	    ap_snprintf(strp, 15, "%lu", c->len);
 	    ap_proxy_add_header(c->hdrs, "Content-Length", strp, HDR_REP);
 	}
     }
@@ -590,7 +717,7 @@ int ap_proxy_cache_check(request_rec *r, char *url, struct cache_conf *conf,
 	    }
 	    ap_pclosef(r->pool, cachefp->fd);
 	    Explain0("Use local copy, cached file hasn't changed");
-	    return USE_LOCAL_COPY;
+	    return HTTP_NOT_MODIFIED;
 	}
 
 /* Ok, has been modified */
@@ -735,7 +862,7 @@ int ap_proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
 /* no date header! */
 /* add one; N.B. use the time _now_ rather than when we were checking the cache
  */
-	date = abs(now);
+	date = now;
 	p = ap_gm_timestr_822(r->pool, now);
 	dates = ap_proxy_add_header(resp_hdrs, "Date", p, HDR_REP);
 	Explain0("Added date header");
@@ -775,10 +902,10 @@ int ap_proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
 	    double maxex = conf->cache.maxexpire;
 	    if (x > maxex)
 		x = maxex;
-	    expc = abs(now) + (int) x;
+	    expc = now + (int) x;
 	}
 	else
-	    expc = abs(now) + conf->cache.defaultexpire;
+	    expc = now + conf->cache.defaultexpire;
 	Explain1("Expiry date calculated %ld", expc);
     }
 
@@ -820,7 +947,7 @@ int ap_proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
 	    ap_pclosef(r->pool, c->fp->fd);
 	    Explain0("Remote document not modified, use local copy");
 	    /* CHECKME: Is this right? Shouldn't we check IMS again here? */
-	    return USE_LOCAL_COPY;
+	    return HTTP_NOT_MODIFIED;
 	}
 	else {
 /* return the whole document */

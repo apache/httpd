@@ -1,5 +1,10 @@
 Changes with Apache 1.3.1
 
+  *) Proxy Cache Fixes: account for directory sizes, fork off garbage collection
+     to continue in background, use predefined types (off_t, size_t, time_t),
+     log the current cache usage percentage at LogLevel debug
+     [Martin Kraemer, based on discussion between Dean Gaudet & Dirk vanGulik]
+
 Changes with Apache 1.3.0
 
   *) Using a type map file as a custom error document was not possible.
