@@ -243,7 +243,7 @@ application/vnd.motorola.flexsuite.gotap
 application/vnd.motorola.flexsuite.kmr
 application/vnd.motorola.flexsuite.ttc
 application/vnd.motorola.flexsuite.wem
-application/vnd.mozilla.xul+xml
+application/vnd.mozilla.xul+xml	xul
 application/vnd.ms-artgalry
 application/vnd.ms-asf
 application/vnd.ms-excel	xls
