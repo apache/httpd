@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/03/21 11:17:01 $]
+Last modified at [$Date: 2004/03/22 12:46:11 $]
 
 Release:
 
@@ -142,6 +142,10 @@ PATCHES TO BACKPORT FROM 2.1
       atomic operations for higher concurrency.
       server/mpm/worker/fdqueue.c 1.24, 1.25
       +1: brianp, ianh, jjclar
+      trawick: Doesn't this make Apache 2.0.next slower except
+               when the right atomic operations are available/
+               implemented?  (Due to under-the-covers mutex
+               operations when the dummy atomics are used?)
 
     * Rewrite how proxy sends its request to allow input bodies to 
       morph the request bodies.  Previously, if an input filter
