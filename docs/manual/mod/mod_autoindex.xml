@@ -328,7 +328,7 @@ icon selected by MIME content-type</description>
 <name>AddIconByEncoding</name>
 <description>Icon to display next to files selected by MIME 
 content-encoding</description>
-<syntax>AddIconByEncoding <var>icon MIME-encoding</var>
+<syntax>AddIconByEncoding <var>icon</var> <var>MIME-encoding</var>
 [<var>MIME-encoding</var>] ...</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
