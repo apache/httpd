@@ -76,19 +76,17 @@ BEGIN {
   print "BEGIN";
   print "  BLOCK \"StringFileInfo\"";
   print "  BEGIN";
-  print "    BLOCK \"00000000\"";
+  print "    BLOCK \"040904b0\"";
   print "    BEGIN";
-  print "      VALUE \"Comments\", \"This software consists of " \
-        "voluntary contributions made by many individuals on behalf of " \
-        "the Apache Software Foundation.  For more information on the " \
-        "Apache Software Foundation, please see <http://www.apache.org/>\\0\"";
-  print "      VALUE \"CompanyName\", \"Apache Software Foundation.\\0\"";
+  print "      VALUE \"Comments\", \"All rights reserved.  The "\
+        "license is available at <http://www.apache.org/LICENSE.txt>.  "\
+        "The new-httpd page is at <http://httpd.apache.org/>.\\0\"";
+  print "      VALUE \"CompanyName\", \"Apache Software Foundation\\0\"";
   print "      VALUE \"FileDescription\", \"" desc "\\0\"";
   print "      VALUE \"FileVersion\", \"" ver "\\0\"";
   print "      VALUE \"InternalName\", \"" file "\\0\"";
-  print "      VALUE \"LegalCopyright\", \"Copyright (c) 2001, " \
-        "The Apache Software Foundation.  Current License is available from " \
-        "<http://www.apache.org/LICENSE.txt>\\0\"";
+  print "      VALUE \"LegalCopyright\", \"Copyright © 2001 "\
+        "The Apache Software Foundation.\\0\"";
   print "      VALUE \"OriginalFilename\", \"" file ".exe\\0\"";
   if (vendor) {
     print "      VALUE \"PrivateBuild\", \"" vendor "\\0\"";
@@ -96,13 +94,13 @@ BEGIN {
   if (special) {
     print "      VALUE \"SpecialBuild\", \"" vendor "\\0\"";
   }
-  print "      VALUE \"ProductName\", \"Apache httpd Server\\0\"";
+  print "      VALUE \"ProductName\", \"Apache http Server\\0\"";
   print "      VALUE \"ProductVersion\", \"" ver "\\0\"";
   print "    END";
   print "  END";
   print "  BLOCK \"VarFileInfo\"";
   print "  BEGIN";
-  print "    VALUE \"Translation\", 0, 1200";
+  print "    VALUE \"Translation\", 0x409, 1200";
   print "  END";
   print "END";
 }
