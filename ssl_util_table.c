@@ -989,7 +989,9 @@ int table_set_data_alignment(table_t * table_p, const int alignment)
  */
 int table_clear(table_t * table_p)
 {
+#if 0
     table_entry_t *entry_p, *next_p;
+#endif
     table_entry_t **bucket_p, **bounds_p;
 
     if (table_p == NULL)
