@@ -1,4 +1,18 @@
 Changes with Apache 1.3.21
+  *) Modified mod_mime and mod_negotiation to prevent mod_negotiation 
+     from serving any multiview variant containing one or more 
+     'unknown' filename extensions. In PR #8130, mod_negotiation was 
+     incorrectly serving index.html.zh.Big5 when better variants were 
+     available. The httpd.conf file on the failing server did not have 
+     an AddLanguage directive for .zh, which caused mod_mime to loose
+     the file_type information it gleened from parsing the .html
+     extension. The absence of any language preferences, either in
+     the browser or configured on the server, caused mod_negotiation
+     to consider all the variants equivalent. When that occurs, 
+     mod_negotiation picks the 'smallest' variant available, which
+     just happened to be  index.html.zh.Big5.
+     [Bill Stoddard, Bill Rowe] PR #8130
+
   *) Security: Close autoindex /?M=D directory listing hole reported
      in bugtraq id 3009.  In some configurations where multiviews and 
      indexes are enabled for a directory, requesting URI /?M=D could

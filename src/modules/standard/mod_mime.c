@@ -615,27 +615,38 @@ static content_type *analyze_ct(pool *p, char *s)
 
 static int find_ct(request_rec *r)
 {
-    const char *fn = strrchr(r->filename, '/');
-    mime_dir_config *conf =
-    (mime_dir_config *) ap_get_module_config(r->per_dir_config, &mime_module);
+    mime_dir_config *conf;
+    array_header *exception_list;
+    const char *fn;
     char *ext;
-    const char *orighandler = r->handler;
     const char *type;
     const char *charset = NULL;
+    int found_metadata = 0;
 
     if (S_ISDIR(r->finfo.st_mode)) {
         r->content_type = DIR_MAGIC_TYPE;
         return OK;
     }
 
-    /* TM -- FIXME
-     * if r->filename does not contain a '/', the following passes a null
-     * pointer to getword, causing a SEGV ..
-     */
+    conf = (mime_dir_config *) ap_get_module_config(r->per_dir_config, 
+                                                    &mime_module);
 
-    if (fn == NULL) {
+    exception_list = ap_make_array(r->pool, 2, sizeof(char *));
+
+    /* Always drop the leading element */
+    fn = strrchr(r->filename, '/');
+    if (fn == NULL)
 	fn = r->filename;
-    }
+    else
+        ++fn;
+
+    /* The exception list keeps track of those filename components that
+     * are not associated with extensions indicating metadata.
+     * The base name is always the first exception (i.e., "txt.html" has
+     * a basename of "txt" even though it might look like an extension).
+     */
+    ext = ap_getword(r->pool, &fn, '.');
+    *((const char **) ap_push_array(exception_list)) = ext;
 
     /* Parse filename extensions, which can be in any order */
     while ((ext = ap_getword(r->pool, &fn, '.')) && *ext) {
@@ -683,19 +694,19 @@ static int find_ct(request_rec *r)
             found = 1;
         }
 
-        /* This is to deal with cases such as foo.gif.bak, which we want
-         * to not have a type. So if we find an unknown extension, we
-         * zap the type/language/encoding and reset the handler
-         */
+        if (found)
+            found_metadata = 1;
+        else
+            *((const char **) ap_push_array(exception_list)) = ext;
+    }
 
-        if (!found) {
-            r->content_type = NULL;
-            r->content_language = NULL;
-            r->content_languages = NULL;
-            r->content_encoding = NULL;
-            r->handler = orighandler;
-	    charset = NULL;
-	}
+    /* Need to see a notes entry on r for unrecognized elements.
+     * Somebody better claim them! If we did absolutly nothing,
+     * skip the notes to alert mod_negotiation we are clueless.
+     */
+    if (found_metadata) {
+        ap_table_setn(r->notes, "ap-mime-exceptions-list",
+                      (void *) exception_list);
     }
 
     if (r->content_type) {
