@@ -294,7 +294,7 @@ static void get_req(int fd, request_rec *r, char **filename, char **argv0, char 
         dconf[i] = (void *)suexec_cfg;
     }
 
-    r->per_dir_config = dconf; 
+    r->per_dir_config = (ap_conf_vector_t *)dconf; 
 #if 0
 #ifdef RLIMIT_CPU 
     read(fd, &j, sizeof(int)); 
