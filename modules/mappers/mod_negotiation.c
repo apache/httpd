@@ -935,7 +935,11 @@ static int read_types_multi(negotiation_state *neg)
         request_rec *sub_req;
         
         /* Do we have a match? */
+#ifdef CASE_BLIND_FILESYSTEM
+        if (strncasecmp(dirent.name, filp, prefix_len)) {
+#else
         if (strncmp(dirent.name, filp, prefix_len)) {
+#endif
             continue;
         }
         if (dirent.name[prefix_len] != '.') {

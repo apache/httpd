@@ -683,6 +683,13 @@ static int find_ct(request_rec *r)
     while ((ext = ap_getword(r->pool, &fn, '.')) && *ext) {
         int found = 0;
 
+#ifdef CASE_BLIND_FILESYSTEM
+        /* We have a basic problem that folks on case-crippled systems
+         * expect anything and everything to succeed
+         */
+        ap_str_tolower(ext);
+#endif
+
         /* Check for Content-Type */
         if ((type = apr_table_get(conf->forced_types, ext))
             || (type = apr_table_get(hash_buckets[hash(*ext)], ext))) {
