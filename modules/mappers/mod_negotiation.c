@@ -2379,7 +2379,16 @@ static int best_match(negotiation_state *neg, var_rec **pbest)
              * variant.
              */
             set_accept_quality(neg, variant);
-            set_language_quality(neg, variant);
+            /* accept the preferred language, even when it's not listed within
+             * the Accept-Language header
+             */
+            if (preferred_language) {
+                variant->lang_quality = 1.0f;
+                variant->definite = 1;
+            }
+            else {
+                set_language_quality(neg, variant);
+            }
             set_encoding_quality(neg, variant);
             set_charset_quality(neg, variant);
 
