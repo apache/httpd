@@ -2887,7 +2887,7 @@ static void rewritelog(request_rec *r, int level, const char *text, ...)
     conf = get_module_config(r->server->module_config, &rewrite_module);
     conn = r->connection;
 
-    if (conf->rewritelogfp <0)
+    if (conf->rewritelogfp < 0)
         return;
     if (conf->rewritelogfile == NULL)
         return;
