@@ -992,9 +992,18 @@ char *nuke_mime_parms (pool *p, char *content_type)
 #endif
 }
 
-char *make_allow(request_rec *r)
+static char *make_allow(request_rec *r)
 {
     int allowed = r->allowed;
+
+    if( allowed == 0 ) {
+	/* RFC2068 #14.7, Allow must contain at least one method.  So rather
+	 * than deal with the possibility of trying not to emit an Allow:
+	 * header, i.e. #10.4.6 says 405 Method Not Allowed MUST include
+	 * an Allow header, we'll just say TRACE is valid.
+	 */
+	return( "TRACE" );
+    }
 
     return 2 + pstrcat(r->pool, (allowed & (1 << M_GET)) ? ", GET, HEAD" : "",
 		       (allowed & (1 << M_POST)) ? ", POST" : "",

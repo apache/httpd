@@ -127,6 +127,10 @@ Changes with Apache 1.2b7
   *) Fixed http_protocol to correctly output all HTTP/1.1 headers, including
      for the special case of a 304 response.  [Paul Sutton]
 
+  *) Improved handling of TRACE method by bypassing normal method handling
+     and header parsing routines; fixed Allow response to always allow TRACE.
+     [Dean Gaudet]
+
   *) Fixed compiler warnings in the regex library. [Dean Gaudet]
 
   *) Cleaned-up some of the generated HTML. [Ken Coar]

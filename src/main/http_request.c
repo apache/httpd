@@ -870,6 +870,15 @@ void process_request_internal (request_rec *r)
 	return;
     }
 
+    /* We don't want TRACE to run through the normal handler set,
+     * we handle it specially.
+     */
+    if (r->method_number == M_TRACE) {
+	send_http_trace (r);
+	finalize_request_protocol (r);
+	return;
+    }
+
     if (!r->proxyreq)
     {
 	access_status = unescape_url(r->uri);
@@ -960,11 +969,7 @@ void process_request_internal (request_rec *r)
 	return;
     }
 
-    /* We don't want TRACE to run through the normal handler set,
-     * we handle it specially.
-     */
-    if (r->method_number == M_TRACE) send_http_trace (r);
-    else if ((access_status = invoke_handler (r)) != 0) {
+    if ((access_status = invoke_handler (r)) != 0) {
         die (access_status, r);
 	return;
     }
