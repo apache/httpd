@@ -630,25 +630,6 @@ AP_DECLARE(int) ap_count_dirs(const char *path)
     return n;
 }
 
-
-AP_DECLARE(void) ap_chdir_file(const char *file)
-{
-    const char *x;
-    char buf[HUGE_STRING_LEN];
-
-    x = ap_strrchr_c(file, '/');
-    if (x == NULL) {
-	chdir(file);
-    }
-    else if (x - file < sizeof(buf) - 1) {
-	memcpy(buf, file, x - file);
-	buf[x - file] = '\0';
-	chdir(buf);
-    }
-    /* XXX: well, this is a silly function, no method of reporting an
-     * error... ah well. */
-}
-
 AP_DECLARE(char *) ap_getword_nc(apr_pool_t *atrans, char **line, char stop)
 {
     return ap_getword(atrans, (const char **) line, stop);
