@@ -943,7 +943,7 @@ static const char *set_document_root(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
-AP_DECLARE(void) ap_custom_response(request_rec *r, int status, char *string)
+AP_DECLARE(void) ap_custom_response(request_rec *r, int status, const char *string)
 {
     core_dir_config *conf = 
 	ap_get_module_config(r->per_dir_config, &core_module);
@@ -3076,6 +3076,7 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
                 }
             }
         }
+
     
         /* Completed iterating over the brigades, now determine if we want 
          * to buffer the brigade or send the brigade out on the network.
