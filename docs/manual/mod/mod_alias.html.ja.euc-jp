@@ -25,8 +25,6 @@
 <a href="../ja/mod/mod_alias.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_alias.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>ホストファイルシステム上のいろいろな違う場所を
     ドキュメントツリーにマップする機能と、
     URL のリダイレクトを行なう機能を提供する</td></tr>
@@ -51,6 +49,11 @@
     クライアントに違った
     URL に新しいリクエストを送るように指示します。これは、
     リソースが新しい場所に移動したときによく使用されます。</p>
+
+    <p><code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code> は簡単な URL 操作向けに設計されています。
+    より複雑な操作、クエリーストリングの操作には、<code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+    で提供されるツールを使用してください。</p>
+
 </div>
 <div id="quickview"><h3 class="directives">ディレクティブ</h3>
 <ul id="toc">
