@@ -1,3 +1,5 @@
+Changes with Apache 2.0.32-dev
+
 Changes with Apache 2.0.31
   *) Add a timeout option to the proxy code 'ProxyTimeout' 
      [Ian Holsman]
