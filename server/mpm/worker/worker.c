@@ -191,7 +191,7 @@ static const char *lock_fname;
 #define SAFE_ACCEPT(stmt) (stmt)
 #endif
 
-static signal_workers(void)
+static void signal_workers(void)
 {
     workers_may_exit = 1;
     ap_queue_signal_all_wakeup(worker_queue);
@@ -680,11 +680,6 @@ static void *worker_thread(apr_thread_t *thd, void * dummy)
     apr_pool_t *tpool = ti->tpool;
     apr_socket_t *csd = NULL;
     apr_pool_t *ptrans;		/* Pool for per-transaction stuff */
-    apr_socket_t *sd = NULL;
-    int n;
-    int curr_pollfd, last_pollfd = 0;
-    apr_pollfd_t *pollset;
-    apr_status_t rv;
 
     free(ti);
 
