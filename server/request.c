@@ -954,6 +954,94 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_uri(const char *new_file,
     return ap_sub_req_method_uri("GET", new_file, r, next_filter);
 }
 
+AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(apr_finfo_t *dirent,
+                                                   const request_rec *r,
+                                                   ap_filter_t *next_filter)
+{
+    request_rec *rnew;
+    int res;
+    char *fdir;
+    char *udir;
+
+    rnew = make_sub_request(r);
+    fill_in_sub_req_vars(rnew, r, next_filter);
+
+    rnew->chunked        = r->chunked;
+
+    /* We have to run this after ap_set_sub_req_protocol, or the r->main
+     * pointer won't be setup
+     */
+    ap_run_create_request(rnew);
+
+    fdir = ap_make_dirstr_parent(rnew->pool, dirent->name);
+
+    /*
+     * Special case: we are looking at a relative lookup in the same directory. 
+     * That means we won't have to redo directory_walk, and we may
+     * not even have to redo access checks.
+     */
+
+    udir = ap_make_dirstr_parent(rnew->pool, r->uri);
+    apr_status_t rv;
+
+    rnew->uri = ap_make_full_path(rnew->pool, udir, dirent->name);
+    rnew->filename = ap_make_full_path(rnew->pool, fdir, dirent->name);
+    ap_parse_uri(rnew, rnew->uri);    /* fill in parsed_uri values */
+
+    if ((dirent->finfo & APR_FINFO_MIN) != APR_FINFO_MIN) {
+        if (((rv = apr_stat(&rnew->finfo, rnew->filename,
+                            APR_FINFO_MIN, rnew->pool)) != APR_SUCCESS)
+                                                 && (rv != APR_INCOMPLETE)) {
+            rnew->finfo.filetype = 0;
+        }
+    }
+    else {
+        r->finfo = apr_palloc(rnew->pool, sizeof(apr_finfo_t));
+        memcpy (r->finfo, dirent);
+    }
+
+    if ((res = check_safe_file(rnew))) {
+        rnew->status = res;
+        return rnew;
+    }
+
+    rnew->per_dir_config = r->per_dir_config;
+
+    /*
+     * no matter what, if it's a subdirectory, we need to re-run
+     * directory_walk
+     */
+    if (rnew->finfo.filetype == APR_DIR) {
+        res = directory_walk(rnew);
+        if (!res) {
+            res = file_walk(rnew);
+        }
+    }
+    else {
+        if ((res = check_symlinks(rnew->filename, ap_allow_options(rnew),
+                                  rnew->pool))) {
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, rnew,
+                        "Symbolic link not allowed: %s", rnew->filename);
+            rnew->status = res;
+            return rnew;
+        }
+        /*
+         * do a file_walk, if it doesn't change the per_dir_config then
+         * we know that we don't have to redo all the access checks
+         */
+        if ((res = file_walk(rnew))) {
+            rnew->status = res;
+            return rnew;
+        }
+        if (rnew->per_dir_config == r->per_dir_config) {
+            if ((res = ap_run_type_checker(rnew)) || (res = ap_run_fixups(rnew))) {
+                rnew->status = res;
+            }
+            return rnew;
+        }
+    }
+}
+
 AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
                                               const request_rec *r,
                                               ap_filter_t *next_filter)
