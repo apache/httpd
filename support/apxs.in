@@ -52,10 +52,6 @@
 # information on the Apache Software Foundation, please see
 # <http://www.apache.org/>.
 #
-##
-##  apxs -- APache eXtenSion tool
-##  Written by Ralf S. Engelschall <rse@apache.org>
-##
 
 require 5.003;
 use strict;
@@ -65,26 +61,17 @@ package apxs;
 ##  Configuration
 ##
 
-my $CFG_TARGET        = '@progname@';
-my $CFG_CC            = '@CC@';
-my $CFG_DEFS          = '@DEFS@';
-my $CFG_CFLAGS        = '@CFLAGS@ @EXTRA_CFLAGS@';
-my $CFG_PREFIX        = "@prefix@";
-my $prefix            = "$CFG_PREFIX";
-my $CFG_EXEC_PREFIX   = "@exec_prefix@";
-my $exec_prefix       = "$CFG_EXEC_PREFIX";
-my $CFG_SBINDIR       = "@bindir@";
-my $CFG_INCLUDEDIR    = "@includedir@";
-my $CFG_LIBEXECDIR    = "@libexecdir@";
-my $CFG_SYSCONFDIR    = "@sysconfdir@";
-
-
-##
-##  Cleanup the above stuff
-##
-$CFG_CFLAGS =~ s|^\s+||;
-$CFG_CFLAGS =~ s|\s+$||;
-$CFG_CFLAGS =~ s|\s+`.+apaci`||;
+my $prefix         = "@prefix@";
+my $CFG_PREFIX     = "$prefix";
+my $exec_prefix    = get_vars("exec_prefix");
+my $CFG_TARGET     = get_vars("progname");
+my $CFG_SYSCONFDIR = get_vars("sysconfdir");
+my $CFG_CFLAGS     = get_vars("SHLTCFLAGS");
+my $includedir     = get_vars("includedir");
+my $CFG_INCLUDEDIR = eval qq("$includedir");
+my $CFG_CC         = get_vars("CC");
+my $libexecdir     = get_vars("libexecdir");
+my $CFG_LIBEXECDIR = eval qq("$libexecdir");
 
 ##
 ##  parse argument line
@@ -219,15 +206,17 @@ if (@opt_S) {
 ##
 ##  Initial shared object support check
 ##
-my $httpd = "$CFG_SBINDIR/$CFG_TARGET";
+my $exec_prefix = get_vars("exec_prefix");
+my $httpd = get_vars("bindir") . "/" . get_vars("progname");
+my $temp = eval qq("$httpd");
+my $httpd = eval qq("$temp");
 
 #allow apxs to be run from the source tree, before installation
 if ($0 =~ m:support/apxs$:) {
     ($httpd = $0) =~ s:support/apxs$::;
-    $httpd .= $CFG_TARGET;
 }
 
-if (not -x $httpd) {
+if (not -x "$httpd") {
 	print STDERR "apxs:Error: $httpd not found or not executable\n";
 	exit(1);
 }
@@ -237,6 +226,36 @@ if (not grep(/mod_so/, `$httpd -l`)) {
     print STDERR "apxs:Error: the Apache module mod_so is compiled into\n";
     print STDERR "apxs:Error: your server binary `$httpd'.\n";
     exit(1);
+}
+
+sub get_vars {
+    my $result = '';
+    my $arg;
+    my $ok = 0;
+    foreach $arg (@_) {
+        open IN, "$prefix/build/config_vars.mk" or die "open $prefix/build/config_vars.mk: $!";
+        while (<IN>) {
+            my $var;
+            my $val;
+            if (/(.*) = (.*)$/) {
+                $var = $1;
+                $val = $2;
+            }
+            next unless $var;
+            if ($arg eq $var or $arg eq lc($var)) {
+                $result .= "$val;;";
+                $ok = 1;
+                last;
+            }
+        }
+        if (not $ok) {
+            printf(STDERR "apxs:Error: Invalid query string `%s'\n", $arg);
+            exit(1);
+        }
+    }
+    $result =~ s|;;$||;
+    $result =~ s|:| |;
+    return("$result");
 }
 
 ##
@@ -273,7 +292,7 @@ if ($opt_g) {
     $data =~ s|%NAME%|$name|sg;
     $data =~ s|%TARGET%|$CFG_TARGET|sg;
 
-    my ($mkf, $src) = ($data =~ m|^(.+)-=#=-\n(.+)|s);
+    my ($mkf, $mods, $src) = ($data =~ m|^(.+)-=#=-\n(.+)-=#=-\n(.+)|s);
 
     print STDERR "Creating [DIR]  $name\n";
     system("mkdir $name");
@@ -281,10 +300,16 @@ if ($opt_g) {
     open(FP, ">${name}/Makefile") || die;
     print FP $mkf;
     close(FP);
+    print STDERR "Creating [FILE] $name/modules.mk\n";
+    open(FP, ">${name}/modules.mk") || die;
+    print FP $mods;
+    close(FP);
     print STDERR "Creating [FILE] $name/mod_$name.c\n";
     open(FP, ">${name}/mod_${name}.c") || die;
     print FP $src;
     close(FP);
+    print STDERR "Creating [FILE] $name/.deps\n";
+    system("touch ${name}/.deps");
 
     exit(0);
 }
@@ -294,30 +319,8 @@ if ($opt_q) {
     ##
     ##  QUERY INFORMATION 
     ##
-
-    my $result = '';
-    my $arg;
-    foreach $arg (@args) {
-        my $ok = 0;
-        my $name;
-        foreach $name (qw(
-            TARGET CC CFLAGS CFLAGS_SHLIB LD_SHLIB LDFLAGS_SHLIB LIBS_SHLIB
-            PREFIX SBINDIR INCLUDEDIR LIBEXECDIR SYSCONFDIR
-        )) {
-            if ($arg eq $name or $arg eq lc($name)) {
-                my $val = eval "\$CFG_$name";
-                $result .= "${val}::";
-                $ok = 1;
-            }
-        }
-        if (not $ok) {
-            printf(STDERR "apxs:Error: Invalid query string `%s'\n", $arg);
-            exit(1);
-        }
-    }
-    $result =~ s|::$||;
-    $result =~ s|::| |;
-    print $result;
+    my $result = get_vars(@args);
+    print "$result\n";
 }
 
 if ($opt_c) {
@@ -407,7 +410,7 @@ if ($opt_c) {
         $opt .= " -l$opt_l";
     }
 
-    push(@cmds, "libtool --silent --mode=link $CFG_CC $cflags -o $dso_file -rpath $CFG_LIBEXECDIR -module -avoid-version $opt $lo");
+    push(@cmds, "libtool --silent --mode=link $CFG_CC -o $dso_file -rpath $CFG_LIBEXECDIR -module -avoid-version $opt $lo");
 
     #   execute the commands
     &execute_cmds(@cmds);
@@ -492,6 +495,7 @@ if ($opt_i or $opt_e) {
         }
 
         open(FP, "<$CFG_SYSCONFDIR/$CFG_TARGET.conf") || die;
+        open(FP, "httpd.conf") || die;
         my $content = join('', <FP>);
         close(FP);
 
@@ -543,6 +547,11 @@ __DATA__
 ##  Autogenerated via ``apxs -n %NAME% -g''.
 ##
 
+builddir=$(shell pwd)
+top_srcdir=/home/rbb/apachebin4
+top_builddir=/home/rbb/apachebin4/build
+include /home/rbb/apachebin4/build/special.mk
+
 #   the used tools
 APXS=apxs
 APACHECTL=apachectl
@@ -553,15 +562,10 @@ APACHECTL=apachectl
 #LIB=-Lmy/lib/dir -lmylib
 
 #   the default target
-all: mod_%NAME%.la
-
-#   compile the shared object file
-mod_%NAME%.la: mod_%NAME%.c
-	$(APXS) -c $(DEF) $(INC) $(LIB) mod_%NAME%.c
+all: local-shared-build
 
 #   install the shared object file into Apache 
-install: all
-	$(APXS) -i -a -n '%NAME%' mod_%NAME%.la
+install: install-modules
 
 #   cleanup
 clean:
@@ -584,6 +588,11 @@ restart:
 stop:
 	$(APACHECTL) stop
 
+-=#=-
+mod_%NAME%.la: mod_%NAME%.slo
+	$(SH_LINK) -rpath $(libexecdir) -module -avoid-version  mod_%NAME%.lo
+DISTCLEAN_TARGETS = modules.mk
+shared =  mod_%NAME%.la
 -=#=-
 /* 
 **  mod_%NAME%.c -- Apache sample %NAME% module
