@@ -308,7 +308,7 @@ static int ap_process_http_connection(conn_rec *c)
             csd = ap_get_module_config(c->conn_config, &core_module);
             csd_set = 1;
         }
-        apr_setsocketopt(csd, APR_INCOMPLETE_READ, 1);
+        apr_socket_opt_set(csd, APR_INCOMPLETE_READ, 1);
     }
  
     return OK;

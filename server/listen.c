@@ -91,20 +91,20 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
     apr_status_t stat;
 
 #ifndef WIN32
-    stat = apr_setsocketopt(s, APR_SO_REUSEADDR, one);
+    stat = apr_socket_opt_set(s, APR_SO_REUSEADDR, one);
     if (stat != APR_SUCCESS && stat != APR_ENOTIMPL) {
         ap_log_perror(APLOG_MARK, APLOG_CRIT, stat, p,
-                      "make_sock: for address %pI, setsockopt: (SO_REUSEADDR)",
+                      "make_sock: for address %pI, apr_socket_opt_set: (SO_REUSEADDR)",
                       server->bind_addr);
         apr_socket_close(s);
         return stat;
     }
 #endif
 
-    stat = apr_setsocketopt(s, APR_SO_KEEPALIVE, one);
+    stat = apr_socket_opt_set(s, APR_SO_KEEPALIVE, one);
     if (stat != APR_SUCCESS && stat != APR_ENOTIMPL) {
         ap_log_perror(APLOG_MARK, APLOG_CRIT, stat, p,
-                      "make_sock: for address %pI, setsockopt: (SO_KEEPALIVE)",
+                      "make_sock: for address %pI, apr_socket_opt_set: (SO_KEEPALIVE)",
                       server->bind_addr);
         apr_socket_close(s);
         return stat;
@@ -130,7 +130,7 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
      * If no size is specified, use the kernel default.
      */
     if (send_buffer_size) {
-        stat = apr_setsocketopt(s, APR_SO_SNDBUF,  send_buffer_size);
+        stat = apr_socket_opt_set(s, APR_SO_SNDBUF,  send_buffer_size);
         if (stat != APR_SUCCESS && stat != APR_ENOTIMPL) {
             ap_log_perror(APLOG_MARK, APLOG_WARNING, stat, p,
                           "make_sock: failed to set SendBufferSize for "
@@ -172,10 +172,10 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
      * So set reuseaddr, but do not attempt to do so until we have the
      * parent listeners successfully bound.
      */
-    stat = apr_setsocketopt(s, APR_SO_REUSEADDR, one);
+    stat = apr_socket_opt_set(s, APR_SO_REUSEADDR, one);
     if (stat != APR_SUCCESS && stat != APR_ENOTIMPL) {
         ap_log_perror(APLOG_MARK, APLOG_CRIT, stat, p,
-                    "make_sock: for address %pI, setsockopt: (SO_REUSEADDR)", 
+                    "make_sock: for address %pI, apr_socket_opt_set: (SO_REUSEADDR)", 
                      server->bind_addr);
         apr_socket_close(s);
         return stat;

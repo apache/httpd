@@ -1148,10 +1148,10 @@ PROXY_DECLARE(int) ap_proxy_connect_to_backend(apr_socket_t **newsock,
 
 #if !defined(TPF) && !defined(BEOS)
         if (conf->recv_buffer_size > 0 &&
-            (rv = apr_setsocketopt(*newsock, APR_SO_RCVBUF,
-                                   conf->recv_buffer_size))) {
+            (rv = apr_socket_opt_set(*newsock, APR_SO_RCVBUF,
+                                     conf->recv_buffer_size))) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                         "setsockopt(SO_RCVBUF): Failed to set "
+                         "apr_socket_opt_set(SO_RCVBUF): Failed to set "
                          "ProxyReceiveBufferSize, using default");
         }
 #endif

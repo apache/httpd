@@ -180,7 +180,7 @@ AP_DECLARE(void) ap_lingering_close(conn_rec *c)
      */
     timeout = apr_time_from_sec(SECONDS_TO_LINGER);
     apr_socket_timeout_set(csd, timeout);
-    apr_setsocketopt(csd, APR_INCOMPLETE_READ, 1);
+    apr_socket_opt_set(csd, APR_INCOMPLETE_READ, 1);
     while (1) {
         nbytes = sizeof(dummybuf);
         rc = apr_recv(csd, dummybuf, &nbytes);
