@@ -84,7 +84,7 @@
  * can also be used when compatibility mode is enabled.
  *
  * dirkx - Added Authoritative control to allow passing on to lower  
- *         modules if and only if the user ap_context_t d is not known to this
+ *         modules if and only if the userid is not known to this
  *         module. A known user with a faulty or absent password still
  *         causes an AuthRequired. The default is 'Authoritative', i.e.
  *         no control is passed along.

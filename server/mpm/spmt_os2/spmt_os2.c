@@ -902,7 +902,7 @@ static void child_main(void *child_num_arg)
     signal(SIGUSR1, just_die);
     signal(SIGTERM, just_die);
 
-    /* Get a sub ap_context_t for global allocations in this child, so that
+    /* Get a sub pool for global allocations in this child, so that
      * we can have cleanups occur when the child exits.
      */
     pchild = ap_make_sub_pool(pconf);

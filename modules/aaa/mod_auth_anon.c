@@ -72,7 +72,7 @@
  *
  * Just add the following tokes to your <directory> setup:
  * 
- * Anonymous                    magic-user ap_context_t d [magic-user ap_context_t d]...
+ * Anonymous                    magic-userid [magic-userid]...
  *
  * Anonymous_MustGiveEmail      [ on | off ] default = off
  * Anonymous_LogEmail           [ on | off ] default = on

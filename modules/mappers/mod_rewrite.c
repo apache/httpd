@@ -605,7 +605,7 @@ static const char *cmd_rewritecond(cmd_parms *cmd, rewrite_perdir_conf *dconf,
     }
 
     /* now be careful: Under the POSIX regex library
-       we can compile the pattern for case ap_context_t nsensitive matching,
+       we can compile the pattern for case insensitive matching,
        under the old V8 library we have to do it self via a hack */
     if (new->flags & CONDFLAG_NOCASE) {
         rc = ((regexp = ap_pregcomp(cmd->pool, cp, REG_EXTENDED|REG_ICASE))
@@ -1758,7 +1758,7 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
      *  make sure we really match against the complete URL.
      */
     if (perdir != NULL && r->path_info != NULL && r->path_info[0] != '\0') {
-        rewritelog(r, 3, "[per-dir %s] add path ap_context_t nfo postfix: %s -> %s%s",
+        rewritelog(r, 3, "[per-dir %s] add path info postfix: %s -> %s%s",
                    perdir, uri, uri, r->path_info);
         uri = ap_pstrcat(r->pool, uri, r->path_info, NULL);
     }

@@ -68,7 +68,7 @@
  * function as well).
  *
  * To load, simply place the ISA in a location in the document tree.
- * Then add an "AddHandler isapi ap_context_t sa dll" into your config file.
+ * Then add an "AddHandler isapi-isa dll" into your config file.
  * You should now be able to load ISAPI DLLs just be reffering to their
  * URLs. Make sure the ExecCGI option is active in the directory
  * the ISA is in.
@@ -546,7 +546,7 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
 }
 
 handler_rec isapi_handlers[] = {
-{ "isapi ap_context_t sa", isapi_handler },
+{ "isapi-isa", isapi_handler },
 { NULL}
 };
 

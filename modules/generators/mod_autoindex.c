@@ -615,7 +615,7 @@ static void *merge_autoindex_configs(ap_context_t *p, void *basev, void *addv)
     }
     else {
 	/*
-	 * If there were any non ap_context_t ncremental options selected for
+	 * If there were any nonincremental options selected for
 	 * this directory, they dominate and we don't inherit *anything.*
 	 * Contrariwise, we *do* inherit if the only settings here are
 	 * incremental ones.
@@ -634,7 +634,7 @@ static void *merge_autoindex_configs(ap_context_t *p, void *basev, void *addv)
 	}
 	else {
 	    /*
-	     * There are local non ap_context_t ncremental settings, which clear
+	     * There are local nonincremental settings, which clear
 	     * all inheritance from above.  They *are* the new base settings.
 	     */
 	    new->opts = add->opts;;

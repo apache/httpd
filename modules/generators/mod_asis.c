@@ -124,7 +124,7 @@ static int asis_handler(request_rec *r)
 static const handler_rec asis_handlers[] =
 {
     {ASIS_MAGIC_TYPE, asis_handler},
-    {"send-as ap_context_t s", asis_handler},
+    {"send-asis", asis_handler},
     {NULL}
 };
 

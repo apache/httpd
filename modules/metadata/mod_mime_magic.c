@@ -93,7 +93,7 @@
  *
  * For compliance with Mr Darwin's terms: this has been very significantly
  * modified from the free "file" command.
- * - all ap_context_t n-one file for compilation convenience when moving from one
+ * - all-in-one file for compilation convenience when moving from one
  *   version of Apache to the next.
  * - Memory allocation is done through the Apache API's ap_context_t structure.
  * - All functions have had necessary Apache API request or server

@@ -494,7 +494,7 @@ void main (int argc, char **argv)
     unsigned long *shared_counter;
 
     if (argc != 3) {
-	fprintf (stderr, "Usage: time-sem num-child num ap_context_t ter\n");
+	fprintf (stderr, "Usage: time-sem num-child num iter\n");
 	exit (1);
     }
 

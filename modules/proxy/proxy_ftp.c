@@ -415,7 +415,7 @@ static long int send_dir(BUFF *f, request_rec *r, cache_req *c, char *cwd)
  * with username and password (which was presumably queried from the user)
  * supplied in the Authorization: header.
  * Note that we "invent" a realm name which consists of the
- * ftp://user@host part of the reqest (sans password  ap_context_t f supplied but invalid-)
+ * ftp://user@host part of the reqest (sans password if supplied but invalid-)
  */
 static int ftp_unauthorized (request_rec *r, int log_it)
 {

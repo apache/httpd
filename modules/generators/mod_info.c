@@ -59,14 +59,14 @@
  * Info Module.  Display configuration information for the server and
  * all included modules.
  *
- * <Location /server ap_context_t nfo>
- * SetHandler server ap_context_t nfo
+ * <Location /server-info>
+ * SetHandler server-info
  * </Location>
  *
- * GET /server ap_context_t nfo - Returns full configuration page for server and all modules
- * GET /server ap_context_t nfo?server - Returns server configuration only
- * GET /server ap_context_t nfo?module_name - Returns configuration for a single module
- * GET /server ap_context_t nfo?list - Returns quick list of included modules
+ * GET /server-info - Returns full configuration page for server and all modules
+ * GET /server-info?server - Returns server configuration only
+ * GET /server-info?module_name - Returns configuration for a single module
+ * GET /server-info?list - Returns quick list of included modules
  *
  * Rasmus Lerdorf <rasmus@vex.net>, May 1996
  *
@@ -660,7 +660,7 @@ static const command_rec info_cmds[] =
 
 static const handler_rec info_handlers[] =
 {
-    {"server ap_context_t nfo", display_info},
+    {"server-info", display_info},
     {NULL}
 };
 

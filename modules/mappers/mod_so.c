@@ -101,7 +101,7 @@
  * You can use this to dynamically change the capability of your server
  * without bringing it down.
  *
- * Because currently there is only limited built ap_context_t n support in the Configure
+ * Because currently there is only limited builtin support in the Configure
  * script for creating the shared library files (`.so'), please consult your
  * vendors cc(1), ld(1) and dlopen(3) manpages to find out the appropriate
  * compiler and linker flags and insert them manually into the Configuration

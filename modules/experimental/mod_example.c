@@ -624,7 +624,7 @@ static int example_handler(request_rec *r)
  */
 
 /*
- * All our module ap_context_t nitialiser does is add its trace to the log.
+ * All our module initialiser does is add its trace to the log.
  */
 static void example_init(server_rec *s, ap_context_t *p)
 {
@@ -648,14 +648,14 @@ static void example_init(server_rec *s, ap_context_t *p)
 /* 
  * This function is called during server initialisation when an heavy-weight
  * process (such as a child) is being initialised.  As with the
- * module ap_context_t nitialisation function, any information that needs to be recorded
+ * module initialisation function, any information that needs to be recorded
  * must be in static cells, since there's no configuration record.
  *
  * There is no return value.
  */
 
 /*
- * All our process ap_context_t nitialiser does is add its trace to the log.
+ * All our process initialiser does is add its trace to the log.
  */
 static void example_child_init(server_rec *s, ap_context_t *p)
 {
@@ -678,7 +678,7 @@ static void example_child_init(server_rec *s, ap_context_t *p)
 
 /* 
  * This function is called when an heavy-weight process (such as a child) is
- * being run down or destroyed.  As with the child ap_context_t nitialisation function,
+ * being run down or destroyed.  As with the child initialisation function,
  * any information that needs to be recorded must be in static cells, since
  * there's no configuration record.
  *
@@ -722,7 +722,7 @@ static void *example_create_dir_config(ap_context_t *p, char *dirspec)
     char *dname = dirspec;
 
     /*
-     * Allocate the space for our record from the ap_context_t supplied.
+     * Allocate the space for our record from the pool supplied.
      */
     cfg = (excfg *) ap_pcalloc(p, sizeof(excfg));
     /*
