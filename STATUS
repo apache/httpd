@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/07/17 22:15:00 $]
+Last modified at [$Date: 2002/07/22 14:26:21 $]
 
 Release:
 
@@ -57,6 +57,10 @@ RELEASE SHOWSTOPPERS:
       each call...  Apache MPMs don't have logic to work around this
       issue.
 
+    * On AIX and Tru64, Apache won't load due to an unresolved
+      reference to iconv.  This is apparently because
+      APRUTIL_EXPORT_LIBS is not being used in the Apache build.
+
 CURRENT VOTES:
 
     * apachectl should revert to just being an init script and
@@ -112,6 +116,12 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       Jeff: See my reply and patch in the PR (and previous commit to
       stop using "pipe" as a field name).  If patch is committed, we
       should be okay.  I'll wait to see if the user tests the patch.
+      Update by Jeff 20020722: I got an account on HP 10.20.  It looks
+      like some of the APR thread detection is screwed up.  If we find
+      pthread.h but we can't compile the pthread test program we still
+      think we can use threads.  For that reason, the patch I posted
+      to the PR won't work as-is since a failed compile of the test
+      program means nothing.
 
     * exec cmd and suexec arg-passing enhancements
       Status: Patches proposed
@@ -188,7 +198,9 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
     * Usage of APR_BRIGADE_NORMALIZE in core_input_filter should be
       removed if possible.
         Message-ID: <Pine.LNX.4.33.0201202232430.318-100000@deepthought.cs.virginia.edu>
-        
+        Jeff wonders if we still care about this.  It is no longer an
+        API issue but simply an extra trip through the brigade.
+
     * There is a bug in how we sort some hooks, at least the pre-config
       hook.  The first time we call the hooks, they are in the correct 
       order, but the second time, we don't sort them correctly.  Currently,
@@ -433,7 +445,6 @@ TODO ISSUES REMAINING IN MOD_SSL:
 
     * ssl_var_lookup could be rewritten to be MUCH faster
 
-
     * CRL callback should be pluggable
 
     * session cache store should be pluggable
@@ -448,12 +459,14 @@ TODO ISSUES REMAINING IN MOD_SSL:
 
 
 EXPERIMENTAL MODULES:
+
     Experimental modules should eventually be be promoted to fully supported
     status or removed from the repository entirely (ie, the
     'experiment' failed). This section tracks what needs to happen to 
     get the modules promoted to fully supported status.
 
     mod_cache/mod_mem_cache/mod_disk_cache:
+
     * mod_cache: handle cache_control: no_cache "field_name" to enable 
       cacheing the response w/o header "field_name"
       See RFC2616 section 14.9.1
