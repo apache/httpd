@@ -69,12 +69,24 @@
 extern "C" {
 #endif
 
+/**
+ * @package Command line options
+ */
+
+/** The name of the Apache executable */
 extern API_VAR_EXPORT const char *ap_server_argv0;
+/** The global server's ServerRoot */
 extern API_VAR_EXPORT const char *ap_server_root;
 
 /* for -C, -c and -D switches */
+/** An array of all -C directives.  These are processed before the server's
+ *  config file */
 extern API_VAR_EXPORT apr_array_header_t *ap_server_pre_read_config;
+/** An array of all -c directives.  These are processed after the server's
+ *  config file */
 extern API_VAR_EXPORT apr_array_header_t *ap_server_post_read_config;
+/** An array of all -D defines on the command line.  This allows people to
+ *  effect the server based on command line options */
 extern API_VAR_EXPORT apr_array_header_t *ap_server_config_defines;
 
 #ifdef __cplusplus
