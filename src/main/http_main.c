@@ -2424,10 +2424,10 @@ int init_suexec(void)
  */
 
 
-conn_rec *new_connection(pool *p, server_rec *server, BUFF *inout,
-			 const struct sockaddr_in *remaddr,
-			 const struct sockaddr_in *saddr,
-			 int child_num)
+conn_rec *ap__new_connection(pool *p, server_rec *server, BUFF *inout,
+			     const struct sockaddr_in *remaddr,
+			     const struct sockaddr_in *saddr,
+			     int child_num)
 {
     conn_rec *conn = (conn_rec *) pcalloc(p, sizeof(conn_rec));
 
@@ -3111,10 +3111,10 @@ void child_main(int child_num_arg)
 #endif
 	bpushfd(conn_io, csd, dupped_csd);
 
-	current_conn = new_connection(ptrans, server_conf, conn_io,
-				      (struct sockaddr_in *) &sa_client,
-				      (struct sockaddr_in *) &sa_server,
-				      my_child_num);
+	current_conn = ap__new_connection(ptrans, server_conf, conn_io,
+				          (struct sockaddr_in *) &sa_client,
+				          (struct sockaddr_in *) &sa_server,
+				          my_child_num);
 
 	/*
 	 * Read and process each request found on our connection
@@ -3790,9 +3790,9 @@ int main(int argc, char *argv[])
 	cio->fd = fileno(stdout);
 #endif
 	cio->fd_in = fileno(stdin);
-	conn = new_connection(ptrans, server_conf, cio,
-			      (struct sockaddr_in *) &sa_client,
-			      (struct sockaddr_in *) &sa_server, -1);
+	conn = ap__new_connection(ptrans, server_conf, cio,
+			          (struct sockaddr_in *) &sa_client,
+			          (struct sockaddr_in *) &sa_server, -1);
 	r = read_request(conn);
 	if (r)
 	    process_request(r);	/* else premature EOF (ignore) */
@@ -4140,10 +4140,10 @@ void child_sub_main(int child_num)
 #endif
 	bpushfd(conn_io, csd, dupped_csd);
 
-	current_conn = new_connection(ptrans, server_conf, conn_io,
-				      (struct sockaddr_in *) &sa_client,
-				      (struct sockaddr_in *) &sa_server,
-				      child_num);
+	current_conn = ap__new_connection(ptrans, server_conf, conn_io,
+				          (struct sockaddr_in *) &sa_client,
+				          (struct sockaddr_in *) &sa_server,
+				          child_num);
 
 	/*
 	 * Read and process each request found on our connection
