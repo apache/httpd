@@ -1148,8 +1148,8 @@ RSA *ssl_callback_TmpRSA(SSL *ssl, int export, int keylen)
     SSLModConfigRec *mc = myModConfig(c->base_server);
     int idx;
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, c->base_server,
-                 "handing out temporary %d bit RSA key", keylen);
+    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c,
+                  "handing out temporary %d bit RSA key", keylen);
 
     /* doesn't matter if export flag is on,
      * we won't be asked for keylen > 512 in that case.
@@ -1180,8 +1180,8 @@ DH *ssl_callback_TmpDH(SSL *ssl, int export, int keylen)
     SSLModConfigRec *mc = myModConfig(c->base_server);
     int idx;
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, c->base_server,
-                 "handing out temporary %d bit DH key", keylen);
+    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c,
+                  "handing out temporary %d bit DH key", keylen);
 
     switch (keylen) {
       case 512:
