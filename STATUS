@@ -15,7 +15,7 @@ Guidelines:
       or not, and if not, what changes are needed to make it right.
 
       Approve guidelines as written:
-         +1: Roy, Dean, Paul, Jim, Martin, Ralf
+         +1: Roy, Dean, Paul, Jim, Martin, Ralf, Randy
          +0:
          -1:
 
@@ -181,12 +181,16 @@ Open issues:
 	apint_xxx: +1: Ralf (int = internal)
     
       Alternate proposal:
-      Everything should be ap_: +1 Dean
+      Everything should be ap_: +1 Dean, Randy
 	Why?  Because it's far easier to type, and damn it, I
 	type these things far too much.  Just using apapi_ for
 	the few hours I did while writing apapi_vformatter is
 	making me puke.  So many extra characters, so much wasted
 	screen width, and keystrokes. -Dean
+
+        I agree with Dean 100%. The work created to keep this straight
+        far outweighs any gain this could give. -Randy
+
       -1: Jim. We should make some sort of logical effort to
         keep things straight and organized. Taken to it's logical
 	conclusion, this argument could be used to keep all variable
