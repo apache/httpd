@@ -204,7 +204,7 @@ typedef struct var_rec {
 
     /* Now some special values */
     float level;                /* Auxiliary to content-type... */
-    long  bytes;                /* content length, if known */
+    apr_off_t bytes;            /* content length, if known */
     int lang_index;             /* pre HTTP/1.1 language priority stuff */
     int is_pseudo_html;         /* text/html, *or* the INCLUDES_MAGIC_TYPEs */
 
@@ -266,7 +266,7 @@ static void clean_var_rec(var_rec *mime_info)
     mime_info->is_pseudo_html = 0;
     mime_info->level = 0.0f;
     mime_info->level_matched = 0.0f;
-    mime_info->bytes = 0;
+    mime_info->bytes = -1;
     mime_info->lang_index = -1;
     mime_info->mime_stars = 0;
     mime_info->definite = 1;
@@ -1451,23 +1451,24 @@ static void set_language_quality(negotiation_state *neg, var_rec *variant)
 
 /* Determining the content length --- if the map didn't tell us,
  * we have to do a stat() and remember for next time.
- *
- * Grump.  For Apache, even the first stat here may well be
- * redundant (for multiviews) with a stat() done by the sub_req
- * machinery.  At some point, that ought to be fixed.
  */
 
-static long find_content_length(negotiation_state *neg, var_rec *variant)
+static apr_off_t find_content_length(negotiation_state *neg, var_rec *variant)
 {
     apr_finfo_t statb;
 
-    if (variant->bytes == 0) {
-        char *fullname = ap_make_full_path(neg->pool, neg->dir_name,
-                                           variant->file_name);
+    if (variant->bytes < 0) {
+        if (variant->sub_req && (variant->sub_req->finfo.valid & APR_FINFO_SIZE)) {
+            variant->bytes = variant->sub_req->finfo.size;
+        }
+        else {
+            char *fullname = ap_make_full_path(neg->pool, neg->dir_name,
+                                               variant->file_name);
 
-        if (apr_stat(&statb, fullname,
-                     APR_FINFO_SIZE, neg->pool) == APR_SUCCESS) {
-            variant->bytes = statb.size;
+            if (apr_stat(&statb, fullname,
+                         APR_FINFO_SIZE, neg->pool) == APR_SUCCESS) {
+                variant->bytes = statb.size;
+            }
         }
     }
 
@@ -2060,7 +2061,7 @@ static void set_neg_headers(request_rec *r, negotiation_state *neg,
     char *lang;
     char *qstr;
     char *lenstr;
-    long len;
+    apr_off_t len;
     apr_array_header_t *arr;
     int max_vlist_array = (neg->avail_vars->nelts * 21);
     int first_variant = 1;
@@ -2193,10 +2194,10 @@ static void set_neg_headers(request_rec *r, negotiation_state *neg,
          * content-length, which currently leads to the correct result).
          */
         if (!(variant->sub_req && variant->sub_req->handler)
-            && (len = find_content_length(neg, variant)) != 0) {
+            && (len = find_content_length(neg, variant)) >= 0) {
 
             lenstr = (char *) apr_palloc(r->pool, 22);
-            apr_snprintf(lenstr, 22, "%ld", len);
+            apr_snprintf(lenstr, 22, "%" APR_OFF_T_FMT, len);
             *((const char **) apr_array_push(arr)) = " {length ";
             *((const char **) apr_array_push(arr)) = lenstr;
             *((const char **) apr_array_push(arr)) = "}";

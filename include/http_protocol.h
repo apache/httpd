@@ -413,9 +413,9 @@ AP_DECLARE(int) ap_should_client_block(request_rec *r);
  * @param bufsiz The size of the buffer
  * @return Number of bytes inserted into the buffer.  When done reading, 0
  *         if EOF, or -1 if there was an error
- * @deffunc long ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
+ * @deffunc long ap_get_client_block(request_rec *r, char *buffer, apr_size_t bufsiz)
  */
-AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz);
+AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer, apr_size_t bufsiz);
 
 /**
  * In HTTP/1.1, any method can have a body.  However, most GET handlers
