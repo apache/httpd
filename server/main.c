@@ -288,7 +288,6 @@ static void usage(process_rec *process)
     ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -t -D DUMP_VHOSTS : show parsed settings (currently only vhost settings)"); 
     ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -t                : run syntax check for config files (with docroot check)");
     ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -T                : run syntax check for config files (without docroot check)");
-    /* TODOC: -X goes away, expect MPMs to use -D options */
     destroy_and_exit_process(process, 1);
 }
 
