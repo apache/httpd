@@ -116,7 +116,7 @@ Available Patches:
     * Ken's slight reworking of the Apache LICENSE to clarify the restricted
       nature of usage of the name "Apache" in derived products
 	Status: Ken +1, Paul +1, Ben +1, Jim +1, Randy +1, Roy +1,
-		Chuck +1, MarkC +1, Ralf +1, Sameer +1, Martin +1
+		Chuck +1, MarkC +1, Ralf +1, Sameer +1, Martin +1, Dean +1
 
     * Ralf's 
       Apache 1.3 Autoconf-*style* Interface (APACI)
@@ -402,6 +402,20 @@ Open issues:
 	  handling this need.
 	    Status: Dean +1, Rasmus +1, Paul +1, Roy +1, Jim +1, 
 	            Martin +1, Ralf +1
+
+    * Don't wait for WIN32:  It's been quite some time and WIN32 doesn't seem
+	to be progressing, and Unix seems quite stable.  It would be in Apache's
+	best interest to continue to support Unix to its utmost, and not delay
+	a release of 1.3.0 waiting for WIN32 issues to be resolved.
+
+	Proposal: the next release should be named 1.3.0 and should be labelled
+	    "stable on unix, beta on NT".
+	    +1: Dean
+
+	Proposal: the next release should be named 1.3b6, and labelled "release
+	    candidate on unix, beta on NT".  The release after that will be
+	    called 1.3.0 "stable on unix, beta on NT".
+	    +0: Dean
 
 Win32 specific issues:
 
