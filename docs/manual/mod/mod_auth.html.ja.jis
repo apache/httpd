@@ -1,18 +1,28 @@
-<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!-- 
-          XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-                This file is generated from xml source: DO NOT EDIT
-          XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-        --><title>mod_auth- Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache モジュール mod_auth</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">説明:</span></td><td>テキストファイルを用いたユーザ認証</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">ステータス:</a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#ModuleIdentifier" class="help">モジュール識別子:</a></td><td>auth_module</td></tr></table></td></tr></table><h2>概要</h2>
+<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      --><title>mod_auth - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache モジュール mod_auth</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">説明:
+                      </span></td><td>テキストファイルを用いたユーザ認証</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">ステータス:
+                      </a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#ModuleIdentifier" class="help">モジュール識別子:
+                        </a></td><td>auth_module</td></tr></table></td></tr></table><h2>概要</h2>
 
     <p>プレインテキストのパスワードファイルとグループファイルを検査して
     ユーザを探すことで、HTTP 基本認証でアクセス制限できるようにします。
     似たような機能で、もっと大きなスケーラビリティを持ったものは、
-    <code><a href="mod_auth_dbm.html">mod_auth_dbm</a></code> で提供されています。
-    また、HTTP ダイジェスト認証は <code><a href="mod_auth_digest.html">mod_auth_digest</a></code>
+    <code><a href="../mod/mod_auth_dbm.html">mod_auth_dbm</a></code> で提供されています。
+    また、HTTP ダイジェスト認証は <code><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code>
     で提供されています。</p>
 
-<h2>ディレクティブ</h2><ul><li><a href="#authauthoritative">AuthAuthoritative</a></li><li><a href="#authgroupfile">AuthGroupFile</a></li><li><a href="#authuserfile">AuthUserFile</a></li></ul><p><strong>参照 </strong></p><ul><li><a href="core.html#require" class="directive"><code class="directive">Require</code></a></li><li><a href="core.html#satisfy" class="directive"><code class="directive">Satisfy</code></a></li><li><a href="core.html#authname" class="directive"><code class="directive">AuthName</code></a></li><li><a href="core.html#authtype" class="directive"><code class="directive">AuthType</code></a></li></ul><hr/><h2><a name="AuthAuthoritative">AuthAuthoritative</a> <a name="authauthoritative">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: </strong></td><td>認証と承認プロセスを、
-より低いレベルのモジュールに移行させるかどうかを設定する</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:</a></td><td>AuthAuthoritative on|off</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">デフォルト:</a></td><td><code>AuthAuthoritative on</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">コンテキスト:</a></td><td>ディレクトリ, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">上書き:</a></td><td>AuthConfig</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">ステータス:</a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">モジュール:</a></td><td>mod_auth</td></tr></table></td></tr></table>
+<h2>ディレクティブ</h2><ul><li><a href="#authauthoritative">AuthAuthoritative</a></li><li><a href="#authgroupfile">AuthGroupFile</a></li><li><a href="#authuserfile">AuthUserFile</a></li></ul><p><strong>参照 </strong></p><ul><li><a href="../mod/core.html#require" class="directive"><code class="directive">Require</code></a></li><li><a href="../mod/core.html#satisfy" class="directive"><code class="directive">Satisfy</code></a></li><li><a href="../mod/core.html#authname" class="directive"><code class="directive">AuthName</code></a></li><li><a href="../mod/core.html#authtype" class="directive"><code class="directive">AuthType</code></a></li></ul><hr/><h2><a name="AuthAuthoritative">AuthAuthoritative</a> <a name="authauthoritative">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
+                  </strong></td><td>認証と承認プロセスを、
+より低いレベルのモジュールに移行させるかどうかを設定する</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:
+                  </a></td><td>AuthAuthoritative on|off</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">デフォルト: 
+                    </a></td><td><code>AuthAuthoritative on</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">コンテキスト:
+                  </a></td><td>ディレクトリ, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">上書き:
+                    </a></td><td>AuthConfig</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">ステータス:
+                  </a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">モジュール:
+                  </a></td><td>mod_auth</td></tr></table></td></tr></table>
 
 <blockquote><table><tr><td bgcolor="#e0e5f5">記載されている情報は、未だ Apache 2.0 向けにアップデートされていません。
 Apache 2.0 では、モジュールの順序づけに異なる仕組みを使っています。</td></tr></table></blockquote>
@@ -30,13 +40,13 @@ Apache 2.0 では、モジュールの順序づけに異なる仕組みを使っています。</td></
 
     <p>ですから、二つ以上のモジュールのデータベースで同一の
     ユーザ ID が現われたり、
-    または、正しい <a href="core.html#require" class="directive"><code class="directive">Require</code></a>
+    または、正しい <a href="../mod/core.html#require" class="directive"><code class="directive">Require</code></a>
     ディレクティブが二つ以上のモジュールで現われたりした場合は、
     一つ目のモジュールが認定を行って、AuthAuthoritative 設定に関わらず、
     アクセスは移行しません。</p>
 
-    <p>一般的な使用法は、<code><a href="auth_dbm.html">auth_dbm</a></code>,
-    <code>mod_auth_msql</code>, <code><a href="mod_auth_anon.html">mod_auth_anon</a></code>
+    <p>一般的な使用法は、<code><a href="../mod/auth_dbm.html">auth_dbm</a></code>,
+    <code>mod_auth_msql</code>, <code><a href="../mod/mod_auth_anon.html">mod_auth_anon</a></code>
     といったデータベースモジュールの一つと組み合わせることです。
     これらのモジュールは多くのユーザ資格検査を提供してくれます。
     しかし、少数の (管理者関連の) アクセスは
@@ -59,15 +69,21 @@ Apache 2.0 では、モジュールの順序づけに異なる仕組みを使っています。</td></
     <em>置かないで下さい</em>。そうしないと 
     <a href="#authuserfile" class="directive"><code class="directive">AuthUserFile</code></a>
     はダウンロードできてしまいます。</td></tr></table></blockquote>
-<hr/><h2><a name="AuthGroupFile">AuthGroupFile</a> <a name="authgroupfile">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: </strong></td><td>認証に使用するユーザグループの一覧が格納されている、
-テキストファイルの名前を設定する</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:</a></td><td>AuthGroupFile <em>file-path</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">コンテキスト:</a></td><td>ディレクトリ, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">上書き:</a></td><td>AuthConfig</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">ステータス:</a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">モジュール:</a></td><td>mod_auth</td></tr></table></td></tr></table>
+<hr/><h2><a name="AuthGroupFile">AuthGroupFile</a> <a name="authgroupfile">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
+                  </strong></td><td>認証に使用するユーザグループの一覧が格納されている、
+テキストファイルの名前を設定する</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:
+                  </a></td><td>AuthGroupFile <em>file-path</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">コンテキスト:
+                  </a></td><td>ディレクトリ, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">上書き:
+                    </a></td><td>AuthConfig</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">ステータス:
+                  </a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">モジュール:
+                  </a></td><td>mod_auth</td></tr></table></td></tr></table>
     <p><code class="directive">AuthGroupFile</code> ディレクティブは、
     認証に使用するユーザグループの一覧が格納されている、
     テキストファイルの名前を設定します。
     <em>file-path</em> はグループファイルへのパスです。
     もし絶対パスでなければ
     (<em>つまり</em> スラッシュで始まらないパスであれば)
-    、<a href="core.html#serverroot" class="directive"><code class="directive">ServerRoot</code></a>
+    、<a href="../mod/core.html#serverroot" class="directive"><code class="directive">ServerRoot</code></a>
     からの相対パスとして扱われます。</p>
 
     <p>グループファイル各行は、グループ名、コロン、そして
@@ -78,7 +94,7 @@ Apache 2.0 では、モジュールの順序づけに異なる仕組みを使っています。</td></
 
     <p>大きなファイルを探索するのは、<em>非常に</em>効率が悪いという点に
     注意してください。そのような場合は、
-    <a href="mod_auth_dbm.html#authdbmgroupfile" class="directive"><code class="directive">AuthDBMGroupFile</code></a>
+    <a href="../mod/mod_auth_dbm.html#authdbmgroupfile" class="directive"><code class="directive">AuthDBMGroupFile</code></a>
     を代わりに使うべきでしょう。</p>
 
 <blockquote><table><tr><td bgcolor="#e0e5f5"><p align="center"><strong>セキュリティ</strong></p>
@@ -87,15 +103,21 @@ Apache 2.0 では、モジュールの順序づけに異なる仕組みを使っています。</td></
     保護しようとしているディレクトリ以下には、<em>置かないで下さい</em>。
     そうしないと AuthGroupFile はダウンロードできてしまいます。</p>
 </td></tr></table></blockquote>
-<hr/><h2><a name="AuthUserFile">AuthUserFile</a> <a name="authuserfile">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: </strong></td><td>認証に使用するユーザとパスワードの一覧が格納されている、
-テキストファイルの名前を設定する</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:</a></td><td>AuthUserFile <em>file-path</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">コンテキスト:</a></td><td>ディレクトリ, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">上書き:</a></td><td>AuthConfig</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">ステータス:</a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">モジュール:</a></td><td>mod_auth</td></tr></table></td></tr></table>
+<hr/><h2><a name="AuthUserFile">AuthUserFile</a> <a name="authuserfile">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
+                  </strong></td><td>認証に使用するユーザとパスワードの一覧が格納されている、
+テキストファイルの名前を設定する</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:
+                  </a></td><td>AuthUserFile <em>file-path</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">コンテキスト:
+                  </a></td><td>ディレクトリ, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">上書き:
+                    </a></td><td>AuthConfig</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">ステータス:
+                  </a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">モジュール:
+                  </a></td><td>mod_auth</td></tr></table></td></tr></table>
     <p><code class="directive">AuthUserFile</code> ディレクティブは、
     ユーザ認証のためのユーザとパスワードの一覧を格納した
     テキストファイルの名前を設定します。<em>file-path</em>
     はユーザファイルへのパスです。
     もし絶対パスでなければ
     (<em>つまり</em> スラッシュで始まらないパスであれば)
-    、<a href="core.html#serverroot" class="directive"><code class="directive">ServerRoot</code></a>
+    、<a href="../mod/core.html#serverroot" class="directive"><code class="directive">ServerRoot</code></a>
     からの相対パスとして扱われます。</p>
 
     <p>ユーザファイルの各行には、ユーザ名、コロン、
@@ -120,7 +142,7 @@ Apache 2.0 では、モジュールの順序づけに異なる仕組みを使っています。</td></
     <p>(訳注: 非常に多くのユーザを登録すると大きなファイルになりますが)
     大きなテキストファイルを検索するのは<em>非常に</em>効率が悪い
     ということに注意してください。そのような必要のある時は、
-    <a href="mod_auth_dbm.html#authdbmuserfile" class="directive"><code class="directive">AuthDBMUserFile</code></a>
+    <a href="../mod/mod_auth_dbm.html#authdbmuserfile" class="directive"><code class="directive">AuthDBMUserFile</code></a>
     を代わりに使ってください。</p>
 
 <blockquote><table><tr><td bgcolor="#e0e5f5"><p align="center"><strong>セキュリティ</strong></p><p>AuthUserFile 
