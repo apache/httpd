@@ -158,6 +158,10 @@ the browser, or by Apache input filters to be overridden or modified.
  REL="Help"
 ><STRONG>Syntax:</STRONG></A> Header unset <EM>header</EM><BR>
 <A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> Header echo <EM>header</EM><BR>
+<A
  HREF="directive-dict.html#Context"
  REL="Help"
 ><STRONG>Context:</STRONG></A> server config, virtual host, access.conf,
@@ -178,8 +182,7 @@ the browser, or by Apache input filters to be overridden or modified.
 This directive can replace, merge or remove HTTP response headers. The header
 is modified just after the content handler and output filters are run, 
 allowing outgoing headers to be modified. The action it performs is determined 
-by the first argument. This can be one of the following values, as with
-RequestHeader:
+by the first argument. This can be one of the following values:
 
 <UL>
 <LI><STRONG>set</STRONG><BR>
@@ -200,13 +203,23 @@ RequestHeader:
 <LI><STRONG>unset</STRONG><BR>
   The response header of this name is removed, if it exists. If there are
   multiple headers of the same name, all will be removed.
+
+<LI><STRONG>echo</STRONG><BR>
+  Request headers with this name are echoed back in the response headers.
+  <EM>header</EM> may be a regular expression. For example, the directive
+  <P>
+  Header echo ^TS*
+  <P>
+  will cause all request headers that begin with TS to be echoed
+  or copied over to the response headers.
 </UL>
 
 This argument is followed by a header name, which can include the
-final colon, but it is not required. Case is ignored. For
-add, append and set a value is given as the third argument. If this
-value contains spaces, it should be surrounded by double quotes.
-For unset, no value should be given.
+final colon, but it is not required. Case is ignored for set, append, add
+and unset. The header name for echo is case sensitive and may be a
+regular expression. For add, append and set a value is given as the third 
+argument. If this value contains spaces, it should be surrounded by double 
+quotes. For unset and echo, no value should be given.
 
 <H3>Order of Processing</H3>
 
