@@ -127,6 +127,8 @@ static int is_scriptaliased(request_rec *r)
 #define DEFAULT_BUFBYTES 1024 
 #define DEFAULT_SOCKET "logs/cgisock"
 
+#define SHELL_PATH "/bin/sh"
+
 typedef struct { 
     const char *sockname;
     char *logname; 
@@ -302,14 +304,16 @@ static void cgid_maint(int reason, void *data, ap_wait_t status)
 #ifdef APR_HAS_OTHER_CHILD
     int *sd = data;
     switch (reason) {
-        case OC_REASON_DEATH:
-        case OC_REASON_LOST:
+        case APR_OC_REASON_DEATH:
+        case APR_OC_REASON_LOST:
             /* stop gap to make sure everything else works.  In the end,
-             * we'll just restart the cgid server. */   
+             * we'll just restart the cgid server. */
+            ap_destroy_pool(pcgi);
             kill(getppid(), SIGWINCH);
             break;
-        case OC_REASON_RESTART:
-        case OC_REASON_UNREGISTER:
+        case APR_OC_REASON_RESTART:
+        case APR_OC_REASON_UNREGISTER:
+            ap_destroy_pool(pcgi);
             kill(*sd, SIGHUP);
             break;
     }
@@ -321,7 +325,6 @@ static void get_req(int fd, request_rec *r, char **filename, char **argv0, char 
     int i, len, j; 
     unsigned char *data; 
     char **environ; 
-    char temp[MAX_STRING_LEN]; 
     core_dir_config *temp_core; 
     void **dconf; 
 
@@ -397,11 +400,8 @@ static void get_req(int fd, request_rec *r, char **filename, char **argv0, char 
 static void send_req(int fd, request_rec *r, char *argv0, char **env) 
 { 
     int len; 
-    int rv;
     int i = 0; 
     char *data; 
-    core_dir_config *conf = ap_get_module_config(r->per_dir_config, 
-                                                 &core_module); 
 
     data = ap_pstrcat(r->pool, r->filename, "\n", argv0, "\n", r->uri, "\n", 
                      NULL); 
@@ -566,6 +566,7 @@ static int cgid_server(void *data)
 static void cgid_init(ap_pool_t *p, ap_pool_t *plog, ap_pool_t *ptemp, server_rec *main_server) 
 { 
     int pid; 
+    ap_proc_t ap_pid;
     int tempfd;
 
     cgid_server_conf *sconf = (cgid_server_conf *)ap_get_module_config( 
@@ -585,7 +586,9 @@ static void cgid_init(ap_pool_t *p, ap_pool_t *plog, ap_pool_t *ptemp, server_re
             exit(-1);
         } 
 #ifdef APR_HAS_OTHER_CHILD
-        ap_register_other_child(pid, cgid_maint, &pid, -1);
+        ap_pid.pid = pid;
+        ap_pid.err = ap_pid.in = ap_pid.out = NULL;
+        ap_register_other_child(&ap_pid, cgid_maint, NULL, NULL, p);
 #endif
     } 
     else once_through++; 
@@ -838,11 +841,11 @@ static int cgid_handler(request_rec *r)
         } 
     } 
 #else 
-    if (r->finfo.st_mode == 0) 
+    if (r->finfo.protection == 0) 
         return log_scripterror(r, conf, NOT_FOUND, APLOG_NOERRNO, 
                                "script not found or unable to stat"); 
 #endif 
-    if (S_ISDIR(r->finfo.st_mode)) 
+    if (r->finfo.filetype == APR_DIR) 
         return log_scripterror(r, conf, FORBIDDEN, APLOG_NOERRNO, 
                                "attempt to invoke directory as script"); 
 /*
@@ -980,8 +983,6 @@ static int cgid_handler(request_rec *r)
     if (script && nph) { 
         ap_send_fb(script, r); 
     } 
-
-ap_destroy_pool(pcgi);
 
     return OK; /* NOT r->status, even if it has changed. */ 
 } 
