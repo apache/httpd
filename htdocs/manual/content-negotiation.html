@@ -86,7 +86,7 @@ A type map is a document which is associated with the handler
 named <code>type-map</code> (or, for backwards-compatibility with
 older Apache configurations, the mime type
 <code>application/x-type-map</code>).  Note that to use this feature,
-you've got to have an <code>SetHanlder</code> some place which defines a
+you've got to have an <code>SetHandler</code> some place which defines a
 file suffix as <code>type-map</code>; this is best done with a
 <pre>
 
@@ -162,7 +162,7 @@ The full list of headers recognized is:
        containing the actual raw data, this says how that was done.
        For compressed files (the only case where this generally comes
        up), content encoding should be
-       <code>x-compress</code>, or <code>gzip</code>, as appropriate.
+       <code>x-compress</code>, or <code>x-gzip</code>, as appropriate.
   <dt> <code>Content-length:</code>
   <dd> The size of the file.  Clients can ask to receive a given media
        type only if the variant isn't too big; specifying a content
@@ -173,12 +173,13 @@ The full list of headers recognized is:
 <h3>Multiviews</h3>
 
 This is a per-directory option, meaning it can be set with an
-<code>Options</code> directive within a <code>&lt;Directory&gt;</code>
+<code>Options</code> directive within a <code>&lt;Directory&gt;</code>,
+<code>&lt;Location&gt;</code> or <code>&lt;Files&gt;</code>
 section in <code>access.conf</code>, or (if <code>AllowOverride</code>
 is properly set) in <code>.htaccess</code> files.  Note that
 <code>Options All</code> does not set <code>MultiViews</code>; you
 have to ask for it by name.  (Fixing this is a one-line change to
-<code>httpd.h</code>).
+<code>http_core.h</code>).
 
 <p>
 
@@ -236,8 +237,8 @@ fiddle quality factors is explained in more detail below.
 <tr><th>Dimension
 <th>Notes
 <tr><td>Media Type
-<td>Browser indicates preferences on Accept: header. Each item
-can have an associate quality factor. Variant description can also
+<td>Browser indicates preferences on Accept: header. Each item 
+can have an associated quality factor. Variant description can also
 have a quality factor.
 <tr><td>Language
 <td>Browser indicates preferneces on Accept-Language: header. Each
@@ -247,7 +248,7 @@ or more languages.
 <tr><td>Encoding
 <td>Browser indicates preference with Accept-Encoding: header.
 <tr><td>Charset
-<td>Browser indicates preference with Accept-Charset: header. Variant
+<td>Browser indicates preference with Accept-Charset: header. Variants
 can indicate a charset as a parameter of the media type.
 </table>
 
@@ -280,7 +281,7 @@ remains, move onto the next test.
 <li>Select the variants with the highest language quality factor
 
 <li>Select the variants with the best language match, using either the
-  order of languages on the LanguagePriority directive (if present),
+  order of languages on the <code>LanguagePriority</code> directive (if present),
   else the order of languages on the Accept-Language header.
 
 <li>Select the variants with the highest 'level' media parameter
@@ -303,13 +304,13 @@ and go to stage 3.
 
 </ol>
 
-<li>The algorithm has now select one 'best' variant, so return
-  it as the response. The HTTP header Vary is set to indicate the
-  dimensions of negotations (browsers and caches can use this
+<li>The algorithm has now selected one 'best' variant, so return
+  it as the response. The HTTP response header Vary is set to indicate the
+  dimensions of negotation (browsers and caches can use this
   information when caching the resource). End.
 
 <li>To get here means no variant was selected (because non are acceptable
-  to the browser. Return a 406 status (meaning "No acceptable representation")
+  to the browser). Return a 406 status (meaning "No acceptable representation")
   with a response body consisting of an HTML document listing the
   available variants. Also set the HTTP Vary header to indicate the
   dimensions of variance.
@@ -319,7 +320,7 @@ and go to stage 3.
 
 Apache sometimes changes the quality values from what would be
 expected by a strict interpretation of the algorithm above. This is to
-get a netter result from the algorithm for browsers which do not send
+get a better result from the algorithm for browsers which do not send
 full or accurate information. Some of the most popular browsers send
 Accept header information which would otherwise result in the
 selection of the wrong variant in many cases. If a browser
@@ -329,24 +330,24 @@ be applied.
 
 <h3>Media Types and Wildcards</h3>
 
-The Accept: request header indicates preferneces for media types. It
+The Accept: request header indicates preferences for media types. It
 can also include 'wildcard' media types, such as "image/*" or "*/*"
 where the * matches any string. So a request including:
 <pre>
   Accept: image/*, */*
 </pre>
 
-would indicate that any type starting "image/" would be acceptable,
-as would any other type (so the first "image/*" is redundant). Some
-browsers routinly send wildcards in addition to explicit types they
+would indicate that any type starting "image/" is acceptable,
+as is any other type (so the first "image/*" is redundant). Some
+browsers routinely send wildcards in addition to explicit types they
 can handle. For example:
 <pre>
   Accept: text/html, text/plain, image/gif, image/jpeg, */*
 </pre>
 
-The intention of this result is to indicate that the explicitly
+The intention of this is to indicate that the explicitly
 listed types are preferred, but if a different representation is
-available, that is ok too. However under the basic algoryth, as given
+available, that is ok too. However under the basic algorithm, as given
 above, the */* wildcard has exactly equal preference to all the other
 types, so they are not being preferred. The browser should really have
 sent a request with a lower quality (preference) value for *.*, such
@@ -401,14 +402,12 @@ The next time that URL is requested, the cache can use the stored
 document, provided it is still within date. But if the resource is
 subject to content negotiation at the server, this would result in
 only the first requested variant being cached, and subsequent cache
-hits could return the wrong response. To prevent this, by default
-Apache marks all response that are returned after content negotiation
-as non-cacheable. Unfortunately, this can increase network traffic by
-requiring the resouce to be obtained from the original server evry
-time. The HTTP/1.1 protocol includes features to make this much more
-efficient, by allowing cacheing.  <p>
+hits could return the wrong response. To prevent this, 
+Apache normally marks all responses that are returned after content negotiation
+as non-cacheable by HTTP/1.0 clients. Apache also supports the HTTP/1.1 
+protocol features to allow cacheing of negotiated responses. <P>
 
-For requrests which come from a HTTP/1.0 compliant client (either a
+For requests which come from a HTTP/1.0 compliant client (either a
 browser or a cache), the directive <tt>CacheNegotiatedDocs</tt> can be
 used to allow caching of responses which were subject to negotiation.
 This directive can be given in the server config or virtual host, and
