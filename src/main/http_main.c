@@ -1981,7 +1981,7 @@ int ap_update_child_status(int child_num, int status, request_rec *r)
 	    conn_rec *c = r->connection;
 	    ap_cpystrn(ss->client, ap_get_remote_host(c, r->per_dir_config,
 				  REMOTE_NOLOOKUP), sizeof(ss->client));
-	if (r->the_request == NULL) {
+	    if (r->the_request == NULL) {
 		    ap_cpystrn(ss->request, "NULL", sizeof(ss->request));
 	    } else if (r->parsed_uri.password == NULL) {
 		    ap_cpystrn(ss->request, r->the_request, sizeof(ss->request));
