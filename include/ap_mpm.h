@@ -66,6 +66,13 @@ API_EXPORT(int) ap_mpm_run(pool *pconf, pool *plog, server_rec *server_conf);
    used by the connection loop */
 API_EXPORT(int) ap_mpm_graceful_stop(void);
 
+/* a mutex which synchronizes threads within one process */
+typedef struct ap_thread_mutex ap_thread_mutex;
+API_EXPORT(ap_thread_mutex *) ap_thread_mutex_new(void);
+API_EXPORT(void) ap_thread_mutex_lock(ap_thread_mutex *);
+API_EXPORT(void) ap_thread_mutex_unlock(ap_thread_mutex *);
+API_EXPORT(void) ap_thread_mutex_destroy(ap_thread_mutex *);
+
 #ifdef HAS_OTHER_CHILD
 /*
  * register an other_child -- a child which the main loop keeps track of
