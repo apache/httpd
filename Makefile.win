@@ -216,10 +216,11 @@ A
 <<
 	if not exist "$(INSTDIR)\conf\httpd.conf" \
             copy "$(INSTDIR)\conf\httpd.default.conf" "$(INSTDIR)\conf\httpd.conf"
-	awk -f <<script.awk "support\dbmmanage" >"$(INSTDIR)\bin\dbmmanage.pl"
-    { if ( $$0 !~ /^#.*-lsdbm/) {
-          gsub( /AnyDBM_File::ISA = qw\(.*\)/, "AnyDBM_File::ISA = qw(SDBM_File)" ); 
+	awk -f <<script.awk "support\dbmmanage.in" >"$(INSTDIR)\bin\dbmmanage.pl"
+    { if ( $$0 ~ /^BEGIN { @AnyDBM_File::/ ) {
+          sub( /ISA = qw\(.*\)/, "ISA = qw(SDBM_File)" ); 
       }
-      print $$0;
+      if ( $$0 !~ /^#!@perlbin@/ )
+          print $$0;
     }
 <<
