@@ -38,7 +38,7 @@
 #include "mod_auth.h"
 
 #if !APR_HAS_LDAP
-#error mod_auth_ldap requires APR-util to have LDAP support built in
+#error mod_auth_ldap requires APR-util to have LDAP support built in. To fix add --with-ldap to ./configure.
 #endif
 
 typedef struct {
