@@ -22,23 +22,16 @@ elif test "$enable_so" = "shared"; then
     AC_MSG_ERROR([mod_so can not be built as a shared DSO])
 fi
 
-ap_old_cppflags=$CPPFLAGS
-CPPFLAGS="$CPPFLAGS $INCLUDES"
-AC_TRY_COMPILE([#include <apr.h>], [
-#if !APR_HAS_DSO
-#error You need APR DSO support to use mod_so. 
-#endif
-], ap_enable_so="static", [
-if test "$enable_so" = "static"; then
-    AC_MSG_ERROR([mod_so has been requested but cannot be built on your system])
-else if test "$sharedobjs" = "yes"; then
-    AC_MSG_ERROR([shared objects have been requested but cannot be built since mod_so cannot be built])
-else
-    ap_enable_so="no"
+APR_CHECK_APR_DEFINE(APR_HAS_DSO)
+if test $ac_cv_define_APR_HAS_DSO = "no"; then
+    if test "$enable_so" = "static"; then
+        AC_MSG_ERROR([mod_so has been requested but cannot be built on your system])
+    elif test "$sharedobjs" = "yes"; then
+        AC_MSG_ERROR([shared objects have been requested but cannot be built since mod_so cannot be built])
+    else
+        ap_enable_so="no"
+    fi
 fi
-fi
-])
-CPPFLAGS=$ap_old_cppflags
 
 APACHE_MODULE(so, DSO capability, , , $ap_enable_so)
 
