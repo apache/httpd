@@ -913,6 +913,7 @@ static void perform_idle_server_maintenance(void)
     int last_non_dead;
     int total_non_dead;
     int one = 1;
+    ap_status_t rv;
 
     /* initialize the free_list */
     free_length = 0;
@@ -967,8 +968,8 @@ static void perform_idle_server_maintenance(void)
     if (idle_thread_count > max_spare_threads) {
         /* Kill off one child */
         char char_of_death = '!';
-        if (ap_write(pipe_of_death_out, &char_of_death, &one) != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "write pipe_of_death");
+        if ((rv = ap_write(pipe_of_death_out, &char_of_death, &one)) != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_WARNING, rv, ap_server_conf, "write pipe_of_death");
         }
         idle_spawn_rate = 1;
     }
@@ -1091,17 +1092,18 @@ int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
 
     pconf = _pconf;
     ap_server_conf = s;
-    if (ap_create_pipe(&pipe_of_death_in, &pipe_of_death_out, pconf) == -1) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, errno,
+    rv = ap_create_pipe(&pipe_of_death_in, &pipe_of_death_out, pconf);
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv,
                      (const server_rec*) ap_server_conf,
                      "pipe: (pipe_of_death)");
         exit(1);
     }
 
-    if (ap_set_pipe_timeout(pipe_of_death_in, 0) != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, errno,
+    if ((rv = ap_set_pipe_timeout(pipe_of_death_in, 0)) != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv,
                      (const server_rec*) ap_server_conf,
-                     "fcntl: O_NONBLOCKing (pipe_of_death)");
+                     "ap_set_pipe_timeout (pipe_of_death)");
         exit(1);
     }
     ap_server_conf = s;
@@ -1217,9 +1219,9 @@ int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
 
 	/* give the children the signal to die */
         for (i = 0; i < ap_daemons_limit;) {
-            if (ap_write(pipe_of_death_in, &char_of_death, &one) == -1) {
-                if (errno == EINTR) continue;
-                ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "write pipe_of_death");
+            if ((rv = ap_write(pipe_of_death_in, &char_of_death, &one)) != APR_SUCCESS) {
+                if (ap_canonical_error(rv) == APR_EINTR) continue;
+                ap_log_error(APLOG_MARK, APLOG_WARNING, rv, ap_server_conf, "write pipe_of_death");
             }
             i++;
         }
