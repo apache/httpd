@@ -1,5 +1,5 @@
 if test "$OS" = "unix" ; then
-    AC_TYPE_RLIM_T
+    APACHE_TYPE_RLIM_T
 
     AC_CHECK_HEADERS(sys/time.h sys/resource.h)
 

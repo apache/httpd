@@ -1,8 +1,3 @@
- 
-AC_DEFUN(APACHE_PASSTHRU,[
-  unset ac_cv_pass_$1
-  AC_CACHE_VAL(ac_cv_pass_$1, [ac_cv_pass_$1=$$1])
-])
 
 dnl APACHE_SUBST(VARIABLE)
 dnl Makes VARIABLE available in generated files
@@ -114,30 +109,11 @@ AC_DEFUN(APACHE_OUTPUT, [
 ])
 
 dnl
-dnl AC_CHECK_DEFINE(macro, headerfile)
-dnl
-dnl checks for the macro in the header file
-dnl
-AC_DEFUN(AC_CHECK_DEFINE,[
-  AC_CACHE_CHECK(for $1 in $2, ac_cv_define_$1,
-  AC_EGREP_CPP([YES_IS_DEFINED], [
-#include <$2>
-#ifdef $1
-YES_IS_DEFINED
-#endif
-  ], ac_cv_define_$1=yes, ac_cv_define_$1=no))
-  if test "$ac_cv_define_$1" = "yes" ; then
-      AC_DEFINE(HAVE_$1,,
-          [Define if the macro "$1" is defined on this system])
-  fi
-])
-
-dnl
-dnl AC_TYPE_RLIM_T
+dnl APACHE_TYPE_RLIM_T
 dnl
 dnl If rlim_t is not defined, define it to int
 dnl
-AC_DEFUN(AC_TYPE_RLIM_T, [
+AC_DEFUN(APACHE_TYPE_RLIM_T, [
   AC_CACHE_CHECK([for rlim_t], ac_cv_type_rlim_t, [
     AC_TRY_COMPILE([
 #include <sys/types.h>
@@ -151,20 +127,6 @@ AC_DEFUN(AC_TYPE_RLIM_T, [
   if test "$ac_cv_type_rlim_t" = "no" ; then
       AC_DEFINE(rlim_t, int,
           [Define to 'int' if <sys/resource.h> doesn't define it for us])
-  fi
-])
-
-dnl
-dnl APACHE_ONCE(namespace, variable, code)
-dnl
-dnl execute code, if variable is not set in namespace
-dnl
-AC_DEFUN(APACHE_ONCE,[
-  unique=`echo $ac_n "$2$ac_c" | tr -cd a-zA-Z0-9`
-  cmd="echo $ac_n \"\$$1$unique$ac_c\""
-  if test -n "$unique" && test "`eval $cmd`" = "" ; then
-    eval "$1$unique=set"
-    $3
   fi
 ])
 
