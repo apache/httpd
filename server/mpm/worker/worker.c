@@ -123,7 +123,6 @@ static int requests_this_child;
 static int num_listensocks = 0;
 static apr_socket_t **listensocks;
 static fd_queue_t *worker_queue;
-static fd_queue_t *pool_queue; /* a resource pool of context pools */
 
 /* The structure used to pass unique initialization info to each thread */
 typedef struct {
@@ -204,7 +203,6 @@ static void signal_workers(void)
     /* XXX: This will happen naturally on a graceful, and we don't care otherwise.
     ap_queue_signal_all_wakeup(worker_queue); */
     ap_queue_interrupt_all(worker_queue);
-    ap_queue_interrupt_all(pool_queue);
 }
 
 AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result)
@@ -558,7 +556,6 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
     int thread_slot = ti->tid;
     apr_pool_t *tpool = apr_thread_pool_get(thd);
     apr_socket_t *csd = NULL;
-    apr_socket_t *dummycsd = NULL;
     apr_pool_t *ptrans;		/* Pool for per-transaction stuff */
     apr_socket_t *sd = NULL;
     int n;
@@ -644,19 +641,8 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
         }
     got_fd:
         if (!workers_may_exit) {
-
-            /* pull the next available transaction pool from the queue */
-            if ((rv = ap_queue_pop(pool_queue, &dummycsd, &ptrans))
-                != FD_QUEUE_SUCCESS) {
-                if (rv == FD_QUEUE_EINTR) {
-                    goto got_fd;
-                }
-                else { /* got some error in the queue */
-                    csd = NULL;
-                    ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf, 
-                        "ap_queue_pop");
-                }
-            }
+            /* create a new transaction pool for each accepted socket */
+            apr_pool_create(&ptrans, tpool);
 
             if ((rv = apr_accept(&csd, sd, ptrans)) != APR_SUCCESS) {
                 csd = NULL;
@@ -692,7 +678,9 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
     ap_scoreboard_image->parent[process_slot].quiescing = 1;
     kill(ap_my_pid, SIGTERM);
 
+/* Unsure if this can be safely uncommented. -aaron
     apr_thread_exit(thd, APR_SUCCESS);
+*/
     return NULL;
 }
 
@@ -718,12 +706,7 @@ static void *worker_thread(apr_thread_t *thd, void * dummy)
         }
         process_socket(ptrans, csd, process_slot, thread_slot);
         requests_this_child--; /* FIXME: should be synchronized - aaron */
-
-        /* get this transaction pool ready for the next request */
-        apr_pool_clear(ptrans);
-        /* don't bother checking if we were interrupted in ap_queue_push,
-         * because we're going to check workers_may_exit right now anyway. */
-        ap_queue_push(pool_queue, NULL, ptrans);
+        apr_pool_destroy(ptrans);
     }
 
     ap_update_child_status(process_slot, thread_slot,
@@ -758,23 +741,11 @@ static void *start_threads(apr_thread_t *thd, void *dummy)
     int i = 0;
     int threads_created = 0;
     apr_thread_t *listener;
-    apr_pool_t *ptrans;
-    apr_socket_t *dummycsd = NULL;
 
     /* We must create the fd queues before we start up the listener
      * and worker threads. */
-    worker_queue = apr_pcalloc(pchild, sizeof(fd_queue_t));
+    worker_queue = apr_pcalloc(pchild, sizeof(*worker_queue));
     ap_queue_init(worker_queue, ap_threads_per_child, pchild);
-
-    /* create the resource pool of available transaction pools */
-    pool_queue = apr_pcalloc(pchild, sizeof(fd_queue_t));
-    ap_queue_init(pool_queue, ap_threads_per_child, pchild);
-    /* fill the pool_queue with real pools */
-    for (i = 0; i < ap_threads_per_child; i++) {
-        ptrans = NULL;
-        apr_pool_create(&ptrans, pchild);
-        ap_queue_push(pool_queue, dummycsd, ptrans);
-    }
 
     my_info = (proc_info *)malloc(sizeof(proc_info));
     my_info->pid = my_child_num;
