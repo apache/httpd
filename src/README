@@ -228,9 +228,3 @@ of these #defines.
        Amount to move sbrk() breakpoint, if required, before attaching
        shared-memory segment.
 
-      RLIMIT_CPU:
-      RLIMIT_DATA:
-      RLIMIT_VMEM:
-      RLIMIT_NPROC:
-       Use the getrlimit/setrlimit calls to adjust/set the rlimit values
-       for the specified limits.
