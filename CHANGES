@@ -1,5 +1,8 @@
 Changes with Apache 2.0.49
 
+  *) Build array of allowed methods with proper dimensions, fixing
+     possible memory corruption.  [Jeff Trawick]
+
   *) mod_ssl: Fix potential segfault on lookup of SSL_SESSION_ID.
      PR 15057.  [Otmar Lendl <lendl nic.at>]
 
