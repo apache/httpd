@@ -6,7 +6,7 @@ LDFLAGS=$(LDFLAGS1) $(EXTRA_LDFLAGS)
 LIB=libap.a
 
 OBJS=ap_execve.o ap_cpystrn.o ap_signal.o \
-     ap_slack.o ap_snprintf.o
+     ap_slack.o ap_snprintf.o ap_fnmatch.o
 
 .c.o:
 	$(CC) -c $(INCLUDES) $(CFLAGS) $<
@@ -59,3 +59,6 @@ ap_snprintf.o: ap_snprintf.c $(INCDIR)/httpd.h $(INCDIR)/ap_config.h \
  $(INCDIR)/ap_config_auto.h $(OSDIR)/os.h $(INCDIR)/ap_ctype.h \
  $(INCDIR)/hsregex.h $(INCDIR)/alloc.h $(INCDIR)/buff.h \
  $(INCDIR)/ap.h $(INCDIR)/util_uri.h
+ap_fnmatch.o: ap_fnmatch.c $(INCDIR)/ap_config.h \
+ $(INCDIR)/ap_config_auto.h $(OSDIR)/os.h $(INCDIR)/ap_ctype.h \
+ $(INCDIR)/hsregex.h $(INCDIR)/fnmatch.h
