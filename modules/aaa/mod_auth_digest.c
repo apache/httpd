@@ -114,7 +114,8 @@
 #include "apr_errno.h"
 #include "apr_lock.h"
 #include "apr_strings.h"
-
+#define APR_WANT_STRFUNC
+#include "apr_want.h"
 
 #if APR_HAS_SHARED_MEMORY
 #include "apr_shmem.h"
