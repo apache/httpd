@@ -81,6 +81,14 @@
 #error mod_ldap requires APR-util to have LDAP support built in
 #endif
 
+    /* defines for certificate file types
+    */
+#define LDAP_CA_TYPE_UNKNOWN            0
+#define LDAP_CA_TYPE_DER                1
+#define LDAP_CA_TYPE_BASE64             2
+#define LDAP_CA_TYPE_CERT7_DB           3
+
+
 module AP_MODULE_DECLARE_DATA ldap_module;
 
 int util_ldap_handler(request_rec *r);
@@ -238,138 +246,125 @@ LDAP_DECLARE_NONSTD(apr_status_t) util_ldap_connection_destroy(void *param)
  *
  * Returns LDAP_SUCCESS on success; and an error code on failure
  */
-LDAP_DECLARE(int) util_ldap_connection_open(util_ldap_connection_t *ldc)
+LDAP_DECLARE(int) util_ldap_connection_open(request_rec *r, 
+                                            util_ldap_connection_t *ldc)
 {
     int result = 0;
     int failures = 0;
+    int version  = LDAP_VERSION3;
 
+    util_ldap_state_t *st = (util_ldap_state_t *)ap_get_module_config(
+                                r->server->module_config, &ldap_module);
 
-start_over:
-    if (failures++ > 10) {
-	/* too many failures - leave */
-        return result;
-    }
-
-    if (!ldc->ldap) {
-        ldc->bound = 0;
-
-	/* opening connection to LDAP server */
-        if ((ldc->ldap = ldap_init(ldc->host, ldc->port)) == NULL) {
-	    /* couldn't connect */
-            ldc->reason = "ldap_init() failed";
-            return -1;
-        }
-
-	/* add the cleanup to the pool */
-        apr_pool_cleanup_register(ldc->pool, ldc,
-                                  util_ldap_connection_destroy,
-                                  apr_pool_cleanup_null);
-
-#if LDAP_VENDOR_VERSION >= 20000
-    /* set protocol version 3 on this connection */
-        {
-            int version = LDAP_VERSION3;
-
-            if ((result = ldap_set_option(ldc->ldap, LDAP_OPT_PROTOCOL_VERSION,
-                                         &version)) != LDAP_SUCCESS) {
-                /* setting LDAP version failed - ignore error */
-            }
-        }
-#endif
-
-        /* Set the alias dereferencing option */
-#if LDAP_VERSION_MAX == 2
-        ldc->ldap->ld_deref = ldc->deref;
-#else
-        result = ldap_set_option(ldc->ldap, LDAP_OPT_DEREF, &(ldc->deref));
-        if (result != LDAP_SUCCESS) {
-	    /* setting LDAP dereference option failed */
-	    /* we ignore this error */
-        }
-#endif /* LDAP_VERSION_MAX */
-
-#ifdef APU_HAS_LDAP_NETSCAPE_SSL
-        if (ldc->netscapessl) {
-            if (!ldc->certdb) {
-		/* secure LDAP requested, but no CA cert defined */
-                ldc->reason = "secure LDAP requested, but no CA cert defined";
-                return -1;
-            } else {
-                result = ldapssl_install_routines(ldc->ldap);
-                if (result != LDAP_SUCCESS) {
-		    /* SSL initialisation failed */
-                    ldc->reason = "ldapssl_install_routines() failed";
-                    return result;
-                }
-                result = ldap_set_option(ldc->ldap, LDAP_OPT_SSL, LDAP_OPT_ON);
-                if (result != LDAP_SUCCESS) {
-		    /* SSL option failed */
-                    ldc->reason = "ldap_set_option() failed trying to set LDAP_OPT_SSL";
-                    return result;
-                }
-            }
-        }
-#endif /* APU_HAS_LDAP_NETSCAPE_SSL */
-
-#ifdef APU_HAS_LDAP_STARTTLS
-        if (ldc->starttls) {
-            /* LDAP protocol version 3 is required for TLS */
-
-            /* 
-             * In util_ldap_connection_find, we compare ldc->withtls to
-             * sec->starttls to see if we have a cache match. On the off
-             * chance that apache's config processing rotines set starttls to
-             * some other true value besides 1, we set it to 1 here to ensure
-             * that the comparison succeeds.
-             */
-            ldc->starttls = 1;
-
-            result = ldap_start_tls_s(ldc->ldap, NULL, NULL);
-            if (result != LDAP_SUCCESS) {
-		/* start TLS failed */
-		ldc->withtls = 0;
-                ldc->reason = "ldap_start_tls_s() failed";
-	        return result;
-            }
-            ldc->withtls = 1;
-        } else {
-            ldc->withtls = 0;
-        }
-#endif /* APU_HAS_LDAP_STARTTLS */
-    }
-
-    /* 
-     * At this point the LDAP connection is guaranteed alive. If bound says
-     * that we're bound already, we can just return.
-     */
-    if (ldc->bound) {
-        ldc->reason = "LDAP connection open successful (already bound)";
+    /* If the connection is already bound, return
+    */
+    if (ldc->bound)
+    {
+        ldc->reason = "LDAP: connection open successful (already bound)";
         return LDAP_SUCCESS;
     }
 
-    /* 
-     * Now bind with the username/password provided by the
-     * configuration. It will be an anonymous bind if no u/p was
-     * provided. 
-     */
-    if ((result = ldap_simple_bind_s(ldc->ldap, ldc->binddn, ldc->bindpw))
-        == LDAP_SERVER_DOWN) {
-	/* couldn't connect - try again */
-        ldc->reason = "ldap_simple_bind_s() failed with server down";
-        goto start_over;
+    /* create the ldap session handle
+    */
+    if (NULL == ldc->ldap)
+    {
+            /* clear connection requested */
+        if (!ldc->secure)
+        {
+            ldc->ldap = ldap_init(const_cast(ldc->host), ldc->port);
+        }
+        else /* ssl connnection requested */
+        {
+                /* check configuration to make sure it supports SSL
+                */
+            if (st->ssl_support)
+            {
+                #if APR_HAS_LDAP_SSL
+                
+                #if APR_HAS_NOVELL_LDAPSDK 
+                ldc->ldap = ldapssl_init(ldc->host, ldc->port, 1);
+
+                #elif APR_HAS_NETSCAPE_LDAPSDK
+                ldc->ldap = ldapssl_init(ldc->host, ldc->port, 1);
+
+                #elif APR_HAS_OPENLDAP_LDAPSDK
+                ldc->ldap = ldap_init(ldc->host, ldc->port);
+                if (NULL != ldc->ldap)
+                {
+                    int SSLmode = LDAP_OPT_X_TLS_HARD;
+                    result = ldap_set_option(ldc->ldap, LDAP_OPT_X_TLS, &SSLmode);
+                    if (LDAP_SUCCESS != result)
+                    {
+                        ldap_unbind_s(ldc->ldap);
+                        ldc->reason = "LDAP: ldap_set_option - LDAP_OPT_X_TLS_HARD failed";
+                        ldc->ldap = NULL;
+                    }
+                }
+
+                #elif APR_HAS_MICROSOFT_LDAPSDK
+                ldc->ldap = ldap_sslinit(const_cast(ldc->host), ldc->port, 1);
+
+                #else
+                    ldc->reason = "LDAP: ssl connections not supported";
+                #endif /* APR_HAS_NOVELL_LDAPSDK */
+            
+                #endif /* APR_HAS_LDAP_SSL */
+            }
+            else
+                ldc->reason = "LDAP: ssl connections not supported";
+        }
+
+        if (NULL == ldc->ldap)
+        {
+            ldc->bound = 0;
+            if (NULL == ldc->reason)
+                ldc->reason = "LDAP: ldap initialization failed";
+            return(-1);
+        }
+
+        /* Set the alias dereferencing option */
+        ldap_set_option(ldc->ldap, LDAP_OPT_DEREF, &(ldc->deref));
+
+        /* always default to LDAP V3 */
+        ldap_set_option(ldc->ldap, LDAP_OPT_PROTOCOL_VERSION, &version);
+
+
+        /* add the cleanup to the pool */
+        apr_pool_cleanup_register(ldc->pool, ldc,
+                                  util_ldap_connection_destroy,
+                                  apr_pool_cleanup_null);
     }
 
-    if (result != LDAP_SUCCESS) {
-	/* LDAP fatal error occured */
-        ldc->reason = "ldap_simple_bind_s() failed";
-        return result;
+
+    /* loop trying to bind up to 10 times if LDAP_SERVER_DOWN error is
+     * returned.  Break out of the loop on Success or any other error.
+     *
+     * NOTE: Looping is probably not a great idea. If the server isn't 
+     * responding the chances it will respond after a few tries are poor.
+     * However, the original code looped and it only happens on
+     * the error condition.
+      */
+    for (failures=0; failures<10; failures++)
+    {
+        result = ldap_simple_bind_s(ldc->ldap, const_cast(ldc->binddn), const_cast(ldc->bindpw));
+        if (LDAP_SERVER_DOWN != result)
+            break;
     }
 
-    /* note how we are bound */
     ldc->bound = 1;
+    ldc->reason = "LDAP: connection open successful";
 
-    ldc->reason = "LDAP connection open successful";
-    return LDAP_SUCCESS;
+    /* free the handle if there was an error
+    */
+    if (LDAP_SUCCESS != result)
+    {
+        ldap_unbind_s(ldc->ldap);
+        ldc->ldap = NULL;
+        ldc->bound = 0;
+        ldc->reason = "LDAP: ldap_simple_bind_s() failed";
+    }
+
+    return(result);
 }
 
 
@@ -383,7 +378,7 @@ start_over:
  */
 LDAP_DECLARE(util_ldap_connection_t *)util_ldap_connection_find(request_rec *r, const char *host, int port,
                                               const char *binddn, const char *bindpw, deref_options deref,
-                                              int netscapessl, int starttls)
+                                              int secure )
 {
     struct util_ldap_connection_t *l, *p;	/* To traverse the linked list */
 
@@ -414,12 +409,7 @@ LDAP_DECLARE(util_ldap_connection_t *)util_ldap_connection_find(request_rec *r, 
 	    && ( (!l->binddn && !binddn) || (l->binddn && binddn && !strcmp(l->binddn, binddn)) )
 	    && ( (!l->bindpw && !bindpw) || (l->bindpw && bindpw && !strcmp(l->bindpw, bindpw)) )
             && l->deref == deref
-#ifdef APU_HAS_LDAP_NETSCAPE_SSL
-            && l->netscapessl == netscapessl
-#endif
-#ifdef APU_HAS_LDAP_STARTTLS
-	    && l->withtls == starttls
-#endif
+            && l->secure == secure 
             )
             break;
         p = l;
@@ -438,12 +428,7 @@ LDAP_DECLARE(util_ldap_connection_t *)util_ldap_connection_find(request_rec *r, 
                 l->port == port
 	        && strcmp(l->host, host) == 0
                 && l->deref == deref
-#ifdef APU_HAS_LDAP_NETSCAPE_SSL
-                && l->netscapessl == netscapessl
-#endif
-#ifdef APU_HAS_LDAP_STARTTLS
-                && l->withtls == starttls
-#endif
+                && l->secure == secure
                 ) {
                 /* the bind credentials have changed */
                 l->bound = 0;
@@ -481,9 +466,7 @@ LDAP_DECLARE(util_ldap_connection_t *)util_ldap_connection_find(request_rec *r, 
         l->deref = deref;
         l->binddn = apr_pstrdup(st->pool, binddn);
         l->bindpw = apr_pstrdup(st->pool, bindpw);
-        l->netscapessl = netscapessl;
-        l->starttls = starttls;
-        l->withtls = 0;
+        l->secure = secure;
 
         if (p) {
             p->next = l;
@@ -577,7 +560,7 @@ start_over:
     }
 
     /* make a server connection */
-    if (LDAP_SUCCESS != (result = util_ldap_connection_open(ldc))) {
+    if (LDAP_SUCCESS != (result = util_ldap_connection_open(r, ldc))) {
 	/* connect to server failed */
         return result;
     }
@@ -703,13 +686,12 @@ start_over:
         /* too many failures */
         return result;
     }
-    if (LDAP_SUCCESS != (result = util_ldap_connection_open(ldc))) {
+    if (LDAP_SUCCESS != (result = util_ldap_connection_open(r, ldc))) {
         /* connect failed */
         return result;
     }
 
-    if ((result = ldap_compare_s(ldc->ldap, const_cast(dn), 
-			         const_cast(attrib), const_cast(value)))
+    if ((result = ldap_compare_s(ldc->ldap, const_cast(dn), const_cast(attrib), const_cast(value)))
         == LDAP_SERVER_DOWN) { 
         /* connection failed - try again */
         util_ldap_connection_close(ldc);
@@ -819,14 +801,14 @@ start_over:
     if (failures++ > 10) {
         return result;
     }
-    if (LDAP_SUCCESS != (result = util_ldap_connection_open(ldc))) {
+    if (LDAP_SUCCESS != (result = util_ldap_connection_open(r, ldc))) {
         return result;
     }
 
     /* try do the search */
     if ((result = ldap_search_ext_s(ldc->ldap,
-				    basedn, scope, 
-				    filter, attrs, 0, 
+				    const_cast(basedn), scope, 
+				    const_cast(filter), attrs, 0, 
 				    NULL, NULL, NULL, -1, &res)) == LDAP_SERVER_DOWN) {
         ldc->reason = "ldap_search_ext_s() for user failed with server down";
         goto start_over;
@@ -843,9 +825,13 @@ start_over:
      * number is an error.
      */
     count = ldap_count_entries(ldc->ldap, res);
-    if (count != 1) {
+    if (count != 1) 
+    {
+        if (count == 0 )
+            ldc->reason = "User not found";
+        else
+            ldc->reason = "User is not unique (search found two or more matches)";
         ldap_msgfree(res);
-        ldc->reason = "User is not unique (search found two or more matches)";
         return LDAP_NO_SUCH_OBJECT;
     }
 
@@ -875,15 +861,17 @@ start_over:
      * exists, since we just retrieved it)
      */
     if ((result = 
-         ldap_simple_bind_s(ldc->ldap, *binddn, bindpw)) == 
+         ldap_simple_bind_s(ldc->ldap, const_cast(*binddn), const_cast(bindpw))) == 
          LDAP_SERVER_DOWN) {
         ldc->reason = "ldap_simple_bind_s() to check user credentials failed with server down";
+        ldap_msgfree(res);
         goto start_over;
     }
 
     /* failure? if so - return */
     if (result != LDAP_SUCCESS) {
         ldc->reason = "ldap_simple_bind_s() to check user credentials failed";
+        ldap_msgfree(res);
         return result;
     }
 
@@ -905,6 +893,7 @@ start_over:
                 str = str ? apr_pstrcat(r->pool, str, "; ", values[j], NULL) : apr_pstrdup(r->pool, values[j]);
                 j++;
             }
+            ldap_value_free(values);
             vals[i] = str;
             i++;
         }
@@ -928,6 +917,18 @@ start_over:
     return LDAP_SUCCESS;
 }
 
+/*
+ * Reports if ssl support is enabled 
+ *
+ * 1 = enabled, 0 = not enabled
+ */
+LDAP_DECLARE(int) util_ldap_ssl_supported(request_rec *r)
+{
+   util_ldap_state_t *st = (util_ldap_state_t *)ap_get_module_config(
+                                r->server->module_config, &ldap_module);
+
+   return(st->ssl_support);
+}
 
 
 /* ---------------------------------------- */
@@ -1016,26 +1017,47 @@ static const char *util_ldap_set_opcache_entries(cmd_parms *cmd, void *dummy, co
     return NULL;
 }
 
-#ifdef APU_HAS_LDAP_NETSCAPE_SSL
-static const char *util_ldap_set_certdbpath(cmd_parms *cmd, void *dummy, const char *path)
+static const char *util_ldap_set_cert_auth(cmd_parms *cmd, void *dummy, const char *file)
 {
     util_ldap_state_t *st = 
         (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config, 
 						  &ldap_module);
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, cmd->server, 
-                      "[%d] ldap cache: Setting LDAP SSL client certificate dbpath to %s.", 
-                      getpid(), path);
+                      "LDAP: SSL trusted certificate authority file - %s", 
+                       file);
 
-    st->have_certdb = 1;
-    if (ldapssl_client_init(path, NULL) != 0) {
-        return "Could not initialize SSL client";
-    }
-    else {
-        return NULL;
-    }
+    st->cert_auth_file = apr_pstrdup(cmd->pool, file);
+
+    return(NULL);
 }
-#endif
+
+
+const char *util_ldap_set_cert_type(cmd_parms *cmd, void *dummy, const char *Type)
+{
+    util_ldap_state_t *st = 
+    (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config, 
+                                              &ldap_module);
+
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, cmd->server, 
+                      "LDAP: SSL trusted certificate authority file type - %s", 
+                       Type);
+
+    if (0 == strcmp("DER_FILE", Type))
+        st->cert_file_type = LDAP_CA_TYPE_DER;
+
+    else if (0 == strcmp("BASE64_FILE", Type))
+        st->cert_file_type = LDAP_CA_TYPE_BASE64;
+
+    else if (0 == strcmp("CERT7_DB_PATH", Type))
+        st->cert_file_type = LDAP_CA_TYPE_CERT7_DB;
+
+    else
+        st->cert_file_type = LDAP_CA_TYPE_UNKNOWN;
+
+    return(NULL);
+}
+
 
 void *util_ldap_create_config(apr_pool_t *p, server_rec *s)
 {
@@ -1049,11 +1071,10 @@ void *util_ldap_create_config(apr_pool_t *p, server_rec *s)
     st->search_cache_size = 1024;
     st->compare_cache_ttl = 600000000;
     st->compare_cache_size = 1024;
-
     st->connections = NULL;
-#ifdef APU_HAS_LDAP_NETSCAPE_SSL
-    st->have_certdb = 0;
-#endif
+    st->cert_auth_file = NULL;
+    st->cert_file_type = LDAP_CA_TYPE_UNKNOWN;
+    st->ssl_support = 0;
 
     return st;
 }
@@ -1071,6 +1092,191 @@ static void util_ldap_init_module(apr_pool_t *pool, server_rec *s)
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, result, s, 
                       "[%d] ldap cache init: %s", 
                       getpid(), buf);
+}
+
+
+static apr_status_t util_ldap_cleanup_module(void *data)
+{
+    server_rec *s = data;
+
+    util_ldap_state_t *st = (util_ldap_state_t *)ap_get_module_config(
+                                          s->module_config, &ldap_module);
+
+    #if APR_HAS_LDAP_SSL
+        #if APR_HAS_NOVELL_LDAPSDK
+            if (st->ssl_support)
+                ldapssl_client_deinit();
+        #endif
+    #endif
+   
+    return(APR_SUCCESS);
+}
+
+static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog, 
+                                 apr_pool_t *ptemp, server_rec *s)
+{
+    int rc = LDAP_SUCCESS;
+
+    util_ldap_state_t *st = (util_ldap_state_t *)ap_get_module_config(
+                                                s->module_config, 
+                                                &ldap_module);
+
+        /* log the LDAP SDK used 
+        */
+    #if APR_HAS_NETSCAPE_LDAPSDK 
+    
+        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s, 
+             "LDAP: Built with Netscape LDAP SDK" );
+
+    #elif APR_HAS_NOVELL_LDAPSDK
+
+        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s, 
+             "LDAP: Built with Novell LDAP SDK" );
+
+    #elif APR_HAS_OPENLDAP_LDAPSDK
+
+        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s, 
+             "LDAP: Built with OpenLDAP LDAP SDK" );
+
+    #elif APR_HAS_MICROSOFT_LDAPSDK
+    
+        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s, 
+             "LDAP: Built with Microsoft LDAP SDK" );
+    #else
+    
+        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s, 
+             "LDAP: Built with unknown LDAP SDK" );
+
+    #endif /* APR_HAS_NETSCAPE_LDAPSDK */
+
+
+
+    apr_pool_cleanup_register(p, s, util_ldap_cleanup_module,
+                              util_ldap_cleanup_module); 
+
+    /* initialize SSL support if requested
+    */
+    if (st->cert_auth_file)
+    {
+        #if APR_HAS_LDAP_SSL /* compiled with ssl support */
+
+        #if APR_HAS_NETSCAPE_LDAPSDK 
+
+            /* Netscape sdk only supports a cert7.db file 
+            */
+            if (st->cert_file_type == LDAP_CA_TYPE_CERT7_DB)
+            {
+                rc = ldapssl_client_init(st->cert_auth_file, NULL);
+            }
+            else
+            {
+                ap_log_error(APLOG_MARK, APLOG_CRIT, 0, s, 
+                         "LDAP: Invalid LDAPTrustedCAType directive - "
+                          "CERT7_DB_PATH type required");
+                rc = -1;
+            }
+
+        #elif APR_HAS_NOVELL_LDAPSDK
+        
+            /* Novell SDK supports DER or BASE64 files
+            */
+            if (st->cert_file_type == LDAP_CA_TYPE_DER  ||
+                st->cert_file_type == LDAP_CA_TYPE_BASE64 )
+            {
+                rc = ldapssl_client_init(NULL, NULL);
+                if (LDAP_SUCCESS == rc)
+                {
+                    if (st->cert_file_type == LDAP_CA_TYPE_BASE64)
+                        rc = ldapssl_add_trusted_cert(st->cert_auth_file, 
+                                                  LDAPSSL_CERT_FILETYPE_B64);
+                    else
+                        rc = ldapssl_add_trusted_cert(st->cert_auth_file, 
+                                                  LDAPSSL_CERT_FILETYPE_DER);
+
+                    if (LDAP_SUCCESS != rc)
+                        ldapssl_client_deinit();
+                }
+            }
+            else
+            {
+                ap_log_error(APLOG_MARK, APLOG_CRIT, 0, s, 
+                             "LDAP: Invalid LDAPTrustedCAType directive - "
+                             "DER_FILE or BASE64_FILE type required");
+                rc = -1;
+            }
+
+        #elif APR_HAS_OPENLDAP_LDAPSDK
+
+            /* OpenLDAP SDK supports BASE64 files
+            */
+            if (st->cert_file_type == LDAP_CA_TYPE_BASE64)
+            {
+                rc = ldap_set_option(NULL, LDAP_OPT_X_TLS_CACERTFILE, st->cert_auth_file);
+            }
+            else
+            {
+                ap_log_error(APLOG_MARK, APLOG_CRIT, 0, s, 
+                             "LDAP: Invalid LDAPTrustedCAType directive - "
+                             "BASE64_FILE type required");
+                rc = -1;
+            }
+
+
+        #elif APR_HAS_MICROSOFT_LDAPSDK
+            
+            /* Microsoft SDK use the registry certificate store - always
+             * assume support is always available
+            */
+            rc = LDAP_SUCCESS;
+
+        #else
+            rc = -1;
+        #endif /* APR_HAS_NETSCAPE_LDAPSDK */
+
+        #else  /* not compiled with SSL Support */
+
+            ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s, 
+                     "LDAP: Not built with SSL support." );
+            rc = -1;
+
+        #endif /* APR_HAS_LDAP_SSL */
+
+        if (LDAP_SUCCESS == rc)
+        {
+            st->ssl_support = 1;
+        }
+        else
+        {
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, 
+                         "LDAP: SSL initialization failed");
+            st->ssl_support = 0;
+        }
+    }
+      
+        /* The Microsoft SDK uses the registry certificate store -
+         * always assume support is available
+        */
+    #if APR_HAS_MICROSOFT_LDAPSDK
+        st->ssl_support = 1;
+    #endif
+    
+
+        /* log SSL status - If SSL isn't available it isn't necessarily
+         * an error because the modules asking for LDAP connections 
+         * may not ask for SSL support
+        */
+    if (st->ssl_support)
+    {
+       ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s, 
+                         "LDAP: SSL support available" );
+    }
+    else
+    {
+       ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s, 
+                         "LDAP: SSL support unavailable" );
+    }
+    
+    return(OK);
 }
 
 
@@ -1097,18 +1303,22 @@ command_rec util_ldap_cmds[] = {
                   "Sets the maximum time (in seconds) that an item is cached in the LDAP "
                   "operation cache. Zero means no limit. Defaults to 600 seconds (10 minutes)."),
 
-#ifdef APU_HAS_LDAP_NETSCAPE_SSL
-    AP_INIT_TAKE1("LDAPCertDBPath", util_ldap_set_certdbpath, NULL, RSRC_CONF,
-                  "Specifies the file containing Certificate Authority certificates "
-                  "for validating secure LDAP server certificates. This file must be the "
-                  "cert7.db database used by Netscape Communicator"),
-#endif
+    AP_INIT_TAKE1("LDAPTrustedCA", util_ldap_set_cert_auth, NULL, RSRC_CONF,
+                  "Sets the file containing the trusted Certificate Authority certificate. "
+                  "Used to validate the LDAP server certificate for SSL connections."),
 
+    AP_INIT_TAKE1("LDAPTrustedCAType", util_ldap_set_cert_type, NULL, RSRC_CONF,
+                 "Specifies the type of the Certificate Authority file.  "
+                 "The following types are supported:  "
+                 "    DER_FILE      - file in binary DER format "
+                 "    BASE64_FILE   - file in Base64 format "
+                 "    CERT7_DB_PATH - Netscape certificate database file "),
     {NULL}
 };
 
 static void util_ldap_register_hooks(apr_pool_t *p)
 {
+    ap_hook_post_config(util_ldap_post_config,NULL,NULL,APR_HOOK_MIDDLE);
     ap_hook_child_init(util_ldap_init_module, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_handler(util_ldap_handler, NULL, NULL, APR_HOOK_MIDDLE);
 }
