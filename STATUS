@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/11/11 01:58:12 $]
+Last modified at [$Date: 2001/11/11 02:00:08 $]
 
 Release:
 
@@ -181,6 +181,13 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       (4) Trying to seperate the https filter logic from mod_ssl -
           This is to facilitate other modules that wish to use the https
           filter or the mod_ssl logic or both as required.
+        Justin: mod_ssl filter logic is redone, so that should be fine.
+                Madhu has submitted a patch for SSL caching - however, I
+                am -0 on that patch as I *think* we could implement the
+                shared memory another way that is much cleaner (i.e.
+                treat shmem directly as a dbm via APR routines).  Justin 
+                also thinks that the https filter logic may be sufficiently
+                decoupled now, but isn't really sure.
 
     * Performance: Get the SINGLE_LISTEN_UNSERIALIZED_ACCEPT
       optimization working in threaded.  prefork's new design for how
