@@ -239,8 +239,11 @@ dav_lookup_result dav_lookup_uri(const char *uri, request_rec * r,
            request. the port must match our port.
         */
         apr_sockaddr_port_get(&port, r->connection->local_addr);
-        if (strcasecmp(comp.scheme, scheme) != 0 ||
-            comp.port != port) {
+        if (strcasecmp(comp.scheme, scheme) != 0
+#ifdef APACHE_PORT_HANDLING_IS_BUSTED
+            || comp.port != port
+#endif
+            ) {
             result.err.status = HTTP_BAD_GATEWAY;
             result.err.desc = apr_psprintf(r->pool,
                                            "Destination URI refers to "
@@ -277,12 +280,14 @@ dav_lookup_result dav_lookup_uri(const char *uri, request_rec * r,
     /* now, if a hostname was provided, then verify that it represents the
        same server as the current connection. note that we just use our
        port, since we've verified the URI matches ours */
+#ifdef APACHE_PORT_HANDLING_IS_BUSTED
     if (comp.hostname != NULL &&
 	!ap_matches_request_vhost(r, comp.hostname, port)) {
 	result.err.status = HTTP_BAD_GATEWAY;
 	result.err.desc = "Destination URI refers to a different server.";
 	return result;
     }
+#endif
 
     /* we have verified that the requested URI denotes the same server as
        the current request. Therefore, we can use ap_sub_req_lookup_uri() */
@@ -325,7 +330,7 @@ ap_xml_elem *dav_find_child(const ap_xml_elem *elem, const char *tagname)
 }
 
 /* gather up all the CDATA into a single string */
-const char *dav_xml_get_cdata(const ap_xml_elem *elem, apr_pool_t *pool,
+DAV_DECLARE(const char *) dav_xml_get_cdata(const ap_xml_elem *elem, apr_pool_t *pool,
                               int strip_white)
 {
     apr_size_t len = 0;

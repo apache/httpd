@@ -526,7 +526,7 @@ int dav_validate_root(const ap_xml_doc *doc, const char *tagname);
 ap_xml_elem *dav_find_child(const ap_xml_elem *elem, const char *tagname);
 
 /* gather up all the CDATA into a single string */
-const char *dav_xml_get_cdata(const ap_xml_elem *elem, apr_pool_t *pool,
+DAV_DECLARE(const char *) dav_xml_get_cdata(const ap_xml_elem *elem, apr_pool_t *pool,
                               int strip_white);
 
 /*
