@@ -118,6 +118,7 @@
 
 #include "httpd.h"
 #include "http_config.h"
+#include "http_core.h" /* For REMOTE_NAME */
 
 module config_log_module;
 
@@ -165,10 +166,10 @@ static char *pfmt(pool *p, int i)
 char *constant_item (request_rec *dummy, char *stuff) { return stuff; }
 
 char *log_remote_host (request_rec *r, char *a)
-{ return get_remote_host(r->connection, r->per_dir_config, REMOTE_NAME); }
+{ return (char *)get_remote_host(r->connection, r->per_dir_config, REMOTE_NAME); }
 
 char *log_remote_logname(request_rec *r, char *a)
-{return get_remote_logname(r);}
+{return (char *)get_remote_logname(r);}
 
 char *log_remote_user (request_rec *r, char *a)
 { return r->connection->user; }
@@ -186,7 +187,7 @@ char *log_bytes_sent (request_rec *r, char *a)
     {
 	long int bs;
 	char dummy[40];
-	bgetopt(r, BO_BYTECT, &bs);
+	bgetopt(r->connection->client, BO_BYTECT, &bs);
 	sprintf(dummy, "%ld", bs);
 	return pstrdup(r->pool, dummy);
     }
