@@ -326,19 +326,6 @@ void *ssl_config_perdir_merge(pool *p, void *basev, void *addv)
     return new;
 }
 
-/*
- * Directive Rewriting
- */
-
-char *ssl_hook_RewriteCommand(cmd_parms *cmd, void *config, const char *cmd_line)
-{
-#ifdef SSL_COMPAT
-    return ssl_compat_directive(cmd->server, cmd->pool, cmd_line);
-#else
-    return NULL;
-#endif
-}
-
 #endif /* XXX */
 
 /*
