@@ -96,7 +96,7 @@
 
 #define VENDOR   "Apache Software Foundation"
 #define SOFTWARE "Apache"
-#define VERSION  "2.0a2"
+#define VERSION  "2.0a3-dev"
 
 #define REGKEY "SOFTWARE\\" VENDOR "\\" SOFTWARE "\\" VERSION
 
