@@ -384,8 +384,8 @@ AP_DECLARE(int) directory_walk(request_rec *r)
     core_server_config *sconf = ap_get_module_config(r->server->module_config,
                                                      &core_module);
     ap_conf_vector_t *per_dir_defaults = r->server->lookup_defaults;
-    ap_conf_vector_t **sec = (ap_conf_vector_t **) sconf->sec->elts;
-    int num_sec = sconf->sec->nelts;
+    ap_conf_vector_t **sec_dir = (ap_conf_vector_t **) sconf->sec_dir->elts;
+    int num_sec = sconf->sec_dir->nelts;
     char *test_filename;
     char *test_dirname;
     int res;
@@ -428,7 +428,7 @@ AP_DECLARE(int) directory_walk(request_rec *r)
 
         for (j = 0; j < num_sec; ++j) {
 
-            entry_config = sec[j];
+            entry_config = sec_dir[j];
             entry_core = ap_get_module_config(entry_config, &core_module);
             entry_dir = entry_core->d;
 
@@ -588,7 +588,7 @@ AP_DECLARE(int) directory_walk(request_rec *r)
         for (; j < num_sec; ++j) {
             char *entry_dir;
 
-            entry_config = sec[j];
+            entry_config = sec_dir[j];
             entry_core = ap_get_module_config(entry_config, &core_module);
             entry_dir = entry_core->d;
 
@@ -650,7 +650,7 @@ AP_DECLARE(int) directory_walk(request_rec *r)
      */
     for (; j < num_sec; ++j) {
 
-        entry_config = sec[j];
+        entry_config = sec_dir[j];
         entry_core = ap_get_module_config(entry_config, &core_module);
 
         if (entry_core->r) {
@@ -704,9 +704,9 @@ AP_DECLARE(int) directory_walk(request_rec *r)
     core_server_config *sconf = ap_get_module_config(r->server->module_config,
                                                      &core_module);
     ap_conf_vector_t *per_dir_defaults = r->server->lookup_defaults;
-    ap_conf_vector_t **sec_ent = (ap_conf_vector_t **) sconf->sec->elts;
-    int num_sec = sconf->sec->nelts;
-    int sec;
+    ap_conf_vector_t **sec_ent = (ap_conf_vector_t **) sconf->sec_dir->elts;
+    int num_sec = sconf->sec_dir->nelts;
+    int sec_idx;
     unsigned int seg;
     int res;
     ap_conf_vector_t *entry_config;
@@ -767,9 +767,9 @@ AP_DECLARE(int) directory_walk(request_rec *r)
             return HTTP_FORBIDDEN;
         }
 
-        for (sec = 0; sec < num_sec; ++sec) {
+        for (sec_idx = 0; sec_idx < num_sec; ++sec_idx) {
 
-            entry_config = sec_ent[sec];
+            entry_config = sec_ent[sec_idx];
             entry_core = ap_get_module_config(entry_config, &core_module);
             entry_dir = entry_core->d;
 
@@ -802,11 +802,11 @@ AP_DECLARE(int) directory_walk(request_rec *r)
 
     /*
      * seg keeps track of which segment we've copied.
-     * sec keeps track of which section we're on, since sections are
+     * sec_idx keeps track of which section we're on, since sections are
      *     ordered by number of segments. See core_reorder_directories 
      */
     seg = ap_count_dirs(r->filename);
-    sec = 0;
+    sec_idx = 0;
     do {
         int overrides_here;
         core_dir_config *core_dir = ap_get_module_config(per_dir_defaults,
@@ -814,16 +814,16 @@ AP_DECLARE(int) directory_walk(request_rec *r)
         
         /* We have no trailing slash, but we sure would appreciate one...
          */
-        if (!sec && r->filename[strlen(r->filename)-1] != '/')
+        if (!sec_idx && r->filename[strlen(r->filename)-1] != '/')
             strcat(r->filename, "/");
 
         /* Begin *this* level by looking for matching <Directory> sections
          * from the server config.
          */
-        for (; sec < num_sec; ++sec) {
+        for (; sec_idx < num_sec; ++sec_idx) {
             const char *entry_dir;
 
-            entry_config = sec_ent[sec];
+            entry_config = sec_ent[sec_idx];
             entry_core = ap_get_module_config(entry_config, &core_module);
             entry_dir = entry_core->d;
 
@@ -994,9 +994,9 @@ AP_DECLARE(int) directory_walk(request_rec *r)
      * already handled the proxy:-style stuff.  Now we'll deal with the
      * regexes.
      */
-    for (; sec < num_sec; ++sec) {
+    for (; sec_idx < num_sec; ++sec_idx) {
 
-        entry_config = sec_ent[sec];
+        entry_config = sec_ent[sec_idx];
         entry_core = ap_get_module_config(entry_config, &core_module);
 
         if (entry_core->r) {
@@ -1111,8 +1111,8 @@ AP_DECLARE(int) file_walk(request_rec *r)
     core_dir_config *conf = ap_get_module_config(r->per_dir_config,
                                                  &core_module);
     ap_conf_vector_t *per_dir_defaults = r->per_dir_config;
-    ap_conf_vector_t **file = (ap_conf_vector_t **) conf->sec->elts;
-    int num_files = conf->sec->nelts;
+    ap_conf_vector_t **file = (ap_conf_vector_t **) conf->sec_file->elts;
+    int num_files = conf->sec_file->nelts;
     char *test_file;
 
     /* get the basename */
