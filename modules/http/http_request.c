@@ -282,7 +282,7 @@ static int get_path_info(request_rec *r)
          * an APR_PATHINCOMPLETE result to indicate that we are staring at
          * an partial virtual root.  Only OS2/Win32/Netware need apply it :-)
          */
-        rv = apr_stat(&r->finfo, path, APR_FINFO_NORM, r->pool);
+        rv = apr_stat(&r->finfo, path, APR_FINFO_MIN, r->pool);
 
         if (cp != end)
             *cp = '/';
