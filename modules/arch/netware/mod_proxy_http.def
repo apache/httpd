@@ -1,4 +1,5 @@
 EXPORT  proxy_http_module
+IMPORT  proxy_module
 IMPORT  proxy_hook_scheme_handler
 IMPORT  proxy_run_fixups
 IMPORT  proxy_hook_canon_handler
