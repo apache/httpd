@@ -326,7 +326,7 @@ AP_DECLARE(file_type_e) ap_get_win32_interpreter(const request_rec *,
 
 char *ap_response_code_string (request_rec *r, int error_index);
 
-extern AP_DECLARE_DATA module core_module;
+AP_DECLARE_DATA extern module core_module;
 
 /* Per-request configuration */
 

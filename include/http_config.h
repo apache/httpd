@@ -726,23 +726,23 @@ AP_DECLARE(const char *) ap_check_cmd_context(cmd_parms *cmd, unsigned forbidden
  * The topmost module in the list
  * @defvar module *top_module
  */
-extern AP_DECLARE_DATA module *top_module;
+AP_DECLARE_DATA extern module *top_module;
 
 /**
  * Array of all statically linked modules
  * @defvar module *ap_prelinked_modules[]
  */
-extern AP_DECLARE_DATA module *ap_prelinked_modules[];
+AP_DECLARE_DATA extern module *ap_prelinked_modules[];
 /**
  * Array of all preloaded modules
  * @defvar module *ap_preloaded_modules[]
  */
-extern AP_DECLARE_DATA module *ap_preloaded_modules[];
+AP_DECLARE_DATA extern module *ap_preloaded_modules[];
 /**
  * Array of all loaded modules
  * @defvar module **ap_loaded_modules
  */
-extern AP_DECLARE_DATA module **ap_loaded_modules;
+AP_DECLARE_DATA extern module **ap_loaded_modules;
 
 /* For mod_so.c... */
 /** Run a single module's two create_config hooks

@@ -100,7 +100,7 @@ struct ap_directive_t {
  * The root of the configuration tree
  * @defvar ap_directive_t *conftree
  */
-extern AP_DECLARE_DATA ap_directive_t *ap_conftree;
+AP_DECLARE_DATA extern ap_directive_t *ap_conftree;
 
 /**
  * Add a node to the configuration tree.
