@@ -1,5 +1,5 @@
 Apache HTTP Server 2.0 Documentation Status File.
-Last modified: $Date: 2001/08/22 00:16:23 $
+Last modified: $Date: 2001/08/24 17:27:42 $
 
 If you are interested in helping accomplish some of the tasks on this
 list or otherwise improving the documentation, please join the
@@ -14,14 +14,12 @@ tutorial on how to get started with making your contribution.
               ------------------------------
 
 - modules docs
-    - mod_mime: has not kept pace with 1.3 docs
+    - mod_ssl/mod_tls: no docs
+    - mod_mime: docs needed for RemoveLanguage and RemoveCharset
     - mod_suexec: very little documentation
-    - mod_include: the "INCLUDES_MAGIC_TYPE" x-server-parsed-html
-      appears to have been removed from mod_include, but it is still
-      present in mod_negotiation, mod_autoindex, and httpd.h.
-      Should it be removed from the docs for mod_include?
     - mod_status: updates for 2.0
     - mod_example: updates for 2.0
+
 
 - man pages
     - Some of the man pages need to be updated for 2.0.  At least
@@ -30,10 +28,7 @@ tutorial on how to get started with making your contribution.
       regenerated.
 
 - XHTML conversion
-        Status: James A Sutherland <jas88@cam.ac.uk> 
-		is working on this.
-		Some work is still needed
-                to determine what the SSIs should look like.
+        Status: unknown
 
 - MPM documentation
    - Each MPM needs to have a documentation file in manual/mod/
@@ -49,8 +44,6 @@ tutorial on how to get started with making your contribution.
         Status:  What docs still need to be touched here?
                  - invoking.html has had a first-pass cleaning done.
                  - misc/perf-tuning.html - needs major rewrite for 2.0
-                 - misc/FAQ.html - some old questions could be remove
-                                 - is a new format in order?
                  - misc/tutorials.html - mostly not relevant to 2.0
                  - misc/stopping.html
                  - dso.html
@@ -119,16 +112,12 @@ Tutorials
   his tutorial from ApacheToday, but it needs to be cleaned up and put in
   a good format for the docs.
 
-  - Rich has kindy donated the "4-part logging article on Apache Today"
-    articles that will need a little massaging.
-
 New User documentation
 ======================
 
-* Adding more documentation for new users
+* Directory Handling (mod_dir/mod_autoindex/etc)
 
-  - I believe that we'll need to get more info on what is missing, ie.
-    user feedback and whatnot. --jsl
+* Sections (<Directory>/<Files>/<Location>)
 
 
 Documentation improvements
