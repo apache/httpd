@@ -159,13 +159,15 @@
       </li>
 
       <li>
-        <strong>Does the target program have an unsafe hierarchical
-        reference?</strong> 
+        <strong>Does the target CGI or SSI program have an unsafe
+        hierarchical reference?</strong> 
 
         <p class="indent">
-          Does the target program contain a leading '/' or have a
-          '..' backreference? These are not allowed; the target
-          program must reside within the Apache webspace.
+          Does the target CGI or SSI program's path contain a leading
+          '/' or have a '..' backreference? These are not allowed; the
+          target CGI/SSI program must reside within suEXEC's document
+          root (see <code>--with-suexec-docroot=<em>DIR</em></code>
+          below).
         </p>
       </li>
 
@@ -242,8 +244,8 @@
       </li>
 
       <li>
-        <strong>Does the directory in which the program resides
-        exist?</strong> 
+        <strong>Does the directory in which the target CGI/SSI program
+        resides exist?</strong> 
 
         <p class="indent">
           If it doesn't exist, it can't very well contain files.
@@ -256,9 +258,10 @@
 
         <p class="indent">
           If the request is for a regular portion of the server, is
-          the requested directory within the server's document
-          root? If the request is for a UserDir, is the requested
-          directory within the user's document root?
+          the requested directory within suEXEC's document root? If
+          the request is for a UserDir, is the requested directory
+          within the directory configured as suEXEC's userdir (see
+          <a href="#install">suEXEC's configuration options</a>)?
         </p>
       </li>
 
@@ -274,7 +277,7 @@
       </li>
 
       <li>
-        <strong>Does the target program exist?</strong> 
+        <strong>Does the target CGI/SSI program exist?</strong> 
 
         <p class="indent">
           If it doesn't exists, it can't very well be executed.
@@ -282,17 +285,17 @@
       </li>
 
       <li>
-        <strong>Is the target program <em>NOT</em> writable by
-        anyone else?</strong> 
+        <strong>Is the target CGI/SSI program <em>NOT</em> writable
+        by anyone else?</strong> 
 
         <p class="indent">
           We don't want to give anyone other than the owner the
-          ability to change the program.
+          ability to change the CGI/SSI program.
         </p>
       </li>
 
       <li>
-        <strong>Is the target program <em>NOT</em> setuid or
+        <strong>Is the target CGI/SSI program <em>NOT</em> setuid or
         setgid?</strong> 
 
         <p class="indent">
@@ -324,11 +327,11 @@
       </li>
 
       <li>
-        <strong>Can we successfully become the target program and
-        execute?</strong> 
+        <strong>Can we successfully become the target CGI/SSI program
+        and execute?</strong> 
 
         <p class="indent">
-          Here is where suEXEC ends and the target program begins.
+          Here is where suEXEC ends and the target CGI/SSI program begins.
         </p>
       </li>
     </ol>
