@@ -11,9 +11,9 @@ APDIR=$(basename $(pwd))
 VER=$(echo $APDIR |sed s/apache-//)
 OS=$(src/helpers/GuessOS)
 USER="$(src/helpers/buildinfo.sh -n %u@%h%d)"
-TAR="$(src/helpers/findprg.sh tar)"
-GTAR="$(src/helpers/findprg.sh gtar)"
-GZIP="$(src/helpers/findprg.sh gzip)"
+TAR="$(src/helpers/PrintPath tar)"
+GTAR="$(src/helpers/PrintPath gtar)"
+GZIP="$(src/helpers/PrintPath gzip)"
 CONFIGPARAM="--with-layout=BinaryDistribution --enable-module=most --enable-shared=max"
 
 if [ ! -f ./ABOUT_APACHE ]
