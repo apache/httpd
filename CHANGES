@@ -1,5 +1,8 @@
 Changes with Apache 2.0.36
 
+  *) Add an intelligent error message should no proxy submodules be
+     valid to handle a request. PR 8407 [Graham Leggett]
+
   *) Major improvements in concurrent processing for AB by enabling
      non-blocking connect()s and preventing APR from doing blocking
      read()s. Also implement fatal error checking for apr_recv().
@@ -23,6 +26,7 @@ Changes with Apache 2.0.36
   *) Fix perchild MPM so that it uses ap_gname2id for groups instead of
      ap_uname2id. [Scott Lamb <slamb@slamb.org>]
 
+>>>>>>> 1.728
   *) Fix AcceptPathInfo. PR 8234  [Cliff Woolley]
 
   *) [Security] Added the APLOG_TOCLIENT flag to ap_log_rerror() to
