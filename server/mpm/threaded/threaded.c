@@ -883,7 +883,7 @@ static void perform_idle_server_maintenance(void)
 {
     int i, j;
     int idle_thread_count;
-    short_score *ss;
+    worker_score *ws;
     int free_length;
     int free_slots[MAX_SPAWN_RATE];
     int last_non_dead;
@@ -910,8 +910,8 @@ static void perform_idle_server_maintenance(void)
 	if (i >= ap_max_daemons_limit && free_length == idle_spawn_rate)
 	    break;
 	for (j = 0; j < ap_threads_per_child; j++) {
-            ss = &ap_scoreboard_image->servers[i][j];
-	    status = ss->status;
+            ws = &ap_scoreboard_image->servers[i][j];
+	    status = ws->status;
 
 	    any_dying_threads = any_dying_threads || (status == SERVER_DEAD)
                                     || (status == SERVER_GRACEFUL);

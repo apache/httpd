@@ -251,8 +251,8 @@ static int status_handler(request_rec *r)
 #endif
     int short_report = 0;
     int no_table_report = 0;
-    short_score score_record;
-    parent_score ps_record;
+    worker_score ws_record;
+    process_score ps_record;
     char stat_buffer[HARD_SERVER_LIMIT * HARD_THREAD_LIMIT];
     pid_t pid_buffer[HARD_SERVER_LIMIT * HARD_THREAD_LIMIT];
     clock_t tu, ts, tcu, tcs;
@@ -317,9 +317,9 @@ static int status_handler(request_rec *r)
         for (j = 0; j < HARD_THREAD_LIMIT; ++j) {
             int indx = (i * HARD_THREAD_LIMIT) + j;
 
-	    score_record = ap_scoreboard_image->servers[i][j];
+	    ws_record = ap_scoreboard_image->servers[i][j];
 	    ps_record = ap_scoreboard_image->parent[i];
-	    res = score_record.status;
+	    res = ws_record.status;
 	    stat_buffer[indx] = status_flags[res];
 	    pid_buffer[indx] = ps_record.pid;
 	    if (res == SERVER_READY)
@@ -327,14 +327,14 @@ static int status_handler(request_rec *r)
 	    else if (res != SERVER_DEAD)
 	        busy++;
 	    if (ap_extended_status) {
-	        lres = score_record.access_count;
-	        bytes = score_record.bytes_served;
+	        lres = ws_record.access_count;
+	        bytes = ws_record.bytes_served;
 	        if (lres != 0 || (res != SERVER_READY && res != SERVER_DEAD)) {
 #ifdef HAVE_TIMES
-		    tu += score_record.times.tms_utime;
-		    ts += score_record.times.tms_stime;
-		    tcu += score_record.times.tms_cutime;
-		    tcs += score_record.times.tms_cstime;
+		    tu += ws_record.times.tms_utime;
+		    ts += ws_record.times.tms_stime;
+		    tcu += ws_record.times.tms_cutime;
+		    tcs += ws_record.times.tms_cstime;
 #endif /* HAVE_TIMES */
 		    count += lres;
 		    bcount += bytes;
@@ -510,47 +510,47 @@ static int status_handler(request_rec *r)
 
 	for (i = 0; i < HARD_SERVER_LIMIT; ++i) {
 	for (j = 0; j < HARD_THREAD_LIMIT; ++j) {
-	    score_record = ap_scoreboard_image->servers[i][j];
+	    ws_record = ap_scoreboard_image->servers[i][j];
 	    ps_record = ap_scoreboard_image->parent[i];
-	    vhost = score_record.vhostrec;
+	    vhost = ws_record.vhostrec;
 	    if (ps_record.generation != ap_my_generation) {
 		vhost = NULL;
 	    }
 
 #if defined(NO_GETTIMEOFDAY)
 #ifdef HAVE_TIMES
-	    if (score_record.start_time == (clock_t) 0)
+	    if (ws_record.start_time == (clock_t) 0)
 #endif /* HAVE_TIMES */
 		req_time = 0L;
 #ifdef HAVE_TIMES
 	    else {
-		req_time = score_record.stop_time - score_record.start_time;
+		req_time = ws_record.stop_time - ws_record.start_time;
 		req_time = (req_time * 1000) / (int) tick;
 	    }
 #endif /* HAVE_TIMES */
 #else
-	    if (score_record.start_time == 0L &&
-		score_record.start_time == 0L)
+	    if (ws_record.start_time == 0L &&
+		ws_record.start_time == 0L)
 		req_time = 0L;
 	    else
 		req_time =
-		    ((score_record.stop_time - score_record.start_time) * 1000) +
-		    ((score_record.stop_time - score_record.start_time) / 1000);
+		    ((ws_record.stop_time - ws_record.start_time) * 1000) +
+		    ((ws_record.stop_time - ws_record.start_time) / 1000);
 #endif
 	    if (req_time < 0L)
 		req_time = 0L;
 
-	    lres = score_record.access_count;
-	    my_lres = score_record.my_access_count;
-	    conn_lres = score_record.conn_count;
-	    bytes = score_record.bytes_served;
-	    my_bytes = score_record.my_bytes_served;
-	    conn_bytes = score_record.conn_bytes;
-	    if (lres != 0 || (score_record.status != SERVER_READY
-			      && score_record.status != SERVER_DEAD)) {
+	    lres = ws_record.access_count;
+	    my_lres = ws_record.my_access_count;
+	    conn_lres = ws_record.conn_count;
+	    bytes = ws_record.bytes_served;
+	    my_bytes = ws_record.my_bytes_served;
+	    conn_bytes = ws_record.conn_bytes;
+	    if (lres != 0 || (ws_record.status != SERVER_READY
+			      && ws_record.status != SERVER_DEAD)) {
 		if (!short_report) {
 		    if (no_table_report) {
-			if (score_record.status == SERVER_DEAD)
+			if (ws_record.status == SERVER_DEAD)
 			    ap_rprintf(r,
 				"<b>Server %d-%d</b> (-): %d|%lu|%lu [",
 				i, (int) ps_record.generation, (int) conn_lres,
@@ -563,7 +563,7 @@ static int status_handler(request_rec *r)
 				ps_record.pid,
 				(int) conn_lres, my_lres, lres);
 
-			switch (score_record.status) {
+			switch (ws_record.status) {
 			case SERVER_READY:
 			    ap_rputs("Ready", r);
 			    break;
@@ -601,12 +601,12 @@ static int status_handler(request_rec *r)
 #else
 
 			ap_rprintf(r, "] u%g s%g cu%g cs%g\n %ld %ld (",
-			    score_record.times.tms_utime / tick,
-			    score_record.times.tms_stime / tick,
-			    score_record.times.tms_cutime / tick,
-			    score_record.times.tms_cstime / tick,
+			    ws_record.times.tms_utime / tick,
+			    ws_record.times.tms_stime / tick,
+			    ws_record.times.tms_cutime / tick,
+			    ws_record.times.tms_cstime / tick,
 #endif
-			    (long)((nowtime - score_record.last_used) / APR_USEC_PER_SEC),
+			    (long)((nowtime - ws_record.last_used) / APR_USEC_PER_SEC),
 			    (long) req_time);
 			format_byte_out(r, conn_bytes);
 			ap_rputs("|", r);
@@ -615,13 +615,13 @@ static int status_handler(request_rec *r)
 			format_byte_out(r, bytes);
 			ap_rputs(")\n", r);
 			ap_rprintf(r, " <i>%s {%s}</i> <b>[%s]</b><br>\n\n",
-			    ap_escape_html(r->pool, score_record.client),
-			    ap_escape_html(r->pool, score_record.request),
+			    ap_escape_html(r->pool, ws_record.client),
+			    ap_escape_html(r->pool, ws_record.request),
 			    vhost ? ap_escape_html(r->pool, 
 				vhost->server_hostname) : "(unavailable)");
 		    }
 		    else {		/* !no_table_report */
-			if (score_record.status == SERVER_DEAD)
+			if (ws_record.status == SERVER_DEAD)
 			    ap_rprintf(r,
 				"<tr><td><b>%d-%d</b><td>-<td>%d/%lu/%lu",
 				i, (int) ps_record.generation,
@@ -634,7 +634,7 @@ static int status_handler(request_rec *r)
 				ps_record.pid, (int) conn_lres,
 				my_lres, lres);
 
-			switch (score_record.status) {
+			switch (ws_record.status) {
 			case SERVER_READY:
 			    ap_rputs("<td>_", r);
 			    break;
@@ -671,26 +671,26 @@ static int status_handler(request_rec *r)
 			ap_rprintf(r, "\n<td>%.0f<td>%ld",
 #else
 			ap_rprintf(r, "\n<td>%.2f<td>%ld<td>%ld",
-			    (score_record.times.tms_utime +
-			     score_record.times.tms_stime +
-			     score_record.times.tms_cutime +
-			     score_record.times.tms_cstime) / tick,
+			    (ws_record.times.tms_utime +
+			     ws_record.times.tms_stime +
+			     ws_record.times.tms_cutime +
+			     ws_record.times.tms_cstime) / tick,
 #endif
-			    (long)((nowtime - score_record.last_used) / APR_USEC_PER_SEC),
+			    (long)((nowtime - ws_record.last_used) / APR_USEC_PER_SEC),
 			    (long) req_time);
 			ap_rprintf(r, "<td>%-1.1f<td>%-2.2f<td>%-2.2f\n",
 			   (float) conn_bytes / KBYTE, (float) my_bytes / MBYTE,
 			    (float) bytes / MBYTE);
-			if (score_record.status == SERVER_BUSY_READ)
+			if (ws_record.status == SERVER_BUSY_READ)
 			    ap_rprintf(r,
 			     "<td>?<td nowrap>?<td nowrap>..reading.. </tr>\n\n");
 			else
 			    ap_rprintf(r,
 			     "<td>%s<td nowrap>%s<td nowrap>%s</tr>\n\n",
-			     ap_escape_html(r->pool, score_record.client),
+			     ap_escape_html(r->pool, ws_record.client),
 			     vhost ? ap_escape_html(r->pool, 
 				vhost->server_hostname) : "(unavailable)",
-			     ap_escape_html(r->pool, score_record.request));
+			     ap_escape_html(r->pool, ws_record.request));
 		    }		/* no_table_report */
 		}			/* !short_report */
 	    }			/* if (<active child>) */

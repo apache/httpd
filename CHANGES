@@ -1,5 +1,9 @@
 Changes with Apache 2.0.18-dev
 
+  *) Make first phase changes to the scoreboard data structures in
+     preparation for the rewriting of the scoreboard per my posted
+     design notes. [Paul J. Reder]
+
   *) Fix httpd's definition of LTFLAGS to be consistent with that of apr
      and apr-util, allow it to be overridden by the configure command-line
      (default="--silent") and introduce LT_LDFLAGS to replace what we were
