@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.10 $ -->
+<!-- $Revision: 1.11 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -54,7 +54,7 @@
      [ -<strong>R</strong> <var>directory</var> ] [ -<strong>h</strong> ]
      [ -<strong>l</strong> ] [ -<strong>L</strong> ] [ -<strong>S</strong> ]
      [ -<strong>t</strong> ] [ -<strong>v</strong> ] [ -<strong>V</strong> ]
-     [ -<strong>X</strong> ]</code></p>
+     [ -<strong>X</strong> ] [ -<strong>M</strong> ]</code></p>
 
      <p>On <a href="../platform/windows.html">Windows systems</a>, the
      following additional arguments are available:</p>
@@ -138,6 +138,10 @@ the <directive module="mod_so">LoadModule</directive> directive.</dd>
 <dd>Output a list of directives together with expected arguments and
 places where the directive is valid.</dd>
 
+<dt><code>-M</code></dt>
+
+<dd>Dump a list of loaded Static and Shared Modules.</dd>
+
 <dt><code>-S</code></dt>
 
 <dd>Show the settings as parsed from the config file (currently only
@@ -149,7 +153,8 @@ shows the virtualhost settings).</dd>
 immediately exits after these syntax parsing tests with either a return code
 of 0 (Syntax OK) or return code not equal to 0 (Syntax Error).  If -D
 <var>DUMP</var>_<var>VHOSTS </var>is also set, details of the virtual host
-configuration will be printed.</dd>
+configuration will be printed. If -D <var>DUMP</var>_<var>MODULES </var> is
+set, all loaded modules will be printed.</dd>
 
 <dt><code>-v</code></dt>
 
