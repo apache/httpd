@@ -285,8 +285,11 @@ static BOOL CALLBACK console_control_handler(DWORD ctrl_type)
 {
     switch (ctrl_type)
     {
-        case CTRL_C_EVENT:
         case CTRL_BREAK_EVENT:
+            fprintf(stderr, "Apache server restarting...\n");
+            signal_parent(1);
+            return TRUE;
+        case CTRL_C_EVENT:
             fprintf(stderr, "Apache server interrupted...\n");
             /* for Interrupt signals, shut down the server.
              * Tell the system we have dealt with the signal
