@@ -107,11 +107,11 @@
  * the benefit for small files.  It shouldn't be set lower than 1.
  */
 #ifndef MMAP_THRESHOLD
-  #ifdef SUNOS4
-  #define MMAP_THRESHOLD		(8*1024)
-  #else
-  #define MMAP_THRESHOLD		1
-  #endif /* SUNOS4 */
+#  ifdef SUNOS4
+#  define MMAP_THRESHOLD		(8*1024)
+#  else
+#  define MMAP_THRESHOLD		1
+#  endif /* SUNOS4 */
 #endif /* MMAP_THRESHOLD */
 #ifndef MMAP_LIMIT
 #define MMAP_LIMIT              (4*1024*1024)
