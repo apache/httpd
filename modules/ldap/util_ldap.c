@@ -154,10 +154,10 @@ int util_ldap_handler(request_rec *r)
 
 /*
  * Closes an LDAP connection by unlocking it. The next time
- * util_ldap_connection_find() is called this connection will be
+ * uldap_connection_find() is called this connection will be
  * available for reuse.
  */
-LDAP_DECLARE(void) util_ldap_connection_close(util_ldap_connection_t *ldc)
+LDAP_DECLARE(void) uldap_connection_close(util_ldap_connection_t *ldc)
 {
 
     /*
@@ -184,7 +184,7 @@ LDAP_DECLARE(void) util_ldap_connection_close(util_ldap_connection_t *ldc)
  * the LDAP server. It is used to bring the connection back to a known
  * state after an error, and during pool cleanup.
  */
-LDAP_DECLARE_NONSTD(apr_status_t) util_ldap_connection_unbind(void *param)
+LDAP_DECLARE_NONSTD(apr_status_t) uldap_connection_unbind(void *param)
 {
     util_ldap_connection_t *ldc = param;
 
@@ -205,14 +205,14 @@ LDAP_DECLARE_NONSTD(apr_status_t) util_ldap_connection_unbind(void *param)
  * This function is registered with the pool cleanup function - causing
  * the LDAP connections to be shut down cleanly on graceful restart.
  */
-LDAP_DECLARE_NONSTD(apr_status_t) util_ldap_connection_cleanup(void *param)
+LDAP_DECLARE_NONSTD(apr_status_t) uldap_connection_cleanup(void *param)
 {
     util_ldap_connection_t *ldc = param;
 
     if (ldc) {
 
         /* unbind and disconnect from the LDAP server */
-        util_ldap_connection_unbind(ldc);
+        uldap_connection_unbind(ldc);
 
         /* free the username and password */
         if (ldc->bindpw) {
@@ -223,7 +223,7 @@ LDAP_DECLARE_NONSTD(apr_status_t) util_ldap_connection_cleanup(void *param)
         }
 
         /* unlock this entry */
-        util_ldap_connection_close(ldc);
+        uldap_connection_close(ldc);
     
     }
 
@@ -237,7 +237,7 @@ LDAP_DECLARE_NONSTD(apr_status_t) util_ldap_connection_cleanup(void *param)
  *
  * Returns LDAP_SUCCESS on success; and an error code on failure
  */
-LDAP_DECLARE(int) util_ldap_connection_open(request_rec *r, 
+LDAP_DECLARE(int) uldap_connection_open(request_rec *r, 
                                             util_ldap_connection_t *ldc)
 {
     int rc = 0;
@@ -408,7 +408,7 @@ static int compare_client_certs(apr_array_header_t *srcs, apr_array_header_t *de
  * ldc structure will be returned.
  */
 LDAP_DECLARE(util_ldap_connection_t *)
-             util_ldap_connection_find(request_rec *r,
+             uldap_connection_find(request_rec *r,
                                        const char *host, int port,
                                        const char *binddn, const char *bindpw,
                                        deref_options deref, int secure) {
@@ -526,7 +526,7 @@ LDAP_DECLARE(util_ldap_connection_t *)
 
         /* add the cleanup to the pool */
         apr_pool_cleanup_register(l->pool, l,
-                                  util_ldap_connection_cleanup,
+                                  uldap_connection_cleanup,
                                   apr_pool_cleanup_null);
 
         if (p) {
@@ -554,7 +554,7 @@ LDAP_DECLARE(util_ldap_connection_t *)
  *
  * The lock for the ldap cache should already be acquired.
  */
-LDAP_DECLARE(int) util_ldap_cache_comparedn(request_rec *r, util_ldap_connection_t *ldc, 
+LDAP_DECLARE(int) uldap_cache_comparedn(request_rec *r, util_ldap_connection_t *ldc, 
                             const char *url, const char *dn, const char *reqdn, 
                             int compare_dn_on_server)
 {
@@ -618,7 +618,7 @@ start_over:
     }
 
     /* make a server connection */
-    if (LDAP_SUCCESS != (result = util_ldap_connection_open(r, ldc))) {
+    if (LDAP_SUCCESS != (result = uldap_connection_open(r, ldc))) {
 	/* connect to server failed */
         return result;
     }
@@ -628,7 +628,7 @@ start_over:
 				    "(objectclass=*)", NULL, 1, 
 				    NULL, NULL, NULL, -1, &res)) == LDAP_SERVER_DOWN) {
         ldc->reason = "DN Comparison ldap_search_ext_s() failed with server down";
-        util_ldap_connection_unbind(ldc);
+        uldap_connection_unbind(ldc);
         goto start_over;
     }
     if (result != LDAP_SUCCESS) {
@@ -677,7 +677,7 @@ start_over:
  * require user cache is owned by the 
  *
  */
-LDAP_DECLARE(int) util_ldap_cache_compare(request_rec *r, util_ldap_connection_t *ldc,
+LDAP_DECLARE(int) uldap_cache_compare(request_rec *r, util_ldap_connection_t *ldc,
                           const char *url, const char *dn,
                           const char *attrib, const char *value)
 {
@@ -751,7 +751,7 @@ start_over:
         /* too many failures */
         return result;
     }
-    if (LDAP_SUCCESS != (result = util_ldap_connection_open(r, ldc))) {
+    if (LDAP_SUCCESS != (result = uldap_connection_open(r, ldc))) {
         /* connect failed */
         return result;
     }
@@ -763,7 +763,7 @@ start_over:
                                                == LDAP_SERVER_DOWN) { 
         /* connection failed - try again */
         ldc->reason = "ldap_compare_s() failed with server down";
-        util_ldap_connection_unbind(ldc);
+        uldap_connection_unbind(ldc);
         goto start_over;
     }
 
@@ -809,7 +809,7 @@ start_over:
     return result;
 }
 
-LDAP_DECLARE(int) util_ldap_cache_checkuserid(request_rec *r, util_ldap_connection_t *ldc,
+LDAP_DECLARE(int) uldap_cache_checkuserid(request_rec *r, util_ldap_connection_t *ldc,
                               const char *url, const char *basedn, int scope, char **attrs,
                               const char *filter, const char *bindpw, const char **binddn,
                               const char ***retvals)
@@ -883,7 +883,7 @@ start_over:
     if (failures++ > 10) {
         return result;
     }
-    if (LDAP_SUCCESS != (result = util_ldap_connection_open(r, ldc))) {
+    if (LDAP_SUCCESS != (result = uldap_connection_open(r, ldc))) {
         return result;
     }
 
@@ -893,7 +893,7 @@ start_over:
 				    (char *)filter, attrs, 0, 
 				    NULL, NULL, NULL, -1, &res)) == LDAP_SERVER_DOWN) {
         ldc->reason = "ldap_search_ext_s() for user failed with server down";
-        util_ldap_connection_unbind(ldc);
+        uldap_connection_unbind(ldc);
         goto start_over;
     }
 
@@ -949,7 +949,7 @@ start_over:
         ldc->reason = "ldap_simple_bind_s() to check user credentials "
                       "failed with server down";
         ldap_msgfree(res);
-        util_ldap_connection_unbind(ldc);
+        uldap_connection_unbind(ldc);
         goto start_over;
     }
 
@@ -957,7 +957,7 @@ start_over:
     if (result != LDAP_SUCCESS) {
         ldc->reason = "ldap_simple_bind_s() to check user credentials failed";
         ldap_msgfree(res);
-        util_ldap_connection_unbind(ldc);
+        uldap_connection_unbind(ldc);
         return result;
     }
     else {
@@ -1040,10 +1040,10 @@ start_over:
  * This function will return the DN of the entry matching userid.
  * It is used to get the DN in case some other module than mod_auth_ldap
  * has authenticated the user.
- * The function is basically a copy of util_ldap_cache_checkuserid
+ * The function is basically a copy of uldap_cache_checkuserid
  * with password checking removed.
  */
-LDAP_DECLARE(int) util_ldap_cache_getuserdn(request_rec *r, util_ldap_connection_t *ldc,
+LDAP_DECLARE(int) uldap_cache_getuserdn(request_rec *r, util_ldap_connection_t *ldc,
                               const char *url, const char *basedn, int scope, char **attrs,
                               const char *filter, const char **binddn,
                               const char ***retvals)
@@ -1114,7 +1114,7 @@ start_over:
     if (failures++ > 10) {
         return result;
     }
-    if (LDAP_SUCCESS != (result = util_ldap_connection_open(r, ldc))) {
+    if (LDAP_SUCCESS != (result = uldap_connection_open(r, ldc))) {
         return result;
     }
 
@@ -1124,7 +1124,7 @@ start_over:
                                     (char *)filter, attrs, 0, 
 				    NULL, NULL, NULL, -1, &res)) == LDAP_SERVER_DOWN) {
         ldc->reason = "ldap_search_ext_s() for user failed with server down";
-        util_ldap_connection_unbind(ldc);
+        uldap_connection_unbind(ldc);
         goto start_over;
     }
 
@@ -1226,7 +1226,7 @@ start_over:
  *
  * 1 = enabled, 0 = not enabled
  */
-LDAP_DECLARE(int) util_ldap_ssl_supported(request_rec *r)
+LDAP_DECLARE(int) uldap_ssl_supported(request_rec *r)
 {
    util_ldap_state_t *st = (util_ldap_state_t *)ap_get_module_config(
                                 r->server->module_config, &ldap_module);
@@ -1945,6 +1945,17 @@ command_rec util_ldap_cmds[] = {
 
 static void util_ldap_register_hooks(apr_pool_t *p)
 {
+    APR_REGISTER_OPTIONAL_FN(uldap_connection_open);
+    APR_REGISTER_OPTIONAL_FN(uldap_connection_close);
+    APR_REGISTER_OPTIONAL_FN(uldap_connection_unbind);
+    APR_REGISTER_OPTIONAL_FN(uldap_connection_cleanup);
+    APR_REGISTER_OPTIONAL_FN(uldap_connection_find);
+    APR_REGISTER_OPTIONAL_FN(uldap_cache_comparedn);
+    APR_REGISTER_OPTIONAL_FN(uldap_cache_compare);
+    APR_REGISTER_OPTIONAL_FN(uldap_cache_checkuserid);
+    APR_REGISTER_OPTIONAL_FN(uldap_cache_getuserdn);
+    APR_REGISTER_OPTIONAL_FN(uldap_ssl_supported);
+
     ap_hook_post_config(util_ldap_post_config,NULL,NULL,APR_HOOK_MIDDLE);
     ap_hook_handler(util_ldap_handler, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_child_init(util_ldap_child_init, NULL, NULL, APR_HOOK_MIDDLE);

@@ -41,6 +41,7 @@
 #include "http_log.h"
 #include "http_protocol.h"
 #include "http_request.h"
+#include "apr_optional.h"
 
 /* Create a set of LDAP_DECLARE macros with appropriate export 
  * and import tags for the platform
@@ -146,8 +147,8 @@ typedef struct util_ldap_state_t {
  * @deffunc int util_ldap_connection_open(request_rec *r,
  *                                        util_ldap_connection_t *ldc)
  */
-LDAP_DECLARE(int) util_ldap_connection_open(request_rec *r, 
-                                            util_ldap_connection_t *ldc);
+APR_DECLARE_OPTIONAL_FN(int,uldap_connection_open,(request_rec *r, 
+                                            util_ldap_connection_t *ldc));
 
 /**
  * Close a connection to an LDAP server
@@ -158,7 +159,7 @@ LDAP_DECLARE(int) util_ldap_connection_open(request_rec *r,
  *      structure, using apr_ldap_open_connection().
  * @deffunc util_ldap_close_connection(util_ldap_connection_t *ldc)
  */
-LDAP_DECLARE(void) util_ldap_connection_close(util_ldap_connection_t *ldc);
+APR_DECLARE_OPTIONAL_FN(void,uldap_connection_close,(util_ldap_connection_t *ldc));
 
 /**
  * Unbind a connection to an LDAP server
@@ -169,7 +170,7 @@ LDAP_DECLARE(void) util_ldap_connection_close(util_ldap_connection_t *ldc);
  *      connection back to a known state.
  * @deffunc apr_status_t util_ldap_connection_unbind(util_ldap_connection_t *ldc)
  */
-LDAP_DECLARE_NONSTD(apr_status_t) util_ldap_connection_unbind(void *param);
+APR_DECLARE_OPTIONAL_FN(apr_status_t,uldap_connection_unbind,(void *param));
 
 /**
  * Cleanup a connection to an LDAP server
@@ -179,7 +180,7 @@ LDAP_DECLARE_NONSTD(apr_status_t) util_ldap_connection_unbind(void *param);
  *      LDAP connections when the server is finished with them.
  * @deffunc apr_status_t util_ldap_connection_cleanup(util_ldap_connection_t *ldc)
  */
-LDAP_DECLARE_NONSTD(apr_status_t) util_ldap_connection_cleanup(void *param);
+APR_DECLARE_OPTIONAL_FN(apr_status_t,uldap_connection_cleanup,(void *param));
 
 /**
  * Find a connection in a list of connections
@@ -198,10 +199,9 @@ LDAP_DECLARE_NONSTD(apr_status_t) util_ldap_connection_cleanup(void *param);
  *                                                           const char *binddn, const char *bindpw, deref_options deref,
  *                                                           int netscapessl, int starttls)
  */
-LDAP_DECLARE(util_ldap_connection_t *) util_ldap_connection_find(request_rec *r, const char *host, int port,
+APR_DECLARE_OPTIONAL_FN(util_ldap_connection_t *,uldap_connection_find,(request_rec *r, const char *host, int port,
                                                   const char *binddn, const char *bindpw, deref_options deref,
-                                                  int secure);
-
+                                                  int secure));
 
 /**
  * Compare two DNs for sameness
@@ -221,9 +221,9 @@ LDAP_DECLARE(util_ldap_connection_t *) util_ldap_connection_find(request_rec *r,
  *                                        const char *url, const char *dn, const char *reqdn,
  *                                        int compare_dn_on_server)
  */
-LDAP_DECLARE(int) util_ldap_cache_comparedn(request_rec *r, util_ldap_connection_t *ldc, 
+APR_DECLARE_OPTIONAL_FN(int,uldap_cache_comparedn,(request_rec *r, util_ldap_connection_t *ldc, 
                               const char *url, const char *dn, const char *reqdn, 
-                              int compare_dn_on_server);
+                              int compare_dn_on_server));
 
 /**
  * A generic LDAP compare function
@@ -238,8 +238,8 @@ LDAP_DECLARE(int) util_ldap_cache_comparedn(request_rec *r, util_ldap_connection
  * @deffunc int util_ldap_cache_compare(request_rec *r, util_ldap_connection_t *ldc,
  *                                      const char *url, const char *dn, const char *attrib, const char *value)
  */
-LDAP_DECLARE(int) util_ldap_cache_compare(request_rec *r, util_ldap_connection_t *ldc,
-                            const char *url, const char *dn, const char *attrib, const char *value);
+APR_DECLARE_OPTIONAL_FN(int,uldap_cache_compare,(request_rec *r, util_ldap_connection_t *ldc,
+                            const char *url, const char *dn, const char *attrib, const char *value));
 
 /**
  * Checks a username/password combination by binding to the LDAP server
@@ -260,9 +260,9 @@ LDAP_DECLARE(int) util_ldap_cache_compare(request_rec *r, util_ldap_connection_t
  *                                          char *url, const char *basedn, int scope, char **attrs,
  *                                          char *filter, char *bindpw, char **binddn, char ***retvals)
  */
-LDAP_DECLARE(int) util_ldap_cache_checkuserid(request_rec *r, util_ldap_connection_t *ldc,
+APR_DECLARE_OPTIONAL_FN(int,uldap_cache_checkuserid,(request_rec *r, util_ldap_connection_t *ldc,
                               const char *url, const char *basedn, int scope, char **attrs,
-                              const char *filter, const char *bindpw, const char **binddn, const char ***retvals);
+                              const char *filter, const char *bindpw, const char **binddn, const char ***retvals));
 
 /**
  * Searches for a specified user object in an LDAP directory
@@ -282,15 +282,15 @@ LDAP_DECLARE(int) util_ldap_cache_checkuserid(request_rec *r, util_ldap_connecti
  *                                          char *url, const char *basedn, int scope, char **attrs,
  *                                          char *filter, char **binddn, char ***retvals)
  */
-LDAP_DECLARE(int) util_ldap_cache_getuserdn(request_rec *r, util_ldap_connection_t *ldc,
+APR_DECLARE_OPTIONAL_FN(int,uldap_cache_getuserdn,(request_rec *r, util_ldap_connection_t *ldc,
                               const char *url, const char *basedn, int scope, char **attrs,
-                              const char *filter, const char **binddn, const char ***retvals);
+                              const char *filter, const char **binddn, const char ***retvals));
 
 /**
  * Checks if SSL support is available in mod_ldap
  * @deffunc int util_ldap_ssl_supported(request_rec *r)
  */
-LDAP_DECLARE(int) util_ldap_ssl_supported(request_rec *r);
+APR_DECLARE_OPTIONAL_FN(int,uldap_ssl_supported,(request_rec *r));
 
 /* from apr_ldap_cache.c */
 
