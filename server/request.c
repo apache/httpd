@@ -476,7 +476,7 @@ typedef struct core_opts_t {
         overrides_t override;
 } core_opts_t;
 
-void core_opts_merge(const ap_conf_vector_t *sec, core_opts_t *opts)
+static void core_opts_merge(const ap_conf_vector_t *sec, core_opts_t *opts)
 {
     core_dir_config *this_dir = ap_get_module_config(sec, &core_module);
 
