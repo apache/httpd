@@ -212,7 +212,7 @@ BOOL GetSystemOSVersion(LPSTR szVersion, LPDWORD dwVersion)
             else if (osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 0)
                 strcpy(szVersion, "MS Windows 2000 ");
             else if (osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 1)
-                strcpy(szVersion, "Whistler ");
+                strcpy(szVersion, "MS Windows XP ");
             /* Test for product type.*/            
 #ifdef VER_VORKSTATION_NT
             if (bOsVersionInfoEx)
@@ -1440,6 +1440,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
                        SetFocus(ap_hwndAboutDlg);
                 break;
                 case IDM_EXIT:
+                    ShowNotifyIcon(hWnd, NIM_DELETE);
                     PostQuitMessage(0);
                     return TRUE;
                 break;
