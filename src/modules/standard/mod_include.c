@@ -689,7 +689,8 @@ static int handle_include(FILE *in, request_rec *r, const char *error, int noexe
             }
 
 	    /* see the Kludge in send_parsed_file for why */
-	    ap_set_module_config(rr->request_config, &includes_module, r);
+	    if (rr) 
+		ap_set_module_config(rr->request_config, &includes_module, r);
 
 #ifdef CHARSET_EBCDIC
             ap_bsetflag(rr->connection->client, B_EBCDIC2ASCII, 0);
