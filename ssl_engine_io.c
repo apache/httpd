@@ -1025,7 +1025,7 @@ long ssl_io_data_cb(BIO *bio, int cmd,
         || cmd == (BIO_CB_READ |BIO_CB_RETURN) ) {
         if (rc >= 0) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                    "%s: %s %ld/%d bytes %s BIO#%p [mem: %p] %s",
+                    "%s: %s %ld/%d bytes %s BIO#%pp [mem: %pp] %s",
                     SSL_LIBRARY_NAME,
                     (cmd == (BIO_CB_WRITE|BIO_CB_RETURN) ? "write" : "read"),
                     rc, argi, (cmd == (BIO_CB_WRITE|BIO_CB_RETURN) ? "to" : "from"),
@@ -1036,7 +1036,7 @@ long ssl_io_data_cb(BIO *bio, int cmd,
         }
         else {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                    "%s: I/O error, %d bytes expected to %s on BIO#%p [mem: %p]",
+                    "%s: I/O error, %d bytes expected to %s on BIO#%pp [mem: %pp]",
                     SSL_LIBRARY_NAME, argi,
                     (cmd == (BIO_CB_WRITE|BIO_CB_RETURN) ? "write" : "read"),
                     bio, argp);
