@@ -1,4 +1,8 @@
 Changes with Apache 1.3.27
+
+  *) Fix FileETags none operation.  PR 12202.
+     [Justin Erenkrantz, Andrew Ho <andrew@tellme.com>]
+
   *) Win32: Fix one byte buffer overflow in ap_get_win32_interpreter
      when a CGI script's #! line does not contain a \r or \n (i.e.
      a line feed character) in the first 1023 bytes. The overflow
