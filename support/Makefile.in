@@ -23,23 +23,23 @@ install:
 
 htpasswd_OBJECTS = htpasswd.lo
 htpasswd: $(htpasswd_OBJECTS)
-	$(LINK) $(htpasswd_OBJECTS) $(PROGRAM_LDADD)
+	$(LINK) $(htpasswd_LTFLAGS) $(htpasswd_OBJECTS) $(PROGRAM_LDADD)
 
 htdigest_OBJECTS = htdigest.lo
 htdigest: $(htdigest_OBJECTS)
-	$(LINK) $(htdigest_OBJECTS) $(PROGRAM_LDADD)
+	$(LINK) $(htdigest_LTFLAGS) $(htdigest_OBJECTS) $(PROGRAM_LDADD)
 
 rotatelogs_OBJECTS = rotatelogs.lo
 rotatelogs: $(rotatelogs_OBJECTS)
-	$(LINK) $(rotatelogs_OBJECTS) $(PROGRAM_LDADD)
+	$(LINK) $(rotatelogs_LTFLAGS) $(rotatelogs_OBJECTS) $(PROGRAM_LDADD)
 
 logresolve_OBJECTS = logresolve.lo
 logresolve: $(logresolve_OBJECTS)
-	$(LINK) $(logresolve_OBJECTS) $(PROGRAM_LDADD)
+	$(LINK) $(logresolve_LTFLAGS) $(logresolve_OBJECTS) $(PROGRAM_LDADD)
 
 ab_OBJECTS = ab.lo
 ab: $(ab_OBJECTS)
-	$(LINK) $(ab_OBJECTS) $(PROGRAM_LDADD)
+	$(LINK) $(ab_LTFLAGS) $(ab_OBJECTS) $(PROGRAM_LDADD)
 
 suexec_OBJECTS = suexec.lo
 suexec: $(suexec_OBJECTS)
