@@ -171,7 +171,11 @@ case "$PLAT" in
 	OS='HP-UX'
 	CFLAGS="$CFLAGS -DHPUX"
 	;;
-    *-sgi-irix*)
+    *-sgi-irix64)
+# Note: We'd like to see patches to compile 64-bit, but for now...
+	CFLAGS="$CFLAGS -n32"
+	LFLAGS="$LFLAGS -n32"
+    *-sgi-irix)
 	DEF_WANTHSREGEX=yes
         DBM_LIB=""
 	if [ "$RULE_IRIXNIS" = "yes" ]; then
