@@ -109,7 +109,7 @@ int dav_fs_find_liveprop(const dav_resource *resource,
                          const char *ns_uri, const char *name,
                          const dav_hooks_liveprop **hooks);
 void dav_fs_insert_all_liveprops(request_rec *r, const dav_resource *resource,
-                                 dav_prop_insert what, ap_text_header *phdr);
+                                 dav_prop_insert what, apr_text_header *phdr);
 
 void dav_fs_register(apr_pool_t *p);
 
