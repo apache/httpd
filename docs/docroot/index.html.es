@@ -16,7 +16,7 @@
   </H1>
   <P>
   Si usted puede ver esta pag&iacute;na, entonces los due&ntilde;os de esta
-  maqu&iacute;na han instalado el <A HREF="http://www.apache.org/">Servidor de
+  maqu&iacute;na han instalado el <A HREF="http://www.apache.org/httpd">Servidor de
   Red Apache</A> con ex&iacute;to.  Ahora deben a&ntilde;adir contenido a este directorio
   y reemplazar esta pag&iacute;na, &oacute; apuntar este servidor al contenido real.
   </P>
