@@ -1110,21 +1110,22 @@ PROXY_DECLARE(apr_status_t) ap_proxy_string_read(conn_rec *c, apr_bucket_brigade
 	    e = APR_BRIGADE_FIRST(bb);
 	    if (APR_BUCKET_IS_EOS(e)) {
 		*eos = 1;
-		continue;
-	    }
-	    if (APR_SUCCESS != apr_bucket_read(e, (const char **)&response, &len, APR_BLOCK_READ)) {
-		return rv;
-	    }
+            }
+            else {
+                if (APR_SUCCESS != apr_bucket_read(e, (const char **)&response, &len, APR_BLOCK_READ)) {
+                    return rv;
+                }
 	    /* is string LF terminated? */
-	    if (memchr(response, APR_ASCII_LF, len)) {
-		found = 1;
-	    }
-	    /* concat strings until buff is full - then throw the data away */
-	    if (len > ((bufflen-1)-(pos-buff))) {
-		len = (bufflen-1)-(pos-buff);
-	    }
-	    if (len > 0) {
-		pos = apr_cpystrn(pos, response, len);
+                if (memchr(response, APR_ASCII_LF, len)) {
+                    found = 1;
+                }
+            /* concat strings until buff is full - then throw the data away */
+                if (len > ((bufflen-1)-(pos-buff))) {
+                    len = (bufflen-1)-(pos-buff);
+                }
+                if (len > 0) {
+                    pos = apr_cpystrn(pos, response, len);
+                }
 	    }
 	    APR_BUCKET_REMOVE(e);
 	    apr_bucket_destroy(e);
