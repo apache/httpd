@@ -344,3 +344,5 @@ EXPORTS
 	ap_server_confname   @338
 	ap_sub_req_method_uri   @339
 	ap_sha1_base64	@340
+	ap_puudecode	@341
+	ap_puuencode	@342
