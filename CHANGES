@@ -1,5 +1,9 @@
 Changes with Apache 2.0.23-dev
 
+  *) Refactored mod_negotiation and mod_mime to help mod_dir accept
+     negotiated index pages, and prevent the server from defaulting
+     to an autoindex of the directory.  [William Rowe]
+
   *) Eliminate mod_cgi's handling of .exe files without the .exe file
      extension.  This is already handled by multiviews, if the admin
      wishes to AddHandler .exe or define a content type handler and 
