@@ -375,9 +375,23 @@ int cgi_handler (request_rec *r)
     if (S_ISDIR(r->finfo.st_mode))
 	return log_scripterror(r, conf, FORBIDDEN,
 			       "attempt to invoke directory as script");
+#ifdef __EMX__
+    /* Allow for cgi files without the .EXE extension on them under OS/2 */
+    if (r->finfo.st_mode == 0) {
+        struct stat statbuf;
+
+        r->filename = pstrcat (r->pool, r->filename, ".EXE", NULL);
+
+        if ((stat(r->filename, &statbuf) != 0) || (!S_ISREG(statbuf.st_mode))) {
+            return log_scripterror(r, conf, NOT_FOUND,
+                                   "script not found or unable to stat");
+        }
+    }
+#else
     if (r->finfo.st_mode == 0)
 	return log_scripterror(r, conf, NOT_FOUND,
 			       "script not found or unable to stat");
+#endif
     if (!suexec_enabled) {
         if (!can_exec(&r->finfo))
             return log_scripterror(r, conf, FORBIDDEN,

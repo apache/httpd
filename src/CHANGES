@@ -1,7 +1,10 @@
 Changes with Apache 1.2b8
 
+  *) Allow for cgi files without the .EXE extension on them under OS/2.
+     [Garey Smiley] PR #59
+
   *) Fixed error message when resource is not found and URL contains
-     path info. [Petr Lampa and Dean Gaudet]
+     path info. [Petr Lampa and Dean Gaudet] PR #40
 
   *) Fixed user and server confusion over what should be a virtual host
      and what is the main server, resulting in access to something
