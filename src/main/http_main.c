@@ -224,7 +224,7 @@ pid_t pgrp;
 int one_process = 0;
 
 /* set if timeouts are to be handled by the children and not by the parent.
- * i.e. child_timeouts = standalone || one_process.
+ * i.e. child_timeouts = !standalone || one_process.
  */
 static int child_timeouts;
 
@@ -3558,7 +3558,7 @@ int main(int argc, char *argv[])
     suexec_enabled = init_suexec();
     server_conf = read_config(pconf, ptrans, server_confname);
 
-    child_timeouts = standalone || one_process;
+    child_timeouts = !standalone || one_process;
 
     if (standalone) {
 	open_logs(server_conf, pconf);
