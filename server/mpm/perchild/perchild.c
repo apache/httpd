@@ -128,6 +128,7 @@ typedef struct {
     const char *sockname;    /* The base name for the socket */
     const char *fullsockname;   /* socket base name + extension */
     int        sd;       /* The socket descriptor */
+    int        sd2;       /* The socket descriptor */
 } perchild_server_conf;
 
 typedef struct child_info_t child_info_t;
@@ -437,6 +438,7 @@ static void process_socket(apr_pool_t *p, apr_socket_t *sock, long conn_id)
     ap_iol *iol;
     int csd;
     apr_status_t rv;
+    int thread_num = conn_id % HARD_THREAD_LIMIT;
 
     if ((rv = apr_get_os_sock(&csd, sock)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL, "apr_get_os_sock");
@@ -452,7 +454,9 @@ static void process_socket(apr_pool_t *p, apr_socket_t *sock, long conn_id)
         return;
     }
 
-    ap_sock_disable_nagle(csd);
+    if (thread_socket_table[thread_num] < 0) {
+        ap_sock_disable_nagle(csd);
+    }
     iol = ap_iol_attach_socket(p, sock);
     conn_io = ap_bcreate(p, B_RDWR);
     ap_bpush_iol(conn_io, iol);
@@ -615,14 +619,13 @@ static void *worker_thread(void *arg)
             }
             
             apr_get_revents(&event, listenfds[1], pollset);
-            if (event & APR_POLLIN) {
+            if (event & APR_POLLIN || event & APR_POLLOUT) {
                 /* This request is from another child in our current process.
                  * We should set a flag here, and then below we will read
                  * two bytes (the socket number and the NULL byte.
                  */
-fprintf(stderr, " I just got a response from a different child process. :-0\n");
-fflush(stderr);
                 thread_socket_table[thread_num] = -2;
+                goto got_from_other_child;
             }
 
             if (num_listenfds == 1) {
@@ -670,26 +673,34 @@ fflush(stderr);
                 }
             }
             pthread_mutex_unlock(&idle_thread_count_mutex);
+        got_from_other_child:
             if (thread_socket_table[thread_num] == -2) {
-                char cbuf[CMSG_SPACE(sizeof(int))];
-                struct msghdr mh = {0};
-                struct cmsghdr *cm;
-                int *dp, ret, sd;
-fprintf(stderr, "Got a request from a different child\n");
-fflush(stderr);
-                mh.msg_control = cbuf;
-                mh.msg_controllen = sizeof cbuf;
-                cm = CMSG_FIRSTHDR(&mh);
-                cm->cmsg_len = CMSG_LEN(sizeof(int));
-                cm->cmsg_level = SOL_SOCKET;
-                cm->cmsg_type = SCM_RIGHTS;
+                struct msghdr msg;
+                struct cmsghdr *cmsg;
+                char sockname[80];
+                struct iovec iov;
+                int ret, sd, dp;
+
+                iov.iov_base = sockname;
+                iov.iov_len = 80;
+
+                msg.msg_name = NULL;
+                msg.msg_namelen = 0;
+                msg.msg_iov = &iov;
+                msg.msg_iovlen = 1;
+
+                cmsg = apr_palloc(ptrans, sizeof(*cmsg) + sizeof(sd));
+                cmsg->cmsg_len = sizeof(*cmsg) + sizeof(sd);
+                msg.msg_control = cmsg;
+                msg.msg_controllen = cmsg->cmsg_len;
+                msg.msg_flags = 0;
                 
-                apr_get_os_sock(&sd, csd);
-                ret = recvmsg(sd, &mh, 0);
+                ret = recvmsg(child_info_table[child_num].sd, &msg, 0);
 
-                dp = (int *)CMSG_DATA(cm);
+                memcpy(&dp, CMSG_DATA(cmsg), sizeof(dp));
 
-                thread_socket_table[thread_num] = *dp;
+                thread_socket_table[thread_num] = dp;
+                apr_put_os_sock(&csd, &child_info_table[child_num].sd, ptrans);
             }
             if (setjmp(jmpbuffer) != 1) {
                 process_socket(ptrans, csd, conn_id);
@@ -1338,73 +1349,52 @@ static void perchild_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *pte
 
 static int pass_request(request_rec *r)
 {
-    char cbuf[CMSG_SPACE(sizeof(int))];
-    int len = r->connection->client->inptr - r->connection->client->inbase;
     apr_socket_t *thesock = ap_iol_get_socket(r->connection->client->iol);
-    struct msghdr mh = {0};
-    struct cmsghdr *cm;
-    struct iovec iov;
-    int *dp;
+    struct msghdr msg;
+    struct cmsghdr *cmsg;
     int sfd;
+    struct iovec iov;
+    char *foo = r->connection->client->inbase;
+    int len = r->connection->client->inptr - r->connection->client->inbase;
     perchild_server_conf *sconf = (perchild_server_conf *)
                             ap_get_module_config(r->server->module_config, 
                                                  &mpm_perchild_module);
 
     apr_get_os_sock(&sfd, thesock);
 
-    mh.msg_control = cbuf;
-    mh.msg_controllen = sizeof cbuf;
-    cm = CMSG_FIRSTHDR(&mh);
-    cm->cmsg_len = CMSG_LEN(sizeof(int));
-    cm->cmsg_level = SOL_SOCKET;
-    cm->cmsg_type = SCM_RIGHTS;
+    iov.iov_base = (char *)sconf->fullsockname;
+    iov.iov_len = strlen(sconf->fullsockname) + 1;
 
-    dp = (int *)(CMSG_DATA(cm));
-    *dp = sfd;
+    msg.msg_name = NULL;
+    msg.msg_namelen = 0;
+    msg.msg_iov = &iov;
+    msg.msg_iovlen = 1;
 
-    apr_cpystrn(iov.iov_base, r->connection->client->inbase, len);
-    iov.iov_len = len;
-    mh.msg_iov = &iov;
-    mh.msg_iovlen = 1; 
-    
-    if (sendmsg(sconf->sd, &mh, 0) == -1) {
-fprintf(stderr, "Could not send %d %d %d \n", errno, sconf->sd, len);
-fflush(stderr);
+    cmsg = apr_palloc(r->pool, sizeof(*cmsg) + sizeof(sfd));
+    cmsg->cmsg_len = sizeof(*cmsg) + sizeof(int);
+    cmsg->cmsg_level = SOL_SOCKET;
+    cmsg->cmsg_type = SCM_RIGHTS;
+
+    memcpy(CMSG_DATA(cmsg), &sfd, sizeof(sfd));
+
+    msg.msg_control = cmsg;
+    msg.msg_controllen = cmsg->cmsg_len;
+    msg.msg_flags=0;
+
+    if (sendmsg(sconf->sd2, &msg, 0) == -1) {
         apr_destroy_pool(r->pool);
         return -1;
     }
+
+    write(sconf->sd2, foo, len);
+   
     apr_destroy_pool(r->pool);
     return 1;
 }
 
-static char *make_perchild_socket(const char *fullsockname, int *sd)
+static char *make_perchild_socket(const char *fullsockname, int sd[2])
 {
-    struct sockaddr_un unix_addr;
-    int rc;
-
-    if (unlink(fullsockname) < 0 && errno != ENOENT) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, errno, ap_server_conf,
-                     "Couldn't unlink unix domain socket %s",
-                     fullsockname);
-        /* Just a warning; don't bail out */
-    }
-
-    if ((*sd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0) {
-        return "Couldn't create unix domain socket";
-    }
-
-    memset(&unix_addr, 0, sizeof(unix_addr));
-    unix_addr.sun_family = AF_UNIX;
-    strcpy(unix_addr.sun_path, fullsockname);
-
-    rc = bind(*sd, (struct sockaddr *)&unix_addr, sizeof(unix_addr));
-    if (rc < 0) {
-        return  "Couldn't bind unix domain socket";
-    }
-
-    if (listen(*sd, DEFAULT_PERCHILD_LISTENBACKLOG) < 0) {
-        return "Couldn't listen on unix domain socket";
-    }
+    socketpair(PF_UNIX, SOCK_STREAM, 0, sd);
     return NULL;
 }
 
@@ -1414,9 +1404,10 @@ static void perchild_post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *pt
     int i;
     server_rec *sr;
     perchild_server_conf *sconf;
-    int def_sd = -1;
+    int def_sd[2];
     
-
+    def_sd[0] = -1;
+    def_sd[1] = -1;
 
     for (sr = s; sr; sr = sr->next) {
         sconf = (perchild_server_conf *)ap_get_module_config(sr->module_config,
@@ -1425,18 +1416,19 @@ static void perchild_post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *pt
         if (sconf->sd == -1) {
             sconf->fullsockname = apr_pstrcat(sr->process->pool, 
                                              sconf->sockname, ".DEFAULT", NULL);
-            if (def_sd == -1) {
-                if (!make_perchild_socket(sconf->fullsockname, &def_sd)) {
+            if (def_sd[0] == -1) {
+                if (!make_perchild_socket(sconf->fullsockname, def_sd)) {
                     /* log error */
                 }
             }
-            sconf->sd = def_sd;
+            sconf->sd = def_sd[0];
+            sconf->sd2 = def_sd[1];
         }
     }
 
     for (i = 0; i < num_daemons; i++) {
         if (child_info_table[i].uid == -1) {
-            child_info_table[i].sd = def_sd;
+            child_info_table[i].sd = def_sd[0];
         }
     }
 }
@@ -1448,15 +1440,10 @@ static int perchild_post_read(request_rec *r)
                             ap_get_module_config(r->server->module_config, 
                                                  &mpm_perchild_module);
 
-fprintf(stderr, "Getting into perchild_post_read\n");
-fflush(stderr);
- 
     if (thread_socket_table[thread_num] != -1) {
-        apr_socket_t *csd;
+        apr_socket_t *csd = NULL;
         ap_iol *iol;
 
-fprintf(stderr, "This didn't come from the network layer.  :-)\n");
-fflush(stderr);
         apr_put_os_sock(&csd, &thread_socket_table[thread_num], 
                              r->connection->client->pool);
         ap_sock_disable_nagle(thread_socket_table[thread_num]);
@@ -1471,8 +1458,6 @@ fflush(stderr);
                              ap_server_conf, "Could not pass request to proper "
                              "child, request will not be honored.");
             }
-fprintf(stderr, "trying to send to somebody else %d\n", child_num);
-fflush(stderr);
             longjmp(jmpbuffer, 1); 
         }
         return OK;
@@ -1713,15 +1698,19 @@ static const char *assign_childuid(cmd_parms *cmd, void *dummy, const char *uid,
     int u = atoi(uid);
     int g = atoi(gid);
     const char *errstr;
+    int socks[2];
     perchild_server_conf *sconf = (perchild_server_conf *)
                             ap_get_module_config(cmd->server->module_config, 
                                                  &mpm_perchild_module);
 
     sconf->fullsockname = apr_pstrcat(cmd->pool, sconf->sockname, ".", uid, ":", gid, NULL);
 
-    if ((errstr = make_perchild_socket(sconf->fullsockname, &sconf->sd))) {
+    if ((errstr = make_perchild_socket(sconf->fullsockname, socks))) {
         return errstr;
     }
+
+    sconf->sd = socks[0]; 
+    sconf->sd2 = socks[1];
 
     for (i = 0; i < num_daemons; i++) {
         if (u == child_info_table[i].uid && g == child_info_table[i].gid) {
