@@ -207,7 +207,7 @@ accept_mutex_init(pool *p)
 	exit (1);
     }
 
-    lock_fd = popenf(p, lock_fname, O_CREAT | O_WRONLY, 0644);
+    lock_fd = popenf(p, lock_fname, O_CREAT | O_WRONLY | O_EXCL, 0644);
     if (lock_fd == -1)
     {
 	perror ("open");
@@ -261,7 +261,7 @@ accept_mutex_init(pool *p)
 	exit (1);
     }
 
-    lock_fd = popenf(p, lock_fname, O_CREAT | O_WRONLY, 0644);
+    lock_fd = popenf(p, lock_fname, O_CREAT | O_WRONLY | O_EXCL, 0644);
     if (lock_fd == -1)
     {
 	perror ("open");

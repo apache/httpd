@@ -1,5 +1,10 @@
 Changes with Apache 1.2b4:
 
+  *) Fix possible race condition in accept_mutex_init() that
+     could leave a small security hole open allowing files to be
+     overwritten in cases where the server UID has write permissions.
+     [Marc Slemko]
+
   *) Fix awk compatibilty problem in Configure.
 
   *) Fix portablity problem in util_script where ARG_MAX may not be
