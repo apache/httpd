@@ -1037,7 +1037,9 @@ static int ssl_io_filter_connect(ssl_filter_ctx_t *filter_ctx)
                          c->base_server,
                          "SSL Proxy connect failed");
             ssl_log_ssl_error(APLOG_MARK, APLOG_INFO, c->base_server);
-            return ssl_filter_io_shutdown(filter_ctx, c, 1);
+            /* ensure that the SSL structures etc are freed, etc: */
+            ssl_filter_io_shutdown(filter_ctx, c, 1);
+            return HTTP_BAD_GATEWAY;
         }
 
         return APR_SUCCESS;
