@@ -1531,6 +1531,7 @@ extern int os_init_job_environment(server_rec *s, const char *user_name, int one
  * @param p The pool to allocate out of
  * @return A copy of the local host name
  * @deffunc char *ap_get_local_host(apr_pool_t *p)
+ */
 char *ap_get_local_host(apr_pool_t *p);
 
 /**
