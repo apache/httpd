@@ -1,5 +1,9 @@
 Changes with Apache 2.0.41
 
+  *) mod_rewrite can now sets cookies in err_headers, and uses the correct
+     expiry date. PR 12132 
+     [Ian Holsman / Rob Cromwell <apachechangelog@robcromwell.com>]
+
   *) The content-length filter no longer tries to buffer up
      the entire output of a long-running request before sending
      anything to the client.  [Brian Pane]
