@@ -223,4 +223,8 @@ typedef void (*modssl_popfree_fn)(char *data);
     SSL_set_verify(ssl, verify, cb)
 #endif
 
+#ifndef SSL_SESS_CACHE_NO_INTERNAL
+#define SSL_SESS_CACHE_NO_INTERNAL  SSL_SESS_CACHE_NO_INTERNAL_LOOKUP
+#endif
+
 #endif /* SSL_TOOLKIT_COMPAT_H */
