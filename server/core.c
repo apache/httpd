@@ -3076,9 +3076,16 @@ AP_DECLARE_NONSTD(int) ap_core_translate(request_rec *r)
         && !strncmp(r->uri, r->server->path, r->server->pathlen)
         && (r->server->path[r->server->pathlen - 1] == '/'
             || r->uri[r->server->pathlen] == '/'
-            || r->uri[r->server->pathlen] == '\0')) {
-        if (apr_filepath_merge(&r->filename, conf->ap_document_root,
-                               r->uri + r->server->pathlen,
+            || r->uri[r->server->pathlen] == '\0')) 
+    {
+        /* skip all leading /'s (e.g. http://localhost///foo) 
+         * so we are looking at only the relative path.
+         */
+        char *path = r->uri + r->server->pathlen;
+        while (*path == '/') {
+            ++*path;
+        }
+        if (apr_filepath_merge(&r->filename, conf->ap_document_root, path,
                                APR_FILEPATH_TRUENAME
                              | APR_FILEPATH_SECUREROOT, r->pool)
                     != APR_SUCCESS) {
@@ -3092,8 +3099,14 @@ AP_DECLARE_NONSTD(int) ap_core_translate(request_rec *r)
          * /'s in a row.  This happens under windows when the document
          * root ends with a /
          */
-        if (apr_filepath_merge(&r->filename, conf->ap_document_root,
-                               r->uri + ((*(r->uri) == '/') ? 1 : 0),
+        /* skip all leading /'s (e.g. http://localhost///foo) 
+         * so we are looking at only the relative path.
+         */
+        char *path = r->uri;
+        while (*path == '/') {
+            ++*path;
+        }
+        if (apr_filepath_merge(&r->filename, conf->ap_document_root, path,
                                APR_FILEPATH_TRUENAME
                              | APR_FILEPATH_SECUREROOT, r->pool)
                     != APR_SUCCESS) {
