@@ -1603,7 +1603,7 @@ int ap_mpm_run(pool *_pconf, pool *plog, server_rec *s)
     return 0;
 }
 
-static void spmt_os2_pre_command_line(pool *pcommands)
+static void spmt_os2_hooks(void)
 {
     INIT_SIGLIST();
     /* TODO: set one_process properly */ one_process = 0;
@@ -1611,7 +1611,7 @@ static void spmt_os2_pre_command_line(pool *pcommands)
 
 static void spmt_os2_pre_config(pool *pconf, pool *plog, pool *ptemp)
 {
-    one_process = ap_exists_config_define("ONE_PROCESS");
+    one_process = getenv("ONE_PROCESS");
 
     is_graceful = 0;
     ap_listen_pre_config();
@@ -1792,7 +1792,6 @@ LISTEN_COMMANDS
 
 module MODULE_VAR_EXPORT mpm_spmt_os2_module = {
     STANDARD20_MODULE_STUFF,
-    spmt_os2_pre_command_line,	/* pre_command_line */
     spmt_os2_pre_config,		/* pre_config */
     NULL,			/* post_config */
     NULL,			/* open_logs */
@@ -1807,5 +1806,5 @@ module MODULE_VAR_EXPORT mpm_spmt_os2_module = {
     NULL,			/* check access */
     NULL,			/* type_checker */
     NULL,			/* pre-run fixups */
-    NULL			/* register hooks */
+    spmt_os2_hooks,		/* register_hooks */
 };

@@ -1510,7 +1510,7 @@ int ap_mpm_run(pool *_pconf, pool *plog, server_rec *s)
     return 0;
 }
 
-static void mpmt_pthread_pre_command_line(pool *pcommands)
+static void mpmt_pthread_hooks(void)
 {
     INIT_SIGLIST()
     one_process = 0;
@@ -1520,7 +1520,7 @@ static void mpmt_pthread_pre_config(pool *pconf, pool *plog, pool *ptemp)
 {
     static int restart_num = 0;
 
-    one_process = ap_exists_config_define("ONE_PROCESS");
+    one_process = getenv("ONE_PROCESS");
 
     /* sigh, want this only the second time around */
     if (restart_num++ == 1) {
@@ -1764,7 +1764,6 @@ LISTEN_COMMANDS
 
 module MODULE_VAR_EXPORT mpm_mpmt_pthread_module = {
     STANDARD20_MODULE_STUFF,
-    mpmt_pthread_pre_command_line,	/* pre_command_line */
     mpmt_pthread_pre_config,		/* pre_config */
     NULL,                       /* post_config */
     NULL,			/* open_logs */
@@ -1777,7 +1776,7 @@ module MODULE_VAR_EXPORT mpm_mpmt_pthread_module = {
     NULL,			/* handlers */
     NULL,			/* check auth */
     NULL,			/* check access */
-    NULL			/* register hooks */
+    mpmt_pthread_hooks		/* register_hooks */
 };
 
 /* force Expat to be linked into the server executable */
