@@ -838,7 +838,10 @@ API_EXPORT(ap_status_t) ap_pcfg_openfile(configfile_t **ret_cfg, ap_pool_t *p, c
     configfile_t *new_cfg;
     ap_file_t *file = NULL;
     ap_finfo_t finfo;
-    ap_status_t stat;
+    ap_status_t status;
+#ifdef DEBUG
+    char buf[120];
+#endif
 
     if (name == NULL) {
         ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, NULL,
@@ -853,18 +856,19 @@ API_EXPORT(ap_status_t) ap_pcfg_openfile(configfile_t **ret_cfg, ap_pool_t *p, c
         return APR_EACCES;
     }
 
-    stat = ap_open(&file, name, APR_READ, APR_OS_DEFAULT, p);
+    status = ap_open(&file, name, APR_READ, APR_OS_DEFAULT, p);
 #ifdef DEBUG
     ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, NULL,
                 "Opening config file %s (%s)",
-                name, (stat != APR_SUCCESS) ? strerror(errno) : "successful");
+                name, (status != APR_SUCCESS) ? 
+                ap_strerror(status, buf, sizeof(buf)) : "successful");
 #endif
-    if (stat != APR_SUCCESS)
-        return stat;
+    if (status != APR_SUCCESS)
+        return status;
 
-    stat = ap_getfileinfo(&finfo, file);
-    if (stat != APR_SUCCESS)
-        return stat;
+    status = ap_getfileinfo(&finfo, file);
+    if (status != APR_SUCCESS)
+        return status;
 
     if (finfo.filetype != APR_REG &&
 #if defined(WIN32) || defined(OS2)
@@ -2024,19 +2028,6 @@ API_EXPORT(char *) ap_uuencode(ap_pool_t *p, char *string)
 { 
     return ap_pbase64encode(p, string);
 }
-
-#ifndef HAVE_STRERROR
-char *
-     strerror(int err)
-{
-
-    char *p;
-    extern char *const sys_errlist[];
-
-    p = sys_errlist[err];
-    return (p);
-}
-#endif
 
 /* we want to downcase the type/subtype for comparison purposes
  * but nothing else because ;parameter=foo values are case sensitive.

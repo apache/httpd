@@ -319,16 +319,10 @@ static int db_authenticate_basic_user(request_rec *r)
     invalid_pw = ap_validate_password(sent_pw, real_pw);
 
     if (invalid_pw != APR_SUCCESS) {
-#ifdef HAVE_APR_STRERROR
+        char buf[120]
 	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 		      "DB user %s: authentication failure for \"%s\": %s",
-		      r->user, r->uri, apr_strerror(invalid_pw));
-#else
-	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-		      "DB user %s: authentication failure for \"%s\": %d",
-		      r->user, r->uri, "error number",
-		      invalid_pw);
-#endif
+		      r->user, r->uri, ap_strerror(invalid_pw, buf, sizeof(buf)));
 	ap_note_basic_auth_failure(r);
 	return AUTH_REQUIRED;
     }

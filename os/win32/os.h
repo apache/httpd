@@ -118,7 +118,6 @@ typedef char * caddr_t;
 #define HAVE_MEMMOVE
 #define HAVE_STRCASECMP
 #define HAVE_STRNCASECMP
-#define HAVE_STRERROR
 #define HAVE_STRDUP
 #define HAVE_STRSTR
 
