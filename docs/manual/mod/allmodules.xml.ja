@@ -22,6 +22,7 @@
   <modulefile>mod_deflate.xml.ja</modulefile>
   <modulefile>mod_dir.xml.ja</modulefile>
   <modulefile>mod_disk_cache.xml</modulefile>
+  <modulefile>mod_dumpio.xml</modulefile>
   <modulefile>mod_echo.xml.ja</modulefile>
   <modulefile>mod_env.xml.ja</modulefile>
   <modulefile>mod_example.xml</modulefile>

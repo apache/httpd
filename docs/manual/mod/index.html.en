@@ -102,6 +102,7 @@ client</dd>
 <dt><a href="mod_dir.html">mod_dir</a></dt><dd>Provides for "trailing slash" redirects and
     serving directory index files</dd>
 <dt><a href="mod_disk_cache.html">mod_disk_cache</a></dt><dd>Content cache storage manager keyed to URIs</dd>
+<dt><a href="mod_dumpio.html">mod_dumpio</a></dt><dd>Dumps all I/O to error log as desired.</dd>
 <dt><a href="mod_echo.html" id="E" name="E">mod_echo</a></dt><dd>A simple echo server to illustrate protocol 
 modules</dd>
 <dt><a href="mod_env.html">mod_env</a></dt><dd>Modifies the environment which is passed to CGI scripts and
