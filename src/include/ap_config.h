@@ -160,7 +160,7 @@ extern char *inet_ntoa();
 #undef NO_KILLPG
 #undef NO_SETSID
 char *crypt(const char *pw, const char *salt);
-char *mktemp(char *template);
+char *mktemp(char *);
 #define HAVE_MMAP 1
 #define USE_MMAP_SCOREBOARD
 #define USE_MMAP_FILES

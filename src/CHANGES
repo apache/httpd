@@ -1,5 +1,9 @@
 Changes with Apache 1.3.10
 
+  *) Removed the variable name "template" from a prototype for SunOS4 
+     in ap_config.h to make C++ compiler happy, too.
+     [SAKAI Kiyotaka <ksakai@netwk.ntt-at.co.jp>] PR#5363
+
   *) Added missing links to htdocs/manual/mod/directives.html 
      for AllowCONNECT and ProxyDomain. [Patrik Grip-Jansson 
      <patrikj@gnulix.org>, Ralf S. Engelschall] PR#5319
