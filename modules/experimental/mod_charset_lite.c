@@ -238,13 +238,6 @@ static int find_code_page(request_rec *r)
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
-    rv = ap_bsetopt(r->connection->client, BO_WXLATE, &r->rrx->to_net);
-    if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
-                     "can't set translation; BO_WXLATE->%d\n", rv);
-        return HTTP_INTERNAL_SERVER_ERROR;
-    }
-
     return DECLINED;
 }
 
