@@ -1,5 +1,7 @@
 Changes with Apache 2.0.37
 
+  *) Fix the worker MPM deadlock problem  [Brian Pane]
+
   *) Modify the module documentation to allow for translations.
      [Yoshiki Hayashi, Joshua Slive]
 
