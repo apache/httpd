@@ -433,7 +433,7 @@ static int mva_translate(request_rec *r)
     cgi = NULL;
     if (conf->cgi_root) {
 	cgi = strstr(r->uri, "cgi-bin/");
-	if (cgi && cgi - r->uri != strspn(r->uri, "/")) {
+	if (cgi && (cgi != r->uri + strspn(r->uri, "/"))) {
 	    cgi = NULL;
 	}
     }
