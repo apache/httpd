@@ -3316,8 +3316,8 @@ static int default_handler(request_rec *r)
 
         if ((status = apr_file_open(&fd, r->filename, APR_READ | APR_BINARY
 #if APR_HAS_SENDFILE
-                             | ((d->enable_sendfile == ENABLE_SENDFILE_OFF) 
-                                                ? 0 : APR_OPEN_FOR_SENDFILE)
+                            | ((d->enable_sendfile == ENABLE_SENDFILE_OFF) 
+                                                ? 0 : APR_SENDFILE_ENABLED)
 #endif
                                     , 0, r->pool)) != APR_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
@@ -3924,7 +3924,7 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
             }
 
 #if APR_HAS_SENDFILE
-            if (apr_file_flags_get(fd) & APR_OPEN_FOR_SENDFILE) {
+            if (apr_file_flags_get(fd) & APR_SENDFILE_ENABLED) {
 
                 if (c->keepalive == AP_CONN_CLOSE && APR_BUCKET_IS_EOS(last_e)) {
                     /* Prepare the socket to be reused */
