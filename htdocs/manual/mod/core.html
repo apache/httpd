@@ -42,6 +42,7 @@ always available.
 <li><A HREF="#hostnamelookups">HostNameLookups</A>
 <li><A HREF="#identitycheck">IdentityCheck</A>
 <li><A HREF="#ifmodule">&lt;IfModule&gt;</A>
+<li><A HREF="#include">&lt;Include&gt;</A>
 <li><A HREF="#keepalive">KeepAlive</A>
 <li><A HREF="#keepalivetimeout">KeepAliveTimeout</A>
 <li><A HREF="#limit">&lt;Limit&gt;</A>
@@ -721,6 +722,16 @@ name of the module, at the time it was compiled. For example,
 
 <p>&lt;IfModule&gt; sections are nest-able, which can be used to implement
 simple multiple-module tests.
+
+<P> <hr>
+
+<h2><a name="include">Include directive</a></h2>
+<strong>Syntax: (Apache 1.2)</strong> Include <em>filename</em><br>
+<strong>Context:</strong> server config<br>
+<strong>Status:</strong> Core<br>
+<strong>Compatibility:</strong> Include is only available in Apache 1.3 and later.
+<P>
+This directive allows inclusion of other configuration files from within the server configuration files.
 
 <P> <hr>
 
