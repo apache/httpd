@@ -21,9 +21,6 @@ Changes with Apache 2.1.0-dev
   *) prefork MPM: Use the right permissions for the directory created 
      for gprof support.  [Jim Carlson <jcarlson@jnous.com>]
 
-  *) ssl_toolkit_compat.h and code fixes to build clean on SSLC.
-     [William Rowe, Madhusudan Mathihalli]
-
   *) Fix the inability to log errors like exec failure in
      mod_ext_filter/mod_cgi script children.  This was broken after 
      such children stopped inheriting the error log handle.  
@@ -148,6 +145,12 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.46
+
+  *) Code fixes, constness corrections and ssl_toolkit_compat.h updates
+     for SSLC and OpenSSL toolkit compatibility.  Still work remains to
+     be done to cripple features based on the limitations of RSA's binary 
+     distribution of their SSL-C toolkit.
+     [William Rowe, Madhusudan Mathihalli, Jeff Trawick]
 
   *) Linux 2.4+: If Apache is started as root and you code 
      CoreDumpDirectory, coredumps are enabled via the prctl() syscall.
