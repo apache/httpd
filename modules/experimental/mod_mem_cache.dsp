@@ -78,8 +78,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /debug /map /machine:I386
-# ADD LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /debug /map /machine:I386 /out:"Debug/mod_mem_cache.so" /base:@..\..\os\win32\BaseAddr.ref,mod_mem_cache
+# ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /map /debug /machine:I386
+# ADD LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /out:"Debug/mod_mem_cache.so" /base:@..\..\os\win32\BaseAddr.ref,mod_mem_cache
 
 !ENDIF 
 
@@ -89,11 +89,11 @@ LINK32=link.exe
 # Name "mod_mem_cache - Win32 Debug"
 # Begin Source File
 
-SOURCE=.\mod_mem_cache.c
+SOURCE=.\mod_cache.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\mod_cache.h
+SOURCE=.\mod_mem_cache.c
 # End Source File
 # Begin Source File
 
