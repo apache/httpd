@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/03/27 00:08:40 $]
+Last modified at [$Date: 2004/03/27 00:18:03 $]
 
 Release:
 
@@ -71,6 +71,12 @@ RELEASE SHOWSTOPPERS:
 PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
+
+    *) mod_ssl: Disable the extra session caching in OpenSSL to prevent
+       memory leak. PR: 26562.
+           modules/ssl/ssl_engine_init.c:    r1.127
+           modules/ssl/ssl_toolkit_compat.h: r1.41
+       +1: madhum
 
     *) Fixed mean and median calculations in ab, also changed where time values
        are set for start and connect when doing keep alive benchmarking.
