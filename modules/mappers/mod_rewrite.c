@@ -165,7 +165,6 @@
  * Vary values, and the one used for per-condition checks in a chain.
  */
 #define VARY_KEY "rewrite-Vary"
-#define VARY_KEY_THIS "rewrite-Vary-this"
 
 /* remembered mime-type for [T=...] */
 #define REWRITE_FORCED_MIMETYPE_NOTEVAR "rewrite-forced-mimetype"
@@ -394,6 +393,7 @@ typedef struct {
     backrefinfo *briRR;
     backrefinfo *briRC;
     const char  *uri;
+    const char  *vary_this;
     char        *perdir;
 } exp_ctx;
 
@@ -1572,12 +1572,15 @@ static char *lookup_map(request_rec *r, char *name, char *key)
 /*
  * lookup a HTTP header and set VARY note
  */
-static const char *lookup_header(request_rec *r, const char *name)
+static const char *lookup_header(const char *name, exp_ctx *ctx)
 {
-    const char *val = apr_table_get(r->headers_in, name);
+    const char *val = apr_table_get(ctx->r->headers_in, name);
 
     if (val) {
-        apr_table_merge(r->notes, VARY_KEY_THIS, name);
+        ctx->vary_this = ctx->vary_this
+                         ? apr_pstrcat(ctx->r->pool, ctx->vary_this, ", ",
+                                       name, NULL)
+                         : apr_pstrdup(ctx->r->pool, name);
     }
 
     return val;
@@ -1638,7 +1641,7 @@ static char *lookup_variable(char *var, exp_ctx *ctx)
             const char *path;
 
             if (!strncasecmp(var, "HTTP", 4)) {
-                result = lookup_header(r, var+5);
+                result = lookup_header(var+5, ctx);
             }
             else if (!strncasecmp(var, "LA-U", 4)) {
                 if (ctx->uri && subreq_ok(r)) {
@@ -1780,7 +1783,7 @@ static char *lookup_variable(char *var, exp_ctx *ctx)
 
             case 'S':
                 if (!strcmp(var, "HTTP_HOST")) {
-                    result = lookup_header(r, "Host");
+                    result = lookup_header("Host", ctx);
                 }
                 break;
 
@@ -1812,7 +1815,7 @@ static char *lookup_variable(char *var, exp_ctx *ctx)
 
             case 'E':
                 if (*var == 'H' && !strcmp(var, "HTTP_ACCEPT")) {
-                    result = lookup_header(r, "Accept");
+                    result = lookup_header("Accept", ctx);
                 }
                 else if (!strcmp(var, "THE_REQUEST")) {
                     result = r->the_request;
@@ -1829,7 +1832,7 @@ static char *lookup_variable(char *var, exp_ctx *ctx)
 
             case 'K':
                 if (!strcmp(var, "HTTP_COOKIE")) {
-                    result = lookup_header(r, "Cookie");
+                    result = lookup_header("Cookie", ctx);
                 }
                 break;
 
@@ -1884,7 +1887,7 @@ static char *lookup_variable(char *var, exp_ctx *ctx)
 
             case 'P':
                 if (!strcmp(var, "HTTP_REFERER")) {
-                    result = lookup_header(r, "Referer");
+                    result = lookup_header("Referer", ctx);
                 }
                 break;
 
@@ -1910,7 +1913,7 @@ static char *lookup_variable(char *var, exp_ctx *ctx)
 
         case 14:
             if (*var == 'H' && !strcmp(var, "HTTP_FORWARDED")) {
-                result = lookup_header(r, "Forwarded");
+                result = lookup_header("Forwarded", ctx);
             }
             else if (!strcmp(var, "REQUEST_METHOD")) {
                 result = r->method;
@@ -1921,7 +1924,7 @@ static char *lookup_variable(char *var, exp_ctx *ctx)
             switch (var[7]) {
             case 'E':
                 if (!strcmp(var, "HTTP_USER_AGENT")) {
-                    result = lookup_header(r, "User-Agent");
+                    result = lookup_header("User-Agent", ctx);
                 }
                 break;
 
@@ -1953,7 +1956,7 @@ static char *lookup_variable(char *var, exp_ctx *ctx)
 
         case 21:
             if (!strcmp(var, "HTTP_PROXY_CONNECTION")) {
-                result = lookup_header(r, "Proxy-Connection");
+                result = lookup_header("Proxy-Connection", ctx);
             }
             break;
         }
@@ -3530,10 +3533,11 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
      *  Else create the RewriteRule `regsubinfo' structure which
      *  holds the substitution information.
      */
-    ctx         = apr_palloc(r->pool, sizeof(*ctx));
-    ctx->r      = r;
-    ctx->perdir = perdir;
-    ctx->uri    = uri;
+    ctx            = apr_palloc(r->pool, sizeof(*ctx));
+    ctx->r         = r;
+    ctx->perdir    = perdir;
+    ctx->uri       = uri;
+    ctx->vary_this = NULL;
 
     ctx->briRR  = apr_palloc(r->pool, sizeof(*ctx->briRR));
     if (!rc && (p->flags & RULEFLAG_NOTMATCH)) {
@@ -3578,7 +3582,7 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
                 /*  One condition is false, but another can be
                  *  still true, so we have to continue...
                  */
-                apr_table_unset(r->notes, VARY_KEY_THIS);
+                ctx->vary_this = NULL;
                 continue;
             }
             else {
@@ -3604,16 +3608,15 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
                 break;
             }
         }
-        vary = apr_table_get(r->notes, VARY_KEY_THIS);
-        if (vary != NULL) {
-            apr_table_merge(r->notes, VARY_KEY, vary);
-            apr_table_unset(r->notes, VARY_KEY_THIS);
+        if (ctx->vary_this) {
+            apr_table_merge(r->notes, VARY_KEY, ctx->vary_this);
+            ctx->vary_this = NULL;
         }
     }
     /*  if any condition fails the complete rule fails  */
     if (failed) {
         apr_table_unset(r->notes, VARY_KEY);
-        apr_table_unset(r->notes, VARY_KEY_THIS);
+        ctx->vary_this = NULL;
         return 0;
     }
 
