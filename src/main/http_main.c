@@ -1593,7 +1593,7 @@ static void setup_shared_mem(pool *p)
 {
     caddr_t m;
 
-#if defined(MAP_ANON) || defined(MAP_FILE)
+#if defined(MAP_ANON)
 /* BSD style */
 #ifdef CONVEXOS11
     /*
