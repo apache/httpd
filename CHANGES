@@ -1,5 +1,9 @@
 Changes with Apache 2.0b1
 
+  *) ap_new_connection() closes the socket and returns NULL if a socket
+     call fails.  Usually this is due to a connection which has been 
+     reset.  [Jeff Trawick]
+
   *) Move the Apache version information out of httpd.h and into release.h.
      This is in preparation for the first tag with the new tag and release
      system.  [Ryan Bloom]

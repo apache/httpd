@@ -277,6 +277,12 @@ int ap_proxy_http_handler(request_rec *r, char *url,
     }
 
     origin = ap_new_connection(r->pool, r->server, sock, 0);
+    if (!origin) {
+        /* the peer reset the connection already; ap_new_connection() 
+         * closed the socket */
+        /* XXX somebody that knows what they're doing add an error path */
+    }
+
     ap_add_output_filter("CORE", NULL, NULL, origin);
 
     clear_connection(r->pool, r->headers_in);	/* Strip connection-based headers */
