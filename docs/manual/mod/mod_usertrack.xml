@@ -5,13 +5,11 @@
 <modulesynopsis>
 <name>mod_usertrack</name> 
 <description>
-    This module uses cookies to provide for a
-    <em>clickstream</em> log of user activity on a site.
+<em>Clickstream</em> logging of user activity on a site
 </description>
 <status>Extension</status>
 <sourcefile>mod_usertrack.c</sourcefile>
 <identifier>usertrack_module</identifier>
-<compatibility>Known as mod_cookies prior to Apache 1.3.</compatibility>
 
 <summary>
     <p>Previous releases of Apache have included a module which
@@ -39,8 +37,10 @@ CustomLog logs/clickstream "%{cookie}n %r %t"
 </example>
 
     <p>For backward compatibility the configurable log module
-    implements the old <directive>CookieLog</directive> directive, but this
-    should be upgraded to the above <directive>CustomLog</directive> directive. </p>
+    implements the old <directive
+    module="mod_log_config">CookieLog</directive> directive, but this
+    should be upgraded to the above <directive
+    module="mod_log_config">CustomLog</directive> directive. </p>
 </section>
 
 <section>
@@ -86,15 +86,15 @@ time late in the year "37".
 
 <directivesynopsis>
 <name>CookieDomain</name>
-<description>controls the setting of the domain to which the tracking cookie applies.</description>
+<description>The domain to which the tracking cookie applies</description>
 <syntax>CookieDomain <em>domain</em></syntax>
-<default>None</default>
 <contextlist>
 <context>server config</context>
 <context>virtual host</context>
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
+<override>FileInfo</override>
 
 <usage>
 
@@ -111,17 +111,15 @@ time late in the year "37".
 
 <directivesynopsis>
 <name>CookieExpires</name>
+<description>Expiry time for the tracking cookie</description>
 <syntax>CookieExpires <em>expiry-period</em></syntax>
-<default></default>
 <contextlist>
 <context>server config</context>
 <context>virtual host</context>
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
-<override></override>
-<compatibility>In 1.3.20 and earlier, not usable in directory and
-.htaccess</compatibility>
+<override>FileInfo</override>
 
 <usage>
     <p>When used, this directive sets an expiry time on the cookie
@@ -139,14 +137,16 @@ time late in the year "37".
 
 <directivesynopsis>
 <name>CookieName</name>
+<description>Name of the tracking cookie</description>
 <syntax>CookieName <em>token</em></syntax>
-<default>Apache</default>
+<default>CookieName Apache</default>
 <contextlist>
 <context>server config</context>
 <context>virtual host</context>
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
+<override>FileInfo</override>
 
 <usage>
     <p>This directive allows you to change the name of the cookie
@@ -161,16 +161,17 @@ time late in the year "37".
 
 <directivesynopsis>
 <name>CookieStyle</name>
-<description>Controls the format of the cookie header field</description>
+<description>Format of the cookie header field</description>
 <syntax>CookieStyle
     <em>Netscape|Cookie|Cookie2|RFC2109|RFC2965</em></syntax>
-<default></default>
+<default>CookieStyle Netscape</default>
 <contextlist>
 <context>server config</context>
 <context>virtual host</context>
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
+<override>FileInfo</override>
 
 <usage>
     <p>This directive controls the format of the cookie header
@@ -198,8 +199,9 @@ time late in the year "37".
 
 <directivesynopsis>
 <name>CookieTracking</name>
+<description>Enables tracking cookie</description>
 <syntax>CookieTracking on|off</syntax>
-<default></default>
+<default>CookieTracking off</default>
 <contextlist>
 <context>server config</context>
 <context>virtual host</context>

@@ -13,27 +13,29 @@ and Group</description>
 
 
 <summary>
-    <p>This module allows CGI scripts to run as a specified user
-    and Group.</p>
+    <p>This module, in combination with the <a
+    href="../programs/suexec.html">suexec support program</a> allows
+    CGI scripts to run as a specified user and Group.</p>
 </summary>
 
+<seealso><a href="../suexec.html">SuEXEC support</a></seealso>
 
 <directivesynopsis>
 
 <name>SuexecUserGroup</name>
+<description>User and group permissions for CGI programs</description>
 <syntax>SuexecUserGroup <em>User Group</em></syntax>
-<default>None</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 <compatibility>SuexecUserGroup is only available in 2.0 and
 later.</compatibility>
 
 <usage>
-    <p>The <directive>SuexecUserGroup</directive> directive allows you to
-    specify a user and group for CGI programs to run as. Non-CGI
-    requests are still processes with the user specified in the
-    User directive. This directive replaces using the User and
-    Group directives inside of VirtualHosts.</p>
+    <p>The <directive>SuexecUserGroup</directive> directive allows you
+    to specify a user and group for CGI programs to run as. Non-CGI
+    requests are still processes with the user specified in the User
+    directive. This directive replaces the Apache 1.3 configuration of
+    using the User and Group directives inside of VirtualHosts.</p>
 </usage>
 
 </directivesynopsis>
