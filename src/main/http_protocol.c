@@ -50,7 +50,7 @@
  *
  */
   
-/* $Id: http_protocol.c,v 1.57 1996/10/16 23:24:33 fielding Exp $ */
+/* $Id: http_protocol.c,v 1.58 1996/10/19 17:02:16 ben Exp $ */
 
 /*
  * http_protocol.c --- routines which directly communicate with the
@@ -856,7 +856,7 @@ int index_of_response(int status)
     int i, pos;
 
     if (status < 100)          /* Below 100 is illegal for HTTP status */
-        return -1;
+        return LEVEL_500;
 
     for (i = 0; i < 5; i++) {
         status -= 100;
@@ -865,10 +865,10 @@ int index_of_response(int status)
             if (pos < shortcut[i+1])
                 return pos;
             else
-                return -1;     /* status unknown (falls in gap) */
+                return LEVEL_500;     /* status unknown (falls in gap) */
         }
     }
-   return -1;                  /* 600 or above is also illegal */
+   return LEVEL_500;                  /* 600 or above is also illegal */
 }
 
 
@@ -1305,12 +1305,6 @@ void send_error_response (request_rec *r, int recursive_error)
     char *location = table_get (r->headers_out, "Location");
     int status = r->status;
     int idx = index_of_response (status);
-
-    /* If status code not found, use code 500.  */
-    if (idx == -1) {
-        status = HTTP_INTERNAL_SERVER_ERROR;
-        idx = index_of_response(HTTP_INTERNAL_SERVER_ERROR);
-    }
 
     if (!r->assbackwards) {
 	int i;
