@@ -74,6 +74,10 @@ URI: index.html.nl
 Content-language: nl
 Content-type: text/html
 
+URI: index.html.nn
+Content-language: nn
+Contenty-Type: text/html
+
 URI: index.html.no
 Content-language: no
 Content-type: text/html
