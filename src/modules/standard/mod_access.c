@@ -167,12 +167,19 @@ int in_ip(char *domain, char *what) {
     return (what[l] == '\0' || what[l] == '.');
 }
 
+static int is_ip(const char *host)
+{
+    while (*host && ((*host == '.') || isdigit(*host))) host++;
+    return (*host == '\0');
+}
+
 int find_allowdeny (request_rec *r, array_header *a, int method)
 {
     allowdeny *ap = (allowdeny *)a->elts;
     int mmask = (1 << method);
-    int i, gothost=0;
-    const char *remotehost=NULL;
+    int i;
+    int gothost = 0;
+    const char *remotehost = NULL;
 
     for (i = 0; i < a->nelts; ++i) {
         if (!(mmask & ap[i].limited))
@@ -191,15 +198,20 @@ int find_allowdeny (request_rec *r, array_header *a, int method)
 	
 	if (!strcmp (ap[i].from, "all"))
 	    return 1;
-	if (!gothost)
-	{
+
+	if (!gothost) {
 	    remotehost = get_remote_host(r->connection, r->per_dir_config,
-					 REMOTE_HOST);
-	    gothost = 1;
+	                                 REMOTE_HOST);
+
+	    if ((remotehost == NULL) || is_ip(remotehost))
+	        gothost = 1;
+	    else
+	        gothost = 2;
 	}
-        if (remotehost != NULL && isalpha(remotehost[0]))
-            if (in_domain(ap[i].from, remotehost))
-                return 1;
+
+        if ((gothost == 2) && in_domain(ap[i].from, remotehost))
+            return 1;
+
         if (in_ip (ap[i].from, r->connection->remote_ip))
             return 1;
     }
