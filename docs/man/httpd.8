@@ -55,8 +55,6 @@ httpd \- Apache hypertext transfer protocol server
 .SH SYNOPSIS
 .B httpd 
 [
-.B \-X
-] [
 .BI \-R " libexecdir"
 ] [
 .BI \-d " serverroot"
@@ -87,9 +85,6 @@ httpd \- Apache hypertext transfer protocol server
 .B \-V
 ] 
 [
-.B \-S
-] 
-[
 .B \-t
 ] 
 [
@@ -103,17 +98,13 @@ designed to be run as a standalone daemon process. When used like this
 it will create a pool of child processes to handle requests. To stop
 it, send a TERM signal to the initial (parent) process. The PID of
 this process is written to a file as given in the configuration file.
-Alternatively 
-.B httpd 
-may be invoked by the Internet daemon inetd(8) each
-time a connection to the HTTP service is made.
 .PP
 This manual page only lists the command line arguments. For details
 of the directives necessary to configure 
 .B httpd
 see the Apache manual,
 which is part of the Apache distribution or can be found at
-http://www.apache.org/. Paths in this manual may not reflect those
+http://httpd.apache.org/. Paths in this manual may not reflect those
 compiled into 
 .B httpd.
 .SH OPTIONS
@@ -165,17 +156,14 @@ virtualhost settings).
 .B \-t
 Run syntax tests for configuration files only. The program immediately exits
 after these syntax parsing with either a return code of 0 (Syntax OK) or
-return code not equal to 0 (Syntax Error).
+return code not equal to 0 (Syntax Error).  If 
+.BI \-D " DUMP_VHOSTS"
+is also set, details of the virtual host configuration will be printed.
 .TP
 .B \-T
 Same as option 
 .B \-t
 but does not check the configured document roots. 
-.TP
-.B \-X
-Run in single-process mode, for internal debugging purposes only; the daemon
-does not detach from the terminal or fork any children. Do NOT use this mode
-to provide ordinary web service.
 .TP
 .B \-v
 Print the version of 
@@ -190,10 +178,6 @@ Print the version and build parameters of
 .PD 0
 .B /usr/local/apache/conf/httpd.conf
 .br
-.B /usr/local/apache/conf/srm.conf
-.br
-.B /usr/local/apache/conf/access.conf
-.br
 .B /usr/local/apache/conf/mime.types
 .br
 .B /usr/local/apache/conf/magic
@@ -203,6 +187,3 @@ Print the version and build parameters of
 .B /usr/local/apache/logs/access_log
 .br
 .B /usr/local/apache/logs/httpd.pid
-.PD
-.SH SEE ALSO
-.BR inetd (8).

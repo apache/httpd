@@ -77,7 +77,7 @@ script returns a 0 exit value on success, and >0 if an error
 occurs.  For more details, view the comments in the script.
 .PP
 Full documentation for Apache is available at 
-.B http://www.apache.org/
+.B http://httpd.apache.org/
 .
 .SH OPTIONS
 The \fIcommand\fP can be any one or more of the following options:
@@ -109,7 +109,7 @@ Displays a brief status report.  Similar to the fullstatus option,
 except that the list of requests currently being served is omitted.
 .TP
 .BI graceful
-Gracefully restarts the Apache daemon by sending it a SIGUSR1.  If
+Gracefully restarts the Apache daemon by sending it a SIGWINCH.  If
 the daemon is not running, it is started.  This differs from a
 normal restart in that currently open connections are not aborted.
 A side effect is that old log files will not be closed immediately.
