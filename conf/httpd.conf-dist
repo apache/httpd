@@ -158,9 +158,15 @@ MaxClients 150
 # as to avoid problems after prolonged use when Apache (and maybe the
 # libraries it uses) leak memory or other resources.  On most systems, this
 # isn't really needed, but a few (such as Solaris) do have notable leaks
-# in the libraries.
+# in the libraries. For these platforms, set to something like 10000
+# or so; a setting of 0 means unlimited.
 #
-MaxRequestsPerChild 30
+# NOTE: This value does not include keepalive requests after the initial
+#       request per connection. For example, if a child process handles
+#       an initial request and 10 subsequent "keptalive" requests, it
+#       would only count as 1 request towards this limit.
+#
+MaxRequestsPerChild 0
 
 #
 # Listen: Allows you to bind Apache to specific IP addresses and/or
