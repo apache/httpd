@@ -2452,7 +2452,7 @@ static int default_handler(request_rec *r)
 	    ap_table_setn(r->headers_out, "Content-MD5",
 			  ap_md5digest(r->pool, fd));
 	}
-#endif /* CHARSET_EBCDIC */
+#endif /* APACHE_XLATE */
 
 	rangestatus = ap_set_byterange(r);
 
