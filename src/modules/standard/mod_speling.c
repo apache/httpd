@@ -68,7 +68,8 @@
  * capitalizations. If it finds a match, it sends a redirect.
  *
  * 08-Aug-1997 <Martin.Kraemer@Mch.SNI.De>
- * o Upgraded module interface to apache_1.3a2-dev API (more NULL's in speling_module).
+ * o Upgraded module interface to apache_1.3a2-dev API (more NULL's in
+ *   speling_module).
  * o Integrated tcsh's "spelling correction" routine which allows one
  *   misspelling (character insertion/omission/typo/transposition).
  *   Rewrote it to ignore case as well. This ought to catch the majority
@@ -84,7 +85,8 @@
 
 MODULE_VAR_EXPORT module speling_module;
 
-/* We use the "unconventional" mod_userdir approach here. And heck,
+/*
+ * We use the "unconventional" mod_userdir approach here. And heck,
  * here it's just one int!
  */
 
@@ -98,7 +100,8 @@ static const char *set_speling(cmd_parms *cmd, void *dummy, int arg)
     void *server_conf = cmd->server->module_config;
 
     /* any non-NULL pointer means speling is enabled */
-    ap_set_module_config(server_conf, &speling_module, arg ? (void *) &speling_module : NULL);
+    ap_set_module_config(server_conf, &speling_module,
+			 arg ? (void *) &speling_module : NULL);
     return NULL;
 }
 
@@ -156,22 +159,29 @@ typedef struct {
 
 static sp_reason spdist(const char *s, const char *t)
 {
-    for (; ap_tolower(*s) == ap_tolower(*t); t++, s++)
-        if (*t == '\0')
+    for (; ap_tolower(*s) == ap_tolower(*t); t++, s++) {
+        if (*t == '\0') {
             return SP_MISCAPITALIZED;   /* exact match (sans case) */
+	}
+    }
     if (*s) {
         if (*t) {
-            if (s[1] && t[1] && ap_tolower(*s) == ap_tolower(t[1]) &&
-              ap_tolower(*t) == ap_tolower(s[1]) && strcasecmp(s + 2, t + 2) == 0)
+            if (s[1] && t[1] && ap_tolower(*s) == ap_tolower(t[1])
+		&& ap_tolower(*t) == ap_tolower(s[1])
+		&& strcasecmp(s + 2, t + 2) == 0) {
                 return SP_TRANSPOSITION;        /* transposition */
-            if (strcasecmp(s + 1, t + 1) == 0)
+	    }
+            if (strcasecmp(s + 1, t + 1) == 0) {
                 return SP_SIMPLETYPO;   /* 1 char mismatch */
+	    }
         }
-        if (strcasecmp(s + 1, t) == 0)
+        if (strcasecmp(s + 1, t) == 0) {
             return SP_EXTRACHAR;        /* extra character */
+	}
     }
-    if (*t && strcasecmp(s, t + 1) == 0)
+    if (*t && strcasecmp(s, t + 1) == 0) {
         return SP_MISSINGCHAR;  /* missing character */
+    }
     return SP_VERYDIFFERENT;    /* distance too large to fix. */
 }
 
@@ -190,20 +200,24 @@ static int check_speling(request_rec *r)
     struct DIR_TYPE *dir_entry;
     array_header *candidates = NULL;
 
-    if (!ap_get_module_config(server_conf, &speling_module))
+    if (!ap_get_module_config(server_conf, &speling_module)) {
         return DECLINED;
+    }
 
     /* We only want to worry about GETs */
-    if (r->method_number != M_GET)
+    if (r->method_number != M_GET) {
         return DECLINED;
+    }
 
     /* We've already got a file of some kind or another */
-    if (r->proxyreq || (r->finfo.st_mode != 0))
+    if (r->proxyreq || (r->finfo.st_mode != 0)) {
         return DECLINED;
+    }
 
     /* This is a sub request - don't mess with it */
-    if (r->main)
+    if (r->main) {
         return DECLINED;
+    }
 
     /*
      * The request should end up looking like this:
@@ -214,9 +228,13 @@ static int check_speling(request_rec *r)
      */
 
     filoc = ap_rind(r->filename, '/');
-    /* Don't do anything if the request doesn't contain a slash, or requests "/" */
-    if (filoc == -1 || strcmp(r->uri, "/") == 0)
+    /*
+     * Don't do anything if the request doesn't contain a slash, or
+     * requests "/" 
+     */
+    if (filoc == -1 || strcmp(r->uri, "/") == 0) {
         return DECLINED;
+    }
 
     /* good = /correct-file */
     good = ap_pstrndup(r->pool, r->filename, filoc);
@@ -229,22 +247,25 @@ static int check_speling(request_rec *r)
     pglen = strlen(postgood);
 
     /* Check to see if the URL pieces add up */
-    if (strcmp(postgood, r->uri + (urlen - pglen)))
+    if (strcmp(postgood, r->uri + (urlen - pglen))) {
         return DECLINED;
+    }
 
     /* url = /correct-url */
     url = ap_pstrndup(r->pool, r->uri, (urlen - pglen));
 
     /* Now open the directory and do ourselves a check... */
     dirp = ap_popendir(r->pool, good);
-    if (dirp == NULL)           /* Oops, not a directory... */
+    if (dirp == NULL) {          /* Oops, not a directory... */
         return DECLINED;
+    }
 
     candidates = ap_make_array(r->pool, 2, sizeof(misspelled_file));
 
     dotloc = ap_ind(bad, '.');
-    if (dotloc == -1)
+    if (dotloc == -1) {
         dotloc = strlen(bad);
+    }
 
     while ((dir_entry = readdir(dirp)) != NULL) {
         sp_reason q;
@@ -263,7 +284,9 @@ static int check_speling(request_rec *r)
          * file, upper case request)
          */
         else if (strcasecmp(bad, dir_entry->d_name) == 0) {
-            misspelled_file *sp_new = (misspelled_file *) ap_push_array(candidates);
+            misspelled_file *sp_new;
+
+	    sp_new = (misspelled_file *) ap_push_array(candidates);
             sp_new->name = ap_pstrdup(r->pool, dir_entry->d_name);
             sp_new->quality = SP_MISCAPITALIZED;
         }
@@ -272,26 +295,31 @@ static int check_speling(request_rec *r)
          * missing/extra/transposed char)
          */
         else if ((q = spdist(bad, dir_entry->d_name)) != SP_VERYDIFFERENT) {
-            misspelled_file *sp_new = (misspelled_file *) ap_push_array(candidates);
+            misspelled_file *sp_new;
+
+	    sp_new = (misspelled_file *) ap_push_array(candidates);
             sp_new->name = ap_pstrdup(r->pool, dir_entry->d_name);
             sp_new->quality = q;
         }
-        /* The spdist() should have found the majority of the misspelled requests.
-         * it is of questionable use to continue looking for files with the same
-         * base name, but potentially of totally wrong type (index.html <-> index.db)
-         * I would propose to not set the WANT_BASENAME_MATCH define.
+        /*
+	 * The spdist() should have found the majority of the misspelled
+	 * requests.  It is of questionable use to continue looking for
+	 * files with the same base name, but potentially of totally wrong
+	 * type (index.html <-> index.db).
+	 * I would propose to not set the WANT_BASENAME_MATCH define.
          *      08-Aug-1997 <Martin.Kraemer@Mch.SNI.De>
          *
          * However, Alexei replied giving some reasons to add it anyway:
          * > Oh, by the way, I remembered why having the
          * > extension-stripping-and-matching stuff is a good idea:
          * >
-         * > If you're using MultiViews, and have a file named foobar.html, which you
-         * > refer to as "foobar", and someone tried to access "Foobar", mod_speling
-         * > won't find it, because it won't find anything matching that
-         * > spelling. With the extension-munging, it would locate "foobar.html". Not
-         * > perfect, but I ran into that problem when I first wrote the module.
-         */
+         * > If you're using MultiViews, and have a file named foobar.html,
+	 * > which you refer to as "foobar", and someone tried to access
+	 * > "Foobar", mod_speling won't find it, because it won't find
+	 * > anything matching that spelling. With the extension-munging,
+	 * > it would locate "foobar.html". Not perfect, but I ran into
+	 * > that problem when I first wrote the module.
+	 */
         else {
 #ifdef WANT_BASENAME_MATCH
             /*
@@ -306,12 +334,15 @@ static int check_speling(request_rec *r)
              * it finds. Better than a Not Found, though.
              */
             int entloc = ap_ind(dir_entry->d_name, '.');
-            if (entloc == -1)
+            if (entloc == -1) {
                 entloc = strlen(dir_entry->d_name);
+	    }
 
             if ((dotloc == entloc)
                 && !strncasecmp(bad, dir_entry->d_name, dotloc)) {
-                misspelled_file *sp_new = (misspelled_file *) ap_push_array(candidates);
+                misspelled_file *sp_new;
+
+		sp_new = (misspelled_file *) ap_push_array(candidates);
                 sp_new->name = ap_pstrdup(r->pool, dir_entry->d_name);
                 sp_new->quality = SP_VERYDIFFERENT;
             }
@@ -335,23 +366,26 @@ static int check_speling(request_rec *r)
         /*
          * Conditions for immediate redirection: 
          *     a) the first candidate was not found by stripping the suffix 
-         * AND b) there exists only one candidate OR the best match is not ambigous
+         * AND b) there exists only one candidate OR the best match is not
+	 *        ambiguous
          * then return a redirection right away.
          */
-        if (variant[0].quality != SP_VERYDIFFERENT &&
-            (candidates->nelts == 1 || variant[0].quality != variant[1].quality)) {
+        if (variant[0].quality != SP_VERYDIFFERENT
+	    && (candidates->nelts == 1
+		|| variant[0].quality != variant[1].quality)) {
 
             nuri = ap_pstrcat(r->pool, url, variant[0].name, r->path_info,
 			      r->parsed_uri.query ? "?" : "",
-			      r->parsed_uri.query ? r->parsed_uri.query : "", NULL);
+			      r->parsed_uri.query ? r->parsed_uri.query : "",
+			      NULL);
 
             ap_table_setn(r->headers_out, "Location",
-                      ap_construct_url(r->pool, nuri, r));
+			  ap_construct_url(r->pool, nuri, r));
 
             ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_INFO, r->server,
-                        ref ? "Fixed spelling: %s to %s from %s"
-                        : "Fixed spelling: %s to %s",
-                        r->uri, nuri, ref);
+			 ref ? "Fixed spelling: %s to %s from %s"
+			     : "Fixed spelling: %s to %s",
+			 r->uri, nuri, ref);
 
             return HTTP_MOVED_PERMANENTLY;
         }
@@ -374,7 +408,8 @@ static int check_speling(request_rec *r)
             }
 
             /* Generate the response text. */
-            /* Since the text is expanded by repeated calls of
+            /*
+	     * Since the text is expanded by repeated calls of
              * t = pstrcat(p, t, ".."), we can avoid a little waste
              * of memory by adding the header AFTER building the list.
              * XXX: FIXME: find a way to build a string concatenation
@@ -392,7 +427,8 @@ static int check_speling(request_rec *r)
 			       r->parsed_uri.query ? "?" : "",
 			       r->parsed_uri.query ? r->parsed_uri.query : "",
 			       "</a> (",
-                    sp_reason_str[(int) (variant[i].quality)], ")\n", NULL);
+			       sp_reason_str[(int) (variant[i].quality)],
+			       ")\n", NULL);
 
                 /*
                  * when we have printed the "close matches" and there are
@@ -404,26 +440,35 @@ static int check_speling(request_rec *r)
                 if (i > 0 && i < candidates->nelts - 1
                     && variant[i].quality != SP_VERYDIFFERENT
                     && variant[i + 1].quality == SP_VERYDIFFERENT) {
-                    t = ap_pstrcat(p, t, "</ul>\nFurthermore, the following related documents were found:\n<ul>\n", NULL);
+                    t = ap_pstrcat(p, t, 
+				   "</ul>\nFurthermore, the following related "
+				   "documents were found:\n<ul>\n", NULL);
                 }
             }
             t = ap_pstrcat(p, "The document name you requested (<code>",
-                     r->uri, "</code>) could not be found on this server.\n"
-                        "However, we found documents with names similar to the one you requested.<p>"
-                        "Available documents:\n<ul>\n", t, "</ul>\n", NULL);
+			   r->uri,
+			   "</code>) could not be found on this server.\n"
+			   "However, we found documents with names similar "
+			   "to the one you requested.<p>"
+			   "Available documents:\n<ul>\n", t, "</ul>\n", NULL);
 
             /* If we know there was a referring page, add a note: */
-            if (ref != NULL)
-                t = ap_pstrcat(p, t, "Please consider informing the owner of the <a href=\"",
-                ref, "\">referring page</a> about the broken link.\n", NULL);
+            if (ref != NULL) {
+                t = ap_pstrcat(p, t,
+			       "Please consider informing the owner of the "
+			       "<a href=\"", ref, 
+			       "\">referring page</a> "
+			       "about the broken link.\n",
+			       NULL);
+	    }
 
             /* Pass our table to http_protocol.c (see mod_negotiation): */
             ap_table_setn(notes, "variant-list", t);
 
             ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_INFO, r->server,
-                        ref ? "Spelling fix: %s: %d candidates from %s"
-                        : "Spelling fix: %s: %d candidates",
-                        r->uri, candidates->nelts, ref);
+			 ref ? "Spelling fix: %s: %d candidates from %s"
+			     : "Spelling fix: %s: %d candidates",
+			 r->uri, candidates->nelts, ref);
 
             return HTTP_MULTIPLE_CHOICES;
         }
