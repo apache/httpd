@@ -1675,7 +1675,11 @@ Setting MaxRequestsPerChild to a non-zero limit has two beneficial effects:
 memory leakage;
 <LI> by giving processes a finite lifetime, it helps reduce the
 number of processes when the server load reduces.
-</UL><P><HR>
+</UL>
+
+<P>This directive has no effect on Win32.
+
+<P><HR>
 
 <H2><A NAME="maxspareservers">MaxSpareServers directive</A></H2>
 <!--%plaintext &lt;?INDEX {\tt MaxSpareServers} directive&gt; -->
