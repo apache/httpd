@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: mod_auth_anon.c,v 1.8 1996/08/20 11:50:58 paul Exp $ */
+/* $Id: mod_auth_anon.c,v 1.9 1996/10/31 00:06:42 brian Exp $ */
 
 /*
  * http_auth: authentication
@@ -130,34 +130,34 @@ void *create_anon_auth_dir_config (pool *p, char *d)
     return sec;
 }
 
-char *anon_set_passwd_flag (cmd_parms *cmd, 
+const char *anon_set_passwd_flag (cmd_parms *cmd, 
 	anon_auth_config_rec *sec, int arg) {
     sec->auth_anon_mustemail=arg;
     return NULL;
 }
 
-char *anon_set_userid_flag (cmd_parms *cmd, 
+const char *anon_set_userid_flag (cmd_parms *cmd, 
 	anon_auth_config_rec *sec, int arg) {
     sec->auth_anon_nouserid=arg;
     return NULL;
 }
-char *anon_set_logemail_flag (cmd_parms *cmd, 
+const char *anon_set_logemail_flag (cmd_parms *cmd, 
 	anon_auth_config_rec *sec, int arg) {
     sec->auth_anon_logemail=arg;
     return NULL;
 }
-char *anon_set_verifyemail_flag (cmd_parms *cmd, 
+const char *anon_set_verifyemail_flag (cmd_parms *cmd, 
 	anon_auth_config_rec *sec, int arg) {
     sec->auth_anon_verifyemail=arg;
     return NULL;
 }
-char *anon_set_authoritative_flag (cmd_parms *cmd, 
+const char *anon_set_authoritative_flag (cmd_parms *cmd, 
 	anon_auth_config_rec *sec, int arg) {
     sec->auth_anon_authoritative=arg;
     return NULL;
 }
 
-char *anon_set_string_slots (cmd_parms *cmd, 
+const char *anon_set_string_slots (cmd_parms *cmd, 
 	anon_auth_config_rec *sec, char *arg) {
   
     auth_anon 	* first;

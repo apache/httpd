@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: mod_auth_dbm.c,v 1.7 1996/10/08 22:19:23 brian Exp $ */
+/* $Id: mod_auth_dbm.c,v 1.8 1996/10/31 00:06:42 brian Exp $ */
 
 /*
  * http_auth: authentication
@@ -79,7 +79,7 @@ void *create_dbm_auth_dir_config (pool *p, char *d)
     return pcalloc (p, sizeof(dbm_auth_config_rec));
 }
 
-char *set_dbm_slot (cmd_parms *cmd, void *offset, char *f, char *t)
+const char *set_dbm_slot (cmd_parms *cmd, void *offset, char *f, char *t)
 {
     if (!t || strcmp(t, "dbm"))
 	return DECLINE_CMD;
@@ -204,7 +204,8 @@ int dbm_check_auth(request_rec *r) {
     require_line *reqs = reqs_arr ? (require_line *)reqs_arr->elts : NULL;
 
     register int x;
-    char *t, *w;
+    const char *t;
+    char *w;
 
     if (!sec->auth_dbmgrpfile) return DECLINED;
     if (!reqs_arr) return DECLINED;
@@ -217,7 +218,8 @@ int dbm_check_auth(request_rec *r) {
         w = getword(r->pool, &t, ' ');
 	
         if(!strcmp(w,"group") && sec->auth_dbmgrpfile) {
-           char *orig_groups,*groups,*v;
+           const char *orig_groups,*groups;
+	   char *v;
 
            if (!(groups = get_dbm_grp(r, user, sec->auth_dbmgrpfile))) {
                sprintf(errstr,"user %s not in DBM group file %s",
