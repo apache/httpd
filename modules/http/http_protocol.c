@@ -748,11 +748,19 @@ static int form_header_field(header_struct *h,
     return 1;
 }
 
+/*
+ * Determine the protocol to use for the response. Potentially downgrade
+ * to HTTP/1.0 in some situations and/or turn off keepalives.
+ *
+ * also prepare r->status_line.
+ */
 static void basic_http_header_check(request_rec *r, 
                                     const char **protocol)
 {
-    if (r->assbackwards)
+    if (r->assbackwards) {
+        /* no such thing as a response protocol */
         return;
+    }
 
     if (!r->status_line)
         r->status_line = status_lines[ap_index_of_response(r->status)];
@@ -770,14 +778,18 @@ static void basic_http_header_check(request_rec *r,
     }
 }
 
-static void basic_http_header(request_rec *r, apr_bucket_brigade *bb, const char *protocol)
+/* fill "bb" with a barebones/initial HTTP response header */
+static void basic_http_header(request_rec *r, apr_bucket_brigade *bb,
+                              const char *protocol)
 {
     char *date = NULL;
     char *tmp;
     header_struct h;
 
-    if (r->assbackwards)
+    if (r->assbackwards) {
+        /* there are no headers to send */
         return;
+    }
 
     /* Output the HTTP/1.x Status-Line and the Date and Server fields */
 
@@ -910,29 +922,13 @@ AP_DECLARE(int) ap_send_http_trace(request_rec *r)
 
 int ap_send_http_options(request_rec *r)
 {
-    apr_bucket_brigade *bb = apr_brigade_create(r->pool);
-    header_struct h;
-
     if (r->assbackwards)
         return DECLINED;
     
-    ap_basic_http_header(r, bb);
-
-    apr_table_setn(r->headers_out, "Content-Length", "0");
     apr_table_setn(r->headers_out, "Allow", make_allow(r));
-    ap_set_keepalive(r);
 
-    h.pool = r->pool;
-    h.bb = bb;
-
-    apr_table_do((int (*) (void *, const char *, const char *)) form_header_field,
-             (void *) &h, r->headers_out, NULL);
-
-    terminate_header(bb);
-
-    r->bytes_sent = 0;
-
-    ap_pass_brigade(r->output_filters, bb);
+    /* the request finalization will send an EOS, which will flush all
+       the headers out (including the Allow header) */
 
     return OK;
 }
@@ -1015,10 +1011,9 @@ static void fixup_vary(request_rec *r)
     }
 }
 
-typedef struct header_filter_cts {
-    int headers_sent;
-} header_filter_ctx;
-AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, apr_bucket_brigade *b)
+AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(
+    ap_filter_t *f,
+    apr_bucket_brigade *b)
 {
     int i;
     char *date = NULL;
@@ -1027,20 +1022,9 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, apr_b
     const char *protocol;
     apr_bucket *e;
     apr_bucket_brigade *b2;
-    apr_size_t len = 0;
     header_struct h;
-    header_filter_ctx *ctx = f->ctx;
 
     AP_DEBUG_ASSERT(!r->main);
-
-    if (!ctx) {
-        ctx = apr_pcalloc(r->pool, sizeof(*ctx));
-    }
-
-    if (ctx->headers_sent) {
-        apr_brigade_destroy(b);
-        return OK;
-    }
 
     APR_BRIGADE_FOREACH(e, b) {
         if (e->type == &ap_bucket_type_error) {
@@ -1071,6 +1055,9 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, apr_b
      * Remove the 'Vary' header field if the client can't handle it.
      * Since this will have nasty effects on HTTP/1.1 caches, force
      * the response into HTTP/1.0 mode.
+     *
+     * Note: the force-response-1.0 should come before the call to
+     *       basic_http_header_check()
      */
     if (apr_table_get(r->subprocess_env, "force-no-vary") != NULL) {
 	apr_table_unset(r->headers_out, "Vary");
@@ -1081,10 +1068,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, apr_b
 	fixup_vary(r);
     }
 
-    /* Need to add a fudge factor so that the CRLF at the end of the headers
-     * and the basic http headers don't overflow this buffer.
-     */
-    len += strlen(ap_get_server_version()) + 100;
+    /* determine the protocol and whether we should use keepalives. */
     basic_http_header_check(r, &protocol);
     ap_set_keepalive(r);
 
