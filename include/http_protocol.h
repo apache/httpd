@@ -320,6 +320,11 @@ AP_DECLARE(void) ap_method_list_remove(ap_method_list_t *l,
  */
 AP_DECLARE(void) ap_clear_method_list(ap_method_list_t *l);
     
+/**
+ *
+ */
+AP_DECLARE(void) ap_rset_content_type(char *str, request_rec *r);
+
 /* Hmmm... could macrofy these for now, and maybe forever, though the
  * definitions of the macros would get a whole lot hairier.
  */

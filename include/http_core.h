@@ -538,6 +538,9 @@ typedef struct {
     apr_array_header_t *sec_url;
 } core_server_config;
 
+/* for AddOutputFiltersByType in core.c */
+void ap_add_output_filters_by_type(request_rec *r);
+
 /* for http_config.c */
 void ap_core_reorder_directories(apr_pool_t *, server_rec *);
 
