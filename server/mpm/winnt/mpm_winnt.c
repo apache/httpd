@@ -1994,7 +1994,7 @@ static void winnt_pre_config(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptemp
 static void winnt_post_config(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptemp, server_rec* server)
 {
     static int restart_num = 0;
-    ap_status_t rv;
+    ap_status_t rv = 0;
 
     server_conf = server;
     
