@@ -1,5 +1,8 @@
 Changes with Apache 1.3.4
 
+  *) Added binbuild.sh and findprg.sh helpers to make it easier for us
+     to build binary distributions. [Lars Eilebrecht]
+
   *) IndexOptions SuppressColumnSorting only turned off making
      the column headers anchors; you could still change the display
      order by manually adding a '?N=A' or similar query string to the

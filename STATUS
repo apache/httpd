@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/01/05 01:03:03 $]
+  Last modified at [$Date: 1999/01/05 05:14:49 $]
 
 Release:
 
@@ -33,58 +33,23 @@ RELEASE SHOWSTOPPERS:
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
-    * How should an Apache binary release tarball look?
+    * Randy's proposed changes for binbuild:
     
-      - A proposed solution is available.
-        See: <XFMail.981213175013.sfx@unix-ag.org>
-             <XFMail.981226052910.sfx@unix-ag.org>
+      1. Change to build binary only distribution
 
-      1. The "old" way where it is just a source release tarball
-         plus a pre-compiled src/httpd-<gnutriple>. It is created
-         via the apache-devsite/binbuild.sh script which
-         - creates the build tree
-         - creates the src/Configuration file with standard modules
-         - runs "make"
-         - renames src/httpd to src/httpd-<gnutriple>
-         - runs "make clean"
-         - packs the build tree stuff together
-         Already known discussion points:
-         - should src/httpd be renamed or not because a lot
-           of PRs say they cannot find the httpd :-(
-         Status: Ralf -0, Ken +0, Randy -1
+      2. Use standard Apache layout
+         [It is currently using the BinaryDistribution layout that mimics
+          the standard Apache layout _without_ any absolute paths in it
+          (apart from HTTPD_ROOT /usr/local/apache). This makes it possible
+          for a user to install it in _any_ directory.]
+         [Roy: I don't understand what Randy wants to change here.]
 
-      2. The way some other projects release binary tarballs, i.e.
-         a package containing the installed (binary) files.
-         It can be created by a script which
-         - creates the build tree
-         - runs "./configure --prefix=/usr/local/apache \
-                             --enable-shared=remain \
-                             --disable-module=auth_db \
-                             --enable-suexec ..."
-         - runs "make install root=apache-root"
-         - packs the stuff together from ./apache-root only!!
-         Already known discussion points:
-         - should there be a prefix usr/local/apache in 
-           the tarball or not?  Some people think
-           it's useful while others dislike it a lot.
-	 - it doesn't include the source.
-	 - the paths don't match the original Apache style, nor the Win32
-	   paths
-	 - should suexec be prebuilt in a binary tarball?
-         Status: Randy, +1, Ralf +1, Martin +1, Roy -1,
-                 Ken +1 (IFF source is included,
-		 there's no usr/local/apache prefix in the tarball, AND the
-		 old-style [common with Win32] paths are used)
+      3. Add 'make dist' target to call binbuild.sh
+         [Roy: That would require a Makefile, which is what binbuild creates.
+               I don't see any point in that.]
 
-      3. A source release tarball with three extra directories:
-            lib: for the shared library object files
-            bin: for the httpd and support executables
-            man: for the man files (if desired)
-         as if the server was installed in those directories.
-         Status: Roy +1, Jim +1 (still need to define which modules
-	 	 are built)
-                 Ralf -0 (I dislike mixed source+binary tarballs)
-                 Randy -1 (those wanting binary dists don't want source)
+      4. Create toplevel 'setup' script for install to mirror win32 name
+         [It is currently creating "install-bindist.sh"]
 
 Documentation that needs writing:
 
@@ -95,10 +60,6 @@ Documentation that needs writing:
          vhost-xxx.html document out of it. -- rse
 
 Available Patches:
-
-    * Lars' 'binbuild' patch
-        Message-ID: <XFMail.981226052910.sfx@unix-ag.org>
-        Status: Lars +1
 
     * Jim Patterson's patch to make mod_info work on Win32
         Message-ID: PR#1442

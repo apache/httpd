@@ -44,3 +44,19 @@
     proxycachedir: $localstatedir/proxy
 </Layout>
 
+#   Apache binary distribution path layout
+<Layout BinaryDistribution>
+    prefix:        /usr/local/apache
+    exec_prefix:
+    bindir:        bin
+    sbindir:       bin
+    libexecdir:    libexec
+    mandir:        man
+    sysconfdir:    conf
+    datadir:
+    includedir:    include
+    localstatedir:
+    runtimedir:    logs
+    logfiledir:    logs
+    proxycachedir: proxy
+</Layout>
