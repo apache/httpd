@@ -330,7 +330,6 @@ start_over:
 
     /* sanity check - if server is down, retry it up to 5 times */
     if (result == LDAP_SERVER_DOWN) {
-        util_ldap_connection_destroy(ldc);
         if (failures++ <= 5) {
             goto start_over;
         }
