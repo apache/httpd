@@ -726,8 +726,8 @@ static void child_sub_main(int child_num)
         
 	current_conn = ap_new_connection(ptrans, server_conf, conn_io,
                                          (struct sockaddr_in *) &sa_client,
-                                         (struct sockaddr_in *) &sa_server);//,
-            //child_num, 0); /* Set my_thread_num to 0 for now */
+                                         (struct sockaddr_in *) &sa_server,
+                                         child_num);
         
         ap_process_connection(current_conn);
     }        

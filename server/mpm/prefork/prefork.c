@@ -2359,7 +2359,8 @@ static void child_main(int child_num_arg)
 
 	current_conn = ap_new_connection(ptrans, server_conf, conn_io,
 					 (struct sockaddr_in *) &sa_client,
-					 (struct sockaddr_in *) &sa_server);
+					 (struct sockaddr_in *) &sa_server,
+					 my_child_num);
 
 	ap_process_connection(current_conn);
     }

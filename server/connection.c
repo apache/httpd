@@ -258,7 +258,7 @@ int ap_process_http_connection(conn_rec *c)
 
 conn_rec *ap_new_connection(pool *p, server_rec *server, BUFF *inout,
 			    const struct sockaddr_in *remaddr,
-			    const struct sockaddr_in *saddr)
+			    const struct sockaddr_in *saddr, long id)
 {
     conn_rec *conn = (conn_rec *) ap_pcalloc(p, sizeof(conn_rec));
 
@@ -278,6 +278,8 @@ conn_rec *ap_new_connection(pool *p, server_rec *server, BUFF *inout,
     conn->remote_addr = *remaddr;
     conn->remote_ip = ap_pstrdup(conn->pool,
 			      inet_ntoa(conn->remote_addr.sin_addr));
+    
+    conn->id = id;
 
     return conn;
 }

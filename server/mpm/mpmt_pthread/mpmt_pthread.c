@@ -864,6 +864,7 @@ static void process_socket(pool *p, struct sockaddr *sa_client, int csd, int my_
     BUFF *conn_io;
     conn_rec *current_conn;
     ap_iol *iol;
+    long conn_id = my_child_num * HARD_THREAD_LIMIT + my_thread_num;
 
     if (getsockname(csd, &sa_server, &len) < 0) { 
 	ap_log_error(APLOG_MARK, APLOG_ERR, server_conf, "getsockname");
@@ -896,7 +897,8 @@ static void process_socket(pool *p, struct sockaddr *sa_client, int csd, int my_
 
     current_conn = ap_new_connection(p, server_conf, conn_io,
                                   (const struct sockaddr_in *) sa_client, 
-                                  (const struct sockaddr_in *) &sa_server);
+                                  (const struct sockaddr_in *) &sa_server,
+                                  conn_id);
 
     ap_process_connection(current_conn);
 }
