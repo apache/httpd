@@ -235,9 +235,9 @@ int main(int argc, char *argv[])
     apr_create_pool(&cntxt, NULL);
 
 #ifdef CHARSET_EBCDIC
-    rv = ap_xlate_open(&to_ascii, "ISO8859-1", APR_DEFAULT_CHARSET, cntxt);
+    rv = apr_xlate_open(&to_ascii, "ISO8859-1", APR_DEFAULT_CHARSET, cntxt);
     if (rv) {
-        fprintf(stderr, "ap_xlate_open(): %s (%d)\n",
+        fprintf(stderr, "apr_xlate_open(): %s (%d)\n",
                 apr_strerror(rv, line, sizeof(line)), rv);
         exit(1);
     }
