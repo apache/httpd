@@ -5,7 +5,7 @@
   <head>
 
     <title>Apache $B%5!<%P$N%P!<%A%c%k%[%9%H$N%5%]!<%H(B</title>
-    <!-- English revision: 1.7 -->
+    <!-- English revision: 1.9 -->
   </head>
   <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
 
@@ -84,7 +84,7 @@ href="../mod/mod_log_config.html#logformat">LogFormat</a></code> $B%G%#%l%/%F%#
 $B@hF,$KDI2C$7$^$9(B:</p>
 
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
- LogFormat "%v %h %l %u %t \"%r\" %>s %b" vhost<br>
+ LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b" vhost<br />
  CustomLog logs/multiple_vhost_log vhost
 </code></td></tr></table></blockquote>
 

@@ -5,7 +5,7 @@
   <head>
 
     <title>Apache バーチャルホスト説明書</title>
-    <!-- English revision: 1.12 -->
+    <!-- English revision: 1.13 -->
   </head>
 
   <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
@@ -75,7 +75,7 @@
       <li><a href="../mod/core.html#serverpath">ServerPath</a></li>
 
       <li><b>参照</b> <a 
-      href="../mod/mod_vhost_alias.html">mod_vhost_alias</a>
+      href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></li>
     </ul>
 
 
