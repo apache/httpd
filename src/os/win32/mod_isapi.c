@@ -74,6 +74,9 @@
  * the ISA is in.
  */
 
+/* A lousy hack to include ap_check_cmd_context(): */
+#define CORE_PRIVATE 
+
 #include "httpd.h"
 #include "http_config.h"
 #include "http_core.h"
@@ -81,6 +84,7 @@
 #include "http_request.h"
 #include "http_log.h"
 #include "util_script.h"
+#include <stdlib.h>
 
 /* We use the exact same header file as the original */
 #include <HttpExt.h>
@@ -92,6 +96,9 @@
 module isapi_module;
 
 static DWORD ReadAheadBuffer = 49152;
+static int LogNotSupported = -1;
+static int AppendLogToErrors = 0;
+static int AppendLogToQuery = 0;
 
 /* Our "Connection ID" structure */
 
@@ -176,7 +183,8 @@ int isapi_handler (request_rec *r) {
     if (!(isapi_version =
           (void *)(GetProcAddress(isapi_handle, "GetExtensionVersion")))) {
         ap_log_rerror(APLOG_MARK, APLOG_ALERT, r,
-                 "DLL could not load GetExtensionVersion(): %s", r->filename);
+                      "DLL could not load GetExtensionVersion(): %s", 
+                      r->filename);
         FreeLibrary(isapi_handle);
         return SERVER_ERROR;
     }
@@ -184,7 +192,8 @@ int isapi_handler (request_rec *r) {
     if (!(isapi_entry =
           (void *)(GetProcAddress(isapi_handle, "HttpExtensionProc")))) {
         ap_log_rerror(APLOG_MARK, APLOG_ALERT, r,
-                   "DLL could not load HttpExtensionProc(): %s", r->filename);
+                      "DLL could not load HttpExtensionProc(): %s", 
+                      r->filename);
         FreeLibrary(isapi_handle);
         return SERVER_ERROR;
     }
@@ -220,11 +229,11 @@ int isapi_handler (request_rec *r) {
     ecb->dwVersion = MAKELONG(0, 2);
     ecb->dwHttpStatusCode = 0;
     strcpy(ecb->lpszLogData, "");
-    ecb->lpszMethod = r->method;
-    ecb->lpszQueryString = ap_table_get(e, "QUERY_STRING");
-    ecb->lpszPathInfo = ap_table_get(e, "PATH_INFO");
-    ecb->lpszPathTranslated = ap_table_get(e, "PATH_TRANSLATED");
-    ecb->lpszContentType = ap_table_get(e, "CONTENT_TYPE");
+    ecb->lpszMethod = ap_pstrdup(r->pool, r->method);
+    ecb->lpszQueryString = ap_pstrdup(r->pool, ap_table_get(e, "QUERY_STRING"));
+    ecb->lpszPathInfo = ap_pstrdup(r->pool, ap_table_get(e, "PATH_INFO"));
+    ecb->lpszPathTranslated = ap_pstrdup(r->pool, ap_table_get(e, "PATH_TRANSLATED"));
+    ecb->lpszContentType = ap_pstrdup(r->pool, ap_table_get(e, "CONTENT_TYPE"));
 
     /* Set up client input */
     if ((retval = ap_setup_client_block(r, REQUEST_CHUNKED_ERROR))) {
@@ -326,8 +335,10 @@ int isapi_handler (request_rec *r) {
 
         return OK;
     case HSE_STATUS_PENDING:   /* We don't support this */
-        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, r,
-                     "ISAPI asynchronous I/O not supported: %s", r->filename);
+        if (LogNotSupported)
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, r,
+                         "ISAPI asynchronous I/O not supported: %s", 
+                         r->filename);
     case HSE_STATUS_ERROR:
     default:
         return SERVER_ERROR;
@@ -347,7 +358,7 @@ BOOL WINAPI GetServerVariable (HCONN hConn, LPSTR lpszVariableName,
          */
         char **env = (char**) ap_table_elts(r->subprocess_env)->elts;
         int n = ap_table_elts(r->subprocess_env)->nelts;
-        int len = 0;
+        DWORD len = 0;
         int i = 0;
 
         while (i < n * 2) {
@@ -383,7 +394,7 @@ BOOL WINAPI GetServerVariable (HCONN hConn, LPSTR lpszVariableName,
          */
         char **raw = (char**) ap_table_elts(r->headers_in)->elts;
         int n = ap_table_elts(r->headers_in)->nelts;
-        int len = 0;
+        DWORD len = 0;
         int i = 0;
 
         while (i < n * 2) {
@@ -435,8 +446,10 @@ BOOL WINAPI WriteClient (HCONN ConnID, LPVOID Buffer, LPDWORD lpwdwBytes,
 
     /* We only support synchronous writing */
     if (dwReserved && dwReserved != HSE_IO_SYNC) {
-        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, r,
-                     "ISAPI asynchronous I/O not supported: %s", r->filename);
+        if (LogNotSupported)
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, r,
+                          "ISAPI asynchronous I/O not supported: %s", 
+                          r->filename);
         SetLastError(ERROR_INVALID_PARAMETER);
         return FALSE;
     }
@@ -579,53 +592,69 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
         return TRUE;
 
     case 1001: /* HSE_REQ_MAP_URL_TO_PATH */
-        /* Map a URL to a filename
-         */
-        subreq = ap_sub_req_lookup_uri(ap_pstrndup(r->pool, (char *)lpvBuffer,
-                                                   *lpdwSize), r);
+    {
+        /* Map a URL to a filename */
+        char *file = (char *)lpvBuffer;
+        subreq = ap_sub_req_lookup_uri(ap_pstrndup(r->pool, file, *lpdwSize), r);
 
-        GetFullPathName(subreq->filename, *lpdwSize - 1, (char *)lpvBuffer, NULL);
+        strncpy(file, subreq->filename, *lpdwSize - 1);
+        file[*lpdwSize - 1] = '\0';
 
         /* IIS puts a trailing slash on directories, Apache doesn't */
         if (S_ISDIR (subreq->finfo.st_mode)) {
-            int l = strlen((char *)lpvBuffer);
-            ((char *)lpvBuffer)[l] = '\\';
-            ((char *)lpvBuffer)[l + 1] = '\0';
+            DWORD l = strlen(file);
+            if (l < *lpdwSize - 1) {
+                file[l] = '\\';
+                file[l + 1] = '\0';
+            }
         }
-
         return TRUE;
+    }
 
     case 1002: /* HSE_REQ_GET_SSPI_INFO */
+        if (LogNotSupported)
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, r,
+                          "ISAPI ServerSupportFunction HSE_REQ_GET_SSPI_INFO "
+                          "is not supported: %s", r->filename);
         SetLastError(ERROR_INVALID_PARAMETER);
-        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, r,
-                      "ISAPI ServerSupportFunction HSE_REQ_GET_SSPI_INFO "
-                      "is not supported: %s", r->filename);
         return FALSE;
 
     case 1003: /* HSE_APPEND_LOG_PARAMETER */
         /* Log lpvBuffer, of lpdwSize bytes, in the URI Query (cs-uri-query) field
          * This code will do for now...
          */
-        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, r,
-                      "ISAPI %s: %s", cid->r->filename,
-                      (char*) lpvBuffer);
+        ap_table_set(r->notes, "isapi-parameter", (char*) lpvBuffer);
+        if (AppendLogToQuery) {
+            if (r->args)
+                r->args = ap_pstrcat(r->pool, r->args, (char*) lpvBuffer, NULL);
+            else
+                r->args = ap_pstrdup(r->pool, (char*) lpvBuffer);
+        }
+        if (AppendLogToErrors)
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, r,
+                          "ISAPI %s: %s", cid->r->filename,
+                          (char*) lpvBuffer);
         return TRUE;
 
     /* We don't support all this async I/O, Microsoft-specific stuff */
     case 1005: /* HSE_REQ_IO_COMPLETION */
     case 1006: /* HSE_REQ_TRANSMIT_FILE */
+        if (LogNotSupported)
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, r,
+                          "ISAPI asynchronous I/O not supported: %s", 
+                          r->filename);
         SetLastError(ERROR_INVALID_PARAMETER);
-        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, r,
-                     "ISAPI asynchronous I/O not supported: %s", r->filename);
         return FALSE;
 
     case 1007: /* HSE_REQ_REFRESH_ISAPI_ACL */
         /* Since we don't override the user ID and access, we can't reset.
          */
+        if (LogNotSupported)
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, r,
+                          "ISAPI ServerSupportFunction "
+                          "HSE_REQ_REFRESH_ISAPI_ACL "
+                          "is not supported: %s", r->filename);
         SetLastError(ERROR_INVALID_PARAMETER);
-        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, r,
-                      "ISAPI ServerSupportFunction HSE_REQ_REFRESH_ISAPI_ACL "
-                      "is not supported: %s", r->filename);
         return FALSE;
 
     case 1008: /* HSE_REQ_IS_KEEP_CONN */
@@ -633,79 +662,106 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
         return TRUE;
 
     case 1010: /* HSE_REQ_ASYNC_READ_CLIENT */
-        SetLastError(ERROR_INVALID_PARAMETER);
-        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, r,
-                     "ISAPI asynchronous I/O not supported: %s", r->filename);
+        if (LogNotSupported)
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, r,
+                          "ISAPI asynchronous I/O not supported: %s", 
+                          r->filename);
         SetLastError(ERROR_INVALID_PARAMETER);
         return FALSE;
 
     case 1011: /* HSE_REQ_GET_IMPERSONATION_TOKEN  Added in ISAPI 4.0 */
+        if (LogNotSupported)
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, r,
+                          "ISAPI ServerSupportFunction "
+                          "HSE_REQ_GET_IMPERSONATION_TOKEN "
+                          "is not supported: %s", r->filename);
         SetLastError(ERROR_INVALID_PARAMETER);
-        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, r,
-                      "ISAPI ServerSupportFunction HSE_REQ_ABORTIVE_CLOSE "
-                      "is not supported: %s", r->filename);
         return FALSE;
 
     case 1012: /* HSE_REQ_MAP_URL_TO_PATH_EX */
-        SetLastError(ERROR_INVALID_PARAMETER);
-        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, r,
-                      "ISAPI ServerSupportFunction HSE_REQ_ABORTIVE_CLOSE "
-                      "is not supported: %s", r->filename);
-        return FALSE;
-
-        /* TODO: Not quite ready for prime time yet */
-
+    {
         /* Map a URL to a filename */
-        subreq = ap_sub_req_lookup_uri(ap_pstrndup(r->pool, (char *)lpvBuffer,
-                                                   *lpdwSize), r);
+        LPHSE_URL_MAPEX_INFO info = (LPHSE_URL_MAPEX_INFO) lpdwDataType;
+        char* test_uri = ap_pstrndup(r->pool, (char *)lpvBuffer, *lpdwSize);
 
-        GetFullPathName(subreq->filename, *lpdwSize - 1, (char *)lpvBuffer, NULL);
-
-        /* IIS puts a trailing slash on directories, Apache doesn't */
-
-        if (S_ISDIR(subreq->finfo.st_mode)) {
-            int l = strlen((char *)lpvBuffer);
-
-            ((char *)lpvBuffer)[l] = '\\';
-            ((char *)lpvBuffer)[l + 1] = '\0';
+        subreq = ap_sub_req_lookup_uri(test_uri, r);
+        info->lpszPath[MAX_PATH - 1] = '\0';
+        strncpy(info->lpszPath, subreq->filename, MAX_PATH - 1);
+        info->cchMatchingURL = strlen(test_uri);        
+        info->cchMatchingPath = strlen(info->lpszPath);
+        /* Mapping started with assuming both strings matched.
+         * Now roll on the path_info as a mismatch and handle
+         * terminating slashes for directory matches.
+         */
+        if (subreq->path_info && *subreq->path_info) {
+            strncpy(info->lpszPath + info->cchMatchingPath, subreq->path_info,
+                    MAX_PATH - info->cchMatchingPath - 1);
+            info->cchMatchingURL -= strlen(subreq->path_info);
+            if (S_ISDIR(subreq->finfo.st_mode)
+                 && info->cchMatchingPath < MAX_PATH - 1) {
+                /* roll forward over path_info's first slash */
+                ++info->cchMatchingPath;
+                ++info->cchMatchingURL;
+            }
+        }
+        else if (S_ISDIR(subreq->finfo.st_mode)
+                 && info->cchMatchingPath < MAX_PATH - 1) {
+            /* Add a trailing slash for directory */
+            info->lpszPath[info->cchMatchingPath++] = '/';
+            info->lpszPath[info->cchMatchingPath] = '\0';
         }
 
-        lpdwDataType = (LPDWORD) ap_palloc(r->pool, sizeof(HSE_URL_MAPEX_INFO));
-        strncpy(((LPHSE_URL_MAPEX_INFO)lpdwDataType)->lpszPath,
-                (char *) lpvBuffer, MAX_PATH);
-        ((LPHSE_URL_MAPEX_INFO)lpdwDataType)->dwFlags = 0;
+        /* If the matched isn't a file, roll match back to the prior slash */
+        if (!subreq->finfo.st_mode) {
+            while (info->cchMatchingPath && info->cchMatchingURL) {
+                if (info->lpszPath[info->cchMatchingPath - 1] == '/') 
+                    break;
+                --info->cchMatchingPath;
+                --info->cchMatchingURL;
+            }
+        }
+        
+        /* Paths returned with back slashes */
+        for (test_uri = info->lpszPath; *test_uri; ++test_uri)
+            if (*test_uri == '/')
+                *test_uri = '\\';
+        
         /* is a combination of:
-         * HSE_URL_FLAGS_READ       Allow for read.
-         * HSE_URL_FLAGS_WRITE      Allow for write.
-         * HSE_URL_FLAGS_EXECUTE    Allow for execute.
-         * HSE_URL_FLAGS_SSL        Require SSL.
-         * HSE_URL_FLAGS_DONT_CACHE Don't cache (virtual root only).
-         * HSE_URL_FLAGS_NEGO_CERT  Allow client SSL certifications.
-         * HSE_URL_FLAGS_REQUIRE_CERT Require client SSL certifications.
-         * HSE_URL_FLAGS_MAP_CERT   Map SSL certification to a Windows account.
-         * HSE_URL_FLAGS_SSL128     Requires a 128-bit SSL.
-         * HSE_URL_FLAGS_SCRIPT     Allows for script execution.
-         */
-        /* (LPHSE_URL_MAPEX_INFO)lpdwDataType)->cchMatchingPath
-         * (LPHSE_URL_MAPEX_INFO)lpdwDataType)->cchMatchingURL
+         * HSE_URL_FLAGS_READ         0x001 Allow read
+         * HSE_URL_FLAGS_WRITE        0x002 Allow write
+         * HSE_URL_FLAGS_EXECUTE      0x004 Allow execute
+         * HSE_URL_FLAGS_SSL          0x008 Require SSL
+         * HSE_URL_FLAGS_DONT_CACHE   0x010 Don't cache (VRoot only)
+         * HSE_URL_FLAGS_NEGO_CERT    0x020 Allow client SSL cert
+         * HSE_URL_FLAGS_REQUIRE_CERT 0x040 Require client SSL cert
+         * HSE_URL_FLAGS_MAP_CERT     0x080 Map client SSL cert to account
+         * HSE_URL_FLAGS_SSL128       0x100 Require 128-bit SSL cert
+         * HSE_URL_FLAGS_SCRIPT       0x200 Allow script execution
          *
-         * Here we have a headache... MS identifies the significant length
-         * of the Path and URL that actually match one another.
-         */
+         * XxX: As everywhere, EXEC flags could use some work...
+         *      and this could go further with more flags, as desired.
+         */ 
+        info->dwFlags = (subreq->finfo.st_mode & _S_IREAD  ? 0x001 : 0)
+                      | (subreq->finfo.st_mode & _S_IWRITE ? 0x002 : 0)
+                      | (subreq->finfo.st_mode & _S_IEXEC  ? 0x204 : 0);
         return TRUE;
+    }
 
     case 1014: /* HSE_REQ_ABORTIVE_CLOSE */
+        if (LogNotSupported)
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, r,
+                          "ISAPI ServerSupportFunction HSE_REQ_ABORTIVE_CLOSE"
+                          " is not supported: %s", r->filename);
         SetLastError(ERROR_INVALID_PARAMETER);
-        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, r,
-                      "ISAPI ServerSupportFunction HSE_REQ_ABORTIVE_CLOSE "
-                      "is not supported: %s", r->filename);
         return FALSE;
 
     case 1015: /* HSE_REQ_GET_CERT_INFO_EX  Added in ISAPI 4.0 */
+        if (LogNotSupported)
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, r,
+                          "ISAPI ServerSupportFunction "
+                          "HSE_REQ_GET_CERT_INFO_EX "
+                          "is not supported: %s", r->filename);
         SetLastError(ERROR_INVALID_PARAMETER);
-        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, r,
-                      "ISAPI ServerSupportFunction HSE_REQ_GET_CERT_INFO_EX "
-                      "is not supported: %s", r->filename);
         return FALSE;
 
     case 1016: /* HSE_REQ_SEND_RESPONSE_HEADER_EX  Added in ISAPI 4.0 */
@@ -719,9 +775,11 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
     }
 
     case 1017: /* HSE_REQ_CLOSE_CONNECTION  Added after ISAPI 4.0 */
-        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, r,
-                      "ISAPI ServerSupportFunction HSE_REQ_CLOSE_CONNECTION "
-                      "is not supported: %s", r->filename);
+        if (LogNotSupported)
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, r,
+                          "ISAPI ServerSupportFunction "
+                          "HSE_REQ_CLOSE_CONNECTION "
+                          "is not supported: %s", r->filename);
         SetLastError(ERROR_INVALID_PARAMETER);
         return FALSE;
 
@@ -736,21 +794,118 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
     case 1020: /* HSE_REQ_EXTENSION_TRIGGER  Added after ISAPI 4.0 */
         /*  Undocumented - defined by the Microsoft Jan '00 Platform SDK
          */
+        if (LogNotSupported)
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, r,
+                          "ISAPI ServerSupportFunction "
+                          "HSE_REQ_EXTENSION_TRIGGER "
+                          "is not supported: %s", r->filename);
         SetLastError(ERROR_INVALID_PARAMETER);
-        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, r,
-                      "ISAPI ServerSupportFunction HSE_REQ_EXTENSION_TRIGGER "
-                      "is not supported: %s", r->filename);
         return FALSE;
 
 
     default:
+        if (LogNotSupported)
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, r,
+                          "ISAPI ServerSupportFunction (%d) not supported: "
+                          "%s", dwHSERequest, r->filename);
         SetLastError(ERROR_INVALID_PARAMETER);
-        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, r,
-                      "ISAPI ServerSupportFunction (%d) not supported: %s",
-                      dwHSERequest, r->filename);
         return FALSE;
     }
 }
+
+/*
+ * Command handler for the ISAPIReadAheadBuffer directive, which is TAKE1
+ */
+static const char *isapi_cmd_readaheadbuffer(cmd_parms *cmd, void *config, 
+                                             char *arg)
+{
+    long val;
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+
+    if (((val = strtol(arg, (char **) &err, 10)) <= 0) || *err)
+        return "ISAPIReadAheadBuffer must be a legitimate value.";
+    
+    ReadAheadBuffer = val;
+    return NULL;
+}
+
+/*
+ * Command handler for the ISAPIReadAheadBuffer directive, which is TAKE1
+ */
+static const char *isapi_cmd_lognotsupported(cmd_parms *cmd, void *config, 
+                                             char *arg)
+{
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+
+    if (strcasecmp(arg, "on") == 0) {
+        LogNotSupported = -1;
+    }
+    else if (strcasecmp(arg, "off") == 0) {
+        LogNotSupported = 0;
+    }
+    else {
+        return "ISAPILogNotSupported must be on or off";
+    }
+    return NULL;
+}
+
+static const char *isapi_cmd_appendlogtoerrors(cmd_parms *cmd, void *config, 
+                                               char *arg)
+{
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+
+    if (strcasecmp(arg, "on") == 0) {
+        AppendLogToErrors = -1;
+    }
+    else if (strcasecmp(arg, "off") == 0) {
+        AppendLogToErrors = 0;
+    }
+    else {
+        return "ISAPIAppendLogToErrors must be on or off";
+    }
+    return NULL;
+}
+
+static const char *isapi_cmd_appendlogtoquery(cmd_parms *cmd, void *config, 
+                                               char *arg)
+{
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+
+    if (strcasecmp(arg, "on") == 0) {
+        AppendLogToQuery = -1;
+    }
+    else if (strcasecmp(arg, "off") == 0) {
+        AppendLogToQuery = 0;
+    }
+    else {
+        return "ISAPIAppendLogToQuery must be on or off";
+    }
+    return NULL;
+}
+
+static const command_rec isapi_cmds[] = {
+{ "ISAPIReadAheadBuffer", isapi_cmd_readaheadbuffer, NULL, RSRC_CONF, TAKE1, 
+  "Maximum bytes to initially pass to the ISAPI handler" },
+{ "ISAPILogNotSupported", isapi_cmd_lognotsupported, NULL, RSRC_CONF, TAKE1, 
+  "Log requests not supported by the ISAPI server" },
+{ "ISAPIAppendLogToErrors", isapi_cmd_appendlogtoerrors, NULL, RSRC_CONF, TAKE1, 
+  "Send all Append Log requests to the error log" },
+{ "ISAPIAppendLogToQuery", isapi_cmd_appendlogtoquery, NULL, RSRC_CONF, TAKE1, 
+  "Append Log requests are concatinated to the query args" },
+{ NULL }
+};
 
 handler_rec isapi_handlers[] = {
 { "isapi-isa", isapi_handler },
@@ -764,7 +919,7 @@ module isapi_module = {
    NULL,                        /* merge per-dir config */
    NULL,                        /* server config */
    NULL,                        /* merge server config */
-   NULL,                        /* command table */
+   isapi_cmds,                  /* command table */
    isapi_handlers,              /* handlers */
    NULL,                        /* filename translation */
    NULL,                        /* check_user_id */
