@@ -433,7 +433,8 @@ static int cgi_handler(request_rec *r)
 			 &script_out, &script_in, &script_err)) {
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
 		    "couldn't spawn child process: %s", r->filename);
-	return SERVER_ERROR;
+	ap_table_setn(r->notes, "error-notes", "Couldn't spawn child process");
+	return HTTP_INTERNAL_SERVER_ERROR;
     }
 
     /* Transfer any put/post args, CERN style...

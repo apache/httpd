@@ -1,5 +1,10 @@
 Changes with Apache 1.3.2
 
+  *) Problems encountered during .htaccess parsing or CGI execution
+     that lead to a "500 Server Error" condition now provide explanatory
+     text (in the *ERROR_NOTES envariable) to ErrorDocument 500 scripts.
+     [Ken Coar] PR#1291
+
   *) Add NameWidth keyword to IndexOptions directive so that the
      width of the filename column is customisable.  [Ken Coar, Dean Gaudet]
      PR#1949, 2324.
