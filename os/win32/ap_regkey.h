@@ -92,6 +92,11 @@ AP_DECLARE(const ap_regkey_t *) ap_regkey_const(int i);
 #define AP_REGKEY_DYN_DATA             ap_regkey_const(6)
 
 /**
+ * Win32 Only: Flags for ap_regkey_value_set()
+ */
+#define AP_REGKEY_EXPAND               0x0001
+
+/**
  * Win32 Only: Open the specified registry key.
  * @param newkey The opened registry key
  * @param parentkey The open registry key of the parent, or one of
@@ -158,6 +163,9 @@ AP_DECLARE(apr_status_t) ap_regkey_remove(const ap_regkey_t *parent,
  * @param key The registry key to retrieve the value from
  * @param valuename The named value to retrieve (pass "" for the default)
  * @param pool The pool used to store the result
+ * @remark There is no toggle to prevent environment variable expansion
+ * if the registry value is set with AP_REG_EXPAND (REG_EXPAND_SZ), such
+ * expansions are always performed.
  */
 AP_DECLARE(apr_status_t) ap_regkey_value_get(char **result, 
                                              ap_regkey_t *key, 
@@ -169,12 +177,47 @@ AP_DECLARE(apr_status_t) ap_regkey_value_get(char **result,
  * @param key The registry key to store the value into
  * @param valuename The named value to store (pass "" for the default)
  * @param value The string to store for the named value
+ * @param flags The option AP_REGKEY_EXPAND or 0, where AP_REGKEY_EXPAND
+ * values will find all %foo% variables expanded from the environment.
  * @param pool The pool used for temp allocations
  */
 AP_DECLARE(apr_status_t) ap_regkey_value_set(ap_regkey_t *key, 
                                              const char *valuename, 
                                              const char *value, 
+                                             apr_int32_t flags,
                                              apr_pool_t *pool);
+
+/**
+ * Win32 Only: Retrieve a raw byte value from an open key.
+ * @param result The raw bytes value retrieved 
+ * @param resultsize Pointer to a variable to store the number raw bytes retrieved 
+ * @param key The registry key to retrieve the value from
+ * @param valuename The named value to retrieve (pass "" for the default)
+ * @param pool The pool used to store the result
+ */
+AP_DECLARE(apr_status_t) ap_regkey_value_raw_get(void **result, 
+                                                 apr_size_t *resultsize,
+                                                 apr_int32_t *resulttype,
+                                                 ap_regkey_t *key, 
+                                                 const char *valuename, 
+                                                 apr_pool_t *pool);
+
+/**
+ * Win32 Only: Store a raw bytes value into an open key.
+ * @param key The registry key to store the value into
+ * @param valuename The named value to store (pass "" for the default)
+ * @param value The bytes to store for the named value
+ * @param valuesize The number of bytes for value
+ * @param valuetype The 
+ * values will find all %foo% variables expanded from the environment.
+ * @param pool The pool used for temp allocations
+ */
+AP_DECLARE(apr_status_t) ap_regkey_value_raw_set(ap_regkey_t *key, 
+                                                 const char *valuename, 
+                                                 const void *value, 
+                                                 apr_size_t  valuesize,
+                                                 apr_int32_t valuetype,
+                                                 apr_pool_t *pool);
 
 /**
  * Win32 Only: Retrieve a registry value string from an open key.
