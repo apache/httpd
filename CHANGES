@@ -1,4 +1,8 @@
 Changes with Apache 2.0.33-dev
+
+  *) Merged in changes to mod_ssl up through 2.8.7-1.3.23.
+     [Ralf S. Engelschall, Cliff Woolley]
+
   *) mod-include: make it handle flush'es and fix the 'false-alarm'
      [Justin Everkrantz, Brian Pane, Ian Holsman]
 

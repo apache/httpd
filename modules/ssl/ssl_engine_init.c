@@ -221,7 +221,11 @@ int ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
 
     /*
      * Seed the Pseudo Random Number Generator (PRNG)
+     *
+     * Note: scoreboard size must be fetched at init time because
+     * ap_calc_scoreboard_size() is not threadsafe
      */
+    mc->nScoreboardSize = ap_calc_scoreboard_size();
     ssl_rand_seed(s, p, SSL_RSCTX_STARTUP, "Init: ");
 
     /*
@@ -713,7 +717,8 @@ void ssl_init_ConfigureServer(server_rec *s, apr_pool_t *p, SSLSrvConfigRec *sc)
             }
             if (SSL_X509_getCN(p, sc->pPublicCert[i], &cp)) {
                 if (apr_is_fnmatch(cp) &&
-                    !apr_fnmatch(cp, s->server_hostname, FNM_PERIOD|FNM_CASE_BLIND)) {
+                    apr_fnmatch(cp, s->server_hostname,
+                                FNM_PERIOD|FNM_CASE_BLIND) == FNM_NOMATCH) {
                     ssl_log(s, SSL_LOG_WARN,
                         "Init: (%s) %s server certificate wildcard CommonName (CN) `%s' "
                         "does NOT match server name!?", cpVHostID, 

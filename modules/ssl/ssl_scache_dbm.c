@@ -142,8 +142,10 @@ BOOL ssl_scache_dbm_store(server_rec *s, UCHAR *id, int idlen, time_t expiry, SS
     UCHAR *ucp;
 
     /* streamline session data */
+    if ((nData = i2d_SSL_SESSION(sess, NULL)) > sizeof(ucaData))
+        return FALSE;
     ucp = ucaData;
-    nData = i2d_SSL_SESSION(sess, &ucp);
+    i2d_SSL_SESSION(sess, &ucp);
 
     /* be careful: do not try to store too much bytes in a DBM file! */
 #ifdef PAIRMAX
