@@ -375,12 +375,12 @@ void usage(char *bin)
  * one timeout in progress at a time...
  */
 
-static APACHE_TLS conn_rec * current_conn;
-static APACHE_TLS request_rec *timeout_req;
-static APACHE_TLS const char *timeout_name = NULL;
-static APACHE_TLS int alarms_blocked = 0;
-static APACHE_TLS int alarm_pending = 0;
-static APACHE_TLS int exit_after_unblock = 0;
+static APACHE_TLS conn_rec * volatile current_conn;
+static APACHE_TLS request_rec * volatile timeout_req;
+static APACHE_TLS const char * volatile timeout_name = NULL;
+static APACHE_TLS int volatile alarms_blocked = 0;
+static APACHE_TLS int volatile alarm_pending = 0;
+static APACHE_TLS int volatile exit_after_unblock = 0;
 
 #ifndef NO_USE_SIGACTION
 /*
@@ -414,7 +414,7 @@ void timeout(int sig)			/* Also called on SIGPIPE */
 	alarm_pending = 1;
 	return;
     }
-    
+
     if (!current_conn) {
 	ap_longjmp (jmpbuffer, 1);
     }
@@ -487,10 +487,19 @@ API_EXPORT(void) unblock_alarms() {
 }
 
 
-static APACHE_TLS void (*alarm_fn)(int) = NULL;
+static APACHE_TLS void (* volatile alarm_fn)(int) = NULL;
 #ifdef WIN32
 static APACHE_TLS unsigned int alarm_expiry_time = 0;
 #endif /* WIN32 */
+
+#ifndef WIN32
+static void alrm_handler (int sig)
+{
+    if (alarm_fn) {
+	(*alarm_fn)(sig);
+    }
+}
+#endif
 
 unsigned int
 set_callback_and_alarm(void (*fn)(int), int x)
@@ -512,10 +521,8 @@ set_callback_and_alarm(void (*fn)(int), int x)
         alarm_expiry_time = time(NULL) + x;
     }
 #else
-    if(x)
+    if(x) {
 	alarm_fn = fn;
-    if (alarm_fn != fn) {
-	signal(SIGALRM, fn);
     }
     old = alarm(x);
 #endif
@@ -1500,17 +1507,21 @@ void just_die(int sig)			/* SIGHUP to child process??? */
     }
 }
 
-static int deferred_die;
+static int volatile usr1_just_die = 1;
+static int volatile deferred_die;
 
-static void deferred_die_handler (int sig)
+static void usr1_handler (int sig)
 {
+    if (usr1_just_die) {
+	just_die (sig);
+    }
     deferred_die = 1;
 }
 
 /* volatile just in case */
-static volatile int restart_pending;
-static volatile int is_graceful;
-static volatile int generation;
+static int volatile restart_pending;
+static int volatile is_graceful;
+static int volatile generation;
 
 static void restart (int sig)
 {
@@ -2205,6 +2216,8 @@ void child_main(int child_num_arg)
 #ifndef __EMX__
     signal(SIGURG, timeout);
 #endif    
+    signal(SIGPIPE, timeout);  
+    signal(SIGALRM, alrm_handler);
 
     while (1) {
 	BUFF *conn_io;
@@ -2214,7 +2227,8 @@ void child_main(int child_num_arg)
 	 * we can exit cleanly.  Since we're between connections right
 	 * now it's the right time to exit, but we might be blocked in a
 	 * system call when the graceful restart request is made. */
-	signal (SIGUSR1, just_die);
+	usr1_just_die = 1;
+	signal (SIGUSR1, usr1_handler);
 
         /*
          * (Re)initialize this child to a pre-connection state.
@@ -2223,7 +2237,6 @@ void child_main(int child_num_arg)
         alarm(0);		/* Cancel any outstanding alarms. */
         timeout_req = NULL;	/* No request in progress */
 	current_conn = NULL;
-        signal(SIGPIPE, timeout);  
     
 	clear_pool (ptrans);
 	
@@ -2269,7 +2282,7 @@ void child_main(int child_num_arg)
 	     * defer the exit
 	     */
 	    deferred_die = 0;
-	    signal (SIGUSR1, deferred_die_handler);
+	    usr1_just_die = 0;
             for (;;) {
                 clen = sizeof(sa_client);
                 csd  = accept(sd, &sa_client, &clen);
@@ -2295,7 +2308,7 @@ void child_main(int child_num_arg)
             }
 
 	    /* go around again, safe to die */
-	    signal (SIGUSR1, just_die);
+	    usr1_just_die = 1;
 	    if (deferred_die) {
 		/* ok maybe not, see ya later */
 		child_exit_modules(pconf, server_conf);
@@ -2367,10 +2380,9 @@ void child_main(int child_num_arg)
 
         while ((r = read_request(current_conn)) != NULL) {
 
-	    /* ok we've read the request... it's a little too late
-	     * to do a graceful restart, so ignore them for now.
+	    /* read_request_line has already done a
+	     * signal (SIGUSR1, SIG_IGN);
 	     */
-	    signal (SIGUSR1, SIG_IGN);
 
             (void)update_child_status(child_num, SERVER_BUSY_WRITE, r);
 
@@ -2406,7 +2418,8 @@ void child_main(int child_num_arg)
 	     * connections to close before receiving a response because
 	     * of network latencies and server timeouts.
 	     */
-	    signal (SIGUSR1, just_die);
+	    usr1_just_die = 1;
+	    signal (SIGUSR1, usr1_handler);
         }
 
         /*
@@ -2520,6 +2533,7 @@ static int idle_spawn_rate = 1;
 #ifndef MAX_SPAWN_RATE
 #define MAX_SPAWN_RATE	(32)
 #endif
+static int hold_off_on_exponential_spawning;
 
 static void perform_idle_server_maintenance (void)
 {
@@ -2596,9 +2610,11 @@ static void perform_idle_server_maintenance (void)
 		++i;
 	    }
 	    /* the next time around we want to spawn twice as many if this
-	     * wasn't good enough
+	     * wasn't good enough, but not if we've just done a graceful
 	     */
-	    if (idle_spawn_rate < MAX_SPAWN_RATE) {
+	    if (hold_off_on_exponential_spawning) {
+		--hold_off_on_exponential_spawning;
+	    } else if (idle_spawn_rate < MAX_SPAWN_RATE) {
 		idle_spawn_rate *= 2;
 	    }
 	}
@@ -2680,6 +2696,10 @@ void standalone_main(int argc, char **argv)
 	if (!is_graceful) {
 	    startup_children (remaining_children_to_start);
 	    remaining_children_to_start = 0;
+	} else {
+	    /* give the system some time to recover before kicking into
+	     * exponential mode */
+	    hold_off_on_exponential_spawning = 10;
 	}
 
 	log_error ("Server configured -- resuming normal operations",
