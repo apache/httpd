@@ -42,7 +42,7 @@ Plan:
 
    - Wednesday, April 15: 
      Rolling the 1.3b6 tarball and pushing the version
-     number to Apache 1.3.0-dev
+     number to Apache 1.3b7
 
    - Thursday, April 16: 
      Double-checking the rolled 1.3b6 tarball
