@@ -41,10 +41,10 @@ use this mode to provide ordinary web service.
 
 <dt><a name="help"><code>-h</code></a>
 <dd>Give a list of directives together with expected arguments and
-places where the directive is valid
+places where the directive is valid. (New in Apache 1.2)
 
 <dt><code>-l</code>
-<dd>Give a list of all modules compiled into the server
+<dd>Give a list of all modules compiled into the server.
 
 <dt><code>-?</code>
 <dd>Print a list of the httpd options, and then exit.
