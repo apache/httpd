@@ -63,7 +63,6 @@ static void register_hooks()
 
 API_VAR_EXPORT module echo_module = {
     STANDARD20_MODULE_STUFF,
-    NULL, 			/* child_init */
     NULL,			/* create per-directory config structure */
     NULL,			/* merge per-directory config structures */
     create_echo_server_config,	/* create per-server config structure */
