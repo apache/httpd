@@ -219,7 +219,7 @@ bindir=$bindir
 progname=$progname
 ])
 
-perlbin=`which perl`
+perlbin=`./helpers/PrintPath perl`
 AC_SUBST(perlbin)
 
 AC_OUTPUT($APACHE_OUTPUT_FILES support/apxs)
