@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="iso-2022-jp" ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
+<!-- English revision: 1.2 -->
+
+<manualpage>
+  <relativepath href="."/>
+
+  <title>バインド</title>
+
+  <summary>
+    <p>Apache が使用するアドレスとポートの設定をします。</p>
+  </summary>
+  
+  <seealso><a href="vhosts/">バーチャルホスト</a></seealso>
+  <seealso><a href="dns-caveats.html">DNS の問題</a></seealso>
+
+  <section id="overview">
+    <title>概要</title>
+    
+    <related>
+      <modulelist>
+        <module>core</module>
+        <module>mpm_common</module>
+      </modulelist>
+      <directivelist>
+        <directive module="core">VirtualHost</directive>
+        <directive module="mpm_common">Listen</directive>
+      </directivelist>
+    </related>
+    
+    
+    <p>Apache は起動時に、ローカルマシンのあるポートあよびアドレス
+    に対して接続し、リクエストが来るのを待ちます。
+    デフォルトではマシンのすべてのアドレスに対して listen します。
+    しかしながら、特定のポートか、特定のアドレスのみか、
+    またはそれらの組み合わせのいずれかを listen するようにする必要があります。
+    これは、異なる IP アドレス、ホスト名、ポートに対する Apache
+    の応答方法を決定するバーチャルホスト機能と組み合わせて使われます。</p>
+
+    <p><directive module="mpm_common">Listen</directive>
+    ディレクティブで、特定のポートやアドレス・ポートの組からのみ入ってくる
+    リクエストを受け付けるようにできます。
+    もしポート番号のみが <directive module="mpm_common">Listen</directive>
+    ディレクティブで指定された場合は、
+    すべてのインターフェースの与えられたポート番号を
+    listen します。 IP アドレスがポート番号と同時に与えられた場合は、
+    サーバは与えられたポートとインターフェースを listen します。
+    複数の Listen ディレクティブを用いて
+    いくつかの listen するアドレスとポートを指定できます。
+    サーバはリストされたアドレスやポートからのすべてのリクエストに
+    対して応答します。</p>
+
+    <p>たとえば、ポート 80 と 8000 の両方に対しての接続を受け付けるには</p>
+
+    <example>
+      Listen 80<br />
+      Listen 8000
+    </example>
+
+    <p>とします。
+    二つの指定されたインタフェースとポート番号に対しての接続を受け付けるには、
+    </p>
+
+    <example>
+      Listen 192.170.2.1:80<br />
+      Listen 192.170.2.5:8000
+    </example>
+
+    <p>とします。
+    IPv6 アドレスは、角括弧で次の例のように囲まなければいけません。</p>
+
+    <example>
+      Listen [fe80::a00:20ff:fea7:ccea]:80
+    </example>
+  </section>
+
+  <section id="ipv6">
+    <title>IPv6 の特記事項</title>
+
+    <p>APR が IPv6 をサポートする場合は、Apache はデフォルトで IPv6
+    を listen するソケットを作ります (例えば Listen ディレクティブで
+    IP アドレスが無指定の場合)。
+    つまり、APR が IPv6 をサポートしている場合、</p>
+
+    <example>
+      Listen 80
+    </example>
+
+    <p>は、次と同じ意味になります。</p>
+
+    <example>
+      Listen [::]:80
+    </example>
+
+    <p>APR が IPv6 をサポートしていない場合は、</p>
+
+    <example>
+      Listen 80
+    </example>
+
+    <p>は、次と同じ意味になります。</p>
+
+    <example>
+      Listen 0.0.0.0:80
+    </example>
+
+    <p>NetBSD 等のいくつかのプラットホームでは、IPv6
+    のワイルドカードアドレス (「::」) のバインドでは IPv4
+    インターフェースにコネクションを張れません。
+    このような状況では、次のように複数の Listen ディレクティブが必要になります。
+    </p>
+
+    <example>
+      Listen 0.0.0.0:80<br />
+      Listen [::]:0
+    </example>
+
+    <p>Apache は現在これを自動検出することができないので、
+    そのような場合は
+    Listen 命令文は管理者が手動で編集しないといけません。</p>
+  </section>
+
+  <section id="virtualhost">
+    <title>バーチャルホストに対してどう働くのか</title>
+
+    <p>Listen でバーチャルホストが実装されるわけではありません。
+    Listen は単にメインサーバにどのアドレスとポートを listen すべきかを
+    教えるだけです。
+    <directive module="core" type="section">VirtualHost</directive>
+    ディレクティブが使われない場合は、
+    受け入れたリクエストすべてに対して全く同じ挙動をします。
+    しかしながら
+    <directive module="core" type="section">VirtualHost</directive>
+    を使って、
+    一つ以上のアドレスやポートに対して異なる挙動をするように
+    指定することができます。
+    VirtualHost を実装するには、使用するアドレスとポートを
+    まず初めにサーバに通知しなければなりません。
+    そして、その指定したアドレスとポートでの
+    このバーチャルホストの挙動を設定するために、
+    <directive module="core" type="section">VirtualHost</directive>
+    セクションを作ります。もし
+    <directive module="core" type="section">VirtualHost</directive>
+    が listen していないアドレスとポートに対して
+    設定されてしまうと、
+    それにはアクセスできないということに注意してください。</p>
+  </section>
+</manualpage>
