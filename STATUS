@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/03/04 14:44:28 $]
+Last modified at [$Date: 2002/03/04 14:53:32 $]
 
 Release:
 
@@ -420,6 +420,10 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
     * Fix the worker MPM to use POD to kill child processes instead
       of ap_os_killpg, regardless of how they should die. (Ryan Bloom)
+
+    * mod_cache: handle cache_control: no_cache "field_name" to enable 
+      cacheing the response w/o header "field_name"
+      See RFC2616 section 14.9.1
 
 PRs that have been suspended forever waiting for someone to
 put them into 'the next release':
