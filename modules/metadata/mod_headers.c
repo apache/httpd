@@ -281,15 +281,15 @@ static char *parse_misc_string(apr_pool_t *p, format_tag *tag, const char **sa)
 static char *parse_format_tag(apr_pool_t *p, format_tag *tag, const char **sa)
 { 
     const char *s = *sa;
-    void *tag_handler;
-
+    const char * (*tag_handler)(request_rec *,char *);
+    
     /* Handle string literal/conditionals */
     if (*s != '%') {
         return parse_misc_string(p, tag, sa);
     }
     s++; /* skip the % */
 
-    tag_handler = apr_hash_get(format_tag_hash, s++, 1);
+    tag_handler = (const char * (*)(request_rec *,char *))apr_hash_get(format_tag_hash, s++, 1);
 
     if (!tag_handler) {
         char dummy[2];
