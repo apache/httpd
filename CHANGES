@@ -1,5 +1,7 @@
 Changes with Apache 2.0.37
 
+  *) Fix a mod_ssl build problem on OS/390.  [Jeff Trawick]
+
   *) Fixed If-Modified-Since on Win32, which would give false positives
      because of the sub-second resolution of file timestamps on that
      platform.  [Cliff Woolley]
