@@ -16,13 +16,20 @@ trap 'rm -f $tmpfile; exit' 0 1 2 3 15
 
 file=Configuration
 tmpfile=htconf.$$
+makefile_tmpl=Makefile.tmpl
 
-if [ "x$1" = "x-file" ] ; then
-  echo "Using alternate config file $2"
-  file=$2 
-else
-  echo "Using '$file' as config file"
-fi
+while [ "x$1" != "x" ]; do
+  if [ "x$1" = "x-file" ] ; then
+    shift 1; file=$1; shift 1
+  elif [ "x$1" = "x-make" ] ; then
+    shift 1; makefile_tmpl=$1; shift 1
+  else
+    echo "Ignoring command line option '$1'"
+    shift 1
+  fi
+done
+echo "Using config file: $file"
+echo "Using Makefile template file: $makefile_tmpl"
 
 if [ ! -r $file ]; then
   echo "Can't see or read \"$file\""
@@ -84,8 +91,8 @@ sed -e 's/_module//' $tmpfile | awk >modules.c '\
 #
 # Add module set only
 #
-awk >Makefile <$tmpfile '\
-   BEGIN { print "# Makefile automatically generated from Makefile.tmpl"; \
+awk -v make=$makefile_tmpl >Makefile <$tmpfile '\
+   BEGIN { printf "# Makefile automatically generated from %s\n", make; \
 	   print "# and configuration file by Apache config script. "; \
 	   print "# Hand-edited changes will be lost if the config script"; \
 	   print "# is re-run."; \
@@ -485,5 +492,5 @@ echo >> Makefile
 echo "#### End of Configure created section ####">> Makefile
 echo >> Makefile
 
-cat Makefile.tmpl >> Makefile
+cat "$makefile_tmpl" >> Makefile
 
