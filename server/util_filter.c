@@ -188,7 +188,8 @@ static ap_filter_rec_t *register_filter(const char *name,
                             ap_filter_type ftype,
                             filter_trie_node **reg_filter_set)
 {
-    ap_filter_rec_t *frec = apr_palloc(FILTER_POOL, sizeof(*frec));
+    ap_filter_rec_t *frec;
+    char *normalized_name;
     const char *n;
     filter_trie_node *node;
 
@@ -196,20 +197,27 @@ static ap_filter_rec_t *register_filter(const char *name,
         *reg_filter_set = trie_node_alloc(FILTER_POOL, NULL, 0);
     }
 
-    frec->name = apr_pstrdup(FILTER_POOL, name);
-    ap_str_tolower((char *)frec->name);
-    frec->filter_func = filter_func;
-    frec->ftype = ftype;
+    normalized_name = apr_pstrdup(FILTER_POOL, name);
+    ap_str_tolower(normalized_name);
 
     node = *reg_filter_set;
-    for (n = frec->name; *n; n++) {
+    for (n = normalized_name; *n; n++) {
         filter_trie_node *child = trie_node_alloc(FILTER_POOL, node, *n);
         if (apr_isalpha(*n)) {
             trie_node_link(FILTER_POOL, node, child, apr_toupper(*n));
         }
         node = child;
     }
-    node->frec = frec;
+    if (node->frec) {
+        frec = node->frec;
+    }
+    else {
+        frec = apr_palloc(FILTER_POOL, sizeof(*frec));
+        node->frec = frec;
+        frec->name = normalized_name;
+    }
+    frec->filter_func = filter_func;
+    frec->ftype = ftype;
     
     apr_pool_cleanup_register(FILTER_POOL, NULL, filter_cleanup, 
                               apr_pool_cleanup_null);
@@ -300,6 +308,35 @@ static ap_filter_t *add_any_filter(const char *name, void *ctx,
     return NULL;
 }
 
+static ap_filter_t *add_any_filter_handle(ap_filter_rec_t *frec, void *ctx, 
+                                          request_rec *r, conn_rec *c, 
+                                          ap_filter_t **r_filters,
+                                          ap_filter_t **c_filters)
+{
+    apr_pool_t* p = r ? r->pool : c->pool;
+    ap_filter_t *f = apr_palloc(p, sizeof(*f));
+    ap_filter_t **outf = r ? r_filters : c_filters;
+
+    f->frec = frec;
+    f->ctx = ctx;
+    f->r = r;
+    f->c = c;
+
+    if (INSERT_BEFORE(f, *outf)) {
+        f->next = *outf;
+        *outf = f;
+    }
+    else {
+        ap_filter_t *fscan = *outf;
+        while (!INSERT_BEFORE(f, fscan->next))
+            fscan = fscan->next;
+        f->next = fscan->next;
+        fscan->next = f;
+    }
+
+    return f;
+}
+
 AP_DECLARE(ap_filter_t *) ap_add_input_filter(const char *name, void *ctx,
                                               request_rec *r, conn_rec *c)
 {
@@ -307,11 +344,29 @@ AP_DECLARE(ap_filter_t *) ap_add_input_filter(const char *name, void *ctx,
                           r ? &r->input_filters : NULL, &c->input_filters);
 }
 
+AP_DECLARE(ap_filter_t *) ap_add_input_filter_handle(ap_filter_rec_t *f,
+                                                     void *ctx,
+                                                     request_rec *r,
+                                                     conn_rec *c)
+{
+    return add_any_filter_handle(f, ctx, r, c, r ? &r->input_filters : NULL,
+                                 &c->input_filters);
+}
+
 AP_DECLARE(ap_filter_t *) ap_add_output_filter(const char *name, void *ctx,
                                                request_rec *r, conn_rec *c)
 {
     return add_any_filter(name, ctx, r, c, registered_output_filters,
                           r ? &r->output_filters : NULL, &c->output_filters);
+}
+
+AP_DECLARE(ap_filter_t *) ap_add_output_filter_handle(ap_filter_rec_t *f,
+                                                      void *ctx,
+                                                      request_rec *r,
+                                                      conn_rec *c)
+{
+    return add_any_filter_handle(f, ctx, r, c, r ? &r->output_filters : NULL,
+                                 &c->output_filters);
 }
 
 static void remove_any_filter(ap_filter_t *f, ap_filter_t **r_filt, 
