@@ -598,6 +598,16 @@ case "$PLAT" in
 	DEF_WANTHSREGEX=yes
 	LIBS="$LIBS -lsocket -lnsl -lc -lgen"
 	;;
+    *-*-powermax*)
+        OS='SVR4'
+        CFLAGS="$CFLAGS -DSVR4"
+        DEF_WANTHSREGEX=yes
+        LIBS="$LIBS -lsocket -lnsl -lgen"
+        LD_SHLIB='cc'
+        LDFLAGS_SHLIB="-Zlink=so"
+        LDFLAGS_SHLIB_EXPORT="-Zlink=dynamic -Wl,-Bexport"
+        CFLAGS_SHLIB='-Zpic'
+        ;;
     BS2000*-sni-sysv4*)
 	OS='BS2000'
 	OSDIR='os/bs2000'
@@ -1095,6 +1105,12 @@ if [ "x$using_shlib" = "x1" ] ; then
             LDFLAGS_SHLIB="$LDFLAGS_SHLIB -lc"
             LDFLAGS_SHLIB_EXPORT="-Wl,-bE:\$(SRCDIR)/support/httpd.exp"
             SHLIB_EXPORT_FILES=yes
+            ;;
+        *-*-powermax*)
+            LD_SHLIB='cc'
+            LDFLAGS_SHLIB="-Zlink=so"
+            LDFLAGS_SHLIB_EXPORT="-Zlink=dynamic -Wl,-Bexport"
+            CFLAGS_SHLIB='-Zpic'
             ;;
         *)
             ##  ok, no known explict support for shared objects

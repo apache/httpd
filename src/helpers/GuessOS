@@ -222,6 +222,11 @@ case "${SYSTEM}:${RELEASE}:${VERSION}:${MACHINE}" in
     UNIX_SV:*:*:maxion)
 	echo "${MACHINE}-ccur-sysv4"; exit 0;
 	;;
+
+    PowerMAX_OS:*:*:Night_Hawk)
+        MACHINE=`uname -p`
+        echo "${MACHINE}-concurrent-powermax"; exit 0;
+        ;;
     
     UNIX_SV:*)
 	if [ -d /usr/nec ];then
