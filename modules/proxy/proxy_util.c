@@ -819,11 +819,11 @@ PROXY_DECLARE(int) ap_proxy_is_domainname(struct dirconn_entry *This, apr_pool_t
 
     /* Domain name must start with a '.' */
     if (addr[0] != '.')
-	return 0;
+        return 0;
 
     /* rfc1035 says DNS names must consist of "[-a-zA-Z0-9]" and '.' */
     for (i = 0; apr_isalnum(addr[i]) || addr[i] == '-' || addr[i] == '.'; ++i)
-	continue;
+        continue;
 
 #if 0
     if (addr[i] == ':') {
@@ -834,11 +834,11 @@ PROXY_DECLARE(int) ap_proxy_is_domainname(struct dirconn_entry *This, apr_pool_t
 #endif
 
     if (addr[i] != '\0')
-	return 0;
+        return 0;
 
     /* Strip trailing dots */
     for (i = strlen(addr) - 1; i > 0 && addr[i] == '.'; --i)
-	addr[i] = '\0';
+        addr[i] = '\0';
 
     This->matcher = proxy_match_domainname;
     return 1;
@@ -851,18 +851,18 @@ static int proxy_match_domainname(struct dirconn_entry *This, request_rec *r)
     int d_len = strlen(This->name), h_len;
 
     if (host == NULL)		/* some error was logged already */
-	return 0;
+        return 0;
 
     h_len = strlen(host);
 
     /* @@@ do this within the setup? */
     /* Ignore trailing dots in domain comparison: */
     while (d_len > 0 && This->name[d_len - 1] == '.')
-	--d_len;
+        --d_len;
     while (h_len > 0 && host[h_len - 1] == '.')
-	--h_len;
+        --h_len;
     return h_len > d_len
-	&& strncasecmp(&host[h_len - d_len], This->name, d_len) == 0;
+        && strncasecmp(&host[h_len - d_len], This->name, d_len) == 0;
 }
 
 /* Return TRUE if host represents a host name */
@@ -874,19 +874,19 @@ PROXY_DECLARE(int) ap_proxy_is_hostname(struct dirconn_entry *This, apr_pool_t *
 
     /* Host names must not start with a '.' */
     if (host[0] == '.')
-	return 0;
+        return 0;
 
     /* rfc1035 says DNS names must consist of "[-a-zA-Z0-9]" and '.' */
     for (i = 0; apr_isalnum(host[i]) || host[i] == '-' || host[i] == '.'; ++i);
 
     if (host[i] != '\0' || apr_sockaddr_info_get(&addr, host, APR_UNSPEC, 0, 0, p) != APR_SUCCESS)
-	return 0;
+        return 0;
     
     This->hostaddr = addr;
 
     /* Strip trailing dots */
     for (i = strlen(host) - 1; i > 0 && host[i] == '.'; --i)
-	host[i] = '\0';
+        host[i] = '\0';
 
     This->matcher = proxy_match_hostname;
     return 1;
@@ -901,7 +901,7 @@ static int proxy_match_hostname(struct dirconn_entry *This, request_rec *r)
     int h1_len;
 
     if (host == NULL || host2 == NULL)
-       return 0; /* oops! */
+        return 0; /* oops! */
 
     h2_len = strlen(host2);
     h1_len = strlen(host);
@@ -911,19 +911,19 @@ static int proxy_match_hostname(struct dirconn_entry *This, request_rec *r)
 
     /* Try to deal with multiple IP addr's for a host */
     while (addr) {
-	if (addr->ipaddr_ptr == ? ? ? ? ? ? ? ? ? ? ? ? ?)
-	    return 1;
-	addr = addr->next;
+        if (addr->ipaddr_ptr == ? ? ? ? ? ? ? ? ? ? ? ? ?)
+            return 1;
+        addr = addr->next;
     }
 #endif
 
     /* Ignore trailing dots in host2 comparison: */
     while (h2_len > 0 && host2[h2_len - 1] == '.')
-	--h2_len;
+        --h2_len;
     while (h1_len > 0 && host[h1_len - 1] == '.')
-	--h1_len;
+        --h1_len;
     return h1_len == h2_len
-	&& strncasecmp(host, host2, h1_len) == 0;
+        && strncasecmp(host, host2, h1_len) == 0;
 }
 
 /* Return TRUE if addr is to be matched as a word */
@@ -948,32 +948,32 @@ PROXY_DECLARE(int) ap_proxy_checkproxyblock(request_rec *r, proxy_server_conf *c
     /* XXX FIXME: conf->noproxies->elts is part of an opaque structure */
     for (j = 0; j < conf->noproxies->nelts; j++) {
         struct noproxy_entry *npent = (struct noproxy_entry *) conf->noproxies->elts;
-	struct apr_sockaddr_t *conf_addr = npent[j].addr;
-	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
-		     "proxy: checking remote machine [%s] against [%s]", uri_addr->hostname, npent[j].name);
-	if ((npent[j].name && ap_strstr_c(uri_addr->hostname, npent[j].name))
+        struct apr_sockaddr_t *conf_addr = npent[j].addr;
+        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+                     "proxy: checking remote machine [%s] against [%s]", uri_addr->hostname, npent[j].name);
+        if ((npent[j].name && ap_strstr_c(uri_addr->hostname, npent[j].name))
             || npent[j].name[0] == '*') {
-	    ap_log_error(APLOG_MARK, APLOG_WARNING|APLOG_NOERRNO, 0, r->server,
-			 "proxy: connect to remote machine %s blocked: name %s matched", uri_addr->hostname, npent[j].name);
-	    return HTTP_FORBIDDEN;
-	}
-	while (conf_addr) {
-	    while (uri_addr) {
-		char *conf_ip;
-		char *uri_ip;
-		apr_sockaddr_ip_get(&conf_ip, conf_addr);
-		apr_sockaddr_ip_get(&uri_ip, uri_addr);
-		ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
-			     "proxy: ProxyBlock comparing %s and %s", conf_ip, uri_ip);
-		if (!apr_strnatcasecmp(conf_ip, uri_ip)) {
-		    ap_log_error(APLOG_MARK, APLOG_WARNING|APLOG_NOERRNO, 0, r->server,
-				 "proxy: connect to remote machine %s blocked: IP %s matched", uri_addr->hostname, conf_ip);
-		    return HTTP_FORBIDDEN;
-		}
-		uri_addr = uri_addr->next;
-	    }
-	    conf_addr = conf_addr->next;
-	}
+            ap_log_error(APLOG_MARK, APLOG_WARNING|APLOG_NOERRNO, 0, r->server,
+                         "proxy: connect to remote machine %s blocked: name %s matched", uri_addr->hostname, npent[j].name);
+            return HTTP_FORBIDDEN;
+        }
+        while (conf_addr) {
+            while (uri_addr) {
+                char *conf_ip;
+                char *uri_ip;
+                apr_sockaddr_ip_get(&conf_ip, conf_addr);
+                apr_sockaddr_ip_get(&uri_ip, uri_addr);
+                ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+                             "proxy: ProxyBlock comparing %s and %s", conf_ip, uri_ip);
+                if (!apr_strnatcasecmp(conf_ip, uri_ip)) {
+                    ap_log_error(APLOG_MARK, APLOG_WARNING|APLOG_NOERRNO, 0, r->server,
+                                 "proxy: connect to remote machine %s blocked: IP %s matched", uri_addr->hostname, conf_ip);
+                    return HTTP_FORBIDDEN;
+                }
+                uri_addr = uri_addr->next;
+            }
+            conf_addr = conf_addr->next;
+        }
     }
     return OK;
 }
@@ -990,9 +990,13 @@ PROXY_DECLARE(int) ap_proxy_pre_http_request(conn_rec *c, request_rec *r)
     ap_add_input_filter("HTTP_IN", NULL, r, c);
     return OK;
 }
-/* converts a series of buckets into a string */
+
+/* converts a series of buckets into a string 
+ * BillS says this function looks essentially identical to ap_rgetline() 
+ * in protocol.c. Deprecate this function and use apr_rgetline() instead?
+ */
 PROXY_DECLARE(apr_status_t) ap_proxy_string_read(conn_rec *c, apr_bucket_brigade *bb,
-				  char *buff, size_t bufflen, int *eos)
+                                                 char *buff, size_t bufflen, int *eos)
 {
     apr_bucket *e;
     apr_status_t rv;
@@ -1009,40 +1013,39 @@ PROXY_DECLARE(apr_status_t) ap_proxy_string_read(conn_rec *c, apr_bucket_brigade
     /* loop through each brigade */
     while (!found) {
 
-	/* get brigade from network one line at a time */
-	if (APR_SUCCESS != (rv = ap_get_brigade(c->input_filters, bb, AP_MODE_BLOCKING, &readbytes))) {
-	    return rv;
-	}
+        /* get brigade from network one line at a time */
+        if (APR_SUCCESS != (rv = ap_get_brigade(c->input_filters, bb, AP_MODE_BLOCKING, &readbytes))) {
+            return rv;
+        }
 
-	/* loop through each bucket */
-	while (!found && !APR_BRIGADE_EMPTY(bb)) {
-	    e = APR_BRIGADE_FIRST(bb);
-	    if (APR_BUCKET_IS_EOS(e)) {
-		*eos = 1;
+        /* loop through each bucket */
+        while (!found && !APR_BRIGADE_EMPTY(bb)) {
+            e = APR_BRIGADE_FIRST(bb);
+            if (APR_BUCKET_IS_EOS(e)) {
+                *eos = 1;
             }
             else {
                 if (APR_SUCCESS != apr_bucket_read(e, (const char **)&response, &len, APR_BLOCK_READ)) {
                     return rv;
                 }
-	    /* is string LF terminated? */
+                /* is string LF terminated? */
                 if (memchr(response, APR_ASCII_LF, len)) {
                     found = 1;
                 }
-            /* concat strings until buff is full - then throw the data away */
+                /* concat strings until buff is full - then throw the data away */
                 if (len > ((bufflen-1)-(pos-buff))) {
                     len = (bufflen-1)-(pos-buff);
                 }
                 if (len > 0) {
                     pos = apr_cpystrn(pos, response, len);
                 }
-	    }
-	    APR_BUCKET_REMOVE(e);
-	    apr_bucket_destroy(e);
-	}
+            }
+            APR_BUCKET_REMOVE(e);
+            apr_bucket_destroy(e);
+        }
     }
 
     return APR_SUCCESS;
-
 }
 
 /* remove other filters (like DECHUNK) from filter stack */
