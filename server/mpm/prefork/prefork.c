@@ -108,6 +108,8 @@
 #include <sys/times.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <sys/socket.h>
+#include <unistd.h>
 
 #ifdef HAVE_NETINET_TCP_H
 #include <netinet/tcp.h>	/* for TCP_NODELAY */

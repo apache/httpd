@@ -90,6 +90,8 @@
 #include "ap_mpm.h"
 #include "iol_socket.h"
 #include "unixd.h"
+#include <sys/stat.h>
+#include <sys/socket.h> /* for sockaddr_un */
 #include <sys/un.h> /* for sockaddr_un */
 #include <sys/types.h>
 #include <sys/stat.h>

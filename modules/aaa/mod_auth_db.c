@@ -99,6 +99,7 @@
 #include "http_core.h"
 #include "http_log.h"
 #include "http_protocol.h"
+#include "http_request.h"  /* for ap_hook_(check_user_id | auth_check) */
 #ifdef HAVE_DB_H
 #include <db.h>
 #endif
@@ -319,10 +320,10 @@ static int db_authenticate_basic_user(request_rec *r)
     invalid_pw = ap_validate_password(sent_pw, real_pw);
 
     if (invalid_pw != APR_SUCCESS) {
-        char buf[120]
 	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-		      "DB user %s: authentication failure for \"%s\": %s",
-		      r->user, r->uri, ap_strerror(invalid_pw, buf, sizeof(buf)));
+		      "DB user %s: authentication failure for \"%s\": "
+                      "Password Mismatch",
+		      r->user, r->uri);
 	ap_note_basic_auth_failure(r);
 	return AUTH_REQUIRED;
     }

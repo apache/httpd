@@ -132,6 +132,8 @@
 #include "http_log.h"
 #include "http_protocol.h"
 #include "util_script.h"
+#include <sys/stat.h>
+#include <unistd.h>
 #ifdef HAVE_UTIME_H
 #include <utime.h>
 #endif
@@ -2155,7 +2157,6 @@ static int uncompress_child(struct uncompress_parms *parm, ap_pool_t *cntxt,
     ap_pool_t *child_context = cntxt;
     ap_procattr_t *procattr;
     ap_proc_t *procnew = NULL;
-    ap_file_t *file = NULL;
     ap_iol *iol;
 
     env = ap_create_environment(child_context, r->subprocess_env);
@@ -2179,7 +2180,7 @@ static int uncompress_child(struct uncompress_parms *parm, ap_pool_t *cntxt,
             close(STDERR_FILENO);
         }
 
-        rc = ap_create_process(&procnew, compr[parm->method].argv[0],
+        rc = ap_create_process(procnew, compr[parm->method].argv[0],
                                new_argv, env, procattr, child_context);
 
         if (rc != APR_SUCCESS) {
@@ -2191,8 +2192,7 @@ static int uncompress_child(struct uncompress_parms *parm, ap_pool_t *cntxt,
         else {
             ap_note_subprocess(child_context, procnew, kill_after_timeout);
             /* Fill in BUFF structure for parents pipe to child's stdout */
-            ap_get_childout(&file, procnew);
-            iol = ap_create_file_iol(file);
+            iol = ap_create_file_iol(procnew->out);
             if (!iol)
                 return APR_EBADF;
             if (script_in) {

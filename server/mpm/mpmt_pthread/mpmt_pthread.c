@@ -78,6 +78,7 @@
 #ifdef HAVE_NETINET_TCP_H
 #include <netinet/tcp.h>
 #endif
+#include <sys/socket.h> 
 #include <sys/wait.h> 
 #include <pthread.h>
 #include <signal.h>

@@ -76,7 +76,9 @@
 #include "mpm.h"
 #include "scoreboard.h"
 
+#include <unistd.h>
 #include <poll.h>
+#include <sys/socket.h>
 #ifdef HAVE_NETINET_TCP_H
 #include <netinet/tcp.h>
 #endif

@@ -80,12 +80,18 @@
 #include "http_config.h"
 #include "util_ebcdic.h"
 
-#if defined(SUNOS4)
-/* stdio.h has been read in ap_config.h already. Add missing prototypes here: */
-extern int fgetc(FILE *);
-extern char *fgets(char *s, int, FILE*);
-extern int fclose(FILE *);
+#include <stdio.h>
+#include <unistd.h>
+#include <netinet/in.h>
+#include <netdb.h>
+#include <arpa/inet.h>
+#ifdef HAVE_PWD_H
+#include <pwd.h>
 #endif
+#ifdef HAVE_GRP_H
+#include <grp.h>
+#endif
+
 
 /* A bunch of functions in util.c scan strings looking for certain characters.
  * To make that more efficient we encode a lookup table.  The test_char_table

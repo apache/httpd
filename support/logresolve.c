@@ -42,6 +42,7 @@
 #include "ap_config.h"
 #include <ctype.h>
 #include <stdio.h>
+#include <netdb.h>
 
 #if !defined(MPE) && !defined(BEOS) && !defined(WIN32)
 #include <arpa/inet.h>

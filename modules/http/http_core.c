@@ -73,6 +73,7 @@
 #include "http_connection.h"
 #include "util_ebcdic.h"
 #include "mpm.h"
+#include <netdb.h>
 
 /* Allow Apache to use ap_mmap */
 #ifdef USE_MMAP_FILES

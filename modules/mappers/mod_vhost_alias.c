@@ -75,9 +75,11 @@
  * both written by James Grinter <jrg@blodwen.demon.co.uk>.
  */
 
+#include "ap_hooks.h"
 #include "httpd.h"
 #include "http_config.h"
 #include "http_core.h"
+#include "http_request.h"  /* for ap_hook_translate_name */
 
 
 module MODULE_VAR_EXPORT vhost_alias_module;
