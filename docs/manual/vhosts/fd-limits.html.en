@@ -85,7 +85,7 @@ directive, and the <code>%v</code> variable. Add this to the beginning
 of your log format string:</p>
 
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
- LogFormat "%v %h %l %u %t \"%r\" %>s %b" vhost<br />
+ LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b" vhost<br />
  CustomLog logs/multiple_vhost_log vhost
 </code></td></tr></table></blockquote>
 
