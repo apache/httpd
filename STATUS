@@ -72,6 +72,10 @@ Available Patches:
       <Pine.LNX.3.96dg4.980418002301.4893H-100000@twinlark.arctic.org>
       Status: Dean +0
 
+    * Wilfredo Sanchez's port to Rhapsody 5.1 for 1.2.6 - forward port to
+      1.3?
+      <199804182347.QAA05438@scv2.apple.com>
+
 In progress:
 
     * Ken's IndexFormat enhancement to mod_autoindex to allow
@@ -228,6 +232,9 @@ Open issues:
 
     * Should we re-enable nagle now that we're non-buffering CGIs?  See various
 	messages from Marc in March 98.
+  
+    * Should we list the operating system's generic name (e.g. Irix, Win32) in
+        SERVER_VERSION?
 
 Win32 specific issues:
 
