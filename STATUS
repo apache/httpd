@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/06/07 02:06:49 $]
+Last modified at [$Date: 2000/06/07 13:47:20 $]
 
 Release:
 
@@ -61,7 +61,7 @@ RELEASE SHOWSTOPPERS:
     * We need a thread-safe resolver, at least on Unix.
         Status: The best known candidate would be something from
 	BIND v9.
-        Status: Greg asks, "why? doesn't gethostname_r() handle this?"
+        Status: Greg asks, "why? doesn't gethostbyname_r() handle this?"
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
     * OS/2: Get loadable modules working again. Requires shared core support
@@ -144,9 +144,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
     * add SDBM into src/lib/sdbm/ as a default/fallback DBM implementation.
       SDBM is used by Perl, mod_dav, mod_sssl, others for basic DBM support.
       Status: Greg +1 (volunteers)
-
-    * Get mod_mmap_static working on 2.0.  Greg Ames posted a patch on 
-      05/26/2000 to get it running and to improve performance.
 
     * Integrate mod_dav.
         Message-id: forthcoming (plan to be posted before integration begins)
