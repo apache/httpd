@@ -1,5 +1,8 @@
 Changes with Apache 2.0.19-dev
 
+  *) Fix htdigest. It would go into a loop in getline when adding 
+     a second user. [Bill Stoddard]
+
   *) Win32 platforms now fully support mod_userdir options.  [Will Rowe]
 
   *) Automatically generate httpd.exp for AIX.
