@@ -81,6 +81,8 @@ static char *ap_pid_fname = NULL;
 static int ap_threads_per_child = 0;
 static int workers_may_exit = 0;
 static int max_requests_per_child = 0;
+static HANDLE shutdown_event;	/* used to signal shutdown to parent */
+static HANDLE restart_event;	/* used to signal a restart to parent */
 
 static struct fd_set listenfds;
 static int num_listenfds = 0;
@@ -1185,7 +1187,7 @@ static void child_main()
         ap_log_error(APLOG_MARK, APLOG_CRIT, h_errno, NULL,
                      "No sockets were created for listening");
         signal_parent(0);	/* tell parent to die */
-        ap_destroy_context(pchild);
+        ap_destroy_pool(pchild);
         exit(0);
     }
 
@@ -1202,7 +1204,7 @@ static void child_main()
 	ap_log_error(APLOG_MARK,APLOG_ERR, status, server_conf,
                      "Child %d: Failed to acquire the start_mutex. Process will exit.", my_pid);
         signal_parent(0);	/* tell parent to die */
-	ap_destroy_context(pchild);
+	ap_destroy_pool(pchild);
 	exit(0);
     }
     ap_log_error(APLOG_MARK,APLOG_INFO, APR_SUCCESS, server_conf, "Child %d: Acquired the start mutex", my_pid);
@@ -1235,14 +1237,7 @@ static void child_main()
         }
     }
     else { /* Windows NT/2000 */
-        /* Hack alert... Give the server a couple of seconds to receive 
-         * connections and drain AcceptEx completion contexts. We will
-         * probably drop a few connections across a graceful restart, but
-         * hopefully not many. This needs work...*/
-        Sleep(2000);
-
-        /* Tell the worker threads to exit. Any connections accepted on 
-         * the completion port from now will be dropped */
+        /* Tell the worker threads to exit. */
         for (i=0; i < nthreads; i++) {
             if (!PostQueuedCompletionStatus(AcceptExCompPort, 0, 999, NULL)) {
                 ap_log_error(APLOG_MARK,APLOG_INFO, APR_SUCCESS, server_conf, 
@@ -1287,7 +1282,7 @@ static void child_main()
     destroy_semaphore(allowed_globals.jobsemaphore);
     ap_destroy_lock(allowed_globals.jobmutex);
 
-    ap_destroy_context(pchild);
+    ap_destroy_pool(pchild);
     CloseHandle(exit_event);
 }
 
@@ -1653,7 +1648,6 @@ static void winnt_pre_config(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptemp
     else {
         /* This is the parent */
         parent_pid = my_pid = getpid();
-
     }
 
     ap_listen_pre_config();
@@ -1668,83 +1662,57 @@ static void winnt_pre_config(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptemp
 
 static void winnt_post_config(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptemp, server_rec* server_conf)
 {
+    static int restart_num = 0;
     server_conf = server_conf;
-}
 
-API_EXPORT(int) ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s )
-{
-    static int restart = 0;            /* Default is "not a restart" */
-//    time_t tmstart;
-    static HANDLE shutdown_event;	/* used to signal shutdown to parent */
-    static HANDLE restart_event;	/* used to signal a restart to parent */
-
-    pconf = _pconf;
-    server_conf = s;
-
-    if (osver.dwPlatformId != VER_PLATFORM_WIN32_WINDOWS) {
-        /* Create the the IoCompletionPort in the parent */
-        if ((parent_pid == my_pid) || one_process) {
-            AcceptExCompPort = CreateIoCompletionPort(INVALID_HANDLE_VALUE,
-                                                      NULL,
-                                                      0,
-                                                      0); /* CONCURRENT ACTIVE THREADS */
-            if (AcceptExCompPort == NULL) {
-                ap_log_error(APLOG_MARK,APLOG_ERR, GetLastError(), server_conf,
-                             "Unable to create the AcceptExCompletionPort -- process will exit");
-                return 1;
-            }
-        }
-    }
-
-    if ((parent_pid != my_pid) || one_process) {
-        /* Running as Child process or in one_process (debug) mode */
-        ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, server_conf,
-                     "Child %d: Child process is running", my_pid);        
-        AMCSocketInitialize();
-        child_main();
-        AMCSocketCleanup();
-        ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, server_conf,
-                     "Child %d: Child process is exiting", my_pid);        
-
-        return 1;  /* Shutdown */
-    }
-    else {
-        /* Parent process */
-        PSECURITY_ATTRIBUTES sa = GetNullACL();  /* returns NULL if invalid (Win95?) */
-
-        setup_signal_names(ap_psprintf(pconf,"ap%d", parent_pid));
-        if (!restart) {
-            /* This code only needs to be run once in the parent and 
-             * should not be run across a restart
+    if (parent_pid == my_pid) {
+        if (restart_num++ == 1) {
+            /* This code should be run once in the parent and not run
+             * accross a restart
              */
-            ap_log_pid(pconf, ap_pid_fname);
+            PSECURITY_ATTRIBUTES sa = GetNullACL();  /* returns NULL if invalid (Win95?) */
+            setup_signal_names(ap_psprintf(pconf,"ap%d", parent_pid));
+            if (osver.dwPlatformId != VER_PLATFORM_WIN32_WINDOWS) {
+                /* Create the AcceptEx IoCompletionPort once in the parent.
+                 * The completion port persists across restarts. 
+                 */
+                AcceptExCompPort = CreateIoCompletionPort(INVALID_HANDLE_VALUE,
+                                                          NULL,
+                                                          0,
+                                                          0); /* CONCURRENT ACTIVE THREADS */
+                if (AcceptExCompPort == NULL) {
+                    ap_log_error(APLOG_MARK,APLOG_ERR, GetLastError(), server_conf,
+                                 "Parent: Unable to create the AcceptExCompletionPort -- process will exit");
+                    exit(1);
+                }
+            }
 
+            ap_log_pid(pconf, ap_pid_fname);
             service_set_status(SERVICE_START_PENDING);
+
             AMCSocketInitialize();
-//            setup_signal_names(ap_psprintf(pconf,"ap%d", parent_pid));
         
             /* Create shutdown event, apPID_shutdown, where PID is the parent 
              * Apache process ID. Shutdown is signaled by 'apache -k shutdown'.
              */
             shutdown_event = CreateEvent(sa, FALSE, FALSE, signal_shutdown_name);
             if (!shutdown_event) {
-                ap_log_error(APLOG_MARK, APLOG_EMERG, GetLastError(), s,
-                             "master_main: Cannot create shutdown event %s", signal_shutdown_name);
+                ap_log_error(APLOG_MARK, APLOG_EMERG, GetLastError(), server_conf,
+                             "Parent: Cannot create shutdown event %s", signal_shutdown_name);
                 CleanNullACL((void *)sa);
-                return 1; /* Shutdown */
+                exit(1);
             }
 
             /* Create restart event, apPID_restart, where PID is the parent 
              * Apache process ID. Restart is signaled by 'apache -k restart'.
              */
-//            restart_event = CreateEvent(sa, TRUE, FALSE, signal_restart_name);
             restart_event = CreateEvent(sa, FALSE, FALSE, signal_restart_name);
             if (!restart_event) {
                 CloseHandle(shutdown_event);
-                ap_log_error(APLOG_MARK, APLOG_EMERG, GetLastError(), s,
-                             "ap_run_mpm: Cannot create restart event %s", signal_restart_name);
+                ap_log_error(APLOG_MARK, APLOG_EMERG, GetLastError(), server_conf,
+                             "Parent: Cannot create restart event %s", signal_restart_name);
                 CleanNullACL((void *)sa);
-                return 1; /* Shutdown */
+                exit(1);
             }
             CleanNullACL((void *)sa);
             
@@ -1752,10 +1720,34 @@ API_EXPORT(int) ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s )
              * Ths start mutex is used during a restart to prevent more than one 
              * child process from entering the accept loop at once.
              */
-//            ap_create_lock(&start_mutex,APR_MUTEX, APR_CROSS_PROCESS,signal_name_prefix,pconf);
-            ap_create_lock(&start_mutex,APR_MUTEX, APR_CROSS_PROCESS,signal_name_prefix,s->process->pool);
-            /* TODO: Add some code to detect failure */
+            ap_create_lock(&start_mutex,APR_MUTEX, APR_CROSS_PROCESS, signal_name_prefix,
+                               server_conf->process->pool);
         }
+    }
+}
+
+API_EXPORT(int) ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s )
+{
+    static int restart = 0;            /* Default is "not a restart" */
+
+    pconf = _pconf;
+    server_conf = s;
+
+    if ((parent_pid != my_pid) || one_process) {
+        /* Running as Child process or in one_process (debug) mode */
+        ap_log_error(APLOG_MARK, APLOG_ERR, APR_SUCCESS, server_conf,
+                     "Child %d: Child process is running %d", my_pid, AcceptExCompPort);
+        AMCSocketInitialize();
+        child_main();
+        AMCSocketCleanup();
+        ap_log_error(APLOG_MARK, APLOG_ERR, APR_SUCCESS, server_conf,
+                     "Child %d: Child process is exiting %d", my_pid, AcceptExCompPort);        
+
+        return 1;  /* Shutdown */
+    }
+    else {
+        /* Parent process */
+//        setup_signal_names(ap_psprintf(pconf,"ap%d", parent_pid));
 
         /* Go to work... */
         restart = master_main(server_conf, shutdown_event, restart_event);
@@ -1787,9 +1779,8 @@ API_EXPORT(int) ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s )
 
 static void winnt_hooks(void)
 {
-//    INIT_SIGLIST()
     one_process = 0;
-    /* Configuration hooks implemented by http_config.c ... */
+    ap_hook_post_config(winnt_post_config, NULL, NULL, 0);
 }
 
 /* 
