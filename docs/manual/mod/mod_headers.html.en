@@ -141,7 +141,7 @@ is available only in Apache 2.0</td></tr></table>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure HTTP response headers also for error responses</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ErrorHeader set|append|add|unset|echo <var>header</var>
-[<var>value</var> [env=[!]<var>variable</var>]]</code></td></tr>
+[<var>value</var>] [env=[!]<var>variable</var>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -160,7 +160,7 @@ Consult this directive for more information on the syntax.</p>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure HTTP response headers</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Header set|append|add|unset|echo  <var>header</var>
-[<var>value</var> [env=[!]<var>variable</var>]]</code></td></tr>
+[<var>value</var>] [env=[!]<var>variable</var>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -193,11 +193,12 @@ Consult this directive for more information on the syntax.</p>
     <dt><code>unset</code></dt>
     <dd>The response header of this name is removed, if it exists.
     If there are multiple headers of the same name, all will be
-    removed.</dd>
+    removed. <var>value</var> must be omitted.</dd>
 
     <dt><code>echo</code></dt>
     <dd>Request headers with this name are echoed back in the
-    response headers. <var>header</var> may be a regular expression.</dd>
+    response headers. <var>header</var> may be a regular expression.
+    <var>value</var> must be omitted.</dd>
     </dl>
 
     <p>This argument is followed by a <var>header</var> name, which
@@ -213,45 +214,39 @@ Consult this directive for more information on the syntax.</p>
     specifiers or a combination of both. The following format specifiers
     are supported in <var>value</var>:</p>
 
-    <table class="bordered">
-    
-    <tr><td><code>%t</code></td>
+    <table class="bordered"><tr class="header"><th>Format</th><th>Description</th></tr>
+<tr><td><code>%%</code></td>
+        <td>The percent sign</td></tr>
+<tr class="odd"><td><code>%t</code></td>
         <td>The time the request was received in Universal Coordinated Time
         since the epoch (Jan. 1, 1970) measured in microseconds. The value
         is preceded by <code>t=</code>.</td></tr>
-
-    <tr><td><code>%D</code></td>
+<tr><td><code>%D</code></td>
         <td>The time from when the request was received to the time the
         headers are sent on the wire. This is a measure of the duration
         of the request. The value is preceded by <code>D=</code>.</td></tr>
-
-    <tr><td><code>%{FOOBAR}e</code></td>
+<tr class="odd"><td><code>%{FOOBAR}e</code></td>
         <td>The contents of the <a href="../env.html">environment
         variable</a> <code>FOOBAR</code>.</td></tr>
-
-    <tr><td><code>%{FOOBAR}s</code></td>
+<tr><td><code>%{FOOBAR}s</code></td>
         <td>The contents of the <a href="mod_ssl.html#envvars">SSL environment
         variable</a> <code>FOOBAR</code>, if <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> is enabled.</td></tr>
-
-    </table>
+</table>
 
     <div class="note"><h3>Note</h3>
-
       <p>The <code>%s</code> format specifier is only available in
       Apache 2.1 and later; it can be used instead of <code>%e</code>
       to avoid the overhead of enabling <code>SSLOptions
       +StdEnvVars</code>.  If <code>SSLOptions +StdEnvVars</code> must
       be enabled anyway for some other reason, <code>%e</code> will be
       more efficient than <code>%s</code>.</p>
-
     </div> 
 
-    <p>When the <code class="directive">Header</code> directive is used with the
-    <code>add</code>, <code>append</code>, or <code>set</code>
-    argument, a fourth argument may be used to specify conditions
+    <p>The <code class="directive">Header</code> directive may be followed by an
+    additional argument, which may be used to specify conditions
     under which the action will be taken. If the <a href="../env.html">environment variable</a> specified in the
-    <code>env=...</code> argument exists (or if the environment
-    variable does not exist and <code>env=!...</code> is specified)
+    <code>env=<var>...</var></code> argument exists (or if the environment
+    variable does not exist and <code>env=!<var>...</var></code> is specified)
     then the action specified by the <code class="directive">Header</code> directive
     will take effect. Otherwise, the directive will have no effect
     on the request.</p>
@@ -267,7 +262,7 @@ Consult this directive for more information on the syntax.</p>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure HTTP request headers</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RequestHeader set|append|add|unset <var>header</var>
-[<var>value</var> [env=[!]<var>variable</var>]]</code></td></tr>
+[<var>value</var>] [env=[!]<var>variable</var>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -300,7 +295,8 @@ Consult this directive for more information on the syntax.</p>
 
     <dt><code>unset</code></dt>
     <dd>The request header of this name is removed, if it exists. If
-    there are multiple headers of the same name, all will be removed.</dd>
+    there are multiple headers of the same name, all will be removed.
+    <var>value</var> must be omitted.</dd>
     </dl>
 
     <p>This argument is followed by a header name, which can
@@ -308,17 +304,20 @@ Consult this directive for more information on the syntax.</p>
     ignored. For <code>add</code>, <code>append</code> and
     <code>set</code> a <var>value</var> is given as the third argument. If
     <var>value</var> contains spaces, it should be surrounded by double
-    quotes. For unset, no <var>value</var> should be given.</p>
+    quotes. For unset, no <var>value</var> should be given.
+    <var>value</var> may be a character string, a string containing format
+    specifiers or a combination of both. The supported format specifiers
+    are the same as for the <code class="directive"><a href="#header">Header</a></code>,
+    please have a look there for details.</p>
 
-    <p>When the <code class="directive">RequestHeader</code> directive is used with the
-    <code>add</code>, <code>append</code>, or <code>set</code> argument, a
-    fourth argument may be used to specify conditions under which the action
-    will be taken. If the <a href="../env.html">environment variable</a>
-    specified in the <code>env=...</code> argument exists (or if the environment
-    variable does not exist and <code>env=!...</code> is specified) then the
-    action specified by the <code class="directive">RequestHeader</code> directive will
-    take effect. Otherwise, the directive will have no effect on the
-    request.</p>
+    <p>The <code class="directive">RequestHeader</code> directive may be followed by
+    an additional argument, which may be used to specify conditions under
+    which the action will be taken. If the <a href="../env.html">environment
+    variable</a> specified in the <code>env=<var>...</var></code> argument
+    exists (or if the environment variable does not exist and
+    <code>env=!<var>...</var></code> is specified) then the action specified
+    by the <code class="directive">RequestHeader</code> directive will take effect.
+    Otherwise, the directive will have no effect on the request.</p>
 
     <p>The <code class="directive">RequestHeader</code> directive is processed
     just before the request is run by its handler in the fixup phase.
