@@ -1,4 +1,12 @@
 Changes with Apache 2.0.36
+  *) [Security] Added the APLOG_TOCLIENT flag to ap_log_rerror() to
+     explicitly tell the server that warning messages should be sent 
+     to the client in addition to being recorded in the error log. 
+     Prior to this change, ap_log_rerror() always sent warning 
+     messages to the client. In one case, a faulty CGI script caused
+     the server to send a warning message to the client that contained
+     the full path to the CGI script. This could be considered a
+     minor security exposure. [Bill Stoddard]
 
   *) mod_autoindex output when SuppressRules was specified would
      omit the first carriage return so the first item in the list
