@@ -819,7 +819,7 @@ static dav_error * dav_fs_load_locknull_list(apr_pool_t *p, const char *dirpath,
     apr_finfo_t finfo;
     apr_file_t *file = NULL;
     dav_error *err = NULL;
-    apr_ssize_t amt;
+    apr_size_t amt;
 
     dav_buffer_init(p, pbuf, dirpath);
 
@@ -873,7 +873,7 @@ static dav_error * dav_fs_save_locknull_list(apr_pool_t *p, const char *dirpath,
     const char *pathname;
     apr_file_t *file = NULL;
     dav_error *err = NULL;
-    apr_ssize_t amt;
+    apr_size_t amt;
 
     if (pbuf->buf == NULL)
 	return NULL;
