@@ -133,7 +133,9 @@ static void *create_core_dir_config(apr_pool_t *a, char *dir)
         conf->d = apr_pstrcat(a, dir, "/", NULL);
     }
     conf->d_is_fnmatch = conf->d ? (apr_is_fnmatch(conf->d) != 0) : 0;
-    conf->d_is_absolute = conf->d ? (ap_os_is_path_absolute(a, conf->d) != 0) : 0;
+    /* On all platforms, "/" is (at minimum) a faux root */
+    conf->d_is_absolute = conf->d ? (ap_os_is_path_absolute(a, conf->d) 
+                                      || strcmp(conf->d, "/")) : 0;
     conf->d_components = conf->d ? ap_count_dirs(conf->d) : 0;
 
     conf->opts = dir ? OPT_UNSET : OPT_UNSET|OPT_ALL;
