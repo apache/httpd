@@ -260,7 +260,7 @@ static void open_error_log(server_rec *s, ap_context_t *p)
     else {
 	fname = ap_server_root_relative(p, s->error_fname);
 	/*  Change to AP funcs. */
-        if (ap_open(&s->error_log, fname, APR_BUFFERED | APR_APPEND | 
+        if (ap_open(&s->error_log, fname, APR_APPEND | 
                     APR_READ | APR_WRITE | APR_CREATE, APR_OS_DEFAULT, p) != APR_SUCCESS) {
             perror("fopen");
             fprintf(stderr, "%s: could not open error log file %s.\n",
@@ -328,7 +328,7 @@ static void log_error_core(const char *file, int line, int level,
                            ap_status_t status, const server_rec *s, 
                            const request_rec *r, const char *fmt, va_list args)
 {
-    char errstr[MAX_STRING_LEN];
+    char errstr[MAX_STRING_LEN + 1];    /* + 1 to have room for '\n' */
     size_t len;
     ap_file_t *logf = NULL;
     int errfileno = STDERR_FILENO;
@@ -377,12 +377,12 @@ static void log_error_core(const char *file, int line, int level,
     }
 
     if (logf) {
-	len = ap_snprintf(errstr, sizeof(errstr), "[%s] ", ap_get_time());
+	len = ap_snprintf(errstr, MAX_STRING_LEN, "[%s] ", ap_get_time());
     } else {
 	len = 0;
     }
 
-    len += ap_snprintf(errstr + len, sizeof(errstr) - len,
+    len += ap_snprintf(errstr + len, MAX_STRING_LEN - len,
 	    "[%s] ", priorities[level & APLOG_LEVELMASK].t_name);
 
 #ifndef TPF
@@ -405,7 +405,7 @@ static void log_error_core(const char *file, int line, int level,
 	    file = tmp;
 	}
 #endif /*_OSD_POSIX*/
-	len += ap_snprintf(errstr + len, sizeof(errstr) - len,
+	len += ap_snprintf(errstr + len, MAX_STRING_LEN - len,
 		"%s(%d): ", file, line);
     }
 #endif /* TPF */
@@ -415,7 +415,7 @@ static void log_error_core(const char *file, int line, int level,
 	 * quad is the most secure, which is why I'm implementing it
 	 * first. -djg
 	 */
-	len += ap_snprintf(errstr + len, sizeof(errstr) - len,
+	len += ap_snprintf(errstr + len, MAX_STRING_LEN - len,
 		"[client %s] ", r->connection->remote_ip);
     }
     if (!(level & APLOG_NOERRNO)
@@ -424,7 +424,7 @@ static void log_error_core(const char *file, int line, int level,
 	&& !(level & APLOG_WIN32ERROR)
 #endif
 	) {
-	len += ap_snprintf(errstr + len, sizeof(errstr) - len,
+	len += ap_snprintf(errstr + len, MAX_STRING_LEN - len,
 		"(%d)%s: ", status, strerror(status));
     }
 #ifdef WIN32
@@ -433,7 +433,7 @@ static void log_error_core(const char *file, int line, int level,
 	int nErrorCode;
 
 	nErrorCode = GetLastError();
-	len += ap_snprintf(errstr + len, sizeof(errstr) - len,
+	len += ap_snprintf(errstr + len, MAX_STRING_LEN - len,
 	    "(%d)", nErrorCode);
 
 	nChars = FormatMessage( 
@@ -442,7 +442,7 @@ static void log_error_core(const char *file, int line, int level,
 	    nErrorCode,
 	    MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), /* // Default language */
 	    (LPTSTR) errstr + len,
-	    sizeof(errstr) - len,
+	    MAX_STRING_LEN - len,
 	    NULL 
 	);
 	len += nChars;
@@ -452,7 +452,7 @@ static void log_error_core(const char *file, int line, int level,
 	     * log the numeric value.
 	     */
 	    nErrorCode = GetLastError();
-	    len += ap_snprintf(errstr + len, sizeof(errstr) - len,
+	    len += ap_snprintf(errstr + len, MAX_STRING_LEN - len,
 			       "(FormatMessage failed with code %d): ",
 			       nErrorCode);
 	}
@@ -472,14 +472,16 @@ static void log_error_core(const char *file, int line, int level,
     }
 #endif
 
-    len += ap_vsnprintf(errstr + len, sizeof(errstr) - len, fmt, args);
+    len += ap_vsnprintf(errstr + len, MAX_STRING_LEN - len, fmt, args);
 
     /* NULL if we are logging to syslog */
     if (logf) {
-      /* ZZZ let's just use AP funcs to Write to the error log.  If failure,
-	 can we output a message to the console??? */
+        /* We know that we have one more character of space available because
+         * the array is sized that way */
+        /* ap_assert(len < MAX_STRING_LEN) */
+        errstr[len++] = '\n';
+        errstr[len] = '\0';
 	ap_puts(errstr, logf);
-	ap_putc('\n', logf);
 	ap_flush(logf);
     }
 #ifdef HAVE_SYSLOG
@@ -553,7 +555,7 @@ void ap_log_pid(ap_context_t *p, const char *fname)
 			       );
     }
 
-    if(ap_open(&pid_file, fname, APR_WRITE | APR_BUFFERED | APR_CREATE, APR_OS_DEFAULT, p) != APR_SUCCESS) {
+    if(ap_open(&pid_file, fname, APR_WRITE | APR_CREATE, APR_OS_DEFAULT, p) != APR_SUCCESS) {
 	perror("fopen");
         fprintf(stderr, "%s: could not log pid to file %s\n",
 		ap_server_argv0, fname);
