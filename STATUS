@@ -102,7 +102,7 @@ PATCHES TO BACKPORT FROM TRUNK:
        PR: 31418
        jerenkrantz comments: 151493 deletes a chunk and adds a chunk,
           with 153280 moving that added hunk elsewhere.  My brain hurts.
-       +1: jorton, jerenkrantz, pquerna
+       +1: jorton, jerenkrantz, pquerna, striker
 
     *) Add a build script to create a solaris package.
        svn rev 124104
@@ -174,7 +174,7 @@ PATCHES TO BACKPORT FROM TRUNK:
        +1: nd, jerenkrantz, wrowe, jim
        -0: by rbb (inconsistent to 1.3, discussion on dev@)
           nd: I'm going to reverse the default
-          jerenkrantz: I'm confused as to the status of this backport.
+          jerenkrantz, striker: I'm confused as to the status of this backport.
 
     *) mod_log_config: Cleanup log_header_out function to allow multiple headers
        like Set-Cookie to be logged properly. PR 27787 (2.0 + 1.3)
@@ -242,23 +242,23 @@ PATCHES TO BACKPORT FROM TRUNK:
       reliability issue)
       http://svn.apache.org/viewcvs.cgi?rev=109510&view=rev
       http://svn.apache.org/viewcvs.cgi?rev=105195&view=rev
-      +1: trawick, stoddard
+      +1: trawick, stoddard, striker
 
     * modules/http/http_request.c (ap_internal_fast_redirect): Take over
       important members of the subrequest. Especially the proxyreq copying
       is interesting for proxying DirectoryIndex'd resources:
         http://svn.apache.org/viewcvs.cgi?rev=102330&view=rev
-      +1: nd, jerenkrantz, pquerna
+      +1: nd, jerenkrantz, pquerna, striker
 
     * Win32: Move call to mpm_service_install to the rewrite_args hook
       from the post_config hook.
       http://svn.apache.org/viewcvs?view=rev&rev=154319
-      +1: stoddard
+      +1: stoddard, striker
 
     * mod_dav: Export functions so that Win32 can use them as was intended.
       svn rev 155345
       http://svn.apache.org/viewcvs?view=rev&rev=155345
-      +1: jerenkrantz, pquerna
+      +1: jerenkrantz, pquerna, striker
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
