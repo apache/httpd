@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/11/09 00:36:39 $]
+Last modified at [$Date: 2000/11/09 07:13:42 $]
 
 Release:
 
@@ -175,13 +175,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
     * make apr_get_uuid() thread-safe
 
     * (possibly) use UUIDs in mod_unique_id and/or mod_usertrack
-
-    * Platforms which have their own APR directories for some feature but
-      mostly use the unix directories (e.g., OS/390 which uses an os390
-      directory only for the DSO feature) don't compile cleanly because the
-      include path is messed up.  For example, start.c can't find locks.h.
-      See new-httpd thread "os-specific directories and -Ifoo/OSDIR in APR"
-      in August/2000.
 
 PRs that have been suspended forever waiting for someone to
 put them into 'the next release':
