@@ -416,15 +416,20 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
                                    proxy_http_conn_t *p_conn, conn_rec *origin, 
                                    proxy_server_conf *conf,
                                    apr_uri_t *uri,
-                                   char *url, apr_bucket_brigade *bb,
-                                   char *server_portstr) {
+                                   char *url, char *server_portstr)
+{
     conn_rec *c = r->connection;
     char *buf;
-    apr_bucket *e;
+    apr_bucket *e, *last_header_bucket;
     const apr_array_header_t *headers_in_array;
     const apr_table_entry_t *headers_in;
-    int counter, seen_eos;
+    int counter, seen_eos, send_chunks;
     apr_status_t status;
+    apr_bucket_brigade *header_brigade, *body_brigade, *input_brigade;
+
+    header_brigade = apr_brigade_create(p, origin->bucket_alloc);
+    body_brigade = apr_brigade_create(p, origin->bucket_alloc);
+    input_brigade = apr_brigade_create(p, origin->bucket_alloc);
 
     /*
      * Send the HTTP/1.1 request to the remote server
@@ -438,6 +443,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
      */
     p_conn->close += ap_proxy_liststr(apr_table_get(r->headers_in,
                                                      "Connection"), "close");
+
     /* sub-requests never use keepalives */
     if (r->main) {
         p_conn->close++;
@@ -449,22 +455,31 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
         origin->keepalive = AP_CONN_CLOSE;
     }
 
-    if ( apr_table_get(r->subprocess_env,"force-proxy-request-1.0")) {
+    /* By default, we can not send chunks. That means we must buffer
+     * the entire request before sending it along to ensure we have
+     * the correct Content-Length attached.
+     */
+    send_chunks = 0;
+
+    if (apr_table_get(r->subprocess_env, "force-proxy-request-1.0")) {
         buf = apr_pstrcat(p, r->method, " ", url, " HTTP/1.0" CRLF, NULL);
     } else {
         buf = apr_pstrcat(p, r->method, " ", url, " HTTP/1.1" CRLF, NULL);
+        if (apr_table_get(r->subprocess_env, "proxy-sendchunks")) {
+            send_chunks = 1;
+        }
     }
-    if ( apr_table_get(r->subprocess_env,"proxy-nokeepalive")) {
+    if (apr_table_get(r->subprocess_env, "proxy-nokeepalive")) {
         apr_table_unset(r->headers_in, "Connection");
         origin->keepalive = AP_CONN_CLOSE;
     }
     ap_xlate_proto_to_ascii(buf, strlen(buf));
     e = apr_bucket_pool_create(buf, strlen(buf), p, c->bucket_alloc);
-    APR_BRIGADE_INSERT_TAIL(bb, e);
-    if ( conf->preserve_host == 0 ) {
+    APR_BRIGADE_INSERT_TAIL(header_brigade, e);
+    if (conf->preserve_host == 0) {
         if (uri->port_str && uri->port != DEFAULT_HTTP_PORT) {
-            buf = apr_pstrcat(p, "Host: ", uri->hostname, ":", uri->port_str, CRLF,
-                            NULL);
+            buf = apr_pstrcat(p, "Host: ", uri->hostname, ":", uri->port_str,
+                              CRLF, NULL);
         } else {
             buf = apr_pstrcat(p, "Host: ", uri->hostname, CRLF, NULL);
         }
@@ -487,7 +502,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
     }
     ap_xlate_proto_to_ascii(buf, strlen(buf));
     e = apr_bucket_pool_create(buf, strlen(buf), p, c->bucket_alloc);        
-    APR_BRIGADE_INSERT_TAIL(bb, e);
+    APR_BRIGADE_INSERT_TAIL(header_brigade, e);
 
     /* handle Via */
     if (conf->viaopt == via_block) {
@@ -574,6 +589,10 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
             || !apr_strnatcasecmp(headers_in[counter].key, "Transfer-Encoding")
             || !apr_strnatcasecmp(headers_in[counter].key, "Upgrade")
 
+            /* We have no way of knowing whether this Content-Length will
+             * be accurate, so we must not include it.
+             */
+            || !apr_strnatcasecmp(headers_in[counter].key, "Content-Length")
         /* XXX: @@@ FIXME: "Proxy-Authorization" should *only* be 
          * suppressed if THIS server requested the authentication,
          * not when a frontend proxy requested it!
@@ -597,24 +616,6 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
                      || !apr_strnatcasecmp(headers_in[counter].key, "If-None-Match")) {
                     continue;
                 }
-
-                /* If you POST to a page that gets server-side parsed
-                 * by mod_include, and the parsing results in a reverse
-                 * proxy call, the proxied request will be a GET, but
-                 * its request_rec will have inherited the Content-Length
-                 * of the original request (the POST for the enclosing
-                 * page).  We can't send the original POST's request body
-                 * as part of the proxied subrequest, so we need to avoid
-                 * sending the corresponding content length.  Otherwise,
-                 * the server to which we're proxying will sit there
-                 * forever, waiting for a request body that will never
-                 * arrive.
-                 */
-                if ((r->method_number == M_GET) && headers_in[counter].key &&
-                    !apr_strnatcasecmp(headers_in[counter].key,
-                                       "Content-Length")) {
-                    continue;
-                }
         }
 
 
@@ -623,7 +624,21 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
                           NULL);
         ap_xlate_proto_to_ascii(buf, strlen(buf));
         e = apr_bucket_pool_create(buf, strlen(buf), p, c->bucket_alloc);
-        APR_BRIGADE_INSERT_TAIL(bb, e);
+        APR_BRIGADE_INSERT_TAIL(header_brigade, e);
+    }
+
+    /* If we can send chunks, do so! */
+    if (send_chunks) {
+        const char *te_hdr = "Transfer-Encoding: chunked" CRLF;
+
+        buf = apr_pmemdup(p, te_hdr, sizeof(te_hdr)-1);
+        ap_xlate_proto_to_ascii(buf, sizeof(te_hdr)-1);
+
+        e = apr_bucket_pool_create(buf, strlen(buf), p, c->bucket_alloc);
+        APR_BRIGADE_INSERT_TAIL(header_brigade, e);
+    }
+    else {
+        last_header_bucket = APR_BRIGADE_LAST(header_brigade);
     }
 
     /* add empty line at the end of the headers */
@@ -632,55 +647,133 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
 #else
     e = apr_bucket_immortal_create(CRLF, sizeof(CRLF)-1, c->bucket_alloc);
 #endif
-    APR_BRIGADE_INSERT_TAIL(bb, e);
+    APR_BRIGADE_INSERT_TAIL(header_brigade, e);
     e = apr_bucket_flush_create(c->bucket_alloc);
-    APR_BRIGADE_INSERT_TAIL(bb, e);
+    APR_BRIGADE_INSERT_TAIL(header_brigade, e);
 
-    status = ap_pass_brigade(origin->output_filters, bb);
+    if (send_chunks) {
+        status = ap_pass_brigade(origin->output_filters, header_brigade);
 
-    if (status != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
-                     "proxy: request failed to %pI (%s)",
-                     p_conn->addr, p_conn->name);
-        return status;
+        if (status != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
+                         "proxy: request failed to %pI (%s)",
+                         p_conn->addr, p_conn->name);
+            return status;
+        }
     }
 
     /* send the request data, if any. */
     seen_eos = 0;
     do {
-        status = ap_get_brigade(r->input_filters, bb, AP_MODE_READBYTES,
-                                APR_BLOCK_READ, HUGE_STRING_LEN);
+        char chunk_hdr[20];  /* must be here due to transient bucket. */
+
+        status = ap_get_brigade(r->input_filters, input_brigade,
+                                AP_MODE_READBYTES, APR_BLOCK_READ,
+                                HUGE_STRING_LEN);
 
         if (status != APR_SUCCESS) {
             return status;
         }
 
         /* If this brigade contain EOS, either stop or remove it. */
-        if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(bb))) {
+        if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(input_brigade))) {
+            seen_eos = 1;
+
             /* As a shortcut, if this brigade is simply an EOS bucket,
              * don't send anything down the filter chain.
              */
-            if (APR_BUCKET_IS_EOS(APR_BRIGADE_FIRST(bb))) {
+            if (APR_BUCKET_IS_EOS(APR_BRIGADE_FIRST(input_brigade))) {
                 break;
             }
 
             /* We can't pass this EOS to the output_filters. */
-            APR_BUCKET_REMOVE(APR_BRIGADE_LAST(bb));
-            seen_eos = 1;
+            APR_BUCKET_REMOVE(APR_BRIGADE_LAST(input_brigade));
+        }
+
+        if (send_chunks) {
+#define ASCII_CRLF  "\015\012"
+#define ASCII_ZERO  "\060"
+            apr_size_t hdr_len;
+            apr_off_t bytes;
+
+            apr_brigade_length(input_brigade, 1, &bytes);
+
+            hdr_len = apr_snprintf(chunk_hdr, sizeof(chunk_hdr),
+                                   "%qx" CRLF, (apr_uint64_t)bytes);
+
+            ap_xlate_proto_to_ascii(chunk_hdr, hdr_len);
+            e = apr_bucket_transient_create(chunk_hdr, hdr_len,
+                                            body_brigade->bucket_alloc);
+            APR_BRIGADE_INSERT_HEAD(input_brigade, e);
+
+            /*
+             * Append the end-of-chunk CRLF
+             */
+            e = apr_bucket_immortal_create(ASCII_CRLF, 2, c->bucket_alloc);
+            APR_BRIGADE_INSERT_TAIL(input_brigade, e);
         }
 
         e = apr_bucket_flush_create(c->bucket_alloc);
-        APR_BRIGADE_INSERT_TAIL(bb, e);
+        APR_BRIGADE_INSERT_TAIL(input_brigade, e);
 
-        status = ap_pass_brigade(origin->output_filters, bb);
+        APR_BRIGADE_CONCAT(body_brigade, input_brigade);
+
+        if (send_chunks) {
+            status = ap_pass_brigade(origin->output_filters, body_brigade);
+
+            if (status != APR_SUCCESS) {
+                ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
+                             "proxy: pass request data failed to %pI (%s)",
+                         p_conn->addr, p_conn->name);
+                return status;
+            }
+
+            apr_brigade_cleanup(body_brigade);
+        }
+
+    } while (!seen_eos);
+
+    if (send_chunks) {
+        e = apr_bucket_immortal_create(ASCII_ZERO ASCII_CRLF
+                                       /* <trailers> */
+                                       ASCII_CRLF, 5, c->bucket_alloc);
+        APR_BRIGADE_INSERT_TAIL(body_brigade, e);
+    }
+
+    if (!send_chunks) {
+        apr_off_t bytes;
+
+        apr_brigade_length(body_brigade, 1, &bytes);
+
+        if (bytes) {
+            const char *cl_hdr = "Content-Length", *cl_val;
+            cl_val = apr_off_t_toa(c->pool, bytes);
+            buf = apr_pstrcat(p, cl_hdr, ": ", cl_val, CRLF, NULL);
+            ap_xlate_proto_to_ascii(buf, strlen(buf));
+            e = apr_bucket_pool_create(buf, strlen(buf), p, c->bucket_alloc);
+            APR_BUCKET_INSERT_AFTER(last_header_bucket, e);
+        }
+        status = ap_pass_brigade(origin->output_filters, header_brigade);
         if (status != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
                          "proxy: pass request data failed to %pI (%s)",
                          p_conn->addr, p_conn->name);
             return status;
         }
-        apr_brigade_cleanup(bb);
-    } while (!seen_eos);
+
+        apr_brigade_cleanup(header_brigade);
+    }
+
+    status = ap_pass_brigade(origin->output_filters, body_brigade);
+
+    if (status != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
+                     "proxy: pass request data failed to %pI (%s)",
+                     p_conn->addr, p_conn->name);
+        return status;
+    }
+ 
+    apr_brigade_cleanup(body_brigade);
 
     return APR_SUCCESS;
 }
@@ -691,19 +784,21 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                                             conn_rec *origin,
                                             proxy_conn_rec *backend,
                                             proxy_server_conf *conf,
-                                            apr_bucket_brigade *bb,
                                             char *server_portstr) {
     conn_rec *c = r->connection;
     char buffer[HUGE_STRING_LEN];
     char keepchar;
     request_rec *rp;
     apr_bucket *e;
+    apr_bucket_brigade *bb;
     int len, backasswards;
     int received_continue = 1; /* flag to indicate if we should
                                 * loop over response parsing logic
                                 * in the case that the origin told us
                                 * to HTTP_CONTINUE
                                 */
+
+    bb = apr_brigade_create(p, c->bucket_alloc);
 
     /* Get response from the remote server, and pass it up the
      * filter chain
@@ -1053,7 +1148,6 @@ int ap_proxy_http_handler(request_rec *r, proxy_server_conf *conf,
      */
     apr_pool_t *p = r->connection->pool;
     conn_rec *c = r->connection;
-    apr_bucket_brigade *bb = apr_brigade_create(p, c->bucket_alloc);
     apr_uri_t *uri = apr_palloc(r->connection->pool, sizeof(*uri));
     proxy_http_conn_t *p_conn = apr_pcalloc(r->connection->pool,
                                            sizeof(*p_conn));
@@ -1114,7 +1208,7 @@ int ap_proxy_http_handler(request_rec *r, proxy_server_conf *conf,
     }
    
     /* Step Three: Send the Request */
-    status = ap_proxy_http_request(p, r, p_conn, origin, conf, uri, url, bb,
+    status = ap_proxy_http_request(p, r, p_conn, origin, conf, uri, url,
                                    server_portstr);
     if ( status != OK ) {
         return status;
@@ -1122,7 +1216,7 @@ int ap_proxy_http_handler(request_rec *r, proxy_server_conf *conf,
 
     /* Step Four: Receive the Response */
     status = ap_proxy_http_process_response(p, r, p_conn, origin, backend, conf,
-                                            bb, server_portstr);
+                                            server_portstr);
     if ( status != OK ) {
         /* clean up even if there is an error */
         ap_proxy_http_cleanup(r, p_conn, backend);
