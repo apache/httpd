@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/07/24 09:43:59 $]
+Last modified at [$Date: 2002/07/24 10:43:43 $]
 
 Release:
 
@@ -70,12 +70,11 @@ CURRENT VOTES:
 
       b) tailored httpd-std.conf should be copied by install to
          sysconfdir/examples
-         +1:   trawick
          -0:   striker
 
       c) tailored httpd-std.conf should be installed to
          sysconfdir/examples or manualdir/exampleconf/
-         +1:   slive
+         +1:   slive, trawick
 
       d) Installing a set of default config files when upgrading a server
          doesn't make ANY sense at all.
