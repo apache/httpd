@@ -273,8 +273,10 @@ static const char *mmapfile(cmd_parms *cmd, void *dummy, const char *filename)
     a_file *new_file;
     a_file tmp;
     apr_file_t *fd = NULL;
+    char *fspec;
 
-    if (apr_stat(&tmp.finfo, filename, cmd->temp_pool) != APR_SUCCESS) { 
+    fspec = ap_os_case_canonical_filename(cmd->pool, filename);
+    if (apr_stat(&tmp.finfo, fspec, cmd->temp_pool) != APR_SUCCESS) { 
 	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, cmd->server,
 	    "mod_file_cache: unable to stat(%s), skipping", filename);
 	return NULL;
@@ -284,7 +286,7 @@ static const char *mmapfile(cmd_parms *cmd, void *dummy, const char *filename)
 	    "mod_file_cache: %s isn't a regular file, skipping", filename);
 	return NULL;
     }
-    if (apr_open(&fd, filename, APR_READ, APR_OS_DEFAULT, cmd->temp_pool) 
+    if (apr_open(&fd, fspec, APR_READ, APR_OS_DEFAULT, cmd->temp_pool) 
                 != APR_SUCCESS) { 
 	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, cmd->server,
 	    "mod_file_cache: unable to open(%s, O_RDONLY), skipping", filename);
@@ -299,7 +301,7 @@ static const char *mmapfile(cmd_parms *cmd, void *dummy, const char *filename)
 	return NULL;
     }
     apr_close(fd);
-    tmp.filename = apr_pstrdup(cmd->pool, filename);
+    tmp.filename = fspec;
     sconf = ap_get_module_config(cmd->server->module_config, &file_cache_module);
     new_file = apr_push_array(sconf->files);
     *new_file = tmp;
