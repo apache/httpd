@@ -387,6 +387,7 @@ ULONG APIENTRY thread_exception_handler(EXCEPTIONREPORTRECORD *pReportRec,
         /* Shut down process ASAP, it could be quite unhealthy & leaking resources */
         shutdown_pending = 1;
         ap_scoreboard_image->parent[child_slot].quiescing = 1;
+        kill(getpid(), SIGHUP);
         DosUnwindException(UNWIND_ALL, 0, 0);
     }
   
