@@ -311,7 +311,6 @@ static int get_path_info(request_rec *r)
                               "access to %s failed", r->uri);
             return HTTP_FORBIDDEN;
         }
-	last_cp = cp;
     }
     return OK;
 }
