@@ -109,7 +109,7 @@
 #define USE_MMAP_SCOREBOARD
 #define HAVE_CANONICAL_FILENAME
 #define HAVE_DRIVE_LETTERS
-#define HAVE_SENDFILE_UNKNOWN
+#define HAVE_SENDFILE
 
 typedef int uid_t;
 typedef int gid_t;
