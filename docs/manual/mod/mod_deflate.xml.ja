@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 1.21 (outdated: 1.24) -->
+<!-- English Revision: 1.24 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -34,13 +34,15 @@
 </summary>
 <seealso><a href="../filter.html">Filters</a></seealso>
 
-<section id="recommended"><title>推奨設定</title>
-    <p>下にせっかちな人向けの設定例を示します。しかしぜひ時間を取って
-    下記の詳細もお読み下さい!</p>
+<section id="recommended"><title>サンプル設定</title>
+    <p>下にせっかちな人向けの簡単な設定例を示します。</p>
 
     <example><title>数タイプのみ圧縮する</title>
       AddOutputFilterByType DEFLATE text/html text/plain text/xml
     </example>
+
+    <p>以下の設定はコンテンツをより圧縮しますが、ずっと複雑な設定になります。
+    設定の隅々までよく理解しないで使わないでください。</p>
 
     <example><title>画像以外全て圧縮する</title>
       &lt;Location /&gt;<br />
@@ -141,8 +143,35 @@
         フィルタの後になります。
         DEFLATE フィルタは内部的なサブリクエストを関知しません。
       </note>
-    </section>
+      <note><title>注</title>
+        <directive module="core">SetEnv</directive> で設定される
+        <code>force-gzip</code> 環境変数がありますが、これは
+        ブラウザの accept-encoding 設定を無視し、圧縮した出力をします。
+      </note>
 
+    </section>
+    <section id="inflate"><title>出力の伸長</title>
+      <p><module>mod_defulate</module> モジュールは、gzip 圧縮されたレスポンス
+      本文を inflate/uncompress するフィルタも提供しています。
+      この機能を有効にするには、<directive module="core">SetOutputFilter</directive>
+      や <directive module="mod_mime">AddOutputFilter</directive> を使って、
+      <code>INFLATE</code> フィルタを出力フィルタチェインに挿入します。
+      例えば次のようにします。</p>
+
+      <example>
+        &lt;Location /dav-area&gt;<br />
+        <indent>
+          ProxyPass http://example.com/<br />
+          SetOutputFilter INFLATE<br />
+        </indent>
+        &lt;/Location&gt;
+      </example>
+
+      <p>この例では、example.com からの gzip 圧縮された出力を伸長し、
+      その他のフィルタがさらにその出力を処理できるようにします。
+      </p>
+      
+    </section>
     <section id="input"><title>入力の伸張</title>
       <p><module>mod_deflate</module> モジュールは、gzip
       で圧縮されたリクエスト本体を伸張するフィルタも提供しています。
