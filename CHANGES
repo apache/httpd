@@ -1,3 +1,5 @@
+Changes with Apache 2.0.49
+
 Changes with Apache 2.0.48
   
   *) SECURITY [CAN-2003-0789]: mod_cgid: Resolve some mishandling of
