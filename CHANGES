@@ -1,4 +1,4 @@
-Changes with Apache 2.0.34-dev
+Changes with Apache 2.0.34
 
   *) Ensure that the build/ directory is created when using VPATH.
      [Justin Erenkrantz]
