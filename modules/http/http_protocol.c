@@ -2019,8 +2019,12 @@ API_EXPORT(long) ap_send_fd(ap_file_t *fd, request_rec *r)
 #ifdef HAVE_SENDFILE
     if (!r->chunked) {
         ap_bflush(r->connection->client);
-        if (iol_sendfile(r->connection->client->iol, fd, len,
-                         NULL, 0, 0) != APR_SUCCESS) {
+        if (iol_sendfile(r->connection->client->iol, 
+                         fd,  /* The file to send */
+                         NULL, /* header and trailer iovecs */
+                         0,   /* Offset in file to begin sending from */
+                         &len,
+                         0) != APR_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
                           "ap_send_fd: iol_sendfile failed.");
         }
