@@ -215,6 +215,17 @@ added if the directory is covered by an
 <CODE>IndexOptions&nbsp;SuppressSize</CODE>, and 19 bytes may be
 added if <CODE>IndexOptions&nbsp;SuppressLastModified</CODE> is
 in effect.  The widest this column can be is therefore 49 bytes.
+<blockquote>
+As of Apache 1.3.10, the
+<a href="#indexoptions:descriptionwidth">DescriptionWidth</a>
+<samp>IndexOptions</samp> keyword allows you to adjust this width
+to any arbitrary size.
+</blockquote>
+<b>Caution:</b> Descriptive text defined with <samp>AddDescription</samp>
+may contain HTML markup, such as tags and character entities.  If the
+width of the description column should happen to truncate a tagged
+element (such as cutting off the end of a bolded phrase), the results
+may affect the rest of the directory listing.
 </P>
 <HR>
 
@@ -545,13 +556,23 @@ IndexIgnore README .htaccess *~
  REL="Help"
 ><STRONG>Compatibility:</STRONG></A> '+/-' syntax and merging of multiple
  <SAMP>IndexOptions</SAMP> directives is only available with
- Apache 1.3.3 and later; the <samp>FoldersFirst</samp> option is only
+ Apache 1.3.3 and later; the <samp>FoldersFirst</samp> and
+ <samp>DescriptionWidth</samp> options are only
  available with Apache 1.3.10 and later
 <P>
 
 The IndexOptions directive specifies the behavior of the directory indexing.
 <EM>Option</EM> can be one of
 <DL>
+<dt><a name="indexoptions:descriptionwidth">DescriptionWidth=[<em>n</em> | *]
+ (<em>Apache 1.3.10 and later</em>)</a>
+<dd>
+The <samp>DescriptionWidth</samp> keyword allows you to specify the
+width of the description column in characters.  If the keyword value
+is '<samp>*</samp>', then the column is automatically sized to the
+length of the longest filename in the display.
+<b>See the section on <a href="#adddescription"><samp>AddDescription</samp></a>
+for dangers inherent in truncating descriptions.</b></dd>
 <DT><A NAME="indexoptions:fancyindexing">FancyIndexing</A>
 <DD><!--%plaintext &lt;?INDEX {\tt FancyIndexing} index option&gt; -->
 This turns on fancy indexing of directories.
