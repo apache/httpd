@@ -165,7 +165,6 @@ static authn_status check_dbm_pw(request_rec *r, const char *user,
     apr_datum_t dbm_pw;
     apr_status_t rv;
     char *dbm_password;
-    int res;
 
     rv = fetch_dbm(conf->dbmtype, conf->pwfile, user, &dbm_pw, r->pool);
 
