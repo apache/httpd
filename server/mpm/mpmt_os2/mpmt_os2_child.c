@@ -443,7 +443,6 @@ static void worker_main(void *vpArg)
         }
 
         apr_pool_destroy(pconn);
-        apr_bucket_alloc_destroy(bucket_alloc);
         ap_update_child_status_from_indexes(child_slot, thread_slot, 
                                             SERVER_READY, NULL);
     }
