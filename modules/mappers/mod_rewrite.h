@@ -440,7 +440,7 @@ static void  rewrite_rand_init(void);
 static int   rewrite_rand(int l, int h);
 
     /* rewriting logfile support */
-static void  open_rewritelog(server_rec *s, apr_pool_t *p);
+static int   open_rewritelog(server_rec *s, apr_pool_t *p);
 static void  rewritelog(request_rec *r, int level, const char *text, ...)
                         __attribute__((format(printf,3,4)));
 static char *current_logtime(request_rec *r);
