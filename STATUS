@@ -23,6 +23,9 @@ Release:
            o Digital Unix 4.0          Lars Eilebrecht, Dirk-Willem van Gulik
            o IRIX 5.3                  Dirk-Willem van Gulik
            o IRIX 6.2                  Mark Cox
+           o SINIX 5.41/5.42/5.43      Martin Kraemer
+           o ReliantUNIX 5.44 64bit    Martin Kraemer (requires -DNET_SIZE_T=int)
+           o BS2000/OSD V2.0/V3.0      Martin Kraemer
 
     1.3b7: Tagged and Released 26/5/98.
 
