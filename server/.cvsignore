@@ -12,3 +12,4 @@ exports.c
 Debug
 Release
 apache.exports
+httpd.exp

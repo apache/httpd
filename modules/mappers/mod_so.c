@@ -238,7 +238,7 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
 			  apr_dso_error(modhandle, my_error, sizeof(my_error)),
 			  NULL);
     }
-    ap_log_perror(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, cmd->pool,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, cmd->server,
 		 "loaded module %s", modname);
 
     /*
@@ -309,7 +309,7 @@ static const char *load_file(cmd_parms *cmd, void *dummy, const char *filename)
 			  NULL);
     }
     
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, cmd->server,
 		 "loaded file %s", filename);
 
     return NULL;
