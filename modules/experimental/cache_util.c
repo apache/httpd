@@ -243,7 +243,7 @@ CACHE_DECLARE(void) ap_cache_msec2hex(apr_time_t j, char *y)
     int i, ch;
 
     for (i = (sizeof(j) * 2)-1; i >= 0; i--) {
-        ch = j & 0xF;
+        ch = (int)j & 0xF;
         j >>= 4;
         if (ch >= 10)
             y[i] = ch + ('A' - 10);
