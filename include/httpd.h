@@ -324,9 +324,9 @@ extern "C" {
  * APR_HAS_LARGE_FILES introduces the problem of spliting sendfile into 
  * mutiple buckets, no greater than MAX(apr_size_t), and more granular 
  * than that in case the brigade code/filters attempt to read it directly.
- * ### 4mb is an invention, no idea if it is reasonable.
+ * ### 16mb is an invention, no idea if it is reasonable.
  */
-#define AP_MAX_SENDFILE 16777216
+#define AP_MAX_SENDFILE 16777216  /* 2^24 */
 
 /**
  * Special Apache error codes. These are basically used
