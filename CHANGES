@@ -1,5 +1,8 @@
 Changes with Apache 2.0.40
 
+  *) Fix infinite loop due to two HTTP_IN filters being present for
+     internally redirected requests.  PR 10146.  [Justin Erenkrantz]
+
   *) Switch conn_rec->keepalive to an enumeration rather than a bitfield.
      [Justin Erenkrantz]
 

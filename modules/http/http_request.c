@@ -383,8 +383,6 @@ static request_rec *internal_internal_redirect(const char *new_uri,
         f = f->next;
     }
 
-    ap_add_input_filter("HTTP_IN", NULL, new, new->connection);
-
     apr_table_setn(new->subprocess_env, "REDIRECT_STATUS",
                    apr_itoa(r->pool, r->status));
 
