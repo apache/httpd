@@ -843,6 +843,13 @@ static void setup_shared_mem(void)
 
     if ((shmid = shmget(shmkey, SCOREBOARD_SIZE, IPC_CREAT|SHM_R|SHM_W)) == -1)
     {
+#ifdef LINUX
+	if (errno == ENOSYS) {
+	    fprintf(stderr,
+		"httpd: Your kernel was built without CONFIG_SYSVIPC\n"
+		"httpd: please consult the Apache FAQ for details\n");
+	}
+#endif
 	perror("shmget");
 	fprintf(stderr, "httpd: Could not call shmget\n");
 	exit(1);
