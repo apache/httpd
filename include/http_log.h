@@ -65,6 +65,10 @@ extern "C" {
 
 #include "apr_thread_proc.h"
 
+/**
+ * @package Apache logging library
+ */
+
 #ifdef HAVE_SYSLOG
 #include <syslog.h>
 
@@ -109,9 +113,15 @@ extern "C" {
 
 #define APLOG_MARK	__FILE__,__LINE__
 
-void ap_open_logs (server_rec *, ap_pool_t *p);
+/**
+ * Open the error log and replace stderr with it.
+ * @param s_main The main server
+ * @param p The pool to allocate out of
+ */
+void ap_open_logs (server_rec *s_main, ap_pool_t *p);
 
-/* The three primary logging functions, ap_log_error, ap_log_rerror, and 
+/* 
+ * The three primary logging functions, ap_log_error, ap_log_rerror, and 
  * ap_log_perror use a printf style format string to build the log message.  
  * It is VERY IMPORTANT that you not include any raw data from the network, 
  * such as the request-URI or request header fields, within the format 
@@ -119,20 +129,91 @@ void ap_open_logs (server_rec *, ap_pool_t *p);
  * attack and other messy behavior.  Instead, use a simple format string 
  * like "%s", followed by the string containing the untrusted data.
  */
+
+/**
+ * One of the primary logging routines in Apache.  This uses a printf-like
+ * format to log messages to the error_log.
+ * @param file The file in which this function is called
+ * @param line The line number on which this function is called
+ * @param level The level of this error message
+ * @param status The status code from the previous command
+ * @param s The server on which we are logging
+ * @param fmt The format string
+ * @param ... The arguments to use to fill out fmt.
+ * @tip Use APLOG_MARK to fill out file and line
+ * @warning It is VERY IMPORTANT that you not include any raw data from 
+ * the network, such as the request-URI or request header fields, within 
+ * the format string.  Doing so makes the server vulnerable to a 
+ * denial-of-service attack and other messy behavior.  Instead, use a 
+ * simple format string like "%s", followed by the string containing the 
+ * untrusted data.
+ * @deffunc void ap_log_error(const char *file, int line, int level, ap_status_t status, const server_rec *s, const char *fmt, ...) 
+ */
 API_EXPORT(void) ap_log_error(const char *file, int line, int level, 
                              ap_status_t status, const server_rec *s, 
                              const char *fmt, ...)
 			    __attribute__((format(printf,6,7)));
+
+/**
+ * The second of the primary logging routines in Apache.  This uses 
+ * a printf-like format to log messages to the error_log.
+ * @param file The file in which this function is called
+ * @param line The line number on which this function is called
+ * @param level The level of this error message
+ * @param status The status code from the previous command
+ * @param p The pool which we are logging for
+ * @param fmt The format string
+ * @param ... The arguments to use to fill out fmt.
+ * @tip Use APLOG_MARK to fill out file and line
+ * @warning It is VERY IMPORTANT that you not include any raw data from 
+ * the network, such as the request-URI or request header fields, within 
+ * the format string.  Doing so makes the server vulnerable to a 
+ * denial-of-service attack and other messy behavior.  Instead, use a 
+ * simple format string like "%s", followed by the string containing the 
+ * untrusted data.
+ * @deffunc void ap_log_error(const char *file, int line, int level, ap_status_t status, ap_pool_t *p, const char *fmt, ...) 
+ */
 API_EXPORT(void) ap_log_perror(const char *file, int line, int level, 
                              ap_status_t status, ap_pool_t *p, 
                              const char *fmt, ...)
 			    __attribute__((format(printf,6,7)));
+
+/**
+ * The last of the primary logging routines in Apache.  This uses 
+ * a printf-like format to log messages to the error_log.
+ * @param file The file in which this function is called
+ * @param line The line number on which this function is called
+ * @param level The level of this error message
+ * @param status The status code from the previous command
+ * @param s The request which we are logging for
+ * @param fmt The format string
+ * @param ... The arguments to use to fill out fmt.
+ * @tip Use APLOG_MARK to fill out file and line
+ * @warning It is VERY IMPORTANT that you not include any raw data from 
+ * the network, such as the request-URI or request header fields, within 
+ * the format string.  Doing so makes the server vulnerable to a 
+ * denial-of-service attack and other messy behavior.  Instead, use a 
+ * simple format string like "%s", followed by the string containing the 
+ * untrusted data.
+ * @deffunc void ap_log_error(const char *file, int line, int level, ap_status_t status, request_rec *s, const char *fmt, ...) 
+ */
 API_EXPORT(void) ap_log_rerror(const char *file, int line, int level, 
                                ap_status_t status, const request_rec *s, 
                                const char *fmt, ...)
 			    __attribute__((format(printf,6,7)));
-API_EXPORT(void) ap_error_log2stderr (server_rec *);     
 
+/**
+ * Convert stderr to the error log
+ * @param s The current server
+ * @deffunc void ap_error_log2stderr(server_rec *s)
+ */
+API_EXPORT(void) ap_error_log2stderr (server_rec *);
+
+/**
+ * Log the current pid of the parent process
+ * @param p The pool to use for logging
+ * @param fname The name of the file to log to
+ */
 void ap_log_pid (ap_pool_t *p, const char *fname);
 /* These are for legacy code, new code should use ap_log_error,
  * or ap_log_rerror.
@@ -145,20 +226,57 @@ API_EXPORT(void) ap_log_printf(const server_rec *s, const char *fmt, ...)
 API_EXPORT(void) ap_log_reason(const char *reason, const char *fname,
 			    request_rec *r);
 
-typedef struct piped_log {
+typedef struct piped_log piped_log;
+
+/**
+ * The piped logging structure.  Piped logs are used to move functionality
+ * out of the main server.  For example, log rotation is done with piped logs.
+ */
+struct piped_log {
+    /** The pool to use for the piped log */
     ap_pool_t *p;
+    /** The pipe between the server and the logging process */
     ap_file_t *fds[2];
     /* XXX - an #ifdef that needs to be eliminated from public view. Shouldn't
      * be hard */
 #ifdef HAVE_RELIABLE_PIPED_LOGS
+    /** The name of the program the logging process is running */
     char *program;
+    /** The pid of the logging process */
     ap_proc_t *pid;
 #endif
-} piped_log;
+};
 
+/**
+ * Open the piped log process
+ * @param p The pool to allocate out of
+ * @param program The program to run in the logging process
+ * @return The piped log structure
+ * @deffunc piped_log *ap_open_piped_log(ap_pool_t *p, const char *program)
+ */
 API_EXPORT(piped_log *) ap_open_piped_log (ap_pool_t *p, const char *program);
+
+/**
+ * Close the piped log and kill the logging process
+ * @param pl The piped log structure
+ * @deffunc void ap_close_piped_log(piped_log *pl)
+ */
 API_EXPORT(void) ap_close_piped_log (piped_log *);
+
+/**
+ * A macro to access the read side of the piped log pipe
+ * @param pl The piped log structure
+ * @return The native file descriptor
+ * @deffunc ap_piped_log_read_fd(pl)
+ */
 #define ap_piped_log_read_fd(pl)	((pl)->fds[0])
+
+/**
+ * A macro to access the write side of the piped log pipe
+ * @param pl The piped log structure
+ * @return The native file descriptor
+ * @deffunc ap_piped_log_read_fd(pl)
+ */
 #define ap_piped_log_write_fd(pl)	((pl)->fds[1])
 
 #ifdef __cplusplus

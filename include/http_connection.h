@@ -62,6 +62,10 @@
 extern "C" {
 #endif
 
+/**
+ * @package Apache connection library
+ */
+
 #ifdef CORE_PRIVATE
 /**
  * Create a new connection. 
