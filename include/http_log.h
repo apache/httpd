@@ -114,6 +114,12 @@ extern "C" {
 #define APLOG_MARK	__FILE__,__LINE__
 
 /**
+ * Set up for logging to stderr.
+ * @param p The pool to allocate out of
+ */
+void ap_open_stderr_log(apr_pool_t *p);
+
+/**
  * Open the error log and replace stderr with it.
  * @param s_main The main server
  * @param p The pool to allocate out of
