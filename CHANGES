@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Don't remove the Content-Length from responses in mod_proxy
+     [Brian Pane]
+
   *) Move the check of the Expect request header field after the hook
      for ap_post_read_request, since that is the only opportunity for
      modules to handle Expect extensions.  [Justin Erenkrantz]
