@@ -499,6 +499,16 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
     }
     note_cleanups_for_socket(pool, sock);
 
+    if (conf->recv_buffer_size) {
+      if (setsockopt(dsock, SOL_SOCKET, SO_RCVBUF,
+		     (const char *) &conf->recv_buffer_size, sizeof(int))
+	  == -1) {
+	proxy_log_uerror("setsockopt", "(SO_RCVBUF)",
+			 "Failed to set RecvBufferSize, using default",
+			 r->server);
+      }
+    }
+
     if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (void *)&one,
 		   sizeof(one)) == -1)
     {
@@ -684,6 +694,14 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
         return SERVER_ERROR;
     }
     note_cleanups_for_socket(pool, dsock);
+
+    if (conf->recv_buffer_size) {
+    	if (setsockopt(dsock, SOL_SOCKET, SO_RCVBUF,
+		(const char *)&conf->recv_buffer_size, sizeof(int)) == -1) {
+	    proxy_log_uerror("setsockopt", "(SO_RCVBUF)",
+		"Failed to set RecvBufferSize, using default", r->server);
+	}
+    }
 
     bputs("PASV\015\012", f);
     bflush(f);

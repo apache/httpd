@@ -226,7 +226,16 @@ proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
     }
     note_cleanups_for_socket(pool, sock);
 
-    
+    if (conf->recv_buffer_size) {
+      if (setsockopt(sock, SOL_SOCKET, SO_RCVBUF,
+		     (const char *)&conf->recv_buffer_size, sizeof(int))
+	  == -1) {
+	proxy_log_uerror("setsockopt", "(SO_RCVBUF)",
+			 "Failed to set RecvBufferSize, using default",
+			 r->server);
+      }
+    }
+
 #ifdef SINIX_D_RESOLVER_BUG
     { struct in_addr *ip_addr = (struct in_addr *) *server_hp.h_addr_list;
 

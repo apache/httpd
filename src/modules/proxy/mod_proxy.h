@@ -196,6 +196,7 @@ typedef struct
     array_header *nocaches;
     char         *domain;    /* domain name to use in absence of a domain name in the request */
     int req;                 /* true if proxy requests are enabled */
+    int recv_buffer_size;
 } proxy_server_conf;
 
 struct hdr_entry

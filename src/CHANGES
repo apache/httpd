@@ -1,5 +1,9 @@
 Changes with Apache 1.3a2
 
+  *) mod_proxy now has a ReceiveBufferSize directive, similar to
+     SendBufferSize, so that the TCP window can be set appropriately
+     for LFNs. [Phillip A. Prindeville]
+
   *) mod_browser has been replaced by the more general mod_setenvif
      (courtesy of Paul Sutton).  BrowserMatch* directives are still
      available, but are now joined by SetEnvIf*, UnSetEnvIf*, and

@@ -682,6 +682,21 @@ set_cache_exclude(cmd_parms *parms, void *dummy, char *arg)
     return NULL;
 }
 
+static const char *
+set_recv_buffer_size (cmd_parms *parms, void *dummy, char *arg)
+{
+    proxy_server_conf *psf =
+	get_module_config (parms->server->module_config, &proxy_module);
+    int s = atoi (arg);
+    if (s < 512 && s != 0)
+    {
+        return "ReceiveBufferSize must be >= 512 bytes, or 0 for system default.";
+    }
+
+    psf->recv_buffer_size = s;
+    return NULL;
+}
+
 static handler_rec proxy_handlers[] = {
 { "proxy-server", proxy_handler },
 { NULL } 
@@ -718,6 +733,8 @@ static command_rec proxy_cmds[] = {
     "The number of characters in subdirectory names" },
 { "NoCache", set_cache_exclude, NULL, RSRC_CONF, ITERATE,
     "A list of names, hosts or domains for which caching is *not* provided" },
+{ "ReceiveBufferSize", set_recv_buffer_size, NULL, RSRC_CONF, TAKE1,
+    "Receive buffer size in bytes" },
 { NULL }
 };
 
