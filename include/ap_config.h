@@ -432,9 +432,6 @@ typedef int pid_t;
 #define PLATFORM "Mac OS"
 #endif
 #define HAVE_DYLD
-#ifdef MAC_OS_X_SERVER
-#define DYLD_CANT_UNLOAD
-#endif /* MAC_OS_X_SERVER */
 #define HAVE_GMTOFF
 #define HAVE_MMAP
 #define USE_MMAP_FILES
