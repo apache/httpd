@@ -15,9 +15,7 @@
     restrict access by looking up users in plain text password and
     group files. Similar functionality and greater scalability is
     provided by <module>mod_auth_dbm</module>. HTTP Digest
-    Authentication is provided by
-    <module>mod_auth_digest</module>.</p>
-
+    Authentication is provided by <module>mod_auth_digest</module>.</p>
 </summary>
 <seealso><directive module="core">Require</directive></seealso>
 <seealso><directive module="core">Satisfy</directive></seealso>
@@ -36,27 +34,26 @@ of user groups for authentication</description>
 <usage>
     <p>The <directive>AuthGroupFile</directive> directive sets the
     name of a textual file containing the list of user groups for user
-    authentication.  <var>File-path</var> is the path to the group
-    file. If it is not absolute (<em>i.e.</em>, if it doesn't begin
-    with a slash), it is treated as relative to the <directive
+    authentication. <var>File-path</var> is the path to the group
+    file. If it is not absolute, it is treated as relative to the <directive
     module="core">ServerRoot</directive>.</p>
 
     <p>Each line of the group file contains a groupname followed by a
-    colon, followed by the member usernames separated by spaces.
-    Example:</p> 
+    colon, followed by the member usernames separated by spaces.</p>
 
-    <example>mygroup: bob joe anne</example> 
+    <example><title>Example:</title>
+      mygroup: bob joe anne
+    </example> 
 
     <p>Note that searching large text files is <em>very</em>
-    inefficient; <directive
-    module="mod_auth_dbm">AuthDBMGroupFile</directive> should be used
-    instead.</p>
+    inefficient; <directive module="mod_auth_dbm"
+    >AuthDBMGroupFile</directive> provides a much better performance.</p>
 
-    <note><title>Security</title>
-    <p>Make sure that the <directive>AuthGroupFile</directive> is
-	stored outside the document tree of the web-server; do <em>not</em>
-	put it in the directory that it protects. Otherwise, clients will
-	be able to download the <directive>AuthGroupFile</directive>.</p>
+    <note type="warning"><title>Security</title>
+      <p>Make sure that the <directive>AuthGroupFile</directive> is
+      stored outside the document tree of the web-server; do <em>not</em>
+      put it in the directory that it protects. Otherwise, clients may
+      be able to download the <directive>AuthGroupFile</directive>.</p>
     </note>
 </usage>
 </directivesynopsis>
@@ -79,35 +76,42 @@ passwords for authentication</description>
     module="core">ServerRoot</directive>.</p>
 
     <p>Each line of the user file contains a username followed by
-    a colon, followed by the <code>crypt()</code> encrypted
-    password. The behavior of multiple occurrences of the same user is
-    undefined.</p>
+    a colon, followed by the encrypted password. If the same user
+    ID is defined multiple times, <module>mod_auth</module> will
+    use the first occurrence to verify the password.</p>
 
     <p>The utility <a href="../programs/htpasswd.html">htpasswd</a>
     which is installed as part of the binary distribution, or which
     can be found in <code>src/support</code>, is used to maintain
-    this password file. See the <code>man</code> page for more
-    details. In short:</p>
+    this password file. See the <a href="../programs/htpasswd.html">man
+    page</a> for more details. In short:</p>
 
-    <p>Create a password file 'Filename' with 'username' as the
-    initial ID. It will prompt for the password:</p>
+    <p>Create a password file <code>Filename</code> with
+    <code>username</code> as the initial ID. It will prompt for the
+    password:</p>
 
-    <example>htpasswd -c Filename username</example>
+    <example>
+      htpasswd -c Filename username
+    </example>
 
-    <p>Add or modify 'username2' in the password file 'Filename':</p>
+    <p>Add or modify <code>username2</code> in the password file
+    <code>Filename</code>:</p>
 
-    <example>htpasswd Filename username2</example>
+    <example>
+      htpasswd Filename username2
+    </example>
 
     <p>Note that searching large text files is <em>very</em>
     inefficient; <directive
     module="mod_auth_dbm">AuthDBMUserFile</directive> should be used
     instead.</p>
 
-    <note><title>Security</title>
-    <p>Make sure that the <directive>AuthUserFile</directive> is
-	stored outside the document tree of the web-server; do <em>not</em>
-	put it in the directory that it protects. Otherwise, clients will
-	be able to download the <directive>AuthUserFile</directive>.</p>
+    <note type="warning"><title>Security</title>
+      <p>Make sure that the <directive>AuthUserFile</directive> is
+      stored outside the document tree of the web-server. Do
+      <strong>not</strong> put it in the directory that it protects.
+      Otherwise, clients may be able to download the
+      <directive>AuthUserFile</directive>.</p>
     </note>
 </usage>
 </directivesynopsis>
@@ -116,31 +120,27 @@ passwords for authentication</description>
 <name>AuthAuthoritative</name>
 <description>Sets whether authorization and authentication are
 passed to lower level modules</description>
-<syntax>AuthAuthoritative on|off</syntax>
-<default>AuthAuthoritative on</default>
+<syntax>AuthAuthoritative On|Off</syntax>
+<default>AuthAuthoritative On</default>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
 
 <usage>
-    <note>This information has not been updated for Apache 2.0, which
-    uses a different system for module ordering.</note>
-
     <p>Setting the <directive>AuthAuthoritative</directive> directive
-    explicitly to <strong>'off'</strong> allows for both
-    authentication and authorization to be passed on to lower level
-    modules (as defined in the <code>Configuration</code> and
-    <code>modules.c</code> files) if there is <strong>no
-    userID</strong> or <strong>rule</strong> matching the supplied
-    userID. If there is a userID and/or rule specified; the usual
-    password and access checks will be applied and a failure will give
-    an Authorization Required reply.</p>
+    explicitly to <code>Off</code> allows for both authentication and
+    authorization to be passed on to lower level modules (as defined in the
+    <code>modules.c</code> files) if there is <strong>no userID</strong>
+    or <strong>rule</strong> matching the supplied userID. If there is a
+    userID and/or rule specified; the usual password and access checks
+    will be applied and a failure will give an "Authentication Required"
+    reply.</p>
 
     <p>So if a userID appears in the database of more than one module;
     or if a valid <directive module="core">Require</directive>
     directive applies to more than one module; then the first module
     will verify the credentials; and no access is passed on;
-    regardless of the AuthAuthoritative setting.</p>
+    regardless of the <directive>AuthAuthoritative</directive> setting.</p>
 
     <p>A common use for this is in conjunction with one of the
     database modules; such as <module>mod_auth_dbm</module>,
@@ -150,22 +150,23 @@ passed to lower level modules</description>
     level with a well protected <directive
     module="mod_auth">AuthUserFile</directive>.</p>
 
-    <p>By default; control is not passed on; and an unknown userID or
-    rule will result in an Authorization Required reply. Not setting
-    it thus keeps the system secure; and forces an NCSA compliant
+    <p>By default control is not passed on and an unknown userID or
+    rule will result in an "Authentication Required" reply. Not setting
+    it thus keeps the system secure and forces an NCSA compliant
     behaviour.</p>
 
-    <note><title>Security</title> Do consider the implications of
-    allowing a user to allow fall-through in his .htaccess file; and
-    verify that this is really what you want; Generally it is easier
-    to just secure a single .htpasswd file, than it is to secure a
-    database such as mSQL. Make sure that the <directive
-    module="mod_auth">AuthUserFile</directive> and the <directive
-    module="mod_auth">AuthGroupFile</directive> are stored outside the
-    document tree of the web-server; do <em>not</em> put them in the
-    directory that they protect. Otherwise, clients will be able to
-    download the <directive module="mod_auth">AuthUserFile</directive>
-    and the <directive module="mod_auth">AuthGroupFile</directive>.
+    <note type="warning"><title>Security</title>
+      <p>Do consider the implications of allowing a user to allow
+      fall-through in his .htaccess file; and verify that this is really
+      what you want; Generally it is easier to just secure a single
+      .htpasswd file, than it is to secure a database such as mSQL.
+      Make sure that the <directive module="mod_auth"
+      >AuthUserFile</directive> and the <directive module="mod_auth"
+      >AuthGroupFile</directive> are stored outside the document tree of
+      the web-server; do <em>not</em> put them in the directory that they
+      protect. Otherwise, clients will be able to download the <directive
+      module="mod_auth">AuthUserFile</directive> and the <directive
+      module="mod_auth">AuthGroupFile</directive>.</p>
     </note>
 </usage>
 </directivesynopsis>

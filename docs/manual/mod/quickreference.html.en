@@ -125,7 +125,7 @@ error log</td></tr>
 <tr class="odd"><td><a href="mod_auth_anon.html#anonymous_verifyemail">Anonymous_VerifyEmail on|off</a></td><td> off </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets whether to check the password field for a correctly
 formatted email address</td></tr>
 <tr><td><a href="perchild.html#assignuserid">AssignUserID <var>user_id</var> <var>group_id</var></a></td><td /><td>v</td><td>M</td></tr><tr><td class="descr" colspan="4">-</td></tr>
-<tr class="odd"><td><a href="mod_auth.html#authauthoritative">AuthAuthoritative on|off</a></td><td> on </td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Sets whether authorization and authentication are
+<tr class="odd"><td><a href="mod_auth.html#authauthoritative">AuthAuthoritative On|Off</a></td><td> On </td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Sets whether authorization and authentication are
 passed to lower level modules</td></tr>
 <tr><td><a href="mod_auth_dbm.html#authdbmauthoritative">AuthDBMAuthoritative on|off</a></td><td> on </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets whether authentication and authorization will be
 passwed on to lower level modules</td></tr>
