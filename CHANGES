@@ -1,5 +1,8 @@
 Changes with Apache 2.0.34
 
+  *) implement ssl proxy to support ProxyPass / https:// and the
+     SSLProxy* directives [Doug MacEachern]
+
   *) Update mod_cgid to not do single-byte socket reads for CGI headers
      [Brian Pane]
 
