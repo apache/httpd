@@ -107,7 +107,6 @@ strstr \
 strerror \
 initgroups \
 waitpid \
-gettimeofday \
 memmove \
 bzero \
 )

@@ -103,7 +103,6 @@
 #define NO_WRITEV
 #define NO_USE_SIGACTION
 /* #undef HAVE_TIMES */
-/* #undef HAVE_GETTIMEOFDAY */
 #define USE_LONGJMP
 #define HAVE_MMAP
 #define USE_MMAP_SCOREBOARD

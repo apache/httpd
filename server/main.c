@@ -87,7 +87,7 @@ static void show_compile_settings(void)
 #ifdef SECURITY_HOLE_PASS_AUTHORIZATION
     printf(" -D SECURITY_HOLE_PASS_AUTHORIZATION\n");
 #endif
-#ifdef HAVE_MMAP
+#ifdef APR_HAS_MMAP
     printf(" -D HAVE_MMAP\n");
 #endif
 #ifdef HAVE_SHMGET
