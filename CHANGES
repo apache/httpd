@@ -1,5 +1,8 @@
 Changes with Apache 2.0b1
 
+  *) EBCDIC: Fix some missing ASCII conversion on some protocol data.
+     [Jeff Trawick]
+
   *) Add generic hooks. [Ben Laurie]
 
   *) Use a real pool to dup the error log descriptor.  [Ryan Bloom]
