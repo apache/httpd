@@ -295,6 +295,7 @@ if test "$ac_cv_prog_gcc" = "yes"; then
 fi
 
 dnl ## Check for library functions
+AC_SEARCH_LIBS(sqrt, m)
 
 dnl See Comment #Spoon
 
