@@ -1119,6 +1119,7 @@ int ap_parse_htaccess(void **result, request_rec *r, int override,
                           "access to be safe");
             return HTTP_FORBIDDEN;
         }
+    }
 
 /* cache it */
     new = ap_palloc(r->pool, sizeof(struct htaccess_result));
