@@ -129,11 +129,14 @@ static char *http2env(pool *a, char *w)
     char *res = pstrcat(a, "HTTP_", w, NULL);
     char *cp = res;
 
-    while (*++cp)
-	if (*cp == '-')
+    while (*++cp) {
+	if (!isalnum(*cp) && *cp != '_') {
 	    *cp = '_';
-	else
+	}
+	else {
 	    *cp = toupper(*cp);
+	}
+    }
 
     return res;
 }
@@ -145,6 +148,7 @@ API_EXPORT(char **) create_environment(pool *p, table *t)
     char **env = (char **) palloc(p, (env_arr->nelts + 2) * sizeof(char *));
     int i, j;
     char *tz;
+    char *whack;
 
     j = 0;
     tz = getenv("TZ");
@@ -153,7 +157,18 @@ API_EXPORT(char **) create_environment(pool *p, table *t)
     for (i = 0; i < env_arr->nelts; ++i) {
 	if (!elts[i].key)
 	    continue;
-	env[j++] = pstrcat(p, elts[i].key, "=", elts[i].val, NULL);
+	env[j] = pstrcat(p, elts[i].key, "=", elts[i].val, NULL);
+	whack = env[j];
+	if (isdigit(*whack)) {
+	    *whack++ = '_';
+	}
+	while (*whack != '=') {
+	    if (!isalnum(*whack) && *whack != '_') {
+		*whack = '_';
+	    }
+	    ++whack;
+	}
+	++j;
     }
 
     env[j] = NULL;

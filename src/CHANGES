@@ -1,5 +1,14 @@
 Changes with Apache 1.3b4
 
+  *) For maximum portability, the environment passed to CGIs should
+     only contain variables whose names match the regex
+     /[a-zA-Z][a-zA-Z0-9_]*/.  This is now enforced by stamping
+     underscores over any character outside the regex.  This
+     affects HTTP_* variables, in a way that should be backward
+     compatible for all the standard headers; and affects variables
+     set with SetEnv/BrowserMatch and similar directives.
+     [Dean Gaudet]
+
   *) Mod_speling returned incorrect HREF's when an ambigous match
      was found. Noticed by <robinton@amtrash.comlink.de> (Soeren Ziehe)
      [robinton@amtrash.comlink.de (Soeren Ziehe), Martin Kraemer]
