@@ -239,7 +239,8 @@ charset</td></tr>
 </table>
     <p>The <code class="directive">AddCharset</code> directive maps the given
     filename extensions to the specified content charset. <var>charset</var>
-    is the MIME charset parameter of filenames containing
+    is the <a href="http://www.iana.org/assignments/character-sets">MIME
+    charset parameter</a> of filenames containing
     <var>extension</var>. This mapping is added to any already in force,
     overriding any mappings that already exist for the same
     <var>extension</var>.</p>

@@ -157,7 +157,7 @@ modules</td></tr>
 <div class="directive-section"><h2><a name="AuthzDBMType" id="AuthzDBMType">AuthzDBMType</a> <a name="authzdbmtype" id="authzdbmtype">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets the type of database file that is used to
-store passwords</td></tr>
+store list of user groups</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthzDBMType default|SDBM|GDBM|NDBM|DB</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthzDBMType default</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
@@ -165,12 +165,13 @@ store passwords</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authz_dbm</td></tr>
 </table>
-    <p>Sets the type of database file that is used to store the passwords.
+    <p>Sets the type of database file that is used to store the list
+    of user groups.
     The default database type is determined at compile time.  The
     availability of other types of database files also depends on
     <a href="../install.html#dbm">compile-time settings</a>.</p>
 
-    <p>It is crucial that whatever program you use to create your password
+    <p>It is crucial that whatever program you use to create your group
     files is configured to use the same type of database.</p>
 
 </div>

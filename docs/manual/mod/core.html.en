@@ -208,8 +208,8 @@ available</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AddDefaultCharset" id="AddDefaultCharset">AddDefaultCharset</a> <a name="adddefaultcharset" id="adddefaultcharset">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Default character set to be added for a
-response without an explicit character set</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Default charset parameter to be added when a response
+content-type is "text/plain" or "text/html"</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AddDefaultCharset On|Off|<var>charset</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AddDefaultCharset Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
@@ -217,21 +217,39 @@ response without an explicit character set</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 </table>
-    <p>This directive specifies the name of the character set that
-    will be added to any response that does not have any parameter on
-    the content type in the HTTP headers. This will override any
-    character set specified in the body of the document via a
-    <code>META</code> tag. A setting of <code>AddDefaultCharset
-    Off</code> disables this
-    functionality. <code>AddDefaultCharset On</code> enables
-    Apache's internal default charset of <code>iso-8859-1</code> as
-    required by the directive. You can also specify an alternate
-    <var>charset</var> to be used. For example:</p>
+    <p>This directive specifies a default value for the media type
+    charset parameter (the name of a character encoding) to be added
+    to a response if and only if the response's content-type is either
+    "text/plain" or "text/html".  This should override any charset
+    specified in the body of the document via a <code>META</code> tag,
+    though the exact behavior is often dependent on the user's client
+    configuration. A setting of <code>AddDefaultCharset Off</code>
+    disables this functionality. <code>AddDefaultCharset On</code> enables
+    a default charset of <code>iso-8859-1</code>. Any other value is assumed
+    to be the <var>charset</var> to be used, which should be one of the
+    <a href="http://www.iana.org/assignments/character-sets">IANA registered
+    charset values</a> for use in MIME media types.
+    For example:</p>
 
     <div class="example"><p><code>
       AddDefaultCharset utf-8
     </code></p></div>
 
+    <p><code>AddDefaultCharset</code> should only be used when all
+    of the text resources to which it applies are known to be in that
+    character encoding and it is too inconvenient to label their charset
+    individually. One such example is to add the charset parameter
+    to resources containing generated content, such as legacy CGI
+    scripts, that might be vulnerable to cross-site scripting attacks
+    due to user-provided data being included in the output.  Note, however,
+    that a better solution is to just fix (or delete) those scripts, since
+    setting a default charset does not protect users that have enabled
+    the "auto-detect character encoding" feature on their browser.</p>
+
+<h3>See also</h3>
+<ul>
+<li><code class="directive"><a href="../mod/mod_mime.html#addcharset">AddCharset</a></code></li>
+</ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AddOutputFilterByType" id="AddOutputFilterByType">AddOutputFilterByType</a> <a name="addoutputfilterbytype" id="addoutputfilterbytype">Directive</a></h2>
