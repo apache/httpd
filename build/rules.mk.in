@@ -178,7 +178,7 @@ local-all: $(TARGETS)
 local-shared-build: $(SHARED_TARGETS)
 
 local-depend: x-local-depend
-	if test -n "`ls $(srcdir)/*.c 2> /dev/null`"; then \
+	@if test -n "`ls $(srcdir)/*.c 2> /dev/null`"; then \
 		rm -f .deps; \
 		list='$(srcdir)/*.c'; \
 		for i in $$list; do \
