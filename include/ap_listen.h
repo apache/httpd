@@ -58,6 +58,7 @@
 #include "apr_network_io.h"
 #include "httpd.h"
 #include "http_config.h"
+#include "mpm.h"
 
 /**
  * @package Apache Listeners Library
