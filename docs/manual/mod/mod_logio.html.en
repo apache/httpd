@@ -43,7 +43,8 @@
 
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
-<p>This module provides no directives.</p>
+<p>This module provides no
+            directives.</p>
 <h3>Topics</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#formats">Custom Log Formats</a></li>

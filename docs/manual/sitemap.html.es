@@ -151,7 +151,8 @@ para describir los módulos de Apache</a></li>
 <li><a href="mod/directive-dict.html">Definiciones de términos
 usados para describir las directivas de Apache</a></li>
 </ul><ul><li><a href="mod/core.html">Funcionalidad Básica de Apache</a></li>
-<li><a href="mod/mpm_common.html">Directivas Comunes de los MPM de Apache</a></li>
+<li><a href="mod/mpm_common.html">Directivas Comunes de los MPM de
+            Apache</a></li>
 <li><a href="mod/beos.html">MPM de Apache beos</a></li>
 <li><a href="mod/leader.html">MPM de Apache leader</a></li>
 <li><a href="mod/mpm_netware.html">MPM de Apache netware</a></li>

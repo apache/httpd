@@ -44,7 +44,8 @@
     </div>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
-<p>This module provides no directives.</p>
+<p>This module provides no
+            directives.</p>
 <h3>See also</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></li>
