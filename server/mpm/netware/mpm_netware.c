@@ -970,7 +970,9 @@ static int netware_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp
         free (addrname);
     }
 
-    ap_listen_pre_config();
+    /* The following call has been moved to the mod_nw_ssl pre-config handler
+    ap_listen_pre_config(); */
+
     ap_threads_to_start = DEFAULT_START_THREADS;
     ap_threads_min_free = DEFAULT_MIN_FREE_THREADS;
     ap_threads_max_free = DEFAULT_MAX_FREE_THREADS;
