@@ -143,6 +143,13 @@
       <code>FancyIndexing</code> option to the <directive
       module="mod_autoindex">IndexOptions</directive>
       directive.</li>
+
+      <li>The MultiViews content-negotiation technique provided by
+      <module>mod_negotiation</module> has become more strict in its
+      default file matching.  It will select only from <em>negotiable</em>
+      files.  The old behavior can be restored using the <directive
+      module="mod_mime">MultiviewsMatch</directive> directive.</li>
+
     </ul>
   </section>
 
