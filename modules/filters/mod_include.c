@@ -113,7 +113,9 @@ static void add_include_vars(request_rec *r, char *timefmt)
     apr_table_setn(e, "LAST_MODIFIED",
               ap_ht_time(r->pool, r->finfo.mtime, timefmt, 0));
     apr_table_setn(e, "DOCUMENT_URI", r->uri);
-    apr_table_setn(e, "DOCUMENT_PATH_INFO", r->path_info);
+    if (r->path_info && *r->path_info) {
+        apr_table_setn(e, "DOCUMENT_PATH_INFO", r->path_info);
+    }
     if (apr_get_username(&pwname, r->finfo.user, r->pool) == APR_SUCCESS) {
         apr_table_setn(e, "USER_NAME", pwname);
     }

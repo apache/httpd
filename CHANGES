@@ -1,5 +1,8 @@
 Changes with Apache 2.0.26-dev
 
+  *) Fix a segfault with mod_include when r->path_info is not set
+     (which is the case with mod_proxy).  [Ian Holsman <ianh@cnet.com>]
+
   *) Add -X functionality back.  This indicates to all MPMs and any other
      part of Apache that it should run in "debug" mode.  [Justin Erenkrantz]
 
