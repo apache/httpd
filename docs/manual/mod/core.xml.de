@@ -237,8 +237,8 @@ zuordnen</description>
 
 <directivesynopsis>
 <name>AllowEncodedSlashes</name>
-<description>Legt fest, ob kodierte Pfadtrennzeichen durchgereicht werden
-d&uuml;rfen</description>
+<description>Legt fest, ob kodierte Pfadtrennzeichen in URLs durchgereicht
+werden d&uuml;rfen</description>
 <syntax>AllowEncodedSlashes On|Off</syntax>
 <default>AllowEncodedSlashes Off</default>
 <contextlist><context>server config</context><context>virtual host</context>
@@ -256,7 +256,7 @@ d&uuml;rfen</description>
     vor allem in Verbindung mit <code>PATH_INFO</code> hilfreich.</p>
 
     <note><title>Anmerkung</title>
-      <p>Das Erlauben von Schr&auml;gstrichen impliziert <em>nicht</em> die 
+      <p>Das Erlauben von Schr&auml;gstrichen impliziert <em>nicht</em> deren
       <em>Dekodierung</em>. Vorkommen von <code>%2F</code> oder <code>%5C</code>
       (<em>nur</em> auf entsprechenden Systemen) werden unver&auml;ndert in der
       ansonsten dekodierten URL belassen.</p>
