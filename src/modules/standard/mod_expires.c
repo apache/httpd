@@ -478,12 +478,14 @@ static int add_expires(request_rec *r)
     };
 
     expires = base + additional;
-    ap_snprintf(age, sizeof(age), "max-age=%d", (int) expires - (int) r->request_time);
-    ap_table_setn(r->headers_out, "Cache-Control", ap_pstrdup(r->pool, age));
-    tzset();                    /* redundant? called implicitly by localtime, at least 
-                                 * under FreeBSD
+    ap_snprintf(age, sizeof(age), "max-age=%d",
+		(int) expires - (int) r->request_time);
+    ap_table_mergen(r->headers_out, "Cache-Control", ap_pstrdup(r->pool, age));
+    tzset();                    /* redundant? called implicitly by localtime,
+				 * at least under FreeBSD
                                  */
-    ap_table_setn(r->headers_out, "Expires", ap_gm_timestr_822(r->pool, expires));
+    ap_table_setn(r->headers_out, "Expires",
+		  ap_gm_timestr_822(r->pool, expires));
     return OK;
 }
 

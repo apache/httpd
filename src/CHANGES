@@ -1,5 +1,10 @@
 Changes with Apache 1.3.13
 
+  *) Fix mod_expires to merge its settings for Cache-Control into any
+     existing value for the field.  It was unconditionally setting it,
+     wiping out anything from, say, a 'Header Append Cache-Control'.
+     PR#5769 [Ken Coar]
+
   *) Add Win32 option -k stop as an alias of -k shutdown, to correspond to
      the NET START/NET STOP syntax. [William Rowe]
 
