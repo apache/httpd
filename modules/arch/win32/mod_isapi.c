@@ -352,6 +352,7 @@ apr_status_t isapi_handler (request_rec *r)
     apr_status_t rv;
     isapi_loaded *isa;
     isapi_cid *cid;
+    const char *val;
     DWORD read;
     int res;
     
@@ -383,9 +384,12 @@ apr_status_t isapi_handler (request_rec *r)
     /* Set up variables */
     ap_add_common_vars(r);
     ap_add_cgi_vars(r);
-    apr_table_setn(r->subprocess_env, "UNMAPPED_REMOTE_USER", "REMOTE_USER");
-    apr_table_setn(r->subprocess_env, "SERVER_PORT_SECURE", "0");
-    apr_table_setn(r->subprocess_env, "URL", r->uri);
+    apr_table_setn(e, "UNMAPPED_REMOTE_USER", "REMOTE_USER");
+    if ((val = apr_table_get(e, "HTTPS")) && strcmp(val, "on"))
+        apr_table_setn(e, "SERVER_PORT_SECURE", "1");
+    else
+        apr_table_setn(e, "SERVER_PORT_SECURE", "0");
+    apr_table_setn(e, "URL", r->uri);
 
     /* Set up connection structure and ecb */
     cid = apr_pcalloc(r->pool, sizeof(isapi_cid));
