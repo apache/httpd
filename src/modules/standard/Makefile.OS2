@@ -75,6 +75,9 @@ log_agen.dll: mod_log_agent.o mod_log_agent.def
 log_conf.dll: mod_log_config.o mod_log_config.def
 	$(mkdll)
 
+log_fore.dll: mod_log_forensic.o mod_log_forensic.def
+	$(mkdll)
+
 log_refe.dll: mod_log_referer.o mod_log_referer.def
 	$(mkdll)
 
