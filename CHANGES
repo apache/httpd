@@ -1,5 +1,14 @@
 Changes with Apache 2.0.44
 
+  *) mod_negotiation: Set the appropriate mime response headers
+     (Content-Type, charset, Content-Language and Content-Encoding)
+     for negotated type-map "Body:" responses (such as the error
+     pages.)  [André Malo <nd@perlig.de>]
+
+  *) mod_log_config: Allow '%%' escaping in CustomLog format
+     strings to insert a literal, single '%'.
+     [André Malo <nd@perlig.de>]
+
   *) mod_autoindex: AddDescription directives for directories
      now work as in Apache 1.3, where no trailing '/' is
      specified on the directory name.  Previously, the trailing
