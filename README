@@ -1,0 +1,163 @@
+                      _             _ 
+  _ __ ___   ___   __| |    ___ ___| |
+ | '_ ` _ \ / _ \ / _` |   / __/ __| | 
+ | | | | | | (_) | (_| |   \__ \__ \ | ``mod_ssl combines the flexibility of
+ |_| |_| |_|\___/ \__,_|___|___/___/_|   Apache with the security of OpenSSL.''
+                      |_____|                                           
+ mod_ssl                               ``Ralf Engelschall has released an
+ Apache Interface to OpenSSL             excellent module that integrates
+ http://www.modssl.org/                  Apache and SSLeay.''                 
+ Version 2.8                                               -- Tim J. Hudson
+
+ SYNOPSIS
+
+ This Apache module provides strong cryptography for the Apache 1.3 webserver
+ via the Secure Sockets Layer (SSL v2/v3) and Transport Layer Security (TLS
+ v1) protocols by the help of the SSL/TLS implementation library OpenSSL which
+ is based on SSLeay from Eric A. Young and Tim J. Hudson. The mod_ssl package
+ was created in April 1998 by Ralf S. Engelschall and was originally derived
+ from software developed by Ben Laurie for use in the Apache-SSL HTTP server
+ project. 
+
+ SOURCES
+
+ Here is a short overview of the source files:
+
+   Makefile.libdir ......... dummy for Apache config mechanism
+   Makefile.tmpl ........... Makefile template for Unix  platform
+   Makefile.win32 .......... Makefile template for Win32 platform
+   libssl.module ........... stub called from the Apache config mechanism
+   libssl.version .......... file containing the mod_ssl version information
+   mod_ssl.c ............... main source file containing API structures
+   mod_ssl.h ............... common header file of mod_ssl
+   ssl_engine_compat.c ..... backward compatibility support
+   ssl_engine_config.c ..... module configuration handling
+   ssl_engine_dh.c ......... DSA/DH support
+   ssl_engine_ds.c ......... data structures
+   ssl_engine_ext.c ........ Extensions to other Apache parts
+   ssl_engine_init.c ....... module initialization
+   ssl_engine_io.c ......... I/O support
+   ssl_engine_kernel.c ..... SSL engine kernel
+   ssl_engine_log.c ........ logfile support
+   ssl_engine_mutex.c ...... mutual exclusion support
+   ssl_engine_pphrase.c .... pass-phrase handling
+   ssl_engine_rand.c ....... PRNG support
+   ssl_engine_vars.c ....... Variable Expansion support
+   ssl_expr.c .............. expression handling main source
+   ssl_expr.h .............. expression handling common header
+   ssl_expr_scan.c ......... expression scanner automaton (pre-generated)
+   ssl_expr_scan.l ......... expression scanner source
+   ssl_expr_parse.c ........ expression parser automaton  (pre-generated)
+   ssl_expr_parse.h ........ expression parser header     (pre-generated)
+   ssl_expr_parse.y ........ expression parser source
+   ssl_expr_eval.c ......... expression machine evaluation
+   ssl_scache.c ............ session cache abstraction layer
+   ssl_scache_dbm.c ........ session cache via DBM file
+   ssl_scache_shmcb.c ...... session cache via shared memory cyclic buffer
+   ssl_scache_shmht.c ...... session cache via shared memory hash table
+   ssl_util.c .............. utility functions
+   ssl_util_ssl.c .......... the OpenSSL companion source
+   ssl_util_ssl.h .......... the OpenSSL companion header
+   ssl_util_sdbm.c ......... the SDBM library source
+   ssl_util_sdbm.h ......... the SDBM library header
+   ssl_util_table.c ........ the hash table library source
+   ssl_util_table.h ........ the hash table library header
+
+ The source files are written in clean ANSI C and pass the ``gcc -O -g
+ -ggdb3 -Wall -Wshadow -Wpointer-arith -Wcast-align -Wmissing-prototypes
+ -Wmissing-declarations -Wnested-externs -Winline'' compiler test
+ (assuming `gcc' is GCC 2.95.2 or newer) without any complains. When
+ you make changes or additions make sure the source still passes this
+ compiler test.
+
+ FUNCTIONS
+  
+ Inside the source code you will be confronted with the following types of
+ functions which can be identified by their prefixes:
+
+   ap_xxxx() ............... Apache API function
+   ssl_xxxx() .............. mod_ssl function
+   SSL_xxxx() .............. OpenSSL function (SSL library)
+   OpenSSL_xxxx() .......... OpenSSL function (SSL library)
+   X509_xxxx() ............. OpenSSL function (Crypto library)
+   PEM_xxxx() .............. OpenSSL function (Crypto library)
+   EVP_xxxx() .............. OpenSSL function (Crypto library)
+   RSA_xxxx() .............. OpenSSL function (Crypto library)
+
+ DATA STRUCTURES
+
+ Inside the source code you will be confronted with the following
+ data structures:
+
+   ap_ctx .................. Apache EAPI Context
+   server_rec .............. Apache (Virtual) Server
+   conn_rec ................ Apache Connection
+   BUFF .................... Apache Connection Buffer
+   request_rec ............. Apache Request
+   SSLModConfig ............ mod_ssl (Global)  Module Configuration
+   SSLSrvConfig ............ mod_ssl (Virtual) Server Configuration
+   SSLDirConfig ............ mod_ssl Directory Configuration
+   SSL_CTX ................. OpenSSL Context
+   SSL_METHOD .............. OpenSSL Protocol Method
+   SSL_CIPHER .............. OpenSSL Cipher
+   SSL_SESSION ............. OpenSSL Session
+   SSL ..................... OpenSSL Connection
+   BIO ..................... OpenSSL Connection Buffer
+
+ For an overview how these are related and chained together have a look at the
+ page in README.dsov.{fig,ps}. It contains overview diagrams for those data
+ structures. It's designed for DIN A4 paper size, but you can easily generate
+ a smaller version inside XFig by specifing a magnification on the Export
+ panel.
+
+ EXPERIMENTAL CODE
+
+ Experimental code is always encapsulated as following:
+
+   | #ifdef SSL_EXPERIMENTAL_xxxx
+   | ...
+   | #endif
+
+ This way it is only compiled in when this define is enabled with
+ the APACI --enable-rule=SSL_EXPERIMENTAL option and as long as the
+ C pre-processor variable SSL_EXPERIMENTAL_xxxx_IGNORE is _NOT_
+ defined (via CFLAGS). Or in other words: SSL_EXPERIMENTAL enables all
+ SSL_EXPERIMENTAL_xxxx variables, except if SSL_EXPERIMENTAL_xxxx_IGNORE
+ is already defined. Currently the following features are experimental:
+
+   o SSL_EXPERIMENTAL_PERDIRCA
+     The ability to use SSLCACertificateFile and SSLCACertificatePath
+     in a per-directory context (.htaccess). This is provided by some nasty
+     reconfiguration hacks until OpenSSL has better support for this. It
+     should work on non-multithreaded platforms (all but Win32).
+
+   o SSL_EXPERIMENTAL_PROXY
+     The ability to use various additional SSLProxyXXX directives in
+     oder to control extended client functionality in the HTTPS proxy
+     code.
+
+   o SSL_EXPERIMENTAL_ENGINE
+     The ability to support the new forthcoming OpenSSL ENGINE stuff.
+     Until this development branch of OpenSSL is merged into the main
+     stream, you have to use openssl-engine-0.9.x.tar.gz for this.
+     mod_ssl automatically recognizes this OpenSSL variant and then can
+     activate external crypto devices through SSLCryptoDevice directive.
+
+ VENDOR EXTENSIONS
+
+ Inside the mod_ssl sources you can enable various EAPI vendor hooks
+ (`ap::mod_ssl::vendor::xxxx') by using the APACI --enable-rule=SSL_VENDOR
+ option.  These hooks can be used to change or extend mod_ssl by a vendor
+ without patching the source code. Grep for `ap::mod_ssl::vendor::'.
+ Additionally vendors can add their own source code to files named
+ ssl_vendor.c, ssl_vendor_XXX.c, etc.  The libssl.module script automatically
+ picks these up under configuration time and mod_ssl under run-time calls the
+ functions `void ssl_vendor_register(void)' and `void
+ ssl_vendor_unregister(void)' inside these objects to bootstrap them.
+
+ An ssl_vendor.c should at least contain the following contents:
+
+   |  #include "mod_ssl.h"
+   |  void ssl_vendor_register(void) { return; }
+   |  void ssl_vendor_unregister(void) { return; }
+

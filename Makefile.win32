@@ -1,0 +1,133 @@
+##                      _             _ 
+##  _ __ ___   ___   __| |    ___ ___| |  mod_ssl
+## | '_ ` _ \ / _ \ / _` |   / __/ __| |  Apache Interface to OpenSSL
+## | | | | | | (_) | (_| |   \__ \__ \ |  www.modssl.org
+## |_| |_| |_|\___/ \__,_|___|___/___/_|  ftp.modssl.org
+##                      |_____|         
+##  Makefile.win32
+##  Apache 1.3 Makefile for SSL module (Win32 environment)
+##
+
+##
+##  ====================================================================
+##  Copyright (c) 1998-2001 Ralf S. Engelschall. All rights reserved.
+## 
+##  Redistribution and use in source and binary forms, with or without
+##  modification, are permitted provided that the following conditions
+##  are met:
+## 
+##  1. Redistributions of source code must retain the above copyright
+##     notice, this list of conditions and the following disclaimer. 
+## 
+##  2. Redistributions in binary form must reproduce the above copyright
+##     notice, this list of conditions and the following
+##     disclaimer in the documentation and/or other materials
+##     provided with the distribution.
+## 
+##  3. All advertising materials mentioning features or use of this
+##     software must display the following acknowledgment:
+##     "This product includes software developed by 
+##      Ralf S. Engelschall <rse@engelschall.com> for use in the
+##      mod_ssl project (http://www.modssl.org/)."
+## 
+##  4. The names "mod_ssl" must not be used to endorse or promote
+##     products derived from this software without prior written
+##     permission. For written permission, please contact
+##     rse@engelschall.com.
+## 
+##  5. Products derived from this software may not be called "mod_ssl"
+##     nor may "mod_ssl" appear in their names without prior
+##     written permission of Ralf S. Engelschall.
+## 
+##  6. Redistributions of any form whatsoever must retain the following
+##     acknowledgment:
+##     "This product includes software developed by 
+##      Ralf S. Engelschall <rse@engelschall.com> for use in the
+##      mod_ssl project (http://www.modssl.org/)."
+## 
+##  THIS SOFTWARE IS PROVIDED BY RALF S. ENGELSCHALL ``AS IS'' AND ANY
+##  EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+##  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+##  PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL RALF S. ENGELSCHALL OR
+##  HIS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+##  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+##  NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+##  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+##  HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+##  STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+##  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+##  OF THE POSSIBILITY OF SUCH DAMAGE.
+##  ====================================================================
+##
+
+#   the following variables are automatically
+#   adjusted by the configure.bat script.
+SSL_INC          = p:\ssl\work\win32\openssl\include
+SSL_LIB          = p:\ssl\work\win32\openssl\lib
+MOD_SSL_VERS_NUM = 000000
+MOD_SSL_VERS_STR = 0.0.0
+
+#   build tools and flags
+CC       = cl.exe
+CFLAGS   = /nologo /c /O2 /MD /W3 /GX /DNDEBUG /DWIN32 /D_WINDOWS /DSHARED_MODULE /DEAPI
+CFLAGS   = $(CFLAGS) /DMOD_SSL=$(MOD_SSL_VERS_NUM) /DMOD_SSL_VERSION=\"$(MOD_SSL_VERS_STR)\"
+CFLAGS   = $(CFLAGS) /I..\..\include /I..\..\os\win32 /I$(SSL_INC)
+LD       = link.exe
+LDFLAGS  = /nologo
+RM       = del
+
+#   name and extension of generated mod_ssl library file
+LIBNAME  = mod_ssl
+LIBEXT   = so
+LIBFILE  = $(LIBNAME).$(LIBEXT)
+
+#   mod_ssl object files
+OBJS=\
+ mod_ssl.obj\
+ ssl_engine_config.obj\
+ ssl_engine_compat.obj\
+ ssl_engine_ds.obj\
+ ssl_engine_dh.obj\
+ ssl_engine_init.obj\
+ ssl_engine_kernel.obj\
+ ssl_engine_rand.obj\
+ ssl_engine_io.obj\
+ ssl_engine_log.obj\
+ ssl_engine_mutex.obj\
+ ssl_engine_pphrase.obj\
+ ssl_engine_vars.obj\
+ ssl_engine_ext.obj\
+ ssl_scache.obj\
+ ssl_scache_dbm.obj\
+ ssl_scache_shmcb.obj\
+ ssl_scache_shmht.obj\
+ ssl_expr.obj\
+ ssl_expr_scan.obj\
+ ssl_expr_parse.obj\
+ ssl_expr_eval.obj\
+ ssl_util.obj\
+ ssl_util_ssl.obj\
+ ssl_util_sdbm.obj\
+ ssl_util_table.obj
+
+.c.obj:
+	$(CC) $(CFLAGS) $<
+
+all: $(LIBFILE)
+
+$(LIBNAME).lib: $(OBJS)
+	$(LD) $(LDFLAGS) /lib /out:$@ \
+		$(OBJS)
+
+$(LIBNAME).so: $(OBJS)
+	$(LD) $(LDFLAGS) /dll /out:$@ \
+		$(OBJS) \
+		..\..\Release\ApacheCore.lib \
+		$(SSL_LIB)\ssleay32.lib \
+		$(SSL_LIB)\libeay32.lib \
+		wsock32.lib gdi32.lib
+
+clean:
+	-$(RM) $(LIBFILE)
+	-$(RM) $(OBJS)
+
