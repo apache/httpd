@@ -8,9 +8,6 @@ Changes with Apache 2.1.0-dev
   *) Add a delete flag to htpasswd.
      [Thom May]
 
-  *) Make mod_expires' ExpiresByType work properly, including for
-     dynamically-generated documents.  [Ken Coar]
-
   *) Ensure that ssl-std.conf is generated at configure time, and switch
      to using the expanded config variables to work the same as
      httpd-std.conf PR 19611
@@ -148,6 +145,9 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.46
+
+  *) Make mod_expires' ExpiresByType work properly, including for
+     dynamically-generated documents.  [Ken Coar]
 
   *) Add another check for already compressed content in mod_deflate.
      PR 19913. [Tsuyoshi SASAMOTO <nazonazo@super.win.ne.jp>]
