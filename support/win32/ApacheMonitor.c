@@ -304,11 +304,14 @@ void appendServiceMenu(HMENU hMenu, UINT uMenuId, LPSTR szServiceName, BOOL fRun
 
     ZeroMemory(&mii, sizeof(MENUITEMINFO));
     mii.cbSize = sizeof(MENUITEMINFO);
-    mii.fMask = MIIM_ID | MIIM_TYPE | MIIM_STATE | MIIM_SUBMENU;
+    mii.fMask = MIIM_ID | MIIM_TYPE | MIIM_STATE | MIIM_SUBMENU | MIIM_CHECKMARKS;
     mii.fType = MFT_STRING;
     mii.wID = uMenuId;
+    mii.hbmpChecked = g_hBmpStart;
+    mii.hbmpUnchecked = g_hBmpStop;
     mii.dwTypeData = szServiceName;
     mii.hSubMenu = smh;
+    mii.fState = fRunning ? MFS_CHECKED : MFS_UNCHECKED;
     InsertMenuItem(hMenu, IDM_SM_SERVICE + uMenuId, FALSE, &mii);
 }
 
@@ -927,10 +930,6 @@ LRESULT CALLBACK ServiceDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
         case WM_INITDIALOG: 
             ShowWindow(hDlg, SW_HIDE);
             g_hwndServiceDlg = hDlg;
-            g_hBmpStart = LoadImage(g_hInstance, MAKEINTRESOURCE(IDB_BMPRUN),
-                                    IMAGE_BITMAP, XBITMAP, YBITMAP, LR_DEFAULTCOLOR); 
-            g_hBmpStop  = LoadImage(g_hInstance, MAKEINTRESOURCE(IDB_BMPSTOP), 
-                                    IMAGE_BITMAP, XBITMAP, YBITMAP, LR_DEFAULTCOLOR); 
 
             Button_Enable(GetDlgItem(hDlg, IDC_SSTART), FALSE);
             Button_Enable(GetDlgItem(hDlg, IDC_SSTOP), FALSE);
@@ -1164,10 +1163,6 @@ LRESULT CALLBACK ServiceDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
         case WM_CLOSE: 
             EndDialog(hDlg, TRUE);
             return TRUE;
-        case WM_DESTROY: 
-            DeleteObject(g_hBmpStart); 
-            DeleteObject(g_hBmpStop); 
-            return TRUE; 
         default:
             return FALSE;
     }
@@ -1400,6 +1395,10 @@ int WINAPI WinMain(HINSTANCE hInstance,
                                    LR_DEFAULTSIZE, LR_DEFAULTSIZE, LR_SHARED);
     g_hCursorArrow     = LoadImage(NULL, MAKEINTRESOURCE(OCR_NORMAL), IMAGE_CURSOR,
                                    LR_DEFAULTSIZE, LR_DEFAULTSIZE, LR_SHARED);
+    g_hBmpStart        = LoadImage(hInstance, MAKEINTRESOURCE(IDB_BMPRUN),
+                                   IMAGE_BITMAP, XBITMAP, YBITMAP, LR_DEFAULTCOLOR);
+    g_hBmpStop         = LoadImage(hInstance, MAKEINTRESOURCE(IDB_BMPSTOP),
+                                   IMAGE_BITMAP, XBITMAP, YBITMAP, LR_DEFAULTCOLOR);
 
     hMutex = CreateMutex(NULL, FALSE, "APSRVMON_MUTEX");
     if((hMutex == NULL) || (GetLastError() == ERROR_ALREADY_EXISTS))
@@ -1432,5 +1431,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
     DestroyIcon(g_icoRun);
     DestroyCursor(g_hCursorHourglass);
     DestroyCursor(g_hCursorArrow);
+    DeleteObject(g_hBmpStart); 
+    DeleteObject(g_hBmpStop); 
     return 0;
 }
