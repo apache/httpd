@@ -273,7 +273,7 @@ else
     then
       case "x$OS" in
         x*390*) $TAR -cfU ../apache_$VER-$OS.tar -C .. apache_$VER;;
-	    *) $TAR -cf ../apache_$VER-$OS.tar -C .. apache_$VER;;
+	    *) (cd .. && $TAR -cf apache_$VER-$OS.tar apache_$VER);;
       esac
       if [ "x$GZIP" != "x" ]
       then
