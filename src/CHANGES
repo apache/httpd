@@ -8,28 +8,28 @@ Changes with Apache 1.3.1
        4. compat.h    -> ap_compat.h
        5. apctype.h   -> ap_ctype.h
      Backward compatibility files for conf.h and compat.h were created.
-     [The Apache Group]
 
-  *) Let mod_mmap_static be more reserved unless at least one "mmapfile"
-     directive is present in the configuration. Because this experimental
-     module has to do some black magic to operate inside the current API and
-     thus forces side-effects for other modules under some circumstances.
+  *) mod_mmap_static will no longer take action on requests unless at 
+     least one "mmapfile" directive is present in the configuration. 
+     This experimental module has to do some black magic to operate 
+     inside the current API and thus creates side-effects for other 
+     modules under some circumstances.
      [Ralf S. Engelschall]
  
   *) Add conservative ticks around more egrep arguments in top-level configure
      to avoid problems under brain-dead platforms like Digital Unix (OSF1).
      [Ralf S. Engelschall] PR#2596
 
-  *) mod_rewrite created RewriteLock files under the uid of the parent
+  *) mod_rewrite created RewriteLock files under the UID of the parent
      process, thus the child processes had no write access to the files.
-     Now a chown() is done to the uid of the childs if applicable.
-     [Lars Eilebrecht, Ralf S. Engelschall] PR#2341
+     Now a chown() is done on the file to the uid of the children,
+     if applicable.  [Lars Eilebrecht, Ralf S. Engelschall] PR#2341
 
   *) Autogenerate some HAVE_XXXXX_H defines in conf_auto.h (determined via
      TestCompile) instead of defining them manually in conf.h based on less
-     accurate platform definitions. This way we no longer have to fiddle with
+     accurate platform definitions.  This way we no longer have to fiddle with
      OS-type and/or OS-version identifiers to discover whether a system header
-     file exists or not. Instead we now directly check for the existence of
+     file exists or not.  Instead we now directly check for the existence of
      those esoteric ones. 
      [Ralf S. Engelschall] PR#2093, PR#2361, PR#2377, PR#2434,
                            PR#2524, PR#2525, PR#2533, PR#2569
@@ -39,12 +39,12 @@ Changes with Apache 1.3.1
 
   *) Cache a proxied request in the event that the client cancels the
      transfer, provided that the configured percentage of the file has
-     already been transfered. It works for http transfers only.  The 
-     new httpd.conf directive is called CacheForceCompletion. 
+     already been transfered. It works for HTTP transfers only.  The 
+     new configuration directive is called CacheForceCompletion. 
      [Glen Parker <glenebob@nwlink.com>] PR#2277
 
   *) Add the "<!DOCTYPE HTML" magic cookie used by modern documents (and
-     required by HTML 3.2 and later) to conf/magic.
+     required by HTML 3.2 and later) to mod_mime_magic's conf/magic.
      [Anna Shergold <anna@inext.co.uk>]
 
   *) Fix yet another signal-based race condition involving nested timers.
@@ -66,14 +66,14 @@ Changes with Apache 1.3.1
      [Ronald Record <rr@sco.com>] PR#2533
 
   *) The APACI libexecdir was not extended with an "apache/" subdir
-     if the installation prefix doesn't already contain "apache". Although
-     it is useful because the DSO files are totally Apache-specific. Now
+     if the installation prefix didn't already contain "apache", but
+     it should be because the DSO files are Apache-specific.  Now
      libexecdir is treated the same way sysconfdir, datadir, localstatedir
      and includedir are already treated.
      [Charles Levert <charles@comm.polymtl.ca>] PR#2551
 
-  *) The <Limit> parsing routine was incorrectly treating methods in
-     a case-insensitive way.  [Ken Coar]
+  *) The <Limit> parsing routine was incorrectly treating methods as
+     case-insensitive.  [Ken Coar]
 
   *) The ap_bprintf() code neglected to test if there was an error on
      the connection.  ap_bflush() misdiagnosed a failure as a success.
@@ -104,12 +104,12 @@ Changes with Apache 1.3.1
   *) Add a flag so ap_fnmatch() can be used for case-blind pattern matching.
      [Ken Coar, Dean Gaudet]
 
-  *) Win32: Don't collapse multiple slashes in PATH_INFO.
+  *) WIN32: Don't collapse multiple slashes in PATH_INFO.
      [Ben Laurie, Bill Stoddard <wgstodda@us.ibm.com>] PR#2274
 
-  *) Win32 (security): Eliminate trailing "."s in path components. These are
+  *) WIN32 SECURITY: Eliminate trailing "."s in path components. These are
      ignored by the Windows filesystem, and so can be used to bypass security.
-	 [Ben Laurie, Alexei Kosut].
+     [Ben Laurie, Alexei Kosut].
 
   *) We now attempt to dump core when we get SIGILL. [Jim Jagielski]
 
@@ -121,10 +121,10 @@ Changes with Apache 1.3.1
      which of three dozen different versions of "ps" are installed.
      [a cast of dozens]
 
-  *) Win32: If we can't figure out how to execute a file in a script
+  *) WIN32: If we can't figure out how to execute a file in a script
      directory, bail out of the request with an error message.  [W G Stoddard]
 
-  *) Win32 (security): Eliminate directories consisting of three or more dots;
+  *) WIN32 SECURITY: Eliminate directories consisting of three or more dots;
      these are treated by Win32 as if they are ".." but are not detected by
      other machinery within Apache. This is something of a kludge but
      eliminates a security hole. [Manoj Kasichainula, Ben Laurie]
@@ -170,7 +170,8 @@ Changes with Apache 1.3.1
 
   *) Fix parsing of FTP `SIZE' responses in proxy module: The newline was not
      truncated which forced following HTTP headers to be data in the HTTP
-     reponse. [Ralf S. Engelschall, Charles Fu <ccwf@bacchus.com>] PR#2412, 2367
+     reponse. [Ralf S. Engelschall, Charles Fu <ccwf@bacchus.com>] 
+     PR#2412, 2367
 
   *) Portability fix for APACI shadow tree support: Swap order of awk and sed
      in top-level configure script to avoid sed fails on some platforms (for
@@ -235,11 +236,7 @@ Changes with Apache 1.3.1
      empty. [Ralf S. Engelschall, Dean Gaudet, Martin Kraemer]
 
   *) Replace two bad sprintf() calls with ap_snprintf() variants in
-     mod_rewrite. The sprintf()'s were incorrectly introduced recently because
-     Ralf didn't recognize that although the ap_psprintf() needs a pool (which
-     is not available at the particular place in mod_rewrite) we also have the
-     non-pool based more secure ap_snprintf() (which is now used).
-     [Ralf S. Engelschall]
+     mod_rewrite. [Ralf S. Engelschall]
 
   *) Fix missing usage description for MetaFiles directive.
      [David MacKenzie <djm@va.pubnix.com>] PR#2384
@@ -374,7 +371,7 @@ Changes with Apache 1.3.0
      more informative. 
      [Martin Kraemer] PR#494, 1259
 
-  *) [SECURITY] A possible buffer overflow in the ftp proxy was fixed.
+  *) SECURITY: A possible buffer overflow in the ftp proxy was fixed.
      [Martin Kraemer]
 
   *) Transform the configure message "You need root privileges for suEXEC"
@@ -520,14 +517,15 @@ Changes with Apache 1.3b7
      SYS_SIGLIST, which if defined should point to a list of text
      descriptions of the signals available.  See PORTING.)  [Dean Gaudet]
 
-  *) chdir() doesn't make sense in a multithreaded environment like WIN32.
-     Before, Win32 CGI's could have had sporadic failures if a chdir call
-     from one thread was made between another chdir call and a spawn in
-     another thread.  So, for now don't chdir for CGI scripts in WIN32.
-     The current CGI "spec" is unclear as to whether it's necessary.  Long-
-     term fix is to either serialize the chdir/spawn combo or use WIN32
-     native calls to spawn a process.  This temp fix was necessary to remove 
-     this as a showstopper for 1.3's release. [Brian Behlendorf]
+  *) WIN32: chdir() doesn't make sense in a multithreaded environment 
+     like WIN32.  Before, Win32 CGI's could have had sporadic failures 
+     if a chdir call from one thread was made between another chdir call 
+     and a spawn in another thread.  So, for now don't chdir for CGI scripts 
+     in WIN32.  The current CGI "spec" is unclear as to whether it's 
+     necessary.  Long-term fix is to either serialize the chdir/spawn combo 
+     or use WIN32 native calls to spawn a process.  This temp fix was 
+     necessary to remove this as a showstopper for 1.3's release. 
+     [Brian Behlendorf]
 
   *) Cleanup the suEXEC support in APACI and make it more safe:
      1. Add big fat hint in INSTALL about risks and to read the
