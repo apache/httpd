@@ -349,25 +349,12 @@ static void *create_cache_config(apr_pool_t *p, server_rec *s)
     return sconf;
 }
 
-static int create_entity(cache_handle_t *h, request_rec *r,
-                         const char *type, 
-                         const char *key, 
-                         apr_off_t len) 
+static int create_entity(cache_handle_t *h, cache_type_e type_e,
+                         request_rec *r, const char *key, apr_off_t len) 
 {
     cache_object_t *obj, *tmp_obj;
     mem_cache_object_t *mobj;
-    cache_type_e type_e;
     apr_size_t key_len;
-
-    if (!strcasecmp(type, "mem")) {
-        type_e = CACHE_TYPE_HEAP;
-    } 
-    else if (!strcasecmp(type, "fd")) {
-        type_e = CACHE_TYPE_FILE;
-    }
-    else {
-        return DECLINED;
-    }
 
     if (len == -1) {
         /* Caching a streaming response. Assume the response is
@@ -471,23 +458,27 @@ static int create_entity(cache_handle_t *h, request_rec *r,
 
     /* Populate the cache handle */
     h->cache_obj = obj;
-    h->recall_body = &recall_body;
-    h->recall_headers = &recall_headers;
-    h->store_body = &store_body;
-    h->store_headers = &store_headers;
-    h->remove_entity = &remove_entity;
 
     return OK;
 }
 
-static int open_entity(cache_handle_t *h, request_rec *r, const char *type, const char *key) 
+static int create_mem_entity(cache_handle_t *h, request_rec *r,
+                             const char *key, apr_off_t len) 
+{
+    return create_entity(h, CACHE_TYPE_HEAP, r, key, len);
+}
+
+static int create_fd_entity(cache_handle_t *h, request_rec *r,
+                            const char *key, apr_off_t len) 
+{
+    return create_entity(h, CACHE_TYPE_FILE, r, key, len);
+}
+
+static int open_entity(cache_handle_t *h, request_rec *r, const char *key) 
 {
     cache_object_t *obj;
 
     /* Look up entity keyed to 'url' */
-    if (strcasecmp(type, "mem") && strcasecmp(type, "fd")) {
-        return DECLINED;
-    }
     if (sconf->lock) {
         apr_thread_mutex_lock(sconf->lock);
     }
@@ -526,11 +517,6 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *type, cons
     }
 
     /* Initialize the cache_handle */
-    h->recall_body = &recall_body;
-    h->recall_headers = &recall_headers;
-    h->store_body = &store_body;
-    h->store_headers = &store_headers;
-    h->remove_entity = &remove_entity;
     h->cache_obj = obj;
     h->req_hdrs = NULL;  /* Pick these up in recall_headers() */
     return OK;
@@ -620,13 +606,10 @@ static int unserialize_table( cache_header_tbl_t *ctbl,
     return APR_SUCCESS;
 }
 /* Define request processing hook handlers */
-static int remove_url(const char *type, const char *key) 
+static int remove_url(const char *key) 
 {
     cache_object_t *obj;
 
-    if (strcasecmp(type, "mem") && strcasecmp(type, "fd")) {
-        return DECLINED;
-    }
     /* Order of the operations is important to avoid race conditions. 
      * First, remove the object from the cache. Remember, all additions
      * deletions from the cache are protected by sconf->lock.
@@ -1128,14 +1111,44 @@ static const command_rec cache_cmds[] =
     {NULL}
 };
 
+static const cache_provider cache_mem_provider =
+{
+    &remove_entity,
+    &store_headers,
+    &store_body,
+    &recall_headers,
+    &recall_body,
+    &create_mem_entity,
+    &open_entity,
+    &remove_url,
+};
+
+static const cache_provider cache_fd_provider =
+{
+    &remove_entity,
+    &store_headers,
+    &store_body,
+    &recall_headers,
+    &recall_body,
+    &create_fd_entity,
+    &open_entity,
+    &remove_url,
+};
+
 static void register_hooks(apr_pool_t *p)
 {
     ap_hook_post_config(mem_cache_post_config, NULL, NULL, APR_HOOK_MIDDLE);
     /* cache initializer */
     /* cache_hook_init(cache_mem_init, NULL, NULL, APR_HOOK_MIDDLE);  */
+    /*
     cache_hook_create_entity(create_entity, NULL, NULL, APR_HOOK_MIDDLE);
     cache_hook_open_entity(open_entity,  NULL, NULL, APR_HOOK_MIDDLE);
     cache_hook_remove_url(remove_url, NULL, NULL, APR_HOOK_MIDDLE);
+    */
+    ap_register_provider(p, CACHE_PROVIDER_GROUP, "mem", "0",
+                         &cache_mem_provider);
+    ap_register_provider(p, CACHE_PROVIDER_GROUP, "fs", "0",
+                         &cache_fd_provider);
 }
 
 module AP_MODULE_DECLARE_DATA mem_cache_module =

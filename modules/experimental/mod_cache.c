@@ -53,7 +53,7 @@ static int cache_url_handler(request_rec *r, int lookup)
     char *url;
     apr_size_t urllen;
     char *path;
-    const char *types;
+    cache_provider_list *providers;
     cache_info *info;
     cache_request_rec *cache;
     cache_server_conf *conf;
@@ -75,7 +75,7 @@ static int cache_url_handler(request_rec *r, int lookup)
     /*
      * Which cache module (if any) should handle this request?
      */
-    if (!(types = ap_cache_get_cachetype(r, conf, path))) {
+    if (!(providers = ap_cache_get_providers(r, conf, path))) {
         return DECLINED;
     }
 
@@ -87,8 +87,8 @@ static int cache_url_handler(request_rec *r, int lookup)
         ap_set_module_config(r->request_config, &cache_module, cache);
     }
 
-    /* save away the type */
-    cache->types = types;
+    /* save away the possible providers */
+    cache->providers = providers;
 
     /*
      * Are we allowed to serve cached info at all?
@@ -119,9 +119,6 @@ static int cache_url_handler(request_rec *r, int lookup)
     else {
         if (ap_cache_liststr(NULL, pragma, "no-cache", NULL) ||
             auth != NULL) {
-            /* delete the previously cached file */
-            cache_remove_url(r, cache->types, url);
-
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                          "cache: no-cache or authorization forbids caching "
                          "of %s", url);
@@ -143,7 +140,7 @@ static int cache_url_handler(request_rec *r, int lookup)
      *       add cache_conditional filter (which updates cache)
      */
 
-    rv = cache_select_url(r, cache->types, url);
+    rv = cache_select_url(r, url);
     if (rv != OK) {
         if (rv == DECLINED) {
             if (!lookup) {
@@ -156,7 +153,7 @@ static int cache_url_handler(request_rec *r, int lookup)
             /* error */
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
                          "cache: error returned while checking for cached "
-                         "file by %s cache", cache->type);
+                         "file by %s cache", cache->provider_name);
         }
         return DECLINED;
     }
@@ -227,7 +224,7 @@ static int cache_url_handler(request_rec *r, int lookup)
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
                      "cache: error returned while trying to return %s "
                      "cached data", 
-                     cache->type);
+                     cache->provider_name);
         return rv;
     }
 
@@ -260,8 +257,8 @@ static int cache_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r->server,
                  "cache: running CACHE_OUT filter");
 
-    /* cache_recall_entity_headers() was called in cache_select_url() */
-    cache_recall_entity_body(cache->handle, r->pool, bb);
+    /* recall_body() was called in cache_select_url() */
+    cache->provider->recall_body(cache->handle, r->pool, bb);
 
     /* This filter is done once it has served up its content */
     ap_remove_output_filter(f);
@@ -369,7 +366,7 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         /* pass the brigades into the cache, then pass them
          * up the filter stack
          */
-        rv = cache_store_entity_body(cache->handle, r, in);
+        rv = cache->provider->store_body(cache->handle, r, in);
         if (rv != APR_SUCCESS) {
             ap_remove_output_filter(f);
         }
@@ -513,7 +510,7 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
          * BillS Asks.. Why do we need to make this call to remove_url?
          * leave it in for now..
          */
-        cache_remove_url(r, cache->types, url);
+        cache_remove_url(r, url);
 
         /* remove this filter from the chain */
         ap_remove_output_filter(f);
@@ -580,7 +577,7 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
      */
     /* no cache handle, create a new entity */
     if (!cache->handle) {
-        rv = cache_create_entity(r, cache->types, url, size);
+        rv = cache_create_entity(r, url, size);
     }
     /* pre-existing cache handle and 304, make entity fresh */
     else if (r->status == HTTP_NOT_MODIFIED) {
@@ -597,8 +594,8 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
      * with this one
      */
     else {
-        cache_remove_entity(r, cache->types, cache->handle);
-        rv = cache_create_entity(r, cache->types, url, size);
+        cache->provider->remove_entity(cache->handle);
+        rv = cache_create_entity(r, url, size);
     }
     
     if (rv != OK) {
@@ -708,9 +705,9 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
     /*
      * Write away header information to cache.
      */
-    rv = cache_store_entity_headers(cache->handle, r, info);
+    rv = cache->provider->store_headers(cache->handle, r, info);
     if (rv == APR_SUCCESS) {
-        rv = cache_store_entity_body(cache->handle, r, in);
+        rv = cache->provider->store_body(cache->handle, r, in);
     }
     if (rv != APR_SUCCESS) {
         ap_remove_output_filter(f);
@@ -824,6 +821,7 @@ static const char *add_cache_enable(cmd_parms *parms, void *dummy,
     new = apr_array_push(conf->cacheenable);
     new->type = type;
     new->url = url;
+    new->urllen = strlen(url);
     return NULL;
 }
 
@@ -838,6 +836,7 @@ static const char *add_cache_disable(cmd_parms *parms, void *dummy,
                                                   &cache_module);
     new = apr_array_push(conf->cachedisable);
     new->url = url;
+    new->urllen = strlen(url);
     return NULL;
 }
 
