@@ -8,7 +8,7 @@ Changes with Apache 1.3.24
   *) Introduce proper escaping of command.com and cmd.exe for Win32.
      These patches close vulnerability CAN-2002-0061, identified and
      reported by Ory Segal <ory.segal@sanctuminc>, by which any CGI
-     invocation of .bat or .cmd files could comprimize the system 
+     invocation of .bat or .cmd files could compromise the system 
      when the .bat or .cmd was parsed the query args as an argument 
      to either cmd.exe /c or command.com /c.  [William Rowe]
 
