@@ -363,6 +363,36 @@ static apr_status_t churn_output(SSLFilterRec *ctx)
     return BIO_bucket_flush(ctx->pbioWrite);
 }
 
+static apr_status_t ssl_filter_write(ap_filter_t *f,
+                                     const char *data,
+                                     apr_size_t len)
+{
+    SSLFilterRec *ctx = f->ctx;
+    apr_size_t n;
+
+    /* write SSL */
+    n = ssl_io_hook_write(ctx->pssl, (unsigned char *)data, len);
+
+    if (n != len) {
+        conn_rec *c = f->c;
+        char *reason = "reason unknown";
+
+        /* XXX: probably a better way to determine this */
+        if (SSL_total_renegotiations(ctx->pssl)) {
+            reason = "likely due to failed renegotiation";
+        }
+
+        ssl_log(c->base_server, SSL_LOG_ERROR,
+                "failed to write %d of %d bytes (%s)",
+                n > 0 ? len - n : len, len, reason);
+
+        return APR_EINVAL;
+    }
+
+    /* churn the state machine */
+    return churn_output(ctx);
+}
+
 #define bio_is_renegotiating(bio) \
 (((int)BIO_get_callback_arg(bio)) == SSL_ST_RENEGOTIATE)
 #define HTTP_ON_HTTPS_PORT "GET /mod_ssl:error:HTTP-request HTTP/1.0\r\n"
@@ -565,7 +595,7 @@ static apr_status_t ssl_io_filter_Output(ap_filter_t *f,
 
     while (!APR_BRIGADE_EMPTY(bb)) {
         const char *data;
-        apr_size_t len, n;
+        apr_size_t len;
 
         bucket = APR_BRIGADE_FIRST(bb);
 
@@ -596,33 +626,12 @@ static apr_status_t ssl_io_filter_Output(ap_filter_t *f,
         else {
             /* read filter */
             apr_bucket_read(bucket, &data, &len, APR_BLOCK_READ);
-
-            /* write SSL */
-            n = ssl_io_hook_write(ctx->pssl, (unsigned char *)data, len);
-
-            if (n != len) {
-                conn_rec *c = f->c;
-                char *reason = "reason unknown";
-
-                /* XXX: probably a better way to determine this */
-                if (SSL_total_renegotiations(ctx->pssl)) {
-                    reason = "likely due to failed renegotiation";
-                }
-
-                ssl_log(c->base_server, SSL_LOG_ERROR,
-                        "failed to write %d of %d bytes (%s)",
-                        n > 0 ? len - n : len, len, reason);
-
-                ret = APR_EINVAL;
-                break;
-            }
-
-            /* churn the state machine */
-            if ((ret = churn_output(ctx)) != APR_SUCCESS) {
-                break;
-            }
-
+            ret = ssl_filter_write(f, data, len);
             apr_bucket_delete(bucket);
+
+            if (ret != APR_SUCCESS) {
+                break;
+            }
         }
     }
 
