@@ -634,7 +634,8 @@ every configuration function as __stdcall.
 #define ap_vsnprintf    vsnprintf
 #else
 API_EXPORT(int) ap_snprintf(char *buf, size_t len, const char *format,...);
-int ap_vsnprintf(char *buf, size_t len, const char *format, va_list ap);
+API_EXPORT(int) ap_vsnprintf(char *buf, size_t len, const char *format,
+			     va_list ap);
 #endif
 
 #if !defined(NEXT) && !defined(CONVEXOS) && !defined(WIN32)

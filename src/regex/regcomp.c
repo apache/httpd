@@ -72,7 +72,7 @@ static int never = 0;		/* for use in asserts; shuts lint up */
 
 /*
  - regcomp - interface for parser and compilation
- = extern int regcomp(regex_t *, const char *, int);
+ = API_EXPORT(int) regcomp(regex_t *, const char *, int);
  = #define	REG_BASIC	0000
  = #define	REG_EXTENDED	0001
  = #define	REG_ICASE	0002
@@ -82,7 +82,7 @@ static int never = 0;		/* for use in asserts; shuts lint up */
  = #define	REG_PEND	0040
  = #define	REG_DUMP	0200
  */
-int				/* 0 success, otherwise REG_something */
+API_EXPORT(int)			/* 0 success, otherwise REG_something */
 regcomp(preg, pattern, cflags)
 regex_t *preg;
 const char *pattern;

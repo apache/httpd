@@ -926,7 +926,7 @@ static void strx_printv(int *ccp, char *buf, size_t len, const char *format,
 }
 
 
-int ap_snprintf(char *buf, size_t len, const char *format,...)
+API_EXPORT(int) ap_snprintf(char *buf, size_t len, const char *format,...)
 {
     int cc;
     va_list ap;
@@ -938,7 +938,8 @@ int ap_snprintf(char *buf, size_t len, const char *format,...)
 }
 
 
-int ap_vsnprintf(char *buf, size_t len, const char *format, va_list ap)
+API_EXPORT(int) ap_vsnprintf(char *buf, size_t len, const char *format,
+			     va_list ap)
 {
     int cc;
 

@@ -8,9 +8,9 @@
 
 /*
  - regfree - free everything
- = extern void regfree(regex_t *);
+ = API_EXPORT(void) regfree(regex_t *);
  */
-void
+API_EXPORT(void)
 regfree(preg)
 regex_t *preg;
 {

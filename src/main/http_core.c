@@ -251,7 +251,7 @@ API_EXPORT(int) allow_options (request_rec *r)
     return conf->opts; 
 } 
 
-int allow_overrides (request_rec *r) 
+API_EXPORT(int) allow_overrides (request_rec *r) 
 { 
     core_dir_config *conf = 
       (core_dir_config *)get_module_config(r->per_dir_config, &core_module); 
@@ -259,7 +259,7 @@ int allow_overrides (request_rec *r)
     return conf->override; 
 } 
 
-char *auth_type (request_rec *r)
+API_EXPORT(char *) auth_type (request_rec *r)
 {
     core_dir_config *conf = 
       (core_dir_config *)get_module_config(r->per_dir_config, &core_module); 
@@ -267,7 +267,7 @@ char *auth_type (request_rec *r)
     return conf->auth_type;
 }
 
-char *auth_name (request_rec *r)
+API_EXPORT(char *) auth_name (request_rec *r)
 {
     core_dir_config *conf = 
       (core_dir_config *)get_module_config(r->per_dir_config, &core_module); 
@@ -283,7 +283,7 @@ API_EXPORT(char *) default_type (request_rec *r)
     return conf->default_type ? conf->default_type : DEFAULT_TYPE;
 }
 
-char *document_root (request_rec *r) /* Don't use this!!! */
+API_EXPORT(char *) document_root (request_rec *r) /* Don't use this!!! */
 {
     core_server_config *conf = 
       (core_server_config *)get_module_config(r->server->module_config,
@@ -387,8 +387,7 @@ API_EXPORT(const char *) get_remote_host(conn_rec *conn, void *dir_config, int t
     }
 }
 
-const char *
-get_remote_logname(request_rec *r)
+API_EXPORT(const char *) get_remote_logname(request_rec *r)
 {
     core_dir_config *dir_conf;
 

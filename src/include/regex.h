@@ -5,13 +5,13 @@
 extern "C" {
 #endif
 
+/* === regex2.h === */
 #ifdef WIN32
 #define API_EXPORT(type)    __declspec(dllexport) type __stdcall
 #else
 #define API_EXPORT(type)    type
 #endif
 
-/* === regex2.h === */
 typedef off_t regoff_t;
 typedef struct {
 	int re_magic;
@@ -26,7 +26,7 @@ typedef struct {
 
 
 /* === regcomp.c === */
-extern int regcomp(regex_t *, const char *, int);
+API_EXPORT(int) regcomp(regex_t *, const char *, int);
 #define	REG_BASIC	0000
 #define	REG_EXTENDED	0001
 #define	REG_ICASE	0002
@@ -56,7 +56,7 @@ extern int regcomp(regex_t *, const char *, int);
 #define	REG_INVARG	16
 #define	REG_ATOI	255	/* convert name to number (!) */
 #define	REG_ITOA	0400	/* convert number to name (!) */
-extern size_t regerror(int, const regex_t *, char *, size_t);
+API_EXPORT(size_t) regerror(int, const regex_t *, char *, size_t);
 
 
 /* === regexec.c === */
@@ -70,7 +70,7 @@ API_EXPORT(int) regexec(const regex_t *, const char *, size_t, regmatch_t [], in
 
 
 /* === regfree.c === */
-extern void regfree(regex_t *);
+API_EXPORT(void) regfree(regex_t *);
 
 #ifdef __cplusplus
 }
