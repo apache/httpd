@@ -976,7 +976,7 @@ static int read_request_line(request_rec *r)
      */
     ap_bsetflag(conn->client, B_SAFEREAD, 1);
     while ((len = ap_getline(l, sizeof(l), conn->client, 0)) <= 0) {
-        if ((len < 0) || ap_bgetflag(conn->client, B_EOF)) {
+        if ((len < 0) || ap_bgetflag(conn->client, B_EOF) || !conn->keepalives) {
             ap_bsetflag(conn->client, B_SAFEREAD, 0);
 	    /* this is a hack to make sure that request time is set,
 	     * it's not perfect, but it's better than nothing 
