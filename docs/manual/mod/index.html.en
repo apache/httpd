@@ -45,8 +45,8 @@ for HTTP Basic authentication.</dd>
 <dt><a href="mod_authz_host.html">mod_authz_host</a></dt><dd>Group authorizations based on host (name or IP
 address)</dd>
 <dt><a href="mod_autoindex.html">mod_autoindex</a></dt><dd>Generates directory indexes,
-    automatically, similar to the Unix <em>ls</em> command or the
-    Win32 <em>dir</em> shell command</dd>
+    automatically, similar to the Unix <code>ls</code> command or the
+    Win32 <code>dir</code> shell command</dd>
 <dt><a href="mod_cache.html">mod_cache</a></dt><dd>Content cache keyed to URIs.</dd>
 <dt><a href="mod_cern_meta.html">mod_cern_meta</a></dt><dd>CERN httpd metafile semantics</dd>
 <dt><a href="mod_cgi.html">mod_cgi</a></dt><dd>Execution of CGI scripts</dd>
