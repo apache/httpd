@@ -33,6 +33,7 @@ href="http://www.apache.org/bugdb.cgi">let us know.</a>
 <LI>The basic mod_auth <CODE>AuthGroupFile</CODE>-specified group file 
     format allows commas between user names - Apache does not.<BR>
     <I>- added 12/1/96</I>
+</LI>
 
   <LI><P>If you follow the NCSA guidelines for setting up access restrictions
   based on client domain, you may well have added entries for,
@@ -99,6 +100,9 @@ it added one automatically if the .asis file contained a Location header.
   files if the last line does not have a trailing newline. This affects
   configuration files (httpd.conf, access.conf and srm.conf), and
   htpasswd and htgroup files.
+  </LI>
+
+  <LI>Apache does not permit commas delimiting the methods in &lt;Limit&gt;.
  
 </OL>
 
