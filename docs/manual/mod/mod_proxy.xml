@@ -228,7 +228,10 @@
     <section id="intranet"><title>What other functions are useful for an
     intranet proxy server?</title>
       <p>An Apache proxy server situated in an intranet needs to forward
-      external requests through the company's firewall. However, when it has to
+      external requests through the company's firewall (for this, configure
+      the <directive module="mod_proxy">ProxyRemote</directive> directive
+      to forward the respective <var>scheme</var> to the firewall proxy).
+      However, when it has to
       access resources within the intranet, it can bypass the firewall when
       accessing hosts. The <directive module="mod_proxy">NoProxy</directive>
       directive is useful for specifying which hosts belong to the intranet and
