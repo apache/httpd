@@ -3,7 +3,7 @@
   [ <!ENTITY allmodules SYSTEM "allmodules.xml.ja"> ]
 >
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English revision: 1.4.2.3 -->
+<!-- English Revision: 1.4.2.5 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
