@@ -67,7 +67,7 @@
 **  _________________________________________________________________
 */
 
-#include "..\..\modules\loggers\mod_log_config.h"
+#include "../../modules/loggers/mod_log_config.h"
 static void  ssl_ext_mlc_register(apr_pool_t *p);
 #if 0 /* XXX */
 static void  ssl_ext_mlc_unregister(void);
