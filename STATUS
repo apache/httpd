@@ -201,6 +201,11 @@ Needs patch:
     * DoS created by the lame hostname lookup code in check_fulluri, which
 	should be part of the proxy and not in the core
 
+    * Documentation for:
+      1) htdocs/manual/sourcereorg.html and other files should mention 
+         new mod_so capabilities.
+      2) windows.html should be cleaned up.
+
 Closed issues:
 
     * Removal of inetd mode
@@ -224,17 +229,17 @@ Open issues:
     * Provide consistant prefixes; suggestions:
 
       Apache provided general functions (e.g., ap_cpystrn)
-	ap_xxx: Ken +1
+	ap_xxx: Ken +1, Brian +1
 
       Public API functions (e.g., palloc)
-	apapi_xxx: Ken +1
+	apapi_xxx: Ken +1, Brian +1
 	appublic_xxx:
 	appub_xxx:
 
       Private functions which we can't make static
       but should be (e.g., new_connection)
 	apprivate_xxx:
-	appri_xxx:
+	appri_xxx: Brian +1
 	httpd_xxx: Ken +1
 
     * Ken's [POLL] apachen/patches directory
@@ -258,14 +263,16 @@ Open issues:
       it's httpd, under Win32 it's apache. Maybe rename it
       to apache-httpd?
 	apache-httpd: Ken +1
+        leave it apache: Brian +1
 
     * Maybe a http_paths.h file? See
 	<Pine.BSF.3.95q.971209222046.25627D-100000@valis.worldgate.com>
-	Dean +1
+	Dean +1, Brian +1
 
     * Release builds: Should we provide Configuration or not?
       Should we 'make all suexec' in src/support?
 	Ken +1 (possible suexec path issue, though)
+        Brian +1
 
     * root's environment is inherited by the Apache server. Jim, Ken &
       Dean thinks we should recommend using 'env' to build the
