@@ -62,8 +62,8 @@
 
 module AP_MODULE_DECLARE_DATA proxy_http_module;
 
-PROXY_DECLARE (int) ap_proxy_http_canon(request_rec *r, char *url);
-PROXY_DECLARE (int) ap_proxy_http_handler(request_rec *r, proxy_server_conf *conf,
+int ap_proxy_http_canon(request_rec *r, char *url);
+int ap_proxy_http_handler(request_rec *r, proxy_server_conf *conf,
                           char *url, const char *proxyname, 
                           apr_port_t proxyport);
 
@@ -74,7 +74,7 @@ PROXY_DECLARE (int) ap_proxy_http_handler(request_rec *r, proxy_server_conf *con
  *  url    is the URL starting with the first '/'
  *  def_port is the default port for this scheme.
  */
-PROXY_DECLARE (int) ap_proxy_http_canon(request_rec *r, char *url)
+int ap_proxy_http_canon(request_rec *r, char *url)
 {
     char *host, *path, *search, sport[7];
     const char *err;
@@ -187,7 +187,7 @@ static void ap_proxy_clear_connection(apr_pool_t *p, apr_table_t *headers)
  * we return DECLINED so that we can try another proxy. (Or the direct
  * route.)
  */
-PROXY_DECLARE (int) ap_proxy_http_handler(request_rec *r, proxy_server_conf *conf,
+int ap_proxy_http_handler(request_rec *r, proxy_server_conf *conf,
                           char *url, const char *proxyname, 
                           apr_port_t proxyport)
 {

@@ -67,7 +67,7 @@ static int proxy_match_word(struct dirconn_entry *This, request_rec *r);
 static struct per_thread_data *get_per_thread_data(void);
 
 /* already called in the knowledge that the characters are hex digits */
-int ap_proxy_hex2c(const char *x)
+PROXY_DECLARE(int) ap_proxy_hex2c(const char *x)
 {
     int i, ch;
 
@@ -94,7 +94,7 @@ int ap_proxy_hex2c(const char *x)
 #endif /*APR_CHARSET_EBCDIC*/
 }
 
-void ap_proxy_c2hex(int ch, char *x)
+PROXY_DECLARE(void) ap_proxy_c2hex(int ch, char *x)
 {
 #if !APR_CHARSET_EBCDIC
     int i;
@@ -131,7 +131,7 @@ void ap_proxy_c2hex(int ch, char *x)
  * and encodes those which must be encoded, and does not touch
  * those which must not be touched.
  */
-char *ap_proxy_canonenc(apr_pool_t *p, const char *x, int len, enum enctype t,
+PROXY_DECLARE(char *)ap_proxy_canonenc(apr_pool_t *p, const char *x, int len, enum enctype t,
 	int isenc)
 {
     int i, j, ch;
@@ -207,7 +207,7 @@ char *ap_proxy_canonenc(apr_pool_t *p, const char *x, int len, enum enctype t,
  *
  * Returns an error string.
  */
-char *
+PROXY_DECLARE(char *)
      ap_proxy_canon_netloc(apr_pool_t *p, char **const urlp, char **userp,
 			char **passwordp, char **hostp, apr_port_t *port)
 {
@@ -305,7 +305,7 @@ static const char * const lwday[7] =
  * sscanf and sprintf. However, if the date is already correctly
  * formatted, then it exits very quickly.
  */
-const char *
+PROXY_DECLARE(const char *)
      ap_proxy_date_canon(apr_pool_t *p, const char *x1)
 {
     char *x = apr_pstrdup(p, x1);
@@ -361,7 +361,7 @@ const char *
     return q;
 }
 
-request_rec *make_fake_req(conn_rec *c, request_rec *r)
+PROXY_DECLARE(request_rec *)make_fake_req(conn_rec *c, request_rec *r)
 {
     request_rec *rp = apr_pcalloc(c->pool, sizeof(*r));
     core_request_config *req_cfg;
@@ -396,7 +396,7 @@ request_rec *make_fake_req(conn_rec *c, request_rec *r)
  * @@@: XXX: FIXME: currently the headers are passed thru un-merged. 
  * Is that okay, or should they be collapsed where possible?
  */
-apr_table_t *ap_proxy_read_headers(request_rec *r, request_rec *rr, char *buffer, int size, conn_rec *c)
+PROXY_DECLARE(apr_table_t *)ap_proxy_read_headers(request_rec *r, request_rec *rr, char *buffer, int size, conn_rec *c)
 {
     apr_table_t *headers_out;
     int len;
@@ -464,7 +464,7 @@ apr_table_t *ap_proxy_read_headers(request_rec *r, request_rec *rr, char *buffer
  * The return returns 1 if the token val is found in the list, or 0
  * otherwise.
  */
-int ap_proxy_liststr(const char *list, const char *val)
+PROXY_DECLARE(int) ap_proxy_liststr(const char *list, const char *val)
 {
     int len, i;
     const char *p;
@@ -497,7 +497,7 @@ int ap_proxy_liststr(const char *list, const char *val)
  * The return returns 1 if the token val is found in the list, or 0
  * otherwise.
  */
-char *ap_proxy_removestr(apr_pool_t *pool, const char *list, const char *val)
+PROXY_DECLARE(char *)ap_proxy_removestr(apr_pool_t *pool, const char *list, const char *val)
 {
     int len, i;
     const char *p;
@@ -535,7 +535,7 @@ char *ap_proxy_removestr(apr_pool_t *pool, const char *list, const char *val)
 /*
  * Converts 8 hex digits to a time integer
  */
-int ap_proxy_hex2sec(const char *x)
+PROXY_DECLARE(int) ap_proxy_hex2sec(const char *x)
 {
     int i, ch;
     unsigned int j;
@@ -559,7 +559,7 @@ int ap_proxy_hex2sec(const char *x)
 /*
  * Converts a time integer to 8 hex digits
  */
-void ap_proxy_sec2hex(int t, char *y)
+PROXY_DECLARE(void) ap_proxy_sec2hex(int t, char *y)
 {
     int i, ch;
     unsigned int j = t;
@@ -575,7 +575,7 @@ void ap_proxy_sec2hex(int t, char *y)
     y[8] = '\0';
 }
 
-int ap_proxyerror(request_rec *r, int statuscode, const char *message)
+PROXY_DECLARE(int) ap_proxyerror(request_rec *r, int statuscode, const char *message)
 {
     apr_table_setn(r->notes, "error-notes",
 	apr_pstrcat(r->pool, 
@@ -598,7 +598,7 @@ int ap_proxyerror(request_rec *r, int statuscode, const char *message)
 /*
  * This routine returns its own error message
  */
-const char *ap_proxy_host2addr(const char *host, struct hostent *reqhp)
+PROXY_DECLARE(const char *)ap_proxy_host2addr(const char *host, struct hostent *reqhp)
 {
     int i;
     struct hostent *hp;
@@ -659,7 +659,7 @@ static const char *
 }
 
 /* Return TRUE if addr represents an IP address (or an IP network address) */
-int ap_proxy_is_ipaddr(struct dirconn_entry *This, apr_pool_t *p)
+PROXY_DECLARE(int) ap_proxy_is_ipaddr(struct dirconn_entry *This, apr_pool_t *p)
 {
     const char *addr = This->name;
     long ip_addr[4];
@@ -856,7 +856,7 @@ static int proxy_match_ipaddr(struct dirconn_entry *This, request_rec *r)
 }
 
 /* Return TRUE if addr represents a domain name */
-int ap_proxy_is_domainname(struct dirconn_entry *This, apr_pool_t *p)
+PROXY_DECLARE(int) ap_proxy_is_domainname(struct dirconn_entry *This, apr_pool_t *p)
 {
     char *addr = This->name;
     int i;
@@ -962,7 +962,7 @@ static struct hostent * pduphostent(apr_pool_t *p, const struct hostent *hp)
 }
 
 /* Return TRUE if addr represents a host name */
-int ap_proxy_is_hostname(struct dirconn_entry *This, apr_pool_t *p)
+PROXY_DECLARE(int) ap_proxy_is_hostname(struct dirconn_entry *This, apr_pool_t *p)
 {
     struct hostent host;
     char *addr = This->name;
@@ -1021,7 +1021,7 @@ static int proxy_match_hostname(struct dirconn_entry *This, request_rec *r)
 }
 
 /* Return TRUE if addr is to be matched as a word */
-int ap_proxy_is_word(struct dirconn_entry *This, apr_pool_t *p)
+PROXY_DECLARE(int) ap_proxy_is_word(struct dirconn_entry *This, apr_pool_t *p)
 {
     This->matcher = proxy_match_word;
     return 1;
@@ -1035,7 +1035,7 @@ static int proxy_match_word(struct dirconn_entry *This, request_rec *r)
 }
 
 /* checks whether a host in uri_addr matches proxyblock */
-int ap_proxy_checkproxyblock(request_rec *r, proxy_server_conf *conf, 
+PROXY_DECLARE(int) ap_proxy_checkproxyblock(request_rec *r, proxy_server_conf *conf, 
                              apr_sockaddr_t *uri_addr)
 {
     int j;
@@ -1073,7 +1073,7 @@ int ap_proxy_checkproxyblock(request_rec *r, proxy_server_conf *conf,
 }
 
 /* set up the minimal filter set */
-int ap_proxy_pre_http_connection(conn_rec *c, request_rec *r)
+PROXY_DECLARE(int) ap_proxy_pre_http_connection(conn_rec *c, request_rec *r)
 {
     ap_add_input_filter("HTTP_IN", NULL, r, c);
     ap_add_input_filter("CORE_IN", NULL, r, c);
@@ -1082,7 +1082,7 @@ int ap_proxy_pre_http_connection(conn_rec *c, request_rec *r)
 }
 
 /* converts a series of buckets into a string */
-apr_status_t ap_proxy_string_read(conn_rec *c, apr_bucket_brigade *bb,
+PROXY_DECLARE(apr_status_t) ap_proxy_string_read(conn_rec *c, apr_bucket_brigade *bb,
 				  char *buff, size_t bufflen, int *eos)
 {
     apr_bucket *e;
@@ -1135,7 +1135,7 @@ apr_status_t ap_proxy_string_read(conn_rec *c, apr_bucket_brigade *bb,
 }
 
 /* remove other filters (like DECHUNK) from filter stack */
-void ap_proxy_reset_output_filters(conn_rec *c)
+PROXY_DECLARE(void) ap_proxy_reset_output_filters(conn_rec *c)
 {
     ap_filter_t *f = c->output_filters;
 

@@ -231,29 +231,29 @@ APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, canon_handler, (request_rec *r,
 
 /* proxy_util.c */
 
-request_rec *make_fake_req(conn_rec *c, request_rec *r);
-int ap_proxy_hex2c(const char *x);
-void ap_proxy_c2hex(int ch, char *x);
-char *ap_proxy_canonenc(apr_pool_t *p, const char *x, int len, enum enctype t,
+PROXY_DECLARE(request_rec *)make_fake_req(conn_rec *c, request_rec *r);
+PROXY_DECLARE(int) ap_proxy_hex2c(const char *x);
+PROXY_DECLARE(void) ap_proxy_c2hex(int ch, char *x);
+PROXY_DECLARE(char *)ap_proxy_canonenc(apr_pool_t *p, const char *x, int len, enum enctype t,
 			int isenc);
-char *ap_proxy_canon_netloc(apr_pool_t *p, char **const urlp, char **userp,
+PROXY_DECLARE(char *)ap_proxy_canon_netloc(apr_pool_t *p, char **const urlp, char **userp,
 			 char **passwordp, char **hostp, apr_port_t *port);
-const char *ap_proxy_date_canon(apr_pool_t *p, const char *x);
-apr_table_t *ap_proxy_read_headers(request_rec *r, request_rec *rp, char *buffer, int size, conn_rec *c);
-int ap_proxy_liststr(const char *list, const char *val);
-char *ap_proxy_removestr(apr_pool_t *pool, const char *list, const char *val);
-int ap_proxy_hex2sec(const char *x);
-void ap_proxy_sec2hex(int t, char *y);
-const char *ap_proxy_host2addr(const char *host, struct hostent *reqhp);
-int ap_proxyerror(request_rec *r, int statuscode, const char *message);
-int ap_proxy_is_ipaddr(struct dirconn_entry *This, apr_pool_t *p);
-int ap_proxy_is_domainname(struct dirconn_entry *This, apr_pool_t *p);
-int ap_proxy_is_hostname(struct dirconn_entry *This, apr_pool_t *p);
-int ap_proxy_is_word(struct dirconn_entry *This, apr_pool_t *p);
-int ap_proxy_checkproxyblock(request_rec *r, proxy_server_conf *conf, apr_sockaddr_t *uri_addr);
-int ap_proxy_pre_http_connection(conn_rec *c, request_rec *r);
-apr_status_t ap_proxy_string_read(conn_rec *c, apr_bucket_brigade *bb, char *buff, size_t bufflen, int *eos);
-void ap_proxy_reset_output_filters(conn_rec *c);
+PROXY_DECLARE(const char *)ap_proxy_date_canon(apr_pool_t *p, const char *x);
+PROXY_DECLARE(apr_table_t *)ap_proxy_read_headers(request_rec *r, request_rec *rp, char *buffer, int size, conn_rec *c);
+PROXY_DECLARE(int) ap_proxy_liststr(const char *list, const char *val);
+PROXY_DECLARE(char *)ap_proxy_removestr(apr_pool_t *pool, const char *list, const char *val);
+PROXY_DECLARE(int) ap_proxy_hex2sec(const char *x);
+PROXY_DECLARE(void) ap_proxy_sec2hex(int t, char *y);
+PROXY_DECLARE(const char *)ap_proxy_host2addr(const char *host, struct hostent *reqhp);
+PROXY_DECLARE(int) ap_proxyerror(request_rec *r, int statuscode, const char *message);
+PROXY_DECLARE(int) ap_proxy_is_ipaddr(struct dirconn_entry *This, apr_pool_t *p);
+PROXY_DECLARE(int) ap_proxy_is_domainname(struct dirconn_entry *This, apr_pool_t *p);
+PROXY_DECLARE(int) ap_proxy_is_hostname(struct dirconn_entry *This, apr_pool_t *p);
+PROXY_DECLARE(int) ap_proxy_is_word(struct dirconn_entry *This, apr_pool_t *p);
+PROXY_DECLARE(int) ap_proxy_checkproxyblock(request_rec *r, proxy_server_conf *conf, apr_sockaddr_t *uri_addr);
+PROXY_DECLARE(int) ap_proxy_pre_http_connection(conn_rec *c, request_rec *r);
+PROXY_DECLARE(apr_status_t) ap_proxy_string_read(conn_rec *c, apr_bucket_brigade *bb, char *buff, size_t bufflen, int *eos);
+PROXY_DECLARE(void) ap_proxy_reset_output_filters(conn_rec *c);
 
 
 #endif /*MOD_PROXY_H*/

@@ -1,24 +1,24 @@
-# Microsoft Developer Studio Project File - Name="mod_proxy" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="proxy_ftp" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Dynamic-Link Library" 0x0102
 
-CFG=mod_proxy - Win32 Release
+CFG=proxy_ftp - Win32 Release
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
-!MESSAGE NMAKE /f "mod_proxy.mak".
+!MESSAGE NMAKE /f "proxy_ftp.mak".
 !MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "mod_proxy.mak" CFG="mod_proxy - Win32 Release"
+!MESSAGE NMAKE /f "proxy_ftp.mak" CFG="proxy_ftp - Win32 Release"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "mod_proxy - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
-!MESSAGE "mod_proxy - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "proxy_ftp - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "proxy_ftp - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
 !MESSAGE 
 
 # Begin Project
@@ -29,7 +29,7 @@ CPP=cl.exe
 MTL=midl.exe
 RSC=rc.exe
 
-!IF  "$(CFG)" == "mod_proxy - Win32 Release"
+!IF  "$(CFG)" == "proxy_ftp - Win32 Release"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
@@ -43,7 +43,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /FD /c
-# ADD CPP /nologo /MD /W3 /O2 /I "..\..\srclib\apr\include" /I "../../srclib/apr-util/include" /I "..\..\include" /I "..\..\os\win32" /I "..\http" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "PROXY_DECLARE_EXPORT" /Fd"Release\mod_proxy" /FD /c
+# ADD CPP /nologo /MD /W3 /O2 /I "..\..\srclib\apr\include" /I "../../srclib/apr-util/include" /I "..\..\include" /I "..\..\os\win32" /I "..\http" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /Fd"Release\proxy_ftp" /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x809 /d "NDEBUG"
@@ -52,10 +52,10 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /map /machine:I386 /out:"Release/mod_proxy.so" /base:@..\..\os\win32\BaseAddr.ref,mod_proxy
-# ADD LINK32 kernel32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /map /machine:I386 /out:"Release/mod_proxy.so" /base:@..\..\os\win32\BaseAddr.ref,mod_proxy
+# ADD BASE LINK32 kernel32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /map /machine:I386 /out:"Release/proxy_ftp.so" /base:@..\..\os\win32\BaseAddr.ref,proxy_ftp
+# ADD LINK32 kernel32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /map /machine:I386 /out:"Release/proxy_ftp.so" /base:@..\..\os\win32\BaseAddr.ref,proxy_ftp
 
-!ELSEIF  "$(CFG)" == "mod_proxy - Win32 Debug"
+!ELSEIF  "$(CFG)" == "proxy_ftp - Win32 Debug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
@@ -69,7 +69,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /FD /c
-# ADD CPP /nologo /MDd /W3 /GX /ZI /Od /I "..\..\srclib\apr\include" /I "../../srclib/apr-util/include" /I "..\..\include" /I "..\..\os\win32" /I "..\http" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "PROXY_DECLARE_EXPORT" /Fd"Debug\mod_proxy" /FD /c
+# ADD CPP /nologo /MDd /W3 /GX /ZI /Od /I "..\..\srclib\apr\include" /I "../../srclib/apr-util/include" /I "..\..\include" /I "..\..\os\win32" /I "..\http" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /Fd"Debug\proxy_ftp" /FD /c
 # ADD BASE MTL /nologo /D "_DEBUG" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x809 /d "_DEBUG"
@@ -78,30 +78,26 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /out:"Debug/mod_proxy.so" /base:@..\..\os\win32\BaseAddr.ref,mod_proxy
-# ADD LINK32 kernel32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /out:"Debug/mod_proxy.so" /base:@..\..\os\win32\BaseAddr.ref,mod_proxy
+# ADD BASE LINK32 kernel32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /out:"Debug/proxy_ftp.so" /base:@..\..\os\win32\BaseAddr.ref,proxy_ftp
+# ADD LINK32 kernel32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /out:"Debug/proxy_ftp.so" /base:@..\..\os\win32\BaseAddr.ref,proxy_ftp
 
 !ENDIF 
 
 # Begin Target
 
-# Name "mod_proxy - Win32 Release"
-# Name "mod_proxy - Win32 Debug"
+# Name "proxy_ftp - Win32 Release"
+# Name "proxy_ftp - Win32 Debug"
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;hpj;bat;for;f90"
 # Begin Source File
 
-SOURCE=.\mod_proxy.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\proxy_util.c
+SOURCE=.\proxy_ftp.c
 # End Source File
 # End Group
 # Begin Group "Header Files"
 
-# PROP Default_Filter "h;hpp;hxx;hm;inl;fi;fd"
+# PROP Default_Filter ".h"
 # Begin Source File
 
 SOURCE=.\mod_proxy.h
