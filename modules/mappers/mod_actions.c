@@ -228,6 +228,10 @@ static int action_handler(request_rec *r)
         }
 
         script = t;
+        /* propagate the handler name to the script
+         * (will be REDIRECT_HANDLER there)
+         */
+        apr_table_setn(r->subprocess_env, "HANDLER", action);
     }
 
     if (script == NULL)
