@@ -184,7 +184,7 @@ A
 	copy lib\expat-lite\$(LONG)\xmlparse.exp "$(INSTDIR)\libexec"
 	copy lib\expat-lite\$(LONG)\xmlparse.lib "$(INSTDIR)\libexec"
 	copy $(LONG)\Apache.pdb "$(INSTDIR)"
-	copy $(LONG)\ApacheCore.pdb "$(INSTDIR)\symbols\bin"
+	copy $(LONG)\ApacheCore.pdb "$(INSTDIR)\bin"
 	copy os\win32\$(LONG)\Win9xConHook.pdb "$(INSTDIR)\bin"
 	copy lib\expat-lite\$(LONG)\xmltok.pdb "$(INSTDIR)\bin"
 	copy lib\expat-lite\$(LONG)\xmlparse.pdb "$(INSTDIR)\bin"
