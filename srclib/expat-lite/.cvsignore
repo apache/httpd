@@ -8,11 +8,5 @@ Makefile
 *.dll
 *.def
 *.plg
-expatlibD
-expatlibR
-XMLParseD
-XMLParseR
-XMLTokD
-XMLTokR
-xmlparse.mak
-xmltok.mak
+Debug
+Release
