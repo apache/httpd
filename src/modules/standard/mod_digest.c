@@ -121,7 +121,7 @@ char *get_hash(request_rec *r, char *user, char *auth_pwfile)
 
 int get_digest_rec(request_rec *r, digest_header_rec *response) {
   char *auth_line = table_get(r->headers_in, "Authorization");
-  int l = strlen(auth_line);
+  int l;
   int s = 0, vk = 0, vv = 0;
   char *t, *key, *value;
 
@@ -144,6 +144,8 @@ int get_digest_rec(request_rec *r, digest_header_rec *response) {
     note_digest_auth_failure (r);
     return AUTH_REQUIRED;
   }
+
+  l = strlen(auth_line);
 
   key=palloc(r->pool,l);
   value=palloc(r->pool,l);
