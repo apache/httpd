@@ -387,7 +387,8 @@ void ssl_scache_shmcb_init(server_rec *s, apr_pool_t *p)
     shm_segsize = apr_shm_size_get(mc->pSessionCacheDataMM);
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                 "shmcb_init allocated %u bytes of shared memory",
+                 "shmcb_init allocated %" APR_SIZE_T_FMT 
+                 " bytes of shared memory",
                  shm_segsize);
     if (!shmcb_init_memory(s, shm_segment, shm_segsize)) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
