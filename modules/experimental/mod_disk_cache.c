@@ -434,8 +434,6 @@ static int remove_url(const char *type, char *key)
 
 static int remove_entity(cache_handle_t *h) 
 {
-    cache_object_t *obj = h->cache_obj;
-
     /* Null out the cache object pointer so next time we start from scratch  */
     h->cache_obj = NULL;
     return OK;
@@ -607,7 +605,6 @@ static apr_status_t write_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
     apr_bucket *e;
     apr_status_t rv;
     disk_cache_object_t *dobj = (disk_cache_object_t *) h->cache_obj->vobj;
-    cache_info *info = &(h->cache_obj->info);
 
     if (!dobj->fd) {
         rv = apr_file_open(&dobj->fd, dobj->tempfile, 
@@ -674,8 +671,10 @@ static const char
 static const char
 *set_cache_gcint(cmd_parms *parms, void *in_struct_ptr, const char *arg)
 {
+/*
     disk_cache_conf *conf = ap_get_module_config(parms->server->module_config, 
                                                  &disk_cache_module);
+*/
     /* XXX */
     return NULL;
 }
@@ -715,9 +714,10 @@ static const char
 static const char
 *set_cache_exchk(cmd_parms *parms, void *in_struct_ptr, int flag)
 {
+    /* XXX 
     disk_cache_conf *conf = ap_get_module_config(parms->server->module_config, 
                                                  &disk_cache_module);
-    /* XXX */
+    */
     return NULL;
 }
 static const char
@@ -739,41 +739,46 @@ static const char
 static const char
 *set_cache_minetm(cmd_parms *parms, void *in_struct_ptr, const char *arg)
 {
+    /* XXX
     disk_cache_conf *conf = ap_get_module_config(parms->server->module_config, 
                                                  &disk_cache_module);
-    /* XXX */
+    */
     return NULL;
 }
 static const char
 *set_cache_gctime(cmd_parms *parms, void *in_struct_ptr, const char *arg)
 {
+    /* XXX
     disk_cache_conf *conf = ap_get_module_config(parms->server->module_config, 
                                                  &disk_cache_module);
-    /* XXX */
+    */
     return NULL;
 }
 static const char
 *add_cache_gcclean(cmd_parms *parms, void *in_struct_ptr, const char *arg, const char *arg1)
 {
+    /* XXX
     disk_cache_conf *conf = ap_get_module_config(parms->server->module_config, 
                                                  &disk_cache_module);
-    /* XXX */
+    */
     return NULL;
 }
 static const char
 *add_cache_gcclnun(cmd_parms *parms, void *in_struct_ptr, const char *arg, const char *arg1)
 {
+    /* XXX
     disk_cache_conf *conf = ap_get_module_config(parms->server->module_config, 
                                                  &disk_cache_module);
-    /* XXX */
+    */
     return NULL;
 }
 static const char
 *set_cache_maxgcmem(cmd_parms *parms, void *in_struct_ptr, const char *arg)
 {
+    /* XXX
     disk_cache_conf *conf = ap_get_module_config(parms->server->module_config, 
                                                  &disk_cache_module);
-    /* XXX */
+    */
     return NULL;
 }
 static const command_rec disk_cache_cmds[] =
