@@ -935,7 +935,6 @@ void reclaim_child_processes ()
  */
 
 static JMP_BUF wait_timeout_buf;
-static int wait_or_timeout_retval = -1;
 
 static void longjmp_out_of_alarm (int sig) {
 #if defined(NEXT) || defined(USE_LONGJMP)
