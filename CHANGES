@@ -1,5 +1,7 @@
 Changes with Apache 2.0.33-dev
 
+  *) Fix IPv6 name-based virtual hosts.  [Jeff Trawick]
+
   *) Introduce AddOutputFilterByType directive.  [Justin Erenkrantz]
 
   *) Fix DEBUG_CGI support in mod_cgi.  PR 9670, 9671.
