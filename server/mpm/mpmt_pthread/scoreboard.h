@@ -72,9 +72,8 @@ extern "C" {
 
 #include "mpm_default.h"	/* For HARD_.*_LIMIT */
 
-/* The optimized timeout code only works if we're not using a scoreboard file
- */
-#if (defined (USE_MMAP_SCOREBOARD) || defined (USE_SHMGET_SCOREBOARD))
+/*The optimized timeout code only works if we're not using a scoreboard file*/
+#if defined(USE_MEM_BASED_SCOREBOARD)
 #define OPTIMIZE_TIMEOUTS
 #endif
 
@@ -216,14 +215,6 @@ void cleanup_scoreboard(void);
 API_EXPORT(void) ap_sync_scoreboard_image(void);
 void ap_mpmt_pthread_force_reset_connection_status(long conn_id);
 
-
-#if defined(USE_OS2_SCOREBOARD)
-caddr_t create_shared_heap(const char *name, size_t size);
-caddr_t get_shared_heap(const char *Name);
-#elif defined(USE_POSIX_SCOREBOARD)
-static void cleanup_shared_mem(void *d);
-#endif
-
 API_EXPORT(void) reopen_scoreboard(ap_pool_t *p);
 
 ap_inline void ap_sync_scoreboard_image(void);
@@ -232,7 +223,6 @@ void update_scoreboard_global(void);
 API_EXPORT(int) find_child_by_pid(ap_proc_t *pid);
 int ap_update_child_status(int child_num, int thread_num, int status, request_rec *r);
 void ap_time_process_request(int child_num, int thread_num, int status);
-
 
 
 API_VAR_EXPORT extern scoreboard *ap_scoreboard_image;

@@ -73,10 +73,6 @@ extern "C" {
 
 /* The generic shared memory chunk code */
 void reinit_scoreboard(ap_pool_t *p);
-#if defined(USE_OS2_SCOREBOARD)
-caddr_t create_shared_heap(const char *name, size_t size);
-caddr_t get_shared_heap(const char *Name);
-#endif
 
 API_EXPORT(void) reopen_scoreboard(ap_pool_t *p);
 
