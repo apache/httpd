@@ -163,7 +163,8 @@ struct connection {
     int state;
     int read;			/* amount of bytes read */
     int bread;			/* amount of body read */
-    int rwrite;			/* amount of bytes written in the req */
+    int rwrite, rwrote;		/* keep pointers in what we write - across
+				 * EAGAINs */
     int length;			/* Content-Length value used for keep-alive */
     char cbuff[CBUFFSIZE];	/* a buffer to store server response header */
     int cbx;			/* offset in cbuffer */
@@ -230,7 +231,8 @@ int err_response = 0;
 apr_time_t start, endtime;
 
 /* global request (and its length) */
-char request[512];
+char _request[512];
+char *request = _request;
 apr_size_t reqlen;
 
 /* one global throw-away buffer to read stuff into */
@@ -271,67 +273,58 @@ static void apr_err(char *s, apr_status_t rv)
 }
 
 /* --------------------------------------------------------- */
-
-/* apr_send() does a single best efford write; which if it
- * manages to send any bytes out - does return. It will only
- * retry on EINTR, EAGAIN and EWOULDBLOCK (until Timeout or
- * until one or more bytes are send). This function turns it
- * into a send_all_or_timeout().
- */
-static int _send(struct connection * c, char *r, apr_size_t len, apr_time_t tuntil)
-{
-    apr_time_t to = 0;
-    do {
-	apr_size_t l = len;
-	if (apr_send(c->aprsock, r, &l) != APR_SUCCESS)
-	    return -1;
-
-	/* Bail early on the most common case */
-	if (len == l)
-	    return 0;
-
-	/*
-	 * only do bookeeping when we really cannot avoid it.
-	 */
-	len -= l;
-	r += l;
-	to = tuntil - apr_time_now();
-	apr_setsocketopt(c->aprsock, APR_SO_TIMEOUT, to);
-
-    } while (to > 0);
-
-    return -1;			/* timeout */
-}
-
 /* write out request to a connection - assumes we can write
  * (small) request out in one go into our new socket buffer
  *
- * XXX: this needs to be rewritten to be pointer based; we do
- *      not really want this to block for serious amounths of
- *      time under normal circumstances.
  */
 static void write_request(struct connection * c)
 {
-    apr_time_t tnow = apr_time_now();
-    apr_size_t tuntil = tnow + aprtimeout;
-    c->connect = tnow;
+    do {
+	apr_time_t tnow = apr_time_now();
+	apr_size_t l = c->rwrite;
+	apr_status_t e;
 
-    apr_setsocketopt(c->aprsock, APR_SO_TIMEOUT, aprtimeout);
-
-    if (_send(c, request, reqlen, tuntil)) {
-	printf("Send request failed!\n");
-	close_connection(c);
-	return;
-    }
-
-    if (posting) {
-	if (_send(c, postdata, postlen, tuntil)) {
-	    printf("Send post request failed!\n");
+	/* First time round ? 
+         */
+	if (c->rwrite == 0) {
+	    apr_setsocketopt(c->aprsock, APR_SO_TIMEOUT, 0);
+	    c->connect = tnow;
+	    c->rwrite = reqlen;
+	    c->rwrote = 0;
+	    if (posting)
+		c->rwrite += postlen;
+	}
+	else if (tnow > c->connect + aprtimeout) {
+	    printf("Send request timed out!\n");
 	    close_connection(c);
 	    return;
 	}
-	totalposted += postlen + reqlen;
-    }
+
+	e = apr_send(c->aprsock, request + c->rwrote, &l);
+
+	/*
+	 * Bail early on the most common case
+	 */
+	if (l == c->rwrite)
+	    break;
+
+	if (e != APR_SUCCESS) {
+	    /*
+	     * Let's hope this traps EWOULDBLOCK too !
+	     */
+	    if (!APR_STATUS_IS_EAGAIN(e)) {
+		printf("Send request failed!\n");
+		close_connection(c);
+	    }
+	    return;
+	}
+	c->rwrote += l;
+	c->rwrite -= l;
+    } while (1);
+
+    if (posting)
+	totalposted += postlen;
+
     c->state = STATE_READ;
     apr_poll_socket_add(readbits, c->aprsock, APR_POLLIN);
 }
@@ -554,6 +547,7 @@ static void start_connect(struct connection * c)
     c->keepalive = 0;
     c->cbx = 0;
     c->gotheader = 0;
+    c->rwrite = 0;
 
     if ((rv = apr_sockaddr_info_get(&destsa, hostname, APR_UNSPEC, port, 0, cntxt))
 	!= APR_SUCCESS) {
@@ -867,6 +861,16 @@ static void test(void)
 
     reqlen = strlen(request);
 
+    /*
+     * Combine headers and (optional) post file into one contineous buffer
+     */
+    if (posting) {
+	char *buff = (char *) malloc(postlen + reqlen + 1);
+	strcpy(buff, request);
+	strcpy(buff + reqlen, postdata);
+	request = buff;
+    }
+
 #ifdef NOT_ASCII
     inbytes_left = outbytes_left = reqlen;
     status = apr_xlate_conv_buffer(to_ascii, request, &inbytes_left,
@@ -962,14 +966,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-	printf("This is ApacheBench, Version %s\n", AB_VERSION " <$Revision: 1.59 $> apache-2.0");
+	printf("This is ApacheBench, Version %s\n", AB_VERSION " <$Revision: 1.60 $> apache-2.0");
 	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
 	printf("Copyright (c) 1998-2001 The Apache Software Foundation, http://www.apache.org/\n");
 	printf("\n");
     }
     else {
 	printf("<p>\n");
-	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AB_VERSION, "$Revision: 1.59 $");
+	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AB_VERSION, "$Revision: 1.60 $");
 	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
 	printf(" Copyright (c) 1998-2001 The Apache Software Foundation, http://www.apache.org/<br>\n");
 	printf("</p>\n<p>\n");
