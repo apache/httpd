@@ -442,7 +442,7 @@ apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *in)
                 len = max;
             }
 
-            /* len+1 to leave spave for the trailing nil char */
+            /* len+1 to leave space for the trailing nil char */
             apr_cpystrn(ctx->buffer+strlen(ctx->buffer), response, len+1);
 
             APR_BUCKET_REMOVE(e);

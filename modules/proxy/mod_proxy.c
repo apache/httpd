@@ -965,9 +965,9 @@ static const command_rec proxy_cmds[] =
     AP_INIT_TAKE1("ProxyVia", set_via_opt, NULL, RSRC_CONF,
      "Configure Via: proxy header header to one of: on | off | block | full"),
     AP_INIT_FLAG("ProxyErrorOverride", set_proxy_error_override, NULL, RSRC_CONF,
-     "use our error handling pages instead of the servers we are proxying"),
+     "use our error handling pages instead of the servers' we are proxying"),
     AP_INIT_FLAG("ProxyPreserveHost", set_preserve_host, NULL, RSRC_CONF,
-     "on if we shoud preserve host header while proxying"),
+     "on if we should preserve host header while proxying"),
  
     {NULL}
 };
