@@ -845,6 +845,7 @@ static HMTX lock_sem = -1;
 
 static void accept_mutex_cleanup(void *foo)
 {
+    DosReleaseMutexSem(lock_sem);
     DosCloseMutexSem(lock_sem);
 }
 
