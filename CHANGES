@@ -1,4 +1,7 @@
 Changes with Apache 2.0.31-dev
+  *) Add the socket back to the conn_rec and remove the create_connection
+     hook. The create_connection hook had a design flaw that did not 
+     allow creating connections based on vhost info. [Bill Stoddard]
 
   *) Fixed PATH_INFO and QUERY_STRING from mod_negotiation results.
      Resolves the common case of using negotation to resolve the request

@@ -68,6 +68,17 @@ extern "C" {
 
 #ifdef CORE_PRIVATE
 /**
+ * Create a new connection. 
+ * @param p Pool to allocate data structures out of
+ * @param server The server to create the connection for
+ * @param csd The socket to use for all communication with the client
+ * @param id ID of this connection; unique at any point in time.
+ * @param sbh Scoreboard handle
+ * @return new conn_rec, or NULL if the connection has already been reset
+ */
+AP_CORE_DECLARE(conn_rec *)ap_new_connection(apr_pool_t *ptrans, server_rec *server, 
+                                             apr_socket_t *csd, long id, void *sbh);
+/**
  * This is the protocol module driver.  This calls all of the
  * pre-connection and connection hooks for all protocol modules.
  * @param c The connection on which the request is read
@@ -116,22 +127,6 @@ AP_DECLARE_HOOK(int,pre_connection,(conn_rec *c))
  * @deffunc int ap_run_process_connection(conn_rec *c)
  */
 AP_DECLARE_HOOK(int,process_connection,(conn_rec *c))
-
-/**
- * This hook allows modules to create connections. After the connection
- * has been accepted, the socket is passed to this function to actually
- * insert all filters that operate on the network, and create the connection
- * record. The first module to create a connection is the last module
- * run
- * @param p The pool from which to allocate the connection record
- * @param csd The socket that has been accepted
- * @param conn_id A unique identifier for this connection.  The ID only
- *                needs to be unique at that time, not forever.
- * @param sbh A handle to scoreboard information for this connection.
- * @return An allocated connection record or NULL.
- */
-AP_DECLARE_HOOK(conn_rec *, create_connection,
-                (apr_pool_t *p, server_rec *server, apr_socket_t *csd, int conn_id, void *sbh))
 
 #ifdef __cplusplus
 }

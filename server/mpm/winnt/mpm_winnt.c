@@ -923,8 +923,8 @@ static void worker_main(int thread_num)
         apr_os_sock_make(&context->sock, &sockinfo, context->ptrans);
 
         ap_create_sb_handle(&sbh, context->ptrans, 0, thread_num);
-        c = ap_run_create_connection(context->ptrans, ap_server_conf, context->sock,
-                                     thread_num, sbh);
+        c = ap_new_connection(context->ptrans, ap_server_conf, context->sock,
+                              thread_num, sbh);
 
         if (c) {
             ap_process_connection(c);

@@ -2405,7 +2405,7 @@ static apr_status_t writev_it_all(apr_socket_t *s,
  */
 
 #if APR_HAS_SENDFILE
-static apr_status_t sendfile_it_all(core_net_rec *c, 
+static apr_status_t sendfile_it_all(conn_rec *c, 
                                     apr_file_t *fd,
                                     apr_hdtr_t *hdtr, 
                                     apr_off_t   file_offset,
@@ -2490,7 +2490,7 @@ static apr_status_t sendfile_it_all(core_net_rec *c,
  * to the network. emulate_sendfile will return only when all the bytes have been
  * sent (i.e., it handles partial writes) or on a network error condition.
  */
-static apr_status_t emulate_sendfile(core_net_rec *c, apr_file_t *fd, 
+static apr_status_t emulate_sendfile(conn_rec *c, apr_file_t *fd, 
                                      apr_hdtr_t *hdtr, apr_off_t offset, 
                                      apr_size_t length, apr_size_t *nbytes) 
 {
@@ -2994,7 +2994,7 @@ static int net_time_filter(ap_filter_t *f, apr_bucket_brigade *b,
                            apr_off_t readbytes)
 {
     int keptalive = f->c->keepalive == 1;
-    apr_socket_t *csd = ap_get_module_config(f->c->conn_config, &core_module);
+    apr_socket_t *csd = f->c->client_socket;
     int *first_line = f->ctx;
 
     if (!f->ctx) {
@@ -3026,8 +3026,7 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
 {
     apr_bucket *e;
     apr_status_t rv;
-    core_net_rec *net = f->ctx;
-    core_ctx_t *ctx = net->in_ctx;
+    core_ctx_t *ctx = f->ctx;
     const char *str;
     apr_size_t len;
 
@@ -3047,13 +3046,12 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
 
     if (!ctx)
     {
-        ctx = apr_pcalloc(f->c->pool, sizeof(*ctx));
+        f->ctx = ctx = apr_pcalloc(f->c->pool, sizeof(*ctx));
         ctx->b = apr_brigade_create(f->c->pool);
 
         /* seed the brigade with the client socket. */
-        e = apr_bucket_socket_create(net->client_socket);
+        e = apr_bucket_socket_create(f->c->client_socket);
         APR_BRIGADE_INSERT_TAIL(ctx->b, e);
-        net->in_ctx = ctx;
     }
     else if (APR_BRIGADE_EMPTY(ctx->b)) {
         /* hit EOF on socket already */
@@ -3202,12 +3200,10 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
 {
     apr_status_t rv;
     conn_rec *c = f->c;
-    core_net_rec *net = f->ctx;
-    core_output_filter_ctx_t *ctx = net->out_ctx;
+    core_output_filter_ctx_t *ctx = f->ctx;
 
     if (ctx == NULL) {
-        ctx = apr_pcalloc(c->pool, sizeof(core_output_filter_ctx_t));
-        net->out_ctx = ctx;
+        f->ctx = ctx = apr_pcalloc(c->pool, sizeof(*ctx));
     }
 
     /* If we have a saved brigade, concatenate the new brigade to it */
@@ -3463,7 +3459,7 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
                 /* Prepare the socket to be reused */
                 flags |= APR_SENDFILE_DISCONNECT_SOCKET;
             }
-            rv = sendfile_it_all(net,      /* the network information   */
+            rv = sendfile_it_all(c,        /* the network information   */
                                  fd,       /* the file to send          */
                                  &hdtr,    /* header and trailer iovecs */
                                  foffset,  /* offset in the file to begin
@@ -3482,7 +3478,7 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
 #endif
             {
                 apr_size_t unused_bytes_sent;
-                rv = emulate_sendfile(net, fd, &hdtr, foffset, flen, 
+                rv = emulate_sendfile(c, fd, &hdtr, foffset, flen, 
                                       &unused_bytes_sent);
             }
             fd = NULL;
@@ -3490,7 +3486,7 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
         else {
             apr_size_t unused_bytes_sent;
 
-            rv = writev_it_all(net->client_socket, 
+            rv = writev_it_all(c->client_socket, 
                                vec, nvec, 
                                nbytes, &unused_bytes_sent);
         }
@@ -3612,59 +3608,6 @@ static int core_create_proxy_req(request_rec *r, request_rec *pr)
     return core_create_req(pr);
 }
 
-static conn_rec *core_create_conn(apr_pool_t *ptrans, server_rec *server,
-                                  apr_socket_t *csd, int conn_id, void *sbh)
-{
-    core_net_rec *net = apr_palloc(ptrans, sizeof(*net));
-    apr_status_t rv;
-
-#ifdef AP_MPM_DISABLE_NAGLE_ACCEPTED_SOCK
-    ap_sock_disable_nagle(csd);
-#endif
-
-    net->in_ctx = NULL;
-    net->out_ctx = NULL;
-    net->c = (conn_rec *) apr_pcalloc(ptrans, sizeof(conn_rec));
-
-    net->c->sbh = sbh;
-    (void) ap_update_child_status(net->c->sbh, SERVER_BUSY_READ, (request_rec *) NULL);
- 
-    /* Got a connection structure, so initialize what fields we can
-     * (the rest are zeroed out by pcalloc).
-     */
- 
-    net->c->conn_config=ap_create_conn_config(ptrans);
-    net->c->notes = apr_table_make(ptrans, 5);
- 
-    net->c->pool = ptrans;
-    if ((rv = apr_socket_addr_get(&net->c->local_addr, APR_LOCAL, csd))
-        != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_INFO, rv, server,
-                     "apr_socket_addr_get(APR_LOCAL)");
-        apr_socket_close(csd);
-        return NULL;
-    }
-    apr_sockaddr_ip_get(&net->c->local_ip, net->c->local_addr);
-    if ((rv = apr_socket_addr_get(&net->c->remote_addr, APR_REMOTE, csd))
-        != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_INFO, rv, server,
-                     "apr_socket_addr_get(APR_REMOTE)");
-        apr_socket_close(csd);
-        return NULL;
-    }
-    apr_sockaddr_ip_get(&net->c->remote_ip, net->c->remote_addr);
-    net->c->base_server = server;
-    net->client_socket = csd;
- 
-    net->c->id = conn_id;
- 
-    ap_set_module_config(net->c->conn_config, &core_module, csd);
-    ap_add_input_filter_handle(ap_core_input_filter_handle, net, NULL, net->c);
-    ap_add_output_filter_handle(ap_core_output_filter_handle,
-                                net, NULL, net->c);
-    return net->c;
-}
-
 static void register_hooks(apr_pool_t *p)
 {
     ap_hook_post_config(core_post_config,NULL,NULL,APR_HOOK_REALLY_FIRST);
@@ -3676,7 +3619,6 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_type_checker(do_nothing,NULL,NULL,APR_HOOK_REALLY_LAST);
     ap_hook_fixups(core_override_type,NULL,NULL,APR_HOOK_REALLY_FIRST);
     ap_hook_access_checker(do_nothing,NULL,NULL,APR_HOOK_REALLY_LAST);
-    ap_hook_create_connection(core_create_conn, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_create_request(core_create_req, NULL, NULL, APR_HOOK_MIDDLE);
     APR_OPTIONAL_HOOK(proxy, create_req, core_create_proxy_req, NULL, NULL, 
                       APR_HOOK_MIDDLE);
