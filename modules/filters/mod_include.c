@@ -92,9 +92,10 @@
 #include "http_log.h"
 #include "http_main.h"
 #include "util_script.h"
-#include <sys/stat.h>
 #include <string.h>
+#ifndef WIN32
 #include <pwd.h>
+#endif
 #endif
 
 #define STARTING_SEQUENCE "<!--#"
@@ -672,7 +673,7 @@ static int handle_include(ap_file_t *in, request_rec *r, const char *error, int 
                 /* be safe; only files in this directory or below allowed */
 		if (!is_only_below(parsed_string)) {
                     error_fmt = "unable to include file \"%s\" "
-                        "in parsed file %s";
+                                "in parsed file %s";
                 }
                 else {
                     rr = ap_sub_req_lookup_file(parsed_string, r);
@@ -1056,7 +1057,7 @@ static int handle_config(ap_file_t *in, request_rec *r, char *error, char *tf,
 
 
 static int find_file(request_rec *r, const char *directive, const char *tag,
-                     char *tag_val, struct stat *finfo, const char *error)
+                     char *tag_val, ap_finfo_t *finfo, const char *error)
 {
     char *to_send = tag_val;
     request_rec *rr = NULL;
@@ -1075,9 +1076,9 @@ static int find_file(request_rec *r, const char *directive, const char *tag,
 
             if (rr->status == HTTP_OK && rr->finfo.protection != 0) {
                 to_send = rr->filename;
-                if (stat(to_send, finfo)) {
+                if (ap_stat(finfo, to_send, rr->pool) != APR_SUCCESS) {
                     error_fmt = "unable to get information about \"%s\" "
-                                "in parsed file %s";
+                        "in parsed file %s";
                 }
             }
             else {
@@ -1129,7 +1130,7 @@ static int handle_fsize(ap_file_t *in, request_rec *r, const char *error, int si
 {
     char tag[MAX_STRING_LEN];
     char *tag_val;
-    struct stat finfo;
+    ap_finfo_t finfo;
     char parsed_string[MAX_STRING_LEN];
 
     while (1) {
@@ -1143,14 +1144,14 @@ static int handle_fsize(ap_file_t *in, request_rec *r, const char *error, int si
             parse_string(r, tag_val, parsed_string, sizeof(parsed_string), 0);
             if (!find_file(r, "fsize", tag, parsed_string, &finfo, error)) {
                 if (sizefmt == SIZEFMT_KMG) {
-                    ap_send_size(finfo.st_size, r);
+                    ap_send_size(finfo.size, r);
                 }
                 else {
                     int l, x;
 #if defined(AP_OFF_T_IS_QUAD)
-                    ap_snprintf(tag, sizeof(tag), "%qd", finfo.st_size);
+                    ap_snprintf(tag, sizeof(tag), "%qd", finfo.size);
 #else
-                    ap_snprintf(tag, sizeof(tag), "%ld", finfo.st_size);
+                    ap_snprintf(tag, sizeof(tag), "%ld", finfo.size);
 #endif
                     l = strlen(tag);    /* grrr */
                     for (x = 0; x < l; x++) {
@@ -1169,7 +1170,7 @@ static int handle_flastmod(ap_file_t *in, request_rec *r, const char *error, con
 {
     char tag[MAX_STRING_LEN];
     char *tag_val;
-    struct stat finfo;
+    ap_finfo_t finfo;
     char parsed_string[MAX_STRING_LEN];
 
     while (1) {
@@ -1182,10 +1183,7 @@ static int handle_flastmod(ap_file_t *in, request_rec *r, const char *error, con
         else {
             parse_string(r, tag_val, parsed_string, sizeof(parsed_string), 0);
             if (!find_file(r, "flastmod", tag, parsed_string, &finfo, error)) {
-		ap_time_t mtime;
-
-		ap_ansi_time_to_ap_time(&mtime, finfo.st_mtime);
-                ap_rputs(ap_ht_time(r->pool, mtime, tf, 0), r);
+                ap_rputs(ap_ht_time(r->pool, finfo.mtime, tf, 0), r);
             }
         }
     }
