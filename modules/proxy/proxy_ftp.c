@@ -113,14 +113,23 @@ static int ftp_check_string(const char *x)
 /*
  * Canonicalise ftp URLs.
  */
-int ap_proxy_ftp_canon(request_rec *r, char *url, const char *scheme, apr_port_t def_port)
+int ap_proxy_ftp_canon(request_rec *r, char *url)
 {
     char *user, *password, *host, *path, *parms, *strp, sport[7];
     apr_pool_t *p = r->pool;
     const char *err;
-    int port;
+    apr_port_t port, def_port;
 
-    port = DEFAULT_FTP_PORT;
+    /* */
+    if (strncasecmp(url, "ftp:", 4) == 0) {
+	url += 4;
+    }
+    else {
+	return DECLINED;
+    }
+    def_port = ap_default_port_for_scheme("ftp");
+
+    port = def_port;
     err = ap_proxy_canon_netloc(p, &url, &user, &password, &host, &port);
     if (err)
 	return HTTP_BAD_REQUEST;
@@ -129,12 +138,12 @@ int ap_proxy_ftp_canon(request_rec *r, char *url, const char *scheme, apr_port_t
     if (password != NULL && !ftp_check_string(password))
 	return HTTP_BAD_REQUEST;
 
-/* now parse path/parameters args, according to rfc1738 */
-/* N.B. if this isn't a true proxy request, then the URL path
- * (but not query args) has already been decoded.
- * This gives rise to the problem of a ; being decoded into the
- * path.
- */
+    /* now parse path/parameters args, according to rfc1738 */
+    /* N.B. if this isn't a true proxy request, then the URL path
+     * (but not query args) has already been decoded.
+     * This gives rise to the problem of a ; being decoded into the
+     * path.
+     */
     strp = strchr(url, ';');
     if (strp != NULL) {
 	*(strp++) = '\0';
@@ -170,7 +179,7 @@ int ap_proxy_ftp_canon(request_rec *r, char *url, const char *scheme, apr_port_t
 
 /* now, rebuild URL */
 
-    if (port != DEFAULT_FTP_PORT)
+    if (port != def_port)
 	apr_snprintf(sport, sizeof(sport), ":%d", port);
     else
 	sport[0] = '\0';

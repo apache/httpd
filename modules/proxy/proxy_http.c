@@ -68,25 +68,40 @@ module AP_MODULE_DECLARE_DATA proxy_http_module;
  *  url    is the URL starting with the first '/'
  *  def_port is the default port for this scheme.
  */
-int ap_proxy_http_canon(request_rec *r, char *url, const char *scheme, apr_port_t def_port)
+int ap_proxy_http_canon(request_rec *r, char *url)
 {
     char *host, *path, *search, sport[7];
     const char *err;
-    int port;
+    const char *scheme;
+    apr_port_t port, def_port;
 
-/* do syntatic check.
- * We break the URL into host, port, path, search
- */
+    /* ap_default_port_for_scheme() */
+    if (strncasecmp(url, "http:", 5) == 0) {
+	url += 5;
+	scheme = "http";
+    }
+    else if (strncasecmp(url, "https:", 6) == 0) {
+	url += 6;
+	scheme = "https:";
+    }
+    else {
+	return DECLINED;
+    }
+    def_port = ap_default_port_for_scheme(scheme);
+
+    /* do syntatic check.
+     * We break the URL into host, port, path, search
+     */
     port = def_port;
     err = ap_proxy_canon_netloc(r->pool, &url, NULL, NULL, &host, &port);
     if (err)
 	return HTTP_BAD_REQUEST;
 
-/* now parse path/search args, according to rfc1738 */
-/* N.B. if this isn't a true proxy request, then the URL _path_
- * has already been decoded.  True proxy requests have r->uri
- * == r->unparsed_uri, and no others have that property.
- */
+    /* now parse path/search args, according to rfc1738 */
+    /* N.B. if this isn't a true proxy request, then the URL _path_
+     * has already been decoded.  True proxy requests have r->uri
+     * == r->unparsed_uri, and no others have that property.
+     */
     if (r->uri == r->unparsed_uri) {
 	search = strchr(url, '?');
 	if (search != NULL)
@@ -95,7 +110,7 @@ int ap_proxy_http_canon(request_rec *r, char *url, const char *scheme, apr_port_
     else
 	search = r->args;
 
-/* process path */
+    /* process path */
     path = ap_proxy_canonenc(r->pool, url, strlen(url), enc_path, r->proxyreq);
     if (path == NULL)
 	return HTTP_BAD_REQUEST;

@@ -209,9 +209,9 @@ char *ap_proxy_canonenc(apr_pool_t *p, const char *x, int len, enum enctype t,
  */
 char *
      ap_proxy_canon_netloc(apr_pool_t *p, char **const urlp, char **userp,
-			char **passwordp, char **hostp, int *port)
+			char **passwordp, char **hostp, apr_port_t *port)
 {
-    int i;
+    apr_port_t i;
     char *strp, *host, *url = *urlp;
     char *user = NULL, *password = NULL;
 
@@ -635,7 +635,7 @@ static const char *
      proxy_get_host_of_request(request_rec *r)
 {
     char *url, *user = NULL, *password = NULL, *err, *host;
-    int port = -1;
+    apr_port_t port = -1;
 
     if (r->hostname != NULL)
 	return r->hostname;
