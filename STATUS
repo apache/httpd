@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/03/22 03:00:32 $]
+  Last modified at [$Date: 1999/03/22 10:37:23 $]
 
 Release:
 
@@ -33,7 +33,7 @@ Binaries (1.3.5):
  i386-unknown-freebsd2.1       no      Andrew Wilson, Brian Tao
  i386-unknown-freebsd2.2.8     yes     Jim Jagielski
  i386-whatever-freebsd3.0      no      Ken Coar
- i686-pc-freebsd3.1            no      Ralf S. Engelschall
+ i686-pc-freebsd3.1            yes     Ralf S. Engelschall
  i586-unknown-linux2           yes     Ralf S. Engelschall, Lars Eilebrecht
  i686-unknown-linux2           yes     Lars Eilebrecht
  i386-unknown-linux(ELF)       no      Aram Mirzadeh, Michael Douglass
@@ -54,7 +54,7 @@ Binaries (1.3.5):
  rs6000-ibm-aix4.2             no      Bill Stoddard
  rs6000-ibm-aix4.3.2           no      Bill Stoddard
  sparc-sun-solaris2.5          yes     Lars Eilebrecht
- sparc-sun-solaris2.6          yes     Lars Eilebrecht, Ralf S. Engelschall
+ sparc-sun-solaris2.6          yes     Lars Eilebrecht
  sparc-sun-solaris2.7          no      Cliff Skolnick
  sparc-sun-sunos4.1.4          yes     Lars Eilebrecht, Michael Douglass
  sparc-sun-sunos4.1.3_U1       no      Sameer Parekh
