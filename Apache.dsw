@@ -101,9 +101,6 @@ Package=<5>
 
 Package=<4>
 {{{
-    Begin Project Dependency
-    Project_Dep_Name apr
-    End Project Dependency
 }}}
 
 ###############################################################################
@@ -204,30 +201,6 @@ Package=<4>
 
 ###############################################################################
 
-Project: "httpd"=".\httpd.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name libapr
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name libaprutil
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name gen_test_char
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name gen_uri_delims
-    End Project Dependency
-}}}
-
-###############################################################################
-
 Project: "libhttpd"=".\libhttpd.dsp" - Package Owner=<4>
 
 Package=<5>
@@ -252,7 +225,10 @@ Package=<4>
     Project_Dep_Name pcreposix
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name httpd
+    Project_Dep_Name gen_test_char
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name gen_uri_delims
     End Project Dependency
 }}}
 
