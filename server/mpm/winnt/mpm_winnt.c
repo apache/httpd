@@ -363,7 +363,7 @@ static ap_inline ap_listen_rec *find_ready_listener(fd_set * main_fds)
     }
     return NULL;
 }
-static int setup_listeners(ap_context_t *pconf, server_rec *s)
+static int setup_listeners(server_rec *s)
 {
     ap_listen_rec *lr;
     int num_listeners = 0;
@@ -372,7 +372,7 @@ static int setup_listeners(ap_context_t *pconf, server_rec *s)
     /* Setup the listeners */
     FD_ZERO(&listenfds);
 
-    if (ap_listen_open(pconf, s->port)) {
+    if (ap_listen_open(s->process, s->port)) {
        return 0;
     }
     for (lr = ap_listeners; lr; lr = lr->next) {
@@ -1028,7 +1028,7 @@ static void worker_main()
 
     /* start_mutex obtained, continue into the select() loop */
     if (one_process) {
-        setup_listeners(pconf, server_conf);
+        setup_listeners(server_conf);
     } else {
         /* Get listeners from the parent process */
         setup_inherited_listeners(pconf, server_conf);
@@ -1343,7 +1343,7 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
     HANDLE process_handles[MAX_PROCESSES];
     HANDLE process_kill_events[MAX_PROCESSES];
 
-    setup_listeners(pconf, s);
+    setup_listeners(s);
 
     /* Create child process 
      * Should only be one in this version of Apache for WIN32 

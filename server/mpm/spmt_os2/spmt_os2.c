@@ -1378,11 +1378,11 @@ static void process_child_status(int tid, ap_wait_t status)
 }
 
 
-static int setup_listeners(ap_context_t *pconf, server_rec *s)
+static int setup_listeners(server_rec *s)
 {
     ap_listen_rec *lr;
 
-    if (ap_listen_open(pconf, s->port)) {
+    if (ap_listen_open(s->process, s->port)) {
 	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT, s,
 		    "no listening sockets available, shutting down");
 	return -1;
@@ -1413,7 +1413,7 @@ int ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec *s)
     server_conf = s;
     ap_log_pid(pconf, ap_pid_fname);
 
-    if (setup_listeners(pconf, s)) {
+    if (setup_listeners(s)) {
 	/* XXX: hey, what's the right way for the mpm to indicate a fatal error? */
 	return 1;
     }

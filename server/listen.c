@@ -151,7 +151,7 @@ static ap_status_t close_listeners_on_exec(void *v)
 }
 
 
-static void alloc_listener(char *addr, unsigned int port)
+static void alloc_listener(process_rec *process, char *addr, unsigned int port)
 {
     ap_listen_rec **walk;
     ap_listen_rec *new;
@@ -174,7 +174,7 @@ static void alloc_listener(char *addr, unsigned int port)
 
     /* this has to survive restarts */
     /* XXX - We need to deal with freeing this structure properly. */
-    new = malloc(sizeof(ap_listen_rec));
+    new = ap_palloc(process->pool, sizeof(ap_listen_rec));
     new->active = 0;
     if (ap_create_tcp_socket(&new->sd, NULL) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, NULL,
@@ -188,15 +188,16 @@ static void alloc_listener(char *addr, unsigned int port)
 }
 
 
-int ap_listen_open(ap_context_t *pconf, unsigned port)
+int ap_listen_open(process_rec *process, unsigned port)
 {
+    ap_context_t *pconf = process->pconf;
     ap_listen_rec *lr;
     ap_listen_rec *next;
     int num_open;
 
     /* allocate a default listener if necessary */
     if (ap_listeners == NULL) {
-	alloc_listener(APR_ANYADDR, port ? port : DEFAULT_HTTP_PORT);
+	alloc_listener(process, APR_ANYADDR, port ? port : DEFAULT_HTTP_PORT);
     }
 
     num_open = 0;
@@ -265,11 +266,11 @@ const char *ap_set_listener(cmd_parms *cmd, void *dummy, char *ips)
     }
 
     if (ports == ips) { /* no address */
-        alloc_listener(APR_ANYADDR, port);
+        alloc_listener(cmd->server->process, APR_ANYADDR, port);
     }
     else {
         ips[(ports - ips) - 1] = '\0';
-	alloc_listener(ips, port);
+	alloc_listener(cmd->server->process, ips, port);
     }
 
     return NULL;
