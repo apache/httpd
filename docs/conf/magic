@@ -1,5 +1,5 @@
 # Magic data for mod_mime_magic Apache module (originally for file(1) command)
-# The module is described in htdocs/manual/mod/mod_mime_magic.html
+# The module is described in /manual/mod/mod_mime_magic.html
 #
 # The format is 4-5 columns:
 #    Column #1: byte number to begin checking from, ">" indicates continuation
