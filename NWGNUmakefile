@@ -307,7 +307,7 @@ install :: nlms FORCE
 	-copy README                    $(INSTALL)\Apache2\*.*
 	-copy STATUS                    $(INSTALL)\Apache2\*.*
 	-copy LICENSE                   $(INSTALL)\Apache2\*.*
-	-awk  -f build\mkconfnw.awk docs\conf\httpd-std.conf >$(INSTALL)\Apache2\conf\httpd.conf
+	-awk  -f build\mkconfnw.awk docs\conf\httpd-std.conf.in >$(INSTALL)\Apache2\conf\httpd.conf
 	-copy docs\conf\magic           $(INSTALL)\Apache2\conf\magic
 	-copy docs\conf\mime.types      $(INSTALL)\Apache2\conf\mime.types
 	@echo rem copying the docs directories > xc.bat
