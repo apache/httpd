@@ -319,7 +319,8 @@ static void lingering_close (int sd, server_rec *server_conf)
 
     /* Close our half of the connection --- send client a FIN */
 
-    shutdown (sd, 1);
+    if ((shutdown (sd, 1)) != 0)
+	log_unixerr("shutdown", NULL, "lingering_close", server_conf);
 
     /* Set up to wait for readable data on socket... */
 
