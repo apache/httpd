@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/01/19 02:37:38 $]
+Last modified at [$Date: 2003/01/20 21:54:39 $]
 
 Release:
 
@@ -77,13 +77,18 @@ PATCHES TO PORT FROM 2.1
     * Fix mod_ext_filter to properly NULL-terminate an array of args
       for some forms of ExtFilterDefine.  PR 15491.  This is r1.2 of
       modules/filters/mod_ext_filter.c.
-      +1: trawick, jerenkrantz, wrowe
+      +1: trawick, jerenkrantz, wrowe, gregames
 
     * Use different ulimit commands in apachectl on Tru64 and AIX.
       On both platforms, there are situations where problems with the
       default command won't be found at configure time.  The changes
       are r1.6 and r1.7 of support/config.m4.
-      +1: trawick, jerenkrantz
+      +1: trawick, jerenkrantz, gregames
+
+    * Insure that ap_get_mime_headers passes a null terminated string
+      to ap_escape_html if ap_rgetline exits abnormally (e.g. header too long).
+      The patch is r1.123 thru r1.125 of server/protocol.c.
+      +1: gregames
 
 CURRENT RELEASE NOTES:
 
