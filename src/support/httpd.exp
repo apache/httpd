@@ -8,6 +8,7 @@ ap_add_module
 ap_add_named_module
 ap_add_per_dir_conf
 ap_add_per_url_conf
+ap_add_version_component
 ap_allow_options
 ap_allow_overrides
 ap_append_arrays
@@ -110,7 +111,6 @@ ap_get_basic_auth_pw
 ap_get_client_block
 ap_get_gmtoff
 ap_get_local_host
-ap_get_module_config
 ap_get_remote_host
 ap_get_remote_logname
 ap_get_server_built
@@ -285,7 +285,6 @@ ap_set_file_slot
 ap_set_flag_slot
 ap_set_keepalive
 ap_set_last_modified
-ap_set_module_config
 ap_set_name_virtual_host
 ap_set_string_slot
 ap_set_string_slot_lower

@@ -1,3 +1,9 @@
+Changes with Apache 1.3b8
+
+  *) Fix src/support/httpd.exp (DSO export file which is currently only
+     used under AIX) because of recent changes to function names.
+     [Ralf S. Engelschall]
+
 Changes with Apache 1.3b7
 
   *) Make sure a MIME-type can be forced via a RewriteRule even when no
