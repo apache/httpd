@@ -1,13 +1,14 @@
-Apache 1.3.6 Released
+Apache 1.3.9 Released
 =====================
 
 The Apache Group is pleased to announce the release of version
-1.3.6 of the Apache HTTP server.
+1.3.9 of the Apache HTTP server.
 
-This new Apache version incorporates over 60 significant improvements
-to the server.  Apart from portability and security fixes, documentation
-enhancements, performance improvements, and assorted other minor
-features or fixes notable changes are:
+This new Apache version incorporates over 130 significant
+improvements to the server.  Apart from portability and
+security fixes, documentation enhancements, performance
+improvements, and assorted other minor features or fixes
+notable changes are:
 
  - mod_log_config now supports conditional logging based upon
    environment variables and support for multiline entries.
@@ -41,13 +42,13 @@ features or fixes notable changes are:
 A complete listing with detailed descriptions is provided in the
 src/CHANGES file.
 
-We consider Apache 1.3.6 to be the best version of Apache available and
+We consider Apache 1.3.9 to be the best version of Apache available and
 we strongly recommend that users of older versions, especially of the
 1.1.x and 1.2.x family, upgrade as soon as possible.  No further releases
 will be made in the 1.2.x family.
 
 
-Apache 1.3.6 is available for download from
+Apache 1.3.9 is available for download from
 
     http://www.apache.org/dist/
 
@@ -58,7 +59,7 @@ Binary distributions are available from
 
    http://www.apache.org/dist/binaries/
 
-As of Apache 1.3.6 binary distributions contain all standard Apache
+As of Apache 1.3.9 binary distributions contain all standard Apache
 modules as shared objects (if supported by the platform) and include
 full source code.  Installation is easily done by executing the
 included install script.  See the README.bindist and INSTALL.bindist
