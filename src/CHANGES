@@ -1,3 +1,25 @@
+Changes with Apache 1.1b4:
+
+  *) More possibly unsecure programs removed from the support directory.
+
+  *) More mod_auth_msql authentication improvements.
+
+  *) VirtualHosts based on Host: headers no longer conflict with the
+     Listen directive.
+
+  *) OS/2 compatibility enhancements.
+
+  *) POST now allowed to directory index CGI scripts.
+
+  *) Actions now work with files of the default type.
+
+  *) Bugs which were fixed:
+        a) more mod_proxy bugs
+        b) early termination of inetd requests
+        c) compile warnings on several systems
+
+Changes with Apache 1.1b3:
+
   *) Much of cgi-bin and all of cgi-src has been removed, due to
      various security holes found and that we could no longer support
      them.  
