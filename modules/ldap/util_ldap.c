@@ -1096,7 +1096,12 @@ start_over:
             /* Nothing in cache, insert new entry */
             util_ald_cache_insert(curl->search_cache, &the_search_node);
         }
-        else {
+        /*
+         * Don't update lastbind on entries with bindpw because
+         * we haven't verified that password. It's OK to update
+         * the entry if there is no password in it.
+         */
+        else if (!search_nodep->bindpw) {
             /* Cache entry is valid, update lastbind */
             search_nodep->lastbind = the_search_node.lastbind;
         }
