@@ -53,7 +53,7 @@ access. Documentation for all of these is located at
 Finally, make a call to httpd, with a -f to the full path to the
 httpd.conf file.  I.e., the common case:
 
-  /usr/local/apache/src/httpd -f /usr/local/apache/conf/httpd.conf
+  /usr/local/apache/httpd -f /usr/local/apache/conf/httpd.conf
 
 And voila!  The server should be running.
 
