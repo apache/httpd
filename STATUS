@@ -138,9 +138,6 @@ Needs patch:
 	proxy on the same IP address you may end up with some fun results.
 	(which means: test namevhosts + proxy)
 
-	- abs_path versus net_loc parsing issues with new parser, in particular
-	    "GET //hostname/path HTTP/1.0" won't behave correctly.
-
 Closed issues:
 
     * Removal of inetd mode

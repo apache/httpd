@@ -383,12 +383,26 @@ void util_uri_init(void)
     const char *re_str;
 
     /* This is a modified version of the regex that appeared in
-     * http://www.ics.uci.edu/~fielding/url/url.txt
-     * It doesnt allow the uri to contain a scheme but no hostinfo
-     * or vice versa. 
-     *         12            3  4          5       6   7        8 9 */
-    re_str = "^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\\?([^#]*))?(#(.*))?$";
-    /*          ^scheme--^      ^site---^  ^path--^   ^query^    ^frag */
+     * draft-fielding-uri-syntax-01.  It doesnt allow the uri to contain a
+     * scheme but no hostinfo or vice versa. 
+     *
+     * draft-fielding-uri-syntax-01.txt, section 4.4 tells us:
+     *
+     *	    Although the BNF defines what is allowed in each component, it is
+     *	    ambiguous in terms of differentiating between a site component and
+     *	    a path component that begins with two slash characters.
+     *  
+     * RFC2068 disambiguates this for the Request-URI, which may only ever be
+     * the "abs_path" portion of the URI.  So a request "GET //foo/bar
+     * HTTP/1.1" is really referring to the path //foo/bar, not the host foo,
+     * path /bar.  Nowhere in RFC2068 is it possible to have a scheme but no
+     * hostinfo or a hostinfo but no scheme.  (Unless you're proxying a
+     * protocol other than HTTP, but this parsing engine probably won't work
+     * for other protocols.)
+     *
+     *         12            3          4       5   6        7 8 */
+    re_str = "^(([^:/?#]+)://([^/?#]*))?([^?#]*)(\\?([^#]*))?(#(.*))?$";
+    /*          ^scheme--^   ^site---^  ^path--^   ^query^    ^frag */
     if ((ret = regcomp(&re_uri, re_str, REG_EXTENDED)) != 0) {
 	char line[1024];
 
@@ -458,20 +472,20 @@ API_EXPORT(int) parse_uri_components(pool *p, const char *uri, uri_components *u
     if (match[2].rm_so != match[2].rm_eo)
 	uptr->scheme = pstrndup (p, uri+match[2].rm_so, match[2].rm_eo - match[2].rm_so);
 
-    /* empty hostinfo is valid, that's why we test $3 but use $4 */
-    if (match[3].rm_so != match[3].rm_eo)
-	uptr->hostinfo = pstrndup (p, uri+match[4].rm_so, match[4].rm_eo - match[4].rm_so);
+    /* empty hostinfo is valid, that's why we test $1 but use $3 */
+    if (match[1].rm_so != match[1].rm_eo)
+	uptr->hostinfo = pstrndup (p, uri+match[3].rm_so, match[3].rm_eo - match[3].rm_so);
 
+    if (match[4].rm_so != match[4].rm_eo)
+	uptr->path = pstrndup (p, uri+match[4].rm_so, match[4].rm_eo - match[4].rm_so);
+
+    /* empty query string is valid, that's why we test $5 but use $6 */
     if (match[5].rm_so != match[5].rm_eo)
-	uptr->path = pstrndup (p, uri+match[5].rm_so, match[5].rm_eo - match[5].rm_so);
+	uptr->query = pstrndup (p, uri+match[6].rm_so, match[6].rm_eo - match[6].rm_so);
 
-    /* empty query string is valid, that's why we test $6 but use $7 */
-    if (match[6].rm_so != match[6].rm_eo)
-	uptr->query = pstrndup (p, uri+match[7].rm_so, match[7].rm_eo - match[7].rm_so);
-
-    /* empty fragment is valid, test $8 use $9 */
-    if (match[8].rm_so != match[8].rm_eo)
-	uptr->fragment = pstrndup (p, uri+match[9].rm_so, match[9].rm_eo - match[9].rm_so);
+    /* empty fragment is valid, test $7 use $8 */
+    if (match[7].rm_so != match[7].rm_eo)
+	uptr->fragment = pstrndup (p, uri+match[8].rm_so, match[8].rm_eo - match[8].rm_so);
 
     if (uptr->hostinfo) {
 	/* Parse the hostinfo part to extract user, password, host, and port */
