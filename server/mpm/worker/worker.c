@@ -190,7 +190,7 @@ static int worker_thread_count;
 static apr_thread_mutex_t *worker_thread_count_mutex;
 
 /* Locks for accept serialization */
-static apr_lock_t *accept_mutex;
+static apr_proc_mutex_t *accept_mutex;
 static const char *lock_fname;
 
 #ifdef NO_SERIALIZED_ACCEPT
@@ -585,7 +585,7 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
         }
         if (workers_may_exit) break;
 
-        if ((rv = SAFE_ACCEPT(apr_lock_acquire(accept_mutex)))
+        if ((rv = SAFE_ACCEPT(apr_proc_mutex_lock(accept_mutex)))
             != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf,
                          "apr_lock_acquire failed. Attempting to shutdown "
@@ -652,7 +652,7 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
                 ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf, 
                              "apr_accept");
             }
-            if ((rv = SAFE_ACCEPT(apr_lock_release(accept_mutex)))
+            if ((rv = SAFE_ACCEPT(apr_proc_mutex_unlock(accept_mutex)))
                 != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf,
                              "apr_lock_release failed. Attempting to shutdown "
@@ -673,7 +673,7 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
             }
         }
         else {
-            if ((rv = SAFE_ACCEPT(apr_lock_release(accept_mutex)))
+            if ((rv = SAFE_ACCEPT(apr_proc_mutex_unlock(accept_mutex)))
                 != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf,
                              "apr_lock_release failed. Attempting to shutdown "
@@ -835,8 +835,8 @@ static void child_main(int child_num_arg)
     /*stuff to do before we switch id's, so we have permissions.*/
     reopen_scoreboard(pchild);
 
-    rv = SAFE_ACCEPT(apr_lock_child_init(&accept_mutex, lock_fname,
-                     pchild));
+    rv = SAFE_ACCEPT(apr_proc_mutex_child_init(&accept_mutex, lock_fname,
+                                               pchild));
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf,
                      "Couldn't initialize cross-process lock in child");
@@ -1286,8 +1286,8 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     lock_fname = apr_psprintf(_pconf, "%s.%" APR_OS_PROC_T_FMT,
                              ap_server_root_relative(_pconf, lock_fname),
                              ap_my_pid);
-    rv = apr_lock_create_np(&accept_mutex, APR_MUTEX, APR_LOCKALL,
-                            ap_accept_lock_mech, lock_fname, _pconf);
+    rv = apr_proc_mutex_create_np(&accept_mutex, lock_fname, 
+                                  ap_accept_lock_mech, _pconf);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s,
                      "Couldn't create accept lock");
@@ -1300,7 +1300,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 #else
     if (ap_accept_lock_mech == APR_LOCK_SYSVSEM) {
 #endif
-        rv = unixd_set_lock_perms(accept_mutex);
+        rv = unixd_set_proc_mutex_perms(accept_mutex);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s,
                          "Couldn't set permissions on cross-process lock");
