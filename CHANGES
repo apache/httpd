@@ -1,5 +1,8 @@
 Changes with Apache 2.0.30-dev
 
+  *) Fix a problem which prevented mod_cgid and suexec from working
+     together reliably [Greg Ames]
+
   *) Remove the call to exit() from within mod_auth_digest's post_config
      phase.  [Aaron Bannert]
 
