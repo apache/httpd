@@ -141,6 +141,7 @@ void *util_ldap_create_config(apr_pool_t *p, server_rec *s);
  */
 int util_ldap_handler(request_rec *r)
 {
+    util_ldap_state_t *st = (util_ldap_state_t *)ap_get_module_config(r->server->module_config, &ldap_module);
 
     r->allowed |= (1 << M_GET);
     if (r->method_number != M_GET)
@@ -171,7 +172,7 @@ int util_ldap_handler(request_rec *r)
              "</tr>\n", r
             );
 
-    ap_rputs(util_ald_cache_display(r->pool), r);
+    ap_rputs(util_ald_cache_display(r->pool, st), r);
 
     ap_rputs("</table>\n</p>\n", r);
 
@@ -506,9 +507,7 @@ LDAP_DECLARE(int) util_ldap_cache_comparedn(request_rec *r, util_ldap_connection
     LDAPMessage *res, *entry;
     char *searchdn;
 
-    util_ldap_state_t *st = 
-        (util_ldap_state_t *)ap_get_module_config(r->server->module_config,
-        &ldap_module);
+    util_ldap_state_t *st =  (util_ldap_state_t *)ap_get_module_config(r->server->module_config, &ldap_module);
 
     /* read lock this function */
     LDAP_CACHE_LOCK_CREATE(st->pool);
@@ -517,7 +516,7 @@ LDAP_DECLARE(int) util_ldap_cache_comparedn(request_rec *r, util_ldap_connection
     LDAP_CACHE_WRLOCK();
 
     curnode.url = url;
-    curl = util_ald_cache_fetch(util_ldap_cache, &curnode);
+    curl = util_ald_cache_fetch(st->util_ldap_cache, &curnode);
     if (curl == NULL) {
         curl = util_ald_create_caches(st, url);
     }
@@ -637,7 +636,7 @@ LDAP_DECLARE(int) util_ldap_cache_compare(request_rec *r, util_ldap_connection_t
     /* get cache entry (or create one) */
     LDAP_CACHE_WRLOCK();
     curnode.url = url;
-    curl = util_ald_cache_fetch(util_ldap_cache, &curnode);
+    curl = util_ald_cache_fetch(st->util_ldap_cache, &curnode);
     if (curl == NULL) {
         curl = util_ald_create_caches(st, url);
     }
@@ -760,7 +759,7 @@ LDAP_DECLARE(int) util_ldap_cache_checkuserid(request_rec *r, util_ldap_connecti
     /* Get the cache node for this url */
     LDAP_CACHE_WRLOCK();
     curnode.url = url;
-    curl = (util_url_node_t *)util_ald_cache_fetch(util_ldap_cache, &curnode);
+    curl = (util_url_node_t *)util_ald_cache_fetch(st->util_ldap_cache, &curnode);
     if (curl == NULL) {
         curl = util_ald_create_caches(st, url);
     }
@@ -962,6 +961,26 @@ static const char *util_ldap_set_cache_bytes(cmd_parms *cmd, void *dummy, const 
     return NULL;
 }
 
+static const char *util_ldap_set_cache_file(cmd_parms *cmd, void *dummy, const char *file)
+{
+    util_ldap_state_t *st = 
+        (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config, 
+                                                  &ldap_module);
+
+    if (file) {
+        st->cache_file = ap_server_root_relative(st->pool, file);
+    }
+    else {
+        st->cache_file = NULL;
+    }
+
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, cmd->server, 
+                 "LDAP cache: Setting shared memory cache file to %s bytes.", 
+                 st->cache_file);
+
+    return NULL;
+}
+
 static const char *util_ldap_set_cache_ttl(cmd_parms *cmd, void *dummy, const char *ttl)
 {
     util_ldap_state_t *st = 
@@ -1091,22 +1110,6 @@ void *util_ldap_create_config(apr_pool_t *p, server_rec *s)
     return st;
 }
 
-static void util_ldap_init_module(apr_pool_t *pool, server_rec *s)
-{
-    util_ldap_state_t *st = 
-        (util_ldap_state_t *)ap_get_module_config(s->module_config, 
-						  &ldap_module);
-
-    apr_status_t result = util_ldap_cache_init(pool, st->cache_bytes);
-    char buf[MAX_STRING_LEN];
-
-    apr_strerror(result, buf, sizeof(buf));
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, result, s, 
-                      "[%d] ldap cache init: %s", 
-                      getpid(), buf);
-}
-
-
 static apr_status_t util_ldap_cleanup_module(void *data)
 {
     server_rec *s = data;
@@ -1128,13 +1131,42 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
                                  apr_pool_t *ptemp, server_rec *s)
 {
     int rc = LDAP_SUCCESS;
+    apr_status_t result;
+    char buf[MAX_STRING_LEN];
 
-    util_ldap_state_t *st = (util_ldap_state_t *)ap_get_module_config(
-                                                s->module_config, 
-                                                &ldap_module);
+    server_rec *s_vhost;
+    util_ldap_state_t *st_vhost;
+    
+    util_ldap_state_t *st =
+        (util_ldap_state_t *)ap_get_module_config(s->module_config, &ldap_module);
 
-        /* log the LDAP SDK used 
-        */
+    /* initializing cache if file is here and we already don't have shm addr*/
+    if (st->cache_file && !st->cache_shm) {
+        result = util_ldap_cache_init(p, st);
+        apr_strerror(result, buf, sizeof(buf));
+        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, result, s,
+                     "LDAP cache init: %s", buf);
+
+        /* merge config in all vhost */
+        s_vhost = s->next;
+        while (s_vhost) {
+            ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, result, s, 
+                         "LDAP merging Shared Cache conf: shm=0x%x rmm=0x%x for VHOST: %s",
+                         st->cache_shm, st->cache_rmm, s_vhost->server_hostname);
+
+            st_vhost = (util_ldap_state_t *)ap_get_module_config(s_vhost->module_config, &ldap_module);
+            st_vhost->cache_shm = st->cache_shm;
+            st_vhost->cache_rmm = st->cache_rmm;
+            st_vhost->cache_file = st->cache_file;
+            s_vhost = s_vhost->next;
+        }
+    }
+    else {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0 , s, "LDAP cache: Unable to init Shared Cache: no file");
+    }
+    
+    /* log the LDAP SDK used 
+     */
     #if APR_HAS_NETSCAPE_LDAPSDK 
     
         ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s, 
@@ -1297,6 +1329,10 @@ command_rec util_ldap_cmds[] = {
                   "Sets the size of the shared memory cache in bytes. "
                   "Zero means disable the shared memory cache. Defaults to 100KB."),
 
+    AP_INIT_TAKE1("LDAPSharedCacheFile", util_ldap_set_cache_file, NULL, RSRC_CONF,
+                  "Sets the file of the shared memory cache."
+                  "Nothing means disable the shared memory cache."),
+
     AP_INIT_TAKE1("LDAPCacheEntries", util_ldap_set_cache_entries, NULL, RSRC_CONF,
                   "Sets the maximum number of entries that are possible in the LDAP "
                   "search cache. "
@@ -1331,7 +1367,6 @@ command_rec util_ldap_cmds[] = {
 static void util_ldap_register_hooks(apr_pool_t *p)
 {
     ap_hook_post_config(util_ldap_post_config,NULL,NULL,APR_HOOK_MIDDLE);
-    ap_hook_child_init(util_ldap_init_module, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_handler(util_ldap_handler, NULL, NULL, APR_HOOK_MIDDLE);
 }
 

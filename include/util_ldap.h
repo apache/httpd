@@ -75,6 +75,10 @@
 #include "http_protocol.h"
 #include "http_request.h"
 
+#if APR_HAS_SHARED_MEMORY
+#include "apr_rmm.h"
+#include "apr_shm.h"
+#endif
 
 /* Create a set of LDAP_DECLARE(type), LDLDAP_DECLARE(type) and 
  * LDAP_DECLARE_DATA with appropriate export and import tags for the platform
@@ -96,7 +100,6 @@
 #define LDAP_DECLARE_NONSTD(type)     __declspec(dllimport) type
 #define LDAP_DECLARE_DATA             __declspec(dllimport)
 #endif
-
 
 /*
  * LDAP Connections
@@ -138,9 +141,11 @@ typedef struct util_ldap_state_t {
     apr_pool_t *pool;           /* pool from which this state is allocated */
 #if APR_HAS_THREADS
     apr_thread_mutex_t *mutex;          /* mutex lock for the connection list */
+    apr_thread_rwlock_t *util_ldap_cache_lock;
 #endif
 
     apr_size_t cache_bytes;     /* Size (in bytes) of shared memory cache */
+    char *cache_file;           /* filename for shm */
     long search_cache_ttl;      /* TTL for search cache */
     long search_cache_size;     /* Size (in entries) of search cache */
     long compare_cache_ttl;     /* TTL for compare cache */
@@ -150,6 +155,15 @@ typedef struct util_ldap_state_t {
     char *cert_auth_file; 
     int   cert_file_type;
     int   ssl_support;
+
+#if APR_HAS_SHARED_MEMORY
+    apr_shm_t *cache_shm;
+    apr_rmm_t *cache_rmm;
+#endif
+
+    /* cache ald */
+    void *util_ldap_cache;
+
 } util_ldap_state_t;
 
 
@@ -286,21 +300,21 @@ LDAP_DECLARE(int) util_ldap_ssl_supported(request_rec *r);
  * @param reqsize The size of the shared memory segement to request. A size
  *                of zero requests the max size possible from
  *                apr_shmem_init()
- * @deffunc void util_ldap_cache_init(apr_pool_t *p)
+ * @deffunc void util_ldap_cache_init(apr_pool_t *p, util_ldap_state_t *st)
  * @return The status code returned is the status code of the
  *         apr_smmem_init() call. Regardless of the status, the cache
  *         will be set up at least for in-process or in-thread operation.
  */
-apr_status_t util_ldap_cache_init(apr_pool_t *pool, apr_size_t reqsize);
+apr_status_t util_ldap_cache_init(apr_pool_t *pool, util_ldap_state_t *st);
 
 /**
  * Display formatted stats for cache
  * @param The pool to allocate the returned string from
  * @tip This function returns a string allocated from the provided pool that describes
  *      various stats about the cache.
- * @deffunc char *util_ald_cache_display(apr_pool_t *pool)
+ * @deffunc char *util_ald_cache_display(apr_pool_t *pool, util_ldap_state_t *st)
  */
-char *util_ald_cache_display(apr_pool_t *pool);
+char *util_ald_cache_display(apr_pool_t *pool, util_ldap_state_t *st);
 
 
 /* from apr_ldap_cache_mgr.c */
@@ -310,9 +324,9 @@ char *util_ald_cache_display(apr_pool_t *pool);
  * @param The pool to allocate the returned string from
  * @tip This function returns a string allocated from the provided pool that describes
  *      various stats about the cache.
- * @deffunc char *util_ald_cache_display(apr_pool_t *pool)
+ * @deffunc char *util_ald_cache_display(apr_pool_t *pool, util_ldap_state_t *st)
  */
-char *util_ald_cache_display(apr_pool_t *pool);
+char *util_ald_cache_display(apr_pool_t *pool, util_ldap_state_t *st);
 
 #endif /* APU_HAS_LDAP */
 #endif /* UTIL_LDAP_H */

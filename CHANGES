@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_auth_ldap: Fix some segfaults in the cache logic.  PR 18756.
+     [Matthieu Estrade <apache@moresecurity.org>]
+
   *) mod_autoindex: Restore the ability to add a description for
      directories that don't contain an index file.  [André Malo]
 
