@@ -1845,59 +1845,6 @@ AP_DECLARE(gid_t) ap_gname2id(const char *name)
 }
 
 
-/*
- * Parses a host of the form <address>[:port]
- * :port is permitted if 'port' is not NULL
- */
-unsigned long ap_get_virthost_addr(char *w, apr_port_t *ports)
-{
-    struct hostent *hep;
-    unsigned long my_addr;
-    char *p;
-
-    p = strchr(w, ':');
-    if (ports != NULL) {
-	*ports = 0;
-	if (p != NULL && strcmp(p + 1, "*") != 0)
-	    *ports = atoi(p + 1);
-    }
-
-    if (p != NULL)
-	*p = '\0';
-    if (strcmp(w, "*") == 0) {
-	if (p != NULL)
-	    *p = ':';
-	return htonl(INADDR_ANY);
-    }
-
-    my_addr = apr_inet_addr((char *)w);
-    if (my_addr != APR_INADDR_NONE) {
-	if (p != NULL)
-	    *p = ':';
-	return my_addr;
-    }
-
-    hep = gethostbyname(w);
-
-    if ((!hep) || (hep->h_addrtype != APR_INET || !hep->h_addr_list[0])) {
-	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "Cannot resolve host name %s --- exiting!", w);
-	exit(1);
-    }
-
-    if (hep->h_addr_list[1]) {
-	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "Host %s has multiple addresses ---", w);
-	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "you must choose one explicitly for use as");
-	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "a virtual host.  Exiting!!!");
-	exit(1);
-    }
-
-    if (p != NULL)
-	*p = ':';
-
-    return ((struct in_addr *) (hep->h_addr))->s_addr;
-}
-
-
 static char *find_fqdn(apr_pool_t *a, struct hostent *p)
 {
     int x;
