@@ -1,17 +1,6 @@
-                      _             _ 
-  _ __ ___   ___   __| |    ___ ___| |
- | '_ ` _ \ / _ \ / _` |   / __/ __| | 
- | | | | | | (_) | (_| |   \__ \__ \ | ``mod_ssl combines the flexibility of
- |_| |_| |_|\___/ \__,_|___|___/___/_|   Apache with the security of OpenSSL.''
-                      |_____|                                           
- mod_ssl                               ``Ralf Engelschall has released an
- Apache Interface to OpenSSL             excellent module that integrates
- http://www.modssl.org/                  Apache and SSLeay.''                 
- Version 2.8                                               -- Tim J. Hudson
+SYNOPSIS
 
- SYNOPSIS
-
- This Apache module provides strong cryptography for the Apache 1.3 webserver
+ This Apache module provides strong cryptography for the Apache 2.0 webserver
  via the Secure Sockets Layer (SSL v2/v3) and Transport Layer Security (TLS
  v1) protocols by the help of the SSL/TLS implementation library OpenSSL which
  is based on SSLeay from Eric A. Young and Tim J. Hudson. The mod_ssl package
@@ -19,47 +8,9 @@
  from software developed by Ben Laurie for use in the Apache-SSL HTTP server
  project. 
 
- SOURCES
+SOURCES
 
- Here is a short overview of the source files:
-
- * README .................. This file ;)
- # Makefile.in ............. Makefile template for Unix platform
- # config.m4 ............... Autoconf stub for the Apache config mechanism
- # mod_ssl.c ............... main source file containing API structures
- # mod_ssl.h ............... common header file of mod_ssl
- # ssl_engine_config.c ..... module configuration handling
- # ssl_engine_dh.c ......... DSA/DH support
- # ssl_engine_init.c ....... module initialization
- # ssl_engine_io.c ......... I/O support
- # ssl_engine_kernel.c ..... SSL engine kernel
- # ssl_engine_log.c ........ logfile support
- # ssl_engine_mutex.c ...... mutual exclusion support
- # ssl_engine_pphrase.c .... pass-phrase handling
- # ssl_engine_rand.c ....... PRNG support
- # ssl_engine_vars.c ....... Variable Expansion support
- # ssl_expr.c .............. expression handling main source
- # ssl_expr.h .............. expression handling common header
- # ssl_expr_scan.c ......... expression scanner automaton (pre-generated)
- # ssl_expr_scan.l ......... expression scanner source
- # ssl_expr_parse.c ........ expression parser automaton  (pre-generated)
- # ssl_expr_parse.h ........ expression parser header     (pre-generated)
- # ssl_expr_parse.y ........ expression parser source
- # ssl_expr_eval.c ......... expression machine evaluation
- # ssl_scache.c ............ session cache abstraction layer
- # ssl_scache_dbm.c ........ session cache via DBM file
- ~ ssl_scache_shmcb.c ...... session cache via shared memory cyclic buffer
- ~ ssl_scache_shmht.c ...... session cache via shared memory hash table
- # ssl_util.c .............. utility functions
- # ssl_util_ssl.c .......... the OpenSSL companion source
- # ssl_util_ssl.h .......... the OpenSSL companion header
- # ssl_util_table.c ........ the hash table library source
- # ssl_util_table.h ........ the hash table library header
-
- Legend: # = already ported to Apache 2.0 and is cleaned up
-         * = ported to Apache 2.0 but still needs cleaning up
-         ~ = ported to Apache 2.0 but still needs work
-         - = port still not finished
+ See the top-level LAYOUT file in httpd-2.0 for file descriptions.
 
  The source files are written in clean ANSI C and pass the ``gcc -O -g
  -ggdb3 -Wall -Wshadow -Wpointer-arith -Wcast-align -Wmissing-prototypes
@@ -68,7 +19,7 @@
  you make changes or additions make sure the source still passes this
  compiler test.
 
- FUNCTIONS
+FUNCTIONS
   
  Inside the source code you will be confronted with the following types of
  functions which can be identified by their prefixes:
@@ -82,7 +33,7 @@
    EVP_xxxx() .............. OpenSSL function (Crypto library)
    RSA_xxxx() .............. OpenSSL function (Crypto library)
 
- DATA STRUCTURES
+DATA STRUCTURES
 
  Inside the source code you will be confronted with the following
  data structures:
@@ -108,7 +59,7 @@
  a smaller version inside XFig by specifing a magnification on the Export
  panel.
 
- EXPERIMENTAL CODE
+EXPERIMENTAL CODE
 
  Experimental code is always encapsulated as following:
 
@@ -130,7 +81,7 @@
      mod_ssl automatically recognizes this OpenSSL variant and then can
      activate external crypto devices through SSLCryptoDevice directive.
 
- INCOMPATIBILITIES
+INCOMPATIBILITIES
 
  The following intentional incompatibilities exist between mod_ssl 2.x
  from Apache 1.3 and this mod_ssl version for Apache 2.0:
@@ -139,7 +90,7 @@
  o The complete EAPI-based SSL_COMPAT stuff was removed.
  o The <IfDefine> variable MOD_SSL is no longer provided automatically 
 
- MAJOR CHANGES 
+MAJOR CHANGES 
 
  The following major changes were made between mod_ssl 2.x
  from Apache 1.3 and this mod_ssl version for Apache 2.0:
@@ -168,26 +119,6 @@
  o the ssl_engine_{ds,ext}.c source files are obsolete and no longer
    exist
 
- TODO
+TODO
 
- o SSL renegotiations in combination with POST request
- o Port all remaining code (code inside #if 0...#endif blocks)
- o Do we need SSL_set_read_ahead()?
- o the ssl_expr api is NOT THREAD SAFE.  race conditions exist:
-   -in ssl_expr_comp() if SSLRequire is used in .htaccess
-    (ssl_expr_info is global)
-   -is ssl_expr_eval() if there is an error
-    (ssl_expr_error is global)
- o SSLRequire directive (parsing of) leaks memory
- o Diffie-Hellman-Parameters for temporary keys are hardcoded in
-   ssl_engine_dh.c, while the comment in ssl_engine_kernel.c says:
-   "it is suggested that keys be changed daily or every 500
-    transactions, and more often if possible."
- o ssl_var_lookup could be rewritten to be MUCH faster
- o CRL callback should be pluggable
- o session cache store should be pluggable
- o init functions should return status code rather than ssl_die()
- o ssl_engine_pphrase.c needs to be reworked so it is generic enough
-   to also decrypt proxy keys
- o the shmcb code should just align its memory segment rather than
-   jumping through all the "safe" memcpy and memset hoops
+ See the top-level STATUS file in httpd-2.0 for current efforts and goals.
