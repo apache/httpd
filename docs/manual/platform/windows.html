@@ -17,7 +17,7 @@
 <H1 ALIGN="CENTER">Using Apache With Microsoft Windows</H1>
 
 <P>This document explains how to install, configure and run
-   Apache 1.3b6 and later under Microsoft Windows. Please note that at
+   Apache 1.3 under Microsoft Windows. Please note that at
    this time, Windows support is entirely experimental, and is
    recommended only for experienced users. The Apache Group does not
    guarantee that this software will work as documented, or even at
@@ -360,34 +360,6 @@ and to remove the Apache service, use
     apache -u
 </PRE>
 
-
-<H2><A NAME="signal">Signalling Apache when running</A></H2>
-
-<P>When Apache is running you may request that it reread it's
-configuration files as follows:
-
-<PRE>
-    apache -Z @@whatever?@@>
-</PRE>
-
-and to request that it shutdown gracefully, via:
-
-<PRE>
-    apache -Z @@whatever?@@>
-</PRE>
-
-and you can force it to stop via:
-
-<PRE>
-    apache -Z @@whatever?@@
-</PRE>
-
-
-<P>
-Other techinques of shutting down the server (e.g. using the
-task manager to "End Process", distroying the command 
-window containing the server, or using control-C to interupt
-it) all have the downside of @@whatever@@.
 
 <H2><A NAME="comp">Compiling Apache for Windows</A></H2>
 
