@@ -3,12 +3,14 @@
 /*
  * 26/06/97 PCS 1.000 Initial version
  * 22/02/98 PCS 1.001 Used the excellent NTemacs to apply proper formating
+ * 04/05/98 PCS 1.002 Copy conf files to *.conf.default, then to *.conf
  */
 
 #include <windows.h>
 #include <winsock.h>
 #include <string.h>
 #include <stdio.h>
+#include <direct.h>
 
 /* Global to store the instance handle */
 HINSTANCE hInstance = NULL;
@@ -38,7 +40,7 @@ int MessageBox_error(HWND hWnd, int opt, char *title,
     wvsprintf(buf, fmt, ap);
     va_end(ap);
 
-    if (opt | AP_WIN32ERROR) {
+    if (opt & AP_WIN32ERROR) {
 	char *p;
 
 	strcat(buf, "\r\r(");
@@ -57,7 +59,7 @@ int MessageBox_error(HWND hWnd, int opt, char *title,
 	strcat(buf, ")");
     }
 
-    return MessageBox(hWnd, buf, title, opt);
+    return MessageBox(hWnd, buf, title, mb_opt);
 }
 
 /*
@@ -234,12 +236,25 @@ char *expandLine(char *in, REPLACETABLE replaceTable)
     return outbuf;
 }
 
+/*
+ * Some options to determine how we copy a file. Apart from OPT_NONE, these should
+ * be OR'able
+ */
+
+typedef enum { 
+    OPT_NONE = 0, 
+    OPT_OVERWRITE = 1,	    /* Always overwrite destination file */
+    OPT_EXPAND = 2,	    /* Expand any @@...@@ tokens in replaceHttpd */
+    OPT_DELETESOURCE = 4,   /* Delete the source file after the copy */
+    OPT_SILENT = 8,	    /* Don't tell use about failures */
+} options_t;
+
 /* 
  * Copy a file, expanding sequences from the replaceTable argument.
  * Returns 0 on success, -1 on error. Reports errors to user.
  */
 #define MAX_INPUT_LINE 2000
-int WINAPI ExpandConfFile(HWND hwnd, LPSTR szInst, LPSTR szinFile, LPSTR szoutFile, REPLACETABLE replaceTable)
+int WINAPI ExpandConfFile(HWND hwnd, LPSTR szInst, LPSTR szinFile, LPSTR szoutFile, REPLACETABLE replaceTable, options_t options)
 {
     char inFile[_MAX_PATH];
     char outFile[_MAX_PATH];
@@ -257,6 +272,24 @@ int WINAPI ExpandConfFile(HWND hwnd, LPSTR szInst, LPSTR szinFile, LPSTR szoutFi
 			 MB_OK | MB_ICONSTOP,
 			 "Cannot read file %s", inFile);
 	return -1;
+    }
+    if (! (options & OPT_OVERWRITE)) {
+	/* Overwrite not allowed if file does not exist */
+	if ((outfp = fopen(outFile, "r"))) {
+	    if (! (options & OPT_SILENT)) {
+		MessageBox_error(hwnd,
+				 0,
+				 "File not overwritten",
+				 MB_OK | MB_ICONWARNING,
+				 "Preserving existing file %s.\r\r"
+				 "The new version of this file has been left in %s", 
+				 outFile, inFile);
+	    }
+	    fclose(outfp);
+	    fclose(infp);
+	    return 0;
+	}
+	/* To get here, output file does not exist */
     }
     if (!(outfp = fopen(outFile, "w"))) {
 	MessageBox_error(hwnd, 
@@ -277,11 +310,13 @@ int WINAPI ExpandConfFile(HWND hwnd, LPSTR szInst, LPSTR szinFile, LPSTR szoutFi
 	 * called expandLine() or taking a copy of the input
 	 * buffer.
 	 */
-	for (pos = inbuf; *pos; ++pos)
-	    if (*pos == '@' && *(pos+1) == '@')
-		break;
+	if (options & OPT_EXPAND) {
+    	    for (pos = inbuf; *pos; ++pos)
+		if (*pos == '@' && *(pos+1) == '@')
+		    break;
+	}
 
-	if (*pos) {
+	if (options & OPT_EXPAND && *pos) {
 	    /* The input line contains at least one '@@' sequence, so
 	     * call expandLine() to expand any sequences we know about.
 	     */
@@ -312,6 +347,10 @@ int WINAPI ExpandConfFile(HWND hwnd, LPSTR szInst, LPSTR szinFile, LPSTR szoutFi
     }
     fclose(infp);
     fclose(outfp);
+
+    if (options & OPT_DELETESOURCE) {
+	unlink(inFile);
+    }
 
     return 0;
 }
@@ -349,27 +388,81 @@ int FillInReplaceTable(HWND hwnd, REPLACETABLE table, char *szInst)
 }
 
 /*
- * This is the entry point from InstallShield. The only parameter
- * of interest is szInst which gives the installation directory. The
- * template configuration files will be in the files 
- * conf\httpd.conf-dist-win, conf\access.conf-dist-win and
- * conf\srm.conf-dist-win relative to this directory. We need to
- * expand them into corresponding conf\*.conf files.
+ * actionTable[] contains things we do when this DLL is called by InstallShield
+ * during the install. It is like a simple script, without us having to
+ * worry about parsing, error checking, etc.
+ *
+ * Each item in the table is of type ACTIONITEM. The first element is the action 
+ * to perform (e.g. CMD_COPY). The second and third elements are filenames
+ * (e.g. for CMD_COPY, the first filename is the source and the second filename
+ * is the destination). The final element of ACTIONITEM is a set of options
+ * which apply to the current "command". For example, OPT_EXPAND on a CMD_COPY
+ * line, tells the copy function to expand @@ServerRoot@@ tokens found in the
+ * source file.
+ *
+ * The contents of this table are performed in order, top to bottom. This lets
+ * us expand the files to the *.conf.default names, then copy to *.conf only
+ * if the corresponding *.conf file does not already exist. If it does exist,
+ * it is not overwritten.
  *
  * Return 1 on success, 0 on error.
  */
 
+typedef enum {
+    CMD_COPY = 0,
+    CMD_RMDIR,
+    CMD_RM,
+    CMD_END
+} cmd_t;
+
 typedef struct {
+    cmd_t command;
     char *in;
     char *out;
-} FILEITEM;
-typedef FILEITEM *FILETABLE;
+    options_t options;
+} ACTIONITEM;
+typedef ACTIONITEM *ACTIONTABLE;
 
-FILEITEM fileTable[] = {
-    { "conf\\httpd.conf-dist-win", "conf\\httpd.conf" },
-    { "conf\\srm.conf-dist-win", "conf\\srm.conf" },
-    { "conf\\access.conf-dist-win", "conf\\access.conf" },
-    { NULL, NULL }
+ACTIONITEM actionTable[] = {
+    /*
+     * Installation of the configuraton files. These are installed into the ".tmp"
+     * directory by the installer. We first move them to conf\*.default (overwriting
+     * any *.default file from a previous install). The *.conf-dist-win files
+     * are also expanded for any @@...@@ tokens. Then we copy the conf\*.default
+     * file to corresponding conf\* file, unless that would overwrite an existing file.
+     */
+    { CMD_COPY, ".tmp\\mime.types", "conf\\mime.types.default",
+	OPT_OVERWRITE|OPT_DELETESOURCE },
+    { CMD_COPY, ".tmp\\magic", "conf\\magic.default",
+	OPT_OVERWRITE|OPT_DELETESOURCE },
+    { CMD_COPY, ".tmp\\httpd.conf-dist-win", "conf\\httpd.conf.default", 
+	OPT_OVERWRITE|OPT_EXPAND|OPT_DELETESOURCE },
+    { CMD_COPY, ".tmp\\srm.conf-dist-win", "conf\\srm.conf.default", 
+	OPT_OVERWRITE|OPT_EXPAND|OPT_DELETESOURCE },
+    { CMD_COPY, ".tmp\\access.conf-dist-win", "conf\\access.conf.default", 
+	OPT_OVERWRITE|OPT_EXPAND|OPT_DELETESOURCE },
+
+    /* Now copy to the 'live' files, unless they already exist */
+    { CMD_COPY, "conf\\httpd.conf.default", "conf\\httpd.conf", OPT_NONE },
+    { CMD_COPY, "conf\\srm.conf.default", "conf\\srm.conf", OPT_NONE },
+    { CMD_COPY, "conf\\access.conf.default", "conf\\access.conf", OPT_NONE },
+    { CMD_COPY, "conf\\magic.default", "conf\\magic", OPT_NONE },
+    { CMD_COPY, "conf\\mime.types.default", "conf\\mime.types", OPT_NONE },
+
+    { CMD_COPY, ".tmp\\highperformance.conf-dist", "conf\\highperformance.conf-dist", 
+	OPT_EXPAND|OPT_OVERWRITE|OPT_DELETESOURCE },
+
+    /* Move the default htdocs files into place, provided they don't already
+     * exist.
+     */
+    { CMD_COPY, ".tmp\\index.html", "htdocs\\index.html", OPT_DELETESOURCE|OPT_SILENT },
+    { CMD_RM, ".tmp\\index.html", NULL, OPT_SILENT },
+    { CMD_COPY, ".tmp\\apache_pb.gif", "htdocs\\apache_pb.gif", OPT_DELETESOURCE|OPT_SILENT },
+    { CMD_RM, ".tmp\\apache_pb.gif", NULL, OPT_SILENT },
+
+    { CMD_RMDIR, ".tmp", NULL },
+
+    { CMD_END, NULL, NULL, OPT_NONE }
 };
 
 /*
@@ -381,19 +474,62 @@ FILEITEM fileTable[] = {
 
 CHAR WINAPI BeforeExit(HWND hwnd, LPSTR szSrcDir, LPSTR szSupport, LPSTR szInst, LPSTR szRes)
 {
-    FILEITEM *pfileItem;
+    ACTIONITEM *pactionItem;
+    int end = 0;
 
     FillInReplaceTable(hwnd, replaceHttpd, szInst);
 
-    pfileItem = fileTable;
-    while (pfileItem->in != NULL) {
-	if (ExpandConfFile(hwnd, szInst, 
-			   pfileItem->in, pfileItem->out,
-			   replaceHttpd) < 0) {
-	    /* Error has already been reported to the user */
-	    return 0;
+    pactionItem = actionTable;
+    while (!end) {
+	switch(pactionItem->command) {
+	case CMD_END:
+	    end = 1;
+	    break;
+	case CMD_COPY:
+	    if (ExpandConfFile(hwnd, szInst, 
+			       pactionItem->in, 
+			       pactionItem->out,
+			       replaceHttpd,
+			       pactionItem->options) < 0) {
+		/* Error has already been reported to the user */
+		return 0;
+	    }
+	    break;
+	case CMD_RM: {
+	    char inFile[MAX_INPUT_LINE];
+
+	    sprintf(inFile, "%s\\%s", szInst, pactionItem->in);
+	    if (unlink(inFile) < 0 && !(pactionItem->options & OPT_SILENT)) {
+		MessageBox_error(hwnd, AP_WIN32ERROR, "Error during configuration",
+		    MB_ICONHAND,
+		    "Could not remove file %s", 
+		    inFile);
+		return 0;
+	    }
+	    break;
 	}
-	pfileItem++;
+	case CMD_RMDIR: {
+	    char inFile[MAX_INPUT_LINE];
+
+	    sprintf(inFile, "%s\\%s", szInst, pactionItem->in);
+	    if (rmdir(inFile) < 0) {
+		MessageBox_error(hwnd, AP_WIN32ERROR, "Error during configuration",
+		    MB_ICONHAND,
+		    "Could not delete temporary directory %s", 
+		    inFile);
+		return 0;
+	    }
+	    break;
+	}
+	default:
+	    MessageBox_error(hwnd, 0, "Error during configuration",
+		    MB_ICONHAND,
+		    "An error has occurred during configuration\r"
+		    "(Error: unknown command %d)", (int)pactionItem->command);
+	    end = 1;
+	    break;
+	}
+	pactionItem++;
     }
     return 1;
 }
