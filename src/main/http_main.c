@@ -3158,17 +3158,19 @@ static void set_group_privs(void)
 /* check to see if we have the 'suexec' setuid wrapper installed */
 static int init_suexec(void)
 {
+    int result = 0;
+
 #ifndef WIN32
     struct stat wrapper;
 
-    if ((stat(SUEXEC_BIN, &wrapper)) != 0)
-	return (ap_suexec_enabled);
-
-    if ((wrapper.st_mode & S_ISUID) && wrapper.st_uid == 0) {
-	ap_suexec_enabled = 1;
+    if ((stat(SUEXEC_BIN, &wrapper)) != 0) {
+	result = 0;
+    }
+    else if ((wrapper.st_mode & S_ISUID) && (wrapper.st_uid == 0)) {
+	result = 1;
     }
 #endif /* ndef WIN32 */
-    return (ap_suexec_enabled);
+    return result;
 }
 
 /*****************************************************************
@@ -4897,6 +4899,7 @@ int REALMAIN(int argc, char *argv[])
 	    show_compile_settings();
 	    exit(0);
 	case 'l':
+	    ap_suexec_enabled = init_suexec();
 	    ap_show_modules();
 	    exit(0);
 	case 'L':

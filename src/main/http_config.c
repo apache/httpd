@@ -1636,6 +1636,11 @@ void ap_show_modules()
     int n;
 
     printf("Compiled-in modules:\n");
-    for (n = 0; ap_loaded_modules[n]; ++n)
+    for (n = 0; ap_loaded_modules[n]; ++n) {
 	printf("  %s\n", ap_loaded_modules[n]->name);
+    }
+    printf("suexec: %s\n",
+	   ap_suexec_enabled
+	       ? "enabled; valid wrapper " SUEXEC_BIN
+	       : "disabled; invalid wrapper " SUEXEC_BIN);
 }
