@@ -75,7 +75,7 @@
 #include "apr_atomic.h"
 #include <unistd.h>
 #include "http_protocol.h"
-#include "../../server/test_char.h"
+#include "test_char.h"
 
 module AP_MODULE_DECLARE_DATA log_forensic_module;
 
