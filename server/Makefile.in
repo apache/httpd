@@ -2,7 +2,7 @@
 CLEAN_TARGETS = gen_test_char test_char.h gen_uri_delims uri_delims.h \
 	ApacheCoreOS2.def
 DISTCLEAN_TARGETS = httpd.exp
-EXTRACLEAN_TARGETS = exports.c export_vars.h
+EXTRACLEAN_TARGETS = export_files exports.c export_vars.h
 
 SUBDIRS = mpm
 
@@ -30,28 +30,42 @@ test_char.h: gen_test_char
 
 util.lo: test_char.h
 
-EXPORT_FILES = $(top_srcdir)/include/*.h \
-       $(top_srcdir)/os/$(OS_DIR)/*.h \
-       $(top_srcdir)/srclib/apr/include/*.h \
-       $(top_srcdir)/srclib/apr-util/include/*.h \
-       $(top_srcdir)/modules/http/*.h
+EXPORT_DIRS = $(top_srcdir)/include $(top_srcdir)/os/$(OS_DIR) $(APR_INCLUDEDIR) $(APU_INCLUDEDIR) $(top_srcdir)/modules/http
 
+# If export_files is a dependency here, but we remove it during this stage,
+# when exports.c is generated, make will not detect that export_files is no
+# longer here and deadlock.  So, export_files can't be a dependency of
+# delete-exports.
 delete-exports:
 	@if test -f exports.c; then \
-		    headers="`find $(EXPORT_FILES) -newer exports.c`" ; \
-		    if test -n "$$headers"; then \
-		        echo Found newer headers. Will rebuild exports.c. ; \
-		        echo rm -f exports.c ; \
-		        rm -f exports.c ; \
-		    fi \
+	    if test -f export_files; then \
+	        files=`cat export_files`; \
+	        headers="`find $$files -newer exports.c`"; \
+	        if test -n "$$headers"; then \
+	           echo Found newer headers. Will rebuild exports.c.; \
+	           echo rm -f exports.c export_files; \
+	           rm -f exports.c export_files; \
+	        fi; \
+	    else \
+	        rm -f exports.c; \
+	    fi; \
 	fi
 
-# full path required to keep BSD make happy
-$(top_builddir)/server/exports.c:
-	$(AWK) -f $(top_srcdir)/build/make_exports.awk $(EXPORT_FILES) > $@
+export_files:
+	tmp=export_files_unsorted.txt; \
+	rm -f $$tmp && touch $$tmp; \
+	for dir in $(EXPORT_DIRS); do \
+	    ls $$dir/*.h >> $$tmp; \
+	done; \
+	sort -u $$tmp > $@; \
+	rm -f $$tmp
 
-export_vars.h:
-	$(AWK) -f $(top_srcdir)/build/make_var_export.awk $(EXPORT_FILES) > $@
+# full path required to keep BSD make happy
+$(top_builddir)/server/exports.c: export_files
+	$(AWK) -f $(top_srcdir)/build/make_exports.awk `cat $?` > $@
+
+export_vars.h: export_files
+	$(AWK) -f $(top_srcdir)/build/make_var_export.awk `cat $?` > $@
 
 # wtf does this have to be explicit????
 exports.lo: exports.c
