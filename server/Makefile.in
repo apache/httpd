@@ -49,11 +49,7 @@ exports.c:
 	$(AWK) -f $(top_srcdir)/build/make_exports.awk $(EXPORT_FILES) > $@
 
 export_vars.h:
-	$(AWK) -f $(top_srcdir)/build/make_var_export.awk \
-		$(top_srcdir)/include/*.h \
-		$(top_srcdir)/os/$(OS_DIR)/*.h \
-		$(top_srcdir)/srclib/apr/include/*.h \
-		$(top_srcdir)/srclib/apr-util/include/*.h > $@
+	$(AWK) -f $(top_srcdir)/build/make_var_export.awk $(EXPORT_FILES) > $@
 
 # wtf does this have to be explicit????
 exports.lo: exports.c
