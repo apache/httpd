@@ -13,13 +13,21 @@ Release:
 RELEASE SHOWSTOPPERS:
 
     * Ralf: mod_so doesn't correctly initialise modules. For instance
-      the handlers of mod_perl are not initialised. An ap_init_modules() could
-      be done from mod_so but this is too much. IMHO we need an API function
-      ap_init_single_module() which does what ap_init_modules() does but only
-      for a particular module. Currently at least mod_perl is broken under the
-      DSO situation because of this missing init in mod_so. But perhaps
-      there are more modules which have the same problem. This should
-      be fixed for 1.3.1!
+      the handlers of mod_perl are not initialised. 
+      An ap_init_modules() could be done from mod_so but this is too much.
+
+      I've already debugged this up to ap_invoke_handler() and it correctly
+      sees the handlers from mod_perl ("perl-script") and actually runs them.
+      But under DSO situation it returns DECLINED while under non-DSO
+      situation it runs fine. Sure, its mod_perl's fault because its mod_perl
+      code which returns DECLINED.  But it definitely seems to be caused by a
+      missing init in mod_so under DSO situation. I've already asked Doug for
+      hints but he still has no clue.
+
+      Currently at least mod_perl is broken under the DSO situation because of
+      this missing init in mod_so. But perhaps there are more modules which
+      have the same problem. This should be fixed for 1.3.1 or at least found
+      out why it is happening!
 
 WIN32 1.3 RELEASE SHOWSTOPPERS:
 
