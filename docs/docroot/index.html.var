@@ -4,7 +4,7 @@ Content-type: text/html
 
 URI: index.html.cz
 Content-language: cz
-Content-type: text/html
+Content-type: text/html;charset=ISO-8859-2
 
 URI: index.html.de
 Content-language: de
@@ -42,21 +42,17 @@ URI: index.html.he.iso8859-8
 Content-language: he
 Content-type: text/html;charset=ISO-8859-8
 
+URI: index.html.hr
+Content-language: hr
+Content-type: text/html;charset=ISO-8859-2
+
 URI: index.html.it
 Content-language: it
 Content-type: text/html
 
 URI: index.html.ja.iso2022-jp
 Content-language: jp
-Content-type: text/html;charset=ISO-2022-JP (DUP by httpd-std.conf)
-
-URI: index.html.ja.jis
-Content-language: ja
-Content-type: text/html;charset=ISO-2022-JP (DUP by httpd-std.conf)
-
-URI: index.html.kr.iso-kr
-Content-language: kr
-Content-type: text/html (Missing in httpd-std.conf)
+Content-type: text/html;charset=ISO-2022-JP
 
 URI: index.html.kr.iso2022-kr
 Content-language: kr
@@ -64,11 +60,11 @@ Content-type: text/html;charset=ISO-2022-KR
 
 URI: index.html.ltz
 Content-language: ltz
-Content-type: text/html
+Content-type: text/html;charset=UTF-8
 
 URI: index.html.lu
 Content-language: lu
-Content-type: text/html
+Content-type: text/html;charset=UTF-8
 
 URI: index.html.nl
 Content-language: nl
@@ -82,9 +78,9 @@ URI: index.html.no
 Content-language: no
 Content-type: text/html
 
-URI: index.html.po.iso-pl
+URI: index.html.po.iso8859-2
 Content-language: pl
-Content-type: text/html  (Missing from httpd-std.conf!)
+Content-type: text/html;charset=ISO-8859-2
 
 URI: index.html.pt
 Content-language: pt
@@ -109,14 +105,6 @@ Content-type: text/html;charset=ISO-8859-5
 URI: index.html.ru.koi8-r
 Content-language: ru
 Content-type: text/html;charset=KOI8-r
-
-URI: index.html.ru.ucs2
-Content-language: ru
-Content-type: text/html;charset=ISO-10646-UCS-2
-
-URI: index.html.ru.ucs4
-Content-language: ru
-Content-type: text/html;charset=ISO-10646-UCS-4
 
 URI: index.html.ru.utf8
 Content-language: ru

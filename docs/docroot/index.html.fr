@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
 <HTML>
  <HEAD>
-  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta http-equiv="Content-Type" content="text/html">
   <TITLE>Page de test de l'installation d'Apache</TITLE>
  </HEAD>
 <!-- Background white, links blue (unvisited), navy (visited), red
