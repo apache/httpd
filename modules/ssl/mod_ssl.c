@@ -73,8 +73,6 @@
         AP_INIT_##args("SSL"#name, ssl_cmd_SSL##name, NULL, OR_##type, desc),
 #define AP_END_CMD { NULL }
 
-#define HTTP_ON_HTTPS_PORT "GET /mod_ssl:error:HTTP-request HTTP/1.0\r\n"
-
 static const command_rec ssl_config_cmds[] = {
 
     /*
@@ -363,47 +361,15 @@ int ssl_hook_process_connection(SSLFilterRec *pRec)
                  * borrowed from openssl_state_machine.c [mod_tls].
                  * TBD.
                  */
-                return 0;
+                return SSL_ERROR_WANT_READ;
             }
             else if (ERR_GET_REASON(ERR_peek_error()) == SSL_R_HTTP_REQUEST) {
                 /*
                  * The case where OpenSSL has recognized a HTTP request:
                  * This means the client speaks plain HTTP on our HTTPS port.
-                 * Hmmmm...  At least for this error we can be more friendly
-                 * and try to provide him with a HTML error page. We have only
-                 * one problem:OpenSSL has already read some bytes from the HTTP
-                 * request. So we have to skip the request line manually and
-                 * instead provide a faked one in order to continue the internal
-                 * Apache processing.
-                 *
+                 * Hmmmm...  Punt this out of here after removing our output
+                 * filter.
                  */
-                apr_bucket *e;
-                const char *str;
-                apr_size_t len;
-                /* log the situation */
-                ssl_log(c->base_server, SSL_LOG_ERROR|SSL_ADD_SSLERR,
-                        "SSL handshake failed: HTTP spoken on HTTPS port; "
-                        "trying to send HTML error page");
-
-                /* fake the request line */
-                e = apr_bucket_immortal_create(HTTP_ON_HTTPS_PORT, 
-                                               strlen(HTTP_ON_HTTPS_PORT));
-                APR_BRIGADE_INSERT_HEAD(pRec->pbbPendingInput, e);
-
-                APR_BRIGADE_FOREACH(e, pRec->pbbInput) {
-                    apr_bucket_read(e, &str, &len, APR_NONBLOCK_READ);
-                    if (len) {
-                        APR_BUCKET_REMOVE(e);
-                        APR_BRIGADE_INSERT_TAIL(pRec->pbbPendingInput, e);
-                        if ((strcmp(str, "\r\n") == 0) ||
-                            (ap_strstr_c(str, "\r\n\r\n"))) {
-                            break;
-                        }
-                    }
-                }
-                e = APR_BRIGADE_LAST(pRec->pbbInput);
-                APR_BUCKET_REMOVE(e);
-
                 ap_remove_output_filter(pRec->pOutputFilter);
                 return HTTP_BAD_REQUEST;
             }

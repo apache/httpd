@@ -442,8 +442,8 @@ typedef struct {
     BIO                *pbioWrite;
     ap_filter_t        *pInputFilter;
     ap_filter_t        *pOutputFilter;
-    apr_bucket_brigade *pbbInput;        /* encrypted input */
-    apr_bucket_brigade *pbbPendingInput; /* decrypted input */
+    apr_bucket_brigade *rawb;               /* encrypted input */
+    apr_bucket_brigade *b;                  /* decrypted input */
 } SSLFilterRec;
 
 typedef struct {

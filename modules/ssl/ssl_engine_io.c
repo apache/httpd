@@ -72,7 +72,7 @@
 
 static const char ssl_io_filter[] = "SSL/TLS Filter";
 
-static int ssl_io_hook_read(SSL *ssl, unsigned char *buf, int len)
+static int ssl_io_hook_read(SSL *ssl, char *buf, int len)
 {
     int rc;
 
@@ -189,75 +189,67 @@ static apr_status_t churn_output(SSLFilterRec *ctx)
 
 #define bio_is_renegotiating(bio) \
 (((int)BIO_get_callback_arg(bio)) == SSL_ST_RENEGOTIATE)
+#define HTTP_ON_HTTPS_PORT "GET /mod_ssl:error:HTTP-request HTTP/1.0\r\n"
 
-static apr_status_t churn_input(SSLFilterRec *pRec,
-        ap_input_mode_t eMode, apr_off_t *readbytes)
+static apr_status_t churn_input(SSLFilterRec *pRec, ap_input_mode_t eMode, 
+                                apr_off_t *readbytes)
 {
-    conn_rec *c = pRec->pInputFilter->c;
+    ap_filter_t *f = pRec->pInputFilter;
+    SSLFilterRec *ctx = pRec;
+    conn_rec *c = f->c;
     apr_pool_t *p = c->pool;
-    apr_bucket *pbktIn;
+    apr_bucket *e;
+    int found_eos = 0, n;
+    char buf[1024];
+    apr_status_t rv;
 
-    if(APR_BRIGADE_EMPTY(pRec->pbbInput)) {
-	ap_get_brigade(pRec->pInputFilter->next,pRec->pbbInput,eMode,readbytes);
-	if(APR_BRIGADE_EMPTY(pRec->pbbInput))
-	    return APR_EOF;
+    /* Flush the output buffers. */
+    churn_output(pRec);
+
+    /* We have something in the processed brigade.  Use that first. */
+    if (!APR_BRIGADE_EMPTY(ctx->b)) {
+        return APR_SUCCESS;
     }
 
-    APR_BRIGADE_FOREACH(pbktIn,pRec->pbbInput) {
-	const char *data;
-	apr_size_t len;
-	int n;
-	char buf[1024];
-	apr_status_t ret;
+    /* If we have nothing in the raw brigade, get some more. */
+    if (APR_BRIGADE_EMPTY(ctx->rawb)) {
+        rv = ap_get_brigade(f->next, ctx->rawb, eMode, readbytes);
 
-	if (APR_BUCKET_IS_EOS(pbktIn)) {
-	    break;
-	}
+        if (rv != APR_SUCCESS)
+            return rv;
 
-	/* read filter */
-	ret = apr_bucket_read(pbktIn, &data, &len, (apr_read_type_e)eMode);
+        /* Can't make any progress here. */
+        if (*readbytes == 0)
+        {
+            /* This means that we have nothing else to read ever. */
+            if (eMode == AP_MODE_BLOCKING) {
+                APR_BRIGADE_INSERT_TAIL(ctx->b, apr_bucket_eos_create());
+            }
+            return APR_SUCCESS;
+        }
+    }
 
-        if (!(eMode == AP_MODE_NONBLOCKING && APR_STATUS_IS_EAGAIN(ret))) {
-            /* allow retry */
-            APR_BUCKET_REMOVE(pbktIn);
+    /* Process anything we have that we haven't done so already. */
+    while (!APR_BRIGADE_EMPTY(ctx->rawb)) {
+        const char *data;
+        apr_size_t len;
+
+        e = APR_BRIGADE_FIRST(ctx->rawb);
+
+        if (APR_BUCKET_IS_EOS(e)) {
+            apr_bucket_delete(e);
+            found_eos = 1;
+            break;
         }
 
-	if (ret == APR_SUCCESS && len == 0 && eMode == AP_MODE_BLOCKING)
-	    ret = APR_EOF;
+        /* read from the bucket */
+        rv = apr_bucket_read(e, &data, &len, eMode);
 
-        if (len == 0) {
-            /* Lazy frickin browsers just reset instead of shutting down. */
-            /* also gotta handle timeout of keepalive connections */
-            if (ret == APR_EOF || APR_STATUS_IS_ECONNRESET(ret) ||
-                ret == APR_TIMEUP)
-            {
-                if (APR_BRIGADE_EMPTY(pRec->pbbPendingInput))
-		    return APR_EOF;
-		else
-		    /* Next time around, the incoming brigade will be empty,
-		     * so we'll return EOF then
-		     */
-		    return APR_SUCCESS;
-	    }
-		
-	    if (eMode != AP_MODE_NONBLOCKING)
-		ap_log_error(APLOG_MARK,APLOG_ERR,ret,NULL,
-			     "Read failed in ssl input filter");
+        if (rv != APR_SUCCESS)
+            return rv;
 
-	    if ((eMode == AP_MODE_NONBLOCKING) &&
-                (APR_STATUS_IS_SUCCESS(ret) || APR_STATUS_IS_EAGAIN(ret)))
-            {
-                /* In this case, we have data in the output bucket, or we were
-                 * non-blocking, so returning nothing is fine.
-                 */
-                return APR_SUCCESS;
-            }
-            else {
-                return ret;
-            }
-	}
-
-	n = BIO_write (pRec->pbioRead, data, len);
+        /* Write it to our BIO */
+	    n = BIO_write(pRec->pbioRead, data, len);
         
         if ((apr_size_t)n != len) {
             /* this should never really happen, since we're just writing
@@ -270,48 +262,81 @@ static apr_status_t churn_input(SSLFilterRec *pRec,
             return APR_ENOMEM;
         }
 
-        if (bio_is_renegotiating(pRec->pbioRead)) {
-            /* we're doing renegotiation in the access phase */
-            if (len >= *readbytes) {
-                /* trick ap_http_filter into leaving us alone */
-                *readbytes = 0;
-                break; /* SSL_renegotiate will take it from here */
-            }
+        /* If we reached here, we read the bucket successfully, so toss
+         * it from the raw brigade. */
+        apr_bucket_delete(e);
+
+    }
+
+    /* Flush the output buffers. */
+    churn_output(pRec);
+
+    /* Before we actually read any unencrypted data, go ahead and
+     * let ssl_hook_process_connection have a shot at it. 
+     */
+    rv = ssl_hook_process_connection(pRec);
+
+    /* Flush again. */
+    churn_output(pRec);
+
+    if (rv != APR_SUCCESS) {
+        /* if process connection says HTTP_BAD_REQUEST, we've seen a 
+         * HTTP on HTTPS error.
+         *
+         * The case where OpenSSL has recognized a HTTP request:
+         * This means the client speaks plain HTTP on our HTTPS port.
+         * Hmmmm...  At least for this error we can be more friendly
+         * and try to provide him with a HTML error page. We have only
+         * one problem:OpenSSL has already read some bytes from the HTTP
+         * request. So we have to skip the request line manually and
+         * instead provide a faked one in order to continue the internal
+         * Apache processing.
+         *
+         */
+        if (rv == HTTP_BAD_REQUEST) {
+            /* log the situation */
+            ssl_log(c->base_server, SSL_LOG_ERROR|SSL_ADD_SSLERR,
+                    "SSL handshake failed: HTTP spoken on HTTPS port; "
+                    "trying to send HTML error page");
+
+            /* fake the request line */
+            e = apr_bucket_immortal_create(HTTP_ON_HTTPS_PORT,
+                                           sizeof(HTTP_ON_HTTPS_PORT) - 1);
+            APR_BRIGADE_INSERT_TAIL(ctx->b, e);
+            e = apr_bucket_immortal_create(CRLF, sizeof(CRLF) - 1);
+            APR_BRIGADE_INSERT_TAIL(ctx->b, e);
+
+            return APR_SUCCESS;
         }
-
-        if ((ret = ssl_hook_process_connection(pRec)) != APR_SUCCESS) {
-            /* if this is the case, ssl connection has been shutdown
-             * and pRec->pssl has been freed
-             */
-            if (ret == HTTP_BAD_REQUEST) {
-                return APR_SUCCESS;
-            }
-            return ret;
+        if (rv == SSL_ERROR_WANT_READ) {
+            apr_off_t tempread = 1024;
+            return churn_input(pRec, eMode, &tempread);
         }
+        return rv;
+    }
 
-        /* pass along all of the current BIO */
-        while ((n = ssl_io_hook_read(pRec->pssl,
-                                     (unsigned char *)buf, sizeof(buf))) > 0)
-        {
-	    apr_bucket *pbktOut;
-	    char *pbuf;
+    /* try to pass along all of the current BIO to ctx->b */
+    /* FIXME: If there's an error and there was EOS, we may not really
+     * reach EOS.
+     */
+    while ((n = ssl_io_hook_read(pRec->pssl, buf, sizeof(buf))) > 0) {
+        char *pbuf;
 
-	    pbuf = apr_pmemdup(p, buf, n);
-	    /* XXX: should we use a heap bucket instead? Or a transient (in
-	     * which case we need a separate brigade for each bucket)?
-	     */
-	    pbktOut = apr_bucket_pool_create(pbuf, n, p);
-	    APR_BRIGADE_INSERT_TAIL(pRec->pbbPendingInput,pbktOut);
+        pbuf = apr_pmemdup(p, buf, n);
+        e = apr_bucket_pool_create(pbuf, n, p);
+        APR_BRIGADE_INSERT_TAIL(ctx->b, e);
 
-           /* Once we've read something, we can move to non-blocking mode (if
-            * we weren't already).
-            */
-            eMode = AP_MODE_NONBLOCKING;
-	}
+        /* Flush the output buffers. */
+        churn_output(pRec);
+    }
 
-	ret=churn_output(pRec);
-	if(ret != APR_SUCCESS)
-	    return ret;
+    if (n < 0 && errno == EINTR && APR_BRIGADE_EMPTY(ctx->b)) {
+        apr_off_t tempread = 1024;
+        return churn_input(pRec, eMode, &tempread);
+    }
+
+    if (found_eos) {
+        APR_BRIGADE_INSERT_TAIL(ctx->b, apr_bucket_eos_create());
     }
 
     return churn_output(pRec);
@@ -324,19 +349,36 @@ static apr_status_t ssl_io_filter_Output(ap_filter_t *f,
     apr_bucket *bucket;
     apr_status_t ret = APR_SUCCESS;
 
-    APR_BRIGADE_FOREACH(bucket, bb) {
+    while (!APR_BRIGADE_EMPTY(bb)) {
         const char *data;
         apr_size_t len, n;
 
-        if (APR_BUCKET_IS_EOS(bucket)) {
-            if ((ret = churn_output(ctx)) != APR_SUCCESS) {
-                ap_log_error(APLOG_MARK, APLOG_ERR, ret, NULL,
-                             "Error in churn_output");
-            }
-            break;
-        }
+        bucket = APR_BRIGADE_FIRST(bb);
 
-        if (!APR_BUCKET_IS_FLUSH(bucket)) {
+        /* If it is a flush or EOS, we need to pass this down. 
+         * These types do not require translation by OpenSSL.  
+         */
+        if (APR_BUCKET_IS_EOS(bucket) || APR_BUCKET_IS_FLUSH(bucket)) {
+            apr_bucket_brigade *outbb;
+
+            if ((ret = churn_output(ctx)) != APR_SUCCESS) {
+                return ret;
+            }
+
+            outbb = apr_brigade_create(f->c->pool);
+            APR_BUCKET_REMOVE(bucket);
+            APR_BRIGADE_INSERT_TAIL(outbb, bucket);
+            ret = ap_pass_brigade(f->next, outbb);
+            if (ret != APR_SUCCESS) {
+                return ret;
+            }
+
+            /* By definition, nothing can come after EOS. */
+            if (APR_BUCKET_IS_EOS(bucket)) {
+                break;
+            }
+        }
+        else {
             /* read filter */
             apr_bucket_read(bucket, &data, &len, APR_BLOCK_READ);
 
@@ -359,15 +401,14 @@ static apr_status_t ssl_io_filter_Output(ap_filter_t *f,
                 ret = APR_EINVAL;
                 break;
             }
-        }
-        /* else fallthrough to flush the current wbio
-         * likely triggered by renegotiation in ssl_hook_Access
-         */
 
-        /* churn the state machine */
-        if ((ret = churn_output(ctx)) != APR_SUCCESS) {
-            break;
+            /* churn the state machine */
+            if ((ret = churn_output(ctx)) != APR_SUCCESS) {
+                break;
+            }
         }
+
+        apr_bucket_delete(bucket);
     }
 
     apr_brigade_destroy(bb);
@@ -376,23 +417,101 @@ static apr_status_t ssl_io_filter_Output(ap_filter_t *f,
 
 static apr_status_t ssl_io_filter_Input(ap_filter_t *f,
                                         apr_bucket_brigade *pbbOut,
-                                        ap_input_mode_t eMode,
+                                        ap_input_mode_t mode,
                                         apr_off_t *readbytes)
 {
     apr_status_t ret;
-    SSLFilterRec *pRec = f->ctx;
+    SSLFilterRec *ctx = f->ctx;
+    apr_status_t rv;
+    apr_bucket *e;
+    apr_off_t tempread;
 
-    /* XXX: we don't currently support peek */
-    if (eMode == AP_MODE_PEEK) {
+    /* XXX: we don't currently support peek or readbytes == -1 */
+    if (mode == AP_MODE_PEEK || *readbytes == -1) {
         return APR_ENOTIMPL;
     }
 
-    /* churn the state machine */
-    ret = churn_input(pRec, eMode, readbytes);
-    if (ret != APR_SUCCESS)
-	return ret;
+    /* Return the requested amount or less. */
+    if (*readbytes)
+    {
+        apr_bucket_brigade *newbb;
 
-    APR_BRIGADE_CONCAT(pbbOut, pRec->pbbPendingInput);
+        /* churn the state machine */
+        ret = churn_input(ctx, mode, readbytes);
+
+        if (ret != APR_SUCCESS)
+	        return ret;
+
+        /* ### This is bad. */
+        APR_BRIGADE_NORMALIZE(ctx->b);
+
+        apr_brigade_length(ctx->b, 0, &tempread);
+
+        if (*readbytes < tempread) {
+            tempread = *readbytes;
+        } 
+        else {
+            *readbytes = tempread;
+        }
+        
+        apr_brigade_partition(ctx->b, tempread, &e);
+        newbb = apr_brigade_split(ctx->b, e);
+        APR_BRIGADE_CONCAT(pbbOut, ctx->b);
+        APR_BRIGADE_CONCAT(ctx->b, newbb);
+
+        return APR_SUCCESS;
+    }
+   
+    /* Readbytes == 0 implies we only want a LF line. 
+     * 1024 seems like a good number for now. */
+    if (APR_BRIGADE_EMPTY(ctx->b)) {
+        tempread = 1024; 
+        rv = churn_input(ctx, mode, &tempread);
+        if (rv != APR_SUCCESS)
+            return rv;
+        /* We have already blocked. */
+        mode = AP_MODE_NONBLOCKING;
+    }
+    while (!APR_BRIGADE_EMPTY(ctx->b)) {
+        const char *pos, *str;
+        apr_size_t len;
+
+        e = APR_BRIGADE_FIRST(ctx->b);
+
+        /* Sure, we'll call this is a line.  Whatever. */
+        if (APR_BUCKET_IS_EOS(e)) {
+            APR_BUCKET_REMOVE(e);
+            APR_BRIGADE_INSERT_TAIL(pbbOut, e);
+            break;
+        }
+
+        if ((rv = apr_bucket_read(e, &str, &len, 
+                                  AP_MODE_NONBLOCKING)) != APR_SUCCESS) {
+            return rv;
+        }
+
+        pos = memchr(str, APR_ASCII_LF, len);
+        /* We found a match. */
+        if (pos != NULL) {
+            apr_bucket_split(e, pos - str + 1);
+            APR_BUCKET_REMOVE(e);
+            APR_BRIGADE_INSERT_TAIL(pbbOut, e);
+            *readbytes += pos - str;
+            return APR_SUCCESS;
+        }
+        APR_BUCKET_REMOVE(e);
+        APR_BRIGADE_INSERT_TAIL(pbbOut, e);
+        *readbytes += len;
+
+        /* Hey, we're about to be starved - go fetch more data. */
+        if (APR_BRIGADE_EMPTY(ctx->b)) {
+            tempread = 1024;
+            ret = churn_input(ctx, mode, &tempread);
+            if (ret != APR_SUCCESS)
+	            return ret;
+            mode = AP_MODE_NONBLOCKING;
+        }
+    }
 
     return APR_SUCCESS;
 }
@@ -423,8 +542,8 @@ void ssl_io_filter_init(conn_rec *c, SSL *ssl)
     filter = apr_pcalloc(c->pool, sizeof(SSLFilterRec));
     filter->pInputFilter    = ap_add_input_filter(ssl_io_filter, filter, NULL, c);
     filter->pOutputFilter   = ap_add_output_filter(ssl_io_filter, filter, NULL, c);
-    filter->pbbInput        = apr_brigade_create(c->pool);
-    filter->pbbPendingInput = apr_brigade_create(c->pool);
+    filter->b               = apr_brigade_create(c->pool);
+    filter->rawb            = apr_brigade_create(c->pool);
     filter->pbioRead        = BIO_new(BIO_s_mem());
     filter->pbioWrite       = BIO_new(BIO_s_mem());
     SSL_set_bio(ssl, filter->pbioRead, filter->pbioWrite);
