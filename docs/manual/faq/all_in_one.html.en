@@ -59,7 +59,7 @@
       <dl>
       <dt>Check the errorlog!</dt>
       <dd>Apache tries to be helpful when it encounters a problem. In many
-      cases, it will provide some details by writing one or messages to the
+      cases, it will provide some details by writing one or more messages to the
       server error log. Sometimes this is enough for you to diagnose &amp; fix
       the problem yourself (such as file permissions or the like). The default
       location of the error log is
