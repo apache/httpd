@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Modify ap_get_client_block() to note if it has seen EOS.
+     [Justin Erenkrantz]
+
   *) The bucket brigades subsystem now honors the MaxMemFree setting.
      [Cliff Woolley, Jean-Jacques Clar]
 

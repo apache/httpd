@@ -1,5 +1,5 @@
 APACHE 2.1 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/08/06 04:02:34 $]
+Last modified at [$Date: 2003/08/31 16:14:38 $]
 
 Release [NOTE that only Alpha/Beta releases occur in 2.1 development]:
 
@@ -27,9 +27,6 @@ RELEASE SHOWSTOPPERS:
 
     * the edge connection filter cannot be removed 
       http://marc.theaimsgroup.com/?l=apache-httpd-dev&m=105366252619530&w=2
-
-    * bug in ap_get_client_block (wrong handling of EOS)
-      http://marc.theaimsgroup.com/?l=apache-httpd-dev&m=105281649228629&w=2
 
 CURRENT VOTES:
 
