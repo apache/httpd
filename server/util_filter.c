@@ -53,6 +53,7 @@
  */
 
 #include "httpd.h"
+#include "http_log.h"
 #include "util_filter.h"
 
 /* ### make this visible for direct manipulation?
@@ -108,8 +109,7 @@ AP_DECLARE(void) ap_register_input_filter(const char *name,
 {
     ap_filter_func f;
     f.in_func = filter_func;
-    register_filter(name, f, ftype, 
-                    &registered_input_filters);
+    register_filter(name, f, ftype, &registered_input_filters);
 }                                                                    
 
 AP_DECLARE(void) ap_register_output_filter(const char *name,
@@ -118,8 +118,7 @@ AP_DECLARE(void) ap_register_output_filter(const char *name,
 {
     ap_filter_func f;
     f.out_func = filter_func;
-    register_filter(name, f, ftype, 
-                    &registered_output_filters);
+    register_filter(name, f, ftype, &registered_output_filters);
 }
 
 AP_DECLARE(void) ap_add_input_filter(const char *name, void *ctx, 
@@ -150,9 +149,12 @@ AP_DECLARE(void) ap_add_input_filter(const char *name, void *ctx,
                 fscan->next = f;
             }
 
-            break;
+            return;
         }
     }
+
+    ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, NULL,
+                 "an unknown input filter was not added: %s", name);
 }
 
 AP_DECLARE(void) ap_remove_output_filter(ap_filter_t *f)
@@ -208,9 +210,12 @@ AP_DECLARE(void) ap_add_output_filter(const char *name, void *ctx,
                 fscan->next = f;
             }
 
-            break;
+            return;
         }
     }
+
+    ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, NULL,
+                 "an unknown output filter was not added: %s", name);
 }
 
 /* 
