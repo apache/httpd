@@ -39,6 +39,7 @@
   <xsl:include href="manualpage.xsl"/>
   <xsl:include href="synopsis.xsl"/>
   <xsl:include href="sitemap.xsl"/>
+  <xsl:include href="quickreference.xsl"/>
 
   <!--                                                            -->
   <!--    Utility templates for constructing pages                -->
