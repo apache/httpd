@@ -26,7 +26,7 @@ Release:
            o SunOS 4.1.3 ........................ Ok (Ralf S. Engelschall)
            o Digital Unix 4.0D / gcc  & DEC C ... Ok (Charles Randall)
            o Digital Unix 4.0B / DEC C .......... Ok (Charles Randall)
-           o IRIX 6.2 ........................... ?? (??)
+           o IRIX 6.2 ........................... Ok (Dan Jacobowitz)
            o OS\2 ............................... Ok (Brian Havard)
            o Windows NT (general)................ Ok (Bill Stoddard)
            o Netwinder .......................... Fails (Rasmus Lerdorf) [NOT CRITICAL]
