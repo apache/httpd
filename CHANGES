@@ -1,5 +1,8 @@
 Changes with Apache 2.0.12-dev
 
+  *) Use "Basic" authentication instead of "basic" in ab, as the spec
+     says we should.  [Andre Breiler <andre.breiler@rd.bbc.co.uk>]
+
   *) Fix a seg fault in mod_userdir.c.  We used to use the pw structure
      without ever filling it out.  This fixes PR 7271.
      [Taketo Kabe <kabe@sra-tohoku.co.jp> and 
