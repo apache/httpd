@@ -72,6 +72,8 @@ my $CFG_INCLUDEDIR = eval qq("$includedir");
 my $CFG_CC         = get_vars("CC");
 my $libexecdir     = get_vars("libexecdir");
 my $CFG_LIBEXECDIR = eval qq("$libexecdir");
+my $bindir        = get_vars("bindir");
+my $CFG_SBINDIR    = eval qq("$bindir");
 
 ##
 ##  parse argument line
@@ -249,8 +251,20 @@ sub get_vars {
             }
         }
         if (not $ok) {
-            printf(STDERR "apxs:Error: Invalid query string `%s'\n", $arg);
-            exit(1);
+            foreach $name (qw(
+                TARGET CC CFLAGS CFLAGS_SHLIB LD_SHLIB LDFLAGS_SHLIB LIBS_SHLIB
+                PREFIX SBINDIR INCLUDEDIR LIBEXECDIR SYSCONFDIR
+                )) {
+                if ($arg eq $name or $arg eq lc($name)) {
+                    my $val = eval "\$CFG_$name";
+                    $result .= eval qq("${val}") . ";;";
+                    $ok = 1;
+                }
+            }
+            if (not $ok) {
+                printf(STDERR "apxs:Error: Invalid query string `%s'\n", $arg);
+                exit(1);
+            }
         }
     }
     $result =~ s|;;$||;
@@ -320,7 +334,7 @@ if ($opt_q) {
     ##  QUERY INFORMATION 
     ##
     my $result = get_vars(@args);
-    print "$result\n";
+    print "$result";
 }
 
 if ($opt_c) {
