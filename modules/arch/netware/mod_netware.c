@@ -163,6 +163,7 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
     }
 
     cmd_only = apr_pstrdup(p, *cmd);
+    e_info->cmd_type = APR_PROGRAM;
 
     /* truncate any arguments from the cmd */
     for (ptr = cmd_only; *ptr && (*ptr != ' '); ptr++);
