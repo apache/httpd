@@ -80,6 +80,13 @@ example:</p>
 <p>Note that you can use <code>*</code> and <code>?</code> as wild-card
 characters.</p>
 
+<p>You also might need ServerAlias if you are serving local users who
+do not always include the domain name.  For example, if local users are
+familiar with typing "www" or "www.physics" then you will need to add
+<code>ServerAlias www www.physics</code>.  It isn't possible for the
+server to know what domain the client uses for their name resolution
+because the client doesn't provide that information in the request.</p>
+
 <h2>Security Considerations</h2>
 
 Apache allows all virtual hosts to be made accessible via the
