@@ -91,6 +91,9 @@ Changes with Apache 1.2.1
 
   *) PORT: Support for Maxion/OS SVR4.2 Real Time Unix. [no name given] PR#383
 
+  *) PORT: Workaround for AIX 3.x compiler bug in http_bprintf.c.  
+     [Marc Slemko] PR#725
+
 Changes with Apache 1.2
 
 Changes with Apache 1.2b11
