@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/07/21 23:52:39 $]
+Last modified at [$Date: 2003/07/22 19:05:05 $]
 
 Release:
 
@@ -69,7 +69,7 @@ PATCHES TO PORT FROM 2.1
       spans buckets or brigades, particularly when the start or end sequence
       spans a bucket or when conditional text spans a brigade.
       modules/filters/mod_include.c r1.234
-      +1: jwoolley, nd
+      +1: jwoolley, nd, brianp
 
     * mod_rewrite.c: Fix mod_rewrite's support of the [P] option to send
       rewritten request using "proxy:". The code was adding multiple "proxy:"
