@@ -712,7 +712,11 @@ int ssl_hook_Access(request_rec *r)
             ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server,
                          "Awaiting re-negotiation handshake");
 
-            SSL_renegotiate(ssl);
+            /* XXX: Should replace SSL_set_state with SSL_renegotiate(ssl);
+             * However, this causes failures in perl-framework currently, 
+             * perhaps pre-test if we have already negotiated?
+             */
+            SSL_set_state(ssl, SSL_ST_ACCEPT);
             SSL_do_handshake(ssl);
 
             if (SSL_get_state(ssl) != SSL_ST_OK) {
