@@ -1,10 +1,10 @@
 APACHE 1.3 STATUS:						-*-text-*-
-  Last modified at [$Date: 2001/05/10 04:07:54 $]
+  Last modified at [$Date: 2001/05/14 05:14:20 $]
 
 Release:
 
    1.3.20: In development - security exploit demands a release ASAP.
-           Will offers to RM, tag and roll 5/10 9:00pm PST.
+           Will offers to RM, tag and roll, suggests 5/17.
    1.3.19: Tagged and rolled Feb 26, 2001. Announced Mar 01, 2001.
    1.3.18: Not released.
              (Pulled because of an incorrect unescaping fix. t/r Feb 19, 2001)
@@ -35,6 +35,9 @@ Release:
     2.0  : In alpha development, see httpd-2.0 repository
 
 RELEASE SHOWSTOPPERS:
+
+    ab is broken on many platforms.  Dirk has offered patch, it does not
+    apply cleanly.
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
