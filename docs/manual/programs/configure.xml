@@ -537,7 +537,7 @@
 
         <dt><code>--enable-speling</code></dt>
         <dd>Enable the functionality to correct common URL misspellings, which
-          is provided by <module>mod_spelling</module>.</dd>
+          is provided by <module>mod_speling</module>.</dd>
 
         <dt><code>--enable-ssl</code></dt>
         <dd>Enable support for SSL/TLS provided by
