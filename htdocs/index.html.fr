@@ -12,7 +12,7 @@
   ALINK="#FF0000"
  >
   <H1 ALIGN="CENTER">
-   Ca fonctionne&nbsp;!  Le serveur web Apache est install&eacute; sur
+   &Ccedil;a fonctionne&nbsp;!  Le serveur web Apache est install&eacute; sur
    ce site&nbsp;!
   </H1>
   <P>
