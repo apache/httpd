@@ -4,7 +4,11 @@
 %common;
 
 <!-- <manualpage> is the root element -->
-<!ELEMENT manualpage (title, summary?, seealso*, section*)>
+<!ELEMENT manualpage (relativepath, title, summary?, seealso*, section*)>
+
+<!-- The path to the root of the documentation from the current doc -->
+<!ELEMENT relativepath EMPTY>
+<!ATTLIST relativepath href CDATA #REQUIRED >
 
 <!-- the lists of related modules and/or related directives -->
 <!ELEMENT related (modulelist | directivelist)+>
