@@ -131,7 +131,7 @@ static int set_group_privs(void)
 	    uid_t uid = atoi(&beosd_config.user_name[1]);
 
 	    if ((ent = getpwuid(uid)) == NULL) {
-		ap_log_error(APLOG_MARK, APLOG_ALERT, NULL,
+		ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
 			 "getpwuid: couldn't determine user name from uid %u, "
 			 "you probably need to modify the User directive",
 			 (unsigned)uid);
@@ -144,7 +144,7 @@ static int set_group_privs(void)
 	    name = beosd_config.user_name;
 
 	if (setgid(beosd_config.group_id) == -1) {
-	    ap_log_error(APLOG_MARK, APLOG_ALERT, NULL,
+	    ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
 			"setgid: unable to set group id to Group %u",
 			(unsigned)beosd_config.group_id);
 	    return -1;
@@ -153,7 +153,7 @@ static int set_group_privs(void)
 	/* Reset `groups' attributes. */
 
 	if (initgroups(name, beosd_config.group_id) == -1) {
-	    ap_log_error(APLOG_MARK, APLOG_ALERT, NULL,
+	    ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
 			"initgroups: unable to set groups for User %s "
 			"and Group %u", name, (unsigned)beosd_config.group_id);
 	    return -1;
@@ -172,7 +172,7 @@ int beosd_setup_child(void)
     /* Only try to switch if we're running as root */
     if (!geteuid() && (
 	setuid(beosd_config.user_id) == -1)) {
-	ap_log_error(APLOG_MARK, APLOG_ALERT, NULL,
+	ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
 		    "setuid: unable to change uid");
 	return -1;
     }
