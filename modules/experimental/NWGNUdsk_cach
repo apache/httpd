@@ -3,7 +3,7 @@
 #
 
 SUBDIRS = \
-	$(EOLIST)
+	$(EOLIST) 
 
 #
 # Get the 'head' of the build environment.  This includes default targets and
@@ -14,7 +14,6 @@ include $(AP_WORK)\build\NWGNUhead.inc
 
 #
 # build this level's files
-
 #
 # Make sure all needed macro's are defined
 #
@@ -24,6 +23,15 @@ include $(AP_WORK)\build\NWGNUhead.inc
 # INCDIRS
 #
 XINCDIRS	+= \
+			$(AP_WORK)/srclib/apr/include \
+			$(AP_WORK)/srclib/include/arch/NetWare \
+			$(AP_WORK)/srclib/apr-util/include \
+			$(AP_WORK)/include \
+			$(AP_WORK)/os/NetWare \
+			$(AP_WORK)/server/mpm/NetWare \
+			$(AP_WORK)/srclib/pcre \
+			../main \
+			$(NWOS) \
 			$(EOLIST)
 
 #
@@ -95,41 +103,41 @@ endif
 # This is used by the link 'name' directive to name the nlm.  If left blank
 # TARGET_nlm (see below) will be used.
 #
-NLM_NAME		=
+NLM_NAME		= dsk_cach
 
 #
-# This is used by the link '-desc ' directive.
+# This is used by the link '-desc ' directive. 
 # If left blank, NLM_NAME will be used.
 #
-NLM_DESCRIPTION	=
+NLM_DESCRIPTION	= Apache Memory Cache module
 
 #
 # This is used by the '-threadname' directive.  If left blank,
 # NLM_NAME Thread will be used.
 #
-NLM_THREAD_NAME	=
+NLM_THREAD_NAME	= dsk_cach
 
 #
-# If this is specified, it will override VERSION value in
+# If this is specified, it will override VERSION value in 
 # $(AP_WORK)\build\NWGNUenvironment.inc
 #
-NLM_VERSION		=
+NLM_VERSION		= 
 
 #
 # If this is specified, it will override the default of 64K
 #
-NLM_STACK_SIZE	=
-
+NLM_STACK_SIZE	= 65536
+ 
 
 #
 # If this is specified it will be used by the link '-entry' directive
 #
-NLM_ENTRY_SYM	=
+NLM_ENTRY_SYM	= _LibCPrelude
 
 #
 # If this is specified it will be used by the link '-exit' directive
 #
-NLM_EXIT_SYM	=
+NLM_EXIT_SYM	= _LibCPostlude
 
 #
 # If this is specified it will be used by the link '-check' directive
@@ -137,25 +145,25 @@ NLM_EXIT_SYM	=
 NLM_CHECK_SYM	=
 
 #
-# If these are specified it will be used by the link '-flags' directive
+# If this is specified it will be used by the link '-flags' directive
 #
-NLM_FLAGS		=
-
+NLM_FLAGS		= AUTOUNLOAD, PSEUDOPREEMPTION
+ 
 #
-# If this is specified it will be linked in with the XDCData option in the def
+# If this is specified it will be linked in with the XDCData option in the def 
 # file instead of the default of $(NWOS)/apache.xdc.  XDCData can be disabled
 # by setting APACHE_UNIPROC in the environment
 #
-XDCDATA         =
+XDCDATA         = 
+
+#
+# Declare all target files (you must add your files here)
+#
 
 #
 # If there is an NLM target, put it here
 #
 TARGET_nlm = \
-	$(OBJDIR)/deflate.nlm \
-	$(OBJDIR)/example.nlm \
-	$(OBJDIR)/mod_cach.nlm \
-	$(OBJDIR)/mem_cach.nlm \
 	$(OBJDIR)/dsk_cach.nlm \
 	$(EOLIST)
 
@@ -170,6 +178,7 @@ TARGET_lib = \
 # Paths must all use the '/' character
 #
 FILES_nlm_objs = \
+	$(OBJDIR)/mod_disk_cache.o \
 	$(EOLIST)
 
 #
@@ -177,6 +186,7 @@ FILES_nlm_objs = \
 # These will be added as a library command in the link.opt file.
 #
 FILES_nlm_libs = \
+   	libcpre.o \
 	$(EOLIST)
 
 #
@@ -184,13 +194,15 @@ FILES_nlm_libs = \
 # These will be added as a module command in the link.opt file.
 #
 FILES_nlm_modules = \
+	Apache2 \
+	Libc \
 	$(EOLIST)
 
 #
 # If the nlm has a msg file, put it's path here
 #
 FILE_nlm_msg =
-
+ 
 #
 # If the nlm has a hlp file put it's path here
 #
@@ -205,15 +217,26 @@ FILE_nlm_copyright =
 # Any additional imports go here
 #
 FILES_nlm_Ximports = \
+	@libc.imp \
+	@$(APR)/aprlib.imp \
+	@httpd.imp \
+	generate_name \
+	ap_cache_hex2usec \
+	ap_cache_usec2hex \
+	cache_hook_create_entity \
+	cache_hook_open_entity \
+	cache_hook_remove_url \
 	$(EOLIST)
-
-#
+ 
+#   
 # Any symbols exported to here
 #
 FILES_nlm_exports = \
+	disk_cache_module \
 	$(EOLIST)
-
-#
+	
+#	@cache.imp \
+#   
 # These are the OBJ files needed to create the LIB target above.
 # Paths must all use the '/' character
 #
@@ -229,12 +252,12 @@ libs :: $(OBJDIR) $(TARGET_lib)
 nlms :: libs $(TARGET_nlm)
 
 #
-# Updated this target to create necessary directories and copy files to the
+# Updated this target to create necessary directories and copy files to the 
 # correct place.  (See $(AP_WORK)\build\NWGNUhead.inc for examples)
 #
 install :: nlms FORCE
-	copy $(OBJDIR)\*.nlm $(INSTALL)\Apache2\modules\*.*
-
+	copy $(OBJDIR)\mod_dav.nlm $(INSTALL)\Apache2\modules\*.*
+    
 #
 # Any specialized rules here
 #
@@ -246,3 +269,5 @@ install :: nlms FORCE
 
 include $(AP_WORK)\build\NWGNUtail.inc
 
+
+	
