@@ -1339,7 +1339,7 @@ static const char *get_hash(request_rec *r, const char *user,
     apr_status_t sts;
 
     if ((sts = ap_pcfg_openfile(&f, r->pool, auth_pwfile)) != APR_SUCCESS) {
-	ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
+	ap_log_rerror(APLOG_MARK, APLOG_ERR, sts, r,
 		      "Digest: Could not open password file: %s", auth_pwfile);
 	return NULL;
     }
@@ -1775,7 +1775,7 @@ static apr_table_t *groups_for_user(request_rec *r, const char *user,
     apr_status_t sts;
 
     if ((sts = ap_pcfg_openfile(&f, r->pool, grpfile)) != APR_SUCCESS) {
-	ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
+	ap_log_rerror(APLOG_MARK, APLOG_ERR, sts, r,
 		      "Digest: Could not open group file: %s", grpfile);
 	return NULL;
     }
