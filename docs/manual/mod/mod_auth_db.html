@@ -21,6 +21,16 @@ Berkeley DB files. It is an alternative to <A HREF="mod_auth_dbm.html">DBM</A>
 files for those systems which support DB and not DBM. It is only
 available in Apache 1.1 and later.
 
+<P>
+On some BSD systems (e.g. FreeBSD and NetBSD) dbm is automatically mapped to
+Berkeley DB. You can use either <A HREF="mod_auth_dbm.html">mod_auth_dbm</A>
+or mod_auth_db. The latter makes it more obvious that it's Berkeley DB.  On
+other platforms where you want to use the DB library you usually have to
+install it first. See <A
+HREF="http://www.sleepycat.com/">http://www.sleepycat.com/</A> for the
+distribution. The interface this module uses is the one from DB version 1.85
+and 1.86, but DB version 2.x can also be used when compatibility mode is
+enabled.
 
 <MENU>
 <LI><A HREF="#authdbgroupfile">AuthDBGroupFile</A>
