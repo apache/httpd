@@ -53,20 +53,21 @@ available</dd>
 more than one multi-processing module (MPM)</dd>
 <dt><a href="beos.html">beos</a></dt><dd>Este módulo de muiltiprocesamiento está
 optimizado para BeOS.</dd>
-<dt><a href="leader.html">leader</a></dt><dd>An experimental variant of the standard <code class="module"><a href="../mod/worker.html">worker</a></code>
-MPM</dd>
+<dt><a href="leader.html">leader</a></dt><dd>Variante experimental del MPM estándar
+<code class="module"><a href="../mod/worker.html">worker</a></code></dd>
 <dt><a href="mpm_netware.html">mpm_netware</a></dt><dd>Multi-Processing Module implementing an exclusively threaded web
     server optimized for Novell NetWare</dd>
 <dt><a href="mpmt_os2.html">mpmt_os2</a></dt><dd>Hybrid multi-process, multi-threaded MPM for OS/2</dd>
 <dt><a href="perchild.html">perchild</a></dt><dd>Multi-Processing Module allowing for daemon processes serving
 requests to be assigned a variety of different userids</dd>
-<dt><a href="prefork.html">prefork</a></dt><dd>Implements a non-threaded, pre-forking web server</dd>
+<dt><a href="prefork.html">prefork</a></dt><dd>Implementa un servidor web pre-forking y no
+hebrado</dd>
 <dt><a href="threadpool.html">threadpool</a></dt><dd>Yet another experimental variant of the standard
 <code class="module"><a href="../mod/worker.html">worker</a></code> MPM</dd>
 <dt><a href="mpm_winnt.html">mpm_winnt</a></dt><dd>This Multi-Processing Module is optimized for Windows
 NT.</dd>
-<dt><a href="worker.html">worker</a></dt><dd>Multi-Processing Module implementing a hybrid
-    multi-threaded multi-process web server</dd>
+<dt><a href="worker.html">worker</a></dt><dd>Módulo de MultiProcesamiento que implementa un
+servidor web híbrido multihebra-multiproceso</dd>
 </dl></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section"><h2><a id="other" name="other">Otros Módulos</a></h2>

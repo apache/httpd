@@ -23,6 +23,7 @@
 <div class="toplang">
 <p><span>Verfügbare Sprachen: </span><a href="../de/mod/prefork.html" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/prefork.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/mod/prefork.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../ja/mod/prefork.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Beschreibung:</a></th><td>Implementiert einen im Voraus forkenden Webserver ohne
@@ -183,6 +184,7 @@
 <div class="bottomlang">
 <p><span>Verfügbare Sprachen: </span><a href="../de/mod/prefork.html" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/prefork.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/mod/prefork.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../ja/mod/prefork.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 1999-2004 The Apache Software Foundation.<br />Lizenziert unter der <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>

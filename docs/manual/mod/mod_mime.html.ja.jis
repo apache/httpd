@@ -490,7 +490,7 @@ Content-Type: text/plain; charset=ISO-8859-2
     <p>AddType ディレクティブは、
     与えられた拡張子を指定されたコンテントタイプにマップします。
     <em>MIME-type</em> は拡張子 <em>extension</em>
-    を含んだドキュメントに使用する MIME タイプです。
+    を含んだドキュメントに使用する MIME タイプです。
     この新しいマッピングは既にあるマッピングに追加され、同じ拡張子
     <em>extension</em> のためのマッピングを上書きします。
     このディレクティブは MIME タイプファイル (<code class="directive"><a href="#typesconfig">TypesConfig</a></code> ディレクティブを参照)

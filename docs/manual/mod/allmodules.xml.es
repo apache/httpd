@@ -59,12 +59,12 @@
   <modulefile>mod_vhost_alias.xml</modulefile>
   <modulefile>beos.xml.es</modulefile>
   <modulefile>mpm_common.xml</modulefile>
-  <modulefile>leader.xml</modulefile>
+  <modulefile>leader.xml.es</modulefile>
   <modulefile>mpm_netware.xml</modulefile>
   <modulefile>mpmt_os2.xml</modulefile>
   <modulefile>perchild.xml</modulefile>
-  <modulefile>prefork.xml</modulefile>
+  <modulefile>prefork.xml.es</modulefile>
   <modulefile>threadpool.xml</modulefile>
   <modulefile>mpm_winnt.xml</modulefile>
-  <modulefile>worker.xml</modulefile>
+  <modulefile>worker.xml.es</modulefile>
 </modulefilelist>
