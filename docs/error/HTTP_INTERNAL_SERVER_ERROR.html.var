@@ -110,6 +110,30 @@ Body:----------fr--
 <!--#include virtual="include/bottom.html" -->   
 ----------fr--
 
+Content-language: nl
+Content-type: text/html
+Body:----------nl--
+<!--#set var="TITLE" value="Server fout!" -->
+<!--#include virtual="include/top.html" -->
+
+  <!--#if expr="$REDIRECT_ERROR_NOTES" -->
+
+    <!--#include virtual="include/spacer.html" -->
+
+    Foutbericht :
+    <BR><!--#echo var="REDIRECT_ERROR_NOTES" -->
+
+  <!--#else -->
+
+    De server kreeg een interne fout en kon
+    uw vraag niet beantwoorden. De server is overbelast
+    of er was een fout in een CGI script.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------nl--
+
 Content-language: sv
 Content-type: text/html
 Body:----------sv--

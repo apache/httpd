@@ -45,6 +45,17 @@ Body:----------fr--
 <!--#include virtual="include/bottom.html" -->
 ----------fr--
 
+Content-language: nl
+Content-type: text/html
+Body:----------nl--
+<!--#set var="TITLE" value="Startvoorwaarde niet voldaan!" -->
+<!--#include virtual="include/top.html" -->
+
+  Een startvoorwaarde werd niet voldaan bij verwerking van de vraag naar de URL.
+
+<!--#include virtual="include/bottom.html" -->
+----------nl--
+
 Content-language: sv
 Content-type: text/html
 Body:----------sv--

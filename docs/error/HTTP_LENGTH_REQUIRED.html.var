@@ -36,6 +36,18 @@ Body:----------fr--
 <!--#include virtual="include/bottom.html" -->
 ----------fr--
 
+Content-language: nl
+Content-type: text/html
+Body:----------nl--
+<!--#set var="TITLE" value="Ongeldige lengte inhoud!" -->
+<!--#include virtual="include/top.html" -->
+
+    Een vraag met het <!--#echo encoding="none" var="REDIRECT_REQUEST_METHOD"-->
+    type methode heeft een correcte <code>Content-Length</code> lijn nodig.
+
+<!--#include virtual="include/bottom.html" -->
+----------nl--
+
 Content-language: sv
 Content-type: text/html
 Body:----------sv--

@@ -48,6 +48,18 @@ Body:----------fr--
 <!--#include virtual="include/bottom.html" -->  
 ----------fr--
 
+Content-language: nl
+Content-type: text/html
+Body:----------nl--
+<!--#set var="TITLE" value="Geen acceptabel object gevonden!" -->
+<!--#include virtual="include/top.html" -->
+
+    Een toereikende representatie van het gevraagde object
+    kon niet gevonden worden op deze server.
+
+<!--#include virtual="include/bottom.html" -->
+----------nl--
+
 Content-language: sv
 Content-type: text/html
 Body:----------sv--

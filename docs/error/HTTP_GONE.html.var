@@ -99,6 +99,31 @@ Body:----------fr--
 <!--#include virtual="include/bottom.html" -->
 ----------fr--
 
+Content-language: nl
+Content-type: text/html
+Body:----------nl--
+<!--#set var="TITLE" value="Dit object is niet langer beschikbaar!" -->
+<!--#include virtual="include/top.html" -->
+
+   De gevraagde URL is niet langer beschikbaar op deze server en er is geen
+   doorverwijsadres.
+
+  <!--#if expr="$HTTP_REFERER" -->
+
+   Gelieve aan de auteur van
+   <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">deze pagina</a>
+   te melden dat deze link niet langer actueel is.
+
+  <!--#else -->
+
+   Indien u deze link hebt gekregen van een andere pagina, gelieve
+   de auteur van deze pagina te contacteren.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------nl--
+
 Content-language: sv
 Content-type: text/html
 Body:----------sv--

@@ -48,6 +48,18 @@ Body:----------fr--
 <!--#include virtual="include/bottom.html" -->
 ----------fr--
 
+Content-language: nl
+Content-type: text/html
+Body:----------nl--
+<!--#set var="TITLE" value="Tijdlimiet overschreden!" -->
+<!--#include virtual="include/top.html" -->
+
+   De server heeft de netwerkverbinding gesloten omdat de browser
+   de vraag niet heeft be&euml;indigd binnen een gestelde tijd.
+
+<!--#include virtual="include/bottom.html" -->
+----------nl--
+
 Content-language: sv
 Content-type: text/html
 Body:----------sv--

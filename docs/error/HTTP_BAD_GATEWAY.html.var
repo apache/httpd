@@ -66,6 +66,23 @@ Body:----------fr--
 <!--#include virtual="include/bottom.html" -->   
 ----------fr--
 
+Content-language: nl
+Content-type: text/html
+Body:----------nl--
+<!--#set var="TITLE" value="Verkeerde Gateway!" -->
+<!--#include virtual="include/top.html" -->
+
+    De proxy server heeft een ongeldig
+    antwoord ontvangen van een gecontacteerde server.
+
+  <!--#if expr="$REDIRECT_ERROR_NOTES" -->
+    <!--#include virtual="include/spacer.html" -->
+    <!--#echo var="REDIRECT_ERROR_NOTES" -->
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------nl--
+
 Content-language: sv
 Content-type: text/html
 Body:----------sv--

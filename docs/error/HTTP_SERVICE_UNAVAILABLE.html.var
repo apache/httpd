@@ -55,6 +55,19 @@ Body:----------fr--
 <!--#include virtual="include/bottom.html" -->
 ----------fr--
 
+Content-language: nl
+Content-type: text/html
+Body:----------nl--
+<!--#set var="TITLE" value="Dienst niet beschikbaar!" -->
+<!--#include virtual="include/top.html" -->
+
+    De server kan tijdelijk uw vraag niet verwerken
+    door onderhoud of problemen met de capaciteit van de server.
+    Gelieve later nog eens opnieuw te proberen.
+
+<!--#include virtual="include/bottom.html" -->
+----------nl--
+
 Content-language: sv
 Content-type: text/html
 Body:----------sv--
