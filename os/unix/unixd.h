@@ -73,8 +73,12 @@
 
 #include <pwd.h>
 #include <grp.h>
+#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
+#endif
+#ifdef HAVE_SYS_IPC_H
 #include <sys/ipc.h>
+#endif
 
 typedef struct {
     uid_t uid;
