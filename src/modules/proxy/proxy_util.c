@@ -442,7 +442,7 @@ table *ap_proxy_read_headers(request_rec *r, char *buffer, int size, BUFF *f)
     return resp_hdrs;
 }
 
-/* read data from f, write it to:
+/* read data from (socket BUFF*) f, write it to:
  * - c->fp, if it is open
  * - r->connection->client, if nowrite == 0
  */
@@ -474,8 +474,6 @@ long int ap_proxy_send_fb(BUFF *f, request_rec *r, cache_req *c, off_t len, int 
 #ifdef CHARSET_EBCDIC
     /* The cache copy is ASCII, not EBCDIC, even for text/html) */
     ap_bsetflag(f, B_ASCII2EBCDIC | B_EBCDIC2ASCII, 0);
-    if (c != NULL && c->fp != NULL)
-        ap_bsetflag(c->fp, B_ASCII2EBCDIC | B_EBCDIC2ASCII, 0);
     ap_bsetflag(con->client, B_ASCII2EBCDIC | B_EBCDIC2ASCII, 0);
 #endif
 
@@ -553,23 +551,29 @@ long int ap_proxy_send_fb(BUFF *f, request_rec *r, cache_req *c, off_t len, int 
 
             /* soak up trailing CRLF */
             if (0 == remaining) {
-                char ch;
+                int ch; /* int because it may hold an EOF */
                 /*
-		 * For EBCDIC, the proxy has configured the BUFF layer to
-		 * transparently pass the ascii characters thru (also writing
-		 * an ASCII copy to the cache, where appropriate).
-		 * Therefore, we see here an ASCII-CRLF (\015\012),
-		 * not an EBCDIC-CRLF (\r\n).
-		 */
-                if ((ch = ap_bgetc(f)) == '\015') { /* _ASCII_ CR */
-                    ch = ap_bgetc(f);
+                 * For EBCDIC, the proxy has configured the BUFF layer to
+                 * transparently pass the ascii characters thru (also writing
+                 * an ASCII copy to the cache, where appropriate).
+                 * Therefore, we see here an ASCII-CRLF (\015\012),
+                 * not an EBCDIC-CRLF (\r\n).
+                 */
+                if ((ch = ap_bgetc(f)) == EOF) {
+                    /* EOF detected */
+                    n = 0;
                 }
-                if (ch != '\012') {
-                    n = -1;
+                else
+                {
+                    if (ch == '\015') { /* _ASCII_ CR */
+                        ch = ap_bgetc(f);
+                    }
+                    if (ch != '\012') {
+                        n = -1;
+                    }
                 }
             }
         }
-
 
         /* otherwise read block normally */
         else {
