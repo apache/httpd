@@ -62,7 +62,7 @@
 #include "apr_md5.h"
 #include "http_log.h"
 #include "util_uri.h"
-#include "util_date.h"	/* get ap_checkmask() decl. */
+#include "util_date.h"    /* get ap_checkmask() decl. */
 
 #include <pthread.h>
 
@@ -79,20 +79,20 @@ int ap_proxy_hex2c(const char *x)
 #ifndef CHARSET_EBCDIC
     ch = x[0];
     if (ap_isdigit(ch))
-	i = ch - '0';
+    i = ch - '0';
     else if (ap_isupper(ch))
-	i = ch - ('A' - 10);
+    i = ch - ('A' - 10);
     else
-	i = ch - ('a' - 10);
+    i = ch - ('a' - 10);
     i <<= 4;
 
     ch = x[1];
     if (ap_isdigit(ch))
-	i += ch - '0';
+    i += ch - '0';
     else if (ap_isupper(ch))
-	i += ch - ('A' - 10);
+    i += ch - ('A' - 10);
     else
-	i += ch - ('a' - 10);
+    i += ch - ('a' - 10);
     return i;
 #else /*CHARSET_EBCDIC*/
     return (1 == sscanf(x, "%2x", &i)) ? os_toebcdic[i&0xFF] : 0;
@@ -107,15 +107,15 @@ void ap_proxy_c2hex(int ch, char *x)
     x[0] = '%';
     i = (ch & 0xF0) >> 4;
     if (i >= 10)
-	x[1] = ('A' - 10) + i;
+    x[1] = ('A' - 10) + i;
     else
-	x[1] = '0' + i;
+    x[1] = '0' + i;
 
     i = ch & 0x0F;
     if (i >= 10)
-	x[2] = ('A' - 10) + i;
+    x[2] = ('A' - 10) + i;
     else
-	x[2] = '0' + i;
+    x[2] = '0' + i;
 #else /*CHARSET_EBCDIC*/
     static const char ntoa[] = { "0123456789ABCDEF" };
     ch &= 0xFF;
@@ -141,8 +141,8 @@ char *
 {
     int i, j, ch;
     char *y;
-    const char *allowed;	/* characters which should not be encoded */
-    const char *reserved;	/* characters which much not be en/de-coded */
+    const char *allowed;    /* characters which should not be encoded */
+    const char *reserved;    /* characters which much not be en/de-coded */
 
 /* N.B. in addition to :@&=, this allows ';' in an http path
  * and '?' in an ftp path -- this may be revised
@@ -152,51 +152,51 @@ char *
  * it only permits ; / ? : @ = & as reserved chars.)
  */
     if (t == enc_path)
-	allowed = "$-_.+!*'(),;:@&=";
+    allowed = "$-_.+!*'(),;:@&=";
     else if (t == enc_search)
-	allowed = "$-_.!*'(),;:@&=";
+    allowed = "$-_.!*'(),;:@&=";
     else if (t == enc_user)
-	allowed = "$-_.+!*'(),;@&=";
+    allowed = "$-_.+!*'(),;@&=";
     else if (t == enc_fpath)
-	allowed = "$-_.+!*'(),?:@&=";
-    else			/* if (t == enc_parm) */
-	allowed = "$-_.+!*'(),?/:@&=";
+    allowed = "$-_.+!*'(),?:@&=";
+    else            /* if (t == enc_parm) */
+    allowed = "$-_.+!*'(),?/:@&=";
 
     if (t == enc_path)
-	reserved = "/";
+    reserved = "/";
     else if (t == enc_search)
-	reserved = "+";
+    reserved = "+";
     else
-	reserved = "";
+    reserved = "";
 
     y = ap_palloc(p, 3 * len + 1);
 
     for (i = 0, j = 0; i < len; i++, j++) {
 /* always handle '/' first */
-	ch = x[i];
-	if (strchr(reserved, ch)) {
-	    y[j] = ch;
-	    continue;
-	}
+    ch = x[i];
+    if (strchr(reserved, ch)) {
+        y[j] = ch;
+        continue;
+    }
 /* decode it if not already done */
-	if (isenc && ch == '%') {
-	    if (!ap_isxdigit(x[i + 1]) || !ap_isxdigit(x[i + 2]))
-		return NULL;
-	    ch = ap_proxy_hex2c(&x[i + 1]);
-	    i += 2;
-	    if (ch != 0 && strchr(reserved, ch)) {	/* keep it encoded */
-		ap_proxy_c2hex(ch, &y[j]);
-		j += 2;
-		continue;
-	    }
-	}
+    if (isenc && ch == '%') {
+        if (!ap_isxdigit(x[i + 1]) || !ap_isxdigit(x[i + 2]))
+        return NULL;
+        ch = ap_proxy_hex2c(&x[i + 1]);
+        i += 2;
+        if (ch != 0 && strchr(reserved, ch)) {    /* keep it encoded */
+        ap_proxy_c2hex(ch, &y[j]);
+        j += 2;
+        continue;
+        }
+    }
 /* recode it, if necessary */
-	if (!ap_isalnum(ch) && !strchr(allowed, ch)) {
-	    ap_proxy_c2hex(ch, &y[j]);
-	    j += 2;
-	}
-	else
-	    y[j] = ch;
+    if (!ap_isalnum(ch) && !strchr(allowed, ch)) {
+        ap_proxy_c2hex(ch, &y[j]);
+        j += 2;
+    }
+    else
+        y[j] = ch;
     }
     y[j] = '\0';
     return y;
@@ -214,73 +214,73 @@ char *
  */
 char *
      ap_proxy_canon_netloc(ap_pool_t *p, char **const urlp, char **userp,
-			char **passwordp, char **hostp, int *port)
+            char **passwordp, char **hostp, int *port)
 {
     int i;
     char *strp, *host, *url = *urlp;
     char *user = NULL, *password = NULL;
 
     if (url[0] != '/' || url[1] != '/')
-	return "Malformed URL";
+    return "Malformed URL";
     host = url + 2;
     url = strchr(host, '/');
     if (url == NULL)
-	url = "";
+    url = "";
     else
-	*(url++) = '\0';	/* skip seperating '/' */
+    *(url++) = '\0';    /* skip seperating '/' */
 
     /* find _last_ '@' since it might occur in user/password part */
     strp = strrchr(host, '@');
 
     if (strp != NULL) {
-	*strp = '\0';
-	user = host;
-	host = strp + 1;
+    *strp = '\0';
+    user = host;
+    host = strp + 1;
 
 /* find password */
-	strp = strchr(user, ':');
-	if (strp != NULL) {
-	    *strp = '\0';
-	    password = ap_proxy_canonenc(p, strp + 1, strlen(strp + 1), enc_user, 1);
-	    if (password == NULL)
-		return "Bad %-escape in URL (password)";
-	}
+    strp = strchr(user, ':');
+    if (strp != NULL) {
+        *strp = '\0';
+        password = ap_proxy_canonenc(p, strp + 1, strlen(strp + 1), enc_user, 1);
+        if (password == NULL)
+        return "Bad %-escape in URL (password)";
+    }
 
-	user = ap_proxy_canonenc(p, user, strlen(user), enc_user, 1);
-	if (user == NULL)
-	    return "Bad %-escape in URL (username)";
+    user = ap_proxy_canonenc(p, user, strlen(user), enc_user, 1);
+    if (user == NULL)
+        return "Bad %-escape in URL (username)";
     }
     if (userp != NULL) {
-	*userp = user;
+    *userp = user;
     }
     if (passwordp != NULL) {
-	*passwordp = password;
+    *passwordp = password;
     }
 
     strp = strrchr(host, ':');
     if (strp != NULL) {
-	*(strp++) = '\0';
+    *(strp++) = '\0';
 
-	for (i = 0; strp[i] != '\0'; i++)
-	    if (!ap_isdigit(strp[i]))
-		break;
+    for (i = 0; strp[i] != '\0'; i++)
+        if (!ap_isdigit(strp[i]))
+        break;
 
-	/* if (i == 0) the no port was given; keep default */
-	if (strp[i] != '\0') {
-	    return "Bad port number in URL";
-	} else if (i > 0) {
-	    *port = atoi(strp);
-	    if (*port > 65535)
-		return "Port number in URL > 65535";
-	}
+    /* if (i == 0) the no port was given; keep default */
+    if (strp[i] != '\0') {
+        return "Bad port number in URL";
+    } else if (i > 0) {
+        *port = atoi(strp);
+        if (*port > 65535)
+        return "Port number in URL > 65535";
     }
-    ap_str_tolower(host);		/* DNS names are case insensitive */
+    }
+    ap_str_tolower(host);        /* DNS names are case insensitive */
     if (*host == '\0')
-	return "Missing host in URL";
+    return "Missing host in URL";
 /* check hostname syntax */
     for (i = 0; host[i] != '\0'; i++)
-	if (!ap_isdigit(host[i]) && host[i] != '.')
-	    break;
+    if (!ap_isdigit(host[i]) && host[i] != '.')
+        break;
     /* must be an IP address */
 #ifdef WIN32
     if (host[i] == '\0' && (inet_addr(host) == -1))
@@ -288,7 +288,7 @@ char *
     if (host[i] == '\0' && (ap_inet_addr(host) == -1 || inet_network(host) == -1))
 #endif
     {
-	return "Bad IP address in URL";
+    return "Bad IP address in URL";
     }
 
 /*    if (strchr(host,'.') == NULL && domain != NULL)
@@ -319,49 +319,49 @@ const char *
     q = strchr(x, ',');
     /* check for RFC 850 date */
     if (q != NULL && q - x > 3 && q[1] == ' ') {
-	*q = '\0';
-	for (wk = 0; wk < 7; wk++)
-	    if (strcmp(x, lwday[wk]) == 0)
-		break;
-	*q = ',';
-	if (wk == 7)
-	    return x;		/* not a valid date */
-	if (q[4] != '-' || q[8] != '-' || q[11] != ' ' || q[14] != ':' ||
-	    q[17] != ':' || strcmp(&q[20], " GMT") != 0)
-	    return x;
-	if (sscanf(q + 2, "%u-%3s-%u %u:%u:%u %3s", &mday, month, &year,
-		   &hour, &min, &sec, zone) != 7)
-	    return x;
-	if (year < 70)
-	    year += 2000;
-	else
-	    year += 1900;
+    *q = '\0';
+    for (wk = 0; wk < 7; wk++)
+        if (strcmp(x, lwday[wk]) == 0)
+        break;
+    *q = ',';
+    if (wk == 7)
+        return x;        /* not a valid date */
+    if (q[4] != '-' || q[8] != '-' || q[11] != ' ' || q[14] != ':' ||
+        q[17] != ':' || strcmp(&q[20], " GMT") != 0)
+        return x;
+    if (sscanf(q + 2, "%u-%3s-%u %u:%u:%u %3s", &mday, month, &year,
+           &hour, &min, &sec, zone) != 7)
+        return x;
+    if (year < 70)
+        year += 2000;
+    else
+        year += 1900;
     }
     else {
 /* check for acstime() date */
-	if (x[3] != ' ' || x[7] != ' ' || x[10] != ' ' || x[13] != ':' ||
-	    x[16] != ':' || x[19] != ' ' || x[24] != '\0')
-	    return x;
-	if (sscanf(x, "%3s %3s %u %u:%u:%u %u", week, month, &mday, &hour,
-		   &min, &sec, &year) != 7)
-	    return x;
-	for (wk = 0; wk < 7; wk++)
-	    if (strcmp(week, ap_day_snames[wk]) == 0)
-		break;
-	if (wk == 7)
-	    return x;
+    if (x[3] != ' ' || x[7] != ' ' || x[10] != ' ' || x[13] != ':' ||
+        x[16] != ':' || x[19] != ' ' || x[24] != '\0')
+        return x;
+    if (sscanf(x, "%3s %3s %u %u:%u:%u %u", week, month, &mday, &hour,
+           &min, &sec, &year) != 7)
+        return x;
+    for (wk = 0; wk < 7; wk++)
+        if (strcmp(week, ap_day_snames[wk]) == 0)
+        break;
+    if (wk == 7)
+        return x;
     }
 
 /* check date */
     for (mon = 0; mon < 12; mon++)
-	if (strcmp(month, ap_month_snames[mon]) == 0)
-	    break;
+    if (strcmp(month, ap_month_snames[mon]) == 0)
+        break;
     if (mon == 12)
-	return x;
+    return x;
 
     q = ap_palloc(p, 30);
     ap_snprintf(q, 30, "%s, %.2d %s %d %.2d:%.2d:%.2d GMT", ap_day_snames[wk], mday,
-		ap_month_snames[mon], year, hour, min, sec);
+        ap_month_snames[mon], year, hour, min, sec);
     return q;
 }
 
@@ -416,7 +416,7 @@ static int proxy_getline(char *s, int n, BUFF *in, int fold)
          * the next line begins with a continuation character.
          */
     } while (fold && (retval != 1) && (n > 1)
-                  && (ap_blookc(&next, in) == 1)
+                  && (next = ap_blookc(in))
                   && ((next == ' ') || (next == '\t')));
 
     return total;
@@ -430,7 +430,7 @@ static int proxy_getline(char *s, int n, BUFF *in, int fold)
  * @@@: XXX: FIXME: currently the headers are passed thru un-merged. 
  * Is that okay, or should they be collapsed where possible?
  */
-table *ap_proxy_read_headers(request_rec *r, char *buffer, int size, BUFF *f)
+ap_table_t *ap_proxy_read_headers(request_rec *r, char *buffer, int size, BUFF *f)
 {
     ap_table_t *resp_hdrs;
     int len;
@@ -444,71 +444,74 @@ table *ap_proxy_read_headers(request_rec *r, char *buffer, int size, BUFF *f)
      * the connection closes (EOF), or we timeout.
      */
     while ((len = proxy_getline(buffer, size, f, 1)) > 0) {
-	
-	if (!(value = strchr(buffer, ':'))) {     /* Find the colon separator */
+    
+    if (!(value = strchr(buffer, ':'))) {     /* Find the colon separator */
 
-	    /* Buggy MS IIS servers sometimes return invalid headers
-	     * (an extra "HTTP/1.0 200, OK" line sprinkled in between
-	     * the usual MIME headers). Try to deal with it in a sensible
-	     * way, but log the fact.
-	     * XXX: The mask check is buggy if we ever see an HTTP/1.10 */
+        /* Buggy MS IIS servers sometimes return invalid headers
+         * (an extra "HTTP/1.0 200, OK" line sprinkled in between
+         * the usual MIME headers). Try to deal with it in a sensible
+         * way, but log the fact.
+         * XXX: The mask check is buggy if we ever see an HTTP/1.10 */
 
-	    if (!ap_checkmask(buffer, "HTTP/#.# ###*")) {
-		/* Nope, it wasn't even an extra HTTP header. Give up. */
-		return NULL;
-	    }
+        if (!ap_checkmask(buffer, "HTTP/#.# ###*")) {
+        /* Nope, it wasn't even an extra HTTP header. Give up. */
+        return NULL;
+        }
 
-	    ap_log_error(APLOG_MARK, APLOG_WARNING|APLOG_NOERRNO, r->server,
-			 "proxy: Ignoring duplicate HTTP header "
-			 "returned by %s (%s)", r->uri, r->method);
-	    continue;
-	}
+        ap_log_error(APLOG_MARK, APLOG_WARNING|APLOG_NOERRNO, 0, r->server,
+             "proxy: Ignoring duplicate HTTP header "
+             "returned by %s (%s)", r->uri, r->method);
+        continue;
+    }
 
         *value = '\0';
         ++value;
-	/* XXX: RFC2068 defines only SP and HT as whitespace, this test is
-	 * wrong... and so are many others probably.
-	 */
+    /* XXX: RFC2068 defines only SP and HT as whitespace, this test is
+     * wrong... and so are many others probably.
+     */
         while (ap_isspace(*value))
             ++value;            /* Skip to start of value   */
 
-	/* should strip trailing whitespace as well */
-	for (end = &value[strlen(value)-1]; end > value && ap_isspace(*end); --end)
-	    *end = '\0';
+    /* should strip trailing whitespace as well */
+    for (end = &value[strlen(value)-1]; end > value && ap_isspace(*end); --end)
+        *end = '\0';
 
         ap_table_add(resp_hdrs, buffer, value);
 
-	/* the header was too long; at the least we should skip extra data */
-	if (len >= size - 1) { 
-	    while ((len = proxy_getline(field, MAX_STRING_LEN, f, 1))
-		    >= MAX_STRING_LEN - 1) {
-		/* soak up the extra data */
-	    }
-	    if (len == 0) /* time to exit the larger loop as well */
-		break;
-	}
+    /* the header was too long; at the least we should skip extra data */
+    if (len >= size - 1) { 
+        while ((len = proxy_getline(field, MAX_STRING_LEN, f, 1))
+            >= MAX_STRING_LEN - 1) {
+        /* soak up the extra data */
+        }
+        if (len == 0) /* time to exit the larger loop as well */
+        break;
+    }
     }
     return resp_hdrs;
 }
 
-long int ap_proxy_send_fb(BUFF *f, request_rec *r, cache_req *c)
+long int ap_proxy_send_fb(proxy_completion *completion, BUFF *f, request_rec *r, ap_cache_el  *c)
 {
     int  ok;
     char buf[IOBUFSIZE];
-    long total_bytes_rcvd;
+    long total_bytes_rcvd, in_buffer;
+    proxy_server_conf *conf = (proxy_server_conf *) ap_get_module_config(r->server->module_config, &proxy_module);
+    ap_ssize_t cntr;
     register int n, o, w;
     conn_rec *con = r->connection;
-    int alternate_timeouts = 1;	/* 1 if we alternate between soft & hard timeouts */
-
+    int alternate_timeouts = 1;    /* 1 if we alternate between soft & hard timeouts */
+    BUFF *cachefp = NULL;
+    int written = 0, wrote_to_cache;
+    
     total_bytes_rcvd = 0;
-    if (c != NULL)
-        c->written = 0;
+    if (c) ap_cache_el_data(c, &cachefp);
 
 #ifdef CHARSET_EBCDIC
     /* The cache copy is ASCII, not EBCDIC, even for text/html) */
     ap_bsetflag(f, B_ASCII2EBCDIC|B_EBCDIC2ASCII, 0);
     if (c != NULL && c->fp != NULL)
-	ap_bsetflag(c->fp, B_ASCII2EBCDIC|B_EBCDIC2ASCII, 0);
+        ap_bsetflag(c->fp, B_ASCII2EBCDIC|B_EBCDIC2ASCII, 0);
     ap_bsetflag(con->client, B_ASCII2EBCDIC|B_EBCDIC2ASCII, 0);
 #endif
 
@@ -527,7 +530,7 @@ long int ap_proxy_send_fb(BUFF *f, request_rec *r, cache_req *c)
      * BUT, if we *can't* continue anyway, just use hard_timeout.
      */
 
-    if (c == NULL || c->len <= 0 || c->cache_completion == 1.0) {
+    if (!completion || completion->content_length > 0 || completion->cache_completion == 1.0) {
         alternate_timeouts = 0;
     }
 #endif
@@ -536,66 +539,60 @@ long int ap_proxy_send_fb(BUFF *f, request_rec *r, cache_req *c)
      * or (after the client aborted) while we can successfully
      * read and finish the configured cache_completion.
      */
-     for (ok = 1; ok; ) {
-	/* Read block from server */
-	n = ap_bread(f, buf, IOBUFSIZE);
-
-	if (n == -1) {		/* input error */
-	    if (c != NULL) {
-		ap_log_rerror(APLOG_MARK, APLOG_ERR, c->req,
-		    "proxy: error reading from %s", c->url);
-		c = ap_proxy_cache_error(c);
-	    }
-	    break;
-	}
-	if (n == 0)
-	    break;		/* EOF */
-	o = 0;
-	total_bytes_rcvd += n;
-
-	/* Write to cache first. */
-	/*@@@ XXX FIXME: Assuming that writing the cache file won't time out?!!? */
-        if (c != NULL && c->fp != NULL) {
-            if (ap_bwrite(c->fp, &buf[0], n) != n) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, c->req,
-		    "proxy: error writing to %s", c->tempfile);
-		c = ap_proxy_cache_error(c);
-            } else {
-                c->written += n;
+    for (ok = 1; ok; cntr=0) {
+        /* Read block from server */
+        if(ap_bread(f, buf, IOBUFSIZE, &cntr) != APR_SUCCESS && !cntr)
+        {
+            if (c != NULL) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                              "proxy: error reading from %s", c->name);
+                ap_proxy_cache_error(&c);
             }
+            break;
+        }
+        else if(cntr == 0) break;
+       
+    
+        /* Write to cache first. */
+        /*@@@ XXX FIXME: Assuming that writing the cache file won't time out?!!? */
+        if (cachefp && ap_bwrite(cachefp, &buf[0], cntr, &wrote_to_cache) != APR_SUCCESS) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                          "proxy: error writing to cache");
+            ap_proxy_cache_error(&c);
+            cachefp = NULL;
+        } else {
+            written += n;
         }
 
-	/* Write the block to the client, detect aborted transfers */
-        while (!con->aborted && n > 0) {
-            w = ap_bwrite(con->client, &buf[o], n);
+        o = 0;
+        total_bytes_rcvd += cntr;
+        in_buffer = cntr;
 
-            if (w <= 0) {
-                if (c != NULL && c->fp != NULL) {
+        /* Write the block to the client, detect aborted transfers */
+        while (!con->aborted && in_buffer > 0) {
+            if (ap_bwrite(con->client, &buf[o], in_buffer, &cntr) != APR_SUCCESS) {
+                if (completion) {
                     /* when a send failure occurs, we need to decide
                      * whether to continue loading and caching the
                      * document, or to abort the whole thing
                      */
-                    ok = (c->len > 0) &&
-                         (c->cache_completion > 0) &&
-                         (c->len * c->cache_completion < total_bytes_rcvd);
+                    ok = (completion->content_length > 0) &&
+                        (completion->cache_completion > 0) &&
+                        (completion->content_length * completion->cache_completion < total_bytes_rcvd);
 
-                    if (! ok) {
-                        ap_pclosef(c->req->pool, c->fp->fd);
-                        c->fp = NULL;
-                        unlink(c->tempfile);
-			c = NULL;
-                    }
+                    if (!ok)
+                        ap_proxy_cache_error(&c);
                 }
                 con->aborted = 1;
                 break;
             }
-            n -= w;
-            o += w;
+            in_buffer -= cntr;
+            o += cntr;
         } /* while client alive and more data to send */
     } /* loop and ap_bread while "ok" */
 
     if (!con->aborted)
-	ap_bflush(con->client);
+        ap_bflush(con->client);
 
     return total_bytes_rcvd;
 }
@@ -611,15 +608,15 @@ void ap_proxy_send_headers(request_rec *r, const char *respline, ap_table_t *t)
 {
     int i;
     BUFF *fp = r->connection->client;
-    table_entry *elts = (table_entry *) ap_table_elts(t)->elts;
+    ap_table_entry_t *elts = (ap_table_entry_t *) ap_table_elts(t)->elts;
 
     ap_bvputs(fp, respline, CRLF, NULL);
 
     for (i = 0; i < ap_table_elts(t)->nelts; ++i) {
-	if (elts[i].key != NULL) {
-	    ap_bvputs(fp, elts[i].key, ": ", elts[i].val, CRLF, NULL);
-	    ap_table_addn(r->headers_out, elts[i].key, elts[i].val);
-	}
+        if (elts[i].key != NULL) {
+            ap_bvputs(fp, elts[i].key, ": ", elts[i].val, CRLF, NULL);
+            ap_table_addn(r->headers_out, elts[i].key, elts[i].val);
+        }
     }
 
     ap_bputs(CRLF, fp);
@@ -640,127 +637,25 @@ int ap_proxy_liststr(const char *list, const char *val)
     len = strlen(val);
 
     while (list != NULL) {
-	p = strchr(list, ',');
-	if (p != NULL) {
-	    i = p - list;
-	    do
-		p++;
-	    while (ap_isspace(*p));
-	}
-	else
-	    i = strlen(list);
+    p = strchr(list, ',');
+    if (p != NULL) {
+        i = p - list;
+        do
+        p++;
+        while (ap_isspace(*p));
+    }
+    else
+        i = strlen(list);
 
-	while (i > 0 && ap_isspace(list[i - 1]))
-	    i--;
-	if (i == len && strncasecmp(list, val, len) == 0)
-	    return 1;
-	list = p;
+    while (i > 0 && ap_isspace(list[i - 1]))
+        i--;
+    if (i == len && strncasecmp(list, val, len) == 0)
+        return 1;
+    list = p;
     }
     return 0;
 }
 
-#ifdef CASE_BLIND_FILESYSTEM
-
-/*
- * On some platforms, the file system is NOT case sensitive. So, a == A
- * need to map to smaller set of characters
- */
-void ap_proxy_hash(const char *it, char *val, int ndepth, int nlength)
-{
-    ap_md5_ctx_t context;
-    unsigned char digest[MD5_DIGESTSIZE];
-    char tmp[26];
-    int i, k, d;
-    unsigned int x;
-    static const char enc_table[32] = "abcdefghijklmnopqrstuvwxyz012345";
-
-    ap_MD5Init(&context);
-    ap_MD5Update(&context, (const unsigned char *) it, strlen(it));
-    ap_MD5Final(digest, &context);
-
-/* encode 128 bits as 26 characters, using a modified uuencoding */
-/* the encoding is 5 bytes -> 8 characters
- * i.e. 128 bits is 3 x 5 bytes + 1 byte -> 3 * 8 characters + 2 characters
- */
-    for (i = 0, k = 0; i < 15; i += 5) {
-	x = (digest[i] << 24) | (digest[i + 1] << 16) | (digest[i + 2] << 8) | digest[i + 3];
-	tmp[k++] = enc_table[x >> 27];
-	tmp[k++] = enc_table[(x >> 22) & 0x1f];
-	tmp[k++] = enc_table[(x >> 17) & 0x1f];
-	tmp[k++] = enc_table[(x >> 12) & 0x1f];
-	tmp[k++] = enc_table[(x >> 7) & 0x1f];
-	tmp[k++] = enc_table[(x >> 2) & 0x1f];
-	x = ((x & 0x3) << 8) | digest[i + 4];
-	tmp[k++] = enc_table[x >> 5];
-	tmp[k++] = enc_table[x & 0x1f];
-    }
-/* one byte left */
-    x = digest[15];
-    tmp[k++] = enc_table[x >> 3];	/* use up 5 bits */
-    tmp[k++] = enc_table[x & 0x7];
-    /* now split into directory levels */
-
-    for (i = k = d = 0; d < ndepth; ++d) {
-	memcpy(&val[i], &tmp[k], nlength);
-	k += nlength;
-	val[i + nlength] = '/';
-	i += nlength + 1;
-    }
-    memcpy(&val[i], &tmp[k], 26 - k);
-    val[i + 26 - k] = '\0';
-}
-
-#else
-
-void ap_proxy_hash(const char *it, char *val, int ndepth, int nlength)
-{
-    ap_md5_ctx_t context;
-    unsigned char digest[MD5_DIGESTSIZE];
-    char tmp[22];
-    int i, k, d;
-    unsigned int x;
-#if defined(AIX) && defined(__ps2__)
-    /* Believe it or not, AIX 1.x does not allow you to name a file '@',
-     * so hack around it in the encoding. */
-    static const char enc_table[64] =
-	"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_%";
-#else
-    static const char enc_table[64] =
-	"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_@";
-#endif
-
-    ap_MD5Init(&context);
-    ap_MD5Update(&context, (const unsigned char *) it, strlen(it));
-    ap_MD5Final(digest, &context);
-
-/* encode 128 bits as 22 characters, using a modified uuencoding */
-/* the encoding is 3 bytes -> 4 characters
- * i.e. 128 bits is 5 x 3 bytes + 1 byte -> 5 * 4 characters + 2 characters
- */
-    for (i = 0, k = 0; i < 15; i += 3) {
-	x = (digest[i] << 16) | (digest[i + 1] << 8) | digest[i + 2];
-	tmp[k++] = enc_table[x >> 18];
-	tmp[k++] = enc_table[(x >> 12) & 0x3f];
-	tmp[k++] = enc_table[(x >> 6) & 0x3f];
-	tmp[k++] = enc_table[x & 0x3f];
-    }
-/* one byte left */
-    x = digest[15];
-    tmp[k++] = enc_table[x >> 2];	/* use up 6 bits */
-    tmp[k++] = enc_table[(x << 4) & 0x3f];
-    /* now split into directory levels */
-
-    for (i = k = d = 0; d < ndepth; ++d) {
-	memcpy(&val[i], &tmp[k], nlength);
-	k += nlength;
-	val[i + nlength] = '/';
-	i += nlength + 1;
-    }
-    memcpy(&val[i], &tmp[k], 22 - k);
-    val[i + 22 - k] = '\0';
-}
-
-#endif /* CASE_BLIND_FILESYSTEM */
 
 /*
  * Converts 8 hex digits to a time integer
@@ -771,19 +666,19 @@ int ap_proxy_hex2sec(const char *x)
     unsigned int j;
 
     for (i = 0, j = 0; i < 8; i++) {
-	ch = x[i];
-	j <<= 4;
-	if (ap_isdigit(ch))
-	    j |= ch - '0';
-	else if (ap_isupper(ch))
-	    j |= ch - ('A' - 10);
-	else
-	    j |= ch - ('a' - 10);
+    ch = x[i];
+    j <<= 4;
+    if (ap_isdigit(ch))
+        j |= ch - '0';
+    else if (ap_isupper(ch))
+        j |= ch - ('A' - 10);
+    else
+        j |= ch - ('a' - 10);
     }
     if (j == 0xffffffff)
-	return -1;		/* so that it works with 8-byte ints */
+    return -1;        /* so that it works with 8-byte ints */
     else
-	return j;
+    return j;
 }
 
 /*
@@ -795,41 +690,39 @@ void ap_proxy_sec2hex(int t, char *y)
     unsigned int j = t;
 
     for (i = 7; i >= 0; i--) {
-	ch = j & 0xF;
-	j >>= 4;
-	if (ch >= 10)
-	    y[i] = ch + ('A' - 10);
-	else
-	    y[i] = ch + '0';
+    ch = j & 0xF;
+    j >>= 4;
+    if (ch >= 10)
+        y[i] = ch + ('A' - 10);
+    else
+        y[i] = ch + '0';
     }
     y[8] = '\0';
 }
 
 
-cache_req *ap_proxy_cache_error(cache_req *c)
+void ap_proxy_cache_error(ap_cache_el  **c)
 {
-    if (c != NULL) {
-	if (c->fp != NULL) {
-	    ap_pclosef(c->req->pool, c->fp->fd);
-	    c->fp = NULL;
-	}
-	if (c->tempfile) unlink(c->tempfile);
+    if (c && *c) {
+        const char *name = (*c)->name;
+        ap_cache_el_finalize((*c));
+        ap_cache_remove((*c)->cache, name);
+        *c = NULL;
     }
-    return NULL;
 }
 
 int ap_proxyerror(request_rec *r, int statuscode, const char *message)
 {
     ap_table_setn(r->notes, "error-notes",
-		  ap_pstrcat(r->pool, 
-			     "The proxy server could not handle the request "
-			     "<EM><A HREF=\"", ap_escape_uri(r->pool, r->uri),
-			     "\">", ap_escape_html(r->pool, r->method),
-			     "&nbsp;", 
-			     ap_escape_html(r->pool, r->uri), "</A></EM>.<P>\n"
-			     "Reason: <STRONG>",
-			     ap_escape_html(r->pool, message), 
-			     "</STRONG>", NULL));
+          ap_pstrcat(r->pool, 
+                 "The proxy server could not handle the request "
+                 "<EM><A HREF=\"", ap_escape_uri(r->pool, r->uri),
+                 "\">", ap_escape_html(r->pool, r->method),
+                 "&nbsp;", 
+                 ap_escape_html(r->pool, r->uri), "</A></EM>.<P>\n"
+                 "Reason: <STRONG>",
+                 ap_escape_html(r->pool, message), 
+                 "</STRONG>", NULL));
 
     /* Allow "error-notes" string to be printed by ap_send_error_response() */
     ap_table_setn(r->notes, "verbose-error-to", ap_pstrdup(r->pool, "*"));
@@ -841,8 +734,7 @@ int ap_proxyerror(request_rec *r, int statuscode, const char *message)
 /*
  * This routine returns its own error message
  */
-const char *
-     ap_proxy_host2addr(const char *host, struct hostent *reqhp)
+const char *ap_proxy_host2addr(const char *host, struct hostent *reqhp)
 {
     int i;
     struct hostent *hp;
@@ -853,27 +745,27 @@ const char *
     static APACHE_TLS char *charpbuf[2];
 
     for (i = 0; host[i] != '\0'; i++)
-	if (!ap_isdigit(host[i]) && host[i] != '.')
-	    break;
+        if (!ap_isdigit(host[i]) && host[i] != '.')
+            break;
 
     if (host[i] != '\0') {
-	hp = gethostbyname(host);
-	if (hp == NULL)
-	    return "Host not found";
+        hp = gethostbyname(host);
+        if (hp == NULL)
+            return "Host not found";
     }
     else {
-	ipaddr = ap_inet_addr(host);
-	hp = gethostbyaddr((char *) &ipaddr, sizeof(u_long), AF_INET);
-	if (hp == NULL) {
-	    memset(&hpbuf, 0, sizeof(hpbuf));
-	    hpbuf.h_name = 0;
-	    hpbuf.h_addrtype = AF_INET;
-	    hpbuf.h_length = sizeof(u_long);
-	    hpbuf.h_addr_list = charpbuf;
-	    hpbuf.h_addr_list[0] = (char *) &ipaddr;
-	    hpbuf.h_addr_list[1] = 0;
-	    hp = &hpbuf;
-	}
+        ipaddr = ap_inet_addr(host);
+        hp = gethostbyaddr((char *) &ipaddr, sizeof(u_long), AF_INET);
+        if (hp == NULL) {
+            memset(&hpbuf, 0, sizeof(hpbuf));
+            hpbuf.h_name = 0;
+            hpbuf.h_addrtype = AF_INET;
+            hpbuf.h_length = sizeof(u_long);
+            hpbuf.h_addr_list = charpbuf;
+            hpbuf.h_addr_list[0] = (char *) &ipaddr;
+            hpbuf.h_addr_list[1] = 0;
+            hp = &hpbuf;
+        }
     }
     *reqhp = *hp;
     return NULL;
@@ -886,24 +778,24 @@ static const char *
     int port = -1;
 
     if (r->hostname != NULL)
-	return r->hostname;
+    return r->hostname;
 
     /* Set url to the first char after "scheme://" */
     if ((url = strchr(r->uri, ':')) == NULL
-	|| url[1] != '/' || url[2] != '/')
-	return NULL;
+    || url[1] != '/' || url[2] != '/')
+    return NULL;
 
-    url = ap_pstrdup(r->pool, &url[1]);	/* make it point to "//", which is what proxy_canon_netloc expects */
+    url = ap_pstrdup(r->pool, &url[1]);    /* make it point to "//", which is what proxy_canon_netloc expects */
 
     err = ap_proxy_canon_netloc(r->pool, &url, &user, &password, &host, &port);
 
     if (err != NULL)
-	ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, r,
-		     "%s", err);
+    ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, r,
+             "%s", err);
 
     r->hostname = host;
 
-    return host;		/* ought to return the port, too */
+    return host;        /* ought to return the port, too */
 }
 
 /* Return TRUE if addr represents an IP address (or an IP network address) */
@@ -928,86 +820,86 @@ int ap_proxy_is_ipaddr(struct dirconn_entry *This, ap_pool_t *p)
 
     /* Iterate over up to 4 (dotted) quads. */
     for (quads = 0; quads < 4 && *addr != '\0'; ++quads) {
-	char *tmp;
+    char *tmp;
 
-	if (*addr == '/' && quads > 0)	/* netmask starts here. */
-	    break;
+    if (*addr == '/' && quads > 0)    /* netmask starts here. */
+        break;
 
-	if (!ap_isdigit(*addr))
-	    return 0;		/* no digit at start of quad */
+    if (!ap_isdigit(*addr))
+        return 0;        /* no digit at start of quad */
 
-	ip_addr[quads] = strtol(addr, &tmp, 0);
+    ip_addr[quads] = strtol(addr, &tmp, 0);
 
-	if (tmp == addr)	/* expected a digit, found something else */
-	    return 0;
+    if (tmp == addr)    /* expected a digit, found something else */
+        return 0;
 
-	if (ip_addr[quads] < 0 || ip_addr[quads] > 255) {
-	    /* invalid octet */
-	    return 0;
-	}
+    if (ip_addr[quads] < 0 || ip_addr[quads] > 255) {
+        /* invalid octet */
+        return 0;
+    }
 
-	addr = tmp;
+    addr = tmp;
 
-	if (*addr == '.' && quads != 3)
-	    ++addr;		/* after the 4th quad, a dot would be illegal */
+    if (*addr == '.' && quads != 3)
+        ++addr;        /* after the 4th quad, a dot would be illegal */
     }
 
     for (This->addr.s_addr = 0, i = 0; i < quads; ++i)
-	This->addr.s_addr |= htonl(ip_addr[i] << (24 - 8 * i));
+    This->addr.s_addr |= htonl(ip_addr[i] << (24 - 8 * i));
 
-    if (addr[0] == '/' && ap_isdigit(addr[1])) {	/* net mask follows: */
-	char *tmp;
+    if (addr[0] == '/' && ap_isdigit(addr[1])) {    /* net mask follows: */
+    char *tmp;
 
-	++addr;
+    ++addr;
 
-	bits = strtol(addr, &tmp, 0);
+    bits = strtol(addr, &tmp, 0);
 
-	if (tmp == addr)	/* expected a digit, found something else */
-	    return 0;
+    if (tmp == addr)    /* expected a digit, found something else */
+        return 0;
 
-	addr = tmp;
+    addr = tmp;
 
-	if (bits < 0 || bits > 32)	/* netmask must be between 0 and 32 */
-	    return 0;
+    if (bits < 0 || bits > 32)    /* netmask must be between 0 and 32 */
+        return 0;
 
     }
     else {
-	/* Determine (i.e., "guess") netmask by counting the */
-	/* number of trailing .0's; reduce #quads appropriately */
-	/* (so that 192.168.0.0 is equivalent to 192.168.)        */
-	while (quads > 0 && ip_addr[quads - 1] == 0)
-	    --quads;
+    /* Determine (i.e., "guess") netmask by counting the */
+    /* number of trailing .0's; reduce #quads appropriately */
+    /* (so that 192.168.0.0 is equivalent to 192.168.)        */
+    while (quads > 0 && ip_addr[quads - 1] == 0)
+        --quads;
 
-	/* "IP Address should be given in dotted-quad form, optionally followed by a netmask (e.g., 192.168.111.0/24)"; */
-	if (quads < 1)
-	    return 0;
+    /* "IP Address should be given in dotted-quad form, optionally followed by a netmask (e.g., 192.168.111.0/24)"; */
+    if (quads < 1)
+        return 0;
 
-	/* every zero-byte counts as 8 zero-bits */
-	bits = 8 * quads;
+    /* every zero-byte counts as 8 zero-bits */
+    bits = 8 * quads;
 
-	if (bits != 32)		/* no warning for fully qualified IP address */
-	    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+    if (bits != 32)        /* no warning for fully qualified IP address */
+        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
                          "Warning: NetMask not supplied with IP-Addr; guessing: %s/%ld",
-		    inet_ntoa(This->addr), bits);
+            inet_ntoa(This->addr), bits);
     }
 
     This->mask.s_addr = htonl(INADDR_NONE << (32 - bits));
 
     if (*addr == '\0' && (This->addr.s_addr & ~This->mask.s_addr) != 0) {
-	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "Warning: NetMask and IP-Addr disagree in %s/%ld\n",
-		inet_ntoa(This->addr), bits);
-	This->addr.s_addr &= This->mask.s_addr;
-	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "Warning: NetMask and IP-Addr disagree in %s/%ld\n",
+        inet_ntoa(This->addr), bits);
+    This->addr.s_addr &= This->mask.s_addr;
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
                      "         Set to %s/%ld",
-		inet_ntoa(This->addr), bits);
+        inet_ntoa(This->addr), bits);
     }
 
     if (*addr == '\0') {
-	This->matcher = proxy_match_ipaddr;
-	return 1;
+    This->matcher = proxy_match_ipaddr;
+    return 1;
     }
     else
-	return (*addr == '\0');	/* okay iff we've parsed the whole string */
+    return (*addr == '\0');    /* okay iff we've parsed the whole string */
 }
 
 /* Return TRUE if addr represents an IP address (or an IP network address) */
@@ -1028,75 +920,75 @@ static int proxy_match_ipaddr(struct dirconn_entry *This, request_rec *r)
     memset(ip_addr, '\0', sizeof ip_addr);
 
     if (4 == sscanf(host, "%d.%d.%d.%d", &ip_addr[0], &ip_addr[1], &ip_addr[2], &ip_addr[3])) {
-	for (addr.s_addr = 0, i = 0; i < 4; ++i)
-	    addr.s_addr |= htonl(ip_addr[i] << (24 - 8 * i));
+    for (addr.s_addr = 0, i = 0; i < 4; ++i)
+        addr.s_addr |= htonl(ip_addr[i] << (24 - 8 * i));
 
-	if (This->addr.s_addr == (addr.s_addr & This->mask.s_addr)) {
+    if (This->addr.s_addr == (addr.s_addr & This->mask.s_addr)) {
 #if DEBUGGING
-	    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
                          "1)IP-Match: %s[%s] <-> ", host, inet_ntoa(addr));
-	    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
                          "%s/", inet_ntoa(This->addr));
-	    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
                          "%s", inet_ntoa(This->mask));
 #endif
-	    return 1;
-	}
+        return 1;
+    }
 #if DEBUGGING
-	else {
-	    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+    else {
+        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
                          "1)IP-NoMatch: %s[%s] <-> ", host, inet_ntoa(addr));
-	    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
                          "%s/", inet_ntoa(This->addr));
-	    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
                          "%s", inet_ntoa(This->mask));
-	}
+    }
 #endif
     }
     else {
-	struct hostent the_host;
+    struct hostent the_host;
 
-	memset(&the_host, '\0', sizeof the_host);
-	found = ap_proxy_host2addr(host, &the_host);
+    memset(&the_host, '\0', sizeof the_host);
+    found = ap_proxy_host2addr(host, &the_host);
 
-	if (found != NULL) {
+    if (found != NULL) {
 #if DEBUGGING
-	    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
                          "2)IP-NoMatch: hostname=%s msg=%s", host, found);
 #endif
-	    return 0;
-	}
+        return 0;
+    }
 
-	if (the_host.h_name != NULL)
-	    found = the_host.h_name;
-	else
-	    found = host;
+    if (the_host.h_name != NULL)
+        found = the_host.h_name;
+    else
+        found = host;
 
-	/* Try to deal with multiple IP addr's for a host */
-	for (ip_listptr = the_host.h_addr_list; *ip_listptr; ++ip_listptr) {
-	    ip_list = (struct in_addr *) *ip_listptr;
-	    if (This->addr.s_addr == (ip_list->s_addr & This->mask.s_addr)) {
+    /* Try to deal with multiple IP addr's for a host */
+    for (ip_listptr = the_host.h_addr_list; *ip_listptr; ++ip_listptr) {
+        ip_list = (struct in_addr *) *ip_listptr;
+        if (This->addr.s_addr == (ip_list->s_addr & This->mask.s_addr)) {
 #if DEBUGGING
-		ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
                        "3)IP-Match: %s[%s] <-> ", found, inet_ntoa(*ip_list));
-		ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
                        "%s/", inet_ntoa(This->addr));
-		ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
                        "%s", inet_ntoa(This->mask));
 #endif
-		return 1;
-	    }
+        return 1;
+        }
 #if DEBUGGING
-	    else {
-		ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+        else {
+        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
                        "3)IP-NoMatch: %s[%s] <-> ", found, inet_ntoa(*ip_list));
-		ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
                        "%s/", inet_ntoa(This->addr));
-		ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
                        "%s", inet_ntoa(This->mask));
-	    }
+        }
 #endif
-	}
+    }
     }
 
     return 0;
@@ -1110,26 +1002,26 @@ int ap_proxy_is_domainname(struct dirconn_entry *This, ap_pool_t *p)
 
     /* Domain name must start with a '.' */
     if (addr[0] != '.')
-	return 0;
+    return 0;
 
     /* rfc1035 says DNS names must consist of "[-a-zA-Z0-9]" and '.' */
     for (i = 0; ap_isalnum(addr[i]) || addr[i] == '-' || addr[i] == '.'; ++i)
-	continue;
+    continue;
 
 #if 0
     if (addr[i] == ':') {
-	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
                      "@@@@ handle optional port in proxy_is_domainname()");
-	/* @@@@ handle optional port */
+    /* @@@@ handle optional port */
     }
 #endif
 
     if (addr[i] != '\0')
-	return 0;
+    return 0;
 
     /* Strip trailing dots */
     for (i = strlen(addr) - 1; i > 0 && addr[i] == '.'; --i)
-	addr[i] = '\0';
+    addr[i] = '\0';
 
     This->matcher = proxy_match_domainname;
     return 1;
@@ -1141,19 +1033,19 @@ static int proxy_match_domainname(struct dirconn_entry *This, request_rec *r)
     const char *host = proxy_get_host_of_request(r);
     int d_len = strlen(This->name), h_len;
 
-    if (host == NULL)		/* some error was logged already */
-	return 0;
+    if (host == NULL)        /* some error was logged already */
+    return 0;
 
     h_len = strlen(host);
 
     /* @@@ do this within the setup? */
     /* Ignore trailing dots in domain comparison: */
     while (d_len > 0 && This->name[d_len - 1] == '.')
-	--d_len;
+    --d_len;
     while (h_len > 0 && host[h_len - 1] == '.')
-	--h_len;
+    --h_len;
     return h_len > d_len
-	&& strncasecmp(&host[h_len - d_len], This->name, d_len) == 0;
+    && strncasecmp(&host[h_len - d_len], This->name, d_len) == 0;
 }
 
 /* Return TRUE if addr represents a host name */
@@ -1165,27 +1057,27 @@ int ap_proxy_is_hostname(struct dirconn_entry *This, ap_pool_t *p)
 
     /* Host names must not start with a '.' */
     if (addr[0] == '.')
-	return 0;
+    return 0;
 
     /* rfc1035 says DNS names must consist of "[-a-zA-Z0-9]" and '.' */
     for (i = 0; ap_isalnum(addr[i]) || addr[i] == '-' || addr[i] == '.'; ++i);
 
 #if 0
     if (addr[i] == ':') {
-	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
                      "@@@@ handle optional port in proxy_is_hostname()");
-	/* @@@@ handle optional port */
+    /* @@@@ handle optional port */
     }
 #endif
 
     if (addr[i] != '\0' || ap_proxy_host2addr(addr, &host) != NULL)
-	return 0;
+    return 0;
 
     This->hostentry = ap_pduphostent (p, &host);
 
     /* Strip trailing dots */
     for (i = strlen(addr) - 1; i > 0 && addr[i] == '.'; --i)
-	addr[i] = '\0';
+    addr[i] = '\0';
 
     This->matcher = proxy_match_hostname;
     return 1;
@@ -1210,17 +1102,17 @@ static int proxy_match_hostname(struct dirconn_entry *This, request_rec *r)
 
     /* Try to deal with multiple IP addr's for a host */
     for (ip_list = *This->hostentry->h_addr_list; *ip_list != 0UL; ++ip_list)
-	if (*ip_list == ? ? ? ? ? ? ? ? ? ? ? ? ?)
-	    return 1;
+    if (*ip_list == ? ? ? ? ? ? ? ? ? ? ? ? ?)
+        return 1;
 #endif
 
     /* Ignore trailing dots in host2 comparison: */
     while (h2_len > 0 && host2[h2_len - 1] == '.')
-	--h2_len;
+    --h2_len;
     while (h1_len > 0 && host[h1_len - 1] == '.')
-	--h1_len;
+    --h1_len;
     return h1_len == h2_len
-	&& strncasecmp(host, host2, h1_len) == 0;
+    && strncasecmp(host, host2, h1_len) == 0;
 }
 
 /* Return TRUE if addr is to be matched as a word */
@@ -1237,24 +1129,32 @@ static int proxy_match_word(struct dirconn_entry *This, request_rec *r)
     return host != NULL && strstr(host, This->name) != NULL;
 }
 
-int ap_proxy_doconnect(int sock, struct sockaddr_in *addr, request_rec *r)
+int ap_proxy_doconnect(ap_socket_t *sock, char *host, ap_uint32_t port, request_rec *r)
 {
     int i;
+    for (i = 0; host[i] != '\0'; i++)
+        if (!ap_isdigit(host[i]) && host[i] != '.')
+            break;
 
-    do {
-	i = connect(sock, (struct sockaddr *) addr, sizeof(struct sockaddr_in));
-#ifdef WIN32
-	if (i == SOCKET_ERROR)
-	    errno = WSAGetLastError();
-#endif /* WIN32 */
-    } while (i == -1 && errno == EINTR);
-    if (i == -1) {
-	ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
-		     "proxy connect to %s port %d failed",
-		     inet_ntoa(addr->sin_addr), ntohs(addr->sin_port));
+    ap_set_remote_port(sock, port);
+    if (host[i] == '\0') {
+        ap_set_remote_ipaddr(sock, host);
+        host = NULL;
     }
-
-    return i;
+    for(;;)
+    {
+        switch(ap_connect(sock, host))
+        {
+        case APR_EINTR:
+            continue;
+        case APR_SUCCESS:
+            return 0;
+        default:
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "proxy connect to %s port %d failed", host, port);
+            return -1;
+        }
+    }
+    return -1;
 }
 
 /* This function is called by ap_table_do() for all header lines */
@@ -1262,27 +1162,86 @@ int ap_proxy_doconnect(int sock, struct sockaddr_in *addr, request_rec *r)
 /* It is passed a table_do_args struct pointer and a MIME field and value pair */
 int ap_proxy_send_hdr_line(void *p, const char *key, const char *value)
 {
-    struct tbl_do_args *parm = (struct tbl_do_args *)p;
-
+    struct request_rec *r = (struct request_rec *)p;
     if (key == NULL || value == NULL || value[0] == '\0')
-	return 1;
-    if (!parm->req->assbackwards)
-	ap_rvputs(parm->req, key, ": ", value, CRLF, NULL);
-    if (parm->cache != NULL && parm->cache->fp != NULL &&
-	ap_bvputs(parm->cache->fp, key, ": ", value, CRLF, NULL) == -1) {
-	    ap_log_rerror(APLOG_MARK, APLOG_ERR, parm->cache->req,
-		    "proxy: error writing header to %s", parm->cache->tempfile);
-	    parm->cache = ap_proxy_cache_error(parm->cache);
-    }
+        return 1;
+    if (!r->assbackwards)
+        ap_rvputs(r, key, ": ", value, CRLF, NULL);
     return 1; /* tell ap_table_do() to continue calling us for more headers */
 }
 
 /* send a text line to one or two BUFF's; return line length */
-unsigned ap_proxy_bputs2(const char *data, BUFF *client, cache_req *cache)
+unsigned ap_proxy_bputs2(const char *data, BUFF *client, ap_cache_el  *cache)
 {
     unsigned len = ap_bputs(data, client);
-    if (cache != NULL && cache->fp != NULL)
-	ap_bputs(data, cache->fp);
+    BUFF *cachefp = NULL;
+    
+    if (ap_cache_el_data(cache, &cachefp) == APR_SUCCESS)
+        ap_bputs(data, cachefp);
     return len;
 }
 
+int ap_proxy_cache_send(request_rec *r, ap_cache_el *c)
+{
+    BUFF *cachefp = NULL, *fp = r->connection->client;
+    char buffer[500];
+    
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
+                 "Sending cache file for %s", c->name);
+    if(ap_cache_el_data(c, &cachefp) != APR_SUCCESS)
+        return HTTP_INTERNAL_SERVER_ERROR;
+    /* send the response */
+    if(ap_bgets(buffer, sizeof(buffer), cachefp))
+        ap_bvputs(fp, buffer, NULL);
+    /* send headers */
+    ap_cache_el_header_walk(c, ap_proxy_send_hdr_line, r, NULL);
+    ap_bputs(CRLF, fp);
+    /* send data */
+    if(!r->header_only && !ap_proxy_send_fb(0, cachefp, r, NULL))
+        return HTTP_INTERNAL_SERVER_ERROR;
+    return OK;
+}
+
+int ap_proxy_cache_should_cache(request_rec *r, ap_table_t *resp_hdrs, const int is_HTTP1)
+{
+    const char *expire = ap_table_get(resp_hdrs, "Expires");
+    time_t expc;
+    if (expire != NULL)
+        expc = ap_parseHTTPdate(expire);
+    else
+        expc = BAD_DATE;
+    if((r->status != HTTP_OK && r->status != HTTP_MOVED_PERMANENTLY && r->status != HTTP_NOT_MODIFIED) ||
+       (r->status == HTTP_NOT_MODIFIED) ||
+       r->header_only ||
+       ap_table_get(r->headers_in, "Authorization") != NULL ||
+       (expire != NULL && expc == BAD_DATE) ||
+       (r->status == HTTP_OK && !ap_table_get(resp_hdrs, "Last-Modified") && is_HTTP1))
+    {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
+                     "proxy: Response is not cacheable: %s", r->unparsed_uri);
+        return 0;
+    }
+    return 1;
+}
+    
+/*
+ * what responses should we not cache?
+ * Unknown status responses and those known to be uncacheable
+ * 304 HTTP_NOT_MODIFIED response when we have no valid cache file, or
+ * 200 HTTP_OK response from HTTP/1.0 and up without a Last-Modified header, or
+ * HEAD requests, or
+ * requests with an Authorization header, or
+ * protocol requests nocache (e.g. ftp with user/password)
+ */
+/* @@@ XXX FIXME: is the test "r->status != HTTP_MOVED_PERMANENTLY" correct?
+ * or shouldn't it be "ap_is_HTTP_REDIRECT(r->status)" ? -MnKr */
+int ap_proxy_cache_update(ap_cache_el *c)
+{
+    ap_cache_handle_t *h = c ? c->cache : NULL;
+    if(!h) return DECLINED;
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
+                 "proxy: Cache finalized: %s", c->name);
+    ap_cache_el_finalize(c);
+    ap_cache_garbage_collect(h);
+    return DECLINED;
+}
