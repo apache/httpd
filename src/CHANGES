@@ -1,5 +1,10 @@
 Changes with Apache 1.3
 
+  *) Added NoProxy directive to avoid using ProxyRemote for selected
+     addresses.  Added ProxyDomain directive to cause unqualified
+     names to be qualified by redirection.
+     [Martin Kraemer <Martin.Kraemer@mch.sni.de>]
+
   *) Support Proxy Authentication, and don't pass the Proxy-Authorize
      header to the remote host in the proxy. [Sameer Parekh and
      Wallace]

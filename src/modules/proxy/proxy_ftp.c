@@ -508,6 +508,17 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	return SERVER_ERROR;
     }
 
+#ifdef SINIX_D_RESOLVER_BUG
+    { struct in_addr *ip_addr = (struct in_addr *) *server_hp.h_addr_list;
+
+	for ( ; ip_addr->s_addr != 0; ++ip_addr) {
+	    memcpy(&server.sin_addr, ip_addr, sizeof(struct in_addr));
+	    i = proxy_doconnect(sock, &server, r);
+	    if (i == 0)
+		break;
+	}
+    }
+#else
     j = 0;
     while (server_hp.h_addr_list[j] != NULL) {
         memcpy(&server.sin_addr, server_hp.h_addr_list[j],
@@ -517,6 +528,7 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
             break; 
         j++;
     }   
+#endif
     if (i == -1)
 	return proxyerror(r, "Could not connect to remote machine");
 

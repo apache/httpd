@@ -51,6 +51,7 @@
  */
 
 #include "mod_proxy.h"
+#include "http_log.h"
 
 /* Some WWW schemes and their default ports; this is basically /etc/services */
 /* This will become global when the protocol abstraction comes */
@@ -186,6 +187,76 @@ proxy_init(server_rec *r, pool *p)
 } 
 
 
+
+/* Send a redirection if the request contains a hostname which is not */
+/* fully qualified, i.e. doesn't have a domain name appended. Some proxy */
+/* servers like Netscape's allow this and access hosts from the local */
+/* domain in this case. I think it is better to redirect to a FQDN, since */
+/* these will later be found in the bookmarks files. */
+/* The "ProxyDomain" directive determines what domain will be appended */
+int
+proxy_needsdomain(request_rec *r, const char *url, const char *domain)
+{
+    char *scheme = pstrdup (r->pool, url);
+    char *url_copy, *user = NULL, *password = NULL, *path, *err, *host;
+    int port = -1;
+
+    /* We only want to worry about GETs */
+    if (r->method_number != M_GET) return DECLINED;
+
+    /* Set url to the first char after "scheme://" */
+    if ((url_copy = strchr(scheme,':')) == NULL
+	|| url_copy[1] != '/' || url_copy[2] != '/')
+	return DECLINED;
+
+    *url_copy++ = '\0';	/* delimit scheme, make url_copy point to "//", which is what proxy_canon_netloc expects */
+
+    /* Save the path - it will be re-appended for the redirection later */
+    path = strchr(&url_copy[2], '/');
+    if (path != NULL)
+	++path;	    /* leading '/' will be overwritten by proxy_canon_netloc */
+    else
+	path = "";
+
+    /* Split request into user, password, host, port */
+    err = proxy_canon_netloc(r->pool, &url_copy, &user, &password, &host, &port);
+
+    if (err != NULL)
+    {
+	log_error(err, r->server);
+	return DECLINED;
+    }
+
+    /* If host does contain a dot already, or it is "localhost", decline */
+    if (strchr (host, '.') != NULL || strcasecmp(host, "localhost") == 0)
+	return DECLINED;	/* host name has a dot already */
+    else
+    {
+	char *nuri;
+	char *ref = table_get(r->headers_in, "Referer");
+	char strport[10];
+
+	/* now, rebuild URL */
+	if (port == -1)
+	    strcpy (strport, "");
+	else
+	    ap_snprintf(strport, sizeof(strport), ":%d", port);
+
+	/* Reassemble the request, but insert the domain after the host name */
+	nuri = pstrcat(r->pool, scheme, "://", (user != NULL) ? user : "",
+		       (password != NULL) ? ":" : "",
+		       (password != NULL) ? password : "",
+		       (user != NULL) ? "@" : "",
+		       host, domain, strport, "/", path,
+		       NULL);
+
+	table_set(r->headers_out, "Location", nuri);
+	log_error(pstrcat(r->pool, "Domain missing: ", r->uri, " sent to ", nuri,
+		      ref ? " from " : NULL, ref, NULL), r->server);
+	return REDIRECT;
+    }
+}
+
 /* -------------------------------------------------------------- */
 /* Invoke handler */
  
@@ -200,6 +271,7 @@ proxy_handler(request_rec *r)
     struct proxy_remote *ents=(struct proxy_remote *)proxies->elts;
     int i, rc;
     struct cache_req *cr;
+    int direct_connect = 0;
 
     if (strncmp(r->filename, "proxy:", 6) != 0) return DECLINED;
 
@@ -213,12 +285,44 @@ proxy_handler(request_rec *r)
     rc = proxy_cache_check(r, url, &conf->cache, &cr);
     if (rc != DECLINED) return rc;
 
+    /* If the host doesn't have a domain name, add one and redirect. */
+    if (conf->domain != NULL
+	&& proxy_needsdomain(r, url, conf->domain) == REDIRECT)
+	return REDIRECT;
+
     *p = '\0';
     scheme = pstrdup(r->pool, url);
     *p = ':';
 
-/* firstly, try a proxy */
+    /* Check URI's destination host against NoProxy hosts */
+    /* Bypass ProxyRemote server lookup if configured as NoProxy */
+    /* we only know how to handle communication to a proxy via http */
+    /*if (strcmp(scheme, "http") == 0)*/
+    {
+	int i;
+	struct dirconn_entry *list=(struct dirconn_entry*)conf->dirconn->elts;
 
+/*        if (*++p == '/' && *++p == '/')   */
+
+	for (direct_connect=i=0; i < conf->dirconn->nelts && !direct_connect; i++)
+	{
+	    direct_connect = list[i].matcher (&list[i], r);
+	    /*log_error("URI and NoProxy:", r->server);*/
+	    /*log_error(r->uri, r->server);*/
+	    /*log_error(list[i].name, r->server);*/
+	}
+#if DEBUGGING
+	{
+	    char msg[256];
+	    sprintf (msg, (direct_connect)?"NoProxy for %s":"UseProxy for %s", r->uri);
+	    log_error(msg, r->server);
+	}
+#endif
+    }
+	
+/* firstly, try a proxy, unless a NoProxy directive is active */
+
+    if (!direct_connect)
     for (i=0; i < proxies->nelts; i++)
     {
 	p = strchr(ents[i].scheme, ':');  /* is it a partial URL? */
@@ -264,7 +368,9 @@ create_proxy_config(pool *p, server_rec *s)
   ps->proxies = make_array(p, 10, sizeof(struct proxy_remote));
   ps->aliases = make_array(p, 10, sizeof(struct proxy_alias));
   ps->noproxies = make_array(p, 10, sizeof(struct noproxy_entry));
+  ps->dirconn = make_array(p, 10, sizeof(struct dirconn_entry));
   ps->nocaches = make_array(p, 10, sizeof(struct nocache_entry));
+  ps->domain = NULL;
   ps->req = 0;
 
   ps->cache.root = NULL;
@@ -363,6 +469,77 @@ set_proxy_exclude(cmd_parms *parms, void *dummy, char *arg)
 	else
 	    new->addr.s_addr = 0;
     }
+    return NULL;
+}
+
+/* Similar to set_proxy_exclude(), but defining directly connected hosts,
+ * which should never be accessed via the configured ProxyRemote servers
+ */
+static const char *
+set_proxy_dirconn(cmd_parms *parms, void *dummy, char *arg)
+{
+    server_rec *s = parms->server;
+    proxy_server_conf *conf =
+	get_module_config (s->module_config, &proxy_module);
+    struct dirconn_entry *New;
+    struct dirconn_entry *list=(struct dirconn_entry*)conf->dirconn->elts;
+    int found = 0;
+    int i;
+
+    /* Don't duplicate entries */
+    for (i=0; i < conf->dirconn->nelts; i++)
+    {
+	if (strcasecmp(arg, list[i].name) == 0)
+	    found = 1;
+    }
+
+    if (!found)
+    {
+	New = push_array (conf->dirconn);
+	New->name = arg;
+
+	if (proxy_is_ipaddr(New))
+	{
+#if DEBUGGING
+	    fprintf(stderr,"Parsed addr %s\n", inet_ntoa(New->addr));
+	    fprintf(stderr,"Parsed mask %s\n", inet_ntoa(New->mask));
+#endif
+	}
+	else if (proxy_is_domainname(New))
+	{
+	    str_tolower(New->name);
+#if DEBUGGING
+	    fprintf(stderr,"Parsed domain %s\n", New->name);
+#endif
+	}
+	else if (proxy_is_hostname(New))
+	{
+	    str_tolower(New->name);
+#if DEBUGGING
+	    fprintf(stderr,"Parsed host %s\n", New->name);
+#endif
+	}
+	else
+	{
+	    proxy_is_word(New);
+#if DEBUGGING
+	    fprintf(stderr,"Parsed word %s\n", New->name);
+#endif
+	}
+    }
+    return NULL;
+}
+
+static const char *
+set_proxy_domain(cmd_parms *parms, void *dummy, char *arg)
+{
+    proxy_server_conf *psf =
+	get_module_config (parms->server->module_config, &proxy_module);
+
+    if (arg[0] != '.')
+	return "Domain name must start with a dot.";
+
+    psf->domain = arg;
     return NULL;
 }
 
@@ -519,6 +696,10 @@ static command_rec proxy_cmds[] = {
     "a virtual path and a URL"},
 { "ProxyBlock", set_proxy_exclude, NULL, RSRC_CONF, ITERATE,
     "A list of names, hosts or domains to which the proxy will not connect" },
+{ "NoProxy", set_proxy_dirconn, NULL, RSRC_CONF, ITERATE,
+    "A list of domains, hosts, or subnets to which the proxy will connect directly" },
+{ "ProxyDomain", set_proxy_domain, NULL, RSRC_CONF, TAKE1,
+    "The default intranet domain name (in absence of a domain in the URL)" },
 { "CacheRoot", set_cache_root, NULL, RSRC_CONF, TAKE1,
       "The directory to store cache files"},
 { "CacheSize", set_cache_size, NULL, RSRC_CONF, TAKE1,

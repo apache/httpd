@@ -56,6 +56,12 @@
 #include "http_main.h"
 #include "md5.h"
 #include "multithread.h"
+#include "http_log.h"
+
+static int proxy_match_ipaddr(struct dirconn_entry *This, request_rec *r);
+static int proxy_match_domainname(struct dirconn_entry *This, request_rec *r);
+static int proxy_match_hostname(struct dirconn_entry *This, request_rec *r);
+static int proxy_match_word(struct dirconn_entry *This, request_rec *r);
 
 /* already called in the knowledge that the characters are hex digits */
 int
@@ -245,6 +251,9 @@ proxy_canon_netloc(pool *pool, char **const urlp, char **userp,
 	    return "Bad IP address in URL";
     }
 
+/*    if (strchr(host,'.') == NULL && domain != NULL)
+	host = pstrcat(pool, host, domain, NULL);
+*/
     *urlp = url;
     *hostp = host;
 
@@ -796,6 +805,354 @@ proxy_host2addr(const char *host, struct hostent *reqhp)
     }
     memcpy(reqhp, hp, sizeof(struct hostent));
     return NULL;
+}
+
+char *
+proxy_get_host_of_request(request_rec *r)
+{
+    char *url, *user = NULL, *password = NULL, *err, *host;
+    int port = -1;
+
+    if (r->hostname != NULL)
+	return r->hostname;
+
+    /* Set url to the first char after "scheme://" */
+    if ((url = strchr(r->uri,':')) == NULL
+	|| url[1] != '/' || url[2] != '/')
+	return NULL;
+
+    url = pstrdup(r->pool, &url[1]); /* make it point to "//", which is what proxy_canon_netloc expects */
+
+    err = proxy_canon_netloc(r->pool, &url, &user, &password, &host, &port);
+
+    if (err != NULL)
+	log_error(err, r->server);
+
+    r->hostname = host;
+
+    return host;        /* ought to return the port, too */
+}
+
+/* Return TRUE if addr represents an IP address (or an IP network address)*/
+int
+proxy_is_ipaddr(struct dirconn_entry *This)
+{
+    const char *addr = This->name;
+    unsigned long ip_addr[4];
+    int i,quads;
+    unsigned long bits;
+
+    /* if the address is given with an explicit netmask, use that */
+    /* Due to a deficiency in inet_addr(), it is impossible to parse */
+    /* "partial" addresses (with less than 4 quads) correctly, i.e.  */
+    /* 192.168.123 is parsed as 192.168.0.123, which is not what I want. */
+    /* I therefore have to parse the IP address manually: */
+    /*if (proxy_readmask(This->name, &This->addr.s_addr, &This->mask.s_addr) == 0)*/
+	/* addr and mask were set by proxy_readmask() */
+	/*return 1;*/
+
+    /* Parse IP addr manually, optionally allowing */
+    /* abbreviated net addresses like 192.168. */
+
+/*    quads = sscanf(what, "%d.%d.%d.%d", &ip_addr[0], &ip_addr[1],
+				  &ip_addr[2], &ip_addr[3]);
+    commented out: use of strtok() allows arbitrary base, like in:
+    139.25.113.10 == 0x8b.0x19.0x71.0x0a
+    (yes, inet_addr() can parse that, too!)
+ */
+
+    /* Iterate over up to 4 (dotted) quads. */
+    for (quads=0; quads<4 && *addr != '\0'; ++quads)
+    {
+	char *tmp;
+
+	if (*addr == '/' && quads > 0)  /* netmask starts here. */
+	    break;
+
+	if (!isdigit(*addr))
+	    return 0;       /* no digit at start of quad */
+
+	ip_addr[quads] = strtoul(addr, &tmp, 0);
+
+	if (tmp == addr)    /* expected a digit, found something else */
+	    return 0;
+
+	addr = tmp;
+
+	if (*addr == '.' && quads != 3)
+	    ++addr;            /* after the 4th quad, a dot would be illegal */
+    }
+
+    for (This->addr.s_addr = 0, i=0; i<quads; ++i)
+	This->addr.s_addr |= htonl(ip_addr[i] << (24 - 8*i));
+
+    if (addr[0] == '/' && isdigit(addr[1]))    /* net mask follows: */
+    {
+	char *tmp;
+
+	++addr;
+
+	bits = strtoul(addr, &tmp, 0);
+
+	if (tmp == addr)    /* expected a digit, found something else */
+	    return 0;
+
+	addr = tmp;
+
+	if (bits > 32)    /* netmask must be between 0 and 32 */
+	    return 0;
+
+    }
+    else
+    {
+	/* Determine (i.e., "guess") netmask by counting the */
+	/* number of trailing .0's; reduce #quads appropriately */
+	/* (so that 192.168.0.0 is equivalent to 192.168.)        */
+	while (quads > 0 && ip_addr[quads-1] == 0)
+	    --quads;
+
+	/* "IP Address should be given in dotted-quad form, optionally followed by a netmask (e.g., 192.168.111.0/24)"; */
+	if (quads < 1)
+	    return 0;
+
+	/* every zero-byte counts as 8 zero-bits */
+	bits = 8*quads;
+
+	if (bits != 32)  /* no warning for fully qualified IP address */
+	    fprintf(stderr,"Warning: NetMask not supplied with IP-Addr; guessing: %s/%ld\n",
+			   inet_ntoa(This->addr), bits);
+    }
+
+    This->mask.s_addr = htonl(INADDR_NONE << (32 - bits));
+
+    if (*addr == '\0' && (This->addr.s_addr & ~This->mask.s_addr) != 0)
+    {
+	fprintf(stderr,"Warning: NetMask and IP-Addr disagree in %s/%ld\n",
+		       inet_ntoa(This->addr), bits);
+	This->addr.s_addr &= This->mask.s_addr;
+	fprintf(stderr,"         Set to %s/%ld\n",
+		       inet_ntoa(This->addr), bits);
+    }
+
+    if (*addr == '\0')
+    {
+	This->matcher = proxy_match_ipaddr;
+	return 1;
+    }
+    else
+    return (*addr == '\0');   /* okay iff we've parsed the whole string */
+}
+
+/* Return TRUE if addr represents an IP address (or an IP network address)*/
+static int
+proxy_match_ipaddr(struct dirconn_entry *This, request_rec *r)
+{
+    int i;
+    int ip_addr[4];
+    struct in_addr addr;
+    struct in_addr *ip_list;
+    const char *found;
+    const char *host = proxy_get_host_of_request(r);
+
+    memset (&addr, '\0', sizeof addr);
+    memset (ip_addr, '\0', sizeof ip_addr);
+
+    if ( 4 == sscanf(host, "%d.%d.%d.%d", &ip_addr[0], &ip_addr[1], &ip_addr[2], &ip_addr[3]))
+    {
+	for (addr.s_addr = 0, i=0; i<4; ++i)
+	    addr.s_addr |= htonl(ip_addr[i] << (24 - 8*i));
+
+	if (This->addr.s_addr == (addr.s_addr & This->mask.s_addr))
+	{
+#if DEBUGGING
+	    fprintf(stderr,"1)IP-Match: %s[%s] <-> ", host, inet_ntoa(addr));
+	    fprintf(stderr,"%s/", inet_ntoa(This->addr));
+	    fprintf(stderr,"%s\n", inet_ntoa(This->mask));
+#endif
+	    return 1;
+	}
+#if DEBUGGING
+	else
+	{
+	    fprintf(stderr,"1)IP-NoMatch: %s[%s] <-> ", host, inet_ntoa(addr));
+	    fprintf(stderr,"%s/", inet_ntoa(This->addr));
+	    fprintf(stderr,"%s\n", inet_ntoa(This->mask));
+	}
+#endif
+    }
+    else
+    {
+	struct hostent the_host;
+
+	memset (&the_host, '\0', sizeof the_host);
+	found = proxy_host2addr(host, &the_host);
+
+	if ( found != NULL )
+	{
+#if DEBUGGING
+	    fprintf(stderr,"2)IP-NoMatch: hostname=%s msg=%s\n", host, found);
+#endif
+	    return 0;
+	}
+
+	if (the_host.h_name != NULL)
+	    found = the_host.h_name;
+	else
+	    found = host;
+
+	/* Try to deal with multiple IP addr's for a host */
+	for (ip_list = (struct in_addr *) *the_host.h_addr_list; ip_list->s_addr != 0UL; ++ip_list)
+	    if (This->addr.s_addr == (ip_list->s_addr & This->mask.s_addr))
+	    {
+#if DEBUGGING
+		fprintf(stderr,"3)IP-Match: %s[%s] <-> ", found, inet_ntoa(*ip_list));
+		fprintf(stderr,"%s/", inet_ntoa(This->addr));
+		fprintf(stderr,"%s\n", inet_ntoa(This->mask));
+#endif
+		return 1;
+	    }
+#if DEBUGGING
+	    else
+	    {
+		fprintf(stderr,"3)IP-NoMatch: %s[%s] <-> ", found, inet_ntoa(*ip_list));
+		fprintf(stderr,"%s/", inet_ntoa(This->addr));
+		fprintf(stderr,"%s\n", inet_ntoa(This->mask));
+	    }
+#endif
+    }
+
+    /* Use net math to determine if a host lies in a subnet */
+    /*return This->addr.s_addr == (r->connection->remote_addr.sin_addr.s_addr & This->mask.s_addr);*/
+    return 0;
+}
+
+/* Return TRUE if addr represents a domain name */
+int
+proxy_is_domainname(struct dirconn_entry *This)
+{
+    char *addr = This->name;
+    int i;
+
+    /* Domain name must start with a '.' */
+    if (addr[0] != '.')
+	return 0;
+
+    /* rfc1035 says DNS names must consist of "[-a-zA-Z0-9]" and '.' */
+    for (i=0; isalnum(addr[i]) || addr[i]=='-' || addr[i]=='.'; ++i)
+	;
+
+    if (addr[i] == ':')
+    {
+	fprintf(stderr,"@@@@ handle optional port in proxy_is_domainname()\n");
+	/* @@@@ handle optional port */
+    }
+
+    if (addr[i] != '\0')
+	return 0;
+
+    /* Strip trailing dots */
+    for (i=strlen(addr)-1; i>0 && addr[i] == '.'; --i)
+	addr[i] = '\0';
+
+    This->matcher = proxy_match_domainname;
+    return 1;
+}
+
+/* Return TRUE if host "host" is in domain "domain" */
+static int
+proxy_match_domainname(struct dirconn_entry *This, request_rec *r)
+{
+    const char *host = proxy_get_host_of_request(r);
+    int d_len=strlen(This->name), h_len;
+
+    if (host == NULL)   /* some error was logged already */
+	return 0;
+
+    h_len = strlen(host);
+
+    /* @@@ do this within the setup? */
+    /* Ignore trailing dots in domain comparison: */
+    while (d_len > 0 && This->name[d_len-1] == '.')
+	--d_len;
+    while (h_len > 0 && host[h_len-1] == '.')
+	--h_len;
+    return h_len > d_len
+	&& strncasecmp(&host[h_len-d_len], This->name, d_len) == 0;
+}
+
+/* Return TRUE if addr represents a host name */
+int
+proxy_is_hostname(struct dirconn_entry *This)
+{
+    char *addr = This->name;
+    int i;
+
+    /* Host names must not start with a '.' */
+    if (addr[0] == '.')
+	return 0;
+
+    /* rfc1035 says DNS names must consist of "[-a-zA-Z0-9]" and '.' */
+    for (i=0; isalnum(addr[i]) || addr[i]=='-' || addr[i]=='.'; ++i)
+	;
+
+    if (addr[i] == ':')
+    {
+	fprintf(stderr,"@@@@ handle optional port in proxy_is_hostname()\n");
+	/* @@@@ handle optional port */
+    }
+
+    if (addr[i] != '\0' || proxy_host2addr(addr, &This->hostlist) != NULL)
+	return 0;
+
+    /* Strip trailing dots */
+    for (i=strlen(addr)-1; i>0 && addr[i] == '.'; --i)
+	addr[i] = '\0';
+
+    This->matcher = proxy_match_hostname;
+    return 1;
+}
+
+/* Return TRUE if host "host" is equal to host2 "host2" */
+static int
+proxy_match_hostname(struct dirconn_entry *This, request_rec *r)
+{
+    char *host = This->name;
+    char *host2 = proxy_get_host_of_request(r);
+    int h2_len=strlen(host2);
+    int h1_len=strlen(host);
+
+#if 0
+    unsigned long *ip_list;
+
+    /* Try to deal with multiple IP addr's for a host */
+    for (ip_list = *This->hostlist.h_addr_list; *ip_list != 0UL; ++ip_list)
+	if (*ip_list == ?????????????)
+	    return 1;
+#endif
+
+    /* Ignore trailing dots in host2 comparison: */
+    while (h2_len > 0 && host2[h2_len-1] == '.')
+	--h2_len;
+    while (h1_len > 0 && host[h1_len-1] == '.')
+	--h1_len;
+    return h1_len == h2_len
+	&& strncasecmp(host, host2, h1_len) == 0;
+}
+
+/* Return TRUE if addr is to be matched as a word */
+int
+proxy_is_word(struct dirconn_entry *This)
+{
+    This->matcher = proxy_match_word;
+    return 1;
+}
+
+/* Return TRUE if string "str2" occurs literally in "str1" */
+static int
+proxy_match_word(struct dirconn_entry *This, request_rec *r)
+{
+    char *host = proxy_get_host_of_request(r);
+    return host != NULL  &&  strstr(host, This->name) != NULL;
 }
 
 int

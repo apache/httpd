@@ -151,6 +151,13 @@ struct proxy_alias {
     char *fake;
 };
 
+struct dirconn_entry {
+    char *name;
+    struct in_addr addr,mask;
+    struct hostent hostlist;
+    int (*matcher)(struct dirconn_entry *This, request_rec *r);
+};
+
 struct noproxy_entry {
     char *name;
     struct in_addr addr;
@@ -185,7 +192,9 @@ typedef struct
     array_header *proxies;
     array_header *aliases;
     array_header *noproxies;
+    array_header *dirconn;
     array_header *nocaches;
+    char         *domain;    /* domain name to use in absence of a domain name in the request */
     int req;                 /* true if proxy requests are enabled */
 } proxy_server_conf;
 
@@ -269,6 +278,10 @@ void proxy_log_uerror(const char *routine, const char *file, const char *err,
 BUFF *proxy_cache_error(struct cache_req *r);
 int proxyerror(request_rec *r, const char *message);
 const char *proxy_host2addr(const char *host, struct hostent *reqhp);
+int proxy_is_ipaddr(struct dirconn_entry *This);
+int proxy_is_domainname(struct dirconn_entry *This);
+int proxy_is_hostname(struct dirconn_entry *This);
+int proxy_is_word(struct dirconn_entry *This);
 int proxy_doconnect(int sock, struct sockaddr_in *addr, request_rec *r);
 int proxy_garbage_init(server_rec *, pool *);
 
