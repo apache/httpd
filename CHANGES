@@ -1,3 +1,11 @@
+Changes with Apache 2.0.43
+
+  *) Add -p option to apxs to allow programs to be compiled with apxs.
+     [Justin Erenkrantz]
+
+  *) Rewrite of aaa modules to an authn/authz model.
+     [Dirk-Willem van Gulik, Justin Erenkrantz]
+
 Changes with Apache 2.0.42
 
   *) mod_dav: Check for versioning hooks before using them.
