@@ -94,3 +94,4 @@ typedef struct {
 #define HARD_SERVER_MAX 150
 
 extern void sync_scoreboard_image(void);
+short_score get_scoreboard_info(int x);

@@ -2058,8 +2058,8 @@ ftp_getrc(BUFF *f)
     
     if (linebuff[len-1] != '\n')
     {
-	len = bskiplf(f);
-	if (len != 1) return len;
+	i = bskiplf(f);
+	if (i != 1) return i;
     }
 
 /* skip continuation lines */    
@@ -2074,8 +2074,8 @@ ftp_getrc(BUFF *f)
 	    if (len < 5) return 0;
 	    if (linebuff[len-1] != '\n')
 	    {
-		len = bskiplf(f);
-		if (len != 1) return i;
+		i = bskiplf(f);
+		if (i != 1) return i;
 	    }
 	} while (memcmp(linebuff, buff, 4) != 0);
     }

@@ -518,3 +518,5 @@ void chdir_file(char *file);
      
 char *get_local_host(pool *);
 unsigned long get_virthost_addr (char *hostname, short int *port);
+
+time_t restart_time;

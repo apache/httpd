@@ -126,10 +126,6 @@ void show_time(request_rec *r,time_t tsecs)
     rputs(buf,r);
 }
 
-
-extern short_score get_scoreboard_info(int x);
-extern time_t restart_time;
-
 /* Main handler for x-httpd-status requests */
 
 int status_handler (request_rec *r)
