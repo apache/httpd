@@ -1097,7 +1097,7 @@ static void cleanup_thread(thread **handles, int *thread_cnt, int thread_to_clea
 {
     int i;
 
-    free_thread(handles[thread_to_clean]);
+    CloseHandle(handles[thread_to_clean]);
     for (i = thread_to_clean; i < ((*thread_cnt) - 1); i++)
 	handles[i] = handles[i + 1];
     (*thread_cnt)--;
@@ -1116,7 +1116,7 @@ static void cleanup_thread(thread **handles, int *thread_cnt, int thread_to_clea
 static void child_main()
 {
     int nthreads = ap_threads_per_child;
-
+    int thread_id;
     thread **child_handles;
     int rv;
     ap_status_t status;
@@ -1173,12 +1173,14 @@ static void child_main()
     ap_log_error(APLOG_MARK,APLOG_INFO, APR_SUCCESS, server_conf, "Child %d: Creating %d worker threads",my_pid, nthreads);
     child_handles = (thread *) alloca(nthreads * sizeof(int));
     for (i = 0; i < nthreads; i++) {
-        child_handles[i] = create_thread((void (*)(void *)) worker_main, (void *) i);
+        child_handles[i] = (thread *) _beginthreadex(NULL, 0, (LPTHREAD_START_ROUTINE) worker_main,
+                                                     NULL, 0, &thread_id);
     }
 
     if (osver.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) {
         /* Win95/98: Create the accept thread */
-        create_thread((void (*)(void *)) accept_and_queue_connections, (void *) NULL);
+        _beginthreadex(NULL, 0, (LPTHREAD_START_ROUTINE) accept_and_queue_connections,
+                       (void *) i, 0, &thread_id);
     }
 
     /* Wait for the exit event to be signaled by the parent process */
@@ -1224,8 +1226,8 @@ static void child_main()
         break;
     }
     for (i = 0; i < nthreads; i++) {
-	kill_thread(child_handles[i]);
-	free_thread(child_handles[i]);
+        TerminateThread(child_handles[i], 1);
+        CloseHandle(child_handles[i]);
     }
     ap_log_error(APLOG_MARK,APLOG_INFO, APR_SUCCESS, server_conf, 
                  "Child %d: All worker threads have ended.", my_pid);
