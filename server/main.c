@@ -265,8 +265,6 @@ static void usage(process_rec *process)
 
 ap_context_t *g_pHookPool;
 
-API_VAR_IMPORT char *optarg;
-
 #ifdef WIN32
 API_EXPORT_NONSTD(int) apache_main(int argc, char *argv[])
 #else
@@ -303,17 +301,17 @@ API_EXPORT_NONSTD(int)        main(int argc, char *argv[])
         switch (c) {
  	case 'c':
 	    new = (char **)ap_push_array(ap_server_post_read_config);
-	    *new = ap_pstrdup(pcommands, optarg);
+	    *new = ap_pstrdup(pcommands, ap_optarg);
 	    break;
 	case 'C':
 	    new = (char **)ap_push_array(ap_server_pre_read_config);
-	    *new = ap_pstrdup(pcommands, optarg);
+	    *new = ap_pstrdup(pcommands, ap_optarg);
 	    break;
 	case 'd':
-	    def_server_root = optarg;
+	    def_server_root = ap_optarg;
 	    break;
 	case 'f':
-	    confname = optarg;
+	    confname = ap_optarg;
 	    break;
 	case 'v':
 	    printf("Server version: %s\n", ap_get_server_version());
