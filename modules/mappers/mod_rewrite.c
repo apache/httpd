@@ -2834,13 +2834,6 @@ static unsigned is_absolute_uri(char *uri)
             return 7;
         }
         break;
-
-    case 'p':
-    case 'P':
-        if (!strncasecmp(uri, "roxy:", 5)) {       /* proxy:   */
-            return 6;
-        }
-        break;
     }
 
     return 0;
