@@ -12,7 +12,7 @@ Changes with Apache 1.3b6
   *) BUG: Configure was using TCC and CC inconsistantly. Make sure
      Configure knows which CC we are using. [Jim Jagielski]
 
-  *) "Options +Includes" wasn't corrently merged if "+IncludesNoExec"
+  *) "Options +Includes" wasn't correctly merged if "+IncludesNoExec"
      was defined in a parent directory. [Lars Eilebrecht]
 
   *) API: ap_snprintf() code mutated into apapi_vformatter(), which is
