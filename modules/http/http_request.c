@@ -438,14 +438,14 @@ AP_DECLARE(void) ap_internal_redirect(const char *new_uri, request_rec *r)
     request_rec *new = internal_internal_redirect(new_uri, r);
     int access_status = ap_process_request_internal(new);
     if (access_status == OK) {
-        if ((access_status = ap_invoke_handler(r)) != 0) {
-            ap_die(access_status, r);
+        if ((access_status = ap_invoke_handler(new)) != 0) {
+            ap_die(access_status, new);
             return;
         }
-        ap_finalize_request_protocol(r);
+        ap_finalize_request_protocol(new);
     }
     else {
-        ap_die(access_status, r);
+        ap_die(access_status, new);
     }
 }
 
@@ -461,14 +461,14 @@ AP_DECLARE(void) ap_internal_redirect_handler(const char *new_uri, request_rec *
         new->content_type = r->content_type;
     access_status = ap_process_request_internal(new);
     if (access_status == OK) {
-        if ((access_status = ap_invoke_handler(r)) != 0) {
-            ap_die(access_status, r);
+        if ((access_status = ap_invoke_handler(new)) != 0) {
+            ap_die(access_status, new);
             return;
         }
-        ap_finalize_request_protocol(r);
+        ap_finalize_request_protocol(new);
     }
     else {
-        ap_die(access_status, r);
+        ap_die(access_status, new);
     }
 }
 
