@@ -186,7 +186,6 @@ FILES_nlm_modules = \
 	lldapsdk \
 	lldapssl \
 	lldapx \
-	utilldap \
 	$(EOLIST)
 
 #
