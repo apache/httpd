@@ -1329,13 +1329,10 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
             break;
 
         case TOKEN_RBRACE:
-            while (current) {
-                if (current->token.type == TOKEN_LBRACE) {
-                    TYPE_TOKEN(&current->token, TOKEN_GROUP);
-                    break;
-                }
+            while (current && current->token.type != TOKEN_LBRACE) {
                 current = current->parent;
             }
+
             if (!current) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                               "Unmatched ')' in \"%s\" in file %s",
@@ -1343,6 +1340,8 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
                 *was_error = 1;
                 return retval;
             }
+
+            TYPE_TOKEN(&current->token, TOKEN_GROUP);
             break;
 
         case TOKEN_NOT:
