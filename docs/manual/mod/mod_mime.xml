@@ -30,18 +30,14 @@
     module="mod_mime">AddType</directive> are all used to map file
     extensions onto the meta-information for that file. Respectively
     they set the character set, content-encoding, content-language,
-    and MIME-type (content-type) of documents.</p>
+    and MIME-type (content-type) of documents.  The directive <directive
+    module="mod_mime">TypesConfig</directive> is used to specify a
+    file which also maps extensions onto MIME types. </p>
 
-    <p>In addition, <module>mod_mime</module> may define the "handler"
-    for a document, which controls what module or script will serve
-    the document. With the introduction of "filters" in Apache 2.0,
-    <module>mod_mime</module> can also define the filters that the the
-    content should be processed through (e.g. the Includes output
-    filter for server side scripting) and what filters the client
-    request and POST content should be processed through (the input
-    filters.)</p>
-
-    <p>The directives <directive
+    <p>In addition, <module>mod_mime</module> may define the <a
+    href="../handler.html">handler</a> and <a
+    href="../filter.html">filters</a> that originate and process
+    content.  The directives <directive
     module="mod_mime">AddHandler</directive>, <directive
     module="mod_mime">AddOutputFilter</directive>, and <directive
     module="mod_mime">AddInputFilter</directive> control the modules
@@ -50,36 +46,20 @@
     <module>mod_negotiation</module> to consider these file extensions
     to included when testing Multiviews matches.</p>
 
-    <p>The directive <directive
-    module="mod_mime">TypesConfig</directive> is used to specify a
-    file which also maps extensions onto MIME types.  Most
-    administrators use the provided mime.types file which associates
-    common filename extensions with IANA registered content types. The
-    current list is maintained at
-    <code>http://www.isi.edu/in-notes/iana/assignments/media-types/media-types</code>. This
-    simplifies the <code>httpd.conf</code> file by providing the
-    majority of media-type definitions, and they may be overridden by
-    <directive module="mod_mime">AddType</directive> directives as
-    needed.</p>
-
-    <note>Please do not send requests to the Apache httpd Project
-    to add any new entries in the distributed mime.types file
-    unless (1) they are already registered with IANA, and (2) they
-    use widely accepted, non-conflicting filename extensions across
-    platforms. category/x-subtype requests will be automatically
-    rejected, as will any new two-letter extensions as they will
-    likely conflict later with the already crowded language and
-    character set namespace.</note>
-
-    <p>The core directives <directive
-    module="core">ForceType</directive> and <directive
-    module="core">SetHandler</directive> are used to associate all the
-    files in a given container (<em>e.g.</em>, <directive
-    type="section" module="core">location</directive>, <directive
-    type="section" module="core">director</directive>, or <directive
-    type="section" module="core">Files</directive>) with a particular
-    MIME-type or handler. These settings override any filename
-    extension mappings defined in <module>mod_mime</module>.</p>
+    <p>While <module>mod_mime</module> associates meta-information
+    with filename extensions, the <module>core</module> server
+    provides directives that are used to associate all the files in a
+    given container (<em>e.g.</em>, <directive type="section"
+    module="core">location</directive>, <directive type="section"
+    module="core">directory</directive>, or <directive type="section"
+    module="core">Files</directive>) with particular
+    meta-information. These directives include <directive
+    module="core">ForceType</directive>, <directive
+    module="core">SetHandler</directive>, <directive
+    module="core">SetInputFilter</directive>, and <directive
+    module="core">SetOutputFilter</directive>.  The core directives
+    override any filename extension mappings defined in
+    <module>mod_mime</module>.</p>
 
     <p>Note that changing the meta-information for a file does not
     change the value of the <code>Last-Modified</code> header.
@@ -93,8 +73,9 @@
 
     <seealso><directive
     module="mod_mime_magic">MimeMagicFile</directive></seealso>
-<seealso><directive module="core">DefaultType</directive></seealso>
 <seealso><directive module="core">AddDefaultCharset</directive></seealso>
+<seealso><directive module="core">ForceType</directive></seealso>
+<seealso><directive module="core">DefaultType</directive></seealso>
 <seealso><directive module="core">SetHandler</directive></seealso>
 <seealso><directive module="core">SetInputFilter</directive></seealso>
 <seealso><directive module="core">SetOutputFilter</directive></seealso>
@@ -326,8 +307,6 @@ Content-Type: text/plain; charset=ISO-8859-2
     be specified with or without a leading dot.</p>
 
 </usage>
-<seealso><a href="#multipleext">Files with
-    multiple extensions</a></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -346,10 +325,12 @@ to the specified handler</description>
 <compatibility></compatibility>
 
 <usage>
-<p>This mapping is added to any already in
-    force, overriding any mappings that already exist for the same
-    <em>extension</em>. For example, to activate CGI scripts with
-    the file extension "<code>.cgi</code>", you might use:</p>
+<p>Files having the named <em>extension</em> will be served by the
+specified <a href="../handler.html">handler-name</a>.  This mapping is
+added to any already in force, overriding any mappings that already
+exist for the same <em>extension</em>. For example, to activate CGI
+scripts with the file extension "<code>.cgi</code>", you might
+use:</p>
 
 <example>
     AddHandler cgi-script .cgi
@@ -363,9 +344,6 @@ to the specified handler</description>
     be specified with or without a leading dot.</p>
 
 </usage>
- <seealso><a href="#multipleext">Files with
-    multiple extensions</a></seealso>
-<seealso><a href="../handler.html">Handlers</a></seealso>
 <seealso><directive module="core">SetHandler</directive></seealso>
 </directivesynopsis>
 
@@ -388,15 +366,14 @@ to the specified handler</description>
 
 <usage>
 
-    <p>AddInputFilter maps the filename extensions
-    <em>extension</em> to the filter or filters which will process
+    <p>AddInputFilter maps the filename extensions <em>extension</em>
+    to the <a href="../filter.html">filters</a> which will process
     client requests and POST input when they are received by the
     server. This is in addition to any filters defined elsewhere,
     including the <a
     href="core.html#setinputfilter">SetInputFilter</a> directive.
-    This mapping is merged over any already in force, overriding
-    any mappings that already exist for the same
-    <em>extension</em>.</p>
+    This mapping is merged over any already in force, overriding any
+    mappings that already exist for the same <em>extension</em>.</p>
 
     <p>If more than one filter is specified, they must be separated
     by semicolons in the order in which they should process the
@@ -405,9 +382,6 @@ to the specified handler</description>
     without a leading dot.</p>
 
 </usage>
-<seealso><a href="../filter.html">Filters</a>
-    documentation.</seealso>
-<seealso><directive module="core">SetInputFilter</directive></seealso>
 
 </directivesynopsis>
 
@@ -469,8 +443,6 @@ to the specified content language</description>
     be specified with or without a leading dot.</p>
 
 </usage>
-<seealso><a href="#multipleext">Files with
-    multiple extensions</a></seealso>
 <seealso><module>mod_negotiation</module></seealso>
 </directivesynopsis>
 
@@ -494,21 +466,23 @@ responses from the server</description>
 
 <usage>
 
-    <p>The <directive>AddOutputFilter</directive> directive maps the filename
-    extensions <em>extension</em> to the filters which will process
-    responses from the server before they are sent to the client.
-    This is in addition to any filters defined elsewhere, including
-    the <directive module="core">SetOutputFilter</directive>
+    <p>The <directive>AddOutputFilter</directive> directive maps the
+    filename extensions <em>extension</em> to the <a
+    href="../filter.html">filters</a> which will process responses
+    from the server before they are sent to the client.  This is in
+    addition to any filters defined elsewhere, including the
+    <directive module="core">SetOutputFilter</directive>
     directive. This mapping is merged over any already in force,
     overriding any mappings that already exist for the same
     <em>extension</em>.</p>
 
     <p>For example, the following configuration will process all
-    .shtml files for server-side includes.</p>
+    .shtml files for server-side includes and will then compress
+    the output using <module>mod_deflate</module>.</p>
      
 
     <example>
-      &nbsp;&nbsp;AddOutputFilter INCLUDES shtml
+      AddOutputFilter INCLUDES;DEFLATE shtml
     </example>
 
     <p>If more than one filter is specified, they must be separated
@@ -518,8 +492,6 @@ responses from the server</description>
     without a leading dot.</p>
 
 </usage>
-<seealso><a href="../filter.html">Filters</a> documentation</seealso>
-<seealso><directive module="core">SetOutputFilter</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -538,13 +510,13 @@ onto the specified content type</description>
 
 <usage>
 
-    <p>The AddType directive maps the given filename extensions
-    onto the specified content type. <em>MIME-type</em> is the MIME
-    type to use for filenames containing <em>extension</em>. This
-    mapping is added to any already in force, overriding any
-    mappings that already exist for the same <em>extension</em>.
-    This directive can be used to add mappings not listed in the
-    MIME types file (see the <directive>TypesConfig</directive>
+    <p>The AddType directive maps the given filename extensions onto
+    the specified content type. <em>MIME-type</em> is the MIME type to
+    use for filenames containing <em>extension</em>. This mapping is
+    added to any already in force, overriding any mappings that
+    already exist for the same <em>extension</em>.  This directive can
+    be used to add mappings not listed in the MIME types file (see the
+    <directive module="mod_mime">TypesConfig</directive>
     directive).</p>
     
     <p>Example:</p>
@@ -557,16 +529,12 @@ onto the specified content type</description>
     AddType directive rather than changing the 
     <directive>TypesConfig</directive> file. </note>
 
-    <note>Note that, unlike the NCSA httpd, this directive cannot be
-    used to set the type of particular files.</note>
-
     <p>The <em>extension</em> argument is case-insensitive, and can
     be specified with or without a leading dot.</p>
 
 </usage>
-<seealso><a href="#multipleext">Files with
-    multiple extensions</a></seealso>
 <seealso><directive module="core">DefaultType</directive></seealso>
+<seealso><directive module="core">ForceType</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -611,8 +579,15 @@ searching for a matching file with MultiViews</description>
     doesn't recognize the extension.  This was the behavior in Apache 1.3,
     and can cause unpredicatable results, such as serving .old or .bak
     files the webmaster never expected to be served.</p>
+
+    <p>For example, the following configuration will allow handlers
+    and filters to participate in Multviews, but will exclude unknown
+    files:</p>
+<example>
+MultiviewsMatch Handlers Filters
+</example>
+
 </usage>
-<seealso><module>mod_negotiation</module></seealso>
 <seealso><directive module="core">Options</directive></seealso>
 </directivesynopsis>
 
@@ -651,9 +626,11 @@ specified language</description>
     by <code>AddLanguage</code>, then that file will be considered
     to have no language attribute.</p>
 
+<example><title>Example</title>
+DeafaultLanguage en
+</example>
+
 </usage>
-<seealso><a href="#multipleext">Files with
-    multiple extensions</a></seealso>
 <seealso><module>mod_negotiation</module></seealso>
 </directivesynopsis>
 
@@ -680,6 +657,11 @@ extensions</description>
 
     <p>The <em>extension</em> argument is case-insensitive, and can
     be specified with or without a leading dot.</p>
+
+<example><title>Example</title>
+RemoveCharset .html .shtml
+</example>
+
 </usage>
 </directivesynopsis>
 
@@ -800,6 +782,7 @@ extensions</description>
 
     <p>The <em>extension</em> argument is case-insensitive, and can
     be specified with or without a leading dot.</p>
+
 </usage>
 </directivesynopsis>
 
@@ -903,8 +886,6 @@ extensions</description>
 </usage>
 </directivesynopsis>
 
-
-
 <directivesynopsis>
 <name>TypesConfig</name>
 <description>The location of the mime.types file</description>
@@ -916,23 +897,43 @@ extensions</description>
 
 <usage>
 
-    <p>The TypesConfig directive sets the location of the MIME
-    types configuration file. <em>Filename</em> is relative to the
-    <a href="core.html#serverroot">ServerRoot</a>. This file sets
-    the default list of mappings from filename extensions to
-    content types; changing this file is not recommended. Use the
-    <a href="#addtype">AddType</a> directive instead. The file
-    contains lines in the format of the arguments to an AddType
-    command:</p>
+    <p>The TypesConfig directive sets the location of the MIME types
+    configuration file. <em>Filename</em> is relative to the <a
+    href="core.html#serverroot">ServerRoot</a>. This file sets the
+    default list of mappings from filename extensions to content
+    types. Most administrators use the provided
+    <code>mime.types</code> file, which associates common filename
+    extensions with IANA registered content types. The current list is
+    maintained at
+    <code>http://www.isi.edu/in-notes/iana/assignments/media-types/media-types</code>. This
+    simplifies the <code>httpd.conf</code> file by providing the
+    majority of media-type definitions, and may be overridden by
+    <directive module="mod_mime">AddType</directive> directives as
+    needed.  You should not edit the <code>mime.types</code> file,
+    because it may be replaced when you upgrade your server.</p>
+   
+    <p>The file contains lines in the format of the arguments to
+    an <directive module="mod_mime">AddType</directive> directive:</p>
 
     <example>
       MIME-type extension extension ...
     </example>
 
     <p>
-    The extensions are lower-cased. Blank lines, and lines
+    The case of the extension does not matter. Blank lines, and lines
     beginning with a hash character (`#') are ignored. </p>
+
+    <note>Please do not send requests to the Apache HTTP Server Project
+    to add any new entries in the distributed mime.types file
+    unless (1) they are already registered with IANA, and (2) they
+    use widely accepted, non-conflicting filename extensions across
+    platforms. category/x-subtype requests will be automatically
+    rejected, as will any new two-letter extensions as they will
+    likely conflict later with the already crowded language and
+    character set namespace.</note>
+
 </usage>
+<seealso><module>mod_mime_magic</module></seealso>
 </directivesynopsis>
 </modulesynopsis>
 
