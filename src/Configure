@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: Configure,v 1.29 1996/10/22 04:21:44 akosut Exp $
+# $Id: Configure,v 1.30 1996/10/23 12:56:31 jim Exp $
 trap 'rm $tmpfile; exit' 0 1 2 3 15
 
 # Apache configuration script, first cut --- rst.
@@ -11,7 +11,9 @@ trap 'rm $tmpfile; exit' 0 1 2 3 15
 # modules and "rules". These rules are used to allow Configure to
 # be totally configured from Configuration
 #
-# Uses 2 supplemental scripts: CutRule and GuessOS
+# Uses 3 supplemental scripts located in ./helpers: CutRule,
+# GuessOS and GuessWhere
+#
 
 file=Configuration
 tmpfile=htconf.$$
@@ -109,10 +111,10 @@ awk >>Makefile <$tmpfile '\
 #
 # Extract the rules.
 #
-RULE_WANTHSREGEX=`./CutRule WANTHSREGEX $file`
-RULE_STATUS=`./CutRule STATUS $file`
-RULE_SOCKS4=`./CutRule SOCKS4 $file`
-RULE_IRIXNIS=`./CutRule IRIXNIS $file`
+RULE_WANTHSREGEX=`./helpers/CutRule WANTHSREGEX $file`
+RULE_STATUS=`./helpers/CutRule STATUS $file`
+RULE_SOCKS4=`./helpers/CutRule SOCKS4 $file`
+RULE_IRIXNIS=`./helpers/CutRule IRIXNIS $file`
 
 #
 # Now we determine the OS/Platform automagically, thanks to
@@ -129,7 +131,7 @@ RULE_IRIXNIS=`./CutRule IRIXNIS $file`
 # add the required lines below.
 #
 
-PLAT=`./GuessOS`
+PLAT=`./helpers/GuessOS`
 
 # Preset DBM_LIB. Can be overridden on a per-platform basis.
 
@@ -301,9 +303,9 @@ echo "Configured for $OS platform"
 # set above. If so, then we honor that; if not, then we set some
 # defaults (gcc and -O2)
 #
-COMPILER=`./GuessWhere gcc`
+COMPILER=`./helpers/GuessWhere gcc`
 if [ "$COMPILER" = "not found" ]; then
-    COMPILER=`./GuessWhere cc`
+    COMPILER=`./helpers/GuessWhere cc`
 fi
 
 if grep "CC=" Makefile > /dev/null; then
@@ -370,7 +372,7 @@ fi
 #
 # Look for ranlib
 #
-RANLIB=`./GuessWhere ranlib`
+RANLIB=`./helpers/GuessWhere ranlib`
 
 #
 # Good enough
