@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/02/28 14:06:29 $]
+Last modified at [$Date: 2003/02/28 18:48:15 $]
 
 Release:
 
@@ -147,7 +147,7 @@ PATCHES TO PORT FROM 2.1
       string if there's no one supplied by configuration. PR 10961.
       (2.0 + 1.3)
       modules/mappers/mod_alias.c: r1.49
-      +1: nd
+      +1: nd, trawick
 
 CURRENT RELEASE NOTES:
 
