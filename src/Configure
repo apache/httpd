@@ -17,7 +17,6 @@ trap 'rm -f $tmpfile; exit' 0 1 2 3 15
 file=Configuration
 tmpfile=htconf.$$
 makefile_tmpl=Makefile.tmpl
-CONF_TEST_EXECUTABLE=-x
 
 while [ "x$1" != "x" ]; do
   if [ "x$1" = "x-file" ] ; then
@@ -359,7 +358,6 @@ case "$PLAT" in
 	OS='ULTRIX'
 	CFLAGS="-DULTRIX"
 	DEF_WANTHSREGEX=yes
-	CONF_TEST_EXECUTABLE=-r
 	;;
     *powerpc-tenon-machten*)
     	OS='MachTen'
@@ -395,8 +393,6 @@ case "$PLAT" in
 	exit 1
 	;;
 esac
-
-export CONF_TEST_EXECUTABLE
 
 #
 # See if we need to override WANTHSREGEX
