@@ -91,13 +91,19 @@ You cannot easily use a different installation directory. You can also
 build debug versions of Apache, with the targets "_apached" and
 "installd".
 
-To build Apache within MSVC, you will need to build the following
-projects and Makefiles:
+Make sure that before you run "nmake" that you've run VCVARS32.BAT
+so that your environment is configured to run nmake from the command
+line.
 
-   os/win32/ApacheOS.dsp
-   src/Apache.dsp
-   src/ApacheCore.dsp
+To build Apache within MSVC, you will need to build the following
+projects and Makefiles, in the following order. Make sure that you
+build the same configuration (i.e. Debug or Release) for all of the
+various projects.
+
    regex/Makefile.mak
+   os/win32/ApacheOS.dsp
+   src/ApacheCore.dsp
+   src/Apache.dsp
 
 Additional modules can also be built using project files in the os/win32
 directory.
