@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/02/16 17:48:03 $]
+Last modified at [$Date: 2001/02/22 01:28:51 $]
 
 Release:
 
@@ -18,9 +18,6 @@ Release:
 RELEASE SHOWSTOPPERS:
 
     WARNING: ALWAYS check srclib/apr/STATUS and srclib/apr-util/STATUS
-
-    * move httpd-2.0/modules/proxy to httpd-proxy/
-        Status: +1: Greg
 
     * Generic Hooks are absolutely wrong in linkage, they are declared as
       exported from APU, but actually exported from modules.  This needs
