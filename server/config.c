@@ -338,23 +338,23 @@ AP_DECLARE(int) ap_method_is_limited(cmd_parms *cmd, const char *method) {
     return 0;
 }
 
-AP_DECLARE(void) ap_register_hooks(module *m)
-    {
+AP_DECLARE(void) ap_register_hooks(module *m, apr_pool_t *p)
+{
     if(m->register_hooks)
-	{
+    {
 	if(getenv("SHOW_HOOKS"))
-	    {
+	{
 	    printf("Registering hooks for %s\n",m->name);
 	    ap_debug_module_hooks=1;
-	    }
-	ap_current_hooking_module=m->name;
-	m->register_hooks();
 	}
+	ap_current_hooking_module=m->name;
+	m->register_hooks(p);
     }
+}
 
 /* One-time setup for precompiled modules --- NOT to be done on restart */
 
-AP_DECLARE(void) ap_add_module(module *m)
+AP_DECLARE(void) ap_add_module(module *m, apr_pool_t *p)
 {
     /* This could be called from an AddModule httpd.conf command,
      * after the file has been linked and the module structure within it
@@ -407,8 +407,10 @@ AP_DECLARE(void) ap_add_module(module *m)
     }
 #endif /*_OSD_POSIX*/
 
-    /* FIXME: is this the right place to call this? */
-    ap_register_hooks(m);
+    /*  FIXME: is this the right place to call this?
+     *  It doesn't appear to be
+     */
+    ap_register_hooks(m, p);
 }
 
 /* 
@@ -454,14 +456,14 @@ AP_DECLARE(void) ap_remove_module(module *m)
     total_modules--;
 }
 
-AP_DECLARE(void) ap_add_loaded_module(module *mod)
+AP_DECLARE(void) ap_add_loaded_module(module *mod, apr_pool_t *p)
 {
     module **m;
 
     /* 
      *  Add module pointer to top of chained module list 
      */
-    ap_add_module(mod);
+    ap_add_module(mod, p);
 
     /* 
      *  And module pointer to list of loaded modules 
@@ -537,7 +539,7 @@ AP_DECLARE(void) ap_setup_prelinked_modules(process_rec *process)
      *   Initialize chain of linked (=activate) modules
      */
     for (m = ap_prelinked_modules; *m != NULL; m++)
-        ap_add_module(*m);
+        ap_add_module(*m, process->pconf);
 
     ap_sort_hooks();
 }
@@ -559,7 +561,7 @@ AP_DECLARE(module *) ap_find_linked_module(const char *name)
 }
 
 /* Add a named module.  Returns 1 if module found, 0 otherwise.  */
-AP_DECLARE(int) ap_add_named_module(const char *name)
+AP_DECLARE(int) ap_add_named_module(const char *name, apr_pool_t *p)
 {
     module *modp;
     int i = 0;
@@ -568,7 +570,7 @@ AP_DECLARE(int) ap_add_named_module(const char *name)
 	if (strcmp(modp->name, name) == 0) {
 	    /* Only add modules that are not already enabled.  */
 	    if (modp->next == NULL) {
-		ap_add_module(modp);
+		ap_add_module(modp, p);
 	    }
 	    return 1;
 	}
@@ -578,7 +580,7 @@ AP_DECLARE(int) ap_add_named_module(const char *name)
 }
 
 /* Clear the internal list of modules, in preparation for starting over. */
-AP_DECLARE(void) ap_clear_module_list()
+AP_DECLARE(void) ap_clear_module_list(apr_pool_t *p)
 {
     module **m = &top_module;
     module **next_m;
@@ -590,7 +592,7 @@ AP_DECLARE(void) ap_clear_module_list()
     }
 
     /* This is required; so we add it always.  */
-    ap_add_named_module("http_core.c");
+    ap_add_named_module("http_core.c", p);
 }
 
 /*****************************************************************

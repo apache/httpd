@@ -298,7 +298,7 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
     /* 
      * Add this module to the Apache core structures
      */
-    ap_add_loaded_module(modp);
+    ap_add_loaded_module(modp, cmd->pool);
 
     /* 
      * Register a cleanup in the config apr_pool_t (normally pconf). When
