@@ -46,10 +46,7 @@ usage?, seealso*)>
 <!ELEMENT moduleindex (title | summary | modulefilelist)+>
 
 <!-- Used in directive.xml -->
-<!ELEMENT directiveindex (title | summary | modulefilelist | letters)+>
+<!ELEMENT directiveindex (title | summary | modulefilelist)+>
 
 <!-- Used in quickreference.xml -->
-<!ELEMENT quickreference (title | summary | modulefilelist | letters)+>
-
-<!ELEMENT letters (letter+)>
-<!ELEMENT letter (#PCDATA)>
+<!ELEMENT quickreference (title | summary | modulefilelist)+>
