@@ -419,7 +419,7 @@ static const char *header_inout_cmd(hdr_inout inout, cmd_parms *cmd, void *indir
 static const char *header_cmd(cmd_parms *cmd, void *indirconf,
                               const char *args)
 {
-    char *s;
+    const char *s;
     const char *action;
     const char *hdr;
     const char *val;
