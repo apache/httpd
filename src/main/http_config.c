@@ -876,7 +876,7 @@ const char *set_file_slot(cmd_parms *cmd, char *struct_ptr, char *arg)
        This allows .htaccess to be independent of server_root,
        so the server can be moved or mirrored with less pain.  */
     char *p;
-    int offset = (int) cmd->info;
+    int offset = (int) (long) cmd->info;
     if (os_is_path_absolute(arg))
 	p = pstrdup(cmd->pool, arg);
     else
