@@ -1994,6 +1994,12 @@ API_EXPORT(int) ap_setup_client_block(request_rec *r, int read_policy)
         }
 
         r->remaining = atol(lenp);
+        if (r->remaining < 0) {
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+              "Request content-length of %s maps to negative number %ld",
+              lenp, r->remaining);
+            return HTTP_BAD_REQUEST;
+        }
     }
 
     if ((r->read_body == REQUEST_NO_BODY) &&
