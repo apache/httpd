@@ -413,7 +413,13 @@ page for more details.
 The directory sections typically occur in the access.conf file, but they
 may appear in any configuration file. &lt;Directory&gt; directives cannot
 nest, and cannot appear in a <A HREF="#limit">&lt;Limit&gt;</A> section.
-<p><hr>
+<p>
+
+<strong>See also</strong>: <a href="../sections.html">How Directory,
+Location and Files sections work</a> for an explanation of how these
+different sections are combined when a request is received
+
+<hr>
 
 <h2><A name="directorymatch">&lt;DirectoryMatch&gt;</A></h2>
 <strong>Syntax:</strong> &lt;DirectoryMatch <em>regex</em>&gt; ... &lt;/DirectoryMatch&gt; <br>
@@ -435,7 +441,11 @@ argument a regular expression. For example:</p>
 
 <p><strong>See Also:</strong>
 <a href="#directory">&lt;Directory&gt;</a> for a description of how
-regular expressions are mixed in with normal &lt;Directory&gt;s.</p>
+regular expressions are mixed in with normal &lt;Directory&gt;s.
+<br>
+<strong>See also</strong>: <a href="../sections.html">How Directory,
+Location and Files sections work</a> for an explanation of how these
+different sections are combined when a request is received
 
 <hr>
 
@@ -573,7 +583,13 @@ file-by-file level. When used in an .htaccess file, if the
 <em>filename</em> does not begin with a <code>/</code> character,
 the directory being applied will be prefixed automatically.
 
-<p> <hr>
+<p>
+
+<strong>See also</strong>: <a href="../sections.html">How Directory,
+Location and Files sections work</a> for an explanation of how these
+different sections are combined when a request is received
+
+<hr>
 
 <h2><A name="filesmatch">&lt;FilesMatch&gt;</A></h2>
 <strong>Syntax:</strong> &lt;FilesMatch <em>regex</em>&gt;
@@ -592,6 +608,10 @@ does. However, it accepts a regular expression. For example:</p>
 </pre>
 
 <p>would match most common Internet graphics formats.</p>
+
+<strong>See also</strong>: <a href="../sections.html">How Directory,
+Location and Files sections work</a> for an explanation of how these
+different sections are combined when a request is received
 
 <hr>
 
@@ -919,6 +939,12 @@ from browsers at foo.com, you might use:
     allow from .foo.com
     &lt;/Location&gt;
 </pre>
+
+<p>
+<strong>See also</strong>: <a href="../sections.html">How Directory,
+Location and Files sections work</a> for an explanation of how these
+different sections are combined when a request is received
+
 <hr>
 
 <h2><a name="locationmatch">&lt;LocationMatch&gt;</a></h2>
@@ -941,6 +967,10 @@ expression as an argument instead of a simple string. For example:</p>
 
 <p>would match URLs that contained the substring "/extra/data" or
 "/special/data".</p>
+
+<strong>See also</strong>: <a href="../sections.html">How Directory,
+Location and Files sections work</a> for an explanation of how these
+different sections are combined when a request is received
 
 <hr>
 
@@ -1681,7 +1711,10 @@ href="#listen">Listen</a>.
 <strong>See also:</strong>
 <a href="../vhosts-in-depth.html">In-depth description of Virtual Host matching</a><br>
 <strong>See also:</strong>
-<a href="../bind.html">Setting which addresses and ports Apache uses</a>
+<a href="../bind.html">Setting which addresses and ports Apache uses</a><br>
+<strong>See also</strong>: <a href="../sections.html">How Directory,
+Location and Files sections work</a> for an explanation of how these
+different sections are combined when a request is received
 </p>
 
 <!--#include virtual="footer.html" -->
