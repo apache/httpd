@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/06/26 11:07:09 $]
+Last modified at [$Date: 2003/06/29 16:49:12 $]
 
 Release:
 
@@ -263,6 +263,10 @@ PATCHES TO PORT FROM 2.1
         Linux, I'd love to hear your experiences.  Just keep sending
         SIGSEGV to the current cgid daemon process and see what
         happens.
+
+    * Backport FreeBSD layout. PR 21100.
+        config.layout: r1.22
+      +1: nd
 
 CURRENT RELEASE NOTES:
 
