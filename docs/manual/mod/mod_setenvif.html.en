@@ -5,7 +5,7 @@
         --><title>mod_setenvif- Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_setenvif</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">Description:</span></td><td>Allows the setting of environment variables based
 on characteristics of the request</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:</a></td><td>setenvif_module</td></tr></table></td></tr></table><h2>Summary</h2>
 
-    <p>The <code><a href="mod_setenvif.html">mod_setenvif</a></code> module allows you to set
+    <p>The <code><a href="../mod/mod_setenvif.html">mod_setenvif</a></code> module allows you to set
     environment variables according to whether different aspects of
     the request match regular expressions you specify. These
     environment variables can be used by other parts of the server

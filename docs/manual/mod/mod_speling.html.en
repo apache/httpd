@@ -2,9 +2,9 @@
           XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                 This file is generated from xml source: DO NOT EDIT
           XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-        --><title>mod_speling- Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_speling</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td valign="top"><span class="help">Description:</span></td><td>Attempts to correct mistaken URLs that
+        --><title>mod_speling- Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_speling</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">Description:</span></td><td>Attempts to correct mistaken URLs that
 users might have entered by ignoring capitalization and by
-allowing up to one misspelling</td></tr><tr><td><a href="module-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:</a></td><td>speling_module</td></tr></table></td></tr></table><h2>Summary</h2>
+allowing up to one misspelling</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:</a></td><td>speling_module</td></tr></table></td></tr></table><h2>Summary</h2>
 
     <p>Requests to documents sometimes cannot be served by the core
     apache server because the request was misspelled or
