@@ -1211,15 +1211,15 @@ static int prefork_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp
     if (restart_num++ == 1) {
 	is_graceful = 0;
 
-    if (!one_process) {
-        rv = apr_proc_detach(no_detach ? APR_PROC_DETACH_FOREGROUND
-                                       : APR_PROC_DETACH_DAEMONIZE);
-        if (rv != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
-                         "apr_proc_detach failed");
-            return HTTP_INTERNAL_SERVER_ERROR;
+        if (!one_process) {
+            rv = apr_proc_detach(no_detach ? APR_PROC_DETACH_FOREGROUND
+                                           : APR_PROC_DETACH_DAEMONIZE);
+            if (rv != APR_SUCCESS) {
+                ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
+                             "apr_proc_detach failed");
+                return HTTP_INTERNAL_SERVER_ERROR;
+            }
         }
-    }
 
 	parent_pid = ap_my_pid = getpid();
     }
