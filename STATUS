@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/10/07 14:00:06 $]
+  Last modified at [$Date: 1999/10/11 21:27:48 $]
 
 Release:
 
@@ -350,6 +350,17 @@ Win32 specific issues:
 	Ken: What's W95-specific about it?
 
  Help:
+    * There are several PRs reporting Apache looping and they each seem to
+      implicate CGI script processing. The first PR happened about the time
+      we migrated to using native Win32 function calls to create the child 
+      process. I have tried to recreate the problem w/o success. It just now
+      occurs to me that there may be a race condition between when the new
+      process comes alive and the parent sending data to (or attempting to
+      read data from) the child process. CreateProcess() returns immediately,
+      before the new process is created. The parent may be attempting I/O
+      with the child before it's ready. TODO: investigate ways to cause the
+      parent to wait for the child process to become fully active before
+      proceeding with CGI I/O processing.
 
     * should trap ^C when running not-as-service and do proper shutdown
 
