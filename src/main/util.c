@@ -812,7 +812,8 @@ API_EXPORT(int) cfg_getline(char *buf, size_t bufsize, configfile_t *cfp)
 	    if (c == CR) {
 		/* silently ignore CR (_assume_ that a LF follows) */
 		c = cfp->getch(cfp->param);
-	    } else if (c == LF) {
+	    }
+	    if (c == LF) {
 		/* increase line number and return on LF */
 		++cfp->line_number;
 	    }
