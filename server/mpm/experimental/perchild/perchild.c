@@ -1740,7 +1740,7 @@ static const char *set_child_per_uid(cmd_parms *cmd, void *dummy, const char *u,
 {
     int i;
     int max_this_time = atoi(num) + curr_child_num;
-    for (i = curr_child_num; i < max_this_time; i++, curr_child_num++); {
+    for (i = curr_child_num; i < max_this_time; i++, curr_child_num++) {
         child_info_t *ug = &child_info_table[i - 1];
 
         if (i > num_daemons) {
