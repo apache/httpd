@@ -230,13 +230,13 @@ LINK32_OBJS= \
 !IF  "$(CFG)" == "ApacheModuleRewrite - Win32 Release"
 
 "ApacheCore - Win32 Release" : 
-   cd "\apache\apache-1.3\src"
+   cd "\live\apache-1.3\src"
    $(MAKE) /$(MAKEFLAGS) /F ".\ApacheCore.mak" CFG="ApacheCore - Win32 Release"\
  
    cd ".\os\win32"
 
 "ApacheCore - Win32 ReleaseCLEAN" : 
-   cd "\apache\apache-1.3\src"
+   cd "\live\apache-1.3\src"
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\ApacheCore.mak"\
  CFG="ApacheCore - Win32 Release" RECURSE=1 
    cd ".\os\win32"
@@ -244,12 +244,12 @@ LINK32_OBJS= \
 !ELSEIF  "$(CFG)" == "ApacheModuleRewrite - Win32 Debug"
 
 "ApacheCore - Win32 Debug" : 
-   cd "\apache\apache-1.3\src"
+   cd "\live\apache-1.3\src"
    $(MAKE) /$(MAKEFLAGS) /F ".\ApacheCore.mak" CFG="ApacheCore - Win32 Debug" 
    cd ".\os\win32"
 
 "ApacheCore - Win32 DebugCLEAN" : 
-   cd "\apache\apache-1.3\src"
+   cd "\live\apache-1.3\src"
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\ApacheCore.mak"\
  CFG="ApacheCore - Win32 Debug" RECURSE=1 
    cd ".\os\win32"
@@ -257,6 +257,9 @@ LINK32_OBJS= \
 !ENDIF 
 
 SOURCE=..\..\modules\standard\mod_rewrite.c
+
+!IF  "$(CFG)" == "ApacheModuleRewrite - Win32 Release"
+
 DEP_CPP_MOD_R=\
 	"..\..\include\ap.h"\
 	"..\..\include\ap_alloc.h"\
@@ -277,15 +280,39 @@ DEP_CPP_MOD_R=\
 	".\os.h"\
 	".\readdir.h"\
 	
-NODEP_CPP_MOD_R=\
-	"..\..\include\ap_config_auto.h"\
-	"..\..\include\ebcdic.h"\
-	"..\..\include\sfio.h"\
+
+"$(INTDIR)\mod_rewrite.obj" : $(SOURCE) $(DEP_CPP_MOD_R) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ELSEIF  "$(CFG)" == "ApacheModuleRewrite - Win32 Debug"
+
+DEP_CPP_MOD_R=\
+	"..\..\include\ap.h"\
+	"..\..\include\ap_alloc.h"\
+	"..\..\include\ap_config.h"\
+	"..\..\include\ap_ctype.h"\
+	"..\..\include\ap_mmn.h"\
+	"..\..\include\buff.h"\
+	"..\..\include\hsregex.h"\
+	"..\..\include\http_conf_globals.h"\
+	"..\..\include\http_config.h"\
+	"..\..\include\http_core.h"\
+	"..\..\include\http_log.h"\
+	"..\..\include\http_request.h"\
+	"..\..\include\http_vhost.h"\
+	"..\..\include\httpd.h"\
+	"..\..\include\util_uri.h"\
+	"..\..\modules\standard\mod_rewrite.h"\
+	".\os.h"\
+	".\readdir.h"\
 	
 
 "$(INTDIR)\mod_rewrite.obj" : $(SOURCE) $(DEP_CPP_MOD_R) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
+
+!ENDIF 
 
 SOURCE=.\passwd.c
 DEP_CPP_PASSW=\

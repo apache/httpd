@@ -208,6 +208,9 @@ LINK32_OBJS= \
 !IF "$(CFG)" == "htdigest - Win32 Release" || "$(CFG)" ==\
  "htdigest - Win32 Debug"
 SOURCE=..\ap\ap_cpystrn.c
+
+!IF  "$(CFG)" == "htdigest - Win32 Release"
+
 DEP_CPP_AP_CP=\
 	"..\include\ap.h"\
 	"..\include\ap_alloc.h"\
@@ -221,17 +224,37 @@ DEP_CPP_AP_CP=\
 	"..\os\win32\os.h"\
 	"..\os\win32\readdir.h"\
 	
-NODEP_CPP_AP_CP=\
-	"..\include\ap_config_auto.h"\
-	"..\include\ebcdic.h"\
-	"..\include\sfio.h"\
+
+"$(INTDIR)\ap_cpystrn.obj" : $(SOURCE) $(DEP_CPP_AP_CP) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ELSEIF  "$(CFG)" == "htdigest - Win32 Debug"
+
+DEP_CPP_AP_CP=\
+	"..\include\ap.h"\
+	"..\include\ap_alloc.h"\
+	"..\include\ap_config.h"\
+	"..\include\ap_ctype.h"\
+	"..\include\ap_mmn.h"\
+	"..\include\buff.h"\
+	"..\include\hsregex.h"\
+	"..\include\httpd.h"\
+	"..\include\util_uri.h"\
+	"..\os\win32\os.h"\
+	"..\os\win32\readdir.h"\
 	
 
 "$(INTDIR)\ap_cpystrn.obj" : $(SOURCE) $(DEP_CPP_AP_CP) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
+!ENDIF 
+
 SOURCE=..\ap\ap_getpass.c
+
+!IF  "$(CFG)" == "htdigest - Win32 Release"
+
 DEP_CPP_AP_GE=\
 	"..\include\ap.h"\
 	"..\include\ap_config.h"\
@@ -240,15 +263,32 @@ DEP_CPP_AP_GE=\
 	"..\include\hsregex.h"\
 	"..\os\win32\os.h"\
 	
-NODEP_CPP_AP_GE=\
-	"..\include\ap_config_auto.h"\
+
+"$(INTDIR)\ap_getpass.obj" : $(SOURCE) $(DEP_CPP_AP_GE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ELSEIF  "$(CFG)" == "htdigest - Win32 Debug"
+
+DEP_CPP_AP_GE=\
+	"..\include\ap.h"\
+	"..\include\ap_config.h"\
+	"..\include\ap_ctype.h"\
+	"..\include\ap_mmn.h"\
+	"..\include\hsregex.h"\
+	"..\os\win32\os.h"\
 	
 
 "$(INTDIR)\ap_getpass.obj" : $(SOURCE) $(DEP_CPP_AP_GE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
+!ENDIF 
+
 SOURCE=..\ap\ap_md5c.c
+
+!IF  "$(CFG)" == "htdigest - Win32 Release"
+
 DEP_CPP_AP_MD=\
 	"..\include\ap.h"\
 	"..\include\ap_config.h"\
@@ -258,16 +298,33 @@ DEP_CPP_AP_MD=\
 	"..\include\hsregex.h"\
 	"..\os\win32\os.h"\
 	
-NODEP_CPP_AP_MD=\
-	"..\ap\ebcdic.h"\
-	"..\include\ap_config_auto.h"\
+
+"$(INTDIR)\ap_md5c.obj" : $(SOURCE) $(DEP_CPP_AP_MD) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ELSEIF  "$(CFG)" == "htdigest - Win32 Debug"
+
+DEP_CPP_AP_MD=\
+	"..\include\ap.h"\
+	"..\include\ap_config.h"\
+	"..\include\ap_ctype.h"\
+	"..\include\ap_md5.h"\
+	"..\include\ap_mmn.h"\
+	"..\include\hsregex.h"\
+	"..\os\win32\os.h"\
 	
 
 "$(INTDIR)\ap_md5c.obj" : $(SOURCE) $(DEP_CPP_AP_MD) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
+!ENDIF 
+
 SOURCE=.\htdigest.c
+
+!IF  "$(CFG)" == "htdigest - Win32 Release"
+
 DEP_CPP_HTDIG=\
 	"..\include\ap.h"\
 	"..\include\ap_config.h"\
@@ -277,12 +334,26 @@ DEP_CPP_HTDIG=\
 	"..\include\hsregex.h"\
 	"..\os\win32\os.h"\
 	
-NODEP_CPP_HTDIG=\
-	"..\include\ap_config_auto.h"\
+
+"$(INTDIR)\htdigest.obj" : $(SOURCE) $(DEP_CPP_HTDIG) "$(INTDIR)"
+
+
+!ELSEIF  "$(CFG)" == "htdigest - Win32 Debug"
+
+DEP_CPP_HTDIG=\
+	"..\include\ap.h"\
+	"..\include\ap_config.h"\
+	"..\include\ap_ctype.h"\
+	"..\include\ap_md5.h"\
+	"..\include\ap_mmn.h"\
+	"..\include\hsregex.h"\
+	"..\os\win32\os.h"\
 	
 
 "$(INTDIR)\htdigest.obj" : $(SOURCE) $(DEP_CPP_HTDIG) "$(INTDIR)"
 
+
+!ENDIF 
 
 
 !ENDIF 

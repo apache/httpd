@@ -210,6 +210,9 @@ DEP_CPP_REGCO=\
 
 
 SOURCE=.\regerror.c
+
+!IF  "$(CFG)" == "regex - Win32 Release"
+
 DEP_CPP_REGER=\
 	"..\include\hsregex.h"\
 	".\regerror.ih"\
@@ -219,7 +222,23 @@ DEP_CPP_REGER=\
 "$(INTDIR)\regerror.obj" : $(SOURCE) $(DEP_CPP_REGER) "$(INTDIR)"
 
 
+!ELSEIF  "$(CFG)" == "regex - Win32 Debug"
+
+DEP_CPP_REGER=\
+	"..\include\hsregex.h"\
+	".\regerror.ih"\
+	".\utils.h"\
+	
+
+"$(INTDIR)\regerror.obj" : $(SOURCE) $(DEP_CPP_REGER) "$(INTDIR)"
+
+
+!ENDIF 
+
 SOURCE=.\regexec.c
+
+!IF  "$(CFG)" == "regex - Win32 Release"
+
 DEP_CPP_REGEX=\
 	"..\include\ap_ctype.h"\
 	"..\include\hsregex.h"\
@@ -232,7 +251,26 @@ DEP_CPP_REGEX=\
 "$(INTDIR)\regexec.obj" : $(SOURCE) $(DEP_CPP_REGEX) "$(INTDIR)"
 
 
+!ELSEIF  "$(CFG)" == "regex - Win32 Debug"
+
+DEP_CPP_REGEX=\
+	"..\include\ap_ctype.h"\
+	"..\include\hsregex.h"\
+	".\engine.c"\
+	".\engine.ih"\
+	".\regex2.h"\
+	".\utils.h"\
+	
+
+"$(INTDIR)\regexec.obj" : $(SOURCE) $(DEP_CPP_REGEX) "$(INTDIR)"
+
+
+!ENDIF 
+
 SOURCE=.\regfree.c
+
+!IF  "$(CFG)" == "regex - Win32 Release"
+
 DEP_CPP_REGFR=\
 	"..\include\hsregex.h"\
 	".\regex2.h"\
@@ -241,6 +279,19 @@ DEP_CPP_REGFR=\
 
 "$(INTDIR)\regfree.obj" : $(SOURCE) $(DEP_CPP_REGFR) "$(INTDIR)"
 
+
+!ELSEIF  "$(CFG)" == "regex - Win32 Debug"
+
+DEP_CPP_REGFR=\
+	"..\include\hsregex.h"\
+	".\regex2.h"\
+	".\utils.h"\
+	
+
+"$(INTDIR)\regfree.obj" : $(SOURCE) $(DEP_CPP_REGFR) "$(INTDIR)"
+
+
+!ENDIF 
 
 
 !ENDIF 

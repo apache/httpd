@@ -223,19 +223,33 @@ LINK32_OBJS= \
 !IF "$(CFG)" == "xmlparse - Win32 Release" || "$(CFG)" ==\
  "xmlparse - Win32 Debug"
 SOURCE=.\hashtable.c
+
+!IF  "$(CFG)" == "xmlparse - Win32 Release"
+
 DEP_CPP_HASHT=\
 	".\hashtable.h"\
 	".\xmldef.h"\
-	
-NODEP_CPP_HASHT=\
-	".\ap_config.h"\
-	".\nspr.h"\
 	
 
 "$(INTDIR)\hashtable.obj" : $(SOURCE) $(DEP_CPP_HASHT) "$(INTDIR)"
 
 
+!ELSEIF  "$(CFG)" == "xmlparse - Win32 Debug"
+
+DEP_CPP_HASHT=\
+	".\hashtable.h"\
+	".\xmldef.h"\
+	
+
+"$(INTDIR)\hashtable.obj" : $(SOURCE) $(DEP_CPP_HASHT) "$(INTDIR)"
+
+
+!ENDIF 
+
 SOURCE=.\xmlparse.c
+
+!IF  "$(CFG)" == "xmlparse - Win32 Release"
+
 DEP_CPP_XMLPA=\
 	".\hashtable.h"\
 	".\xmldef.h"\
@@ -243,13 +257,24 @@ DEP_CPP_XMLPA=\
 	".\xmlrole.h"\
 	".\xmltok.h"\
 	
-NODEP_CPP_XMLPA=\
-	".\ap_config.h"\
-	".\nspr.h"\
+
+"$(INTDIR)\xmlparse.obj" : $(SOURCE) $(DEP_CPP_XMLPA) "$(INTDIR)"
+
+
+!ELSEIF  "$(CFG)" == "xmlparse - Win32 Debug"
+
+DEP_CPP_XMLPA=\
+	".\hashtable.h"\
+	".\xmldef.h"\
+	".\xmlparse.h"\
+	".\xmlrole.h"\
+	".\xmltok.h"\
 	
 
 "$(INTDIR)\xmlparse.obj" : $(SOURCE) $(DEP_CPP_XMLPA) "$(INTDIR)"
 
+
+!ENDIF 
 
 !IF  "$(CFG)" == "xmlparse - Win32 Release"
 

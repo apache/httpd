@@ -227,10 +227,6 @@ DEP_CPP_AP_BA=\
 	"..\include\hsregex.h"\
 	"..\os\win32\os.h"\
 	
-NODEP_CPP_AP_BA=\
-	"..\include\ap_config_auto.h"\
-	".\ebcdic.h"\
-	
 
 "$(INTDIR)\ap_base64.obj" : $(SOURCE) $(DEP_CPP_AP_BA) "$(INTDIR)"
 
@@ -264,9 +260,6 @@ DEP_CPP_AP_CH=\
 	"..\include\ap_sha1.h"\
 	"..\include\hsregex.h"\
 	"..\os\win32\os.h"\
-	
-NODEP_CPP_AP_CH=\
-	"..\include\ap_config_auto.h"\
 	
 
 "$(INTDIR)\ap_checkpass.obj" : $(SOURCE) $(DEP_CPP_AP_CH) "$(INTDIR)"
@@ -307,11 +300,6 @@ DEP_CPP_AP_CP=\
 	"..\os\win32\os.h"\
 	"..\os\win32\readdir.h"\
 	
-NODEP_CPP_AP_CP=\
-	"..\include\ap_config_auto.h"\
-	"..\include\ebcdic.h"\
-	"..\include\sfio.h"\
-	
 
 "$(INTDIR)\ap_cpystrn.obj" : $(SOURCE) $(DEP_CPP_AP_CP) "$(INTDIR)"
 
@@ -349,9 +337,6 @@ DEP_CPP_AP_FN=\
 	"..\include\hsregex.h"\
 	"..\os\win32\os.h"\
 	
-NODEP_CPP_AP_FN=\
-	"..\include\ap_config_auto.h"\
-	
 
 "$(INTDIR)\ap_fnmatch.obj" : $(SOURCE) $(DEP_CPP_AP_FN) "$(INTDIR)"
 
@@ -384,10 +369,6 @@ DEP_CPP_AP_MD=\
 	"..\include\ap_mmn.h"\
 	"..\include\hsregex.h"\
 	"..\os\win32\os.h"\
-	
-NODEP_CPP_AP_MD=\
-	"..\include\ap_config_auto.h"\
-	".\ebcdic.h"\
 	
 
 "$(INTDIR)\ap_md5c.obj" : $(SOURCE) $(DEP_CPP_AP_MD) "$(INTDIR)"
@@ -422,10 +403,6 @@ DEP_CPP_AP_SH=\
 	"..\include\ap_sha1.h"\
 	"..\include\hsregex.h"\
 	"..\os\win32\os.h"\
-	
-NODEP_CPP_AP_SH=\
-	"..\include\ap_config_auto.h"\
-	".\ebcdic.h"\
 	
 
 "$(INTDIR)\ap_sha1.obj" : $(SOURCE) $(DEP_CPP_AP_SH) "$(INTDIR)"
@@ -464,11 +441,6 @@ DEP_CPP_AP_SI=\
 	"..\include\util_uri.h"\
 	"..\os\win32\os.h"\
 	"..\os\win32\readdir.h"\
-	
-NODEP_CPP_AP_SI=\
-	"..\include\ap_config_auto.h"\
-	"..\include\ebcdic.h"\
-	"..\include\sfio.h"\
 	
 
 "$(INTDIR)\ap_signal.obj" : $(SOURCE) $(DEP_CPP_AP_SI) "$(INTDIR)"
@@ -513,11 +485,6 @@ DEP_CPP_AP_SL=\
 	"..\os\win32\os.h"\
 	"..\os\win32\readdir.h"\
 	
-NODEP_CPP_AP_SL=\
-	"..\include\ap_config_auto.h"\
-	"..\include\ebcdic.h"\
-	"..\include\sfio.h"\
-	
 
 "$(INTDIR)\ap_slack.obj" : $(SOURCE) $(DEP_CPP_AP_SL) "$(INTDIR)"
 
@@ -560,11 +527,6 @@ DEP_CPP_AP_SN=\
 	"..\include\util_uri.h"\
 	"..\os\win32\os.h"\
 	"..\os\win32\readdir.h"\
-	
-NODEP_CPP_AP_SN=\
-	"..\include\ap_config_auto.h"\
-	"..\include\ebcdic.h"\
-	"..\include\sfio.h"\
 	
 
 "$(INTDIR)\ap_snprintf.obj" : $(SOURCE) $(DEP_CPP_AP_SN) "$(INTDIR)"

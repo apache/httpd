@@ -197,6 +197,9 @@ LINK32_OBJS= \
 !IF "$(CFG)" == "rotatelogs - Win32 Release" || "$(CFG)" ==\
  "rotatelogs - Win32 Debug"
 SOURCE=.\rotatelogs.c
+
+!IF  "$(CFG)" == "rotatelogs - Win32 Release"
+
 DEP_CPP_ROTAT=\
 	"..\include\ap_config.h"\
 	"..\include\ap_ctype.h"\
@@ -204,12 +207,24 @@ DEP_CPP_ROTAT=\
 	"..\include\hsregex.h"\
 	"..\os\win32\os.h"\
 	
-NODEP_CPP_ROTAT=\
-	"..\include\ap_config_auto.h"\
+
+"$(INTDIR)\rotatelogs.obj" : $(SOURCE) $(DEP_CPP_ROTAT) "$(INTDIR)"
+
+
+!ELSEIF  "$(CFG)" == "rotatelogs - Win32 Debug"
+
+DEP_CPP_ROTAT=\
+	"..\include\ap_config.h"\
+	"..\include\ap_ctype.h"\
+	"..\include\ap_mmn.h"\
+	"..\include\hsregex.h"\
+	"..\os\win32\os.h"\
 	
 
 "$(INTDIR)\rotatelogs.obj" : $(SOURCE) $(DEP_CPP_ROTAT) "$(INTDIR)"
 
+
+!ENDIF 
 
 
 !ENDIF 

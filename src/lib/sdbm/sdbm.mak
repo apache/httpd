@@ -216,6 +216,9 @@ DEP_CPP_SDBM_H=\
 
 
 SOURCE=.\sdbm_lock.c
+
+!IF  "$(CFG)" == "sdbm - Win32 Release"
+
 DEP_CPP_SDBM_L=\
 	"..\..\include\ap_config.h"\
 	"..\..\include\ap_ctype.h"\
@@ -223,14 +226,29 @@ DEP_CPP_SDBM_L=\
 	"..\..\include\hsregex.h"\
 	"..\..\os\win32\os.h"\
 	
-NODEP_CPP_SDBM_L=\
-	"..\..\include\ap_config_auto.h"\
+
+"$(INTDIR)\sdbm_lock.obj" : $(SOURCE) $(DEP_CPP_SDBM_L) "$(INTDIR)"
+
+
+!ELSEIF  "$(CFG)" == "sdbm - Win32 Debug"
+
+DEP_CPP_SDBM_L=\
+	"..\..\include\ap_config.h"\
+	"..\..\include\ap_ctype.h"\
+	"..\..\include\ap_mmn.h"\
+	"..\..\include\hsregex.h"\
+	"..\..\os\win32\os.h"\
 	
 
 "$(INTDIR)\sdbm_lock.obj" : $(SOURCE) $(DEP_CPP_SDBM_L) "$(INTDIR)"
 
 
+!ENDIF 
+
 SOURCE=.\sdbm_pair.c
+
+!IF  "$(CFG)" == "sdbm - Win32 Release"
+
 DEP_CPP_SDBM_P=\
 	".\sdbm.h"\
 	".\sdbm_pair.h"\
@@ -239,6 +257,19 @@ DEP_CPP_SDBM_P=\
 
 "$(INTDIR)\sdbm_pair.obj" : $(SOURCE) $(DEP_CPP_SDBM_P) "$(INTDIR)"
 
+
+!ELSEIF  "$(CFG)" == "sdbm - Win32 Debug"
+
+DEP_CPP_SDBM_P=\
+	".\sdbm.h"\
+	".\sdbm_pair.h"\
+	".\sdbm_tune.h"\
+	
+
+"$(INTDIR)\sdbm_pair.obj" : $(SOURCE) $(DEP_CPP_SDBM_P) "$(INTDIR)"
+
+
+!ENDIF 
 
 
 !ENDIF 

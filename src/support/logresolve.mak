@@ -198,6 +198,9 @@ LINK32_OBJS= \
 !IF "$(CFG)" == "logresolve - Win32 Release" || "$(CFG)" ==\
  "logresolve - Win32 Debug"
 SOURCE=.\logresolve.c
+
+!IF  "$(CFG)" == "logresolve - Win32 Release"
+
 DEP_CPP_LOGRE=\
 	"..\include\ap_config.h"\
 	"..\include\ap_ctype.h"\
@@ -205,12 +208,24 @@ DEP_CPP_LOGRE=\
 	"..\include\hsregex.h"\
 	"..\os\win32\os.h"\
 	
-NODEP_CPP_LOGRE=\
-	"..\include\ap_config_auto.h"\
+
+"$(INTDIR)\logresolve.obj" : $(SOURCE) $(DEP_CPP_LOGRE) "$(INTDIR)"
+
+
+!ELSEIF  "$(CFG)" == "logresolve - Win32 Debug"
+
+DEP_CPP_LOGRE=\
+	"..\include\ap_config.h"\
+	"..\include\ap_ctype.h"\
+	"..\include\ap_mmn.h"\
+	"..\include\hsregex.h"\
+	"..\os\win32\os.h"\
 	
 
 "$(INTDIR)\logresolve.obj" : $(SOURCE) $(DEP_CPP_LOGRE) "$(INTDIR)"
 
+
+!ENDIF 
 
 
 !ENDIF 

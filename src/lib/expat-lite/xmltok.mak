@@ -222,15 +222,14 @@ DEP_CPP_XMLRO=\
 	".\xmlrole.h"\
 	".\xmltok.h"\
 	
-NODEP_CPP_XMLRO=\
-	".\ap_config.h"\
-	".\nspr.h"\
-	
 
 "$(INTDIR)\xmlrole.obj" : $(SOURCE) $(DEP_CPP_XMLRO) "$(INTDIR)"
 
 
 SOURCE=.\xmltok.c
+
+!IF  "$(CFG)" == "xmltok - Win32 Release"
+
 DEP_CPP_XMLTO=\
 	".\asciitab.h"\
 	".\iasciitab.h"\
@@ -243,13 +242,29 @@ DEP_CPP_XMLTO=\
 	".\xmltok_impl.h"\
 	".\xmltok_ns.c"\
 	
-NODEP_CPP_XMLTO=\
-	".\ap_config.h"\
-	".\nspr.h"\
+
+"$(INTDIR)\xmltok.obj" : $(SOURCE) $(DEP_CPP_XMLTO) "$(INTDIR)"
+
+
+!ELSEIF  "$(CFG)" == "xmltok - Win32 Debug"
+
+DEP_CPP_XMLTO=\
+	".\asciitab.h"\
+	".\iasciitab.h"\
+	".\latin1tab.h"\
+	".\nametab.h"\
+	".\utf8tab.h"\
+	".\xmldef.h"\
+	".\xmltok.h"\
+	".\xmltok_impl.c"\
+	".\xmltok_impl.h"\
+	".\xmltok_ns.c"\
 	
 
 "$(INTDIR)\xmltok.obj" : $(SOURCE) $(DEP_CPP_XMLTO) "$(INTDIR)"
 
+
+!ENDIF 
 
 SOURCE=.\xmltok_impl.c
 
