@@ -9,7 +9,7 @@ APACHE_MODULE(include, Server Side Includes, , , yes)
 
 APR_ADDTO(LT_LDFLAGS,-export-dynamic)
 
-APACHE_MODULE(deflate, Deflate transfer encoding support, , , no, [
+APACHE_MODULE(deflate, Deflate transfer encoding support, , , most, [
   AC_ARG_WITH(z, APACHE_HELP_STRING(--with-z=DIR,use a specific zlib library),
   [
     if test "x$withval" != "xyes" && test "x$withval" != "x"; then
