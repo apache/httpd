@@ -110,6 +110,7 @@ typedef int rlim_t;
 #endif
 #define JMP_BUF sigjmp_buf
 #define HAVE_MMAP
+typedef int rlim_t;
 
 #elif defined(AIX)
 #undef HAVE_GMTOFF
