@@ -92,9 +92,9 @@
        Japanese, a guide to using Apache httpd on Cygwin, a lexicon of
        Apache error messages, updated TPF documentation, and a
        comprehensive guide to using log files
-     * The user manual has been moved out of the htdocs DocumentRoot and
-       is now handled by an Alias directive in a similar way to the icons
-       directory
+     * The user manual can now be moved out of the htdocs DocumentRoot
+       during installation by invoking configure with the --manualdir=
+       switch, to allow separation of on-line docs from regular contents.
      * The supplied icons are now also distributed in PNG format
      * A significant overhaul to the Apache Bench program, ab has taken
        place, as first reported in April. The new Apache Bench includes

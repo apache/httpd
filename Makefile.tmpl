@@ -512,8 +512,8 @@ install-config:
 		 echo ""; \
 		 cat $(TOP)/conf/$${conf}-dist ) |\
 		 sed -e '/# LoadModule/r $(TOP)/$(SRC)/.apaci.install.conf' \
+			-e 's;@@ServerRoot@@/htdocs/manual;$(manualdir);' \
 			-e 's;@@ServerRoot@@/htdocs;$(htdocsdir);' \
-			-e 's;@@ServerRoot@@/manual;$(manualdir);' \
 			-e 's;@@ServerRoot@@/icons;$(iconsdir);' \
 			-e 's;@@ServerRoot@@/cgi-bin;$(cgidir);' \
 			-e 's;@@ServerRoot@@/proxy;$(proxycachedir);' \
