@@ -1,4 +1,13 @@
 Changes with Apache 2.0.15-dev
+  *) Reimplement the Windows MPM (mpm_winnt.c) to eliminate calling 
+     DuplicateHandle on an IOCompletionPort (a practice which
+     MS "discourages"). The new model does not rely on associating
+     the completion port with the listening sockets, thus the
+     completion port can be completely managed within the child 
+     process.  A dedicated thread accepts connections off the network,
+     then calls PostQueuedCompletionStatus() to wake up worker
+     threads blocked on the completion port.
+     [Bill Stoddard]
 
   *) Bring forward the --suexec-umask option which allows the
      builder to preset the umask for suexec processes.  [Ken Coar]

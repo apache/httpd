@@ -87,13 +87,6 @@ struct ap_listen_rec {
      * Is this socket currently active 
      */
     int active;
-#ifdef WIN32
-    /**
-     * Windows only.  The number of completion ports currently listening to 
-     * this socket 
-     */
-    int count;
-#endif
 /* more stuff here, like which protocol is bound to the port */
 };
 
@@ -106,7 +99,7 @@ extern ap_listen_rec *ap_listeners;
  * Setup all of the defaults for the listener list
  */
 void ap_listen_pre_config(void);
-#if !defined(WIN32) && !defined(SPMT_OS2_MPM)
+#if !defined(SPMT_OS2_MPM)
 /**
  * Loop through the global ap_listen_rec list and create all of the required
  * sockets.  This executes the listen and bind on the sockets.
@@ -119,7 +112,7 @@ int ap_setup_listeners(server_rec *s);
 #endif
 /* Split into two #if's to make the exports scripts easier.
  */
-#if defined(WIN32) || defined(SPMT_OS2_MPM)
+#if defined(SPMT_OS2_MPM)
 /**
  * Create and open a socket on the specified port.  This includes listening
  * and binding the socket.

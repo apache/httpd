@@ -257,7 +257,7 @@ static void alloc_listener(process_rec *process, char *addr, apr_port_t port)
     ap_listeners = new;
 }
 
-#if !defined(WIN32) && !defined(SPMT_OS2_MPM)
+#if !defined(SPMT_OS2_MPM)
 static
 #endif
 int ap_listen_open(process_rec *process, apr_port_t port)
@@ -299,7 +299,6 @@ int ap_listen_open(process_rec *process, apr_port_t port)
     return num_open ? 0 : -1;
 }
 
-#if !defined(WIN32)
 int ap_setup_listeners(server_rec *s)
 {
     ap_listen_rec *lr;
@@ -312,7 +311,6 @@ int ap_setup_listeners(server_rec *s)
     }
     return num_listeners;
 }
-#endif
 
 void ap_listen_pre_config(void)
 {
