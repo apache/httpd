@@ -1,5 +1,8 @@
 Changes with Apache 2.0.49
 
+  *) mod_log_config: Fix corruption of buffered logs with threaded
+     MPMs.  PR 25520.  [Jeff Trawick]
+
   *) Fix mod_include's expression parser to recognize strings correctly
      even if they start with an escaped token.  [André Malo]
 
