@@ -122,9 +122,43 @@ API_EXPORT(char *) ap_get_time()
 API_EXPORT(char *) ap_ht_time(pool *p, time_t t, const char *fmt, int gmt)
 {
     char ts[MAX_STRING_LEN];
+    char tf[MAX_STRING_LEN];
     struct tm *tms;
 
     tms = (gmt ? gmtime(&t) : localtime(&t));
+    if(gmt) {
+      /* Convert %Z to "GMT" and %z to "+0000";
+       * on hosts that do not have a time zone string in struct tm,
+       * strftime must assume its argument is local time.
+       */
+      const char *f;
+      char *p;
+      for(p = tf, f = fmt; p < tf + sizeof tf - 5 && (*p = *f); f++, p++) {
+	if(*f == '%')
+	  switch(f[1])
+	    {
+	    case '%':
+	      *++p = *++f;
+	      break;
+	    case 'Z':
+	      *p++ = 'G';
+	      *p++ = 'M';
+	      *p = 'T';
+	      f++;
+	      break;
+	    case 'z': /* common extension */
+	      *p++ = '+';
+	      *p++ = '0';
+	      *p++ = '0';
+	      *p++ = '0';
+	      *p = '0';
+	      f++;
+	      break;
+	    }
+      }
+      *p = '\0';
+      fmt = tf;
+    }
 
     /* check return code? */
     strftime(ts, MAX_STRING_LEN, fmt, tms);
