@@ -1,5 +1,9 @@
 Changes with Apache 2.0.48
 
+  *) Avoid an infinite recursion, which occured if the name of an included
+     config file or directory contained a wildcard character. PR 22194.
+     [André Malo]
+
   *) mod_ssl: Fix a problem setting variables that represent the
      client certificate chain.  PR 21371  [Jeff Trawick]
 
