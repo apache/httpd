@@ -1,85 +1,129 @@
+                   OVERVIEW OF NEW FEATURES IN APACHE 1.2
+
 New features with this release, as extensions of the Apache functionality
-(see also more detailed CHANGES file) in the source directory. For more
-information, see http://www.apache.org/docs/1.1/
+For more information, see the documentation included with this release
+(htdocs/manual/) or http://www.apache.org/docs/
 
 In addition to a number of bug fixes and internal performance
-enhancements, Apache 1.1 has the following specific new user
+enhancements, Apache 1.2 has the following specific new user
 features:
 
-  *) Caching Proxy Server
-       Apache can now act as an HTTP proxy server, allowing clients
-       behind firewalls to use the server to access the outside world. In
-       addition, it can cache documents it proxies, speeding up access to
-       frequently requested documents.
 
-  *) Filetype-based Script "Actions"
-       You can now run CGI scripts whenever a file of a certion type is
-       requested. Makes it much easier to execute scripts that process
-       files.
+  *) HTTP/1.1 Compliance
+       Apache (except for the optional proxy) is fully compliant with the
+       new HTTP/1.1 standard, as ratified by the IETF HTTP working group.
+       HTTP/1.1 provides a much-improved protocol, and should allow for
+       greater performance and efficiency when transfering files. Apache
+       does, however, still work great with HTTP/1.0 browsers.
 
-  *) Support for Keep-Alive Persistent Connections
-       Apache now has (optional) support for persistent connections, as
-       defined by the HTTP/1.1 draft. This protocol, supported by a
-       number of current HTTP servers and browsers (including Netscape
-       Navigator 2.0) has been shown to increase speed of document
-       transfer by up to 50% in certain cases.
+  *) eXtended Server Side Includes (XSSI)
+       A new set of server-side include directives allows the user to
+       better create WWW pages. This includes number of powerful new
+       features, such as the ability to set variables and use conditional
+       HTML.
 
-  *) Customizable CGI Environment Variables (not in this release)
-       New PassEnv and SetEnv directives allow you to modify the
-       environment variables passed to CGI scripts
+  *) File-based and Regex-enabled Directive Sections
+       The new <Files> section allows directives to be enabled based on
+       full filename, not just directory and URL. In addition, <Files>
+       sections can appear in .htaccess files. <Files>, along with
+       <Directory> and <Location>, can also now be based on regular
+       expressions, not just simple prefix matching.
 
-  *) CERN Metafile Support
-       Now emulates the CERN httpd's support for metafiles containing
-       additional HTTP headers to be supplied with a document.
+  *) Browser-based Environment Variables
+       Environment variables can now be set based on the User-Agent
+       string of the browser. Combined with XSSI, this allows you to
+       write browser-based conditional HTML documents.
 
-  *) Redirect Now Usable in .htaccess Files
-       The Redirect directive can now be used in .htaccess files when the
-       FileInfo directive has been set on. This allows users to redirect
-       parts of their directories without requiring CGI scripts
+  *) SetUID CGI Execution Apache now supports the execution of CGI
+       scripts as users other than the server user. A number of security
+       checks are built in to try and make this as safe as possible.
 
-  *) Improved UserDir Directive (not in this release)
-       Now supports the ability to point user's files (as specificed by
-       URLs beginning with the "~" character) at directories other than
-       those specified by the Unix password file.
+  *) URL Rewriting Module
+       The optional mod_rewrite module is now included. This module can
+       provide powerful URL mapping, using regular expressions. There's
+       nothing this module can't do!
 
-  *) Minimal DNS Now Runtime Option
-       New HostnameLookups server configuration directive can be used to
-       turn On or  Off DNS lookups. This supercedes the -DMINIMAL_DNS
-       compile-time configuration option.
+  *) Optional FastCGI Module Included
+       FastCGI is a high-performance alternative to CGI. FastCGI gets its
+       speed by having the Web server keep the application processes
+       running between requests. So, unlike CGI, you do not have the
+       overhead of starting up a new process and doing application
+       initialization (e.g. connecting to a database) each time somebody
+       requests a document. The processes start up with the Web server
+       and keep on running.
 
-  *) Listen to Multiple Addresses and Ports
-       Using the new Listen directive, Apache can listen to more than one
-       port and IP address, using the same configuration set.
+  *) Enhanced, Configurable Logging
+       The optional mod_log_config included with earlier versions of
+       Apache is now standard, and has been enhanced to allow logging of
+       much more detail about the transaction, and can be used to open
+       more than one log at once (each of which can have a different log
+       format).
 
-  *) Anonymous HTTP Logins
-       New options allow you to allow, using Basic HTTP Authentication,
-       anonymous logins, like those of FTP. This allows you to collect
-       email addresses of people accessing your site.
+  *) User Tracking (Cookies) Revisions
+       The mod_cookies included with previous versions of Apache has been
+       renamed mod_usertrack, to more accurately reflect its function
+       (some people inadvertantely thought it enabled cookie support in
+       Apache, which is not true - Apache supports the use of cookies
+       directly). It is also now possible to disable the generation of
+       cookies, even when the cookie module is compiled in. Also, an
+       expiry time can be set on the cookies.
 
-  *) File Owner Avialable to Included CGI Scripts
-       Server-side includes that call CGI scripts will now set a
-       USER_NAME environment variable that contains the owner of the file
-       which included it.
+  *) Multiple IPs in <VirtualHost>
+       The <VirtualHost> directive can now take more than one IP address
+       or hostname. This lets a single vhost handles requests for
+       multiple IPs or hostnames.
 
-  *) Improved Icons
-       Thanks to Kevin Hughes, Apache's nifty color GIF icons for
-       directory listings have been updated. In addition, the Powered by
-       Apache (apache_pb.gif) logo has been included.
+  *) CGI Debugging Environment
+       ScriptLog allows you to now set up a log that records all input
+       and output to failed CGI scripts. This includes environment
+       variables, input headers, POST data, output, and more. This makes
+       CGI scripts much easier to debug.
 
-  *) Log Rotation
-	New support utility to allow log rotation without shutting down the
-	server. See support/rotatelogs.c.
+  *) Resource Limits for CGI Scripts
+       New directives allow the limiting of resources used by CGI scripts
+       (e.g. max CPU time). This is helpful in preventing 'runaway' CGI
+       processes.
 
-NEW AUTHENTICATION MODULES:
+  *) Redirect Directive Can Returns Additional Statuses
+       The Redirect directive can return permanent or temporary
+       redirectes, "Gone" or "See Other" HTTP statuses. For
+       NCSA-compatability, RedirectTemp and RedirectPermanent are also
+       implemented.
 
-Note: These modules are not compiled into the server by default, as
-they require special support on the host system. They must be enabled
-specifically in the Configuration file.
+  *) Graceful Restarts
+       Apache can re-read the config files and re-open log files without
+       terminating transactions in progress.
 
-  *) Support for Unix DB Authentication - mod_db.c
-       In addition to DBM support, Apache now contains optional support
-       for Berkeley DB databases.
+  *) Simplified Compliation
+       The process of configuring Apache for compilation has been
+       simplified.
 
-  *) mSQL Database Authentication - mod_auth_msql.html
-       Support for the use of mSQL databases for user authentication via
-       HTTP is now supported.
+  *) Add or Remove Options
+       The Optionsdirective can now add or remove options from those
+       currently in force, rather than always replacing them.
+
+  *) Command-line Help
+       The -h command-line option now lists all the available directives.
+
+  *) Optional Headers Module to Set or Remove HTTP Headers
+       The optional mod_headers module can be used to set custom headers
+       in the HTTP response. It can append to existing headers, replace
+       them, or remove headers from the response.
+
+  *) Conditional Config Directives
+       A new <IfModule> section allows directives to be enabled only if a
+       given module is loaded into the server.
+
+  *) Authorization Directives Now Use NCSA-style Syntax
+       The AuthUserFile, AuthGroupFile and AuthDigestFile commands now
+       have a syntax compatible with the NCSA server.
+
+  *) Optional proxy module
+       An improved FTP, HTTP, and CONNECT mode SSL proxy is included with
+       Apache 1.2. Some of the changes visible to users:
+       
+              - Improved FTP proxy supporting PASV mode
+              - NoProxy directive for excluding sites to proxy
+              - CONNECT mode ports are configurable from a list
+              - NoCache * directive for disabling proxy caching
+              - Numerous bug fixes

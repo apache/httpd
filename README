@@ -1,5 +1,5 @@
                                  Apache
-                             Version 1.1 (and up)
+                             Version 1.2 (and up)
 
 What is it?
 -----------
@@ -12,7 +12,10 @@ allows it to be extended to meet users' needs more easily.
 Documentation
 -------------
 
-All the documentation is on-line on the WWW, via <URL:http://www.apache.org/>.
+The documentation available as of the date of this release is also
+included, in HTML format, in the htdocs/manual/ directory. For the
+most up-to-date documentation, visit us on the WWW, at
+<URL:http://www.apache.org/>.
 
 Installation
 ------------
@@ -58,17 +61,6 @@ The Latest Version
 ------------------
 
 Details of the latest version are in the apache project page (above).
-
-NOTE: At the time of release of Apache 1.1, two modules had updated
-versions which were not sufficiently tested for inclusion into the 1.1
-distribution: mod_auth_msql and mod_cern_meta.  The newer versions are
-available from http://www.apache.org/dist/contrib/modules/ - if you
-plan on using this functionality we encourage you to give the newer
-modules a test drive, and let us know of any problems.  In particular,
-mod_cern_meta is now configurable per-directory, and the configuration
-directives have changed.  We can not promise that the existing
-configuration directives provided by the mod_cern_meta included in the
-distribution will be supported in the future.
 
 Licencing
 ---------
