@@ -257,7 +257,8 @@ typedef struct {
 
 /* cache_util.c */
 /* do a HTTP/1.1 age calculation */
-CACHE_DECLARE(apr_time_t) ap_cache_current_age(cache_info *info, const apr_time_t age_value);
+CACHE_DECLARE(apr_time_t) ap_cache_current_age(cache_info *info, const apr_time_t age_value,
+                                               apr_time_t now);
 
 /**
  * Check the freshness of the cache object per RFC2616 section 13.2 (Expiration Model)
