@@ -563,13 +563,12 @@ API_EXPORT(const char *) ap_auth_nonce(request_rec *r)
      * But then again - you should use AuthDigestRealmSeed in your config
      * file if you care. So the adhoc value should do.
      */
-    return ap_psprintf(r->pool,"%lu%lu%lu%lu%lu%s",
-           *(unsigned long *)&((r->connection->local_addr).sin_addr ),
-           *(unsigned long *)ap_user_name,
-           *(unsigned long *)ap_listeners,
-           *(unsigned long *)ap_server_argv0,
-           *(unsigned long *)ap_pid_fname,
-           "WHAT_THE_HECK_GOES_HERE?");
+    return ap_psprintf(r->pool,"%pp%pp%pp%pp%pp",
+           (void *)&((r->connection->local_addr).sin_addr ),
+           (void *)ap_user_name,
+           (void *)ap_listeners,
+           (void *)ap_server_argv0,
+           (void *)ap_pid_fname);
 }
 
 API_EXPORT(const char *) ap_default_type(request_rec *r)
