@@ -3070,6 +3070,10 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mod
  */
 typedef struct CORE_OUTPUT_FILTER_CTX {
     apr_bucket_brigade *b;
+    apr_pool_t *subpool; /* subpool of c->pool used for data saved after a
+                          * request is finished
+                          */
+    int subpool_has_stuff; /* anything in the subpool? */
 } core_output_filter_ctx_t;
 
 #define MAX_IOVEC_TO_WRITE 16
@@ -3191,6 +3195,11 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
         if ((!fd && !more && 
             (nbytes + flen < AP_MIN_BYTES_TO_WRITE) && !APR_BUCKET_IS_FLUSH(last_e))
             || (nbytes + flen < AP_MIN_BYTES_TO_WRITE && APR_BUCKET_IS_EOS(last_e) && c->keepalive)) {
+
+            if (ctx->subpool == NULL) {
+                apr_pool_create(&ctx->subpool, f->c->pool);
+            }
+
             /* NEVER save an EOS in here.  If we are saving a brigade with 
              * an EOS bucket, then we are doing keepalive connections, and 
              * we want to process to second request fully.
@@ -3202,7 +3211,7 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
                  * after the request_pool is cleared.
                  */ 
                 if (ctx->b == NULL) {
-                    ctx->b = apr_brigade_create(f->c->pool);
+                    ctx->b = apr_brigade_create(ctx->subpool);
                 }
 
                 APR_BRIGADE_FOREACH(bucket, b) {
@@ -3227,11 +3236,13 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
                         return rv;
                     }
                     apr_brigade_write(ctx->b, NULL, NULL, str, n);
+                    ctx->subpool_has_stuff = 1;
                 }
                 apr_brigade_destroy(b);
             }
             else {
-                ap_save_brigade(f, &ctx->b, &b, c->pool);
+                ap_save_brigade(f, &ctx->b, &b, ctx->subpool);
+                ctx->subpool_has_stuff = 1;
             }
             return APR_SUCCESS;
         }
@@ -3304,6 +3315,11 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
         b = more;
         more = NULL;
     }  /* end while () */
+
+    if (ctx->subpool && ctx->subpool_has_stuff) {
+        apr_pool_clear(ctx->subpool);
+        ctx->subpool_has_stuff = 0;
+    }
 
     return APR_SUCCESS;
 }
