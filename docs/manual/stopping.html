@@ -126,13 +126,18 @@ In the case of graceful
 restarts it will also leave children running when it exits.  (These are
 the children which are "gracefully exiting" by handling their last request.)
 This will cause problems if you attempt to restart the server -- it will
-not be able to bind to its listening ports.  At present the only work
-around is to check the syntax of your files before doing a restart.  The
-easiest way is to just run httpd as a non-root user.  If there are no
-errors it will attempt to open its sockets and logs and fail because it's
-not root (or because the currently running httpd already has those ports
-bound).  If it fails for any other reason then it's probably a config file
-error and the error should be fixed before issuing the graceful restart.
+not be able to bind to its listening ports.  Before doing a restart, you
+can check the syntax of the configuration files with the <CODE>-t</CODE>
+command line argument (see <A HREF="invoking.html">Starting
+Apache</A>). This still will not guarantee that the server will restart
+correctly. To check the semantics of the configuration files as well
+as the syntax, you can try starting httpd as a non-root user.  If
+there are no errors it will attempt to open its sockets and logs and
+fail because it's not root (or because the currently running httpd
+already has those ports bound).  If it fails for any other reason then
+it's probably a config file error and the error should be fixed before
+issuing the graceful restart.
+
 
 <H3>Appendix: signals and race conditions</H3>
 
