@@ -125,7 +125,7 @@ HPUX betreiben</page>
 <page href="mod/directives.html">Direktiven-Index</page>
 <page href="mod/quickreference.html">Kurzreferenz der Direktiven</page>
 <modulefilelist>
-  <modulefile>core.xml</modulefile>
+  <modulefile>core.xml.de</modulefile>
   <modulefile>mod_actions.xml</modulefile>
   <modulefile>mod_alias.xml</modulefile>
   <modulefile>mod_asis.xml</modulefile>
