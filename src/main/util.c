@@ -1055,24 +1055,6 @@ API_EXPORT(char *) escape_shell_cmd(pool *p, const char *str)
     return cmd;
 }
 
-void plustospace(char *str)
-{
-    register int x;
-
-    for (x = 0; str[x]; x++)
-	if (str[x] == '+')
-	    str[x] = ' ';
-}
-
-void spacetoplus(char *str)
-{
-    register int x;
-
-    for (x = 0; str[x]; x++)
-	if (str[x] == ' ')
-	    str[x] = '+';
-}
-
 static char x2c(const char *what)
 {
     register char digit;
