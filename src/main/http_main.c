@@ -1565,7 +1565,7 @@ static void lingering_close(request_rec *r)
 	select_rv = ap_select(lsd + 1, &lfds, NULL, NULL, &tv);
 
     } while ((select_rv > 0) &&
-#ifdef WIN32
+#if defined(WIN32) || defined(NETWARE)
              (recv(lsd, dummybuf, sizeof dummybuf, 0) > 0));
 #else
              (read(lsd, dummybuf, sizeof dummybuf) > 0));
