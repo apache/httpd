@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE faq SYSTEM "../style/faq.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+
+<faq metafile="support.xml.meta">
+<parentdocument href="./">FAQ</parentdocument>
+
+<title>Support - Frequently Asked Questions</title>
+<description>What do I do when I have problems?</description>
+
+<section id="support"><title>Support</title>
+    <ul>
+    <li><a href="#support.what2do">"Why can't I ...? Why won't ... work?" What
+    to do in case of problems</a></li>
+
+    <li><a href="#support.support">Whom do I contact for support?</a></li>
+    </ul>
+
+    <section id="support.what2do">
+    <title>"Why can't I ...? Why won't ... work?" What to do in case of
+    problems</title>
+
+      <p>If you are having trouble with your Apache server software, you should
+      take the following steps:</p>
+
+      <dl>
+      <dt>Check the errorlog!</dt>
+      <dd>Apache tries to be helpful when it encounters a problem. In many
+      cases, it will provide some details by writing one or messages to the
+      server error log. Sometimes this is enough for you to diagnose &amp; fix
+      the problem yourself (such as file permissions or the like). The default
+      location of the error log is
+      <code>/usr/local/apache2/logs/error_log</code>, but see the <directive
+      module="core">ErrorLog</directive> directive in your config files for the
+      location on your server.</dd>
+
+      <dt>Check the <a
+      href="http://httpd.apache.org/docs-2.1/faq/">FAQ</a>!</dt>
+      <dd>The latest version of the Apache Frequently-Asked Questions list can
+      always be found at the main Apache web site.</dd>
+
+      <dt>Check the Apache bug database</dt>
+      <dd>Most problems that get reported to The Apache Group are recorded in
+      the <a href="http://httpd.apache.org/bug_report.html">bug database</a>.
+      <strong>Please</strong> check the existing reports, open
+      <strong>and</strong> closed, before adding one. If you find that your
+      issue has already been reported, please <em>don't</em> add a "me, too"
+      report. If the original report isn't closed yet, we suggest that you
+      check it periodically. You might also consider contacting the original
+      submitter, because there may be an email exchange going on about the
+      issue that isn't getting recorded in the database.</dd>
+
+      <dt><a id="support.what2do.user-support"
+      name="support.what2do.user-support">Ask in a user support forum</a></dt>
+      <dd><p>Apache has an active community of users who are willing to share
+      their knowledge. Participating in this community is usually the best and
+      fastest way to get answers to your questions and problems.</p>
+
+      <p><a href="http://httpd.apache.org/userslist.html">Users
+      mailing list</a></p>
+
+      <p>USENET newsgroups:</p>
+
+      <ul>
+      <li>comp.infosystems.www.servers.unix
+      [<a href="news:comp.infosystems.www.servers.unix">news</a>]
+      [<a href="http://groups.google.com/groups?group=comp.infosystems.www.servers.unix">google</a>]
+      </li>
+
+      <li>comp.infosystems.www.servers.ms-windows
+      [<a href="news:comp.infosystems.www.servers.ms-windows">news</a>]
+      [<a href="http://groups.google.com/groups?group=comp.infosystems.www.servers.ms-windows">google</a>]
+      </li>
+
+      <li>comp.infosystems.www.authoring.cgi
+      [<a href="news:comp.infosystems.www.authoring.cgi">news</a>]
+      [<a href="http://groups.google.com/groups?group=comp.infosystems.www.authoring.cgi">google</a>]
+      </li>
+      </ul></dd>
+
+      <dt>If all else fails, report the problem in the bug database</dt>
+      <dd><p>If you've gone through those steps above that are appropriate and
+      have obtained no relief, then please <em>do</em> let the httpd developers
+      know about the problem by <a
+      href="http://httpd.apache.org/bug_report.html">logging a bug
+      report</a>.</p>
+
+      <p>If your problem involves the server crashing and generating a core
+      dump, please include a backtrace (if possible). As an example,</p>
+
+      <example>
+        # cd <var>ServerRoot</var><br />
+        # dbx <var>httpd</var> <var>core</var><br />
+        (dbx) where
+      </example>
+
+      <p>(Substitute the appropriate locations for your <var>ServerRoot</var>
+      and your <var>httpd</var> and <var>core</var> files. You may have to use
+      <code>gdb</code> instead of <code>dbx</code>.)</p>
+      </dd>
+      </dl>
+    </section>
+
+    <section id="support.support"><title>Whom do I contact for support?</title>
+      <p>With several million users and fewer than forty volunteer developers,
+      we cannot provide personal support for Apache. For free support, we
+      suggest participating in a <a href="#support.what2do.user-support"
+      >user forum</a>.</p>
+
+      <p>Professional, commercial support for Apache is available from
+      <a href="http://www.apache.org/info/support.cgi">a number of
+      companies</a>.</p>
+    </section>
+</section>
+
+</faq>
+
