@@ -1,5 +1,9 @@
 Changes with Apache 2.0.22-dev
 
+  *) Fix a cosmetic problem with mod_include.  Non-existant SSI vars
+     used to appear as '(none', without the closing paren.
+     [Günter Knauf <eflash@gmx.net>]
+
   *) Improve the exports generating awk script.  In the past, we had
      work around problems in the awk script by avoiding some #if and
      #ifdefs.  This has bitten us many times in generating the exports.c
