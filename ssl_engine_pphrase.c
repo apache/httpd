@@ -569,7 +569,7 @@ static apr_status_t ssl_pipe_child_create(apr_pool_t *p, const char *progname)
                              NULL, procattr, p);
         if (rc == APR_SUCCESS) {
             /* XXX: not sure if we aught to...
-             * apr_pool_note_subprocess(p, procnew, kill_after_timeout);
+             * apr_pool_note_subprocess(p, procnew, APR_KILL_AFTER_TIMEOUT);
              */
             writetty = procnew->in;
             readtty = procnew->out;
