@@ -31,32 +31,46 @@ Source projects.</p>
 
 <h3>Overview for the impatient</h3>
 
-<blockquote><code>
-     $ ./configure --prefix=<em>PREFIX</em><br>
-     $ make<br>
-     $ make install<br>
-     $ <em>PREFIX</em>/bin/apachectl start
-</blockquote></code>
+<table>
+<tr><td><a href="#download">Download</a></td>
+<td><code>$ lynx http://www.apache.org/dist/httpd/httpd-2_0_<em>NN</em>.tar.gz
+</code></td></tr>
 
-<p>Notes:
-<ul>
+<tr><td><a href="#extract">Extract</a></td>
+<td><code>$ gzip -d httpd-2_0_<em>NN</em>.tar.gz<br>
+$ tar xvf httpd-2_0_<em>NN</em>.tar
+</code></td></tr>
 
-<li><em>PREFIX</em> is not the string "PREFIX". Instead use the Unix
-filesystem path under which Apache should be installed. For instance
-use "/usr/local/apache" for <em>PREFIX</em> above.</li>
+<tr><td><a href="#configure">Configure</a></td>
+<td><code>$ ./configure --prefix=<em>PREFIX</em>
+</code></td></tr>
 
-<li>if you are building from a copy of the Apache CVS repository,
-rather than a release distribution, then you must use the "buildconf"
-script before running configure.</li>
+<tr><td><a href="#compile">Compile</a></td>
+<td><code>$ make
+</code></td></tr>
 
-<li>If you are building on FreeBSD, you should add the argument
---with-mpm=prefork to the configure line.  The Apache Group has
-discovered that threads do not work well with Apache on FreeBSD.  For
-that reason, we disable threads by default on FreeBSD, and you need to
-build the prefork MPM.  If you wish to try to make threads work on
-FreeBSD, they can be re-enabled by using --enable-threads</li>
+<tr><td><a href="#install">Install</a></td>
+<td><code>$ make install
+</code></td></tr>
 
-</ul>
+<tr><td><a href="#customize">Customize</a></td>
+<td><code>$ vi <em>PREFIX</em>/conf/httpd.conf
+</code></td></tr>
+
+<tr><td><a href="#test">Test</a></td>
+<td><code>$ <em>PREFIX</em>/bin/apachectl start
+</code></td></tr>
+
+</table>
+
+<p><em>NN</em> must be replaced with the current minor version number,
+and <em>PREFIX</em> must be replaced with the filesystem path under
+which the server should be installed.  If <em>PREFIX</em> is not
+specified, it defaults to <code>/usr/local/apache2</code>.</p>
+
+<p>Each section of the compilation and installation process is
+described in more detail below, beginning with the requirements
+for compiling and installing Apache HTTPD.</p>
 
 <h3>Requirements</h3>
 
@@ -64,91 +78,102 @@ FreeBSD, they can be re-enabled by using --enable-threads</li>
 
 <ul>
 
-<li>Disk Space<br><br>
-Make sure you have approximately 12 MB of
-temporary free disk space available.  After installation Apache
-occupies approximately 5 MB of disk space (the actual required disk
-space depends on the amount of compiled in third party modules,
-etc).<br><br></li>
+<li>Disk Space<br><br> Make sure you have at least 50 MB of temporary
+free disk space available.  After installation Apache occupies
+approximately 10 MB of disk space.  The actual disk space requirements
+will vary considerably based on your chosen configuration options and
+any third-party modules.<br><br></li>
 
-<li>ANSI-C Compiler<br><br>Make sure you have an ANSI-C compiler
-installed. The GNU C compiler (GCC) from the Free Software Foundation
-(FSF) is recommended (version 2.7.2 is fine). If you don't have GCC
-then at least make sure your vendors compiler is ANSI compliant. You
-can find the homepage of GNU at http://www.gnu.org/ and the GCC
-distribution under http://www.gnu.org/order/ftp.html.<br><br></li>
+<li>ANSI-C Compiler and Build System<br><br> Make sure you have an
+ANSI-C compiler installed. The <a
+href="http://www.gnu.org/software/gcc/gcc.html">GNU C compiler
+(GCC)</a> from the <a href="http://www.gnu.org/">Free Software
+Foundation (FSF)</a> is recommended (version 2.7.2 is fine). If you
+don't have GCC then at least make sure your vendors compiler is ANSI
+compliant.  In addition, your <code>PATH</code> must contain basic
+build tools such as <code>make</code>.<br><br></li>
 
-<li>Perl 5 Interpreter [OPTIONAL]<br><br> For some of the support
-scripts like `apxs' or `dbmmanage' (which are written in Perl) the
-Perl 5 interpreter is required (versions 5.003 and 5.004 are fine). If
-no such interpreter is found by the `configure' script this is no
-harm.  Of course, you still can build and install Apache 2.0. Only
-those support scripts cannot be used. If you have multiple Perl
-interpreters installed (perhaps a Perl 4 from the vendor and a Perl 5
-from your own), then it is recommended to use the --with-perl option
-(see below) to make sure the correct one is selected by ./configure.
-<br><br></li>
+<li>Accurate time keeping<br><br> Elements of the HTTP protocol are
+expressed as the time of day.  So, it's time to investigate setting
+some time synchronization facility on your system. Usually the ntpdate
+or xntpd programs are used for this purpose which are based on the
+Network Time Protocol (NTP). See the Usenet newsgroup <a
+href="news:comp.protocols.time.ntp">comp.protocols.time.ntp</a> and
+the <a href="http://www.eecis.udel.edu/~ntp/">NTP homepage</a> for more
+details about NTP software and public time servers.<br><br></li>
 
-<li>Dynamic Shared Object (DSO) support [OPTIONAL]<br><br> To provide
-maximum flexibility Apache now is able to load modules under runtime
-via the DSO mechanism by using the pragmatic
-apr_dso_open()/apr_dso_sym() calls. These calls are not available
-under all operating systems therefore you cannot use the DSO mechanism
-on all platforms. Apache relies on autoconf to detect the ability to
-use DSOs, and libtool to determine how to build DSOs. If your platform
-is supported by libtool, and we can find DSO system calls, then DSOs
-should work out-of-the-box.<br><br>
-
-If your system is not on these lists but has the dlopen-style
-interface, you either have to provide the appropriate compiler and
-linker flags manually or at least make sure a Perl 5 interpreter is
-installed from which Apache can guess the options.<br><br></li>
+<li><a href="http://www.perl.org/">Perl 5</a> [OPTIONAL]<br><br> For
+some of the support scripts like <a href="programs/apxs.html">apxs</a>
+or <a href="programs/dbmmanage.html">dbmmanage</a> (which are written
+in Perl) the Perl 5 interpreter is required (versions 5.003 and 5.004
+are fine). If no such interpreter is found by the `configure' script
+there is no harm.  Of course, you still can build and install Apache
+2.0. Only those support scripts cannot be used. If you have multiple
+Perl interpreters installed (perhaps a Perl 4 from the vendor and a
+Perl 5 from your own), then it is recommended to use the --with-perl
+option (see below) to make sure the correct one is selected by
+./configure.  <br><br></li>
 
 </ul>
 
+<h3><a name="download">Download</a></h3>
 
-<p>If you are building from a copy of the CVS repository, rather than
-a release distribution, then you will need these additional tools:</p>
+<p>Apache can be downloaded from the <a
+href="http://www.apache.org/dist/httpd/">Apache Software Foundation
+download site</a> or from a <a
+href="http://www.apache.org/dyn/closer.cgi">nearby mirror</a>.</p>
 
-<ul>
+<p>Version numbers that end in <code>alpha</code> indicate early
+pre-test versions which may or may not work.  Version numbers ending
+in <code>beta</code> indicate more reliable releases that still
+require further testing or bug fixing.  If you wish to dowload the
+best available production release of the Apache HTTP Server, you
+should choose the latest version with neither <code>alpha</code> nor
+<code>beta</code> in its filename.</p>
 
-<li>Libtool 1.3.3<br><br> Make sure that you have libtool 1.3.3 or
-later installed before trying to configure and build Apache 2.0.
-Libtool can be downloaded from the Free Software Foundation (FSF), at
-http://www.gnu.org/order/ftp.html.<br><br></li>
+<p>After downloading, especially if a mirror site is used, it is
+important to verify that you have a complete and unmodified version
+of the Apache HTTP Server.  This can be accomplished by testing the
+downloaded tarball against the PGP signature, which should always be
+obtained from the <a href="http://www.apache.org/dist/httpd">main
+Apache website</a>.  The signature file has a filename identical to
+the source tarball with the addition of <code>.asc</code>.</p>
 
-<li>Autoconf 2.13<br><br> Make sure that you have autoconf 2.13 or
-later installed before trying to configure and build Apache 2.0.
-Autoconf can be downloaded from the Free Software Foundation (FSF), at
-http://www.gnu.org/order/ftp.html.<br><br></li>
+<h3><a name="extract">Extract</a></h3>
 
-</ul>
-
-<h3>Configuring the source tree</h3>
-
-<h4>Setup</h4>
-
-<p>If you have downloading the Apache 2.0 from the CVS, rather than a
-release distribution, then you will need to prepare the source tree
-for configuration and compilation. This is done by running:</p>
+<p>Extracting the source from the Apache HTTPD tarball is a simple
+matter of uncompressing, and then untarring:</p>
 
 <blockquote><code>
-      ./buildconf
-</blockquote></code>
+$ gzip -d httpd-2_0_<em>NN</em>.tar.gz<br>
+$ tar xvf httpd-2_0_<em>NN</em>.tar
+</code></blockquote>
 
-<p>This script ensures that all required programs are installed on the
-currently machine, and creates the ./configure script.  If you are
-using a package downloaded from apache.org then this step is not
-necessary.</p>
+<p>This will create a new directory under the current directory
+containing the source code for the distribution.  You should
+<code>cd</code> into that directory before proceeding with
+compiling the server.</p>
 
-<h4>Introduction</h4>
+<h3><a name="configure">Configuring the source tree</a></h3>
 
 <p>The next step is to configure the Apache source tree for your
-particular platform and personal requirements. The most important
-setup here is the location prefix where Apache is to be installed
-later, because Apache has to be configured for this location to work
-correctly. But there are a lot of other options available for your
-pleasure.</p>
+particular platform and personal requirements. This is done using the
+script <code>configure</code> included in the root directory of the
+distribution.  (Developers downloading the CVS version of the Apache
+source tree will need to have <code>autoconf</code> and
+<code>libtool</code> installed and will need to run
+<code>buildconf</code> before proceeding with the next steps.  This is
+not necessary for official releases.)</p>
+
+<p>To configure the source tree using all the default options, simply
+type <code>./configure</code>.  To change the default options,
+<code>configure</code> accepts a variety of variables and command line
+options.  Environment variables are generally placed before the
+<code>./configure</code> command, while other options are placed
+after.  The most important option here is the location prefix where
+Apache is to be installed later, because Apache has to be configured
+for this location to work correctly. But there are a lot of other
+options available for your pleasure.</p>
 
 <p>For a short impression of what possibilities you have, here is a
 typical example which compiles Apache for the installation tree
@@ -163,216 +188,200 @@ through the DSO mechanism:</p>
                    --enable-speling=shared
 </code></blockquote>
 
+<p>When configure is run it will take several minutes to test for
+the availability of features on your system and build Makefiles
+which will later be used to compile the server.</p>
+
 <p>The easiest way to find all of the configuration flags for Apache
-2.0 is to run ./configure --help.  What follows is a brief description
-of most of the arguments.</p>
+is to run ./configure --help.  What follows is a brief description
+of most of the arguments and environment variables.</p>
 
-<pre>
-     Reference:
+<h4>Environment Variables</h4>
 
-     $ [CC=...]        [TARGET=...]
-       [CPPFLAGS=...]  [NOTEST_CPPFLAGS=...]
-       [CFLAGS=...]    [NOTEST_CFLAGS=...]
-       [CXXFLAGS=...]  [NOTEST_CXXFLAGS=...]
-       [LDFLAGS=...]   [NOTEST_LDFLAGS=...]
-       [LIBS=...]      [NOTEST_LIBS=...]
-       [INCLUDES=...]  [SHLIB_PATH=...] 
+<p>The autoconf build process uses several environment variables to
+configure the build environment.  In general, these variables change
+the method used to build Apache, but not the eventual features of the
+server.  These variables can be placed in the environment before
+invoking <code>configure</code>, but it is usually easier to specify
+them on the <code>configure</code> command line as demonstrated 
+in the example above.</p>
 
-       ./configure
-           [--quiet]         [--prefix=DIR]            [--enable-NAME=(shared)]
-           [--verbose]       [--exec-prefix=PREFIX]    [--disable-NAME]
-           [--shadow[=DIR]]  [--bindir=EPREFIX]        [--with-mpm=NAME]
-           [--show-layout]   [--sbindir=DIR]           
-           [--help]          [--libexecdir=DIR]        
-                             [--mandir=DIR]            
-                             [--sysconfdir=DIR]        
-                             [--datadir=DIR]           
-                             [--includedir=DIR]        
-                             [--localstatedir=DIR]
-                             [--runtimedir=DIR]        [--enable-suexec]
-                             [--logfiledir=DIR]        [--suexec-caller=UID]
-                             [--proxycachedir=DIR]     [--suexec-docroot=DIR]
-                             [--with-layout=[FILE:]ID] [--suexec-logfile=FILE]
-                                                       [--suexec-userdir=DIR]
-                             [--with-perl=FILE]        [--suexec-uidmin=UID]
-                             [--without-support]       [--suexec-gidmin=GID]
-                             [--without-confadjust]    [--suexec-safepath=PATH]
-                             [--without-execstrip]
-			     [--server-uid=UID]
-			     [--server-gid=GID]
+<dl>
 
-                             [--enable-maintainter-mode]
-                             [--enable-debug]
-</pre>
+<dt><code>CC=...</code></dt>
+<dd>The name of the C compiler command.</dd>
 
-<p>Use the CC, CPPFLAGS, CFLAGS, CXXFLAGS, LDFLAGS, LIBS, INCLUDES,
-SHLIB_PATH and TARGET environment variables to override or expand the
-corresponding default entries as determined by configure.</p>
+<dt><code>CPPFLAGS=...</code></dt> <dd>Miscellaneous C preprocessor
+and compiler options.</dd>
 
-<p>Use NOTEST_CPPFLAGS, NOTEST_CFLAGS, NOTEST_CXXFLAGS,
-NOTEST_LDFLAGS, and NOTEST_LIBS to add entries that should only be
-used during the actual build and compilation of Apache, such as
--Werror.</p>
+<dt><code>CFLAGS=...</code></dt>
+<dd>Debugging and optimization options for the C compiler.</dd>
 
-<p>Use the --prefix=PREFIX and --exec-prefix=EPREFIX options to
-configure Apache to use a particular installation prefix. The default
-is PREFIX=/usr/local/apache and EPREFIX=PREFIX.</p>
+<dt><code>LDFLAGS=...</code></dt>
+<dd>Miscellaneous options to be passed to the linker.</dd>
 
-<p>Use the --bindir=DIR, --sbindir=DIR, --libexecdir=DIR,
---mandir=DIR, --sysconfdir=DIR, --datadir=DIR, --iconsdir=DIR,
---htdocsdir=DIR, --cgidir=DIR, --includedir=DIR, --localstatedir=DIR,
---runtimedir=DIR, --logfiledir=DIR and --proxycachedir=DIR option to
-change the paths for particular subdirectories of the installation
-tree.  Defaults are bindir=EPREFIX/bin, sbindir=EPREFIX/bin,
-libexecdir=EPREFIX/modules, mandir=PREFIX/man, sysconfdir=PREFIX/conf,
-datadir=PREFIX, iconsdir=PREFIX/icons, htdocsdir=PREFIX/htdocs,
-cgidir=PREFIX/cgi-bin, includedir=PREFIX/include,
-localstatedir=PREFIX, runtimedir=PREFIX/logs, logfiledir=PREFIX/logs
-and proxycachedir=PREFIX/proxy.</p>
+<dt><code>LIBS=...</code></dt>
+<dd>Library location information ("-L" and "-l" options)
+to pass to the linker.</dd>
 
-<p>Note: To reduce the pollution of shared installation locations
-(like /usr/local/ or /etc) with Apache files to a minimum the string
-``/apache'' is automatically appended to 'libexecdir', 'sysconfdir',
-'datadir', 'localstatedir' and 'includedir' if (and only if) the
-following points apply for each path individually:</p>
-<ol>
-<li>the path doesn't already contain the word ``apache''</li>
-<li>the path was not directly customized by the user</li>
-</ol>
+<dt><code>INCLUDES=...</code></dt>
+<dd>Header file search directories ("-I<em>dir</em>").</dd>
 
-<p>Keep in mind that per default these paths are derived from 'prefix'
-and 'exec-prefix', so usually its only a matter whether these paths
-contain ``apache'' or not. Although the defaults were defined with
-experience in mind you always should make sure the paths fit your
-situation by checking the finally chosen paths via the --layout
-option.</p>
+<dt><code>TARGET=...</code> [Default: apache]</dt>
+<dd>Name of the executable which will be built.</dd>
 
-<p>Use the --with-layout=[F:]ID option to select a particular
-installation path base-layout. You always _HAVE_ to select a
-base-layout. There are currently two layouts pre-defined in the file
-config.layout: `Apache' for the classical Apache path layout and `GNU'
-for a path layout conforming to the GNU `standards' document. When you
-want to use your own custom layout FOO, either add a corresponding
-"&lt;Layout FOO&gt;...&lt;/Layout&gt;" section to config.layout and use
---with-layout=FOO or place it into your own file, say config.mypaths,
-and use --with-layout=config.mypaths:FOO.</p>
- 
-<p>Use the --show-layout option to check the final installation path
-layout while fiddling with the options above.</p>
- 
-<p>Use the --enable-NAME=(shared) and --disable-NAME options to enable
-or disable a particular already distributed module from the Apache
-package.</p>
+<dt><code>NOTEST_CPPFLAGS=...</code></dt>
+<dt><code>NOTEST_CFLAGS=...</code></dt>
+<dt><code>NOTEST_LDFLAGS=...</code></dt>
+<dt><code>NOTEST_LIBS=...</code></dt>
+<dd>These variables share the same function as their non-NOTEST namesakes.
+However, the variables are applied to the build process only after
+autoconf has performed its feature testing.  This allows the inclusion of
+flags which will cause problems during feature testing, but must be used
+for the final compilation.</dd>
 
-<p>Use the --with-mpm=NAME option to determine which MPM should be
-built for your server.</p>
+<dt><code>SHLIB_PATH=...</code></dt> 
+<dd>Options which specify shared library paths for the compiler and
+linker.</dd>
 
-<h3>List of Available Modules</h3>
-<pre>
-     Environment creation
-      (+) mod_env .......... Set environment variables for CGI/SSI scripts
-      (+) mod_setenvif ..... Set environment variables based on HTTP headers
-      (-) mod_unique_id .... Generate unique identifiers for request
+</dl>
 
-     Content type decisions
-      (+) mod_mime ......... Content type/encoding determination (configured)
-      (-) mod_mime_magic ... Content type/encoding determination (automatic)
-      (+) mod_negotiation .. Content selection based on the HTTP Accept* headers
+<h4>autoconf Output Options</h4>
 
-     URL mapping
-      (+) mod_alias ........ Simple   URL translation and redirection
-      (-) mod_rewrite ...... Advanced URL translation and redirection
-      (+) mod_userdir ...... Selection of resource directories by username
-      (-) mod_speling ...... Correction of misspelled URLs
+<dl>
 
-     Directory Handling
-      (+) mod_dir .......... Directory and directory default file handling
-      (+) mod_autoindex .... Automated directory index file generation
+<dt><code>--help</code></dt>
+<dd>Prints the usage message including all available options, but 
+does not actually configure anything.</dd>
 
-     Access Control and Authentication
-      (+) mod_access ....... Access Control (user, host, network)
-      (+) mod_auth ......... HTTP Basic Authentication (user, passwd)
-      (-) mod_auth_dbm ..... HTTP Basic Authentication via Unix NDBM files
-      (-) mod_auth_db ...... HTTP Basic Authentication via Berkeley-DB files
-      (-) mod_auth_anon .... HTTP Basic Authentication for Anonymous-style users
-      (-) mod_digest ....... HTTP Digest Authentication
+<dt><code>--quiet</code></dt>
+<dd>Prevents the printing of the usual "checking..." messages.</dd>
 
-     HTTP response
-      (-) mod_headers ...... Arbitrary HTTP response headers (configured)
-      (-) mod_cern_meta .... Arbitrary HTTP response headers (CERN-style files)
-      (-) mod_expires ...... Expires HTTP responses 
-      (+) mod_asis ......... Raw HTTP responses 
+<dt><code>--verbose</code></dt>
+<dd>Prints much more information during the configuration process,
+including the names of all the files examined.</dd>
 
-     Scripting
-      (+) mod_include ...... Server Side Includes (SSI) support
-      (+) mod_cgi .......... Common Gateway Interface (CGI) support
-      (+) mod_cgid ......... Common Gateway Interface (CGI) support for 
-                             multi-threaded MPMs
-      (+) mod_actions ...... Map CGI scripts to act as internal `handlers'
+</dl>
 
-     Internal Content Handlers
-      (+) mod_status ....... Content handler for server run-time status
-      (-) mod_info ......... Content handler for server configuration summary
+<h4>Pathnames</h4>
 
-     Request Logging
-      (+) mod_log_config ... Customizable logging of requests
-      (-) mod_usertrack .... Logging of user click-trails via HTTP Cookies
+<p>There are currently two ways to configure the pathnames under
+which Apache will install its files.  First, you can specify
+a directory and have Apache install itself under that directory
+in its default locations.</p>
 
-     Content Management
-      (-) mod_dav .......... WebDAV (RFC 2518) support for Apache
-      (-) mod_dav_fs ....... mod_dav backend to managing filesystem content
+<dl>
+<dt><code>--prefix=<em>PREFIX</em></code> [Default:
+/usr/local/apache2]</dt> 
+<dd>Specifies the directory under which the Apache files will be
+installed.</dd>
+</dl>
 
-     Miscellaneous
-      (+) mod_imap ......... Server-side Image Map support
-      (-) mod_proxy ........ Caching Proxy Module (HTTP, HTTPS, FTP)
-      (-) mod_so ........... Dynamic Shared Object (DSO) bootstrapping
+<p>It is possible to specify that architecture-dependent files should
+be placed under a different directory.</p>
 
-     Experimental
-      (-) mod_mmap_static .. Caching of frequently served pages via mmap()
+<dl>
+<dt><code>--exec-prefix=<em>EPREFIX</em></code> [Default:
+<em>PREFIX</em>]</dt> 
+<dd>Specifies the directory under which architecture-dependent files
+will be placed.</dd>
+</dl>
 
-     Development
-      (-) mod_example ...... Apache API demonstration (developers only)
+<p>The second, and more flexible way to configure the install path
+locations for Apache is using the <code>config.layout</code> file.
+Using this method, it is possible to separately specify the location
+for each type of file within the Apache installation.  The
+<code>config.layout</code> file contains several example
+configurations, and you can also create your own custom configuration
+following the examples.  The different layouts in this file are
+grouped into <code>&lt;Layout FOO&gt;...&lt;/Layout&gt;</code>
+sections and referred to by name as in <code>FOO</code>.</p>
 
-     MPMs
-          mpmt_pthread ..... Multi-process(dynamic) Multi-threaded(static) 
-                             Unix MPM
-          prefork .......... Preforking Unix MPM
-          perchild ......... Multi-process(static) Multi-threaded(dynamic)
-                             Unix MPM, that allows a User per child process
+<dl>
 
-          winnt ............ Multi-process(1) Multi-threaded Windows MPM
+<dt><code>--enable-layout=<em>LAYOUT</em></code></dt>
+<dd>Use the named layout in the <code>config.layout</code> file
+to specify the installation paths.</dd>
 
-          mpmt_beos ........ Multi-process Multi-threaded Beos MPM
-          beos ............. Multi-process Multi-threaded Beos MPM
+</dl>
 
-          spmt_os2 ......... Single-process Multi-threaded OS/2 MPM
-     _________________________________________________________________________
-                    (+) = enabled  per default [disable with --disable-module]
-                    (-) = disabled per default [enable  with --enable-module ]
+<p>Presently it is not possible to mix the
+<code>--enable-layout</code> and <code>--prefix</code> options.  Nor
+is it possible to individually specify detailed pathnames on the
+<code>configure</code> command line.  If you want just a basic
+install, you can simply use the <code>--prefix</code> option on its
+own.  If you want to customize your install, you should edit the
+<code>config.layout</code> file and use the
+<code>--enable-layout</code> option.</p>
 
-</pre>
+<h4>Modules</h4>
 
-<p>Use the --enable-suexec option to enable the suEXEC feature by
-building and installing the "suexec" support program.</p>
+<p>Apache is a modular server.  Only the most basic functionality is
+included in the core server.  Extended features are available in
+various modules.  During the configuration process, you must select
+which modules to compile for use with your server.  You can view a <a
+href="mod/index-bytype.html">list of modules</a> included in the
+documentation.  Those modules with a <a
+href="mod/module-dict.html#Status">status</a>
+of "Base" are included by default and must be specifically disabled if
+you do not want them.  Modules with any other status must be
+specifically enabled if you wish to use them.</p>
 
-<p><strong>CAUTION: FOR DETAILS ABOUT THE SUEXEC FEATURE WE HIGHLY
-RECOMMEND YOU TO FIRST READ THE DOCUMENT htdocs/manual/suexec.html
-BEFORE USING THE ABOVE OPTIONS.</strong></p>
-     
-<p><strong>USING THE SUEXEC FEATURE PROPERLY CAN REDUCE CONSIDERABLY
-THE SECURITY RISKS INVOLVED WITH ALLOWING USERS TO DEVELOP AND RUN
-PRIVATE CGI OR SSI PROGRAMS. HOWEVER, IF SUEXEC IS IMPROPERLY
-CONFIGURED, IT CAN CAUSE ANY NUMBER OF PROBLEMS AND POSSIBLY CREATE
-NEW HOLES IN YOUR COMPUTER'S SECURITY.  IF YOU AREN'T FAMILIAR WITH
-MANAGING SETUID ROOT PROGRAMS AND THE SECURITY ISSUES THEY PRESENT, WE
-HIGHLY RECOMMEND THAT YOU NOT CONSIDER USING SUEXEC AND KEEP AWAY FROM
-THESE OPTIONS!</strong></p>
+<p>There are two ways for a module to be compiled and used with
+Apache.  Modules may be <em>statically compiled</em>, which means that
+they are permanently included in the Apache binary.  Alternatively, if
+your operating system supports Dynamic Shared Objects (DSOs) and
+autoconf can detect that support, then modules may be <em>dynamically
+compiled</em>.  DSO modules are stored separately from the Apache
+binary, and may be included or excluded from the server using the
+run-time configuration directives provided by <a
+href="mod/mod_so.html">mod_so</a>.  The mod_so is automatically
+included in the server if any dynamic modules are included in the
+compilation.  If you would like to make your server capable of loading
+DSOs without actually compiling any dynamic modules, you can
+explicitly <code>--enable-so</code>.</p>
 
-<p>Use the --quiet option to disable all configuration verbose
-messages.</p>
+<dl>
+
+<dt><code>--enable-<em>MODULE</em>[=shared]</code></dt> <dd>Compile
+and include the module <em>MODULE</em>.  The identifier
+<em>MODULE</em> is the <a
+href="mod/module-dict.html#ModuleIdentifier"
+>Module Identifier</a> from the module documentation without the
+"_module" string.  To compile the module dynamically as a DSO, add the
+option <code>=shared</code>.</dd>
+
+<dt><code>--disable-<em>MODULE</em></code></dt>
+<dd>Remove the module <em>MODULE</em> which would otherwise be
+compiled and included.</dd>
+
+</dl>
+
+<p>In addition to the standard set of modules, Apache 2.0 also
+includes a choice of <a href="mpm.html">Multi-Processing Modules</a>
+(MPMs).  One, and only one MPM must be included in the compilation
+process.  The default MPMs for each platform are listed on the <a
+href="mpm.html">MPM documentation page</a>, but can be overridden
+on the <code>configure</code> command line.
+
+<dl>
+
+<dt><code>--with-mpm=<em>NAME</em></code></dt>
+<dd>Choose the mpm <em>NAME</em>.
+
+</dl>
+
+<h4>Suexec</h4>
+
+<p>Apache includes a support program called <a
+href="suexec.html">suexec</a> which can be used to isolate user CGI
+programs.  However, if suexec is improperly configured, it can cause
+serious security problems.  Therefore, you should carefully read and
+consider the <a href="suexec.html">suexec documentation</a> before
+implementing this feature.</p>
  
 
-<h3>Building the package</h3>
+<h3><a name="compile">Building the package</a></h3>
      
 <p>Now you can build the various parts which form the Apache package
 by simply running the command:</p>
@@ -381,77 +390,58 @@ by simply running the command:</p>
         $ make 
 </code></blockquote>
 
-<p>Please be patient here, this takes approximately 2 minutes to
-complete under a Pentium-166/FreeBSD-2.2 system, dependend on the
-amount of modules you have enabled.</p>
+<p>Please be patient here, since a base configuration takes
+approximately 3 minutes to compile under a Pentium III/Linux 2.2
+system, but this will vary widely depending on your hardware and the
+number of modules which you have enabled.</p>
 
  
-<h3>Installing the package</h3>
+<h3><a name="install">Installing the package</a></h3>
      
 <p>Now its time to install the package under the configured
-installation PREFIX (see --prefix option above) by running:</h3>
+installation PREFIX (see <code>--prefix</code> option above) by running:</h3>
 <blockquote><code>
         $ make install
 </code></blockquote> 
 
-<p>For the paranoid hackers under us: The above command really
-installs under prefix _only_, i.e. no other stuff from your system is
-touched. Even if you upgrade an existing installation your
-configuration files in PREFIX/conf/ are preserved.</p>
+<p>If you are upgrading, the installation will not overwrite 
+your configuration files or documents.</p>
 
 
-<h3>Testing the package</h3>
+<h3><a name="customize">Customizing the package</a></h3>
  
-<p>Now you can fire up your Apache HTTP server by immediately running:</p>
+<p>Next, you can customize your Apache HTTP server by editing the <a
+href="configuring.html">configuration files</a> under
+PREFIX/conf/.</p> 
+
+<blockquote><code> 
+$ vi PREFIX/conf/httpd.conf
+</code></blockquote>
+
+<p>Have a look at the Apache manual under <a
+href="./">docs/manual/</a> or <a
+href="http://httpd.apache.org/docs/">http://httpd.apache.org/docs/</a>
+for a complete reference of available <a
+href="mod/directives.html">configuration directives</a>.</p>
+
+<h3><a name="test">Testing the package</a></h3>
+ 
+<p>Now you can <a href="invoking.html">start</a> your Apache HTTP
+server by immediately running:</p>
 
 <blockquote><code>
         $ PREFIX/bin/apachectl start
 </code></blockquote>
  
 <p>and then you should be able to request your first document via URL
-http://localhost/ (when you built and installed Apache as root or at
-least used the --without-confadjust option) or http://localhost:8080/
-(when you built and installed Apache as a regular user). Then stop the
-server again by running:</p>
-<blockquote><code>
-        $ PREFIX/bin/apachectl stop
-</code></blockquote>
- 
-<h3>Customizing the package</h3>
- 
-<p>Finally you can customize your Apache HTTP server by editing the
-configuration files under PREFIX/conf/.</p>
-<blockquote><code>
-        $ vi PREFIX/conf/httpd.conf
-</code></blockquote>
+http://localhost/ (when you built and installed Apache as root) or
+http://localhost:8080/ (when you built and installed Apache as a
+regular user).  The web page you see is located under the <a
+href="mod/core.html#documentroot">DocumentRoot</a> which will usually
+be <code>PREFIX/htdocs/</code>.  Then <a href="stopping.html">stop</a>
+the server again by running:</p>
 
-<p>Have a look at the Apache manual under docs/manual/ or
-http://httpd.apache.org/docs/ for a complete reference of available
-configuration directives.</p>
-
-
-<h3>Preparing the system</h3>
-
-<p>Proper operation of a public HTTP server requires at least the
-following:</p>
-
-<ol>
-
-<li>A correctly working TCP/IP layer, since HTTP is implemented on top
-of TCP/IP. Although modern Unix platforms have good networking layers,
-always make sure you have all official vendor patches referring to the
-network layer applied.</li>
-
-<li>Accurate time keeping, since elements of the HTTP protocol are
-expressed as the time of day.  So, it's time to investigate setting
-some time synchronization facility on your system. Usually the ntpdate
-or xntpd programs are used for this purpose which are based on the
-Network Time Protocol (NTP). See the Usenet newsgroup
-comp.protocols.time.ntp and the NTP homepage at
-http://www.eecis.udel.edu/~ntp/ for more details about NTP software
-and public time servers.</li>
-
-</ol>
+<blockquote><code> $ PREFIX/bin/apachectl stop </code></blockquote>
 
 
 <!--#include virtual="footer.html" -->
