@@ -401,6 +401,12 @@ AP_DECLARE(apr_status_t) ap_rgetline(char **s, apr_size_t n,
             return rv;
         }
 
+        if (APR_BRIGADE_EMPTY(bb)) {
+            *read = bytes_handled;
+            apr_brigade_destroy(bb);
+            return APR_SUCCESS;
+        }
+
         e = APR_BRIGADE_FIRST(bb);
 
         /* If we see an EOS, don't bother doing anything more. */
