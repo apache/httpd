@@ -80,10 +80,10 @@ typedef struct disk_cache_object {
     char *datafile;          /* name of file where the data will go */
     char *hdrsfile;          /* name of file where the hdrs will go */
     char *name;
-    int version;             /* update count of the file */
+    apr_time_t version;      /* update count of the file */
     apr_file_t *fd;          /* data file */
     apr_file_t *hfd;         /* headers file */
-    apr_off_t file_size;    /*  File size of the cached data file  */    
+    apr_off_t file_size;     /*  File size of the cached data file  */    
 } disk_cache_object_t;
 
 /*
@@ -504,7 +504,7 @@ static apr_status_t read_body(cache_handle_t *h, apr_pool_t *p, apr_bucket_briga
     apr_bucket *e;
     disk_cache_object_t *dobj = (disk_cache_object_t*) h->cache_obj->vobj;
 
-    e = apr_bucket_file_create(dobj->fd, 0, dobj->file_size, p,
+    e = apr_bucket_file_create(dobj->fd, 0, (apr_size_t) dobj->file_size, p,
                                bb->bucket_alloc);
     APR_BRIGADE_INSERT_HEAD(bb, e);
     e = apr_bucket_eos_create(bb->bucket_alloc);
@@ -769,7 +769,7 @@ static const command_rec disk_cache_cmds[] =
     AP_INIT_TAKE1("CacheRoot", set_cache_root, NULL, RSRC_CONF,
                  "The directory to store cache files"),
     AP_INIT_TAKE1("CacheSize", set_cache_size, NULL, RSRC_CONF,
-                  "The maximum disk space used by the cache in Kb"),
+                  "The maximum disk space used by the cache in KB"),
     AP_INIT_TAKE1("CacheGcInterval", set_cache_gcint, NULL, RSRC_CONF,
                   "The interval between garbage collections, in hours"),
     AP_INIT_TAKE1("CacheDirLevels", set_cache_dirlevels, NULL, RSRC_CONF,
