@@ -59,6 +59,7 @@
 #ifndef APACHE_OS_H
 #define APACHE_OS_H
 
+#include "apr.h"
 #include "ap_config.h"
 
 #ifndef PLATFORM
@@ -75,19 +76,11 @@
  * and prototypes of OS specific functions defined in os.c or os-inline.c
  */
 
-#if !defined(INLINE) && defined(USE_GNU_INLINE)
+
+#if APR_HAS_INLINE
 /* Compiler supports inline, so include the inlineable functions as
  * part of the header
  */
-#define INLINE extern apr_inline
-
-/**
- * Is the path an absolute or relative path
- * @param file The path to the file
- * @return 1 if absolute, 0 otherwise
- * @deffunc int ap_os_is_path_absolute(const char *file)
- */
-INLINE int ap_os_is_path_absolute(const char *file);
 
 #include "os-inline.c"
 
@@ -96,7 +89,15 @@ INLINE int ap_os_is_path_absolute(const char *file);
 /* Compiler does not support inline, so prototype the inlineable functions
  * as normal
  */
+
+/**
+ * Is the path an absolute or relative path
+ * @param file The path to the file
+ * @return 1 if absolute, 0 otherwise
+ * @deffunc int ap_os_is_path_absolute(const char *file)
+ */
 extern int ap_os_is_path_absolute(const char *file);
+
 #endif
 
 /* Other ap_os_ routines not used by this platform */

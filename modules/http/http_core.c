@@ -577,7 +577,7 @@ char *ap_response_code_string(request_rec *r, int error_index)
 
 
 /* Code from Harald Hanche-Olsen <hanche@imf.unit.no> */
-static apr_inline void do_double_reverse (conn_rec *conn)
+static APR_INLINE void do_double_reverse (conn_rec *conn)
 {
     apr_sockaddr_t *sa;
     apr_status_t rv;

@@ -184,7 +184,7 @@ static char c_by_encoding, c_by_type, c_by_path;
  * matches ".." or "../").  Hopefully this one call is significantly less
  * expensive than multiple strcmp() calls.
  */
-static apr_inline int is_parent(const char *name)
+static APR_INLINE int is_parent(const char *name)
 {
     /*
      * Now, IFF the first two bytes are dots, and the third byte is either

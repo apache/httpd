@@ -64,7 +64,8 @@
 #define HAVE_DRIVE_LETTERS
 #define HAVE_UNC_PATHS
 
-#include <apr_general.h>
+#include <apr.h>
+#include <apr_pools.h>
 
 /*
  * This file in included in all Apache source code. It contains definitions
@@ -72,18 +73,14 @@
  * and prototypes of OS specific functions defined in os.c or os-inline.c
  */
 
-#if defined(__GNUC__) && !defined(INLINE)
+#if APR_HAS_INLINE
 /* Compiler supports inline, so include the inlineable functions as
  * part of the header
  */
-#define INLINE extern __inline__
-
-INLINE int ap_os_is_path_absolute(const char *file);
 
 #include "os-inline.c"
-#endif
 
-#ifndef INLINE
+#else
 /* Compiler does not support inline, so prototype the inlineable functions
  * as normal
  */
