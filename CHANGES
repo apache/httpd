@@ -1,3 +1,5 @@
+Changes with Apache 2.0.36
+
 Changes with Apache 2.0.35
 
   *) mod_rewrite: updated to use the new APR global mutex type.
