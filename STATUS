@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/06/02 18:02:50 $]
+Last modified at [$Date: 2002/06/02 19:55:41 $]
 
 Release:
 
@@ -96,9 +96,6 @@ RELEASE SHOWSTOPPERS:
                    where possible, I'd prefer to remove duplicate calls to
                    ap_discard_request_body.  So, maybe both strategies are
                    needed.
-
-    * Bucket metadata flag must be per-type not per-bucket.
-      Message-ID: <Pine.LNX.4.44.0205311656500.490-100000@deepthought.cs.virginia.edu>
 
 CURRENT VOTES:
 
