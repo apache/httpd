@@ -558,24 +558,11 @@ static int status_handler(request_rec *r)
                 ws_record = ap_scoreboard_image->servers[i][j];
                 ps_record = ap_scoreboard_image->parent[i];
 
-#if defined(NO_GETTIMEOFDAY)
-#ifdef HAVE_TIMES
-                if (ws_record.start_time == (clock_t)0)
-                    req_time = 0L;
-                else {
-                    req_time = ws_record.stop_time - ws_record.start_time;
-                    req_time = (req_time * 1000) / (int)tick;
-                }
-#else
-                req_time = 0L;
-#endif /* HAVE_TIMES */
-#else
                 if (ws_record.start_time == 0L)
                     req_time = 0L;
                 else
                     req_time = (long)
                         ((ws_record.stop_time - ws_record.start_time) / 1000);
-#endif
                 if (req_time < 0L)
                     req_time = 0L;
 
