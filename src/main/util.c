@@ -759,13 +759,13 @@ API_EXPORT(configfile_t *) ap_pcfg_openfile(pool *p, const char *name)
 
     if (fstat(fileno(file), &stbuf) == 0 &&
         !S_ISREG(stbuf.st_mode) &&
-#ifdef WIN32
+#if defined(WIN32) || defined(OS2)
         !(strcasecmp(name, "nul") == 0 ||
           (strlen(name) >= 4 &&
            strcasecmp(name + strlen(name) - 4, "/nul") == 0))) {
 #else
         strcmp(name, "/dev/null") != 0) {
-#endif
+#endif /* WIN32 || OS2 */
 	saved_errno = errno;
         ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, NULL,
                     "Access to file %s denied by server: not a regular file",
