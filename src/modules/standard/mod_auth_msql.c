@@ -143,7 +143,7 @@
  *  		        use a differt table with multiple entries.
  *
  * Auth_MSQL_nopasswd	        off
- * Auth_MSQL_Authorative        on
+ * Auth_MSQL_Authoritative        on
  * Auth_MSQL_EncryptedPasswords on
  *
  *                      These three optional fields (all set to the sensible defaults,
@@ -203,7 +203,7 @@
  *			Normally this table is compulsory, but it is
  *			possible to use a fall-through to other methods
  *			and use the mSQL module for group control only;
- *			see the Authorative directive below.
+ *			see the Authoritative directive below.
  *
  * Auth_MSQLgrp_table	Contains at least the fields with the
  *			username and the groupname. A user which
@@ -232,7 +232,7 @@
  *			in the mSQL table does not allow people in by
  *			default with a random password.
  *
- * Auth_MSQL_Authorative <on|off>
+ * Auth_MSQL_Authoritative <on|off>
  *			default is 'on'. When set on, there is no
  *		     	fall through to other authorization methods. So if a
  *			user is not in the mSQL dbase table (and perhaps
@@ -273,7 +273,7 @@
  *		indicated above.
  *	   0.7  *host to host fixed. Credits go to Rob Stout,
  * 	 	<stout@lava.et.tudelft.nl> for spotting this one.
- *	   0.8  Authorative directive added. See above.
+ *	   0.8  Authoritative directive added. See above.
  *	   0.9  palloc return code check(s), should be backward compatible with
  *	   	1.11 version of Vivek Khera <khera@kciLink.com> msql module,
  *		fixed broken err msg in group control, changed command table
@@ -287,7 +287,7 @@
  *	   1.1	no logging of empty password strings.
  * 	   1.2  Problem with the Backward vitek which cause it to check
  *		even if msql_auth was not configured; Also more carefull
- *		with the authorative stuff; caught by thomas@marvin.calvacom.fr.
+ *		with the authoritative stuff; caught by thomas@marvin.calvacom.fr.
  *	   1.3  Even more changes to get it right; that BACKWARD thing was a bad
  *		idea. 
  */
@@ -415,7 +415,7 @@ typedef struct  {
     char *auth_msql_grp_field;
 
     int auth_msql_nopasswd;
-    int auth_msql_authorative;
+    int auth_msql_authoritative;
     int auth_msql_encrypted;
 
 } msql_auth_config_rec;
@@ -435,7 +435,7 @@ void *create_msql_auth_dir_config (pool *p, char *d)
     sec->auth_msql_grp_field   = NULL;
 
 
-    sec->auth_msql_authorative = 1; /* set some defaults, just in case... */
+    sec->auth_msql_authoritative = 1; /* set some defaults, just in case... */
     sec->auth_msql_encrypted   = 1;
     sec->auth_msql_nopasswd    = 0;
 
@@ -455,8 +455,8 @@ char *set_passwd_flag (cmd_parms *cmd, msql_auth_config_rec *sec, int arg) {
     return NULL;
 }
 
-char *set_authorative_flag (cmd_parms *cmd, msql_auth_config_rec *sec, int arg) {
-    sec->auth_msql_authorative=arg;
+char *set_authoritative_flag (cmd_parms *cmd, msql_auth_config_rec *sec, int arg) {
+    sec->auth_msql_authoritative=arg;
     return NULL;
 }
 
@@ -505,8 +505,8 @@ command_rec msql_auth_cmds[] = {
 { "Auth_MSQL_nopasswd", set_passwd_flag, NULL, OR_AUTHCFG, FLAG,
 	"Enable (on) or disable (off) empty password strings; in which case any user password is accepted." },
 
-{ "Auth_MSQL_Authorative", set_authorative_flag, NULL, OR_AUTHCFG, FLAG,
-	"When 'on' the mSQL database is taken to be authorative and access control is not passed along to other db or access modules." },
+{ "Auth_MSQL_Authoritative", set_authoritative_flag, NULL, OR_AUTHCFG, FLAG,
+	"When 'on' the mSQL database is taken to be authoritative and access control is not passed along to other db or access modules." },
 
 { "Auth_MSQL_EncryptedPasswords", set_crypted_password_flag, NULL, OR_AUTHCFG, FLAG,
 	"When 'on' the password in the password table are taken to be crypt()ed using your machines crypt() function." },
@@ -793,7 +793,7 @@ int msql_authenticate_basic_user (request_rec *r)
 	if ( msql_errstr[0] ) {
 		res = SERVER_ERROR;
 		} else {
-		if (sec->auth_msql_authorative) {
+		if (sec->auth_msql_authoritative) {
           	   /* insist that the user is in the database
           	    */
           	   sprintf(msql_errstr,"mSQL: Password for user %s not found", c->user);
@@ -803,7 +803,7 @@ int msql_authenticate_basic_user (request_rec *r)
 		   /* pass control on to the next authorization module.
 		    */
 		   return DECLINED;
-		   }; /* if authorative */
+		   }; /* if authoritative */
                }; /* if no error */
 	log_reason (msql_errstr, r->filename, r);
 	return res;
@@ -873,8 +873,8 @@ int msql_check_auth (request_rec *r) {
     if (!sec->auth_msql_pwd_table) return DECLINED;
 
     if (!reqs_arr) {
-	if (sec->auth_msql_authorative) {
-	        sprintf(msql_errstr,"user %s denied, no access rules specified (MSQL-Authorative) ",user);
+	if (sec->auth_msql_authoritative) {
+	        sprintf(msql_errstr,"user %s denied, no access rules specified (MSQL-Authoritative) ",user);
 		log_reason (msql_errstr, r->uri, r);
 	        note_basic_auth_failure(r);
 		return AUTH_REQUIRED;
@@ -898,7 +898,7 @@ int msql_check_auth (request_rec *r) {
 		    break;
 		};
             }
-	    if ((sec->auth_msql_authorative) && ( user_result != OK)) {
+	    if ((sec->auth_msql_authoritative) && ( user_result != OK)) {
            	sprintf(msql_errstr,"User %s not found (MSQL-Auhtorative)",user);
 		log_reason (msql_errstr, r->uri, r);
            	note_basic_auth_failure(r);
@@ -926,8 +926,8 @@ int msql_check_auth (request_rec *r) {
 		return SERVER_ERROR;
 		};
 
-	   if ( (sec->auth_msql_authorative) && (group_result != OK) ) {
-           	sprintf(msql_errstr,"user %s not in right groups (MSQL-Authorative) ",user);
+	   if ( (sec->auth_msql_authoritative) && (group_result != OK) ) {
+           	sprintf(msql_errstr,"user %s not in right groups (MSQL-Authoritative) ",user);
 		log_reason (msql_errstr, r->uri, r);
            	note_basic_auth_failure(r);
 		return AUTH_REQUIRED;
@@ -939,12 +939,12 @@ int msql_check_auth (request_rec *r) {
 	    };
         }
 
-    /* Get serious if we are authorative, previous
+    /* Get serious if we are authoritative, previous
      * returns are only if msql yielded a correct result. 
      * This really is not needed.
      */
-    if (((group_result == AUTH_REQUIRED) || (user_result == AUTH_REQUIRED)) && (sec->auth_msql_authorative) ) {
-        sprintf(msql_errstr,"mSQL-Authorative: Access denied on %s %s rule(s) ", 
+    if (((group_result == AUTH_REQUIRED) || (user_result == AUTH_REQUIRED)) && (sec->auth_msql_authoritative) ) {
+        sprintf(msql_errstr,"mSQL-Authoritative: Access denied on %s %s rule(s) ", 
 		(group_result == AUTH_REQUIRED) ? "USER" : "", 
 		(user_result == AUTH_REQUIRED) ? "GROUP" : ""
 		);

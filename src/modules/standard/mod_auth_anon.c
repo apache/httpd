@@ -108,7 +108,7 @@ typedef struct  {
     int   auth_anon_logemail;
     int   auth_anon_verifyemail;
     int   auth_anon_mustemail;
-    int   auth_anon_authorative;
+    int   auth_anon_authoritative;
 
 } anon_auth_config_rec;
 
@@ -126,7 +126,7 @@ void *create_anon_auth_dir_config (pool *p, char *d)
     sec -> auth_anon_logemail		=1;
     sec -> auth_anon_verifyemail	=0;
     sec -> auth_anon_mustemail		=1;
-    sec -> auth_anon_authorative        =0;
+    sec -> auth_anon_authoritative        =0;
     return sec;
 }
 
@@ -151,9 +151,9 @@ char *anon_set_verifyemail_flag (cmd_parms *cmd,
     sec->auth_anon_verifyemail=arg;
     return NULL;
 }
-char *anon_set_authorative_flag (cmd_parms *cmd, 
+char *anon_set_authoritative_flag (cmd_parms *cmd, 
 	anon_auth_config_rec *sec, int arg) {
-    sec->auth_anon_authorative=arg;
+    sec->auth_anon_authoritative=arg;
     return NULL;
 }
 
@@ -190,7 +190,7 @@ command_rec anon_auth_cmds[] = {
 	"Limited to 'on' or 'off'" },
 { "Anonymous_LogEmail", anon_set_logemail_flag, NULL, OR_AUTHCFG, FLAG, 
 	"Limited to 'on' or 'off'" },
-{ "Anonymous_Authorative", anon_set_authorative_flag, NULL, OR_AUTHCFG, FLAG, 
+{ "Anonymous_Authoritative", anon_set_authoritative_flag, NULL, OR_AUTHCFG, FLAG, 
 	"Limited to 'on' or 'off'" },
 
 { NULL }
@@ -247,8 +247,8 @@ int anon_authenticate_basic_user (request_rec *r)
       }
       return OK;
     } else {
-        if (sec->auth_anon_authorative) {
-	sprintf(errstr,"Anonymous: Authorative, Passwd <%s> not accepted",
+        if (sec->auth_anon_authoritative) {
+	sprintf(errstr,"Anonymous: Authoritative, Passwd <%s> not accepted",
 		send_pw ? send_pw : "\'none\'");
 	log_error(errstr,r->server);
 	return AUTH_REQUIRED;
