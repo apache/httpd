@@ -1176,8 +1176,7 @@ static int hook_uri2file(request_rec *r)
      */
 
     if (r->main == NULL) {
-         var = apr_pstrcat(r->pool, "REDIRECT_", ENVVAR_SCRIPT_URL, NULL);
-         var = apr_table_get(r->subprocess_env, var);
+         var = apr_table_get(r->subprocess_env, REDIRECT_ENVVAR_SCRIPT_URL);
          if (var == NULL) {
              apr_table_setn(r->subprocess_env, ENVVAR_SCRIPT_URL, r->uri);
          }
