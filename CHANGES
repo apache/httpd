@@ -1,5 +1,8 @@
 Changes with Apache 2.0.49
 
+  *) mod_autoindex: Don't omit the <tr> start tag if the SuppressIcon
+     option is set. PR 21668.  [Jesse Tie-Ten-Quee <highos highos.com>]
+
   *) mod_include no longer allows an ETag header on 304 responses.
      PR 19355. [Geoffrey Young <geoff apache.org>, André Malo]
 

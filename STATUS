@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/11/21 23:42:47 $]
+Last modified at [$Date: 2003/11/21 23:51:53 $]
 
 Release:
 
@@ -330,11 +330,6 @@ PATCHES TO BACKPORT FROM 2.1
       PR 13598.
         server/request.c: r1.130
       +1: nd
-
-    * mod_autoindex: Don't omit the <tr> start tag if the SuppressIcon
-      option is set. PR 21668.
-        modules/generators/mod_autoindex.c: r1.123
-      +1: nd, trawick, thommay
 
     * mod_setenvif: Fix optimizer to treat regexps as such even if they
       only contain anchors like \b. PR 24219.
