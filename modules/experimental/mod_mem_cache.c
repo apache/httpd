@@ -121,6 +121,9 @@ typedef struct {
     apr_size_t max_object_cnt;
     cache_pqueue_set_priority cache_remove_algorithm;
 
+    /* maximum amount of data to buffer on a streamed response where
+     * we haven't yet seen EOS */
+    apr_off_t max_streaming_buffer_size;
 } mem_cache_conf;
 static mem_cache_conf *sconf;
 
@@ -128,6 +131,7 @@ static mem_cache_conf *sconf;
 #define DEFAULT_MIN_CACHE_OBJECT_SIZE 0
 #define DEFAULT_MAX_CACHE_OBJECT_SIZE 10000
 #define DEFAULT_MAX_OBJECT_CNT 1009
+#define DEFAULT_MAX_STREAMING_BUFFER_SIZE 100000
 #define CACHEFILE_LEN 20
 
 /* Forward declarations */
@@ -425,6 +429,7 @@ static void *create_cache_config(apr_pool_t *p, server_rec *s)
     sconf->cache_size = 0;
     sconf->cache_cache = NULL;
     sconf->cache_remove_algorithm = memcache_gdsf_algorithm;
+    sconf->max_streaming_buffer_size = DEFAULT_MAX_STREAMING_BUFFER_SIZE;
 
     return sconf;
 }
@@ -449,20 +454,28 @@ static int create_entity(cache_handle_t *h, request_rec *r,
         return DECLINED;
     }
 
-    /* In principle, we should be able to dispense with the cache_size checks
-     * when caching open file descriptors.  However, code in cache_insert() and 
-     * other places does not make the distinction whether a file's content or
-     * descriptor is being cached. For now, just do all the same size checks
-     * regardless of what we are caching.
+    if (len == -1) {
+        /* Caching a streaming response. Assume the response is
+         * less than or equal to max_streaming_buffer_size. We will
+         * correct all the cache size counters in write_body once
+         * we know exactly know how much we are caching.
+         */
+        len = sconf->max_streaming_buffer_size;
+    }
+
+    /* Note: cache_insert() will automatically garbage collect 
+     * objects from the cache if the max_cache_size threshold is
+     * exceeded. This means mod_mem_cache does not need to implement
+     * max_cache_size checks.
      */
     if (len < sconf->min_cache_object_size || 
         len > sconf->max_cache_object_size) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                     "cache_mem: URL %s failed the size check, "
-                     "or is incomplete", 
+                     "mem_cache: URL %s failed the size check and will not be cached.",
                      key);
         return DECLINED;
     }
+
     if (type_e == CACHE_TYPE_FILE) {
         /* CACHE_TYPE_FILE is only valid for local content handled by the 
          * default handler. Need a better way to check if the file is
@@ -487,7 +500,6 @@ static int create_entity(cache_handle_t *h, request_rec *r,
     memcpy(obj->key, key, key_len);
     /* Safe cast: We tested < sconf->max_cache_object_size above */
     obj->info.len = (apr_size_t)len;
-
 
     /* Allocate and init mem_cache_object_t */
     mobj = calloc(1, sizeof(*mobj));
@@ -941,21 +953,14 @@ static apr_status_t write_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
             apr_os_file_get(&(mobj->fd), tmpfile);
 
             /* Open for business */
+            ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server,
+                         "mem_cache: Cached file: %s with key: %s", name, obj->key);
             obj->complete = 1;
             return APR_SUCCESS;
         }
 
         /* Content not suitable for fd caching. Cache in-memory instead. */
         mobj->type = CACHE_TYPE_HEAP;
-        /* Check to make sure the object will not exceed configured thresholds */
-        if (mobj->m_len < sconf->min_cache_object_size || 
-            mobj->m_len > sconf->max_cache_object_size) {
-            return APR_ENOMEM; /* ?? DECLINED; */
-        }
-        if ((sconf->cache_size + mobj->m_len) > sconf->max_cache_size) {
-            return APR_ENOMEM; /* ?? DECLINED; */
-        }
-        sconf->cache_size += mobj->m_len;
     }
 
     /* 
@@ -977,7 +982,37 @@ static apr_status_t write_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
         apr_size_t len;
 
         if (APR_BUCKET_IS_EOS(e)) {
+            if (mobj->m_len > obj->count) {
+                /* Caching a streamed response. Reallocate a buffer of the 
+                 * correct size and copy the streamed response into that 
+                 * buffer */
+                char *buf = malloc(obj->count);
+                if (!buf) {
+                    return APR_ENOMEM;
+                }
+                memcpy(buf, mobj->m, obj->count);
+                free(mobj->m);
+                mobj->m = buf;
+
+                /* Now comes the crufty part... there is no way to tell the
+                 * cache that the size of the object has changed. We need
+                 * to remove the object, update the size and re-add the 
+                 * object, all under protection of the lock.
+                 */
+                if (sconf->lock) {
+                    apr_thread_mutex_lock(sconf->lock);
+                }
+                cache_remove(sconf->cache_cache, obj);
+                mobj->m_len = obj->count;
+                cache_insert(sconf->cache_cache, obj);                
+                sconf->cache_size -= (mobj->m_len - obj->count);
+                if (sconf->lock) {
+                    apr_thread_mutex_unlock(sconf->lock);
+                }
+            }
             /* Open for business */
+            ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server,
+                         "mem_cache: Cached url: %s", obj->key);
             obj->complete = 1;
             break;
         }
@@ -1021,6 +1056,23 @@ static int mem_cache_post_config(apr_pool_t *p, apr_pool_t *plog,
         ap_log_error(APLOG_MARK, APLOG_CRIT, 0, s,
                      "MCacheSize must be greater than MCacheMaxObjectSize");
         return DONE;
+    }
+    if (sconf->max_streaming_buffer_size > sconf->max_cache_object_size) {
+        /* Issue a notice only if something other than the default config 
+         * is being used */
+        if (sconf->max_streaming_buffer_size != DEFAULT_MAX_STREAMING_BUFFER_SIZE &&
+            sconf->max_cache_object_size != DEFAULT_MAX_CACHE_OBJECT_SIZE) {
+            ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s,
+                         "MCacheMaxStreamingBuffer must be less than or equal to MCacheMaxObjectSize. "
+                         "Resetting MCacheMaxStreamingBuffer to MCacheMaxObjectSize.");
+        }
+        sconf->max_streaming_buffer_size = sconf->max_cache_object_size;
+    }
+    if (sconf->max_streaming_buffer_size < sconf->min_cache_object_size) {
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
+                     "MCacheMaxStreamingBuffer must be greater than or equal to MCacheMinObjectSize. "
+                     "Resetting MCacheMaxStreamingBuffer to MCacheMinObjectSize.");
+        sconf->max_streaming_buffer_size = sconf->min_cache_object_size;
     }
     ap_mpm_query(AP_MPMQ_IS_THREADED, &threaded_mpm);
     if (threaded_mpm) {
@@ -1108,6 +1160,19 @@ static const char
     return NULL;
 }
 
+static const char *set_max_streaming_buffer(cmd_parms *parms, void *dummy,
+                                            const char *arg)
+{
+    apr_off_t val;
+    char *err;
+    val = (apr_off_t)strtol(arg, &err, 10);
+    if (*err != 0) {
+        return "MCacheMaxStreamingBuffer value must be a number";
+    }
+    sconf->max_streaming_buffer_size = val;
+    return NULL;
+}
+
 static const command_rec cache_cmds[] =
 {
     AP_INIT_TAKE1("MCacheSize", set_max_cache_size, NULL, RSRC_CONF,
@@ -1120,6 +1185,8 @@ static const command_rec cache_cmds[] =
      "The maximum size (in bytes) of an object to be placed in the cache"),
     AP_INIT_TAKE1("MCacheRemovalAlgorithm", set_cache_removal_algorithm, NULL, RSRC_CONF,
      "The algorithm used to remove entries from the cache (default: GDSF)"),
+    AP_INIT_TAKE1("MCacheMaxStreamingBuffer", set_max_streaming_buffer, NULL, RSRC_CONF,
+     "Maximum number of bytes of content to buffer for a streamed response"),
     {NULL}
 };
 
