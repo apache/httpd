@@ -129,16 +129,18 @@ typedef struct {
 /*
  * Sun Jun  7 05:43:49 CEST 1998 -- Alvaro
  * More comments:
- * 1) The UUencoding prodecure is now done in a general way, avoiding the problems
- * with sizes and paddings that can arise depending on the architecture. Now the
- * offsets and sizes of the elements of the unique_id_rec structure are calculated
- * in unique_id_global_init; and then used to duplicate the structure without the
- * paddings that might exist. The multithreaded server fix should be now very easy:
- * just add a new "tid" field to the unique_id_rec structure, and increase by one
- * UNIQUE_ID_REC_MAX.
- * 2) unique_id_rec.stamp has been changed from "time_t" to "unsigned int", because
- * its size is 64bits on some platforms (linux/alpha), and this caused problems with
- * htonl/ntohl. Well, this shouldn't be a problem till year 2106.
+ * 1) The UUencoding prodecure is now done in a general way, avoiding
+ * the problems with sizes and paddings that can arise depending on
+ * the architecture. Now the offsets and sizes of the elements of the
+ * unique_id_rec structure are calculated in unique_id_global_init;
+ * and then used to duplicate the structure without the paddings that
+ * might exist. The multithreaded server fix should be now very easy:
+ * just add a new "tid" field to the unique_id_rec structure, and
+ * increase by one UNIQUE_ID_REC_MAX.
+ * 2) unique_id_rec.stamp has been changed from "time_t" to
+ * "unsigned int", because its size is 64bits on some platforms
+ * (linux/alpha), and this caused problems with htonl/ntohl. Well,
+ * this shouldn't be a problem till year 2106.
  */
 
 static unsigned global_in_addr;
@@ -192,22 +194,23 @@ static void unique_id_global_init(server_rec *s, pool *p)
      */
     if (gethostname(str, sizeof(str) - 1) != 0) {
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT, s,
-          "gethostname: mod_unique_id requires the hostname of the server");
+		     "gethostname: mod_unique_id requires the "
+		     "hostname of the server");
         exit(1);
     }
     str[sizeof(str) - 1] = '\0';
 
     if ((hent = gethostbyname(str)) == NULL) {
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT, s,
-                    "mod_unique_id: unable to gethostbyname(\"%s\")", str);
+		     "mod_unique_id: unable to gethostbyname(\"%s\")", str);
         exit(1);
     }
 
     global_in_addr = ((struct in_addr *) hent->h_addr_list[0])->s_addr;
 
     ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, s,
-                "mod_unique_id: using ip addr %s",
-                inet_ntoa(*(struct in_addr *) hent->h_addr_list[0]));
+		 "mod_unique_id: using ip addr %s",
+		 inet_ntoa(*(struct in_addr *) hent->h_addr_list[0]));
 
     /*
      * If the server is pummelled with restart requests we could possibly end
@@ -263,7 +266,7 @@ static void unique_id_child_init(server_rec *s, pool *p)
      */
     if (cur_unique_id.pid != pid) {
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_CRIT, s,
-                    "oh no! pids are greater than 32-bits!  I'm broken!");
+		     "oh no! pids are greater than 32-bits!  I'm broken!");
     }
 
     cur_unique_id.in_addr = global_in_addr;
@@ -328,7 +331,8 @@ static int gen_unique_id(request_rec *r)
     /* copy the unique_id if this is an internal redirect (we're never
      * actually called for sub requests, so we don't need to test for
      * them) */
-    if (r->prev && (e = ap_table_get(r->subprocess_env, "REDIRECT_UNIQUE_ID"))) {
+    if (r->prev
+	&& (e = ap_table_get(r->subprocess_env, "REDIRECT_UNIQUE_ID"))) {
 	ap_table_setn(r->subprocess_env, "UNIQUE_ID", e);
 	return DECLINED;
     }
@@ -336,7 +340,8 @@ static int gen_unique_id(request_rec *r)
     cur_unique_id.stamp = htonl((unsigned int)r->request_time);
 
     /* we'll use a temporal buffer to avoid uuencoding the possible internal
-     * paddings of the original structure */
+     * paddings of the original structure
+     */
     x = (unsigned char *) &paddedbuf;
     y = (unsigned char *) &cur_unique_id;
     k = 0;
@@ -347,7 +352,8 @@ static int gen_unique_id(request_rec *r)
         }
     }
     /*
-     * We reset two more bytes just in case padding is needed for the uuencoding.
+     * We reset two more bytes just in case padding is needed for
+     * the uuencoding.
      */
     x[k++] = '\0';
     x[k++] = '\0';
@@ -359,9 +365,13 @@ static int gen_unique_id(request_rec *r)
         y = x + i;
         str[k++] = uuencoder[y[0] >> 2];
         str[k++] = uuencoder[((y[0] & 0x03) << 4) | ((y[1] & 0xf0) >> 4)];
-        if (k == unique_id_rec_size_uu) break;
+        if (k == unique_id_rec_size_uu) {
+	    break;
+	}
         str[k++] = uuencoder[((y[1] & 0x0f) << 2) | ((y[2] & 0xc0) >> 6)];
-        if (k == unique_id_rec_size_uu) break;
+        if (k == unique_id_rec_size_uu) {
+	    break;
+	}
         str[k++] = uuencoder[y[2] & 0x3f];
     }
     str[k++] = '\0';
@@ -375,7 +385,6 @@ static int gen_unique_id(request_rec *r)
 
     return DECLINED;
 }
-
 
 module MODULE_VAR_EXPORT unique_id_module = {
     STANDARD_MODULE_STUFF,
