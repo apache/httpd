@@ -697,7 +697,7 @@ static const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms,
                               void *mconfig, const char *args)
 {
     char *w, *w2, *w3;
-    const char *errmsg;
+    const char *errmsg = NULL;
 
     if ((parms->override & cmd->req_override) == 0)
         return apr_pstrcat(parms->pool, cmd->name, " not allowed here", NULL);
@@ -797,11 +797,14 @@ static const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms,
 
     case ITERATE:
         while (*(w = ap_getword_conf(parms->pool, &args)) != '\0') {
-            if ((errmsg = cmd->AP_TAKE1(parms, mconfig, w)))
+
+            errmsg = cmd->AP_TAKE1(parms, mconfig, w);
+
+            if (errmsg && strcmp(errmsg, DECLINE_CMD) != 0)
                 return errmsg;
         }
 
-        return NULL;
+        return errmsg;
 
     case ITERATE2:
         w = ap_getword_conf(parms->pool, &args);
@@ -812,11 +815,14 @@ static const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms,
                                cmd->errmsg ? ", " : NULL, cmd->errmsg, NULL);
 
         while (*(w2 = ap_getword_conf(parms->pool, &args)) != '\0') {
-            if ((errmsg = cmd->AP_TAKE2(parms, mconfig, w, w2)))
+
+            errmsg = cmd->AP_TAKE2(parms, mconfig, w, w2);
+
+            if (errmsg && strcmp(errmsg, DECLINE_CMD) != 0)
                 return errmsg;
         }
 
-        return NULL;
+        return errmsg;
 
     case FLAG:
         w = ap_getword_conf(parms->pool, &args);
