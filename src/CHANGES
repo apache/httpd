@@ -1,5 +1,10 @@
 Changes with Apache 1.3.20
 
+  *) Hooked calls to opendir() and readdir() so that we could add '.' and
+     '..' to the entry list.  By default NetWare does not return these
+     entries which caused mod_autoindex not to display the parent directory
+     entry. [Brad Nicholes <BNICHOLES@novell.com>]
+
   *) Solved a very serious threading problem with WinNT/2K Services.  The
      moment master_main told that the shutdown was complete, the parent
      control thread exited Apache, leaving mod_jserv's Java process running

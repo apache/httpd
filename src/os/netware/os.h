@@ -83,6 +83,7 @@ typedef int gid_t;
 #include <ws2nlm.h>
 #include <winsock2.h>
 #include <fcntl.h>
+#include <dirent.h>
 
 #define NO_LINGCLOSE
 #define NO_SLACK
@@ -120,6 +121,13 @@ typedef int gid_t;
 #define mktemp(s) tmpnam(s)
 #define _getch(c) getch(c)
 
+#define opendir_411(p) os_opendir(p)
+#define openir(p) os_opendir(p)
+DIR *os_opendir (const char *pathname);
+
+#define readdir_411(p) os_readdir(p)
+#define readdir(p) os_readdir(p)
+DIR *os_readdir (DIR *dirP);
 
 /* Prototypes */
 void AMCSocketCleanup(void);

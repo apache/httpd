@@ -297,3 +297,30 @@ int ap_os_is_filename_valid(const char *file)
     return 1;
 }
 
+#undef opendir_411
+DIR *os_opendir (const char *pathname)
+{
+    DIR *d = opendir_411 (pathname);
+
+    if (d) {
+        strcpy (d->d_name, "<<**");
+    }
+    return d;
+}
+
+#undef readdir_411
+DIR *os_readdir (DIR *dirP)
+{
+    if ((dirP->d_name[0] == '<') && (dirP->d_name[2] == '*')) {
+        strcpy (dirP->d_name, ".");
+        strcpy (dirP->d_nameDOS, ".");
+        return (dirP);
+    }
+    else if ((dirP->d_name[0] == '.') && (dirP->d_name[1] == '\0')) {
+        strcpy (dirP->d_name, "..");
+        strcpy (dirP->d_nameDOS, "..");
+        return (dirP);
+    }
+    else
+        return readdir_411 (dirP);
+}
