@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
 <HTML>
 <HEAD>
 <TITLE>Apache module mod_mime</TITLE>
@@ -324,12 +324,21 @@ multiple extensions</A>
 
 The DefaultLanguage directive tells Apache that all files in the
 directive's scope (<EM>e.g.</EM>, all files covered by the current
-<CODE>&lt;Directory&gt;</CODE> container) that don't have an explicit language
-extension (such as <SAMP>.fr</SAMP> or <SAMP>.de</SAMP>) should be
-considered to be the specified <EM>MIME-lang</EM> language
-by default, rather than English.  This allows entire directories
-to be marked as containing Dutch content, for instance, without
-having to rename each file.
+<CODE>&lt;Directory&gt;</CODE> container) that don't have an explicit
+language extension (such as <SAMP>.fr</SAMP> or <SAMP>.de</SAMP> as
+configured by <SAMP>AddLanguage</SAMP>) should be considered to be in
+the specified <EM>MIME-lang</EM> language.  This allows entire
+directories to be marked as containing Dutch content, for instance,
+without having to rename each file. Note that unlike using extensions
+to specify languages, <SAMP>DefaultLanguage</SAMP> can only specify a
+single language.
+
+<P>
+
+If no <SAMP>DefaultLanguage</SAMP> directive is in force, and a file
+does not have any language extensions as configured by
+<SAMP>AddLanguage</SAMP>, then that file will be considered to have no
+language attribute.
 
 <P>
 
