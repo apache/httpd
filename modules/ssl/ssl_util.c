@@ -347,10 +347,12 @@ static void ssl_util_thr_lock(int mode, int type, const char *file, int line)
     }
 }
 
+#if APR_HAS_THREADS
 static unsigned long ssl_util_thr_id(void)
 {
     return (unsigned long) apr_os_thread_current();
 }
+#endif
 
 static apr_status_t ssl_util_thread_cleanup(void *data)
 {
@@ -389,7 +391,10 @@ void ssl_util_thread_setup(server_rec *s, apr_pool_t *p)
                         mc->szMutexFile, p);
     }
 
+#if APR_HAS_THREADS
     CRYPTO_set_id_callback(ssl_util_thr_id);
+#endif
+
     CRYPTO_set_locking_callback(ssl_util_thr_lock);
 
     apr_pool_cleanup_register(p, NULL,
