@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_cache: Add CacheIgnoreHeaders directive.  PR 30399.
+     [Rüiger Plü <r.pluem t-online.de>]
+
   *) WIN64: API changes to clean up Windows 64bit compile warnings
      [Allan Edwards]
 

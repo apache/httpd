@@ -709,6 +709,9 @@ static void * create_cache_config(apr_pool_t *p, server_rec *s)
     ps->no_last_mod_ignore = 0;
     ps->ignorecachecontrol = 0;
     ps->ignorecachecontrol_set = 0 ;
+    /* array of headers that should not be stored in cache */
+    ps->ignore_headers = apr_array_make(p, 10, sizeof(char *));
+    ps->ignore_headers_set = CACHE_IGNORE_HEADERS_UNSET;
     return ps;
 }
 
@@ -745,6 +748,10 @@ static void * merge_cache_config(apr_pool_t *p, void *basev, void *overridesv)
         (overrides->ignorecachecontrol_set == 0)
         ? base->ignorecachecontrol
         : overrides->ignorecachecontrol;
+    ps->ignore_headers =
+        (overrides->ignore_headers_set == CACHE_IGNORE_HEADERS_UNSET)
+        ? base->ignore_headers
+        : overrides->ignore_headers;
     return ps;
 }
 static const char *set_cache_ignore_no_last_mod(cmd_parms *parms, void *dummy,
@@ -771,6 +778,34 @@ static const char *set_cache_ignore_cachecontrol(cmd_parms *parms,
                                                   &cache_module);
     conf->ignorecachecontrol = flag;
     conf->ignorecachecontrol_set = 1;
+    return NULL;
+}
+
+static const char *add_ignore_header(cmd_parms *parms, void *dummy,
+                                     const char *header)
+{
+    cache_server_conf *conf;
+    char **new;
+
+    conf =
+        (cache_server_conf *)ap_get_module_config(parms->server->module_config,
+                                                  &cache_module);
+    if (!strncasecmp(header, "None", 4)) {
+        /* if header None is listed clear array */
+        conf->ignore_headers->nelts = 0;
+    }
+    else {
+        if ((conf->ignore_headers_set == CACHE_IGNORE_HEADERS_UNSET) ||
+            (conf->ignore_headers->nelts)) {
+            /* Only add header if no "None" has been found in header list
+             * so far.
+             * (When 'None' is passed, IGNORE_HEADERS_SET && nelts == 0.)
+             */
+            new = (char **)apr_array_push(conf->ignore_headers);
+            (*new) = header;
+        }
+    }
+    conf->ignore_headers_set = CACHE_IGNORE_HEADERS_SET;
     return NULL;
 }
 
@@ -906,6 +941,9 @@ static const command_rec cache_cmds[] =
                   NULL, 
                   RSRC_CONF, 
                   "Ignore requests from the client for uncached content"),
+    AP_INIT_ITERATE("CacheIgnoreHeaders", add_ignore_header, NULL, RSRC_CONF,
+                    "A space separated list of headers that should not be "
+                    "stored by the cache"),
     AP_INIT_TAKE1("CacheLastModifiedFactor", set_cache_factor, NULL, RSRC_CONF,
                   "The factor used to estimate Expires date from "
                   "LastModified date"),

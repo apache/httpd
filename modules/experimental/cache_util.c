@@ -21,6 +21,8 @@
 
 /* -------------------------------------------------------------- */
 
+extern module AP_MODULE_DECLARE_DATA cache_module;
+
 /* return true if the request is conditional */
 CACHE_DECLARE(int) ap_cache_request_is_conditional(apr_table_t *table)
 {
@@ -517,8 +519,13 @@ CACHE_DECLARE(char *)generate_name(apr_pool_t *p, int dirlevels,
  * headers table that are allowed to be stored in a cache.
  */
 CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_hdrs_out(apr_pool_t *pool,
-                                                        apr_table_t *t)
+                                                        apr_table_t *t,
+                                                        server_rec *s)
 {
+    cache_server_conf *conf;
+    char **header;
+    int i;
+
     /* Make a copy of the headers, and remove from
      * the copy any hop-by-hop headers, as defined in Section
      * 13.5.1 of RFC 2616
@@ -533,5 +540,15 @@ CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_hdrs_out(apr_pool_t *pool,
     apr_table_unset(headers_out, "Trailers");
     apr_table_unset(headers_out, "Transfer-Encoding");
     apr_table_unset(headers_out, "Upgrade");
+
+    conf = (cache_server_conf *)ap_get_module_config(s->module_config,
+                                                     &cache_module);
+    /* Remove the user defined headers set with CacheIgnoreHeaders.
+     * This may break RFC 2616 compliance on behalf of the administrator.
+     */
+    header = (char **)conf->ignore_headers->elts;
+    for (i = 0; i < conf->ignore_headers->nelts; i++) {
+        apr_table_unset(headers_out, header[i]);
+    }
     return headers_out;
 }
