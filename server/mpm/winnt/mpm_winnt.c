@@ -1931,7 +1931,7 @@ void winnt_rewrite_args(process_rec *process)
         }
         else
         {
-            ap_log_error(APLOG_MARK,APLOG_ERR, APR_BADARG, NULL,
+            ap_log_error(APLOG_MARK,APLOG_ERR, 0, NULL,
                  "%s: No installed service by that name.", display_name);
             exit(1);
         }
@@ -1940,7 +1940,7 @@ void winnt_rewrite_args(process_rec *process)
     {
         if (service_named == APR_SUCCESS) 
         {
-            ap_log_error(APLOG_MARK,APLOG_ERR, APR_BADARG, NULL,
+            ap_log_error(APLOG_MARK,APLOG_ERR, 0, NULL,
                  "%s: Service is already installed.", display_name);
             exit(1);
         }
@@ -2031,6 +2031,12 @@ static void winnt_post_config(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptem
     // TODO: This Stinks - but we needed the ap_pid_fname entry from 
     //       the config!?!  Find a clean way to get the egg back into
     //       into the chicken and shove this signal into pre_config
+    //
+    // src/os/win32/main_win32.c had some (possibly buggy) code to
+    // search for just the PidFile entry, but this sounds like a
+    // universally useful function that we ought to wrap into the
+    // main server, not just the Win32 MPM.
+    //
     if (!strcasecmp(signal_arg, "stop")) {
         mpm_signal_service(ptemp, ap_pid_fname, 0);
         exit(0);
@@ -2041,7 +2047,7 @@ static void winnt_post_config(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptem
         if (restart_num++ == 1) 
         {
             /* This code should be run once in the parent and not run
-             * accross a restart
+             * across a restart
              */
             PSECURITY_ATTRIBUTES sa = GetNullACL();  /* returns NULL if invalid (Win95?) */
             setup_signal_names(ap_psprintf(pconf,"ap%d", parent_pid));
@@ -2104,9 +2110,10 @@ static void winnt_post_config(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptem
                     }            
                 }
             }
-            else
+            else /* ! -k runservice */
+            {
                 mpm_start_console_handler();
-
+            }
 
             /* Create the start mutex, apPID, where PID is the parent Apache process ID.
              * Ths start mutex is used during a restart to prevent more than one 
