@@ -1,0 +1,206 @@
+# With this document, you define the name space that users see of your http
+# server.  This file also defines server settings which affect how requests are
+# serviced, and how results should be formatted. 
+
+# See the tutorials at http://www.apache.org/ for
+# more information.
+
+# Originally by Rob McCool; Adapted for Apache
+
+
+# DocumentRoot: The directory out of which you will serve your
+# documents. By default, all requests are taken from this directory, but
+# symbolic links and aliases may be used to point to other locations.
+
+DocumentRoot /usr/local/etc/httpd/htdocs
+
+# UserDir: The name of the directory which is appended onto a user's home
+# directory if a ~user request is recieved.
+
+UserDir public_html
+
+# DirectoryIndex: Name of the file or files to use as a pre-written HTML
+# directory index.  Separate multiple entries with spaces.
+
+DirectoryIndex index.html
+
+# FancyIndexing is whether you want fancy directory indexing or standard
+
+FancyIndexing on
+
+# AddIcon tells the server which icon to show for different files or filename
+# extensions
+
+AddIconByEncoding (CMP,/icons/compressed.gif) x-compress x-gzip
+
+AddIconByType (TXT,/icons/text.gif) text/*
+AddIconByType (IMG,/icons/image2.gif) image/*
+AddIconByType (SND,/icons/sound2.gif) audio/*
+AddIconByType (VID,/icons/movie.gif) video/*
+
+AddIcon /icons/binary.gif .bin .exe
+AddIcon /icons/binhex.gif .hqx
+AddIcon /icons/tar.gif .tar
+AddIcon /icons/world2.gif .wrl .wrl.gz .vrml .vrm .iv
+AddIcon /icons/compressed.gif .Z .z .tgz .gz .zip
+AddIcon /icons/a.gif .ps .ai .eps
+AddIcon /icons/layout.gif .html .shtml .htm .pdf
+AddIcon /icons/text.gif .txt
+AddIcon /icons/c.gif .c
+AddIcon /icons/p.gif .pl .py
+AddIcon /icons/f.gif .for
+AddIcon /icons/dvi.gif .dvi
+AddIcon /icons/uuencoded.gif .uu
+AddIcon /icons/script.gif .conf .sh .shar .csh .ksh .tcl
+AddIcon /icons/tex.gif .tex
+AddIcon /icons/bomb.gif core
+
+AddIcon /icons/back.gif ..
+AddIcon /icons/hand.right.gif README
+AddIcon /icons/folder.gif ^^DIRECTORY^^
+AddIcon /icons/blank.gif ^^BLANKICON^^
+
+# DefaultIcon is which icon to show for files which do not have an icon
+# explicitly set.
+
+DefaultIcon /icons/unknown.gif
+
+# AddDescription allows you to place a short description after a file in
+# server-generated indexes.
+# Format: AddDescription "description" filename
+
+# ReadmeName is the name of the README file the server will look for by
+# default. Format: ReadmeName name
+#
+# The server will first look for name.html, include it if found, and it will
+# then look for name and include it as plaintext if found.
+#
+# HeaderName is the name of a file which should be prepended to
+# directory indexes. 
+
+ReadmeName README
+HeaderName HEADER
+
+# IndexIgnore is a set of filenames which directory indexing should ignore
+# Format: IndexIgnore name1 name2...
+
+IndexIgnore */.??* *~ *# */HEADER* */README* */RCS
+
+# AccessFileName: The name of the file to look for in each directory
+# for access control information.
+
+AccessFileName .htaccess
+
+# DefaultType is the default MIME type for documents which the server
+# cannot find the type of from filename extensions.
+
+DefaultType text/plain
+
+# AddEncoding allows you to have certain browsers (Mosaic/X 2.1+) uncompress
+# information on the fly. Note: Not all browsers support this.
+
+AddEncoding x-compress Z
+AddEncoding x-gzip gz
+
+# AddLanguage allows you to specify the language of a document. You can
+# then use content negotiation to give a browser a file in a language
+# it can understand.  Note that the suffix does not have to be the same
+# as the language keyword --- those with documents in Polish (whose
+# net-standard language code is pl) may wish to use "AddLanguage pl .po" 
+# to avoid the ambiguity with the common suffix for perl scripts.
+
+AddLanguage en .en
+AddLanguage fr .fr
+AddLanguage de .de
+AddLanguage da .da
+AddLanguage el .el
+AddLanguage it .it
+
+# LanguagePriority allows you to give precedence to some languages
+# in case of a tie during content negotiation.
+# Just list the languages in decreasing order of preference.
+
+LanguagePriority en fr de
+
+# Redirect allows you to tell clients about documents which used to exist in
+# your server's namespace, but do not anymore. This allows you to tell the
+# clients where to look for the relocated document.
+# Format: Redirect fakename url
+
+
+# Aliases: Add here as many aliases as you need (with no limit). The format is 
+# Alias fakename realname
+
+# Note that if you include a trailing / on fakename then the server will
+# require it to be present in the URL.  So "/icons" isn't aliased in this
+# example.
+
+#Alias /icons/ /usr/local/etc/httpd/icons/
+
+# ScriptAlias: This controls which directories contain server scripts.
+# Format: ScriptAlias fakename realname
+
+#ScriptAlias /cgi-bin/ /usr/local/etc/httpd/cgi-bin/
+
+# If you want to use server side includes, or CGI outside
+# ScriptAliased directories, uncomment the following lines.
+
+# AddType allows you to tweak mime.types without actually editing it, or to
+# make certain files to be certain types.
+# Format: AddType type/subtype ext1
+
+# AddHandler allows you to map certain file extensions to "handlers",
+# actions unrelated to filetype. These can be either built into the server
+# or added with the Action command (see below)
+# Format: AddHandler action-name ext1
+
+# To use CGI scripts:
+#AddHandler cgi-script .cgi
+
+# To use server-parsed HTML files
+#AddType text/html .shtml
+#AddHandler server-parsed .shtml
+
+# Uncomment the following line to enable Apache's send-asis HTTP file
+# feature
+#AddHandler send-as-is asis
+
+# If you wish to use server-parsed imagemap files, use
+#AddHandler imap-file map
+
+# To enable type maps, you might want to use
+#AddHandler type-map var
+
+# Action lets you define media types that will execute a script whenever
+# a matching file is called. This eliminates the need for repeated URL
+# pathnames for oft-used CGI file processors.
+# Format: Action media/type /cgi-script/location
+# Format: Action handler-name /cgi-script/location
+
+# MetaDir: specifies the name of the directory in which Apache can find
+# meta information files. These files contain additional HTTP headers
+# to include when sending the document
+
+#MetaDir .web
+
+# MetaSuffix: specifies the file name suffix for the file containing the
+# meta information.
+
+#MetaSuffix .meta
+
+# Customizable error response (Apache style)
+#  these come in three flavors
+#
+#    1) plain text
+#ErrorDocument 500 "The server made a boo boo.
+#  n.b.  the (") marks it as text, it does not get output
+#
+#    2) local redirects
+#ErrorDocument 404 /missing.html
+#  to redirect to local url /missing.html
+#ErrorDocument 404 /cgi-bin/missing_handler.pl
+#  n.b. can redirect to a script or a document using server-side-includes.
+#
+#    3) external redirects
+#ErrorDocument 402 http://some.other_server.com/subscription_info.html
+#

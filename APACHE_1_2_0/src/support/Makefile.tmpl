@@ -1,0 +1,35 @@
+# Apache makefile template (well, suffix).
+
+# This is combined with the information in the "Configuration" file
+# by the configure script to make the actual Makefile.
+
+CFLAGS=$(OPTIM) $(CFLAGS1) $(EXTRA_CFLAGS)
+LIBS=$(EXTRA_LIBS) $(LIBS1)
+INCLUDES=-I../src -I../src/regex $(INCLUDES1) $(EXTRA_INCLUDES)
+LFLAGS=$(LFLAGS1) $(EXTRA_LFLAGS)
+
+.c.o: 
+	$(CC) -c $(CFLAGS) $(INCLUDES) $<
+
+TARGETS=htpasswd htdigest httpd_monitor rotatelogs logresolve
+
+all: $(TARGETS)
+
+htpasswd: htpasswd.c
+	$(CC) $(CFLAGS) htpasswd.c -o htpasswd $(LIBS)
+
+htdigest: htdigest.c
+	$(CC) $(CFLAGS) htdigest.c -o htdigest
+
+httpd_monitor: httpd_monitor.c
+	$(CC) $(INCLUDES) $(CFLAGS) httpd_monitor.c -o httpd_monitor
+
+rotatelogs: rotatelogs.c
+	$(CC) $(INCLUDES) $(CFLAGS) rotatelogs.c -o rotatelogs
+
+logresolve: logresolve.c
+	$(CC) $(INCLUDES) $(CFLAGS) logresolve.c -o logresolve $(LIBS)
+
+clean:
+	rm -f $(TARGETS)
+

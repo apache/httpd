@@ -1,0 +1,46 @@
+#!/bin/sh
+# Look for $1 somewhere in $PATH
+#  will print out the full pathname unless
+#  called with the '-s' option
+#
+# We do some funny stuff to check to see
+# if test/[] knows about -x
+#
+testfile="pp.t.$$"
+
+cat > $testfile <<ENDTEST
+#!/bin/sh
+if [ -x / ] || [ -x /bin ] || [ -x /bin/ls ]; then
+ exit 0
+fi
+exit 1
+ENDTEST
+
+if `/bin/sh $testfile 2>/dev/null`; then
+    test_exec_flag="-x"
+else
+    test_exec_flag="-r"
+fi
+rm -f $testfile
+
+if [ "x$1" = "x-s" ]; then
+    shift
+else
+    echo="yes"
+fi
+
+for path in `echo $PATH |
+ sed 's/^:/.:/
+      s/::/:.:/g
+      s/:$/:./
+      s/:/ /g' `
+do
+    if [ $test_exec_flag $path/$1 ] && [ ! -d $path/$1 ]; then
+        if [ "$echo" = "yes" ]; then
+	    echo $path/$1
+	fi
+	exit 0
+    fi
+done
+exit 1
+
