@@ -501,7 +501,7 @@ int include_cmd(char *s, request_rec *r) {
 
     arg.r = r; arg.s = s;
 
-    if (!spawn_child (r->connection->pool, include_cmd_child, &arg,
+    if (!spawn_child (r->pool, include_cmd_child, &arg,
 		      kill_after_timeout, NULL, &f))
         return -1;
     
