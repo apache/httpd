@@ -87,6 +87,10 @@
 #include "ap_listen.h"
 #include "apr_strings.h"
 #include "apr_portable.h"
+#include "apr_optional.h"
+
+APR_DECLARE_OPTIONAL_FN(int, ssl_proxy_enable, (conn_rec *));
+APR_DECLARE_OPTIONAL_FN(int, ssl_engine_disable, (conn_rec *));
 
 module AP_MODULE_DECLARE_DATA nwssl_module;
 
@@ -108,9 +112,29 @@ struct NWSSLSrvConfigRec {
     apr_table_t *sltable;
 };
 
+static apr_array_header_t *certlist = NULL;
+static unicode_t** certarray = NULL;
+static int numcerts = 0;
 static seclisten_rec* ap_seclisteners = NULL;
 
 #define get_nwssl_cfg(srv) (NWSSLSrvConfigRec *) ap_get_module_config(srv->module_config, &nwssl_module)
+
+
+static void build_cert_list (apr_pool_t *p)
+{
+    int i;
+    char **rootcerts = (char **)certlist->elts;
+
+    numcerts = certlist->nelts;
+    certarray = apr_palloc(p, sizeof(unicode_t*)*numcerts);
+
+    for (i = 0; i < numcerts; ++i) {
+        unicode_t *unistr;
+        unistr = (unicode_t*)apr_palloc(p, strlen(rootcerts[i])*4);
+        loc2uni (UNI_LOCAL_DEFAULT, unistr, rootcerts[i], 0, 2);
+        certarray[i] = unistr;
+    }
+}
 
 /*
  * Parses a host of the form <address>[:port]
@@ -257,6 +281,66 @@ static int make_secure_socket(apr_pool_t *pconf, const struct sockaddr_in *serve
     return s;
 }
 
+int convert_secure_socket(conn_rec *c, apr_socket_t *csd)
+{
+	int rcode;
+	struct tlsclientopts sWS2Opts;
+	struct nwtlsopts sNWTLSOpts;
+	unsigned long ulFlags;
+    SOCKET sock;
+
+    apr_os_sock_get(&sock, csd);
+
+    /* zero out buffers */
+	memset((char *)&sWS2Opts, 0, sizeof(struct tlsclientopts));
+	memset((char *)&sNWTLSOpts, 0, sizeof(struct nwtlsopts));
+
+    /* turn on ssl for the socket */
+	ulFlags = SO_TLS_ENABLE;
+	rcode = WSAIoctl(sock, SO_TLS_SET_FLAGS, &ulFlags, sizeof(unsigned long),
+                     NULL, 0, NULL, NULL, NULL);
+	if (SOCKET_ERROR == rcode)
+	{
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, c->base_server,
+                     "Error: %d with ioctlsocket(flag SO_TLS_ENABLE)", WSAGetLastError());
+		return rcode;
+	}
+
+
+    /* setup the socket for SSL */
+	sWS2Opts.wallet = NULL;    /* no client certificate */
+	sWS2Opts.walletlen = 0;
+	sWS2Opts.sidtimeout = 0;
+	sWS2Opts.sidentries = 0;
+	sWS2Opts.siddir = NULL;
+	sWS2Opts.options = &sNWTLSOpts;
+
+	sNWTLSOpts.walletProvider 		= WAL_PROV_DER;	//the wallet provider defined in wdefs.h
+	sNWTLSOpts.TrustedRootList 		= certarray;	//array of certs in UNICODE format
+	sNWTLSOpts.numElementsInTRList 	= numcerts;     //number of certs in TRList
+	sNWTLSOpts.keysList 			= NULL;
+	sNWTLSOpts.numElementsInKeyList = 0;
+	sNWTLSOpts.reservedforfutureuse = NULL;
+	sNWTLSOpts.reservedforfutureCRL = NULL;
+	sNWTLSOpts.reservedforfutureCRLLen = 0;
+	sNWTLSOpts.reserved1			= NULL;
+	sNWTLSOpts.reserved2			= NULL;
+	sNWTLSOpts.reserved3			= NULL;
+	
+	
+    /* make the IOCTL call */
+	rcode = WSAIoctl(sock, SO_TLS_SET_CLIENT, &sWS2Opts,
+	  			     sizeof(struct tlsclientopts), NULL, 0, NULL,
+				     NULL, NULL);
+	
+    /* make sure that it was successfull */
+	if(SOCKET_ERROR == rcode ){
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, c->base_server,
+                     "Error: %d with ioctl (SO_TLS_SET_CLIENT)", WSAGetLastError());
+	}		
+	return rcode;
+}
+
 static const char *set_secure_listener(cmd_parms *cmd, void *dummy, 
                                        const char *ips, const char* key, 
                                        const char* mutual)
@@ -337,11 +421,30 @@ static apr_status_t nwssl_socket_cleanup(void *data)
     return APR_SUCCESS;
 }
 
+static const char *set_trusted_certs(cmd_parms *cmd, void *dummy, char *arg)
+{
+    char **ptr = (char **)apr_array_push(certlist);
+
+    *ptr = apr_pstrdup(cmd->pool, arg);
+    return NULL;
+}
+
 static int nwssl_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
                          apr_pool_t *ptemp)
 {
     ap_seclisteners = NULL;
+    certlist = apr_array_make(pconf, 1, sizeof(char *));
 
+    return OK;
+}
+
+static int nwssl_pre_connection(conn_rec *c, void *csd)
+{
+    
+    if (apr_table_get(c->notes, "nwconv-ssl")) {
+        convert_secure_socket(c, (apr_socket_t*)csd);
+    }
+    
     return OK;
 }
 
@@ -383,11 +486,13 @@ static int nwssl_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                 lr->next = ap_listeners;
                 ap_listeners = lr;
                 apr_pool_cleanup_register(pconf, lr, nwssl_socket_cleanup, apr_pool_cleanup_null);
-            }                        
+            }
         } else {
             return HTTP_INTERNAL_SERVER_ERROR;
         }
     } 
+    build_cert_list(pconf);
+
     return OK;
 }
 
@@ -440,20 +545,38 @@ static const char *nwssl_hook_http_method (const request_rec *r)
     return NULL;
 }
 
+int ssl_proxy_enable(conn_rec *c)
+{
+    apr_table_set(c->notes, "nwconv-ssl", "Y");
+
+    return 1;
+}
+
+int ssl_engine_disable(conn_rec *c)
+{
+    return 1;
+}
+
 static const command_rec nwssl_module_cmds[] =
 {
     AP_INIT_TAKE23("SecureListen", set_secure_listener, NULL, RSRC_CONF,
       "specify an address and/or port with a key pair name.\n"
       "Optional third parameter of MUTUAL configures the port for mutual authentication."),
+    AP_INIT_ITERATE("NWSSLTrustedCerts", set_trusted_certs, NULL, RSRC_CONF,
+        "Adds trusted certificates that are used to create secure connections to proxied servers"),
     {NULL}
 };
 
 static void register_hooks(apr_pool_t *p)
 {
     ap_hook_pre_config(nwssl_pre_config, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_pre_connection(nwssl_pre_connection, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_post_config(nwssl_post_config, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_fixups(nwssl_hook_Fixup, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_http_method(nwssl_hook_http_method,   NULL,NULL, APR_HOOK_MIDDLE);
+
+    APR_REGISTER_OPTIONAL_FN(ssl_proxy_enable);
+    APR_REGISTER_OPTIONAL_FN(ssl_engine_disable);
 }
 
 module AP_MODULE_DECLARE_DATA nwssl_module =
