@@ -48,8 +48,19 @@
     the server to display all locks in a lock database.</p> -->
 
     <example><title>Example</title>
-      DavLockDB logs/DavLock
+      DavLockDB var/DavLock
     </example>
+
+    <p>The directory containing the lock database file must be
+    writable by the <directive module="mpm_common">User</directive>
+    and <directive module="mpm_common" >Group</directive> under which
+    Apache is running.  For security reasons, you should create a
+    directory for this purpose rather than changing the permissions on
+    an existing directory.  In the above example, Apache will create
+    files in the <code>var/</code> directory under the <directive
+    module="core">ServerRoot</directive> with the base filename
+    <code>DavLock</code> and extension name chosen by the server.</p>
+
 </usage>
 </directivesynopsis>
 
