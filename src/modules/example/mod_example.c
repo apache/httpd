@@ -413,7 +413,7 @@ static void trace_add(server_rec *s, request_rec *r, example_config *mconfig,
      */
 /*
     if (s != NULL) {
-        log_printf(s, "mod_example: %s", note);
+        aplog_error(APLOG_MARK, APLOG_ERR, s, "mod_example: %s", note);
     }
  */
 }
