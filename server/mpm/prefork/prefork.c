@@ -1020,7 +1020,7 @@ static void child_main(int child_num_arg)
 	    continue;
 #endif
 
-	ap_sock_disable_nagle(sockdes);
+	ap_sock_disable_nagle(csd);
 
 	iol = ap_iol_attach_socket(ptrans, csd);
 	(void) ap_update_child_status(my_child_num, SERVER_BUSY_READ,

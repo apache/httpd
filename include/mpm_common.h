@@ -123,7 +123,7 @@ void ap_process_child_status(apr_proc_t *pid, apr_wait_t status);
  * Nagle's algorithm that have severe performance penalties.
  * @param s The socket to disable nagle for.
  */
-void ap_sock_disable_nagle(int s);
+void ap_sock_disable_nagle(apr_socket_t *s);
 #else
 #define ap_sock_disable_nagle(s)        /* NOOP */
 #endif

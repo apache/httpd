@@ -261,7 +261,7 @@ void ap_process_child_status(apr_proc_t *pid, apr_wait_t status)
 }
 
 #if defined(TCP_NODELAY) && !defined(MPE) && !defined(TPF)
-void ap_sock_disable_nagle(int s)
+void ap_sock_disable_nagle(apr_socket_t *s)
 {
     /* The Nagle algorithm says that we should delay sending partial
      * packets in hopes of getting more data.  We don't want to do
@@ -272,11 +272,10 @@ void ap_sock_disable_nagle(int s)
      *
      * In spite of these problems, failure here is not a shooting offense.
      */
-    int just_say_no = 1;
+    apr_status_t status = apr_setsocketopt(s, APR_TCP_NODELAY, 1);
 
-    if (setsockopt(s, IPPROTO_TCP, TCP_NODELAY, (char *) &just_say_no,
-                   sizeof(int)) != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf,
+    if (status != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_WARNING, status, ap_server_conf,
                     "setsockopt: (TCP_NODELAY)");
     }
 }
