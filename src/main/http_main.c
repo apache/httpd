@@ -1323,6 +1323,11 @@ void default_server_hostnames(server_rec *s)
 				   sizeof (struct in_addr), AF_INET);
 		if (h != NULL)
 		    s->server_hostname = pstrdup (pconf, (char *)h->h_name);
+		else
+		    {
+		    fprintf(stderr,"Failed to resolve server name (check DNS)\n");
+		    exit(0);
+		    }
 	    }
 	}
     }
