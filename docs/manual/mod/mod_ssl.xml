@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.27 $ -->
+<!-- $Revision: 1.28 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -1534,9 +1534,9 @@ SSLHonorCipherOrder on
 <name>SSLCryptoDevice</name>
 <description>Enable use of a cryptographic hardware accelerator</description>
 <syntax>SSLCryptoDevice <em>engine</em></syntax>
+<default>SSLCryptoDevice builtin</default>
 <contextlist><context>server config</context></contextlist>
 <compatibility>Available if mod_ssl is built using <code>-DSSL_ENGINE_EXPERIMENTAL</code></compatibility>
-<default>SSLCryptoDevice builtin</default>
 
 <usage>
 <p>
