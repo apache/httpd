@@ -108,7 +108,7 @@ typedef struct feedback_args_t {
 
 int main(int argc, char** argv)
 {
-    char str[1024], *contitle;
+    char str[1024], *contitle = NULL;
     HANDLE hproc, thread;
     HANDLE hwinsta = NULL, hsavewinsta;
     HANDLE hdesk = NULL, hsavedesk = NULL;
