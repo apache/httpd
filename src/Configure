@@ -158,7 +158,7 @@ sed 's/#.*//' $file | \
 using_shlib=`grep  '^SharedModule' $tmpfile >/dev/null && echo 1`
 
 # But perhaps later via apxs when just mod_so is compiled in!
-if [ ".$using_shlib" = . ]; then
+if [ "x$using_shlib" = "x" ]; then
     using_shlib=`grep  '^AddModule modules/standard/mod_so.o' $tmpfile >/dev/null && echo 1`
 fi
 
@@ -811,12 +811,12 @@ fi
 ## Now check how we can _directly_ run the C pre-processor
 ##
 TCPP=`egrep '^CPP=' Makefile.config | tail -1 | awk -F= '{print $2}'`
-if [ ".$TCPP" != . ]; then
+if [ "x$TCPP" != "x" ]; then
     CPP=`CC=$CC CPP=$TCPP ./helpers/findcpp.sh`
 else
     CPP=`CC=$CC ./helpers/findcpp.sh`
 fi
-if [ ".$TCPP" = . ]; then
+if [ "x$TCPP" = "x" ]; then
     echo "CPP=$CPP" >> Makefile.config
 fi 
 echo " + setting C pre-processor to $CPP"
@@ -1110,9 +1110,9 @@ if [ "x$using_shlib" = "x1" ] ; then
                     break
                 fi
             done
-            if [ ".$PERL" != . ]; then
+            if [ "x$PERL" != "x" ]; then
                 #   cool, Perl is installed on this platform...
-                if [ ".`$PERL -V:dlsrc 2>/dev/null | grep dlopen`" != . ]; then
+                if [ "x`$PERL -V:dlsrc 2>/dev/null | grep dlopen`" != "x" ]; then
                     #   ...and actually uses the dlopen-style interface,
                     #   so we can guess the flags from its knowledge
                     CFLAGS_SHLIB="`$PERL -V:cccdlflags | cut -d\' -f2`"
@@ -1144,8 +1144,8 @@ fi
 ## the shared objects if SharedModule was used.
 ##
 if [ "x$using_shlib" = "x1" ] ; then
-    if [ "x$TCFLAGS_SHLIB"  = x -a "x$CFLAGS_SHLIB"  = x  -a \
-         "x$TLDFLAGS_SHLIB" = x -a "x$LDFLAGS_SHLIB" = x ]; then
+    if [ "x$TCFLAGS_SHLIB"  = "x" -a "x$CFLAGS_SHLIB"  = "x"  -a \
+         "x$TLDFLAGS_SHLIB" = "x" -a "x$LDFLAGS_SHLIB" = "x" ]; then
         echo ""
         echo "** FAILURE: Sorry, no shared object support available."
         echo "** Either compile all modules statically (use AddModule instead"
@@ -1232,8 +1232,8 @@ fi
 ####################################################################
 ## OK, now handle RANLIB
 ##
-if [ ".$RANLIB" = . ]; then
-    if [ ".$TRANLIB" != . ]; then
+if [ "x$RANLIB" = "x" ]; then
+    if [ "x$TRANLIB" != "x" ]; then
         RANLIB=$TRANLIB
     else
         if ./helpers/PrintPath -s ranlib; then
@@ -1278,7 +1278,7 @@ if [ "$RULE_SOCKS4" = "yes" ]; then
     CFLAGS="$CFLAGS -DSOCKS -DSOCKS4"
     CFLAGS="$CFLAGS -Dconnect=Rconnect -Dselect=Rselect"
     CFLAGS="$CFLAGS -Dgethostbyname=Rgethostbyname"
-    if [ ".`grep EXTRA_ Makefile | grep lsocks`" = . ]; then
+    if [ "x`grep EXTRA_ Makefile | grep lsocks`" = "x" ]; then
 	LIBS="$LIBS -L/usr/local/lib -lsocks"
     fi
     case $PLAT in
@@ -1297,7 +1297,7 @@ if [ "$RULE_SOCKS5" = "yes" ]; then
     CFLAGS="$CFLAGS -DSOCKS -DSOCKS5"
     CFLAGS="$CFLAGS -Dconnect=SOCKSconnect -Dselect=SOCKSselect"
     CFLAGS="$CFLAGS -Dgethostbyname=SOCKSgethostbyname -Dclose=SOCKSclose"
-    if [ ".`grep EXTRA_ Makefile | grep lsocks5`" = . ]; then
+    if [ "x`grep EXTRA_ Makefile | grep lsocks5`" = "x" ]; then
         LIBS="$LIBS -L/usr/local/lib -lsocks5"
     fi
     case $PLAT in
@@ -1404,9 +1404,9 @@ for modfile in $MODFILES ; do
 
 	ext=`echo $modfile | sed 's/^.*\.//'`
 	modbase=`echo $modfile | sed 's/\.[^.]*$//'`
-	if [ x$ext = x$modfile ]; then ext=o; modbase=$modfile; modfile=$modbase.o; fi
-	if [ x$ext = x ] ; then ext=o; modbase=$modfile; fi
-	if [ x$ext = xc ] ; then ext=o; fi
+	if [ "x$ext" = "x$modfile" ]; then ext=o; modbase=$modfile; modfile=$modbase.o; fi
+	if [ "x$ext" = "x" ] ; then ext=o; modbase=$modfile; fi
+	if [ "x$ext" = "xc" ] ; then ext=o; fi
 
 	# modbase is the path+filename without extension, ext is the
 	# extension given, or if none, o
@@ -1441,7 +1441,7 @@ for modfile in $MODFILES ; do
 		    . ./$tmpfile3
 		fi
 		rm -f $tmpfile2 $tmpfile3
-		if [ $ext != so ]; then
+		if [ "$ext" != "so" ]; then
 		    ext=o
 		fi
 	fi
@@ -1449,11 +1449,11 @@ for modfile in $MODFILES ; do
 		modname=`echo $modbase | sed 's/^.*\///' | \
 			sed 's/^mod_//' | sed 's/^lib//' | sed 's/$/_module/'`
 	fi
-	if [ $ext != so ]; then
+	if [ "$ext" != "so" ]; then
 		echo "Module $modname $modbase.$ext" >>$tmpfile
 	fi
 	#   optionally generate export file for some linkers 
-	if [ $ext = so -a .$SHLIB_EXPORT_FILES = .yes ]; then
+	if [ "$ext" = "so" -a "$SHLIB_EXPORT_FILES" = "yes" ]; then
 		echo "$modname" >$modbase.exp
 	fi
 done
@@ -1474,10 +1474,10 @@ fi
 ##
 LIBS_SHLIB=''
 if [ "x$using_shlib" = "x1" ] ; then
-    if [ ".$RULE_SHARED_CHAIN" = .default ] ; then
+    if [ "$RULE_SHARED_CHAIN" = "default" ] ; then
         RULE_SHARED_CHAIN=$DEF_SHARED_CHAIN
     fi
-    if [ ".$RULE_SHARED_CHAIN" = .yes ]; then
+    if [ "$RULE_SHARED_CHAIN" = "yes" ]; then
         echo " + enabling DSO files to be linked against others"
         #   determine libraries which can be safely linked
         #   to our DSO files, i.e. PIC libraries and shared libraries
@@ -1492,10 +1492,10 @@ fi
 ## Now the SHARED_CORE stuff
 ##
 if [ "x$using_shlib" = "x1" ] ; then
-    if [ ".$RULE_SHARED_CORE" = .default ] ; then
+    if [ "$RULE_SHARED_CORE" = "default" ] ; then
         RULE_SHARED_CORE=$DEF_SHARED_CORE
     fi
-    if [ ".$RULE_SHARED_CORE" = .yes ]; then
+    if [ "$RULE_SHARED_CORE" = "yes" ]; then
         echo " + enabling generation of Apache core as DSO"
         #    shuffle compiler flags from shlib variant to standard
         CFLAGS="$CFLAGS $CFLAGS_SHLIB"
@@ -1506,19 +1506,19 @@ if [ "x$using_shlib" = "x1" ] ; then
         SUBTARGET=target_shared
         #    determine additional suffixes for libhttpd.so
 	V=1 R=3 P=4
-        if [ ".$SHLIB_SUFFIX_DEPTH" = .0 ]; then
+        if [ "$SHLIB_SUFFIX_DEPTH" = "0" ]; then
             SHLIB_SUFFIX_LIST=""
         fi
-        if [ ".$SHLIB_SUFFIX_DEPTH" = .1 ]; then
+        if [ "$SHLIB_SUFFIX_DEPTH" = "1" ]; then
             SHLIB_SUFFIX_LIST="$V"
         fi
-        if [ ".$SHLIB_SUFFIX_DEPTH" = .2 ]; then
+        if [ "$SHLIB_SUFFIX_DEPTH" = "2" ]; then
             SHLIB_SUFFIX_LIST="$V.$R"
         fi
-        if [ ".$SHLIB_SUFFIX_DEPTH" = .3 ]; then
+        if [ "$SHLIB_SUFFIX_DEPTH" = "3" ]; then
             SHLIB_SUFFIX_LIST="$V.$R.$P"
         fi
-        if [ ".$SHLIB_SUFFIX_DEPTH" = .all ]; then
+        if [ "$SHLIB_SUFFIX_DEPTH" = "all" ]; then
             SHLIB_SUFFIX_LIST="$V $V.$R $V.$R.$P"
         fi
     fi
@@ -1701,7 +1701,7 @@ fi
 ## it uses ugly looking built-in directory walk messages
 ## while we are already using our own messages
 ##
-if [ ".`make -v 2>/dev/null | grep 'GNU Make'`" = . ]; then
+if [ "x`make -v 2>/dev/null | grep 'GNU Make'`" = "x" ]; then
 	MFLAGS_STATIC=
 else
 	MFLAGS_STATIC=--no-print-directory
@@ -1753,7 +1753,7 @@ if [ "x$using_shlib" = "x1" ] ; then
             fi
             ;;
     esac
-    if [ ".$DL_LIB" != . ]; then
+    if [ "x$DL_LIB" != "x" ]; then
         LIBS="$LIBS $DL_LIB"
         echo " + using $DL_LIB for vendor DSO support"
     fi
@@ -1888,7 +1888,7 @@ EOF
 		} 
 		'`
 	    echo "OBJS=$OBJS" >> $moddir/Makefile
-	    if [ ".$OBJS" != . ]; then
+	    if [ "x$OBJS" != "x" ]; then
 		echo "LIB=lib$basedir.a" >> $moddir/Makefile
 	    else
 		#   essential!
