@@ -300,7 +300,7 @@ int scan_script_header(request_rec *r, FILE *f)
             r->status_line = pstrdup(r->pool, l);
         }
         else if(!strcasecmp(w,"Location")) {
-	    table_merge (r->headers_out, w, l);
+	    table_set (r->headers_out, w, l);
         }   
         else {
 	    table_merge (r->err_headers_out, w, l);
