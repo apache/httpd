@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/07/14 17:31:00 $]
+Last modified at [$Date: 2003/07/14 18:11:08 $]
 
 Release:
 
@@ -258,7 +258,7 @@ PATCHES TO PORT FROM 2.1
       the handling of .xml from text/xml to application/xml (per RFCs),
       adds extensions for commonly used *+xml and calendar types, and
       lists image/x-icon ico.
-        docs/conf/mime.types: r1.18 + r1.19
+        docs/conf/mime.types: r1.20
       +1: fielding
 
     * httpd-std.conf: Try to be clearer in describing the connection
