@@ -856,7 +856,7 @@ static const char *
             char *val = strchr(word, '=');
             if (!val) {
                 if (cmd->path)
-                    return "Invalid ProxyPass parameter. Paramet must be in the form key=value";
+                    return "Invalid ProxyPass parameter. Paramet must be in the form 'key=value'";
                 else
                     return "ProxyPass can not have a path when defined in a location"; 
             }
@@ -883,12 +883,12 @@ static const char *
                                                     cmd->pool,
                                                     conf, r);
             if (err)
-                return apr_pstrcat(cmd->temp_pool, "BalancerMember: ", err, NULL);
+                return apr_pstrcat(cmd->temp_pool, "ProxyPass ", err, NULL);
         }        
         for (i = 0; i < arr->nelts; i++) {
             const char *err = set_balancer_param(balancer, elts[i].key, elts[i].val);
             if (err)
-                return apr_pstrcat(cmd->temp_pool, "ProxyPass: ", err, NULL);
+                return apr_pstrcat(cmd->temp_pool, "ProxyPass ", err, NULL);
         }
     }
     else {
@@ -896,14 +896,14 @@ static const char *
         if (!worker) {
             const char *err = ap_proxy_add_worker(&worker, cmd->pool, conf, r);
             if (err)
-                return apr_pstrcat(cmd->temp_pool, "ProxyPass: ", err, NULL);
+                return apr_pstrcat(cmd->temp_pool, "ProxyPass ", err, NULL);
         }
         PROXY_COPY_CONF_PARAMS(worker, conf);
 
         for (i = 0; i < arr->nelts; i++) {
             const char *err = set_worker_param(worker, elts[i].key, elts[i].val);
             if (err)
-                return apr_pstrcat(cmd->temp_pool, "ProxyPass: ", err, NULL);
+                return apr_pstrcat(cmd->temp_pool, "ProxyPass ", err, NULL);
         }
     }
     return NULL;
@@ -1249,7 +1249,7 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
                 if (cmd->path)
                     return "BalancerMember can not have a balancer name when defined in a location";
                 else
-                    return "Invalid BalancerMember parameter. Paramet must be in the form key=value";
+                    return "Invalid BalancerMember parameter. Paramet must be in the form 'key=value'";
             else
                 *val++ = '\0';
             apr_table_setn(params, word, val);
@@ -1268,7 +1268,7 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
     if (!worker) {
         const char *err;
         if ((err = ap_proxy_add_worker(&worker, cmd->pool, conf, name)) != NULL)
-            return apr_pstrcat(cmd->temp_pool, "BalancerMember: ", err, NULL); 
+            return apr_pstrcat(cmd->temp_pool, "BalancerMember ", err, NULL); 
     }
     PROXY_COPY_CONF_PARAMS(worker, conf);
     
@@ -1277,7 +1277,7 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
     for (i = 0; i < arr->nelts; i++) {
         const char *err = set_worker_param(worker, elts[i].key, elts[i].val);
         if (err)
-            return apr_pstrcat(cmd->temp_pool, "BalancerMember: ", err, NULL);
+            return apr_pstrcat(cmd->temp_pool, "BalancerMember ", err, NULL);
     }
     /* Try to find the balancer */
     balancer = ap_proxy_get_balancer(cmd->temp_pool, conf, name); 
@@ -1286,7 +1286,7 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
                                                 cmd->pool,
                                                 conf, path);
         if (err)
-            return apr_pstrcat(cmd->temp_pool, "BalancerMember: ", err, NULL);
+            return apr_pstrcat(cmd->temp_pool, "BalancerMember ", err, NULL);
     }
     /* Add the worker to the load balancer */
     ap_proxy_add_worker_to_balancer(balancer, worker);

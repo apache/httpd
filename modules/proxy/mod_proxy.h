@@ -209,6 +209,7 @@ struct proxy_conn_pool {
 #if APR_HAS_THREADS
     apr_reslist_t  *res;    /* Connection resource list */
 #endif
+    int            nfree;   /* Balancer free count number */
     proxy_conn_rec *conn;   /* Single connection for prefork mpm's */
 };
 
@@ -250,6 +251,8 @@ typedef struct {
     double          lbsatus;    /* Current lbstatus */
     apr_size_t      transfered; /* Number of bytes transfered to remote */
     apr_size_t      readed;     /* Number of bytes readed from remote */
+    const char      *route;
+    const char      *redirect;
 } proxy_runtime_worker;
 
 struct proxy_balancer {
@@ -311,7 +314,7 @@ APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, fixups, (request_rec *r))
  *
  */
 APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, pre_request, (proxy_worker **worker,
-                          struct proxy_balancer **balancer,
+                          proxy_balancer **balancer,
                           request_rec *r,
                           proxy_server_conf *conf, char **url))                          
 /**
@@ -319,7 +322,7 @@ APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, pre_request, (proxy_worker **worker
  * It is called after request for updating runtime balancer status.
  */
 APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, post_request, (proxy_worker *worker,
-                          struct proxy_balancer *balancer, request_rec *r,
+                          proxy_balancer *balancer, request_rec *r,
                           proxy_server_conf *conf))
 
 
