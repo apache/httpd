@@ -534,10 +534,20 @@ static int ignore_entry(autoindex_config_rec * d, char *path)
 	    ap++;
 	}
 
+#ifndef WIN32
 	if (!ap_strcmp_match(path, p->apply_path)
 	    && !ap_strcmp_match(tt, ap)) {
 	    return 1;
 	}
+#else  /* !WIN32 */
+	/*
+	 * On Win32, the match must be case-blind.
+	 */
+	if (!ap_strcasecmp_match(path, p->apply_path)
+	    && !ap_strcasecmp_match(tt, ap)) {
+	    return 1;
+	}
+#endif /* !WIN32 */
     }
     return 0;
 }

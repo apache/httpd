@@ -1,5 +1,8 @@
 Changes with Apache 1.3.1
 
+  *) IndexIgnore should be case-blind on Win32 (and any other case-aware
+     but case-insensitive platforms).  [Ken Coar] PR#2455
+
   *) Enable DSO support for OpenBSD in general, not only for 2.x, because it
      also works for OpenBSD 1.x. [Ralf S. Engelschall]
 
