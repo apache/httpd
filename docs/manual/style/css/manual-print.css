@@ -33,7 +33,6 @@ q, em, var {
 span.transnote {
     background-color: inherit;
     color: #888;
-    font-size: 90%;
 }
 
 /* fixup IE & Opera
