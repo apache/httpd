@@ -283,13 +283,16 @@ static int translate_userdir(request_rec *r)
                 /*
                  * Crummy hack. Need to figure out whether we have been
                  * redirected to a URL or to a file on some drive. Since I
-                 * know of no protocols that are a single letter, if the : is
-                 * the second character, I will assume a file was specified
+                 * know of no protocols that are a single letter, ignore
+                 * a : as the first or second character, and assume a file 
+                 * was specified
+                 *
+                 * XXX: Still no good for NETWARE, since : is embedded (sys:/home)
                  */
                 if (strchr(x + 2, ':'))
 #else
                 if (strchr(x, ':'))
-#endif                          /* WIN32 */
+#endif /* HAVE_DRIVE_LETTERS */
 		{
                     redirect = apr_pstrcat(r->pool, x, w, userdir, dname, NULL);
                     apr_table_setn(r->headers_out, "Location", redirect);
