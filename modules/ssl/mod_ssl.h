@@ -611,7 +611,7 @@ void         ssl_scache_dc_remove(server_rec *, UCHAR *, int);
 void         ssl_scache_dc_expire(server_rec *);
 void         ssl_scache_dc_status(request_rec *r, int flags, apr_pool_t *pool);
 
-/*  PASS Phrase Support  */
+/*  Pass Phrase Support  */
 void         ssl_pphrase_Handle(server_rec *, apr_pool_t *);
 
 /*  Diffie-Hellman Parameter Support  */
