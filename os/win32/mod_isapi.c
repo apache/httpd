@@ -172,7 +172,7 @@ apr_status_t isapi_handler (request_rec *r)
     if (r->finfo.filetype == APR_NOFILE)
         return HTTP_NOT_FOUND;
 
-    if (r->finfo.filetype != APR_FILE)
+    if (r->finfo.filetype != APR_REG)
         return HTTP_FORBIDDEN;
 
     /* Load the module...
@@ -183,7 +183,7 @@ apr_status_t isapi_handler (request_rec *r)
      *
      * Transpose '\' for '/' in the filename.
      */
-    p = fspec = ap_pstrdup(r->pool, r->filename);
+    p = fspec = apr_pstrdup(r->pool, r->filename);
     while (*p) {
         if (*p == '/')
             *p = '\\';
@@ -396,7 +396,7 @@ apr_status_t isapi_handler (request_rec *r)
             if (!isa->fakeasync) {
                 if (LogNotSupported)
                 {
-                     ap_log_rerror(APLOG_MARK, APLOG_WARNING|ARP_NOERRNO, 0, r,
+                     ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, r,
                                    "ISAPI %s asynch I/O request refused", 
                                    r->filename);
                      cid->retval = APR_ENOTIMPL;
@@ -500,7 +500,7 @@ BOOL WINAPI WriteClient (HCONN ConnID, LPVOID Buffer, LPDWORD lpwdwBytes,
     /* We only support synchronous writing */
     if (dwReserved && dwReserved != HSE_IO_SYNC) {
         if (LogNotSupported)
-            ap_log_rerror(APLOG_MARK, APLOG_WARNING|API_NOERRNO, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, r,
                           "ISAPI %s  asynch I/O request refused",
                           r->filename);
         SetLastError(ERROR_INVALID_PARAMETER);
