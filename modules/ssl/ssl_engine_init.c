@@ -557,6 +557,38 @@ static void ssl_init_cipher_suite(server_rec *s,
     }
 }
 
+static void ssl_init_crl(server_rec *s,
+                         apr_pool_t *p,
+                         apr_pool_t *ptemp,
+                         SSLSrvConfigRec *sc)
+{
+    const char *vhost_id = sc->szVHostID;
+
+    /*
+     * Configure Certificate Revocation List (CRL) Details
+     */
+
+    if (!(sc->szCARevocationFile || sc->szCARevocationPath)) {
+        return;
+    }
+
+    ssl_log(s, SSL_LOG_TRACE,
+            "Init: (%s) Configuring certificate revocation facility",
+            vhost_id);
+
+    sc->pRevocationStore =
+        SSL_X509_STORE_create((char *)sc->szCARevocationFile,
+                              (char *)sc->szCARevocationPath);
+
+    if (!sc->pRevocationStore) {
+        ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR,
+                "Init: (%s) Unable to configure X.509 CRL storage "
+                "for certificate revocation",
+                vhost_id);
+        ssl_die();
+    }
+}
+
 /*
  * Configure a particular server
  */
@@ -613,33 +645,14 @@ void ssl_init_ConfigureServer(server_rec *s,
 
     ssl_init_cipher_suite(s, p, ptemp, sc);
 
+    ssl_init_crl(s, p, ptemp, sc);
+
     SSL_CTX_set_tmp_rsa_callback(ctx, ssl_callback_TmpRSA);
     SSL_CTX_set_tmp_dh_callback(ctx,  ssl_callback_TmpDH);
 
     if (sc->nLogLevel >= SSL_LOG_INFO) {
         /* this callback only logs if SSLLogLevel >= info */
         SSL_CTX_set_info_callback(ctx, ssl_callback_LogTracingState);
-    }
-
-    /*
-     * Configure Certificate Revocation List (CRL) Details
-     */
-    if (sc->szCARevocationFile || sc->szCARevocationPath) {
-        ssl_log(s, SSL_LOG_TRACE,
-                "Init: (%s) Configuring certificate revocation facility",
-                vhost_id);
-
-        sc->pRevocationStore =
-            SSL_X509_STORE_create((char *)sc->szCARevocationFile,
-                                  (char *)sc->szCARevocationPath);
-
-        if (!sc->pRevocationStore) {
-            ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR,
-                    "Init: (%s) Unable to configure X.509 CRL storage "
-                    "for certificate revocation",
-                    vhost_id);
-            ssl_die();
-        }
     }
 
     /*
