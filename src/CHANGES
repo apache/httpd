@@ -1,5 +1,11 @@
 Changes with Apache 1.3b4
 
+  *) Tweaked the headers_out table size, and the subprocess_env
+     table size guess in rename_original_environment().  Added
+     MAKE_TABLE_PROFILE which can help discover make_table()
+     calls that use too small an initial guess, see alloc.c.
+     [Dean Gaudet]
+
   *) Options and AllowOverrides weren't properly merging in the main
      server setting inside vhosts (only an issue when you have no
      <Directory> or other section containing an Options that affects

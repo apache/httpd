@@ -97,6 +97,17 @@
  */
 /* #define POOL_DEBUG */
 
+/* Provide diagnostic information about make_table() calls which are
+ * possibly too small.  This requires a recent gcc which supports
+ * __builtin_return_address().  The error_log output will be a
+ * message such as:
+ *    table_push: table created by 0x804d874 hit limit of 10
+ * Use "l *0x804d874" to find the source that corresponds to.  It
+ * indicates that a table allocated by a call at that address has
+ * possibly too small an initial table size guess.
+ */
+/* #define MAKE_TABLE_PROFILE */
+
 #ifdef POOL_DEBUG
 #ifdef ALLOC_USE_MALLOC
 # error "sorry, no support for ALLOC_USE_MALLOC and POOL_DEBUG at the same time"
@@ -112,7 +123,6 @@
 #define BLOCK_MINFREE	0
 #define BLOCK_MINALLOC	0
 #endif
-
 
 /*****************************************************************
  *
@@ -890,7 +900,24 @@ struct table {
      * cases they do this for.
      */
     array_header a;
+#ifdef MAKE_TABLE_PROFILE
+    void *creator;
+#endif
 };
+
+#ifdef MAKE_TABLE_PROFILE
+static table_entry *table_push(table *t)
+{
+    if (t->a.nelts == t->a.nalloc) {
+	fprintf(stderr,
+	    "table_push: table created by %p hit limit of %u\n",
+	    t->creator, t->a.nalloc);
+    }
+    return (table_entry *) push_array(&t->a);
+}
+#else
+#define table_push(t)	((table_entry *) push_array(&(t)->a))
+#endif
 
 
 API_EXPORT(table *) make_table(pool *p, int nelts)
@@ -898,6 +925,9 @@ API_EXPORT(table *) make_table(pool *p, int nelts)
     table *t = palloc(p, sizeof(table));
 
     make_array_core(&t->a, p, nelts, sizeof(table_entry));
+#ifdef MAKE_TABLE_PROFILE
+    t->creator = __builtin_return_address(0);
+#endif
     return t;
 }
 
@@ -967,7 +997,7 @@ API_EXPORT(void) table_set(table *t, const char *key, const char *val)
     }
 
     if (!done) {
-	elts = (table_entry *) push_array(&t->a);
+	elts = (table_entry *) table_push(t);
 	elts->key = pstrdup(t->a.pool, key);
 	elts->val = pstrdup(t->a.pool, val);
     }
@@ -1013,7 +1043,7 @@ API_EXPORT(void) table_setn(table *t, char *key, char *val)
     }
 
     if (!done) {
-	elts = (table_entry *) push_array(&t->a);
+	elts = (table_entry *) table_push(t);
 	elts->key = key;
 	elts->val = val;
     }
@@ -1055,7 +1085,7 @@ API_EXPORT(void) table_merge(table *t, const char *key, const char *val)
 	    return;
 	}
 
-    elts = (table_entry *) push_array(&t->a);
+    elts = (table_entry *) table_push(t);
     elts->key = pstrdup(t->a.pool, key);
     elts->val = pstrdup(t->a.pool, val);
 }
@@ -1085,7 +1115,7 @@ API_EXPORT(void) table_mergen(table *t, char *key, char *val)
 	}
     }
 
-    elts = (table_entry *) push_array(&t->a);
+    elts = (table_entry *) table_push(t);
     elts->key = key;
     elts->val = val;
 }
@@ -1094,7 +1124,7 @@ API_EXPORT(void) table_add(table *t, const char *key, const char *val)
 {
     table_entry *elts = (table_entry *) t->a.elts;
 
-    elts = (table_entry *) push_array(&t->a);
+    elts = (table_entry *) table_push(t);
     elts->key = pstrdup(t->a.pool, key);
     elts->val = pstrdup(t->a.pool, val);
 }
@@ -1116,7 +1146,7 @@ API_EXPORT(void) table_addn(table *t, char *key, char *val)
     }
 #endif
 
-    elts = (table_entry *) push_array(&t->a);
+    elts = (table_entry *) table_push(t);
     elts->key = key;
     elts->val = val;
 }
