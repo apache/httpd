@@ -60,7 +60,7 @@
 # apache/htdocs/manual directory of the Apache distribution tree).
 #***
 #***
-$INDEX = "/export/pub/apache/manual-index.dat";
+$INDEX = "/export/pub/apache/manual-index-data";
 
 #***
 #***
