@@ -1,5 +1,8 @@
 Changes with Apache 1.3b1
 
+  *) Windows now defaults to using full status reports with mod_status.
+     [Alexei Kosut, PR #1094]
+
   *) *Really* disable all mod_rewrite operations if the engine is off.
      Some things (like RewriteMaps) were checked/performed even if they
      weren't supposed to be.  [Ken Coar, PR #991]

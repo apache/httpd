@@ -630,6 +630,7 @@ typedef int rlim_t;
    chdir() */
 #include <direct.h>
 
+#define STATUS
 #define WIN32_LEAN_AND_MEAN
 #define STRICT
 #define NO_UNISTD_H
