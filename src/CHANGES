@@ -1,5 +1,9 @@
 Changes with Apache 1.3.7
 
+  *) Add "force-no-vary" envariable to allow servers to work around
+     clients that choke on "Vary" fields in the response header.
+     [Ken Coar]  PR#4118
+
   *) Ease configuration debugging by making TestCompile fall back to
      using "make" if the $MAKE variable is unset [Martin Kraemer]
 

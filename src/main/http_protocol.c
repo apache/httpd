@@ -1474,6 +1474,13 @@ API_EXPORT(void) ap_send_http_header(request_rec *r)
         r->headers_out = ap_overlay_tables(r->pool, r->err_headers_out,
                                         r->headers_out);
 
+    /*
+     * Remove the 'Vary' header field if the client can't handle it.
+     */
+    if (ap_table_get(r->subprocess_env, "force-no-vary") != NULL) {
+	ap_table_unset(r->headers_out, "Vary");
+    }
+
     ap_hard_timeout("send headers", r);
 
     ap_basic_http_header(r);
