@@ -194,6 +194,25 @@ that support Cookies don't like merged headers and prefer that each
 headers returned by a CGI, Apache will explicitly avoid merging any
 <code>Set-Cookie</code> headers.
 
+<a name="gif89-expires"><h3><code>Expires</code> headers and GIF89A animations</h3></a>
+
+<p>Navigator versions 2 through 4 will erroneously re-request
+GIF89A animations on each loop of the animation if the first
+response included an <code>Expires</code> header.  This happens
+regardless of how far in the future the expiry time is set.  There
+is no workaround supplied with Apache, however there are hacks for <a
+href="http://www.arctic.org/~dgaudet/patches/apache-1.2-gif89-expires-hack.patch">1.2</a>
+and for <a
+href="http://www.arctic.org/~dgaudet/patches/apache-1.3-gif89-expires-hack.patch">1.3</a>.
+
+<a name="no-content-length"><h3><code>POST</code> without <code>Content-Length</code></h3></a>
+
+<p>In certain situations Navigator 3 appears to incorrectly
+issue a POST without the request body.  There is no
+known workaround.  There's a little more information <a
+href="http://www.arctic.org/~dgaudet/apache/no-content-length/">
+available</a>.
+
 <!--#include virtual="footer.html" -->
 </BODY>
 </HTML>
