@@ -167,11 +167,6 @@ typedef struct {
     apr_array_header_t *noproxies;
     apr_array_header_t *dirconn;
     apr_array_header_t *allowed_connect_ports;
-    long id;
-    const char *connectname;
-    apr_port_t connectport;
-/*    apr_socket_t *client_socket;*/
-    conn_rec *connection;
     const char *domain;		/* domain name to use in absence of a domain name in the request */
     int req;			/* true if proxy requests are enabled */
     char req_set;
@@ -215,7 +210,8 @@ int ap_proxy_connect_handler(request_rec *r, char *url,
 
 int ap_proxy_ftp_canon(request_rec *r, char *url);
 int ap_proxy_ftp_handler(request_rec *r, char *url);
-apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *bb);
+apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f,
+				      apr_bucket_brigade *bb);
 
 
 /* proxy_http.c */
@@ -248,7 +244,7 @@ int ap_proxy_is_hostname(struct dirconn_entry *This, apr_pool_t *p);
 int ap_proxy_is_word(struct dirconn_entry *This, apr_pool_t *p);
 int ap_proxy_checkproxyblock(request_rec *r, proxy_server_conf *conf, apr_sockaddr_t *uri_addr);
 int ap_proxy_pre_http_connection(conn_rec *c, request_rec *r);
-apr_status_t ap_proxy_string_read(conn_rec *c, apr_bucket_brigade *bb, char *buff, size_t bufflen);
+apr_status_t ap_proxy_string_read(conn_rec *c, apr_bucket_brigade *bb, char *buff, size_t bufflen, int *eos);
 void ap_proxy_reset_output_filters(conn_rec *c);
 
 #endif /*MOD_PROXY_H*/

@@ -175,7 +175,7 @@ int ap_proxy_http_handler(request_rec *r, char *url,
     apr_sockaddr_t *connect_addr;
     char server_portstr[32];
     apr_socket_t *sock;
-    int i, len, backasswards, close=0, failed=0, new=0;
+    int i, len, backasswards, eos, close=0, failed=0, new=0;
     apr_status_t err, rv;
     apr_array_header_t *headers_in_array;
     apr_table_entry_t *headers_in;
@@ -587,7 +587,7 @@ int ap_proxy_http_handler(request_rec *r, char *url,
 
     apr_brigade_cleanup(bb);
 
-    if (APR_SUCCESS != (rv = ap_proxy_string_read(origin, bb, buffer, sizeof(buffer)))) {
+    if (APR_SUCCESS != (rv = ap_proxy_string_read(origin, bb, buffer, sizeof(buffer), &eos))) {
 	apr_socket_close(sock);
 	backend->connection = NULL;
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
@@ -733,6 +733,8 @@ int ap_proxy_http_handler(request_rec *r, char *url,
 	/* read the body, pass it to the output filters */
 	while (ap_get_brigade(rp->input_filters, bb, AP_MODE_BLOCKING) == APR_SUCCESS) {
 	    if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(bb))) {
+		e = apr_bucket_flush_create();
+		APR_BRIGADE_INSERT_TAIL(bb, e);
 		ap_pass_brigade(r->output_filters, bb);
 		break;
 	    }

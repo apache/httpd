@@ -410,8 +410,6 @@ static void * create_proxy_config(apr_pool_t *p, server_rec *s)
     ps->noproxies = ap_make_array(p, 10, sizeof(struct noproxy_entry));
     ps->dirconn = ap_make_array(p, 10, sizeof(struct dirconn_entry));
     ps->allowed_connect_ports = ap_make_array(p, 10, sizeof(int));
-/*    ps->client_socket = NULL;*/
-    ps->connection = NULL;
     ps->domain = NULL;
     ps->viaopt = via_off; /* initially backward compatible with 1.3.1 */
     ps->viaopt_set = 0; /* 0 means default */
@@ -721,7 +719,7 @@ static void register_hooks(apr_pool_t *p)
     /* filename-to-URI translation */
     ap_hook_translate_name(proxy_trans, NULL, NULL, APR_HOOK_FIRST);
     /* filters */
-    ap_register_output_filter("PROXY_SEND_DIR", ap_proxy_send_dir_filter, AP_FTYPE_CONNECTION);
+    ap_register_output_filter("PROXY_SEND_DIR", ap_proxy_send_dir_filter, AP_FTYPE_CONTENT);
     /* fixups */
     ap_hook_fixups(proxy_fixup, NULL, NULL, APR_HOOK_FIRST);
     /* post read_request handling */
