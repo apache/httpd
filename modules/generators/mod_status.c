@@ -347,11 +347,13 @@ static int status_handler(request_rec *r)
             stat_buffer[indx] = status_flags[res];
 
             if (!ps_record->quiescing
-                && ps_record->generation == ap_my_generation
                 && ps_record->pid) {
-                if (res == SERVER_READY)
+                if (res == SERVER_READY
+                    && ps_record->generation == ap_my_generation)
                     ready++;
-                else if (res != SERVER_DEAD && res != SERVER_IDLE_KILL)
+                else if (res != SERVER_DEAD &&
+                         res != SERVER_STARTING &&
+                         res != SERVER_IDLE_KILL)
                     busy++;
             }
 
