@@ -1256,21 +1256,22 @@ static const char *dirsection(cmd_parms *cmd, void *mconfig, const char *arg)
     else if (thiscmd->cmd_data) { /* <DirectoryMatch> */
 	r = ap_pregcomp(cmd->pool, cmd->path, REG_EXTENDED|USE_ICASE);
     }
-    else if (cmd->path[strlen(cmd->path) - 1] != '/') {
-        cmd->path = apr_pstrcat(cmd->pool, cmd->path, "/", NULL);
-
-        if (!strcmp(cmd->path, "/") == 0) 
-        {
-            char *newpath;
-	    /* Ensure that the pathname is canonical */
-            if (apr_filepath_merge(&newpath, NULL, cmd->path, 
-                                   APR_FILEPATH_TRUENAME, cmd->pool) != APR_SUCCESS) {
-                return apr_pstrcat(cmd->pool, "<Directory \"", cmd->path,
-                                   "\"> path is invalid.", NULL);
-            }
-            cmd->path = newpath;
+    else if (!strcmp(cmd->path, "/") == 0) 
+    {
+        char *newpath;
+	/*
+         * Ensure that the pathname is canonical, and append the trailing /
+         */
+        if (apr_filepath_merge(&newpath, NULL, cmd->path, 
+                               APR_FILEPATH_TRUENAME, cmd->pool) != APR_SUCCESS) {
+            return apr_pstrcat(cmd->pool, "<Directory \"", cmd->path,
+                               "\"> path is invalid.", NULL);
         }
+        cmd->path = newpath;
+        if (cmd->path[strlen(cmd->path) - 1] != '/')
+            cmd->path = apr_pstrcat(cmd->pool, cmd->path, "/", NULL);
     }
+
     /* initialize our config and fetch it */
     conf = ap_set_config_vectors(cmd->server, new_dir_conf, cmd->path,
                                  &core_module, cmd->pool);
