@@ -374,7 +374,7 @@ apr_status_t ap_proxy_http_create_connection(apr_pool_t *p, request_rec *r,
         *origin = ap_run_create_connection(c->pool, r->server, p_conn->sock,
                                            r->connection->id,
                                            r->connection->sbh, c->bucket_alloc);
-        if (!origin) {
+        if (!*origin) {
         /* the peer reset the connection already; ap_run_create_connection() 
          * closed the socket
          */
