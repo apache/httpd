@@ -392,7 +392,9 @@
 #include "http_log.h"
 #include "http_protocol.h"
 #include <msql.h>
+#ifdef HAVE_CRYPT_H
 #include <crypt.h>
+#endif
 
 typedef struct  {
 

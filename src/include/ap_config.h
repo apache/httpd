@@ -82,6 +82,7 @@ char *crypt(char *pw, char *salt);
 #define JMP_BUF sigjmp_buf
 #define FCNTL_SERIALIZED_ACCEPT
 #define HAVE_MMAP
+#define HAVE_CRYPT_H
 
 #elif defined(IRIX)
 #undef HAS_GMTOFF
@@ -90,6 +91,7 @@ char *crypt(char *pw, char *salt);
 #define JMP_BUF sigjmp_buf
 #define FCNTL_SERIALIZED_ACCEPT
 #define HAVE_SHMGET
+#define HAVE_CRYPT_H
  
 #elif defined(HPUX)
 #define HAVE_RESOURCE 1
@@ -128,6 +130,7 @@ char *crypt(char *pw, char *salt);
 #undef NO_SETSID
 #define JMP_BUF sigjmp_buf
 #define HAVE_MMAP
+#define HAVE_CRYPT_H
 
 #elif defined(SEQUENT)
 #define HAS_GMTOFF
