@@ -72,7 +72,9 @@ static TRANS facilities[] = {
     {"authpriv",LOG_AUTHPRIV},
     {"cron", 	LOG_CRON},
     {"daemon",	LOG_DAEMON},
+#ifdef LOG_FTP
     {"ftp",	LOG_FTP},
+#endif
     {"kern",	LOG_KERN},
     {"lpr",	LOG_LPR},
     {"mail",	LOG_MAIL},
