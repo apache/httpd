@@ -91,11 +91,12 @@ static const char *set_speling(cmd_parms *cmd, void *dummy, int arg)
 {
     void *server_conf = cmd->server->module_config;
 
-    set_module_config(server_conf, &speling_module, (void *) arg);
+    /* any non-NULL pointer means speling is enabled */
+    set_module_config(server_conf, &speling_module, arg ? (void *)&speling_module : NULL);
     return NULL;
 }
 
-command_rec speling_cmds[] =
+static command_rec speling_cmds[] =
 {
     {"CheckSpelling", set_speling, NULL, RSRC_CONF, FLAG,
     "whether or not to fix miscapitalized/misspelled requests"},
@@ -183,7 +184,7 @@ static int check_speling(request_rec *r)
     struct DIR_TYPE *dir_entry;
     array_header *candidates = NULL;
 
-    if (!(int) get_module_config(server_conf, &speling_module))
+    if (!get_module_config(server_conf, &speling_module))
         return DECLINED;
 
     /* We only want to worry about GETs */
