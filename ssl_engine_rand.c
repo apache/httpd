@@ -81,8 +81,6 @@ int ssl_rand_seed(server_rec *s, apr_pool_t *p, ssl_rsctx_t nCtx, char *prefix)
     int nReq, nDone;
     apr_file_t *fp;
     int i, n, l;
-    time_t t;
-    pid_t pid;
 
     mc = myModConfig(s);
     nReq  = 0;
@@ -125,20 +123,23 @@ int ssl_rand_seed(server_rec *s, apr_pool_t *p, ssl_rsctx_t nCtx, char *prefix)
             }
 #endif
             else if (pRandSeed->nSrc == SSL_RSSRC_BUILTIN) {
+                struct {
+                    time_t t;
+                    pid_t pid;
+                } my_seed;
+
                 /*
                  * seed in the current time (usually just 4 bytes)
                  */
-                t = time(NULL);
-                l = sizeof(time_t);
-                RAND_seed((unsigned char *)&t, l);
-                nDone += l;
+                my_seed.t = time(NULL);
 
                 /*
                  * seed in the current process id (usually just 4 bytes)
                  */
-                pid = mc->pid;
-                l = sizeof(pid_t);
-                RAND_seed((unsigned char *)&pid, l);
+                my_seed.pid = mc->pid;
+
+                l = sizeof(my_seed);
+                RAND_seed((unsigned char *)&my_seed, l);
                 nDone += l;
                 
                 /*
