@@ -15,7 +15,7 @@
 <!--#include virtual="header.html" -->
 <h1 ALIGN="CENTER">Source Re-organisation</h1>
 
-As of 1.3, the Apache source directories have been re-organisated. This
+As of 1.3, the Apache source directories have been re-organised. This
 re-organisation is designed to simplify the directory structure,
 make it easier to add additional modules, and to give module authors
 a way of specifying compile time options or distribute binary
@@ -67,14 +67,14 @@ Modules are added to Apache by adding a reference to them in
 line added to Configuration looked like this:
 
 <PRE>
-  Module    mod_status.o    status_module
+  Module    status_module    mod_status.o
 </PRE>
 
 From 1.3 onwards, the <CODE>AddModule</CODE> line should be used
 instead, and typically looks like this:
 
 <PRE>
-  AddModule    modules/standard/mod_status.c
+  AddModule    modules/standard/mod_status.o
 </PRE>
 
 The argument to AddModule is the path, relative to <CODE>src</CODE>, to
@@ -84,8 +84,8 @@ the module file's source or object file.
 
 Normally when adding a module you should follow the instructions of
 the module author. However if the module comes as a single source
-file, say mod_foo.c, then the way to add the module to Apache is as
-follows:
+file, say mod_foo.c, then the recommended way to add the module to
+Apache is as follows:
 
 <ul>
  <li>Put <CODE>mod_foo.c</CODE> into the directory 
@@ -124,7 +124,7 @@ From Apache 1.3 onwards, module authors can make use of these new features:
      "module definition file" can also be distributed which gives
      the information Configure needs to add the module, such as extra
      libraries and the module's structure name.
- <li>Module can be installed anyway on the file system, although a directory
+ <li>Modules can be installed anywhere on the file system, although a directory
      under <CODE>src/modules</CODE> is recommended.
  </li>
  <li>If the module is in its own directory, Apache can automatically
@@ -156,7 +156,7 @@ tree. This will create a new directory
 line to the <CODE>Configuration</CODE> file:
 
 <pre>
-  AddModule  modules/mod_demo/mod_demo
+  AddModule  modules/mod_demo/mod_demo.o
 </pre>
 
 then run <CODE>Configure</CODE> and <CODE>make</CODE> as normal.
@@ -182,17 +182,17 @@ archive. If the module consists of multiple source files it can be
 built into a library file using a supplied makefile. In this case,
 distribute the makefile as <CODE>mod_demo/Makefile</CODE> and <b>do
 not</b> include a <CODE>mod_demo/Makefile.tmpl</CODE>. If
-<CODE>Configure</CODE> see a <CODE>Makefile.tmpl</CODE> it assmes it
-is safe to overwrite any existing<CODE>Makefile</CODE>.
+<CODE>Configure</CODE> sees a <CODE>Makefile.tmpl</CODE> it assumes it
+is safe to overwrite any existing <CODE>Makefile</CODE>.
 
 <P> 
 
 See the Apache <CODE>src/modules/standard</CODE> for an example of a
-module directory where the makeifle is create automatically from a
-Makefile.tmpl file (note also that this directory also shows how to
-distributed multiple modules in a single directory). See
+module directory where the makefile is created automatically from a
+Makefile.tmpl file (note that this directory also shows how to
+distribute multiple modules in a single directory). See
 <CODE>src/modules/proxy</CODE> and <CODE>src/modules/example</CODE>
-for examples of modules build using custom makefiles (to build a
+for examples of modules built using custom makefiles (to build a
 library and an object file, respectively).
 
 <h3>Adding Compile time Information</h3>
