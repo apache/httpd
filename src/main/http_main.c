@@ -672,6 +672,8 @@ void update_child_status (int child_num, int status, request_rec *r)
 	 */
 	new_score_rec.my_access_count = 0L;
 	new_score_rec.my_bytes_served = 0L;
+	new_score_rec.conn_count = (unsigned short)0;
+	new_score_rec.conn_bytes = (unsigned short)0;
     }
     if (r) {
 	int slot_size;
@@ -713,7 +715,7 @@ short_score get_scoreboard_info(int i)
 }
 
 #if defined(STATUS)
-void increment_counts (int child_num, request_rec *r)
+void increment_counts (int child_num, request_rec *r, int flag)
 {
     long int bs=0;
     short_score new_score_rec=scoreboard_image[child_num];
@@ -721,10 +723,16 @@ void increment_counts (int child_num, request_rec *r)
     if (r->sent_bodyct)
         bgetopt(r->connection->client, BO_BYTECT, &bs);
 
+    if (flag) {
+	new_score_rec.conn_count = (unsigned short)0;
+	new_score_rec.conn_bytes = (unsigned short)0;
+    }
     new_score_rec.access_count ++;
     new_score_rec.my_access_count ++;
+    new_score_rec.conn_count ++;
     new_score_rec.bytes_served += (unsigned long)bs;
     new_score_rec.my_bytes_served += (unsigned long)bs;
+    new_score_rec.conn_bytes += (unsigned short)bs;
 
     times(&new_score_rec.times);
 
@@ -1176,7 +1184,7 @@ void child_main(int child_num_arg)
 	if (r) process_request (r); /* else premature EOF --- ignore */
 
 #if defined(STATUS)
-        if (r) increment_counts(child_num,r);
+        if (r) increment_counts(child_num,r,1);
 #endif
 	while (r && current_conn->keepalive) {
 	  bflush(conn_io);
@@ -1187,7 +1195,7 @@ void child_main(int child_num_arg)
 	  if (r) process_request (r);
 
 #if defined(STATUS)
-	  if (r) increment_counts(child_num,r);
+	  if (r) increment_counts(child_num,r,0);
 #endif
 	}
 #if 0	
