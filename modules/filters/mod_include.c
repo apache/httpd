@@ -859,7 +859,7 @@ static int handle_include(include_ctx_t *ctx, apr_bucket_brigade **bb, request_r
                         for (q = p; q != NULL; q = q->prev) {
                             if ((q->filename && rr->filename && 
                                     (strcmp(q->filename, rr->filename) == 0)) ||
-                                (strcmp(q->uri, rr->uri) == 0))
+                                ((*q->uri == '/') && (strcmp(q->uri, rr->uri) == 0)))
                             {
                                 founddupe = 1;
                                 break;
