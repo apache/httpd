@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/07/11 23:01:25 $]
+Last modified at [$Date: 2002/07/17 22:15:00 $]
 
 Release:
 
@@ -53,6 +53,9 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
+    * apr_poll() grows the pool (e.g., pchild or the thread's pool) on
+      each call...  Apache MPMs don't have logic to work around this
+      issue.
 
 CURRENT VOTES:
 
