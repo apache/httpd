@@ -28,18 +28,28 @@
 
     <example>Dav On</example>
 
-    <p>This enables the DAV file system provider, which is implemented by
-    the <module>mod_dav_fs</module> module. Therefore that module has to
-    be compiled into the server or has to be loaded at runtime using the
+    <p>This enables the DAV file system provider, which is implemented
+    by the <module>mod_dav_fs</module> module. Therefore, that module
+    must be compiled into the server or loaded at runtime using the
     <directive module="mod_so">LoadModule</directive> directive.</p>
     
-    <p>In order to make it work you have to specify a web-server writable
-    filename for the DAV lock database by adding the following to the
-    global section in your <code>httpd.conf</code> file:</p>
+    <p>In addition, a location for the DAV lock database must be
+    specified in the global section of your <code>httpd.conf</code>
+    file:</p>
 
     <example>
-      DavLockDB /tmp/DavLock
+      DavLockDB /usr/local/apache2/var/DavLock
     </example>
+
+    <p>The directory containing the lock database file must be
+    writable by the <directive module="mpm_common">User</directive>
+    and <directive module="mpm_common" >Group</directive> under which
+    Apache is running.  For security reasons, you should create a
+    directory for this purpose rather than changing the permissions on
+    an existing directory.  In the above example, Apache will create
+    files in the <code>/usr/local/apache2/var/</code> directory
+    with the base filename <code>DavLock</code> and extension name
+    chosen by the server.</p>
 
     <p>You may wish to add a <directive module="core" type="section"
     >Limit</directive> clause inside the <directive module="core"
@@ -62,7 +72,7 @@
          AuthName DAV<br />
          AuthUserFile user.passwd<br />
          <br />
-         &lt;LimitExcept GET HEAD OPTIONS&gt;<br />
+         &lt;LimitExcept GET OPTIONS&gt;<br />
          <indent>
            require user admin<br />
          </indent>
@@ -71,14 +81,77 @@
        &lt;/Location&gt;<br />
     </example>
 
-    <note type="warning"><title>Security</title>
-      <p>The use of HTTP Basic Authentication is not recommended. You
-      should use at least HTTP Digest Authentication, which is provided by
-      the <module>mod_auth_digest</module> module. Nearly all WebDAV clients
-      support this authentication method. Of course, Basic Authentication
-      over an <a href="../ssl/">SSL</a> enabled connection is secure,
-      too.</p>
-    </note>
+   <p><module>mod_dav</module> is a descendent of Greg Stein's <a
+   href="http://www.webdav.org/mod_dav/">mod_dav for Apache 1.3</a>.  More
+   information about the module is available from that site.</p>
+</section>
+
+<section id="security"><title>Security Issues</title>
+
+    <p>Since DAV access methods allow remote clients to manipulate
+    files on the server, you must take particular care to assure that
+    your server is secure before enabling <module>mod_dav</module>.</p>
+
+    <p>Any location on the server where DAV is enabled should be
+    protected by authentication.  The use of HTTP Basic Authentication
+    is not recommended. You should use at least HTTP Digest
+    Authentication, which is provided by the
+    <module>mod_auth_digest</module> module. Nearly all WebDAV clients
+    support this authentication method. An alternative is Basic
+    Authentication over an <a href="../ssl/">SSL</a> enabled
+    connection.</p>
+
+    <p>In order for <module>mod_dav</module> to manage files, it must
+    be able to write to the directories and files under its control
+    using the <directive module="mpm_common">User</directive> and
+    <directive module="mpm_common">Group</directive> under which
+    Apache is running.  New files created will also be owned by this
+    <directive module="mpm_common">User</directive> and <directive
+    module="mpm_common">Group</directive>.  For this reason, it is
+    important to control access to this account.  The DAV repository
+    is considered private to Apache; modifying files outside of Apache
+    (for example using FTP or filesystem-level tools) should not be
+    allowed.</p>
+
+    <p><module>mod_dav</module> may be subject to various kinds of
+    denial-of-service attacks.  The <directive
+    module="core">LimitXMLRequestBody</directive> directive can be
+    used to limit the amount of memory consumed in parsing large DAV
+    requests.  The <directive
+    module="mod_dav">DavDepthInfinity</directive> directive can be
+    used to prevent <code>PROPFIND</code> requests on a very large
+    repository from consuming large amounts of memory.  Another
+    possible denial-of-service attack involves a client simply filling
+    up all available disk space with many large files.  There is no
+    direct way to prevent this in Apache, so you should avoid giving
+    DAV access to untrusted users.</p>
+</section>
+
+<section id="complex"><title>Complex Configurations</title>
+
+    <p>One common request is to use <module>mod_dav</module> to
+    manipulate dynamic files (PHP scripts, CGI scripts, etc).  This is
+    difficult because a <code>GET</code> request will always run the
+    script, rather than downloading its contents.  One way to avoid
+    this is to map two different URLs to the content, one of which
+    will run the script, and one of which will allow it to be
+    downloaded and manipulated with DAV.</p>
+
+<example>
+Alias /phparea /home/gstein/php_files<br />
+Alias /php-source /home/gstein/php_files<br />
+&lt;Location /php-source&gt;
+<indent>
+    DAV On<br />
+    ForceType text/plain<br />
+</indent>
+&lt;/Location&gt;
+</example>
+
+    <p>With this setup, <code>http://example.com/phparea</code> can be
+    used to access the output of the PHP scripts, and
+    <code>http://example.com/php-source</code> can be used with a DAV
+    client to manipulate them.</p>
 </section>
 
 <directivesynopsis>
