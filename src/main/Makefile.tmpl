@@ -125,3 +125,7 @@ util_script.o: util_script.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
  $(INCDIR)/http_log.h $(INCDIR)/http_protocol.h \
  $(INCDIR)/http_core.h $(INCDIR)/http_request.h \
  $(INCDIR)/util_script.h $(INCDIR)/util_date.h
+util_uri.o: util_uri.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
+ ../os/unix/os.h $(INCDIR)/hsregex.h $(INCDIR)/alloc.h \
+ $(INCDIR)/buff.h $(INCDIR)/ap.h $(INCDIR)/http_log.h \
+ $(INCDIR)/http_conf_globals.h $(INCDIR)/util_uri.h
