@@ -181,10 +181,6 @@ Changes with Apache 2.1.0-dev
   *) Added new module mod_version, which provides version dependent
      configuration containers.  [André Malo]
 
-  *) mod_rewrite no longer confuses the RewriteMap caches if
-     different maps defined in different virtual hosts use the
-     same map name. PR 26462.  [André Malo]
-
   *) mod_log_config now logs all Set-Cookie headers if the %{Set-Cookie}o
      format is used.  PR 27787.  [André Malo]
 
@@ -440,6 +436,10 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.51
+
+  *) mod_rewrite no longer confuses the RewriteMap caches if
+     different maps defined in different virtual hosts use the
+     same map name. PR 26462.  [André Malo]
 
   *) mod_setenvif: Remove "support" for Remote_User variable which
      never worked at all. PR 25725.  [André Malo]
