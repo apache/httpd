@@ -368,8 +368,8 @@ API_EXPORT(const char *) ap_check_cmd_context(cmd_parms *cmd, unsigned forbidden
 
 extern API_VAR_EXPORT module *top_module;
 
-extern module *ap_prelinked_modules[];
-extern module *ap_preloaded_modules[];
+extern API_VAR_EXPORT module *ap_prelinked_modules[];
+extern API_VAR_EXPORT module *ap_preloaded_modules[];
 extern API_VAR_EXPORT module **ap_loaded_modules;
 
 /* For mod_so.c... */
@@ -378,16 +378,15 @@ void ap_single_module_configure(ap_pool_t *p, server_rec *s, module *m);
 
 /* For http_main.c... */
 
-void ap_setup_prelinked_modules(process_rec *process);
-void ap_show_directives(void);
-void ap_show_modules(void);
-server_rec *ap_read_config(process_rec *process, ap_pool_t *temp_pool, const char *config_name);
-void ap_post_config_hook(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptemp, server_rec *s);
-void ap_child_init_hook(ap_pool_t *pchild, server_rec *s);
-void ap_run_rewrite_args(process_rec *process);
-void ap_run_pre_config(ap_pool_t *p, ap_pool_t *plog, ap_pool_t *ptemp);
+API_EXPORT(void) ap_setup_prelinked_modules(process_rec *process);
+API_EXPORT(void) ap_show_directives(void);
+API_EXPORT(void) ap_show_modules(void);
+API_EXPORT(server_rec*) ap_read_config(process_rec *process, ap_pool_t *temp_pool, const char *config_name);
+API_EXPORT(void) ap_post_config_hook(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptemp, server_rec *s);
+API_EXPORT(void) ap_run_rewrite_args(process_rec *process);
+API_EXPORT(void) ap_run_pre_config(ap_pool_t *p, ap_pool_t *plog, ap_pool_t *ptemp);
 
-void ap_register_hooks(module *m);
+API_EXPORT(void) ap_register_hooks(module *m);
 
 /* For http_request.c... */
 
@@ -407,6 +406,10 @@ int ap_parse_htaccess(void **result, request_rec *r, int override,
 CORE_EXPORT(const char *) ap_init_virtual_host(ap_pool_t *p, const char *hostname,
 				server_rec *main_server, server_rec **);
 void ap_process_resource_config(server_rec *s, const char *fname, ap_pool_t *p, ap_pool_t *ptemp);
+
+/* For individual MPMs... */
+
+void ap_child_init_hook(ap_pool_t *pchild, server_rec *s);
 
 /* Module-method dispatchers, also for http_request.c */
 

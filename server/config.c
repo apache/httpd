@@ -366,7 +366,7 @@ int ap_invoke_handler(request_rec *r)
     return HTTP_INTERNAL_SERVER_ERROR;
 }
 
-void ap_register_hooks(module *m)
+API_EXPORT(void) ap_register_hooks(module *m)
     {
     if(m->register_hooks)
 	{
@@ -534,7 +534,7 @@ API_EXPORT(void) ap_remove_loaded_module(module *mod)
     *m = NULL;
 }
 
-void ap_setup_prelinked_modules(process_rec *process)
+API_EXPORT(void) ap_setup_prelinked_modules(process_rec *process)
 {
     module **m;
     module **m2;
@@ -1529,7 +1529,8 @@ static server_rec *init_server_config(process_rec *process, ap_pool_t *p)
 }
 
 
-server_rec *ap_read_config(process_rec *process, ap_pool_t *ptemp, const char *confname)
+API_EXPORT(server_rec*) ap_read_config(process_rec *process, ap_pool_t *ptemp,
+                                       const char *confname)
 {
     ap_pool_t *p = process->pconf;
     server_rec *s = init_server_config(process, p);
@@ -1561,7 +1562,7 @@ void ap_single_module_configure(ap_pool_t *p, server_rec *s, module *m)
                              (*m->create_dir_config)(p, NULL));
 }
 
-void ap_run_rewrite_args(process_rec *process)
+API_EXPORT(void) ap_run_rewrite_args(process_rec *process)
 {
     module *m;
 
@@ -1570,7 +1571,7 @@ void ap_run_rewrite_args(process_rec *process)
             (*m->rewrite_args) (process);
 }
 
-void ap_run_pre_config(ap_pool_t *p, ap_pool_t *plog, ap_pool_t *ptemp)
+API_EXPORT(void) ap_run_pre_config(ap_pool_t *p, ap_pool_t *plog, ap_pool_t *ptemp)
 {
     module *m;
 
@@ -1580,7 +1581,7 @@ void ap_run_pre_config(ap_pool_t *p, ap_pool_t *plog, ap_pool_t *ptemp)
     init_handlers(p);
 }
 
-void ap_post_config_hook(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptemp, server_rec *s)
+API_EXPORT(void) ap_post_config_hook(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptemp, server_rec *s)
 {
     ap_run_post_config(pconf,plog,ptemp,s); 
     init_handlers(pconf);
@@ -1672,7 +1673,7 @@ static void show_overrides(const command_rec *pc, module *pm)
  * the directive arguments, in what module they are handled, and in
  * what parts of the configuration they are allowed.  Used for httpd -h.
  */
-void ap_show_directives()
+API_EXPORT(void) ap_show_directives()
 {
     const command_rec *pc;
     int n;
@@ -1687,7 +1688,7 @@ void ap_show_directives()
 }
 
 /* Show the preloaded module names.  Used for httpd -l. */
-void ap_show_modules()
+API_EXPORT(void) ap_show_modules()
 {
     int n;
 

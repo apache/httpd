@@ -233,7 +233,7 @@ API_EXPORT(char *) ap_unparse_uri_components(ap_pool_t *p, const uri_components 
 static regex_t re_uri;
 static regex_t re_hostpart;
 
-void ap_util_uri_init(void)
+API_EXPORT(void) ap_util_uri_init(void)
 {
     int ret;
     const char *re_str;
@@ -431,7 +431,7 @@ API_EXPORT(int) ap_parse_uri_components(ap_pool_t *p, const char *uri, uri_compo
 #define NOTEND_HOSTINFO	(T_SLASH | T_QUESTION | T_HASH | T_NUL)
 #define NOTEND_PATH	(T_QUESTION | T_HASH | T_NUL)
 
-void ap_util_uri_init(void)
+API_EXPORT(void) ap_util_uri_init(void)
 {
     /* nothing to do */
 }
