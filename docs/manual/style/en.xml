@@ -33,7 +33,7 @@
  <!-- Used for directive lists -->
  <message name="directives">Directives</message>
  <message name="directive">Directive</message>
- <message name="nodirective">This module provides no directives.</message>
+ <message name="nodirectives">This module provides no directives.</message>
 
  <!-- Used in summaries -->
  <message name="summary">Summary</message>
