@@ -192,7 +192,6 @@ SSLOptions           +FakeBasicAuth
 SSLRequireSSL
 AuthName             "Snake Oil Authentication"
 AuthType             Basic
-AuthBasicProvider    file
 AuthUserFile         /usr/local/apache2/conf/httpd.passwd
 require              valid-user
 &lt;/Directory&gt;</pre></div>
@@ -268,7 +267,6 @@ Allow                192.168.1.0/24
 #   HTTP Basic Authentication
 AuthType             basic
 AuthName             "Protected Intranet Area"
-AuthBasicProvider    file
 AuthUserFile         conf/protected.passwd
 Require              valid-user
 &lt;/Directory&gt;</pre></div>
