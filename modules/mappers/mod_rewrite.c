@@ -4134,6 +4134,7 @@ static void add_cookie(request_rec *r, char *s)
     char *val;
     char *domain;
     char *expires;
+    char *path;
 
     char *tok_cntx;
     char *cookie;
@@ -4144,6 +4145,12 @@ static void add_cookie(request_rec *r, char *s)
         domain = apr_strtok(NULL, ":", &tok_cntx);
         /** the line below won't hit the token ever **/
         expires = apr_strtok(NULL, ":", &tok_cntx); 
+        if (expires) {
+            path = apr_strtok(NULL,":", &tok_cntx);
+        }
+        else {
+            path = NULL;
+        }
 
         if (var && val && domain) {
             /* FIX: use cached time similar to how logging does it */
@@ -4161,7 +4168,9 @@ static void add_cookie(request_rec *r, char *s)
                                     var,
                                     "=",
                                     val,
-                                    "; path=/; domain=",
+                                    "; path=",
+                                    (path)? path : "/",
+                                    "; domain=",
                                     domain,
                                     (expires)? "; expires=" : NULL,
                                     (expires)? 

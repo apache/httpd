@@ -1,7 +1,8 @@
 Changes with Apache 2.0.41
 
-  *) mod_rewrite can now sets cookies in err_headers, and uses the correct
-     expiry date. PR 12132 
+  *) mod_rewrite can now sets cookies in err_headers, uses the correct
+     expiry date, and can now set the path as well
+     PR 12132,12181,12172.
      [Ian Holsman / Rob Cromwell <apachechangelog@robcromwell.com>]
 
   *) The content-length filter no longer tries to buffer up
