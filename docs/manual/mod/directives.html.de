@@ -279,6 +279,8 @@
 <li><a href="mod_proxy.html#proxymaxforwards">ProxyMaxForwards</a></li>
 <li><a href="mod_proxy.html#proxypass">ProxyPass</a></li>
 <li><a href="mod_proxy.html#proxypassreverse">ProxyPassReverse</a></li>
+<li><a href="mod_proxy.html#proxypassreversecookiedomain">ProxyPassReverseCookieDomain</a></li>
+<li><a href="mod_proxy.html#proxypassreversecookiepath">ProxyPassReverseCookiePath</a></li>
 <li><a href="mod_proxy.html#proxypreservehost">ProxyPreserveHost</a></li>
 <li><a href="mod_proxy.html#proxyreceivebuffersize">ProxyReceiveBufferSize</a></li>
 <li><a href="mod_proxy.html#proxyremote">ProxyRemote</a></li>
