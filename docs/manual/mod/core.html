@@ -24,6 +24,8 @@ always available.
 <LI><A HREF="#accessconfig">AccessConfig</A>
 <LI><A HREF="#accessfilename">AccessFileName</A>
 <LI><A HREF="#addmodule">AddModule</A>
+<LI><A HREF="#addversioncomponent">AddVersionComponent</A>
+<LI><A HREF="#addversionplatform">AddVersionPlatform</A>
 <LI><A HREF="#allowoverride">AllowOverride</A>
 <LI><A HREF="#authname">AuthName</A>
 <LI><A HREF="#authtype">AuthType</A>
@@ -177,6 +179,101 @@ This directive can be used to enable the use of those modules.  The
 server comes with a pre-loaded list of active modules; this list can
 be cleared with the <A HREF="#clearmodulelist">ClearModuleList</A>
 directive.<P><HR>
+
+<H2><A name="addversioncomponent">AddVersionComponent directive</A></H2>
+<!--%plaintext &lt;?INDEX {\tt AddVersionComponent} directive&gt; -->
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> AddVersionComponent <EM>string</EM><BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> server config <BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> core<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> AddVersionComponent is only available
+ in Apache 1.3 and later
+
+<P>
+Use this directive to add a string to the <SAMP>Server-Version</SAMP>
+response header field which is sent back to clients.  This field identifies
+the server software as the Apache Web server, and can also list additional
+information.  This directive may occur multiple times, and the results are
+cumulative.  In each case the string should take one of the following forms:
+</P>
+<DL>
+ <DD><CODE>AddVersionComponent "(some comment within parentheses)"</CODE>
+  <DL>
+   <DD><EM>or</EM>
+   </DD>
+  </DL>
+  <CODE>AddVersionComponent "component-name/major.minor"</CODE>
+ </DD>
+</DL>
+<P>
+that is, the string should either be arbitrary text enclosed in parentheses,
+or else a specific component token and version number (such as "mymod/1.0").
+</P>
+<P>
+This setting applies to the entire server, and cannot be enabled or
+disabled on a virtualhost-by-virtualhost basis.
+</P>
+<P>
+This directive replaces the <SAMP>SERVER_SUBVERSION</SAMP> setting
+that was available in earlier versions of the Apache Web server.
+</P><HR>
+
+<H2><A name="addversionplatform">AddVersionPlatform directive</A></H2>
+<!--%plaintext &lt;?INDEX {\tt AddVersionPlatform} directive&gt; -->
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> AddVersionPlatform <EM>On|Off</EM><BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> server config <BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> core<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> AddVersionPlatform is only available
+ in Apache 1.3 and later
+
+<P>
+This directive controls whether the server's operating system platform
+will be identified in the <SAMP>Server-Version</SAMP> response header
+field which is sent back to clients.  If enabled, a non-specific platform
+designation will be added to the identity string, as shown below:
+</P>
+<DL>
+ <DT><CODE>AddVersionPlatform Off</CODE>
+ </DT>
+ <DD>Server sends: <SAMP>Server-Version: Apache/1.3.0</SAMP>
+ </DD>
+ <DT><CODE>AddVersionPlatform On</CODE>
+ </DT>
+ <DD>Server sends: <SAMP>Server-Version: Apache/1.3.0 (UNIX)</SAMP>
+ </DD>
+</DL>
+<P>
+This setting applies to the entire server, and cannot be enabled or
+disabled on a virtualhost-by-virtualhost basis.
+</P>
+<P>
+By default, this information is <EM>not</EM> included in the server
+identity string.
+</P>
+<HR>
 
 <H2><A name="allowoverride">AllowOverride directive</A></H2>
 <!--%plaintext &lt;?INDEX {\tt AllowOverride} directive&gt; -->
@@ -373,7 +470,10 @@ HREF="#virtualhost">&lt;VirtualHost&gt;</A></CODE> sections.
  HREF="directive-dict.html#Status"
  REL="Help"
 ><STRONG>Status:</STRONG></A> core<BR>
-<STRONG>Compatibility:</STRONG></A> BS2000AuthFile is only available for BS2000 machines, as of Apache 1.3 and later.<P>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> BS2000AuthFile is only available for BS2000 machines, as of Apache 1.3 and later.<P>
 
 The <CODE>BS2000AuthFile</CODE> directive is available for BS2000 hosts
 only. It must be used to define the password file which is used to
