@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/04/07 21:49:47 $]
+Last modified at [$Date: 2004/04/09 01:00:53 $]
 
 Release:
 
@@ -71,6 +71,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
+
+    *) Enable special ErrorDocument value 'default' which restores the
+       canned server response for the scope of the directive
+         http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/core.c?r1=1.270&r2=1.271
+       +1: geoff
 
     *) Nested <IfDefine> blocks will cause ap_build_cont_config()
        to be called recursively. Allocate the temporary 8k 
