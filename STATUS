@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/01/31 15:46:19 $]
+Last modified at [$Date: 2002/01/31 18:15:09 $]
 
 Release:
 
@@ -107,7 +107,7 @@ RELEASE SHOWSTOPPERS:
     * Redirected autoindex requests no longer work. Example:
       http://jakarta.apache.org/builds/tomcat/  mod_dir is a suspect.
 
-    * mod_rewrite redirections are issuing invalid Location:
+    * mod_alias redirections are issuing invalid Location:
       response header fields (they're not absoluteURI values).
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
