@@ -3945,11 +3945,8 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
         {
             /* keep track of the last bucket processed */
             last_e = e;
-            if (APR_BUCKET_IS_EOS(e)) {
+            if (APR_BUCKET_IS_EOS(e) || AP_BUCKET_IS_EOC(e)) {
                 break;
-            }
-            if (AP_BUCKET_IS_EOC(e)) {
-                apr_bucket_delete(e);
             }
             else if (APR_BUCKET_IS_FLUSH(e)) {
                 if (e != APR_BRIGADE_LAST(b)) {
@@ -4106,7 +4103,8 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
         /* Completed iterating over the brigade, now determine if we want
          * to buffer the brigade or send the brigade out on the network.
          *
-         * Save if we haven't accumulated enough bytes to send, and:
+         * Save if we haven't accumulated enough bytes to send, the connection
+         * is not about to be closed, and:
          *
          *   1) we didn't see a file, we don't have more passes over the
          *      brigade to perform,  AND we didn't stop at a FLUSH bucket.
@@ -4117,6 +4115,7 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
          *       with the hope of concatenating with another response)
          */
         if (nbytes + flen < AP_MIN_BYTES_TO_WRITE
+            && !AP_BUCKET_IS_EOC(last_e)
             && ((!fd && !more && !APR_BUCKET_IS_FLUSH(last_e))
                 || (APR_BUCKET_IS_EOS(last_e)
                     && c->keepalive == AP_CONN_KEEPALIVE))) {
