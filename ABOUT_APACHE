@@ -3,7 +3,7 @@
 
                          http://www.apache.org/
 
-                               June 1998
+                               July 1998
 
 The Apache Project is a collaborative software development effort aimed
 at creating a robust, commercial-grade, featureful, and freely-available
@@ -67,11 +67,12 @@ NCSA's httpd as the #1 server on the Internet.
 
  ============================================================================
 
-Current Apache Group in alphabetical order as of 23 April 1998:
+Current Apache Group in alphabetical order as of 14 July 1998:
 
    Brian Behlendorf       Organic Online, California 
    Ken Coar               MeepZor Consulting, New England, USA 
    Mark J. Cox            C2Net Europe, UK 
+   Lars Eilebrecht        Kreuztal, Germany 
    Ralf S. Engelschall    Munich, Germany.
    Dean Gaudet            Transmeta Corporation, California 
    Rob Hartill            Internet Movie DB, UK 
@@ -115,10 +116,10 @@ contribute ideas, patches, and testing.  In particular, Doug MacEachern
 
 Hundreds of people have made individual contributions to the Apache
 project.  Patch contributors are listed in the src/CHANGES file.
-Frequent contributors have included Lars Eilebrecht, Petr Lampa, Tom Tromey,
-James H. Cloos Jr., Ed Korthof, Nathan Neulinger, Jason S. Clary,
-Jason A. Dour, Michael Douglass, Tony Sanders, Brian Tao, Michael Smith,
-Adam Sussman, Nathan Schrenk, Matthew Gray, and John Heidemann.
+Frequent contributors have included Petr Lampa, Tom Tromey, James H.
+Cloos Jr., Ed Korthof, Nathan Neulinger, Jason S. Clary, Jason A. Dour,
+Michael Douglass, Tony Sanders, Brian Tao, Michael Smith, Adam Sussman,
+Nathan Schrenk, Matthew Gray, and John Heidemann.
 
  ============================================================================
 
