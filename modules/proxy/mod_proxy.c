@@ -57,9 +57,9 @@
 
 static unsigned char hex2c(const char* p) {
   const char c1 = p[1];
-  const char c2 = p[2];
-  int i1 = x2c(c1);
-  int i2 = x2c(c2);
+  const char c2 = p[1] ? p[2]: '\0';
+  int i1 = c1 ? x2c(c1) : 0;
+  int i2 = c2 ? x2c(c2) : 0;
   unsigned char ret = (i1 << 4) | i2;
 
   return ret;
@@ -70,9 +70,10 @@ static int alias_match(const char *uri, const char *alias_fakename)
 {
     const char *end_fakename = alias_fakename + strlen(alias_fakename);
     const char *aliasp = alias_fakename, *urip = uri;
+    const char *end_uri = uri + strlen(uri);
     unsigned char uric, aliasc;
 
-    while (aliasp < end_fakename) {
+    while (aliasp < end_fakename && urip < end_uri) {
         if (*aliasp == '/') {
             /* any number of '/' in the alias matches any number in
              * the supplied URI, but there must be at least one...
@@ -111,8 +112,15 @@ static int alias_match(const char *uri, const char *alias_fakename)
         }
     }
 
-    /* Check last alias path component matched all the way */
+    /* fixup badly encoded stuff (e.g. % as last character) */
+    if (aliasp > end_fakename) {
+        aliasp = end_fakename;
+    }
+    if (urip > end_uri) {
+        urip = end_uri;
+    }
 
+    /* Check last alias path component matched all the way */
     if (aliasp[-1] != '/' && *urip != '\0' && *urip != '/')
         return 0;
 
