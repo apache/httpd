@@ -288,8 +288,13 @@ static int get_path_info(request_rec *r)
         }
         else {
 #if defined(EACCES)
-            if (errno != EACCES)
-#endif
+            if (errno == EACCES)
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
+                            "access to %s failed because search "
+                            "permissions are missing on a component "
+                            "of the path", r->uri);
+            else
+#endif 
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
                             "access to %s failed", r->uri);
             return HTTP_FORBIDDEN;
