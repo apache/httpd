@@ -70,6 +70,13 @@ Documentation that needs writing:
 
 Available Patches:
 
+    * Harrie Hazewinkel's PATCH scoreboard
+      This is a patch that changes the 'vhost'-name (type char [32])
+      in the scoreboard into a 'vhost'-number (type int), and then uses a
+      lookup table to display the server name.
+        Message-ID: <36189CC2.52006F33@jrc.it>
+        Status: Roy (untested +1)
+
     * Manoj's [PATCH] mime.types update
         Message-ID: <19980923190915.B15359@raleigh.ibm.com>
         Status: Roy thinks we should put a common_mime_types.txt file in
