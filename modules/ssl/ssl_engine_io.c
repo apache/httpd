@@ -372,8 +372,10 @@ static apr_status_t ssl_io_filter_Output(ap_filter_t *f,
     return ret;
 }
 
-static apr_status_t ssl_io_filter_Input(ap_filter_t *f,apr_bucket_brigade *pbbOut,
-                                        ap_input_mode_t eMode, apr_off_t *readbytes)
+static apr_status_t ssl_io_filter_Input(ap_filter_t *f,
+                                        apr_bucket_brigade *pbbOut,
+                                        ap_input_mode_t eMode,
+                                        apr_off_t *readbytes)
 {
     apr_status_t ret;
     SSLFilterRec *pRec = f->ctx;
@@ -388,12 +390,7 @@ static apr_status_t ssl_io_filter_Input(ap_filter_t *f,apr_bucket_brigade *pbbOu
     if (ret != APR_SUCCESS)
 	return ret;
 
-    /* XXX: shame that APR_BRIGADE_FOREACH doesn't work here */
-    while(!APR_BRIGADE_EMPTY(pRec->pbbPendingInput)) {
-	apr_bucket *pbktIn=APR_BRIGADE_FIRST(pRec->pbbPendingInput);
-	APR_BUCKET_REMOVE(pbktIn);
-	APR_BRIGADE_INSERT_TAIL(pbbOut,pbktIn);
-    }
+    APR_BRIGADE_CONCAT(pbbOut, pRec->pbbPendingInput);
 
     return APR_SUCCESS;
 }
