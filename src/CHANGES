@@ -1,5 +1,9 @@
 Changes with Apache 1.3b7
 
+  *) Fix debug log messages for BS2000/OSD: instead of logging the whole
+     absolute path, only log base name of logging source as is done
+     in unix. [Martin Kraemer]
+
   *) Ronald Tschalaer's Accept-Encoding patch - preserve the "x-" in
      the encoding type from the Accept-Encoding header (if it's there)
      and use it in the response, as that's probably what it'll be expecting.

@@ -325,6 +325,24 @@ API_EXPORT(void) ap_log_error (const char *file, int line, int level,
 	    "[%s] ", priorities[level & APLOG_LEVELMASK].t_name);
 
     if (file && (level & APLOG_LEVELMASK) == APLOG_DEBUG) {
+#ifdef _OSD_POSIX
+	char tmp[256];
+	char *e = strrchr(file, '/');
+
+	/* In OSD/POSIX, the compiler returns for __FILE__
+	 * a string like: __FILE__="*POSIX(/usr/include/stdio.h)"
+	 * (it even returns an absolute path for sources in
+	 * the current directory). Here we try to strip this
+	 * down to the basename.
+	 */
+	if (e != NULL && e[1] != '\0') {
+	    ap_snprintf(tmp, sizeof(tmp), "%s", &e[1]);
+	    e = &tmp[strlen(tmp)-1];
+	    if (*e == ')')
+		*e = '\0';
+	    file = tmp;
+	}
+#endif /*_OSD_POSIX*/
 	len += ap_snprintf(errstr + len, sizeof(errstr) - len,
 		"%s(%d): ", file, line);
     }
