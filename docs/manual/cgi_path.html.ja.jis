@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+
+    <title>CGI 環境の PATH_INFO の変更</title>
+  <!-- English revision: 1.8 -->
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#ffffff" text="#000000" link="#0000ff"
+  vlink="#000080" alink="#ff0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="center">CGI 環境の PATH_INFO の変更</h1>
+    <hr />
+
+
+    <h2><a id="over" name="over">概要</a></h2>
+
+    <p>Apache 1.1.1 およびそれ以前のバージョンで実装されていた
+    CGI 環境で PATH_INFO を作成する方法は直観的でなく、
+    場合によってはクラッシュすることもありました。
+    Apache 1.2 及びそれ以降において、この動作が変更されました。
+    このことにより特定の古い CGI アプリケーションにおいていくつか
+    互換性の問題が生じることがありますが、それでも Apache 1.2 の動作は
+    CGI/1.1 仕様と互換があり、CGI スクリプトは容易に修正できます(<a
+    href="#compat">以下参照</a>)。</p>
+
+    <h2><a id="prob" name="prob">問題</a></h2>
+
+    <p>Apache 1.1.1 およびそれ以前では、URL ではなくファイル名を参照して
+    PATH_INFO と SCRIPT_NAME 環境変数を設定していました。
+    多くの場合はこれが正しい結果を返しますが、パス情報を含むように
+    filesystem パスがオーバーロードされた場合は、
+    誤った結果を返す場合がありました。
+    たとえば、設定ファイルに以下がある場合</p>
+<pre>
+     Alias /cgi-ralph /usr/local/httpd/cgi-bin/user.cgi/ralph
+</pre>
+
+    <p>この場合、<code>user.cgi</code> は CGI スクリプトであり、
+    &quot;/ralph&quot; は、CGI に渡される情報です。もし上の設定がなされていて、
+    &quot;<code>/cgi-ralph/script/</code>&quot; へのリクエストが来れば、
+    PATH_INFO には &quot;<code>/ralph/script/</code>&quot; が、
+    SCRIPT_NAME には &quot;<code>/cgi-</code>&quot; が設定されます。
+    明らかに、後者は間違っています。特定の場合には、これにより
+    サーバがクラッシュすることさえありました。</p>
+
+    <h2><a id="solution" name="solution">解決</a></h2>
+
+    <p>Apache 1.2 以降では SCRIPT_NAME と PATH_INFO の決定には URL
+    を直接参照して、URL
+    のどれだけの部分がクライアントが変更可能なのかを確定させた上で
+    PATH_INFO を設定するようになりました。上の例では、PATH_INFO には
+    &quot;<code>/script</code>&quot; が、SCRIPT_NAME には
+    &quot;<code>/cgi-ralph</code>&quot; が設定されます。
+    これは正しく、さらに、サーバの動作に問題を起こすこともありません。また、
+    &quot;<code>http://$SERVER_NAME:$SERVER_PORT$SCRIPT_NAME$PATH_INFO</code>&quot;
+    が、常に最新のスクリプトを指す、アクセス可能な URL であることを
+    保証します。これは、以前のバージョンの Apache
+    では必ずしもそうとは限らなかったことです。
+    </p>
+
+    <p>しかし <code>Alias</code> ディレクティブからの
+    &quot;<code>/ralph</code>&quot; 情報は失われます。
+    これは残念ですが、filesystem を通してこの種類の情報を
+    渡すのは薦められた方法ではなく、
+    またそれを使ったスクリプトは動作しなくても当然だと考えます。
+    ただし、Apache 1.2b3 以降では<a
+    href="#compat">代替手段</a>を用意しています。</p>
+
+    <h2><a id="compat" name="compat">以前のサーバとの互換性</a></h2>
+
+    <p>以前のバージョンの Apache や他のサーバ向けに設計された
+    スクリプトには古い PATH_INFO 変数により提供される情報が
+    必要であるかもしれません。
+    この目的のために、
+    Apache 1.2 (1.2b3 以降) では追加の変数、FILEPATH_INFO
+    を設定します。この環境変数には、Apache 1.1.1 で
+    PATH_INFO であったであろう値が設定されます。</p>
+
+    <p>Apache 1.2 およびそれ以前のバージョンの両方で動作させたいスクリプトは、
+    FILEPATH_INFO の存在を単に調べて、それがあれば
+    使う、ということができます。そうでなければ、PATH_INFO
+    を使うことができます。たとえば、Perl では次のものを使うことができます</p>
+<pre>
+    $path_info = $ENV{'FILEPATH_INFO'} || $ENV{'PATH_INFO'};
+</pre>
+
+    <p>これにより、スクリプトはすべてのバージョンの Apache を含む、
+    CGI/1.1 をサポートするすべてのサーバで動作することができます。
+    </p>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+
