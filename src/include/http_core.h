@@ -115,6 +115,12 @@ extern "C" {
 #define SATISFY_ANY 1
 #define SATISFY_NOSPEC 2
 
+/* default maximum of internal redirects */
+# define AP_DEFAULT_MAX_INTERNAL_REDIRECTS 20
+
+/* default maximum subrequest nesting level */
+# define AP_DEFAULT_MAX_SUBREQ_DEPTH 20
+
 API_EXPORT(int) ap_allow_options (request_rec *);
 API_EXPORT(int) ap_allow_overrides (request_rec *);
 API_EXPORT(const char *) ap_default_type (request_rec *);     
@@ -135,6 +141,12 @@ API_EXPORT(unsigned) ap_get_server_port(const request_rec *r);
 API_EXPORT(unsigned long) ap_get_limit_req_body(const request_rec *r);
 API_EXPORT(void) ap_custom_response(request_rec *r, int status, char *string);
 API_EXPORT(int) ap_exists_config_define(char *name);
+
+/* Check if the current request is beyond the configured max. number of redirects or subrequests
+ * @param r The current request
+ * @return true (is exceeded) or false
+ */
+API_EXPORT(int) ap_is_recursion_limit_exceeded(const request_rec *r);
 
 /* Authentication stuff.  This is one of the places where compatibility
  * with the old config files *really* hurts; they don't discriminate at
@@ -364,6 +376,11 @@ typedef struct {
     char *access_name;
     array_header *sec;
     array_header *sec_url;
+
+    /* recursion backstopper */
+    int recursion_limit_set; /* boolean */
+    int redirect_limit;      /* maximum number of internal redirects */
+    int subreq_limit;        /* maximum nesting level of subrequests */
 } core_server_config;
 
 /* for http_config.c */

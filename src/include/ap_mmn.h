@@ -242,6 +242,7 @@
  *                        ap_note_cleanups_for_socket_ex(),
  *                        ap_note_cleanups_for_file_ex(),
  *                        ap_popenf_ex() and ap_psocket_ex().
+ * 19990320.15          - ap_is_recursion_limit_exceeded()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503133UL /* "AP13" */
@@ -249,7 +250,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 19990320
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 14                    /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 15                    /* 0...n */
 
 /* Useful for testing for features. */
 #define AP_MODULE_MAGIC_AT_LEAST(major,minor)		\

@@ -1,5 +1,11 @@
 Changes with Apache 1.3.28
 
+  *) Prevent the server from crashing when entering infinite loops. The
+     new LimitInternalRecursion directive configures limits of subsequent
+     internal redirects and nested subrequests, after which the request
+     will be aborted.  PR 19753 (and probably others).
+     [William Rowe, Jeff Trawick, Jim Jagielski, André Malo]
+
   *) Fix NULL-pointer issue in ab when parsing an incomplete or non-HTTP
      response. PR 21085. [Glenn Nielsen <glenn@apache.org>, André Malo]
 

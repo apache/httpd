@@ -827,6 +827,13 @@ API_EXPORT(request_rec *) ap_sub_req_method_uri(const char *method,
         ap_parse_uri(rnew, ap_make_full_path(rnew->pool, udir, new_file));
     }
 
+    /* We cannot return NULL without violating the API. So just turn this
+     * subrequest into a 500 to indicate the failure. */
+    if (ap_is_recursion_limit_exceeded(r)) {
+        rnew->status = HTTP_INTERNAL_SERVER_ERROR;
+        return rnew;
+    }
+
     res = ap_unescape_url(rnew->uri);
     if (res) {
         rnew->status = res;
@@ -902,6 +909,13 @@ API_EXPORT(request_rec *) ap_sub_req_lookup_file(const char *new_file,
 
     ap_set_sub_req_protocol(rnew, r);
     fdir = ap_make_dirstr_parent(rnew->pool, r->filename);
+
+    /* We cannot return NULL without violating the API. So just turn this
+     * subrequest into a 500. */
+    if (ap_is_recursion_limit_exceeded(r)) {
+        rnew->status = HTTP_INTERNAL_SERVER_ERROR;
+        return rnew;
+    }
 
     /*
      * Check for a special case... if there are no '/' characters in new_file
@@ -1363,7 +1377,14 @@ static table *rename_original_env(pool *p, table *t)
 static request_rec *internal_internal_redirect(const char *new_uri, request_rec *r)
 {
     int access_status;
-    request_rec *new = (request_rec *) ap_pcalloc(r->pool, sizeof(request_rec));
+    request_rec *new;
+
+    if (ap_is_recursion_limit_exceeded(r)) {
+        ap_die(HTTP_INTERNAL_SERVER_ERROR, r);
+        return NULL;
+    }
+
+    new = (request_rec *) ap_pcalloc(r->pool, sizeof(request_rec));
 
     new->connection = r->connection;
     new->server     = r->server;
@@ -1435,7 +1456,10 @@ static request_rec *internal_internal_redirect(const char *new_uri, request_rec 
 API_EXPORT(void) ap_internal_redirect(const char *new_uri, request_rec *r)
 {
     request_rec *new = internal_internal_redirect(new_uri, r);
-    process_request_internal(new);
+
+    if (new) {
+        process_request_internal(new);
+    }
 }
 
 /* This function is designed for things like actions or CGI scripts, when
@@ -1445,9 +1469,12 @@ API_EXPORT(void) ap_internal_redirect(const char *new_uri, request_rec *r)
 API_EXPORT(void) ap_internal_redirect_handler(const char *new_uri, request_rec *r)
 {
     request_rec *new = internal_internal_redirect(new_uri, r);
-    if (r->handler)
-        new->content_type = r->content_type;
-    process_request_internal(new);
+
+    if (new) {
+        if (r->handler)
+            new->content_type = r->content_type;
+        process_request_internal(new);
+    }
 }
 
 /*
