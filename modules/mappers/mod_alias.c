@@ -146,9 +146,14 @@ static const char *add_alias_internal(cmd_parms *cmd, void *dummy,
 	if (new->regexp == NULL)
 	    return "Regular expression could not be compiled.";
     }
+#ifndef OS2
+    else
+        new->real = ap_os_canonical_filename(cmd->pool, r);
+#else
+    new->real = r;
+#endif
 
     new->fake = f;
-    new->real = r;
     new->handler = cmd->info;
 
     return NULL;
