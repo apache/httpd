@@ -252,7 +252,7 @@ const char *ap_mpm_set_lockfile(cmd_parms *cmd, void *dummy,
  * The system mutex implementation to use for the accept mutex.
  */
 #ifdef AP_MPM_WANT_SET_ACCEPT_LOCK_MECH
-extern apr_lockmech_e_np accept_lock_mech;
+extern apr_lockmech_e_np ap_accept_lock_mech;
 const char *ap_mpm_set_accept_lock_mech(cmd_parms *cmd, void *dummy,
                                         const char *arg);
 #endif

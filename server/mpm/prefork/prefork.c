@@ -271,7 +271,7 @@ static void accept_mutex_init(apr_pool_t *p)
 
     expand_lock_fname(p);
     rv = apr_lock_create_np(&accept_lock, APR_MUTEX, APR_CROSS_PROCESS, 
-                            accept_lock_mech, ap_lock_fname, p);
+                            ap_accept_lock_mech, ap_lock_fname, p);
     if (rv) {
 	ap_log_error(APLOG_MARK, APLOG_EMERG, rv, NULL, "couldn't create accept mutex");
         exit(APEXIT_INIT);
