@@ -162,30 +162,6 @@ static void *create_server_config(apr_pool_t *p, server_rec *s)
     return sconf;
 }
 
-static apr_status_t cleanup_file_cache(void *sconfv)
-{
-    a_server_config *sconf = sconfv;
-    apr_pool_t *p = apr_hash_pool_get(sconf->fileht);
-    a_file *file;
-    apr_hash_index_t *hi;
-
-    /* Iterate over the file hash table and clean up each entry */
-    for (hi = apr_hash_first(p, sconf->fileht); hi; hi=apr_hash_next(hi)) {
-        apr_hash_this(hi, NULL, NULL, (void **)&file);
-#if APR_HAS_MMAP
-        if (file->is_mmapped) { 
-	    apr_mmap_delete(file->mm);
-        } 
-#endif 
-#if APR_HAS_SENDFILE
-        if (!file->is_mmapped) {
-            apr_file_close(file->file); 
-        }
-#endif
-    }
-    return APR_SUCCESS;
-}
-
 static void cache_the_file(cmd_parms *cmd, const char *filename, int mmap)
 {
     a_server_config *sconf;
@@ -274,10 +250,6 @@ static void cache_the_file(cmd_parms *cmd, const char *filename, int mmap)
     sconf = ap_get_module_config(cmd->server->module_config, &file_cache_module);
     apr_hash_set(sconf->fileht, new_file->filename, strlen(new_file->filename), new_file);
 
-    if (apr_hash_count(sconf->fileht) == 1) {
-	/* first one, register the cleanup */
-	apr_pool_cleanup_register(cmd->pool, sconf, cleanup_file_cache, apr_pool_cleanup_null);
-    }
 }
 
 static const char *cachefilehandle(cmd_parms *cmd, void *dummy, const char *filename)
