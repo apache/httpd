@@ -100,6 +100,14 @@
    **    - Changed timeout behavour during write to work whilst the sockets
    **      are filling up and apr_write() does writes a few - but not all.
    **      This will potentially change results. <dirkx@webweaving.org>, April 2001
+   ** Version 2.0.36-dev
+   **    Improvements to concurrent processing:
+   **      - Enabled non-blocking connect()s.
+   **      - Prevent blocking calls to apr_recv() (thereby allowing AB to
+   **        manage its entire set of socket descriptors).
+   **      - Any error returned from apr_recv() that is not EAGAIN or EOF
+   **        is now treated as fatal.
+   **      Contributed by Aaron Bannert, April 24, 2002
    **
  */
 
@@ -1311,14 +1319,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-	printf("This is ApacheBench, Version %s\n", AP_SERVER_BASEREVISION " <$Revision: 1.96 $> apache-2.0");
+	printf("This is ApacheBench, Version %s\n", AP_SERVER_BASEREVISION " <$Revision: 1.97 $> apache-2.0");
 	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
 	printf("Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/\n");
 	printf("\n");
     }
     else {
 	printf("<p>\n");
-	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_SERVER_BASEREVISION, "$Revision: 1.96 $");
+	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_SERVER_BASEREVISION, "$Revision: 1.97 $");
 	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
 	printf(" Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/<br>\n");
 	printf("</p>\n<p>\n");
