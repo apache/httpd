@@ -2042,20 +2042,13 @@ static dav_error *dav_fs_patch_rollback(dav_resource *resource,
 
 static const dav_hooks_liveprop dav_hooks_liveprop_fs =
 {
-#ifdef WIN32
-    NULL,
-#else
-    "http://apache.org/dav/propset/fs/1",	/* filesystem, set 1 */
-#endif
-    dav_fs_find_prop,
     dav_fs_insert_prop,
-    dav_fs_insert_all,
     dav_fs_is_writeable,
     dav_fs_namespace_uris,
     dav_fs_patch_validate,
     dav_fs_patch_exec,
     dav_fs_patch_commit,
-    dav_fs_patch_rollback,
+    dav_fs_patch_rollback
 };
 
 static const dav_provider dav_fs_provider =
