@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 2000/01/13 12:59:37 $]
+  Last modified at [$Date: 2000/01/13 13:19:44 $]
 
 Release:
 
@@ -41,6 +41,10 @@ RELEASE SHOWSTOPPERS:
 	 suggested patches break other platforms. So it
 	 is entirely possible that this fix is the one we
 	 will ship with.
+        UPDATE: Brian posted a patch which implements SHMOD_SUFFIX_NAME.
+         This has been reported to work on OS/2 and HPUX.
+         <200001130122.MAA32461@silk.apana.org.au>
+         Ryan +1
 
     * HPUX build failure without -Ae provided to HPUX compiler as a CFLAG.
       The error message states this flag is required for "long long" types
