@@ -2939,15 +2939,12 @@ static int default_handler(request_rec *r)
                        ap_md5digest(r->pool, fd));
     }
 
-    ap_send_http_header(r);
-	
     if (!r->header_only) {
         apr_size_t nbytes;
 
         ap_send_fd(fd, r, 0, r->finfo.size, &nbytes);
     }
 
-    apr_close(fd);
     return OK;
 }
 
