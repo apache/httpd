@@ -1,5 +1,9 @@
 Changes with Apache 1.3b3
 
+  *) PORT: "Fix" PR#467 by generating warnings on systems which we have
+     not been able to get working USE_*_SERIALIZED_ACCEPT settings for.
+     Document this a bit more in src/PORTING.  [Dean Gaudet] PR#467
+
   *) Ensure that one copy of config warnings makes it to the
      error_log.  [Dean Gaudet]
 

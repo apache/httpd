@@ -609,10 +609,15 @@ static void accept_mutex_off(void)
 /* Default --- no serialization.  Other methods *could* go here,
  * as #elifs...
  */
+#if !defined(MULTITHREAD)
+/* Multithreaded systems don't complete between processes for
+ * the sockets. */
+#define NO_SERIALIZED_ACCEPT
 #define accept_mutex_cleanup()
 #define accept_mutex_init(x)
 #define accept_mutex_on()
 #define accept_mutex_off()
+#endif
 #endif
 
 /* On some architectures it's safe to do unserialized accept()s in the
@@ -2484,6 +2489,18 @@ static void setup_listeners(pool *p)
     lr->next = listeners;
     head_listener = listeners;
     close_unused_listeners();
+
+#ifdef NO_SERIALIZED_ACCEPT
+    /* warn them about the starvation problem if they're using multiple
+     * sockets
+     */
+    if (listeners->next != listeners) {
+	aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_CRIT, NULL,
+		    "You cannot use multiple Listens safely on your system, "
+		    "proceeding anyway.  See src/PORTING, search for "
+		    "SERIALIZED_ACCEPT.");
+    }
+#endif
 }
 
 

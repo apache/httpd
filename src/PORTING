@@ -203,42 +203,44 @@ build for your OS.
   These #defines are used for functions and ability that aren't exactly
   required but should be used.
 
-     USE_FCNTL_SERIALIZED_ACCEPT:
-      Define if the OS requires a mutex "lock" around the socket accept()
-      call. Use fcntl() locking.  See htdocs/manual/misc/perf-tuning.html.
-
-     USE_FLOCK_SERIALIZED_ACCEPT:
-      Define if the OS requires a mutex "lock" around the socket accept()
-      call. Use flock() locking (fcntl() is expensive on some OSs, esp.
-      when using NFS).  See htdocs/manual/misc/perf-tuning.html.
-
-     USE_USLOCK_SERIALIZED_ACCEPT:
-      Probably IRIX only: use uslock() to serialize, which is far faster
-      on multiprocessor boxes (and far slower on uniprocessor, yay).
-      See htdocs/manual/misc/perf-tuning.html.
-
-     USE_SYSVSEM_SERIALIZED_ACCEPT:
-      Use System V semaphores to serialize accept.  These are problematic
-      in that they won't be cleaned up if apache is kill -9d, and there's
-      the potential of a CGI causing a denial of service attack if it's
-      running as the same uid as apache (i.e. suexec is recommended on
-      public servers).
-      See htdocs/manual/misc/perf-tuning.html.
-     
-     USE_PTHREAD_SERIALIZED_ACCEPT:
-      Use POSIX mutexes to serialize accept.
-      See htdocs/manual/misc/perf-tuning.html.
-
-     SAFE_UNSERIALIZED_ACCEPT:
-      It's safe to unserialize single-socket accept().
-      See htdocs/manual/misc/perf-tuning.html.
-
      USE_LONGJMP:
       Define to use the longjmp() call instead of siglongjmp()
       (as well as setjmp() instead of sigsetjmp()).
 
      USE_MMAP_FILES:
       Enable the use of mmap() for sending static files.
+
+ USE_*_SERIALIZED_ACCEPT:
+  See htdocs/manual/misc/perf-tuning.html for an in-depth discussion of
+  why these are required.  These are choices for implementing a semaphore
+  between children entering accept().  A complete port should define one
+  of these, many may work and it's worthwhile timing them.  Without these
+  the server will not implement multiple Listen directives reliably.
+
+     USE_FCNTL_SERIALIZED_ACCEPT:
+      Use fcntl() to implement the semaphore.
+
+     USE_FLOCK_SERIALIZED_ACCEPT:
+      Use flock() to implement the semaphore (fcntl() is expensive on
+      some OSs, esp.  when using NFS).
+
+     USE_USLOCK_SERIALIZED_ACCEPT:
+      Probably IRIX only: use uslock() to serialize, which is far faster
+      on multiprocessor boxes (and far slower on uniprocessor, yay).
+
+     USE_SYSVSEM_SERIALIZED_ACCEPT:
+      Use System V semaphores to implement the semaphore.  These are
+      problematic in that they won't be cleaned up if apache is kill -9d,
+      and there's the potential of a CGI causing a denial of service
+      attack if it's running as the same uid as apache (i.e. suexec
+      is recommended on public servers).  But they can be faster than
+      either of fcntl() or flock() on some systems.
+
+     USE_PTHREAD_SERIALIZED_ACCEPT:
+      Use POSIX mutexes to implement the semaphore.
+
+     SAFE_UNSERIALIZED_ACCEPT:
+      It's safe to unserialize single-socket accept().
 
 --
 
