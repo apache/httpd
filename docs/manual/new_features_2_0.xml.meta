@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<metafile>
+  <basename>new_features_2_0</basename>
+  <path>/</path>
+  <relpath>.</relpath>
+
+  <variants>
+    <variant>de</variant>
+    <variant>en</variant>
+    <variant htmlonly="yes">fr</variant>
+    <variant>ja</variant>
+    <variant htmlonly="yes">ko</variant>
+    <variant>ru</variant>
+  </variants>
+</metafile>
