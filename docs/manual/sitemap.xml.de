@@ -187,7 +187,7 @@ HPUX betreiben</page>
   <modulefile>mpm_winnt.xml</modulefile>
   <modulefile>mpmt_os2.xml</modulefile>
   <modulefile>perchild.xml</modulefile>
-  <modulefile>prefork.xml</modulefile>
+  <modulefile>prefork.xml.de</modulefile>
   <modulefile>worker.xml</modulefile>
   <modulefile>leader.xml</modulefile>
   <modulefile>threadpool.xml</modulefile>

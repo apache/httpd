@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="de" xml:lang="de"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>prefork - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">Module</a> | <a href="../mod/directives.html">Direktiven</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossar</a> | <a href="../sitemap.html">Seitenindex</a></p>
+<p class="apache">Apache HTTP Server Version 2.0</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP-Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Dokumentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Module</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache-MPM prefork</h1>
+<table class="module"><tr><th><a href="module-dict.html#Description">Beschreibung:</a></th><td>Implementiert einen im Voraus forkenden Webserver ohne
+  Thread-Unterstützung</td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>MPM</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Modulbezeichner:</a></th><td>mpm_prefork_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Quelltext-Datei:</a></th><td>prefork.c</td></tr></table>
+<h3>Zusammenfassung</h3>
+
+    <p>Dieses Multi-Processing-Modul (MPM) implementiert einen
+    im Voraus forkenden Webserver ohne Thread-Unterstützung, der Anfragen
+    auf ähnliche Weise behandelt wie der Apache 1.3. Es ist für
+    Angebote geeignet, die aus Kompatibilitätsgründen mit
+    nicht-Thread-sicheren Bibliotheken Threading vermeiden müssen.
+    Es ist außerdem das geeignetste MPM, um jede Anfrage isoliert
+    zu bearbeiten, so dass Probleme mit einem einzelnen Prozess keinen
+    anderen beeinflussen.</p>
+
+    <p>Das MPM ist stark selbstregulierend, so dass es selten
+    notwendig ist, seine Konfigurationseinstellungen zu justieren. Das
+    Wichtigste ist, dass <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code>
+    gross genug ist, so viele gleichzeitige Anfragen zu bedienen, wie Sie
+    erwarten, aber klein genug, um sicherzustellen, dass genug physischer
+    Arbeitsspeicher für alle Prozesse vorhanden ist.</p>
+</div>
+<div id="quickview"><h3 class="directives">Direktiven</h3>
+<ul id="toc">
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#acceptmutex">AcceptMutex</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#bs2000account">BS2000Account</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#group">Group</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#listen">Listen</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#listenbacklog">ListenBacklog</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#lockfile">LockFile</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#maxclients">MaxClients</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#maxmemfree">MaxMemFree</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#maxspareservers">MaxSpareServers</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#minspareservers">MinSpareServers</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#pidfile">PidFile</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#scoreboardfile">ScoreBoardFile</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#sendbuffersize">SendBufferSize</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#serverlimit">ServerLimit</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#startservers">StartServers</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#user">User</a></li>
+</ul>
+<h3>Themen</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#how-it-works">Arbeitsweise</a></li>
+</ul><h3>Siehe auch</h3>
+<ul class="seealso">
+<li><a href="../bind.html">Bestimmen der vom Apache verwendeten Adressen
+  und Ports</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="how-it-works" id="how-it-works">Arbeitsweise</a></h2>
+    <p>Ein einzelner Steuerprozess ist für das Starten von
+    Kindprozessen verantwortlich, die auf Verbindungen warten und diese
+    bedienen, sobald sie eintreffen. Der Apache versucht immer, mehrere
+    <dfn>freie</dfn> oder unbeschäftigte Serverprozesse vorzuhalten,
+    die zur Bedienung eingehender Anfragen bereit stehen. Auf diese Weise
+    müssen Clients nicht darauf warten, dass neue Kindprozesse
+    geforkt werden, bevor ihre Anfrage bearbeitet werden kann.</p>
+
+    <p><code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code>,
+    <code class="directive"><a href="#minspareservers">MinSpareServers</a></code>,
+    <code class="directive"><a href="#maxspareservers">MaxSpareServers</a></code> und
+    <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code> regulieren,
+    wie der Elternprozess Kindprozesse zur Bedienung von Anfragen erstellt.
+    Im Allgemeinen ist der Apache sehr selbstregulierend, so dass die meisten
+    Angebote die Voreinstellung dieser Direktiven nicht verändern
+    müssen. Systeme, die mehr als 256 gleichzeitige Anfragen bedienen
+    müssen, können <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code> erhöhen, während
+    Systeme mit begrenztem Arbeitsspeicher möglicherweise
+    <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code> heruntersetzen
+    müssen, um den Server vor Flatterverhalten (Arbeitsspeicherinhalte auf
+    Platte auslagern - und zurück) zu schützen. Weitere
+    Informationen zur Feinabstimmung der Prozesserstellung sind in den
+    <a href="../misc/perf-tuning.html">Performance-Hinweisen</a> zu
+    finden.</p>
+
+    <p>Währen der Elternprozess unter Unix normalerweise als
+    <code>root</code> gestartet wird, um sich an Port 80 binden zu können,
+    werden die Kindprozesse unter einem weniger privilegierten Benutzer
+    gestartet. Die Direktiven <code class="directive"><a href="../mod/mpm_common.html#user">User</a></code>
+    und <code class="directive"><a href="../mod/mpm_common.html#group">Group</a></code> werden dazu
+    verwendet, die Privilegien der Apache-Kindprozesse festzulegen. Die
+    Kindprozesse müssen in der Lage sein, alle Inhalte zu lesen, die
+    sie ausliefern sollen, sollten darüber hinaus jedoch so wenig wie
+    möglich Rechte besitzen.</p>
+
+    <p><code class="directive"><a href="../mod/mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></code>
+    bestimmt, wie häufig der Server Prozesse durch Beendigung alter und
+    Starten neuer erneuert.</p>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="MaxSpareServers" id="MaxSpareServers">MaxSpareServers</a>-<a name="maxspareservers" id="maxspareservers">Direktive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Maximale Anzahl der unbeschäftigten Kindprozesse des
+  Servers</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MaxSpareServers <var>Anzahl</var><br /></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Voreinstellung:</a></th><td><code>MaxSpareServers 10</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>prefork</td></tr>
+</table>
+    <p>Die Direktive <code class="directive">MaxSpareServers</code> bestimmt das
+    gewünschte Maximum an <em>unbeschäftigten</em>
+    Kindprozessen des Servers. Ein unbeschäftiger Prozess ist einer, der
+    keine Anfrage bedient. Wenn mehr als <code class="directive">MaxSpareServers</code>
+    Prozesse unbeschäftigt sind, wird der Elternprozess die
+    überschüssigen Prozesse beenden.</p>
+
+    <p>Eine Feineinstellung dieses Parameters sollte nur bei sehr
+    beschäftigten Angeboten notwendig sein. Es ist nahezu immer eine
+    schlechte Idee, den Parameter auf einen hohen Wert zu setzen. Wenn Sie
+    versuchen, den Wert niedriger als <code class="directive"><a href="#minspareservers">MinSpareServers</a></code> zu setzen, wird der Apache
+    ihn automatisch auf <code class="directive"><a href="#minspareservers">MinSpareServers</a></code> + 1 korrigieren.</p>
+
+<h3>Siehe auch</h3>
+<ul>
+<li><code class="directive"><a href="#minspareservers">MinSpareServers</a></code></li>
+<li><code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code></li>
+</ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="MinSpareServers" id="MinSpareServers">MinSpareServers</a>-<a name="minspareservers" id="minspareservers">Direktive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Minimale Anzahl der unbeschäftigten Kindprozesse des
+  Servers</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MinSpareServers <var>Anzahl</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Voreinstellung:</a></th><td><code>MinSpareServers 5</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>prefork</td></tr>
+</table>
+    <p>Die Direktive <code class="directive">MinSpareServers</code> bestimmt das
+    gewünschte Minimum der <em>unbeschäftigten</em>
+    Kindprozesse des Servers. Ein unbeschäftigter Prozess ist einer, der
+    keine Anfrage bedient. Wenn weniger als
+    <code class="directive">MinSpareServers</code> Prozesse unbeschäftigt sind,
+    dann erstellt der Elternprozess neue mit einer maximalen Rate von 1
+    pro Sekunde.</p>
+
+    <p>Die Feineinstellung des Parameters sollte nur bei sehr
+    beschäftigten Angeboten notwendig sein. Es ist nahezu immer eine
+    schlechte ide, den Parameter auf einen hohen Wert zu setzen.</p>
+
+<h3>Siehe auch</h3>
+<ul>
+<li><code class="directive"><a href="#maxspareservers">MaxSpareServers</a></code></li>
+<li><code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code></li>
+</ul>
+</div>
+</div>
+<div id="footer">
+<p class="apache">Gepflegt durch das <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="../mod/">Module</a> | <a href="../mod/directives.html">Direktiven</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossar</a> | <a href="../sitemap.html">Seitenindex</a></p></div>
+</body></html>
