@@ -43,7 +43,7 @@
 <div class="section">
 <h2><a name="security" id="security">Security Warning</a></h2>
     
-    
+
     <p>Anyone who can write to the directory where Apache is
     writing a log file can almost certainly gain access to the uid
     that the server is started as, which is normally root. Do
@@ -61,9 +61,9 @@
 <div class="section">
 <h2><a name="errorlog" id="errorlog">Error Log</a></h2>
     
-    
+
     <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td /><td><ul><li><code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code></li><li><code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code></li></ul></td></tr></table>
-    
+
     <p>The server error log, whose name and location is set by the
     <code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code> directive, is the
     most important log file. This is the place where Apache httpd
@@ -79,18 +79,18 @@
     is also possible to have the server send errors to
     <code>syslog</code> or <a href="#piped">pipe them to a
     program</a>.</p>
-    
+
     <p>The format of the error log is relatively free-form and
     descriptive. But there is certain information that is contained
     in most error log entries. For example, here is a typical
     message.</p>
-    
+
     <div class="example"><p><code>
       [Wed Oct 11 14:32:52 2000] [error] [client 127.0.0.1]
       client denied by server configuration:
       /export/home/live/ap/htdocs/test
     </code></p></div>
-    
+
     <p>The first item in the log entry is the date and time of the
     message. The second entry lists the severity of the error being
     reported. The <code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code>
@@ -115,11 +115,11 @@
     Since it is possible to customize the access log, you can
     obtain more information about error conditions using that log
     file.</p>
-    
+
     <p>During testing, it is often useful to continuously monitor
     the error log for any problems. On unix systems, you can
     accomplish this using:</p>
-    
+
     <div class="example"><p><code>
       tail -f error_log
     </code></p></div>
@@ -127,9 +127,9 @@
 <div class="section">
 <h2><a name="accesslog" id="accesslog">Access Log</a></h2>
     
-    
+
     <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_log_config.html">mod_log_config</a></code></li><li><code class="module"><a href="./mod/mod_setenvif.html">mod_setenvif</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code></li><li><code class="directive"><a href="./mod/mod_log_config.html#logformat">LogFormat</a></code></li><li><code class="directive"><a href="./mod/mod_setenvif.html#setenvif">SetEnvIf</a></code></li></ul></td></tr></table>
-    
+
     <p>The server access log records all requests processed by the
     server. The location and content of the access log are
     controlled by the <code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code>
@@ -147,7 +147,7 @@
     analysis, check the <a href="http://dmoz.org/Computers/Software/Internet/Site_Management/Log_analysis/">
     Open Directory</a> or <a href="http://dir.yahoo.com/Computers_and_Internet/Software/Internet/World_Wide_Web/Servers/Log_Analysis_Tools/">
     Yahoo</a>.</p>
-    
+
     <p>Various versions of Apache httpd have used other modules and
     directives to control access logging, including
     mod_log_referer, mod_log_agent, and the
@@ -159,10 +159,10 @@
     printf(1) format string. Some examples are presented in the next
     sections. For a complete list of the possible contents of the
     format string, see the <code class="module"><a href="./mod/mod_log_config.html">mod_log_config</a></code> <a href="mod/mod_log_config.html#formats">format strings</a>.</p>
-    
+
     <h3><a name="common" id="common">Common Log Format</a></h3>
       
-    
+
       <p>A typical configuration for the access log might look as
       follows.</p>
 
@@ -170,7 +170,7 @@
         LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common<br />
          CustomLog logs/access_log common
       </code></p></div>
-    
+
       <p>This defines the <em>nickname</em> <code>common</code> and
       associates it with a particular log format string. The format
       string consists of percent directives, each of which tell the
@@ -188,7 +188,7 @@
 	  <em>nickname</em>. The filename for the access log is relative to
 	  the <code class="directive"><a href="./mod/core.html#serverroot">ServerRoot</a></code> unless it
 	  begins with a slash.</p>
-    
+
       <p>The above configuration will write log entries in a format
       known as the Common Log Format (CLF). This standard format can
       be produced by many different web servers and read by many log
@@ -199,9 +199,9 @@
         127.0.0.1 - frank [10/Oct/2000:13:55:36 -0700] "GET
         /apache_pb.gif HTTP/1.0" 200 2326
       </code></p></div>
-    
+
       <p>Each part of this log entry is described below.</p>
-    
+
       <dl>
         <dt><code>127.0.0.1</code> (<code>%h</code>)</dt>
 
@@ -299,10 +299,10 @@
         <code>%B</code> instead.</dd>
       </dl>
     
-    
+
     <h3><a name="combined" id="combined">Combined Log Format</a></h3>
       
-      
+
       <p>Another commonly used format string is called the Combined
       Log Format. It can be used as follows.</p>
 
@@ -318,7 +318,7 @@
       <code>%{<em>header</em>}i</code>, where <em>header</em> can be
       any HTTP request header. The access log under this format will
       look like:</p>
-      
+
       <div class="example"><p><code>
         127.0.0.1 - frank [10/Oct/2000:13:55:36 -0700] "GET
         /apache_pb.gif HTTP/1.0" 200 2326
@@ -327,7 +327,7 @@
       </code></p></div>
 
       <p>The additional fields are:</p>
-      
+
       <dl>
         <dt><code>"http://www.example.com/start.html"</code>
         (<code>\"%{Referer}i\"</code>)</dt>
@@ -345,10 +345,10 @@
         itself.</dd>
       </dl>
     
-    
+
     <h3><a name="multiple" id="multiple">Multiple Access Logs</a></h3>
       
-      
+
       <p>Multiple access logs can be created simply by specifying
       multiple <code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code> 
       directives in the configuration
@@ -369,10 +369,10 @@
       nickname with the <code class="directive"><a href="./mod/mod_log_config.html#logformat">LogFormat</a></code> directive. Instead,
       the log format can be specified directly in the <code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code> directive.</p>
     
-    
+
     <h3><a name="conditional" id="conditional">Conditional Logs</a></h3>
       
-      
+
       <p>There are times when it is convenient to exclude certain
       entries from the access logs based on characteristics of the
       client request. This is easily accomplished with the help of <a href="env.html">environment variables</a>. First, an
@@ -413,7 +413,7 @@
 <div class="section">
 <h2><a name="rotation" id="rotation">Log Rotation</a></h2>
     
-    
+
     <p>On even a moderately busy server, the quantity of
     information stored in the log files is very large. The access
     log file typically grows 1 MB or more per 10,000 requests. It
@@ -448,7 +448,7 @@
 <div class="section">
 <h2><a name="piped" id="piped">Piped Logs</a></h2>
     
-    
+
     <p>Apache httpd is capable of writing error and access log
     files through a pipe to another process, rather than directly
     to a file. This capability dramatically increases the
@@ -476,7 +476,7 @@
       CustomLog "|/usr/local/apache/bin/rotatelogs
       /var/log/access_log 86400" common
     </code></p></div>
-    
+
     <p>Notice that quotes are used to enclose the entire command
     that will be called for the pipe. Although these examples are
     for the access log, the same technique can be used for the
@@ -493,7 +493,7 @@
 <div class="section">
 <h2><a name="virtualhost" id="virtualhost">Virtual Hosts</a></h2>
     
-    
+
     <p>When running a server with many <a href="vhosts/">virtual
     hosts</a>, there are several options for dealing with log
     files. First, it is possible to use logs exactly as in a
@@ -537,12 +537,12 @@
 <div class="section">
 <h2><a name="other" id="other">Other Log Files</a></h2>
     
-    
+
     <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_cgi.html">mod_cgi</a></code></li><li><code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code></li><li><code class="directive"><a href="./mod/mod_rewrite.html#rewritelog">RewriteLog</a></code></li><li><code class="directive"><a href="./mod/mod_rewrite.html#rewriteloglevel">RewriteLogLevel</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptlog">ScriptLog</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptlogbuffer">ScriptLogBuffer</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptloglength">ScriptLogLength</a></code></li></ul></td></tr></table>
-    
+
     <h3><a name="pidfile" id="pidfile">PID File</a></h3>
       
-    
+
       <p>On startup, Apache httpd saves the process id of the parent
       httpd process to the file <code>logs/httpd.pid</code>. This
       filename can be changed with the <code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code> directive. The
@@ -552,20 +552,20 @@
       For more information see the <a href="stopping.html">Stopping
       and Restarting</a> page.</p>    
     
-    
+
     <h3><a name="scriptlog" id="scriptlog">Script Log</a></h3>
       
-      
+
       <p>In order to aid in debugging, the
       <code class="directive"><a href="./mod/mod_cgi.html#scriptlog">ScriptLog</a></code> directive
       allows you to record the input to and output from CGI scripts.
       This should only be used in testing - not for live servers.
       More information is available in the <a href="mod/mod_cgi.html">mod_cgi</a> documentation.</p>
     
-    
+
     <h3><a name="rewritelog" id="rewritelog">Rewrite Log</a></h3>
       
-      
+
       <p>When using the powerful and complex features of <a href="mod/mod_rewrite.html">mod_rewrite</a>, it is almost
       always necessary to use the <code class="directive"><a href="./mod/mod_rewrite.html#rewritelog">RewriteLog</a></code> to help
       in debugging. This log file produces a detailed analysis of how
