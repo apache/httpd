@@ -1,0 +1,54 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<HTML>
+<HEAD>
+<TITLE>Apache module mod_browser</TITLE>
+</HEAD>
+
+<BODY>
+<!--#include virtual="header.html" -->
+<H1>Apache module mod_browser</h1>
+
+This module is contained in the <code>mod_browser.c</code> file, and
+is compiled in by default. It provides for setting various variables
+based on the User-Agent header passed to the server.<P>
+
+<h2>Summary</h2>
+
+ 
+<h2>Directives</h2>
+<ul>
+<li><A HREF="#bm">BrowserMatch</A>
+<li><A HREF="#bmnocase">BrowserMatchNoCase</A>
+</ul>
+
+<hr>
+
+<A NAME="bm"><H2>BrowserMatch</H2></A>
+
+<STRONG>Syntax:</STRONG> BrowserMatch <EM>User-Agent Regex</EM> <EM>Variable</EM><BR>
+<STRONG>Context:</STRONG> server config, virtual host<BR>
+<STRONG>Status:</STRONG> ???<BR>
+<STRONG>Module:</STRONG> mod_browser<BR>
+<STRONG>Compatibility:</STRONG> BrowserMatch is only available in
+Apache 1.2 and later.<P>
+
+If the user-agent passed by the browser matches the regex passed to
+browsermatch, th variable is set.<P>
+
+<A NAME="bmnocase"><H2>BrowserMatchNoCase</H2></A>
+
+<STRONG>Syntax:</STRONG> BrowserMatchNoCase <EM>User-Agent Regex</EM> <EM>Variable</EM><BR>
+<STRONG>Context:</STRONG> server config, virtual host<BR>
+<STRONG>Status:</STRONG> ???<BR>
+<STRONG>Module:</STRONG> mod_browser<BR>
+<STRONG>Compatibility:</STRONG> BrowserMatchNoCase is only available in
+Apache 1.2 and later.<P>
+
+Same as BrowserMatch, but the matching is not case-sensitive.
+
+<P>
+
+<!--#include virtual="footer.html" -->
+</BODY>
+</HTML>
+
