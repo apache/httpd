@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/12/04 23:24:23 $]
+Last modified at [$Date: 2000/12/07 08:56:17 $]
 
 Release:
 
@@ -155,6 +155,9 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
     * mod_info to use the configuration tree
 
     * (possibly) use UUIDs in mod_unique_id and/or mod_usertrack
+
+    * (possibly) port the bug fix for PR 6942 (segv when LoadModule is put
+      into a VirtualHost container) to 2.0.
 
 PRs that have been suspended forever waiting for someone to
 put them into 'the next release':
