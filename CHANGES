@@ -9,7 +9,7 @@ Changes with Apache 2.0.45
 
   *) SECURITY [CAN-2003-0132]: Close a Denial of Service vulnerability
      identified by David Endler <DEndler@iDefense.com> on all platforms.
-     Details embargoed until their announcement on 2 April 2003.
+     Details embargoed until their announcement on 8 April 2003.
 
   *) Added an rpm build script.
      [Graham Leggett, Joe Orton <jorton@redhat.com>]
