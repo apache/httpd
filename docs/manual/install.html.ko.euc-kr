@@ -14,7 +14,7 @@
   vlink="#000080" alink="#FF0000">
     <!--#include virtual="header.html" -->
 
-    <h1 align="CENTER">컴파일과 설치</h1>
+    <h1 align="center">컴파일과 설치</h1>
 
     <p>이 문서는 유닉스와 유닉스류 시스템에서 아파치를 컴파일하고
     설치하는 것만을 다룬다. 윈도우즈에서 컴파일과 설치에 대해서는 <a
