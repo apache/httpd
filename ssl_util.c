@@ -375,17 +375,24 @@ void ssl_asn1_table_unset(apr_hash_t *table,
 
 static const char *ssl_asn1_key_types[] = {"RSA", "DSA"};
 
-const char *ssl_asn1_table_keyfmt(apr_pool_t *p,
-                                  const char *id,
-                                  int keytype)
+const char *ssl_asn1_keystr(int keytype)
 {
     if (keytype >= SSL_AIDX_MAX) {
         return NULL;
     }
 
-    return apr_pstrcat(p, id, ":",
-                       ssl_asn1_key_types[keytype], NULL);
+    return ssl_asn1_key_types[keytype];
 }
+
+const char *ssl_asn1_table_keyfmt(apr_pool_t *p,
+                                  const char *id,
+                                  int keytype)
+{
+    const char *keystr = ssl_asn1_keystr(keytype);
+
+    return apr_pstrcat(p, id, ":", keystr, NULL);
+}
+
 
 #if APR_HAS_THREADS
 /*
