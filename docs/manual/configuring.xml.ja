@@ -1,0 +1,193 @@
+<?xml version='1.0' encoding='iso-2022-jp' ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
+<manualpage>
+<relativepath href="."/>
+<!-- English revision: 1.2 -->
+
+  <title>設定ファイル</title>
+
+<summary>
+<p>この文書では、Apache HTTP サーバを設定するのに使用するファイルについて
+記述しています。</p>
+</summary>
+
+  <section id="main">
+    <title>メインの設定ファイル</title>
+    <related>
+      <modulelist>
+        <module>mod_mime</module>
+      </modulelist>
+      <directivelist>
+        <directive module="core" type="section">IfDefine</directive>
+        <directive module="core">Include</directive>
+        <directive module="mod_mime">TypesConfig</directive>
+      </directivelist>
+    </related>
+
+    <p>Apache は <a href="mod/directives.html"
+    >ディレクティブ</a> を設定ファイルに平文で書くことにより設定します。
+    メインの設定ファイルは普通は <code>httpd.conf</code> という名前です。
+    このファイルの位置はコンパイル時に設定されますが、コマンドラインの
+    <code>-f</code> フラグにより上書きできます。
+    その上、他の設定ファイルが <directive module="core">Include</directive>
+    ディレクティブによって追加されているかもしれません。
+    どのディレクティブもこれらの設定ファイルのどれにでも入れられます。
+    Apache は起動時か再起動時のみメイン設定ファイルの変更を認識します。</p>
+
+    <p>Apache 1.3.13 の新しい機能として、設定ファイルが実際はディレクトリで
+    あるときにはそのディレクトリで見つかったすべてのファイル
+    (とサブディレクトリ) を解析するというものがあります。利用法としては、
+    バーチャルホストを追加するときに、それぞれのホストに対して小さな設定
+    ファイルを作り、設定ディレクトリに置くというものが挙げられます。
+    こうすると、単にファイルの追加、削除をすることにより全くファイルを
+    編集することなくバーチャルホストの追加、削除ができます。
+    これは自動化をずっと簡単にします。</p>
+
+    <p>サーバは MIME
+    ドキュメントタイプを含んでいるファイルも読み込みます。ファイル名は
+    <directive module="mod_mime">TypesConfig</directive>
+    で設定され、デフォルトでは <code>mime.types</code>
+    になっています。</p>
+  </section>
+
+  <section id="syntax">
+    <title>設定ファイルの構文</title>
+
+    <p>Apache の設定ファイルは 1 行に 1 つのディレクティブからなります。
+    バックスラッシュ "\" はディレクティブが次の行に継続していることを
+    示すために行の最後の文字として使われているかもしれません。
+    行の最後とバックスラッシュの間に他の文字や空白があってはいけません。
+    </p>
+
+    <p>設定ファイルのディレクティブは大文字小文字を区別しませんが、
+    引数にはしばしば区別するものがあります。ハッシュ文字 "#"
+    で始まる行はコメントと見なされて無視されます。
+    設定ディレクティブの後の行ではコメントが含まれていては<strong
+    >いけません</strong>。ディレクティブの前の空行と空白は無視されますので、
+    わかりやすくするためにディレクティブをインデントしても構いません。
+    </p>
+
+    <p>設定ファイルの構文エラーは、
+    <code>apachectl configtest</code>
+    かコマンドラインオプション
+    <code>-t</code> を使って調べられます。</p>
+  </section>
+
+  <section id="modules">
+    <title>モジュール</title>
+
+    <related>
+      <modulelist>
+        <module>mod_so</module>
+      </modulelist>
+      <directivelist>
+        <directive module="core" type="section">IfModule</directive>
+        <directive module="mod_so">LoadModule</directive>
+      </directivelist>
+    </related>
+
+    <p>Apache はモジュール化されたサーバです。
+    コアサーバには最も基本的な機能だけが含まれています。拡張機能は
+    Apache にロードされる<a href="mod/index.html">モジュール</a
+    >として利用可能です。デフォルトでは、コンパイル時にモジュールの
+    <a href="mod/module-dict.html#status">Base</a> セット (基本セット) が
+    サーバに含まれます。サーバが<a href="dso.html">動的ロード</a
+    >モジュールを使うようにコンパイルされている場合は、
+    モジュールを別にコンパイルして、いつでも
+    <directive module="mod_so">LoadModule</directive>
+    ディレクティブを使って追加できます。
+    そうでない場合は、モジュールの追加や削除をするためには Apache
+    を再コンパイルする必要があります。設定ディレクティブは <directive
+    module="core" type="section">IfModule</directive>
+    ブロックに入れることで特定のモジュールが存在するときだけ
+    設定ファイルに含まれるようにすることができます。</p>
+
+    <p>コマンドラインオプション <code>-l</code> を使って現時点で
+    どのモジュールがサーバにコンパイルされているかを知ることができます。</p>
+  </section>
+
+  <section id="scope">
+    <title>ディレクティブの適用範囲</title>
+
+    <related>
+      <directivelist>
+        <directive module="core" type="section">Directory</directive>
+        <directive module="core" type="section">DirectoryMatch</directive>
+        <directive module="core" type="section">Files</directive>
+        <directive module="core" type="section">FilesMatch</directive>
+        <directive module="core" type="section">Location</directive>
+        <directive module="core" type="section">LocationMatch</directive>
+        <directive module="core" type="section">VirtualHost</directive>
+      </directivelist>
+    </related>
+
+    <p>メイン設定ファイルにあるディレクティブはサーバ全体に適用されます。
+    サーバの一部分の設定だけを変更したい場合は <directive module="core"
+    type="section">Directory</directive>, <directive module="core"
+    type="section">DirectoryMatch</directive>, <directive module="core"
+    type="section">Files</directive>, <directive module="core"
+    type="section">FilesMatch</directive>, <directive module="core"
+    type="section">Location</directive>, <directive module="core"
+    type="section">LocationMatch</directive>
+    セクションの中に置くことで適用範囲を決められます。
+    これらのセクションはその中にあるディレクティブの適用範囲を
+    特定のファイルシステムの位置や URL に限定します。
+    非常に細粒度の設定を可能にするために、
+    セクションを入れ子にすることもできます。</p>
+
+    <p>Apache は同時に多くの違うウェブサイトを扱う能力があります。
+    これは <a href="vhosts/">バーチャルホスト</a> と呼ばれています。
+    特定のウェブサイトにのみ適用されるようにするために、
+    ディレクティブは
+    <directive module="core" type="section">VirtualHost</directive>
+    セクションの中に置くことでも適用範囲を変えることができます。</p>
+
+    <p>ほとんどのディレクティブはどのセクションにでも書けますが、
+    中にはコンテキストによっては意味をなさないものもあります。
+    例えば、プロセスの作成を制御しているディレクティブはメインサーバの
+    コンテキストにのみ書くことができます。
+    どのディレクティブをどのセクションに書くことができるかを知るためには
+    ディレクティブの <a href="mod/directive-dict.html#context"
+    >コンテキスト</a> を調べてください。詳しい情報は、
+    <a href="sections.html">Directory, Location, Files
+    セクションの動作法</a>にあります。</p>
+  </section>
+
+  <section id="htaccess">
+    <title>.htaccess ファイル</title>
+
+    <related>
+      <directivelist>
+        <directive module="core">AccessFileName</directive>
+        <directive module="core">AllowOverride</directive>
+      </directivelist>
+    </related>
+
+    <p>Apache ではウェブツリーの中に置かれた特別なファイルを使って
+    非中央集権的な設定管理をできます。その特別なファイルは普通は
+    <code>.htaccess</code> という名前で、
+    <directive module="core">AccessFileName</directive>
+    ディレクティブでどんな名前にでも指定できます。
+    <code>.htaccess</code>
+    ファイルに書かれたディレクティブはファイルを置いた
+    ディレクトリとその全てのサブディレクトリに適用されます。
+    <code>.htaccess</code>
+    ファイルはすべてのリクエストで読み込まれるため、
+    変更はすぐに反映されます。</p>
+
+    <p>どのディレクティブが <code>.htaccess</code>
+    ファイルに書けるかを調べるには、ディレクティブの<a
+    href="mod/directive-dict.html#context">コンテキスト</a>
+    を調べてください。サーバ管理者はさらにメイン設定ファイルの
+    <directive module="core">AllowOverride</directive>
+    を設定することでどのディレクティブを <code>.htaccess</code>
+    ファイルに書けるようにするかを制御することができます。</p>
+
+    <p><code>.htaccess</code> ファイルに関する詳しい情報は
+    Ken Coar さんのチュートリアル
+    <a href="http://apache-server.com/tutorials/ATusing-htaccess.html"
+    >Using .htaccess Files with Apache</a> 
+    を参照してください。</p>
+  </section>
+</manualpage>
