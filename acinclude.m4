@@ -67,6 +67,8 @@ AC_DEFUN(APACHE_GEN_CONFIG_VARS,[
   APACHE_SUBST(CC)
   APACHE_SUBST(CFLAGS)
   APACHE_SUBST(CPPFLAGS)
+  APACHE_SUBST(CXX)
+  APACHE_SUBST(CXXFLAGS)
   APACHE_SUBST(LTFLAGS)
   APACHE_SUBST(LDFLAGS)
   APACHE_SUBST(DEFS)
@@ -289,7 +291,7 @@ EOF
       modpath_shared="$modpath_shared $libname"
       cat >>$modpath_current/modules.mk<<EOF
 $libname: $shobjects
-	\$(SHLINK) -rpath \$(libexecdir) -module -avoid-version $4 $objects $5
+	\$(SH_LINK) -rpath \$(libexecdir) -module -avoid-version $4 $objects $5
 EOF
     fi
   fi
@@ -408,3 +410,10 @@ AC_ARG_ENABLE(modules,
 ])
 ])dnl
 
+AC_DEFUN(APACHE_REQUIRE_CXX,[
+  if test -z "$apache_cxx_done"; then
+    AC_PROG_CXX
+    AC_PROG_CXXCPP
+    apache_cxx_done=yes
+  fi
+])

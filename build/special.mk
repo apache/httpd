@@ -63,9 +63,9 @@ install_targets = install-modules
 install-modules:
 	@shared='$(shared)'; \
 	if test -n "$$shared"; then \
-		$(mkinstalldirs) $(libexecdir); \
+		$(MKINSTALLDIRS) $(libexecdir); \
 		for i in $$shared; do \
-			$(SHLIBTOOL) --mode=install cp $$i $(libexecdir); \
+			$(SH_LIBTOOL) --mode=install cp $$i $(libexecdir); \
 		done; \
 	fi	
 

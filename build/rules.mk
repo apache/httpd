@@ -56,25 +56,40 @@
 
 include $(top_builddir)/config_vars.mk
 
+# Compile commands
 
-SHLIB_SUFFIX = so
-COMPILE = $(CC) $(DEFS) $(INCLUDES) $(EXTRA_INCLUDES) $(CPPFLAGS) $(CFLAGS) $(EXTRA_CFLAGS)
-LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(EXTRA_INCLUDES) $(CPPFLAGS) $(CFLAGS) $(EXTRA_CFLAGS)
-CCLD = $(CC)
-LINK = $(LIBTOOL) --mode=link $(CCLD) $(LTFLAGS) $(CFLAGS) $(EXTRA_CFLAGS) $(LDFLAGS) -o $@
-mkinstalldirs = $(abs_srcdir)/helpers/mkdir.sh
+COMMON_FLAGS = $(DEFS) $(INCLUDES) $(EXTRA_INCLUDES) $(CPPFLAGS)
+COMPILE      = $(CC)  $(COMMON_FLAGS) $(CFLAGS) $(EXTRA_CFLAGS)
+CXX_COMPILE  = $(CXX) $(COMMON_FLAGS) $(CXXFLAGS) $(EXTRA_CXXFLAGS)
+
+SH_COMPILE     = $(SH_LIBTOOL) --mode=compile $(COMPILE) -c $< && touch $@
+SH_CXX_COMPILE = $(SH_LIBTOOL) --mode=compile $(CXX_COMPILE) -c $< && touch $@
+
+LT_COMPILE     = $(LIBTOOL) --mode=compile $(COMPILE) -c $< && touch $@
+LT_CXX_COMPILE = $(LIBTOOL) --mode=compile $(CXX_COMPILE) -c $< && touch $@
+
+# Link-related commands
+
+LINK    = $(LIBTOOL) --mode=link $(COMPILE) $(LDFLAGS) -o $@
+SH_LINK = $(SH_LIBTOOL) --mode=link $(COMPILE) $(LDFLAGS) -o $@
+
+# Helper programs
+
+SH_LIBTOOL = $(SHELL) $(top_builddir)/shlibtool --silent
+MKINSTALLDIRS = $(abs_srcdir)/helpers/mkdir.sh
 INSTALL = $(abs_srcdir)/helpers/install.sh -c
 INSTALL_DATA = $(INSTALL) -m 644
 INSTALL_PROGRAM = $(INSTALL) -m 755
-SHLIBTOOL = $(SHELL) $(top_builddir)/shlibtool --silent
-APACHE_COMPILE = $(LTCOMPILE) -c $< && touch $@
-APACHE_SH_COMPILE = $(SHLIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(EXTRA_INCLUDES) $(CPPFLAGS) $(CFLAGS) $(EXTRA_CFLAGS) -c $< && touch $@
-SHLINK = $(SHLIBTOOL) --mode=link $(CCLD) $(CFLAGS) $(EXTRA_CFLAGS) $(LDFLAGS) -o $@
 
 DEFS = -I. -I$(srcdir) -I$(top_srcdir)/modules/mpm/$(MPM_NAME)
 
+# Suffixes
+	
+CXX_SUFFIX = cpp
+SHLIB_SUFFIX = so
+	
 .SUFFIXES:
-.SUFFIXES: .S .c .lo .o .s .y .l .slo
+.SUFFIXES: .S .c .$(CXX_SUFFIX) .lo .o .s .y .l .slo
 
 .c.o:
 	$(COMPILE) -c $<
@@ -83,13 +98,19 @@ DEFS = -I. -I$(srcdir) -I$(top_srcdir)/modules/mpm/$(MPM_NAME)
 	$(COMPILE) -c $<
 
 .c.lo:
-	$(APACHE_COMPILE)
+	$(LT_COMPILE)
 
 .s.lo:
-	$(APACHE_COMPILE)
+	$(LT_COMPILE)
 
 .c.slo:
-	$(APACHE_SH_COMPILE)
+	$(SH_COMPILE)
+
+.$(CXX_SUFFIX).lo:
+	$(LT_CXX_COMPILE)
+
+.$(CXX_SUFFIX).slo:
+	$(SH_CXX_COMPILE)
 
 .y.c:
 	$(YACC) $(YFLAGS) $< && mv y.tab.c $*.c
@@ -137,7 +158,7 @@ distclean-recursive clean-recursive depend-recursive all-recursive install-recur
 all-p: $(targets)
 install-p: $(targets) $(install_targets)
 	@if test -n '$(PROGRAMS)'; then \
-		test -d $(bindir) || $(mkinstalldirs) $(bindir); \
+		test -d $(bindir) || $(MKINSTALLDIRS) $(bindir); \
 		for i in "$(PROGRAMS)"; do \
 			$(INSTALL_PROGRAM) $$i $(bindir); \
 		done; \
