@@ -177,8 +177,8 @@ static const char *add_alias_internal(cmd_parms *cmd, void *dummy,
         for (i = 0; i < conf->aliases->nelts - 1; ++i) {
             alias_entry *p = &entries[i];
 
-            if (  !p->regexp &&  alias_matches(f, p->fake) > 0
-                || p->regexp && !ap_regexec(p->regexp, f, 0, NULL, 0)) {
+            if (  (!p->regexp &&  alias_matches(f, p->fake) > 0)
+                || (p->regexp && !ap_regexec(p->regexp, f, 0, NULL, 0))) {
                 ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server,
                              "The %s directive at line %d will probably never "
                              "match because it overlaps an earlier %sAlias%s.",
