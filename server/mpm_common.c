@@ -194,9 +194,6 @@ void ap_wait_or_timeout(apr_wait_t *status, apr_proc_t *ret, apr_pool_t *p)
     ++wait_or_timeout_counter;
     if (wait_or_timeout_counter == INTERVAL_OF_WRITABLE_PROBES) {
         wait_or_timeout_counter = 0;
-#if APR_HAS_OTHER_CHILD
-        apr_proc_probe_writable_fds();
-#endif
     }
     rv = apr_proc_wait_all_procs(ret, status, APR_NOWAIT, p);
     if (APR_STATUS_IS_EINTR(rv)) {
