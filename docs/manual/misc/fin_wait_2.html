@@ -175,10 +175,11 @@ The following systems are known to have a timeout:
 	    In later revisions, there is an explicit timer for
 	    connections in FIN_WAIT_2 that can be modified; contact HP
 	    support for details.
-	<LI><A HREF="http://www.sgi.com/">SGI IRIX</A> 5.3, 6.2 and 6.3
-	    (and a patch for 6.4 after release) will add a timeout for 
-	    connections in FIN_WAIT_2 in a forthcoming (as of 97/01) rollup
-	    patch.  Contact SGI for details.
+	<LI><A HREF="http://www.sgi.com/">SGI IRIX</A> can be patched to
+	    support a timeout.  For IRIX 5.3, 6.2, and 6.3, 
+	    use patches 1654, 1703 and 1778 respectively.  If you
+	    have trouble locating these patches, please contact your
+	    SGI support channel for help.
 	<LI><A HREF="http://www.ncr.com/">NCR's MP RAS Unix</A> 2.xx and
 	    3.xx both have FIN_WAIT_2 timeouts.  In 2.xx it is non-tunable
 	    at 600 seconds, while in 3.xx it defaults to 600 seconds and
