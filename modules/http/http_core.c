@@ -2923,7 +2923,7 @@ static int chunk_filter(ap_filter_t *f, ap_bucket_brigade *b)
 {
     ap_bucket *dptr = b->head, *lb, *next, *tail;
     int len = 0, cur_len;
-    char lenstr[strlen("ffffffff\r\n") + 1];
+    char lenstr[sizeof("ffffffff\r\n")];
     const char *cur_str;
     int hit_eos = 0;
     apr_status_t rv = 0; /* currently bytes written, will be APR_* */
