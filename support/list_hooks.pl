@@ -4,20 +4,20 @@ use strict;
 
 use Carp;
 
-my $path=shift;
+my $path=shift || '.';
 
 findInDir($path);
 
 foreach my $hook (sort keys %::Hooks) {
     my $h=$::Hooks{$hook};
     for my $x (qw(declared implemented type args)) {
-	croak "$hook datum '$x' missing" if !exists $h->{$x};
+	print "$hook datum '$x' missing\n" if !exists $h->{$x};
     }
     print "$hook\n";
-    print "  declared in $h->{declared}\n";
-    print "  implemented in $h->{implemented}\n";
-    print "  type is $h->{type}\n";
-    print "  $h->{ret} $hook($h->{args})\n";
+    print "  declared in $h->{declared}\n" if defined $h->{declared};
+    print "  implemented in $h->{implemented}\n" if defined $h->{implemented};
+    print "  type is $h->{type}\n" if defined $h->{type};
+    print "  $h->{ret} $hook($h->{args})\n" if defined $h->{args};
     print "\n";
 }
 
@@ -61,6 +61,15 @@ sub scanFile {
 	    $::Hooks{$name}->{declared}=$file;
 	    $::Hooks{$name}->{ret}=$ret;
 	    $::Hooks{$name}->{args}=$args;
+	} elsif(/AP_DECLARE_HOOK\(([^,]+),([^,]+)/) {
+# really we should swallow subsequent lines to get the arguments...
+	    my $name=$2;
+	    my $ret=$1;
+	    croak "$name declared twice! ($_)"
+		if exists $::Hooks{$name}->{declared};
+	    $::Hooks{$name}->{declared}=$file;
+	    $::Hooks{$name}->{ret}=$ret;
+	    $::Hooks{$name}->{args}='???';
 	}
 	if(/AP_IMPLEMENT_HOOK_()(VOID)\(([^,\s]+)/
 	   || /AP_IMPLEMENT(_OPTIONAL|)_HOOK_(.*?)\([^,]+?\s*,\s*([^,\s]+)/) {
