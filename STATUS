@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/03/25 23:22:53 $]
+  Last modified at [$Date: 1999/03/26 00:15:24 $]
 
 Release:
 
@@ -25,7 +25,7 @@ Binaries (1.3.6):
  hppa1.1-hp-hpux               no      Rob Hartill
  i386-slackware-linux(a.out)   no      Sameer Parekh
  i386-sun-solaris2.5           no      Sameer Parekh
- i386-sun-solaris2.7           no      Cliff Skolnick
+ i386-sun-solaris2.7           yes     Cliff Skolnick
  i386-unixware-svr4            no      Sameer Parekh
  i386-unknown-freebsd2.1       no      Andrew Wilson, Brian Tao
  i386-unknown-freebsd2.2.8     yes     Jim Jagielski
@@ -53,8 +53,8 @@ Binaries (1.3.6):
  rs6000-ibm-aix4.3.2           no      Bill Stoddard
  sparc-sun-solaris2.5          yes     Lars Eilebrecht
  sparc-sun-solaris2.6          yes     Lars Eilebrecht
- sparc-sun-solaris2.7          no      Cliff Skolnick
- sparc-sun-sunos4.1.4          no      Lars Eilebrecht, Michael Douglass
+ sparc-sun-solaris2.7          yes     Cliff Skolnick
+ sparc-sun-sunos4.1.4          yes     Lars Eilebrecht, Michael Douglass
  sparc-sun-sunos4.1.3_U1       no      Sameer Parekh
  sparc-unknown-linux           yes     Lars Eilebrecht
  mips-dec-ultrix4.4            no      Sameer Parekh
