@@ -57,7 +57,7 @@
 #include "http_main.h"
 
 #ifdef HAVE_BSTRING_H
-#include <bstring.h>            /* for IRIX, FD_SET calls bzero() */
+#include <bstring.h>		/* for IRIX, FD_SET calls bzero() */
 #endif
 
 DEF_Explain
@@ -84,61 +84,57 @@ DEF_Explain
  * FIXME: this doesn't log the number of bytes sent, but
  *        that may be okay, since the data is supposed to
  *        be transparent. In fact, this doesn't log at all
- *	  yet. 8^)
+ *        yet. 8^)
  * FIXME: doesn't check any headers initally sent from the
  *        client.
  * FIXME: should allow authentication, but hopefully the
  *        generic proxy authentication is good enough.
  * FIXME: no check for r->assbackwards, whatever that is.
- */ 
- 
-int
-proxy_connect_handler(request_rec *r, struct cache_req *c, char *url,
-    const char *proxyhost, int proxyport)
+ */
+
+int proxy_connect_handler(request_rec *r, struct cache_req *c, char *url,
+			  const char *proxyhost, int proxyport)
 {
     struct sockaddr_in server;
     struct in_addr destaddr;
     struct hostent server_hp;
     const char *host, *err;
     char *p;
-    int   port, sock;
+    int port, sock;
     char buffer[HUGE_STRING_LEN];
-    int  nbytes, i, j;
+    int nbytes, i, j;
     fd_set fds;
 
     void *sconf = r->server->module_config;
     proxy_server_conf *conf =
-        (proxy_server_conf *)get_module_config(sconf, &proxy_module);
-    struct noproxy_entry *npent=(struct noproxy_entry *)conf->noproxies->elts;
+    (proxy_server_conf *) get_module_config(sconf, &proxy_module);
+    struct noproxy_entry *npent = (struct noproxy_entry *) conf->noproxies->elts;
 
     memset(&server, '\0', sizeof(server));
-    server.sin_family=AF_INET;
- 
+    server.sin_family = AF_INET;
+
     /* Break the URL into host:port pairs */
 
     host = url;
     p = strchr(url, ':');
-    if (p==NULL)
+    if (p == NULL)
 	port = DEFAULT_HTTPS_PORT;
-    else
-    {
-      port = atoi(p+1);
-      *p='\0';
-    }
- 
-/* check if ProxyBlock directive on this host */
-    destaddr.s_addr = ap_inet_addr(host);
-    for (i=0; i < conf->noproxies->nelts; i++)
-    {
-        if ((npent[i].name != NULL && strstr(host, npent[i].name) != NULL)
-          || destaddr.s_addr == npent[i].addr.s_addr || npent[i].name[0] == '*')
-            return proxyerror(r, "Connect to remote machine blocked");
+    else {
+	port = atoi(p + 1);
+	*p = '\0';
     }
 
-    switch (port)
-    {
+/* check if ProxyBlock directive on this host */
+    destaddr.s_addr = ap_inet_addr(host);
+    for (i = 0; i < conf->noproxies->nelts; i++) {
+	if ((npent[i].name != NULL && strstr(host, npent[i].name) != NULL)
+	    || destaddr.s_addr == npent[i].addr.s_addr || npent[i].name[0] == '*')
+	    return proxyerror(r, "Connect to remote machine blocked");
+    }
+
+    switch (port) {
 	case DEFAULT_HTTPS_PORT:
-	case DEFAULT_SNEWS_PORT:
+	    case DEFAULT_SNEWS_PORT:
 	    break;
 	default:
 	    return HTTP_SERVICE_UNAVAILABLE;
@@ -146,38 +142,38 @@ proxy_connect_handler(request_rec *r, struct cache_req *c, char *url,
 
     if (proxyhost) {
 	Explain2("CONNECT to remote proxy %s on port %d", proxyhost, proxyport);
-    } else {
-    	Explain2("CONNECT to %s on port %d", host, port);
     }
- 
+    else {
+	Explain2("CONNECT to %s on port %d", host, port);
+    }
+
     server.sin_port = (proxyport ? htons(proxyport) : htons(port));
     err = proxy_host2addr(proxyhost ? proxyhost : host, &server_hp);
 
     if (err != NULL)
-	return proxyerror(r, err); /* give up */
- 
-    sock = psocket(r->pool, PF_INET, SOCK_STREAM, IPPROTO_TCP);  
-    if (sock == -1)
-    {     
-        aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+	return proxyerror(r, err);	/* give up */
+
+    sock = psocket(r->pool, PF_INET, SOCK_STREAM, IPPROTO_TCP);
+    if (sock == -1) {
+	aplog_error(APLOG_MARK, APLOG_ERR, r->server,
 		    "proxy: error creating socket");
-        return SERVER_ERROR;
-    }     
- 
+	return SERVER_ERROR;
+    }
+
     j = 0;
     while (server_hp.h_addr_list[j] != NULL) {
-        memcpy(&server.sin_addr, server_hp.h_addr_list[j],
-            sizeof(struct in_addr));
-        i = proxy_doconnect(sock, &server, r);
-        if (i == 0)
-            break; 
-        j++;
-    }   
+	memcpy(&server.sin_addr, server_hp.h_addr_list[j],
+	       sizeof(struct in_addr));
+	i = proxy_doconnect(sock, &server, r);
+	if (i == 0)
+	    break;
+	j++;
+    }
     if (i == -1) {
 	pclosesocket(r->pool, sock);
-        return proxyerror(r, "Could not connect to remote machine");
+	return proxyerror(r, "Could not connect to remote machine");
     }
- 
+
     /* If we are connecting through a remote proxy, we need to pass
      * the CONNECT request on to it.
      */
@@ -187,67 +183,65 @@ proxy_connect_handler(request_rec *r, struct cache_req *c, char *url,
 	 * a HTTP/1.0 request to keep things simple.
 	 */
 	Explain0("Sending the CONNECT request to the remote proxy");
-	ap_snprintf(buffer, sizeof(buffer), "CONNECT %s HTTP/1.0\015\012", 
-	    r->uri); 
+	ap_snprintf(buffer, sizeof(buffer), "CONNECT %s HTTP/1.0\015\012",
+		    r->uri);
 	write(sock, buffer, strlen(buffer));
 	ap_snprintf(buffer, sizeof(buffer),
-	    "Proxy-agent: %s\015\012\015\012", SERVER_VERSION);
+		    "Proxy-agent: %s\015\012\015\012", SERVER_VERSION);
 	write(sock, buffer, strlen(buffer));
-    } else {
+    }
+    else {
 	Explain0("Returning 200 OK Status");
 	rvputs(r, "HTTP/1.0 200 Connection established\015\012", NULL);
 	rvputs(r, "Proxy-agent: ", SERVER_VERSION, "\015\012\015\012", NULL);
 	bflush(r->connection->client);
     }
 
-    while (1) /* Infinite loop until error (one side closes the connection) */
-    {
-      FD_ZERO(&fds);
-      FD_SET(sock, &fds);
-      FD_SET(r->connection->client->fd, &fds);
-    
-      Explain0("Going to sleep (select)");
-      i = ap_select((r->connection->client->fd > sock ?
-	r->connection->client->fd+1 :
-	sock+1), &fds, NULL, NULL, NULL);
-      Explain1("Woke from select(), i=%d",i);
-    
-      if (i)
-      {
-        if (FD_ISSET(sock, &fds))
-        {
-           Explain0("sock was set");
-           if((nbytes=read(sock,buffer,HUGE_STRING_LEN))!=0)
-           {
-              if (nbytes==-1)
-		  break;
-              if (write(r->connection->client->fd, buffer, nbytes)==EOF)
-		  break;
-              Explain1("Wrote %d bytes to client", nbytes);
-           }
-           else break;
-        }
-        else if (FD_ISSET(r->connection->client->fd, &fds))
-        { 
-           Explain0("client->fd was set");
-           if((nbytes=read(r->connection->client->fd,buffer,
-		HUGE_STRING_LEN))!=0)   
-           {
-              if (nbytes==-1)
-		  break;
-              if (write(sock,buffer,nbytes)==EOF)
-		  break;
-              Explain1("Wrote %d bytes to server", nbytes);
-           }
-           else break;
-        }
-        else break; /* Must be done waiting */
-      }
-      else break;
+    while (1) {			/* Infinite loop until error (one side closes the connection) */
+	FD_ZERO(&fds);
+	FD_SET(sock, &fds);
+	FD_SET(r->connection->client->fd, &fds);
+
+	Explain0("Going to sleep (select)");
+	i = ap_select((r->connection->client->fd > sock ?
+		       r->connection->client->fd + 1 :
+		       sock + 1), &fds, NULL, NULL, NULL);
+	Explain1("Woke from select(), i=%d", i);
+
+	if (i) {
+	    if (FD_ISSET(sock, &fds)) {
+		Explain0("sock was set");
+		if ((nbytes = read(sock, buffer, HUGE_STRING_LEN)) != 0) {
+		    if (nbytes == -1)
+			break;
+		    if (write(r->connection->client->fd, buffer, nbytes) == EOF)
+			break;
+		    Explain1("Wrote %d bytes to client", nbytes);
+		}
+		else
+		    break;
+	    }
+	    else if (FD_ISSET(r->connection->client->fd, &fds)) {
+		Explain0("client->fd was set");
+		if ((nbytes = read(r->connection->client->fd, buffer,
+				   HUGE_STRING_LEN)) != 0) {
+		    if (nbytes == -1)
+			break;
+		    if (write(sock, buffer, nbytes) == EOF)
+			break;
+		    Explain1("Wrote %d bytes to server", nbytes);
+		}
+		else
+		    break;
+	    }
+	    else
+		break;		/* Must be done waiting */
+	}
+	else
+	    break;
     }
 
-    pclosesocket(r->pool,sock);
-    
-    return OK;
-}     
+    pclosesocket(r->pool, sock);
 
+    return OK;
+}
