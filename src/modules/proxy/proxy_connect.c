@@ -159,10 +159,10 @@ int ap_proxy_connect_handler(request_rec *r, cache_req *c, char *url,
 	    case DEFAULT_SNEWS_PORT:
 		break;
 	    default:
-		return HTTP_SERVICE_UNAVAILABLE;
+		return HTTP_FORBIDDEN;
 	}
     } else if(!allowed_port(conf, port))
-	return HTTP_SERVICE_UNAVAILABLE;
+	return HTTP_FORBIDDEN;
 
     if (proxyhost) {
 	Explain2("CONNECT to remote proxy %s on port %d", proxyhost, proxyport);
