@@ -5,7 +5,7 @@
   <head>
     <meta name="generator" content="HTML Tidy, see www.w3.org" />
 
-    <title>Apache 2.0 Thread Safe Issues</title>
+    <title>Apache 2.0 Thread Safety Issues</title>
   </head>
   <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
 
@@ -13,9 +13,9 @@
   vlink="#000080" alink="#FF0000">
     <!--#include virtual="header.html" -->
 
-    <h1>Thread Safetyness</h1>
+    <h1>Thread Safety</h1>
     <p>When using any of the threaded mpms in Apache 2.0 it is important
-    that every function from Apache be thread safe.  When linking in 3rd
+    that every function called from Apache be thread safe.  When linking in 3rd
     party extensions it can be difficult to determine whether the resulting
     server will be thread safe.  Casual testing generally won't tell you this
     either as thread safety problems can lead to subtle race conditons that
