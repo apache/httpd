@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
-<!--<?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>-->
-<!-- English revision: 1.2 -->
+<?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
+<!-- English revision: 1.3 -->
 <manualpage>
 <relativepath href="."/>
 
@@ -19,7 +19,7 @@
     Dieses Dokument beschreibt, wie <code>httpd</code> aufgerufen wird.</p>
 </summary>
 
-<seealso><a href="stopping.html">Apache stoppen</a></seealso>
+<seealso><a href="stopping.html">Beenden und Neustarten</a></seealso>
 <seealso><a href="programs/httpd.html">httpd</a></seealso>
 <seealso><a href="programs/apachectl.html">apachectl</a></seealso>
 

@@ -18,7 +18,7 @@
     to invoke <code>httpd</code>.</p>
 </summary>
 
-<seealso><a href="stopping.html">Stopping Apache</a></seealso>
+<seealso><a href="stopping.html">Stopping and Restarting</a></seealso>
 <seealso><a href="programs/httpd.html">httpd</a></seealso>
 <seealso><a href="programs/apachectl.html">apachectl</a></seealso>
 
