@@ -213,7 +213,7 @@ if test "$apache_need_expat" = "yes"; then
 fi
 
 dnl APR should go after the other libs, so the right symbols can be picked up
-AP_LIBS="$AP_LIBS srclib/apr/\$(LIBPRE)apr.a"
+AP_LIBS="$AP_LIBS srclib/apr/\$(LIBPRE)apr.la"
 APACHE_SUBST(AP_LIB_DIRS)
 APACHE_SUBST(AP_LIBS)
 
@@ -248,7 +248,7 @@ dnl ## or disable threads), while still allowing APR to run and generate
 dnl ## APRVARS before Apache generates it's Makefiles and the related files.
 dnl ## This allows APR to detect libraries like dl and tell Apache that it
 dnl ## needs to include or not include them.
-RUN_SUBDIR_CONFIG_NOW(srclib/apr, $apache_apr_flags)
+RUN_SUBDIR_CONFIG_NOW(srclib/apr, "$apache_apr_flags --disable-shared")
 RUN_SUBDIR_CONFIG_NOW(srclib/apr-util, "--with-apr=../apr --disable-shared")
 RUN_SUBDIR_CONFIG_NOW(srclib/pcre)
 . ./srclib/apr/APRVARS
