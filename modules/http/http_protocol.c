@@ -858,9 +858,9 @@ API_EXPORT(const char *) ap_method_name_of(int methnum)
 
 typedef struct http_filter_ctx {
     ap_bucket_brigade *b;
-    int c_len;
 } http_ctx_t;
-int http_filter(ap_filter_t *f, ap_bucket_brigade *b)
+
+apr_status_t http_filter(ap_filter_t *f, ap_bucket_brigade *b)
 {
 #define ASCII_CR '\015'
 #define ASCII_LF '\012'
@@ -871,19 +871,23 @@ int http_filter(ap_filter_t *f, ap_bucket_brigade *b)
     int state = 0;
     http_ctx_t *ctx = f->ctx;
     ap_bucket_brigade *bb;
-
+    apr_status_t rv;
 
     if (!ctx) {
         f->ctx = ctx = apr_pcalloc(f->c->pool, sizeof(*ctx));
-        ap_get_brigade(f->next, b);
+        if ((rv = ap_get_brigade(f->next, b)) != APR_SUCCESS) {
+            return rv;
+        }
     }
     else {
         if (ctx->b) {
             AP_BRIGADE_CONCAT(b, ctx->b);
-            ctx->b = NULL;
+            ctx->b = NULL; /* XXX we just leaked a brigade structure */
         }
         else {
-            ap_get_brigade(f->next, b);
+            if ((rv = ap_get_brigade(f->next, b)) != APR_SUCCESS) {
+                return rv;
+            }
         }
     }
 
@@ -902,17 +906,20 @@ int http_filter(ap_filter_t *f, ap_bucket_brigade *b)
             bb = ap_brigade_split(b, AP_BUCKET_NEXT(e));
             f->c->remaining = remain;
             ctx->b = bb;
-            return length;
+            return APR_SUCCESS;
         }
         else {
+            f->c->remaining = remain;
             ctx->b = NULL;
-            return length;
+            return APR_SUCCESS;
         }
     }
 
     AP_BRIGADE_FOREACH(e, b) {
 
-        e->read(e, (const char **)&buff, &length, 0);
+        if ((rv = e->read(e, (const char **)&buff, &length, 0)) != APR_SUCCESS) {
+            return rv;
+        }
 
         pos = buff + 1;
         while (pos < buff + length) {
@@ -936,7 +943,7 @@ int http_filter(ap_filter_t *f, ap_bucket_brigade *b)
                 e->split(e, pos - buff);
                 bb = ap_brigade_split(b, AP_BUCKET_NEXT(e));
                 ctx->b = bb;
-                return length;
+                return APR_SUCCESS;
             }
         }
     }
@@ -2464,7 +2471,6 @@ API_EXPORT(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
             }
         } while (AP_BRIGADE_EMPTY(r->connection->input_data));
 
-        len_read = len_to_read;
         rv = b->read(b, &tempbuf, &len_read, 0);
         if (len_to_read < b->length) {
             b->split(b, len_to_read);
