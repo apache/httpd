@@ -244,7 +244,8 @@
     <p>For a short impression of what possibilities you have, here
     is a typical example which compiles Apache for the installation
     tree <code>/sw/pkg/apache</code> with a particular compiler and flags
-    plus the two additional modules mod_rewrite and mod_speling for
+    plus the two additional modules <module>mod_rewrite</module> and
+    <module>mod_speling</module> for
     later loading through the DSO mechanism:</p>
 
 <example>
