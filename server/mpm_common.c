@@ -302,7 +302,7 @@ int ap_process_child_status(apr_proc_t *pid, apr_exit_why_e why, int status)
 }
 #endif /* AP_MPM_WANT_PROCESS_CHILD_STATUS */
 
-#if defined(TCP_NODELAY) && !defined(MPE) && !defined(TPF) && !defined(WIN32)
+#if defined(TCP_NODELAY) && !defined(MPE) && !defined(TPF)
 void ap_sock_disable_nagle(apr_socket_t *s)
 {
     /* The Nagle algorithm says that we should delay sending partial

@@ -1,5 +1,9 @@
 Changes with Apache 2.0.46
 
+  *) Enable ap_sock_disable_nagle for Windows. This along with the 
+     addition of APR_TCP_NODELAY_INHERITED to apr.hw will cause Nagle 
+     to be disabled for Windows. [Allan Edwards]
+
   *) Correct a mis-correlation between mpm_common.c and mpm_common.h;
      This patch reverts us to pre-2.0.46 behavior, using the 
      ap_sock_disable_nagle noop macro, because ap_sock_disable_nagle 
