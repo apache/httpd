@@ -63,7 +63,7 @@
 #include "http_main.h"
 
 #ifdef HAVE_BSTRING_H
-#include <bstring.h>		/* for IRIX, FD_SET calls bzero() */
+#include <bstring.h>            /* for IRIX, FD_SET calls bzero() */
 #endif
 
 /*  
@@ -103,15 +103,15 @@ allowed_port(proxy_server_conf *conf, int port)
     int *list = (int *) conf->allowed_connect_ports->elts;
 
     for(i = 0; i < conf->allowed_connect_ports->nelts; i++) {
-	if(port == list[i])
-	    return 1;
+        if(port == list[i])
+            return 1;
     }
     return 0;
 }
 
 
 int ap_proxy_connect_handler(request_rec *r, cache_req *c, char *url,
-			  const char *proxyhost, int proxyport)
+                          const char *proxyhost, int proxyport)
 {
     struct sockaddr_in server;
     struct in_addr destaddr;
@@ -126,7 +126,7 @@ int ap_proxy_connect_handler(request_rec *r, cache_req *c, char *url,
     void *sconf = r->server->module_config;
     proxy_server_conf *conf =
     (proxy_server_conf *) ap_get_module_config(sconf, &proxy_module);
-    struct noproxy_entry *npent = (struct noproxy_entry *) conf->noproxies->elts;
+    struct noproxy_entry *npent = (struct noproxy_entry *)conf->noproxies->elts;
 
     memset(&server, '\0', sizeof(server));
     server.sin_family = AF_INET;
@@ -136,158 +136,157 @@ int ap_proxy_connect_handler(request_rec *r, cache_req *c, char *url,
     host = url;
     p = strchr(url, ':');
     if (p == NULL)
-	port = DEFAULT_HTTPS_PORT;
+        port = DEFAULT_HTTPS_PORT;
     else {
-	port = atoi(p + 1);
-	*p = '\0';
+        port = atoi(p + 1);
+        *p = '\0';
     }
 
 /* check if ProxyBlock directive on this host */
     destaddr.s_addr = ap_inet_addr(host);
     for (i = 0; i < conf->noproxies->nelts; i++) {
-	if ((npent[i].name != NULL && strstr(host, npent[i].name) != NULL)
-	    || destaddr.s_addr == npent[i].addr.s_addr || npent[i].name[0] == '*')
-	    return ap_proxyerror(r, HTTP_FORBIDDEN,
-				 "Connect to remote machine blocked");
+        if ((npent[i].name != NULL && strstr(host, npent[i].name) != NULL)
+            || destaddr.s_addr == npent[i].addr.s_addr
+            || npent[i].name[0] == '*')
+            return ap_proxyerror(r, HTTP_FORBIDDEN,
+                                 "Connect to remote machine blocked");
     }
 
     /* Check if it is an allowed port */
     if (conf->allowed_connect_ports->nelts == 0) {
-	/* Default setting if not overridden by AllowCONNECT */
-	switch (port) {
-	    case DEFAULT_HTTPS_PORT:
-	    case DEFAULT_SNEWS_PORT:
-		break;
-	    default:
-		return HTTP_FORBIDDEN;
-	}
+        /* Default setting if not overridden by AllowCONNECT */
+        switch (port) {
+            case DEFAULT_HTTPS_PORT:
+            case DEFAULT_SNEWS_PORT:
+                break;
+            default:
+                return HTTP_FORBIDDEN;
+        }
     } else if(!allowed_port(conf, port))
-	return HTTP_FORBIDDEN;
+        return HTTP_FORBIDDEN;
 
     if (proxyhost) {
-	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "CONNECT to remote proxy %s on port %d", proxyhost, proxyport);
+        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server,
+            "CONNECT to remote proxy %s on port %d", proxyhost, proxyport);
     }
     else {
-	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "CONNECT to %s on port %d", host, port);
+        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server,
+            "CONNECT to %s on port %d", host, port);
     }
 
     server.sin_port = (proxyport ? htons(proxyport) : htons(port));
     err = ap_proxy_host2addr(proxyhost ? proxyhost : host, &server_hp);
 
     if (err != NULL)
-	return ap_proxyerror(r,
-			     proxyhost ? HTTP_BAD_GATEWAY : HTTP_INTERNAL_SERVER_ERROR,
-			     err);
+        return ap_proxyerror(r,
+           proxyhost ? HTTP_BAD_GATEWAY : HTTP_INTERNAL_SERVER_ERROR, err);
 
     sock = ap_psocket(r->pool, PF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (sock == -1) {
-	ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
-		    "proxy: error creating socket");
-	return HTTP_INTERNAL_SERVER_ERROR;
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, r, "proxy: error creating socket");
+        return HTTP_INTERNAL_SERVER_ERROR;
     }
 
 #ifdef CHECK_FD_SETSIZE
     if (sock >= FD_SETSIZE) {
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, r->server,
-	    "proxy_connect_handler: filedescriptor (%u) "
-	    "larger than FD_SETSIZE (%u) "
-	    "found, you probably need to rebuild Apache with a "
-	    "larger FD_SETSIZE", sock, FD_SETSIZE);
-	ap_pclosesocket(r->pool, sock);
-	return HTTP_INTERNAL_SERVER_ERROR;
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, NULL,
+            "proxy_connect_handler: filedescriptor (%u) "
+            "larger than FD_SETSIZE (%u) "
+            "found, you probably need to rebuild Apache with a "
+            "larger FD_SETSIZE", sock, FD_SETSIZE);
+        ap_pclosesocket(r->pool, sock);
+        return HTTP_INTERNAL_SERVER_ERROR;
     }
 #endif
 
     j = 0;
     while (server_hp.h_addr_list[j] != NULL) {
-	memcpy(&server.sin_addr, server_hp.h_addr_list[j],
-	       sizeof(struct in_addr));
-	i = ap_proxy_doconnect(sock, &server, r);
-	if (i == 0)
-	    break;
-	j++;
+        memcpy(&server.sin_addr, server_hp.h_addr_list[j],
+               sizeof(struct in_addr));
+        i = ap_proxy_doconnect(sock, &server, r);
+        if (i == 0)
+            break;
+        j++;
     }
     if (i == -1) {
-	ap_pclosesocket(r->pool, sock);
-	return ap_proxyerror(r, HTTP_INTERNAL_SERVER_ERROR, ap_pstrcat(r->pool,
-					"Could not connect to remote machine:<br>",
-					strerror(errno), NULL));
+        ap_pclosesocket(r->pool, sock);
+        return ap_proxyerror(r, HTTP_INTERNAL_SERVER_ERROR, ap_pstrcat(r->pool,
+            "Could not connect to remote machine:<br>", strerror(errno), NULL));
     }
 
     /* If we are connecting through a remote proxy, we need to pass
      * the CONNECT request on to it.
      */
     if (proxyport) {
-	/* FIXME: We should not be calling write() directly, but we currently
-	 * have no alternative.  Error checking ignored.  Also, we force
-	 * a HTTP/1.0 request to keep things simple.
-	 */
-	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "Sending the CONNECT request to the remote proxy");
-	ap_snprintf(buffer, sizeof(buffer), "CONNECT %s HTTP/1.0" CRLF,
-		    r->uri);
-#ifdef CHARSET_EBCDIC
-	/* We are writing to the pure socket,
-	 * so we must convert our string to ASCII first
-	 */
-	ebcdic2ascii(buffer, buffer, strlen(buffer));
-#endif
-	send(sock, buffer, strlen(buffer),0);
-	ap_snprintf(buffer, sizeof(buffer),
-		    "Proxy-agent: %s" CRLF CRLF, ap_get_server_version());
-#ifdef CHARSET_EBCDIC
-	ebcdic2ascii(buffer, buffer, strlen(buffer));
-#endif
-	send(sock, buffer, strlen(buffer),0);
+        /* FIXME: We should not be calling write() directly, but we currently
+         * have no alternative.  Error checking ignored.  Also, we force
+         * a HTTP/1.0 request to keep things simple.
+         */
+        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server,
+            "Sending the CONNECT request to the remote proxy");
+        ap_snprintf(buffer, sizeof(buffer), "CONNECT %s HTTP/1.0" CRLF, r->uri);
+        send(sock, buffer, strlen(buffer),0);
+        ap_snprintf(buffer, sizeof(buffer),
+            "Proxy-agent: %s" CRLF CRLF, ap_get_server_version());
+        send(sock, buffer, strlen(buffer),0);
     }
     else {
-	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "Returning 200 OK Status");
-	ap_rvputs(r, "HTTP/1.0 200 Connection established" CRLF, NULL);
-	ap_rvputs(r, "Proxy-agent: ", ap_get_server_version(), CRLF CRLF, NULL);
-	ap_bflush(r->connection->client);
+        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server,
+            "Returning 200 OK Status");
+        ap_rvputs(r, "HTTP/1.0 200 Connection established" CRLF, NULL);
+        ap_rvputs(r, "Proxy-agent: ", ap_get_server_version(), CRLF CRLF, NULL);
+        ap_bflush(r->connection->client);
     }
 
-    while (1) {			/* Infinite loop until error (one side closes the connection) */
-	FD_ZERO(&fds);
-	FD_SET(sock, &fds);
-	FD_SET(ap_bfileno(r->connection->client, B_WR), &fds);
+    while (1) { /* Infinite loop until error (one side closes the connection) */
+        FD_ZERO(&fds);
+        FD_SET(sock, &fds);
+        FD_SET(ap_bfileno(r->connection->client, B_WR), &fds);
 
-	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "Going to sleep (select)");
-	i = ap_select((ap_bfileno(r->connection->client, B_WR) > sock ?
-		       ap_bfileno(r->connection->client, B_WR) + 1 :
-		       sock + 1), &fds, NULL, NULL, NULL);
-	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "Woke from select(), i=%d", i);
+        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server,
+            "Going to sleep (select)");
+        i = ap_select((ap_bfileno(r->connection->client, B_WR) > sock ?
+            ap_bfileno(r->connection->client, B_WR) + 1 :
+            sock + 1), &fds, NULL, NULL, NULL);
+        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server,
+            "Woke from select(), i=%d", i);
 
-	if (i) {
-	    if (FD_ISSET(sock, &fds)) {
-		ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "sock was set");
-		if ((nbytes = recv(sock, buffer, HUGE_STRING_LEN,0)) != 0) {
-		    if (nbytes == -1)
-			break;
-		    if (send(ap_bfileno(r->connection->client, B_WR), buffer, nbytes,0) == EOF)
-			break;
-		    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "Wrote %d bytes to client", nbytes);
-		}
-		else
-		    break;
-	    }
-	    else if (FD_ISSET(ap_bfileno(r->connection->client, B_WR), &fds)) {
-		ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "client->fd was set");
-		if ((nbytes = recv(ap_bfileno(r->connection->client, B_WR), buffer,
-				   HUGE_STRING_LEN, 0)) != 0) {
-		    if (nbytes == -1)
-			break;
-		    if (send(sock, buffer, nbytes, 0) == EOF)
-			break;
-		    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "Wrote %d bytes to server", nbytes);
-		}
-		else
-		    break;
-	    }
-	    else
-		break;		/* Must be done waiting */
-	}
-	else
-	    break;
+        if (i) {
+            if (FD_ISSET(sock, &fds)) {
+                ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server,
+                    "sock was set");
+                if ((nbytes = recv(sock, buffer, HUGE_STRING_LEN,0)) != 0) {
+                    if (nbytes == -1)
+                        break;
+                    if (send(ap_bfileno(r->connection->client, B_WR), buffer,
+                        nbytes,0) == EOF)
+                        break;
+                    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO,
+                        r->server, "Wrote %d bytes to client", nbytes);
+                }
+                else
+                    break;
+            }
+            else if (FD_ISSET(ap_bfileno(r->connection->client, B_WR), &fds)) {
+                ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server,
+                    "client->fd was set");
+                if ((nbytes = recv(ap_bfileno(r->connection->client, B_WR),
+                    buffer, HUGE_STRING_LEN, 0)) != 0) {
+                    if (nbytes == -1)
+                        break;
+                    if (send(sock, buffer, nbytes, 0) == EOF)
+                        break;
+                    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO,
+                        r->server, "Wrote %d bytes to server", nbytes);
+                }
+                else
+                    break;
+            }
+            else
+                break;          /* Must be done waiting */
+        }
+        else
+            break;
     }
 
     ap_pclosesocket(r->pool, sock);
