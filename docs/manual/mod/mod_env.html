@@ -15,8 +15,8 @@
 <!--#include virtual="header.html" -->
 <H1 ALIGN="CENTER">Apache module mod_env</H1>
 
-<p>This module provides for
-passing environment variables to CGI/SSI scripts.</p>
+<p>This module provides for modifying the environment which
+is passed to CGI scripts and SSI pages.</p>
 
 <P><A
 HREF="module-dict.html#Status"
@@ -40,12 +40,15 @@ REL="Help"
 </P>
 
 <H2>Summary</H2>
-<!-- XXX: Should mention mod_setenvif and the effect of suexec -->
-<p>This module allows Apache's CGI and SSI environment to inherit
-environment variables from the shell which invoked the httpd process.
-CERN web-servers are able to do this, so this module is especially
-useful to web-admins who wish to migrate from CERN to Apache without
-rewriting all their scripts</p>
+
+<p>This module allows for control of the environment that will be
+provided to CGI scripts and SSI pages.  Environment variables may be
+passed from the shell which invoked the httpd process.  Alternatively,
+environment variables may be set or unset within the configuration
+process.</p>
+
+<p>For additional information, we provide a document on
+<a href="../env.html">Environment Variables in Apache</a>.</p>
 
 <H2>Directives</H2>
 <UL>
@@ -81,7 +84,8 @@ rewriting all their scripts</p>
 Apache 1.1 and later.<P>
 
 Specifies one or more environment variables to pass to CGI scripts
-from the server's own environment. Example:
+and SSI pages from the environment of the shell which invoked
+the httpd process. Example:
 <PRE>
     PassEnv LD_LIBRARY_PATH
 </PRE>
@@ -112,7 +116,7 @@ from the server's own environment. Example:
 Apache 1.1 and later.<P>
 
 Sets an environment variable, which is then passed on to CGI
-scripts. Example:
+scripts and SSI pages. Example:
 <PRE>
     SetEnv SPECIAL_PATH /foo/bin
 </PRE>
@@ -144,14 +148,11 @@ scripts. Example:
 Apache 1.1 and later.<P>
 
 Removes one or more environment variables from those passed on to
-CGI scripts. Example:
+CGI scripts and SSI pages. Example:
 <PRE>
     UnsetEnv LD_LIBRARY_PATH
 </PRE>
 
-
-
-<P>
 <!--#include virtual="footer.html" -->
 </BODY>
 </HTML>
