@@ -104,8 +104,9 @@ for HTTP Basic authentication.</dd>
 <dt><a href="mod_env.html">mod_env</a></dt><dd>CGI スクリプト及び SSI
 ページに渡される環境変数を変更する機能を提供する</dd>
 <dt><a href="mod_example.html">mod_example</a></dt><dd>Illustrates the Apache module API</dd>
-<dt><a href="mod_expires.html">mod_expires</a></dt><dd>Generation of <code>Expires</code> HTTP headers according to
-user-specified criteria</dd>
+<dt><a href="mod_expires.html">mod_expires</a></dt><dd>Generation of <code>Expires</code> and
+<code>Cache-Control</code> HTTP headers according to user-specified
+criteria</dd>
 <dt><a href="mod_ext_filter.html">mod_ext_filter</a></dt><dd>Pass the response body through an external program before
 delivery to the client</dd>
 <dt><a href="mod_file_cache.html" id="F" name="F">mod_file_cache</a></dt><dd>Caches a static list of files in memory</dd>
