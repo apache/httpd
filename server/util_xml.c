@@ -361,8 +361,7 @@ static void cdata_handler(void *userdata, const char *data, int len)
 AP_DECLARE(int) ap_xml_parse_input(request_rec * r, ap_xml_doc **pdoc)
 {
     int result;
-    ap_xml_ctx ctx =
-    {0};
+    ap_xml_ctx ctx = { 0 };
     XML_Parser parser;
 
     if ((result = ap_setup_client_block(r, REQUEST_CHUNKED_DECHUNK)) != OK)
@@ -396,8 +395,8 @@ AP_DECLARE(int) ap_xml_parse_input(request_rec * r, ap_xml_doc **pdoc)
 	char *buffer;
 	char end;
 	int rv;
-	size_t total_read = 0;
-	size_t limit_xml_body = ap_get_limit_xml_body(r);
+	apr_size_t total_read = 0;
+	apr_size_t limit_xml_body = ap_get_limit_xml_body(r);
 
 	/* allocate our working buffer */
 	buffer = apr_palloc(r->pool, AP_XML_READ_BLOCKSIZE);
@@ -512,8 +511,8 @@ AP_DECLARE(const char *) ap_xml_quote_string(apr_pool_t *p, const char *s,
                                              int quotes)
 {
     const char *scan;
-    int len = 0;
-    int extra = 0;
+    apr_size_t len = 0;
+    apr_size_t extra = 0;
     char *qstr;
     char *qscan;
     char c;
@@ -575,19 +574,19 @@ AP_DECLARE(const char *) ap_xml_quote_string(apr_pool_t *p, const char *s,
 			 (ns) < 1000000 ? 6 : (ns) < 10000000 ? 7 : \
 			 (ns) < 100000000 ? 8 : (ns) < 1000000000 ? 9 : 10)
 
-static int text_size(const ap_text *t)
+static apr_size_t text_size(const ap_text *t)
 {
-    int size = 0;
+    apr_size_t size = 0;
 
     for (; t; t = t->next)
 	size += strlen(t->text);
     return size;
 }
 
-static size_t elem_size(const ap_xml_elem *elem, int style,
-			apr_array_header_t *namespaces, int *ns_map)
+static apr_size_t elem_size(const ap_xml_elem *elem, int style,
+                            apr_array_header_t *namespaces, int *ns_map)
 {
-    size_t size;
+    apr_size_t size;
 
     if (style == AP_XML_X2T_FULL || style == AP_XML_X2T_FULL_NS_LANG) {
 	const ap_xml_attr *attr;
@@ -685,7 +684,7 @@ static size_t elem_size(const ap_xml_elem *elem, int style,
 static char *write_text(char *s, const ap_text *t)
 {
     for (; t; t = t->next) {
-	size_t len = strlen(t->text);
+	apr_size_t len = strlen(t->text);
 	memcpy(s, t->text, len);
 	s += len;
     }
@@ -696,7 +695,7 @@ static char *write_elem(char *s, const ap_xml_elem *elem, int style,
 			apr_array_header_t *namespaces, int *ns_map)
 {
     const ap_xml_elem *child;
-    size_t len;
+    apr_size_t len;
     int ns;
 
     if (style == AP_XML_X2T_FULL || style == AP_XML_X2T_FULL_NS_LANG) {
@@ -817,10 +816,11 @@ AP_DECLARE(void) ap_xml_quote_elem(apr_pool_t *p, ap_xml_elem *elem)
 /* convert an element to a text string */
 AP_DECLARE(void) ap_xml_to_text(apr_pool_t * p, const ap_xml_elem *elem,
                                 int style, apr_array_header_t *namespaces,
-                                int *ns_map, const char **pbuf, size_t *psize)
+                                int *ns_map, const char **pbuf,
+                                apr_size_t *psize)
 {
     /* get the exact size, plus a null terminator */
-    size_t size = elem_size(elem, style, namespaces, ns_map) + 1;
+    apr_size_t size = elem_size(elem, style, namespaces, ns_map) + 1;
     char *s = apr_palloc(p, size);
 
     (void) write_elem(s, elem, style, namespaces, ns_map);
