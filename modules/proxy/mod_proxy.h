@@ -224,6 +224,7 @@ struct proxy_conn_pool {
 
 /* woker status flags */
 #define PROXY_WORKER_INITIALIZED    0x0001
+#define PROXY_WORKER_IGNORE_ERRORS  0x0002
 #define PROXY_WORKER_IN_SHUTDOWN    0x0010
 #define PROXY_WORKER_DISABLED       0x0020
 #define PROXY_WORKER_IN_ERROR       0x0040
