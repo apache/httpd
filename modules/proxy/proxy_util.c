@@ -992,15 +992,16 @@ PROXY_DECLARE(int) ap_proxy_pre_http_request(conn_rec *c, request_rec *r)
 }
 
 /* converts a series of buckets into a string 
- * BillS says this function looks essentially identical to ap_rgetline() 
- * in protocol.c. Deprecate this function and use apr_rgetline() instead?
+ * XXX: BillS says this function performs essentially the same function as 
+ * ap_rgetline() in protocol.c. Deprecate this function and use ap_rgetline() 
+ * instead? I think ap_proxy_string_read() will not work properly on non ASCII
+ * (EBCDIC) machines either.
  */
 PROXY_DECLARE(apr_status_t) ap_proxy_string_read(conn_rec *c, apr_bucket_brigade *bb,
                                                  char *buff, size_t bufflen, int *eos)
 {
     apr_bucket *e;
     apr_status_t rv;
-    apr_off_t readbytes = 0;	/* line-at-a-time */
     char *pos = buff;
     char *response;
     int found = 0;
@@ -1012,14 +1013,20 @@ PROXY_DECLARE(apr_status_t) ap_proxy_string_read(conn_rec *c, apr_bucket_brigade
 
     /* loop through each brigade */
     while (!found) {
-
+        apr_off_t zero = 0;
         /* get brigade from network one line at a time */
-        if (APR_SUCCESS != (rv = ap_get_brigade(c->input_filters, bb, AP_MODE_BLOCKING, &readbytes))) {
+        if (APR_SUCCESS != (rv = ap_get_brigade(c->input_filters, bb, 
+                                                AP_MODE_BLOCKING, 
+                                                &zero /* readline */))) {
             return rv;
+        }
+        if (APR_BRIGADE_EMPTY(bb)) {
+            /* The connection aborted or timed out */
+            return APR_TIMEUP;
         }
 
         /* loop through each bucket */
-        while (!found && !APR_BRIGADE_EMPTY(bb)) {
+        while (!found) {
             e = APR_BRIGADE_FIRST(bb);
             if (APR_BUCKET_IS_EOS(e)) {
                 *eos = 1;
@@ -1028,7 +1035,11 @@ PROXY_DECLARE(apr_status_t) ap_proxy_string_read(conn_rec *c, apr_bucket_brigade
                 if (APR_SUCCESS != apr_bucket_read(e, (const char **)&response, &len, APR_BLOCK_READ)) {
                     return rv;
                 }
-                /* is string LF terminated? */
+                /* is string LF terminated? 
+                 * XXX: This check can be made more efficient by simply checking 
+                 * if the last character in the 'response' buffer is an ASCII_LF.
+                 * See ap_rgetline() for an example.
+                 */
                 if (memchr(response, APR_ASCII_LF, len)) {
                     found = 1;
                 }
