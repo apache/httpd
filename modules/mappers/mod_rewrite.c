@@ -1973,7 +1973,7 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
     char *uri;
     char *output;
     const char *vary;
-    char newuri[MAX_STRING_LEN];
+    char *newuri;
     regex_t *regexp;
     regmatch_t regmatch[MAX_NMATCH];
     backrefinfo *briRR = NULL;
@@ -2178,7 +2178,7 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
      *  that there is something to replace, so we create the
      *  substitution URL string in `newuri'.
      */
-    do_expand(r, output, newuri, sizeof(newuri), briRR, briRC);
+    newuri = do_expand(r, output, briRR, briRC);
     if (perdir == NULL) {
         rewritelog(r, 2, "rewrite %s -> %s", uri, newuri);
     }
@@ -2325,7 +2325,7 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p,
                               char *perdir, backrefinfo *briRR,
                               backrefinfo *briRC)
 {
-    char input[MAX_STRING_LEN];
+    char *input;
     apr_finfo_t sb;
     request_rec *rsub;
     regmatch_t regmatch[MAX_NMATCH];
@@ -2335,7 +2335,7 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p,
      *   Construct the string we match against
      */
 
-    do_expand(r, p->input, input, sizeof(input), briRR, briRC);
+    input = do_expand(r, p->input, briRR, briRC);
 
     /*
      *   Apply the patterns
@@ -2469,13 +2469,204 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p,
 */
 
 
-/*
-**
-**  perform all the expansions on the input string
-**  leaving the result in the supplied buffer
-**
-*/
+/* perform all the expansions on the input string
+ * putting the result into a new string
+ *
+ * for security reasons this expansion must be performed in a
+ * single pass, otherwise an attacker can arrange for the result
+ * of an earlier expansion to include expansion specifiers that
+ * are interpreted by a later expansion, producing results that
+ * were not intended by the administrator.
+ */
+static char *do_expand(request_rec *r, char *input,
+                       backrefinfo *briRR, backrefinfo *briRC)
+{
+    result_list *result, *current;
+    apr_size_t span, inputlen, outlen;
+    char *p, *c;
 
+    span = strcspn(input, "\\$%");
+    inputlen = strlen(input);
+
+    /* fast exit */
+    if (inputlen == span) {
+        return apr_pstrdup(r->pool, input);
+    }
+
+    /* well, actually something to do */
+    result = current = apr_palloc(r->pool, sizeof(result_list));
+
+    p = input + span;
+    current->next = NULL;
+    current->string = input;
+    current->len = span;
+    outlen = span;
+
+    /* loop for specials */
+    do {
+        /* prepare next entry */
+        if (current->len) {
+            current->next = apr_palloc(r->pool, sizeof(result_list));
+            current = current->next;
+            current->next = NULL;
+            current->len = 0;
+        }
+
+        /* escaped character */
+        if (*p == '\\') {
+            current->len = 1;
+            ++outlen;
+            if (!p[1]) {
+                current->string = p;
+                break;
+            }
+            else {
+                current->string = ++p;
+                ++p;
+            }
+        }
+
+        /* variable or map lookup */
+        else if (p[1] == '{') {
+            char *endp;
+
+            endp = find_closing_bracket(p+2, '{', '}');
+            if (!endp) {
+                current->len = 2;
+                current->string = p;
+                outlen += 2;
+                p += 2;
+            }
+
+            /* variable lookup */
+            else if (*p == '%') {
+                p = lookup_variable(r, apr_pstrmemdup(r->pool, p+2, endp-p-2));
+
+                span = strlen(p);
+                current->len = span;
+                current->string = p;
+                outlen += span;
+                p = endp + 1;
+            }
+
+            /* map lookup */
+            else {     /* *p == '$' */
+                char *key;
+
+                /*
+                 * To make rewrite maps useful, the lookup key and
+                 * default values must be expanded, so we make
+                 * recursive calls to do the work. For security
+                 * reasons we must never expand a string that includes
+                 * verbatim data from the network. The recursion here
+                 * isn't a problem because the result of expansion is
+                 * only passed to lookup_map() so it cannot be
+                 * re-expanded, only re-looked-up. Another way of
+                 * looking at it is that the recursion is entirely
+                 * driven by the syntax of the nested curly brackets.
+                 */
+
+                key = find_char_in_brackets(p+2, ':', '{', '}');
+                if (!key) {
+                    current->len = 2;
+                    current->string = p;
+                    outlen += 2;
+                    p += 2;
+                }
+                else {
+                    char *map, *dflt;
+
+                    map = apr_pstrmemdup(r->pool, p+2, endp-p-2);
+                    key = map + (key-p-2);
+                    *key++ = '\0';
+                    dflt = find_char_in_brackets(key, '|', '{', '}');
+                    if (dflt) {
+                        *dflt++ = '\0';
+                    }
+                    else {
+                        dflt = "";
+                    }
+
+                    /* reuse of key variable as result */
+                    key = lookup_map(r, map, do_expand(r, key, briRR, briRC));
+
+                    if (!key && *dflt) {
+                        key = do_expand(r, dflt, briRR, briRC);
+                    }
+
+                    if (key) {
+                        span = strlen(key);
+                        current->len = span;
+                        current->string = key;
+                        outlen += span;
+                    }
+
+                    p = endp + 1;
+                }
+            }
+        }
+
+        /* backreference */
+        else if (apr_isdigit(p[1])) {
+            int n = p[1] - '0';
+            backrefinfo *bri = (*p == '$') ? briRR : briRC;
+
+            /* see ap_pregsub() in server/util.c */
+            if (bri && n <= bri->nsub
+                && bri->regmatch[n].rm_eo > bri->regmatch[n].rm_so) {
+                span = bri->regmatch[n].rm_eo - bri->regmatch[n].rm_so;
+
+                current->len = span;
+                current->string = bri->source + bri->regmatch[n].rm_so;
+                outlen += span;
+            }
+
+            p += 2;
+        }
+
+        /* not for us, just copy it */
+        else {
+            current->len = 1;
+            current->string = p++;
+            ++outlen;
+        }
+
+        /* check the remainder */
+        if (*p && (span = strcspn(p, "\\$%")) > 0) {
+            if (current->len) {
+                current->next = apr_palloc(r->pool, sizeof(result_list));
+                current = current->next;
+                current->next = NULL;
+            }
+
+            current->len = span;
+            current->string = p;
+            p += span;
+            outlen += span;
+        }
+
+    } while (p < input+inputlen);
+
+    /* assemble result */
+    c = p = apr_palloc(r->pool, outlen + 1); /* don't forget the \0 */
+    do {
+        if (result->len) {
+            ap_assert(c+result->len <= p+outlen); /* XXX: can be removed after
+                                                   * extensive testing and
+                                                   * review
+                                                   */
+            memcpy(c, result->string, result->len);
+            c += result->len;
+        }
+        result = result->next;
+    } while (result);
+
+    p[outlen] = '\0';
+
+    return p;
+}
+
+#if 0
 static void do_expand(request_rec *r, char *input, char *buffer, int nbuf,
                       backrefinfo *briRR, backrefinfo *briRC)
 {
@@ -2612,7 +2803,7 @@ static void do_expand(request_rec *r, char *input, char *buffer, int nbuf,
     }
     *outp++ = '\0';
 }
-
+#endif /* 0 */
 
 /*
 **
@@ -2624,11 +2815,9 @@ static void do_expand_env(request_rec *r, char *env[],
                           backrefinfo *briRR, backrefinfo *briRC)
 {
     int i;
-    char buf[MAX_STRING_LEN];
 
     for (i = 0; env[i] != NULL; i++) {
-        do_expand(r, env[i], buf, sizeof(buf), briRR, briRC);
-        add_env_variable(r, buf);
+        add_env_variable(r, do_expand(r, env[i], briRR, briRC));
     }
 }
 
@@ -2636,11 +2825,9 @@ static void do_expand_cookie( request_rec *r, char *cookie[],
                               backrefinfo *briRR, backrefinfo *briRC)
 {
     int i;
-    char buf[MAX_STRING_LEN];
 
     for (i = 0; cookie[i] != NULL; i++) {
-        do_expand(r, cookie[i], buf, sizeof(buf), briRR, briRC);
-        add_cookie(r, buf);
+        add_cookie(r, do_expand(r, cookie[i], briRR, briRC));
     }
 }
 
@@ -4378,18 +4565,13 @@ static int parseargline(char *str, char **a1, char **a2, char **a3)
 
 static void add_env_variable(request_rec *r, char *s)
 {
-    char var[MAX_STRING_LEN];
-    char val[MAX_STRING_LEN];
-    char *cp;
-    int n;
+    char *val;
 
-    if ((cp = strchr(s, ':')) != NULL) {
-        n = ((cp-s) > MAX_STRING_LEN-1 ? MAX_STRING_LEN-1 : (cp-s));
-        memcpy(var, s, n);
-        var[n] = '\0';
-        apr_cpystrn(val, cp+1, sizeof(val));
-        apr_table_set(r->subprocess_env, var, val);
-        rewritelog(r, 5, "setting env variable '%s' to '%s'", var, val);
+    if ((val = ap_strchr(s, ':')) != NULL) {
+        *val++ = '\0';
+
+        apr_table_set(r->subprocess_env, s, val);
+        rewritelog(r, 5, "setting env variable '%s' to '%s'", s, val);
     }
 }
 
