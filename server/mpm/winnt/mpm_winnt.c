@@ -400,7 +400,7 @@ static void sock_disable_nagle(int s)
  */
 static ap_listen_rec *head_listener;
 
-static apr_inline ap_listen_rec *find_ready_listener(fd_set * main_fds)
+static APR_INLINE ap_listen_rec *find_ready_listener(fd_set * main_fds)
 {
     ap_listen_rec *lr;
     SOCKET nsd;
@@ -885,7 +885,7 @@ static int create_acceptex_context(apr_pool_t *_pconf, ap_listen_rec *lr)
 
     return 0;
 }
-static apr_inline apr_status_t reset_acceptex_context(PCOMP_CONTEXT context) 
+static APR_INLINE apr_status_t reset_acceptex_context(PCOMP_CONTEXT context) 
 {
     DWORD BytesRead;
     SOCKET nsd;

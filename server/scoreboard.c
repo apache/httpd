@@ -211,7 +211,7 @@ AP_DECLARE(int) ap_exists_scoreboard_image(void)
     return (ap_scoreboard_image ? 1 : 0);
 }
 
-static apr_inline void put_scoreboard_info(int child_num, int thread_num, 
+static APR_INLINE void put_scoreboard_info(int child_num, int thread_num, 
 				       short_score *new_score_rec)
 {
     /* XXX - needs to be fixed to account for threads */

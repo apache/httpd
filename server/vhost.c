@@ -342,13 +342,13 @@ static void dump_iphash_statistics(server_rec *main_s)
  *
  * Hash function provided by David Hankins.
  */
-static apr_inline unsigned hash_inaddr(unsigned key)
+static APR_INLINE unsigned hash_inaddr(unsigned key)
 {
     key ^= (key >> 16);
     return ((key >> 8) ^ key) % IPHASH_TABLE_SIZE;
 }
 
-static apr_inline unsigned hash_addr(struct apr_sockaddr_t *sa)
+static APR_INLINE unsigned hash_addr(struct apr_sockaddr_t *sa)
 {
     unsigned key;
 
@@ -386,7 +386,7 @@ static name_chain *new_name_chain(apr_pool_t *p, server_rec *s, server_addr_rec 
 }
 
 
-static apr_inline ipaddr_chain *find_ipaddr(apr_sockaddr_t *sa)
+static APR_INLINE ipaddr_chain *find_ipaddr(apr_sockaddr_t *sa)
 {
     unsigned bucket;
     ipaddr_chain *trav;

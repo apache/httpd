@@ -276,7 +276,7 @@ static const command_rec mva_commands[] =
  * This really wants to be a nested function
  * but C is too feeble to support them.
  */
-static apr_inline void vhost_alias_checkspace(request_rec *r, char *buf,
+static APR_INLINE void vhost_alias_checkspace(request_rec *r, char *buf,
 					     char **pdest, int size)
 {
     /* XXX: what if size > HUGE_STRING_LEN? */
