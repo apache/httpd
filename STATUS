@@ -83,10 +83,6 @@ Available Patches:
 	Status: Marc +1, Jim +1 (concept)
 	* Needs more in-depth review *
 
-    * Roy's [PATCH] Enable all WebDAV methods
-        Message-ID: <9810310150.aa15713@paris.ics.uci.edu>
-	Status: Roy +1, Lars +1
-
     * Manoj and Ken Parzygnat's PATCH to support %-expandos from Unix
       on Win32
         Message-ID: <19981027170221.A6663@raleigh.ibm.com>
@@ -115,12 +111,7 @@ Available Patches:
 
     * Manoj's [PATCH] mime.types update
         Message-ID: <19980923190915.B15359@raleigh.ibm.com>
-        Status: Roy thinks we should put a common_mime_types.txt file in
-                the documentation and remove the unused entries from conf.
-                Ralf +1 for both Manoj's patch and Roys suggestion with
-                        a slight preference for Manoj's patch because the
-                        overhead of more entries is not noticeable to me.
-                Lars +1
+        Status: Roy +1, Ralf +1, Lars +1
 
     * Patches for the DSO/mod_perl problem (see below for description):
 
@@ -137,6 +128,8 @@ In progress:
       CustomLog-like tailoring of directory listing formats
 
 Needs patch:
+
+    * Roy: Need to add updated WebDAV status codes from latest draft.
 
     * Ralf: mod_so doesn't correctly initialise modules. For instance
       the handlers of mod_perl are not initialised. 
