@@ -262,10 +262,6 @@ PATCHES TO BACKPORT FROM 2.1
         change is in my 2.0.x tree.)
       +1 for 20reqbody.txt: trawick
 
-    * mod_proxy: Respect errors reported by pre_connection hooks.
-      http://svn.apache.org/viewcvs?view=rev&rev=111304
-      +1: trawick, jerenkrantz, fielding
-
     * Allow mod_dav to do weak entity comparison functions.
       modules/dav/main/util.c: r1.45
       [ This one is under review.  Don't merge.  ]
@@ -358,13 +354,11 @@ PATCHES TO BACKPORT FROM 2.1
       jerenkrantz says: r126224 fixes brokenness with r125495 on Solaris.
       +1: thommay, jerenkrantz
       trawick: "which" isn't portable; I've suggested a work-around on dev@
-
-    * mod_proxy: Fix ProxyRemoteMatch.  PR 33170.
-      svn rev 151248
-      +1: jerenkrantz, trawick, fielding, pquerna
-
-    * Fix --with-apr=/usr and/or --with-apr-util=/usr.  PR 29740.
-      +1: jerenkrantz, trawick, fielding, pquerna
+      jorton said: NetBSD's which isn't sufficient either.
+      jerenkrantz: Since it's not in the critical path (and depends on
+                   mod_log_forensic), I think it's still worth it to backport
+                   it as-is.  For the one or two platforms that don't like 
+                   which, they can write their own version of the script.
 
 CURRENT RELEASE NOTES:
 
