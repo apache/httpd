@@ -222,7 +222,7 @@ Allow use of the authorization directives
 <A HREF="mod_auth.html#authgroupfile">AuthGroupFile</A>,
 <A HREF="#authname">AuthName</A>, <A HREF="#authtype">AuthType</A>,
 <A HREF="mod_auth.html#authuserfile">AuthUserFile</A>,
-<A HREF="#require">require</A>, etc.).
+<A HREF="#require">require</A>, <EM>etc.</EM>).
 <DT>FileInfo
 <DD>
 <!--%plaintext &lt;?INDEX {\tt FileInfo} override&gt; -->
@@ -232,7 +232,7 @@ Allow use of the directives controlling document types
 <A HREF="mod_mime.html#addtype">AddType</A>,
 <A HREF="#defaulttype">DefaultType</A>,
 <A HREF="#errordocument">ErrorDocument</A>,
-<A HREF="mod_negotiation.html#languagepriority">LanguagePriority</A>, etc.).
+<A HREF="mod_negotiation.html#languagepriority">LanguagePriority</A>, <EM>etc.</EM>).
 <DT>Indexes
 <DD>
 <!--%plaintext &lt;?INDEX {\tt Indexes} override&gt; -->
@@ -247,7 +247,7 @@ Allow use of the directives controlling directory indexing
 <A HREF="mod_autoindex.html#headername">HeaderName</A>,
 <A HREF="mod_autoindex.html#indexignore">IndexIgnore</A>,
 <A HREF="mod_autoindex.html#indexoptions">IndexOptions</A>,
-<A HREF="mod_autoindex.html#readmename">ReadmeName</A>, etc.).
+<A HREF="mod_autoindex.html#readmename">ReadmeName</A>, <EM>etc.</EM>).
 <DT>Limit
 <DD>
 <!--%plaintext &lt;?INDEX {\tt Limit} override&gt; -->
@@ -1858,7 +1858,7 @@ decreasing significance:
 </TABLE>
 
 <P>When a particular level is specified, messages from all other levels
-of higher significance will be reported as well.  E.g., when 
+of higher significance will be reported as well.  <EM>E.g.</EM>, when 
 <CODE>LogLevel info</CODE> is specified, then messages with log levels of
 <CODE>notice</CODE> and <CODE>warn</CODE> will also be posted.
 <P>
@@ -2054,7 +2054,7 @@ The NameVirtualHost directive is a required directive if you want to configure
 <A HREF="../vhosts/index.html">name-based virtual hosts</A>.<P>
 
 Although <EM>addr</EM> can be hostname it is recommended that you always use
-an IP address, e.g.
+an IP address, <EM>e.g.</EM>
 
 <BLOCKQUOTE><CODE>NameVirtualHost 111.22.33.44</CODE></BLOCKQUOTE>
 
@@ -2068,7 +2068,7 @@ reason you specify NameVirtualHost but then don't define any VirtualHosts
 for that address).<P>
 
 Optionally you can specify a port number on which the name-based
-virtual hosts should be used, e.g.
+virtual hosts should be used, <EM>e.g.</EM>
 
 <BLOCKQUOTE><CODE>NameVirtualHost 111.22.33.44:8080</CODE></BLOCKQUOTE>
 
@@ -2284,7 +2284,7 @@ address of the server.
 (See also <A HREF="#usecanonicalname">UseCanonicalName</A>.)<P>
 
 Port 80 is one of Unix's special ports. All ports numbered
-below 1024 are reserved for system use, i.e. regular (non-root) users cannot
+below 1024 are reserved for system use, <EM>i.e.</EM>, regular (non-root) users cannot
 make use of them; instead they can only use higher port numbers.
 To use port 80, you must start the server from the root account.
 After binding to the port and before accepting requests, Apache will change
@@ -2630,7 +2630,7 @@ fast pipes)
 The ServerAdmin sets the e-mail address that the server includes in any
 error messages it returns to the client.<P>
 
-It may be worth setting up a dedicated address for this, e.g.
+It may be worth setting up a dedicated address for this, <EM>e.g.</EM>
 <BLOCKQUOTE><CODE>ServerAdmin www-admin@foo.bar.com</CODE></BLOCKQUOTE>
 as users do not always mention that they are talking about the server!<P><HR>
 
@@ -2825,15 +2825,15 @@ OS-type of the server as well as information about compiled-in modules.
 <DL>
  <DT><CODE>ServerTokens Min[imal]</CODE>
  </DT>
- <DD>Server sends (e.g.): <SAMP>Server: Apache/1.3.0</SAMP>
+ <DD>Server sends (<EM>e.g.</EM>): <SAMP>Server: Apache/1.3.0</SAMP>
  </DD>
  <DT><CODE>ServerTokens OS</CODE>
  </DT>
- <DD>Server sends (e.g.): <SAMP>Server: Apache/1.3.0 (Unix)</SAMP>
+ <DD>Server sends (<EM>e.g.</EM>): <SAMP>Server: Apache/1.3.0 (Unix)</SAMP>
  </DD>
  <DT><CODE>ServerTokens Full</CODE> (or not specified)
  </DT>
- <DD>Server sends (e.g.): <SAMP>Server: Apache/1.3.0 (Unix) PHP/3.0
+ <DD>Server sends (<EM>e.g.</EM>): <SAMP>Server: Apache/1.3.0 (Unix) PHP/3.0
   MyMod/1.2</SAMP>
  </DD>
 </DL>

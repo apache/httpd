@@ -54,7 +54,7 @@
      more clearly.
 
   <P>To achieve this, Apache will define new CGI-like environment
-     variables, e.g.
+     variables, <EM>e.g.</EM>
 
   <BLOCKQUOTE><CODE>
 REDIRECT_HTTP_ACCEPT=*/*, image/gif, image/x-xbitmap, image/jpeg <BR>
@@ -145,7 +145,7 @@ script which has been redirected to.  Each new variable will have the
 prefix <CODE>REDIRECT_</CODE>.  <CODE>REDIRECT_</CODE> environment
 variables are created from the CGI environment variables which existed
 prior to the redirect, they are renamed with a <CODE>REDIRECT_</CODE>
-prefix, i.e. <CODE>HTTP_USER_AGENT</CODE> becomes
+prefix, <EM>i.e.</EM>, <CODE>HTTP_USER_AGENT</CODE> becomes
 <CODE>REDIRECT_HTTP_USER_AGENT</CODE>.  In addition to these new
 variables, Apache will define <CODE>REDIRECT_URL</CODE> and
 <CODE>REDIRECT_STATUS</CODE> to help the script trace its origin.

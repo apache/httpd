@@ -99,7 +99,7 @@
 	includes character translations, differences in
 	contiguity of the two character sets, flags which
 	indicate which part of the HTTP protocol has to be
-	converted and which part doesn't etc.
+	converted and which part doesn't <EM>etc.</EM>
     <DT><CODE><STRONG>#ifdef _OSD_POSIX</STRONG></CODE>
     <DD>Code which is needed for the BS2000 SIEMENS NIXDORF
 	mainframe platform only. This deals with include file
@@ -116,8 +116,8 @@
     mixture of protocol related strings and non-protocol related
     raw file data. HTTP protocol strings are always encoded in
     ASCII (the GET request, any Header: lines, the chunking
-    information etc.) whereas the file transfer parts (i.e., GIF
-    images, CGI output etc.) should usually be just "passed through"
+    information <EM>etc.</EM>) whereas the file transfer parts (<EM>i.e.</EM>, GIF
+    images, CGI output <EM>etc.</EM>) should usually be just "passed through"
     by the server. This separation between "protocol string" and
     "raw data" is reflected in the server code by functions like
     bgets() or rvputs() for strings, and functions like bwrite()
@@ -160,7 +160,7 @@
    </LI><BR>
 
    <LI>
-    For Text documents (MIME types text/plain, text/html etc.),
+    For Text documents (MIME types text/plain, text/html <EM>etc.</EM>),
     an implicit translation to ASCII can be used, or (if the
     users prefer to store some documents in raw ASCII form for
     faster serving, or because the files reside on a NFS-mounted
@@ -179,13 +179,13 @@
 
    <LI>
     Non-text documents are always served "binary" without conversion.
-    This seems to be the most sensible choice for, .e.g., GIF/ZIP/AU
+    This seems to be the most sensible choice for, .<EM>e.g.</EM>, GIF/ZIP/AU
     file types. This of course requires the user to copy them to the
     mainframe host using the "rcp -b" binary switch.
    </LI><BR>
 
    <LI>
-    Server parsed files are always assumed to be in native (i.e.,
+    Server parsed files are always assumed to be in native (<EM>i.e.</EM>,
     EBCDIC) format as used on the machine, and are converted after
     processing.
    </LI><BR>
@@ -220,7 +220,7 @@
   <H3 ALIGN=CENTER>Text Documents</H3>
    <P>
     The default assumption of the server is that Text Files
-    (i.e., all files whose <SAMP>Content-Type:</SAMP> starts with
+    (<EM>i.e.</EM>, all files whose <SAMP>Content-Type:</SAMP> starts with
     <SAMP>text/</SAMP>) are stored in the native character
     set of the host, EBCDIC.
    </P>

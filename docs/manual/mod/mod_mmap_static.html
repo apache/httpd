@@ -108,7 +108,7 @@
   Be careful with the <EM>filename</EM> arguments: They have to literally
   match the filesystem path Apache's URL-to-filename translation handlers
   create. We cannot compare inodes or other stuff to match paths through
-  symbolic links etc. because that again would cost extra <CODE>stat()</CODE>
+  symbolic links <EM>etc.</EM> because that again would cost extra <CODE>stat()</CODE>
   system calls which is not acceptable.  This module may or may not work
   with filenames rewritten by <CODE>mod_alias</CODE> or
   <CODE>mod_rewrite</CODE>... it is an experiment after all.
