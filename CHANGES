@@ -1,5 +1,7 @@
 Changes with Apache 2.0.53
 
+  *) Add charset to example CGI scripts.  [Roy Fielding]
+
   *) mod_ssl: fail quickly if SSL connection is aborted rather than
      making many doomed ap_pass_brigade calls.  PR 32699.  [Joe Orton]
 
