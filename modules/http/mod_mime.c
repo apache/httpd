@@ -875,7 +875,11 @@ static int find_ct(request_rec *r)
                     r->content_encoding = exinfo->encoding_type;
                 }
                 else {
-                    /* XXX should eliminate duplicate entities */
+                    /* XXX should eliminate duplicate entities
+                     *
+                     * ah no. Order is important and double encoding is neither
+                     * forbidden nor impossible. -- nd
+                     */
                     r->content_encoding = apr_pstrcat(r->pool,
                                                       r->content_encoding,
                                                       ", ",
