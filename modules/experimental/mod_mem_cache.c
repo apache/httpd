@@ -484,7 +484,8 @@ static int create_entity(cache_handle_t *h, request_rec *r,
         return DECLINED;
     }
     memcpy(obj->key, key, key_len);
-    obj->info.len = len;
+    /* Safe cast: We tested < sconf->max_cache_object_size above */
+    obj->info.len = (apr_size_t)len;
 
 
     /* Allocate and init mem_cache_object_t */
@@ -504,7 +505,8 @@ static int create_entity(cache_handle_t *h, request_rec *r,
     obj->complete = 0;
     obj->cleanup = 0;
     obj->vobj = mobj;
-    mobj->m_len = len;
+    /* Safe cast: We tested < sconf->max_cache_object_size above */
+    mobj->m_len = (apr_size_t)len;
     mobj->type = type_e;
 
     /* Place the cache_object_t into the hash table.
@@ -527,7 +529,8 @@ static int create_entity(cache_handle_t *h, request_rec *r,
     if (!tmp_obj) {
         cache_insert(sconf->cache_cache, obj);     
         sconf->object_cnt++;
-        sconf->cache_size += len;
+        /* Safe cast: Must fit in cache_size or alloc would have failed */
+        sconf->cache_size += (apr_size_t)len;
     }
     if (sconf->lock) {
         apr_thread_mutex_unlock(sconf->lock);
