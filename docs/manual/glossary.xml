@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
-<!-- $Revision: 1.12 $ -->
+<!-- $Revision: 1.13 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -210,7 +210,7 @@ version 1.1 of the protocol, referred to as HTTP/1.1 and defined by <a
 href="http://ietf.org/rfc/rfc2616.txt">RFC 2616</a>.</dd>
 
 <dt><a name="https">HTTPS</a></dt>
-<dd>The HyperText Transport Protocol (Secure), the standard encrypted
+<dd>The HyperText Transfer Protocol (Secure), the standard encrypted
     communication mechanism on the World Wide Web. This is actually just HTTP
     over <a name="ssl">SSL</a>.<br />
 See: <a href="ssl/">SSL/TLS Encryption</a></dd>
