@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/03/05 21:23:29 $]
+Last modified at [$Date: 2002/03/08 14:32:55 $]
 
 Release:
 
@@ -173,15 +173,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       descriptors between vhost child groups. An API was proposed
       on dev@apr:
         Message-ID: <20020111115006.K1529@clove.org>
-
-    * Recent changes to ap_rgetline may have broken EBCDIC boxes.
-        Message-ID: <20020122072605.GF28051@ebuilt.com>
-        Justin says: "I don't have an EBCDIC box to test on.  A potential
-                      solution is to split out ap_rgetline into two
-                      functions as described in this message."
-        gregames says: I see the breakage now, and volunteer to fix it
-                       when things calm down a little.  It looks OK when 
-                       there are complete lines and no mime continuations.
 
     * CGI single-byte reads
       BrianP suggests that this is caused by the ap_scan_script_header_err()
