@@ -70,7 +70,7 @@
     다음과 같이 <code>-f</code> 명령행 옵션으로 지정할 수도 있다.</p>
 
 <div class="example"><p><code>/usr/local/apache2/bin/apachectl -f
-      /usr/local/apache/conf/httpd.conf</code></p></div>
+      /usr/local/apache2/conf/httpd.conf</code></p></div>
 
     <p>시작하는 과정에서 문제가 없다면, 서버는 터미널에서
     떨어지고 명령 프롬프트가 거의 즉시 나오게된다. 이는 서버가
