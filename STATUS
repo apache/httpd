@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/11/02 22:12:27 $]
+Last modified at [$Date: 2003/11/03 21:59:58 $]
 
 Release:
 
@@ -307,6 +307,11 @@ PATCHES TO BACKPORT FROM 2.1
 
     * mod_include: Don't allow ETag to be sent in 304. PR 19355.
         modules/filters/mod_include.c: r1.290
+      +1: nd
+
+    * mod_autoindex: Restore the ability to add a description for
+      directories that don't contain an index file.
+        modules/generators/mod_autoindex.c: r1.125
       +1: nd
 
 CURRENT RELEASE NOTES:
