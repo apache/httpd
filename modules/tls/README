@@ -1,16 +1,17 @@
 This currently won't work with Apache unaided. The manual things I
 have to do to make it work are:
 
-edit .../httpd-2.0/config_vars.mk:
+To configure this module you must use:
 
-Add "-L<where OpenSSL is> -lssl -lcrypto" to EXTRA_LIBS.
+--enable-tls
+--with-ssl=/path/to/ssl/library
 
-Change "modules/tls/mod_tls.la" to "modules/tls/libapachemod_tls.la" in
-BUILTIN_LIBS.
+For example:
 
-edit .../httpd-2.0/modules/tls/Makefile.in:
+--enable-tls
+--with-ssl=/home/rbb/openssl-0.9.6
 
-Diddle with the openssl_state_machine.lo target to match your setup.
+NOTE:  You must be using OpenSSL 0.9.6 or later in order for this to work.
 
 Then all you need is "TLSFilter on" and "TLSCertificateFile <file>" in
 your config, and you are away (note that the cert file must also
