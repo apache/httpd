@@ -1,9 +1,13 @@
-<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!-- 
-          XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-                This file is generated from xml source: DO NOT EDIT
-          XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-        --><title>mod_rewrite- Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_rewrite</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">Description:</span></td><td>Provides a rule-based rewriting engine to rewrite requested
-URLs on the fly</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:</a></td><td>rewrite_module</td></tr><tr><td align="left" valign="top"><a href="module-dict.html#Compatibility" class="help">Compatibility:</a></td><td><compatibility>Available in Apache 1.3 and later</compatibility></td></tr></table></td></tr></table><h2>Summary</h2>
+<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      --><title>mod_rewrite - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_rewrite</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">Description:
+                      </span></td><td>Provides a rule-based rewriting engine to rewrite requested
+URLs on the fly</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">Status:
+                      </a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:
+                        </a></td><td>rewrite_module</td></tr><tr><td align="left" valign="top"><a href="module-dict.html#Compatibility" class="help">Compatibility:
+                        </a></td><td><compatibility>Available in Apache 1.3 and later</compatibility></td></tr></table></td></tr></table><h2>Summary</h2>
       <blockquote>
             <em>``The great thing about mod_rewrite is it gives you
             all the configurability and flexibility of Sendmail.
@@ -160,10 +164,10 @@ URLs on the fly</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Statu
       directives). For historical reasons the conditions are given
       first, and so the control flow is a little bit long-winded. See
       Figure 1 for more details.</p>
-<h3/>
+<blockquote>
       <img src="../images/mod_rewrite_fig1.gif" border="1" width="428" height="385" alt="[Needs graphics capability to display]">
       <p><strong>Figure 1:</strong>The control flow through the rewriting ruleset</p>
-
+</blockquote>
       <p>As you can see, first the URL is matched against the
       <em>Pattern</em> of each rule. When it fails mod_rewrite
       immediately stops processing this rule and continues with the
@@ -210,10 +214,10 @@ URLs on the fly</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Statu
       Figure 2 shows to which locations the back-references are
       transfered for expansion.</p>
 
-<h3/>
+<blockquote>
       <img src="../images/mod_rewrite_fig2.gif" border="1" width="381" height="179" alt="[Needs graphics capability to display]">
       <p><strong>Figure 2:</strong> The back-reference flow through a rule.</p>
-
+</blockquote>
       <p>We know this was a crash course on mod_rewrite's internal
       processing. But you will benefit from this knowledge when
       reading the following documentation of the available
@@ -254,7 +258,14 @@ SCRIPT_URI=http://en1.engelschall.com/u/rse/
       practical solutions for URL-based problems. There you can
       find real-life rulesets and additional information about
       mod_rewrite.</p>
-<hr/><h2><a name="RewriteBase">RewriteBase</a> <a name="rewritebase">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>Sets the base URL for per-directory rewrites</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>RewriteBase <em>URL-path</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>See usage for information.</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>directory, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">Override:</a></td><td>FileInfo</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_rewrite</td></tr></table></td></tr></table>
+<hr/><h2><a name="RewriteBase">RewriteBase</a> <a name="rewritebase">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+                  </strong></td><td>Sets the base URL for per-directory rewrites</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
+                  </a></td><td>RewriteBase <em>URL-path</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
+                    </a></td><td><code>See usage for information.</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
+                  </a></td><td>directory, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">Override:
+                    </a></td><td>FileInfo</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
+                  </a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
+                  </a></td><td>mod_rewrite</td></tr></table></td></tr></table>
       <p>The <code class="directive">RewriteBase</code> directive explicitly
       sets the base URL for per-directory rewrites. As you will see
       below, <a href="#rewriterule" class="directive"><code class="directive">RewriteRule</code></a>
@@ -335,9 +346,16 @@ Result:
               implementation is correct.</p>
 </td></tr></table></blockquote>
 
-<hr/><h2><a name="RewriteCond">RewriteCond</a> <a name="rewritecond">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>Defines a condition under which rewriting will take place
-</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td> RewriteCond
-      <em>TestString</em> <em>CondPattern</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>None</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">Override:</a></td><td>FileInfo</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_rewrite</td></tr></table></td></tr></table>
+<hr/><h2><a name="RewriteCond">RewriteCond</a> <a name="rewritecond">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+                  </strong></td><td>Defines a condition under which rewriting will take place
+</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
+                  </a></td><td> RewriteCond
+      <em>TestString</em> <em>CondPattern</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
+                    </a></td><td><code>None</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
+                  </a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">Override:
+                    </a></td><td>FileInfo</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
+                  </a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
+                  </a></td><td>mod_rewrite</td></tr></table></td></tr></table>
       <p>The <code class="directive">RewriteCond</code> directive defines a
       rule condition. Precede a <a href="#rewriterule" class="directive"><code class="directive">RewriteRule</code></a> directive with one
       or more <code class="directive">RewriteCond</code> directives. The following
@@ -730,7 +748,14 @@ RewriteRule  ^/$                 /homepage.std.html  [L]
         tables, <em>etc.</em> If you use any other browser you get
         the standard homepage.</p>
 
-<hr/><h2><a name="RewriteEngine">RewriteEngine</a> <a name="rewriteengine">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>Enables or disables runtime rewriting engine</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>RewriteEngine on|off</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>RewriteEngine off</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">Override:</a></td><td>FileInfo</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_rewrite</td></tr></table></td></tr></table>       
+<hr/><h2><a name="RewriteEngine">RewriteEngine</a> <a name="rewriteengine">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+                  </strong></td><td>Enables or disables runtime rewriting engine</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
+                  </a></td><td>RewriteEngine on|off</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
+                    </a></td><td><code>RewriteEngine off</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
+                  </a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">Override:
+                    </a></td><td>FileInfo</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
+                  </a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
+                  </a></td><td>mod_rewrite</td></tr></table></td></tr></table>       
 
       <p>The <code class="directive">RewriteEngine</code> directive enables or
       disables the runtime rewriting engine. If it is set to
@@ -745,16 +770,27 @@ RewriteRule  ^/$                 /homepage.std.html  [L]
       inherited. This means that you need to have a
       <code>RewriteEngine on</code> directive for each virtual host
       in which you wish to use it.</p>
-<hr/><h2><a name="RewriteLock">RewriteLock</a> <a name="rewritelock">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>Sets the name of the lock file used for RewriteMap
-synchronization</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>RewriteLock <em>file-path</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>None</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_rewrite</td></tr></table></td></tr></table>
+<hr/><h2><a name="RewriteLock">RewriteLock</a> <a name="rewritelock">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+                  </strong></td><td>Sets the name of the lock file used for RewriteMap
+synchronization</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
+                  </a></td><td>RewriteLock <em>file-path</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
+                    </a></td><td><code>None</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
+                  </a></td><td>server config</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
+                  </a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
+                  </a></td><td>mod_rewrite</td></tr></table></td></tr></table>
       <p>This directive sets the filename for a synchronization
       lockfile which mod_rewrite needs to communicate with <a href="#rewritemap" class="directive"><code class="directive">RewriteMap</code></a>
       <em>programs</em>. Set this lockfile to a local path (not on a
       NFS-mounted device) when you want to use a rewriting
       map-program. It is not required for other types of rewriting
       maps.</p>
-<hr/><h2><a name="RewriteLog">RewriteLog</a> <a name="rewritelog">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>Sets the name of the file used for logging rewrite engine
-processing</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>RewriteLog <em>file-path</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_rewrite</td></tr></table></td></tr></table>
+<hr/><h2><a name="RewriteLog">RewriteLog</a> <a name="rewritelog">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+                  </strong></td><td>Sets the name of the file used for logging rewrite engine
+processing</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
+                  </a></td><td>RewriteLog <em>file-path</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
+                  </a></td><td>server config, virtual host</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
+                  </a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
+                  </a></td><td>mod_rewrite</td></tr></table></td></tr></table>
       <p>The <code class="directive">RewriteLog</code> directive sets the name
       of the file to which the server logs any rewriting actions it
       performs. If the name does not begin with a slash
@@ -785,8 +821,14 @@ the user that starts the server.
 RewriteLog "/usr/local/var/apache/logs/rewrite.log"
 </code></td></tr></table></blockquote>
 
-<hr/><h2><a name="RewriteLogLevel">RewriteLogLevel</a> <a name="rewriteloglevel">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>Sets the verbosity of the log file used by the rewrite
-engine</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>RewriteLogLevel <em>Level</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>RerwiteLogLevel 0</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_rewrite</td></tr></table></td></tr></table>
+<hr/><h2><a name="RewriteLogLevel">RewriteLogLevel</a> <a name="rewriteloglevel">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+                  </strong></td><td>Sets the verbosity of the log file used by the rewrite
+engine</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
+                  </a></td><td>RewriteLogLevel <em>Level</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
+                    </a></td><td><code>RerwiteLogLevel 0</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
+                  </a></td><td>server config, virtual host</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
+                  </a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
+                  </a></td><td>mod_rewrite</td></tr></table></td></tr></table>
       <p>The <code class="directive">RewriteLogLevel</code> directive sets the
       verbosity level of the rewriting logfile. The default level 0
       means no logging, while 9 or more means that practically all
@@ -806,8 +848,14 @@ engine</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" cla
 RewriteLogLevel 3
 </code></td></tr></table></blockquote>
 
-<hr/><h2><a name="RewriteMap">RewriteMap</a> <a name="rewritemap">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>Defines a mapping function for key-lookup</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>RewriteMap <em>MapName</em> <em>MapType</em>:<em>MapSource</em>
-</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>None</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_rewrite</td></tr></table></td></tr></table>
+<hr/><h2><a name="RewriteMap">RewriteMap</a> <a name="rewritemap">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+                  </strong></td><td>Defines a mapping function for key-lookup</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
+                  </a></td><td>RewriteMap <em>MapName</em> <em>MapType</em>:<em>MapSource</em>
+</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
+                    </a></td><td><code>None</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
+                  </a></td><td>server config, virtual host</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
+                  </a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
+                  </a></td><td>mod_rewrite</td></tr></table></td></tr></table>
       <p>The <code class="directive">RewriteMap</code> directive defines a
       <em>Rewriting Map</em> which can be used inside rule
       substitution strings by the mapping-functions to
@@ -1039,7 +1087,13 @@ request.  This is no problem, because the external lookup only happens
 once!
 </td></tr></table></blockquote>
 
-<hr/><h2><a name="RewriteOptions">RewriteOptions</a> <a name="rewriteoptions">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>Sets some special options for the rewrite engine</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>RewriteOptions <em>Options</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>None</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_rewrite</td></tr></table></td></tr></table>
+<hr/><h2><a name="RewriteOptions">RewriteOptions</a> <a name="rewriteoptions">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+                  </strong></td><td>Sets some special options for the rewrite engine</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
+                  </a></td><td>RewriteOptions <em>Options</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
+                    </a></td><td><code>None</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
+                  </a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
+                  </a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
+                  </a></td><td>mod_rewrite</td></tr></table></td></tr></table>
 
       <p>The <code class="directive">RewriteOptions</code> directive sets some
       special options for the current per-server or per-directory
@@ -1055,8 +1109,15 @@ once!
         that conditions and rules of the parent directory's
         <code>.htaccess</code> configuration are inherited.</li>
       </ul>
-<hr/><h2><a name="RewriteRule">RewriteRule</a> <a name="rewriterule">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>Defines rules for the rewriting engine</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>RewriteRule
-      <em>Pattern</em> <em>Substitution</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>None</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">Override:</a></td><td>FileInfo</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_rewrite</td></tr></table></td></tr></table>
+<hr/><h2><a name="RewriteRule">RewriteRule</a> <a name="rewriterule">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+                  </strong></td><td>Defines rules for the rewriting engine</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
+                  </a></td><td>RewriteRule
+      <em>Pattern</em> <em>Substitution</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
+                    </a></td><td><code>None</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
+                  </a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">Override:
+                    </a></td><td>FileInfo</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
+                  </a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
+                  </a></td><td>mod_rewrite</td></tr></table></td></tr></table>
       <p>The <code class="directive">RewriteRule</code> directive is the real
       rewriting workhorse. The directive can occur more than once.
       Each directive then defines one single rewriting rule. The
