@@ -379,7 +379,7 @@ if ($opt_c) {
         $lo =~ s|\.c$|.lo|;
         my $la = $s;
         $la =~ s|\.c$|.la|;
-        push(@cmds, "libtool --silent --mode=compile $CFG_CC $cflags -I$CFG_INCLUDEDIR -I$CFG_INCLUDEDIR/apr $opt -c $s && touch $slo");
+        push(@cmds, "libtool --silent --mode=compile $CFG_CC $cflags -I$CFG_INCLUDEDIR $opt -c $s && touch $slo");
         push(@cmds, "libtool --silent --mode=link $CFG_CC $cflags -o $la -rpath $CFG_LIBEXECDIR -module -avoid-version $lo");
 
     }
