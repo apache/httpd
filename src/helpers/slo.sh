@@ -22,7 +22,7 @@ OIFS="$IFS" IFS="$DIFS"
 for opt
 do
     #   concatenate with previous option if exists
-    if [ "$optprev" != "" ]; then
+    if [ "x$optprev" != "x" ]; then
         opt="${optprev}${opt}";
         optprev=''
     fi

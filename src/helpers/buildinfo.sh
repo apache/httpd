@@ -19,7 +19,7 @@ fi
 if [ $# -eq 2 -a "x$1" != "x-n" ]; then
     error=yes
 fi
-if [ "$error" = "yes" ]; then
+if [ "x$error" = "xyes" ]; then
     echo "$0:Error: invalid argument line"
     echo "$0:Usage: $0 [-n] <format-string>"
     echo "Where <format-string> can contain:"

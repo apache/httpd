@@ -274,7 +274,7 @@ fi
 
 # Apache is not compiled on the TPF platform
 # therefore an environment variable is used
-if [ "$TPF" = "YES" ]; then
+if [ "x$TPF" = "xYES" ]; then
     echo "TPF"
     exit 0	
 fi

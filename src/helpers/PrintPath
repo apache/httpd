@@ -91,7 +91,7 @@ do
     do
 	if [ $test_exec_flag $path/${program}${ext} ] && \
 	   [ ! -d $path/${program}${ext} ]; then
-	    if [ "$echo" = "yes" ]; then
+	    if [ "x$echo" = "xyes" ]; then
 		echo $path/${program}${ext}
 	    fi
 	    exit 0

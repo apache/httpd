@@ -228,7 +228,7 @@ RULE_SHARED_CHAIN=`./helpers/CutRule SHARED_CHAIN $file`
 ####################################################################
 ## Rule SHARED_CORE implies required DSO support
 ##
-if [ "$RULE_SHARED_CORE" = "yes" ]; then
+if [ "x$RULE_SHARED_CORE" = "xyes" ]; then
 	using_shlib=1
 fi
 
@@ -371,7 +371,7 @@ case "$PLAT" in
 	echo "but if you would care to port to 64-bit, send us the patches."
 	DEF_WANTHSREGEX=yes
 	DBM_LIB=""
-	if [ "$RULE_IRIXNIS" = "yes" ]; then
+	if [ "x$RULE_IRIXNIS" = "xyes" ]; then
 	    OS='SGI IRIX-64 w/NIS'
 	    CFLAGS="$CFLAGS -DIRIX"
 	    LIBS="$LIBS -lsun"
@@ -383,14 +383,14 @@ case "$PLAT" in
     *-sgi-irix32)
 	DEF_WANTHSREGEX=yes
 	DBM_LIB=""
-	if [ "$RULE_IRIXN32" = "yes" ]; then
-	    if [ "$RULE_IRIXNIS" = "yes" ]; then
+	if [ "x$RULE_IRIXN32" = "xyes" ]; then
+	    if [ "x$RULE_IRIXNIS" = "xyes" ]; then
 		OS='SGI IRIX-32 w/NIS'
 	    else
 		OS='SGI IRIX-32'
 	    fi
 	else
-	    if [ "$RULE_IRIXNIS" = "yes" ]; then
+	    if [ "x$RULE_IRIXNIS" = "xyes" ]; then
 		OS='SGI IRIX w/NIS'
 	    else
 		OS='SGI IRIX'
@@ -402,7 +402,7 @@ case "$PLAT" in
     *-sgi-irix)
 	DEF_WANTHSREGEX=yes
 	DBM_LIB=""
-	if [ "$RULE_IRIXNIS" = "yes" ]; then
+	if [ "x$RULE_IRIXNIS" = "xyes" ]; then
 	    OS='SGI IRIX w/NIS'
 	    CFLAGS="$CFLAGS -DIRIX"
 	    LIBS="$LIBS -lsun"
@@ -779,7 +779,7 @@ echo >>Makefile.config "SHELL=$SHELL"
 ####################################################################
 ## And adjust/override WANTHSREGEX as needed
 ##
-if [ "$RULE_WANTHSREGEX" = "default" ]; then
+if [ "x$RULE_WANTHSREGEX" = "xdefault" ]; then
 	if [ "x$DEF_WANTHSREGEX" = "x" ]; then
 		RULE_WANTHSREGEX=yes
 	else
@@ -1022,7 +1022,7 @@ if [ "x$using_shlib" = "x1" ] ; then
 		    N32FLAG="-n32"
 		    ;;
 	    esac
-	    if [ "$RULE_IRIXN32" = "yes" ]; then
+	    if [ "x$RULE_IRIXN32" = "xyes" ]; then
 		LDFLAGS_SHLIB="$N32FLAG -shared"
 	    else
 		LDFLAGS_SHLIB="-shared"
@@ -1040,7 +1040,7 @@ if [ "x$using_shlib" = "x1" ] ; then
 		    N32FLAG="-n32"
 		    ;;
 	    esac
-	    if [ "$RULE_IRIXN32" = "yes" ]; then
+	    if [ "x$RULE_IRIXN32" = "xyes" ]; then
 		LDFLAGS_SHLIB="$N32FLAG -shared"
 	    else
 		LDFLAGS_SHLIB="-shared"
@@ -1254,7 +1254,7 @@ case "$OS" in
 	esac
 	;;
     *IRIX-64*)
-	if [ "$RULE_IRIXN32" = "yes" ]; then
+	if [ "x$RULE_IRIXN32" = "xyes" ]; then
 	    case "$CC" in
 		*/cc|cc )
 		    CFLAGS="$CFLAGS -n32"
@@ -1264,7 +1264,7 @@ case "$OS" in
 	fi
 	;;
     *IRIX-32*)
-	if [ "$RULE_IRIXN32" = "yes" ]; then
+	if [ "x$RULE_IRIXN32" = "xyes" ]; then
 	    case "$CC" in
 		*/cc|cc )
 		    CFLAGS="$CFLAGS -n32"
@@ -1333,7 +1333,7 @@ esac
 # We assume that if they are using SOCKS4, then they've
 # adjusted EXTRA_LIBS and/or EXTRA_LDFLAGS as required,
 # otherwise we assume "-L/usr/local/lib -lsocks"
-if [ "$RULE_SOCKS4" = "yes" ]; then
+if [ "x$RULE_SOCKS4" = "xyes" ]; then
     echo " + enabling SOCKS4 support"
     CFLAGS="$CFLAGS -DSOCKS -DSOCKS4"
     CFLAGS="$CFLAGS -Dconnect=Rconnect -Dselect=Rselect"
@@ -1352,7 +1352,7 @@ fi
 # We assume that if they are using SOCKS5, then they've
 # adjusted EXTRA_LIBS and/or EXTRA_LDFLAGS as required,
 # otherwise we assume "-L/usr/local/lib -lsocks5"
-if [ "$RULE_SOCKS5" = "yes" ]; then
+if [ "x$RULE_SOCKS5" = "xyes" ]; then
     echo " + enabling SOCKS5 support"
     CFLAGS="$CFLAGS -DSOCKS -DSOCKS5"
     CFLAGS="$CFLAGS -Dconnect=SOCKSconnect -Dselect=SOCKSselect"
@@ -1495,13 +1495,13 @@ for modfile in $MODFILES ; do
 		    sed '1,/ConfigStart/d;/ConfigEnd/,$d' $tmpfile2 > \
 		     $tmpfile3
 		    echo "    o $modname uses ConfigStart/End"
-		    if [ "$RULE_PARANOID" = "yes" ]; then
+		    if [ "x$RULE_PARANOID" = "xyes" ]; then
 			sed 's/^/>> /' $tmpfile3
 		    fi
 		    . ./$tmpfile3
 		fi
 		rm -f $tmpfile2 $tmpfile3
-		if [ "$ext" != "so" ]; then
+		if [ "x$ext" != "xso" ]; then
 		    ext=o
 		fi
 	fi
@@ -1509,11 +1509,11 @@ for modfile in $MODFILES ; do
 		modname=`echo $modbase | sed 's/^.*\///' | \
 			sed 's/^mod_//' | sed 's/^lib//' | sed 's/$/_module/'`
 	fi
-	if [ "$ext" != "so" ]; then
+	if [ "x$ext" != "xso" ]; then
 		echo "Module $modname $modbase.$ext" >>$tmpfile
 	fi
 	#   optionally generate export file for some linkers 
-	if [ "$ext" = "so" -a "$SHLIB_EXPORT_FILES" = "yes" ]; then
+	if [ "x$ext" = "xso" -a "x$SHLIB_EXPORT_FILES" = "xyes" ]; then
 		echo "$modname" >$modbase.exp
 	fi
 done
@@ -1523,7 +1523,7 @@ done
 ## Now HS's POSIX regex implementation if needed/wanted. We do it
 ## now since AddModule may have changed it
 ##
-if [ "$RULE_WANTHSREGEX" = "yes" ]; then
+if [ "x$RULE_WANTHSREGEX" = "xyes" ]; then
     REGLIB="regex/libregex.a"
     SUBDIRS="regex $SUBDIRS"
     CFLAGS="$CFLAGS -DUSE_HSREGEX"
@@ -1534,10 +1534,10 @@ fi
 ##
 LIBS_SHLIB=''
 if [ "x$using_shlib" = "x1" ] ; then
-    if [ "$RULE_SHARED_CHAIN" = "default" ] ; then
+    if [ "x$RULE_SHARED_CHAIN" = "xdefault" ] ; then
 	RULE_SHARED_CHAIN=$DEF_SHARED_CHAIN
     fi
-    if [ "$RULE_SHARED_CHAIN" = "yes" ]; then
+    if [ "x$RULE_SHARED_CHAIN" = "xyes" ]; then
 	echo " + enabling DSO files to be linked against others"
 	#   determine libraries which can be safely linked
 	#   to our DSO files, i.e. PIC libraries and shared libraries
@@ -1552,10 +1552,10 @@ fi
 ## Now the SHARED_CORE stuff
 ##
 if [ "x$using_shlib" = "x1" ] ; then
-    if [ "$RULE_SHARED_CORE" = "default" ] ; then
+    if [ "x$RULE_SHARED_CORE" = "xdefault" ] ; then
 	RULE_SHARED_CORE=$DEF_SHARED_CORE
     fi
-    if [ "$RULE_SHARED_CORE" = "yes" ]; then
+    if [ "x$RULE_SHARED_CORE" = "xyes" ]; then
 	echo " + enabling generation of Apache core as DSO"
 	#    shuffle compiler flags from shlib variant to standard
 	CFLAGS="$CFLAGS $CFLAGS_SHLIB"
@@ -1566,19 +1566,19 @@ if [ "x$using_shlib" = "x1" ] ; then
 	SUBTARGET=target_shared
 	#    determine additional suffixes for libhttpd.so
 	V=1 R=3 P=5
-	if [ "$SHLIB_SUFFIX_DEPTH" = "0" ]; then
+	if [ "x$SHLIB_SUFFIX_DEPTH" = "x0" ]; then
 	    SHLIB_SUFFIX_LIST=""
 	fi
-	if [ "$SHLIB_SUFFIX_DEPTH" = "1" ]; then
+	if [ "x$SHLIB_SUFFIX_DEPTH" = "x1" ]; then
 	    SHLIB_SUFFIX_LIST="$V"
 	fi
-	if [ "$SHLIB_SUFFIX_DEPTH" = "2" ]; then
+	if [ "x$SHLIB_SUFFIX_DEPTH" = "x2" ]; then
 	    SHLIB_SUFFIX_LIST="$V.$R"
 	fi
-	if [ "$SHLIB_SUFFIX_DEPTH" = "3" ]; then
+	if [ "x$SHLIB_SUFFIX_DEPTH" = "x3" ]; then
 	    SHLIB_SUFFIX_LIST="$V.$R.$P"
 	fi
-	if [ "$SHLIB_SUFFIX_DEPTH" = "all" ]; then
+	if [ "x$SHLIB_SUFFIX_DEPTH" = "xall" ]; then
 	    SHLIB_SUFFIX_LIST="$V $V.$R $V.$R.$P"
 	fi
     fi
@@ -1857,7 +1857,7 @@ echo "" >> Makefile.config
 ## check
 ##
 
-if [ "$OS" = "TPF" ] ; then
+if [ "x$OS" = "xTPF" ] ; then
     :
 else
    echo " + doing sanity check on compiler and options"

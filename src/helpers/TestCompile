@@ -62,7 +62,7 @@ case "$1" in
 	    exit
 	fi
 	TLIB="-l$2"
-	if [ "$VERBOSE" = "yes" ]; then
+	if [ "x$VERBOSE" = "xyes" ]; then
 	    ERRDIR=""
 	else
 	    ERRDIR='2>/dev/null'
@@ -76,7 +76,7 @@ case "$1" in
 	;;
     "sanity")
 	TLIB=""
-	if [ "$VERBOSE" = "no" ]; then
+	if [ "x$VERBOSE" = "xno" ]; then
 	    ERRDIR='2>/dev/null'
 	else
 	    ERRDIR=""
@@ -88,7 +88,7 @@ case "$1" in
 	    exit
 	fi
 	TLIB=""
-	if [ "$VERBOSE" = "yes" ]; then
+	if [ "x$VERBOSE" = "xyes" ]; then
 	    ERRDIR=""
 	else
 	    ERRDIR='2>/dev/null'
@@ -106,7 +106,7 @@ EOF
 	    exit
 	fi
 	TLIB=""
-	if [ "$VERBOSE" = "yes" ]; then
+	if [ "x$VERBOSE" = "xyes" ]; then
 	    ERRDIR=""
 	else
 	    ERRDIR='2>/dev/null'

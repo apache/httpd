@@ -18,13 +18,13 @@ if [ "x$found_dbm" = "x" ]; then
 		elif ./helpers/TestCompile lib ndbm dbm_open; then
 		    DBM_LIB="-lndbm"
 		fi
-		if [ "X$DBM_LIB" != "X" ]; then
+		if [ "x$DBM_LIB" != "x" ]; then
 		    LIBS="$LIBS $DBM_LIB"
 		    found_dbm=1
 		fi
 		;;
 	    *)
-		if [ "X$DBM_LIB" != "X" ]; then
+		if [ "x$DBM_LIB" != "x" ]; then
 		    oldLIBS="$LIBS"
 		    LIBS="$LIBS $DBM_LIB"
 		    if ./helpers/TestCompile func dbm_open; then
@@ -36,7 +36,7 @@ if [ "x$found_dbm" = "x" ]; then
 		fi
 		;;
 	esac
-	if [ "X$found_dbm" = "X1" ]; then
+	if [ "x$found_dbm" = "x1" ]; then
 	    echo " + using $DBM_LIB for DBM support"
 	fi
     fi
