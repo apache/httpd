@@ -895,6 +895,10 @@ typedef int rlim_t;
 #undef PLATFORM
 #define PLATFORM "BeOS"
 #include <stddef.h>
+#include <kernel/OS.h>
+
+#define HAVE_BEOS_SERIALIZED_ACCEPT
+#define SINGLE_LISTEN_UNSERIALIZED_ACCEPT
 
 #define NO_WRITEV
 #define NO_KILLPG
@@ -905,9 +909,13 @@ typedef int rlim_t;
 #elif defined(BONE)
 #undef PLATFORM
 #define PLATFORM "BeOS BONE"
+#include <kernel/OS.h>
+
 #define NO_KILLPG
 #define NEED_INITGROUPS
 #define S_IEXEC S_IXUSR
+#define HAVE_BEOS_SERIALIZED_ACCEPT
+#define SINGLE_LISTEN_UNSERIALIZED_ACCEPT
 
 #elif defined(_CX_SX)
 #define JMP_BUF sigjmp_buf
@@ -1224,6 +1232,9 @@ int setrlimit(int, struct rlimit *);
 #endif
 #if defined(USE_TPF_CORE_SERIALIZED_ACCEPT) && !defined(HAVE_TPF_CORE_SERIALIZED_ACCEPT)
 #define HAVE_TPF_CORE_SERIALIZED_ACCEPT
+#endif
+#if defined(USE_BEOS_SERIALIZED_ACCEPT) && !defined(HAVE_BEOS_SERIALIZED_ACCEPT)
+#define HAVE_BEOS_SERIALIZED_ACCEPT
 #endif
 #if defined(USE_NONE_SERIALIZED_ACCEPT) && !defined(HAVE_NONE_SERIALIZED_ACCEPT)
 #define HAVE_NONE_SERIALIZED_ACCEPT

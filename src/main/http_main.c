@@ -1104,6 +1104,65 @@ accept_mutex_methods_s accept_mutex_tpfcore_s = {
 };
 #endif
 
+#ifdef HAVE_BEOS_SERIALIZED_ACCEPT
+static sem_id _sem = -1;
+static int  locked = 0;
+
+static void accept_mutex_child_cleanup_beos(void *foo)
+{
+    if (_sem > 0 && locked)
+        release_sem(_sem);
+}
+
+static void accept_mutex_child_init_beos(pool *p)
+{
+    ap_register_cleanup(p, NULL, accept_mutex_child_cleanup_beos, ap_null_cleanup);
+    locked = 0;
+}
+
+static void accept_mutex_cleanup_beos(void *foo)
+{
+    if (_sem > 0)
+        delete_sem(_sem);
+}
+
+static void accept_mutex_init_beos(pool *p)
+{
+    _sem = create_sem(1, "httpd_accept");
+    if (_sem < 0) {
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_EMERG, server_conf,
+                    "Parent cannot create lock semaphore, sem=%ld", _sem);
+        exit(APEXIT_INIT);
+    }
+
+    ap_register_cleanup(p, NULL, accept_mutex_cleanup_beos, ap_null_cleanup);
+}                                                                                                        
+void accept_mutex_on_beos(void)
+{
+    if (locked == 0) {
+        if (acquire_sem(_sem) == B_OK)
+            locked = 1;
+    }
+}
+
+static void accept_mutex_off_beos(void)
+{
+    if (locked == 1) {
+        if (release_sem(_sem) == B_OK)
+            locked = 0; 
+    }
+}
+
+accept_mutex_methods_s accept_mutex_beos_s = {
+    accept_mutex_child_init_beos,
+    accept_mutex_init_beos,
+    accept_mutex_on_beos,
+    accept_mutex_off_beos,
+    "beos_sem"
+};
+#endif /* HAVE_BEOS_SERIALIZED_ACCEPT */
+
+
 /* Generally, HAVE_NONE_SERIALIZED_ACCEPT simply won't work but
  * for testing purposes, here it is... */
 #if defined HAVE_NONE_SERIALIZED_ACCEPT
@@ -1147,6 +1206,8 @@ char *ap_default_mutex_method(void)
     t = "os2sem";
 #elif defined USE_TPF_CORE_SERIALIZED_ACCEPT
     t = "tpfcore";
+#elif defined USE_BEOS_SERIALIZED_ACCEPT
+    t = "beos_sem";
 #elif defined USE_NONE_SERIALIZED_ACCEPT
     t = "none";
 #else
@@ -1179,6 +1240,10 @@ char *ap_default_mutex_method(void)
 #if defined HAVE_TPF_CORE_SERIALIZED_ACCEPT
     if ((!(strcasecmp(t,"default"))) || (!(strcasecmp(t,"tpfcore"))))
     	return "tpfcore";
+#endif
+#if defined HAVE_BEOS_SERIALIZED_ACCEPT
+    if ((!(strcasecmp(t,"default"))) || (!(strcasecmp(t,"beos_sem"))))
+        return "beos_sem";
 #endif
 #if defined HAVE_NONE_SERIALIZED_ACCEPT
     if ((!(strcasecmp(t,"default"))) || (!(strcasecmp(t,"none"))))
@@ -1230,6 +1295,11 @@ char *ap_init_mutex_method(char *t)
     if (!(strcasecmp(t,"tpfcore"))) {
     	amutex = &accept_mutex_tpfcore_s;
     } else 
+#endif
+#if defined HAVE_BEOS_SERIALIZED_ACCEPT
+    if (!(strcasecmp(t,"beos_sem"))) {
+        amutex = &accept_mutex_beos_s;
+    } else
 #endif
 #if defined HAVE_NONE_SERIALIZED_ACCEPT
     if (!(strcasecmp(t,"none"))) {
@@ -3286,7 +3356,8 @@ static void detach(void)
     int x;
 
     chdir("/");
-#if !defined(MPE) && !defined(OS2) && !defined(TPF)
+#if !defined(MPE) && !defined(OS2) && !defined(TPF) && !defined(BEOS) && \
+    !defined(BONE)
 /* Don't detach for MPE because child processes can't survive the death of
    the parent. */
     if ((x = fork()) > 0)
@@ -3950,6 +4021,9 @@ static void show_compile_settings(void)
 #ifdef HAVE_TPF_CORE_SERIALIZED_ACCEPT
     printf(" -D HAVE_TPF_CORE_SERIALIZED_ACCEPT\n");
 #endif
+#ifdef HAVE_BEOS_SERIALIZED_ACCEPT
+    printf(" -D HAVE_BEOS_SERIALIZED_ACCEPT\n");
+#endif  
 #ifdef HAVE_NONE_SERIALIZED_ACCEPT
     printf(" -D HAVE_NONE_SERIALIZED_ACCEPT\n");
 #endif

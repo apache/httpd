@@ -3251,6 +3251,9 @@ static const command_rec core_cmds[] = {
 #ifdef HAVE_TPF_CORE_SERIALIZED_ACCEPT
     "'tpfcore' "
 #endif
+#ifdef HAVE_BEOS_SERIALIZED_ACCEPT
+    "'beos_sem' "
+#endif
 #ifdef HAVE_NONE_SERIALIZED_ACCEPT
     "'none' "
 #endif
