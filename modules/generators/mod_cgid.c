@@ -1234,15 +1234,13 @@ static int cgid_handler(request_rec *r)
             return HTTP_MOVED_TEMPORARILY; 
         } 
 
-        if (!r->header_only) {
-            /* Passing our socket down the filter chain in a pipe bucket
-             * gives up the responsibility of closing the socket, so
-             * get rid of the cleanup.
-             */
-            apr_pool_cleanup_kill(r->pool, (void *)sd, close_unix_socket);
+        /* Passing our socket down the filter chain in a pipe bucket
+         * gives up the responsibility of closing the socket, so
+         * get rid of the cleanup.
+         */
+        apr_pool_cleanup_kill(r->pool, (void *)sd, close_unix_socket);
 
-            ap_pass_brigade(r->output_filters, bb);
-        } 
+        ap_pass_brigade(r->output_filters, bb);
     } 
 
     if (nph) {
