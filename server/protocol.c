@@ -677,8 +677,9 @@ static int read_request_line(request_rec *r)
     /* ap_getline returns (size of max buffer - 1) if it fills up the
      * buffer before finding the end-of-line.  This is only going to
      * happen if it exceeds the configured limit for a request-line.
+     * The cast is safe, limit_req_line cannot be negative
      */
-    if (len > r->server->limit_req_line) {
+    if (len > (apr_size_t)r->server->limit_req_line) {
         r->status    = HTTP_REQUEST_URI_TOO_LARGE;
         r->proto_num = HTTP_VERSION(1,0);
         r->protocol  = apr_pstrdup(r->pool, "HTTP/1.0");
@@ -739,9 +740,11 @@ static void get_mime_headers(request_rec *r)
         /* ap_rgetline returns APR_ENOSPC if it fills up the buffer before
          * finding the end-of-line.  This is only going to happen if it
          * exceeds the configured limit for a field size.
+         * The cast is safe, limit_req_fieldsize cannot be negative
          */
         if (rv == APR_ENOSPC
-            || (rv == APR_SUCCESS && len > r->server->limit_req_fieldsize)) {
+            || (rv == APR_SUCCESS 
+                && len > (apr_size_t)r->server->limit_req_fieldsize)) {
             r->status = HTTP_BAD_REQUEST;
             apr_table_setn(r->notes, "error-notes",
                            apr_pstrcat(r->pool,
