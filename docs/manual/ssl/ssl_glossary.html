@@ -1,0 +1,413 @@
+<html>
+<head>
+<title>mod_ssl: Glossary</title>
+
+<!--
+  Copyright (c) 1998-2001 Ralf S. Engelschall. All rights reserved.
+
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions
+  are met:
+
+  1. Redistributions of source code must retain the above
+     copyright notice, this list of conditions and the following
+     disclaimer. 
+ 
+  2. Redistributions in binary form must reproduce the above
+     copyright notice, this list of conditions and the following
+     disclaimer in the documentation and/or other materials
+     provided with the distribution.
+ 
+  3. All advertising materials mentioning features or use of this
+     software must display the following acknowledgment: 
+     "This product includes software developed by 
+      Ralf S. Engelschall <rse@engelschall.com> for use in the
+      mod_ssl project (http://www.modssl.org/)."
+ 
+  4. The name "mod_ssl" must not be used to endorse or promote
+     products derived from this software without prior written
+     permission.  
+
+  5. Redistributions of any form whatsoever must retain the
+     following acknowledgment:
+     "This product includes software developed by 
+      Ralf S. Engelschall <rse@engelschall.com> for use in the
+      mod_ssl project (http://www.modssl.org/)."
+ 
+  THIS SOFTWARE IS PROVIDED BY RALF S. ENGELSCHALL ``AS IS'' AND ANY
+  EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+  PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL RALF S. ENGELSCHALL OR
+  HIS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+  NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+  HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+  STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+  OF THE POSSIBILITY OF SUCH DAMAGE.
+-->
+<style type="text/css"><!--
+A:link {
+    text-decoration: none;
+    color: #6666cc;
+}
+A:active {
+    text-decoration: none;
+    color: #6666cc;
+}
+A:visited {
+    text-decoration: none;
+    color: #6666cc;
+}
+#sf {
+    font-family: arial,helvetica;
+    font-variant: normal;
+    font-style: normal;
+}
+H1 {
+    font-weight: bold;
+    font-size: 24pt;
+    line-height: 24pt;
+    font-family: arial,helvetica;
+    font-variant: normal;
+    font-style: normal;
+}
+H2 {
+    font-weight: bold;
+    font-size: 18pt;
+    line-height: 18pt;
+    font-family: arial,helvetica;
+    font-variant: normal;
+    font-style: normal;
+}
+H3 {
+    font-weight: bold;
+    font-size: 14pt;
+    line-height: 14pt;
+    font-family: arial,helvetica;
+    font-variant: normal;
+    font-style: normal;
+}
+H4 {
+    font-weight: bold;
+    font-size: 12pt;
+    line-height: 12pt;
+    font-family: arial,helvetica;
+    font-variant: normal;
+    font-style: normal;
+}
+#H {
+}
+#D {
+    background-color: #f0f0f0;
+}
+#faq {
+    font-weight: bold;
+    font-size: 16pt;
+    line-height: 16pt;
+    font-family: arial,helvetica;
+    font-variant: normal;
+    font-style: normal;
+}
+#howto {
+    font-weight: bold;
+    font-size: 16pt;
+    line-height: 16pt;
+    font-family: arial,helvetica;
+    font-variant: normal;
+    font-style: normal;
+}
+#term {
+    font-weight: bold;
+    font-size: 16pt;
+    line-height: 16pt;
+    font-family: arial,helvetica;
+    font-variant: normal;
+    font-style: normal;
+}
+--></style>
+<script type="text/javascript" language="JavaScript">
+<!-- Hiding the code
+function ro_imgNormal(imgName) {
+    if (document.images) {
+        document[imgName].src = eval(imgName + '_n.src');
+        self.status = '';
+    }
+}
+function ro_imgOver(imgName, descript) {
+    if (document.images) {
+        document[imgName].src = eval(imgName + '_o.src');
+        self.status = descript;
+    }
+}
+// done hiding -->
+</script>
+<script type="text/javascript" language="JavaScript">
+<!-- Hiding the code
+if (document.images) {
+    ro_img_prev_top_n = new Image();
+    ro_img_prev_top_n.src = 'ssl_template.navbut-prev-n.gif';
+    ro_img_prev_top_o = new Image();
+    ro_img_prev_top_o.src = 'ssl_template.navbut-prev-s.gif';
+}
+// done hiding -->
+</script>
+<script type="text/javascript" language="JavaScript">
+<!-- Hiding the code
+if (document.images) {
+    ro_img_prev_bot_n = new Image();
+    ro_img_prev_bot_n.src = 'ssl_template.navbut-prev-n.gif';
+    ro_img_prev_bot_o = new Image();
+    ro_img_prev_bot_o.src = 'ssl_template.navbut-prev-s.gif';
+}
+// done hiding -->
+</script>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#333399" alink="#9999ff" vlink="#000066">
+<div align="center">
+<table width="600" cellspacing="0" cellpadding="0" border="0" summary="">
+<tr>
+  <td>
+      <img src="ssl_template.imgdot-1x1-transp.gif" alt="" width="600" height="1" align="bottom" border="0"><br>
+      <table width="600" cellspacing="0" cellpadding="0" summary="">
+      <tr>
+        <td>
+        <table width="600" summary="">
+        <tr>
+            <td align="left" valign="bottom">
+            <font face="Arial,Helvetica" size="+2"><b>mod_ssl</b></font>
+            </td>
+            <td align="right">
+              <img src="ssl_template.head-chapter.gif" alt="Chapter" width="175" height="94"> <img src="ssl_template.head-num-7.gif" alt="7" width="74" height="89">
+            </td>
+        </tr>
+        </table>
+        </td>
+      </tr>
+      <tr>
+        <td><img src="ssl_template.imgdot-1x1-000000.gif" alt="" width="600" height="2" align="bottom" border="0"></td>
+      </tr>
+      <tr>
+        <td>
+           <table width="600" border="0" summary="">
+           <tr>
+            <td valign="top" align="left" width="250">
+<a href="ssl_faq.html" onmouseover="ro_imgOver('ro_img_prev_top', 'previous page'); return true" onmouseout="ro_imgNormal('ro_img_prev_top'); return true" onfocus="ro_imgOver('ro_img_prev_top', 'previous page'); return true" onblur="ro_imgNormal('ro_img_prev_top'); return true"><img name="ro_img_prev_top" src="ssl_template.navbut-prev-n.gif" alt="previous page" width="70" height="18" border="0"></a><br><font color="#000000">F.A.Q. List</font>
+            </td>
+            <td valign="top" align="right" width="250">
+            </td>
+           </tr>
+           </table>
+         </td>
+      </tr>
+      <tr>
+        <td>
+          <br>
+          <img src="ssl_template.title-gloss.gif" alt="Glossary" width="456" height="60">
+        </td>
+      </tr>
+      </table>
+<div align="right">
+<table cellspacing="0" cellpadding="0" width="300" summary="">
+<tr>
+<td>
+<em>
+``I know you believe you understand what you think I said, but I am not sure you
+realize that what you heard is not what I meant.''
+</em>
+</td>
+</tr>
+<tr>
+<td align="right">
+<font size="-1">
+Richard Nixon
+</font>
+</td>
+</tr>
+</table>
+</div>
+<dl>
+<dt><div id="term">Authentication</div>
+<dd>The positive identification of a network entity such as a server, a
+    client, or a user. In SSL context the server and client
+    <em>Certificate</em> verification process.
+<p>
+<dt><div id="term">Access Control</div>
+<dd>The restriction of access to network realms. In Apache context
+    usually the restriction of access to certain <em>URLs</em>.
+<p>
+<dt><div id="term">Algorithm</div>
+<dd>An unambiguous formula or set of rules for solving a problem in a finite
+    number of steps. Algorithms for encryption are usually called <em>Ciphers</em>.
+<p>
+<dt><div id="term">Certificate</div>
+<dd>A data record used for authenticating network entities such
+    as a server or a client. A certificate contains X.509 information pieces
+    about its owner (called the subject) and the signing <em>Certificate
+    Authority</em> (called the issuer), plus the owner's public key and the
+    signature made by the CA. Network entities verify these signatures using
+    CA certificates.
+<p>
+<dt><div id="term">Certification Authority (CA)</div>
+<dd>A trusted third party whose purpose is to sign certificates for network
+    entities it has authenticated using secure means. Other network entities
+    can check the signature to verify that a CA has authenticated the bearer
+    of a certificate.
+<p>
+<dt><div id="term">Certificate Signing Request (CSR)</div>
+<dd>An unsigned certificate for submission to a <em>Certification Authority</em>,
+    which signs it with the <em>Private Key</em> of their CA <em>Certificate</em>. Once
+    the CSR is signed, it becomes a real certificate.
+<p>
+<dt><div id="term">Cipher</div>
+<dd>An algorithm or system for data encryption. Examples are DES, IDEA, RC4, etc.
+<p>
+<dt><div id="term">Ciphertext</div>
+<dd>The result after a <em>Plaintext</em> passed a <em>Cipher</em>.
+<p>
+<dt><div id="term">Configuration Directive</div>
+<dd>A configuration command that controls one or more aspects of a program's
+    behavior. In Apache context these are all the command names in the first
+    column of the configuration files.
+<p>
+<dt><div id="term">CONNECT</div>
+<dd>A HTTP command for proxying raw data channels over HTTP. It can be used to
+    encapsulate other protocols, such as the SSL protocol.
+<p>
+<dt><div id="term">Digital Signature</div>
+<dd>An encrypted text block that validates a certificate or other file. A
+    <em>Certification Authority</em> creates a signature by generating a
+    hash of the <em>Public Key</em> embedded in a <em>Certificate</em>, then
+    encrypting the hash with its own <em>Private Key</em>. Only the CA's
+    public key can decrypt the signature, verifying that the CA has
+    authenticated the network entity that owns the <em>Certificate</em>.
+<p>
+<dt><div id="term">Export-Crippled</div>
+<dd>Diminished in cryptographic strength (and security) in order to comply
+    with the United States' Export Administration Regulations (EAR).
+    Export-crippled cryptographic software is limited to a small key size,
+    resulting in <em>Ciphertext</em> which usually can be decrypted by brute
+    force.
+<p>
+<dt><div id="term">Fully-Qualified Domain-Name (FQDN)</div>
+<dd>The unique name of a network entity, consisting of a hostname and a domain
+    name that can resolve to an IP address. For example, <code>www</code> is a
+    hostname, <code>whatever.com</code> is a domain name, and
+    <code>www.whatever.com</code> is a fully-qualified domain name.
+<p>
+<dt><div id="term">HyperText Transfer Protocol (HTTP)</div>
+<dd>The HyperText Transport Protocol is the standard transmission protocol used
+    on the World Wide Web.
+<p>
+<dt><div id="term">HTTPS</div>
+<dd>The HyperText Transport Protocol (Secure), the standard encrypted
+    communication mechanism on the World Wide Web. This is actually just HTTP
+    over SSL.
+<p>
+<dt><div id="term">Message Digest</div>
+<dd>A hash of a message, which can be used to verify that the contents of
+    the message have not been altered in transit.
+<p>
+<dt><div id="term">OpenSSL</div>
+<dd>The Open Source toolkit for SSL/TLS;
+    see <a href="http://www.openssl.org/">http://www.openssl.org/</a>
+<p>
+<dt><div id="term">Pass Phrase</div>
+<dd>The word or phrase that protects private key files.
+    It prevents unauthorized users from encrypting them. Usually it's just
+    the secret encryption/decryption key used for <em>Ciphers</em>.
+<p>
+<dt><div id="term">Plaintext</div>
+<dd>The unencrypted text.
+<p>
+<dt><div id="term">Private Key</div>
+<dd>The secret key in a <em>Public Key Cryptography</em> system, used to
+    decrypt incoming messages and sign outgoing ones.
+<p>
+<dt><div id="term">Public Key</div>
+<dd>The publically available key in a <em>Public Key Cryptography</em> system, used to
+    encrypt messages bound for its owner and to decrypt signatures made by its
+    owner.
+<p>
+<dt><div id="term">Public Key Cryptography</div>
+<dd>The study and application of asymmetric encryption systems, which use one
+    key for encryption and another for decryption. A corresponding pair of
+    such keys constitutes a key pair. Also called Asymmetric Crypography.
+<p>
+<dt><div id="term">Secure Sockets Layer (SSL)</div>
+<dd>A protocol created by Netscape Communications Corporation for
+    general communication authentication and encryption over TCP/IP networks.
+    The most popular usage is <em>HTTPS</em>, i.e. the HyperText Transfer
+    Protocol (HTTP) over SSL.
+<p>
+<dt><div id="term">Session</div>
+<dd>The context information of an SSL communication.
+<p>
+<dt><div id="term">SSLeay</div>
+<dd>The original SSL/TLS implementation library developed by
+    Eric A. Young &lt;eay@aus.rsa.com&gt;;
+    see <a href="http://www.ssleay.org/">http://www.ssleay.org/</a>
+<p>
+<dt><div id="term">Symmetric Cryptography</div>
+<dd>The study and application of <em>Ciphers</em> that use a single secret key
+    for both encryption and decryption operations.
+<p>
+<dt><div id="term">Transport Layer Security (TLS)</div>
+<dd>The successor protocol to SSL, created by the Internet Engineering Task
+    Force (IETF) for general communication authentication and encryption over
+    TCP/IP networks. TLS version 1 and is nearly identical with SSL version 3.
+<p>
+<dt><div id="term">Uniform Resource Locator (URL)</div>
+<dd>The formal identifier to locate various resources on the World Wide Web.
+    The most popular URL scheme is <code>http</code>. SSL uses the
+    scheme <code>https</code>
+<p>
+<dt><div id="term">X.509</div>
+<dd>An authentication certificate scheme recommended by the International
+    Telecommunication Union (ITU-T) which is used for SSL/TLS authentication.
+</dl>
+      <p>
+      <br>
+      <table summary="">
+      <tr>
+        <td>
+           <table width="600" border="0" summary="">
+           <tr>
+            <td valign="top" align="left" width="250">
+<a href="ssl_faq.html" onmouseover="ro_imgOver('ro_img_prev_bot', 'previous page'); return true" onmouseout="ro_imgNormal('ro_img_prev_bot'); return true" onfocus="ro_imgOver('ro_img_prev_bot', 'previous page'); return true" onblur="ro_imgNormal('ro_img_prev_bot'); return true"><img name="ro_img_prev_bot" src="ssl_template.navbut-prev-n.gif" alt="previous page" width="70" height="18" border="0"></a><br><font color="#000000">F.A.Q. List</font>
+            </td>
+            <td valign="top" align="right" width="250">
+            </td>
+           </tr>
+           </table>
+         </td>
+      </tr>
+      <tr>
+        <td><img src="ssl_template.imgdot-1x1-000000.gif" alt="" width="600" height="2" align="bottom" border="0"></td>
+      </tr>
+      <tr>
+        <td><table width="598" summary="">
+        <tr>
+        <td align="left"><font face="Arial,Helvetica">
+        <a href="http://www.modssl.org/">mod_ssl</a> 2.8, User Manual<br>
+        The Apache Interface to OpenSSL
+        </font>
+        </td>
+        <td align="right"><font face="Arial,Helvetica">
+        Copyright &copy; 1998-2001
+        <a href="http://www.engelschall.com/">Ralf S. Engelschall</a><br>
+        All Rights Reserved<br>
+        </font>
+        </td>
+        </tr>
+        </table>
+        </td>
+      </tr>
+      </table>
+  </td>
+</tr>
+</table>
+</div>
+</body>
+</html>

@@ -1,0 +1,919 @@
+<html>
+<head>
+<title>mod_ssl: Introduction</title>
+
+<!--
+  Copyright (c) 1998-2001 Ralf S. Engelschall. All rights reserved.
+
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions
+  are met:
+
+  1. Redistributions of source code must retain the above
+     copyright notice, this list of conditions and the following
+     disclaimer. 
+ 
+  2. Redistributions in binary form must reproduce the above
+     copyright notice, this list of conditions and the following
+     disclaimer in the documentation and/or other materials
+     provided with the distribution.
+ 
+  3. All advertising materials mentioning features or use of this
+     software must display the following acknowledgment: 
+     "This product includes software developed by 
+      Ralf S. Engelschall <rse@engelschall.com> for use in the
+      mod_ssl project (http://www.modssl.org/)."
+ 
+  4. The name "mod_ssl" must not be used to endorse or promote
+     products derived from this software without prior written
+     permission.  
+
+  5. Redistributions of any form whatsoever must retain the
+     following acknowledgment:
+     "This product includes software developed by 
+      Ralf S. Engelschall <rse@engelschall.com> for use in the
+      mod_ssl project (http://www.modssl.org/)."
+ 
+  THIS SOFTWARE IS PROVIDED BY RALF S. ENGELSCHALL ``AS IS'' AND ANY
+  EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+  PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL RALF S. ENGELSCHALL OR
+  HIS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+  NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+  HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+  STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+  OF THE POSSIBILITY OF SUCH DAMAGE.
+-->
+<style type="text/css"><!--
+A:link {
+    text-decoration: none;
+    color: #6666cc;
+}
+A:active {
+    text-decoration: none;
+    color: #6666cc;
+}
+A:visited {
+    text-decoration: none;
+    color: #6666cc;
+}
+#sf {
+    font-family: arial,helvetica;
+    font-variant: normal;
+    font-style: normal;
+}
+H1 {
+    font-weight: bold;
+    font-size: 24pt;
+    line-height: 24pt;
+    font-family: arial,helvetica;
+    font-variant: normal;
+    font-style: normal;
+}
+H2 {
+    font-weight: bold;
+    font-size: 18pt;
+    line-height: 18pt;
+    font-family: arial,helvetica;
+    font-variant: normal;
+    font-style: normal;
+}
+H3 {
+    font-weight: bold;
+    font-size: 14pt;
+    line-height: 14pt;
+    font-family: arial,helvetica;
+    font-variant: normal;
+    font-style: normal;
+}
+H4 {
+    font-weight: bold;
+    font-size: 12pt;
+    line-height: 12pt;
+    font-family: arial,helvetica;
+    font-variant: normal;
+    font-style: normal;
+}
+#H {
+}
+#D {
+    background-color: #f0f0f0;
+}
+#faq {
+    font-weight: bold;
+    font-size: 16pt;
+    line-height: 16pt;
+    font-family: arial,helvetica;
+    font-variant: normal;
+    font-style: normal;
+}
+#howto {
+    font-weight: bold;
+    font-size: 16pt;
+    line-height: 16pt;
+    font-family: arial,helvetica;
+    font-variant: normal;
+    font-style: normal;
+}
+#term {
+    font-weight: bold;
+    font-size: 16pt;
+    line-height: 16pt;
+    font-family: arial,helvetica;
+    font-variant: normal;
+    font-style: normal;
+}
+--></style>
+<script type="text/javascript" language="JavaScript">
+<!-- Hiding the code
+function ro_imgNormal(imgName) {
+    if (document.images) {
+        document[imgName].src = eval(imgName + '_n.src');
+        self.status = '';
+    }
+}
+function ro_imgOver(imgName, descript) {
+    if (document.images) {
+        document[imgName].src = eval(imgName + '_o.src');
+        self.status = descript;
+    }
+}
+// done hiding -->
+</script>
+<script type="text/javascript" language="JavaScript">
+<!-- Hiding the code
+if (document.images) {
+    ro_img_prev_top_n = new Image();
+    ro_img_prev_top_n.src = 'ssl_template.navbut-prev-n.gif';
+    ro_img_prev_top_o = new Image();
+    ro_img_prev_top_o.src = 'ssl_template.navbut-prev-s.gif';
+}
+// done hiding -->
+</script>
+<script type="text/javascript" language="JavaScript">
+<!-- Hiding the code
+if (document.images) {
+    ro_img_prev_bot_n = new Image();
+    ro_img_prev_bot_n.src = 'ssl_template.navbut-prev-n.gif';
+    ro_img_prev_bot_o = new Image();
+    ro_img_prev_bot_o.src = 'ssl_template.navbut-prev-s.gif';
+}
+// done hiding -->
+</script>
+<script type="text/javascript" language="JavaScript">
+<!-- Hiding the code
+if (document.images) {
+    ro_img_next_top_n = new Image();
+    ro_img_next_top_n.src = 'ssl_template.navbut-next-n.gif';
+    ro_img_next_top_o = new Image();
+    ro_img_next_top_o.src = 'ssl_template.navbut-next-s.gif';
+}
+// done hiding -->
+</script>
+<script type="text/javascript" language="JavaScript">
+<!-- Hiding the code
+if (document.images) {
+    ro_img_next_bot_n = new Image();
+    ro_img_next_bot_n.src = 'ssl_template.navbut-next-n.gif';
+    ro_img_next_bot_o = new Image();
+    ro_img_next_bot_o.src = 'ssl_template.navbut-next-s.gif';
+}
+// done hiding -->
+</script>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#333399" alink="#9999ff" vlink="#000066">
+<div align="center">
+<table width="600" cellspacing="0" cellpadding="0" border="0" summary="">
+<tr>
+  <td>
+      <img src="ssl_template.imgdot-1x1-transp.gif" alt="" width="600" height="1" align="bottom" border="0"><br>
+      <table width="600" cellspacing="0" cellpadding="0" summary="">
+      <tr>
+        <td>
+        <table width="600" summary="">
+        <tr>
+            <td align="left" valign="bottom">
+            <font face="Arial,Helvetica" size="+2"><b>mod_ssl</b></font>
+            </td>
+            <td align="right">
+              <img src="ssl_template.head-chapter.gif" alt="Chapter" width="175" height="94"> <img src="ssl_template.head-num-2.gif" alt="2" width="74" height="89">
+            </td>
+        </tr>
+        </table>
+        </td>
+      </tr>
+      <tr>
+        <td><img src="ssl_template.imgdot-1x1-000000.gif" alt="" width="600" height="2" align="bottom" border="0"></td>
+      </tr>
+      <tr>
+        <td>
+           <table width="600" border="0" summary="">
+           <tr>
+            <td valign="top" align="left" width="250">
+<a href="ssl_overview.html" onmouseover="ro_imgOver('ro_img_prev_top', 'previous page'); return true" onmouseout="ro_imgNormal('ro_img_prev_top'); return true" onfocus="ro_imgOver('ro_img_prev_top', 'previous page'); return true" onblur="ro_imgNormal('ro_img_prev_top'); return true"><img name="ro_img_prev_top" src="ssl_template.navbut-prev-n.gif" alt="previous page" width="70" height="18" border="0"></a><br><font color="#000000">Overview</font>
+            </td>
+            <td valign="top" align="right" width="250">
+<a href="ssl_reference.html" onmouseover="ro_imgOver('ro_img_next_top', 'next page'); return true" onmouseout="ro_imgNormal('ro_img_next_top'); return true" onfocus="ro_imgOver('ro_img_next_top', 'next page'); return true" onblur="ro_imgNormal('ro_img_next_top'); return true"><img name="ro_img_next_top" src="ssl_template.navbut-next-n.gif" alt="next page" width="70" height="18" border="0"></a><br><font color="#000000">Reference</font>
+            </td>
+           </tr>
+           </table>
+         </td>
+      </tr>
+      <tr>
+        <td>
+          <br>
+          <img src="ssl_template.title-intro.gif" alt="Introduction" width="456" height="60">
+        </td>
+      </tr>
+      </table>
+<div align="right">
+<table cellspacing="0" cellpadding="0" width="400" summary="">
+<tr>
+<td>
+<em>
+``The nice thing about standards is that there are so many to choose from.
+And if you really don't like all the standards you just have to wait another
+year until the one arises you are looking for.''
+</em>
+</td>
+</tr>
+<tr>
+<td align="right">
+<font size="-1">
+A. Tanenbaum, ``Introduction to Computer Networks''
+</font>
+</td>
+</tr>
+</table>
+</div>
+<p>
+<table cellspacing="0" cellpadding="0" border="0" summary="">
+<tr valign="bottom">
+<td>
+<img src="ssl_intro.gfont000.gif" alt="A" width="37" height="35" border="0" align="left">
+s an introduction this chapter is aimed at readers who are familiar
+with the Web, HTTP, and Apache, but are not security experts. It is not
+intended to be a definitive guide to the SSL protocol, nor does it discuss
+specific techniques for managing certificates in an organization, or the
+important legal issues of patents and import and export restrictions. Rather,
+it is intended to provide a common background to mod_ssl users by pulling
+together various concepts, definitions, and examples as a starting point for
+further exploration.
+<p>
+The presented content is mainly derived, with permission by the author, from
+the article <a
+href="http://www.ultranet.com/~fhirsch/Papers/wwwj/index.html"><em>Introducing SSL
+and Certificates using SSLeay</em></a> from <a
+href="http://www.ultranet.com/~fhirsch/">Frederick J. Hirsch</a>, of The Open
+Group Research Institute, which was published in <a
+href="http://www.ora.com/catalog/wjsum97/"><em>Web Security: A Matter of
+Trust</em></a>, World Wide Web Journal, Volume 2, Issue 3, Summer 1997.
+Please send any postive feedback to <a
+href="mailto:fjh@alum.mit.edu">Frederick Hirsch</a> (the original
+article author) and all negative feedback to <a
+href="mailto:rse@engelschall.com">Ralf S. Engelschall</a> (the mod_ssl
+author).
+</td>
+<td>
+&nbsp;&nbsp;
+</td>
+<td>
+<div align="right">
+<table cellspacing="0" cellpadding="5" border="0" bgcolor="#ccccff" summary="">
+<tr>
+<td bgcolor="#333399">
+<font face="Arial,Helvetica" color="#ccccff">
+<b>Table Of Contents</b>
+</font>
+</td>
+</tr>
+<tr>
+<td>
+<font face="Arial,Helvetica" size="-1">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ToC1"><strong>Cryptographic Techniques</strong></a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ToC2"><strong>Cryptographic Algorithms</strong></a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ToC3"><strong>Message Digests</strong></a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ToC4"><strong>Digital Signatures</strong></a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ToC5"><strong>Certificates</strong></a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ToC6"><strong>Certificate Contents</strong></a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ToC7"><strong>Certificate Authorities</strong></a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ToC8"><strong>Certificate Chains</strong></a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ToC9"><strong>Creating a Root-Level CA</strong></a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ToC10"><strong>Certificate Management</strong></a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ToC11"><strong>Secure Sockets Layer (SSL)</strong></a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ToC12"><strong>Session Establishment</strong></a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ToC13"><strong>Key Exchange Method</strong></a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ToC14"><strong>Cipher for Data Transfer</strong></a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ToC15"><strong>Digest Function</strong></a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ToC16"><strong>Handshake Sequence Protocol</strong></a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ToC17"><strong>Data Transfer</strong></a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ToC18"><strong>Securing HTTP Communication</strong></a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ToC19"><strong>References</strong></a><br>
+</font>
+</td>
+</tr>
+</table>
+</div>
+</td>
+</tr>
+</table>
+<h2><a name="ToC1">Cryptographic Techniques</a></h2>
+Understanding SSL requires an understanding of cryptographic algorithms,
+message digest functions (aka. one-way or hash functions), and digital
+signatures. These techniques are the subject of entire books (see for instance
+[<a href="#AC96">AC96</a>]) and provide the basis for privacy, integrity, and
+authentication.
+<h3><a name="ToC2">Cryptographic Algorithms</a></h3>
+Suppose Alice wants to send a message to her bank to transfer some money.
+Alice would like the message to be private, since it will include information
+such as her account number and transfer amount. One solution is to use a
+cryptographic algorithm, a technique that would transform her message into an
+encrypted form, unreadable except by those it is intended for. Once in this
+form, the message may only be interpreted through the use of a secret key.
+Without the key the message is useless: good cryptographic algorithms make it
+so difficult for intruders to decode the original text that it isn't worth
+their effort.
+<p>
+There are two categories of cryptographic algorithms:
+conventional and public key.
+<ul>
+<li><em>Conventional cryptography</em>, also known as symmetric
+cryptography, requires the sender and receiver to share a key: a secret
+piece of information that may be used to encrypt or decrypt a message.
+If this key is secret, then nobody other than the sender or receiver may
+read the message. If Alice and the bank know a secret key, then they
+may send each other private messages. The task of privately choosing a key
+before communicating, however, can be problematic.
+<p>
+<li><em>Public key cryptography</em>, also known as asymmetric cryptography,
+solves the key exchange problem by defining an algorithm which uses two keys,
+each of which may be used to encrypt a message. If one key is used to encrypt
+a message then the other must be used to decrypt it. This makes it possible
+to receive secure messages by simply publishing one key (the public key) and
+keeping the other secret (the private key).
+<p>
+Anyone may encrypt a message using the public key, but only the owner of the
+private key will be able to read it. In this way, Alice may send private
+messages to the owner of a key-pair (the bank), by encrypting it using their
+public key. Only the bank will be able to decrypt it.
+</ul>
+<h3><a name="ToC3">Message Digests</a></h3>
+Although Alice may encrypt her message to make it private, there is still a
+concern that someone might modify her original message or substitute
+it with a different one, in order to transfer the money to themselves, for
+instance. One way of guaranteeing the integrity of Alice's message is to
+create a concise summary of her message and send this to the bank as well.
+Upon receipt of the message, the bank creates its own summary and compares it
+with the one Alice sent. If they agree then the message was received intact.
+<p>
+A summary such as this is called a <em>message digest</em>, <em>one-way
+function</em> or <em>hash function</em>. Message digests are used to create
+short, fixed-length representations of longer, variable-length messages.
+Digest algorithms are designed to produce unique digests for different
+messages. Message digests are designed to make it too difficult to determine
+the message from the digest, and also impossible to find two different
+messages which create the same digest -- thus eliminating the possibility of
+substituting one message for another while maintaining the same digest.
+<p>
+Another challenge that Alice faces is finding a way to send the digest to the
+bank securely; when this is achieved, the integrity of the associated message
+is assured. One way to to this is to include the digest in a digital
+signature.
+<h3><a name="ToC4">Digital Signatures</a></h3>
+When Alice sends a message to the bank, the bank needs to ensure that the
+message is really from her, so an intruder does not request a transaction
+involving her account. A <em>digital signature</em>, created by Alice and
+included with the message, serves this purpose.
+<p>
+Digital signatures are created by encrypting a digest of the message,
+and other information (such as a sequence number) with the sender's
+private key. Though anyone may <em>decrypt</em> the signature using the public
+key, only the signer knows the private key. This means that only they may
+have signed it. Including the digest in the signature means the signature is
+only good for that message; it also ensures the integrity of the message since
+no one can change the digest and still sign it.
+<p>
+To guard against interception and reuse of the signature by an intruder at a
+later date, the signature contains a unique sequence number. This protects
+the bank from a fraudulent claim from Alice that she did not send the message
+-- only she could have signed it (non-repudiation).
+<h2><a name="ToC5">Certificates</a></h2>
+Although Alice could have sent a private message to the bank, signed it, and
+ensured the integrity of the message, she still needs to be sure that she is
+really communicating with the bank. This means that she needs to be sure that
+the public key she is using corresponds to the bank's private key. Similarly,
+the bank also needs to verify that the message signature really corresponds to
+Alice's signature.
+<p>
+If each party has a certificate which validates the other's identity, confirms
+the public key, and is signed by a trusted agency, then they both will be
+assured that they are communicating with whom they think they are. Such a
+trusted agency is called a <em>Certificate Authority</em>, and certificates are
+used for authentication.
+<h3><a name="ToC6">Certificate Contents</a></h3>
+A certificate associates a public key with the real identity of an individual,
+server, or other entity, known as the subject. As shown in <a
+href="#table1">Table 1</a>, information about the subject includes identifying
+information (the distinguished name), and the public key. It also includes
+the identification and signature of the Certificate Authority that issued the
+certificate, and the period of time during which the certificate is valid. It
+may have additional information (or extensions) as well as administrative
+information for the Certificate Authority's use, such as a serial number.
+<p>
+<div align="center">
+<a name="table1"></a>
+<table width="600" cellspacing="0" cellpadding="1" border="0" summary="">
+<caption align="bottom" id="sf">Table 1: Certificate Information</caption>
+<tr><td bgcolor="#cccccc">
+<table width="598" cellpadding="5" cellspacing="0" border="0" summary="">
+<tr><td valign="top" align="center" bgcolor="#ffffff">
+<table summary="">
+<tr valign="top"><td><b>Subject:</b></td>
+<td>Distinguished Name, Public Key</td></tr>
+<tr valign="top"><td><b>Issuer:</b></td>
+<td>Distinguished Name, Signature</td></tr>
+<tr><td><b>Period of Validity:</b></td>
+<td>Not Before Date, Not After Date</td></tr>
+<tr><td><b>Administrative Information:</b></td>
+<td>Version, Serial Number</td></TR>
+<tr><td><b>Extended Information:</b></td>
+<td>Basic Contraints, Netscape Flags, etc.</td></TR>
+</table>
+</td>
+</tr></table>
+</td></tr></table>
+</div>
+<p>
+A distinguished name is used to provide an identity in a specific context --
+for instance, an individual might have a personal certificate as well as one
+for their identity as an employee. Distinguished names are defined by the
+X.509 standard [<a href="#X509">X509</A>], which defines the fields, field
+names, and abbreviations used to refer to the fields
+(see <a href="#table2">Table 2</a>).
+<p>
+<div align="center">
+<a name="table2"></a>
+<table width="600" cellspacing="0" cellpadding="1" border="0" summary="">
+<caption align="bottom" id="sf">Table 2: Distinguished Name Information</caption>
+<tr><td bgcolor="#cccccc">
+<table width="598" cellpadding="5" cellspacing="0" border="0" summary="">
+<tr><td valign="top" align="center" bgcolor="#ffffff">
+<table summary="">
+<tr valign="top"><td><b>DN Field:</b></td><td><b>Abbrev.:</b></td><td><b>Description:</b></td>
+<td><b>Example:</b></td>
+</t>
+<tr valign="top"><td>Common Name</td><td>CN</td>
+<td>Name being certified</td><td>CN=Joe Average</td></tr>
+<tr valign="top"><td>Organization or Company</td><td>O</td>
+<td>Name is associated with this<br>organization</td><td>O=Snake Oil, Ltd.</td></tr>
+<tr valign="top"><td>Organizational Unit</td><td>OU</td>
+<td>Name is associated with this <br>organization unit, such as a department</td><td>OU=Research Institute</td></tr>
+<tr valign="top"><td>City/Locality</td><td>L</td>
+<td>Name is located in this City</td><td>L=Snake City</td></tr>
+<tr valign="top"><td>State/Province</td><td>ST</td>
+<td>Name is located in this State/Province</td><td>ST=Desert</td></tr>
+<tr valign="top"><td>Country</td><td>C</td>
+<td>Name is located in this Country (ISO code)</td><td>C=XZ</td></tr>
+</table>
+</td>
+</tr></table>
+</td></tr></table>
+</div>
+<p>
+A Certificate Authority may define a policy specifying which distinguished
+field names are optional, and which are required. It may also place
+requirements upon the field contents, as may users of certificates. As an
+example, a Netscape browser requires that the Common Name for a certificate
+representing a server has a name which matches a wildcard pattern for the
+domain name of that server, such as <code>*.snakeoil.com</code>.
+<p>
+The binary format of a certificate is defined using the ASN.1 notation [ <a
+href="#X208">X208</a>] [<a href="#PKCS">PKCS</a>]. This notation defines how to
+specify the contents, and encoding rules define how this information is
+translated into binary form. The binary encoding of the certificate is
+defined using Distinguished Encoding Rules (DER), which are based on the more
+general Basic Encoding Rules (BER). For those transmissions which cannot
+handle binary, the binary form may be translated into an ASCII form by using
+Base64 encoding [<a href="#MIME">MIME</a>]. This encoded version is called PEM
+encoded (the name comes from "Privacy Enhanced Mail"), when placed between
+begin and end delimiter lines as illustrated in <a href="#table3">Table 3</a>.
+<p>
+<div align="center">
+<a name="table3"></a>
+<table width="600" cellspacing="0" cellpadding="1" border="0" summary="">
+<caption align="bottom" id="sf">Table 3: Example of a PEM-encoded certificate (snakeoil.crt)</caption>
+<tr><td bgcolor="#cccccc">
+<table width="598" cellpadding="5" cellspacing="0" border="0" summary="">
+<tr><td valign="top" align="center" bgcolor="#ffffff">
+<table cellspacing="0" cellpadding="0" summary=""><tr><td>
+<div class="code"><pre>
+-----BEGIN CERTIFICATE-----
+MIIC7jCCAlegAwIBAgIBATANBgkqhkiG9w0BAQQFADCBqTELMAkGA1UEBhMCWFkx
+FTATBgNVBAgTDFNuYWtlIERlc2VydDETMBEGA1UEBxMKU25ha2UgVG93bjEXMBUG
+A1UEChMOU25ha2UgT2lsLCBMdGQxHjAcBgNVBAsTFUNlcnRpZmljYXRlIEF1dGhv
+cml0eTEVMBMGA1UEAxMMU25ha2UgT2lsIENBMR4wHAYJKoZIhvcNAQkBFg9jYUBz
+bmFrZW9pbC5kb20wHhcNOTgxMDIxMDg1ODM2WhcNOTkxMDIxMDg1ODM2WjCBpzEL
+MAkGA1UEBhMCWFkxFTATBgNVBAgTDFNuYWtlIERlc2VydDETMBEGA1UEBxMKU25h
+a2UgVG93bjEXMBUGA1UEChMOU25ha2UgT2lsLCBMdGQxFzAVBgNVBAsTDldlYnNl
+cnZlciBUZWFtMRkwFwYDVQQDExB3d3cuc25ha2VvaWwuZG9tMR8wHQYJKoZIhvcN
+AQkBFhB3d3dAc25ha2VvaWwuZG9tMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKB
+gQDH9Ge/s2zcH+da+rPTx/DPRp3xGjHZ4GG6pCmvADIEtBtKBFAcZ64n+Dy7Np8b
+vKR+yy5DGQiijsH1D/j8HlGE+q4TZ8OFk7BNBFazHxFbYI4OKMiCxdKzdif1yfaa
+lWoANFlAzlSdbxeGVHoT0K+gT5w3UxwZKv2DLbCTzLZyPwIDAQABoyYwJDAPBgNV
+HRMECDAGAQH/AgEAMBEGCWCGSAGG+EIBAQQEAwIAQDANBgkqhkiG9w0BAQQFAAOB
+gQAZUIHAL4D09oE6Lv2k56Gp38OBDuILvwLg1v1KL8mQR+KFjghCrtpqaztZqcDt
+2q2QoyulCgSzHbEGmi0EsdkPfg6mp0penssIFePYNI+/8u9HT4LuKMJX15hxBam7
+dUHzICxBVC1lnHyYGjDuAMhe396lYAn8bCld1/L4NMGBCQ==
+-----END CERTIFICATE-----</pre></div>
+</td></tr></table>
+</td>
+</tr></table>
+</td></tr></table>
+</div>
+<h3><a name="ToC7">Certificate Authorities</a></h3>
+By first verifying the information in a certificate request before granting
+the certificate, the Certificate Authority assures the identity of the private
+key owner of a key-pair. For instance, if Alice requests a personal
+certificate, the Certificate Authority must first make sure that Alice really
+is the person the certificate request claims.
+<h4><a name="ToC8">Certificate Chains</a></h4>
+A Certificate Authority may also issue a certificate for another Certificate
+Authority. When examining a certificate, Alice may need to examine the
+certificate of the issuer, for each parent Certificate Authority, until
+reaching one which she has confidence in. She may decide to trust only
+certificates with a limited chain of issuers, to reduce her risk of a "bad"
+certificate in the chain.
+<h4><a name="ToC9">Creating a Root-Level CA</a></h4>
+As noted earlier, each certificate requires an issuer to assert the validity
+of the identity of the certificate subject, up to the top-level Certificate
+Authority (CA). This presents a problem: Since this is who vouches for the
+certificate of the top-level authority, which has no issuer?
+In this unique case, the certificate is "self-signed", so the issuer of the
+certificate is the same as the subject. As a result, one must exercise extra
+care in trusting a self-signed certificate. The wide publication of a public
+key by the root authority reduces the risk in trusting this key -- it would be
+obvious if someone else publicized a key claiming to be the authority.
+Browsers are preconfigured to trust well-known certificate authorities.
+<p>
+A number of companies, such as <a href="http://www.thawte.com/">Thawte</a> and
+<a href="http://www.verisign.com/">VeriSign</a> have established themselves as
+Certificate Authorities. These companies provide the following services:
+<ul>
+<li>Verifying certificate requests
+<li>Processing certificate requests
+<li>Issuing and managing certificates
+</ul>
+<p>
+It is also possible to create your own Certificate Authority. Although risky
+in the Internet environment, it may be useful within an Intranet where the
+organization can easily verify the identities of individuals and servers.
+<h4><a name="ToC10">Certificate Management</a></h4>
+Establishing a Certificate Authority is a responsibility which requires a
+solid administrative, technical, and management framework.
+Certificate Authorities not only issue certificates, they also manage them --
+that is, they determine how long certificates are valid, they renew them, and
+they keep lists of certificates that have already been issued but are no
+longer valid (Certificate Revocation Lists, or CRLs).
+Say Alice is entitled to a certificate as an employee of a company. Say too,
+that the certificate needs to be revoked when Alice leaves the company. Since
+certificates are objects that get passed around, it is impossible to tell from
+the certificate alone that it has been revoked.
+When examining certificates for validity, therefore, it is necessary to
+contact the issuing Certificate Authority to check CRLs -- this is not usually
+an automated part of the process.
+<p>
+<div align="center"><B>Note:</B></div>
+If you use a Certificate Authority that is not configured into browsers by
+default, it is necessary to load the Certificate Authority certificate into
+the browser, enabling the browser to validate server certificates signed by
+that Certificate Authority. Doing so may be dangerous, since once loaded, the
+browser will accept all certificates signed by that Certificate Authority.
+<h2><a name="ToC11">Secure Sockets Layer (SSL)</a></h2>
+The Secure Sockets Layer protocol is a protocol layer which may be placed
+between a reliable connection-oriented network layer protocol (e.g. TCP/IP)
+and the application protocol layer (e.g. HTTP). SSL provides for secure
+communication between client and server by allowing mutual authentication, the
+use of digital signatures for integrity, and encryption for privacy.
+<p>
+The protocol is designed to support a range of choices for specific algorithms
+used for cryptography, digests, and signatures. This allows algorithm
+selection for specific servers to be made based on legal, export or other
+concerns, and also enables the protocol to take advantage of new algorithms.
+Choices are negotiated between client and server at the start of establishing
+a protocol session.
+<p>
+<div align="center">
+<a name="table4"></a>
+<table width="600" cellspacing="0" cellpadding="1" border="0" summary="">
+<caption align="bottom" id="sf">Table 4: Versions of the SSL protocol</caption>
+<tr><td bgcolor="#cccccc">
+<table width="598" cellpadding="5" cellspacing="0" border="0" summary="">
+<tr><td valign="top" align="center" bgcolor="#ffffff">
+<table summary="">
+<tr valign="top">
+<td><b>Version:</b></td>
+<td><b>Source:</b></td>
+<td><b>Description:</b></td>
+<td><b>Browser Support:</b></td>
+</tr>
+<tr valign="top">
+<td>SSL v2.0</td>
+<td>Vendor Standard (from Netscape Corp.) [<a href="#SSL2">SSL2</a>]</td>
+<td>First SSL protocol for which implementations exists</td>
+<td>- NS Navigator 1.x/2.x<br>
+    - MS IE 3.x<br>
+    - Lynx/2.8+OpenSSL
+</td>
+</tr>
+<tr valign="top">
+<td>SSL v3.0</td>
+<td>Expired Internet Draft (from Netscape Corp.) [<a href="#SSL3">SSL3</a>]</td>
+<td>Revisions to prevent specific security attacks, add non-RSA ciphers, and support for certificate chains</td>
+<td>- NS Navigator 2.x/3.x/4.x<br>
+    - MS IE 3.x/4.x<br>
+    - Lynx/2.8+OpenSSL
+</td>
+</tr>
+<tr valign="top">
+<td>TLS v1.0</td>
+<td>Proposed Internet Standard (from IETF) [<a href="#TLS1">TLS1</a>]</td>
+<td>Revision of SSL 3.0 to update the MAC layer to HMAC, add block padding for
+    block ciphers, message order standardization and more alert messages.
+</td>
+<td>- Lynx/2.8+OpenSSL</td>
+</table>
+</td>
+</tr></table>
+</td></tr></table>
+</div>
+<p>
+There are a number of versions of the SSL protocol, as shown in <a
+href="#table4">Table 4</a>. As noted there, one of the benefits in SSL 3.0 is
+that it adds support of certificate chain loading. This feature allows a
+server to pass a server certificate along with issuer certificates to the
+browser. Chain loading also permits the browser to validate the server
+certificate, even if Certificate Authority certificates are not installed for
+the intermediate issuers, since they are included in the certificate chain.
+SSL 3.0 is the basis for the Transport Layer Security [<A
+HREF="#TLS1">TLS</A>] protocol standard, currently in development by the
+Internet Engineering Task Force (IETF).
+<h3><a name="ToC12">Session Establishment</a></h3>
+The SSL session is established by following a <I>handshake sequence</I>
+between client and server, as shown in <a href="#figure1">Figure 1</a>. This
+sequence may vary, depending on whether the server is configured to provide a
+server certificate or request a client certificate. Though cases exist where
+additional handshake steps are required for management of cipher information,
+this article summarizes one common scenario: see the SSL specification for the
+full range of possibilities.
+<p>
+<div align="center"><b>Note</b></div>
+Once an SSL session has been established it may be reused, thus avoiding the
+performance penalty of repeating the many steps needed to start a session.
+For this the server assigns each SSL session a unique session identifier which
+is cached in the server and which the client can use on forthcoming
+connections to reduce the handshake (until the session identifer expires in
+the cache of the server).
+<p>
+<div align="center">
+<a name="figure1"></a>
+<table width="600" cellspacing="0" cellpadding="1" border="0" summary="">
+<caption align="bottom" id="sf">Figure 1: Simplified SSL Handshake Sequence</caption>
+<tr><td bgcolor="#cccccc">
+<table width="598" cellpadding="5" cellspacing="0" border="0" summary="">
+<tr><td valign="top" align="center" bgcolor="#ffffff">
+<img src="ssl_intro_fig1.gif" alt="" width="423" height="327">
+</td>
+</tr></table>
+</td></tr></table>
+</div>
+<p>
+The elements of the handshake sequence, as used by the client and server, are
+listed below:
+<ol>
+<li>Negotiate the Cipher Suite to be used during data transfer
+<li>Establish and share a session key between client and server
+<li>Optionally authenticate the server to the client
+<li>Optionally authenticate the client to the server
+</ol>
+<p>
+The first step, Cipher Suite Negotiation, allows the client and server to
+choose a Cipher Suite supportable by both of them. The SSL3.0 protocol
+specification defines 31 Cipher Suites. A Cipher Suite is defined by the
+following components:
+<ul>
+<li>Key Exchange Method
+<li>Cipher for Data Transfer
+<li>Message Digest for creating the Message Authentication Code (MAC)
+</ul>
+These three elements are described in the sections that follow.
+<h3><a name="ToC13">Key Exchange Method</a></h3>
+The key exchange method defines how the shared secret symmetric cryptography
+key used for application data transfer will be agreed upon by client and
+server. SSL 2.0 uses RSA key exchange only, while SSL 3.0 supports a choice of
+key exchange algorithms including the RSA key exchange when certificates are
+used, and Diffie-Hellman key exchange for exchanging keys without certificates
+and without prior communication between client and server.
+<p>
+One variable in the choice of key exchange methods is digital signatures --
+whether or not to use them, and if so, what kind of signatures to use.
+Signing with a private key provides assurance against a
+man-in-the-middle-attack during the information exchange used in generating
+the shared key [<a href="#AC96">AC96</a>, p516].
+<h3><a name="ToC14">Cipher for Data Transfer</a></h3>
+SSL uses the conventional cryptography algorithm (symmetric cryptography)
+described earlier for encrypting messages in a session. There are nine
+choices, including the choice to perform no encryption:
+<ul>
+<li>No encryption
+<li>Stream Ciphers
+    <ul>
+    <li>RC4 with 40-bit keys
+    <li>RC4 with 128-bit keys
+    </ul>
+<li>CBC Block Ciphers
+    <ul>
+    <li>RC2 with 40 bit key
+    <li>DES with 40 bit key
+    <li>DES with 56 bit key
+    <li>Triple-DES with 168 bit key
+    <li>Idea (128 bit key)
+    <li>Fortezza (96 bit key)
+    </ul>
+</ul>
+Here "CBC" refers to Cipher Block Chaining, which means that a portion of the
+previously encrypted cipher text is used in the encryption of the current
+block. "DES" refers to the Data Encryption Standard [<a href="#AC96">AC96</a>,
+ch12], which has a number of variants (including DES40 and 3DES_EDE). "Idea"
+is one of the best and cryptographically strongest available algorithms, and
+"RC2" is a proprietary algorithm from RSA DSI [<a href="#AC96">AC96</a>,
+ch13].
+<h3><a name="ToC15">Digest Function</a></h3>
+The choice of digest function determines how a digest is created from a record
+unit. SSL supports the following:
+<ul>
+<li>No digest (Null choice)
+<li>MD5, a 128-bit hash
+<li>Secure Hash Algorithm (SHA-1), a 160-bit hash
+</ul>
+The message digest is used to create a Message Authentication Code (MAC) which
+is encrypted with the message to provide integrity and to prevent against
+replay attacks.
+<h3><a name="ToC16">Handshake Sequence Protocol</a></h3>
+The handshake sequence uses three protocols:
+<ul>
+<li>The <em>SSL Handshake Protocol</em>
+    for performing the client and server SSL session establishment.
+<li>The <em>SSL Change Cipher Spec Protocol</em> for actually establishing agreement
+    on the Cipher Suite for the session.
+<li>The <em>SSL Alert Protocol</em> for
+    conveying SSL error messages between client and server.
+</ul>
+These protocols, as well as application protocol data, are encapsulated in the
+<em>SSL Record Protocol</em>, as shown in <a href="#figure2">Figure 2</a>. An
+encapsulated protocol is transferred as data by the lower layer protocol,
+which does not examine the data. The encapsulated protocol has no knowledge of
+the underlying protocol.
+<p>
+<div align="center">
+<a name="figure2"></a>
+<table width="600" cellspacing="0" cellpadding="1" border="0" summary="">
+<caption align="bottom" id="sf">Figure 2: SSL Protocol Stack</caption>
+<tr><td bgcolor="#cccccc">
+<table width="598" cellpadding="5" cellspacing="0" border="0" summary="">
+<tr><td valign="top" align="center" bgcolor="#ffffff">
+<img src="ssl_intro_fig2.gif" alt="" width="428" height="217">
+</td>
+</tr></table>
+</td></tr></table>
+</div>
+<p>
+The encapsulation of SSL control protocols by the record protocol means that
+if an active session is renegotiated the control protocols will be transmitted
+securely. If there were no session before, then the Null cipher suite is
+used, which means there is no encryption and messages have no integrity
+digests until the session has been established.
+<h3><a name="ToC17">Data Transfer</a></h3>
+The SSL Record Protocol, shown in <a href="#figure3">Figure 3</a>, is used to
+transfer application and SSL Control data between the client and server,
+possibly fragmenting this data into smaller units, or combining multiple
+higher level protocol data messages into single units. It may compress, attach
+digest signatures, and encrypt these units before transmitting them using the
+underlying reliable transport protocol (Note: currently all major SSL
+implementations lack support for compression).
+<p>
+<div align="center">
+<a name="figure3"></a>
+<table width="600" cellspacing="0" cellpadding="1" border="0" summary="">
+<caption align="bottom" id="sf">Figure 3: SSL Record Protocol</caption>
+<tr><td bgcolor="#cccccc">
+<table width="598" cellpadding="5" cellspacing="0" border="0" summary="">
+<tr><td valign="top" align="center" bgcolor="#ffffff">
+<img src="ssl_intro_fig3.gif" alt="" width="423" height="323">
+</td>
+</tr></table>
+</td></tr></table>
+</div>
+<h3><a name="ToC18">Securing HTTP Communication</a></h3>
+One common use of SSL is to secure Web HTTP communication between a browser
+and a webserver. This case does not preclude the use of non-secured HTTP. The
+secure version is mainly plain HTTP over SSL (named HTTPS), but with one major
+difference: it uses the URL scheme <code>https</code> rather than
+<code>http</code> and a different server port (by default 443). This mainly
+is what mod_ssl provides to you for the Apache webserver...
+<h2><a name="ToC19">References</a></h2>
+<ul>
+<p>
+<li><a name="AC96"></a>
+[AC96] Bruce Schneier, <em>Applied Cryptography</em>, 2nd Edition, Wiley,
+       1996. See <a href="http://www.counterpane.com/">http://www.counterpane.com/</a> for
+       various other materials by Bruce Schneier.
+<p>
+<li><a name="X208"></a>
+[X208] ITU-T Recommendation X.208, <em>Specification of Abstract Syntax Notation
+       One (ASN.1)</em>, 1988. See for instance <a
+       href="ftp://ftp.neda.com/pub/itu/x.series/x208.ps">
+       ftp://ftp.neda.com/pub/itu/x.series/x208.ps</a>.
+<p>
+<li><a name="X509"></a>
+[X509] ITU-T Recommendation X.509, <em>The Directory - Authentication
+       Framework</em>, 1988. See for instance <a
+       href="ftp://ftp.bull.com/pub/OSIdirectory/ITUnov96/X.509/97x509final.doc">
+       ftp://ftp.bull.com/pub/OSIdirectory/ITUnov96/X.509/97x509final.doc</a>.
+<p>
+<li><a name="PKCS"></a>
+[PKCS] Kaliski, Burton S., Jr., <em>An Overview of the PKCS Standards</em>, An RSA
+     Laboratories Technical Note, revised November 1, 1993.
+     See <a href="http://www.rsa.com/rsalabs/pubs/PKCS/">
+     http://www.rsa.com/rsalabs/pubs/PKCS/</a>.
+<p>
+<li><a name="MIME"></a>
+[MIME] N. Freed, N. Borenstein, <em>Multipurpose Internet Mail Extensions
+       (MIME) Part One: Format of Internet Message Bodies</em>, RFC2045.
+       See for instance <a href="ftp://ftp.isi.edu/in-notes/rfc2045.txt">
+       ftp://ftp.isi.edu/in-notes/rfc2045.txt</a>.
+<p>
+<li><a name="SSL2"></a>
+[SSL2] Kipp E.B. Hickman, <em>The SSL Protocol</em>, 1995.
+       See <a href="http://www.netscape.com/eng/security/SSL_2.html">
+       http://www.netscape.com/eng/security/SSL_2.html</a>.
+<p>
+<li><a name="SSL3"></a>
+[SSL3] Alan O. Freier, Philip Karlton, Paul C. Kocher, <em>The SSL Protocol
+       Version 3.0</em>, 1996. See <a
+       href="http://www.netscape.com/eng/ssl3/draft302.txt">
+       http://www.netscape.com/eng/ssl3/draft302.txt</a>.
+<p>
+<li><a name="TLS1"></a>
+[TLS1] Tim Dierks, Christopher Allen, <em>The TLS Protocol Version 1.0</em>,
+       1997. See <a
+       href="ftp://ftp.ietf.org/internet-drafts/draft-ietf-tls-protocol-06.txt">
+       ftp://ftp.ietf.org/internet-drafts/draft-ietf-tls-protocol-06.txt</a>.
+</ul>
+      <p>
+      <br>
+      <table summary="">
+      <tr>
+        <td>
+           <table width="600" border="0" summary="">
+           <tr>
+            <td valign="top" align="left" width="250">
+<a href="ssl_overview.html" onmouseover="ro_imgOver('ro_img_prev_bot', 'previous page'); return true" onmouseout="ro_imgNormal('ro_img_prev_bot'); return true" onfocus="ro_imgOver('ro_img_prev_bot', 'previous page'); return true" onblur="ro_imgNormal('ro_img_prev_bot'); return true"><img name="ro_img_prev_bot" src="ssl_template.navbut-prev-n.gif" alt="previous page" width="70" height="18" border="0"></a><br><font color="#000000">Overview</font>
+            </td>
+            <td valign="top" align="right" width="250">
+<a href="ssl_reference.html" onmouseover="ro_imgOver('ro_img_next_bot', 'next page'); return true" onmouseout="ro_imgNormal('ro_img_next_bot'); return true" onfocus="ro_imgOver('ro_img_next_bot', 'next page'); return true" onblur="ro_imgNormal('ro_img_next_bot'); return true"><img name="ro_img_next_bot" src="ssl_template.navbut-next-n.gif" alt="next page" width="70" height="18" border="0"></a><br><font color="#000000">Reference</font>
+            </td>
+           </tr>
+           </table>
+         </td>
+      </tr>
+      <tr>
+        <td><img src="ssl_template.imgdot-1x1-000000.gif" alt="" width="600" height="2" align="bottom" border="0"></td>
+      </tr>
+      <tr>
+        <td><table width="598" summary="">
+        <tr>
+        <td align="left"><font face="Arial,Helvetica">
+        <a href="http://www.modssl.org/">mod_ssl</a> 2.8, User Manual<br>
+        The Apache Interface to OpenSSL
+        </font>
+        </td>
+        <td align="right"><font face="Arial,Helvetica">
+        Copyright &copy; 1998-2001
+        <a href="http://www.engelschall.com/">Ralf S. Engelschall</a><br>
+        All Rights Reserved<br>
+        </font>
+        </td>
+        </tr>
+        </table>
+        </td>
+      </tr>
+      </table>
+  </td>
+</tr>
+</table>
+</div>
+</body>
+</html>
