@@ -14,7 +14,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.143 $ ($Date: 1999/02/21 20:35:12 $)
+  $Revision: 1.144 $ ($Date: 1999/05/27 16:49:26 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -959,7 +959,11 @@
   <A HREF="../mod/core.html#group"><SAMP>Group</SAMP></A>
   directive (probably in <SAMP>conf/httpd.conf</SAMP>) needs to name a
   group that actually exists in the <SAMP>/etc/group</SAMP> file (or
-  your system's equivalent).
+  your system's equivalent).  This problem is also frequently seen when
+  a negative number is used in the <CODE>Group</CODE> directive
+  (<EM>e.g.</EM>, "<CODE>Group&nbsp;#-1</CODE>").  Using a group name
+  -- not group number -- found in your system's group database should
+  solve this problem in all cases.
   </P>
   <HR>
  </LI>
