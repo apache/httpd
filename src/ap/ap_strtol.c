@@ -106,9 +106,8 @@
  *
  * Assumes that the upper and lower case
  * alphabets and digits are each contiguous.
- * As such, this will break on EBCDIC machines
- * if base is >19. The highest we use is 16
- * so we're OK, but you are warned!
+ * (On EBCDIC machines it assumes that digits and
+ *  upper/lower case A-I, J-R, and S-Z are contiguous.)
  */
 
 API_EXPORT(long) ap_strtol(const char *nptr, char **endptr, int base)
@@ -173,10 +172,25 @@ API_EXPORT(long) ap_strtol(const char *nptr, char **endptr, int base)
 	for ( ; ; c = *s++) {
 		if (c >= '0' && c <= '9')
 			c -= '0';
+#ifdef CHARSET_EBCDIC
+		else if (c >= 'A' && c <= 'I')
+			c -= 'A' - 10;
+		else if (c >= 'a' && c <= 'i')
+			c -= 'a' - 10;
+		else if (c >= 'J' && c <= 'R')
+			c -= 'J' - 19;
+		else if (c >= 'j' && c <= 'r')
+			c -= 'j' - 19;
+		else if (c >= 'S' && c <= 'Z')
+			c -= 'S' - 28;
+		else if (c >= 's' && c <= 'z')
+			c -= 's' - 28;
+#else
 		else if (c >= 'A' && c <= 'Z')
 			c -= 'A' - 10;
 		else if (c >= 'a' && c <= 'z')
 			c -= 'a' - 10;
+#endif /* CHARSET_EBCDIC */
 		else
 			break;
 		if (c >= base)
