@@ -1,5 +1,8 @@
 Changes with Apache 1.3.7
 
+  *) The "100 Continue" response wasn't being sent after internal
+     redirects. [Jose KAHAN <kahan@w3.org>] PR#3910
+
   *) When padding the name with spaces for display, mod_autoindex would
      count &, <, and > in their escaped width, messing up the display.
      [Dean Gaudet] PR#4075

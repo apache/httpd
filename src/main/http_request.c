@@ -1309,6 +1309,7 @@ static request_rec *internal_internal_redirect(const char *new_uri, request_rec 
 
     new->htaccess        = r->htaccess;
     new->no_cache        = r->no_cache;
+    new->expecting_100	 = r->expecting_100;
     new->no_local_copy   = r->no_local_copy;
     new->read_length     = r->read_length;     /* We can only read it once */
     new->vlist_validator = r->vlist_validator;
