@@ -91,12 +91,12 @@ void ssl_log_ssl_error(const char *file, int line, int level, server_rec *s)
 
         if (annotation) {
             ap_log_error(file, line, level, 0, s,
-                         "SSL Library Error: %ld %s %s",
+                         "SSL Library Error: %lu %s %s",
                          e, err, annotation); 
         }
         else {
             ap_log_error(file, line, level, 0, s,
-                         "SSL Library Error: %ld %s",
+                         "SSL Library Error: %lu %s",
                          e, err); 
         }
     }
