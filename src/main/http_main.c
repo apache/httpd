@@ -4680,7 +4680,7 @@ int REALMAIN(int argc, char *argv[])
     ap_setup_prelinked_modules();
 
     while ((c = getopt(argc, argv,
-				    "D:C:c:xXd:f:vVlLR:Sth"
+				    "D:C:c:xXd:f:vVlLR:StTh"
 #ifdef DEBUG_SIGSTOP
 				    "Z:"
 #endif
@@ -6175,7 +6175,7 @@ int REALMAIN(int argc, char *argv[])
     ap_cpystrn(cwd, ap_os_canonical_filename(pcommands, cwd), sizeof(cwd));
     ap_cpystrn(ap_server_root, cwd, sizeof(ap_server_root));
 
-    while ((c = getopt(argc, argv, "D:C:c:Xd:f:vVlLZ:iusSthk:n:")) != -1) {
+    while ((c = getopt(argc, argv, "D:C:c:Xd:f:vVlLZ:iusStThk:n:")) != -1) {
         char **new;
 	switch (c) {
 	case 'c':
@@ -6462,7 +6462,7 @@ int main(int argc, char *argv[], char *envp[])
      * but only handle the -L option 
      */
     llp_dir = SHARED_CORE_DIR;
-    while ((c = getopt(argc, argv, "D:C:c:Xd:f:vVlLR:SZ:th")) != -1) {
+    while ((c = getopt(argc, argv, "D:C:c:Xd:f:vVlLR:SZ:tTh")) != -1) {
 	switch (c) {
 	case 'D':
 	case 'C':
@@ -6477,6 +6477,7 @@ int main(int argc, char *argv[], char *envp[])
 	case 'S':
 	case 'Z':
 	case 't':
+	case 'T':
 	case 'h':
 	case '?':
 	    break;
