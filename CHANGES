@@ -35,9 +35,6 @@ Changes with Apache 2.1.0-dev
      delimiters (;). Thus column headers no longer contain unescaped
      ampersands. PR 10880  [André Malo]
 
-  *) mod_autoindex no longer forgets output format and enabled version
-     sort in linked column headers.  [André Malo]
-
   *) Extend mod_negotiation to evaluate the environment variables
      no-gzip and gzip-only-text/html the same way as mod_deflate does.
      [André Malo]
@@ -169,6 +166,9 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.45
+
+  *) mod_autoindex no longer forgets output format and enabled version
+     sort in linked column headers.  [André Malo]
 
   *) Use .sv instead of .se as extension for Swedish documents in the
      default configuration. PR 12877.  [André Malo]
