@@ -1087,6 +1087,7 @@ apr_status_t ap_proxy_string_read(conn_rec *c, apr_bucket_brigade *bb,
 {
     apr_bucket *e;
     apr_status_t rv;
+    apr_size_t zero = 0;
     char *pos = buff;
     char *response;
     int found = 0;
@@ -1100,7 +1101,7 @@ apr_status_t ap_proxy_string_read(conn_rec *c, apr_bucket_brigade *bb,
     while (!found) {
 
 	/* get brigade from network one line at a time */
-	if (APR_SUCCESS != (rv = ap_get_brigade(c->input_filters, bb, AP_MODE_BLOCKING, 0))) {
+	if (APR_SUCCESS != (rv = ap_get_brigade(c->input_filters, bb, AP_MODE_BLOCKING, &zero))) {
 	    return rv;
 	}
 
