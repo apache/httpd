@@ -455,6 +455,17 @@ static const char *log_request_time_custom(request_rec *r, char *a,
     return apr_pstrdup(r->pool, tstr);
 }
 
+#define DEFAULT_REQUEST_TIME_SIZE 32
+typedef struct {
+    apr_int64_t t;
+    char timestr[DEFAULT_REQUEST_TIME_SIZE];
+    apr_int64_t t_validate;
+} cached_request_time;
+
+#define TIME_CACHE_SIZE 4
+#define TIME_CACHE_MASK 3
+static cached_request_time request_time_cache[TIME_CACHE_SIZE];
+
 static const char *log_request_time(request_rec *r, char *a)
 {
     apr_time_exp_t xt;
@@ -470,11 +481,6 @@ static const char *log_request_time(request_rec *r, char *a)
 	than force the server to pay extra cpu cycles.	if you've got
 	a problem with this, you can set the define.  -djg
     */
-#ifdef I_INSIST_ON_EXTRA_CYCLES_FOR_CLF_COMPLIANCE
-    ap_explode_recent_localtime(&xt, apr_time_now());
-#else
-    ap_explode_recent_localtime(&xt, r->request_time);
-#endif
     if (a && *a) {              /* Custom format */
         /* The custom time formatting uses a very large temp buffer
          * on the stack.  To avoid using so much stack space in the
@@ -482,25 +488,57 @@ static const char *log_request_time(request_rec *r, char *a)
          * for the custom format in a separate function.  (That's why
          * log_request_time_custom is not inlined right here.)
          */
+#ifdef I_INSIST_ON_EXTRA_CYCLES_FOR_CLF_COMPLIANCE
+        ap_explode_recent_localtime(&xt, apr_time_now());
+#else
+        ap_explode_recent_localtime(&xt, r->request_time);
+#endif
         return log_request_time_custom(r, a, &xt);
     }
     else {                      /* CLF format */
-	char sign;
-	int timz;
+        /* This code uses the same technique as ap_explode_recent_localtime():
+         * optimistic caching with logic to detect and correct race conditions.
+         * See the comments in server/util_time.c for more information.
+         */
+        cached_request_time* cached_time = apr_palloc(r->pool,
+                                                      sizeof(*cached_time));
+#ifdef I_INSIST_ON_EXTRA_CYCLES_FOR_CLF_COMPLIANCE
+        apr_time_t request_time = apr_time_now();
+#else
+        apr_time_t request_time = r->request_time;
+#endif
+        unsigned i = request_time / APR_USEC_PER_SEC;
+        i &= TIME_CACHE_MASK;
+        memcpy(cached_time, &(request_time_cache[i]), sizeof(*cached_time));
+        if ((request_time != cached_time->t) ||
+            (request_time != cached_time->t_validate)) {
 
-	timz = xt.tm_gmtoff;
-	if (timz < 0) {
-	    timz = -timz;
-	    sign = '-';
-	}
-	else {
-	    sign = '+';
-	}
+            /* Invalid or old snapshot, so compute the proper time string
+             * and store it in the cache
+             */
+            char sign;
+            int timz;
 
-        return apr_psprintf(r->pool, "[%02d/%s/%d:%02d:%02d:%02d %c%.2d%.2d]",
-                xt.tm_mday, apr_month_snames[xt.tm_mon], xt.tm_year+1900,
-                xt.tm_hour, xt.tm_min, xt.tm_sec,
-                sign, timz / (60*60), timz % (60*60));
+            ap_explode_recent_localtime(&xt, r->request_time);
+            timz = xt.tm_gmtoff;
+            if (timz < 0) {
+                timz = -timz;
+                sign = '-';
+            }
+            else {
+                sign = '+';
+            }
+            cached_time->t = request_time;
+            apr_snprintf(cached_time->timestr, DEFAULT_REQUEST_TIME_SIZE,
+                         "[%02d/%s/%d:%02d:%02d:%02d %c%.2d%.2d]",
+                         xt.tm_mday, apr_month_snames[xt.tm_mon],
+                         xt.tm_year+1900, xt.tm_hour, xt.tm_min, xt.tm_sec,
+                         sign, timz / (60*60), timz % (60*60));
+            cached_time->t_validate = request_time;
+            memcpy(&(request_time_cache[i]), cached_time,
+                   sizeof(*cached_time));
+        }
+        return cached_time->timestr;
     }
 }
 
