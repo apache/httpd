@@ -3058,11 +3058,14 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
         APR_BRIGADE_INSERT_TAIL(ctx->b, e);
         net->in_ctx = ctx;
     }
-
+    else if (APR_BRIGADE_EMPTY(ctx->b)) {
+        return APR_EOF;
+    }
+    
     /* ### This is bad. */
     APR_BRIGADE_NORMALIZE(ctx->b);
 
-    /* check for empty brigade *AFTER* APR_BRIGADE_NORMALIZE()
+    /* check for empty brigade again *AFTER* APR_BRIGADE_NORMALIZE()
      * If we have lost our socket bucket (see above), we are EOF.
      *
      * Ideally, this should be returning SUCCESS with EOS bucket, but
