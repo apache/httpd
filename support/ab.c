@@ -204,11 +204,12 @@
 #define CBUFFSIZE (2048)
 
 struct connection {
+    apr_pool_t *ctx;
     apr_socket_t *aprsock;
     int state;
     int read;			/* amount of bytes read */
     int bread;			/* amount of body read */
-    int rwrite, rwrote;		/* keep pointers in what we write - across
+    int rwrite, rwrote;	        /* keep pointers in what we write - across
 				 * EAGAINs */
     int length;			/* Content-Length value used for keep-alive */
     char cbuff[CBUFFSIZE];	/* a buffer to store server response header */
@@ -271,13 +272,13 @@ apr_port_t port;		/* port number */
 char proxyhost[1024];		/* proxy host name */
 int proxyport = 0;		/* proxy port */
 char connecthost[1024];
-int connectport;
+apr_port_t connectport;
 char *gnuplot;			/* GNUplot file */
 char *csvperc;			/* CSV Percentile file */
 char url[1024];
 char fullurl[1024];
 int isproxy = 0;
-apr_time_t aprtimeout = 30 * APR_USEC_PER_SEC;	/* timeout value */
+apr_short_interval_time_t aprtimeout = 30 * APR_USEC_PER_SEC;	/* timeout value */
  /*
   * XXX - this is now a per read/write transact type of value
   */
@@ -325,6 +326,8 @@ apr_pool_t *cntxt;
 
 apr_pollfd_t *readbits;
 
+apr_sockaddr_t *destsa;
+
 #ifdef NOT_ASCII
 apr_xlate_t *from_ascii, *to_ascii;
 #endif
@@ -361,7 +364,7 @@ static void write_request(struct connection * c)
 {
     do {
 	apr_time_t tnow = apr_time_now();
-	apr_size_t l = c->rwrite;
+	int l = c->rwrite;
 	apr_status_t e;
 
 	/*
@@ -827,8 +830,7 @@ static void output_html_results(void)
 static void start_connect(struct connection * c)
 {
     apr_status_t rv;
-    apr_sockaddr_t *destsa;
-
+    
     if (!(started < requests))
 	return;
 
@@ -838,16 +840,12 @@ static void start_connect(struct connection * c)
     c->cbx = 0;
     c->gotheader = 0;
     c->rwrite = 0;
+    if (c->ctx)
+        apr_pool_destroy(c->ctx);
+    apr_pool_create(&c->ctx, cntxt);
 
-    if ((rv = apr_sockaddr_info_get(&destsa, connecthost, APR_UNSPEC, connectport, 0, cntxt))
-	!= APR_SUCCESS) {
-	char buf[120];
-	apr_snprintf(buf, sizeof(buf),
-		     "apr_sockaddr_info_get() for %s", connecthost);
-	apr_err(buf, rv);
-    }
     if ((rv = apr_socket_create(&c->aprsock, destsa->sa.sin.sin_family,
-				SOCK_STREAM, cntxt)) != APR_SUCCESS) {
+				SOCK_STREAM, c->ctx)) != APR_SUCCESS) {
 	apr_err("socket", rv);
     }
     c->start = apr_time_now();
@@ -932,7 +930,7 @@ static void close_connection(struct connection * c)
 
 static void read_connection(struct connection * c)
 {
-    apr_size_t r;
+    int r;
     apr_status_t status;
     char *part;
     char respcode[4];		/* 3 digits and null */
@@ -1138,10 +1136,9 @@ static void test(void)
 
     now = apr_time_now();
 
-    con = malloc(concurrency * sizeof(struct connection));
-    memset(con, 0, concurrency * sizeof(struct connection));
-
-    stats = malloc(requests * sizeof(struct data));
+    con = calloc(concurrency * sizeof(struct connection), 1);
+    
+    stats = calloc(requests * sizeof(struct data), 1);
     apr_poll_setup(&readbits, concurrency, cntxt);
 
     /* setup request */
@@ -1201,6 +1198,15 @@ static void test(void)
 	exit(1);
     }
 #endif				/* NOT_ASCII */
+
+    /* This only needs to be done once */
+    if ((rv = apr_sockaddr_info_get(&destsa, connecthost, APR_UNSPEC, connectport, 0, cntxt))
+	!= APR_SUCCESS) {
+	char buf[120];
+	apr_snprintf(buf, sizeof(buf),
+		     "apr_sockaddr_info_get() for %s", connecthost);
+	apr_err(buf, rv);
+    }
 
     /* ok - lets start */
     start = apr_time_now();
@@ -1292,14 +1298,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-	printf("This is ApacheBench, Version %s\n", AB_VERSION " <$Revision: 1.76 $> apache-2.0");
+	printf("This is ApacheBench, Version %s\n", AB_VERSION " <$Revision: 1.77 $> apache-2.0");
 	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
 	printf("Copyright (c) 1998-2001 The Apache Software Foundation, http://www.apache.org/\n");
 	printf("\n");
     }
     else {
 	printf("<p>\n");
-	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AB_VERSION, "$Revision: 1.76 $");
+	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AB_VERSION, "$Revision: 1.77 $");
 	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
 	printf(" Copyright (c) 1998-2001 The Apache Software Foundation, http://www.apache.org/<br>\n");
 	printf("</p>\n<p>\n");
@@ -1663,6 +1669,7 @@ int main(int argc, const char *const argv[])
 #endif
     copyright();
     test();
+    apr_pool_destroy(cntxt);
 
     return 0;
 }

@@ -1,5 +1,10 @@
 Changes with Apache 2.0.21-dev
 
+  *) Introduce connection sub-pools into ab.  Truncating the lifetime
+     of these allocations means that ab no longer perpetually grows
+     its working set, running out of memory on large request attempts.
+     [William Rowe]
+
   *) Make scoreboard creation a hook.  This allows management
      modules to have access to the scoreboard at the time that it is
      created, and at every restart request.  
