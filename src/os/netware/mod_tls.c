@@ -207,12 +207,6 @@ static int make_secure_socket(pool *p, const struct sockaddr_in *server,
         return -1;
     }
 
-    if (setsockopt(s, IPPROTO_TCP, TCP_NODELAY, (char *) &no, sizeof(int)) < 0) {
-        errno = WSAGetLastError();
-        ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf,
-            "setsockopt: (TCP_NODELAY)");
-    }
-
     if (server_conf->send_buffer_size) {
         if (setsockopt(s, SOL_SOCKET, SO_SNDBUF,
             (char *) &server_conf->send_buffer_size, sizeof(int)) < 0) {
@@ -231,6 +225,12 @@ static int make_secure_socket(pool *p, const struct sockaddr_in *server,
             "make_secure_socket: could not bind to %s", addr);
         ap_unblock_alarms();
         return -1;
+    }
+
+    if (setsockopt(s, IPPROTO_TCP, TCP_NODELAY, (char *) &no, sizeof(int)) < 0) {
+        errno = WSAGetLastError();
+        ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf,
+            "setsockopt: (TCP_NODELAY)");
     }
 
     if (listen(s, ap_listenbacklog) == -1) {
@@ -349,7 +349,12 @@ int tls_hook_Fixup(request_rec *r)
     const char *s_secure;
     char port[8];
     
-    itoa(r->server->port, port, 10);
+    
+    // For some reason r->server->port always return 80 rather than
+    //  the current port.  So for now we will get it straight from
+    //  the horses mouth.
+    //  itoa(r->server->port, port, 10);
+    itoa(ntohs(((r->connection)->local_addr).sin_port), port, 10);
     s_secure = ap_table_get(sc->sltable, port);    
     
     if (!s_secure)
@@ -381,8 +386,12 @@ module MODULE_VAR_EXPORT tls_module =
     NULL,                     /* check auth */
     NULL,                     /* check access */
     NULL,                     /* type_checker */    
-    tls_hook_Fixup,           /* fixups */
+    NULL,			          /* fixups */
     NULL,                     /* logger */
+    NULL,               	  /* header parser */
+    NULL,               	  /* child_init */
+    NULL,			       	  /* child_exit */
+    tls_hook_Fixup         	  /* post read request */
 };
 
 
