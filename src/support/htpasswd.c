@@ -115,17 +115,9 @@
 static char *tempfilename;
 
 /*
- * Duplicate a string into memory malloc()ed for it.
+ * Get a line of input from the user, not including any terminating
+ * newline.
  */
-static char *strd(char *s)
-{
-    char *d;
-
-    d = (char *) malloc(strlen(s) + 1);
-    strcpy(d, s);
-    return (d);
-}
-
 static int getline(char *s, int n, FILE *f)
 {
     register int i = 0;
@@ -236,17 +228,23 @@ static int mkrecord(char *user, char *record, size_t rlen, char *passwd,
     char *pw;
     char cpw[120];
     char salt[9];
+    char pwin[129];
+    char pwv[129];
 
     if (passwd != NULL) {
 	pw = passwd;
     }
     else {
-	pw = strd((char *) getpass("New password: "));
-	if (strcmp(pw, (char *) getpass("Re-type new password: "))) {
+	if (ap_getpass("New password: ", pwin, sizeof(pwin)) != 0) {
+	    ap_cpystrn(record, "password too long", (rlen -1));
+	    return ERR_OVERFLOW;
+	}
+	ap_getpass("Re-type new password: ", pwv, sizeof(pwv));
+	if (strcmp(pwin, pwv) != 0) {
 	    ap_cpystrn(record, "password verification error", (rlen - 1));
-	    free(pw);
 	    return ERR_PWMISMATCH;
 	}
+	pw = pwin;
     }
     (void) srand((int) time((time_t *) NULL));
     to64(&salt[0], rand(), 8);
@@ -262,13 +260,6 @@ static int mkrecord(char *user, char *record, size_t rlen, char *passwd,
 	break;
     }
 
-    /*
-     * Now that we have the smashed password, we don't need the
-     * plaintext one any more.
-     */
-    if (passwd == NULL) {
-	free(pw);
-    }
     /*
      * Check to see if the buffer is large enough to hold the username,
      * hash, and delimiters.
