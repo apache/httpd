@@ -1232,18 +1232,16 @@ static const char *set_allow_opts(cmd_parms *cmd, allow_options_t *opts,
     allow_options_t opt;
     int first = 1;
 
-    char *p = (char *) l;
+    char *w, *p = (char *) l;
+    char *tok_state;
 
-    while (p && *p) {
-        char *w = strsep(&p, ",");
+    while (w = apr_strtok(p, ",", &tok_state)) {
 
         if (first) {
+            p = NULL;
             *opts = OPT_NONE;
             first = 0;
         }
-
-	if (!w)
-	    continue;
 
         if (!strcasecmp(w, "Indexes")) {
             opt = OPT_INDEXES;
