@@ -171,6 +171,10 @@ int ssl_hook_ReadReq(request_rec *r)
     SSLConnRec *sslconn = myConnConfig(r->connection);
     SSL *ssl;
 
+    if (!sslconn) {
+        return DECLINED;
+    }
+
     /*
      * Get the SSL connection structure and perform the
      * delayed interlinking from SSL back to request_rec
@@ -233,7 +237,7 @@ int ssl_hook_Translate(request_rec *r)
 {
     SSLConnRec *sslconn = myConnConfig(r->connection);
 
-    if (sslconn->ssl == NULL)
+    if (!sslconn || !sslconn->ssl)
         return DECLINED;
 
     /*
@@ -332,7 +336,7 @@ int ssl_hook_Access(request_rec *r)
     dc  = myDirConfig(r);
     sc  = mySrvConfig(r->server);
     sslconn = myConnConfig(r->connection);
-    ssl = sslconn->ssl;
+    ssl = sslconn ? sslconn->ssl : NULL;
     if (ssl != NULL)
         ctx = SSL_get_SSL_CTX(ssl);
 
