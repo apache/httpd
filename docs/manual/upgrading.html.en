@@ -61,7 +61,7 @@
       href="mod/mod_include.html">INCLUDES</a> are implemented on top
       of the core handler, and therefore reject requests with
       PATH_INFO.  You can use the <a
-      href="core.html#acceptpathinfo">AcceptPathInfo</a> directive to
+      href="mod/core.html#acceptpathinfo">AcceptPathInfo</a> directive to
       force the core handler to accept requests with PATH_INFO and
       thereby restore the ability to use PATH_INFO in server-side 
       includes.</li>
