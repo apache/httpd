@@ -105,6 +105,12 @@ AC_DEFUN(APACHE_GEN_CONFIG_VARS,[
 
   APACHE_MKDIR_P_CHECK
   echo creating config_vars.mk
+  if test "$ac_cv_mkdir_p" = "yes"; then
+    mkdir_p="mkdir -p"
+  else
+    mkdir_p="$top_srcdir/build/mkdir.sh"
+  fi
+  test -d build || $mkdir_p build
   > build/config_vars.mk
   for i in $APACHE_VAR_SUBST; do
     eval echo "$i = \$$i" >> build/config_vars.mk
