@@ -96,11 +96,13 @@ VERSION_STR	= 2.0.0
 endif
 
 
-$(OBJDIR)/%.o: %.c $(OBJDIR)\cc.opt
-	@echo Compiling $<
-	$(CC) $< -o=$(OBJDIR)\$(@F) @$(OBJDIR)\cc.opt
+ifeq "$(words $(strip $(TARGET_nlm)))" "1"
 
-$(OBJDIR)\cc.opt: $(CCOPT_DEPENDS)
+$(OBJDIR)/%.o: %.c $(OBJDIR)\$(NLM_NAME)_cc.opt
+	@echo Compiling $<
+	$(CC) $< -o=$(OBJDIR)\$(@F) @$(OBJDIR)\$(NLM_NAME)_cc.opt
+
+$(OBJDIR)\$(NLM_NAME)_cc.opt: $(CCOPT_DEPENDS)
 	$(CHK) $@ $(DEL) $@
 	@echo Generating $@
 ifneq "$(strip $(CFLAGS))" ""
@@ -147,6 +149,8 @@ endif
 ifneq "$(strip $(XDEFINES))" ""
 	@echo $(XDEFINES) >> $@
 endif
+
+endif # one target nlm
 
 #
 # Rules to build libraries

@@ -29,11 +29,11 @@ $(NWOS)/httpd.imp : make_nw_export.awk nw_export.i
 	@echo Generating $(subst /,\,$@)
 	awk -f make_nw_export.awk nw_export.i | sort >$(NWOS)/httpd.imp
     
-nw_export.i : nw_export.inc $(FILES_prebuild_headers) cc.opt
+nw_export.i : nw_export.inc $(FILES_prebuild_headers) $(NLM_NAME)_cc.opt
 	@echo Generating $(subst /,\,$@)
-	$(CC) $< @cc.opt
+	$(CC) $< @$(NLM_NAME)_cc.opt
 	
-cc.opt : NWGNUmakefile $(AP_WORK)\build\NWGNUenvironment.inc $(AP_WORK)\build\NWGNUtail.inc $(AP_WORK)\build\NWGNUhead.inc
+$(NLM_NAME)_cc.opt : NWGNUmakefile $(AP_WORK)\build\NWGNUenvironment.inc $(AP_WORK)\build\NWGNUtail.inc $(AP_WORK)\build\NWGNUhead.inc
 	$(CHK) $@ $(DEL) $@
 	@echo -P >> $@
 	@echo -EP >> $@
@@ -71,7 +71,7 @@ install :: nlms FORCE
 
 clean ::
 	$(CHK) nw_export.i                                  $(DEL) nw_export.i
-	$(CHK) cc.opt                                       $(DEL) cc.opt
+	$(CHK) $(NLM_NAME)_cc.opt                           $(DEL) $(NLM_NAME)_cc.opt
 	$(CHK) NWGNUversion.inc                             $(DEL) NWGNUversion.inc
 	$(CHK) $(subst /,\,$(APR))\include\apr.h            $(DEL) $(subst /,\,$(APR))\include\apr.h
 	$(CHK) $(subst /,\,$(APRUTIL))\include\apu.h        $(DEL) $(subst /,\,$(APRUTIL))\include\apu.h
