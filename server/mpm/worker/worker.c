@@ -626,6 +626,7 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
                          "apr_proc_mutex_lock failed. Attempting to shutdown "
                          "process gracefully.");
             signal_workers();
+            break;                    /* skip the lock release */
         }
 
         if (!ap_listeners->next) {
