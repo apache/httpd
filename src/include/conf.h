@@ -690,6 +690,7 @@ typedef int rlim_t;
 #define NEED_STRNCASECMP
 #define NO_SETSID
 #define NO_TIMES
+#define CASE_BLIND_FILESYSTEM
 /* Add some drive name support */
 #define chdir _chdir2
 #include <sys/time.h>

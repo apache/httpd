@@ -22,6 +22,7 @@
 #ifndef STRICT
  #define STRICT
 #endif
+#define CASE_BLIND_FILESYSTEM
 #define NO_UNISTD_H
 #define NO_WRITEV
 #define NO_SETSID

@@ -534,20 +534,22 @@ static int ignore_entry(autoindex_config_rec * d, char *path)
 	    ap++;
 	}
 
-#ifndef WIN32
+#ifndef CASE_BLIND_FILESYSTEM
 	if (!ap_strcmp_match(path, p->apply_path)
 	    && !ap_strcmp_match(tt, ap)) {
 	    return 1;
 	}
-#else  /* !WIN32 */
+#else  /* !CASE_BLIND_FILESYSTEM */
 	/*
-	 * On Win32, the match must be case-blind.
+	 * On some platforms, the match must be case-blind.  This is really
+	 * a factor of the filesystem involved, but we can't detect that
+	 * reliably - so we have to granularise at the OS level.
 	 */
 	if (!ap_strcasecmp_match(path, p->apply_path)
 	    && !ap_strcasecmp_match(tt, ap)) {
 	    return 1;
 	}
-#endif /* !WIN32 */
+#endif /* !CASE_BLIND_FILESYSTEM */
     }
     return 0;
 }
