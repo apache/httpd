@@ -2034,16 +2034,6 @@ void winnt_rewrite_args(process_rec *process)
         case 'k':
             signal_arg = optarg;
             break;
-        case 'i':
-            ap_log_error(APLOG_MARK,APLOG_WARNING, 0, NULL,
-                "-i is deprecated.  Use -k install.");
-            signal_arg = "install";
-            break;
-        case 'u':
-            ap_log_error(APLOG_MARK,APLOG_WARNING, 0, NULL,
-                "-u is deprecated.  Use -k uninstall.");
-            signal_arg = "uninstall";
-            break;
         default:
             *(const char **)apr_array_push(mpm_new_argv) =
                 apr_pstrdup(process->pool, optbuf);
