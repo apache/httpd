@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/06/20 20:28:47 $]
+Last modified at [$Date: 2000/06/26 00:38:44 $]
 
 Release:
 
@@ -147,7 +147,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       Status: Greg +1 (volunteers)
 
     * Integrate mod_dav.
-        Message-id: forthcoming (plan to be posted before integration begins)
+        Message-id: <20000625173247.M29590@lyra.org>
         Status: Greg +1 (volunteers :-)
 
     * ap_core_translate() and its use by mod_mmap_static are a bit wonky.
@@ -171,6 +171,8 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       (APR) library version skew.
       MsgID: <Pine.LNX.4.10.10005231712380.31927-100000@nebula.lyra.org>
       Status: Greg +1 (volunteers), Jeff +1, Ryan +1, Tony -0(?)
+
+    * mod_info to use the configuration tree
 
 Other bugs that need fixing:
 
@@ -223,6 +225,8 @@ Documentation that needs writing:
       which includes some of Roy's comments when the changes were
       committed in rough change-sets by purpose.  Note that the commitlog
       does not show the contents of new files until later.
+
+    * mod_dav documentation (once integrated)
 
 Available Patches:
 
