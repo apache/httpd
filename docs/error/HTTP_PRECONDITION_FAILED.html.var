@@ -16,7 +16,7 @@ Body:----------en--
 <!--#set var="TITLE" value="Precondition failed!" -->
 <!--#include virtual="include/top.html" -->
 
-  The precondition on the request for the URL failed positive evaluation.
+    The precondition on the request for the URL failed positive evaluation.
   
 <!--#include virtual="include/bottom.html" --> 
 ----------en--
@@ -39,6 +39,20 @@ Body:----------fr--
 <!--#set var="TITLE" value="Pr&eacute;condition n&eacute;gative!" -->
 <!--#include virtual="include/top.html" -->
 
-La pr&eacute;condition pour l'URL requise a &eacute;t&eacute; &eacute;valu&eacute;e n&eacute;gativement.
+    La pr&eacute;condition pour l'URL requise a &eacute;t&eacute;
+    &eacute;valu&eacute;e n&eacute;gativement.
 
 <!--#include virtual="include/bottom.html" -->----------fr--
+
+Content-language: sv
+Content-type: text/html
+Body:----------sv--
+<!--#set var="TITLE" value="N&ouml;dv&auml;ndig f&ouml;ruts&auml;ttning misslyckades!" -->
+<!--#include virtual="include/top.html" -->
+
+    Den n&ouml;dv&auml;ndiga f&ouml;ruts&auml;ttningen f&ouml;r
+    adressf&ouml;rfr&aring;gan passerade inte utv&auml;rderingen
+    med acceptabelt resultat.
+
+<!--#include virtual="include/bottom.html" --> 
+----------sv--

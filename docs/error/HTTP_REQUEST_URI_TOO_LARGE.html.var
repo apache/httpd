@@ -17,8 +17,8 @@ Body:----------en--
 <!--#set var="TITLE" value="Submitted URI too large!" -->
 <!--#include virtual="include/top.html" -->
 
-   The length of the requested URL exceeds the capacity limit for this server.
-   The request cannot be processed.
+    The length of the requested URL exceeds the capacity limit for this server.
+    The request cannot be processed.
    
 <!--#include virtual="include/bottom.html" -->
 ----------en--
@@ -42,7 +42,22 @@ Body:----------fr--
 <!--#set var="TITLE" value="L'URI demandee est trop longue!" -->
 <!--#include virtual="include/top.html" -->
 
-La longueur de l'URL demand&eacute;e exc&egrave;de la limite de capacit&egrave; pour ce serveur. Nous ne pouvons donner suite &agrave; votre requ&ecirc;te.
+    La longueur de l'URL demand&eacute;e exc&egrave;de la limite de
+    capacit&egrave; pour ce serveur. Nous ne pouvons donner suite
+    &agrave; votre requ&ecirc;te.
 
 <!--#include virtual="include/bottom.html" -->
 ----------fr--
+
+Content-language: sv
+Content-type: text/html
+Body:----------sv--
+<!--#set var="TITLE" value="Submitted URI too large!" -->
+<!--#include virtual="include/top.html" -->
+
+    L&auml;ngden p&aring; adressen som efterfr&aring;gas &ouml;verskrider
+    kapacitetsgr&auml;nsen f&ouml;r denna server. F&ouml;rfr&aring;gan kan
+    inte verkst&auml;llas.
+
+<!--#include virtual="include/bottom.html" -->
+----------sv--

@@ -49,3 +49,16 @@ Body:----------fr--
 
 <!--#include virtual="include/bottom.html" -->  
 ----------fr--
+
+Content-language: sv
+Content-type: text/html
+Body:----------sv--
+<!--#set var="TITLE" value="Variant also varies!" -->
+<!--#include virtual="include/top.html" -->
+
+    En variant av den f&ouml;rfr&aring;gade enheten &auml;r i
+    sig sj&auml;lv en giltig resurs. &Aring;tkomst &auml;r inte
+    m&ouml;jlig.
+
+<!--#include virtual="include/bottom.html" -->
+----------sv--

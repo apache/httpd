@@ -48,9 +48,24 @@ Body:----------fr--
 <!--#set var="TITLE" value="Service inaccessible!" -->
 <!--#include virtual="include/top.html" -->
 
-    En raison de travaux de maintenance ou de probl&egrave;mes de capacit&eacute;
-    le serveur n'est pas en mesure de r&eacute;pondre &agrave; votre requ&ecirc;te pour l'instant.
-    Veuillez r&eacute;essayer plus tard.
+    En raison de travaux de maintenance ou de probl&egrave;mes
+    de capacit&eacute; le serveur n'est pas en mesure de r&eacute;pondre
+    &agrave; votre requ&ecirc;te pour l'instant. Veuillez r&eacute;essayer
+     plus tard.
 
 <!--#include virtual="include/bottom.html" -->
 ----------fr--
+
+Content-language: sv
+Content-type: text/html
+Body:----------sv--
+<!--#set var="TITLE" value="Tj&auml;nsten ej tillg&auml;nglig!" -->
+<!--#include virtual="include/top.html" -->
+
+    Servern &auml;r f&ouml;r tillf&auml;llet of&ouml;rm&ouml;gen att
+    utf&ouml;ra din f&ouml;rfr&aring;gan p&aring; grund av underh&aring;ll
+    eller kapacitetsbegr&auml;nsningar. V&auml;nligen f&ouml;rs&ouml;k
+    igen senare.
+
+<!--#include virtual="include/bottom.html" -->
+----------sv--

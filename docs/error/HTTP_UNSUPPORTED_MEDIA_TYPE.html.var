@@ -16,7 +16,7 @@ Body:----------en--
 <!--#set var="TITLE" value="Unsupported media type!" -->
 <!--#include virtual="include/top.html" -->
 
-   The server does not support the media type transmitted in the request.
+    The server does not support the media type transmitted in the request.
 
 <!--#include virtual="include/bottom.html" -->
 ----------en--
@@ -39,7 +39,19 @@ Body:----------fr--
 <!--#set var="TITLE" value="Type de m&eacute;dia invalide!" -->
 <!--#include virtual="include/top.html" -->
 
-Le serveur ne supporte pas le type de m&eacute;dia utilis&eacute; dans votre requ&ecirc;te. 
+    Le serveur ne supporte pas le type de m&eacute;dia utilis&eacute;
+    dans votre requ&ecirc;te. 
 
 <!--#include virtual="include/bottom.html" -->
 ----------fr--
+
+Content-language: sv
+Content-type: text/html
+Body:----------sv--
+<!--#set var="TITLE" value="Mediatypen st&ouml;ds ej!" -->
+<!--#include virtual="include/top.html" -->
+
+    Servern st&ouml;djer inte den mediatyp som skickats i f&ouml;rfr&aring;gan.
+
+<!--#include virtual="include/bottom.html" -->
+----------sv--

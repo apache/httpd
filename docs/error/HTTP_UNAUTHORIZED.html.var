@@ -10,7 +10,7 @@ Body:----------de--
     angegeben oder ihr Browser versteht nicht, wie die geforderten
     Referenzen zu &uuml;bermitteln sind.
 
-<!--#include virtual="include/spacer.html" -->
+  <!--#include virtual="include/spacer.html" -->
 
     Sofern Sie f&uuml;r den Zugriff berechtigt sind, &uuml;berpr&uuml;fen Sie bitte
     die eingegebene User-ID und das Passwort und versuchen Sie es erneut.  
@@ -43,18 +43,18 @@ Body:----------es--
 <!--#set var="TITLE" value="Authentication required!" -->
 <!--#include virtual="include/top.html" -->
 
- El servidor no puede certificar que usted este autorizado
- para accesar el URL "<!--#echo encoding="url" var="REDIRECT_URL" -->".
- Usted pudo suministrar informaci&oacute;n incorrecta accidentalmente
- (ejem. una contrase&ntilde;a inv&aacute;lida) o, el buscador no sabe 
- como suministrar la informaci&oacute;n requerida.
+    El servidor no puede certificar que usted este autorizado
+    para accesar el URL "<!--#echo encoding="url" var="REDIRECT_URL" -->".
+    Usted pudo suministrar informaci&oacute;n incorrecta accidentalmente
+    (ejem. una contrase&ntilde;a inv&aacute;lida) o, el buscador no sabe 
+    como suministrar la informaci&oacute;n requerida.
 
   <!--#include virtual="include/spacer.html" -->
 
- En caso de que a usted le este permitido el uso del
- documento requerido, le solicitamos de la manera mas atenta
- que porfavor vuelva a intentar la operaci&oacute;n suministrando
- nuevamente su numero de identificaci&oacute;n y su contrase&ntilde;a.
+    En caso de que a usted le este permitido el uso del
+    documento requerido, le solicitamos de la manera mas atenta
+    que porfavor vuelva a intentar la operaci&oacute;n suministrando
+    nuevamente su numero de identificaci&oacute;n y su contrase&ntilde;a.
 
  Muchas Gracias.
 <!--#include virtual="include/bottom.html" -->
@@ -82,3 +82,22 @@ Body:----------fr--
 
 <!--#include virtual="include/bottom.html" -->
 ----------fr--
+
+Content-language: sv
+Content-type: text/html
+Body:----------sv--
+<!--#set var="TITLE" value="Autentisering kr&auml;vs!" -->
+<!--#include virtual="include/top.html" -->
+
+    Servern kunde inte verifiera att du har till&aring;telse att bes&ouml;ka 
+    adressen "<!--#echo encoding="url" var="REDIRECT_URL" -->".
+    Antingen angav du felaktiga uppgifter (ex. fel l&ouml;senord) eller s&aring;
+    st&ouml;djer inte din webbl&auml;sare detta autentiseringss&auml;tt.
+
+  <!--#include virtual="include/spacer.html" -->
+
+    Om du har till&aring;telse att bes&ouml;ka sidan, v&auml;nligen kontrollera ditt 
+    anv&auml;ndarnamn samt l&ouml;senord och f&ouml;rs&ouml;k igen.
+
+<!--#include virtual="include/bottom.html" -->
+----------sv--

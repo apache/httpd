@@ -106,3 +106,29 @@ Body:----------fr--
 
 <!--#include virtual="include/bottom.html" -->
 ----------fr--
+
+Content-language: sv
+Content-type: text/html
+Body:----------sv--
+<!--#set var="TITLE" value="Objektet hittas ej!" -->
+<!--#include virtual="include/top.html" -->
+
+    Den efterfr&aring;gade adressen hittades inte p&aring; denna server.
+
+  <!--#if expr="$HTTP_REFERER" -->
+
+    L&auml;nken p&aring; den
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">tidigare sidan</a> 
+    verkar vara felaktig eller inaktuell. V&auml;nligen informera f&ouml;rfattaren av
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">sidan</a>
+    om felet.
+
+  <!--#else -->
+
+    Om du skrev in adressen manuellt s&aring; kontrollera din stavning och
+    f&ouml;rs&ouml;k igen.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------sv--

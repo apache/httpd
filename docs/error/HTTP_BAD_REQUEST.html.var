@@ -4,8 +4,8 @@ Body:----------de--
 <!--#set var="TITLE" value="Fehlerhafte Anfrage!" -->
 <!--#include virtual="include/top.html" -->
 
-    Ihr Browser (oder Proxy) hat eine ung&uuml;ltige Anfrage gesendet,
-    die vom Server nicht beantwortet werden kann.
+    Ihr Browser (oder Proxy) hat eine ung&uuml;ltige Anfrage
+    gesendet, die vom Server nicht beantwortet werden kann.
 
 <!--#include virtual="include/bottom.html" -->
 ----------de--
@@ -40,7 +40,20 @@ Body:----------fr--
 <!--#set var="TITLE" value="Demande incorrecte!" -->
 <!--#include virtual="include/top.html" -->
 
-    Votre navigateur (ou votre proxy) a envoy&eacute; une demande que ce serveur n'a pas comprise.
+    Votre navigateur (ou votre proxy) a envoy&eacute;
+    une demande que ce serveur n'a pas comprise.
 
 <!--#include virtual="include/bottom.html" -->  
 ----------fr--
+
+Content-language: sv
+Content-type: text/html
+Body:----------sv--
+<!--#set var="TITLE" value="Felaktig f&ouml;rfr&aring;gan!" -->
+<!--#include virtual="include/top.html" -->
+
+    Din webbl&auml;sare eller proxy skickade en f&ouml;rfr&aring;gan
+    som denna server inte kunde f&ouml;rst&aring;.
+
+<!--#include virtual="include/bottom.html" -->  
+----------sv--
