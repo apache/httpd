@@ -194,6 +194,7 @@ static int translate_userdir (request_rec *r)
     const char *userdirs = pstrdup (r->pool, s_cfg->userdir);
     const char *w, *dname, *redirect;
     char *x = NULL;
+    struct stat statbuf;
 
     /*
      * If the URI doesn't match our basic pattern, we've nothing to do with
@@ -312,8 +313,9 @@ static int translate_userdir (request_rec *r)
        in the hope that some handler might handle it. This can be used, for
        example, to run a CGI script for the user. 
        */
-      if (filename && (!*userdirs || stat(filename, &r->finfo) != -1)) {
+      if (filename && (!*userdirs || stat(filename, &statbuf) != -1)) {
         r->filename = pstrcat(r->pool, filename, dname, NULL);
+	r->finfo = statbuf;
         return OK;
       }
     }

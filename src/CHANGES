@@ -1,5 +1,9 @@
 Changes with Apache 1.3b1
-  
+
+  *) mod_userdir was modifying r->finfo in cases where it wasn't setting
+     r->filename.  Since those two are meant to be in sync with each other
+     this is a bug.  ["Paul B. Henson" <henson@intranet.csupomona.edu>]
+
   *) PORT: Support Unisys SVR4, whose uname returns mostly useless data.
      ["Kaufman, Steven E" <Steven.Kaufman@unisys.com>]
 
