@@ -49,6 +49,11 @@ span.transnote {
     background-color: inherit;
     color: #888;
 }
+span.phonetic {
+    font-weight: normal;
+    background-color: inherit;
+    color: #888;
+}
 
 /* fixup IE & Opera
  * otherwise they forget to inherit
