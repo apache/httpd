@@ -1,5 +1,5 @@
 Apache HTTP Server 2.0 Documentation Status File.
-Last modified: $Date: 2001/07/11 07:12:53 $
+Last modified: $Date: 2001/08/10 18:54:09 $
 
 If you are interested in helping accomplish some of the tasks on this
 list or otherwise improving the documentation, please join the
@@ -39,12 +39,8 @@ tutorial on how to get started with making your contribution.
         Status: Initial outlines done.  Much more details need to be
           filled in.
           - Non unix/windows MPMs still need to be completed.
-          - perchild MPM needs some docs.
-
-- Merging of changes in 1.3.
-   - There have been many changes in the 1.3 docs which haven't
-     been propagated into 2.0.
-     Things which need to be merged: ???
+          - worker has no docs
+          - the perchild directives in threaded/worker need docs
 
 - Cleaning.
    - We could use a list of all the docs that can be axed out of 2.0
@@ -54,7 +50,7 @@ tutorial on how to get started with making your contribution.
           manual/cgi-path.html (should be documented in mod_cgi.html instead)
           manual/process-model.html (documented in MPMs, eventually)
           platform/perf-* (are these relevant anymore?)
-
+          misc/howto.html
 
    - Individual docs will need some cleanup. 
         Status:  What docs still need to be touched here?
@@ -67,8 +63,6 @@ tutorial on how to get started with making your contribution.
                  - dso.html
                  - misc/rewriteguide.html - needs cleaning in 1.3 and 2.0
                  - misc/known_client_problems.html - mostly ancient
-                 - howto/* - some syntax has changed in 2.0 due to 
-                             filtering and mod_cgid
 
 - New build process.
     - install.html has had a first-pass rewrite, but needs more
@@ -79,10 +73,6 @@ tutorial on how to get started with making your contribution.
    - This will probably require more input from new-httpd, since
      not many people here follow the development process close
      enough to know what is going on.
-        Status: Ryan has two ApacheToday articles which may be useful 
-                for this.
-	        New features which need documentation:
-                    - filters !!!
 
 - Translations
     We appear to have people working on translation into the following
@@ -135,11 +125,6 @@ Tutorials
 
   - Rich has kindy donated the "4-part logging article on Apache Today"
     articles that will need a little massaging.
-
-* Tutorial on "log files in apache"
-
-  - Chris Pepper <pepper@reppep.com> has offered to look into this.
-
 
 New User documentation
 ======================
