@@ -3,9 +3,9 @@ Changes with Apache 2.1.0-dev
   [Remove entries to the current 2.0 section below, when backported]
 
   *) Fix the inability to log errors like exec failure in
-     mod_ext_filter/mod_cgi script children (e.g., exec failure).  This
-     was broken after such children stopped inheriting the error log
-     handle.  [Jeff Trawick]
+     mod_ext_filter/mod_cgi script children.  This was broken after 
+     such children stopped inheriting the error log handle.  
+     [Jeff Trawick]
 
   *) Fix a compile failure with recent OpenSSL and picky compilers
      (e.g., OpenSSL 0.9.7a and xlc_r on AIX).  [Jeff Trawick]
