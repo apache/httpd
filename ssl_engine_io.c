@@ -656,9 +656,12 @@ static apr_status_t ssl_io_input_read(bio_filter_in_ctx_t *inctx,
             inctx->cbuf.length += bytes;
             return APR_SUCCESS;
         } 
-        if ((*len >= wanted) || inctx->mode == AP_MODE_GETLINE) {
+        if (*len >= wanted) {
             return APR_SUCCESS;
         }
+        /* Down to a nonblock pattern as we have some data already
+         */
+        inctx->block = APR_NONBLOCK_READ;
     }
 
     while (1) {
@@ -683,6 +686,9 @@ static apr_status_t ssl_io_input_read(bio_filter_in_ctx_t *inctx,
             if (APR_STATUS_IS_EAGAIN(inctx->rc)
                     || APR_STATUS_IS_EINTR(inctx->rc)) {
                 if (inctx->block == APR_NONBLOCK_READ) {
+                    if (*len > 0) {
+                        inctx->rc = APR_SUCCESS;
+                    }
                     break;
                 }
             }
@@ -703,8 +709,12 @@ static apr_status_t ssl_io_input_read(bio_filter_in_ctx_t *inctx,
                  * (This is usually the case when the client forces an SSL
                  * renegotation which is handled implicitly by OpenSSL.)
                  */
+                inctx->rc = APR_EAGAIN;
+
                 if (inctx->block == APR_NONBLOCK_READ) {
-                    inctx->rc = APR_EAGAIN;
+                    if (*len > 0) {
+                        inctx->rc = APR_SUCCESS;
+                    }
                     break; /* non fatal error */
                 }
             }
