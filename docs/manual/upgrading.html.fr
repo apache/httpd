@@ -97,10 +97,6 @@ mod_log_config.</li>
 
 <UL>
 
-<li>Le redémarrage en douceur du serveur est maintenant traité en envoyant
-au processus père le signal <code>WINCH</code> à la place du 
-signal <code>USR1</code>.</li>
-
 <li>L'option <code>-S</code> du programme <code>httpd</code>
 qui servait à afficher la configuration des hôtes virtuels est 
 remplacé par <code>-t -D DUMP_VHOSTS</code>.</li>

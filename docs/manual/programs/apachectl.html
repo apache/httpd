@@ -57,7 +57,7 @@ vlink="#000080" alink="#ff0000">
                  requests currently being served is omitted.
 
      <strong>graceful    </strong>Gracefully restarts the Apache daemon by sending
-                 it a SIGWINCH.  If the daemon is not running, it
+                 it a SIGUSR1.  If the daemon is not running,  it
                  is started.  This differs from a normal  restart
                  in  that  currently  open  connections  are  not
                  aborted.  A side effect is that  old  log  files
@@ -67,7 +67,12 @@ vlink="#000080" alink="#ff0000">
                  log files are  closed  before  processing  them.
                  This command automatically checks the configura-
                  tion files via <strong>configtest </strong>before initiating  the
-                 restart to make sure Apache doesn't die.
+                 restart to make sure  Apache  doesn't  die.   <i>On 
+                 certain  platforms that  do not allow USR1 to be 
+                 used  for  a  graceful  restart,  an alternative 
+                 signal may be used  (such as WINCH).   apachectl 
+                 graceful will send  the right  signal  for  your 
+                 platform.</i>
 
      <strong>configtest  </strong>Run a configuration file syntax test. It  parses
                  the  configuration files and either reports <strong>Syn-</strong>

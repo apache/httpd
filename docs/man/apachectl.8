@@ -109,7 +109,7 @@ Displays a brief status report.  Similar to the fullstatus option,
 except that the list of requests currently being served is omitted.
 .TP
 .BI graceful
-Gracefully restarts the Apache daemon by sending it a SIGWINCH.  If
+Gracefully restarts the Apache daemon by sending it a SIGUSR1.  If
 the daemon is not running, it is started.  This differs from a
 normal restart in that currently open connections are not aborted.
 A side effect is that old log files will not be closed immediately.
@@ -118,6 +118,9 @@ necessary to ensure that the old log files are closed before processing them.
 This command automatically checks the configuration files via 
 .BI configtest
 before initiating the restart to make sure Apache doesn't die.
+On certain platforms that do not allow SIGUSR1 to be used for a graceful
+restart, an alternative signal may be used (such as SIGWINCH).  graceful 
+will send the right signal for your platform.
 .TP
 .BI configtest
 Run a configuration file syntax test. It parses the configuration
