@@ -128,66 +128,65 @@ _build:
 	cd ..
 
 _install:
-	-mkdir $(INSTDIR)
-	-mkdir $(INSTDIR)\bin
-	-mkdir $(INSTDIR)\conf
-	-mkdir $(INSTDIR)\logs
-	-mkdir $(INSTDIR)\modules
-#	-mkdir $(INSTDIR)\proxy
-	-mkdir $(INSTDIR)\htdocs
-	-mkdir $(INSTDIR)\htdocs\manual
-	copy Apache$(SHORT)\Apache.exe $(INSTDIR)
-	copy Core$(SHORT)\ApacheCore.dll $(INSTDIR)
-	copy srclib\apr\$(LONG)\aprlib.dll $(INSTDIR)
-        copy srclib\apr-util\$(LONG)\apr-util.dll $(INSTDIR)
-        copy srclib\expat-lite\$(LONG)\expatlib.dll $(INSTDIR)
-        copy modules\aaa\mod_auth_anon$(SHORT)\mod_auth_anon.dll $(INSTDIR)\modules
-	copy modules\aaa\mod_auth_dbm$(SHORT)\mod_auth_dbm.dll $(INSTDIR)\modules
-	copy modules\aaa\mod_auth_digest$(SHORT)\mod_auth_digest.dll $(INSTDIR)\modules
-	copy modules\cache\mod_file_cache$(SHORT)\mod_file_cache.dll $(INSTDIR)\modules
-        copy modules\dav\fs\mod_dav_fs$(SHORT)\mod_dav_fs.dll $(INSTDIR)\modules
-        copy modules\dav\main\mod_dav$(SHORT)\mod_dav.dll $(INSTDIR)\modules
-#       copy modules\generators\mod_info$(SHORT)\mod_info.dll $(INSTDIR)\modules
-        copy modules\generators\mod_status$(SHORT)\mod_status.dll $(INSTDIR)\modules
-        copy modules\mappers\mod_rewrite$(SHORT)\mod_rewrite.dll $(INSTDIR)\modules
-	copy modules\mappers\mod_speling$(SHORT)\mod_speling.dll $(INSTDIR)\modules
-	copy modules\metadata\mod_cern_meta$(SHORT)\mod_cern_meta.dll $(INSTDIR)\modules
-	copy modules\metadata\mod_expires$(SHORT)\mod_expires.dll $(INSTDIR)\modules
-	copy modules\metadata\mod_headers$(SHORT)\mod_headers.dll $(INSTDIR)\modules
-	copy modules\metadata\mod_usertrack$(SHORT)\mod_usertrack.dll $(INSTDIR)\modules
-#       copy modules\proxy\mod_proxy$(SHORT)\mod_proxy.dll $(INSTDIR)\modules
-        copy support\$(LONG)\ab.exe $(INSTDIR)\bin
-        copy support\$(LONG)\htpasswd.exe $(INSTDIR)\bin
-	copy support\$(LONG)\htdigest.exe $(INSTDIR)\bin
-	copy support\$(LONG)\logresolve.exe $(INSTDIR)\bin
-	copy support\$(LONG)\rotatelogs.exe $(INSTDIR)\bin
-        xcopy docs\docroot $(INSTDIR)\htdocs /dy
-        xcopy docs\manual $(INSTDIR)\htdocs\manual /sdy
-        copy docs\conf\magic $(INSTDIR)\conf\magic.default
-        if not exist $(INSTDIR)\conf\magic \
-            copy $(INSTDIR)\conf\magic.default $(INSTDIR)\conf\magic
-        copy docs\conf\mime.types $(INSTDIR)\conf\mime.types.default
-        if not exist $(INSTDIR)\conf\mime.types \
-            copy $(INSTDIR)\conf\mime.types.default $(INSTDIR)\conf\mime.types
-	awk -f << docs\conf\httpd-win.conf $(INSTDIR)\conf\httpd.default.conf $(INSTDIR)
+	-mkdir "$(INSTDIR)"
+	-mkdir "$(INSTDIR)\bin"
+	-mkdir "$(INSTDIR)\conf"
+	-mkdir "$(INSTDIR)\logs"
+	-mkdir "$(INSTDIR)\modules"
+#	-mkdir "$(INSTDIR)\proxy"
+	-mkdir "$(INSTDIR)\htdocs"
+	-mkdir "$(INSTDIR)\htdocs\manual"
+	copy Apache$(SHORT)\Apache.exe "$(INSTDIR)"
+	copy Core$(SHORT)\ApacheCore.dll "$(INSTDIR)"
+	copy srclib\apr\$(LONG)\aprlib.dll "$(INSTDIR)"
+        copy srclib\apr-util\$(LONG)\apr-util.dll "$(INSTDIR)"
+        copy srclib\expat-lite\$(LONG)\expatlib.dll "$(INSTDIR)"
+        copy modules\aaa\mod_auth_anon$(SHORT)\mod_auth_anon.dll "$(INSTDIR)\modules"
+	copy modules\aaa\mod_auth_dbm$(SHORT)\mod_auth_dbm.dll "$(INSTDIR)\modules"
+	copy modules\aaa\mod_auth_digest$(SHORT)\mod_auth_digest.dll "$(INSTDIR)\modules"
+	copy modules\cache\mod_file_cache$(SHORT)\mod_file_cache.dll "$(INSTDIR)\modules"
+        copy modules\dav\fs\mod_dav_fs$(SHORT)\mod_dav_fs.dll "$(INSTDIR)\modules"
+        copy modules\dav\main\mod_dav$(SHORT)\mod_dav.dll "$(INSTDIR)\modules"
+#       copy modules\generators\mod_info$(SHORT)\mod_info.dll "$(INSTDIR)\modules"
+        copy modules\generators\mod_status$(SHORT)\mod_status.dll "$(INSTDIR)\modules"
+        copy modules\mappers\mod_rewrite$(SHORT)\mod_rewrite.dll "$(INSTDIR)\modules"
+	copy modules\mappers\mod_speling$(SHORT)\mod_speling.dll "$(INSTDIR)\modules"
+	copy modules\metadata\mod_cern_meta$(SHORT)\mod_cern_meta.dll "$(INSTDIR)\modules"
+	copy modules\metadata\mod_expires$(SHORT)\mod_expires.dll "$(INSTDIR)\modules"
+	copy modules\metadata\mod_headers$(SHORT)\mod_headers.dll "$(INSTDIR)\modules"
+	copy modules\metadata\mod_usertrack$(SHORT)\mod_usertrack.dll "$(INSTDIR)\modules"
+#       copy modules\proxy\mod_proxy$(SHORT)\mod_proxy.dll "$(INSTDIR)\modules"
+        copy support\$(LONG)\ab.exe "$(INSTDIR)\bin"
+        copy support\$(LONG)\htpasswd.exe "$(INSTDIR)\bin"
+	copy support\$(LONG)\htdigest.exe "$(INSTDIR)\bin"
+	copy support\$(LONG)\logresolve.exe "$(INSTDIR)\bin"
+	copy support\$(LONG)\rotatelogs.exe "$(INSTDIR)\bin"
+        xcopy docs\docroot "$(INSTDIR)\htdocs" /dy
+        xcopy docs\manual "$(INSTDIR)\htdocs\manual" /sdy
+        copy docs\conf\magic "$(INSTDIR)\conf\magic.default"
+        if not exist "$(INSTDIR)\conf\magic" \
+            copy "$(INSTDIR)\conf\magic.default" "$(INSTDIR)\conf\magic"
+        copy docs\conf\mime.types "$(INSTDIR)\conf\mime.types.default"
+        if not exist "$(INSTDIR)\conf\mime.types" \
+            copy "$(INSTDIR)\conf\mime.types.default" "$(INSTDIR)\conf\mime.types"
+	awk -f << docs\conf\httpd-win.conf "$(INSTDIR)\conf\httpd.default.conf" "$(INSTDIR)"
     BEGIN { 
         srcfl = ARGV[1];
         dstfl = ARGV[2];
         serverroot = ARGV[3];
         gsub( /\\/, "/", serverroot );
-        print "" > dstfl;
         while ( ( getline < srcfl ) > 0 ) {
             gsub( /@@ServerRoot@@/, serverroot );
             print $$0 >> dstfl;
         }
     }
 <<
-	if not exist $(INSTDIR)\conf\httpd.conf \
-            copy $(INSTDIR)\conf\httpd.default.conf $(INSTDIR)\conf\httpd.conf 
-	awk -f << support\dbmmanage >$(INSTDIR)\bin\dbmmanage.pl
+	if not exist "$(INSTDIR)\conf\httpd.conf" \
+            copy "$(INSTDIR)\conf\httpd.default.conf" "$(INSTDIR)\conf\httpd.conf"
+	awk -f << support\dbmmanage >"$(INSTDIR)\bin\dbmmanage.pl"
     { if ( $$0 !~ /^#.*-lsdbm/) {
           gsub( /AnyDBM_File::ISA = qw\(.*\)/, "AnyDBM_File::ISA = qw(SDBM_File)" ); 
-          print $$0 
+          print $$0;
       } 
     }
 <<
