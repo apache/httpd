@@ -329,16 +329,8 @@ static int get_req(int fd, request_rec *r, char **argv0, char ***env, int *req_t
         if (rc != sizeof(int)) {
             return 1;
         }
-        rc = read(fd, &suexec_cfg->ugid.uid, sizeof(uid_t));
-        if (rc != sizeof(uid_t)) {
-            return 1;
-        }
-        rc = read(fd, &suexec_cfg->ugid.gid, sizeof(gid_t));
-        if (rc != sizeof(gid_t)) {
-            return 1;
-        }
-        rc = read(fd, &suexec_cfg->active, sizeof(int));
-        if (rc != sizeof(int)) {
+        rc = read(fd, suexec_cfg, sizeof(*suexec_cfg));
+        if (rc != sizeof(*suexec_cfg)) {
             return 1;
         }
         dconf[i] = (void *)suexec_cfg;
@@ -379,12 +371,20 @@ static int get_req(int fd, request_rec *r, char **argv0, char ***env, int *req_t
     } 
 #endif 
 #endif
-    /* For right now, just make the notes table.  At some point we will need
-     * to actually fill this out, but for now we just don't want suexec to
-     * seg fault.
-     */
+
+    /* basic notes table to avoid segfaults */
     r->notes = apr_table_make(r->pool, 1);
 
+    /* mod_userdir requires the mod_userdir_user note */
+    rc = read(fd, &len, sizeof(len));
+    if ((rc == sizeof(len)) && len) {
+        data = apr_pcalloc(r->pool, len + 1); /* last byte is '\0' */
+        rc = read(fd, data, len);
+        if(rc != len) {
+	    return 1;
+        }
+	apr_table_set(r->notes,"mod_userdir_user", data);
+    }
     return 0;
 } 
 
@@ -441,9 +441,7 @@ static void send_req(int fd, request_rec *r, char *argv0, char **env, int req_ty
                                                            suexec_mod);
 
         write(fd, &suexec_mod->module_index, sizeof(int));
-        write(fd, &suexec_cfg->ugid.uid, sizeof(uid_t));
-        write(fd, &suexec_cfg->ugid.gid, sizeof(gid_t));
-        write(fd, &suexec_cfg->active, sizeof(int));
+        write(fd, suexec_cfg, sizeof(*suexec_cfg));
     }
 
 #if 0
@@ -483,6 +481,16 @@ static void send_req(int fd, request_rec *r, char *argv0, char **env, int req_ty
     } 
 #endif
 #endif 
+   /* send a minimal notes table */
+   data  = (char *) apr_table_get(r->notes, "mod_userdir_user");
+   if(data != NULL) {
+       len = strlen(data);
+       write(fd, &len, sizeof(len));
+       write(fd, data, len);
+   } else {
+       len = 0;
+       write(fd, &len, sizeof(len));
+   }
 } 
 
 static void daemon_signal_handler(int sig)
