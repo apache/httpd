@@ -295,79 +295,14 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
 
     while ((current = ap_getword(r->pool, &r->range, ',')) &&
            (rv = parse_byterange(current, clength, &range_start, &range_end))) {
-        const char *str;
-        apr_size_t n;
-        const char *range;
-        char *loc;
-        apr_size_t range_length = (apr_size_t)(range_end - range_start + 1);
-        apr_size_t curr_length = range_length;
-        apr_size_t segment_length;
-        apr_off_t curr_offset = 0;
+        apr_bucket *e2;
+        apr_bucket *ec;
 
         if (rv == -1) {
             continue;
         }        
         else {
             found = 1;
-        }
-
-        /* ### this is so bogus, but not dealing with it right now */
-        range = loc = apr_pcalloc(r->pool, range_length + 1);
-
-        e = APR_BRIGADE_FIRST(bb);
-
-        /* ### we should split() buckets rather than read() them. this
-           ### will allow us to avoid reading files or custom buckets
-           ### into memory. for example: we REALLY don't want to cycle
-           ### a 10gig file into memory just to send out 100 bytes from
-           ### the end of the file.
-           ###
-           ### content generators that used to call ap_each_byterange()
-           ### manually (thus, optimizing the output) can replace their
-           ### behavior with a new bucket type that understands split().
-           ### they can then defer reading actual content until a read()
-           ### occurs, using the split() as an internal "seek".
-        */
-
-        apr_bucket_read(e, &str, &n, APR_NONBLOCK_READ);
-        /* using e->length doesn't account for pipes once we change the read
-         * to a split.*/
-        while (range_start > (curr_offset + e->length)) {
-            curr_offset += e->length;
-            e = APR_BUCKET_NEXT(e);
-
-            if (e == APR_BRIGADE_SENTINEL(bb)) {
-                break;
-            }
-
-            /* eventually we can avoid this */
-            apr_bucket_read(e, &str, &n, APR_NONBLOCK_READ);
-        }
-        if (range_start != curr_offset) {
-            /* If we get here, then we know that the beginning of this 
-             * byte-range occurs someplace in the middle of the current bucket
-             */
-            /* when we split above, we should read here */
-            segment_length = MIN_LENGTH(curr_length + 1, e->length);
-            memcpy(loc, str + (range_start - curr_offset), segment_length);
-            loc += segment_length;
-            curr_length -= segment_length;
-            e = APR_BUCKET_NEXT(e);
-        }
-
-        while (e != APR_BRIGADE_SENTINEL(bb)) {
-            if (curr_length == 0) {
-                break;
-            }
-            apr_bucket_read(e, &str, &n, APR_NONBLOCK_READ);
-
-            /* ### we should use 'n', not e->length */
-            segment_length = MIN_LENGTH(curr_length + 1, e->length);
-
-            memcpy(loc, str, segment_length);
-            loc += segment_length;
-            curr_length -= segment_length;
-            e = APR_BUCKET_NEXT(e);
         }
 
         if (ctx->num_ranges > 1) {
@@ -384,8 +319,16 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
             APR_BRIGADE_INSERT_TAIL(bsend, e);
         }
         
-        e = apr_bucket_create_pool(range, range_length, r->pool);
-        APR_BRIGADE_INSERT_TAIL(bsend, e);
+        e = apr_brigade_partition(bb, range_start);
+        e2 = apr_brigade_partition(bb, range_end + 1);
+        
+        ec = e;
+        do {
+            apr_bucket *foo;
+            apr_bucket_copy(ec, &foo);
+            APR_BRIGADE_INSERT_TAIL(bsend, foo);
+            ec = APR_BUCKET_NEXT(ec);
+        } while (ec != e2);
     }
 
     if (found == 0) {
