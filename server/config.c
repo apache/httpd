@@ -95,6 +95,7 @@ API_VAR_EXPORT ap_array_header_t *ap_server_config_defines;
 
 AP_HOOK_STRUCT(
 	    AP_HOOK_LINK(header_parser)
+	    AP_HOOK_LINK(pre_config)
 	    AP_HOOK_LINK(post_config)
 	    AP_HOOK_LINK(open_logs)
 	    AP_HOOK_LINK(child_init)
@@ -102,6 +103,9 @@ AP_HOOK_STRUCT(
 
 AP_IMPLEMENT_HOOK_RUN_ALL(int,header_parser,
                           (request_rec *r),(r),OK,DECLINED)
+AP_IMPLEMENT_HOOK_VOID(pre_config,
+		       (ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptemp),
+                       (pconf,plog,ptemp))
 AP_IMPLEMENT_HOOK_VOID(post_config,
 		       (ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptemp,
                         server_rec *s),(pconf,plog,ptemp,s))
@@ -1582,16 +1586,6 @@ API_EXPORT(void) ap_run_rewrite_args(process_rec *process)
     for (m = top_module; m; m = m->next)
         if (m->rewrite_args)
             (*m->rewrite_args) (process);
-}
-
-API_EXPORT(void) ap_run_pre_config(ap_pool_t *p, ap_pool_t *plog, ap_pool_t *ptemp)
-{
-    module *m;
-
-    for (m = top_module; m; m = m->next)
-        if (m->pre_config)
-            (*m->pre_config) (p, plog, ptemp);
-    init_handlers(p);
 }
 
 API_EXPORT(void) ap_post_config_hook(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptemp, server_rec *s)

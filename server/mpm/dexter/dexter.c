@@ -1251,6 +1251,8 @@ static void dexter_hooks(void)
 {
     INIT_SIGLIST()
     one_process = 0;
+
+    ap_hook_pre_config(dexter_pre_config, NULL, NULL, AP_HOOK_MIDDLE); 
 }
 
 static const char *set_pidfile(cmd_parms *cmd, void *dummy, char *arg) 
@@ -1459,7 +1461,6 @@ LISTEN_COMMANDS
 module MODULE_VAR_EXPORT mpm_dexter_module = {
     MPM20_MODULE_STUFF,
     NULL,                       /* hook to run before apache parses args */
-    dexter_pre_config,          /* run hook before the configuration is read */ 
     NULL,			/* create per-directory config structure */
     NULL,			/* merge per-directory config structures */
     NULL,			/* create per-server config structure */
