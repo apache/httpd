@@ -162,10 +162,7 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
 
     if ((access_status = ap_run_map_to_storage(r))) {
         /* This request wasn't in storage (e.g. TRACE) */
-        if (access_status == DONE)
-	    return OK;
-	else
-            return access_status;
+        return access_status;
     }
 
     if ((access_status = ap_location_walk(r))) {
