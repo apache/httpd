@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
-<!-- English Revision: 106090:106849 (outdated) -->
+<!-- English Revision: 106849 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -40,9 +40,9 @@
       href="http://deuce.doc.wustl.edu/doc/pspdfs/lf.pdf"
       >http://deuce.doc.wustl.edu/doc/pspdfs/lf.pdf</a>.</p>
 
-    <p>Um bei der Erstellung  des <code>httpd</code> das MPM
+    <p>Um bei der Erstellung  des <program>httpd</program> das MPM
       <module>leader</module> zu verwenden, f&uuml;gen Sie den Argumenten
-      des <code>configure</code>-Skripts <code>--with-mpm=leader</code>
+      des <program>configure</program>-Skripts <code>--with-mpm=leader</code>
       hinzu.</p>
   
     <p>Dieses MPM baut auf den atomaren APR-Vergleichs- und -Tauschoperationen
@@ -50,7 +50,7 @@
       x86-Rechner kompilieren, ohne dass 386-Unterst&uuml;tzung ben&ouml;tigt
       wird, oder wenn Sie f&uuml;r einen SPARC-Rechner kompilieren und keine
       pre-UltraSPARC-Chips betreiben m&uuml;ssen, f&uuml;gen Sie den Argumenten
-      des <code>configure</code>-Skripts
+      des <program>configure</program>-Skripts
       <code>--enable-nonportable-atomics=yes</code> hinzu. Dies veranlasst die
       APR veranlasst dazu, atomare Operationen einzusetzen, welche effizienten
       Befehlscode verwenden, der &auml;lteren CPUs nicht zur Verf&uuml;gung

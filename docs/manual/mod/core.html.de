@@ -25,9 +25,6 @@
 <a href="../en/mod/core.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">Diese Übersetzung ist möglicherweise
-            nicht mehr aktuell. Bitte prüfen Sie die englische Version auf
-            die neuesten Änderungen.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Beschreibung:</a></th><td>Ständig verfügbare Kernfunktionen des Apache HTTP
 Servers</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Core</td></tr></table>
@@ -815,7 +812,7 @@ Web sichtbar ist.</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
 </table>
     <p>Die Direktive setzt das Verzeichnis, von dem aus
-    <code>httpd</code> Dateien ausliefert. Sofern nicht eine Direktive
+    <code class="program"><a href="../programs/httpd.html">httpd</a></code> Dateien ausliefert. Sofern nicht eine Direktive
     wie <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code> greift, hängt
     der Server Pfade aus der angeforderten URL an das Wurzelverzeichnis
     an, um den Pfad zum Dokument zu bilden. Beispiel:</p>
@@ -849,8 +846,8 @@ Auslieferung zu lesen</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
 </table>
-    <p>Die Direktive steuert, ob <code>httpd</code> Memory-Mapping verwenden
-    darf, wenn er während der Auslieferung den Inhalt einer
+    <p>Die Direktive steuert, ob <code class="program"><a href="../programs/httpd.html">httpd</a></code> Memory-Mapping
+    verwenden darf, wenn er während der Auslieferung den Inhalt einer
     Datei lesen muss. Wenn die Bearbeitung einer Anfrage es erfordert,
     auf die Daten in einer Datei zuzugreifen -- zum Beispiel bei der
     Auslieferung einer mittels <code class="module"><a href="../mod/mod_include.html">mod_include</a></code> serverseitig
@@ -864,11 +861,11 @@ Auslieferung zu lesen</td></tr>
 
     <ul>
     <li>Bei einigen Multiprozessorsystemen kann Memory-Mapping die
-    Performance von <code>httpd</code> reduzieren.</li>
-    <li>Bei einem per NFS eingebundenen <code class="directive"><a href="#documentroot">DocumentRoot</a></code> kann <code>httpd</code> mit einem
-    Segmentierungsfehler <span class="transnote">(<em>Anm.d.Ü.:</em> ein sogenannter "segmentation
+    Performance von <code class="program"><a href="../programs/httpd.html">httpd</a></code> reduzieren.</li>
+    <li>Bei einem per NFS eingebundenen <code class="directive"><a href="#documentroot">DocumentRoot</a></code> kann <code class="program"><a href="../programs/httpd.html">httpd</a></code> mit
+    einem Speicherzugriffsfehler <span class="transnote">(<em>Anm.d.Ü.:</em> ein so genannter "segmentation
     fault")</span> abstürzen, wenn eine Datei gelöscht oder
-    gekürzt wird, während <code>httpd</code> sie im Speicher
+    gekürzt wird, während <code class="program"><a href="../programs/httpd.html">httpd</a></code> sie im Speicher
     abbildet.</li>
     </ul>
 
@@ -906,7 +903,7 @@ Dateien an den Client auszuliefern</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Kompatibilität:</a></th><td>Verfügbar ab Apache Version 2.0.44</td></tr>
 </table>
-    <p>Die Direktive steuert, ob <code>httpd</code> die
+    <p>Die Direktive steuert, ob <code class="program"><a href="../programs/httpd.html">httpd</a></code> die
     sendfile-Unterstützung des Kernels verwenden kann, um
     Dateiinhalte an den Client zu übermitteln. Wenn die Bearbeitung
     einer Anfrage keinen Zugriff auf die Daten in der Datei erfordert --
@@ -1346,11 +1343,10 @@ angegebenen MIME-Content-Type</td></tr>
     benötigen. Es ist auch für die Endanwender besser, da sie nicht
     die zusätzliche Wartezeit ertragen müssen, die ein Lookup mit
     sich bringt. Hoch frequentierte Angebote sollten diese Direktive auf
-    <code>Off</code>lassen. Das Hilfsprogramm <a href="../programs/logresolve.html">logresolve</a>, das
-    standardmäßig in das Unterverzeichnis <code>bin</code>
-    Ihres Installationsverzeichnisses kompiliert wird, kann dazu verwendet
-    werden, um offline Hostnamen zu protokollierten IP-Adressen
-    nachzuschlagen.</p>
+    <code>Off</code>lassen. Das Hilfsprogramm <code class="program"><a href="../programs/logresolve.html">logresolve</a></code>, das standardmäßig in das
+    Unterverzeichnis <code>bin</code> Ihres Installationsverzeichnisses
+    kompiliert wird, kann dazu verwendet werden, um offline Hostnamen von
+    protokollierten IP-Adressen nachzuschlagen.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1416,8 +1412,8 @@ wenn eine Testbedingung beim Start wahr ist</td></tr>
 
     <p>Das Argument <var>Parametername</var> ist ein sogenanntes
     "Define", das beim beim Start des Servers in der
-    <code>httpd</code>-Befehlszeile durch <code>-D<var>Parameter</var></code>
-    angegeben wird.</p>
+    <code class="program"><a href="../programs/httpd.html">httpd</a></code>-Befehlszeile durch
+    <code>-D<var>Parameter</var></code> angegeben wird.</p>
 
     <p><code class="directive">&lt;IfDefine&gt;</code>-Container können
     ineinander verschachtelt werden, um einfache Multi-Parameter-Tests
@@ -1512,7 +1508,7 @@ Server-Konfigurationsdatei ein</td></tr>
     Unterverzeichnissen ein. Das Einfügen ganzer Verzeichnisse ist
     jedoch nicht empfehlenswert, da temporäre Dateien sehr leicht
     versehentlich in einem Verzeichnis zurückgelassen werden, was
-    <code>httpd</code> scheitern lassen kann.</p>
+    <code class="program"><a href="../programs/httpd.html">httpd</a></code> scheitern lassen kann.</p>
 
   <p>Der angegebene Dateiname kann ein absoluter Pfad sein oder relativ zum
     <code class="directive"><a href="#serverroot">ServerRoot</a></code>-Verzeichnis angegeben
@@ -1546,7 +1542,7 @@ Server-Konfigurationsdatei ein</td></tr>
 
 <h3>Siehe auch</h3>
 <ul>
-<li><a href="../programs/apachectl.html">apachectl</a></li>
+<li><code class="program"><a href="../programs/apachectl.html">apachectl</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

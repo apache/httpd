@@ -26,9 +26,6 @@
 <a href="../es/mod/worker.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../ja/mod/worker.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">Diese Übersetzung ist möglicherweise
-            nicht mehr aktuell. Bitte prüfen Sie die englische Version auf
-            die neuesten Änderungen.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Beschreibung:</a></th><td>Multi-Processing-Modul, das einen Hybrid-Webserver mit
   Multi-Thread und Multi-Prozess-Unterstützung implementiert</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>MPM</td></tr>
@@ -153,7 +150,7 @@
     Privilegien der Apache-Kindprozesse festzulegen. Die Kindprozesse
     müssen in der Lage sein, alle Inhalte zu lesen, die sie ausliefern
     sollen, sollten darüber hinaus jedoch so wenig wie möglich Rechte
-    besitzen. Zusätzlich, solange nicht <a href="../suexec.html">suexec</a> verwendet wird, legen diese
+    besitzen. Zusätzlich, solange nicht <code class="program"><a href="../programs/suexec.html">suexec</a></code> verwendet wird, legen diese
     Direktiven auch die Privilegien fest, die von CGI-Skripts
     geerbt werden.</p>
 

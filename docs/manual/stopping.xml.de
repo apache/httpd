@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
-<!-- English Revision: 106090:106849 (outdated) -->
+<!-- English Revision: 106849 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -33,18 +33,18 @@
     zur Handhabung des Apache auf diesen Systemen zu erhalten.</p>
 </summary>
 
-<seealso><a href="programs/httpd.html">httpd</a></seealso>
-<seealso><a href="programs/apachectl.html">apachectl</a></seealso>
+<seealso><program>httpd</program></seealso>
+<seealso><program>apachectl</program></seealso>
 
 <section id="introduction"><title>Einleitung</title>
 
     <p>Um den Apache zu stoppen oder neu zu starten, m&#252;ssen Sie
-    ein Signal an den laufenden <code>httpd</code>-Prozess senden. Es gibt
+    ein Signal an den laufenden <program>httpd</program>-Prozess senden. Es gibt
     zwei M&#246;glichkeiten, diese Signale zu senden. Zum einen k&#246;nnen
     Sie den Unix-Befehl <code>kill</code> verwenden, um den Prozessen
     direkt Signale zu senden. Sie werden feststellen, dass auf Ihrem
-    System mehrere <code>httpd</code>-Programme laufen. Sie sollten jedoch
-    nicht jedem dieser Prozesse ein Signal senden, sondern nur dem
+    System mehrere <program>httpd</program>-Programme laufen. Sie sollten
+    jedoch nicht jedem dieser Prozesse ein Signal senden, sondern nur dem
     Elternprozess, dessen PID im <directive
     module="mpm_common">PidFile</directive> steht. Das hei&#223;t, Sie
     sollten es niemals n&#246;tig haben, einem anderen Prozess, als dem
@@ -59,16 +59,16 @@
 
     <example>kill -TERM `cat /usr/local/apache2/logs/httpd.pid`</example>
 
-    <p>Die zweite Methode, dem <code>httpd</code>-Prozess zu signalisieren,
-    ist die Verwendung der <code>-k</code>-Befehlszeilenoptionen
+    <p>Die zweite Methode, dem <program>httpd</program>-Prozess zu
+    signalisieren, ist die Verwendung der <code>-k</code>-Befehlszeilenoptionen
     <code>stop</code>, <code>restart</code> und <code>graceful</code>, wie
-    unten beschrieben. Dies sind Argumente des <a
-    href="programs/httpd.html">httpd</a>-Programms, es wird jedoch
-    empfohlen, sie unter Verwendung des Steuerskripts <a
-    href="programs/apachectl.html">apachectl</a> zu senden, welches diese
-    an <code>httpd</code> durchreicht.</p>
+    unten beschrieben. Dies sind Argumente des <program>
+    httpd</program>-Programms, es wird jedoch
+    empfohlen, sie unter Verwendung des Steuerskripts <program>
+    apachectl</program> zu senden, welches diese
+    an <program>httpd</program> durchreicht.</p>
 
-    <p>Nachdem Sie <code>httpd</code> signalisiert haben, k&#246;nnen Sie
+    <p>Nachdem Sie <program>httpd</program> signalisiert haben, k&#246;nnen Sie
     dessen Fortschritt beobachten, indem Sie eingeben:</p>
 
     <example>tail -f /usr/local/apache2/logs/error_log</example>
@@ -165,13 +165,13 @@
     binden, an denen er lauschen soll. Bevor Sie einen Neustart
     durchf&#252;hren, k&#246;nnen Sie die Syntax der Konfigurationsdateien
     mit dem Befehlszeilenargument <code>-t</code> &#252;berpr&#252;fen
-    (siehe auch <a href="programs/httpd.html">httpd</a>). Das garantiert
+    (siehe auch <program>httpd</program>). Das garantiert
     allerdings nicht, dass der Server korrekt starten wird. Um sowohl die
     Syntax als auch die Semantik der Konfigurationsdateien zu pr&#252;fen,
-    k&#246;nnen Sie versuchen, <code>httpd</code> als nicht-root-Benutzer
+    k&#246;nnen Sie versuchen, <program>httpd</program> als nicht-root-Benutzer
     zu starten. Wenn dabei keine Fehler auftreten, wird er versuchen, seine
     Sockets und Logdateien zu &#246;ffnen und fehlschlagen, da er nicht root
-    ist (oder weil sich der gegenw&#228;rtig laufende <code>httpd</code>
+    ist (oder weil sich der gegenw&#228;rtig laufende <program>httpd</program>
     bereits diese Ports gebunden hat). Wenn er aus einem anderen Grund
     fehlschl&#228;gt, dann liegt wahrscheinlich ein Konfigurationsfehler vor.
     Der Fehler sollte behoben werden, bevor der unterbrechungsfreie Neustart
