@@ -66,6 +66,11 @@ Documentation that needs writing:
 
 Available Patches:
 
+    * Ken's merge of the Three Config Files into one, with srm.conf and
+      access.conf made into "go see the One True Config File" placeholders.
+	Message-ID: <3624C175.D0C18CAA@Golux.Com>
+	Status: 
+
     * Harrie Hazewinkel's PATCH scoreboard
       This is a patch that changes the 'vhost'-name (type char [32])
       in the scoreboard into a 'vhost'-number (type int), and then uses a
