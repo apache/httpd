@@ -36,7 +36,7 @@ REL="Help"
 
 <h2>Summary</h2>
 
-<p>This module provides a handler which will process files before they
+<p>This module provides a filter which will process files before they
 are sent to the client.  The processing is controlled by specially
 formated SGML comments, referred to as <em>elements</em>.  These
 elements allow conditional text, the inclusion other files or
@@ -63,7 +63,7 @@ resulting document the mime type of <CODE>text/html</CODE>:
 
 <blockquote><code>
 AddType text/html .shtml<br>
-&lt;FilesMatch "\.shtml[.$]"&gt;<br>
+&lt;FilesMatch "\.shtml(\..+)?$"&gt;<br>
 &nbsp;&nbsp;SetOutputFilter INCLUDES<br>
 &lt;/FilesMatch&gt;
 </code></blockquote>

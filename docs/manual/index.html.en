@@ -133,6 +133,8 @@ Modules: <A HREF="mod/index-bytype.html">By Type</A> or
 </td></tr><tr><td>
 <A HREF="vhosts/">Virtual Hosts</A>
 </td></tr><tr><td>
+<A HREF="howto/ssi.html">Server Side Includes</A>
+</td></tr><tr><td>
 <A HREF="howto/cgi.html">Dynamic Content with CGI</A>
 </td></tr><tr><td>
 <A HREF="handler.html">Handlers</A>

@@ -143,8 +143,8 @@ such as <code>.shtml</code>, with the following directives:</p>
 
 <pre>
         AddType text/html .shtml
-        &lt;FilesMatch "\.shtml[.$]"&gt;
-          SetOutputFilter INCLUDES<br>
+        &lt;FilesMatch "\.shtml(\..+)?$"&gt;
+          SetOutputFilter INCLUDES
         &lt;/FilesMatch&gt;
 </pre>
 
@@ -516,6 +516,8 @@ ever resorting to CGI.</p>
 used for generating dynamic web pages. But it is a great way to add
 small amounts of dynamic content to pages, without doing a lot of extra
 work.</p>
+
+<!--#include virtual="footer.html" -->
 </body>
 </html>
 
