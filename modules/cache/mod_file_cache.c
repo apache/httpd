@@ -131,11 +131,7 @@ static ap_pool_t *context;
 static int once_through = 0;
 
 typedef struct {
-#if 1
     ap_file_t *file;
-#else
-    ap_mmap_t *mm;
-#endif
     char *filename;
     ap_finfo_t finfo;
 } a_file;
@@ -190,7 +186,7 @@ static ap_status_t open_file(ap_file_t **file, char* filename, int flg1, int flg
     return rv;
 }
 
-ap_status_t cleanup_mmap(void *sconfv)
+ap_status_t cleanup_file_cache(void *sconfv)
 {
     a_server_config *sconf = sconfv;
     size_t n;
@@ -199,11 +195,7 @@ ap_status_t cleanup_mmap(void *sconfv)
     n = sconf->files->nelts;
     file = (a_file *)sconf->files->elts;
     while(n) {
-#if 1
         ap_close(file->file);
-#else
-        ap_mmap_delete(file->mm);
-#endif
         ++file;
         --n;
     }
@@ -216,10 +208,8 @@ static const char *cachefile(cmd_parms *cmd, void *dummy, char *filename)
     a_file *new_file;
     a_file tmp;
     ap_file_t *fd = NULL;
-#if 0
-    caddr_t mm;
-#endif
     ap_status_t rc;
+
     /* canonicalize the file name */
     /* os_canonical... */
     if (ap_stat(&tmp.finfo, filename, NULL) != APR_SUCCESS) {
@@ -232,36 +222,25 @@ static const char *cachefile(cmd_parms *cmd, void *dummy, char *filename)
 	    "file_cache: %s isn't a regular file, skipping", filename);
 	return NULL;
     }
+
     /* Note: open_file should call ap_open for Unix and CreateFile for Windows.
      * The Windows file needs to be opened for async I/O to allow multiple threads
      * to serve it up at once.
      */
-    rc = open_file(&fd, filename, APR_READ, APR_OS_DEFAULT, cmd->pool); //context);
+    rc = open_file(&fd, filename, APR_READ, APR_OS_DEFAULT, cmd->pool);
     if (rc != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_WARNING, rc, cmd->server,
                      "file_cache: unable to open(%s, O_RDONLY), skipping", filename);
 	return NULL;
     }
-#if 1
     tmp.file = fd;
-#else
-    if (ap_mmap_create(&tmp.mm, fd, 0, tmp.finfo.st_size, context) != APR_SUCCESS) {
-	int save_errno = errno;
-	ap_close(fd);
-	errno = save_errno;
-	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, cmd->server,
-	    "file_cache: unable to mmap %s, skipping", filename);
-	return NULL;
-    }
-    ap_close(fd);
-#endif
     tmp.filename = ap_pstrdup(cmd->pool, filename);
     sconf = ap_get_module_config(cmd->server->module_config, &file_cache_module);
     new_file = ap_push_array(sconf->files);
     *new_file = tmp;
     if (sconf->files->nelts == 1) {
 	/* first one, register the cleanup */
-	ap_register_cleanup(cmd->pool, sconf, cleanup_mmap, ap_null_cleanup);
+	ap_register_cleanup(cmd->pool, sconf, cleanup_file_cache, ap_null_cleanup);
     }
     return NULL;
 }
@@ -362,7 +341,7 @@ int core_translate_copy(request_rec *r)
             r->filename = ap_pstrcat(r->pool, conf->ap_document_root, r->uri,
                                      NULL);
         }
-        
+
         return OK;
     }
 }
@@ -468,13 +447,17 @@ static int file_cache_handler(request_rec *r)
     if (!r->header_only) {
         long length = match->finfo.size;
         ap_off_t offset = 0;
-#if 1
-        /* ap_bflush(r->connection->client->); */
         struct iovec iov;
         ap_hdtr_t hdtr;
         ap_hdtr_t *phdtr = &hdtr;
 
-        /* frob the client buffer */
+        /* 
+         * We want to send any data held in the client buffer on the
+         * call to iol_sendfile. So hijack it then set outcnt to 0
+         * to prevent the data from being sent to the client again
+         * when the buffer is flushed to the client at the end of the 
+         * request.
+         */
         iov.iov_base = r->connection->client->outbase;
         iov.iov_len =  r->connection->client->outcnt;
         r->connection->client->outcnt = 0;
@@ -504,16 +487,6 @@ static int file_cache_handler(request_rec *r)
                 phdtr = NULL;
 	    }
 	}
-#else
-	if (!rangestatus) {
-	    ap_send_mmap (match->mm, r, 0, match->finfo.st_size);
-	}
-	else {
-	    while (ap_each_byterange(r, &offset, &length)) {
-		ap_send_mmap(match->mm, r, offset, length);
-	    }
-	}
-#endif
     }
 
     return OK;
