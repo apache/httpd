@@ -8,7 +8,7 @@
 <!--#include virtual="header.html" -->
 <H1>Apache Server Frequently Asked Questions</H1>
 <P>
-$Revision: 1.21 $ ($Date: 1997/04/12 04:49:10 $)
+$Revision: 1.22 $ ($Date: 1997/04/12 12:55:29 $)
 </P>
 <H2>The Questions</H2>
 <!-- Stuff to Add:						    -->
@@ -23,6 +23,8 @@ $Revision: 1.21 $ ($Date: 1997/04/12 04:49:10 $)
 <!-- - disable Apache buffering of script output by using nph-	    -->
 <!-- - access control based on DNS name really needs MAXIMUM_DNS    -->
 <!--   and double-check that rDNS resolves to name expected	    -->
+<!-- - mod_auth & passwd lines "user:pw:.*" - ++1st colon onward is -->
+<!--   treated as pw, not just ++1st to --2nd.			    -->
 <UL>
  <LI><STRONG>Background</STRONG>
   <OL START=1>
@@ -82,7 +84,12 @@ $Revision: 1.21 $ ($Date: 1997/04/12 04:49:10 $)
    <LI><A HREF="#passwdauth">Can I use my <SAMP>/etc/passwd</SAMP> file
     for Web page authentication?</A>
    </LI>
-   <LI><A HREF="#errordoc401"><SAMP>ErrorDocument 401</SAMP> does not work.</A>
+   <LI><A HREF="#errordoc401">Why doesn't my <SAMP>ErrorDocument
+    401</SAMP> work?</A>
+   </LI>
+   <LI><A HREF="#setgid">Why do I get &quot;setgid: Invalid
+    argument&quot; at startup?</A>
+   </LI>
   </OL>
  </LI>
 </UL>
@@ -699,13 +706,28 @@ $Revision: 1.21 $ ($Date: 1997/04/12 04:49:10 $)
   </P>
   <HR>
  <LI><A NAME="errordoc401">
-      <STRONG><SAMP>ErrorDocument 401</SAMP> does not work.</STRONG>
+      <STRONG>Why doesn't my <SAMP>ErrorDocument 401</SAMP> work?</STRONG>
      </A>
   <P>
   You need to use it with a URL in the form "/foo/bar" and not one
   with a method and hostname such as "http://host/foo/bar".  See the
   <A HREF="../mod/core.html#errordocument">ErrorDocument</A> documentation
   for details.  This was incorrectly documented in the past.
+  </P>
+  <HR>
+ </LI>
+ <LI><A NAME="setgid">
+      <STRONG>Why do I get &quot;setgid: Invalid argument&quot; at
+      startup?</STRONG>
+     </A>
+  <P>
+  Your
+  <A
+   HREF="../mod/core.html#group"
+  ><SAMP>Group</SAMP></A>
+  directive (probably in <SAMP>conf/httpd.conf</SAMP>) needs to name a
+  group that actually exists in the <SAMP>/etc/group</SAMP> file (or
+  your system's equivalent).
   </P>
   <HR>
  </LI>
