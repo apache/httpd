@@ -31,10 +31,9 @@ API_EXPORT(char *)ap_os_case_canonical_filename(pool *pPool, const char *szFile)
     if (rc) {
         if ( rc != ERROR_INVALID_NAME ) {
             ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, NULL, "OS/2 error %d for file %s", rc, szFile);
-            return ap_pstrdup(pPool, "");
-        } else {
-            return ap_pstrdup(pPool, szFile);
         }
+
+        return ap_pstrdup(pPool, szFile);
     }
 
 /* Switch backslashes to forward */
