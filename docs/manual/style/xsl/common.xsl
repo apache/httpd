@@ -779,9 +779,14 @@
 <xsl:template match="ol">
 <ol>
     <!-- A. B. C. D. (list-style-type="upper-alpha") -->
-    <xsl:if test="@type = 'A'">
+    <xsl:choose>
+    <xsl:when test="@type = 'A'">
         <xsl:attribute name="class">up-A</xsl:attribute>
-    </xsl:if>
+    </xsl:when>
+    <xsl:when test="@type = 'a'">
+        <xsl:attribute name="class">lo-A</xsl:attribute>
+    </xsl:when>
+    </xsl:choose>
 
     <xsl:apply-templates/>
 </ol>
