@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: ap_config.h,v 1.37 1996/09/12 21:18:49 jim Exp $ */
+/* $Id: ap_config.h,v 1.38 1996/09/23 14:02:14 jim Exp $ */
 
 /*
  * conf.h: system-dependant #defines and includes...
@@ -253,7 +253,7 @@ extern int strncasecmp(const char *,const char *,unsigned);
  * to 0x2000000 which is still PLENTY of space. I doubt if
  * even on heavy systems sbrk() would be called at all...
  */
-#undef NO_LINGCLOSE
+#define NO_LINGCLOSE
 
 #elif defined(SVR4)
 #define NO_KILLPG
