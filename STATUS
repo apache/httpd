@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/04/07 19:14:29 $]
+Last modified at [$Date: 2002/04/08 06:21:40 $]
 
 Release:
 
@@ -786,7 +786,9 @@ Binaries needed:
     FreeBSD 4.1:            rbb volunteers
     OS X 10.1.3/Darwin 5.3: Jim volunteers
     Solaris 8.x/sparc:      Jim volunteers
+    Solaris 8.x/i386:       Aaron volunteers
     RedHat 7.2:             Jim volunteers
+    Linux 2.2.19/i386:      Aaron volunteers
 
 Other features that need writing:
 
