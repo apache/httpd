@@ -175,11 +175,11 @@ URLs on the fly</description>
       directives). For historical reasons the conditions are given
       first, and so the control flow is a little bit long-winded. See
       Figure 1 for more details.</p>
-<section>
+<blockquote>
       <img src="../images/mod_rewrite_fig1.gif" border="1" width="428"
            height="385" alt="[Needs graphics capability to display]" />
       <p><strong>Figure 1:</strong>The control flow through the rewriting ruleset</p>
-</section>
+</blockquote>
       <p>As you can see, first the URL is matched against the
       <em>Pattern</em> of each rule. When it fails mod_rewrite
       immediately stops processing this rule and continues with the
@@ -226,11 +226,11 @@ URLs on the fly</description>
       Figure 2 shows to which locations the back-references are
       transfered for expansion.</p>
 
-<section>
+<blockquote>
       <img src="../images/mod_rewrite_fig2.gif" border="1" width="381"
            height="179" alt="[Needs graphics capability to display]" />
       <p><strong>Figure 2:</strong> The back-reference flow through a rule.</p>
-</section>
+</blockquote>
       <p>We know this was a crash course on mod_rewrite's internal
       processing. But you will benefit from this knowledge when
       reading the following documentation of the available
