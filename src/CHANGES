@@ -1,5 +1,8 @@
 Changes with Apache 1.3.33
 
+  *) SECURITY: CAN-2004-0940 (cve.mitre.org)
+     mod_include: Fix potential buffer overflow with escaped characters
+     in SSI tag string. [Martin Kraemer, Jim Jagielski]
 
 Changes with Apache 1.3.32
 
