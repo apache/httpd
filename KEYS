@@ -317,7 +317,7 @@ sig       BB1D9F6D             ct magazine CERTIFICATE <pgpCA@ct.heise.de>
 sig       E2449019             Martin Kraemer <Martin.Kraemer@Mch.SNI.De>
 sig       EE65E321             Martin Kraemer <martin@apache.org>
 -----BEGIN PGP PUBLIC KEY BLOCK-----
-Version: 2.6.2
+Version: PGP 6.5.1i
 
 mQCNAzYvawcAAAEEAO/lLOQVYsUS+l7yan+Rzr0ehfWRqlgeNsV4DQ0xTuQewD9K
 5lm7ujRwutxlNaf5dXjE24mlsiRN8KDp+fKwm7Wtqv490xmhzS/6y8ekwB02P4fi
@@ -332,8 +332,13 @@ bD3VfUUkkV8kZ4ituecWTx0zj1Oa0QiCiv8HHvdsmQB0mj07mWQz1CamXPSwHYn+
 t+fJOIkAlQMFEDYva2c34/Rf7mXjIQEBcNQEAOrt4+o2LwcCiJp3bOF9WZMirpMQ
 QJISqXBnom3r2eB+k1a/Jig1sePSzPxneW9EgWIrWg0EfK+u2kMgvTJynDUux9zL
 4qnECmZT+ESEm+P8rPKeecOfUHgDjQlTUCneOX5p0TbdvJm+TcJVjXjoVrYv6hZg
-InYw+jlvF5e/sdI8
-=03LU
+InYw+jlvF5e/sdI8mQBtAzRKZDIAAAEDAON7JJtbjj6ZFEstbQS16Hd/BPlwdbcz
+MGaQ0Mi3Xjfvi5Dq4+Lf8bthb8YWu8pxIb+6ktmfzWmgshWwxNNYzaY/iqgH72zl
+gYSG4dYoozC4yj5nOv1Bc5xQ69dy/eU00QAFEbQiTWFydGluIEtyYWVtZXIgPG1h
+cnRpbkBhcGFjaGUub3JnPokAdQMFEDXZHR02KtdYjzlOPQEBN4YC/jSEJAkGu66E
+wospSnZmNvjZxo72FbZLKKDGZARYNP6d887a9IiJk2fuibab24Ia+7CV+W8S8VI2
++mHX0KS5Uqwavndlu4py566D5Uq3X0icpHGIglj0aF48YXscnVxTNg==
+=i6nr
 -----END PGP PUBLIC KEY BLOCK-----
 
 
