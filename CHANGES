@@ -1,5 +1,24 @@
 Changes with Apache 2.0.37
 
+  *) mod_isapi: All mod_isapi directives, excluding ISAPICacheFile,
+     may now be specified to the <File/Directory > container, rather
+     than by vhost.  [William Rowe]
+
+  *) mod_isapi: Experimental support for faux async support for ISAPI
+     modules.  [William Rowe]
+
+  *) mod_isapi: Major refactoring of the code to rely on apr internals
+     rather than MS APIs (using our own mod_isapi.h headers for ISAPI
+     symbol definitions.)  [William Rowe]
+
+  *) mod_isapi: Fixed the return string length from GetServerVariable
+     callback, it was not including the trailing null in the consumed
+     buffer size.  This was particularly bad for Delphi 6.0 users.
+     PR 8934  [Sebastian Hantsch <sebastian.hantsch@gmx.de>]
+
+  *) Fixed Win32 builds for Microsoft VisualStudio 7.0 (.net).
+     [William Rowe]
+
   *) Make apxs look in the correct directory for envvars.  It was
      broken when sbindir != bindir.  PR 8869
      [Andreas Sundström <sunkan@zappa.cx>]
