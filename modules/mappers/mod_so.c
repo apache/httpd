@@ -220,7 +220,7 @@ static ap_status_t unload_file(void *handle)
 static const char *load_module(cmd_parms *cmd, void *dummy, 
                                char *modname, char *filename)
 {
-    ap_status_t stat;
+    ap_status_t status;
     ap_dso_handle_t *modhandle;
     ap_dso_handle_sym_t modsym;
     module *modp;
@@ -254,8 +254,9 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
     /*
      * Load the file into the Apache address space
      */
-    if ((stat = ap_dso_load(&modhandle, szModuleFile, cmd->pool )) != APR_SUCCESS) {
-        const char *my_error = ap_os_dso_error();
+    if ((status = ap_dso_load(&modhandle, szModuleFile, cmd->pool )) != APR_SUCCESS) {
+        char my_error[256];
+        ap_strerror(ap_canonical_error(status), my_error, 256);
         return ap_pstrcat (cmd->pool, "Cannot load ", szModuleFile,
                            " into server: ", 
                            my_error ? my_error : "(reason unknown)",
@@ -269,9 +270,11 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
      * First with the hidden variant (prefix `AP_') and then with the plain
      * symbol name.
      */
-    if ((stat = ap_dso_sym(&modsym, modhandle, modname)) != APR_SUCCESS) {
+    if ((status = ap_dso_sym(&modsym, modhandle, modname)) != APR_SUCCESS) {
+        char my_err[256];
 	return ap_pstrcat(cmd->pool, "Can't locate API module structure `", modname,
-		       "' in file ", szModuleFile, ": ", ap_os_dso_error(), NULL);
+		       "' in file ", szModuleFile, ": ", 
+                       ap_strerror(ap_canonical_error(status), my_err, 256), NULL);
     }
     modp = (module*) modsym;
     modp->dynamic_load_handle = (ap_dso_handle_t *)modhandle;
