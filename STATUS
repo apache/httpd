@@ -1,9 +1,10 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/10/07 19:54:21 $]
+Last modified at [$Date: 2000/10/12 03:59:12 $]
 
 Release:
 
-    2.0a7   : ???
+    2.0a8   : ???
+    2.0a7   : released October 8, 2000
     2.0a6   : released August 18, 2000
     2.0a5   : released August 4, 2000
     2.0a4   : released June 7, 2000
@@ -24,9 +25,9 @@ RELEASE SHOWSTOPPERS:
 		   be responsible for stripping off the EOS bucket for the
 		   sub-request, and removing all vestiges of the request.
 
-    * Remove Buff and IOL from the code.  To do this, a chunking and 
-      translation filter must be written.  This allows us to remove BUFF.
-      IOLs can be removed as soon as somebody gets to it.
+    * Remove Buff from the code.  Some buff functionality is currently 
+      missing: input translation filter, translation of protocol data for 
+      EBCDIC machines
 
     * suEXEC doesn't work
         Status: Manoj has posted an patch to fix this.
@@ -109,7 +110,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       process This may not be able to be implemented everywhere though.
 
     * There are still a number of places in the code where we are
-      loosing error status (i.e. throwing away the error returned by a
+      losing error status (i.e. throwing away the error returned by a
       system call and replacing it with a generic error code)
 
     * Win32: Implement reliable piped logs on Windows
