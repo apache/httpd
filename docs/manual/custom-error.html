@@ -1,6 +1,6 @@
 <HTML>
 <HEAD>
-<TITLE>Ccustom error responses</TITLE>
+<TITLE>Custom error responses</TITLE>
 </HEAD>
 
 <BODY>
@@ -9,7 +9,7 @@
 
 <DL>
 <DT>Purpose
-<DD>Additional functionality. Allows webmasters to configure the response of
+<DD>Additional functionality. Allows web-masters to configure the response of
 Apache to some error or problem.<BR>
 <P>Customizable responses can be defined to be activated in the event of a
 server detected error or problem.<BR>
@@ -82,14 +82,14 @@ prior to sending a <code>SIGHUP</code> (kill -1) signal.
 <h2>Custom error responses and redirects</H2>
 <DL>
 <DT>Purpose
-<DD>Apache's behaviour to redirected URLs has been modified so that additional
+<DD>Apache's behavior to redirected URLs has been modified so that additional
 environment variables are available to a script/server-include.<p>
 
-<DT>Old behaviour
+<DT>Old behavior
 <DD>Standard CGI vars were made available to a script which has been
 redirected to. No indication of where the redirection came from was provided.
 <p>
-<DT>New behaviour
+<DT>New behavior
 <DD>A new batch of environment variables will be initialized for use by a
 script which has been redirected to.<BR>
 Each new variable will have the prefix <code>REDIRECT_</code>.<BR>

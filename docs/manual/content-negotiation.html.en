@@ -108,7 +108,7 @@ The full list of headers recognized is:
        <code>image/gif</code>, <code>text/plain</code>, or
        <code>text/html;&nbsp;level=3</code>.
   <dt> <code>Content-language:</code>
-  <dd> The language of the variant, specified as an internet standard
+  <dd> The language of the variant, specified as an Internet standard
        language code (e.g., <code>en</code> for English,
        <code>kr</code> for Korean, etc.).
   <dt> <code>Content-encoding:</code>

@@ -10,11 +10,11 @@
 <h3>What is suEXEC?</h3>
 The <b>suEXEC</b> feature, introduced in Apache 1.2 provides the ability to
 run <b>CGI</b> programs under user ids different from the user id of the
-calling webserver. Used properly, this feature can reduce considerably the
+calling web-server. Used properly, this feature can reduce considerably the
 insecurity of allowing users to run CGI programs. At the same time, improperly
 configured, this facility can crash your computer, burn your house down and
 steal all the money from your retirement fund. <b>:-)</b> If you aren't 
-familar with managing setuid root programs and the security issues they
+familiar with managing setuid root programs and the security issues they
 present, we highly recommend that you not consider using this feature.<p>
 
 <hr>
@@ -26,7 +26,7 @@ is not part of the normal install/compile process.<p>
 
 <ul>
 <h3>Configuring the suEXEC wrapper</h3>
-From the toplevel of the Apache source tree, type:&nbsp;&nbsp;<b><code>cd support [ENTER]</code></b><p>
+From the top-level of the Apache source tree, type:&nbsp;&nbsp;<b><code>cd support [ENTER]</code></b><p>
 Edit the <code>suexec.h</code> file and change the following macros to match your
 local Apache installation.<p>
 <i>From support/suexec.h</i>
@@ -47,9 +47,9 @@ local Apache installation.<p>
 #define LOG_EXEC "/usr/local/etc/httpd/logs/cgi.log"
 
 /*
- * DOC_ROOT -- Define as the DocuemntRoot set for Apache.  This
+ * DOC_ROOT -- Define as the DocumentRoot set for Apache.  This
  *             will be the only hierarchy (aside from UserDirs)
- *             that can be used for suEXEC behaviour.
+ *             that can be used for suEXEC behavior.
  */
 #define DOC_ROOT "/usr/local/etc/httpd/htdocs"
 
@@ -117,7 +117,7 @@ checks before it will execute any program passed to it for execution.
 <li>The current working directory <b>must be a directory</b>.
 <li>The current working directory <b>must not be writable by <em>group</em> or <em>other</em></b>.
 <li>The command being executed <b>cannot be a symbolic link</b>.
-<li>The command being executed <b>cannot be writeable by <em>group</em> or <em>other</em></b>.
+<li>The command being executed <b>cannot be writable by <em>group</em> or <em>other</em></b>.
 <li>The command being executed <b>cannot be a <em>setuid</em> or <em>setgid</em> program</b>.
 <li>The target UID and GID <b>must be a valid user and group on this system</b>.
 <li>The target UID and GID to execute as, <b>must match the UID and GID of the directory</b>.
@@ -133,7 +133,7 @@ have fun with it. <b>:-)</b>
 <h3>Using suEXEC</h3>
 After properly installing the <b>suexec</b> wrapper executable, you must kill and restart
 the Apache server. A simple <code><b>kill -1 `cat httpd.pid`</b></code> will not be enough.
-Upon startup of the webserver, if Apache finds a properly configured <b>suexec</b> wrapper,
+Upon startup of the web-server, if Apache finds a properly configured <b>suexec</b> wrapper,
 it will print the following message to the console.<p>
 
 <code>Configuring Apache for use with suexec wrapper.</code><p>
