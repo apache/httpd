@@ -807,6 +807,7 @@ static int ssl_server_import_key(server_rec *s,
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                     "Copying DSA parameters from private key to certificate");
             ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, s);
+            EVP_PKEY_free(pubkey);
         }
     }
 

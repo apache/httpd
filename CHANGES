@@ -1,5 +1,10 @@
 Changes with Apache 2.0.44
 
+  *) Fix memory leak in mod_ssl from internal SSL library allocations
+     within SSL_get_peer_certificate and X509_get_pubkey.
+     [Zvi Har'El <rl@math.technion.ac.il>
+      Madhusudan Mathihalli <madhusudan_mathihalli@hp.com>].
+
   *) mod_ssl uses free() inappropriately in several places, to free
      memory which has been previously allocated inside OpenSSL.
      Such memory should be freed with OPENSSL_free(), not with free().
