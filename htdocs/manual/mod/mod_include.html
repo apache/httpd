@@ -10,14 +10,37 @@
 
 This module is contained in the <code>mod_include.c</code> file, and
 is compiled in by default. It provides for server-parsed html
-documents, known as SPML documents.  Any document with mime type
-<code>text/x-server-parsed-html</code> or
-<code>text/x-server-parsed-html3</code> will be parsed by this module,
-with the resulting output given the mime type <code>text/html</code>.
-Several directives beyond the original NCSA SPML definition have been
+documents. Several directives beyond the original NCSA definition have been
 included in Apache 1.2 - these are flagged below with the phrase
 "Apache 1.2 and above".  Of particular significance are the new flow 
 control directives documented at the bottom.
+
+<H2>Enabling Server-Side Includes</H2>
+
+Any document with handler of "server-parsed" will be parsed by this
+module, if the <CODE>Includes</CODE> option is set. If documents
+containing server-side include directives are given the extension
+.shtml, the following directives will make Apache parse them and
+assign the resulting document the mime type of <CODE>text/html</CODE>:
+
+<PRE>
+AddType text/html .shtml
+AddHandler server-parsed .shtml
+</PRE>
+
+The following directive must be given for the directories containing
+the shtml files (typically in a <CODE>&lt;Directory&gt;</CODE> section,
+but this directive is also valid .htaccess files if <CODE>AllowOverride
+Options</CODE> is set):
+
+<PRE>
+Options +Includes
+</PRE>
+
+For backwards compatibility, documents with mime type
+<code>text/x-server-parsed-html</code> or
+<code>text/x-server-parsed-html3</code> will also be parsed
+(and the resulting output given the mime type <code>text/html</code>).
 
 <h2>Basic Elements</h2>
 
