@@ -360,9 +360,9 @@ static int remove_entity(cache_handle_t *h)
     
     return OK;
 }
-static int serialize_table( cache_header_tbl_t **obj, 
-                            int*nelts, 
-                            apr_table_t *table) 
+static int serialize_table(cache_header_tbl_t **obj, 
+                           apr_ssize_t *nelts, 
+                           apr_table_t *table)
 {
    apr_table_entry_t *elts = (apr_table_entry_t *) table->a.elts;
    apr_ssize_t i;
