@@ -21,12 +21,12 @@ If a file has already been indent'd, or doesn't need it, mark it as DONE
    http_core.h
    http_log.c
    http_log.h
-   http_main.c
+   http_main.c			RESERVED until Dean applies his two patches
    http_main.h
-   http_protocol.c
-   http_protocol.h
-   http_request.c
-   http_request.h
+   http_protocol.c		RESERVED while Roy is working on it
+   http_protocol.h		RESERVED while Roy is working on it
+   http_request.c		RESERVED while Roy is working on it
+   http_request.h		RESERVED while Roy is working on it
    httpd.h
    md5.h
    md5c.c
