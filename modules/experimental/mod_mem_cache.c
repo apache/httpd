@@ -346,7 +346,7 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *type, cons
 
 static int remove_entity(cache_handle_t *h) 
 {
-    cache_object_t *obj = h->cache_obj;
+    cache_object_t *obj ;
 
     if (sconf->lock) {
         apr_thread_mutex_lock(sconf->lock);
@@ -355,7 +355,8 @@ static int remove_entity(cache_handle_t *h)
      * RACE .. some one might have just deleted this object .. so test
      * if it is still around
      */
-    if (obj) {
+    if (h->cache_obj) {
+        obj = h->cache_obj;
         apr_hash_set(sconf->cacheht, obj->key, strlen(obj->key), NULL);
         cleanup_cache_object(obj);
         h->cache_obj = NULL;
