@@ -361,6 +361,9 @@ struct pool {
 #ifdef ALLOC_USE_MALLOC
     void *allocation_list;
 #endif
+#ifdef POOL_DEBUG
+    struct pool *joined;
+#endif
 };
 
 pool *permanent_pool;
@@ -576,6 +579,9 @@ int pool_is_ancestor(pool *a, pool *b)
     if (a == NULL) {
 	return 1;
     }
+    while (a->joined) {
+	a = a->joined;
+    }
     while (b) {
 	if (a == b) {
 	    return 1;
@@ -583,6 +589,31 @@ int pool_is_ancestor(pool *a, pool *b)
 	b = b->parent;
     }
     return 0;
+}
+
+/* All blocks belonging to sub will be changed to point to p
+ * instead.  This is a guarantee by the caller that sub will not
+ * be destroyed before p is.
+ */
+API_EXPORT(void) pool_join(pool *p, pool *sub)
+{
+    union block_hdr *b;
+
+    if (!pool_is_ancestor(p, sub)) {
+	fprintf(stderr, "pool_join: p is not an ancestor of sub\n");
+	abort();
+    }
+    block_alarms();
+    while (p->joined) {
+	p = p->joined;
+    }
+    sub->joined = p;
+    for (b = global_block_list; b; b = b->h.global_next) {
+	if (b->h.owning_pool == sub) {
+	    b->h.owning_pool = p;
+	}
+    }
+    unblock_alarms();
 }
 #endif
 

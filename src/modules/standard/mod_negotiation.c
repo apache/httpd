@@ -2182,6 +2182,13 @@ static int handle_multi(request_rec *r)
         set_neg_headers(r, neg, na_not_applied);
     }
 
+    /* now do a "fast redirect" ... promote the sub_req into the main req */
+    /* We need to tell POOL_DEBUG that we're guaranteeing that sub_req->pool
+     * will exist as long as r->pool.  Otherwise we run into troubles because
+     * some values in this request will be allocated in r->pool, and others in
+     * sub_req->pool.
+     */
+    pool_join(r->pool, sub_req->pool);
     r->filename = sub_req->filename;
     r->handler = sub_req->handler;
     r->content_type = sub_req->content_type;
@@ -2190,19 +2197,13 @@ static int handle_multi(request_rec *r)
     r->content_language = sub_req->content_language;
     r->finfo = sub_req->finfo;
     r->per_dir_config = sub_req->per_dir_config;
-    /* You may wonder why we're using the sub_req->pool here.  It's to support
-     * POOL_DEBUG in alloc.c.  sub_req->pool will have the same lifetime as
-     * r->pool, we guarantee that by not destroying the sub request below.
-     * We have to guarantee that because we've "promoted" some of the values
-     * from sub_req->pool to r->foobar, like r->filename.
-     */
     /* copy output headers from subrequest, but leave negotiation headers */
-    r->notes = overlay_tables(sub_req->pool, sub_req->notes, r->notes);
-    r->headers_out = overlay_tables(sub_req->pool, sub_req->headers_out,
+    r->notes = overlay_tables(r->pool, sub_req->notes, r->notes);
+    r->headers_out = overlay_tables(r->pool, sub_req->headers_out,
                                     r->headers_out);
-    r->err_headers_out = overlay_tables(sub_req->pool, sub_req->err_headers_out,
+    r->err_headers_out = overlay_tables(r->pool, sub_req->err_headers_out,
                                         r->err_headers_out);
-    r->subprocess_env = overlay_tables(sub_req->pool, sub_req->subprocess_env,
+    r->subprocess_env = overlay_tables(r->pool, sub_req->subprocess_env,
                                        r->subprocess_env);
     avail_recs = (var_rec *) neg->avail_vars->elts;
     for (j = 0; j < neg->avail_vars->nelts; ++j) {

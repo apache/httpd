@@ -87,6 +87,15 @@ void init_alloc(void);		/* Set up everything */
 API_EXPORT(pool *) make_sub_pool(pool *);	/* All pools are subpools of permanent_pool */
 API_EXPORT(void) destroy_pool(pool *);
 
+/* used to guarantee to the pool debugging code that the sub pool will not be
+ * destroyed before the parent pool
+ */
+#ifndef POOL_DEBUG
+#define pool_join(a,b)
+#else
+API_EXPORT(void) pool_join(pool *p, pool *sub);
+#endif
+
 /* Clearing out EVERYTHING in an pool... destroys any sub-pools */
 
 API_EXPORT(void) clear_pool(struct pool *);
