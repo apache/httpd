@@ -25,7 +25,7 @@ URLs on the fly.   <code>mod_rewrite</code> is not compiled into the server by
 default. To use <code>mod_rewrite</code> you have to enable the following line
 in the server build Configuration file:
 <pre>
-    Module  rewrite_module   mod_rewrite.o
+    AddModule  modules/standard/mod_rewrite.o
 </pre>
 
 <h2>Summary</h2>
