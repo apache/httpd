@@ -57,7 +57,7 @@
  */
 
 #define CORE_PRIVATE
-
+#define CACHE_FD 0
 #include "mod_cache.h"
 #include "ap_mpm.h"
 #include "apr_thread_mutex.h"
@@ -102,6 +102,7 @@ typedef struct mem_cache_object {
     apr_size_t refcount;
     apr_size_t m_len;
     void *m;
+    apr_os_file_t fd;
 } mem_cache_object_t;
 
 typedef struct {
@@ -163,8 +164,11 @@ static void cleanup_cache_object(cache_object_t *obj)
     
     /* Cleanup the mem_cache_object_t */
     if (mobj) {
-        if (mobj->m) {
+        if (mobj->type == CACHE_TYPE_HEAP && mobj->m) {
             free(mobj->m);
+        }
+        if (mobj->type == CACHE_TYPE_FILE && mobj->fd) {
+            apr_file_close(mobj->fd);
         }
         if (mobj->header_out) {
             if (mobj->header_out[0].hdr) 
@@ -576,8 +580,17 @@ static apr_status_t read_body(cache_handle_t *h, apr_pool_t *p, apr_bucket_briga
 {
     apr_bucket *b;
     mem_cache_object_t *mobj = (mem_cache_object_t*) h->cache_obj->vobj;
-    
-    b = apr_bucket_immortal_create(mobj->m, mobj->m_len);
+
+    if (mobj->type == CACHE_TYPE_FILE) {
+        /* CACHE_TYPE_FILE */
+        apr_file_t *file;
+        apr_os_file_put(&file, &mobj->fd, APR_READ|APR_XTHREAD, p);
+        b = apr_bucket_file_create(file, 0, mobj->m_len, p);
+    }
+    else {
+        /* CACHE_TYPE_HEAP */
+        b = apr_bucket_immortal_create(mobj->m, mobj->m_len);
+    }
     APR_BRIGADE_INSERT_TAIL(bb, b);
     b = apr_bucket_eos_create();
     APR_BRIGADE_INSERT_TAIL(bb, b);
@@ -646,11 +659,58 @@ static apr_status_t write_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
     apr_read_type_e eblock = APR_BLOCK_READ;
     apr_bucket *e;
     char *cur;
-    
-    /* XXX mmap, malloc or file? 
-     * Enable this decision to be configured....
-     * XXX cache buckets...
-     */
+
+    if (CACHE_FD) {
+        apr_file_t *file = NULL;
+        int fd = 0;
+        int other = 0;
+
+        /* We can cache an open file descriptor if:
+         * - the brigade contains one and only one file_bucket &&
+	 * - the brigade is complete &&
+	 * - the file_bucket is the last data bucket in the brigade
+         */
+        APR_BRIGADE_FOREACH(e, b) {
+            if (APR_BUCKET_IS_EOS(e)) {
+                h->cache_obj->complete = 1;
+            }
+            else if (APR_BUCKET_IS_FILE(e)) {
+                apr_bucket_file *a = e->data;
+                fd++;
+                file = a->fd;
+            }
+            else {
+                other++;
+            }
+        }
+        if (fd == 1 && !other && h->cache_obj->complete) {
+            apr_file_t *tmpfile;
+
+            mobj->type = CACHE_TYPE_FILE;
+            /* Open a new XTHREAD handle to the file */
+            rv = apr_file_open(&tmpfile, r->filename, 
+                               APR_READ | APR_BINARY | APR_XTHREAD | APR_FILE_NOCLEANUP,
+                               APR_OS_DEFAULT, r->pool);
+            if (rv != APR_SUCCESS) {
+                return rv;
+            }
+            apr_file_unset_inherit(tmpfile);
+            apr_os_file_get(&(mobj->fd), tmpfile);
+
+            mobj->cleanup = 0;
+            mobj->refcount--;    /* Count should be 0 now */
+            apr_pool_cleanup_kill(r->pool, h->cache_obj, decrement_refcount);
+
+            /* Open for business */
+            h->cache_obj->complete = 1;
+            return APR_SUCCESS;
+        }
+    }
+
+    /* 
+     * FD cacheing is not enabled or the content was not
+     * suitable for fd caching.
+     */  
     if (mobj->m == NULL) {
         mobj->m = malloc(mobj->m_len);
         if (mobj->m == NULL) {
