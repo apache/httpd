@@ -166,7 +166,7 @@ proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
 
 /* We break the URL into host, port, path-search */
 
-    if ((desthost = table_get(r->headers_in, "Host:")) == NULL)
+    if ((desthost = table_get(r->headers_in, "Host")) == NULL)
     {
 	url += 7;  /* skip http:// */
 	destport = DEFAULT_PORT;
@@ -189,8 +189,11 @@ proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
     if (p != NULL)
     {
         *(p++) = '\0';
-        destport = atoi(p);
-        destportstr = p;
+	if (isdigit(*p))
+	{
+            destport = atoi(p);
+            destportstr = p;
+	}
     }
 
     if (proxyhost != NULL)
