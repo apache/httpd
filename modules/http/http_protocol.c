@@ -1413,9 +1413,9 @@ request_rec *ap_read_request(conn_rec *conn)
     r->input_filters   = conn->input_filters;
 
     apr_setsocketopt(conn->client_socket, APR_SO_TIMEOUT, 
-                     conn->keptalive
+                     (int)(conn->keptalive
                      ? r->server->keep_alive_timeout * APR_USEC_PER_SEC
-                     : r->server->timeout * APR_USEC_PER_SEC);
+                     : r->server->timeout * APR_USEC_PER_SEC));
                      
     ap_add_output_filter("BYTERANGE", NULL, r, r->connection);
     ap_add_output_filter("CONTENT_LENGTH", NULL, r, r->connection);
@@ -1434,7 +1434,7 @@ request_rec *ap_read_request(conn_rec *conn)
     }
     if (r->connection->keptalive) {
         apr_setsocketopt(r->connection->client_socket, APR_SO_TIMEOUT,
-                         r->server->timeout * APR_USEC_PER_SEC);
+                         (int)(r->server->timeout * APR_USEC_PER_SEC));
     }
     if (!r->assbackwards) {
         get_mime_headers(r);
