@@ -89,15 +89,13 @@
  * Actual definitions of config globals
  */
 
-int ap_threads_per_child=0;         /* Worker threads per child */
+int ap_threads_per_child=HARD_THREAD_LIMIT;         /* Worker threads per child */
 int ap_max_requests_per_child=0;
 static const char *ap_pid_fname=NULL;
-static const char *ap_scoreboard_fname=NULL;
 static int ap_threads_to_start=0;
 static int min_spare_threads=0;
 static int max_spare_threads=0;
 static int ap_thread_limit=0;
-AP_DECLARE_DATA int ap_extended_status = 0;
 static int num_listening_sockets = 0; /* set by open_listeners in ap_mpm_run */
 static apr_socket_t ** listening_sockets;
 apr_lock_t *accept_mutex = NULL;
@@ -117,8 +115,6 @@ typedef struct {
     apr_pool_t *tpool;
 } proc_info;
 
-struct ap_ctable ap_child_table[HARD_SERVER_LIMIT];
-
 /*
  * The max child slot ever assigned, preserved across restarts.  Necessary
  * to deal with MaxClients changes across SIGWINCH restarts.  We use this
@@ -127,7 +123,11 @@ struct ap_ctable ap_child_table[HARD_SERVER_LIMIT];
 int ap_max_child_assigned = -1;
 int ap_max_threads_limit = -1;
 char ap_coredump_dir[MAX_STRING_LEN];
+
+
 static volatile bool flag_of_death;
+static int udp_sock;
+static struct sockaddr_in udpsi;
 
 /* shared http_main globals... */
 
@@ -177,6 +177,7 @@ static void sig_coredump(int sig)
 static int volatile shutdown_pending;
 static int volatile restart_pending;
 static int volatile is_graceful;
+ap_generation_t volatile ap_my_generation = 0;
 
 /*
  * ap_start_shutdown() and ap_start_restart(), below, are a first stab at
@@ -219,6 +220,9 @@ static void ap_start_restart(int graceful)
     }
     restart_pending = 1;
     is_graceful = graceful;
+    if (is_graceful){
+        apr_pool_cleanup_kill(pconf, NULL, ap_cleanup_scoreboard);
+    }
 }
 
 static void sig_term(int sig)
@@ -234,14 +238,7 @@ static void restart(int sig)
 static void tell_workers_to_exit(void)
 {
     flag_of_death = true;
-}
-
-static void push_workers_off_cliff(int sig)
-{
-    int i;
-    
-    for (i=0;i<ap_max_child_assigned;i++)
-        kill(ap_child_table[i].pid, sig);
+    sendto(udp_sock, "die!", 4, 0, (struct sockaddr*)&udpsi, sizeof(udpsi));
 }
 
 static void set_signals(void)
@@ -314,8 +311,9 @@ static void process_socket(apr_pool_t *p, apr_socket_t *sock, int my_child_num)
         apr_socket_close(sock);
 	    return;
     }
-    
+
     current_conn = ap_new_connection(p, ap_server_conf, sock, conn_id);
+
     if (current_conn) {
         ap_process_connection(current_conn);
         ap_lingering_close(current_conn);
@@ -350,14 +348,20 @@ static int32 worker_thread(void * dummy)
     worker_thread_count++;
     apr_lock_release(worker_thread_count_mutex);
 
+    (void) ap_update_child_status(0, child_slot, SERVER_STARTING,
+                                  (request_rec*)NULL);
+                                  
     apr_poll_setup(&pollset, num_listening_sockets, tpool);
-    for(n=0 ; n < num_listening_sockets ; ++n)
+    for(n=0 ; n <= num_listening_sockets ; ++n)
 	    apr_poll_socket_add(pollset, listening_sockets[n], APR_POLLIN);
 
     while (!this_worker_should_exit) {
         this_worker_should_exit |= (ap_max_requests_per_child != 0) && (requests_this_child <= 0);
         
         if (this_worker_should_exit) break;
+
+        (void) ap_update_child_status(0, child_slot, SERVER_READY,
+                                      (request_rec*)NULL);
 
         apr_lock_aquire(accept_mutex);
         while (!this_worker_should_exit) {
@@ -367,6 +371,10 @@ static int32 worker_thread(void * dummy)
             if (flag_of_death)
                 this_worker_should_exit = 1;
 
+            apr_poll_revents_get(&event, listening_sockets[0], pollset);
+            if (event & APR_POLLIN)
+                this_worker_should_exit = 1;
+            
             if (ret != APR_SUCCESS) {
                 if (errno == EINTR) {
                     continue;
@@ -423,14 +431,10 @@ static int32 worker_thread(void * dummy)
         apr_clear_pool(ptrans);
     }
 
-    apr_pool_destroy(tpool);
+    ap_update_child_status(0, child_slot, SERVER_DEAD, (request_rec*)NULL);
+    
     apr_lock_aquire(worker_thread_count_mutex);
     worker_thread_count--;
-    if (worker_thread_count == 0) {
-        /* All the threads have exited, now finish the shutdown process
-         * by signalling the sigwait thread */
-        kill(server_pid, SIGTERM);
-    }
     apr_lock_release(worker_thread_count_mutex);
 
     return (0);
@@ -439,7 +443,7 @@ static int32 worker_thread(void * dummy)
 static int make_worker(server_rec *s, int slot)
 {
     thread_id tid;
-    proc_info *my_info = (proc_info *)malloc(sizeof(proc_info));
+    proc_info *my_info = (proc_info *)malloc(sizeof(proc_info)); /* freed by thread... */
 
     if (my_info == NULL) {
         ap_log_error(APLOG_MARK, APLOG_ALERT, errno, ap_server_conf,
@@ -455,11 +459,11 @@ static int make_worker(server_rec *s, int slot)
 
     if (one_process) {
     	set_signals();
-        ap_child_table[slot].pid = getpid();
-        ap_child_table[slot].status = SERVER_ALIVE;
+        ap_scoreboard_image->parent[0].pid = getpid();
         return 0;
     }
 
+    (void) ap_update_child_status(0, slot, SERVER_STARTING, (request_rec*)NULL);
     tid = spawn_thread(worker_thread, "apache_worker", B_NORMAL_PRIORITY,
         my_info);
     if (tid < B_NO_ERROR) {
@@ -468,14 +472,17 @@ static int make_worker(server_rec *s, int slot)
 	    /* In case system resources are maxxed out, we don't want
 	     * Apache running away with the CPU trying to fork over and
 	     * over and over again. */
+        (void) ap_update_child_status(0, slot, SERVER_DEAD, 
+                                      (request_rec*)NULL);
+        
     	sleep(10);
-
+        free(my_info);
+        
     	return -1;
     }
     resume_thread(tid);
-    
-    ap_child_table[slot].pid = tid;
-    ap_child_table[slot].status = SERVER_ALIVE;
+
+    ap_scoreboard_image->servers[0][slot].tid = tid;
     return 0;
 }
 
@@ -484,8 +491,11 @@ static void startup_threads(int number_to_start)
 {
     int i;
 
+   ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL, 
+                "starting %d threads", number_to_start);
+
     for (i = 0; number_to_start && i < ap_thread_limit; ++i) {
-	if (ap_child_table[i].pid) {
+	if (ap_scoreboard_image->servers[0][i].tid) {
 	    continue;
 	}
 	if (make_worker(ap_server_conf, i) < 0) {
@@ -519,7 +529,7 @@ static void perform_idle_server_maintenance(void)
     free_length = 0;
 
     for (i = 0; i < ap_thread_limit; ++i) {
-        if (ap_child_table[i].pid == 0) {
+        if (ap_scoreboard_image->servers[0][i].tid == 0) {
             if (free_length < spawn_rate) {
                 free_slots[free_length] = i;
                 ++free_length;
@@ -567,75 +577,89 @@ static void server_main_loop(int remaining_threads_to_start)
             /* non-fatal death... note that it's gone in the scoreboard. */
             child_slot = -1;
             for (i = 0; i < ap_max_child_assigned; ++i) {
-        	if (ap_child_table[i].pid == pid.pid) {
-                    int j;
-
+        	if (ap_scoreboard_image->servers[0][i].tid == pid.pid) {
                     child_slot = i;
-                    for (j = 0; j < HARD_THREAD_LIMIT; j++) {
-                        ap_beos_force_reset_connection_status(i * HARD_THREAD_LIMIT + j);
-                    }
                     break;
                 }
             }
             if (child_slot >= 0) {
-                ap_child_table[child_slot].pid = 0;
+                ap_scoreboard_image->servers[0][child_slot].tid = 0;
+                (void) ap_update_child_status(0, child_slot, SERVER_DEAD, (request_rec*)NULL);
                 
-		if (remaining_threads_to_start
-		    && child_slot < ap_thread_limit) {
-		    /* we're still doing a 1-for-1 replacement of dead
+                if (remaining_threads_to_start
+		            && child_slot < ap_thread_limit) {
+                    /* we're still doing a 1-for-1 replacement of dead
                      * children with new children
                      */
-		    make_worker(ap_server_conf, child_slot);
-		    --remaining_threads_to_start;
-		}
+                    make_worker(ap_server_conf, child_slot);
+                    --remaining_threads_to_start;
+		        }
 #if APR_HAS_OTHER_CHILD
-	    }
-	    else if (apr_proc_other_child_read(&pid, status) == 0) {
-		/* handled */
+            }
+            else if (apr_proc_other_child_read(&pid, status) == 0) {
+    		/* handled */
 #endif
-	    }
-	    else if (is_graceful) {
-            /* Great, we've probably just lost a slot in the
-		     * scoreboard.  Somehow we don't know about this
-		     * child.
-		     */
-		    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, ap_server_conf,
-			    "long lost child came home! (pid %ld)", pid.pid);
-	    }
+            }
+            else if (is_graceful) {
+                /* Great, we've probably just lost a slot in the
+                 * scoreboard.  Somehow we don't know about this
+                 * child.
+                 */
+                 ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, ap_server_conf,
+			                  "long lost child came home! (pid %ld)", pid.pid);
+            }
 	    
-	    /* Don't perform idle maintenance when a child dies,
-         * only do it when there's a timeout.  Remember only a
-         * finite number of children can die, and it's pretty
-         * pathological for a lot to die suddenly.
-         */
-	    continue;
-	}
-	else if (remaining_threads_to_start) {
-	    /* we hit a 1 second timeout in which none of the previous
-	     * generation of children needed to be reaped... so assume
-	     * they're all done, and pick up the slack if any is left.
-	     */
-	    startup_threads(remaining_threads_to_start);
-	    remaining_threads_to_start = 0;
-	    /* In any event we really shouldn't do the code below because
-	     * few of the servers we just started are in the IDLE state
-	     * yet, so we'd mistakenly create an extra server.
-	     */
-	    continue;
-	}
-
-	perform_idle_server_maintenance();
+            /* Don't perform idle maintenance when a child dies,
+             * only do it when there's a timeout.  Remember only a
+             * finite number of children can die, and it's pretty
+             * pathological for a lot to die suddenly.
+             */
+             continue;
+         }
+	     else if (remaining_threads_to_start) {
+             /* we hit a 1 second timeout in which none of the previous
+              * generation of children needed to be reaped... so assume
+              * they're all done, and pick up the slack if any is left.
+              */
+              startup_threads(remaining_threads_to_start);
+              remaining_threads_to_start = 0;
+              /* In any event we really shouldn't do the code below because
+               * few of the servers we just started are in the IDLE state
+               * yet, so we'd mistakenly create an extra server.
+               */
+              continue;
+         }
+         perform_idle_server_maintenance();
     }
 }
 
 int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 {
-    int remaining_threads_to_start, i;
+    int remaining_threads_to_start, i,j;
     apr_status_t rv;
     ap_listen_rec *lr;    
     pconf = _pconf;
     ap_server_conf = s;
-    
+
+    ap_scoreboard_fname = DEFAULT_SCOREBOARD;
+
+    if ((udp_sock = socket(AF_INET,SOCK_DGRAM,IPPROTO_UDP)) < 0){
+        ap_log_error(APLOG_MARK, APLOG_ALERT, errno, s,
+            "couldn't create control socket, shutting down");
+        return 1;
+    }
+
+    /* now build the udp sockaddr_in structure... */
+    udpsi.sin_len = sizeof(struct sockaddr_in);
+    udpsi.sin_family = AF_INET;
+    udpsi.sin_port = htons(7777);
+    udpsi.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+    if (bind(udp_sock, (struct sockaddr*)&udpsi, sizeof(udpsi)) < 0){
+        ap_log_error(APLOG_MARK, APLOG_ALERT, errno, s,
+            "couldn't bind the control socket, shutting down");
+        return 1;
+    }
+
     if ((num_listening_sockets = ap_setup_listeners(ap_server_conf)) < 1) {
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT, 0, s,
             "no listening sockets available, shutting down");
@@ -643,7 +667,6 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     }
 
     ap_log_pid(pconf, ap_pid_fname);
-
     flag_of_death = false;
         
     /*
@@ -662,6 +685,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
                      "Couldn't create accept lock");
         return 1;
     }
+
     /* worker_thread_count_mutex
      * locks the worker_thread_count so we have ana ccurate count...
      */
@@ -679,8 +703,19 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     if (!is_graceful)
         ap_create_scoreboard(pconf, SB_SHARED);
 
+    if (!is_graceful) {
+        for (i = 0; i < HARD_SERVER_LIMIT; i++) {
+            ap_scoreboard_image->parent[i].pid = 0;
+            for (j = 0;j < HARD_THREAD_LIMIT; j++)
+                ap_scoreboard_image->servers[i][j].tid = 0;
+        }
+    }
+    if (HARD_SERVER_LIMIT == 1)
+        ap_scoreboard_image->parent[0].pid = getpid();
+
     set_signals();
-    /* Sanity cehcks to avoid thrashing... */
+
+    /* Sanity checks to avoid thrashing... */
     if (max_spare_threads < min_spare_threads )
         max_spare_threads = min_spare_threads;
 
@@ -708,8 +743,11 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
      * the listenfds and creat the pollset...
      */
     listening_sockets = apr_palloc(pchild,
-       sizeof(*listening_sockets) * (num_listening_sockets));
-    for (lr = ap_listeners, i = 0; i < num_listening_sockets; lr = lr->next, ++i)
+       sizeof(*listening_sockets) * (num_listening_sockets + 1));
+
+    apr_os_sock_put(&listening_sockets[0], &udp_sock, pchild);
+
+    for (lr = ap_listeners, i = 1; i <= num_listening_sockets; lr = lr->next, ++i)
 	    listening_sockets[i]=lr->sd;
 
     /* we assume all goes OK...hmm might want to check that! */
@@ -729,15 +767,23 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, ap_server_conf,
 		"%s configured -- resuming normal operations",
 		ap_get_server_version());
+
     ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0, ap_server_conf,
 		"Server built: %s", ap_get_server_built());
+
     restart_pending = shutdown_pending = 0;
 
     /*
      * main_loop until it's all over
      */
     server_main_loop(remaining_threads_to_start);
+    
+    tell_workers_to_exit(); /* if we get here we're exiting... */
+    sleep(1); /* give them a brief chance to exit */
 
+    /* close the UDP socket we've been using... */
+    apr_socket_close(listening_sockets[0]);
+        
     /*
      * If we get here we're shutting down...
      */
@@ -767,7 +813,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, ap_server_conf,
             "caught SIGTERM, shutting down");
     
-	return 1;
+        return 1;
     }
 
     /* we've been told to restart */
@@ -780,15 +826,12 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     if (is_graceful) {
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, ap_server_conf,
 		    "SIGWINCH received.  Doing graceful restart");
-        tell_workers_to_exit();
-        /* TODO - need to test some ideas here... */
     }
     else {
         /* Kill 'em all.  Since the child acts the same on the parents SIGTERM 
          * and a SIGHUP, we may as well use the same signal, because some user
          * pthreads are stealing signals from us left and right.
          */
-        push_workers_off_cliff(SIGTERM);
 	    
         ap_reclaim_child_processes(1);		/* Start with SIGTERM */
 	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, ap_server_conf,
@@ -814,21 +857,23 @@ static void beos_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pte
     /* sigh, want this only the second time around */
     if (restart_num++ == 1) {
         is_graceful = 0;
+        
         if (!one_process && !no_detach)
 	        apr_proc_detach();
+
         server_pid = getpid();
     }
 
     beosd_pre_config();
     ap_listen_pre_config();
     ap_threads_to_start = DEFAULT_START_THREADS;
-    min_spare_threads = DEFAULT_MIN_FREE_DAEMON * DEFAULT_THREADS_PER_CHILD;
-    max_spare_threads = DEFAULT_MAX_FREE_DAEMON * DEFAULT_THREADS_PER_CHILD;
-    ap_thread_limit = HARD_SERVER_LIMIT;
+    min_spare_threads = DEFAULT_MIN_FREE_THREADS;
+    max_spare_threads = DEFAULT_MAX_FREE_THREADS;
+    ap_thread_limit = HARD_THREAD_LIMIT;
     ap_threads_per_child = DEFAULT_THREADS_PER_CHILD;
     ap_pid_fname = DEFAULT_PIDLOG;
+    ap_scoreboard_fname = DEFAULT_SCOREBOARD;
     ap_max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
-    ap_beos_set_maintain_connection_status(1);
 
     apr_cpystrn(ap_coredump_dir, ap_server_root, sizeof(ap_coredump_dir));
 }
@@ -975,18 +1020,6 @@ static const char *set_max_requests(cmd_parms *cmd, void *dummy, const char *arg
     return NULL;
 }
 
-static const char *set_maintain_connection_status(cmd_parms *cmd,
-                                                  void *dummy, int arg) 
-{
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
-
-    ap_beos_set_maintain_connection_status(arg != 0);
-    return NULL;
-}
-
 static const char *set_coredumpdir (cmd_parms *cmd, void *dummy, const char *arg) 
 {
     apr_finfo_t finfo;
@@ -1024,8 +1057,6 @@ AP_INIT_TAKE1( "ThreadsPerChild", set_threads_per_child, NULL, RSRC_CONF,
   "Number of threads each child creates" ),
 AP_INIT_TAKE1( "MaxRequestsPerChild", set_max_requests, NULL, RSRC_CONF,
   "Maximum number of requests a particular child serves before dying." ),
-AP_INIT_FLAG( "ConnectionStatus", set_maintain_connection_status, NULL, RSRC_CONF,
-  "Whether or not to maintain status information on current connections." ),
 AP_INIT_TAKE1( "CoreDumpDirectory", set_coredumpdir, NULL, RSRC_CONF, 
   "The location of the directory Apache changes to before dumping core" ),
 { NULL }
