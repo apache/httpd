@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/13 17:18:38 $]
+Last modified at [$Date: 2003/05/13 17:28:20 $]
 
 Release:
 
@@ -232,6 +232,12 @@ PATCHES TO PORT FROM 2.1
        0: nd
           nd: The runtime files (e.g. cache) should be in runtimedir, since the
               logfilefir should not be writable for the httpd user.
+	  
+	  thommay: In principle I agree; however I was going for the principle
+	           of least surprise - the new version uses exactly the same
+		   settings as the old one. If we want to change the locations
+		   I'm quite happy to do that but don't think that should 
+		   affect backporting this fix.
 
     * mod_log_config: be able to log the id of the thread that handled
       the request
