@@ -212,7 +212,7 @@ void util_ald_cache_purge(util_ald_cache_t *cache)
  */
 util_url_node_t *util_ald_create_caches(util_ldap_state_t *st, const char *url)
 {
-    util_url_node_t curl, *newcurl;
+    util_url_node_t curl, *newcurl = NULL;
     util_ald_cache_t *search_cache;
     util_ald_cache_t *compare_cache;
     util_ald_cache_t *dn_compare_cache;

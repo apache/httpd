@@ -1,5 +1,8 @@
 Changes with Apache 2.0.52
 
+  *) Fix a segfault in the LDAP cache when it is configured switched
+     off. [Jess Holle <jessh ptc.com>]
+
   *) SECURITY: CAN-2004-0811 (cve.mitre.org)
      Fix merging of the Satisfy directive, which was applied to
      the surrounding context and could allow access despite configured

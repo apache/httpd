@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/09/23 16:44:16 $]
+Last modified at [$Date: 2004/09/23 16:55:35 $]
 
 Release:
 
@@ -99,10 +99,6 @@ PATCHES TO BACKPORT FROM 2.1
 	    should eliminate the need to backport the "else" condition included
 	    in this patch.
        minfrin: The excess "else" condition has been removed in v1.10.
-
-    *) Fix a segfault in the LDAP cache when it is configured switched off.
-         modules/ldap/util_ldap_cache_mgr.c: 1.7
-       +1: minfrin, bnicholes, trawick
 
     *) Use HTML 2.0 <hr> for error pages. PR 30732
          modules/http/http_protocol.c: r1.483
