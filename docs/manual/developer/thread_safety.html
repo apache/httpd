@@ -24,8 +24,8 @@
     <h1>Common 3rd Party Libraries</h1>
     <p>The following is a list of common libraries that are used by 3rd party
     Apache modules.  You can check to see if your module is using a potentially
-    unsafe library by using tools such as <tt>ldd</tt> and <tt>nm</tt>.  For PHP,
-    for example, try this:
+    unsafe library by using tools such as <tt>ldd</tt> and <tt>nm</tt>.  For
+    PHP, for example, try this:</p>
 <pre>% ldd libphp4.so
 libsablot.so.0 => /usr/local/lib/libsablot.so.0 (0x401f6000)
 libexpat.so.0 => /usr/lib/libexpat.so.0 (0x402da000)
@@ -46,14 +46,13 @@ libdl.so.2 => /lib/libdl.so.2 (0x40634000)
 libnsl.so.1 => /lib/libnsl.so.1 (0x40637000)
 libc.so.6 => /lib/libc.so.6 (0x4064b000)
 /lib/ld-linux.so.2 => /lib/ld-linux.so.2 (0x80000000)</pre>
-In addition to these libraries you will need to have a look at any libraries
-linked statically into the module.  You can use <tt>nm</tt> to look for individual
-symbols in the module.</p>
+<p>In addition to these libraries you will need to have a look at any libraries
+linked statically into the module.  You can use <tt>nm</tt> to look for
+individual symbols in the module.</p>
 
     <h2>Library List</h2>
-    <p>Please drop a note to rasmus@apache.org [need a better contact address here] if
-    you have additions or corrections to this list.</p>
-    <p>
+    <p>Please drop a note to dev@httpd.apache.org if you have additions or
+       corrections to this list.</p>
     <table><tr><th>Library</th><th>Version</th><th>Thread Safe?</th><th>Notes</th></tr>
     <tr><td><a href="http://aspell.sourceforge.net/">ASpell/PSpell</a></td><td> </td><td>?</td><td> </td></tr>
     <tr><td><a href="http://www.sleepycat.com/">Berkeley DB</a></td><td>3.x,4.x </td><td>Yes</td><td>Be careful about sharing a connection across threads.</td></tr>
