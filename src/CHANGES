@@ -1,5 +1,9 @@
 Changes with Apache 1.3.28
 
+  *) suexec: Be more pedantic when cleaning environment. Clean it
+     immediately after startup. PR 2790, 10449.
+     [Jeff Stewart <jws@purdue.edu>, André Malo]
+
   *) Fix apxs to insert LoadModule/AddModule directives only outside of
      sections. PR 8712, 9012.  [André Malo]
 
