@@ -804,6 +804,10 @@ static apr_off_t get_body(char *buffer, apr_size_t *len, const char *tag,
     if (apr_file_read(map, buffer, len) != APR_SUCCESS) {
         return -1;
     }      
+    /* XXX next line can go beyond allocated storage and segfault,
+     *     or worse yet go beyond data read but not beyond allocated
+     *     storage and think it found the tag
+     */
     endbody = strstr(buffer, tag);
     if (!endbody) {
         return -1;
@@ -824,7 +828,7 @@ static apr_off_t get_body(char *buffer, apr_size_t *len, const char *tag,
         return -1;
     }
 
-    /* Give the caller back the actual body's offset and length */
+    /* Give the caller back the actual body's file offset and length */
     *len = bodylen;
     return pos - (endbody - buffer);
 }
