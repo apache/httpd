@@ -7,24 +7,6 @@ Changes with Apache 2.1.0-dev
      of the server specified. PR 24922
      [Pascal Terjan <pterjan@linuxfr.org>]
 
-  *) Fix a potential segfault if the bind password in the LDAP cache
-     is NULL. PR 26686 [Jari Ahonen <jah@progress.com>]
-
-  *) Quotes cannot be used around require group and require dn
-     directives, update the documentation to reflect this. Also add
-     quotes around the dn and group within debug messages, to make it
-     more obvious why authentication is failing if quotes are used in
-     error. PR 19304 [Graham Leggett]
-
-  *) The Microsoft LDAP SDK escapes filters for us, stop util_ldap
-     from escaping filters twice when the backslash character is used.
-     PR 24437 [Jess Holle <jessh@ptc.com>]
-
-  *) Overhaul handling of LDAP error conditions, so that the util_ldap_*
-     functions leave the connections in a sane state after errors have
-     occurred. PR 27748, 17274, 17599, 18661, 21787, 24595, 24683, 27134,
-     27271 [Graham Leggett]
-
   *) RPM spec file changes: changed default dependancy to link to db4
      instead of db3. Fixed complaints about unpackaged files.
      [Graham Leggett]
@@ -394,6 +376,24 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.50
+
+  *) Fix a potential segfault if the bind password in the LDAP cache
+     is NULL. PR 26686 [Jari Ahonen <jah@progress.com>]
+
+  *) Quotes cannot be used around require group and require dn
+     directives, update the documentation to reflect this. Also add
+     quotes around the dn and group within debug messages, to make it
+     more obvious why authentication is failing if quotes are used in
+     error. PR 19304 [Graham Leggett]
+
+  *) The Microsoft LDAP SDK escapes filters for us, stop util_ldap
+     from escaping filters twice when the backslash character is used.
+     PR 24437 [Jess Holle <jessh@ptc.com>]
+
+  *) Overhaul handling of LDAP error conditions, so that the util_ldap_*
+     functions leave the connections in a sane state after errors have
+     occurred. PR 27748, 17274, 17599, 18661, 21787, 24595, 24683, 27134,
+     27271 [Graham Leggett]
 
   *) mod_ldap calls ldap_simple_bind_s() to validate the user
      credentials.  If the bind fails, the connection is left
