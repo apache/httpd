@@ -353,7 +353,8 @@ be passed through</td></tr>
     <div class="note"><h3>Only available in &lt;Directory&gt; sections</h3>
     <code class="directive">AllowOverride</code> is valid only in
     <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code>
-    sections, not in <code class="directive"><a href="#location">&lt;Location&gt;</a></code> or <code class="directive"><a href="#files">&lt;Files&gt;</a></code> sections.
+    sections specified without regular expressions, not in <code class="directive"><a href="#location">&lt;Location&gt;</a></code>, <code class="directive"><a href="#directorymatch">&lt;DirectoryMatch&gt;</a></code> or
+    <code class="directive"><a href="#files">&lt;Files&gt;</a></code> sections.
     </div>
 
     <p>When this directive is set to <code>None</code>, then
@@ -415,6 +416,10 @@ be passed through</td></tr>
     <div class="example"><p><code>
       AllowOverride AuthConfig Indexes
     </code></p></div>
+
+    <p>In the example above all directives that are neither in the group
+    <code>AuthConfig</code> nor <code>Indexes</code> cause an internal
+    server error.</p>
 
 <h3>See also</h3>
 <ul>
