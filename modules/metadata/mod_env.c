@@ -256,7 +256,7 @@ static int fixup_env_module(request_rec *r)
 
 static void register_hooks(apr_pool_t *p)
 {
-    ap_hook_fixups(fixup_env_module,NULL,NULL,AP_HOOK_MIDDLE);
+    ap_hook_fixups(fixup_env_module,NULL,NULL,APR_HOOK_MIDDLE);
 }
 
 module AP_MODULE_DECLARE_DATA env_module =

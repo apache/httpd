@@ -76,9 +76,9 @@
 #include <arpa/inet.h>
 #endif
 
-AP_HOOK_STRUCT(
-	    AP_HOOK_LINK(pre_connection)
-	    AP_HOOK_LINK(process_connection)
+APR_HOOK_STRUCT(
+	    APR_HOOK_LINK(pre_connection)
+	    APR_HOOK_LINK(process_connection)
 )
 
 AP_IMPLEMENT_HOOK_RUN_ALL(int,pre_connection,(conn_rec *c),(c),OK,DECLINED)
@@ -132,12 +132,12 @@ static void sock_enable_linger(int s)
 
 AP_CORE_DECLARE(void) ap_flush_conn(conn_rec *c)
 {
-    ap_bucket_brigade *bb;
-    ap_bucket *b;
+    apr_bucket_brigade *bb;
+    apr_bucket *b;
 
-    bb = ap_brigade_create(c->pool);
-    b = ap_bucket_create_flush();
-    AP_BRIGADE_INSERT_TAIL(bb, b);
+    bb = apr_brigade_create(c->pool);
+    b = apr_bucket_create_flush();
+    APR_BRIGADE_INSERT_TAIL(bb, b);
     ap_pass_brigade(c->output_filters, bb);
 }
 

@@ -4,7 +4,7 @@
 #include "http_config.h"
 #include "apr_general.h"
 #include "util_filter.h"
-#include "ap_buckets.h"
+#include "apr_buckets.h"
 #include "http_request.h"
 
 static const char s_szCaseFilterName[]="CaseFilter";
@@ -36,31 +36,31 @@ static void CaseFilterInsertFilter(request_rec *r)
     }
 
 static apr_status_t CaseFilterOutFilter(ap_filter_t *f,
-					ap_bucket_brigade *pbbIn)
+					apr_bucket_brigade *pbbIn)
     {
-    ap_bucket *pbktIn;
-    ap_bucket_brigade *pbbOut;
+    apr_bucket *pbktIn;
+    apr_bucket_brigade *pbbOut;
 
     // XXX: is this the most appropriate pool?
-    pbbOut=ap_brigade_create(f->r->pool);
-    AP_BRIGADE_FOREACH(pbktIn,pbbIn)
+    pbbOut=apr_brigade_create(f->r->pool);
+    APR_BRIGADE_FOREACH(pbktIn,pbbIn)
 	{
 	const char *data;
 	apr_size_t len;
 	char *buf;
 	apr_size_t n;
-	ap_bucket *pbktOut;
+	apr_bucket *pbktOut;
 
-	if(AP_BUCKET_IS_EOS(pbktIn))
+	if(APR_BUCKET_IS_EOS(pbktIn))
 	    {
 	    // XXX: why can't I reuse pbktIn???
-	    ap_bucket *pbktEOS=ap_bucket_create_eos();
-	    AP_BRIGADE_INSERT_TAIL(pbbOut,pbktEOS);
+	    apr_bucket *pbktEOS=apr_bucket_create_eos();
+	    APR_BRIGADE_INSERT_TAIL(pbbOut,pbktEOS);
 	    break;
 	    }
 
 	// read
-	ap_bucket_read(pbktIn,&data,&len,1);
+	apr_bucket_read(pbktIn,&data,&len,1);
 
 	// write
 	buf=apr_palloc(f->r->pool,len);
@@ -69,8 +69,8 @@ static apr_status_t CaseFilterOutFilter(ap_filter_t *f,
 
 	// XXX: should we use a heap bucket instead? Or a transient (in
 	// which case we need a separate brigade for each bucket)?
-	pbktOut=ap_bucket_create_pool(buf,len,f->r->pool);
-	AP_BRIGADE_INSERT_TAIL(pbbOut,pbktOut);
+	pbktOut=apr_bucket_create_pool(buf,len,f->r->pool);
+	APR_BRIGADE_INSERT_TAIL(pbbOut,pbktOut);
 	}
 
     // XXX: is there any advantage to passing a brigade for each bucket?
@@ -95,7 +95,7 @@ static const command_rec CaseFilterCmds[] =
 
 static void CaseFilterRegisterHooks(void)
     {
-    ap_hook_insert_filter(CaseFilterInsertFilter,NULL,NULL,AP_HOOK_MIDDLE);
+    ap_hook_insert_filter(CaseFilterInsertFilter,NULL,NULL,APR_HOOK_MIDDLE);
     ap_register_output_filter(s_szCaseFilterName,CaseFilterOutFilter,
 			      AP_FTYPE_CONTENT);
     }

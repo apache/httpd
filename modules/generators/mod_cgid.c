@@ -78,7 +78,7 @@
 #include "apr_general.h"
 #include "apr_file_io.h"
 #include "apr_portable.h"
-#include "ap_buckets.h"
+#include "apr_buckets.h"
 #include "util_filter.h"
 #include "httpd.h" 
 #include "http_config.h" 
@@ -734,8 +734,8 @@ static int cgid_handler(request_rec *r)
 { 
     int retval, nph, dbpos = 0; 
     char *argv0, *dbuf = NULL; 
-    ap_bucket_brigade *bb;
-    ap_bucket *b;
+    apr_bucket_brigade *bb;
+    apr_bucket *b;
     char argsbuffer[HUGE_STRING_LEN]; 
     void *sconf;
     cgid_server_conf *conf;
@@ -908,21 +908,21 @@ static int cgid_handler(request_rec *r)
 
         ap_send_http_header(r); 
         if (!r->header_only) { 
-            bb = ap_brigade_create(r->pool);
-            b = ap_bucket_create_pipe(tempsock);
-            AP_BRIGADE_INSERT_TAIL(bb, b);
-            b = ap_bucket_create_eos();
-            AP_BRIGADE_INSERT_TAIL(bb, b);
+            bb = apr_brigade_create(r->pool);
+            b = apr_bucket_create_pipe(tempsock);
+            APR_BRIGADE_INSERT_TAIL(bb, b);
+            b = apr_bucket_create_eos();
+            APR_BRIGADE_INSERT_TAIL(bb, b);
             ap_pass_brigade(r->output_filters, bb);
         } 
     } 
 
     if (nph) {
-        bb = ap_brigade_create(r->pool);
-        b = ap_bucket_create_pipe(tempsock);
-        AP_BRIGADE_INSERT_TAIL(bb, b);
-        b = ap_bucket_create_eos();
-        AP_BRIGADE_INSERT_TAIL(bb, b);
+        bb = apr_brigade_create(r->pool);
+        b = apr_bucket_create_pipe(tempsock);
+        APR_BRIGADE_INSERT_TAIL(bb, b);
+        b = apr_bucket_create_eos();
+        APR_BRIGADE_INSERT_TAIL(bb, b);
         ap_pass_brigade(r->output_filters, bb);
     } 
 
@@ -933,8 +933,8 @@ static int cgid_handler(request_rec *r)
 
 static void register_hook(apr_pool_t *p)
 {
-    ap_hook_post_config(cgid_init, NULL, NULL, AP_HOOK_MIDDLE);
-    ap_hook_handler(cgid_handler, NULL, NULL, AP_HOOK_MIDDLE);
+    ap_hook_post_config(cgid_init, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_handler(cgid_handler, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 module AP_MODULE_DECLARE_DATA cgid_module = { 

@@ -77,7 +77,7 @@
 
 #include "apr_strings.h"
 #include "apr_portable.h"
-#include "ap_buckets.h"
+#include "apr_buckets.h"
 #include "ap_config.h"
 #include "httpd.h"
 #include "http_config.h"
@@ -648,17 +648,17 @@ BOOL WINAPI WriteClient (HCONN ConnID, LPVOID Buffer, LPDWORD lpwdwBytes,
                          DWORD dwReserved)
 {
     request_rec *r = ((isapi_cid *)ConnID)->r;
-    ap_bucket_brigade *bb;
-    ap_bucket *b;
+    apr_bucket_brigade *bb;
+    apr_bucket *b;
 
     if (dwReserved == HSE_IO_SYNC)
         ; /* XXX: Fake it */
 
-    bb = ap_brigade_create(r->pool);
-    b = ap_bucket_create_transient(Buffer, (apr_size_t)lpwdwBytes);
-    AP_BRIGADE_INSERT_TAIL(bb, b);
-    b = ap_bucket_create_eos();
-    AP_BRIGADE_INSERT_TAIL(bb, b);
+    bb = apr_brigade_create(r->pool);
+    b = apr_bucket_create_transient(Buffer, (apr_size_t)lpwdwBytes);
+    APR_BRIGADE_INSERT_TAIL(bb, b);
+    b = apr_bucket_create_eos();
+    APR_BRIGADE_INSERT_TAIL(bb, b);
     ap_pass_brigade(r->output_filters, bb);
 
     return TRUE;
@@ -796,14 +796,14 @@ BOOL WINAPI ServerSupportFunction(HCONN hConn, DWORD dwHSERequest,
             return FALSE;
         }
         else if (ate < headlen) {
-            ap_bucket_brigade *bb;
-            ap_bucket *b;
-            bb = ap_brigade_create(cid->r->pool);
-	    b = ap_bucket_create_transient((char*) lpdwDataType + ate, 
+            apr_bucket_brigade *bb;
+            apr_bucket *b;
+            bb = apr_brigade_create(cid->r->pool);
+	    b = apr_bucket_create_transient((char*) lpdwDataType + ate, 
                                            headlen - ate);
-	    AP_BRIGADE_INSERT_TAIL(bb, b);
-            b = ap_bucket_create_eos();
-	    AP_BRIGADE_INSERT_TAIL(bb, b);
+	    APR_BRIGADE_INSERT_TAIL(bb, b);
+            b = apr_bucket_create_eos();
+	    APR_BRIGADE_INSERT_TAIL(bb, b);
 	    ap_pass_brigade(cid->r->output_filters, bb);
         }
         return TRUE;
@@ -885,8 +885,8 @@ BOOL WINAPI ServerSupportFunction(HCONN hConn, DWORD dwHSERequest,
     {
         HSE_TF_INFO *tf = (HSE_TF_INFO*)lpvBuffer;
         apr_status_t rv;
-        ap_bucket_brigade *bb;
-        ap_bucket *b;
+        apr_bucket_brigade *bb;
+        apr_bucket *b;
         apr_file_t *fd;
 
         if (!cid->isa->fakeasync && (tf->dwFlags & HSE_IO_ASYNC)) {
@@ -903,7 +903,7 @@ BOOL WINAPI ServerSupportFunction(HCONN hConn, DWORD dwHSERequest,
         }
         
         /* apr_dupfile_oshandle (&fd, tf->hFile, r->pool); */
-        bb = ap_brigade_create(r->pool);
+        bb = apr_brigade_create(r->pool);
 
         if (tf->dwFlags & HSE_IO_SEND_HEADERS) 
         {
@@ -922,35 +922,35 @@ BOOL WINAPI ServerSupportFunction(HCONN hConn, DWORD dwHSERequest,
                                                  (apr_size_t)tf->HeadLength);
             if (ate < 0)
             {
-                ap_brigade_destroy(bb);
+                apr_brigade_destroy(bb);
                 SetLastError(TODO_ERROR);
                 return FALSE;
             }
             if (ate < (apr_size_t)tf->HeadLength)
             {
-                b = ap_bucket_create_transient((char*)tf->pHead + ate, 
+                b = apr_bucket_create_transient((char*)tf->pHead + ate, 
                                             (apr_size_t)tf->HeadLength - ate);
-                AP_BRIGADE_INSERT_TAIL(bb, b);
+                APR_BRIGADE_INSERT_TAIL(bb, b);
             }
         }
         else if (tf->pHead && tf->HeadLength) {
-            b = ap_bucket_create_transient((char*)tf->pHead, 
+            b = apr_bucket_create_transient((char*)tf->pHead, 
                                            (apr_size_t)tf->HeadLength);
-            AP_BRIGADE_INSERT_TAIL(bb, b);
+            APR_BRIGADE_INSERT_TAIL(bb, b);
         }
 
-        b = ap_bucket_create_file(fd, (apr_off_t)tf->Offset, 
+        b = apr_bucket_create_file(fd, (apr_off_t)tf->Offset, 
                                   (apr_size_t)tf->BytesToWrite);
-        AP_BRIGADE_INSERT_TAIL(bb, b);
+        APR_BRIGADE_INSERT_TAIL(bb, b);
         
         if (tf->pTail && (apr_size_t)tf->TailLength) {
-            b = ap_bucket_create_transient((char*)tf->pTail, 
+            b = apr_bucket_create_transient((char*)tf->pTail, 
                                            (apr_size_t)tf->TailLength);
-            AP_BRIGADE_INSERT_TAIL(bb, b);
+            APR_BRIGADE_INSERT_TAIL(bb, b);
         }
         
-        b = ap_bucket_create_eos();
-        AP_BRIGADE_INSERT_TAIL(bb, b);
+        b = apr_bucket_create_eos();
+        APR_BRIGADE_INSERT_TAIL(bb, b);
         ap_pass_brigade(r->output_filters, bb);
 
         /* we do nothing with (tf->dwFlags & HSE_DISCONNECT_AFTER_SEND)
@@ -1099,14 +1099,14 @@ BOOL WINAPI ServerSupportFunction(HCONN hConn, DWORD dwHSERequest,
             return FALSE;
         }
         else if (ate < (apr_off_t)shi->cchHeader) {
-            ap_bucket_brigade *bb;
-            ap_bucket *b;
-            bb = ap_brigade_create(cid->r->pool);
-	    b = ap_bucket_create_transient(shi->pszHeader + ate, 
+            apr_bucket_brigade *bb;
+            apr_bucket *b;
+            bb = apr_brigade_create(cid->r->pool);
+	    b = apr_bucket_create_transient(shi->pszHeader + ate, 
                                            (apr_size_t)shi->cchHeader - ate);
-	    AP_BRIGADE_INSERT_TAIL(bb, b);
-            b = ap_bucket_create_eos();
-	    AP_BRIGADE_INSERT_TAIL(bb, b);
+	    APR_BRIGADE_INSERT_TAIL(bb, b);
+            b = apr_bucket_create_eos();
+	    APR_BRIGADE_INSERT_TAIL(bb, b);
 	    ap_pass_brigade(cid->r->output_filters, bb);
         }
         return TRUE;
@@ -1266,8 +1266,8 @@ static const char *isapi_cmd_cachefile(cmd_parms *cmd, void *dummy,
 
 static void isapi_hooks(apr_pool_t *cont)
 {
-    ap_hook_post_config(isapi_post_config, NULL, NULL, AP_HOOK_MIDDLE);
-    ap_hook_handler(isapi_handler, NULL, NULL, AP_HOOK_MIDDLE);
+    ap_hook_post_config(isapi_post_config, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_handler(isapi_handler, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 static const command_rec isapi_cmds[] = {

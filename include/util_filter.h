@@ -65,7 +65,7 @@ extern "C" {
 
 #include "httpd.h"
 #include "apr.h"
-#include "ap_buckets.h"
+#include "apr_buckets.h"
 
 /**
  * @package Apache filter library
@@ -150,8 +150,8 @@ typedef struct ap_filter_t ap_filter_t;
  *
  * The return value of a filter should be an APR status value.
  */
-typedef apr_status_t (*ap_out_filter_func)(ap_filter_t *f, ap_bucket_brigade *b);
-typedef apr_status_t (*ap_in_filter_func)(ap_filter_t *f, ap_bucket_brigade *b, 
+typedef apr_status_t (*ap_out_filter_func)(ap_filter_t *f, apr_bucket_brigade *b);
+typedef apr_status_t (*ap_in_filter_func)(ap_filter_t *f, apr_bucket_brigade *b, 
                                           ap_input_mode_t mode);
 typedef union ap_filter_func {
     ap_out_filter_func out_func;
@@ -280,9 +280,9 @@ struct ap_filter_t {
  * @param bucket The current bucket brigade
  * @param mode   AP_MODE_BLOCKING, AP_MODE_NONBLOCKING, or AP_MODE_PEEK
  * @return apr_status_t value
- * @deffunc apr_status_t ap_get_brigade(ap_filter_t *filter, ap_bucket_brigade *bucket, ap_input_mode_t mode)
+ * @deffunc apr_status_t ap_get_brigade(ap_filter_t *filter, apr_bucket_brigade *bucket, ap_input_mode_t mode)
  */
-AP_DECLARE(apr_status_t) ap_get_brigade(ap_filter_t *filter, ap_bucket_brigade *bucket, 
+AP_DECLARE(apr_status_t) ap_get_brigade(ap_filter_t *filter, apr_bucket_brigade *bucket, 
                                         ap_input_mode_t mode);
 
 /**
@@ -292,9 +292,9 @@ AP_DECLARE(apr_status_t) ap_get_brigade(ap_filter_t *filter, ap_bucket_brigade *
  * @param filter The next filter in the chain
  * @param bucket The current bucket brigade
  * @return apr_status_t value
- * @deffunc apr_status_t ap_pass_brigade(ap_filter_t *filter, ap_bucket_brigade *bucket)
+ * @deffunc apr_status_t ap_pass_brigade(ap_filter_t *filter, apr_bucket_brigade *bucket)
  */
-AP_DECLARE(apr_status_t) ap_pass_brigade(ap_filter_t *filter, ap_bucket_brigade *bucket);
+AP_DECLARE(apr_status_t) ap_pass_brigade(ap_filter_t *filter, apr_bucket_brigade *bucket);
 
 /*
  * ap_register_input_filter():
@@ -399,10 +399,10 @@ AP_DECLARE(void) ap_remove_output_filter(ap_filter_t *f);
  *             new bucket brigade is returned in this location.
  * @param b The bucket brigade to save aside.  This brigade is always empty
  *          on return
- * @deffunc apr_status_t ap_save_brigade(ap_filter_t *f, ap_bucket_brigade **save_to, ap_bucket_brigade **b)
+ * @deffunc apr_status_t ap_save_brigade(ap_filter_t *f, apr_bucket_brigade **save_to, apr_bucket_brigade **b)
  */
-AP_DECLARE(apr_status_t) ap_save_brigade(ap_filter_t *f, ap_bucket_brigade **save_to,
-                                         ap_bucket_brigade **b);    
+AP_DECLARE(apr_status_t) ap_save_brigade(ap_filter_t *f, apr_bucket_brigade **save_to,
+                                         apr_bucket_brigade **b);    
 
 #ifdef __cplusplus
 }

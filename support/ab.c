@@ -129,7 +129,7 @@
 #include <stdlib.h>
 #endif
 
-#include "ap_base64.h"
+#include "apr_base64.h"
 #ifdef NOT_ASCII
 #include "apr_xlate.h"
 #endif
@@ -903,14 +903,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-        printf("This is ApacheBench, Version %s\n", AB_VERSION " <$Revision: 1.51 $> apache-2.0");
+        printf("This is ApacheBench, Version %s\n", AB_VERSION " <$Revision: 1.52 $> apache-2.0");
         printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
         printf("Copyright (c) 1998-2000 The Apache Software Foundation, http://www.apache.org/\n");
         printf("\n");
     }
     else {
         printf("<p>\n");
-        printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AB_VERSION, "$Revision: 1.51 $");
+        printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AB_VERSION, "$Revision: 1.52 $");
         printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
         printf(" Copyright (c) 1998-2000 The Apache Software Foundation, http://www.apache.org/<br>\n");
         printf("</p>\n<p>\n");
@@ -1065,9 +1065,9 @@ int main(int argc, const char * const argv[])
         fprintf(stderr, "apr_xlate_open(from ASCII)->%d\n", status);
         exit(1);
     }
-    status = ap_base64init_ebcdic(to_ascii, from_ascii);
+    status = apr_base64init_ebcdic(to_ascii, from_ascii);
     if (status) {
-        fprintf(stderr, "ap_base64init_ebcdic()->%d\n", status);
+        fprintf(stderr, "apr_base64init_ebcdic()->%d\n", status);
         exit(1);
     }
 #endif
@@ -1124,7 +1124,7 @@ int main(int argc, const char * const argv[])
              */
             while(apr_isspace(*optarg))
                 optarg++;
-            l=ap_base64encode(tmp, optarg, strlen(optarg));
+            l=apr_base64encode(tmp, optarg, strlen(optarg));
             tmp[l]='\0';
  
             strncat(auth, "Authorization: basic ", sizeof(auth));
@@ -1137,7 +1137,7 @@ int main(int argc, const char * const argv[])
              */
             while(apr_isspace(*optarg))
                 optarg++;
-            l=ap_base64encode(tmp, optarg, strlen(optarg));
+            l=apr_base64encode(tmp, optarg, strlen(optarg));
             tmp[l]='\0';
  
             strncat(auth, "Proxy-Authorization: basic ", sizeof(auth));

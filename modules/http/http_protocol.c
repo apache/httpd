@@ -74,7 +74,7 @@
 #endif
 
 #define CORE_PRIVATE
-#include "ap_buckets.h"
+#include "apr_buckets.h"
 #include "util_filter.h"
 #include "ap_config.h"
 #include "httpd.h"
@@ -98,11 +98,11 @@
 #include <strings.h>
 #endif
 
-AP_HOOK_STRUCT(
-	    AP_HOOK_LINK(post_read_request)
-	    AP_HOOK_LINK(log_transaction)
-	    AP_HOOK_LINK(http_method)
-	    AP_HOOK_LINK(default_port)
+APR_HOOK_STRUCT(
+	    APR_HOOK_LINK(post_read_request)
+	    APR_HOOK_LINK(log_transaction)
+	    APR_HOOK_LINK(http_method)
+	    APR_HOOK_LINK(default_port)
 )
 
 /*
@@ -189,7 +189,7 @@ static int parse_byterange(char *range, apr_off_t clength,
 static int ap_set_byterange(request_rec *r);
 
 typedef struct byterange_ctx {
-    ap_bucket_brigade *bb;
+    apr_bucket_brigade *bb;
     int num_ranges;
 } byterange_ctx;
 
@@ -212,13 +212,13 @@ static int use_range_x(request_rec *r)
 
 AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
     ap_filter_t *f,
-    ap_bucket_brigade *bb)
+    apr_bucket_brigade *bb)
 {
 #define MIN_LENGTH(len1, len2) ((len1 > len2) ? len2 : len1)
     request_rec *r = f->r;
     byterange_ctx *ctx = f->ctx;
-    ap_bucket *e;
-    ap_bucket_brigade *bsend;
+    apr_bucket *e;
+    apr_bucket_brigade *bsend;
     apr_off_t range_start;
     apr_off_t range_end;
     char *current;
@@ -249,14 +249,14 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
         }
 
         /* create a brigade in case we never call ap_save_brigade() */
-        ctx->bb = ap_brigade_create(r->pool);
+        ctx->bb = apr_brigade_create(r->pool);
     }
 
     /* We can't actually deal with byte-ranges until we have the whole brigade
      * because the byte-ranges can be in any order, and according to the RFC,
      * we SHOULD return the data in the same order it was requested. 
      */
-    if (!AP_BUCKET_IS_EOS(AP_BRIGADE_LAST(bb))) {
+    if (!APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(bb))) {
         ap_save_brigade(f, &ctx->bb, &bb);
         return APR_SUCCESS;
     }
@@ -271,14 +271,14 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
     ap_xlate_proto_to_ascii(bound_head, strlen(bound_head));
 
     /* concat the passed brigade with our saved brigade */
-    AP_BRIGADE_CONCAT(ctx->bb, bb);
+    APR_BRIGADE_CONCAT(ctx->bb, bb);
     bb = ctx->bb;
     ctx->bb = NULL;     /* ### strictly necessary? call brigade_destroy? */
 
     /* It is possible that we won't have a content length yet, so we have to
      * compute the length before we can actually do the byterange work.
      */
-    AP_BRIGADE_FOREACH(e, bb) {
+    APR_BRIGADE_FOREACH(e, bb) {
         const char *ignore;
         apr_size_t len;
 
@@ -286,12 +286,12 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
             clength += e->length;
             continue;
         }
-        ap_bucket_read(e, &ignore, &len, AP_NONBLOCK_READ);
+        apr_bucket_read(e, &ignore, &len, APR_NONBLOCK_READ);
         clength += e->length;
     }
 
     /* this brigade holds what we will be sending */
-    bsend = ap_brigade_create(r->pool);
+    bsend = apr_brigade_create(r->pool);
 
     while ((current = ap_getword(r->pool, &r->range, ',')) &&
            (rv = parse_byterange(current, clength, &range_start, &range_end))) {
@@ -314,7 +314,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
         /* ### this is so bogus, but not dealing with it right now */
         range = loc = apr_pcalloc(r->pool, range_length + 1);
 
-        e = AP_BRIGADE_FIRST(bb);
+        e = APR_BRIGADE_FIRST(bb);
 
         /* ### we should split() buckets rather than read() them. this
            ### will allow us to avoid reading files or custom buckets
@@ -329,19 +329,19 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
            ### occurs, using the split() as an internal "seek".
         */
 
-        ap_bucket_read(e, &str, &n, AP_NONBLOCK_READ);
+        apr_bucket_read(e, &str, &n, APR_NONBLOCK_READ);
         /* using e->length doesn't account for pipes once we change the read
          * to a split.*/
         while (range_start > (curr_offset + e->length)) {
             curr_offset += e->length;
-            e = AP_BUCKET_NEXT(e);
+            e = APR_BUCKET_NEXT(e);
 
-            if (e == AP_BRIGADE_SENTINEL(bb)) {
+            if (e == APR_BRIGADE_SENTINEL(bb)) {
                 break;
             }
 
             /* eventually we can avoid this */
-            ap_bucket_read(e, &str, &n, AP_NONBLOCK_READ);
+            apr_bucket_read(e, &str, &n, APR_NONBLOCK_READ);
         }
         if (range_start != curr_offset) {
             /* If we get here, then we know that the beginning of this 
@@ -352,14 +352,14 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
             memcpy(loc, str + (range_start - curr_offset), segment_length);
             loc += segment_length;
             curr_length -= segment_length;
-            e = AP_BUCKET_NEXT(e);
+            e = APR_BUCKET_NEXT(e);
         }
 
-        while (e != AP_BRIGADE_SENTINEL(bb)) {
+        while (e != APR_BRIGADE_SENTINEL(bb)) {
             if (curr_length == 0) {
                 break;
             }
-            ap_bucket_read(e, &str, &n, AP_NONBLOCK_READ);
+            apr_bucket_read(e, &str, &n, APR_NONBLOCK_READ);
 
             /* ### we should use 'n', not e->length */
             segment_length = MIN_LENGTH(curr_length + 1, e->length);
@@ -367,25 +367,25 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
             memcpy(loc, str, segment_length);
             loc += segment_length;
             curr_length -= segment_length;
-            e = AP_BUCKET_NEXT(e);
+            e = APR_BUCKET_NEXT(e);
         }
 
         if (ctx->num_ranges > 1) {
             char *ts;
 
-            e = ap_bucket_create_pool(bound_head,
+            e = apr_bucket_create_pool(bound_head,
                                       strlen(bound_head), r->pool);
-            AP_BRIGADE_INSERT_TAIL(bsend, e);
+            APR_BRIGADE_INSERT_TAIL(bsend, e);
 
             ts = apr_psprintf(r->pool, BYTERANGE_FMT CRLF CRLF,
                               range_start, range_end, clength);
             ap_xlate_proto_to_ascii(ts, strlen(ts));
-            e = ap_bucket_create_pool(ts, strlen(ts), r->pool);
-            AP_BRIGADE_INSERT_TAIL(bsend, e);
+            e = apr_bucket_create_pool(ts, strlen(ts), r->pool);
+            APR_BRIGADE_INSERT_TAIL(bsend, e);
         }
         
-        e = ap_bucket_create_pool(range, range_length, r->pool);
-        AP_BRIGADE_INSERT_TAIL(bsend, e);
+        e = apr_bucket_create_pool(range, range_length, r->pool);
+        APR_BRIGADE_INSERT_TAIL(bsend, e);
     }
 
     if (found == 0) {
@@ -400,15 +400,15 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
         /* add the final boundary */
         end = apr_pstrcat(r->pool, CRLF "--", r->boundary, "--" CRLF, NULL);
         ap_xlate_proto_to_ascii(end, strlen(end));
-        e = ap_bucket_create_pool(end, strlen(end), r->pool);
-        AP_BRIGADE_INSERT_TAIL(bsend, e);
+        e = apr_bucket_create_pool(end, strlen(end), r->pool);
+        APR_BRIGADE_INSERT_TAIL(bsend, e);
     }
 
-    e = ap_bucket_create_eos();
-    AP_BRIGADE_INSERT_TAIL(bsend, e);
+    e = apr_bucket_create_eos();
+    APR_BRIGADE_INSERT_TAIL(bsend, e);
 
     /* we're done with the original content */
-    ap_brigade_destroy(bb);
+    apr_brigade_destroy(bb);
 
     /* send our multipart output */
     return ap_pass_brigade(f->next, bsend); 
@@ -864,12 +864,12 @@ struct dechunk_ctx {
 
 static long get_chunk_size(char *);
 
-apr_status_t ap_dechunk_filter(ap_filter_t *f, ap_bucket_brigade *bb,
+apr_status_t ap_dechunk_filter(ap_filter_t *f, apr_bucket_brigade *bb,
                                ap_input_mode_t mode)
 {
     apr_status_t rv;
     struct dechunk_ctx *ctx = f->ctx;
-    ap_bucket *b;
+    apr_bucket *b;
     const char *buf;
     apr_size_t len;
 
@@ -906,8 +906,8 @@ apr_status_t ap_dechunk_filter(ap_filter_t *f, ap_bucket_brigade *bb,
                 }
                 if (ctx->chunk_size == 0) { /* we just finished the last chunk? */
                     /* append eos bucket and get out */
-                    b = ap_bucket_create_eos();
-                    AP_BRIGADE_INSERT_TAIL(bb, b);
+                    b = apr_bucket_create_eos();
+                    APR_BRIGADE_INSERT_TAIL(bb, b);
                     return APR_SUCCESS;
                 }
                 ctx->state = WANT_HDR;
@@ -927,17 +927,17 @@ apr_status_t ap_dechunk_filter(ap_filter_t *f, ap_bucket_brigade *bb,
         /* Walk through the body, accounting for bytes, and removing an eos bucket if
          * ap_http_filter() delivered the entire chunk.
          */
-        b = AP_BRIGADE_FIRST(bb);
-        while (b != AP_BRIGADE_SENTINEL(bb) && !AP_BUCKET_IS_EOS(b)) {
-            ap_bucket_read(b, &buf, &len, mode);
+        b = APR_BRIGADE_FIRST(bb);
+        while (b != APR_BRIGADE_SENTINEL(bb) && !APR_BUCKET_IS_EOS(b)) {
+            apr_bucket_read(b, &buf, &len, mode);
             AP_DEBUG_ASSERT(len <= ctx->chunk_size - ctx->bytes_delivered);
             ctx->bytes_delivered += len;
-            b = AP_BUCKET_NEXT(b);
+            b = APR_BUCKET_NEXT(b);
         }
         if (ctx->bytes_delivered == ctx->chunk_size) {
-            AP_DEBUG_ASSERT(AP_BUCKET_IS_EOS(b));
-            AP_BUCKET_REMOVE(b);
-            ap_bucket_destroy(b);
+            AP_DEBUG_ASSERT(APR_BUCKET_IS_EOS(b));
+            APR_BUCKET_REMOVE(b);
+            apr_bucket_destroy(b);
             ctx->state = WANT_TRL;
         }
     }
@@ -946,16 +946,16 @@ apr_status_t ap_dechunk_filter(ap_filter_t *f, ap_bucket_brigade *bb,
 }
 
 typedef struct http_filter_ctx {
-    ap_bucket_brigade *b;
+    apr_bucket_brigade *b;
 } http_ctx_t;
 
-apr_status_t ap_http_filter(ap_filter_t *f, ap_bucket_brigade *b, ap_input_mode_t mode)
+apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode_t mode)
 {
 #define ASCII_BLANK  '\040'
 #define ASCII_CR     '\015'
 #define ASCII_LF     '\012'
 #define ASCII_TAB    '\011' 
-    ap_bucket *e;
+    apr_bucket *e;
     char *buff;
     apr_size_t len;
     char *pos;
@@ -964,11 +964,11 @@ apr_status_t ap_http_filter(ap_filter_t *f, ap_bucket_brigade *b, ap_input_mode_
 
     if (!ctx) {
         f->ctx = ctx = apr_pcalloc(f->c->pool, sizeof(*ctx));
-        ctx->b = ap_brigade_create(f->c->pool);
+        ctx->b = apr_brigade_create(f->c->pool);
     }
 
     if (mode == AP_MODE_PEEK) {
-        ap_bucket *e;
+        apr_bucket *e;
         const char *str;
         apr_size_t length;
 
@@ -982,13 +982,13 @@ apr_status_t ap_http_filter(ap_filter_t *f, ap_bucket_brigade *b, ap_input_mode_
          * mean that there is another request, just a blank line.
          */
         while (1) {
-            if (AP_BRIGADE_EMPTY(ctx->b)) {
+            if (APR_BRIGADE_EMPTY(ctx->b)) {
                 e = NULL;
             }
             else {
-                e = AP_BRIGADE_FIRST(ctx->b);
+                e = APR_BRIGADE_FIRST(ctx->b);
             }
-            if (!e || ap_bucket_read(e, &str, &length, AP_NONBLOCK_READ) != APR_SUCCESS) {
+            if (!e || apr_bucket_read(e, &str, &length, APR_NONBLOCK_READ) != APR_SUCCESS) {
                 return APR_EOF;
             }
             else {
@@ -1000,73 +1000,73 @@ apr_status_t ap_http_filter(ap_filter_t *f, ap_bucket_brigade *b, ap_input_mode_
                         c += 2;
                     else return APR_SUCCESS;
                 }
-                AP_BUCKET_REMOVE(e);
-                ap_bucket_destroy(e);
+                APR_BUCKET_REMOVE(e);
+                apr_bucket_destroy(e);
             }
         }
     }
 
-    if (AP_BRIGADE_EMPTY(ctx->b)) {
+    if (APR_BRIGADE_EMPTY(ctx->b)) {
         if ((rv = ap_get_brigade(f->next, ctx->b, mode)) != APR_SUCCESS) {
             return rv;
         }
     }
 
     if (f->c->remain) {
-        e = AP_BRIGADE_FIRST(ctx->b);
-        while (e != AP_BRIGADE_SENTINEL(ctx->b)) {
-            ap_bucket *old;
+        e = APR_BRIGADE_FIRST(ctx->b);
+        while (e != APR_BRIGADE_SENTINEL(ctx->b)) {
+            apr_bucket *old;
             const char *ignore;
 
-            if ((rv = ap_bucket_read(e, &ignore, &len, mode)) != APR_SUCCESS) {
+            if ((rv = apr_bucket_read(e, &ignore, &len, mode)) != APR_SUCCESS) {
                 /* probably APR_IS_EAGAIN(rv); socket state isn't correct;
                  * remove log once we get this squared away */
                 ap_log_error(APLOG_MARK, APLOG_ERR, rv, f->c->base_server, 
-                             "ap_bucket_read");
+                             "apr_bucket_read");
                 return rv;
             }
 
             if (len) {
                 if (f->c->remain < len) {
-                    ap_bucket_split(e, f->c->remain);
+                    apr_bucket_split(e, f->c->remain);
                     f->c->remain = 0;
                 }
                 else {
                     f->c->remain -= len;
                 }
-                AP_BUCKET_REMOVE(e);
-                AP_BRIGADE_INSERT_TAIL(b, e);
+                APR_BUCKET_REMOVE(e);
+                APR_BRIGADE_INSERT_TAIL(b, e);
                 break; /* once we've gotten some data, deliver it to caller */
             }
 
             old = e;
-            e = AP_BUCKET_NEXT(e);
-            AP_BUCKET_REMOVE(old);
-            ap_bucket_destroy(old);
+            e = APR_BUCKET_NEXT(e);
+            APR_BUCKET_REMOVE(old);
+            apr_bucket_destroy(old);
         }
         if (f->c->remain == 0) {
-            ap_bucket *eos = ap_bucket_create_eos();
+            apr_bucket *eos = apr_bucket_create_eos();
                 
-            AP_BRIGADE_INSERT_TAIL(b, eos);
+            APR_BRIGADE_INSERT_TAIL(b, eos);
         }
         return APR_SUCCESS;
     }
 
-    while (!AP_BRIGADE_EMPTY(ctx->b)) {
-        e = AP_BRIGADE_FIRST(ctx->b);
-        if ((rv = ap_bucket_read(e, (const char **)&buff, &len, mode)) != APR_SUCCESS) {
+    while (!APR_BRIGADE_EMPTY(ctx->b)) {
+        e = APR_BRIGADE_FIRST(ctx->b);
+        if ((rv = apr_bucket_read(e, (const char **)&buff, &len, mode)) != APR_SUCCESS) {
             return rv;
         }
 
         pos = memchr(buff, ASCII_LF, len);
         if (pos != NULL) {
-            ap_bucket_split(e, pos - buff + 1);
-            AP_BUCKET_REMOVE(e);
-            AP_BRIGADE_INSERT_TAIL(b, e);
+            apr_bucket_split(e, pos - buff + 1);
+            APR_BUCKET_REMOVE(e);
+            APR_BRIGADE_INSERT_TAIL(b, e);
             return APR_SUCCESS;
         }
-        AP_BUCKET_REMOVE(e);
-        AP_BRIGADE_INSERT_TAIL(b, e);
+        APR_BUCKET_REMOVE(e);
+        APR_BRIGADE_INSERT_TAIL(b, e);
     }
     return APR_SUCCESS;
 }
@@ -1095,29 +1095,29 @@ AP_CORE_DECLARE(int) ap_getline(char *s, int n, request_rec *r, int fold)
     apr_size_t length;
     conn_rec *c = r->connection;
     core_request_config *req_cfg;
-    ap_bucket_brigade *b;
-    ap_bucket *e;
+    apr_bucket_brigade *b;
+    apr_bucket *e;
 
     req_cfg = (core_request_config *)
                 ap_get_module_config(r->request_config, &core_module);
     b = req_cfg->bb;
     /* make sure it's empty unless we're folding */ 
-    AP_DEBUG_ASSERT(fold || AP_BRIGADE_EMPTY(b));
+    AP_DEBUG_ASSERT(fold || APR_BRIGADE_EMPTY(b));
 
     while (1) {
-        if (AP_BRIGADE_EMPTY(b)) {
+        if (APR_BRIGADE_EMPTY(b)) {
             if (ap_get_brigade(c->input_filters, b, AP_MODE_BLOCKING) != APR_SUCCESS ||
-                AP_BRIGADE_EMPTY(b)) {
+                APR_BRIGADE_EMPTY(b)) {
                 return -1;
             }
         }
-        e = AP_BRIGADE_FIRST(b); 
+        e = APR_BRIGADE_FIRST(b); 
         if (e->length == 0) {
-            AP_BUCKET_REMOVE(e);
-            ap_bucket_destroy(e);
+            APR_BUCKET_REMOVE(e);
+            apr_bucket_destroy(e);
             continue;
         }
-        retval = ap_bucket_read(e, &temp, &length, AP_BLOCK_READ);
+        retval = apr_bucket_read(e, &temp, &length, APR_BLOCK_READ);
 
         if (retval != APR_SUCCESS) {
             total = ((length < 0) && (total == 0)) ? -1 : total;
@@ -1129,18 +1129,18 @@ AP_CORE_DECLARE(int) ap_getline(char *s, int n, request_rec *r, int fold)
              * so return what we have.  lookahead brigade is 
              * stashed on req_cfg->bb
              */
-            AP_DEBUG_ASSERT(!AP_BRIGADE_EMPTY(req_cfg->bb));
+            AP_DEBUG_ASSERT(!APR_BRIGADE_EMPTY(req_cfg->bb));
             break;
         }
         last_char = pos + length - 1;
         if (last_char < beyond_buff) {
             memcpy(pos, temp, length);
-            AP_BUCKET_REMOVE(e);
-            ap_bucket_destroy(e);
+            APR_BUCKET_REMOVE(e);
+            apr_bucket_destroy(e);
         }
         else {
             /* input line was larger than the caller's buffer */
-            ap_brigade_destroy(b); 
+            apr_brigade_destroy(b); 
             
             /* don't need to worry about req_cfg->bb being bogus.
              * the request is about to die, and ErrorDocument
@@ -1178,7 +1178,7 @@ AP_CORE_DECLARE(int) ap_getline(char *s, int n, request_rec *r, int fold)
                 looking_ahead = 1;
             }
             else {
-                AP_DEBUG_ASSERT(AP_BRIGADE_EMPTY(req_cfg->bb));
+                AP_DEBUG_ASSERT(APR_BRIGADE_EMPTY(req_cfg->bb));
                 break;
             }
         }
@@ -1453,7 +1453,7 @@ request_rec *ap_read_request(conn_rec *conn)
 
     r->request_config  = ap_create_request_config(r->pool);
     req_cfg = apr_pcalloc(r->pool, sizeof(core_request_config));
-    req_cfg->bb = ap_brigade_create(r->pool);
+    req_cfg->bb = apr_brigade_create(r->pool);
     ap_set_module_config(r->request_config, &core_module, req_cfg);
                     
     r->per_dir_config  = r->server->lookup_defaults;
@@ -1619,12 +1619,12 @@ void ap_set_sub_req_protocol(request_rec *rnew, const request_rec *r)
 
 static void end_output_stream(request_rec *r)
 {
-    ap_bucket_brigade *bb;
-    ap_bucket *b;
+    apr_bucket_brigade *bb;
+    apr_bucket *b;
 
-    bb = ap_brigade_create(r->pool);
-    b = ap_bucket_create_eos();
-    AP_BRIGADE_INSERT_TAIL(bb, b);
+    bb = apr_brigade_create(r->pool);
+    b = apr_bucket_create_eos();
+    APR_BRIGADE_INSERT_TAIL(bb, b);
     ap_pass_brigade(r->output_filters, bb);
 }
 
@@ -2173,8 +2173,8 @@ AP_DECLARE(int) ap_send_http_trace(request_rec *r)
 int ap_send_http_options(request_rec *r)
 {
     char *buff;
-    ap_bucket *b;
-    ap_bucket_brigade *bb;
+    apr_bucket *b;
+    apr_bucket_brigade *bb;
     apr_size_t len = 0;
     header_struct h;
 
@@ -2205,9 +2205,9 @@ int ap_send_http_options(request_rec *r)
 
     r->bytes_sent = 0;
 
-    bb = ap_brigade_create(r->pool);
-    b = ap_bucket_create_pool(buff, strlen(buff), r->pool);
-    AP_BRIGADE_INSERT_TAIL(bb, b);
+    bb = apr_brigade_create(r->pool);
+    b = apr_bucket_create_pool(buff, strlen(buff), r->pool);
+    APR_BRIGADE_INSERT_TAIL(bb, b);
     ap_pass_brigade(r->output_filters, bb);
 
     return OK;
@@ -2296,7 +2296,7 @@ AP_DECLARE(void) ap_send_http_header(request_rec *r)
 }
 
 struct content_length_ctx {
-    ap_bucket_brigade *saved;
+    apr_bucket_brigade *saved;
     int compute_len;
     apr_size_t curr_len;
 };
@@ -2306,12 +2306,12 @@ struct content_length_ctx {
  * through all of the buckets in all brigades 
  */
 AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(ap_filter_t *f,
-                                                              ap_bucket_brigade *b)
+                                                              apr_bucket_brigade *b)
 {
     request_rec *r = f->r;
     struct content_length_ctx *ctx;
     apr_status_t rv;
-    ap_bucket *e;
+    apr_bucket *e;
     int send_it = 0;
 
     ctx = f->ctx;
@@ -2319,15 +2319,15 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(ap_filter_t *f,
         f->ctx = ctx = apr_pcalloc(r->pool, sizeof(struct content_length_ctx));
     }
 
-    AP_BRIGADE_FOREACH(e, b) {
+    APR_BRIGADE_FOREACH(e, b) {
         const char *ignored;
         apr_size_t length;
 
-        if (AP_BUCKET_IS_EOS(e) || AP_BUCKET_IS_FLUSH(e)) {
+        if (APR_BUCKET_IS_EOS(e) || APR_BUCKET_IS_FLUSH(e)) {
             send_it = 1;
         }
         if (e->length == -1) { /* if length unknown */
-            rv = ap_bucket_read(e, &ignored, &length, AP_BLOCK_READ);
+            rv = apr_bucket_read(e, &ignored, &length, APR_BLOCK_READ);
             if (rv != APR_SUCCESS) {
                 return rv;
             }
@@ -2358,7 +2358,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(ap_filter_t *f,
                                              "Transfer-Encoding"),
                                "chunked"))
         || (f->r->connection->keepalive)
-        || (AP_BUCKET_IS_EOS(AP_BRIGADE_LAST(b)))) {
+        || (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(b)))) {
         ctx->compute_len = 1;
     }
     else {
@@ -2376,8 +2376,8 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(ap_filter_t *f,
         ap_set_content_length(r, r->bytes_sent);
     }
     if (ctx->saved) {
-        AP_BRIGADE_CONCAT(ctx->saved, b);
-        ap_brigade_destroy(b);
+        APR_BRIGADE_CONCAT(ctx->saved, b);
+        apr_brigade_destroy(b);
         b = ctx->saved;
         ctx->saved = NULL;
     }
@@ -2475,14 +2475,14 @@ static int ap_set_byterange(request_rec *r)
 typedef struct header_filter_cts {
     int headers_sent;
 } header_filter_ctx;
-AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, ap_bucket_brigade *b)
+AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, apr_bucket_brigade *b)
 {
     int i;
     char *date = NULL;
     request_rec *r = f->r;
     char *buff, *buff_start;
-    ap_bucket *e;
-    ap_bucket_brigade *b2;
+    apr_bucket *e;
+    apr_bucket_brigade *b2;
     apr_size_t len = 0;
     header_struct h;
     header_filter_ctx *ctx = f->ctx;
@@ -2494,7 +2494,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, ap_bu
     }
 
     if (ctx->headers_sent) {
-        ap_brigade_destroy(b);
+        apr_brigade_destroy(b);
         return AP_REQUEST_DONE;
     }
 
@@ -2637,13 +2637,13 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, ap_bu
 
     r->sent_bodyct = 1;         /* Whatever follows is real body stuff... */
 
-    b2 = ap_brigade_create(r->pool);
-    e = ap_bucket_create_pool(buff_start, strlen(buff_start), r->pool);
-    AP_BRIGADE_INSERT_HEAD(b2, e);
+    b2 = apr_brigade_create(r->pool);
+    e = apr_bucket_create_pool(buff_start, strlen(buff_start), r->pool);
+    APR_BRIGADE_INSERT_HEAD(b2, e);
     ap_pass_brigade(f->next, b2);
 
     if (r->header_only) {
-        ap_brigade_destroy(b);
+        apr_brigade_destroy(b);
         return AP_REQUEST_DONE;
     }
 
@@ -2783,7 +2783,7 @@ AP_DECLARE(int) ap_setup_client_block(request_rec *r, int read_policy)
         core_request_config *req_cfg = 
             (core_request_config *)ap_get_module_config(r->request_config,
                                                         &core_module);
-        AP_DEBUG_ASSERT(AP_BRIGADE_EMPTY(req_cfg->bb));
+        AP_DEBUG_ASSERT(APR_BRIGADE_EMPTY(req_cfg->bb));
     }
 #endif
 
@@ -2799,17 +2799,17 @@ AP_DECLARE(int) ap_should_client_block(request_rec *r)
 
     if (r->expecting_100 && r->proto_num >= HTTP_VERSION(1,1)) {
         char *tmp;
-        ap_bucket *e;
-        ap_bucket_brigade *bb;
+        apr_bucket *e;
+        apr_bucket_brigade *bb;
 
         /* sending 100 Continue interim response */
         tmp = apr_pstrcat(r->pool, AP_SERVER_PROTOCOL, " ", status_lines[0],
                                 CRLF CRLF, NULL);
-        bb = ap_brigade_create(r->pool);
-        e = ap_bucket_create_pool(tmp, strlen(tmp), r->pool);
-        AP_BRIGADE_INSERT_HEAD(bb, e);
-        e = ap_bucket_create_flush();
-        AP_BRIGADE_INSERT_TAIL(bb, e);
+        bb = apr_brigade_create(r->pool);
+        e = apr_bucket_create_pool(tmp, strlen(tmp), r->pool);
+        APR_BRIGADE_INSERT_HEAD(bb, e);
+        e = apr_bucket_create_flush();
+        APR_BRIGADE_INSERT_TAIL(bb, e);
 
         ap_pass_brigade(r->connection->output_filters, bb);
     }
@@ -2858,40 +2858,40 @@ AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
 {
     apr_size_t len_read, total;
     apr_status_t rv;
-    ap_bucket *b, *old;
+    apr_bucket *b, *old;
     const char *tempbuf;
     core_request_config *req_cfg =
 	(core_request_config *)ap_get_module_config(r->request_config,
                                                     &core_module);
-    ap_bucket_brigade *bb = req_cfg->bb;
+    apr_bucket_brigade *bb = req_cfg->bb;
 
     do {
-        if (AP_BRIGADE_EMPTY(bb)) {
+        if (APR_BRIGADE_EMPTY(bb)) {
             if (ap_get_brigade(r->input_filters, bb, AP_MODE_BLOCKING) != APR_SUCCESS) {
                 /* if we actually fail here, we want to just return and
                  * stop trying to read data from the client.
                  */
                 r->connection->keepalive = -1;
-                ap_brigade_destroy(bb);
+                apr_brigade_destroy(bb);
                 return -1;
             }
         }
-        b = AP_BRIGADE_FIRST(bb);
-    } while (AP_BRIGADE_EMPTY(bb));
+        b = APR_BRIGADE_FIRST(bb);
+    } while (APR_BRIGADE_EMPTY(bb));
 
-    if (AP_BUCKET_IS_EOS(b)) {         /* reached eos on previous invocation */
-        AP_BUCKET_REMOVE(b);
-        ap_bucket_destroy(b);
+    if (APR_BUCKET_IS_EOS(b)) {         /* reached eos on previous invocation */
+        APR_BUCKET_REMOVE(b);
+        apr_bucket_destroy(b);
         return 0;
     }
 
     total = 0;
-    while (total < bufsiz &&  b != AP_BRIGADE_SENTINEL(bb) && !AP_BUCKET_IS_EOS(b)) {
-        if ((rv = ap_bucket_read(b, &tempbuf, &len_read, AP_BLOCK_READ)) != APR_SUCCESS) {
+    while (total < bufsiz &&  b != APR_BRIGADE_SENTINEL(bb) && !APR_BUCKET_IS_EOS(b)) {
+        if ((rv = apr_bucket_read(b, &tempbuf, &len_read, APR_BLOCK_READ)) != APR_SUCCESS) {
             return -1;
         }
         if (total + len_read > bufsiz) {
-            ap_bucket_split(b, bufsiz - total);
+            apr_bucket_split(b, bufsiz - total);
             len_read = bufsiz - total;
         }
         memcpy(buffer, tempbuf, len_read);
@@ -2904,9 +2904,9 @@ AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
         r->read_length += len_read;      /* XXX yank me? */
         r->remaining -= len_read;        /* XXX yank me? */
         old = b;
-        b = AP_BUCKET_NEXT(b);
-        AP_BUCKET_REMOVE(old);
-        ap_bucket_destroy(old);
+        b = APR_BUCKET_NEXT(b);
+        APR_BUCKET_REMOVE(old);
+        apr_bucket_destroy(old);
     }
 
     return total;
@@ -2960,13 +2960,13 @@ AP_DECLARE(int) ap_discard_request_body(request_rec *r)
 AP_DECLARE(apr_status_t) ap_send_fd(apr_file_t *fd, request_rec *r, apr_off_t offset, 
                                     apr_size_t len, apr_size_t *nbytes) 
 {
-    ap_bucket_brigade *bb = NULL;
-    ap_bucket *b;
+    apr_bucket_brigade *bb = NULL;
+    apr_bucket *b;
     apr_status_t rv;
 
-    bb = ap_brigade_create(r->pool);
-    b = ap_bucket_create_file(fd, offset, len);
-    AP_BRIGADE_INSERT_TAIL(bb, b);
+    bb = apr_brigade_create(r->pool);
+    b = apr_bucket_create_file(fd, offset, len);
+    APR_BRIGADE_INSERT_TAIL(bb, b);
 
     rv = ap_pass_brigade(r->output_filters, bb);
     if (rv != APR_SUCCESS) {
@@ -2984,12 +2984,12 @@ AP_DECLARE(apr_status_t) ap_send_fd(apr_file_t *fd, request_rec *r, apr_off_t of
 AP_DECLARE(size_t) ap_send_mmap(apr_mmap_t *mm, request_rec *r, size_t offset,
                              size_t length)
 {
-    ap_bucket_brigade *bb = NULL;
-    ap_bucket *b;
+    apr_bucket_brigade *bb = NULL;
+    apr_bucket *b;
 
-    bb = ap_brigade_create(r->pool);
-    b = ap_bucket_create_mmap(mm, offset, length);
-    AP_BRIGADE_INSERT_TAIL(bb, b);
+    bb = apr_brigade_create(r->pool);
+    b = apr_bucket_create_mmap(mm, offset, length);
+    APR_BRIGADE_INSERT_TAIL(bb, b);
     ap_pass_brigade(r->output_filters, bb);
 
     return mm->size; /* XXX - change API to report apr_status_t? */
@@ -2998,17 +2998,17 @@ AP_DECLARE(size_t) ap_send_mmap(apr_mmap_t *mm, request_rec *r, size_t offset,
 
 AP_DECLARE(int) ap_rputc(int c, request_rec *r)
 {
-    ap_bucket_brigade *bb = NULL;
-    ap_bucket *b;
+    apr_bucket_brigade *bb = NULL;
+    apr_bucket *b;
     char c2 = (char)c;
 
     if (r->connection->aborted) {
 	return EOF;
     }
 
-    bb = ap_brigade_create(r->pool);
-    b = ap_bucket_create_transient(&c2, 1);
-    AP_BRIGADE_INSERT_TAIL(bb, b);
+    bb = apr_brigade_create(r->pool);
+    b = apr_bucket_create_transient(&c2, 1);
+    APR_BRIGADE_INSERT_TAIL(bb, b);
     ap_pass_brigade(r->output_filters, bb);
 
     return c;
@@ -3016,8 +3016,8 @@ AP_DECLARE(int) ap_rputc(int c, request_rec *r)
 
 AP_DECLARE(int) ap_rputs(const char *str, request_rec *r)
 {
-    ap_bucket_brigade *bb = NULL;
-    ap_bucket *b;
+    apr_bucket_brigade *bb = NULL;
+    apr_bucket *b;
     apr_size_t len;
 
     if (r->connection->aborted)
@@ -3026,9 +3026,9 @@ AP_DECLARE(int) ap_rputs(const char *str, request_rec *r)
         return 0;
 
     len = strlen(str);
-    bb = ap_brigade_create(r->pool);
-    b = ap_bucket_create_transient(str, len);
-    AP_BRIGADE_INSERT_TAIL(bb, b);
+    bb = apr_brigade_create(r->pool);
+    b = apr_bucket_create_transient(str, len);
+    APR_BRIGADE_INSERT_TAIL(bb, b);
     ap_pass_brigade(r->output_filters, bb);
 
     return len;
@@ -3036,31 +3036,31 @@ AP_DECLARE(int) ap_rputs(const char *str, request_rec *r)
 
 AP_DECLARE(int) ap_rwrite(const void *buf, int nbyte, request_rec *r)
 {
-    ap_bucket_brigade *bb = NULL;
-    ap_bucket *b;
+    apr_bucket_brigade *bb = NULL;
+    apr_bucket *b;
 
     if (r->connection->aborted)
         return EOF;
     if (nbyte == 0)
         return 0;
 
-    bb = ap_brigade_create(r->pool);
-    b = ap_bucket_create_transient(buf, nbyte);
-    AP_BRIGADE_INSERT_TAIL(bb, b);
+    bb = apr_brigade_create(r->pool);
+    b = apr_bucket_create_transient(buf, nbyte);
+    APR_BRIGADE_INSERT_TAIL(bb, b);
     ap_pass_brigade(r->output_filters, bb);
     return nbyte;
 }
 
 AP_DECLARE(int) ap_vrprintf(request_rec *r, const char *fmt, va_list va)
 {
-    ap_bucket_brigade *bb = NULL;
+    apr_bucket_brigade *bb = NULL;
     apr_size_t written;
 
     if (r->connection->aborted)
         return EOF;
 
-    bb = ap_brigade_create(r->pool);
-    written = ap_brigade_vprintf(bb, fmt, va);
+    bb = apr_brigade_create(r->pool);
+    written = apr_brigade_vprintf(bb, fmt, va);
     if (written != 0)
         ap_pass_brigade(r->output_filters, bb);
     return written;
@@ -3086,15 +3086,15 @@ AP_DECLARE_NONSTD(int) ap_rprintf(request_rec *r, const char *fmt, ...)
 
 AP_DECLARE_NONSTD(int) ap_rvputs(request_rec *r, ...)
 {
-    ap_bucket_brigade *bb = NULL;
+    apr_bucket_brigade *bb = NULL;
     apr_size_t written;
     va_list va;
 
     if (r->connection->aborted)
         return EOF;
-    bb = ap_brigade_create(r->pool);
+    bb = apr_brigade_create(r->pool);
     va_start(va, r);
-    written = ap_brigade_vputstrs(bb, va);
+    written = apr_brigade_vputstrs(bb, va);
     va_end(va);
     if (written != 0)
         ap_pass_brigade(r->output_filters, bb);
@@ -3104,12 +3104,12 @@ AP_DECLARE_NONSTD(int) ap_rvputs(request_rec *r, ...)
 AP_DECLARE(int) ap_rflush(request_rec *r)
 {
     /* we should be using a flush bucket to flush the stack, not buff code. */
-    ap_bucket_brigade *bb;
-    ap_bucket *b;
+    apr_bucket_brigade *bb;
+    apr_bucket *b;
 
-    bb = ap_brigade_create(r->pool);
-    b = ap_bucket_create_flush();
-    AP_BRIGADE_INSERT_TAIL(bb, b);
+    bb = apr_brigade_create(r->pool);
+    b = apr_bucket_create_flush();
+    APR_BRIGADE_INSERT_TAIL(bb, b);
     ap_pass_brigade(r->output_filters, bb);
     return 0;
 }

@@ -419,8 +419,8 @@ AP_DECLARE(void) unixd_set_rlimit(cmd_parms *cmd, struct rlimit **plimit,
 #endif
 }
 
-AP_HOOK_STRUCT(
-               AP_HOOK_LINK(get_suexec_identity)
+APR_HOOK_STRUCT(
+               APR_HOOK_LINK(get_suexec_identity)
 )
 
 AP_IMPLEMENT_HOOK_RUN_FIRST(ap_unix_identity_t *, get_suexec_identity,

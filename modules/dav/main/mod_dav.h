@@ -61,7 +61,7 @@
 
 #include "httpd.h"
 #include "util_xml.h"
-#include "ap_hooks.h"
+#include "apr_hooks.h"
 #include "apr_hash.h"
 #include "apr_dbm.h"
 
@@ -520,7 +520,7 @@ ap_xml_elem *dav_find_child(const ap_xml_elem *elem, const char *tagname);
 ** functionality.
 **
 ** Live properties are not part of the dav_provider structure because they
-** are handled through the AP_HOOK interface (to allow for multiple liveprop
+** are handled through the APR_HOOK interface (to allow for multiple liveprop
 ** providers). The core always provides some properties, and then a given
 ** provider will add more properties.
 */
@@ -546,7 +546,7 @@ typedef struct {
 **
 ** (of course, use your own domain to ensure a unique value)
 */
-AP_DECLARE_EXTERNAL_HOOK(DAV, void, gather_propsets, 
+APR_DECLARE_EXTERNAL_HOOK(dav, DAV, void, gather_propsets, 
                          (apr_array_header_t *uris))
 
 /*
@@ -560,7 +560,7 @@ AP_DECLARE_EXTERNAL_HOOK(DAV, void, gather_propsets,
 **
 ** Return 0 if the property is not defined by the hook implementor.
 */
-AP_DECLARE_EXTERNAL_HOOK(DAV, int, find_liveprop,
+APR_DECLARE_EXTERNAL_HOOK(dav, DAV, int, find_liveprop,
                          (const dav_resource *resource,
                           const char *ns_uri, const char *name,
                           const dav_hooks_liveprop **hooks))
@@ -576,7 +576,7 @@ AP_DECLARE_EXTERNAL_HOOK(DAV, int, find_liveprop,
 ** properties on the specified resource. If a particular liveprop is
 ** not defined for this resource, then it should not be inserted.
 */
-AP_DECLARE_EXTERNAL_HOOK(DAV, void, insert_all_liveprops, 
+APR_DECLARE_EXTERNAL_HOOK(dav, DAV, void, insert_all_liveprops, 
                          (request_rec *r, const dav_resource *resource,
                           int insvalue, ap_text_header *phdr))
 

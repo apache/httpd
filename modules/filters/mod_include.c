@@ -149,8 +149,8 @@ static void add_include_vars(request_rec *r, char *timefmt)
  * first byte of the BEGINNING_SEQUENCE (after finding a complete match) or it
  * returns NULL if no match found.
  */
-static ap_bucket *find_start_sequence(ap_bucket *dptr, include_ctx_t *ctx,
-                                      ap_bucket_brigade *bb, int *do_cleanup)
+static apr_bucket *find_start_sequence(apr_bucket *dptr, include_ctx_t *ctx,
+                                      apr_bucket_brigade *bb, int *do_cleanup)
 {
     apr_size_t len;
     const char *c;
@@ -160,10 +160,10 @@ static ap_bucket *find_start_sequence(ap_bucket *dptr, include_ctx_t *ctx,
     *do_cleanup = 0;
 
     do {
-        if (AP_BUCKET_IS_EOS(dptr)) {
+        if (APR_BUCKET_IS_EOS(dptr)) {
             break;
         }
-        ap_bucket_read(dptr, &buf, &len, 0);
+        apr_bucket_read(dptr, &buf, &len, 0);
         /* XXX handle retcodes */
         if (len == 0) { /* end of pipe? */
             break;
@@ -180,7 +180,7 @@ static ap_bucket *find_start_sequence(ap_bucket *dptr, include_ctx_t *ctx,
             }
             else {
                 if (str[ctx->parse_pos] == '\0') {
-                    ap_bucket   *tmp_bkt;
+                    apr_bucket   *tmp_bkt;
                     apr_size_t  start_index;
 
                     /* We want to split the bucket at the '<'. */
@@ -191,8 +191,8 @@ static ap_bucket *find_start_sequence(ap_bucket *dptr, include_ctx_t *ctx,
                     ctx->tag_start_index  = c - buf;
                     if (ctx->head_start_index > 0) {
                         start_index = (c - buf) - ctx->head_start_index;
-                        ap_bucket_split(ctx->head_start_bucket, ctx->head_start_index);
-                        tmp_bkt = AP_BUCKET_NEXT(ctx->head_start_bucket);
+                        apr_bucket_split(ctx->head_start_bucket, ctx->head_start_index);
+                        tmp_bkt = APR_BUCKET_NEXT(ctx->head_start_bucket);
                         if (dptr == ctx->head_start_bucket) {
                             ctx->tag_start_bucket = tmp_bkt;
                             ctx->tag_start_index  = start_index;
@@ -225,12 +225,12 @@ static ap_bucket *find_start_sequence(ap_bucket *dptr, include_ctx_t *ctx,
             }
             c++;
         }
-        dptr = AP_BUCKET_NEXT(dptr);
-    } while (dptr != AP_BRIGADE_SENTINEL(bb));
+        dptr = APR_BUCKET_NEXT(dptr);
+    } while (dptr != APR_BRIGADE_SENTINEL(bb));
     return NULL;
 }
 
-static ap_bucket *find_end_sequence(ap_bucket *dptr, include_ctx_t *ctx, ap_bucket_brigade *bb)
+static apr_bucket *find_end_sequence(apr_bucket *dptr, include_ctx_t *ctx, apr_bucket_brigade *bb)
 {
     apr_size_t len;
     const char *c;
@@ -238,10 +238,10 @@ static ap_bucket *find_end_sequence(ap_bucket *dptr, include_ctx_t *ctx, ap_buck
     const char *str = ENDING_SEQUENCE;
 
     do {
-        if (AP_BUCKET_IS_EOS(dptr)) {
+        if (APR_BUCKET_IS_EOS(dptr)) {
             break;
         }
-        ap_bucket_read(dptr, &buf, &len, 0);
+        apr_bucket_read(dptr, &buf, &len, 0);
         /* XXX handle retcodes */
         if (len == 0) { /* end of pipe? */
             break;
@@ -286,7 +286,7 @@ static ap_bucket *find_end_sequence(ap_bucket *dptr, include_ctx_t *ctx, ap_buck
                 }
                 else {
                     if (str[ctx->parse_pos] == '\0') {
-                        ap_bucket *tmp_buck = dptr;
+                        apr_bucket *tmp_buck = dptr;
 
                         /* We want to split the bucket at the '>'. The
                          * end of the END_SEQUENCE is in the current bucket.
@@ -294,8 +294,8 @@ static ap_bucket *find_end_sequence(ap_bucket *dptr, include_ctx_t *ctx, ap_buck
                          */
                         ctx->state = PARSED;
                         if ((c - buf) > 0) {
-                            ap_bucket_split(dptr, c - buf);
-                            tmp_buck = AP_BUCKET_NEXT(dptr);
+                            apr_bucket_split(dptr, c - buf);
+                            tmp_buck = APR_BUCKET_NEXT(dptr);
                         }
                         return (tmp_buck);
                     }
@@ -332,8 +332,8 @@ static ap_bucket *find_end_sequence(ap_bucket *dptr, include_ctx_t *ctx, ap_buck
             }
             c++;
         }
-        dptr = AP_BUCKET_NEXT(dptr);
-    } while (dptr != AP_BRIGADE_SENTINEL(bb));
+        dptr = APR_BUCKET_NEXT(dptr);
+    } while (dptr != APR_BRIGADE_SENTINEL(bb));
     return NULL;
 }
 
@@ -343,11 +343,11 @@ static ap_bucket *find_end_sequence(ap_bucket *dptr, include_ctx_t *ctx, ap_buck
  */
 static apr_status_t get_combined_directive (include_ctx_t *ctx,
                                             request_rec *r,
-                                            ap_bucket_brigade *bb,
+                                            apr_bucket_brigade *bb,
                                             char *tmp_buf, int tmp_buf_size)
 {
     int         done = 0;
-    ap_bucket  *dptr;
+    apr_bucket  *dptr;
     const char *tmp_from;
     apr_size_t tmp_from_len;
 
@@ -363,7 +363,7 @@ static apr_status_t get_combined_directive (include_ctx_t *ctx,
 
     /* Prime the pump. Start at the beginning of the tag... */
     dptr = ctx->tag_start_bucket;
-    ap_bucket_read (dptr, &tmp_from, &tmp_from_len, 0);  /* Read the bucket... */
+    apr_bucket_read (dptr, &tmp_from, &tmp_from_len, 0);  /* Read the bucket... */
 
     /* Adjust the pointer to start at the tag within the bucket... */
     if (dptr == ctx->tail_start_bucket) {
@@ -384,8 +384,8 @@ static apr_status_t get_combined_directive (include_ctx_t *ctx,
             done = 1;
         }
         else {
-            dptr = AP_BUCKET_NEXT (dptr);
-            ap_bucket_read (dptr, &tmp_from, &tmp_from_len, 0);
+            dptr = APR_BUCKET_NEXT (dptr);
+            apr_bucket_read (dptr, &tmp_from, &tmp_from_len, 0);
             /* Adjust the count to stop at the beginning of the tail. */
             if (dptr == ctx->tail_start_bucket) {
                 tmp_from_len -= (tmp_from_len - ctx->tail_start_index);
@@ -695,11 +695,11 @@ static void parse_string(request_rec *r, const char *in, char *out,
 /* --------------------------- Action handlers ---------------------------- */
 
 static int include_cgi(char *s, request_rec *r, ap_filter_t *next,
-                       ap_bucket *head_ptr, ap_bucket **inserted_head)
+                       apr_bucket *head_ptr, apr_bucket **inserted_head)
 {
     request_rec *rr = ap_sub_req_lookup_uri(s, r, next);
     int rr_status;
-    ap_bucket  *tmp_buck, *tmp2_buck;
+    apr_bucket  *tmp_buck, *tmp2_buck;
 
     if (rr->status != HTTP_OK) {
         return -1;
@@ -735,16 +735,16 @@ static int include_cgi(char *s, request_rec *r, ap_filter_t *next,
         location = ap_escape_html(rr->pool, location);
         len_loc = strlen(location);
 
-        tmp_buck = ap_bucket_create_immortal("<A HREF=\"", sizeof("<A HREF=\""));
-        AP_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
-        tmp2_buck = ap_bucket_create_heap(location, len_loc, 1, &h_wrt);
-        AP_BUCKET_INSERT_BEFORE(head_ptr, tmp2_buck);
-        tmp2_buck = ap_bucket_create_immortal("\">", sizeof("\">"));
-        AP_BUCKET_INSERT_BEFORE(head_ptr, tmp2_buck);
-        tmp2_buck = ap_bucket_create_heap(location, len_loc, 1, &h_wrt);
-        AP_BUCKET_INSERT_BEFORE(head_ptr, tmp2_buck);
-        tmp2_buck = ap_bucket_create_immortal("</A>", sizeof("</A>"));
-        AP_BUCKET_INSERT_BEFORE(head_ptr, tmp2_buck);
+        tmp_buck = apr_bucket_create_immortal("<A HREF=\"", sizeof("<A HREF=\""));
+        APR_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
+        tmp2_buck = apr_bucket_create_heap(location, len_loc, 1, &h_wrt);
+        APR_BUCKET_INSERT_BEFORE(head_ptr, tmp2_buck);
+        tmp2_buck = apr_bucket_create_immortal("\">", sizeof("\">"));
+        APR_BUCKET_INSERT_BEFORE(head_ptr, tmp2_buck);
+        tmp2_buck = apr_bucket_create_heap(location, len_loc, 1, &h_wrt);
+        APR_BUCKET_INSERT_BEFORE(head_ptr, tmp2_buck);
+        tmp2_buck = apr_bucket_create_immortal("</A>", sizeof("</A>"));
+        APR_BUCKET_INSERT_BEFORE(head_ptr, tmp2_buck);
 
         if (*inserted_head == NULL) {
             *inserted_head = tmp_buck;
@@ -797,12 +797,12 @@ static int is_only_below(const char *path)
     return 1;
 }
 
-static int handle_include(include_ctx_t *ctx, ap_bucket_brigade **bb, request_rec *r,
-                          ap_filter_t *f, ap_bucket *head_ptr, ap_bucket **inserted_head)
+static int handle_include(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec *r,
+                          ap_filter_t *f, apr_bucket *head_ptr, apr_bucket **inserted_head)
 {
     char *tag     = NULL;
     char *tag_val = NULL;
-    ap_bucket  *tmp_buck;
+    apr_bucket  *tmp_buck;
     char parsed_string[MAX_STRING_LEN];
 
     *inserted_head = NULL;
@@ -973,7 +973,7 @@ static apr_status_t build_argv_list(char ***argv, request_rec *r, apr_pool_t *p)
 
 
 
-static int include_cmd(include_ctx_t *ctx, ap_bucket_brigade **bb, char *s,
+static int include_cmd(include_ctx_t *ctx, apr_bucket_brigade **bb, char *s,
                        request_rec *r, ap_filter_t *f)
 {
     include_cmd_arg arg;
@@ -1054,17 +1054,17 @@ static int include_cmd(include_ctx_t *ctx, ap_bucket_brigade **bb, char *s,
                         "couldn't create child process: %d: %s", rc, s);
         }
         else {
-            ap_bucket_brigade *bcgi;
-            ap_bucket *b;
+            apr_bucket_brigade *bcgi;
+            apr_bucket *b;
 
             apr_note_subprocess(r->pool, procnew, kill_after_timeout);
             /* Fill in BUFF structure for parents pipe to child's stdout */
             file = procnew->out;
             if (!file)
                 return APR_EBADF;
-            bcgi = ap_brigade_create(r->pool);
-            b = ap_bucket_create_pipe(file);
-            AP_BRIGADE_INSERT_TAIL(bcgi, b);
+            bcgi = apr_brigade_create(r->pool);
+            b = apr_bucket_create_pipe(file);
+            APR_BRIGADE_INSERT_TAIL(bcgi, b);
             ap_pass_brigade(f->next, bcgi);
         
             /* We can't close the pipe here, because we may return before the
@@ -1077,13 +1077,13 @@ static int include_cmd(include_ctx_t *ctx, ap_bucket_brigade **bb, char *s,
     return 0;
 }
 
-static int handle_exec(include_ctx_t *ctx, ap_bucket_brigade **bb, request_rec *r,
-                       ap_filter_t *f, ap_bucket *head_ptr, ap_bucket **inserted_head)
+static int handle_exec(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec *r,
+                       ap_filter_t *f, apr_bucket *head_ptr, apr_bucket **inserted_head)
 {
     char *tag     = NULL;
     char *tag_val = NULL;
     char *file = r->filename;
-    ap_bucket  *tmp_buck;
+    apr_bucket  *tmp_buck;
     char parsed_string[MAX_STRING_LEN];
 
     *inserted_head = NULL;
@@ -1136,13 +1136,13 @@ static int handle_exec(include_ctx_t *ctx, ap_bucket_brigade **bb, request_rec *
     return 0;
 }
 
-static int handle_echo(include_ctx_t *ctx, ap_bucket_brigade **bb, request_rec *r,
-                       ap_filter_t *f, ap_bucket *head_ptr, ap_bucket **inserted_head)
+static int handle_echo(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec *r,
+                       ap_filter_t *f, apr_bucket *head_ptr, apr_bucket **inserted_head)
 {
     char       *tag       = NULL;
     char       *tag_val   = NULL;
     const char *echo_text = NULL;
-    ap_bucket  *tmp_buck;
+    apr_bucket  *tmp_buck;
     apr_size_t e_len, e_wrt;
     enum {E_NONE, E_URL, E_ENTITY} encode;
 
@@ -1172,12 +1172,12 @@ static int handle_echo(include_ctx_t *ctx, ap_bucket_brigade **bb, request_rec *
             	}
 
                     e_len = strlen(echo_text);
-                    tmp_buck = ap_bucket_create_heap(echo_text, e_len, 1, &e_wrt);
+                    tmp_buck = apr_bucket_create_heap(echo_text, e_len, 1, &e_wrt);
                 }
                 else {
-                    tmp_buck = ap_bucket_create_immortal("(none)", sizeof("none"));
+                    tmp_buck = apr_bucket_create_immortal("(none)", sizeof("none"));
                 }
-                AP_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
+                APR_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
                 if (*inserted_head == NULL) {
                     *inserted_head = tmp_buck;
                 }
@@ -1208,8 +1208,8 @@ static int handle_echo(include_ctx_t *ctx, ap_bucket_brigade **bb, request_rec *
 /* error and tf must point to a string with room for at 
  * least MAX_STRING_LEN characters 
  */
-static int handle_config(include_ctx_t *ctx, ap_bucket_brigade **bb, request_rec *r,
-                         ap_filter_t *f, ap_bucket *head_ptr, ap_bucket **inserted_head)
+static int handle_config(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec *r,
+                         ap_filter_t *f, apr_bucket *head_ptr, apr_bucket **inserted_head)
 {
     char *tag     = NULL;
     char *tag_val = NULL;
@@ -1252,7 +1252,7 @@ static int handle_config(include_ctx_t *ctx, ap_bucket_brigade **bb, request_rec
                 }
             }
             else {
-                ap_bucket  *tmp_buck;
+                apr_bucket  *tmp_buck;
 
                 ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
                             "unknown parameter \"%s\" to tag config in %s",
@@ -1366,14 +1366,14 @@ static void generate_size(apr_ssize_t size, char *buff, apr_size_t buff_size)
     }
 }
 
-static int handle_fsize(include_ctx_t *ctx, ap_bucket_brigade **bb, request_rec *r,
-                        ap_filter_t *f, ap_bucket *head_ptr, ap_bucket **inserted_head)
+static int handle_fsize(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec *r,
+                        ap_filter_t *f, apr_bucket *head_ptr, apr_bucket **inserted_head)
 {
     char *tag     = NULL;
     char *tag_val = NULL;
     apr_finfo_t  finfo;
     apr_size_t  s_len, s_wrt;
-    ap_bucket   *tmp_buck;
+    apr_bucket   *tmp_buck;
     char parsed_string[MAX_STRING_LEN];
 
     *inserted_head = NULL;
@@ -1413,8 +1413,8 @@ static int handle_fsize(include_ctx_t *ctx, ap_bucket_brigade **bb, request_rec 
                         s_len = pos;
                     }
 
-                    tmp_buck = ap_bucket_create_heap(buff, s_len, 1, &s_wrt);
-                    AP_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
+                    tmp_buck = apr_bucket_create_heap(buff, s_len, 1, &s_wrt);
+                    APR_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
                     if (*inserted_head == NULL) {
                         *inserted_head = tmp_buck;
                     }
@@ -1428,14 +1428,14 @@ static int handle_fsize(include_ctx_t *ctx, ap_bucket_brigade **bb, request_rec 
     return 0;
 }
 
-static int handle_flastmod(include_ctx_t *ctx, ap_bucket_brigade **bb, request_rec *r,
-                           ap_filter_t *f, ap_bucket *head_ptr, ap_bucket **inserted_head)
+static int handle_flastmod(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec *r,
+                           ap_filter_t *f, apr_bucket *head_ptr, apr_bucket **inserted_head)
 {
     char *tag     = NULL;
     char *tag_val = NULL;
     apr_finfo_t  finfo;
     apr_size_t  t_len, t_wrt;
-    ap_bucket   *tmp_buck;
+    apr_bucket   *tmp_buck;
     char parsed_string[MAX_STRING_LEN];
 
     *inserted_head = NULL;
@@ -1458,8 +1458,8 @@ static int handle_flastmod(include_ctx_t *ctx, ap_bucket_brigade **bb, request_r
                     t_val = ap_ht_time(r->pool, finfo.mtime, ctx->time_str, 0);
                     t_len = strlen(t_val);
 
-                    tmp_buck = ap_bucket_create_heap(t_val, t_len, 1, &t_wrt);
-                    AP_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
+                    tmp_buck = apr_bucket_create_heap(t_val, t_len, 1, &t_wrt);
+                    APR_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
                     if (*inserted_head == NULL) {
                         *inserted_head = tmp_buck;
                     }
@@ -2274,8 +2274,8 @@ static int parse_expr(request_rec *r, const char *expr, int *was_error,
         cond_txt[31] = '1';                                                \
     }                                                                      \
     memcpy(&cond_txt[5], tag_text, sizeof(tag_text));                      \
-    t_buck = ap_bucket_create_heap(cond_txt, sizeof(cond_txt), 1, &c_wrt); \
-    AP_BUCKET_INSERT_BEFORE(h_ptr, t_buck);                                \
+    t_buck = apr_bucket_create_heap(cond_txt, sizeof(cond_txt), 1, &c_wrt); \
+    APR_BUCKET_INSERT_BEFORE(h_ptr, t_buck);                                \
                                                                            \
     if (ins_head == NULL) {                                                \
         ins_head = t_buck;                                                 \
@@ -2285,8 +2285,8 @@ static int parse_expr(request_rec *r, const char *expr, int *was_error,
 {                                                                        \
     apr_size_t b_wrt;                                                    \
     if (d_buf[0] != '\0') {                                              \
-        t_buck = ap_bucket_create_heap(d_buf, strlen(d_buf), 1, &b_wrt); \
-        AP_BUCKET_INSERT_BEFORE(h_ptr, t_buck);                          \
+        t_buck = apr_bucket_create_heap(d_buf, strlen(d_buf), 1, &b_wrt); \
+        APR_BUCKET_INSERT_BEFORE(h_ptr, t_buck);                          \
                                                                          \
         if (ins_head == NULL) {                                          \
             ins_head = t_buck;                                           \
@@ -2303,14 +2303,14 @@ static int parse_expr(request_rec *r, const char *expr, int *was_error,
 /*-------------------------------------------------------------------------*/
 
 /* pjr - These seem to allow expr="fred" expr="joe" where joe overwrites fred. */
-static int handle_if(include_ctx_t *ctx, ap_bucket_brigade **bb, request_rec *r,
-                     ap_filter_t *f, ap_bucket *head_ptr, ap_bucket **inserted_head)
+static int handle_if(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec *r,
+                     ap_filter_t *f, apr_bucket *head_ptr, apr_bucket **inserted_head)
 {
     char *tag     = NULL;
     char *tag_val = NULL;
     char *expr    = NULL;
     int   expr_ret, was_error, was_unmatched;
-    ap_bucket *tmp_buck;
+    apr_bucket *tmp_buck;
     char debug_buf[MAX_DEBUG_SIZE];
 
     *inserted_head = NULL;
@@ -2354,8 +2354,8 @@ static int handle_if(include_ctx_t *ctx, ap_bucket_brigade **bb, request_rec *r,
                 if (1) {
                     apr_size_t d_len = 0, d_wrt = 0;
                     d_len = sprintf(debug_buf, "**** if expr=\"%s\"\n", expr);
-                    tmp_buck = ap_bucket_create_heap(debug_buf, d_len, 1, &d_wrt);
-                    AP_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
+                    tmp_buck = apr_bucket_create_heap(debug_buf, d_len, 1, &d_wrt);
+                    APR_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
 
                     if (*inserted_head == NULL) {
                         *inserted_head = tmp_buck;
@@ -2374,14 +2374,14 @@ static int handle_if(include_ctx_t *ctx, ap_bucket_brigade **bb, request_rec *r,
     return 0;
 }
 
-static int handle_elif(include_ctx_t *ctx, ap_bucket_brigade **bb, request_rec *r,
-                       ap_filter_t *f,  ap_bucket *head_ptr, ap_bucket **inserted_head)
+static int handle_elif(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec *r,
+                       ap_filter_t *f,  apr_bucket *head_ptr, apr_bucket **inserted_head)
 {
     char *tag     = NULL;
     char *tag_val = NULL;
     char *expr    = NULL;
     int   expr_ret, was_error, was_unmatched;
-    ap_bucket *tmp_buck;
+    apr_bucket *tmp_buck;
     char debug_buf[MAX_DEBUG_SIZE];
 
     *inserted_head = NULL;
@@ -2427,8 +2427,8 @@ static int handle_elif(include_ctx_t *ctx, ap_bucket_brigade **bb, request_rec *
                 if (1) {
                     apr_size_t d_len = 0, d_wrt = 0;
                     d_len = sprintf(debug_buf, "**** elif expr=\"%s\"\n", expr);
-                    tmp_buck = ap_bucket_create_heap(debug_buf, d_len, 1, &d_wrt);
-                    AP_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
+                    tmp_buck = apr_bucket_create_heap(debug_buf, d_len, 1, &d_wrt);
+                    APR_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
 
                     if (*inserted_head == NULL) {
                         *inserted_head = tmp_buck;
@@ -2446,12 +2446,12 @@ static int handle_elif(include_ctx_t *ctx, ap_bucket_brigade **bb, request_rec *
     return 0;
 }
 
-static int handle_else(include_ctx_t *ctx, ap_bucket_brigade **bb, request_rec *r,
-                       ap_filter_t *f, ap_bucket *head_ptr, ap_bucket **inserted_head)
+static int handle_else(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec *r,
+                       ap_filter_t *f, apr_bucket *head_ptr, apr_bucket **inserted_head)
 {
     char *tag = NULL;
     char *tag_val = NULL;
-    ap_bucket *tmp_buck;
+    apr_bucket *tmp_buck;
 
     *inserted_head = NULL;
     if (!ctx->if_nesting_level) {
@@ -2479,12 +2479,12 @@ static int handle_else(include_ctx_t *ctx, ap_bucket_brigade **bb, request_rec *
     return 0;
 }
 
-static int handle_endif(include_ctx_t *ctx, ap_bucket_brigade **bb, request_rec *r,
-                        ap_filter_t *f, ap_bucket *head_ptr, ap_bucket **inserted_head)
+static int handle_endif(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec *r,
+                        ap_filter_t *f, apr_bucket *head_ptr, apr_bucket **inserted_head)
 {
     char *tag     = NULL;
     char *tag_val = NULL;
-    ap_bucket *tmp_buck;
+    apr_bucket *tmp_buck;
 
     *inserted_head = NULL;
     if (!ctx->if_nesting_level) {
@@ -2507,13 +2507,13 @@ static int handle_endif(include_ctx_t *ctx, ap_bucket_brigade **bb, request_rec 
     }
 }
 
-static int handle_set(include_ctx_t *ctx, ap_bucket_brigade **bb, request_rec *r,
-                      ap_filter_t *f, ap_bucket *head_ptr, ap_bucket **inserted_head)
+static int handle_set(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec *r,
+                      ap_filter_t *f, apr_bucket *head_ptr, apr_bucket **inserted_head)
 {
     char *tag     = NULL;
     char *tag_val = NULL;
     char *var     = NULL;
-    ap_bucket *tmp_buck;
+    apr_bucket *tmp_buck;
     char parsed_string[MAX_STRING_LEN];
 
     *inserted_head = NULL;
@@ -2552,12 +2552,12 @@ static int handle_set(include_ctx_t *ctx, ap_bucket_brigade **bb, request_rec *r
     return 0;
 }
 
-static int handle_printenv(include_ctx_t *ctx, ap_bucket_brigade **bb, request_rec *r,
-                           ap_filter_t *f, ap_bucket *head_ptr, ap_bucket **inserted_head)
+static int handle_printenv(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec *r,
+                           ap_filter_t *f, apr_bucket *head_ptr, apr_bucket **inserted_head)
 {
     char *tag     = NULL;
     char *tag_val = NULL;
-    ap_bucket *tmp_buck;
+    apr_bucket *tmp_buck;
 
     if (ctx->flags & FLAG_PRINTING) {
         get_tag_and_value(ctx, &tag, &tag_val, 1);
@@ -2576,20 +2576,20 @@ static int handle_printenv(include_ctx_t *ctx, ap_bucket_brigade **bb, request_r
                 v_len = strlen(val_text);
 
                 /*  Key_text                                               */
-                tmp_buck = ap_bucket_create_heap(key_text, k_len, 1, &t_wrt);
-                AP_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
+                tmp_buck = apr_bucket_create_heap(key_text, k_len, 1, &t_wrt);
+                APR_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
                 if (*inserted_head == NULL) {
                     *inserted_head = tmp_buck;
                 }
                 /*            =                                            */
-                tmp_buck = ap_bucket_create_immortal("=", 1);
-                AP_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
+                tmp_buck = apr_bucket_create_immortal("=", 1);
+                APR_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
                 /*              Value_text                                 */
-                tmp_buck = ap_bucket_create_heap(val_text, v_len, 1, &t_wrt);
-                AP_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
+                tmp_buck = apr_bucket_create_heap(val_text, v_len, 1, &t_wrt);
+                APR_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
                 /*                        newline...                       */
-                tmp_buck = ap_bucket_create_immortal("\n", 1);
-                AP_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
+                tmp_buck = apr_bucket_create_immortal("\n", 1);
+                APR_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
             }
             return 0;
         }
@@ -2606,13 +2606,13 @@ static int handle_printenv(include_ctx_t *ctx, ap_bucket_brigade **bb, request_r
 
 /* -------------------------- The main function --------------------------- */
 
-static void send_parsed_content(ap_bucket_brigade **bb, request_rec *r, 
+static void send_parsed_content(apr_bucket_brigade **bb, request_rec *r, 
                                 ap_filter_t *f)
 {
     include_ctx_t *ctx = f->ctx;
-    ap_bucket *dptr = AP_BRIGADE_FIRST(*bb);
-    ap_bucket *tmp_dptr;
-    ap_bucket_brigade *tag_and_after;
+    apr_bucket *dptr = APR_BRIGADE_FIRST(*bb);
+    apr_bucket *tmp_dptr;
+    apr_bucket_brigade *tag_and_after;
     int ret;
 
     ap_chdir_file(r->filename);
@@ -2625,7 +2625,7 @@ static void send_parsed_content(ap_bucket_brigade **bb, request_rec *r,
                   ap_escape_shell_cmd(r->pool, arg_copy));
     }
 
-    while (dptr != AP_BRIGADE_SENTINEL(*bb)) {
+    while (dptr != APR_BRIGADE_SENTINEL(*bb)) {
         /* State to check for the STARTING_SEQUENCE. */
         if ((ctx->state == PRE_HEAD) || (ctx->state == PARSE_HEAD)) {
             int do_cleanup = 0;
@@ -2637,16 +2637,16 @@ static void send_parsed_content(ap_bucket_brigade **bb, request_rec *r,
              * be a tag after all. This can only happen if the starting
              * tag actually spans brigades. This should be very rare.
              */
-            if ((do_cleanup) && (!AP_BRIGADE_EMPTY(ctx->ssi_tag_brigade))) {
-                ap_bucket *tmp_bkt;
+            if ((do_cleanup) && (!APR_BRIGADE_EMPTY(ctx->ssi_tag_brigade))) {
+                apr_bucket *tmp_bkt;
 
-                tmp_bkt = ap_bucket_create_immortal(STARTING_SEQUENCE, cleanup_bytes);
-                AP_BRIGADE_INSERT_HEAD(*bb, tmp_bkt);
+                tmp_bkt = apr_bucket_create_immortal(STARTING_SEQUENCE, cleanup_bytes);
+                APR_BRIGADE_INSERT_HEAD(*bb, tmp_bkt);
 
-                while (!AP_BRIGADE_EMPTY(ctx->ssi_tag_brigade)) {
-                    tmp_bkt = AP_BRIGADE_FIRST(ctx->ssi_tag_brigade);
-                    AP_BUCKET_REMOVE(tmp_bkt);
-                    ap_bucket_destroy(tmp_bkt);
+                while (!APR_BRIGADE_EMPTY(ctx->ssi_tag_brigade)) {
+                    tmp_bkt = APR_BRIGADE_FIRST(ctx->ssi_tag_brigade);
+                    APR_BUCKET_REMOVE(tmp_bkt);
+                    apr_bucket_destroy(tmp_bkt);
                 }
             }
 
@@ -2654,14 +2654,14 @@ static void send_parsed_content(ap_bucket_brigade **bb, request_rec *r,
              *   then I need to throw away anything contained in it.
              */
             if ((!(ctx->flags & FLAG_PRINTING)) && (tmp_dptr != NULL) &&
-                (dptr != AP_BRIGADE_SENTINEL(*bb))) {
-                while ((dptr != AP_BRIGADE_SENTINEL(*bb)) &&
+                (dptr != APR_BRIGADE_SENTINEL(*bb))) {
+                while ((dptr != APR_BRIGADE_SENTINEL(*bb)) &&
                        (dptr != tmp_dptr)) {
-                    ap_bucket *free_bucket = dptr;
+                    apr_bucket *free_bucket = dptr;
 
-                    dptr = AP_BUCKET_NEXT (dptr);
-                    AP_BUCKET_REMOVE(free_bucket);
-                    ap_bucket_destroy(free_bucket);
+                    dptr = APR_BUCKET_NEXT (dptr);
+                    APR_BUCKET_REMOVE(free_bucket);
+                    apr_bucket_destroy(free_bucket);
                 }
             }
 
@@ -2671,11 +2671,11 @@ static void send_parsed_content(ap_bucket_brigade **bb, request_rec *r,
                     dptr = ctx->tag_start_bucket;
                 }
                 else {
-                    dptr = AP_BRIGADE_SENTINEL(*bb);
+                    dptr = APR_BRIGADE_SENTINEL(*bb);
                 }
             }
             else if (tmp_dptr == NULL) { /* There was no possible SSI tag in the */
-                dptr = AP_BRIGADE_SENTINEL(*bb);  /* remainder of this brigade...    */
+                dptr = APR_BRIGADE_SENTINEL(*bb);  /* remainder of this brigade...    */
             }
         }
 
@@ -2683,7 +2683,7 @@ static void send_parsed_content(ap_bucket_brigade **bb, request_rec *r,
         if (((ctx->state == PARSE_DIRECTIVE) ||
              (ctx->state == PARSE_TAG)       ||
              (ctx->state == PARSE_TAIL))       &&
-            (dptr != AP_BRIGADE_SENTINEL(*bb))) {
+            (dptr != APR_BRIGADE_SENTINEL(*bb))) {
             tmp_dptr = find_end_sequence(dptr, ctx, *bb);
 
             if (tmp_dptr != NULL) {
@@ -2695,24 +2695,24 @@ static void send_parsed_content(ap_bucket_brigade **bb, request_rec *r,
                  * In any event after this the entire set of tag buckets will be
                  * in one place or another.
                  */
-                if (!AP_BRIGADE_EMPTY(ctx->ssi_tag_brigade)) {
-                    tag_and_after = ap_brigade_split(*bb, dptr);
-                    AP_BRIGADE_CONCAT(ctx->ssi_tag_brigade, *bb);
+                if (!APR_BRIGADE_EMPTY(ctx->ssi_tag_brigade)) {
+                    tag_and_after = apr_brigade_split(*bb, dptr);
+                    APR_BRIGADE_CONCAT(ctx->ssi_tag_brigade, *bb);
                     *bb = tag_and_after;
                 }
             }
             else {
-                dptr = AP_BRIGADE_SENTINEL(*bb);  /* remainder of this brigade...    */
+                dptr = APR_BRIGADE_SENTINEL(*bb);  /* remainder of this brigade...    */
             }
         }
 
         /* State to processed the directive... */
         if (ctx->state == PARSED) {
-            ap_bucket    *content_head = NULL, *tmp_bkt;
+            apr_bucket    *content_head = NULL, *tmp_bkt;
             apr_size_t    tmp_i;
             char          tmp_buf[TMP_BUF_SIZE];
-            int (*handle_func)(include_ctx_t *, ap_bucket_brigade **, request_rec *,
-                           ap_filter_t *, ap_bucket *, ap_bucket **);
+            int (*handle_func)(include_ctx_t *, apr_bucket_brigade **, request_rec *,
+                           ap_filter_t *, apr_bucket *, apr_bucket **);
 
             /* By now the full tag (all buckets) should either be set aside into
              *  ssi_tag_brigade or contained within the current bb. All tag
@@ -2732,21 +2732,21 @@ static void send_parsed_content(ap_bucket_brigade **bb, request_rec *r,
 
                 /* DO CLEANUP HERE!!!!! */
                 tmp_dptr = ctx->head_start_bucket;
-                if (!AP_BRIGADE_EMPTY(ctx->ssi_tag_brigade)) {
-                    while (!AP_BRIGADE_EMPTY(ctx->ssi_tag_brigade)) {
-                        tmp_bkt = AP_BRIGADE_FIRST(ctx->ssi_tag_brigade);
-                        AP_BUCKET_REMOVE(tmp_bkt);
-                        ap_bucket_destroy(tmp_bkt);
+                if (!APR_BRIGADE_EMPTY(ctx->ssi_tag_brigade)) {
+                    while (!APR_BRIGADE_EMPTY(ctx->ssi_tag_brigade)) {
+                        tmp_bkt = APR_BRIGADE_FIRST(ctx->ssi_tag_brigade);
+                        APR_BUCKET_REMOVE(tmp_bkt);
+                        apr_bucket_destroy(tmp_bkt);
                     }
                 }
                 else {
                     do {
                         tmp_bkt  = tmp_dptr;
-                        tmp_dptr = AP_BUCKET_NEXT (tmp_dptr);
-                        AP_BUCKET_REMOVE(tmp_bkt);
-                        ap_bucket_destroy(tmp_bkt);
+                        tmp_dptr = APR_BUCKET_NEXT (tmp_dptr);
+                        APR_BUCKET_REMOVE(tmp_bkt);
+                        apr_bucket_destroy(tmp_bkt);
                     } while ((tmp_dptr != dptr) &&
-                             (tmp_dptr != AP_BRIGADE_SENTINEL(*bb)));
+                             (tmp_dptr != APR_BRIGADE_SENTINEL(*bb)));
                 }
 
                 return;
@@ -2777,8 +2777,8 @@ static void send_parsed_content(ap_bucket_brigade **bb, request_rec *r,
             ctx->curr_tag_pos = &ctx->combined_tag[ctx->directive_length+1];
 
             handle_func = 
-                (int (*)(include_ctx_t *, ap_bucket_brigade **, request_rec *,
-                    ap_filter_t *, ap_bucket *, ap_bucket **))
+                (int (*)(include_ctx_t *, apr_bucket_brigade **, request_rec *,
+                    ap_filter_t *, apr_bucket *, apr_bucket **))
                 apr_hash_get(include_hash, ctx->combined_tag, ctx->directive_length+1);
             if (handle_func != NULL) {
                 ret = (*handle_func)(ctx, bb, r, f, dptr, &content_head);
@@ -2812,21 +2812,21 @@ static void send_parsed_content(ap_bucket_brigade **bb, request_rec *r,
                 content_head = dptr;
             }
             tmp_dptr = ctx->head_start_bucket;
-            if (!AP_BRIGADE_EMPTY(ctx->ssi_tag_brigade)) {
-                while (!AP_BRIGADE_EMPTY(ctx->ssi_tag_brigade)) {
-                    tmp_bkt = AP_BRIGADE_FIRST(ctx->ssi_tag_brigade);
-                    AP_BUCKET_REMOVE(tmp_bkt);
-                    ap_bucket_destroy(tmp_bkt);
+            if (!APR_BRIGADE_EMPTY(ctx->ssi_tag_brigade)) {
+                while (!APR_BRIGADE_EMPTY(ctx->ssi_tag_brigade)) {
+                    tmp_bkt = APR_BRIGADE_FIRST(ctx->ssi_tag_brigade);
+                    APR_BUCKET_REMOVE(tmp_bkt);
+                    apr_bucket_destroy(tmp_bkt);
                 }
             }
             else {
                 do {
                     tmp_bkt  = tmp_dptr;
-                    tmp_dptr = AP_BUCKET_NEXT (tmp_dptr);
-                    AP_BUCKET_REMOVE(tmp_bkt);
-                    ap_bucket_destroy(tmp_bkt);
+                    tmp_dptr = APR_BUCKET_NEXT (tmp_dptr);
+                    APR_BUCKET_REMOVE(tmp_bkt);
+                    apr_bucket_destroy(tmp_bkt);
                 } while ((tmp_dptr != content_head) &&
-                         (tmp_dptr != AP_BRIGADE_SENTINEL(*bb)));
+                         (tmp_dptr != APR_BRIGADE_SENTINEL(*bb)));
             }
             if (ctx->combined_tag == tmp_buf) {
                 memset (ctx->combined_tag, '\0', ctx->tag_length);
@@ -2845,11 +2845,11 @@ static void send_parsed_content(ap_bucket_brigade **bb, request_rec *r,
             ctx->tag_length        = 0;
             ctx->directive_length  = 0;
 
-            if (!AP_BRIGADE_EMPTY(ctx->ssi_tag_brigade)) {
-                while (!AP_BRIGADE_EMPTY(ctx->ssi_tag_brigade)) {
-                    tmp_bkt = AP_BRIGADE_FIRST(ctx->ssi_tag_brigade);
-                    AP_BUCKET_REMOVE(tmp_bkt);
-                    ap_bucket_destroy(tmp_bkt);
+            if (!APR_BRIGADE_EMPTY(ctx->ssi_tag_brigade)) {
+                while (!APR_BRIGADE_EMPTY(ctx->ssi_tag_brigade)) {
+                    tmp_bkt = APR_BRIGADE_FIRST(ctx->ssi_tag_brigade);
+                    APR_BUCKET_REMOVE(tmp_bkt);
+                    apr_bucket_destroy(tmp_bkt);
                 }
             }
 
@@ -2865,38 +2865,38 @@ static void send_parsed_content(ap_bucket_brigade **bb, request_rec *r,
      */
     if (ctx->state == PRE_HEAD) {
         /* Inside a false conditional (if, elif, else), so toss it all... */
-        if ((dptr != AP_BRIGADE_SENTINEL(*bb)) &&
+        if ((dptr != APR_BRIGADE_SENTINEL(*bb)) &&
             (!(ctx->flags & FLAG_PRINTING))) {
-            ap_bucket *free_bucket;
+            apr_bucket *free_bucket;
             do {
                 free_bucket = dptr;
-                dptr = AP_BUCKET_NEXT (dptr);
-                AP_BUCKET_REMOVE(free_bucket);
-                ap_bucket_destroy(free_bucket);
-            } while (dptr != AP_BRIGADE_SENTINEL(*bb));
+                dptr = APR_BUCKET_NEXT (dptr);
+                APR_BUCKET_REMOVE(free_bucket);
+                apr_bucket_destroy(free_bucket);
+            } while (dptr != APR_BRIGADE_SENTINEL(*bb));
         }
         else { /* Otherwise pass it along... */
             ap_pass_brigade(f->next, *bb);  /* No SSI tags in this brigade... */
         }
     }
     else if (ctx->state == PARSED) {     /* Invalid internal condition... */
-        ap_bucket *content_head = NULL, *tmp_bkt;
+        apr_bucket *content_head = NULL, *tmp_bkt;
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
                       "Invalid mod_include state during file %s", r->filename);
-        CREATE_ERROR_BUCKET(ctx, tmp_bkt, AP_BRIGADE_FIRST(*bb), content_head);
+        CREATE_ERROR_BUCKET(ctx, tmp_bkt, APR_BRIGADE_FIRST(*bb), content_head);
     }
     else {                 /* Entire brigade is middle chunk of SSI tag... */
-        if (!AP_BRIGADE_EMPTY(ctx->ssi_tag_brigade)) {
-            AP_BRIGADE_CONCAT(ctx->ssi_tag_brigade, *bb);
+        if (!APR_BRIGADE_EMPTY(ctx->ssi_tag_brigade)) {
+            APR_BRIGADE_CONCAT(ctx->ssi_tag_brigade, *bb);
         }
         else {             /* End of brigade contains part of SSI tag... */
             if (ctx->head_start_index > 0) {
-                ap_bucket_split(ctx->head_start_bucket, ctx->head_start_index);
-                ctx->head_start_bucket = AP_BUCKET_NEXT(ctx->head_start_bucket);
+                apr_bucket_split(ctx->head_start_bucket, ctx->head_start_index);
+                ctx->head_start_bucket = APR_BUCKET_NEXT(ctx->head_start_bucket);
                 ctx->head_start_index  = 0;
             }
                            /* Set aside tag, pass pre-tag... */
-            tag_and_after = ap_brigade_split(*bb, ctx->head_start_bucket);
+            tag_and_after = apr_brigade_split(*bb, ctx->head_start_bucket);
             ap_save_brigade(f, &ctx->ssi_tag_brigade, &tag_and_after);
             ap_pass_brigade(f->next, *bb);
         }
@@ -2947,7 +2947,7 @@ static const char *set_xbithack(cmd_parms *cmd, void *xbp, const char *arg)
     return NULL;
 }
 
-static int includes_filter(ap_filter_t *f, ap_bucket_brigade *b)
+static int includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
 {
     request_rec *r = f->r;
     include_ctx_t *ctx = f->ctx;
@@ -2971,7 +2971,7 @@ static int includes_filter(ap_filter_t *f, ap_bucket_brigade *b)
             if (ap_allow_options(r) & OPT_INCNOEXEC) {
                 ctx->flags |= FLAG_NO_EXEC;
             }
-            ctx->ssi_tag_brigade = ap_brigade_create(f->c->pool);
+            ctx->ssi_tag_brigade = apr_brigade_create(f->c->pool);
 
             apr_cpystrn(ctx->error_str, DEFAULT_ERROR_MSG,   sizeof(ctx->error_str));
             apr_cpystrn(ctx->time_str,  DEFAULT_TIME_FORMAT, sizeof(ctx->time_str));
@@ -3067,7 +3067,7 @@ static const command_rec includes_cmds[] =
 
 static void register_hooks(apr_pool_t *p)
 {
-    ap_hook_post_config(include_post_config, NULL, NULL, AP_HOOK_REALLY_FIRST);
+    ap_hook_post_config(include_post_config, NULL, NULL, APR_HOOK_REALLY_FIRST);
     ap_register_output_filter("INCLUDES", includes_filter, AP_FTYPE_CONTENT);
 }
 

@@ -915,7 +915,7 @@ menu_bail:
 
 static void register_hooks(apr_pool_t *p)
 {
-    ap_hook_handler(imap_handler,NULL,NULL,AP_HOOK_MIDDLE);
+    ap_hook_handler(imap_handler,NULL,NULL,APR_HOOK_MIDDLE);
 }
 
 module AP_MODULE_DECLARE_DATA imap_module =

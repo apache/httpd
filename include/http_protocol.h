@@ -59,11 +59,11 @@
 #ifndef APACHE_HTTP_PROTOCOL_H
 #define APACHE_HTTP_PROTOCOL_H
 
-#include "ap_hooks.h"
+#include "apr_hooks.h"
 #include "apr_portable.h"
 #include "apr_mmap.h"
 #include "util_filter.h"
-#include "ap_buckets.h"
+#include "apr_buckets.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -103,10 +103,10 @@ AP_DECLARE(void) ap_basic_http_header(request_rec *r, char *buf);
  */
 AP_DECLARE(void) ap_send_http_header(request_rec *l);
 
-AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f, ap_bucket_brigade *b);
-AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, ap_bucket_brigade *b);
+AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f, apr_bucket_brigade *b);
+AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, apr_bucket_brigade *b);
 AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(ap_filter_t *, 
-                                                              ap_bucket_brigade *);
+                                                              apr_bucket_brigade *);
 
 /* Send the response to special method requests */
 
@@ -516,8 +516,8 @@ AP_DECLARE(int) ap_method_number_of(const char *method);
  */
 AP_DECLARE(const char *) ap_method_name_of(int methnum);
 
-apr_status_t ap_http_filter(ap_filter_t *f, ap_bucket_brigade *b, ap_input_mode_t mode);
-apr_status_t ap_dechunk_filter(ap_filter_t *f, ap_bucket_brigade *b, ap_input_mode_t mode);
+apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode_t mode);
+apr_status_t ap_dechunk_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode_t mode);
 
 
   /* Hooks */

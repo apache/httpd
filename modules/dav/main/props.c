@@ -354,7 +354,7 @@ static void dav_find_liveprop(dav_propdb *propdb, ap_xml_elem *elem)
     ns_uri = AP_XML_GET_URI_ITEM(propdb->ns_xlate, elem->ns);
 
     /* is there a liveprop provider for this property? */
-    propid = ap_run_find_liveprop(propdb->resource, ns_uri, elem->name,
+    propid = dav_run_find_liveprop(propdb->resource, ns_uri, elem->name,
                                   &hooks);
     if (propid != 0) {
         priv->propid = propid;
@@ -1068,7 +1068,7 @@ dav_get_props_result dav_get_allprops(dav_propdb *propdb, int getvals)
     dav_add_all_liveprop_xmlns(propdb->p, &hdr_ns);
     
     /* ask the liveprop providers to insert their properties */
-    ap_run_insert_all_liveprops(propdb->r, propdb->resource, getvals, &hdr);
+    dav_run_insert_all_liveprops(propdb->r, propdb->resource, getvals, &hdr);
 
     /* insert the standard properties */
     /* ### should be handling the return errors here */

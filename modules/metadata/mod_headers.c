@@ -253,7 +253,7 @@ static int fixup_headers(request_rec *r)
 
 static void register_hooks(apr_pool_t *p)
 {
-    ap_hook_fixups(fixup_headers,NULL,NULL,AP_HOOK_MIDDLE);
+    ap_hook_fixups(fixup_headers,NULL,NULL,APR_HOOK_MIDDLE);
 } 
 
 module AP_MODULE_DECLARE_DATA headers_module =

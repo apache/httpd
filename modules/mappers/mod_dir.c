@@ -225,7 +225,7 @@ static void register_hooks(apr_pool_t *p)
 {
     static const char * const aszSucc[]={ "mod_autoindex.c", NULL };
 
-    ap_hook_handler(handle_dir,NULL,aszSucc,AP_HOOK_MIDDLE);
+    ap_hook_handler(handle_dir,NULL,aszSucc,APR_HOOK_MIDDLE);
 }
 
 module AP_MODULE_DECLARE_DATA dir_module = {

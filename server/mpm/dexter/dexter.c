@@ -1162,7 +1162,7 @@ static void dexter_hooks(apr_pool_t *p)
     INIT_SIGLIST()
     one_process = 0;
 
-    ap_hook_pre_config(dexter_pre_config, NULL, NULL, AP_HOOK_MIDDLE); 
+    ap_hook_pre_config(dexter_pre_config, NULL, NULL, APR_HOOK_MIDDLE); 
 }
 
 static const char *set_pidfile(cmd_parms *cmd, void *dummy, const char *arg) 

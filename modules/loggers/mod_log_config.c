@@ -1243,9 +1243,9 @@ static void init_child(apr_pool_t *p, server_rec *s)
 
 static void register_hooks(apr_pool_t *p)
 {
-    ap_hook_child_init(init_child,NULL,NULL,AP_HOOK_MIDDLE);
-    ap_hook_open_logs(init_config_log,NULL,NULL,AP_HOOK_MIDDLE);
-    ap_hook_log_transaction(multi_log_transaction,NULL,NULL,AP_HOOK_MIDDLE);
+    ap_hook_child_init(init_child,NULL,NULL,APR_HOOK_MIDDLE);
+    ap_hook_open_logs(init_config_log,NULL,NULL,APR_HOOK_MIDDLE);
+    ap_hook_log_transaction(multi_log_transaction,NULL,NULL,APR_HOOK_MIDDLE);
 }
 
 module AP_MODULE_DECLARE_DATA config_log_module =

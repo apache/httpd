@@ -337,8 +337,8 @@ static int dbm_check_auth(request_rec *r)
 
 static void register_hooks(apr_pool_t *p)
 {
-    ap_hook_check_user_id(dbm_authenticate_basic_user, NULL, NULL, AP_HOOK_MIDDLE);
-    ap_hook_auth_checker(dbm_check_auth, NULL, NULL, AP_HOOK_MIDDLE);
+    ap_hook_check_user_id(dbm_authenticate_basic_user, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_auth_checker(dbm_check_auth, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 module AP_MODULE_DECLARE_DATA dbm_auth_module =

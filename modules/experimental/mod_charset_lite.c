@@ -75,7 +75,7 @@
 #include "http_protocol.h"
 #include "http_request.h"
 #include "util_charset.h"
-#include "ap_buckets.h"
+#include "apr_buckets.h"
 #include "util_filter.h"
 #include "apr_strings.h"
 
@@ -86,7 +86,7 @@
 #define OUTPUT_XLATE_BUF_SIZE (16*1024) /* size of translation buffer used on output */
 #define INPUT_XLATE_BUF_SIZE  (8*1024)  /* size of translation buffer used on input */
 
-/* XXX this works around an issue with the heap bucket: ap_bucket_create_heap will 
+/* XXX this works around an issue with the heap bucket: apr_bucket_create_heap will 
  *     copy only the first 4096 bytes
  */
 #undef INPUT_XLATE_BUF_SIZE         /* XXX */
@@ -140,7 +140,7 @@ typedef struct charset_filter_ctx_t {
     int ran;                /* has filter instance run before? */
     int noop;               /* should we pass brigades through unchanged? */
     char *tmp;              /* buffer for input filtering */
-    ap_bucket_brigade *bb;  /* input buckets we couldn't finish translating */
+    apr_bucket_brigade *bb;  /* input buckets we couldn't finish translating */
 } charset_filter_ctx_t;
 
 /* charset_req_t is available via r->request_config if any translation is
@@ -353,7 +353,7 @@ static int find_code_page(request_rec *r)
          * of it.
          */
         input_ctx = apr_pcalloc(r->pool, sizeof(charset_filter_ctx_t));
-        input_ctx->bb = ap_brigade_create(r->pool);
+        input_ctx->bb = apr_brigade_create(r->pool);
         input_ctx->tmp = apr_palloc(r->pool, INPUT_XLATE_BUF_SIZE);
         input_ctx->dc = dc;
         reqinfo->input_ctx = input_ctx;
@@ -455,14 +455,14 @@ static void xlate_insert_filter(request_rec *r)
  */
 static apr_status_t send_downstream(ap_filter_t *f, const char *tmp, apr_size_t len)
 {
-    ap_bucket_brigade *bb;
-    ap_bucket *b;
+    apr_bucket_brigade *bb;
+    apr_bucket *b;
     charset_filter_ctx_t *ctx = f->ctx;
     apr_status_t rv;
 
-    bb = ap_brigade_create(f->r->pool);
-    b = ap_bucket_create_transient(tmp, len);
-    AP_BRIGADE_INSERT_TAIL(bb, b);
+    bb = apr_brigade_create(f->r->pool);
+    b = apr_bucket_create_transient(tmp, len);
+    APR_BRIGADE_INSERT_TAIL(bb, b);
     rv = ap_pass_brigade(f->next, bb);
     if (rv != APR_SUCCESS) {
         ctx->ees = EES_DOWNSTREAM;
@@ -472,14 +472,14 @@ static apr_status_t send_downstream(ap_filter_t *f, const char *tmp, apr_size_t 
 
 static apr_status_t send_eos(ap_filter_t *f)
 {
-    ap_bucket_brigade *bb;
-    ap_bucket *b;
+    apr_bucket_brigade *bb;
+    apr_bucket *b;
     charset_filter_ctx_t *ctx = f->ctx;
     apr_status_t rv;
 
-    bb = ap_brigade_create(f->r->pool);
-    b = ap_bucket_create_eos();
-    AP_BRIGADE_INSERT_TAIL(bb, b);
+    bb = apr_brigade_create(f->r->pool);
+    b = apr_bucket_create_eos();
+    APR_BRIGADE_INSERT_TAIL(bb, b);
     rv = ap_pass_brigade(f->next, bb);
     if (rv != APR_SUCCESS) {
         ctx->ees = EES_DOWNSTREAM;
@@ -723,12 +723,12 @@ static void chk_filter_chain(ap_filter_t *f)
  *   hit_eos:          did we hit an EOS bucket?
  */
 static apr_status_t xlate_brigade(charset_filter_ctx_t *ctx,
-                                  ap_bucket_brigade *bb,
+                                  apr_bucket_brigade *bb,
                                   char *buffer, 
                                   apr_size_t *buffer_avail,
                                   int *hit_eos)
 {
-    ap_bucket *b, *consumed_bucket;
+    apr_bucket *b, *consumed_bucket;
     const char *bucket;
     apr_size_t bytes_in_bucket; /* total bytes read from current bucket */
     apr_size_t bucket_avail;    /* bytes left in current bucket */
@@ -740,16 +740,16 @@ static apr_status_t xlate_brigade(charset_filter_ctx_t *ctx,
     while (1) {
         if (!bucket_avail) { /* no bytes left to process in the current bucket... */
             if (consumed_bucket) {
-                AP_BUCKET_REMOVE(consumed_bucket);
-                ap_bucket_destroy(consumed_bucket);
+                APR_BUCKET_REMOVE(consumed_bucket);
+                apr_bucket_destroy(consumed_bucket);
                 consumed_bucket = NULL;
             }
-            b = AP_BRIGADE_FIRST(bb);
-            if (b == AP_BRIGADE_SENTINEL(bb) ||
-                AP_BUCKET_IS_EOS(b)) {
+            b = APR_BRIGADE_FIRST(bb);
+            if (b == APR_BRIGADE_SENTINEL(bb) ||
+                APR_BUCKET_IS_EOS(b)) {
                 break;
             }
-            rv = ap_bucket_read(b, &bucket, &bytes_in_bucket, 0);
+            rv = apr_bucket_read(b, &bucket, &bytes_in_bucket, 0);
             if (rv != APR_SUCCESS) {
                 ctx->ees = EES_BUCKET_READ;
                 break;
@@ -797,18 +797,18 @@ static apr_status_t xlate_brigade(charset_filter_ctx_t *ctx,
             if (*buffer_avail < XLATE_MIN_BUFF_LEFT) {
                 /* if any data remains in the current bucket, split there */
                 if (bucket_avail) {
-                    ap_bucket_split(b, bytes_in_bucket - bucket_avail);
+                    apr_bucket_split(b, bytes_in_bucket - bucket_avail);
                 }
-                AP_BUCKET_REMOVE(b);
-                ap_bucket_destroy(b);
+                APR_BUCKET_REMOVE(b);
+                apr_bucket_destroy(b);
                 break;
             }
         }
     }
 
-    if (!AP_BRIGADE_EMPTY(bb)) {
-        b = AP_BRIGADE_FIRST(bb);
-        if (AP_BUCKET_IS_EOS(b)) {
+    if (!APR_BRIGADE_EMPTY(bb)) {
+        b = APR_BRIGADE_FIRST(bb);
+        if (APR_BUCKET_IS_EOS(b)) {
             /* Leave the eos bucket in the brigade for reporting to
              * subsequent filters.
              */
@@ -832,14 +832,14 @@ static apr_status_t xlate_brigade(charset_filter_ctx_t *ctx,
  * where the filter's context data is set up... the context data gives us
  * the translation handle
  */
-static apr_status_t xlate_out_filter(ap_filter_t *f, ap_bucket_brigade *bb)
+static apr_status_t xlate_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
 {
     charset_req_t *reqinfo = ap_get_module_config(f->r->request_config,
                                                   &charset_lite_module);
     charset_dir_t *dc = ap_get_module_config(f->r->per_dir_config,
                                              &charset_lite_module);
     charset_filter_ctx_t *ctx = f->ctx;
-    ap_bucket *dptr, *consumed_bucket;
+    apr_bucket *dptr, *consumed_bucket;
     const char *cur_str;
     apr_size_t cur_len, cur_avail;
     char tmp[OUTPUT_XLATE_BUF_SIZE];
@@ -883,7 +883,7 @@ static apr_status_t xlate_out_filter(ap_filter_t *f, ap_bucket_brigade *bb)
         return ap_pass_brigade(f->next, bb);
     }
 
-    dptr = AP_BRIGADE_FIRST(bb);
+    dptr = APR_BRIGADE_FIRST(bb);
     done = 0;
     cur_len = 0;
     space_avail = sizeof(tmp);
@@ -891,15 +891,15 @@ static apr_status_t xlate_out_filter(ap_filter_t *f, ap_bucket_brigade *bb)
     while (!done) {
         if (!cur_len) { /* no bytes left to process in the current bucket... */
             if (consumed_bucket) {
-                AP_BUCKET_REMOVE(consumed_bucket);
-                ap_bucket_destroy(consumed_bucket);
+                APR_BUCKET_REMOVE(consumed_bucket);
+                apr_bucket_destroy(consumed_bucket);
                 consumed_bucket = NULL;
             }
-            if (dptr == AP_BRIGADE_SENTINEL(bb)) {
+            if (dptr == APR_BRIGADE_SENTINEL(bb)) {
                 done = 1;
                 break;
             }
-            if (AP_BUCKET_IS_EOS(dptr)) {
+            if (APR_BUCKET_IS_EOS(dptr)) {
                 done = 1;
                 cur_len = -1; /* XXX yuck, but that tells us to send
                                  * eos down; when we minimize our bb construction
@@ -913,14 +913,14 @@ static apr_status_t xlate_out_filter(ap_filter_t *f, ap_bucket_brigade *bb)
                 }
                 break;
             }
-            rv = ap_bucket_read(dptr, &cur_str, &cur_len, 0);
+            rv = apr_bucket_read(dptr, &cur_str, &cur_len, 0);
             if (rv != APR_SUCCESS) {
                 done = 1;
                 ctx->ees = EES_BUCKET_READ;
                 break;
             }
             consumed_bucket = dptr; /* for axing when we're done reading it */
-            dptr = AP_BUCKET_NEXT(dptr); /* get ready for when we access the 
+            dptr = APR_BUCKET_NEXT(dptr); /* get ready for when we access the 
                                           * next bucket */
         }
         /* Try to fill up our tmp buffer with translated data. */
@@ -993,18 +993,18 @@ static apr_status_t xlate_out_filter(ap_filter_t *f, ap_bucket_brigade *bb)
     return rv;
 }
 
-static void transfer_brigade(ap_bucket_brigade *in, ap_bucket_brigade *out)
+static void transfer_brigade(apr_bucket_brigade *in, apr_bucket_brigade *out)
 {
-    ap_bucket *b;
+    apr_bucket *b;
 
-    while (!AP_BRIGADE_EMPTY(in)) {
-        b = AP_BRIGADE_FIRST(in);
-        AP_BUCKET_REMOVE(b);
-        AP_BRIGADE_INSERT_TAIL(out, b);
+    while (!APR_BRIGADE_EMPTY(in)) {
+        b = APR_BRIGADE_FIRST(in);
+        APR_BUCKET_REMOVE(b);
+        APR_BRIGADE_INSERT_TAIL(out, b);
     }
 }
 
-static int xlate_in_filter(ap_filter_t *f, ap_bucket_brigade *bb, 
+static int xlate_in_filter(ap_filter_t *f, apr_bucket_brigade *bb, 
                            ap_input_mode_t mode)
 {
     apr_status_t rv;
@@ -1052,7 +1052,7 @@ static int xlate_in_filter(ap_filter_t *f, ap_bucket_brigade *bb,
         return ap_get_brigade(f->next, bb, mode);
     }
 
-    if (AP_BRIGADE_EMPTY(ctx->bb)) {
+    if (APR_BRIGADE_EMPTY(ctx->bb)) {
         if ((rv = ap_get_brigade(f->next, bb, mode)) != APR_SUCCESS) {
             return rv;
         }
@@ -1073,16 +1073,16 @@ static int xlate_in_filter(ap_filter_t *f, ap_bucket_brigade *bb,
             transfer_brigade(bb, ctx->bb);
         }
         if (buffer_size < INPUT_XLATE_BUF_SIZE) { /* do we have output? */
-            ap_bucket *e;
+            apr_bucket *e;
 
-            e = ap_bucket_create_heap(ctx->tmp, 
+            e = apr_bucket_create_heap(ctx->tmp, 
                                       INPUT_XLATE_BUF_SIZE - buffer_size, 1, 
                                       NULL);
             /* make sure we insert at the head, because there may be
              * an eos bucket already there, and the eos bucket should 
              * come after the data
              */
-            AP_BRIGADE_INSERT_HEAD(bb, e);
+            APR_BRIGADE_INSERT_HEAD(bb, e);
         }
         else {
             /* XXX need to get some more data... what if the last brigade
@@ -1121,8 +1121,8 @@ static const command_rec cmds[] =
 
 static void charset_register_hooks(apr_pool_t *p)
 {
-    ap_hook_fixups(find_code_page, NULL, NULL, AP_HOOK_MIDDLE);
-    ap_hook_insert_filter(xlate_insert_filter, NULL, NULL, AP_HOOK_MIDDLE);
+    ap_hook_fixups(find_code_page, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_insert_filter(xlate_insert_filter, NULL, NULL, APR_HOOK_MIDDLE);
     ap_register_output_filter(XLATEOUT_FILTER_NAME, xlate_out_filter, 
                               AP_FTYPE_CONTENT);
     ap_register_input_filter(XLATEIN_FILTER_NAME, xlate_in_filter, 

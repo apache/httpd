@@ -91,7 +91,7 @@
 #endif
 
 #include "apr_md5.h"
-#include "ap_sha1.h"
+#include "apr_sha1.h"
 #if APR_HAVE_SIGNAL_H
 #include <signal.h>
 #endif
@@ -234,7 +234,7 @@ static int mkrecord(char *user, char *record, size_t rlen, char *passwd,
 
     case ALG_APSHA:
 	/* XXX cpw >= 28 + strlen(sha1) chars - fixed len SHA */
- 	ap_sha1_base64(pw,strlen(pw),cpw);
+ 	apr_sha1_base64(pw,strlen(pw),cpw);
 	break;
 
     case ALG_APMD5: 
@@ -409,9 +409,9 @@ int main(int argc, char *argv[])
         fprintf(stderr, "apr_xlate_open(to ASCII)->%d\n", rv);
         exit(1);
     }
-    rv = ap_SHA1InitEBCDIC(to_ascii);
+    rv = apr_SHA1InitEBCDIC(to_ascii);
     if (rv) {
-        fprintf(stderr, "ap_SHA1InitEBCDIC()->%d\n", rv);
+        fprintf(stderr, "apr_SHA1InitEBCDIC()->%d\n", rv);
         exit(1);
     }
     rv = apr_MD5InitEBCDIC(to_ascii);

@@ -454,8 +454,8 @@ static int match_headers(request_rec *r)
 
 static void register_hooks(apr_pool_t *p)
 {
-    ap_hook_header_parser(match_headers, NULL, NULL, AP_HOOK_MIDDLE);
-    ap_hook_post_read_request(match_headers, NULL, NULL, AP_HOOK_MIDDLE);
+    ap_hook_header_parser(match_headers, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_post_read_request(match_headers, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 module AP_MODULE_DECLARE_DATA setenvif_module =

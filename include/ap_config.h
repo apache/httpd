@@ -57,7 +57,7 @@
 
 #include "ap_mmn.h"		/* MODULE_MAGIC_NUMBER_ */
 #include "apr_lib.h"		/* apr_isfoo() macros */
-#include "ap_hooks.h"
+#include "apr_hooks.h"
 
 /**
  * AP_DECLARE_EXPORT is defined when building the Apache Core dynamic
@@ -133,15 +133,11 @@
 #define AP_MODULE_DECLARE_DATA __declspec(dllexport)
 #endif
 
-/* XXX: Must go away, perhaps into compat, maybe not even there.
- */
-#define MODULE_VAR_EXPORT    AP_MODULE_DECLARE_DATA
-
 #define AP_DECLARE_HOOK(ret,name,args) \
-AP_DECLARE_EXTERNAL_HOOK(AP,ret,name,args)
+APR_DECLARE_EXTERNAL_HOOK(ap,AP,ret,name,args)
 
 #define AP_IMPLEMENT_HOOK_BASE(name) \
-AP_IMPLEMENT_EXTERNAL_HOOK_BASE(AP,name)
+APR_IMPLEMENT_EXTERNAL_HOOK_BASE(ap,AP,name)
 
 /**
  * Implement an Apache core hook that has no return code, and therefore 
@@ -151,10 +147,10 @@ AP_IMPLEMENT_EXTERNAL_HOOK_BASE(AP,name)
  * @param args_used The names for the arguments for the hook
  * @deffunc void AP_IMPLEMENT_HOOK_VOID(name, args_decl, args_use)
  * @tip If IMPLEMENTing a hook that is not linked into the Apache core,
- * (e.g. within a dso) see AP_IMPLEMENT_EXTERNAL_HOOK_HOOK_VOID.
+ * (e.g. within a dso) see APR_IMPLEMENT_EXTERNAL_HOOK_HOOK_VOID.
  */
 #define AP_IMPLEMENT_HOOK_VOID(name,args_decl,args_use) \
-AP_IMPLEMENT_EXTERNAL_HOOK_VOID(AP,name,args_decl,args_use)
+APR_IMPLEMENT_EXTERNAL_HOOK_VOID(ap,AP,name,args_decl,args_use)
 
 /**
  * Implement an Apache core hook that runs until one of the functions 
@@ -164,10 +160,10 @@ AP_IMPLEMENT_EXTERNAL_HOOK_VOID(AP,name,args_decl,args_use)
  * @param args_used The names for the arguments for the hook
  * @deffunc int AP_IMPLEMENT_HOOK_RUN_ALL(name, args_decl, args_use)
  * @tip If IMPLEMENTing a hook that is not linked into the Apache core,
- * (e.g. within a dso) see AP_IMPLEMENT_EXTERNAL_HOOK_RUN_ALL.
+ * (e.g. within a dso) see APR_IMPLEMENT_EXTERNAL_HOOK_RUN_ALL.
  */
 #define AP_IMPLEMENT_HOOK_RUN_ALL(ret,name,args_decl,args_use,ok,decline) \
-AP_IMPLEMENT_EXTERNAL_HOOK_RUN_ALL(AP,ret,name,args_decl,args_use,ok,decline)
+APR_IMPLEMENT_EXTERNAL_HOOK_RUN_ALL(ap,AP,ret,name,args_decl,args_use,ok,decline)
 
 /**
  * Implement a hook that runs until the first function returns something
@@ -177,10 +173,10 @@ AP_IMPLEMENT_EXTERNAL_HOOK_RUN_ALL(AP,ret,name,args_decl,args_use,ok,decline)
  * @param args_used The names for the arguments for the hook
  * @deffunc int AP_IMPLEMENT_HOOK_RUN_FIRST(name, args_decl, args_use)
  * @tip If IMPLEMENTing a hook that is not linked into the Apache core
- * (e.g. within a dso) see AP_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST.
+ * (e.g. within a dso) see APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST.
  */
 #define AP_IMPLEMENT_HOOK_RUN_FIRST(ret,name,args_decl,args_use,decline) \
-AP_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(AP,ret,name,args_decl,args_use,decline)
+APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(ap,AP,ret,name,args_decl,args_use,decline)
 
 #ifdef WIN32
 #include "os.h"

@@ -55,7 +55,7 @@
 #ifndef MOD_GENERIC_HOOK_EXPORT_H
 #define MOD_GENERIC_HOOK_EXPORT_H
 
-#include "ap_generic_hook.h"
+#include "apr_generic_hook.h"
 
 AP_DECLARE_HOOK(int,generic_hook_test,(const char *))
 

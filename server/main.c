@@ -390,7 +390,7 @@ int main(int argc, const char * const argv[])
     ap_process_config_tree(server_conf, ap_conftree, process->pconf, ptemp); 
     ap_fixup_virtual_hosts(pconf, server_conf);
     ap_fini_vhost_config(pconf, server_conf);
-    ap_sort_hooks();
+    apr_sort_hooks();
     if (configtestonly) {
 	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "Syntax OK\n");
 	destroy_and_exit_process(process, 0);
@@ -401,7 +401,7 @@ int main(int argc, const char * const argv[])
     apr_destroy_pool(ptemp);
 
     for (;;) {
-	ap_hook_deregister_all();
+	apr_hook_deregister_all();
 	apr_clear_pool(pconf);
 	for (mod = ap_prelinked_modules; *mod != NULL; mod++) {
 		ap_register_hooks(*mod, pconf);
@@ -418,7 +418,7 @@ int main(int argc, const char * const argv[])
         ap_process_config_tree(server_conf, ap_conftree, process->pconf, ptemp);
         ap_fixup_virtual_hosts(pconf, server_conf);
         ap_fini_vhost_config(pconf, server_conf);
-        ap_sort_hooks();
+        apr_sort_hooks();
 	apr_clear_pool(plog);
 	ap_run_open_logs(pconf, plog, ptemp, server_conf);
 	ap_post_config_hook(pconf, plog, ptemp, server_conf);

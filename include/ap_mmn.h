@@ -221,11 +221,11 @@
  * 19990320.3           - add ap_regexec() and ap_regerror()
  * 19990320.4           - add ap_field_noparam()
  * 19990320.5           - add local_ip/host to conn_rec for mass-vhost
- * 19990320.6           - add ap_SHA1Final(), ap_SHA1Init(),
- *                        ap_SHA1Update_binary(), ap_SHA1Update(),
- *                        ap_base64encode(), ap_base64encode_binary(),
- *                        ap_base64encode_len(), ap_base64decode(),
- *                        ap_base64decode_binary(), ap_base64decode_len(),
+ * 19990320.6           - add apr_SHA1Final(), apr_SHA1Init(),
+ *                        apr_SHA1Update_binary(), apr_SHA1Update(),
+ *                        apr_base64encode(), apr_base64encode_binary(),
+ *                        apr_base64encode_len(), apr_base64decode(),
+ *                        apr_base64decode_binary(), apr_base64decode_len(),
  *                        ap_pbase64decode(), ap_pbase64encode()
  */
 

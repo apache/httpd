@@ -67,7 +67,7 @@
 #ifdef HAVE_SYS_RESOURCE_H
 #include <sys/resource.h>
 #endif
-#include "ap_hooks.h"
+#include "apr_hooks.h"
 #include "apr_thread_proc.h"
 
 #include <pwd.h>

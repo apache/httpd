@@ -109,13 +109,13 @@ AP_DECLARE_DATA apr_array_header_t *ap_server_config_defines;
 
 AP_DECLARE_DATA ap_directive_t *ap_conftree;
 
-AP_HOOK_STRUCT(
-	       AP_HOOK_LINK(header_parser)
-	       AP_HOOK_LINK(pre_config)
-	       AP_HOOK_LINK(post_config)
-	       AP_HOOK_LINK(open_logs)
-	       AP_HOOK_LINK(child_init)
-	       AP_HOOK_LINK(handler)
+APR_HOOK_STRUCT(
+	       APR_HOOK_LINK(header_parser)
+	       APR_HOOK_LINK(pre_config)
+	       APR_HOOK_LINK(post_config)
+	       APR_HOOK_LINK(open_logs)
+	       APR_HOOK_LINK(child_init)
+	       APR_HOOK_LINK(handler)
 )
 
 AP_IMPLEMENT_HOOK_RUN_ALL(int,header_parser,
@@ -345,9 +345,9 @@ AP_DECLARE(void) ap_register_hooks(module *m, apr_pool_t *p)
 	if(getenv("SHOW_HOOKS"))
 	{
 	    printf("Registering hooks for %s\n",m->name);
-	    ap_debug_module_hooks=1;
+	    apr_debug_module_hooks=1;
 	}
-	ap_current_hooking_module=m->name;
+	apr_debug_module_name=m->name;
 	m->register_hooks(p);
     }
 }
@@ -513,7 +513,7 @@ AP_DECLARE(void) ap_setup_prelinked_modules(process_rec *process)
     module **m;
     module **m2;
 
-    ap_global_hook_pool=process->pconf;
+    apr_global_hook_pool=process->pconf;
 
     /*
      *  Initialise total_modules variable and module indices
@@ -541,7 +541,7 @@ AP_DECLARE(void) ap_setup_prelinked_modules(process_rec *process)
     for (m = ap_prelinked_modules; *m != NULL; m++)
         ap_add_module(*m, process->pconf);
 
-    ap_sort_hooks();
+    apr_sort_hooks();
 }
 
 AP_DECLARE(const char *) ap_find_module_name(module *m)

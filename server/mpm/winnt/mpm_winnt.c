@@ -2228,7 +2228,7 @@ AP_DECLARE(int) ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
 
 static void winnt_hooks(apr_pool_t *p)
 {
-    ap_hook_pre_config(winnt_pre_config, NULL, NULL, AP_HOOK_MIDDLE);
+    ap_hook_pre_config(winnt_pre_config, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_post_config(winnt_post_config, NULL, NULL, 0);
 }
 

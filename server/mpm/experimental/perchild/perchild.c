@@ -1346,7 +1346,7 @@ static int pass_request(request_rec *r)
     struct cmsghdr *cmsg;
     int sfd;
     struct iovec iov;
-    ap_bucket_brigade *bb = ap_brigade_create(r->pool);
+    apr_bucket_brigade *bb = apr_brigade_create(r->pool);
     perchild_server_conf *sconf = (perchild_server_conf *)
                             ap_get_module_config(r->server->module_config, 
                                                  &mpm_perchild_module);
@@ -1388,11 +1388,11 @@ static int pass_request(request_rec *r)
     write(sconf->sd2, foo, len);
    
     while (ap_get_brigade(r->input_filters, bb, AP_MODE_NONBLOCKING) == APR_SUCCESS) {
-        ap_bucket *e;
-        AP_BRIGADE_FOREACH(e, bb) {
+        apr_bucket *e;
+        APR_BRIGADE_FOREACH(e, bb) {
             const char *str;
 
-            ap_bucket_read(e, &str, &len, AP_NONBLOCK_READ);
+            apr_bucket_read(e, &str, &len, APR_NONBLOCK_READ);
             write(sconf->sd2, str, len);
         }
     }
@@ -1481,9 +1481,9 @@ static int perchild_post_read(request_rec *r)
     return OK;
 }
 
-static apr_status_t perchild_buffer(ap_filter_t *f, ap_bucket_brigade *b, ap_input_mode_t mode)
+static apr_status_t perchild_buffer(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode_t mode)
 {
-    ap_bucket *e;
+    apr_bucket *e;
     apr_status_t rv;
     char *buffer = NULL;
     const char *str;
@@ -1495,9 +1495,9 @@ static apr_status_t perchild_buffer(ap_filter_t *f, ap_bucket_brigade *b, ap_inp
 
     apr_get_userdata((void **)&buffer, "PERCHILD_BUFFER", f->c->pool);
 
-    AP_BRIGADE_FOREACH(e, b) {
+    APR_BRIGADE_FOREACH(e, b) {
         if (e->length != 0) {
-            ap_bucket_read(e, &str, &len, AP_NONBLOCK_READ);
+            apr_bucket_read(e, &str, &len, APR_NONBLOCK_READ);
        
             if (buffer == NULL) {
                 buffer = apr_pstrndup(f->c->pool, str, len);
@@ -1524,16 +1524,16 @@ static void perchild_hooks(apr_pool_t *p)
     INIT_SIGLIST()
     one_process = 0;
 
-    ap_hook_pre_config(perchild_pre_config, NULL, NULL, AP_HOOK_MIDDLE); 
-    ap_hook_post_config(perchild_post_config, NULL, NULL, AP_HOOK_MIDDLE); 
-    ap_hook_pre_connection(perchild_pre_connection,NULL,NULL, AP_HOOK_MIDDLE);
+    ap_hook_pre_config(perchild_pre_config, NULL, NULL, APR_HOOK_MIDDLE); 
+    ap_hook_post_config(perchild_post_config, NULL, NULL, APR_HOOK_MIDDLE); 
+    ap_hook_pre_connection(perchild_pre_connection,NULL,NULL, APR_HOOK_MIDDLE);
 
     /* This must be run absolutely first.  If this request isn't for this
      * server then we need to forward it to the proper child.  No sense
      * tying up this server running more post_read request hooks if it is
      * just going to be forwarded along.
      */
-    ap_hook_post_read_request(perchild_post_read, NULL, NULL, AP_HOOK_REALLY_FIRST);
+    ap_hook_post_read_request(perchild_post_read, NULL, NULL, APR_HOOK_REALLY_FIRST);
     ap_register_input_filter("PERCHILD_BUFFER", perchild_buffer, AP_FTYPE_CONTENT);
 }
 

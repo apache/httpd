@@ -1303,7 +1303,7 @@ static int dav_method_options(request_rec *r)
 
     /* gather property set URIs from all the liveprop providers */
     uri_ary = apr_make_array(r->pool, 5, sizeof(const char *));
-    ap_run_gather_propsets(uri_ary);
+    dav_run_gather_propsets(uri_ary);
     uris = apr_array_pstrcat(r->pool, uri_ary, ',');
     if (*uris) {
         dav_level = apr_pstrcat(r->pool, dav_level, ",", uris, NULL);
@@ -4007,13 +4007,13 @@ static int dav_type_checker(request_rec *r)
 
 static void register_hooks(apr_pool_t *p)
 {
-    ap_hook_handler(dav_handler, NULL, NULL, AP_HOOK_MIDDLE);
-    ap_hook_post_config(dav_init_handler, NULL, NULL, AP_HOOK_MIDDLE);
-    ap_hook_type_checker(dav_type_checker, NULL, NULL, AP_HOOK_FIRST);
+    ap_hook_handler(dav_handler, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_post_config(dav_init_handler, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_type_checker(dav_type_checker, NULL, NULL, APR_HOOK_FIRST);
 
-    ap_hook_find_liveprop(dav_core_find_liveprop, NULL, NULL, AP_HOOK_LAST);
-    ap_hook_insert_all_liveprops(dav_core_insert_all_liveprops,
-                                 NULL, NULL, AP_HOOK_MIDDLE);
+    dav_hook_find_liveprop(dav_core_find_liveprop, NULL, NULL, APR_HOOK_LAST);
+    dav_hook_insert_all_liveprops(dav_core_insert_all_liveprops,
+                                 NULL, NULL, APR_HOOK_MIDDLE);
 
     dav_core_register_uris(p);
 }
@@ -4058,20 +4058,20 @@ module DAV_DECLARE_DATA dav_module =
     register_hooks,             /* register hooks */
 };
 
-AP_HOOK_STRUCT(
-    AP_HOOK_LINK(gather_propsets)
-    AP_HOOK_LINK(find_liveprop)
-    AP_HOOK_LINK(insert_all_liveprops)
+APR_HOOK_STRUCT(
+    APR_HOOK_LINK(gather_propsets)
+    APR_HOOK_LINK(find_liveprop)
+    APR_HOOK_LINK(insert_all_liveprops)
     )
-AP_IMPLEMENT_EXTERNAL_HOOK_VOID(DAV, gather_propsets,
-                                (apr_array_header_t *uris),
-                                (uris))
-AP_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(DAV, int, find_liveprop,
-                                     (const dav_resource *resource,
-                                      const char *ns_uri, const char *name,
-                                      const dav_hooks_liveprop **hooks),
+APR_IMPLEMENT_EXTERNAL_HOOK_VOID(dav, DAV, gather_propsets,
+                                 (apr_array_header_t *uris),
+                                 (uris))
+APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(dav, DAV, int, find_liveprop,
+                                      (const dav_resource *resource,
+                                       const char *ns_uri, const char *name,
+                                       const dav_hooks_liveprop **hooks),
                                      (resource, ns_uri, name, hooks), 0);
-AP_IMPLEMENT_EXTERNAL_HOOK_VOID(DAV, insert_all_liveprops,
-                                (request_rec *r, const dav_resource *resource,
-                                 int insvalue, ap_text_header *phdr),
-                                (r, resource, insvalue, phdr));
+APR_IMPLEMENT_EXTERNAL_HOOK_VOID(dav, DAV, insert_all_liveprops,
+                                 (request_rec *r, const dav_resource *resource,
+                                  int insvalue, ap_text_header *phdr),
+                                 (r, resource, insvalue, phdr));

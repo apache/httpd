@@ -69,8 +69,8 @@ static ap_filter_rec_t *registered_input_filters = NULL;
 /* NOTE: Apache's current design doesn't allow a pool to be passed thu,
    so we depend on a global to hold the correct pool
 */
-#define FILTER_POOL     ap_global_hook_pool
-#include "ap_hooks.h"   /* for ap_global_hook_pool */
+#define FILTER_POOL     apr_global_hook_pool
+#include "apr_hooks.h"   /* for apr_global_hook_pool */
 
 /*
 ** This macro returns true/false if a given filter should be inserted BEFORE
@@ -208,7 +208,7 @@ AP_DECLARE(void) ap_remove_output_filter(ap_filter_t *f)
  * save data off to the side should probably create their own temporary
  * brigade especially for that use.
  */
-AP_DECLARE(apr_status_t) ap_get_brigade(ap_filter_t *next, ap_bucket_brigade *bb, 
+AP_DECLARE(apr_status_t) ap_get_brigade(ap_filter_t *next, apr_bucket_brigade *bb, 
                                         ap_input_mode_t mode)
 {
     if (next) {
@@ -222,11 +222,11 @@ AP_DECLARE(apr_status_t) ap_get_brigade(ap_filter_t *next, ap_bucket_brigade *bb
  * the current filter.  At that point, we can just call the first filter in
  * the stack, or r->output_filters.
  */
-AP_DECLARE(apr_status_t) ap_pass_brigade(ap_filter_t *next, ap_bucket_brigade *bb)
+AP_DECLARE(apr_status_t) ap_pass_brigade(ap_filter_t *next, apr_bucket_brigade *bb)
 {
     if (next) {
-        ap_bucket *e;
-        if ((e = AP_BRIGADE_LAST(bb)) && AP_BUCKET_IS_EOS(e) && next->r) {
+        apr_bucket *e;
+        if ((e = APR_BRIGADE_LAST(bb)) && APR_BUCKET_IS_EOS(e) && next->r) {
             /* This is only safe because HTTP_HEADER filter is always in
              * the filter stack.   This ensures that there is ALWAYS a
              * request-based filter that we can attach this to.  If the
@@ -242,10 +242,10 @@ AP_DECLARE(apr_status_t) ap_pass_brigade(ap_filter_t *next, ap_bucket_brigade *b
     return AP_NOBODY_WROTE;
 }
 
-AP_DECLARE(apr_status_t) ap_save_brigade(ap_filter_t *f, ap_bucket_brigade **saveto,
-                                         ap_bucket_brigade **b)
+AP_DECLARE(apr_status_t) ap_save_brigade(ap_filter_t *f, apr_bucket_brigade **saveto,
+                                         apr_bucket_brigade **b)
 {
-    ap_bucket *e;
+    apr_bucket *e;
     apr_pool_t *p = f->r ? f->r->pool : f->c->pool;
     apr_status_t rv;
 
@@ -253,15 +253,15 @@ AP_DECLARE(apr_status_t) ap_save_brigade(ap_filter_t *f, ap_bucket_brigade **sav
      * create an empty bucket brigade so that we can concat.
      */
     if (!(*saveto)) {
-        *saveto = ap_brigade_create(p);
+        *saveto = apr_brigade_create(p);
     }
     
-    AP_RING_FOREACH(e, &(*b)->list, ap_bucket, link) {
-        rv = ap_bucket_setaside(e);
+    APR_RING_FOREACH(e, &(*b)->list, apr_bucket, link) {
+        rv = apr_bucket_setaside(e);
         if (rv != APR_SUCCESS && rv != APR_ENOTIMPL) {
             return rv;
         }
     }
-    AP_BRIGADE_CONCAT(*saveto, *b);
+    APR_BRIGADE_CONCAT(*saveto, *b);
     return APR_SUCCESS;
 }
