@@ -361,7 +361,7 @@ case "$PLAT" in
     	PLATOSVERS=`echo $PLAT | sed 's/^.*freebsd//'`
 	OS='FreeBSD $PLATOSVERS'
 	case "$PLATOSVERS" in
-	    3*)
+	    [23]*)
 		DEF_WANTHSREGEX=no
 		CFLAGS="$CFLAGS -funsigned-char"
 		;;
