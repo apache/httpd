@@ -18,7 +18,7 @@ Funcionou! O Apache Web Server foi instalado corretamente neste Web Site!</h1></
 Se voc&ecirc; est&aacute; vendo esta p&aacute;gina, isso quer dizer que o software
 Apache
 Web server foi instalado com sucesso. Agora, basta adicionar o conte&uacute;do
-ao diret&oacute;rio raiz e substituir esta p&aacute;gina temporaria, ou apontar o servidor
+ao diret&oacute;rio raiz e substituir esta p&aacute;gina tempor&aacute;ria, ou configurar o servidor
 para o seu conte&uacute;do real.
 <br>
 <hr>
@@ -26,20 +26,21 @@ para o seu conte&uacute;do real.
 <center>
 <h3>
 <b>Est&aacute; vendo esta p&aacute;gina em vez do site que esperava?</b></h3></center>
-Esta p&aacute;gina est&aacute; sendo carregada, pois o administrador modificou as
+Esta p&aacute;gina foi carregada, pois provavelmente, o administrador modificou as
 configura&ccedil;&otilde;es
-deste servidor. Por favor, <b>contacte o administrador do site para esclarecimentos.</b>
+deste servidor. Por favor, <b>contate o administrador do site para esclarecimentos.</b>
 (Tente enviar um e-mail para <tt>&lt;Webmaster@dominio></tt>.) A Apache
 Server Foundation, que desenvolveu o software (web server) utilizado pelo
 administrador, n&atilde;o tem nenhuma responsabilidade sobre a manuten&ccedil;&atilde;o desta
-p&aacute;gina e n&atilde;o poder&aacute; ajudar a resolu&ccedil;&atilde;o de problemas de
+p&aacute;gina e n&atilde;o poder&aacute; ajudar na resolu&ccedil;&atilde;o de problemas de
 configura&ccedil;&atilde;o.</blockquote>
 
 <hr>
-<p>O Apache <a href="manual/index.html">documentation</a> foi inclu&iacute;do
+<p>A  <a href="manual/index.html">documenta&ccedil;&atilde;o</a> do Apache foi inclu&iacute;da
 com esta distribui&ccedil;&atilde;o.
 <p>O Webmaster deste site &eacute; livre para utilizar a imagem abaixo num web
-server utilizando o Apache. Obrigado por utilizar o Apache!
+server utilizando o Apache.
+<p>Obrigado por utilizar o Apache!
 <center><img SRC="apache_pb.gif" ALT="" ></center>
 
 </body>
