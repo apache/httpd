@@ -113,9 +113,7 @@
          >http://www.openssl.org/source/</a>, in order to compile mod_ssl
         or the abs project (ab.exe with SSL support.)  To prepare OpenSSL 
         for both release and debug builds of Apache, and disable the patent 
-        protected features in 0.9.6d (as built by the ASF for binary
-        distribution from the United States),  you might use the following 
-        build commands;
+        protected features in 0.9.6,  you might use the following build commands;
 <pre>
   perl util\mkfiles.pl >MINFO
   perl util\mk1mf.pl dll no-asm no-mdc2 no-rc5 no-idea VC-WIN32 >makefile
@@ -185,28 +183,40 @@
     <p>The .dsp project files are distributed in Visual C++ 6.0
     format. Visual C++ 5.0 (97) will recognize them.  Visual C++
     7.0 (.net) must convert Apache.dsw plus the .dsp files into an 
-    .msproj format, be sure you reconvert the .msproj file if any 
-    of the source .dsp files change!</p>
+    Apache.sln plus .msproj files, be sure you reconvert the .msproj 
+    file if any of the source .dsp files change!  This is really
+    trivial, just open Apache.dsw in the VC++ 7.0 IDE once again.</p>
+
+    <p>Visual C++ 7.0 (.net) users should also use the <u>B</u>uild
+    menu, C<u>o</u>nfiguration Manager dialog to uncheck both the 
+    Debug and Release Solution modules abs, mod_ssl, and mod_deflate.
+    These modules are built by invoking nmake or the IDE directly with
+    the BinBuild target to build those modules explicitly, only if the 
+    srclib directories openssl and/or zlib exist.</p>
 
     <p>Exported .mak files pose a greater hassle, but they are
-    required for Visual C++ 5.0 and 7.0 users to build mod_ssl, ab
-    with SSL support or mod_deflate, since only VC 6.0 knows how
-    to invoke .dsp files directly.  Build the entire project from
-    within the IDE, then export all makefiles.  You must build the
-    projects in order to create all dynamic auto-generated targets,
-    so that dependencies can be parsed correctly.  Run the following
-    command to fix the paths so they will build anywhere;
+    required for Visual C++ 5.0 users to build mod_ssl, abs (ab
+    with SSL support) and/or mod_deflate.  VC++ 7.0 (.net) users
+    also benefit, nmake builds are faster than binenv builds.
+    Build the entire project from within the VC++ 5.0 or 6.0 IDE, 
+    then use the <u>P</u>roject Menu <u>E</u>xport for all makefiles.
+    You must build the projects first in order to create all dynamic 
+    auto-generated targets, so that dependencies can be parsed 
+    correctly.  Run the following command to fix the paths so they 
+    will build anywhere;
 <pre>
      perl srclib\apr\build\fixwin32mak.pl
 </pre>
     You must type this command from the <em>top level</em>
     directory of the httpd source tree. Every .mak and .dep project 
-    file within the current directory and below will be converted,
-    and the timestamps adjusted to reflect the .dsp. If you contribute 
-    back a patch that revises project files, you must submit project 
-    files in Visual Studio 6.0 format.<br />
-     <br />
-     
+    file within the current directory and below will be corrected,
+    and the timestamps adjusted to reflect the .dsp.</p>
+
+    <p>If you contribute back a patch that revises project files, we
+    must commit project files in Visual Studio 6.0 format.  Changes
+    should be simple, with minimal compilation and linkage flags that
+    will be recognized by all VC++ 5.0 through 7.0 environments.</p>
+
     <h3><a id="projectcomponents" name="projectcomponents">Project
     Components</a></h3>
 
