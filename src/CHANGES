@@ -1,4 +1,8 @@
 Changes with Apache 1.3.21
+  *) Added Mod_Vhost_Alias to the project file so that it builds as an
+     external module (VHOST.NLM). 
+     [Brad Nicholes <BNICHOLES@novell.com>]
+
   *) Fix problem with lingering_close() on Windows.  Issuing read() on the
      socket descriptor on Windows always fails. Should be calling
      recv() instead of read() on Windows.
