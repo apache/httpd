@@ -3,7 +3,7 @@ Changes with Apache 2.1.0-dev
   [Remove entries to the current 2.0 section below, when backported]
 
   *) mod_log_config: Add the ability to log the id of the thread 
-     processing the request (%I).  [Jeff Trawick]
+     processing the request via new %P formats.  [Jeff Trawick]
 
   *) Fix a problem that caused httpd to linked with incorrect flags
      on some platforms when mod_so was enabled by default, breaking 

@@ -613,20 +613,28 @@ static const char *log_server_name(request_rec *r, char *a)
     return ap_escape_logitem(r->pool, ap_get_server_name(r));
 }
 
-static const char *log_child_pid(request_rec *r, char *a)
+static const char *log_pid_tid(request_rec *r, char *a)
 {
-    return apr_psprintf(r->pool, "%ld", (long) getpid());
-}
-
-static const char *log_tid(request_rec *r, char *a)
-{
+    if (*a == '\0' || !strcmp(a, "pid")) {
+        return apr_psprintf(r->pool, "%ld", (long)getpid());
+    }
+    else {
 #if APR_HAS_THREADS
-    apr_os_thread_t tid = apr_os_thread_current();
-
-    return apr_psprintf(r->pool, "%pT", &tid);
+        apr_os_thread_t tid = apr_os_thread_current();
 #else
-    return "0";
+        int tid = 0; /* APR will format "0" anyway but an arg is needed */
 #endif
+
+        if (!strcmp(a, "pid/tid")) {
+            return apr_psprintf(r->pool, "%ld/%pT", (long)getpid(), &tid);
+        }
+        else if (!strcmp(a, "tid")) {
+            return apr_psprintf(r->pool, "%pT", &tid);
+        }
+        else { /* bogus string */
+            return a;
+        }
+    }
 }
 
 static const char *log_connection_status(request_rec *r, char *a)
@@ -1393,8 +1401,7 @@ static int log_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
         log_pfn_register(p, "V", log_server_name, 0);
         log_pfn_register(p, "v", log_virtual_host, 0);
         log_pfn_register(p, "p", log_server_port, 0);
-        log_pfn_register(p, "P", log_child_pid, 0);
-        log_pfn_register(p, "I", log_tid, 0);
+        log_pfn_register(p, "P", log_pid_tid, 0);
         log_pfn_register(p, "H", log_request_protocol, 0);
         log_pfn_register(p, "m", log_request_method, 0);
         log_pfn_register(p, "q", log_request_query, 0);

@@ -97,27 +97,29 @@
         <td>Remote host</td></tr>
 <tr><td><code>%...H</code></td>
         <td>The request protocol</td></tr>
-<tr class="odd"><td><code>%...I</code></td>
-        <td>The thread id if APR supports threads, otherwise 0</td></tr>
-<tr><td><code>%...{<var>Foobar</var>}i</code></td>
+<tr class="odd"><td><code>%...{<var>Foobar</var>}i</code></td>
         <td>The contents of <code><var>Foobar</var>:</code> header line(s)
         in the request sent to the server.</td></tr>
-<tr class="odd"><td><code>%...l</code></td>
+<tr><td><code>%...l</code></td>
         <td>Remote logname (from identd, if supplied). This will return a
         dash unless <code class="module"><a href="../mod/mod_ident.html">mod_ident</a></code> is present and <code class="directive"><a href="../mod/mod_ident.html#identitycheck">IdentityCheck</a></code> is set
         <code>On</code>.</td></tr>
-<tr><td><code>%...m</code></td>
+<tr class="odd"><td><code>%...m</code></td>
         <td>The request method</td></tr>
-<tr class="odd"><td><code>%...{<var>Foobar</var>}n</code></td>
+<tr><td><code>%...{<var>Foobar</var>}n</code></td>
         <td>The contents of note <var>Foobar</var> from another
         module.</td></tr>
-<tr><td><code>%...{<var>Foobar</var>}o</code></td>
+<tr class="odd"><td><code>%...{<var>Foobar</var>}o</code></td>
         <td>The contents of <code><var>Foobar</var>:</code> header line(s)
         in the reply.</td></tr>
-<tr class="odd"><td><code>%...p</code></td>
+<tr><td><code>%...p</code></td>
         <td>The canonical port of the server serving the request</td></tr>
-<tr><td><code>%...P</code></td>
+<tr class="odd"><td><code>%...P</code></td>
         <td>The process ID of the child that serviced the request.</td></tr>
+<tr><td><code>%...{<var>format</var>}P</code></td>
+        <td>The process ID and or thread id of the child that serviced the 
+        request.  Valid formats are <code>pid</code>, <code>tid</code>,
+        and <code>pid/tid</code>.</td></tr>
 <tr class="odd"><td><code>%...q</code></td>
         <td>The query string (prepended with a <code>?</code> if a query
         string exists, otherwise an empty string)</td></tr>
