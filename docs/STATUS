@@ -1,5 +1,5 @@
 Apache HTTP Server 2.1 Documentation Status File.
-Last modified: $Date: 2003/07/12 04:56:57 $
+Last modified: $Date: 2003/07/18 18:33:06 $
 
 For more information on how to contribute to the Apache Documentation
 Project, please see http://httpd.apache.org/docs-project/
@@ -14,7 +14,7 @@ Decisions pending
   repository but don't belong in distributions unless we introduce the
   tools to generate the index database or keep a current database checked
   into cvs.
-  +1: wrowe, nd
+  +1: wrowe, nd, slive
 
 - Remove several out-of-place files into somewhere in the tree outside
   of the actual web site content?  Erik suggests we merge the two icons
@@ -23,7 +23,7 @@ Decisions pending
     icons/readme
     icons/small/readme.txt
   Votes for a single top-level README reference?
-  +1: wrowe
+  +1: wrowe, slive
 
 
 Things That Need Fixing
@@ -77,14 +77,10 @@ Things That Need Fixing
     - Ben Laurie has written some hooks documentation
     - authn provider API documentation could be useful
 
-- Several features in Apache require write-access to the filesystem.
-    Examples: CacheRoot, DavLockDB, ScriptLog
-    We should treat the things consistently in the docs, and perhaps
-    suggest the use of directory like /usr/local/apache2/var/ that is
-    httpd-writable.
-
 - SSL docs are generally good, but they need a refreshing by someone
   familiar with mod_ssl and openssl.
+
+- How does <Proxy> fit into sections.html?
 
 Documentation improvements
 ==========================
@@ -135,6 +131,12 @@ Documentation improvements
 
 * Provide example solutions for the mapping of encodings, especially
   for .gz etc. (also in regard to our default configuration)
+
+* Several features in Apache require write-access to the filesystem.
+    Examples: CacheRoot, DavLockDB, ScriptLog
+    We should treat the things consistently in the docs, and perhaps
+    suggest the use of directory like /usr/local/apache2/var/ that is
+    httpd-writable.
 
 
 LaTeX Todo list
