@@ -12,7 +12,7 @@
 
 #include "ap_config.h"
 #include <sys/types.h>
-#ifdef MPE
+#if defined(MPE) || defined(QNX)
 #include <signal.h>
 #else
 #include <sys/signal.h>
