@@ -2,6 +2,12 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) minor mod_auth_basic and mod_auth_digest sync.  mod_auth_basic
+     now populates r->user with the (possibly unauthenticated) user,
+     and mod_auth_digest returns 500 when a provider returns
+     AUTH_GENERAL_ERROR.
+     [Geoffrey Young]
+
   *) fix "Expected </Foo>> but saw </Foo>" errors in nested,
      argumentless containers.
      ["Philippe M. Chiasson" <gozer cpan.org>]
