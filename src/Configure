@@ -164,6 +164,9 @@ else
     RANLIB="true"
 fi
 
+#
+SHELL="/bin/sh"
+
 case "$PLAT" in
     *MPE/iX*)
         OS='MPE/iX'
@@ -387,6 +390,7 @@ case "$PLAT" in
 	OS='ULTRIX'
 	CFLAGS="-DULTRIX"
 	DEF_WANTHSREGEX=yes
+	SHELL="/bin/sh5"
 	;;
     *powerpc-tenon-machten*)
 	OS='MachTen PPC'
@@ -563,6 +567,7 @@ echo "LFLAGS1=$LFLAGS">> Makefile.config
 echo "BROKEN_BPRINTF_FLAGS=$OSBPRINTF">> Makefile.config
 echo "REGLIB=$REGLIB">> Makefile.config
 echo "RANLIB=$RANLIB">> Makefile.config
+echo "SHELL=$SHELL">> Makefile.config
 echo >> Makefile.config
 echo "#### End of Configure created section ####">> Makefile.config
 
@@ -581,7 +586,7 @@ cat << EOF > modules/Makefile
 # hand-edit at your own risk!
 # 
 
-SHELL = /bin/sh
+SHELL=$SHELL
 EOF
 
 if [ "$RULE_WANTHSREGEX" = "yes" ]; then
