@@ -75,7 +75,6 @@ typedef struct {
 #define	DEFAULT_GOPHER_PORT	70
 #define	DEFAULT_NNTP_PORT	119
 #define	DEFAULT_WAIS_PORT	210
-#define	DEFAULT_HTTPS_PORT	443
 #define	DEFAULT_SNEWS_PORT	563
 #define	DEFAULT_PROSPERO_PORT	1525	/* WARNING: conflict w/Oracle */
 
