@@ -1,5 +1,12 @@
 Changes with Apache 1.3.21
 
+  *) SECURITY: Make support/split-logfile use the default log file if
+     "/" or "\" are present in the virtual host name.  This prevents
+     the possible use of specially crafted virtual host names in
+     some configurations to allow writing to any .log file on the
+     system.  [Daniel Matuschek <daniel.matuschek@swisscom.com>,
+     Marc Slemko]  PR#7848
+
   *) Added a directive: "AcceptFilter <on|off>". To control BSD 
      acccept filters when at compile time SO_ACCEPT_FILTER is 
      detected. The default is still 'on' except when, at compile
