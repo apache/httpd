@@ -638,8 +638,11 @@ static void child_main(int child_num_arg)
         ap_log_error(APLOG_MARK, APLOG_ALERT, errno, ap_server_conf, "sigprocmask");
     }
 #else
-    if (pthread_sigmask(SIG_SETMASK, &sig_mask, NULL) != 0) {
-        ap_log_error(APLOG_MARK, APLOG_ALERT, errno, ap_server_conf, "pthread_sigmask");
+    if ((rv = pthread_sigmask(SIG_SETMASK, &sig_mask, NULL)) != 0) {
+#ifdef PTHREAD_SETS_ERRNO
+        rv = errno;
+#endif
+        ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf, "pthread_sigmask");
     }
 #endif
 
@@ -686,8 +689,11 @@ static void child_main(int child_num_arg)
 	(void) ap_update_child_status(my_child_num, i, SERVER_STARTING, 
 				      (request_rec *) NULL);
 #ifndef NO_THREADS
-	if (pthread_create(&thread, &thread_attr, worker_thread, my_info)) {
-	    ap_log_error(APLOG_MARK, APLOG_ALERT, errno, ap_server_conf,
+	if ((rv = pthread_create(&thread, &thread_attr, worker_thread, my_info))) {
+#ifdef PTHREAD_SETS_ERRNO
+            rv = errno;
+#endif
+	    ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf,
 			 "pthread_create: unable to create worker thread");
             /* In case system resources are maxxed out, we don't want
                Apache running away with the CPU trying to fork over and
