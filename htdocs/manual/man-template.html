@@ -13,7 +13,7 @@
   ALINK="#FF0000"
  >
 <!--#include virtual="header.html" -->
-  <H1 ALIGN="CENTER">Module mod_foobar</h1>
+  <H1 ALIGN="CENTER">Module mod_foobar</H1>
 
 <BLOCKQUOTE><EM>Add this file as a link in modules.html</EM></BLOCKQUOTE>
 
@@ -44,30 +44,59 @@ directives.html</EM></BLOCKQUOTE>
   <HR> <!-- the HR is part of the directive description -->
   <H2><A NAME="adirective">ADirective directive</A></H2>
   <P>
-  <STRONG>Syntax:</STRONG> ADirective <EM>some args</EM>
+  <A
+   HREF="directive-dict.html#Syntax"
+   REL="Help"
+  ><STRONG>Syntax:</STRONG></A> ADirective <EM>some args</EM>
   <BR>
-  <STRONG>Default:</STRONG> <SAMP>ADirective default value</SAMP>
+  <A
+   HREF="directive-dict.html#Default"
+   REL="Help"
+  ><STRONG>Default:</STRONG></A> <SAMP>ADirective default value</SAMP>
   <BR>
-  <STRONG>Context:</STRONG> context-list
+  <A
+   HREF="directive-dict.html#Context"
+   REL="Help"
+  ><STRONG>Context:</STRONG></A> context-list
   <BR>
 
 <BLOCKQUOTE><EM>context-list is where this directive can appear;
 allowed: server config, virtual host, directory, .htaccess</EM></BLOCKQUOTE>
 
-  <STRONG>Override:</STRONG> override
+  <A
+   HREF="directive-dict.html#Override"
+   REL="Help"
+  ><STRONG>Override:</STRONG></A> override
   <BR>
 
 <BLOCKQUOTE><EM>required if the directive is allowed in .htaccess files;
 the AllowOverride option that allows the directive.</EM></BLOCKQUOTE>
 
-  <STRONG>Status:</STRONG> status
+  <A
+   HREF="directive-dict.html#Status"
+   REL="Help"
+  ><STRONG>Status:</STRONG></A> status
   <BR>
 
 <BLOCKQUOTE><EM>Core if in core apache, Base if in one of the standard
 modules, Extension if in an extension module (not compiled in by default)
 or Experimental</EM></BLOCKQUOTE>
 
-  <STRONG>Module:</STRONG> mod_foobar
+  <A
+   HREF="directive-dict.html#Module"
+   REL="Help"
+  ><STRONG>Module:</STRONG></A> mod_foobar
+  <BR>
+  <A
+   HREF="directive-dict.html#Compatibility"
+   REL="Help"
+  ><STRONG>Compatibility:</STRONG></A> compatibility notes
+
+<BLOCKQUOTE>
+ <EM>Describe any compatibility issues, such as "Only available in Apache
+  1.2 or later," or "The Apache syntax for this directive is not
+  compatible with the NCSA directive of the same name."</EM>
+</BLOCKQUOTE>
   </P>
 
   <P>
