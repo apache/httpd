@@ -1,5 +1,8 @@
 Changes with Apache 1.3.30
 
+  *) Forensic logging module added (mod_log_forensic).
+     [Ben Laurie]
+
   *) SECURITY [CAN-2003-0020]: Escape arbitrary data before writing
      into the errorlog.  [André Malo]
 

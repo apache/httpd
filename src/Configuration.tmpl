@@ -431,6 +431,15 @@ AddModule modules/standard/mod_auth.o
 
 # AddModule modules/example/mod_example.o
 
+## mod_log_forensic logs a unique id, the request line and headers
+## before processing starts, and again when processing completes. If
+## processing does not complete due to a bug or an attack, this can be
+## detected from the logs.  See support/check_forensic.
+## If mod_unique_id is also included, then this will use its unique ID.
+## Note that this must come before mod_unique_id.
+
+# AddModule modules/standard/mod_log_forensic.o
+
 ## mod_unique_id generates unique identifiers for each hit, which are
 ## available in the environment variable UNIQUE_ID.  It may not work on all
 ## systems, hence it is not included by default.
