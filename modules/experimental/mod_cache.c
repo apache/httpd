@@ -82,7 +82,7 @@ APR_OPTIONAL_FN_TYPE(ap_cache_generate_key) *cache_generate_key;
  *     oh well.
  */
 
-static int cache_url_handler(request_rec *r)
+static int cache_url_handler(request_rec *r, int lookup)
 {
     apr_status_t rv;
     const char *cc_in, *pragma, *auth;
@@ -189,12 +189,13 @@ static int cache_url_handler(request_rec *r)
 
     rv = cache_select_url(r, cache->types, url);
     if (DECLINED == rv) {
-        /* no existing cache file */
-        ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r->server,
-                     "cache: no cache - add cache_in filter and DECLINE");
-        /* add cache_in filter to cache this request */
-        ap_add_output_filter("CACHE_IN", NULL, r, r->connection);
-        /* return DECLINED */
+        if (!lookup) {
+            /* no existing cache file */
+            ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r->server,
+                         "cache: no cache - add cache_in filter and DECLINE");
+            /* add cache_in filter to cache this request */
+            ap_add_output_filter("CACHE_IN", NULL, r, r->connection);
+        }
         return DECLINED;
     }
     else if (OK == rv) {
@@ -203,6 +204,9 @@ static int cache_url_handler(request_rec *r)
             apr_bucket_brigade *out;
 
             /* fresh data available */
+            if (lookup) {
+                return OK;
+            }
             ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r->server,
                          "cache: fresh cache - add cache_out filter and "
                          "handle request");
@@ -235,6 +239,10 @@ static int cache_url_handler(request_rec *r)
         }
         else {
             /* stale data available */
+            if (lookup) {
+                return DECLINED;
+            }
+
             ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r->server,
                          "cache: stale cache - test conditional");
             /* if conditional request */

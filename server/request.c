@@ -145,36 +145,6 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
     int file_req = (r->main && r->filename);
     int access_status;
 
-    /* Give quick handlers a shot at serving the request on the fast
-     * path, bypassing all of the other Apache hooks. Bypass the call
-     * for dirent subrequests (any other cases to bypass?)
-     *
-     * This hook was added to enable serving files out of a URI keyed 
-     * content cache ( e.g., Mike Abbott's Quick Shortcut Cache, 
-     * described here: http://oss.sgi.com/projects/apache/mod_qsc.html )
-     *
-     * It may have other uses as well, such as routing requests directly to
-     * content handlers that have the ability to grok HTTP and do their
-     * own access checking, etc (e.g. servlet engines). 
-     * 
-     * Use this hook with extreme care and only if you know what you are 
-     * doing. This hook is available to (non dirent) subrequests.
-     */
-    if (!(r->main && r->filename && r->finfo.filetype)) {
-        /* TODO?: Add a field to the request_rec explicitly identifying
-         * the type of subrequest?
-         */
-        access_status = ap_run_quick_handler(r);
-        if (access_status != DECLINED) {
-            if (access_status == OK) {
-                return DONE;
-            }
-            else  {
-                return access_status;
-            }
-        }
-    }
-
     /* Ignore embedded %2F's in path for proxy requests */
     if (!r->proxyreq && r->parsed_uri.path) {
         access_status = ap_unescape_url(r->parsed_uri.path);
@@ -1657,10 +1627,17 @@ AP_DECLARE(request_rec *) ap_sub_req_method_uri(const char *method,
         udir = ap_escape_uri(rnew->pool, udir);    /* re-escape it */
         ap_parse_uri(rnew, ap_make_full_path(rnew->pool, udir, new_file));
     }
+    /* lookup_uri 
+     * If the content can be served by the quick_handler, we can
+     * safely bypass request_internal processing.
+     */
+    res = ap_run_quick_handler(rnew, 1);
 
-    if ((res = ap_process_request_internal(rnew))) {
-        rnew->status = res;
-    }
+    if (res != OK) {
+        if ((res = ap_process_request_internal(rnew))) {
+            rnew->status = res;
+        }
+    } 
 
     return rnew;
 }
@@ -1879,9 +1856,16 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
 
 AP_DECLARE(int) ap_run_sub_req(request_rec *r)
 {
-    int retval;
-
-    retval = ap_invoke_handler(r);
+    int retval = DECLINED;
+    /* Run the quick handler if the subrequest is not a dirent or file 
+     * subrequest 
+     */
+    if (!(r->filename && r->finfo.filetype)) {
+        retval = ap_run_quick_handler(r, 0);
+    }
+    if (retval != OK) {
+        retval = ap_invoke_handler(r);
+    }
     ap_finalize_sub_req_protocol(r);
     return retval;
 }

@@ -1,4 +1,9 @@
 Changes with Apache 2.0.35
+  *) Add a new parameter to the quick_handler hook to instruct
+     quick handlers to optionally do a lookup rather than actually 
+     serve content. This is the first of several changes required fix
+     several problems with how quick handlers work with subrequests.
+     [Bill Stoddard]
 
   *) worker MPM: Get MaxRequestsPerChild to work again.  [Jeff Trawick]
 
