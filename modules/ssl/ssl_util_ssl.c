@@ -420,7 +420,7 @@ BOOL SSL_load_CrtAndKeyInfo_path(apr_pool_t *p, STACK_OF(X509_INFO) *sk, char *p
     char *fullname;
     BOOL ok;
 
-    sp = apr_pool_sub_make(p, NULL);
+    apr_pool_sub_make(&sp, p, NULL);
     if (apr_dir_open(&dir, pathname, sp)) != APR_SUCCESS) {
         apr_pool_destroy(sp);
         return FALSE;
