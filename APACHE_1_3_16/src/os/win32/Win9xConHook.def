@@ -1,0 +1,10 @@
+LIBRARY Win9xConHook
+
+EXETYPE WINDOWS
+
+EXPORTS
+    DllMain
+    GetMsgProc
+    CallWndProc
+    FixConsoleCtrlHandler
+    Windows9xServiceCtrlHandler
