@@ -1134,8 +1134,16 @@ module example_module =
     example_type_checker,       /* [7] MIME type checker/setter */
     example_fixer_upper,        /* [8] fixups */
     example_logger,             /* [10] logger */
+#if MODULE_MAGIC_NUMBER >= 19970103
     example_header_parser,      /* [3] header parser */
+#endif
+#if MODULE_MAGIC_NUMBER >= 19970719
     example_child_init,         /* process initializer */
+#endif
+#if MODULE_MAGIC_NUMBER >= 19970728
     example_child_exit,         /* process exit/cleanup */
+#endif
+#if MODULE_MAGIC_NUMBER >= 19970902
     example_post_read_request   /* [1] post read_request handling */
+#endif
 };
