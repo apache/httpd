@@ -1,4 +1,7 @@
 Changes with Apache 2.0.19-dev
+
+  *) Win32 platforms now fully support mod_userdir options.  [Will Rowe]
+
   *) Automatically generate httpd.exp for AIX.
      DSOs now work again on AIX in 2.0
      [Victor J. Orlikowski]
