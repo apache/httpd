@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: http_main.c,v 1.79 1996/10/23 13:28:17 mjc Exp $ */
+/* $Id: http_main.c,v 1.80 1996/10/31 17:51:35 brian Exp $ */
 
 /*
  * httpd.c: simple http daemon for answering WWW file requests
@@ -1583,6 +1583,12 @@ void make_child(server_rec *server_conf, int child_num)
 
     if ((pid = fork()) == -1) {
 	log_unixerr("fork", NULL, "Unable to fork new process", server_conf);
+
+	/* In case system resources are maxxed out, we don't want
+           Apache running away with the CPU trying to fork over and
+           over and over again. */
+	sleep(10);
+
 	return;
     } 
     
