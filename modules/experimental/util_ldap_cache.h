@@ -107,7 +107,23 @@ apr_shm_t *util_ldap_shm;
 apr_rmm_t *util_ldap_rmm;
 #endif
 util_ald_cache_t *util_ldap_cache;
+
+#if APR_HAS_THREADS
 apr_thread_rwlock_t *util_ldap_cache_lock;
+#define LDAP_CACHE_LOCK_CREATE(p) \
+    if (!util_ldap_cache_lock) apr_thread_rwlock_create(&util_ldap_cache_lock, p)
+#define LDAP_CACHE_WRLOCK() \
+    apr_thread_rwlock_wrlock(util_ldap_cache_lock)
+#define LDAP_CACHE_UNLOCK() \
+    apr_thread_rwlock_unlock(util_ldap_cache_lock)
+#define LDAP_CACHE_RDLOCK() \
+    apr_thread_rwlock_rdlock(util_ldap_cache_lock)
+#else
+#define LDAP_CACHE_LOCK_CREATE(p)
+#define LDAP_CACHE_WRLOCK()
+#define LDAP_CACHE_UNLOCK()
+#define LDAP_CACHE_RDLOCK()
+#endif
 
 #ifndef WIN32
 #define ALD_MM_FILE_MODE ( S_IRUSR|S_IWUSR )
