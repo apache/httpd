@@ -2661,6 +2661,75 @@ void AMCSocketCleanup(void)
     return;
 }
 
+static void show_compile_settings(void)
+{
+#ifdef SERVER_SUBVERSION
+    printf("Server base version: \"%s\"\n", SERVER_BASEVERSION);
+    printf("Server sub-version:  \"%s\"\n", SERVER_SUBVERSION);
+#else
+    printf("Server version \"%s\"\n", SERVER_VERSION);
+#endif
+#ifndef WIN32
+    printf("Server built:  %s\n", SERVER_BUILT);
+#endif
+    printf("Server compiled with....\n");
+#ifdef BIG_SECURITY_HOLE
+    printf(" -D BIG_SECURITY_HOLE\n");
+#endif
+#ifdef HTTPD_ROOT
+    printf(" -D HTTPD_ROOT=\"" HTTPD_ROOT "\"\n");
+#endif
+#ifdef HAVE_MMAP
+    printf(" -D HAVE_MMAP\n");
+#endif
+#ifdef HAVE_SHMGET
+    printf(" -D HAVE_SHMGET\n");
+#endif
+#ifdef USE_MMAP_FILES
+    printf(" -D USE_MMAP_FILES\n");
+#ifdef MMAP_SEGMENT_SIZE
+	printf(" -D MMAP_SEGMENT_SIZE=%ld\n",(long)MMAP_SEGMENT_SIZE);
+#endif
+#endif /*USE_MMAP_FILES*/
+#ifdef NO_WRITEV
+    printf(" -D NO_WRITEV\n");
+#endif
+#ifdef NO_LINGCLOSE
+    printf(" -D NO_LINGCLOSE\n");
+#endif
+#ifdef USE_FCNTL_SERIALIZED_ACCEPT
+    printf(" -D USE_FCNTL_SERIALIZED_ACCEPT\n");
+#endif
+#ifdef USE_FLOCK_SERIALIZED_ACCEPT
+    printf(" -D USE_FLOCK_SERIALIZED_ACCEPT\n");
+#endif
+#ifdef USE_USLOCK_SERIALIZED_ACCEPT
+    printf(" -D USE_USLOCK_SERIALIZED_ACCEPT\n");
+#endif
+#ifdef USE_SYSVSEM_SERIALIZED_ACCEPT
+    printf(" -D USE_SYSVSEM_SERIALIZED_ACCEPT\n");
+#endif
+#ifdef USE_PTHREAD_SERIALIZED_ACCEPT
+    printf(" -D USE_PTHREAD_SERIALIZED_ACCEPT\n");
+#endif
+#ifdef SAFE_UNSERIALIZED_ACCEPT
+    printf(" -D SAFE_UNSERIALIZED_ACCEPT\n");
+#endif
+#ifdef NO_OTHER_CHILD
+    printf(" -D NO_OTHER_CHILD\n");
+#endif
+#ifdef NO_RELIABLE_PIPED_LOGS
+    printf(" -D NO_RELIABLE_PIPED_LOGS\n");
+#endif
+#ifdef BUFFERED_LOGS
+    printf(" -D BUFFERED_LOGS\n");
+#ifdef PIPE_BUF
+	printf(" -D PIPE_BUF=%ld\n",(long)PIPE_BUF);
+#endif
+#endif
+    printf("\n");
+}
+
 #ifndef MULTITHREAD
 /*****************************************************************
  * Child process main loop.
@@ -3196,73 +3265,6 @@ static void perform_idle_server_maintenance(void)
     }
 }
 
-
-static void show_compile_settings(void)
-{
-#ifdef SERVER_SUBVERSION
-    printf("Server base version: \"%s\"\n", SERVER_BASEVERSION);
-    printf("Server sub-version:  \"%s\"\n", SERVER_SUBVERSION);
-#else
-    printf("Server version \"%s\"\n", SERVER_VERSION);
-#endif
-    printf("Server built:  %s\n", SERVER_BUILT);
-    printf("Server compiled with....\n");
-#ifdef BIG_SECURITY_HOLE
-    printf(" -D BIG_SECURITY_HOLE\n");
-#endif
-#ifdef HTTPD_ROOT
-    printf(" -D HTTPD_ROOT=\"" HTTPD_ROOT "\"\n");
-#endif
-#ifdef HAVE_MMAP
-    printf(" -D HAVE_MMAP\n");
-#endif
-#ifdef HAVE_SHMGET
-    printf(" -D HAVE_SHMGET\n");
-#endif
-#ifdef USE_MMAP_FILES
-    printf(" -D USE_MMAP_FILES\n");
-#ifdef MMAP_SEGMENT_SIZE
-	printf(" -D MMAP_SEGMENT_SIZE=%ld\n",(long)MMAP_SEGMENT_SIZE);
-#endif
-#endif /*USE_MMAP_FILES*/
-#ifdef NO_WRITEV
-    printf(" -D NO_WRITEV\n");
-#endif
-#ifdef NO_LINGCLOSE
-    printf(" -D NO_LINGCLOSE\n");
-#endif
-#ifdef USE_FCNTL_SERIALIZED_ACCEPT
-    printf(" -D USE_FCNTL_SERIALIZED_ACCEPT\n");
-#endif
-#ifdef USE_FLOCK_SERIALIZED_ACCEPT
-    printf(" -D USE_FLOCK_SERIALIZED_ACCEPT\n");
-#endif
-#ifdef USE_USLOCK_SERIALIZED_ACCEPT
-    printf(" -D USE_USLOCK_SERIALIZED_ACCEPT\n");
-#endif
-#ifdef USE_SYSVSEM_SERIALIZED_ACCEPT
-    printf(" -D USE_SYSVSEM_SERIALIZED_ACCEPT\n");
-#endif
-#ifdef USE_PTHREAD_SERIALIZED_ACCEPT
-    printf(" -D USE_PTHREAD_SERIALIZED_ACCEPT\n");
-#endif
-#ifdef SAFE_UNSERIALIZED_ACCEPT
-    printf(" -D SAFE_UNSERIALIZED_ACCEPT\n");
-#endif
-#ifdef NO_OTHER_CHILD
-    printf(" -D NO_OTHER_CHILD\n");
-#endif
-#ifdef NO_RELIABLE_PIPED_LOGS
-    printf(" -D NO_RELIABLE_PIPED_LOGS\n");
-#endif
-#ifdef BUFFERED_LOGS
-    printf(" -D BUFFERED_LOGS\n");
-#ifdef PIPE_BUF
-	printf(" -D PIPE_BUF=%ld\n",(long)PIPE_BUF);
-#endif
-#endif
-    printf("\n");
-}
 
 /*****************************************************************
  * Executive routines.
@@ -4345,7 +4347,9 @@ __declspec(dllexport)
 	    break;
 	case 'v':
 	    printf("Server version %s.\n", SERVER_VERSION);
+#ifndef WIN32
 	    printf("Server built:  %s\n", SERVER_BUILT);
+#endif
 	    exit(0);
 	case 'V':
 	    show_compile_settings();
