@@ -475,6 +475,9 @@ void ap_log_pid(ap_context_t *p, const char *fname)
     ap_finfo_t finfo;
     static pid_t saved_pid = -1;
     pid_t mypid;
+#ifndef WIN32
+    mode_t u;
+#endif
 
     if (!fname) 
 	return;
@@ -496,6 +499,10 @@ void ap_log_pid(ap_context_t *p, const char *fname)
 			       );
     }
 
+#ifndef WIN32
+    u = umask(022);
+    (void) umask(u | 022);
+#endif
     if(ap_open(&pid_file, fname, APR_WRITE | APR_CREATE, APR_OS_DEFAULT, p) != APR_SUCCESS) {
 	perror("fopen");
         ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
@@ -503,6 +510,9 @@ void ap_log_pid(ap_context_t *p, const char *fname)
 		     ap_server_argv0, fname);
         exit(1);
     }
+#ifndef WIN32
+    (void) umask(u);
+#endif
     ap_fprintf(pid_file, "%ld\n", (long)mypid);
     ap_close(pid_file);
     saved_pid = mypid;
