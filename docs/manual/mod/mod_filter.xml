@@ -105,7 +105,7 @@
     <dt>Register Providers</dt>
     <dd>The <directive module="mod_filter">FilterProvider</directive>
     directive registers a provider with a filter. The filter may have
-    been registered with <directive module="mod_filter"
+    been declared with <directive module="mod_filter"
     >FilterDeclare</directive>; if not, FilterProvider will implicitly
     declare it with the default type AP_FTYPE_RESOURCE. The provider
     must have been
