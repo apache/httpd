@@ -499,58 +499,60 @@ int location_walk(request_rec *r)
     void *per_dir_defaults = r->per_dir_config;
     void **url = (void **) sconf->sec_url->elts;
     int len, num_url = sconf->sec_url->nelts;
-    char *test_location = pstrdup(r->pool, r->uri);
+    char *test_location;
+    void *this_conf, *entry_config;
+    core_dir_config *entry_core;
+    char *entry_url;
+    int j;
+
+    if (!num_url) {
+	return OK;
+    }
 
     /*
      * Collapse multiple slashes, if it's a path URL (we don't want to do
      * anything to <Location http://...> or such).
      */
+    test_location = pstrdup(r->pool, r->uri);
     if (test_location[0] == '/')
         no2slash(test_location);
 
     /* Go through the location entries, and check for matches. */
 
-    if (num_url) {
-        void *this_conf, *entry_config;
-        core_dir_config *entry_core;
-        char *entry_url;
-        int j;
+    /* we apply the directive sections in some order;
+     * should really try them with the most general first.
+     */
+    for (j = 0; j < num_url; ++j) {
 
-        /* we apply the directive sections in some order;
-         * should really try them with the most general first.
-         */
-        for (j = 0; j < num_url; ++j) {
+	entry_config = url[j];
 
-            entry_config = url[j];
+	entry_core = (core_dir_config *)
+	    get_module_config(entry_config, &core_module);
+	entry_url = entry_core->d;
 
-            entry_core = (core_dir_config *)
-                get_module_config(entry_config, &core_module);
-            entry_url = entry_core->d;
+	len = strlen(entry_url);
 
-            len = strlen(entry_url);
+	this_conf = NULL;
 
-            this_conf = NULL;
+	if (entry_core->r) {
+	    if (!regexec(entry_core->r, test_location, 0, NULL, 0))
+		this_conf = entry_config;
+	}
+	else if (entry_core->d_is_fnmatch) {
+	    if (!fnmatch(entry_url, test_location, FNM_PATHNAME)) {
+		this_conf = entry_config;
+	    }
+	}
+	else if (!strncmp(test_location, entry_url, len) &&
+		    (entry_url[len - 1] == '/' ||
+		test_location[len] == '/' || test_location[len] == '\0'))
+	    this_conf = entry_config;
 
-            if (entry_core->r) {
-                if (!regexec(entry_core->r, test_location, 0, NULL, 0))
-                    this_conf = entry_config;
-            }
-            else if (entry_core->d_is_fnmatch) {
-                if (!fnmatch(entry_url, test_location, FNM_PATHNAME)) {
-                    this_conf = entry_config;
-                }
-            }
-            else if (!strncmp(test_location, entry_url, len) &&
-                     (entry_url[len - 1] == '/' ||
-                   test_location[len] == '/' || test_location[len] == '\0'))
-                this_conf = entry_config;
-
-            if (this_conf)
-                per_dir_defaults = merge_per_dir_configs(r->pool,
-                                               per_dir_defaults, this_conf);
-        }
-        r->per_dir_config = per_dir_defaults;
+	if (this_conf)
+	    per_dir_defaults = merge_per_dir_configs(r->pool,
+					    per_dir_defaults, this_conf);
     }
+    r->per_dir_config = per_dir_defaults;
 
     return OK;
 }
