@@ -125,7 +125,7 @@ MaxRequestsPerChild 0
 # depending on the responsiveness you want and the resources you wish
 # this server to consume).
 
-ThreadsPerChild 20
+ThreadsPerChild 50
 
 
 # Proxy Server directives. Uncomment the following line to
