@@ -25,7 +25,9 @@ As the term <cite>IP-based</cite> indicates, the server <strong>must have a
 different IP address for each IP-based virtual host</strong>.
 This can be achieved by the machine having several physical network connections,
 or by use of virtual interfaces which are supported by most modern
-operating systems (see system documentation for details).
+operating systems (see system documentation for details, these are
+frequently called "ip aliases", and the "ifconfig" command
+is most commonly used to set them up).
 
 <h2>How to set up Apache</h2>
 There are two ways of configuring apache to support multiple hosts.
