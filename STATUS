@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/02/10 22:21:22 $]
+Last modified at [$Date: 2001/02/16 06:09:04 $]
 
 Release:
 
@@ -97,6 +97,10 @@ RELEASE SHOWSTOPPERS:
         Status: Greg volunteers
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
+
+    * All of our MPMs should use APR for threads/processes.  This 
+      will allow us to error out if a threaded MPM is chosen on a
+      platform that doesn't support threads.
 
     * Combine log_child and piped_log_spawn. Clean up http_log.c.
       Common logging API.
