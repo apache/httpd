@@ -1,5 +1,9 @@
 Changes with Apache 1.2b5
 
+  *) Add HTTP/1.0 response forcing. [Ben Laurie]
+
+  *) Add access control via environment variables. [Ben Laurie]
+
   *) Add rflush() function. [Alexei Kosut]
 
   *) remove duplicate pcalloc() call in new_connection().
