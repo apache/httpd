@@ -119,6 +119,13 @@ AP_IMPLEMENT_HOOK_RUN_ALL(int, get_mgmt_items,
  * the http_conf_globals.
  */
 
+/* Handles for core filters */
+ap_filter_rec_t *ap_subreq_core_filter_handle;
+ap_filter_rec_t *ap_core_output_filter_handle;
+ap_filter_rec_t *ap_content_length_filter_handle;
+ap_filter_rec_t *ap_net_time_filter_handle;
+ap_filter_rec_t *ap_core_input_filter_handle;
+
 static void *create_core_dir_config(apr_pool_t *a, char *dir)
 {
     core_dir_config *conf;
@@ -3590,7 +3597,8 @@ static int core_create_req(request_rec *r)
     }
     ap_set_module_config(r->request_config, &core_module, req_cfg);
 
-    ap_add_input_filter("NET_TIME", NULL, r, r->connection);
+    ap_add_input_filter_handle(ap_net_time_filter_handle,
+                               NULL, r, r->connection);
     
     /* Begin by presuming any module can make it's own path_info assumptions,
      * until some module interjects and changes the value.
@@ -3651,8 +3659,9 @@ static conn_rec *core_create_conn(apr_pool_t *ptrans, server_rec *server,
     net->c->id = conn_id;
  
     ap_set_module_config(net->c->conn_config, &core_module, csd);
-    ap_add_input_filter("CORE_IN", net, NULL, net->c);
-    ap_add_output_filter("CORE", net, NULL, net->c);
+    ap_add_input_filter_handle(ap_core_input_filter_handle, net, NULL, net->c);
+    ap_add_output_filter_handle(ap_core_output_filter_handle,
+                                net, NULL, net->c);
     return net->c;
 }
 
@@ -3678,13 +3687,21 @@ static void register_hooks(apr_pool_t *p)
      */
     ap_hook_insert_filter(core_insert_filter, NULL, NULL, APR_HOOK_MIDDLE);
 
-    ap_register_input_filter("CORE_IN", core_input_filter, AP_FTYPE_NETWORK);
-    ap_register_input_filter("NET_TIME", net_time_filter, AP_FTYPE_CONTENT);
-    ap_register_output_filter("CONTENT_LENGTH", ap_content_length_filter, 
-                              AP_FTYPE_HTTP_HEADER);
-    ap_register_output_filter("CORE", core_output_filter, AP_FTYPE_NETWORK);
-    ap_register_output_filter("SUBREQ_CORE", ap_sub_req_output_filter, 
-                              AP_FTYPE_HTTP_HEADER);
+    ap_core_input_filter_handle =
+        ap_register_input_filter("CORE_IN", core_input_filter,
+                                 AP_FTYPE_NETWORK);
+    ap_net_time_filter_handle =
+        ap_register_input_filter("NET_TIME", net_time_filter,
+                                 AP_FTYPE_CONTENT);
+    ap_content_length_filter_handle =
+        ap_register_output_filter("CONTENT_LENGTH", ap_content_length_filter, 
+                                  AP_FTYPE_HTTP_HEADER);
+    ap_core_output_filter_handle =
+        ap_register_output_filter("CORE", core_output_filter,
+                                  AP_FTYPE_NETWORK);
+    ap_subreq_core_filter_handle =
+        ap_register_output_filter("SUBREQ_CORE", ap_sub_req_output_filter, 
+                                  AP_FTYPE_HTTP_HEADER);
     ap_old_write_func = ap_register_output_filter("OLD_WRITE", 
                                    ap_old_write_filter, AP_FTYPE_CONTENT - 10);
 }
