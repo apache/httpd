@@ -43,7 +43,7 @@ configuration</td></tr>
     </code></p></div>
 
     <p>Once configured, the server information is obtained by
-    accessing <code>http://your.host.dom/server-info</code></p>
+    accessing <code>http://your.host.example.com/server-info</code></p>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
@@ -77,11 +77,11 @@ configuration</td></tr>
       &lt;Location /server-info&gt;<br />
       <span class="indent">
         SetHandler server-info<br />
-        Order allow,deny
-        # Allow access from server itself
-        Allow from 127.0.0.1
-        # Additionally, allow access from local workstation
-        Allow from 192.168.1.17
+        Order allow,deny<br />
+        # Allow access from server itself<br />
+        Allow from 127.0.0.1<br />
+        # Additionally, allow access from local workstation<br />
+        Allow from 192.168.1.17<br />
       </span>
       &lt;/Location&gt;
     </code></p></div>
