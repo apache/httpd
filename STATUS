@@ -19,9 +19,6 @@ WIN32 1.3 FINAL RELEASE SHOWSTOPPERS:
 
     * CGI: chdir() needs to be reinstated for CGI.
 
-    * Child process: eliminate spawn_child() and spawn_child_err() which
-      are unsafe in mod_rewrite.c
-
     * Win95: when authentication is required for directory /foobar/, direct 
       access to /foobar/bletch is permitted.  PR #2145
 
