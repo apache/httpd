@@ -277,7 +277,8 @@ PATCHES TO BACKPORT FROM 2.1
       -1: brianp (we need a more robust solution than what's in 2.1 right now),
           jerenkrantz (should be fixed, but I don't have time to do this)
       trawick: see proxy-reqbody branch in subversion for improved (?)
-        implementation; I have an equivalent patch for 2.0.x as well
+        implementation; I have an equivalent patch for 2.0.x as well which
+        is at www.apache.org/~trawick/20reqbody.txt
 
     * mod_proxy: Respect errors reported by pre_connection hooks.
       http://svn.apache.org/viewcvs?view=rev&rev=111304
