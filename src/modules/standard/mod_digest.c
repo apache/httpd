@@ -290,7 +290,7 @@ int authenticate_digest_user (request_rec *r)
 int digest_check_auth (request_rec *r) {
     char *user = r->connection->user;
     int m = r->method_number;
-    
+    int method_restricted = 0;    
     register int x;
     char *t, *w;
     array_header *reqs_arr;
@@ -311,7 +311,9 @@ int digest_check_auth (request_rec *r) {
       
 	if (! (reqs[x].method_mask & (1 << m))) continue;
 	
-        t = reqs[x].requirement;
+        method_restricted = 1;
+
+	t = reqs[x].requirement;
         w = getword(r->pool, &t, ' ');
         if(!strcmp(w,"valid-user"))
             return OK;
@@ -326,6 +328,9 @@ int digest_check_auth (request_rec *r) {
 	  return DECLINED;
     }
     
+    if (!method_restricted)
+      return OK;
+
     note_digest_auth_failure(r);
     return AUTH_REQUIRED;
 }
