@@ -25,9 +25,6 @@
 <a href="../en/mod/core.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">Diese Übersetzung ist möglicherweise
-            nicht mehr aktuell. Bitte prüfen Sie die englische Version auf
-            die neuesten Änderungen.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Beschreibung:</a></th><td>Ständig verfügbare Kernfunktionen des Apache HTTP
 Servers</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Core</td></tr></table>
@@ -2621,6 +2618,7 @@ Benutzerauthentisierung</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Kompatibilität:</a></th><td>Wird seit Version 2.0.51 von <code class="directive"><a href="#limit">&lt;Limit&gt;</a></code> und <code class="directive"><a href="#limitexcept">&lt;LimitExcept&gt;</a></code> beeinflusst</td></tr>
 </table>
     <p>Verfahrensweise für den Zugriff, falls sowohl <code class="directive"><a href="../mod/mod_authz_host.html#allow">Allow</a></code> als auch <code class="directive"><a href="#require">Require</a></code> verwendet werden. Der Parameter kann
     entweder <code>All</code> oder <code>Any</code> sein. Die Direktive ist
@@ -2648,6 +2646,10 @@ Benutzerauthentisierung</td></tr>
       Allow from 192.168.1<br />
       Satisfy Any
     </code></p></div>
+
+    <p>Seit Version 2.0.51 können
+      <code class="directive">Satisfy</code>-Anweisungen durch <code class="directive"><a href="#limit">&lt;Limit&gt;</a></code>- und <code class="directive"><a href="#limitexcept">&lt;LimitExcept&gt;</a></code>-Abschnitte auf bestimmte Methoden
+      beschränkt werden.</p>
 
 <h3>Siehe auch</h3>
 <ul>
