@@ -2,9 +2,6 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
-  *) Add the NOTICE file to the rpm spec file in compliance with the
-     Apache v2.0 license. [Graham Leggett]
-
   *) mod_proxy: multiple bugfixes, principally support cookies in
      ProxyPassReverse, and don't canonicalise URL passed to backend.
      Documentation correspondingly updated. [Nick Kew <nick webthing.com>]
@@ -393,6 +390,9 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.51
+
+  *) Add the NOTICE file to the rpm spec file in compliance with the
+     Apache v2.0 license. [Graham Leggett]
 
   *) RPM spec file changes: changed default dependancy to link to db4
      instead of db3. Fixed complaints about unpackaged files.
