@@ -154,15 +154,32 @@ A new <code>&lt;IfModule&gt;</code> section allows directives to be
 enabled only if a given module is loaded into the server.
 
 <li><b><xa href="ncsa_auth.html">Authorization Directives Now Use
-NCSA-style Syntax</a></b>
-[Documentation to be written]<br>
-The AuthUserFile, AuthGroupFile and AuthDigestFile commands now have a syntax
-compatible with the NCSA server.
+NCSA-style Syntax</a></b><br>
+
+The <a href="mod/mod_auth.html#AuthUserFile">AuthUserFile</a>, <a
+href="mod/mod_auth.html#AuthGroupFile">AuthGroupFile</a> and <a
+href="mod/mod_digest.html#AuthDigestFile">AuthDigestFile</a> commands
+now have a syntax compatible with the NCSA server.
 
 <li><b><a href="mod/core.html#satisfy">NCSA Satisfy authentication
 directive now implemented</a></b><br> 
 <code>Satisfy</code> allows for more flexible access control
 configurations.
+
+<li><b>Better NCSA Compatibility</b><br>
+Apache directives are now more compatible with NCSA 1.5 to make
+moving between servers easier. In particular, Apache now implements the
+<a href="mod/core.html#satisfy"><code>Satisfy</code></a>,
+<a href="mod/core.html#MaxKeepAliveRequests">MaxKeepAliveRequests</A>,
+<a href="mod/mod_alias.html#RedirectPermanent">RedirectPermanent</A> and
+<a href="mod/mod_alias.html#RedirectTemp">RedirectTemp</A>,
+directives, and the following directives are now syntax-compatible with
+NCSA:
+<a href="mod/mod_auth.html#AuthUserFile">AuthUserFile</A>,
+<a href="mod/mod_auth.html#AuthGroupFile">AuthGroupFile</A>,
+<a href="mod/mod_digest.html#AuthDigestFile">AuthDigestFile</A>,
+<a href="mod/core.html#KeepAlive">KeepAlive</A> and
+<a href="mod/core.html#KeepAliveTimeout">KeepAliveTimeout</A>.
 
 <li><b><a href="mod/mod_proxy.html">Optional proxy module</a></b><br>
 An improved FTP, HTTP, and CONNECT mode SSL proxy is included with
