@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/08/01 17:06:20 $]
+Last modified at [$Date: 2000/08/01 17:36:02 $]
 
 Release:
 
@@ -422,10 +422,6 @@ put them into 'the next release':
 
     * PR#2138: mod_status
       mod_status always displays 256 possible connection slots
-	Status: 
-
-    * PR#2144: general
-      apache always detaches for normal operation
 	Status: 
 
     * PR#2221: documentation

@@ -851,13 +851,15 @@ int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
 static void beos_pre_config(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptemp)
 {
     static int restart_num = 0;
+    int no_detach = 0;
 
     one_process = !!getenv("ONE_PROCESS");
+    no_detach = !!getenv("NO_DETACH");
 
     /* sigh, want this only the second time around */
     if (restart_num++ == 1) {
         is_graceful = 0;
-        if (!one_process)
+        if (!one_process && !no_detach)
 	        ap_detach();
         server_pid = getpid();
     }
