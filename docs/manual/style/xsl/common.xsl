@@ -318,13 +318,18 @@
         <xsl:for-each select="$metafile/variants/variant">
         <xsl:sort select="." />
 
-            <a hreflang="{.}"
-                   href="{$path}/{.}{$metafile/path}{$metafile/basename}.html">
+            <a href="{$path}/{.}{$metafile/path}{$metafile/basename}.html">
                 <xsl:if test="$metafile/basename = 'index'">
                     <xsl:attribute name="href">
                         <xsl:value-of
                             select="concat($path, '/', ., $metafile/path)" />
                     </xsl:attribute>
+                </xsl:if>
+                <xsl:if test="$messages/@lang != .">
+                    <xsl:attribute name="hreflang">
+                        <xsl:value-of select="." />
+                    </xsl:attribute>
+                    <xsl:attribute name="rel">alternate</xsl:attribute>
                 </xsl:if>
                 <xsl:attribute name="title">
                     <xsl:choose>
@@ -342,7 +347,9 @@
                 <xsl:value-of select="." />
                 &nbsp;
             </a>
-            <xsl:if test="position() != last()"> | </xsl:if>
+            <xsl:if test="position() != last()">
+                <xsl:text> |&#xA;</xsl:text>
+            </xsl:if>
         </xsl:for-each>
     </p>&lf;
 </div> <!-- /.{$position}lang -->
