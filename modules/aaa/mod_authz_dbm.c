@@ -189,12 +189,15 @@ static int dbm_check_auth(request_rec *r)
 {
     authz_dbm_config_rec *conf = ap_get_module_config(r->per_dir_config,
                                                       &authz_dbm_module);
+    char *user = r->user;
     int m = r->method_number;
     const apr_array_header_t *reqs_arr = ap_requires(r);
     require_line *reqs = reqs_arr ? (require_line *) reqs_arr->elts : NULL;
     register int x;
     const char *t;
+    const char *orig_groups = NULL;
     char *w;
+    int required_group = 0;
 
     if (!conf->grpfile) {
         return DECLINED;
@@ -214,38 +217,45 @@ static int dbm_check_auth(request_rec *r)
         w = ap_getword_white(r->pool, &t);
  
         if (!strcmp(w, "group")) {
-            char *user = r->user;
             const char *realm = ap_auth_name(r);
-            const char *orig_groups, *groups;
+            const char *groups;
             char *v;
-            apr_status_t status;
 
-            status = get_dbm_grp(r,
-                                 apr_pstrcat(r->pool, user, ":", realm, NULL),
-                                 user,
-                                 conf->grpfile, conf->dbmtype, &groups);
+            /* remember that actually a group is required */
+            required_group = 1;
 
-            if (status != APR_SUCCESS) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
-                      "could not open dbm (type %s) group access file: %s", 
-                        conf->dbmtype, conf->grpfile);
-                return HTTP_INTERNAL_SERVER_ERROR;
-           }
+            /* fetch group data from dbm file only once. */
+            if (!orig_groups) {
+                apr_status_t status;
 
-           if (groups == NULL) {
-                if (!conf->authoritative) {
-                    return DECLINED;
+                status = get_dbm_grp(r, apr_pstrcat(r->pool, user, ":", realm,
+                                                    NULL),
+                                     user,
+                                     conf->grpfile, conf->dbmtype, &groups);
+
+                if (status != APR_SUCCESS) {
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
+                                  "could not open dbm (type %s) group access "
+                                  "file: %s", conf->dbmtype, conf->grpfile);
+                    return HTTP_INTERNAL_SERVER_ERROR;
                 }
 
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                            "user %s not in DBM group file %s: %s",
-                            user, conf->grpfile, r->filename);
+                if (groups == NULL) {
+                    if (!conf->authoritative) {
+                        return DECLINED;
+                    }
 
-                ap_note_auth_failure(r);
-                return HTTP_UNAUTHORIZED;
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                                  "user %s not in DBM group file %s: %s",
+                                  user, conf->grpfile, r->filename);
+
+                    ap_note_auth_failure(r);
+                    return HTTP_UNAUTHORIZED;
+                }
+
+                orig_groups = groups;
             }
 
-            orig_groups = groups;
             while (t[0]) {
                 w = ap_getword_white(r->pool, &t);
                 groups = orig_groups;
@@ -256,15 +266,24 @@ static int dbm_check_auth(request_rec *r)
                     }
                 }
             }
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                          "user %s not in right group: %s",
-                          user, r->filename);
-            ap_note_auth_failure(r);
-            return HTTP_UNAUTHORIZED;
         }
     }
 
-    return DECLINED;
+    /* no group requirement seen */
+    if (!required_group) {
+        return DECLINED;
+    }
+
+    if (!conf->authoritative) {
+        return DECLINED;
+    }
+
+    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                  "user %s not in right group: %s",
+                  user, r->filename);
+
+    ap_note_auth_failure(r);
+    return HTTP_UNAUTHORIZED;
 }
 
 static void register_hooks(apr_pool_t *p)
