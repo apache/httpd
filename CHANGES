@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_rewrite no longer turns forward proxy requests into reverse proxy
+     requests. PR 28125  [ast domdv.de, André Malo]
+
   *) mod_rewrite now officially supports RewriteRules in <Proxy> sections.
      PR 27985.  [André Malo]
 
