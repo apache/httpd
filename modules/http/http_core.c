@@ -62,9 +62,10 @@
 #include "apr_fnmatch.h"
 #include "apr_thread_proc.h"    /* for RLIMIT stuff */
 
-#if APR_HAVE_SYS_UIO_H
-#include <sys/uio.h>            /* for iovec */
-#endif
+#define APR_WANT_IOVEC
+#define APR_WANT_STRFUNC
+#define APR_WANT_MEMFUNC
+#include "apr_want.h"
 
 #define CORE_PRIVATE
 #include "ap_config.h"
@@ -84,15 +85,15 @@
 #include "util_ebcdic.h"
 #include "mpm.h"
 
+#include "mod_core.h"
+
 #ifdef HAVE_SYS_SOCKET_H
 #include <sys/socket.h>
 #endif
 #ifdef HAVE_ARPA_INET_H
 #include <arpa/inet.h>
 #endif
-#ifdef HAVE_STRINGS_H
-#include <strings.h>
-#endif
+
 
 /* LimitXMLRequestBody handling */
 #define AP_LIMIT_UNSET                  ((long) -1)

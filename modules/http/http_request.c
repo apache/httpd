@@ -66,6 +66,10 @@
  *
  */
 
+#include "apr_strings.h"
+#include "apr_file_io.h"
+#include "apr_fnmatch.h"
+
 #define CORE_PRIVATE
 #include "ap_config.h"
 #include "httpd.h"
@@ -77,9 +81,9 @@
 #include "http_main.h"
 #include "util_filter.h"
 #include "util_charset.h"
-#include "apr_strings.h"
-#include "apr_file_io.h"
-#include "apr_fnmatch.h"
+
+#include "mod_core.h"
+
 #ifdef APR_HAVE_STDARG_H
 #include <stdarg.h>
 #endif
@@ -1358,15 +1362,26 @@ static void process_request_internal(request_rec *r)
 
 static void check_pipeline_flush(request_rec *r)
 {
+    /* ### if would be nice if we could PEEK without a brigade. that would
+       ### allow us to defer creation of the brigade to when we actually
+       ### need to send a FLUSH. */
     apr_bucket_brigade *bb = apr_brigade_create(r->pool);
+
+    /* Flush the filter contents if:
+     *
+     *   1) the connection will be closed
+     *   2) there isn't a request ready to be read
+     */
+    /* ### shouldn't this read from the connection input filters? */
     if (!r->connection->keepalive || 
         ap_get_brigade(r->input_filters, bb, AP_MODE_PEEK) != APR_SUCCESS) {
         apr_bucket *e = apr_bucket_create_flush();
 
-        /* We just send directly to the connection based filters, because at
-         * this point, we know that we have seen all of the data, so we just
-         * want to flush the buckets if something hasn't been sent to the
-         * network yet.
+        /* We just send directly to the connection based filters.  At
+         * this point, we know that we have seen all of the data
+         * (request finalization sent an EOS bucket, which empties all
+         * of the request filters). We just want to flush the buckets
+         * if something hasn't been sent to the network yet.
          */
         APR_BRIGADE_INSERT_HEAD(bb, e);
         ap_pass_brigade(r->connection->output_filters, bb);
