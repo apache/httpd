@@ -252,6 +252,35 @@ InputPath=.\modules\http\mod_core.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\modules\generators\mod_cgi.h
+
+!IF  "$(CFG)" == "libhttpd - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Creating include/mod_cgi.h
+InputPath=.\modules\generators\mod_cgi.h
+
+".\include\mod_cgi.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	type .\modules\generators\mod_cgi.h > .\include\mod_cgi.h
+	
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Creating include/mod_cgi.h
+InputPath=.\modules\generators\mod_cgi.h
+
+".\include\mod_cgi.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	type .\modules\generators\mod_cgi.h > .\include\mod_cgi.h
+	
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
 SOURCE=.\modules\dav\main\mod_dav.h
 
 !IF  "$(CFG)" == "libhttpd - Win32 Release"
@@ -273,6 +302,35 @@ InputPath=.\modules\dav\main\mod_dav.h
 
 ".\include\mod_dav.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	type .\modules\dav\main\mod_dav.h > .\include\mod_dav.h
+	
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\modules\filters\mod_include.h
+
+!IF  "$(CFG)" == "libhttpd - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Creating include/mod_include.h
+InputPath=.\modules\filters\mod_include.h
+
+".\include\mod_include.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	type .\modules\filters\mod_include.h > .\include\mod_include.h
+	
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Creating include/mod_include.h
+InputPath=.\modules\filters\mod_include.h
+
+".\include\mod_include.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	type .\modules\filters\mod_include.h > .\include\mod_include.h
 	
 # End Custom Build
 
