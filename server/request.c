@@ -415,6 +415,8 @@ static int resolve_symlink(char *d, apr_finfo_t *lfi, int opts, apr_pool_t *p)
     return OK;
 }
 
+/* #define REPLACE_PATH_INFO_METHOD
+ */
 #ifndef REPLACE_PATH_INFO_METHOD
 
 static int check_symlinks(char *d, int opts, apr_pool_t *p)
@@ -1143,22 +1145,22 @@ minimerge:
 minimerge2:
                     this_dir = ap_get_module_config(htaccess_conf, &core_module);
 
-                    if (!this_dir)
-                        continue;
-
-                    if (this_dir->opts & OPT_UNSET) {
-	                opts_add = (opts_add & ~this_dir->opts_remove) | this_dir->opts_add;
-	                opts_remove = (opts_remove & ~this_dir->opts_add)
-	                            | this_dir->opts_remove;
-	                opts = (opts & ~opts_remove) | opts_add;
-                    }
-                    else {
-	                opts = this_dir->opts;
-	                opts_add = this_dir->opts_add;
-	                opts_remove = this_dir->opts_remove;
-                    }
-                    if (!(this_dir->override & OR_UNSET)) {
-                        override = this_dir->override;
+                    if (this_dir) 
+                    {
+                        if (this_dir->opts & OPT_UNSET) {
+	                    opts_add = (opts_add & ~this_dir->opts_remove) | this_dir->opts_add;
+	                    opts_remove = (opts_remove & ~this_dir->opts_add)
+	                                | this_dir->opts_remove;
+	                    opts = (opts & ~opts_remove) | opts_add;
+                        }
+                        else {
+	                    opts = this_dir->opts;
+	                    opts_add = this_dir->opts_add;
+	                    opts_remove = this_dir->opts_remove;
+                        }
+                        if (!(this_dir->override & OR_UNSET)) {
+                            override = this_dir->override;
+                        }
                     }
                 }
             }
