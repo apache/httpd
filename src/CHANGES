@@ -1,5 +1,10 @@
 Changes with Apache 1.2
 
+  *) If the lookup for a DirectoryIndex name with content negotiation
+     has found matching variants, but none are acceptable, return the
+     negotiation result if there are no more DirectoryIndex names lookup.
+     [Petr Lampa and Roy Fielding]
+
   *) If a soft_timeout occurs after keepalive is set, then the main child
      loop would try to read another request even though the connection
      has been aborted.  [Roy Fielding]

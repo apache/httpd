@@ -807,7 +807,7 @@ int handle_dir (request_rec *r)
 	char *name_ptr = getword_conf (r->pool, &names_ptr);
 	request_rec *rr = sub_req_lookup_uri (name_ptr, r);
            
-	if (rr->status == 200 && rr->finfo.st_mode != 0) {
+	if (rr->status == HTTP_OK && rr->finfo.st_mode != 0) {
 	    char* new_uri = escape_uri(r->pool, rr->uri);
 
 	    if (rr->args != NULL)
@@ -822,7 +822,9 @@ int handle_dir (request_rec *r)
 
 	/* If the request returned a redirect, propagate it to the client */
 
-	if (is_HTTP_REDIRECT(rr->status)) {
+	if (is_HTTP_REDIRECT(rr->status) ||
+	    (rr->status == HTTP_NOT_ACCEPTABLE && *names_ptr == '\0')) {
+
 	    error_notfound = rr->status;
 	    r->notes = overlay_tables(r->pool, r->notes, rr->notes);
 	    r->headers_out = overlay_tables(r->pool, r->headers_out,
@@ -842,7 +844,7 @@ int handle_dir (request_rec *r)
 	 * exist, we return the last error response we got, instead
 	 * of a directory listing.
 	 */
-	if (rr->status && rr->status != 404 && rr->status != 200)
+	if (rr->status && rr->status != HTTP_NOT_FOUND && rr->status != HTTP_OK)
 	    error_notfound = rr->status;
 
         destroy_sub_req (rr);
