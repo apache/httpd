@@ -2749,7 +2749,7 @@ API_EXPORT(apr_status_t) ap_send_fd(apr_file_t *fd, request_rec *r, apr_off_t of
         
         do {
             rv = apr_read(fd, buf, &n);
-        } while (rv == APR_EINTR && !r->connection->aborted);
+        } while (APR_STATUS_IS_EINTR(rv) && !r->connection->aborted);
 
         /* Is this still the right check? maybe check for n==0 or rv == APR_EOF? */
         if (n < 1) {
