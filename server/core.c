@@ -3164,7 +3164,7 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
                        a bit shaky if changes are made to some of the
                        buffering sizes. Let's do an assert to prevent
                        potential future problems... */
-                    AP_DEBUG_ASSERT(AP_MIN_BYTES_TO_WRITE <
+                    AP_DEBUG_ASSERT(AP_MIN_BYTES_TO_WRITE <=
                                     APR_BUCKET_BUFF_SIZE);
                     apr_brigade_write(ctx->b, NULL, NULL, str, n);
                 }
