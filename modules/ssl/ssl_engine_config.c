@@ -152,17 +152,9 @@ static void modssl_ctx_init_server(SSLSrvConfigRec *sc,
 
     modssl_ctx_init(mctx);
 
-    mctx->pks = apr_palloc(p, sizeof(*mctx->pks));
+    mctx->pks = apr_pcalloc(p, sizeof(*mctx->pks));
 
-    memset((void*)mctx->pks->cert_files, 0, sizeof(mctx->pks->cert_files));
-
-    memset((void*)mctx->pks->key_files, 0, sizeof(mctx->pks->key_files));
-
-    /* certs/keys are set during module init */
-
-    memset(mctx->pks->certs, 0, sizeof(mctx->pks->certs));
-
-    memset(mctx->pks->keys, 0, sizeof(mctx->pks->keys));
+    /* mctx->pks->... certs/keys are set during module init */
 }
 
 static SSLSrvConfigRec *ssl_config_server_new(apr_pool_t *p)
@@ -245,6 +237,9 @@ static void modssl_ctx_cfg_merge_server(modssl_ctx_t *base,
         cfgMergeString(pks->cert_files[i]);
         cfgMergeString(pks->key_files[i]);
     }
+
+    cfgMergeString(pks->ca_name_path);
+    cfgMergeString(pks->ca_name_file);
 }
 
 /*
@@ -831,6 +826,36 @@ const char *ssl_cmd_SSLCACertificateFile(cmd_parms *cmd,
 
     /* XXX: bring back per-dir */
     sc->server->auth.ca_cert_file = arg;
+
+    return NULL;
+}
+
+const char *ssl_cmd_SSLCADNRequestPath(cmd_parms *cmd, void *dcfg,
+                                       const char *arg)
+{
+    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+    const char *err;
+
+    if ((err = ssl_cmd_check_dir(cmd, &arg))) {
+        return err;
+    }
+
+    sc->server->pks->ca_name_path = arg;
+
+    return NULL;
+}
+
+const char *ssl_cmd_SSLCADNRequestFile(cmd_parms *cmd, void *dcfg,
+                                       const char *arg)
+{
+    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+    const char *err;
+
+    if ((err = ssl_cmd_check_file(cmd, &arg))) {
+        return err;
+    }
+
+    sc->server->pks->ca_name_file = arg;
 
     return NULL;
 }
