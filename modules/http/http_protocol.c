@@ -859,7 +859,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
             apr_brigade_flatten(bb, line, &len);
 
             ctx->remaining = get_chunk_size(line);
-            /* Detect invalid chunk sizes. */
+            /* Detect chunksize error (such as overflow) */
             if (ctx->remaining < 0) {
                 apr_brigade_cleanup(bb);
                 e = ap_bucket_error_create(HTTP_REQUEST_ENTITY_TOO_LARGE, NULL,
@@ -908,7 +908,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                 apr_brigade_flatten(bb, line, &len);
                 ctx->remaining = get_chunk_size(line);
 
-                /* Detect invalid chunk sizes. */
+                /* Detect chunksize error (such as overflow) */
                 if (ctx->remaining < 0) {
                     apr_brigade_cleanup(bb);
                     e = ap_bucket_error_create(HTTP_REQUEST_ENTITY_TOO_LARGE,
@@ -1690,8 +1690,9 @@ AP_DECLARE(int) ap_should_client_block(request_rec *r)
 static long get_chunk_size(char *b)
 {
     long chunksize = 0;
+    size_t chunkbits = sizeof(long) * 8;
 
-    while (apr_isxdigit(*b)) {
+    while (apr_isxdigit(*b) && (chunkbits > 0)) {
         int xvalue = 0;
 
         if (*b >= '0' && *b <= '9') {
@@ -1705,7 +1706,12 @@ static long get_chunk_size(char *b)
         }
 
         chunksize = (chunksize << 4) | xvalue;
+        chunkbits -= 4;
         ++b;
+    }
+    if (apr_isxdigit(*b) && (chunkbits <= 0)) {
+        /* overflow */
+        return -1;
     }
 
     return chunksize;
