@@ -310,6 +310,18 @@ static void set_signals(void)
     apr_signal(SIGTERM, sig_term);
 }
 
+int nlmUnloadSignaled()
+{
+    if (shutdown_pending == 1) {
+        printf ("Shutdown in progress. Please wait...\n");
+    }
+    else {
+        shutdown_pending = 1;
+        printf ("Shutdown signalled. Please wait...\n");
+    }
+    return 0;
+}
+
 /*****************************************************************
  * Child process main loop.
  * The following vars are static to avoid getting clobbered by longjmp();
@@ -790,7 +802,7 @@ static void show_server_data()
     ap_listen_rec *lr;
     module **m;
 
-    printf("%s \n", ap_get_server_version());
+    printf("%s ID: %d\n", ap_get_server_version(), getpid());
 
     /* Display listening ports */
     printf("   Listening on port(s):");
@@ -1030,31 +1042,56 @@ void netware_rewrite_args(process_rec *process)
 
 static int CommandLineInterpreter(scr_t screenID, const char *commandLine)
 {
+    char *szCommand = "APACHE2 ";
+    int iCommandLen = 8;
+    char szcommandLine[256];
+    char *pID;
     screenID = screenID;
+
+
+    if (commandLine == NULL)
+        return NOTMYCOMMAND;
+
+    strncpy (szcommandLine, commandLine, sizeof(szcommandLine)-1);
+
     /*  All added commands begin with "HTTPD " */
 
-    if (!strnicmp("HTTPD ", commandLine, 6)) {
+    if (!strnicmp(szCommand, szcommandLine, iCommandLen)) {
         ActivateScreen (getscreenhandle());
 
-        if (!strnicmp("RESTART",&commandLine[6],3)) {
+        /* If an instance id was not given but the nlm is loaded in 
+            protected space, then the the command belongs to the
+            OS address space instance to pass it on. */
+        pID = strstr (szcommandLine, "-p");
+        if ((pID == NULL) && nlmisloadedprotected())
+            return NOTMYCOMMAND;
+
+        /* If we got an instance id but it doesn't match this 
+            instance of the nlm, pass it on. */
+        if (pID && (atoi(&pID[2]) != getpid()))
+            return NOTMYCOMMAND;
+
+        /* If we have determined that this command belongs to this
+            instance of the nlm, then handle it. */
+        if (!strnicmp("RESTART",&szcommandLine[iCommandLen],3)) {
             printf("Restart Requested...\n");
             restart();
         }
-        else if (!strnicmp("VERSION",&commandLine[6],3)) {
+        else if (!strnicmp("VERSION",&szcommandLine[iCommandLen],3)) {
             printf("Server version: %s\n", ap_get_server_version());
             printf("Server built:   %s\n", ap_get_server_built());
         }
-        else if (!strnicmp("MODULES",&commandLine[6],3)) {
+        else if (!strnicmp("MODULES",&szcommandLine[iCommandLen],3)) {
     	    ap_show_modules();
         }
-        else if (!strnicmp("DIRECTIVES",&commandLine[6],3)) {
+        else if (!strnicmp("DIRECTIVES",&szcommandLine[iCommandLen],3)) {
 	        ap_show_directives();
         }
-        else if (!strnicmp("SHUTDOWN",&commandLine[6],3)) {
+        else if (!strnicmp("SHUTDOWN",&szcommandLine[iCommandLen],3)) {
             printf("Shutdown Requested...\n");
             shutdown_pending = 1;
         }
-        else if (!strnicmp("SETTINGS",&commandLine[6],3)) {
+        else if (!strnicmp("SETTINGS",&szcommandLine[iCommandLen],3)) {
             if (show_settings) {
                 show_settings = 0;
                 ClearScreen (getscreenhandle());
@@ -1066,7 +1103,18 @@ static int CommandLineInterpreter(scr_t screenID, const char *commandLine)
             }
         }
         else {
-            printf("Unknown HTTPD command %s\n", &commandLine[6]);
+            show_settings = 0;
+            if (!strnicmp("HELP",&szcommandLine[iCommandLen],3))
+                printf("Unknown HTTPD command %s\n", &szcommandLine[iCommandLen]);
+            printf("Usage: HTTPD [command] [-p <instance ID>]\n");
+            printf("Commands:\n");
+            printf("\tDIRECTIVES - Show directives\n");
+            printf("\tHELP       - Display this help information\n");
+            printf("\tMODULES    - Show a list of the loaded modules\n");
+            printf("\tRESTART    - Reread the configurtion file and restart Apache\n");
+            printf("\tSETTINGS   - Show current thread status\n");
+            printf("\tSHUTDOWN   - Shutdown Apache\n");
+            printf("\tVERSION    - Display the server version information\n");
         }
 
         /*  Tell NetWare we handled the command */
