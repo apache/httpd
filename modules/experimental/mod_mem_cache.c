@@ -96,6 +96,7 @@ typedef struct mem_cache_object {
     apr_size_t m_len;
     void *m;
     apr_os_file_t fd;
+    apr_int32_t flags;  /* File open flags */
     long priority;      /**< the priority of this entry */
     long total_refs;          /**< total number of references this entry has had */
 
@@ -801,7 +802,7 @@ static apr_status_t read_body(cache_handle_t *h, apr_pool_t *p, apr_bucket_briga
     if (mobj->type == CACHE_TYPE_FILE) {
         /* CACHE_TYPE_FILE */
         apr_file_t *file;
-        apr_os_file_put(&file, &mobj->fd, APR_READ|APR_XTHREAD, p);
+        apr_os_file_put(&file, &mobj->fd, mobj->flags, p);
         b = apr_bucket_file_create(file, 0, mobj->m_len, p, bb->bucket_alloc);
     }
     else {
@@ -929,8 +930,9 @@ static apr_status_t write_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
             const char *name;
             /* Open a new XTHREAD handle to the file */
             apr_file_name_get(&name, file);
-            rv = apr_file_open(&tmpfile, name, 
-                               APR_READ | APR_BINARY | APR_XTHREAD | APR_FILE_NOCLEANUP,
+            mobj->flags = ((APR_SENDFILE_ENABLED & apr_file_flags_get(file))
+                           | APR_READ | APR_BINARY | APR_XTHREAD | APR_FILE_NOCLEANUP);
+            rv = apr_file_open(&tmpfile, name, mobj->flags,
                                APR_OS_DEFAULT, r->pool);
             if (rv != APR_SUCCESS) {
                 return rv;
