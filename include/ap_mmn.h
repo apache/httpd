@@ -111,7 +111,7 @@
  * 20020625 (2.0.40-dev) Changed conn_rec->keepalive to an enumeration
  * 20020628 (2.0.40-dev) Added filter_init to filter registration functions
  * 20020903 (2.0.41-dev) APR's error constants changed
- * 20020903.1 (2.0.44-dev) allow_encoded_slashes added to core_dir_config
+ * 20020903.1 (2.1.0-dev) allow_encoded_slashes added to core_dir_config
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503230UL /* "AP20" */
