@@ -565,7 +565,7 @@ AP_DECLARE(void) ap_internal_fast_redirect(request_rec *rr, request_rec *r)
      * rr->pool.
      */
     apr_pool_join(r->pool, rr->pool);
-    r->mtime = rr->mtime; /* reset etag info for subrequest */
+    r->mtime = rr->mtime;
     r->uri = rr->uri;
     r->args = rr->args;
     r->filename = rr->filename;
