@@ -113,7 +113,6 @@
 #endif
 
 #if APR_HAS_THREADS
-#include "apr_lock.h"
 #include "apr_thread_mutex.h"
 #endif
 #include "ap_config.h"
