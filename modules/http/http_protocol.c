@@ -2148,6 +2148,23 @@ API_EXPORT(int) ap_discard_request_body(request_rec *r)
     return OK;
 }
 
+/* if this is the first error, then log an INFO message and shut down the
+ * connection.
+ */
+static void check_first_conn_error(const request_rec *r, const char *operation,
+                                   ap_status_t status)
+{
+    if (!ap_is_aborted(r->connection)) {
+        if (status == 0)
+            status = ap_berror(r->connection->client);
+        ap_log_rerror(APLOG_MARK, APLOG_INFO, status, r,
+                      "client stopped connection before %s completed",
+                      operation);
+        ap_bsetflag(r->connection->client, B_EOUT, 1);
+        r->connection->aborted = 1;
+    }
+}
+
 /*
  * Send the body of a response to the client.
  */
@@ -2223,12 +2240,7 @@ API_EXPORT(long) ap_send_fd_length(ap_file_t *fd, request_rec *r, long length)
                 o += w;
             }
             else if (rv != APR_SUCCESS) {
-                if (!ap_is_aborted(r->connection)) {
-                    ap_log_rerror(APLOG_MARK, APLOG_INFO, rv, r,
-                     "client stopped connection before send body completed");
-                    ap_bsetflag(r->connection->client, B_EOUT, 1);
-                    r->connection->aborted = 1;
-                }
+                check_first_conn_error(r, "send-body", rv);
                 break;
             }
         }
@@ -2282,12 +2294,7 @@ API_EXPORT(long) ap_send_fb_length(BUFF *fb, request_rec *r, long length)
                 o += w;
             }
             else if (rv != APR_SUCCESS) {
-                if (!ap_is_aborted(r->connection)) {
-                    ap_log_rerror(APLOG_MARK, APLOG_INFO, rv, r,
-                                  "client stopped connection before rflush completed");
-                    ap_bsetflag(r->connection->client, B_EOUT, 1);
-                    r->connection->aborted = 1;
-                }
+                check_first_conn_error(r, "rflush", rv);
                 break;
             }
         }
@@ -2377,10 +2384,7 @@ API_EXPORT(size_t) ap_send_mmap(ap_mmap_t *mm, request_rec *r, size_t offset,
                 else if (ap_canonical_error(rv) == APR_EAGAIN)
                     continue;
                 else {
-                    ap_log_rerror(APLOG_MARK, APLOG_INFO, rv, r,
-                     "client stopped connection before send mmap completed");
-                    ap_bsetflag(r->connection->client, B_EOUT, 1);
-                    r->connection->aborted = 1;
+                    check_first_conn_error(r, "send-mmap", rv);
                     break;
                 }
             }
@@ -2398,13 +2402,7 @@ API_EXPORT(int) ap_rputc(int c, request_rec *r)
         return EOF;
 
     if (ap_bputc(c, r->connection->client) < 0) {
-        if (!r->connection->aborted) {
-            ap_log_rerror(APLOG_MARK, APLOG_INFO,
-                ap_berror(r->connection->client), r,
-                "client stopped connection before rputc completed");
-            ap_bsetflag(r->connection->client, B_EOUT, 1);
-            r->connection->aborted = 1;
-        }
+        check_first_conn_error(r, "rputc", 0);
         return EOF;
     }
     SET_BYTES_SENT(r);
@@ -2420,13 +2418,7 @@ API_EXPORT(int) ap_rputs(const char *str, request_rec *r)
     
     rcode = ap_bputs(str, r->connection->client);
     if (rcode < 0) {
-        if (!r->connection->aborted) {
-            ap_log_rerror(APLOG_MARK, APLOG_INFO,
-                ap_berror(r->connection->client), r,
-                "client stopped connection before rputs completed");
-            ap_bsetflag(r->connection->client, B_EOUT, 1);
-            r->connection->aborted = 1;
-        }
+        check_first_conn_error(r, "rputs", 0);
         return EOF;
     }
     SET_BYTES_SENT(r);
@@ -2443,87 +2435,64 @@ API_EXPORT(int) ap_rwrite(const void *buf, int nbyte, request_rec *r)
 
     rv = ap_bwrite(r->connection->client, buf, nbyte, &n);
     if (n < 0) {
-        if (!r->connection->aborted) {
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, rv, r,
-                "client stopped connection before rwrite completed");
-            ap_bsetflag(r->connection->client, B_EOUT, 1);
-            r->connection->aborted = 1;
-        }
+        check_first_conn_error(r, "rwrite", rv);
         return EOF;
     }
     SET_BYTES_SENT(r);
     return n;
 }
 
-API_EXPORT(int) ap_vrprintf(request_rec *r, const char *fmt, va_list ap)
+API_EXPORT(int) ap_vrprintf(request_rec *r, const char *fmt, va_list va)
 {
     int n;
 
     if (r->connection->aborted)
         return EOF;
 
-    n = ap_vbprintf(r->connection->client, fmt, ap);
+    n = ap_vbprintf(r->connection->client, fmt, va);
 
     if (n < 0) {
-        if (!r->connection->aborted) {
-            ap_log_rerror(APLOG_MARK, APLOG_INFO,
-                ap_berror(r->connection->client), r,
-                "client stopped connection before vrprintf completed");
-            ap_bsetflag(r->connection->client, B_EOUT, 1);
-            r->connection->aborted = 1;
-        }
+        check_first_conn_error(r, "vrprintf", 0);
         return EOF;
     }
     SET_BYTES_SENT(r);
     return n;
 }
 
-API_EXPORT(int) ap_rprintf(request_rec *r, const char *fmt,...)
+API_EXPORT_NONSTD(int) ap_rprintf(request_rec *r, const char *fmt, ...)
 {
-    va_list vlist;
+    va_list va;
     int n;
 
     if (r->connection->aborted)
         return EOF;
 
-    va_start(vlist, fmt);
-    n = ap_vbprintf(r->connection->client, fmt, vlist);
-    va_end(vlist);
+    va_start(va, fmt);
+    n = ap_vbprintf(r->connection->client, fmt, va);
+    va_end(va);
 
     if (n < 0) {
-        if (!r->connection->aborted) {
-            ap_log_rerror(APLOG_MARK, APLOG_INFO,
-                ap_berror(r->connection->client), r,
-                "client stopped connection before rprintf completed");
-            ap_bsetflag(r->connection->client, B_EOUT, 1);
-            r->connection->aborted = 1;
-        }
+        check_first_conn_error(r, "rprintf", 0);
         return EOF;
     }
     SET_BYTES_SENT(r);
     return n;
 }
 
-API_EXPORT_NONSTD(int) ap_rvputs(request_rec *r,...)
+API_EXPORT_NONSTD(int) ap_rvputs(request_rec *r, ...)
 {
-    va_list args;
+    va_list va;
     int n;
 
     if (r->connection->aborted)
         return EOF;
 
-    va_start(args, r);
-    n = ap_vbputstrs(r->connection->client, args);
-    va_end(args);
+    va_start(va, r);
+    n = ap_vbputstrs(r->connection->client, va);
+    va_end(va);
 
     if (n < 0) {
-        if (!r->connection->aborted) {
-            ap_log_rerror(APLOG_MARK, APLOG_INFO,
-                          ap_berror(r->connection->client), r,
-                          "client stopped connection before rvputs completed");
-            ap_bsetflag(r->connection->client, B_EOUT, 1);
-            r->connection->aborted = 1;
-        }
+        check_first_conn_error(r, "rvputs", 0);
         return EOF;
     }
 
@@ -2536,12 +2505,7 @@ API_EXPORT(int) ap_rflush(request_rec *r)
     ap_status_t rv;
 
     if ((rv = ap_bflush(r->connection->client)) != APR_SUCCESS) {
-        if (!ap_is_aborted(r->connection)) {
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, rv, r,
-                "client stopped connection before rflush completed");
-            ap_bsetflag(r->connection->client, B_EOUT, 1);
-            r->connection->aborted = 1;
-        }
+        check_first_conn_error(r, "rflush", rv);
         return EOF;
     }
     return 0;
