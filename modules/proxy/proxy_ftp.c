@@ -1640,10 +1640,13 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     /* responses: 221, 500 */
     /*   221 Service closing control connection. */
     /*   500 Syntax error, command unrecognized. */
-    i = ftp_getrc_msg(origin, cbb, buffer, sizeof(buffer));
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
-                 "proxy: FTP: %d %s", i, buffer);
-
+    /* FIXME
+     * Using ftp_getrc_msg is blocking here (in fact, anywhere after the
+     * while loop in section VI). Disabling for now, to get things working.
+     * i = ftp_getrc_msg(origin, cbb, buffer, sizeof(buffer));
+     * ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+     *           "proxy: FTP: %d %s", i, buffer);
+     */
     apr_brigade_destroy(bb);
     return OK;
 }
