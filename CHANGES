@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Fix bug in mod_usertrack when no CookieName is set.  PR 24483.
+     [Manni Wood <manniwood planet-save.com>]
+
   *) Remove compile-time length limit on request strings. Length is
      now enforced solely with the LimitRequestLine config directive.
      [Paul J. Reder]
