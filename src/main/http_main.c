@@ -2465,7 +2465,7 @@ static void perform_idle_server_maintenance ()
 	 * shut down gracefully, in case it happened to pick up a request
 	 * while we were counting
 	 */
-	kill (SIGUSR1, scoreboard_image->servers[to_kill].pid);
+	kill (scoreboard_image->servers[to_kill].pid, SIGUSR1);
     } else if (idle_count < daemons_min_free) {
 	if (free_slot == -1) {
 	    /* only report this condition once */
