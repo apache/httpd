@@ -276,9 +276,6 @@ static long int send_dir(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c,
 	site = pstrndup(r->pool, tempurl, hostlen);
     }
 
-    /* Save "scheme://site" prefix */
-    site = pstrndup(r->pool, tempurl, hostlen);
-
     /* Copy path, strip (all except the last) trailing slashes */
     path = dir = pstrcat(r->pool, tempurl+hostlen, "/", NULL);
     while ((n = strlen(path)) > 1 && path[n-1] == '/' && path[n-2] == '/')
