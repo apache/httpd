@@ -4,6 +4,9 @@ Changes with Apache 2.1.5
 
 Changes with Apache 2.1.4
 
+  *) Fix Windows CompContext buff size miscalculation
+     [Allan Edwards]
+
   *) Add ReceiveBufferSize directive to control the TCP receive buffer.
      [Eric Covener <covener gmail.com>]
 
