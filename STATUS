@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/07/21 06:47:58 $]
+Last modified at [$Date: 2001/07/23 18:00:16 $]
 
 Release:
 
@@ -106,9 +106,6 @@ RELEASE SHOWSTOPPERS:
 
     WARNING: ALWAYS check srclib/apr/STATUS and srclib/apr-util/STATUS
 
-    * Win32: Rotatelogs sometimes is not terminated when Apache
-      goes down hard.  Need parent tracking the child's processes.
-
     * There is a bug in how we sort some hooks, at least the pre-config
       hook.  The first time we call the hooks, they are in the correct 
       order, but the second time, we don't sort them correctly.  Currently,
@@ -116,13 +113,10 @@ RELEASE SHOWSTOPPERS:
       modules/http/config2.m4 to work around this problem, it should moved
       back when this is fixed.    rbb
 
-    * Win32: Complete the revamp the service environment and relocation
-        into the WinNT MPM.  Changes ServerRoot service registry 
-        parameter into ConfigArgs for multiple service startup parameters.
-        Problems to fix in the revamp: -k shutdown/restart are broken, 
-        signals are not being acknowledged.  Close window and shutdown 
-        also seem out of sorts.
-        OtherBill is working on this and will finish over the weekend.
+    * We need a thread-safe resolver, at least on Unix.
+        Status: The best known candidate would be something from
+	BIND v9.
+        Status: Greg asks, "why? doesn't gethostbyname_r() handle this?"
 
     * The AddInputFilter and AddOutputFilter directives do not allow the
       administrator to remove or reorder filters.  Once a filter is added
@@ -166,14 +160,15 @@ RELEASE SHOWSTOPPERS:
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
-    * Win32: Get Apache working on Windows 95/98. The following work
-	(at least) needs to be done:
-	- winnt MPM: Fix 95/98 code paths in the winnt MPM. There is some NT
-	specific code that is still not in NT only code paths
-	- IOL binds to APR sendfile, implemented with TransmitFile, which 
-        is not available on 95/98.
-        - Document warning that OSR2 is required (for Crypt functions, in
-        rand.c, at least.)
+
+    * Win32: Rotatelogs sometimes is not terminated when Apache
+      goes down hard.  FirstBill was looking at possibly tracking the 
+      child's-child processes in the parent process.
+
+    * Win32: Add a simple hold console open patch (wait for close or
+        the ESC key, with a nice message) if the server died a bad 
+        death (non-zero exit code) in console mode.
+        Resolution: bring forward same ugly hacks from 1.3.13-.20
 
     * Port of mod_ssl to Apache 2.0:
 
@@ -237,16 +232,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
     * OS/2: Make mod_status work for spmt_os2 MPM.
 
-    * Win32: Win9x console window still won't play nice with the
-        close window, logoff and shutdown scenarios.
-        Status: OtherBill will move the patch forward from 1.3.15, once we 
-        get our other Win9x issues solved.
-
-    * Win32: Add a simple hold console open patch (wait for close or
-        the ESC key, with a nice message) if the server died a bad 
-        death (non-zero exit code) in console mode.
-        Status: OtherBill is bringing forward same ugly hack from 1.3.13
-
     * Platforms that do not support fork (primarily Win32 and AS/400)
       Architect start-up code that avoids initializing all the modules 
       in the parent process on platforms that do not support fork.
@@ -307,6 +292,23 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
     * when prefork bails out due to an initialization error in the detached
       process (e.g., mutex init failure), other children (cgid, at least) 
       are left hanging around
+
+    * Win32 should grow version info on all .dll/.so/.exe binaries.  Pretty
+      simple with the right script (awk or perl), we just don't need to grow
+      dozens of new files in the repository to do so.
+      Suggested by: Jerker Back <info.jelmar@telia.com> PR 7388
+
+    * Win32: Get Apache working on Windows 95/98. The following work
+	(at least) needs to be done:
+	- winnt MPM: Fix 95/98 code paths in the winnt MPM. There is some NT
+	specific code that is still not in NT only code paths
+	- IOL binds to APR sendfile, implemented with TransmitFile, which 
+        is not available on 95/98.
+        - Document warning that OSR2 is required (for Crypt functions, in
+        rand.c, at least.)  This could be resolved with an SSL library, or
+        randomization in APR itself.
+        - Bring the Win9xConHook.dll from 1.3 into 2.0 (no sense till it
+        actually works) and add in a splash of Win9x service code.
 
 PRs that have been suspended forever waiting for someone to
 put them into 'the next release':
