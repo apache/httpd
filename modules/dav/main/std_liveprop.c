@@ -147,10 +147,12 @@ static dav_prop_insert dav_core_insert_prop(const dav_resource *resource,
 
     case DAV_PROPID_supported_live_property_set:
         /* ### insert all live property names ### */
+        return DAV_PROP_INSERT_NOTDEF;
         break;
 
     case DAV_PROPID_supported_method_set:
         /* ### leverage code from dav_method_options ### */
+        return DAV_PROP_INSERT_NOTDEF;
         break;
 
     case DAV_PROPID_supported_report_set:
@@ -216,7 +218,7 @@ static dav_prop_insert dav_core_insert_prop(const dav_resource *resource,
 
     /* assert: info != NULL && info->name != NULL */
 
-    if (insvalue) {
+    if (insvalue && *value != '\0') {
         s = apr_psprintf(p, "<lp%d:%s>%s</lp%d:%s>" DEBUG_CR,
                          global_ns, info->name, value, global_ns, info->name);
         which = DAV_PROP_INSERT_VALUE;
@@ -260,8 +262,8 @@ static const dav_hooks_liveprop dav_core_hooks_liveprop = {
     NULL,       /* patch_rollback */
 };
 
-int dav_core_find_liveprop(request_rec *r, const char *ns_uri,
-                           const char *name,
+int dav_core_find_liveprop(const dav_resource *resource,
+                           const char *ns_uri, const char *name,
                            const dav_hooks_liveprop **hooks)
 {
     return dav_do_find_liveprop(ns_uri, name, &dav_core_liveprop_group, hooks);

@@ -4071,10 +4071,10 @@ AP_IMPLEMENT_EXTERNAL_HOOK_VOID(DAV, gather_propsets,
                                 (apr_array_header_t *uris),
                                 (uris))
 AP_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(DAV, int, find_liveprop,
-                                     (request_rec *r, const char *ns_uri,
-                                      const char *name,
+                                     (const dav_resource *resource,
+                                      const char *ns_uri, const char *name,
                                       const dav_hooks_liveprop **hooks),
-                                     (r, ns_uri, name, hooks), 0);
+                                     (resource, ns_uri, name, hooks), 0);
 AP_IMPLEMENT_EXTERNAL_HOOK_VOID(DAV, insert_all_liveprops,
                                 (request_rec *r, const dav_resource *resource,
                                  int insvalue, ap_text_header *phdr),

@@ -354,7 +354,8 @@ static void dav_find_liveprop(dav_propdb *propdb, ap_xml_elem *elem)
     ns_uri = AP_XML_GET_URI_ITEM(propdb->ns_xlate, elem->ns);
 
     /* is there a liveprop provider for this property? */
-    propid = ap_run_find_liveprop(propdb->r, ns_uri, elem->name, &hooks);
+    propid = ap_run_find_liveprop(propdb->resource, ns_uri, elem->name,
+                                  &hooks);
     if (propid != 0) {
         priv->propid = propid;
         priv->provider = hooks;

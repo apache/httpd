@@ -1998,15 +1998,23 @@ void dav_fs_gather_propsets(apr_array_header_t *uris)
 #endif
 }
 
-int dav_fs_find_liveprop(request_rec *r, const char *ns_uri, const char *name,
+int dav_fs_find_liveprop(const dav_resource *resource,
+                         const char *ns_uri, const char *name,
                          const dav_hooks_liveprop **hooks)
 {
+    /* don't try to find any liveprops if this isn't "our" resource */
+    if (resource->hooks != &dav_hooks_repository_fs)
+        return 0;
     return dav_do_find_liveprop(ns_uri, name, &dav_fs_liveprop_group, hooks);
 }
 
 void dav_fs_insert_all_liveprops(request_rec *r, const dav_resource *resource,
                                  int insvalue, ap_text_header *phdr)
 {
+    /* don't insert any liveprops if this isn't "our" resource */
+    if (resource->hooks != &dav_hooks_repository_fs)
+        return;
+
     if (!resource->exists) {
 	/* a lock-null resource */
 	/*
