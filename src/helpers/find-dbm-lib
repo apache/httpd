@@ -15,15 +15,27 @@ if [ "x$found_dbm" = "x" ]; then
 		DBM_LIB=""
 		if ./helpers/TestCompile lib dbm dbm_open; then
 		    DBM_LIB="-ldbm"
+		    found_dbm=1
 		elif ./helpers/TestCompile lib ndbm dbm_open; then
 		    DBM_LIB="-lndbm"
+		    found_dbm=1
+		fi
+		;;
+	    *)
+		if [ "X$DBM_LIB" != "X" ]; then
+		    oldLIBS="$LIBS"
+		    LIBS="$LIBS $DBM_LIB"
+		    if ./helpers/TestCompile func dbm_open; then
+			found_dbm=1
+		    else
+			found_dbm=0
+			LIBS="$oldLIBS"
+		    fi
 		fi
 		;;
 	esac
-	LIBS="$LIBS $DBM_LIB"
-	if [ "X$DBM_LIB" != "X" ]; then
+	if [ "X$found_dbm" = "X1" ]; then
 	    echo " + using $DBM_LIB"
-	    found_dbm=1
 	fi
     fi
 fi
