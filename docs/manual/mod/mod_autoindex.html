@@ -334,6 +334,14 @@ This enables the extraction of the title from HTML documents for fancy
 indexing. If the file does not have a description given by
 <A HREF="#adddescription">AddDescription</A> then httpd will read the
 document for the value of the TITLE tag.  This is CPU and disk intensive.
+<DT>SuppressColumnSorting
+<DD>
+<!--%plaintext &lt;?INDEX {\tt SuppressColumnSorting} index option&gt; -->
+If specified, Apache will not make the column headings in a FancyIndexed
+directory listing into links for sorting.  The default behaviour is
+for them to be links; selecting the column heading will sort the directory
+listing by the values in that column.
+<STRONG>Only available in Apache 1.3 and later.</STRONG>
 <dt>SuppressDescription
 <dd>
 <!--%plaintext &lt;?INDEX {\tt SuppressDescription} index option&gt; -->
