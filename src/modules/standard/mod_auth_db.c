@@ -134,7 +134,8 @@ static command_rec db_auth_cmds[] = {
 
 module db_auth_module;
 
-static char *get_db_pw(request_rec *r, char *user, const char *auth_dbpwfile) {
+static char *get_db_pw(request_rec *r, char *user, const char *auth_dbpwfile)
+{
     DB *f; 
     DBT d, q; 
     char *pw = NULL;
@@ -142,13 +143,14 @@ static char *get_db_pw(request_rec *r, char *user, const char *auth_dbpwfile) {
     q.data = user; 
     q.size = strlen(q.data); 
     
-    if(!(f=dbopen(auth_dbpwfile,O_RDONLY,0664,DB_HASH,NULL))) {
-        log_reason ("could not open db auth file", auth_dbpwfile, r);
+    if (!(f = dbopen(auth_dbpwfile,O_RDONLY,0664,DB_HASH,NULL))) {
+        aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+		    "could not open db auth file: %s", auth_dbpwfile);
 	return NULL;
     }
 
     if (!((f->get)(f,&q,&d,0))) {
-        pw = palloc (r->pool, d.size + 1);
+        pw = palloc(r->pool, d.size + 1);
 	strncpy(pw,d.data,d.size);
 	pw[d.size] = '\0';         /* Terminate the string */
     }
@@ -185,36 +187,35 @@ static char *get_db_grp(request_rec *r, char *user, const char *auth_dbgrpfile) 
 static int db_authenticate_basic_user (request_rec *r)
 {
     db_auth_config_rec *sec =
-      (db_auth_config_rec *)get_module_config (r->per_dir_config,
+	(db_auth_config_rec *)get_module_config(r->per_dir_config,
 						&db_auth_module);
     conn_rec *c = r->connection;
     char *sent_pw, *real_pw, *colon_pw;
     char errstr[MAX_STRING_LEN];
     int res;
     
-    if ((res = get_basic_auth_pw (r, &sent_pw)))
+    if ((res = get_basic_auth_pw(r, &sent_pw)))
         return res;
     
-    if(!sec->auth_dbpwfile)
+    if (!sec->auth_dbpwfile)
         return DECLINED;
 	
-    if(!(real_pw = get_db_pw(r, c->user, sec->auth_dbpwfile))) {
+    if (!(real_pw = get_db_pw(r, c->user, sec->auth_dbpwfile))) {
 	if (!(sec -> auth_dbauthoritative))
 	    return DECLINED; 
         ap_snprintf(errstr, sizeof(errstr), "DB user %s not found", c->user);
-	log_reason (errstr, r->filename, r);
-	note_basic_auth_failure (r);
+	aplog_error(APLOG_MARK, APLOG_ERR, r->server, "%s: %s", errstr, r->filename);
+	note_basic_auth_failure(r);
 	return AUTH_REQUIRED;
     }    
     /* Password is up to first : if exists */
     colon_pw = strchr(real_pw,':');
     if (colon_pw) *colon_pw='\0';   
     /* anyone know where the prototype for crypt is? */
-    if(strcmp(real_pw,(char *)crypt(sent_pw,real_pw))) {
-        ap_snprintf(errstr, sizeof(errstr), 
-		"user %s: password mismatch",c->user);
-	log_reason (errstr, r->uri, r);
-	note_basic_auth_failure (r);
+    if (strcmp(real_pw,(char *)crypt(sent_pw,real_pw))) {
+        ap_snprintf(errstr, sizeof(errstr), "user %s: password mismatch",c->user);
+	aplog_error(APLOG_MARK, APLOG_ERR, r->server, "%s: %s", errstr, r->uri);
+	note_basic_auth_failure(r);
 	return AUTH_REQUIRED;
     }
     return OK;
@@ -222,9 +223,10 @@ static int db_authenticate_basic_user (request_rec *r)
     
 /* Checking ID */
     
-static int db_check_auth(request_rec *r) {
+static int db_check_auth(request_rec *r)
+{
     db_auth_config_rec *sec =
-      (db_auth_config_rec *)get_module_config (r->per_dir_config,
+	(db_auth_config_rec *)get_module_config(r->per_dir_config,
 						&db_auth_module);
     char *user = r->connection->user;
     int m = r->method_number;
@@ -240,14 +242,14 @@ static int db_check_auth(request_rec *r) {
     if (!sec->auth_dbgrpfile) return DECLINED;
     if (!reqs_arr) return DECLINED;
     
-    for(x=0; x < reqs_arr->nelts; x++) {
+    for (x = 0; x < reqs_arr->nelts; x++) {
       
 	if (! (reqs[x].method_mask & (1 << m))) continue;
 	
         t = reqs[x].requirement;
         w = getword(r->pool, &t, ' ');
 	
-        if(!strcmp(w,"group") && sec->auth_dbgrpfile) {
+        if (!strcmp(w,"group") && sec->auth_dbgrpfile) {
 	   const char *orig_groups,*groups;
            char *v;
 
@@ -255,25 +257,25 @@ static int db_check_auth(request_rec *r) {
 	       if (!(sec->auth_dbauthoritative))
 		 return DECLINED;
                ap_snprintf(errstr, sizeof(errstr), 
-			"user %s not in DB group file %s",
-			user, sec->auth_dbgrpfile);
-	       log_reason (errstr, r->filename, r);
-	       note_basic_auth_failure (r);
+			   "user %s not in DB group file %s",
+			   user, sec->auth_dbgrpfile);
+	       aplog_error(APLOG_MARK, APLOG_ERR, "%s: %s", errstr, r->filename);
+	       note_basic_auth_failure(r);
 	       return AUTH_REQUIRED;
            }
            orig_groups = groups;
-           while(t[0]) {
+           while (t[0]) {
                w = getword(r->pool, &t, ' ');
                groups = orig_groups;
-               while(groups[0]) {
+               while (groups[0]) {
                    v = getword(r->pool, &groups,',');
-                   if(!strcmp(v,w))
+                   if (!strcmp(v,w))
                        return OK;
                }
            }
            ap_snprintf(errstr, sizeof(errstr), 
-		"user %s not in right group",user);
-	   log_reason (errstr, r->filename, r);
+		       "user %s not in right group",user);
+	   aplog_error(APLOG_MARK, APLOG_ERR, "%s: %s", errstr, r->filename);
            note_basic_auth_failure(r);
 	   return AUTH_REQUIRED;
        }
