@@ -300,9 +300,8 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
     clear_connection(r->pool, r->headers_in);	/* Strip connection-based headers */
 
     f = ap_bcreate(p, B_RDWR | B_SOCKET);
-    ap_bpushfd(f, sock, sock);
+    ap_bpushfd(f, sock);
 
-    ap_hard_timeout("proxy send", r);
     ap_bvputs(f, r->method, " ", proxyhost ? url : urlptr, " HTTP/1.0" CRLF,
 	   NULL);
     if (destportstr != NULL && destport != DEFAULT_HTTP_PORT)
@@ -359,14 +358,10 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
 	    ap_bwrite(f, buffer, i);
     }
     ap_bflush(f);
-    ap_kill_timeout(r);
-
-    ap_hard_timeout("proxy receive", r);
 
     len = ap_bgets(buffer, sizeof buffer - 1, f);
     if (len == -1) {
 	ap_bclose(f);
-	ap_kill_timeout(r);
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
 		     "ap_bgets() - proxy receive - Error reading from remote server %s (length %d)",
 		     proxyhost ? proxyhost : desthost, len);
@@ -374,7 +369,6 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
 			     "Error reading from remote server");
     } else if (len == 0) {
 	ap_bclose(f);
-	ap_kill_timeout(r);
 	return ap_proxyerror(r, HTTP_BAD_GATEWAY,
 			     "Document contains no data");
     }
@@ -390,7 +384,6 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
 /* If not an HTTP/1 message or if the status line was > 8192 bytes */
 	if (buffer[5] != '1' || buffer[len - 1] != '\n') {
 	    ap_bclose(f);
-	    ap_kill_timeout(r);
 	    return HTTP_BAD_GATEWAY;
 	}
 	backasswards = 0;
@@ -448,7 +441,6 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
 
     c->hdrs = resp_hdrs;
 
-    ap_kill_timeout(r);
 
 /*
  * HTTP/1.0 requires us to accept 3 types of dates, but only generate
@@ -478,8 +470,6 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
 	ap_bclose(f);
 	return i;
     }
-
-    ap_hard_timeout("proxy receive", r);
 
 /* write status line */
     if (!r->assbackwards)
@@ -515,7 +505,6 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
 	    c = ap_proxy_cache_error(c);
 	}
     }
-    ap_kill_timeout(r);
 
 #ifdef CHARSET_EBCDIC
     /* What we read/write after the header should not be modified

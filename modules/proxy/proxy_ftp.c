@@ -396,7 +396,6 @@ static long int send_dir(BUFF *f, request_rec *r, cache_req *c, char *cwd)
 	    w = ap_bwrite(con->client, &buf[o], n);
 	    if (w <= 0)
 		break;
-	    ap_reset_timeout(r);	/* reset timeout after successfule write */
 	    n -= w;
 	    o += w;
 	}
@@ -515,9 +514,9 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 	 * because it has the lifetime of the connection.  The other allocations
 	 * are temporary and can be tossed away any time.
 	 */
-	user = ap_getword_nulls (r->connection->pool, &password, ':');
-	r->connection->ap_auth_type = "Basic";
-	r->connection->user = r->parsed_uri.user = user;
+	user = ap_getword_nulls (r->pool, &password, ':');
+	r->ap_auth_type = "Basic";
+	r->user = r->parsed_uri.user = user;
 	nocache = 1;	/* This resource only accessible with username/password */
     }
     else if ((user = r->parsed_uri.user) != NULL) {
@@ -612,7 +611,7 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
     }
 
     f = ap_bcreate(p, B_RDWR | B_SOCKET);
-    ap_bpushfd(f, sock, sock);
+    ap_bpushfd(f, sock);
 /* shouldn't we implement telnet control options here? */
 
 #ifdef CHARSET_EBCDIC
@@ -623,17 +622,14 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
     /* 120 Service ready in nnn minutes. */
     /* 220 Service ready for new user. */
     /* 421 Service not available, closing control connection. */
-    ap_hard_timeout("proxy ftp", r);
     i = ftp_getrc_msg(f, resp, sizeof resp);
     Explain1("FTP: returned status %d", i);
     if (i == -1) {
-	ap_kill_timeout(r);
 	return ap_proxyerror(r, HTTP_BAD_GATEWAY,
-			     "Error reading from remote server");
+                             "Error reading from remote server");
     }
 #if 0
     if (i == 120) {
-	ap_kill_timeout(r);
 	/* RFC2068 states:
 	 * 14.38 Retry-After
 	 * 
@@ -649,7 +645,6 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
     }
 #endif
     if (i != 220) {
-	ap_kill_timeout(r);
 	return ap_proxyerror(r, HTTP_BAD_GATEWAY, resp);
     }
 
@@ -672,16 +667,13 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
     i = ftp_getrc(f);
     Explain1("FTP: returned status %d", i);
     if (i == -1) {
-	ap_kill_timeout(r);
 	return ap_proxyerror(r, HTTP_BAD_GATEWAY,
-			     "Error reading from remote server");
+                             "Error reading from remote server");
     }
     if (i == 530) {
-	ap_kill_timeout(r);
 	return ftp_unauthorized (r, 1);	/* log it: user name guessing attempt? */
     }
     if (i != 230 && i != 331) {
-	ap_kill_timeout(r);
 	return HTTP_BAD_GATEWAY;
     }
 
@@ -703,22 +695,16 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 	i = ftp_getrc(f);
 	Explain1("FTP: returned status %d", i);
 	if (i == -1) {
-	    ap_kill_timeout(r);
-	    return ap_proxyerror(r, HTTP_BAD_GATEWAY,
-				 "Error reading from remote server");
+	    return ap_proxyerror(r, HTTP_BAD_GATEWAY, "Error reading from remote server");
 	}
 	if (i == 332) {
-	    ap_kill_timeout(r);
-	    return ap_proxyerror(r, HTTP_UNAUTHORIZED,
-				 "Need account for login");
+	    return ap_proxyerror(r, HTTP_UNAUTHORIZED, "Need account for login");
 	}
 	/* @@@ questionable -- we might as well return a 403 Forbidden here */
 	if (i == 530) {
-	    ap_kill_timeout(r);
 	    return ftp_unauthorized (r, 1); /* log it: passwd guessing attempt? */
 	}
 	if (i != 230 && i != 202) {
-	    ap_kill_timeout(r);
 	    return HTTP_BAD_GATEWAY;
 	}
     }
@@ -749,16 +735,13 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 	i = ftp_getrc(f);
 	Explain1("FTP: returned status %d", i);
 	if (i == -1) {
-	    ap_kill_timeout(r);
 	    return ap_proxyerror(r, HTTP_BAD_GATEWAY,
-				 "Error reading from remote server");
+                                 "Error reading from remote server");
 	}
 	if (i == 550) {
-	    ap_kill_timeout(r);
 	    return HTTP_NOT_FOUND;
 	}
 	if (i != 250) {
-	    ap_kill_timeout(r);
 	    return HTTP_BAD_GATEWAY;
 	}
 
@@ -793,12 +776,10 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 	i = ftp_getrc(f);
 	Explain1("FTP: returned status %d", i);
 	if (i == -1) {
-	    ap_kill_timeout(r);
 	    return ap_proxyerror(r, HTTP_BAD_GATEWAY,
-				 "Error reading from remote server");
+                                 "Error reading from remote server");
 	}
 	if (i != 200 && i != 504) {
-	    ap_kill_timeout(r);
 	    return HTTP_BAD_GATEWAY;
 	}
 /* Allow not implemented */
@@ -812,7 +793,6 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
 		     "proxy: error creating PASV socket");
 	ap_bclose(f);
-	ap_kill_timeout(r);
 	return HTTP_INTERNAL_SERVER_ERROR;
     }
 
@@ -840,7 +820,6 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 		     "PASV: control connection is toast");
 	ap_pclosesocket(p, dsock);
 	ap_bclose(f);
-	ap_kill_timeout(r);
 	return HTTP_INTERNAL_SERVER_ERROR;
     }
     else {
@@ -875,11 +854,10 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 	    i = ap_proxy_doconnect(dsock, &data_addr, r);
 
 	    if (i == -1) {
-		ap_kill_timeout(r);
 		return ap_proxyerror(r, HTTP_BAD_GATEWAY,
-				     ap_pstrcat(r->pool,
-						"Could not connect to remote machine: ",
-						strerror(errno), NULL));
+                                     ap_pstrcat(r->pool,
+                                                "Could not connect to remote machine: ",
+                                                strerror(errno), NULL));
 	    }
 	    else {
 		pasvmode = 1;
@@ -895,7 +873,6 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 	    ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
 			 "proxy: error getting socket address");
 	    ap_bclose(f);
-	    ap_kill_timeout(r);
 	    return HTTP_INTERNAL_SERVER_ERROR;
 	}
 
@@ -904,7 +881,6 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 	    ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
 			 "proxy: error creating socket");
 	    ap_bclose(f);
-	    ap_kill_timeout(r);
 	    return HTTP_INTERNAL_SERVER_ERROR;
 	}
 
@@ -915,7 +891,6 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 			 "proxy: error setting reuseaddr option");
 	    ap_pclosesocket(p, dsock);
 	    ap_bclose(f);
-	    ap_kill_timeout(r);
 	    return HTTP_INTERNAL_SERVER_ERROR;
 #endif /*_OSD_POSIX*/
 	}
@@ -966,16 +941,13 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 		/* 550 Requested action not taken. */
 		Explain1("FTP: returned status %d", i);
 		if (i == -1) {
-		    ap_kill_timeout(r);
 		    return ap_proxyerror(r, HTTP_BAD_GATEWAY,
-					 "Error reading from remote server");
+                                         "Error reading from remote server");
 		}
 		if (i == 550) {
-		    ap_kill_timeout(r);
 		    return HTTP_NOT_FOUND;
 		}
 		if (i != 250) {
-		    ap_kill_timeout(r);
 		    return HTTP_BAD_GATEWAY;
 		}
 		path = "";
@@ -1005,12 +977,10 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
     i = ftp_getrc_msg(f, resp, sizeof resp);
     Explain1("FTP: PWD returned status %d", i);
     if (i == -1 || i == 421) {
-	ap_kill_timeout(r);
 	return ap_proxyerror(r, HTTP_BAD_GATEWAY,
-			     "Error reading from remote server");
+                             "Error reading from remote server");
     }
     if (i == 550) {
-	ap_kill_timeout(r);
 	return HTTP_NOT_FOUND;
     }
     if (i == 257) {
@@ -1050,9 +1020,8 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
     rc = ftp_getrc(f);
     Explain1("FTP: returned status %d", rc);
     if (rc == -1) {
-	ap_kill_timeout(r);
 	return ap_proxyerror(r, HTTP_BAD_GATEWAY,
-			     "Error reading from remote server");
+                             "Error reading from remote server");
     }
     if (rc == 550) {
 	Explain0("FTP: RETR failed, trying LIST instead");
@@ -1071,16 +1040,13 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 	rc = ftp_getrc(f);
 	Explain1("FTP: returned status %d", rc);
 	if (rc == -1) {
-	    ap_kill_timeout(r);
 	    return ap_proxyerror(r, HTTP_BAD_GATEWAY,
-				 "Error reading from remote server");
+                                 "Error reading from remote server");
 	}
 	if (rc == 550) {
-	    ap_kill_timeout(r);
 	    return HTTP_NOT_FOUND;
 	}
 	if (rc != 250) {
-	    ap_kill_timeout(r);
 	    return HTTP_BAD_GATEWAY;
 	}
 
@@ -1098,12 +1064,10 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 	i = ftp_getrc_msg(f, resp, sizeof resp);
 	Explain1("FTP: PWD returned status %d", i);
 	if (i == -1 || i == 421) {
-	    ap_kill_timeout(r);
 	    return ap_proxyerror(r, HTTP_BAD_GATEWAY,
-				 "Error reading from remote server");
+                                 "Error reading from remote server");
 	}
 	if (i == 550) {
-	    ap_kill_timeout(r);
 	    return HTTP_NOT_FOUND;
 	}
 	if (i == 257) {
@@ -1121,7 +1085,6 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 	    return ap_proxyerror(r, HTTP_BAD_GATEWAY,
 				 "Error reading from remote server");
     }
-    ap_kill_timeout(r);
     if (rc != 125 && rc != 150 && rc != 226 && rc != 250)
 	return HTTP_BAD_GATEWAY;
 
@@ -1171,7 +1134,6 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
     }
 
     if (!pasvmode) {		/* wait for connection */
-	ap_hard_timeout("proxy ftp data connect", r);
 	clen = sizeof(struct sockaddr_in);
 	do
 	    csd = accept(dsock, (struct sockaddr *) &server, &clen);
@@ -1181,22 +1143,19 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 			 "proxy: failed to accept data connection");
 	    ap_pclosesocket(p, dsock);
 	    ap_bclose(f);
-	    ap_kill_timeout(r);
 	    if (c != NULL)
 		c = ap_proxy_cache_error(c);
 	    return HTTP_BAD_GATEWAY;
 	}
 	ap_note_cleanups_for_socket(p, csd);
 	data = ap_bcreate(p, B_RDWR | B_SOCKET);
-	ap_bpushfd(data, csd, -1);
-	ap_kill_timeout(r);
+	ap_bpushfd(data, csd);
     }
     else {
 	data = ap_bcreate(p, B_RDWR | B_SOCKET);
-	ap_bpushfd(data, dsock, dsock);
+	ap_bpushfd(data, dsock);
     }
 
-    ap_hard_timeout("proxy receive", r);
 /* send response */
 /* write status line */
     if (!r->assbackwards)
@@ -1259,7 +1218,6 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 	Explain1("FTP: returned status %d", i);
     }
 
-    ap_kill_timeout(r);
     ap_proxy_cache_tidy(c);
 
 /* finish */
