@@ -24,10 +24,13 @@ host filesystem in the the document tree, and for URL redirection.
 <H2>Directives</H2>
 <UL>
 <li><A HREF="#alias">Alias</A>
+<li><A HREF="#aliasmatch">AliasMatch</A>
 <li><A HREF="#redirect">Redirect</A>
+<li><A HREF="#redirectmatch">RedirectMatch</A>
 <li><A HREF="#redirecttemp">RedirectTemp</A>
 <li><A HREF="#redirectperm">RedirectPermanent</A>
 <li><A HREF="#scriptalias">ScriptAlias</A>
+<li><A HREF="#scriptaliasmatch">ScriptAliasMatch</A>
 </UL>
 <hr>
 
@@ -62,6 +65,28 @@ the url <code>/icons</code> will not be aliased.
 <P>
 See also <A HREF="#scriptalias">ScriptAlias</A>.
 </p>
+<hr>
+
+<h2><A name="aliasmatch">AliasMatch</A></h2>
+<P>
+<strong>Syntax:</strong> AliasMatch <em>regex directory-filename</em><br>
+<Strong>Context:</strong> server config, virtual host<br>
+<strong>Status:</strong> Base<br>
+<strong>Module:</strong> mod_alias<br>
+<strong>Compatibility:</strong> Available in Apache 1.3 and later
+</P>
+
+<p>This directive is equivilent to <a href="#alias">Alias</a>, but
+makes use of standard regular expressions, instead of simple prefix
+matching. The supplied regular expression is matched against the URL,
+and if it matches, the server will substitute any parenthesized
+matches into the given string and use it as a filename. For example,
+to activate the <code>/icons</code> directory, one might use:
+<pre>
+    AliasMatch ^/icons(.*) /usr/local/etc/httpd/icons$1
+</pre>
+</p>
+
 <hr>
 
 <h2><A name="redirect">Redirect directive</A></h2>
@@ -128,6 +153,29 @@ the function <code>send_error_response</code> in http_protocol.c).
 </P>
 <HR>
 
+<h2><A name="redirectmatch">RedirectMatch</A></h2>
+<P>
+<strong>Syntax:</strong> RedirectMatch [<em>status</em> <em>regex url</em><br>
+<Strong>Context:</strong> server config, virtual host<br>
+<strong>Status:</strong> Base<br>
+<strong>Module:</strong> mod_alias<br>
+<strong>Compatibility:</strong> Available in Apache 1.3 and later
+</P>
+
+<p>This directive is equivilent to <a href="#alias">Redirect</a>, but
+makes use of standard regular expressions, instead of simple prefix
+matching. The supplied regular expression is matched against the URL,
+and if it matches, the server will substitute any parenthesized
+matches into the given string and use it as a filename. For example,
+to redirect all GIF files to like-named JPEG files on another server,
+one might use:
+<pre>
+    RedirectMatch (.*)\.gif$ http://www.anotherserver.com$1.jpg
+</pre>
+</p>
+
+<hr>
+
 <h2><A name="redirecttemp">RedirectTemp directive</A></h2>
 <P>
 <!--%plaintext &lt;?INDEX {\tt Redirect} directive&gt; -->
@@ -181,6 +229,28 @@ Example:
 A request for http://myserver/cgi-bin/foo would cause the server to
 run the script /web/cgi-bin/foo.
 </P>
+
+<hr>
+
+<h2><A name="scriptaliasmatch">ScriptAliasMatch</A></h2>
+<P>
+<strong>Syntax:</strong> ScriptAliasMatch <em>regex directory-filename</em><br>
+<Strong>Context:</strong> server config, virtual host<br>
+<strong>Status:</strong> Base<br>
+<strong>Module:</strong> mod_alias<br>
+<strong>Compatibility:</strong> Available in Apache 1.3 and later
+</P>
+
+<p>This directive is equivilent to <a href="#scriptalias">ScriptAlias</a>, but
+makes use of standard regular expressions, instead of simple prefix
+matching. The supplied regular expression is matched against the URL,
+and if it matches, the server will substitute any parenthesized
+matches into the given string and use it as a filename. For example,
+to activate the standard <code>/cgi-bin</code>, one might use:
+<pre>
+    ScriptAlias ^/cgi-bin(.*) /usr/local/etc/httpd/cgi-bin$1
+</pre>
+</p>
 
 <!--#include virtual="footer.html" -->
 </BODY>
