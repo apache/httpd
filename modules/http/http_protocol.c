@@ -1363,6 +1363,7 @@ request_rec *ap_read_request(conn_rec *conn)
 
     r->request_config  = ap_create_request_config(r->pool);
     req_cfg = apr_pcalloc(r->pool, sizeof(core_request_config));
+    req_cfg->bb = ap_brigade_create(r->pool);
     ap_set_module_config(r->request_config, &core_module, req_cfg);
                     
     r->per_dir_config  = r->server->lookup_defaults;
@@ -2375,6 +2376,16 @@ AP_DECLARE(int) ap_setup_client_block(request_rec *r, int read_policy)
         return HTTP_REQUEST_ENTITY_TOO_LARGE;
     }
 
+#ifdef AP_DEBUG
+    {
+        /* Make sure getline() didn't leave any droppings. */
+        core_request_config *req_cfg = 
+            (core_request_config *)ap_get_module_config(r->request_config,
+                                                        &core_module);
+        AP_DEBUG_ASSERT(AP_BRIGADE_EMPTY(req_cfg->bb));
+    }
+#endif
+
     return OK;
 }
 
@@ -2439,14 +2450,10 @@ AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
     apr_int32_t timeout;
     ap_bucket *b, *old;
     const char *tempbuf;
-    core_dir_config *conf =
-	(core_dir_config *)ap_get_module_config(r->per_dir_config,
-						&core_module);
-    ap_bucket_brigade *bb = conf->bb;
-
-    if (!bb) {
-        conf->bb = bb = ap_brigade_create(r->pool);
-    }
+    core_request_config *req_cfg =
+	(core_request_config *)ap_get_module_config(r->request_config,
+                                                    &core_module);
+    ap_bucket_brigade *bb = req_cfg->bb;
 
     do {
         if (AP_BRIGADE_EMPTY(bb)) {
