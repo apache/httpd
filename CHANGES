@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Allow LimitRequestBody to be reset to unlimited. PR 29106
+     [André Malo]
+
   *) Fix a segfault when requests for shared memory fails and returns
      NULL. Fix a segfault caused by a lack of bounds checking on the
      cache. PR 24801 [Graham Leggett]

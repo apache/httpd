@@ -48,6 +48,10 @@
 #include "mod_proxy.h"
 #include "ap_listen.h"
 
+/* LimitRequestBody handling */
+#define AP_LIMIT_REQ_BODY_UNSET         ((apr_off_t) -1)
+#define AP_DEFAULT_LIMIT_REQ_BODY       ((apr_off_t) 0)
+
 /* LimitXMLRequestBody handling */
 #define AP_LIMIT_UNSET                  ((long) -1)
 #define AP_DEFAULT_LIMIT_XML_BODY       ((size_t)1000000)
@@ -124,7 +128,7 @@ static void *create_core_dir_config(apr_pool_t *a, char *dir)
     conf->limit_nproc = NULL;
 #endif
 
-    conf->limit_req_body = 0;
+    conf->limit_req_body = AP_LIMIT_REQ_BODY_UNSET;
     conf->limit_xml_body = AP_LIMIT_UNSET;
     conf->sec_file = apr_array_make(a, 2, sizeof(ap_conf_vector_t *));
 
@@ -321,7 +325,7 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
     }
 #endif
 
-    if (new->limit_req_body) {
+    if (new->limit_req_body != AP_LIMIT_REQ_BODY_UNSET) {
         conf->limit_req_body = new->limit_req_body;
     }
 
@@ -952,6 +956,10 @@ AP_DECLARE(apr_off_t) ap_get_limit_req_body(const request_rec *r)
 {
     core_dir_config *d =
       (core_dir_config *)ap_get_module_config(r->per_dir_config, &core_module);
+
+    if (d->limit_req_body == AP_LIMIT_REQ_BODY_UNSET) {
+        return AP_DEFAULT_LIMIT_REQ_BODY;
+    }
 
     return d->limit_req_body;
 }
