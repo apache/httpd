@@ -60,6 +60,7 @@
 #include "http_main.h"
 #include "http_log.h"
 #include "unixd.h"
+#include <pwd.h>
 
 unixd_config_rec unixd_config;
 

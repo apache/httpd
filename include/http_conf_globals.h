@@ -64,16 +64,7 @@ extern "C" {
 
 /* TODO: this file should be deleted after the other todos are dealt with */
 
-/* TODO: extern MODULE_VAR_EXPORT int ap_suexec_enabled; */
-#define ap_suexec_enabled (0)
-/* TODO: extern API_VAR_EXPORT int ap_extended_status; */
-
 /* TODO: extern enum server_token_type ap_server_tokens; */
-
-/* We want this to have the least chance of being corrupted if there
- * is some memory corruption, so we allocate it statically.
- */
-/* TODO: extern char ap_coredump_dir[MAX_STRING_LEN]; */
 
 /* TODO: extern int ap_configtestonly;  ... although it pains me because this breaks an abstraction */
 /* TODO: extern int ap_docrootcheck; */

@@ -64,6 +64,7 @@
 #include "mpm_status.h"
 #include "http_config.h"
 #include "http_vhost.h"
+#include "ap_config.h"
 
 HOOK_STRUCT(
 	    HOOK_LINK(pre_connection)

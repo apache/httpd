@@ -1,3 +1,4 @@
+#include "ap_config.h"
 #include "httpd.h"
 #include "http_log.h"
 #include "http_main.h"
@@ -8,8 +9,8 @@
 #include "mpm_status.h"
 #include "mpmt_pthread.h"
 #include "scoreboard.h"
-#ifdef USE_SHMGET_SCOREBOARD
 #include <sys/types.h>
+#ifdef USE_SHMGET_SCOREBOARD
 #include <sys/ipc.h>
 #include <sys/shm.h>
 #endif
@@ -411,8 +412,6 @@ API_EXPORT(void) reopen_scoreboard(ap_context_t *p)
 #else
 #define SCOREBOARD_FILE
 static scoreboard _scoreboard_image;
-static int scoreboard_fd = -1;
-static ap_file_t *scoreboard_file = NULL;
 static ap_file_t *scoreboard_file = NULL;
 
 /* XXX: things are seriously screwed if we ever have to do a partial
@@ -456,7 +455,7 @@ static void cleanup_scoreboard_file(void *foo)
 API_EXPORT(void) reopen_scoreboard(ap_context_t *p)
 {
     if (scoreboard_fd != -1)
-	ap_close(scoreboard_fd);
+	ap_close(scoreboard_file);
 
     ap_open(p, ap_scoreboard_fname, APR_CREATE | APR_BINARY | APR_READ | APR_WRITE,
             APR_UREAD | APR_UWRITE | APR_GREAD | APR_GWRITE | APR_WREAD | APR_WWRITE,

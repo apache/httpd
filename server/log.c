@@ -64,6 +64,7 @@
 
 
 #define CORE_PRIVATE
+#include "ap_config.h"
 #include "apr_lib.h"
 #include "apr_portable.h"
 #include "httpd.h"
@@ -405,59 +406,12 @@ static void log_error_core(const char *file, int line, int level,
 	len += ap_snprintf(errstr + len, MAX_STRING_LEN - len,
 		"[client %s] ", r->connection->remote_ip);
     }
+    /* XXX - need an APRized strerror() */
     if (!(level & APLOG_NOERRNO)
-	&& (status != 0)
-#ifdef WIN32
-	&& !(level & APLOG_WIN32ERROR)
-#endif
-	) {
+	&& (status != 0)) {
 	len += ap_snprintf(errstr + len, MAX_STRING_LEN - len,
 		"(%d)%s: ", status, strerror(status));
     }
-#ifdef WIN32
-    if (level & APLOG_WIN32ERROR) {
-	int nChars;
-	int nErrorCode;
-
-	nErrorCode = GetLastError();
-	len += ap_snprintf(errstr + len, MAX_STRING_LEN - len,
-	    "(%d)", nErrorCode);
-
-	nChars = FormatMessage( 
-	    FORMAT_MESSAGE_FROM_SYSTEM,
-	    NULL,
-	    nErrorCode,
-	    MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), /* // Default language */
-	    (LPTSTR) errstr + len,
-	    MAX_STRING_LEN - len,
-	    NULL 
-	);
-	len += nChars;
-	if (nChars == 0) {
-	    /* Um, error occurred, but we can't recurse to log it again
-	     * (and it would probably only fail anyway), so lets just
-	     * log the numeric value.
-	     */
-	    nErrorCode = GetLastError();
-	    len += ap_snprintf(errstr + len, MAX_STRING_LEN - len,
-			       "(FormatMessage failed with code %d): ",
-			       nErrorCode);
-	}
-	else {
-	    /* FormatMessage put the message in the buffer, but it may
-	     * have appended a newline (\r\n). So remove it and use
-	     * ": " instead like the Unix errors. The error may also
-	     * end with a . before the return - if so, trash it.
-	     */
-	    if (len > 1 && errstr[len-2] == '\r' && errstr[len-1] == '\n') {
-		if (len > 2 && errstr[len-3] == '.')
-		    len--;
-		errstr[len-2] = ':';
-		errstr[len-1] = ' ';
-	    }
-	}
-    }
-#endif
 
     len += ap_vsnprintf(errstr + len, MAX_STRING_LEN - len, fmt, args);
 
@@ -622,11 +576,11 @@ static int piped_log_spawn(piped_log *pl)
 #endif
     if ((ap_createprocattr_init(&procattr, pl->p)         != APR_SUCCESS) ||
         (ap_setprocattr_dir(procattr, pl->program)        != APR_SUCCESS) ||
-        (ap_set_childin(procattr, pl->fds[0], pl->fds[1]) != APR_SUCCESS)) {
+        (ap_set_childin(procattr, ap_piped_log_read_fd(pl), ap_piped_log_write_fd(pl)) != APR_SUCCESS)) {
         /* Something bad happened, give up and go away. */
 	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
-	    "piped_log_spawn: unable to exec %s -c '%s': %s",
-	    SHELL_PATH, pl->program, strerror (errno));
+	    "piped_log_spawn: unable to exec '%s': %s",
+	    pl->program, strerror (errno));
         rc = -1;
     }
     else {
@@ -637,7 +591,7 @@ static int piped_log_spawn(piped_log *pl)
                                             /*   successful that the child is running.        */
             pl->pid = procnew;
             ap_get_os_proc(&pid, procnew);
-            ap_register_other_child(pid, piped_log_maintenance, pl, pl->fds[1]);
+            ap_register_other_child(pid, piped_log_maintenance, pl, ap_piped_log_write_fd(pl));
         }
     }
     
@@ -696,8 +650,8 @@ static ap_status_t piped_log_cleanup(void *data)
 	ap_kill(pl->pid, SIGTERM);
     }
     ap_unregister_other_child(pl);
-    ap_close(pl->fds[0]);
-    ap_close(pl->fds[1]);
+    ap_close(ap_piped_log_read_fd(pl));
+    ap_close(ap_piped_log_write_fd(pl));
     return APR_SUCCESS;
 }
 
@@ -706,11 +660,10 @@ static ap_status_t piped_log_cleanup_for_exec(void *data)
 {
     piped_log *pl = data;
 
-    ap_close(pl->fds[0]);
-    ap_close(pl->fds[1]);
+    ap_close(ap_piped_log_read_fd(pl));
+    ap_close(ap_piped_log_write_fd(pl));
     return APR_SUCCESS;
 }
-
 
 API_EXPORT(piped_log *) ap_open_piped_log(ap_context_t *p, const char *program)
 {
@@ -720,7 +673,7 @@ API_EXPORT(piped_log *) ap_open_piped_log(ap_context_t *p, const char *program)
     pl->p = p;
     pl->program = ap_pstrdup(p, program);
     pl->pid = NULL;
-    if (ap_create_pipe(&pl->fds[0], &pl->fds[1], p) != APR_SUCCESS) {
+    if (ap_create_pipe(&ap_piped_log_read_fd(pl), &ap_piped_log_write_fd(pl), p) != APR_SUCCESS) {
 	int save_errno = errno;
 	errno = save_errno;
 	return NULL;
@@ -729,21 +682,24 @@ API_EXPORT(piped_log *) ap_open_piped_log(ap_context_t *p, const char *program)
     if (piped_log_spawn(pl) == -1) {
 	int save_errno = errno;
 	ap_kill_cleanup(p, pl, piped_log_cleanup);
-	ap_close(pl->fds[0]);
-	ap_close(pl->fds[1]);
+	ap_close(ap_piped_log_read_fd(pl));
+	ap_close(ap_piped_log_write_fd(pl));
 	errno = save_errno;
 	return NULL;
     }
     return pl;
 }
 
-API_EXPORT(void) ap_close_piped_log(piped_log *pl)
+#else
+
+static ap_status_t piped_log_cleanup(void *data)
 {
-    piped_log_cleanup(pl);
-    ap_kill_cleanup(pl->p, pl, piped_log_cleanup);
+    piped_log *pl = data;
+
+    ap_close(ap_piped_log_write_fd(pl));
+    return APR_SUCCESS;
 }
 
-#else
 API_EXPORT(piped_log *) ap_open_piped_log(ap_context_t *p, const char *program)
 {
     piped_log *pl;
@@ -760,14 +716,17 @@ API_EXPORT(piped_log *) ap_open_piped_log(ap_context_t *p, const char *program)
 
     pl = ap_palloc(p, sizeof (*pl));
     pl->p = p;
-    pl->write_f = dummy;
+    ap_piped_log_read_fd(pl) = NULL;
+    ap_piped_log_write_fd(pl) = dummy;
+    ap_register_cleanup(p, pl, piped_log_cleanup, piped_log_cleanup);
 
     return pl;
 }
 
+#endif
 
 API_EXPORT(void) ap_close_piped_log(piped_log *pl)
 {
-    ap_close(pl->write_f);
+    ap_run_cleanup(pl->p, pl, piped_log_cleanup);
 }
-#endif
+

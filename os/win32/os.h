@@ -172,6 +172,9 @@ __inline int ap_os_is_path_absolute(const char *file)
 #define spawnle				    os_spawnle
 
 /* OS-dependent filename routines in util_win32.c */
+API_EXPORT(char *) ap_os_canonical_filename(ap_context_t *p, const char *file);
+API_EXPORT(char *) ap_os_case_canonical_filename(ap_context_t *pPool, const char *szFile);
+API_EXPORT(char *) ap_os_systemcase_filename(ap_context_t *pPool, const char *szFile);
 int ap_os_is_filename_valid(const char *file);
 int os_strftime(char *, size_t , const char *, const struct tm *);
 

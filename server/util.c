@@ -68,10 +68,13 @@
  * #define DEBUG_CFG_LINES  to trace every line read from the config files
  */
 
+#define CORE_PRIVATE
+
 #include "httpd.h"
 #include "http_main.h"
 #include "http_log.h"
 #include "http_protocol.h"
+#include "ap_config.h"
 #if defined(SUNOS4)
 /* stdio.h has been read in ap_config.h already. Add missing prototypes here: */
 extern int fgetc(FILE *);
@@ -1938,60 +1941,6 @@ API_EXPORT(char *) ap_uuencode(ap_context_t *p, char *string)
 { 
     return ap_pbase64encode(p, string);
 }
-
-#ifdef OS2
-void os2pathname(char *path)
-{
-    char newpath[MAX_STRING_LEN];
-    int loop;
-    int offset;
-
-    offset = 0;
-    for (loop = 0; loop < (strlen(path) + 1) && loop < sizeof(newpath) - 1; loop++) {
-	if (path[loop] == '/') {
-	    newpath[offset] = '\\';
-	    /*
-	       offset = offset + 1;
-	       newpath[offset] = '\\';
-	     */
-	}
-	else
-	    newpath[offset] = path[loop];
-	offset = offset + 1;
-    };
-    /* Debugging code */
-    /* fprintf(stderr, "%s \n", newpath); */
-
-    strcpy(path, newpath);
-};
-
-/* quotes in the string are doubled up.
- * Used to escape quotes in args passed to OS/2's cmd.exe
- */
-char *ap_double_quotes(ap_context_t *p, char *str)
-{
-    int num_quotes = 0;
-    int len = 0;
-    char *quote_doubled_str, *dest;
-    
-    while (str[len]) {
-        num_quotes += str[len++] == '\"';
-    }
-    
-    quote_doubled_str = ap_palloc(p, len + num_quotes + 1);
-    dest = quote_doubled_str;
-    
-    while (*str) {
-        if (*str == '\"')
-            *(dest++) = '\"';
-        *(dest++) = *(str++);
-    }
-    
-    *dest = 0;
-    return quote_doubled_str;
-}
-#endif
-
 
 #ifndef HAVE_STRERROR
 char *

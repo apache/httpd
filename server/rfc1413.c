@@ -83,6 +83,7 @@
 #include "rfc1413.h"
 #include "http_main.h"		/* set_callback_and_alarm */
 #include "apr_network_io.h"
+#include <string.h>
 
 /* Local stuff. */
 /* Semi-well-known port */

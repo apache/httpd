@@ -58,6 +58,8 @@
 #define CORE_PRIVATE 
  
 #include "apr_portable.h"
+#include "apr_thread_proc.h"
+#include "ap_config.h"
 #include "httpd.h" 
 #include "http_main.h" 
 #include "http_log.h" 
@@ -71,6 +73,7 @@
 #include "scoreboard.h" 
 
 #include <netinet/tcp.h> 
+#include <sys/wait.h> 
 #include <pthread.h>
 #include <signal.h>
 

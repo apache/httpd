@@ -55,6 +55,7 @@
  * 
  */ 
 
+#include "ap_config.h" 
 #include "httpd.h"
 #include "http_log.h"
 #include "http_main.h"
@@ -65,8 +66,8 @@
 #include "mpm_status.h"
 #include "scoreboard.h"
 #include "dexter.h" /* for max_daemons_limit */
-#ifdef USE_SHMGET_SCOREBOARD
 #include <sys/types.h>
+#ifdef USE_SHMGET_SCOREBOARD
 #include <sys/ipc.h>
 #include <sys/shm.h>
 #endif

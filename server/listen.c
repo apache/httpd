@@ -56,10 +56,13 @@
  */
 
 #include "apr_network_io.h"
+
+#define CORE_PRIVATE
 #include "httpd.h"
 #include "http_config.h"
 #include "ap_listen.h"
 #include "http_log.h"
+#include <string.h>
 
 ap_listen_rec *ap_listeners;
 static ap_listen_rec *old_listeners;

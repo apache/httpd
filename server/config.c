@@ -81,7 +81,7 @@
 #include "http_request.h"	/* for default_handler (see invoke_handler) */
 #include "http_main.h"
 #include "http_vhost.h"
-#include "explain.h"
+#include "ap_config.h"
 
 HOOK_STRUCT(
 	    HOOK_LINK(header_parser)
@@ -101,8 +101,6 @@ IMPLEMENT_HOOK_VOID(open_logs,
 		    (ap_context_t *pconf, ap_context_t *plog, ap_context_t *ptemp, server_rec *s),
 		    (pconf,plog,ptemp,s))
 IMPLEMENT_HOOK_VOID(child_init,(ap_context_t *pchild, server_rec *s),(pchild,s))
-
-DEF_Explain
 
 /****************************************************************
  *

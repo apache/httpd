@@ -73,10 +73,8 @@
 #include "http_protocol.h"
 #include "http_log.h"
 #include "http_main.h"
-#if 0
-#include "scoreboard.h"
-#endif
 #include "apr_fnmatch.h"
+#include "ap_config.h"
 
 HOOK_STRUCT(
 	    HOOK_LINK(translate_name)

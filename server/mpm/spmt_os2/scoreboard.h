@@ -66,6 +66,12 @@ extern "C" {
 #include <sys/times.h>
 #endif
 
+/* The optimized timeout code only works if we're not using a scoreboard file
+ */
+#if (defined (USE_MMAP_SCOREBOARD) || defined (USE_SHMGET_SCOREBOARD))
+#define OPTIMIZE_TIMEOUTS
+#endif
+
 /* Scoreboard info on a thread is, for now, kept very brief --- 
  * just status value and pid (the latter so that the caretaker thread
  * can properly update the scoreboard when a thread dies).  We may want

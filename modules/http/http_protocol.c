@@ -75,6 +75,7 @@
 #include "util_date.h"          /* For parseHTTPdate and BAD_DATE */
 #include "mpm_status.h"
 #include <stdarg.h>
+#include "ap_config.h"
 
 HOOK_STRUCT(
 	    HOOK_LINK(post_read_request)

@@ -87,6 +87,7 @@
 
 #define CORE_PRIVATE
 
+#include "ap_config.h"
 #include "apr_portable.h"
 #include "httpd.h"
 #include "mpm_default.h"
@@ -101,8 +102,11 @@
 #include "unixd.h"
 #include "iol_socket.h"
 #include "ap_listen.h"
-#ifdef USE_SHMGET_SCOREBOARD
+#include "ap_mmn.h"
+#include <sys/times.h>
 #include <sys/types.h>
+#include <sys/wait.h>
+#ifdef USE_SHMGET_SCOREBOARD
 #include <sys/ipc.h>
 #include <sys/shm.h>
 #endif

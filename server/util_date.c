@@ -66,6 +66,8 @@
  * 
  */
 
+#define CORE_PRIVATE
+
 #include "ap_config.h"
 #include "util_date.h"
 #include <ctype.h>
