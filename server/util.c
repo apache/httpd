@@ -862,7 +862,9 @@ static int cfg_getch(void *param)
 static void *cfg_getstr(void *buf, size_t bufsiz, void *param)
 {
     apr_file_t *cfp = (apr_file_t *) param;
-    if (apr_fgets(buf, bufsiz, cfp) == APR_SUCCESS)
+    apr_status_t rv;
+    rv = apr_fgets(buf, bufsiz, cfp);
+    if (rv == APR_SUCCESS || (rv == APR_EOF && strcmp(buf, "")))
         return buf;
     return NULL;
 }
