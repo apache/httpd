@@ -310,12 +310,6 @@ int ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
          * it or give out some information about what we're
          * configuring.
          */
-        if (!sc->enabled) {
-            continue;
-        }
-
-        ssl_log(s, SSL_LOG_INFO|SSL_INIT,
-                "Configuring server for SSL protocol");
 
         /*
          * Read the server certificate and key
@@ -901,6 +895,14 @@ static void ssl_init_server_certs(server_rec *s,
     }
 }
 
+static void ssl_init_proxy_ctx(server_rec *s,
+                               apr_pool_t *p,
+                               apr_pool_t *ptemp,
+                               SSLSrvConfigRec *sc)
+{
+    ssl_init_ctx(s, p, ptemp, sc->proxy);
+}
+
 static void ssl_init_server_ctx(server_rec *s,
                                 apr_pool_t *p,
                                 apr_pool_t *ptemp,
@@ -921,7 +923,15 @@ void ssl_init_ConfigureServer(server_rec *s,
                               apr_pool_t *ptemp,
                               SSLSrvConfigRec *sc)
 {
-    ssl_init_server_ctx(s, p, ptemp, sc);
+    if (sc->enabled) {
+        ssl_log(s, SSL_LOG_INFO|SSL_INIT,
+                "Configuring server for SSL protocol");
+        ssl_init_server_ctx(s, p, ptemp, sc);
+    }
+
+    if (1) { /* XXX: add directive */
+        ssl_init_proxy_ctx(s, p, ptemp, sc);
+    }
 }
 
 void ssl_init_CheckServers(server_rec *base_server, apr_pool_t *p)
