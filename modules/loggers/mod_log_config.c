@@ -447,7 +447,7 @@ static const char *log_cookie(request_rec *r, char *a)
 }
 
 static const char *log_request_time_custom(request_rec *r, char *a,
-                                           apr_exploded_time_t *xt)
+                                           apr_time_exp_t *xt)
 {
     apr_size_t retcode;
     char tstr[MAX_STRING_LEN];
@@ -457,7 +457,7 @@ static const char *log_request_time_custom(request_rec *r, char *a,
 
 static const char *log_request_time(request_rec *r, char *a)
 {
-    apr_exploded_time_t xt;
+    apr_time_exp_t xt;
 
     /*
 	hi.  i think getting the time again at the end of the request

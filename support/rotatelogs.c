@@ -161,7 +161,7 @@ int main (int argc, char *argv[])
             int tLogStart = (now / tRotation) * tRotation;
             if (use_strftime) {
 		apr_time_t tNow = tLogStart * APR_USEC_PER_SEC;
-                apr_exploded_time_t e;
+                apr_time_exp_t e;
                 apr_size_t rs;
 
                 apr_explode_gmt(&e, tNow);

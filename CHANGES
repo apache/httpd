@@ -1,5 +1,8 @@
 Changes with Apache 2.0.33-dev
 
+  *) rename apr_exploded_time_t to apr_time_exp_t (as per renames pending)
+     [Thom May <thom@planetarytramp.net>]
+
   *) Change mod_ssl to always do a full startup/teardown on restarts.
      this allows mod_ssl to be added to a server that is already
      running and makes it possible to add/change certs/keys after the
