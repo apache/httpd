@@ -1234,7 +1234,7 @@ static const char *isapi_cmd_cachefile(cmd_parms *cmd, void *dummy,
     apr_status_t rv;
     char *fspec;
     
-    fspec = ap_os_case_canonical_filename(cmd->pool, filename);
+    fspec = ap_server_root_relative(cmd->pool, filename);
     if (apr_stat(&tmp, fspec, 
                  APR_FINFO_TYPE, cmd->temp_pool) != APR_SUCCESS) { 
 	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, cmd->server,
