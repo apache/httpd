@@ -24,7 +24,7 @@
     step. The <code>TransferLog</code> and <code>CustomLog</code>
     directives can be used multiple times in each server to cause
     each request to be logged to multiple files.</p>
-</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#cookielog">CookieLog</a></li><li><img alt="" src="../images/down.gif" /> <a href="#customlog">CustomLog</a></li><li><img alt="" src="../images/down.gif" /> <a href="#logformat">LogFormat</a></li><li><img alt="" src="../images/down.gif" /> <a href="#transferlog">TransferLog</a></li></ul><h3>Topics</h3><ul id="topics"><li><img alt="" src="../images/down.gif" /> <a href="#formats">Custom Log Formats</a></li><li><img alt="" src="../images/down.gif" /> Security Considerations</li></ul><h3>See also</h3><ul class="seealso"><li><a href="../logs.html">Apache Log Files</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="formats" id="formats">Custom Log Formats</a></h2>
+</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#cookielog">CookieLog</a></li><li><img alt="" src="../images/down.gif" /> <a href="#customlog">CustomLog</a></li><li><img alt="" src="../images/down.gif" /> <a href="#logformat">LogFormat</a></li><li><img alt="" src="../images/down.gif" /> <a href="#transferlog">TransferLog</a></li></ul><h3>Topics</h3><ul id="topics"><li><img alt="" src="../images/down.gif" /> <a href="#formats">Custom Log Formats</a></li><li><img alt="" src="../images/down.gif" /> <a href="#security">Security Considerations</a></li></ul><h3>See also</h3><ul class="seealso"><li><a href="../logs.html">Apache Log Files</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="formats" id="formats">Custom Log Formats</a></h2>
 
 
     <p>The format argument to the <code>LogFormat</code> and
@@ -138,15 +138,13 @@ be in strftime(3) format. (potentially localized)</td></tr>
 this conflicted with the historical ssl %...{var}c syntax.)</div>
 </td></tr>
 
-<tr><td>%...I:</td>          
+<tr><td>%...I:</td>
 <td>Bytes received, including request and headers, cannot be zero. You need to
-enable <code class="module"><a
-href="../mod/mod_logio.html">mod_logio</a></code> to use this.</td></tr>
+enable <code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code> to use this.</td></tr>
 
-<tr><td>%...O:</td>          
-<td>Bytes sent, including headers, cannot be zero. You need to enable <code
-class="module"><a href="../mod/mod_logio.html">mod_logio</a></code> to use
-this.</td></tr>
+<tr><td>%...O:</td>
+<td>Bytes sent, including headers, cannot be zero. You need to enable
+<code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code> to use this.</td></tr>
 
 </table>
 
@@ -197,7 +195,7 @@ this.</td></tr>
     because otherwise log analysis programs would have to duplicate
     the entire vhost matching algorithm in order to decide what
     host really served the request.</p>
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2>Security Considerations</h2>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="security" id="security">Security Considerations</a></h2>
 
     
 
