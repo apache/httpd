@@ -316,8 +316,7 @@ AC_DEFUN(APACHE_MODULE,[
       shared=yes;;
     *)
       MODLIST="$MODLIST ifelse($4,,$1,$4)"
-      if test "$1" == "so"; then
-          echo "so"
+      if test "$1" = "so"; then
           sharedobjs=yes
       fi
       shared="";;
