@@ -138,7 +138,7 @@ install-man:
 install-suexec:
 	@if test -f $(builddir)/support/suexec; then \
             test -d $(sbindir) || $(MKINSTALLDIRS) $(sbindir); \
-            $(INSTALL_PROGRAM) $(srcdir)/support/suexec $(sbindir); \
+            $(INSTALL_PROGRAM) $(top_builddir)/support/suexec $(sbindir); \
             chmod 4755 $(sbindir)/suexec; \
 	fi
 
