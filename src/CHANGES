@@ -1,5 +1,9 @@
 Changes with Apache 1.3.30
 
+  *) Some syntax errors in mod_mime_magic's magic file can result
+     in a 500 error, which previously was unlogged.  Now we log the
+     error.  [Jeff Trawick]
+
   *) Linux 2.4+: If Apache is started as root and you code
      CoreDumpDirectory, coredumps are enabled via the prctl() syscall.
      Backport of a 2.x feature by Greg Ames.  [Jeff Trawick]
