@@ -236,8 +236,6 @@ ap_pbase64decode
 ap_pbase64encode
 ap_pcfg_open_custom
 ap_pcfg_openfile
-ap_pduphostent
-ap_pgethostbyname
 ap_post_config_hook
 ap_pregcomp
 ap_pregfree

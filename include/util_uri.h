@@ -158,26 +158,6 @@ AP_DECLARE(apr_port_t) ap_default_port_for_scheme(const char *scheme_str);
 AP_DECLARE(apr_port_t) ap_default_port_for_request(const request_rec *r);
 
 /**
- * Create a copy of a "struct hostent" record; it was presumably returned
- * from a call to gethostbyname() and lives in static storage.
- * By creating a copy we can tuck it away for later use.
- * @param p Pool to allocate out of
- * @param hp hostent to duplicate
- * @deffunc struct hostent * ap_pduphostent(apr_pool_t *p, const struct hostent *hp)
- */ 
-AP_DECLARE(struct hostent *) ap_pduphostent(apr_pool_t *p, const struct hostent *hp);
-
-/**
- * resolve hostname, if successful return an ALLOCATED COPY OF the hostent 
- * structure, intended to be stored and used later.
- * @param p The pool to allocate out of
- * @param hostname The hostname to resolve
- * @return The allocated hostent structure
- * @deffunc struct hostent * ap_pgethostbyname(apr_pool_t *p, const char *hostname)
- */
-AP_DECLARE(struct hostent *) ap_pgethostbyname(apr_pool_t *p, const char *hostname);
-
-/**
  * Unparse a uri_components structure to an URI string.  Optionally suppress 
  * the password for security reasons.
  * @param p The pool to allocate out of

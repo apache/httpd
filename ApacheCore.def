@@ -182,11 +182,11 @@ EXPORTS
 
 
 
-	ap_pduphostent
 
 
 
-	ap_pgethostbyname
+
+
 
 
 	ap_pregcomp

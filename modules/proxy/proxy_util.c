@@ -1024,6 +1024,58 @@ static int proxy_match_domainname(struct dirconn_entry *This, request_rec *r)
 	&& strncasecmp(&host[h_len - d_len], This->name, d_len) == 0;
 }
 
+/* Create a copy of a "struct hostent" record; it was presumably returned
+ * from a call to gethostbyname() and lives in static storage.
+ * By creating a copy we can tuck it away for later use.
+ */
+static struct hostent * pduphostent(apr_pool_t *p, const struct hostent *hp)
+{
+    struct hostent *newent;
+    char	  **ptrs;
+    char	  **aliases;
+    struct in_addr *addrs;
+    int		   i = 0, j = 0;
+
+    if (hp == NULL)
+	return NULL;
+
+    /* Count number of alias entries */
+    if (hp->h_aliases != NULL)
+	for (; hp->h_aliases[j] != NULL; ++j)
+	    continue;
+
+    /* Count number of in_addr entries */
+    if (hp->h_addr_list != NULL)
+	for (; hp->h_addr_list[i] != NULL; ++i)
+	    continue;
+
+    /* Allocate hostent structure, alias ptrs, addr ptrs, addrs */
+    newent = (struct hostent *) apr_palloc(p, sizeof(*hp));
+    aliases = (char **) apr_palloc(p, (j+1) * sizeof(char*));
+    ptrs = (char **) apr_palloc(p, (i+1) * sizeof(char*));
+    addrs  = (struct in_addr *) apr_palloc(p, (i+1) * sizeof(struct in_addr));
+
+    *newent = *hp;
+    newent->h_name = apr_pstrdup(p, hp->h_name);
+    newent->h_aliases = aliases;
+    newent->h_addr_list = (char**) ptrs;
+
+    /* Copy Alias Names: */
+    for (j = 0; hp->h_aliases[j] != NULL; ++j) {
+       aliases[j] = apr_pstrdup(p, hp->h_aliases[j]);
+    }
+    aliases[j] = NULL;
+
+    /* Copy address entries */
+    for (i = 0; hp->h_addr_list[i] != NULL; ++i) {
+	ptrs[i] = (char*) &addrs[i];
+	addrs[i] = *(struct in_addr *) hp->h_addr_list[i];
+    }
+    ptrs[i] = NULL;
+
+    return newent;
+}
+
 /* Return TRUE if addr represents a host name */
 int ap_proxy_is_hostname(struct dirconn_entry *This, apr_pool_t *p)
 {
@@ -1049,7 +1101,7 @@ int ap_proxy_is_hostname(struct dirconn_entry *This, apr_pool_t *p)
     if (addr[i] != '\0' || ap_proxy_host2addr(addr, &host) != NULL)
 	return 0;
 
-    This->hostentry = ap_pduphostent (p, &host);
+    This->hostentry = pduphostent (p, &host);
 
     /* Strip trailing dots */
     for (i = strlen(addr) - 1; i > 0 && addr[i] == '.'; --i)

@@ -1,4 +1,8 @@
 Changes with Apache 2.0b1
+
+  *) API routines ap_pgethostbyname() and ap_pduphostent() are no longer
+     available.  Use apr_getaddrinfo() instead.  [Jeff Trawick]
+
   *) Get "NameVirtualHost *" working in 2.0.  [Ryan Bloom]
 
   *) Return HTTP_RANGE_NOT_SATISFIABLE if the every range requested starts
