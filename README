@@ -146,4 +146,5 @@
  from Apache 1.3 and this mod_ssl version for Apache 2.0:
 
  o The complete EAPI-based SSL_VENDOR stuff was removed.
+ o The complete EAPI-based SSL_COMPAT stuff was removed.
  

@@ -1260,14 +1260,6 @@ int ssl_hook_Fixup(request_rec *r)
         }
     }
 
-    /*
-     * On-demand bloat up the SSI/CGI environment with compat variables
-     */
-#ifdef SSL_COMPAT
-    if (dc->nOptions & SSL_OPT_COMPATENVVARS)
-        ssl_compat_variables(r);
-#endif
-
     return DECLINED;
 }
 
