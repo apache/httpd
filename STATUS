@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/06/12 21:17:22 $]
+Last modified at [$Date: 2003/06/13 22:08:16 $]
 
 Release:
 
@@ -231,6 +231,9 @@ CURRENT RELEASE NOTES:
       get feedback and then commit to APACHE_2_0_BRANCH.
 
 CURRENT VOTES:
+
+    * Backport wildcard ExpiresByType from 2.0.46
+      +1: ken
 
     * Promote mod_cache from experimental to non-experimental
       status (keep issues noted below in EXPERIMENTAL MODULES as
