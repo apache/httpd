@@ -291,8 +291,6 @@ int directory_walk(request_rec *r)
         return OK;
     }
 
-    test_filename = pstrdup(r->pool, r->filename);
-
     /*
      * Go down the directory hierarchy.  Where we have to check for symlinks,
      * do so.  Where a .htaccess file has permission to override anything,
@@ -304,7 +302,7 @@ int directory_walk(request_rec *r)
      * Fake filenames (i.e. proxy:) only match Directory sections.
      */
 
-    if (!os_is_path_absolute(test_filename))
+    if (!os_is_path_absolute(r->filename))
     {
         void *this_conf, *entry_config;
         core_dir_config *entry_core;
@@ -320,14 +318,14 @@ int directory_walk(request_rec *r)
 
             this_conf = NULL;
             if (entry_core->r) {
-                if (!regexec(entry_core->r, test_filename, 0, NULL, 0))
+                if (!regexec(entry_core->r, r->filename, 0, NULL, 0))
                     this_conf = entry_config;
             }
             else if (entry_core->d_is_fnmatch) {
-                if (!fnmatch(entry_dir, test_filename, 0))
+                if (!fnmatch(entry_dir, r->filename, 0))
                     this_conf = entry_config;
             }
-            else if (!strncmp(test_filename, entry_dir, strlen(entry_dir)))
+            else if (!strncmp(r->filename, entry_dir, strlen(entry_dir)))
                 this_conf = entry_config;
 
             if (this_conf)
@@ -342,6 +340,8 @@ int directory_walk(request_rec *r)
     }
 
     r->filename   = os_canonical_filename(r->pool, r->filename);
+    test_filename = pstrdup(r->pool, r->filename);
+
     no2slash(test_filename);
     num_dirs = count_dirs(test_filename);
 

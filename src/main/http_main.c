@@ -112,6 +112,9 @@
 #ifdef MULTITHREAD
 /* special debug stuff -- PCS */
 
+/* Set this non-zero if you are prepared to put up with more than one log entry per second */
+#define SEVERELY_VERBOSE	    0
+
   /* APD1() to APD5() are macros to help us debug. Then can either
    * log to the screen or the error_log file. In release builds, this
    * macros do nothing. In debug builds, they send messages at priority
@@ -4376,8 +4379,10 @@ void worker_main()
     }
 
     while (1) {
+#if SEVERELY_VERBOSE
 	APD4("child PID %d: thread_main total_jobs=%d start_exit=%d",
 		my_pid, total_jobs, start_exit);
+#endif
 	if ((max_jobs_per_exe && (total_jobs > max_jobs_per_exe) && !start_exit)) {
 	    start_exit = 1;
 	    wait_time = 1;

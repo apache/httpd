@@ -1,5 +1,8 @@
 Changes with Apache 1.3b5
 
+  *) Sort out problems with canonical filename handling happening too late.
+     [Dean Gaudet, Ben Laurie]
+
 Changes with Apache 1.3b4
 
   *) The module structure was modified to include a *dynamic_load_handle
