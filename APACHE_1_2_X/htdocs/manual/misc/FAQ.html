@@ -15,7 +15,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.63.2.6 $ ($Date: 1997/07/05 15:37:37 $)
+  $Revision: 1.63.2.7 $ ($Date: 1997/07/05 15:49:38 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -261,8 +261,8 @@
   programmers that httpd didn't behave as they wanted it to behave.
   Apache is an entirely volunteer effort, completely funded by its 
   members, not by commercial sales.
-  <HR>
   </P>
+  <HR>
  </LI>
  <LI><A NAME="relate">
       <STRONG>How does The Apache Group's work relate to other
@@ -872,21 +872,23 @@
   <a href="descriptors.html">More information is available.</a>
   </P>
   <HR>
+ </LI>
 
  <LI><A NAME="freebsd-setsize">
-      <STRONG>Can I increase FD_SETSIZE on FreeBSD?</STRONG>
+      <STRONG>Can I increase <SAMP>FD_SETSIZE</SAMP> on FreeBSD?</STRONG>
      </A>
   <P>
-    On FreeBSD 2.2 and older FD_SETSIZE, which limits the number of open
-    files on the system, is limted to 256. This can limit the number of
-    virtual hosts you are using; especially if they all use different log
-    files. Increasing this limit (and recompiling apache) is not enough
-    (As it is on some platforms, such as Solaris), as you also will have
-    to recompile libc with the changed setting.
+  On FreeBSD 2.2 and older <SAMP>FD_SETSIZE</SAMP>, which limits the
+  number of open 
+  files on the system, is limited to 256. This can restrict the number of
+  virtual hosts you can use; especially if they all use different log
+  files. Increasing this limit (and recompiling Apache) is not enough,
+  as it is on some platforms (such as Solaris), as you also will have
+  to recompile <SAMP>libc</SAMP> with the changed setting.
   </P>
-  <p>
-    On FreeBSD 3.0 the default is 1024, so the problem is lessened.
-  </p>
+  <P>
+  On FreeBSD 3.0 the default is 1024, so the problem is lessened.
+  </P>
   <HR>
  </LI>
 
@@ -965,6 +967,7 @@
   warranty, though, and you'll lose all accumulated UNIX guru points.
   </P>
   <HR>
+ </LI>
  <LI><A NAME="errordoc401">
       <STRONG>Why doesn't my <CODE>ErrorDocument 401</CODE> work?</STRONG>
      </A>
@@ -1105,7 +1108,7 @@
   ><CITE>Publishing Pages with PUT</CITE></A>.
   </P>
   <HR>
-  </LI>
+ </LI>
  <LI><A NAME="fastcgi">
       <STRONG>Why isn't FastCGI included with Apache any more?</STRONG>
      </A>
@@ -1218,6 +1221,7 @@
   includes.  You need to make sure that the versions of both are matched
   properly.  There are two workarounds, either one will solve the problem:
   </P>
+  <P>
   <UL>
    <LI>Remove the definition of <CODE>struct iovec</CODE> from your C
     library includes.  It is located in <CODE>/usr/include/sys/uio.h</CODE>.  
@@ -1228,6 +1232,7 @@
     This hurts performance and should only be used as a last resort.
    </LI>
   </UL>
+  </P>
   <HR>
  </LI>
  <LI><A NAME="wheres-the-dump">
@@ -1335,8 +1340,8 @@
   ><CITE>Apache and Secure Transactions</CITE></A>.
   </P>
   <HR>
-  </LI>
-  <LI><A NAME="HPUX-core">
+ </LI>
+ <LI><A NAME="HPUX-core">
        <STRONG>Why do I get core dumps under HPUX using HP's ANSI 
                C compiler?</STRONG>
       </A>
@@ -1747,7 +1752,7 @@
   hosts, check out the <SAMP>mod_auth_msql</SAMP> code for 
   some compile time flags which might - or might not - suit you.
   </P>
- <HR>
+  <HR>
  </LI>
 
   <!-- Don't forget to add HR tags at the end of each list item.. -->
