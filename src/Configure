@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: Configure,v 1.16 1996/09/08 17:18:45 jim Exp $
+# $Id: Configure,v 1.17 1996/09/13 21:02:16 jim Exp $
 trap 'rm $tmpfile; exit' 0 1 2 3 15
 
 # Apache configuration script, first cut --- rst.
@@ -10,6 +10,8 @@ trap 'rm $tmpfile; exit' 0 1 2 3 15
 # contains comments, specific compiler flags, a list of included
 # modules and "rules". These rules are used to allow Configure to
 # be totally configured from Configuration
+#
+# Uses 2 supplemental scripts: CutRule and GuessOS
 
 file=Configuration
 tmpfile=htconf.$$
@@ -19,6 +21,11 @@ if [ "x$1" = "x-file" ] ; then
   file=$2 
 else
   echo "Using '$file' as config file"
+fi
+
+if [ ! -r $file ]; then
+  echo "Can't see or read \"$file\""
+  exit 1
 fi
 
 # First, strip comments and blank lines and then change Rules to comments
@@ -100,7 +107,18 @@ awk >>Makefile <$tmpfile '\
     END { print "###############"; }'
 
 #
-# Now we scan thru the Makefile for the PLATFORM seting.
+# Extract the rules.
+#
+RULE_WANTHSREGEX=`./CutRule WANTHSREGEX`
+RULE_STATUS=`./CutRule STATUS`
+RULE_SOCKS=`./CutRule SOCKS`
+RULE_BADMMAP=`./CutRule BADMMAP`
+RULE_IRIXNIS=`./CutRule IRIXNIS`
+
+#
+# Now we determine the OS/Platform automagically, thanks to
+# GuessOS, a home-brewed OS-determiner ala config.guess
+#
 # We adjust CFLAGS, LIBS, LFLAGS and INCLUDES (and other Makefile
 # options) as required. Setting CC and OPTIM here has no effect
 # if they were set in Configure.
@@ -112,15 +130,10 @@ awk >>Makefile <$tmpfile '\
 # add the required lines below.
 #
 
-PLAT=`grep "PLATFORM=" Makefile | awk '{ print $1 }' | awk -F= '{ print $2 }'`
-
-if [ "x$PLAT" = "x" ]; then
-	echo "PLATFORM has not been set!"
-	exit 1
-fi
+PLAT=`./GuessOS`
 
 case "$PLAT" in
-    A/UX)
+    *-apple-aux3*)
 	OS='A/UX 3.1.x'
 	CFLAGS="$CFLAGS -DAUX -D_POSIX_SOURCE"
 	LIBS="$LIBS -lposix -lbsd"
@@ -128,15 +141,15 @@ case "$PLAT" in
 	DEF_WANTHSREGEX=no
 	DEF_BADMMAP=no
 	;;
-    AIX)
+    *-ibm-aix*)
 	OS='IBM AIX'
 	CFLAGS="$CFLAGS -DAIX -U__STR__"
 	;;
-    APOLLO)
+    *-apollo-*)
 	OS='Apollo Domain'
 	CFLAGS="$CFLAGS -DAPOLLO"
 	;;
-    DGUX)
+    *-dg-dgux-*)
 	OS='DG/UX 5.4'
 	CFLAGS="$CFLAGS -DDGUX"
 	;;
@@ -145,52 +158,53 @@ case "$PLAT" in
 	CFLAGS="$CFLAGS -Zbsd-signals -Zbin-files -DNO_KILLPG -DNEED_STRCASECMP -DNO_SETSID -g"
 	LIBS="$LIBS -lsocket -llibufc -lgdbm -lbsd"
 	;;
-    HP-UX)
-	OS='HP-UX'
-	CFLAGS="$CFLAGS -DHPUX"
-	;;
-    HP-UX10)
+    *-hp-hpux10.*)
 	OS='HP-UX 10'
 	CFLAGS="$CFLAGS -DHPUX10"
 	;;
-    IRIX)
-	OS='SGI IRIX'
-	CFLAGS="$CFLAGS -DIRIX"
+    *-hp-hpux*)
+	OS='HP-UX'
+	CFLAGS="$CFLAGS -DHPUX"
 	;;
-    IRIXNIS)
-	OS='SGI IRIX w/NIS'
-	CFLAGS="$CFLAGS -DIRIX"
-	LIBS="$LIBS -lsun"
+    *-sgi-irix*)
+	if [ $RULE_IRIXNIS="yes" ]; then
+	    OS='SGI IRIX w/NIS'
+	    CFLAGS="$CFLAGS -DIRIX"
+	    LIBS="$LIBS -lsun"
+	else
+	    OS='SGI IRIX'
+	    CFLAGS="$CFLAGS -DIRIX"
+	fi
 	;;
-    LINUX)
+    *-linux-*)
 	OS='Linux'
 	CFLAGS="$CFLAGS -DLINUX"
 	;;
-    LYNXOS)
+    *-lynx-lynxos*)
 	OS='LynxOS'
 	CFLAGS="$CFLAGS -DLYNXOS"
 	LIBS="$LIBS -lbsd -ldes -lc_p"
 	;;
-    BSDI)
-	OS='BSDI'
-	;;
-    BSDI486)
+    *486-*-bsdi*)
 	OS='BSDI w/486'
 	CFLAGS="$CFLAGS -m486"
 	;;
-    BSD)
-	OS='FreeBSD/NetBSD'
-	LIBS="$LIBS -lcrypt"
+    *-bsdi*)
+	OS='BSDI'
 	;;
-    BSD486)
+    *486-*-freebsd*|*486-*-netbsd*)
 	OS='FreeBSD/NETBSD on 486'
 	LIBS="$LIBS -lcrypt"
 	;;
-    NeXT)
+    *-freebsd*|*-netbsd*)
+	OS='FreeBSD/NetBSD'
+	LIBS="$LIBS -lcrypt"
+	;;
+    *-next-nextstep*)
 	OS='NeXT'
 	CFLAGS="$CFLAGS -DNEXT"
 	;;
-    OSF)
+    *-dec-osf*)
 	OS='DEC OSF/1'
 	CFLAGS="$CFLAGS -DOSF1"
 	;;
@@ -199,12 +213,12 @@ case "$PLAT" in
 	CFLAGS="$CFLAGS -DQNX"
 	LIBS="$LIBS -N128k -lsocket"
 	;;
-    SCO3)
+    *-sco3*)
 	OS='SCO 3'
 	CFLAGS="$CFLAGS -DSCO -Oacgiltz"
 	LIBS="$LIBS -lPW -lsocket -lmalloc -lcrypt_i"
 	;;
-    SCO5)
+    *-sco5*)
 	OS='SCO 5'
 	CFLAGS="$CFLAGS -DSCO5"
 	LIBS="$LIBS -lsocket -lmalloc -lprot"
@@ -212,26 +226,26 @@ case "$PLAT" in
 	DEF_WANTHSREGEX=no
 	DEF_BADMMAP=no
 	;;
-    SOLARIS2)
+    *-solaris2*)
 	OS='Solaris 2'
 	CFLAGS="$CFLAGS -DSOLARIS2"
 	LIBS="$LIBS -lsocket -lnsl"
 	;;
-    SUNOS4)
+    *-sunos4*)
 	OS='SunOS 4'
 	CFLAGS="$CFLAGS -DSUNOS4"
 	;;
-    UNIXWARE)
+    *-unixware*)
 	OS='Unixware'
 	CFLAGS="$CFLAGS -DSVR4"
 	LIBS="$LIBS -lsocket -lnsl -lcrypt"
 	;;
-    SVR4)
+    *-sysv4*)
 	OS='SVR4'
 	CFLAGS="$CFLAGS -DSVR4"
 	LIBS="$LIBS -lsocket -lnsl -lc"
 	;;
-    UTS)
+    *-uts*)
 	OS='Amdahl UTS'
 	CFLAGS="$CFLAGS -Xa -eft -DUTS21"
 	LIBS="$LIBS -lsocket -lbsd -la"
@@ -241,17 +255,17 @@ case "$PLAT" in
 	CFLAGS="$CFLAGS -DUXPDS"
 	LIBS="$LIBS -lsocket -lnsl"
 	;;
-    *) # default
+    *) # default: Catch systems we don't know about
+    	echo Sorry, but we cannot grok \"$PLAT\"
+	echo Please Email this output to apache-bugs@apache.org
+	echo Thank you
+	exit 1
 	;;
 esac
 
-# Extract the rules
-
-RULE_WANTHSREGEX=`./CutRule WANTHSREGEX`
-RULE_STATUS=`./CutRule STATUS`
-RULE_SOCKS=`./CutRule SOCKS`
-RULE_BADMMAP=`./CutRule BADMMAP`
-
+#
+# See if we need to override WANTHSREGEX or BADMMAP
+#
 if [ "$RULE_WANTHSREGEX" = "default" ]; then
 	if [ "x$DEF_WANTHSREGEX" = "x" ]; then
 		RULE_WANTHSREGEX=no
@@ -272,8 +286,8 @@ fi
 
 echo "# Platform: $OS" >> Makefile
 echo "# Final Rules:" >> Makefile
-echo "# Rule WANTHSREGEX=$RULE_WANTHSREGEX" >> Makefile
-echo "# Rule BADMMAP=$RULE_BADMMAP" >> Makefile
+echo "#  Rule WANTHSREGEX=$RULE_WANTHSREGEX" >> Makefile
+echo "#  Rule BADMMAP=$RULE_BADMMAP" >> Makefile
 echo "###############" >> Makefile
 
 #
@@ -281,7 +295,6 @@ echo "###############" >> Makefile
 #
 
 echo "Configured for $OS platform"
-echo
 
 #
 # Handle the setting of CC and OPTIM. The values in Configure

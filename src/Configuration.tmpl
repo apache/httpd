@@ -1,4 +1,4 @@
-# $Id: Configuration.tmpl,v 1.35 1996/09/08 17:18:43 jim Exp $
+# $Id: Configuration.tmpl,v 1.36 1996/09/13 21:02:15 jim Exp $
 # Config file for the Apache httpd.
 
 # Configuration.tmpl is the template for Configuration. Configuration should
@@ -56,20 +56,12 @@ RANLIB=ranlib
 # functions. The format is: Rule RULE=value
 #
 # At present, only the following RULES are known: WANTHSREGEX, SOCKS,
-# STATUS and BADMMAP.
+# STATUS, BADMMAP and IRIXNIS.
 #
 # For all Rules, if set to "yes", then Configure knows we want that
 # capability and does what is required to add it in. If set to "default"
 # then Configure makes a "best guess"; if set to anything else, or not
 # present, then nothing is done.
-#
-# WANTHSREGEX:
-#  Apache requires a POSIX regex implementation. Harry Spencer's
-#  excellent regex package is included with Apache and can be used
-#  if desired. If your OS has a decent regex, you can elect to
-#  not use this one by setting WANTHSREGEX to 'no' or commenting
-#  out the Rule. The "default" action is "no" unless overruled
-#  by OS specifics
 #
 # SOCKS:
 #  If SOCKS is set to 'yes', be sure that you add the sock library
@@ -82,58 +74,37 @@ RANLIB=ranlib
 #  to 'yes'. If the status module is not included, having STATUS
 #  set to 'yes' has no impact.
 #
-# BADMMAP:
-#  If you find that your OS can't cope with mmap (compiles OKAY but refuses
-#  to run and moans "httpd: Could not mmap memory" .. or similar) set
-#  this to 'yes'.
+# IRIXNIS:
+#  Only takes effect if Configure determines that you are running
+#  SGI IRIX. If you are, and you are using NIS, you should set this
+#  to 'yes'
+#
 
 Rule STATUS=yes
 Rule SOCKS=no
+Rule IRIXNIS=no
 
 # The following rules should be set automatically by Configure. However, if
 # they are not set by Configure (because we don't know the correct value for
 # your platform), or are set incorrectly, you may override them here.
 # If you have to do this, please let us know what you set and what your
 # platform is, by sending mail to apache-bugs@apache.org.
+#
+# WANTHSREGEX:
+#  Apache requires a POSIX regex implementation. Harry Spencer's
+#  excellent regex package is included with Apache and can be used
+#  if desired. If your OS has a decent regex, you can elect to
+#  not use this one by setting WANTHSREGEX to 'no' or commenting
+#  out the Rule. The "default" action is "no" unless overruled
+#  by OS specifics
+#
+# BADMMAP:
+#  If you find that your OS can't cope with mmap (compiles OKAY but refuses
+#  to run and moans "httpd: Could not mmap memory" .. or similar) set
+#  this to 'yes'.
 
 Rule WANTHSREGEX=default
 Rule BADMMAP=default
-
-###############
-#
-# The platforms: Uncomment the line for your OS/platform
-#  PLATFORM:
-#
-###############
-#PLATFORM=SUNOS4	# SunOS4
-#PLATFORM=SOLARIS2	# Solaris 2
-#PLATFORM=IRIX		# SGI IRIX
-#PLATFORM=IRIXNIS	# SGI IRIX with NIS and user-supplied directories
-#PLATFORM=HP-UX		# HP-UX
-#PLATFORM=HP-UX10	# HP-UX 10
-#PLATFORM=AIX		# IBM AIX
-#PLATFORM=ULTRIX	# Ultrix
-#PLATFORM=OSF		# DEC OSF/1
-#PLATFORM=NeXT		# NeXT
-#PLATFORM=SEQUENT	# Sequent
-#PLATFORM=LINUX		# Linux with 486 support in kernel
-#PLATFORM=A/UX		# Apple A/UX
-#PLATFORM=SCO3		# SCO ODT 3
-#PLATFORM=SCO5		# SCO ODT 5
-#PLATFORM=SVR4		# SVR4 implementation (non Unixware)
-#PLATFORM=UNIXWARE	# Unixware
-#PLATFORM=UTS		# Amdahl UTS 2.1
-#PLATFORM=APOLLO	# HP / Apollo Domain/OS
-#PLATFORM=BSD		# FreeBSD/NetBSD
-#PLATFORM=BSD486	# FreeBSD/NetBSD on 486/586
-#PLATFORM=BSDI		# BSDI
-#PLATFORM=BSDI486	# BSDI on 486/586
-#PLATFORM=QNX		# QNX
-#PLATFORM=LYNXOS	# LynxOS
-#PLATFORM=DGUX		# DG/UX 5.4
-#PLATFORM=UXPDS         # UXP/DS V20L10
-#PLATFORM=OS/2		# EMX OS/2 Port
-
 
 ################################################################
 # Module configuration
@@ -198,7 +169,7 @@ Module browser_module      mod_browser.o
 
 ## The status module allows the server to display current details about 
 ## how well it is performing and what it is doing.  Consider also enabling 
-## :STATUS=yes (see the Rules section near the start of the file) to allow
+## STATUS=yes (see the Rules section near the start of the file) to allow
 ## full status information.  Check conf/access.conf on how to enable this.
 
 # Module status_module	     mod_status.o

@@ -1,4 +1,4 @@
-$Id: INSTALL,v 1.6 1996/08/20 11:50:34 paul Exp $
+$Id: INSTALL,v 1.7 1996/09/13 21:02:17 jim Exp $
 
 This release of Apache supports the notion of "optional modules".
 However, the server has to know which modules are compiled into it, in
@@ -10,13 +10,12 @@ It is also necessary to choose the correct options for your platform.
 To do this:
 
 1) Copy the file "Configuration.tmpl" to "Configuration" and then edit
-   "Configuration".  This contains the per-machine config settings of
-   the Makefile, and also an additional section at the bottom which
+   "Configuration".  This contains the list and settings of various
+   "Rules" and an additional section at the bottom which
    lists the modules which have been compiled in, and also names the
    files containing them.  You will need to:
 
-   a) Select the PLATFORM that you will be compiling for. You may also
-      adjust the Rules and EXTRA_CFLAGS|LIBS|LFLAGS|INCLUDES if
+   a) Adjust the Rules and EXTRA_CFLAGS|LIBS|LFLAGS|INCLUDES if
       you feel so inclined.
 
    b) Uncomment lines corresponding to those optional modules you wish
