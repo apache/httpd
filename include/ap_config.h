@@ -65,7 +65,12 @@
  *   MODULE_EXPORT_VAR       is a hack that will need to go away
  */
 
-#if !defined(WIN32) || defined(API_STATIC)
+#if !defined(WIN32)
+#define API_EXPORT(type)        type
+#define API_EXPORT_NONSTD(type) type
+#define API_EXPORT_VAR
+#define MODULE_EXPORT_VAR
+#elif defined(API_STATIC)
 #define API_EXPORT(type)        type __stdcall
 #define API_EXPORT_NONSTD(type) type
 #define API_EXPORT_VAR
