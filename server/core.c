@@ -3042,6 +3042,11 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
         apr_size_t flen = 0;
         apr_off_t foffset = 0;
 
+        /* keep track of buckets that we've concatenated
+         * to avoid small writes
+         */
+        apr_bucket *last_merged_bucket = NULL;
+
         /* Iterate over the brigade: collect iovecs and/or a file */
         APR_BRIGADE_FOREACH(e, b) {
             /* keep track of the last bucket processed */
@@ -3088,36 +3093,78 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
                                 more = apr_brigade_split(b, e);
                                 break;
                             }
-                            temp_brig = apr_brigade_create(f->c->pool);
+
+                            /* Create a temporary brigade as a means
+                             * of concatenating a bunch of buckets together
+                             */
+                            if (last_merged_bucket) {
+                                /* If we've concatenated together small
+                                 * buckets already in a previous pass,
+                                 * the initial buckets in this brigade
+                                 * are heap buckets that may have extra
+                                 * space left in them (because they
+                                 * were created by apr_brigade_write()).
+                                 * We can take advantage of this by
+                                 * building the new temp brigade out of
+                                 * these buckets, so that the content
+                                 * in them doesn't have to be copied again.
+                                 */
+                                apr_bucket_brigade *bb;
+                                bb = apr_brigade_split(b,
+                                         APR_BUCKET_NEXT(last_merged_bucket));
+                                temp_brig = b;
+                                b = bb;
+                            }
+                            else {
+                                temp_brig = apr_brigade_create(f->c->pool);
+                            }
                             temp = APR_BRIGADE_FIRST(b);
                             while (temp != e) {
                                 apr_bucket *d;
                                 rv = apr_bucket_read(temp, &str, &n, APR_BLOCK_READ);
-                                nbytes -= n;
                                 apr_brigade_write(temp_brig, NULL, NULL, str, n);
                                 d = temp;
                                 temp = APR_BUCKET_NEXT(temp);
                                 apr_bucket_delete(d);
                             }
+                            nvec = 0;
+                            nbytes = 0;
                             temp = APR_BRIGADE_FIRST(temp_brig);
                             APR_BUCKET_REMOVE(temp);
                             APR_BRIGADE_INSERT_HEAD(b, temp);
-                            e = temp;
-                            last_e = e;
+                            apr_bucket_read(temp, &str, &n, APR_BLOCK_READ);
+                            vec[nvec].iov_base = (char*) str;
+                            vec[nvec].iov_len = n;
+                            nvec++;
+
+                            /* Just in case the temporary brigade has
+                             * multiple buckets, recover the rest of
+                             * them and put them in the brigade that
+                             * we're sending.
+                             */
                             for (next = APR_BRIGADE_FIRST(temp_brig);
                                  next != APR_BRIGADE_SENTINEL(temp_brig);
                                  next = APR_BRIGADE_FIRST(temp_brig)) {
                                 APR_BUCKET_REMOVE(next);
                                 APR_BUCKET_INSERT_AFTER(temp, next);
                                 temp = next;
+                                apr_bucket_read(next, &str, &n,
+                                                APR_BLOCK_READ);
+                                vec[nvec].iov_base = (char*) str;
+                                vec[nvec].iov_len = n;
+                                nvec++;
                             }
                             apr_brigade_destroy(temp_brig);
-                            nvec = 0;
-                            apr_bucket_read(e, &str, &n, APR_BLOCK_READ);
+
+                            last_merged_bucket = temp;
+                            e = temp;
+                            last_e = e;
                         }
-                        vec[nvec].iov_base = (char*) str;
-                        vec[nvec].iov_len = n;
-                        nvec++;
+                        else {
+                            vec[nvec].iov_base = (char*) str;
+                            vec[nvec].iov_len = n;
+                            nvec++;
+                        }
                     }
                     else {
                         /* The bucket is a trailer to a file bucket */
