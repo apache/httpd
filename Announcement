@@ -12,8 +12,8 @@ the ``cross site scripting'' security alerts described at
    http://www.apache.org/info/css-security/index.html
 
 Specifically, charset handling has been improved and reinforced
-(including 2 new directives: AddDefaultCharset and AddDefaultCharsetName)
-and server generated pages properly escape ``userland'' input.
+(including a new directive: AddDefaultCharset) and server generated
+pages properly escape ``userland'' input.
 
 A complete listing with detailed descriptions is provided in the
 src/CHANGES file.
