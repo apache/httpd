@@ -56,6 +56,13 @@ Documentation that needs writing:
 
 Available Patches:
 
+    * Ralf's "[PATCH] Fix module execution order for DSO situation (take 2)":
+      This is the final patch for 1.3b7 to make sure the module execution
+      order is correct even when the DSO mechanism is used. This is mainly
+      achieved by fixing the AddModule command.
+      <19980504161025.A794@engelschall.com>
+      Status: Ralf +1
+
     * Ed Korthof's patch to fix protocol issues surrounding 400, 408, and
       414 responses.
       <Pine.GSO.3.95.980204191834.4314K-200000@aether.organic.com>
@@ -81,9 +88,6 @@ Available Patches:
 
 In progress:
  
-    * Ralf's fix for 1.3b7 to make the module execution order 
-      correct when the DSO mechanism is used
-
     * Ken's IndexFormat enhancement to mod_autoindex to allow
       CustomLog-like tailoring of directory listing formats
 
