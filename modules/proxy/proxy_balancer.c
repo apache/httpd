@@ -22,6 +22,10 @@
 #include "scoreboard.h"
 #include "apr_version.h"
 
+#if APR_HAVE_UNISTD_H
+#include <unistd.h>         /* for getpid() */
+#endif
+
 module AP_MODULE_DECLARE_DATA proxy_balancer_module;
 
 #if APR_HAS_THREADS
