@@ -1,10 +1,9 @@
 Apache HTTP Server 2.0 Documentation Status File.
-Last modified: $Date: 2002/08/29 19:16:40 $
+Last modified: $Date: 2002/09/03 19:11:27 $
 
 If you are interested in helping accomplish some of the tasks on this
 list or otherwise improving the documentation, please join the
-apache-docs mailing list by mailing to 
-apache-docs-subscribe@apache.org
+apache-docs mailing list by mailing to apache-docs-subscribe@apache.org
 
 For more information on how to contribute to the Apache Documentation
 Project, please see http://httpd.apache.org/docs-project/, and
@@ -65,38 +64,11 @@ tutorial on how to get started with making your contribution.
     Status: Ben Laurie has written some hooks documentation
 
 - Translations
-    We appear to have people working on translation into the following
-    languages.  These may just be the 'it worked' page, but if so
-    the authors of those should perhaps be contacted to help do the
-    rest.. :-)  Note that this list is NOT identical to that for the
-    1.3 documentation project..!
+    There are several efforts underway to translate the documentation
+    into other languages. A detailed list of the currently known
+    translators (and the corresponding websites) can be found at
 
-  [Should we attempt to get a known-current authorlist together? --jsl]
-
-    - Catalan (.ca)
-    - Czech Republic (.cz)
-    - German (.de)
-    - Danish (.dk)
-    - Estonia (.ee)
-    - Greek (.el)
-    - Spanish (.es)
-    - Estonian (.et)
-    - French (.fr)
-    - Hebrew (.he.iso8859-8)
-    - Italian (.it)
-    - Japanese (.ja.iso2022-jp, .ja.jis)
-    - Korean (.ko.euc-kr)
-    - Luxembourgish (.lb)
-    - Dutch (.nl)
-    - Norwegian (.no)
-    - Polish (.po.iso-pl)
-    - Portuguese (.pt)
-    - Portuguese [Brasilian] (.pt-br)
-    - Russian (.ru.cp-1251, .ru.cp866, .ru.iso-ru, .ru.koi8-r, .ru.ucs[248])
-    - Swedish (.se)
-    - Chinese (.zh)
-    [Need this clarified --jsl]
-
+    http://httpd.apache.org/docs-project/translations.html
 
 New User documentation
 ======================
