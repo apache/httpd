@@ -391,8 +391,8 @@ dnl
 dnl APACHE_ENABLE_SHARED
 dnl
 AC_DEFUN(APACHE_ENABLE_SHARED,[
-AC_ARG_ENABLE(shared,
-[  --enable-shared=MODULE-LIST],[
+AC_ARG_ENABLE(mods-shared,
+[  --enable-mods-shared=MODULE-LIST],[
   for i in $enableval; do
   	eval "enable_$i=shared"
   done
