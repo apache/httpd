@@ -435,3 +435,5 @@ EXPORTS
        ap_bucket_make_shared  @462
        ap_bucket_destroy_shared @463
        
+        ap_bucket_create_pool @464
+        ap_flush_type         @465 DATA
