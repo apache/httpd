@@ -171,7 +171,7 @@ static info_cfg_lines *mod_info_load_config(ap_context_t *p, const char *filenam
 
     fp = ap_pcfg_openfile(p, filename);
     if (!fp) {
-        ap_log_rerror(APLOG_MARK, APLOG_WARNING, r, 
+        ap_log_rerror(APLOG_MARK, APLOG_WARNING, errno, r,
 		    "mod_info: couldn't open config file %s",
 		    filename);
         return NULL;

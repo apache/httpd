@@ -166,7 +166,7 @@ static char *get_db_pw(request_rec *r, char *user, const char *auth_dbpwfile)
 #else
     if (!(f = dbopen(auth_dbpwfile, O_RDONLY, 0664, DB_HASH, NULL))) {
 #endif
-	ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
+	ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
 		    "could not open db auth file: %s", auth_dbpwfile);
 	return NULL;
     }
@@ -237,7 +237,7 @@ static int db_authenticate_basic_user(request_rec *r)
     if (!(real_pw = get_db_pw(r, r->user, sec->auth_dbpwfile))) {
 	if (!(sec->auth_dbauthoritative))
 	    return DECLINED;
-	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 		    "DB user %s not found: %s", r->user, r->filename);
 	ap_note_basic_auth_failure(r);
 	return AUTH_REQUIRED;
@@ -249,7 +249,7 @@ static int db_authenticate_basic_user(request_rec *r)
     }
     invalid_pw = ap_validate_password(sent_pw, real_pw);
     if (invalid_pw != NULL) {
-	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 		      "DB user %s: authentication failure for \"%s\": %s",
 		      r->user, r->uri, invalid_pw);
 	ap_note_basic_auth_failure(r);
@@ -295,7 +295,7 @@ static int db_check_auth(request_rec *r)
 	    if (!(groups = get_db_grp(r, user, sec->auth_dbgrpfile))) {
 		if (!(sec->auth_dbauthoritative))
 		    return DECLINED;
-		ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+		ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 			    "user %s not in DB group file %s: %s",
 			    user, sec->auth_dbgrpfile, r->filename);
 		ap_note_basic_auth_failure(r);
@@ -311,7 +311,7 @@ static int db_check_auth(request_rec *r)
 			return OK;
 		}
 	    }
-	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 			"user %s not in right group: %s", user, r->filename);
 	    ap_note_basic_auth_failure(r);
 	    return AUTH_REQUIRED;

@@ -256,7 +256,7 @@ static int scan_meta_file(request_rec *r, FILE *f)
 	/* if we see a bogus header don't ignore it. Shout and scream */
 
 	if (!(l = strchr(w, ':'))) {
-	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+ 	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 			"malformed header in meta file: %s", r->filename);
 	    return SERVER_ERROR;
 	}
@@ -330,7 +330,7 @@ static int add_cern_meta_data(request_rec *r)
     }
     else {
 	/* no last slash, buh?! */
-	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 		    "internal error in mod_cern_meta: %s", r->filename);
 	/* should really barf, but hey, let's be friends... */
 	return DECLINED;
@@ -359,7 +359,7 @@ static int add_cern_meta_data(request_rec *r)
 	if (errno == ENOENT) {
 	    return DECLINED;
 	}
-	ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
+	ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
 	      "meta file permissions deny server access: %s", metafilename);
 	return FORBIDDEN;
     };
