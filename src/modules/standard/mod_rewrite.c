@@ -1784,7 +1784,10 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p, char *perdir
         rc = (compare_lexicography(input, p->pattern+1) == -1 ? 1 : 0);
     }
     else if (strlen(p->pattern) > 1 && *(p->pattern) == '=') {
-        rc = (strcmp(input, p->pattern+1) == 0 ? 1 : 0);
+        if (strcmp(p->pattern+1, "\"\"") == 0)
+            rc = (*input == '\0');
+        else
+            rc = (strcmp(input, p->pattern+1) == 0 ? 1 : 0);
     }
     else {
         /* it is really a regexp pattern, so apply it */
