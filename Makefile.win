@@ -155,7 +155,7 @@ installd:
 	$(MAKE) $(MAKEOPT) -f Makefile.win SHORT=D LONG=Debug   _build _install
 
 clean:	_cleanr _cleand
-	-rd /s Browse < <<
+	-rd /s Browse < << > nul
 y
 <<
 
