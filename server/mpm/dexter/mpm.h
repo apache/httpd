@@ -78,4 +78,6 @@ typedef struct ap_ctable{
 extern int ap_max_daemons_limit;
 extern ap_ctable ap_child_table[HARD_SERVER_LIMIT];
 extern server_rec *ap_server_conf;
+extern char ap_coredump_dir[MAX_STRING_LEN];
+
 #endif /* APACHE_MPM_DEXTER_H */
