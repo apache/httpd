@@ -1,0 +1,112 @@
+
+                   Apache HTTP Server 1.3.29 freigegeben
+
+   Wir, die Apache Software Foundation und das Apache Server Projekt, freuen
+   uns, die Freigabe der Version 1.3.29 des Apache HTTP Servers ("Apache")
+   bekannt zu geben. Diese Ankündigung führt die wesentlichen Änderungen von
+   1.3.29 gegenüber 1.3.28 auf. Die Ankündigung ist auch in englischer Sprache
+   unter http://www.apache.org/dist/httpd/Announcement.txt verfügbar.
+
+   Diese Version des Apache ist vornehmlich ein Bug-Fix-Update. 
+   Eine kurze Zusammenfassung der Bug-Fixes ist am Ende des Dokumentes
+   aufgeführt. Die vollständige Liste der Änderungen ist in der CHANGES-
+   Datei zu finden.
+
+   Wir betrachten den Apache 1.3.29 als die beste verfügbare Version des
+   Apache 1.3 und wir empfehlen Benutzern älterer Versionen, insbesondere
+   der Familien 1.1.x und 1.2.x, umgehend die Aufrüstung. Für die 1.2.x-
+   Familie werden keine weiteren Releases mehr erstellt.
+
+   Apache 1.3.29 steht unter
+
+       http://httpd.apache.org/download.cgi
+                - oder -
+       http://www.apache.org/dist/httpd/
+
+   zum Download bereit.
+
+   Für eine vollständige Liste der Änderungen lesen Sie bitte die Datei
+   CHANGES_1.3 im gleichen Verzeichnis.
+
+   Binärdistributionen sind verfügbar unter
+
+       http://www.apache.org/dist/httpd/binaries/
+
+   Die Quelltexte und Binärdistributionen sind ebenso über jeden unter
+
+       http://www.apache.org/mirrors/
+
+   aufgeführten Mirror erhältlich.
+
+   Seit Apache 1.3.12 enthalten Binärdistributionen alle Apache-Standard-
+   module als Shared Objects (sofern es von der Plattform unterstützt
+   wird) sowie den kompletten Quelltext. Die Installation kann auf einfache
+   Weise mit dem beigefügten Installationsskript durchgeführt werden.
+   Eine vollständige Erläuterung finden Sie in den Dateien README.bindist
+   und INSTALL.bindist. Beachten Sie bitte, dass die Binärdistributionen
+   auf freiwilliger Basis angeboten werden und aktuelle Distributionen
+   nicht immer für spezielle Plattformen verfügbar sind.
+   Win32-Binärdistributionen basieren auf der Microsoft-Installer-
+   Technologie (.MSI). Obwohl die Entwickler diese Installationsmethode
+   fortlaufend stabilisieren, sollten Fragen dazu an die Newsgroup
+   news:comp.infosystems.www.servers.ms-windows gerichtet werden.
+
+   Eine Übersicht der seit 1.2 eingeführten neuen Features finden Sie unter
+
+   http://httpd.apache.org/docs/new_features_1_3.html
+
+   Ganz allgemein bietet der Apache 1.3 wesentliche Verbesserungen gegenüber
+   der Version 1.2, einschliesslich besserer Performance, Zuverlässigkeit
+   und Unterstützung von mehr Plattformen, darunter Windows NT und 2000 (die
+   unter die Bezeichnung "Win32" fallen), OS2, Netware und Plattformen mit
+   TPF-Thread-Unterstützung.
+
+   Apache ist der am häufigsten verwendete Webserver des bekannten
+   Universums. Mehr als die Hälfte aller Server im Internet laufen mit dem
+   Apache oder einem seiner Derivate.
+
+   WICHTIGER HINWEIS FÜR APACHE-NUTZER: Der Apache 1.3 wurde für
+   Unix-Systeme entwickelt. Obwohl die Portierungen auf nicht-Unix-
+   Plattformen (wie zum Beispiel Win32, Netware oder OS2) von akzeptabler
+   Qualität sind, ist der Apache 1.3 nicht für diese Plattformen optimiert.
+   Sicherheits-, Stabilitäts- und Performanceprobleme zu diesen nicht-Unix-
+   Portierungen betreffen aufgrund der Unix-Herkunft der Software im
+   Allgemeinen nicht die Unix-Version.
+
+   Der Apache 2.0 wurde durch die Einführung der Apache Portability Library
+   und MPM-Module von Anfang an für mehrere Betriebssysteme konstruiert.
+   Nutzer von nicht-Unix-Plattformen sind dringend angehalten, aufgrund der
+   besseren Performance, Stabilität und Sicherheit auf den Apache 2.0 zu
+   wechseln.
+
+               Wesentliche Änderungen des Apache 1.3.29
+
+   Neue Features
+
+   Neue Features, die sich auf bestimmte Plattformen beziehen:
+
+     * Die ident-Funktionalität gemäß RFC1413 ist nun sowohl für
+       Windows- wie auch für NetWare-Plattformen verfügbar. Dies 
+       beinhaltet auch eine alternative Thread-sichere Implementation der
+       Socket-Timeout-Funktionalität bei der Abfrage des identd-Daemons.
+
+   Behobene Fehler
+
+   Die folgenden nennenswerten Fehler wurden im Apache 1.3.28 (oder
+   früher) gefunden und im Apache 1.3.29 behoben:
+
+     * Innerhalb von ap_bclose() wird nun durchweg ap_pclosesocket() für
+       Sockets und sp_pclosef() für Dateien aufgerufen. Ebenso wird nun 
+       einheitlich closesocket() zum Schließen der (Dateideskriptoren von) 
+       Sockets verwendet. Das vorherige Durcheinander von Dateideskriptoren
+       für Sockets und Dateien würde bei einigen Applikationen Probleme 
+       verursachen, jetzt wo wir vorsorglich Dateideskriptoren schließen, 
+       um Lecks zu vermeiden. PR 22805
+ 
+     * Korrektur von mod_usertrack, um keine fälschlich zutreffenden
+       Übereinstimmungen mit dem Namen des user-tracking-Cookies zu
+       erhalten. PR 16661.
+
+     * Die Bildung von Subprozess-Zombies bei der Verwendung von CGI-Wrappern
+       wie suExec und cgiwrap wird verhindert. PR 21737. [Numerous]
+
