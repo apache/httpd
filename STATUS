@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/08/08 09:37:53 $]
+Last modified at [$Date: 2003/08/08 11:51:12 $]
 
 Release:
 
@@ -203,16 +203,12 @@ PATCHES TO PORT FROM 2.1
     * mod_cgid: Restart the cgid daemon if it crashes.  PR 19849
         modules/generators/mod_cgid.c 1.152
         +1: trawick, gregames, stoddard
-        FYI...  Merge of this is on hold for the time being.  After 
-        testing it previously on multiple platforms, where it performed
-        perfectly time after time, I made the "mistake" of giving it a 
-        quick smoke test on Linux right before committing.  On the 
-        second crash of the cgid daemon the parent got knocked out.
-        More research is needed to see what the issue is, and I am out 
-        of time right now :(  If anybody else has time to play on
-        Linux, I'd love to hear your experiences.  Just keep sending
-        SIGSEGV to the current cgid daemon process and see what
-        happens.
+        oops, 2 problems to deal with:
+        a) patch relies on worker MPM behavior of
+           ap_graceful_stop_signalled(), which is to return true if
+           MPM is exiting (whether stop or restart or graceful)
+        b) maybe not the fault of this patch, but on Linux the parent
+           gets knocked out after a couple of segfaults in cgid
 
     * ab: catch out of memory (reasoning report ID 29)
         support/ab.c: r1.125
