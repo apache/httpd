@@ -59,15 +59,15 @@ orig_prefix="$prefix"
 
 echo $ac_n "${nl}Configuring Apache Portable Runtime library ...${nl}"
 
-APR_SUBDIR_CONFIG(srclib/apr, "$apache_apr_flags --prefix=$prefix --exec-prefix=$exec_prefix --libdir=$libdir --bindir=$bindir --datadir=$datadir --with-installbuilddir=$installbuilddir")
+APR_SUBDIR_CONFIG(srclib/apr, "$apache_apr_flags --prefix=$prefix --exec-prefix=$exec_prefix --libdir=$libdir --includedir=$includedir --bindir=$bindir --datadir=$datadir --with-installbuilddir=$installbuilddir")
 
 echo $ac_n "${nl}Configuring Apache Portable Runtime Utility library...${nl}"
 
-APR_SUBDIR_CONFIG(srclib/apr-util, "--with-apr=../apr --prefix=$prefix --exec-prefix=$exec_prefix --libdir=$libdir --bindir=$bindir")
+APR_SUBDIR_CONFIG(srclib/apr-util, "--with-apr=../apr --prefix=$prefix --exec-prefix=$exec_prefix --libdir=$libdir --includedir=$includedir --bindir=$bindir")
 
 echo $ac_n "${nl}Configuring PCRE regular expression library ...${nl}"
 
-APR_SUBDIR_CONFIG(srclib/pcre, "--prefix=$prefix --exec-prefix=$exec_prefix --libdir=$libdir --bindir=$bindir")
+APR_SUBDIR_CONFIG(srclib/pcre, "--prefix=$prefix --exec-prefix=$exec_prefix --libdir=$libdir --includedir=$includedir --bindir=$bindir")
 
 echo $ac_n "${nl}Configuring Apache httpd ...${nl}"
 
