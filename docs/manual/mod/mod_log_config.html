@@ -77,24 +77,24 @@
 %...A:          Local IP-address
 %...B:          Bytes sent, excluding HTTP headers.
 %...b:          Bytes sent, excluding HTTP headers. In CLF format
-        i.e. a '-' rather than a 0 when no bytes are sent.
+                i.e. a '-' rather than a 0 when no bytes are sent.
 %...{Foobar}C:  The contents of cookie "Foobar" in the request sent to the
                 server.
 %...D:          The time taken to serve the request, in microseconds.
 %...{FOOBAR}e:  The contents of the environment variable FOOBAR
 %...f:          Filename
 %...h:          Remote host
-%...H       The request protocol
+%...H           The request protocol
 %...{Foobar}i:  The contents of Foobar: header line(s) in the request
                 sent to the server.
 %...l:          Remote logname (from identd, if supplied)
-%...m       The request method
+%...m           The request method
 %...{Foobar}n:  The contents of note "Foobar" from another module.
 %...{Foobar}o:  The contents of Foobar: header line(s) in the reply.
 %...p:          The canonical Port of the server serving the request
 %...P:          The process ID of the child that serviced the request.
-%...q       The query string (prepended with a ? if a query string exists,
-        otherwise an empty string)
+%...q           The query string (prepended with a ? if a query string exists,
+                otherwise an empty string)
 %...r:          First line of request
 %...s:          Status.  For requests that got internally redirected, this is
                 the status of the *original* request --- %...&gt;s for the last.
