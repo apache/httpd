@@ -172,10 +172,10 @@ void *ssl_config_server_create(apr_pool_t *p, server_rec *s)
     sc->pSSLProxyCtx                  = NULL;
 #endif
 
-    (void)memset(sc->szPublicCertFile, 0, SSL_AIDX_MAX*sizeof(char *));
-    (void)memset(sc->szPrivateKeyFile, 0, SSL_AIDX_MAX*sizeof(char *));
-    (void)memset(sc->pPublicCert, 0, SSL_AIDX_MAX*sizeof(X509 *));
-    (void)memset(sc->pPrivateKey, 0, SSL_AIDX_MAX*sizeof(EVP_PKEY *));
+    (void)memset((char*)sc->szPublicCertFile, 0, SSL_AIDX_MAX*sizeof(char *));
+    (void)memset((char*)sc->szPrivateKeyFile, 0, SSL_AIDX_MAX*sizeof(char *));
+    (void)memset((char*)sc->pPublicCert, 0, SSL_AIDX_MAX*sizeof(X509 *));
+    (void)memset((char*)sc->pPrivateKey, 0, SSL_AIDX_MAX*sizeof(EVP_PKEY *));
 
     return sc;
 }
