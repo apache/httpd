@@ -66,6 +66,7 @@
 #include "httpd.h"
 #include "http_config.h"
 #include "http_connection.h"
+#include "http_core.h"
 #include "http_protocol.h"	/* For index_of_response().  Grump. */
 #include "http_request.h"
 
@@ -75,6 +76,12 @@
 #include "scoreboard.h"
 
 #include "mod_core.h"
+
+/* Handles for core filters */
+ap_filter_rec_t *ap_http_input_filter_handle;
+ap_filter_rec_t *ap_http_header_filter_handle;
+ap_filter_rec_t *ap_chunk_filter_handle;
+ap_filter_rec_t *ap_byterange_filter_handle;
 
 static const char *set_keep_alive_timeout(cmd_parms *cmd, void *dummy,
 					  const char *arg)
@@ -261,8 +268,8 @@ static apr_port_t http_port(const request_rec *r)
     { return DEFAULT_HTTP_PORT; }
 static int ap_pre_http_connection(conn_rec *c)
 {
-    ap_add_input_filter("CORE_IN", NULL, NULL, c);
-    ap_add_output_filter("CORE", NULL, NULL, c);
+    ap_add_input_filter_handle(ap_core_input_filter_handle, NULL, NULL, c);
+    ap_add_output_filter_handle(ap_core_output_filter_handle, NULL, NULL, c);
     return OK;
 }
 static int ap_process_http_connection(conn_rec *c)
@@ -303,9 +310,12 @@ static int ap_process_http_connection(conn_rec *c)
 static void ap_http_insert_filter(request_rec *r)
 {
     if (!r->main) {
-        ap_add_output_filter("BYTERANGE", NULL, r, r->connection);
-        ap_add_output_filter("CONTENT_LENGTH", NULL, r, r->connection);
-        ap_add_output_filter("HTTP_HEADER", NULL, r, r->connection);
+        ap_add_output_filter_handle(ap_byterange_filter_handle,
+                                    NULL, r, r->connection);
+        ap_add_output_filter_handle(ap_content_length_filter_handle,
+                                    NULL, r, r->connection);
+        ap_add_output_filter_handle(ap_http_header_filter_handle,
+                                    NULL, r, r->connection);
     }
 }
 
@@ -319,12 +329,17 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_http_method(http_method,NULL,NULL,APR_HOOK_REALLY_LAST);
     ap_hook_default_port(http_port,NULL,NULL,APR_HOOK_REALLY_LAST);
     ap_hook_insert_filter(ap_http_insert_filter, NULL, NULL, APR_HOOK_REALLY_LAST);
-    ap_register_input_filter("HTTP_IN", ap_http_filter, AP_FTYPE_CONNECTION);
-    ap_register_output_filter("HTTP_HEADER", ap_http_header_filter, 
-                              AP_FTYPE_HTTP_HEADER);
-    ap_register_output_filter("CHUNK", chunk_filter, AP_FTYPE_TRANSCODE);
-    ap_register_output_filter("BYTERANGE", ap_byterange_filter,
-                              AP_FTYPE_HTTP_HEADER);
+    ap_http_input_filter_handle =
+        ap_register_input_filter("HTTP_IN", ap_http_filter,
+                                 AP_FTYPE_CONNECTION);
+    ap_http_header_filter_handle =
+        ap_register_output_filter("HTTP_HEADER", ap_http_header_filter, 
+                                  AP_FTYPE_HTTP_HEADER);
+    ap_chunk_filter_handle =
+        ap_register_output_filter("CHUNK", chunk_filter, AP_FTYPE_TRANSCODE);
+    ap_byterange_filter_handle =
+        ap_register_output_filter("BYTERANGE", ap_byterange_filter,
+                                  AP_FTYPE_HTTP_HEADER);
 }
 
 module AP_MODULE_DECLARE_DATA http_module = {

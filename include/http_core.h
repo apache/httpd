@@ -578,6 +578,10 @@ extern ap_filter_rec_t *ap_core_output_filter_handle;
 extern ap_filter_rec_t *ap_content_length_filter_handle;
 extern ap_filter_rec_t *ap_net_time_filter_handle;
 extern ap_filter_rec_t *ap_core_input_filter_handle;
+extern ap_filter_rec_t *ap_http_input_filter_handle;
+extern ap_filter_rec_t *ap_http_header_filter_handle;
+extern ap_filter_rec_t *ap_chunk_filter_handle;
+extern ap_filter_rec_t *ap_byterange_filter_handle;
 
 /**
  * This hook provdes a way for modules to provide metrics/statistics about
