@@ -84,7 +84,7 @@ module AP_MODULE_DECLARE_DATA cache_module;
 static int cache_url_handler(request_rec *r)
 {
     apr_status_t rv;
-    const char *cc_in;
+    const char *cc_in, *pragma, *auth;
     apr_uri_t uri = r->parsed_uri;
     char *url = r->unparsed_uri;
     char *path = uri.path;
@@ -123,7 +123,9 @@ static int cache_url_handler(request_rec *r)
      */
 
     /* find certain cache controlling headers */
-    cc_in = ap_table_get(r->headers_in, "Cache-Control");
+    cc_in = apr_table_get(r->headers_in, "Cache-Control");
+    pragma = apr_table_get(r->headers_in, "Pragma");
+    auth = apr_table_get(r->headers_in, "Authorization");
 
     /* first things first - does the request allow us to return
      * cached information at all? If not, just decline the request.
@@ -135,10 +137,18 @@ static int cache_url_handler(request_rec *r)
      * Caching is forbidden under the following circumstances:
      *
      * - RFC2616 14.9.2 Cache-Control: no-store
-     * we are not supposed to store this request at all. Behave as a
-     * tunnel.
+     * - Pragma: no-cache
+     * - Any requests requiring authorization.
+     * - Any URLs whose length exceeds MAX_URL_LENGTH
+     * - TODO: Make MAX_URL_LENGTH a config directive?
      */
-    if (ap_cache_liststr(cc_in, "no-store", NULL)) {
+    if (strlen(url) > MAX_URL_LENGTH) {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r->server,
+                     "cache: URL exceeds length threshold: %s", url);
+        return DECLINED;
+    }
+    if (ap_cache_liststr(cc_in, "no-store", NULL) ||
+        ap_cache_liststr(pragma, "no-cache", NULL) || (auth != NULL)) {
         /* delete the previously cached file */
         cache_remove_url(r, cache->types, url);
 
