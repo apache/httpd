@@ -76,10 +76,12 @@
     module="core">NameVirtualHost</directive> directive.
     In the normal case where any and all IP addresses on the server should
     be used, you can use <code>*</code> as the argument to <directive
-    module="core">NameVirtualHost</directive>. Note that mentioning an
-    IP address in a <directive module="core">NameVirtualHost</directive>
-    directive does not automatically make the server listen to that IP address.
-    See <a href="../bind.html">Setting which addresses and ports Apache uses</a> 
+    module="core">NameVirtualHost</directive>. If you're planning to use
+    multiple ports (e.g. running SSL) you should add a Port to the argument,
+    such as <code>*:80</code>. Note that mentioning an IP address in a
+    <directive module="core">NameVirtualHost</directive> directive does not
+    automatically make the server listen to that IP address. See
+    <a href="../bind.html">Setting which addresses and ports Apache uses</a>
     for more details. In addition, any IP address specified here must be
     associated with a network interface	on the server.</p>
 
@@ -114,9 +116,9 @@
     Then you simply add the following to <code>httpd.conf</code>:</p>
 
     <example>
-        NameVirtualHost *<br />
+        NameVirtualHost *:80<br />
         <br />
-        &lt;VirtualHost *&gt;<br />
+        &lt;VirtualHost *:80&gt;<br />
         <indent>
             ServerName www.domain.tld<br />
             ServerAlias domain.tld *.domain.tld<br />
@@ -124,7 +126,7 @@
         </indent>
         &lt;/VirtualHost&gt;<br />
         <br />
-        &lt;VirtualHost *&gt;<br />
+        &lt;VirtualHost *:80&gt;<br />
         <indent>ServerName www.otherdomain.tld<br />
             DocumentRoot /www/otherdomain<br />
         </indent>
