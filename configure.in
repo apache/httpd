@@ -30,7 +30,7 @@ if test "$abs_builddir" != "$abs_srcdir"; then
 fi
 
 dnl ## Run configure for packages Apache uses
-AC_CONFIG_SUBDIRS(lib/pcre lib/apr)
+AC_CONFIG_SUBDIRS(lib/apr)
 
 dnl
 dnl ## Preload our OS configuration
@@ -173,7 +173,7 @@ AC_ARG_WITH(program-name,
   progname="httpd"] )
 
 APACHE_FAST_OUTPUT(Makefile ap/Makefile lib/Makefile main/Makefile)
-APACHE_FAST_OUTPUT(modules/Makefile os/Makefile support/Makefile)
+APACHE_FAST_OUTPUT(modules/Makefile os/Makefile support/Makefile lib/pcre/Makefile)
 
 APACHE_GEN_CONFIG_VARS
 
