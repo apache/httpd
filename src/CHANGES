@@ -27,7 +27,7 @@ Changes with Apache 1.3.1
 
   *) Win32 (security): Eliminate trailing "."s in path components. These are
      ignored by the Windows filesystem, and so can be used to bypass security.
-	 [Ben Laurie, Alexei Kosut, W G Stoddard].
+	 [Ben Laurie, Alexei Kosut].
 
   *) We now attempt to dump core when we get SIGILL. [Jim Jagielski]
 
@@ -45,7 +45,7 @@ Changes with Apache 1.3.1
   *) Win32 (security): Eliminate directories consisting of three or more dots;
      these are treated by Win32 as if they are ".." but are not detected by
      other machinery within Apache. This is something of a kludge but
-     eliminates a security hole. [W G Stoddard, Ben Laurie]
+     eliminates a security hole. [Manoj Kasichainula, Ben Laurie]
 
   *) Move ap_escape_quotes() from src/ap to src/main/util.c; it uses
      pools and thus pollutes libap (until the pool stuff is moved there).
