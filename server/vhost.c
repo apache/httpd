@@ -340,7 +340,17 @@ static apr_inline unsigned hash_inaddr(unsigned key)
     return ((key >> 8) ^ key) % IPHASH_TABLE_SIZE;
 }
 
+static apr_inline unsigned hash_addr(struct apr_sockaddr_t *sa)
+{
+    unsigned key;
 
+    /* The key is the last four bytes of the IP address.
+     * For IPv4, this is the entire address, as always.
+     * For IPv6, this is usually part of the MAC address.
+     */
+    key = *(unsigned *)((char *)sa->ipaddr_ptr + sa->ipaddr_len - 4);
+    return hash_inaddr(key);
+}
 
 static ipaddr_chain *new_ipaddr_chain(apr_pool_t *p,
 				    server_rec *s, server_addr_rec *sar)
@@ -368,23 +378,27 @@ static name_chain *new_name_chain(apr_pool_t *p, server_rec *s, server_addr_rec 
 }
 
 
-static apr_inline ipaddr_chain *find_ipaddr(apr_in_addr_t *server_ip,
-    apr_port_t port)
+static apr_inline ipaddr_chain *find_ipaddr(apr_sockaddr_t *sa)
 {
     unsigned bucket;
     ipaddr_chain *trav;
-    unsigned addr;
 
     /* scan the hash apr_table_t for an exact match first */
-    addr = server_ip->s_addr;
-    bucket = hash_inaddr(addr);
+    bucket = hash_addr(sa);
     for (trav = iphash_table[bucket]; trav; trav = trav->next) {
 	server_addr_rec *sar = trav->sar;
-	if ((sar->host_addr->sa.sin.sin_addr.s_addr == addr)
-	    && (sar->host_port == 0 || sar->host_port == port
-		|| port == 0)) {
-	    return trav;
-	}
+        apr_sockaddr_t *cur = sar->host_addr;
+
+        if (cur->sa.sin.sin_port == 0 ||
+            sa->sa.sin.sin_port == 0  ||
+            cur->sa.sin.sin_port == sa->sa.sin.sin_port) {
+            if (cur->ipaddr_len == sa->ipaddr_len &&
+                !memcmp(cur->ipaddr_ptr,
+                        sa->ipaddr_ptr,
+                        sa->ipaddr_len)) {
+                return trav;
+            }
+        }    
     }
     return NULL;
 }
@@ -549,7 +563,7 @@ void ap_fini_vhost_config(apr_pool_t *p, server_rec *main_s)
      * occured in the config file, we'll copy it in that order.
      */
     for (sar = name_vhost_list; sar; sar = sar->next) {
-	unsigned bucket = hash_inaddr(sar->host_addr->sa.sin.sin_addr.s_addr);
+	unsigned bucket = hash_addr(sar->host_addr);
 	ipaddr_chain *ic = new_ipaddr_chain(p, NULL, sar);
 
 	if (sar->host_addr->sa.sin.sin_addr.s_addr != INADDR_ANY) {
@@ -597,7 +611,7 @@ void ap_fini_vhost_config(apr_pool_t *p, server_rec *main_s)
 	    }
 	    else {
 		/* see if it matches something we've already got */
-		ic = find_ipaddr(&sar->host_addr->sa.sin.sin_addr, sar->host_port);
+		ic = find_ipaddr(sar->host_addr);
 
 		if (!ic) {
 		    unsigned bucket = hash_inaddr(sar->host_addr->sa.sin.sin_addr.s_addr);
@@ -975,11 +989,8 @@ void ap_update_vhost_given_ip(conn_rec *conn)
     ipaddr_chain *trav;
     apr_port_t port;
 
-    apr_get_port(&port, conn->local_addr);
-
     /* scan the hash apr_table_t for an exact match first */
-    /* XXX IPv6 issues handled in an uncommitted patch */
-    trav = find_ipaddr(&conn->local_addr->sa.sin.sin_addr, port);
+    trav = find_ipaddr(conn->local_addr);
     if (trav) {
 	/* save the name_chain for later in case this is a name-vhost */
 	conn->vhost_lookup_data = trav->names;
@@ -990,6 +1001,7 @@ void ap_update_vhost_given_ip(conn_rec *conn)
     /* maybe there's a default server or wildcard name-based vhost
      * matching this port
      */
+    apr_get_port(&port, conn->local_addr);
     trav = find_default_server(port);
     if (trav) {
 	conn->vhost_lookup_data = trav->names;
