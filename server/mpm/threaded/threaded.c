@@ -1003,15 +1003,15 @@ static void perform_idle_server_maintenance(void)
     }
     ap_max_daemons_limit = last_non_dead + 1;
 
-    if (idle_thread_count > max_spare_threads * total_non_dead) {
-        /* Kill off one child */
+    if (idle_thread_count > max_spare_threads) {
         char char_of_death = '!';
+        /* Kill off one child */
         if ((rv = apr_file_write(pipe_of_death_out, &char_of_death, &one)) != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_WARNING, rv, ap_server_conf, "write pipe_of_death");
         }
         idle_spawn_rate = 1;
     }
-    else if (idle_thread_count < min_spare_threads * total_non_dead) {
+    else if (idle_thread_count < min_spare_threads) {
         /* terminate the free list */
         if (free_length == 0) {
 	    /* only report this condition once */
