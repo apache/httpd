@@ -253,7 +253,7 @@ AP_DECLARE(void) ap_die(int type, request_rec *r);
  * @param r The current request
  * @ingroup hooks
  */
-AP_DECLARE_HOOK(void,create_request,(request_rec *r))
+AP_DECLARE_HOOK(int,create_request,(request_rec *r))
 
 /**
  * This hook allow modules an opportunity to translate the URI into an
