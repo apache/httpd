@@ -206,13 +206,10 @@ void increment_counts(int child_num, int thread_num, request_rec *r)
 API_EXPORT(int) find_child_by_pid(ap_proc_t *pid)
 {
     int i;
-    pid_t actual_pid;
-
     int max_daemons_limit = ap_get_max_daemons();
-    ap_get_os_proc(&actual_pid, pid);
 
     for (i = 0; i < max_daemons_limit; ++i)
-	if (ap_scoreboard_image->parent[i].pid == actual_pid)
+	if (ap_scoreboard_image->parent[i].pid == pid->pid)
 	    return i;
 
     return -1;
