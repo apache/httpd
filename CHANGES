@@ -1,5 +1,7 @@
 Changes with Apache 2.0.41
 
+  *) Fix memory leak in core_output_filter.  [Justin Erenkrantz]
+
   *) Add ability to htpasswd (via -5) to produce non-obfuscated MD5 hashes.
      [Justin Erenkrantz]
 

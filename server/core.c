@@ -3798,7 +3798,7 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
             if (APR_BUCKET_IS_EOS(last_e)) {
                 apr_bucket *bucket;
                 int file_bucket_saved = 0;
-                APR_BUCKET_REMOVE(last_e);
+                apr_bucket_delete(last_e);
                 for (bucket = APR_BRIGADE_FIRST(b);
                      bucket != APR_BRIGADE_SENTINEL(b);
                      bucket = APR_BUCKET_NEXT(bucket)) {
