@@ -16,7 +16,7 @@ Changes with Apache 1.3.2
      the possibility to override it manually via APACI or src/Configuration.
      As a fallback for the header check itself we can directly check the
      existance of the file under /usr/include, too.
-     [Ralf S. Engelschall] PR????
+     [Ralf S. Engelschall] PR#2777
 
   *) PORT: Added RHAPSODY (Mac OS X Server) support. MAP_TMPFILE defined
      as an alternate mechanism for mmap'd shared memory for RHAPSODY.
