@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/03/26 00:15:24 $]
+  Last modified at [$Date: 1999/03/27 22:43:29 $]
 
 Release:
 
@@ -30,6 +30,7 @@ Binaries (1.3.6):
  i386-unknown-freebsd2.1       no      Andrew Wilson, Brian Tao
  i386-unknown-freebsd2.2.8     yes     Jim Jagielski
  i386-whatever-freebsd3.0      yes     Ken Coar
+ i386-whatever-freebsd3.0      yes     Dirk-Willem van Gulik
  i686-pc-freebsd3.1            no      Ralf S. Engelschall
  i586-unknown-linux2           yes     Ralf S. Engelschall, Lars Eilebrecht
  i686-unknown-linux2           yes     Lars Eilebrecht
@@ -108,7 +109,7 @@ Available Patches:
     * Jun-ichiro itojun Hagino's [PATCH] IPv6 enable patch
       ftp://ftp.kame.net/pub/kame/misc/apache-134-v6-19990118.diff.gz
         Message-ID: <18586.916662926@coconut.itojun.org>
-        Status: Lars +1 (on concept)
+        Status: Lars +1 (on concept) Dirkx +1 (tested)
 
     * Jim Patterson's patch to make mod_info work on Win32
         Message-ID: PR#1442
