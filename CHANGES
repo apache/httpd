@@ -44,7 +44,7 @@ Changes with Apache 2.0.40
   *) Add a new directive: MaxMemFree.  MaxMemFree makes it possible
      to configure the maximum amount of memory the allocators will
      hold on to for reuse.  Anything over the MaxMemFree threshold
-     will be free()d.  This directive is usefull when uncommon large
+     will be free()d.  This directive is useful when uncommon large
      peaks occur in memory usage.  It should _not_ be used to mask
      defective modules' memory use.  [Sander Striker]
 
