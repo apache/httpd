@@ -1,5 +1,10 @@
 Changes with Apache 2.0b1
 
+  *) Adopt apr features to simplify mod_includes.  This changes the
+     behavior of the USER_NAME variable, unknown uid's are now reported
+     as USER_NAME="<unknown>" rather than the old user#000 result.
+     WinNT now resolves USER_NAME on NTFS volumes.  [William Rowe]
+
   *) Adopt apr features for simplifing mod_userdir, and accept the new
      Win32/OS2 exceptions without hiccuping.  [William Rowe]
 

@@ -68,6 +68,7 @@
 #include "apr_strings.h"
 #include "apr_thread_proc.h"
 #include "apr_hash.h"
+#include "apr_user.h"
 
 #define CORE_PRIVATE
 
@@ -89,9 +90,6 @@
 #ifdef HAVE_STRINGS_H
 #include <strings.h>
 #endif
-#ifdef HAVE_PWD_H
-#include <pwd.h>
-#endif
 #include "util_ebcdic.h"
 
 
@@ -102,9 +100,7 @@ static apr_hash_t *include_hash;
 /* XXX: could use ap_table_overlap here */
 static void add_include_vars(request_rec *r, char *timefmt)
 {
-#ifndef WIN32
-    struct passwd *pw;
-#endif /* ndef WIN32 */
+    char *pwname;
     apr_table_t *e = r->subprocess_env;
     char *t;
     apr_time_t date = r->request_time;
@@ -115,17 +111,12 @@ static void add_include_vars(request_rec *r, char *timefmt)
               ap_ht_time(r->pool, r->finfo.mtime, timefmt, 0));
     apr_table_setn(e, "DOCUMENT_URI", r->uri);
     apr_table_setn(e, "DOCUMENT_PATH_INFO", r->path_info);
-#ifndef WIN32
-    pw = getpwuid(r->finfo.user);
-    if (pw) {
-        apr_table_setn(e, "USER_NAME", apr_pstrdup(r->pool, pw->pw_name));
+    if (apr_get_username(&pwname, r->finfo.user, r->pool) == APR_SUCCESS) {
+        apr_table_setn(e, "USER_NAME", pwname);
     }
     else {
-        apr_table_setn(e, "USER_NAME", apr_psprintf(r->pool, "user#%lu",
-                    (unsigned long) r->finfo.user));
+        apr_table_setn(e, "USER_NAME", "<unknown>");
     }
-#endif /* ndef WIN32 */
-
     if ((t = strrchr(r->filename, '/'))) {
         apr_table_setn(e, "DOCUMENT_NAME", ++t);
     }
@@ -1285,8 +1276,9 @@ static int find_file(request_rec *r, const char *directive, const char *tag,
 
             if (rr->status == HTTP_OK && rr->finfo.protection != 0) {
                 to_send = rr->filename;
-                if (apr_stat(finfo, to_send, 
-                             APR_FINFO_NORM, rr->pool) != APR_SUCCESS) {
+                if (rv = apr_stat(finfo, to_send, APR_FINFO_GPROT 
+                                | APR_FINFO_MIN, rr->pool) != APR_SUCCESS
+                                                     && rv != APR_INCOMPLETE) {
                     error_fmt = "unable to get information about \"%s\" "
                         "in parsed file %s";
                 }
