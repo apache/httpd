@@ -415,11 +415,6 @@ void timeout(int sig)			/* Also called on SIGPIPE */
 	    else log_req = log_req->prev;
 	}
 	
-/* If we didn't get SIGPIPE and we didn't set the method number,
- * then it's safe to say the client timed out
- */
-        if (sig != SIGPIPE && log_req->method_number == M_NONE)
-            log_req->status = HTTP_REQUEST_TIME_OUT;
 	if (!current_conn->keptalive) 
             log_transaction(log_req);
 

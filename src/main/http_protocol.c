@@ -790,7 +790,6 @@ request_rec *read_request (conn_rec *conn)
 				 * Only changed by die(), or (bletch!)
 				 * scan_script_header...
 				 */
-    r->method_number = M_NONE;  /* Until we finish reading a request */
 
     /* Get the request... */
     
