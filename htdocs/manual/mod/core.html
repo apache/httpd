@@ -477,7 +477,7 @@ considerations.<p><hr>
 <!--%plaintext &lt;?INDEX {\tt HostNameLookups} directive&gt; -->
 <strong>Syntax:</strong> HostNameLookups <em>boolean</em><br>
 <strong>Default:</strong> <code>HostNameLookups on</code><br>
-<strong>Context:</strong> server config, virtual host, directory<br>
+<strong>Context:</strong> server config, virtual host<br>
 <strong>Status:</strong> core<p>
 
 This directive enables DNS lookups so that host names can be logged.
@@ -493,10 +493,10 @@ from logged IP addresses offline.<p><hr>
 <!--%plaintext &lt;?INDEX {\tt IdentityCheck} directive&gt; -->
 <strong>Syntax:</strong> IdentityCheck <em>boolean</em><br>
 <strong>Default:</strong> <code>IdentityCheck off</code><br>
-<strong>Context:</strong> server config, virtual host, directory<br>
+<strong>Context:</strong> server config, virtual host<br>
 <strong>Status:</strong> core<p>
 
-This directive enables RFC931-compliant logging of the remote user name
+This directive enables RFC1413-compliant logging of the remote user name
 for each connection, where the client machine runs identd or something similar.
 This information is logged in the access log. <em>Boolean</em> is either
 <code>on</code> or <code>off</code>.<p>
