@@ -29,48 +29,25 @@
 #
 
 ### Section 1: Global Environment
-#
-# The directives in this section affect the overall operation of Apache,
-# such as the number of concurrent requests it can handle or where it
-# can find its configuration files.
-#
 
 #
 # ServerRoot: The top of the directory tree under which the server's
 # configuration, error, and log files are kept.
 #
-# NOTE!  If you intend to place this on an NFS (or otherwise network)
-# mounted filesystem then please read the LockFile documentation (available
-# at <URL:http://httpd.apache.org/docs-2.1/mod/mpm_common.html#lockfile>);
-# you will save yourself a lot of trouble.
-#
 # Do NOT add a slash at the end of the directory path.
 #
 ServerRoot "@@ServerRoot@@"
 
-#
-# The accept serialization lock file MUST BE STORED ON A LOCAL DISK.
+# NOTE! The following two directives are used on some systems
+# to coordinate the httpd children.  THEY MUST BE STORED ON
+# A LOCAL DISK!
 #
 #<IfModule !mpm_winnt_module>
 #<IfModule !mpm_netware_module>
 #LockFile @rel_logfiledir@/accept.lock
-#</IfModule>
-#</IfModule>
-
-#
-# ScoreBoardFile: File used to store internal server process information.
-# If unspecified (the default), the scoreboard will be stored in an
-# anonymous shared memory segment, and will be unavailable to third-party
-# applications.
-# If specified, ensure that no two invocations of Apache share the same
-# scoreboard file. The scoreboard file MUST BE STORED ON A LOCAL DISK.
-#
-#<IfModule !mpm_netware_module>
-#<IfModule !mpm_perchild_module>
 #ScoreBoardFile @rel_logfiledir@/apache_runtime_status
 #</IfModule>
 #</IfModule>
-
 
 #
 # PidFile: The file in which the server should record its process
@@ -130,13 +107,6 @@ Listen @@Port@@
 #
 @@LoadModule@@
 
-#
-# ExtendedStatus controls whether Apache will generate "full" status
-# information (ExtendedStatus On) or just basic information (ExtendedStatus
-# Off) when the "server-status" handler is called. The default is Off.
-#
-#ExtendedStatus On
-
 ### Section 2: 'Main' server configuration
 #
 # The directives in this section set up the values used by the 'main'
@@ -179,9 +149,6 @@ ServerAdmin you@example.com
 # ServerName gives the name and port that the server uses to identify itself.
 # This can often be determined automatically, but we recommend you specify
 # it explicitly to prevent problems during startup.
-#
-# If this is not set to valid DNS name for your host, server-generated
-# redirections will not work.  See also the UseCanonicalName directive.
 #
 # If your host doesn't have a registered DNS name, enter its IP address here.
 # You will have to access it by its address anyway, and this will make 
@@ -265,12 +232,8 @@ DocumentRoot "@exp_htdocsdir@"
 # DirectoryIndex: sets the file that Apache will serve if a directory
 # is requested.
 #
-# The index.html.var file (a type-map) is used to deliver content-
-# negotiated documents.  The MultiViews Option can be used for the 
-# same purpose, but it is much slower.
-#
 <IfModule dir_module>
-    DirectoryIndex index.html index.html.var
+    DirectoryIndex index.html
 </IfModule>
 
 #
@@ -295,7 +258,6 @@ AccessFileName .htaccess
     # to be found.
     #
     TypesConfig @rel_sysconfdir@/mime.types
-
 </IfModule>
 
 #
@@ -328,23 +290,14 @@ DefaultType text/plain
 #
 HostnameLookups Off
 
-#
-# EnableMMAP: Control whether memory-mapping is used to deliver
-# files (assuming that the underlying OS supports it).
-# The default is on; turn this off if you serve from NFS-mounted 
-# filesystems.  On some systems, turning it off (regardless of
-# filesystem) can improve performance; for details, please see
-# http://httpd.apache.org/docs-2.1/mod/core.html#enablemmap
+# EnableMMAP and EnableSendfile: On systems that support it, 
+# memory-mapping or the sendfile syscall is used to deliver
+# files.  This usually improves server performance, but must
+# be turned off when serving from networked-mounted 
+# filesystems or if support for these functions is otherwise
+# broken on your system.
 #
 #EnableMMAP off
-
-#
-# EnableSendfile: Control whether the sendfile kernel support is 
-# used  to deliver files (assuming that the OS supports it).
-# The default is on; turn this off if you serve from NFS-mounted 
-# filesystems.  Please see
-# http://httpd.apache.org/docs-2.1/mod/core.html#enablesendfile
-#
 #EnableSendfile off
 
 #
@@ -542,10 +495,8 @@ ServerSignature On
 
     #
     # For type maps (negotiated resources):
-    # (This is enabled by default to allow the Apache "It Worked" page
-    #  to be distributed in multiple languages.)
     #
-    AddHandler type-map var
+    #AddHandler type-map var
 
     #
     # Filters allow you to process content before it is sent to the client.
@@ -632,6 +583,7 @@ ServerSignature On
 #
 # Secure (SSL/TLS) connections
 # Include @rel_sysconfdir@/extra/httpd-ssl.conf
+#
 # Note: The following must must be present to support
 #       starting without SSL on platforms with no /dev/random equivalent
 #       but a statically compiled-in mod_ssl.
