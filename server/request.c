@@ -984,7 +984,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
         override = this_dir->override;
 
         r->path_info = r->filename;
-        rv = apr_filepath_root(&r->filename, &r->path_info, 
+        rv = apr_filepath_root((char**)&r->filename, (char**)&r->path_info, 
                                APR_FILEPATH_TRUENAME, r->pool);
         buflen = strlen(r->filename) + strlen(r->path_info) + 1;
         buf = apr_palloc(r->pool, buflen);
