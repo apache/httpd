@@ -3,7 +3,7 @@
   [ <!ENTITY allmodules SYSTEM "allmodules.xml.ja"> ]
 >
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English revision: 1.4 -->
+<!-- English revision: 1.6 -->
 
 <quickreference metafile="quickreference.xml.meta">
   <title>ディレクティブ クイックリファレンス</title>
