@@ -1,0 +1,13 @@
+#!/bin/sh
+##
+## fp2rp -- convert a standard forward path to a reverse dotted path
+##
+if [ "x$1" = "x." ]; then
+    rp="."
+else
+    rp=""
+    for pe in `IFS="$IFS/"; echo $1`; do
+        rp="../$rp"
+    done
+fi
+echo $rp | sed -e 's:/$::'
