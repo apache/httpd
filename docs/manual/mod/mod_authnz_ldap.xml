@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.1 $ -->
+<!-- $Revision: 1.2 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -241,7 +241,7 @@ for HTTP Basic authentication.</description>
 
         <td>The attribute specified in the
         URL is used in compare operations for the <code>require
-        user</code> operation.</td>
+        ldap-user</code> operation.</td>
       </tr>
 
       <tr>
@@ -249,7 +249,7 @@ for HTTP Basic authentication.</description>
         module="mod_authnz_ldap">AuthLDAPCompareDNOnServer</directive></td>
 
         <td>Determines the behavior of the
-        <code>require dn</code> directive.</td>
+        <code>require ldap-dn</code> directive.</td>
       </tr>
 
       <tr>
@@ -257,7 +257,7 @@ for HTTP Basic authentication.</description>
         module="mod_authnz_ldap">AuthLDAPGroupAttribute</directive></td>
 
         <td>Determines the attribute to
-        use for comparisons in the <code>require group</code>
+        use for comparisons in the <code>require ldap-group</code>
         directive.</td>
       </tr>
 
@@ -267,7 +267,7 @@ for HTTP Basic authentication.</description>
 
         <td>Specifies whether to use the
         user DN or the username when doing comparisons for the
-        <code>require group</code> directive.</td>
+        <code>require ldap-group</code> directive.</td>
       </tr>
     </table>
 </section>
@@ -288,7 +288,7 @@ for HTTP Basic authentication.</description>
     access to any user that has successfully authenticated during the
     search/bind phase.  Requires that <module>mod_authz_user</module> be 
     loaded and that the 
-    <directive module="mod_authnz_ldap">AuthLDAPAuthoritative</directive>
+    <directive module="mod_authnz_ldap">AuthzLDAPAuthoritative</directive>
     directive be set to off.</p>
 </section>
 
@@ -505,12 +505,12 @@ require valid-user
     that gets created in the web</p>
 <example><pre>
 AuthLDAPURL            "the url"
-AuthLDAPAuthoritative  off
+AuthzLDAPAuthoritative off
 AuthGroupFile <em>mygroupfile</em>
 require group <em>mygroupfile</em>
 </pre></example>
 
-    <p><directive module="mod_authnz_ldap">AuthLDAPAuthoritative</directive> 
+    <p><directive module="mod_authnz_ldap">AuthzLDAPAuthoritative</directive> 
     must be off to allow <module>mod_authnz_ldap</module> to decline group
     authentication so that Apache will fall back to file
     authentication for checking group membership. This allows the
@@ -576,11 +576,11 @@ require group <em>mygroupfile</em>
 </section>
 
 <directivesynopsis>
-<name>AuthLDAPAuthoritative</name>
+<name>AuthzLDAPAuthoritative</name>
 <description>Prevent other authentication modules from
 authenticating the user if this one fails</description>
-<syntax>AuthLDAPAuthoritative on|off</syntax>
-<default>AuthLDAPAuthoritative on</default>
+<syntax>AuthzLDAPAuthoritative on|off</syntax>
+<default>AuthzLDAPAuthoritative on</default>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
