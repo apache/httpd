@@ -298,6 +298,7 @@
     datadir:       ${exec_prefix}/share/apache2
     iconsdir:      ${datadir}/icons
     htdocsdir:     ${prefix}/usr/share/apache2/default-site/htdocs
+    manualdir:     ${htdocsdir}/manual
     cgidir:        ${prefix}/usr/lib/cgi-bin
     includedir:    ${exec_prefix}/include/apache2
     localstatedir: ${prefix}/var/run
