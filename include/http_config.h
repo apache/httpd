@@ -155,7 +155,7 @@ typedef struct {
     int override;		/* Which allow-override bits are set */
     int limited;		/* Which methods are <Limit>ed */
 
-    configfile_t *config_file;	/* Config file structure from pcfg_openfile() */
+    ap_directive_t *directive;	/* the directive specifying this command */
 
     ap_pool_t *pool;			/* Pool to allocate new storage in */
     ap_pool_t *temp_pool;		/* Pool for scratch memory; persists during
@@ -173,7 +173,7 @@ typedef struct {
 				 * or being called in a dir context (path != NULL).
 				 */
     const command_rec *cmd;	/* configuration command */
-    const char *end_token;	/* end token required to end a nested section */
+
     void *context;		/* per_dir_config vector passed 
 				 * to handle_command */
 } cmd_parms;
@@ -304,8 +304,39 @@ API_EXPORT(void) ap_clear_module_list(void);
 API_EXPORT(const char *) ap_find_module_name(module *m);
 API_EXPORT(module *) ap_find_linked_module(const char *name);
 
+/* Common structure for reading of config files / passwd files etc. */
+typedef struct {
+    int (*getch) (void *param);	/* a getc()-like function */
+    void *(*getstr) (void *buf, size_t bufsiz, void *param); /* a fgets()-like function */
+    int (*close) (void *param);	/* a close hander function */
+    void *param;		/* the argument passed to getch/getstr/close */
+    const char *name;		/* the filename / description */
+    unsigned line_number;	/* current line number, starting at 1 */
+} configfile_t;
+
+/* Open a configfile_t as FILE, return open configfile_t struct pointer */
+API_EXPORT(ap_status_t) ap_pcfg_openfile(configfile_t **, ap_pool_t *p, const char *name);
+
+/* Allocate a configfile_t handle with user defined functions and params */
+API_EXPORT(configfile_t *) ap_pcfg_open_custom(ap_pool_t *p, const char *descr,
+    void *param,
+    int(*getc_func)(void*),
+    void *(*gets_func) (void *buf, size_t bufsiz, void *param),
+    int(*close_func)(void *param));
+
+/* Read one line from open configfile_t, strip LF, increase line number */
+API_EXPORT(int) ap_cfg_getline(char *buf, size_t bufsize, configfile_t *cfp);
+
+/* Read one char from open configfile_t, increase line number upon LF */
+API_EXPORT(int) ap_cfg_getc(configfile_t *cfp);
+
+/* Detach from open configfile_t, calling the close handler */
+API_EXPORT(int) ap_cfg_closefile(configfile_t *cfp);
+
 /* for implementing subconfigs and customized config files */
-API_EXPORT(const char *) ap_build_config(cmd_parms *parms,
+API_EXPORT(const char *) ap_build_config(configfile_t *cfp,
+					 ap_pool_t *conf_pool,
+					 ap_pool_t *temp_pool,
 					 ap_directive_t **conftree);
 API_EXPORT(const char *) ap_walk_config(ap_directive_t *conftree, cmd_parms *parms, void *config, int container);
 

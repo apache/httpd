@@ -928,16 +928,19 @@ API_EXPORT (file_type_e) ap_get_win32_interpreter(const  request_rec *r,
  * commands, but most of the old srm.conf is in the the modules.
  */
 
-static const char end_directory_section[] = "</Directory>";
-static const char end_directorymatch_section[] = "</DirectoryMatch>";
-static const char end_location_section[] = "</Location>";
-static const char end_locationmatch_section[] = "</LocationMatch>";
-static const char end_files_section[] = "</Files>";
-static const char end_filesmatch_section[] = "</FilesMatch>";
-static const char end_virtualhost_section[] = "</VirtualHost>";
-static const char end_ifmodule_section[] = "</IfModule>";
-static const char end_ifdefine_section[] = "</IfDefine>";
 
+/* returns a parent if it matches the given directive */
+static const ap_directive_t * find_parent(const ap_directive_t *dirp,
+					  const char *what)
+{
+    while (dirp->parent != NULL) {
+	dirp = dirp->parent;
+	/* ### it would be nice to have atom-ized directives */
+	if (strcasecmp(dirp->directive, what) == 0)
+	    return dirp;
+    }
+    return NULL;
+}
 
 API_EXPORT(const char *) ap_check_cmd_context(cmd_parms *cmd,
 					      unsigned forbidden)
@@ -945,6 +948,7 @@ API_EXPORT(const char *) ap_check_cmd_context(cmd_parms *cmd,
     const char *gt = (cmd->cmd->name[0] == '<'
 		      && cmd->cmd->name[strlen(cmd->cmd->name)-1] != '>')
                          ? ">" : "";
+    const ap_directive_t *found;
 
     if ((forbidden & NOT_IN_VIRTUALHOST) && cmd->server->is_virtual) {
 	return ap_pstrcat(cmd->pool, cmd->cmd->name, gt,
@@ -964,17 +968,17 @@ API_EXPORT(const char *) ap_check_cmd_context(cmd_parms *cmd,
     }
     
     if (((forbidden & NOT_IN_DIRECTORY)
-	 && (cmd->end_token == end_directory_section
-	     || cmd->end_token == end_directorymatch_section)) 
+	 && ((found = find_parent(cmd->directive, "<Directory"))
+	     || (found = find_parent(cmd->directive, "<DirectoryMatch"))))
 	|| ((forbidden & NOT_IN_LOCATION)
-	    && (cmd->end_token == end_location_section
-		|| cmd->end_token == end_locationmatch_section)) 
+	    && ((found = find_parent(cmd->directive, "<Location"))
+		|| (found = find_parent(cmd->directive, "<LocationMatch"))))
 	|| ((forbidden & NOT_IN_FILES)
-	    && (cmd->end_token == end_files_section
-		|| cmd->end_token == end_filesmatch_section))) {
+	    && ((found = find_parent(cmd->directive, "<Files"))
+		|| (found = find_parent(cmd->directive, "<FilesMatch"))))) {
 	return ap_pstrcat(cmd->pool, cmd->cmd->name, gt,
-			  " cannot occur within <", cmd->end_token+2,
-			  " section", NULL);
+			  " cannot occur within ", found->directive,
+			  "> section", NULL);
     }
 
     return NULL;
@@ -1140,15 +1144,6 @@ static const char *set_error_document(cmd_parms *cmd, core_dir_config *conf,
     return NULL;
 }
 
-/* access.conf commands...
- *
- * The *only* thing that can appear in access.conf at top level is a
- * <Directory> section.  NB we need to have a way to cut the srm_command_loop
- * invoked by dirsection (i.e., <Directory>) short when </Directory> is seen.
- * We do that by returning an error, which dirsection itself recognizes and
- * discards as harmless.  Cheesy, but it works.
- */
-
 static const char *set_override(cmd_parms *cmd, core_dir_config *d,
 				const char *l)
 {
@@ -1297,16 +1292,12 @@ CORE_EXPORT_NONSTD(const char *) ap_limit_section(cmd_parms *cmd, void *dummy,
     const char *limited_methods = ap_getword(cmd->pool, &arg, '>');
     void *tog = cmd->cmd->cmd_data;
     int limited = 0;
+    const char *errmsg;
   
     const char *err = ap_check_cmd_context(cmd, NOT_IN_LIMIT);
     if (err != NULL) {
         return err;
     }
-
-    /* XXX: NB: Currently, we have no way of checking
-     * whether <Limit> or <LimitExcept> sections are closed properly.
-     * (If we would add a srm_command_loop() here we might...)
-     */
     
     while (limited_methods[0]) {
         char *method = ap_getword_conf(cmd->pool, &limited_methods);
@@ -1328,33 +1319,12 @@ CORE_EXPORT_NONSTD(const char *) ap_limit_section(cmd_parms *cmd, void *dummy,
      * if (tog == NULL) <Limit>, else <LimitExcept>
      */
     cmd->limited = tog ? ~limited : limited;
-    return NULL;
-}
 
-static const char *endlimit_section(cmd_parms *cmd, void *dummy, void *dummy2)
-{
-    void *tog = cmd->cmd->cmd_data;
+    errmsg = ap_walk_config(NULL, cmd, cmd->context, 1);
 
-    if (cmd->limited == -1) {
-        return tog ? "</LimitExcept> unexpected" : "</Limit> unexpected";
-    }
-    
     cmd->limited = -1;
-    return NULL;
-}
 
-/*
- * When a section is not closed properly when end-of-file is reached,
- * then an error message should be printed:
- */
-static const char *missing_endsection(cmd_parms *cmd, int nest)
-{
-    if (nest < 2) {
-	return ap_psprintf(cmd->pool, "Missing %s directive at end-of-file",
-			   cmd->end_token);
-    }
-    return ap_psprintf(cmd->pool, "%d missing %s directives at end-of-file",
-		       nest, cmd->end_token);
+    return errmsg;
 }
 
 /* We use this in <DirectoryMatch> and <FilesMatch>, to ensure that 
@@ -1366,25 +1336,6 @@ static const char *missing_endsection(cmd_parms *cmd, int nest)
 #else
 #define USE_ICASE 0
 #endif
-
-static const char *end_nested_section(cmd_parms *cmd, void *dummy)
-{
-    if (cmd->end_token == NULL) {
-        return ap_pstrcat(cmd->pool, cmd->cmd->name,
-			  " without matching <", cmd->cmd->name + 2, 
-			  " section", NULL);
-    }
-    /*
-     * This '!=' may look weird on a string comparison, but it's correct --
-     * it's been set up so that checking for two pointers to the same datum
-     * is valid here.  And faster.
-     */
-    if (cmd->cmd->name != cmd->end_token) {
-	return ap_pstrcat(cmd->pool, "Expected ", cmd->end_token, " but saw ",
-			  cmd->cmd->name, NULL);
-    }
-    return NULL;
-}
 
 /*
  * Report a missing-'>' syntax error.
@@ -1404,7 +1355,6 @@ static const char *dirsection(cmd_parms *cmd, void *dummy, const char *arg)
     core_dir_config *conf;
     void *new_dir_conf = ap_create_per_dir_config(cmd->pool);
     regex_t *r = NULL;
-    const char *old_end_token;
     const command_rec *thiscmd = cmd->cmd;
 
     const char *err = ap_check_cmd_context(cmd,
@@ -1434,15 +1384,14 @@ static const char *dirsection(cmd_parms *cmd, void *dummy, const char *arg)
 	cmd->path = ap_os_canonical_filename(cmd->pool, cmd->path);
     }
 
-    old_end_token = cmd->end_token;
-    cmd->end_token = thiscmd->cmd_data ? end_directorymatch_section : end_directory_section;
+    /* initialize our config and fetch it */
+    conf = (core_dir_config *)ap_set_config_vectors(cmd, new_dir_conf,
+						    &core_module);
 
     errmsg = ap_walk_config(NULL, cmd, new_dir_conf, 1);
-    cmd->end_token = old_end_token;
     if (errmsg != NULL)
 	return errmsg;
 
-    conf = (core_dir_config *)ap_get_module_config(new_dir_conf, &core_module);
     conf->r = r;
 
     ap_add_per_dir_conf(cmd->server, new_dir_conf);
@@ -1466,7 +1415,6 @@ static const char *urlsection(cmd_parms *cmd, void *dummy, const char *arg)
     char *old_path = cmd->path;
     core_dir_config *conf;
     regex_t *r = NULL;
-    const char *old_end_token;
     const command_rec *thiscmd = cmd->cmd;
 
     void *new_url_conf = ap_create_per_dir_config(cmd->pool);
@@ -1494,16 +1442,14 @@ static const char *urlsection(cmd_parms *cmd, void *dummy, const char *arg)
 	r = ap_pregcomp(cmd->pool, cmd->path, REG_EXTENDED);
     }
 
-    old_end_token = cmd->end_token;
-    cmd->end_token = thiscmd->cmd_data ? end_locationmatch_section
-                                       : end_location_section;
+    /* initialize our config and fetch it */
+    conf = (core_dir_config *)ap_set_config_vectors(cmd, new_url_conf,
+						    &core_module);
 
     errmsg = ap_walk_config(NULL, cmd, new_url_conf, 1);
-    cmd->end_token = old_end_token;
     if (errmsg != NULL)
 	return errmsg;
 
-    conf = (core_dir_config *)ap_get_module_config(new_url_conf, &core_module);
     conf->d = ap_pstrdup(cmd->pool, cmd->path);	/* No mangling, please */
     conf->d_is_fnmatch = ap_is_fnmatch(conf->d) != 0;
     conf->r = r;
@@ -1530,7 +1476,6 @@ static const char *filesection(cmd_parms *cmd, core_dir_config *c,
     char *old_path = cmd->path;
     core_dir_config *conf;
     regex_t *r = NULL;
-    const char *old_end_token;
     const command_rec *thiscmd = cmd->cmd;
 
     void *new_file_conf = ap_create_per_dir_config(cmd->pool);
@@ -1564,16 +1509,14 @@ static const char *filesection(cmd_parms *cmd, core_dir_config *c,
 	cmd->path = ap_os_canonical_filename(cmd->pool, cmd->path);
     }
 
-    old_end_token = cmd->end_token;
-    cmd->end_token = thiscmd->cmd_data ? end_filesmatch_section : end_files_section;
+    /* initialize our config and fetch it */
+    conf = (core_dir_config *)ap_set_config_vectors(cmd, new_file_conf,
+						    &core_module);
 
     errmsg = ap_walk_config(NULL, cmd, new_file_conf, 1);
-    cmd->end_token = old_end_token;
     if (errmsg != NULL)
 	return errmsg;
 
-    conf = (core_dir_config *)ap_get_module_config(new_file_conf,
-						   &core_module);
     conf->d = cmd->path;
     conf->d_is_fnmatch = ap_is_fnmatch(conf->d) != 0;
     conf->r = r;
@@ -1588,16 +1531,6 @@ static const char *filesection(cmd_parms *cmd, core_dir_config *c,
     cmd->path = old_path;
     cmd->override = old_overrides;
 
-    return NULL;
-}
-
-/* XXX: NB: Currently, we have no way of checking
- * whether <IfModule> sections are closed properly.
- * Extra (redundant, unpaired) </IfModule> directives are
- * simply silently ignored.
- */
-static const char *end_ifmod(cmd_parms *cmd, void *dummy)
-{
     return NULL;
 }
 
@@ -1620,7 +1553,7 @@ static const char *start_ifmod(cmd_parms *cmd, void *dummy, char *arg)
     found = ap_find_linked_module(arg);
 
     if ((!not && found) || (not && !found)) {
-        return ap_walk_config(NULL, cmd, cmd->server->lookup_defaults, 1);
+        return ap_walk_config(NULL, cmd, cmd->context, 1);
     }
 
     return NULL;
@@ -1638,11 +1571,6 @@ API_EXPORT(int) ap_exists_config_define(char *name)
 	}
     }
     return 0;
-}
-
-static const char *end_ifdefine(cmd_parms *cmd, void *dummy) 
-{
-    return NULL;
 }
 
 static const char *start_ifdefine(cmd_parms *cmd, void *dummy, char *arg)
@@ -1666,7 +1594,7 @@ static const char *start_ifdefine(cmd_parms *cmd, void *dummy, char *arg)
     defined = ap_exists_config_define(arg);
 
     if ((!not && defined) || (not && !defined)) {
-        return ap_walk_config(NULL, cmd, dummy, 1);
+        return ap_walk_config(NULL, cmd, cmd->context, 1);
     }
 
     return NULL;
@@ -1680,7 +1608,6 @@ static const char *virtualhost_section(cmd_parms *cmd, void *dummy, char *arg)
     const char *errmsg;
     char *endp = strrchr(arg, '>');
     ap_pool_t *p = cmd->pool;
-    const char *old_end_token;
 
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
@@ -1710,15 +1637,13 @@ static const char *virtualhost_section(cmd_parms *cmd, void *dummy, char *arg)
     s->next = main_server->next;
     main_server->next = s;
 
-    s->defn_name = cmd->config_file->name;
-    s->defn_line_number = cmd->config_file->line_number;
+    s->defn_name = cmd->directive->filename;
+    s->defn_line_number = cmd->directive->line_num;
 
-    old_end_token = cmd->end_token;
-    cmd->end_token = end_virtualhost_section;
     cmd->server = s;
 
     errmsg = ap_walk_config(NULL, cmd, s->lookup_defaults, 1);
-    cmd->end_token = old_end_token;
+
     cmd->server = main_server;
 
     return errmsg;
@@ -2222,53 +2147,31 @@ static const command_rec core_cmds[] = {
 { "<Directory", dirsection, NULL, RSRC_CONF, RAW_ARGS,
   "Container for directives affecting resources located in the specified "
   "directories" },
-{ end_directory_section, end_nested_section, NULL, ACCESS_CONF, NO_ARGS,
-  "Marks end of <Directory>" },
 { "<Location", urlsection, NULL, RSRC_CONF, RAW_ARGS,
   "Container for directives affecting resources accessed through the "
   "specified URL paths" },
-{ end_location_section, end_nested_section, NULL, ACCESS_CONF, NO_ARGS,
-  "Marks end of <Location>" },
 { "<VirtualHost", virtualhost_section, NULL, RSRC_CONF, RAW_ARGS,
   "Container to map directives to a particular virtual host, takes one or "
   "more host addresses" },
-{ end_virtualhost_section, end_nested_section, NULL, RSRC_CONF, NO_ARGS,
-  "Marks end of <VirtualHost>" },
 { "<Files", filesection, NULL, OR_ALL, RAW_ARGS, "Container for directives "
   "affecting files matching specified patterns" },
-{ end_files_section, end_nested_section, NULL, OR_ALL, NO_ARGS,
-  "Marks end of <Files>" },
 { "<Limit", ap_limit_section, NULL, OR_ALL, RAW_ARGS, "Container for "
   "authentication directives when accessed using specified HTTP methods" },
-{ "</Limit>", endlimit_section, NULL, OR_ALL, NO_ARGS,
-  "Marks end of <Limit>" },
 { "<LimitExcept", ap_limit_section, (void*)1, OR_ALL, RAW_ARGS,
   "Container for authentication directives to be applied when any HTTP "
   "method other than those specified is used to access the resource" },
-{ "</LimitExcept>", endlimit_section, (void*)1, OR_ALL, NO_ARGS,
-  "Marks end of <LimitExcept>" },
 { "<IfModule", start_ifmod, NULL, OR_ALL, TAKE1,
   "Container for directives based on existance of specified modules" },
-{ end_ifmodule_section, end_ifmod, NULL, OR_ALL, NO_ARGS,
-  "Marks end of <IfModule>" },
 { "<IfDefine", start_ifdefine, NULL, OR_ALL, TAKE1,
   "Container for directives based on existance of command line defines" },
-{ end_ifdefine_section, end_ifdefine, NULL, OR_ALL, NO_ARGS,
-  "Marks end of <IfDefine>" },
 { "<DirectoryMatch", dirsection, (void*)1, RSRC_CONF, RAW_ARGS,
   "Container for directives affecting resources located in the "
   "specified directories" },
-{ end_directorymatch_section, end_nested_section, NULL, ACCESS_CONF, NO_ARGS,
-  "Marks end of <DirectoryMatch>" },
 { "<LocationMatch", urlsection, (void*)1, RSRC_CONF, RAW_ARGS,
   "Container for directives affecting resources accessed through the "
   "specified URL paths" },
-{ end_locationmatch_section, end_nested_section, NULL, ACCESS_CONF, NO_ARGS,
-  "Marks end of <LocationMatch>" },
 { "<FilesMatch", filesection, (void*)1, OR_ALL, RAW_ARGS,
   "Container for directives affecting files matching specified patterns" },
-{ end_filesmatch_section, end_nested_section, NULL, OR_ALL, NO_ARGS,
-  "Marks end of <FilesMatch>" },
 { "AuthType", ap_set_string_slot,
   (void*)XtOffsetOf(core_dir_config, ap_auth_type), OR_AUTHCFG, TAKE1,
   "An HTTP authorization type (e.g., \"Basic\")" },
