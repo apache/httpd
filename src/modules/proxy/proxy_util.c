@@ -338,9 +338,9 @@ char *
     if (mon == 12)
 	return x;
 
-    if (strlen(x) < 31)
-	x = palloc(p, 31);
-    ap_snprintf(x, strlen(x) + 1, "%s, %.2d %s %d %.2d:%.2d:%.2d GMT", wday[wk], mday,
+    if (strlen(x) < 30)
+	x = palloc(p, 30);
+    ap_snprintf(x, 30, "%s, %.2d %s %d %.2d:%.2d:%.2d GMT", wday[wk], mday,
 		months[mon], year, hour, min, sec);
     return x;
 }
