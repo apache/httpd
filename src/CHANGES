@@ -1,5 +1,8 @@
 Changes with Apache 1.3b7
   
+  *) Minor stability tweaks to avoid core dumps in ap_snprintf.
+     [Martin Kraemer]
+
   *) Emit the "Accept-Range" header for the default handler.
      [Brian Behlendorf] PR#1464
 
