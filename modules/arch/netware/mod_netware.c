@@ -80,6 +80,7 @@ module AP_MODULE_DECLARE_DATA netware_module;
 
 typedef struct {
     apr_table_t *file_type_handlers;    /* CGI map from file types to CGI modules */
+    apr_table_t *file_handler_mode;     /* CGI module mode (spawn in same address space or not) */
     apr_table_t *extra_env_vars;        /* Environment variables to be added to the CGI environment */
 } netware_dir_config;
 
@@ -89,6 +90,7 @@ static void *create_netware_dir_config(apr_pool_t *p, char *dir)
     netware_dir_config *new = (netware_dir_config*) apr_palloc(p, sizeof(netware_dir_config));
 
     new->file_type_handlers = apr_table_make(p, 10);
+    new->file_handler_mode = apr_table_make(p, 10);
     new->extra_env_vars = apr_table_make(p, 10);
 
     return new;
@@ -101,16 +103,21 @@ static void *merge_netware_dir_configs(apr_pool_t *p, void *basev, void *addv)
     netware_dir_config *new = (netware_dir_config *) apr_palloc(p, sizeof(netware_dir_config));
 
     new->file_type_handlers = apr_table_overlay(p, add->file_type_handlers, base->file_type_handlers);
+    new->file_handler_mode = apr_table_overlay(p, add->file_handler_mode, base->file_handler_mode);
     new->extra_env_vars = apr_table_overlay(p, add->extra_env_vars, base->extra_env_vars);
 
     return new;
 }
 
-static const char *set_extension_map(cmd_parms *cmd, netware_dir_config *m, char *CGIhdlr, char *ext)
+static const char *set_extension_map(cmd_parms *cmd, netware_dir_config *m,
+                                     char *CGIhdlr, char *ext, char *detach)
 {
     if (*ext == '.')
         ++ext;
     apr_table_set(m->file_type_handlers, ext, CGIhdlr);
+    if (detach) {
+        apr_table_set(m->file_handler_mode, ext, "y");
+    }
     return NULL;
 }
 
@@ -119,7 +126,7 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
                                          cgi_exec_info_t *e_info)
 {
     const char *ext = NULL;
-    const char *interpreter = NULL;
+    const char *detached = NULL;
     netware_dir_config *d;
     apr_file_t *fh;
     const char *args = "";
@@ -153,7 +160,10 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
                       "Could not find a command associated with the %s extension", ext);
             return APR_EBADF;
         }
-
+        detached = apr_table_get(d->file_handler_mode, ext);
+        if (detached) {
+            e_info->detached = 1;
+        }
     }
 
     apr_tokenize_to_argv(r->filename, (char***)argv, p);
@@ -168,8 +178,10 @@ static void register_hooks(apr_pool_t *p)
 }
 
 static const command_rec netware_cmds[] = {
-AP_INIT_ITERATE2("CGIMapExtension", set_extension_map, NULL, OR_FILEINFO, 
-              "full path to the CGI NLM module followed by one or more file extensions"),
+AP_INIT_TAKE23("CGIMapExtension", set_extension_map, NULL, OR_FILEINFO, 
+              "Full path to the CGI NLM module followed by a file extension. "
+              "The optional parameter \"detach\" can be specified if the NLM should "
+              "be launched in its own address space."),
 { NULL }
 };
 
