@@ -545,6 +545,45 @@ Location</a></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>EnableMMAP</name>
+<description>Controls whether the httpd uses memory-mapping to read files
+during delivery</description>
+<syntax>EnableMMAP on|off</syntax>
+<default>EnableMMAP on</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+
+<usage>
+    <p>This directive controls whether the httpd may use memory-mapping
+    if it needs to read the contents of a file during delivery.  By default,
+    when the handling of a request requires access to the data within a file--
+    for example, when delivering a server-parsed file using <module>mod_include</module>--
+    Apache memory-maps the file if the OS supports it.
+    </p>
+    <p>
+    This memory-mapping sometimes yields a performance improvement.
+    But in some environments, it is better to disable the memory-mapping
+    to prevent operational problems:
+    </p>
+    <ul>
+    <li>On some multiprocessor systems, memory-mapping can reduce the
+    performance of the httpd.</li>
+    <li>With an NFS-mounted <directive module="core">DocumentRoot</directive>,
+    the httpd may crash due tof a segmentation fault if a file is deleted
+    or truncated while the httpd has it memory-mapped.</li>
+    </ul>
+    <p>
+    For server configurations that are vulnerable to these problems,
+    you should disable memory-mapping of delivered files by specifying:
+    </p>
+<example>
+   EnableMMAP off
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>ErrorDocument</name>
 <description>Specifies what the server will return to the client
 in case of an error</description>
