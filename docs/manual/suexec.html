@@ -384,17 +384,17 @@
 
       <dd>This option enables the suEXEC feature which is never
       installed or activated by default. At least one
-      --suexec-xxxxx option has to be provided together with the
+      --with-suexec-xxxxx option has to be provided together with the
       --enable-suexec option to let APACI accept your request for
       using the suEXEC feature.</dd>
 
-      <dt><code>--suexec-caller=<em>UID</em></code></dt>
+      <dt><code>--with-suexec-caller=<em>UID</em></code></dt>
 
       <dd>The <a href="mod/mpm_common.html#user">username</a> under which
       Apache normally runs. This is the only user allowed to
       execute this program.</dd>
 
-      <dt><code>--suexec-docroot=<em>DIR</em></code></dt>
+      <dt><code>--with-suexec-docroot=<em>DIR</em></code></dt>
 
       <dd>Define as the DocumentRoot set for Apache. This will be
       the only hierarchy (aside from UserDirs) that can be used for
@@ -404,7 +404,7 @@
       "/home/apache/htdocs" is used as document root for the suEXEC
       wrapper.</dd>
 
-      <dt><code>--suexec-logfile=<em>FILE</em></code></dt>
+      <dt><code>--with-suexec-logfile=<em>FILE</em></code></dt>
 
       <dd>This defines the filename to which all suEXEC
       transactions and errors are logged (useful for auditing and
@@ -412,7 +412,7 @@
       "suexec_log" and located in your standard logfile directory
       (--logfiledir).</dd>
 
-      <dt><code>--suexec-userdir=<em>DIR</em></code></dt>
+      <dt><code>--with-suexec-userdir=<em>DIR</em></code></dt>
 
       <dd>Define to be the subdirectory under users' home
       directories where suEXEC access should be allowed. All
@@ -430,19 +430,19 @@
       this is not defined properly, "~userdir" cgi requests will
       not work!</strong></dd>
 
-      <dt><code>--suexec-uidmin=<em>UID</em></code></dt>
+      <dt><code>--with-suexec-uidmin=<em>UID</em></code></dt>
 
       <dd>Define this as the lowest UID allowed to be a target user
       for suEXEC. For most systems, 500 or 100 is common. Default
       value is 100.</dd>
 
-      <dt><code>--suexec-gidmin=<em>GID</em></code></dt>
+      <dt><code>--with-suexec-gidmin=<em>GID</em></code></dt>
 
       <dd>Define this as the lowest GID allowed to be a target
       group for suEXEC. For most systems, 100 is common and
       therefore used as default value.</dd>
 
-      <dt><code>--suexec-safepath=<em>PATH</em></code></dt>
+      <dt><code>--with-suexec-safepath=<em>PATH</em></code></dt>
 
       <dd>Define a safe PATH environment to pass to CGI
       executables. Default value is
@@ -550,7 +550,7 @@
     <h3><a id="debug" name="debug">Debugging suEXEC</a></h3>
 
     <p align="LEFT">The suEXEC wrapper will write log information
-    to the file defined with the --suexec-logfile option as
+    to the file defined with the --with-suexec-logfile option as
     indicated above. If you feel you have configured and installed
     the wrapper properly, have a look at this log and the error_log
     for the server to see where you may have gone astray.</p>
