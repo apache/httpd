@@ -1651,9 +1651,15 @@ static const char *dirsection(cmd_parms *cmd, void *mconfig, const char *arg)
         if (!cmd->path)
             return "<Directory ~ > block must specify a path";
         r = ap_pregcomp(cmd->pool, cmd->path, REG_EXTENDED|USE_ICASE);
+        if (!r) {
+            return "Regex could not be compiled";
+        }
     }
     else if (thiscmd->cmd_data) { /* <DirectoryMatch> */
         r = ap_pregcomp(cmd->pool, cmd->path, REG_EXTENDED|USE_ICASE);
+        if (!r) {
+            return "Regex could not be compiled";
+        }
     }
     else if (!strcmp(cmd->path, "/") == 0)
     {
@@ -1735,10 +1741,16 @@ static const char *urlsection(cmd_parms *cmd, void *mconfig, const char *arg)
 
     if (thiscmd->cmd_data) { /* <LocationMatch> */
         r = ap_pregcomp(cmd->pool, cmd->path, REG_EXTENDED);
+        if (!r) {
+            return "Regex could not be compiled";
+        }
     }
     else if (!strcmp(cmd->path, "~")) {
         cmd->path = ap_getword_conf(cmd->pool, &arg);
         r = ap_pregcomp(cmd->pool, cmd->path, REG_EXTENDED);
+        if (!r) {
+            return "Regex could not be compiled";
+        }
     }
 
     /* initialize our config and fetch it */
@@ -1797,10 +1809,16 @@ static const char *filesection(cmd_parms *cmd, void *mconfig, const char *arg)
 
     if (thiscmd->cmd_data) { /* <FilesMatch> */
         r = ap_pregcomp(cmd->pool, cmd->path, REG_EXTENDED|USE_ICASE);
+        if (!r) {
+            return "Regex could not be compiled";
+        }
     }
     else if (!strcmp(cmd->path, "~")) {
         cmd->path = ap_getword_conf(cmd->pool, &arg);
         r = ap_pregcomp(cmd->pool, cmd->path, REG_EXTENDED|USE_ICASE);
+        if (!r) {
+            return "Regex could not be compiled";
+        }
     }
     else {
         char *newpath;

@@ -200,6 +200,7 @@ static void set_and_comp_regexp(cookie_dir_rec *dcfg,
                                       "=([^;,]+)", NULL);
 
     dcfg->regexp = ap_pregcomp(p, dcfg->regexp_string, REG_EXTENDED);
+    ap_assert(dcfg->regexp != NULL);
 }
 
 static int spot_cookie(request_rec *r)
