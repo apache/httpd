@@ -77,6 +77,10 @@
 #include "http_protocol.h"
 #include "http_core.h"
 
+#if APR_HAVE_ARPA_INET_H
+#include <arpa/inet.h>
+#endif
+
 /*
  * After all the definitions there's an explanation of how it's all put
  * together.
