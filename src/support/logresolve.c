@@ -71,7 +71,7 @@ static void stats(FILE *output);
 /* number of buckets in cache hash table */
 #define BUCKETS 256
 
-#ifdef MPE
+#if defined(MPE) || defined(NEXT)
 char *strdup (const char *str)
 {
     char *dup;
