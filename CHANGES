@@ -1,5 +1,10 @@
 Changes with Apache 2.0.14-dev
 
+  *) Report unbounded containers in the config file.  Previously, a typo
+     in the </container> directive could result in the rest of the config
+     file being silently ignored, with undesired defaults used.
+     [Jeff Trawick]
+
   *) Make the old_write filter use the ap_f* functions for the buffering.
      [Ryan Bloom]
 

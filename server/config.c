@@ -1137,14 +1137,20 @@ AP_DECLARE(const char *) ap_soak_end_container(cmd_parms *cmd, char *directive)
                                       directive + 1, "> but saw ",
                                       cmd_name, ">", NULL);
                 }
-                break;
+                return NULL; /* found end of container */
             }
             else {
-                ap_soak_end_container(cmd, cmd_name);
+                const char *msg;
+
+                if ((msg = ap_soak_end_container(cmd, cmd_name)) != NULL) {
+                    return msg;
+                }
             }
         }
     }
-    return NULL;
+    return apr_pstrcat(cmd->pool, "Expected </",
+                       directive + 1, "> before end of configuration",
+                       NULL);
 }
 
 static const char *execute_now(char *cmd_line, const char *args, cmd_parms *parms, 
