@@ -31,7 +31,7 @@
   *) Added simple and complex instrumentation to Apache to allow a
      instantaneous status screen to be displayed.  Since the complex
      instrumentation makes the scoreboard file bigger it has been 
-     made a compile-time define (add "-DSTATUS_INSTRUMENTATION" to 
+     made a compile-time define (add "-DSTATUS" to 
      CFLAGS in the Configuration file) [Mark Cox]
 
   *) Made it so XBITHACK behavior only occurs for files of type text/html, as

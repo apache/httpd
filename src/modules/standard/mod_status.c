@@ -218,7 +218,7 @@ int status_handler (request_rec *r)
         sprintf(buffer,"\n%d requests currently being processed,\n %d idle servers\n",busy,ready);
     rputs(buffer,r);
 
-#ifdef STATUS_INSTRUMENTATION
+#if defined(STATUS)
     if (!short_report)
       rputs("<hr><h2>Server Details</h2>",r);
     for (i = 0; i<HARD_SERVER_MAX; ++i) {

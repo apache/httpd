@@ -72,7 +72,7 @@
 typedef struct {
     pid_t pid;
     char status;
-#if defined(STATUS_INSTRUMENTATION)
+#if defined(STATUS)
     unsigned long access_count;
     unsigned long bytes_served;
     unsigned long my_access_count;

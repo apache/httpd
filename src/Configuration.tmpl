@@ -45,7 +45,7 @@ CC= gcc
 #  In order for the status module to obtain full statistics Apache must
 #  be modified to keep track of various information.  This is not
 #  turned on by default.
-# In order to enable full status details add -DSTATUS_INSTRUMENTATION to
+# In order to enable full status details add -DSTATUS to
 # the end of the CFLAGS line below
 
 # [Some other former Apache compile-time options are now treated differently;
@@ -170,6 +170,13 @@ Module env_module         mod_env.o
 Module anon_auth_module   mod_auth_anon.o
 Module digest_module      mod_digest.o
 
+# The status module allows the server to display current details about 
+# how well it is performing and what it is doing.  Consider also enabling 
+# -DSTATUS (see the CFLAGS section near the start of the file) to allow
+# full status information.  Also check conf/httpd.conf to enable this.
+
+Module status_module	mod_status.o
+
 # Optional authentication modules, which should only be
 # uncommented out if you have the neccessary system support.
 # (if you don't have the decade-old "new" DBM libs, for example)
@@ -188,14 +195,10 @@ Module digest_module      mod_digest.o
 # allows other modules to be loaded in at runtime, and mod_cookies
 # uses Netscape cookies to automatically construct and log accurate
 # click-trails from Netscape cookies, for Netscape-using clients who
-# aren't coming in via proxy.   The status module allows the server
-# to display current details about how well it is performing and what
-# it is doing.  Consider also enabling -DSTATUS_INSTRUMENTATION explained
-# near the start of this file
+# aren't coming in via proxy.   
 
 # Module dld_module     mod_dld.o
 # Module cookies_module mod_cookies.o
-# Module status_module	mod_status.o
 
 # Finally, this is a *replacement* for mod_log_common which 
 # supports a LogFormat directive which allows you to specify what

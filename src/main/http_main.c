@@ -664,7 +664,7 @@ void update_child_status (int child_num, int status, request_rec *r)
     new_score_rec.pid = getpid();
     new_score_rec.status = status;
 
-#if defined(STATUS_INSTRUMENTATION)
+#if defined(STATUS)
     new_score_rec.last_used=time(NULL);
     if (status == SERVER_DEAD) {
 	/*
@@ -712,7 +712,7 @@ short_score get_scoreboard_info(int i)
     return (scoreboard_image[i]);
 }
 
-#if defined(STATUS_INSTRUMENTATION)
+#if defined(STATUS)
 void increment_counts (int child_num, request_rec *r)
 {
     long int bs=0;
@@ -1175,7 +1175,7 @@ void child_main(int child_num_arg)
 	update_child_status (child_num, SERVER_BUSY_WRITE, r);
 	if (r) process_request (r); /* else premature EOF --- ignore */
 
-#if defined(STATUS_INSTRUMENTATION)
+#if defined(STATUS)
         if (r) increment_counts(child_num,r);
 #endif
 	while (r && current_conn->keepalive) {
@@ -1186,7 +1186,7 @@ void child_main(int child_num_arg)
 	  update_child_status (child_num, SERVER_BUSY_WRITE, r);
 	  if (r) process_request (r);
 
-#if defined(STATUS_INSTRUMENTATION)
+#if defined(STATUS)
 	  if (r) increment_counts(child_num,r);
 #endif
 	}
