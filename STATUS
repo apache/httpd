@@ -5,7 +5,7 @@ Release:
     2.0  : In pre-alpha development
 	    see: <http://www.arctic.org/~dgaudet/apache/2.0/process-model>
     1.3b6: in development
-    1.3b5: Tagged APACHE_1_3b5
+    1.3b5: Tagged APACHE_1_3b5. Randy will do announcement
     1.3b4: Internal version... not tagged or released.
     1.3b3: Released and announced
     1.3b1: There is no 1.3b1
@@ -39,14 +39,9 @@ Available Patches:
 
     * Doug's [PATCH] unbind cpu option for aix
       <34EA1E72.E79AA3D2@telebusiness.co.nz>
-      Status: Doug +1
+      Status: Doug +1, Jim +1
 
 Concepts:
-
-   * Jim's [CONCEPT] platform.h header file. Instead of lumping
-     all OS stuff in conf.h, create a ./platforms/ sub-dir
-     and have Configure copy and modify platform.h as needed.
-	<199712272303.SAA16225@devsys.jaguNET.com>
 
     * Dean's [PRE-PATCH] expanding ap_snprintf()
 	<Pine.LNX.3.95dg3.971023233600.4431I-100000@twinlark.arctic.org>
@@ -74,7 +69,6 @@ Needs patch:
 
     * Dean's "locale" project
 	See <Pine.LNX.3.95dg3.971219001345.7010F-100000@twinlark.arctic.org>
-	Status: Jim'll look into it
     
     * os_ abstract is_only_below() in mod_include.c
 
