@@ -1,5 +1,9 @@
 Changes with Apache 1.3.18
 
+  *) Fixed a problem with file extensions being truncated during
+     the call to ap_os_canonical_filename().
+	 [Brad Nicholes <BNICHOLES@novell.com>]
+
 Changes with Apache 1.3.17
 
   *) Normalize the Netware path names to close a potential security

@@ -155,11 +155,10 @@ char *ap_os_canonical_filename(pool *pPool, const char *szFile)
     }
     if ((slash_test = strchr(pNewName, ':')) && (*(slash_test+1) != '/'))
     {
-        char vol[_MAX_VOLUME+1], dir[_MAX_DIR+1];
-        char fname[_MAX_FNAME+1], ext[_MAX_EXT+1];
+        char vol[_MAX_VOLUME+1];
         
-        _splitpath (pNewName, vol, dir, fname, ext);
-        pNewName = ap_pstrcat (pPool, vol, "/", dir, fname, ext, NULL);
+        _splitpath (pNewName, vol, NULL, NULL, NULL);
+        pNewName = ap_pstrcat (pPool, vol, "/", pNewName+strlen(vol), NULL);
     }
     strlwr(pNewName);
     return pNewName;
