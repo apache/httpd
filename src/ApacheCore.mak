@@ -779,6 +779,8 @@ DEP_CPP_MOD_AL=\
 	".\include\buff.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
+	".\include\http_core.h"\
+	".\include\http_log.h"\
 	".\include\httpd.h"\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
