@@ -176,7 +176,7 @@ static const TRANS priorities[] = {
 
 static apr_file_t *stderr_log;
 
-void ap_open_stderr_log(apr_pool_t *p)
+AP_DECLARE(void) ap_open_stderr_log(apr_pool_t *p)
 {
     apr_open_stderr(&stderr_log, p);
 }
