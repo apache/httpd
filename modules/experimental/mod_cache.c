@@ -480,7 +480,10 @@ int ap_cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
         ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r->server,
                  "cache: response is not cachable");
 
-        /* remove this object from the cache */
+        /* remove this object from the cache 
+         * BillS Asks.. Why do we need to make this call to remove_url?
+         * leave it in for now..
+         */
         cache_remove_url(r, cache->types, url);
 
         /* remove this filter from the chain */
