@@ -93,12 +93,15 @@ static int cache_url_handler(request_rec *r, int lookup)
     const char *types;
     cache_info *info = NULL;
     cache_request_rec *cache;
-    cache_server_conf *conf = 
-        (cache_server_conf *) ap_get_module_config(r->server->module_config, 
-                                                   &cache_module);
+    cache_server_conf *conf;
+
+    conf = (cache_server_conf *) ap_get_module_config(r->server->module_config,
+                                                      &cache_module);
 
     /* we don't handle anything but GET */
-    if (r->method_number != M_GET) return DECLINED;
+    if (r->method_number != M_GET) {
+        return DECLINED;
+    }
 
     /*
      * Which cache module (if any) should handle this request?
@@ -155,7 +158,8 @@ static int cache_url_handler(request_rec *r, int lookup)
      */
     if (conf->ignorecachecontrol == 1 && auth == NULL) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-            "incoming request is asking for a uncached version of %s, but we know better and are ignoring it", url);
+                     "incoming request is asking for a uncached version of "
+                     "%s, but we know better and are ignoring it", url);
     }
     else {
         if (ap_cache_liststr(cc_in, "no-store", NULL) ||
@@ -164,13 +168,13 @@ static int cache_url_handler(request_rec *r, int lookup)
             cache_remove_url(r, cache->types, url);
 
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                        "cache: no-store forbids caching of %s", url);
+                         "cache: no-store forbids caching of %s", url);
             return DECLINED;
         }
     }
 
     /*
-     * Try serve this request from the cache.
+     * Try to serve this request from the cache.
      *
      * If no existing cache file
      *   add cache_in filter
@@ -229,7 +233,8 @@ static int cache_url_handler(request_rec *r, int lookup)
 
             /* kick off the filter stack */
             out = apr_brigade_create(r->pool, c->bucket_alloc);
-            if (APR_SUCCESS != (rv = ap_pass_brigade(r->output_filters, out))) {
+            if (APR_SUCCESS
+                != (rv = ap_pass_brigade(r->output_filters, out))) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
                              "cache: error returned while trying to return %s "
                              "cached data", 
@@ -292,8 +297,8 @@ static int cache_url_handler(request_rec *r, int lookup)
                 /* add cache_conditional filter */
                 ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, 
                              r->server,
-                             "cache: nonconditional - add cache_conditional and"
-                             " DECLINE");
+                             "cache: nonconditional - add cache_conditional "
+                             "and DECLINE");
                 ap_add_output_filter("CACHE_CONDITIONAL", 
                                      NULL, 
                                      r, 
@@ -323,9 +328,10 @@ static int cache_url_handler(request_rec *r, int lookup)
 static int cache_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
 {
     request_rec *r = f->r;
-    cache_request_rec *cache = 
-        (cache_request_rec *) ap_get_module_config(r->request_config, 
-                                                   &cache_module);
+    cache_request_rec *cache;
+
+    cache = (cache_request_rec *) ap_get_module_config(r->request_config, 
+                                                       &cache_module);
 
     if (!cache) {
         /* user likely configured CACHE_OUT manually; they should use mod_cache
@@ -337,7 +343,7 @@ static int cache_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     }
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r->server,
-            "cache: running CACHE_OUT filter");
+                 "cache: running CACHE_OUT filter");
 
     /* cache_read_entity_headers() was called in cache_select_url() */
     cache_read_entity_body(cache->handle, r->pool, bb);
@@ -346,7 +352,7 @@ static int cache_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     ap_remove_output_filter(f);
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r->server,
-            "cache: serving cached version of %s", r->uri);
+                 "cache: serving cached version of %s", r->uri);
     return ap_pass_brigade(f->next, bb);
 }
 
@@ -407,10 +413,10 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
     cache_info *info;
     void *sconf = r->server->module_config;
     cache_server_conf *conf =
-    (cache_server_conf *) ap_get_module_config(sconf, &cache_module);
+        (cache_server_conf *) ap_get_module_config(sconf, &cache_module);
     void *scache = r->request_config;
     cache_request_rec *cache =
-    (cache_request_rec *) ap_get_module_config(scache, &cache_module);
+        (cache_request_rec *) ap_get_module_config(scache, &cache_module);
 
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, f->r->server,
@@ -500,53 +506,49 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
     /* RFC2616 13.4 we are allowed to cache 200, 203, 206, 300, 301 or 410
      * We don't cache 206, because we don't (yet) cache partial responses.
      * We include 304 Not Modified here too as this is the origin server
-     * telling us to serve the cached copy. */
-    if ((r->status != HTTP_OK && r->status != HTTP_NON_AUTHORITATIVE && 
-         r->status != HTTP_MULTIPLE_CHOICES && 
-         r->status != HTTP_MOVED_PERMANENTLY && 
-         r->status != HTTP_NOT_MODIFIED) ||
-
-    /* if a broken Expires header is present, don't cache it */
-        (exps != NULL && exp == APR_DATE_BAD) ||
-
-    /* if the server said 304 Not Modified but we have no cache file - pass
-     * this untouched to the user agent, it's not for us. */
-        (r->status == HTTP_NOT_MODIFIED && (NULL == cache->handle)) ||
-
-    /* 200 OK response from HTTP/1.0 and up without a Last-Modified header/Etag 
+     * telling us to serve the cached copy.
      */
-    /* XXX mod-include clears last_modified/expires/etags - this is why we have
-     * a optional function for a key-gen ;-) 
-     */
-        (r->status == HTTP_OK && lastmods == NULL && etag == NULL 
-            && (conf->no_last_mod_ignore ==0)) ||
-
-    /* HEAD requests */
-        r->header_only ||
-
-    /* RFC2616 14.9.2 Cache-Control: no-store response indicating do not
-     * cache, or stop now if you are trying to cache it */
-        ap_cache_liststr(cc_out, "no-store", NULL) ||
-
-    /* RFC2616 14.9.1 Cache-Control: private
-     * this object is marked for this user's eyes only. Behave as a tunnel. */
-        ap_cache_liststr(cc_out, "private", NULL) ||
-
-    /* RFC2616 14.8 Authorisation:
-     * if authorisation is included in the request, we don't cache, but we
-     * can cache if the following exceptions are true:
-     * 1) If Cache-Control: s-maxage is included
-     * 2) If Cache-Control: must-revalidate is included
-     * 3) If Cache-Control: public is included
-     */
-        (apr_table_get(r->headers_in, "Authorization") != NULL &&
-         !(ap_cache_liststr(cc_out, "s-maxage", NULL) || 
-           ap_cache_liststr(cc_out, "must-revalidate", NULL) || 
-           ap_cache_liststr(cc_out, "public", NULL))
-        ) ||
-
-    /* or we've been asked not to cache it above */
-        r->no_cache) {
+    if ((r->status != HTTP_OK && r->status != HTTP_NON_AUTHORITATIVE
+         && r->status != HTTP_MULTIPLE_CHOICES
+         && r->status != HTTP_MOVED_PERMANENTLY
+         && r->status != HTTP_NOT_MODIFIED)
+        /* if a broken Expires header is present, don't cache it */
+        || (exps != NULL && exp == APR_DATE_BAD)
+        /* if the server said 304 Not Modified but we have no cache
+         * file - pass this untouched to the user agent, it's not for us.
+         */
+        || (r->status == HTTP_NOT_MODIFIED && (NULL == cache->handle))
+        /* 200 OK response from HTTP/1.0 and up without a Last-Modified
+         * header/Etag 
+         */
+        /* XXX mod-include clears last_modified/expires/etags - this
+         * is why we have an optional function for a key-gen ;-) 
+         */
+        || (r->status == HTTP_OK && lastmods == NULL && etag == NULL 
+            && (conf->no_last_mod_ignore ==0))
+        /* HEAD requests */
+        || r->header_only
+        /* RFC2616 14.9.2 Cache-Control: no-store response indicating do not
+         * cache, or stop now if you are trying to cache it */
+        || ap_cache_liststr(cc_out, "no-store", NULL)
+        /* RFC2616 14.9.1 Cache-Control: private
+         * this object is marked for this user's eyes only. Behave
+         * as a tunnel.
+         */
+        || ap_cache_liststr(cc_out, "private", NULL)
+        /* RFC2616 14.8 Authorisation:
+         * if authorisation is included in the request, we don't cache,
+         * but we can cache if the following exceptions are true:
+         * 1) If Cache-Control: s-maxage is included
+         * 2) If Cache-Control: must-revalidate is included
+         * 3) If Cache-Control: public is included
+         */
+        || (apr_table_get(r->headers_in, "Authorization") != NULL
+            && !(ap_cache_liststr(cc_out, "s-maxage", NULL)
+                 || ap_cache_liststr(cc_out, "must-revalidate", NULL)
+                 || ap_cache_liststr(cc_out, "public", NULL)))
+        /* or we've been asked not to cache it above */
+        || r->no_cache) {
 
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                  "cache: response is not cachable");
@@ -632,7 +634,9 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
          */
         rv = HTTP_NOT_MODIFIED;
     }
-    /* pre-existing cache handle and new entity, replace entity with this one */
+    /* pre-existing cache handle and new entity, replace entity
+     * with this one
+     */
     else {
         cache_remove_entity(r, cache->types, cache->handle);
         rv = cache_create_entity(r, cache->types, url, size);
@@ -659,10 +663,12 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
 
     /* Read the date. Generate one if one is not supplied */
     dates = apr_table_get(r->headers_out, "Date");
-    if (dates != NULL)
+    if (dates != NULL) {
         info->date = apr_date_parse_http(dates);
-    else
+    }
+    else {
         info->date = APR_DATE_BAD;
+    }
 
     now = apr_time_now();
     if (info->date == APR_DATE_BAD) {  /* No, or bad date */
@@ -691,9 +697,8 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
 
     /* check last-modified date */
     /* XXX FIXME we're referencing date on a path where we didn't set it */
-    if (lastmod != APR_DATE_BAD && lastmod > date)
-    {
-        /* if its in the future, then replace by date */
+    if (lastmod != APR_DATE_BAD && lastmod > date) {
+        /* if it's in the future, then replace by date */
         lastmod = date;
         lastmods = dates;
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, 
@@ -712,8 +717,9 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
     if (exp == APR_DATE_BAD) {
         if (lastmod != APR_DATE_BAD) {
             apr_time_t x = (apr_time_t) ((date - lastmod) * conf->factor);
-            if (x > conf->maxex)
+            if (x > conf->maxex) {
                 x = conf->maxex;
+            }
             exp = now + x;
         }
         else {
@@ -793,140 +799,157 @@ static void * merge_cache_config(apr_pool_t *p, void *basev, void *overridesv)
     /* default time to cache a document */
     ps->defex = (overrides->defex_set == 0) ? base->defex : overrides->defex;
     /* factor used to estimate Expires date from LastModified date */
-    ps->factor = (overrides->factor_set == 0) ? base->factor : overrides->factor;
+    ps->factor =
+        (overrides->factor_set == 0) ? base->factor : overrides->factor;
     /* default percentage to force cache completion */
     ps->complete =
         (overrides->complete_set == 0) ? base->complete : overrides->complete;
 
     ps->no_last_mod_ignore =
-        (overrides->no_last_mod_ignore_set == 0) ? 
-                    base->no_last_mod_ignore : 
-                    overrides->no_last_mod_ignore;
+        (overrides->no_last_mod_ignore_set == 0)
+        ? base->no_last_mod_ignore
+        : overrides->no_last_mod_ignore;
     ps->ignorecachecontrol  =
-        (overrides->ignorecachecontrol_set == 0) ? 
-                    base->ignorecachecontrol : 
-                    overrides->ignorecachecontrol;
+        (overrides->ignorecachecontrol_set == 0)
+        ? base->ignorecachecontrol
+        : overrides->ignorecachecontrol;
 
     return ps;
 }
-static const char
-*set_cache_ignore_no_last_mod( cmd_parms *parms, void *dummy, int flag)
+static const char *set_cache_ignore_no_last_mod(cmd_parms *parms, void *dummy,
+                                                int flag)
 {
-    cache_server_conf *conf = ap_get_module_config(parms->server->module_config, 
-                                                   &cache_module);
+    cache_server_conf *conf;
 
+    conf =
+        (cache_server_conf *)ap_get_module_config(parms->server->module_config,
+                                                  &cache_module);
     conf->no_last_mod_ignore = 1;
     conf->no_last_mod_ignore_set = 1;
     return NULL;
 
 }
 
-static const char
-*set_cache_on(cmd_parms *parms, void *dummy, int flag)
+static const char *set_cache_on(cmd_parms *parms, void *dummy, int flag)
 {
-    cache_server_conf *conf = ap_get_module_config(parms->server->module_config,
-                                                   &cache_module);
+    cache_server_conf *conf;
 
+    conf =
+        (cache_server_conf *)ap_get_module_config(parms->server->module_config,
+                                                  &cache_module);
     conf->cacheon = 1;
     conf->cacheon_set = 1;
     return NULL;
 }
-static const char
-*set_cache_ignore_cachecontrol( cmd_parms *parms, void *dummy, int flag)
+static const char *set_cache_ignore_cachecontrol(cmd_parms *parms,
+                                                 void *dummy, int flag)
 {
-    cache_server_conf *conf = ap_get_module_config(parms->server->module_config, 
-                                                   &cache_module);
+    cache_server_conf *conf;
 
+    conf =
+        (cache_server_conf *)ap_get_module_config(parms->server->module_config,
+                                                  &cache_module);
     conf->ignorecachecontrol = 1;
     conf->ignorecachecontrol_set = 1;
     return NULL;
-
 }
 
-static const char
-*add_cache_enable(cmd_parms *parms, 
-                  void *dummy, 
-                  const char *type, 
-                  const char *url)
+static const char *add_cache_enable(cmd_parms *parms, void *dummy, 
+                                    const char *type, 
+                                    const char *url)
 {
-    cache_server_conf *conf = ap_get_module_config(parms->server->module_config,
-                                                   &cache_module);
+    cache_server_conf *conf;
     struct cache_enable *new;
 
+    conf =
+        (cache_server_conf *)ap_get_module_config(parms->server->module_config,
+                                                  &cache_module);
     new = apr_array_push(conf->cacheenable);
     new->type = type;
     new->url = url;
     return NULL;
 }
 
-static const char
-*add_cache_disable(cmd_parms *parms, void *dummy, const char *url)
+static const char *add_cache_disable(cmd_parms *parms, void *dummy,
+                                     const char *url)
 {
-    cache_server_conf *conf = ap_get_module_config(parms->server->module_config, 
-                                                   &cache_module);
+    cache_server_conf *conf;
     struct cache_enable *new;
 
+    conf =
+        (cache_server_conf *)ap_get_module_config(parms->server->module_config,
+                                                  &cache_module);
     new = apr_array_push(conf->cachedisable);
     new->url = url;
     return NULL;
 }
 
-static const char
-*set_cache_maxex(cmd_parms *parms, void *dummy, const char *arg)
+static const char *set_cache_maxex(cmd_parms *parms, void *dummy,
+                                   const char *arg)
 {
-    cache_server_conf *conf = ap_get_module_config(parms->server->module_config,
-                                                   &cache_module);
+    cache_server_conf *conf;
 
+    conf =
+        (cache_server_conf *)ap_get_module_config(parms->server->module_config,
+                                                  &cache_module);
     conf->maxex = (apr_time_t) (atol(arg) * MSEC_ONE_SEC);
     conf->maxex_set = 1;
     return NULL;
 }
 
-static const char
-*set_cache_defex(cmd_parms *parms, void *dummy, const char *arg)
+static const char *set_cache_defex(cmd_parms *parms, void *dummy,
+                                   const char *arg)
 {
-    cache_server_conf *conf = ap_get_module_config(parms->server->module_config, 
-                                                   &cache_module);
+    cache_server_conf *conf;
 
+    conf =
+        (cache_server_conf *)ap_get_module_config(parms->server->module_config,
+                                                  &cache_module);
     conf->defex = (apr_time_t) (atol(arg) * MSEC_ONE_SEC);
     conf->defex_set = 1;
     return NULL;
 }
 
-static const char
-*set_cache_factor(cmd_parms *parms, void *dummy, const char *arg)
+static const char *set_cache_factor(cmd_parms *parms, void *dummy,
+                                    const char *arg)
 {
-    cache_server_conf *conf = ap_get_module_config(parms->server->module_config, 
-                                                   &cache_module);
+    cache_server_conf *conf;
     double val;
 
-    if (sscanf(arg, "%lg", &val) != 1)
+    conf =
+        (cache_server_conf *)ap_get_module_config(parms->server->module_config,
+                                                  &cache_module);
+    if (sscanf(arg, "%lg", &val) != 1) {
         return "CacheLastModifiedFactor value must be a float";
+    }
     conf->factor = val;
     conf->factor_set = 1;
     return NULL;
 }
 
-static const char
-*set_cache_complete(cmd_parms *parms, void *dummy, const char *arg)
+static const char *set_cache_complete(cmd_parms *parms, void *dummy,
+                                      const char *arg)
 {
-    cache_server_conf *conf = ap_get_module_config(parms->server->module_config, 
-                                                   &cache_module);
+    cache_server_conf *conf;
     int val;
 
-    if (sscanf(arg, "%u", &val) != 1)
+    conf =
+        (cache_server_conf *)ap_get_module_config(parms->server->module_config,
+                                                  &cache_module);
+    if (sscanf(arg, "%u", &val) != 1) {
         return "CacheForceCompletion value must be a percentage";
+    }
     conf->complete = val;
     conf->complete_set = 1;
     return NULL;
 }
-static int 
-cache_post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s)
+static int cache_post_config(apr_pool_t *p, apr_pool_t *plog,
+                             apr_pool_t *ptemp, server_rec *s)
 {
-     /* This is the means by which unusual (non-unix) os's may find alternate
+    /* This is the means by which unusual (non-unix) os's may find alternate
      * means to run a given command (e.g. shebang/registry parsing on Win32)
      */
-    cache_generate_key    = APR_RETRIEVE_OPTIONAL_FN(ap_cache_generate_key);
+    cache_generate_key = APR_RETRIEVE_OPTIONAL_FN(ap_cache_generate_key);
     if (!cache_generate_key) {
         cache_generate_key = cache_generate_key_default;
     }
@@ -945,30 +968,33 @@ static const command_rec cache_cmds[] =
      */
 
     AP_INIT_FLAG("CacheOn", set_cache_on, NULL, RSRC_CONF,
-     "On if the transparent cache should be enabled"),
+                 "On if the transparent cache should be enabled"),
     AP_INIT_TAKE2("CacheEnable", add_cache_enable, NULL, RSRC_CONF,
-     "A cache type and partial URL prefix below which caching is enabled"),
+                  "A cache type and partial URL prefix below which "
+                  "caching is enabled"),
     AP_INIT_TAKE1("CacheDisable", add_cache_disable, NULL, RSRC_CONF,
-     "A partial URL prefix below which caching is disabled"),
+                  "A partial URL prefix below which caching is disabled"),
     AP_INIT_TAKE1("CacheMaxExpire", set_cache_maxex, NULL, RSRC_CONF,
-     "The maximum time in seconds to cache a document"),
+                  "The maximum time in seconds to cache a document"),
      AP_INIT_TAKE1("CacheDefaultExpire", set_cache_defex, NULL, RSRC_CONF,
-     "The default time in seconds to cache a document"),
+                   "The default time in seconds to cache a document"),
      AP_INIT_FLAG("CacheIgnoreNoLastMod", set_cache_ignore_no_last_mod, NULL, 
-             RSRC_CONF, 
-             "Ignore Responses where there is no Last Modified Header"),
-     AP_INIT_FLAG("CacheIgnoreCacheControl", set_cache_ignore_cachecontrol, NULL, 
-            RSRC_CONF, 
-            "Ignore requests from the client for uncached content"),
+                  RSRC_CONF, 
+                  "Ignore Responses where there is no Last Modified Header"),
+     AP_INIT_FLAG("CacheIgnoreCacheControl", set_cache_ignore_cachecontrol,
+                  NULL, 
+                  RSRC_CONF, 
+                  "Ignore requests from the client for uncached content"),
     AP_INIT_TAKE1("CacheLastModifiedFactor", set_cache_factor, NULL, RSRC_CONF,
-     "The factor used to estimate Expires date from LastModified date"),
+                  "The factor used to estimate Expires date from "
+                  "LastModified date"),
     AP_INIT_TAKE1("CacheForceCompletion", set_cache_complete, NULL, RSRC_CONF,
-     "Percentage of download to arrive for the cache to force complete transfer"),
+                  "Percentage of download to arrive for the cache to force "
+                  "complete transfer"),
     {NULL}
 };
 
-static void
-register_hooks(apr_pool_t *p)
+static void register_hooks(apr_pool_t *p)
 {
     /* cache initializer */
     /* cache handler */
