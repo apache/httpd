@@ -73,5 +73,6 @@
 #define AP_MPM_WANT_SET_COREDUMPDIR
 
 extern int ap_threads_per_child;
+extern server_rec *ap_server_conf;
 
 #endif /* APACHE_MPM_H */
