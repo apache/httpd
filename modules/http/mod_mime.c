@@ -804,7 +804,7 @@ static int find_ct(request_rec *r)
 
     /* Always drop the path leading up to the file name.
      */
-    if ((fn = strrchr(resource_name, '/')) == NULL) {
+    if ((fn = ap_strrchr_c(resource_name, '/')) == NULL) {
         fn = resource_name;
     }
     else {
