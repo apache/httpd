@@ -100,6 +100,9 @@
 #include "http_log.h"
 #include "http_protocol.h"
 #include "http_request.h"  /* for ap_hook_(check_user_id | auth_check) */
+#include "apr_lib.h"
+#define APR_WANT_STRFUNC
+#include "apr_want.h"
 #ifdef HAVE_DB_H
 #include <db.h>
 #endif

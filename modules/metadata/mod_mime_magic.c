@@ -126,6 +126,9 @@
 
 #include "apr.h"
 #include "apr_strings.h"
+#include "apr_lib.h"
+#define APR_WANT_STRFUNC
+#include "apr_want.h"
 
 #if APR_HAVE_UNISTD_H
 #include <unistd.h>

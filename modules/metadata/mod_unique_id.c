@@ -70,6 +70,15 @@
 #include "http_log.h"
 #include "http_protocol.h"  /* for ap_hook_post_read_request */
 
+#if APR_HAVE_NETDB_H
+#include <netdb.h>
+#endif
+#if APR_HAVE_ARPA_INET_H
+#include <arpa/inet.h>
+#endif
+#if APR_HAVE_UNISTD_H
+#include <unistd.h>
+#endif
 
 typedef struct {
     unsigned int stamp;
