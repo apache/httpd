@@ -135,51 +135,51 @@ BOOL ssl_config_global_isfixed(SSLModConfigRec *mc)
 **  _________________________________________________________________
 */
 
-static void modssl_ctx_init(modssl_ctx_t *ctx)
+static void modssl_ctx_init(modssl_ctx_t *mctx)
 {
-    ctx->sc                  = NULL;
+    mctx->sc                  = NULL;
 
-    ctx->ssl_ctx             = NULL;
+    mctx->ssl_ctx             = NULL;
 
-    ctx->pks                 = NULL;
-    ctx->pkp                 = NULL;
+    mctx->pks                 = NULL;
+    mctx->pkp                 = NULL;
 
-    ctx->protocol            = SSL_PROTOCOL_ALL;
+    mctx->protocol            = SSL_PROTOCOL_ALL;
 
-    ctx->pphrase_dialog_type = SSL_PPTYPE_UNSET;
-    ctx->pphrase_dialog_path = NULL;
+    mctx->pphrase_dialog_type = SSL_PPTYPE_UNSET;
+    mctx->pphrase_dialog_path = NULL;
 
-    ctx->cert_chain          = NULL;
+    mctx->cert_chain          = NULL;
 
-    ctx->crl_path            = NULL;
-    ctx->crl_file            = NULL;
-    ctx->crl                 = NULL;
+    mctx->crl_path            = NULL;
+    mctx->crl_file            = NULL;
+    mctx->crl                 = NULL;
 
-    ctx->auth.ca_cert_path   = NULL;
-    ctx->auth.ca_cert_file   = NULL;
-    ctx->auth.cipher_suite   = NULL;
-    ctx->auth.verify_depth   = UNSET;
-    ctx->auth.verify_mode    = SSL_CVERIFY_UNSET;
+    mctx->auth.ca_cert_path   = NULL;
+    mctx->auth.ca_cert_file   = NULL;
+    mctx->auth.cipher_suite   = NULL;
+    mctx->auth.verify_depth   = UNSET;
+    mctx->auth.verify_mode    = SSL_CVERIFY_UNSET;
 }
 
 static void modssl_ctx_init_server(SSLSrvConfigRec *sc,
                                    apr_pool_t *p)
 {
-    modssl_ctx_t *ctx;
+    modssl_ctx_t *mctx;
 
-    ctx = sc->server = apr_palloc(p, sizeof(*sc->server));
+    mctx = sc->server = apr_palloc(p, sizeof(*sc->server));
 
-    modssl_ctx_init(ctx);
+    modssl_ctx_init(mctx);
 
-    ctx->pks = apr_palloc(p, sizeof(*ctx->pks));
+    mctx->pks = apr_palloc(p, sizeof(*mctx->pks));
 
-    memset((void*)ctx->pks->cert_files, 0, sizeof(ctx->pks->cert_files));
+    memset((void*)mctx->pks->cert_files, 0, sizeof(mctx->pks->cert_files));
 
-    memset((void*)ctx->pks->key_files, 0, sizeof(ctx->pks->key_files));
+    memset((void*)mctx->pks->key_files, 0, sizeof(mctx->pks->key_files));
 
-    memset(ctx->pks->certs, 0, sizeof(ctx->pks->certs));
+    memset(mctx->pks->certs, 0, sizeof(mctx->pks->certs));
 
-    memset(ctx->pks->keys, 0, sizeof(ctx->pks->keys));
+    memset(mctx->pks->keys, 0, sizeof(mctx->pks->keys));
 }
 
 /*
