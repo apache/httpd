@@ -89,6 +89,8 @@
       &lt;IfModule mod_cache.c&gt;<br />
       <span class="indent">
         #LoadModule disk_cache_module modules/mod_disk_cache.so<br />
+        # If you want to use mod_disk_cache instead of mod_mem_cache,
+        # uncomment the line above and comment out the LoadModule line below.
         &lt;IfModule mod_disk_cache.c&gt;<br />
         <span class="indent">
           CacheRoot c:/cacheroot<br />
