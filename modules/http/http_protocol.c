@@ -3589,6 +3589,16 @@ AP_DECLARE(void) ap_send_error_response(request_rec *r, int recursive_error)
         const char *title = status_lines[idx];
         const char *h1;
 
+        /* XXX This is a major hack that should be fixed cleanly.  The
+         * problem is that we have the information we need in a previous
+         * request, but the text of the page must be sent down the last
+         * request_rec's filter stack.  rbb
+         */
+        request_rec *rlast = r;
+        while (rlast->next) {
+            rlast = rlast->next;
+        }
+
         /* Accept a status_line set by a module, but only if it begins
          * with the 3 digit status code
          */
@@ -3605,22 +3615,22 @@ AP_DECLARE(void) ap_send_error_response(request_rec *r, int recursive_error)
         /* folks decided they didn't want the error code in the H1 text */
         h1 = &title[4];
 
-        ap_rvputs(r,
+        ap_rvputs(rlast,
                   DOCTYPE_HTML_2_0
                   "<HTML><HEAD>\n<TITLE>", title,
                   "</TITLE>\n</HEAD><BODY>\n<H1>", h1, "</H1>\n",
                   NULL);
         
-        ap_rputs(get_canned_error_string(status, r, location),r); 
+        ap_rputs(get_canned_error_string(status, r, location),rlast); 
 
         if (recursive_error) {
-            ap_rvputs(r, "<P>Additionally, a ",
+            ap_rvputs(rlast, "<P>Additionally, a ",
                       status_lines[ap_index_of_response(recursive_error)],
                       "\nerror was encountered while trying to use an "
                       "ErrorDocument to handle the request.\n", NULL);
         }
-        ap_rputs(ap_psignature("<HR>\n", r), r);
-        ap_rputs("</BODY></HTML>\n", r);
+        ap_rputs(ap_psignature("<HR>\n", r), rlast);
+        ap_rputs("</BODY></HTML>\n", rlast);
     }
     ap_finalize_request_protocol(r);
 }
