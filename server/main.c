@@ -276,7 +276,7 @@ static void usage(process_rec *process)
 
 int main(int argc, char *argv[])
 {
-    int c;
+    char c;
     int configtestonly = 0;
     const char *confname = SERVER_CONFIG_FILE;
     const char *def_server_root = HTTPD_ROOT;
@@ -287,8 +287,10 @@ int main(int argc, char *argv[])
     apr_pool_t *plog; /* Pool of log streams, reset _after_ each read of conf */
     apr_pool_t *ptemp; /* Pool for temporary config stuff, reset often */
     apr_pool_t *pcommands; /* Pool for -D, -C and -c switches */
+    apr_getopt_t *opt;
     module **mod;
     ap_directive_t *conftree = NULL;
+    const char *optarg;
 
     apr_initialize();
     process = create_process(argc, (char *const *)argv);
@@ -316,28 +318,29 @@ int main(int argc, char *argv[])
     /* Maintain AP_SERVER_BASEARGS list in http_main.h to allow the MPM 
      * to safely pass on our args from its rewrite_args() handler.
      */
-    while (apr_getopt(process->argc, process->argv, 
-                     AP_SERVER_BASEARGS, &c, pcommands) 
+    apr_initopt(&opt, pcommands, process->argc, process->argv);
+
+    while (apr_getopt(opt, AP_SERVER_BASEARGS, &c, &optarg) 
             == APR_SUCCESS) {
         char **new;
         switch (c) {
  	case 'c':
 	    new = (char **)apr_push_array(ap_server_post_read_config);
-	    *new = apr_pstrdup(pcommands, apr_optarg);
+	    *new = apr_pstrdup(pcommands, optarg);
 	    break;
 	case 'C':
 	    new = (char **)apr_push_array(ap_server_pre_read_config);
-	    *new = apr_pstrdup(pcommands, apr_optarg);
+	    *new = apr_pstrdup(pcommands, optarg);
 	    break;
 	case 'd':
-	    def_server_root = apr_optarg;
+	    def_server_root = optarg;
 	    break;
 	case 'D':
 	    new = (char **)apr_push_array(ap_server_config_defines);
-	    *new = apr_pstrdup(pcommands, apr_optarg);
+	    *new = apr_pstrdup(pcommands, optarg);
 	    break;
 	case 'f':
-	    confname = apr_optarg;
+	    confname = optarg;
 	    break;
 	case 'v':
 	    printf("Server version: %s\n", ap_get_server_version());
