@@ -1,5 +1,9 @@
 Changes with Apache 2.0.44
 
+  *) Change the LDAP modules to export their symbols correctly
+     during a Windows build. Add dsp files for Windows.
+     [Andre Schild <A.Schild@aarboard.ch>]
+
   *) Performance improvements for the code that generates HTTP
      response headers  [Brian Pane]
 
