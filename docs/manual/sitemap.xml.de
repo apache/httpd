@@ -3,7 +3,7 @@
   [ <!ENTITY allmodules SYSTEM "./mod/allmodules.xml.de"> ]
 >
 <?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
-<!-- English revision: 1.12.2.9 -->
+<!-- English revision: 1.12.2.12 -->
 
 <sitemap metafile="sitemap.xml.meta">
 

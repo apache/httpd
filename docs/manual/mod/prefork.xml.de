@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
 <modulesynopsis metafile="prefork.xml.meta">
-<!-- English revision: 1.8.2.1 -->
+<!-- English revision: 1.8.2.2 -->
 
 <name>prefork</name>
 <description>Implementiert einen im Voraus forkenden Webserver ohne

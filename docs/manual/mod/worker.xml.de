@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- English revision: 1.8.2.2 -->
+<!-- English revision: 1.8.2.4 -->
 
 <modulesynopsis metafile="worker.xml.meta">
 <name>worker</name>
