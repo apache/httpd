@@ -1,4 +1,15 @@
 Changes with Apache 2.0.27-dev
+  *) Win32: Track and display "Parent Server Generation:" in
+     mod_status output. The generation will be bumped at
+     server graceful restart, when the child process exits
+     by hitting MaxRequestsPerChild or if the child 
+     process exits abnormally. [Bill Stoddard]
+
+  *) Win32: Fix problem where MaxRequestsPerChild directive was
+     not being picked up in favor of the default. Enable
+     the parent to start up a new child process immediately upon
+     the old child starting shutdown.
+     [Bill Stoddard]
 
   *) Fix some bungling of the remote port in rfc1413.c so that 
      IdentityCheck retrieves the proper user id instead of failing
