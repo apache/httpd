@@ -256,6 +256,11 @@ PATCHES TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewcvs?view=rev&rev=154319
       +1: stoddard
 
+    * mod_dav: Export functions so that Win32 can use them as was intended.
+      svn rev 155345
+      http://svn.apache.org/viewcvs?view=rev&rev=155345
+      +1: jerenkrantz
+
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
     *) Remove LDAP toolkit specific code from util_ldap and mod_auth_ldap.
