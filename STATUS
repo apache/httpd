@@ -11,7 +11,7 @@ Release:
 
 Current Modes:
 
-    o Review-Then-Commit
+    o Commit-Then-Review
     o NO lazy voting
 
 Plan:
@@ -88,20 +88,19 @@ Committed Code Changes:
     * Martin's [PATCH] mod_speling [300] Multiple Choices bug (Take 2)
     * Dean's [PATCH] protect the environment
     * general/1666: Apache uses a case sensitive match for "Basic" auth scheme
-    * mod_rewrite/1684: RewriteLog directive does the equivalent of "HostnameLookups on"
+    * mod_rewrite/1684: RewriteLog directive does the equivalent of
+     "HostnameLookups on"
     * protocol/1683: The Connection header may contain multiple close tokens
     * some of Marc's 1.2.5 security patches (minus proxy fixes)
+    * John Van Essen <jve@gamers.org>'s fix for mod_autoindex <PRE>
+      misplacement.
 
 Available Patches:
 
-    * Martin's [PATCH] Improve implementation of -c/-C directive reading (take 2)
+    * Martin's [PATCH] Improve implementation of -c/-C directive reading
+      (take 2)
 	<19980117135342.51384@deejai.mch.sni.de>
 	Status: Martin +1, Doug +1, Dean +1, Jim +1
-
-    * John Van Essen <jve@gamers.org>'s fix for mod_autoindex <PRE>
-      misplacement.
-	<34C0805F.1CBE0DDA@Golux.Com>
-	Status: Ken +1, Dean +1, Jim +1
 
     * Dean's [PATCH] MONCONTROL for profiling children
 	<Pine.LNX.3.95dg3.980111040040.25014C-100000@twinlark.arctic.org>

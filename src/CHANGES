@@ -1,5 +1,10 @@
 Changes with Apache 1.3b4
 
+  *) mod_autoindex with a plaintext header file would emit the <PRE>
+     start-tag before the HTML preamble, rather than after the preamble
+     but before the header file contents.  [John Van Essen <jve@gamers.org>]
+     PR#1667
+
   *) SECURITY: Fix a possible buffer overflow in logresolve.  This is
      only an issue on systems without a MAXDNAME define or where
      the resolver returns domain names longer than MAXDNAME.  [Marc Slemko]
