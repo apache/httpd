@@ -3,7 +3,7 @@
 <!ENTITY % sitemap SYSTEM "sitemap.dtd">
 %sitemap;
 
-<!ELEMENT modulesynopsis (name , description, status , sourcefile?,
+<!ELEMENT modulesynopsis (name , description, status, hint?, sourcefile?,
 identifier? , compatibility? , summary? , seealso* , section*,
 directivesynopsis*)>
 
@@ -14,6 +14,8 @@ usage?, seealso*)>
 <!ELEMENT name (#PCDATA)>
 
 <!ELEMENT status (#PCDATA)>
+
+<!ELEMENT hint %Inline;>
 
 <!ELEMENT identifier (#PCDATA)>
 

@@ -199,7 +199,7 @@
         <xsl:sort select="document(concat($basedir,'mod/',.))/modulesynopsis/name"/>
         <xsl:variable name="current" select="document(concat($basedir,'mod/',.))/modulesynopsis" />
 
-        <xsl:if test="$current/status!='MPM' and $current/status!='Core'">
+        <xsl:if test="$current/status!='MPM' and $current/status!='Core' and $current/status!='Obsolete'">
           <li>
             <a href="mod/{$current/name}.html">
               <xsl:value-of select="$messages/message[@name='apachemodule']"/>
@@ -214,8 +214,31 @@
         </xsl:if>
       </xsl:for-each>
       <!-- /other modules -->
-
     </ul>
+
+    <!-- obsolete modules -->
+    <ul>
+      <xsl:for-each select="modulefile">
+        <xsl:sort select="document(concat($basedir,'mod/',.))/modulesynopsis/name"/>
+        <xsl:variable name="current" select="document(concat($basedir,'mod/',.))/modulesynopsis" />
+
+        <xsl:if test="$current/status='Obsolete'">
+          <li>
+            <a href="mod/obs_{$current/name}.html">
+              <xsl:value-of select="$messages/message[@name='obsoleteapachemodule']"/>
+              <xsl:text> </xsl:text>
+              <xsl:value-of select="$current/name"/>
+            </a>
+          </li>
+ 
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
+        </xsl:if>
+      </xsl:for-each>
+      <!-- /other modules -->
+     </ul>
+
   </xsl:template>
   <!-- /category/modulefilelist -->
 
