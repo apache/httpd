@@ -532,7 +532,7 @@ expressions</description>
 <directivesynopsis>
 <name>ProxyPass</name>
 <description>Maps remote servers into the local server URL-space</description>
-<syntax>ProxyPass [<var>path</var>] !|<var>url</var></syntax>
+<syntax>ProxyPass [<var>path</var>] !|<var>url</var> [<var>key=value</var> <var>key=value</var> ...]]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
 </contextlist>
@@ -572,6 +572,30 @@ expressions</description>
       <p>Order is important. you need to put the exclusions <em>before</em> the
       general <directive>ProxyPass</directive> directive.</p>
     </note>
+
+    <p>New in Apache 2.1, is the ability to use pooled connections to a 
+    backend server. Using the <code>key=value</code> parameters it is possible
+    to tune this connection pooling. The default for a <code>Hard Maximum</code>
+    for the number of connections is the number of threads per process in the 
+    active MPM. In the Prefork MPM, this is always 1, while with the Worker MPM
+    it is controlled by the <directive>ThreadsPerChild</directive>.</p>
+
+    <p>Setting <code>min</code> will determine how many connections will always 
+    be open to the backend server. Upto the Soft Maximum or <code>smax</code> 
+    number of connections will be created on demand. Any connections above 
+    <code>smax</code> are subject to a time to live or <code>ttl</code>.  Apache
+    will never create more than the Hard Maximum or <code>hmax</code> connections
+    to the backend server.</p>
+
+    <example>
+        ProxyPass /example http://backend.example.com min=0 smax=5 hmax=20 ttl=60
+    </example>
+
+    <!-- Still to be documented:
+             retry acquire timeout 
+             iobuffersize receivebuffersize 
+             keepalive route redirect 
+         See modules/proxy/mod_proxy.c set_worker_param() for details.  -->
 
     <p>When used inside a <directive type="section" module="core"
     >Location</directive> section, the first argument is omitted and the local
