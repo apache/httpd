@@ -286,6 +286,10 @@ void ap_process_request(request_rec *r)
     else if (access_status == DECLINED) {
          access_status = ap_process_request_internal(r);
          if (access_status == OK) {
+             if ((access_status = ap_invoke_handler(r)) != 0) {
+                 ap_die(access_status, r);
+                 return;
+             }
              ap_finalize_request_protocol(r);
          }
          else {
@@ -441,6 +445,10 @@ AP_DECLARE(void) ap_internal_redirect(const char *new_uri, request_rec *r)
     request_rec *new = internal_internal_redirect(new_uri, r);
     int access_status = ap_process_request_internal(new);
     if (access_status == OK) {
+        if ((access_status = ap_invoke_handler(r)) != 0) {
+            ap_die(access_status, r);
+            return;
+        }
         ap_finalize_request_protocol(r);
     }
     else {
@@ -460,6 +468,10 @@ AP_DECLARE(void) ap_internal_redirect_handler(const char *new_uri, request_rec *
         new->content_type = r->content_type;
     access_status = ap_process_request_internal(new);
     if (access_status == OK) {
+        if ((access_status = ap_invoke_handler(r)) != 0) {
+            ap_die(access_status, r);
+            return;
+        }
         ap_finalize_request_protocol(r);
     }
     else {
