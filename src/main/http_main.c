@@ -3699,7 +3699,10 @@ static void child_main(int child_num_arg)
 
 	    (void) ap_update_child_status(my_child_num, SERVER_BUSY_WRITE, r);
 
-	    ap_process_request(r);
+	    /* process the request if it was read without error */
+
+	    if (r->status == HTTP_OK)
+		ap_process_request(r);
 
 #if defined(STATUS)
 	    increment_counts(my_child_num, r);
@@ -4466,15 +4469,16 @@ int REALMAIN(int argc, char *argv[])
 	conn = new_connection(ptrans, server_conf, cio,
 			          (struct sockaddr_in *) &sa_client,
 			          (struct sockaddr_in *) &sa_server, -1);
-	r = ap_read_request(conn);
-	if (r)
-	    ap_process_request(r);	/* else premature EOF (ignore) */
 
-	while (r && conn->keepalive && !conn->aborted) {
-	    ap_destroy_pool(r->pool);
-	    r = ap_read_request(conn);
-	    if (r)
+	while ((r = ap_read_request(conn)) != NULL) {
+
+	    if (r->status == HTTP_OK)
 		ap_process_request(r);
+
+	    if (!conn->keepalive || conn->aborted)
+		break;
+
+	    ap_destroy_pool(r->pool);
 	}
 
 	ap_bclose(cio);
@@ -4779,7 +4783,8 @@ static void child_sub_main(int child_num)
 	while ((r = ap_read_request(current_conn)) != NULL) {
 	    (void) ap_update_child_status(child_num, SERVER_BUSY_WRITE, r);
 
-	    ap_process_request(r);
+	    if (r->status == HTTP_OK)
+		ap_process_request(r);
 
 #if defined(STATUS)
 	    increment_counts(child_num, r);

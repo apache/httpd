@@ -1,5 +1,10 @@
 Changes with Apache 1.3.2
 
+  *) Allow ap_read_request errors to propagate through the normal request
+     handling loop so that the connection can be properly closed with
+     lingering_close, thus avoiding a potential TCP reset that would
+     cause the client to miss the HTTP error response.  [Roy Fielding]
+
   *) One more portability fix for APACI shadow tree support: Swap order of awk
      and sed in top-level configure script to avoid sed fails on some
      platforms (for instance SunOS 4.1.3 and NCR SysV) because of the

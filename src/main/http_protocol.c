@@ -803,8 +803,8 @@ request_rec *ap_read_request(conn_rec *conn)
             ap_send_error_response(r, 0);
             ap_bflush(r->connection->client);
             ap_log_transaction(r);
+            return r;
         }
-        r->connection->aborted = 1;
         return NULL;
     }
     if (!r->assbackwards) {
@@ -819,8 +819,7 @@ request_rec *ap_read_request(conn_rec *conn)
             ap_send_error_response(r, 0);
             ap_bflush(r->connection->client);
             ap_log_transaction(r);
-            r->connection->aborted = 1;
-            return NULL;
+            return r;
         }
     }
     else {
