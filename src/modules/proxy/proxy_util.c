@@ -562,7 +562,7 @@ long int ap_proxy_send_fb(BUFF *f, request_rec *r, cache_req *c, off_t len, int 
             n = ap_bread(f, buf, buf_size);
         }
         else {
-            n = ap_bread(f, buf, MIN(buf_size, len - total_bytes_rcvd));
+            n = ap_bread(f, buf, MIN((off_t)buf_size, len - total_bytes_rcvd));
         }
 
         if (alternate_timeouts)
