@@ -74,6 +74,7 @@
 #include "ap_iol.h"
 #include "apr_portable.h"
 #include "mpm_common.h"
+#include "apr_strings.h"
 
 #include <os2.h>
 #include <stdlib.h>
