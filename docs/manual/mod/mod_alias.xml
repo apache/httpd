@@ -167,7 +167,7 @@ sections.</p></note>
     <p>Example:</p>
 
     <example>
-        Redirect permanent /one http://example.com/two</ br>
+        Redirect permanent /one http://example.com/two<br />
         Redirect 303 /three http://example.com/other
     </example>
 
