@@ -1763,6 +1763,15 @@ AP_DECLARE(int) ap_should_client_block(request_rec *r)
     return 1;
 }
 
+/**
+ * Parse a chunk extension, detect overflow.
+ * There are two error cases:
+ *  1) If the conversion would require too many bits, a -1 is returned.
+ *  2) If the conversion used the correct number of bits, but an overflow
+ *     caused only the sign bit to flip, then that negative number is
+ *     returned.
+ * In general, any negative number can be considered an overflow error.
+ */
 static long get_chunk_size(char *b)
 {
     long chunksize = 0;
