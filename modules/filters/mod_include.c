@@ -204,14 +204,36 @@ static const char *add_include_vars_lazy(request_rec *r, const char *var)
     return val;
 }
 
-static const char *get_include_var(request_rec *r, const char *var)
+static const char *get_include_var(request_rec *r, include_ctx_t *ctx, 
+                                   const char *var)
 {
     const char *val;
-    val = apr_table_get(r->subprocess_env, var);
+    if (apr_isdigit(*var) && !var[1]) {
+        /* Handle $0 .. $9 from the last regex evaluated.
+         * The choice of returning NULL strings on not-found,
+         * v.s. empty strings on an empty match is deliberate.
+         */
+        if (!ctx->re_result || !ctx->re_string) {
+            return NULL;
+        }
+        else {
+            int idx = atoi(var);
+            apr_size_t len = (*ctx->re_result)[idx].rm_eo
+                           - (*ctx->re_result)[idx].rm_so;
+            if (    (*ctx->re_result)[idx].rm_so < 0
+                 || (*ctx->re_result)[idx].rm_eo < 0) {
+                return NULL;
+            }
+            var = apr_pstrmemdup(r->pool, ctx->re_string 
+                                        + (*ctx->re_result)[idx].rm_so, len);
+        }
+    }
+    else {
+        val = apr_table_get(r->subprocess_env, var);
 
-    if (val == LAZY_VALUE)
-        val = add_include_vars_lazy(r, var);
-
+        if (val == LAZY_VALUE)
+            val = add_include_vars_lazy(r, var);
+    }
     return val;
 }
 
@@ -873,7 +895,8 @@ static void ap_ssi_get_tag_and_value(include_ctx_t *ctx, char **tag,
 /*
  * Do variable substitution on strings
  */
-static void ap_ssi_parse_string(request_rec *r, const char *in, char *out,
+static void ap_ssi_parse_string(request_rec *r, include_ctx_t *ctx, 
+                                const char *in, char *out,
                                 size_t length, int leave_name)
 {
     char ch;
@@ -937,7 +960,7 @@ static void ap_ssi_parse_string(request_rec *r, const char *in, char *out,
                 if (l != 0) {
                     tmp_store        = *end_of_var_name;
                     *end_of_var_name = '\0';
-                    val = get_include_var(r, start_of_var_name);
+                    val = get_include_var(r, ctx, start_of_var_name);
                     *end_of_var_name = tmp_store;
 
                     if (val) {
@@ -1044,7 +1067,7 @@ static int handle_include(include_ctx_t *ctx, apr_bucket_brigade **bb,
                 request_rec *rr = NULL;
                 char *error_fmt = NULL;
 
-                ap_ssi_parse_string(r, tag_val, parsed_string, 
+                ap_ssi_parse_string(r, ctx, tag_val, parsed_string, 
                                     sizeof(parsed_string), 0);
                 if (tag[0] == 'f') {
                     /* XXX: Port to apr_filepath_merge
@@ -1192,7 +1215,7 @@ static int handle_echo(include_ctx_t *ctx, apr_bucket_brigade **bb,
                 }
             }
             if (!strcmp(tag, "var")) {
-                const char *val = get_include_var(r, tag_val);
+                const char *val = get_include_var(r, ctx, tag_val);
                 if (val) {
                     switch(encode) {
                     case E_NONE:   
@@ -1273,7 +1296,7 @@ static int handle_config(include_ctx_t *ctx, apr_bucket_brigade **bb,
                                                               MAX_STRING_LEN);
                     ctx->error_str = ctx->error_str_override;
                 }
-                ap_ssi_parse_string(r, tag_val, ctx->error_str_override,
+                ap_ssi_parse_string(r, ctx, tag_val, ctx->error_str_override,
                                     MAX_STRING_LEN, 0);
             }
             else if (!strcmp(tag, "timefmt")) {
@@ -1283,7 +1306,7 @@ static int handle_config(include_ctx_t *ctx, apr_bucket_brigade **bb,
                                                               MAX_STRING_LEN);
                     ctx->time_str = ctx->time_str_override;
                 }
-                ap_ssi_parse_string(r, tag_val, ctx->time_str_override,
+                ap_ssi_parse_string(r, ctx, tag_val, ctx->time_str_override,
                                     MAX_STRING_LEN, 0);
                 apr_table_setn(env, "DATE_LOCAL", ap_ht_time(r->pool, date, 
                                ctx->time_str, 0));
@@ -1294,7 +1317,7 @@ static int handle_config(include_ctx_t *ctx, apr_bucket_brigade **bb,
                                ctx->time_str, 0));
             }
             else if (!strcmp(tag, "sizefmt")) {
-                ap_ssi_parse_string(r, tag_val, parsed_string, 
+                ap_ssi_parse_string(r, ctx, tag_val, parsed_string, 
                                     sizeof(parsed_string), 0);
                 decodehtml(parsed_string);
                 if (!strcmp(parsed_string, "bytes")) {
@@ -1419,7 +1442,7 @@ static int handle_fsize(include_ctx_t *ctx, apr_bucket_brigade **bb,
                 }
             }
             else {
-                ap_ssi_parse_string(r, tag_val, parsed_string, 
+                ap_ssi_parse_string(r, ctx, tag_val, parsed_string, 
                                     sizeof(parsed_string), 0);
                 if (!find_file(r, "fsize", tag, parsed_string, &finfo)) {
                     /* XXX: if we *know* we're going to have to copy the
@@ -1490,7 +1513,7 @@ static int handle_flastmod(include_ctx_t *ctx, apr_bucket_brigade **bb,
                 }
             }
             else {
-                ap_ssi_parse_string(r, tag_val, parsed_string, 
+                ap_ssi_parse_string(r, ctx, tag_val, parsed_string, 
                                     sizeof(parsed_string), 0);
                 if (!find_file(r, "flastmod", tag, parsed_string, &finfo)) {
                     char *t_val;
@@ -1514,24 +1537,30 @@ static int handle_flastmod(include_ctx_t *ctx, apr_bucket_brigade **bb,
     return 0;
 }
 
-static int re_check(request_rec *r, char *string, char *rexp)
+static int re_check(request_rec *r, include_ctx_t *ctx, 
+                    char *string, char *rexp)
 {
     regex_t *compiled;
+    const apr_size_t nres = sizeof(*ctx->re_result) / sizeof(regmatch_t);
     int regex_error;
 
     compiled = ap_pregcomp(r->pool, rexp, REG_EXTENDED | REG_NOSUB);
     if (compiled == NULL) {
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-                    "unable to compile pattern \"%s\"", rexp);
+                      "unable to compile pattern \"%s\"", rexp);
         return -1;
     }
-    regex_error = ap_regexec(compiled, string, 0, (regmatch_t *) NULL, 0);
+    if (!ctx->re_result) {
+        ctx->re_result = apr_pcalloc(r->pool, sizeof(*ctx->re_result));
+    }
+    ctx->re_string = string;
+    regex_error = ap_regexec(compiled, string, nres, *ctx->re_result, 0);
     ap_pregfree(r->pool, compiled);
     return (!regex_error);
 }
 
 enum token_type {
-    token_string,
+    token_string, token_re,
     token_and, token_or, token_not, token_eq, token_ne,
     token_rbrace, token_lbrace, token_group,
     token_ge, token_le, token_gt, token_lt
@@ -1549,7 +1578,7 @@ static const char *get_ptoken(request_rec *r, const char *string,
 {
     char ch;
     int next = 0;
-    int qs = 0;
+    char qs = 0;
     int tkn_fnd = 0;
 
     /* Skip leading white space */
@@ -1586,8 +1615,12 @@ static const char *get_ptoken(request_rec *r, const char *string,
             return (string);
         }
     case '\'':
-        token->type = token_string;
-        qs = 1;
+        /* already token->type == token_string */
+        qs = '\'';
+        break;
+    case '/':
+        token->type = token_re;
+        qs = '/';
         break;
     case '|':
         if (*string == '|') {
@@ -1620,7 +1653,7 @@ static const char *get_ptoken(request_rec *r, const char *string,
             return (string);
         }
     default:
-        token->type = token_string;
+        /* already token->type == token_string */
         break;
     }
     /* We should only be here if we are in a string */
@@ -1678,9 +1711,8 @@ static const char *get_ptoken(request_rec *r, const char *string,
                 }
             }
             else {
-                if (ch == '\'') {
+                if (ch == qs) {
                     qs = 0;
-                    ++string;
                     tkn_fnd = 1;
                 }
                 else {
@@ -1690,12 +1722,13 @@ static const char *get_ptoken(request_rec *r, const char *string,
         }
     }
 
-    /* If qs is still set, I have an unmatched ' */
+    /* If qs is still set, we have an unmatched quote */
     if (qs) {
         *unmatched = 1;
         next = 0;
     }
     token->value[next] = '\0';
+
     return (string);
 }
 
@@ -1710,8 +1743,8 @@ static const char *get_ptoken(request_rec *r, const char *string,
 /* there is an implicit assumption here that expr is at most MAX_STRING_LEN-1
  * characters long...
  */
-static int parse_expr(request_rec *r, const char *expr, int *was_error, 
-                      int *was_unmatched, char *debug)
+static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
+                      int *was_error, int *was_unmatched, char *debug)
 {
     struct parse_node {
         struct parse_node *left, *right, *parent;
@@ -1790,6 +1823,35 @@ static int parse_expr(request_rec *r, const char *expr, int *was_error,
             }
             break;
 
+        case token_re:
+#ifdef DEBUG_INCLUDE
+            debug_pos += sprintf (&debug[debug_pos], 
+                                  "     Token: regex (%s)\n", 
+                                  new->token.value);
+#endif
+            if (current == (struct parse_node *) NULL) {
+                root = current = new;
+                break;
+            }
+            switch (current->token.type) {
+            case token_eq:
+            case token_ne:
+            case token_and:
+            case token_or:
+            case token_lbrace:
+            case token_not:
+                new->parent = current;
+                current = current->right = new;
+                break;
+            default:
+                ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+                            "Invalid expression \"%s\" in file %s",
+                            expr, r->filename);
+                *was_error = 1;
+                goto RETURN;
+            }
+            break;
+
         case token_and:
         case token_or:
 #ifdef DEBUG_INCLUDE
@@ -1808,6 +1870,7 @@ static int parse_expr(request_rec *r, const char *expr, int *was_error,
             while (current != (struct parse_node *) NULL) {
                 switch (current->token.type) {
                 case token_string:
+                case token_re:
                 case token_group:
                 case token_not:
                 case token_eq:
@@ -1914,6 +1977,7 @@ static int parse_expr(request_rec *r, const char *expr, int *was_error,
             while (current != (struct parse_node *) NULL) {
                 switch (current->token.type) {
                 case token_string:
+                case token_re:
                 case token_group:
                     current = current->parent;
                     continue;
@@ -1998,6 +2062,7 @@ static int parse_expr(request_rec *r, const char *expr, int *was_error,
                 case token_lt:
                     break;
                 case token_string:
+                case token_re:
                 case token_group:
                 default:
                     ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
@@ -2036,7 +2101,7 @@ static int parse_expr(request_rec *r, const char *expr, int *was_error,
                     sizeof ("     Evaluate string\n"));
             debug_pos += sizeof ("     Evaluate string\n");
 #endif
-            ap_ssi_parse_string(r, current->token.value, buffer, 
+            ap_ssi_parse_string(r, ctx, current->token.value, buffer, 
                                 sizeof(buffer), 0);
             apr_cpystrn(current->token.value, buffer, 
                         sizeof(current->token.value));
@@ -2044,6 +2109,13 @@ static int parse_expr(request_rec *r, const char *expr, int *was_error,
             current->done = 1;
             current = current->parent;
             break;
+
+        case token_re:
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+                          "No operator before regex of expr \"%s\" in file %s",
+                          expr, r->filename);
+            *was_error = 1;
+            goto RETURN;
 
         case token_and:
         case token_or:
@@ -2063,7 +2135,7 @@ static int parse_expr(request_rec *r, const char *expr, int *was_error,
             if (!current->left->done) {
                 switch (current->left->token.type) {
                 case token_string:
-                    ap_ssi_parse_string(r, current->left->token.value,
+                    ap_ssi_parse_string(r, ctx, current->left->token.value,
                                         buffer, sizeof(buffer), 0);
                     apr_cpystrn(current->left->token.value, buffer,
                                 sizeof(current->left->token.value));
@@ -2079,7 +2151,7 @@ static int parse_expr(request_rec *r, const char *expr, int *was_error,
             if (!current->right->done) {
                 switch (current->right->token.type) {
                 case token_string:
-                    ap_ssi_parse_string(r, current->right->token.value,
+                    ap_ssi_parse_string(r, ctx, current->right->token.value,
                                         buffer, sizeof(buffer), 0);
                     apr_cpystrn(current->right->token.value, buffer,
                                 sizeof(current->right->token.value));
@@ -2122,34 +2194,23 @@ static int parse_expr(request_rec *r, const char *expr, int *was_error,
             if ((current->left == (struct parse_node *) NULL) ||
                 (current->right == (struct parse_node *) NULL) ||
                 (current->left->token.type != token_string) ||
-                (current->right->token.type != token_string)) {
+                ((current->right->token.type != token_string) &&
+                 (current->right->token.type != token_re))) {
                 ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
                             "Invalid expression \"%s\" in file %s",
                             expr, r->filename);
                 *was_error = 1;
                 goto RETURN;
             }
-            ap_ssi_parse_string(r, current->left->token.value,
+            ap_ssi_parse_string(r, ctx, current->left->token.value,
                          buffer, sizeof(buffer), 0);
             apr_cpystrn(current->left->token.value, buffer,
                         sizeof(current->left->token.value));
-            ap_ssi_parse_string(r, current->right->token.value,
+            ap_ssi_parse_string(r, ctx, current->right->token.value,
                          buffer, sizeof(buffer), 0);
             apr_cpystrn(current->right->token.value, buffer,
                         sizeof(current->right->token.value));
-            if (current->right->token.value[0] == '/') {
-                int len;
-                len = strlen(current->right->token.value);
-                if (current->right->token.value[len - 1] == '/') {
-                    current->right->token.value[len - 1] = '\0';
-                }
-                else {
-                    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-                                "Invalid rexp \"%s\" in file %s",
-                                current->right->token.value, r->filename);
-                    *was_error = 1;
-                    goto RETURN;
-                }
+            if (current->right->token.type == token_re) {
 #ifdef DEBUG_INCLUDE
                 debug_pos += sprintf (&debug[debug_pos],
                                       "     Re Compare (%s) with /%s/\n",
@@ -2157,7 +2218,7 @@ static int parse_expr(request_rec *r, const char *expr, int *was_error,
                                       &current->right->token.value[1]);
 #endif
                 current->value =
-                    re_check(r, current->left->token.value,
+                    re_check(r, ctx, current->left->token.value,
                              &current->right->token.value[1]);
             }
             else {
@@ -2200,11 +2261,11 @@ static int parse_expr(request_rec *r, const char *expr, int *was_error,
                 *was_error = 1;
                 goto RETURN;
             }
-            ap_ssi_parse_string(r, current->left->token.value,
+            ap_ssi_parse_string(r, ctx, current->left->token.value,
                          buffer, sizeof(buffer), 0);
             apr_cpystrn(current->left->token.value, buffer,
                         sizeof(current->left->token.value));
-            ap_ssi_parse_string(r, current->right->token.value,
+            ap_ssi_parse_string(r, ctx, current->right->token.value,
                          buffer, sizeof(buffer), 0);
             apr_cpystrn(current->right->token.value, buffer,
                         sizeof(current->right->token.value));
@@ -2375,8 +2436,8 @@ static int handle_if(include_ctx_t *ctx, apr_bucket_brigade **bb,
                                         *inserted_head);
                     return 1;
                 }
-                expr_ret = parse_expr(r, expr, &was_error, &was_unmatched, 
-                                      debug_buf);
+                expr_ret = parse_expr(r, ctx, expr, &was_error, 
+                                      &was_unmatched, debug_buf);
                 if (was_error) {
                     CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, 
                                         *inserted_head);
@@ -2458,8 +2519,8 @@ static int handle_elif(include_ctx_t *ctx, apr_bucket_brigade **bb,
                                         *inserted_head);
                     return (1);
                 }
-                expr_ret = parse_expr(r, expr, &was_error, &was_unmatched, 
-                                      debug_buf);
+                expr_ret = parse_expr(r, ctx, expr, &was_error, 
+                                      &was_unmatched, debug_buf);
                 if (was_error) {
                     CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, 
                                         *inserted_head);
@@ -2603,7 +2664,7 @@ static int handle_set(include_ctx_t *ctx, apr_bucket_brigade **bb,
                                         *inserted_head);
                     return (-1);
                 }
-                ap_ssi_parse_string(r, tag_val, parsed_string, 
+                ap_ssi_parse_string(r, ctx, tag_val, parsed_string, 
                                     sizeof(parsed_string), 0);
                 apr_table_setn(r->subprocess_env, apr_pstrdup(r->pool, var),
                                apr_pstrdup(r->pool, parsed_string));

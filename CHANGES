@@ -1,5 +1,8 @@
 Changes with Apache 2.0.30-dev
 
+  *) Provide $0..$9 results from mod_include regex parsing.
+     [William Rowe]
+
   *) Allow mod-include to look for alternate start & end tags [Ian Holsman]
 
   *) Introduced the ForceLanguagePriority directive, to prevent

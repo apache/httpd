@@ -893,7 +893,7 @@ static int handle_exec(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec 
                     }
                 }
                 if (!strcmp(tag, "cmd")) {
-                    cgi_pfn_ps(r, tag_val, parsed_string, sizeof(parsed_string), 1);
+                    cgi_pfn_ps(r, ctx, tag_val, parsed_string, sizeof(parsed_string), 1);
                     if (include_cmd(ctx, bb, parsed_string, r, f) == -1) {
                         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
                                     "execution failure for parameter \"%s\" "
@@ -904,7 +904,7 @@ static int handle_exec(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec 
                 else if (!strcmp(tag, "cgi")) {
                     apr_status_t retval = APR_SUCCESS;
 
-                    cgi_pfn_ps(r, tag_val, parsed_string, sizeof(parsed_string), 0);
+                    cgi_pfn_ps(r, ctx, tag_val, parsed_string, sizeof(parsed_string), 0);
                     SPLIT_AND_PASS_PRETAG_BUCKETS(*bb, ctx, f->next, retval);
                     if (retval != APR_SUCCESS) {
                         return retval;

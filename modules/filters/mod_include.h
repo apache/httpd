@@ -169,7 +169,8 @@ typedef struct include_filter_ctx {
     char         *start_seq;
     int          start_seq_len;
     char         *end_seq;
-
+    char         *re_string;
+    regmatch_t   (*re_result)[10];
 } include_ctx_t;
 
 /* These flags are used to set flag bits. */
@@ -216,10 +217,11 @@ typedef int (include_handler_fn_t)(include_ctx_t *ctx, apr_bucket_brigade **bb,
                        apr_bucket **inserted_head);
 
 APR_DECLARE_OPTIONAL_FN(void, ap_ssi_get_tag_and_value, (include_ctx_t *ctx,
-                                                        char **tag,
-                                                        char **tag_val,
-                                                        int dodecode));
+                                                         char **tag,
+                                                         char **tag_val,
+                                                         int dodecode));
 APR_DECLARE_OPTIONAL_FN(void, ap_ssi_parse_string, (request_rec *r,
+                                                    include_ctx_t *ctx,
                                                     const char *in,
                                                     char *out,
                                                     size_t length,
