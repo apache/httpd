@@ -1,0 +1,62 @@
+Apache HTTP Server 2.0 Documentation Status File.
+
+If you are interested in helping accomplish some of the tasks on this
+list or otherwise improving the documentation, please join the
+apache-docs mailing list by mailing to 
+apache-docs-subscribe@apache.org
+
+- MPM documentation
+   - Each MPM needs to have a documentation file in manual/mod/
+     which lists the directives it provides, and some details
+     about its operation.
+        Status: Ryan <rbb@covalent.net> offers to supply information
+                on the operation of each MPM.  There is also some info in
+                htdocs/manual/mpm.html that will need to be cleaned up,
+                linked up, and updated.
+
+- Merging of changes in 1.3.
+   - There have been many changes in the 1.3 docs which haven't
+     been propagated into 2.0.  For example, many of the "It Worked"
+     translations have not made it.
+     Things which need to be merged:
+         manual/howto/*
+
+- Reorganizing.
+   - Joshua thinks this is a good opportunity to think about directory
+     structure.  He was thinking of having a "platform" directory
+     for platform specific notes and a "FAQ" directory.  What
+     others are needed?
+
+- Cleaning.
+   - We could use a list of all the docs that can be axed out of 2.0
+     because they are redundant or irrelevant.
+        Status: Rich <rbowen@rcbowen.com> is going to look at this.
+
+   - Individual docs will need some cleanup.  For example,
+     manual/invoking.html could use a big cleanup with lots of the
+     "this changed in 1.3.10" stuff removed.
+
+
+- New build process.
+   - The new build process is autoconf based, so manual/install.html
+     will need to be completely rewritten.  Someone with enough
+     patience could probably figure out most of the important stuff
+     by trial and error.
+        Status: Ryan's "Building and Installing Apache 2.0" might be
+                a starting place.  Rich <rbowen@rcbown.com> is interested
+                in collaborating with someone else on this.
+
+- Documentation of new features.
+   - This will probably require more input from new-httpd, since
+     not many people here follow the development process close
+     enough to know what is going on.
+        Status: Ryan has two ApacheToday articles which may be useful 
+                for this.
+
+- Translations
+        Status: ???
+
+
+- The STATUS Document.
+   - Is this the best organization/format?  What else needs to be
+     added?  Should this be auto-posted to apache-docs?
