@@ -62,6 +62,7 @@ SetOutputFilter DEFLATE
 <name>DeflateBufferSize</name>
 <description>Fragment size to be compressed at one time by zlib</description>
 <syntax>DeflateBufferSize <em>value</em></syntax>
+<default>DeflateBufferSize 8096</default>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
@@ -75,6 +76,7 @@ SetOutputFilter DEFLATE
 <name>DeflateWindowSize</name>
 <description>Zlib compression window size</description>
 <syntax>DeflateWindowSize <em>value</em></syntax>
+<default>DeflateWindowSize 15</default>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
@@ -87,6 +89,7 @@ SetOutputFilter DEFLATE
 <name>DeflateMemLevel</name>
 <description>How much memory should be used by zlib for compression</description>
 <syntax>DeflateMemLevel <em>value</em></syntax>
+<default>DeflateMemLevel 9</default>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
