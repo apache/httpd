@@ -6,7 +6,7 @@
   <head>
     <title>Site Map - Apache HTTP Server 2.0</title>
   </head>
-  <!-- English revision: 1.8 -->
+  <!-- English revision: 1.9 -->
   <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
 
   <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
@@ -144,7 +144,6 @@ Side Includes 入門</a></li>
 <li><a href="mod/mod_auth_anon.html">Apache モジュール mod_auth_anon.c</a></li>
 <li><a href="mod/mod_auth_dbm.html">Apache モジュール mod_auth_dbm</a></li>
 <li><a href="mod/mod_auth_digest.html">Apache モジュール mod_auth_digest</a></li>
-<li><a href="mod/mod_auth_ldap.html">Apache モジュール mod_ldap</a></li>
 <li><a href="mod/mod_autoindex.html">Apache モジュール mod_autoindex</a></li>
 <li><a href="mod/mod_cache.html">Apache モジュール mod_cache</a></li>
 <li><a href="mod/mod_cern_meta.html">Apache モジュール mod_cern_meta</a></li>
@@ -164,7 +163,6 @@ Side Includes 入門</a></li>
 <li><a href="mod/mod_include.html">Apache モジュール mod_include</a></li>
 <li><a href="mod/mod_info.html">Apache モジュール mod_info</a></li>
 <li><a href="mod/mod_isapi.html">Apache モジュール mod_isapi</a></li>
-<li><a href="mod/mod_ldap.html">Apache モジュール mod_ldap</a></li>
 <li><a href="mod/mod_log_config.html">Apache モジュール mod_log_config</a></li>
 <li><a href="mod/mod_mime.html">Apache モジュール mod_mime</a></li>
 <li><a href="mod/mod_mime_magic.html">Apache モジュール mod_mime_magic</a></li>

@@ -7,7 +7,7 @@
     <title>Mapping URLs to Filesystem Locations - Apache HTTP
     Server</title>
   </head>
-  <!-- English revision: 1.6 -->
+  <!-- English revision: 1.7 -->
   <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
 
   <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
@@ -117,7 +117,7 @@
     たとえば、</p>
 
     <blockquote>
-      <code>Alias /docs /var/web/</code>
+      <code>Alias /docs /var/web</code>
     </blockquote>
 
     <p>という設定のときは、URL
