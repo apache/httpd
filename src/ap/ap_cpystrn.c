@@ -66,7 +66,7 @@
  * ap_cpystrn() follows the same call structure as strncpy().
  */
 
-char *ap_cpystrn(char *dst, const char *src, size_t dst_size)
+API_EXPORT(char *) ap_cpystrn(char *dst, const char *src, size_t dst_size)
 {
 
     char *d, *end;

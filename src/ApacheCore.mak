@@ -52,6 +52,7 @@ ALL : "$(OUTDIR)\ApacheCore.dll"
 
 CLEAN :
 	-@erase "$(INTDIR)\alloc.obj"
+	-@erase "$(INTDIR)\ap_cpystrn.obj"
 	-@erase "$(INTDIR)\ap_snprintf.obj"
 	-@erase "$(INTDIR)\ap_strings.obj"
 	-@erase "$(INTDIR)\buff.obj"
@@ -126,6 +127,7 @@ DEF_FILE= \
 	".\ApacheCore.def"
 LINK32_OBJS= \
 	"$(INTDIR)\alloc.obj" \
+	"$(INTDIR)\ap_cpystrn.obj" \
 	"$(INTDIR)\ap_snprintf.obj" \
 	"$(INTDIR)\ap_strings.obj" \
 	"$(INTDIR)\buff.obj" \
@@ -197,6 +199,8 @@ ALL : "$(OUTDIR)\ApacheCore.dll" "$(OUTDIR)\ApacheCore.bsc"
 CLEAN :
 	-@erase "$(INTDIR)\alloc.obj"
 	-@erase "$(INTDIR)\alloc.sbr"
+	-@erase "$(INTDIR)\ap_cpystrn.obj"
+	-@erase "$(INTDIR)\ap_cpystrn.sbr"
 	-@erase "$(INTDIR)\ap_snprintf.obj"
 	-@erase "$(INTDIR)\ap_snprintf.sbr"
 	-@erase "$(INTDIR)\ap_strings.obj"
@@ -307,6 +311,7 @@ BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\ApacheCore.bsc" 
 BSC32_SBRS= \
 	"$(INTDIR)\alloc.sbr" \
+	"$(INTDIR)\ap_cpystrn.sbr" \
 	"$(INTDIR)\ap_snprintf.sbr" \
 	"$(INTDIR)\ap_strings.sbr" \
 	"$(INTDIR)\buff.sbr" \
@@ -367,6 +372,7 @@ DEF_FILE= \
 	".\ApacheCore.def"
 LINK32_OBJS= \
 	"$(INTDIR)\alloc.obj" \
+	"$(INTDIR)\ap_cpystrn.obj" \
 	"$(INTDIR)\ap_snprintf.obj" \
 	"$(INTDIR)\ap_strings.obj" \
 	"$(INTDIR)\buff.obj" \
@@ -493,6 +499,40 @@ DEP_CPP_ALLOC=\
 
 !ENDIF 
 
+SOURCE=.\ap\ap_cpystrn.c
+DEP_CPP_AP_CP=\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\httpd.h"\
+	".\os\win32\os.h"\
+	".\os\win32\readdir.h"\
+	".\regex\regex.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
+NODEP_CPP_AP_CP=\
+	".\main\os.h"\
+	".\main\sfio.h"\
+	
+
+!IF  "$(CFG)" == "ApacheCore - Win32 Release"
+
+
+"$(INTDIR)\ap_cpystrn.obj" : $(SOURCE) $(DEP_CPP_AP_CP) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
+
+
+"$(INTDIR)\ap_cpystrn.obj"	"$(INTDIR)\ap_cpystrn.sbr" : $(SOURCE)\
+ $(DEP_CPP_AP_CP) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ENDIF 
+
 SOURCE=.\ap\ap_snprintf.c
 
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
@@ -534,12 +574,6 @@ DEP_CPP_AP_ST=\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
-	{$(INCLUDE)}"sys\stat.h"\
-	{$(INCLUDE)}"sys\types.h"\
-	
-NODEP_CPP_AP_ST=\
-	".\main\os.h"\
-	".\main\sfio.h"\
 	
 
 "$(INTDIR)\ap_strings.obj" : $(SOURCE) $(DEP_CPP_AP_ST) "$(INTDIR)"
