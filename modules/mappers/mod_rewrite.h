@@ -266,9 +266,9 @@ typedef struct {
     char *datafile;                /* filename for map data files */
     char *checkfile;               /* filename to check for map existence */
     int   type;                    /* the type of the map */
-    int   fpin;                    /* in  file pointer for program maps */
-    int   fpout;                   /* out file pointer for program maps */
-    int   fperr;                   /* err file pointer for program maps */
+    ap_file_t *fpin;               /* in  file pointer for program maps */
+    ap_file_t *fpout;              /* out file pointer for program maps */
+    ap_file_t *fperr;              /* err file pointer for program maps */
     char *(*func)(request_rec *,   /* function pointer for internal maps */
                   char *);
 } rewritemap_entry;
@@ -300,7 +300,7 @@ typedef struct {
     int           state;           /* the RewriteEngine state */
     int           options;         /* the RewriteOption state */
     char         *rewritelogfile;  /* the RewriteLog filename */
-    int           rewritelogfp;    /* the RewriteLog open filepointer */
+    ap_file_t    *rewritelogfp;    /* the RewriteLog open filepointer */
     int           rewriteloglevel; /* the RewriteLog level of verbosity */
     ap_array_header_t *rewritemaps;     /* the RewriteMap entries */
     ap_array_header_t *rewriteconds;    /* the RewriteCond entries (temporary) */
@@ -400,8 +400,11 @@ static const char *cmd_rewriterule_setflag(ap_context_t *p, rewriterule_entry *c
                                            char *key, char *val);
 
     /* initialisation */
-static void init_module(server_rec *s, ap_context_t *p);
-static void init_child(server_rec *s, ap_context_t *p);
+static void init_module(ap_context_t *p,
+                        ap_context_t *plog,
+                        ap_context_t *ptemp,
+                        server_rec *s);
+static void init_child(ap_context_t *p, server_rec *s);
 
     /* runtime hooks */
 static int hook_uri2file   (request_rec *r);
@@ -433,8 +436,8 @@ static char *lookup_map_txtfile(request_rec *r, char *file, char *key);
 #ifndef NO_DBM_REWRITEMAP
 static char *lookup_map_dbmfile(request_rec *r, char *file, char *key);
 #endif
-static char *lookup_map_program(request_rec *r, int fpin,
-                                int fpout, char *key);
+static char *lookup_map_program(request_rec *r, ap_file_t *fpin,
+                                ap_file_t *fpout, char *key);
 static char *lookup_map_internal(request_rec *r,
                                  char *(*func)(request_rec *r, char *key),
                                  char *key);
@@ -455,13 +458,15 @@ static char *current_logtime(request_rec *r);
     /* rewriting lockfile support */
 static void rewritelock_create(server_rec *s, ap_context_t *p);
 static void rewritelock_open(server_rec *s, ap_context_t *p);
-static void rewritelock_remove(void *data);
+static ap_status_t rewritelock_remove(void *data);
 static void rewritelock_alloc(request_rec *r);
 static void rewritelock_free(request_rec *r);
 
     /* program map support */
 static void  run_rewritemap_programs(server_rec *s, ap_context_t *p);
-static int   rewritemap_program_child(void *cmd, child_info *pinfo);
+static int   rewritemap_program_child(ap_context_t *p, char *progname,
+                                    ap_file_t **fpout, ap_file_t **fpin,
+                                    ap_file_t **fperr);
 
     /* env variable support */
 static void  expand_variables_inbuffer(request_rec *r, char *buf, int buf_len);
@@ -486,8 +491,8 @@ static int    prefix_stat(const char *path, struct stat *sb);
 static void   add_env_variable(request_rec *r, char *s);
 
     /* File locking */
-static void fd_lock(request_rec *r, int fd);
-static void fd_unlock(request_rec *r, int fd);
+static void fd_lock(request_rec *r, ap_file_t *fd);
+static void fd_unlock(request_rec *r, ap_file_t *fd);
 
     /* Lexicographic Comparison */
 static int compare_lexicography(char *cpNum1, char *cpNum2);
