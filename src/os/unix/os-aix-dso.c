@@ -117,7 +117,7 @@
 #define RTLD_GLOBAL	0x100	/* allow symbols to be global */
 
 /*
- * To be able to intialize, a library may provide a dl_info structure
+ * To be able to initialize, a library may provide a dl_info structure
  * that contains functions to be called to initialize and terminate.
  */
 struct dl_info {
