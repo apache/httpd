@@ -1,5 +1,12 @@
 Changes with Apache 1.3b6
 
+  *) Add the new ApacheBench program "ab" to src/support/: This is derived
+     from the ZeusBench benchmarking program and can be used to determine the
+     response performance of an Apache installation. This version is
+     officially licensed with Zeus Technology, Ltd. See the license agreement
+     statements in <199803171224.NAA24547@en1.engelschall.com> in apache-core.
+     [Ralf S. Engelschall]
+
   *) API: Various core functions that are definately not part of the API
      have been made static, and a few have been marked API_EXPORT.  Still
      more have been marked CORE_EXPORT and are not intended for general

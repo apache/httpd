@@ -93,6 +93,7 @@ Committed Code Changes:
     * Ralf's Various cleanups to the command line interface and manual pages
     * Marc's mod_proxy was not clearing the Proxy-Connection header
     * Dean's API_EXPORT and CORE_EXPORT cleanup for core functions
+    * Ralf's new ApacheBench support program (src/support/ab.c)
 
 Available Patches:
 

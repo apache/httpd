@@ -9,9 +9,9 @@ INCLUDES=$(INCLUDES1) $(INCLUDES_DEPTH1) $(EXTRA_INCLUDES)
 LDFLAGS=$(LDFLAGS1) $(EXTRA_LDFLAGS) -L../ap
 INCDIR=../include
 
-TARGETS=htpasswd htdigest rotatelogs logresolve
+TARGETS=htpasswd htdigest rotatelogs logresolve ab
 
-OBJS=htpasswd.o htdigest.o rotatelogs.o logresolve.o
+OBJS=htpasswd.o htdigest.o rotatelogs.o logresolve.o ab.o
 
 .c.o: 
 	$(CC) -c $(CFLAGS) $(INCLUDES) $<
@@ -29,6 +29,9 @@ rotatelogs: rotatelogs.o
 
 logresolve: logresolve.o
 	$(CC) $(INCLUDES) $(CFLAGS) logresolve.o -o logresolve $(LDFLAGS) $(LIBS)
+
+ab: ab.o
+	$(CC) $(INCLUDES) $(CFLAGS) ab.o -o ab $(LDFLAGS) $(LIBS)
 
 clean:
 	rm -f $(TARGETS) *.o
