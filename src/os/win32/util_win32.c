@@ -62,6 +62,8 @@ static BOOL sub_canonical_filename(char *szCanon, unsigned nCanon, const char *s
         char b2[_MAX_PATH];
 	char b3[_MAX_PATH];
         ap_assert(szFilePart > buf+3);
+	/* avoid SEGVs on things like "Directory *" */
+	ap_assert(s >= szFile && "this is a known bug");
 
 	memcpy(b3,szFile,s-szFile);
 	b3[s-szFile]='\0';
@@ -94,9 +96,9 @@ static BOOL sub_canonical_filename(char *szCanon, unsigned nCanon, const char *s
     }
 }
 
-/* UNC requires backslashes, hence the conversion before canonicalisation. Not sure how
- * many backslashes (could be that \\machine\share\some/path/is/ok for example). For now, do
- * them all.
+/* UNC requires backslashes, hence the conversion before canonicalisation. 
+ * Not sure how * many backslashes (could be that 
+ * \\machine\share\some/path/is/ok for example). For now, do them all.
  */
 API_EXPORT(char *) ap_os_canonical_filename(pool *pPool, const char *szFile)
 {
@@ -127,6 +129,7 @@ API_EXPORT(char *) ap_os_canonical_filename(pool *pPool, const char *szFile)
     // Finally, a trailing slash(es) screws thing, so blow them away
     for(nSlashes=0 ; d > b2 && d[-1] == '\\' ; --d,++nSlashes)
 	;
+    /* XXXX this breaks '/' and 'c:/' cases */
     *d='\0';
 
     sub_canonical_filename(buf, sizeof buf, b2);
@@ -142,8 +145,9 @@ API_EXPORT(char *) ap_os_canonical_filename(pool *pPool, const char *szFile)
 
 /* Win95 doesn't like trailing /s. NT and Unix don't mind. This works 
  * around the problem.
- * Errr... except if it is UNC and we are referring to the root of the UNC, we MUST have
- * a trailing \ and we can't use /s. Jeez. Not sure if this refers to all UNCs or just roots,
+ * Errr... except if it is UNC and we are referring to the root of 
+ * the UNC, we MUST have a trailing \ and we can't use /s. Jeez. 
+ * Not sure if this refers to all UNCs or just roots,
  * but I'm going to fix it for all cases for now. (Ben)
  */
 
