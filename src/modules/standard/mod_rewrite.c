@@ -521,7 +521,7 @@ static const char *cmd_rewritebase(cmd_parms *cmd, rewrite_perdir_conf *dconf,
     if (a1[0] == '\0')
         return "RewriteBase: empty URL not allowed";
 
-    dconf->baseurl = pstrdup(cmd->pool, a1);
+    dconf->baseurl = a1;
 
     return NULL;
 }
@@ -605,7 +605,7 @@ static const char *cmd_rewritecond_parseflagfield(pool *p,
     const char *err;
 
     if (str[0] != '[' || str[strlen(str)-1] != ']')
-        return pstrdup(p, "RewriteCond: bad flag delimiters");
+        return "RewriteCond: bad flag delimiters";
 
     cp = str+1;
     str[strlen(str)-1] = ','; /* for simpler parsing */
@@ -746,7 +746,7 @@ static const char *cmd_rewriterule_parseflagfield(pool *p,
     const char *err;
 
     if (str[0] != '[' || str[strlen(str)-1] != ']')
-        return pstrdup(p, "RewriteRule: bad flag delimiters");
+        return "RewriteRule: bad flag delimiters";
 
     cp = str+1;
     str[strlen(str)-1] = ','; /* for simpler parsing */
@@ -800,8 +800,8 @@ static const char *cmd_rewriterule_setflag(pool *p, rewriterule_entry *cfg,
             else if (isdigit(*val))
                 status = atoi(val);
             if (!is_HTTP_REDIRECT(status))
-                return pstrdup(p, "RewriteRule: invalid HTTP response code "
-                                  "for flag 'R'");
+                return "RewriteRule: invalid HTTP response code "
+			"for flag 'R'";
             cfg->forced_responsecode = status;
         }
     }
@@ -831,7 +831,7 @@ static const char *cmd_rewriterule_setflag(pool *p, rewriterule_entry *cfg,
             cfg->env[i+1] = NULL;
         }
         else
-            return pstrdup(p, "RewriteRule: to many environment flags 'E'");
+            return "RewriteRule: to many environment flags 'E'";
     }
     else if (   strcasecmp(key, "nosubreq") == 0
              || strcasecmp(key, "NS") == 0      ) {
@@ -3337,7 +3337,7 @@ static char *lookup_variable(request_rec *r, char *var)
         result = r->protocol;
     }
     else if (strcasecmp(var, "SERVER_SOFTWARE") == 0) {
-        result = pstrdup(r->pool, apapi_get_server_version());
+        result = apapi_get_server_version();
     }
     else if (strcasecmp(var, "API_VERSION") == 0) { /* non-standard */
         ap_snprintf(resultbuf, sizeof(resultbuf), "%d", MODULE_MAGIC_NUMBER);
@@ -3438,31 +3438,31 @@ static char *lookup_variable(request_rec *r, char *var)
 
     /* file stuff */
     else if (strcasecmp(var, "SCRIPT_USER") == 0) {
-        result = pstrdup(r->pool, "<unknown>");
+	result = "<unknown>";
         if (r->finfo.st_mode != 0) {
             if ((pw = getpwuid(r->finfo.st_uid)) != NULL) {
-                result = pstrdup(r->pool, pw->pw_name);
+                result = pw->pw_name;
             }
         }
         else {
             if (stat(r->filename, &finfo) == 0) {
                 if ((pw = getpwuid(finfo.st_uid)) != NULL) {
-                    result = pstrdup(r->pool, pw->pw_name);
+                    result = pw->pw_name;
                 }
             }
         }
     }
     else if (strcasecmp(var, "SCRIPT_GROUP") == 0) {
-        result = pstrdup(r->pool, "<unknown>");
+	result = "<unknown>";
         if (r->finfo.st_mode != 0) {
             if ((gr = getgrgid(r->finfo.st_gid)) != NULL) {
-                result = pstrdup(r->pool, gr->gr_name);
+                result = gr->gr_name;
             }
         }
         else {
             if (stat(r->filename, &finfo) == 0) {
                 if ((gr = getgrgid(finfo.st_gid)) != NULL) {
-                    result = pstrdup(r->pool, gr->gr_name);
+                    result = gr->gr_name;
                 }
             }
         }

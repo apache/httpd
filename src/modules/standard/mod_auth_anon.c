@@ -177,7 +177,7 @@ static const char *anon_set_string_slots(cmd_parms *cmd,
 
     if (
 	   (!(sec->auth_anon_passwords = (auth_anon *) palloc(cmd->pool, sizeof(auth_anon)))) ||
-           (!(sec->auth_anon_passwords->password = pstrdup(cmd->pool, arg)))
+           (!(sec->auth_anon_passwords->password = arg))
     )
 	     return "Failed to claim memory for an anonymous password...";
 

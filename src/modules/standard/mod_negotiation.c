@@ -120,7 +120,7 @@ static const char *set_language_priority(cmd_parms *cmd, void *n, char *lang)
     array_header *arr = ((neg_dir_config *) n)->language_priority;
     char **langp = (char **) push_array(arr);
 
-    *langp = pstrdup(arr->pool, lang);
+    *langp = lang;
     return NULL;
 }
 

@@ -129,13 +129,13 @@ static const char *set_script(cmd_parms *cmd, action_dir_config * m, char *metho
 			      char *script)
 {
     if (!strcmp(method, "GET"))
-	m->get = pstrdup(cmd->pool, script);
+	m->get = script;
     else if (!strcmp(method, "POST"))
-	m->post = pstrdup(cmd->pool, script);
+	m->post = script;
     else if (!strcmp(method, "PUT"))
-	m->put = pstrdup(cmd->pool, script);
+	m->put = script;
     else if (!strcmp(method, "DELETE"))
-	m->delete = pstrdup(cmd->pool, script);
+	m->delete = script;
     else
 	return "Unknown method type for Script";
 

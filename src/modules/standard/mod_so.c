@@ -251,7 +251,7 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
             return NULL;
     }
     modi = push_array(sconf->loaded_modules);
-    modi->name = pstrdup(cmd->pool, modname);
+    modi->name = modname;
 
     /*
      * Actually load the file into the address space 

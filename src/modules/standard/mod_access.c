@@ -149,7 +149,7 @@ static const char *allow_cmd(cmd_parms *cmd, void *dv, char *from, char *where)
 	return "allow and deny must be followed by 'from'";
 
     a = (allowdeny *) push_array(cmd->info ? d->allows : d->denys);
-    a->x.from = where = pstrdup(cmd->pool, where);
+    a->x.from = where;
     a->limited = cmd->limited;
 
     if (!strncasecmp(where, "env=", 4)) {

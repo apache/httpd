@@ -145,7 +145,7 @@ static void *merge_env_server_configs(pool *p, void *basev, void *addv)
     elts = (table_entry *)arr->elts;
 
     for (i = 0; i < arr->nelts; ++i) {
-        table_set(new_table, elts[i].key, elts[i].val);
+        table_setn(new_table, elts[i].key, elts[i].val);
     }
 
     unset = add->unsetenv;
@@ -176,7 +176,7 @@ static const char *add_env_module_vars_passed(cmd_parms *cmd, char *struct_ptr,
         env_var = getenv(name_ptr);
         if (env_var != NULL) {
             sconf->vars_present = 1;
-            table_set(vars, name_ptr, env_var);
+            table_setn(vars, name_ptr, pstrdup(cmd->pool, env_var));
         }
     }
     return NULL;
@@ -203,7 +203,7 @@ static const char *add_env_module_vars_set(cmd_parms *cmd, char *struct_ptr,
     }
 
     sconf->vars_present = 1;
-    table_set(vars, name, value);
+    table_setn(vars, name, value);
 
     return NULL;
 }
@@ -215,7 +215,7 @@ static const char *add_env_module_vars_unset(cmd_parms *cmd, char *struct_ptr,
     get_module_config(cmd->server->module_config, &env_module);
     sconf->unsetenv = sconf->unsetenv ?
         pstrcat(cmd->pool, sconf->unsetenv, " ", arg, NULL) :
-         pstrdup(cmd->pool, arg);
+         arg;
     return NULL;
 }
 

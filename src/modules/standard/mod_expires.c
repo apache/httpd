@@ -247,7 +247,7 @@ static char *check_code(pool *p, const char *code, char **real_code)
     /* 0.0.4 compatibility?
      */
     if ((code[0] == 'A') || (code[0] == 'M')) {
-        *real_code = pstrdup(p, code);
+        *real_code = (char *)code;
         return NULL;
     };
 
@@ -344,7 +344,7 @@ static const char *set_expiresbytype(cmd_parms *cmd, expires_dir_config * dir_co
     char *response, *real_code;
 
     if ((response = check_code(cmd->pool, code, &real_code)) == NULL) {
-        table_set(dir_config->expiresbytype, mime, real_code);
+        table_setn(dir_config->expiresbytype, mime, real_code);
         return NULL;
     };
     return pstrcat(cmd->pool,
@@ -356,7 +356,7 @@ static const char *set_expiresdefault(cmd_parms *cmd, expires_dir_config * dir_c
     char *response, *real_code;
 
     if ((response = check_code(cmd->pool, code, &real_code)) == NULL) {
-        dir_config->expiresdefault = pstrdup(cmd->pool, real_code);
+        dir_config->expiresdefault = real_code;
         return NULL;
     };
     return pstrcat(cmd->pool,

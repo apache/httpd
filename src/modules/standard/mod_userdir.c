@@ -193,7 +193,7 @@ static int translate_userdir(request_rec *r)
     const userdir_config *s_cfg =
     (userdir_config *) get_module_config(server_conf, &userdir_module);
     char *name = r->uri;
-    const char *userdirs = pstrdup(r->pool, s_cfg->userdir);
+    const char *userdirs = s_cfg->userdir;
     const char *w, *dname;
     char *redirect;
     char *x = NULL;

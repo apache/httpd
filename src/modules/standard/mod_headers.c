@@ -185,8 +185,8 @@ static const char *header_cmd(cmd_parms *cmd, headers_conf * dirconf, char *acti
     if ((colon = strchr(hdr, ':')))
         *colon = '\0';
 
-    new->header = pstrdup(cmd->pool, hdr);
-    new->value = value ? pstrdup(cmd->pool, value) : NULL;
+    new->header = hdr;
+    new->value = value;
 
     return NULL;
 }
