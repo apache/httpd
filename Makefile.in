@@ -50,8 +50,14 @@ install-conf:
 					-e 'p' \
 					< $$i; \
 				for j in $(DSO_MODULES) "^EOL^"; do \
+					if test "x$$j" = "xssl"; then \
+						echo "<IfDefine SSL>"; \
+					fi; \
 					if test $$j != "^EOL^"; then \
 						echo "LoadModule $${j}_module modules/mod_$${j}.so"; \
+					fi; \
+					if test "x$$j" = "xssl"; then \
+						echo "</IfDefine>"; \
 					fi; \
 				done; \
 				sed -e '1,/@@LoadModule@@/d' \
