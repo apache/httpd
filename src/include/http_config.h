@@ -233,6 +233,12 @@ typedef struct module_struct {
 #else
     void (*child_init)(server_rec *, pool *);
 #endif
+#ifdef ULTRIX_BRAIN_DEATH
+    void (*child_exit)();
+#else
+    void (*child_exit)(server_rec *, pool *);
+#endif
+
 } module;
 
 /* Initializer for the first few module slots, which are only
@@ -242,7 +248,7 @@ typedef struct module_struct {
  * handle it back-compatibly, or at least signal an error).
  */
 
-#define MODULE_MAGIC_NUMBER 19970719
+#define MODULE_MAGIC_NUMBER 19970728
 #define STANDARD_MODULE_STUFF MODULE_MAGIC_NUMBER, -1, __FILE__, NULL
 
 /* Generic accessors for other modules to get at their own module-specific
@@ -282,6 +288,7 @@ extern module *preloaded_modules[];
 server_rec *read_config (pool *conf_pool, pool *temp_pool, char *config_name);
 void init_modules(pool *p, server_rec *s);
 void child_init_modules(pool *p, server_rec *s);
+void child_exit_modules(pool *p, server_rec *s);
 void setup_prelinked_modules(void);
 void show_directives(void);
 void show_modules(void);

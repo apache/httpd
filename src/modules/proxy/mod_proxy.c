@@ -738,6 +738,7 @@ module MODULE_VAR_EXPORT proxy_module = {
    proxy_fixup,                 /* pre-run fixups */
    NULL,                        /* logger */
    NULL,                        /* header parser */
-   NULL				/* child_init */
+   NULL,			/* child_init */
+   NULL			/* child_exit */
 };
 

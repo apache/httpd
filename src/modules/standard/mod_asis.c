@@ -127,5 +127,6 @@ module MODULE_VAR_EXPORT asis_module = {
    NULL,			/* pre-run fixups */
    NULL,			/* logger */
    NULL,			/* header parser */
-   NULL				/* child_init */
+   NULL,			/* child_init */
+   NULL			/* child_exit */
 };

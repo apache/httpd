@@ -199,5 +199,6 @@ module agent_log_module = {
    NULL,			/* fixups */
    agent_log_transaction,	/* logger */
    NULL,			/* header parser */
-   NULL				/* child_init */
+   NULL,			/* child_init */
+   NULL			/* child_exit */
 };

@@ -1138,5 +1138,6 @@ module example_module = {
     example_fixer,              /* [7] fixups */
     example_logger,             /* [9] logger */
     example_hparser,            /* [2] header parser */
-    example_child_init          /* process initializer */
+    example_child_init,         /* process initializer */
+    NULL			/* process exit/cleanup */
 };

@@ -213,7 +213,8 @@ module rewrite_module = {
    hook_fixup,                  /* [#7] pre-run fixups */
    NULL,                        /* [#9] log a transaction */
    NULL,                        /* [#3] header parser */
-   NULL                         /* child_init */
+   NULL,                        /* child_init */
+   NULL			/* child_exit */
 };
 
     /* the cache */

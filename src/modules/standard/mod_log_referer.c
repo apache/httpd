@@ -237,5 +237,6 @@ module referer_log_module = {
    NULL,			/* fixups */
    referer_log_transaction,	/* logger */
    NULL,			/* header parser */
-   NULL				/* child_init */
+   NULL,			/* child_init */
+   NULL			/* child_exit */
 };

@@ -1473,9 +1473,17 @@ void seg_fault(int sig) {
     exit(1);
 }
 
+/*****************************************************************
+ * Connection structures and accounting...
+ * Should these be global?  Only to this file, at least...
+ */
+
+pool *pconf;			/* Pool for config stuff */
+pool *ptrans;			/* Pool for per-transaction stuff */
+
 void just_die(int sig)			/* SIGHUP to child process??? */
 {
-    exit (0);
+    child_exit_modules(pconf, server_conf);
 }
 
 static int deferred_die;
@@ -1670,13 +1678,6 @@ int init_suexec (void)
     return (suexec_enabled);
 }
 
-/*****************************************************************
- * Connection structures and accounting...
- * Should these be global?  Only to this file, at least...
- */
-
-pool *pconf;			/* Pool for config stuff */
-pool *ptrans;			/* Pool for per-transaction stuff */
 
 static server_rec *find_virtual_server (struct in_addr server_ip,
 				unsigned port, server_rec *server)
@@ -2209,12 +2210,12 @@ void child_main(int child_num_arg)
 	
 	sync_scoreboard_image();
 	if (scoreboard_image->global.exit_generation >= generation)
-	    exit(0);
+	    child_exit_modules(pconf, server_conf);
 	
 	if ((max_requests_per_child > 0
 	        && ++requests_this_child >= max_requests_per_child))
 	{
-	    exit(0);
+	    child_exit_modules(pconf, server_conf);
 	}
 
 	(void)update_child_status(child_num, SERVER_READY, (request_rec*)NULL);
@@ -2256,7 +2257,7 @@ void child_main(int child_num_arg)
 		if (csd >= 0 || errno != EINTR) break;
 		if (deferred_die) {
 		    /* we didn't get a socket, and we were told to die */
-		    exit (0);
+		    child_exit_modules(pconf, server_conf);
 		}
 	    }
 
@@ -2278,14 +2279,14 @@ void child_main(int child_num_arg)
 	    signal (SIGUSR1, just_die);
 	    if (deferred_die) {
 		/* ok maybe not, see ya later */
-		exit (0);
+		child_exit_modules(pconf, server_conf);
 	    }
 	    /* or maybe we missed a signal, you never know on systems
 	     * without reliable signals
 	     */
 	    sync_scoreboard_image();
 	    if (scoreboard_image->global.exit_generation >= generation)
-		exit(0);
+		child_exit_modules(pconf, server_conf);
         }
 
         accept_mutex_off(); /* unlock after "accept" */
@@ -2370,7 +2371,7 @@ void child_main(int child_num_arg)
             sync_scoreboard_image();
             if (scoreboard_image->global.exit_generation >= generation) {
                 bclose(conn_io);
-                exit(0);
+		child_exit_modules(pconf, server_conf);
             }
 
 	    /* In case we get a graceful restart while we're blocked

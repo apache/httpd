@@ -258,5 +258,6 @@ module MODULE_VAR_EXPORT env_module = {
    fixup_env_module,		/* fixups */
    NULL,			/* logger */
    NULL,			/* header parser */
-   NULL				/* child_init */
+   NULL,			/* child_init */
+   NULL			/* child_exit */
 };

@@ -1,5 +1,10 @@
 Changes with Apache 1.3a2
 
+  *) API: Added child_exit function to module structure.  This is called
+     once per "heavy-weight process" just before a server child exit()'s 
+     e.g. when max_requests_per_child is reached, etc.
+     [Doug MacEachern, Dean Gaudet]
+  
   *) mod_include cleanup showed that handle_else was being used to handle
      endif.  It didn't cause problems, but it was cleaned up too.
      [Howard Fear]
@@ -390,7 +395,7 @@ Changes with Apache 1.2b11
   *) Fixed open timestamp fd in proxy_cache.c [Chuck Murcko]
 
   *) Added undocumented perl SSI mechanism for -DUSE_PERL_SSI and mod_perl.
-     [Rob Hartill]
+     [Doug MacEachern, Rob Hartill]
 
   *) Proxy needs to use hard_timeout instead of soft_timeout when it is
      reading from one buffer and writing to another, at least until it has

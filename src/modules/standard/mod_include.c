@@ -2050,5 +2050,6 @@ module includes_module = {
     NULL,                        /* fixups */
     NULL,                        /* logger */
     NULL,                        /* header parser */
-    NULL			 /* child_init */
+    NULL,			 /* child_init */
+    NULL			/* child_exit */
 };

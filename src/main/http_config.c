@@ -1242,6 +1242,24 @@ void child_init_modules(pool *p, server_rec *s)
 	    (*m->child_init) (s, p);
 }
 
+void child_exit_modules(pool *p, server_rec *s)
+{
+    module *m;
+
+#ifdef SIGHUP
+    signal (SIGHUP, SIG_IGN);
+#endif 
+#ifdef SIGUSR1
+    signal (SIGUSR1, SIG_IGN);
+#endif 
+
+    for (m = top_module; m; m = m->next)
+        if (m->child_exit)
+	    (*m->child_exit) (s, p);
+
+    exit(0);
+}
+
 /********************************************************************
  * Configuration directives are restricted in terms of where they may
  * appear in the main configuration files and/or .htaccess files according
