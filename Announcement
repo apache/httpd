@@ -1,13 +1,13 @@
 
- Apache 1.3 Beta 6 Released
+ Apache 1.3 Beta 7 Released
  ==========================
 
- The Apache Group is pleased to announce the release of the 1.3b6 version
- of Apache, the latest beta release of the Apache HTTP server.  1.3b6 is
- a release candidate for Apache 1.3.0.
+ The Apache Group is pleased to announce the release of the 1.3b7 version
+ of Apache, the latest beta release of the Apache HTTP server.  1.3b7 is
+ a second release candidate for Apache 1.3.0.
  
  This version is stable under UNIX but remains beta-level under Win32.  No
- new features are expected between 1.3b6 and 1.3.0, so please give this
+ new features are expected between 1.3b7 and 1.3.0, so please give this
  version a good thrashing in order to provide as much feedback as possible
  to the Apache Group before the release of 1.3.0.
 
@@ -19,81 +19,80 @@
  For a detailed list of changes please read the CHANGES file in the
  distribution and the "New Features with Apache 1.3" document at
  http://www.apache.org/docs/new_features_1_3.html.  For your convenience here
- is a short summary of all major changes between Apache 1.2 and 1.3 (changes
- which are new with version 1.3b6 are tagged '+'):
+ is a short summary of all major changes between Apache 1.2 and 1.3.
 
    o Ported to Windows 95/NT
-       http://www.apache.org/dist/apache_1.3b6/htdocs/manual/windows
-       http://www.apache.org/dist/apache_1.3b6/README.NT
+       http://www.apache.org/dist/apache_1.3b7/htdocs/manual/windows
+       http://www.apache.org/dist/apache_1.3b7/README.NT
 
    o Ported to BS2000/OSD, a mainframe OS with EBCDIC charset 
-       http://www.apache.org/dist/apache_1.3b6/htdocs/manual/ebcdic
+       http://www.apache.org/dist/apache_1.3b7/htdocs/manual/ebcdic
 
-   + Apache Autoconf-style Interface (APACI) for out-of-the-box installation
-       http://www.apache.org/dist/apache_1.3b6/README.configure
-       http://www.apache.org/dist/apache_1.3b6/INSTALL
+   o Apache Autoconf-style Interface (APACI) for out-of-the-box installation
+       http://www.apache.org/dist/apache_1.3b7/README.configure
+       http://www.apache.org/dist/apache_1.3b7/INSTALL
 
-   + Dynamic Shared Object (DSO) support for all major Unix platforms 
-       http://www.apache.org/dist/apache_1.3b6/src/README.DSO
+   o Dynamic Shared Object (DSO) support for all major Unix platforms 
+       http://www.apache.org/dist/apache_1.3b7/src/README.DSO
 
-   + APache eXtenSion (APXS) tool for building third-party modules as DSO
-       http://www.apache.org/dist/apache_1.3b6/src/README.DSO
-       http://www.apache.org/dist/apache_1.3b6/src/support/
+   o APache eXtenSion (APXS) tool for building third-party modules as DSO
+       http://www.apache.org/dist/apache_1.3b7/src/README.DSO
+       http://www.apache.org/dist/apache_1.3b7/src/support/
 
-   + Additional support tools: apachectl, ab (ApacheBench), dbmmanage
-       http://www.apache.org/dist/apache_1.3b6/src/support/
+   o Additional support tools: apachectl, ab (ApacheBench), dbmmanage
+       http://www.apache.org/dist/apache_1.3b7/src/support/
 
-   + Enhanced configuration support: Include and Line-Continuation
-       http://www.apache.org/dist/apache_1.3b6/htdocs/manual/new_features_1_3
+   o Enhanced configuration support: Include and Line-Continuation
+       http://www.apache.org/dist/apache_1.3b7/htdocs/manual/new_features_1_3
 
    o New `Magic' MIME-typing module for content type guessing 
-       http://www.apache.org/dist/apache_1.3b6/htdocs/manual/mod/mod_mime_magic
+       http://www.apache.org/dist/apache_1.3b7/htdocs/manual/mod/mod_mime_magic
 
    o Regular Expression support for Alias and Redirect directives
-       http://www.apache.org/dist/apache_1.3b6/htdocs/manual/mod/mod_alias
+       http://www.apache.org/dist/apache_1.3b7/htdocs/manual/mod/mod_alias
 
-   + Overhauled and enhanced URL Rewriting Engine
-       http://www.apache.org/dist/apache_1.3b6/htdocs/manual/mod/mod_rewrite
+   o Overhauled and enhanced URL Rewriting Engine
+       http://www.apache.org/dist/apache_1.3b7/htdocs/manual/mod/mod_rewrite
 
    o Spell-checking module for on-the-fly URL corrections
-       http://www.apache.org/dist/apache_1.3b6/htdocs/manual/mod/mod_speling
+       http://www.apache.org/dist/apache_1.3b7/htdocs/manual/mod/mod_speling
 
    o Additional access control via CIDR and Netmasks
-       http://www.apache.org/dist/apache_1.3b6/htdocs/manual/mod/mod_access
+       http://www.apache.org/dist/apache_1.3b7/htdocs/manual/mod/mod_access
 
    o Improved HTTP/1.1-style Virtual Host support
-       http://www.apache.org/dist/apache_1.3b6/htdocs/manual/vhosts/
+       http://www.apache.org/dist/apache_1.3b7/htdocs/manual/vhosts/
 
    o Less Buffering of CGI Script Output (makes nph- obsolete)
-       http://www.apache.org/dist/apache_1.3b6/htdocs/manual/new_features_1_3
+       http://www.apache.org/dist/apache_1.3b7/htdocs/manual/new_features_1_3
 
-   + Various Proxy Enhancements (NoProxy, ProxyDomain, ProxyPassReverse)
-       http://www.apache.org/dist/apache_1.3b6/htdocs/manual/mod/mod_proxy
+   o Various Proxy Enhancements (NoProxy, ProxyDomain, ProxyPassReverse)
+       http://www.apache.org/dist/apache_1.3b7/htdocs/manual/mod/mod_proxy
 
    o Various internal performance improvements
-       http://www.apache.org/dist/apache_1.3b6/htdocs/manual/new_features_1_3
+       http://www.apache.org/dist/apache_1.3b7/htdocs/manual/new_features_1_3
 
    o Various fixes to the hostname DNS lookup handling
-       http://www.apache.org/dist/apache_1.3b6/htdocs/manual/mod/core
+       http://www.apache.org/dist/apache_1.3b7/htdocs/manual/mod/core
 
    o Various Directory Indexing enhancements
-       http://www.apache.org/dist/apache_1.3b6/htdocs/manual/mod/mod_autoindex
+       http://www.apache.org/dist/apache_1.3b7/htdocs/manual/mod/mod_autoindex
 
    o Various Logging enhancements (Reliable Piped Logs, Named Log Formats)
-       http://www.apache.org/dist/apache_1.3b6/htdocs/manual/mod/core
-       http://www.apache.org/dist/apache_1.3b6/htdocs/manual/mod/mod_log_config
+       http://www.apache.org/dist/apache_1.3b7/htdocs/manual/mod/core
+       http://www.apache.org/dist/apache_1.3b7/htdocs/manual/mod/mod_log_config
 
    o Unique Identifiers
-       http://www.apache.org/dist/apache_1.3b6/htdocs/manual/mod/mod_unique_id
+       http://www.apache.org/dist/apache_1.3b7/htdocs/manual/mod/mod_unique_id
 
    o Source tree reorganization
-       http://www.apache.org/dist/apache_1.3b6/htdocs/manual/sourcereorg
+       http://www.apache.org/dist/apache_1.3b7/htdocs/manual/sourcereorg
 
-   + Big Symbol Renaming to avoid symbol clashes with third-party code
-       http://www.apache.org/dist/apache_1.3b6/htdocs/manual/sourcereorg
+   o Big Symbol Renaming to avoid symbol clashes with third-party code
+       http://www.apache.org/dist/apache_1.3b7/htdocs/manual/sourcereorg
 
    o API Additions
-       http://www.apache.org/dist/apache_1.3b6/htdocs/manual/new_features_1_3
+       http://www.apache.org/dist/apache_1.3b7/htdocs/manual/new_features_1_3
   
  Apache has been the most popular web server on the Internet since April of
  1996.  The Web Server Survey by Netcraft (http://www.netcraft.co.uk/Survey/)
