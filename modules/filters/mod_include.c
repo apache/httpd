@@ -63,18 +63,6 @@
  * incorporated into the Apache module framework by rst.
  * 
  */
-/* 
- * sub key may be anything a Perl*Handler can be:
- * subroutine name, package name (defaults to package::handler),
- * Class->method call or anoymous sub {}
- *
- * Child <!--#perl sub="sub {print $$}" --> accessed
- * <!--#perl sub="sub {print ++$Access::Cnt }" --> times. <br>
- *
- * <!--#perl arg="one" sub="mymod::includer" -->
- *
- * -Doug MacEachern
- */
 
 #include "apr.h"
 #include "apr_strings.h"
@@ -82,10 +70,6 @@
 
 #define CORE_PRIVATE
 
-#ifdef USE_PERL_SSI
-#include "config.h"
-#include "modules/perl/mod_perl.h"
-#else
 #include "ap_config.h"
 #include "util_filter.h"
 #include "httpd.h"
@@ -106,7 +90,6 @@
 #endif
 #ifdef HAVE_PWD_H
 #include <pwd.h>
-#endif
 #endif
 #include "util_ebcdic.h"
 
@@ -603,9 +586,6 @@ static char *get_directive(include_ctx_t *ctx, dir_token_id *fnd_token)
             else if (!strcmp(dest, "elif"))     *fnd_token = TOK_ELIF;
             else if (!strcmp(dest, "exec"))     *fnd_token = TOK_EXEC;
             else if (!strcmp(dest, "echo"))     *fnd_token = TOK_ECHO;
-#ifdef USE_PERL_SSI                             
-            else if (!strcmp(dest, "perl"))     *fnd_token = TOK_PERL;
-#endif
             break;
     case 5: if      (!strcmp(dest, "endif"))    *fnd_token = TOK_ENDIF;
             else if (!strcmp(dest, "fsize"))    *fnd_token = TOK_FSIZE;
@@ -840,8 +820,7 @@ static int is_only_below(const char *path)
 }
 
 static int handle_include(include_ctx_t *ctx, ap_bucket_brigade **bb, request_rec *r,
-                          ap_filter_t *f, ap_bucket *head_ptr,
-                          ap_bucket **inserted_head)
+                          ap_filter_t *f, ap_bucket *head_ptr, ap_bucket **inserted_head)
 {
     char *tag     = NULL;
     char *tag_val = NULL;
@@ -1121,8 +1100,7 @@ static int include_cmd(include_ctx_t *ctx, ap_bucket_brigade **bb, char *s,
 }
 
 static int handle_exec(include_ctx_t *ctx, ap_bucket_brigade **bb, request_rec *r,
-                       ap_filter_t *f, ap_bucket *head_ptr,
-                       ap_bucket **inserted_head)
+                       ap_filter_t *f, ap_bucket *head_ptr, ap_bucket **inserted_head)
 {
     char *tag     = NULL;
     char *tag_val = NULL;
@@ -1180,8 +1158,8 @@ static int handle_exec(include_ctx_t *ctx, ap_bucket_brigade **bb, request_rec *
     return 0;
 }
 
-static int handle_echo(include_ctx_t *ctx, request_rec *r, ap_bucket *head_ptr,
-                           ap_bucket **inserted_head)
+static int handle_echo(include_ctx_t *ctx, ap_bucket_brigade **bb, request_rec *r,
+                       ap_filter_t *f, ap_bucket *head_ptr, ap_bucket **inserted_head)
 {
     char       *tag       = NULL;
     char       *tag_val   = NULL;
@@ -1249,51 +1227,11 @@ static int handle_echo(include_ctx_t *ctx, request_rec *r, ap_bucket *head_ptr,
     return 0;
 }
 
-#ifdef USE_PERL_SSI
-static int handle_perl(include_ctx_t *ctx, request_rec *r)
-{
-    char *tag     = NULL;
-    char *tag_val = NULL;
-    char parsed_string[MAX_STRING_LEN];
-    SV *sub = Nullsv;
-    AV *av = newAV();
-
-    if (ctx->flags & FLAG_PRINTING) {
-        if (ctx->flags & FLAG_NO_EXEC) {
-            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-    		      "#perl SSI disallowed by IncludesNoExec in %s",
-    		      r->filename);
-            return (DECLINED);
-        }
-
-        while (1) {
-            get_tag_and_value(ctx, &tag, &tag_val, 1);
-            if (tag_val == NULL) {
-                break;
-            }
-            if (strnEQ(tag, "sub", 3)) {
-                sub = newSVpv(tag_val, 0);
-            }
-            else if (strnEQ(tag, "arg", 3)) {
-                parse_string(r, tag_val, parsed_string, sizeof(parsed_string), 0);
-                av_push(av, newSVpv(parsed_string, 0));
-            }
-        }
-
-        perl_stdout2client(r);
-        perl_setup_env(r);
-        perl_call_handler(sub, r, av);
-    }
-
-    return (OK);
-}
-#endif
-
 /* error and tf must point to a string with room for at 
  * least MAX_STRING_LEN characters 
  */
-static int handle_config(include_ctx_t *ctx, request_rec *r, ap_bucket *head_ptr,
-                           ap_bucket **inserted_head)
+static int handle_config(include_ctx_t *ctx, ap_bucket_brigade **bb, request_rec *r,
+                         ap_filter_t *f, ap_bucket *head_ptr, ap_bucket **inserted_head)
 {
     char *tag     = NULL;
     char *tag_val = NULL;
@@ -1450,8 +1388,8 @@ static void generate_size(apr_ssize_t size, char *buff, apr_size_t buff_size)
     }
 }
 
-static int handle_fsize(include_ctx_t *ctx, request_rec *r, ap_bucket *head_ptr,
-                        ap_bucket **inserted_head)
+static int handle_fsize(include_ctx_t *ctx, ap_bucket_brigade **bb, request_rec *r,
+                        ap_filter_t *f, ap_bucket *head_ptr, ap_bucket **inserted_head)
 {
     char *tag     = NULL;
     char *tag_val = NULL;
@@ -1512,8 +1450,8 @@ static int handle_fsize(include_ctx_t *ctx, request_rec *r, ap_bucket *head_ptr,
     return 0;
 }
 
-static int handle_flastmod(include_ctx_t *ctx, request_rec *r, ap_bucket *head_ptr,
-                           ap_bucket **inserted_head)
+static int handle_flastmod(include_ctx_t *ctx, ap_bucket_brigade **bb, request_rec *r,
+                           ap_filter_t *f, ap_bucket *head_ptr, ap_bucket **inserted_head)
 {
     char *tag     = NULL;
     char *tag_val = NULL;
@@ -2387,8 +2325,8 @@ static int parse_expr(request_rec *r, const char *expr, int *was_error,
 /*-------------------------------------------------------------------------*/
 
 /* pjr - These seem to allow expr="fred" expr="joe" where joe overwrites fred. */
-static int handle_if(include_ctx_t *ctx, request_rec *r, ap_bucket *head_ptr,
-                     ap_bucket **inserted_head)
+static int handle_if(include_ctx_t *ctx, ap_bucket_brigade **bb, request_rec *r,
+                     ap_filter_t *f, ap_bucket *head_ptr, ap_bucket **inserted_head)
 {
     char *tag     = NULL;
     char *tag_val = NULL;
@@ -2458,8 +2396,8 @@ static int handle_if(include_ctx_t *ctx, request_rec *r, ap_bucket *head_ptr,
     return 0;
 }
 
-static int handle_elif(include_ctx_t *ctx, request_rec *r, ap_bucket *head_ptr,
-                       ap_bucket **inserted_head)
+static int handle_elif(include_ctx_t *ctx, ap_bucket_brigade **bb, request_rec *r,
+                       ap_filter_t *f,  ap_bucket *head_ptr, ap_bucket **inserted_head)
 {
     char *tag     = NULL;
     char *tag_val = NULL;
@@ -2530,8 +2468,8 @@ static int handle_elif(include_ctx_t *ctx, request_rec *r, ap_bucket *head_ptr,
     return 0;
 }
 
-static int handle_else(include_ctx_t *ctx, request_rec *r, ap_bucket *head_ptr,
-                       ap_bucket **inserted_head)
+static int handle_else(include_ctx_t *ctx, ap_bucket_brigade **bb, request_rec *r,
+                       ap_filter_t *f, ap_bucket *head_ptr, ap_bucket **inserted_head)
 {
     char *tag = NULL;
     char *tag_val = NULL;
@@ -2563,8 +2501,8 @@ static int handle_else(include_ctx_t *ctx, request_rec *r, ap_bucket *head_ptr,
     return 0;
 }
 
-static int handle_endif(include_ctx_t *ctx, request_rec *r, ap_bucket *head_ptr,
-                        ap_bucket **inserted_head)
+static int handle_endif(include_ctx_t *ctx, ap_bucket_brigade **bb, request_rec *r,
+                        ap_filter_t *f, ap_bucket *head_ptr, ap_bucket **inserted_head)
 {
     char *tag     = NULL;
     char *tag_val = NULL;
@@ -2591,8 +2529,8 @@ static int handle_endif(include_ctx_t *ctx, request_rec *r, ap_bucket *head_ptr,
     }
 }
 
-static int handle_set(include_ctx_t *ctx, request_rec *r, ap_bucket *head_ptr,
-                        ap_bucket **inserted_head)
+static int handle_set(include_ctx_t *ctx, ap_bucket_brigade **bb, request_rec *r,
+                      ap_filter_t *f, ap_bucket *head_ptr, ap_bucket **inserted_head)
 {
     char *tag     = NULL;
     char *tag_val = NULL;
@@ -2636,8 +2574,8 @@ static int handle_set(include_ctx_t *ctx, request_rec *r, ap_bucket *head_ptr,
     return 0;
 }
 
-static int handle_printenv(include_ctx_t *ctx, request_rec *r, ap_bucket *head_ptr,
-                           ap_bucket **inserted_head)
+static int handle_printenv(include_ctx_t *ctx, ap_bucket_brigade **bb, request_rec *r,
+                           ap_filter_t *f, ap_bucket *head_ptr, ap_bucket **inserted_head)
 {
     char *tag     = NULL;
     char *tag_val = NULL;
@@ -2844,20 +2782,25 @@ static void send_parsed_content(ap_bucket_brigade **bb, request_rec *r,
              *  because the combined_tag might just be pointing to
              *  the contents of a single bucket!
              */
+
+            /* pjr - This is about to change to be a generic function
+             *       call from a hash table lookup. All functions need
+             *       to have the same parms...
+             */
             directive_str = get_directive(ctx, &directive_token);
 
             switch (directive_token) {
             case TOK_IF:
-                ret = handle_if(ctx, r, dptr, &content_head);
+                ret = handle_if(ctx, bb, r, f, dptr, &content_head);
                 break;
             case TOK_ELSE:
-                ret = handle_else(ctx, r, dptr, &content_head);
+                ret = handle_else(ctx, bb, r, f, dptr, &content_head);
                 break;
             case TOK_ELIF:
-                ret = handle_elif(ctx, r, dptr, &content_head);
+                ret = handle_elif(ctx, bb, r, f, dptr, &content_head);
                 break;
             case TOK_ENDIF:
-                ret = handle_endif(ctx, r, dptr, &content_head);
+                ret = handle_endif(ctx, bb, r, f, dptr, &content_head);
                 break;
             case TOK_EXEC:
                 ret = handle_exec(ctx, bb, r, f, dptr, &content_head);
@@ -2865,29 +2808,23 @@ static void send_parsed_content(ap_bucket_brigade **bb, request_rec *r,
             case TOK_INCLUDE:
                 ret = handle_include(ctx, bb, r, f, dptr, &content_head);
                 break;
-#ifdef USE_PERL_SSI  /* Leaving this as is for now... */
-            case TOK_PERL:
-                SPLIT_AND_PASS_PRETAG_BUCKETS(*bb, ctx);
-                ret = handle_perl(ctx, r);
-                break;
-#endif
             case TOK_SET:
-                ret = handle_set(ctx, r, dptr, &content_head);
+                ret = handle_set(ctx, bb, r, f, dptr, &content_head);
                 break;
             case TOK_ECHO:
-                ret = handle_echo(ctx, r, dptr, &content_head);
+                ret = handle_echo(ctx, bb, r, f, dptr, &content_head);
                 break;
             case TOK_FSIZE:
-                ret = handle_fsize(ctx, r, dptr, &content_head);
+                ret = handle_fsize(ctx, bb, r, f, dptr, &content_head);
                 break;
             case TOK_CONFIG:
-                ret = handle_config(ctx, r, dptr, &content_head);
+                ret = handle_config(ctx, bb, r, f, dptr, &content_head);
                 break;
             case TOK_FLASTMOD:
-                ret = handle_flastmod(ctx, r, dptr, &content_head);
+                ret = handle_flastmod(ctx, bb, r, f, dptr, &content_head);
                 break;
             case TOK_PRINTENV:
-                ret = handle_printenv(ctx, r, dptr, &content_head);
+                ret = handle_printenv(ctx, bb, r, f, dptr, &content_head);
                 break;
 
             case TOK_UNKNOWN:
@@ -2987,7 +2924,7 @@ static void send_parsed_content(ap_bucket_brigade **bb, request_rec *r,
         }
     }
     else if (ctx->state == PARSED) {     /* Invalid internal condition... */
-        ap_bucket *content_head, *tmp_bkt;
+        ap_bucket *content_head = NULL, *tmp_bkt;
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
                       "Invalid mod_include state during file %s", r->filename);
         CREATE_ERROR_BUCKET(ctx, tmp_bkt, AP_BRIGADE_FIRST(*bb), content_head);
