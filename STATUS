@@ -1,5 +1,5 @@
 APACHE 1.3 STATUS:						-*-text-*-
-  Last modified at [$Date: 2002/06/20 14:48:44 $]
+  Last modified at [$Date: 2002/06/22 09:12:11 $]
 
 Release:
 
@@ -228,6 +228,7 @@ Binaries (1.3.26):
  ------------------------------------------------------------------
  000964804C00-ibm-aix4.3       yes     Bill Stoddard
  9000_715-hp-hpux11.00         no      Jeff Trawick
+ 9000_785-hp-hpux11.00         yes     Cliff Woolley
  alpha-dec-osf3.0              no      Sameer Parekh
  alpha-dec-osf4.0              no      Lars Eilebrecht, Ken Coar,
                                        Randy Terbush
@@ -260,6 +261,7 @@ Binaries (1.3.26):
  i686-whatever-linux2          no      Ken Coar, Randy Terbush
  i686-whatever-linux22         yes     Aaron Bannert
  ia64-whatever-linux22         no      Martin Kraemer
+ ia64-hp-hpux11.20             yes     Cliff Woolley
  m68k-apple-aux3.1.1           no      Jim Jagielski
  m88k-dg-dgux5.4R2.01          no      Sameer parekh
  m88k-next-next                no      Rob Hartill
