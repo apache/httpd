@@ -1,5 +1,10 @@
 Changes with Apache 2.0.46
 
+  *) Correct a mis-correlation between mpm_common.c and mpm_common.h;
+     This patch reverts us to pre-2.0.46 behavior, using the 
+     ap_sock_disable_nagle noop macro, because ap_sock_disable_nagle 
+     was never compiled on Win32. [Allan Edwards, William Rowe]
+
   *) Fix a build problem with passing unsupported --enable-layout
      args to apr and apr-util.  This broke binbuild.sh as well as
      user-specified layout parameters.  PR 18649 [Justin Erenkrantz,
