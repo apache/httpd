@@ -1389,7 +1389,7 @@ void ap_process_resource_config(server_rec *s, const char *fname,
 	}
 	candidates = apr_make_array(p, 1, sizeof(fnames));
         while (apr_readdir(dirp) == APR_SUCCESS) {
-            char *d_name;
+            const char *d_name;
 	    apr_get_dir_filename(&d_name, dirp);
 	    /* strip out '.' and '..' */
 	    if (strcmp(d_name, ".") &&

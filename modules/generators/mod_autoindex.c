@@ -1157,7 +1157,7 @@ static char *find_title(request_rec *r)
     return NULL;
 }
 
-static struct ent *make_autoindex_entry(char *name, int autoindex_opts,
+static struct ent *make_autoindex_entry(const char *name, int autoindex_opts,
 					autoindex_config_rec *d,
 					request_rec *r, char keyid,
 					char direction)
@@ -1622,7 +1622,7 @@ static int index_directory(request_rec *r,
      */
     head = NULL;
     while (apr_readdir(d) == APR_SUCCESS) {
-        char *d_name;
+        const char *d_name;
         apr_get_dir_filename(&d_name, d);
 	p = make_autoindex_entry(d_name, autoindex_opts,
 				 autoindex_conf, r, keyid, direction);
