@@ -119,6 +119,7 @@ typedef struct {
      
 API_EXPORT(const char *) ap_auth_type (request_rec *);
 API_EXPORT(const char *) ap_auth_name (request_rec *);     
+API_EXPORT(const char *) ap_auth_nonce (request_rec *);
 API_EXPORT(int) ap_satisfies (request_rec *r);
 API_EXPORT(const array_header *) ap_requires (request_rec *);    
 
@@ -313,6 +314,9 @@ typedef struct {
      * direct command line parameters or argv elements?
      */
     ap_flag_e cgi_command_args;
+
+    /* Digest auth. */
+    char *ap_auth_nonce;
 
 } core_dir_config;
 

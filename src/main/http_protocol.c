@@ -33,6 +33,7 @@
 #include "util_date.h"          /* For parseHTTPdate and BAD_DATE */
 #include <stdarg.h>
 #include "http_conf_globals.h"
+#include "util_md5.h"           /* For digestAuth */
 
 #define SET_BYTES_SENT(r) \
   do { if (r->sent_bodyct) \
@@ -1348,11 +1349,25 @@ API_EXPORT(void) ap_note_basic_auth_failure(request_rec *r)
 
 API_EXPORT(void) ap_note_digest_auth_failure(request_rec *r)
 {
+    /* We need to create a nonce which:
+     * a) changes all the time (see r->request_time)
+     *    below and
+     * b) of which we can verify that it is our own
+     *    fairly easily when it comes to veryfing
+     *    the digest coming back in the response.
+     * c) and which as a whole should not
+     *    be unlikely to be in use anywhere else.
+     */
+    char * nonce_prefix = ap_md5(r->pool,
+           (unsigned char *)
+           ap_psprintf(r->pool, "%s%lu",
+                       ap_auth_nonce(r), r->request_time));
+
     ap_table_setn(r->err_headers_out,
 	    r->proxyreq == STD_PROXY ? "Proxy-Authenticate"
 		  : "WWW-Authenticate",
-	    ap_psprintf(r->pool, "Digest realm=\"%s\", nonce=\"%lu\"",
-		ap_auth_name(r), r->request_time));
+           ap_psprintf(r->pool, "Digest realm=\"%s\", nonce=\"%s%lu\"",
+               ap_auth_name(r), nonce_prefix, r->request_time));
 }
 
 API_EXPORT(int) ap_get_basic_auth_pw(request_rec *r, const char **pw)

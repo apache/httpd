@@ -273,6 +273,23 @@ static int get_digest_rec(request_rec *r, digest_header_rec * response)
 
 /* The actual MD5 code... whee */
 
+/* Check that a given nonce is actually one which was
+ * issued by this server in the right context.
+ */
+static int check_nonce(pool *p, const char *prefix, const char *nonce) {
+    char *timestamp = (char *)nonce + 2 * MD5_DIGESTSIZE;
+    char *md5;
+
+    if (strlen(nonce) < MD5_DIGESTSIZE)
+       return AUTH_REQUIRED;
+
+    md5 = ap_md5(p, (unsigned char *)ap_pstrcat(p, prefix, timestamp, NULL));
+
+    return strncmp(md5, nonce, 2 * MD5_DIGESTSIZE);
+}
+
+/* Check the digest itself.
+ */
 static char *find_digest(request_rec *r, digest_header_rec * h, char *a1)
 {
     return ap_md5(r->pool,
@@ -312,6 +329,15 @@ static int authenticate_digest_user(request_rec *r)
 
     if (!sec->pwfile)
 	return DECLINED;
+
+    /* Check that the nonce was one we actually issued. */
+    if (check_nonce(r->pool, ap_auth_nonce(r), response->nonce)) {
+        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+            "Client is using a nonce which was not issued by "
+            "this server for this context: %s", r->uri);
+        ap_note_digest_auth_failure(r);
+        return AUTH_REQUIRED;
+    }
 
     if (!(a1 = get_hash(r, c->user, sec->pwfile))) {
 	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,

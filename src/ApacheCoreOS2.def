@@ -430,3 +430,4 @@ EXPORTS
 	ap_escape_logitem @441
 	ap_popenf_ex @442
 	ap_psocket_ex @443
+       ap_auth_nonce @444

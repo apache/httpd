@@ -201,6 +201,8 @@
  *                        ap_popenf_ex() and ap_psocket_ex().
  * 19990320.15          - ap_is_recursion_limit_exceeded()
  * 19990320.16          - ap_escape_errorlog_item()
+ * 19990320.17          - ap_auth_nonce() and ap_auth_nonce added
+ *                        in core_dir_config.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503133UL /* "AP13" */

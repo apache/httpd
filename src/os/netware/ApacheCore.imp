@@ -16,6 +16,7 @@
  ap_array_cat,
  ap_auth_name,
  ap_auth_type,
+ ap_auth_nonce,
  ap_basic_http_header,
  ap_bclose,
  ap_bcreate,

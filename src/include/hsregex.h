@@ -16,8 +16,7 @@ extern "C" {
 #endif
 #endif
 
-#undef ap_private_extern
-#if defined(MAC_OS) || defined(MAC_OS_X_SERVER) || (defined(DARWIN) && defined(__DYNAMIC__))
+#if defined(MAC_OS) || defined(MAC_OS_X_SERVER)
 #define ap_private_extern __private_extern__
 #else
 #define ap_private_extern

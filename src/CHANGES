@@ -1,5 +1,11 @@
 Changes with Apache 1.3.31
 
+  *) SECURITY: CAN-2003-0987 (cve.mitre.org)
+     Verification as to whether the nonce returned in the client response 
+     is one we issued ourselves by means of a AuthNonce secret exposed as an 
+     md5(). See mod_digest documentation for more details. The experimental
+     mod_auth_digest.c does not have this issue.  [Dirk-Willem van Gulik]
+
 Changes with Apache 1.3.30
 
   *) Fix memory corruption problem with ap_custom_response() function.

@@ -447,3 +447,4 @@ EXPORTS
         ap_getline @439
         ap_get_chunk_size @440
         ap_escape_logitem @441
+        ap_auth_nonce @442

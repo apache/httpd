@@ -22,6 +22,7 @@ ap_append_arrays
 ap_array_cat
 ap_array_pstrcat
 ap_auth_name
+ap_auth_nonce
 ap_auth_type
 ap_base64encode
 ap_base64encode_binary
