@@ -427,9 +427,14 @@ extern "C" {
  * Example: "Apache/1.1.0 MrWidget/0.1-alpha" 
  */
 
-#define SERVER_PRODUCT "Apache"
-#define SERVER_BASEVERSION SERVER_PRODUCT "/1.3.13-dev"	/* SEE COMMENTS ABOVE */
-#define SERVER_VERSION  SERVER_BASEVERSION
+#define SERVER_BASEVENDOR   "Apache Group"
+#define SERVER_BASEPRODUCT  "Apache"
+#define SERVER_BASEREVISION "1.3.13-dev"
+#define SERVER_BASEVERSION  SERVER_BASEPRODUCT "/" SERVER_BASEREVISION
+
+#define SERVER_PRODUCT  SERVER_BASEPRODUCT
+#define SERVER_REVISION SERVER_BASEREVISION
+#define SERVER_VERSION  SERVER_PRODUCT "/" SERVER_REVISION
 enum server_token_type {
     SrvTk_MIN,		/* eg: Apache/1.3.0 */
     SrvTk_OS,		/* eg: Apache/1.3.0 (UNIX) */

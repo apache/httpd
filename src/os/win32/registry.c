@@ -36,11 +36,13 @@
  * major release, but will change when the final release is made.
  */
 
-#define VENDOR   "Apache Group"
-#define SOFTWARE "Apache"
-#define VERSION  "1.3.13 dev"
+/* Define where the Apache values are stored in the registry. 
+ *
+ * If you are looking here to roll the tarball, you didn't need to visit.
+ * registry.c now picks up the version from include/httpd.h
+ */
 
-#define REGKEY "SOFTWARE\\" VENDOR "\\" SOFTWARE "\\" VERSION
+#define REGKEY "SOFTWARE\\" SERVER_BASEVENDOR "\\" SERVER_BASEPRODUCT "\\" SERVER_BASEREVISION
 
 #define SERVICEKEYPRE  "System\\CurrentControlSet\\Services\\"
 #define SERVICEKEYPOST "\\Parameters"
