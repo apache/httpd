@@ -921,7 +921,7 @@ static int cgid_handler(request_rec *r)
     /* We are putting the tempsock variable into a file so that we can use
      * a pipe bucket to send the data to the client.
      */
-    apr_put_os_file(&tempsock, &sd, pcgi);
+    apr_put_os_file(&tempsock, &sd, r->pool);
 
     if ((retval = ap_setup_client_block(r, REQUEST_CHUNKED_ERROR))) 
         return retval; 
