@@ -64,7 +64,8 @@
 
 #include "apr_buckets.h"
 #include "util_filter.h"
-AP_DECLARE_DATA module echo_module;
+
+module AP_MODULE_DECLARE_DATA echo_module;
 
 typedef struct {
     int bEnabled;
@@ -133,7 +134,7 @@ static void register_hooks(apr_pool_t *p)
                                APR_HOOK_MIDDLE);
 }
 
-AP_DECLARE_DATA module echo_module = {
+module AP_MODULE_DECLARE_DATA echo_module = {
     STANDARD20_MODULE_STUFF,
     NULL,			/* create per-directory config structure */
     NULL,			/* merge per-directory config structures */

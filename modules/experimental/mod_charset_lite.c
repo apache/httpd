@@ -151,7 +151,7 @@ typedef struct charset_req_t {
                                  * each request */
 #define DBGLVL_PMC            2 /* messages about possible misconfiguration */
 
-module charset_lite_module;
+module AP_MODULE_DECLARE_DATA charset_lite_module;
 
 static void *create_charset_dir_conf(apr_pool_t *p,char *dummy)
 {
@@ -1113,7 +1113,7 @@ static void charset_register_hooks(apr_pool_t *p)
                              AP_FTYPE_CONTENT);
 }
 
-module charset_lite_module =
+module AP_MODULE_DECLARE_DATA charset_lite_module =
 {
     STANDARD20_MODULE_STUFF,
     create_charset_dir_conf,

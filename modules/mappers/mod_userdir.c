@@ -120,7 +120,7 @@
 #define DEFAULT_USER_DIR "public_html"
 #endif
 
-module userdir_module;
+module AP_MODULE_DECLARE_DATA userdir_module;
 
 typedef struct {
     int globally_disabled;
@@ -388,7 +388,7 @@ static void register_hooks(apr_pool_t *p)
 #endif
 }
 
-module userdir_module = {
+module AP_MODULE_DECLARE_DATA userdir_module = {
     STANDARD20_MODULE_STUFF,
     NULL,                       /* dir config creater */
     NULL,                       /* dir merger --- default is to override */
