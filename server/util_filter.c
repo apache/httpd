@@ -412,8 +412,8 @@ static ap_filter_t *add_any_filter(const char *name, void *ctx,
         }
 
         if (node && node->frec) {
-            add_any_filter_handle(node->frec, ctx, r, c, r_filters, p_filters,
-                                  c_filters);
+            return add_any_filter_handle(node->frec, ctx, r, c, r_filters, 
+                                         p_filters, c_filters);
         }
     }
 
