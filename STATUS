@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/05/26 05:45:07 $]
+Last modified at [$Date: 2002/05/26 22:28:06 $]
 
 Release:
 
@@ -89,10 +89,6 @@ RELEASE SHOWSTOPPERS:
     * apr_brigade_write() is not flushing in all cases it should
       Status: Cliff will fix this
 
-    * mod_suexec issues seem to be at critical mass
-      Status: Patches proposed
-      Message-ID: <20020526041748.A29148@prodigy.Redbrick.DCU.IE>
-
     * need consensus on Cliff's /dev/random vs. /dev/urandom question.
       Is there a better alternative than picking strictly one or the other?
       Message-ID:
@@ -156,6 +152,12 @@ CURRENT VOTES:
 	 information isn't all that useful.
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
+
+    * exec cmd and suexec arg-passing enhancements
+      Status: Patches proposed
+      Message-ID: <20020526041748.A29148@prodigy.Redbrick.DCU.IE>
+      (see the "proc.patch" and "suexec-shell.patch" links in this message)
+
     * Get mod_cache/mod_mem_cache out of experimental (still some
       work items left to complete)
 
