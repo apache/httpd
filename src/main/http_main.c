@@ -1021,10 +1021,9 @@ static APACHE_TLS int volatile alarms_blocked = 0;
 static APACHE_TLS int volatile alarm_pending = 0;
 
 static void timeout(int sig)
-{				/* Also called on SIGPIPE */
+{
     void *dirconf;
 
-    signal(SIGPIPE, SIG_IGN);	/* Block SIGPIPE */
     if (alarms_blocked) {
 	alarm_pending = 1;
 	return;
@@ -1042,20 +1041,10 @@ static void timeout(int sig)
     else
 	dirconf = current_conn->server->lookup_defaults;
     if (!current_conn->keptalive) {
-	if (sig == SIGPIPE) {
-	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO,
-			current_conn->server,
-			"[client %s] stopped connection before %s completed",
-			current_conn->remote_ip,
-			timeout_name ? timeout_name : "request");
-	}
-	else {
-	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO,
-			current_conn->server,
-			"[client %s] %s timed out",
-			current_conn->remote_ip,
-			timeout_name ? timeout_name : "request");
-	}
+	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO,
+		     current_conn->server, "[client %s] %s timed out",
+		     current_conn->remote_ip,
+		     timeout_name ? timeout_name : "request");
     }
 
     if (timeout_req) {
@@ -2757,6 +2746,11 @@ static void set_signals(void)
     if (sigaction(SIGXFSZ, &sa, NULL) < 0)
 	ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf, "sigaction(SIGXFSZ)");
 #endif
+#ifdef SIGPIPE
+    sa.sa_handler = SIG_IGN;
+    if (sigaction(SIGPIPE, &sa, NULL) < 0)
+	ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf, "sigaction(SIGPIPE)");
+#endif
 
     /* we want to ignore HUPs and USR1 while we're busy processing one */
     sigaddset(&sa.sa_mask, SIGHUP);
@@ -2796,6 +2790,10 @@ static void set_signals(void)
 #ifdef SIGUSR1
     signal(SIGUSR1, restart);
 #endif /* SIGUSR1 */
+#ifdef SIGPIPE
+    signal(SIGPIPE, SIG_IGN);
+#endif /* SIGPIPE */
+
 #endif
 }
 
@@ -3578,8 +3576,7 @@ static void child_main(int child_num_arg)
     (void) ap_update_child_status(my_child_num, SERVER_READY, (request_rec *) NULL);
 
     /*
-     * Setup the jump buffers so that we can return here after
-     * a signal or a timeout (yeah, I know, same thing).
+     * Setup the jump buffers so that we can return here after a timeout 
      */
     ap_setjmp(jmpbuffer);
 #ifndef OS2
@@ -3587,7 +3584,6 @@ static void child_main(int child_num_arg)
     signal(SIGURG, timeout);
 #endif
 #endif
-    signal(SIGPIPE, timeout);
     signal(SIGALRM, alrm_handler);
 
 #ifdef OS2
@@ -4907,8 +4903,7 @@ static void child_sub_main(int child_num)
     (void) ap_update_child_status(child_num, SERVER_READY, (request_rec *) NULL);
 
     /*
-     * Setup the jump buffers so that we can return here after
-     * a signal or a timeout (yeah, I know, same thing).
+     * Setup the jump buffers so that we can return here after a timeout.
      */
 #if defined(USE_LONGJMP)
     setjmp(jmpbuffer);
@@ -4927,16 +4922,14 @@ static void child_sub_main(int child_num)
 	 * (Re)initialize this child to a pre-connection state.
 	 */
 
-	ap_set_callback_and_alarm(NULL, 0);	/* Cancel any outstanding alarms. */
-	timeout_req = NULL;	/* No request in progress */
+	ap_set_callback_and_alarm(NULL, 0); /* Cancel any outstanding alarms */
+	timeout_req = NULL;                 /* No request in progress */
 	current_conn = NULL;
-#ifdef SIGPIPE
-	signal(SIGPIPE, timeout);
-#endif
 
 	ap_clear_pool(ptrans);
 
-	(void) ap_update_child_status(child_num, SERVER_READY, (request_rec *) NULL);
+	(void) ap_update_child_status(child_num, SERVER_READY,
+	                              (request_rec *) NULL);
 
 	/* Get job from the job list. This will block until a job is ready.
 	 * If -1 is returned then the main thread wants us to exit.

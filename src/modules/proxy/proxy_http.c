@@ -352,7 +352,7 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
     }
 
     ap_bputs(CRLF, f);
-/* send the request data, if any. N.B. should we trap SIGPIPE ? */
+/* send the request data, if any. */
 
     if (ap_should_client_block(r)) {
 	while ((i = ap_get_client_block(r, buffer, sizeof buffer)) > 0)

@@ -440,16 +440,10 @@ static int cgi_handler(request_rec *r)
     }
 
     /* Transfer any put/post args, CERN style...
-     * Note that if a buggy script fails to read everything we throw
-     * at it, or a buggy client sends too much, we get a SIGPIPE, so
-     * we have to ignore SIGPIPE while doing this.  CERN does the same
-     * (and in fact, they pretty nearly guarantee themselves a SIGPIPE
-     * on every invocation by chasing the real client data with a
-     * spurious newline).
+     * Note that we already ignore SIGPIPE in the core server.
      */
 
     if (ap_should_client_block(r)) {
-	void (*handler) (int);
 	int dbsize, len_read;
 
 	if (conf->logname) {
@@ -458,9 +452,6 @@ static int cgi_handler(request_rec *r)
 	}
 
 	ap_hard_timeout("copy script args", r);
-#ifdef SIGPIPE
-	handler = signal(SIGPIPE, SIG_IGN);
-#endif
 
 	while ((len_read =
 		ap_get_client_block(r, argsbuffer, HUGE_STRING_LEN)) > 0) {
@@ -485,7 +476,6 @@ static int cgi_handler(request_rec *r)
 	}
 
 	ap_bflush(script_out);
-	signal(SIGPIPE, handler);
 
 	ap_kill_timeout(r);
     }

@@ -1,5 +1,11 @@
 Changes with Apache 1.3.5
 
+  *) SIGPIPE is now ignored by the server core.  The request write routines
+     (ap_rputc, ap_rputs, ap_rvputs, ap_rwrite, ap_rprintf, ap_rflush) now
+     correctly check for output errors and mark the connection as aborted.
+     Replaced many direct (unchecked) calls to ap_b* routines with the
+     analogous ap_r* calls.  [Roy Fielding]
+
   *) Enhanced mod_rewrite's mapfile handling: The in-core cache for text and
      DBM format mapfiles now uses a 4-way hash table with LRU functionality.
      Furthermore map lookups for non-existent keys are now cached as well.

@@ -949,7 +949,7 @@ request_rec *ap_read_request(conn_rec *conn)
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
                          "request failed: URI too long");
             ap_send_error_response(r, 0);
-            ap_bflush(r->connection->client);
+            ap_rflush(r);
             ap_log_transaction(r);
             return r;
         }
@@ -963,7 +963,7 @@ request_rec *ap_read_request(conn_rec *conn)
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
                          "request failed: error reading the headers");
             ap_send_error_response(r, 0);
-            ap_bflush(r->connection->client);
+            ap_rflush(r);
             ap_log_transaction(r);
             return r;
         }
@@ -983,7 +983,7 @@ request_rec *ap_read_request(conn_rec *conn)
             r->header_only = 0;
             r->status = HTTP_BAD_REQUEST;
             ap_send_error_response(r, 0);
-            ap_bflush(r->connection->client);
+            ap_rflush(r);
             ap_log_transaction(r);
             return r;
         }
@@ -1016,7 +1016,7 @@ request_rec *ap_read_request(conn_rec *conn)
                       "client sent HTTP/1.1 request without hostname "
                       "(see RFC2068 section 9, and 14.23): %s", r->uri);
         ap_send_error_response(r, 0);
-        ap_bflush(r->connection->client);
+        ap_rflush(r);
         ap_log_transaction(r);
         return r;
     }
@@ -1037,7 +1037,7 @@ request_rec *ap_read_request(conn_rec *conn)
                           "client sent an unrecognized expectation value of "
                           "Expect: %s", expect);
             ap_send_error_response(r, 0);
-            ap_bflush(r->connection->client);
+            ap_rflush(r);
             (void) ap_discard_request_body(r);
             ap_log_transaction(r);
             return r;
@@ -1268,8 +1268,7 @@ API_EXPORT(int) ap_index_of_response(int status)
 API_EXPORT_NONSTD(int) ap_send_header_field(request_rec *r,
     const char *fieldname, const char *fieldval)
 {
-    return (0 < ap_bvputs(r->connection->client,
-                       fieldname, ": ", fieldval, "\015\012", NULL));
+    return (0 < ap_rvputs(r, fieldname, ": ", fieldval, "\015\012", NULL));
 }
 
 API_EXPORT(void) ap_basic_http_header(request_rec *r)
@@ -1304,8 +1303,7 @@ API_EXPORT(void) ap_basic_http_header(request_rec *r)
 
     /* Output the HTTP/1.x Status-Line and the Date and Server fields */
 
-    ap_bvputs(r->connection->client,
-           protocol, " ", r->status_line, "\015\012", NULL);
+    ap_rvputs(r, protocol, " ", r->status_line, "\015\012", NULL);
 
     ap_send_header_field(r, "Date", ap_gm_timestr_822(r->pool, r->request_time));
     ap_send_header_field(r, "Server", ap_get_server_version());
@@ -1390,9 +1388,9 @@ API_EXPORT(int) ap_send_http_trace(request_rec *r)
 
     ap_rvputs(r, r->the_request, "\015\012", NULL);
 
-    ap_table_do((int (*) (void *, const char *, const char *)) ap_send_header_field,
-             (void *) r, r->headers_in, NULL);
-    ap_bputs("\015\012", r->connection->client);
+    ap_table_do((int (*) (void *, const char *, const char *))
+                ap_send_header_field, (void *) r, r->headers_in, NULL);
+    ap_rputs("\015\012", r);
 
     ap_kill_timeout(r);
     return OK;
@@ -1543,9 +1541,9 @@ API_EXPORT(void) ap_finalize_request_protocol(request_rec *r)
         ap_bsetflag(r->connection->client, B_CHUNK, 0);
 
         ap_soft_timeout("send ending chunk", r);
-        ap_bputs("0\015\012", r->connection->client);
+        ap_rputs("0\015\012", r);
         /* If we had footer "headers", we'd send them now */
-        ap_bputs("\015\012", r->connection->client);
+        ap_rputs("\015\012", r);
         ap_kill_timeout(r);
     }
 }
@@ -1654,10 +1652,9 @@ API_EXPORT(int) ap_should_client_block(request_rec *r)
 
     if (r->expecting_100 && r->proto_num >= HTTP_VERSION(1,1)) {
         /* sending 100 Continue interim response */
-        ap_bvputs(r->connection->client,
-               SERVER_PROTOCOL, " ", status_lines[0], "\015\012\015\012",
-               NULL);
-        ap_bflush(r->connection->client);
+        ap_rvputs(r, SERVER_PROTOCOL, " ", status_lines[0], "\015\012\015\012",
+                  NULL);
+        ap_rflush(r);
     }
 
     return 1;
@@ -1920,23 +1917,19 @@ API_EXPORT(long) ap_send_fd_length(FILE *f, request_rec *r, long length)
         while (n && !r->connection->aborted) {
             w = ap_bwrite(r->connection->client, &buf[o], n);
             if (w > 0) {
-                ap_reset_timeout(r);   /* reset timeout after successful write */
-		total_bytes_sent += w;
+                ap_reset_timeout(r); /* reset timeout after successful write */
+                total_bytes_sent += w;
                 n -= w;
                 o += w;
             }
             else if (w < 0) {
-                if (r->connection->aborted)
-                    break;
-                else if (errno == EAGAIN)
-                    continue;
-                else {
+                if (!r->connection->aborted) {
                     ap_log_rerror(APLOG_MARK, APLOG_INFO, r,
                      "client stopped connection before send body completed");
                     ap_bsetflag(r->connection->client, B_EOUT, 1);
                     r->connection->aborted = 1;
-                    break;
                 }
+                break;
             }
         }
     }
@@ -2009,10 +2002,15 @@ API_EXPORT(long) ap_send_fb_length(BUFF *fb, request_rec *r, long length)
                 break;
             if (n < 0 && errno != EAGAIN)
                 break;
+
             /* we need to block, so flush the output first */
-            ap_bflush(r->connection->client);
-            if (r->connection->aborted)
+            if (ap_bflush(r->connection->client) < 0) {
+                ap_log_rerror(APLOG_MARK, APLOG_INFO, r,
+                    "client stopped connection before send body completed");
+                ap_bsetflag(r->connection->client, B_EOUT, 1);
+                r->connection->aborted = 1;
                 break;
+            }
             FD_SET(fd, &fds);
             /*
              * we don't care what select says, we might as well loop back
@@ -2027,30 +2025,24 @@ API_EXPORT(long) ap_send_fb_length(BUFF *fb, request_rec *r, long length)
         if (n < 1 || r->connection->aborted) {
             break;
         }
-
         o = 0;
-        total_bytes_sent += n;
 
         while (n && !r->connection->aborted) {
             w = ap_bwrite(r->connection->client, &buf[o], n);
             if (w > 0) {
-                ap_reset_timeout(r);       /* reset timeout after successful
-                                         * write */
+                ap_reset_timeout(r); /* reset timeout after successful write */
+                total_bytes_sent += w;
                 n -= w;
                 o += w;
             }
             else if (w < 0) {
-                if (r->connection->aborted)
-                    break;
-                else if (errno == EAGAIN)
-                    continue;
-                else {
+                if (!r->connection->aborted) {
                     ap_log_rerror(APLOG_MARK, APLOG_INFO, r,
-                     "client stopped connection before send body completed");
+                       "client stopped connection before send body completed");
                     ap_bsetflag(r->connection->client, B_EOUT, 1);
                     r->connection->aborted = 1;
-                    break;
                 }
+                break;
             }
         }
     }
@@ -2099,23 +2091,19 @@ API_EXPORT(size_t) ap_send_mmap(void *mm, request_rec *r, size_t offset,
         while (n && !r->connection->aborted) {
             w = ap_bwrite(r->connection->client, (char *) mm + offset, n);
             if (w > 0) {
-                ap_reset_timeout(r);   /* reset timeout after successful write */
+                ap_reset_timeout(r); /* reset timeout after successful write */
                 total_bytes_sent += w;
                 n -= w;
                 offset += w;
             }
             else if (w < 0) {
-                if (r->connection->aborted)
-                    break;
-                else if (errno == EAGAIN)
-                    continue;
-                else {
+                if (!r->connection->aborted) {
                     ap_log_rerror(APLOG_MARK, APLOG_INFO, r,
-                     "client stopped connection before send mmap completed");
+                       "client stopped connection before send mmap completed");
                     ap_bsetflag(r->connection->client, B_EOUT, 1);
                     r->connection->aborted = 1;
-                    break;
                 }
+                break;
             }
         }
     }
@@ -2129,7 +2117,16 @@ API_EXPORT(int) ap_rputc(int c, request_rec *r)
 {
     if (r->connection->aborted)
         return EOF;
-    ap_bputc(c, r->connection->client);
+
+    if (ap_bputc(c, r->connection->client) < 0) {
+        if (!r->connection->aborted) {
+            ap_log_rerror(APLOG_MARK, APLOG_INFO, r,
+                "client stopped connection before rputc completed");
+            ap_bsetflag(r->connection->client, B_EOUT, 1);
+            r->connection->aborted = 1;
+        }
+        return EOF;
+    }
     SET_BYTES_SENT(r);
     return c;
 }
@@ -2140,7 +2137,17 @@ API_EXPORT(int) ap_rputs(const char *str, request_rec *r)
 
     if (r->connection->aborted)
         return EOF;
+    
     rcode = ap_bputs(str, r->connection->client);
+    if (rcode < 0) {
+        if (!r->connection->aborted) {
+            ap_log_rerror(APLOG_MARK, APLOG_INFO, r,
+                "client stopped connection before rputs completed");
+            ap_bsetflag(r->connection->client, B_EOUT, 1);
+            r->connection->aborted = 1;
+        }
+        return EOF;
+    }
     SET_BYTES_SENT(r);
     return rcode;
 }
@@ -2148,9 +2155,20 @@ API_EXPORT(int) ap_rputs(const char *str, request_rec *r)
 API_EXPORT(int) ap_rwrite(const void *buf, int nbyte, request_rec *r)
 {
     int n;
+
     if (r->connection->aborted)
-        return EOF;
+        return -1;
+
     n = ap_bwrite(r->connection->client, buf, nbyte);
+    if (n < 0) {
+        if (!r->connection->aborted) {
+            ap_log_rerror(APLOG_MARK, APLOG_INFO, r,
+                "client stopped connection before rwrite completed");
+            ap_bsetflag(r->connection->client, B_EOUT, 1);
+            r->connection->aborted = 1;
+        }
+        return -1;
+    }
     SET_BYTES_SENT(r);
     return n;
 }
@@ -2161,10 +2179,21 @@ API_EXPORT(int) ap_rprintf(request_rec *r, const char *fmt,...)
     int n;
 
     if (r->connection->aborted)
-        return EOF;
+        return -1;
+
     va_start(vlist, fmt);
     n = ap_vbprintf(r->connection->client, fmt, vlist);
     va_end(vlist);
+
+    if (n < 0) {
+        if (!r->connection->aborted) {
+            ap_log_rerror(APLOG_MARK, APLOG_INFO, r,
+                "client stopped connection before rprintf completed");
+            ap_bsetflag(r->connection->client, B_EOUT, 1);
+            r->connection->aborted = 1;
+        }
+        return -1;
+    }
     SET_BYTES_SENT(r);
     return n;
 }
@@ -2188,7 +2217,13 @@ API_EXPORT_NONSTD(int) ap_rvputs(request_rec *r,...)
         i = ap_bwrite(fb, x, j);
         if (i != j) {
             va_end(args);
-            return -1;
+            if (!r->connection->aborted) {
+                ap_log_rerror(APLOG_MARK, APLOG_INFO, r,
+                    "client stopped connection before rvputs completed");
+                ap_bsetflag(r->connection->client, B_EOUT, 1);
+                r->connection->aborted = 1;
+            }
+            return EOF;
         }
         k += i;
     }
@@ -2200,7 +2235,16 @@ API_EXPORT_NONSTD(int) ap_rvputs(request_rec *r,...)
 
 API_EXPORT(int) ap_rflush(request_rec *r)
 {
-    return ap_bflush(r->connection->client);
+    if (ap_bflush(r->connection->client) < 0) {
+        if (!r->connection->aborted) {
+            ap_log_rerror(APLOG_MARK, APLOG_INFO, r,
+                "client stopped connection before rflush completed");
+            ap_bsetflag(r->connection->client, B_EOUT, 1);
+            r->connection->aborted = 1;
+        }
+        return EOF;
+    }
+    return 0;
 }
 
 /* We should have named this send_canned_response, since it is used for any
@@ -2211,7 +2255,6 @@ API_EXPORT(int) ap_rflush(request_rec *r)
  */
 void ap_send_error_response(request_rec *r, int recursive_error)
 {
-    BUFF *fd = r->connection->client;
     int status = r->status;
     int idx = ap_index_of_response(status);
     char *custom_response;
@@ -2305,7 +2348,7 @@ void ap_send_error_response(request_rec *r, int recursive_error)
          * the original error and output that as well.
          */
         if (custom_response[0] == '\"') {
-            ap_bputs(custom_response + 1, fd);
+            ap_rputs(custom_response + 1, r);
             ap_kill_timeout(r);
             ap_finalize_request_protocol(r);
             return;
@@ -2337,7 +2380,7 @@ void ap_send_error_response(request_rec *r, int recursive_error)
         /* folks decided they didn't want the error code in the H1 text */
         h1 = &title[4];
 
-        ap_bvputs(fd,
+        ap_rvputs(r,
                   "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\n"
                   "<HTML><HEAD>\n<TITLE>", title,
                   "</TITLE>\n</HEAD><BODY>\n<H1>", h1, "</H1>\n",
@@ -2347,17 +2390,17 @@ void ap_send_error_response(request_rec *r, int recursive_error)
 	case HTTP_MOVED_PERMANENTLY:
 	case HTTP_MOVED_TEMPORARILY:
 	case HTTP_TEMPORARY_REDIRECT:
-	    ap_bvputs(fd, "The document has moved <A HREF=\"",
+	    ap_rvputs(r, "The document has moved <A HREF=\"",
 		      ap_escape_html(r->pool, location), "\">here</A>.<P>\n",
 		      NULL);
 	    break;
 	case HTTP_SEE_OTHER:
-	    ap_bvputs(fd, "The answer to your request is located <A HREF=\"",
+	    ap_rvputs(r, "The answer to your request is located <A HREF=\"",
 		      ap_escape_html(r->pool, location), "\">here</A>.<P>\n",
 		      NULL);
 	    break;
 	case HTTP_USE_PROXY:
-	    ap_bvputs(fd, "This resource is only accessible "
+	    ap_rvputs(r, "This resource is only accessible "
 		      "through the proxy\n",
 		      ap_escape_html(r->pool, location),
 		      "<BR>\nYou will need to ",
@@ -2365,38 +2408,38 @@ void ap_send_error_response(request_rec *r, int recursive_error)
 	    break;
 	case HTTP_PROXY_AUTHENTICATION_REQUIRED:
 	case AUTH_REQUIRED:
-	    ap_bputs("This server could not verify that you\n", fd);
-	    ap_bputs("are authorized to access the document you\n", fd);
-	    ap_bputs("requested.  Either you supplied the wrong\n", fd);
-	    ap_bputs("credentials (e.g., bad password), or your\n", fd);
-	    ap_bputs("browser doesn't understand how to supply\n", fd);
-	    ap_bputs("the credentials required.<P>\n", fd);
+	    ap_rputs("This server could not verify that you\n"
+	             "are authorized to access the document\n"
+	             "requested.  Either you supplied the wrong\n"
+	             "credentials (e.g., bad password), or your\n"
+	             "browser doesn't understand how to supply\n"
+	             "the credentials required.<P>\n", r);
 	    break;
 	case BAD_REQUEST:
-	    ap_bputs("Your browser sent a request that\n", fd);
-	    ap_bputs("this server could not understand.<P>\n", fd);
+	    ap_rputs("Your browser sent a request that "
+	             "this server could not understand.<P>\n", r);
 	    if ((error_notes = ap_table_get(r->notes, "error-notes")) != NULL) {
-		ap_bvputs(fd, error_notes, "<P>\n", NULL);
+		ap_rvputs(r, error_notes, "<P>\n", NULL);
 	    }
 	    break;
 	case HTTP_FORBIDDEN:
-	    ap_bvputs(fd, "You don't have permission to access ",
+	    ap_rvputs(r, "You don't have permission to access ",
 		      ap_escape_html(r->pool, r->uri),
 		      "\non this server.<P>\n", NULL);
 	    break;
 	case NOT_FOUND:
-	    ap_bvputs(fd, "The requested URL ",
+	    ap_rvputs(r, "The requested URL ",
 		      ap_escape_html(r->pool, r->uri),
 		      " was not found on this server.<P>\n", NULL);
 	    break;
 	case METHOD_NOT_ALLOWED:
-	    ap_bvputs(fd, "The requested method ", r->method,
+	    ap_rvputs(r, "The requested method ", r->method,
 		      " is not allowed "
 		      "for the URL ", ap_escape_html(r->pool, r->uri),
 		      ".<P>\n", NULL);
 	    break;
 	case NOT_ACCEPTABLE:
-	    ap_bvputs(fd,
+	    ap_rvputs(r,
 		      "An appropriate representation of the "
 		      "requested resource ",
 		      ap_escape_html(r->pool, r->uri),
@@ -2406,47 +2449,47 @@ void ap_send_error_response(request_rec *r, int recursive_error)
 	    {
 		const char *list;
 		if ((list = ap_table_get(r->notes, "variant-list")))
-		    ap_bputs(list, fd);
+		    ap_rputs(list, r);
 	    }
 	    break;
 	case LENGTH_REQUIRED:
-	    ap_bvputs(fd, "A request of the requested method ", r->method,
+	    ap_rvputs(r, "A request of the requested method ", r->method,
 		      " requires a valid Content-length.<P>\n", NULL);
 	    if ((error_notes = ap_table_get(r->notes, "error-notes")) != NULL) {
-		ap_bvputs(fd, error_notes, "<P>\n", NULL);
+		ap_rvputs(r, error_notes, "<P>\n", NULL);
 	    }
 	    break;
 	case PRECONDITION_FAILED:
-	    ap_bvputs(fd, "The precondition on the request for the URL ",
+	    ap_rvputs(r, "The precondition on the request for the URL ",
 		      ap_escape_html(r->pool, r->uri),
 		      " evaluated to false.<P>\n", NULL);
 	    break;
 	case HTTP_NOT_IMPLEMENTED:
-	    ap_bvputs(fd, ap_escape_html(r->pool, r->method), " to ",
+	    ap_rvputs(r, ap_escape_html(r->pool, r->method), " to ",
 		      ap_escape_html(r->pool, r->uri),
 		      " not supported.<P>\n", NULL);
 	    if ((error_notes = ap_table_get(r->notes, "error-notes")) != NULL) {
-		ap_bvputs(fd, error_notes, "<P>\n", NULL);
+		ap_rvputs(r, error_notes, "<P>\n", NULL);
 	    }
 	    break;
 	case BAD_GATEWAY:
-	    ap_bputs("The proxy server received an invalid\015\012", fd);
-	    ap_bputs("response from an upstream server.<P>\015\012", fd);
+	    ap_rputs("The proxy server received an invalid\015\012"
+	             "response from an upstream server.<P>\015\012", r);
 	    if ((error_notes = ap_table_get(r->notes, "error-notes")) != NULL) {
-		ap_bvputs(fd, error_notes, "<P>\n", NULL);
+		ap_rvputs(r, error_notes, "<P>\n", NULL);
 	    }
 	    break;
 	case VARIANT_ALSO_VARIES:
-	    ap_bvputs(fd, "A variant for the requested resource\n<PRE>\n",
+	    ap_rvputs(r, "A variant for the requested resource\n<PRE>\n",
 		      ap_escape_html(r->pool, r->uri),
 		      "\n</PRE>\nis itself a negotiable resource. "
 		      "This indicates a configuration error.<P>\n", NULL);
 	    break;
 	case HTTP_REQUEST_TIME_OUT:
-	    ap_bputs("I'm tired of waiting for your request.\n", fd);
+	    ap_rputs("I'm tired of waiting for your request.\n", r);
 	    break;
 	case HTTP_GONE:
-	    ap_bvputs(fd, "The requested resource<BR>",
+	    ap_rvputs(r, "The requested resource<BR>",
 		      ap_escape_html(r->pool, r->uri),
 		      "<BR>\nis no longer available on this server ",
 		      "and there is no forwarding address.\n",
@@ -2454,30 +2497,30 @@ void ap_send_error_response(request_rec *r, int recursive_error)
 		      NULL);
 	    break;
 	case HTTP_REQUEST_ENTITY_TOO_LARGE:
-	    ap_bvputs(fd, "The requested resource<BR>",
+	    ap_rvputs(r, "The requested resource<BR>",
 		      ap_escape_html(r->pool, r->uri), "<BR>\n",
 		      "does not allow request data with ", r->method,
 		      " requests, or the amount of data provided in\n",
 		      "the request exceeds the capacity limit.\n", NULL);
 	    break;
 	case HTTP_REQUEST_URI_TOO_LARGE:
-	    ap_bputs("The requested URL's length exceeds the capacity\n"
-	             "limit for this server.<P>\n", fd);
+	    ap_rputs("The requested URL's length exceeds the capacity\n"
+	             "limit for this server.<P>\n", r);
 	    if ((error_notes = ap_table_get(r->notes, "error-notes")) != NULL) {
-		ap_bvputs(fd, error_notes, "<P>\n", NULL);
+		ap_rvputs(r, error_notes, "<P>\n", NULL);
 	    }
 	    break;
 	case HTTP_UNSUPPORTED_MEDIA_TYPE:
-	    ap_bputs("The supplied request data is not in a format\n"
-	             "acceptable for processing by this resource.\n", fd);
+	    ap_rputs("The supplied request data is not in a format\n"
+	             "acceptable for processing by this resource.\n", r);
 	    break;
 	case HTTP_RANGE_NOT_SATISFIABLE:
-	    ap_bputs("None of the range-specifier values in the Range\n"
+	    ap_rputs("None of the range-specifier values in the Range\n"
 	             "request-header field overlap the current extent\n"
-	             "of the selected resource.\n", fd);
+	             "of the selected resource.\n", r);
 	    break;
 	case HTTP_EXPECTATION_FAILED:
-	    ap_bvputs(fd, "The expectation given in the Expect request-header"
+	    ap_rvputs(r, "The expectation given in the Expect request-header"
 	              "\nfield could not be met by this server.<P>\n"
 	              "The client sent<PRE>\n    Expect: ",
 	              ap_table_get(r->headers_in, "Expect"), "\n</PRE>\n"
@@ -2485,39 +2528,39 @@ void ap_send_error_response(request_rec *r, int recursive_error)
 	              NULL);
 	    break;
 	case HTTP_UNPROCESSABLE_ENTITY:
-	    ap_bputs("The server understands the media type of the\n"
+	    ap_rputs("The server understands the media type of the\n"
 	             "request entity, but was unable to process the\n"
-	             "contained instructions.\n", fd);
+	             "contained instructions.\n", r);
 	    break;
 	case HTTP_LOCKED:
-	    ap_bputs("The requested resource is currently locked.\n"
+	    ap_rputs("The requested resource is currently locked.\n"
 	             "The lock must be released or proper identification\n"
-	             "given before the method can be applied.\n", fd);
+	             "given before the method can be applied.\n", r);
 	    break;
 	case HTTP_FAILED_DEPENDENCY:
-	    ap_bputs("The method could not be performed on the resource\n"
+	    ap_rputs("The method could not be performed on the resource\n"
 	             "because the requested action depended on another\n"
-	             "action and that other action failed.\n", fd);
+	             "action and that other action failed.\n", r);
 	    break;
 	case HTTP_INSUFFICIENT_STORAGE:
-	    ap_bputs("The method could not be performed on the resource\n"
+	    ap_rputs("The method could not be performed on the resource\n"
 	             "because the server is unable to store the\n"
 	             "representation needed to successfully complete the\n"
 	             "request.  There is insufficient free space left in\n"
-	             "your storage allocation.\n", fd);
+	             "your storage allocation.\n", r);
 	    break;
 	case HTTP_SERVICE_UNAVAILABLE:
-	    ap_bputs("The server is temporarily unable to service your\n"
+	    ap_rputs("The server is temporarily unable to service your\n"
 	             "request due to maintenance downtime or capacity\n"
-	             "problems. Please try again later.\n", fd);
+	             "problems. Please try again later.\n", r);
 	    break;
 	case HTTP_GATEWAY_TIME_OUT:
-	    ap_bputs("The proxy server did not receive a timely response\n"
-	             "from the upstream server.\n", fd);
+	    ap_rputs("The proxy server did not receive a timely response\n"
+	             "from the upstream server.\n", r);
 	    break;
 	case HTTP_NOT_EXTENDED:
-	    ap_bputs("A mandatory extension policy in the request is not\n"
-                     "accepted by the server for this resource.\n", fd);
+	    ap_rputs("A mandatory extension policy in the request is not\n"
+	             "accepted by the server for this resource.\n", r);
 	    break;
 	default:            /* HTTP_INTERNAL_SERVER_ERROR */
 	    /*
@@ -2530,9 +2573,9 @@ void ap_send_error_response(request_rec *r, int recursive_error)
 	    if (((error_notes = ap_table_get(r->notes, "error-notes")) != NULL)
 		&& (h1 = ap_table_get(r->notes, "verbose-error-to")) != NULL
 		&& (strcmp(h1, "*") == 0)) {
-	        ap_bvputs(fd, error_notes, "<P>\n", NULL);
+	        ap_rvputs(r, error_notes, "<P>\n", NULL);
 	    } else {
-	        ap_bvputs(fd, "The server encountered an internal error or\n"
+	        ap_rvputs(r, "The server encountered an internal error or\n"
 	             "misconfiguration and was unable to complete\n"
 	             "your request.<P>\n"
 	             "Please contact the server administrator,\n ",
@@ -2553,20 +2596,20 @@ void ap_send_error_response(request_rec *r, int recursive_error)
 	  * can figure out a way to remove the pathname, leave this commented.
 	  *
 	  * if ((error_notes = ap_table_get(r->notes, "error-notes")) != NULL) {
-	  *     ap_bvputs(fd, error_notes, "<P>\n", NULL);
+	  *     ap_rvputs(r, error_notes, "<P>\n", NULL);
 	  * }
 	  */
 	    break;
 	}
 
         if (recursive_error) {
-            ap_bvputs(fd, "<P>Additionally, a ",
+            ap_rvputs(r, "<P>Additionally, a ",
                       status_lines[ap_index_of_response(recursive_error)],
                       "\nerror was encountered while trying to use an "
                       "ErrorDocument to handle the request.\n", NULL);
         }
-        ap_bputs(ap_psignature("<HR>\n", r), fd);
-        ap_bputs("</BODY></HTML>\n", fd);
+        ap_rputs(ap_psignature("<HR>\n", r), r);
+        ap_rputs("</BODY></HTML>\n", r);
     }
     ap_kill_timeout(r);
     ap_finalize_request_protocol(r);
