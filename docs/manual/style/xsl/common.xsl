@@ -745,6 +745,21 @@
 
 
   <!--                                                    -->
+  <!-- <transnote>                                        -->
+  <!--                                                    -->
+  <xsl:template match="transnote">
+    <span class="transnote">
+      <xsl:text>(</xsl:text><em>
+      <xsl:value-of select="$messages/message[@name='transnote']"/>
+      </em><xsl:text> </xsl:text>
+      <xsl:apply-templates/>
+      <xsl:text>)</xsl:text>
+    </span>
+  </xsl:template>
+  <!-- /note/title -->
+
+
+  <!--                                                    -->
   <!-- Process everything else by just passing it through -->
   <!--                                                    -->
   <xsl:template match="*|@*">
