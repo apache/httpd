@@ -13,7 +13,7 @@ Body:----------de--
 Content-language: en
 Content-type: text/html
 Body:----------en--
-<!--#set var="TITLE" value="Cannot proceed request!" -->
+<!--#set var="TITLE" value="Cannot process request!" -->
 <!--#include virtual="include/top.html" -->
 
    The server does not support the action requested by the browser.
