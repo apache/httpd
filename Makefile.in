@@ -33,6 +33,7 @@ install-conf:
 	done; \
 	for i in *-dist; do \
 		sed -e 's#@@ServerRoot@@#$(prefix)#g' \
+		    -e 's#@@Port@@#$(PORT)#g' \
 			< $$i > $(sysconfdir)/$$i; \
 		chmod 0644 $(sysconfdir)/$$i; \
 		file=`echo $$i|sed s/-dist//`; \
