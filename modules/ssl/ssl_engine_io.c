@@ -690,8 +690,13 @@ static apr_status_t ssl_io_filter_Output(ap_filter_t *f,
             /* read filter */
             const char *data;
             apr_size_t len;
+            
+            status = apr_bucket_read(bucket, &data, &len, APR_BLOCK_READ);
 
-            apr_bucket_read(bucket, &data, &len, APR_BLOCK_READ);
+            if (APR_STATUS_IS_EOF(status) && (status != APR_SUCCESS)) {
+                break;
+            }
+
             status = ssl_filter_write(f, data, len);
             apr_bucket_delete(bucket);
 
