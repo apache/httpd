@@ -1,4 +1,6 @@
 Changes with Apache 2.0.19-dev
+  *) Automatically generate httpd.exp for AIX.
+     [Victor J. Orlikowski]
 
   *) Add a new request hook, error_log.  This phase allows modules
      to act on the error log string _after_ it has been written
