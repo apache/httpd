@@ -2155,6 +2155,8 @@ API_EXPORT(long) ap_send_fb_length(BUFF *fb, request_rec *r, long length)
     return total_bytes_sent;
 }
 
+#ifdef USE_MMAP_FILES
+
 /* The code writes MMAP_SEGMENT_SIZE bytes at a time.  This is due to Apache's
  * timeout model, which is a timeout per-write rather than a time for the
  * entire transaction to complete.  Essentially this should be small enough
@@ -2218,6 +2220,7 @@ API_EXPORT(size_t) ap_send_mmap(ap_mmap_t *mm, request_rec *r, size_t offset,
     SET_BYTES_SENT(r);
     return total_bytes_sent;
 }
+#endif /* USE_MMAP_FILES */
 
 API_EXPORT(int) ap_rputc(int c, request_rec *r)
 {
