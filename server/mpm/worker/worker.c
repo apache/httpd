@@ -196,8 +196,6 @@ typedef struct {
  */
 int ap_max_daemons_limit = -1;
 
-char ap_coredump_dir[MAX_STRING_LEN];
-
 static apr_file_t *pipe_of_death_in = NULL;
 static apr_file_t *pipe_of_death_out = NULL;
 /* insures that a child process only consumes one character */
