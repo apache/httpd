@@ -1193,11 +1193,7 @@ static int handle_fsize(ap_file_t *in, request_rec *r, const char *error, int si
                 }
                 else {
                     int l, x;
-#if defined(AP_OFF_T_IS_QUAD)
-                    ap_snprintf(tag, sizeof(tag), "%qd", finfo.size);
-#else
-                    ap_snprintf(tag, sizeof(tag), "%ld", (long)finfo.size);
-#endif
+                    ap_snprintf(tag, sizeof(tag), "%" APR_OFF_T_FMT, finfo.size);
                     l = strlen(tag);    /* grrr */
                     for (x = 0; x < l; x++) {
                         if (x && (!((l - x) % 3))) {
