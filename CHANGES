@@ -1,5 +1,11 @@
 Changes with Apache 2.0.51
 
+  *) suexec: Pass the SERVER_SIGNATURE envvar through to CGIs.
+     [Zvi Har'El <rl math.technion.ac.il>]
+
+  *) apachectl: Fix a problem finding envvars if sbindir != bindir.
+     PR 30723.  [Friedrich Haubensak <hsk imb-jena.de>]
+
   *) mod_ssl: Build on RHEL 3.  PR 18989.  [Justin Erenkrantz]
 
   *) SECURITY: CAN-2004-0748 (cve.mitre.org)
