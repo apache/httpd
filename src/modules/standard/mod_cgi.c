@@ -308,8 +308,21 @@ int cgi_handler (request_rec *r)
 	    len_read = read_client_block (r, argsbuffer, len_to_read);
 	    if (len_read == 0)
 		break;
-	    fwrite (argsbuffer, 1, len_read, script_out);
+	    if (fwrite (argsbuffer, 1, len_read, script_out) == 0)
+		break;
 	    remaining -= len_read;
+	}
+
+	/* If script stopped reading early, soak up remaining stuff from
+	 * client...
+	 */
+	
+	while (remaining > 0) {
+	    int len_read, len_to_read = remaining;
+	    if (len_to_read > HUGE_STRING_LEN) len_to_read = HUGE_STRING_LEN;
+	    
+	    len_read = read_client_block (r, argsbuffer, len_to_read);
+	    if (len_read == 0) break;
 	}
     
 	fflush (script_out);
