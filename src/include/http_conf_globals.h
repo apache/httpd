@@ -102,9 +102,10 @@ extern enum server_token_type ap_server_tokens;
 extern API_VAR_EXPORT char ap_server_root[MAX_STRING_LEN];
 extern char ap_server_confname[MAX_STRING_LEN];
 
-/* for -C and -c switches */
+/* for -C, -c and -D switches */
 extern array_header *ap_server_pre_read_config;
 extern array_header *ap_server_post_read_config;
+extern array_header *ap_server_config_defines;
 
 /* We want this to have the least chance of being corrupted if there
  * is some memory corruption, so we allocate it statically.

@@ -69,6 +69,8 @@ httpd \- Apache hypertext transfer protocol server
 .BI \-C " directive"
 ] [
 .BI \-c " directive"
+] [
+.BI \-D " parameter"
 ]
 
 .B httpd 
@@ -137,6 +139,11 @@ Process the configuration \fIdirective\fP before reading config files.
 .TP
 .BI \-c " directive"
 Process the configuration \fIdirective\fP after reading config files.
+.TP
+.BI \-D " parameter"
+Sets a configuration \fIparameter\fP which can be used with
+<IfDefine>...</IfDefine> sections in the configuration files
+to conditionally skip or process commands.
 .TP
 .B \-h
 Output a list of directives together with expected arguments and

@@ -43,6 +43,7 @@ always available.
 <LI><A HREF="#group">Group</A>
 <LI><A HREF="#hostnamelookups">HostNameLookups</A>
 <LI><A HREF="#identitycheck">IdentityCheck</A>
+<LI><A HREF="#ifdefine">&lt;IfDefine&gt;</A>
 <LI><A HREF="#ifmodule">&lt;IfModule&gt;</A>
 <LI><A HREF="#include">Include</A>
 <LI><A HREF="#keepalive">KeepAlive</A>
@@ -1083,6 +1084,73 @@ firewalls are involved each lookup might possibly fail and add 30 seconds
 of latency to each hit.  So in general this is not very useful on public
 servers accessible from the Internet.
 <P><HR>
+
+<H2><A NAME="ifdefine">&lt;IfDefine&gt; directive</A></H2>
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> &lt;IfDefine [!]<EM>parameter-name</EM>&gt; <EM>...</EM>
+&lt;/IfDefine&gt;<BR>
+<A
+ HREF="directive-dict.html#Default"
+ REL="Help"
+><STRONG>Default:</STRONG></A> None<BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> all<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Core<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> &lt;IfDefine&gt; is only available in 1.3 and
+later.<P>
+
+<P>
+
+The &lt;IfDefine <EM>test</EM>&gt;...&lt;/IfDefine&gt;
+section is used to mark directives that are conditional. The
+directives within an IfDefine section are only
+processed if the <EM>test</EM> is true. If <EM>test</EM>
+is false, everything between the start and end markers
+is ignored.<P>
+
+The <EM>test</EM> in the &lt;IfDefine&gt; section directive
+can be one of two forms:
+
+<UL>
+<LI><EM>parameter-name</EM>
+<LI><CODE>!</CODE><EM>parameter-name</EM>
+</UL>
+
+<P>In the former case, the directives between the start and end markers are
+only processed if the parameter named <EM>parameter-name</EM> is defined.
+The second format reverses the test, and only processes the directives if
+<EM>parameter-name</EM> is <STRONG>not</STRONG> defined.
+
+<P>The <EM>paramater-name</EM> argument is a define as given on the
+<CODE>httpd</CODE> command line via <CODE>-D</CODE><EM>parameter-</EM>, at the
+time the server was started.
+
+<P>&lt;IfDefine&gt; sections are nest-able, which can be used to implement
+simple multiple-parameter tests.
+
+Example:
+
+<PRE>
+  $ httpd -DReverseProxy ...
+
+  # httpd.conf
+  &lt;IfDefine ReverseProxy&gt;
+  LoadModule rewrite_module libexec/mod_rewrite.so
+  LoadModule proxy_module   libexec/libproxy.so
+  &lt;/IfDefine&gt;
+</PRE>
+
+<P> <HR>
 
 <H2><A NAME="ifmodule">&lt;IfModule&gt; directive</A></H2>
 <A

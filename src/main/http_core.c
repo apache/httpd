@@ -657,6 +657,7 @@ static const char end_files_section[] = "</Files>";
 static const char end_filesmatch_section[] = "</FilesMatch>";
 static const char end_virtualhost_section[] = "</VirtualHost>";
 static const char end_ifmodule_section[] = "</IfModule>";
+static const char end_ifdefine_section[] = "</IfDefine>";
 
 
 API_EXPORT(const char *) ap_check_cmd_context(cmd_parms *cmd, unsigned forbidden)
@@ -1169,6 +1170,58 @@ static const char *start_ifmod (cmd_parms *cmd, void *dummy, char *arg)
 
     if (nest) {
 	cmd->end_token = end_ifmodule_section;
+	return missing_endsection(cmd, nest);
+    }
+    return NULL;
+}
+
+static int ap_exists_config_define(char *name)
+{
+    char **defines;
+    int i;
+
+    defines = (char **)ap_server_config_defines->elts;
+    for (i = 0; i < ap_server_config_defines->nelts; i++) {
+        if (strcmp(defines[i], name) == 0)
+            return 1;
+    }
+    return 0;
+}
+
+static const char *end_ifdefine(cmd_parms *cmd, void *dummy) 
+{
+    return NULL;
+}
+
+static const char *start_ifdefine(cmd_parms *cmd, void *dummy, char *arg)
+{
+    char *endp;
+    char l[MAX_STRING_LEN];
+    int defined;
+    int not = 0;
+    int nest = 1;
+
+    endp = strrchr(arg, '>');
+    if (endp)
+	*endp = '\0';
+    if (arg[0] == '!') {
+        not = 1;
+	arg++;
+    }
+
+    defined = ap_exists_config_define(arg);
+
+    if ((!not && defined) || (not && !defined))
+	return NULL;
+
+    while (nest && !(ap_cfg_getline(l, MAX_STRING_LEN, cmd->config_file))) {
+        if (!strncasecmp(l, "<IfDefine", 9))
+	  nest++;
+	if (!strcasecmp(l, "</IfDefine>"))
+	  nest--;
+    }
+    if (nest) {
+	cmd->end_token = end_ifdefine_section;
 	return missing_endsection(cmd, nest);
     }
     return NULL;
@@ -1915,6 +1968,8 @@ static const command_rec core_cmds[] = {
 { "</Limit>", endlimit_section, NULL, OR_ALL, NO_ARGS, "Marks end of <Limit>" },
 { "<IfModule", start_ifmod, NULL, OR_ALL, RAW_ARGS, "Container for directives based on existance of specified modules" },
 { end_ifmodule_section, end_ifmod, NULL, OR_ALL, NO_ARGS, "Marks end of <IfModule>" },
+{ "<IfDefine", start_ifdefine, NULL, OR_ALL, RAW_ARGS, "Container for directives based on existance of command line defines" },
+{ end_ifdefine_section, end_ifdefine, NULL, OR_ALL, NO_ARGS, "Marks end of <IfDefine>" },
 { "<DirectoryMatch", dirsection, (void*)1, RSRC_CONF, RAW_ARGS, "Container for directives affecting resources located in the specified directories" },
 { end_directorymatch_section, end_nested_section, NULL, ACCESS_CONF, NO_ARGS, "Marks end of <DirectoryMatch>" },
 { "<LocationMatch", urlsection, (void*)1, RSRC_CONF, RAW_ARGS, "Container for directives affecting resources accessed through the specified URL paths" },

@@ -44,15 +44,6 @@ Available Patches:
       <19980611171746.A23845@engelschall.com>
       Status: Ralf +1
 
-    * Ralf's "<IfDefine>...</IfDefine>":
-      This patch adds a useful <IfDefine>...</IfDefine> section to the core
-      module very similar to the existing <IfModule>...<IfModule> sections.
-      The intent is to provide _LOGICAL_ conditions based on arbitrary defined
-      parameters. The parameters are specified on the "httpd" command line via
-      -D options.
-      See: http://www.engelschall.com/sw/apache/ [ifdefine]
-      Status (for 1.3.1-dev): Ralf +1
-
     * Ralf's "substitute some more configuration parameters":
       This patch lets APACI's configure script determine more configuration
       parameters (Group, Port, ServerAdmin, ServerName) via some intelligent

@@ -280,6 +280,7 @@ char ap_coredump_dir[MAX_STRING_LEN];
 
 array_header *ap_server_pre_read_config;
 array_header *ap_server_post_read_config;
+array_header *ap_server_config_defines;
 
 /* *Non*-shared http_main globals... */
 
@@ -3257,6 +3258,7 @@ static void common_init(void)
     pcommands = ap_make_sub_pool(NULL);
     ap_server_pre_read_config  = ap_make_array(pcommands, 1, sizeof(char *));
     ap_server_post_read_config = ap_make_array(pcommands, 1, sizeof(char *));
+    ap_server_config_defines   = ap_make_array(pcommands, 1, sizeof(char *));
 }
 
 #ifndef MULTITHREAD
@@ -4229,7 +4231,7 @@ int REALMAIN(int argc, char *argv[])
     ap_setup_prelinked_modules();
 
     while ((c = getopt(argc, argv,
-				    "C:c:Xd:f:vVhlL:St"
+				    "D:C:c:Xd:f:vVhlL:St"
 #ifdef DEBUG_SIGSTOP
 				    "Z:"
 #endif
@@ -4242,6 +4244,10 @@ int REALMAIN(int argc, char *argv[])
 	    break;
 	case 'C':
 	    new = (char **)ap_push_array(ap_server_pre_read_config);
+	    *new = ap_pstrdup(pcommands, optarg);
+	    break;
+	case 'D':
+	    new = (char **)ap_push_array(ap_server_config_defines);
 	    *new = ap_pstrdup(pcommands, optarg);
 	    break;
 	case 'd':
@@ -5391,7 +5397,7 @@ int REALMAIN(int argc, char *argv[])
 
     ap_setup_prelinked_modules();
 
-    while ((c = getopt(argc, argv, "C:c:Xd:f:vVhlZ:iusSt")) != -1) {
+    while ((c = getopt(argc, argv, "D:C:c:Xd:f:vVhlZ:iusSt")) != -1) {
         char **new;
 	switch (c) {
 	case 'c':
@@ -5400,6 +5406,10 @@ int REALMAIN(int argc, char *argv[])
 	    break;
 	case 'C':
 	    new = (char **)ap_push_array(ap_server_pre_read_config);
+	    *new = ap_pstrdup(pcommands, optarg);
+	    break;
+	case 'D':
+	    new = (char **)ap_push_array(ap_server_config_defines);
 	    *new = ap_pstrdup(pcommands, optarg);
 	    break;
 #ifdef WIN32
