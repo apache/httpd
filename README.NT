@@ -31,10 +31,6 @@ platform such as Solaris, FreeBSD, or Linux.
 
 Apache on Win32 should still be considered beta quality code.  It does not
 meet the normal standards of stability and security that Unix releases do.
-There is also a much greater chance of security holes being present in the
-Win32 version of Apache, due to the frequent discrepancies between the public
-documentation for the various Windows system calls and file system types
-and the reality of what is included in Windows system software.
 
 Installation or Compilation Instructions
 ----------------------------------------
