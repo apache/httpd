@@ -63,6 +63,10 @@
 extern "C" {
 #endif
 
+/**
+ * @package Apache script tools
+ */
+
 #ifndef APACHE_ARG_MAX
 #ifdef _POSIX_ARG_MAX
 #define APACHE_ARG_MAX _POSIX_ARG_MAX
@@ -71,16 +75,95 @@ extern "C" {
 #endif
 #endif
 
+/**
+ * Create an environment variable out of an Apache table of key-value pairs
+ * @param p pool to allocate out of
+ * @param t Apache table of key-value pairs
+ * @return An array containing the same key-value pairs suitable for
+ *         use with an exec call.
+ * @deffunc char **ap_create_environment(apr_pool_t *p, apr_table_t *t)
+ */
 API_EXPORT(char **) ap_create_environment(apr_pool_t *p, apr_table_t *t);
+
+/**
+ * This "cute" little function comes about because the path info on
+ * filenames and URLs aren't always the same. So we take the two,
+ * and find as much of the two that match as possible.
+ * @param uri The uri we are currently parsing
+ * @param path_info The current path info
+ * @return The length of the path info
+ * @deffunc int ap_fine_path_info(const char *uri, const char *path_info)
+ */
 API_EXPORT(int) ap_find_path_info(const char *uri, const char *path_info);
+
+/**
+ * Add CGI environment variables required by HTTP/1.1 to the request's 
+ * environment table
+ * @param r the current request
+ * @deffunc void ap_add_cgi_vars(request_rec *r)
+ */
 API_EXPORT(void) ap_add_cgi_vars(request_rec *r);
+
+/**
+ * Add common CGI environment variables to the requests environment table
+ * @param r The current request
+ * @deffunc void ap_add_common_vars(request_rec *r)
+ */
 API_EXPORT(void) ap_add_common_vars(request_rec *r);
+
+/**
+ * Read headers output from a script, ensuring that the output is valid.  If
+ * the output is valid, then the headers are added to the headers out of the
+ * current request
+ * @param r The current request
+ * @param f The file to read from
+ * @param buffer Empty when calling the function.  On output, if there was an
+ *               error, the string that cause the error is stored here. 
+ * @return HTTP_OK on success, HTTP_INTERNAL_SERVER_ERROR otherwise
+ * @deffunc int ap_scan_script_header_err(request_rec *r, apr_file_t *f, char *buffer)
+ */ 
 API_EXPORT(int) ap_scan_script_header_err(request_rec *r, apr_file_t *f, char *buffer);
+
+/**
+ * Read headers output from a script, ensuring that the output is valid.  If
+ * the output is valid, then the headers are added to the headers out of the
+ * current request
+ * @param r The current request
+ * @param f The BUFF to read from
+ * @param buffer Empty when calling the function.  On output, if there was an
+ *               error, the string that cause the error is stored here. 
+ * @return HTTP_OK on success, HTTP_INTERNAL_SERVER_ERROR otherwise
+ * @deffunc int ap_scan_script_header_err_buff(request_rec *r, BUFF *f, char *buffer)
+ */ 
 API_EXPORT(int) ap_scan_script_header_err_buff(request_rec *r, BUFF *f,
                                                char *buffer);
+
+/**
+ * Read headers output from a script, ensuring that the output is valid.  If
+ * the output is valid, then the headers are added to the headers out of the
+ * current request
+ * @param r The current request
+ * @param buffer Empty when calling the function.  On output, if there was an
+ *               error, the string that cause the error is stored here. 
+ * @param getsfunc Function to read the headers from.  This function should
+                   act like gets()
+ * @param getsfunc_data The place to read from
+ * @return HTTP_OK on success, HTTP_INTERNAL_SERVER_ERROR otherwise
+ * @deffunc int ap_scan_script_header_err_core(request_rec *r, char *buffer, int (*getsfunc)(char *, int, void *), void *getsfunc_data)
+ */ 
 API_EXPORT(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
 				       int (*getsfunc) (char *, int, void *),
 				       void *getsfunc_data);
+
+/**
+ * Convert the file size given in size into a formatted string and send the
+ * string to the client.  The size should always be in bytes, although the
+ * string sent to the client may be in bytes, kb, or MB, depending on the size
+ * of the file.
+ * @param size The size of the file
+ * @param r The currnt request
+ * @deffunc void ap_send_size(apr_ssize_t size, request_rec *r)
+ */
 API_EXPORT(void) ap_send_size(apr_ssize_t size, request_rec *r);
 
 #ifdef __cplusplus
