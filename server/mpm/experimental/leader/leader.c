@@ -103,7 +103,6 @@
 #include "http_connection.h"
 #include "ap_mpm.h"
 #include "mpm_common.h"
-#include "pod.h"
 #include "ap_listen.h"
 #include "scoreboard.h" 
 #include "mpm_default.h"
@@ -481,6 +480,7 @@ static void clean_child_exit(int code)
     if (pchild) {
         apr_pool_destroy(pchild);
     }
+    ap_mpm_pod_close(pod);
     exit(code);
 }
 
@@ -940,6 +940,10 @@ static void *worker_thread(apr_thread_t *thd, void * dummy)
                 apr_pool_clear(ptrans);
                 requests_this_child--;
             }
+            if (ap_mpm_pod_check(pod) == APR_SUCCESS) { /* selected as idle? */
+                signal_threads(ST_GRACEFUL);
+                break;
+            }
         }
         else {
             if ((rv = SAFE_ACCEPT(apr_proc_mutex_unlock(accept_mutex)))
@@ -1221,6 +1225,7 @@ static void child_main(int child_num_arg)
          */
         unblock_signal(SIGTERM);
         apr_signal(SIGTERM, dummy_signal_handler);
+#if 0
         /* Watch for any messages from the parent over the POD */
         while (1) {
             rv = ap_mpm_pod_check(pod);
@@ -1255,6 +1260,10 @@ static void child_main(int child_num_arg)
              */
             join_workers(threads);
         }
+#else
+        join_start_thread(start_thread_id);
+        join_workers(threads);
+#endif /* 0 */
     }
 
     free(threads);
@@ -1436,7 +1445,7 @@ static void perform_idle_server_maintenance(void)
 
     if (idle_thread_count > max_spare_threads) {
         /* Kill off one child */
-        ap_mpm_pod_signal(pod, TRUE);
+        ap_mpm_pod_signal(pod);
         idle_spawn_rate = 1;
     }
     else if (idle_thread_count < min_spare_threads) {
@@ -1666,7 +1675,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
          * (By "gracefully" we don't mean graceful in the same sense as 
          * "apachectl graceful" where we allow old connections to finish.)
          */
-        ap_mpm_pod_killpg(pod, ap_daemons_limit, FALSE);
+        ap_mpm_pod_killpg(pod, ap_daemons_limit);
         ap_reclaim_child_processes(1);                /* Start with SIGTERM */
 
         if (!child_fatal) {
@@ -1704,7 +1713,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
                      AP_SIG_GRACEFUL_STRING " received.  Doing graceful restart");
         /* wake up the children...time to die.  But we'll have more soon */
-        ap_mpm_pod_killpg(pod, ap_daemons_limit, TRUE);
+        ap_mpm_pod_killpg(pod, ap_daemons_limit);
     
 
         /* This is mostly for debugging... so that we know what is still
@@ -1717,7 +1726,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
          * and a SIGHUP, we may as well use the same signal, because some user
          * pthreads are stealing signals from us left and right.
          */
-        ap_mpm_pod_killpg(pod, ap_daemons_limit, FALSE);
+        ap_mpm_pod_killpg(pod, ap_daemons_limit);
 
         ap_reclaim_child_processes(1);                /* Start with SIGTERM */
         ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
