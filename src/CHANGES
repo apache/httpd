@@ -7,53 +7,26 @@ Changes with Apache 1.3
   *) Added NT support [Ben Laurie and Ambarish Malpani <ambarish@valicert.com>]
 
 Changes with Apache 1.2.1
-  
-  *) Improved unix error response logging.  [Marc Slemko]
 
-  *) Update mod_rewrite from 3.0.5 to 3.0.6.  New ruleflag
-     QSA=query_string_append.  Also fixed a nasty bug in per-dir context:
-     when a URL http://... was used in concunction with a special
-     redirect flag, e.g. R=permanent, the permanent status was lost.
-     [Ronald Tschalaer <Ronald.Tschalaer@psi.ch>, Ralf S. Engelschall]
-
-  *) If an object has multiple variants that are otherwise equal Apache
-     would prefer the last listed variant rather than the first.
-     [Paul Sutton] PR#94
-
-  *) "HostnameLookups" now defaults to off because it is far better for
-     the net if we require people that actually need this data to
-     enable it.  [Linus Torvalds]
-
-  *) "make clean" at the top level now removes *.o.  [Dean Gaudet] PR#752
-
-  *) Don't serve file system objects unless they are plain files, symlinks,
-     or directories.  This prevents local users from using pipes or
-     named sockets to invoke programs for an extremely crude form of
+  *) SECURITY: Don't serve file system objects unless they are plain files,
+     symlinks, or directories.  This prevents local users from using pipes
+     or named sockets to invoke programs for an extremely crude form of
      CGI.  [Dean Gaudet]
 
-  *) HeaderName and ReadmeName were settable in .htaccess and could
-     contain "../" allowing a local user to "publish" any file on the
-     system.  No slashes are allowed now.  [Dean Gaudet]
+  *) SECURITY: HeaderName and ReadmeName were settable in .htaccess and
+     could contain "../" allowing a local user to "publish" any file on
+     the system.  No slashes are allowed now.  [Dean Gaudet]
 
-  *) It was possible to violate the symlink Options using mod_dir (headers,
-     readmes, titles), mod_negotiation (type maps), or mod_cern_meta
-     (meta files).  [Dean Gaudet]
+  *) SECURITY: It was possible to violate the symlink Options using mod_dir
+     (headers, readmes, titles), mod_negotiation (type maps), or
+     mod_cern_meta (meta files).  [Dean Gaudet]
 
-  *) Update Unixware support for 2.1.2.  [Lawrence Rosenman <ler@lerctr.org>]
-     PR#511
-
-  *) Port to NonStop-UX [Joachim Schmitz <schmitz_joachim@tandem.com>] PR#327
-
-  *) Update ConvexOS support for 11.5.  [David DeSimone <fox@convex.com>]
-     PR#399
-
-  *) Support for dec cc compiler under ultrix.
-     ["P. Alejandro Lopez-Valencia" <alejolo@ideam.gov.co>] PR#388
-
-  *) Support for Maxion/OS SVR4.2 Real Time Unix. [no name given] PR#383
-
-  *) mod_status dumps core in inetd mode.  [Marc Slemko and Roy Fielding]
-     PR#566
+  *) CONFIG: "HostnameLookups" now defaults to off because it is far better
+     for the net if we require people that actually need this data to
+     enable it.  [Linus Torvalds]
+  
+  *) mod_include was not properly changing the current directory.
+     [Marc Slemko] PR#742
 
   *) Attempt to work around problems with third party libraries that do not
      handle high numbered descriptors (examples include bind, and
@@ -72,7 +45,37 @@ Changes with Apache 1.2.1
      directives.  But using -DHIGH_SLACK_LINE=256 described above will
      work around this problem.  [Dean Gaudet]
 
+  *) Improved unix error response logging.  [Marc Slemko]
+
+  *) Update mod_rewrite from 3.0.5 to 3.0.6.  New ruleflag
+     QSA=query_string_append.  Also fixed a nasty bug in per-dir context:
+     when a URL http://... was used in concunction with a special
+     redirect flag, e.g. R=permanent, the permanent status was lost.
+     [Ronald Tschalaer <Ronald.Tschalaer@psi.ch>, Ralf S. Engelschall]
+
+  *) If an object has multiple variants that are otherwise equal Apache
+     would prefer the last listed variant rather than the first.
+     [Paul Sutton] PR#94
+
+  *) "make clean" at the top level now removes *.o.  [Dean Gaudet] PR#752
+
+  *) mod_status dumps core in inetd mode.  [Marc Slemko and Roy Fielding]
+     PR#566
+
   *) pregsub had an off-by-1 in its error checking code. [Alexei Kosut]
+
+  *) PORT: Update Unixware support for 2.1.2.
+     [Lawrence Rosenman <ler@lerctr.org>] PR#511
+
+  *) PORT: NonStop-UX [Joachim Schmitz <schmitz_joachim@tandem.com>] PR#327
+
+  *) PORT: Update ConvexOS support for 11.5.
+     [David DeSimone <fox@convex.com>] PR#399
+
+  *) PORT: Support for dec cc compiler under ultrix.
+     ["P. Alejandro Lopez-Valencia" <alejolo@ideam.gov.co>] PR#388
+
+  *) PORT: Support for Maxion/OS SVR4.2 Real Time Unix. [no name given] PR#383
 
 Changes with Apache 1.2
 
