@@ -149,7 +149,7 @@ typedef apr_status_t (*ap_filter_func)(ap_filter_t *f, ap_bucket_brigade *b);
  *
  * The types have a particular sort order, which allows us to insert them
  * into the filter chain in a determistic order. Within a particular grouping,
- * the ordering is equivalent to the order of calls to ap_add_filter().
+ * the ordering is equivalent to the order of calls to ap_add_*_filter().
  */
 typedef enum {
     AP_FTYPE_CONTENT,
@@ -263,8 +263,8 @@ API_EXPORT(apr_status_t) ap_pass_brigade(ap_filter_t *filter, ap_bucket_brigade 
  *
  * This function is used to register an input filter with the system. 
  * After this registration is performed, then a filter may be added 
- * into the filter chain by using ap_add_filter() and simply specifying 
- * the name.
+ * into the filter chain by using ap_add_input_filter() and simply 
+ * specifying the name.
  *
  * The filter's callback and type should be passed.
  */
@@ -284,8 +284,8 @@ API_EXPORT(void) ap_register_input_filter(const char *name,
  *
  * This function is used to register an output filter with the system. 
  * After this registration is performed, then a filter may be added 
- * into the filter chain by using ap_add_filter() and simply specifying 
- * the name.
+ * into the filter chain by using ap_add_output_filter() and simply 
+ * specifying the name.
  *
  * The filter's callback and type should be passed.
  */
@@ -329,11 +329,13 @@ API_EXPORT(void) ap_add_input_filter(const char *name, void *ctx, conn_rec *r);
  * Add a filter to the current request.  Filters are added in a FIFO manner.
  * The first filter added will be the first filter called.
  * @param name The name of the filter to add
- * @param r The request to add this filter for.
- * @deffunc void ap_add_filter(const char *name, request_rec *r)
+ * @param ctx Context data to set in the filter
+ * @param r The request to add this filter for (or NULL if it isn't associated with a request)
+ * @param c The connection to add this filter for
+ * @deffunc void ap_add_output_filter(const char *name, void *ctx, request_rec *r, conn_rec *c)
  */
-API_EXPORT(void) ap_add_filter(const char *name, void *ctx, request_rec *r,
-                               conn_rec *c);
+API_EXPORT(void) ap_add_output_filter(const char *name, void *ctx, 
+                                      request_rec *r, conn_rec *c);
 
 /* The next two filters are for abstraction purposes only.  They could be
  * done away with, but that would require that we break modules if we ever

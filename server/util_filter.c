@@ -148,8 +148,8 @@ API_EXPORT(void) ap_add_input_filter(const char *name, void *ctx, conn_rec *c)
     }
 }
 
-API_EXPORT(void) ap_add_filter(const char *name, void *ctx, request_rec *r,
-                               conn_rec *c)
+API_EXPORT(void) ap_add_output_filter(const char *name, void *ctx, 
+                                      request_rec *r, conn_rec *c)
 {
     ap_filter_rec_t *frec = registered_output_filters;
 

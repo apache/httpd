@@ -109,7 +109,8 @@ typedef struct charset_dir_t {
     int debug;
     const char *charset_source; /* source encoding */
     const char *charset_default; /* how to ship on wire */
-    enum {IA_INIT, IA_IMPADD, IA_NOIMPADD} implicit_add; /* tmp hack! module does ap_add_filter()? */
+    /** module does ap_add_*_filter()? */    
+    enum {IA_INIT, IA_IMPADD, IA_NOIMPADD} implicit_add; 
 } charset_dir_t;
 
 /* charset_filter_ctx_t is created for each filter instance; because the same
@@ -366,14 +367,15 @@ static void xlate_insert_filter(request_rec *r)
     if (reqinfo && 
         dc->implicit_add == IA_IMPADD &&
         reqinfo->output_ctx) {
-        ap_add_filter(XLATEOUT_FILTER_NAME, reqinfo->output_ctx, r, r->connection);
+        ap_add_output_filter(XLATEOUT_FILTER_NAME, reqinfo->output_ctx, r, 
+                             r->connection);
     }
     
 #ifdef NOT_YET /* no input filters yet; we still rely on BUFF */
     if (reqinfo && 
         dc->implicit_add == IA_IMPADD &&
         reqinfo->input_ctx) {
-        /* ap_add_filter(XLATEIN_FILTER_NAME, reqinfo->input_ctx, r); */
+        /* ap_add_input_filter(XLATEIN_FILTER_NAME, reqinfo->input_ctx, r); */
     }
 #endif
 }
