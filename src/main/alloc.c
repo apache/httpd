@@ -55,7 +55,6 @@
  *
  */
 
-
 /*
  * Resource allocation code... the code here is responsible for making
  * sure that nothing leaks.
@@ -799,7 +798,7 @@ static int psprintf_flush(ap_vformatter_buff *vbuff)
     int size;
     char *ptr;
 
-    size = ps->vbuff.curpos - ps->base;
+    size = (char *)ps->vbuff.curpos - ps->base;
     ptr = realloc(ps->base, 2*size);
     if (ptr == NULL) {
 	fputs("Ouch!  Out of memory!\n", stderr);
@@ -820,25 +819,20 @@ static int psprintf_flush(ap_vformatter_buff *vbuff)
     cur_len = strp - blok->h.first_avail;
 
     /* must try another blok */
-    ap_block_alarms();
     (void) ap_acquire_mutex(alloc_mutex);
     nblok = new_block(2 * cur_len);
     (void) ap_release_mutex(alloc_mutex);
-    ap_unblock_alarms();
-    memcpy(nblok->h.first_avail, strp, cur_len);
-    strp = nblok->h.first_avail + cur_len;
-    ps->vbuff.curpos = strp;
+    memcpy(nblok->h.first_avail, blok->h.first_avail, cur_len);
+    ps->vbuff.curpos = nblok->h.first_avail + cur_len;
     ps->vbuff.endpos = nblok->h.endp - 1;
 
     /* did we allocate the current blok? if so free it up */
     if (ps->got_a_new_block) {
 	debug_fill(blok->h.first_avail, blok->h.endp - blok->h.first_avail);
-	ap_block_alarms();
 	(void) ap_acquire_mutex(alloc_mutex);
 	blok->h.next = block_freelist;
 	block_freelist = blok;
 	(void) ap_release_mutex(alloc_mutex);
-	ap_unblock_alarms();
     }
     ps->blok = nblok;
     ps->got_a_new_block = 1;
@@ -865,7 +859,7 @@ API_EXPORT(char *) ap_pvsprintf(pool *p, const char *fmt, va_list ap)
     *ps.vbuff.curpos++ = '\0';
     ptr = ps.base;
     /* shrink */
-    ptr = realloc(ptr, ps.vbuff.curpos - ptr);
+    ptr = realloc(ptr, (char *)ps.vbuff.curpos - (char *)ptr);
     if (ptr == NULL) {
 	fputs("Ouch!  Out of memory!\n", stderr);
 	exit(1);
@@ -879,9 +873,10 @@ API_EXPORT(char *) ap_pvsprintf(pool *p, const char *fmt, va_list ap)
     char *strp;
     int size;
 
+    ap_block_alarms();
     ps.blok = p->last;
     ps.vbuff.curpos = ps.blok->h.first_avail;
-    ps.vbuff.endpos = ps.blok->h.endp - 1;
+    ps.vbuff.endpos = ps.blok->h.endp - 1;	/* save one for NUL */
     ps.got_a_new_block = 0;
 
     ap_vformatter(psprintf_flush, &ps.vbuff, fmt, ap);
@@ -902,6 +897,7 @@ API_EXPORT(char *) ap_pvsprintf(pool *p, const char *fmt, va_list ap)
 	ps.blok->h.owning_pool = p;
 #endif
     }
+    ap_unblock_alarms();
 
     return strp;
 #endif
