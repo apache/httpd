@@ -103,16 +103,10 @@ static unsigned char dh512_g[] =
 
 static DH *get_dh512(void)
 {
-    DH *dh;
-
-    if ((dh = DH_new()) == NULL)
-        return (NULL);
-    dh->p = BN_bin2bn(dh512_p, sizeof(dh512_p), NULL);
-    dh->g = BN_bin2bn(dh512_g, sizeof(dh512_g), NULL);
-    if ((dh->p == NULL) || (dh->g == NULL))
-        return (NULL);
-    return (dh);
+    return modssl_dh_configure(dh512_p, sizeof(dh512_p),
+                               dh512_g, sizeof(dh512_g));
 }
+
 static unsigned char dh1024_p[] =
 {
     0xE6, 0x96, 0x9D, 0x3D, 0x49, 0x5B, 0xE3, 0x2C, 0x7C, 0xF1, 0x80, 0xC3,
@@ -134,15 +128,8 @@ static unsigned char dh1024_g[] =
 
 static DH *get_dh1024(void)
 {
-    DH *dh;
-
-    if ((dh = DH_new()) == NULL)
-        return (NULL);
-    dh->p = BN_bin2bn(dh1024_p, sizeof(dh1024_p), NULL);
-    dh->g = BN_bin2bn(dh1024_g, sizeof(dh1024_g), NULL);
-    if ((dh->p == NULL) || (dh->g == NULL))
-        return (NULL);
-    return (dh);
+    return modssl_dh_configure(dh1024_p, sizeof(dh1024_p),
+                               dh1024_g, sizeof(dh1024_g));
 }
 /* ----END GENERATED SECTION---------- */
 
