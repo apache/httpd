@@ -86,5 +86,40 @@ LINK32=link.exe
 
 SOURCE=.\wintty.c
 # End Source File
+# Begin Source File
+
+SOURCE=.\wintty.rc
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\build\win32\win32ver.awk
+
+!IF  "$(CFG)" == "wintty - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Creating Version Resource
+InputPath=..\..\build\win32\win32ver.awk
+
+".\wintty.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	awk -f ../../build/win32/win32ver.awk wintty\
+ "wintty Console Utility" ../../include/ap_release.h > .\wintty.rc
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "wintty - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Creating Version Resource
+InputPath=..\..\build\win32\win32ver.awk
+
+".\wintty.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	awk -f ../../build/win32/win32ver.awk wintty\
+ "wintty Console Utility" ../../include/ap_release.h > .\wintty.rc
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
 # End Target
 # End Project
