@@ -275,6 +275,7 @@ static apr_bucket *find_end_sequence(apr_bucket *dptr, include_ctx_t *ctx, apr_b
                 if (ctx->state == PARSE_DIRECTIVE) {
                     /* gonna start over parsing the directive next time through */
                     ctx->directive_length = 0;
+                    ctx->tag_length       = 0;
                 }
                 return dptr;
             }
@@ -832,8 +833,9 @@ static int handle_include(include_ctx_t *ctx, apr_bucket_brigade **bb, request_r
                     for (p = r; p != NULL && !founddupe; p = p->main) {
     		    request_rec *q;
     		    for (q = p; q != NULL; q = q->prev) {
-    			if ( (strcmp(q->filename, rr->filename) == 0) ||
-    			     (strcmp(q->uri, rr->uri) == 0) ){
+                        if ((q->filename && rr->filename && 
+                                    (strcmp(q->filename, rr->filename) == 0)) ||
+                                (strcmp(q->uri, rr->uri) == 0)) {
     			    founddupe = 1;
     			    break;
     			}
