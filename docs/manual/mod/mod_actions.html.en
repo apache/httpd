@@ -98,8 +98,8 @@ content-type</td></tr>
     <div class="example"><h3>Example</h3><p><code>
       &lt;Location /news&gt;<br />
       <span class="indent">
-        SetHandler news-handler
-        Action news-handler /cgi-bin/news.cgi virtual
+        SetHandler news-handler<br />
+        Action news-handler /cgi-bin/news.cgi virtual<br />
       </span>
       &lt;/Location&gt;
     </code></p></div>
