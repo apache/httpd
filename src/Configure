@@ -290,7 +290,7 @@ if grep "Rule:SOCKS=yes" Makefile > /dev/null; then
     # Set flag and check Makefile for -lsocks line
     CFLAGS="$CFLAGS -Dconnect=Rconnect -Dselect=Rselect"
     CFLAGS="$CFLAGS -Dgethostbyname=Rgethostbyname"
-    if grep "EXTRA_" Makefile | grep "-lsocks" > /dev null; then
+    if grep "EXTRA_" Makefile | grep "\-lsocks" > /dev/null; then
 	:
     else
 	LIBS="$LIBS -L/usr/local/lib -lsocks"
