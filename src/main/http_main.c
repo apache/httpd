@@ -335,7 +335,11 @@ static void lingering_close (request_rec *r)
      */
     lsd = r->connection->client->fd;
 
+#ifdef MPE
+    if (((shutdown(lsd, 1)) != 0) || (sfcntl(lsd, F_SETFL, FNDELAY) == -1)) {
+#else
     if (((shutdown(lsd, 1)) != 0) || (fcntl(lsd, F_SETFL, FNDELAY) == -1)) {
+#endif
 	/* if it fails, no need to go through the rest of the routine */
 	if (errno != ENOTCONN)
 	    log_unixerr("shutdown", NULL, "lingering_close", r->server);
@@ -1547,7 +1551,7 @@ conn_rec *new_connection (pool *p, server_rec *server, BUFF *inout,
     return conn;
 }
 
-#if defined(TCP_NODELAY)
+#if defined(TCP_NODELAY) && !defined(MPE)
 static void sock_disable_nagle (int s)
 {
     /* The Nagle algorithm says that we should delay sending partial
