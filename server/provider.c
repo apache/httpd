@@ -69,9 +69,11 @@ static apr_status_t cleanup_global_providers(void *ctx)
 AP_DECLARE(apr_status_t) ap_register_provider(apr_pool_t *pool,
                                               const char *provider_group,
                                               const char *provider_name,
+                                              const char *provider_version,
                                               const void *provider)
 {
     apr_hash_t *provider_group_hash;
+    apr_hash_t *provider_version_hash;
 
     if (global_providers == NULL) {
         global_providers = apr_hash_make(pool);
@@ -89,17 +91,28 @@ AP_DECLARE(apr_status_t) ap_register_provider(apr_pool_t *pool,
         
     }
 
+    provider_version_hash = apr_hash_get(provider_group_hash, provider_name,
+                                         APR_HASH_KEY_STRING);
+
+    if (!provider_version_hash) {
+        provider_version_hash = apr_hash_make(pool);
+        apr_hash_set(provider_group_hash, provider_name, APR_HASH_KEY_STRING,
+                     provider_version_hash);
+        
+    }
+
     /* just set it. no biggy if it was there before. */
-    apr_hash_set(provider_group_hash, provider_name, APR_HASH_KEY_STRING,
+    apr_hash_set(provider_version_hash, provider_version, APR_HASH_KEY_STRING,
                  provider);
 
     return APR_SUCCESS;
 }
 
 AP_DECLARE(void *) ap_lookup_provider(const char *provider_group,
-                                      const char *provider_name)
+                                      const char *provider_name,
+                                      const char *provider_version)
 {
-    apr_hash_t *provider_group_hash;
+    apr_hash_t *provider_group_hash, *provider_name_hash;
 
     if (global_providers == NULL) {
         return NULL;
@@ -112,6 +125,13 @@ AP_DECLARE(void *) ap_lookup_provider(const char *provider_group,
         return NULL;
     }
 
-    return apr_hash_get(provider_group_hash, provider_name,
+    provider_name_hash = apr_hash_get(provider_group_hash, provider_name,
+                                      APR_HASH_KEY_STRING);
+
+    if (provider_name_hash == NULL) {
+        return NULL;
+    }
+
+    return apr_hash_get(provider_name_hash, provider_version,
                         APR_HASH_KEY_STRING);
 }
