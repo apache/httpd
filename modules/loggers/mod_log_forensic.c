@@ -90,8 +90,7 @@ static void open_log(server_rec *s, apr_pool_t *p)
 
         if ((rv = apr_file_open(&cfg->fd, fname,
                                 APR_WRITE | APR_APPEND | APR_CREATE,
-                                APR_OS_DEFAULT, p) != APR_SUCCESS)
-            < 0) {
+                                APR_OS_DEFAULT, p)) != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
                          "could not open forensic log file %s.", fname);
             exit(1);
