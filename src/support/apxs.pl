@@ -245,7 +245,7 @@ sub execute_cmds {
         print STDERR "$cmd\n";
         $rc = system("$cmd");
         if ($rc != 0) {
-            printf(STDERR "apxs:Break: Command failed with rc=%d\n", $rc << 8);
+            printf(STDERR "apxs:Break: Command failed with rc=%d\n", $rc >> 8);
             exit(1);
         }
     }
