@@ -130,7 +130,7 @@
 **
 **  o  Runtime logic of a request is as following:
 **       while(request or subrequest)
-**           foreach(stage #1...#9)
+**           foreach(stage #0...#9)
 **               foreach(module) (**)
 **                   try to run hook
 **
@@ -141,7 +141,7 @@
 **
 **  o  there are two different types of result checking and
 **     continue processing:
-**     for hook #1,#4,#5,#6,#8:
+**     for hook #0,#1,#4,#5,#6,#8:
 **         hook run loop stops on first modules which gives
 **         back a result != DECLINED, i.e. it usually returns OK
 **         which says "OK, module has handled this _stage_" and for #1
@@ -222,7 +222,7 @@ module rewrite_module = {
    NULL,                        /* [#3] header parser                  */
    NULL,                        /* child_init                          */
    NULL,                        /* child_exit                          */
-   NULL                         /* post read-request                   */
+   NULL                         /* [#0] post read-request              */
 };
 
     /* the cache */
@@ -2240,7 +2240,7 @@ static void reduce_uri(request_rec *r)
         }
 
         /* now check whether we could reduce it to a local path... */
-	if (matches_request_vhost(r, host, port)) {
+        if (matches_request_vhost(r, host, port)) {
             /* this is our host, so only the URL remains */
             r->filename = pstrdup(r->pool, url);
             rewritelog(r, 3, "reduce %s -> %s", olduri, r->filename);
