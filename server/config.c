@@ -1646,7 +1646,7 @@ AP_DECLARE(int) ap_process_config_tree(server_rec *s,
 
 AP_CORE_DECLARE(int) ap_parse_htaccess(ap_conf_vector_t **result,
                                        request_rec *r, int override,
-				       int override_opts,
+                                       int override_opts,
                                        const char *d, const char *access_name)
 {
     ap_configfile_t *f = NULL;
