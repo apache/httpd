@@ -117,6 +117,10 @@
 #include "util_uri.h"
 #include "util_md5.h"
 
+/* Disable shmem until pools/init gets sorted out - remove next line when fixed */
+#undef APR_HAS_SHARED_MEMORY
+#define APR_HAS_SHARED_MEMORY 0
+
 #if APR_HAS_SHARED_MEMORY
 #include "apr_shmem.h"
 #else
@@ -124,34 +128,40 @@
 typedef   void apr_shmem_t;
 typedef   void apr_shm_name_t;
 
-apr_status_t apr_shm_init(apr_shmem_t **m, apr_size_t reqsize, const char *file, apr_pool_t *cont) {
+/*
+static apr_status_t apr_shm_init(apr_shmem_t **m, apr_size_t reqsize, const char *file, apr_pool_t *cont) {
     return APR_ENOTIMPL;
 }
-apr_status_t apr_shm_destroy(apr_shmem_t *m) {
+*/
+static apr_status_t apr_shm_destroy(apr_shmem_t *m) {
     return APR_ENOTIMPL;
 }
-void *apr_shm_malloc(apr_shmem_t *c, apr_size_t reqsize) {
+static void *apr_shm_malloc(apr_shmem_t *c, apr_size_t reqsize) {
     return NULL;
 }
-void *apr_shm_calloc(apr_shmem_t *shared, apr_size_t size) {
+/*
+static void *apr_shm_calloc(apr_shmem_t *shared, apr_size_t size) {
     return NULL;
 }
-apr_status_t apr_shm_free(apr_shmem_t *shared, void *free) {
+*/
+static apr_status_t apr_shm_free(apr_shmem_t *shared, void *free) {
     return APR_ENOTIMPL;
 }
-apr_status_t apr_shm_name_get(apr_shmem_t *c, apr_shm_name_t **name) {
+/*
+static apr_status_t apr_shm_name_get(apr_shmem_t *c, apr_shm_name_t **name) {
     return APR_ENOTIMPL;
 }
-apr_status_t apr_shm_name_set(apr_shmem_t *c, apr_shm_name_t *name) {
+static apr_status_t apr_shm_name_set(apr_shmem_t *c, apr_shm_name_t *name) {
     return APR_ENOTIMPL;
 }
-apr_status_t apr_shm_open(apr_shmem_t *c) {
+static apr_status_t apr_shm_open(apr_shmem_t *c) {
     return APR_ENOTIMPL;
 }
-apr_status_t apr_shm_avail(apr_shmem_t *c, apr_size_t *avail) {
+static apr_status_t apr_shm_avail(apr_shmem_t *c, apr_size_t *avail) {
     return APR_ENOTIMPL;
 }
-#endif /* APR_HAS_SHARED_MEMORY */
+*/
+#endif /* ndef APR_HAS_SHARED_MEMORY */
 
 
 /* struct to hold the configuration info */
@@ -409,10 +419,6 @@ static void initialize_module(apr_pool_t *p, apr_pool_t *plog,
     /* only initialize the secret on startup, not on restarts */
     if (call_cnt == 2)
 	initialize_secret(s);
-
-/* Disable shmem until pools/init gets sorted out - remove next line when fixed */
-#undef APR_HAS_SHARED_MEMORY
-#define APR_HAS_SHARED_MEMORY 0
 
 #if APR_HAS_SHARED_MEMORY
     /* Note: this stuff is currently fixed for the lifetime of the server,
