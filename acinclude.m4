@@ -400,9 +400,9 @@ if test "x$ap_ssltk_configured" = "x"; then
   else
     AC_CHECK_LIB(sslc, SSLC_library_version, [], [liberrors="yes"])
     AC_CHECK_LIB(sslc, SSL_CTX_new, [], [liberrors="yes"])
-    AC_CHECK_FUNCS(SSL_set_cert_store)
     AC_CHECK_FUNCS(SSL_set_state)
   fi
+  AC_CHECK_FUNCS(SSL_set_cert_store)
   if test "x$liberrors" != "x"; then
     AC_MSG_ERROR([... Error, SSL/TLS libraries were missing or unusable])
   fi
