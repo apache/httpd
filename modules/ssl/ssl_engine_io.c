@@ -74,38 +74,37 @@ static const char ssl_io_filter[] = "SSL/TLS Filter";
 
 static int ssl_io_hook_read(SSL *ssl, unsigned char *buf, int len)
 {
-    conn_rec *c;
     int rc;
 
-    if (ssl != NULL) {
-        rc = SSL_read(ssl, buf, len);
-        /*
-         * Simulate an EINTR in case OpenSSL wants to read more.
-         * (This is usually the case when the client forces an SSL
-         * renegotation which is handled implicitly by OpenSSL.)
-         */
-        if (rc < 0 && SSL_get_error(ssl, rc) == SSL_ERROR_WANT_READ)
+    if (ssl == NULL) {
+        return -1;
+    }
+
+    rc = SSL_read(ssl, buf, len);
+
+    if (rc < 0) {
+        int ssl_err = SSL_get_error(ssl, rc);
+
+        if (ssl_err == SSL_ERROR_WANT_READ) {
+            /*
+             * Simulate an EINTR in case OpenSSL wants to read more.
+             * (This is usually the case when the client forces an SSL
+             * renegotation which is handled implicitly by OpenSSL.)
+             */
             errno = EINTR;
-        /*
-         * Log SSL errors
-         */
-        if (rc < 0 && SSL_get_error(ssl, rc) == SSL_ERROR_SSL) {
-            c = (conn_rec *)SSL_get_app_data(ssl);
+        }
+        else if (ssl_err == SSL_ERROR_SSL) {
+            /*
+             * Log SSL errors
+             */
+            conn_rec *c = (conn_rec *)SSL_get_app_data(ssl);
             ssl_log(c->base_server, SSL_LOG_ERROR|SSL_ADD_SSLERR,
                     "SSL error on reading data");
         }
         /*
-         * read(2) returns only the generic error number -1
+         * XXX - Just trying to reflect the behaviour in 
+         * openssl_state_machine.c [mod_tls]. TBD
          */
-        if (rc < 0) {
-            /*
-             * XXX - Just trying to reflect the behaviour in 
-             * openssl_state_machine.c [mod_tls]. TBD
-             */
-            rc = -1;
-        }
-    }
-    else {
         rc = -1;
     }
     return rc;
@@ -113,37 +112,36 @@ static int ssl_io_hook_read(SSL *ssl, unsigned char *buf, int len)
 
 static int ssl_io_hook_write(SSL *ssl, unsigned char *buf, int len)
 {
-    conn_rec *c;
     int rc;
 
-    if (ssl != NULL) {
-        rc = SSL_write(ssl, buf, len);
-        /*
-         * Simulate an EINTR in case OpenSSL wants to write more.
-         */
-        if (rc < 0 && SSL_get_error(ssl, rc) == SSL_ERROR_WANT_WRITE)
+    if (ssl == NULL) {
+        return -1;
+    }
+
+    rc = SSL_write(ssl, buf, len);
+
+    if (rc < 0) {
+        int ssl_err = SSL_get_error(ssl, rc);
+
+        if (ssl_err == SSL_ERROR_WANT_WRITE) {
+            /*
+             * Simulate an EINTR in case OpenSSL wants to write more.
+             */
             errno = EINTR;
-        /*
-         * Log SSL errors
-         */
-        if (rc < 0 && SSL_get_error(ssl, rc) == SSL_ERROR_SSL) {
-            c = (conn_rec *)SSL_get_app_data(ssl);
+        }
+        else if (ssl_err == SSL_ERROR_SSL) {
+            /*
+             * Log SSL errors
+             */
+            conn_rec *c = (conn_rec *)SSL_get_app_data(ssl);
             ssl_log(c->base_server, SSL_LOG_ERROR|SSL_ADD_SSLERR,
                     "SSL error on writing data");
         }
         /*
-         * write(2) returns only the generic error number -1
+         * XXX - Just trying to reflect the behaviour in 
+         * openssl_state_machine.c [mod_tls]. TBD
          */
-        if (rc < 0) {
-            /*
-             * XXX - Just trying to reflect the behaviour in 
-             * openssl_state_machine.c [mod_tls]. TBD
-             */
-            rc = 0;
-        }
-    }
-    else {
-        rc = -1;
+        rc = 0;
     }
     return rc;
 }
