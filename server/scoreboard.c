@@ -156,32 +156,29 @@ static void init_scoreboard(void)
  * a scoreboard shared between processes using any IPC technique, 
  * not just a shared memory segment
  */
-static void setup_shared(apr_pool_t *p)
+static apr_status_t setup_shared(apr_pool_t *p)
 {
 #if APR_HAS_SHARED_MEMORY
-    char buf[512];
-    char errmsg[120];
     const char *fname;
     apr_status_t rv;
 
     fname = ap_server_root_relative(p, ap_scoreboard_fname);
     rv = apr_shm_init(&scoreboard_shm, scoreboard_size, fname, p);
     if (rv != APR_SUCCESS) {
-        apr_snprintf(buf, sizeof(buf), "%s: could not open(create) scoreboard: (%d)%s",
-                    ap_server_argv0, rv, apr_strerror(rv, errmsg, sizeof errmsg));
-        fprintf(stderr, "%s\n", buf);
-        exit(APEXIT_INIT);
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
+                     "Fatal error: could not open(create) scoreboard");
+        return rv;
     }
     ap_scoreboard_image = apr_shm_malloc(scoreboard_shm, scoreboard_size);
     if (ap_scoreboard_image == NULL) {
-        apr_snprintf(buf, sizeof(buf), "%s: cannot allocate scoreboard",
-                    ap_server_argv0);
-        perror(buf); /* o.k. since MM sets errno */
+        ap_log_error(APLOG_MARK, APLOG_CRIT | APLOG_NOERRNO, 0, NULL,
+                     "Fatal error: cannot allocate scoreboard");
         apr_shm_destroy(scoreboard_shm);
-        exit(APEXIT_INIT);
+        return APR_EGENERAL;
     }
     /* everything will be cleared shortly */
 #endif
+    return APR_SUCCESS;
 }
 
 AP_DECLARE(void) reopen_scoreboard(apr_pool_t *p)
@@ -214,22 +211,24 @@ apr_status_t ap_cleanup_scoreboard(void *d) {
 AP_DECLARE_NONSTD(void) ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e sb_type)
 {
     int running_gen = 0;
+    apr_status_t rv;
+
     if (ap_scoreboard_image)
 	running_gen = ap_scoreboard_image->global.running_generation;
     if (ap_scoreboard_image == NULL) {
         calc_scoreboard_size();
         if (sb_type == SB_SHARED) {
-            setup_shared(p);
+            rv = setup_shared(p);
+            exit(APEXIT_INIT); /* XXX need to return an error from this function */
         }
         else {
             /* A simple malloc will suffice */
-            char buf[512];
             ap_scoreboard_image = (scoreboard *) malloc(scoreboard_size);
             if (ap_scoreboard_image == NULL) {
-                apr_snprintf(buf, sizeof(buf), "%s: cannot allocate scoreboard",
-                             ap_server_argv0);
-                perror(buf); /* o.k. since MM sets errno */
-                exit(APEXIT_INIT);            
+                ap_log_error(APLOG_MARK, APLOG_CRIT | APLOG_NOERRNO, 0, NULL,
+                             "(%d)%s: cannot allocate scoreboard",
+                             errno, strerror(errno));
+                exit(APEXIT_INIT); /* XXX need to return an error from this function */
             }
         }
     }
