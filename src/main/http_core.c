@@ -1276,7 +1276,7 @@ static const char *set_error_document(cmd_parms *cmd, core_dir_config *conf,
     if (error_number == 401 &&
 	line[0] != '/' && line[0] != '"') { /* Ignore it... */
 	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, cmd->server,
-		     "cannot use a full or relative URL in a 401 ErrorDocument "
+		     "cannot use a full URL in a 401 ErrorDocument "
 		     "directive --- ignoring!");
     }
     else { /* Store it... */
