@@ -1,0 +1,227 @@
+
+  A P A C H E   I N S T A L L A T I O N
+
+  Installing the Apache 1.3 HTTP server manually
+  ==============================================
+
+  If you really want to build and install Apache 1.3 manually, you can still
+  use the Apache 1.2 way by following the instructions in the file src/INSTALL
+  as in the past. Nothing has changes there. So when you are already familiar
+  with this procedure or really need a very special custom configuration go
+  for it.  
+
+  On the other hand you should remember that the new Apache 1.3 Autoconf-style
+  Interface (APACI) already is a user-friendly frontend to the old scripts (it
+  actually uses them internally). And because APACI provides all usually
+  needed functionality the user wants to specify, there is no longer real need
+  to do so. Especially when it comes to the installation process: only APACI
+  provides an out-of-the-box way of installing the _complete_ Apache package.
+  See the file README.configure for an overview of APACI and the following
+  description for detailed information about how to use APACI.
+
+  Installing the Apache 1.3 HTTP server with APACI
+  ================================================
+
+  1. Overview for the impatient
+     --------------------------
+
+     $ ./configure --prefix=PREFIX
+     $ make
+     $ make install
+     $ PREFIX/sbin/apachectl start
+
+  2. Requirements
+     ------------
+
+     The following requirements exist for building Apache:
+
+     o  Disk Space: 
+        Make sure you have approximately 12 MB of temporary free disk space
+        available.  After installation Apache occupies approximately 3 MB of
+        disk space (the actual required disk space depends on the amount of
+        compiled in third party modules, etc).
+
+     o  ANSI-C Compiler: 
+        Make sure you have an ANSI-C compiler installed. The GNU C compiler
+        (GCC) from the Free Software Foundation (FSF) is recommended.  If you
+        don't have GCC then at least make sure your vendors compiler is ANSI
+        compliant. You can find the homepage of GNU at
+        http://www.gnu.ai.mit.edu/ and the GCC distribution under
+        http://www.gnu.ai.mit.edu/order/ftp.html .
+
+     o  Perl 5 Interpreter (OPTIONAL):
+        For some of the support scripts like `apachectl' (which are written in
+        Perl) the Perl 5 interpreter is required. If no such interpreter is
+        found by APACI's `configure' script this is no harm. You still can
+        build and install Apache 1.3. Only those support scripts cannot be
+        used. If you have multiple Perl interpreters installed (perhaps a Perl
+        4 from the vendor and a Perl 5 from your own), then it is recommended
+        to use the --with-perl option (see below) to make sure the correct one
+        is selected by APACI.
+
+  3. Configuring the source tree
+     ---------------------------
+
+     The next step is to configure the Apache source tree for your particular
+     system/platform and personal requirements. The most important setup here
+     is the location prefix where Apache is to be installed later, because
+     Apache has to be configured for this location to work correctly.
+
+     $ [CC=...]        [CFLAGS_SHLIB=...]         
+       [OPTIM=...]     [LDFLAGS_SHLIB=...]        
+       [CFLAGS=...]    [LDFLAGS_SHLIB_EXPORT=...] 
+       [INCLUDES=...] 
+       [LDFLAGS=...]   [RANLIB=...]  
+       [LIBS=...] 
+       ./configure [--quiet]   [--prefix=DIR]         [--enable-rule=NAME]    
+                   [--verbose] [--exec-prefix=PREFIX] [--disable-rule=NAME]   
+                   [--shadow]  [--bindir=EPREFIX]     [--add-module=FILE]     
+                   [--help]    [--sbindir=DIR]        [--activate-module=FILE]
+                   [--layout]  [--libexecdir=DIR]     [--enable-module=NAME]  
+                               [--mandir=DIR]         [--disable-module=NAME] 
+                               [--sysconfdir=DIR]     [--enable-shared=NAME]  
+                               [--datadir=DIR]        [--disable-shared=NAME] 
+                               [--localstatedir=DIR]  
+                               [--compat]             [--with-perl=FILE]    
+                                                      [--enable-suexec]
+                                                      [--suexec-caller=UID]
+                                                      [--suexec-userdir=DIR]
+
+    Use the CC, OPTIM, CFLAGS, INCLUDES, LDFLAGS, LIBS, CFLAGS_SHLIB,
+    LDFLAGS_SHLIB, LDFLAGS_SHLIB_EXPORT and RANLIB environment variables to
+    override the corresponding default entries in the src/Configuration.tmpl
+    file (see there for more information about their usage).
+
+    Use the --prefix=PREFIX and --exec-prefix=EPREFIX options to configure
+    Apache to use a particular installation prefix. The default is
+    PREFIX=/usr/local and EPREFIX=PREFIX.
+
+    Use the --bindir=DIR, --sbindir=DIR, --libexecdir=DIR, --mandir=DIR,
+    --sysconfdir=DIR, --datadir=DIR and --localstatedir=DIR option to change
+    the paths for particular subdirectories of the installation tree. Defaults
+    are bindir=EPREFIX/bin, sbindir=EPREFIX/sbin, libexecdir=EPREFIX/libexec,
+    mandir=PREFIX/man, sysconfdir=PREFIX/etc, datadir=PREFIX/share and
+    localstatedir=PREFIX/var.
+
+    Use the --compat option to install Apache into a installation tree which
+    has a similar layout than the one used with Apache 1.2.
+
+    Use the --layout option to check the final installation path layout while
+    fiddling with the options above.
+
+    Use the --enable-rule=NAME and --disable-rule=NAME options to enable or
+    disable a particular Rule from the Apache src/Configuration.tmpl file. The
+    defaults (yes=enabled, no=disabled) can either be seen when running
+    `./configure --help' or manually looked up in the src/Configuration.tmpl
+    file.
+
+    Use the --add-module=FILE option to copy a module source file to the
+    Apache src/modules/extra/ directory and on-the-fly add an entry for it in
+    the configuration file. FILE has to be a valid path to a C source file
+    outside the Apache source tree, for instance /path/to/mod_foo.c. The added
+    module this is way is automatically activated and enabled. Use this option
+    to automatically include a simple third-party module to the Apache build
+    process.
+
+    Use the --activate-module=FILE option to on-the-fly add an entry for an
+    existing module source file in the configuration file. FILE has to be a
+    valid path under src/modules/ of the Apache source tree, i.e. it already
+    has to be copied to this location before.  The module is automatically
+    enabled. Use this option to automatically include a complex third-party
+    module to the Apache build process where, for instance a module like
+    mod_perl or mod_php3 consisting of more than one file which are created by
+    a third-party configuration scheme.
+
+    Use the --enable-module=NAME and --disable-module=NAME options to enable
+    or disable a particular already distributed module from the Apache
+    src/Configuration.tmpl file. The defaults (yes=enabled, no=disabled) can
+    be seen when running `./configure --help'. There are two special NAME
+    variants: "all" for enabling or disabling all modules and "most" for
+    enabling or disabling only these modules which are useable on all
+    platforms (currently this is "all" minus the "auth_db", "log_agent",
+    "log_referer", "example" and "so" module).
+
+    Use the --enable-shared=NAME and --disable-shared=NAME options to enable
+    or disable the shared object support for a particular module from the
+    Apache src/Configuration.tmpl file. The defaults (yes=enabled,
+    no=disabled) can be seen when running `./configure --help'. There are two
+    special NAME variants: "max" for enabling or disabling all modules except
+    the bootstrapping "so" module and "remain" for enabling or disabling only
+    these modules which are still not enabled. ATTENTION: Shared object
+    support is not available on all platforms. See the src/Configuration.tmpl
+    file for the definitive list of supported platforms.
+
+    Use the --with-perl=FILE option to select a particular Perl interpreter
+    executable to be used with Apache. Per default APACI tries to find it
+    automatically. But if multiple Perl instances exist on your system you
+    have to select the correct one manually.
+
+    Use the --enable-suexec option to enable the suEXEC feature by building
+    and installing the "suexec" support program. Use --suexec-caller=UID to
+    set the allowed caller user id and --suexec-userdir=DIR to set the user
+    subdirectory for this feature.
+    
+    Use the --shadow option to let APACI create a shadow source tree of the
+    sources for building. This is useful when you want to build for different
+    platforms in parallel (usually through a NFS, AFS or DFS mounted
+    filesystem).
+
+    Use the --quiet option to disable all configuration verbose messages.
+
+    Use the --verbose option to enable additional verbose messages.
+    
+ 4. Building the package
+    --------------------
+    
+    Now you can build the various parts which form the Apache package by
+    simply running the command
+
+       $ make 
+
+    Please be patient here, this takes approximately 2 minutes to complete
+    under a Pentium-166/FreeBSD-2.1 system, dependend on the amount of modules
+    you have enabled. 
+
+ 5. Installing the package
+    ----------------------
+    
+    Now its time to install the package under the configured installation
+    PREFIX (see --prefix above) by running:
+
+       $ make install
+
+    For the paranoid hackers under us: The above command really installs under
+    prefix _only_, i.e. no other stuff from your system is touched. Even if
+    you upgrade an existing installation your configuration files in
+    PREFIX/etc/ are preserved.
+
+ 6. Testing the package
+    -------------------
+
+    Now you can fire up your Apache HTTP server by immediately running
+
+       $ PREFIX/sbin/apachectl start
+
+    and then you should be able to request your first document via URL
+    http://localhost/. Then stop the server again by running:
+ 
+       $ PREFIX/sbin/apachectl stop
+
+ 7. Customizing the package
+    -----------------------
+
+    Finally you can customize your Apache HTTP server by editing the
+    configuration files under PREFIX/etc/.
+
+       $ vi PREFIX/etc/httpd.conf
+       $ vi PREFIX/etc/access.conf
+       $ vi PREFIX/etc/srm.conf
+
+    Have a look at the Apache manual under http://localhost/manual/ or
+    http://www.apache.org/docs/ for a complete reference of available
+    configuration directives.
+
+    Thanks for running Apache.
+                                         The Apache Group
+                                         www.apache.org
+

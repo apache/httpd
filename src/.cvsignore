@@ -9,9 +9,11 @@ ApacheR
 Configuration
 Configuration.default
 Configuration.lint
+Configuration.apaci
 CoreD
 CoreR
 httpd
 Makefile
 Makefile.config
 modules.c
+apaci

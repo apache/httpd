@@ -120,3 +120,15 @@ features:
        of serving either "binary-ASCII" or EBCDIC coded HTML text
        documents. See the file README.EBCDIC in the src directory;
        it also explains which modules still need porting (most are ready).
+
+  *) Apache Autoconf-style Interface (APACI) 
+       Until Apache 1.3 there was no real out-of-the-box batch-capable build
+       and installation procedure for the complete Apache package. This is now
+       provided by a top-level "configure" script and a corresponding
+       top-level "Makefile.tmpl" file. The goal is to provide a GNU
+       Autoconf-style frontend which is capable to both drive the old
+       src/Configure stuff in batch and additionally installs the package
+       with a GNU-conforming directory layout. Any options from the old
+       configuration scheme are available plus a lot of new options for
+       flexibly customizing Apache.
+
