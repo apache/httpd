@@ -341,6 +341,12 @@ case "$PLAT" in
 	OS='HI-UX'
 	CFLAGS="$CFLAGS -DHIUX"
 	;;
+    *-hp-hpux11.*)
+	OS='HP-UX 11'
+	CFLAGS="$CFLAGS -DHPUX11"
+	LIBS="$LIBS -lm -lpthread"
+	DEF_WANTHSREGEX=yes
+	;;
     *-hp-hpux10.*)
 	OS='HP-UX 10'
 	CFLAGS="$CFLAGS -DHPUX10"
@@ -876,7 +882,7 @@ if [ "x$using_shlib" = "x1" ] ; then
             LDFLAGS_SHLIB="-b"
             LDFLAGS_SHLIB_EXPORT="-Wl,-E -Wl,-B,deferred"
             ;;
-        *-hp-hpux10.*)
+        *-hp-hpux10.*|*-hp-hpux11.*)
             case $CC in
                 */gcc|gcc ) CFLAGS_SHLIB="-fpic" ;;
                 */cc|cc   ) CFLAGS_SHLIB="+z" ;;
@@ -992,7 +998,7 @@ case "$OS" in
 	    ;;
 	esac
 	;;
-    'HP-UX'|'HP-UX 10')
+    'HP-UX'|'HP-UX 10'|'HP-UX 11')
 	case "$CC" in
 	    */cc|cc )
 		CFLAGS="$CFLAGS -Aa -D_HPUX_SOURCE"

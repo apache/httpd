@@ -205,6 +205,27 @@ int gethostname(char *name, int namelen);
 typedef int rlim_t;
 #endif
 
+#elif defined(HPUX11)
+#ifndef _HPUX_SOURCE
+#define _HPUX_SOURCE
+#endif
+#define HAVE_SHMGET
+#define USE_SHMGET_SCOREBOARD
+#undef  HAVE_GMTOFF
+#define HAVE_RESOURCE
+#define HAVE_CRYPT_H
+#undef  HAVE_SYS_SELECT_H
+#define HAVE_SYS_RESOURCE_H
+#define USE_FCNTL_SERIALIZED_ACCEPT
+/* feeling brave?  want to try using POSIX mutexes? */
+/* #define HAVE_MMAP */
+/* #define USE_MMAP_SCOREBOARD */
+/* #define USE_MMAP_FILES */
+/* #define USE_PTHREAD_SERIALIZED_ACCEPT */
+#define NO_KILLPG
+#undef  NO_SETSID
+#define HAVE_SYSLOG
+
 #elif defined(AIX)
 #undef HAVE_GMTOFF
 #undef NO_KILLPG
