@@ -18,14 +18,19 @@ This module is experimental. Documentation is still under development...
     cache that can be used to cache either local or proxied content.
     mod_cache requires the services of one or more storage
     management modules. Two storage management modules are included in
-    the base Apache distribution: <em>mod_disk_cache</em> implements a
-    disk based storage manager (generally used for proxy caching) and 
-    <em>mod_mem_cache</em> implements an in-memory based storage
-    manager (primarily useful for caching local content). </p>
-
+    the base Apache distribution:</p>
+    <ul>
+    <li><em>mod_disk_cache</em></li><br />
+    implements a disk based storage manager for use with mod_proxy</br>
+    <li><em>mod_mem_cache</em></li><br />
+    implements an in-memory based storage manager. mod_mem_cache
+    can be configured to operate in two modes: caching open file
+    descriptors or caching objects in heap storage. <em>mod_mem_cache</em>
+    is most useful when used to cache locally generated content or to cache 
+    backend server content for mod_proxy configured for ProxyPass (aka <em>reverse proxy</em>)
+    </ul>
     <p>Content stored and retrived keyed to the URL. Content with
     access protections is not cached.</p>
-
 </summary>
 
 <section><title>Sample Configuration</title>
@@ -42,6 +47,7 @@ LoadModule cache_module modules/mod_cache.so  <br />
    #LoadModule disk_cache_module modules/mod_disk_cache.so <br />
    &lt;IfModule mod_disk_cache.c&gt; <br />
       CacheRoot c:/cacheroot <br />
+      CacheSize 
       CacheEnable disk  / <br />
       CacheDirLevels 5 <br />
       CacheDirLength 3 <br />
@@ -49,11 +55,11 @@ LoadModule cache_module modules/mod_cache.so  <br />
 <p />
    LoadModule mem_cache_module modules/mod_mem_cache.so <br />
    &lt;IfModule mod_mem_cache.c&gt; <br />
-      CacheEnable mem  / <br />
-      CacheSize 4096 <br />
-      CacheMaxObjectCount 100 <br />
-      CacheMinObjectSize 1 <br />
-      CacheMaxObjectSize 2048 <br />
+      MCacheEnable mem  / <br />
+      MCacheSize 4096 <br />
+      MCacheMaxObjectCount 100 <br />
+      MCacheMinObjectSize 1 <br />
+      MCacheMaxObjectSize 2048 <br />
    &lt;/IfModule&gt; <br />
 <p />
 &lt;/IfModule&gt; <br />
@@ -96,7 +102,8 @@ LoadModule cache_module modules/mod_cache.so  <br />
 
 <example>
   CacheEnable  disk  / <br />
-  CacheEnable  mem   /manual
+  CacheEnable  mem   /manual <br />
+  CacheEnable  fd    /images <br />
 </example>
 </usage>
 
