@@ -1,5 +1,10 @@
 Changes with Apache 1.3.2
 
+  *) Add support for Berkeley-DB/2.x (in addition to Berkeley-DB/1.x) to
+     mod_auth_db to both be friendly to users who wants to use this version
+     and to avoid problems under platforms where only version 2.x is present.
+     [Dan Jacobowitz <drow@false.org>, Ralf S. Engelschall]
+
   *) When using ap_log_rerror(), make the error message available to the
      *ERROR_NOTES envariables by default.  [Ken Coar]
 
