@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/02/13 13:42:45 $]
+Last modified at [$Date: 2003/02/14 20:18:34 $]
 
 Release:
 
@@ -84,6 +84,11 @@ PATCHES TO PORT FROM 2.1
       choice or language negotiation. If user's choice doesn't exist, it
       falls back to negotiation again.
       modules/mappers/mod_negotiation.c r1.110
+      +1: nd
+
+    * Extend the SetEnvIf directive to capture subexpressions of the
+      matched value. This is related to the backport proposal above ... ;-)
+      modules/metadata/mod_setenvif.c r1.42
       +1: nd
 
     * Fix If header handling to ignore non-mod_dav locks. (PR 16452)
