@@ -56,6 +56,5 @@ fi
 dnl ## Check for library functions
 
 AC_CHECK_FUNCS(
-difftime \
 syslog \
 )
