@@ -629,7 +629,7 @@ AP_DECLARE(void) ap_log_pid(apr_pool_t *p, const char *filename)
 AP_DECLARE(apr_status_t) ap_read_pid(apr_pool_t *p, const char *filename,
                                      pid_t *mypid)
 {
-    const int BUFFER_SIZE = sizeof(long) * 3 + 2; /* see apr_ltoa */
+    const apr_size_t BUFFER_SIZE = sizeof(long) * 3 + 2; /* see apr_ltoa */
     apr_file_t *pid_file = NULL;
     apr_status_t rv;
     const char *fname;
