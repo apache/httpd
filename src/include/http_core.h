@@ -168,6 +168,7 @@ typedef struct {
   
     char *access_name;
     array_header *sec;
+    array_header *sec_url;
 } core_server_config;
 
 #endif

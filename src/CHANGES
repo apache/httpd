@@ -1,3 +1,6 @@
+  *) Add new <Location> directive, similar to <Directory>, but protects
+     URLs instead of directories. [Alexei Kosut]
+
   *) Allow ErrorDocument directive to also be used from .htaccess files.
      This is enabled/disabled by using the FileInfo flag with 
      AllowOverrides [Mark Cox]

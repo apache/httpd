@@ -192,14 +192,69 @@ int directory_walk (request_rec *r)
     core_server_config *sconf = get_module_config (r->server->module_config,
 						   &core_module);
     array_header *sec_array = copy_array (r->pool, sconf->sec);
+    array_header *url_array = copy_array (r->pool, sconf->sec_url);
+    void *per_dir_defaults = r->server->lookup_defaults;
     
     core_dir_config **sec = (core_dir_config **)sec_array->elts;
     int num_sec = sec_array->nelts;
-    void *per_dir_defaults = r->server->lookup_defaults;
     char *test_filename = pstrdup (r->pool, r->filename);
+
+    core_dir_config **url = (core_dir_config **)url_array->elts;
+    int num_url = url_array->nelts;
+    char *test_location = pstrdup (r->pool, r->uri);
 
     int num_dirs, res;
     int i;
+
+    /* First, go through the location entries, and check for matches. */
+
+    if (num_url) {
+        void *this_conf, *entry_config;
+	core_dir_config *entry_core;
+	char *entry_url;
+	int j;
+
+/* 
+ * we apply the directive sections in some order; should really try them
+ * with the most general first.
+ */
+	for (j = 0; j < num_url; ++j) {
+
+	    entry_config = url[j];
+	    if (!entry_config) continue;
+	    
+	    entry_core =(core_dir_config *)
+		get_module_config(entry_config, &core_module);
+	    entry_url = entry_core->d;
+
+	    this_conf = NULL;
+	    if (is_matchexp(entry_url)) {
+		if (!strcmp_match(test_location, entry_url))
+		    this_conf = entry_config;
+	    }
+	    else if (!strncmp (test_location, entry_url, strlen(entry_url)))
+	        this_conf = entry_config;
+
+	    if (this_conf)
+	        per_dir_defaults = merge_per_dir_configs (r->pool,
+					    per_dir_defaults, this_conf);
+	}
+
+    }
+
+    /* Are we dealing with a file? If not, we can (hopefuly) safely assume
+     * we have a handler that doesn't require one, but for safety's sake,
+     * and so we have something find_types() can get something out of,
+     * fake one. But don't run through the directory entries.
+     */
+
+    if (test_filename == NULL) {
+        r->filename = pstrdup(r->pool, r->uri);
+	r->finfo.st_mode = 0;	/* Not really a file... */
+        r->per_dir_config = per_dir_defaults;
+
+        return OK;
+    }
 
     /* Go down the directory hierarchy.  Where we have to check for symlinks,
      * do so.  Where a .htaccess file has permission to override anything,
@@ -217,10 +272,6 @@ int directory_walk (request_rec *r)
 	char *entry_dir;
 	int j;
 
-/* 
- * we apply the directive sections in some order; should really try them
- * with the most general first.
- */
 	for (j = 0; j < num_sec; ++j) {
 
 	    entry_config = sec[j];
@@ -231,10 +282,11 @@ int directory_walk (request_rec *r)
 	    entry_dir = entry_core->d;
 
 	    this_conf = NULL;
-	    if (is_matchexp(entry_dir))
-		if (strcmp_match(test_filename, entry_dir) == 0)
+	    if (is_matchexp(entry_dir)) {
+		if (!strcmp_match(test_filename, entry_dir))
 		    this_conf = entry_config;
-	    else if (strcmp (test_filename, entry_dir) == 0)
+	    }
+	    else if (!strncmp (test_filename, entry_dir, strlen(entry_dir)))
 	        this_conf = entry_config;
 
 	    if (this_conf)

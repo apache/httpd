@@ -135,6 +135,7 @@ void *create_core_server_config (pool *a, server_rec *s)
     conf->access_name = is_virtual ? NULL : DEFAULT_ACCESS_FNAME;
     conf->document_root = is_virtual ? NULL : DOCUMENT_LOCATION;
     conf->sec = make_array (a, 40, sizeof(void *));
+    conf->sec_url = make_array (a, 40, sizeof(void *));
     
     return (void *)conf;
 }
@@ -150,6 +151,7 @@ void *merge_core_server_configs (pool *p, void *basev, void *virtv)
     if (!conf->access_name) conf->access_name = base->access_name;
     if (!conf->document_root) conf->document_root = base->document_root;
     conf->sec = append_arrays (p, virt->sec, base->sec);
+    conf->sec_url = append_arrays (p, virt->sec_url, base->sec_url);
 
     return conf;
 }
@@ -165,6 +167,15 @@ void add_per_dir_conf (server_rec *s, void *dir_config)
     void **new_space = (void **) push_array (sconf->sec);
     
     *new_space = dir_config;
+}
+
+void add_per_url_conf (server_rec *s, void *url_config)
+{
+    core_server_config *sconf = get_module_config (s->module_config,
+						   &core_module);
+    void **new_space = (void **) push_array (sconf->sec_url);
+    
+    *new_space = url_config;
 }
 
 /*****************************************************************
@@ -513,6 +524,43 @@ char *dirsection (cmd_parms *cmd, void *dummy, char *arg)
     return errmsg;
 }
 
+static char *end_url_magic = "</Location> outside of any <Location> section";
+
+char *end_urlsection (cmd_parms *cmd, void *dummy) {
+    return end_url_magic;
+}
+
+char *urlsection (cmd_parms *cmd, void *dummy, char *arg)
+{
+    char *errmsg, *endp = strrchr (arg, '>');
+    int old_overrides = cmd->override;
+    char *old_path = cmd->path;
+    core_dir_config *conf;
+
+    void *new_url_conf = create_per_dir_config (cmd->pool);
+
+    if (endp) *endp = '\0';
+
+    if (cmd->path) return "<Location> sections don't nest";
+    if (cmd->limited != -1) return "Can't have <Location> within <Limit>";
+    
+    cmd->path = getword_conf (cmd->pool, &arg);
+    cmd->override = OR_ALL|ACCESS_CONF;
+
+    errmsg = srm_command_loop (cmd, new_url_conf);
+
+    conf = (core_dir_config *)get_module_config(new_url_conf, &core_module);
+    conf->d = pstrdup(cmd->pool, cmd->path);	/* No mangling, please */
+
+    add_per_url_conf (cmd->server, new_url_conf);
+    
+    cmd->path = old_path;
+    cmd->override = old_overrides;
+
+    if (errmsg == end_url_magic) return NULL;
+    return errmsg;
+}
+
 /* httpd.conf commands... beginning with the <VirtualHost> business */
 
 char *end_virthost_magic = "</Virtualhost> out of place";
@@ -707,6 +755,8 @@ command_rec core_cmds[] = {
 
 { "<Directory", dirsection, NULL, RSRC_CONF, RAW_ARGS, NULL },
 { "</Directory>", end_dirsection, NULL, ACCESS_CONF, NO_ARGS, NULL },
+{ "<Location", urlsection, NULL, RSRC_CONF, RAW_ARGS, NULL },
+{ "</Location>", end_urlsection, NULL, ACCESS_CONF, NO_ARGS, NULL },
 { "<Limit", limit, NULL, OR_ALL, RAW_ARGS, NULL },
 { "</Limit>", endlimit, NULL, OR_ALL, RAW_ARGS, NULL },
 { "AuthType", set_string_slot, (void*)XtOffsetOf(core_dir_config, auth_type),
