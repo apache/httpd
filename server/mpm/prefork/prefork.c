@@ -56,34 +56,6 @@
  * University of Illinois, Urbana-Champaign.
  */
 
-/*
- * httpd.c: simple http daemon for answering WWW file requests
- *
- * 
- * 03-21-93  Rob McCool wrote original code (up to NCSA HTTPd 1.3)
- * 
- * 03-06-95  blong
- *  changed server number for child-alone processes to 0 and changed name
- *   of processes
- *
- * 03-10-95  blong
- *      Added numerous speed hacks proposed by Robert S. Thau (rst@ai.mit.edu) 
- *      including set group before fork, and call gettime before to fork
- *      to set up libraries.
- *
- * 04-14-95  rst / rh
- *      Brandon's code snarfed from NCSA 1.4, but tinkered to work with the
- *      Apache server, and also to have child processes do accept() directly.
- *
- * April-July '95 rst
- *      Extensive rework for Apache.
- */
-
-/* TODO: this is a cobbled together prefork MPM example... it should mostly
- * TODO: behave like apache-1.3... here's a short list of things I think
- * TODO: need cleaning up still:
- */
-
 #include "apr.h"
 #include "apr_portable.h"
 #include "apr_strings.h"
