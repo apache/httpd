@@ -809,7 +809,11 @@ static apr_off_t get_body(char *buffer, apr_size_t *len, const char *tag,
         return -1;
     }
 
-    strncpy(buffer + *len, tag, taglen);
+    /* put a copy of the tag *after* the data read from the file
+     * so that strstr() will find something with no reliance on
+     * terminating '\0'
+     */
+    memcpy(buffer + *len, tag, taglen);
     endbody = strstr(buffer, tag);
     if (endbody == buffer + *len) {
         return -1;
