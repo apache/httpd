@@ -1,11 +1,18 @@
 Changes with Apache 1.2b5
 
+  *) Add ProxyBlock directive w/IP address caching. Add IP address
+     caching to NoCache directive as well. ProxyBlock works with all
+     handlers; NoCache now also works with FTP for anonymous logins.
+     Still more code cleanup. [Chuck Murcko]
+
+  *) Fix byte ordering problems for REMOTE_PORT [Chuck Murcko]
+
   *) suEXEC wrapper was freeing memory that had not been malloc'ed.
 
   *) Correctly allow access and auth directives in <Files> sections in
      server config files. [Alexei Kosut]
 
-  *) Fix bug with ServerPath that could cause certaub files to be not
+  *) Fix bug with ServerPath that could cause certain files to be not
      found by the server. [Alexei Kosut] 
 
 Changes with Apache 1.2b4:
