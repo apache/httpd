@@ -93,7 +93,7 @@ void *create_db_auth_dir_config (pool *p, char *d)
     return pcalloc (p, sizeof(db_auth_config_rec));
 }
 
-char *set_db_slot (cmd_parms *cmd, void *offset, char *f, char *t)
+const char *set_db_slot (cmd_parms *cmd, void *offset, char *f, char *t)
 {
     if (!t || strcmp(t, "db"))
         return DECLINE_CMD;
@@ -216,7 +216,8 @@ int db_check_auth(request_rec *r) {
     require_line *reqs = reqs_arr ? (require_line *)reqs_arr->elts : NULL;
 
     register int x;
-    char *t, *w;
+    const char *t;
+    char *w;
 
     if (!sec->auth_dbgrpfile) return DECLINED;
     if (!reqs_arr) return DECLINED;
@@ -229,7 +230,8 @@ int db_check_auth(request_rec *r) {
         w = getword(r->pool, &t, ' ');
 	
         if(!strcmp(w,"group") && sec->auth_dbgrpfile) {
-           char *orig_groups,*groups,*v;
+	   const char *orig_groups,*groups;
+           char *v;
 
            if (!(groups = get_db_grp(r, user, sec->auth_dbgrpfile))) {
                sprintf(errstr,"user %s not in DB group file %s",
