@@ -91,7 +91,7 @@
 <li><a href="mod_auth_ldap.html#authldapgroupattribute">AuthLDAPGroupAttribute</a></li>
 <li><a href="mod_auth_ldap.html#authldapgroupattributeisdn">AuthLDAPGroupAttributeIsDN</a></li>
 <li><a href="mod_auth_ldap.html#authldapremoteuserisdn">AuthLDAPRemoteUserIsDN</a></li>
-<li><a href="mod_auth_ldap.html#authldapstarttls directive">AuthLDAPStartTLS directive</a></li>
+<li><a href="mod_auth_ldap.html#authldapstarttls">AuthLDAPStartTLS</a></li>
 <li><a href="mod_auth_ldap.html#authldapurl">AuthLDAPUrl</a></li>
 <li><a href="core.html#authname">AuthName</a></li>
 <li><a href="core.html#authtype">AuthType</a></li>

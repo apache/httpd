@@ -713,7 +713,7 @@ environment variable</description>
 </directivesynopsis>
 
 <directivesynopsis>
-<name>AuthLDAPStartTLS directive</name>
+<name>AuthLDAPStartTLS</name>
 <description>Use a secure TLS connection to the LDAP server</description>
 <syntax>AuthLDAPStartTLS on|off</syntax>
 <default>AuthLDAPStartTLS off</default>

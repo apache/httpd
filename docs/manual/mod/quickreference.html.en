@@ -163,7 +163,7 @@ authenticating the user if this one fails</td></tr>
 group membership</td></tr>
 <tr><td><a href="mod_auth_ldap.html#authldapremoteuserisdn">AuthLDAPRemoteUserIsDN on|off</a></td><td /><td>dh</td><td>X</td></tr><tr><td class="descr" colspan="4">Use the DN of the client username to set the REMOTE_USER
 environment variable</td></tr>
-<tr class="odd"><td><a href="mod_auth_ldap.html#authldapstarttls directive">AuthLDAPStartTLS on|off</a></td><td /><td>dh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Use a secure TLS connection to the LDAP server</td></tr>
+<tr class="odd"><td><a href="mod_auth_ldap.html#authldapstarttls">AuthLDAPStartTLS on|off</a></td><td> off </td><td>dh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Use a secure TLS connection to the LDAP server</td></tr>
 <tr><td><a href="mod_auth_ldap.html#authldapurl">AuthLDAPUrl <em>url</em></a></td><td /><td>dh</td><td>X</td></tr><tr><td class="descr" colspan="4">URL specifying the LDAP search parameters</td></tr>
 <tr class="odd"><td><a href="core.html#authname">AuthName <var>auth-domain</var></a></td><td /><td>dh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Authorization realm for use in HTTP
 authentication</td></tr>
