@@ -1,6 +1,6 @@
 APACHE 2.x ROADMAP
 ==================
-Last modified at [$Date: 2002/10/17 17:59:17 $]
+Last modified at [$Date: 2002/10/18 01:08:38 $]
 
 
 INTRODUCTION
@@ -67,8 +67,8 @@ keeping the stable tree as safe as possible:
     to the 2.4-stable release if they cannot be incorporated in the current
     stable release due to API change requirements.
 
-  * The stable CVS tree must not remain unstable at any time.  Atomic commits 
-    must be used to introduce code from the development version to the stable 
+  * The stable CVS tree should not remain unstable at any time.  Atomic commits 
+    aught be used to introduce code from the development version to the stable 
     tree.  At any given time a security release may be in preparation, 
     unbeknownst to other contributors.  At any given time, testers may be
     checking out CVS head to confirm that a bug has been corrected.  And as
@@ -119,6 +119,20 @@ shortcomings so that they can be addressed before the stable release.  The
 entire onus is on the third party module author to anticipate the needs of
 their module before the stable release is created, once it has been released
 they will be stuck with that API for the lifetime of that stable release.
+
+
+ALL RELEASES
+------------
+In order to avoid 'skipped' release numbers, the Release Manager will generally
+roll a release candidate (APACHE_#_#_#_RC#) tag.  This is true of both the
+stable as well as the development tree.  Release Candidate tarballs will be
+announced to the stable-testers@httpd.apache.org for the stable tree, or to
+the current-testers@httpd.apache.org list for the development tree.
+
+The final APACHE_#_#_# tag will not exist until the APACHE_#_#_#_RC# candidate
+has passed the usual votes to release that version.  Only then is the final
+tarball packaged, removing all -rc# designations from the version number, and
+tagging the tree with the release number.
 
 
 WORKS IN PROGRESS
