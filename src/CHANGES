@@ -1,5 +1,10 @@
 Changes with Apache 1.3b7
 
+  *) The proxy cache would store an incorrect content-length in the cached
+     file copy after a cache update. That resulted in repeated fetching
+     of the original copy instead of using the cached copy.
+     [Ernst Kloppenburg <kloppen@isr.uni-stuttgart.de>] PR#2094
+
   *) The Makefiles assumed that DSO files are build via $(LD). This
      is broken for two reasons: First we never defined at least LD=ld
      somewhere to make sure this works (it was silently assumed that most Make

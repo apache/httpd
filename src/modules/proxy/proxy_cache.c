@@ -770,7 +770,7 @@ int ap_proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
     }
 
 /* get the content-length header */
-    clen = ap_proxy_get_header(c->hdrs, "Content-Length");
+    clen = ap_proxy_get_header(resp_hdrs, "Content-Length");
     if (clen == NULL)
 	c->len = -1;
     else
