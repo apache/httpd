@@ -438,7 +438,7 @@ static const command_rec cookie_log_cmds[] = {
 
 static void register_hooks(apr_pool_t *p)
 {
-    ap_hook_fixups(spot_cookie,NULL,NULL,APR_HOOK_MIDDLE);
+    ap_hook_fixups(spot_cookie,NULL,NULL,APR_HOOK_FIRST);
 }
 
 module AP_MODULE_DECLARE_DATA usertrack_module = {

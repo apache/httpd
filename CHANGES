@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_usertrack: Run the fixups hook before other modules.
+     PR 29755. [Paul Querna]
+
   *) mod_authnz_ldap: Added the directive "Requires ldap-attribute" that
      allows the module to only authorize a user if the attribute value
      specified matches the value of the user object. PR 31913
