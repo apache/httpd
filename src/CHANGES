@@ -1,5 +1,8 @@
 Changes with Apache 1.3.2
 
+  *) Make status module aware of DNS and logging states, even if
+     STATUS not defined.  [Jim Jagielski]
+
   *) Fix a problem with the new OS/2 mutexes.  [Brian Havard]
 
   *) Enhance mod_spelling so that CheckSpelling can be used in

@@ -555,9 +555,7 @@ API_EXPORT(const char *) ap_get_remote_host(conn_rec *conn, void *dir_config,
     struct in_addr *iaddr;
     struct hostent *hptr;
     int hostname_lookups;
-#ifdef STATUS
     int old_stat = SERVER_DEAD;	/* we shouldn't ever be in this state */
-#endif
 
     /* If we haven't checked the host name, and we want to */
     if (dir_config) {
@@ -577,10 +575,8 @@ API_EXPORT(const char *) ap_get_remote_host(conn_rec *conn, void *dir_config,
 	&& conn->remote_host == NULL
 	&& (type == REMOTE_DOUBLE_REV
 	    || hostname_lookups != HOSTNAME_LOOKUP_OFF)) {
-#ifdef STATUS
 	old_stat = ap_update_child_status(conn->child_num, SERVER_BUSY_DNS,
 					  (request_rec*)NULL);
-#endif /* STATUS */
 	iaddr = &(conn->remote_addr.sin_addr);
 	hptr = gethostbyaddr((char *)iaddr, sizeof(struct in_addr), AF_INET);
 	if (hptr != NULL) {
@@ -605,12 +601,10 @@ API_EXPORT(const char *) ap_get_remote_host(conn_rec *conn, void *dir_config,
 	    return NULL;
 	}
     }
-#ifdef STATUS
     if (old_stat != SERVER_DEAD) {
 	(void)ap_update_child_status(conn->child_num, old_stat,
 				     (request_rec*)NULL);
     }
-#endif /* STATUS */
 
 /*
  * Return the desired information; either the remote DNS name, if found,

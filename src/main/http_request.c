@@ -1180,18 +1180,16 @@ static void process_request_internal(request_rec *r)
 
 void ap_process_request(request_rec *r)
 {
-#ifdef STATUS
     int old_stat;
 
+#ifdef STATUS
     ap_time_process_request(r->connection->child_num, START_PREQUEST);
 #endif
 
     process_request_internal(r);
 
-#ifdef STATUS
     old_stat = ap_update_child_status(r->connection->child_num,
                                    SERVER_BUSY_LOG, r);
-#endif
 
     /*
      * We want to flush the last packet if this isn't a pipelining connection
@@ -1203,8 +1201,8 @@ void ap_process_request(request_rec *r)
     ap_bhalfduplex(r->connection->client);
     ap_log_transaction(r);
 
-#ifdef STATUS
     (void) ap_update_child_status(r->connection->child_num, old_stat, r);
+#ifdef STATUS
     ap_time_process_request(r->connection->child_num, STOP_PREQUEST);
 #endif
 }
