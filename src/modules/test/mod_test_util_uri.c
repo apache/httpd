@@ -159,13 +159,12 @@ static unsigned iterate_pieces(request_rec *r, const test_uri_t *pieces, int row
 	strp = input_uri;
 	expect = 0;
 
-	if (u & T_scheme) {
+	/* a scheme requires a hostinfo and vice versa */
+	/* a hostinfo requires a hostname */
+	if (u & (T_scheme|T_user|T_password|T_hostname|T_port_str)) {
 	    expect |= T_scheme;
 	    strp = my_stpcpy(strp, pieces->scheme);
 	    *strp++ = ':';
-	}
-	/* can't have hostinfo without hostname */
-	if (u & (T_user|T_password|T_hostname|T_port_str)) {
 	    *strp++ = '/';
 	    *strp++ = '/';
 	    /* can't have password without user */
@@ -303,9 +302,21 @@ the values we expected for each piece (resp.).
     HEADER(fragment);
 #undef HEADER
 
-    total_failures = 0;
-    for (i = 0; i < sizeof(uri_tests) / sizeof(uri_tests[0]); ++i) {
-	total_failures += iterate_pieces(r, &uri_tests[i], i);
+    if (r->args) {
+	i = atoi(r->args);
+	total_failures = iterate_pieces(r, &uri_tests[i], i);
+    }
+    else {
+	total_failures = 0;
+	for (i = 0; i < sizeof(uri_tests) / sizeof(uri_tests[0]); ++i) {
+	    total_failures += iterate_pieces(r, &uri_tests[i], i);
+	    if (total_failures > 256) {
+		rprintf(r, "</table>\n<b>Stopped early to save your browser "
+			   "from certain death!</b>\nTOTAL FAILURES = %u\n",
+			   total_failures);
+		return OK;
+	    }
+	}
     }
     rprintf(r, "</table>\nTOTAL FAILURES = %u\n", total_failures);
 
