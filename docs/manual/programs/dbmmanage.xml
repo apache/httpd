@@ -27,7 +27,7 @@
 <summary>
     <p><code>dbmmanage</code> is used to create and update the DBM format files
     used to store usernames and password for basic authentication of HTTP users
-    via <module>mod_auth_dbm</module>.
+    via <module>mod_authn_dbm</module>.
     Resources available from the Apache HTTP server can be restricted to just
     the users listed in the files created by <code>dbmmanage</code>. This
     program can only be used when the usernames are stored in a DBM file. To
