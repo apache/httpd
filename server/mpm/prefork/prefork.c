@@ -518,6 +518,7 @@ int ap_graceful_stop_signalled(void)
 static void child_main(int child_num_arg)
 {
     apr_pool_t *ptrans;
+    apr_allocator_t *allocator;
     conn_rec *current_conn;
     apr_status_t status = APR_EINIT;
     int i;
@@ -537,7 +538,9 @@ static void child_main(int child_num_arg)
     /* Get a sub context for global allocations in this child, so that
      * we can have cleanups occur when the child exits.
      */
-    apr_pool_create_ex(&pchild, pconf, NULL, APR_POOL_FNEW_ALLOCATOR);
+    apr_allocator_create(&allocator);
+    apr_pool_create_ex(&pchild, pconf, NULL, allocator);
+    apr_allocator_set_owner(allocator, pchild);
 
     apr_pool_create(&ptrans, pchild);
     apr_pool_tag(ptrans, "transaction");
