@@ -189,6 +189,21 @@ int gethostname(char *name, int namelen);
 #define SELECT_NEEDS_CAST
 #define HAVE_SYSLOG 1
 
+#elif defined(HPUX11)
+#ifndef _HPUX_SOURCE
+#define _HPUX_SOURCE
+#endif
+#define HAVE_SHMGET
+#define USE_SHMGET_SCOREBOARD
+#undef  HAVE_GMTOFF
+#define HAVE_FCNTL_SERIALIZED_ACCEPT
+#define HAVE_MMAP
+#define USE_MMAP_FILES
+#define NO_KILLPG
+#undef  NO_SETSID
+#define HAVE_SYSLOG
+#define AP_ENABLE_EXCEPTION_HOOK
+
 #elif defined(HPUX) || defined(HPUX10)
 #undef HAVE_GMTOFF
 #define NO_KILLPG
@@ -204,24 +219,6 @@ int gethostname(char *name, int namelen);
 #define SELECT_NEEDS_CAST
 typedef int rlim_t;
 #endif
-
-#elif defined(HPUX11)
-#ifndef _HPUX_SOURCE
-#define _HPUX_SOURCE
-#endif
-#define HAVE_SHMGET
-#define USE_SHMGET_SCOREBOARD
-#undef  HAVE_GMTOFF
-#define HAVE_FCNTL_SERIALIZED_ACCEPT
-/* feeling brave?  want to try using POSIX mutexes? */
-/* #define HAVE_MMAP */
-/* #define USE_MMAP_SCOREBOARD */
-/* #define USE_MMAP_FILES */
-/* #define HAVE_PTHREAD_SERIALIZED_ACCEPT */
-#define NO_KILLPG
-#undef  NO_SETSID
-#define HAVE_SYSLOG
-#define AP_ENABLE_EXCEPTION_HOOK
 
 #elif defined(AIX)
 #undef HAVE_GMTOFF
