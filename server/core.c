@@ -2616,11 +2616,11 @@ static apr_status_t send_the_file(conn_rec *c, apr_file_t *fd,
                                   apr_size_t length, apr_size_t *nbytes) 
 {
     apr_status_t rv = APR_SUCCESS;
-    apr_int32_t togo;         /* Remaining number of bytes in the file to send */
+    apr_int32_t togo;        /* Remaining number of bytes in the file to send */
     apr_size_t sendlen = 0;
     apr_size_t bytes_sent;
     apr_int32_t i;
-    apr_off_t o;              /* Track the file offset for partial writes */
+    apr_off_t o;             /* Track the file offset for partial writes */
     char buffer[8192];
 
     *nbytes = 0;
@@ -2659,9 +2659,6 @@ static apr_status_t send_the_file(conn_rec *c, apr_file_t *fd,
                 o += bytes_sent;       /* o is where we are in the buffer */
                 *nbytes += bytes_sent;
                 togo -= bytes_sent;    /* track how much of the file we've sent */
-            } else {
-                ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL,
-                             "Failed to send data in send_the_file");
             }
         }
     }
@@ -3208,7 +3205,8 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
 
         apr_brigade_destroy(b);
         if (rv != APR_SUCCESS) {
-            /* XXX: log the error */
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, c->base_server,
+               "core_output_filter: writing data to the network");
             if (more)
                 apr_brigade_destroy(more);
             return rv;
