@@ -505,6 +505,7 @@ static void process_socket(apr_pool_t *p, apr_socket_t *sock, long conn_id)
     current_conn = ap_run_create_connection(p, ap_server_conf, sock, conn_id);
     if (current_conn) {
         ap_process_connection(current_conn);
+        ap_lingering_close(current_conn);
     }
 }
 

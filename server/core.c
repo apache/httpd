@@ -3095,10 +3095,6 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
             (nbytes + flen < AP_MIN_BYTES_TO_WRITE) && !APR_BUCKET_IS_FLUSH(last_e))
             || (nbytes + flen < AP_MIN_BYTES_TO_WRITE && APR_BUCKET_IS_EOS(last_e) && c->keepalive)) {
 
-            if (ctx->subpool == NULL) {
-                apr_pool_create(&ctx->subpool, f->c->pool);
-            }
-
             /* NEVER save an EOS in here.  If we are saving a brigade with 
              * an EOS bucket, then we are doing keepalive connections, and 
              * we want to process to second request fully.
@@ -3110,7 +3106,7 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
                  * after the request_pool is cleared.
                  */ 
                 if (ctx->b == NULL) {
-                    ctx->b = apr_brigade_create(ctx->subpool);
+                    ctx->b = apr_brigade_create(c->pool);
                 }
 
                 APR_BRIGADE_FOREACH(bucket, b) {
@@ -3135,13 +3131,11 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
                         return rv;
                     }
                     apr_brigade_write(ctx->b, NULL, NULL, str, n);
-                    ctx->subpool_has_stuff = 1;
                 }
                 apr_brigade_destroy(b);
             }
             else {
-                ap_save_brigade(f, &ctx->b, &b, ctx->subpool);
-                ctx->subpool_has_stuff = 1;
+                ap_save_brigade(f, &ctx->b, &b, c->pool);
             }
             return APR_SUCCESS;
         }
@@ -3215,11 +3209,6 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
         b = more;
         more = NULL;
     }  /* end while () */
-
-    if (ctx->subpool && ctx->subpool_has_stuff) {
-        apr_pool_clear(ctx->subpool);
-        ctx->subpool_has_stuff = 0;
-    }
 
     return APR_SUCCESS;
 }
@@ -3321,8 +3310,6 @@ static conn_rec *core_create_conn(apr_pool_t *ptrans, server_rec *server,
     net->client_socket = csd;
  
     net->c->id = conn_id;
- 
-    apr_pool_cleanup_register(ptrans, net, ap_lingering_close, apr_pool_cleanup_null);
  
     ap_set_module_config(net->c->conn_config, &core_module, csd);
     ap_add_input_filter("CORE_IN", net, NULL, net->c);

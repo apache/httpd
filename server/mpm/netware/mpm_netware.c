@@ -508,6 +508,7 @@ got_listener:
         current_conn = ap_run_create_connection(ptrans, ap_server_conf, csd, my_worker_num);
         if (current_conn) {
             ap_process_connection(current_conn);
+            ap_lingering_close(current_conn);
         }
         
     }

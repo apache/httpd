@@ -68,6 +68,7 @@
 #include "ap_mpm.h"
 #include "mpm_default.h"
 #include "http_config.h"
+#include "http_core.h"
 #include "http_vhost.h"
 #include "scoreboard.h"
 #include "http_log.h"
@@ -153,20 +154,24 @@ AP_CORE_DECLARE(void) ap_flush_conn(conn_rec *c)
  * all the response data has been sent to the client.
  */
 #define SECONDS_TO_LINGER  2
-apr_status_t ap_lingering_close(void *dummy)
+AP_DECLARE(void) ap_lingering_close(conn_rec *c)
 {
     char dummybuf[512];
     apr_size_t nbytes = sizeof(dummybuf);
     apr_status_t rc;
     apr_int32_t timeout;
     apr_int32_t total_linger_time = 0;
-    core_net_rec *net = dummy;
+    apr_socket_t *csd = ap_get_module_config(c->conn_config, &core_module);
 
-    ap_update_child_status(AP_CHILD_THREAD_FROM_ID(net->c->id), SERVER_CLOSING, NULL);
+    if (!csd) {
+        return;
+    }
+
+    ap_update_child_status(AP_CHILD_THREAD_FROM_ID(c->id), SERVER_CLOSING, NULL);
 
 #ifdef NO_LINGCLOSE
-    ap_flush_conn(net->c);	/* just close it */
-    apr_socket_close(net->client_socket);
+    ap_flush_conn(c);	/* just close it */
+    apr_socket_close(csd);
     return;
 #endif
 
@@ -176,20 +181,20 @@ apr_status_t ap_lingering_close(void *dummy)
      */
 
     /* Send any leftover data to the client, but never try to again */
-    ap_flush_conn(net->c);
+    ap_flush_conn(c);
 
-    if (net->c->aborted) {
-        apr_socket_close(net->client_socket);
-        return APR_SUCCESS;
+    if (c->aborted) {
+        apr_socket_close(csd);
+        return;
     }
 
     /* Shut down the socket for write, which will send a FIN
      * to the peer.
      */
-    if (apr_shutdown(net->client_socket, APR_SHUTDOWN_WRITE) != APR_SUCCESS || 
-        net->c->aborted) {
-        apr_socket_close(net->client_socket);
-        return APR_SUCCESS;
+    if (apr_shutdown(csd, APR_SHUTDOWN_WRITE) != APR_SUCCESS || 
+        c->aborted) {
+        apr_socket_close(csd);
+        return;
     }
 
     /* Read all data from the peer until we reach "end-of-file" (FIN
@@ -198,11 +203,11 @@ apr_status_t ap_lingering_close(void *dummy)
      * which seems to work well), close the connection.
      */
     timeout = SECONDS_TO_LINGER * APR_USEC_PER_SEC;
-    apr_setsocketopt(net->client_socket, APR_SO_TIMEOUT, timeout);
-    apr_setsocketopt(net->client_socket, APR_INCOMPLETE_READ, 1);
+    apr_setsocketopt(csd, APR_SO_TIMEOUT, timeout);
+    apr_setsocketopt(csd, APR_INCOMPLETE_READ, 1);
     for (;;) {
         nbytes = sizeof(dummybuf);
-        rc = apr_recv(net->client_socket, dummybuf, &nbytes);
+        rc = apr_recv(csd, dummybuf, &nbytes);
         if (rc != APR_SUCCESS || nbytes == 0) break;
 
         total_linger_time += SECONDS_TO_LINGER;
@@ -211,8 +216,8 @@ apr_status_t ap_lingering_close(void *dummy)
         }
     }
 
-    apr_socket_close(net->client_socket);
-    return APR_SUCCESS;
+    apr_socket_close(csd);
+    return;
 }
 
 AP_CORE_DECLARE(void) ap_process_connection(conn_rec *c)
