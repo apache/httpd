@@ -405,8 +405,8 @@ CORE_EXPORT(const char *) ap_init_virtual_host(ap_pool_t *p, const char *hostnam
 				server_rec *main_server, server_rec **);
 void ap_process_resource_config(server_rec *s, const char *fname, 
                  ap_directive_t **conftree, ap_pool_t *p, ap_pool_t *ptemp);
-void ap_process_config_tree(server_rec *s, ap_directive_t *conftree,
-                            ap_pool_t *p, ap_pool_t *ptemp);
+API_EXPORT(void) ap_process_config_tree(server_rec *s, ap_directive_t *conftree,
+                                        ap_pool_t *p, ap_pool_t *ptemp);
 
 
 /* For individual MPMs... */

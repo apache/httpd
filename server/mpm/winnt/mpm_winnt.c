@@ -2173,6 +2173,7 @@ API_EXPORT(int) ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s )
 static void winnt_hooks(void)
 {
     one_process = 0;
+    ap_hook_pre_config(winnt_pre_config, NULL, NULL, AP_HOOK_MIDDLE);
     ap_hook_post_config(winnt_post_config, NULL, NULL, 0);
 }
 
@@ -2285,7 +2286,6 @@ LISTEN_COMMANDS
 MODULE_VAR_EXPORT module mpm_winnt_module = {
     MPM20_MODULE_STUFF,
     winnt_rewrite_args,         /* hook to run before apache parses args */
-    winnt_pre_config,           /* hook run before configuration is read */
     NULL,			/* create per-directory config structure */
     NULL,			/* merge per-directory config structures */
     NULL,			/* create per-server config structure */
