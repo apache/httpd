@@ -216,7 +216,6 @@
    required network resource.</STRONG></P>
 
 
-
 <H2><A NAME="trouble">Troubleshooting Apache for Windows as a Service</A></H2>
 
 <P>When starting Apache as a service you may encounter an error message from
@@ -227,10 +226,17 @@
   Error 1067; The process terminated unexpectedly.
 </PRE>
 <P>You will get this error if there is any problem starting Apache. In order to see
-  what is causing the problem you should follow the instructions
-	for <a href="windows.html#test">Testing Apache at the Command Prompt</a>.
-</P>
-	
+   what is causing the problem you should follow the instructions
+   for <a href="windows.html#test">Testing Apache at the Command Prompt</a>.</P>
+
+<P>Also, Apache 1.3.13 now records startup errors in the Application Event Log
+   under Windows NT/2000, if Apache is run as a service.  Run the Event Viewer
+   and select <U>L</U>og ... <U>A</U>pplication to see these events.
+
+<P><STRONG>Check the Application Event Log with the Event Viewer in case of any
+   problems, even if no error message pops up to warn you that an error 
+   occured.</STRONG></P>
+
 <H2><A NAME="cmdline">Running Apache for Windows from the Command Line</A></H2>
 
 For details on controlling Apache service from the command line, please refer to
