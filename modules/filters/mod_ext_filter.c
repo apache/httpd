@@ -222,9 +222,10 @@ static const char *parse_cmd(apr_pool_t *p, const char **args, ef_filter_t *filt
     else
     {
         /* simple path */
-        /* Allocate space for one argv pointer and parse the args. */
-        filter->args = (char **)apr_palloc(p, sizeof(char *));
+        /* Allocate space for two argv pointers and parse the args. */
+        filter->args = (char **)apr_palloc(p, 2 * sizeof(char *));
         filter->args[0] = ap_getword_white(p, args);
+        filter->args[1] = NULL; /* end of args */
     }
     if (!filter->args[0]) {
         return "Invalid cmd= parameter";
