@@ -369,9 +369,21 @@ if (! -x "$apr_bindir/apr-config") {
     exit(1);
 }
 
+my $apu_bindir = get_vars("APU_BINDIR");
+
+if (! -x "$apu_bindir/apu-config") {
+    error("$apu_bindir/apu-config not found!");
+    exit(1);
+}
+
 my $libtool = `$apr_bindir/apr-config --installbuilddir`;
 chomp($libtool);
 $libtool = "$libtool/libtool";
+
+my $apr_includedir = `$apr_bindir/apr-config --includes`;
+chomp($apr_includedir);
+my $apu_includedir = `$apu_bindir/apu-config --includes`;
+chomp($apu_includedir);
 
 if ($opt_c) {
     ##
@@ -435,7 +447,7 @@ if ($opt_c) {
         $la =~ s|\.c$|.la|;
         my $o = $s;
         $o =~ s|\.c$|.o|;
-        push(@cmds, "$libtool $ltflags --mode=compile $CFG_CC $cflags -I$CFG_INCLUDEDIR $opt -c -o $lo $s && touch $slo");
+        push(@cmds, "$libtool $ltflags --mode=compile $CFG_CC $cflags -I$CFG_INCLUDEDIR $apr_includedir $apu_includedir $opt -c -o $lo $s && touch $slo");
         unshift(@objs, $lo);
     }
 
@@ -461,12 +473,6 @@ if ($opt_c) {
     }
 
     if ($opt_p == 1) {
-        my $apu_bindir = get_vars("APU_BINDIR");
-
-        if (! -x "$apu_bindir/apu-config") {
-            error("$apu_bindir/apu-config not found!");
-            exit(1);
-        }
         
         my $apr_libs=`$apr_bindir/apr-config --cflags --ldflags --link-libtool --libs`;
         chomp($apr_libs);
