@@ -93,9 +93,5 @@ void reset_timeout (request_rec *);
 
 void sync_scoreboard_image ();
 int update_child_status (int child_num, int status, request_rec *r);
-int get_child_status (int child_num);
-int count_busy_servers ();
-int count_idle_servers ();
-
 unsigned int set_callback_and_alarm(void (*fn)(int), int x);
 int check_alarm();

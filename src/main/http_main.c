@@ -156,7 +156,6 @@ char *scoreboard_fname;
 char *lock_fname;
 char *server_argv0;
 struct in_addr bind_address;
-listen_rec *listeners;
 int daemons_to_start;
 int daemons_min_free;
 int daemons_max_free;
@@ -164,6 +163,33 @@ int daemons_limit;
 time_t restart_time;
 int suexec_enabled = 0;
 int listenbacklog;
+
+/*
+ * The max child slot ever assigned, preserved across restarts.  Necessary
+ * to deal with MaxClients changes across SIGUSR1 restarts.  We use this
+ * value to optimize routines that have to scan the entire scoreboard.
+ */
+static int max_daemons_limit = -1;
+
+/*
+ * During config time, listeners is treated as a NULL-terminated list.
+ * child_main previously would start at the beginning of the list each time
+ * through the loop, so a socket early on in the list could easily starve out
+ * sockets later on in the list.  The solution is to start at the listener
+ * after the last one processed.  But to do that fast/easily in child_main it's
+ * way more convenient for listeners to be a ring that loops back on itself.
+ * The routine setup_listeners() is called after config time to both open up
+ * the sockets and to turn the NULL-terminated list into a ring that loops back
+ * on itself.
+ *
+ * head_listener is used by each child to keep track of what they consider
+ * to be the "start" of the ring.  It is also set by make_child to ensure
+ * that new children also don't starve any sockets.
+ *
+ * Note that listeners != NULL is ensured by read_config().
+ */
+listen_rec *listeners;
+static listen_rec *head_listener;
 
 char server_root[MAX_STRING_LEN];
 char server_confname[MAX_STRING_LEN];
@@ -919,14 +945,14 @@ static int scoreboard_fd;
 /* XXX: things are seriously screwed if we ever have to do a partial
  * read or write ... we could get a corrupted scoreboard
  */
-static int force_write (int fd, char *buffer, int bufsz)
+static int force_write (int fd, void *buffer, int bufsz)
 {
     int rv, orig_sz = bufsz;
     
     do {
 	rv = write (fd, buffer, bufsz);
 	if (rv > 0) {
-	    buffer += rv;
+	    buffer = (char *)buffer + rv;
 	    bufsz -= rv;
 	}
     } while ((rv > 0 && bufsz > 0) || (rv == -1 && errno == EINTR));
@@ -934,14 +960,14 @@ static int force_write (int fd, char *buffer, int bufsz)
     return rv < 0? rv : orig_sz - bufsz;
 }
 
-static int force_read (int fd, char *buffer, int bufsz)
+static int force_read (int fd, void *buffer, int bufsz)
 {
     int rv, orig_sz = bufsz;
     
     do {
 	rv = read (fd, buffer, bufsz);
 	if (rv > 0) {
-	    buffer += rv;
+	    buffer = (char *)buffer + rv;
 	    bufsz -= rv;
 	}
     } while ((rv > 0 && bufsz > 0) || (rv == -1 && errno == EINTR));
@@ -977,8 +1003,7 @@ void reinit_scoreboard (pool *p)
 
     memset ((char*)scoreboard_image, 0, sizeof(*scoreboard_image));
     scoreboard_image->global.exit_generation=exit_gen;
-    force_write (scoreboard_fd, (char*)scoreboard_image,
-		 sizeof(*scoreboard_image));
+    force_write (scoreboard_fd, scoreboard_image, sizeof(*scoreboard_image));
 #endif
 }
 
@@ -1036,8 +1061,7 @@ void sync_scoreboard_image ()
 {
 #ifdef SCOREBOARD_FILE
     lseek (scoreboard_fd, 0L, 0);
-    force_read (scoreboard_fd, (char*)scoreboard_image,
-		sizeof(*scoreboard_image));
+    force_read (scoreboard_fd, scoreboard_image, sizeof(*scoreboard_image));
 #endif
 }
 
@@ -1046,6 +1070,18 @@ void sync_scoreboard_image ()
 int exists_scoreboard_image ()
 {
     return (scoreboard_image ? 1 : 0);
+}
+
+static inline void put_scoreboard_info(int child_num,
+    short_score *new_score_rec)
+{ 
+#ifndef SCOREBOARD_FILE
+    memcpy(&scoreboard_image->servers[child_num], new_score_rec,
+	   sizeof(short_score));
+#else 
+    lseek(scoreboard_fd, (long)child_num * sizeof(short_score), 0);
+    force_write(scoreboard_fd, new_score_rec, sizeof(short_score));
+#endif
 }
 
 int update_child_status (int child_num, int status, request_rec *r)
@@ -1092,59 +1128,20 @@ int update_child_status (int child_num, int status, request_rec *r)
     }
 #endif
 
-#ifndef SCOREBOARD_FILE
-    memcpy(&scoreboard_image->servers[child_num], &new_score_rec, sizeof new_score_rec);
-#else
-    lseek (scoreboard_fd, (long)child_num * sizeof(short_score), 0);
-    force_write (scoreboard_fd, (char*)&new_score_rec, sizeof(short_score));
-#endif
+    put_scoreboard_info(child_num, &new_score_rec);
 
     return old_status;
 }
 
-void update_scoreboard_global()
-    {
+static void update_scoreboard_global()
+{
 #ifdef SCOREBOARD_FILE
     lseek(scoreboard_fd,
 	  (char *)&scoreboard_image->global-(char *)scoreboard_image,0);
-    force_write(scoreboard_fd,(char *)&scoreboard_image->global,
+    force_write(scoreboard_fd,&scoreboard_image->global,
 		sizeof scoreboard_image->global);
 #endif
-    }
-
-int get_child_status (int child_num)
-{
-    if (child_num<0 || child_num>=HARD_SERVER_LIMIT)
-    	return -1;
-    else
-	return scoreboard_image->servers[child_num].status;
 }
-
-int count_busy_servers ()
-{
-    int i;
-    int res = 0;
-
-    for (i = 0; i < HARD_SERVER_LIMIT; ++i)
-      if (scoreboard_image->servers[i].status == SERVER_BUSY_READ ||
-              scoreboard_image->servers[i].status == SERVER_BUSY_WRITE ||
-              scoreboard_image->servers[i].status == SERVER_BUSY_KEEPALIVE ||
-              scoreboard_image->servers[i].status == SERVER_BUSY_LOG ||
-              scoreboard_image->servers[i].status == SERVER_BUSY_DNS)
-          ++res;
-    return res;
-}
-
-int count_live_servers()
-    {
-    int i;
-    int res = 0;
-
-    for (i = 0; i < HARD_SERVER_LIMIT; ++i)
-      if (scoreboard_image->servers[i].status != SERVER_DEAD)
-	  ++res;
-    return res;
-    }
 
 short_score get_scoreboard_info(int i)
 {
@@ -1171,58 +1168,30 @@ static void increment_counts (int child_num, request_rec *r)
 
     times(&new_score_rec.times);
 
-
-#ifndef SCOREBOARD_FILE
-    memcpy(&scoreboard_image->servers[child_num], &new_score_rec, sizeof(short_score));
-#else
-    lseek (scoreboard_fd, (long)child_num * sizeof(short_score), 0);
-    force_write (scoreboard_fd, (char*)&new_score_rec, sizeof(short_score));
-#endif
+    put_scoreboard_info(child_num, &new_score_rec); 
 }
 #endif
 
-int count_idle_servers ()
-{
-    int i;
-    int res = 0;
 
-    for (i = 0; i < HARD_SERVER_LIMIT; ++i)
-	if (scoreboard_image->servers[i].status == SERVER_READY)
-	    ++res;
-
-    return res;
-}
-
-int find_free_child_num ()
+static int find_child_by_pid (int pid)
 {
     int i;
 
-    for (i = 0; i < HARD_SERVER_LIMIT; ++i)
-	if (scoreboard_image->servers[i].status == SERVER_DEAD)
-	    return i;
-
-    return -1;
-}
-
-int find_child_by_pid (int pid)
-{
-    int i;
-
-    for (i = 0; i < HARD_SERVER_LIMIT; ++i)
+    for (i = 0; i < max_daemons_limit; ++i)
 	if (scoreboard_image->servers[i].pid == pid)
 	    return i;
 
     return -1;
 }
 
-void reclaim_child_processes ()
+static void reclaim_child_processes ()
 {
 #ifndef MULTITHREAD
     int i, status;
     int my_pid = getpid();
 
     sync_scoreboard_image();
-    for (i = 0; i < HARD_SERVER_LIMIT; ++i) {
+    for (i = 0; i < max_daemons_limit; ++i) {
 	int pid = scoreboard_image->servers[i].pid;
 
 	if (pid != my_pid && pid != 0) { 
@@ -1292,7 +1261,7 @@ int reap_children ()
     int status, n;
     int ret = 0;
 
-    for (n = 0; n < HARD_SERVER_LIMIT; ++n) {
+    for (n = 0; n < max_daemons_limit; ++n) {
 	if (scoreboard_image->servers[n].status != SERVER_DEAD
 		&& waitpid (scoreboard_image->servers[n].pid, &status, WNOHANG)
 		    == -1
@@ -1346,6 +1315,7 @@ static int wait_or_timeout ()
     return(-1);
 
 #else /* WIN32 */
+    struct timeval tv;
 #ifndef NEED_WAITPID
     int ret;
 
@@ -1353,17 +1323,18 @@ static int wait_or_timeout ()
     if (ret == -1 && errno == EINTR) {
 	return -1;
     }
-    if (ret <= 0) {
-	sleep (1);
+    if (ret > 0) {
+	return ret;
+    }
+#else
+    if (reap_children ()) {
 	return -1;
     }
-    return ret;
-#else
-    if (!reap_children ()) {
-	sleep(1);
-    }
-    return -1;
 #endif
+    tv.tv_sec = SCOREBOARD_MAINTENANCE_INTERVAL / 1000000;
+    tv.tv_usec = SCOREBOARD_MAINTENANCE_INTERVAL % 1000000;
+    ap_select(0, NULL, NULL, NULL, &tv);
+    return -1;
 #endif /* WIN32 */
 }
 
@@ -1458,14 +1429,7 @@ void set_signals()
     if (sigaction (SIGTERM, &sa, NULL) < 0)
 	log_unixerr ("sigaction(SIGTERM)", NULL, NULL, server_conf);
 
-    /* wait_or_timeout uses sleep() which could deliver a SIGALRM just as we're
-     * trying to process the restart requests.  That's not good.  So we avoid
-     * the race condition between when the restart request is made and when the
-     * handler is invoked.
-     *
-     * We also want to ignore HUPs and USR1 while we're busy processing one.
-     */
-    sigaddset (&sa.sa_mask, SIGALRM);
+    /* we want to ignore HUPs and USR1 while we're busy processing one */
     sigaddset (&sa.sa_mask, SIGHUP);
     sigaddset (&sa.sa_mask, SIGUSR1);
     sa.sa_handler = (void (*)())restart;
@@ -1881,14 +1845,30 @@ static int make_sock(pool *pconf, const struct sockaddr_in *server)
     return s;
 }
 
+
+/*
+ * During a restart we keep track of the old listeners here, so that we
+ * can re-use the sockets.  We have to do this because we won't be able
+ * to re-open the sockets ("Address already in use").
+ *
+ * Unlike the listeners ring, old_listeners is a NULL terminated list.
+ *
+ * copy_listeners() makes the copy, find_listener() finds an old listener
+ * and close_unused_listener() cleans up whatever wasn't used.
+ */
 static listen_rec *old_listeners;
 
+/* unfortunately copy_listeners may be called before listeners is a ring */
 static void copy_listeners(pool *p)
 {
     listen_rec *lr;
 
     ap_assert(old_listeners == NULL);
-    for (lr = listeners; lr; lr = lr->next) {
+    if (listeners == NULL) {
+	return;
+    }
+    lr = listeners;
+    do {
 	listen_rec *nr = malloc(sizeof *nr);
 	if (nr == NULL) {
 	    fprintf (stderr, "Ouch!  malloc failed in copy_listeners()\n");
@@ -1899,7 +1879,8 @@ static void copy_listeners(pool *p)
 	nr->next = old_listeners;
 	ap_assert(!nr->used);
 	old_listeners = nr;
-    }
+	lr = lr->next;
+    } while (lr && lr != listeners);
 }
 
 
@@ -1928,6 +1909,53 @@ static void close_unused_listeners()
 	free(or);
     }
     old_listeners = NULL;
+}
+
+
+/* open sockets, and turn the listeners list into a singly linked ring */
+static void setup_listeners(pool *pconf)
+{
+    listen_rec *lr;
+    int fd;
+
+    listenmaxfd = -1;
+    FD_ZERO (&listenfds);
+    lr = listeners;
+    for(;;) {
+	fd = find_listener (lr);
+	if (fd < 0) {
+	    fd = make_sock (pconf, &lr->local_addr);
+	}
+	FD_SET (fd, &listenfds);
+	if (fd > listenmaxfd) listenmaxfd = fd;
+	lr->fd = fd;
+	if (lr->next == NULL) break;
+	lr = lr->next;
+    }
+    /* turn the list into a ring */
+    lr->next = listeners;
+    head_listener = listeners;
+    close_unused_listeners ();
+}
+
+
+/*
+ * Find a listener which is ready for accept().  This advances the
+ * head_listener global.
+ */
+static inline listen_rec *find_ready_listener(fd_set *main_fds)
+{
+    listen_rec *lr;
+    
+    lr = head_listener;
+    do {
+	if (FD_ISSET(lr->fd, main_fds)) {
+	    head_listener = lr->next;
+	    return (lr);
+	}
+	lr = lr->next;
+    } while (lr != head_listener);
+    return NULL;
 }
 
 
@@ -2072,8 +2100,7 @@ void child_main(int child_num_arg)
 	if (scoreboard_image->global.exit_generation >= generation)
 	    exit(0);
 	
-	if ((count_idle_servers() >= daemons_max_free)
-	    || (max_requests_per_child > 0
+	if ((max_requests_per_child > 0
 	        && ++requests_this_child >= max_requests_per_child))
 	{
 	    exit(0);
@@ -2103,9 +2130,7 @@ void child_main(int child_num_arg)
             if (srv <= 0)
                 continue;
 
-	    for (lr = listeners; lr; lr = lr->next) {
-		if (FD_ISSET(lr->fd, &main_fds)) break;
-            }
+	    lr = find_ready_listener(&main_fds);
 	    if (lr == NULL) continue;
 	    sd = lr->fd;
 
@@ -2269,15 +2294,22 @@ void child_main(int child_num_arg)
     }    
 }
 
-int make_child(server_rec *server_conf, int child_num)
+static int make_child(server_rec *server_conf, int child_num)
 {
     int pid;
+
+    if (child_num + 1 > max_daemons_limit) {
+	max_daemons_limit = child_num + 1;
+    }
 
     if (one_process) {
 	signal (SIGHUP, (void (*)())just_die);
 	signal (SIGTERM, (void (*)())just_die);
 	child_main (child_num);
     }
+
+    /* avoid starvation */
+    head_listener = head_listener->next;
 
     Explain1 ("Starting new child in slot %d", child_num);
     (void)update_child_status (child_num, SERVER_STARTING, (request_rec *)NULL);
@@ -2322,6 +2354,79 @@ int make_child(server_rec *server_conf, int child_num)
 }
 
 
+/* start up a bunch of children */
+static void startup_children (int number_to_start)
+{
+    int i;
+
+    for (i = 0; number_to_start && i < daemons_limit; ++i ) {
+	if (scoreboard_image->servers[i].status != SERVER_DEAD) {
+	    continue;
+	}
+	if (make_child (server_conf, i) < 0) {
+	    break;
+	}
+	--number_to_start;
+    }
+}
+
+
+static void perform_idle_server_maintenance ()
+{
+    int i;
+    int to_kill;
+    int free_slot;
+    int idle_count;
+
+    free_slot = -1;
+    to_kill = -1;
+    idle_count = 0;
+    sync_scoreboard_image ();
+    for (i = 0; i < daemons_limit; ++i) {
+	switch (scoreboard_image->servers[i].status) {
+	case SERVER_READY:
+	    ++idle_count;
+	    /* always kill the highest numbered child if we have to...
+	     * no really well thought out reason ... other than observing
+	     * the server behaviour under linux where lower numbered children
+	     * tend to service more hits (and hence are more likely to have
+	     * their data in cpu caches).
+	     */
+	    to_kill = i;
+	    break;
+	case SERVER_DEAD:
+	    /* try to keep children numbers as low as possible */
+	    if (free_slot == -1) {
+		free_slot = i;
+	    }
+	    break;
+	}
+    }
+    if (idle_count > daemons_max_free) {
+	/* kill off one child... we use SIGUSR1 because that'll cause it to
+	 * shut down gracefully, in case it happened to pick up a request
+	 * while we were counting
+	 */
+	kill (SIGUSR1, scoreboard_image->servers[to_kill].pid);
+    } else if (idle_count < daemons_min_free) {
+	if (free_slot == -1) {
+	    /* only report this condition once */
+	    static int reported = 0;
+
+	    if (!reported) {
+		log_printf (server_conf,
+		    "server reached MaxClients setting, consider"
+		    " raising the MaxClients setting");
+		reported = 1;
+	    }
+	} else {
+	    make_child (server_conf, free_slot);
+	}
+    }
+}
+
+
+
 /*****************************************************************
  * Executive routines.
  */
@@ -2332,10 +2437,8 @@ int make_child(server_rec *server_conf, int child_num)
 void standalone_main(int argc, char **argv)
 {
     int remaining_children_to_start;
-    listen_rec *lr;
 
     standalone = 1;
-    listenmaxfd = -1;
 
     is_graceful = 0;
     ++generation;
@@ -2356,22 +2459,7 @@ void standalone_main(int argc, char **argv)
 	ptrans = make_sub_pool (pconf);
 
 	server_conf = read_config (pconf, ptrans, server_confname); 
-
-	listenmaxfd = -1;
-	FD_ZERO (&listenfds);
-	for (lr = listeners; lr != NULL; lr = lr->next) {
-	    int fd;
-	    
-	    fd = find_listener (lr);
-	    if (fd < 0) {
-		fd = make_sock (pconf, &lr->local_addr);
-	    }
-	    FD_SET (fd, &listenfds);
-	    if (fd > listenmaxfd) listenmaxfd = fd;
-	    lr->fd = fd;
-	}
-	close_unused_listeners ();
-
+	setup_listeners (pconf);
 	init_modules (pconf, server_conf);
 	open_logs (server_conf, pconf);
 	set_group_privs ();
@@ -2385,7 +2473,6 @@ void standalone_main(int argc, char **argv)
 	    note_cleanups_for_fd (pconf, scoreboard_fd);
 	}
 #endif
-
 	default_server_hostnames (server_conf);
 
 	set_signals ();
@@ -2407,10 +2494,8 @@ void standalone_main(int argc, char **argv)
 	    remaining_children_to_start = daemons_limit;
 	}
 	if (!is_graceful) {
-	    while (remaining_children_to_start) {
-		--remaining_children_to_start;
-		make_child (server_conf, remaining_children_to_start);
-	    }
+	    startup_children (remaining_children_to_start);
+	    remaining_children_to_start = 0;
 	}
 
 	log_error ("Server configured -- resuming normal operations",
@@ -2433,6 +2518,16 @@ void standalone_main(int argc, char **argv)
 		if (child_slot >= 0) {
 		    (void)update_child_status (child_slot, SERVER_DEAD,
 			(request_rec *)NULL);
+		    if (remaining_children_to_start
+			&& child_slot < daemons_limit) {
+			/* we're still doing a 1-for-1 replacement of dead
+			 * children with new children
+			 */
+			make_child (server_conf, child_slot);
+			--remaining_children_to_start;
+			/* don't perform idle maintenance yet */
+			continue;
+		    }
 		} else if (is_graceful) {
 		    /* Great, we've probably just lost a slot in the
 		     * scoreboard.  Somehow we don't know about this
@@ -2446,18 +2541,8 @@ void standalone_main(int argc, char **argv)
 	 	 * generation of children needed to be reaped... so assume
 		 * they're all done, and pick up the slack if any is left.
 		 */
-		while (remaining_children_to_start > 0) {
-		    child_slot = find_free_child_num ();
-		    if (child_slot < 0 || child_slot >= daemons_limit) {
-			remaining_children_to_start = 0;
-			break;
-		    }
-		    if (make_child (server_conf, child_slot) < 0) {
-			remaining_children_to_start = 0;
-			break;
-		    }
-		    --remaining_children_to_start;
-		}
+		startup_children (remaining_children_to_start);
+		remaining_children_to_start = 0;
 		/* In any event we really shouldn't do the code below because
 		 * few of the servers we just started are in the IDLE state
 		 * yet, so we'd mistakenly create an extra server.
@@ -2465,16 +2550,7 @@ void standalone_main(int argc, char **argv)
 		continue;
 	    }
 
-	    sync_scoreboard_image ();
-	    if ((remaining_children_to_start
-		    || (count_idle_servers () < daemons_min_free))
-		&& (child_slot = find_free_child_num ()) >= 0
-		&& child_slot < daemons_limit) {
-		make_child (server_conf, child_slot);
-	    }
-	    if (remaining_children_to_start) {
-		--remaining_children_to_start;
-	    }
+	    perform_idle_server_maintenance();
 	}
 
 	/* we've been told to restart */
@@ -3018,7 +3094,7 @@ void worker_main()
     int max_jobs_after_exit_request;
 
     standalone = 1;
-    sd = listenmaxfd = -1;
+    sd = -1;
     nthreads = threads_per_child;
     max_jobs_after_exit_request = excess_requests_per_child;
     max_jobs_per_exe = max_requests_per_child;
@@ -3040,28 +3116,8 @@ void worker_main()
     default_server_hostnames (server_conf);
 
     acquire_mutex(start_mutex);
-    {
-	listen_rec *lr;
-	int fd;
 
-        listenmaxfd = -1;
-	FD_ZERO(&listenfds);
-
-	for (lr=listeners; lr != NULL; lr=lr->next)
-	{
-	    fd=find_listener(lr);
-	    if(fd < 0)
-	    {
-		fd = make_sock(pconf, &lr->local_addr);
-	    }
-	    FD_SET(fd, &listenfds);
-	    if (fd > listenmaxfd) listenmaxfd = fd;
-	    lr->fd=fd;
-	}
-	close_unused_listeners();
-	sd = -1;
-    }
-
+    setup_listeners(pconf);
     set_signals();
 
     /*
@@ -3090,6 +3146,9 @@ void worker_main()
         {
             child_handles[i] = create_thread((void (*)(void *))child_main, (void *)i);
         }
+	if (nthreads > max_daemons_limit) {
+	    max_daemons_limit = nthreads;
+	}
     }
 
     /* main loop */
@@ -3104,17 +3163,17 @@ void worker_main()
             start_mutex_released = 1;
             /* set the listen queue to 1 */
             {
-		listen_rec *lr;
+		listen_rec *lr = listeners;
 		
-		for (lr=listeners; lr != NULL; lr=lr->next)
-		{
+		do {
 		/* to prove a point - Ben */
 		    ap_assert(!lr->used);
 		    if(lr->used)
 		    {
 			listen(lr->fd, 1);
 		    }
-		}
+		    lr = lr->next;
+		} while (lr != listeners);
             }
         }
         if(!start_exit)
@@ -3160,21 +3219,12 @@ void worker_main()
 
         {
 	    listen_rec *lr;
-	    int fd;
-	    
-	    for (lr=listeners; lr != NULL; lr=lr->next)
-	    {
-/*	        if(!lr->used)
-                    continue;*/
-                fd=lr->fd;
-	        
-	        if(FD_ISSET(fd, &listenfds))
-		    {
-		    sd = fd;
-		    break;
-		    }
+
+	    lr = find_ready_listener (&listenfds);
+	    if (lr != NULL) {
+		sd = lr->fd;
 	    }
-        }
+	}
 
         do {
             clen = sizeof(sa_client);
@@ -3216,8 +3266,8 @@ void worker_main()
     {
 	listen_rec *lr;
 	
-	for (lr=listeners; lr != NULL; lr=lr->next)
-	{
+	lr = listeners;
+	do {
 	/* prove the point again */
 	    ap_assert(!lr->used);
 	    if(lr->used)
@@ -3225,7 +3275,8 @@ void worker_main()
 		closesocket(lr->fd);
 		lr->fd = -1;
 	    }
-	}
+	    lr = lr->next;
+	} while (lr != listeners);
     }
 
     for(i=0; i<nthreads; i++)

@@ -231,6 +231,21 @@
 #define HARD_SERVER_LIMIT 256
 #endif
 
+/*
+ * (Unix, OS/2 only)
+ * Interval, in microseconds, between scoreboard maintenance.  During
+ * each scoreboard maintenance cycle the parent decides if it needs to
+ * spawn a new child (to meet MinSpareServers requirements), or kill off
+ * a child (to meet MaxSpareServers requirements).  It will only spawn or
+ * kill one child per cycle.  Setting this too low will chew cpu.  The
+ * default is probably sufficient for everyone.  But some people may want
+ * to raise this on servers which aren't dedicated to httpd and where they
+ * don't like the httpd waking up each second to see what's going on.
+ */
+#ifndef SCOREBOARD_MAINTENANCE_INTERVAL
+#define SCOREBOARD_MAINTENANCE_INTERVAL 1000000
+#endif
+
 /* Number of requests to try to handle in a single process.  If <= 0,
  * the children don't die off.  That's the default here, since I'm still
  * interested in finding and stanching leaks.

@@ -1,5 +1,15 @@
 Changes with Apache 1.3
-  
+
+  *) Revamp of (unix) scoreboard management code such that it avoids
+     unnecessary traversals of the scoreboard on each hit.  This is
+     particularly important for high volume sites with a large
+     HARD_SERVER_LIMIT.  Some of the previous operations were O(n^2),
+     and are now O(n).  See also SCOREBOARD_MAINTENANCE_INTERVAL in
+     httpd.h. [Dean Gaudet]
+
+  *) In configurations using multiple Listen statements it was possible for
+     busy sockets to starve other sockets of service.  [Dean Gaudet]
+
   *) API: It's possible to replace standalone_main (define STANDALONE_MAIN)
      and it's possible to use SFIO for the underlying i/o layer.
      [Doug MacEachern]
