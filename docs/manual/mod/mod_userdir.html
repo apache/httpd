@@ -46,6 +46,23 @@ UserDir http://www.foo.com/*/usr   -> http://www.foo.com/bob/usr/one/two.html
 UserDir http://www.foo.com/~*/     -> http://www.foo.com/~bob/one/two.html
 </pre>
 
+<P>
+<STRONG>
+Be careful when using this directive; for instance, <SAMP>&quot;UserDir
+./&quot;</SAMP> would map <SAMP>&quot;/~root&quot;</SAMP> to
+<SAMP>&quot;/&quot;</SAMP> - which is probably undesirable.  See also
+the
+<A
+ HREF="core.html#directory"
+>&lt;Directory&gt;</A>
+directive and the
+<A
+ HREF="../misc/security_tips.html"
+>Security Tips</A>
+page for more information.
+</STRONG>
+</P>
+
 <!--#include virtual="footer.html" -->
 </BODY>
 </HTML>
