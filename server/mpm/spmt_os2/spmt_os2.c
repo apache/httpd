@@ -1793,14 +1793,11 @@ LISTEN_COMMANDS
 
 module MODULE_VAR_EXPORT mpm_spmt_os2_module = {
     STANDARD20_MODULE_STUFF,
-    NULL, 			/* child_init */
     NULL,			/* create per-directory config structure */
     NULL,			/* merge per-directory config structures */
     NULL,			/* create per-server config structure */
     NULL,			/* merge per-server config structures */
     spmt_os2_cmds,		/* command table */
     NULL,			/* handlers */
-    NULL,			/* check auth */
-    NULL,			/* check access */
     spmt_os2_hooks,		/* register_hooks */
 };
