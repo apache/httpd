@@ -84,7 +84,7 @@ typedef struct {
 extern unixd_config_rec unixd_config;
 
 int unixd_setup_child(void);
-void unixd_pre_config(void);
+void unixd_pre_config(apr_pool_t *ptemp);
 const char *unixd_set_user(cmd_parms *cmd, void *dummy, const char *arg);
 const char *unixd_set_group(cmd_parms *cmd, void *dummy, const char *arg);
 #if defined(RLIMIT_CPU) || defined(RLIMIT_DATA) || defined(RLIMIT_VMEM) || \

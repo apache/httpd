@@ -1537,7 +1537,7 @@ static void prefork_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptem
 	ap_my_pid = getpid();
     }
 
-    unixd_pre_config();
+    unixd_pre_config(ptemp);
     ap_listen_pre_config();
     ap_daemons_to_start = DEFAULT_START_DAEMON;
     ap_daemons_min_free = DEFAULT_MIN_FREE_DAEMON;

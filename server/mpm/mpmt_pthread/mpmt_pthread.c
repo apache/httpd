@@ -1184,7 +1184,7 @@ static void mpmt_pthread_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_poo
 	ap_my_pid = getpid();
     }
 
-    unixd_pre_config();
+    unixd_pre_config(ptemp);
     ap_listen_pre_config();
     ap_daemons_to_start = DEFAULT_START_DAEMON;
     min_spare_threads = DEFAULT_MIN_FREE_DAEMON * DEFAULT_THREADS_PER_CHILD;

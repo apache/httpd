@@ -212,7 +212,7 @@ const char *unixd_set_group(cmd_parms *cmd, void *dummy, const char *arg)
     return NULL;
 }
 
-void unixd_pre_config(void)
+void unixd_pre_config(apr_pool_t *ptemp)
 {
     unixd_config.user_name = DEFAULT_USER;
     unixd_config.user_id = ap_uname2id(DEFAULT_USER);
