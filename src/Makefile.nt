@@ -6,9 +6,7 @@
 # regex makes delete the appropriate apache.exe. Tacky, but it'll work!
 # Ben, 5 July 97
 
-_release: release
-
-release:
+apacher:
     cd regex & set CFG=regex - Win32 Release& nmake /nologo -f regex.mak
 	cd . & set CFG=ApacheCore - Win32 Release& nmake /nologo -f ApacheCore.mak
 	cd . & set CFG=Apache - Win32 Release& nmake /nologo -f Apache.mak
@@ -22,7 +20,7 @@ release:
 	cd nt & set CFG=ApacheModuleUserTrack - Win32 Release& nmake /nologo -f ApacheModuleUserTrack.mak
 	cd modules\proxy & set CFG=ApacheModuleProxy - Win32 Release& nmake /nologo -f ApacheModuleProxy.mak
 
-debug:
+apached:
     cd regex & set CFG=regex - Win32 Debug& nmake /nologo -f regex.mak
 	cd . & set CFG=ApacheCore - Win32 Debug& nmake /nologo -f ApacheCore.mak
 	cd . & set CFG=Apache - Win32 Debug& nmake /nologo -f Apache.mak
