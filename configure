@@ -991,14 +991,14 @@ if [ "x$suexec" = "x1" ]; then
         exit 1
     fi
     if [ "x`$aux/getuid.sh`" != "x0" ]; then
-        echo " + Warning: You enabled the suEXEC feature. Be aware that you need" 1>&2
-        echo " + root privileges for this, at the latest at the installation step." 1>&2
+        echo " + Warning: You have enabled the suEXEC feature. Be aware that you need" 1>&2
+        echo " + root privileges to complete the final installation step." 1>&2
     fi
 fi
 if [ "x$PERL" = "xno-perl-on-this-system" ]; then
     if [ "x$quiet" = "xno" ]; then
-        echo " + Warning: no Perl interpreter available for support scripts."
-        echo " + Perhaps you have to select one with --with-perl=FILE."
+        echo " + Warning: no Perl interpreter detected for support scripts."
+        echo " + Perhaps you need to specify one with --with-perl=FILE."
     fi
 fi
 
