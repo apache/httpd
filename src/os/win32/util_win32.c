@@ -133,11 +133,10 @@ API_EXPORT(char *) ap_os_systemcase_filename(pool *pPool,
         }
         
         if (!bFileExists || OnlyDots((*q == '.' ? q : q+1))) {
-            /* WARNING: Comparison is faulty ...\unknown
+            /* XXX: Comparison could be faulty ...\unknown
              * names may not match!
              */
             strcpy(t, q);
-            strlwr(t);
             t = strchr(t, '\0');
         }
         
