@@ -2352,7 +2352,7 @@ static const command_rec core_cmds[] = {
 { "ContentDigest", set_content_md5, NULL, OR_OPTIONS,
   FLAG, "whether or not to send a Content-MD5 header with each request" },
 { "UseCanonicalName", set_use_canonical_name, NULL,
-  RSRC_CONF, TAKE1,
+  RSRC_CONF|ACCESS_CONF, TAKE1,
   "How to work out the ServerName : Port when constructing URLs" },
 /* TODOC: MaxServers is deprecated */
 /* TODOC: ServersSafetyLimit is deprecated */
