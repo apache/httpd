@@ -246,7 +246,7 @@ typedef struct {
     apr_file_t *log_fd;
     char *condition_var;
 #ifdef BUFFERED_LOGS
-    int outcnt;
+    apr_ssize_t outcnt;
     char outbuf[LOG_BUFSIZE];
 #endif
 } config_log_state;
@@ -756,7 +756,7 @@ static const char *process_item(request_rec *r, request_rec *orig,
 static void flush_log(config_log_state *cls)
 {
     if (cls->outcnt && cls->log_fd != NULL) {
-        apr_write(cls->log_fd, cls->outbuf, cls->outcnt);
+        apr_write(cls->log_fd, cls->outbuf, &cls->outcnt);
         cls->outcnt = 0;
     }
 }
@@ -824,12 +824,15 @@ static int config_log_transaction(request_rec *r, config_log_state *cls,
         flush_log(cls);
     }
     if (len >= LOG_BUFSIZE) {
+        apr_ssize_t w;
+
         str = apr_palloc(r->pool, len + 1);
         for (i = 0, s = str; i < format->nelts; ++i) {
             memcpy(s, strs[i], strl[i]);
             s += strl[i];
         }
-        apr_write(cls->log_fd, str, len);
+        w = len;
+        apr_write(cls->log_fd, str, &w);
     }
     else {
         for (i = 0, s = &cls->outbuf[cls->outcnt]; i < format->nelts; ++i) {
@@ -1104,28 +1107,10 @@ static config_log_state *open_multi_logs(server_rec *s, apr_pool_t *p)
     return NULL;
 }
 
-static void init_config_log(apr_pool_t *pc, apr_pool_t *p, apr_pool_t *pt, server_rec *s)
-{
-    /* First, do "physical" server, which gets default log fd and format
-     * for the virtual servers, if they don't override...
-     */
-
-    open_multi_logs(s, p);
-
-    /* Then, virtual servers */
-
-    for (s = s->next; s; s = s->next) {
-        open_multi_logs(s, p);
-    }
 #ifdef BUFFERED_LOGS
-	/* Now register the last buffer flush with the cleanup engine */
-	apr_register_cleanup(p , s, flush_all_logs, flush_all_logs);
-#endif
-}
-
-#ifdef BUFFERED_LOGS
-static void flush_all_logs(server_rec *s)
+static apr_status_t flush_all_logs(void *data)
 {
+    server_rec *s = data;
     multi_log_state *mls;
     apr_array_header_t *log_list;
     config_log_state *clsarray;
@@ -1147,8 +1132,28 @@ static void flush_all_logs(server_rec *s)
             }
         }
     }
+    return APR_SUCCESS;
 }
 #endif
+
+static void init_config_log(apr_pool_t *pc, apr_pool_t *p, apr_pool_t *pt, server_rec *s)
+{
+    /* First, do "physical" server, which gets default log fd and format
+     * for the virtual servers, if they don't override...
+     */
+
+    open_multi_logs(s, p);
+
+    /* Then, virtual servers */
+
+    for (s = s->next; s; s = s->next) {
+        open_multi_logs(s, p);
+    }
+#ifdef BUFFERED_LOGS
+	/* Now register the last buffer flush with the cleanup engine */
+	apr_register_cleanup(p, s, flush_all_logs, flush_all_logs);
+#endif
+}
 
 static void register_hooks(void)
 {
