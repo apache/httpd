@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: http_config.h,v 1.14 1996/10/08 22:19:21 brian Exp $ */
+/* $Id: http_config.h,v 1.15 1996/10/09 15:23:08 mjc Exp $ */
 
 /*
  * The central data structures around here...
@@ -70,7 +70,11 @@ enum cmd_how {
 				 */
   FLAG,				/* One of 'On' or 'Off' */
   NO_ARGS,			/* No args at all, e.g. </Directory> */
-  TAKE12			/* one or two arguments */
+  TAKE12,			/* one or two arguments */
+  TAKE3,			/* three arguments only */
+  TAKE23,			/* two or three arguments */
+  TAKE123,			/* one, two or three arguments */
+  TAKE13			/* one or three arguments */
 };
 
 typedef struct command_struct {

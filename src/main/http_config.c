@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: http_config.c,v 1.25 1996/10/08 22:19:20 brian Exp $ */
+/* $Id: http_config.c,v 1.26 1996/10/09 15:23:08 mjc Exp $ */
 
 /*
  * http_config.c: once was auxillary functions for reading httpd's config
@@ -400,7 +400,7 @@ void setup_prelinked_modules ()
 
 char *invoke_cmd(command_rec *cmd, cmd_parms *parms, void *mconfig, char *args)
 {
-    char *w, *w2, *errmsg;
+    char *w, *w2, *w3, *errmsg;
 
     if ((parms->override & cmd->req_override) == 0)
         return pstrcat (parms->pool, cmd->name, " not allowed here", NULL);
@@ -449,6 +449,54 @@ char *invoke_cmd(command_rec *cmd, cmd_parms *parms, void *mconfig, char *args)
 			    cmd->errmsg ? ", " : NULL, cmd->errmsg, NULL);
 
 	return (*cmd->func) (parms, mconfig, w, *w2 ? w2 : NULL);
+	
+    case TAKE3:
+
+	w = getword_conf (parms->pool, &args);
+	w2 = getword_conf (parms->pool, &args);
+	w3 = getword_conf (parms->pool, &args);
+	
+	if (*w == '\0' || *w2 == '\0' || *w3 == '\0' || *args != 0) 
+	    return pstrcat (parms->pool, cmd->name, " takes three arguments",
+			    cmd->errmsg ? ", " : NULL, cmd->errmsg, NULL);
+
+	return (*cmd->func) (parms, mconfig, w, w2, w3);
+	
+    case TAKE23:
+
+	w = getword_conf (parms->pool, &args);
+	w2 = getword_conf (parms->pool, &args);
+	w3 = *args ? getword_conf (parms->pool, &args) : NULL;
+	
+	if (*w == '\0' || *w2 == '\0' || *args != 0) 
+	    return pstrcat (parms->pool, cmd->name, " takes two or three arguments",
+			    cmd->errmsg ? ", " : NULL, cmd->errmsg, NULL);
+
+	return (*cmd->func) (parms, mconfig, w, w2, w3);
+	
+    case TAKE123:
+
+	w = getword_conf (parms->pool, &args);
+	w2 = *args ? getword_conf (parms->pool, &args) : NULL;
+	w3 = *args ? getword_conf (parms->pool, &args) : NULL;
+	
+	if (*w == '\0' || *args != 0) 
+	    return pstrcat (parms->pool, cmd->name, " takes one, two or three arguments",
+			    cmd->errmsg ? ", " : NULL, cmd->errmsg, NULL);
+
+	return (*cmd->func) (parms, mconfig, w, w2, w3);
+	
+    case TAKE13:
+
+	w = getword_conf (parms->pool, &args);
+	w2 = *args ? getword_conf (parms->pool, &args) : NULL;
+	w3 = *args ? getword_conf (parms->pool, &args) : NULL;
+	
+	if (*w == '\0' || (*w2 && !w3) || *args != 0) 
+	    return pstrcat (parms->pool, cmd->name, " takes one or three arguments",
+			    cmd->errmsg ? ", " : NULL, cmd->errmsg, NULL);
+
+	return (*cmd->func) (parms, mconfig, w, w2, w3);
 	
     case ITERATE:
 

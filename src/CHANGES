@@ -1,6 +1,9 @@
-$Id: CHANGES,v 1.68 1996/09/29 14:16:09 chuck Exp $
+$Id: CHANGES,v 1.69 1996/10/09 15:23:09 mjc Exp $
 
 Changes with Apache 1.2b1:
+
+  *) Allow directives to have any number of arguments between one
+     and three, with TAKE12, TAKE23, TAKE123, TAKE13 and TAKE3.
 
   *) Phase I proxy overhaul:
      Added support for null form data set [Petr Lampa]
