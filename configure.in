@@ -20,6 +20,8 @@ dnl Absolute source/build directory
 abs_srcdir=`(cd $srcdir && pwd)`
 abs_builddir=`pwd`
 
+APACHE_CONFIG_NICE(config.nice)
+
 dnl If the source dir is not equal to the build dir, 
 dnl then we are running in VPATH mode.
 
