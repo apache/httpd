@@ -5,10 +5,6 @@ Changes with Apache 2.1.0-dev
   *) Log an error when requests for URIs which fail to map to a valid 
      filesystem name are rejected with 403.  [Jeff Trawick]
 
-  *) Fixed mod_usertrack to not get false positive matches on the
-     user-tracking cookie's name.  PR 16661.
-     [Manni Wood <manniwood@planet-save.com>]
-
   *) Fix mod_info to use the real config file name, not the default
      config file name.  [Aryeh Katz <aryeh@secured-services.com>]
 
@@ -236,6 +232,10 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.48
+
+  *) Fixed mod_usertrack to not get false positive matches on the
+     user-tracking cookie's name.  PR 16661.
+     [Manni Wood <manniwood@planet-save.com>]
 
   *) mod_cache: Fix the cache code so that responses can be cached
      if they have an Expires header but no Etag or Last-Modified
