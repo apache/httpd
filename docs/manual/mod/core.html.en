@@ -660,7 +660,7 @@ filenames</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     directive and <code class="directive"><a href="#location">Location</a></code> directives. It should be
     matched with a <code>&lt;/Files&gt;</code> directive. The
     directives given within this section will be applied to any object
-    with a basename (not a full path) matching the
+    with a basename (last component of filename) matching the
     specified filename. <code class="directive">&lt;Files&gt;</code>
     sections are processed in the order they appear in the
     configuration file, after the <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code> sections and
@@ -840,7 +840,7 @@ $ httpd -DReverseProxy ...
 &lt;/IfDefine&gt;</pre></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="IfModule" id="IfModule">&lt;IfModule&gt;</a> <a name="ifmodule" id="ifmodule">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Encloses directives that are processed conditional on the
-presence of absence of a specific module</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+presence or absence of a specific module</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>&lt;IfModule [!]<var>module-name</var>&gt; ...
     &lt;/IfModule&gt;</td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:

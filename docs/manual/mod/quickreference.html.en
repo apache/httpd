@@ -273,7 +273,7 @@ user</td></tr>
 if a test is true at startup</td></tr>
 <tr class="odd"><td><a href="core.html#ifmodule">&lt;IfModule [!]<var>module-name</var>&gt; ...
     &lt;/IfModule&gt;</a></td><td /><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Encloses directives that are processed conditional on the
-presence of absence of a specific module</td></tr>
+presence or absence of a specific module</td></tr>
 <tr><td><a href="mod_imap.html#imapbase">ImapBase map|referer|<em>URL</em></a></td><td> http://servername/ </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Default <code>base</code> for imagemap files</td></tr>
 <tr class="odd"><td><a href="mod_imap.html#imapdefault">ImapDefault error|nocontent|map|referer|<em>URL</em></a></td><td> nocontent </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Default action when an imagemap is called with coordinates
 that are not explicitly mapped</td></tr>
