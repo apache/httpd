@@ -66,7 +66,8 @@ Committed Code Changes:
     * Paul/Ben's [PATCH] 1.3: spaces in NT spawn* arguments
     * Dean's [PATCH] mod_info minor cleanups (take 2)
     * Dean's [PATCH] mod_status cleanups
-    * [PATCH] mod_digest/1599: proxy authentication using the digest auth scheme never succeeds (fwd)
+    * [PATCH] mod_digest/1599: proxy authentication using the digest auth
+      scheme never succeeds (fwd)
     * Paul's [PATCH] a bundle of multithreading changes
 
 Available Patches:
