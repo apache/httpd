@@ -87,6 +87,10 @@ SOURCE=.\os\win32\BaseAddr.ref
 # End Source File
 # Begin Source File
 
+SOURCE=.\CHANGES
+# End Source File
+# Begin Source File
+
 SOURCE=..\logs\error.log
 # End Source File
 # Begin Source File
@@ -96,6 +100,10 @@ SOURCE=..\conf\httpd.conf
 # Begin Source File
 
 SOURCE=.\Makefile.win
+# End Source File
+# Begin Source File
+
+SOURCE=..\STATUS
 # End Source File
 # End Target
 # End Project
