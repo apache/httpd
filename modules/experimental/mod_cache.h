@@ -180,10 +180,10 @@ typedef struct {
 /* cache info information */
 typedef struct cache_info cache_info;
 struct cache_info {
-    const char *content_type;
-    const char *etag;
-    const char *lastmods;     /* last modified of cache entity */
-    const char *filename;   
+    char *content_type;
+    char *etag;
+    char *lastmods;         /* last modified of cache entity */
+    char *filename;   
     apr_time_t date;
     apr_time_t lastmod;
     char lastmod_str[APR_RFC822_DATE_LEN];
