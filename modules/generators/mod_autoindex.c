@@ -2126,8 +2126,16 @@ static int index_directory(request_rec *r,
     fullpath = apr_palloc(r->pool, APR_PATH_MAX);
     dirpathlen = strlen(name);
     memcpy(fullpath, name, dirpathlen);
-    while (apr_dir_read(&dirent, APR_FINFO_MIN | APR_FINFO_NAME,
-                        thedir) == APR_SUCCESS) {
+
+    do {
+        status = apr_dir_read(&dirent, APR_FINFO_MIN | APR_FINFO_NAME, thedir);
+        if (APR_STATUS_IS_INCOMPLETE(status)) {
+            continue; /* ignore un-stat()able files */
+        }
+        else if (status != APR_SUCCESS) {
+            break;
+        }
+
         /* We want to explode symlinks here. */
         if (dirent.filetype == APR_LNK) {
             const char *savename;
@@ -2153,7 +2161,8 @@ static int index_directory(request_rec *r,
             head = p;
             num_ent++;
         }
-    }
+    } while (1);
+
     if (num_ent > 0) {
         ar = (struct ent **) apr_palloc(r->pool,
                                         num_ent * sizeof(struct ent *));
