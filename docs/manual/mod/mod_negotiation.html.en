@@ -58,6 +58,7 @@
 <li><code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code></li>
 <li><a href="../content-negotiation.html">Content
 Negotiation</a></li>
+<li><a href="../env.html">Environment Variables</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
