@@ -390,7 +390,7 @@ EXPORTS
         ap_hook_type_checker @385
         ap_hook_access_checker @386
         ap_hook_header_parser @387
-        ap_hook_pre_config @388
+;       ap_hook_pre_config @388
         ap_hook_post_config @389
         ap_hook_open_logs @390
         ap_hook_child_init @391
