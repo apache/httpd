@@ -195,14 +195,14 @@ build-support:
 	if [ ".$(suexec)" = .1 ]; then \
 	    $(MAKE) $(MFLAGS) \
 		EXTRA_CFLAGS='\
+			$(suexec_umask) \
 			-DHTTPD_USER=\"$(suexec_caller)\" \
 			-DUID_MIN=$(suexec_uidmin) \
 			-DGID_MIN=$(suexec_gidmin) \
 			-DUSERDIR_SUFFIX=\"$(suexec_userdir)\" \
 			-DLOG_EXEC=\"$(suexec_logexec)\" \
 			-DDOC_ROOT=\"$(suexec_docroot)\" \
-			-DSAFE_PATH=\"$(suexec_safepath)\" \
-			$(suexec_umask)' \
+			-DSAFE_PATH=\"$(suexec_safepath)\"' \
 		suexec; \
 	fi
 	@echo "<=== $(SRC)/support"
