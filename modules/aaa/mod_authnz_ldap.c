@@ -64,8 +64,6 @@ typedef struct {
     char *binddn;                   /* DN to bind to server (can be NULL) */
     char *bindpw;                   /* Password to bind to server (can be NULL) */
 
-/*    int frontpage_hack;             /* Hack for frontpage support */
-
     int user_is_dn;                 /* If true, connection->user is DN instead of userid */
     int compare_dn_on_server;       /* If true, will use server to do DN compare */
 
@@ -165,7 +163,7 @@ static apr_xlate_t* get_conv_set (request_rec *r)
  * search filter will be (&(posixid=*)(uid=userj)).
  */
 #define FILTER_LENGTH MAX_STRING_LEN
-void authn_ldap_build_filter(char *filtbuf, 
+static void authn_ldap_build_filter(char *filtbuf, 
                              request_rec *r,
                              const char* sent_user,
                              authn_ldap_config_t *sec)
@@ -424,7 +422,7 @@ start_over:
  *                              LDAP tree to be let in.
  *
  */
-int authz_ldap_check_user_access(request_rec *r)
+static int authz_ldap_check_user_access(request_rec *r)
 {
     int result = 0;
     authn_ldap_request_t *req =
@@ -502,35 +500,6 @@ int authz_ldap_check_user_access(request_rec *r)
         t = reqs[x].requirement;
         w = ap_getword_white(r->pool, &t);
     
-/*
-        if (strcmp(w, "valid-user") == 0) {
-            /*
-             * Valid user will always be true if we authenticated with ldap,
-             * but when using front page, valid user should only be true if
-             * he exists in the frontpage password file. This hack will get
-             * auth_ldap to look up the user in the the pw file to really be
-             * sure that he's valid. Naturally, it requires mod_auth to be
-             * compiled in, but if mod_auth wasn't in there, then the need
-             * for this hack wouldn't exist anyway.
-             */
-/*
-            if (sec->frontpage_hack) {
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r, 
-                      "[%d] auth_ldap authorise: "
-                      "deferring authorisation to mod_auth (FP Hack)", 
-                      getpid());
-                return OK;
-            }
-            else {
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r, 
-                              "[%d] auth_ldap authorise: "
-                              "successful authorisation because user "
-                              "is valid-user", getpid());
-                return OK;
-            }
-        }
-        else 
-*/
         if (strcmp(w, "ldap-user") == 0) {
             if (req->dn == NULL || strlen(req->dn) == 0) {
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r,
@@ -900,10 +869,6 @@ static const command_rec authnz_ldap_cmds[] =
     AP_INIT_FLAG("AuthLDAPAuthzEnabled", ap_set_flag_slot,
                  (void *)APR_OFFSETOF(authn_ldap_config_t, authz_enabled), OR_AUTHCFG,
                  "Set to off to disable the LDAP authorization handler, even if it's been enabled in a higher tree"),
- 
-    AP_INIT_FLAG("AuthLDAPFrontPageHack", ap_set_flag_slot,
-                 (void *)APR_OFFSETOF(authn_ldap_config_t, frontpage_hack), OR_AUTHCFG,
-                 "Set to 'on' to support Microsoft FrontPage"),
 */
 
     AP_INIT_TAKE1("AuthLDAPCharsetConfig", set_charset_config, NULL, RSRC_CONF,
