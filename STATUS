@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/11/28 07:11:44 $]
+Last modified at [$Date: 2001/11/28 07:15:53 $]
 
 Release:
 
@@ -70,6 +70,20 @@ RELEASE SHOWSTOPPERS:
         Status: Bill has some code in his tree that accomplishes
                 this, and will commit it Friday after it's tested.
 
+    * Fold mod_auth_db features back into mod_auth_dbm, and depricate it.
+        This can't wait until we have a 2.0-gold release, if folks need
+        to move over to auth_dbm, we can't do that to them after 2.0 gold.
+
+    * Convert all instances of the old apr_lock_t type to the new
+      types (once they are fully supported in APR).
+        Status: Aaron is working on converting INTRAPROCESS
+                to apr_thread_mutex_t types. Full replacements for
+                LOCKALL and CROSS_PROCESS are not yet complete on all
+                platforms, and should only be used in MPMs like worker
+                with limited OS exposure.
+
+RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
+
     * revamp the input filter behavior, per discussions since
       February (and especially at the hackathon last
       April). Specifically, ap_get_brigade will return a brigade with
@@ -113,20 +127,6 @@ RELEASE SHOWSTOPPERS:
 
       - thoughts on filter modes:
           Message-ID: <021b01c14dee$09782af0$93c0b0d0@roweclan.net>
-
-    * Fold mod_auth_db features back into mod_auth_dbm, and depricate it.
-        This can't wait until we have a 2.0-gold release, if folks need
-        to move over to auth_dbm, we can't do that to them after 2.0 gold.
-
-    * Convert all instances of the old apr_lock_t type to the new
-      types (once they are fully supported in APR).
-        Status: Aaron is working on converting INTRAPROCESS
-                to apr_thread_mutex_t types. Full replacements for
-                LOCKALL and CROSS_PROCESS are not yet complete on all
-                platforms, and should only be used in MPMs like worker
-                with limited OS exposure.
-
-RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
     * Allow the DocumentRoot directive within <Location > scopes?  This
       allows the beloved (crusty) Alias /foo/ /somepath/foo/ followed
