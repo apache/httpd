@@ -1549,6 +1549,21 @@ AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result)
         case AP_MPMQ_MAX_THREADS:
             *result = ap_threads_per_child;
             return APR_SUCCESS;
+        case AP_MPMQ_MIN_SPARE_DEAMONS:
+            *result = 0;
+            return APR_SUCCESS;
+        case AP_MPMQ_MIN_SPARE_THREADS:    
+            *result = 0;
+            return APR_SUCCESS;
+        case AP_MPMQ_MAX_SPARE_DAEMONS:
+            *result = 0;
+            return APR_SUCCESS;
+        case AP_MPMQ_MAX_SPARE_THREADS:
+            *result = 0;
+            return APR_SUCCESS;
+        case AP_MPMQ_MAX_REQUESTS_DEAMON:
+            *result = ap_max_requests_per_child;
+            return APR_SUCCESS;
     }
     return APR_ENOTIMPL;
 } 
