@@ -180,6 +180,10 @@ void ap_force_library_loading(void) {
 #ifdef WIN32
 #include "../os/win32/service.h"
 #include "../os/win32/registry.h"
+#define DEFAULTSERVICENAME "Apache"
+#define PATHSEPARATOR '\\'
+#else
+#define PATHSEPARATOR '/'
 #endif
 
 
@@ -984,6 +988,9 @@ static void usage(char *bin)
 #endif
     fprintf(stderr, "       %s [-C \"directive\"] [-c \"directive\"]\n", pad);
     fprintf(stderr, "       %s [-v] [-V] [-h] [-l] [-L] [-S] [-t]\n", pad);
+#ifdef WIN32
+    fprintf(stderr, "       %s [-n service] [-k signal] [-i] [-u]\n", pad);
+#endif
     fprintf(stderr, "Options:\n");
 #ifdef SHARED_CORE
     fprintf(stderr, "  -R directory     : specify an alternate location for shared object files\n");
@@ -1001,8 +1008,12 @@ static void usage(char *bin)
     fprintf(stderr, "  -S               : show parsed settings (currently only vhost settings)\n");
     fprintf(stderr, "  -t               : run syntax test for configuration files only\n");
 #ifdef WIN32
+    fprintf(stderr, "  -n name          : set service name and use its ServerConfigFile\n");
     fprintf(stderr, "  -k shutdown      : tell running Apache to shutdown\n");
     fprintf(stderr, "  -k restart       : tell running Apache to do a graceful restart\n");
+    fprintf(stderr, "  -k start         : tell Apache to start\n");
+    fprintf(stderr, "  -i               : install an Apache service\n");
+    fprintf(stderr, "  -u               : uninstall an Apache service\n");
 #endif
     exit(1);
 }
@@ -3465,7 +3476,7 @@ static void show_compile_settings(void)
  * some of it is #ifdef'd but was duplicated before anyhow.  This stuff
  * is still a mess.
  */
-static void common_init(void)
+void common_init(void)
 {
     INIT_SIGLIST()
 #ifdef AUX3
@@ -4485,7 +4496,7 @@ int REALMAIN(int argc, char *argv[])
 
     common_init();
     
-    if ((s = strrchr(argv[0], '/')) != NULL) {
+    if ((s = strrchr(argv[0], PATHSEPARATOR)) != NULL) {
 	ap_server_argv0 = ++s;
     }
     else {
@@ -5434,7 +5445,13 @@ int create_event_and_spawn(int argc, char **argv, event **ev, int *child_num, ch
 {
     char buf[40], mod[200];
     int i, rv;
-    char **pass_argv = (char **) alloca(sizeof(char *) * (argc + 3));
+
+#ifdef WIN32
+#define NUMCHILDARGS  4
+#else
+#define NUMCHILDARGS  2
+#endif
+    char **pass_argv = (char **) alloca(sizeof(char *) * (argc + NUMCHILDARGS + 1));
     
     /* We need an event to tell the child process to kill itself when
      * the parent is doing a shutdown/restart. This will be named
@@ -5456,10 +5473,14 @@ int create_event_and_spawn(int argc, char **argv, event **ev, int *child_num, ch
     pass_argv[0] = argv[0];
     pass_argv[1] = "-Z";
     pass_argv[2] = buf;
+#ifdef WIN32
+    pass_argv[3] = "-f";
+    pass_argv[4] = ap_server_confname;
+#endif
     for (i = 1; i < argc; i++) {
-	pass_argv[i + 2] = argv[i];
+        pass_argv[i + NUMCHILDARGS] = argv[i];
     }
-    pass_argv[argc + 2] = NULL;
+    pass_argv[argc + NUMCHILDARGS] = NULL;
 
     rv = GetModuleFileName(NULL, mod, sizeof(mod));
     if (rv == sizeof(mod)) {
@@ -5533,8 +5554,47 @@ int create_process(HANDLE *handles, HANDLE *events, int *processes, int *child_n
     return 0;
 }
 
+/* To share the semaphores with other processes, we need a NULL ACL
+ * Code from MS KB Q106387
+ */
+
+static PSECURITY_ATTRIBUTES GetNullACL()
+{
+    PSECURITY_DESCRIPTOR pSD;
+    PSECURITY_ATTRIBUTES sa;
+
+    sa  = (PSECURITY_ATTRIBUTES) LocalAlloc(LPTR, sizeof (SECURITY_ATTRIBUTES));
+    pSD = (PSECURITY_DESCRIPTOR) LocalAlloc(LPTR, SECURITY_DESCRIPTOR_MIN_LENGTH);
+    if (pSD == NULL || sa == NULL)
+        return NULL;
+    if (!InitializeSecurityDescriptor(pSD, SECURITY_DESCRIPTOR_REVISION)) {
+        LocalFree( pSD );
+        LocalFree( sa );
+        return NULL;
+    }
+    if (!SetSecurityDescriptorDacl(pSD, TRUE, (PACL) NULL, FALSE)) {
+        LocalFree( pSD );
+        LocalFree( sa );
+        return NULL;
+    }
+    sa->nLength = sizeof(sa);
+    sa->lpSecurityDescriptor = pSD;
+    sa->bInheritHandle = TRUE;
+    return sa;
+}
+
+
+static void CleanNullACL( void *sa ) {
+    if( sa ) {
+        LocalFree( ((PSECURITY_ATTRIBUTES)sa)->lpSecurityDescriptor);
+        LocalFree( sa );
+    }
+}
+
 int master_main(int argc, char **argv)
 {
+    /* returns NULL if invalid (Win95?) */
+    PSECURITY_ATTRIBUTES sa = GetNullACL();
     int nchild = ap_daemons_to_start;
     event **ev;
     int *child;
@@ -5560,20 +5620,23 @@ int master_main(int argc, char **argv)
 	        "ap%d", getpid());
     setup_signal_names(signal_prefix_string);
 
-    signal_shutdown_event = CreateEvent(NULL, TRUE, FALSE, signal_shutdown_name);
+    signal_shutdown_event = CreateEvent(sa, TRUE, FALSE, signal_shutdown_name);
     if (!signal_shutdown_event) {
 	ap_log_error(APLOG_MARK, APLOG_EMERG|APLOG_WIN32ERROR, server_conf,
 		    "Cannot create shutdown event %s", signal_shutdown_name);
+        CleanNullACL((void *)sa);
 	exit(1);
     }
     APD2("master_main: created event %s", signal_shutdown_name);
-    signal_restart_event = CreateEvent(NULL, TRUE, FALSE, signal_restart_name);
+    signal_restart_event = CreateEvent(sa, TRUE, FALSE, signal_restart_name);
     if (!signal_restart_event) {
 	CloseHandle(signal_shutdown_event);
 	ap_log_error(APLOG_MARK, APLOG_EMERG|APLOG_WIN32ERROR, server_conf,
 		    "Cannot create restart event %s", signal_restart_name);
+        CleanNullACL((void *)sa);
 	exit(1);
     }
+    CleanNullACL((void *)sa);
     APD2("master_main: created event %s", signal_restart_name);
 
     start_mutex = ap_create_mutex(signal_prefix_string);
@@ -5774,7 +5837,7 @@ die_now:
  * either "shutdown" or "restart"
  */
 
-void send_signal(pool *p, char *signal)
+int send_signal(pool *p, char *signal)
 {
     char prefix[20];
     FILE *fp;
@@ -5787,7 +5850,7 @@ void send_signal(pool *p, char *signal)
     fp = fopen(fname, "r");
     if (!fp) {
 	printf("Cannot read apache PID file %s\n", fname);
-	return;
+        return FALSE;
     }
     prefix[0] = 'a';
     prefix[1] = 'p';
@@ -5796,7 +5859,7 @@ void send_signal(pool *p, char *signal)
     if (nread == 0) {
 	fclose(fp);
 	printf("PID file %s was empty\n", fname);
-	return;
+        return FALSE;
     }
     fclose(fp);
 
@@ -5812,11 +5875,38 @@ void send_signal(pool *p, char *signal)
 	ap_start_shutdown();
     else if (!strcasecmp(signal, "restart"))
 	ap_start_restart(1);
-    else
+    else {
 	printf("Unknown signal name \"%s\". Use either shutdown or restart.\n",
 	    signal);
+        return FALSE;
+    }
+    return TRUE;
+}
 
-    return;
+void post_parse_init()
+{
+    ap_set_version();
+    ap_init_modules(pconf, server_conf);
+    ap_suexec_enabled = init_suexec();
+    version_locked++;
+    ap_open_logs(server_conf, pconf);
+    set_group_privs();
+}
+
+int service_init()
+{
+    common_init();
+ 
+    ap_cpystrn(ap_server_root, HTTPD_ROOT, sizeof(ap_server_root));
+    if (ap_registry_get_service_conf(pconf, ap_server_confname, sizeof(ap_server_confname),
+                                     ap_server_argv0))
+        return FALSE;
+
+    ap_setup_prelinked_modules();
+    server_conf = ap_read_config(pconf, ptrans, ap_server_confname);
+    ap_log_pid(pconf, ap_pid_fname);
+    post_parse_init();
+    return TRUE;
 }
 
 #ifdef WIN32
@@ -5829,41 +5919,45 @@ int REALMAIN(int argc, char *argv[])
     int c;
     int child = 0;
     char *cp;
-    int run_as_service = 1;
+    char *s;
+    char *service_name = NULL;
     int install = 0;
     int configtestonly = 0;
+    int conf_specified = 0;
     char *signal_to_send = NULL;
-    char *s;
-    
-    common_init();
+    char cwd[MAX_STRING_LEN];
 
-    if ((s = strrchr(argv[0], '/')) != NULL) {
-	ap_server_argv0 = ++s;
+    /* Service application
+     * Configuration file in registry at:
+     * HKLM\System\CurrentControlSet\Services\[Svc name]\Parameters\ConfPath
+     */
+    if (isProcessService()) {
+        service_main(master_main, argc, argv);
+        clean_parent_exit(0);
+    }
+
+    /* Console application or a child process. */
+
+    if ((s = strrchr(argv[0], PATHSEPARATOR)) != NULL) {
+        ap_server_argv0 = ++s;
     }
     else {
-	ap_server_argv0 = argv[0];
+        ap_server_argv0 = argv[0];
     }
 
-    /* Get the serverroot from the registry, if it exists. This can be
-     * overridden by a command line -d argument.
-     */
-    if (ap_registry_get_server_root(pconf, ap_server_root, sizeof(ap_server_root)) < 0) {
-	/* The error has already been logged. Actually it won't have been,
-	 * because we haven't read the config files to find out where our 
-	 * error log is. But we can't just ignore the error since we might
-	 * end up using totally the wrong server root.
-	 */
-	exit(1);
-    }
-
-    if (!*ap_server_root) {
-	ap_cpystrn(ap_server_root, HTTPD_ROOT, sizeof(ap_server_root));
-    }
-    ap_cpystrn(ap_server_confname, SERVER_CONFIG_FILE, sizeof(ap_server_confname));
-
+    common_init();
     ap_setup_prelinked_modules();
 
-    while ((c = getopt(argc, argv, "D:C:c:Xd:f:vVlLZ:iusSthk:")) != -1) {
+    if(!GetCurrentDirectory(sizeof(cwd),cwd)) {
+       ap_log_error(APLOG_MARK,APLOG_WIN32ERROR, NULL,
+       "GetCurrentDirectory() failure");
+       return -1;
+    }
+
+    ap_cpystrn(cwd, ap_os_canonical_filename(pcommands, cwd), sizeof(cwd));
+    ap_cpystrn(ap_server_root, cwd, sizeof(ap_server_root));
+
+    while ((c = getopt(argc, argv, "D:C:c:Xd:f:vVlLZ:iusSthk:n:")) != -1) {
         char **new;
 	switch (c) {
 	case 'c':
@@ -5890,14 +5984,19 @@ int REALMAIN(int argc, char *argv[])
 	    ap_assert(start_mutex);
 	    child = 1;
 	    break;
+        case 'n':
+            service_name = ap_pstrdup(pcommands, optarg);
+            if (isValidService(optarg)) {
+                ap_registry_get_service_conf(pconf, ap_server_confname, sizeof(ap_server_confname),
+                                             optarg);
+                conf_specified = 1;
+            }
+            break;
 	case 'i':
 	    install = 1;
 	    break;
 	case 'u':
 	    install = -1;
-	    break;
-	case 's':
-	    run_as_service = 0;
 	    break;
 	case 'S':
 	    ap_dump_settings = 1;
@@ -5907,10 +6006,22 @@ int REALMAIN(int argc, char *argv[])
 	    break;
 #endif /* WIN32 */
 	case 'd':
-	    ap_cpystrn(ap_server_root, ap_os_canonical_filename(pconf, optarg), sizeof(ap_server_root));
+            optarg = ap_os_canonical_filename(pcommands, optarg);
+            if (!ap_os_is_path_absolute(optarg)) {
+	        optarg = ap_pstrcat(pcommands, cwd, optarg, NULL);
+                ap_getparents(optarg);
+            }
+            if (optarg[strlen(optarg)-1] != '/')
+                optarg = ap_pstrcat(pcommands, optarg, "/", NULL);
+            ap_cpystrn(ap_server_root,
+                       optarg,
+                       sizeof(ap_server_root));
 	    break;
 	case 'f':
-	    ap_cpystrn(ap_server_confname, ap_os_canonical_filename(pconf, optarg), sizeof(ap_server_confname));
+            ap_cpystrn(ap_server_confname,
+                       ap_os_canonical_filename(pcommands, optarg),
+                       sizeof(ap_server_confname));
+            conf_specified = 1;
 	    break;
 	case 'v':
 	    ap_set_version();
@@ -5934,49 +6045,89 @@ int REALMAIN(int argc, char *argv[])
 	    configtestonly = 1;
 	    break;
 	case 'h':
-	    usage(argv[0]);
+	    usage(ap_server_argv0);
 	case '?':
-	    usage(argv[0]);
-	}
+	    usage(ap_server_argv0);
+        }   /* switch */
+    }       /* while  */
+
+    /* ServerConfFile is found in this order:
+     * (1) -f or -n
+     * (2) [-d]/SERVER_CONFIG_FILE
+     * (3) ./SERVER_CONFIG_FILE
+     * (4) [Registry: HKLM\Software\[product]\ServerRoot]/SERVER_CONFIG_FILE
+     * (5) /HTTPD_ROOT/SERVER_CONFIG_FILE
+     */
+
+    if (!conf_specified) {
+        ap_cpystrn(ap_server_confname, SERVER_CONFIG_FILE, sizeof(ap_server_confname));
+        if (access(ap_server_root_relative(pcommands, ap_server_confname), 0)) {
+            ap_registry_get_server_root(pconf, ap_server_root, sizeof(ap_server_root));
+            if (!*ap_server_root)
+                ap_cpystrn(ap_server_root, HTTPD_ROOT, sizeof(ap_server_root));
+            ap_cpystrn(ap_server_root, ap_os_canonical_filename(pcommands, ap_server_root),
+                       sizeof(ap_server_root));
+        }
     }
 
-    if (!child && run_as_service) {
-	service_cd();
+    if (!ap_os_is_path_absolute(ap_server_confname)) {
+        char *full_conf_path;
+
+        full_conf_path = ap_pstrcat(pcommands, ap_server_root, "/", ap_server_confname, NULL);
+        full_conf_path = ap_os_canonical_filename(pcommands, full_conf_path);
+        ap_cpystrn(ap_server_confname, full_conf_path, sizeof(ap_server_confname));
+    }
+    ap_getparents(ap_server_confname);
+    ap_no2slash(ap_server_confname);
+
+#ifdef WIN32
+    if (install) {
+        if (!service_name)
+            service_name = ap_pstrdup(pconf, DEFAULTSERVICENAME);
+        if (install > 0) 
+            InstallService(service_name, ap_server_root_relative(pcommands, ap_server_confname));
+        else
+            RemoveService(service_name);
+        clean_parent_exit(0);
+    }
+    
+    if (service_name && signal_to_send) {
+        send_signal_to_service(service_name, signal_to_send);
+        clean_parent_exit(0);
     }
 
+    if (service_name && !conf_specified) {
+        printf("Unknown service: %s\n", service_name);
+        clean_parent_exit(0);
+    }
+#endif
     server_conf = ap_read_config(pconf, ptrans, ap_server_confname);
 
     if (configtestonly) {
-        fprintf(stderr, "Syntax OK\n");
-        exit(0);
+        fprintf(stderr, "%s: Syntax OK\n", ap_server_root_relative(pcommands, ap_server_confname));
+        clean_parent_exit(0);
     }
 
-    if (signal_to_send) {
-	send_signal(pconf, signal_to_send);
-	exit(0);
+    /* Treat -k start confpath as just -f confpath */
+    if (signal_to_send && strcasecmp(signal_to_send, "start")) {
+        send_signal(pconf, signal_to_send);
+        clean_parent_exit(0);
     }
 
-    if (!child && !ap_dump_settings && !install) {
-	ap_log_pid(pconf, ap_pid_fname);
+    if (!child && !ap_dump_settings) { 
+        ap_log_pid(pconf, ap_pid_fname);
     }
-    ap_set_version();
-    ap_init_modules(pconf, server_conf);
-    ap_suexec_enabled = init_suexec();
-    version_locked++;
-    if (!install) {
-	ap_open_logs(server_conf, pconf);
-    }
-    set_group_privs();
+
+    post_parse_init();
 
 #ifdef OS2
     printf("%s running...\n", ap_get_server_version());
 #endif
 #ifdef WIN32
-    if (!child && !install) {
+    if (!child) {
 	printf("%s running...\n", ap_get_server_version());
     }
 #endif
-
     if (one_process && !exit_event)
 	exit_event = create_event(0, 0, NULL);
     if (one_process && !start_mutex)
@@ -5993,10 +6144,8 @@ int REALMAIN(int argc, char *argv[])
 	ap_destroy_mutex(start_mutex);
 	destroy_event(exit_event);
     }
-    else {
-	service_main(master_main, argc, argv,
-			"Apache", install, run_as_service);
-    }
+    else 
+        master_main(argc, argv);
 
     clean_parent_exit(0);
     return 0;	/* purely to avoid a warning */
@@ -6148,3 +6297,4 @@ int main(int argc, char *argv[], char *envp[])
 
 #endif /* ndef SHARED_CORE_BOOTSTRAP */
 
+
