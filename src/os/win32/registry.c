@@ -332,7 +332,7 @@ static int ap_registry_store_key_int(char *key, DWORD type, void *value, int val
 
 	if (rv == ERROR_FILE_NOT_FOUND) {
 	    aplog_error(APLOG_MARK,APLOG_WARNING|APLOG_NOERRNO,NULL,
-		"Registry does not contain key " REGKEY);
+		"Registry does not contain key " REGKEY " after creation");
 
 	    return -1;
 	}
