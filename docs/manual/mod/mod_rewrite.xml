@@ -1611,13 +1611,14 @@ There is a special feature:
         information from URLs.</li>
 
         <li>
-        '<strong><code>cookie|CO=</code></strong><em>NAME</em>:<em>VAL</em>:<em>domain</em>[:<em>lifetime</em>]'
+		'<strong><code>cookie|CO=</code></strong><em>NAME</em>:<em>VAL</em>:<em>domain</em>[:<em>lifetime</em>[:<em>path</em>]]'
         (set <strong>co</strong>cookie)<br />
         This sets a cookie on the client's browser.  The cookie's name
         is specified by <em>NAME</em> and the value is
         <em>VAL</em>. The <em>domain</em> field is the domain of the
-        cookie, such as '.apache.org' and the optional <em>lifetime</em>
-        is the lifetime of the cookie in minutes.</li>
+        cookie, such as '.apache.org',the optional <em>lifetime</em>
+	is the lifetime of the cookie in minutes, and the optional 
+	<em>path</em> is the path of the cookie</li>
  
       </ul>
 
