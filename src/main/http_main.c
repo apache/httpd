@@ -1070,6 +1070,9 @@ static void usage(char *bin)
     fprintf(stderr, "  -l               : list compiled-in modules\n");
     fprintf(stderr, "  -L               : list available configuration directives\n");
     fprintf(stderr, "  -S               : show parsed settings (currently only vhost settings)\n");
+#ifdef NETWARE
+    fprintf(stderr, "  -s               : load Apache without a screen\n");
+#endif
     fprintf(stderr, "  -t               : run syntax check for config files (with docroot check)\n");
     fprintf(stderr, "  -T               : run syntax check for config files (without docroot check)\n");
 #ifdef WIN32
