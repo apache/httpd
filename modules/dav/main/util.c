@@ -1079,23 +1079,21 @@ static dav_error * dav_validate_resource_state(apr_pool_t *p,
                 /* Do a weak entity comparison function as defined in
                  * RFC 2616 13.3.3.
                  */
-                if (state_list->etag[0] == '"' &&
-                    state_list->etag[1] == 'W' &&
-                    state_list->etag[2] == '/') {
+                if (state_list->etag[0] == 'W' &&
+                    state_list->etag[1] == '/' &&
+                    state_list->etag[2] == '"') {
                     new_etag = apr_pstrdup(p, state_list->etag);
                     new_etag += 2;
-                    new_etag[0] = '"';
                     given_etag = new_etag;
                 }
                 else {
                     given_etag = state_list->etag;
                 }
-                if (etag[0] == '"' &&
-                    etag[1] == 'W' &&
-                    etag[2] == '/') {
+                if (etag[0] == 'W' &&
+                    etag[1] == '/' &&
+                    etag[2] == '"') {
                     new_etag = apr_pstrdup(p, etag);
                     new_etag += 2;
-                    new_etag[0] = '"';
                     current_etag = new_etag;
                 }
                 else {
