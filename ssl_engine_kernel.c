@@ -1298,9 +1298,7 @@ int ssl_hook_Fixup(request_rec *r)
     if (dc->nOptions & SSL_OPT_STDENVVARS) {
         for (i = 0; ssl_hook_Fixup_vars[i] != NULL; i++) {
             var = (char *)ssl_hook_Fixup_vars[i];
-#if 0 /* XXX */
             val = ssl_var_lookup(r->pool, r->server, r->connection, r, var);
-#endif
             if (!strIsEmpty(val))
                 apr_table_set(e, var, val);
         }
@@ -1310,18 +1308,14 @@ int ssl_hook_Fixup(request_rec *r)
      * On-demand bloat up the SSI/CGI environment with certificate data
      */
     if (dc->nOptions & SSL_OPT_EXPORTCERTDATA) {
-#if 0 /* XXX */
         val = ssl_var_lookup(r->pool, r->server, r->connection, r, "SSL_SERVER_CERT");
         apr_table_set(e, "SSL_SERVER_CERT", val);
         val = ssl_var_lookup(r->pool, r->server, r->connection, r, "SSL_CLIENT_CERT");
         apr_table_set(e, "SSL_CLIENT_CERT", val);
-#endif
         if ((sk = SSL_get_peer_cert_chain(ssl)) != NULL) {
             for (i = 0; i < sk_X509_num(sk); i++) {
                 var = apr_psprintf(r->pool, "SSL_CLIENT_CERT_CHAIN_%d", i);
-#if 0 /* XXX */
                 val = ssl_var_lookup(r->pool, r->server, r->connection, r, var);
-#endif
                 if (val != NULL)
                      apr_table_setn(e, var, val);
             }
@@ -1894,7 +1888,6 @@ void ssl_callback_LogTracingState(SSL *ssl, int where, int rc)
      * right after a finished handshake.
      */
     if (where & SSL_CB_HANDSHAKE_DONE) {
-#if 0 /* XXX */
         ssl_log(s, SSL_LOG_INFO,
                 "Connection: Client IP: %s, Protocol: %s, Cipher: %s (%s/%s bits)",
                 ssl_var_lookup(NULL, s, c, NULL, "REMOTE_ADDR"),
@@ -1902,7 +1895,6 @@ void ssl_callback_LogTracingState(SSL *ssl, int where, int rc)
                 ssl_var_lookup(NULL, s, c, NULL, "SSL_CIPHER"),
                 ssl_var_lookup(NULL, s, c, NULL, "SSL_CIPHER_USEKEYSIZE"),
                 ssl_var_lookup(NULL, s, c, NULL, "SSL_CIPHER_ALGKEYSIZE"));
-#endif
     }
 
     return;
