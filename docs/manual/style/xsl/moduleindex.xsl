@@ -30,7 +30,7 @@
           </h2>
 
           <dl>
-            <xsl:for-each select="document(modulefilelist/modulefile)/modulesynopsis">
+            <xsl:for-each select="document(sitemap/category[@id='modules']/modulefilelist/modulefile)/modulesynopsis">
               <xsl:sort select="name"/>
 
               <xsl:if test="status='MPM' or status='Core'">
@@ -56,7 +56,7 @@
           </h2>
             
           <dl>
-            <xsl:for-each select="document(modulefilelist/modulefile)/modulesynopsis">
+            <xsl:for-each select="document(sitemap/category[@id='modules']/modulefilelist/modulefile)/modulesynopsis">
               <xsl:sort select="name"/>
                 
               <xsl:if test="status!='MPM' and status!='Core'">

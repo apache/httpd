@@ -12,7 +12,7 @@
   <!-- <sitemap>                                          -->
   <!-- Process an entire document into an HTML page       -->
   <!--                                                    -->
-  <xsl:template match="sitemap">
+  <xsl:template match="/sitemap">
     <html xml:lang="{$messages/@lang}" lang="{$messages/@lang}">
       <xsl:call-template name="head"/>
 
@@ -102,11 +102,15 @@
       </li>
     </xsl:if>
 
-    <xsl:if test="@separate='no'">
+    <xsl:if test="not(@separate='yes')">
       <li>
         <xsl:copy-of select="$link"/>
       </li>
     </xsl:if>
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
   </xsl:template>
   <!-- /category/page -->
 
@@ -183,6 +187,10 @@
               </xsl:otherwise></xsl:choose>
             </a>
           </li>
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
         </xsl:if>
       </xsl:for-each>
       <!-- /core,mpm -->
@@ -199,6 +207,10 @@
               <xsl:value-of select="$current/name"/>
             </a>
           </li>
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
         </xsl:if>
       </xsl:for-each>
       <!-- /other modules -->

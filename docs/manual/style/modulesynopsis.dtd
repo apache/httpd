@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 
-<!ENTITY % common SYSTEM "common.dtd">
-%common;
+<!ENTITY % sitemap SYSTEM "sitemap.dtd">
+%sitemap;
 
 <!ELEMENT modulesynopsis (name , description, status , sourcefile?,
 identifier? , compatibility? , summary? , seealso* , section*,
@@ -38,16 +38,12 @@ usage?, seealso*)>
 
 <!ELEMENT usage %Block;>
 
-<!-- Used in allmodules.xml -->
-<!ELEMENT modulefilelist (modulefile+)>
-<!ELEMENT modulefile (#PCDATA)>
-
 <!-- Used in index.xml -->
-<!ELEMENT moduleindex (title | summary | modulefilelist)+>
+<!ELEMENT moduleindex (title | summary | sitemap)+>
 
 <!-- Used in directive.xml -->
-<!ELEMENT directiveindex (title | summary | modulefilelist)+>
+<!ELEMENT directiveindex (title | summary | sitemap)+>
 
 <!-- Used in quickreference.xml -->
-<!ELEMENT quickreference (title | summary | legend | modulefilelist)+>
+<!ELEMENT quickreference (title | summary | legend | sitemap)+>
 <!ELEMENT legend (table, table)>

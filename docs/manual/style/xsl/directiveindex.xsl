@@ -15,9 +15,13 @@
       <body id="directive-index">
         <xsl:call-template name="top"/>
 
+        <xsl:variable name="directives" select="document(sitemap/category[@id='modules']/modulefilelist/modulefile)/modulesynopsis/directivesynopsis[not(@location)]"/>
+
         <!-- collect the start letters -->
         <xsl:variable name="start-letters">
-          <xsl:call-template name="directive-startletters" />
+          <xsl:call-template name="directive-startletters">
+            <xsl:with-param name="directives" select="$directives"/>
+          </xsl:call-template>
         </xsl:variable>
 
         <div id="preamble">
@@ -45,18 +49,10 @@
           <ul>
             <xsl:call-template name="dindex-of-letter">
               <xsl:with-param name="letters-todo" select="$start-letters"/>
+              <xsl:with-param name="directives" select="$directives"/>
             </xsl:call-template>
-
-            <xsl:if test="letters">
-              <xsl:for-each select="letters/*">
-                <xsl:variable name="letter" select="."/>
-
-              </xsl:for-each> <!-- /letters -->
-            </xsl:if>
-            <!-- /if letters -->
-
           </ul>
-        </div> <!-- /directive-index -->
+        </div> <!-- /directive-list -->
 
         <xsl:call-template name="bottom"/>
       </body>
@@ -71,10 +67,11 @@
   <!--                                                     -->
   <xsl:template name="dindex-of-letter">
   <xsl:param name="letters-todo"/>
+  <xsl:param name="directives"/>
 
     <xsl:variable name="letter" select="substring($letters-todo,1,1)"/>
 
-    <xsl:for-each select="document(/*/modulefilelist/modulefile)/modulesynopsis/directivesynopsis[not(@location)][$letter=translate(substring(normalize-space(name),1,1),$lowercase,$uppercase)]">
+    <xsl:for-each select="$directives[$letter=translate(substring(normalize-space(name),1,1),$lowercase,$uppercase)]">
     <xsl:sort select="name"/>
 
       <li><xsl:choose>
@@ -104,6 +101,7 @@
     <xsl:if test="string-length($letters-todo) &gt; 1">
       <xsl:call-template name="dindex-of-letter">
         <xsl:with-param name="letters-todo" select="substring($letters-todo,2)"/>
+        <xsl:with-param name="directives" select="$directives"/>
       </xsl:call-template>
     </xsl:if>
 
