@@ -160,19 +160,16 @@ of these #defines.
     NEED_INITGROUPS:
     NEED_WAITPID:
     NEED_STRERROR:
-    NEED_SELECT_H:
-      Define if the OS needs the <sys/select.h> header file.
-
 --
 
  HAVE_*:
   Does this OS have/support this capablity?
 
-    HAS_GMTOFF:
+    HAVE_GMTOFF:
       Define if the OS's tm struct has the tm_gmtoff element
 
     HAVE_RESOURCE:
-      Define as 1 if the OS supports the getrlimit()/setrlimit() functions
+      Define if the OS supports the getrlimit()/setrlimit() functions
 
     HAVE_MMAP:
       Define if the OS supports the BSD mmap() call. This is used by various
@@ -187,6 +184,25 @@ of these #defines.
     HAVE_CRYPT_H:
       Define if the OS has the <crypt.h> header file.
 
+    HAVE_SYS_SELECT_H:
+      Define if the OS has the <sys/select.h> header file.
+--
+
+ USE_*:
+  These #defines are used for functions and ability that aren't exactly
+  required but should be used.
+
+     USE_FCNTL_SERIALIZED_ACCEPT:
+      Define if the OS requires a mutex "lock" around the socket accept()
+      call. Use fcntl() locking.
+
+     USE_FLOCK_SERIALIZED_ACCEPT:
+      Define if the OS requires a mutex "lock" around the socket accept()
+      call. Use flock() locking (fcntl() is expensive on some OSs, esp.
+      when using NFS).
+
+     USE_LONGJMP:
+      use the longjmp() call instead of siglongjmp()
 --
 
   NO_*:
@@ -202,18 +218,9 @@ of these #defines.
   MISC #DEFINES:
    Various other #defines used in the code.
 
-     FCNTL_SERIALIZED_ACCEPT:
-      Define if the OS requires a mutex "lock" around the socket accept()
-      call. Use fcntl() locking.
+      JMP_BUF:
+       The variable-type for siglongjmp() or longjmp() call.
 
-     FLOCK_SERIALIZED_ACCEPT:
-      Define if the OS requires a mutex "lock" around the socket accept()
-      call. Use flock() locking (fcntl() is expensive on some OSs, esp.
-      when using NFS).
-
-     JMP_BUF:
-      The variable-type for siglongjmp() or longjmp() call.
-
-     MOVEBREAK:
-      Amount to move sbrk() breakpoint, if required, before attaching
-      shared-memory segment.
+      MOVEBREAK:
+       Amount to move sbrk() breakpoint, if required, before attaching
+       shared-memory segment.
