@@ -1,5 +1,8 @@
 Changes with Apache 1.3.2
 
+  *) Fix mod_auth_*.html documents: NSCA -> NCSA
+     [Youichirou Koga <y-koga@jp.FreeBSD.org>] PR#2991
+
   *) Fix INSTALL document: www.gnu.ai.mit.edu -> www.gnu.org
      [Karl Berry <karl@gnu.org>] PR#2994
 
