@@ -133,6 +133,7 @@ _install:
 	-mkdir $(INSTDIR)\conf
 	-mkdir $(INSTDIR)\logs
 	-mkdir $(INSTDIR)\modules
+#	-mkdir $(INSTDIR)\proxy
 	-mkdir $(INSTDIR)\htdocs
 	-mkdir $(INSTDIR)\htdocs\manual
 	copy Apache$(SHORT)\Apache.exe $(INSTDIR)
@@ -160,39 +161,33 @@ _install:
 	copy support\$(LONG)\htdigest.exe $(INSTDIR)\bin
 	copy support\$(LONG)\logresolve.exe $(INSTDIR)\bin
 	copy support\$(LONG)\rotatelogs.exe $(INSTDIR)\bin
-        if not exist $(INSTDIR)\conf\magic copy docs\conf\magic $(INSTDIR)\conf
-        copy docs\conf\magic $(INSTDIR)\conf\magic-default
-	if not exist $(INSTDIR)\conf\mime.types copy docs\conf\mime.types $(INSTDIR)\conf
-        copy docs\conf\mime.types $(INSTDIR)\conf\mime.types-default
-        cd docs\docroot
-          for %%a in (*.*) do if not exist $(INSTDIR)\htdocs\%%a copy %%a $(INSTDIR)\htdocs
-        cd ..\..
+        xcopy docs\docroot $(INSTDIR)\htdocs /dy
         xcopy docs\manual $(INSTDIR)\htdocs\manual /sdy
-	perl <<
-
-    my $$serverroot = '$(INSTDIR)';
-    $$serverroot =~ s|\\|\/|;
-    open(IN, '< docs\conf\httpd-win.conf') 
-        || die 'Source httpd-win.conf not found in docs\conf';
-    open(OUT, '> $(INSTDIR)\conf\httpd.conf-default') 
-        || die 'Create file $(INSTDIR)\conf\httpd.conf-default failed';
-    while (<IN>) {
-        while (s|\@\@ServerRoot\@\@|$$serverroot|) {}
-	print OUT $_;
+        copy docs\conf\magic $(INSTDIR)\conf\magic.default
+        if not exist $(INSTDIR)\conf\magic \
+            copy $(INSTDIR)\conf\magic.default $(INSTDIR)\conf\magic
+        copy docs\conf\mime.types $(INSTDIR)\conf\mime.types.default
+        if not exist $(INSTDIR)\conf\mime.types \
+            copy $(INSTDIR)\conf\mime.types.default $(INSTDIR)\conf\mime.types
+	awk -f << docs\conf\httpd-win.conf $(INSTDIR)\conf\httpd.default.conf $(INSTDIR)
+    BEGIN { 
+        srcfl = ARGV[1];
+        dstfl = ARGV[2];
+        serverroot = ARGV[3];
+        gsub( /\\/, "/", serverroot );
+        print "" > dstfl;
+        while ( ( getline < srcfl ) > 0 ) {
+            gsub( /@@ServerRoot@@/, serverroot );
+            print $$0 >> dstfl;
+        }
     }
-    print 'Installed httpd.conf-default in $(INSTDIR)\conf' . "\n";
-    close (OUT); 
-    seek(IN, 0, SEEK_SET);
-    if (open(OUT, '< $(INSTDIR)\conf\httpd.conf')) { 
-        print 'Existing $(INSTDIR)\conf\httpd.conf preserved' . "\n";
-        close(OUT); close(IN); exit;
+<<
+	if not exist $(INSTDIR)\conf\httpd.conf \
+            copy $(INSTDIR)\conf\httpd.default.conf $(INSTDIR)\conf\httpd.conf 
+	awk -f << support\dbmmanage >$(INSTDIR)\bin\dbmmanage.pl
+    { if ( $$0 !~ /^#.*-lsdbm/) {
+          gsub( /AnyDBM_File::ISA = qw\(.*\)/, "AnyDBM_File::ISA = qw(SDBM_File)" ); 
+          print $$0 
+      } 
     }
-    open(OUT, '> $(INSTDIR)\conf\httpd.conf') 
-        || die 'Create file $(INSTDIR)\conf\httpd.conf failed';
-    while (<IN>) {
-        while (s|\@\@ServerRoot\@\@|$$serverroot|) {}
-	print OUT $_;
-    }
-    print 'Installed httpd.conf in $(INSTDIR)\conf' . "\n";
-    close(OUT); close(IN);
 <<
