@@ -25,8 +25,6 @@ NULL=
 NULL=nul
 !ENDIF 
 
-CPP=cl.exe
-
 !IF  "$(CFG)" == "sdbm - Win32 Release"
 
 OUTDIR=.\LibR
@@ -57,10 +55,42 @@ CLEAN :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
 RSC=rc.exe
+CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /O2 /I "..\..\include" /I "..\..\os\win32" /D "WIN32"\
  /D "NDEBUG" /D "_WINDOWS" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\sdbm" /FD /c 
 CPP_OBJS=.\LibR/
 CPP_SBRS=.
+
+.c{$(CPP_OBJS)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(CPP_OBJS)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(CPP_OBJS)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(CPP_SBRS)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(CPP_SBRS)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(CPP_SBRS)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\sdbm.bsc" 
 BSC32_SBRS= \
@@ -109,29 +139,12 @@ CLEAN :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
 RSC=rc.exe
+CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /GX /Zi /Od /I "..\..\include" /I "..\..\os\win32" /D\
  "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "SHARED_MODULE" /Fo"$(INTDIR)\\"\
  /Fd"$(INTDIR)\sdbm" /FD /c 
 CPP_OBJS=.\LibD/
 CPP_SBRS=.
-BSC32=bscmake.exe
-BSC32_FLAGS=/nologo /o"$(OUTDIR)\sdbm.bsc" 
-BSC32_SBRS= \
-	
-LIB32=link.exe -lib
-LIB32_FLAGS=/nologo /out:"$(OUTDIR)\sdbm.lib" 
-LIB32_OBJS= \
-	"$(INTDIR)\sdbm.obj" \
-	"$(INTDIR)\sdbm_hash.obj" \
-	"$(INTDIR)\sdbm_lock.obj" \
-	"$(INTDIR)\sdbm_pair.obj"
-
-"$(OUTDIR)\sdbm.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
-    $(LIB32) @<<
-  $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
-<<
-
-!ENDIF 
 
 .c{$(CPP_OBJS)}.obj::
    $(CPP) @<<
@@ -162,6 +175,25 @@ LIB32_OBJS= \
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
+
+BSC32=bscmake.exe
+BSC32_FLAGS=/nologo /o"$(OUTDIR)\sdbm.bsc" 
+BSC32_SBRS= \
+	
+LIB32=link.exe -lib
+LIB32_FLAGS=/nologo /out:"$(OUTDIR)\sdbm.lib" 
+LIB32_OBJS= \
+	"$(INTDIR)\sdbm.obj" \
+	"$(INTDIR)\sdbm_hash.obj" \
+	"$(INTDIR)\sdbm_lock.obj" \
+	"$(INTDIR)\sdbm_pair.obj"
+
+"$(OUTDIR)\sdbm.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
+    $(LIB32) @<<
+  $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
+<<
+
+!ENDIF 
 
 
 !IF "$(CFG)" == "sdbm - Win32 Release" || "$(CFG)" == "sdbm - Win32 Debug"

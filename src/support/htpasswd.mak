@@ -27,9 +27,6 @@ NULL=
 NULL=nul
 !ENDIF 
 
-CPP=cl.exe
-RSC=rc.exe
-
 !IF  "$(CFG)" == "htpasswd - Win32 Release"
 
 OUTDIR=.\Release
@@ -64,11 +61,44 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /O2 /I "..\include" /I "..\os\win32" /D "NDEBUG" /D\
  "WIN32" /D "_CONSOLE" /D "_MBCS" /D "WIN32_LEAN_AND_MEAN" /Fo"$(INTDIR)\\"\
  /Fd"$(INTDIR)\htpasswd" /FD /c 
 CPP_OBJS=.\Release/
 CPP_SBRS=.
+
+.c{$(CPP_OBJS)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(CPP_OBJS)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(CPP_OBJS)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(CPP_SBRS)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(CPP_SBRS)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(CPP_SBRS)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\htpasswd.bsc" 
 BSC32_SBRS= \
@@ -127,35 +157,12 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /GX /Zi /Od /I "..\include" /I "..\os\win32" /D\
  "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "WIN32_LEAN_AND_MEAN"\
  /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\htpasswd" /FD /c 
 CPP_OBJS=.\Debug/
 CPP_SBRS=.
-BSC32=bscmake.exe
-BSC32_FLAGS=/nologo /o"$(OUTDIR)\htpasswd.bsc" 
-BSC32_SBRS= \
-	
-LINK32=link.exe
-LINK32_FLAGS=ws2_32.lib /nologo /subsystem:console /incremental:no\
- /pdb:"$(OUTDIR)\htpasswd.pdb" /map:"$(INTDIR)\htpasswd.map" /debug\
- /machine:I386 /out:"$(OUTDIR)\htpasswd.exe" 
-LINK32_OBJS= \
-	"$(INTDIR)\ap_base64.obj" \
-	"$(INTDIR)\ap_checkpass.obj" \
-	"$(INTDIR)\ap_cpystrn.obj" \
-	"$(INTDIR)\ap_getpass.obj" \
-	"$(INTDIR)\ap_md5c.obj" \
-	"$(INTDIR)\ap_sha1.obj" \
-	"$(INTDIR)\ap_snprintf.obj" \
-	"$(INTDIR)\htpasswd.obj"
-
-"$(OUTDIR)\htpasswd.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
-    $(LINK32) @<<
-  $(LINK32_FLAGS) $(LINK32_OBJS)
-<<
-
-!ENDIF 
 
 .c{$(CPP_OBJS)}.obj::
    $(CPP) @<<
@@ -186,6 +193,32 @@ LINK32_OBJS= \
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
+
+RSC=rc.exe
+BSC32=bscmake.exe
+BSC32_FLAGS=/nologo /o"$(OUTDIR)\htpasswd.bsc" 
+BSC32_SBRS= \
+	
+LINK32=link.exe
+LINK32_FLAGS=ws2_32.lib /nologo /subsystem:console /incremental:no\
+ /pdb:"$(OUTDIR)\htpasswd.pdb" /map:"$(INTDIR)\htpasswd.map" /debug\
+ /machine:I386 /out:"$(OUTDIR)\htpasswd.exe" 
+LINK32_OBJS= \
+	"$(INTDIR)\ap_base64.obj" \
+	"$(INTDIR)\ap_checkpass.obj" \
+	"$(INTDIR)\ap_cpystrn.obj" \
+	"$(INTDIR)\ap_getpass.obj" \
+	"$(INTDIR)\ap_md5c.obj" \
+	"$(INTDIR)\ap_sha1.obj" \
+	"$(INTDIR)\ap_snprintf.obj" \
+	"$(INTDIR)\htpasswd.obj"
+
+"$(OUTDIR)\htpasswd.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
+    $(LINK32) @<<
+  $(LINK32_FLAGS) $(LINK32_OBJS)
+<<
+
+!ENDIF 
 
 
 !IF "$(CFG)" == "htpasswd - Win32 Release" || "$(CFG)" ==\

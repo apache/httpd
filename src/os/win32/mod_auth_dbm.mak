@@ -29,10 +29,6 @@ NULL=
 NULL=nul
 !ENDIF 
 
-CPP=cl.exe
-MTL=midl.exe
-RSC=rc.exe
-
 !IF  "$(CFG)" == "mod_auth_dbm - Win32 Release"
 
 OUTDIR=.\Release
@@ -67,12 +63,46 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /O2 /I "..\..\include" /I "..\..\os\win32" /I\
  "..\..\lib\sdbm" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "SHARED_MODULE"\
  /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\mod_auth_dbm" /FD /c 
 CPP_OBJS=.\Release/
 CPP_SBRS=.
+
+.c{$(CPP_OBJS)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(CPP_OBJS)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(CPP_OBJS)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(CPP_SBRS)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(CPP_SBRS)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(CPP_SBRS)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+MTL=midl.exe
 MTL_PROJ=/nologo /D "NDEBUG" /mktyplib203 /win32 
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\mod_auth_dbm.bsc" 
 BSC32_SBRS= \
@@ -127,32 +157,12 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /GX /Zi /Od /I "..\..\include" /I "..\..\os\win32" /I\
  "..\..\lib\sdbm" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "SHARED_MODULE"\
  /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\mod_auth_dbm" /FD /c 
 CPP_OBJS=.\Debug/
 CPP_SBRS=.
-MTL_PROJ=/nologo /D "_DEBUG" /mktyplib203 /win32 
-BSC32=bscmake.exe
-BSC32_FLAGS=/nologo /o"$(OUTDIR)\mod_auth_dbm.bsc" 
-BSC32_SBRS= \
-	
-LINK32=link.exe
-LINK32_FLAGS=kernel32.lib /nologo /subsystem:windows /dll /incremental:no\
- /pdb:"$(OUTDIR)\mod_auth_dbm.pdb" /map:"$(INTDIR)\mod_auth_dbm.map" /debug\
- /machine:I386 /out:"$(OUTDIR)\mod_auth_dbm.so"\
- /implib:"$(OUTDIR)\mod_auth_dbm.lib" /base:@"BaseAddr.ref",mod_auth_dbm 
-LINK32_OBJS= \
-	"$(INTDIR)\mod_auth_dbm.obj" \
-	"..\..\Debug\ApacheCore.lib" \
-	"..\..\lib\sdbm\LibD\sdbm.lib"
-
-"$(OUTDIR)\mod_auth_dbm.so" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
-    $(LINK32) @<<
-  $(LINK32_FLAGS) $(LINK32_OBJS)
-<<
-
-!ENDIF 
 
 .c{$(CPP_OBJS)}.obj::
    $(CPP) @<<
@@ -184,6 +194,30 @@ LINK32_OBJS= \
    $(CPP_PROJ) $< 
 <<
 
+MTL=midl.exe
+MTL_PROJ=/nologo /D "_DEBUG" /mktyplib203 /win32 
+RSC=rc.exe
+BSC32=bscmake.exe
+BSC32_FLAGS=/nologo /o"$(OUTDIR)\mod_auth_dbm.bsc" 
+BSC32_SBRS= \
+	
+LINK32=link.exe
+LINK32_FLAGS=kernel32.lib /nologo /subsystem:windows /dll /incremental:no\
+ /pdb:"$(OUTDIR)\mod_auth_dbm.pdb" /map:"$(INTDIR)\mod_auth_dbm.map" /debug\
+ /machine:I386 /out:"$(OUTDIR)\mod_auth_dbm.so"\
+ /implib:"$(OUTDIR)\mod_auth_dbm.lib" /base:@"BaseAddr.ref",mod_auth_dbm 
+LINK32_OBJS= \
+	"$(INTDIR)\mod_auth_dbm.obj" \
+	"..\..\Debug\ApacheCore.lib" \
+	"..\..\lib\sdbm\LibD\sdbm.lib"
+
+"$(OUTDIR)\mod_auth_dbm.so" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
+    $(LINK32) @<<
+  $(LINK32_FLAGS) $(LINK32_OBJS)
+<<
+
+!ENDIF 
+
 
 !IF "$(CFG)" == "mod_auth_dbm - Win32 Release" || "$(CFG)" ==\
  "mod_auth_dbm - Win32 Debug"
@@ -191,13 +225,13 @@ LINK32_OBJS= \
 !IF  "$(CFG)" == "mod_auth_dbm - Win32 Release"
 
 "ApacheCore - Win32 Release" : 
-   cd "..\.."
+   cd "\clean\apache-1.3\src"
    $(MAKE) /$(MAKEFLAGS) /F ".\ApacheCore.mak" CFG="ApacheCore - Win32 Release"\
  
    cd ".\os\win32"
 
 "ApacheCore - Win32 ReleaseCLEAN" : 
-   cd "..\.."
+   cd "\clean\apache-1.3\src"
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\ApacheCore.mak"\
  CFG="ApacheCore - Win32 Release" RECURSE=1 
    cd ".\os\win32"
@@ -205,12 +239,12 @@ LINK32_OBJS= \
 !ELSEIF  "$(CFG)" == "mod_auth_dbm - Win32 Debug"
 
 "ApacheCore - Win32 Debug" : 
-   cd "..\.."
+   cd "\clean\apache-1.3\src"
    $(MAKE) /$(MAKEFLAGS) /F ".\ApacheCore.mak" CFG="ApacheCore - Win32 Debug" 
    cd ".\os\win32"
 
 "ApacheCore - Win32 DebugCLEAN" : 
-   cd "..\.."
+   cd "\clean\apache-1.3\src"
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\ApacheCore.mak"\
  CFG="ApacheCore - Win32 Debug" RECURSE=1 
    cd ".\os\win32"
@@ -220,12 +254,12 @@ LINK32_OBJS= \
 !IF  "$(CFG)" == "mod_auth_dbm - Win32 Release"
 
 "sdbm - Win32 Release" : 
-   cd "..\..\lib\sdbm"
+   cd "\clean\apache-1.3\src\lib\sdbm"
    $(MAKE) /$(MAKEFLAGS) /F ".\sdbm.mak" CFG="sdbm - Win32 Release" 
    cd "..\..\os\win32"
 
 "sdbm - Win32 ReleaseCLEAN" : 
-   cd "..\..\lib\sdbm"
+   cd "\clean\apache-1.3\src\lib\sdbm"
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\sdbm.mak" CFG="sdbm - Win32 Release"\
  RECURSE=1 
    cd "..\..\os\win32"
@@ -233,12 +267,12 @@ LINK32_OBJS= \
 !ELSEIF  "$(CFG)" == "mod_auth_dbm - Win32 Debug"
 
 "sdbm - Win32 Debug" : 
-   cd "..\..\lib\sdbm"
+   cd "\clean\apache-1.3\src\lib\sdbm"
    $(MAKE) /$(MAKEFLAGS) /F ".\sdbm.mak" CFG="sdbm - Win32 Debug" 
    cd "..\..\os\win32"
 
 "sdbm - Win32 DebugCLEAN" : 
-   cd "..\..\lib\sdbm"
+   cd "\clean\apache-1.3\src\lib\sdbm"
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\sdbm.mak" CFG="sdbm - Win32 Debug"\
  RECURSE=1 
    cd "..\..\os\win32"

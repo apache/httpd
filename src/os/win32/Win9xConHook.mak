@@ -29,10 +29,6 @@ NULL=
 NULL=nul
 !ENDIF 
 
-CPP=cl.exe
-MTL=midl.exe
-RSC=rc.exe
-
 !IF  "$(CFG)" == "Win9xConHook - Win32 Release"
 
 OUTDIR=.\Release
@@ -62,11 +58,45 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /O2 /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D\
  "SHARED_MODULE" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\Win9xConHook" /FD /c 
 CPP_OBJS=.\Release/
 CPP_SBRS=.
+
+.c{$(CPP_OBJS)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(CPP_OBJS)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(CPP_OBJS)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(CPP_SBRS)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(CPP_SBRS)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(CPP_SBRS)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+MTL=midl.exe
 MTL_PROJ=/nologo /D "NDEBUG" /mktyplib203 /win32 
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\Win9xConHook.bsc" 
 BSC32_SBRS= \
@@ -116,32 +146,11 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /GX /Zi /Od /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D\
  "SHARED_MODULE" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\Win9xConHook" /FD /c 
 CPP_OBJS=.\Debug/
 CPP_SBRS=.
-MTL_PROJ=/nologo /D "_DEBUG" /mktyplib203 /win32 
-BSC32=bscmake.exe
-BSC32_FLAGS=/nologo /o"$(OUTDIR)\Win9xConHook.bsc" 
-BSC32_SBRS= \
-	
-LINK32=link.exe
-LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib /nologo /base:"0x1c0f0000"\
- /subsystem:windows /dll /incremental:no /pdb:"$(OUTDIR)\Win9xConHook.pdb"\
- /map:"$(INTDIR)\Win9xConHook.map" /debug /machine:I386\
- /def:".\Win9xConHook.def" /out:"$(OUTDIR)\Win9xConHook.dll"\
- /implib:"$(OUTDIR)\Win9xConHook.lib" 
-DEF_FILE= \
-	".\Win9xConHook.def"
-LINK32_OBJS= \
-	"$(INTDIR)\Win9xConHook.obj"
-
-"$(OUTDIR)\Win9xConHook.dll" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
-    $(LINK32) @<<
-  $(LINK32_FLAGS) $(LINK32_OBJS)
-<<
-
-!ENDIF 
 
 .c{$(CPP_OBJS)}.obj::
    $(CPP) @<<
@@ -172,6 +181,31 @@ LINK32_OBJS= \
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
+
+MTL=midl.exe
+MTL_PROJ=/nologo /D "_DEBUG" /mktyplib203 /win32 
+RSC=rc.exe
+BSC32=bscmake.exe
+BSC32_FLAGS=/nologo /o"$(OUTDIR)\Win9xConHook.bsc" 
+BSC32_SBRS= \
+	
+LINK32=link.exe
+LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib /nologo /base:"0x1c0f0000"\
+ /subsystem:windows /dll /incremental:no /pdb:"$(OUTDIR)\Win9xConHook.pdb"\
+ /map:"$(INTDIR)\Win9xConHook.map" /debug /machine:I386\
+ /def:".\Win9xConHook.def" /out:"$(OUTDIR)\Win9xConHook.dll"\
+ /implib:"$(OUTDIR)\Win9xConHook.lib" 
+DEF_FILE= \
+	".\Win9xConHook.def"
+LINK32_OBJS= \
+	"$(INTDIR)\Win9xConHook.obj"
+
+"$(OUTDIR)\Win9xConHook.dll" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
+    $(LINK32) @<<
+  $(LINK32_FLAGS) $(LINK32_OBJS)
+<<
+
+!ENDIF 
 
 
 !IF "$(CFG)" == "Win9xConHook - Win32 Release" || "$(CFG)" ==\
