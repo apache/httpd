@@ -881,7 +881,7 @@ static int magic_process(request_rec *r)
     /*
      * try looking at the first HOWMANY bytes
      */
-    if ((nbytes = read(fd, (char *) buf, sizeof(buf))) == -1) {
+    if ((nbytes = read(fd, (char *) buf, sizeof(buf) - 1)) == -1) {
 	aplog_error(APLOG_MARK, APLOG_ERR, r->server,
 		    MODNAME ": read failed: %s", r->filename);
 	return HTTP_INTERNAL_SERVER_ERROR;
@@ -1086,7 +1086,6 @@ static unsigned long signextend(server_rec *s, struct magic *m, unsigned long v)
  */
 static int parse(server_rec *serv, pool *p, char *l, int lineno)
 {
-    int i = 0;
     struct magic *m;
     char *t, *s;
     magic_server_config_rec *conf = (magic_server_config_rec *)
@@ -1297,14 +1296,13 @@ static int parse(server_rec *serv, pool *p, char *l, int lineno)
     }
     else
 	m->nospflag = 0;
-    while ((m->desc[i++] = *l++) != '\0' && i < MAXDESC)
-	/* NULLBODY */ ;
+    strncpy(m->desc, l, sizeof(m->desc) - 1);
+    m->desc[sizeof(m->desc) - 1] = '\0';
 
 #if MIME_MAGIC_DEBUG
     aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, serv,
 		MODNAME ": parse line=%d m=%x next=%x cont=%d desc=%s",
-		lineno, m, m->next, m->cont_level,
-		m->desc ? m->desc : "NULL");
+		lineno, m, m->next, m->cont_level, m->desc);
 #endif /* MIME_MAGIC_DEBUG */
 
     return 0;
@@ -1650,7 +1648,7 @@ static int match(request_rec *r, unsigned char *s, int nbytes)
 			MODNAME ": line=%d mc=%x mc->next=%x cont=%d desc=%s",
 			    m_cont->lineno, m_cont,
 			    m_cont->next, m_cont->cont_level,
-			    m_cont->desc ? m_cont->desc : "NULL");
+			    m_cont->desc);
 #endif
 		/*
 		 * this trick allows us to keep *m in sync when the continue
@@ -1779,6 +1777,7 @@ static void mprint(request_rec *r, union VALUETYPE *p, struct magic *m)
     case DATE:
     case BEDATE:
     case LEDATE:
+	/* XXX: not multithread safe */
 	pp = ctime((time_t *) & p->l);
 	if ((rt = strchr(pp, '\n')) != NULL)
 	    *rt = '\0';
@@ -1842,9 +1841,9 @@ static int mget(request_rec *r, union VALUETYPE *p, unsigned char *s,
 		struct magic *m, int nbytes)
 {
     long offset = m->offset;
+
     if (offset + sizeof(union VALUETYPE) > nbytes)
 	          return 0;
-
 
     memcpy(p, s + offset, sizeof(union VALUETYPE));
 
@@ -2066,6 +2065,7 @@ static int ascmagic(request_rec *r, unsigned char *buf, int nbytes)
     s = (unsigned char *) memcpy(nbuf, buf, small_nbytes);
     s[small_nbytes] = '\0';
     has_escapes = (memchr(s, '\033', small_nbytes) != NULL);
+    /* XXX: not multithread safe */
     while ((token = strtok((char *) s, " \t\n\r\f")) != NULL) {
 	s = NULL;		/* make strtok() keep on tokin' */
 	for (p = names; p < names + NNAMES; p++) {

@@ -1,5 +1,8 @@
 Changes with Apache 1.3b4
 
+  *) Fix an off-by-1, and an unterminated string error in
+     mod_mime_magic.  [Dean Gaudet]
+
   *) Fix a potential SEGV problem in mod_negotiation when dealing
      with type-maps.  [Dean Gaudet]
 
