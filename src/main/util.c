@@ -128,12 +128,14 @@ API_EXPORT(char *) ap_field_noparam(pool *p, const char *intype)
     const char *semi;
 
     semi = strchr(intype, ';');
-    if (semi != NULL) {
+    if (!semi) {
+	return ap_pstrdup(p, intype);
+    } else {
 	while ((semi > intype) && ap_isspace(semi[-1])) {
 	    semi--;
 	}
+	return ap_pstrndup(p, intype, semi - intype);
     }
-    return ap_pstrndup(p, intype, semi - intype);
 }
 
 API_EXPORT(char *) ap_ht_time(pool *p, time_t t, const char *fmt, int gmt)
