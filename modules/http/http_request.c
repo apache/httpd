@@ -139,13 +139,16 @@ AP_DECLARE(void) ap_die(int type, request_rec *r)
         r->status = HTTP_PROXY_AUTHENTICATION_REQUIRED;
     }
 
-    /*
-     * If we want to keep the connection, be sure that the request body
-     * (if any) has been read.
+    /* If we don't want to keep the connection, make sure we mark that the
+     * connection is not eligible for keepalive.  If we want to keep the
+     * connection, be sure that the request body (if any) has been read.
      */
-    if ((r->status != HTTP_NOT_MODIFIED) && (r->status != HTTP_NO_CONTENT)
-        && !ap_status_drops_connection(r->status)
-        && r->connection && (r->connection->keepalive != -1)) {
+    if (ap_status_drops_connection(r->status)) {
+        r->connection->keepalive = 0;
+    }
+    else if ((r->status != HTTP_NOT_MODIFIED) &&
+             (r->status != HTTP_NO_CONTENT) &&
+             r->connection && (r->connection->keepalive != -1)) {
 
         (void) ap_discard_request_body(r);
     }
