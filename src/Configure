@@ -332,16 +332,14 @@ case "$PLAT" in
         # Note: We'd like to see patches to compile 64-bit, but for now...
 	echo "You are running 64-bit Irix. For now, we will compile 32-bit"
 	echo "but if you would care to port to 64-bit, send us the patches."
-	CFLAGS="$CFLAGS -n32"
-	LDFLAGS="$LDFLAGS -n32"
 	DEF_WANTHSREGEX=yes
 	DBM_LIB=""
 	if [ "$RULE_IRIXNIS" = "yes" ]; then
-	    OS='SGI IRIX w/NIS'
+	    OS='SGI IRIX-64 w/NIS'
 	    CFLAGS="$CFLAGS -DIRIX"
 	    LIBS="$LIBS -lsun"
 	else
-	    OS='SGI IRIX'
+	    OS='SGI IRIX-64'
 	    CFLAGS="$CFLAGS -DIRIX"
 	fi
 	;;
@@ -349,8 +347,6 @@ case "$PLAT" in
 	DEF_WANTHSREGEX=yes
 	DBM_LIB=""
 	if [ "$RULE_IRIXN32" = "yes" ]; then
-	    CFLAGS="$CFLAGS -n32"
-	    LDFLAGS="$LDFLAGS -n32"
 	    if [ "$RULE_IRIXNIS" = "yes" ]; then
 		OS='SGI IRIX-32 w/NIS'
 	    else
@@ -753,11 +749,17 @@ if [ "x$using_shlib" = "x1" ] ; then
             ;;
         *-sgi-irix32)
             case $CC in
-                */gcc|gcc ) CFLAGS_SHLIB="-fpic" ;;
-                */cc|cc   ) CFLAGS_SHLIB="-KPIC" ;;
+                */gcc|gcc )
+		    CFLAGS_SHLIB="-fpic"
+		    N32FLAG=""
+		    ;;
+                */cc|cc )
+		    CFLAGS_SHLIB="-KPIC"
+		    N32FLAG="-n32"
+		    ;;
             esac
             if [ "$RULE_IRIXN32" = "yes" ]; then
-                LDFLAGS_SHLIB="-n32 -shared"
+                LDFLAGS_SHLIB="$N32FLAG -shared"
             else
                 LDFLAGS_SHLIB="-shared"
             fi
@@ -831,28 +833,48 @@ fi
 ##
 case "$OS" in
     'ULTRIX')
-	if [ "$CC" = "cc" ]; then
-	    CFLAGS="$CFLAGS -std"
-	fi
+	case "$CC" in
+	    */cc|cc ) CFLAGS="$CFLAGS -std" ;;
+	esac
 	;;
     'SCO 5')
-	if [ "$CC" = "cc" ]; then
-	    OSBPRINTF="-K noinline"
-	fi
+	case "$CC" in
+	    */cc|cc ) OSBPRINTF="-K noinline" ;;
+	esac
 	;;
     'HI-UX')
-	if [ "$CC" = "cc" ]; then
-	    CFLAGS="$CFLAGS -Aa -D_HIUX_SOURCE"
-	    OPTIM=" "
-	    TOPTIM=""
-	fi
+	case "$CC" in
+	    */cc|cc )
+		CFLAGS="$CFLAGS -Aa -D_HIUX_SOURCE"
+		OPTIM=" "
+		TOPTIM=""
+	    ;;
+	esac
 	;;
     'HP-UX'|'HP-UX 10')
-	if [ "$CC" = "cc" ]; then
-	    CFLAGS="$CFLAGS -Aa -D_HPUX_SOURCE"
-	    OPTIM=" "
-	    TOPTIM=""
-	fi
+	case "$CC" in
+	    */cc|cc )
+		CFLAGS="$CFLAGS -Aa -D_HPUX_SOURCE"
+		OPTIM=" "
+		TOPTIM=""
+	    ;;
+	esac
+	;;
+    *IRIX-64*)
+	case "$CC" in
+	    */cc|cc )
+		CFLAGS="$CFLAGS -n32"
+		LDFLAGS="$LDFLAGS -n32"
+	    ;;
+	esac
+	;;
+    *IRIX-32*)
+	case "$CC" in
+	    */cc|cc )
+		CFLAGS="$CFLAGS -n32"
+		LDFLAGS="$LDFLAGS -n32"
+	    ;;
+	esac
 	;;
 esac
 
