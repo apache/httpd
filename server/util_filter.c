@@ -209,48 +209,21 @@ API_EXPORT(apr_status_t) ap_pass_brigade(ap_filter_t *next, ap_bucket_brigade *b
     return AP_NOBODY_WROTE;
 }
 
-API_EXPORT(ap_bucket_brigade *) ap_get_saved_data(ap_filter_t *f, 
-                                                  ap_bucket_brigade **b)
+API_EXPORT(void) ap_save_brigade(ap_filter_t *f, ap_bucket_brigade **saveto,
+                                        ap_bucket_brigade **b)
 {
-    ap_bucket_brigade *bb = (ap_bucket_brigade *)f->ctx;
-
-    /* If we have never stored any data in the filter, then we had better
-     * create an empty bucket brigade so that we can concat.
-     */
-    if (!bb) {
-        bb = ap_brigade_create(f->r->pool);
-    }
-
-    /* join the two brigades together.  *b is now empty so we can 
-     * safely destroy it. 
-     */
-    AP_BRIGADE_CONCAT(bb, *b);
-    ap_brigade_destroy(*b);
-    /* clear out the filter's context pointer.  If we don't do this, then
-     * when we save more data to the filter, we will be appended to what is
-     * currently there.  This will mean repeating data.... BAD!  :-)
-     */
-    f->ctx = NULL;
-    
-    return bb;
-}
-
-API_EXPORT(void) ap_save_data_to_filter(ap_filter_t *f, ap_bucket_brigade **b)
-{
-    ap_bucket_brigade *bb = (ap_bucket_brigade *)f->ctx;
     ap_bucket *e;
 
     /* If have never stored any data in the filter, then we had better
      * create an empty bucket brigade so that we can concat.
      */
-    if (!bb) {
-        bb = ap_brigade_create(f->r->pool);
+    if (!(*saveto)) {
+        *saveto = ap_brigade_create(f->r->pool);
     }
     
     AP_RING_FOREACH(e, &(*b)->list, ap_bucket, link) {
         if (e->setaside)
             e->setaside(e);
     }
-    AP_BRIGADE_CONCAT(bb, *b);
-    f->ctx = bb;
+    AP_BRIGADE_CONCAT(*saveto, *b);
 }

@@ -346,28 +346,19 @@ API_EXPORT(void) ap_add_filter(const char *name, void *ctx, request_rec *r);
  * you retrieve data, if you pass in a bucket brigade to the get function,
  * it will append the current brigade onto the one that you are retrieving.
  */
-/**
- * Get data that was saved aside for the current filter from an earlier call
- * @param f The current filter
- * @param b The bucket brigade to append to the data that was saved earlier.
- *          This should be the brigade that was most recently passed to the
- *          filter
- * @return A single bucket brigade containing all of the data that was set 
- *         aside from a previous call to ap_save_data_to_filter and the data
- *         that was most recently passed to this filter.
- * @deffunc ap_bucket_brigade *ap_get_saved_data(ap_filter_t *f, ap_bucket_brigade **b)
- */
-API_EXPORT(ap_bucket_brigade *) ap_get_saved_data(ap_filter_t *f, 
-                                                  ap_bucket_brigade **b);
 
 /**
- * Save a bucket brigade to a filter.  This is used to save portions of the
- * data off to the side for consumption later
+ * prepare a bucket brigade to be setaside.  If a different brigade was 
+ * set-aside earlier, then the two brigades are concatenated together.
  * @param f The current filter
- * @param b The bucket brigade to save aside
- * @deffunc void ap_save_data_to_filter(ap_filter_t *f, ap_bucket_brigade **b)
+ * @param save_to The brigade that was previously set-aside.  Regardless, the
+ *             new bucket brigade is returned in this location.
+ * @param b The bucket brigade to save aside.  This brigade is always empty
+ *          on return
+ * @deffunc void ap_save_brigade(ap_filter_t *f, ap_bucket_brigade **save_to, ap_bucket_brigade **b)
  */
-API_EXPORT(void) ap_save_data_to_filter(ap_filter_t *f, ap_bucket_brigade **b);    
+API_EXPORT(void) ap_save_brigade(ap_filter_t *f, ap_bucket_brigade **save_to,
+                                        ap_bucket_brigade **b);    
 
 #ifdef __cplusplus
 }
