@@ -136,34 +136,54 @@ static void cleanup_cache_object(cache_object_t *obj)
 {
     mem_cache_object_t *mobj = obj->vobj;
 
+    /* TODO:
+     * We desperately need a more efficient way of allocating objects. We're
+     * making way too many malloc calls to create a fully populated 
+     * cache object...
+     */
+
     /* Cleanup the cache_object_t */
     if (obj->key) {
         free(obj->key);
     }
+    if (obj->info.content_type) {
+        free(obj->info.content_type);
+    }
+    if (obj->info.etag) {
+        free(obj->info.etag);
+    }
+    if (obj->info.lastmods) {
+        free(obj->info.lastmods);
+    }
+    if (obj->info.filename) {
+        free(obj->info.filename);
+    }
+
     free(obj);
     
     /* Cleanup the mem_cache_object_t */
-    if (!mobj) {
-        return;
+    if (mobj) {
+        if (mobj->m) {
+            free(mobj->m);
+        }
+        if (mobj->header_out) {
+            if (mobj->header_out[0].hdr) 
+                free(mobj->header_out[0].hdr);
+            free(mobj->header_out);
+        }
+        if (mobj->subprocess_env) {
+            if (mobj->subprocess_env[0].hdr) 
+                free(mobj->subprocess_env[0].hdr);
+            free(mobj->subprocess_env);
+        }
+        if (mobj->notes) {
+            if (mobj->notes[0].hdr) 
+                free(mobj->notes[0].hdr);
+            free(mobj->notes);
+        }
+        free(mobj);
     }
-    if (mobj->m) {
-        free(mobj->m);
-    }
-    /* XXX should freeing of the info be done here or in cache_storage ? 
-    if (obj->info.content_type ) {
-        free((char*)obj->info.content_type );
-        obj->info.content_type =NULL;
-    }
-    if (obj->info.filename ) {
-        free( (char*)obj->info.filename );
-        obj->info.filename= NULL;
-    }
-    */
-    /* XXX Cleanup the headers */
-    if (mobj->num_header_out) {
-        
-    }
-    free(mobj);
+    return;
 }
 static apr_status_t decrement_refcount(void *arg) 
 {
@@ -278,35 +298,29 @@ static int create_entity(cache_handle_t *h, request_rec *r,
     }
 
     /* Allocate and initialize cache_object_t */
-    obj = malloc(sizeof(*obj));
+    obj = calloc(1, sizeof(*obj));
     if (!obj) {
         return DECLINED;
     }
-    memset(obj,'\0', sizeof(*obj));
-    obj->key = malloc(strlen(key) + 1);
+    obj->key = calloc(1, strlen(key) + 1);
     if (!obj->key) {
-        free(obj);
+        cleanup_cache_object(obj);
         return DECLINED;
     }
     strncpy(obj->key, key, strlen(key) + 1);
     obj->info.len = len;
-    obj->complete = 0;   /* Cache object is not complete */
 
 
     /* Allocate and init mem_cache_object_t */
-    mobj = malloc(sizeof(*mobj));
+    mobj = calloc(1, sizeof(*mobj));
     if (!mobj) {
-        /* XXX: Cleanup */
         cleanup_cache_object(obj);
+        return DECLINED;
     }
-    memset(mobj,'\0', sizeof(*mobj));
-    obj->vobj = mobj;    /* Reference the mem_cache_object_t out of 
-                          * cache_object_t 
-                          */
-    mobj->refcount = 0;
-    mobj->cleanup = 0;
-    mobj->m_len = len;    /* Duplicates info in cache_object_t info */
 
+    /* Reference mem_cache_object_t out of cache_object_t */
+    obj->vobj = mobj;
+    mobj->m_len = len;
 
     /* Place the cache_object_t into the hash table.
      * Note: Perhaps we should wait to put the object in the
@@ -332,6 +346,14 @@ static int create_entity(cache_handle_t *h, request_rec *r,
         apr_hash_set(sconf->cacheht, obj->key, strlen(obj->key), obj);
         sconf->object_cnt++;
         sconf->cache_size += len;
+        /* Call a cleanup at the end of the request to garbage collect
+         * a partially completed (aborted) cache update.
+         */
+        obj->complete = 0;
+        mobj->refcount = 1;
+        mobj->cleanup = 1;
+        apr_pool_cleanup_register(r->pool, obj, decrement_refcount, 
+                                  apr_pool_cleanup_null);
     }
     if (sconf->lock) {
         apr_thread_mutex_unlock(sconf->lock);
@@ -373,15 +395,20 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *type, cons
     
     if (obj) {
         mem_cache_object_t *mobj = (mem_cache_object_t *) obj->vobj;
-        mobj->refcount++;
-        apr_pool_cleanup_register(r->pool, obj, decrement_refcount, apr_pool_cleanup_null);
+        if (obj->complete) {
+            mobj->refcount++;
+            apr_pool_cleanup_register(r->pool, obj, decrement_refcount, apr_pool_cleanup_null);
+        }
+        else {
+            obj = NULL;
+        }
     }
 
     if (sconf->lock) {
         apr_thread_mutex_unlock(sconf->lock);
     }
 
-    if (!obj || !(obj->complete)) {
+    if (!obj) {
         return DECLINED;
     }
 
@@ -439,9 +466,8 @@ static int serialize_table(cache_header_tbl_t **obj,
        *obj=NULL;
        return OK;
    }
-    *obj = malloc(sizeof(cache_header_tbl_t) * table->a.nelts);
+    *obj = calloc(1, sizeof(cache_header_tbl_t) * table->a.nelts);
     if (NULL == *obj) {
-        /* cleanup_cache_obj(h->cache_obj); */
         return DECLINED;
     }
     for (i = 0; i < table->a.nelts; ++i) {
@@ -451,11 +477,9 @@ static int serialize_table(cache_header_tbl_t **obj,
     }
 
     /* Transfer the headers into a contiguous memory block */
-    buf = malloc(len);
+    buf = calloc(1, len);
     if (!buf) {
-        free(obj);
         *obj = NULL;
-        /* cleanup_cache_obj(h->cache_obj); */
         return DECLINED;
     }
 
@@ -471,7 +495,6 @@ static int serialize_table(cache_header_tbl_t **obj,
         idx+=len;
     }
     return OK;
- 
 }
 static int unserialize_table( cache_header_tbl_t *ctbl, 
                               int num_headers, 
@@ -588,7 +611,6 @@ static int write_headers(cache_handle_t *h, request_rec *r, cache_info *info)
     if (rc != OK ) {
         return rc;
     }
-
  
     /* Init the info struct */
     if (info->date) {
@@ -601,18 +623,15 @@ static int write_headers(cache_handle_t *h, request_rec *r, cache_info *info)
         obj->info.expire = info->expire;
     }
     if (info->content_type) {
-        obj->info.content_type = (char*) malloc(strlen(info->content_type) + 1);
+        obj->info.content_type = (char*) calloc(1, strlen(info->content_type) + 1);
         if (!obj->info.content_type) {
-            /* cleanup the object? */
             return DECLINED;
         }
         strcpy((char*) obj->info.content_type, info->content_type);
     }
     if ( info->filename) {
-        obj->info.filename = (char*) malloc(strlen(info->filename )+1);
+        obj->info.filename = (char*) calloc(1, strlen(info->filename) + 1);
         if (!obj->info.filename ) {
-            free( (char*)obj->info.content_type );
-            obj->info.content_type =NULL;
             return DECLINED;
         }
         strcpy((char*) obj->info.filename, info->filename );
@@ -636,7 +655,7 @@ static int write_body(cache_handle_t *h, request_rec *r, apr_bucket_brigade *b)
     if (mobj->m == NULL) {
         mobj->m = malloc(mobj->m_len);
         if (mobj->m == NULL) {
-            /* Cleanup cache entry and return */
+            return DECLINED;
         }
         mobj->type = CACHE_TYPE_HEAP;
         h->cache_obj->count = 0;
@@ -649,12 +668,17 @@ static int write_body(cache_handle_t *h, request_rec *r, apr_bucket_brigade *b)
         apr_size_t len;
 
         if (APR_BUCKET_IS_EOS(e)) {
+            mobj->cleanup = 0;
+            mobj->refcount--;    /* Count should be 0 now */
+            apr_pool_cleanup_kill(r->pool, h->cache_obj, decrement_refcount);
+
+            /* Open for business */
             h->cache_obj->complete = 1;
             break;
         }
         rv = apr_bucket_read(e, &s, &len, eblock);
         if (rv != APR_SUCCESS) {
-            /* Big problem!  Cleanup cache entry and return */
+            return DECLINED;
         }
         /* XXX Check for overflow */
         if (len ) {
