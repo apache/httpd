@@ -1,5 +1,9 @@
 Changes with Apache 1.3b4
 
+  *) The aplog_error changes specific to 1.3 introduced a buffer
+     overrun in the (now legacy) log_printf function.  Fixed.
+     [Dean Gaudet]
+
   *) mod_digest didn't properly deal with proxy authentication.  It
      also lacked a case-insensitive comparision of the "Digest"
      token.  [Ronald Tschalaer <Ronald.Tschalaer@psi.ch>] PR#1599

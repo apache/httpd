@@ -413,7 +413,7 @@ API_EXPORT(void) log_printf (const server_rec *s, const char *fmt, ...)
     va_list args;
     
     va_start(args, fmt);
-    vsprintf(buf, fmt, args);
+    ap_vsnprintf(buf, sizeof(buf), fmt, args);
     aplog_error(APLOG_MARK, APLOG_ERR, s, buf);
     va_end(args);
 }
