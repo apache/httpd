@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/04/02 04:15:55 $]
+Last modified at [$Date: 2002/04/05 17:22:19 $]
 
 Release:
 
@@ -55,7 +55,7 @@ FINAL RELEASE SHOWSTOPPERS:
         Aaron says: This is not a showstopper, these problems have existed
                     for as long as I can remember. It would be nice to fix
                     them but they are not new.
-        Not a showstopper: Jeff, Aaron, BillS, gregames
+        Not a showstopper: Jeff, Aaron, BillS, gregames, Jim
 
 CURRENT VOTES:
 
