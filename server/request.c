@@ -1552,13 +1552,17 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
     fdir = ap_make_dirstr_parent(rnew->pool, r->filename);
     fdirlen = strlen(fdir);
 
-    /* Translate r->filename
+    /* Translate r->filename, if it was canonical, it stays canonical
      */
+    if (r->canonical_filename != r->filename)
+        r->canonical_filename = NULL;
     if (apr_filepath_merge(&rnew->filename, fdir, new_file,
                            APR_FILEPATH_TRUENAME, rnew->pool) != APR_SUCCESS) {
         rnew->status = HTTP_FORBIDDEN;
         return rnew;
     }
+    if (r->canonical_filename)
+        rnew->canonical_filename = rnew->filename;
 
     /*
      * Check for a special case... if there are no '/' characters in new_file
