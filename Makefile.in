@@ -115,7 +115,7 @@ install-include:
 
 install-suexec:
 	@if test -f $(builddir)/support/suexec; then \
-	    $(MKINSTALLDIRS) -p $(bindir)/sbin; \
+	    $(MKINSTALLDIRS) $(bindir)/sbin; \
 	    cp -p $(srcdir)/support/suexec $(bindir)/sbin; \
 	fi
 
