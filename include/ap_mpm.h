@@ -126,13 +126,6 @@ AP_DECLARE(int) ap_mpm_run(apr_pool_t *pconf, apr_pool_t *plog, server_rec *serv
 AP_DECLARE(int) ap_graceful_stop_signalled(void);
 
 /**
- * Get the maximum number of daemons processes for this version of Apache
- * @return The maximum number of daemon processes
- * @deffunc int ap_get_max_daemons(void)
- */
-AP_DECLARE(int) ap_get_max_daemons(void);
-
-/**
  * Spawn a process with privileges that another module has requested
  * @param r The request_rec of the current request
  * @param newproc The resulting process handle.
@@ -154,5 +147,18 @@ AP_DECLARE(apr_status_t) ap_os_create_privileged_process(
     apr_procattr_t *attr, 
     apr_pool_t *p);
 
+
+#define AP_MPMQ_MAX_DAEMONS 1    /* Max # of daemons     */
+#define AP_MPMQ_IS_THREADED 2    /* MPM can do threading */
+#define AP_MPMQ_IS_FORKED   3    /* MPM can do forking   */
+
+/**
+ * Query a property of the current MPM.  
+ * @param query_code One of APM_MPMQ_*
+ * @param result A location to place the result of the query
+ * @return APR_SUCCESS or APR_ENOTIMPL
+ * @deffunc int ap_mpm_query(int query_code, int *result)
+ */
+AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result);
 
 #endif
