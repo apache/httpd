@@ -656,7 +656,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode
            ### READBYTES bytes, and we wouldn't have to do any work.
         */
 
-        apr_brigade_partition(ctx->b, *readbytes, &e, APR_NONBLOCK_READ);
+        apr_brigade_partition(ctx->b, *readbytes, &e);
         APR_BRIGADE_CONCAT(b, ctx->b);
         ctx->b = apr_brigade_split(b, e);
         apr_brigade_length(b, 1, &total);
@@ -2400,12 +2400,12 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
         /* these calls to apr_brigade_partition() should theoretically
          * never fail because of the above call to apr_brigade_length(),
          * but what the heck, we'll check for an error anyway */
-        if ((rv = apr_brigade_partition(bb, range_start, &ec, APR_BLOCK_READ)) != APR_SUCCESS) {
+        if ((rv = apr_brigade_partition(bb, range_start, &ec)) != APR_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                           PARTITION_ERR_FMT, range_start, clength);
             continue;
         }
-        if ((rv = apr_brigade_partition(bb, range_end+1, &e2, APR_BLOCK_READ)) != APR_SUCCESS) {
+        if ((rv = apr_brigade_partition(bb, range_end+1, &e2)) != APR_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                           PARTITION_ERR_FMT, range_end+1, clength);
             continue;
