@@ -830,7 +830,7 @@ struct request_rec {
 struct conn_rec {
     /** Pool associated with this connection */
     apr_pool_t *pool;
-    /** Physical vhost this conn come in on */
+    /** Physical vhost this conn came in on */
     server_rec *base_server;
     /** used by http_vhost.c */
     void *vhost_lookup_data;
