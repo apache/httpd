@@ -1,5 +1,11 @@
 Changes with Apache 2.0b1
 
+  *) Remove AddModule and ClearModuleList directives.  Both of these
+     directives were used to ensure that modules could be enabled
+     in the correct order.  That requirement is now gone, because
+     we use hooks to ensure that modules are in the correct order.
+     [Ryan Bloom]
+
   *) When SuExec is specified, we need to add it to the list of
      targets to be built.  If we don't, then any changes to the
      configuration won't affect SuExec, unless 'make suexec' is
