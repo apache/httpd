@@ -174,7 +174,6 @@ typedef struct {
     pid_t pid;
     ap_generation_t generation;	/* generation of this child */
     int worker_threads;
-    int acceptor_threads;
 #ifdef OPTIMIZE_TIMEOUTS
     time_t last_rtime;		/* time(0) of the last change */
     vtime_t last_vtime;		/* the last vtime the parent has seen */

@@ -590,7 +590,6 @@ int ap_update_child_status(int child_num, int thread_num, int status, request_re
 	&& old_status == SERVER_STARTING) {
         ss->tid = pthread_self();
 	ps->worker_threads = ap_threads_per_child;
-	ps->acceptor_threads = ap_acceptors_per_child;
     }
 
     if (ap_extended_status) {
