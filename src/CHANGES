@@ -1,5 +1,9 @@
 Changes with Apache 1.3.10
 
+  *) Build errors in src/support stop with an error, just like all the
+     other recursive make calls. [David Harris <dharris@drh.net>]
+
+
 Changes with Apache 1.3.9
 
   *) Remove bogus error message when a redirect doesn't set Location.

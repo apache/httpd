@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/08/18 17:22:32 $]
+  Last modified at [$Date: 1999/08/19 09:07:29 $]
 
 Release:
 
@@ -44,10 +44,6 @@ Documentation that needs writing:
 
 
 Available Patches:
-
-    * David Harris's [patch] make does not propagate src/support errors
-        Message-ID: <001601bee6e4$788274a0$0500a8c0@delf>
-	Status:
 
     * Paul Reder's patch to fix Allow/Deny (.htaccess parsing) in
       regex <Directory*> processing.
