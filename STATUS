@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/08/15 14:57:21 $]
+Last modified at [$Date: 2000/08/16 20:42:39 $]
 
 Release:
 
@@ -19,7 +19,10 @@ RELEASE SHOWSTOPPERS:
       support.
 
     * All of the bucket types must be implemented.  The list can be found
-      in src/include/ap_buckets.h
+      in src/include/ap_buckets.h. May need to implement a bucket type
+      to mark the end of a subrequest content stream, and one to tell
+      filters to flush any pending content. See http_protocol.c:
+      ap_finalize_sub_req_protocol() and ap_rflush()
 
     * Remove Buff and IOL from the code.  To do this, a chunking and 
       translation filter must be written.  This allows us to remove BUFF.
