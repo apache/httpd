@@ -1,5 +1,5 @@
 # Microsoft Developer Studio Project File - Name="libhttpd" - Package Owner=<4>
-# Microsoft Developer Studio Generated Build File, Format Version 5.00
+# Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Dynamic-Link Library" 0x0102
@@ -22,6 +22,7 @@ CFG=libhttpd - Win32 Release
 !MESSAGE 
 
 # Begin Project
+# PROP AllowPerConfigDependencies 0
 # PROP Scc_ProjName ""
 # PROP Scc_LocalPath ""
 CPP=cl.exe
@@ -67,8 +68,8 @@ LINK32=link.exe
 # PROP Intermediate_Dir "Debug"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MDd /W3 /GX /Od /I ".\include" /I ".\srclib\apr\include" /I ".\srclib\apr-util\include" /I "./server/mpm/winnt" /I "./srclib/expat-lite" /I "./os/win32" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /Zi /c
-# ADD CPP /nologo /MDd /W3 /GX /Od /I ".\include" /I ".\srclib\apr\include" /I ".\srclib\apr-util\include" /I "./server/mpm/winnt" /I "./srclib/expat-lite" /I "./os/win32" /I "./modules/http" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /Fd"Debug\libhttpd" /FD /Zi /c
+# ADD BASE CPP /nologo /MDd /W3 /GX /Od /I ".\include" /I ".\srclib\apr\include" /I ".\srclib\apr-util\include" /I "./server/mpm/winnt" /I "./srclib/expat-lite" /I "./os/win32" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /ZI /c
+# ADD CPP /nologo /MDd /W3 /GX /Od /I ".\include" /I ".\srclib\apr\include" /I ".\srclib\apr-util\include" /I "./server/mpm/winnt" /I "./srclib/expat-lite" /I "./os/win32" /I "./modules/http" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /Fd"Debug\libhttpd" /FD /ZI /c
 # ADD BASE MTL /nologo /D "_DEBUG" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x809 /d "_DEBUG"
