@@ -1,6 +1,6 @@
 dnl modules enabled in this directory by default
 
-APACHE_MODPATH_INIT(httpd-proxy/module-2.0)
+APACHE_MODPATH_INIT(proxy)
 
 proxy_objs="mod_proxy.lo proxy_connect.lo proxy_cache.lo proxy_http.lo proxy_util.lo"
 
