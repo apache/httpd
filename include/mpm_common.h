@@ -276,6 +276,7 @@ const char *ap_mpm_set_scoreboard(cmd_parms *cmd, void *dummy,
  */
 #ifdef AP_MPM_WANT_SET_COREDUMPDIR
 extern char ap_coredump_dir[MAX_STRING_LEN];
+extern int ap_coredumpdir_configured;
 const char *ap_mpm_set_coredumpdir(cmd_parms *cmd, void *dummy,
                                    const char *arg);
 #endif

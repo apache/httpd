@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Linux 2.4+: enable coredumps when Apache is started as root
+     if CoreDumpDir is configured [Greg Ames]
+
   *) you can now specify the compression level for mod_deflate. 
      [Ian Holsman, Stephen Pierzchala <stephen@pierzchala.com>, 
      Michael Schroepl <Michael.Schroepl@telekurs.de>]
