@@ -76,6 +76,7 @@
 #define AP_MPM_WANT_SET_ACCEPT_LOCK_MECH
 #define AP_MPM_WANT_SIGNAL_SERVER
 #define AP_MPM_WANT_SET_MAX_MEM_FREE
+#define AP_MPM_WANT_FATAL_SIGNAL_HANDLER
 #define AP_MPM_DISABLE_NAGLE_ACCEPTED_SOCK
 
 #define MPM_CHILD_PID(i) (ap_scoreboard_image->parent[i].pid)
