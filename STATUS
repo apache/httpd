@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/02/01 12:31:07 $]
+Last modified at [$Date: 2002/02/01 13:16:00 $]
 
 Release:
 
@@ -120,7 +120,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       "gracefully" self-terminate.
         Message-ID: <3C58232C.FE91F19F@Golux.Com>
 
-      +1:  Jim, Justin
+      +1:  Jim, Justin, Ken
       -1:  BrianP
 
     * Make some modifications to the scoreboard creation routines,
