@@ -1,5 +1,8 @@
 Changes with Apache 1.3b1
 
+  *) Fix support for Proxy Authentication (we were testing the response
+     status too early). [Marc Slemko]
+
   *) CoreDumpDirectory directive directs where the core file is
      written when a SIGSEGV, SIGBUS, SIGABORT or SIGABRT are
      received.  [Marc Slemko, Dean Gaudet]

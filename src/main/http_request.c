@@ -850,15 +850,6 @@ void die(int type, request_rec *r)
     char *custom_response = response_code_string(r, error_index);
     int recursive_error = 0;
 
-    /*
-     * This test is done here so that none of the auth modules needs to know
-     * about proxy authentication.  They treat it like normal auth, and then
-     * we tweak the status.
-     */
-    if (r->status == AUTH_REQUIRED && r->proxyreq) {
-        r->status = HTTP_PROXY_AUTHENTICATION_REQUIRED;
-    }
-
     if (type == DONE) {
         finalize_request_protocol(r);
         return;
@@ -882,6 +873,15 @@ void die(int type, request_rec *r)
     }
 
     r->status = type;
+
+    /*
+     * This test is done here so that none of the auth modules needs to know
+     * about proxy authentication.  They treat it like normal auth, and then
+     * we tweak the status.
+     */
+    if (r->status == AUTH_REQUIRED && r->proxyreq) {
+        r->status = HTTP_PROXY_AUTHENTICATION_REQUIRED;
+    }
 
     /*
      * Two types of custom redirects --- plain text, and URLs. Plain text has
