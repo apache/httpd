@@ -50,7 +50,7 @@
 # 
 # Makefile for the Apache proxy library
 # 
-# $Id: Makefile,v 1.3 1996/10/01 07:11:41 chuck Exp $
+# $Id: Makefile,v 1.4 1996/10/01 21:54:57 chuck Exp $
 #
 
 SHELL = /bin/sh
@@ -63,13 +63,15 @@ LIB=libproxy.a
 CFLAGS=-I. -I$(INCDIR) $(AUX_CFLAGS)
 
 # Internal stuff, should not need changing.
-OBJS=mod_proxy.o proxy_cache.o proxy_connect.o proxy_ftp.o proxy_http.o \
-proxy_util.o
-
 PROXYSRC=mod_proxy.c proxy_cache.c proxy_connect.c proxy_ftp.c proxy_http.c \
 proxy_util.c
 
+OBJS=$(PROXYSRC:.c=.o)
+
 default:	$(LIB)
+
+.c.a:
+	$(MAKE) $(CFLAGS) $<
 
 $(LIB):	$(OBJS)
 	rm -f $@
@@ -77,14 +79,8 @@ $(LIB):	$(OBJS)
 	$(RANLIB) $@
 
 # dependencies
-mod_proxy.o proxy_cache.o proxy_connect.o proxy_ftp.o proxy_http.o \
-proxy_util.o: mod_proxy.h
-mod_proxy.o: $(INCDIR)/httpd.h $(INCDIR)/http_config.h
-proxy_cache.o: $(INCDIR)/httpd.h $(INCDIR)/http_config.h $(INCDIR)/md5.h
-proxy_connect.o: $(INCDIR)/httpd.h $(INCDIR)/http_config.h
-proxy_ftp.o: $(INCDIR)/httpd.h $(INCDIR)/http_config.h
-proxy_http.o: $(INCDIR)/httpd.h $(INCDIR)/http_config.h
-proxy_util.o: $(INCDIR)/httpd.h $(INCDIR)/http_config.h $(INCDIR)/md5.h
+$(OBJS): mod_proxy.h $(INCDIR)/httpd.h $(INCDIR)/http_config.h
+proxy_cache.o proxy_util.o: $(INCDIR)/md5.h
 
 # various forms of cleanup
 tidy:
