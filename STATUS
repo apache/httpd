@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 1999/08/27 18:57:17 $]
+Last modified at [$Date: 1999/08/27 19:02:51 $]
 
 Release:
 
@@ -39,7 +39,10 @@ RELEASE SHOWSTOPPERS:
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
-    (none listed)
+    * Switch to autoconf, et al. for configuration.
+
+    * Use APR to get rid of more platform dependancies.
+        Status: Ryan Bloom <rbb@raleigh.ibm.com> is working on this.
 
 Other bugs that need fixing:
 
@@ -51,11 +54,6 @@ Other bugs that need fixing:
         completely.
 
 Other features that need writing:
-
-    * Switch to autoconf, et al. for configuration.
-
-    * Use APR to get rid of more platform dependancies.
-        Status: Ryan Bloom <rbb@raleigh.ibm.com> is working on this.
 
     * Finish infrastructure in core for async MPMs
         Status: ?
