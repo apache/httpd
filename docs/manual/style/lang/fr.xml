@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE language [ <!ENTITY nbsp "&#160;"> ]>
+<!-- English revision: 106753 -->
 
 <!--
  Copyright 2004 The Apache Software Foundation
@@ -93,6 +94,9 @@
 
         <!-- Used in summaries -->
         <message id="summary">Sommaire</message>
+
+        <!-- Used for glossary link titles -->
+        <message id="glossarylink">see glossary</message>
 
         <!-- Used in headers and footers -->
         <message id="apachetitle">- Serveur Apache HTTP</message>
