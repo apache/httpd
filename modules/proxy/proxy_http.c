@@ -392,10 +392,12 @@ static apr_status_t stream_reqbody_chunked(apr_pool_t *p,
         b = header_brigade;
     }
     else {
-        /* input brigade still has an EOS which we can't pass to the output_filters. */
-        e = APR_BRIGADE_LAST(input_brigade);
-        AP_DEBUG_ASSERT(APR_BUCKET_IS_EOS(e));
-        apr_bucket_delete(e);
+        if (!APR_BRIGADE_EMPTY(input_brigade)) {
+            /* input brigade still has an EOS which we can't pass to the output_filters. */
+            e = APR_BRIGADE_LAST(input_brigade);
+            AP_DEBUG_ASSERT(APR_BUCKET_IS_EOS(e));
+            apr_bucket_delete(e);
+        }
         e = apr_bucket_immortal_create(ASCII_ZERO ASCII_CRLF
                                        /* <trailers> */
                                        ASCII_CRLF,
