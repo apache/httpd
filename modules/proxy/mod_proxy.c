@@ -63,6 +63,9 @@
 
 extern module AP_MODULE_DECLARE_DATA proxy_module;
 
+#ifndef MAX
+#define MAX(x,y) ((x) >= (y) ? (x) : (y))
+#endif
 
 /*
  * A Web proxy module. Stages:
