@@ -216,20 +216,19 @@ PATCHES TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewcvs?view=rev&rev=154319
       +1: stoddard, striker
 
-    * mod_dav: Export functions so that Win32 can use them as was intended.
-      svn rev 155345
-      http://svn.apache.org/viewcvs?view=rev&rev=155345
-      +1: jerenkrantz, pquerna, striker
-
-    * don't propagate input headers describing a body to a GET subrequest       
+    * don't propagate input headers describing a body to a GET subrequest
       with no body
       http://svn.apache.org/viewcvs?view=rev&rev=158798
       http://svn.apache.org/viewcvs?view=rev&rev=159410
       +1: gregames
+      -1: jerenkrantz (read_length isn't a sufficient check to see if a body
+                       is present in the request; presence of T-E and C-L in
+                       the headers is the correct flag.)
 
     * mod_version: New Module, Backport from trunk.
       http://svn.apache.org/repos/asf/httpd/httpd/trunk/modules/metadata/mod_version.c
-      +1: pquerna
+      (Also need to backport docs, and build system stuff.)
+      +1: pquerna, jerenkrantz
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
@@ -382,6 +381,7 @@ CURRENT VOTES:
       non experimental status.
       +1: bnicholes, wrowe
       +0: minfrin (wait till the last cache bugs are ironed out)
+      -1: jerenkrantz
 
     * httpd-std.conf and friends;
 
