@@ -79,15 +79,39 @@ behavior and performance of the apache server (<EM>e.g.</EM>,
 then exit.
 
 <DT><A NAME="help"><CODE>-L</CODE></A>
-<DD>Give a list of directives together with expected arguments and
-places where the directive is valid. (New in Apache 1.2)
+<DD>
 
-<DT><CODE>-l</CODE>
-<DD>Give a list of all modules compiled into the server.
+Give a list of directives together with expected arguments and places
+where the directive is valid, then exit.  (Apache 1.3.4 and
+later. Earlier versions used -l instead).
+
+
+<DT><CODE>-l</CODE></A>
+<DD>
+
+Give a list of all modules compiled into the server, then exit.
+(Apache 1.3.4 and later. Earlier versions used -h instead).<br>
+
+Give a list of directives together with expected arguments and places
+where the directive is valid, then exit. (Apache 1.2 to 1.3.3. Later
+versions use -L instead).
+
+
+
+<DT><CODE>-h</CODE>
+<DD>
+
+Print a list of the httpd options, then exit. (Apache 1.3.4 and
+later. Earlier versions used -? instead).<br>
+
+Give a list of all modules compiled into the server, then exit. (Up to
+Apache 1.3.3. Later versions use -l instead).<br>
+
 
 <DT><CODE>-S</CODE>
 <DD>Show the settings as parsed from the config file (currently only
-shows a breakdown of the vhost settings).
+shows a breakdown of the vhost settings) but do not start the
+server. (Up to Apache 1.3.3, this option also started the server).
 
 <DT><CODE>-t</CODE>
 <DD>Test the configuration file syntax (<EM>i.e.</EM>, read all configuration files
@@ -97,10 +121,12 @@ otherwise display "Syntax OK" and terminate with a zero exit status.
 
 <DT><CODE>-k</CODE> <EM>option</EM>
 <DD>Windows only: signal Apache to restart or shutdown. <EM>option</EM> 
-is one of "shutdown" or "restart". (New in Apache 1.3.3).
+is one of "shutdown" or "restart". (Apache 1.3.3 and later).
 
 <DT><CODE>-?</CODE>
-<DD>Print a list of the httpd options, and then exit.
+<DD>Print a list of the httpd options, and then exit (up to Apache
+1.3.3. Later version use -h instead).
+
 </DL>
 
 <H2>Configuration files</H2>
