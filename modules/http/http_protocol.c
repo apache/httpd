@@ -766,7 +766,8 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                 ctx->remaining = get_chunk_size(line);
 
                 if (!ctx->remaining) {
-                    /* Handle trailers by calling get_mime_headers again! */
+                    /* Handle trailers by calling ap_get_mime_headers again! */
+                    ap_get_mime_headers(f->r);
                     e = apr_bucket_eos_create(c->bucket_alloc);
                     APR_BRIGADE_INSERT_TAIL(b, e);
                     return APR_SUCCESS;

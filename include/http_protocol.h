@@ -91,6 +91,12 @@ AP_DECLARE_DATA extern ap_filter_rec_t *ap_old_write_func;
  */ 
 request_rec *ap_read_request(conn_rec *c);
 
+/**
+ * Read the mime-encoded headers.
+ * @param r The current request
+ */
+void ap_get_mime_headers(request_rec *r);
+
 /* Finish up stuff after a request */
 
 /**

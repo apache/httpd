@@ -716,7 +716,7 @@ static int read_request_line(request_rec *r)
     return 1;
 }
 
-static void get_mime_headers(request_rec *r)
+void ap_get_mime_headers(request_rec *r)
 {
     char* field;
     char *value;
@@ -856,7 +856,7 @@ request_rec *ap_read_request(conn_rec *conn)
     }
 
     if (!r->assbackwards) {
-        get_mime_headers(r);
+        ap_get_mime_headers(r);
         if (r->status != HTTP_REQUEST_TIME_OUT) {
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
                           "request failed: error reading the headers");
