@@ -18,7 +18,7 @@
   <P>
   Si veu aquesta p&agrave;gina, es que els propietaris d'aquest domini
   acaben d'instal&middot;lar satisfact&ograve;riament el
-  <A HREF="http://www.apache.org/httpd">servidor web Apache</A>.
+  <A HREF="http://httpd.apache.org/">servidor web Apache</A>.
   Ara han d'afegir contingut en aquest directori i substituir aquesta p&agrave;gina, 
   o b&egrave; dirigir aquest servidor cap al contingut real.
   </P>

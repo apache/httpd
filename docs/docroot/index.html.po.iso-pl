@@ -1,0 +1,41 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+ <HEAD>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-2">
+  <!-- Translated by Marta Bartnicka, martab@dziupla.eu.org on November 13, 2000 -->
+  <TITLE>Strona testowa instalacji Apache</TITLE>
+ </HEAD>
+
+<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+ <BODY
+  BGCOLOR="#FFFFFF"
+  TEXT="#000000"
+  LINK="#0000FF"
+  VLINK="#000080"
+  ALINK="#FF0000"
+ >
+
+
+<P>
+Jeśli została wyświetlona ta strona, to instalacja serwera WWW <A HREF="http://www.apache.org/httpd">Apache</A> zakończyła się pomyślnie. Należy teraz zastąpić tę stronę właściwymi stronami WWW.
+
+<P><HR WIDTH="50%" SIZE="8">
+
+<H2 ALIGN="CENTER">Spodziewasz się w tym miejscu innej strony?</H2>
+
+<P>
+Niniejsza strona jest wyświetlona, gdyż administrator tego serwera WWW zmienił jego konfigurację.  
+<STRONG>Pytania należy kierować do osoby odpowiedzialnej za serwer.</STRONG>   Organizacja Apache Software Foundation, której autorstwa jest oprogramowanie tego serwera WWW, nie odpowiada za utrzymanie ani konfigurację serwera.
+
+<P><HR WIDTH="50%" SIZE="8">
+
+
+<P>
+<A HREF="manual/index.html">Dokumentacja</A> do pakietu Apache jest dołączona do jego dystrybucji.
+
+<P>
+Na serwerze WWW korzystającym z oprogramowania Apache można umieścić poniższy znak.  Dziękujemy za używanie Apache!
+
+<DIV ALIGN="CENTER"><IMG SRC="apache_pb.gif" ALT=""></DIV>
+</BODY>
+</HTML>
