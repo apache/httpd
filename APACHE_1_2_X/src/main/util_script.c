@@ -502,7 +502,10 @@ void call_exec (request_rec *r, char *argv0, char **env, int shellcmd)
         program = fopen (r->filename, "r");
         if (!program) {
             char err_string[HUGE_STRING_LEN];
-            ap_snprintf(err_string, sizeof(err_string), "open of %s failed, errno is %d\n", r->filename, errno);
+            ap_snprintf(err_string, sizeof(err_string), 
+		 "open of %s failed, reason: fopen: %s (errno = %d)\n", 
+		 r->filename, strerror(errno), errno);
+
             /* write(2, err_string, strlen(err_string)); */
             /* exit(0); */
             log_unixerr("fopen", NULL, err_string, r->server);

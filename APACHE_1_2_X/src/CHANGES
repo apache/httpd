@@ -1,4 +1,6 @@
 Changes with Apache 1.2.1
+  
+  *) Improved unix error response logging.  [Marc Slemko]
 
   *) Update mod_rewrite from 3.0.5 to 3.0.6.  New ruleflag
      QSA=query_string_append.  Also fixed a nasty bug in per-dir context:
