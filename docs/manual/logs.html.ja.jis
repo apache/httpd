@@ -283,7 +283,7 @@
       <div class="example"><p><code>
         LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\"
         \"%{User-agent}i\"" combined<br />
-         CustomLog log/acces_log combined
+         CustomLog log/access_log combined
       </code></p></div>
 
       <p>この書式の最初の方は Common Log Format とまったく同じで、最後に
