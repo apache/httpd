@@ -30,3 +30,8 @@ test_char.h: gen_test_char
 
 util_uri.lo: uri_delims.h
 util.lo: test_char.h
+
+EXPORT_FILES = ../srclib/apr/apr.exports ../srclib/apr-util/aprutil.exports
+
+exports.c: $(EXPORT_FILES)
+	(cat $(EXPORT_FILES) | ../build/buildexports.sh ../srclib) > $@
