@@ -289,12 +289,20 @@ apr_status_t ap_cleanup_scoreboard(void *d)
 int ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e sb_type)
 {
     int running_gen = 0;
+    int i;
 #if APR_HAS_SHARED_MEMORY
     apr_status_t rv;
 #endif
 
     if (ap_scoreboard_image) {
         running_gen = ap_scoreboard_image->global->running_generation;
+        ap_scoreboard_image->global->restart_time = apr_time_now();
+        memset(ap_scoreboard_image->parent, 0, 
+               sizeof(process_score) * server_limit);
+        for (i = 0; i < server_limit; i++) {
+            memset(ap_scoreboard_image->servers[i], 0,
+                   sizeof(worker_score) * thread_limit);
+        }
         return OK;
     }
 
