@@ -223,12 +223,6 @@
 #endif
 
 
-#ifdef SIGWAIT_TAKES_ONE_ARG
-#define ap_sigwait(a,b) ((*(b)=sigwait((a)))<0?-1:0)
-#else
-#define ap_sigwait(a,b) sigwait((a),(b))
-#endif
-
 /* TODO - We need to put OS detection back to make all the following work */
 
 #if defined(SUNOS4) || defined(IRIX) || defined(NEXT) || defined(AUX3) \

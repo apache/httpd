@@ -93,7 +93,6 @@
 #endif
 
 #include <signal.h>
-#include <pthread.h>
 
 /*
  * Actual definitions of config globals
@@ -581,11 +580,19 @@ static void * worker_thread(void * dummy)
     return NULL;
 }
 
+static int check_signal(int signum)
+{
+    switch (signum) {
+        case SIGTERM:
+        case SIGINT:
+            just_die(signum);
+            return 1;
+    }                                                                           
+    return 0;
+}
 
 static void child_main(int child_num_arg)
 {
-    sigset_t sig_mask;
-    int signal_received;
     apr_thread_t *thread;
     apr_threadattr_t *thread_attr;
     int i;
@@ -617,21 +624,7 @@ static void child_main(int child_num_arg)
 
     /*done with init critical section */
 
-    /* All threads should mask signals out, accoring to sigwait(2) man page */
-    sigfillset(&sig_mask);
-
-#ifdef SIGPROCMASK_SETS_THREAD_MASK
-    if (sigprocmask(SIG_SETMASK, &sig_mask, NULL) != 0) {
-        ap_log_error(APLOG_MARK, APLOG_ALERT, errno, ap_server_conf, "sigprocmask");
-    }
-#else
-    if ((rv = pthread_sigmask(SIG_SETMASK, &sig_mask, NULL)) != 0) {
-#ifdef PTHREAD_SETS_ERRNO
-        rv = errno;
-#endif
-        ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf, "pthread_sigmask");
-    }
-#endif
+    apr_setup_signal_thread();
 
     requests_this_child = ap_max_requests_per_child;
     
@@ -654,7 +647,9 @@ static void child_main(int child_num_arg)
     apr_threadattr_create(&thread_attr, pchild);
     apr_threadattr_detach_set(thread_attr);
 
-    for (i=0; i < ap_threads_per_child; i++) {
+    apr_create_signal_thread(&thread, thread_attr, check_signal, pchild);
+
+    for (i=0; i < ap_threads_per_child - 1; i++) {
 
 	my_info = (proc_info *)malloc(sizeof(proc_info));
         if (my_info == NULL) {
@@ -683,22 +678,17 @@ static void child_main(int child_num_arg)
 	 * because it let's us deal with tid better.
 	 */
     }
-
-    /* This thread will be the one responsible for handling signals */
-    sigemptyset(&sig_mask);
-    sigaddset(&sig_mask, SIGTERM);
-    sigaddset(&sig_mask, SIGINT);
-    ap_sigwait(&sig_mask, &signal_received);
-    switch (signal_received) {
-        case SIGTERM:
-        case SIGINT:
-            just_die(signal_received);
-            break;
-        default:
-            ap_log_error(APLOG_MARK, APLOG_ALERT, errno, ap_server_conf,
-            "received impossible signal: %d", signal_received);
-            just_die(SIGTERM);
+    apr_pool_create(&my_info->tpool, pchild);
+    my_info = (proc_info *)malloc(sizeof(proc_info));
+    if (my_info == NULL) {
+        ap_log_error(APLOG_MARK, APLOG_ALERT, errno, ap_server_conf,
+                    "malloc: out of memory");
+        clean_child_exit(APEXIT_CHILDFATAL);
     }
+    my_info->pid = my_child_num;
+    my_info->tid = i;
+    my_info->sd = 0;
+    worker_thread(my_info);
 }
 
 static int make_child(server_rec *s, int slot) 
