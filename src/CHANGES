@@ -1,5 +1,9 @@
 Changes with Apache 1.3a2
 
+  *) Modules and core routines are now put into libraries, which
+     simplifies the link line tremendously (among other advantages).
+     [Paul Sutton]
+
   *) Some of the MD5 names defined in Apache have been renamed to have
      an `ap_' prefix to avoid conflicts with routines supplied by
      external libraries.  [Ken Coar]
