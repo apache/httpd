@@ -52,10 +52,6 @@ Changes with Apache 2.1.0-dev
   *) mod_rewrite: Fix some problems reporting errors with mapping
      programs (RewriteMap prg:/something).  [Jeff Trawick]
 
-  *) Win32: Avoid busy wait (consuming all the CPU idle cycles) when
-     all worker threads are busy. 
-     [Igor Nazarenko <igor_nazarenko@hotmail.com>]
-
   *) When using Redirect in directory context, append requested query
      string if there's no one supplied by configuration. PR 10961.
      [André Malo]
@@ -159,6 +155,9 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.45
+  *) Win32: Avoid busy wait (consuming all the CPU idle cycles) when
+     all worker threads are busy. 
+     [Igor Nazarenko <igor_nazarenko@hotmail.com>]
 
   *) Keep the subrequest filter in place when a subrequest is 
      redirected.  PR 15423.  [Jeff Trawick]
