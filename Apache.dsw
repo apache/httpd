@@ -657,6 +657,30 @@ Package=<4>
 
 ###############################################################################
 
+Project: "mod_auth_ldap"=".\modules\experimental\mod_auth_ldap.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name util_ldap
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "mod_autoindex"=".\modules\generators\mod_autoindex.dsp" - Package Owner=<4>
 
 Package=<5>
@@ -1516,6 +1540,27 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name aprutil
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "util_ldap"=".\modules\experimental\util_ldap.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
     End Project Dependency
 }}}
 
