@@ -1,5 +1,12 @@
 Changes with Apache 1.3.21
 
+  *) Fixed ap_os_canonical_filename() so that it wouldn't try to
+     canonicalize an invalid file name.  Also fixed 
+     ap_os_is_path_absolute() so that it wouldn't recognize names
+     such as proxy:http://blah as a NetWare volume:pathname.  Both of 
+     these fixes were necessary to fix mod_proxy problems on NetWare.
+     [Brad Nicholes <BNICHOLES@novell.com>]
+
   *) Fix a storage leak (a strdup() call) in mod_mime_magic.  
      [Jeff Trawick]
 
