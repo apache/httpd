@@ -356,7 +356,7 @@ static char *original_uri(request_rec *r)
 	++last;			/* end at next whitespace */
     }
 
-    return apr_pstrndup(r->pool, first, last - first);
+    return apr_pstrmemdup(r->pool, first, last - first);
 }
 
 AP_DECLARE(void) ap_add_cgi_vars(request_rec *r)
