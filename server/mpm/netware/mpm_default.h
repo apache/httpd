@@ -122,11 +122,6 @@
   #endif
 */
 
-/* Scoreboard file, if there is one */
-#ifndef DEFAULT_SCOREBOARD
-#define DEFAULT_SCOREBOARD "logs/apache_runtime_status"
-#endif
-
 /* Where the main/parent process's pid is logged */
 /*#ifndef DEFAULT_PIDLOG
   #define DEFAULT_PIDLOG "logs/httpd.pid"

@@ -762,8 +762,6 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     pconf = _pconf;
     ap_server_conf = s;
 
-    ap_scoreboard_fname = DEFAULT_SCOREBOARD;
-
     /* Increase the available pool of fd's.  This code from
      * Joe Kloss <joek@be.com>
      */
@@ -1032,7 +1030,6 @@ static int beos_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptem
     ap_thread_limit = HARD_THREAD_LIMIT;
     ap_pid_fname = DEFAULT_PIDLOG;
     ap_max_requests_per_thread = DEFAULT_MAX_REQUESTS_PER_THREAD;
-    ap_scoreboard_fname = DEFAULT_SCOREBOARD;
 
     apr_cpystrn(ap_coredump_dir, ap_server_root, sizeof(ap_coredump_dir));
 

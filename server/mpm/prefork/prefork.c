@@ -1254,7 +1254,6 @@ static int prefork_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp
     ap_daemons_max_free = DEFAULT_MAX_FREE_DAEMON;
     ap_daemons_limit = server_limit;
     ap_pid_fname = DEFAULT_PIDLOG;
-    ap_scoreboard_fname = DEFAULT_SCOREBOARD;
     ap_lock_fname = DEFAULT_LOCKFILE;
     ap_max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
     ap_extended_status = 0;

@@ -1493,7 +1493,6 @@ static int perchild_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptem
     max_spare_threads = DEFAULT_MAX_SPARE_THREAD;
     max_threads = thread_limit;
     ap_pid_fname = DEFAULT_PIDLOG;
-    ap_scoreboard_fname = DEFAULT_SCOREBOARD;
     ap_lock_fname = DEFAULT_LOCKFILE;
     max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
     curr_child_num = 0;

@@ -161,6 +161,31 @@ void ap_init_scoreboard(void *shared_score)
     ap_assert(more_storage == (char*)shared_score + scoreboard_size);
 }
 
+/**
+ * Create a name-based scoreboard in the given pool using the
+ * given filename.
+ */
+static apr_status_t create_namebased_scoreboard(apr_pool_t *pool,
+                                                const char *fname)
+{
+#if APR_HAS_SHARED_MEMORY
+    apr_status_t rv;
+
+    /* The shared memory file must not exist before we create the
+     * segment. */
+    apr_file_remove(fname, pool); /* ignore errors */
+
+    rv = apr_shm_create(&ap_scoreboard_shm, scoreboard_size, fname, pool);
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
+                     "unable to create scoreboard "
+                     "(name-based shared memory failure)");
+        return rv;
+    }
+#endif /* APR_HAS_SHARED_MEMORY */
+    return APR_SUCCESS;
+}
+
 /* ToDo: This function should be made to handle setting up 
  * a scoreboard shared between processes using any IPC technique, 
  * not just a shared memory segment
@@ -183,35 +208,32 @@ static apr_status_t open_scoreboard(apr_pool_t *pconf)
         return rv;
     }
 
-#ifndef WIN32
-    rv = apr_shm_create(&ap_scoreboard_shm, scoreboard_size, fname,
-                        global_pool);
-    if ((rv != APR_SUCCESS) && (rv != APR_ENOTIMPL)) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
-                     "Fatal error: could not create scoreboard "
-                     "(using anonymous shared memory)");
-        return rv;
+    /* The config says to create a name-based shmem */
+    if (ap_scoreboard_fname) {
+        /* make sure it's an absolute pathname */
+        fname = ap_server_root_relative(pconf, ap_scoreboard_fname);
+
+        return create_namebased_scoreboard(global_pool, fname);
     }
-    if (rv == APR_ENOTIMPL) {
-#else
-    {
-#endif
-        if (ap_scoreboard_fname) {
-            fname = ap_server_root_relative(global_pool, ap_scoreboard_fname);
-            /* make sure the file doesn't exist before trying 
-             * to create the segment. */
-            apr_file_remove(fname, global_pool);
-        }
-        rv = apr_shm_create(&ap_scoreboard_shm, scoreboard_size, fname,
-                            global_pool);
-        if (rv != APR_SUCCESS) {
+    else { /* config didn't specify, we get to choose shmem type */
+        rv = apr_shm_create(&ap_scoreboard_shm, scoreboard_size, NULL,
+                            global_pool); /* anonymous shared memory */
+        if ((rv != APR_SUCCESS) && (rv != APR_ENOTIMPL)) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
-                         "Fatal error: could not open(create) scoreboard");
+                         "Unable to create scoreboard "
+                         "(anonymous shared memory failure)");
             return rv;
         }
+        /* Make up a filename and do name-based shmem */
+        else if (rv == APR_ENOTIMPL) {
+            /* Make sure it's an absolute pathname */
+            ap_scoreboard_fname = DEFAULT_SCOREBOARD;
+            fname = ap_server_root_relative(pconf, ap_scoreboard_fname);
+
+            return create_namebased_scoreboard(global_pool, fname);
+        }
     }
-    /* everything will be cleared shortly */
-#endif
+#endif /* APR_HAS_SHARED_MEMORY */
     return APR_SUCCESS;
 }
 
