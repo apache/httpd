@@ -54,7 +54,6 @@
 
       <li><a href="#customlog">CustomLog</a></li>
 
-      <li><a href="#logexcludebytype">LogExcludeByType</a></li>
       <li><a href="#logformat">LogFormat</a></li>
 
       <li><a href="#transferlog">TransferLog</a></li>
@@ -279,41 +278,6 @@
     CustomLog gif-requests.log common env=gif-image
     CustomLog nongif-requests.log common env=!gif-image
 </pre>
-    <hr />
-
-
-    <h2><a id="logexcludebytype" name="logexcludebytype">LogExcludeByType</a> directive</h2>
-
-    <p><a href="directive-dict.html#Syntax"
-    rel="Help"><strong>Syntax:</strong></a> LogExcludeByType
-    "<em>mimetype</em> <em>mimetype</em> <em>...</em>" [env=[!]<em>environment-variable</em>]<br />
-     <a href="directive-dict.html#Context"
-    rel="Help"><strong>Context:</strong></a> server config, virtual
-    host<br />
-     <a href="directive-dict.html#Status"
-    rel="Help"><strong>Status:</strong></a> Base<br />
-     <a href="directive-dict.html#Compatibility"
-    rel="Help"><strong>Compatibility:</strong></a> only
-    available in Apache 2.0.31 or later. <br />
-     <a href="directive-dict.html#Module"
-    rel="Help"><strong>Module:</strong></a> mod_log_config</p>
-
-    <p>The <code>LogExcludeByType</code> directive is used to not log requests
-    of certain types of files. for example, you may not want to log requests for
-    all the gif images on your site</p>
-
-    <p>The first argument, which specifies the mime types to ignore. These values
-    are space seperated and are in the simliar to image/gif. (To figure out what mime
-    type a certain file is, try looking at the request headers it returns where you request it)
-
-    <p>The third argument is optional and allows the decision on
-    whether or not to log a particular request to be based on the
-    presence or absence of a particular variable in the server
-    environment. If the specified <a href="../env.html">environment
-    variable</a> is set for the request (or is not set, in the case
-    of a '<code>env=!<em>name</em></code>' clause), then the
-    request will be logged.</p>
-
     <hr />
 
     <h2><a id="logformat" name="logformat">LogFormat</a>

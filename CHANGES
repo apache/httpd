@@ -1,7 +1,4 @@
 Changes with Apache 2.0.31-dev
-  *) Added new directive LogExcludeByType. lets you stop logging
-     certain mimetypes. (eg. images/gif images/jpeg)
-
   *) Moved several pointers out of the shared Scoreboard so it is
      more portable, and will present the vhost name across server
      generation restarts.  [William Rowe]
