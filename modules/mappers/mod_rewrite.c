@@ -4178,7 +4178,7 @@ static void add_cookie(request_rec *r, char *s)
                 */
                 apr_table_add(rmain->err_headers_out, "Set-Cookie", cookie);
                 apr_pool_userdata_set("set", notename, NULL, rmain->pool);
-                rewritelog(rmain, 5, "setting cookie '%s' to '%s'", var, val);
+                rewritelog(rmain, 5, "setting cookie '%s'", cookie);
             }
             else {
                 rewritelog(rmain, 5, "cookie '%s' is already set..skipping", var);
