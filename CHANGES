@@ -1,4 +1,10 @@
 Changes with Apache 2.0b1
+  *) Apache is now IPv6-capable.  On systems where APR supports IPv6,
+     Apache gets IPv6 listening sockets by default.  Additionally, the
+     Listen, NameVirtualHost, and <VirtualHost> directives support IPv6
+     numeric address strings (e.g., "Listen [fe80::1]:8080").
+     [Jeff Trawick]
+
   *) Modify the install directory layout.  Modules are now installed in
      modules/.  Shared libraries should be installed in libraries/, but
      we don't have any of those on Unix yet.  All install directories
@@ -9,7 +15,7 @@ Changes with Apache 2.0b1
   *) Get the functions in server/linked into the server, regardless of
      which modules linked into the server.  This uses the same hack 
      for Apache that we use for APR and apr-util to ensure all of the
-     necessary functions are linked.  As a part of thise, the CHARSET_EBCIDC
+     necessary functions are linked.  As a part of thise, the CHARSET_EBCDIC
      was renamed to AP_CHARSET_EBCDIC for namespace protection, and to make
      the scripts a bit easier.
      [Ryan Bloom]
