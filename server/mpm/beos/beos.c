@@ -837,7 +837,9 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     
     if (!is_graceful) {
         /* setup the scoreboard shared memory */
-        ap_run_pre_mpm(pconf, SB_SHARED);
+        if (ap_run_pre_mpm(pconf, SB_SHARED) != OK) {
+            return 1;
+        }
 
         for (i = 0; i < HARD_SERVER_LIMIT; i++) {
             ap_scoreboard_image->parent[i].pid = 0;

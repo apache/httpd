@@ -184,7 +184,7 @@ typedef struct ap_sb_handle_t ap_sb_handle_t;
 AP_DECLARE(int) ap_exists_scoreboard_image(void);
 AP_DECLARE(void) ap_increment_counts(ap_sb_handle_t *sbh, request_rec *r);
 
-void ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e t);
+int ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e t);
 apr_status_t reopen_scoreboard(apr_pool_t *p, int detached);
 void ap_init_scoreboard(void *shared_score);
 int ap_calc_scoreboard_size(void);
@@ -218,8 +218,9 @@ AP_DECLARE_DATA extern ap_generation_t volatile ap_my_generation;
   * @param p       Apache pool to allocate from.
   * @param sb_type 
   * @ingroup hooks
+  * @return OK or DECLINE on success; anything else is a error
   */  
-AP_DECLARE_HOOK(void, pre_mpm, (apr_pool_t *p, ap_scoreboard_e sb_type))
+AP_DECLARE_HOOK(int, pre_mpm, (apr_pool_t *p, ap_scoreboard_e sb_type))
 
 /* for time_process_request() in http_main.c */
 #define START_PREQUEST 1

@@ -2101,7 +2101,9 @@ AP_DECLARE(int) ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
 
         if (one_process) {
             /* Set up the scoreboard. */
-            ap_run_pre_mpm(pconf, SB_SHARED);
+            if (ap_run_pre_mpm(pconf, SB_SHARED) != OK) {
+                return 1;
+            }
             if (ap_setup_listeners(ap_server_conf) < 1) {
                 return 1;
             }
@@ -2130,7 +2132,9 @@ AP_DECLARE(int) ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
                 exit(1);
             }
 
-            ap_run_pre_mpm(pconf, SB_SHARED_CHILD);
+            if (ap_run_pre_mpm(pconf, SB_SHARED_CHILD) != OK) {
+                exit(1);
+            }
             ap_my_generation = atoi(getenv("AP_MY_GENERATION"));
             get_listeners_from_parent(ap_server_conf);
         }
@@ -2148,7 +2152,9 @@ AP_DECLARE(int) ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
     }
     else /* Child */ { 
         /* Set up the scoreboard. */
-        ap_run_pre_mpm(pconf, SB_SHARED);
+        if (ap_run_pre_mpm(pconf, SB_SHARED) != OK) {
+            return 1;
+        }
 
         /* Parent process */
         if (ap_setup_listeners(ap_server_conf) < 1) {
