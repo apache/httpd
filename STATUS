@@ -137,10 +137,6 @@ Available Patches:
 		Chuck +1, MarkC +1, Ralf +1, Sameer +1, Martin +1, Dean +1
 	        Brian +1
 
-    * Dean's patch to speed up os_escape_path 
-	<Pine.LNX.3.96dg4.980226221531.25145P-100000@twinlark.arctic.org>
-	Status: Brian +1
-
 In progress:
 
     * Ken's IndexFormat enhancement to mod_autoindex to allow
