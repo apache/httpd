@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
 <manualpage>
 <relativepath href="."/>
-<!-- English revision: 1.1 -->
+<!-- English revision: 1.2 -->
 
   <title>マルチプロセッシングモジュール (MPM)</title>
 
@@ -96,6 +96,7 @@ Apache HTTP サーバでどのように使用されるかについて解説しています。</p>
 
 <table>
 <tr><td>BeOS</td><td><module>beos</module></td></tr>
+<tr><td>Netware</td><td><module>mpm_netware</module></td></tr>
 <tr><td>OS/2</td><td><module>mpmt_os2</module></td></tr>
 <tr><td>Unix</td><td><module>prefork</module></td></tr>
 <tr><td>Windows</td><td><module>mpm_winnt</module></td></tr>
