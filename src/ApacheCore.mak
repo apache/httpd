@@ -28,6 +28,10 @@ NULL=
 NULL=nul
 !ENDIF 
 
+CPP=cl.exe
+MTL=midl.exe
+RSC=rc.exe
+
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 OUTDIR=.\CoreR
@@ -97,46 +101,12 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /GX /O2 /I ".\regex" /I ".\main" /D "WIN32" /D\
  "NDEBUG" /D "_WINDOWS" /Fp"$(INTDIR)\ApacheCore.pch" /YX /Fo"$(INTDIR)\\"\
  /Fd"$(INTDIR)\\" /FD /c 
 CPP_OBJS=.\CoreR/
 CPP_SBRS=.
-
-.c{$(CPP_OBJS)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(CPP_OBJS)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(CPP_OBJS)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(CPP_SBRS)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(CPP_SBRS)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(CPP_SBRS)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-MTL=midl.exe
 MTL_PROJ=/nologo /D "NDEBUG" /mktyplib203 /win32 
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\ApacheCore.bsc" 
 BSC32_SBRS= \
@@ -314,46 +284,12 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /Gm /GX /Zi /Od /I ".\regex" /I ".\main" /D "WIN32"\
  /D "_DEBUG" /D "_WINDOWS" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\ApacheCore.pch" /YX\
  /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 CPP_OBJS=.\CoreD/
 CPP_SBRS=.\CoreD/
-
-.c{$(CPP_OBJS)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(CPP_OBJS)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(CPP_OBJS)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(CPP_SBRS)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(CPP_SBRS)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(CPP_SBRS)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-MTL=midl.exe
 MTL_PROJ=/nologo /D "_DEBUG" /mktyplib203 /win32 
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\ApacheCore.bsc" 
 BSC32_SBRS= \
@@ -465,6 +401,36 @@ LINK32_OBJS= \
 
 !ENDIF 
 
+.c{$(CPP_OBJS)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(CPP_OBJS)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(CPP_OBJS)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(CPP_SBRS)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(CPP_SBRS)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(CPP_SBRS)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
 
 !IF "$(CFG)" == "ApacheCore - Win32 Release" || "$(CFG)" ==\
  "ApacheCore - Win32 Debug"
@@ -494,7 +460,7 @@ DEP_CPP_ALLOC=\
 	".\main\conf.h"\
 	".\main\httpd.h"\
 	".\main\multithread.h"\
-	".\main\os.h"\
+	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -532,7 +498,7 @@ DEP_CPP_BUFF_=\
 	".\main\conf.h"\
 	".\main\http_main.h"\
 	".\main\httpd.h"\
-	".\main\os.h"\
+	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -630,7 +596,7 @@ DEP_CPP_HTTP_=\
 	".\main\buff.h"\
 	".\main\conf.h"\
 	".\main\httpd.h"\
-	".\main\os.h"\
+	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -678,7 +644,7 @@ DEP_CPP_HTTP_C=\
 	".\main\http_log.h"\
 	".\main\http_request.h"\
 	".\main\httpd.h"\
-	".\main\os.h"\
+	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -734,10 +700,10 @@ DEP_CPP_HTTP_CO=\
 	".\main\http_request.h"\
 	".\main\httpd.h"\
 	".\main\md5.h"\
-	".\main\os.h"\
 	".\main\rfc1413.h"\
 	".\main\scoreboard.h"\
 	".\main\util_md5.h"\
+	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -780,7 +746,7 @@ DEP_CPP_HTTP_L=\
 	".\main\http_log.h"\
 	".\main\http_main.h"\
 	".\main\httpd.h"\
-	".\main\os.h"\
+	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -837,9 +803,9 @@ DEP_CPP_HTTP_M=\
 	".\main\http_request.h"\
 	".\main\httpd.h"\
 	".\main\multithread.h"\
-	".\main\os.h"\
 	".\main\scoreboard.h"\
 	".\os\win32\getopt.h"\
+	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	".\os\win32\service.h"\
 	".\regex\regex.h"\
@@ -891,8 +857,8 @@ DEP_CPP_HTTP_P=\
 	".\main\http_protocol.h"\
 	".\main\http_request.h"\
 	".\main\httpd.h"\
-	".\main\os.h"\
 	".\main\util_date.h"\
+	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -943,8 +909,8 @@ DEP_CPP_HTTP_R=\
 	".\main\http_protocol.h"\
 	".\main\http_request.h"\
 	".\main\httpd.h"\
-	".\main\os.h"\
 	".\main\scoreboard.h"\
+	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -975,7 +941,7 @@ DEP_CPP_MD5C_=\
 DEP_CPP_MD5C_=\
 	".\main\conf.h"\
 	".\main\md5.h"\
-	".\main\os.h"\
+	".\os\win32\os.h"\
 	".\regex\regex.h"\
 	
 
@@ -1018,7 +984,7 @@ DEP_CPP_MOD_A=\
 	".\main\http_log.h"\
 	".\main\http_request.h"\
 	".\main\httpd.h"\
-	".\main\os.h"\
+	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1067,8 +1033,8 @@ DEP_CPP_MOD_AC=\
 	".\main\http_protocol.h"\
 	".\main\http_request.h"\
 	".\main\httpd.h"\
-	".\main\os.h"\
 	".\main\util_script.h"\
+	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1106,7 +1072,7 @@ DEP_CPP_MOD_AL=\
 	".\main\conf.h"\
 	".\main\http_config.h"\
 	".\main\httpd.h"\
-	".\main\os.h"\
+	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1153,8 +1119,8 @@ DEP_CPP_MOD_AS=\
 	".\main\http_protocol.h"\
 	".\main\http_request.h"\
 	".\main\httpd.h"\
-	".\main\os.h"\
 	".\main\util_script.h"\
+	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1198,7 +1164,7 @@ DEP_CPP_MOD_AU=\
 	".\main\http_log.h"\
 	".\main\http_protocol.h"\
 	".\main\httpd.h"\
-	".\main\os.h"\
+	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1247,8 +1213,8 @@ DEP_CPP_MOD_AUT=\
 	".\main\http_protocol.h"\
 	".\main\http_request.h"\
 	".\main\httpd.h"\
-	".\main\os.h"\
 	".\main\util_script.h"\
+	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1299,8 +1265,8 @@ DEP_CPP_MOD_C=\
 	".\main\http_protocol.h"\
 	".\main\http_request.h"\
 	".\main\httpd.h"\
-	".\main\os.h"\
 	".\main\util_script.h"\
+	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1349,8 +1315,8 @@ DEP_CPP_MOD_D=\
 	".\main\http_protocol.h"\
 	".\main\http_request.h"\
 	".\main\httpd.h"\
-	".\main\os.h"\
 	".\main\util_script.h"\
+	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1388,7 +1354,7 @@ DEP_CPP_MOD_DL=\
 	".\main\conf.h"\
 	".\main\http_config.h"\
 	".\main\httpd.h"\
-	".\main\os.h"\
+	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1426,7 +1392,7 @@ DEP_CPP_MOD_E=\
 	".\main\conf.h"\
 	".\main\http_config.h"\
 	".\main\httpd.h"\
-	".\main\os.h"\
+	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1475,8 +1441,8 @@ DEP_CPP_MOD_I=\
 	".\main\http_protocol.h"\
 	".\main\http_request.h"\
 	".\main\httpd.h"\
-	".\main\os.h"\
 	".\main\util_script.h"\
+	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1525,8 +1491,8 @@ DEP_CPP_MOD_IN=\
 	".\main\http_protocol.h"\
 	".\main\http_request.h"\
 	".\main\httpd.h"\
-	".\main\os.h"\
 	".\main\util_script.h"\
+	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1573,8 +1539,8 @@ DEP_CPP_MOD_IS=\
 	".\main\http_protocol.h"\
 	".\main\http_request.h"\
 	".\main\httpd.h"\
-	".\main\os.h"\
 	".\main\util_script.h"\
+	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1615,7 +1581,7 @@ DEP_CPP_MOD_L=\
 	".\main\http_core.h"\
 	".\main\http_log.h"\
 	".\main\httpd.h"\
-	".\main\os.h"\
+	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1654,8 +1620,8 @@ DEP_CPP_MOD_M=\
 	".\main\conf.h"\
 	".\main\http_config.h"\
 	".\main\httpd.h"\
-	".\main\os.h"\
 	".\modules\standard\mod_mime.h"\
+	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1700,8 +1666,8 @@ DEP_CPP_MOD_N=\
 	".\main\http_log.h"\
 	".\main\http_request.h"\
 	".\main\httpd.h"\
-	".\main\os.h"\
 	".\main\util_script.h"\
+	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1743,7 +1709,7 @@ DEP_CPP_MOD_S=\
 	".\main\http_core.h"\
 	".\main\http_log.h"\
 	".\main\httpd.h"\
-	".\main\os.h"\
+	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1781,7 +1747,7 @@ DEP_CPP_MOD_U=\
 	".\main\conf.h"\
 	".\main\http_config.h"\
 	".\main\httpd.h"\
-	".\main\os.h"\
+	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1819,7 +1785,7 @@ DEP_CPP_MODUL=\
 	".\main\conf.h"\
 	".\main\http_config.h"\
 	".\main\httpd.h"\
-	".\main\os.h"\
+	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1850,7 +1816,7 @@ DEP_CPP_MULTI=\
 DEP_CPP_MULTI=\
 	".\main\conf.h"\
 	".\main\multithread.h"\
-	".\main\os.h"\
+	".\os\win32\os.h"\
 	".\regex\regex.h"\
 	
 
@@ -1912,8 +1878,8 @@ DEP_CPP_RFC14=\
 	".\main\http_log.h"\
 	".\main\http_main.h"\
 	".\main\httpd.h"\
-	".\main\os.h"\
 	".\main\rfc1413.h"\
+	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1945,7 +1911,7 @@ DEP_CPP_SERVI=\
 DEP_CPP_SERVI=\
 	".\main\conf.h"\
 	".\main\multithread.h"\
-	".\main\os.h"\
+	".\os\win32\os.h"\
 	".\os\win32\service.h"\
 	".\regex\regex.h"\
 	
@@ -1983,7 +1949,7 @@ DEP_CPP_UTIL_=\
 	".\main\conf.h"\
 	".\main\http_conf_globals.h"\
 	".\main\httpd.h"\
-	".\main\os.h"\
+	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -2013,8 +1979,8 @@ DEP_CPP_UTIL_D=\
 
 DEP_CPP_UTIL_D=\
 	".\main\conf.h"\
-	".\main\os.h"\
 	".\main\util_date.h"\
+	".\os\win32\os.h"\
 	".\regex\regex.h"\
 	
 
@@ -2052,8 +2018,8 @@ DEP_CPP_UTIL_M=\
 	".\main\conf.h"\
 	".\main\httpd.h"\
 	".\main\md5.h"\
-	".\main\os.h"\
 	".\main\util_md5.h"\
+	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -2104,9 +2070,9 @@ DEP_CPP_UTIL_S=\
 	".\main\http_protocol.h"\
 	".\main\http_request.h"\
 	".\main\httpd.h"\
-	".\main\os.h"\
 	".\main\util_date.h"\
 	".\main\util_script.h"\
+	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -2135,7 +2101,7 @@ DEP_CPP_UTIL_SN=\
 
 DEP_CPP_UTIL_SN=\
 	".\main\conf.h"\
-	".\main\os.h"\
+	".\os\win32\os.h"\
 	".\regex\regex.h"\
 	
 
@@ -2170,7 +2136,7 @@ DEP_CPP_UTIL_W=\
 	".\main\buff.h"\
 	".\main\conf.h"\
 	".\main\httpd.h"\
-	".\main\os.h"\
+	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	

@@ -56,7 +56,9 @@
  */
 
 
-#include "os.h"
+#ifdef WIN32
+#include "../os/win32/os.h"
+#endif
 
 #if !defined(QNX) && !defined(MPE) && !defined(WIN32)
 #include <sys/param.h>

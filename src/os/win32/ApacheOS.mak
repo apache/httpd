@@ -97,16 +97,15 @@ OUTDIR=.\ApacheOSD
 INTDIR=.\ApacheOSD
 # Begin Custom Macros
 OutDir=.\ApacheOSD
-ProjDir=.
 # End Custom Macros
 
 !IF "$(RECURSE)" == "0" 
 
-ALL : "$(OUTDIR)\ApacheOS.dll" "$(ProjDir)\..\..\main\os.h"
+ALL : "$(OUTDIR)\ApacheOS.dll"
 
 !ELSE 
 
-ALL : "$(OUTDIR)\ApacheOS.dll" "$(ProjDir)\..\..\main\os.h"
+ALL : "$(OUTDIR)\ApacheOS.dll"
 
 !ENDIF 
 
@@ -119,7 +118,6 @@ CLEAN :
 	-@erase "$(OUTDIR)\ApacheOS.ilk"
 	-@erase "$(OUTDIR)\ApacheOS.lib"
 	-@erase "$(OUTDIR)\ApacheOS.pdb"
-	-@erase "$(ProjDir)\..\..\main\os.h"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
@@ -146,13 +144,6 @@ LINK32_OBJS= \
     $(LINK32) @<<
   $(LINK32_FLAGS) $(LINK32_OBJS)
 <<
-
-ProjDir=.
-InputPath=.\ApacheOSD\ApacheOS.dll
-SOURCE=$(InputPath)
-
-"$(ProjDir)\..\..\main\os.h"	 : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	COPY os.h $(ProjDir)\..\..\main
 
 !ENDIF 
 

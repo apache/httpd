@@ -337,6 +337,10 @@ SOURCE=.\main\multithread.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\os\win32\os.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\os\win32\readdir.h
 # End Source File
 # Begin Source File
