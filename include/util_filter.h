@@ -75,23 +75,25 @@ extern "C" {
 #define AP_NOBODY_READ          -2
 #define AP_FILTER_ERROR         -3
 
-/* ap_input_mode_t - input filtering modes 
+/**
+ * @heading ap_input_mode_t - input filtering modes 
  * 
  * AP_MODE_BLOCKING
  *
- *   The filter shouldn't return until data is received or EOF is hit or an error
- *   occurs.
+ *   The filter shouldn't return until data is received or EOF is hit
+ *   or an error occurs.
  *
  * AP_MODE_NONBLOCKING
  *
- *   The filter should process any available data/status as normal, but will not 
- *   wait for additional data.
+ *   The filter should process any available data/status as normal,
+ *   but will not wait for additional data.
  *
  * AP_MODE_PEEK
  *
- *   The filter should return APR_SUCCESS if data is available or APR_EOF 
- *   otherwise.  The filter must not return any buckets of data.  Data returned
- *   on a subsequent call, when mode is AP_MODE_BLOCKING or AP_MODE_NONBLOCKING.
+ *   The filter should return APR_SUCCESS if data is available or
+ *   APR_EOF otherwise.  The filter must not return any buckets of
+ *   data.  Data returned on a subsequent call, when mode is
+ *   AP_MODE_BLOCKING or AP_MODE_NONBLOCKING.
  */
 typedef enum {
     AP_MODE_BLOCKING,
@@ -158,7 +160,9 @@ typedef union ap_filter_func {
     ap_in_filter_func in_func;
 } ap_filter_func;
 
-/*
+/**
+ * @heading Filter Types
+ *
  * ap_filter_type:
  *
  * Filters have different types/classifications. These are used to group
@@ -296,44 +300,29 @@ AP_DECLARE(apr_status_t) ap_get_brigade(ap_filter_t *filter, apr_bucket_brigade 
  */
 AP_DECLARE(apr_status_t) ap_pass_brigade(ap_filter_t *filter, apr_bucket_brigade *bucket);
 
-/*
- * ap_register_input_filter():
- *
+/**
  * This function is used to register an input filter with the system. 
  * After this registration is performed, then a filter may be added 
  * into the filter chain by using ap_add_input_filter() and simply 
  * specifying the name.
  *
- * The filter's callback and type should be passed.
- */
-/**
- * Register an input filter for later use.  This allows modules to name their 
- * filter functions for later addition to a specific request
  * @param name The name to attach to the filter function
  * @param filter_func The filter function to name
- * @param The type of filter function, either AP_FTYPE_CONTENT or AP_FTYPE_CONNECTION
- * @deffunc void ap_register_input_filter(const char *name, ap_in_filter_func filter_func, ap_filter_type ftype)
+ * @param ftype The type of filter function, either AP_FTYPE_CONTENT or AP_FTYPE_CONNECTION
  */
 AP_DECLARE(void) ap_register_input_filter(const char *name,
                                           ap_in_filter_func filter_func,
                                           ap_filter_type ftype);
-/*
- * ap_register_output_filter():
- *
+/**
  * This function is used to register an output filter with the system. 
  * After this registration is performed, then a filter may be added 
  * into the filter chain by using ap_add_output_filter() and simply 
  * specifying the name.
  *
- * The filter's callback and type should be passed.
- */
-/**
- * Register an output filter for later use.  This allows modules to name their 
- * filter functions for later addition to a specific request
  * @param name The name to attach to the filter function
  * @param filter_func The filter function to name
- * @param The type of filter function, either AP_FTYPE_CONTENT or AP_FTYPE_CONNECTION
- * @deffunc void ap_register_output_filter(const char *name, ap_out_filter_func filter_func, ap_filter_type ftype)
+ * @param ftype The type of filter function, either AP_FTYPE_CONTENT or AP_FTYPE_CONNECTION
+ * @see ::ap_add_output_filter
  */
 AP_DECLARE(void) ap_register_output_filter(const char *name,
                                            ap_out_filter_func filter_func,
