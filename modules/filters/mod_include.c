@@ -1415,6 +1415,7 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
 
                     current->right->token.value = buffer;
                     current->right->value = !!*current->right->token.value;
+                    DEBUG_DUMP_EVAL(ctx, current->right);
                     current->right->done = 1;
                     break;
 
@@ -1441,6 +1442,7 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
 
                         current->left->token.value = buffer;
                         current->left->value = !!*current->left->token.value;
+                        DEBUG_DUMP_EVAL(ctx, current->left);
                         current->left->done = 1;
                         break;
 
