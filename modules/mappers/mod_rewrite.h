@@ -408,9 +408,7 @@ static char *expand_tildepaths(request_rec *r, char *uri);
     /* rewrite map support functions */
 static char *lookup_map(request_rec *r, char *name, char *key);
 static char *lookup_map_txtfile(request_rec *r, const char *file, char *key);
-#ifndef NO_DBM_REWRITEMAP
 static char *lookup_map_dbmfile(request_rec *r, const char *file, char *key);
-#endif
 static char *lookup_map_program(request_rec *r, apr_file_t *fpin,
                                 apr_file_t *fpout, char *key);
 
