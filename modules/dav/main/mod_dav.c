@@ -4006,6 +4006,13 @@ static void register_hooks(void)
 {
     ap_hook_post_config(dav_init_handler, NULL, NULL, AP_HOOK_MIDDLE);
     ap_hook_type_checker(dav_type_checker, NULL, NULL, AP_HOOK_FIRST);
+
+    ap_hook_find_liveprop(dav_core_find_liveprop, NULL, NULL, AP_HOOK_LAST);
+    ap_hook_insert_all_liveprops(dav_core_insert_all_liveprops,
+                                 NULL, NULL, AP_HOOK_MIDDLE);
+
+    /* ### damn. need a pool. */
+    dav_core_register_uris(NULL);
 }
 
 /*---------------------------------------------------------------------------

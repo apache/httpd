@@ -826,6 +826,19 @@ int dav_get_liveprop_ns_count(void);
 void dav_add_all_liveprop_xmlns(apr_pool_t *p, ap_text_header *phdr);
 
 /*
+** The following three functions are part of mod_dav's internal handling
+** for the core WebDAV properties. They are not part of mod_dav's API.
+*/
+int dav_core_find_liveprop(request_rec *r, const char *ns_uri,
+                           const char *name,
+                           const dav_hooks_liveprop **hooks);
+void dav_core_insert_all_liveprops(request_rec *r,
+                                   const dav_resource *resource,
+                                   int insvalue, ap_text_header *phdr);
+void dav_core_register_uris(apr_pool_t *p);
+
+
+/*
 ** Standard WebDAV Property Identifiers
 **
 ** A live property provider does not need to use these; they are simply

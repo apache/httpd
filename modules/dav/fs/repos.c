@@ -186,20 +186,6 @@ static const dav_liveprop_spec dav_fs_props[] =
         DAV_PROPID_FS_executable,
         0       /* handled special in dav_fs_is_writeable */
     },
-      
-    /* ### these aren't FS specific */
-    {
-        DAV_FS_URI_DAV,
-        "displayname",
-        DAV_PROPID_displayname,
-        1,
-    },
-    {
-        DAV_FS_URI_DAV,
-        "source",
-        DAV_PROPID_source,
-        1,
-    },
 
     { 0 }	/* sentinel */
 };
@@ -1743,10 +1729,6 @@ static dav_prop_insert dav_fs_insert_prop(const dav_resource *resource,
     ** None of FS provider properties are defined if the resource does not
     ** exist. Just bail for this case.
     **
-    ** Note that DAV:displayname and DAV:source will be stored as dead
-    ** properties; the NOTDEF return code indicates that dav_props.c should
-    ** look there for the value.
-    **
     ** Even though we state that the FS properties are not defined, the
     ** client cannot store dead values -- we deny that thru the is_writeable
     ** hook function.
@@ -1804,13 +1786,8 @@ static dav_prop_insert dav_fs_insert_prop(const dav_resource *resource,
 	break;
 #endif /* WIN32 */
 
-    case DAV_PROPID_displayname:
-    case DAV_PROPID_source:
     default:
-	/*
-	** This property is not defined. However, it may be a dead
-	** property.
-	*/
+        /* ### what the heck was this property? */
 	return DAV_PROP_INSERT_NOTDEF;
     }
 
