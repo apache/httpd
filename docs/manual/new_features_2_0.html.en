@@ -86,7 +86,7 @@
       <dt><strong>mod_ssl</strong></dt>
 
       <dd>New module in Apache 2.0.  This module is an interface
-      to the SSL/TLS strong encryption protocols provided by
+      to the SSL/TLS encryption protocols provided by
       OpenSSL.</dd>
 
       <dt><strong>mod_dav</strong></dt>
@@ -94,10 +94,6 @@
       <dd>New module in Apache 2.0. This module implements the HTTP
       Distributed Authoring and Versioning (DAV) specification for
       posting and maintaining web content.</dd>
-
-      <dt><strong>mod_auth_db</strong></dt>
-
-      <dd>Now supports Berkeley DB 3.0</dd>
 
       <dt><strong>mod_auth_digest</strong></dt>
 
@@ -120,6 +116,42 @@
       <dd>This module is much more flexible in Apache 2.0. It can
       now modify request headers used by mod_proxy, and it can
       conditionally set response headers.</dd>
+
+      <dt><strong>mod_proxy</strong></dt>
+
+      <dd>The proxy module has been completely rewritten to take advantage
+      of the new filter infrastructure and to implement a more
+      reliable, HTTP/1.1 compliant proxy.</dd>
+
+      <dt><strong>mod_negotiation</strong></dt>
+
+      <dd>A new <a
+      href="mod/mod_negotation.html#forcelanguagepriority">ForceLanguagePriority</a>
+      directive can be used to assure that the client receives a
+      single document in all cases, rather than NOT ACCEPTABLE or
+      MULTIPLE CHOICES responses.  In addition, the negotiation and MultiViews
+      algorithms have been cleaned up to provide more consistent
+      results and a new form of type map that can include document
+      content is provided.</dd>
+
+      <dt><strong>mod_include</strong></dt>
+
+      <dd>New directives allow the default start and end tags for SSI elements
+      to be changed and allow for error and time format configuration
+      to take place in the main configuration file rather than in the
+      SSI document.</dd>
+
+      <dt><strong>mod_auth_dbm</strong></dt>
+
+      <dd>Now supports multiple DBM-like databases using the <a
+      href="mod/mod_auth_dbm.html#authdbmtype">AuthDBMType</a>
+      directive.</dd>
+
+      <dt><strong>mod_auth_db</strong></dt>
+
+      <dd>Now supports Berkeley DB 3.0</dd>
+
+
     </dl>
     <!--#include virtual="footer.html" -->
   </body>
