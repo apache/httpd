@@ -1,5 +1,11 @@
 Changes with Apache 1.3b7
 
+  *) When opening "configuration" files (like httpd.conf, htaccess
+     and htpasswd), Apache will not allow them to be non-/dev/null
+     device files. This closes a DoS hole. At the same time,
+     we use ap_pfopen to open these files to handle timeouts.
+     [Jim Jagielski, Martin Kraemer]
+
   *) Apache will now log the reason its httpd children exit if they exit
      due to an unexpected signal.  (It requires a new porting define,
      SYS_SIGLIST, which if defined should point to a list of text

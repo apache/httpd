@@ -698,15 +698,39 @@ API_EXPORT(char *) ap_getword_conf(pool *p, const char **line)
     return res;
 }
 
+API_EXPORT(int) ap_cfg_closefile(configfile_t *cfp)
+{
+#ifdef DEBUG
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, NULL, "Done with config file %s", fp->name);
+#endif
+    return (cfp->close == NULL) ? 0 : cfp->close(cfp->param);
+}
+
+static int cfg_close(void *param)
+{
+    poolfile_t *cfp = (poolfile_t *) param;
+    return (ap_pfclose(cfp->pool, cfp->file));
+}
+
+static int cfg_getch(void *param)
+{
+    poolfile_t *cfp = (poolfile_t *) param;
+    return (fgetc(cfp->file));
+}
+
+static void *cfg_getstr(void *buf, size_t bufsiz, void *param)
+{
+    poolfile_t *cfp = (poolfile_t *) param;
+    return (fgets(buf, bufsiz, cfp->file));
+}
 
 /* Open a configfile_t as FILE, return open configfile_t struct pointer */
 API_EXPORT(configfile_t *) ap_pcfg_openfile(pool *p, const char *name)
 {
     configfile_t *new_cfg;
+    poolfile_t *new_pfile;
     FILE *file;
-#ifdef unvoted_DISALLOW_DEVICE_ACCESS
     struct stat stbuf;
-#endif
 
     if (name == NULL) {
         ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, NULL,
@@ -714,7 +738,7 @@ API_EXPORT(configfile_t *) ap_pcfg_openfile(pool *p, const char *name)
         return NULL;
     }
 
-    file = fopen(name, "r");
+    file = ap_pfopen(p, name, "r");
 #ifdef DEBUG
     ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, NULL,
                 "Opening config file %s (%s)",
@@ -723,24 +747,25 @@ API_EXPORT(configfile_t *) ap_pcfg_openfile(pool *p, const char *name)
     if (file == NULL)
         return NULL;
 
-#ifdef unvoted_DISALLOW_DEVICE_ACCESS
     if (strcmp(name, "/dev/null") != 0 &&
         fstat(fileno(file), &stbuf) == 0 &&
         !S_ISREG(stbuf.st_mode)) {
         ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, NULL,
                     "Access to file %s denied by server: not a regular file",
                     name);
-        fclose(file);
+        ap_pfclose(p, file);
         return NULL;
     }
-#endif
 
     new_cfg = ap_palloc(p, sizeof(*new_cfg));
-    new_cfg->param = file;
+    new_pfile = ap_palloc(p, sizeof(*new_pfile));
+    new_pfile->file = file;
+    new_pfile->pool = p;
+    new_cfg->param = new_pfile;
     new_cfg->name = ap_pstrdup(p, name);
-    new_cfg->getch = (int (*)(void *)) fgetc;
-    new_cfg->getstr = (void *(*)(void *, size_t, void *)) fgets;
-    new_cfg->close = (int (*)(void *)) fclose;
+    new_cfg->getch = (int (*)(void *)) cfg_getch;
+    new_cfg->getstr = (void *(*)(void *, size_t, void *)) cfg_getstr;
+    new_cfg->close = (int (*)(void *)) cfg_close;
     new_cfg->line_number = 0;
     return new_cfg;
 }
@@ -749,9 +774,9 @@ API_EXPORT(configfile_t *) ap_pcfg_openfile(pool *p, const char *name)
 /* Allocate a configfile_t handle with user defined functions and params */
 API_EXPORT(configfile_t *) ap_pcfg_open_custom(pool *p, const char *descr,
     void *param,
-    int(*getch)(void *),
+    int(*getch)(void *param),
     void *(*getstr) (void *buf, size_t bufsiz, void *param),
-    int(*close_func)(void *))
+    int(*close_func)(void *param))
 {
     configfile_t *new_cfg = ap_palloc(p, sizeof(*new_cfg));
 #ifdef DEBUG
@@ -919,15 +944,6 @@ API_EXPORT(int) ap_cfg_getline(char *buf, size_t bufsize, configfile_t *cfp)
 	}
     }
 }
-
-API_EXPORT(int) ap_cfg_closefile(configfile_t *fp)
-{
-#ifdef DEBUG
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, NULL, "Done with config file %s", fp->name);
-#endif
-    return (fp->close == NULL) ? 0 : fp->close(fp->param);
-}
-
 
 /* Retrieve a token, spacing over it and returning a pointer to
  * the first non-white byte afterwards.  Note that these tokens
@@ -1321,13 +1337,13 @@ API_EXPORT(int) ap_can_exec(const struct stat *finfo)
 #ifdef NEED_STRDUP
 char *strdup(const char *str)
 {
-    char *dup;
+    char *sdup;
 
-    if (!(dup = (char *) malloc(strlen(str) + 1)))
+    if (!(sdup = (char *) malloc(strlen(str) + 1)))
 	return NULL;
-    dup = strcpy(dup, str);
+    sdup = strcpy(sdup, str);
 
-    return dup;
+    return sdup;
 }
 #endif
 

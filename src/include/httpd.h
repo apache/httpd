@@ -905,11 +905,17 @@ API_EXPORT(char *) ap_escape_quotes (pool *p, const char *instring);
 typedef struct {
     int (*getch) (void *param);	/* a getc()-like function */
     void *(*getstr) (void *buf, size_t bufsiz, void *param); /* a fgets()-like function */
-    int (*close) (void *param);	/* a fclose()-like function */
-    void *param;		/* the argument passed to getc()/close()/gets() */
+    int (*close) (void *param);	/* a close hander function */
+    void *param;		/* the argument passed to getch/getstr/close */
     const char *name;		/* the filename / description */
     unsigned line_number;	/* current line number, starting at 1 */
 } configfile_t;
+
+/* Common structure that holds the file and pool for ap_pcfg_openfile */
+typedef struct {
+    struct pool *pool;
+    FILE *file;
+} poolfile_t;
 
 /* Open a configfile_t as FILE, return open configfile_t struct pointer */
 API_EXPORT(configfile_t *) ap_pcfg_openfile(pool *p, const char *name);
@@ -919,7 +925,7 @@ API_EXPORT(configfile_t *) ap_pcfg_open_custom(pool *p, const char *descr,
     void *param,
     int(*getc_func)(void*),
     void *(*gets_func) (void *buf, size_t bufsiz, void *param),
-    int(*close_func)(void*));
+    int(*close_func)(void *param));
 
 /* Read one line from open configfile_t, strip LF, increase line number */
 API_EXPORT(int) ap_cfg_getline(char *buf, size_t bufsize, configfile_t *cfp);
@@ -928,7 +934,7 @@ API_EXPORT(int) ap_cfg_getline(char *buf, size_t bufsize, configfile_t *cfp);
 API_EXPORT(int) ap_cfg_getc(configfile_t *cfp);
 
 /* Detach from open configfile_t, calling the close handler */
-API_EXPORT(int) ap_cfg_closefile(configfile_t *fp);
+API_EXPORT(int) ap_cfg_closefile(configfile_t *cfp);
 
 #ifdef NEED_STRERROR
 char *strerror(int err);
