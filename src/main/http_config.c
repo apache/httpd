@@ -803,7 +803,9 @@ const char *handle_command(cmd_parms *parms, void *config, const char *l)
 
     do {
 	if (!(cmd = find_command_in_modules(cmd_name, &mod))) {
-	    return pstrcat(parms->pool, "Invalid command ", cmd_name, NULL);
+            errno = EINVAL;
+            return pstrcat(parms->pool, "Invalid command '", cmd_name, "'",
+                           NULL);
 	}
 	else {
 	    void *mconfig = get_module_config(config, mod);
@@ -835,8 +837,9 @@ const char *srm_command_loop(cmd_parms *parms, void *config)
 
     while (!(cfg_getline(l, MAX_STRING_LEN, parms->config_file))) {
 	const char *errmsg = handle_command(parms, config, l);
-	if (errmsg)
+        if (errmsg) {
 	    return errmsg;
+    }
     }
 
     return NULL;
@@ -980,8 +983,9 @@ int parse_htaccess(void **result, request_rec *r, int override,
 	cfg_closefile(f);
 
 	if (errmsg) {
-	    aplog_error(APLOG_MARK, APLOG_ALERT, r->server, "%s: %s", filename, errmsg);
-	    return SERVER_ERROR;
+            aplog_error(APLOG_MARK, APLOG_ALERT, r->server, "%s: %s",
+                        filename, errmsg);
+            return HTTP_INTERNAL_SERVER_ERROR;
 	}
 
 	*result = dc;
