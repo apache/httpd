@@ -1,5 +1,9 @@
 Changes with Apache 1.3.4
 
+  *) RFC2396 allows the syntax http://host:/path (with no port number)
+     but the proxy disallowed it (ap_proxy_canon_netloc()).
+     [David Kristol <dmk@bell-labs.com>] PR#3530
+
   *) When modules update/modify the file name in the configfile_t structure,
      syntax errors will report the updated name, not the original one.
      [Fabien Coelho <coelho@cri.ensmp.fr>] PR#3573

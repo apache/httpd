@@ -263,11 +263,14 @@ char *
 	    if (!ap_isdigit(strp[i]))
 		break;
 
-	if (i == 0 || strp[i] != '\0')
+	/* if (i == 0) the no port was given; keep default */
+	if (strp[i] != '\0') {
 	    return "Bad port number in URL";
-	*port = atoi(strp);
-	if (*port > 65535)
-	    return "Port number in URL > 65535";
+	} else if (i > 0) {
+	    *port = atoi(strp);
+	    if (*port > 65535)
+		return "Port number in URL > 65535";
+	}
     }
     ap_str_tolower(host);		/* DNS names are case-insensitive */
     if (*host == '\0')
