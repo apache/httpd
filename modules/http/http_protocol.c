@@ -260,6 +260,7 @@ AP_DECLARE(int) ap_meets_conditions(request_rec *r)
     const char *if_match, *if_modified_since, *if_unmodified, *if_nonematch;
     apr_time_t tmp_time;
     apr_int64_t mtime;
+    int not_modified = 0;
 
     /* Check for conditional requests --- note that we only want to do
      * this if we are successful so far and we are not processing a
@@ -329,17 +330,17 @@ AP_DECLARE(int) ap_meets_conditions(request_rec *r)
     if (if_nonematch != NULL) {
         if (r->method_number == M_GET) {
             if (if_nonematch[0] == '*') {
-                return HTTP_NOT_MODIFIED;
+                not_modified = 1;
             }
-            if (etag != NULL) {
+            else if (etag != NULL) {
                 if (apr_table_get(r->headers_in, "Range")) {
-                    if (etag[0] != 'W'
-                        && ap_find_list_item(r->pool, if_nonematch, etag)) {
-                        return HTTP_NOT_MODIFIED;
-                    }
+                    not_modified = etag[0] != 'W'
+                                   && ap_find_list_item(r->pool,
+                                                        if_nonematch, etag);
                 }
-                else if (ap_strstr_c(if_nonematch, etag)) {
-                    return HTTP_NOT_MODIFIED;
+                else {
+                    not_modified = ap_find_list_item(r->pool,
+                                                     if_nonematch, etag);
                 }
             }
         }
@@ -349,17 +350,19 @@ AP_DECLARE(int) ap_meets_conditions(request_rec *r)
             return HTTP_PRECONDITION_FAILED;
         }
     }
-    /* Else if a valid If-Modified-Since request-header field was given
+
+    /* If a valid If-Modified-Since request-header field was given
      * AND it is a GET or HEAD request
      * AND the requested resource has not been modified since the time
      * specified in this field, then the server MUST
      *    respond with a status of 304 (Not Modified).
      * A date later than the server's current request time is invalid.
      */
-    else if ((r->method_number == M_GET)
-             && ((if_modified_since =
-                  apr_table_get(r->headers_in,
-                                "If-Modified-Since")) != NULL)) {
+    if (r->method_number == M_GET
+        && (not_modified || !if_nonematch)
+        && (if_modified_since =
+              apr_table_get(r->headers_in,
+                            "If-Modified-Since")) != NULL) {
         apr_time_t ims_time;
         apr_int64_t ims, reqtime;
 
@@ -367,10 +370,13 @@ AP_DECLARE(int) ap_meets_conditions(request_rec *r)
         ims = apr_time_sec(ims_time);
         reqtime = apr_time_sec(r->request_time);
 
-        if ((ims >= mtime) && (ims <= reqtime)) {
-            return HTTP_NOT_MODIFIED;
-        }
+        not_modified = ims >= mtime && ims <= reqtime;
     }
+
+    if (not_modified) {
+        return HTTP_NOT_MODIFIED;
+    }
+
     return OK;
 }
 
