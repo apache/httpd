@@ -185,7 +185,6 @@ int status_handler (request_rec *r)
 	       NULL);
 	rputs("Server up for: ",r);
 	show_time(r,up_time);
-	rputs(buffer,r);
 	rputs("<hr>",r);
     }
 
