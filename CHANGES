@@ -1,4 +1,4 @@
-Changes with Apache 2.0.14
+Changes with Apache 2.0.15-dev
 
   *) Add a -V flag to suexec, which causes it to display the
      compile-time settings with which it was built.  (Only
@@ -9,6 +9,8 @@ Changes with Apache 2.0.14
      determine if the content will change before actually scanning the
      entire content.  It is far safer to just remove the C-L as long
      as we are scanning it.  [Ryan Bloom]
+
+Changes with Apache 2.0.14
 
   *) Fix content-length computation.  We ONLY compute a content-length if
      We are not in a 1.1 request and we cannot chunk, and this is a keepalive
