@@ -1,4 +1,6 @@
 Changes with Apache 1.3b6
+
+  *) PORT: OS/2 tweak to deal with multiple .exe targets. [Brian Havard]
  
   *) Add documentation file and src/Configuration.tmpl entry for the
      experimental mod_mmap_static module. Because although it is and marked as
