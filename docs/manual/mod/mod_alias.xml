@@ -163,6 +163,14 @@ sections.</p></note>
     otherwise it must be omitted. Note that the status must be
     known to the Apache code (see the function
     <code>send_error_response</code> in http_protocol.c).</p>
+
+    <p>Example:</p>
+
+    <example>
+        Redirect permanent /one http://example.com/two</ br>
+        Redirect 303 /three http://example.com/other
+    </example>
+
 </usage>
 </directivesynopsis>
 
