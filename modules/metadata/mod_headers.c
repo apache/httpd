@@ -103,6 +103,7 @@
 
 #include "httpd.h"
 #include "http_config.h"
+#include "http_request.h"
 
 typedef enum {
     hdr_add = 'a',              /* add header (could mean multiple hdrs) */
