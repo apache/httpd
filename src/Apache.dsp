@@ -96,6 +96,14 @@ SOURCE=.\os\win32\main_win32.c
 # Begin Group "Resource Files"
 
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;cnt;rtf;gif;jpg;jpeg;jpe"
+# Begin Source File
+
+SOURCE=.\os\win32\apache.ico
+# End Source File
+# Begin Source File
+
+SOURCE=.\os\win32\apache.rc
+# End Source File
 # End Group
 # End Target
 # End Project
