@@ -227,10 +227,10 @@ $ make install
 <TABLE BGCOLOR="#f0f0f0" CELLPADDING=10><TR><TD>
 <PRE>
 - Edit src/Configuration:
-  &lt;&lt "Rule SHARED_CORE=default"
-  &gt;&gt; "Rule SHARED_CORE=yes"
-  &lt;&lt "EXTRA_CFLAGS= "
-  &gt;&gt; "EXTRA_CFLAGS= -DSHARED_CORE_DIR=\"/path/to/install/libexec\"
+  &lt;&lt; Rule SHARED_CORE=default
+  &gt;&gt; Rule SHARED_CORE=yes
+  &lt;&lt; EXTRA_CFLAGS= 
+  &gt;&gt; EXTRA_CFLAGS= -DSHARED_CORE_DIR=\"/path/to/install/libexec\"
 $ make 
 $ cp src/libhttpd.so* /path/to/install/libexec/
 $ cp src/libhttpd.ep  /path/to/install/libexec/
@@ -257,12 +257,12 @@ $ make install
 <TABLE BGCOLOR="#f0f0f0" CELLPADDING=10><TR><TD>
 <PRE>
 - Edit src/Configuration:
-  &lt;&lt "AddModule    modules/xxxx/mod_foo.o" 
-  &gt;&gt; "SharedModule modules/xxxx/mod_foo.so"
+  &lt;&lt; AddModule    modules/xxxx/mod_foo.o
+  &gt;&gt; SharedModule modules/xxxx/mod_foo.so
 $ make
 $ cp src/xxxx/mod_foo.so /path/to/install/libexec
 - Edit /path/to/install/etc/httpd.conf
-  &gt;&gt; "LoadModule foo_module /path/to/install/libexec/mod_foo.so"
+  &gt;&gt; LoadModule foo_module /path/to/install/libexec/mod_foo.so
 </PRE>
 </TD></TR></TABLE>
 </UL>
@@ -286,11 +286,11 @@ $ make install
 <PRE>
 $ cp /path/to/3rdparty/mod_foo.c /path/to/apache-1.3/src/modules/extra/
 - Edit src/Configuration:
-  &gt;&gt; "SharedModule modules/extra/mod_foo.so"
+  &gt;&gt; SharedModule modules/extra/mod_foo.so
 $ make
 $ cp src/xxxx/mod_foo.so /path/to/install/libexec
 - Edit /path/to/install/etc/httpd.conf
-  &gt;&gt; "LoadModule foo_module /path/to/install/libexec/mod_foo.so"
+  &gt;&gt; LoadModule foo_module /path/to/install/libexec/mod_foo.so
 </PRE>
 </TD></TR></TABLE>
 </UL>
