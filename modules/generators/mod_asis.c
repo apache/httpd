@@ -138,14 +138,14 @@ static int asis_handler(request_rec *r)
              * in case the brigade code/filters attempt to read it directly.
              */
             apr_off_t fsize = r->finfo.size - pos;
-            e = apr_bucket_file_create(fd, pos, AP_MAX_SENDFILE, r->pool);
+            b = apr_bucket_file_create(f, pos, AP_MAX_SENDFILE, r->pool);
             while (fsize > AP_MAX_SENDFILE) {
-                APR_BRIGADE_INSERT_TAIL(bb, e);
-                apr_bucket_copy(e, &e);
-                e->start += AP_MAX_SENDFILE;
+                APR_BRIGADE_INSERT_TAIL(bb, b);
+                apr_bucket_copy(b, &b);
+                b->start += AP_MAX_SENDFILE;
                 fsize -= AP_MAX_SENDFILE;
             }
-            e->length = (apr_size_t)fsize; /* Resize just the last bucket */
+            b->length = (apr_size_t)fsize; /* Resize just the last bucket */
         }
         else
 #endif
