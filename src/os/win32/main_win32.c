@@ -12,5 +12,5 @@ __declspec(dllexport) int apache_main(int argc, char *argv[]);
 
 int main(int argc, char *argv[]) 
 {
-    apache_main(argc, argv);
+    return apache_main(argc, argv);
 }
