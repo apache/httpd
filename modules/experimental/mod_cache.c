@@ -236,12 +236,15 @@ static int cache_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
  * ---------------
  *
  * Decide whether or not this content should be cached.
- * If we decide no it should:
+ * If we decide no it should not:
  *   remove the filter from the chain
  * If we decide yes it should:
- *   pass the data to the storage manager
- *   pass the data to the next filter (the network)
- *
+ *   Have we already started saving the response?
+ *      If we have started, pass the data to the storage manager via store_body
+ *      Otherwise:
+ *        Check to see if we *can* save this particular response.
+ *        If we can, call cache_create_entity() and save the headers and body
+ *   Finally, pass the data to the next filter (the network or whatever)
  */
 
 static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
@@ -447,6 +450,8 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         /* ship the data up the stack */
         return ap_pass_brigade(f->next, in);
     }
+
+    /* Make it so that we don't execute this path again. */
     cache->in_checked = 1;
 
     /* Set the content length if known. 
@@ -636,7 +641,7 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
     info->content_type = apr_pstrdup(r->pool, r->content_type);
     info->etag = apr_pstrdup(r->pool, etag);
     info->lastmods = apr_pstrdup(r->pool, lastmods);
-    info->filename = apr_pstrdup(r->pool, r->filename );
+    info->filename = apr_pstrdup(r->pool, r->filename);
 
     /*
      * Write away header information to cache.
