@@ -8,7 +8,7 @@ AC_PREREQ(2.13)
 AC_INIT(ABOUT_APACHE)
 
 AC_CONFIG_HEADER(include/ap_config_auto.h)
-AC_CONFIG_AUX_DIR(srclib/apr/build)
+AC_CONFIG_AUX_DIR(build)
 
 dnl #
 dnl # Include our own M4 macros along with those for APR and libtool
