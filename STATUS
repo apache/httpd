@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/07/12 05:01:27 $]
+Last modified at [$Date: 2000/07/12 22:04:42 $]
 
 Release:
 
@@ -57,6 +57,9 @@ RELEASE SHOWSTOPPERS:
       a lot of directives to be removed from the core.
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
+    * Combine log_child and piped_log_spawn. Clean up http_log.c.
+      Common logging API.
+
     * Create unified scoreboard API and implementation shared across
       the MPMs 
 
