@@ -153,13 +153,13 @@ static void alloc_listener(char *addr, unsigned int port)
 {
     ap_listen_rec **walk;
     ap_listen_rec *new;
-    char *oldaddr;
+    char oldaddr[17];
     unsigned int oldport;
 
     /* see if we've got an old listener for this address:port */
     for (walk = &old_listeners; *walk; walk = &(*walk)->next) {
         ap_getport((*walk)->sd, &oldport);
-        ap_getipaddr((*walk)->sd, &oldaddr);
+	ap_getipaddr(oldaddr,sizeof oldaddr,(*walk)->sd);
 	if (!strcmp(oldaddr, addr) && port == oldport) {
 	    /* re-use existing record */
 	    new = *walk;
