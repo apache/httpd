@@ -4,17 +4,18 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_userdir - Apache HTTP サーバ</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p><p class="apache">Apache HTTP サーバ バージョン 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.0</a> &gt; <a href="./">モジュール</a></div><div id="page-content"><div id="preamble"><h1>Apache モジュール mod_userdir</h1><table class="module"><tr><th><a href="module-dict.html#Description">説明:
+      --><title>mod_userdir - Apache HTTP サーバ</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p><p class="apache">Apache HTTP サーバ バージョン 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.0</a> &gt; <a href="./">モジュール</a></div><div id="page-content"><div id="preamble"><h1>Apache モジュール mod_userdir</h1><table class="module"><tr><th><a href="module-dict.html#Description">説明:
                   </a></th><td>ユーザ専用のディレクトリを提供
   </td></tr><tr><th><a href="module-dict.html#Status">ステータス:
                   </a></th><td>Base</td></tr><tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:
-                  </a></th><td>userdir_module</td></tr><tr><th><a href="module-dict.html#SourceFile">:
+                  </a></th><td>userdir_module</td></tr><tr><th><a href="module-dict.html#SourceFile">ソースファイル:
                   </a></th><td>mod_userdir.c</td></tr></table><h3>概要</h3>
 <p>このモジュールは、
 <code>http://example.com/~user/</code>
 構文を使ってユーザ専用ディレクトリにアクセスできるようにします。</p>
-</div><div id="quickview"><h3 class="directives">ディレクティブ</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#userdir">UserDir</a></li></ul><h3>参照</h3><ul class="seealso"><li><a href="../urlmapping.html">URL から
-ファイルシステムへのマッピング</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="UserDir" id="UserDir">UserDir</a> <a name="userdir" id="userdir">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
+</div><div id="quickview"><h3 class="directives">ディレクティブ</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#userdir">UserDir</a></li></ul><h3>参照</h3><ul class="seealso"><li><a href="../urlmapping.html">URL から
+ファイルシステムへのマッピング</a></li><li><a href="../howto/public_html.html">public_html
+チュートリアル</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="UserDir" id="UserDir">UserDir</a> <a name="userdir" id="userdir">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
               </a></th><td>ユーザ専用ディレクトリの位置</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
               </a></th><td>UserDir <em>directory-filename</em></td></tr><tr><th><a href="directive-dict.html#Default">デフォルト: 
               </a></th><td><code>UserDir public_html</code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
@@ -26,15 +27,15 @@
     ユーザのドキュメントへのリクエストを受けた時に使う
     ユーザのホームディレクトリ中の、実際のディレクトリを
     設定します。
-    <em>directory-filename</em> には次のどれかを指定します:</p>
+    <em>directory-filename</em> には次のどれかを指定します:</p>
 
     <ul>
       <li>ディレクトリ名か下に示すようなパターン。</li>
 
       <li><code>disabled</code> キーワード。
       <code>enabled</code> キーワード (下記参照) で明示的に
-      指定されたユーザ以外の
-      <em>全ての</em>ユーザ名-ディレクトリ変換を
+      指定されたユーザ以外の
+      <em>全ての</em>ユーザ名-ディレクトリ変換を
       しないようにします。</li>
 
       <li><code>disabled</code> キーワードと、スペース区切りのユーザ名リスト。
@@ -57,7 +58,7 @@
     へのリクエストは次のように変換されます:</p>
 
 <table>
-<tr><th>UserDir ディレクティブ</th>
+<tr><th>UserDir ディレクティブ</th>
 <th>変換後のパス</th></tr>
 <tr><td>UserDir public_html</td><td>~bob/public_html/one/two.html</td></tr>
 <tr><td>UserDir /usr/web</td><td>/usr/web/bob/one/two.html</td></tr>
@@ -80,8 +81,8 @@ http://www.foo.com/~*/</td><td>http://www.foo.com/~bob/one/two.html</td></tr>
 <div class="note">
       <strong>このディレクティブを使うときは注意してください;
       "<code>UserDir ./</code>" は
-      "<code>/~root</code>" から "<code>/</code>" へマップしますが、
-      これは望ましい動作ではないでしょう。
+      "<code>/~root</code>" から "<code>/</code>" へマップしますが、
+      これは望ましい動作ではないでしょう。
       "<code>UserDir disabled root</code>" 宣言を
       設定の中に含めておくことを強くお薦めします。
       追加情報に <code class="directive"><a href="../mod/core.html#directory">Directory</a></code>
@@ -109,4 +110,5 @@ UserDir enabled<br />
 UserDir disabled user4 user5 user6
 </code></p></div>
 
-</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div></body></html>
+<h3>参照</h3><ul><li><a href="../howto/public_html.html">public_html
+チュートリアル</a></li></ul></div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div></body></html>
