@@ -1,4 +1,4 @@
-# $Id: Makefile.tmpl,v 1.29 1996/10/09 14:51:21 chuck Exp $
+# $Id: Makefile.tmpl,v 1.30 1996/10/27 18:28:21 chuck Exp $
 # Apache makefile template (well, suffix).
 
 # This is combined with the information in the "Configuration" file
@@ -11,7 +11,7 @@ LFLAGS=$(LFLAGS1) $(EXTRA_LFLAGS)
 
 OBJS= alloc.o http_main.o http_core.o http_config.o http_request.o \
   http_log.o http_protocol.o rfc1413.o util.o util_script.o modules.o buff.o\
-  md5c.o util_md5.o explain.o http_bprintf.o $(MODULES)
+  md5c.o util_md5.o explain.o http_bprintf.o util_date.o $(MODULES)
 
 .c.o:
 	$(CC) -c $(INCLUDES) $(CFLAGS) $(SPACER) $<
@@ -91,4 +91,5 @@ md5c.o: md5.h
 util.o: http_conf_globals.h
 util_script.o: http_core.h http_main.h http_protocol.h util_script.h
 util_md5.o: md5.h
+util_date.o: util_date.h
 
