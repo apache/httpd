@@ -56,14 +56,23 @@ apxs \- APache eXtenSion tool
 .SH SYNOPSIS
 .B apxs
 .B \-g
+[
+.BI \-S " name=value
+]
 .BI \-n " modname"
 
 .B apxs
 .B \-q
+[
+.BI \-S " name=value
+]
 .IR query " ..."
 
 .B apxs
 .B \-c
+[
+.BI \-S " name=value
+]
 [
 .BI \-o " dsofile"
 ]
@@ -89,6 +98,9 @@ apxs \- APache eXtenSion tool
 
 .B apxs
 .B \-i
+[
+.BI \-S " name=value
+]
 [
 .BI \-n " modname"
 ]
@@ -218,6 +230,11 @@ Use this for manually determining settings. For instance use
 .fi
 inside your own Makefiles if you need manual access
 to Apache's C header files.
+.PP
+Configuration options:
+.TP 12
+.BI \-S " name=value"
+This option changes the apxs settings described above.
 .PP
 Template Generation options:
 .TP 12

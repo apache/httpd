@@ -68,18 +68,18 @@ package apxs;
 ##  Configuration
 ##
 
-my $CFG_TARGET        = '@TARGET@';        # substituted via Makefile.tmpl 
-my $CFG_CC            = '@CC@';            # substituted via Makefile.tmpl
-my $CFG_CFLAGS        = '@CFLAGS@';        # substituted via Makefile.tmpl
-my $CFG_CFLAGS_SHLIB  = '@CFLAGS_SHLIB@';  # substituted via Makefile.tmpl
-my $CFG_LD_SHLIB      = '@LD_SHLIB@';      # substituted via Makefile.tmpl
+my $CFG_TARGET        = '@TARGET@';            # substituted via Makefile.tmpl 
+my $CFG_CC            = '@CC@';                # substituted via Makefile.tmpl
+my $CFG_CFLAGS        = '@CFLAGS@';            # substituted via Makefile.tmpl
+my $CFG_CFLAGS_SHLIB  = '@CFLAGS_SHLIB@';      # substituted via Makefile.tmpl
+my $CFG_LD_SHLIB      = '@LD_SHLIB@';          # substituted via Makefile.tmpl
 my $CFG_LDFLAGS_SHLIB = '@LDFLAGS_MOD_SHLIB@'; # substituted via Makefile.tmpl 
-my $CFG_LIBS_SHLIB    = '@LIBS_SHLIB@';    # substituted via Makefile.tmpl 
-my $CFG_PREFIX        = '@prefix@';        # substituted via APACI install
-my $CFG_SBINDIR       = '@sbindir@';       # substituted via APACI install
-my $CFG_INCLUDEDIR    = '@includedir@';    # substituted via APACI install
-my $CFG_LIBEXECDIR    = '@libexecdir@';    # substituted via APACI install
-my $CFG_SYSCONFDIR    = '@sysconfdir@';    # substituted via APACI install
+my $CFG_LIBS_SHLIB    = '@LIBS_SHLIB@';        # substituted via Makefile.tmpl 
+my $CFG_PREFIX        = '@prefix@';            # substituted via APACI install
+my $CFG_SBINDIR       = '@sbindir@';           # substituted via APACI install
+my $CFG_INCLUDEDIR    = '@includedir@';        # substituted via APACI install
+my $CFG_LIBEXECDIR    = '@libexecdir@';        # substituted via APACI install
+my $CFG_SYSCONFDIR    = '@sysconfdir@';        # substituted via APACI install
 
 ##
 ##  Cleanup the above stuff
@@ -117,6 +117,7 @@ my @opt_I = ();
 my @opt_L = ();
 my @opt_l = ();
 my @opt_W = ();
+my @opt_S = ();
 my $opt_i = 0;
 my $opt_a = 0;
 my $opt_A = 0;
@@ -188,18 +189,18 @@ sub Getopts {
 }
 
 sub usage {
-    print STDERR "Usage: apxs -g -n <modname>\n";
-    print STDERR "       apxs -q <query> ...\n";
-    print STDERR "       apxs -c [-o <dsofile>] [-D <name>[=<value>]] [-I <incdir>]\n";
-    print STDERR "               [-L <libdir>] [-l <libname>] [-Wc,<flags>] [-Wl,<flags>]\n";
-    print STDERR "               <files> ...\n";
-    print STDERR "       apxs -i [-a] [-A] [-n <modname>] <dsofile> ...\n";
+    print STDERR "Usage: apxs -g [-S <var>=<val>] -n <modname>\n";
+    print STDERR "       apxs -q [-S <var>=<val>] <query> ...\n";
+    print STDERR "       apxs -c [-S <var>=<val>] [-o <dsofile>] [-D <name>[=<value>]]\n";
+    print STDERR "               [-I <incdir>] [-L <libdir>] [-l <libname>] [-Wc,<flags>]\n";
+    print STDERR "               [-Wl,<flags>] <files> ...\n";
+    print STDERR "       apxs -i [-S <var>=<val>] [-a] [-A] [-n <modname>] <dsofile> ...\n";
     exit(1);
 }
 
 #   option handling
 my $rc;
-($rc, @ARGV) = &Getopts("qn:gco:I+D+L+l+W+iaA", @ARGV);
+($rc, @ARGV) = &Getopts("qn:gco:I+D+L+l+W+S+iaA", @ARGV);
 &usage if ($rc == 0);
 &usage if ($#ARGV == -1 and not $opt_g);
 &usage if (not $opt_q and not ($opt_g and $opt_n) and not $opt_i and not $opt_c);
@@ -208,6 +209,27 @@ my $rc;
 my @args = @ARGV;
 my $name = 'unknown';
 $name = $opt_n if ($opt_n ne '');
+
+if (@opt_S) {
+    my ($opt_S);
+    foreach $opt_S (@opt_S) {
+	if ($opt_S =~ m/^([^=]+)=(.*)$/) {
+	    my ($var) = $1;
+	    my ($val) = $2;
+	    my $oldval = eval "\$CFG_$var";
+
+	    unless ($var and $oldval) {
+		print STDERR "apxs:Error: no config variable $var\n";
+		&usage;
+	    }
+
+	    eval "\$CFG_${var}=\"${val}\"";
+	} else {
+	    print STDERR "apxs:Error: malformatted -S option\n";
+	    &usage;
+	}	
+    }
+}
 
 ##
 ##  Operation
