@@ -90,6 +90,16 @@
                                   * two buckets
                                   */
 
+/* extended error status codes; this is used in addition to an apr_status_t to
+ * track errors in the translation filter
+ */
+typedef enum {
+    EES_INIT = 0,   /* no error info yet; value must be 0 for easy init */
+    EES_LIMIT,      /* built-in restriction encountered */
+    EES_INCOMPLETE_CHAR, /* incomplete multi-byte char at end of content */
+    EES_BAD_INPUT   /* input data invalid */
+} ees_t;
+
 #define XLATE_FILTER_NAME "XLATE" /* registered name of the translation filter */
 
 typedef struct charset_dir_t {
@@ -106,6 +116,7 @@ typedef struct charset_dir_t {
  */
 typedef struct charset_filter_ctx_t {
     apr_xlate_t *xlate;
+    ees_t ees;              /* extended error status */
     apr_ssize_t saved;
     char buf[FATTEST_CHAR]; /* we want to be able to build a complete char here */
 } charset_filter_ctx_t;
@@ -356,9 +367,6 @@ static void xlate_register_filter(request_rec *r)
  * translation mechanics:
  *   we don't handle characters that straddle more than two buckets; an error
  *   will be generated
- *
- *   we don't signal an error if we get EOS but we're in the middle of an input
- *   character
  */
 
 /* send_downstream() is passed the translated data; it puts it in a single-
@@ -393,14 +401,24 @@ static void remove_and_destroy(ap_bucket_brigade *bb, ap_bucket *b)
     ap_bucket_destroy(b);
 }
 
-static void set_aside_partial_char(ap_filter_t *f, const char *partial,
-                                   apr_ssize_t partial_len)
+static apr_status_t set_aside_partial_char(ap_filter_t *f, const char *partial,
+                                           apr_ssize_t partial_len)
 {
     charset_filter_ctx_t *ctx = f->ctx;
+    apr_status_t rv;
 
-    ap_assert(sizeof(ctx->buf) > partial_len);
-    ctx->saved = partial_len;
-    memcpy(ctx->buf, partial, partial_len);
+    if (sizeof(ctx->buf) > partial_len) {
+        ctx->saved = partial_len;
+        memcpy(ctx->buf, partial, partial_len);
+        rv = APR_SUCCESS;
+    }
+    else {
+        rv = APR_INCOMPLETE;
+        ctx->ees = EES_LIMIT; /* we don't handle chars this wide which straddle 
+                               * buckets 
+                               */
+    }
+    return rv;
 }
 
 static apr_status_t finish_partial_char(ap_filter_t *f,
@@ -438,11 +456,48 @@ static apr_status_t finish_partial_char(ap_filter_t *f,
     if (rv == APR_SUCCESS) {
         ctx->saved = 0;
     }
+    else {
+        ctx->ees = EES_LIMIT; /* code isn't smart enough to handle chars '
+                               * straddling more than two buckets
+                               */
+    }
 
     return rv;
 }
 
-/* xlate_filter() handles arbirary conversions from one charset to another...
+static void log_xlate_error(ap_filter_t *f, apr_status_t rv)
+{
+    charset_filter_ctx_t *ctx = f->ctx;
+    const char *msg;
+    char msgbuf[100];
+    int cur;
+
+    switch(ctx->ees) {
+    case EES_LIMIT:
+        msg = "xlate_filter() - a built-in restriction was encountered";
+        break;
+    case EES_BAD_INPUT:
+        msg = "xlate_filter() - an input character was invalid";
+        break;
+    case EES_INCOMPLETE_CHAR:
+        strcpy(msgbuf, "xlate_filter() - incomplete char at end of input - ");
+        cur = 0;
+        while (cur < ctx->saved) {
+            apr_snprintf(msgbuf + strlen(msgbuf), sizeof(msgbuf) - strlen(msgbuf), 
+                         "%02X", (unsigned)ctx->buf[cur]);
+            ++cur;
+        }
+        msg = msgbuf;
+        break;
+    default:
+        msg = "xlate_filter() - returning error";
+    }
+    ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, rv, f->r,
+                  "%s", msg);
+}
+
+/* xlate_filter() handles (almost) arbitrary conversions from one charset 
+ * to another...
  * translation is determined in the fixup hook (find_code_page), which is
  * where the filter's context data is set up... the context data gives us
  * the translation handle
@@ -485,6 +540,13 @@ static apr_status_t xlate_filter(ap_filter_t *f, ap_bucket_brigade *bb)
             if (!dptr ||
                 dptr->read(dptr, &cur_str, &cur_len, 0) == AP_END_OF_BRIGADE) {
                 done = 1;
+                if (dptr && ctx->saved) {
+                    /* Oops... we have a partial char from the previous bucket
+                     * that won't be completed because there's no more data.
+                     */
+                    rv = APR_INCOMPLETE;
+                    ctx->ees = EES_INCOMPLETE_CHAR;
+                }
                 break;
             }
             consumed_bucket = dptr; /* for axing when we're done reading it */
@@ -493,41 +555,40 @@ static apr_status_t xlate_filter(ap_filter_t *f, ap_bucket_brigade *bb)
         /* Try to fill up our tmp buffer with translated data. */
         cur_avail = cur_len;
 
-        if (ctx->saved) {
-            /* Rats... we need to finish a partial character from the previous
-             * bucket.
-             */
-            char *tmp_tmp;
-
-            tmp_tmp = tmp + sizeof(tmp) - space_avail;
-            rv = finish_partial_char(f, reqinfo, 
-                                     &cur_str, &cur_len,
-                                     &tmp_tmp, &space_avail);
-        }
-        else {
-            rv = apr_xlate_conv_buffer(ctx->xlate,
-                                       cur_str, &cur_avail,
-                                       tmp + sizeof(tmp) - space_avail, &space_avail);
-
-            /* Update input ptr and len after consuming some bytes */
-            cur_str += cur_len - cur_avail;
-            cur_len = cur_avail;
-            
-            if (rv == APR_INCOMPLETE) { /* partial character at end of input */
-                /* We need to safe the final byte(s) for next time; we can't
-                 * convert it until we look at the next bucket.
+        if (cur_len) { /* maybe we just hit the end of a pipe (len = 0) ? */
+            if (ctx->saved) {
+                /* Rats... we need to finish a partial character from the previous
+                 * bucket.
                  */
-                set_aside_partial_char(f, cur_str, cur_len);
-                rv = APR_SUCCESS;
-                cur_len = 0;
+                char *tmp_tmp;
+                
+                tmp_tmp = tmp + sizeof(tmp) - space_avail;
+                rv = finish_partial_char(f, reqinfo, 
+                                         &cur_str, &cur_len,
+                                         &tmp_tmp, &space_avail);
+            }
+            else {
+                rv = apr_xlate_conv_buffer(ctx->xlate,
+                                           cur_str, &cur_avail,
+                                           tmp + sizeof(tmp) - space_avail, &space_avail);
+                
+                /* Update input ptr and len after consuming some bytes */
+                cur_str += cur_len - cur_avail;
+                cur_len = cur_avail;
+                
+                if (rv == APR_INCOMPLETE) { /* partial character at end of input */
+                    /* We need to save the final byte(s) for next time; we can't
+                     * convert it until we look at the next bucket.
+                     */
+                    rv = set_aside_partial_char(f, cur_str, cur_len);
+                    cur_len = 0;
+                }
             }
         }
 
         if (rv != APR_SUCCESS) {
-            /* bad input byte; we can't continue */
+            /* bad input byte or partial char too big to store */
             done = 1;
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, f->r->server,
-                         "xlate_filter() - apr_xlate_conv_buffer() failed"); 
         }
 
         if (space_avail < XLATE_MIN_BUFF_LEFT) {
@@ -535,7 +596,7 @@ static apr_status_t xlate_filter(ap_filter_t *f, ap_bucket_brigade *bb)
              * current output buffer to bother with converting more data.
              */
             rv = send_downstream(f, tmp, sizeof(tmp) - space_avail);
-            if (rv == APR_SUCCESS) {
+            if (rv != APR_SUCCESS) {
                 done = 1;
             }
             
@@ -555,8 +616,7 @@ static apr_status_t xlate_filter(ap_filter_t *f, ap_bucket_brigade *bb)
         }
     }
     else {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, rv, f->r,
-                      "xlate_filter() - returning error");
+        log_xlate_error(f, rv);
     }
 
     return rv;
