@@ -548,7 +548,7 @@ static int lock_fd = -1;
  */
 static void accept_mutex_init(ap_context_t *p)
 {
-    ap_file_t *tempfile;
+    ap_file_t *tempfile = NULL;
     lock_it.l_whence = SEEK_SET;	/* from current point */
     lock_it.l_start = 0;		/* -"- */
     lock_it.l_len = 0;			/* until end of file */
@@ -623,7 +623,7 @@ static ap_status_t accept_mutex_cleanup(void *foo)
  */
 static void accept_mutex_child_init(ap_context_t *p)
 {
-    ap_file_t *tempfile;
+    ap_file_t *tempfile = NULL;
     ap_status_t ret;
 
     ret=ap_open(&tempfile, ap_lock_fname, APR_WRITE, APR_UREAD|APR_UWRITE, p);
@@ -641,7 +641,7 @@ static void accept_mutex_child_init(ap_context_t *p)
  */
 static void accept_mutex_init(ap_context_t *p)
 {
-    ap_file_t *tempfile;
+    ap_file_t *tempfile = NULL;
     ap_status_t ret;
 
     expand_lock_fname(p);

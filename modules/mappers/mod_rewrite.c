@@ -3394,9 +3394,9 @@ static void rewritelock_free(request_rec *r)
 static void run_rewritemap_programs(server_rec *s, ap_context_t *p)
 {
     rewrite_server_conf *conf;
-    ap_file_t *fpin;
-    ap_file_t *fpout;
-    ap_file_t *fperr;
+    ap_file_t *fpin = NULL;
+    ap_file_t *fpout = NULL;
+    ap_file_t *fperr = NULL;
     ap_array_header_t *rewritemaps;
     rewritemap_entry *entries;
     rewritemap_entry *map;

@@ -204,7 +204,7 @@ static void open_error_log(server_rec *s, ap_context_t *p)
     int rc;
 
     if (*s->error_fname == '|') {
-	ap_file_t *dummy;
+	ap_file_t *dummy = NULL;
 
         /* This starts a new process... */
         rc = log_child (p, s->error_fname+1, &dummy);
@@ -299,7 +299,7 @@ void ap_open_logs(server_rec *s_main, ap_context_t *p)
 }
 
 API_EXPORT(void) ap_error_log2stderr(server_rec *s) {
-    ap_file_t *errfile;
+    ap_file_t *errfile = NULL;
 
     ap_open_stderr(&errfile, s->process->pool);        
     if (   s->error_log != NULL) {
@@ -513,8 +513,7 @@ API_EXPORT(void) ap_log_rerror(const char *file, int line, int level,
 
 void ap_log_pid(ap_context_t *p, const char *fname)
 {
-    ap_file_t *pid_file;
-    struct stat finfo;
+    ap_file_t *pid_file = NULL;
     static pid_t saved_pid = -1;
     pid_t mypid;
 
@@ -523,7 +522,7 @@ void ap_log_pid(ap_context_t *p, const char *fname)
 
     fname = ap_server_root_relative(p, fname);
     mypid = getpid();
-    if (mypid != saved_pid && stat(fname, &finfo) == 0) {
+    if (mypid != saved_pid && ap_stat(&pid_file, fname, p) == 0) {
       /* WINCH and HUP call this on each restart.
        * Only warn on first time through for this pid.
        *
@@ -740,7 +739,7 @@ API_EXPORT(void) ap_close_piped_log(piped_log *pl)
 API_EXPORT(piped_log *) ap_open_piped_log(ap_context_t *p, const char *program)
 {
     piped_log *pl;
-    ap_file_t *dummy;
+    ap_file_t *dummy = NULL;
     int rc;
 
     rc = log_child(p, program, &dummy);

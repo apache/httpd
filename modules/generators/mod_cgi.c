@@ -166,7 +166,7 @@ static const command_rec cgi_cmds[] =
 static int log_scripterror(request_rec *r, cgi_server_conf * conf, int ret,
 			   int show_errno, char *error)
 {
-    ap_file_t *f;
+    ap_file_t *f = NULL;
     struct stat finfo;
 
     ap_log_rerror(APLOG_MARK, show_errno|APLOG_ERR, errno, r, 
@@ -198,7 +198,7 @@ static int log_script(request_rec *r, cgi_server_conf * conf, int ret,
     ap_array_header_t *hdrs_arr = ap_table_elts(r->headers_in);
     ap_table_entry_t *hdrs = (ap_table_entry_t *) hdrs_arr->elts;
     char argsbuffer[HUGE_STRING_LEN];
-    ap_file_t *f;
+    ap_file_t *f = NULL;
     int i;
     struct stat finfo;
 
@@ -285,7 +285,7 @@ static ap_status_t run_cgi_child(BUFF **script_out, BUFF **script_in, BUFF **scr
     ap_procattr_t *procattr;
     ap_proc_t *procnew;
     ap_status_t rc = APR_SUCCESS;
-    ap_file_t *file;
+    ap_file_t *file = NULL;
     ap_iol *iol;
 
 #ifdef DEBUG_CGI

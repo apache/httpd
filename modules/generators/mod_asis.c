@@ -65,7 +65,7 @@
 
 static int asis_handler(request_rec *r)
 {
-    ap_file_t *f;
+    ap_file_t *f = NULL;
     ap_status_t status;
     const char *location;
 

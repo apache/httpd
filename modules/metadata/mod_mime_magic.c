@@ -935,7 +935,7 @@ static void tryit(request_rec *r, unsigned char *buf, int nb, int checkzmagic)
  */
 static int apprentice(server_rec *s, ap_context_t *p)
 {
-    ap_file_t *f;
+    ap_file_t *f = NULL;
     ap_status_t result;
     char line[BUFSIZ + 1];
     int errs = 0;
@@ -2153,7 +2153,7 @@ static int uncompress_child(struct uncompress_parms *parm, ap_context_t *cntxt,
     ap_context_t *child_context = cntxt;
     ap_procattr_t *procattr;
     ap_proc_t *procnew = NULL;
-    ap_file_t *file;
+    ap_file_t *file = NULL;
     ap_iol *iol;
 
     ap_block_alarms();
