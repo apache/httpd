@@ -70,7 +70,7 @@ compatibility mode is enabled.</p>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> AuthDBGroupFile <EM>filename</EM><BR>
+><STRONG>Syntax:</STRONG></A> AuthDBGroupFile <EM>file-path</EM><BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
@@ -89,7 +89,7 @@ compatibility mode is enabled.</p>
 ><STRONG>Module:</STRONG></A> mod_auth_db<P>
 
 The AuthDBGroupFile directive sets the name of a DB file containing the list
-of user groups for user authentication. <EM>Filename</EM> is the absolute path
+of user groups for user authentication. <EM>File-path</EM> is the absolute path
 to the group file.<P>
 
 The group file is keyed on the username. The value for a user is a
@@ -133,7 +133,7 @@ See also <A HREF="core.html#authname">AuthName</A>,
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> AuthDBUserFile <EM>filename</EM><BR>
+><STRONG>Syntax:</STRONG></A> AuthDBUserFile <EM>file-path</EM><BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
@@ -152,7 +152,7 @@ See also <A HREF="core.html#authname">AuthName</A>,
 ><STRONG>Module:</STRONG></A> mod_auth_db<P>
 
 The AuthDBUserFile directive sets the name of a DB file containing the list
-of users and passwords for user authentication. <EM>Filename</EM> is the
+of users and passwords for user authentication. <EM>File-path</EM> is the
 absolute path to the user file.<P>
 
 The user file is keyed on the username. The value for a user is the

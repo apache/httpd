@@ -60,7 +60,7 @@ provided by <a href="mod_auth_db.html">mod_auth_db</a>.</p>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> AuthDBMGroupFile <EM>filename</EM><BR>
+><STRONG>Syntax:</STRONG></A> AuthDBMGroupFile <EM>file-path</EM><BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
@@ -79,7 +79,7 @@ provided by <a href="mod_auth_db.html">mod_auth_db</a>.</p>
 ><STRONG>Module:</STRONG></A> mod_auth_dbm<P>
 
 The AuthDBMGroupFile directive sets the name of a DBM file containing the list
-of user groups for user authentication. <EM>Filename</EM> is the absolute path
+of user groups for user authentication. <EM>File-path</EM> is the absolute path
 to the group file.<P>
 
 The group file is keyed on the username. The value for a user is a
@@ -124,7 +124,7 @@ See also <A HREF="core.html#authname">AuthName</A>,
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> AuthDBMUserFile <EM>filename</EM><BR>
+><STRONG>Syntax:</STRONG></A> AuthDBMUserFile <EM>file-path</EM><BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
@@ -143,7 +143,7 @@ See also <A HREF="core.html#authname">AuthName</A>,
 ><STRONG>Module:</STRONG></A> mod_auth_dbm<P>
 
 The AuthDBMUserFile directive sets the name of a DBM file containing the list
-of users and passwords for user authentication. <EM>Filename</EM> is the
+of users and passwords for user authentication. <EM>File-path</EM> is the
 absolute path to the user file.<P>
 
 The user file is keyed on the username. The value for a user is the

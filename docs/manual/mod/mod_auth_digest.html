@@ -97,7 +97,7 @@ ideal.
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> AuthDigestFile <EM>filename</EM><BR>
+><STRONG>Syntax:</STRONG></A> AuthDigestFile <EM>file-path</EM><BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
@@ -117,7 +117,7 @@ ideal.
 
 <P>The AuthDigestFile directive sets the name of a textual file containing
 the list of users and encoded passwords for digest authentication.
-<EM>Filename</EM> is the absolute path to the user file.
+<EM>File-path</EM> is the absolute path to the user file.
 
 <P>The digest file uses a special format. Files in this format can be
 created using the <a href="../programs/htdigest.html">htdigest</a>
@@ -129,7 +129,7 @@ utility found in the support/ subdirectory of the Apache distribution.
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> AuthDigestGroupFile <EM>filename</EM><BR>
+><STRONG>Syntax:</STRONG></A> AuthDigestGroupFile <EM>file-path</EM><BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
@@ -149,7 +149,7 @@ utility found in the support/ subdirectory of the Apache distribution.
 
 <P>The AuthDigestGroupFile directive sets the name of a textual file
 containing the list of groups and their members (user names).
-<EM>Filename</EM> is the absolute path to the group file.
+<EM>File-path</EM> is the absolute path to the group file.
 
 <P>Each line of the group file contains a groupname followed by a colon,
 followed by the member usernames separated by spaces. Example:
