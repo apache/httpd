@@ -136,7 +136,7 @@ Changes with Apache 2.0.47
      to prefer a certain language.  [André Malo]
 
   *) Make mod_expires' ExpiresByType work properly, including for
-     dynamically-generated documents.  [Ken Coar]
+     dynamically-generated documents.  [Ken Coar, Bill Stoddard]
 
 Changes with Apache 2.0.46
 
