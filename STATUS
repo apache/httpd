@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/02/28 18:48:15 $]
+Last modified at [$Date: 2003/02/28 18:50:29 $]
 
 Release:
 
@@ -59,6 +59,16 @@ Contributors looking for a mission:
 PATCHES TO PORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
+
+    * AllowEncodedSlashes patch to permit %2f in path-info.
+      CHANGES r1.1038
+      include/ap_mmn.h r1.54 (based on r1.53)
+      include/http_core.h r1.73
+      include/httpd.h r1.193
+      server/core.c r1.230
+      server/request.c r1.123
+      server/util.c r1.135
+      +1: coar
 
     * Win32: Avoid busy wait when all worker threads are busy.
       server/mpm/winnt/child.c r1.12
