@@ -95,9 +95,18 @@
 #include "util_ebcdic.h"
 #define RAW_ASCII_CHAR(ch)  apr_xlate_conv_byte(ap_hdrs_from_ascii, \
                                                 (unsigned char)ch)
-#else /*APR_CHARSET_EBCDIC*/
+#else /* APR_CHARSET_EBCDIC */
 #define RAW_ASCII_CHAR(ch)  (ch)
-#endif /*APR_CHARSET_EBCDIC*/
+#endif /* !APR_CHARSET_EBCDIC */
+
+
+/*
+ * +-------------------------------------------------------+
+ * |                                                       |
+ * |                  Debugging Macros
+ * |                                                       |
+ * +-------------------------------------------------------+
+ */
 
 #ifdef DEBUG_INCLUDE
 
@@ -126,14 +135,13 @@ do {                                                                        \
 
 #endif
 
-module AP_MODULE_DECLARE_DATA include_module;
-static apr_hash_t *include_hash;
-static APR_OPTIONAL_FN_TYPE(ap_register_include_handler) *ssi_pfn_register;
 
-/*****************************************************************
- *
- * XBITHACK.  Sigh...  NB it's configurable per-directory; the compile-time
- * option only changes the default.
+/*
+ * +-------------------------------------------------------+
+ * |                                                       |
+ * |                 Types and Structures
+ * |                                                       |
+ * +-------------------------------------------------------+
  */
 
 enum xbithack {
@@ -218,7 +226,31 @@ struct ssi_internal_ctx {
     regmatch_t   (*re_result)[10];
 };
 
-/* some defaults */
+
+/*
+ * +-------------------------------------------------------+
+ * |                                                       |
+ * |                 Static Module Data
+ * |                                                       |
+ * +-------------------------------------------------------+
+ */
+
+/* global module structure */
+module AP_MODULE_DECLARE_DATA include_module;
+
+/* function handlers for include directives */
+static apr_hash_t *include_handlers;
+
+/* forward declaration of handler registry */
+static APR_OPTIONAL_FN_TYPE(ap_register_include_handler) *ssi_pfn_register;
+
+/* Sentinel value to store in subprocess_env for items that
+ * shouldn't be evaluated until/unless they're actually used
+ */
+static const char lazy_eval_sentinel;
+#define LAZY_VALUE (&lazy_eval_sentinel)
+
+/* default values */
 #define DEFAULT_START_SEQUENCE "<!--#"
 #define DEFAULT_END_SEQUENCE "-->"
 #define DEFAULT_ERROR_MSG "[an error occurred while processing this directive]"
@@ -231,13 +263,115 @@ struct ssi_internal_ctx {
 #define DEFAULT_XBITHACK xbithack_off
 #endif
 
-/* ------------------------ Environment function -------------------------- */
 
-/* Sentinel value to store in subprocess_env for items that
- * shouldn't be evaluated until/unless they're actually used
+/*
+ * +-------------------------------------------------------+
+ * |                                                       |
+ * |            Environment/Expansion Functions
+ * |                                                       |
+ * +-------------------------------------------------------+
  */
-static const char lazy_eval_sentinel;
-#define LAZY_VALUE (&lazy_eval_sentinel)
+
+/*
+ * decodes a string containing html entities or numeric character references.
+ * 's' is overwritten with the decoded string.
+ * If 's' is syntatically incorrect, then the followed fixups will be made:
+ *   unknown entities will be left undecoded;
+ *   references to unused numeric characters will be deleted.
+ *   In particular, &#00; will not be decoded, but will be deleted.
+ */
+
+/* maximum length of any ISO-LATIN-1 HTML entity name. */
+#define MAXENTLEN (6)
+
+/* The following is a shrinking transformation, therefore safe. */
+
+static void decodehtml(char *s)
+{
+    int val, i, j;
+    char *p;
+    const char *ents;
+    static const char * const entlist[MAXENTLEN + 1] =
+    {
+        NULL,                   /* 0 */
+        NULL,                   /* 1 */
+        "lt\074gt\076",         /* 2 */
+        "amp\046ETH\320eth\360",        /* 3 */
+        "quot\042Auml\304Euml\313Iuml\317Ouml\326Uuml\334auml\344euml\353\
+iuml\357ouml\366uuml\374yuml\377",      /* 4 */
+        "Acirc\302Aring\305AElig\306Ecirc\312Icirc\316Ocirc\324Ucirc\333\
+THORN\336szlig\337acirc\342aring\345aelig\346ecirc\352icirc\356ocirc\364\
+ucirc\373thorn\376",            /* 5 */
+        "Agrave\300Aacute\301Atilde\303Ccedil\307Egrave\310Eacute\311\
+Igrave\314Iacute\315Ntilde\321Ograve\322Oacute\323Otilde\325Oslash\330\
+Ugrave\331Uacute\332Yacute\335agrave\340aacute\341atilde\343ccedil\347\
+egrave\350eacute\351igrave\354iacute\355ntilde\361ograve\362oacute\363\
+otilde\365oslash\370ugrave\371uacute\372yacute\375"     /* 6 */
+    };
+
+    /* Do a fast scan through the string until we find anything
+     * that needs more complicated handling
+     */
+    for (; *s != '&'; s++) {
+        if (*s == '\0') {
+            return;
+        }
+    }
+
+    for (p = s; *s != '\0'; s++, p++) {
+        if (*s != '&') {
+            *p = *s;
+            continue;
+        }
+        /* find end of entity */
+        for (i = 1; s[i] != ';' && s[i] != '\0'; i++) {
+            continue;
+        }
+
+        if (s[i] == '\0') {     /* treat as normal data */
+            *p = *s;
+            continue;
+        }
+
+        /* is it numeric ? */
+        if (s[1] == '#') {
+            for (j = 2, val = 0; j < i && apr_isdigit(s[j]); j++) {
+                val = val * 10 + s[j] - '0';
+            }
+            s += i;
+            if (j < i || val <= 8 || (val >= 11 && val <= 31) ||
+                (val >= 127 && val <= 160) || val >= 256) {
+                p--;            /* no data to output */
+            }
+            else {
+                *p = RAW_ASCII_CHAR(val);
+            }
+        }
+        else {
+            j = i - 1;
+            if (j > MAXENTLEN || entlist[j] == NULL) {
+                /* wrong length */
+                *p = '&';
+                continue;       /* skip it */
+            }
+            for (ents = entlist[j]; *ents != '\0'; ents += i) {
+                if (strncmp(s + 1, ents, j) == 0) {
+                    break;
+                }
+            }
+
+            if (*ents == '\0') {
+                *p = '&';       /* unknown */
+            }
+            else {
+                *p = RAW_ASCII_CHAR(((const unsigned char *) ents)[j]);
+                s += i;
+            }
+        }
+    }
+
+    *p = '\0';
+}
 
 static void add_include_vars(request_rec *r, char *timefmt)
 {
@@ -334,214 +468,6 @@ static const char *get_include_var(request_rec *r, include_ctx_t *ctx,
             val = add_include_vars_lazy(r, var);
     }
     return val;
-}
-
-/* --------------------------- Parser functions --------------------------- */
-
-/* This is an implementation of the BNDM search algorithm.
- *
- * Fast and Flexible String Matching by Combining Bit-parallelism and 
- * Suffix Automata (2001) 
- * Gonzalo Navarro, Mathieu Raffinot
- *
- * http://www-igm.univ-mlv.fr/~raffinot/ftp/jea2001.ps.gz
- *
- * Initial code submitted by Sascha Schumann.
- */
-   
-/* Precompile the bndm_t data structure. */
-static void bndm_compile(bndm_t *t, const char *n, apr_size_t nl)
-{
-    unsigned int x;
-    const char *ne = n + nl;
-
-    memset(t->T, 0, sizeof(unsigned int) * 256);
-    
-    for (x = 1; n < ne; x <<= 1)
-        t->T[(unsigned char) *n++] |= x;
-
-    t->x = x - 1;
-}
-
-/* Implements the BNDM search algorithm (as described above).
- *
- * n  - the pattern to search for
- * nl - length of the pattern to search for
- * h  - the string to look in
- * hl - length of the string to look for
- * t  - precompiled bndm structure against the pattern 
- *
- * Returns the count of character that is the first match or hl if no
- * match is found.
- */
-static apr_size_t bndm(const char *n, apr_size_t nl, const char *h, 
-                       apr_size_t hl, bndm_t *t)
-{
-    const char *skip;
-    const char *he, *p, *pi;
-    unsigned int *T, x, d;
-
-    he = h + hl;
-
-    T = t->T;
-    x = t->x;
-
-    pi = h - 1; /* pi: p initial */
-    p = pi + nl; /* compare window right to left. point to the first char */
-
-    while (p < he) {
-        skip = p;
-        d = x;
-        do {
-            d &= T[(unsigned char) *p--];
-            if (!d) {
-                break;
-            }
-            if ((d & 1)) {
-                if (p != pi)
-                    skip = p;
-                else
-                    return p - h + 1;
-            }
-            d >>= 1;
-        } while (d);
-
-        pi = skip;
-        p = pi + nl;
-    }
-
-    return hl;
-}
-
-/*
- * decodes a string containing html entities or numeric character references.
- * 's' is overwritten with the decoded string.
- * If 's' is syntatically incorrect, then the followed fixups will be made:
- *   unknown entities will be left undecoded;
- *   references to unused numeric characters will be deleted.
- *   In particular, &#00; will not be decoded, but will be deleted.
- *
- * drtr
- */
-
-/* maximum length of any ISO-LATIN-1 HTML entity name. */
-#define MAXENTLEN (6)
-
-/* The following is a shrinking transformation, therefore safe. */
-
-static void decodehtml(char *s)
-{
-    int val, i, j;
-    char *p;
-    const char *ents;
-    static const char * const entlist[MAXENTLEN + 1] =
-    {
-        NULL,                   /* 0 */
-        NULL,                   /* 1 */
-        "lt\074gt\076",         /* 2 */
-        "amp\046ETH\320eth\360",        /* 3 */
-        "quot\042Auml\304Euml\313Iuml\317Ouml\326Uuml\334auml\344euml\353\
-iuml\357ouml\366uuml\374yuml\377",      /* 4 */
-        "Acirc\302Aring\305AElig\306Ecirc\312Icirc\316Ocirc\324Ucirc\333\
-THORN\336szlig\337acirc\342aring\345aelig\346ecirc\352icirc\356ocirc\364\
-ucirc\373thorn\376",            /* 5 */
-        "Agrave\300Aacute\301Atilde\303Ccedil\307Egrave\310Eacute\311\
-Igrave\314Iacute\315Ntilde\321Ograve\322Oacute\323Otilde\325Oslash\330\
-Ugrave\331Uacute\332Yacute\335agrave\340aacute\341atilde\343ccedil\347\
-egrave\350eacute\351igrave\354iacute\355ntilde\361ograve\362oacute\363\
-otilde\365oslash\370ugrave\371uacute\372yacute\375"     /* 6 */
-    };
-
-    /* Do a fast scan through the string until we find anything
-     * that needs more complicated handling
-     */
-    for (; *s != '&'; s++) {
-        if (*s == '\0') {
-            return;
-        }
-    }
-
-    for (p = s; *s != '\0'; s++, p++) {
-        if (*s != '&') {
-            *p = *s;
-            continue;
-        }
-        /* find end of entity */
-        for (i = 1; s[i] != ';' && s[i] != '\0'; i++) {
-            continue;
-        }
-
-        if (s[i] == '\0') {     /* treat as normal data */
-            *p = *s;
-            continue;
-        }
-
-        /* is it numeric ? */
-        if (s[1] == '#') {
-            for (j = 2, val = 0; j < i && apr_isdigit(s[j]); j++) {
-                val = val * 10 + s[j] - '0';
-            }
-            s += i;
-            if (j < i || val <= 8 || (val >= 11 && val <= 31) ||
-                (val >= 127 && val <= 160) || val >= 256) {
-                p--;            /* no data to output */
-            }
-            else {
-                *p = RAW_ASCII_CHAR(val);
-            }
-        }
-        else {
-            j = i - 1;
-            if (j > MAXENTLEN || entlist[j] == NULL) {
-                /* wrong length */
-                *p = '&';
-                continue;       /* skip it */
-            }
-            for (ents = entlist[j]; *ents != '\0'; ents += i) {
-                if (strncmp(s + 1, ents, j) == 0) {
-                    break;
-                }
-            }
-
-            if (*ents == '\0') {
-                *p = '&';       /* unknown */
-            }
-            else {
-                *p = RAW_ASCII_CHAR(((const unsigned char *) ents)[j]);
-                s += i;
-            }
-        }
-    }
-
-    *p = '\0';
-}
-
-/*
- * Extract the next tag name and value.
- * If there are no more tags, set the tag name to NULL.
- * The tag value is html decoded if dodecode is non-zero.
- * The tag value may be NULL if there is no tag value..
- */
-static void ap_ssi_get_tag_and_value(include_ctx_t *ctx, char **tag,
-                                     char **tag_val, int dodecode)
-{
-    if (!ctx->intern->argv) {
-        *tag = NULL;
-        *tag_val = NULL;
-
-        return;
-    }
-
-    *tag_val = ctx->intern->argv->value;
-    *tag = ctx->intern->argv->name;
-
-    ctx->intern->argv = ctx->intern->argv->next;
-
-    if (dodecode && *tag_val) {
-        decodehtml(*tag_val);
-    }
-
-    return;
 }
 
 /* initial buffer size for power-of-two allocator in ap_ssi_parse_string */
@@ -722,513 +648,14 @@ static char *ap_ssi_parse_string(request_rec *r, include_ctx_t *ctx,
     return out;
 }
 
-/* --------------------------- Action handlers ---------------------------- */
 
-/* ensure that path is relative, and does not contain ".." elements
- * ensentially ensure that it does not match the regex:
- * (^/|(^|/)\.\.(/|$))
- * XXX: Simply replace with apr_filepath_merge                    
+/*
+ * +-------------------------------------------------------+
+ * |                                                       |
+ * |              Conditional Expression Parser
+ * |                                                       |
+ * +-------------------------------------------------------+
  */
-static int is_only_below(const char *path)
-{
-#ifdef HAVE_DRIVE_LETTERS
-    if (path[1] == ':') 
-        return 0;
-#endif
-#ifdef NETWARE
-    if (ap_strchr_c(path, ':'))
-        return 0;
-#endif
-    if (path[0] == '/') {
-        return 0;
-    }
-    while (*path) {
-        int dots = 0;
-        while (path[dots] == '.')
-            ++dots;
-#if defined(WIN32) 
-        /* If the name is canonical this is redundant
-         * but in security, redundancy is worthwhile.
-         * Does OS2 belong here (accepts ... for ..)?
-         */
-        if (dots > 1 && (!path[dots] || path[dots] == '/'))
-            return 0;
-#else
-        if (dots == 2 && (!path[dots] || path[dots] == '/'))
-            return 0;
-#endif
-        path += dots;
-        /* Advance to either the null byte at the end of the
-         * string or the character right after the next slash,
-         * whichever comes first
-         */
-        while (*path && (*path++ != '/')) {
-            continue;
-        }
-    }
-    return 1;
-}
-
-static apr_status_t handle_include(include_ctx_t *ctx, ap_filter_t *f,
-                                   apr_bucket_brigade *bb)
-{
-    char *tag     = NULL;
-    char *tag_val = NULL;
-    char *parsed_string;
-    int loglevel = APLOG_ERR;
-    request_rec *r = f->r;
-
-    if (ctx->flags & SSI_FLAG_PRINTING) {
-        while (1) {
-            ap_ssi_get_tag_and_value(ctx, &tag, &tag_val, SSI_VALUE_DECODED);
-            if (!tag || !tag_val) {
-                return APR_SUCCESS;
-            }
-
-            if (!strcmp(tag, "virtual") || !strcmp(tag, "file")) {
-                request_rec *rr = NULL;
-                char *error_fmt = NULL;
-
-                parsed_string = ap_ssi_parse_string(r, ctx, tag_val, NULL, 
-                                                    MAX_STRING_LEN,
-                                                    SSI_EXPAND_DROP_NAME);
-                if (tag[0] == 'f') {
-                    /* XXX: Port to apr_filepath_merge
-                     * be safe; only files in this directory or below allowed 
-                     */
-                    if (!is_only_below(parsed_string)) {
-                        error_fmt = "unable to include file \"%s\" "
-                                    "in parsed file %s";
-                    }
-                    else {
-                        rr = ap_sub_req_lookup_uri(parsed_string, r, f->next);
-                    }
-                }
-                else {
-                    rr = ap_sub_req_lookup_uri(parsed_string, r, f->next);
-                }
-
-                if (!error_fmt && rr->status != HTTP_OK) {
-                    error_fmt = "unable to include \"%s\" in parsed file %s";
-                }
-
-                if (!error_fmt && (ctx->flags & SSI_FLAG_NO_EXEC) && 
-                    rr->content_type && 
-                    (strncmp(rr->content_type, "text/", 5))) {
-                    error_fmt = "unable to include potential exec \"%s\" "
-                        "in parsed file %s";
-                }
-                if (error_fmt == NULL) {
-                    /* try to avoid recursive includes.  We do this by walking
-                     * up the r->main list of subrequests, and at each level
-                     * walking back through any internal redirects.  At each
-                     * step, we compare the filenames and the URIs.  
-                     *
-                     * The filename comparison catches a recursive include
-                     * with an ever-changing URL, eg.
-                     * <!--#include virtual=
-                     *      "$REQUEST_URI/$QUERY_STRING?$QUERY_STRING/x" -->
-                     * which, although they would eventually be caught because
-                     * we have a limit on the length of files, etc., can 
-                     * recurse for a while.
-                     *
-                     * The URI comparison catches the case where the filename
-                     * is changed while processing the request, so the 
-                     * current name is never the same as any previous one.
-                     * This can happen with "DocumentRoot /foo" when you
-                     * request "/" on the server and it includes "/".
-                     * This only applies to modules such as mod_dir that 
-                     * (somewhat improperly) mess with r->filename outside 
-                     * of a filename translation phase.
-                     */
-                    int founddupe = 0;
-                    request_rec *p;
-                    for (p = r; p != NULL && !founddupe; p = p->main) {
-                        request_rec *q;
-                        for (q = p; q != NULL; q = q->prev) {
-                            if ((q->filename && rr->filename && 
-                                (strcmp(q->filename, rr->filename) == 0)) ||
-                                ((*q->uri == '/') && 
-                                 (strcmp(q->uri, rr->uri) == 0)))
-                            {
-                                founddupe = 1;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (p != NULL) {
-                        error_fmt = "Recursive include of \"%s\" "
-                            "in parsed file %s";
-                    }
-                }
-
-                /* See the Kludge in send_parsed_file for why */
-                /* Basically, it puts a bread crumb in here, then looks */
-                /*   for the crumb later to see if its been here.       */
-                if (rr) 
-                    ap_set_module_config(rr->request_config, 
-                                         &include_module, r);
-
-                if (!error_fmt && ap_run_sub_req(rr)) {
-                    error_fmt = "unable to include \"%s\" in parsed file %s";
-                }
-                if (error_fmt) {
-                    ap_log_rerror(APLOG_MARK, loglevel,
-                                  0, r, error_fmt, tag_val, r->filename);
-                    SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
-                }
-
-                /* destroy the sub request */
-                if (rr != NULL) {
-                    ap_destroy_sub_req(rr);
-                }
-            }
-            else {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                            "unknown parameter \"%s\" to tag include in %s",
-                            tag, r->filename);
-                SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
-            }
-        }
-    }
-
-    return APR_SUCCESS;
-}
-
-
-static apr_status_t handle_echo(include_ctx_t *ctx, ap_filter_t *f,
-                                apr_bucket_brigade *bb)
-{
-    char       *tag       = NULL;
-    char       *tag_val   = NULL;
-    const char *echo_text = NULL;
-    apr_bucket  *tmp_buck;
-    apr_size_t e_len;
-    enum {E_NONE, E_URL, E_ENTITY} encode;
-    request_rec *r = f->r;
-
-    encode = E_ENTITY;
-
-    if (ctx->flags & SSI_FLAG_PRINTING) {
-        while (1) {
-            ap_ssi_get_tag_and_value(ctx, &tag, &tag_val, SSI_VALUE_DECODED);
-            if (!tag || !tag_val) {
-                return APR_SUCCESS;
-            }
-
-            if (!strcmp(tag, "var")) {
-                conn_rec *c = r->connection;
-                const char *val =
-                    get_include_var(r, ctx,
-                                    ap_ssi_parse_string(r, ctx, tag_val, NULL,
-                                                        MAX_STRING_LEN,
-                                                        SSI_EXPAND_DROP_NAME));
-                if (val) {
-                    switch(encode) {
-                    case E_NONE:   
-                        echo_text = val;
-                        break;
-                    case E_URL:
-                        echo_text = ap_escape_uri(r->pool, val);  
-                        break;
-                    case E_ENTITY: 
-                        echo_text = ap_escape_html(r->pool, val); 
-                        break;
-                    }
-
-                    e_len = strlen(echo_text);
-                    tmp_buck = apr_bucket_pool_create(echo_text, e_len,
-                                                      r->pool, c->bucket_alloc);
-                }
-                else {
-                    include_server_config *sconf= 
-                        ap_get_module_config(r->server->module_config,
-                                             &include_module);
-                    tmp_buck = apr_bucket_pool_create(sconf->undefinedEcho, 
-                                                      sconf->undefinedEchoLen,
-                                                      r->pool, c->bucket_alloc);
-                }
-                APR_BRIGADE_INSERT_TAIL(bb, tmp_buck);
-            }
-            else if (!strcmp(tag, "encoding")) {
-                if (!strcasecmp(tag_val, "none")) encode = E_NONE;
-                else if (!strcasecmp(tag_val, "url")) encode = E_URL;
-                else if (!strcasecmp(tag_val, "entity")) encode = E_ENTITY;
-                else {
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                           "unknown value \"%s\" to parameter \"encoding\" of "
-                           "tag echo in %s", tag_val, r->filename);
-                    SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
-                }
-            }
-            else {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                            "unknown parameter \"%s\" in tag echo of %s",
-                            tag, r->filename);
-                SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
-            }
-
-        }
-    }
-
-    return APR_SUCCESS;
-}
-
-/* error and tf must point to a string with room for at 
- * least MAX_STRING_LEN characters 
- */
-static apr_status_t handle_config(include_ctx_t *ctx, ap_filter_t *f,
-                                  apr_bucket_brigade *bb)
-{
-    char *tag     = NULL;
-    char *tag_val = NULL;
-    char *parsed_string;
-    request_rec *r = f->r;
-    apr_table_t *env = r->subprocess_env;
-
-    if (ctx->flags & SSI_FLAG_PRINTING) {
-        while (1) {
-            ap_ssi_get_tag_and_value(ctx, &tag, &tag_val, SSI_VALUE_RAW);
-            if (! tag || !tag_val) {
-                return APR_SUCCESS;
-            }
-
-            if (!strcmp(tag, "errmsg")) {
-                if (ctx->intern->error_str_override == NULL) {
-                    ctx->intern->error_str_override = apr_palloc(ctx->pool,
-                                                                MAX_STRING_LEN);
-                    ctx->error_str = ctx->intern->error_str_override;
-                }
-                ap_ssi_parse_string(r, ctx, tag_val,
-                                    ctx->intern->error_str_override,
-                                    MAX_STRING_LEN, SSI_EXPAND_DROP_NAME);
-            }
-            else if (!strcmp(tag, "timefmt")) {
-                apr_time_t date = r->request_time;
-                if (ctx->intern->time_str_override == NULL) {
-                    ctx->intern->time_str_override = apr_palloc(ctx->pool,
-                                                                MAX_STRING_LEN);
-                    ctx->time_str = ctx->intern->time_str_override;
-                }
-                ap_ssi_parse_string(r, ctx, tag_val,
-                                    ctx->intern->time_str_override,
-                                    MAX_STRING_LEN, SSI_EXPAND_DROP_NAME);
-
-                apr_table_setn(env, "DATE_LOCAL", ap_ht_time(r->pool, date, 
-                               ctx->time_str, 0));
-                apr_table_setn(env, "DATE_GMT", ap_ht_time(r->pool, date, 
-                               ctx->time_str, 1));
-                apr_table_setn(env, "LAST_MODIFIED",
-                               ap_ht_time(r->pool, r->finfo.mtime, 
-                               ctx->time_str, 0));
-            }
-            else if (!strcmp(tag, "sizefmt")) {
-                parsed_string = ap_ssi_parse_string(r, ctx, tag_val, NULL, 
-                                                    MAX_STRING_LEN,
-                                                    SSI_EXPAND_DROP_NAME);
-                decodehtml(parsed_string);
-                if (!strcmp(parsed_string, "bytes")) {
-                    ctx->flags |= SSI_FLAG_SIZE_IN_BYTES;
-                }
-                else if (!strcmp(parsed_string, "abbrev")) {
-                    ctx->flags &= SSI_FLAG_SIZE_ABBREV;
-                }
-            }
-            else {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                              "unknown parameter \"%s\" to tag config in %s",
-                              tag, r->filename);
-                SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
-            }
-        }
-    }
-
-    return APR_SUCCESS;
-}
-
-
-static int find_file(request_rec *r, const char *directive, const char *tag,
-                     char *tag_val, apr_finfo_t *finfo)
-{
-    char *to_send = tag_val;
-    request_rec *rr = NULL;
-    int ret=0;
-    char *error_fmt = NULL;
-    apr_status_t rv = APR_SUCCESS;
-
-    if (!strcmp(tag, "file")) {
-        /* XXX: Port to apr_filepath_merge
-         * be safe; only files in this directory or below allowed 
-         */
-        if (!is_only_below(tag_val)) {
-            error_fmt = "unable to access file \"%s\" "
-                        "in parsed file %s";
-        }
-        else {
-            ap_getparents(tag_val);    /* get rid of any nasties */
-
-            /* note: it is okay to pass NULL for the "next filter" since
-               we never attempt to "run" this sub request. */
-            rr = ap_sub_req_lookup_file(tag_val, r, NULL);
-
-            if (rr->status == HTTP_OK && rr->finfo.filetype != 0) {
-                to_send = rr->filename;
-                if ((rv = apr_stat(finfo, to_send, 
-                    APR_FINFO_GPROT | APR_FINFO_MIN, rr->pool)) != APR_SUCCESS
-                    && rv != APR_INCOMPLETE) {
-                    error_fmt = "unable to get information about \"%s\" "
-                        "in parsed file %s";
-                }
-            }
-            else {
-                error_fmt = "unable to lookup information about \"%s\" "
-                            "in parsed file %s";
-            }
-        }
-
-        if (error_fmt) {
-            ret = -1;
-            ap_log_rerror(APLOG_MARK, APLOG_ERR,
-                          rv, r, error_fmt, to_send, r->filename);
-        }
-
-        if (rr) ap_destroy_sub_req(rr);
-        
-        return ret;
-    }
-    else if (!strcmp(tag, "virtual")) {
-        /* note: it is okay to pass NULL for the "next filter" since
-           we never attempt to "run" this sub request. */
-        rr = ap_sub_req_lookup_uri(tag_val, r, NULL);
-
-        if (rr->status == HTTP_OK && rr->finfo.filetype != 0) {
-            memcpy((char *) finfo, (const char *) &rr->finfo,
-                   sizeof(rr->finfo));
-            ap_destroy_sub_req(rr);
-            return 0;
-        }
-        else {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                        "unable to get information about \"%s\" "
-                        "in parsed file %s",
-                        tag_val, r->filename);
-            ap_destroy_sub_req(rr);
-            return -1;
-        }
-    }
-    else {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                    "unknown parameter \"%s\" to tag %s in %s",
-                    tag, directive, r->filename);
-        return -1;
-    }
-}
-
-static apr_status_t handle_fsize(include_ctx_t *ctx, ap_filter_t *f,
-                                 apr_bucket_brigade *bb)
-{
-    char *tag     = NULL;
-    char *tag_val = NULL;
-    apr_finfo_t  finfo;
-    apr_size_t  s_len;
-    apr_bucket   *tmp_buck;
-    char *parsed_string;
-    request_rec *r = f->r;
-
-    if (ctx->flags & SSI_FLAG_PRINTING) {
-        while (1) {
-            ap_ssi_get_tag_and_value(ctx, &tag, &tag_val, SSI_VALUE_DECODED);
-            if (!tag || !tag_val) {
-                return APR_SUCCESS;
-            }
-            else {
-                parsed_string = ap_ssi_parse_string(r, ctx, tag_val, NULL, 
-                                                    MAX_STRING_LEN,
-                                                    SSI_EXPAND_DROP_NAME);
-                if (!find_file(r, "fsize", tag, parsed_string, &finfo)) {
-                    /* XXX: if we *know* we're going to have to copy the
-                     * thing off of the stack anyway, why not palloc buff
-                     * instead of sticking it on the stack; then we can just
-                     * use a pool bucket and skip the copy
-                     */
-                    char buff[50];
-
-                    if (!(ctx->flags & SSI_FLAG_SIZE_IN_BYTES)) {
-                        apr_strfsize(finfo.size, buff);
-                        s_len = strlen (buff);
-                    }
-                    else {
-                        int l, x, pos = 0;
-                        char tmp_buff[50];
-
-                        apr_snprintf(tmp_buff, sizeof(tmp_buff), 
-                                     "%" APR_OFF_T_FMT, finfo.size);
-                        l = strlen(tmp_buff);    /* grrr */
-                        for (x = 0; x < l; x++) {
-                            if (x && (!((l - x) % 3))) {
-                                buff[pos++] = ',';
-                            }
-                            buff[pos++] = tmp_buff[x];
-                        }
-                        buff[pos] = '\0';
-                        s_len = pos;
-                    }
-
-                    tmp_buck = apr_bucket_heap_create(buff, s_len, NULL,
-                                                  r->connection->bucket_alloc);
-                    APR_BRIGADE_INSERT_TAIL(bb, tmp_buck);
-                }
-                else {
-                    SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
-                }
-            }
-        }
-    }
-
-    return APR_SUCCESS;
-}
-
-static apr_status_t handle_flastmod(include_ctx_t *ctx, ap_filter_t *f,
-                                    apr_bucket_brigade *bb)
-{
-    char *tag     = NULL;
-    char *tag_val = NULL;
-    apr_finfo_t  finfo;
-    apr_size_t  t_len;
-    apr_bucket   *tmp_buck;
-    char *parsed_string;
-    request_rec *r = f->r;
-
-    if (ctx->flags & SSI_FLAG_PRINTING) {
-        while (1) {
-            ap_ssi_get_tag_and_value(ctx, &tag, &tag_val, SSI_VALUE_DECODED);
-            if (!tag || !tag_val) {
-                return APR_SUCCESS;
-            }
-            else {
-                parsed_string = ap_ssi_parse_string(r, ctx, tag_val, NULL, 
-                                                    MAX_STRING_LEN,
-                                                    SSI_EXPAND_DROP_NAME);
-                if (!find_file(r, "flastmod", tag, parsed_string, &finfo)) {
-                    char *t_val;
-
-                    t_val = ap_ht_time(r->pool, finfo.mtime, ctx->time_str, 0);
-                    t_len = strlen(t_val);
-
-                    tmp_buck = apr_bucket_pool_create(t_val, t_len, r->pool,
-                                                  r->connection->bucket_alloc);
-                    APR_BRIGADE_INSERT_TAIL(bb, tmp_buck);
-                }
-                else {
-                    SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
-                }
-            }
-        }
-    }
-
-    return APR_SUCCESS;
-}
 
 static int re_check(request_rec *r, include_ctx_t *ctx, 
                     char *string, char *rexp)
@@ -2036,6 +1463,547 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
     return (retval);
 }
 
+
+/*
+ * +-------------------------------------------------------+
+ * |                                                       |
+ * |                    Action Handlers
+ * |                                                       |
+ * +-------------------------------------------------------+
+ */
+
+/*
+ * Extract the next tag name and value.
+ * If there are no more tags, set the tag name to NULL.
+ * The tag value is html decoded if dodecode is non-zero.
+ * The tag value may be NULL if there is no tag value..
+ */
+static void ap_ssi_get_tag_and_value(include_ctx_t *ctx, char **tag,
+                                     char **tag_val, int dodecode)
+{
+    if (!ctx->intern->argv) {
+        *tag = NULL;
+        *tag_val = NULL;
+
+        return;
+    }
+
+    *tag_val = ctx->intern->argv->value;
+    *tag = ctx->intern->argv->name;
+
+    ctx->intern->argv = ctx->intern->argv->next;
+
+    if (dodecode && *tag_val) {
+        decodehtml(*tag_val);
+    }
+
+    return;
+}
+
+/* ensure that path is relative, and does not contain ".." elements
+ * ensentially ensure that it does not match the regex:
+ * (^/|(^|/)\.\.(/|$))
+ * XXX: Simply replace with apr_filepath_merge                    
+ */
+static int is_only_below(const char *path)
+{
+#ifdef HAVE_DRIVE_LETTERS
+    if (path[1] == ':') 
+        return 0;
+#endif
+#ifdef NETWARE
+    if (ap_strchr_c(path, ':'))
+        return 0;
+#endif
+    if (path[0] == '/') {
+        return 0;
+    }
+    while (*path) {
+        int dots = 0;
+        while (path[dots] == '.')
+            ++dots;
+#if defined(WIN32) 
+        /* If the name is canonical this is redundant
+         * but in security, redundancy is worthwhile.
+         * Does OS2 belong here (accepts ... for ..)?
+         */
+        if (dots > 1 && (!path[dots] || path[dots] == '/'))
+            return 0;
+#else
+        if (dots == 2 && (!path[dots] || path[dots] == '/'))
+            return 0;
+#endif
+        path += dots;
+        /* Advance to either the null byte at the end of the
+         * string or the character right after the next slash,
+         * whichever comes first
+         */
+        while (*path && (*path++ != '/')) {
+            continue;
+        }
+    }
+    return 1;
+}
+
+static int find_file(request_rec *r, const char *directive, const char *tag,
+                     char *tag_val, apr_finfo_t *finfo)
+{
+    char *to_send = tag_val;
+    request_rec *rr = NULL;
+    int ret=0;
+    char *error_fmt = NULL;
+    apr_status_t rv = APR_SUCCESS;
+
+    if (!strcmp(tag, "file")) {
+        /* XXX: Port to apr_filepath_merge
+         * be safe; only files in this directory or below allowed 
+         */
+        if (!is_only_below(tag_val)) {
+            error_fmt = "unable to access file \"%s\" "
+                        "in parsed file %s";
+        }
+        else {
+            ap_getparents(tag_val);    /* get rid of any nasties */
+
+            /* note: it is okay to pass NULL for the "next filter" since
+               we never attempt to "run" this sub request. */
+            rr = ap_sub_req_lookup_file(tag_val, r, NULL);
+
+            if (rr->status == HTTP_OK && rr->finfo.filetype != 0) {
+                to_send = rr->filename;
+                if ((rv = apr_stat(finfo, to_send, 
+                    APR_FINFO_GPROT | APR_FINFO_MIN, rr->pool)) != APR_SUCCESS
+                    && rv != APR_INCOMPLETE) {
+                    error_fmt = "unable to get information about \"%s\" "
+                        "in parsed file %s";
+                }
+            }
+            else {
+                error_fmt = "unable to lookup information about \"%s\" "
+                            "in parsed file %s";
+            }
+        }
+
+        if (error_fmt) {
+            ret = -1;
+            ap_log_rerror(APLOG_MARK, APLOG_ERR,
+                          rv, r, error_fmt, to_send, r->filename);
+        }
+
+        if (rr) ap_destroy_sub_req(rr);
+        
+        return ret;
+    }
+    else if (!strcmp(tag, "virtual")) {
+        /* note: it is okay to pass NULL for the "next filter" since
+           we never attempt to "run" this sub request. */
+        rr = ap_sub_req_lookup_uri(tag_val, r, NULL);
+
+        if (rr->status == HTTP_OK && rr->finfo.filetype != 0) {
+            memcpy((char *) finfo, (const char *) &rr->finfo,
+                   sizeof(rr->finfo));
+            ap_destroy_sub_req(rr);
+            return 0;
+        }
+        else {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                        "unable to get information about \"%s\" "
+                        "in parsed file %s",
+                        tag_val, r->filename);
+            ap_destroy_sub_req(rr);
+            return -1;
+        }
+    }
+    else {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                    "unknown parameter \"%s\" to tag %s in %s",
+                    tag, directive, r->filename);
+        return -1;
+    }
+}
+
+static apr_status_t handle_include(include_ctx_t *ctx, ap_filter_t *f,
+                                   apr_bucket_brigade *bb)
+{
+    char *tag     = NULL;
+    char *tag_val = NULL;
+    char *parsed_string;
+    int loglevel = APLOG_ERR;
+    request_rec *r = f->r;
+
+    if (ctx->flags & SSI_FLAG_PRINTING) {
+        while (1) {
+            ap_ssi_get_tag_and_value(ctx, &tag, &tag_val, SSI_VALUE_DECODED);
+            if (!tag || !tag_val) {
+                return APR_SUCCESS;
+            }
+
+            if (!strcmp(tag, "virtual") || !strcmp(tag, "file")) {
+                request_rec *rr = NULL;
+                char *error_fmt = NULL;
+
+                parsed_string = ap_ssi_parse_string(r, ctx, tag_val, NULL, 
+                                                    MAX_STRING_LEN,
+                                                    SSI_EXPAND_DROP_NAME);
+                if (tag[0] == 'f') {
+                    /* XXX: Port to apr_filepath_merge
+                     * be safe; only files in this directory or below allowed 
+                     */
+                    if (!is_only_below(parsed_string)) {
+                        error_fmt = "unable to include file \"%s\" "
+                                    "in parsed file %s";
+                    }
+                    else {
+                        rr = ap_sub_req_lookup_uri(parsed_string, r, f->next);
+                    }
+                }
+                else {
+                    rr = ap_sub_req_lookup_uri(parsed_string, r, f->next);
+                }
+
+                if (!error_fmt && rr->status != HTTP_OK) {
+                    error_fmt = "unable to include \"%s\" in parsed file %s";
+                }
+
+                if (!error_fmt && (ctx->flags & SSI_FLAG_NO_EXEC) && 
+                    rr->content_type && 
+                    (strncmp(rr->content_type, "text/", 5))) {
+                    error_fmt = "unable to include potential exec \"%s\" "
+                        "in parsed file %s";
+                }
+                if (error_fmt == NULL) {
+                    /* try to avoid recursive includes.  We do this by walking
+                     * up the r->main list of subrequests, and at each level
+                     * walking back through any internal redirects.  At each
+                     * step, we compare the filenames and the URIs.  
+                     *
+                     * The filename comparison catches a recursive include
+                     * with an ever-changing URL, eg.
+                     * <!--#include virtual=
+                     *      "$REQUEST_URI/$QUERY_STRING?$QUERY_STRING/x" -->
+                     * which, although they would eventually be caught because
+                     * we have a limit on the length of files, etc., can 
+                     * recurse for a while.
+                     *
+                     * The URI comparison catches the case where the filename
+                     * is changed while processing the request, so the 
+                     * current name is never the same as any previous one.
+                     * This can happen with "DocumentRoot /foo" when you
+                     * request "/" on the server and it includes "/".
+                     * This only applies to modules such as mod_dir that 
+                     * (somewhat improperly) mess with r->filename outside 
+                     * of a filename translation phase.
+                     */
+                    int founddupe = 0;
+                    request_rec *p;
+                    for (p = r; p != NULL && !founddupe; p = p->main) {
+                        request_rec *q;
+                        for (q = p; q != NULL; q = q->prev) {
+                            if ((q->filename && rr->filename && 
+                                (strcmp(q->filename, rr->filename) == 0)) ||
+                                ((*q->uri == '/') && 
+                                 (strcmp(q->uri, rr->uri) == 0)))
+                            {
+                                founddupe = 1;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (p != NULL) {
+                        error_fmt = "Recursive include of \"%s\" "
+                            "in parsed file %s";
+                    }
+                }
+
+                /* See the Kludge in send_parsed_file for why */
+                /* Basically, it puts a bread crumb in here, then looks */
+                /*   for the crumb later to see if its been here.       */
+                if (rr) 
+                    ap_set_module_config(rr->request_config, 
+                                         &include_module, r);
+
+                if (!error_fmt && ap_run_sub_req(rr)) {
+                    error_fmt = "unable to include \"%s\" in parsed file %s";
+                }
+                if (error_fmt) {
+                    ap_log_rerror(APLOG_MARK, loglevel,
+                                  0, r, error_fmt, tag_val, r->filename);
+                    SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
+                }
+
+                /* destroy the sub request */
+                if (rr != NULL) {
+                    ap_destroy_sub_req(rr);
+                }
+            }
+            else {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                            "unknown parameter \"%s\" to tag include in %s",
+                            tag, r->filename);
+                SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
+            }
+        }
+    }
+
+    return APR_SUCCESS;
+}
+
+static apr_status_t handle_echo(include_ctx_t *ctx, ap_filter_t *f,
+                                apr_bucket_brigade *bb)
+{
+    char       *tag       = NULL;
+    char       *tag_val   = NULL;
+    const char *echo_text = NULL;
+    apr_bucket  *tmp_buck;
+    apr_size_t e_len;
+    enum {E_NONE, E_URL, E_ENTITY} encode;
+    request_rec *r = f->r;
+
+    encode = E_ENTITY;
+
+    if (ctx->flags & SSI_FLAG_PRINTING) {
+        while (1) {
+            ap_ssi_get_tag_and_value(ctx, &tag, &tag_val, SSI_VALUE_DECODED);
+            if (!tag || !tag_val) {
+                return APR_SUCCESS;
+            }
+
+            if (!strcmp(tag, "var")) {
+                conn_rec *c = r->connection;
+                const char *val =
+                    get_include_var(r, ctx,
+                                    ap_ssi_parse_string(r, ctx, tag_val, NULL,
+                                                        MAX_STRING_LEN,
+                                                        SSI_EXPAND_DROP_NAME));
+                if (val) {
+                    switch(encode) {
+                    case E_NONE:   
+                        echo_text = val;
+                        break;
+                    case E_URL:
+                        echo_text = ap_escape_uri(r->pool, val);  
+                        break;
+                    case E_ENTITY: 
+                        echo_text = ap_escape_html(r->pool, val); 
+                        break;
+                    }
+
+                    e_len = strlen(echo_text);
+                    tmp_buck = apr_bucket_pool_create(echo_text, e_len,
+                                                      r->pool, c->bucket_alloc);
+                }
+                else {
+                    include_server_config *sconf= 
+                        ap_get_module_config(r->server->module_config,
+                                             &include_module);
+                    tmp_buck = apr_bucket_pool_create(sconf->undefinedEcho, 
+                                                      sconf->undefinedEchoLen,
+                                                      r->pool, c->bucket_alloc);
+                }
+                APR_BRIGADE_INSERT_TAIL(bb, tmp_buck);
+            }
+            else if (!strcmp(tag, "encoding")) {
+                if (!strcasecmp(tag_val, "none")) encode = E_NONE;
+                else if (!strcasecmp(tag_val, "url")) encode = E_URL;
+                else if (!strcasecmp(tag_val, "entity")) encode = E_ENTITY;
+                else {
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                           "unknown value \"%s\" to parameter \"encoding\" of "
+                           "tag echo in %s", tag_val, r->filename);
+                    SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
+                }
+            }
+            else {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                            "unknown parameter \"%s\" in tag echo of %s",
+                            tag, r->filename);
+                SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
+            }
+
+        }
+    }
+
+    return APR_SUCCESS;
+}
+
+/* error and tf must point to a string with room for at 
+ * least MAX_STRING_LEN characters 
+ */
+static apr_status_t handle_config(include_ctx_t *ctx, ap_filter_t *f,
+                                  apr_bucket_brigade *bb)
+{
+    char *tag     = NULL;
+    char *tag_val = NULL;
+    char *parsed_string;
+    request_rec *r = f->r;
+    apr_table_t *env = r->subprocess_env;
+
+    if (ctx->flags & SSI_FLAG_PRINTING) {
+        while (1) {
+            ap_ssi_get_tag_and_value(ctx, &tag, &tag_val, SSI_VALUE_RAW);
+            if (! tag || !tag_val) {
+                return APR_SUCCESS;
+            }
+
+            if (!strcmp(tag, "errmsg")) {
+                if (ctx->intern->error_str_override == NULL) {
+                    ctx->intern->error_str_override = apr_palloc(ctx->pool,
+                                                                MAX_STRING_LEN);
+                    ctx->error_str = ctx->intern->error_str_override;
+                }
+                ap_ssi_parse_string(r, ctx, tag_val,
+                                    ctx->intern->error_str_override,
+                                    MAX_STRING_LEN, SSI_EXPAND_DROP_NAME);
+            }
+            else if (!strcmp(tag, "timefmt")) {
+                apr_time_t date = r->request_time;
+                if (ctx->intern->time_str_override == NULL) {
+                    ctx->intern->time_str_override = apr_palloc(ctx->pool,
+                                                                MAX_STRING_LEN);
+                    ctx->time_str = ctx->intern->time_str_override;
+                }
+                ap_ssi_parse_string(r, ctx, tag_val,
+                                    ctx->intern->time_str_override,
+                                    MAX_STRING_LEN, SSI_EXPAND_DROP_NAME);
+
+                apr_table_setn(env, "DATE_LOCAL", ap_ht_time(r->pool, date, 
+                               ctx->time_str, 0));
+                apr_table_setn(env, "DATE_GMT", ap_ht_time(r->pool, date, 
+                               ctx->time_str, 1));
+                apr_table_setn(env, "LAST_MODIFIED",
+                               ap_ht_time(r->pool, r->finfo.mtime, 
+                               ctx->time_str, 0));
+            }
+            else if (!strcmp(tag, "sizefmt")) {
+                parsed_string = ap_ssi_parse_string(r, ctx, tag_val, NULL, 
+                                                    MAX_STRING_LEN,
+                                                    SSI_EXPAND_DROP_NAME);
+                decodehtml(parsed_string);
+                if (!strcmp(parsed_string, "bytes")) {
+                    ctx->flags |= SSI_FLAG_SIZE_IN_BYTES;
+                }
+                else if (!strcmp(parsed_string, "abbrev")) {
+                    ctx->flags &= SSI_FLAG_SIZE_ABBREV;
+                }
+            }
+            else {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                              "unknown parameter \"%s\" to tag config in %s",
+                              tag, r->filename);
+                SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
+            }
+        }
+    }
+
+    return APR_SUCCESS;
+}
+
+static apr_status_t handle_fsize(include_ctx_t *ctx, ap_filter_t *f,
+                                 apr_bucket_brigade *bb)
+{
+    char *tag     = NULL;
+    char *tag_val = NULL;
+    apr_finfo_t  finfo;
+    apr_size_t  s_len;
+    apr_bucket   *tmp_buck;
+    char *parsed_string;
+    request_rec *r = f->r;
+
+    if (ctx->flags & SSI_FLAG_PRINTING) {
+        while (1) {
+            ap_ssi_get_tag_and_value(ctx, &tag, &tag_val, SSI_VALUE_DECODED);
+            if (!tag || !tag_val) {
+                return APR_SUCCESS;
+            }
+            else {
+                parsed_string = ap_ssi_parse_string(r, ctx, tag_val, NULL, 
+                                                    MAX_STRING_LEN,
+                                                    SSI_EXPAND_DROP_NAME);
+                if (!find_file(r, "fsize", tag, parsed_string, &finfo)) {
+                    /* XXX: if we *know* we're going to have to copy the
+                     * thing off of the stack anyway, why not palloc buff
+                     * instead of sticking it on the stack; then we can just
+                     * use a pool bucket and skip the copy
+                     */
+                    char buff[50];
+
+                    if (!(ctx->flags & SSI_FLAG_SIZE_IN_BYTES)) {
+                        apr_strfsize(finfo.size, buff);
+                        s_len = strlen (buff);
+                    }
+                    else {
+                        int l, x, pos = 0;
+                        char tmp_buff[50];
+
+                        apr_snprintf(tmp_buff, sizeof(tmp_buff), 
+                                     "%" APR_OFF_T_FMT, finfo.size);
+                        l = strlen(tmp_buff);    /* grrr */
+                        for (x = 0; x < l; x++) {
+                            if (x && (!((l - x) % 3))) {
+                                buff[pos++] = ',';
+                            }
+                            buff[pos++] = tmp_buff[x];
+                        }
+                        buff[pos] = '\0';
+                        s_len = pos;
+                    }
+
+                    tmp_buck = apr_bucket_heap_create(buff, s_len, NULL,
+                                                  r->connection->bucket_alloc);
+                    APR_BRIGADE_INSERT_TAIL(bb, tmp_buck);
+                }
+                else {
+                    SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
+                }
+            }
+        }
+    }
+
+    return APR_SUCCESS;
+}
+
+static apr_status_t handle_flastmod(include_ctx_t *ctx, ap_filter_t *f,
+                                    apr_bucket_brigade *bb)
+{
+    char *tag     = NULL;
+    char *tag_val = NULL;
+    apr_finfo_t  finfo;
+    apr_size_t  t_len;
+    apr_bucket   *tmp_buck;
+    char *parsed_string;
+    request_rec *r = f->r;
+
+    if (ctx->flags & SSI_FLAG_PRINTING) {
+        while (1) {
+            ap_ssi_get_tag_and_value(ctx, &tag, &tag_val, SSI_VALUE_DECODED);
+            if (!tag || !tag_val) {
+                return APR_SUCCESS;
+            }
+            else {
+                parsed_string = ap_ssi_parse_string(r, ctx, tag_val, NULL, 
+                                                    MAX_STRING_LEN,
+                                                    SSI_EXPAND_DROP_NAME);
+                if (!find_file(r, "flastmod", tag, parsed_string, &finfo)) {
+                    char *t_val;
+
+                    t_val = ap_ht_time(r->pool, finfo.mtime, ctx->time_str, 0);
+                    t_len = strlen(t_val);
+
+                    tmp_buck = apr_bucket_pool_create(t_val, t_len, r->pool,
+                                                  r->connection->bucket_alloc);
+                    APR_BRIGADE_INSERT_TAIL(bb, tmp_buck);
+                }
+                else {
+                    SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
+                }
+            }
+        }
+    }
+
+    return APR_SUCCESS;
+}
+
 /* pjr - These seem to allow expr="fred" expr="joe" where joe overwrites fred. */
 static apr_status_t handle_if(include_ctx_t *ctx, ap_filter_t *f,
                               apr_bucket_brigade *bb)
@@ -2354,7 +2322,89 @@ static apr_status_t handle_printenv(include_ctx_t *ctx, ap_filter_t *f,
     return APR_SUCCESS;
 }
 
-/* -------------------------- The main function --------------------------- */
+
+/*
+ * +-------------------------------------------------------+
+ * |                                                       |
+ * |               Main Includes-Filter Engine
+ * |                                                       |
+ * +-------------------------------------------------------+
+ */
+
+/* This is an implementation of the BNDM search algorithm.
+ *
+ * Fast and Flexible String Matching by Combining Bit-parallelism and 
+ * Suffix Automata (2001) 
+ * Gonzalo Navarro, Mathieu Raffinot
+ *
+ * http://www-igm.univ-mlv.fr/~raffinot/ftp/jea2001.ps.gz
+ *
+ * Initial code submitted by Sascha Schumann.
+ */
+   
+/* Precompile the bndm_t data structure. */
+static void bndm_compile(bndm_t *t, const char *n, apr_size_t nl)
+{
+    unsigned int x;
+    const char *ne = n + nl;
+
+    memset(t->T, 0, sizeof(unsigned int) * 256);
+    
+    for (x = 1; n < ne; x <<= 1)
+        t->T[(unsigned char) *n++] |= x;
+
+    t->x = x - 1;
+}
+
+/* Implements the BNDM search algorithm (as described above).
+ *
+ * n  - the pattern to search for
+ * nl - length of the pattern to search for
+ * h  - the string to look in
+ * hl - length of the string to look for
+ * t  - precompiled bndm structure against the pattern 
+ *
+ * Returns the count of character that is the first match or hl if no
+ * match is found.
+ */
+static apr_size_t bndm(const char *n, apr_size_t nl, const char *h, 
+                       apr_size_t hl, bndm_t *t)
+{
+    const char *skip;
+    const char *he, *p, *pi;
+    unsigned int *T, x, d;
+
+    he = h + hl;
+
+    T = t->T;
+    x = t->x;
+
+    pi = h - 1; /* pi: p initial */
+    p = pi + nl; /* compare window right to left. point to the first char */
+
+    while (p < he) {
+        skip = p;
+        d = x;
+        do {
+            d &= T[(unsigned char) *p--];
+            if (!d) {
+                break;
+            }
+            if ((d & 1)) {
+                if (p != pi)
+                    skip = p;
+                else
+                    return p - h + 1;
+            }
+            d >>= 1;
+        } while (d);
+
+        pi = skip;
+        p = pi + nl;
+    }
+
+    return hl;
+}
 
 /*
  * returns the index position of the first byte of start_seq (or the len of
@@ -3240,7 +3290,7 @@ static apr_status_t send_parsed_content(ap_filter_t *f, apr_bucket_brigade *bb)
             else {
                 include_handler_fn_t *handle_func;
 
-                handle_func = apr_hash_get(include_hash, intern->directive, 
+                handle_func = apr_hash_get(include_handlers, intern->directive,
                                            intern->directive_len);
 
                 if (handle_func) {
@@ -3322,52 +3372,14 @@ static apr_status_t send_parsed_content(ap_filter_t *f, apr_bucket_brigade *bb)
     return rv;
 }
 
-static void *create_includes_dir_config(apr_pool_t *p, char *dummy)
-{
-    include_dir_config *result =
-        (include_dir_config *)apr_palloc(p, sizeof(include_dir_config));
-    enum xbithack *xbh = (enum xbithack *) apr_palloc(p, sizeof(enum xbithack));
-    *xbh = DEFAULT_XBITHACK;
-    result->default_error_msg = DEFAULT_ERROR_MSG;
-    result->default_time_fmt = DEFAULT_TIME_FORMAT;
-    result->xbithack = xbh;
-    return result;
-}
 
-static void *create_includes_server_config(apr_pool_t*p, server_rec *server)
-{
-    include_server_config *result =
-        (include_server_config *)apr_palloc(p, sizeof(include_server_config));
-    result->default_end_tag = DEFAULT_END_SEQUENCE;
-    result->default_start_tag = DEFAULT_START_SEQUENCE;
-    result->start_tag_len = sizeof(DEFAULT_START_SEQUENCE)-1;
-    /* compile the pattern used by find_start_sequence */
-    bndm_compile(&result->start_seq_pat, result->default_start_tag, 
-                 result->start_tag_len); 
-
-    result->undefinedEcho = apr_pstrdup(p,"(none)");
-    result->undefinedEchoLen = strlen( result->undefinedEcho);
-    return result; 
-}
-static const char *set_xbithack(cmd_parms *cmd, void *xbp, const char *arg)
-{
-    include_dir_config *conf = (include_dir_config *)xbp;
-
-    if (!strcasecmp(arg, "off")) {
-        *conf->xbithack = xbithack_off;
-    }
-    else if (!strcasecmp(arg, "on")) {
-        *conf->xbithack = xbithack_on;
-    }
-    else if (!strcasecmp(arg, "full")) {
-        *conf->xbithack = xbithack_full;
-    }
-    else {
-        return "XBitHack must be set to Off, On, or Full";
-    }
-
-    return NULL;
-}
+/*
+ * +-------------------------------------------------------+
+ * |                                                       |
+ * |                     Runtime Hooks
+ * |                                                       |
+ * +-------------------------------------------------------+
+ */
 
 static int includes_setup(ap_filter_t *f)
 {
@@ -3499,32 +3511,103 @@ static apr_status_t includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
     return send_parsed_content(f, b);
 }
 
-static void ap_register_include_handler(char *tag, include_handler_fn_t *func)
+static int include_fixup(request_rec *r)
 {
-    apr_hash_set(include_hash, tag, strlen(tag), (const void *)func);
+    include_dir_config *conf;
+ 
+    conf = (include_dir_config *) ap_get_module_config(r->per_dir_config,
+                                                &include_module);
+ 
+    if (r->handler && (strcmp(r->handler, "server-parsed") == 0)) 
+    {
+        if (!r->content_type || !*r->content_type) {
+            ap_set_content_type(r, "text/html");
+        }
+        r->handler = "default-handler";
+    }
+    else 
+#if defined(OS2) || defined(WIN32) || defined(NETWARE)
+    /* These OS's don't support xbithack. This is being worked on. */
+    {
+        return DECLINED;
+    }
+#else
+    {
+        if (*conf->xbithack == xbithack_off) {
+            return DECLINED;
+        }
+
+        if (!(r->finfo.protection & APR_UEXECUTE)) {
+            return DECLINED;
+        }
+
+        if (!r->content_type || strcmp(r->content_type, "text/html")) {
+            return DECLINED;
+        }
+    }
+#endif
+
+    /* We always return declined, because the default handler actually
+     * serves the file.  All we have to do is add the filter.
+     */
+    ap_add_output_filter("INCLUDES", NULL, r, r->connection);
+    return DECLINED;
 }
 
-static int include_post_config(apr_pool_t *p, apr_pool_t *plog,
-                                apr_pool_t *ptemp, server_rec *s)
-{
-    include_hash = apr_hash_make(p);
-    
-    ssi_pfn_register = APR_RETRIEVE_OPTIONAL_FN(ap_register_include_handler);
 
-    if(ssi_pfn_register) {
-        ssi_pfn_register("if", handle_if);
-        ssi_pfn_register("set", handle_set);
-        ssi_pfn_register("else", handle_else);
-        ssi_pfn_register("elif", handle_elif);
-        ssi_pfn_register("echo", handle_echo);
-        ssi_pfn_register("endif", handle_endif);
-        ssi_pfn_register("fsize", handle_fsize);
-        ssi_pfn_register("config", handle_config);
-        ssi_pfn_register("include", handle_include);
-        ssi_pfn_register("flastmod", handle_flastmod);
-        ssi_pfn_register("printenv", handle_printenv);
+/*
+ * +-------------------------------------------------------+
+ * |                                                       |
+ * |                Configuration Handling
+ * |                                                       |
+ * +-------------------------------------------------------+
+ */
+
+static void *create_includes_dir_config(apr_pool_t *p, char *dummy)
+{
+    include_dir_config *result =
+        (include_dir_config *)apr_palloc(p, sizeof(include_dir_config));
+    enum xbithack *xbh = (enum xbithack *) apr_palloc(p, sizeof(enum xbithack));
+    *xbh = DEFAULT_XBITHACK;
+    result->default_error_msg = DEFAULT_ERROR_MSG;
+    result->default_time_fmt = DEFAULT_TIME_FORMAT;
+    result->xbithack = xbh;
+    return result;
+}
+
+static void *create_includes_server_config(apr_pool_t*p, server_rec *server)
+{
+    include_server_config *result =
+        (include_server_config *)apr_palloc(p, sizeof(include_server_config));
+    result->default_end_tag = DEFAULT_END_SEQUENCE;
+    result->default_start_tag = DEFAULT_START_SEQUENCE;
+    result->start_tag_len = sizeof(DEFAULT_START_SEQUENCE)-1;
+    /* compile the pattern used by find_start_sequence */
+    bndm_compile(&result->start_seq_pat, result->default_start_tag, 
+                 result->start_tag_len); 
+
+    result->undefinedEcho = apr_pstrdup(p,"(none)");
+    result->undefinedEchoLen = strlen( result->undefinedEcho);
+    return result; 
+}
+static const char *set_xbithack(cmd_parms *cmd, void *xbp, const char *arg)
+{
+    include_dir_config *conf = (include_dir_config *)xbp;
+
+    if (!strcasecmp(arg, "off")) {
+        *conf->xbithack = xbithack_off;
     }
-    return OK;
+    else if (!strcasecmp(arg, "on")) {
+        *conf->xbithack = xbithack_on;
+    }
+    else if (!strcasecmp(arg, "full")) {
+        *conf->xbithack = xbithack_full;
+    }
+    else {
+        return "XBitHack must be set to Off, On, or Full";
+    }
+
+    return NULL;
 }
 
 static const char *set_default_error_msg(cmd_parms *cmd, void *mconfig, const char *msg)
@@ -3592,9 +3675,39 @@ static const char *set_default_time_fmt(cmd_parms *cmd, void *mconfig, const cha
     return NULL;
 }
 
+
 /*
- * Module definition and configuration data structs...
+ * +-------------------------------------------------------+
+ * |                                                       |
+ * |        Module Initialization and Configuration
+ * |                                                       |
+ * +-------------------------------------------------------+
  */
+
+static int include_post_config(apr_pool_t *p, apr_pool_t *plog,
+                                apr_pool_t *ptemp, server_rec *s)
+{
+    include_handlers = apr_hash_make(p);
+
+    ssi_pfn_register = APR_RETRIEVE_OPTIONAL_FN(ap_register_include_handler);
+
+    if(ssi_pfn_register) {
+        ssi_pfn_register("if", handle_if);
+        ssi_pfn_register("set", handle_set);
+        ssi_pfn_register("else", handle_else);
+        ssi_pfn_register("elif", handle_elif);
+        ssi_pfn_register("echo", handle_echo);
+        ssi_pfn_register("endif", handle_endif);
+        ssi_pfn_register("fsize", handle_fsize);
+        ssi_pfn_register("config", handle_config);
+        ssi_pfn_register("include", handle_include);
+        ssi_pfn_register("flastmod", handle_flastmod);
+        ssi_pfn_register("printenv", handle_printenv);
+    }
+
+    return OK;
+}
+
 static const command_rec includes_cmds[] =
 {
     AP_INIT_TAKE1("XBitHack", set_xbithack, NULL, OR_OPTIONS, 
@@ -3612,47 +3725,9 @@ static const command_rec includes_cmds[] =
     {NULL}
 };
 
-static int include_fixup(request_rec *r)
+static void ap_register_include_handler(char *tag, include_handler_fn_t *func)
 {
-    include_dir_config *conf;
- 
-    conf = (include_dir_config *) ap_get_module_config(r->per_dir_config,
-                                                &include_module);
- 
-    if (r->handler && (strcmp(r->handler, "server-parsed") == 0)) 
-    {
-        if (!r->content_type || !*r->content_type) {
-            ap_set_content_type(r, "text/html");
-        }
-        r->handler = "default-handler";
-    }
-    else 
-#if defined(OS2) || defined(WIN32) || defined(NETWARE)
-    /* These OS's don't support xbithack. This is being worked on. */
-    {
-        return DECLINED;
-    }
-#else
-    {
-        if (*conf->xbithack == xbithack_off) {
-            return DECLINED;
-        }
-
-        if (!(r->finfo.protection & APR_UEXECUTE)) {
-            return DECLINED;
-        }
-
-        if (!r->content_type || strcmp(r->content_type, "text/html")) {
-            return DECLINED;
-        }
-    }
-#endif
-
-    /* We always return declined, because the default handler actually
-     * serves the file.  All we have to do is add the filter.
-     */
-    ap_add_output_filter("INCLUDES", NULL, r, r->connection);
-    return DECLINED;
+    apr_hash_set(include_handlers, tag, strlen(tag), (const void *)func);
 }
 
 static void register_hooks(apr_pool_t *p)
