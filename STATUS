@@ -76,7 +76,7 @@ Available Patches:
     * Ralf's Build outside of source tree (take 2: alternative solution)
       ("overrules"  Wilfredo Sanchez's [PATCH] Build outside of source tree)
         Message-ID: <19981027154021.A24640@engelschall.com>
-	Status: Ralf +1, Jim +1
+	Status: Ralf +1, Jim +1, Martin +1
 
     * Marc's [PATCH] PR#3323: recursive includes
         Message-ID: <Pine.BSF.4.03.9810311132540.20832-100000@alive.znep.com>
@@ -96,7 +96,7 @@ Available Patches:
     * Wilfredo Sanchez's PATCH to make Apache buildable for FAT on
       Rhapsody/OS X.
 	Message-ID: <199810192236.PAA42758@scv4.apple.com>
-	Status: Ken +1 (untested)
+	Status: Ken +1 (untested), Martin +1 (untested)
 
     * Amiel Lee Yee's patch to update ap_config.h for DGUX/Intel
       and str[n]casecmp().
@@ -111,7 +111,7 @@ Available Patches:
 
     * Manoj's [PATCH] mime.types update
         Message-ID: <19980923190915.B15359@raleigh.ibm.com>
-        Status: Roy +1, Ralf +1, Lars +1
+        Status: Roy +1, Ralf +1, Lars +1, Martin +1
 
     * Patches for the DSO/mod_perl problem (see below for description):
 
