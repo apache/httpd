@@ -2173,6 +2173,28 @@ API_EXPORT(int) ap_rwrite(const void *buf, int nbyte, request_rec *r)
     return n;
 }
 
+API_EXPORT(int) ap_vrprintf(request_rec *r, const char *fmt, va_list ap)
+{
+    int n;
+
+    if (r->connection->aborted)
+        return -1;
+
+    n = ap_vbprintf(r->connection->client, fmt, ap);
+
+    if (n < 0) {
+        if (!r->connection->aborted) {
+            ap_log_rerror(APLOG_MARK, APLOG_INFO, r,
+                "client stopped connection before vrprintf completed");
+            ap_bsetflag(r->connection->client, B_EOUT, 1);
+            r->connection->aborted = 1;
+        }
+        return -1;
+    }
+    SET_BYTES_SENT(r);
+    return n;
+}
+
 API_EXPORT(int) ap_rprintf(request_rec *r, const char *fmt,...)
 {
     va_list vlist;
