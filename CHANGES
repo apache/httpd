@@ -1,5 +1,10 @@
 Changes with Apache 2.0.29-dev
 
+  *) Really reset the MaxClients value in worker when the
+     configured value is not a multiple of the number of threads
+     per child.  We said we did previously but we forgot to.
+     [Jeff Trawick]
+
   *) Add Debian layout.  [Daniel Stone <daniel@sfarc.net>]
 
   *) If shared modules are requested and mod_so is not available,

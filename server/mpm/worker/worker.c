@@ -1588,6 +1588,7 @@ static const char *set_server_limit (cmd_parms *cmd, void *dummy,
        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
                     " for a maximum of %d child processes,",
                     ap_daemons_limit);
+       max_clients = ap_daemons_limit * ap_threads_per_child; 
     }
     if (ap_daemons_limit > HARD_SERVER_LIMIT) {
        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
