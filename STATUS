@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/02/23 00:13:38 $]
+Last modified at [$Date: 2003/02/23 17:29:25 $]
 
 Release:
 
@@ -59,6 +59,15 @@ Contributors looking for a mission:
 PATCHES TO PORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
+
+    * Fix SSLMutex bogusness where right now it always uses APR_LOCK_DEFAULT.
+      Allow SSLMutex to choose any APR locking mechanism, ala AcceptMutex.
+      modules/ssl/mod_ssl.c r1.78
+      modules/ssl/mod_ssl.h r1.125
+      modules/ssl/ssl_engine_config.c r1.73
+      modules/ssl/ssl_engine_mutex.c r1.19
+      +1:
+      -1:
 
     * Rewrite how proxy sends its request to allow input bodies to 
       morph the request bodies.  Previously, if an input filter
