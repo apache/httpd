@@ -798,11 +798,12 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
                  * doing O(n) allocs and using O(n^2) space for
                  * continuations that span many many lines.
                  */
-                if (last_len + len > alloc_len) {
+                apr_size_t fold_len = last_len + len + 1; /* trailing null */
+                if (fold_len > alloc_len) {
                     char *fold_buf;
                     alloc_len += alloc_len;
-                    if (last_len + len > alloc_len) {
-                        alloc_len = last_len + len;
+                    if (fold_len > alloc_len) {
+                        alloc_len = fold_len;
                     }
                     fold_buf = (char *)apr_palloc(r->pool, alloc_len);
                     memcpy(fold_buf, last_field, last_len);

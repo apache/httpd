@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) ap_get_mime_headers_core: allocate space for the trailing null
+     when folding is in effect.
+     PR 18170 [Peter Mayne <PeterMayne@SPAM_SUX.ap.spherion.com>]
+
   *) Do not bypass output filters when redirecting subrequests internally.
      PR 17629.  [André Malo]
 
