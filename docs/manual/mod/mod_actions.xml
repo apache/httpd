@@ -1,0 +1,115 @@
+<?xml version="1.0"?>
+<!DOCTYPE xml:manual [ <!ENTITY nbsp "&#160;"> ]>
+<?xml-stylesheet type="text/xsl" href="../style/manual.xsl"?>
+<modulesynopsis>
+
+<name>mod_actions</name> 
+
+<description>This module provides for executing CGI scripts based on
+media type or request method.</description>
+
+<status>Base</status>
+<sourcefile>mod_actions.c</sourcefile>
+<identifier>actions_module</identifier>
+
+<summary>
+    <p>This module has two directives. The <directive
+    module="mod_actions">Action</directive> directive lets you run CGI
+    scripts whenever a file of a certain type is requested. The
+    <directive module="mod_actions">Script</directive> directive lets
+    you run CGI scripts whenever a particular method is used in a
+    request. This makes it much easier to execute scripts that process
+    files.</p>
+</summary>
+
+<directivesynopsis>
+
+<name>Action</name>
+
+<description>Activates a CGI script for a particular handler or
+content-type</description>
+
+<syntax>Action <em>action-type cgi-script</em></syntax>
+<contextlist>
+<context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p>This directive adds an action, which will activate
+    <em>cgi-script</em> when <em>action-type</em> is triggered by
+    the request. The <em>action-type</em> can be either a <a
+    href="../handler.html">handler</a> or a MIME content type. It
+    sends the URL and file path of the requested document using the
+    standard CGI PATH_INFO and PATH_TRANSLATED environment
+    variables.</p>
+
+<example>
+<title>Examples</title>
+
+    # Requests for files of a particular type:<br />
+    Action image/gif /cgi-bin/images.cgi<br />
+<br />
+    # Files of a particular file extension<br />
+    AddHandler my-file-type .xyz<br />
+    Action my-file-type /cgi-bin/program.cgi<br />
+</example>
+
+    <p>In the first example, requests for files with a MIME content
+    type of <code>image/gif</code> will instead be handled by the
+    specified cgi script <code>/cgi-bin/images.cgi</code>.</p>
+
+    <p>In the second example, requests for files with a file extension of
+    <code>.xyz</code> are handled instead by the specified cgi script 
+    <code>/cgi-bin/program.cgi</code>.</p>
+</usage>
+
+<seealso><directive module="mod_mime">AddHandler</directive></seealso>
+
+</directivesynopsis>
+
+<directivesynopsis>
+
+<name>Script</name>
+
+<description>Activates a CGI script for a particular request
+method.</description>
+<syntax> Script <em>method cgi-script</em></syntax>
+<contextlist>
+<context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
+<usage>
+    <p>This directive adds an action, which will activate
+    <em>cgi-script</em> when a file is requested using the method of
+    <em>method</em>. It sends the URL and file path of the requested
+    document using the standard CGI PATH_INFO and PATH_TRANSLATED
+    environment variables.</p>
+
+<note>
+      Any arbitrary method name may be used. <strong>Method names are
+      case-sensitive</strong>, so <code>Script&nbsp;PUT</code> and
+      <code>Script&nbsp;put</code> have two entirely different
+      effects.
+</note>
+
+    <p>Note that the Script command defines default actions only.
+    If a CGI script is called, or some other resource that is
+    capable of handling the requested method internally, it will do
+    so. Also note that Script with a method of <code>GET</code>
+    will only be called if there are query arguments present
+    (<em>e.g.</em>, foo.html?hi). Otherwise, the request will
+    proceed normally.</p>
+
+<example>
+<title>Examples</title>
+    # For &lt;ISINDEX&gt;-style searching<br />
+    Script GET /cgi-bin/search<br />
+    # A CGI PUT handler<br />
+    Script PUT /~bob/put.cgi<br />
+</example>
+</usage>
+
+</directivesynopsis>
+
+</modulesynopsis>
