@@ -168,6 +168,7 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
     char *destportstr = NULL;
     const char *urlptr = NULL;
     const char *datestr, *urlstr;
+    char *content_length;
 
     void *sconf = r->server->module_config;
     proxy_server_conf *conf =
@@ -362,7 +363,7 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
          * says we should strip these headers:
          */
             || !strcasecmp(reqhdrs_elts[i].key, "Host") /* Already sent */
-            ||!strcasecmp(reqhdrs_elts[i].key, "Keep-Alive")
+            || !strcasecmp(reqhdrs_elts[i].key, "Keep-Alive")
             || !strcasecmp(reqhdrs_elts[i].key, "TE")
             || !strcasecmp(reqhdrs_elts[i].key, "Trailer")
             || !strcasecmp(reqhdrs_elts[i].key, "Transfer-Encoding")
@@ -486,6 +487,11 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
 
         /* strip hop-by-hop headers defined by Connection and RFC2616 */
         ap_proxy_clear_connection(p, resp_hdrs);
+
+        content_length = ap_table_get(resp_hdrs, "Content-Length");
+        if (content_length != NULL)
+            c->len = strtol(content_length, NULL, 10);
+
         /* Now add out bound headers set by other modules */
         resp_hdrs = ap_overlay_tables(r->pool, r->err_headers_out, resp_hdrs);
     }

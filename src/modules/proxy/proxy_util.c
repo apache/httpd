@@ -449,7 +449,7 @@ table *ap_proxy_read_headers(request_rec *r, char *buffer, int size, BUFF *f)
 
 long int ap_proxy_send_fb(BUFF *f, request_rec *r, cache_req *c, off_t len, int nowrite, int chunked, size_t recv_buffer_size)
 {
-    int ok;
+    int ok, end_of_chunk;
     char *buf;
     size_t buf_size;
     size_t remaining = 0;
@@ -510,7 +510,7 @@ long int ap_proxy_send_fb(BUFF *f, request_rec *r, cache_req *c, off_t len, int 
      * (after the client aborted) while we can successfully read and finish
      * the configured cache_completion.
      */
-    for (ok = 1; ok;) {
+    for (end_of_chunk = ok = 1; ok;) {
         if (alternate_timeouts)
             ap_hard_timeout("proxy recv body from upstream server", r);
 
@@ -521,7 +521,8 @@ long int ap_proxy_send_fb(BUFF *f, request_rec *r, cache_req *c, off_t len, int 
             n = 0;
 
             /* start of a new chunk */
-            if (remaining == 0) {
+            if (end_of_chunk) {
+                end_of_chunk = 0;
                 /* get the chunk size from the stream */
                 chunk_start = ap_getline(buf, buf_size, f, 0);
                 if ((chunk_start <= 0) || ((size_t)chunk_start + 1 >= buf_size) || !ap_isxdigit(*buf)) {
@@ -546,11 +547,12 @@ long int ap_proxy_send_fb(BUFF *f, request_rec *r, cache_req *c, off_t len, int 
                 n = ap_bread(f, buf, MIN((int)buf_size, (int)remaining));
                 if (n > -1) {
                     remaining -= n;
+                    end_of_chunk = (remaining == 0);
                 }
             }
 
             /* soak up trailing CRLF */
-            if (0 == remaining) {
+            if (end_of_chunk) {
                 int ch; /* int because it may hold an EOF */
                 /*
                  * For EBCDIC, the proxy has configured the BUFF layer to
@@ -583,7 +585,7 @@ long int ap_proxy_send_fb(BUFF *f, request_rec *r, cache_req *c, off_t len, int 
                 n = ap_bread(f, buf, buf_size);
             }
             else {
-                n = ap_bread(f, buf, MIN((int)buf_size, 
+                n = ap_bread(f, buf, MIN((int)buf_size,
                                          (int)(len - total_bytes_rcvd)));
             }
         }
@@ -1469,21 +1471,22 @@ void ap_proxy_clear_connection(pool *p, table *headers)
     const char *name;
     char *next = ap_pstrdup(p, ap_table_get(headers, "Connection"));
 
+    /* Some proxies (Squid, ICS) use the non-standard "Proxy-Connection" header. */
     ap_table_unset(headers, "Proxy-Connection");
-    if (!next)
-        return;
 
-    while (*next) {
-        name = next;
-        while (*next && !ap_isspace(*next) && (*next != ','))
-            ++next;
-        while (*next && (ap_isspace(*next) || (*next == ','))) {
-            *next = '\0';
-            ++next;
+    if (next != NULL) {
+        while (*next) {
+            name = next;
+            while (*next && !ap_isspace(*next) && (*next != ','))
+                ++next;
+            while (*next && (ap_isspace(*next) || (*next == ','))) {
+                *next = '\0';
+                ++next;
+            }
+            ap_table_unset(headers, name);
         }
-        ap_table_unset(headers, name);
+        ap_table_unset(headers, "Connection");
     }
-    ap_table_unset(headers, "Connection");
 
     /* unset hop-by-hop headers defined in RFC2616 13.5.1 */
     ap_table_unset(headers,"Keep-Alive");
