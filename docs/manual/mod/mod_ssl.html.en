@@ -92,7 +92,7 @@ compatibility variables.</p>
 <table class="bordered">
 
 <tr>
- <th>Variable Name:</th>
+ <th><a name="table3">Variable Name:</a></th>
  <th>Value Type:</th>
  <th>Description:</th>
 </tr>
@@ -381,7 +381,7 @@ specify the preference and order for the ciphers (see <a href="#table1">Table
 
 <table class="bordered">
 
-<tr><th>Tag</th> <th>Description</th></tr>
+<tr><th><a name="table1">Tag</a></th> <th>Description</th></tr>
 <tr><td colspan="2"><em>Key Exchange Algorithm:</em></td></tr>
 <tr><td><code>kRSA</code></td>   <td>RSA key exchange</td></tr>
 <tr><td><code>kDHr</code></td>   <td>Diffie-Hellman key exchange with RSA key</td></tr>
@@ -458,7 +458,7 @@ SSLCipherSuite RSA:!EXP:!NULL:+HIGH:+MEDIUM:-LOW
 </code></p></div>
 <table class="bordered">
 
-<tr><th>Cipher-Tag</th> <th>Protocol</th> <th>Key Ex.</th> <th>Auth.</th> <th>Enc.</th> <th>MAC</th> <th>Type</th> </tr>
+<tr><th><a name="table2">Cipher-Tag</a></th> <th>Protocol</th> <th>Key Ex.</th> <th>Auth.</th> <th>Enc.</th> <th>MAC</th> <th>Type</th> </tr>
 <tr><td colspan="7"><em>RSA Ciphers:</em></td></tr>
 <tr><td><code>DES-CBC3-SHA</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>3DES(168)</td> <td>SHA1</td> <td /> </tr>
 <tr><td><code>DES-CBC3-MD5</code></td> <td>SSLv2</td> <td>RSA</td> <td>RSA</td> <td>3DES(168)</td> <td>MD5</td> <td /> </tr>
