@@ -836,6 +836,9 @@ Execution of CGI scripts is permitted.
 <dd>
 <!--%plaintext &lt;?INDEX {\tt FollowSymLinks} option&gt; -->
 The server will follow symbolic links in this directory.
+<b>Note</b>: even though the server follows the symlink it does <i>not</i>
+change the pathname used to match against <code>&lt;Directory&gt;</code>
+sections.
 <dt>Includes
 <dd>
 <!--%plaintext &lt;?INDEX {\tt Includes} option&gt; -->
@@ -1158,7 +1161,7 @@ release.<p>
 <A name="sendbuffersize"><h2>SendBufferSize directive</h2></A>
 <!--%plaintext &lt;?INDEX {\tt SendBufferSize} directive&gt; -->
 <strong>Syntax:</strong> SendBufferSize <em>bytes</em><br>
-<strong>Context:</strong> server config, virtual host<br>
+<strong>Context:</strong> server config<br>
 <strong>Status:</strong> core<p>
 
 The server will set the TCP buffer size to the number of bytes

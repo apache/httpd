@@ -17,15 +17,15 @@
 
 The most up-to-date resource for bug tracking and information is the
 <A HREF="http://www.apache.org/bugdb.cgi">Apache bug database</A>.
-All existing bugs will be noted there.  Below is a synopsis of
-significant outstanding bugs at release time.  In fact you really
-shouldn't trust anything this page says other than the 1.2
-information.
+Significant bugs at release time will also be noted there.
+If you are running a 1.2 beta release or version 1.1.3 or earlier
+and thing you have found a bug, please upgrade to 1.2. Many bugs
+in early versions have been fixed in 1.2.
 
 <P>See Also: <A HREF="compat_notes.html">Compatibility notes</A></P>
 <HR>
 
-<H2>Version 1.2 (all)</H2>
+<H2>Apache 1.2 Bugs</H2>
 
 <OL><a name="listenbug"></a>
     <LI>On some architectures if your configuration uses multiple
@@ -39,7 +39,7 @@ information.
     This affects any architecture that doesn't use one of the
     <code>USE_xxxxx_SERIALIZED_ACCEPT</code> definitions, see the
     source file <code>conf.h</code> for your architecture.
-    <p>This will be tracked as
+    This will be tracked as
     <a href="http://www.apache.org/bugdb.cgi/full/467">PR#467</a>.
     </LI>
 
@@ -51,268 +51,69 @@ information.
     This <A HREF="../../dist/contrib/patches/1.2/conneg-bug.patch">patch</A>
     fixes this problem. It also fixes the problem which makes Apache
     pick the last equally acceptable variant instead of the first.
-    <p>This will be tracked as
+    This will be tracked as
     <a href="http://www.apache.org/bugdb.cgi/full/94">PR#94</a>.
     </LI>
-</OL>
 
-<H2>Version 1.2b8</H2>
-
-There are several known bugs in 1.2b8.  See the
-<A HREF="http://www.apache.org/dist/patches/apply_to_1.2b8/">1.2b8 patches
-directory</A> for patches for some of the ones that have been fixed since
-the release of 1.2b8.<P>
-
-<H2>Version 1.2b1</H2>
-
-<OL>
-
-	<LI>users have reported problems with many connections stuck in the
-FIN_WAIT_2 state due to server timeouts. This is a quite complicated 
-problem; see our <A HREF="fin_wait_2.html">FIN_WAIT_2</A> page for
-details.
-
-	<LI>hard_timeout() for request reads uses incorrect logic, and
-ends up waiting for an initial request read for the default "timeout"
-number of seconds, 1200, yet only the "KeepAliveTimeout" number of
-seconds on keepalive connections.  
-
-	<LI>mod_info output is not displaying current configuration as
-it should.
-
-	<LI>Invalid commands in .htaccess files may cause segmentation faults.
-
-</OL>
-
-<H2>Version 1.1.1</H2>
-
-<OL>
-
-	<LI>Hostnames such as "123.hotwired.com" are valid, yet
-find_allowdeny does not properly handle them.  This should be put on
-Known Bugs.  Be careful when fixing this because just removing the
-isalpha() check creates a security hole, consider the DNS map
-"1.1.1.1.in-addr.arpa IN PTR 2.2.2."  if the user has a config line
-"allow from 2.2.2" it will allow 1.1.1.1 in (unless -DMAXIMUM_DNS).
--- which is bad because it breaks people who understand double reverse
-lookup and are trying to avoid it by using only IP addresses on
-allow/deny statements. - reported by Dean Gaudet, fixed in 1.2.
-
-</OL>
-
-
-<H2>Version 1.1.0</H2>
-
-<OL>
-	<LI>mod_auth_msql misbehaviors.  Grab a newer version from 
-	<A HREF="http://www.apache.org/dist/contrib/modules/">the modules distribution
-	directory</A>. -fixed in 1.1
-
-	<LI>Hanging on Netscape 2.0-3.0b4 on MSWindows (3.1 and 95) - 
-	we investigated pretty seriously, and as best we can tell 
-	this is a Netscape bug, and was fixed in 3.0b5.  Please read our
-	<A HREF="windoz_keepalive.html">lab report</A>.
-
-</OL>
-
-<H2>Version 1.1b2 (beta)</h2>
-<OL>
-       <LI>SunOS has trouble compiling mod_status.c . It'll be fixed
-       before 1.1 is released.</LI>
-
-       <LI>CGI which spawn background processes may fail to return immediately.
-       No fix exists yet.</LI>
-
-       <LI>mod_dir appears to have problems when the DocumentRoot has a 
-       trailing slash.</LI>
-
-</OL>
-<H2>Version 1.1b1 (beta)</h2>
-<OL>
-	<LI>The logfile can sometimes contain only part of a host
-	address.  This occurs if the Cookie module is compiled in
-	and enabled.  
-</OL>
-
-<H2>Version 0.8.16 (beta)</H2>
-<OL>
-  <LI>(Feature) You cannot use relative pathnames for the -f or -d flags
- to httpd.<p>
-  <LI><code>.asis</code> files cannot be used for content-negotiation.
-</OL>
-
-<H2>Version 0.8.13 (beta)</H2>
-
-<OL>
-  <LI><CODE>AddDescription</CODE> doesn't seem to work (a fix is imminent)</LI>
-</OL>
-
-<H2>Version 0.8.11 (beta)</H2>
-<OL>
-  <LI><CODE>http_main.c</CODE> function <CODE>accept_mutex_init()</CODE>
- horrible bug, <CODE>lock_fname</CODE> should be defined larger, e.g.
- <CODE><BR>
-     char lock_fname[30];
- </CODE>
- <BR><B>Ooops.</B>
-
-<P>
-
- <LI>There's a bug with <B>NeXT</B>. Restarting the server causes an
-   infinite loop. A fix has been provided by a user and should be included
-   in a future update.
-
-<P>
-
-</OL>
-
-
-<H2>Version 0.8.10 (beta)</H2>
-
-<OL>
-  <LI>Server side includes which include CGI output can have unbearable
-   delays on some platforms. We're looking into a fix.
-
-<P>
-
-  <LI>NCSA 1.3 and beyond allow wildcards in &lt;Directory&gt; tags; e.g.
-      &lt;Directory /home/*/public_html&gt; - Apache doesn't (yet),
-      but we have a patch coming real soon now
-
-<P>
-
-  <LI>Buggy scripts can cause server misbehavior on Solaris at least.
-
-<P>
-
-  <LI>Some of the default directives in srm.conf-dist are outdated
-
-<P>
-
-  <LI>Descriptions of args to AddIcon and AddAlt are wrong
-      in command table.
-
-<P>
-
-  <LI>DirectoryIndex sometimes gets spuriously reset to the default value.
-
-<P>
-
-  <LI>ErrorDocument is a little shaky, <CODE>" Some text %s</CODE> doesn't
-    agree with the documentation.
-
-<P>
-
-  <LI>All Aliases are checked before any ScriptAliases --- the fully
-      compatible behavior would be to check both in one pass, in the order
-      in which they occur in srm.conf.
-
-<P>
-</OL>
-
-<H2>Version 0.8.8 (beta)</H2>
-
-<OL>
-  <LI>There's a known compilation problem with <B>NeXT</B>. Knock out the
-   2nd argument to <CODE>setjmp</CODE> when your compiler complains.<BR><BR>
-  </LI>
-
-  <LI><CODE>exec cgi=""</CODE> produces reasonable <B>malformed header</B>
-  responses when used to invoke non-CGI scripts.<BR>
-  The NCSA code ignores the missing header. (bad idea)<BR>
-  Solution: write CGI to the CGI spec or use <CODE>exec cmd=""</CODE> instead.
-  <P>We might add <CODE>virtual</CODE> support to <CODE>exec cmd</CODE> to
-  make up for this difference.</P>
-
-  <LI>A <I>scoreboard</I> file for process management is currently
-  created in <B>/tmp</B>. We now find this to be a bad idea, and have plans
-  to move it into the <CODE>/logs</CODE> directory along with other
-  files created by Apache.
-  <P>If you have any <B>/tmp</B> cleaning scripts (e.g. from crontab), you
-  should have them ignore the scoreboard file, which is named 
-  <B>/tmp/htstatus.XXXXXXX</B>. If the scoreboard file is damaged, Apache
-  can become very confused (a SIGHUP repairs the damage).  Furthermore, not
-  having a /tmp at all can cause disastrous results, as there's no error 
-  checking yet.<P>  
-
-  <LI>Putting authorization information (like AuthName and AuthType) into a 
-  &lt;Directory&gt; directive without a "requires" field in the &lt;Limit&gt;
-  directive can result in a core dump.<P>
-
-  <LI>AddIcon is broken. The fix is to change<BR>
-  <CODE>
-  { "AddIcon", add_icon, BY_<B>TYPE</B>, DIR_CMD_PERMS, ITERATE2,
-  </CODE>
-  <BR>to<BR>
-  <CODE>
-  { "AddIcon", add_icon, BY_<B>PATH</B>, DIR_CMD_PERMS, ITERATE2,
-  </CODE>
-  <P>in <CODE>mod_dir.c</CODE></P></LI>
-
-  <LI>Under IRIX, the "Group" directive in httpd.conf needs to be a valid group name 
-  (i.e. "nogroup") not the numeric group ID.  The distribution httpd.conf, and earlier 
-  ones, had the default Group be "#-1", which was causing silent exits at startup. 
-
-<P>
-
-
-  <LI>Server push as regular CGI's don't work - actually, any normal CGI script 
-  that outputs additional attributes to the Content-type line (separated by a 
-  semicolon) gets that extra information chopped off, which means that the line
-  <code>Content-type: multipart/x-mixed-replace; boundary=ThisRandomString</code>
-  gets munged to just <code>Content-type: multipart/x-mixed-replace</code>, which 
-  means it doesn't know what the boundary is, and fails.  You can get around this
-  until 0.8.9 by making the CGI script a "No Parsed Header" script by prefixing the 
-  name of the script with a "nph-", but then you have to be responsible for correct
-  HTTP headers.  If the server-push animation is a constant, unchanging stream that
-  terminates at some point, you could also put that stream into a whole file and 
-  use the .asis file extension functionality.  
-
-<P>
-
-  <LI>ErrorDocument is a little shaky, <CODE>" Some text %s</CODE> doesn't
-    agree with the documentation.
-
-<P>
-
-</OL>
-
-<HR>
-
-<H2>Version 0.6.4 </H2>
-<OL>
-<LI>As with NCSA 1.3 (and 1.4 ?), some <B>HEAD</B> requests on
-directories without an <CODE>index.html</CODE> fail to be logged... harmless.</LI>
-<LI>Typo in Virtual Host #defines (accidentally defined #VIRUAL_HOST").  0.6.4b fixes this.
-</OL>
-<H2>Version 0.6.2 (first beta)</H2>
-<OL>
-
-<LI><P>Apache error_log might show <CODE>httpd: caught SIGBUS, dumping core</CODE> after a successful redirect. We hope to fix this in 0.6.3</P></LI>
-
-<LI><P>If you see a lot of messages such as,
-<PRE>access to /something: failed for foo.bar.com, reason: no multi in this directory</PRE>
-in your error log, don't panic !. It means "File not found", and we will
-fix it sooner or later.
-
-</P>
-
-<LI><P><B>WARNING</B>: Apache logs all URLs redirected <B>from</B> and
-<B>to</B>.  This isn't bug, it's deliberate, but you should be aware
-of it.  It's a recognition of the fact that the Common Log File format
-doesn't have any place to log the real object that was returned for
-the internally redirected request.  This will be changed soon.  
-
-</P>
-
-<LI><P>BSDI problems: One of the test machines (<a
-href="http://www.hyperreal.com/">Hyperreal</a>) has noticed "flocks" of
-child processes sucking up large amounts of resources when moderately
-hit (on a Pentium 90 running 1.1 serving ~2 hits/second).  Killing and
-restarting the daemon helps this disappear - it's being investigated,
-it might be a kernel bug, but then every server developer likes to say
-that.  Let us know how well it works for you if you are using BSDI and
-have a high number of hits.</P></LI>
+    <LI>
+    The PATH_INFO part of a request URI cannot include the sequence
+    <CODE>%2f</CODE>. This will be tracked as 
+    <A HREF="http://www.apache.org/bugdb.cgi/full/543">PR#543</A>.
+    </LI>
+
+    <LI>Users of early 1.2 betas reported problems with many
+    connections stuck in the FIN_WAIT_2 state due to server
+    timeouts. Several changes were made during the beta testing of 1.2
+    to reduce this problem as much as possible, although you may still
+    see sockets in FIN_WAIT_2 state due to network or operating system
+    issues outside the control of Apache. See our <A
+    HREF="fin_wait_2.html">FIN_WAIT_2</A> page for more details.
+    </LI>
+
+    <LI>Compilation fails on SCO3 when using gcc instead of cc, complaining
+    with "<CODE>gcc: noinline: No such file or directory</CODE>". Fix
+    is given in <a href="http://www.apache.org/bugdb.cgi/full/695">PR#695</A>.
+    </LI>
+
+    <LI>If compilation fails complaining about "unknown symbol __inet_ntoa()"
+    then you have probably installed version 8 of bind. You will need to
+    explicitly link with the bind library by adding <CODE>-lbind</CODE> 
+    to <CODE>EXTRA_LFLAGS</CODE> in <CODE>Configuration</CODE>. See
+    <A HREF="http://www.apache.org/bugdb.cgi/full/616">PR#616</A>
+    and the 
+    <A HREF="http://192.168.2.4:8080/htdocs/manual/misc/FAQ.html#bind8.1">Apache FAQ</A>.
+    </LI>
+
+    <LI>The message "<CODE>created shared memory segment #730499</CODE>"
+    in error_log is not an error and should be ignored. See 
+    <a href="http://www.apache.org/bugdb.cgi/full/696">PR#696</A>.
+    </LI>
+
+    <LI>
+    Compiling on Solaris 2 with SunSoft's C compiler gives the warning
+    <CODE>"mod_include.c", line 1123: warning: end-of-loop code not
+    reached</CODE>. This is a bogus warning and can be ignored.
+    See <A HREF="http://www.apache.org/bugdb.cgi/full/681">PR#681</A>.
+    </LI>
+
+    <LI>
+    There appears to be a problem on BSDI 2.1 with large numbers of
+    virtual hosts. This appears similar to a file-descriptor limit
+    but BSDI should not have this problem. This will be tracked as
+    <A HREF="http://www.apache.org/bugdb.cgi/full/611">PR#611</A>.
+    See also the 
+    <A HREF="http://192.168.2.4:8080/htdocs/manual/misc/FAQ.html#fdlim">Apache
+    FAQ</A>. 
+    </LI>
+
+    <LI>
+    Solaris 2 has problems with large numbers of virtual hosts. This is
+    because of an operating system limit of 256 file pointers, not due
+    to Apache. 
+    See also the 
+    <A HREF="http://192.168.2.4:8080/htdocs/manual/misc/FAQ.html#fdlim">Apache
+    FAQ</A>.
+    </LI>
 
 </OL>
 
