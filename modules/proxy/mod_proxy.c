@@ -494,6 +494,8 @@ static void * create_proxy_config(apr_pool_t *p, server_rec *s)
     ps->error_override_set = 0; 
     ps->preserve_host_set =0;
     ps->preserve_host =0;    
+    ps->timeout=0;
+    ps->timeout_set=0;
     return ps;
 }
 
@@ -518,6 +520,7 @@ static void * merge_proxy_config(apr_pool_t *p, void *basev, void *overridesv)
     ps->maxfwd = (overrides->maxfwd_set == 0) ? base->maxfwd : overrides->maxfwd;
     ps->error_override = (overrides->error_override_set == 0) ? base->error_override : overrides->error_override;
     ps->preserve_host = (overrides->preserve_host_set == 0) ? base->preserve_host : overrides->preserve_host;
+    ps->timeout= (overrides->timeout_set == 0) ? base->timeout : overrides->timeout;
 
     return ps;
 }
@@ -823,6 +826,22 @@ static const char *
     psf->maxfwd_set = 1;
     return NULL;
 }
+static const char*
+    set_proxy_timeout(cmd_parms *parms, void *dummy, const char *arg)
+{
+    proxy_server_conf *psf =
+    ap_get_module_config(parms->server->module_config, &proxy_module);
+    int timeout;
+
+    timeout=atoi(arg);
+    if (timeout<1) {
+        return "Proxy Timeout must be at least 1 second.";
+    }
+    psf->timeout_set=1;
+    psf->timeout=timeout;
+
+    return NULL;    
+}
 
 static const char*
     set_via_opt(cmd_parms *parms, void *dummy, const char *arg)
@@ -968,6 +987,9 @@ static const command_rec proxy_cmds[] =
      "use our error handling pages instead of the servers' we are proxying"),
     AP_INIT_FLAG("ProxyPreserveHost", set_preserve_host, NULL, RSRC_CONF,
      "on if we should preserve host header while proxying"),
+    AP_INIT_TAKE1("ProxyTimeout", set_proxy_timeout, NULL, RSRC_CONF,
+     "Set the timeout (in seconds) for a proxied connection. "
+     "This overrides the server timeout"),
  
     {NULL}
 };

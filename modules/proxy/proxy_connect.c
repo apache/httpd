@@ -247,7 +247,16 @@ int ap_proxy_connect_handler(request_rec *r, proxy_server_conf *conf,
             }
 
             /* Set a timeout on the socket */
-            apr_setsocketopt(sock, APR_SO_TIMEOUT, (int)(r->server->timeout * APR_USEC_PER_SEC));
+            if (conf->timeout_set == 1 ) {
+                apr_setsocketopt(sock, 
+                                 APR_SO_TIMEOUT, 
+                                 (int)(conf->timeout * APR_USEC_PER_SEC));
+            }
+            else {
+                apr_setsocketopt(sock, 
+                                 APR_SO_TIMEOUT, 
+                                 (int)(r->server->timeout * APR_USEC_PER_SEC));
+            }
 
 	    /* make the connection out of the socket */
 	    rv = apr_connect(sock, connect_addr);

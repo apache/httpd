@@ -897,7 +897,16 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     }
 
     /* Set a timeout on the socket */
-    apr_setsocketopt(sock, APR_SO_TIMEOUT, (int)(r->server->timeout * APR_USEC_PER_SEC));
+    if (conf->timeout_set == 1) {
+        apr_setsocketopt(sock, 
+                         APR_SO_TIMEOUT, 
+                         (int)(conf->timeout * APR_USEC_PER_SEC));
+    }
+    else {
+        apr_setsocketopt(sock, 
+                         APR_SO_TIMEOUT, 
+                         (int)(r->server->timeout * APR_USEC_PER_SEC));
+    }
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r->server,
                  "proxy: FTP: socket has been created");

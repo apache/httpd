@@ -385,8 +385,14 @@ apr_status_t ap_proxy_http_create_connection(apr_pool_t *p, request_rec *r,
 #endif
 
             /* Set a timeout on the socket */
-            apr_setsocketopt(p_conn->sock, APR_SO_TIMEOUT,
+            if (conf->timeout_set == 1) {
+                apr_setsocketopt(p_conn->sock, APR_SO_TIMEOUT,
+                             (int)(conf->timeout * APR_USEC_PER_SEC));
+            } 
+            else {
+                apr_setsocketopt(p_conn->sock, APR_SO_TIMEOUT,
                              (int)(r->server->timeout * APR_USEC_PER_SEC));
+            }
 
             ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
                          "proxy: socket has been created");
