@@ -759,10 +759,10 @@ static apr_status_t write_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
         }
         if (fd == 1 && !other && eos) {
             apr_file_t *tmpfile;
-            /* Open a new XTHREAD handle to the file 
-             * XXX: Need to fetch the filename from the file bucket...
-             */
-            rv = apr_file_open(&tmpfile, r->filename, 
+            char *name;
+            /* Open a new XTHREAD handle to the file */
+            apr_file_name_get(&name, file);
+            rv = apr_file_open(&tmpfile, name, 
                                APR_READ | APR_BINARY | APR_XTHREAD | APR_FILE_NOCLEANUP,
                                APR_OS_DEFAULT, r->pool);
             if (rv != APR_SUCCESS) {
