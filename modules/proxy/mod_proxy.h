@@ -155,7 +155,7 @@ typedef struct {
     int preserve_host;
     int preserve_host_set;
     apr_interval_time_t timeout;
-    int timeout_set;
+    char timeout_set;
     enum {
       bad_error,
       bad_ignore,
@@ -228,9 +228,13 @@ struct proxy_worker {
     apr_interval_time_t ttl;    /* maximum amount of time in seconds a connection
                                  * may be available while exceeding the soft limit */
     apr_interval_time_t timeout; /* connection timeout */
-    int timeout_set;
+    char                timeout_set;
     apr_interval_time_t acquire; /* acquire timeout when the maximum number of connections is exceeded */
     char                acquire_set;
+    apr_size_t          recv_buffer_size;
+    char                recv_buffer_size_set;
+    apr_size_t          io_buffer_size;
+    char                io_buffer_size_set;
     proxy_conn_pool *cp;        /* Connection pool to use */
     void            *opaque;    /* per scheme worker data */
 };
