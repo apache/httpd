@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/10/23 14:25:24 $]
+Last modified at [$Date: 2004/10/23 17:49:58 $]
 
 Release:
 
@@ -309,6 +309,16 @@ PATCHES TO BACKPORT FROM 2.1
       fixed up as well as putting together a patch for httpd 2.0.next
       which integrates the two rounds of changes)
       +1 concept: trawick, nd, stoddard
+
+    * mod_cache: Add CacheIgnoreHeaders directive.
+      PR: 30399
+        docs/manual/mod/mod_cache.xml: r1.18
+        modules/experimental/cache_util.c: 1.36
+        modules/experimental/mod_cache.c: 1.95
+        modules/experimental/mod_cache.h: 1.52
+        modules/experimental/mod_disk_cache.c: 1.67
+        modules/experimental/mod_mem_cache.c: 1.119
+      +1: jerenkrantz
 
 CURRENT RELEASE NOTES:
 
