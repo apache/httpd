@@ -1,9 +1,10 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/07/08 22:42:11 $]
+Last modified at [$Date: 2003/07/09 11:47:13 $]
 
 Release:
 
-    2.0.47  : in development
+    2.0.48  : in development
+    2.0.47  : released July 09, 2003 as GA.
     2.0.46  : released May 28, 2003 as GA.
     2.0.45  : released April 1, 2003 as GA.
     2.0.44  : released January 20, 2003 as GA.
