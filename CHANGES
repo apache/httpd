@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_rewrite: In external rewrite maps lookup keys containing
+     a newline now cause a lookup failure. PR 14453.
+     [Cedric Gavage <cedric.gavage@unixtech.be>, André Malo]
+
   *) Install config.nice into the build/ directory to make
      minor version upgrades easier. [Joshua Slive]
 
