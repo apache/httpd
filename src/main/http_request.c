@@ -289,7 +289,6 @@ int directory_walk (request_rec *r)
         void *this_conf, *entry_config;
         core_dir_config *entry_core;
 	char *entry_dir;
-	int j;
 
 	for (j = 0; j < num_sec; ++j) {
 
