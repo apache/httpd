@@ -97,7 +97,7 @@ PATCHES TO BACKPORT FROM TRUNK:
     *) htdigest: Fix permissions of created files
        http://svn.apache.org/viewcvs.cgi?rev=155681&view=rev
        PR: 33765
-       +1: jorton, trawick
+       +1: jorton, trawick, jerenkrantz
 
     *) mod_ssl: Set r->user from SSLUsername earlier so that it's
        actually useful.
@@ -129,7 +129,9 @@ PATCHES TO BACKPORT FROM TRUNK:
        reset during reloads but is fatal in such cases.
        http://svn.apache.org/viewcvs?view=rev&rev=111241
        PR: 32529
-       +1: jorton, trawick
+       jerenkrantz chimes in: X509_STORE_CTX_get_app_data is a macro around
+                              X509_STORE_CTX_get_ex_data(ctx,0).
+       +1: jorton, trawick, jerenkrantz
 
     *) several changes to improve logging of connection-oriented errors, including
        ap_log_cerror() API (needs minor bump in addition to changes below)
@@ -250,7 +252,7 @@ PATCHES TO BACKPORT FROM TRUNK:
       important members of the subrequest. Especially the proxyreq copying
       is interesting for proxying DirectoryIndex'd resources:
         http://svn.apache.org/viewcvs.cgi?rev=102330&view=rev
-      +1: nd
+      +1: nd, jerenkrantz
 
     * Win32: Move call to mpm_service_install to the rewrite_args hook
       from the post_config hook.
