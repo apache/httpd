@@ -75,6 +75,7 @@
  *  4: Failure; operation interrupted (such as with CTRL/C)
  *  5: Failure; buffer would overflow (username, filename, or computed
  *     record too long)
+ *  6: Failure; username contains illegal or reserved characters
  */
 
 #include "ap_config.h"
@@ -107,6 +108,7 @@
 #define ERR_PWMISMATCH 3
 #define ERR_INTERRUPTED 4
 #define ERR_OVERFLOW 5
+#define ERR_BADUSER 6
 
 /*
  * This needs to be declared statically so the signal handler can
@@ -160,63 +162,6 @@ static void to64(register char *s, register long v, register int n)
     }
 }
 
-#ifdef MPE
-/*
- * MPE lacks getpass() and a way to suppress stdin echo.  So for now, just
- * issue the prompt and read the results with echo.  (Ugh).
- */
-
-static char *getpass(const char *prompt)
-{
-    static char password[81];
-
-    fputs(prompt, stderr);
-    gets((char *) &password);
-
-    if (strlen((char *) &password) > 80) {
-	password[80] = '\0';
-    }
-
-    return (char *) &password;
-}
-
-#endif
-
-#ifdef WIN32
-/*
- * Windows lacks getpass().  So we'll re-implement it here.
- */
-
-static char *getpass(const char *prompt)
-{
-    static char password[81];
-    int n = 0;
-
-    fputs(prompt, stderr);
-    
-    while ((password[n] = _getch()) != '\r') {
-        if (password[n] >= ' ' && password[n] <= '~') {
-            n++;
-            printf("*");
-        }
-	else {
-            printf("\n");
-            fputs(prompt, stderr);
-            n = 0;
-        }
-    }
- 
-    password[n] = '\0';
-    printf("\n");
-
-    if (n > 80) {
-        password[80] = '\0';
-    }
-
-    return (char *) &password;
-}
-#endif
-
 /*
  * Make a password record from the given information.  A zero return
  * indicates success; failure means that the output buffer contains an
@@ -228,15 +173,16 @@ static int mkrecord(char *user, char *record, size_t rlen, char *passwd,
     char *pw;
     char cpw[120];
     char salt[9];
-    char pwin[129];
-    char pwv[129];
+    char pwin[MAX_STRING_LEN];
+    char pwv[MAX_STRING_LEN];
 
     if (passwd != NULL) {
 	pw = passwd;
     }
     else {
 	if (ap_getpass("New password: ", pwin, sizeof(pwin)) != 0) {
-	    ap_cpystrn(record, "password too long", (rlen -1));
+	    ap_snprintf(record, (rlen - 1), "password too long (>%d)",
+			sizeof(pwin) - 1);
 	    return ERR_OVERFLOW;
 	}
 	ap_getpass("Re-type new password: ", pwv, sizeof(pwv));
@@ -434,13 +380,20 @@ int main(int argc, char *argv[])
     }
     strcpy(pwfilename, argv[i]);
     if (strlen(argv[i + 1]) > (sizeof(user) - 1)) {
-	fprintf(stderr, "%s: username too long\n", argv[0]);
+	fprintf(stderr, "%s: username too long (>%d)\n", argv[0],
+		sizeof(user) - 1);
 	return ERR_OVERFLOW;
     }
     strcpy(user, argv[i + 1]);
+    if ((arg = strchr(user, ':')) != NULL) {
+	fprintf(stderr, "%s: username contains illegal character '%c'\n",
+		argv[0], *arg);
+	return ERR_BADUSER;
+    }
     if (noninteractive) {
 	if (strlen(argv[i + 2]) > (sizeof(password) - 1)) {
-	    fprintf(stderr, "%s: password too long\n", argv[0]);
+	    fprintf(stderr, "%s: password too long (>%d)\n", argv[0],
+		    sizeof(password) - 1);
 	    return ERR_OVERFLOW;
 	}
 	strcpy(password, argv[i + 2]);

@@ -1,5 +1,10 @@
 Changes with Apache 1.3.7
 
+  *) When the username or password fed to htpasswd is too long, include the
+     size limit in the error message.  Also report illegal characters
+     (currently only ':') in the username.  Add the size restrictions
+     to the man page.  [Ken Coar]
+
   *) Fixed the configure --without-support option so it doesn't result in
      an infinite loop.  [Marc Slemko]
 
