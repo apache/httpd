@@ -248,10 +248,13 @@ API_EXPORT(void) pclosedir(pool *p, DIR * d);
  * to call in the child, and an argument to be passed to the function.
  */
 
-     enum kill_conditions {
-	 kill_never, kill_always, kill_after_timeout, just_wait,
-	 kill_only_once
-     };
+enum kill_conditions {
+    kill_never,			/* process is never sent any signals */
+    kill_always,		/* process is sent SIGKILL on pool cleanup */
+    kill_after_timeout,		/* SIGTERM, wait 3 seconds, SIGKILL */
+    just_wait,			/* wait forever for the process to complete */
+    kill_only_once		/* send SIGTERM and then wait */
+};
 
 API_EXPORT(void) note_subprocess(pool *a, int pid, enum kill_conditions how);
 API_EXPORT(int) spawn_child_err(pool *, int (*)(void *), void *,
