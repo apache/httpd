@@ -2,8 +2,8 @@
           XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                 This file is generated from xml source: DO NOT EDIT
           XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-        --><title>mpm_common- Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mpm_common</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td valign="top"><span class="help">Description:</span></td><td>A collection of directives that are implemented by
-more than one multi-processing module (MPM)</td></tr><tr><td><a href="module-dict.html#Status" class="help">Status:</a></td><td>MPM</td></tr></table></td></tr></table><h2>Directives</h2><ul><li><a href="#coredumpdirectory">CoreDumpDirectory</a></li><li><a href="#group">Group</a></li><li><a href="#listen">Listen</a></li><li><a href="#listenbacklog">ListenBackLog</a></li><li><a href="#lockfile">LockFile</a></li><li><a href="#maxclients">MaxClients</a></li><li><a href="#maxrequestsperchild">MaxRequestsPerChild</a></li><li><a href="#maxsparethreads">MaxSpareThreads</a></li><li><a href="#maxthreadsperchild">MaxThreadsPerChild</a></li><li><a href="#minsparethreads">MinSpareThreads</a></li><li><a href="#numservers">NumServers</a></li><li><a href="#pidfile">PidFile</a></li><li><a href="#scoreboardfile">ScoreBoardFile</a></li><li><a href="#sendbuffersize">SendBufferSize</a></li><li><a href="#serverlimit">ServerLimit</a></li><li><a href="#startservers">StartServers</a></li><li><a href="#startthreads">StartThreads</a></li><li><a href="#threadlimit">ThreadLimit</a></li><li><a href="#threadsperchild">ThreadsPerChild</a></li><li><a href="#user">User</a></li></ul><hr/><h2><a name="CoreDumpDirectory">CoreDumpDirectory</a> <a name="coredumpdirectory">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>Directory where Apache attempts to
+        --><title>mpm_common- Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mpm_common</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">Description:</span></td><td>A collection of directives that are implemented by
+more than one multi-processing module (MPM)</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">Status:</a></td><td>MPM</td></tr></table></td></tr></table><h2>Directives</h2><ul><li><a href="#coredumpdirectory">CoreDumpDirectory</a></li><li><a href="#group">Group</a></li><li><a href="#listen">Listen</a></li><li><a href="#listenbacklog">ListenBackLog</a></li><li><a href="#lockfile">LockFile</a></li><li><a href="#maxclients">MaxClients</a></li><li><a href="#maxrequestsperchild">MaxRequestsPerChild</a></li><li><a href="#maxsparethreads">MaxSpareThreads</a></li><li><a href="#maxthreadsperchild">MaxThreadsPerChild</a></li><li><a href="#minsparethreads">MinSpareThreads</a></li><li><a href="#numservers">NumServers</a></li><li><a href="#pidfile">PidFile</a></li><li><a href="#scoreboardfile">ScoreBoardFile</a></li><li><a href="#sendbuffersize">SendBufferSize</a></li><li><a href="#serverlimit">ServerLimit</a></li><li><a href="#startservers">StartServers</a></li><li><a href="#startthreads">StartThreads</a></li><li><a href="#threadlimit">ThreadLimit</a></li><li><a href="#threadsperchild">ThreadsPerChild</a></li><li><a href="#user">User</a></li></ul><hr/><h2><a name="CoreDumpDirectory">CoreDumpDirectory</a> <a name="coredumpdirectory">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>Directory where Apache attempts to
 switch before dumping core</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>CoreDumpDirectory <em>directory</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>See usage for the default setting</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>MPM</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td><code><a href="worker.html">worker</a></code>, <code><a href="perchild.html">perchild</a></code>, <code><a href="prefork.html">prefork</a></code>, <code><a href="mpm_winnt.html">mpm_winnt</a></code></td></tr></table></td></tr></table>
 
     <p>This controls the directory to which Apache attempts to
@@ -155,17 +155,25 @@ will handle during its life</td></tr><tr><td nowrap="nowrap"><a href="directive-
     the first request is counted towards this limit. In effect, it
     changes the behavior to limit the number of
     <em>connections</em> per child.</p>
-<hr/><h2><a name="MaxSpareThreads">MaxSpareThreads</a> <a name="maxsparethreads">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>Maximum number of idle threads</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>MaxSpareThreads <em>number</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>MaxSpareThreads 10 (Perchild) or 500 (worker)</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>MPM</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td><code><a href="worker.html">worker</a></code>, <code><a href="perchild.html">perchild</a></code></td></tr></table></td></tr></table>
+<hr/><h2><a name="MaxSpareThreads">MaxSpareThreads</a> <a name="maxsparethreads">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>Maximum number of idle threads</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>MaxSpareThreads <em>number</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>MPM</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td><code><a href="mpm_netware.html">mpm_netware</a></code>, <code><a href="perchild.html">perchild</a></code>, <code><a href="worker.html">worker</a></code></td></tr></table></td></tr></table>
     <p>Maximum number of idle threads. Different MPMs deal with this
-    directive differently. <code><a href="perchild.html">perchild</a></code> monitors the
-    number of idle threads on a per-child basis. If there are too many
-    idle threads in that child, the server will begin to kill threads
+    directive differently.</p>
+
+    <p>For <code><a href="perchild.html">perchild</a></code> the default is
+    <code>MaxSpareThreads 10</code>.  This MPM monitors the number of
+    idle threads on a per-child basis. If there are too many idle
+    threads in that child, the server will begin to kill threads
     within that child.</p>
 
-    <p><code><a href="worker.html">worker</a></code> deals with idle threads on a
-    server-wide basis. If there are too many idle threads in the
+    <p>For <code><a href="worker.html">worker</a></code> the default is
+    <code>MaxSpareThreads 500</code>.  This MPM deals with idle threads
+    on a server-wide basis. If there are too many idle threads in the
     server then child processes are killed until the number of idle
     threads is less than this number.</p>
+
+    <p>For <code><a href="mpm_netware.html">mpm_netware</a></code> the default is
+    <code>MaxSpareThreads 100</code>.  Since this MPM runs a
+    single-process, the spare thread count is also server-wide.</p>
 
 <p><strong>See also </strong></p><ul><li><a href="#minsparethreads" class="directive"><code class="directive">MinSpareThreads</code></a></li><li><a href="#startservers" class="directive"><code class="directive">StartServers</code></a></li></ul><hr/><h2><a name="MaxThreadsPerChild">MaxThreadsPerChild</a> <a name="maxthreadsperchild">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>Maximum number of threads per child process</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>MaxThreadsPerChild <em>number</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>MaxThreadsPerChild 64</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>MPM</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td><code><a href="worker.html">worker</a></code>, <code><a href="perchild.html">perchild</a></code></td></tr></table></td></tr></table>
     <p>Maximum number of threads per child. For MPMs with a
@@ -175,18 +183,27 @@ will handle during its life</td></tr><tr><td nowrap="nowrap"><a href="directive-
     necessary to change the value of the compile-time define
     <code>HARD_THREAD_LIMIT</code> and recompile the server.</p>
 <hr/><h2><a name="MinSpareThreads">MinSpareThreads</a> <a name="minsparethreads">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>Minimum number of idle threads available to handle request
-spikes</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>MinSpareServers <em>number</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>MinSpareThreads 5 (Perchild) or 250 (worker)</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>MPM</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td><code><a href="worker.html">worker</a></code>, <code><a href="perchild.html">perchild</a></code></td></tr></table></td></tr></table>
+spikes</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>MinSpareServers <em>number</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>MPM</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td><code><a href="mpm_netware.html">mpm_netware</a></code>, <code><a href="perchild.html">perchild</a></code>, <code><a href="worker.html">worker</a></code></td></tr></table></td></tr></table>
     <p>Minimum number of idle threads to handle request spikes.
     Different MPMs deal with this directive
-    differently. <code><a href="perchild.html">perchild</a></code> monitors the number of idle
+    differently.</p>
+
+    <p><code><a href="perchild.html">perchild</a></code> uses a default of
+    <code>MinSpareThreads 5</code> and monitors the number of idle
     threads on a per-child basis. If there aren't enough idle threads
     in that child, the server will begin to create new threads within
     that child.</p>
 
-    <p><code><a href="worker.html">worker</a></code> deals with idle threads on a
-    server-wide basis. If there aren't enough idle threads in the
-    server then child processes are created until the number of idle
-    threads is greater than number.</p>
+    <p><code><a href="worker.html">worker</a></code> uses a default of <code>MinSpareThreads
+    250</code> and deals with idle threads on a server-wide basis. If
+    there aren't enough idle threads in the server then child
+    processes are created until the number of idle threads is greater
+    than number.</p>
+
+    <p><code><a href="mpm_netware.html">mpm_netware</a></code> uses a default of
+    <code>MinSpareThreads 10</code> and, since it is a single-process
+    MPM, tracks this on a server-wide bases.</p>
+
 <p><strong>See also </strong></p><ul><li><a href="#maxsparethreads" class="directive"><code class="directive">MaxSpareThreads</code></a></li><li><a href="#startservers" class="directive"><code class="directive">StartServers</code></a></li></ul><hr/><h2><a name="NumServers">NumServers</a> <a name="numservers">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>Total number of children alive at the same time</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>NumServers <em>number</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>NumServers 2</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>MPM</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td><code><a href="perchild.html">perchild</a></code></td></tr></table></td></tr></table>
     <p>Number of children alive at the same time. MPMs that use
     this directive do not dynamically create new child processes so
@@ -270,11 +287,21 @@ the child processes</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.htm
     number of child server processes created on startup. As the number
     of processes is dynamically controlled depending on the load,
     there is usually little reason to adjust this parameter.</p>
-<p><strong>See also </strong></p><ul><li><a href="#minsparethreads" class="directive"><code class="directive">MinSpareThreads</code></a></li><li><a href="#maxsparethreads" class="directive"><code class="directive">MaxSpareThreads</code></a></li></ul><hr/><h2><a name="StartThreads">StartThreads</a> <a name="startthreads">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>Nubmer of threads each child creates on startup</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>StartThreads <em>number</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>StartThreads 5</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>MPM</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td><code><a href="perchild.html">perchild</a></code></td></tr></table></td></tr></table>
-    <p>Number of threads each child creates on startup. As the
+<p><strong>See also </strong></p><ul><li><a href="#minsparethreads" class="directive"><code class="directive">MinSpareThreads</code></a></li><li><a href="#maxsparethreads" class="directive"><code class="directive">MaxSpareThreads</code></a></li></ul><hr/><h2><a name="StartThreads">StartThreads</a> <a name="startthreads">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>Nubmer of threads created on startup</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>StartThreads <em>number</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>MPM</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td><code><a href="mpm_netware.html">mpm_netware</a></code>, <code><a href="perchild.html">perchild</a></code></td></tr></table></td></tr></table>
+    <p>Number of threads created on startup. As the
     number of threads is dynamically controlled depending on the
     load, there is usually little reason to adjust this
     parameter.</p>
+
+    <p>For <code><a href="perchild.html">perchild</a></code> the default is <code>StartThreads
+    5</code> and this directive tracks the number of threads per
+    process at startup.</p>
+
+    <p>For <code><a href="mpm_netware.html">mpm_netware</a></code> the default is
+    <code>StartThreads 50</code> and, since there is only a single
+    process, this is the total number of threads created at startup to
+    serve requests.</p>
+
 <hr/><h2><a name="ThreadLimit">ThreadLimit</a> <a name="threadlimit">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>Sets the upper limit on the configurable number of threads
 per child process</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>ThreadLimit <em>number</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>ThreadLimit 64</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>MPM</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td><code><a href="worker.html">worker</a></code></td></tr></table></td></tr></table>
     <p>This directive sets the maximum configured value for <a href="#threadsperchild" class="directive"><code class="directive">ThreadsPerChild</code></a> for the lifetime
