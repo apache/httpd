@@ -1,5 +1,12 @@
 Changes with Apache 1.3.27
 
+  *) Add the new directive 'ShmemUIDisUser'. By default, Apache
+     will no longer set the uid/gid of SysV shared memory scoreboard
+     to User/Group, and it will therefore stay the uid/gid of
+     the parent Apache process. This is actually the way it should
+     be, however, some implementations may still require this, which
+     can be enabled by 'ShmemUIDisUser On'.  [Jim Jagielski]
+
   *) Fix a problem with the definition of union semun which broke
      System V semaphores on systems where sizeof(int) != sizeof(long).
      PR 12072  [<winterling@de.ibm.com>]

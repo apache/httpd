@@ -402,6 +402,8 @@ enum server_token_type ap_server_tokens = SrvTk_FULL;
 /* Also global, for http_core and http_protocol */
 int ap_protocol_req_check = 1;
 
+int ap_change_shmem_uid = 0;
+
 /*
  * This routine is called when the pconf pool is vacuumed.  It resets the
  * server version string to a known value and [re]enables modifications
@@ -2330,7 +2332,9 @@ static void setup_shared_mem(pool *p)
 	 * We exit below, after we try to remove the segment
 	 */
     }
-    else {			/* only worry about permissions if we attached the segment */
+    /* only worry about permissions if we attached the segment
+       and we want/need to change the uid/gid */
+    else if (ap_change_shmem_uid) {
 	if (shmctl(shmid, IPC_STAT, &shmbuf) != 0) {
 	    ap_log_error(APLOG_MARK, APLOG_ERR, server_conf,
 		"shmctl() could not stat segment #%d", shmid);

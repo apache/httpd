@@ -2790,6 +2790,18 @@ static const char *set_protocol_req_check(cmd_parms *cmd,
     return NULL;
 }
 
+static const char *set_change_shmem_uid(cmd_parms *cmd,
+                                              core_dir_config *d, int arg) 
+{
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+
+    ap_change_shmem_uid = arg != 0;
+    return NULL;
+}
+
 /*
  * Handle a request to include the server's OS platform in the Server
  * response header field (the ServerTokens directive).  Unfortunately
@@ -3424,6 +3436,8 @@ static const command_rec core_cmds[] = {
   "Limit (in bytes) on maximum size of request message body" },
 { "ProtocolReqCheck", set_protocol_req_check, NULL, RSRC_CONF, FLAG,
   "Enable strict checking of Protocol type in requests" },
+{ "ShmemUIDisUser", set_change_shmem_uid, NULL, RSRC_CONF, FLAG,
+  "Enable the setting of SysV shared memory scoreboard uid/gid to User/Group" },
 { "AcceptMutex", set_accept_mutex, NULL, RSRC_CONF, TAKE1,
   "Serialized Accept Mutex; the methods " 
 #ifdef HAVE_USLOCK_SERIALIZED_ACCEPT
