@@ -152,7 +152,8 @@ switch before dumping core</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="EnableExceptionHook" id="EnableExceptionHook">EnableExceptionHook</a> <a name="enableexceptionhook" id="enableexceptionhook">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable the fatal exception handler after a crash</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enables a hook that runs exception handlers
+after a crash</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>EnableExceptionHook On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>EnableExceptionHook Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
