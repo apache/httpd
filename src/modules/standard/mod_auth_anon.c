@@ -227,8 +227,8 @@ int anon_authenticate_basic_user (request_rec *r)
 	if (!(strcasecmp(c->user,p->password)))
 	  res=OK;
 	p=p->next;
-      };
-    };
+      }
+    }
     if (
 	/* username is OK */
 	(res == OK) &&
@@ -244,7 +244,7 @@ int anon_authenticate_basic_user (request_rec *r)
 	sprintf(errstr,"Anonymous: Passwd <%s> Accepted", 
 			send_pw ? send_pw : "\'none\'");
 	log_error (errstr, r->server );
-      };
+      }
       return OK;
     } else {
         if (sec->auth_anon_authorative) {
@@ -252,10 +252,9 @@ int anon_authenticate_basic_user (request_rec *r)
 		send_pw ? send_pw : "\'none\'");
 	log_error(errstr,r->server);
 	return AUTH_REQUIRED;
-	};
-
-	return DECLINED;
-    };
+	}
+	/* Drop out the bottom to return DECLINED */
+    }
      
 
    return DECLINED;
