@@ -57,7 +57,7 @@ OPTIM=-O2
 # functions. The format is: Rule RULE=value
 #
 # At present, only the following RULES are known: WANTHSREGEX, SOCKS4,
-# STATUS, IRIXNIS, and LINUX_TWEAK.
+# STATUS, and IRIXNIS.
 #
 # For all Rules, if set to "yes", then Configure knows we want that
 # capability and does what is required to add it in. If set to "default"
@@ -80,18 +80,10 @@ OPTIM=-O2
 #  SGI IRIX. If you are, and you are using NIS, you should set this
 #  to 'yes'
 #
-# LINUX_TWEAK:
-#  Only takes effect if Configure determines that you are running a Linux
-#  system.  This enables two optimizations that work well on i386 linux 2.0
-#  or later systems.  They aren't enabled by default because of kernel and
-#  library problems with various versions of linux.  We'd rather release
-#  something known stable and let you choose the optimizations yourself.
-#
 
 Rule STATUS=yes
 Rule SOCKS4=no
 Rule IRIXNIS=no
-Rule LINUX_TWEAK=no
 
 # The following rules should be set automatically by Configure. However, if
 # they are not set by Configure (because we don't know the correct value for

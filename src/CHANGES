@@ -82,10 +82,10 @@ Changes with Apache 1.2
      <Directory> sections missing a trailing /.
      [Ralf S. Engelschall]
 
-  *) Back out the HAVE_SHMGET change for Linux because it's too late in
-     the beta cycle to deal cleanly with compilation problems on the
-     myriad of linux systems out there.  Linux users should see
-     Configuration.tmpl about defining "Rule LINUX_TWEAK=yes".
+  *) Clean up Linux settings in conf.h by detecting 2.x versus 1.x.  For
+     1.x the settings are those of pre-1.2b8.  For 2.x we include
+     HAVE_SHMGET (scoreboard in shared memory rather than file) and
+     HAVE_SYS_RESOURCE_H (enable the RLimit commands).
      [Dean Gaudet] PR#336, PR#340
 
   *) Redirect did not preserve ?query_strings when present in the client's

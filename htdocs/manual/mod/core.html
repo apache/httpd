@@ -1133,17 +1133,18 @@ about log file placement and
 
 Apache 1.2 and above:<p>
 
-Linux 2.x users should consider defining <code>Rules LINUX_TWEAK=yes</code>
-in the <code>Configuration</code> file which will cause the server to
-use shared memory instead of a scoreboard file.  This is known to cause
-compilation problems with some distributions and kernels, so we have not
-enabled it by default.  (Patches to conditionally determine the ability
-to set this option are quite welcome.)<p>
+Linux 1.x users might be able to add <code>-DHAVE_SHMGET</code> to
+the <code>EXTRA_CFLAGS</code> in your <code>Configuration</code>.  This
+might work with some 1.x installations, but won't work with all of
+them.<p>
 
 SVR4 users should consider adding <code>-DHAVE_SHMGET</code> to the
 <code>EXTRA_CFLAGS</code> in your <code>Configuration</code>.  This
 is believed to work, but we were unable to test it in time for 1.2
 release.<p>
+
+<strong>See Also</strong>:
+<a href="../stopping.html">Stopping and Restarting Apache</a></p>
 
 <p><hr>
 

@@ -90,8 +90,12 @@ case "${SYSTEM}:${RELEASE}:${VERSION}:${MACHINE}" in
 	echo "${MACHINE}-sgi-irix64"; exit 0
 	;;
 
-    Linux:*)
-	echo "${MACHINE}-whatever-linux"; exit 0
+    Linux:[2-9].*)
+	echo "${MACHINE}-whatever-linux2"; exit 0
+	;;
+
+    Linux:1.*)
+	echo "${MACHINE}-whatever-linux1"; exit 0
 	;;
 
     LynxOS:*)

@@ -133,7 +133,6 @@ RULE_WANTHSREGEX=`./helpers/CutRule WANTHSREGEX $file`
 RULE_STATUS=`./helpers/CutRule STATUS $file`
 RULE_SOCKS4=`./helpers/CutRule SOCKS4 $file`
 RULE_IRIXNIS=`./helpers/CutRule IRIXNIS $file`
-RULE_LINUX_TWEAK=`./helpers/CutRule LINUX_TWEAK $file`
 
 #
 # Now we determine the OS/Platform automagically, thanks to
@@ -259,13 +258,15 @@ case "$PLAT" in
 	    CFLAGS="$CFLAGS -DIRIX"
 	fi
 	;;
-    *-linux*)
+    *-linux2)
 	DEF_WANTHSREGEX=yes
 	OS='Linux'
-	CFLAGS="$CFLAGS -DLINUX"
-	if [ "$RULE_LINUX_TWEAK" = "yes" ]; then
-	    CFLAGS="$CFLAGS -DLINUX_TWEAK"
-	fi
+	CFLAGS="$CFLAGS -DLINUX=2"
+	;;
+    *-linux1)
+	DEF_WANTHSREGEX=yes
+	OS='Linux'
+	CFLAGS="$CFLAGS -DLINUX=1"
 	;;
     *-lynx-lynxos*)
 	OS='LynxOS'
