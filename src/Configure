@@ -1,5 +1,5 @@
 #!/bin/sh
-trap 'rm -f $tmpfile $tmpfile.2 $tmpfile.3; exit' 0 1 2 3 15
+trap 'rm -f $tmpfile $tmpfile2 $tmpfile3; exit' 0 1 2 3 15
 
 # Apache configuration script, first cut --- rst.
 # Dont like it?  Inspired to do something better?  Go for it.
@@ -766,7 +766,7 @@ for modfile in $MODFILES ; do
 			sed 's/^module.*[ 	][ 	]*//' | \
 			sed 's/[ 	]*;[ 	]*$//'`
 		# Get any module definition part
-		if fgrep "MODULE-DEFINITION-" $modbase.c > /dev/null; then
+		if grep "MODULE-DEFINITION-" $modbase.c > /dev/null; then
 		cat $modbase.c | \
 		sed '1,/MODULE-DEFINITION-START/d;/MODULE-DEFINITION-END/,$d' \
 			> $tmpfile2
@@ -774,14 +774,19 @@ for modfile in $MODFILES ; do
 	fi		
 	if [ -r $tmpfile2 ] ; then
 		# Read a module definition from .module or .c
-		modname=`fgrep "Name:" $tmpfile2 | sed 's/^.*Name:[ 	]*//'`
-		cat $tmpfile2 | sed '1,/ConfigStart/d;/ConfigEnd/,$d' > \
-			$tmpfile3
-		. ./$tmpfile3
+		modname=`grep "Name:" $tmpfile2 | sed 's/^.*Name:[ 	]*//'`
+		if grep "ConfigStart" $tmpfile2 > /dev/null \
+		 && grep "ConfigEnd" $tmpfile2 > /dev/null; then
+		    echo "    o $modname runs:"
+		    sed '1,/ConfigStart/d;/ConfigEnd/,$d' $tmpfile2 > \
+		     $tmpfile3
+		    sed 's/^/>> /' $tmpfile3
+		    . ./$tmpfile3
+		fi
 		rm -f $tmpfile2 $tmpfile3
 		ext=o
 	fi
-	if [ -z "$modname" ] ; then
+	if [ "x$modname" = "x" ] ; then
 		modname=`echo $modbase | sed 's/^.*\///' | \
 			sed 's/^mod_//' | sed 's/^lib//' | sed 's/$/_module/'`
 	fi
