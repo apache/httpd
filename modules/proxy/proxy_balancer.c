@@ -23,14 +23,6 @@
 
 module AP_MODULE_DECLARE_DATA proxy_balancer_module;
 
-#if APR_HAS_THREADS
-#define PROXY_BALANCER_LOCK(b)      apr_thread_mutex_lock((b)->mutex)
-#define PROXY_BALANCER_UNLOCK(b)    apr_thread_mutex_unlock((b)->mutex)
-#else
-#define PROXY_BALANCER_LOCK(b)      APR_SUCCESS
-#define PROXY_BALANCER_UNLOCK(b)    APR_SUCCESS
-#endif
-
 static int init_balancer_members(proxy_server_conf *conf, server_rec *s,
                                  proxy_balancer *balancer)
 {
@@ -261,7 +253,7 @@ static proxy_worker *find_best_worker(proxy_balancer *balancer,
     proxy_worker *worker = (proxy_worker *)balancer->workers->elts;
     proxy_worker *candidate = NULL;
     
-    if (PROXY_BALANCER_LOCK(balancer) != APR_SUCCESS)
+    if (PROXY_THREAD_LOCK(balancer) != APR_SUCCESS)
         return NULL;
 
     /* First try to see if we have available candidate */
@@ -289,11 +281,11 @@ static proxy_worker *find_best_worker(proxy_balancer *balancer,
     if (candidate) {
         candidate->s->lbstatus -= total_factor;
         candidate->s->elected++;
-        PROXY_BALANCER_UNLOCK(balancer);
+        PROXY_THREAD_UNLOCK(balancer);
         return candidate;
     }
     else {
-        PROXY_BALANCER_UNLOCK(balancer);
+        PROXY_THREAD_UNLOCK(balancer);
         /* All the workers are in error state or disabled.
          * If the balancer has a timeout sleep for a while
          * and try again to find the worker. The chances are
@@ -374,7 +366,7 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
     /* Lock the LoadBalancer
      * XXX: perhaps we need the process lock here
      */
-    if ((rv = PROXY_BALANCER_LOCK(*balancer)) != APR_SUCCESS) {
+    if ((rv = PROXY_THREAD_LOCK(*balancer)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
                      "proxy: BALANCER: lock");
         return DECLINED;
@@ -407,11 +399,11 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                      "proxy: BALANCER: (%s). All workers are in error state for route (%s)",
                      (*balancer)->name, route);
-        PROXY_BALANCER_UNLOCK(*balancer);
+        PROXY_THREAD_UNLOCK(*balancer);
         return HTTP_SERVICE_UNAVAILABLE;
     }
 
-    PROXY_BALANCER_UNLOCK(*balancer);
+    PROXY_THREAD_UNLOCK(*balancer);
     if (!*worker) {
         runtime = find_best_worker(*balancer, r);
         if (!runtime) {
@@ -449,7 +441,7 @@ static int proxy_balancer_post_request(proxy_worker *worker,
 {
     apr_status_t rv;
 
-    if ((rv = PROXY_BALANCER_LOCK(balancer)) != APR_SUCCESS) {
+    if ((rv = PROXY_THREAD_LOCK(balancer)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
             "proxy: BALANCER: lock");
         return HTTP_INTERNAL_SERVER_ERROR;
@@ -462,7 +454,7 @@ static int proxy_balancer_post_request(proxy_worker *worker,
      * track on that.
      */
 
-    PROXY_BALANCER_UNLOCK(balancer);        
+    PROXY_THREAD_UNLOCK(balancer);        
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                  "proxy_balancer_post_request for (%s)", balancer->name);
 

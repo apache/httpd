@@ -759,7 +759,7 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
     conn_rec *c = r->connection;
     proxy_conn_rec *backend;
     apr_socket_t *sock, *local_sock, *data_sock = NULL;
-    apr_sockaddr_t *connect_addr;
+    apr_sockaddr_t *connect_addr = NULL;
     apr_status_t rv;
     conn_rec *origin, *data = NULL;
     apr_status_t err = APR_SUCCESS;
@@ -786,6 +786,7 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
     int connect = 0, use_port = 0;
     char dates[APR_RFC822_DATE_LEN];
     int status;
+    apr_pool_t *address_pool;
 
     /* is this for us? */
     if (proxyhost) {
@@ -893,12 +894,30 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
        "proxy: FTP: connecting %s to %s:%d", url, connectname, connectport);
 
+    if (worker->is_address_reusable) {
+        if (!worker->cp->addr) {
+            if ((err = PROXY_THREAD_LOCK(worker)) != APR_SUCCESS) {
+                ap_log_error(APLOG_MARK, APLOG_ERR, err, r->server,
+                             "proxy: FTP: lock");
+                return HTTP_INTERNAL_SERVER_ERROR;
+            }
+        }
+        connect_addr = worker->cp->addr;
+        address_pool = worker->cp->pool;
+    }
+    else
+        address_pool = r->pool;
+
     /* do a DNS lookup for the destination host */
-    if (!worker->cp->addr)
-        err = apr_sockaddr_info_get(&(worker->cp->addr),
+    if (!connect_addr)
+        err = apr_sockaddr_info_get(&(connect_addr),
                                     connectname, APR_UNSPEC,
                                     connectport, 0,
-                                    worker->cp->pool);
+                                    address_pool);
+    if (worker->is_address_reusable && !worker->cp->addr) {        
+        worker->cp->addr = connect_addr;            
+        PROXY_THREAD_UNLOCK(worker);
+    }
     /*
      * get all the possible IP addresses for the destname and loop through
      * them until we get a successful connection
@@ -910,7 +929,7 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
     }
 
     /* check if ProxyBlock directive on this host */
-    if (OK != ap_proxy_checkproxyblock(r, conf, worker->cp->addr)) {
+    if (OK != ap_proxy_checkproxyblock(r, conf, connect_addr)) {
         return ap_proxyerror(r, HTTP_FORBIDDEN,
                              "Connect to remote machine blocked");
     }
@@ -927,7 +946,7 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
             return status;
         }
         /* TODO: see if ftp could use determine_connection */ 
-        backend->addr = worker->cp->addr;
+        backend->addr = connect_addr;
         ap_set_module_config(c->conn_config, &proxy_ftp_module, backend);        
     }
 
@@ -942,7 +961,7 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
     if (ap_proxy_connect_backend("FTP", backend, worker, r->server)) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                      "proxy: FTP: an error occurred creating a new connection to %pI (%s)",
-                     worker->cp->addr, connectname);
+                     connect_addr, connectname);
         proxy_ftp_cleanup(r, backend);
         return HTTP_SERVICE_UNAVAILABLE;
     }
@@ -957,7 +976,6 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
 
     /* Use old naming */
     origin = backend->connection;
-    connect_addr = worker->cp->addr;
     sock = backend->sock;
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
