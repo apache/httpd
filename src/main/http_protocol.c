@@ -1376,6 +1376,8 @@ void send_error_response (request_rec *r, int recursive_error)
     }
     {
 	char *title = status_lines[idx];
+	/* folks decided they didn't want the error code in the H1 text */
+
 	char *h1 = 4 + status_lines[idx];
 	BUFF *fd = c->client;
 	
