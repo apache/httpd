@@ -1,5 +1,9 @@
 Changes with Apache 1.3.5
 
+  *) Do not round the TCN quality calculation to 5 decimal places,
+     unlike RFC 2296, because the calculation might need 12 decimal places
+     to get the right result.  [Roy Fielding]
+
   *) Remove unused code to disable transparent negotiation when
      negotiating on encoding only, as we now handle encoding too
      (though this is nonstandard for TCN), and fix bugs in debugging

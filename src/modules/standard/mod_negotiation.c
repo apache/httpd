@@ -1763,13 +1763,14 @@ static int is_variant_better_rvsa(negotiation_state *neg, var_rec *variant,
         variant->charset_quality *
         variant->lang_quality;
 
-   /* Make sure that variants with a very low nonzero q value
-    * do not get rounded down to 0
+   /* RFC 2296 calls for the result to be rounded to 5 decimal places,
+    * but we don't do that because it serves no useful purpose other
+    * than to ensure that a remote algorithm operates on the same
+    * precision as ours.  That is silly, since what we obviously want
+    * is for the algorithm to operate on the best available precision
+    * regardless of who runs it.  Since the above calculation may
+    * result in significant variance at 1e-12, rounding would be bogus.
     */
-   if (q <= 0.0f)
-       q = 0.0f; 
-   else if (q < 0.00001f)
-       q = 0.00001f; 
 
 #ifdef NEG_DEBUG
     fprintf(stderr, "Variant: file=%s type=%s lang=%s sourceq=%1.3f "
@@ -1789,7 +1790,7 @@ static int is_variant_better_rvsa(negotiation_state *neg, var_rec *variant,
             variant->definite);
 #endif
 
-    if (q == 0.0f) {
+    if (q <= 0.0f) {
         return 0;
     }
     if (q > bestq) {
