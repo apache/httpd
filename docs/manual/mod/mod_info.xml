@@ -1,22 +1,19 @@
 <?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.xsl"?>
 <modulesynopsis>
 
 <name>mod_info</name>
+<description>Provides a comprehensive overview of the server
+configuration</description>
 <status>Extension</status>
-<description>This module provides a comprehensive overview of the server
-configuration including all installed modules and directives in the
-configuration files.</description>
-<identifier>info_module</identifier>
 <sourcefile>mod_info.c</sourcefile>
-<compatibility>Available in Apache 1.1 and later</compatibility>
+<identifier>info_module</identifier>
 
 
 <summary>
 
-    <h2>Using mod_info</h2>
-
-    <p>To configure it, add the following to your
+    <p>To configure <module>mod_info</module>, add the following to your
     <code>httpd.conf</code> file.</p>
 
 <example>
@@ -25,12 +22,12 @@ SetHandler server-info<br />
 &lt;/Location&gt;<br />
 </example>
 
-    You may wish to add a 
+    <p>You may wish to add a 
     <directive module="core">&lt;Limit&gt;</directive> 
     clause inside the 
     <directive module="core">&lt;location&gt;</directive>
     directive to limit access to your server configuration 
-    information. 
+    information.</p>
 
     <p>Once configured, the server information is obtained by
     accessing <code>http://your.host.dom/server-info</code></p>
@@ -59,7 +56,6 @@ SetHandler server-info<br />
 <description>Allows additional information to be added to the module
 information displayed by the server-info handler</description>
 <syntax>AddModuleInfo <em>module-name string</em></syntax>
-<default><em>none</em></default>
 <contextlist><context>server config</context> <context>virtual
 host</context></contextlist>
 <compatibility>Apache 1.3 and above</compatibility>
