@@ -333,6 +333,12 @@
                  distributed modules are build as shared objects. This can be
                  achieved by explicitly using --enable-module=so.
 
+         Note 5: Some platforms require --enable-rule=SHARED_CORE for
+                 the DSO mechanism to work, i.e. when you want to use
+                 --enable-shared for some modules on these platforms you also
+                 have to enable the SHARED_CORE rule. For more details please
+                 read the document `htdocs/manual/dso.html'.
+
      Use the --with-perl=FILE option to select a particular Perl interpreter
      executable to be used with Apache. Per default APACI tries to find it
      automatically. But if multiple Perl instances exist on your system you

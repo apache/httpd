@@ -1,5 +1,9 @@
 Changes with Apache 1.3.2
 
+  *) Add note about the SHARED_CORE requirement on some platforms also to the
+     INSTALL file because a lot of users don't read htdocs/manual/dso.html
+     first. [Ralf S. Engelschall] PR#2701
+
   *) Fix document "hyperlink" for dso.html in src/Configuration.tmpl
      [Knut A.Syed <Knut.Syed@nhh.no>] PR#2674
 
