@@ -176,3 +176,7 @@
    -is ssl_expr_eval() if there is an error
     (ssl_expr_error is global)
  o SSLRequire directive (parsing of) leaks memory
+ o Diffie-Hellman-Parameters for temporary keys are hardcoded in
+   ssl_engine_dh.c, while the comment in ssl_engine_kernel.c says:
+   "it is suggested that keys be changed daily or every 500
+    transactions, and more often if possible."
