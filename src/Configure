@@ -1190,7 +1190,6 @@ if [ "x$using_shlib" = "x1" ] ; then
 		    ;;
 	    esac
 	    LDFLAGS_MOD_SHLIB="$LDFLAGS_SHLIB -bI:@libexecdir@/httpd.exp -lc"
-	    LDFLAGS_MOD_SHLIB="$LDFLAGS_MOD_SHLIB -bE:\`echo \$@|sed -e 's:\.so\$\$:.exp:'\`"
 	    LDFLAGS_SHLIB="$LDFLAGS_SHLIB -bI:\$(SRCDIR)/support/httpd.exp "
 	    LDFLAGS_SHLIB="$LDFLAGS_SHLIB -bE:\`echo \$@|sed -e 's:\.so\$\$:.exp:'\`"
 	    LDFLAGS_SHLIB="$LDFLAGS_SHLIB -lc"
