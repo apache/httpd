@@ -3,7 +3,7 @@
 #
 # This is the main Apache server configuration file.  It contains the
 # configuration directives that give the server its instructions.
-# See <URL:http://www.apache.org/docs/> for detailed information about
+# See <URL:http://httpd.apache.org/docs/> for detailed information about
 # the directives.
 #
 # Do NOT simply read the instructions in here without understanding
