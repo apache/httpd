@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/08/19 16:06:20 $]
+Last modified at [$Date: 2003/08/20 12:10:11 $]
 
 Release:
 
@@ -201,6 +201,14 @@ PATCHES TO PORT FROM 2.1
         os/unix/unixd.c 1.58
         os/unix/unixd.h 1.38
         +1: trawick, jerenkrantz
+         0: jim (it seems to me that the locking mech itself
+                 should have the required flags to determine whether
+                 uid/gid and chown is required, rather than placing
+                 that knowledge in unixd.c (kind of what is done for
+                 the SSL stuff already with ChownMutexFile). Thus
+                 unixd would simply check those out and do what is
+                 required rather than having internal APR knowledge
+                 it shouldn't).
 
     * Backport wildcard ExpiresByType from 2.0.46
       +1: ken, stoddard
