@@ -62,8 +62,12 @@ be creating files in there.
 <p>If you allow non-root users to modify any files that root either
 executes or writes on then you open your system to root compromises.
 For example, someone could replace the httpd binary so that the next
-time you start it, it will execute some arbitrary code.  Or someone
-could overwrite the logs with arbitrary data.
+time you start it, it will execute some arbitrary code.  If the logs
+directory is writeable (by a non-root user), someone
+could replace a log file with a symlink to some other system file,
+and then root might overwrite that file with arbitrary data.  If the
+log files themselves are writeable (by a non-root user), then someone
+may be able to overwrite the log itself with bogus data.
 <P>
 <HR>
 <H2>Server Side Includes</H2>
