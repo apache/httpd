@@ -1,5 +1,8 @@
 Changes with Apache 1.2
 
+  *) Subrequests and internal redirect now inherit the_request from the
+     original request-line. [Roy Fielding]
+
   *) Test for error conditions before creating output header fields, since
      we don't want the error message to include those fields.  Likewise,
      reset the content_language(s) and content_encoding of the response

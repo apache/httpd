@@ -847,6 +847,8 @@ request_rec *read_request (conn_rec *conn)
 
 void set_sub_req_protocol (request_rec *rnew, const request_rec *r)
 {
+    rnew->the_request = r->the_request;  /* Keep original request-line */
+
     rnew->assbackwards = 1;	/* Don't send headers from this. */
     rnew->no_local_copy = 1;	/* Don't try to send USE_LOCAL_COPY for a
 				 * fragment.

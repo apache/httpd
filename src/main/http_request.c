@@ -1040,6 +1040,8 @@ request_rec *internal_internal_redirect (const char *new_uri, request_rec *r)
     
     /* Inherit the rest of the protocol info... */
 
+    new->the_request = r->the_request;
+
     new->method = r->method;
     new->method_number = r->method_number;
     new->allowed = r->allowed;
