@@ -69,6 +69,7 @@
 #endif
 #include "apr_hooks.h"
 #include "apr_thread_proc.h"
+#include "apr_lock.h"
 
 #include <pwd.h>
 #include <grp.h>
@@ -111,7 +112,7 @@ AP_DECLARE(const char *) unixd_set_group(cmd_parms *cmd, void *dummy,
 AP_DECLARE(void) unixd_set_rlimit(cmd_parms *cmd, struct rlimit **plimit,
                            const char *arg, const char * arg2, int type);
 #endif
-
+AP_DECLARE(apr_status_t) unixd_set_lock_perms(apr_lock_t *lock);
 
 #ifdef HAVE_KILLPG
 #define unixd_killpg(x, y)	(killpg ((x), (y)))

@@ -276,6 +276,20 @@ static void accept_mutex_init(apr_pool_t *p)
 	ap_log_error(APLOG_MARK, APLOG_EMERG, rv, NULL, "couldn't create accept mutex");
         exit(APEXIT_INIT);
     }
+
+#if APR_USE_SYSVSEM_SERIALIZE
+    if (ap_accept_lock_mech == APR_LOCK_DEFAULT || 
+        ap_accept_lock_mech == APR_LOCK_SYSVSEM) {
+#else
+    if (ap_accept_lock_mech == APR_LOCK_SYSVSEM) {
+#endif
+        rv = unixd_set_lock_perms(accept_lock);
+        if (rv != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_EMERG, rv, NULL,
+                         "Couldn't set permissions on cross-process lock");
+            exit(APEXIT_INIT);
+        }
+    }
 }
 
 static void accept_mutex_on(void)

@@ -186,7 +186,8 @@ sys/socket.h \
 pwd.h \
 grp.h \
 strings.h \
-sys/processor.h
+sys/processor.h \
+sys/sem.h
 )
 AC_HEADER_SYS_WAIT
 
