@@ -414,6 +414,18 @@ AP_DECLARE(apr_status_t) unixd_set_proc_mutex_perms(apr_proc_mutex_t *pmutex)
     return APR_SUCCESS;
 }
 
+AP_DECLARE(apr_status_t) unixd_set_global_mutex_perms(apr_global_mutex_t *gmutex)
+{
+#if !APR_PROCESS_LOCK_IS_GLOBAL
+    apr_os_global_mutex_t osgmutex;
+    apr_os_global_mutex_get(&osgmutex, gmutex);
+    return unixd_set_proc_mutex_perms(osgmutex.proc_mutex);
+#else  /* APR_PROCESS_LOCK_IS_GLOBAL */
+    /* In this case, apr_proc_mutex_t and apr_global_mutex_t are the same. */
+    return unixd_set_proc_mutex_perms((apr_proc_mutex_t *)gmutex);
+#endif /* APR_PROCESS_LOCK_IS_GLOBAL */
+}
+
 AP_DECLARE(apr_status_t) unixd_accept(void **accepted, ap_listen_rec *lr,
                                         apr_pool_t *ptrans)
 {
