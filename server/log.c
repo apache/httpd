@@ -403,7 +403,7 @@ static void log_error_core(const char *file, int line, int level,
                            const char *fmt, va_list args)
 {
     char errstr[MAX_STRING_LEN];
-#ifndef AP_ERROR_LOG_UNESCAPED
+#ifndef AP_UNSAFE_ERROR_LOG_UNESCAPED
     char scratch[MAX_STRING_LEN];
 #endif
     apr_size_t len, errstrlen;
@@ -542,7 +542,7 @@ static void log_error_core(const char *file, int line, int level,
     }
 
     errstrlen = len;
-#ifndef AP_ERROR_LOG_UNESCAPED
+#ifndef AP_UNSAFE_ERROR_LOG_UNESCAPED
     if (apr_vsnprintf(scratch, MAX_STRING_LEN - len, fmt, args)) {
         len += ap_escape_errorlog_item(errstr + len, scratch,
                                        MAX_STRING_LEN - len);
@@ -552,13 +552,13 @@ static void log_error_core(const char *file, int line, int level,
 #endif
 
     if (   r && (referer = apr_table_get(r->headers_in, "Referer"))
-#ifndef AP_ERROR_LOG_UNESCAPED
+#ifndef AP_UNSAFE_ERROR_LOG_UNESCAPED
         && ap_escape_errorlog_item(scratch, referer, MAX_STRING_LEN - len)
 #endif
         ) {
         len += apr_snprintf(errstr + len, MAX_STRING_LEN - len,
                             ", referer: %s",
-#ifndef AP_ERROR_LOG_UNESCAPED
+#ifndef AP_UNSAFE_ERROR_LOG_UNESCAPED
                             scratch
 #else
                             referer
