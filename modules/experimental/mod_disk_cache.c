@@ -23,6 +23,32 @@
 #include <unistd.h> /* needed for unlink/link */
 #endif
 
+/* Our on-disk header format is:
+ *
+ * disk_cache_info_t
+ * entity name (dobj->name) [length is in disk_cache_info_t->name_len]
+ * r->headers_out (delimited by CRLF)
+ * CRLF
+ * r->headers_in (delimited by CRLF)
+ * CRLF
+ */
+#define DISK_FORMAT_VERSION 0
+typedef struct {
+    /* Indicates the format of the header struct stored on-disk. */
+    int format;
+    /* The HTTP status code returned for this response.  */
+    int status;
+    /* The size of the entity name that follows. */
+    apr_size_t name_len;
+    /* The number of times we've cached this entity. */
+    apr_size_t entity_version;
+    /* Miscellaneous time values. */
+    apr_time_t date;
+    apr_time_t expire;
+    apr_time_t request_time;
+    apr_time_t response_time;
+} disk_cache_info_t;
+
 /*
  * disk_cache_object_t
  * Pointed to by cache_object_t::vobj
@@ -38,11 +64,12 @@ typedef struct disk_cache_object {
     char *hdrsfile;          /* name of file where the hdrs will go */
     char *hashfile;          /* Computed hash key for this URI */
     char *name;
-    apr_time_t version;      /* update count of the file */
     apr_file_t *fd;          /* data file */
     apr_file_t *hfd;         /* headers file */
     apr_off_t file_size;     /*  File size of the cached data file  */
+    disk_cache_info_t disk_info; /* Header information. */
 } disk_cache_object_t;
+
 
 /*
  * mod_disk_cache configuration
@@ -193,102 +220,53 @@ static apr_status_t file_cache_errorcleanup(disk_cache_object_t *dobj, request_r
  * and written transparent to clients of this module
  */
 static int file_cache_recall_mydata(apr_file_t *fd, cache_info *info,
-                                  disk_cache_object_t *dobj)
+                                    disk_cache_object_t *dobj, request_rec *r)
 {
     apr_status_t rv;
-    char urlbuff[1034]; /* XXX FIXME... THIS IS A POTENTIAL SECURITY HOLE */
-    int urllen = sizeof(urlbuff);
-    int offset=0;
+    char *urlbuff;
     char * temp;
+    disk_cache_info_t disk_info;
+    apr_size_t len;
 
     /* read the data from the cache file */
-    /* format
-     * date SP expire SP count CRLF
-     * dates are stored as a hex representation of apr_time_t (number of
-     * microseconds since 00:00:00 january 1, 1970 UTC)
-     */
-    rv = apr_file_gets(&urlbuff[0], urllen, fd);
+    len = sizeof(disk_cache_info_t);
+    rv = apr_file_read_full(fd, &disk_info, len, &len);
     if (rv != APR_SUCCESS) {
         return rv;
     }
 
-    if ((temp = strchr(&urlbuff[0], '\n')) != NULL) /* trim off new line character */
-        *temp = '\0';      /* overlay it with the null terminator */
-
-    if (!apr_date_checkmask(urlbuff, "&&&&&&&&&&&&&&&& &&&&&&&&&&&&&&&& &&&&&&&&&&&&&&&& &&&&&&&&&&&&&&&& &&&&&&&&&&&&&&&&")) {
+    if (disk_info.format != DISK_FORMAT_VERSION) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
+                     "cache_disk: URL %s had a on-disk version mismatch",
+                     r->uri);
         return APR_EGENERAL;
     }
 
-    info->date = ap_cache_hex2usec(urlbuff + offset);
-    offset += (sizeof(info->date)*2) + 1;
-    info->expire = ap_cache_hex2usec(urlbuff + offset);
-    offset += (sizeof(info->expire)*2) + 1;
-    dobj->version = ap_cache_hex2usec(urlbuff + offset);
-    offset += (sizeof(info->expire)*2) + 1;
-    info->request_time = ap_cache_hex2usec(urlbuff + offset);
-    offset += (sizeof(info->expire)*2) + 1;
-    info->response_time = ap_cache_hex2usec(urlbuff + offset);
+    /* Store it away so we can get it later. */
+    dobj->disk_info = disk_info;
+
+    info->date = disk_info.date;
+    info->expire = disk_info.expire;
+    info->request_time = disk_info.request_time;
+    info->response_time = disk_info.response_time;
+
+    /* Note that we could optimize this by conditionally doing the palloc
+     * depending upon the size. */
+    urlbuff = apr_palloc(r->pool, disk_info.name_len + 1);
+    len = disk_info.name_len;
+    rv = apr_file_read_full(fd, urlbuff, len, &len);
+    if (rv != APR_SUCCESS) {
+        return rv;
+    }
+    urlbuff[disk_info.name_len] = '\0';
 
     /* check that we have the same URL */
-    rv = apr_file_gets(&urlbuff[0], urllen, fd);
-    if (rv != APR_SUCCESS) {
-        return rv;
-    }
-
-    if ((temp = strchr(&urlbuff[0], '\n')) != NULL) { /* trim off new line character */
-        *temp = '\0';      /* overlay it with the null terminator */
-    }
-
-    if (strncmp(urlbuff, "X-NAME: ", 7) != 0) {
-        return APR_EGENERAL;
-    }
-    if (strcmp(urlbuff + 8, dobj->name) != 0) {
+    /* Would strncmp be correct? */
+    if (strcmp(urlbuff, dobj->name) != 0) {
         return APR_EGENERAL;
     }
 
     return APR_SUCCESS;
-}
-
-static int file_cache_store_mydata(apr_file_t *fd , cache_handle_t *h, request_rec *r)
-{
-    apr_status_t rc;
-    char *buf;
-    apr_size_t amt;
-
-    char	dateHexS[sizeof(apr_time_t) * 2 + 1];
-    char	expireHexS[sizeof(apr_time_t) * 2 + 1];
-    char	verHexS[sizeof(apr_time_t) * 2 + 1];
-    char	requestHexS[sizeof(apr_time_t) * 2 + 1];
-    char	responseHexS[sizeof(apr_time_t) * 2 + 1];
-    cache_info *info = &(h->cache_obj->info);
-    disk_cache_object_t *dobj = (disk_cache_object_t *) h->cache_obj->vobj;
-
-    if (!r->headers_out) {
-        /* XXX log message */
-        return 0;
-    }
-
-    ap_cache_usec2hex(info->date, dateHexS);
-    ap_cache_usec2hex(info->expire, expireHexS);
-    ap_cache_usec2hex(dobj->version++, verHexS);
-    ap_cache_usec2hex(info->request_time, requestHexS);
-    ap_cache_usec2hex(info->response_time, responseHexS);
-    buf = apr_pstrcat(r->pool, dateHexS, " ", expireHexS, " ", verHexS, " ", requestHexS, " ", responseHexS, "\n", NULL);
-    amt = strlen(buf);
-    rc = apr_file_write(fd, buf, &amt);
-    if (rc != APR_SUCCESS) {
-        /* XXX log message */
-        return 0;
-    }
-
-    buf = apr_pstrcat(r->pool, "X-NAME: ", dobj->name, "\n", NULL);
-    amt = strlen(buf);
-    rc = apr_file_write(fd, buf, &amt);
-    if (rc != APR_SUCCESS) {
-        /* XXX log message */
-        return 0;
-    }
-    return 1;
 }
 
 /*
@@ -412,7 +390,7 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
     }
 
     /* Read the bytes to setup the cache_info fields */
-    rc = file_cache_recall_mydata(dobj->hfd, info, dobj);
+    rc = file_cache_recall_mydata(dobj->hfd, info, dobj, r);
     if (rc != APR_SUCCESS) {
         /* XXX log message */
         return DECLINED;
@@ -447,8 +425,6 @@ static int remove_url(const char *key)
 static apr_status_t recall_headers(cache_handle_t *h, request_rec *r)
 {
     apr_status_t rv;
-    char urlbuff[1034];
-    int urllen = sizeof(urlbuff);
     disk_cache_object_t *dobj = (disk_cache_object_t *) h->cache_obj->vobj;
     apr_table_t * tmp;
 
@@ -465,36 +441,22 @@ static apr_status_t recall_headers(cache_handle_t *h, request_rec *r)
     /*
      * Call routine to read the header lines/status line
      */
+    r->status = dobj->disk_info.status;
     ap_scan_script_header_err(r, dobj->hfd, NULL);
 
     apr_table_setn(r->headers_out, "Content-Type",
                    ap_make_content_type(r, r->content_type));
 
-    rv = apr_file_gets(&urlbuff[0], urllen, dobj->hfd);           /* Read status  */
-    if (rv != APR_SUCCESS) {
-        /* XXX log message */
-	return rv;
-    }
-
-    r->status = atoi(urlbuff);                           /* Save status line into request rec  */
-
-    /* Read and ignore the status line (This request might result in a
-     * 304, so we don't necessarily want to retransmit a 200 from the cache.)
-     */
-    rv = apr_file_gets(&urlbuff[0], urllen, dobj->hfd);
-    if (rv != APR_SUCCESS) {
-        /* XXX log message */
-	return rv;
-    }
-
     h->req_hdrs = apr_table_make(r->pool, 20);
 
     /*
      * Call routine to read the header lines/status line
+     *
+     * Note that ap_scan_script_header_err sets to r->err_headers_out,
+     * so we must set the real one aside.
      */
     tmp = r->err_headers_out;
     r->err_headers_out = h->req_hdrs;
-    rv = apr_file_gets(&urlbuff[0], urllen, dobj->hfd);           /* Read status  */
     ap_scan_script_header_err(r, dobj->hfd, NULL);
     r->err_headers_out = tmp;
 
@@ -519,6 +481,40 @@ static apr_status_t recall_body(cache_handle_t *h, apr_pool_t *p, apr_bucket_bri
     return APR_SUCCESS;
 }
 
+static apr_status_t store_table(apr_file_t *fd, apr_table_t *table)
+{
+    int i;
+    apr_status_t rv;
+    struct iovec iov[4];
+    apr_size_t amt;
+    apr_table_entry_t *elts;
+
+    elts = (apr_table_entry_t *) apr_table_elts(table)->elts;
+    for (i = 0; i < apr_table_elts(table)->nelts; ++i) {
+        if (elts[i].key != NULL) {
+            iov[0].iov_base = elts[i].key;
+            iov[0].iov_len = strlen(elts[i].key);
+            iov[1].iov_base = ": ";
+            iov[1].iov_len = sizeof(": ") - 1;
+            iov[2].iov_base = elts[i].val;
+            iov[2].iov_len = strlen(elts[i].val);
+            iov[3].iov_base = CRLF;
+            iov[3].iov_len = sizeof(CRLF) - 1;
+
+            rv = apr_file_writev(fd, (const struct iovec *) &iov, 4,
+                                 &amt);
+            if (rv != APR_SUCCESS) {
+                return rv;
+            }
+        }
+    }
+    iov[0].iov_base = CRLF;
+    iov[0].iov_len = sizeof(CRLF) - 1;
+    rv = apr_file_writev(fd, (const struct iovec *) &iov, 1,
+                         &amt);
+    return rv;
+}
+
 static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info *info)
 {
     disk_cache_conf *conf = ap_get_module_config(r->server->module_config,
@@ -531,6 +527,9 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
     apr_file_t *hfd = dobj->hfd;
 
     if (!hfd)  {
+        disk_cache_info_t disk_info;
+        struct iovec iov[2];
+
         if (!dobj->hdrsfile) {
             dobj->hdrsfile = header_file(r->pool, conf, dobj,
                                          h->cache_obj->key);
@@ -557,22 +556,40 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
         hfd = dobj->hfd;
         dobj->name = h->cache_obj->key;
 
-        file_cache_store_mydata(dobj->hfd, h, r);
+        disk_info.format = DISK_FORMAT_VERSION;
+        disk_info.date = info->date;
+        disk_info.expire = info->expire;
+        disk_info.entity_version = dobj->disk_info.entity_version++;
+        disk_info.request_time = info->request_time;
+        disk_info.response_time = info->response_time;
+
+        disk_info.name_len = strlen(dobj->name);
+        disk_info.status = r->status;
+
+        /* This case only occurs when the content is generated locally */
+        if (!r->status_line) {
+            r->status_line = ap_get_status_line(r->status);
+        }
+
+        iov[0].iov_base = (void*)&disk_info;
+        iov[0].iov_len = sizeof(disk_cache_info_t);
+        iov[1].iov_base = dobj->name;
+        iov[1].iov_len = disk_info.name_len;
+
+        rv = apr_file_writev(hfd, (const struct iovec *) &iov, 2, &amt);
+        if (rv != APR_SUCCESS) {
+            return rv;
+        }
 
         if (r->headers_out) {
-            int i;
-            apr_table_t* headers_out = ap_cache_cacheable_hdrs_out(r->pool, r->headers_out);
-            apr_table_entry_t *elts = (apr_table_entry_t *) apr_table_elts(headers_out)->elts;
-            for (i = 0; i < apr_table_elts(headers_out)->nelts; ++i) {
-                if (elts[i].key != NULL) {
-                    buf = apr_pstrcat(r->pool, elts[i].key, ": ",  elts[i].val, CRLF, NULL);
-                    amt = strlen(buf);
-                    apr_file_write(hfd, buf, &amt);
-                }
+            apr_table_t *headers_out;
+
+            headers_out = ap_cache_cacheable_hdrs_out(r->pool, r->headers_out);
+
+            rv = store_table(hfd, headers_out);
+            if (rv != APR_SUCCESS) {
+                return rv;
             }
-            buf = apr_pstrcat(r->pool, CRLF, NULL);
-            amt = strlen(buf);
-            apr_file_write(hfd, buf, &amt);
 
             /* This case only occurs when the content is generated locally */
             if (!apr_table_get(r->headers_out, "Content-Type") && r->content_type) {
@@ -580,38 +597,15 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
                                ap_make_content_type(r, r->content_type));
             }
         }
-        sprintf(statusbuf,"%d", r->status);
-        buf = apr_pstrcat(r->pool, statusbuf, CRLF, NULL);
-        amt = strlen(buf);
-        apr_file_write(hfd, buf, &amt);
 
-        /* This case only occurs when the content is generated locally */
-        if (!r->status_line) {
-            r->status_line = ap_get_status_line(r->status);
-        }
-        buf = apr_pstrcat(r->pool, r->status_line, "\n", NULL);
-        amt = strlen(buf);
-        apr_file_write(hfd, buf, &amt);
-        buf = apr_pstrcat(r->pool, CRLF, NULL);
-        amt = strlen(buf);
-        apr_file_write(hfd, buf, &amt);
-
-	/* Parse the vary header and dump those fields from the headers_in. */
-	/* Make call to the same thing cache_select_url calls to crack Vary. */
-	/* @@@ Some day, not today. */
+        /* Parse the vary header and dump those fields from the headers_in. */
+        /* Make call to the same thing cache_select_url calls to crack Vary. */
+        /* @@@ Some day, not today. */
         if (r->headers_in) {
-            int i;
-            apr_table_entry_t *elts = (apr_table_entry_t *) apr_table_elts(r->headers_in)->elts;
-            for (i = 0; i < apr_table_elts(r->headers_in)->nelts; ++i) {
-                if (elts[i].key != NULL) {
-                    buf = apr_pstrcat(r->pool, elts[i].key, ": ",  elts[i].val, CRLF, NULL);
-                    amt = strlen(buf);
-                    apr_file_write(hfd, buf, &amt);
-                }
+            rv = store_table(hfd, r->headers_in);
+            if (rv != APR_SUCCESS) {
+                return rv;
             }
-            buf = apr_pstrcat(r->pool, CRLF, NULL);
-            amt = strlen(buf);
-            apr_file_write(hfd, buf, &amt);
         }
         apr_file_close(hfd); /* flush and close */
     }
