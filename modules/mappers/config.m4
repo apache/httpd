@@ -1,27 +1,33 @@
 dnl modules enabled in this directory by default
 
-dnl AC_DEFUN(modulename, modulestructname, defaultonoroff, configmacros)
-dnl XXX - Need to allow --enable-module to fail if optional config fails
-
-AC_DEFUN(APACHE_CHECK_MAPPERS_MODULE, [
-  APACHE_MODULE([$1],[$2],,[$3],[$4],[$5])
-])
+dnl APACHE_MODULE(name, helptext[, objects[, structname[, default[, config]]]])
 
 APACHE_MODPATH_INIT(mappers)
 
-APACHE_CHECK_MAPPERS_MODULE(vhost_alias, mass hosting module, , no)
-APACHE_CHECK_MAPPERS_MODULE(negotiation, content negoatiation, , yes)
-APACHE_CHECK_MAPPERS_MODULE(dir, directory request handling, , yes)
-APACHE_CHECK_MAPPERS_MODULE(imap, internal imagemaps, , yes)
-APACHE_CHECK_MAPPERS_MODULE(actions, Action triggering on requests, action, yes)
-APACHE_CHECK_MAPPERS_MODULE(speling, correct common URL misspellings, , no)
-APACHE_CHECK_MAPPERS_MODULE(userdir, mapping of user requests, , yes)
-APACHE_CHECK_MAPPERS_MODULE(alias, translation of requests, , yes)
+APACHE_MODULE(vhost_alias, mass hosting module, , , no)
+APACHE_MODULE(negotiation, content negoatiation, , , yes)
+APACHE_MODULE(dir, directory request handling, , , yes)
+APACHE_MODULE(imap, internal imagemaps, , , yes)
+APACHE_MODULE(actions, Action triggering on requests, , action, yes)
+APACHE_MODULE(speling, correct common URL misspellings, , , no)
+APACHE_MODULE(userdir, mapping of user requests, , , yes)
+APACHE_MODULE(alias, translation of requests, , , yes)
 
-APACHE_CHECK_MAPPERS_MODULE(rewrite, regex URL translation, , no, [
+APACHE_MODULE(rewrite, regex URL translation, , , no, [
   EXTRA_CFLAGS="$EXTRA_CFLAGS -DNO_DBM_REWRITEMAP"
 ])
 
+dnl ### this isn't going to work quite right because of ordering issues
+dnl ### among the config.m4 files. it is possible that a *later* module
+dnl ### is marked as shared (thus setting sharedobjs), so we won't see
+dnl ### it here. we need to shift *this* config.m4 to be "last" or we
+dnl ### need to find a different way to set up this default and module spec.
+if test "$sharedobjs" = "yes"; then
+    APACHE_MODULE(so, DSO capability, , , yes)
+else
+    APACHE_MODULE(so, DSO capability, , , no)
+fi
+dnl ### why save the cache?
+AC_CACHE_SAVE
+
 APACHE_MODPATH_FINISH
-    
-APACHE_SUBST(STANDARD_LIBS)
