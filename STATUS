@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/02/06 22:17:47 $]
+Last modified at [$Date: 2002/02/06 22:19:57 $]
 
 Release:
 
@@ -117,6 +117,7 @@ CURRENT RELEASE NOTES:
 
             * mod_autoindex displays the wrong icon for subdirectories
               on Unix
+                possible fix in modules/generators/mod_autoindex.c r1.93.
 
             * anon shared memory not allocating enough 
                 (fix is apr/shm/unix/shm.c 1.14)
