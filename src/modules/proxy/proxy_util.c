@@ -426,8 +426,11 @@ static int proxy_getline(char *s, int n, BUFF *in, int fold)
  * Reads headers from a buffer and returns an array of headers.
  * Returns NULL on file error
  * This routine tries to deal with too long lines and continuation lines.
- * @@@: XXX: FIXME: currently the headers are passed thru un-merged. 
- * Is that okay, or should they be collapsed where possible?
+ *
+ * Note: Currently the headers are passed through unmerged. This has to be
+ * done so that headers which react badly to merging (such as Set-Cookie
+ * headers, which contain commas within the date field) do not get stuffed
+ * up.
  */
 table *ap_proxy_read_headers(request_rec *r, char *buffer, int size, BUFF *f)
 {
@@ -475,8 +478,8 @@ table *ap_proxy_read_headers(request_rec *r, char *buffer, int size, BUFF *f)
         for (end = &value[strlen(value)-1]; end > value && ap_isspace(*end); --end)
             *end = '\0';
 
-        /* make sure we merge so as not to destroy duplicated headers */
-        ap_table_merge(resp_hdrs, buffer, value);
+        /* make sure we add so as not to destroy duplicated headers */
+        ap_table_add(resp_hdrs, buffer, value);
 
         /* the header was too long; at the least we should skip extra data */
         if (len >= size - 1) { 
@@ -1447,6 +1450,20 @@ void ap_proxy_clear_connection(pool *p, table *headers)
 
 /* overlay one table on another
  * keys in base will be replaced by keys in overlay
+ *
+ * Note: this has to be done in a special way, due
+ * to some nastiness when it comes to having multiple
+ * headers in the overlay table. First, we remove all
+ * the headers in the base table that are found in the
+ * overlay table, then we simply concatenate the
+ * tables together.
+ *
+ * The base and overlay tables need not be in the same
+ * pool (and probably won't be).
+ *
+ * If the base table is changed in any way through
+ * being overlayed with the overlay table, this
+ * function returns a 1.
  */
 int ap_proxy_table_replace(table *base, table *overlay)
 {
@@ -1454,11 +1471,20 @@ int ap_proxy_table_replace(table *base, table *overlay)
     int i, q = 0;
     const char *val;
 
+    /* remove overlay's keys from base */
     for (i = 0; i < overlay->a.nelts; ++i) {
         val = ap_table_get(base, elts[i].key);
-        if (!val || strcmp(val, elts[i].val))
+        if (!val || strcmp(val, elts[i].val)) {
             q = 1;
-        ap_table_set(base, elts[i].key, elts[i].val);
+        }
+        if (val) {
+            ap_table_unset(base, elts[i].key);
+        }
+    }
+
+    /* add overlay to base */
+    for (i = 0; i < overlay->a.nelts; ++i) {
+        ap_table_add(base, elts[i].key, elts[i].val);
     }
 
     return q;

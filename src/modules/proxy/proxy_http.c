@@ -539,10 +539,6 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
     r->content_type = ap_table_get (r->headers_out, "Content-Type");
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "Content-Type: %s", r->content_type);
 
-    /* cookies are special: they must not be merged (stupid browsers) */
-    ap_proxy_table_unmerge(r->pool, r->headers_out, "Set-Cookie");
-    ap_proxy_table_unmerge(r->pool, r->headers_out, "Set-Cookie2");
-
     /* finally output the headers to the client */
     ap_send_http_header(r);
 

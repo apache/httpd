@@ -1,4 +1,10 @@
 Changes with Apache 1.3.24
+
+  *) Fixed the previous multiple-cookie fix in the proxy. Cookies
+     are broken in that they contain dates which in turn contain
+     commas - so merging and then unmerging them breaks Set-Cookie
+     headers. Sigh. [Graham Leggett]
+
   *) Add ap_uuencode to the httpd.exp exports file used by
      the AIX linker. [Bill Stoddard]
 
