@@ -16,6 +16,24 @@
 
 ServerType standalone
 
+#
+# The following lists extra modules that can be uncommented to be loaded 
+# to enable extra functionality.  See the manual 
+# (http://www.apache.org/docs/mod/) for details on the functionality 
+# of each module.
+#
+#LoadModule anon_auth_module modules/ApacheModuleAuthAnon.dll
+#LoadModule cern_meta_module modules/ApacheModuleCERNMeta.dll
+#LoadModule digest_module modules/ApacheModuleDigest.dll
+#LoadModule expires_module modules/ApacheModuleExpires.dll
+#LoadModule headers_module modules/ApacheModuleHeaders.dll
+#LoadModule proxy_module modules/ApacheModuleProxy.dll
+#LoadModule rewrite_module modules/ApacheModuleRewrite.dll
+#LoadModule speling_module modules/ApacheModuleSpeling.dll
+#LoadModule status_module modules/ApacheModuleStatus.dll
+#LoadModule usertrack_module modules/ApacheModuleUserTrack.dll
+
+
 # Port: The port the standalone listens to.
 
 Port 80
