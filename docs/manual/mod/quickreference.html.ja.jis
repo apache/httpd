@@ -67,18 +67,16 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 <tr><td><a href="mod_autoindex.html#addaltbytype">AddAltByType <var>string</var> <var>MIME-type</var>
 [<var>MIME-type</var>] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">$B%"%$%3%s$NBe$o$j$K(B
 $BI=<($5$l$k!"(BMIME $B%?%$%W$GA*Br$5$l$?BeBX%F%-%9%H(B</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#addcharset">AddCharset <var>charset</var> <var>extension</var>
-[<var>extension</var>] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Maps the given filename extensions to the specified content
-charset</td></tr>
+<tr class="odd"><td><a href="mod_mime.html#addcharset">AddCharset <em>charset extension</em> 
+[<em>extension</em>] ...</a></td><td /><td>svdh</td><td /></tr><tr class="odd"><td class="descr" colspan="4">$B%U%!%$%kL>$N3HD%;R$r;XDj$5$l$?J8;z%;%C%H$K%^%C%W$9$k(B</td></tr>
 <tr><td><a href="core.html#adddefaultcharset">AddDefaultCharset On|Off|<var>charset</var></a></td><td> Off </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Default character set to be added for a
 response without an explicit character set</td></tr>
 <tr class="odd"><td><a href="mod_autoindex.html#adddescription">AddDescription <var>string</var> <var>file</var> [<var>file</var>] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">$B%U%!%$%k$KBP$7$FI=<($9$k@bL@(B</td></tr>
-<tr><td><a href="mod_mime.html#addencoding">AddEncoding <var>MIME-enc</var> <var>extension</var>
-[<var>extension</var>] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Maps the given filename extensions to the specified encoding
-type</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#addhandler">AddHandler <var>handler-name</var> <var>extension</var>
-[<var>extension</var>] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Maps the filename extensions to the specified
-handler</td></tr>
+<tr><td><a href="mod_mime.html#addencoding">AddEncoding
+    <em>MIME-enc extension</em> [<em>extension</em>] ...</a></td><td /><td>svdh</td><td /></tr><tr><td class="descr" colspan="4">$B%U%!%$%kL>$N3HD%;R$r;XDj$5$l$?%(%s%3!<%G%#%s%0(B
+$B$K%^%C%W$9$k(B</td></tr>
+<tr class="odd"><td><a href="mod_mime.html#addhandler">AddHandler
+    <em>handler-name extension</em> [<em>extension</em>] ...</a></td><td /><td>svdh</td><td /></tr><tr class="odd"><td class="descr" colspan="4">$B%U%!%$%kL>$N3HD%;R$r;XDj$5$l$?%O%s%I%i$K%^%C%W$9$k(B</td></tr>
 <tr><td><a href="mod_autoindex.html#addicon">AddIcon <var>icon</var> <var>name</var>
 [<var>name</var>] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">$B%U%!%$%k$KI=<($9$k%"%$%3%s$rL>A0$GA*Br(B</td></tr>
 <tr class="odd"><td><a href="mod_autoindex.html#addiconbyencoding">AddIconByEncoding <var>icon</var> <var>MIME-encoding</var>
@@ -87,22 +85,22 @@ handler</td></tr>
 <tr><td><a href="mod_autoindex.html#addiconbytype">AddIconByType <var>icon</var> <var>MIME-type</var>
 [<var>MIME-type</var>] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">$B%U%!%$%k$NNY$KI=<($9$k%"%$%3%s$r(B
 MIME $B%?%$%W$K$h$C$FA*Br(B</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#addinputfilter">AddInputFilter <var>filter</var>[;<var>filter</var>...]
-<var>extension</var> [<var>extension</var>] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Maps filename extensions to the filters that will process
-client requests</td></tr>
-<tr><td><a href="mod_mime.html#addlanguage">AddLanguage <var>MIME-lang</var> <var>extension</var>
-[<var>extension</var>] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Maps the given filename extension to the specified content
-language</td></tr>
+<tr class="odd"><td><a href="mod_mime.html#addinputfilter">AddInputFilter
+    <em>filter</em>[<em>;filter</em>...] extension
+    [<em>extension</em> ...]</a></td><td /><td>svdh</td><td /></tr><tr class="odd"><td class="descr" colspan="4">$B%U%!%$%k$N3HD%;R$r%/%i%$%"%s%H$N%j%/%(%9%H$r=hM}$9$k(B
+    $B%U%#%k%?$K%^%C%W$9$k(B</td></tr>
+<tr><td><a href="mod_mime.html#addlanguage">AddLanguage
+    <em>MIME-lang extension</em> [<em>extension</em>] ...</a></td><td /><td>svdh</td><td /></tr><tr><td class="descr" colspan="4">$B%U%!%$%kL>$r;XDj$5$l$?8@8l$K%^%C%W(B</td></tr>
 <tr class="odd"><td><a href="mod_info.html#addmoduleinfo">AddModuleInfo <em>module-name string</em></a></td><td /><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">server-info $B%O%s%I%i$K$h$jI=<($5$l$k%b%8%e!<%k$N>pJs$K(B
 $BDI2C$N>pJs$rIU$12C$($k(B</td></tr>
-<tr><td><a href="mod_mime.html#addoutputfilter">AddOutputFilter <var>filter</var>[;<var>filter</var>...]
-<var>extension</var> [<var>extension</var>] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Maps filename extensions to the filters that will process
-responses from the server</td></tr>
+<tr><td><a href="mod_mime.html#addoutputfilter">AddOutputFilter
+    <em>filter</em>[<em>;filter</em>...] extension
+    [<em>extension</em> ...]</a></td><td /><td>svdh</td><td /></tr><tr><td class="descr" colspan="4">$B%U%!%$%kL>$N3HD%;R$r%5!<%P$+$i$N1~Ez$r=hM}$9$k%U%#%k%?$K(B
+    $B%^%C%W$9$k(B</td></tr>
 <tr class="odd"><td><a href="core.html#addoutputfilterbytype">AddOutputFilterByType <var>filter</var>[;<var>filter</var>...]
 <var>MIME-type</var> [<var>MIME-type</var>] ...</a></td><td /><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">assigns an output filter to a particular MIME-type</td></tr>
-<tr><td><a href="mod_mime.html#addtype">AddType <var>MIME-type</var> <var>extension</var>
-[<var>extension</var>] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Maps the given filename extensions onto the specified content
-type</td></tr>
+<tr><td><a href="mod_mime.html#addtype">AddType <em>MIME-type
+    extension</em> [<em>extension</em>] ...</a></td><td /><td>svdh</td><td /></tr><tr><td class="descr" colspan="4">$B%U%!%$%kL>$N3HD%;R$r;XDj$5$l$?%3%s%F%s%H%?%$%W$K%^%C%W(B</td></tr>
 <tr class="odd"><td><a href="mod_alias.html#alias">Alias <var>URL-path</var>
 <var>file-path</var>|<var>directory-path</var></a></td><td /><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">URL $B$r%U%!%$%k%7%9%F%`$N0LCV$K%^%C%W$9$k(B</td></tr>
 <tr><td><a href="mod_alias.html#aliasmatch">AliasMatch <var>regex</var>
@@ -244,13 +242,14 @@ headers</td></tr>
 [env=[!]<var>environment-variable</var>]</a></td><td /><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Sets filename and format of log file</td></tr>
 <tr class="odd"><td><a href="mod_dav.html#dav" id="D" name="D">Dav On|Off|<var>provider-name</var></a></td><td> Off </td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">WebDAV HTTP $B%a%=%C%I$rM-8z$K$7$^$9(B</td></tr>
 <tr><td><a href="mod_dav.html#davdepthinfinity">DavDepthInfinity on|off</a></td><td> off </td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">PROPFIND, Depth: Infinity $B%j%/%(%9%H$r5v2D$7$^$9(B</td></tr>
-<tr class="odd"><td><a href="mod_dav_fs.html#davlockdb">DavLockDB <var>file-path</var></a></td><td /><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Location of the DAV lock database</td></tr>
+<tr class="odd"><td><a href="mod_dav_fs.html#davlockdb">DavLockDB <var>file-path</var></a></td><td /><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">DAV $B%m%C%/%G!<%?%Y!<%9$N0LCV(B</td></tr>
 <tr><td><a href="mod_dav.html#davmintimeout">DavMinTimeout <var>seconds</var></a></td><td> 0 </td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">$B%5!<%P$,(B DAV $B%j%=!<%9$N%m%C%/$r0];}$9$k:G>.;~4V$G$9!#(B
 </td></tr>
 <tr class="odd"><td><a href="mod_autoindex.html#defaulticon">DefaultIcon <var>url-path</var></a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">$BFCDj$N%"%$%3%s$,2?$b@_Dj$5$l$F$$$J$$;~$K(B
 $B%U%!%$%k$KI=<($9$k%"%$%3%s(B</td></tr>
-<tr><td><a href="mod_mime.html#defaultlanguage">DefaultLanguage <var>MIME-lang</var></a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Sets all files in the given scope to the specified
-language</td></tr>
+<tr><td><a href="mod_mime.html#defaultlanguage">DefaultLanguage
+    <em>MIME-lang</em></a></td><td /><td>svdh</td><td /></tr><tr><td class="descr" colspan="4">$B$"$k%9%3!<%W$N$9$Y$F$N%U%!%$%k$r;XDj$5$l$?8@8l$K(B
+$B@_Dj$9$k(B</td></tr>
 <tr class="odd"><td><a href="core.html#defaulttype">DefaultType <var>MIME-type</var></a></td><td> text/plain </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">MIME content-type that will be sent if the
 server cannot determine a type in any other way</td></tr>
 <tr><td><a href="mod_deflate.html#deflatebuffersize">DeflateBufferSize <em>value</em></a></td><td> 8096 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">zlib $B$,0lEY$K05=L$9$k2t$NBg$-$5(B</td></tr>
@@ -419,11 +418,11 @@ using the specified magic file</td></tr>
 <tr><td><a href="mpm_common.html#minsparethreads">MinSpareServers <var>number</var></a></td><td /><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">$B%j%/%(%9%H$K1~Ez$9$k$3$H$N$G$-$k(B
 $B%"%$%I%k%9%l%C%I?t$N:G>.?t(B</td></tr>
 <tr class="odd"><td><a href="mod_file_cache.html#mmapfile">MMapFile <var>file-path</var> [<var>file-path</var>] ...</a></td><td /><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Map a list of files into memory at startup time</td></tr>
-<tr><td><a href="mod_mime.html#modmimeusepathinfo">ModMimeUsePathInfo On|Off</a></td><td> Off </td><td>d</td><td>B</td></tr><tr><td class="descr" colspan="4">Tells <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code> to treat <code>path_info</code>
-components as part of the filename</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#multiviewsmatch">MultiviewsMatch Any|NegotiatedOnly|Filters|Handlers
-[Handlers|Filters]</a></td><td> NegotiatedOnly </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">The types of files that will be included when searching for
-a matching file with MultiViews</td></tr>
+<tr><td><a href="mod_mime.html#modmimeusepathinfo">ModMimeUsePathInfo On|Off</a></td><td /><td>d</td><td /></tr><tr><td class="descr" colspan="4">path_info $B%3%s%]!<%M%s%H$r%U%!%$%kL>$N0lIt$H$7$F07$&$h$&$K(B mod_mime
+$B$KDLCN$9$k(B</td></tr>
+<tr class="odd"><td><a href="mod_mime.html#multiviewsmatch">MultiviewsMatch
+    <em>[NegotiatedOnly] [Handlers] [Filters] [Any]</em></a></td><td /><td>svdh</td><td /></tr><tr class="odd"><td class="descr" colspan="4">MultiViews $B$G$N%^%C%A%s%0$N8!:w$K4^$^$;$k(B
+$B%U%!%$%k$N%?%$%W$r;XDj$9$k(B</td></tr>
 <tr><td><a href="core.html#namevirtualhost" id="N" name="N">NameVirtualHost <var>addr</var>[:<var>port</var>]</a></td><td /><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Designates an IP address for name-virtual
 hosting</td></tr>
 <tr class="odd"><td><a href="mod_proxy.html#noproxy">NoProxy <em>host</em> [<em>host</em>] ...</a></td><td /><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Hosts, domains, or networks that will be connected
@@ -482,27 +481,24 @@ header for proxied requests</td></tr>
 $B%j%@%$%l%/%H$rAw$k(B</td></tr>
 <tr class="odd"><td><a href="mod_alias.html#redirecttemp">RedirectTemp <var>URL-path</var> <var>URL</var></a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">$B%/%i%$%"%s%H$,0c$&(B URL $B$r<hF@$9$k$h$&$K30It$X$N0l;~E*$J(B
 $B%j%@%$%l%/%H$rAw$k(B</td></tr>
-<tr><td><a href="mod_mime.html#removecharset">RemoveCharset <var>extension</var> [<var>extension</var>]
-...</a></td><td /><td>vdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Removes any character set associations for a set of file
-extensions</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#removeencoding">RemoveEncoding <var>extension</var> [<var>extension</var>]
-...</a></td><td /><td>vdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Removes any content encoding associations for a set of file
-extensions</td></tr>
-<tr><td><a href="mod_mime.html#removehandler">RemoveHandler <var>extension</var> [<var>extension</var>]
-...</a></td><td /><td>vdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Removes any handler associations for a set of file
-extensions</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#removeinputfilter">RemoveInputFilter <var>extension</var> [<var>extension</var>]
-...</a></td><td /><td>vdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Removes any input filter associations for a set of file
-extensions</td></tr>
-<tr><td><a href="mod_mime.html#removelanguage">RemoveLanguage <var>extension</var> [<var>extension</var>]
-...</a></td><td /><td>vdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Removes any language associations for a set of file
-extensions</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#removeoutputfilter">RemoveOutputFilter <var>extension</var> [<var>extension</var>]
-...</a></td><td /><td>vdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Removes any output filter associations for a set of file
-extensions</td></tr>
-<tr><td><a href="mod_mime.html#removetype">RemoveType <var>extension</var> [<var>extension</var>]
-...</a></td><td /><td>vdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Removes any content type associations for a set of file
-extensions</td></tr>
+<tr><td><a href="mod_mime.html#removecharset">RemoveCharset
+    <em>extension</em> [<em>extension</em>] ...</a></td><td /><td>dh</td><td /></tr><tr><td class="descr" colspan="4">$B%U%!%$%k$N3HD%;R$K4XO"IU$1$i$l$?$9$Y$F$NJ8;z%;%C%H(B
+$B$r2r=|$9$k(B</td></tr>
+<tr class="odd"><td><a href="mod_mime.html#removeencoding">RemoveEncoding
+    <em>extension</em> [<em>extension</em>] ...</a></td><td /><td>vdh</td><td /></tr><tr class="odd"><td class="descr" colspan="4">$B%U%!%$%k$N3HD%;R$K4XO"IU$1$i$l$?$9$Y$F$N%3%s%F%s%H%(%s%3!<%G%#%s%0(B
+$B$r2r=|$9$k(B</td></tr>
+<tr><td><a href="mod_mime.html#removehandler">RemoveHandler
+    <em>extension</em> [<em>extension</em>] ...</a></td><td /><td>vdh</td><td /></tr><tr><td class="descr" colspan="4">$B%U%!%$%k$N3HD%;R$K4XO"IU$1$i$l$?$9$Y$F$N%O%s%I%i$r(B
+$B2r=|$9$k(B</td></tr>
+<tr class="odd"><td><a href="mod_mime.html#removeinputfilter">RemoveInputFilter
+    <em>extension</em> [<em>extension</em>] ...</a></td><td /><td>vdh</td><td /></tr><tr class="odd"><td class="descr" colspan="4">$B%U%!%$%k3HD%;R$K4XO"IU$1$i$l$?F~NO%U%#%k%?$r2r=|$9$k(B</td></tr>
+<tr><td><a href="mod_mime.html#removelanguage">RemoveLanguage
+    <em>extension</em> [<em>extension</em>] ...</a></td><td /><td>vdh</td><td /></tr><tr><td class="descr" colspan="4">$B%U%!%$%k3HD%;R$K4XO"IU$1$i$l$?8@8l$r2r=|$9$k(B</td></tr>
+<tr class="odd"><td><a href="mod_mime.html#removeoutputfilter">RemoveOutputFilter
+    <em>extension</em> [<em>extension</em>] ...</a></td><td /><td>vdh</td><td /></tr><tr class="odd"><td class="descr" colspan="4">$B%U%!%$%k3HD%;R$K4XO"IU$1$i$l$?=PNO%U%#%k%?$r2r=|$9$k(B</td></tr>
+<tr><td><a href="mod_mime.html#removetype">RemoveType
+    <em>extension</em> [<em>extension</em>] ...</a></td><td /><td>vdh</td><td /></tr><tr><td class="descr" colspan="4">$B%U%!%$%k$N3HD%;R$H4XO"IU$1$i$l$?%3%s%F%s%H%?%$%W$r(B
+$B2r=|$9$k(B</td></tr>
 <tr class="odd"><td><a href="mod_headers.html#requestheader">RequestHeader set|append|add|unset <var>header</var>
 [<var>value</var>]</a></td><td /><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configure HTTP request headers</td></tr>
 <tr><td><a href="core.html#require">Require <var>entity-name</var> [<var>entity-name</var>] ...</a></td><td /><td>dh</td><td>C</td></tr><tr><td class="descr" colspan="4">Selects which authenticated users can access
@@ -577,13 +573,12 @@ handler</td></tr>
 input</td></tr>
 <tr><td><a href="core.html#setoutputfilter">SetOutputFilter <var>filter</var>[;<var>filter</var>...]</a></td><td /><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Sets the filters that will process responses from the
 server</td></tr>
-<tr class="odd"><td><a href="mod_include.html#ssiendtag">SSIEndTag <var>tag</var></a></td><td> "--&gt;" </td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">String that ends an include element</td></tr>
-<tr><td><a href="mod_include.html#ssierrormsg">SSIErrorMsg <var>message</var></a></td><td> "[an error occurred +</td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Error message displayed when there is an SSI
-error</td></tr>
-<tr class="odd"><td><a href="mod_include.html#ssistarttag">SSIStartTag <var>tag</var></a></td><td> "&lt;!--" </td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">String that starts an include element</td></tr>
-<tr><td><a href="mod_include.html#ssitimeformat">SSITimeFormat <var>formatstring</var></a></td><td> "%A, %d-%b-%Y %H:%M +</td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Configures the format in which date strings are
-displayed</td></tr>
-<tr class="odd"><td><a href="mod_include.html#ssiundefinedecho">SSIUndefinedEcho <var>string</var></a></td><td> "(none)" </td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">String displayed when an unset variable is echoed</td></tr>
+<tr class="odd"><td><a href="mod_include.html#ssiendtag">SSIEndTag <em>tag</em></a></td><td> "--&gt;" </td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">include $BMWAG$r=*N;$5$;$kJ8;zNs(B</td></tr>
+<tr><td><a href="mod_include.html#ssierrormsg">SSIErrorMsg <em>message</em></a></td><td> 
+"[an error occurre +</td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">SSI $B$N%(%i!<$,$"$C$?$H$-$KI=<($5$l$k%(%i!<%a%C%;!<%8(B</td></tr>
+<tr class="odd"><td><a href="mod_include.html#ssistarttag">SSIStartTag <em>tag</em></a></td><td> "&lt;!--" </td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">include $BMWAG$r3+;O$9$kJ8;zNs(B</td></tr>
+<tr><td><a href="mod_include.html#ssitimeformat">SSITimeFormat <em>formatstring</em></a></td><td> "%A, %d-%b-%Y %H:%M +</td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">$BF|IU$1$r8=$9J8;zNs$N=q<0$r@_Dj$9$k(B</td></tr>
+<tr class="odd"><td><a href="mod_include.html#ssiundefinedecho">SSIUndefinedEcho <em>tag</em></a></td><td> "(none)" </td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">$BL$Dj5A$NJQ?t$,(B echo $B$5$l$?$H$-$KI=<($5$l$kJ8;zNs(B</td></tr>
 <tr><td><a href="mod_ssl.html#sslcacertificatefile">SSLCACertificateFile <em>file-path</em></a></td><td /><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">File of concatenated PEM-encoded CA Certificates 
 for Client Auth</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslcacertificatepath">SSLCACertificatePath <em>directory-path</em></a></td><td /><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Directory of PEM-encoded CA Certificates for 
@@ -645,7 +640,7 @@ Certificate verification</td></tr>
 <tr class="odd"><td><a href="core.html#timeout">TimeOut <var>seconds</var></a></td><td> 300 </td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Amount of time the server will wait for
 certain events before failing a request</td></tr>
 <tr><td><a href="mod_log_config.html#transferlog">TransferLog <var>file</var>|<var>pipe</var></a></td><td /><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Specifly location of a log file</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#typesconfig">TypesConfig <var>file-path</var></a></td><td> conf/mime.types </td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">The location of the <code>mime.types</code> file</td></tr>
+<tr class="odd"><td><a href="mod_mime.html#typesconfig">TypesConfig <em>file-path</em></a></td><td> conf/mime.types </td><td>s</td><td /></tr><tr class="odd"><td class="descr" colspan="4">mime.types $B%U%!%$%k$N0LCV(B</td></tr>
 <tr><td><a href="mod_env.html#unsetenv" id="U" name="U">UnsetEnv <var>env-variable</var> [<var>env-variable</var>] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">$B4D6-$+$iJQ?t$r<h$j=|$/(B</td></tr>
 <tr class="odd"><td><a href="core.html#usecanonicalname">UseCanonicalName On|Off|DNS</a></td><td> On </td><td>svd</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Configures how the server determines its own name and
 port</td></tr>
@@ -663,8 +658,8 @@ hostname or IP address</td></tr>
 a given virtual host</td></tr>
 <tr><td><a href="mod_vhost_alias.html#virtualscriptaliasip">VirtualScriptAliasIP <em>interpolated-directory</em>|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Dynamically configure the location of the cgi directory for
 a given virtual host</td></tr>
-<tr class="odd"><td><a href="mod_include.html#xbithack" id="X" name="X">XBitHack on|off|full</a></td><td> off </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Parse SSI directives in files with the execute bit
-set</td></tr>
+<tr class="odd"><td><a href="mod_include.html#xbithack" id="X" name="X">XBitHack on|off|full</a></td><td> off </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">$B<B9T%S%C%H$,@_Dj$5$l$?%U%!%$%k$N(B SSI $B%G%#%l%/%F%#%V$r(B
+$B2r@O$9$k(B</td></tr>
 </table></div>
 <div id="footer">
 <p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>

@@ -87,7 +87,7 @@ for HTTP Basic authentication.</dd>
 <dt><a href="mod_charset_lite.html">mod_charset_lite</a></dt><dd>Specify character set translation or recoding</dd>
 <dt><a href="mod_dav.html" id="D" name="D">mod_dav</a></dt><dd>分散オーサリングとバージョン管理
 (<a href="http://www.webdav.org/">WebDAV</a>) 機能</dd>
-<dt><a href="mod_dav_fs.html">mod_dav_fs</a></dt><dd>filesystem provider for <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code></dd>
+<dt><a href="mod_dav_fs.html">mod_dav_fs</a></dt><dd><code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code> のためのファイルシステムプロバイダ</dd>
 <dt><a href="mod_deflate.html">mod_deflate</a></dt><dd>クライアントへ送られる前にコンテンツを圧縮する</dd>
 <dt><a href="mod_dir.html">mod_dir</a></dt><dd>「最後のスラッシュ」のリダイレクトと、ディレクトリの
 インデックスファイルを扱う機能を提供する</dd>
@@ -105,7 +105,7 @@ delivery to the client</dd>
 <dt><a href="mod_headers.html" id="H" name="H">mod_headers</a></dt><dd>Customization of HTTP request and response
 headers</dd>
 <dt><a href="mod_imap.html" id="I" name="I">mod_imap</a></dt><dd>Server-side imagemap processing</dd>
-<dt><a href="mod_include.html">mod_include</a></dt><dd>Server-parsed html documents (Server Side Includes)</dd>
+<dt><a href="mod_include.html">mod_include</a></dt><dd>サーバがパースする html ドキュメント (Server Side Includes)</dd>
 <dt><a href="mod_info.html">mod_info</a></dt><dd>サーバの設定の包括的な概観を提供する</dd>
 <dt><a href="mod_isapi.html">mod_isapi</a></dt><dd>ISAPI Extensions within Apache for Windows</dd>
 <dt><a href="mod_ldap.html" id="L" name="L">mod_ldap</a></dt><dd>LDAP connection pooling and result caching services for use
@@ -113,10 +113,9 @@ by other LDAP modules</dd>
 <dt><a href="mod_log_config.html">mod_log_config</a></dt><dd>Logging of the requests made to the server</dd>
 <dt><a href="mod_logio.html">mod_logio</a></dt><dd>Logging of input and output bytes per request</dd>
 <dt><a href="mod_mem_cache.html" id="M" name="M">mod_mem_cache</a></dt><dd>Content cache keyed to URIs</dd>
-<dt><a href="mod_mime.html">mod_mime</a></dt><dd>Associates the requested filename's extensions
-    with the file's behavior (handlers and filters)
-    and content (mime-type, language, character set and
-    encoding)</dd>
+<dt><a href="mod_mime.html">mod_mime</a></dt><dd>リクエストされたファイルの拡張子とファイルの振る舞い
+    (ハンドラとフィルタ)、内容 (MIME タイプ、言語、文字セット、エンコーディング)
+    とを関連付ける</dd>
 <dt><a href="mod_mime_magic.html">mod_mime_magic</a></dt><dd>Determines the MIME type of a file
     by looking at a few bytes of its contents</dd>
 <dt><a href="mod_negotiation.html" id="N" name="N">mod_negotiation</a></dt><dd><a href="../content-negotiation.html">コンテントネゴシエーション</a>
