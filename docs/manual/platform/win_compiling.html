@@ -50,6 +50,16 @@
    complete Apache binary release.  It includes dependencies between
    the projects to assure that they are built in the appropriate order.</P>
 
+<P><STRONG>Notice: The Apache/VisualStudio project files are distributed
+   in VisualStudio 6.0 (98) format.  In fact you may use VisualStudio
+   5.0 (97) but you must first use the perl script command:<BR>
+<PRE>
+<BR>
+    CD src\helpers<BR>
+    cvstodsp5.pl<BR>
+<BR>
+</PRE>
+
 <OL>
    <LI><CODE>lib\apr\aprlib.dsp</CODE>
    <LI><CODE>lib\apr\aprlibdll.dsp <EM>requires aprlib</EM></CODE>
@@ -58,7 +68,6 @@
    <LI><CODE>lib\pcre\pcreposix.dsp <EM>requires dftables and pcre</EM></CODE>
    <LI><CODE>lib\expat-lite\xmltok.dsp</CODE>
    <LI><CODE>lib\expat-lite\xmlparse.dsp <EM>requires xmltok</EM></CODE>
-   <LI><CODE>ap\ap.dsp</CODE>
    <LI><CODE>main\gen_uri_delims.dsp</CODE>
    <LI><CODE>main\gen_test_char.dsp</CODE>
    <LI><CODE>ApacheCore.dsp <EM>requires all of the above</EM></CODE>
