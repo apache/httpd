@@ -64,19 +64,6 @@
 #ifndef __MOD_SSL_H__
 #define __MOD_SSL_H__
 
-/* 
- * Optionally enable the experimental stuff, but allow the user to
- * override the decision which experimental parts are included by using
- * CFLAGS="-DSSL_EXPERIMENTAL_xxxx_IGNORE".
- */
-#ifdef SSL_EXPERIMENTAL
-#ifdef SSL_ENGINE
-#ifndef SSL_EXPERIMENTAL_ENGINE_IGNORE
-#define SSL_EXPERIMENTAL_ENGINE
-#endif
-#endif
-#endif /* SSL_EXPERIMENTAL */
-
 /*
  * Power up our brain...
  */
@@ -414,7 +401,7 @@ typedef struct {
     void           *pTmpKeys[SSL_TMP_KEY_MAX];
     apr_hash_t     *tPublicCert;
     apr_hash_t     *tPrivateKey;
-#ifdef SSL_EXPERIMENTAL_ENGINE
+#ifdef HAVE_ENGINE_INIT
     char           *szCryptoDevice;
 #endif
     struct {
