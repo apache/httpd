@@ -85,7 +85,7 @@ static const char *add_index(cmd_parms *cmd, void *dummy, const char *arg)
     if (!d->index_names) {
 	d->index_names = ap_make_array(cmd->pool, 2, sizeof(char *));
     }
-    *(char **)ap_push_array(d->index_names) = arg;
+    *(const char **)ap_push_array(d->index_names) = arg;
     return NULL;
 }
 
