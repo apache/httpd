@@ -1466,7 +1466,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
          */
         wake_up_and_die();
 
-        if (unixd_killpg(getpgrp(), SIGTERM) < 0) {
+        if (ap_os_killpg(getpgrp(), SIGTERM) < 0) {
             ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf,
                          "killpg SIGTERM");
         }
@@ -1521,7 +1521,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
          * and a SIGHUP, we may as well use the same signal, because some user
          * pthreads are stealing signals from us left and right.
          */
-        if (unixd_killpg(getpgrp(), SIGTERM) < 0) {
+        if (ap_os_killpg(getpgrp(), SIGTERM) < 0) {
             ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, 
                          "killpg SIGTERM");
         }
