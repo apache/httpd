@@ -6,8 +6,9 @@
 
   Apache 2.0's configuration and installation environment has changed
   completely from Apache 1.3.  Apache 1.3 used a custom set of scripts
-  to achieve easy installation.  Apache 2.0 now uses libtool and autoconf
-  to create an environment that looks like many other Open Source projects.
+  to achieve easy installation.  Apache 2.0 now uses libtool and
+  autoconf to create an environment that looks like many other Open
+  Source projects.
 
 
   Installing the Apache 2.0 HTTP server
@@ -38,45 +39,49 @@
 
      o  Disk Space: 
 
-        Make sure you have approximately 12 MB of temporary free disk space
-        available.  After installation Apache occupies approximately 5 MB of
-        disk space (the actual required disk space depends on the amount of
-        compiled in third party modules, etc).
+        Make sure you have approximately 12 MB of temporary free disk
+        space available.  After installation Apache occupies
+        approximately 5 MB of disk space (the actual required disk
+        space depends on the amount of compiled in third party
+        modules, etc).
 
      o  ANSI-C Compiler: 
 
-        Make sure you have an ANSI-C compiler installed. The GNU C compiler
-        (GCC) from the Free Software Foundation (FSF) is recommended (version
-        2.7.2 is fine). If you don't have GCC then at least make sure your
-        vendors compiler is ANSI compliant. You can find the homepage of GNU
-        at http://www.gnu.org/ and the GCC distribution under
+        Make sure you have an ANSI-C compiler installed. The GNU C
+        compiler (GCC) from the Free Software Foundation (FSF) is
+        recommended (version 2.7.2 is fine). If you don't have GCC
+        then at least make sure your vendors compiler is ANSI
+        compliant. You can find the homepage of GNU at
+        http://www.gnu.org/ and the GCC distribution under
         http://www.gnu.org/order/ftp.html .
 
      o  Perl 5 Interpreter [OPTIONAL]:
 
-        For some of the support scripts like `apxs' or `dbmmanage' (which are
-        written in Perl) the Perl 5 interpreter is required (versions 5.003
-        and 5.004 are fine). If no such interpreter is found by APACI's
-        `configure' script this is no harm.  Of course, you still can build
-        and install Apache 1.3. Only those support scripts cannot be used. If
-        you have multiple Perl interpreters installed (perhaps a Perl 4 from
-        the vendor and a Perl 5 from your own), then it is recommended to use
-        the --with-perl option (see below) to make sure the correct one is
+        For some of the support scripts like `apxs' or `dbmmanage'
+        (which are written in Perl) the Perl 5 interpreter is required
+        (versions 5.003 and 5.004 are fine). If no such interpreter is
+        found by APACI's `configure' script this is no harm.  Of
+        course, you still can build and install Apache 1.3. Only those
+        support scripts cannot be used. If you have multiple Perl
+        interpreters installed (perhaps a Perl 4 from the vendor and a
+        Perl 5 from your own), then it is recommended to use the
+        --with-perl option (see below) to make sure the correct one is
         selected by APACI.
 
      o  Dynamic Shared Object (DSO) support [OPTIONAL]:
 
-        To provide maximum flexibility Apache now is able to load modules
-        under runtime via the DSO mechanism by using the pragmatic
-        dlopen()/dlsym() system calls. These system calls are not available
-        under all operating systems therefore you cannot use the DSO mechanism
-        on all platforms. And Apache currently has only limited built-in
-        knowledge on how to compile shared objects because this is heavily
+        To provide maximum flexibility Apache now is able to load
+        modules under runtime via the DSO mechanism by using the
+        pragmatic dlopen()/dlsym() system calls. These system calls
+        are not available under all operating systems therefore you
+        cannot use the DSO mechanism on all platforms. And Apache
+        currently has only limited built-in knowledge on how to
+        compile shared objects because this is heavily
         platform-dependent. The current state is this:
 
-        o Out-of-the-box supported platforms are (Not all of these will
-          work currently.  DSO support is currently available on most
-          of these platforms however):
+        o Out-of-the-box supported platforms are (Not all of these
+          will work currently.  DSO support is currently available on
+          most of these platforms however):
            - Linux     - SunOS         - UnixWare     - Darwin/Mac OS
            - FreeBSD   - Solaris       - AIX          - OpenStep/Mach
            - OpenBSD   - IRIX          - SCO          - DYNIX/ptx
@@ -87,10 +92,11 @@
            - Ultrix
 
         If your system is not on these lists but has the dlopen-style
-        interface, you either have to provide the appropriate compiler and
-        linker flags (see CFLAGS_SHLIB, LDFLAGS_SHLIB and LDFLAGS_SHLIB_EXPORT
-        below) manually or at least make sure a Perl 5 interpreter is
-        installed from which Apache can guess the options.
+        interface, you either have to provide the appropriate compiler
+        and linker flags (see CFLAGS_SHLIB, LDFLAGS_SHLIB and
+        LDFLAGS_SHLIB_EXPORT below) manually or at least make sure a
+        Perl 5 interpreter is installed from which Apache can guess
+        the options.
 
 
      If you are building from a copy of the CVS repository, rather
@@ -99,16 +105,16 @@
 
      o  Libtool 1.3.3:
 
-        Make sure that you have libtool 1.3.3 or later installed before
-        trying to configure and build Apache 2.0.  Libtool can be downloaded
-        from the Free Software Foundation (FSF), at 
+        Make sure that you have libtool 1.3.3 or later installed
+        before trying to configure and build Apache 2.0.  Libtool can
+        be downloaded from the Free Software Foundation (FSF), at
         http://www.gnu.org/order/ftp.html.
 
      o  Autoconf 2.13:
 
-        Make sure that you have autoconf 2.13 or later installed before
-        trying to configure and build Apache 2.0.  Autoconf can be
-        downloaded from the Free Software Foundation (FSF), at
+        Make sure that you have autoconf 2.13 or later installed
+        before trying to configure and build Apache 2.0.  Autoconf can
+        be downloaded from the Free Software Foundation (FSF), at
         http://www.gnu.org/order/ftp.html.
 
 
@@ -123,32 +129,34 @@
  
      ./buildconf
 
-     This script ensures that all required programs are installed on the
-     currently machine, and creates the ./configure script.  If you are
-     using a package downloaded from apache.org then this step is not 
-     necessary.
+     This script ensures that all required programs are installed on
+     the currently machine, and creates the ./configure script.  If
+     you are using a package downloaded from apache.org then this step
+     is not necessary.
 
      Introduction:
 
-     The next step is to configure the Apache source tree for your particular
-     platform and personal requirements. The most important setup here is the
-     location prefix where Apache is to be installed later, because Apache has
-     to be configured for this location to work correctly. But there are a lot
-     of other options available for your pleasure.
+     The next step is to configure the Apache source tree for your
+     particular platform and personal requirements. The most important
+     setup here is the location prefix where Apache is to be installed
+     later, because Apache has to be configured for this location to
+     work correctly. But there are a lot of other options available
+     for your pleasure.
 
-     For a short impression of what possibilities you have, here is a typical
-     example which compiles Apache for the installation tree /sw/pkg/apache
-     with a particular compiler and flags plus the two additional modules
-     mod_rewrite and mod_speling for later loading through the DSO mechanism: 
+     For a short impression of what possibilities you have, here is a
+     typical example which compiles Apache for the installation tree
+     /sw/pkg/apache with a particular compiler and flags plus the two
+     additional modules mod_rewrite and mod_speling for later loading
+     through the DSO mechanism:
 
      $ CC="pgcc" OPTIM="-O2" \
        ./configure --prefix=/sw/pkg/apache \
                    --enable-rewrite=shared \
                    --enable-speling=shared
 
-     The easiest way to find all of the configuration flags for Apache 2.0
-     is to run ./configure --help.  What follows is a brief description of
-     most of the arguments.
+     The easiest way to find all of the configuration flags for Apache
+     2.0 is to run ./configure --help.  What follows is a brief
+     description of most of the arguments.
 
      Reference:
 
@@ -182,62 +190,68 @@
 			     [--server-gid=GID]
 
      Use the CC, OPTIM, CFLAGS, INCLUDES, LDFLAGS, LIBS, CFLAGS_SHLIB,
-     LD_SHLIB, LDFLAGS_SHLIB, LDFLAGS_SHLIB_EXPORT, RANLIB, DEPS and TARGET
-     environment variables to override the corresponding default entries in
-     the src/Configuration.tmpl file (see there for more information about
-     their usage).
+     LD_SHLIB, LDFLAGS_SHLIB, LDFLAGS_SHLIB_EXPORT, RANLIB, DEPS and
+     TARGET environment variables to override the corresponding
+     default entries in the src/Configuration.tmpl file (see there for
+     more information about their usage).
 
-     Use the --prefix=PREFIX and --exec-prefix=EPREFIX options to configure
-     Apache to use a particular installation prefix. The default is
-     PREFIX=/usr/local/apache and EPREFIX=PREFIX.
+     Use the --prefix=PREFIX and --exec-prefix=EPREFIX options to
+     configure Apache to use a particular installation prefix. The
+     default is PREFIX=/usr/local/apache and EPREFIX=PREFIX.
 
-     Use the --bindir=DIR, --sbindir=DIR, --libexecdir=DIR, --mandir=DIR,
-     --sysconfdir=DIR, --datadir=DIR, --iconsdir=DIR, --htdocsdir=DIR,
-     --cgidir=DIR, --includedir=DIR, --localstatedir=DIR,
-     --runtimedir=DIR, --logfiledir=DIR and --proxycachedir=DIR option to change
-     the paths for particular subdirectories of the installation tree.
-     Defaults are bindir=EPREFIX/bin, sbindir=EPREFIX/bin,
-     libexecdir=EPREFIX/modules, mandir=PREFIX/man, sysconfdir=PREFIX/conf,
-     datadir=PREFIX, iconsdir=PREFIX/icons, htdocsdir=PREFIX/htdocs,
-     cgidir=PREFIX/cgi-bin, includedir=PREFIX/include,
-     localstatedir=PREFIX, runtimedir=PREFIX/logs,
-     logfiledir=PREFIX/logs and proxycachedir=PREFIX/proxy.
+     Use the --bindir=DIR, --sbindir=DIR, --libexecdir=DIR,
+     --mandir=DIR, --sysconfdir=DIR, --datadir=DIR, --iconsdir=DIR,
+     --htdocsdir=DIR, --cgidir=DIR, --includedir=DIR,
+     --localstatedir=DIR, --runtimedir=DIR, --logfiledir=DIR and
+     --proxycachedir=DIR option to change the paths for particular
+     subdirectories of the installation tree.  Defaults are
+     bindir=EPREFIX/bin, sbindir=EPREFIX/bin,
+     libexecdir=EPREFIX/modules, mandir=PREFIX/man,
+     sysconfdir=PREFIX/conf, datadir=PREFIX, iconsdir=PREFIX/icons,
+     htdocsdir=PREFIX/htdocs, cgidir=PREFIX/cgi-bin,
+     includedir=PREFIX/include, localstatedir=PREFIX,
+     runtimedir=PREFIX/logs, logfiledir=PREFIX/logs and
+     proxycachedir=PREFIX/proxy.
 
-         Note: To reduce the pollution of shared installation locations
-               (like /usr/local/ or /etc) with Apache files to a minimum the
-               string ``/apache'' is automatically appended to 'libexecdir',
-               'sysconfdir', 'datadir', 'localstatedir' and 'includedir' if
-               (and only if) the following points apply for each path
-               individually:
+         Note: To reduce the pollution of shared installation
+               locations (like /usr/local/ or /etc) with Apache files
+               to a minimum the string ``/apache'' is automatically
+               appended to 'libexecdir', 'sysconfdir', 'datadir',
+               'localstatedir' and 'includedir' if (and only if) the
+               following points apply for each path individually:
 
                    1. the path doesn't already contain the word ``apache''
                    2. the path was not directly customized by the user
 
-               Keep in mind that per default these paths are derived from
-               'prefix' and 'exec-prefix', so usually its only a matter
-               whether these paths contain ``apache'' or not. Although the
-               defaults were defined with experience in mind you always should
-               make sure the paths fit your situation by checking the finally
-               chosen paths via the --layout option.
+               Keep in mind that per default these paths are derived
+               from 'prefix' and 'exec-prefix', so usually its only a
+               matter whether these paths contain ``apache'' or
+               not. Although the defaults were defined with experience
+               in mind you always should make sure the paths fit your
+               situation by checking the finally chosen paths via the
+               --layout option.
 
-     Use the --with-layout=[F:]ID option to select a particular installation
-     path base-layout. You always _HAVE_ to select a base-layout. There are
-     currently two layouts pre-defined in the file config.layout: `Apache' for
-     the classical Apache path layout and `GNU' for a path layout conforming
-     to the GNU `standards' document. When you want to use your own custom
-     layout FOO, either add a corresponding "<Layout FOO>...</Layout>" section
-     to config.layout and use --with-layout=FOO or place it into your own
-     file, say config.mypaths, and use --with-layout=config.mypaths:FOO.
+     Use the --with-layout=[F:]ID option to select a particular
+     installation path base-layout. You always _HAVE_ to select a
+     base-layout. There are currently two layouts pre-defined in the
+     file config.layout: `Apache' for the classical Apache path layout
+     and `GNU' for a path layout conforming to the GNU `standards'
+     document. When you want to use your own custom layout FOO, either
+     add a corresponding "<Layout FOO>...</Layout>" section to
+     config.layout and use --with-layout=FOO or place it into your own
+     file, say config.mypaths, and use
+     --with-layout=config.mypaths:FOO.
  
-     Use the --show-layout option to check the final installation path layout
-     while fiddling with the options above.
+     Use the --show-layout option to check the final installation path
+     layout while fiddling with the options above.
  
-     Use the --enable-NAME=(shared) and --disable-NAME options to enable
-     or disable a particular already distributed module from the Apache
-     package.
+     Use the --enable-NAME=(shared) and --disable-NAME options to
+     enable or disable a particular already distributed module from
+     the Apache package.
 
-     Use the --with-mpm=NAME option to determine which MPM should be built
-     for your server.
+     Use the --with-mpm=NAME option to determine which MPM should be
+     built for your server.
+
      _________________________________________________________________________
      LIST OF AVAILABLE MODULES
 
@@ -324,88 +338,94 @@
                     (+) = enabled  per default [disable with --disable-module]
                     (-) = disabled per default [enable  with --enable-module ]
 
-     Use the --enable-suexec option to enable the suEXEC feature by building
-     and installing the "suexec" support program. Use --suexec-caller=UID to
-     set the allowed caller user id, --suexec-userdir=DIR to set the user
-     subdirectory, --suexec-docroot=DIR to set the suexec root directory,
-     --suexec-uidmin=UID/--suexec-gidmin=GID to set the minimal allowed
-     UID/GID, --suexec-logfile=FILE to set the logfile and
+     Use the --enable-suexec option to enable the suEXEC feature by
+     building and installing the "suexec" support program. Use
+     --suexec-caller=UID to set the allowed caller user id,
+     --suexec-userdir=DIR to set the user subdirectory,
+     --suexec-docroot=DIR to set the suexec root directory,
+     --suexec-uidmin=UID/--suexec-gidmin=GID to set the minimal
+     allowed UID/GID, --suexec-logfile=FILE to set the logfile and
      --suexec-safepath=PATH to set the safe shell PATH for the suEXEC
-     feature. At least one --suexec-xxxxx option has to be provided together
-     with the --enable-suexec option to let APACI accept your request for
-     using the suEXEC feature.
+     feature. At least one --suexec-xxxxx option has to be provided
+     together with the --enable-suexec option to let APACI accept your
+     request for using the suEXEC feature.
 
-     CAUTION: FOR DETAILS ABOUT THE SUEXEC FEATURE WE HIGHLY RECOMMEND YOU TO
-              FIRST READ THE DOCUMENT htdocs/manual/suexec.html BEFORE USING
-              THE ABOVE OPTIONS.
+     CAUTION: FOR DETAILS ABOUT THE SUEXEC FEATURE WE HIGHLY RECOMMEND
+              YOU TO FIRST READ THE DOCUMENT htdocs/manual/suexec.html
+              BEFORE USING THE ABOVE OPTIONS.
      
-              USING THE SUEXEC FEATURE PROPERLY CAN REDUCE CONSIDERABLY THE
-              SECURITY RISKS INVOLVED WITH ALLOWING USERS TO DEVELOP AND RUN
-              PRIVATE CGI OR SSI PROGRAMS. HOWEVER, IF SUEXEC IS IMPROPERLY
-              CONFIGURED, IT CAN CAUSE ANY NUMBER OF PROBLEMS AND POSSIBLY
-              CREATE NEW HOLES IN YOUR COMPUTER'S SECURITY.  IF YOU AREN'T
-              FAMILIAR WITH MANAGING SETUID ROOT PROGRAMS AND THE SECURITY
-              ISSUES THEY PRESENT, WE HIGHLY RECOMMEND THAT YOU NOT CONSIDER
-              USING SUEXEC AND KEEP AWAY FROM THESE OPTIONS!
+              USING THE SUEXEC FEATURE PROPERLY CAN REDUCE
+              CONSIDERABLY THE SECURITY RISKS INVOLVED WITH ALLOWING
+              USERS TO DEVELOP AND RUN PRIVATE CGI OR SSI
+              PROGRAMS. HOWEVER, IF SUEXEC IS IMPROPERLY CONFIGURED,
+              IT CAN CAUSE ANY NUMBER OF PROBLEMS AND POSSIBLY CREATE
+              NEW HOLES IN YOUR COMPUTER'S SECURITY.  IF YOU AREN'T
+              FAMILIAR WITH MANAGING SETUID ROOT PROGRAMS AND THE
+              SECURITY ISSUES THEY PRESENT, WE HIGHLY RECOMMEND THAT
+              YOU NOT CONSIDER USING SUEXEC AND KEEP AWAY FROM THESE
+              OPTIONS!
 
-     Use the --shadow option to let APACI create a shadow source tree of the
-     sources for building. This is useful when you want to build for different
-     platforms in parallel (usually through a NFS, AFS or DFS mounted
-     filesystem).  You may specify a directory to the --shadow option into
-     which the shadow tree will be created.
+     Use the --shadow option to let APACI create a shadow source tree
+     of the sources for building. This is useful when you want to
+     build for different platforms in parallel (usually through a NFS,
+     AFS or DFS mounted filesystem).  You may specify a directory to
+     the --shadow option into which the shadow tree will be created.
  
-     Use the --quiet option to disable all configuration verbose messages.
+     Use the --quiet option to disable all configuration verbose
+     messages.
  
      Use the --verbose option to enable additional verbose messages.
      
-     Use the --server-uid option to specify the user ID you want the server to run
-     as. If not specified the server will run as user nobody.  If the user ID
-     specified is different than the ID of the user starting the server, you need to
-     start the server as root.
+     Use the --server-uid option to specify the user ID you want the
+     server to run as. If not specified the server will run as user
+     nobody.  If the user ID specified is different than the ID of the
+     user starting the server, you need to start the server as root.
 
-     Use the --server-gid option to specify the group ID you want the server user ID to
-     be a member of.  If not specified, the group ID will be #-1.
+     Use the --server-gid option to specify the group ID you want the
+     server user ID to be a member of.  If not specified, the group ID
+     will be #-1.
 
 
   4. Building the package
      --------------------
      
-     Now you can build the various parts which form the Apache package by
-     simply running the command
+     Now you can build the various parts which form the Apache package
+     by simply running the command:
  
         $ make 
  
-     Please be patient here, this takes approximately 2 minutes to complete
-     under a Pentium-166/FreeBSD-2.2 system, dependend on the amount of
-     modules you have enabled. 
+     Please be patient here, this takes approximately 2 minutes to
+     complete under a Pentium-166/FreeBSD-2.2 system, dependend on the
+     amount of modules you have enabled.
 
  
   5. Installing the package
      ----------------------
      
-     Now its time to install the package under the configured installation
-     PREFIX (see --prefix option above) by running:
+     Now its time to install the package under the configured
+     installation PREFIX (see --prefix option above) by running:
  
         $ make install
  
-     For the paranoid hackers under us: The above command really installs under
-     prefix _only_, i.e. no other stuff from your system is touched. Even if
-     you upgrade an existing installation your configuration files in
-     PREFIX/conf/ are preserved.
+     For the paranoid hackers under us: The above command really
+     installs under prefix _only_, i.e. no other stuff from your
+     system is touched. Even if you upgrade an existing installation
+     your configuration files in PREFIX/conf/ are preserved.
 
 
   6. Testing the package
      -------------------
  
-     Now you can fire up your Apache HTTP server by immediately running
+     Now you can fire up your Apache HTTP server by immediately
+     running:
  
         $ PREFIX/bin/apachectl start
  
-     and then you should be able to request your first document via URL
-     http://localhost/ (when you built and installed Apache as root or at
-     least used the --without-confadjust option) or http://localhost:8080/
-     (when you built and installed Apache as a regular user). Then stop the
-     server again by running: 
+     and then you should be able to request your first document via
+     URL http://localhost/ (when you built and installed Apache as
+     root or at least used the --without-confadjust option) or
+     http://localhost:8080/ (when you built and installed Apache as a
+     regular user). Then stop the server again by running:
 
         $ PREFIX/bin/apachectl stop
 
@@ -419,46 +439,46 @@
         $ vi PREFIX/conf/httpd.conf
  
      Have a look at the Apache manual under docs/manual/ or
-     http://httpd.apache.org/docs/ for a complete reference of available
-     configuration directives.
+     http://httpd.apache.org/docs/ for a complete reference of
+     available configuration directives.
 
 
   8. Preparing the system
      --------------------
 
-     Proper operation of a public HTTP server requires at least the following:
+     Proper operation of a public HTTP server requires at least the
+     following:
 
-     1. A correctly working TCP/IP layer, since HTTP is implemented on top of
-        TCP/IP. Although modern Unix platforms have good networking layers,
-        always make sure you have all official vendor patches referring to the
-        network layer applied.
+     1. A correctly working TCP/IP layer, since HTTP is implemented on
+        top of TCP/IP. Although modern Unix platforms have good
+        networking layers, always make sure you have all official
+        vendor patches referring to the network layer applied.
 
      2. Accurate time keeping, since elements of the HTTP protocol are
-        expressed as the time of day.  So, it's time to investigate setting
-        some time synchronization facility on your system. Usually the ntpdate
-        or xntpd programs are used for this purpose which are based on the
-        Network Time Protocol (NTP). See the Usenet newsgroup
-        comp.protocols.time.ntp and the NTP homepage at
-        http://www.eecis.udel.edu/~ntp/ for more details about NTP software
-        and public time servers.
+        expressed as the time of day.  So, it's time to investigate
+        setting some time synchronization facility on your
+        system. Usually the ntpdate or xntpd programs are used for
+        this purpose which are based on the Network Time Protocol
+        (NTP). See the Usenet newsgroup comp.protocols.time.ntp and
+        the NTP homepage at http://www.eecis.udel.edu/~ntp/ for more
+        details about NTP software and public time servers.
 
 
   9. Contacts
      --------
 
-     o If you want to be informed about new code releases, bug fixes, 
-       security fixes, general news and information about the Apache server
-       subscribe to the apache-announce mailing list as described under
-       http://httpd.apache.org/announcelist.html
+     o If you want to be informed about new code releases, bug fixes,
+       security fixes, general news and information about the Apache
+       server subscribe to the apache-announce mailing list as
+       described under http://httpd.apache.org/announcelist.html
 
-     o If you want freely available support for running Apache please join the
-       Apache user community by subscribing at least to the following USENET
-       newsgroup:
-       comp.infosystems.www.servers.unix
+     o If you want freely available support for running Apache please
+       join the Apache user community by subscribing at least to the
+       following USENET newsgroup: comp.infosystems.www.servers.unix
 
-     o If you want commercial support for running Apache please contact
-       one of the companies and contractors which are listed at
-       http://httpd.apache.org/info/support.cgi
+     o If you want commercial support for running Apache please
+       contact one of the companies and contractors which are listed
+       at http://httpd.apache.org/info/support.cgi
 
      o If you have a concrete bug report for Apache please go to the
        Apache Group Bug Database and submit your report:
