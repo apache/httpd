@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/02/06 02:40:37 $]
+Last modified at [$Date: 2002/02/06 03:55:42 $]
 
 Release:
 
@@ -47,8 +47,8 @@ RELEASE SHOWSTOPPERS:
                       Linux 2.2 & 2.4, HPUX
         Broken on: Win32 [no error logging within service, other bugs]
         for beta
-            +1 : Jeff Trawick, Aaron, Jim
-            +0 : Lars, Justin
+            +1 : Aaron, Jim
+            +0 : Lars, Justin, trawick
             -0 : OtherBill
             -1 : BillS, Ian, gregames, BrianP
         bumps since original tag:
@@ -99,11 +99,11 @@ RELEASE SHOWSTOPPERS:
                    Perhaps in FirstBill's example _restart didn't survive.
                  . Scoreboard appears irrelevant to the problem.
                  . This looks like handle corruption in NT/XP
-                 . Args are not initialied correctly when the -k install
+                 . Args are not initialized correctly when the -k install
                    is given.
               OtherBill will not create Win32 binaries due to this bug.
 
-            * mod_auth_dbm can't open a Berkely DB password file on Unix
+            * mod_auth_dbm can't open a Berkeley DB password file on Unix
                 Justin postulates that this might be related to the fact
                 that mod_auth_dbm wasn't using apr-util.  See
                 modules/aaa/mod_auth_dbm.c revision 1.42 and
@@ -117,6 +117,12 @@ RELEASE SHOWSTOPPERS:
 
             * anon shared memory not allocating enough 
                 (fix is apr/shm/unix/shm.c 1.14)
+
+    * other BETA possibilities
+      31 + fixes for all non-cosmetic problems seen on daedalus
+        +1: trawick
+        +0:
+        -1:
 
     * ap_directory_walk skips some per-dir config merge functions
       if there is no "<Directory />" block in the configuration
