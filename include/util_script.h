@@ -59,6 +59,8 @@
 #ifndef APACHE_UTIL_SCRIPT_H
 #define APACHE_UTIL_SCRIPT_H
 
+#include "apr_buckets.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -123,6 +125,21 @@ AP_DECLARE(void) ap_add_common_vars(request_rec *r);
  * @deffunc int ap_scan_script_header_err(request_rec *r, apr_file_t *f, char *buffer)
  */ 
 AP_DECLARE(int) ap_scan_script_header_err(request_rec *r, apr_file_t *f, char *buffer);
+
+/**
+ * Read headers output from a script, ensuring that the output is valid.  If
+ * the output is valid, then the headers are added to the headers out of the
+ * current request
+ * @param r The current request
+ * @param bb The brigade from which to read
+ * @param buffer Empty when calling the function.  On output, if there was an
+ *               error, the string that cause the error is stored here. 
+ * @return HTTP_OK on success, HTTP_INTERNAL_SERVER_ERROR otherwise
+ * @deffunc int ap_scan_script_header_err_brigade(request_rec *r, apr_bucket_brigade *bb, char *buffer)
+ */ 
+AP_DECLARE(int) ap_scan_script_header_err_brigade(request_rec *r,
+                                                  apr_bucket_brigade *bb,
+                                                  char *buffer);
 
 /**
  * Read headers strings from a script, ensuring that the output is valid.  If
