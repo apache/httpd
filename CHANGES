@@ -1,5 +1,9 @@
 Changes with Apache 2.0.26-dev
 
+  *) Allow support programs to be compiled against a static version
+     of libapr.  This allows the smaller support programs to be 
+     relocated.  [Aaron Bannert <aaron@clove.org>]
+
   *) Update the mime.types file to the registered media types as
      of 2001-09-25, and add mapping for xsl extension [Mark Cox]
 
