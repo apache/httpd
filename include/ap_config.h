@@ -103,16 +103,6 @@
 /* ap_ versions of ctype macros to make sure they deal with 8-bit chars */
 #include "ap_ctype.h"
 
-/* XXX - This probably doesn't handle OS/2 */
-#ifdef SELECT_NEEDS_CAST
-#define ap_select(_a, _b, _c, _d, _e)   \
-    select((SELECT_TYPE_ARG1)(_a), (SELECT_TYPE_ARG234)(_b), \
-           (SELECT_TYPE_ARG234)(_c), (SELECT_TYPE_ARG234)(_d), \
-           (SELECT_TYPE_ARG5)(_e))
-#else
-#define ap_select(_a, _b, _c, _d, _e) select(_a, _b, _c, _d, _e)
-#endif
-
 #ifdef SIGWAIT_TAKES_ONE_ARG
 #define ap_sigwait(a,b) ((*(b)=sigwait((a)))<0?-1:0)
 #else
