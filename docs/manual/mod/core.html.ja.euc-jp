@@ -326,7 +326,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AllowOverride" id="AllowOverride">AllowOverride</a> <a name="allowoverride" id="allowoverride">ディレクティブ</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>.htaccess で許可されるディレクティブの種類</td></tr>
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td><code>.htaccess</code> で許可されるディレクティブの種類</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>AllowOverride All|None|<var>directive-type</var> 
 [<var>directive-type</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>AllowOverride All</code></td></tr>
@@ -499,7 +499,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ContentDigest" id="ContentDigest">ContentDigest</a> <a name="contentdigest" id="contentdigest">ディレクティブ</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Content-MD5 HTTP 応答ヘッダの生成を有効にする</td></tr>
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td><code>Content-MD5</code> HTTP 応答ヘッダの生成を有効にする</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ContentDigest On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>ContentDigest Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>

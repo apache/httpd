@@ -840,7 +840,7 @@ RewriteRule  ^/$                 /homepage.std.html  [L]
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="RewriteLock" id="RewriteLock">RewriteLock</a> <a name="rewritelock" id="rewritelock">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets the name of the lock file used for RewriteMap
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets the name of the lock file used for <code class="directive"><a href="#rewritemap">RewriteMap</a></code>
 synchronization</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RewriteLock <em>file-path</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>

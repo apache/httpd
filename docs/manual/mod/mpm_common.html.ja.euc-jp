@@ -417,7 +417,7 @@ accept しようとしているときに、Apache がそれらの子プロセスを直列化するために
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MaxMemFree" id="MaxMemFree">MaxMemFree</a> <a name="maxmemfree" id="maxmemfree">ディレクティブ</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>free() が呼ばれない限り、
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td><code>free()</code> が呼ばれない限り、
 主メモリアロケータが保持し続けられるメモリの最大量</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>MaxMemFree <var>KBytes</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>MaxMemFree 0</code></td></tr>

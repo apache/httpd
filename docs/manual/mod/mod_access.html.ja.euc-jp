@@ -218,8 +218,8 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Order" id="Order">Order</a> <a name="order" id="order">ディレクティブ</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>デフォルトのアクセス可能な状態と、Allow と
-Deny が評価される順番を制御する</td></tr>
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>デフォルトのアクセス可能な状態と、<code class="directive">Allow</code> と
+<code class="directive">Deny</code> が評価される順番を制御する</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code> Order <var>ordering</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>Order Deny,Allow</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>ディレクトリ, .htaccess</td></tr>

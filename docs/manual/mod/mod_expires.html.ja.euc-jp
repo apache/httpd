@@ -125,7 +125,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ExpiresActive" id="ExpiresActive">ExpiresActive</a> <a name="expiresactive" id="expiresactive">ディレクティブ</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Expires ヘッダの生成を有効にする</td></tr>
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td><code>Expires</code> ヘッダの生成を有効にする</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ExpiresActive On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>Indexes</td></tr>
@@ -154,7 +154,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ExpiresByType" id="ExpiresByType">ExpiresByType</a> <a name="expiresbytype" id="expiresbytype">ディレクティブ</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>MIME タイプによって設定される Expires ヘッダの値</td></tr>
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>MIME タイプによって設定される <code>Expires</code> ヘッダの値</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ExpiresByType <var>MIME-type</var>
 <var>&lt;code&gt;seconds</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>

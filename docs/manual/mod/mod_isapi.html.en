@@ -227,7 +227,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ISAPIAppendLogToErrors" id="ISAPIAppendLogToErrors">ISAPIAppendLogToErrors</a> <a name="isapiappendlogtoerrors" id="isapiappendlogtoerrors">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Record HSE_APPEND_LOG_PARAMETER requests from
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Record <code>HSE_APPEND_LOG_PARAMETER</code> requests from
 ISAPI extensions to the error log</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ISAPIAppendLogToErrors on|off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ISAPIAppendLogToErrors off</code></td></tr>
@@ -243,7 +243,7 @@ ISAPI extensions to the error log</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ISAPIAppendLogToQuery" id="ISAPIAppendLogToQuery">ISAPIAppendLogToQuery</a> <a name="isapiappendlogtoquery" id="isapiappendlogtoquery">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Record HSE_APPEND_LOG_PARAMETER requests from
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Record <code>HSE_APPEND_LOG_PARAMETER</code> requests from
 ISAPI extensions to the query field</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ISAPIAppendLogToQuery on|off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ISAPIAppendLogToQuery on</code></td></tr>
