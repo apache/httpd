@@ -107,6 +107,7 @@
 #include <time.h>
 #include "scoreboard.h"
 #include "http_log.h"
+#include "mod_status.h"
 #if APR_HAVE_UNISTD_H
 #include <unistd.h>
 #endif
@@ -140,6 +141,12 @@
 module AP_MODULE_DECLARE_DATA status_module;
 
 int server_limit, thread_limit;
+
+/* Implement 'ap_run_status_hook'. */
+AP_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(int,status_hook,
+                                   (request_rec *r, int flags),
+                                   (r, flags),
+                                   OK, DECLINED)
 
 /*
  * command-related code. This is here to prevent use of ExtendedStatus
@@ -784,6 +791,16 @@ static int status_handler(request_rec *r)
                      "information you need to use the "
                      "<code>ExtendedStatus On</code> directive.\n", r);
         }
+    }
+
+    {
+        /* Run extension hooks to insert extra content. */
+        int flags = 
+            (short_report ? AP_STATUS_SHORT : 0) | 
+            (no_table_report ? AP_STATUS_NOTABLE : 0) |
+            (ap_extended_status ? AP_STATUS_EXTENDED : 0);
+        
+        ap_run_status_hook(r, flags);
     }
 
     if (!short_report) {
