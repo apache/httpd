@@ -181,7 +181,7 @@ HPUX betreiben</page>
   <modulefile>mod_usertrack.xml</modulefile>
   <modulefile>mod_vhost_alias.xml</modulefile>
 
-  <modulefile>mpm_common.xml</modulefile>
+  <modulefile>mpm_common.xml.de</modulefile>
   <modulefile>beos.xml</modulefile>
   <modulefile>mpm_netware.xml</modulefile>
   <modulefile>mpm_winnt.xml</modulefile>

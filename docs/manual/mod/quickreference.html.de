@@ -52,8 +52,8 @@
     </table></td></tr>
 </table>
 <table class="qref">
-<tr><td><a href="mpm_common.html#acceptmutex" id="A" name="A">AcceptMutex Default|<var>method</var></a></td><td> Default </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Method that Apache uses to serialize multiple children
-accepting requests on network sockets</td></tr>
+<tr><td><a href="mpm_common.html#acceptmutex" id="A" name="A">AcceptMutex Default|<var>Methode</var></a></td><td> Default </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Vom Apache verwendete Methode zur Serialisierung mehrerer
+  Kindprozesse, die Anfragen an Netzwerk-Sockets entgegennehmen.</td></tr>
 <tr class="odd"><td><a href="core.html#acceptpathinfo">AcceptPathInfo On|Off|Default</a></td><td> Default </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Ressourcen lassen angehängte Pfadangaben zu</td></tr>
 <tr><td><a href="core.html#accessfilename">AccessFileName <var>Dateiname</var> [<var>Dateiname</var>] ...</a></td><td> .htaccess </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Name der dezentralen Konfigurationsdateien</td></tr>
 <tr class="odd"><td><a href="mod_actions.html#action">Action <var>action-type</var> <var>cgi-script</var></a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Activates a CGI script for a particular handler or
@@ -183,8 +183,8 @@ passwords for authentication</td></tr>
 <tr><td><a href="mod_setenvif.html#browsermatchnocase">BrowserMatchNoCase  <em>regex [!]env-variable</em>[=<em>value</em>]
     [[!]<em>env-variable</em>[=<em>value</em>]] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Sets environment variables conditional on User-Agent without
 respect to case</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#bs2000account">BS2000Account <var>account</var></a></td><td /><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Define the non-privileged account on BS2000
-machines</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#bs2000account">BS2000Account <var>Account</var></a></td><td /><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Bestimmt den nicht-privilegierten Account auf
+BS2000-Maschinen</td></tr>
 <tr><td><a href="mod_cache.html#cachedefaultexpire" id="C" name="C">CacheDefaultExpire <var>seconds</var></a></td><td> 3600 (one hour) </td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">The default duration to cache a document when no expiry date is specified.</td></tr>
 <tr class="odd"><td><a href="mod_disk_cache.html#cachedirlength">CacheDirLength <var>length</var></a></td><td> 2 </td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">The number of characters in subdirectory names</td></tr>
 <tr><td><a href="mod_disk_cache.html#cachedirlevels">CacheDirLevels <var>levels</var></a></td><td> 3 </td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">The number of levels of subdirectories in the
@@ -243,8 +243,8 @@ HTTP-Response-Headern</td></tr>
 <tr><td><a href="mod_usertrack.html#cookiestyle">CookieStyle
     <em>Netscape|Cookie|Cookie2|RFC2109|RFC2965</em></a></td><td> Netscape </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Format of the cookie header field</td></tr>
 <tr class="odd"><td><a href="mod_usertrack.html#cookietracking">CookieTracking on|off</a></td><td> off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enables tracking cookie</td></tr>
-<tr><td><a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory <var>directory</var></a></td><td /><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Directory where Apache attempts to
-switch before dumping core</td></tr>
+<tr><td><a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory <var>Verzeichnis</var></a></td><td /><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Verzeichnis, in das der Apache zu wechseln versucht, bevor er
+  einen Hauptspeicherauszug erstellt</td></tr>
 <tr class="odd"><td><a href="mod_log_config.html#customlog">CustomLog  <var>file</var>|<var>pipe</var>
 <var>format</var>|<var>nickname</var>
 [env=[!]<var>environment-variable</var>]</a></td><td /><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Sets filename and format of log file</td></tr>
@@ -309,8 +309,8 @@ beziehen</td></tr>
 found</td></tr>
 <tr><td><a href="core.html#forcetype">ForceType <var>MIME-Type</var>|none</a></td><td /><td>dh</td><td>C</td></tr><tr><td class="descr" colspan="4">Erzwingt die Auslieferung aller passendenden Dateien mit dem
 angegebenen MIME-Content-Type</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#group" id="G" name="G">Group <var>unix-group</var></a></td><td> #-1 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Group under which the server will answer
-requests</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#group" id="G" name="G">Group <var>Unix-Gruppe</var></a></td><td> #-1 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Benutzergruppe, unter welcher der Server Anfragen
+  beantwortet</td></tr>
 <tr><td><a href="mod_headers.html#header" id="H" name="H">Header set|append|add|unset|echo  <var>header</var>
 [<var>value</var> [env=[!]<var>variable</var>]]</a></td><td /><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Configure HTTP response headers</td></tr>
 <tr class="odd"><td><a href="mod_autoindex.html#headername">HeaderName <var>filename</var></a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Name of the file that will be inserted at the top
@@ -381,9 +381,9 @@ HTTP-Request-Headers</td></tr>
 HTTP-Anfragezeile</td></tr>
 <tr class="odd"><td><a href="core.html#limitxmlrequestbody">LimitXMLRequestBody <var>Bytes</var></a></td><td> 1000000 </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Begrenzt die Größe eines XML-basierten
 Request-Bodys</td></tr>
-<tr><td><a href="mpm_common.html#listen">Listen [<var>IP-address</var>:]<var>portnumber</var></a></td><td /><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">IP addresses and ports that the server
-listens to</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#listenbacklog">ListenBacklog <var>backlog</var></a></td><td /><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum length of the queue of pending connections</td></tr>
+<tr><td><a href="mpm_common.html#listen">Listen [<var>IP-Addresse</var>:]<var>Port</var></a></td><td /><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">IP-Adressen und Ports, an denen der Server lauscht</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#listenbacklog">ListenBacklog <var>backlog</var></a></td><td /><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Maximale Länge der Warteschlange schwebender
+  Verbindungen</td></tr>
 <tr><td><a href="mod_so.html#loadfile">LoadFile <em>filename</em> [<em>filename</em>] ...</a></td><td /><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Link in the named object file or library</td></tr>
 <tr class="odd"><td><a href="mod_so.html#loadmodule">LoadModule <em>module filename</em></a></td><td /><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Links in the object file or library, and adds to the list
 of active modules</td></tr>
@@ -393,22 +393,24 @@ URLs an</td></tr>
 <tr class="odd"><td><a href="core.html#locationmatch">&lt;LocationMatch
     <var>regex</var>&gt; ... &lt;/LocationMatch&gt;</a></td><td /><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Wendet die enthaltenen Direktiven nur auf URLs an, die auf
 reguläre Ausdrücke passen</td></tr>
-<tr><td><a href="mpm_common.html#lockfile">LockFile <var>filename</var></a></td><td> logs/accept.lock </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Location of the accept serialization lock file</td></tr>
+<tr><td><a href="mpm_common.html#lockfile">LockFile <var>Dateiname</var></a></td><td> logs/accept.lock </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Ablageort der Lock-Datei für die Serialisierung von
+entgegengenommenen Anfragen</td></tr>
 <tr class="odd"><td><a href="mod_log_config.html#logformat">LogFormat <var>format</var>|<var>nickname</var>
 [<var>nickname</var>]</a></td><td> "%h %l %u %t \"%r\" +</td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Describes a format for use in a log file</td></tr>
 <tr><td><a href="core.html#loglevel">LogLevel <var>Level</var></a></td><td> warn </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Steuert die Ausführlichkeit des Fehlerprotokolls</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#maxclients" id="M" name="M">MaxClients <var>number</var></a></td><td /><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum number of child processes that will be created
-to serve requests</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#maxclients" id="M" name="M">MaxClients <var>Anzahl</var></a></td><td /><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Maximale Anzahl der Kindprozesse, die zur Bedienung von Anfragen
+  gestartet wird</td></tr>
 <tr><td><a href="core.html#maxkeepaliverequests">MaxKeepAliveRequests <var>Anzahl</var></a></td><td> 100 </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Anzahl der Anfragen, die bei einer persistenten Verbindung
 zulässig sind</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#maxmemfree">MaxMemFree <var>KBytes</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum amount of memory that the main allocator is allowed
-to hold without calling <code>free()</code></td></tr>
-<tr><td><a href="mpm_common.html#maxrequestsperchild">MaxRequestsPerChild <var>number</var></a></td><td> 10000 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Limit on the number of requests that an individual child server
-will handle during its life</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#maxmemfree">MaxMemFree <var>KBytes</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Maximale Menge des Arbeitsspeichers, den die
+  Haupt-Zuteilungsroutine verwalten darf, ohne <code>free()</code>
+  aufzurufen</td></tr>
+<tr><td><a href="mpm_common.html#maxrequestsperchild">MaxRequestsPerChild <var>number</var></a></td><td> 10000 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Obergrenze für die Anzahl von Anfragen, die ein einzelner
+  Kindprozess während seines Lebens bearbeitet</td></tr>
 <tr class="odd"><td><a href="beos.html#maxrequestsperthread">MaxRequestsPerThread <var>number</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Limit on the number of requests that an individual thread
 will handle during its life</td></tr>
 <tr><td><a href="prefork.html#maxspareservers">MaxSpareServers <var>number</var><br /></a></td><td> 10 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Maximum number of idle child server processes</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#maxsparethreads">MaxSpareThreads <var>number</var></a></td><td /><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum number of idle threads</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#maxsparethreads">MaxSpareThreads <var>Anzahl</var></a></td><td /><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Maximale Anzahl unbeschäftigter Threads</td></tr>
 <tr><td><a href="mpm_netware.html#maxthreads">MaxThreads <var>number</var></a></td><td> 2048 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Set the maximum number of worker threads</td></tr>
 <tr class="odd"><td><a href="perchild.html#maxthreadsperchild">MaxThreadsPerChild <var>number</var></a></td><td> 64 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum number of threads per child process</td></tr>
 <tr><td><a href="mod_mem_cache.html#mcachemaxobjectcount">MCacheMaxObjectCount <var>value</var></a></td><td> 1009 </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">The maximum number of objects allowed to be placed in the
@@ -431,8 +433,8 @@ meta information</td></tr>
 <tr class="odd"><td><a href="mod_mime_magic.html#mimemagicfile">MimeMagicFile <var>file-path</var></a></td><td /><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable MIME-type determination based on file contents
 using the specified magic file</td></tr>
 <tr><td><a href="prefork.html#minspareservers">MinSpareServers <var>number</var></a></td><td> 5 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Minimum number of idle child server processes</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#minsparethreads">MinSpareThreads <var>number</var></a></td><td /><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Minimum number of idle threads available to handle request
-spikes</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#minsparethreads">MinSpareThreads <var>Anzahl</var></a></td><td /><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Minimale Anzahl unbeschäftigter Threads, die zur
+  Bedienung von Anfragespitzen zur Verfügung stehen</td></tr>
 <tr><td><a href="mod_file_cache.html#mmapfile">MMapFile <var>file-path</var> [<var>file-path</var>] ...</a></td><td /><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Map a list of files into memory at startup time</td></tr>
 <tr class="odd"><td><a href="mod_mime.html#modmimeusepathinfo">ModMimeUsePathInfo On|Off</a></td><td> Off </td><td>d</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Tells <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code> to treat <code>path_info</code>
 components as part of the filename</td></tr>
@@ -453,8 +455,8 @@ bestimmten Verzeichnis verfügbar sind</td></tr>
 evaluated.</td></tr>
 <tr class="odd"><td><a href="mod_env.html#passenv" id="P" name="P">PassEnv <var>env-variable</var> [<var>env-variable</var>]
 ...</a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Passes environment variables from the shell</td></tr>
-<tr><td><a href="mpm_common.html#pidfile">PidFile <var>filename</var></a></td><td> logs/httpd.pid </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">File where the server records the process ID
-of the daemon</td></tr>
+<tr><td><a href="mpm_common.html#pidfile">PidFile <var>Dateiname</var></a></td><td> logs/httpd.pid </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Datei, in welcher der Server die Prozess-ID des Daemons
+ablegt</td></tr>
 <tr class="odd"><td><a href="mod_echo.html#protocolecho">ProtocolEcho On|Off</a></td><td /><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Turn the echo server on or off</td></tr>
 <tr><td><a href="mod_proxy.html#proxy">&lt;Proxy <em>wildcard-url</em>&gt; ...&lt;/Proxy&gt;</a></td><td /><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Container for directives applied to proxied 
 resources</td></tr>
@@ -546,8 +548,8 @@ werden können, der ihrerseits von Apache-Kinprozessen gestartet
 wurden</td></tr>
 <tr><td><a href="core.html#satisfy" id="S" name="S">Satisfy Any|All</a></td><td> All </td><td>dh</td><td>C</td></tr><tr><td class="descr" colspan="4">Zusammenspiel von rechnerbasierter Zugriffskontrolle und
 Benutzerauthentisierung</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#scoreboardfile">ScoreBoardFile <var>file-path</var></a></td><td> logs/apache_status </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Location of the file used to store coordination data for
-the child processes</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#scoreboardfile">ScoreBoardFile <var>Dateipfad</var></a></td><td> logs/apache_status </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Ablageort der Datei, die zur Speicherung von Daten zur
+  Koordinierung der Kindprozesse verwendet wird</td></tr>
 <tr><td><a href="mod_actions.html#script">Script <var>method</var> <var>cgi-script</var></a></td><td /><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Activates a CGI script for a particular request
 method.</td></tr>
 <tr class="odd"><td><a href="mod_alias.html#scriptalias">ScriptAlias <var>URL-path</var>
@@ -565,12 +567,13 @@ in the scriptlog</td></tr>
 <tr class="odd"><td><a href="mod_cgid.html#scriptsock">ScriptSock <var>file-path</var></a></td><td> logs/cgisock </td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">The name of the socket to use for communication with
 the cgi daemon</td></tr>
 <tr><td><a href="mod_nw_ssl.html#securelisten">SecureListen <var>[IP-address:]portnumber</var> <var>Certificate-Name</var> <var>[MUTUAL]</var></a></td><td /><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">Enables SSL encryption for the specified port</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#sendbuffersize">SendBufferSize <var>bytes</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">TCP buffer size</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#sendbuffersize">SendBufferSize <var>Bytes</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Größe des TCP-Puffers</td></tr>
 <tr><td><a href="core.html#serveradmin">ServerAdmin <var>E-Mail-Adresse</var></a></td><td /><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">E-Mail-Adresse, die der Server in Fehlermeldungen einfügt,
 welche an den Client gesendet werden</td></tr>
 <tr class="odd"><td><a href="core.html#serveralias">ServerAlias <var>Hostname</var> [<var>Hostname</var>] ...</a></td><td /><td>v</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Alternativer Name für einen Host, der verwendet wird, wenn
 Anfragen einem namensbasierten Virtual-Host zugeordnet werden</td></tr>
-<tr><td><a href="mpm_common.html#serverlimit">ServerLimit <var>number</var></a></td><td /><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Upper limit on configurable number of processes</td></tr>
+<tr><td><a href="mpm_common.html#serverlimit">ServerLimit <var>Anzahl</var></a></td><td /><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Obergrenze für die konfigurierbare Anzahl von
+  Prozessen</td></tr>
 <tr class="odd"><td><a href="core.html#servername">ServerName
 <var>voll-qualifizierter-Domainname</var>[:<var>port</var>]</a></td><td /><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Rechnername und Port, die der Server dazu verwendet, sich
 selbst zu identifizieren</td></tr>
@@ -654,12 +657,14 @@ in the Session Cache</td></tr>
 <tr><td><a href="mod_ssl.html#sslverifyclient">SSLVerifyClient <em>level</em></a></td><td> none </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Type of Client Certificate verification</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslverifydepth">SSLVerifyDepth <em>number</em></a></td><td> 1 </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum depth of CA Certificates in Client 
 Certificate verification</td></tr>
-<tr><td><a href="mpm_common.html#startservers">StartServers <var>number</var></a></td><td /><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Number of child server processes created at startup</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#startthreads">StartThreads <var>number</var></a></td><td /><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Number of threads created on startup</td></tr>
+<tr><td><a href="mpm_common.html#startservers">StartServers <var>Anzahl</var></a></td><td /><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Anzahl der Kindprozesse des Servers, die beim Start erstellt
+  werden</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#startthreads">StartThreads <var>Anzahl</var></a></td><td /><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Anzahl der Threads, die beim Start erstellt werden</td></tr>
 <tr><td><a href="mod_suexec.html#suexecusergroup">SuexecUserGroup <em>User Group</em></a></td><td /><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">User and group permissions for CGI programs</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#threadlimit" id="T" name="T">ThreadLimit <var>number</var></a></td><td /><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the upper limit on the configurable number of threads
-per child process</td></tr>
-<tr><td><a href="mpm_common.html#threadsperchild">ThreadsPerChild <var>number</var></a></td><td /><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Number of threads created by each child process</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#threadlimit" id="T" name="T">ThreadLimit <var>Anzahl</var></a></td><td /><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Bestimmt die Obergrenze der konfigurierbaren Anzahl von Threads
+  pro Kindprozess</td></tr>
+<tr><td><a href="mpm_common.html#threadsperchild">ThreadsPerChild <var>Anzahl</var></a></td><td /><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Anzahl der Threads, die mit jedem Kindprozess gestartet
+  werden</td></tr>
 <tr class="odd"><td><a href="mpm_netware.html#threadstacksize">ThreadStackSize <var>number</var></a></td><td> 65536 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Determine the stack size for each thread</td></tr>
 <tr><td><a href="core.html#timeout">TimeOut <var>Sekunden</var></a></td><td> 300 </td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Zeitspanne, die der Server auf verschiedene Ereignisse wartet,
 bevor er die Anfrage abbricht</td></tr>
@@ -669,8 +674,8 @@ bevor er die Anfrage abbricht</td></tr>
 ...</a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Removes variables from the environment</td></tr>
 <tr><td><a href="core.html#usecanonicalname">UseCanonicalName On|Off|DNS</a></td><td> On </td><td>svd</td><td>C</td></tr><tr><td class="descr" colspan="4">Bestimmt, wie der Server seinen eigenen Namen und Port
 ermittelt</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#user">User <var>unix-userid</var></a></td><td> #-1 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">The userid under which the server will answer
-requests</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#user">User <var>Unix-User-ID</var></a></td><td> #-1 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Die Benutzerkennung, unter welcher der Server Anfragen
+  beantwortet</td></tr>
 <tr><td><a href="mod_userdir.html#userdir">UserDir <em>directory-filename</em></a></td><td> public_html </td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Location of the user-specific directories</td></tr>
 <tr class="odd"><td><a href="mod_vhost_alias.html#virtualdocumentroot" id="V" name="V">VirtualDocumentRoot <em>interpolated-directory</em>|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Dynamically configure the location of the document root
 for a given virtual host</td></tr>
