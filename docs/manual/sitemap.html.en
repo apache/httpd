@@ -141,7 +141,6 @@ Server on HPUX</a></li>
 <li><a href="mod/mod_auth_anon.html">Apache module mod_auth_anon.c</a></li>
 <li><a href="mod/mod_auth_dbm.html">Apache module mod_auth_dbm</a></li>
 <li><a href="mod/mod_auth_digest.html">Apache module mod_auth_digest</a></li>
-<li><a href="mod/mod_auth_ldap.html">Apache module mod_ldap</a></li>
 <li><a href="mod/mod_autoindex.html">Apache module mod_autoindex</a></li>
 <li><a href="mod/mod_cache.html">Apache module mod_cache</a></li>
 <li><a href="mod/mod_cern_meta.html">Apache module mod_cern_meta</a></li>
@@ -161,7 +160,6 @@ Server on HPUX</a></li>
 <li><a href="mod/mod_include.html">Apache module mod_include</a></li>
 <li><a href="mod/mod_info.html">Apache module mod_info</a></li>
 <li><a href="mod/mod_isapi.html">Apache module mod_isapi</a></li>
-<li><a href="mod/mod_ldap.html">Apache module mod_ldap</a></li>
 <li><a href="mod/mod_log_config.html">Apache module mod_log_config</a></li>
 <li><a href="mod/mod_mime.html">Apache module mod_mime</a></li>
 <li><a href="mod/mod_mime_magic.html">Apache module mod_mime_magic</a></li>
