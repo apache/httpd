@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <modulesynopsis>
-<!-- English revision: 1.9 -->
+<!-- English revision: 1.12 -->
 
 <name>mod_info</name>
 <description>サーバの設定の包括的な概観を提供する</description>
@@ -10,17 +10,17 @@
 <sourcefile>mod_info.c</sourcefile>
 <identifier>info_module</identifier>
 
-
 <summary>
-
     <p><module>mod_info</module> を設定するには、以下を <code>httpd.conf</code>
     ファイルに加えます。</p>
 
-<example>
-&lt;Location /server-info&gt;<br />
-SetHandler server-info<br />
-&lt;/Location&gt;<br />
-</example>
+    <example>
+      &lt;Location /server-info&gt;<br />
+      <indent>
+        SetHandler server-info<br />
+      </indent>
+      &lt;/Location&gt;
+    </example>
 
     <p>サーバ設定の情報へのアクセスを制限するために、
     <directive type="section" module="core">Location</directive>
@@ -42,7 +42,7 @@ SetHandler server-info<br />
       でなければ、ディレクティブの設定は表示されません。</p>
 
       <p><module>mod_info</module>
-      がサーバに組み込まれている場合は、ディレクトリ<em>毎</em>のファイル
+      がサーバに組み込まれている場合は、ディレクトリ毎のファイル
       (例えば、<code>.htaccess</code>) を含むすべての設定ファイルで
       ハンドラを使用可能であるということにも注意してください。
       これは、あなたのサイトではセキュリティに関連した問題があるかもしれません。
@@ -52,7 +52,7 @@ SetHandler server-info<br />
       データベース名など、他の Apache モジュールの設定ディレクティブから
       セキュリティ上微妙な情報を漏らす可能性があります。
       このモジュールの動作方法のせいで、情報の流出を防ぐ方法はありません。
-      ですから、このモジュールはちゃんとアクセスが制御された環境で、
+      ですから、このモジュールはきちんとアクセス制御された環境で<strong>のみ</strong>、
       注意して使ってください。</p>
     </note>
 </summary>
@@ -61,23 +61,23 @@ SetHandler server-info<br />
 <name>AddModuleInfo</name>
 <description>server-info ハンドラにより表示されるモジュールの情報に
 追加の情報を付け加える</description>
-<syntax>AddModuleInfo <em>module-name string</em></syntax>
-<contextlist><context>server config</context>
-<context>virtual host</context></contextlist>
+<syntax>AddModuleInfo <var>module-name</var> <var>string</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
 <compatibility>Apache 1.3 以降</compatibility>
 
 <usage>
-    <p>これは、<em>string</em> の内容がモジュール <em>module-name</em>
+    <p>これは、<var>string</var> の内容がモジュール <var>module-name</var>
     の<strong>追加情報</strong> として HTML
     として解釈され、表示されるようにします。例:</p>
 
-<example>
-  AddModuleInfo mod_authn_file.c 'See &lt;a \<br />
-  <indent>
-    href="http://www.apache.org/docs-2.1/mod/mod_authn_file.html"&gt;\<br />
-    http://www.apache.org/docs-2.1/mod/mod_authn_file.html&lt;/a&gt;'
-  </indent>
-</example>
+    <example>
+      AddModuleInfo mod_deflate.c 'See &lt;a \<br />
+      <indent>
+      href="http://www.apache.org/docs-2.1/mod/mod_deflate.html"&gt;\<br />
+      http://www.apache.org/docs-2.1/mod/mod_deflate.html&lt;/a&gt;'
+      </indent>
+    </example>
 </usage>
 
 </directivesynopsis>
