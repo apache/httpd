@@ -116,7 +116,6 @@ int ssl_rand_seed(server_rec *s, apr_pool_t *p, ssl_rsctx_t nCtx, char *prefix)
                 nDone += ssl_rand_feedfp(p, fp, pRandSeed->nBytes);
                 ssl_util_ppclose(s, p, fp);
             }
-#if SSL_LIBRARY_VERSION >= 0x00905100
             else if (pRandSeed->nSrc == SSL_RSSRC_EGD) {
                 /*
                  * seed in contents provided by the external
@@ -126,7 +125,6 @@ int ssl_rand_seed(server_rec *s, apr_pool_t *p, ssl_rsctx_t nCtx, char *prefix)
                     continue;
                 nDone += n;
             }
-#endif
             else if (pRandSeed->nSrc == SSL_RSSRC_BUILTIN) {
                 struct {
                     time_t t;
@@ -159,10 +157,9 @@ int ssl_rand_seed(server_rec *s, apr_pool_t *p, ssl_rsctx_t nCtx, char *prefix)
     }
     ssl_log(s, SSL_LOG_INFO, "%sSeeding PRNG with %d bytes of entropy", prefix, nDone);
 
-#if SSL_LIBRARY_VERSION >= 0x00905100
     if (RAND_status() == 0)
         ssl_log(s, SSL_LOG_WARN, "%sPRNG still contains not sufficient entropy!", prefix);
-#endif
+
     return nDone;
 }
 
