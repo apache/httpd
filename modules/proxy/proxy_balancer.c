@@ -105,7 +105,9 @@ static int init_runtime_score(apr_pool_t *pool, proxy_balancer *balancer)
     return 0;
 }
 
-/* Retrieve the parameter with the given name                                */
+/* Retrieve the parameter with the given name
+ * Something like 'JSESSIONID=12345...N'
+ */
 static char *get_path_param(apr_pool_t *pool, char *url,
                             const char *name)
 {
@@ -165,6 +167,8 @@ static char *get_cookie_param(request_rec *r, const char *name)
     return NULL;
 }
 
+/* Find the worker that has the 'route' defined
+ */
 static proxy_runtime_worker *find_route_worker(proxy_balancer *balancer,
                                                const char *route)
 {
@@ -191,10 +195,18 @@ static proxy_runtime_worker *find_session_route(proxy_balancer *balancer,
     if (!*route)
         *route = get_cookie_param(r, balancer->sticky);
     if (*route) {
+        /* We have a route in path or in cookie
+         * Find the worker that has this route defined.
+         */
         proxy_runtime_worker *worker =  find_route_worker(balancer, *route);
-        /* TODO: make worker status codes */
-        /* See if we have a redirection route */
         if (worker && !PROXY_WORKER_IS_USABLE(worker->w)) {
+            /* We have a worker that is unusable.
+             * It can be in error or disabled, but in case
+             * it has a redirection set use that redirection worker.
+             * This enables to safely remove the member from the
+             * balancer. Of course you will need a some kind of
+             * session replication between those two remote.
+             */
             if (worker->w->redirect)
                 worker = find_route_worker(balancer, worker->w->redirect);
             /* Check if the redirect worker is usable */
@@ -219,25 +231,32 @@ static proxy_runtime_worker *find_best_worker(proxy_balancer *balancer,
 
     /* First try to see if we have available candidate */
     for (i = 0; i < balancer->workers->nelts; i++) {
-        /* See if the retry timeout is ellapsed
-         * for the workers flagged as IN_ERROR
+        /* If the worker is in error state run
+         * retry on that worker. It will be marked as
+         * operational if the retry timeout is elapsed.
+         * The worker might still be unusable, but we try
+         * anyway.
          */
         if (!PROXY_WORKER_IS_USABLE(worker->w))
             ap_proxy_retry_worker("BALANCER", worker->w, r->server);
-        /* If the worker is not in error state
-         * or not disabled.
+        /* Take into calculation only the workers that are
+         * not in error state or not disabled.
          */
         if (PROXY_WORKER_IS_USABLE(worker->w)) {
             if (!candidate)
                 candidate = worker;
             else {
-                /* See if the worker has a larger number of free channels */
+                /* See if the worker has a larger number of free channels.
+                 * This is used to favor the worker with the same balance
+                 * factor and higher free channel number.
+                 */
                 if (worker->w->cp->nfree > candidate->w->cp->nfree)
                     candidate = worker;
             }
-            /* Total factor should allways be 100.
-             * This is for cases when worker is in error state.
-             * It will force the even request distribution
+            /* Total factor is always 100 if all workers are
+             * operational.
+             * If we have a 60-20-20 load factors and the third goes down
+             * the effective factors for the rest two will be 70-30.
              */
             total_factor += worker->s->lbfactor;
         }
@@ -245,7 +264,11 @@ static proxy_runtime_worker *find_best_worker(proxy_balancer *balancer,
     }
     if (!candidate) {
         /* All the workers are in error state or disabled.
-         * If the balancer has a timeout wait.
+         * If the balancer has a timeout sleep for a while
+         * and try again to find the worker. The chances are
+         * that some other thread will release a connection.
+         * By default the timeout is not set, and the server
+         * returns SERVER_BUSY.
          */
 #if APR_HAS_THREADS
         if (balancer->timeout) {
@@ -256,6 +279,9 @@ static proxy_runtime_worker *find_best_worker(proxy_balancer *balancer,
              */
             apr_interval_time_t timeout = balancer->timeout;
             apr_interval_time_t step, tval = 0;
+            /* Set the timeout to 0 so that we don't
+             * end in infinite loop
+             */
             balancer->timeout = 0;
             step = timeout / 100;
             while (tval < timeout) {
@@ -273,32 +299,48 @@ static proxy_runtime_worker *find_best_worker(proxy_balancer *balancer,
     else {
         /* We have at least one candidate that is not in
          * error state or disabled.
-         * Now calculate the appropriate one 
+         * Now calculate the appropriate one.
+         */
+
+        /* Step one: Find the worker that has a lbfactor
+         * higher then a candidate found initially.
          */
         worker = (proxy_runtime_worker *)balancer->workers->elts;
         for (i = 0; i < balancer->workers->nelts; i++) {
-            /* If the worker is not error state
-             * or not in disabled mode
-             */
             if (PROXY_WORKER_IS_USABLE(worker->w)) {
-                /* 1. Find the worker with higher lbstatus.
-                 * Lbstatus is of higher importance then
-                 * the number of empty slots.
-                 */
                 if (worker->s->lbstatus > candidate->s->lbstatus) {
                     candidate = worker;
                 }
             }
             worker++;
         }
+        /* Step two: Recalculate the load statuses.
+         * Each usable worker load status is incremented
+         * by it's load factor.
+         */
         worker = (proxy_runtime_worker *)balancer->workers->elts;
         for (i = 0; i < balancer->workers->nelts; i++) {
-            /* If the worker is not error state
-             * or not in disabled mode
-             */
             if (PROXY_WORKER_IS_USABLE(worker->w)) {
-                /* XXX: The lbfactor can be update using bytes transfered
-                 * Right now, use the round-robin scheme
+                /* Algo for w0(70%) w1(30%) tot(100):
+                 * E1. Elected w0 -- highest lbstatus
+                 *     w0 += 70 -> w0 = 140 -- ovreflow set to 70
+                 *     w1 += 30 -> w1 = 60
+                 * E2. Elected w0 -- highest lbstatus
+                 *     w0 += 70 -> w0 = 140 -- ovreflow set to 70
+                 *     w1 += 30 -> w1 = 90
+                 * E3. Elected w1 -- highest lbstatus
+                 *     w0 += 70 -> w0 = 140 -- ovreflow set to 70
+                 *     w1 += 30 -> w1 = 120 -- ovreflow set to 30
+                 * E4. Elected w0 -- highest lbstatus
+                 *     w0 += 70 -> w0 = 140 -- ovreflow set to 70
+                 *     w1 += 30 -> w1 = 60
+                 * etc...
+                 * Note:
+                 * Although the load is 70-30, the actual load is
+                 * 66-33, cause we can not have 2.33 : 1 requests,
+                 * but rather 2:1 that is the closest integer number.
+                 * In upper example the w0 will serve as twice as
+                 * many requests as w1 does.
                  */
                 worker->s->lbstatus += worker->s->lbfactor;
                 if (worker->s->lbstatus >= total_factor)
@@ -342,7 +384,9 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
     apr_status_t rv;
 
     *worker = NULL;
-    /* Step 1: check if the url is for us */
+    /* Step 1: check if the url is for us 
+     * The url we can handle starts with 'balancer://'
+     */
     if (!(*balancer = ap_proxy_get_balancer(r->pool, conf, *url)))
         return DECLINED;
     
@@ -398,11 +442,19 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
         *worker = runtime->w;
     }
     /* Decrease the free channels number */
-    /* XXX: This should be the function of apr_reslist */
+    /* XXX: This should be the function of apr_reslist
+     * There is a pending patch for apr_reslist that will
+     * enable to drop the need to maintain the free channels number
+     */
     --(*worker)->cp->nfree;
 
     PROXY_BALANCER_UNLOCK(*balancer);
     
+    /* Rewrite the url from 'balancer://url'
+     * to the 'worker_scheme://worker_hostname[:worker_port]/url'
+     * This replaces the balancers fictional name with the
+     * real hostname of the elected worker.
+     */
     access_status = rewrite_url(r, *worker, url);
     /* Add the session route to request notes if present */
     if (route) {
@@ -433,9 +485,13 @@ static int proxy_balancer_post_request(proxy_worker *worker,
     }
     /* increase the free channels number */
     worker->cp->nfree++;
-    /* TODO: calculate the bytes transfered */
-
-    /* TODO: update the scoreboard status */
+    /* TODO: calculate the bytes transferred
+     * This will enable to elect the worker that has
+     * the lowest load.
+     * The bytes transferred depends on the protocol
+     * used, so each protocol handler should keep the
+     * track on that.
+     */
 
     PROXY_BALANCER_UNLOCK(balancer);        
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
@@ -493,7 +549,8 @@ static void recalc_factors(proxy_balancer *balancer,
     }
 }
 
-/* Invoke handler */
+/* Manages the loadfactors and member status 
+ */
 static int balancer_handler(request_rec *r)
 {
     void *sconf = r->server->module_config;
