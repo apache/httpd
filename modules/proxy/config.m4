@@ -2,10 +2,10 @@ dnl modules enabled in this directory by default
 
 APACHE_MODPATH_INIT(proxy)
 
-if test "$enable_proxy" = "no"; then
-  proxy_mods_enable=no
-else
+if test "$enable_proxy" = "yes"; then
   proxy_mods_enable=yes
+else
+  proxy_mods_enable=no
 fi
 
 proxy_objs="mod_proxy.lo proxy_util.lo"
