@@ -239,6 +239,7 @@ response without an explicit character set</description>
 
 <seealso><directive module="core">AccessFileName</directive></seealso>
 <seealso><a href="../configuring.html">Configuration Files</a></seealso>
+<seealso><a href="../howto/htaccess.html">.htaccess Files</a></seealso>
 </directivesynopsis>
 
 <directivesynopsis>

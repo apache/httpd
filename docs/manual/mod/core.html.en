@@ -186,7 +186,7 @@ response without an explicit character set</td></tr><tr><td nowrap="nowrap"><a h
     <p>Example:</p>
 
     <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>AllowOverride AuthConfig Indexes</code></td></tr></table></blockquote>
-<p><strong>See also </strong></p><ul><li><a href="#accessfilename" class="directive"><code class="directive">AccessFileName</code></a></li><li><a href="../configuring.html">Configuration Files</a></li></ul><hr><h2><a name="AuthName">AuthName</a> <a name="authname">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<p><strong>See also </strong></p><ul><li><a href="#accessfilename" class="directive"><code class="directive">AccessFileName</code></a></li><li><a href="../configuring.html">Configuration Files</a></li><li><a href="../howto/htaccess.html">.htaccess Files</a></li></ul><hr><h2><a name="AuthName">AuthName</a> <a name="authname">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Authorization realm for use in HTTP
 authentication</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>AuthName <em>auth-domain</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
