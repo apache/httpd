@@ -4,7 +4,7 @@ IDI_APSRVMON            ICON    DISCARDABLE     "ApacheMonitor.ico"
 IDI_ICOSTOP             ICON    DISCARDABLE     "apstop.ico"
 IDI_ICORUN              ICON    DISCARDABLE     "aprun.ico"
 
-#include "ApacheMonitor.ver"
+#include "ApacheMonitorVersion.rc"
 
 IDD_DLGSERVICES DIALOGEX 0, 0, 350, 174
 STYLE DS_MODALFRAME | DS_SETFOREGROUND | WS_MINIMIZEBOX | WS_VISIBLE | 

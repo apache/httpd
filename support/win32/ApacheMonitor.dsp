@@ -134,9 +134,9 @@ SOURCE=..\..\build\win32\win32ver.awk
 # Begin Custom Build - Creating Version Resource
 InputPath=..\..\build\win32\win32ver.awk
 
-".\ApacheMonitor.ver" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+".\ApacheMonitorVersion.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	awk -f ../../build/win32/win32ver.awk ApacheMonitor\
- "Apache Server Monitor" ../../include/ap_release.h > .\ApacheMonitor.ver
+ "Apache Server Monitor" ../../include/ap_release.h > .\ApacheMonitorVersion.rc
 
 # End Custom Build
 
@@ -146,9 +146,9 @@ InputPath=..\..\build\win32\win32ver.awk
 # Begin Custom Build - Creating Version Resource
 InputPath=..\..\build\win32\win32ver.awk
 
-".\ApacheMonitor.ver" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+".\ApacheMonitorVersion.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	awk -f ../../build/win32/win32ver.awk ApacheMonitor\
- "Apache Server Monitor" ../../include/ap_release.h > .\ApacheMonitor.ver
+ "Apache Server Monitor" ../../include/ap_release.h > .\ApacheMonitorVersion.rc
 
 # End Custom Build
 
