@@ -274,49 +274,76 @@ static long int send_dir(BUFF *data, request_rec *r, cache_req *c, char *cwd)
     register int n, o, w;
     conn_rec *con = r->connection;
     pool *p = r->pool;
-    char *dir, *path, *reldir, *site;
+    char *dir, *path, *reldir, *site, *type = NULL;
+    char *basedir = ""; /* By default, path is relative to the $HOME dir */
 
     /* Save "scheme://site" prefix without password */
     site = ap_unparse_uri_components(p, &r->parsed_uri, UNP_OMITPASSWORD|UNP_OMITPATHINFO);
     /* ... and path without query args */
     path = ap_unparse_uri_components(p, &r->parsed_uri, UNP_OMITSITEPART|UNP_OMITQUERY);
+
+    /* If path began with /%2f, change the basedir */
+    if (strncasecmp(path, "/%2f", 4) == 0) {
+        basedir = "/%2f";
+    }
+
+    /* Strip off a type qualifier. It is ignored for dir listings */
+    if ((type = strstr(path, ";type=")) != NULL)
+        *type++ = '\0';
+
     (void)decodeenc(path);
 
+    while (path[1] == '/') /* collapse multiple leading slashes to one */
+        ++path;
+
     /* Copy path, strip (all except the last) trailing slashes */
-    path = dir = ap_pstrcat(p, path, "/", NULL);
-    while ((n = strlen(path)) > 1 && path[n-1] == '/' && path[n-2] == '/')
+    /* (the trailing slash is needed for the dir component loop below) */
+    path = dir = ap_pstrcat(r->pool, path, "/", NULL);
+    for (n = strlen(path); n > 1 && path[n-1] == '/' && path[n-2] == '/'; --n)
         path[n-1] = '\0';
 
     /* print "ftp://host/" */
     n = ap_snprintf(buf, sizeof(buf), DOCTYPE_HTML_3_2
-                "<html><head><title>%s%s</title>\n"
-                "<base href=\"%s%s\"></head>\n"
+                "<html><head><title>%s%s%s</title>\n"
+                "<base href=\"%s%s%s\"></head>\n"
                 "<body><h2>Directory of "
                 "<a href=\"/\">%s</a>/",
-                site, ap_escape_html(p,path),
-                site, ap_escape_uri(p,path), site);
+                site, basedir, ap_escape_html(p,path),
+                site, basedir, ap_escape_uri(p,path),
+                site);
     total_bytes_sent += ap_proxy_bputs2(buf, con->client, c);
 
-    while ((dir = strchr(dir+1, '/')) != NULL)
+    /* Add a link to the root directory (if %2f hack was used) */
+    if (basedir[0] != '\0') {
+        total_bytes_sent += ap_proxy_bputs2("<a href=\"/%2f/\">%2f</a>/", con->client, c);
+    }
+
+    for (dir = path+1; (dir = strchr(dir, '/')) != NULL; )
     {
         *dir = '\0';
-        if ((reldir = strrchr(path+1, '/'))==NULL)
+        if ((reldir = strrchr(path+1, '/'))==NULL) {
             reldir = path+1;
+        }
         else
             ++reldir;
         /* print "path/" component */
-        ap_snprintf(buf, sizeof(buf), "<a href=\"%s/\">%s</a>/",
-                    ap_escape_uri(p,path), ap_escape_html(p,reldir));
+        ap_snprintf(buf, sizeof(buf), "<a href=\"%s%s/\">%s</a>/",
+                    basedir,
+                    ap_escape_uri(p, path),
+                    ap_escape_html(p, reldir));
         total_bytes_sent += ap_proxy_bputs2(buf, con->client, c);
         *dir = '/';
+        while (*dir == '/')
+          ++dir;
     }
+
     /* If the caller has determined the current directory, and it differs */
     /* from what the client requested, then show the real name */
     if (cwd == NULL || strncmp (cwd, path, strlen(cwd)) == 0) {
         ap_snprintf(buf, sizeof(buf), "</h2>\n<hr /><pre>");
     } else {
         ap_snprintf(buf, sizeof(buf), "</h2>\n(%s)\n<hr /><pre>",
-                    ap_escape_html(p,cwd));
+                    ap_escape_html(p, cwd));
     }
     total_bytes_sent += ap_proxy_bputs2(buf, con->client, c);
 
@@ -332,6 +359,12 @@ static long int send_dir(BUFF *data, request_rec *r, cache_req *c, char *cwd)
         }
         if (n == 0)
             break;                /* EOF */
+
+        if (buf[n-1] == '\n')  /* strip trailing '\n' */
+            buf[--n] = '\0';
+        if (buf[n-1] == '\r')  /* strip trailing '\r' if present */
+            buf[--n] = '\0';
+
         /* Handle unix-style symbolic link */
         if (buf[0] == 'l' && (filename=strstr(buf, " -> ")) != NULL) {
             char *link_ptr = filename;
@@ -342,8 +375,6 @@ static long int send_dir(BUFF *data, request_rec *r, cache_req *c, char *cwd)
             if (filename != buf)
                 *(filename++) = '\0';
             *(link_ptr++) = '\0';
-            if ((n = strlen(link_ptr)) > 1 && link_ptr[n - 1] == '\n')
-              link_ptr[n - 1] = '\0';
             ap_snprintf(buf2, sizeof(buf2), "%s <a href=\"%s\">%s %s</a>\n",
                         ap_escape_html(p, buf),
                         ap_escape_uri(p,filename),
@@ -365,7 +396,6 @@ static long int send_dir(BUFF *data, request_rec *r, cache_req *c, char *cwd)
 
             filename = strrchr(buf, ' ');
             *(filename++) = 0;
-            filename[strlen(filename) - 1] = 0;
 
             /* handle filenames with spaces in 'em */
             if (!strcmp(filename, ".") || !strcmp(filename, "..") || firstfile) {
@@ -395,6 +425,7 @@ static long int send_dir(BUFF *data, request_rec *r, cache_req *c, char *cwd)
         }
         /* else??? What about other OS's output formats? */
         else {
+            strcat(buf, "\n"); /* re-append the newline char */
             ap_cpystrn(buf, ap_escape_html(p, buf), sizeof(buf));
         }
 
@@ -440,6 +471,67 @@ static int ftp_unauthorized (request_rec *r, int log_it)
     return HTTP_UNAUTHORIZED;
 }
 
+/* Set ftp server to TYPE {A,I,E} before transfer of a directory or file */
+static int ftp_set_TYPE(request_rec *r, BUFF *ctrl, char xfer_type)
+{
+    static char old_type[2] = { 'A', '\0' }; /* After logon, mode is ASCII */
+    int ret = HTTP_OK;
+    int rc;
+
+    if (xfer_type == old_type[0])
+        return ret;
+
+    /* set desired type */
+    old_type[0] = xfer_type;
+    ap_bvputs(ctrl, "TYPE ", old_type, CRLF, NULL);
+    ap_bflush(ctrl);
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: TYPE %s", old_type);
+
+/* responses: 200, 421, 500, 501, 504, 530 */
+    /* 200 Command okay. */
+    /* 421 Service not available, closing control connection. */
+    /* 500 Syntax error, command unrecognized. */
+    /* 501 Syntax error in parameters or arguments. */
+    /* 504 Command not implemented for that parameter. */
+    /* 530 Not logged in. */
+    rc = ftp_getrc(ctrl);
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: returned status %d", rc);
+    if (rc == -1 || rc == 421) {
+        ap_kill_timeout(r);
+        ret = ap_proxyerror(r, HTTP_BAD_GATEWAY,
+                             "Error reading from remote server");
+    }
+    else if (rc != 200 && rc != 504) {
+        ap_kill_timeout(r);
+        ret = ap_proxyerror(r, HTTP_BAD_GATEWAY,
+                             "Unable to set transfer type");
+    }
+/* Allow not implemented */
+    else if (rc == 504)
+        /* ignore it silently */;
+
+    return ret;
+}
+
+/* Common cleanup routine: close open BUFFers or sockets, and return an error */
+static int
+ftp_cleanup_and_return(request_rec *r, BUFF *ctrl, BUFF *data, int csock, int dsock, int rc)
+{
+    if (ctrl != NULL)
+      ap_bclose(ctrl);
+    else if (csock != -1)
+      ap_pclosesocket(r->pool, csock);
+
+    if (data != NULL)
+      ap_bclose(data);
+    else if (dsock != -1)
+      ap_pclosesocket(r->pool, dsock);
+
+    ap_kill_timeout(r);
+
+    return rc;
+}
+
 /*
  * Handles direct access of ftp:// URLs
  * Original (Non-PASV) version from
@@ -454,17 +546,19 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 /*    char *account = NULL; how to supply an account in a URL? */
     const char *password = NULL;
     const char *err;
-    int port, i, j, len, sock, dsock, rc, nocache = 0;
-    int csd = 0;
+    int port, i, j, len, rc, nocache = 0;
+    int csd = 0, sock = -1, dsock = -1;
     struct sockaddr_in server;
     struct hostent server_hp;
     struct in_addr destaddr;
     table *resp_hdrs;
-    BUFF *ctrl;
+    BUFF *ctrl = NULL;
     BUFF *data = NULL;
     pool *p = r->pool;
     int one = 1;
     NET_SIZE_T clen;
+    char xfer_type = 'A'; /* after ftp login, the default is ASCII */
+    int get_dirlisting = 0;
 
     void *sconf = r->server->module_config;
     proxy_server_conf *conf =
@@ -497,7 +591,11 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
             ? r->parsed_uri.port
             : ap_default_port_for_request(r);
     path = ap_pstrdup(p, r->parsed_uri.path);
-    path = (path != NULL && path[0] != '\0') ? &path[1] : "";
+    if (path == NULL)
+        path = "";
+    else
+        while (*path == '/')
+            ++path;
 
     /* The "Authorization:" header must be checked first.
      * We allow the user to "override" the URL-coded user [ & password ]
@@ -607,10 +705,10 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
     }
 #endif
     if (i == -1) {
-        ap_pclosesocket(p, sock);
-        return ap_proxyerror(r, HTTP_BAD_GATEWAY, ap_pstrcat(r->pool,
-                                "Could not connect to remote machine: ",
-                                strerror(errno), NULL));
+        return ftp_cleanup_and_return(r, ctrl, data, sock, dsock,
+                      ap_proxyerror(r, HTTP_BAD_GATEWAY, ap_pstrcat(r->pool,
+                                    "Could not connect to remote machine: ",
+                                    strerror(errno), NULL)));
     }
 
     /* record request_time for HTTP/1.1 age calculation */
@@ -632,13 +730,12 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
     i = ftp_getrc_msg(ctrl, resp, sizeof resp);
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: returned status %d", i);
     if (i == -1 || i == 421) {
-        ap_kill_timeout(r);
-        return ap_proxyerror(r, HTTP_BAD_GATEWAY,
-                             "Error reading from remote server");
+        return ftp_cleanup_and_return(r, ctrl, data, sock, dsock,
+                      ap_proxyerror(r, HTTP_BAD_GATEWAY,
+                                    "Error reading from remote server"));
     }
 #if 0
     if (i == 120) {
-        ap_kill_timeout(r);
         /* RFC2068 states:
          * 14.38 Retry-After
          * 
@@ -650,12 +747,13 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
          *     Retry-After  = "Retry-After" ":" ( HTTP-date | delta-seconds )
          */
         ap_set_header("Retry-After", ap_psprintf(p, "%u", 60*wait_mins);
-        return ap_proxyerror(r, HTTP_SERVICE_UNAVAILABLE, resp);
+        return ftp_cleanup_and_return(r, ctrl, data, sock, dsock,
+                      ap_proxyerror(r, HTTP_SERVICE_UNAVAILABLE, resp));
     }
 #endif
     if (i != 220) {
-        ap_kill_timeout(r);
-        return ap_proxyerror(r, HTTP_BAD_GATEWAY, resp);
+        return ftp_cleanup_and_return(r, ctrl, data, sock, dsock,
+                      ap_proxyerror(r, HTTP_BAD_GATEWAY, resp));
     }
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: connected.");
@@ -677,22 +775,23 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
     i = ftp_getrc(ctrl);
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: returned status %d", i);
     if (i == -1 || i == 421) {
-        ap_kill_timeout(r);
-        return ap_proxyerror(r, HTTP_BAD_GATEWAY,
-                             "Error reading from remote server");
+        return ftp_cleanup_and_return(r, ctrl, data, sock, dsock,
+                      ap_proxyerror(r, HTTP_BAD_GATEWAY,
+                                    "Error reading from remote server"));
     }
     if (i == 530) {
-        ap_kill_timeout(r);
-        return ftp_unauthorized (r, 1);        /* log it: user name guessing attempt? */
+        return ftp_cleanup_and_return(r, ctrl, data, sock, dsock,
+                                      ftp_unauthorized (r, 1));
     }
     if (i != 230 && i != 331) {
-        ap_kill_timeout(r);
-        return HTTP_BAD_GATEWAY;
+        return ftp_cleanup_and_return(r, ctrl, data, sock, dsock,
+                                      HTTP_BAD_GATEWAY);
     }
 
     if (i == 331) {             /* send password */
         if (password == NULL) {
-            return ftp_unauthorized (r, 0);
+            return ftp_cleanup_and_return(r, ctrl, data, sock, dsock,
+                                          ftp_unauthorized (r, 0));
         }
         ap_bvputs(ctrl, "PASS ", password, CRLF, NULL);
         ap_bflush(ctrl);
@@ -708,41 +807,83 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
         i = ftp_getrc(ctrl);
         ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: returned status %d", i);
         if (i == -1 || i == 421) {
-            ap_kill_timeout(r);
-            return ap_proxyerror(r, HTTP_BAD_GATEWAY,
-                                 "Error reading from remote server");
+            return ftp_cleanup_and_return(r, ctrl, data, sock, dsock,
+                      ap_proxyerror(r, HTTP_BAD_GATEWAY,
+                                    "Error reading from remote server"));
         }
         if (i == 332) {
-            ap_kill_timeout(r);
-            return ap_proxyerror(r, HTTP_UNAUTHORIZED,
-                                 "Need account for login");
+            return ftp_cleanup_and_return(r, ctrl, data, sock, dsock,
+                      ap_proxyerror(r, HTTP_UNAUTHORIZED,
+                                 "Need account for login"));
         }
         /* @@@ questionable -- we might as well return a 403 Forbidden here */
-        if (i == 530) {
-            ap_kill_timeout(r);
-            return ftp_unauthorized (r, 1); /* log it: passwd guessing attempt? */
-        }
-        if (i != 230 && i != 202) {
-            ap_kill_timeout(r);
-            return HTTP_BAD_GATEWAY;
-        }
+        if (i == 530) /* log it: passwd guessing attempt? */
+            return ftp_cleanup_and_return(r, ctrl, data, sock, dsock,
+                                          ftp_unauthorized (r, 1));
+        if (i != 230 && i != 202)
+            return ftp_cleanup_and_return(r, ctrl, data, sock, dsock,
+                                          HTTP_BAD_GATEWAY);
+    }
+
+    /* Special handling for leading "%2f": this enforces a "cwd /"
+     * out of the $HOME directory which was the starting point after login
+     */
+    if (strncasecmp(path, "%2f", 3) == 0) {
+        path += 3;
+        while (*path == '/') /* skip leading '/' (after root %2f) */
+            ++path;
+        ap_bputs("CWD /" CRLF, ctrl);
+        ap_bflush(ctrl);
+        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: CWD /");
+
+        /* possible results: 250, 421, 500, 501, 502, 530, 550 */
+        /* 250 Requested file action okay, completed. */
+        /* 421 Service not available, closing control connection. */
+        /* 500 Syntax error, command unrecognized. */
+        /* 501 Syntax error in parameters or arguments. */
+        /* 502 Command not implemented. */
+        /* 530 Not logged in. */
+        /* 550 Requested action not taken. */
+        i = ftp_getrc(ctrl);
+        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: returned status %d", i);
+        if (i == -1 || i == 421)
+            return ftp_cleanup_and_return(r, ctrl, data, sock, dsock,
+                        ap_proxyerror(r, HTTP_BAD_GATEWAY,
+                                      "Error reading from remote server"));
+        else if (i == 550)
+            return ftp_cleanup_and_return(r, ctrl, data, sock, dsock,
+                                          HTTP_NOT_FOUND);
+        else if (i != 250)
+            return ftp_cleanup_and_return(r, ctrl, data, sock, dsock,
+                                          HTTP_BAD_GATEWAY);
     }
 
 /* set the directory (walk directory component by component):
  * this is what we must do if we don't know the OS type of the remote
  * machine
  */
-    for (;;) {
-        strp = strchr(path, '/');
-        if (strp == NULL)
-            break;
-        *strp = '\0';
+    for ( ; (strp = strchr(path, '/')) != NULL ; path = strp + 1) {
+        char *slash = strp;
 
-        len = decodeenc(path);
+        *slash = '\0';
+
+        /* Skip multiple '/' (or trailing '/') to avoid 500 errors */
+        while (strp[1] == '/')
+            ++strp;
+        if (strp[1] == '\0')
+            break;
+
+        len = decodeenc(path); /* Note! This decodes a %2f -> "/" */
+        if (strchr(path, '/')) /* were there any '/' characters? */
+            return ftp_cleanup_and_return(r, ctrl, data, sock, dsock,
+                        ap_proxyerror(r, HTTP_BAD_REQUEST,
+                                      "Use of %2F is only allowed at the base directory"));
+
         ap_bvputs(ctrl, "CWD ", path, CRLF, NULL);
         ap_bflush(ctrl);
         ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: CWD %s", path);
-        *strp = '/';
+        *slash = '/';
+
 /* responses: 250, 421, 500, 501, 502, 530, 550 */
     /* 250 Requested file action okay, completed. */
     /* 421 Service not available, closing control connection. */
@@ -753,72 +894,48 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
     /* 550 Requested action not taken. */
         i = ftp_getrc(ctrl);
         ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: returned status %d", i);
-        if (i == -1 || i == 421) {
-            ap_kill_timeout(r);
-            return ap_proxyerror(r, HTTP_BAD_GATEWAY,
-                                 "Error reading from remote server");
-        }
-        if (i == 550) {
-            ap_kill_timeout(r);
-            return HTTP_NOT_FOUND;
-        }
-        if (i != 250) {
-            ap_kill_timeout(r);
-            return HTTP_BAD_GATEWAY;
-        }
-
-        path = strp + 1;
+        if (i == -1 || i == 421)
+            return ftp_cleanup_and_return(r, ctrl, data, sock, dsock,
+                      ap_proxyerror(r, HTTP_BAD_GATEWAY,
+                                    "Error reading from remote server"));
+        if (i == 550)
+            return ftp_cleanup_and_return(r, ctrl, data, sock, dsock,
+                                          HTTP_NOT_FOUND);
+        if (i == 500 || i == 501)
+            return ftp_cleanup_and_return(r, ctrl, data, sock, dsock,
+                      ap_proxyerror(r, HTTP_BAD_REQUEST,
+                                    "Syntax error in filename (reported by ftp server)"));
+        if (i != 250)
+            return ftp_cleanup_and_return(r, ctrl, data, sock, dsock,
+                                          HTTP_BAD_GATEWAY);
     }
 
-    if (parms != NULL && strncmp(parms, "type=", 5) == 0) {
-        parms += 5;
-        if ((parms[0] != 'd' && parms[0] != 'a' && parms[0] != 'i') ||
-            parms[1] != '\0')
-            parms = "";
+    if (parms != NULL && strncmp(parms, "type=", 5) == 0
+        && ap_isalpha(parms[5])) {
+        /* "type=d" forces a dir listing.
+         * The other types (i|a|e) are directly used for the ftp TYPE command
+         */
+        if ( ! (get_dirlisting = (parms[5] == 'd')))
+            xfer_type = ap_toupper(parms[5]);
+
+        /* Check valid types, rather than ignoring invalid types silently: */
+        if (strchr("AEI", xfer_type) == NULL)
+            return ftp_cleanup_and_return(r, ctrl, data, sock, dsock,
+                      ap_proxyerror(r, HTTP_BAD_REQUEST, ap_pstrcat(r->pool,
+                                    "ftp proxy supports only types 'a', 'i', or 'e': \"",
+                                    parms, "\" is invalid.", NULL)));
     }
-    else
-        parms = "";
-
-    /* changed to make binary transfers the default */
-
-    if (parms[0] != 'a') {
-        /* set type to image */
-        /* TM - Added CRLF to the end of TYPE I, otherwise it hangs the
-           connection */
-        ap_bputs("TYPE I" CRLF, ctrl);
-        ap_bflush(ctrl);
-        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: TYPE I");
-/* responses: 200, 421, 500, 501, 504, 530 */
-    /* 200 Command okay. */
-    /* 421 Service not available, closing control connection. */
-    /* 500 Syntax error, command unrecognized. */
-    /* 501 Syntax error in parameters or arguments. */
-    /* 504 Command not implemented for that parameter. */
-    /* 530 Not logged in. */
-        i = ftp_getrc(ctrl);
-        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: returned status %d", i);
-        if (i == -1 || i == 421) {
-            ap_kill_timeout(r);
-            return ap_proxyerror(r, HTTP_BAD_GATEWAY,
-                                 "Error reading from remote server");
-        }
-        if (i != 200 && i != 504) {
-            ap_kill_timeout(r);
-            return HTTP_BAD_GATEWAY;
-        }
-/* Allow not implemented */
-        if (i == 504)
-            parms[0] = '\0';
+    else {
+        /* make binary transfers the default */
+        xfer_type = 'I';
     }
 
 /* try to set up PASV data connection first */
     dsock = ap_psocket(p, PF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (dsock == -1) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
-                     "proxy: error creating PASV socket");
-        ap_bclose(ctrl);
-        ap_kill_timeout(r);
-        return HTTP_INTERNAL_SERVER_ERROR;
+        return ftp_cleanup_and_return(r, ctrl, data, sock, dsock,
+                      ap_proxyerror(r, HTTP_INTERNAL_SERVER_ERROR, 
+                                    "proxy: error creating PASV socket"));
     }
 
 #if !defined (TPF) && !defined(BEOS)
@@ -841,14 +958,12 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
     /* 501 Syntax error in parameters or arguments. */
     /* 502 Command not implemented. */
     /* 530 Not logged in. */
+
     i = ap_bgets(pasv, sizeof(pasv), ctrl);
     if (i == -1 || i == 421) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, r,
-                     "PASV: control connection is toast");
-        ap_pclosesocket(p, dsock);
-        ap_bclose(ctrl);
-        ap_kill_timeout(r);
-        return HTTP_INTERNAL_SERVER_ERROR;
+        return ftp_cleanup_and_return(r, ctrl, data, sock, dsock,
+                      ap_proxyerror(r, HTTP_INTERNAL_SERVER_ERROR, 
+                                    "proxy: PASV: control connection is toast"));
     }
     else {
         pasv[i - 1] = '\0';
@@ -882,72 +997,66 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
             i = ap_proxy_doconnect(dsock, &data_addr, r);
 
             if (i == -1) {
-                ap_kill_timeout(r);
-                return ap_proxyerror(r, HTTP_BAD_GATEWAY,
-                                     ap_pstrcat(r->pool,
-                                                "Could not connect to remote machine: ",
-                                                strerror(errno), NULL));
+                return ftp_cleanup_and_return(r, ctrl, data, sock, dsock,
+                          ap_proxyerror(r, HTTP_BAD_GATEWAY,
+                             ap_pstrcat(r->pool,
+                                        "Could not connect to remote machine: ",
+                                        strerror(errno), NULL)));
             }
-            else {
-                pasvmode = 1;
-            }
+            pasvmode = 1;
         }
-        else
+        else {
             ap_pclosesocket(p, dsock);  /* and try the regular way */
+            dsock = -1;
+        }
     }
 
     if (!pasvmode) {            /* set up data connection */
         clen = sizeof(struct sockaddr_in);
         if (getsockname(sock, (struct sockaddr *) &server, &clen) < 0) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
-                         "proxy: error getting socket address");
-            ap_bclose(ctrl);
-            ap_kill_timeout(r);
-            return HTTP_INTERNAL_SERVER_ERROR;
+            return ftp_cleanup_and_return(r, ctrl, data, sock, dsock,
+                      ap_proxyerror(r, HTTP_INTERNAL_SERVER_ERROR, 
+                                    "proxy: error getting socket address"));
         }
 
         dsock = ap_psocket(p, PF_INET, SOCK_STREAM, IPPROTO_TCP);
         if (dsock == -1) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
-                         "proxy: error creating socket");
-            ap_bclose(ctrl);
-            ap_kill_timeout(r);
-            return HTTP_INTERNAL_SERVER_ERROR;
+            return ftp_cleanup_and_return(r, ctrl, data, sock, dsock,
+                      ap_proxyerror(r, HTTP_INTERNAL_SERVER_ERROR, 
+                                    "proxy: error creating socket"));
         }
 
         if (setsockopt(dsock, SOL_SOCKET, SO_REUSEADDR, (void *) &one,
                        sizeof(one)) == -1) {
 #ifndef _OSD_POSIX /* BS2000 has this option "always on" */
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
-                         "proxy: error setting reuseaddr option");
-            ap_pclosesocket(p, dsock);
-            ap_bclose(ctrl);
-            ap_kill_timeout(r);
-            return HTTP_INTERNAL_SERVER_ERROR;
+            return ftp_cleanup_and_return(r, ctrl, data, sock, dsock,
+                      ap_proxyerror(r, HTTP_INTERNAL_SERVER_ERROR, 
+                                    "proxy: error setting reuseaddr option"));
 #endif /*_OSD_POSIX*/
         }
 
         if (bind(dsock, (struct sockaddr *) &server,
                  sizeof(struct sockaddr_in)) == -1) {
-            char buff[22];
 
-            ap_snprintf(buff, sizeof(buff), "%s:%d", inet_ntoa(server.sin_addr), server.sin_port);
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
-                         "proxy: error binding to ftp data socket %s", buff);
-            ap_bclose(ctrl);
-            ap_pclosesocket(p, dsock);
-            return HTTP_INTERNAL_SERVER_ERROR;
+            return ftp_cleanup_and_return(r, ctrl, data, sock, dsock,
+                      ap_proxyerror(r, HTTP_INTERNAL_SERVER_ERROR, 
+                        ap_psprintf(p, "proxy: error binding to ftp data socket %s:%d",
+                           inet_ntoa(server.sin_addr), server.sin_port)));
         }
         listen(dsock, 2);        /* only need a short queue */
     }
 
 /* set request; "path" holds last path component */
     len = decodeenc(path);
+    if (strchr(path, '/')) /* were there any '/' characters? */
+        return ftp_cleanup_and_return(r, ctrl, data, sock, dsock,
+                    ap_proxyerror(r, HTTP_BAD_REQUEST,
+                                  "Use of %2F is only allowed at the base directory"));
 
     /* TM - if len == 0 then it must be a directory (you can't RETR nothing) */
 
     if (len == 0) {
-        parms = "d";
+        get_dirlisting = 1;
     }
     else {
         ap_bvputs(ctrl, "SIZE ", path, CRLF, NULL);
@@ -958,11 +1067,11 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
         if (i != 500) {         /* Size command not recognized */
             if (i == 550) {     /* Not a regular file */
                 ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: SIZE shows this is a directory");
-                parms = "d";
+                get_dirlisting = 1;
                 ap_bvputs(ctrl, "CWD ", path, CRLF, NULL);
                 ap_bflush(ctrl);
                 ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: CWD %s", path);
-                i = ftp_getrc(ctrl);
+
                 /* possible results: 250, 421, 500, 501, 502, 530, 550 */
                 /* 250 Requested file action okay, completed. */
                 /* 421 Service not available, closing control connection. */
@@ -971,20 +1080,18 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
                 /* 502 Command not implemented. */
                 /* 530 Not logged in. */
                 /* 550 Requested action not taken. */
+                i = ftp_getrc(ctrl);
                 ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: returned status %d", i);
-                if (i == -1 || i == 421) {
-                    ap_kill_timeout(r);
-                    return ap_proxyerror(r, HTTP_BAD_GATEWAY,
-                                         "Error reading from remote server");
-                }
-                if (i == 550) {
-                    ap_kill_timeout(r);
-                    return HTTP_NOT_FOUND;
-                }
-                if (i != 250) {
-                    ap_kill_timeout(r);
-                    return HTTP_BAD_GATEWAY;
-                }
+                if (i == -1 || i == 421)
+                    return ftp_cleanup_and_return(r, ctrl, data, sock, dsock,
+                                ap_proxyerror(r, HTTP_BAD_GATEWAY,
+                                              "Error reading from remote server"));
+                if (i == 550)
+                    return ftp_cleanup_and_return(r, ctrl, data, sock, dsock,
+                                                  HTTP_NOT_FOUND);
+                if (i != 250)
+                    return ftp_cleanup_and_return(r, ctrl, data, sock, dsock,
+                                                  HTTP_BAD_GATEWAY);
                 path = "";
                 len = 0;
             }
@@ -1011,22 +1118,20 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
     /* 550 Requested action not taken. */
     i = ftp_getrc_msg(ctrl, resp, sizeof resp);
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: PWD returned status %d", i);
-    if (i == -1 || i == 421) {
-        ap_kill_timeout(r);
-        return ap_proxyerror(r, HTTP_BAD_GATEWAY,
-                             "Error reading from remote server");
-    }
-    if (i == 550) {
-        ap_kill_timeout(r);
-        return HTTP_NOT_FOUND;
-    }
+    if (i == -1 || i == 421)
+        return ftp_cleanup_and_return(r, ctrl, data, sock, dsock,
+                                ap_proxyerror(r, HTTP_BAD_GATEWAY,
+                                      "Error reading from remote server"));
+    if (i == 550)
+        return ftp_cleanup_and_return(r, ctrl, data, sock, dsock,
+                                      HTTP_NOT_FOUND);
     if (i == 257) {
         const char *dirp = resp;
         cwd = ap_getword_conf(r->pool, &dirp);
     }
 #endif /*AUTODETECT_PWD*/
 
-    if (parms[0] == 'd') {
+    if (get_dirlisting) {
         if (len != 0)
             ap_bvputs(ctrl, "LIST ", path, CRLF, NULL);
         else
@@ -1034,6 +1139,7 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
         ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: LIST %s", (len == 0 ? "" : path));
     }
     else {
+        ftp_set_TYPE(r, ctrl, xfer_type);
         ap_bvputs(ctrl, "RETR ", path, CRLF, NULL);
         ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: RETR %s", path);
     }
@@ -1056,14 +1162,15 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
     /* 550 Requested action not taken. */
     rc = ftp_getrc(ctrl);
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: returned status %d", rc);
-    if (rc == -1 || i == 421) {
-        ap_kill_timeout(r);
-        return ap_proxyerror(r, HTTP_BAD_GATEWAY,
-                             "Error reading from remote server");
-    }
+    if (rc == -1 || rc == 421)
+        return ftp_cleanup_and_return(r, ctrl, data, sock, dsock,
+                                ap_proxyerror(r, HTTP_BAD_GATEWAY,
+                                      "Error reading from remote server"));
     if (rc == 550) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: RETR failed, trying LIST instead");
-        parms = "d";
+        get_dirlisting = 1;
+        ftp_set_TYPE(r, ctrl, 'A'); /* directories must be transferred in ASCII */
+
         ap_bvputs(ctrl, "CWD ", path, CRLF, NULL);
         ap_bflush(ctrl);
         ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: CWD %s", path);
@@ -1077,19 +1184,16 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
         /* 550 Requested action not taken. */
         rc = ftp_getrc(ctrl);
         ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: returned status %d", rc);
-        if (rc == -1 || rc == 421) {
-            ap_kill_timeout(r);
-            return ap_proxyerror(r, HTTP_BAD_GATEWAY,
-                                 "Error reading from remote server");
-        }
-        if (rc == 550) {
-            ap_kill_timeout(r);
-            return HTTP_NOT_FOUND;
-        }
-        if (rc != 250) {
-            ap_kill_timeout(r);
-            return HTTP_BAD_GATEWAY;
-        }
+        if (rc == -1 || rc == 421)
+            return ftp_cleanup_and_return(r, ctrl, data, sock, dsock,
+                                ap_proxyerror(r, HTTP_BAD_GATEWAY,
+                                      "Error reading from remote server"));
+        if (rc == 550)
+            return ftp_cleanup_and_return(r, ctrl, data, sock, dsock,
+                                          HTTP_NOT_FOUND);
+        if (rc != 250)
+            return ftp_cleanup_and_return(r, ctrl, data, sock, dsock,
+                                          HTTP_BAD_GATEWAY);
 
 #ifdef AUTODETECT_PWD
         ap_bvputs(ctrl, "PWD", CRLF, NULL);
@@ -1104,15 +1208,13 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
         /* 550 Requested action not taken. */
         i = ftp_getrc_msg(ctrl, resp, sizeof resp);
         ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: PWD returned status %d", i);
-        if (i == -1 || i == 421) {
-            ap_kill_timeout(r);
-            return ap_proxyerror(r, HTTP_BAD_GATEWAY,
-                                 "Error reading from remote server");
-        }
-        if (i == 550) {
-            ap_kill_timeout(r);
-            return HTTP_NOT_FOUND;
-        }
+        if (i == -1 || i == 421)
+            return ftp_cleanup_and_return(r, ctrl, data, sock, dsock,
+                                ap_proxyerror(r, HTTP_BAD_GATEWAY,
+                                      "Error reading from remote server"));
+        if (i == 550)
+            return ftp_cleanup_and_return(r, ctrl, data, sock, dsock,
+                                          HTTP_NOT_FOUND);
         if (i == 257) {
             const char *dirp = resp;
             cwd = ap_getword_conf(r->pool, &dirp);
@@ -1125,12 +1227,14 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
         rc = ftp_getrc(ctrl);
         ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: returned status %d", rc);
         if (rc == -1 || rc == 421)
-            return ap_proxyerror(r, HTTP_BAD_GATEWAY,
-                                 "Error reading from remote server");
+            return ftp_cleanup_and_return(r, ctrl, data, sock, dsock,
+                                ap_proxyerror(r, HTTP_BAD_GATEWAY,
+                                      "Error reading from remote server"));
     }
     ap_kill_timeout(r);
     if (rc != 125 && rc != 150 && rc != 226 && rc != 250)
-        return HTTP_BAD_GATEWAY;
+        return ftp_cleanup_and_return(r, ctrl, data, sock, dsock,
+                                          HTTP_BAD_GATEWAY);
 
     r->status = HTTP_OK;
     r->status_line = "200 OK";
@@ -1141,7 +1245,7 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
     ap_table_setn(resp_hdrs, "Date", ap_gm_timestr_822(r->pool, r->request_time));
     ap_table_setn(resp_hdrs, "Server", ap_get_server_version());
 
-    if (parms[0] == 'd') {
+    if (get_dirlisting) {
         ap_table_setn(resp_hdrs, "Content-Type", "text/html");
 #ifdef CHARSET_EBCDIC
         r->ebcdic.conv_out = 1; /* server-generated */
@@ -1158,7 +1262,7 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
         else {
             ap_table_setn(resp_hdrs, "Content-Type", ap_default_type(r));
         }
-        if (parms[0] != 'a' && size != NULL) {
+        if (xfer_type != 'A' && size != NULL) {
             /* We "trust" the ftp server to really serve (size) bytes... */
             ap_table_set(resp_hdrs, "Content-Length", size);
             ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: Content-Length set to %s", size);
@@ -1185,9 +1289,7 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
     i = ap_proxy_cache_update(c, resp_hdrs, 0, nocache);
 
     if (i != DECLINED) {
-        ap_pclosesocket(p, dsock);
-        ap_bclose(ctrl);
-        return i;
+        return ftp_cleanup_and_return(r, ctrl, data, sock, dsock, i);
     }
 
     if (!pasvmode) {            /* wait for connection */
@@ -1199,14 +1301,11 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
         if (csd == -1) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
                          "proxy: failed to accept data connection");
-            ap_pclosesocket(p, dsock);
-            ap_bclose(ctrl);
-            ap_kill_timeout(r);
             if (c != NULL)
                 c = ap_proxy_cache_error(c);
-            return HTTP_BAD_GATEWAY;
+            return ftp_cleanup_and_return(r, ctrl, data, sock, dsock,
+                                          HTTP_BAD_GATEWAY);
         }
-        ap_note_cleanups_for_socket(p, csd);
         data = ap_bcreate(p, B_RDWR | B_SOCKET);
         ap_bpushfd(data, csd, -1);
         ap_kill_timeout(r);
@@ -1238,28 +1337,32 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 #endif
 /* send body */
     if (!r->header_only) {
-        if (parms[0] != 'd') {
+        if (!get_dirlisting) {
 /* we need to set this for ap_proxy_send_fb()... */
             if (c != NULL)
                 c->cache_completion = 0;
             ap_proxy_send_fb(data, r, c, -1, 0);
         } else
             send_dir(data, r, c, cwd);
+        ap_bclose(data);
+        data = NULL;
+        dsock = -1;
 
+        /* We checked for 125||150||226||250 above.
+         * See if another rc is pending, and fetch it:
+         */
         if (rc == 125 || rc == 150)
             rc = ftp_getrc(ctrl);
-
-        /* XXX: we checked for 125||150||226||250 above. This is redundant. */
-        if (rc != 226 && rc != 250)
-            /* XXX: we no longer log an "error writing to c->tempfile" - should we? */
-            c = ap_proxy_cache_error(c);
     }
     else {
-/* abort the transfer */
+/* abort the transfer: we send the header only */
         ap_bputs("ABOR" CRLF, ctrl);
         ap_bflush(ctrl);
-        if (!pasvmode)
+        if (data != NULL) {
             ap_bclose(data);
+            data = NULL;
+            dsock = -1;
+        }
         ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: ABOR");
 /* responses: 225, 226, 421, 500, 501, 502 */
     /* 225 Data connection open; no transfer in progress. */
@@ -1285,8 +1388,6 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
     i = ftp_getrc(ctrl);
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: QUIT: status %d", i);
 
-    if (pasvmode)
-        ap_bclose(data);
     ap_bclose(ctrl);
 
     ap_rflush(r);        /* flush before garbage collection */

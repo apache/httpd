@@ -1,5 +1,13 @@
 Changes with Apache 1.3.24
 
+  *) ftp proxy: various cosmetic and functional improvements
+     - Allow for /%2f hack (to access the root directory / )
+     - properly escape generated links in dir listing
+     - do directory listings in ASCII, to avoid problems with EBCDIC
+       servers
+     - close data & control channels to server properly
+     [Martin Kraemer]
+
   *) NetWare: Added mod_auth_dbm to the project file.  
      [Brad Nicholes bnicholes@novell.com]
 
