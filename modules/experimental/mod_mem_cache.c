@@ -13,6 +13,27 @@
  * limitations under the License.
  */
 
+/*
+ * Rules for managing obj->refcount:
+ * refcount should be incremented when an object is placed in the cache. Insertion 
+ *   of an object into the cache and the refcount increment should happen under 
+ *   protection of the sconf->lock.
+ *
+ * refcount should be decremented when the object is removed from the cache.
+ *   Object should be removed from the cache and the refcount decremented while
+ *   under protection of the sconf->lock.
+ * 
+ * refcount should be incremented when an object is retrieved from the cache
+ *   by a worker thread. The retrieval/find operation and refcount increment
+ *   should occur under protection of the sconf->lock
+ *
+ * refcount can be atomically decremented w/o protection of the sconf->lock
+ *   by worker threads.
+ *
+ * Any object whose refcount drops to 0 should be freed/cleaned up. A refcount 
+ * of 0 means the object is not in the cache and no worker threads are accessing 
+ * it.
+ */
 #define CORE_PRIVATE
 #include "mod_cache.h"
 #include "cache_pqueue.h"
@@ -88,8 +109,6 @@ static mem_cache_conf *sconf;
 #define DEFAULT_MAX_STREAMING_BUFFER_SIZE 100000
 #define CACHEFILE_LEN 20
 
-#define OBJECT_CLEANUP_BIT 0x00800000   /* flag to cleanup cache object */
-
 /* Forward declarations */
 static int remove_entity(cache_handle_t *h);
 static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info *i);
@@ -144,25 +163,23 @@ static const char* memcache_cache_get_key(void*a)
     return obj->key;
 }
 /** 
- * function used to free an entry, used as a callback and as a local function. 
- * There is way too much magic in this code. This callback
- * has to be called under protection of the sconf->lock, which means that we 
- * do not (and should not) attempt to obtain the lock recursively. 
+ * memcache_cache_free()
+ * memcache_cache_free is a callback that is only invoked by a thread 
+ * running in cache_insert(). cache_insert() runs under protection
+ * of sconf->lock.  By the time this function has been entered, the cache_object
+ * has been ejected from the cache. decrement the refcount and if the refcount drops
+ * to 0, cleanup the cache object.
  */
 static void memcache_cache_free(void*a)
 {
     cache_object_t *obj = (cache_object_t *)a;
-    apr_uint32_t tmp_refcount = obj->refcount;
 
-    /* Cleanup the cache object. Object should be removed from the cache now. */
-    if (!apr_atomic_read32(&obj->refcount)) {
+    /* Decrement the refcount to account for the object being ejected
+     * from the cache. If the refcount is 0, free the object.
+     */
+    if (!apr_atomic_dec32(&obj->refcount)) {
         cleanup_cache_object(obj);
     }
-    /* checking if there was a collision with another thread */
-    else if(tmp_refcount != apr_atomic_cas32(&obj->refcount, tmp_refcount | OBJECT_CLEANUP_BIT, tmp_refcount)) {
-        memcache_cache_free(obj);
-    }
-    return;
 }
 /*
  * functions return a 'negative' score since priority queues
@@ -269,26 +286,27 @@ static apr_status_t decrement_refcount(void *arg)
 
     /* If obj->complete is not set, the cache update failed and the
      * object needs to be removed from the cache then cleaned up.
+     * The garbage collector may have ejected the object from the
+     * cache already, so make sure it is really still in the cache
+     * before attempting to remove it.
      */
     if (!obj->complete) {
+        cache_object_t *tobj = NULL;
         if (sconf->lock) {
             apr_thread_mutex_lock(sconf->lock);
         }
-        /* Remember, objects marked for cleanup are, by design, already
-         * removed from the cache. remove_url() could have already
-         * removed the object from the cache (and set the OBJECT_CLEANUP_BIT)
-         */
-        if (!(apr_atomic_read32(&obj->refcount) & OBJECT_CLEANUP_BIT)) {
+        tobj = cache_find(sconf->cache_cache, obj->key);
+        if (tobj == obj) {
             cache_remove(sconf->cache_cache, obj);
-            apr_atomic_set32(&obj->refcount, obj->refcount | OBJECT_CLEANUP_BIT);
+            apr_atomic_dec32(&obj->refcount);
         }
         if (sconf->lock) {
             apr_thread_mutex_unlock(sconf->lock);
         }
-    }
+    } 
 
-    /* Cleanup the cache object */
-    if(apr_atomic_dec32(&obj->refcount) == OBJECT_CLEANUP_BIT) {
+    /* If the refcount drops to 0, cleanup the cache object */
+    if (!apr_atomic_dec32(&obj->refcount)) {
         cleanup_cache_object(obj);
     }
     return APR_SUCCESS;
@@ -310,9 +328,10 @@ static apr_status_t cleanup_cache_mem(void *sconfv)
     }
     obj = cache_pop(co->cache_cache);
     while (obj) {         
-    /* Iterate over the cache and clean up each entry */  
-    /* Free the object if the recount == 0 */
-        memcache_cache_free(obj);
+        /* Iterate over the cache and clean up each unreferenced entry */
+        if (!apr_atomic_dec32(&obj->refcount)) {
+            cleanup_cache_object(obj);
+        }
         obj = cache_pop(co->cache_cache);
     }
 
@@ -418,7 +437,7 @@ static int create_entity(cache_handle_t *h, cache_type_e type_e,
      * Note: Perhaps we should wait to put the object in the
      * hash table when the object is complete?  I add the object here to
      * avoid multiple threads attempting to cache the same content only
-     * to discover at the very end that only one of them will suceed.
+     * to discover at the very end that only one of them will succeed.
      * Furthermore, adding the cache object to the table at the end could
      * open up a subtle but easy to exploit DoS hole: someone could request 
      * a very large file with multiple requests. Better to detect this here
@@ -432,7 +451,12 @@ static int create_entity(cache_handle_t *h, cache_type_e type_e,
     tmp_obj = (cache_object_t *) cache_find(sconf->cache_cache, key);
 
     if (!tmp_obj) {
-        cache_insert(sconf->cache_cache, obj);     
+        cache_insert(sconf->cache_cache, obj);
+        /* Add a refcount to account for the reference by the 
+         * hashtable in the cache. Refcount should be 2 now, one
+         * for this thread, and one for the cache.
+         */
+        apr_atomic_inc32(&obj->refcount);
     }
     if (sconf->lock) {
         apr_thread_mutex_unlock(sconf->lock);
@@ -516,25 +540,33 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
     return OK;
 }
 
+/* remove_entity()
+ * Notes: 
+ *   refcount should be at least 1 upon entry to this function to account
+ *   for this thread's reference to the object. If the refcount is 1, then
+ *   object has been removed from the cache by another thread and this thread
+ *   is the last thread accessing the object.
+ */
 static int remove_entity(cache_handle_t *h) 
 {
     cache_object_t *obj = h->cache_obj;
+    cache_object_t *tobj = NULL;
 
-    /* Remove the cache object from the cache under protection */
     if (sconf->lock) {
         apr_thread_mutex_lock(sconf->lock);
     }
-    /* If the object is not already marked for cleanup, remove
-     * it from the cache and mark it for cleanup. Remember,
-     * an object marked for cleanup is by design not in the
-     * hash table.
-     */
-    if (!(apr_atomic_read32(&obj->refcount) & OBJECT_CLEANUP_BIT)) {
-        cache_remove(sconf->cache_cache, obj);
-        apr_atomic_set32(&obj->refcount, obj->refcount | OBJECT_CLEANUP_BIT);
-        ap_log_error(APLOG_MARK, APLOG_INFO, 0, NULL, "gcing a cache entry");
-    }
 
+    /* If the entity is still in the cache, remove it and decrement the
+     * refcount. If the entity is not in the cache, do nothing. In both cases
+     * decrement_refcount called by the last thread referencing the object will 
+     * trigger the cleanup.
+     */
+    tobj = cache_find(sconf->cache_cache, obj->key);
+    if (tobj == obj) {
+        cache_remove(sconf->cache_cache, obj);
+        apr_atomic_dec32(&obj->refcount);
+    }
+    
     if (sconf->lock) {
         apr_thread_mutex_unlock(sconf->lock);
     }
@@ -600,31 +632,32 @@ static int unserialize_table( cache_header_tbl_t *ctbl,
     return APR_SUCCESS;
 }
 /* Define request processing hook handlers */
+/* remove_url()
+ * Notes:
+ */
 static int remove_url(const char *key) 
 {
     cache_object_t *obj;
+    int cleanup = 0;
 
-    /* Order of the operations is important to avoid race conditions. 
-     * First, remove the object from the cache. Remember, all additions
-     * deletions from the cache are protected by sconf->lock.
-     * Increment the ref count on the object to indicate our thread
-     * is accessing the object. Then set the cleanup flag on the
-     * object. Remember, the cleanup flag is NEVER set on an
-     * object in the hash table.  If an object has the cleanup
-     * flag set, it is guaranteed to NOT be in the hash table.
-     */
     if (sconf->lock) {
         apr_thread_mutex_lock(sconf->lock);
     }
   
     obj = cache_find(sconf->cache_cache, key);       
     if (obj) {
-        cache_remove(sconf->cache_cache, obj);        
-        memcache_cache_free(obj);
+        cache_remove(sconf->cache_cache, obj);
+        /* For performance, cleanup cache object after releasing the lock */
+        cleanup = !apr_atomic_dec32(&obj->refcount);
     }
     if (sconf->lock) {
         apr_thread_mutex_unlock(sconf->lock);
     }
+
+    if (cleanup) {
+        cleanup_cache_object(obj);
+    }
+
     return OK;
 }
 
@@ -787,6 +820,7 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
 {
     apr_status_t rv;
     cache_object_t *obj = h->cache_obj;
+    cache_object_t *tobj = NULL;
     mem_cache_object_t *mobj = (mem_cache_object_t*) obj->vobj;
     apr_read_type_e eblock = APR_BLOCK_READ;
     apr_bucket *e;
@@ -887,25 +921,39 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
                 if (sconf->lock) {
                     apr_thread_mutex_lock(sconf->lock);
                 }
-                if ((apr_atomic_read32(&obj->refcount) & OBJECT_CLEANUP_BIT)) {
-                    /* If OBJECT_CLEANUP_BIT is set, the object has been prematurly 
-                     * ejected from the cache by the garbage collector. Add the
-                     * object back to the cache. If an object with the same key is 
-                     * found in the cache, eject it in favor of the completed obj.
+                /* Has the object been ejected from the cache?
+                 */
+                tobj = (cache_object_t *) cache_find(sconf->cache_cache, obj->key);
+                if (tobj == obj) {
+                    /* Object is still in the cache, remove it, update the len field then
+                     * replace it under protection of sconf->lock.
                      */
-                    cache_object_t *tmp_obj =
-                      (cache_object_t *) cache_find(sconf->cache_cache, obj->key);
-                    if (tmp_obj) {
-                        cache_remove(sconf->cache_cache, tmp_obj);
-                        memcache_cache_free(tmp_obj);
-                    }
-                    apr_atomic_set32(&obj->refcount, obj->refcount & ~OBJECT_CLEANUP_BIT);
-                }
-                else {
                     cache_remove(sconf->cache_cache, obj);
+                    /* For illustration, cache no longer has reference to the object
+                     * so decrement the refcount
+                     * apr_atomic_dec32(&obj->refcount); 
+                     */
+                    mobj->m_len = obj->count;
+
+                    cache_insert(sconf->cache_cache, obj);
+                    /* For illustration, cache now has reference to the object, so
+                     * increment the refcount
+                     * apr_atomic_inc32(&obj->refcount); 
+                     */
                 }
-                mobj->m_len = obj->count;
-                cache_insert(sconf->cache_cache, obj);                
+                else if (tobj) {
+                    /* Different object with the same key found in the cache. Doing nothing
+                     * here will cause the object refcount to drop to 0 in decrement_refcount
+                     * and the object will be cleaned up.
+                     */
+
+                } else {
+                    /* Object has been ejected from the cache, add it back to the cache */
+                    mobj->m_len = obj->count;
+                    cache_insert(sconf->cache_cache, obj);
+                    apr_atomic_inc32(&obj->refcount); 
+                }
+
                 if (sconf->lock) {
                     apr_thread_mutex_unlock(sconf->lock);
                 }
