@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) ap_set_sub_req_protocol and ap_finalize_sub_req_protocol are now
+     exported on Win32 as well.  PR 28523.
+     [Edward Rudd <eddie omegaware.com>, André Malo]
+
   *) Include directives no longer refuse to process symlinks on
      directories. Instead there's now a maximum nesting level
      of included directories (128 as distributed). This is configurable
