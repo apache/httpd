@@ -136,12 +136,17 @@ every configuration function as __stdcall.
 
 #define MODULE_VAR_EXPORT   __declspec(dllexport)
 
-
+#define HAVE_MEMMOVE
 #define HAVE_STRCASECMP
 #define HAVE_STRNCASECMP
+#define HAVE_STRERROR
+#define HAVE_STRDUP
+#define HAVE_STRSTR
 
 #define strcasecmp(s1, s2) stricmp(s1, s2)
 #define strncasecmp(s1, s2, n) strnicmp(s1, s2, n)
+
+#define HAVE_SYS_STAT_H
 #define lstat(x, y) stat(x, y)
 #define S_ISLNK(m) (0)
 #define S_ISREG(m) ((m & _S_IFREG) == _S_IFREG)
