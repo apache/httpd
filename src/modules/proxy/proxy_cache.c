@@ -499,7 +499,19 @@ static int sub_garbage_coll(request_rec *r, array_header *files,
 #endif
 
 /* read the file */
-	fd = open(filename, O_RDONLY | O_BINARY);
+#if defined(WIN32)
+        /* On WIN32 open does not work for directories, 
+         * so we us stat instead of fstat to determine 
+         * if the file is a directory 
+         */
+        if (stat(filename, &buf) == -1) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+        		 "proxy gc: stat(%s)", filename);
+            continue;
+        }
+        fd = -1;
+#else
+ 	fd = open(filename, O_RDONLY | O_BINARY);
 	if (fd == -1) {
 	    if (errno != ENOENT)
 		ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
@@ -512,12 +524,16 @@ static int sub_garbage_coll(request_rec *r, array_header *files,
 	    close(fd);
 	    continue;
 	}
+#endif
 
 /* In OS/2 and TPF this has already been done above */
 #if !defined(OS2) && !defined(TPF)
 	if (S_ISDIR(buf.st_mode)) {
 	    char newcachedir[HUGE_STRING_LEN];
-	    close(fd);
+#if !defined(WIN32)
+            /* Win32 used stat, no file to close */
+            close(fd);
+#endif
 	    ap_snprintf(newcachedir, sizeof(newcachedir),
 			"%s%s/", cachesubdir, ent->d_name);
 	    if (!sub_garbage_coll(r, files, cachebasedir, newcachedir)) {
@@ -537,6 +553,19 @@ static int sub_garbage_coll(request_rec *r, array_header *files,
 	}
 #endif
 
+#if defined(WIN32)
+        /* Since we have determined above that the file is not a directory,
+         * it should be safe to open it now 
+         */
+        fd = open(filename, O_RDONLY | O_BINARY);
+        if (fd == -1) {
+            if (errno != ENOENT)
+	        ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+		             "proxy gc: open(%s) = %d", filename, errno);
+            continue;
+        }
+#endif
+ 
 	i = read(fd, line, 26);
 	close(fd);
 	if (i == -1) {
