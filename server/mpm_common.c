@@ -838,6 +838,8 @@ void ap_mpm_rewrite_args(process_rec *process)
     apr_getopt_init(&opt, process->pool, process->argc, process->argv);
     opt->errfn = NULL;
     optbuf[0] = '-';
+    /* option char returned by apr_getopt() will be stored in optbuf[1] */
+    optbuf[2] = '\0';
     while ((rv = apr_getopt(opt, "k:" AP_SERVER_BASEARGS,
                             optbuf + 1, &optarg)) == APR_SUCCESS) {
         switch(optbuf[1]) {
