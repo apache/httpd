@@ -898,7 +898,7 @@ struct server_addr_rec {
     /** The next server in the list */
     server_addr_rec *next;
     /** The bound address, for this server */
-    apr_in_addr_t host_addr;
+    apr_sockaddr_t *host_addr;
     /** The bound port, for this server */
     apr_port_t host_port;
     /** The name given in <VirtualHost> */
