@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/06/17 15:20:02 $]
+Last modified at [$Date: 2003/06/20 00:07:54 $]
 
 Release:
 
@@ -209,12 +209,9 @@ PATCHES TO PORT FROM 2.1
                  the extra pkgconfig/openssl.pc Libs: * foo }
 
     * mod_dav: backport the "streamy" PROPFIND response.
-        modules/dav/main/mod_dav.c 1.94
+        modules/dav/main/mod_dav.c r1.94 r1.95 r1.96
         modules/dav/main/mod_dav.h 1.67
-        +1: gstein, sander
-        jerenkrantz says: dav_handle_err needs to be fixed to handle the
-                          case where an error is found during a multistatus
-                          response.
+        +1: striker
 
     * winnt MPM: fix some invalid ap_log_error() invocations
         server/mpm/winnt/child.c 1.15
