@@ -145,7 +145,6 @@ TARGET_nlm = \
 # If there is an LIB target, put it here
 #
 TARGET_lib = \
-	$(OBJDIR)/stdmod.lib \
 	$(EOLIST)
 
 #
