@@ -648,6 +648,12 @@ static apr_status_t read_headers(cache_handle_t *h, request_rec *r)
     rc = unserialize_table( mobj->notes,
                             mobj->num_notes,
                             r->notes);
+
+    /* Content-Type: header may not be set if content is local since
+     * CACHE_IN runs before header filters....
+     */
+    ap_set_content_type(r, apr_pstrdup(r->pool, h->cache_obj->info.content_type));
+
     return rc;
 }
 

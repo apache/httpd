@@ -1,4 +1,7 @@
 Changes with Apache 2.0.38
+  *) Fix problem where mod_cache/mod_disk_cache was incorrectly
+     stripping the content_type from cached responses.
+     [Bill Stoddard]
 
   *) apachectl passes through any httpd options.  Note: apachectl
      should be used in preference to httpd since it ensures that any
