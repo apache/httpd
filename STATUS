@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/03/16 20:19:43 $]
+Last modified at [$Date: 2004/03/16 21:10:15 $]
 
 Release:
 
@@ -74,10 +74,6 @@ PATCHES TO BACKPORT FROM 2.1
     *) Add a check on apr_pollset_create() to return value to exit ab in case it fails.
         support/ab.c: r1.138
       +1: jjclar, bnicholes
-
-    *) mod_cgid: Fix storage corruption caused by use of incorrect pool.
-         modules/generators/mod_cgid.c: r1.425
-       +1: trawick, stoddard, bnicholes
 
     *) Use apr_temp_dir_get for htpasswd
        support/htpasswd.c: 1.75
