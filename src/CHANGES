@@ -1,5 +1,9 @@
 Changes with Apache 1.3a2
 
+  *) support/httpd_monitor is no longer distributed because the 
+     scoreboard should not be file based if at all possible. Use
+     mod_status to see current server snapshot.
+
   *) (set_file_slot): New function, allowing auth directives to be
      independent of the server root, so the server documents can be
      moved to a different directory or machine more easily.
