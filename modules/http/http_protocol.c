@@ -759,8 +759,10 @@ static int getline(char *s, int n, BUFF *in, int fold)
         retval = ap_bgets(pos, n, in);
        /* retval == -1 if error, 0 if EOF */
 
-        if (retval <= 0)
-            return ((retval < 0) && (total == 0)) ? -1 : total;
+        if (retval <= 0) {
+            total = ((retval < 0) && (total == 0)) ? -1 : total;
+            break;
+        }
 
         /* retval is the number of characters read, not including NUL      */
 
@@ -785,7 +787,7 @@ static int getline(char *s, int n, BUFF *in, int fold)
             ++n;
         }
         else
-            return total;       /* if not, input line exceeded buffer size */
+            break;       /* if not, input line exceeded buffer size */
 
         /* Continue appending if line folding is desired and
          * the last line was not empty and we have room in the buffer and
@@ -1873,7 +1875,12 @@ API_EXPORT(int) ap_setup_client_block(request_rec *r, int read_policy)
                           strncasecmp(typep, "multipart/", 10) == 0 ||
                           strcasecmp (typep, "application/x-www-form-urlencoded") == 0
                          );
-        ap_bsetopt(r->connection->client, BO_RXLATE, ap_locale_from_ascii);
+        /* By default, we translate content on input.  Turn off translation
+         * if it isn't text.
+         */
+        if (!convert_in) {
+            ap_set_content_xlate(r, 0, NULL);
+        }
     }
 #endif /*CHARSET_EBCDIC*/
 
