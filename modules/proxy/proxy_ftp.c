@@ -673,7 +673,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     }
 
 
-    if ((rv = apr_socket_create(&sock, APR_INET, SOCK_STREAM, APR_INHERIT, r->pool)) != APR_SUCCESS) {
+    if ((rv = apr_socket_create(&sock, APR_INET, SOCK_STREAM, APR_NO_INHERIT, r->pool)) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                       "proxy: FTP: error creating socket");
         return HTTP_INTERNAL_SERVER_ERROR;
@@ -1038,7 +1038,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
                              "proxy: FTP: EPSV contacting remote host on port %d",
                              remote_port);
 
-		if ((rv = apr_socket_create(&remote_sock, APR_INET, SOCK_STREAM, APR_INHERIT, r->pool)) != APR_SUCCESS) {
+		if ((rv = apr_socket_create(&remote_sock, APR_INET, SOCK_STREAM, APR_NO_INHERIT, r->pool)) != APR_SUCCESS) {
 		    ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
 			          "proxy: FTP: error creating EPSV socket");
 		    return HTTP_INTERNAL_SERVER_ERROR;
@@ -1132,7 +1132,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
                              "proxy: FTP: PASV contacting host %d.%d.%d.%d:%d",
                              h3, h2, h1, h0, pasvport);
 
-		if ((rv = apr_socket_create(&remote_sock, APR_INET, SOCK_STREAM, APR_INHERIT, r->pool)) != APR_SUCCESS) {
+		if ((rv = apr_socket_create(&remote_sock, APR_INET, SOCK_STREAM, APR_NO_INHERIT, r->pool)) != APR_SUCCESS) {
 		    ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
 			          "proxy: error creating PASV socket");
 		    return HTTP_INTERNAL_SERVER_ERROR;
@@ -1174,7 +1174,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
 	apr_port_t local_port;
 	unsigned int h0, h1, h2, h3, p0, p1;
 
-	if ((rv = apr_socket_create(&local_sock, APR_INET, SOCK_STREAM, APR_INHERIT, r->pool)) != APR_SUCCESS) {
+	if ((rv = apr_socket_create(&local_sock, APR_INET, SOCK_STREAM, APR_NO_INHERIT, r->pool)) != APR_SUCCESS) {
 	    ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
 			 "proxy: FTP: error creating local socket");
 	    return HTTP_INTERNAL_SERVER_ERROR;
