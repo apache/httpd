@@ -134,10 +134,15 @@ static ap_pool_t *pconf;
 static int once_through = 0;
 
 typedef struct {
+#if APR_HAS_SENDFILE
     ap_file_t *file;
+#endif
     char *filename;
     ap_finfo_t finfo;
     int is_mmapped;
+#if APR_HAS_MMAP
+    ap_mmap_t *mm;
+#endif
 } a_file;
 
 typedef struct {
