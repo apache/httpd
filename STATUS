@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 2000/10/14 03:03:48 $]
+  Last modified at [$Date: 2000/10/14 04:54:19 $]
 
 Release:
 
@@ -513,7 +513,7 @@ Binaries (1.3.14):
  mips-sgi-irix6.2              no      Lars Eilebrecht, Randy Terbush
  mips-sgi-irix6.4              no      Lars Eilebrecht
  mips-siemens-reliantunix5.4   yes     Martin Kraemer
- netware                       no 
+ netware                       yes     Brad Nicholes <bnicholes@novell.com>
  OS/2                          no      Brian Havard
  OS/390-09.00-02               no                     
  powerpc+i386-apple-darwin1.2  yes     Wilfredo Sanchez
@@ -527,3 +527,4 @@ Binaries (1.3.14):
  sparc-sun-solaris2.7          no      Cliff Skolnick
  sparc-sun-sunos4.1.3_U1       no      Sameer Parekh
  sparc-unknown-linux           no      Lars Eilebrecht, Randy Terbush
+ win32                         yes     Daniel Ridruejo
