@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/03/12 14:41:29 $]
+Last modified at [$Date: 2002/03/14 18:54:20 $]
 
 Release:
 
@@ -89,8 +89,6 @@ FINAL RELEASE SHOWSTOPPERS:
 
     * Address popular PRs
         * Win32 doesn't install as service correctly [9863, 9914, 9961]
-        * Don't be stupid and cd to a blank directory when doing installs
-          [PR 9993]
 
 CURRENT VOTES:
 
