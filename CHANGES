@@ -1,3 +1,5 @@
+Changes with Apache 2.0.26-dev
+
 Changes with Apache 2.0.25
 
   *) Move the installed /manual directory out of the /htdocs/ tree, so
