@@ -840,6 +840,10 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, rewriterule_entry *cfg
             cfg->forced_responsecode = status;
         }
     }
+    else if (   strcasecmp(key, "noescape") == 0
+        || strcasecmp(key, "NE") == 0       ) {
+        cfg->flags |= RULEFLAG_NOESCAPE;
+    }
     else if (   strcasecmp(key, "last") == 0
              || strcasecmp(key, "L") == 0   ) {
         cfg->flags |= RULEFLAG_LASTRULE;
@@ -1015,6 +1019,7 @@ static int hook_uri2file(request_rec *r)
     const char *ccp;
     apr_finfo_t finfo;
     unsigned int port;
+    int rulestatus;
     int n;
     int l;
 
@@ -1096,7 +1101,8 @@ static int hook_uri2file(request_rec *r)
     /*
      *  now apply the rules ...
      */
-    if (apply_rewrite_list(r, conf->rewriterules, NULL)) {
+    rulestatus = apply_rewrite_list(r, conf->rewriterules, NULL);
+    if (rulestatus) {
 
         if (strlen(r->filename) > 6 &&
             strncmp(r->filename, "proxy:", 6) == 0) {
@@ -1146,16 +1152,28 @@ static int hook_uri2file(request_rec *r)
             for ( ; *cp != '/' && *cp != '\0'; cp++)
                 ;
             if (*cp != '\0') {
-                rewritelog(r, 1, "escaping %s for redirect", r->filename);
-                cp2 = ap_escape_uri(r->pool, cp);
+                if (rulestatus != ACTION_NOESCAPE) {
+                    rewritelog(r, 1, "escaping %s for redirect", r->filename);
+                    cp2 = ap_escape_uri(r->pool, cp);
+                }
+                else {
+                    cp2 = apr_pstrdup(r->pool, cp);
+                }
                 *cp = '\0';
                 r->filename = apr_pstrcat(r->pool, r->filename, cp2, NULL);
             }
 
             /* append the QUERY_STRING part */
             if (r->args != NULL) {
+                char *args;
+                if (rulestatus == ACTION_NOESCAPE) {
+                    args = r->args;
+                }
+                else {
+                    args = ap_escape_uri(r->pool, r->args);
+                }
                 r->filename = apr_pstrcat(r->pool, r->filename, "?", 
-                                         ap_escape_uri(r->pool, r->args), NULL);
+                                          args, NULL);
             }
 
             /* determine HTTP redirect response code */
@@ -1308,6 +1326,7 @@ static int hook_fixup(request_rec *r)
     const char *ccp;
     char *prefix;
     int l;
+    int rulestatus;
     int n;
     char *ofilename;
 
@@ -1361,7 +1380,8 @@ static int hook_fixup(request_rec *r)
     /*
      *  now apply the rules ...
      */
-    if (apply_rewrite_list(r, dconf->rewriterules, dconf->directory)) {
+    rulestatus = apply_rewrite_list(r, dconf->rewriterules, dconf->directory);
+    if (rulestatus) {
 
         if (strlen(r->filename) > 6 &&
             strncmp(r->filename, "proxy:", 6) == 0) {
@@ -1374,7 +1394,7 @@ static int hook_fixup(request_rec *r)
              */
             if (r->args != NULL) {
                 r->filename = apr_pstrcat(r->pool, r->filename,
-                                         "?", r->args, NULL);
+                                          "?", r->args, NULL);
             }
 
             /* now make sure the request gets handled by the proxy handler */
@@ -1425,17 +1445,29 @@ static int hook_fixup(request_rec *r)
             for ( ; *cp != '/' && *cp != '\0'; cp++)
                 ;
             if (*cp != '\0') {
-                rewritelog(r, 1, "[per-dir %s] escaping %s for redirect",
-                           dconf->directory, r->filename);
-                cp2 = ap_escape_uri(r->pool, cp);
+                if (rulestatus != ACTION_NOESCAPE) {
+                    rewritelog(r, 1, "[per-dir %s] escaping %s for redirect",
+                               dconf->directory, r->filename);
+                    cp2 = ap_escape_uri(r->pool, cp);
+                }
+                else {
+                    cp2 = apr_pstrdup(r->pool, cp);
+                }
                 *cp = '\0';
                 r->filename = apr_pstrcat(r->pool, r->filename, cp2, NULL);
             }
 
             /* append the QUERY_STRING part */
             if (r->args != NULL) {
+                char *args;
+                if (rulestatus == ACTION_NOESCAPE) {
+                    args = r->args;
+                }
+                else {
+                    args = ap_escape_uri(r->pool, r->args);
+                }
                 r->filename = apr_pstrcat(r->pool, r->filename, "?", 
-                                         ap_escape_uri(r->pool, r->args), NULL);
+                                          args, NULL);
             }
 
             /* determine HTTP redirect response code */
@@ -1629,7 +1661,8 @@ static int apply_rewrite_list(request_rec *r, apr_array_header_t *rewriterules,
              *  Indicate a change if this was not a match-only rule.
              */
             if (rc != 2) {
-                changed = 1;
+                changed = ((p->flags & RULEFLAG_NOESCAPE)
+                           ? ACTION_NOESCAPE : ACTION_NORMAL);
             }
 
             /*
@@ -1643,7 +1676,7 @@ static int apply_rewrite_list(request_rec *r, apr_array_header_t *rewriterules,
                            "to next API URI-to-filename handler", r->filename);
                 r->filename = apr_pstrcat(r->pool, "passthrough:",
                                          r->filename, NULL);
-                changed = 1;
+                changed = ACTION_NORMAL;
                 break;
             }
 
@@ -1655,7 +1688,7 @@ static int apply_rewrite_list(request_rec *r, apr_array_header_t *rewriterules,
                 rewritelog(r, 2, "forcing '%s' to be forbidden", r->filename);
                 r->filename = apr_pstrcat(r->pool, "forbidden:",
                                          r->filename, NULL);
-                changed = 1;
+                changed = ACTION_NORMAL;
                 break;
             }
 
@@ -1666,7 +1699,7 @@ static int apply_rewrite_list(request_rec *r, apr_array_header_t *rewriterules,
             if (p->flags & RULEFLAG_GONE) {
                 rewritelog(r, 2, "forcing '%s' to be gone", r->filename);
                 r->filename = apr_pstrcat(r->pool, "gone:", r->filename, NULL);
-                changed = 1;
+                changed = ACTION_NORMAL;
                 break;
             }
 
@@ -2253,7 +2286,7 @@ static void do_expand(request_rec *r, char *input, char *buffer, int nbuf,
     space = nbuf - 1; /* room for '\0' */
 
     for (;;) {
-	span = strcspn(inp, "$%");
+	span = strcspn(inp, "\\$%");
 	if (span > space) {
 	    span = space;
 	}
@@ -2264,8 +2297,14 @@ static void do_expand(request_rec *r, char *input, char *buffer, int nbuf,
 	if (space == 0 || *inp == '\0') {
 	    break;
 	}
-	/* now we have a '$' or a '%' */
-	if (inp[1] == '{') {
+	/* now we have a '\', '$', or '%' */
+        if (inp[0] == '\\') {
+            if (inp[1] != '\0') {
+                inp++;
+                goto skip;
+            }
+        }
+	else if (inp[1] == '{') {
 	    char *endp;
 	    endp = find_closing_bracket(inp+2, '{', '}');
 	    if (endp == NULL) {
@@ -2296,14 +2335,16 @@ static void do_expand(request_rec *r, char *input, char *buffer, int nbuf,
 		char xkey[MAX_STRING_LEN];
 		char xdflt[MAX_STRING_LEN];
 		key = find_char_in_brackets(inp+2, ':', '{', '}');
-		if (key == NULL)
-		    goto skip;
+		if (key == NULL) {
+                    goto skip;
+                }
 		map  = apr_pstrndup(r->pool, inp+2, key-inp-2);
 		dflt = find_char_in_brackets(key+1, '|', '{', '}');
 		if (dflt == NULL) {
 		    key  = apr_pstrndup(r->pool, key+1, endp-key-1);
 		    dflt = "";
-		} else {
+		}
+                else {
 		    key  = apr_pstrndup(r->pool, key+1, dflt-key-1);
 		    dflt = apr_pstrndup(r->pool, dflt+1, endp-dflt-1);
 		}
@@ -4125,7 +4166,7 @@ module AP_MODULE_DECLARE_DATA rewrite_module = {
    config_perdir_merge,         /* merge  per-dir    config structures */
    config_server_create,        /* create per-server config structures */
    config_server_merge,         /* merge  per-server config structures */
-   command_table,               /* apr_table_t of config file commands  */
+   command_table,               /* table of config file commands       */
    register_hooks               /* register hooks                      */
 };
  
