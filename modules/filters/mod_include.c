@@ -622,7 +622,7 @@ static void parse_string(request_rec *r, const char *in, char *out,
 
 /* --------------------------- Action handlers ---------------------------- */
 
-static int include_cgi(char *s, request_rec *r)
+static int include_cgi(char *s, request_rec *r, ap_filter_t *next)
 {
     request_rec *rr = ap_sub_req_lookup_uri(s, r);
     int rr_status;
@@ -650,6 +650,9 @@ static int include_cgi(char *s, request_rec *r)
      */
 
     rr->content_type = CGI_MAGIC_TYPE;
+
+    /* The subrequest should inherit the remaining filters from this request. */
+    rr->output_filters = next;
 
     /* Run it. */
 
@@ -694,7 +697,8 @@ static int is_only_below(const char *path)
     return 1;
 }
 
-static int handle_include(ap_bucket *in, request_rec *r, const char *error, int noexec)
+static int handle_include(ap_bucket *in, request_rec *r, ap_filter_t *next,
+                          const char *error, int noexec)
 {
     char tag[MAX_STRING_LEN];
     char parsed_string[MAX_STRING_LEN];
@@ -779,8 +783,13 @@ static int handle_include(ap_bucket *in, request_rec *r, const char *error, int 
 	    if (rr) 
 		ap_set_module_config(rr->request_config, &includes_module, r);
 
-            if (!error_fmt && ap_run_sub_req(rr)) {
-                error_fmt = "unable to include \"%s\" in parsed file %s";
+            if (!error_fmt) {
+                /* The subrequest should inherit the remaining filters from 
+                 * this request. */
+                rr->output_filters = next;
+                if (ap_run_sub_req(rr)) {
+                    error_fmt = "unable to include \"%s\" in parsed file %s";
+                }
             }
             ap_chdir_file(r->filename);
             if (error_fmt) {
@@ -982,7 +991,7 @@ static int handle_exec(ap_bucket *in, request_rec *r, const char *error,
         }
         else if (!strcmp(tag, "cgi")) {
             parse_string(r, tag_val, parsed_string, sizeof(parsed_string), 0);
-            if (include_cgi(parsed_string, r) == -1) {
+            if (include_cgi(parsed_string, r, next) == -1) {
                 ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
                             "invalid CGI ref \"%s\" in %s", tag_val, file);
                 ap_rputs(error, r);
@@ -2374,7 +2383,7 @@ static void send_parsed_content(ap_bucket_brigade **bb, request_rec *r,
                 ret = handle_set(tagbuck, r, error);
             }
             else if (!strcmp(directive, "include")) {
-                ret = handle_include(tagbuck, r, error, noexec);
+                ret = handle_include(tagbuck, r, f->next, error, noexec);
             }
             else if (!strcmp(directive, "echo")) {
                 ret = handle_echo(tagbuck, r, error);
