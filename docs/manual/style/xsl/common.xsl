@@ -70,56 +70,8 @@
         <xsl:value-of select="$messages/message[@name='apachetitle']"/>
       </title>
       
-      <link title="right sidebar - blue (font 100%)"    type="text/css" media="all" rel="alternate stylesheet"
-             href="{$path}/style/css/manual-sbar-right-100pc.css" />
-      <link title="right sidebar - blue (font 90%)"     type="text/css" media="all" rel="alternate stylesheet"
-             href="{$path}/style/css/manual-sbar-right-90pc.css" />
-      <link title="right sidebar - blue (font fix 15)"  type="text/css" media="all" rel="stylesheet"
-             href="{$path}/style/css/manual-sbar-right-fix15.css" />
-      <link title="right sidebar - blue (font fix 13)"  type="text/css" media="all" rel="alternate stylesheet"
-             href="{$path}/style/css/manual-sbar-right-fix13.css" />
-      <link title="right sidebar - black (font 100%)"   type="text/css" media="all" rel="alternate stylesheet"
-             href="{$path}/style/css/manual-sbar-right-100pc-b.css" />
-      <link title="right sidebar - black (font 90%)"    type="text/css" media="all" rel="alternate stylesheet"
-             href="{$path}/style/css/manual-sbar-right-90pc-b.css" />
-      <link title="right sidebar - black (font fix 15)" type="text/css" media="all" rel="alternate stylesheet"
-             href="{$path}/style/css/manual-sbar-right-fix15-b.css" />
-      <link title="right sidebar - black (font fix 13)" type="text/css" media="all" rel="alternate stylesheet"
-             href="{$path}/style/css/manual-sbar-right-fix13-b.css" />
-
-      <link title="left sidebar - blue (font 100%)"     type="text/css" media="all" rel="alternate stylesheet"
-             href="{$path}/style/css/manual-sbar-left-100pc.css" />
-      <link title="left sidebar - blue (font 90%)"      type="text/css" media="all" rel="alternate stylesheet"
-             href="{$path}/style/css/manual-sbar-left-90pc.css" />
-      <link title="left sidebar - blue (font fix 15)"   type="text/css" media="all" rel="alternate stylesheet"
-             href="{$path}/style/css/manual-sbar-left-fix15.css" />
-      <link title="left sidebar - blue (font fix 13)"   type="text/css" media="all" rel="alternate stylesheet"
-             href="{$path}/style/css/manual-sbar-left-fix13.css" />
-      <link title="left sidebar - black (font 100%)"    type="text/css" media="all" rel="alternate stylesheet"
-             href="{$path}/style/css/manual-sbar-left-100pc-b.css" />
-      <link title="left sidebar - black (font 90%)"     type="text/css" media="all" rel="alternate stylesheet"
-             href="{$path}/style/css/manual-sbar-left-90pc-b.css" />
-      <link title="left sidebar - black (font fix 15)"  type="text/css" media="all" rel="alternate stylesheet"
-             href="{$path}/style/css/manual-sbar-left-fix15-b.css" />
-      <link title="left sidebar - black (font fix 13)"  type="text/css" media="all" rel="alternate stylesheet"
-             href="{$path}/style/css/manual-sbar-left-fix13-b.css" />
-
-      <link title="loose style - blue (font 100%)"      type="text/css" media="all" rel="alternate stylesheet"
-             href="{$path}/style/css/manual-loose-100pc.css" />
-      <link title="loose style - blue (font 90%)"       type="text/css" media="all" rel="alternate stylesheet"
-             href="{$path}/style/css/manual-loose-90pc.css" />
-      <link title="loose style - blue (font fix 15)"    type="text/css" media="all" rel="alternate stylesheet"
-             href="{$path}/style/css/manual-loose-fix15.css" />
-      <link title="loose style - blue (font fix 13)"    type="text/css" media="all" rel="alternate stylesheet"
-             href="{$path}/style/css/manual-loose-fix13.css" />
-      <link title="loose style - black (font 100%)"     type="text/css" media="all" rel="alternate stylesheet"
-             href="{$path}/style/css/manual-loose-100pc-b.css" />
-      <link title="loose style - black (font 90%)"      type="text/css" media="all" rel="alternate stylesheet"
-             href="{$path}/style/css/manual-loose-90pc-b.css" />
-      <link title="loose style - black (font fix 15)"   type="text/css" media="all" rel="alternate stylesheet"
-             href="{$path}/style/css/manual-loose-fix15-b.css" />
-      <link title="loose style - black (font fix 13)"   type="text/css" media="all" rel="alternate stylesheet"
-             href="{$path}/style/css/manual-loose-fix13-b.css" />
+      <link title="Main stylesheet"  type="text/css" media="all" rel="stylesheet"
+             href="{$path}/style/css/manual.css" />
 
       <link rel="shortcut icon" href="{$path}/images/favicon.ico" />
     </head>
