@@ -96,7 +96,7 @@ static void show_compile_settings(void)
 #ifdef SECURITY_HOLE_PASS_AUTHORIZATION
     printf(" -D SECURITY_HOLE_PASS_AUTHORIZATION\n");
 #endif
-#if APACHE_MPM_DIR
+#ifdef APACHE_MPM_DIR
     printf(" -D APACHE_MPM_DIR=\"%s\"\n", APACHE_MPM_DIR);
 #endif
 #ifdef HAVE_SHMGET
