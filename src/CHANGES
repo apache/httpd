@@ -1,5 +1,7 @@
 Changes with Apache 1.3b3
 
+  *) PORT: Update the LynxOS port.  [Marius Groeger <mag@sysgo.de>]
+
   *) Fix logic error when issuing a mmap() failed message
      with a non-zero MMAP_THRESHOLD.
      [David Chambers <davidc@flosun.salk.edu>] PR#1294

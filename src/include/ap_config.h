@@ -510,11 +510,25 @@ int initgroups(char *, int);
 #define HAVE_SYSLOG
 
 #elif defined(LYNXOS)
+#undef HAVE_GMTOFF
+#define HAVE_RESOURCE
+#undef HAVE_MMAP
+#undef HAVE_SHMGET
+#undef HAVE_CRYPT_H
+#undef HAVE_SYS_SELECT_H
+#define HAVE_SYS_RESOURCE_H
+#undef HAVE_SNPRINTF
+#undef USE_FCNTL_SERIALIZED_ACCEPT
+#undef USE_FLOCK_SERIALIZED_ACCEPT
+#define USE_LONGJMP
+#undef NO_UNISTD_H
 #undef NO_KILLPG
 #undef NO_SETSID
-#define NEED_STRCASECMP
-#define NEED_STRNCASECMP
-#define NEED_INITGROUPS
+#undef NO_USE_SIGACTION
+#undef NO_LINGCLOSE
+#define HAVE_CVT
+extern char *crypt(char *pw, char *salt);
+typedef int rlim_t;
 #define HAVE_SYSLOG
 
 #elif defined(UXPDS)

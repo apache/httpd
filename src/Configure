@@ -318,10 +318,12 @@ case "$PLAT" in
 	OS='Linux'
 	CFLAGS="$CFLAGS -DLINUX=1"
 	;;
-    *-lynx-lynxos*)
-	OS='LynxOS'
-	CFLAGS="$CFLAGS -DLYNXOS"
-	LIBS="$LIBS -lbsd -ldes -lc_p"
+    *-lynx-lynxos)
+	OS='LynxOS 2.x'
+	CFLAGS="$CFLAGS -D__NO_INCLUDE_WARN__ -DLYNXOS"
+	LIBS="$LIBS -lbsd -lcrypt"
+	LFLAGS="$LFLAGS"
+	DEF_WANTHSREGEX=yes
 	;;
     *486-*-bsdi*)
 	OS='BSDI w/486'
