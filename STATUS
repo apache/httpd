@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/05/28 21:14:28 $]
+Last modified at [$Date: 2002/05/28 23:16:57 $]
 
 Release:
 
@@ -100,9 +100,6 @@ RELEASE SHOWSTOPPERS:
 
     * Find a better name for ap_signal_server()
       Message-ID: <m37kltilb3.fsf@rdu88-251-253.nc.rr.com>
-
-    * /dev/random vs. /dev/urandom
-      Status: Cliff is working on a patch to make this configurable.
 
     * server pushed CGI's not working.  (Is this a showstopper??)
       PR: 8482
