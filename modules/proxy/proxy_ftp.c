@@ -1027,7 +1027,14 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
      */
 
     /* set up the connection filters */
-    ap_run_pre_connection(origin, sock);
+    rc = ap_run_pre_connection(origin, sock);
+    if (rc != OK && rc != DONE) {
+        origin->aborted = 1;
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                     "proxy: FTP: pre_connection setup failed (%d)",
+                     rc);
+        return rc;
+    }
 
     /* possible results: */
     /* 120 Service ready in nnn minutes. */
@@ -1772,7 +1779,14 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     }
 
     /* set up the connection filters */
-    ap_run_pre_connection(data, data_sock);
+    rc = ap_run_pre_connection(data, data_sock);
+    if (rc != OK && rc != DONE) {
+        data->aborted = 1;
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                     "proxy: FTP: pre_connection setup failed (%d)",
+                     rc);
+        return rc;
+    }
 
     /*
      * VI: Receive the Response ------------------------

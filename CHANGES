@@ -1,5 +1,8 @@
 Changes with Apache 2.0.53
 
+  *) mod_proxy: Respect errors reported by pre_connection hooks.
+     [Jeff Trawick]
+
   *) --with-module can now take more than one module to be statically
      linked: --with-module=<modtype>:<modfile>,<modtype>:<modfile>,...
      If the <modtype>-subdirectory doesn't exist it will be created and
