@@ -1017,12 +1017,9 @@ static void output_directories(struct ent **ar, int n,
 
 static int dsortf(struct ent **e1, struct ent **e2)
 {
-    char *s1;
-    char *s2;
     struct ent *c1;
     struct ent *c2;
     int result = 0;
-    int compare_by_string = 1;
 
     /*
      * First, see if either of the entries is for the parent directory.
@@ -1040,87 +1037,37 @@ static int dsortf(struct ent **e1, struct ent **e2)
      */
     if ((*e1)->ascending) {
         c1 = *e1;
-	c2 = *e2;
+        c2 = *e2;
     }
     else {
         c1 = *e2;
         c2 = *e1;
     }
-    /*
-     * Choose the right values for the sort keys.
-     */
     switch (c1->key) {
     case K_LAST_MOD:
-        /*
-	 * Since the last-modified time is a monotonically increasing integer,
-	 * we can short-circuit this process with a simple comparison.
-	 */
-        result = c1->lm - c2->lm;
-	if (result != 0) {
-	    result = (result > 0) ? 1 : -1;
-	}
-	compare_by_string = 0;
-	break;
+	if (c1->lm > c2->lm) {
+            return 1;
+        }
+        else if (c1->lm < c2->lm) {
+            return -1;
+        }
+        break;
     case K_SIZE:
-        /*
-	 * We can pull the same trick with the size as with the mtime.
-	 */
-        result = c1->size - c2->size;
-	if (result != 0) {
-	    result = (result > 0) ? 1 : -1;
-	}
-	compare_by_string = 0;
-	break;
+        if (c1->size > c2->size) {
+            return 1;
+        }
+        else if (c1->size < c2->size) {
+            return -1;
+        }
+        break;
     case K_DESC:
-	s1 = c1->desc;
-	s2 = c2->desc;
-	break;
-    case K_NAME:
-    default:
-	s1 = c1->name;
-	s2 = c2->name;
-	break;
+        result = strcmp(c1->desc ? c1->desc : "", c2->desc ? c2->desc : "");
+        if (result) {
+            return result;
+        }
+        break;
     }
-
-    if (compare_by_string) {
-        /*
-	 * Take some care, here, in case one string or the other (or both) is
-	 * NULL.
-	 */
-
-        /*
-	 * Two valid strings, compare normally.
-	 */
-        if ((s1 != NULL) && (s2 != NULL)) {
-	    result = strcmp(s1, s2);
-	}
-	/*
-	 * Two NULL strings - primary keys are equal (fake it).
-	 */
-	else if ((s1 == NULL) && (s2 == NULL)) {
-	    result = 0;
-	}
-	/*
-	 * s1 is NULL, but s2 is a string - so s2 wins.
-	 */
-	else if (s1 == NULL) {
-	    result = -1;
-	}
-	/*
-	 * Last case: s1 is a string and s2 is NULL, so s1 wins.
-	 */
-	else {
-	    result = 1;
-	}
-    }
-    /*
-     * If the keys were equal, the file name is *always* the secondary key -
-     * in ascending order.
-     */
-    if (!result) {
-	result = strcmp((*e1)->name, (*e2)->name);
-    }
-    return result;
+    return strcmp(c1->name, c2->name);
 }
 
 
