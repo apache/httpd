@@ -812,6 +812,15 @@ const char *server_port (cmd_parms *cmd, void *dummy, char *arg) {
     return NULL;
 }
 
+const char *set_send_buffer_size (cmd_parms *cmd, void *dummy, char *arg) {
+    int s = atoi (arg);
+    if (s < 512 && s != 0) {
+        return "SendBufferSize must be >= 512 bytes, or 0 for system default.";
+    }
+    cmd->server->send_buffer_size = s;
+    return NULL;
+}
+
 const char *set_user (cmd_parms *cmd, void *dummy, char *arg)
 {
     uid_t uid;
@@ -1163,6 +1172,7 @@ command_rec core_cmds[] = {
   "'*', a numeric IP address, or the name of a host with a unique IP address"},
 { "Listen", set_listener, NULL, RSRC_CONF, TAKE1,
       "a port number or a numeric IP address and a port number"},
+{ "SendBufferSize", set_send_buffer_size, NULL, RSRC_CONF, TAKE1, "send buffer size in bytes"},
 { "<VirtualHost", virtualhost_section, NULL, RSRC_CONF, RAW_ARGS, NULL },
 { "</VirtualHost>", end_virtualhost_section, NULL, RSRC_CONF, NO_ARGS, NULL },
 { "AddModule", add_module_command, NULL, RSRC_CONF, ITERATE,

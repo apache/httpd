@@ -570,6 +570,7 @@ struct server_rec {
     int timeout;		/* Timeout, in seconds, before we give up */
     int keep_alive_timeout;	/* Seconds we'll wait for another request */
     int keep_alive;		/* Maximum requests per connection */
+    int send_buffer_size;       /* size of TCP send buffer (in bytes) */
 
     char *path;			/* Pathname for ServerPath */
     int pathlen;		/* Length of path */

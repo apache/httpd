@@ -1658,6 +1658,33 @@ make_sock(pool *pconf, const struct sockaddr_in *server)
     }
 #endif  /* USE_SO_LINGER */
 
+    /*
+     * To send data over high bandwidth-delay connections at full
+     * speed we must the TCP window to open wide enough to keep the
+     * pipe full.  Default the default window size on many systems
+     * is only 4kB.  Cross-country WAN connections of 100ms
+     * at 1Mb/s are not impossible for well connected sites in 1995.
+     * If we assume 100ms cross-country latency,
+     * a 4kB buffer limits throughput to 40kB/s.
+     *
+     * To avoid this problem I've added the SendBufferSize directive
+     * to allow the web master to configure send buffer size.
+     *
+     * The trade-off of larger buffers is that more kernel memory
+     * is consumed.  YMMV, know your customers and your network!
+     *
+     * -John Heidemann <johnh@isi.edu> 25-Oct-96
+     *
+     *
+     * If no size is specified, use the kernel default.
+     */
+    if (server_conf->send_buffer_size) {
+        if((setsockopt(s, SOL_SOCKET, SO_SNDBUF, (char*)&server_conf->send_buffer_size, sizeof(int))) < 0) {
+	    perror("setsockopt(SO_SNDBUF), using default buffer size"); 
+	    /* Fail soft. */
+	}
+    }
+
     if(bind(s, (struct sockaddr *)server,sizeof(struct sockaddr_in)) == -1)
     {
         perror("bind");

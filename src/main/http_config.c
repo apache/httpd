@@ -971,6 +971,9 @@ void fixup_virtual_hosts (pool *p, server_rec *main_server)
 
 	if (virt->keep_alive == -1)
 	    virt->keep_alive = main_server->keep_alive;
+
+	if (virt->send_buffer_size == 0)
+		virt->send_buffer_size = main_server->send_buffer_size;
     }
 }
 
