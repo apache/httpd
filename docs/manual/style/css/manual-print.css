@@ -604,6 +604,8 @@ div#footer p.apache {
     font-weight: bold;
 }
 
+div.toplang,
+div.bottomlang,
 div#footer p.menu {
     display: none;
 }
