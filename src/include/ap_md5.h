@@ -104,7 +104,12 @@ typedef struct {
     unsigned char buffer[64];	/* input buffer */
 } AP_MD5_CTX;
 
-extern const char *apr1_id;		/* MD5 passwd marker string */
+/*
+ * Define the Magic String prefix that identifies a password as being
+ * hashed using our algorithm.
+ */
+#define AP_MD5PW_ID "$apr1$"
+#define AP_MD5PW_IDLEN 6
 
 API_EXPORT(void) ap_MD5Init(AP_MD5_CTX *context);
 API_EXPORT(void) ap_MD5Update(AP_MD5_CTX *context, const unsigned char *input,

@@ -1,5 +1,9 @@
 Changes with Apache 1.3.9
 
+  *) Don't allow configure to include mod_auth_digest unless it is
+     explicitly requested, even if the user asked for all modules.
+     [Roy Fielding]
+
   *) Translate module names to dll names for OS/2 so that they are no more
      than 8 characters long and have an extension of "dll" instead of "so".
      [Brian Havard]
@@ -25,12 +29,16 @@ Changes with Apache 1.3.9
      problem observed by some Win95/98 users where they get CGI script
      output sent to the console.  [Bill Stoddard]
 
-  *) Roll back (re)naming in the uuencode/decode section. The ap/ap_
+  *) Fix (re)naming in the uuencode/decode section. The ap/ap_
      routines are now called ap_base64* and are 'plain' (i.e., no 
-     pool access or anything clever). Inside apache the routines 
-     acting like pstrdup are called ap_puuencode() and ap_puudecode().
-     The oddly named ap_uuencode(), ap_uudecode() is kept around for
+     pool access or anything clever). Inside util.c the routines acting
+     like pstrdup are called ap_pbase64encode() and ap_pbase64decode().
+     The oddly named ap_uuencode(), ap_uudecode() are kept around for
      now but deprecated.  [dirkx]
+
+  *) Clean up the base64 and SHA1 additions and make sure they are
+     represented in the ApacheCore.def, ApacheCoreOS2.def, and httpd.exp
+     files.  [Roy Fielding]
 
   *) WIN32: Migrate to InstallShield 5.5 and provide a bit more error
      checking.  Allow compiling on VS 6.0.  [Randy Terbush]

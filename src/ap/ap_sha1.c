@@ -118,7 +118,6 @@
     E = D; D = C; C = ROT32(B,30); B = A; A = temp
 
 #define SHA_BLOCKSIZE           64
-#define SHA_DIGESTSIZE          20
 
 typedef unsigned char AP_BYTE;
 
@@ -322,7 +321,8 @@ API_EXPORT(void) ap_SHA1Update(AP_SHA1_CTX *sha_info, const char *buf,
 
 /* finish computing the SHA digest */
 
-API_EXPORT(void) ap_SHA1Final(unsigned char digest[20], AP_SHA1_CTX *sha_info)
+API_EXPORT(void) ap_SHA1Final(unsigned char digest[SHA_DIGESTSIZE],
+                              AP_SHA1_CTX *sha_info)
 {
     int count, i, j;
     AP_LONG lo_bit_count, hi_bit_count, k;
@@ -356,19 +356,14 @@ API_EXPORT(void) ap_SHA1Final(unsigned char digest[20], AP_SHA1_CTX *sha_info)
 }
 
 
-/* {SHA} is the prefix used for base64 encoded sha1 in
- * ldap data interchange format.
- */
-const char *sha1_id = "{SHA}";
-
 API_EXPORT(void) ap_sha1_base64(const char *clear, int len, char *out)
 {
     int l;
     AP_SHA1_CTX context;
     AP_BYTE digest[SHA_DIGESTSIZE];
 
-    if (!strncmp(clear, sha1_id, strlen(sha1_id))) {
-	clear += strlen(sha1_id);
+    if (strncmp(clear, AP_SHA1PW_ID, AP_SHA1PW_IDLEN) == 0) {
+	clear += AP_SHA1PW_IDLEN;
     }
 
     ap_SHA1Init(&context);
@@ -376,14 +371,13 @@ API_EXPORT(void) ap_sha1_base64(const char *clear, int len, char *out)
     ap_SHA1Final(digest, &context);
 
     /* private marker. */
-    strcpy(out, sha1_id);
+    ap_cpystrn(out, AP_SHA1PW_ID, AP_SHA1PW_IDLEN);
 
     /* SHA1 hash is always 20 chars */
-    l = ap_base64encode_binary(out + strlen(sha1_id), digest, sizeof(digest));
-    out[l + strlen(sha1_id)] = '\0';
+    l = ap_base64encode_binary(out + AP_SHA1PW_IDLEN, digest, sizeof(digest));
+    out[l + AP_SHA1PW_IDLEN] = '\0';
 
     /*
-     * output of MIME Base 64 encoded SHA1 is always 28 characters +
-     * strlen(sha1_id)
+     * output of base64 encoded SHA1 is always 28 chars + AP_SHA1PW_IDLEN
      */
 }

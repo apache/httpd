@@ -104,7 +104,7 @@ typedef struct {
  * saving cpu cycles.  The counter is never reset, and is used to permit up to
  * 64k requests in a single second by a single child.
  *
- * The 112-bits of unique_id_rec are uuencoded using the alphabet
+ * The 112-bits of unique_id_rec are encoded using the alphabet
  * [A-Za-z0-9@-], resulting in 19 bytes of printable characters.  That is then
  * stuffed into the environment variable UNIQUE_ID so that it is available to
  * other modules.  The alphabet choice differs from normal base64 encoding
@@ -181,7 +181,7 @@ static void unique_id_global_init(server_rec *s, pool *p)
                                unique_id_rec_size[2] + unique_id_rec_size[3];
 
     /*
-     * Calculate the size of the structure when uuencoded.
+     * Calculate the size of the structure when encoded.
      */
     unique_id_rec_size_uu = (unique_id_rec_total_size*8+5)/6;
 
@@ -296,7 +296,7 @@ static void unique_id_child_init(server_rec *s, pool *p)
     cur_unique_id.counter = htons(cur_unique_id.counter);
 }
 
-/* NOTE: This is *NOT* the same encoding used by uuencode ... the last two
+/* NOTE: This is *NOT* the same encoding used by base64encode ... the last two
  * characters should be + and /.  But those two characters have very special
  * meanings in URLs, and we want to make it easy to use identifiers in
  * URLs.  So we replace them with @ and -.

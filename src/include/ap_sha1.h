@@ -67,6 +67,15 @@
 extern "C" {
 #endif
 
+#define SHA_DIGESTSIZE 20
+
+/*
+ * Define the Magic String prefix that identifies a password as being
+ * hashed using our algorithm.
+ */
+#define AP_SHA1PW_ID "{SHA}"
+#define AP_SHA1PW_IDLEN 5
+
 typedef unsigned long AP_LONG;     /* a 32-bit quantity */
 
 typedef struct {
@@ -76,7 +85,6 @@ typedef struct {
     int local;                     /* unprocessed amount in data */
 } AP_SHA1_CTX;
 
-extern const char *sha1_id;	/* passwd prefix marker for SHA1 */
 API_EXPORT(void) ap_sha1_base64(const char *clear, int len, char *out);
 API_EXPORT(void) ap_SHA1Init(AP_SHA1_CTX *context);
 API_EXPORT(void) ap_SHA1Update(AP_SHA1_CTX *context, const char *input,
@@ -84,7 +92,8 @@ API_EXPORT(void) ap_SHA1Update(AP_SHA1_CTX *context, const char *input,
 API_EXPORT(void) ap_SHA1Update_binary(AP_SHA1_CTX *context,
 				      const unsigned char *input,
 				      unsigned int inputLen);
-API_EXPORT(void) ap_SHA1Final(unsigned char digest[20], AP_SHA1_CTX *context);
+API_EXPORT(void) ap_SHA1Final(unsigned char digest[SHA_DIGESTSIZE],
+                              AP_SHA1_CTX *context);
 
 #ifdef __cplusplus
 }

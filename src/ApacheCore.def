@@ -343,6 +343,20 @@ EXPORTS
 	ap_standalone   @337
 	ap_server_confname   @338
 	ap_sub_req_method_uri   @339
-	ap_sha1_base64	@340
-	ap_puudecode	@341
-	ap_puuencode	@342
+	ap_regerror   @341
+	ap_regexec   @342
+	ap_field_noparam   @343
+	ap_pbase64decode   @344
+	ap_pbase64encode   @345
+	ap_base64encode   @346
+	ap_base64encode_binary   @347
+	ap_base64encode_len   @348
+	ap_base64decode   @349
+	ap_base64decode_binary   @350
+	ap_base64decode_len   @351
+	ap_SHA1Init   @352
+	ap_SHA1Update_binary   @353
+	ap_SHA1Update   @354
+	ap_SHA1Final   @355
+	ap_sha1_base64   @356
+

@@ -412,12 +412,6 @@ static void Decode(UINT4 *output, const unsigned char *input, unsigned int len)
 }
 
 /*
- * Define the Magic String prefix that identifies a password as being
- * hashed using our algorithm.
- */
-const char *apr1_id = "$apr1$";
-
-/*
  * The following MD5 password encryption code was largely borrowed from
  * the FreeBSD 3.0 /usr/src/lib/libcrypt/crypt.c file, which is
  * licenced as stated at the top of this file.
@@ -463,8 +457,8 @@ API_EXPORT(void) ap_MD5Encode(const unsigned char *pw,
     /*
      * If it starts with the magic string, then skip that.
      */
-    if (!strncmp((char *)sp, apr1_id, strlen(apr1_id))) {
-	sp += strlen(apr1_id);
+    if (strncmp((char *)sp, AP_MD5PW_ID, AP_MD5PW_IDLEN) == 0) {
+	sp += AP_MD5PW_IDLEN;
     }
 
     /*
@@ -493,7 +487,7 @@ API_EXPORT(void) ap_MD5Encode(const unsigned char *pw,
     /*
      * Then our magic string
      */
-    ap_MD5Update(&ctx, (const unsigned char *)apr1_id, strlen(apr1_id));
+    ap_MD5Update(&ctx, AP_MD5PW_ID, AP_MD5PW_IDLEN);
 
     /*
      * Then the raw salt
@@ -533,9 +527,10 @@ API_EXPORT(void) ap_MD5Encode(const unsigned char *pw,
      * Now make the output string.  We know our limitations, so we
      * can use the string routines without bounds checking.
      */
-    strcpy(passwd, apr1_id);
-    strncat(passwd, (char *)sp, sl);
-    strcat(passwd, "$");
+    ap_cpystrn(passwd, AP_MD5PW_ID, AP_MD5PW_IDLEN);
+    ap_cpystrn(passwd + AP_MD5PW_IDLEN, (char *)sp, sl);
+    passwd[AP_MD5PW_IDLEN + sl]     = '$';
+    passwd[AP_MD5PW_IDLEN + sl + 1] = '\0';
 
     ap_MD5Final(final, &ctx);
 

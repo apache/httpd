@@ -510,7 +510,7 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
      */
     if ((password = ap_table_get(r->headers_in, "Authorization")) != NULL
 	&& strcasecmp(ap_getword(r->pool, &password, ' '), "Basic") == 0
-	&& (password = ap_puudecode(r->pool, password))[0] != ':') {
+	&& (password = ap_pbase64decode(r->pool, password))[0] != ':') {
 	/* Note that this allocation has to be made from r->connection->pool
 	 * because it has the lifetime of the connection.  The other allocations
 	 * are temporary and can be tossed away any time.

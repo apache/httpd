@@ -3,6 +3,10 @@ ap_MD5Encode
 ap_MD5Final
 ap_MD5Init
 ap_MD5Update
+ap_SHA1Final
+ap_SHA1Init
+ap_SHA1Update_binary
+ap_SHA1Update
 ap_add_cgi_vars
 ap_add_common_vars
 ap_add_module
@@ -17,6 +21,12 @@ ap_array_cat
 ap_array_pstrcat
 ap_auth_name
 ap_auth_type
+ap_base64encode
+ap_base64encode_binary
+ap_base64encode_len
+ap_base64decode
+ap_base64decode_binary
+ap_base64decode_len
 ap_basic_http_header
 ap_bclose
 ap_bcreate
@@ -217,6 +227,8 @@ ap_parse_htaccess
 ap_parse_uri
 ap_parse_uri_components
 ap_parse_vhost_addrs
+ap_pbase64decode
+ap_pbase64encode
 ap_pcalloc
 ap_pcfg_open_custom
 ap_pcfg_openfile
@@ -245,8 +257,6 @@ ap_pstrcat
 ap_pstrdup
 ap_pstrndup
 ap_push_array
-ap_puudecode
-ap_puuencode
 ap_pvsprintf
 ap_rationalize_mtime
 ap_read_config

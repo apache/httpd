@@ -82,14 +82,14 @@ API_EXPORT(char *) ap_validate_password(const char *passwd, const char *hash)
 
     /* FreeBSD style MD5 string 
      */
-    if (!strncmp(hash, apr1_id, strlen(apr1_id))) {
+    if (strncmp(hash, AP_MD5PW_ID, AP_MD5PW_IDLEN) == 0) {
 
 	ap_MD5Encode((const unsigned char *)passwd,
 		     (const unsigned char *)hash, sample, sizeof(sample));
     }
     /* Netscape / SHA1 ldap style strng  
      */
-    else if (!strncmp(hash, sha1_id, strlen(sha1_id))) {
+    else if (strncmp(hash, AP_SHA1PW_ID, AP_SHA1PW_IDLEN) == 0) {
 
  	ap_sha1_base64(passwd, strlen(passwd), sample);
     }

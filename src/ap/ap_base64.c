@@ -57,8 +57,8 @@
 
 /* base64 encoder/decoder. Originally part of main/util.c
  * but moved here so that support/ab and ap_sha1.c could
- * use it. This mean (re)moving the ap_palloc()s. And adding
- * ugly 'len' functions. Which is quite a nasty cost.
+ * use it. This meant removing the ap_palloc()s and adding
+ * ugly 'len' functions, which is quite a nasty cost.
  */
 
 #include <string.h>
@@ -75,20 +75,21 @@ static const unsigned char pr2six[256] =
 {
 #ifndef CHARSET_EBCDIC
     /* ASCII table */
-    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
-    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
-    64, 64, 64, 64, 64, 64, 64, 64, 64, 62, 64, 64, 64, 63, 52, 53, 54,
-    55, 56, 57, 58, 59, 60, 61, 64, 64, 64, 64, 64, 64, 64, 0, 1, 2, 3,
-    4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
-    22, 23, 24, 25, 64, 64, 64, 64, 64, 64, 26, 27, 28, 29, 30, 31, 32,
-    33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49,
-    50, 51, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
-    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
-    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
-    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
-    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
-    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
-    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
+    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
+    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
+    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 62, 64, 64, 64, 63,
+    52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 64, 64, 64, 64, 64, 64,
+    64,  0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14,
+    15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 64, 64, 64, 64, 64,
+    64, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
+    41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 64, 64, 64, 64, 64,
+    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
+    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
+    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
+    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
+    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
+    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
+    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
     64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64
 #else /*CHARSET_EBCDIC*/
     /* EBCDIC table */
@@ -107,7 +108,7 @@ static const unsigned char pr2six[256] =
     64,  0,  1,  2,  3,  4,  5,  6,  7,  8, 64, 64, 64, 64, 64, 64,
     64,  9, 10, 11, 12, 13, 14, 15, 16, 17, 64, 64, 64, 64, 64, 64,
     64, 64, 18, 19, 20, 21, 22, 23, 24, 25, 64, 64, 64, 64, 64, 64,
-    52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 64, 64, 64, 64, 64, 64,
+    52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 64, 64, 64, 64, 64, 64
 #endif /*CHARSET_EBCDIC*/
 };
 
@@ -135,7 +136,7 @@ API_EXPORT(int) ap_base64decode(char *bufplain, const char *bufcoded)
     
     len = ap_base64decode_binary((unsigned char *) bufplain, bufcoded);
 #ifdef CHARSET_EBCDIC
-    for (i=0; i<len; i++)
+    for (i = 0; i < len; i++)
 	bufplain[i] = os_toebcdic[bufplain[i]];
 #endif				/* CHARSET_EBCDIC */
     return len;
@@ -191,7 +192,7 @@ API_EXPORT(int) ap_base64decode_binary(unsigned char *bufplain,
 }
 
 static const char basis_64[] =
-"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
 API_EXPORT(int) ap_base64encode_len(int len)
 {
@@ -209,8 +210,10 @@ API_EXPORT(int) ap_base64encode(char *encoded, const char *string, int len)
     p = encoded;
     for (i = 0; i < len - 2; i += 3) {
 	*p++ = basis_64[(os_toascii[string[i]] >> 2) & 0x3F];
-	*p++ = basis_64[((os_toascii[string[i]] & 0x3) << 4) | ((int) (os_toascii[string[i + 1]] & 0xF0) >> 4)];
-	*p++ = basis_64[((os_toascii[string[i + 1]] & 0xF) << 2) | ((int) (os_toascii[string[i + 2]] & 0xC0) >> 6)];
+	*p++ = basis_64[((os_toascii[string[i]] & 0x3) << 4) |
+	                ((int) (os_toascii[string[i + 1]] & 0xF0) >> 4)];
+	*p++ = basis_64[((os_toascii[string[i + 1]] & 0xF) << 2) |
+	                ((int) (os_toascii[string[i + 2]] & 0xC0) >> 6)];
 	*p++ = basis_64[os_toascii[string[i + 2]] & 0x3F];
     }
     if (i < len) {
@@ -220,7 +223,8 @@ API_EXPORT(int) ap_base64encode(char *encoded, const char *string, int len)
 	    *p++ = '=';
 	}
 	else {
-	    *p++ = basis_64[((os_toascii[string[i]] & 0x3) << 4) | ((int) (os_toascii[string[i + 1]] & 0xF0) >> 4)];
+	    *p++ = basis_64[((os_toascii[string[i]] & 0x3) << 4) |
+	                    ((int) (os_toascii[string[i + 1]] & 0xF0) >> 4)];
 	    *p++ = basis_64[((os_toascii[string[i + 1]] & 0xF) << 2)];
 	}
 	*p++ = '=';
@@ -234,8 +238,8 @@ API_EXPORT(int) ap_base64encode(char *encoded, const char *string, int len)
 /* This is the same as ap_base64encode() except on EBCDIC machines, where
  * the conversion of the input to ascii is left out.
  */
-API_EXPORT(int) ap_base64encode_binary(char *encoded, const unsigned char *string,
-				   int len)
+API_EXPORT(int) ap_base64encode_binary(char *encoded,
+                                       const unsigned char *string, int len)
 {
     int i;
     char *p;
@@ -243,8 +247,10 @@ API_EXPORT(int) ap_base64encode_binary(char *encoded, const unsigned char *strin
     p = encoded;
     for (i = 0; i < len - 2; i += 3) {
 	*p++ = basis_64[(string[i] >> 2) & 0x3F];
-	*p++ = basis_64[((string[i] & 0x3) << 4) | ((int) (string[i + 1] & 0xF0) >> 4)];
-	*p++ = basis_64[((string[i + 1] & 0xF) << 2) | ((int) (string[i + 2] & 0xC0) >> 6)];
+	*p++ = basis_64[((string[i] & 0x3) << 4) |
+	                ((int) (string[i + 1] & 0xF0) >> 4)];
+	*p++ = basis_64[((string[i + 1] & 0xF) << 2) |
+	                ((int) (string[i + 2] & 0xC0) >> 6)];
 	*p++ = basis_64[string[i + 2] & 0x3F];
     }
     if (i < len) {
@@ -254,7 +260,8 @@ API_EXPORT(int) ap_base64encode_binary(char *encoded, const unsigned char *strin
 	    *p++ = '=';
 	}
 	else {
-	    *p++ = basis_64[((string[i] & 0x3) << 4) | ((int) (string[i + 1] & 0xF0) >> 4)];
+	    *p++ = basis_64[((string[i] & 0x3) << 4) |
+	                    ((int) (string[i + 1] & 0xF0) >> 4)];
 	    *p++ = basis_64[((string[i + 1] & 0xF) << 2)];
 	}
 	*p++ = '=';

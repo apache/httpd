@@ -1959,39 +1959,40 @@ char *ap_get_local_host(pool *a)
 
 /* simple 'pool' alloc()ing glue to ap_base64.c
  */
-API_EXPORT(char *) ap_puudecode(pool *p, const char *bufcoded)
+API_EXPORT(char *) ap_pbase64decode(pool *p, const char *bufcoded)
 {
     char *decoded;
     int l;
 
-    decoded = (char *) ap_palloc(p, 1+ap_base64decode_len(bufcoded));
-    l = ap_base64decode(decoded,bufcoded);
-    decoded[l]='\0'; /* make binary sequence into string */
+    decoded = (char *) ap_palloc(p, 1 + ap_base64decode_len(bufcoded));
+    l = ap_base64decode(decoded, bufcoded);
+    decoded[l] = '\0'; /* make binary sequence into string */
 
     return decoded;
 }
 
-
-API_EXPORT(char *) ap_puuencode(pool *p, char *string) 
+API_EXPORT(char *) ap_pbase64encode(pool *p, char *string) 
 { 
     char *encoded;
     int l = strlen(string);
 
-    encoded = (char *) ap_palloc(p, 1+ap_base64encode_len(l));
-    l=ap_base64encode(encoded,string,l);
-    encoded[l]='\0'; /* make binary sequence into string */
+    encoded = (char *) ap_palloc(p, 1 + ap_base64encode_len(l));
+    l = ap_base64encode(encoded, string, l);
+    encoded[l] = '\0'; /* make binary sequence into string */
 
     return encoded;
 }
 
+/* deprecated names for the above two functions, here for compatibility
+ */
 API_EXPORT(char *) ap_uudecode(pool *p, const char *bufcoded)
 {
-    return ap_puudecode(p,bufcoded);
+    return ap_pbase64decode(p, bufcoded);
 }
 
 API_EXPORT(char *) ap_uuencode(pool *p, char *string) 
 { 
-    return ap_puuencode(p,string);
+    return ap_pbase64encode(p, string);
 }
 
 #ifdef OS2

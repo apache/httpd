@@ -943,7 +943,7 @@ static void gen_nonce_hash(char *hash, const char *timestr, const char *opaque,
 			   const digest_config_rec *conf)
 {
     const char *hex = "0123456789abcdef";
-    unsigned char sha1[20];
+    unsigned char sha1[SHA_DIGESTSIZE];
     AP_SHA1_CTX ctx;
     int idx;
 
@@ -958,7 +958,7 @@ static void gen_nonce_hash(char *hash, const char *timestr, const char *opaque,
 			     strlen(opaque));
     ap_SHA1Final(sha1, &ctx);
 
-    for (idx=0; idx<20; idx++) {
+    for (idx=0; idx<SHA_DIGESTSIZE; idx++) {
 	*hash++ = hex[sha1[idx] >> 4];
 	*hash++ = hex[sha1[idx] & 0xF];
     }

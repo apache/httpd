@@ -322,13 +322,6 @@ AddModule modules/standard/mod_actions.o
 
 AddModule modules/standard/mod_userdir.o
 
-## The proxy module enables the server to act as a proxy for outside
-## http and ftp services. It's not as complete as it could be yet.
-## NOTE: You do not want this module UNLESS you are running a proxy;
-##       it is not needed for normal (origin server) operation.
-
-# AddModule modules/proxy/libproxy.a
-
 ## The Alias module provides simple URL translation and redirection.
 
 AddModule modules/standard/mod_alias.o
@@ -372,8 +365,21 @@ AddModule modules/standard/mod_auth.o
 ## truerand library (available for example from
 ## ftp://research.att.com/dist/mab/librand.shar) - see the Rule
 ## DEV_RANDOM above for more info.
+##
+## Must be added above (run later than) the proxy module because the
+## WWW-Authenticate and Proxy-Authenticate headers are parsed in the
+## post-read-request phase and it needs to know if this is a proxy request.
 
 # AddModule modules/experimental/mod_auth_digest.o
+
+## Optional Proxy
+##
+## The proxy module enables the server to act as a proxy for outside
+## http and ftp services. It's not as complete as it could be yet.
+## NOTE: You do not want this module UNLESS you are running a proxy;
+##       it is not needed for normal (origin server) operation.
+
+# AddModule modules/proxy/libproxy.a
 
 ## Optional response header manipulation modules. 
 ##
