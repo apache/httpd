@@ -36,8 +36,9 @@
       <code>type-map</code>) which explicitly lists the files
       containing the variants.</li>
 
-      <li>A MultiViews search (enabled by the MultiViews <code class="directive"><a href="../mod/core.html#options">Options</a></code>, where the server does an
-      implicit filename pattern match, and choose from amongst the
+      <li>A MultiViews search (enabled by the <code>MultiViews</code>
+      <code class="directive"><a href="../mod/core.html#options">Options</a></code>), where the server does
+      an implicit filename pattern match, and choose from amongst the
       results.</li>
     </ul>
 </div>
@@ -53,16 +54,15 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#multiviews">MultiViews</a></li>
 </ul><h3>See also</h3>
 <ul class="seealso">
-<li><code class="directive"><a href="../mod/mod_mime.html#defaultlanguage">DefaultLanguage</a></code></li>
-<li><code class="directive"><a href="../mod/mod_mime.html#addencoding">AddEncoding</a></code></li>
-<li><code class="directive"><a href="../mod/mod_mime.html#addlanguage">AddLanguage</a></code></li>
-<li><code class="directive"><a href="../mod/mod_mime.html#addtype">AddType</a></code></li>
-<li><code class="directive"><a href="../mod/mod_mime.html#multiviewsmatch">MultiViewsMatch</a></code></li>
+<li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li>
+<li><code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code></li>
+<li><a href="../content-negotiation.html">Content
+Negotiation</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="typemaps" id="typemaps">Type maps</a></h2>
-    <p>A type map has the same format as RFC822 mail headers. It
+    <p>A type map has a format similar to RFC822 mail headers. It
     contains document descriptions separated by blank lines, with
     lines beginning with a hash character ('#') treated as
     comments. A document description consists of several header
@@ -74,8 +74,7 @@
     and between the tokens of value. The headers allowed are: </p>
 
     <dl>
-      <dt>Content-Encoding:</dt>
-
+      <dt><code>Content-Encoding:</code></dt>
       <dd>The encoding of the file. Apache only recognizes
       encodings that are defined by an <code class="directive"><a href="../mod/mod_mime.html#addencoding">AddEncoding</a></code> directive.
       This normally includes the encodings <code>x-compress</code>
@@ -83,18 +82,17 @@
       files. The <code>x-</code> prefix is ignored for encoding
       comparisons.</dd>
 
-      <dt>Content-Language:</dt>
+      <dt><code>Content-Language:</code></dt>
+      <dd>The language(s) of the variant, as an Internet standard
+      language tag (<a href="http://www.ietf.org/rfc/rfc1766.txt">RFC 1766</a>). An example is <code>en</code>,
+      meaning English. If the variant contains more than one
+      language, they are separated by a comma.</dd>
 
-      <dd>The language of the variant, as an Internet standard
-      language tag (RFC 1766). An example is <code>en</code>,
-      meaning English.</dd>
-
-      <dt>Content-Length:</dt>
-
+      <dt><code>Content-Length:</code></dt>
       <dd>The length of the file, in bytes. If this header is not
       present, then the actual length of the file is used.</dd>
 
-      <dt>Content-Type:</dt>
+      <dt><code>Content-Type:</code></dt>
 
       <dd>
         The MIME media type of the document, with optional
@@ -103,14 +101,12 @@
         <code>name=value</code>. Common parameters include: 
 
         <dl>
-          <dt>level</dt>
-
+          <dt><code>level</code></dt>
           <dd>an integer specifying the version of the media type.
           For <code>text/html</code> this defaults to 2, otherwise
           0.</dd>
 
-          <dt>qs</dt>
-
+          <dt><code>qs</code></dt>
           <dd>a floating-point number with a value in the range 0.0
           to 1.0, indicating the relative 'quality' of this variant
           compared to the other available variants, independent of
@@ -119,16 +115,16 @@
           is attempting to represent a photograph. However, if the
           resource being represented is ascii art, then an ascii
           file would have a higher source quality than a jpeg file.
-          All qs values are therefore specific to a given
+          All <code>qs</code> values are therefore specific to a given
           resource.</dd>
         </dl>
-        Example: 
 
-<div class="example"><p><code>Content-Type: image/jpeg; qs=0.8</code></p></div>
+        <div class="example"><h3>Example</h3><p><code>
+          Content-Type: image/jpeg; qs=0.8
+        </code></p></div>
       </dd>
 
-      <dt>URI:</dt>
-
+      <dt><code>URI:</code></dt>
       <dd>uri of the file containing the variant (of the given
       media type, encoded with the given content encoding). These
       are interpreted as URLs relative to the map file; they must
@@ -136,33 +132,30 @@
       which the client would be granted access if they were to be
       requested directly.</dd>
 
-      <dt>Body:</dt>
-   
-      <dd><p>New in Apache 2.0, the actual content of the resource may
+      <dt><code>Body:</code></dt>
+      <dd>New in Apache 2.0, the actual content of the resource may
       be included in the type-map file using the Body header.  This
       header must contain a string that designates a delimiter for
-      the body content.  Then all following lines in the type map
+      the body content. Then all following lines in the type map
       file will be considered part of the resource body until the
-      delimiter string is found.</p>
+      delimiter string is found.
 
-      <p>Example:</p>
-<div class="example"><p><code>
-Body:----xyz----<br />
-&lt;html&gt;<br />
-&lt;body&gt;<br />
-&lt;p&gt;Content of the page.&lt;/p&gt;<br />
-&lt;/body&gt;<br />
-&lt;/html&gt;<br />
-----xyz----
-</code></p></div>
+      <div class="example"><h3>Example:</h3><p><code>
+        Body:----xyz----<br />
+        &lt;html&gt;<br />
+        &lt;body&gt;<br />
+        &lt;p&gt;Content of the page.&lt;/p&gt;<br />
+        &lt;/body&gt;<br />
+        &lt;/html&gt;<br />
+        ----xyz----
+      </code></p></div>
       </dd>
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="multiviews" id="multiviews">MultiViews</a></h2>
-    
-
-    <p>A MultiViews search is enabled by the MultiViews <code class="directive"><a href="../mod/core.html#options">Options</a></code>. If the server receives a
+    <p>A MultiViews search is enabled by the <code>MultiViews</code>
+    <code class="directive"><a href="../mod/core.html#options">Options</a></code>. If the server receives a
     request for <code>/some/dir/foo</code> and
     <code>/some/dir/foo</code> does <em>not</em> exist, then the
     server reads the directory looking for all files named
@@ -177,8 +170,8 @@ Body:----xyz----<br />
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Allows content-negotiated documents to be 
 cached by proxy servers</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CacheNegotiatedDocs on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>CacheNegotiatedDocs off</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CacheNegotiatedDocs On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>CacheNegotiatedDocs Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_negotiation</td></tr>
@@ -223,41 +216,47 @@ found</td></tr>
     <code>LanguagePriority</code> to serve a one valid result, rather
     than returning an HTTP result 300 (MULTIPLE CHOICES) when there
     are several equally valid choices.  If the directives below were
-    given, and the user's Accept-Language header assigned en and de
-    each as quality .500 (equally acceptable) then the first matching
-    variant, en, will be served.</p>
+    given, and the user's <code>Accept-Language</code> header assigned
+    <code>en</code> and <code>de</code> each as quality <code>.500</code>
+    (equally acceptable) then the first matching variant, <code>en</code>,
+    will be served.</p>
 
-<div class="example"><p><code>
+    <div class="example"><p><code>
       LanguagePriority en fr de<br />
       ForceLanguagePriority Prefer
-</code></p></div>
+    </code></p></div>
 
     <p><code>ForceLanguagePriority Fallback</code> uses
-    <code>LanguagePriority</code> to serve a valid result, rather than
-    returning an HTTP result 406 (NOT ACCEPTABLE).  If the directives
-    below were given, and the user's Accept-Language only permitted an
-    es language response, but such a variant isn't found, then the
-    first variant from the LanguagePriority list below will be
-    served.</p>
+    <code class="directive"><a href="#languagepriority">LanguagePriority</a></code> to
+    serve a valid result, rather than returning an HTTP result 406
+    (NOT ACCEPTABLE). If the directives below were given, and the user's
+    <code>Accept-Language</code> only permitted an <code>es</code>
+    language response, but such a variant isn't found, then the first
+    variant from the <code class="directive"><a href="#languagepriority">LanguagePriority</a></code> list below will be served.</p>
 
-<div class="example"><p><code>
+    <div class="example"><p><code>
       LanguagePriority en fr de<br />
       ForceLanguagePriority Fallback
-</code></p></div>
+    </code></p></div>
 
-    <p>Both options, Prefer and Fallback, may be specified, so either the
-    first matching variant from LanguagePriority will be served if more
-    that one variant is acceptable, or first available document will be
-    served if none of the variants matched the client's acceptable list of
-    languages.</p>
+    <p>Both options, <code>Prefer</code> and <code>Fallback</code>, may be
+    specified, so either the first matching variant from <code class="directive"><a href="#languagepriority">LanguagePriority</a></code> will be served if
+    more than one variant is acceptable, or first available document will
+    be served if none of the variants matched the client's acceptable list
+    of languages.</p>
 
+<h3>See also</h3>
+<ul>
+<li><code class="directive"><a href="../mod/mod_mime.html#addlanguage">AddLanguage</a></code></li>
+</ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LanguagePriority" id="LanguagePriority">LanguagePriority</a> <a name="languagepriority" id="languagepriority">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The precendence of language variants for cases where
 the client does not express a preference</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LanguagePriority <em>MIME-lang</em> [<em>MIME-lang</em>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LanguagePriority <var>MIME-lang</var> [<var>MIME-lang</var>]
+...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
@@ -266,10 +265,11 @@ the client does not express a preference</td></tr>
     <p>The <code class="directive">LanguagePriority</code> sets the precedence
     of language variants for the case where the client does not
     express a preference, when handling a MultiViews request. The list
-    of <em>MIME-lang</em> are in order of decreasing preference.
-    Example:</p>
+    of <var>MIME-lang</var> are in order of decreasing preference.</p>
 
-<div class="example"><p><code>LanguagePriority en fr de</code></p></div>
+    <div class="example"><h3>Example:</h3><p><code>
+      LanguagePriority en fr de
+    </code></p></div>
 
     <p>For a request for <code>foo.html</code>, where
     <code>foo.html.fr</code> and <code>foo.html.de</code> both
@@ -281,6 +281,10 @@ the client does not express a preference</td></tr>
     is not <code>None</code>. Correctly implemented HTTP/1.1 requests
     will mean this directive has no effect.</p>
 
+<h3>See also</h3>
+<ul>
+<li><code class="directive"><a href="../mod/mod_mime.html#addlanguage">AddLanguage</a></code></li>
+</ul>
 </div>
 </div>
 <div id="footer">
