@@ -32,6 +32,7 @@
 
 #include "ap_release.h"
 
+#include "apr.h"
 #include "apr_general.h"
 #include "apr_tables.h"
 #include "apr_pools.h"
@@ -43,6 +44,10 @@
 #include "os.h"
 
 #include "ap_regex.h"
+
+#if APR_HAVE_STDLIB_H
+#include <stdlib.h>
+#endif
 
 /* Note: util_uri.h is also included, see below */
 
