@@ -417,21 +417,6 @@ void util_uri_init(void)
     uri_delims['\0'] = T_NUL;
 }
 
-/* Since we know that the string we're duping is of exactly length l
- * we don't need to go through the expensive (silly) pstrndup().  We
- * can do much better on our own.  This is worth another 50%
- * improvement.
- */
-static char *special_strdup(pool *p, const char *s, size_t l)
-{
-    char *d;
-
-    d = palloc(p, l + 1);
-    memcpy(d, s, l);
-    d[l] = '\0';
-    return d;
-}
-
 /* parse_uri_components():
  * Parse a given URI, fill in all supplied fields of a uri_components
  * structure. This eliminates the necessity of extracting host, port,
@@ -468,7 +453,7 @@ deal_with_path:
 	    ++s;
 	}
 	if (s != uri) {
-	    uptr->path = special_strdup(p, uri, s - uri);
+	    uptr->path = pstrndup(p, uri, s - uri);
 	}
 	if (*s == 0) {
 	    return HTTP_OK;
@@ -478,7 +463,7 @@ deal_with_path:
 	    s1 = strchr(s, '#');
 	    if (s1) {
 		uptr->fragment = pstrdup(p, s1 + 1);
-		uptr->query = special_strdup(p, s, s1 - s);
+		uptr->query = pstrndup(p, s, s1 - s);
 	    }
 	    else {
 		uptr->query = pstrdup(p, s);
@@ -500,14 +485,14 @@ deal_with_path:
 	goto deal_with_path;	/* backwards predicted taken! */
     }
 
-    uptr->scheme = special_strdup(p, uri, s - uri);
+    uptr->scheme = pstrndup(p, uri, s - uri);
     s += 3;
     hostinfo = s;
     while ((uri_delims[*(unsigned char *)s] & NOTEND_HOSTINFO) == 0) {
 	++s;
     }
     uri = s;	/* whatever follows hostinfo is start of uri */
-    uptr->hostinfo = special_strdup(p, hostinfo, uri - hostinfo);
+    uptr->hostinfo = pstrndup(p, hostinfo, uri - hostinfo);
 
     /* If there's a username:password@host:port, the @ we want is the last @...
      * too bad there's no memrchr()... For the C purists, note that hostinfo
@@ -527,12 +512,12 @@ deal_with_host:
 	s = memchr(hostinfo, ':', uri - hostinfo);
 	if (s == NULL) {
 	    /* we expect the common case to have no port */
-	    uptr->hostname = special_strdup(p, hostinfo, uri - hostinfo);
+	    uptr->hostname = pstrndup(p, hostinfo, uri - hostinfo);
 	    goto deal_with_path;
 	}
-	uptr->hostname = special_strdup(p, hostinfo, s - hostinfo);
+	uptr->hostname = pstrndup(p, hostinfo, s - hostinfo);
 	++s;
-	uptr->port_str = special_strdup(p, s, uri - s);
+	uptr->port_str = pstrndup(p, s, uri - s);
 	if (uri != s) {
 	    port = strtol(uptr->port_str, &endstr, 10);
 	    uptr->port = port;
@@ -549,12 +534,12 @@ deal_with_host:
     /* first colon delimits username:password */
     s1 = memchr(hostinfo, ':', s - hostinfo);
     if (s1) {
-	uptr->user = special_strdup(p, hostinfo, s1 - hostinfo);
+	uptr->user = pstrndup(p, hostinfo, s1 - hostinfo);
 	++s1;
-	uptr->password = special_strdup(p, s1, s - s1);
+	uptr->password = pstrndup(p, s1, s - s1);
     }
     else {
-	uptr->user = special_strdup(p, hostinfo, s - hostinfo);
+	uptr->user = pstrndup(p, hostinfo, s - hostinfo);
     }
     hostinfo = s + 1;
     goto deal_with_host;

@@ -115,6 +115,7 @@ API_EXPORT(void) cleanup_for_exec(void);
 API_EXPORT(void *) palloc(struct pool *, int nbytes);
 API_EXPORT(void *) pcalloc(struct pool *, int nbytes);
 API_EXPORT(char *) pstrdup(struct pool *, const char *s);
+/* make a nul terminated copy of the n characters starting with s */
 API_EXPORT(char *) pstrndup(struct pool *, const char *s, int n);
 API_EXPORT(char *) pstrcat(struct pool *,...);	/* all '...' must be char* */
 

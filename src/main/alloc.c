@@ -726,10 +726,12 @@ API_EXPORT(char *) pstrdup(struct pool *a, const char *s)
 API_EXPORT(char *) pstrndup(struct pool *a, const char *s, int n)
 {
     char *res;
+
     if (s == NULL)
 	return NULL;
     res = palloc(a, n + 1);
-    ap_cpystrn(res, s, n + 1);
+    memcpy(res, s, n);
+    res[n] = '\0';
     return res;
 }
 
