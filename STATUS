@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/12/11 13:01:47 $]
+Last modified at [$Date: 2002/12/11 16:32:45 $]
 
 Release:
 
@@ -58,7 +58,7 @@ Contributors looking for a mission:
 PATCHES TO PORT FROM 2.1
 
     * stoddard: All mod_cache (and related) patches as of 12/10/02.
-      +1: stoddard, trawick
+      +1: stoddard, trawick, rederpj
 
     * Fix the building of cgi command lines when the query string
       contains '='.  PR 13914  [Ville Skyttä <ville.skytta@iki.fi>,
@@ -90,7 +90,7 @@ CURRENT VOTES:
 
     * Develop in Review-Then-Commit or Commit-Then-Review mode 
       on APACHE_2_0_BRANCH (no vetoes, this is a straight vote.)
-       R-T-C:   trawick, wrowe, jerenkrantz, stoddard
+       R-T-C:   trawick, wrowe, jerenkrantz, stoddard, rederpj
        Abstain: 
        C-T-R:   BrianP, aaron, jim
 
