@@ -873,6 +873,10 @@ API_EXPORT(int) ap_cfg_getline(char *buf, size_t bufsize, configfile_t *cfp)
 	dst = &src[strlen(src)];
 	while (--dst >= buf && ap_isspace(*dst))
 	    *dst = '\0';
+        /* Zap leading whitespace by shifting */
+        if (src != buf)
+	    for (dst = buf; (*dst++ = *src++) != '\0'; )
+	        ;
 
 #ifdef DEBUG_CFG_LINES
 	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, NULL, "Read config: %s", buf);

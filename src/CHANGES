@@ -3,6 +3,8 @@ Changes with Apache 1.3.2
   *) Cure ap_cfg_getline() of its nasty habit of compressing internal
      whitespace in input lines -- including within quoted strings.
      [Ken Coar]
+     but leading and trailing whitespace should continue to be
+     stripped [Martin Kraemer]
 
   *) Cleanup of the PrintPath/PrintPathOS2 helper functions. Avoid
      the ugly use of an env. variable and use command-line args for
