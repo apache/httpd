@@ -62,6 +62,8 @@
 #include "http_config.h"
 #include "http_connection.h"
 
+#include "apr_buckets.h"
+#include "util_filter.h"
 AP_DECLARE_DATA module echo_module;
 
 typedef struct {
@@ -88,26 +90,32 @@ static const char *echo_on(cmd_parms *cmd, void *dummy, int arg)
 
 static int process_echo_connection(conn_rec *c)
 {
-    char buf[1024];
+    apr_bucket_brigade *bb;
+    apr_bucket *b;
+    apr_status_t rv;
+    int zero = 0;
     EchoConfig *pConfig = ap_get_module_config(c->base_server->module_config,
                                                &echo_module);
 
     if (!pConfig->bEnabled) {
         return DECLINED;
     }
+    
+    bb = apr_brigade_create(c->pool);
 
     for ( ; ; ) {
-	apr_ssize_t r, w;
-        r = sizeof(buf);
-        apr_recv(c->client_socket, buf, &r);
-	if (r <= 0) {
+        /* Get a single line of input from the client */
+        if ((rv = ap_get_brigade(c->input_filters, bb,
+                                 AP_MODE_BLOCKING, &zero) != APR_SUCCESS || 
+             APR_BRIGADE_EMPTY(bb))) {
+            apr_brigade_destroy(bb);
             break;
         }
-        w = r;
-	apr_send(c->client_socket, buf, &w);
-	if (w != r) {
-	    break;
-        }
+
+        /* Make sure the data is flushed to the client */
+        b = apr_bucket_flush_create();
+        APR_BRIGADE_INSERT_TAIL(bb, b);
+        ap_pass_brigade(c->output_filters, bb);    
     }
     return OK;
 }
