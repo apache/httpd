@@ -44,9 +44,9 @@ static char nuls[10];		/* place to point scanner in event of error */
 #define	MORE2()	(p->next+1 < p->end)
 #define	SEE(c)	(MORE() && PEEK() == (c))
 #define	SEETWO(a, b)	(MORE() && MORE2() && PEEK() == (a) && PEEK2() == (b))
-#define	EAT(c)	((SEE(c)) ? (NEXT(), 1) : 0)
+#define	EAT(c)	((SEE(c)) ? (NEXT1(), 1) : 0)
 #define	EATTWO(a, b)	((SEETWO(a, b)) ? (NEXT2(), 1) : 0)
-#define	NEXT()	(p->next++)
+#define	NEXT1()	(p->next++)
 #define	NEXT2()	(p->next += 2)
 #define	NEXTn(n)	(p->next += (n))
 #define	GETNEXT()	(*p->next++)
@@ -324,7 +324,7 @@ register struct parse *p;
 	if (!( c == '*' || c == '+' || c == '?' ||
 				(c == '{' && MORE2() && isdigit(PEEK2())) ))
 		return;		/* no repetition, we're done */
-	NEXT();
+	NEXT1();
 
 	REQUIRE(!wascaret, REG_BADRPT);
 	switch (c) {
@@ -361,7 +361,7 @@ register struct parse *p;
 		repeat(p, pos, count, count2);
 		if (!EAT('}')) {	/* error heuristics */
 			while (MORE() && PEEK() != '}')
-				NEXT();
+				NEXT1();
 			REQUIRE(MORE(), REG_EBRACE);
 			SETERROR(REG_BADBR);
 		}
@@ -539,7 +539,7 @@ int starordinary;		/* is a leading * an ordinary character? */
 		repeat(p, pos, count, count2);
 		if (!EATTWO('\\', '}')) {	/* error heuristics */
 			while (MORE() && !SEETWO('\\', '}'))
-				NEXT();
+				NEXT1();
 			REQUIRE(MORE(), REG_EBRACE);
 			SETERROR(REG_BADBR);
 		}
@@ -698,7 +698,7 @@ register cset *cs;
 		start = p_b_symbol(p);
 		if (SEE('-') && MORE2() && PEEK2() != ']') {
 			/* range */
-			NEXT();
+			NEXT1();
 			if (EAT('-'))
 				finish = '-';
 			else
@@ -729,7 +729,7 @@ register cset *cs;
 	register char c;
 
 	while (MORE() && isalpha(PEEK()))
-		NEXT();
+		NEXT1();
 	len = p->next - sp;
 	for (cp = cclasses; cp->name != NULL; cp++)
 		if (strncmp(cp->name, sp, len) == 0 && cp->name[len] == '\0')
@@ -799,7 +799,7 @@ int endc;			/* name ended by endc,']' */
 	register char c;
 
 	while (MORE() && !SEETWO(endc, ']'))
-		NEXT();
+		NEXT1();
 	if (!MORE()) {
 		SETERROR(REG_EBRACK);
 		return(0);

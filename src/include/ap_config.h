@@ -164,7 +164,6 @@ typedef int rlim_t;
 #define tolower(c) (isupper(c) ? tolower(c) : c)
 
 #elif defined(NEXT)
-#include <libc.h>
 typedef unsigned short mode_t;
 #define HAVE_GMTOFF
 #undef NO_KILLPG
@@ -524,7 +523,7 @@ int ap_vsnprintf(char *buf, size_t len, const char *format, va_list ap);
 #include <grp.h>
 #include <fcntl.h>
 #include <limits.h>
-#if !defined(QNX) && !defined(CONVEXOS11)
+#if !defined(QNX) && !defined(CONVEXOS11) && !defined(NEXT)
 #include <memory.h>
 #endif
 #ifdef NEED_PROCESS_H

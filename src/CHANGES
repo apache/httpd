@@ -1,5 +1,9 @@
 Changes with Apache 1.2b5
 
+  *) Various NeXT compilation patches, as well as a change in
+     regex/regcomp.c since that file also used a NEXT define.
+     [Andreas Koenig]
+
   *) Allow * to terminate the end of a directory match in mod_dir.
      Allows /~* to match for both /~joe and /~joe/. [David Bronder]
 

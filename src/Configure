@@ -155,6 +155,15 @@ PLAT=`./helpers/GuessOS`
 
 DBM_LIB="-ldbm"
 
+#
+# Look for ranlib. Do it early in case we want to override it below
+#
+if ./helpers/PrintPath -s ranlib; then
+    RANLIB="ranlib"
+else
+    RANLIB="true"
+fi
+
 case "$PLAT" in
     *-apple-aux3*)
 	OS='A/UX 3.1.x'
@@ -267,6 +276,8 @@ case "$PLAT" in
 	OS='NeXT'
 	CFLAGS="$CFLAGS -DNEXT"
 	DEF_WANTHSREGEX=yes
+	RANLIB="sleep 5; /bin/ranlib"
+	# ranlib on most NeXTs sets the time wrong. 5 secs wait does much good
 	;;
     *-dec-osf*)
 	OS='DEC OSF/1'
@@ -508,14 +519,6 @@ if [ "$RULE_SOCKS4" = "yes" ]; then
     else
 	LIBS="$LIBS -L/usr/local/lib -lsocks"
     fi
-fi
-#
-# Look for ranlib
-#
-if ./helpers/PrintPath -s ranlib; then
-    RANLIB="ranlib"
-else
-    RANLIB="true"
 fi
 
 #
