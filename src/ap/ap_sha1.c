@@ -53,7 +53,7 @@
  * For more information on the Apache Group and the Apache HTTP server
  * project, please see <http://www.apache.org/>.
  *
- * The only exported function:
+ * The exported function:
  *
  * 	 ap_sha1_base64(const char *clear, int len, char *out);
  *
@@ -73,29 +73,13 @@
  * See also the documentation in support/SHA1 as to hints on how to
  * migrate an existing netscape installation and other supplied utitlites.
  *
- * This software also makes use of the following components:
+ * This software also makes use of the following component:
  *
  * NIST Secure Hash Algorithm
  *  	heavily modified by Uwe Hollerbach uh@alumni.caltech edu
  *	from Peter C. Gutmann's implementation as found in
  *	Applied Cryptography by Bruce Schneier
  *	This code is hereby placed in the public domain
- *
- * MIME Base 64 encoding based on src/metamail/codes.c in metamail,
- *	available at: ftp://thumper.bellcore.com/pub/nsb/
- *
- * Metamail's copyright is:
- * 	Copyright (c) 1991 Bell Communications Research, Inc. (Bellcore)
- * 	Permission to use, copy, modify, and distribute this material
- *	for any purpose and without fee is hereby granted, provided
- *	that the above copyright notice and this permission notice
- *	appear in all copies, and that the name of Bellcore not be
- *	used in advertising or publicity pertaining to this
- *	material without the specific, prior written permission
- *	of an authorized representative of Bellcore.  BELLCORE
- *	MAKES NO REPRESENTATIONS ABOUT THE ACCURACY OR SUITABILITY
- *	OF THIS MATERIAL FOR ANY PURPOSE.  IT IS PROVIDED "AS IS",
- *	WITHOUT ANY EXPRESS OR IMPLIED WARRANTIES.
  */
 
 #include <string.h>
