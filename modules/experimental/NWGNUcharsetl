@@ -24,6 +24,12 @@ include $(AP_WORK)\build\NWGNUhead.inc
 # INCDIRS
 #
 XINCDIRS	+= \
+			$(AP_WORK)/include \
+			$(NWOS) \
+			$(AP_WORK)/modules/arch/netware \
+			$(AP_WORK)/srclib/apr/include \
+			$(AP_WORK)/srclib/apr-util/include \
+			$(AP_WORK)/srclib/apr \
 			$(EOLIST)
 
 #
@@ -59,7 +65,7 @@ XDEFINES	+= \
 			$(EOLIST)
 
 XLFLAGS		+= \
-		   	$(EOLIST)
+			$(EOLIST)
 endif
 
 ifeq "$(RELEASE)" "noopt"
@@ -73,7 +79,7 @@ XDEFINES	+= \
 			$(EOLIST)
 
 XLFLAGS		+= \
-		   	$(EOLIST)
+			$(EOLIST)
 endif
 
 ifeq "$(RELEASE)" "release"
@@ -95,19 +101,19 @@ endif
 # This is used by the link 'name' directive to name the nlm.  If left blank
 # TARGET_nlm (see below) will be used.
 #
-NLM_NAME		=
+NLM_NAME		= charsetl
 
 #
 # This is used by the link '-desc ' directive.
 # If left blank, NLM_NAME will be used.
 #
-NLM_DESCRIPTION	=
+NLM_DESCRIPTION	= Apache $(VERSION_STR) Charset Lite Module
 
 #
 # This is used by the '-threadname' directive.  If left blank,
 # NLM_NAME Thread will be used.
 #
-NLM_THREAD_NAME	=
+NLM_THREAD_NAME	= charsetl
 
 #
 # If this is specified, it will override VERSION value in
@@ -118,18 +124,18 @@ NLM_VERSION		=
 #
 # If this is specified, it will override the default of 64K
 #
-NLM_STACK_SIZE	=
+NLM_STACK_SIZE	= 8192
 
 
 #
 # If this is specified it will be used by the link '-entry' directive
 #
-NLM_ENTRY_SYM	=
+NLM_ENTRY_SYM	= _LibCPrelude
 
 #
 # If this is specified it will be used by the link '-exit' directive
 #
-NLM_EXIT_SYM	=
+NLM_EXIT_SYM	= _LibCPostlude
 
 #
 # If this is specified it will be used by the link '-check' directive
@@ -139,7 +145,7 @@ NLM_CHECK_SYM	=
 #
 # If these are specified it will be used by the link '-flags' directive
 #
-NLM_FLAGS		=
+NLM_FLAGS		=  AUTOUNLOAD, PSEUDOPREEMPTION
 
 #
 # If this is specified it will be linked in with the XDCData option in the def
@@ -153,18 +159,7 @@ XDCDATA         =
 #
 TARGET_nlm = \
 	$(OBJDIR)/charsetl.nlm \
-	$(OBJDIR)/example.nlm \
-	$(OBJDIR)/mod_cach.nlm \
-	$(OBJDIR)/mem_cach.nlm \
-	$(OBJDIR)/dsk_cach.nlm \
 	$(EOLIST)
-	
-# If LDAPSDK has been defined then build the auth_ldap module
-ifneq "$(LDAPSDK)" ""
-TARGET_nlm += $(OBJDIR)/authldap.nlm \
-	$(OBJDIR)/utilldap.nlm \
-	$(EOLIST)
-endif
 
 #
 # If there is an LIB target, put it here
@@ -177,6 +172,7 @@ TARGET_lib = \
 # Paths must all use the '/' character
 #
 FILES_nlm_objs = \
+	$(OBJDIR)/mod_charset_lite.o \
 	$(EOLIST)
 
 #
@@ -184,6 +180,7 @@ FILES_nlm_objs = \
 # These will be added as a library command in the link.opt file.
 #
 FILES_nlm_libs = \
+	libcpre.o \
 	$(EOLIST)
 
 #
@@ -191,6 +188,8 @@ FILES_nlm_libs = \
 # These will be added as a module command in the link.opt file.
 #
 FILES_nlm_modules = \
+	aprlib \
+	libc \
 	$(EOLIST)
 
 #
@@ -212,12 +211,16 @@ FILE_nlm_copyright =
 # Any additional imports go here
 #
 FILES_nlm_Ximports = \
+	@$(APR)/aprlib.imp \
+	@$(NWOS)/httpd.imp \
+	@libc.imp \
 	$(EOLIST)
 
 #
 # Any symbols exported to here
 #
 FILES_nlm_exports = \
+	charset_lite_module \
 	$(EOLIST)
 
 #
@@ -240,7 +243,6 @@ nlms :: libs $(TARGET_nlm)
 # correct place.  (See $(AP_WORK)\build\NWGNUhead.inc for examples)
 #
 install :: nlms FORCE
-	copy $(OBJDIR)\*.nlm $(INSTALL)\Apache2\modules\*.*
 
 #
 # Any specialized rules here
@@ -252,4 +254,6 @@ install :: nlms FORCE
 #
 
 include $(AP_WORK)\build\NWGNUtail.inc
+
+
 
