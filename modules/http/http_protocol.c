@@ -2122,6 +2122,31 @@ AP_DECLARE(void) ap_clear_method_list(ap_method_list_t *l)
     l->method_list->nelts = 0;
 }
 
+/* Generate the human-readable hex representation of an unsigned long
+ * (basically a faster version of 'sprintf("%lx")')
+ */
+#define HEX_DIGITS "0123456789abcdef"
+static char *etag_ulong_to_hex(char *next, unsigned long u)
+{
+    int printing = 0;
+    int shift = sizeof(unsigned long) * 8 - 4;
+    do {
+        unsigned long next_digit = ((u >> shift) & (unsigned long)0xf);
+        if (next_digit) {
+            *next++ = HEX_DIGITS[next_digit];
+            printing = 1;
+        }
+        else if (printing) {
+            *next++ = HEX_DIGITS[next_digit];
+        }
+        shift -= 4;
+    } while (shift);
+    *next++ = HEX_DIGITS[u & (unsigned long)0xf];
+    return next;
+}
+
+#define ETAG_WEAK "W/"
+#define CHARS_PER_UNSIGNED_LONG (sizeof(unsigned long) * 2)
 /*
  * Construct an entity tag (ETag) from resource information.  If it's a real
  * file, build in some of the file characteristics.  If the modification time
@@ -2131,8 +2156,10 @@ AP_DECLARE(void) ap_clear_method_list(ap_method_list_t *l)
  */
 AP_DECLARE(char *) ap_make_etag(request_rec *r, int force_weak)
 {
-    char *etag;
     char *weak;
+    apr_size_t weak_len;
+    char *etag;
+    char *next;
 
     /*
      * Make an ETag header out of various pieces of information. We use
@@ -2146,20 +2173,48 @@ AP_DECLARE(char *) ap_make_etag(request_rec *r, int force_weak)
      * be modified again later in the second, and the validation
      * would be incorrect.
      */
-
-    weak = ((r->request_time - r->mtime > APR_USEC_PER_SEC)
-            && !force_weak) ? "" : "W/";
-
-    if (r->finfo.filetype != 0) {
-        etag = apr_psprintf(r->pool,
-                            "%s\"%lx-%lx-%lx\"", weak,
-                            (unsigned long) r->finfo.inode,
-                            (unsigned long) r->finfo.size,
-                            (unsigned long) r->mtime);
+    if ((r->request_time - r->mtime > APR_USEC_PER_SEC) && !force_weak) {
+        weak = NULL;
+        weak_len = 0;
     }
     else {
-        etag = apr_psprintf(r->pool, "%s\"%lx\"", weak,
-                            (unsigned long) r->mtime);
+        weak = ETAG_WEAK;
+        weak_len = sizeof(ETAG_WEAK);
+    }
+
+    if (r->finfo.filetype != 0) {
+        /* [W/]"inode-size-mtime" */
+        etag = apr_palloc(r->pool, weak_len + sizeof("\"--\"") +
+                          3 * CHARS_PER_UNSIGNED_LONG + 1);
+        next = etag;
+        if (weak) {
+            while (*weak) {
+                *next++ = *weak++;
+            }
+        }
+        *next++ = '"';
+        next = etag_ulong_to_hex(next, (unsigned long)r->finfo.inode);
+        *next++ = '-';
+        next = etag_ulong_to_hex(next, (unsigned long)r->finfo.size);
+        *next++ = '-';
+        next = etag_ulong_to_hex(next, (unsigned long)r->mtime);
+        *next++ = '"';
+        *next = 0;
+    }
+    else {
+        /* [W/]"mtime" */
+        etag = apr_palloc(r->pool, weak_len + sizeof("\"\"") +
+                          CHARS_PER_UNSIGNED_LONG + 1);
+        next = etag;
+        if (weak) {
+            while (*weak) {
+                *next++ = *weak++;
+            }
+        }
+        *next++ = '"';
+        next = etag_ulong_to_hex(next, (unsigned long)r->mtime);
+        *next++ = '"';
+        *next = 0;
     }
 
     return etag;
