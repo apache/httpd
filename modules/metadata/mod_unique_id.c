@@ -231,13 +231,13 @@ static void unique_id_global_init(ap_pool_t *p, ap_pool_t *plog, ap_pool_t *ptem
      * next second.
      */
     tv = ap_now();
-    ap_sleep(
+    ap_sleep(tv);
 }
 
 static void unique_id_child_init(ap_pool_t *p, server_rec *s)
 {
     pid_t pid;
-    time_t tv;
+    ap_time_t tv;
 
     /*
      * Note that we use the pid because it's possible that on the same
@@ -270,6 +270,9 @@ static void unique_id_child_init(ap_pool_t *p, server_rec *s)
      * going backwards in time.
      */
     tv = ap_now();
+    /* Some systems have very low variance on the low end of their system
+     * counter, defend against that.
+     */
     cur_unique_id.counter = tv % APR_USEC_PER_SEC / 10;
 
     /*
