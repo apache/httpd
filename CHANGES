@@ -101,9 +101,6 @@ Changes with Apache 2.1.0-dev
   *) mod_deflate: support gzip flags in inflate_out_filter
      [Nick Kew <nick webthing.com>]
 
-  *) Add -l option to rotatelogs to let it use local time rather than
-     UTC.  PR 24417.  [Ken Coar, Uli Zappe <uli ritual.org>]
-
   *) Drop the ErrorHeader directive which turned out to be a misnomer.
      Instead there's a new optional flag for the Header directive
      ('always'), which keeps the former ErrorHeader functionality.
@@ -404,6 +401,9 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.51
+
+  *) Add -l option to rotatelogs to let it use local time rather than
+     UTC.  PR 24417.  [Ken Coar, Uli Zappe <uli ritual.org>]
 
   *) mod_log_config: Fix a bug which prevented request completion time
      from being logged for I_INSIST_ON_EXTRA_CYCLES_FOR_CLF_COMPLIANCE
