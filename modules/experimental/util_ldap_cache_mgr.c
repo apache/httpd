@@ -398,9 +398,11 @@ void util_ald_cache_insert(util_ald_cache_t *cache, void *payload)
     if (cache == NULL || payload == NULL)
         return;
 
+    if ((node = (util_cache_node_t *)util_ald_alloc(cache->rmm_addr, sizeof(util_cache_node_t))) == NULL)
+        return;
+
     cache->inserts++;
     hashval = (*cache->hash)(payload) % cache->size;
-    node = (util_cache_node_t *)util_ald_alloc(cache->rmm_addr, sizeof(util_cache_node_t));
     node->add_time = apr_time_now();
     node->payload = (*cache->copy)(cache, payload);
     node->next = cache->nodes[hashval];
