@@ -457,7 +457,7 @@ static apr_status_t stream_reqbody_cl(apr_pool_t *p,
             b = input_brigade;
         }
         
-        status = pass_brigade(r, conn, origin, input_brigade, 1);
+        status = pass_brigade(r, conn, origin, b, 1);
         if (status != APR_SUCCESS) {
             return status;
         }
