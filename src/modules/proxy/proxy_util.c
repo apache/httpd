@@ -68,7 +68,7 @@ static int proxy_match_ipaddr(struct dirconn_entry *This, request_rec *r);
 static int proxy_match_domainname(struct dirconn_entry *This, request_rec *r);
 static int proxy_match_hostname(struct dirconn_entry *This, request_rec *r);
 static int proxy_match_word(struct dirconn_entry *This, request_rec *r);
-
+static struct per_thread_data *get_per_thread_data();
 /* already called in the knowledge that the characters are hex digits */
 int ap_proxy_hex2c(const char *x)
 {
@@ -867,9 +867,7 @@ const char *
 {
     int i;
     struct hostent *hp;
-    static APACHE_TLS struct hostent hpbuf;
-    static APACHE_TLS u_long ipaddr;
-    static APACHE_TLS char *charpbuf[2];
+    struct per_thread_data *ptd = get_per_thread_data();
 
     for (i = 0; host[i] != '\0'; i++)
 	if (!ap_isdigit(host[i]) && host[i] != '.')
@@ -881,17 +879,17 @@ const char *
 	    return "Host not found";
     }
     else {
-	ipaddr = ap_inet_addr(host);
-	hp = gethostbyaddr((char *) &ipaddr, sizeof(ipaddr), AF_INET);
+	ptd->ipaddr = ap_inet_addr(host);
+	hp = gethostbyaddr((char *) &ptd->ipaddr, sizeof(ptd->ipaddr), AF_INET);
 	if (hp == NULL) {
-	    memset(&hpbuf, 0, sizeof(hpbuf));
-	    hpbuf.h_name = 0;
-	    hpbuf.h_addrtype = AF_INET;
-	    hpbuf.h_length = sizeof(ipaddr);
-	    hpbuf.h_addr_list = charpbuf;
-	    hpbuf.h_addr_list[0] = (char *) &ipaddr;
-	    hpbuf.h_addr_list[1] = 0;
-	    hp = &hpbuf;
+	    memset(&ptd->hpbuf, 0, sizeof(ptd->hpbuf));
+	    ptd->hpbuf.h_name = 0;
+	    ptd->hpbuf.h_addrtype = AF_INET;
+	    ptd->hpbuf.h_length = sizeof(ptd->ipaddr);
+	    ptd->hpbuf.h_addr_list = ptd->charpbuf;
+	    ptd->hpbuf.h_addr_list[0] = (char *) &ptd->ipaddr;
+	    ptd->hpbuf.h_addr_list[1] = 0;
+	    hp = &ptd->hpbuf;
 	}
     }
     *reqhp = *hp;
@@ -1290,3 +1288,44 @@ unsigned ap_proxy_bputs2(const char *data, BUFF *client, cache_req *cache)
     return len;
 }
 
+#if defined WIN32
+
+static DWORD tls_index;
+
+BOOL WINAPI DllMain (HINSTANCE dllhandle, DWORD reason, LPVOID reserved)
+{
+    LPVOID memptr;
+
+    switch (reason) {
+    case DLL_PROCESS_ATTACH:
+	tls_index = TlsAlloc();
+    case DLL_THREAD_ATTACH: /* intentional no break */
+	TlsSetValue (tls_index, malloc (sizeof (struct per_thread_data)));
+	break;
+    case DLL_THREAD_DETACH:
+	memptr = TlsGetValue (tls_index);
+	if (memptr) {
+	    free (memptr);
+	    TlsSetValue (tls_index, 0);
+	}
+	break;
+    }
+
+    return TRUE;
+}
+
+#endif
+
+static struct per_thread_data *get_per_thread_data()
+{
+#if defined WIN32
+
+    return (struct per_thread_data *) TlsGetValue (tls_index);
+
+#else
+
+    static APACHE_TLS per_thread_data sptd;
+    return *sptd;
+
+#endif
+}

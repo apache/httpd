@@ -260,6 +260,11 @@ struct tbl_do_args {
     cache_req *cache;
 };
 
+struct per_thread_data {
+    struct hostent hpbuf;
+    u_long ipaddr;
+    char *charpbuf[2];
+};
 /* Function prototypes */
 
 /* proxy_cache.c */

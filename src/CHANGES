@@ -1,8 +1,12 @@
 Changes with Apache 1.3.13
 
+  *) Correct mod_proxy Win95 dynamic link __declspec(thread) bug.
+     David Whitmarsh <david.whitmarsh@dial.pipex.com> 
+     PR: 1462, 2216, 3645
+    
   *) Correct mod_proxy Win32 garbage collection bug (clean failing
      due to stat() against directory).
-     PR: 1891, 3278, 4139, 5997
+     PR: 1891, 3278, 3640, 4139, 5997
      [Michael Friedel <mfriedel@lbell.slctnet.com>]
 
   *) Add '-n' option to htpasswd to make it print its user:pw record
@@ -94,6 +98,7 @@ Changes with Apache 1.3.13
 
   *) use send/recv instead of write/read in proxy_connect -- fixes
      https through proxy on NT.  [willem.vanpelt@philips.com]
+     PR 5963, 5899, 5823, 5107, 4990?, 4885, 4680, 4468, 3801, 2014
 
   *) [EBCDIC] Make chunked encoding work again; it was broken by the
      recent CRLF macro changes. An oversight. [Martin Kraemer]
