@@ -385,6 +385,10 @@ SOURCE=.\include\util_script.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\server\util_time.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\os\win32\util_win32.c
 # End Source File
 # Begin Source File
