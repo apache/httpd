@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/08/10 16:22:28 $]
+Last modified at [$Date: 2004/08/11 16:53:15 $]
 
 Release:
 
@@ -72,6 +72,16 @@ RELEASE SHOWSTOPPERS:
 PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
+
+    *) [SECURITY] mod_ssl: Fix potential infinite loop.
+       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_engine_io.c?r1=1.124&r2=1.125
+       PR: 29964
+       jorton: +1
+
+    *) mod_ssl: Use anon shm in shmcb by default.
+       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_scache_shmcb.c?r1=1.23&r2=1.24
+       PR: 21335
+       jorton: +1
 
     *) Proposal: Several folks want to aggressively backport changes
        from mod_cache, mod_mem_cache and mod_file_cache from Apache
@@ -162,7 +172,7 @@ PATCHES TO BACKPORT FROM 2.1
          ssl_engine_config.c r1.94
          ssl_engine_kernel.c r1.107
          ssl_private.h r1.7
-       +1: trawick
+       +1: trawick, jorton
 
     *) Prevent Win32 pool corruption at startup
          server/mpm/winnt/child.c: r1.36 
@@ -404,7 +414,7 @@ PATCHES TO BACKPORT FROM 2.1
         http://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=82369
       Patch (2.1 version already committed, 2.0 has diff OpenSSL config logic):
         http://www.apache.org/~jerenkrantz/httpd-openssl-pkgconfig.patch
-      +1: jerenkrantz, trawick
+      +1: jerenkrantz, trawick, jorton
 
 CURRENT RELEASE NOTES:
 
