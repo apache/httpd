@@ -58,12 +58,30 @@ The main difference is that one and only one MPM must be loaded
 into the server at any time.  The list of available MPMs
 appears on the <a href="mod/">module index page</a>.</p>
 
-<!-- XXX: Needed here: a brief discussion or reference to instructions
-on how to choose and load an MPM, how to figure out what MPM you are
-currently using, and what MPMs are the defaults on various
-platforms. -->
+<h2 align="center">Choosing an MPM</h2>
 
+<p>MPMs must be chosen during configuration, and compiled into the server.
+Compilers are capable of optimizing a lot of functions if threads are used,
+but only if they know that threads are being used.  Because some MPMs use
+threads on Unix and others don't, Apache will always perform better if the
+MPM is chosen at configuration time and built into Apache.</p>
 
+<p>To actually choose the desired MPM, use the argument --with-mpm=
+<EM>NAME</EM> with the ./configure script.  <EM>NAME</EM> is the name of 
+the desired MPM.</p>
+
+<p>Once the server has been compiled, it is possible to determine which
+MPM was chosen by using <code>./httpd -l</code>.  This command will list
+every module that is compiled into the server, including the MPM.</p>
+
+<h2 align="center">MPM Defaults</h2>
+
+<ul>
+  <li> BeOS:  mpmt_beos</li>
+  <li> OS/2:  spmt_os2</li>
+  <li> Unix:  mpmt_pthread </li>
+  <li> Windows:  winnt</li>
+</ul>
 
 <!--#include virtual="footer.html" -->
 
