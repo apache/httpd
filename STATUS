@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/04/12 21:17:42 $]
+Last modified at [$Date: 2004/04/12 21:26:25 $]
 
 Release:
 
@@ -139,11 +139,6 @@ PATCHES TO BACKPORT FROM 2.1
          modules/mappers/mod_rewrite.c: r1.255
        +1: nd
 
-    *) Check to make sure that if auth_ldap is loaded, mod_ldap is 
-       also loaded. 
-         modules/experimental/mod_auth_ldap.c: r1.22
-       +1: bnicholes, minfrin, trawick
-       
     *) Update the ldc->binddn and ldc->bindpw associated with the LDAP 
        connection to match the authenticating user DN and password after
        ldap_simple_bind_s() is called to authenticate the user.  Otherwise 
