@@ -1319,14 +1319,24 @@ static apr_status_t proxy_conn_cleanup(void *theconn)
 static apr_status_t connection_cleanup(void *theconn)
 {
     proxy_conn_rec *conn = (proxy_conn_rec *)theconn;
+    proxy_worker *worker = conn->worker;
+
     /* deterimine if the connection need to be closed */
     if (conn->close_on_recycle) {
         if (conn->sock)
             apr_socket_close(conn->sock);
         conn->sock = NULL;
     }
-    conn->connection = NULL;
-    ap_proxy_release_connection(NULL, conn, NULL);
+#if APR_HAS_THREADS
+    if (worker->hmax && worker->cp->res) {
+        apr_reslist_release(worker->cp->res, (void *)conn);
+    }
+    else
+#endif
+    {
+        worker->cp->conn = conn;
+    }
+
     /* Allways return the SUCCESS */
     return APR_SUCCESS;
 }
@@ -1486,39 +1496,12 @@ PROXY_DECLARE(int) ap_proxy_release_connection(const char *proxy_function,
                                                server_rec *s)
 {
     apr_status_t rv = APR_SUCCESS;
-    proxy_worker *worker = conn->worker;
 
-    if (!worker) {
-        /* something bad happened. Obviously bug.
-         * for now make a core dump.
-         */
-    }
-    
-    /* Need to close the connection */
-    if (conn->sock && conn->close) {
-        apr_socket_close(conn->sock);
-        conn->sock = NULL;
-    }
-    conn->close = 0;
     /* If there is a connection kill it's cleanup */
     if (conn->connection)
         apr_pool_cleanup_kill(conn->connection->pool, conn, connection_cleanup);
-
-#if APR_HAS_THREADS
-    if (worker->hmax && worker->cp->res) {
-        rv = apr_reslist_release(worker->cp->res, (void *)conn);
-    }
-    else
-#endif
-    {
-        worker->cp->conn = conn;
-    }
-    if (rv != APR_SUCCESS && proxy_function) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                     "proxy: %s: failed to acquire connection for (%s)",
-                     proxy_function, conn->hostname);
-        return DECLINED;
-    }
+    connection_cleanup(conn);
+    conn->connection = NULL;
     return OK;
 }
 
@@ -1652,7 +1635,8 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
 
     while (backend_addr && !connected) {
         if ((rv = apr_socket_create(&newsock, backend_addr->family,
-                                SOCK_STREAM, 0, conn->pool)) != APR_SUCCESS) {
+                                SOCK_STREAM, APR_PROTO_TCP,
+                                conn->pool)) != APR_SUCCESS) {
             loglevel = backend_addr->next ? APLOG_DEBUG : APLOG_ERR;
             ap_log_error(APLOG_MARK, loglevel, rv, s,
                          "proxy: %s: error creating fam %d socket for target %s",
@@ -1748,6 +1732,12 @@ PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function,
         conn->sock = NULL;
         return HTTP_INTERNAL_SERVER_ERROR;
     }
+    /* register the connection cleanup to client connection
+     * so that the connection can be closed or reused
+     */
+    apr_pool_cleanup_register(c->pool, (void *)conn,
+                              connection_cleanup,
+                              apr_pool_cleanup_null);      
 
     /* For ssl connection to backend */
     if (conn->is_ssl) {
@@ -1770,13 +1760,6 @@ PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function,
 
     /* set up the connection filters */
     ap_run_pre_connection(conn->connection, conn->sock);
-
-    /* register the connection cleanup to client connection
-     * so that the connection can be closed or reused
-     */
-    apr_pool_cleanup_register(conn->connection->pool, (void *)conn,
-                              connection_cleanup,
-                              apr_pool_cleanup_null);      
 
     return OK;
 }

@@ -796,7 +796,8 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
         }
         if (len <= 0) {
             apr_socket_close(backend->sock);
-            backend->connection = NULL;
+            backend->sock = NULL;
+//            backend->connection = NULL;
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "proxy: error reading status line from remote "
                           "server %s", backend->hostname);
@@ -819,7 +820,8 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
              */
             else if ((buffer[5] != '1') || (len >= sizeof(buffer)-1)) {
                 apr_socket_close(backend->sock);
-                backend->connection = NULL;
+//                backend->connection = NULL;
+                backend->sock = NULL;
                 return ap_proxyerror(r, HTTP_BAD_GATEWAY,
                 apr_pstrcat(p, "Corrupt status line returned by remote "
                             "server: ", buffer, NULL));
@@ -1029,7 +1031,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                          * backend server from hanging around waiting
                          * for a slow client to eat these bytes
                          */
-                        ap_proxy_http_cleanup(NULL, r, backend);
+                        backend->close = 1;
                         /* signal that we must leave */
                         finish = TRUE;
                     }
@@ -1092,17 +1094,10 @@ apr_status_t ap_proxy_http_cleanup(const char *scheme, request_rec *r,
     /* if the connection is < HTTP/1.1, or Connection: close,
      * we close the socket, otherwise we leave it open for KeepAlive support
      */
-    if (backend->close) {
+    if (backend->close || (r->proto_num < HTTP_VERSION(1,1))) {
         backend->close_on_recycle = 1;
-        ap_set_module_config(r->connection, &proxy_http_module, backend);
+        ap_set_module_config(r->connection->conn_config, &proxy_http_module, NULL);
         ap_proxy_release_connection(scheme, backend, r->server);    
-    }
-    else if(r->proto_num < HTTP_VERSION(1,1)) {
-        if (backend->sock) {
-            apr_socket_close(backend->sock);
-            backend->sock = NULL;
-            backend->connection = NULL;
-        }
     }
     return OK;
 }
@@ -1231,7 +1226,7 @@ int ap_proxy_http_handler(request_rec *r, proxy_worker *worker,
     /* Step Five: Receive the Response */
     status = ap_proxy_http_process_response(p, r, backend, backend->connection, conf,
                                             server_portstr);
-    if ( status != OK ) {
+    if (status != OK) {
         /* clean up even if there is an error */
         ap_proxy_http_cleanup(scheme, r, backend);
         return status;
