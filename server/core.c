@@ -3910,9 +3910,8 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
             if (more)
                 apr_brigade_destroy(more);
 
-            if (APR_STATUS_IS_ECONNABORTED(rv)
-                || APR_STATUS_IS_ECONNRESET(rv)
-                || APR_STATUS_IS_EPIPE(rv)) {
+            /* No need to check for SUCCESS, we did that above. */
+            if (!APR_STATUS_IS_EAGAIN(rv)) {
                 c->aborted = 1;
             }
 
