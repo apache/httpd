@@ -259,7 +259,7 @@ static apr_status_t churn(SSLFilterRec *pRec,
 
 	n = BIO_write (pRec->pbioRead, data, len);
         
-        if (n != len) {
+        if ((apr_size_t)n != len) {
             /* this should never really happen, since we're just writing
              * into a memory buffer, unless, of course, we run out of 
              * memory
