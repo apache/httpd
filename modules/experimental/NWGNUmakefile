@@ -3,7 +3,7 @@
 #
 
 SUBDIRS = \
-	$(EOLIST) 
+	$(EOLIST)
 
 #
 # Get the 'head' of the build environment.  This includes default targets and
@@ -19,6 +19,7 @@ include $(AP_WORK)\build\NWGNUhead.inc
 # Make sure all needed macro's are defined
 #
 
+#
 # These directories will be at the beginning of the include list, followed by
 # INCDIRS
 #
@@ -97,7 +98,7 @@ endif
 NLM_NAME		=
 
 #
-# This is used by the link '-desc ' directive. 
+# This is used by the link '-desc ' directive.
 # If left blank, NLM_NAME will be used.
 #
 NLM_DESCRIPTION	=
@@ -109,7 +110,7 @@ NLM_DESCRIPTION	=
 NLM_THREAD_NAME	=
 
 #
-# If this is specified, it will override VERSION value in 
+# If this is specified, it will override VERSION value in
 # $(AP_WORK)\build\NWGNUenvironment.inc
 #
 NLM_VERSION		=
@@ -141,21 +142,18 @@ NLM_CHECK_SYM	=
 NLM_FLAGS		=
 
 #
-# If this is specified it will be linked in with the XDCData option in the def 
+# If this is specified it will be linked in with the XDCData option in the def
 # file instead of the default of $(NWOS)/apache.xdc.  XDCData can be disabled
 # by setting APACHE_UNIPROC in the environment
 #
-XDCDATA         = 
+XDCDATA         =
 
 #
 # If there is an NLM target, put it here
 #
 TARGET_nlm = \
-	$(OBJDIR)/ab.nlm \
-	$(OBJDIR)/htpasswd.nlm \
-	$(OBJDIR)/htdigest.nlm \
-	$(OBJDIR)/htdbm.nlm \
-	$(OBJDIR)/logres.nlm \
+	$(OBJDIR)/deflate.nlm \
+	$(OBJDIR)/example.nlm \
 	$(EOLIST)
 
 #
@@ -189,7 +187,7 @@ FILES_nlm_modules = \
 # If the nlm has a msg file, put it's path here
 #
 FILE_nlm_msg =
- 
+
 #
 # If the nlm has a hlp file put it's path here
 #
@@ -205,14 +203,14 @@ FILE_nlm_copyright =
 #
 FILES_nlm_Ximports = \
 	$(EOLIST)
- 
-#   
+
+#
 # Any symbols exported to here
 #
 FILES_nlm_exports = \
 	$(EOLIST)
-	
-#   
+
+#
 # These are the OBJ files needed to create the LIB target above.
 # Paths must all use the '/' character
 #
@@ -228,11 +226,11 @@ libs :: $(OBJDIR) $(TARGET_lib)
 nlms :: libs $(TARGET_nlm)
 
 #
-# Updated this target to create necessary directories and copy files to the 
+# Updated this target to create necessary directories and copy files to the
 # correct place.  (See $(AP_WORK)\build\NWGNUhead.inc for examples)
 #
 install :: nlms FORCE
-	copy $(OBJDIR)\*.nlm $(INSTALL)\Apache2\*.*
+	copy $(OBJDIR)\*.nlm $(INSTALL)\Apache2\modules\*.*
 
 #
 # Any specialized rules here
@@ -244,5 +242,4 @@ install :: nlms FORCE
 #
 
 include $(AP_WORK)\build\NWGNUtail.inc
-
 
