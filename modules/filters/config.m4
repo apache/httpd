@@ -42,7 +42,7 @@ APACHE_MODULE(deflate, Deflate transfer encoding support, , , no, [
     if test "$ap_zlib_base" != "/usr"; then
       APR_ADDTO(INCLUDES, [-I${ap_zlib_base}/include])
       dnl put in CPPFLAGS temporarily so that AC_TRY_LINK below will work
-      CPPFLAGS="$CPPFLAGS -I${ap_zlib_base}/include"
+      CPPFLAGS="$CPPFLAGS $INCLUDES"
       APR_ADDTO(LDFLAGS, [-L${ap_zlib_base}/lib])
       if test "x$ap_platform_runtime_link_flag" != "x"; then
          APR_ADDTO(LDFLAGS, [$ap_platform_runtime_link_flag${ap_zlib_base}/lib])

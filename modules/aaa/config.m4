@@ -36,7 +36,7 @@ dnl these are the front-end authentication modules
 APACHE_MODULE(auth_basic, basic authentication, , , yes)
 APACHE_MODULE(auth_digest, RFC2617 Digest authentication, , , most, [
   ap_old_cppflags=$CPPFLAGS
-  CPPFLAGS="$CPPFLAGS -I$APR_SOURCE_DIR/include -I$abs_builddir/srclib/apr/include"
+  CPPFLAGS="$CPPFLAGS $INCLUDES"
   AC_TRY_COMPILE([#include <apr.h>], [
 #if !APR_HAS_RANDOM 
 #error You need APR random support to use mod_auth_digest. 
