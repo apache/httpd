@@ -85,6 +85,7 @@ fi
 touch .deps
 rm -f aclocal.m4
 rm -f generated_lists
+rm -f srclib/pcre/aclocal.m4
 
 # Remove autoconf 2.5x cache directories
 rm -rf autom4te*.cache srclib/pcre/autom4te*.cache
@@ -137,7 +138,7 @@ if [ -f $apr_src_dir/build/ltmain.sh ]; then
 fi
 
 echo rebuilding $pcre_configure
-(cd srclib/pcre && ${AUTOCONF:-autoconf})
+(cd srclib/pcre && ${ACLOCAL:-aclocal} && ${AUTOCONF:-autoconf})
 
 echo rebuilding $config_h_in
 rm -f $config_h_in
