@@ -105,4 +105,8 @@
 #define HARD_THREAD_LIMIT 64 
 #endif
 
+#ifndef DEFAULT_THREADS_PER_CHILD
+#define DEFAULT_THREADS_PER_CHILD 50
+#endif
+
 #endif /* AP_MPM_DEFAULT_H */
