@@ -529,9 +529,19 @@ static int cgi_handler(request_rec *r)
 	    while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_in) > 0) {
 		continue;
 	    }
-	    while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0) {
-		continue;
-	    }
+#if defined(WIN32) || defined(NETWARE)
+            /* Soak up stderr and redirect it to the error log.
+             * Script output to stderr is already directed to the error log
+             * on Unix, thanks to the magic of fork().
+             */
+            while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, r, 
+                              "%s", argsbuffer);            
+            }
+#else
+	    while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0)
+	        continue;
+#endif
 	    ap_kill_timeout(r);
 
 
@@ -564,9 +574,18 @@ static int cgi_handler(request_rec *r)
 	ap_bclose(script_in);
 
 	ap_soft_timeout("soaking script stderr", r);
-	while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0) {
+#if defined(WIN32) || defined(NETWARE)
+        /* Script output to stderr is already directed to the error log
+         * on Unix, thanks to the magic of fork().
+         */
+        while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, r, 
+                          "%s", argsbuffer);            
+        }
+#else
+	while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0)
 	    continue;
-	}
+#endif
 	ap_kill_timeout(r);
 	ap_bclose(script_err);
     }
