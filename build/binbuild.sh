@@ -199,7 +199,7 @@ cp README.bindist ../httpd-$VER-$OS.README
   echo "lcopy bindist/man \$SR/man 755 644" && \
   echo "if [ -d bindist/modules ]" && \
   echo "then" && \
-  echo "  lcopy bindist/modules \$SR/modules 750 644" && \
+  echo "  lcopy bindist/modules \$SR/modules 750 750" && \
   echo "fi" && \
   echo "lcopy bindist/include \$SR/include 755 644" && \
   echo "lcopy bindist/icons \$SR/icons 755 644" && \
