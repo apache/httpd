@@ -1,34 +1,131 @@
-index.html.ca
-index.html.cz
-index.html.de
-index.html.dk
-index.html.ee
-index.html.el
-index.html.en
-index.html.es
-index.html.et
-index.html.fr
-index.html.he.iso8859-8
-index.html.it
-index.html.ja.iso2022-jp
-index.html.ja.jis
-index.html.kr.iso-kr
-index.html.kr.iso2022-kr
-index.html.ltz
-index.html.lu
-index.html.nl
-index.html.no
-index.html.po.iso-pl
-index.html.pt
-index.html.pt-br
-index.html.ru.cp-1251
-index.html.ru.cp866
-index.html.ru.iso-ru
-index.html.ru.koi8-r
-index.html.ru.ucs2
-index.html.ru.ucs4
-index.html.ru.utf8
-index.html.se
-index.html.tw
-index.html.tw.Big5
-index.html.var
+URI: index.html.ca
+Content-language: ca
+Content-type: text/html
+
+URI: index.html.cz
+Content-language: cz
+Content-type: text/html
+
+URI: index.html.de
+Content-language: de
+Content-type: text/html
+
+URI: index.html.dk
+Content-language: da
+Content-type: text/html
+
+URI: index.html.ee
+Content-language: ee
+Content-type: text/html
+
+URI: index.html.el
+Content-language: el
+Content-type: text/html
+
+URI: index.html.en
+Content-language: en
+Content-type: text/html
+
+URI: index.html.es
+Content-language: es
+Content-type: text/html
+
+URI: index.html.et
+Content-language: et
+Content-type: text/html
+
+URI: index.html.fr
+Content-language: fr
+Content-type: text/html
+
+URI: index.html.he.iso8859-8
+Content-language: he
+Content-type: text/html;charset=ISO-8859-8
+
+URI: index.html.it
+Content-language: it
+Content-type: text/html
+
+URI: index.html.ja.iso2022-jp
+Content-language: jp
+Content-type: text/html;charset=ISO-2022-JP (DUP by httpd-std.conf)
+
+URI: index.html.ja.jis
+Content-language: ja
+Content-type: text/html;charset=ISO-2022-JP (DUP by httpd-std.conf)
+
+URI: index.html.kr.iso-kr
+Content-language: kr
+Content-type: text/html (Missing in httpd-std.conf)
+
+URI: index.html.kr.iso2022-kr
+Content-language: kr
+Content-type: text/html;charset=ISO-2022-KR
+
+URI: index.html.ltz
+Content-language: ltz
+Content-type: text/html
+
+URI: index.html.lu
+Content-language: lu
+Content-type: text/html
+
+URI: index.html.nl
+Content-language: nl
+Content-type: text/html
+
+URI: index.html.no
+Content-language: no
+Content-type: text/html
+
+URI: index.html.po.iso-pl
+Content-language: pl
+Content-type: text/html  (Missing from httpd-std.conf!)
+
+URI: index.html.pt
+Content-language: pt
+Content-type: text/html
+
+URI: index.html.pt-br
+Content-language: pt-br
+Content-type: text/html
+
+URI: index.html.ru.cp-1251
+Content-language: ru
+Content-type: text/html;charset=WINDOWS-1251
+
+URI: index.html.ru.cp866
+Content-language: ru
+Content-type: text/html;charset=CP866
+
+URI: index.html.ru.iso-ru
+Content-language: ru
+Content-type: text/html;charset=ISO-8859-5
+
+URI: index.html.ru.koi8-r
+Content-language: ru
+Content-type: text/html;charset=KOI8-r
+
+URI: index.html.ru.ucs2
+Content-language: ru
+Content-type: text/html;charset=ISO-10646-UCS-2
+
+URI: index.html.ru.ucs4
+Content-language: ru
+Content-type: text/html;charset=ISO-10646-UCS-4
+
+URI: index.html.ru.utf8
+Content-language: ru
+Content-type: text/html;charset=UTF-8
+
+URI: index.html.se
+Content-language: sv
+Content-type: text/html
+
+URI: index.html.tw
+Content-language: zh-tw
+Content-type: text/html
+
+URI: index.html.tw.Big5
+Content-language: tw, zh-tw
+Content-type: text/html;charset=Big5
