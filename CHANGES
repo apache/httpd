@@ -210,6 +210,11 @@ Changes with Apache 2.1.0-dev
 
 Changes with Apache 2.0.48
 
+  *) SECURITY: CAN-2003-0542 (cve.mitre.org)
+     Fix buffer overflows in mod_alias and mod_rewrite which occurred if
+     one configured a regular expression with more than 9 captures.
+     [André Malo]
+
   *) mod_include: fix segfault which occured if the filename was not
      set, for example, when processing some error conditions.
      PR 23836.  [Brian Akins <bakins@web.turner.com>, André Malo]

@@ -201,13 +201,11 @@ typedef struct arg_item {
     apr_size_t        value_len;
 } arg_item_t;
 
-#define MAX_NMATCH 10
-
 typedef struct {
     const char *source;
     const char *rexp;
     apr_size_t  nsub;
-    regmatch_t  match[MAX_NMATCH];
+    regmatch_t  match[AP_MAX_REG_MATCH];
 } backref_t;
 
 typedef struct {
@@ -712,7 +710,7 @@ static const char *get_include_var(const char *var, include_ctx_t *ctx)
             return NULL;
         }
         else {
-            if (re->nsub < idx) {
+            if (re->nsub < idx || idx >= AP_MAX_REG_MATCH) {
                 ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
                               "regex capture $%" APR_SIZE_T_FMT
                               " is out of range (last regex was: '%s') in %s",
@@ -987,7 +985,7 @@ static APR_INLINE int re_check(include_ctx_t *ctx, const char *string,
     re->source = apr_pstrdup(ctx->pool, string);
     re->rexp = apr_pstrdup(ctx->pool, rexp);
     re->nsub = compiled->re_nsub;
-    rc = !ap_regexec(compiled, string, MAX_NMATCH, re->match, 0);
+    rc = !ap_regexec(compiled, string, AP_MAX_REG_MATCH, re->match, 0);
 
     ap_pregfree(ctx->dpool, compiled);
     return rc;
