@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.10 $ -->
+<!-- $Revision: 1.11 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -453,7 +453,8 @@ the Internet Engineering Task Force (IETF).</p>
     </note>
 
     <p class="figure">
-    <img src="ssl_intro_fig1.gif" alt="" width="423" height="327" /><br />
+    <img src="../images/ssl_intro_fig1.gif" alt="" width="423"
+        height="327" /><br />
     <a id="figure1" name="figure1"><dfn>Figure 1</dfn></a>: Simplified SSL
     Handshake Sequence</p>
 
@@ -569,7 +570,8 @@ the Internet Engineering Task Force (IETF).</p>
     underlying protocol.</p>
 
     <p class="figure">
-    <img src="ssl_intro_fig2.gif" alt="" width="428" height="217" /><br />
+    <img src="../images/ssl_intro_fig2.gif" alt="" width="428"
+        height="217" /><br />
     <a id="figure2" name="figure2"><dfn>Figure 2</dfn></a>: SSL Protocol Stack
     </p>
 
@@ -593,7 +595,8 @@ the Internet Engineering Task Force (IETF).</p>
     for compression).</p>
 
     <p class="figure">
-    <img src="ssl_intro_fig3.gif" alt="" width="423" height="323" /><br />
+    <img src="../images/ssl_intro_fig3.gif" alt="" width="423"
+        height="323" /><br />
     <a id="figure3" name="figure3"><dfn>Figure 3</dfn></a>: SSL Record Protocol
     </p>
 </section>
