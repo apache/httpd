@@ -363,7 +363,8 @@ static void win9x_accept(void * dummy)
 	tv.tv_usec = 0;
 	memcpy(&main_fds, &listenfds, sizeof(fd_set));
 
-	rc = select((int)(listenmaxfd + 1), &main_fds, NULL, NULL, &tv);
+        /* First parameter of select() is ignored on Windows */
+        rc = select(0, &main_fds, NULL, NULL, &tv);
 
         if (rc == 0 || (rc == SOCKET_ERROR && APR_STATUS_IS_EINTR(apr_get_netos_error()))) {
             count_select_errors = 0;    /* reset count of errors */            
