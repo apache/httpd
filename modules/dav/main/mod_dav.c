@@ -167,7 +167,19 @@ static void *dav_create_dir_config(apr_pool_t *p, char *dir)
     dav_dir_conf *conf;
 
     conf = (dav_dir_conf *) apr_pcalloc(p, sizeof(*conf));
-    conf->dir = apr_pstrdup(p, dir);
+
+    /* clean up the directory to remove any trailing slash */
+    if (dir != NULL) {
+        char *d;
+        apr_size_t l;
+
+        d = apr_pstrdup(p, dir);
+        l = strlen(d);
+        if (l > 1 && d[l - 1] == '/')
+            d[l - 1] = '\0';
+        conf->dir = d;
+    }
+
     conf->d_params = apr_make_table(p, 1);
 
     return conf;
@@ -182,7 +194,8 @@ static void *dav_merge_dir_config(apr_pool_t *p, void *base, void *overrides)
     /* DBG3("dav_merge_dir_config: new=%08lx  base=%08lx  overrides=%08lx",
        (long)newconf, (long)base, (long)overrides); */
 
-    newconf->provider_name = child->provider_name;
+    newconf->provider_name = DAV_INHERIT_VALUE(parent, child, provider_name);
+    newconf->provider = DAV_INHERIT_VALUE(parent, child, provider);
     if (parent->provider_name != NULL) {
         if (child->provider_name == NULL) {
             ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, NULL,
@@ -205,17 +218,6 @@ static void *dav_merge_dir_config(apr_pool_t *p, void *base, void *overrides)
     newconf->d_params = apr_copy_table(p, parent->d_params);
     apr_overlap_tables(newconf->d_params, child->d_params,
 		      APR_OVERLAP_TABLES_SET);
-
-    if (newconf->provider_name == NULL)
-        newconf->provider = NULL;
-    else {
-        newconf->provider = dav_lookup_provider(newconf->provider_name);
-
-        if (newconf->provider == NULL) {
-            ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, NULL,
-                         "Unknown DAV provider: %s", newconf->provider_name);
-        }
-    }
 
     return newconf;
 }
@@ -2798,9 +2800,14 @@ static int dav_method_checkout(request_rec *r)
         return dav_handle_err(r, err, NULL);
     }
 
-    /* set the Cache-Control headers, per the spec */
+    /* set the Cache-Control header, per the spec */
     apr_table_setn(r->headers_out, "Cache-Control", "no-cache");
-    return dav_created(r, working_resource->uri, "Working resource", 0);
+
+    /* use appropriate URI for Location header */
+    if (working_resource == NULL)
+        working_resource = resource;
+
+    return dav_created(r, working_resource->uri, "Checked-out resource", 0);
 }
 
 /* handle the UNCHECKOUT method */
