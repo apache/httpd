@@ -1,5 +1,8 @@
 Changes with Apache 2.0.34-dev
 
+  *) Fix a mod_cgid problem that left daemon processes stranded
+     in some server restart scenarios.  [Jeff Trawick]
+
   *) Added exp_foo and rel_foo variables to config_vars.mk for
      all Apache and Autoconf path variables (like --sysconfdir,
      --sbindir, etc). exp_foo is the "expanded" version, which means
