@@ -214,6 +214,12 @@ CORE_EXPORT(void) ap_process_connection(conn_rec *c)
 
 }
 
+int ap_pre_http_connection(conn_rec *c)
+{
+    ap_add_input_filter("CORE_IN", NULL, c);
+    return OK;
+}
+
 int ap_process_http_connection(conn_rec *c)
 {
     request_rec *r;
@@ -275,8 +281,6 @@ conn_rec *ap_new_connection(apr_pool_t *p, server_rec *server, BUFF *inout,
 			      inet_ntoa(conn->remote_addr.sin_addr));
     
     conn->id = id;
-
-    ap_add_input_filter("CORE_IN", NULL, conn);
 
     return conn;
 }

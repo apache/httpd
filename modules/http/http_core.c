@@ -3467,6 +3467,8 @@ static void register_hooks(void)
 {
     ap_hook_post_config(core_post_config,NULL,NULL,AP_HOOK_REALLY_FIRST);
     ap_hook_translate_name(ap_core_translate,NULL,NULL,AP_HOOK_REALLY_LAST);
+    ap_hook_pre_connection(ap_pre_http_connection,NULL,NULL,
+			       AP_HOOK_REALLY_LAST);
     ap_hook_process_connection(ap_process_http_connection,NULL,NULL,
 			       AP_HOOK_REALLY_LAST);
     ap_hook_http_method(core_method,NULL,NULL,AP_HOOK_REALLY_LAST);
