@@ -1,5 +1,8 @@
 Changes with Apache 2.0b1
 
+  *) Update some of the docs in README and INSTALL to reflect some of
+     the changes in Apache 2.0 [Cliff Woolley <cliffwoolley@yahoo.com>]
+
   *) If we get EAGAIN returned from the call to apr_sendfile, then we
      need to call sendfile again.  This gets us serving large files
      such as apache_2.0a9.tar.gz on FreeBSD again. [Ryan Bloom]
