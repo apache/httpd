@@ -1,5 +1,12 @@
 Changes with Apache 2.0b1
 
+  *) Some adjustment on the handling and automatic setting (via
+     hints.m4) of various compilation flags (eg: CFLAGS). Also,
+     add the capability to specify flags (NOTEST_CFLAGS and
+     NOTEST_LDFLAGS) which are used to compile Apache, but
+     not used during the configuration process. Useful for
+     flags like "-Werror". [Jim Jagielski]
+
   *) Stop using environment variables to force debug mode or
      no detach.  We now use the -D command line argument to 
      specify the correct mode.  -DONE_PROCESS and -DNO_DETACH.
