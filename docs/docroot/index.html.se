@@ -16,7 +16,7 @@
   </h1>
   <p>
   Om du kan se denna sida s&aring; har &auml;garen till denna maskin installerat
-  webbserverprogramvaran <a href="http://httpd.apache.org/">Apache</a>.<br>
+  webbserverprogramvaran Apache.<br>
   Denne m&aring;ste nu placera webbsidor i detta bibliotek och &auml;ndra p&aring; denna sida, eller
   peka servern mot ett annat bibliotek.
   </p>

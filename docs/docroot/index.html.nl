@@ -17,8 +17,8 @@
   </H1>
   <P>
   Mocht u deze pagina zien, dan betekent dat, dat de eigenaren van dit
-  domein zojuist een nieuwe <A HREF="http://httpd.apache.org/">Apache Web
-  Server</A> hebben geinstalleerd. Nu moet men nog de echte inhoud gaan
+  domein zojuist een nieuwe Apache Web
+  Server hebben geinstalleerd. Nu moet men nog de echte inhoud gaan
   toevoegen, en moet men deze pagina gaan vervangen door de echte web
   site. 
   </P>

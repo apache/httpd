@@ -16,7 +16,7 @@
   </H1>
   <P>
   Hvis du kan se denne siden har den eller de som driver dette nettstedet
-  installert <A HREF="http://www.apache.org/">Apache Web server</A>.
+  installert Apache Web server.
   Nå må denne testsiden erstattes med virkelig innhold.
   </P>
   <HR>
