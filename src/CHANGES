@@ -1,5 +1,8 @@
 Changes with Apache 1.2b5
 
+  *) Fixed bug in modules/Makefile that wouldn't allow building in more
+     than one subdirectory (or cleaning, either). [Jeremy Laidman]
+
   *) mod_info assumed that the config files were relative to ServerRoot.
      [Ken the Rodent]
 
