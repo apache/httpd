@@ -378,9 +378,10 @@ AP_DECLARE(void) ap_remove_output_filter(ap_filter_t *f);
  *             new bucket brigade is returned in this location.
  * @param b The bucket brigade to save aside.  This brigade is always empty
  *          on return
+ * @param p Ensure that all data in the brigade lives as long as this pool
  */
 AP_DECLARE(apr_status_t) ap_save_brigade(ap_filter_t *f, apr_bucket_brigade **save_to,
-                                         apr_bucket_brigade **b);    
+                                         apr_bucket_brigade **b, apr_pool_t *p);    
 
 /**
  * Flush function for apr_brigade_* calls.  This calls ap_pass_brigade

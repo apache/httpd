@@ -2620,7 +2620,7 @@ static void send_parsed_content(apr_bucket_brigade **bb, request_rec *r,
             }
                            /* Set aside tag, pass pre-tag... */
             tag_and_after = apr_brigade_split(*bb, ctx->head_start_bucket);
-            ap_save_brigade(f, &ctx->ssi_tag_brigade, &tag_and_after);
+            ap_save_brigade(f, &ctx->ssi_tag_brigade, &tag_and_after, r->pool);
             ap_pass_brigade(f->next, *bb);
             ctx->bytes_parsed = 0;
         }

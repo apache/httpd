@@ -245,12 +245,9 @@ AP_DECLARE(apr_status_t) ap_pass_brigade(ap_filter_t *next, apr_bucket_brigade *
 }
 
 AP_DECLARE(apr_status_t) ap_save_brigade(ap_filter_t *f, apr_bucket_brigade **saveto,
-                                         apr_bucket_brigade **b)
+                                         apr_bucket_brigade **b, apr_pool_t *p)
 {
     apr_bucket *e;
-    /* ### this pool should be passed in; the caller is the only one who
-       ### really knows what the proper lifetime is for this pool. */
-    apr_pool_t *p = f->r ? f->r->pool : f->c->pool;
     apr_status_t rv;
 
     /* If have never stored any data in the filter, then we had better

@@ -2282,7 +2282,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
      * we SHOULD return the data in the same order it was requested. 
      */
     if (!APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(bb))) {
-        ap_save_brigade(f, &ctx->bb, &bb);
+        ap_save_brigade(f, &ctx->bb, &bb, r->pool);
         return APR_SUCCESS;
     }
 

@@ -2966,7 +2966,7 @@ static int default_handler(request_rec *r)
         return HTTP_METHOD_NOT_ALLOWED;
     }
     main_pool = (r->main) ? (r->main->pool) : (r->pool);
-	
+
     if ((status = apr_file_open(&fd, r->filename, APR_READ | APR_BINARY, 0, main_pool)) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
 		     "file permissions deny server access: %s", r->filename);
@@ -3173,7 +3173,7 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
                 apr_brigade_destroy(b);
             }
             else {
-                ap_save_brigade(f, &ctx->b, &b);
+                ap_save_brigade(f, &ctx->b, &b, c->pool);
             }
             return APR_SUCCESS;
         }
