@@ -580,7 +580,7 @@ BEGIN {
 		inst_so="$(INSTDIR)\symbols\so" 
 !ENDIF
 	cd srclib\apr-iconv
-	$(MAKE) $(MAKEOPT) -f build\modules.mk.win install symbols \
+	$(MAKE) $(MAKEOPT) -f build\modules.mk.win install \
 		BUILD_MODE=$(LONG) BIND_MODE=shared API_SOURCE=. \
 		INSTALL_DIR="$(INSTDIR)\bin\iconv" \
 		SYMBOLS_DIR="$(INSTDIR)\symbols"
