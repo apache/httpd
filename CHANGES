@@ -1,4 +1,10 @@
 Changes with Apache 2.0.41
+
+  *) Add support for using fnmatch patterns in the final path
+     segment of an Include statement (eg.. include /foo/bar/*.conf).
+     and remove the noise on stderr during config dir processing.
+     [Joe Orton <jorton@redhat.com>]
+
   *) mod_cache: cache_storage.c. Add the hostname and any request
      args to the key generated for caching. This provides a unique
      key for each virtual host and for each request with unique
