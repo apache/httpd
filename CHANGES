@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) SECURITY [CAN-2003-0020]: Escape arbitrary data before writing
+     into the errorlog.  [André Malo]
+
   *) mod_expires: Initialize ExpiresDefault to NULL instead of "" to
      avoid reporting an Internal Server error if it is used without
      having been set in the httpd.conf file. PR: 23748, 24459
