@@ -167,15 +167,19 @@ int recvwithtimeout(int sock, char *buf, int len, int flags)
 	    FD_SET(sock, &fdset);
 	    tv.tv_usec = 0;
 	    rv = select(FD_SETSIZE, &fdset, NULL, NULL, &tv);
-	    if (rv == 0) {
+	    if (rv == SOCKET_ERROR)
+		err = WSAGetLastError();
+	    else if (rv == 0) {
 		ioctlsocket(sock, FIONBIO, &iostate);
 		check_alarm();
 		WSASetLastError(WSAEWOULDBLOCK);
 		return (SOCKET_ERROR);
 	    }
-	    rv = recv(sock, buf, len, flags);
-	    if (rv == SOCKET_ERROR)
-		err = WSAGetLastError();
+	    else {
+		rv = recv(sock, buf, len, flags);
+		if (rv == SOCKET_ERROR)
+		    err = WSAGetLastError();
+	    }
 	}
     }
     ioctlsocket(sock, FIONBIO, &iostate);
