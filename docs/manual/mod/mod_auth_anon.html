@@ -162,7 +162,7 @@ allows users to share URLs.
 ><STRONG>Module:</STRONG></A> mod_auth_anon<P>
 
         When set 'on', the default, the 'password' entered (which hopefully
-        contains a sensible email address) is logged in the httpd-log file.
+        contains a sensible email address) is logged in the error log.
 <HR>
 
 <H2><A NAME="MustGiveEmail">Anonymous_MustGiveEmail directive</A></H2>
@@ -282,7 +282,7 @@ The userID must be one of <CODE>anonymous guest www test welcome</CODE>
 and comparison is <STRONG>not</STRONG> case sensitive.
 <LI>
 And the Email addresses entered in the passwd field are logged to
-the httpd-log file
+the error log file
 (<CODE>Anonymous_LogEmail</CODE>)
 </UL>
 <P>
