@@ -600,6 +600,18 @@ static APR_INLINE void do_double_reverse (conn_rec *conn)
                 conn->double_reverse = 1;
                 return;
             }
+#if APR_HAVE_IPV6
+            /* match IPv4-mapped IPv6 addresses with IPv4 A record */
+            if (conn->remote_addr->sa.sin.sin_family == APR_INET6 &&
+                sa->sa.sin.sin_family == APR_INET &&
+                IN6_IS_ADDR_V4MAPPED((struct in6_addr *)conn->remote_addr->ipaddr_ptr) &&
+                !memcmp(&((struct in6_addr *)conn->remote_addr->ipaddr_ptr)->s6_addr[12],
+                        sa->ipaddr_ptr,
+                        sizeof (((struct in_addr *)0)->s_addr))) {
+                conn->double_reverse = 1;
+                return;
+            }
+#endif
             sa = sa->next;
         }
     }
