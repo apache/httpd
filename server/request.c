@@ -152,6 +152,53 @@ static int check_safe_file(request_rec *r)
     return HTTP_FORBIDDEN;
 }
 
+/*
+ * resolve_symlink must _always_ be called on an APR_LNK file type!
+ * It will resolve the actual target file type, modification date, etc, 
+ * and provide any processing required for symlink evaluation.
+ * Path must already be cleaned, no trailing slash, no multi-slashes,
+ * and don't call this on the root!
+ *
+ * Simply, the number of times we deref a symlink are minimal compared
+ * to the number of times we had an extra lstat() since we 'weren't sure'.
+ *
+ * To optimize, we stat() anything when given (opts & OPT_SYM_LINKS), otherwise
+ * we start off with an lstat().  Every lstat() must be dereferenced in case 
+ * it points at a 'nasty' - we must always rerun check_safe_file (or similar.)
+ */
+static int resolve_symlink(char *d, apr_finfo_t *lfi, int opts, apr_pool_t *p)
+{
+    apr_finfo_t fi;
+    int res;
+
+    if (!(opts & OPT_SYM_OWNER | OPT_SYM_LINKS))
+        return HTTP_FORBIDDEN;
+
+    if (opts & OPT_SYM_LINKS) {
+        if (res = apr_stat(&fi, d, lfi->valid, p) != APR_SUCCESS)
+            return HTTP_FORBIDDEN;
+        return OK;
+    }
+
+    /* OPT_SYM_OWNER only works if we can get the owner of 
+     * both the file and symlink.  First fill in a missing
+     * owner of the symlink, then get the info of the target.
+     */
+    if (!(lfi->valid & APR_FINFO_OWNER))
+        if (res = apr_lstat(&fi, d, lfi->valid | APR_FINFO_OWNER, p)
+                != APR_SUCCESS)
+            return HTTP_FORBIDDEN;
+
+    if (res = apr_stat(&fi, d, lfi->valid, p) != APR_SUCCESS)
+        return HTTP_FORBIDDEN;
+
+    if (apr_compare_users(fi.user, lfi->user) != APR_SUCCESS) 
+        return HTTP_FORBIDDEN;
+
+    /* Give back the target */
+    memcpy(lfi, &fi, sizeof(fi));
+    return OK;
+}
 
 #ifndef REPLACE_PATH_INFO_METHOD
 
@@ -826,10 +873,10 @@ AP_DECLARE(int) directory_walk(request_rec *r)
 
             if (htaccess_conf) {
                 per_dir_defaults = ap_merge_per_dir_configs(r->pool,
-           per_dir_defaults,
-           htaccess_conf);
-           r->per_dir_config = per_dir_defaults;
-           }
+                                                            per_dir_defaults,
+                                                            htaccess_conf);
+                r->per_dir_config = per_dir_defaults;
+            }
         }
 
         /* That temporary trailing slash was useful, now drop it.
@@ -859,7 +906,8 @@ AP_DECLARE(int) directory_walk(request_rec *r)
             strcpy(seg_name, r->path_info);
             r->path_info = strchr(r->path_info, '\0');
         }
-        if (*seg_name == '/') ++seg_name;
+        if (*seg_name == '/') 
+            ++seg_name;
         
         /* If nothing remained but a '/' string, we are finished
          */
@@ -891,8 +939,8 @@ AP_DECLARE(int) directory_walk(request_rec *r)
             break;
         }
         else if (APR_STATUS_IS_EACCES(rv)) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-                              "access to %s denied", r->uri);
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                          "access to %s denied", r->uri);
             return r->status = HTTP_FORBIDDEN;
         }
         else if ((rv != APR_SUCCESS && rv != APR_INCOMPLETE) 
@@ -904,70 +952,34 @@ AP_DECLARE(int) directory_walk(request_rec *r)
                           "access to %s failed", r->uri);
             return r->status = HTTP_FORBIDDEN;
         }
-        else if ((res = check_safe_file(rnew))) {
-            rnew->status = res;
-            return rnew;
+        else if ((res = check_safe_file(r))) {
+            r->status = res;
+            return res;
         }
 
         /* Fix up the path now if we have a name, and they don't agree
          */
         if ((r->finfo.valid & APR_FINFO_NAME) 
             && strcmp(seg_name, r->finfo.name)) {
-            strcpy(seg_name, r->finfo.name);
             /* TODO: provide users an option that an internal/external
              * redirect is required here?
              */
+            strcpy(seg_name, r->finfo.name);
         }
 
         if (r->finfo.filetype == APR_LNK) 
         {
             /* Is this an possibly acceptable symlink?
              */
-            apr_finfo_t fi;
-            if (!(core_dir->opts & (OPT_SYM_LINKS | OPT_SYM_OWNER))) {
+            if ((res = resolve_symlink(r->filename, &r->finfo, 
+                                       core_dir->opts, r->pool)) != OK) {
                 ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
                             "Symbolic link not allowed: %s", r->filename);
-                return r->status = HTTP_FORBIDDEN;
-            }
-
-            if ((core_dir->opts & OPT_SYM_OWNER) 
-                    && !(r->finfo.valid & APR_FINFO_OWNER)) {
-                /* Ok, it wasn't so easy to learn the owner, (at least, it
-                 * wasn't free info), so let's ask again... this may hurt
-                 * performance-wise, but we need the name more often than
-                 * we test symlinks on case-insensitive platforms.
-                 */
-                if (apr_lstat(&r->finfo, r->filename, APR_FINFO_OWNER, r->pool)
-                        != APR_SUCCESS) {
-                    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-                                  "Symbolic link not allowed: %s", r->filename);
-                    return r->status = HTTP_FORBIDDEN;
-                }
-            }
-
-            /* let's find out the real deal...
-             */
-            rv = apr_stat(&fi, r->filename, APR_FINFO_MIN
-                                          | (core_dir->opts & OPT_SYM_OWNER 
-                                               ? APR_FINFO_OWNER : 0), r->pool);
-            if (rv != APR_SUCCESS) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-                              "Failed to stat symbolic link's target: %s", r->filename);
-                return r->status = HTTP_FORBIDDEN;
-            }
-
-            if ((core_dir->opts & OPT_SYM_OWNER)
-                && (apr_compare_users(fi.user, r->finfo.user) != APR_SUCCESS)) {
-                ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-                              "Symbolic link's owner doesn't match target's owner: %s", 
-                              r->filename);
-                return r->status = HTTP_FORBIDDEN;
+                return r->status = res;
             }
 
             /* Ok, we are done with the link's info, test the real target
              */
-            r->finfo = fi;
-
             if (r->finfo.filetype == APR_REG) {
                 /* That was fun, nothing left for us here
                  */
@@ -1018,7 +1030,7 @@ AP_DECLARE(int) directory_walk(request_rec *r)
  x    * you would *not* get the 403.
  x
  x   if (r->finfo.filetype != APR_DIR
- x       && (res = check_symlinks(r->filename, ap_allow_options(r), r->pool))) {
+ x       && (res = resolve_symlink(r->filename, r->info, ap_allow_options(r), r->pool))) {
  x       ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
  x                   "Symbolic link not allowed: %s", r->filename);
  x       return res;
@@ -1386,12 +1398,24 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *dirent,
     rnew->filename = ap_make_full_path(rnew->pool, fdir, dirent->name);
     ap_parse_uri(rnew, rnew->uri);    /* fill in parsed_uri values */
 
+    rnew->per_dir_config = r->per_dir_config;
+
     if ((dirent->valid & APR_FINFO_MIN) != APR_FINFO_MIN) {
-        if (((rv = apr_stat(&rnew->finfo, rnew->filename,
-                            APR_FINFO_MIN, rnew->pool)) != APR_SUCCESS)
-                                                 && (rv != APR_INCOMPLETE)) {
-            rnew->finfo.filetype = 0;
+        /*
+         * If this is an APR_LNK that resolves to an APR_DIR, then 
+         * we will rerun everything anyways... this should be safe.
+         */
+        if (ap_allow_options(rnew) & OPT_SYM_LINKS) {
+            if (((rv = apr_stat(&rnew->finfo, rnew->filename,
+                                 APR_FINFO_MIN, rnew->pool)) != APR_SUCCESS)
+                                                      && (rv != APR_INCOMPLETE))
+                rnew->finfo.filetype = 0;
         }
+        else
+            if (((rv = apr_lstat(&rnew->finfo, rnew->filename,
+                                 APR_FINFO_MIN, rnew->pool)) != APR_SUCCESS)
+                                                      && (rv != APR_INCOMPLETE))
+                rnew->finfo.filetype = 0;
     }
     else {
         memcpy (&rnew->finfo, dirent, sizeof(apr_finfo_t));
@@ -1402,7 +1426,14 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *dirent,
         return rnew;
     }
 
-    rnew->per_dir_config = r->per_dir_config;
+    if (rnew->finfo.filetype == APR_LNK
+        && (res = resolve_symlink(rnew->filename, &rnew->finfo, 
+                                  ap_allow_options(rnew), rnew->pool)) != OK) {
+        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, rnew,
+                    "Symbolic link not allowed: %s", rnew->filename);
+        rnew->status = res;
+        return rnew;
+    }
 
     /*
      * no matter what, if it's a subdirectory, we need to re-run
@@ -1414,28 +1445,23 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *dirent,
             res = file_walk(rnew);
         }
     }
-    else {
-        if ((res = check_symlinks(rnew->filename, ap_allow_options(rnew),
-                                  rnew->pool))) {
-            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, rnew,
-                        "Symbolic link not allowed: %s", rnew->filename);
-            rnew->status = res;
-            return rnew;
-        }
+    else if (rnew->finfo.filetype == APR_REG || !rnew->finfo.filetype) {
         /*
          * do a file_walk, if it doesn't change the per_dir_config then
          * we know that we don't have to redo all the access checks
          */
-        if ((res = file_walk(rnew))) {
-            rnew->status = res;
+        if ((res = file_walk(rnew) == OK)
+            && (rnew->per_dir_config == r->per_dir_config)
+            && (res = ap_run_type_checker(rnew)) == OK 
+            && (res = ap_run_fixups(rnew)) == OK) {
             return rnew;
         }
-        if (rnew->per_dir_config == r->per_dir_config) {
-            if ((res = ap_run_type_checker(rnew)) || (res = ap_run_fixups(rnew))) {
-                rnew->status = res;
-            }
-            return rnew;
-        }
+    }
+    else {
+        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, rnew,
+                      "symlink doesn't point to a file or directory: %s",
+                      r->filename);
+        res = HTTP_FORBIDDEN;
     }
 
     if (res || (res = sub_req_common_validation(rnew))) {
@@ -1479,11 +1505,21 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
         rnew->filename = ap_make_full_path(rnew->pool, fdir, new_file);
         ap_parse_uri(rnew, rnew->uri);    /* fill in parsed_uri values */
 
-        if (((rv = apr_stat(&rnew->finfo, rnew->filename,
-                            APR_FINFO_MIN, rnew->pool)) != APR_SUCCESS)
-                                                 && (rv != APR_INCOMPLETE)) {
-            rnew->finfo.filetype = 0;
+        /*
+         * If this is an APR_LNK that resolves to an APR_DIR, then 
+         * we will rerun everything anyways... this should be safe.
+         */
+        if (ap_allow_options(rnew) & OPT_SYM_LINKS) {
+            if (((rv = apr_stat(&rnew->finfo, rnew->filename,
+                                 APR_FINFO_MIN, rnew->pool)) != APR_SUCCESS)
+                                                      && (rv != APR_INCOMPLETE))
+                rnew->finfo.filetype = 0;
         }
+        else
+            if (((rv = apr_lstat(&rnew->finfo, rnew->filename,
+                                 APR_FINFO_MIN, rnew->pool)) != APR_SUCCESS)
+                                                      && (rv != APR_INCOMPLETE))
+                rnew->finfo.filetype = 0;
 
         if ((res = check_safe_file(rnew))) {
             rnew->status = res;
@@ -1491,6 +1527,15 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
         }
 
         rnew->per_dir_config = r->per_dir_config;
+
+        if (rnew->finfo.filetype == APR_LNK
+            && (res = resolve_symlink(rnew->filename, &rnew->finfo, 
+                                      ap_allow_options(rnew), rnew->pool)) != OK) {
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, rnew,
+                        "Symbolic link not allowed: %s", rnew->filename);
+            rnew->status = res;
+            return rnew;
+        }
 
         /*
          * no matter what, if it's a subdirectory, we need to re-run
@@ -1502,28 +1547,23 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
                 res = file_walk(rnew);
             }
         }
-        else {
-            if ((res = check_symlinks(rnew->filename, ap_allow_options(rnew),
-                                      rnew->pool))) {
-                ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, rnew,
-                            "Symbolic link not allowed: %s", rnew->filename);
-                rnew->status = res;
-                return rnew;
-            }
+        else if (rnew->finfo.filetype == APR_REG || !rnew->finfo.filetype) {
             /*
              * do a file_walk, if it doesn't change the per_dir_config then
              * we know that we don't have to redo all the access checks
              */
-            if ((res = file_walk(rnew))) {
-                rnew->status = res;
+            if ((res = file_walk(rnew) == OK)
+                && (rnew->per_dir_config == r->per_dir_config)
+                && (res = ap_run_type_checker(rnew)) == OK 
+                && (res = ap_run_fixups(rnew)) == OK) {
                 return rnew;
             }
-            if (rnew->per_dir_config == r->per_dir_config) {
-                if ((res = ap_run_type_checker(rnew)) || (res = ap_run_fixups(rnew))) {
-                    rnew->status = res;
-                }
-                return rnew;
-            }
+        }
+        else {
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, rnew,
+                          "symlink doesn't point to a file or directory: %s",
+                          r->filename);
+            res = HTTP_FORBIDDEN;
         }
     }
     else {
