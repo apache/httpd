@@ -69,6 +69,11 @@ Documentation that needs writing:
 
 Available Patches:
 
+    * Michael van Elst's patch [PR#3160] to improve mod_rewrite's
+      in-core cache handling by using a hash table.
+        Message-ID: <XFMail.981115192248.sfx@unix-ag.org>
+        Status: Lars +1
+
     * Ralf's [PATCH] MODULE_MAGIC_COOKIE field for module structure
         Message-ID: <19981106125801.A17402@engelschall.com>
         Status: Currently assumes 8-byte long, Ralf will fix and repost.
