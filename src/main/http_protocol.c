@@ -849,6 +849,9 @@ request_rec *read_request (conn_rec *conn)
 	if (r->server->is_virtual == 0) {
 	    check_default_server (r);
 	}
+    } else if (!r->hostname) {
+	/* must set this for HTTP/1.1 support */
+	r->hostname = table_get (r->headers_in, "Host");
     }
     /* we have finished the search for a vhost */
     
