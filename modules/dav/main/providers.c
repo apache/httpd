@@ -54,18 +54,36 @@
 
 #include "apr_pools.h"
 #include "apr_hash.h"
-#include "ap_provider.h"
 #include "mod_dav.h"
 
-#define DAV_PROVIDER_GROUP "dav"
+
+static apr_hash_t *dav_repos_providers = NULL;
+
+
+static apr_status_t dav_cleanup_providers(void *ctx)
+{
+    dav_repos_providers = NULL;
+    return APR_SUCCESS;
+}
 
 DAV_DECLARE(void) dav_register_provider(apr_pool_t *p, const char *name,
                                         const dav_provider *provider)
 {
-    ap_register_provider(p, DAV_PROVIDER_GROUP, name, provider);
+    if (dav_repos_providers == NULL) {
+        dav_repos_providers = apr_hash_make(p);
+        apr_pool_cleanup_register(p, NULL, dav_cleanup_providers, apr_pool_cleanup_null);
+    }
+
+    /* just set it. no biggy if it was there before. */
+    apr_hash_set(dav_repos_providers, name, APR_HASH_KEY_STRING, provider);
 }
 
 const dav_provider * dav_lookup_provider(const char *name)
 {
-    return ap_lookup_provider(DAV_PROVIDER_GROUP, name);
+    /* Better watch out against no registered providers */
+    if (dav_repos_providers == NULL) {
+        return NULL;
+    }
+
+    return apr_hash_get(dav_repos_providers, name, APR_HASH_KEY_STRING);
 }

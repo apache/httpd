@@ -583,10 +583,6 @@ SOURCE=.\server\mpm\winnt\service.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\server\provider.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\server\scoreboard.c
 # End Source File
 # Begin Source File

@@ -21,7 +21,6 @@
 #include "ap_listen.h"
 #include "ap_mmn.h"
 #include "ap_mpm.h"
-#include "ap_provider.h"
 #include "ap_release.h"
 #include "http_config.h"
 #include "http_connection.h"
@@ -46,4 +45,3 @@
 #include "util_xml.h"
 
 #include "mod_core.h"
-#include "mod_auth.h"

@@ -81,7 +81,6 @@ APR_ADDTO(CPPFLAGS, `$apr_config --cppflags`)
 APR_ADDTO(LDFLAGS, `$apr_config --ldflags`)
 APR_ADDTO(INCLUDES, `$apr_config --includes`)
 SHLIBPATH_VAR=`$apr_config --shlib-path-var`
-APR_BINDIR=`$apr_config --bindir`
 
 echo $ac_n "${nl}Configuring Apache Portable Runtime Utility library...${nl}"
 
@@ -100,7 +99,6 @@ fi
 
 APR_ADDTO(LDFLAGS, `$apu_config --ldflags`)
 APR_ADDTO(INCLUDES, `$apu_config --includes`)
-APU_BINDIR=`$apu_config --bindir`
 
 echo $ac_n "${nl}Configuring PCRE regular expression library ...${nl}"
 
