@@ -36,9 +36,31 @@ install-conf:
 	done; \
 	for i in *-std* ldap.conf proxy.conf ssl.conf; do \
 		[ -f $$i ] || continue; \
-		sed -e 's#@@ServerRoot@@#$(prefix)#g' \
-		    -e 's#@@Port@@#$(PORT)#g' \
-			< $$i > $(sysconfdir)/$$i; \
+		( \
+			n_lm=`awk 'BEGIN {n=0} /@@LoadModule@@/ {n+=1} END {print n}' < $$i`; \
+			if test $$n_lm -eq 0 -o "x$(DSO_MODULES)" = "x"; then \
+				sed -e 's#@@ServerRoot@@#$(prefix)#g' \
+					-e 's#@@Port@@#$(PORT)#g' \
+					-e '/@@LoadModule@@/d' \
+					< $$i; \
+			else \
+				sed -n -e '/@@LoadModule@@/q' \
+					-e 's#@@ServerRoot@@#$(prefix)#g' \
+					-e 's#@@Port@@#$(PORT)#g' \
+					-e 'p' \
+					< $$i; \
+				for j in $(DSO_MODULES) "^EOL^"; do \
+					if test $$j != "^EOL^"; then \
+						echo "LoadModule $${j}_module modules/mod_$${j}.so"; \
+					fi; \
+				done; \
+				sed -e '1,/@@LoadModule@@/d' \
+					-e '/@@LoadModule@@/d' \
+					-e 's#@@ServerRoot@@#$(prefix)#g' \
+					-e 's#@@Port@@#$(PORT)#g' \
+					< $$i; \
+			fi \
+		) > $(sysconfdir)/$$i; \
 		chmod 0644 $(sysconfdir)/$$i; \
 		file=`echo $$i|sed s/-std//`; \
 		if [ "$$file" = "httpd.conf" ]; then \

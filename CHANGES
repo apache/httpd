@@ -1,5 +1,9 @@
 Changes with Apache 2.0.26-dev
 
+  *) Fixed the configure script to add a LoadModule directive to
+     the default httpd.conf for any module that was compiled
+     as a DSO.       [Aaron Bannert <aaron@clove.org>]
+
   *) rewrite mod_ssl input filtering to work with the new input filtering
      system.  [Justin Erenkrantz]
 

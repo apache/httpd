@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/10/11 01:49:21 $]
+Last modified at [$Date: 2001/10/11 03:42:53 $]
 
 Release:
 
@@ -82,10 +82,6 @@ RELEASE SHOWSTOPPERS:
       Bill would be happy with changing MaxClients to MaxServers
       to make it agree with the operation of the StartServers
       directive.
-
-    * Fix the configure script to add a LoadModule directive to
-      the default httpd.conf for any module that was compiled
-      as a DSO.
 
     * revamp the input filter semantics, per discussions since
       February (and especially at the hackathon last
