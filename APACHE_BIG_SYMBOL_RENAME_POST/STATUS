@@ -1,0 +1,426 @@
+Apache 1.3 STATUS:
+
+Release:
+
+    1.3b6: in development; release proposed for Friday, April 17
+    1.3b5: Tagged APACHE_1_3b5 and released
+
+    2.0  : In pre-alpha development, see apache-2.0 repository
+
+Guidelines:
+
+    o For the past few months we have been working on a commit-then-review
+      basis.  It is now time to decide whether or not we want to work
+      under the guidelines in <http://dev.apache.org/guidelines.html>
+      or not, and if not, what changes are needed to make it right.
+
+      Approve guidelines as written:
+         +1: Paul, Jim, Martin, Ralf, Randy, Brian, Ken
+         +0:
+         -1:
+
+      Notes:
+      - Ken: 'lazy consensus' needs to be defined.
+      - Ralf: At least the following points should be added:
+              1. A statement that really everyone has the equal right to veto
+                 in general and that only the one can rescind a veto who has
+                 done it originally.
+              2. The statements that although a veto can be done at any point
+                 if it gets done more then approximately two weeks after some
+                 stuff already went in or was changed, the guy who vetoes
+                 really  _HAS_ to provide a reasonable alternative solution
+                 idea _AND_ at least someone (not really the guy who vetoes)
+                 who wants to volunteer for this alternative solution.  Or
+                 the veto will not make much sense IMHO at this stage and
+                 always just creates flamewars! I think only this way it's
+                 fair.
+
+Plan:
+
+Showstoppers:
+
+Committed Code Changes:
+    * Dean's `const'-change to os_is_path_absolute().
+    * Security patch for "UserDir /abspath" without a * in the path. PR#1701
+    * Dean's cleanup of race conditions in Unix child_main
+    * Dean's fixes for better handling of various errors from select() and
+      accept() in child_main(). PR#1747, 1107, 588, 1787, 987, 588
+    * Dean's add of -lm to LIBS for HPUX. PR#1639
+    * Ralf's remove of obsolete "dist.tar" target from Makefile.tmpl
+    * Dean's fixes for some inconsistencies in <Files> semantics. PR#1817
+    * Dean's <Files> is not permitted within <Location>. PR#379
+    * Dean's and Martin's fix of </Files> 
+    * Fix for mod_mime_magic error messages. PR#1827
+    * Workaround for using RLIMIT_AS for the RLimitMEM directive. PR#1816
+    * Doug's patch to bind a process to a single processor under AIX
+    * Martin's patch for mod_info to fix HTML markup
+    * Martin's changes to the check_cmd_context() function 
+    * Patch for the ap_cpystrn() off-by-1 error
+    * Dean's fix for multiple UserDir problem introduced during 1.3b4-dev.
+    * Dean's fix to problems with absoluteURIs.
+    * Dean's patch to use SA_RESETHAND or SA_ONESHOT for coredump handlers.
+    * Patch to recognize FreeBSD versions. PR#1450
+    * Workaround in mod_status for NeXT's running not m68k chips
+    * Fix for -X situation to honor the SIGINT or SIGQUIT signals
+    * Patch to hide Proxy-Authorization from CGI/SSI/etc
+    * Ralf's new ProxyPassReverse directive for mod_proxy
+    * Ralf's add of new RewriteMap types: rnd and int. PR#1631
+    * Fix regex handling for mod_setenvif BrowserMatch command. PR#1825
+    * Ralf's fix for assumptions on the username characters in mod_rewrite
+    * Paul's merge of os/win32/mod_dll.c into modules/standard/mod_so.c
+    * Paul's patch for reading the server-root from the NT registry
+    * Ralf's fix for locking of `RewriteMap' programs. PR#1029
+    * Dean's fix for the `config with no Port setting' situation
+    * Ralf's fix for `RewriteMap' program handling. PR#1431
+    * Ralf's fix for the initialization of RewriteLogLevel. PR#1325
+    * Ralf's mod_rewrite meta-construct expansion inconsistency fix
+    * Martin's new URI parsing stuff (the source module main/util_uri.c)
+    * New `%a' construct for LogFormat and CustomLog. PR#1885
+    * Make \\ behave as expected.
+    * Fix for "poly" directive in image maps. PR#1771
+    * Reduce memory usage, and speed up ServerAlias support. PR#1531
+    * Dean's cleanup of code in http_vhost.c and vhost-stuff in mod_rewrite.c
+    * Dean's rewrite of absoluteURI handling vhost matching
+    * Dean's new mod_test_util_uri.c 
+    * back out USE_PTHREAD_SERIALIZED_ACCEPT for solaris
+    * Ken's abstraction of SERVER_{BUILT,VERSION}
+    * Ralf's Config File Line Continuation
+    * Ralf's Reanimation of DBM support for RewriteMap in mod_rewrite PR#1696
+    * Ralf's fix for the `<VirtualHost> w/o mod_rewrite' situation. PR#1790
+    * Mark's fix for ProxyPass/ProxyRequests interaction broken by uri stuff
+    * Rasmus' generation of the new src/include/ap_config.h header file
+    * Dean's fix for mod_mime_magic and files with length 0
+    * Dean's change to Location and LocationMatch semantics. PR#1440
+    * Ralf's fix for the flock()<->fork() problematic for RewriteLock's
+    * Dean's Minor cleanup in http_main
+    * Ralf's Various improvements to the configuration and build support
+    * Corrections to the setup of the REMOTE_HOST variable. PR#1925 
+    * Fix for rputs() which did not calculate r->sent_bodyct properly. PR#1900
+    * Don't tweak TZ envvar if the user has specified an explicit one. PR#1888
+    * API clarification for command_rec handlers
+    * API clarification for content_type et al
+    * Ralf's mod_so changes to keep track of loaded modules ourself.
+    * Ralf's support for building shared objects even for library-style modules
+    * Performance improvements to invoke_handler().
+    * Ben Hyde's check to make sure the "Port" range is valid
+    * Ralf's Unbundling mod_proxy and mod_mime (making mime_find_ct obsolete)
+    * Jim's change of -DAUX to -DAUX3 for A/UX
+    * Jim's src/include/ap_config.h wraps it's #define's with #ifndef/#endif's
+    * Dean's Clean up of some undocumented behavior of mod_setenvif
+    * Performance tweak to mod_log_config
+    * Marc's cfg_getline() fix for lines without the termination char
+    * Ralf's Various cleanups to the command line interface and manual pages
+    * Marc's mod_proxy was not clearing the Proxy-Connection header
+    * Dean's API_EXPORT and CORE_EXPORT cleanup for core functions
+    * Ralf's new ApacheBench support program (src/support/ab.c)
+    * Ralf's major Configure cleanup
+    * Ralf's additional manual pages for the support programs
+    * Ben Hyde's Configure check for unknown command switch
+    * Martin's fix for src/helpers/fp2rp
+    * Ralf's reanim. of undocum. directive: ProxyReceiveBufferSize, PR#1348
+    * Ralf's mod_proxy fix to use FTP SIZE response for Content-Length, PR#1183
+    * Ralf's change to make the shared object compilation command more portable
+    * Dean's protect against FD_SETSIZE mismatches
+    * Martin's fix to allow %2F chars in proxy requests and in the uri query
+      part
+    * fix to mark listening sockets for closure in the parent after a SIGHUP 
+    * Dean's clean up undefined signals on some platforms (SCO, BeOS).
+    * Dean's fix for making work the `HostnameLookups Off'
+    * Dean's mark of a few bitfields as signed to ensure correct code. 
+    * Dean's changes to scoreboard defs which helps gcc generate better code.
+    * Ralf's fix for QUERY_STRING and the proxy pass-through of mod_rewrite
+    * Fix for symlink check in mod_rewrite's ``RewriteCond ... -l'', PR#2010
+    * Fix: SIGXCPU and SIGXFSZ are now reset to SIG_DFL at boot-time
+    * Dean's remove of HAVE_SNPRINTF
+    * Dean's mutation of ap_snprintf() code into ap_vformatter()
+    * Lars' fix for "Options +Includes" and "+IncludesNoExec" merging
+    * Jim's fix for inconsistent usage of TCC and CC in Configure
+    * Jim's fix for IRIX which needs the -n32 flag iff using 'cc', PR#1901
+    * Jim's add of the SCO_SV port. PR#1962
+    * Dean's floating point ap_snprintf code wasn't threadsafe.
+    * Ralf's add of the new Apache Autoconf-style Interface (APACI)
+    * Rainer Scherg's fix for CONNECT proxy support: #1326, #1573, #1942
+    * Ken's reworking of the Apache LICENSE
+    * Ralf's APache eXtenSion for easy "off-source" extending Apache via DSO
+    * Ralf's APACI --without-support option
+    * Martin's fix accept (and pass) http://user:pass@host proxy requests
+    * Martin's fix CONNECT proxy handling again
+    * Ralf's fallback strategy for DSO by trying to guess flags from Perl
+    * Ralf's add of the query (-q) option to apxs
+    * Ralf's initial doc and Configuration.tmpl entry for mod_mmap_static
+    * OS/2 tweak to deal with multiple .exe targets. [Brian Havard]
+    * Roy's reduce of logging level of "normal" warning messages
+    * Alexei's change Win32 IS_MODULE to SHARED_MODULE to match Unix way
+    * Fixed ordering of argument checks for RewriteBase directive, PR#2045
+    * Ralf's cleanup of subdir movement to again allow correct breaks on error
+    * Ralf's consistent add of "distclean" targets for the src/-Makefiles
+    * Build the libraries before building the rest of the tools
+    * Ralf's and Martin's DSO support for all SVR4-derivate Unix platforms
+    * THE BIG SYMBOL RENAMING
+
+Available Patches:
+
+    * Arnt Gulbrandsen <agulbra@troll.no> 03 Apr 1998 21:28:17 +0200
+      <m3emzer9gu.fsf@lupinella.troll.no> mod_usertrack.c patch:
+      The patch provides per-domain cookies (which I use to share user-ids
+      among the *.troll.no web servers) and configurable cookie names.  It
+      also marginally increases the efficiency of Apache when the server
+      runs with DNS lookups turned off.
+
+In progress:
+
+    * Ken's IndexFormat enhancement to mod_autoindex to allow
+      CustomLog-like tailoring of directory listing formats
+
+FINAL RELEASE SHOWSTOPPERS:
+
+    * proxy security fixes from 1.2.5 need to be brought forward
+
+Needs patch:
+
+    * Documentation for:
+      1) htdocs/manual/sourcereorg.html and other files should mention 
+         new mod_so capabilities.
+      2) windows.html should be cleaned up.
+
+    * uri issues
+	- RFC2068 requires a server to recognize its own IP addr(s) in dot
+	notation, we do this fine if the user follows the dns-caveats
+	documentation... we should handle it in the case the user doesn't ever
+	supply a dot-notation address.
+
+Closed issues:
+
+Open issues:
+    
+    * Paul would like to see a 'gdbm' option because he uses
+      it a lot.
+
+    * The binary should have the same name on Win32 and UNIX.
+	+1: Ken
+	-1:  
+
+    * What do we call the binary: apache or httpd? Under UNIX
+      it's httpd, under Win32 it's apache.
+	apache-httpd: Ken +1
+	leave it apache: +1 Brian, Ralf, Martin
+
+    * Maybe a http_paths.h file? See
+	<Pine.BSF.3.95q.971209222046.25627D-100000@valis.worldgate.com>
+	+1: Brian, Paul, Ralf, Martin
+
+    * Release builds: Should we provide Configuration or not?
+      Should we 'make all suexec' in src/support?
+	Ken +1 (possible suexec path issue, though)
+        Brian +1
+
+    * root's environment is inherited by the Apache server. Jim & Ken
+      think we should recommend using 'env' to build the
+      appropriate environment. Marc and Alexei don't see any
+      big deal. Martin says that not every "env" has a -u flag.
+
+    * 206 vs. 200 issue on Content-Length
+	See <Pine.BSF.3.95q.971102000930.5555B-100000@valis.worldgate.com>
+	Roy says sending 200 is correct, but Alexei disagrees.
+	Marc sides with Alexei.  We were talking about two different PRs.
+        Apache should be sending 200 *and* Accept-Ranges.
+
+    * Marc's socket options like source routing (kill them?)
+	Marc, Martin say Yes
+
+    * Ken's PR#1053: an error when accessing a negotiated document
+      explicitly names the variant selected.  Should it do so, or should
+      the base input name be referenced?
+
+    * Proposed API Changes:
+
+	- r->content_language is for backwards compatibility... with modules
+	  that may not link any longer without some minor editing.  The new
+	  field is r->content_languages.  Heck it's not even mentioned in
+	  apache-devsite/mmn.txt when we got content_languages (note the s!).
+	  The proposal is to remove r->content_language:
+	    Status: Paul +1, Ralf +1, Ken +1
+
+	- child_exit() is redundant, it can be implemented via cleanups.  It is
+	  not "symmetric" in the sense that there is no exit API method to go
+	  along with the init() API method.  There is no need for an exit
+	  method, there are already modules using cleanups to perform this (see
+	  mod_mmap_static, and mod_php3 for example).  The proposal is to
+	  remove the child_exit() method and document cleanups as the method of
+	  handling this need.
+	    Status: Rasmus +1, Paul +1, Jim +1, 
+	            Martin +1, Ralf +1, Ken +1
+
+    * Don't wait for WIN32:  It's been quite some time and WIN32 doesn't seem
+	to be progressing, and Unix seems quite stable.  It would be in Apache's
+	best interest to continue to support Unix to its utmost, and not delay
+	a release of 1.3.0 waiting for WIN32 issues to be resolved.
+
+	Proposal: the next release should be named 1.3.0 and should be labelled
+	    "stable on unix, beta on NT".
+	    +1: 
+	    -0: Ralf (because we've done a lot of good but new stuff
+		      in 1.3b6-dev now and we should give us at least
+		      one pre-release before the so-called "release" [1.3.0].
+		      But we should not take again many months. 1.3.0 should
+		      be kicked out as soon as possible after 1.3b6 is out. So
+		      we should commit APACI, test a few days again, release
+		      1.3b6, look for the responses, fix a few bugs and then
+		      roll 1.3.0 out of the door marked as stated above)
+
+	Proposal: the next release should be named 1.3b6, and labelled "release
+	    candidate on unix, beta on NT".  The release after that will be
+	    called 1.3.0 "stable on unix, beta on NT".
+	    +1: Jim, Ralf, Randy, Brian, Martin
+	    +0: 
+
+            Notes:
+            Randy: APACI should go in a beta release if it is to go in at all.
+                   I would also argue that 1.3b6 is _not_ stable. I've been 
+                   having real fits keeping it alive on a dual processor
+                   machine. Could be OS problems..
+
+  * vformatter TODO:
+    - double check logic in ap_vformatter(), and especially psprintf()
+    - add in and use the inaddr formatting codes that started the whole
+      debate last october
+    - ... so that we can finally start fixing all the log messages that
+      were previously log_reason(), which included the client address,
+      but now using aplog_error() they're without the client address, and
+      that sucks
+    - bump mmn and make it official (wanna make sure the api is right first)
+
+Win32 specific issues:
+
+ Open issues:
+
+    * Should ApacheCore.dll be merged back into the main server
+      image?  May make debugging easier..
+
+ In progress:
+
+    * Ben's ASP work... All agree it sounds cool.
+
+    * DDA's adding a tray application to the Windoze version for ease of
+      status/management.
+	<01BCDB29.2C04DEB0@caravan.individual.com>
+	<01BCDB2A.F8C09010@caravan.individual.com>
+	Status: Ken +1, Sameer +1, Martin +1, Ben +1 (as long as
+	we get a single executable)
+	Paul: No like Win95 specific stuff
+	Ken: What's W95-specific about it?
+
+ Help:
+
+    * process/thread model
+	- need dynamic thread creation/destruction, similar to 
+	  Unix process model
+	- can't use WaitForMultipleObjects in the same way we
+	  do now, since that has a limit of 64(!) objects.  Grr.
+	  PR#1665
+
+    * some errors printed by CGIs to stderr don't end up making it
+      to the server log unless an extra debugging message is added
+      after they run? (PR#1725 indicates this may not be just Win32)
+
+    * handle bugs that make it pop up errors on console, ie. segv 
+      equiv?  Can we do this?  Need to make it robust.
+
+    * install
+	- make installshield work
+	- config in cvs tree?
+	- install docs, etc.?
+	- location for install
+
+    * the mutex should be critical-regions, since the current design
+      is creating a mess of SO calls that are unnecessary
+
+    * we don't mmap on NT.  Use TransmitFile?
+
+    * CGIs
+        - hangs on multiple CGI execution?  PR#1607,1129
+    	    Marc can't repeat...
+	- docs on how they work w/scripts
+	- use registry to find interpreter?
+	- WTF is the buffering coming from?
+	    - we don't have a way to make non-blocking files on NT!
+
+    * performance
+
+    * documentation:
+	- running the server without admin
+	- how CGIs work
+	- update README.NT
+	- short/long name handling
+	- better status page on current state of NT for users
+
+    * http_main.c hell
+	- split into two files?
+
+    * who should run the service?  Who exactly is the "system account"?
+
+      docs say:
+
+      Localsystem is a very privileged account locally, so you shouldn't run
+      any shareware applications there. However, it has no network privileges
+      and cannot leave the machine via any NT-secured mechanism, including
+      file system, named pipes, DCOM, or secure RPC.
+
+      and:
+
+      A service that runs in the context of the LocalSystem account
+      inherits the security context of the SCM. It is not associated with
+      any logged-on user account and does not have credentials (domain
+      name, user name, and password) to be used for verification. This
+      has several implications: [... removed ...]
+
+
+      That _really_ sucks.  Can we recommend running Apache as some 
+      other user?
+
+
+    * need a crypt() of some sort.
+	- sources are easy; problem is export restrictions on DES
+	- if we don't do DES, can do md5
+
+    * modules that need to be made to work on win32
+        - mod_example isn't multithreadreded
+	- mod_unique_id (needs mt changes)
+	- mod_auth_db.c  (do we want to even try this?  We should have some
+          db of some sort... what else can we pick from under win32?)
+	- mod_auth_dbm.c
+	- mod_info.c (PR re exporting symbols for it...)
+	- mod_log_agent.c
+	- mod_log_referer.c
+	- mod_mime_magic.c (needs access to mod_mime API stage...)
+
+    * do something to disable bogus warnings
+
+    * rfc1413.c has static storage which won't work multithreaded
+
+    * mod_include --> exec cgi, exec cmd, etc. don't work right.
+      Looks like a code path that isn't run anywhere else that has
+      something not quite right...  A PR or two on it.
+
+WIN32 1.3 FINAL RELEASE SHOWSTOPPERS:
+
+    * CGIs
+        - hangs on multiple CGI execution?  PR#1607,1129
+    	    Marc can't repeat...
+
+    * SECURITY: PR#1203 still needs to be dealt with for WIN32
+
+    * SECURITY: check if the magic con/aux/nul/etc names do anything
+	really bad
+
+    * SECURITY: numerous uses of strcpy and strcat have potential
+	for buffer overflow, someone should rewrite or verify
+	they're safe
+
+    * SECURITY: os_ abstract is_only_below() in mod_include.c
+
+    * signal type handling
+    	- how to rotate logs from command line?
+
+    * bad use of chdir in some places; it isn't thread-specific
+

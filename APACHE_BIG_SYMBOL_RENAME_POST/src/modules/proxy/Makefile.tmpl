@@ -1,0 +1,104 @@
+
+LIB=libproxy.$(LIBEXT)
+
+OBJS=\
+     mod_proxy.o \
+     proxy_cache.o proxy_connect.o proxy_ftp.o proxy_http.o proxy_util.o
+SHLIB_OBJS=\
+     mod_proxy.so-o \
+     proxy_cache.so-o proxy_connect.so-o proxy_ftp.so-o proxy_http.so-o proxy_util.so-o
+
+all: lib
+
+lib: $(LIB)
+
+libproxy.a: $(OBJS)
+	rm -f $@
+	ar cr $@ $(OBJS)
+	$(RANLIB) $@
+
+libproxy.so: $(SHLIB_OBJS)
+	rm -f $@
+	$(LD) $(LDFLAGS_SHLIB) -o $@ $(SHLIB_OBJS)
+
+# 1. extension .o for shared objects cannot be used here because
+#    first these files aren't still shared objects and second we
+#    have to use a different name to trigger the different
+#    implicit Make rule
+# 2. extension -so.o (as used elsewhere) cannot be used because
+#    the suffix feature of Make really wants just .x, so we use
+#    extension .so-o
+
+.SUFFIXES: .o .so-o
+
+.c.o:
+	$(CC) -c $(INCLUDES) $(CFLAGS) $(SPACER) $<
+
+.c.so-o:
+	$(CC) -c $(INCLUDES) $(CFLAGS) $(CFLAGS_SHLIB) $(SPACER) $< && mv $*.o $*.so-o
+
+clean:
+	rm -f $(OBJS) $(SHLIB_OBJS) $(LIB)
+
+distclean: clean
+	-rm -f Makefile
+
+# We really don't expect end users to use this rule.  It works only with
+# gcc, and rebuilds Makefile.tmpl.  You have to re-run Configure after
+# using it.
+depend:
+	cp Makefile.tmpl Makefile.tmpl.bak \
+	    && sed -ne '1,/^# DO NOT REMOVE/p' Makefile.tmpl > Makefile.new \
+	    && gcc -MM $(INCLUDES) $(CFLAGS) *.c >> Makefile.new \
+	    && sed -e '1,$$s: $(INCDIR)/: $$(INCDIR)/:g' Makefile.new \
+		> Makefile.tmpl \
+	    && rm Makefile.new
+
+#Dependencies
+
+$(OBJS): Makefile
+
+# DO NOT REMOVE
+mod_proxy.o: mod_proxy.c mod_proxy.h $(INCDIR)/httpd.h \
+ $(INCDIR)/conf.h ../../os/unix/os.h \
+ $(INCDIR)/hsregex.h $(INCDIR)/alloc.h $(INCDIR)/buff.h \
+ $(INCDIR)/ap.h $(INCDIR)/util_uri.h \
+ $(INCDIR)/http_config.h $(INCDIR)/http_protocol.h \
+ $(INCDIR)/explain.h $(INCDIR)/http_log.h \
+ $(INCDIR)/http_vhost.h
+proxy_cache.o: proxy_cache.c mod_proxy.h $(INCDIR)/httpd.h \
+ $(INCDIR)/conf.h ../../os/unix/os.h \
+ $(INCDIR)/hsregex.h $(INCDIR)/alloc.h $(INCDIR)/buff.h \
+ $(INCDIR)/ap.h $(INCDIR)/util_uri.h \
+ $(INCDIR)/http_config.h $(INCDIR)/http_protocol.h \
+ $(INCDIR)/explain.h $(INCDIR)/http_log.h \
+ $(INCDIR)/http_main.h $(INCDIR)/util_date.h \
+ $(INCDIR)/multithread.h $(INCDIR)/md5.h
+proxy_connect.o: proxy_connect.c mod_proxy.h $(INCDIR)/httpd.h \
+ $(INCDIR)/conf.h ../../os/unix/os.h \
+ $(INCDIR)/hsregex.h $(INCDIR)/alloc.h $(INCDIR)/buff.h \
+ $(INCDIR)/ap.h $(INCDIR)/util_uri.h \
+ $(INCDIR)/http_config.h $(INCDIR)/http_protocol.h \
+ $(INCDIR)/explain.h $(INCDIR)/http_log.h \
+ $(INCDIR)/http_main.h
+proxy_ftp.o: proxy_ftp.c mod_proxy.h $(INCDIR)/httpd.h \
+ $(INCDIR)/conf.h ../../os/unix/os.h \
+ $(INCDIR)/hsregex.h $(INCDIR)/alloc.h $(INCDIR)/buff.h \
+ $(INCDIR)/ap.h $(INCDIR)/util_uri.h \
+ $(INCDIR)/http_config.h $(INCDIR)/http_protocol.h \
+ $(INCDIR)/explain.h $(INCDIR)/http_main.h
+proxy_http.o: proxy_http.c mod_proxy.h $(INCDIR)/httpd.h \
+ $(INCDIR)/conf.h ../../os/unix/os.h \
+ $(INCDIR)/hsregex.h $(INCDIR)/alloc.h $(INCDIR)/buff.h \
+ $(INCDIR)/ap.h $(INCDIR)/util_uri.h \
+ $(INCDIR)/http_config.h $(INCDIR)/http_protocol.h \
+ $(INCDIR)/explain.h $(INCDIR)/http_log.h \
+ $(INCDIR)/http_main.h $(INCDIR)/http_core.h \
+ $(INCDIR)/util_date.h
+proxy_util.o: proxy_util.c mod_proxy.h $(INCDIR)/httpd.h \
+ $(INCDIR)/conf.h ../../os/unix/os.h \
+ $(INCDIR)/hsregex.h $(INCDIR)/alloc.h $(INCDIR)/buff.h \
+ $(INCDIR)/ap.h $(INCDIR)/util_uri.h \
+ $(INCDIR)/http_config.h $(INCDIR)/http_protocol.h \
+ $(INCDIR)/explain.h $(INCDIR)/http_main.h $(INCDIR)/md5.h \
+ $(INCDIR)/multithread.h $(INCDIR)/http_log.h
