@@ -3395,30 +3395,34 @@ static int default_handler(request_rec *r)
     }
 }
 
+typedef struct net_time_filter_ctx {
+    apr_socket_t *csd;
+    int           first_line;
+} net_time_filter_ctx_t;
 static int net_time_filter(ap_filter_t *f, apr_bucket_brigade *b,
                            ap_input_mode_t mode, apr_read_type_e block,
                            apr_off_t readbytes)
 {
+    net_time_filter_ctx_t *ctx = f->ctx;
     int keptalive = f->c->keepalive == AP_CONN_KEEPALIVE;
-    apr_socket_t *csd = ap_get_module_config(f->c->conn_config, &core_module);
-    int *first_line = f->ctx;
 
-    if (!f->ctx) {
-        f->ctx = first_line = apr_palloc(f->r->pool, sizeof(*first_line));
-        *first_line = 1;
+    if (!ctx) {
+        f->ctx = ctx = apr_palloc(f->r->pool, sizeof(*ctx));
+        ctx->first_line = 1;
+        ctx->csd = ap_get_module_config(f->c->conn_config, &core_module);        
     }
 
     if (mode != AP_MODE_INIT && mode != AP_MODE_EATCRLF) {
-        if (*first_line) {
-            apr_socket_timeout_set(csd, 
+        if (ctx->first_line) {
+            apr_socket_timeout_set(ctx->csd, 
                                    keptalive
                                       ? f->c->base_server->keep_alive_timeout
                                       : f->c->base_server->timeout);
-            *first_line = 0;
+            ctx->first_line = 0;
         }
         else {
             if (keptalive) {
-                apr_socket_timeout_set(csd, f->c->base_server->timeout);
+                apr_socket_timeout_set(ctx->csd, f->c->base_server->timeout);
             }
         }
     }
@@ -3494,6 +3498,19 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
         return APR_EOF;
     }
 
+    if (mode == AP_MODE_GETLINE) {
+        /* we are reading a single LF line, e.g. the HTTP headers */
+        rv = apr_brigade_split_line(b, ctx->b, block, HUGE_STRING_LEN);
+        /* We should treat EAGAIN here the same as we do for EOF (brigade is
+         * empty).  We do this by returning whatever we have read.  This may
+         * or may not be bogus, but is consistent (for now) with EOF logic.
+         */
+        if (APR_STATUS_IS_EAGAIN(rv)) {
+            rv = APR_SUCCESS;
+        }
+        return rv;
+    }
+
     /* ### AP_MODE_PEEK is a horrific name for this mode because we also
      * eat any CRLFs that we see.  That's not the obvious intention of
      * this mode.  Determine whether anyone actually uses this or not. */
@@ -3536,6 +3553,7 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
             /* FIXME: Is this the right thing to do in the core? */
             apr_bucket_delete(e);
         }
+        return APR_SUCCESS;
     }
 
     /* If mode is EXHAUSTIVE, we want to just read everything until the end
@@ -3628,22 +3646,8 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
 
         /* Take what was originally there and place it back on ctx->b */
         APR_BRIGADE_CONCAT(ctx->b, newbb);
-
-        return APR_SUCCESS;
     }
-
-    /* we are reading a single LF line, e.g. the HTTP headers */
-    rv = apr_brigade_split_line(b, ctx->b, block, HUGE_STRING_LEN);
-
-    /* We should treat EAGAIN here the same as we do for EOF (brigade is
-     * empty).  We do this by returning whatever we have read.  This may
-     * or may not be bogus, but is consistent (for now) with EOF logic.
-     */
-    if (APR_STATUS_IS_EAGAIN(rv)) {
-        rv = APR_SUCCESS;
-    }
-
-    return rv;
+    return APR_SUCCESS;
 }
 
 /* Default filter.  This filter should almost always be used.  Its only job
