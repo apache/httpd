@@ -66,16 +66,38 @@
 extern "C" {
 #endif
 
+/**
+ * @package Apache Configuration
+ */
+
 /*
  * The central data structures around here...
  */
 
 /* Command dispatch structures... */
 
-/* Note that for all of these except RAW_ARGS, the config routine is
- * passed a freshly allocated string which can be modified or stored
- * or whatever... it's only necessary to do pstrdup() stuff with
- * RAW_ARGS.
+/**
+ * How the directives arguments should be parsed.
+ * @tip Note that for all of these except RAW_ARGS, the config routine is
+ *      passed a freshly allocated string which can be modified or stored
+ *      or whatever... it's only necessary to do pstrdup() stuff with
+ * <PRE>
+ *    RAW_ARGS	--		 cmd_func parses command line itself 
+ *    TAKE1	--		 one argument only 
+ *    TAKE2	--		 two arguments only 
+ *    ITERATE	--		 one argument, occuring multiple times
+ *				 * (e.g., IndexIgnore)
+ *    ITERATE2	--		 two arguments, 2nd occurs multiple times
+ *				 * (e.g., AddIcon)
+ *    FLAG	--		 One of 'On' or 'Off' 
+ *    NO_ARGS	--		 No args at all, e.g. </Directory> 
+ *    TAKE12	--		 one or two arguments 
+ *    TAKE3	--		 three arguments only 
+ *    TAKE23	--		 two or three arguments
+ *    TAKE123	--		 one, two or three arguments 
+ *    TAKE13	--		 one or three arguments 
+ * </PRE>
+ * @defvar enum cmd_how
  */
 enum cmd_how {
     RAW_ARGS,			/* cmd_func parses command line itself */
@@ -174,19 +196,27 @@ typedef const char *(*cmd_func) ();
 
 #endif
 
-typedef struct command_struct {
-    const char *name;		/* Name of this command */
+typedef struct command_struct command_rec; 
+/**
+ * The command record structure.  Each modules can define a table of these
+ * to define the directives it will implement.
+ */
+struct command_struct {
+    /** Name of this command */
+    const char *name;
+    /** The function to be called when this directive is parsed */
     cmd_func func;
-    void *cmd_data;		/* Extra data, for functions which
-				 * implement multiple commands...
-				 */
-    int req_override;		/* What overrides need to be allowed to
-				 * enable this command.
-				 */
-    enum cmd_how args_how;	/* What the command expects as arguments */
+    /** Extra data, for functions which implement multiple commands... */
+    void *cmd_data;		
+    /** What overrides need to be allowed to enable this command. */
+    int req_override;
+    /** What the command expects as arguments 
+     *  @defvar cmd_how args_how*/
+    enum cmd_how args_how;
 
-    const char *errmsg;		/* 'usage' message, in case of syntax errors */
-} command_rec;
+    /** 'usage' message, in case of syntax errors */
+    const char *errmsg;
+};
 
 /* The allowed locations for a configuration directive are the union of
  * those indicated by each set bit in the req_override mask.
@@ -216,121 +246,175 @@ typedef struct command_struct {
 #define EXEC_ON_READ 256
 #define OR_ALL (OR_LIMIT|OR_OPTIONS|OR_FILEINFO|OR_AUTHCFG|OR_INDEXES)
 
-/* This can be returned by a function if they don't wish to handle
+/**
+ * This can be returned by a function if they don't wish to handle
  * a command. Make it something not likely someone will actually use
  * as an error code.
+ * @defvar DECLINE_CMD "\a\b"
  */
-
 #define DECLINE_CMD "\a\b"
 
-/* Common structure for reading of config files / passwd files etc. */
-typedef struct {
-    int (*getch) (void *param);	/* a getc()-like function */
-    void *(*getstr) (void *buf, size_t bufsiz, void *param); /* a fgets()-like function */
-    int (*close) (void *param);	/* a close hander function */
-    void *param;		/* the argument passed to getch/getstr/close */
-    const char *name;		/* the filename / description */
-    unsigned line_number;	/* current line number, starting at 1 */
-} configfile_t;
+typedef struct configfile_t configfile_t;
+/** Common structure for reading of config files / passwd files etc. */
+struct configfile_t {
+    /** a getc()-like function
+     *  @deffunc int getch(void *param) */
+    int (*getch) (void *param);	
+    /** a fgets()-like function 
+     *  @deffunc void *getstr(void *buf, size_t bufsize, void *param)*/
+    void *(*getstr) (void *buf, size_t bufsiz, void *param);
+    /** a close hander function 
+     *  @deffunc int close(void *param)*/
+    int (*close) (void *param);	
+    /** the argument passed to getch/getstr/close 
+    void *param;
+    /** the filename / description */
+    const char *name;
+    /** current line number, starting at 1 */
+    unsigned line_number;
+};
 
-/*
+/**
  * This structure is passed to a command which is being invoked,
  * to carry a large variety of miscellaneous data which is all of
  * use to *somebody*...
  */
-
 struct cmd_parms_struct
     {
-    void *info;			/* Argument to command from cmd_table */
-    int override;		/* Which allow-override bits are set */
-    int limited;		/* Which methods are <Limit>ed */
+    /** Argument to command from cmd_table */
+    void *info;
+    /** Which allow-override bits are set */
+    int override;
+    /** Which methods are <Limit>ed */
+    int limited;
 
-    configfile_t *config_file;  /* Config file structure. */
-    ap_directive_t *directive;	/* the directive specifying this command */
+    /** Config file structure. */
+    configfile_t *config_file;
+    /** the directive specifying this command */
+    ap_directive_t *directive;
 
-    ap_pool_t *pool;			/* Pool to allocate new storage in */
-    ap_pool_t *temp_pool;		/* Pool for scratch memory; persists during
-				 * configuration, but wiped before the first
-				 * request is served...
-				 */
-    server_rec *server;		/* Server_rec being configured for */
-    char *path;			/* If configuring for a directory,
-				 * pathname of that directory.
-				 * NOPE!  That's what it meant previous to the
-				 * existance of <Files>, <Location> and regex
-				 * matching.  Now the only usefulness that can
-				 * be derived from this field is whether a command
-				 * is being called in a server context (path == NULL)
-				 * or being called in a dir context (path != NULL).
-				 */
-    const command_rec *cmd;	/* configuration command */
+    /** Pool to allocate new storage in */
+    ap_pool_t *pool;
+    /** Pool for scratch memory; persists during configuration, but 
+     *  wiped before the first request is served...  */
+    ap_pool_t *temp_pool;
+    /** Server_rec being configured for */
+    server_rec *server;
+    /** If configuring for a directory, pathname of that directory.  
+     *  NOPE!  That's what it meant previous to the existance of <Files>, 
+     * <Location> and regex matching.  Now the only usefulness that can be 
+     * derived from this field is whether a command is being called in a 
+     * server context (path == NULL) or being called in a dir context 
+     * (path != NULL).  */
+    char *path;
+    /** configuration command */
+    const command_rec *cmd;
 
-    void *context;		/* per_dir_config vector passed 
-				 * to handle_command */
-    const ap_directive_t *err_directive; /* directive with syntax error */
-
+    /** per_dir_config vector passed to handle_command */
+    void *context;
+    /** directive with syntax error */
+    const ap_directive_t *err_directive;
 };
 
-/* This structure records the existence of handlers in a module... */
+typedef struct handler_rec handler_rec;
 
-typedef struct {
-    const char *content_type;	/* MUST be all lower case */
+/** This structure records the existence of handlers in a module... */
+struct handler_rec {
+    /** The type of content this handler function will handle.  
+     *  MUST be all lower case 
+     */
+    const char *content_type;
+    /** The function to call when this context-type is requested. 
+     *  @deffunc int handler(request_rec *)
+     */
     int (*handler) (request_rec *);
-} handler_rec;
+};
 
-/*
+typedef struct module_struct module;
+/**
  * Module structures.  Just about everything is dispatched through
  * these, directly or indirectly (through the command and handler
  * tables).
  */
+struct module_struct {
+    /** API version, *not* module version; check that module is 
+     * compatible with this version of the server.
+     */
+    int version;
+    /** API minor version. Provides API feature milestones. Not checked 
+     *  during module init */
+    int minor_version;
+    /** Index to this modules structures in config vectors.  */
+    int module_index;
 
-typedef struct module_struct {
-    int version;		/* API version, *not* module version;
-				 * check that module is compatible with this
-				 * version of the server.
-				 */
-    int minor_version;          /* API minor version. Provides API feature
-                                 * milestones. Not checked during module init
-				 */
-    int module_index;		/* Index to this modules structures in
-				 * config vectors.
-				 */
-
+    /** The name of the module's C file */
     const char *name;
+    /** The handle for the DSO.  Internal use only */
     void *dynamic_load_handle;
 
+    /** A pointer to the next module in the list;
     struct module_struct *next;
 
-    unsigned long magic;        /* Magic Cookie to identify a module structure;
-                                 * It's mainly important for the DSO facility
-                                 * (see also mod_so).
-                                 */
+    /** Magic Cookie to identify a module structure;  It's mainly 
+     *  important for the DSO facility (see also mod_so).  */
+    unsigned long magic;
+
+    /** Function to allow MPMs to re-write command line arguments.  This
+     *  hook is only available to MPMs.
+     *  @param The process that the server is running in.
+     *  @deffunc void rewrite_args(process_rec *process);
+     */
     void (*rewrite_args) (process_rec *process);
+    /** Function to allow all modules to create per directory configuration
+     *  structures.
+     *  @param p The pool to use for all allocations.
+     *  @param dir The directory currently being processed.
+     *  @return The per-directory structure created
+     *  @deffunc void *create_dir_config(ap_pool_t *p, char *dir)
+     */
     void *(*create_dir_config) (ap_pool_t *p, char *dir);
+    /** Function to allow all modules to merge the per directory configuration
+     *  structures for two directories.
+     *  @param p The pool to use for all allocations.
+     *  @param base_conf The directory structure created for the parent directory.
+     *  @param new_conf The directory structure currently being processed.
+     *  @return The new per-directory structure created
+     *  @deffunc void *merge_dir_config(ap_pool_t *p, void *base_conf, void *new_conf)
+     */
     void *(*merge_dir_config) (ap_pool_t *p, void *base_conf, void *new_conf);
+    /** Function to allow all modules to create per server configuration
+     *  structures.
+     *  @param p The pool to use for all allocations.
+     *  @param s The server currently being processed.
+     *  @return The per-server structure created
+     *  @deffunc void *create_server_config(ap_pool_t *p, server_rec *dir)
+     */
     void *(*create_server_config) (ap_pool_t *p, server_rec *s);
+    /** Function to allow all modules to merge the per server configuration
+     *  structures for two servers.
+     *  @param p The pool to use for all allocations.
+     *  @param base_conf The directory structure created for the parent directory.
+     *  @param new_conf The directory structure currently being processed.
+     *  @return The new per-directory structure created
+     *  @deffunc void *merge_dir_config(ap_pool_t *p, void *base_conf, void *new_conf)
+     */
     void *(*merge_server_config) (ap_pool_t *p, void *base_conf, void *new_conf);
 
+    /** A command_rec table that describes all of the directives this module
+     * defines. */
     const command_rec *cmds;
+    /** A handler_rec table that describes all of the mime-types this module
+     *  will server responses for. */
     const handler_rec *handlers;
 
-    /* Hooks for getting into the middle of server ops...
-
-     * translate_handler --- translate URI to filename
-     * access_checker --- check access by host address, etc.   All of these
-     *                    run; if all decline, that's still OK.
-     * check_user_id --- get and validate user id from the HTTP request
-     * auth_checker --- see if the user (from check_user_id) is OK *here*.
-     *                  If all of *these* decline, the request is rejected
-     *                  (as a HTTP_INTERNAL_SERVER_ERROR, since the module
-     *                  which was suppsoed to handle this was configured
-     *                  wrong).
-     * type_checker --- Determine MIME type of the requested entity;
-     *                  sets content_type, _encoding and _language fields.
+    /** A hook to allow modules to hook other points in the request processing.
+     *  In this function, modules should call the ap_hook_*() functions to
+     *  register an interest in a specific step in processing the current
+     *  request.
+     *  @deffunc void register_hooks(void)
      */
-
     void (*register_hooks) (void);
-} module;
+};
 
 /* Initializer for the first few module slots, which are only
  * really set up once we start running.  Note that the first two slots
