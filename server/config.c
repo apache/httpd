@@ -863,11 +863,18 @@ static const char * ap_build_config_sub(ap_pool_t *p, ap_pool_t *temp_pool,
 	return NULL;
     }
 
+    newdir = ap_pcalloc(p, sizeof(ap_directive_t));
+    newdir->filename = parms->config_file->name;
+    newdir->line_num = parms->config_file->line_number;
+    newdir->directive = cmd_name;
+    newdir->args = ap_pstrdup(p, args);
+
     if ((cmd = ap_find_command_in_modules(cmd_name, &mod)) != NULL) {
         if (cmd->req_override & EXEC_ON_READ) {
             const char *retval;
             ap_directive_t *sub_tree = NULL;
 
+            parms->err_directive = newdir;
             retval = execute_now(cmd_name, args, parms, p, temp_pool, 
                                  &sub_tree, *curr_parent);
             if (*current) {
@@ -891,12 +898,6 @@ static const char * ap_build_config_sub(ap_pool_t *p, ap_pool_t *temp_pool,
             return retval;
         }
     }
-
-    newdir = ap_pcalloc(p, sizeof(ap_directive_t));
-    newdir->filename = parms->config_file->name;
-    newdir->line_num = parms->config_file->line_number;
-    newdir->directive = cmd_name;
-    newdir->args = ap_pstrdup(p, args);
 
     if (cmd_name[0] == '<') {
         if (cmd_name[1] != '/') {
