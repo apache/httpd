@@ -1,5 +1,12 @@
 Changes with Apache 1.3b4
   
+  *) Abstract read()/write() out of buff.c to the libap library.
+     Makes it easier to add other types of IO code such as SFIO.
+     [Randy Terbush]
+
+  *) Generalize default_port manipulations to make support of
+     different protocols easier. [Ben Laurie, Randy Terbush]
+
   *) There are many cases where users do not want Apache to form
      self-referential urls using the "canonical" ServerName and Port.
      The new UseCanonicalName directive (default on), if set to off
