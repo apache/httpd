@@ -1175,7 +1175,7 @@ static struct ent *make_autoindex_entry(const apr_finfo_t *dirent,
 
     /* Dot is ignored, Parent is handled by make_parent_entry() */
     if ((dirent->name[0] == '.') && (!dirent->name[1]
-        || (dirent->name[1] == '.') && !dirent->name[2]))
+        || ((dirent->name[1] == '.') && !dirent->name[2])))
 	return (NULL);
 
     if (ignore_entry(d, ap_make_full_path(r->pool, r->filename, dirent->name)))
