@@ -565,7 +565,7 @@ static int match_headers(request_rec *r)
         }
 
         if ((b->pattern && apr_strmatch(b->pattern, val, val_len)) ||
-            !ap_regexec(b->preg, val, 0, NULL, 0)) {
+            (!b->pattern && !ap_regexec(b->preg, val, 0, NULL, 0))) {
 	    const apr_array_header_t *arr = apr_table_elts(b->features);
             elts = (const apr_table_entry_t *) arr->elts;
 
