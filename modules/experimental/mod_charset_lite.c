@@ -1137,7 +1137,6 @@ module charset_lite_module =
     NULL, 
     NULL,
     cmds,
-    NULL,
-    charset_register_hooks,
+    charset_register_hooks
 };
 
