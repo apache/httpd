@@ -688,6 +688,9 @@ char *util_ald_cache_display(request_rec *r, util_ldap_state_t *st)
             }
 
         }
+        else {
+            buf = "";
+        }
     }
     else {
         ap_rputs("<p>\n"
