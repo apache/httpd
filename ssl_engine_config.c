@@ -95,9 +95,8 @@ SSLModConfigRec *ssl_config_global_create(server_rec *s)
     mc->nSessionCacheMode      = SSL_SCMODE_UNSET;
     mc->szSessionCacheDataFile = NULL;
     mc->nSessionCacheDataSize  = 0;
-#if 0 /* XXX */
     mc->pSessionCacheDataMM    = NULL;
-#endif
+    mc->pSessionCacheDataRMM   = NULL;
     mc->tSessionCacheDataTable = NULL;
     mc->nMutexMode             = SSL_MUTEXMODE_UNSET;
     mc->szMutexFile            = NULL;
@@ -803,6 +802,9 @@ const char *ssl_cmd_SSLVerifyDepth(cmd_parms *cmd, void *ctx,
     return NULL;
 }
 
+#define MODSSL_NO_SHARED_MEMORY_ERROR \
+    "SSLSessionCache: shared memory cache not useable on this platform"
+
 const char *ssl_cmd_SSLSessionCache(cmd_parms *cmd, void *ctx,
                                     const char *arg)
 {
@@ -828,16 +830,10 @@ const char *ssl_cmd_SSLSessionCache(cmd_parms *cmd, void *ctx,
         mc->nSessionCacheMode      = SSL_SCMODE_DBM;
         mc->szSessionCacheDataFile = ap_server_root_relative(mc->pPool, arg+4);
     }
-    else if (((arglen > 4) && strcEQn(arg, "shm:", 4)) ||
-             ((arglen > 6) && strcEQn(arg, "shmht:", 6)))
-    {
-#if 0 /* XXX */
-        if (!ap_mm_useable()) {
-            return "SSLSessionCache: shared memory cache "
-                   "not useable on this platform";
-        }
+    else if ((arglen > 6) && strcEQn(arg, "shmht:", 6)) {
+#if !APR_HAS_SHARED_MEMORY
+        return MODSSL_NO_SHARED_MEMORY_ERROR;
 #endif
-
         mc->nSessionCacheMode = SSL_SCMODE_SHMHT;
         colon = ap_strchr_c(arg, ':');
         mc->szSessionCacheDataFile =
@@ -862,13 +858,7 @@ const char *ssl_cmd_SSLSessionCache(cmd_parms *cmd, void *ctx,
                        "size has to be >= 8192 bytes";
             }
 
-#if 0 /* XXX */
-            maxsize = ap_mm_core_maxsegsize();
-#else
-            maxsize = 1024 * 512;
-#endif
-
-            if (mc->nSessionCacheDataSize >= maxsize) {
+            if (mc->nSessionCacheDataSize >= APR_SHM_MAXSIZE) {
                 return apr_psprintf(cmd->pool,
                                     "SSLSessionCache: Invalid argument: "
                                     "size has to be < %d bytes on this "
@@ -876,22 +866,22 @@ const char *ssl_cmd_SSLSessionCache(cmd_parms *cmd, void *ctx,
             }
         }
     }
-    else if ((arglen > 6) && strcEQn(arg, "shmcb:", 6)) {
-#if 0 /* XXX */
-        if (!ap_mm_useable()) {
-            return "SSLSessionCache: shared memory cache "
-                   "not useable on this platform";
-        }
+    else if (((arglen > 4) && strcEQn(arg, "shm:", 4)) ||
+             ((arglen > 6) && strcEQn(arg, "shmcb:", 6))) {
+#if !APR_HAS_SHARED_MEMORY
+        return MODSSL_NO_SHARED_MEMORY_ERROR;
 #endif
         mc->nSessionCacheMode      = SSL_SCMODE_SHMCB;
-        mc->szSessionCacheDataFile = ap_server_root_relative(mc->pPool, arg+6);
+        colon = ap_strchr_c(arg, ':');
+        mc->szSessionCacheDataFile =
+            ap_server_root_relative(mc->pPool, colon+1);
         mc->tSessionCacheDataTable = NULL;
         mc->nSessionCacheDataSize  = 1024*512; /* 512KB */
 
         if ((cp = strchr(mc->szSessionCacheDataFile, '('))) {
             *cp++ = NUL;
 
-            if ((cp2 = strchr(cp, ')'))) {
+            if (!(cp2 = strchr(cp, ')'))) {
                 return "SSLSessionCache: Invalid argument: "
                        "no closing parenthesis";
             }
@@ -906,13 +896,7 @@ const char *ssl_cmd_SSLSessionCache(cmd_parms *cmd, void *ctx,
 
             }
 
-#if 0 /* XXX */
-            maxsize = ap_mm_core_maxsegsize();
-#else
-            maxsize = 1024 * 512;
-#endif
-
-            if (mc->nSessionCacheDataSize >= maxsize) {
+            if (mc->nSessionCacheDataSize >= APR_SHM_MAXSIZE) {
                 return apr_psprintf(cmd->pool,
                                     "SSLSessionCache: Invalid argument: "
                                     "size has to be < %d bytes on this "

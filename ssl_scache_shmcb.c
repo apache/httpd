@@ -59,8 +59,6 @@
 
 #include "mod_ssl.h"
 
-#if 0 /* XXX */
-
 /* 
  * This shared memory based SSL session cache implementation was
  * originally written by Geoff Thorpe <geoff@eu.c2.net> for C2Net Europe
@@ -178,24 +176,6 @@
  * so as to decrease "struct-bloat". sigh.
  */
 typedef struct {
-#if 0
-    unsigned char division_mask;
-    unsigned int division_offset;
-    unsigned int division_size;
-    unsigned int queue_size;
-    unsigned int index_num;
-    unsigned int index_offset;
-    unsigned int index_size;
-    unsigned int cache_data_offset;
-    unsigned int cache_data_size;
-    unsigned long num_stores;
-    unsigned long num_expiries;
-    unsigned long num_scrolled;
-    unsigned long num_retrieves_hit;
-    unsigned long num_retrieves_miss;
-    unsigned long num_removes_hit;
-    unsigned long num_removes_miss;
-#else
     unsigned long num_stores;
     unsigned long num_expiries;
     unsigned long num_scrolled;
@@ -208,11 +188,10 @@ typedef struct {
     unsigned int queue_size;
     unsigned int cache_data_offset;
     unsigned int cache_data_size;
+    unsigned char division_mask;
     unsigned int index_num;
     unsigned int index_offset;
     unsigned int index_size;
-    unsigned char division_mask;
-#endif
 } SHMCBHeader;
 
 /* 
@@ -262,13 +241,38 @@ typedef struct {
    memcpys can hardly make a dent on the massive memmove operations this
    cache technique avoids, nor the overheads of ASN en/decoding. */
 static unsigned int shmcb_get_safe_uint(unsigned int *);
-static void shmcb_set_safe_uint(unsigned int *, unsigned int);
+static void shmcb_set_safe_uint_ex(unsigned char *, const unsigned char *);
+#define shmcb_set_safe_uint(pdest, src) \
+	do { \
+		unsigned int tmp_uint = src; \
+		shmcb_set_safe_uint_ex((unsigned char *)pdest, \
+			(const unsigned char *)(&tmp_uint)); \
+	} while(0)
 #if 0 /* Unused so far */
 static unsigned long shmcb_get_safe_ulong(unsigned long *);
-static void shmcb_set_safe_ulong(unsigned long *, unsigned long);
+static void shmcb_set_safe_ulong_ex(unsigned char *, const unsigned char *);
+#define shmcb_set_safe_ulong(pdest, src) \
+	do { \
+		unsigned long tmp_ulong = src; \
+		shmcb_set_safe_ulong_ex((unsigned char *)pdest, \
+			(const unsigned char *)(&tmp_ulong)); \
+	} while(0)
 #endif
 static time_t shmcb_get_safe_time(time_t *);
-static void shmcb_set_safe_time(time_t *, time_t);
+static void shmcb_set_safe_time_ex(unsigned char *, const unsigned char *);
+#define shmcb_set_safe_time(pdest, src) \
+	do { \
+		time_t tmp_time = src; \
+		shmcb_set_safe_time_ex((unsigned char *)pdest, \
+			(const unsigned char *)(&tmp_time)); \
+	} while(0)
+
+/* This is necessary simply so that the size passed to memset() is not a
+ * compile-time constant, preventing the compiler from optimising it. */
+static void shmcb_safe_clear(void *ptr, size_t size)
+{
+	memset(ptr, 0, size);
+}
 
 /* Underlying functions for session-caching */
 static BOOL shmcb_init_memory(server_rec *, void *, unsigned int);
@@ -306,81 +310,65 @@ static BOOL shmcb_remove_session_id(server_rec *, SHMCBQueue *, SHMCBCache *, UC
 
 static unsigned int shmcb_get_safe_uint(unsigned int *ptr)
 {
-    unsigned char *from;
     unsigned int ret;
-
-    from = (unsigned char *)ptr;
-    memcpy(&ret, from, sizeof(unsigned int));
+    shmcb_set_safe_uint_ex((unsigned char *)(&ret),
+		    (const unsigned char *)ptr);
     return ret;
 }
 
-static void shmcb_set_safe_uint(unsigned int *ptr, unsigned int val)
+static void shmcb_set_safe_uint_ex(unsigned char *dest,
+				const unsigned char *src)
 {
-    unsigned char *to, *from;
-
-    to = (unsigned char *)ptr;
-    from = (unsigned char *)(&val);
-    memcpy(to, from, sizeof(unsigned int));
+    memcpy(dest, src, sizeof(unsigned int));
 }
 
 #if 0 /* Unused so far */
 static unsigned long shmcb_get_safe_ulong(unsigned long *ptr)
 {
-    unsigned char *from;
     unsigned long ret;
-
-    from = (unsigned char *)ptr;
-    memcpy(&ret, from, sizeof(unsigned long));
+    shmcb_set_safe_ulong_ex((unsigned char *)(&ret),
+		    (const unsigned char *)ptr);
     return ret;
 }
 
-static void shmcb_set_safe_ulong(unsigned long *ptr, unsigned long val)
+static void shmcb_set_safe_ulong_ex(unsigned char *dest,
+				const unsigned char *src)
 {
-    unsigned char *to, *from;
-
-    to = (unsigned char *)ptr;
-    from = (unsigned char *)(&val);
-    memcpy(to, from, sizeof(unsigned long));
+    memcpy(dest, src, sizeof(unsigned long));
 }
 #endif
 
 static time_t shmcb_get_safe_time(time_t * ptr)
 {
-    unsigned char *from;
     time_t ret;
-
-    from = (unsigned char *)ptr;
-    memcpy(&ret, from, sizeof(time_t));
+    shmcb_set_safe_time_ex((unsigned char *)(&ret),
+		    (const unsigned char *)ptr);
     return ret;
 }
 
-static void shmcb_set_safe_time(time_t * ptr, time_t val)
+static void shmcb_set_safe_time_ex(unsigned char *dest,
+				const unsigned char *src)
 {
-    unsigned char *to, *from;
-
-    to = (unsigned char *)ptr;
-    from = (unsigned char *)(&val);
-    memcpy(to, from, sizeof(time_t));
+    memcpy(dest, src, sizeof(time_t));
 }
-
 /*
 **
 ** High-Level "handlers" as per ssl_scache.c
 **
 */
 
-static void *shmcb_malloc(size_t size)
+static void *shmcb_malloc(SSLModConfigRec *mc, size_t size)
 {
-    SSLModConfigRec *mc = myModConfig();
-    return ap_mm_malloc(mc->pSessionCacheDataMM, size);
+    apr_rmm_off_t off = apr_rmm_malloc(mc->pSessionCacheDataRMM, size);
+    return apr_rmm_addr_get(mc->pSessionCacheDataRMM, off);
 }
 
-void ssl_scache_shmcb_init(server_rec *s, pool *p)
+void ssl_scache_shmcb_init(server_rec *s, apr_pool_t *p)
 {
-    SSLModConfigRec *mc = myModConfig();
-    AP_MM *mm;
+    SSLModConfigRec *mc = myModConfig(s);
     void *shm_segment = NULL;
     int avail, avail_orig;
+    apr_status_t rv;
 
     /*
      * Create shared memory segment
@@ -389,23 +377,29 @@ void ssl_scache_shmcb_init(server_rec *s, pool *p)
         ssl_log(s, SSL_LOG_ERROR, "SSLSessionCache required");
         ssl_die();
     }
-    if ((mm = ap_mm_create(mc->nSessionCacheDataSize,
-                           mc->szSessionCacheDataFile)) == NULL) {
+
+    if ((rv = apr_shm_create(&(mc->pSessionCacheDataMM), 
+                             mc->nSessionCacheDataSize, 
+                             mc->szSessionCacheDataFile,
+                             mc->pPool)) != APR_SUCCESS) {
         ssl_log(s, SSL_LOG_ERROR,
-                "Cannot allocate shared memory: %s", ap_mm_error());
+                "Cannot allocate shared memory: %d", rv);
         ssl_die();
     }
-    mc->pSessionCacheDataMM = mm;
 
-    /*
-     * Make sure the child processes have access to the underlying files
-     */
-    ap_mm_permission(mm, SSL_MM_FILE_MODE, ap_user_id, -1);
+    if ((rv = apr_rmm_init(&(mc->pSessionCacheDataRMM), NULL,
+                             apr_shm_baseaddr_get(mc->pSessionCacheDataMM),
+                             mc->nSessionCacheDataSize,
+                             mc->pPool)) != APR_SUCCESS) {
+        ssl_log(s, SSL_LOG_ERROR,
+                "Cannot initialize rmm: %d", rv);
+        ssl_die();
+    }
 
     /*
      * Create cache inside the shared memory segment
      */
-    avail = avail_orig = ap_mm_available(mm);
+    avail_orig = avail = mc->nSessionCacheDataSize - apr_rmm_overhead_get(0);
     ssl_log(s, SSL_LOG_TRACE, "Shared-memory segment has %u available",
             avail);
 
@@ -415,11 +409,11 @@ void ssl_scache_shmcb_init(server_rec *s, pool *p)
      * and error and output trace information.
      */
     while ((shm_segment == NULL) && ((avail_orig - avail) * 100 < avail_orig)) {
-        shm_segment = shmcb_malloc(avail);
+        shm_segment = shmcb_malloc(mc, avail);
         if (shm_segment == NULL) {
             ssl_log(s, SSL_LOG_TRACE,
                     "shmcb_malloc attempt for %u bytes failed", avail);
-            avail -= 2;
+            avail -= 4;
         }
     }
     if (shm_segment == NULL) {
@@ -447,10 +441,15 @@ void ssl_scache_shmcb_init(server_rec *s, pool *p)
 
 void ssl_scache_shmcb_kill(server_rec *s)
 {
-    SSLModConfigRec *mc = myModConfig();
+    SSLModConfigRec *mc = myModConfig(s);
+
+    if (mc->pSessionCacheDataRMM != NULL) {
+        apr_rmm_destroy(mc->pSessionCacheDataRMM);
+        mc->pSessionCacheDataRMM = NULL;
+    }
 
     if (mc->pSessionCacheDataMM != NULL) {
-        ap_mm_destroy(mc->pSessionCacheDataMM);
+        apr_shm_destroy(mc->pSessionCacheDataMM);
         mc->pSessionCacheDataMM = NULL;
     }
     return;
@@ -459,7 +458,7 @@ void ssl_scache_shmcb_kill(server_rec *s)
 BOOL ssl_scache_shmcb_store(server_rec *s, UCHAR *id, int idlen,
                            time_t timeout, SSL_SESSION * pSession)
 {
-    SSLModConfigRec *mc = myModConfig();
+    SSLModConfigRec *mc = myModConfig(s);
     void *shm_segment;
     BOOL to_return = FALSE;
 
@@ -480,7 +479,7 @@ BOOL ssl_scache_shmcb_store(server_rec *s, UCHAR *id, int idlen,
 
 SSL_SESSION *ssl_scache_shmcb_retrieve(server_rec *s, UCHAR *id, int idlen)
 {
-    SSLModConfigRec *mc = myModConfig();
+    SSLModConfigRec *mc = myModConfig(s);
     void *shm_segment;
     SSL_SESSION *pSession;
 
@@ -501,7 +500,7 @@ SSL_SESSION *ssl_scache_shmcb_retrieve(server_rec *s, UCHAR *id, int idlen)
 
 void ssl_scache_shmcb_remove(server_rec *s, UCHAR *id, int idlen)
 {
-    SSLModConfigRec *mc = myModConfig();
+    SSLModConfigRec *mc = myModConfig(s);
     void *shm_segment;
 
     /* We've kludged our pointer into the other cache's member variable. */
@@ -517,10 +516,10 @@ void ssl_scache_shmcb_expire(server_rec *s)
     return;
 }
 
-void ssl_scache_shmcb_status(server_rec *s, pool *p,
+void ssl_scache_shmcb_status(server_rec *s, apr_pool_t *p,
                             void (*func) (char *, void *), void *arg)
 {
-    SSLModConfigRec *mc = myModConfig();
+    SSLModConfigRec *mc = myModConfig(s);
     SHMCBHeader *header;
     SHMCBQueue queue;
     SHMCBCache cache;
@@ -569,36 +568,36 @@ void ssl_scache_shmcb_status(server_rec *s, pool *p,
     }
     index_pct = (100 * total) / (header->index_num * (header->division_mask + 1));
     cache_pct = (100 * cache_total) / (header->cache_data_size * (header->division_mask + 1));
-    func(ap_psprintf(p, "cache type: <b>SHMCB</b>, shared memory: <b>%d</b> "
+    func(apr_psprintf(p, "cache type: <b>SHMCB</b>, shared memory: <b>%d</b> "
                      "bytes, current sessions: <b>%d</b><br>",
                      mc->nSessionCacheDataSize, total), arg);
-    func(ap_psprintf(p, "sub-caches: <b>%d</b>, indexes per sub-cache: "
+    func(apr_psprintf(p, "sub-caches: <b>%d</b>, indexes per sub-cache: "
                      "<b>%d</b><br>", (int) header->division_mask + 1,
                      (int) header->index_num), arg);
     if (non_empty_divisions != 0) {
         average_expiry = (time_t)(expiry_total / (double)non_empty_divisions);
-        func(ap_psprintf(p, "time left on oldest entries' SSL sessions: "), arg);
+        func(apr_psprintf(p, "time left on oldest entries' SSL sessions: "), arg);
         if (now < average_expiry)
-            func(ap_psprintf(p, "avg: <b>%d</b> seconds, (range: %d...%d)<br>",
+            func(apr_psprintf(p, "avg: <b>%d</b> seconds, (range: %d...%d)<br>",
                             (int)(average_expiry - now), (int) (min_expiry - now),
                             (int)(max_expiry - now)), arg);
         else
-            func(ap_psprintf(p, "expiry threshold: <b>Calculation Error!</b>" 
+            func(apr_psprintf(p, "expiry threshold: <b>Calculation Error!</b>" 
                              "<br>"), arg);
 
     }
-    func(ap_psprintf(p, "index usage: <b>%d%%</b>, cache usage: <b>%d%%</b>"
+    func(apr_psprintf(p, "index usage: <b>%d%%</b>, cache usage: <b>%d%%</b>"
                      "<br>", index_pct, cache_pct), arg);
-    func(ap_psprintf(p, "total sessions stored since starting: <b>%lu</b><br>",
+    func(apr_psprintf(p, "total sessions stored since starting: <b>%lu</b><br>",
                      header->num_stores), arg);
-    func(ap_psprintf(p, "total sessions expired since starting: <b>%lu</b><br>",
+    func(apr_psprintf(p,"total sessions expired since starting: <b>%lu</b><br>",
                      header->num_expiries), arg);
-    func(ap_psprintf(p, "total (pre-expiry) sessions scrolled out of the "
+    func(apr_psprintf(p, "total (pre-expiry) sessions scrolled out of the "
                      "cache: <b>%lu</b><br>", header->num_scrolled), arg);
-    func(ap_psprintf(p, "total retrieves since starting: <b>%lu</b> hit, "
+    func(apr_psprintf(p, "total retrieves since starting: <b>%lu</b> hit, "
                      "<b>%lu</b> miss<br>", header->num_retrieves_hit,
                      header->num_retrieves_miss), arg);
-    func(ap_psprintf(p, "total removes since starting: <b>%lu</b> hit, "
+    func(apr_psprintf(p, "total removes since starting: <b>%lu</b> hit, "
                      "<b>%lu</b> miss<br>", header->num_removes_hit,
                      header->num_removes_miss), arg);
     ssl_log(s, SSL_LOG_TRACE, "leaving shmcb_status");
@@ -1342,6 +1341,3 @@ end:
     ssl_log(s, SSL_LOG_TRACE, "leaving shmcb_remove_session_id");
     return to_return;
 }
-
-#endif /* XXX */
-

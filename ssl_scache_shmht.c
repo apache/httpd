@@ -59,35 +59,46 @@
 
 #include "mod_ssl.h"
 
-#if 0 /* XXX */
-
 /*
  *  Wrapper functions for table library which resemble malloc(3) & Co 
  *  but use the variants from the MM shared memory library.
  */
 
-static void *ssl_scache_shmht_malloc(size_t size)
+static void *ssl_scache_shmht_malloc(void *opt_param, size_t size)
 {
-    SSLModConfigRec *mc = myModConfig();
-    return ap_mm_malloc(mc->pSessionCacheDataMM, size);
+    SSLModConfigRec *mc = myModConfig((server_rec *)opt_param);
+
+    apr_rmm_off_t off = apr_rmm_calloc(mc->pSessionCacheDataRMM, size);
+    return apr_rmm_addr_get(mc->pSessionCacheDataRMM, off);
 }
 
-static void *ssl_scache_shmht_calloc(size_t number, size_t size)
+static void *ssl_scache_shmht_calloc(void *opt_param,
+                                     size_t number, size_t size)
 {
-    SSLModConfigRec *mc = myModConfig();
-    return ap_mm_calloc(mc->pSessionCacheDataMM, number, size);
+    SSLModConfigRec *mc = myModConfig((server_rec *)opt_param);
+
+    apr_rmm_off_t off = apr_rmm_calloc(mc->pSessionCacheDataRMM, (number*size));
+ssl_log((server_rec *)opt_param, SSL_LOG_ERROR,
+    "rmm calloc returning %ld %ld size %d",
+    off, apr_rmm_addr_get(mc->pSessionCacheDataRMM, off), (number * size));
+
+    return apr_rmm_addr_get(mc->pSessionCacheDataRMM, off);
 }
 
-static void *ssl_scache_shmht_realloc(void *ptr, size_t size)
+static void *ssl_scache_shmht_realloc(void *opt_param, void *ptr, size_t size)
 {
-    SSLModConfigRec *mc = myModConfig();
-    return ap_mm_realloc(mc->pSessionCacheDataMM, ptr, size);
+    SSLModConfigRec *mc = myModConfig((server_rec *)opt_param);
+
+    apr_rmm_off_t off = apr_rmm_realloc(mc->pSessionCacheDataRMM, ptr, size);
+    return apr_rmm_addr_get(mc->pSessionCacheDataRMM, off);
 }
 
-static void ssl_scache_shmht_free(void *ptr)
+static void ssl_scache_shmht_free(void *opt_param, void *ptr)
 {
-    SSLModConfigRec *mc = myModConfig();
-    ap_mm_free(mc->pSessionCacheDataMM, ptr);
+    SSLModConfigRec *mc = myModConfig((server_rec *)opt_param);
+
+    apr_rmm_off_t off = apr_rmm_offset_get(mc->pSessionCacheDataRMM, ptr);
+    apr_rmm_free(mc->pSessionCacheDataRMM, off);
     return;
 }
 
@@ -96,14 +107,14 @@ static void ssl_scache_shmht_free(void *ptr)
  * based on a hash table inside a shared memory segment.
  */
 
-void ssl_scache_shmht_init(server_rec *s, pool *p)
+void ssl_scache_shmht_init(server_rec *s, apr_pool_t *p)
 {
-    SSLModConfigRec *mc = myModConfig();
-    AP_MM *mm;
+    SSLModConfigRec *mc = myModConfig(s);
     table_t *ta;
     int ta_errno;
-    int avail;
+    apr_size_t avail;
     int n;
+    apr_status_t rv;
 
     /*
      * Create shared memory segment
@@ -112,35 +123,47 @@ void ssl_scache_shmht_init(server_rec *s, pool *p)
         ssl_log(s, SSL_LOG_ERROR, "SSLSessionCache required");
         ssl_die();
     }
-    if ((mm = ap_mm_create(mc->nSessionCacheDataSize, 
-                           mc->szSessionCacheDataFile)) == NULL) {
-        ssl_log(s, SSL_LOG_ERROR, 
-                "Cannot allocate shared memory: %s", ap_mm_error());
+
+    if ((rv = apr_shm_create(&(mc->pSessionCacheDataMM), 
+                   mc->nSessionCacheDataSize, 
+                   mc->szSessionCacheDataFile, mc->pPool)) != APR_SUCCESS) {
+        ssl_log(s, SSL_LOG_ERROR,
+                "Cannot allocate shared memory: %d", rv);
         ssl_die();
     }
-    mc->pSessionCacheDataMM = mm;
 
-    /* 
-     * Make sure the childs have access to the underlaying files
-     */
-    ap_mm_permission(mm, SSL_MM_FILE_MODE, ap_user_id, -1);
+    if ((rv = apr_rmm_init(&(mc->pSessionCacheDataRMM), NULL,
+                   apr_shm_baseaddr_get(mc->pSessionCacheDataMM),
+                   mc->nSessionCacheDataSize, mc->pPool)) != APR_SUCCESS) {
+        ssl_log(s, SSL_LOG_ERROR,
+                "Cannot initialize rmm: %d", rv);
+        ssl_die();
+    }
+ssl_log(s, SSL_LOG_ERROR, "initialize MM %ld RMM %ld",
+        mc->pSessionCacheDataMM, mc->pSessionCacheDataRMM);
 
     /*
      * Create hash table in shared memory segment
      */
-    avail = ap_mm_available(mm);
+    avail = mc->nSessionCacheDataSize;
     n = (avail/2) / 1024;
     n = n < 10 ? 10 : n;
+
+    /*
+     * Passing server_rec as opt_param to table_alloc so that we can do
+     * logging if required ssl_util_table. Otherwise, mc is sufficient.
+     */ 
     if ((ta = table_alloc(n, &ta_errno, 
                           ssl_scache_shmht_malloc,  
                           ssl_scache_shmht_calloc, 
                           ssl_scache_shmht_realloc, 
-                          ssl_scache_shmht_free    )) == NULL) {
+                          ssl_scache_shmht_free, s )) == NULL) {
         ssl_log(s, SSL_LOG_ERROR,
                 "Cannot allocate hash table in shared memory: %s",
                 table_strerror(ta_errno));
         ssl_die();
     }
+
     table_attr(ta, TABLE_FLAG_AUTO_ADJUST|TABLE_FLAG_ADJUST_DOWN);
     table_set_data_alignment(ta, sizeof(char *));
     table_clear(ta);
@@ -157,10 +180,15 @@ void ssl_scache_shmht_init(server_rec *s, pool *p)
 
 void ssl_scache_shmht_kill(server_rec *s)
 {
-    SSLModConfigRec *mc = myModConfig();
+    SSLModConfigRec *mc = myModConfig(s);
+
+    if (mc->pSessionCacheDataRMM != NULL) {
+        apr_rmm_destroy(mc->pSessionCacheDataRMM);
+        mc->pSessionCacheDataRMM = NULL;
+    }
 
     if (mc->pSessionCacheDataMM != NULL) {
-        ap_mm_destroy(mc->pSessionCacheDataMM);
+        apr_shm_destroy(mc->pSessionCacheDataMM);
         mc->pSessionCacheDataMM = NULL;
     }
     return;
@@ -168,7 +196,7 @@ void ssl_scache_shmht_kill(server_rec *s)
 
 BOOL ssl_scache_shmht_store(server_rec *s, UCHAR *id, int idlen, time_t expiry, SSL_SESSION *sess)
 {
-    SSLModConfigRec *mc = myModConfig();
+    SSLModConfigRec *mc = myModConfig(s);
     void *vp;
     UCHAR ucaData[SSL_SESSION_MAX_DER];
     int nData;
@@ -199,7 +227,7 @@ BOOL ssl_scache_shmht_store(server_rec *s, UCHAR *id, int idlen, time_t expiry, 
 
 SSL_SESSION *ssl_scache_shmht_retrieve(server_rec *s, UCHAR *id, int idlen)
 {
-    SSLModConfigRec *mc = myModConfig();
+    SSLModConfigRec *mc = myModConfig(s);
     void *vp;
     SSL_SESSION *sess = NULL;
     UCHAR *ucpData;
@@ -245,7 +273,7 @@ SSL_SESSION *ssl_scache_shmht_retrieve(server_rec *s, UCHAR *id, int idlen)
 
 void ssl_scache_shmht_remove(server_rec *s, UCHAR *id, int idlen)
 {
-    SSLModConfigRec *mc = myModConfig();
+    SSLModConfigRec *mc = myModConfig(s);
 
     /* remove value under key in table */
     ssl_mutex_on(s);
@@ -256,7 +284,7 @@ void ssl_scache_shmht_remove(server_rec *s, UCHAR *id, int idlen)
 
 void ssl_scache_shmht_expire(server_rec *s)
 {
-    SSLModConfigRec *mc = myModConfig();
+    SSLModConfigRec *mc = myModConfig(s);
     SSLSrvConfigRec *sc = mySrvConfig(s);
     static time_t tLast = 0;
     table_linear_t iterator;
@@ -292,6 +320,10 @@ void ssl_scache_shmht_expire(server_rec *s)
                 bDelete = TRUE;
             else {
                 memcpy(&tExpiresAt, vpData, sizeof(time_t));
+                /* 
+                 * XXX : Force the record to be cleaned up. TBD (Madhu)
+                 * tExpiresAt = tNow;
+                 */
                 if (tExpiresAt <= tNow)
                    bDelete = TRUE;
             }
@@ -304,17 +336,19 @@ void ssl_scache_shmht_expire(server_rec *s)
                              vpKeyThis, nKeyThis, NULL, NULL);
                 nDeleted++;
             }
-        } while (rc == TABLE_ERROR_NONE);
+        } while (rc == TABLE_ERROR_NONE); 
+        /* (vpKeyThis != vpKey) && (nKeyThis != nKey) */
     }
     ssl_mutex_off(s);
     ssl_log(s, SSL_LOG_TRACE, "Inter-Process Session Cache (SHMHT) Expiry: "
-            "old: %d, new: %d, removed: %d", nElements, nElements-nDeleted, nDeleted);
+            "old: %d, new: %d, removed: %d",
+            nElements, nElements-nDeleted, nDeleted);
     return;
 }
 
-void ssl_scache_shmht_status(server_rec *s, pool *p, void (*func)(char *, void *), void *arg)
+void ssl_scache_shmht_status(server_rec *s, apr_pool_t *p, void (*func)(char *, void *), void *arg)
 {
-    SSLModConfigRec *mc = myModConfig();
+    SSLModConfigRec *mc = myModConfig(s);
     void *vpKey;
     void *vpData;
     int nKey;
@@ -334,18 +368,15 @@ void ssl_scache_shmht_status(server_rec *s, pool *p, void (*func)(char *, void *
             nElem += 1;
             nSize += nData;
         } while (table_next(mc->tSessionCacheDataTable,
-                            &vpKey, &nKey, &vpData, &nData) == TABLE_ERROR_NONE);
+                        &vpKey, &nKey, &vpData, &nData) == TABLE_ERROR_NONE);
     }
     ssl_mutex_off(s);
     if (nSize > 0 && nElem > 0)
         nAverage = nSize / nElem;
     else
         nAverage = 0;
-    func(ap_psprintf(p, "cache type: <b>SHMHT</b>, maximum size: <b>%d</b> bytes<br>", mc->nSessionCacheDataSize), arg);
-    func(ap_psprintf(p, "current sessions: <b>%d</b>, current size: <b>%d</b> bytes<br>", nElem, nSize), arg);
-    func(ap_psprintf(p, "average session size: <b>%d</b> bytes<br>", nAverage), arg);
+    func(apr_psprintf(p, "cache type: <b>SHMHT</b>, maximum size: <b>%d</b> bytes<br>", mc->nSessionCacheDataSize), arg);
+    func(apr_psprintf(p, "current sessions: <b>%d</b>, current size: <b>%d</b> bytes<br>", nElem, nSize), arg);
+    func(apr_psprintf(p, "average session size: <b>%d</b> bytes<br>", nAverage), arg);
     return;
 }
-
-#endif /* XXX */
-
