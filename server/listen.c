@@ -250,8 +250,9 @@ void ap_listen_pre_config(void)
 }
 
 
-const char *ap_set_listener(cmd_parms *cmd, void *dummy, char *ips)
+const char *ap_set_listener(cmd_parms *cmd, void *dummy, const char *ips_)
 {
+    char *ips=ap_pstrdup(cmd->pool, ips_);
     char *ports;
     unsigned short port;
 
@@ -290,7 +291,7 @@ const char *ap_set_listener(cmd_parms *cmd, void *dummy, char *ips)
     return NULL;
 }
 
-const char *ap_set_listenbacklog(cmd_parms *cmd, void *dummy, char *arg) 
+const char *ap_set_listenbacklog(cmd_parms *cmd, void *dummy, const char *arg) 
 {
     int b;
 
@@ -307,7 +308,7 @@ const char *ap_set_listenbacklog(cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
-const char *ap_set_send_buffer_size(cmd_parms *cmd, void *dummy, char *arg)
+const char *ap_set_send_buffer_size(cmd_parms *cmd, void *dummy, const char *arg)
 {
     int s = atoi(arg);
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);

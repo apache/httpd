@@ -865,7 +865,7 @@ API_EXPORT(request_rec *) ap_sub_req_lookup_file(const char *new_file,
      * not even have to redo access checks.
      */
 
-    if (strchr(new_file, '/') == NULL) {
+    if (ap_strchr_c(new_file, '/') == NULL) {
         char *udir = ap_make_dirstr_parent(rnew->pool, r->uri);
 
         rnew->uri = ap_make_full_path(rnew->pool, udir, new_file);

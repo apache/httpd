@@ -179,7 +179,7 @@ void ap_init_vhost_config(ap_pool_t *p)
  * *paddr is the variable used to keep track of **paddr between calls
  * port is the default port to assume
  */
-static const char *get_addresses(ap_pool_t *p, const char *w,
+static const char *get_addresses(ap_pool_t *p, const char *w_,
 				 server_addr_rec ***paddr, unsigned port)
 {
     struct hostent *hep;
@@ -187,10 +187,12 @@ static const char *get_addresses(ap_pool_t *p, const char *w,
     server_addr_rec *sar;
     char *t;
     int i, is_an_ip_addr;
+    char *w;
 
-    if (*w == 0)
+    if (*w_ == 0)
 	return NULL;
 
+    w=ap_pstrdup(p, w_);
     t = strchr(w, ':');
     if (t) {
 	if (strcmp(t + 1, "*") == 0) {
@@ -225,8 +227,6 @@ static const char *get_addresses(ap_pool_t *p, const char *w,
 	sar->host_addr.s_addr = my_addr;
 	sar->host_port = port;
 	sar->virthost = ap_pstrdup(p, w);
-	if (t != NULL)
-	    *t = ':';
 	return NULL;
     }
 
@@ -235,8 +235,6 @@ static const char *get_addresses(ap_pool_t *p, const char *w,
     if ((!hep) || (hep->h_addrtype != AF_INET || !hep->h_addr_list[0])) {
 	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, NULL,
 	    "Cannot resolve host name %s --- ignoring!", w);
-	if (t != NULL)
-	    *t = ':';
 	return NULL;
     }
 
@@ -249,8 +247,6 @@ static const char *get_addresses(ap_pool_t *p, const char *w,
 	sar->virthost = ap_pstrdup(p, w);
     }
 
-    if (t != NULL)
-	*t = ':';
     return NULL;
 }
 

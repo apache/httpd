@@ -277,13 +277,13 @@ static void init_handlers(ap_pool_t *p)
     int nwildhandlers = 0;
     const handler_rec *handp;
     fast_handler_rec *ph, *pw;
-    char *starp;
+    const char *starp;
 
     for (modp = top_module; modp; modp = modp->next) {
 	if (!modp->handlers)
 	    continue;
 	for (handp = modp->handlers; handp->content_type; ++handp) {
-	    if (strchr(handp->content_type, '*')) {
+	    if (ap_strchr_c(handp->content_type, '*')) {
                 nwildhandlers ++;
             } else {
                 nhandlers ++;
@@ -296,7 +296,7 @@ static void init_handlers(ap_pool_t *p)
 	if (!modp->handlers)
 	    continue;
 	for (handp = modp->handlers; handp->content_type; ++handp) {
-	    if ((starp = strchr(handp->content_type, '*'))) {
+	    if ((starp = ap_strchr_c(handp->content_type, '*'))) {
                 pw->hr.content_type = handp->content_type;
                 pw->hr.handler = handp->handler;
 		pw->len = starp - handp->content_type;
@@ -319,7 +319,7 @@ int ap_invoke_handler(request_rec *r)
 {
     fast_handler_rec *handp;
     const char *handler;
-    char *p;
+    const char *p;
     size_t handler_len;
     int result = HTTP_INTERNAL_SERVER_ERROR;
 
@@ -329,7 +329,8 @@ int ap_invoke_handler(request_rec *r)
     }
     else {
         handler = r->content_type ? r->content_type : ap_default_type(r);
-        if ((p = strchr(handler, ';')) != NULL) { /* MIME type arguments */
+        if ((p = ap_strchr_c(handler, ';')) != NULL) {
+	    /* MIME type arguments */
             while (p > handler && p[-1] == ' ')
 	        --p;		/* strip trailing spaces */
 	    handler_len = p - handler;

@@ -8,7 +8,7 @@ LTLIBRARY_SOURCES = \
 	http_protocol.c http_request.c http_vhost.c util.c util_date.c \
 	util_script.c util_uri.c util_md5.c util_cfgtree.c util_ebcdic.c \
 	rfc1413.c http_connection.c iol_file.c listen.c mpm_common.c \
-	util_charset.c
+	util_charset.c util_debug.c
 
 include $(top_srcdir)/build/ltlib.mk
 
@@ -16,7 +16,7 @@ gen_uri_delims_OBJECTS = gen_uri_delims.lo
 gen_uri_delims: $(gen_uri_delims_OBJECTS)
 	$(LINK) $(EXTRA_LDFLAGS) $(gen_uri_delims_OBJECTS)
 
-gen_test_char_OBJECTS = gen_test_char.lo
+gen_test_char_OBJECTS = gen_test_char.lo util_debug.lo
 gen_test_char: $(gen_test_char_OBJECTS)
 	$(LINK) $(EXTRA_LDFLAGS) $(gen_test_char_OBJECTS)
 

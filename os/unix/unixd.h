@@ -86,8 +86,8 @@ extern unixd_config_rec unixd_config;
 void unixd_detach(void);
 int unixd_setup_child(void);
 void unixd_pre_config(void);
-const char *unixd_set_user(cmd_parms *cmd, void *dummy, char *arg);
-const char *unixd_set_group(cmd_parms *cmd, void *dummy, char *arg);
+const char *unixd_set_user(cmd_parms *cmd, void *dummy, const char *arg);
+const char *unixd_set_group(cmd_parms *cmd, void *dummy, const char *arg);
 #if defined(RLIMIT_CPU) || defined(RLIMIT_DATA) || defined(RLIMIT_VMEM) || \
     defined(RLIMIT_NPROC) || defined(RLIMIT_AS)
 API_EXPORT(void) unixd_set_rlimit(cmd_parms *cmd, struct rlimit **plimit,
@@ -126,9 +126,9 @@ void unixd_siglist_init(void);
 #endif /* HAVE_KILLPG */
 
 #define UNIX_DAEMON_COMMANDS	\
-{ "User", unixd_set_user, NULL, RSRC_CONF, TAKE1, \
-  "Effective user id for this server"}, \
-{ "Group", unixd_set_group, NULL, RSRC_CONF, TAKE1, \
-  "Effective group id for this server"}, \
+AP_INIT_TAKE1("User", unixd_set_user, NULL, RSRC_CONF, \
+  "Effective user id for this server"), \
+AP_INIT_TAKE1("Group", unixd_set_group, NULL, RSRC_CONF, \
+  "Effective group id for this server"),
 
 #endif

@@ -527,7 +527,7 @@ static void parse_string(request_rec *r, const char *in, char *out,
 		if (*in == '{') {
 		    ++in;
 		    start_of_var_name = in;
-		    in = strchr(in, '}');
+		    in = ap_strchr_c(in, '}');
 		    if (in == NULL) {
                         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR,
 				    0, r, "Missing '}' on variable \"%s\"",
@@ -791,7 +791,7 @@ static ap_status_t build_argv_list(char ***argv, request_rec *r, ap_pool_t *p)
     char *w;
     const char *args = r->args;
 
-    if (!args || !args[0] || strchr(args, '=')) {
+    if (!args || !args[0] || ap_strchr_c(args, '=')) {
        numwords = 1;
     }
     else {

@@ -243,7 +243,7 @@ int unixd_setup_child(void)
 }
 
 
-const char *unixd_set_user(cmd_parms *cmd, void *dummy, char *arg)
+const char *unixd_set_user(cmd_parms *cmd, void *dummy, const char *arg)
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
@@ -269,7 +269,7 @@ const char *unixd_set_user(cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
-const char *unixd_set_group(cmd_parms *cmd, void *dummy, char *arg)
+const char *unixd_set_group(cmd_parms *cmd, void *dummy, const char *arg)
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
