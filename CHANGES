@@ -1,4 +1,10 @@
 Changes with Apache 2.0.20-dev
+  *) Fix problem in content-length filter where the filter would
+     buffer all the output from a CGI before sending any bytes
+     down the filter stack to the network. This problem would cause
+     significant memory consumption if the CGIs generated
+     lots of bytes. [Bill Stoddard]
+  
   *) Get non-blocking CGI pipe reads working with the bucket brigades.
      [Bill Stoddard]
 
