@@ -18,6 +18,10 @@
     $ make
     $ make install
   
+  NOTE: PREFIX is not the string "PREFIX". Instead use the Unix
+        filesystem path under which Apache should be installed. For
+        instance use "/usr/local/apache" for PREFIX above.
+
   After these steps Apache 1.3 is completely installed under PREFIX and
   already initially configured, so you can immediately fire it up the first
   time via

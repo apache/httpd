@@ -31,6 +31,10 @@
      $ make install
      $ PREFIX/sbin/apachectl start
 
+     NOTE: PREFIX is not the string "PREFIX". Instead use the Unix
+           filesystem path under which Apache should be installed. For
+           instance use "/usr/local/apache" for PREFIX above.
+
   2. Requirements
      ------------
 
