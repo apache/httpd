@@ -1,5 +1,10 @@
 Changes with Apache 2.0.37
 
+  *) Correctly return 413 when an invalid chunk size is given on
+     input.  Also modify ap_discard_request_body to not do anything
+     on sub-requests or when the connection will be dropped.
+     [Justin Erenkrantz]
+
   *) Fix the TIME_* SSL var lookups to be threadsafe.  PR 9469.
      [Cliff Woolley]
 

@@ -852,6 +852,17 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
             apr_brigade_flatten(bb, line, &len);
 
             ctx->remaining = get_chunk_size(line);
+            /* Detect invalid chunk sizes. */
+            if (ctx->remaining < 0) {
+                apr_brigade_cleanup(bb);
+                e = ap_bucket_error_create(HTTP_REQUEST_ENTITY_TOO_LARGE, NULL,
+                                           f->r->connection->pool,
+                                           f->r->connection->bucket_alloc);
+                APR_BRIGADE_INSERT_TAIL(bb, e);
+                e = apr_bucket_eos_create(f->r->connection->bucket_alloc);
+                APR_BRIGADE_INSERT_TAIL(bb, e);
+                return ap_pass_brigade(f->r->output_filters, bb);
+            }
         } 
     }
 
@@ -889,6 +900,17 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                 }
                 apr_brigade_flatten(bb, line, &len);
                 ctx->remaining = get_chunk_size(line);
+
+                /* Detect invalid chunk sizes. */
+                if (ctx->remaining < 0) {
+                    apr_brigade_cleanup(bb);
+                    e = ap_bucket_error_create(HTTP_REQUEST_ENTITY_TOO_LARGE,
+                                               NULL, c->pool, c->bucket_alloc);
+                    APR_BRIGADE_INSERT_TAIL(bb, e);
+                    e = apr_bucket_eos_create(c->bucket_alloc);
+                    APR_BRIGADE_INSERT_TAIL(bb, e);
+                    return ap_pass_brigade(f->r->output_filters, bb);
+                }
 
                 if (!ctx->remaining) {
                     /* Handle trailers by calling ap_get_mime_headers again! */
@@ -1776,6 +1798,17 @@ AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer,
 AP_DECLARE(int) ap_discard_request_body(request_rec *r)
 {
     int rv;
+
+    /* Sometimes we'll get in a state where the input handling has
+     * detected an error where we want to drop the connection, so if
+     * that's the case, don't read the data as that is what we're trying
+     * to avoid.
+     *
+     * This function is also a no-op on a subrequest.
+     */
+    if (r->main || ap_status_drops_connection(r->status)) {
+        return OK;
+    }
 
     if (r->read_length == 0) {  /* if not read already */
         if ((rv = ap_setup_client_block(r, REQUEST_CHUNKED_DECHUNK))) {
