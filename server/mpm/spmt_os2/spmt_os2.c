@@ -85,7 +85,7 @@
 /* config globals */
 
 static int ap_max_requests_per_child=0;
-static char *ap_pid_fname=NULL;
+static const char *ap_pid_fname=NULL;
 static int ap_daemons_to_start=0;
 static int ap_daemons_min_free=0;
 static int ap_daemons_max_free=0;
@@ -1159,7 +1159,7 @@ static void spmt_os2_hooks(apr_pool_t *p)
     ap_hook_pre_config(spmt_os2_pre_config, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
-static const char *set_pidfile(cmd_parms *cmd, void *dummy, char *arg) 
+static const char *set_pidfile(cmd_parms *cmd, void *dummy, const char *arg) 
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
@@ -1173,7 +1173,7 @@ static const char *set_pidfile(cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
-static const char *set_daemons_to_start(cmd_parms *cmd, void *dummy, char *arg)
+static const char *set_daemons_to_start(cmd_parms *cmd, void *dummy, const char *arg)
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
@@ -1184,7 +1184,7 @@ static const char *set_daemons_to_start(cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
-static const char *set_min_free_servers(cmd_parms *cmd, void *dummy, char *arg)
+static const char *set_min_free_servers(cmd_parms *cmd, void *dummy, const char *arg)
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
@@ -1205,7 +1205,7 @@ static const char *set_min_free_servers(cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
-static const char *set_max_free_servers(cmd_parms *cmd, void *dummy, char *arg)
+static const char *set_max_free_servers(cmd_parms *cmd, void *dummy, const char *arg)
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
@@ -1216,7 +1216,7 @@ static const char *set_max_free_servers(cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
-static const char *set_server_limit (cmd_parms *cmd, void *dummy, char *arg) 
+static const char *set_server_limit (cmd_parms *cmd, void *dummy, const char *arg) 
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
@@ -1244,7 +1244,7 @@ static const char *set_server_limit (cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
-static const char *set_max_requests(cmd_parms *cmd, void *dummy, char *arg) 
+static const char *set_max_requests(cmd_parms *cmd, void *dummy, const char *arg) 
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
@@ -1256,7 +1256,7 @@ static const char *set_max_requests(cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
-static const char *set_coredumpdir (cmd_parms *cmd, void *dummy, char *arg) 
+static const char *set_coredumpdir (cmd_parms *cmd, void *dummy, const char *arg) 
 {
     apr_finfo_t finfo;
     const char *fname;
@@ -1290,20 +1290,20 @@ AP_DECLARE(void) ap_reset_connection_status(long conn_id)
 
 static const command_rec spmt_os2_cmds[] = {
 LISTEN_COMMANDS
-{ "PidFile", set_pidfile, NULL, RSRC_CONF, TAKE1,
-    "A file for logging the server process ID"},
-{ "StartServers", set_daemons_to_start, NULL, RSRC_CONF, TAKE1,
-  "Number of child processes launched at server startup" },
-{ "MinSpareServers", set_min_free_servers, NULL, RSRC_CONF, TAKE1,
-  "Minimum number of idle children, to handle request spikes" },
-{ "MaxSpareServers", set_max_free_servers, NULL, RSRC_CONF, TAKE1,
-  "Maximum number of idle children" },
-{ "MaxClients", set_server_limit, NULL, RSRC_CONF, TAKE1,
-  "Maximum number of children alive at the same time" },
-{ "MaxRequestsPerChild", set_max_requests, NULL, RSRC_CONF, TAKE1,
-  "Maximum number of requests a particular child serves before dying." },
-{ "CoreDumpDirectory", set_coredumpdir, NULL, RSRC_CONF, TAKE1,
-  "The location of the directory Apache changes to before dumping core" },
+AP_INIT_TAKE1("PidFile", set_pidfile, NULL, RSRC_CONF,
+    "A file for logging the server process ID"),
+AP_INIT_TAKE1( "StartServers", set_daemons_to_start, NULL, RSRC_CONF, 
+  "Number of child processes launched at server startup" ),
+AP_INIT_TAKE1( "MinSpareServers", set_min_free_servers, NULL, RSRC_CONF,
+  "Minimum number of idle children, to handle request spikes" ),
+AP_INIT_TAKE1( "MaxSpareServers", set_max_free_servers, NULL, RSRC_CONF,
+  "Maximum number of idle children" ),
+AP_INIT_TAKE1( "MaxClients", set_server_limit, NULL, RSRC_CONF,
+  "Maximum number of children alive at the same time" ),
+AP_INIT_TAKE1( "MaxRequestsPerChild", set_max_requests, NULL, RSRC_CONF,
+  "Maximum number of requests a particular child serves before dying." ),
+AP_INIT_TAKE1( "CoreDumpDirectory", set_coredumpdir, NULL, RSRC_CONF,
+  "The location of the directory Apache changes to before dumping core" ),
 { NULL }
 };
 
