@@ -141,12 +141,6 @@ static const command_rec ssl_config_cmds[] = {
     SSL_CMD_SRV(SessionCacheTimeout, TAKE1,
                 "SSL Session Cache object lifetime "
                 "(`N' - number of seconds)")
-    SSL_CMD_SRV(Log, TAKE1,
-                "SSL logfile for SSL-related messages "
-                "(`/path/to/file', `|/path/to/program')")
-    SSL_CMD_SRV(LogLevel, TAKE1,
-                "SSL logfile verbosity level "
-                "(`none', `error', `warn', `info', `debug')")
     SSL_CMD_SRV(Protocol, RAW_ARGS,
                 "Enable or disable various SSL protocols"
                 "(`[+-][SSLv2|SSLv3|TLSv1] ...' - see manual)")
@@ -201,6 +195,12 @@ static const command_rec ssl_config_cmds[] = {
                "Require a boolean expression to evaluate to true for granting access"
                "(arbitrary complex boolean expression - see manual)")
 
+    /* Deprecated directives. */
+    AP_INIT_RAW_ARGS("SSLLog", ap_set_deprecated, NULL, OR_ALL, 
+      "SSLLog directive is no longer supported - use ErrorLog."),
+    AP_INIT_RAW_ARGS("SSLLogLevel", ap_set_deprecated, NULL, OR_ALL, 
+      "SSLLogLevel directive is no longer supported - use LogLevel."),
+    
     AP_END_CMD
 };
 
@@ -301,8 +301,6 @@ static int ssl_hook_pre_connection(conn_rec *c, void *csd)
     if (sslconn->disabled) {
         return DECLINED;
     }
-
-    sslconn->log_level = sc->log_level;
 
     /*
      * Remember the connection information for
