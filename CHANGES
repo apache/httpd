@@ -1,5 +1,10 @@
 Changes with Apache 2.0.25-dev
 
+  *) Introduce the AddInputFilter filter[;filter...] ext [ext...]
+     and corresponding AddOutputFilter syntax, to insert one or more 
+     filters by mod_mime filename extension processing.
+     [William Rowe]
+
   *) Fix a growing connection pool in core_output_filter() for 
      keepalive requests.  [Jeff Trawick]
 

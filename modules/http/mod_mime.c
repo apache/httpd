@@ -95,6 +95,7 @@
 
 typedef struct attrib_info {
     char *name;
+    int   offset;
 } attrib_info;
 
 /* Information to which an extension can be mapped
@@ -105,17 +106,15 @@ typedef struct extension_info {
     char *language_type;              /* Added with AddLanguage... */
     char *handler;                    /* Added with AddHandler... */
     char *charset_type;               /* Added with AddCharset... */
+    char *input_filters;              /* Added with AddInputFilter... */
+    char *output_filters;             /* Added with AddOutputFilter... */
 } extension_info;
 
 typedef struct {
     apr_hash_t  *extension_mappings;  /* Map from extension name to
                                        * extension_info structure */
 
-    apr_array_header_t *charsets_remove;  /* List of charsets to remove */
-    apr_array_header_t *encodings_remove; /* List of encodings to remove */
-    apr_array_header_t *handlers_remove;  /* List of handlers to remove */
-    apr_array_header_t *languages_remove; /* List of languages to remove */
-    apr_array_header_t *types_remove;     /* List of MIME types to remove */
+    apr_array_header_t *remove_mappings; /* A simple list, walked once */
 
     char *type;                 /* Type forced with ForceType  */
     char *handler;              /* Handler forced with SetHandler */
@@ -150,12 +149,7 @@ static void *create_mime_dir_config(apr_pool_t *p, char *dummy)
     (mime_dir_config *) apr_palloc(p, sizeof(mime_dir_config));
 
     new->extension_mappings = NULL;
-
-    new->charsets_remove = NULL;
-    new->encodings_remove = NULL;
-    new->handlers_remove = NULL;
-    new->languages_remove = NULL;
-    new->types_remove = NULL;
+    new->remove_mappings = NULL;
 
     new->type = NULL;
     new->handler = NULL;
@@ -211,7 +205,7 @@ static void overlay_extension_mappings(apr_pool_t *p,
 /* Member is the offset within an extension_info of the pointer to reset 
  */
 static void remove_items(apr_pool_t *p, apr_array_header_t *remove, 
-                         apr_hash_t *mappings, void *member)
+                         apr_hash_t *mappings)
 {
     attrib_info *suffix = (attrib_info *) remove->elts;
     int i;
@@ -220,13 +214,13 @@ static void remove_items(apr_pool_t *p, apr_array_header_t *remove,
             (extension_info*)apr_hash_get(mappings,
                                           suffix[i].name,
                                           APR_HASH_KEY_STRING);
-        if (exinfo && *((void **)((char*)&exinfo + (apr_size_t)member))) {
+        if (exinfo && *(const char**)((char *)exinfo + suffix[i].offset)) {
             extension_info *copyinfo = exinfo;
             exinfo = (extension_info*)apr_palloc(p, sizeof(*exinfo));
             apr_hash_set(mappings, suffix[i].name, 
                          APR_HASH_KEY_STRING, exinfo);
             memcpy(exinfo, copyinfo, sizeof(*exinfo));
-            *(void **)((char*)exinfo + (apr_size_t)member) = NULL;
+            *(const char**)((char *)exinfo + suffix[i].offset) = NULL;
         }
     }
 }
@@ -255,11 +249,7 @@ static void *merge_mime_dir_configs(apr_pool_t *p, void *basev, void *addv)
          * an exinfo member, then we are about to trounce it anyways.
          * We must have a copy for safety.
          */
-        if (new->extension_mappings && (add->charsets_remove
-                                     || add->encodings_remove
-                                     || add->handlers_remove 
-                                     || add->languages_remove 
-                                     || add->types_remove)) {
+        if (new->extension_mappings && add->remove_mappings) {
             apr_hash_t *copyhash = new->extension_mappings;
             new->extension_mappings = apr_hash_make(p);
             overlay_extension_mappings(p, copyhash, new->extension_mappings);
@@ -267,33 +257,10 @@ static void *merge_mime_dir_configs(apr_pool_t *p, void *basev, void *addv)
     }
 
     if (new->extension_mappings) {
-        if (add->charsets_remove)
-            remove_items(p, add->charsets_remove, new->extension_mappings,
-                         &(*(extension_info*)NULL).charset_type);
-
-        if (add->encodings_remove)
-            remove_items(p, add->encodings_remove, new->extension_mappings,
-                         &(*(extension_info*)NULL).encoding_type);
-
-        if (add->languages_remove)
-            remove_items(p, add->languages_remove, new->extension_mappings,
-                         &(*(extension_info*)NULL).language_type);
-
-        if (add->handlers_remove)
-            remove_items(p, add->handlers_remove, new->extension_mappings,
-                         &(*(extension_info*)NULL).handler);
-
-        if (add->types_remove)
-            remove_items(p, add->types_remove, new->extension_mappings,
-                         &(*(extension_info*)NULL).forced_type);
-
+        if (add->remove_mappings)
+            remove_items(p, add->remove_mappings, new->extension_mappings);
     }
-
-    new->charsets_remove = NULL;
-    new->encodings_remove = NULL;
-    new->handlers_remove = NULL;
-    new->languages_remove = NULL;
-    new->types_remove = NULL;
+    new->remove_mappings = NULL;
 
     new->type = add->type ? add->type : base->type;
     new->handler = add->handler ? add->handler : base->handler;
@@ -303,13 +270,15 @@ static void *merge_mime_dir_configs(apr_pool_t *p, void *basev, void *addv)
     return new;
 }
 
-static extension_info *add_extension_info(cmd_parms *cmd, void *m_, 
-                                          const char* ext)
+static const char *add_extension_info(cmd_parms *cmd, void *m_, 
+                                      const char *value_, const char* ext)
 {
     mime_dir_config *m=m_;
     extension_info *exinfo;
+    int offset = (int) (long) cmd->info;
     char *key = apr_pstrdup(cmd->temp_pool, ext);
-
+    char *value = apr_pstrdup(cmd->pool, value_);
+    ap_str_tolower(value);
 #ifdef CASE_BLIND_FILESYSTEM
     ap_str_tolower(key);
 #endif
@@ -328,114 +297,31 @@ static extension_info *add_extension_info(cmd_parms *cmd, void *m_,
         apr_hash_set(m->extension_mappings, key,
                      APR_HASH_KEY_STRING, exinfo);
     }
-    return exinfo;
-}
- 
-static const char *add_charset(cmd_parms *cmd, void *m, const char *value,
-			       const char *ext)
-{
-    extension_info* exinfo = add_extension_info(cmd, m, ext);
-    char *charset = apr_pstrdup(cmd->pool, value);
-    ap_str_tolower(charset);
-    exinfo->charset_type = charset;
-    return NULL;
-}
-
-static const char *add_encoding(cmd_parms *cmd, void *m, const char *value,
-				const char *ext)
-{
-    extension_info* exinfo = add_extension_info(cmd, m, ext);
-    char *enc = apr_pstrdup(cmd->pool, value);
-    ap_str_tolower(enc);
-    exinfo->encoding_type = enc;
-    return NULL;
-}
-
-static const char *add_handler(cmd_parms *cmd, void *m, const char *value,
-                               const char *ext)
-{
-    extension_info* exinfo = add_extension_info(cmd, m, ext);
-    char *hdlr = apr_pstrdup(cmd->pool, value);
-    ap_str_tolower(hdlr);
-    exinfo->handler = hdlr;
-    return NULL;
-}
-
-static const char *add_language(cmd_parms *cmd, void *m, const char *value,
-                                const char *ext)
-{
-    extension_info* exinfo = add_extension_info(cmd, m, ext);
-    char *lang = apr_pstrdup(cmd->pool, value);
-    ap_str_tolower(lang);
-    exinfo->language_type = lang;
-    return NULL;
-}
-
-static const char *add_type(cmd_parms *cmd, void *m, const char *value,
-                            const char *ext)
-{
-    extension_info* exinfo = add_extension_info(cmd, m, ext);
-    char *ct = apr_pstrdup(cmd->pool, value);
-    ap_str_tolower(ct);
-    exinfo->forced_type = ct;
+    *(const char**)((char *)exinfo + offset) = value;
     return NULL;
 }
 
 /*
- * Note handler names that should be un-added for this location.  This
- * will keep the association from being inherited, as well, but not
+ * Note handler names are un-added with each per_dir_config merge.
+ * This keeps the association from being inherited, but not
  * from being re-added at a subordinate level.
  */
-static void remove_extension_info(cmd_parms *cmd, 
-                                  apr_array_header_t **m_array,
-                                  const char* ext)
+static const char *remove_extension_info(cmd_parms *cmd, void *m_, 
+                                         const char *ext)
 {
+    mime_dir_config *m = (mime_dir_config *) m_;
     attrib_info *suffix;
-
     if (*ext == '.')
         ++ext;
-    if (*m_array == NULL) {
-        *m_array = apr_array_make(cmd->pool, 4, sizeof(*suffix));
+    if (!m->remove_mappings) {
+        m->remove_mappings = apr_array_make(cmd->pool, 4, sizeof(*suffix));
     }
-    suffix = (attrib_info *) apr_array_push(*m_array);
+    suffix = (attrib_info *) apr_array_push(m->remove_mappings);
     suffix->name = apr_pstrdup(cmd->pool, ext);
 #ifdef CASE_BLIND_FILESYSTEM
     ap_str_tolower(suffix->name);
 #endif
-}
-
-static const char *remove_charset(cmd_parms *cmd, void *m_, const char *ext)
-{
-    mime_dir_config *m = (mime_dir_config *) m_;
-    remove_extension_info(cmd, &m->charsets_remove, ext);
-    return NULL;
-}
-
-static const char *remove_encoding(cmd_parms *cmd, void *m_, const char *ext)
-{
-    mime_dir_config *m = (mime_dir_config *) m_;
-    remove_extension_info(cmd, &m->encodings_remove, ext);
-    return NULL;
-}
-
-static const char *remove_handler(cmd_parms *cmd, void *m_, const char *ext)
-{
-    mime_dir_config *m = (mime_dir_config *) m_;
-    remove_extension_info(cmd, &m->handlers_remove, ext);
-    return NULL;
-}
-
-static const char *remove_language(cmd_parms *cmd, void *m_, const char *ext)
-{
-    mime_dir_config *m = (mime_dir_config *) m_;
-    remove_extension_info(cmd, &m->languages_remove, ext);
-    return NULL;
-}
-
-static const char *remove_type(cmd_parms *cmd, void *m_, const char *ext)
-{
-    mime_dir_config *m = (mime_dir_config *) m_;
-    remove_extension_info(cmd, &m->types_remove, ext);
+    suffix->offset = (int) (long) cmd->info;
     return NULL;
 }
 
@@ -453,34 +339,56 @@ static const char *set_types_config(cmd_parms *cmd, void *dummy,
 
 static const command_rec mime_cmds[] =
 {
-AP_INIT_ITERATE2("AddCharset", add_charset, NULL, OR_FILEINFO,
+AP_INIT_ITERATE2("AddCharset", add_extension_info, 
+         (void *)APR_XtOffsetOf(extension_info, charset_type), OR_FILEINFO,
      "a charset (e.g., iso-2022-jp), followed by one or more file extensions"),
-AP_INIT_ITERATE2("AddEncoding", add_encoding, NULL, OR_FILEINFO,
+AP_INIT_ITERATE2("AddEncoding", add_extension_info, 
+         (void *)APR_XtOffsetOf(extension_info, encoding_type), OR_FILEINFO,
      "an encoding (e.g., gzip), followed by one or more file extensions"),
-AP_INIT_ITERATE2("AddHandler", add_handler, NULL, OR_FILEINFO,
+AP_INIT_ITERATE2("AddHandler", add_extension_info, 
+         (void *)APR_XtOffsetOf(extension_info, handler), OR_FILEINFO,
      "a handler name followed by one or more file extensions"),
-AP_INIT_ITERATE2("AddLanguage", add_language, NULL, OR_FILEINFO,
+AP_INIT_ITERATE2("AddInputFilter", add_extension_info, 
+         (void *)APR_XtOffsetOf(extension_info, input_filters), OR_FILEINFO,
+     "a handler name followed by one or more file extensions"),
+AP_INIT_ITERATE2("AddLanguage", add_extension_info, 
+         (void *)APR_XtOffsetOf(extension_info, language_type), OR_FILEINFO,
      "a language (e.g., fr), followed by one or more file extensions"),
-AP_INIT_ITERATE2("AddType", add_type, NULL, OR_FILEINFO, 
+AP_INIT_ITERATE2("AddOutputFilter", add_extension_info, 
+         (void *)APR_XtOffsetOf(extension_info, output_filters), OR_FILEINFO, 
+     "a mime type followed by one or more file extensions"),
+AP_INIT_ITERATE2("AddType", add_extension_info, 
+         (void *)APR_XtOffsetOf(extension_info, forced_type), OR_FILEINFO, 
      "a mime type followed by one or more file extensions"),
 AP_INIT_TAKE1("DefaultLanguage", ap_set_string_slot,
-     (void*)APR_XtOffsetOf(mime_dir_config, default_language), OR_FILEINFO,
+       (void*)APR_XtOffsetOf(mime_dir_config, default_language), OR_FILEINFO,
      "language to use for documents with no other language file extension"),
 AP_INIT_TAKE1("ForceType", ap_set_string_slot_lower, 
-     (void *)APR_XtOffsetOf(mime_dir_config, type), OR_FILEINFO,
+       (void *)APR_XtOffsetOf(mime_dir_config, type), OR_FILEINFO,
      "a media type"),
-AP_INIT_ITERATE("RemoveCharset", remove_charset, NULL, OR_FILEINFO,
+AP_INIT_ITERATE("RemoveCharset", remove_extension_info, 
+        (void *)APR_XtOffsetOf(extension_info, charset_type), OR_FILEINFO,
      "one or more file extensions"),
-AP_INIT_ITERATE("RemoveEncoding", remove_encoding, NULL, OR_FILEINFO,
+AP_INIT_ITERATE("RemoveEncoding", remove_extension_info, 
+        (void *)APR_XtOffsetOf(extension_info, encoding_type), OR_FILEINFO,
      "one or more file extensions"),
-AP_INIT_ITERATE("RemoveHandler", remove_handler, NULL, OR_FILEINFO,
+AP_INIT_ITERATE("RemoveHandler", remove_extension_info, 
+        (void *)APR_XtOffsetOf(extension_info, handler), OR_FILEINFO,
      "one or more file extensions"),
-AP_INIT_ITERATE("RemoveLanguage", remove_language, NULL, OR_FILEINFO,
+AP_INIT_ITERATE("RemoveInputFilter", remove_extension_info, 
+        (void *)APR_XtOffsetOf(extension_info, input_filters), OR_FILEINFO,
      "one or more file extensions"),
-AP_INIT_ITERATE("RemoveType", remove_type, NULL, OR_FILEINFO,
+AP_INIT_ITERATE("RemoveLanguage", remove_extension_info, 
+        (void *)APR_XtOffsetOf(extension_info, language_type), OR_FILEINFO,
+     "one or more file extensions"),
+AP_INIT_ITERATE("RemoveOutputFilter", remove_extension_info, 
+        (void *)APR_XtOffsetOf(extension_info, output_filters), OR_FILEINFO,
+     "one or more file extensions"),
+AP_INIT_ITERATE("RemoveType", remove_extension_info, 
+        (void *)APR_XtOffsetOf(extension_info, forced_type), OR_FILEINFO,
      "one or more file extensions"),
 AP_INIT_TAKE1("SetHandler", ap_set_string_slot_lower, 
-     (void *)APR_XtOffsetOf(mime_dir_config, handler), OR_FILEINFO,
+       (void *)APR_XtOffsetOf(mime_dir_config, handler), OR_FILEINFO,
      "a handler name"),
 AP_INIT_TAKE1("TypesConfig", set_types_config, NULL, RSRC_CONF,
      "the MIME types config file"),
@@ -871,9 +779,30 @@ static int find_ct(request_rec *r)
                 }
                 found = 1;
             }
+            /* The following extensions are not 'Found'.  That is, they don't
+             * make any contribution to metadata negotation, so they must have
+             * been explicitly requested by name.
+             */
             if (exinfo->handler && r->proxyreq == PROXYREQ_NONE) {
                 r->handler = exinfo->handler;
-                found = 1;
+            }
+            /* XXX Two significant problems; 1, we don't check to see if we are
+             * setting redundant filters.    2, we insert these in the types config
+             * hook, which may be too early (dunno.)
+             */
+            if (exinfo->input_filters && r->proxyreq == PROXYREQ_NONE) {
+                const char *filter, *filters = exinfo->input_filters;
+                while (*filters 
+                    && (filter = ap_getword(r->pool, &filters, ';'))) {
+                    ap_add_input_filter(filter, NULL, r, r->connection);
+                }
+            }
+            if (exinfo->output_filters && r->proxyreq == PROXYREQ_NONE) {
+                const char *filter, *filters = exinfo->output_filters;
+                while (*filters 
+                    && (filter = ap_getword(r->pool, &filters, ';'))) {
+                    ap_add_output_filter(filter, NULL, r, r->connection);
+                }
             }
         }
 
@@ -960,8 +889,14 @@ static int find_ct(request_rec *r)
 
 static void register_hooks(apr_pool_t *p)
 {
-    ap_hook_type_checker(find_ct,NULL,NULL,APR_HOOK_MIDDLE);
     ap_hook_post_config(mime_post_config,NULL,NULL,APR_HOOK_MIDDLE);
+    ap_hook_type_checker(find_ct,NULL,NULL,APR_HOOK_MIDDLE);
+ /* 
+  * this hook seems redundant ... is there any reason a type checker isn't
+  * allowed to do this already?  I'd think that fixups in general would be
+  * the last opportunity to get the filters right.
+  * ap_hook_insert_filter(mime_insert_filters,NULL,NULL,APR_HOOK_MIDDLE);
+  */
 }
 
 module AP_MODULE_DECLARE_DATA mime_module = {
