@@ -119,7 +119,7 @@
     <code>ap_location_walk()</code> call. This reassures that a
     translated request is still subjected to the configured
     &lt;Location &gt; sections. The request again borrows some or
-    all of the processing from it's previous location_walk above,
+    all of the processing from its previous location_walk above,
     so this step is almost always very efficient unless the
     translated URI mapped to a substantially different path or
     Virtual Host.</p>
@@ -213,12 +213,12 @@
     <p>Modules that transform the content in some way can insert
     their values and override existing filters, such that if the
     user configured a more advanced filter out-of-order, then the
-    module can move it's order as need be.  There is no result code,
+    module can move its order as need be.  There is no result code,
     so actions in this hook better be trusted to always succeed.</p>
 
     <h3>Hook: handler</h3>
 
-    <p>The module finally has a chance to serve the request in it's
+    <p>The module finally has a chance to serve the request in its
     handler hook. Note that not every prepared request is sent to
     the handler hook. Many modules, such as mod_autoindex, will
     create subrequests for a given URI, and then never serve the
