@@ -476,9 +476,7 @@ static apr_bucket *find_start_sequence(apr_bucket *dptr, include_ctx_t *ctx,
             {
                 ctx->head_start_bucket = dptr;
                 ctx->head_start_index = pos;
-                ctx->bytes_parsed += pos + slen;       /* pjr - isn't this incrementing by too much?
-                                                        *    What if only 1 byte in this bucket?
-                                                        */
+                ctx->bytes_parsed += pos + slen;
                 return found_start_sequence(dptr, ctx, pos + slen, len);
             }
         }
