@@ -18,7 +18,8 @@
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.1</a> &gt; <a href="./">How-To / Tutorials</a></div><div id="page-content"><div id="preamble"><h1>Apache Tutorial: .htaccess files</h1>
 <div class="toplang">
-<p><span>Available Languages: </span><a href="../en/howto/htaccess.html" title="English">&nbsp;en&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="../en/howto/htaccess.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/howto/htaccess.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
 
 <p><code>.htaccess</code> files provide a way to make configuration
@@ -341,7 +342,8 @@ changes on a per-directory basis.</p>
 
 </div></div>
 <div class="bottomlang">
-<p><span>Available Languages: </span><a href="../en/howto/htaccess.html" title="English">&nbsp;en&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="../en/howto/htaccess.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/howto/htaccess.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
