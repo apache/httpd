@@ -265,7 +265,7 @@ EXPORTS
 ;	opendir   @258
 ;	os_spawnv   @259
 ;	os_spawnve   @260
-	os_stat   @261
+;	os_stat   @261
 ;	readdir   @262
 	regcomp   @263
 	regexec   @264
@@ -273,7 +273,7 @@ EXPORTS
 	access_module @266
 	alias_module   @267
 	ap_bprintf   @268
-	ap_bvputs   @269
+	ap_bputstrs  @269
 ;	ap_day_snames @270  
 	;ap_extended_status  @271   
 	ap_limit_section   @272
@@ -399,7 +399,8 @@ EXPORTS
         ap_run_http_method @394
         ap_bread_core @395
         ap_bwrite_core @396
-	
+        ap_vbputstrs @397
+
 ;       Exclusively provided for http_main.c
         ap_register_hooks       @398 NONAME
         ap_prelinked_modules    @399 NONAME
