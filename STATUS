@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/07/13 18:14:21 $]
+Last modified at [$Date: 2004/07/13 18:44:20 $]
 
 Release:
 
@@ -213,7 +213,7 @@ PATCHES TO BACKPORT FROM 2.1
     *) Provide TLS/SSL upgrade functionality in mod_ssl allowing an unsecure
        connection to be upgraded to a secure connection upon request by the
        client.  The full patch file is available at http://www.apache.org/~bnicholes/
-       as well as a test version of wget. This functionality is mainly used by
+       as well as a test client tlsupgrade.c. This functionality is mainly used by
        IPP clients today.
           modules/ssl/mod_ssl.c: r1.75, r1.97
           modules/ssl/mod_ssl.h: r1.123
