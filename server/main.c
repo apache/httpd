@@ -342,6 +342,10 @@ static void usage(process_rec *process)
                  "  -c \"directive\"    : process directive after reading "
                  "config files");
 
+#ifdef NETWARE
+    ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
+                 "  -n name           : set screen name");
+#endif
 #ifdef WIN32
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                  "  -n name           : set service name and use its "

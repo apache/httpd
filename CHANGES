@@ -70,6 +70,10 @@ Changes with Apache 2.1.0-dev
 
 Changes with Apache 2.0.45
 
+  *) Enable the -n name parameter on NetWare to allow the
+     administrator to rename the Apache console screen
+     [Brad Nicholes]
+     
   *) Fixed piped access logs on Win32 by disabling OTHER_CHILD
      support by default in APR.  More development is required
      to deploy OTHER_CHILD on Win32.  [William Rowe]
