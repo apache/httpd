@@ -29,7 +29,7 @@
         <directive module="core">AuthName</directive>
         <directive module="core">AuthType</directive>
         <directive module="mod_authn_file">AuthUserFile</directive>
-        <directive module="mod_authz_file">Deny</directive>
+        <directive module="mod_authz_host">Deny</directive>
         <directive module="core">Options</directive>
         <directive module="core">Require</directive>
       </directivelist>
