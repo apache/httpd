@@ -146,11 +146,6 @@ Changes with Apache 2.1.0-dev
      which allows to influence the negotiation process on request basis
      to prefer a certain language.  [André Malo]
 
-  *) Added AllowEncodedSlashes directive which permits request URIs
-     to encode '/' as '%2f' and pass it to scripts in path-info without
-     triggering the 'no encoded slashes anywhere' legacy rule.
-     PR 543, 2389, 3581, 3589, 5687, 7066, 7865, 14639.  [Ken Coar]
-
   *) Move RFC 1413 ident requests from core to new module mod_ident.
      [André Malo]
 
@@ -186,6 +181,12 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.46
+
+  *) Added AllowEncodedSlashes directive to permit control of whether
+     the server will accept encoded slashes ('%2f') in the URI path.
+     Default condition is off (the historical behaviour).  This permits
+     environments in which the path-info needs to contain encoded
+     slashes. PR 543, 2389, 3581, 3589, 5687, 7066, 7865, 14639.  [Ken Coar]
 
   *) When using Redirect in directory context, append requested query
      string if there's no one supplied by configuration. PR 10961.
