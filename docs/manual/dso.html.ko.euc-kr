@@ -51,7 +51,7 @@
     이 모듈은 <code class="module"><a href="./mod/core.html">core</a></code>를 제외하고 DSO가
     될 수 없는 유일한 모듈이다. 실제로 다른 모든 아파치 모듈은
     <a href="install.html">설치 문서</a>에서 설명한
-    <code>configure</code>의 <code>--enable-<i>module</i>=shared</code>
+    <code>configure</code>의 <code>--enable-<var>module</var>=shared</code>
     옵션을 사용하여 DSO로 컴파일할 수 있다. 모듈을
     <code>mod_foo.so</code>와 같이 DSO로 컴파일한후 <code>httpd.conf</code>
     파일에 <code class="module"><a href="./mod/mod_so.html">mod_so</a></code>의
