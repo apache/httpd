@@ -12,3 +12,4 @@ int SSLStateMachine_write_extract(SSLStateMachine *pMachine,
 				  unsigned char *aucBuf,int nBuf);
 void SSLStateMachine_write_inject(SSLStateMachine *pMachine,
 				  const unsigned char *aucBuf,int nBuf);
+void SSLStateMachine_write_close(SSLStateMachine *pMachine);
