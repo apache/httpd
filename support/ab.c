@@ -275,7 +275,7 @@ apr_port_t connectport;
 char *gnuplot;			/* GNUplot file */
 char *csvperc;			/* CSV Percentile file */
 char url[1024];
-char fullurl[1024];
+char * fullurl, * colonhost;
 int isproxy = 0;
 apr_short_interval_time_t aprtimeout = 30 * APR_USEC_PER_SEC;	/* timeout value */
  /*
@@ -1150,20 +1150,20 @@ static void test(void)
 	sprintf(request, "%s %s HTTP/1.0\r\n"
 		"User-Agent: ApacheBench/%s\r\n"
 		"%s" "%s" "%s"
-		"Host: %s\r\n"
+		"Host: %s%s\r\n"
 		"Accept: */*\r\n"
 		"%s" "\r\n",
 		(posting == 0) ? "GET" : "HEAD",
 		(isproxy) ? fullurl : path,
 		AP_SERVER_BASEREVISION,
 		keepalive ? "Connection: Keep-Alive\r\n" : "",
-		cookie, auth, host_field, hdrs);
+		cookie, auth, host_field, colonhost, hdrs);
     }
     else {
 	sprintf(request, "POST %s HTTP/1.0\r\n"
 		"User-Agent: ApacheBench/%s\r\n"
 		"%s" "%s" "%s"
-		"Host: %s\r\n"
+		"Host: %s%s\r\n"
 		"Accept: */*\r\n"
 		"Content-length: %" APR_SIZE_T_FMT "\r\n"
 		"Content-type: %s\r\n"
@@ -1173,7 +1173,7 @@ static void test(void)
 		AP_SERVER_BASEREVISION,
 		keepalive ? "Connection: Keep-Alive\r\n" : "",
 		cookie, auth,
-		host_field, postlen,
+		host_field, colonhost, postlen,
 		(content_type[0]) ? content_type : "text/plain", hdrs);
     }
 
@@ -1302,14 +1302,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-	printf("This is ApacheBench, Version %s\n", AP_SERVER_BASEREVISION " <$Revision: 1.92 $> apache-2.0");
+	printf("This is ApacheBench, Version %s\n", AP_SERVER_BASEREVISION " <$Revision: 1.93 $> apache-2.0");
 	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
 	printf("Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/\n");
 	printf("\n");
     }
     else {
 	printf("<p>\n");
-	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_SERVER_BASEREVISION, "$Revision: 1.92 $");
+	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_SERVER_BASEREVISION, "$Revision: 1.93 $");
 	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
 	printf(" Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/<br>\n");
 	printf("</p>\n<p>\n");
@@ -1368,6 +1368,9 @@ static int parse_url(char *url)
     char *scope_id;
     apr_status_t rv;
 
+    /* Save a copy for the proxy */
+    fullurl = apr_pstrdup(cntxt, url);
+
     if (strlen(url) > 7 && strncmp(url, "http://", 7) == 0)
 	url += 7;
     else
@@ -1401,9 +1404,19 @@ static int parse_url(char *url)
     else {
 	host_field = hostname;
     }
+
     if (port == 0) {		/* no port specified */
 	port = 80;
-    }
+    };
+    if ((
+#if USE_SSL
+         (ssl == 1) && (port != 443)) || (( ssl == 0 ) && 
+#endif
+         (port != 80)))
+    {
+	colonhost = apr_psprintf(cntxt,":%d",port);
+    } else
+	colonhost = "";
     return 0;
 }
 

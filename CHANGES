@@ -11,6 +11,9 @@ Changes with Apache 2.0.34
   *) Update mod_cgid to not do single-byte socket reads for CGI headers
      [Brian Pane]
 
+  *) Made AB's use of the Host: header rfc2616 compliant
+     by Taisuke Yamada <tai@iij.ad.jp> [Dirk-Willem van Gulik].
+
   *) The old, legacy (and unused) code in which the scoreboard was totally
      and completely contained in a file (SCOREBOARD_FILE) has been
      removed. This does not affect scoreboards which are *mapped* to
