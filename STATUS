@@ -196,6 +196,18 @@ Closed issues:
 
 Open issues:
 
+    * Provide consistant prefixes; suggestions:
+
+         ap_: (eg: ap_cpystrn)
+	   Apache provided general functions
+	 appublic_:
+	 appub_:
+	   Public API functions
+	 apprivate_: (eg: apprivate_new_connection)
+	 appri_:
+	   Private functions which we can't make static
+	   but should be.
+
     * Maybe moving *all* of the *.h header files into a new
       src/include directory?
 	Status: Ken +1
@@ -204,7 +216,7 @@ Open issues:
       "apachen" module to "apache-1.3" - and, at some point,
       copying (*not* branching) the apache-1.3 module to a new
       apache-2.x tree and opening up 2.0 development.
-	Status: Ken +1
+	Status: Ken +1, Jim +1 (let do it NOW :) )
 
     * Ken's [POLL] apachen/patches directory
       Shall we experiment with allowing patches to be distributed for
