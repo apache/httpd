@@ -68,16 +68,6 @@ Changes with Apache 2.1.0-dev
      hopefully saves some hours of searching for typos. PR 12863.
      [André Malo]
 
-  *) Remove an extra bit of unnecessary code from the recently
-     committed fix for PR 13946 (in mod_rewrite). Reported by
-     Andre Malo. [Paul J. Reder]
-
-  *) mod_rewrite: fix a problem in the proxy support of mod_rewrite.
-     The broken code was inserting multiple "proxy:" fields in the
-     rewritten URIs. [PR: 13946]
-     [Submitted by:  Eider Oliveira <eider@bol.com.br>]
-     [Updated and reviewed by: Paul J. Reder]
-
   *) mod_actions: Propagate the handler name to the action script via
      the REDIRECT_HANDLER environment variable.  [André Malo]
 
@@ -215,6 +205,10 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.48
+
+  *) mod_rewrite: Fix mod_rewrite's support of the [P] option to send
+      rewritten request using "proxy:". The code was adding multiple "proxy:"
+      fields in the rewritten URI. PR: 13946. [Eider Oliveira <eider@bol.com.br>]
 
   *) cache_util: Fix ap_check_cache_freshness to check max_age, smax_age, and
      expires as directed in RFC 2616. [Thomas Castelle tcastelle@generali.fr]
