@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: Configure,v 1.20 1996/09/23 10:14:59 ben Exp $
+# $Id: Configure,v 1.21 1996/09/24 14:33:57 mjc Exp $
 trap 'rm $tmpfile; exit' 0 1 2 3 15
 
 # Apache configuration script, first cut --- rst.
@@ -173,6 +173,7 @@ case "$PLAT" in
     *-sgi-irix*)
 	DEF_WANTHSREGEX=yes
 	DEF_BADMMAP=no
+        DBM_LIB=""
 	if [ "$RULE_IRIXNIS" = "yes" ]; then
 	    OS='SGI IRIX w/NIS'
 	    CFLAGS="$CFLAGS -DIRIX"
@@ -236,6 +237,7 @@ case "$PLAT" in
 	OS='Solaris 2'
 	CFLAGS="$CFLAGS -DSOLARIS2"
 	LIBS="$LIBS -lsocket -lnsl"
+        DBM_LIB=""
 	;;
     *-sunos4*)
 	OS='SunOS 4'
