@@ -672,19 +672,17 @@ static void child_main(int child_num_arg)
 	/* if we accept() something we don't want to die, so we have to
 	 * defer the exit
 	 */
-	for (;;) {
-            status = listensocks[offset].accept_func(&csd, 
-                                       &listensocks[offset], ptrans);
+        status = listensocks[offset].accept_func(&csd, 
+                                                 &listensocks[offset], ptrans);
+        SAFE_ACCEPT(accept_mutex_off());	/* unlock after "accept" */
 
-            if (status == APR_SUCCESS) {
-                break;
-            }
-            if (status == APR_EGENERAL) {
-                /* resource shortage or should-not-occur occured */
-                clean_child_exit(1);
-            }
+        if (status == APR_EGENERAL) {
+            /* resource shortage or should-not-occur occured */
+            clean_child_exit(1);
         }
-	SAFE_ACCEPT(accept_mutex_off());	/* unlock after "accept" */
+        else if (status != APR_SUCCESS) {
+            continue;
+        }
 
 	/*
 	 * We now have a connection, so set it up with the appropriate
