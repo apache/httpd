@@ -124,10 +124,8 @@ int ap_max_child_assigned = -1;
 int ap_max_threads_limit = -1;
 char ap_coredump_dir[MAX_STRING_LEN];
 
-
-static volatile bool flag_of_death;
-static int udp_sock;
-static struct sockaddr_in udpsi;
+static apr_socket_t *udp_sock;
+static apr_sockaddr_t *udp_sa;
 
 /* shared http_main globals... */
 
@@ -232,8 +230,13 @@ static void restart(int sig)
 
 static void tell_workers_to_exit(void)
 {
-    flag_of_death = true;
-    sendto(udp_sock, "die!", 4, 0, (struct sockaddr*)&udpsi, sizeof(udpsi));
+    apr_size_t len;
+    int i = 0;
+    for (i = 0 ; i < ap_max_child_assigned; i++){
+        len = 4;
+        if (apr_sendto(udp_sock, udp_sa, 0, "die!", &len) != APR_SUCCESS)
+            break;
+    }   
 }
 
 static void set_signals(void)
@@ -325,7 +328,7 @@ static int32 worker_thread(void * dummy)
     apr_socket_t *sd = NULL;
     apr_status_t rv = APR_EINIT;
     int srv , n;
-    int curr_pollfd, last_pollfd = 0;
+    int curr_pollfd = 0, last_pollfd = 0;
     sigset_t sig_mask;
     int requests_this_child = ap_max_requests_per_child;
     apr_pollfd_t *pollset;
@@ -347,10 +350,15 @@ static int32 worker_thread(void * dummy)
                                   (request_rec*)NULL);
                                   
     apr_poll_setup(&pollset, num_listening_sockets, tpool);
-    for(n=0 ; n <= num_listening_sockets ; ++n)
-	    apr_poll_socket_add(pollset, listening_sockets[n], APR_POLLIN);
 
-    while (!this_worker_should_exit) {
+    while (1) {
+        /* If we're here, then chances are (unless we're the first thread created) we're going
+           to be held up on the accept_muetx, so doing this here shouldn't be a peformance hit.
+           If it is, you probably need more threads...
+         */
+        for(n=0 ; n <= num_listening_sockets ; n++)
+	        apr_poll_socket_add(pollset, listening_sockets[n], APR_POLLIN);
+
         this_worker_should_exit |= (ap_max_requests_per_child != 0) && (requests_this_child <= 0);
         
         if (this_worker_should_exit) break;
@@ -359,29 +367,43 @@ static int32 worker_thread(void * dummy)
                                       (request_rec*)NULL);
 
         apr_lock_acquire(accept_mutex);
+
         while (!this_worker_should_exit) {
             apr_int16_t event;
-            apr_status_t ret = apr_poll(pollset, &srv, -1);
+            apr_status_t ret;
             
-            if (flag_of_death)
-                this_worker_should_exit = 1;
+            ret = apr_poll(pollset, &srv, -1);
 
-            apr_poll_revents_get(&event, listening_sockets[0], pollset);
-            if (event & APR_POLLIN)
-                this_worker_should_exit = 1;
-            
             if (ret != APR_SUCCESS) {
-                if (errno == EINTR) {
+                if (APR_STATUS_IS_EINTR(ret)) {
                     continue;
                 }
-
                 /* poll() will only return errors in catastrophic
                  * circumstances. Let's try exiting gracefully, for now. */
                 ap_log_error(APLOG_MARK, APLOG_ERR, ret, (const server_rec *)
                              ap_server_conf, "apr_poll: (listen)");
                 this_worker_should_exit = 1;
-            }
+            } else {
+                /* if we've bailed in apr_poll what's the point of trying to use the data? */
+                apr_poll_revents_get(&event, listening_sockets[0], pollset);
 
+                if (event & APR_POLLIN){
+                    apr_sockaddr_t *rec_sa;
+                    char *tmpbuf = apr_pcalloc(ptrans, sizeof(char) * 5);
+                    apr_size_t len = 5;
+                    apr_sockaddr_info_get(&rec_sa, "127.0.0.1", APR_UNSPEC, 7772, 0, ptrans);
+                    
+                    if ((ret = apr_recvfrom(rec_sa, listening_sockets[0], 0, tmpbuf, &len))
+                        != APR_SUCCESS){
+                        ap_log_error(APLOG_MARK, APLOG_ERR, ret, NULL, 
+                            "error getting data from UDP!!");
+                    }else {
+                        /* add checking??? */              
+                    }
+                    this_worker_should_exit = 1;
+                }
+            }
+          
             if (this_worker_should_exit) break;
 
             if (num_listening_sockets == 1) {
@@ -393,9 +415,10 @@ static int32 worker_thread(void * dummy)
                 curr_pollfd = last_pollfd;
                 do {
                     curr_pollfd++;
-                    if (curr_pollfd > num_listening_sockets) {
+
+                    if (curr_pollfd > num_listening_sockets)
                         curr_pollfd = 1;
-                    }
+                    
                     /* Get the revent... */
                     apr_poll_revents_get(&event, listening_sockets[curr_pollfd], pollset);
                     
@@ -408,6 +431,7 @@ static int32 worker_thread(void * dummy)
             }
         }
     got_fd:
+
         if (!this_worker_should_exit) {
             rv = apr_accept(&csd, sd, ptrans);
             apr_lock_release(accept_mutex);
@@ -424,6 +448,7 @@ static int32 worker_thread(void * dummy)
             break;
         }
         apr_pool_clear(ptrans);
+
     }
 
     ap_update_child_status(0, child_slot, SERVER_DEAD, (request_rec*)NULL);
@@ -485,9 +510,6 @@ static int make_worker(server_rec *s, int slot)
 static void startup_threads(int number_to_start)
 {
     int i;
-
-   ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL, 
-                "starting %d threads", number_to_start);
 
     for (i = 0; number_to_start && i < ap_thread_limit; ++i) {
 	if (ap_scoreboard_image->servers[0][i].tid) {
@@ -654,25 +676,30 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
     ap_scoreboard_fname = DEFAULT_SCOREBOARD;
 
-    if ((udp_sock = socket(AF_INET,SOCK_DGRAM,IPPROTO_UDP)) < 0){
+    /* BeOS R5 doesn't support pipes on select() calls, so we use a 
+       UDP socket as these are supported in both R5 and BONE.  If we only cared
+       about BONE we'd use a pipe, but there it is.
+       As we have UDP support in APR, now use the APR functions and check all the
+       return values...
+      */
+    if (apr_sockaddr_info_get(&udp_sa, "127.0.0.1", APR_UNSPEC, 7772, 0, _pconf)
+        != APR_SUCCESS){
+        ap_log_error(APLOG_MARK, APLOG_ALERT, errno, s,
+            "couldn't create control socket information, shutting down");
+        return 1;
+    }
+    if (apr_socket_create(&udp_sock, udp_sa->sa.sin.sin_family, SOCK_DGRAM,
+                      _pconf) != APR_SUCCESS){
         ap_log_error(APLOG_MARK, APLOG_ALERT, errno, s,
             "couldn't create control socket, shutting down");
         return 1;
     }
-
-    /* now build the udp sockaddr_in structure... */
-#ifdef BEOS_BONE
-    udpsi.sin_len = sizeof(struct sockaddr_in);
-#endif
-    udpsi.sin_family = AF_INET;
-    udpsi.sin_port = htons(7777);
-    udpsi.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
-    if (bind(udp_sock, (struct sockaddr*)&udpsi, sizeof(udpsi)) < 0){
+    if (apr_bind(udp_sock, udp_sa) != APR_SUCCESS){
         ap_log_error(APLOG_MARK, APLOG_ALERT, errno, s,
-            "couldn't bind the control socket, shutting down");
+            "couldn't bind UDP socket!");
         return 1;
     }
-
+ 
     if ((num_listening_sockets = ap_setup_listeners(ap_server_conf)) < 1) {
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT, 0, s,
             "no listening sockets available, shutting down");
@@ -680,8 +707,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     }
 
     ap_log_pid(pconf, ap_pid_fname);
-    flag_of_death = false;
-        
+
     /*
      * Create our locks... 
      */
@@ -758,8 +784,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     listening_sockets = apr_palloc(pchild,
        sizeof(*listening_sockets) * (num_listening_sockets + 1));
 
-    apr_os_sock_put(&listening_sockets[0], &udp_sock, pchild);
-
+    listening_sockets[0] = udp_sock;
     for (lr = ap_listeners, i = 1; i <= num_listening_sockets; lr = lr->next, ++i)
 	    listening_sockets[i]=lr->sd;
 
