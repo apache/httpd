@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/02/15 05:22:16 $]
+Last modified at [$Date: 2002/02/15 07:43:19 $]
 
 Release:
 
@@ -51,16 +51,6 @@ CURRENT RELEASE NOTES:
         +1: trawick, Justin, FirstBill, Ian
 
 FINAL RELEASE SHOWSTOPPERS:
-
-    * ap_directory_walk skips some per-dir config merge functions
-      if there is no "<Directory />" block in the configuration
-        Message-ID: <m3itbdiijq.fsf@rdu163-40-092.nc.rr.com>
-        * That is very unlikely, merges are additive.  Much more likely,
-          the default SetOutputFilter default or merge is borked.
-          Unless it's the code that permits 'null' merges, per module.
-          Still, it's probably in SetOutputFilter's behavior.
-        * BrianP notes: directory_walk's handling of trailing slashes
-          appears to be the cause: <3C1CF721.1090300@pacbell.net>
 
     * If any request gets to the core handler, without a flag that this 
       r->filename was tested by dir/file_walk, we need to 500 at the very 
