@@ -306,7 +306,7 @@
                 </a>
             </th>
             <td>
-                <xsl:value-of select="description" />
+                <xsl:apply-templates select="description" />
             </td>
         </tr>&lf;
 
