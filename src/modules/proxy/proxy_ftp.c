@@ -329,7 +329,6 @@ static long int send_dir(BUFF *f, request_rec *r, cache_req *c, char *url)
 	/* print "path/" component */
 	ap_snprintf(buf, sizeof(buf), "<A HREF=\"/%s/\">%s</A>/", path+1, reldir);
 	total_bytes_sent += ap_proxy_bputs2(buf, con->client, c);
-	total_bytes_sent += strlen(buf);
 	*dir = '/';
     }
     ap_snprintf(buf, sizeof(buf), "</H2>\n<HR><PRE>");
