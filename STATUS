@@ -71,16 +71,13 @@ Committed Code Changes:
     * Paul's [PATCH] a bundle of multithreading changes
     * Ken's [PATCH] for copyright year update
     * Dean's [PATCH] 1.3: security updates for mod_imap and mod_include
+    * Dean's [PATCH] make mod_include use ap_cpystrn
 
 Available Patches:
 
     * Dean's [PATCH] make mod_rewrite use ap_cpystrn
 	<Pine.LNX.3.95dg3.980107182931.5827H-100000@twinlark.arctic.org>
 	Status: waiting to find out status of Ralf's mod_rewrite restructuring
-
-    * Dean's [PATCH] make mod_include use ap_cpystrn
-	<Pine.LNX.3.95dg3.980107182803.5827G-100000@twinlark.arctic.org>
-	Status: Dean +1, Brian +1
 
     * Dean's [PATCH] yet another slow function
         <Pine.LNX.3.95dg3.980106142612.1054W-100000@twinlark.arctic.org>
