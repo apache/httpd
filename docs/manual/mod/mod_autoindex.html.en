@@ -156,14 +156,15 @@ icon selected by filename</td></tr><tr><th><a href="directive-dict.html#Syntax">
     display for a file, instead of an icon, for <code><a href="#indexoptions:fancyindexing">FancyIndexing</a></code>.
     <em>File</em> is a file extension, partial filename, wild-card
     expression or full filename for files to describe.
-    <em>String</em> is enclosed in double quotes (<code>"</code>).
-    This alternate text is displayed if the client is image-incapable,
-    has image loading disabled, or fails to retrieve the icon.</p>
+    If <em>String</em> contains any whitespace, you have to enclose it
+    in quotes (<code>"</code> or <code>'</code>). This alternate text
+    is displayed if the client is image-incapable, has image loading
+    disabled, or fails to retrieve the icon.</p>
 
     <p>Examples:</p>
 <div class="example"><p><code>
-    AddAlt "PDF" *.pdf<br />
-    AddAlt "Compressed" *.gz *.zip *.Z
+    AddAlt "PDF file" *.pdf<br />
+    AddAlt Compressed *.gz *.zip *.Z
 </code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AddAltByEncoding" id="AddAltByEncoding">AddAltByEncoding</a> <a name="addaltbyencoding" id="addaltbyencoding">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Alternate text to display for a file instead of an icon
@@ -177,14 +178,14 @@ selected by MIME-encoding</td></tr><tr><th><a href="directive-dict.html#Syntax">
     <p><code class="directive">AddAltByEncoding</code> provides the alternate
     text to display for a file, instead of an icon, for <code><a href="#indexoptions:fancyindexing">FancyIndexing</a></code>.
     <em>MIME-encoding</em> is a valid content-encoding, such as
-    <code>x-compress</code>. <em>String</em> is enclosed in double
-    quotes (<code>"</code>). This alternate text is displayed if the
-    client is image-incapable, has image loading disabled, or fails to
-    retrieve the icon.</p>
+    <code>x-compress</code>. If <em>String</em> contains any whitespace,
+    you have to enclose it in quotes (<code>"</code> or <code>'</code>).
+    This alternate text is displayed if the client is image-incapable,
+    has image loading disabled, or fails to retrieve the icon.</p>
 
     <p>Example:</p>
 <div class="example"><p><code>
-    AddAltByEncoding "gzip" x-gzip
+    AddAltByEncoding gzip x-gzip
 </code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AddAltByType" id="AddAltByType">AddAltByType</a> <a name="addaltbytype" id="addaltbytype">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Alternate text to display for a file, instead of an
@@ -198,14 +199,14 @@ icon selected by MIME content-type</td></tr><tr><th><a href="directive-dict.html
     <p><code class="directive">AddAltByType</code> sets the alternate text to
     display for a file, instead of an icon, for <code><a href="#indexoptions:fancyindexing">FancyIndexing</a></code>.
     <em>MIME-type</em> is a valid content-type, such as
-    <code>text/html</code>. <em>String</em> is enclosed in double
-    quotes (<code>"</code>). This alternate text is displayed if the
-    client is image-incapable, has image loading disabled, or fails to
-    retrieve the icon.</p>
+    <code>text/html</code>. If <em>String</em> contains any whitespace,
+    you have to enclose it in quotes (<code>"</code> or <code>'</code>).
+    This alternate text is displayed if the client is image-incapable,
+    has image loading disabled, or fails to retrieve the icon.</p>
 
     <p>Example:</p>
 <div class="example"><p><code>
-    AddAltByType "TXT" text/plain
+    AddAltByType 'plain text' text/plain
 </code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AddDescription" id="AddDescription">AddDescription</a> <a name="adddescription" id="adddescription">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Description to display for a file</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
@@ -357,11 +358,12 @@ HeaderName HEADER.html
     AddType text/html .cgi
 </code></p></div>
       <p><a href="../content-negotiation.html">Content negotiation</a>
-      will be performed if the <code>MultiViews</code> <code class="directive"><a href="../mod/core.html#option">Option</a></code> is enabled. If
-      <em>filename</em> resolves to a static <code>text/html</code>
-      document (not a CGI script) and the <code>Includes</code>
-      <code class="directive"><a href="../mod/core.html#option">option</a></code> is enabled, the file
-      will be processed for server-side includes (see the
+      will be performed if <code class="directive"><a href="../mod/core.html#options">Options</a></code>
+      <code>MultiViews</code> is in effect. If <em>filename</em> resolves
+      to a static <code>text/html</code> document (not a CGI script) and
+      either one of the <code class="directive"><a href="../mod/core.html#options">options</a></code>
+      <code>Includes</code> or <code>IncludesNOEXEC</code> is enabled,
+      the file will be processed for server-side includes (see the
       <code class="module"><a href="../mod/mod_include.html">mod_include</a></code> documentation).</p>
 </div>
 

@@ -169,14 +169,15 @@ icon selected by filename</description>
     href="#indexoptions:fancyindexing">FancyIndexing</a></code>.
     <em>File</em> is a file extension, partial filename, wild-card
     expression or full filename for files to describe.
-    <em>String</em> is enclosed in double quotes (<code>"</code>).
-    This alternate text is displayed if the client is image-incapable,
-    has image loading disabled, or fails to retrieve the icon.</p>
+    If <em>String</em> contains any whitespace, you have to enclose it
+    in quotes (<code>"</code> or <code>'</code>). This alternate text
+    is displayed if the client is image-incapable, has image loading
+    disabled, or fails to retrieve the icon.</p>
 
     <p>Examples:</p>
 <example>
-    AddAlt "PDF" *.pdf<br />
-    AddAlt "Compressed" *.gz *.zip *.Z
+    AddAlt "PDF file" *.pdf<br />
+    AddAlt Compressed *.gz *.zip *.Z
 </example>
 </usage>
 </directivesynopsis>
@@ -197,14 +198,14 @@ selected by MIME-encoding</description>
     text to display for a file, instead of an icon, for <code><a
     href="#indexoptions:fancyindexing">FancyIndexing</a></code>.
     <em>MIME-encoding</em> is a valid content-encoding, such as
-    <code>x-compress</code>. <em>String</em> is enclosed in double
-    quotes (<code>"</code>). This alternate text is displayed if the
-    client is image-incapable, has image loading disabled, or fails to
-    retrieve the icon.</p>
+    <code>x-compress</code>. If <em>String</em> contains any whitespace,
+    you have to enclose it in quotes (<code>"</code> or <code>'</code>).
+    This alternate text is displayed if the client is image-incapable,
+    has image loading disabled, or fails to retrieve the icon.</p>
 
     <p>Example:</p>
 <example>
-    AddAltByEncoding "gzip" x-gzip
+    AddAltByEncoding gzip x-gzip
 </example>
 </usage>
 </directivesynopsis>
@@ -225,14 +226,14 @@ icon selected by MIME content-type</description>
     display for a file, instead of an icon, for <code><a
     href="#indexoptions:fancyindexing">FancyIndexing</a></code>.
     <em>MIME-type</em> is a valid content-type, such as
-    <code>text/html</code>. <em>String</em> is enclosed in double
-    quotes (<code>"</code>). This alternate text is displayed if the
-    client is image-incapable, has image loading disabled, or fails to
-    retrieve the icon.</p>
+    <code>text/html</code>. If <em>String</em> contains any whitespace,
+    you have to enclose it in quotes (<code>"</code> or <code>'</code>).
+    This alternate text is displayed if the client is image-incapable,
+    has image loading disabled, or fails to retrieve the icon.</p>
 
     <p>Example:</p>
 <example>
-    AddAltByType "TXT" text/plain
+    AddAltByType 'plain text' text/plain
 </example>
 </usage>
 </directivesynopsis>
@@ -427,12 +428,12 @@ HeaderName HEADER.html
     AddType text/html .cgi
 </example>
       <p><a href="../content-negotiation.html">Content negotiation</a>
-      will be performed if the <code>MultiViews</code> <directive
-      module="core">Option</directive> is enabled. If
-      <em>filename</em> resolves to a static <code>text/html</code>
-      document (not a CGI script) and the <code>Includes</code>
-      <directive module="core">option</directive> is enabled, the file
-      will be processed for server-side includes (see the
+      will be performed if <directive module="core">Options</directive>
+      <code>MultiViews</code> is in effect. If <em>filename</em> resolves
+      to a static <code>text/html</code> document (not a CGI script) and
+      either one of the <directive module="core">options</directive>
+      <code>Includes</code> or <code>IncludesNOEXEC</code> is enabled,
+      the file will be processed for server-side includes (see the
       <module>mod_include</module> documentation).</p>
 </note>
 
