@@ -1,5 +1,8 @@
 Changes with Apache 1.2b7
 
+  *) Tweak byteserving code (e.g. serving PDF files) to work around a 
+     bug in Netscape Navigator. [Alexei Kosut]
+
   *) Port to  HP MPE operating system for HP 3000 machines
      [Mark Bixby <markb@cccd.edu>]
 

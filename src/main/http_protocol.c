@@ -113,6 +113,17 @@ int set_byterange (request_rec *r)
     char ts[MAX_STRING_LEN], *match;
     long range_start, range_end;
 
+    /* Also check, for backwards-compatibility with second-draft
+     * Luotonen/Franks byte-ranges (e.g. Netscape Navigator 2-3)
+     *
+     * We support this form, with Request-Range, and (farther down) we
+     * send multipart/x-byteranges instead of multipart/byteranges for
+     * Request-Range based requests to work around a bug in Netscape
+     * Navigator 2 and 3.
+     */
+
+    if (!range) range = table_get (r->headers_in, "Request-Range");
+
     /* Reasons we won't do ranges... */
 
     if (!r->clength || r->assbackwards) return 0;
@@ -1032,8 +1043,10 @@ void send_http_header(request_rec *r)
 	bputs("Transfer-Encoding: chunked\015\012", fd);
 
     if (r->byterange > 1)
-        bvputs(fd, "Content-Type: multipart/byteranges; boundary=\"",
-	       r->boundary, "\"\015\012", NULL);
+        bvputs(fd, "Content-Type: multipart/",
+	       table_get(r->headers_in, "Request-Range") ?
+	       "x-byteranges" : "byteranges",
+	       "; boundary=\"", r->boundary, "\"\015\012", NULL);
     else if (r->content_type)
         bvputs(fd, "Content-Type: ", 
 		 nuke_mime_parms (r->pool, r->content_type), "\015\012", NULL);
