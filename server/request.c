@@ -128,8 +128,9 @@ static int decl_die(int status, char *phase, request_rec *r)
                     "configuration error:  couldn't %s: %s", phase, r->uri);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
-    else
+    else {
         return status;
+    }
 }
 
 /* This is the master logic for processing requests.  Do NOT duplicate
@@ -156,8 +157,7 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
      * next several steps.  Only file subrequests are allowed an empty uri, 
      * otherwise let translate_name kill the request.
      */
-    if (!file_req)
-    {
+    if (!file_req) {
         if ((access_status = ap_location_walk(r))) {
             return access_status;
         }
@@ -180,8 +180,7 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
 
     /* Excluding file-specific requests with no 'true' URI...
      */
-    if (!file_req)
-    {
+    if (!file_req) {
         /* Rerun the location walk, which overrides any map_to_storage config.
          */
         if ((access_status = ap_location_walk(r))) {
@@ -209,8 +208,7 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
         r->user = r->prev->user;	
         r->ap_auth_type = r->prev->ap_auth_type;
     }
-    else
-    {
+    else {
         switch (ap_satisfies(r)) {
         case SATISFY_ALL:
         case SATISFY_NOSPEC:
@@ -387,12 +385,14 @@ static int resolve_symlink(char *d, apr_finfo_t *lfi, int opts, apr_pool_t *p)
     apr_finfo_t fi;
     int res;
 
-    if (!(opts & (OPT_SYM_OWNER | OPT_SYM_LINKS)))
+    if (!(opts & (OPT_SYM_OWNER | OPT_SYM_LINKS))) {
         return HTTP_FORBIDDEN;
+    }
 
     if (opts & OPT_SYM_LINKS) {
-        if ((res = apr_stat(&fi, d, lfi->valid, p)) != APR_SUCCESS)
+        if ((res = apr_stat(&fi, d, lfi->valid, p)) != APR_SUCCESS) {
             return HTTP_FORBIDDEN;
+        }
 
         /* Give back the target */
         memcpy(lfi, &fi, sizeof(fi));
@@ -403,16 +403,20 @@ static int resolve_symlink(char *d, apr_finfo_t *lfi, int opts, apr_pool_t *p)
      * both the file and symlink.  First fill in a missing
      * owner of the symlink, then get the info of the target.
      */
-    if (!(lfi->valid & APR_FINFO_OWNER))
+    if (!(lfi->valid & APR_FINFO_OWNER)) {
         if ((res = apr_lstat(&fi, d, lfi->valid | APR_FINFO_OWNER, p))
-                != APR_SUCCESS)
+            != APR_SUCCESS) {
             return HTTP_FORBIDDEN;
+        }
+    }
 
-    if ((res = apr_stat(&fi, d, lfi->valid, p)) != APR_SUCCESS)
+    if ((res = apr_stat(&fi, d, lfi->valid, p)) != APR_SUCCESS) {
         return HTTP_FORBIDDEN;
+    }
 
-    if (apr_compare_users(fi.user, lfi->user) != APR_SUCCESS) 
+    if (apr_compare_users(fi.user, lfi->user) != APR_SUCCESS) {
         return HTTP_FORBIDDEN;
+    }
 
     /* Give back the target */
     memcpy(lfi, &fi, sizeof(fi));
@@ -485,10 +489,12 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
      */
     cache = prep_walk_cache("ap_directory_walk::cache", r);
     
-    if (r->finfo.filetype == APR_REG)
+    if (r->finfo.filetype == APR_REG) {
         entry_dir = ap_make_dirstr_parent(r->pool, entry_dir);
-    else if (r->filename[strlen(r->filename) - 1] != '/')
+    }
+    else if (r->filename[strlen(r->filename) - 1] != '/') {
         entry_dir = apr_pstrcat(r->pool, r->filename, "/", NULL);
+    }
 
     /* If we have a file already matches the path of r->filename,
      * and the vhost's list of directory sections hasn't changed, 
@@ -510,9 +516,10 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
             r->per_dir_config = cache->per_dir_result;
             return OK;
         }
-        if (cache->walked->nelts)
+        if (cache->walked->nelts) {
             now_merged = ((walk_walked_t*)cache->walked->elts)
-                                            [cache->walked->nelts - 1].merged;
+                [cache->walked->nelts - 1].merged;
+        }
     }
     else {
         /* We start now_merged from NULL since we want to build 
@@ -545,11 +552,13 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
 
         /* XXX: Remerge path_info, or we are broken.  Needs more thought.
          */
-        if (r->path_info)
+        if (r->path_info) {
             r->path_info = ap_make_full_path(r->pool, r->filename, 
-                                                      r->path_info);
-        else
+                                             r->path_info);
+        }
+        else {
             r->path_info = r->filename;
+        }
         rv = apr_filepath_root((const char **)&r->filename,
                                (const char **)&r->path_info,
                                APR_FILEPATH_TRUENAME, r->pool);
@@ -575,8 +584,9 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
         
             /* We have no trailing slash, but we sure would appreciate one...
              */
-            if (sec_idx && r->filename[strlen(r->filename)-1] != '/')
+            if (sec_idx && r->filename[strlen(r->filename)-1] != '/') {
                 strcat(r->filename, "/");
+            }
 
             /* Begin *this* level by looking for matching <Directory> sections
              * from the server config.
@@ -590,8 +600,9 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
                 /* No more possible matches for this many segments? 
                  * We are done when we find relative/regex/longer components.
                  */
-                if (entry_core->r || entry_core->d_components > seg)
+                if (entry_core->r || entry_core->d_components > seg) {
                     break;
+                }
 
                 /* We will never skip '0' element components, e.g. plain old
                  * <Directory >, and <Directory "/"> are classified as zero 
@@ -621,12 +632,14 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
                     matches = 0;
                 }
 
-                if (now_merged)
+                if (now_merged) {
 	            now_merged = ap_merge_per_dir_configs(r->pool, 
                                                           now_merged,
                                                           sec_ent[sec_idx]);
-                else
+                }
+                else {
                     now_merged = sec_ent[sec_idx];
+                }
 
                 last_walk = (walk_walked_t*)apr_array_push(cache->walked);
                 last_walk->matched = sec_ent[sec_idx];
@@ -641,8 +654,9 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
 minimerge:
                 this_dir = ap_get_module_config(sec_ent[sec_idx], &core_module);
 
-                if (!this_dir)
+                if (!this_dir) {
                     continue;
+                }
 
                 if (this_dir->opts & OPT_UNSET) {
 	            opts_add = (opts_add & ~this_dir->opts_remove) | this_dir->opts_add;
@@ -669,8 +683,9 @@ minimerge:
                 res = ap_parse_htaccess(&htaccess_conf, r, override,
                                         apr_pstrdup(r->pool, r->filename),
                                         sconf->access_name);
-                if (res)
+                if (res) {
                     return res;
+                }
 
                 if (htaccess_conf) {
 
@@ -693,12 +708,14 @@ minimerge:
                         matches = 0;
                     }
 
-                    if (now_merged)
+                    if (now_merged) {
 	                now_merged = ap_merge_per_dir_configs(r->pool, 
                                                               now_merged,
                                                               htaccess_conf);
-                    else
+                    }
+                    else {
                         now_merged = htaccess_conf;
+                    }
 
                     last_walk = (walk_walked_t*)apr_array_push(cache->walked);
                     last_walk->matched = htaccess_conf;
@@ -735,13 +752,15 @@ minimerge2:
 
             /* That temporary trailing slash was useful, now drop it.
              */
-            if (seg > startseg)
+            if (seg > startseg) {
                 r->filename[strlen(r->filename) - 1] = '\0';
+            }
 
             /* Time for all good things to come to an end?
              */
-            if (!r->path_info || !*r->path_info)
+            if (!r->path_info || !*r->path_info) {
                 break;
+            }
 
             /* Now it's time for the next segment... 
              * We will assume the next element is an end node, and fix it up
@@ -765,8 +784,9 @@ minimerge2:
         
             /* If nothing remained but a '/' string, we are finished
              */
-            if (!*seg_name)
+            if (!*seg_name) {
                 break;
+            }
 
             /* XXX: Optimization required:
              * If...we have allowed symlinks, and
@@ -860,11 +880,13 @@ minimerge2:
 	    core_dir_config *entry_core; 
             entry_core = ap_get_module_config(sec_ent[sec_idx], &core_module);
 
-            if (!entry_core->r)
+            if (!entry_core->r) {
                 continue;
+            }
 
-            if (ap_regexec(entry_core->r, r->filename, 0, NULL, REG_NOTEOL))
+            if (ap_regexec(entry_core->r, r->filename, 0, NULL, REG_NOTEOL)) {
                 continue;
+            }
 
             /* If we merged this same section last time, reuse it
              */
@@ -882,12 +904,14 @@ minimerge2:
                 matches = 0;
             }
 
-            if (now_merged)
+            if (now_merged) {
 	        now_merged = ap_merge_per_dir_configs(r->pool, 
                                                       now_merged,
                                                       sec_ent[sec_idx]);
-            else
+            }
+            else {
                 now_merged = sec_ent[sec_idx];
+            }
 
             last_walk = (walk_walked_t*)apr_array_push(cache->walked);
             last_walk->matched = sec_ent[sec_idx];
@@ -897,8 +921,9 @@ minimerge2:
         /* Whoops - everything matched in sequence, but the original walk
          * found some additional matches.  Truncate them.
          */
-        if (matches)
+        if (matches) {
             cache->walked->nelts -= matches;
+        }
     }
 
 /* It seems this shouldn't be needed anymore.  We translated the symlink above
@@ -922,10 +947,12 @@ minimerge2:
  x   }
  */
 
-    if (r->finfo.filetype == APR_DIR)
+    if (r->finfo.filetype == APR_DIR) {
         cache->cached = r->filename;
-    else
+    }
+    else {
         cache->cached = ap_make_dirstr_parent(r->pool, r->filename);
+    }
 
     cache->dir_conf_tested = sec_ent;
     cache->dir_conf_merged = r->per_dir_config;
@@ -933,10 +960,11 @@ minimerge2:
     /* Merge our cache->dir_conf_merged construct with the r->per_dir_configs,
      * and note the end result to (potentially) skip this step next time.
      */
-    if (now_merged)
+    if (now_merged) {
         r->per_dir_config = ap_merge_per_dir_configs(r->pool,
                                                      r->per_dir_config,
                                                      now_merged);
+    }
     cache->per_dir_result = r->per_dir_config;
 
     return OK;
@@ -995,9 +1023,10 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
             r->per_dir_config = cache->per_dir_result;
             return OK;
         }
-        if (cache->walked->nelts)
+        if (cache->walked->nelts) {
             now_merged = ((walk_walked_t*)cache->walked->elts)
                                             [cache->walked->nelts - 1].merged;
+        }
     }
     else {
         /* We start now_merged from NULL since we want to build 
@@ -1052,12 +1081,14 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
                 matches = 0;
             }
 
-            if (now_merged)
+            if (now_merged) {
 	        now_merged = ap_merge_per_dir_configs(r->pool, 
                                                       now_merged,
                                                       sec_ent[sec_idx]);
-            else
+            }
+            else {
                 now_merged = sec_ent[sec_idx];
+            }
 
             last_walk = (walk_walked_t*)apr_array_push(cache->walked);
             last_walk->matched = sec_ent[sec_idx];
@@ -1066,8 +1097,9 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
         /* Whoops - everything matched in sequence, but the original walk
          * found some additional matches.  Truncate them.
          */
-        if (matches)
+        if (matches) {
             cache->walked->nelts -= matches;
+        }
     }
 
     cache->dir_conf_tested = sec_ent;
@@ -1076,10 +1108,11 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
     /* Merge our cache->dir_conf_merged construct with the r->per_dir_configs,
      * and note the end result to (potentially) skip this step next time.
      */
-    if (now_merged)
+    if (now_merged) {
         r->per_dir_config = ap_merge_per_dir_configs(r->pool,
                                                      r->per_dir_config,
                                                      now_merged);
+    }
     cache->per_dir_result = r->per_dir_config;
 
     return OK;
@@ -1142,9 +1175,10 @@ AP_DECLARE(int) ap_file_walk(request_rec *r)
             r->per_dir_config = cache->per_dir_result;
             return OK;
         }
-        if (cache->walked->nelts)
+        if (cache->walked->nelts) {
             now_merged = ((walk_walked_t*)cache->walked->elts)
                                             [cache->walked->nelts - 1].merged;
+        }
     }
     else {
         /* We start now_merged from NULL since we want to build 
@@ -1188,12 +1222,14 @@ AP_DECLARE(int) ap_file_walk(request_rec *r)
                 matches = 0;
             }
 
-            if (now_merged)
+            if (now_merged) {
 	        now_merged = ap_merge_per_dir_configs(r->pool, 
                                                       now_merged,
                                                       sec_ent[sec_idx]);
-            else
+            }
+            else {
                 now_merged = sec_ent[sec_idx];
+            }
 
             last_walk = (walk_walked_t*)apr_array_push(cache->walked);
             last_walk->matched = sec_ent[sec_idx];
@@ -1202,8 +1238,9 @@ AP_DECLARE(int) ap_file_walk(request_rec *r)
         /* Whoops - everything matched in sequence, but the original walk
          * found some additional matches.  Truncate them.
          */
-        if (matches)
+        if (matches) {
             cache->walked->nelts -= matches;
+        }
     }
 
     cache->dir_conf_tested = sec_ent;
@@ -1212,10 +1249,11 @@ AP_DECLARE(int) ap_file_walk(request_rec *r)
     /* Merge our cache->dir_conf_merged construct with the r->per_dir_configs,
      * and note the end result to (potentially) skip this step next time.
      */
-    if (now_merged)
+    if (now_merged) {
         r->per_dir_config = ap_merge_per_dir_configs(r->pool,
                                                      r->per_dir_config,
                                                      now_merged);
+    }
     cache->per_dir_result = r->per_dir_config;
 
     return OK;
@@ -1311,14 +1349,17 @@ AP_DECLARE(int) ap_some_auth_required(request_rec *r)
     require_line *reqs;
     int i;
  
-    if (!reqs_arr)
+    if (!reqs_arr) {
         return 0;
+    }
  
     reqs = (require_line *) reqs_arr->elts;
  
-    for (i = 0; i < reqs_arr->nelts; ++i)
-        if (reqs[i].method_mask & (AP_METHOD_BIT << r->method_number))
+    for (i = 0; i < reqs_arr->nelts; ++i) {
+        if (reqs[i].method_mask & (AP_METHOD_BIT << r->method_number)) {
             return 1;
+        }
+    }
  
     return 0;
 } 
@@ -1345,8 +1386,9 @@ AP_DECLARE(request_rec *) ap_sub_req_method_uri(const char *method,
     rnew->method = method;
     rnew->method_number = ap_method_number_of(method);
 
-    if (new_file[0] == '/')
+    if (new_file[0] == '/') {
         ap_parse_uri(rnew, new_file);
+    }
     else {
         udir = ap_make_dirstr_parent(rnew->pool, r->uri);
         udir = ap_escape_uri(rnew->pool, udir);    /* re-escape it */
@@ -1391,8 +1433,9 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *dirent,
     rnew->uri = ap_make_full_path(rnew->pool, udir, dirent->name);
     fdir = ap_make_dirstr_parent(rnew->pool, r->filename);
     rnew->filename = ap_make_full_path(rnew->pool, fdir, dirent->name);
-    if (r->canonical_filename == r->filename)
+    if (r->canonical_filename == r->filename) {
         rnew->canonical_filename = rnew->filename;
+    }
     
     /* XXX This is now less relevant; we will do a full location walk
      * these days for this case.  Preserve the apr_stat results, and 
@@ -1416,11 +1459,13 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *dirent,
                                                       && (rv != APR_INCOMPLETE))
                 rnew->finfo.filetype = 0;
         }
-        else
+        else {
             if (((rv = apr_lstat(&rnew->finfo, rnew->filename,
                                  APR_FINFO_MIN, rnew->pool)) != APR_SUCCESS)
-                                                      && (rv != APR_INCOMPLETE))
+                && (rv != APR_INCOMPLETE)) {
                 rnew->finfo.filetype = 0;
+            }
+        }
     }
     else {
         memcpy (&rnew->finfo, dirent, sizeof(apr_finfo_t));
@@ -1443,8 +1488,9 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *dirent,
          */
         rnew->filename = apr_pstrcat(rnew->pool, rnew->filename, "/", NULL);
         rnew->uri = apr_pstrcat(rnew->pool, rnew->uri, "/", NULL);
-        if (r->canonical_filename == r->filename)
+        if (r->canonical_filename == r->filename) {
             rnew->canonical_filename = rnew->filename;
+        }
     }
 
     ap_parse_uri(rnew, rnew->uri);    /* fill in parsed_uri values */
@@ -1478,15 +1524,17 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
 
     /* Translate r->filename, if it was canonical, it stays canonical
      */
-    if (r->canonical_filename == r->filename)
+    if (r->canonical_filename == r->filename) {
         rnew->canonical_filename = (char*)(1);
+    }
     if (apr_filepath_merge(&rnew->filename, fdir, new_file,
                            APR_FILEPATH_TRUENAME, rnew->pool) != APR_SUCCESS) {
         rnew->status = HTTP_FORBIDDEN;
         return rnew;
     }
-    if (rnew->canonical_filename)
+    if (rnew->canonical_filename) {
         rnew->canonical_filename = rnew->filename;
+    }
 
     /*
      * Check for a special case... if there are no '/' characters in new_file
