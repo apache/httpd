@@ -1272,7 +1272,9 @@ Apache).<p>
 <li>
 In the absence of any <a href="#listen">Listen</a> or
 <a href="#bindaddress">BindAddress</a> directives specifying a port number,
-the Port directive sets the network port on which the server listens.
+a Port directive given in the "main server"
+(i.e. outside any <a href="#virtualhost">&lt;VirtualHost&gt</a> section)
+sets the network port on which the server listens.
 If there are any Listen or BindAddress directives specifying
 <code>:number</code> then Port has no effect on what address the server
 listens at.
