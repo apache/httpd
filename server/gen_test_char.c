@@ -73,6 +73,7 @@
 #define T_ESCAPE_PATH_SEGMENT (0x02)
 #define T_OS_ESCAPE_PATH      (0x04)
 #define T_HTTP_TOKEN_STOP     (0x08)
+#define T_ESCAPE_LOGITEM      (0x10)
 
 int main(int argc, char *argv[])
 {
@@ -85,13 +86,15 @@ int main(int argc, char *argv[])
            "#define T_ESCAPE_PATH_SEGMENT  (%u)\n"
            "#define T_OS_ESCAPE_PATH       (%u)\n"
            "#define T_HTTP_TOKEN_STOP      (%u)\n"
+           "#define T_ESCAPE_LOGITEM       (%u)\n"
            "\n"
            "static const unsigned char test_char_table[256] = {\n"
            "    0,",
            T_ESCAPE_SHELL_CMD,
            T_ESCAPE_PATH_SEGMENT,
            T_OS_ESCAPE_PATH,
-           T_HTTP_TOKEN_STOP);
+           T_HTTP_TOKEN_STOP,
+           T_ESCAPE_LOGITEM);
 
     /* we explicitly dealt with NUL above
      * in case some strchr() do bogosity with it */
@@ -135,8 +138,16 @@ int main(int argc, char *argv[])
             flags |= T_HTTP_TOKEN_STOP;
         }
 
-        printf("%u%c", flags, (c < 255) ? ',' : ' ');
+        /* For logging, escape all control characters,
+         * double quotes (because they delimit the request in the log file)
+         * backslashes (because we use backslash for escaping)
+         * and 8-bit chars with the high bit set
+         */
+        if (!apr_isprint(c) || c == '"' || c == '\\' || apr_iscntrl(c)) {
+            flags |= T_ESCAPE_LOGITEM;
+        }
 
+        printf("%u%c", flags, (c < 255) ? ',' : ' ');
     }
 
     printf("\n};\n");

@@ -1359,6 +1359,14 @@ AP_DECLARE(char *) ap_os_escape_path(apr_pool_t *p, const char *path, int partia
 AP_DECLARE(char *) ap_escape_html(apr_pool_t *p, const char *s);
 
 /**
+ * Escape a string for logging
+ * @param p The pool to allocate from
+ * @param s The string to escape
+ * @return The escaped string
+ */
+AP_DECLARE(char *) ap_escape_logitem(apr_pool_t *p, const char *str);
+
+/**
  * Construct a full hostname
  * @param p The pool to allocate from
  * @param hostname The hostname of the server

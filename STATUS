@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/04/04 00:40:57 $]
+Last modified at [$Date: 2003/04/04 01:07:32 $]
 
 Release:
 
@@ -66,22 +66,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES TO PORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
-
-    * Forward port: Escape special characters (especially control
-      characters) in mod_log_config to make a clear distinction between
-      client-supplied strings (with special characters) and server-side
-      strings. This was already introduced in version 1.3.25.
-      A ready-for-commit patch for 2.0 can be found under
-      <http://cvs.apache.org/~nd/logescape.patch>. Rev.# of HEAD:
-      include/ap_mmn.h: r1.57
-      include/httpd.h: r1.196
-      modules/loggers/mod_log_config.c: r1.100
-      server/gen_test_char.c: r1.16
-      server/util.c: r1.138
-      +1: nd, wrowe (clean solution, mirrors our \0 escaping of %00), trawick
-      +0: mod_log_config.c has another change which requires mod_log_config.h
-         and a possible mmn bump
-         nd: but not in 2.0. AFAICS the MMNs don't conflict.
 
     * AllowEncodedSlashes patch to permit %2f in path-info.
       CHANGES r1.1038
