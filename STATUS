@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/01/30 11:29:50 $]
+Last modified at [$Date: 2003/01/30 16:38:11 $]
 
 Release:
 
@@ -100,7 +100,8 @@ PATCHES TO PORT FROM 2.1
 
     * Allow mod_dav to do weak entity comparison functions.
       modules/dav/main/util.c: r1.45
-      +1: jerenkrantz
+      [ This one is under review.  Don't merge.  ]
+      +1:
 
 CURRENT RELEASE NOTES:
 
