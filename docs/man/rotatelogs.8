@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "ROTATELOGS" 8 "2003-11-25" "Apache HTTP Server" "rotatelogs"
+.TH "ROTATELOGS" 8 "2003-12-02" "Apache HTTP Server" "rotatelogs"
 
 .SH NAME
 rotatelogs \- Piped logging program to rotate Apache logs
@@ -42,7 +42,7 @@ rotatelogs is a simple program for use in conjunction with Apache's piped logfil
 .fi
  
 .PP
-This creates the files /var/logs/logfile\&.nnnn where nnnn is the system time at which the log nominally starts (this time will always be a multiple of the rotation time, so you can synchronize cron scripts with it)\&. At the end of each rota- tion time (here after 24 hours) a new log is started\&.
+This creates the files /var/logs/logfile\&.nnnn where nnnn is the system time at which the log nominally starts (this time will always be a multiple of the rotation time, so you can synchronize cron scripts with it)\&. At the end of each rotation time (here after 24 hours) a new log is started\&.
  
 .nf
 
