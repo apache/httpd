@@ -989,7 +989,7 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	else {
 	    proxy_add_header(resp_hdrs, "Content-Type", "text/plain", HDR_REP);
 	}
-	if (size != NULL) {
+	if (parms[0] != 'a' && size != NULL) {
 	    proxy_add_header(resp_hdrs, "Content-Length", size, HDR_REP);
 	    Explain1("FTP: Content-Length set to %s", size);
 	}
