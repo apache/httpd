@@ -86,10 +86,6 @@ extern "C" {
 #include "apr_time.h"
 #include "apr_network_io.h"
 
-#ifdef HAVE_NETINET_IN_H
-#include <netinet/in.h>
-#endif
-
 #ifdef CORE_PRIVATE
 
 /* ----------------------------- config dir ------------------------------ */
@@ -839,9 +835,9 @@ struct conn_rec {
     /* Who is the client? */
 
     /** local address */
-    struct sockaddr_in local_addr;
+    apr_sockaddr_t *local_addr;
     /** remote address */
-    struct sockaddr_in remote_addr;
+    apr_sockaddr_t *remote_addr;
     /** Client's IP address */
     char *remote_ip;
     /** Client's DNS name, if known.  NULL if DNS hasn't been checked,

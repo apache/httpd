@@ -272,7 +272,6 @@ conn_rec *ap_new_connection(apr_pool_t *p, server_rec *server,
                             apr_socket_t *inout, long id)
 {
     conn_rec *conn = (conn_rec *) apr_pcalloc(p, sizeof(conn_rec));
-    apr_sockaddr_t *sa;
 
     /* Got a connection structure, so initialize what fields we can
      * (the rest are zeroed out by pcalloc).
@@ -282,15 +281,13 @@ conn_rec *ap_new_connection(apr_pool_t *p, server_rec *server,
     conn->notes = apr_make_table(p, 5);
 
     conn->pool = p;
-    apr_get_sockaddr(&sa, APR_LOCAL, inout);
-    conn->local_addr = sa->sa.sin;
-    apr_get_ipaddr(&conn->local_ip, sa);
+    apr_get_sockaddr(&conn->local_addr, APR_LOCAL, inout);
+    apr_get_ipaddr(&conn->local_ip, conn->local_addr);
+    apr_get_sockaddr(&conn->remote_addr, APR_REMOTE, inout);
+    apr_get_ipaddr(&conn->remote_ip, conn->remote_addr);
     conn->base_server = server;
     conn->client_socket = inout;
 
-    apr_get_sockaddr(&sa, APR_REMOTE, inout);
-    conn->remote_addr = sa->sa.sin;
-    apr_get_ipaddr(&conn->remote_ip, sa);   
     conn->id = id;
 
     return conn;

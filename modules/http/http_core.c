@@ -603,7 +603,7 @@ static apr_inline void do_double_reverse (conn_rec *conn)
 
 	for (haddr = hptr->h_addr_list; *haddr; haddr++) {
 	    if (((struct in_addr *)(*haddr))->s_addr
-		== conn->remote_addr.sin_addr.s_addr) {
+		== conn->remote_addr->sa.sin.sin_addr.s_addr) {
 		conn->double_reverse = 1;
 		return;
 	    }

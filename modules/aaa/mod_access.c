@@ -334,8 +334,10 @@ static int find_allowdeny(request_rec *r, apr_array_header_t *a, int method)
 	    return 1;
 
 	case T_IP:
+            /* XXX handle IPv6 with separate T_IP6 type or add common 
+             *     address masking operations to APR */
 	    if (ap[i].x.ip.net != APR_INADDR_NONE
-		&& (r->connection->remote_addr.sin_addr.s_addr
+		&& (r->connection->remote_addr->sa.sin.sin_addr.s_addr
 		    & ap[i].x.ip.mask) == ap[i].x.ip.net) {
 		return 1;
 	    }
