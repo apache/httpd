@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 2000/10/12 04:03:07 $]
+  Last modified at [$Date: 2000/10/12 11:32:02 $]
 
 Release:
 
@@ -468,7 +468,7 @@ Win32 specific issues:
       cause instability - see PR#1729.
 
 
-Binaries (1.3.12):
+Binaries (1.3.14):
 
  Platform                      Avail.  Volunteer
  ------------------------------------------------------------------------------
@@ -486,11 +486,11 @@ Binaries (1.3.12):
  i386-unknown-freebsd2.2.8     no      Jim Jagielski
  i386-whatever-freebsd3.0      no      Ken Coar
  i386-whatever-freebsd3.0      no      Dirk-Willem van Gulik
- i386-whatever-freebsd3.3      yes     Ask Bjoern Hansen
- i386-whatever-freebsd4.0      yes     Ask Bjoern Hansen
+ i386-whatever-freebsd3.3      no      Ask Bjoern Hansen
+ i386-whatever-freebsd4.0      no      Ask Bjoern Hansen
  i686-pc-freebsd3.1            no      Ralf S. Engelschall
  i586-unknown-linux2           no      Ralf S. Engelschall, Lars Eilebrecht, Randy Terbush
- i686-unknown-linux2           yes     Lars Eilebrecht
+ i686-unknown-linux2           no      Lars Eilebrecht
  i686-whatever-linux2          no      Ken Coar, Randy Terbush
  i386-unknown-linux(ELF)       no      Aram Mirzadeh, Michael Douglass
  i386-unknown-netBSD-1.3.2     no      Lars Eilebrecht, Randy Terbush
@@ -511,13 +511,13 @@ Binaries (1.3.12):
  mips-sgi-irix6.2              no      Lars Eilebrecht, Randy Terbush
  mips-sgi-irix6.4              no      Lars Eilebrecht
  mips-siemens-reliantunix5.4   yes     Martin Kraemer
- netware                       yes
- OS/2                          yes     Brian Havard
- OS/390-09.00-02               yes                    
- powerpc-apple-rhapsody5.6     yes     Wilfredo Sanchez
+ netware                       no 
+ OS/2                          no      Brian Havard
+ OS/390-09.00-02               no                     
+ powerpc-apple-rhapsody5.6     no      Wilfredo Sanchez
  rs6000-ibm-aix3.2.5           no      Sameer Parekh
  rs6000-ibm-aix4.1             no      Lars Eilebrecht
- rs6000-ibm-aix4.2             yes     Bill Stoddard
+ rs6000-ibm-aix4.2             no      Bill Stoddard
  rs6000-ibm-aix4.3.x           no      Bill Stoddard, Randy Terbush
  sparc-sun-solaris2.5          no      Lars Eilebrecht, Randy Terbush
  sparc-sun-solaris2.6          no      Lars Eilebrecht
