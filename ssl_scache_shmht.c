@@ -175,8 +175,10 @@ BOOL ssl_scache_shmht_store(server_rec *s, UCHAR *id, int idlen, time_t expiry, 
     UCHAR *ucp;
 
     /* streamline session data */
+    if ((nData = i2d_SSL_SESSION(sess, NULL)) > sizeof(ucaData))
+        return FALSE;
     ucp = ucaData;
-    nData = i2d_SSL_SESSION(sess, &ucp);
+    i2d_SSL_SESSION(sess, &ucp);
 
     ssl_mutex_on(s);
     if (table_insert_kd(mc->tSessionCacheDataTable, 
