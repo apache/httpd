@@ -101,7 +101,7 @@
     sysconfdir:    /etc/httpd/conf
     datadir:       /home/httpd
     iconsdir:      $datadir/icons
-    htdocsdir:     $datadir/htdocs
+    htdocsdir:     $datadir/html
     cgidir:        $datadir/cgi-bin
     includedir:    $prefix/include/apache
     localstatedir: /var
