@@ -265,10 +265,8 @@ static int create_entity(cache_handle_t *h, request_rec *r,
 {
     disk_cache_conf *conf = ap_get_module_config(r->server->module_config,
                                                  &disk_cache_module);
-    apr_status_t rv;
     cache_object_t *obj;
     disk_cache_object_t *dobj;
-    apr_file_t *tmpfile;
 
     if (conf->cache_root == NULL) {
         return DECLINED;
@@ -477,7 +475,6 @@ static apr_status_t read_table(cache_handle_t *handle, request_rec *r,
 static apr_status_t recall_headers(cache_handle_t *h, request_rec *r)
 {
     disk_cache_object_t *dobj = (disk_cache_object_t *) h->cache_obj->vobj;
-    apr_table_t * tmp;
 
     /* This case should not happen... */
     if (!dobj->hfd) {
