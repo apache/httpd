@@ -359,61 +359,6 @@ void ap_start_shutdown(void)
 {
     signal_parent(0);
 }
-
-void ap_signal_parent(ap_context_t *p, const char* signal, 
-                      const char* server_root) 
-{
-    HANDLE event;
-    char prefix[20];
-    char *EventName;
-    FILE *fp;
-    int nread;
-    char *fname;
-    int end;
-
-    printf("signal = %s\n", signal);
-
-    fname = ap_server_root_relative (p, ap_pid_fname);
-
-    fp = fopen(fname, "r");
-    if (!fp) {
-	printf("Cannot read apache PID file %s. Error = %d\n", fname, errno);
-        return;
-    }
-    prefix[0] = 'a';
-    prefix[1] = 'p';
-
-    nread = fread(prefix+2, 1, sizeof(prefix)-3, fp);
-    if (nread == 0) {
-	fclose(fp);
-	printf("PID file %s was empty\n", fname);
-        return;
-    }
-    fclose(fp);
-
-    /* Terminate the prefix string */
-    end = 2 + nread - 1;
-    while (end > 0 && (prefix[end] == '\r' || prefix[end] == '\n'))
-	end--;
-    prefix[end + 1] = '\0';
-
-    /* Build the event name. Should be one of the following...
-     * apPID_shutdown
-     * apPID_restart
-     */
-    EventName = ap_pstrcat(p,prefix,"_",signal,NULL);
-    printf("event name = %s\n", EventName);
-    event = OpenEvent(EVENT_ALL_ACCESS, FALSE, EventName);
-    printf("event handle = %d\n", event);
-    if (event == NULL) {
-	printf("Unable to open event %s.\n", EventName);
-        return;
-    }
-    SetEvent(event);
-    ResetEvent(event);
-    CloseHandle(event);
-    return;
-}
 /*
  * Initialise the signal names, in the global variables signal_name_prefix, 
  * signal_restart_name and signal_shutdown_name.
