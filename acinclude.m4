@@ -71,9 +71,11 @@ AC_DEFUN(AC_TYPE_RLIM_T, [
     AC_TRY_COMPILE([#include <sys/resource.h>], [rlim_t spoon;], [
       ac_cv_type_rlim_t=yes
     ],[ac_cv_type_rlim_t=no
-      AC_DEFINE(rlim_t, int)
     ])
   ])
+  if test "$ac_ac_type_rlim_t" = "no" ; then
+      AC_DEFINE(rlim_t, int)
+  fi
 ])
 
 dnl
