@@ -259,7 +259,7 @@ static void alloc_listener(process_rec *process, char *addr, apr_port_t port)
                      "alloc_listener: failed to get a socket for %s", addr);
         return;
     }
-    apr_socket_set_inherit();
+    apr_socket_set_inherit(new->sd);
     new->next = ap_listeners;
     ap_listeners = new;
 }
