@@ -272,17 +272,6 @@ int ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
 #endif
 
     /*
-     * Warn the user that he should use the session cache.
-     * But we can operate without it, of course.
-     */
-    if (mc->nSessionCacheMode == SSL_SCMODE_UNSET) {
-        ssl_log(base_server, SSL_LOG_WARN,
-                "Init: Session Cache is not configured "
-                "[hint: SSLSessionCache]");
-        mc->nSessionCacheMode = SSL_SCMODE_NONE;
-    }
-
-    /*
      * initialize the mutex handling
      */
     if (!ssl_mutex_init(base_server, p)) {
