@@ -132,7 +132,7 @@ PATCHES TO BACKPORT FROM 2.1
     *) modules: Include mod_dumpio to the modules/experimental
        tree. Module included in 2.1:modules/debug.
        http://www.apache.org/~jim/mod_dumpio.c
-       +1: jim
+       +1: jim, trawick
        -0: nd (suggests the experimental directory instead)
            jerenkrantz (ditto)
 
@@ -408,6 +408,7 @@ PATCHES TO BACKPORT FROM 2.1
       svn rev 125495, 126224
       jerenkrantz says: r126224 fixes brokenness with r125495 on Solaris.
       +1: thommay, jerenkrantz
+      trawick: "which" isn't portable; I've suggested a work-around on dev@
 
 CURRENT RELEASE NOTES:
 
