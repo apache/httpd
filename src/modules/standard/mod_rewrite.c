@@ -1766,6 +1766,10 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
             expand_backref_inbuffer(r->pool, env, sizeof(env), briRR, '$');
             /*  3. expand %N (i.e. backrefs to latest RewriteCond pattern)  */
             expand_backref_inbuffer(r->pool, env, sizeof(env), briRC, '%');
+            /*  4. expand %{...} (i.e. variables) */
+            expand_variables_inbuffer(r, env, sizeof(env));
+            /*  5. expand ${...} (RewriteMap lookups)  */
+            expand_map_lookups(r, env, sizeof(env));
             /*  and add the variable to Apache's structures  */
             add_env_variable(r, env);
         }
@@ -1804,6 +1808,10 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
         expand_backref_inbuffer(r->pool, env, sizeof(env), briRR, '$');
         /*  3. expand %N (i.e. backrefs to latest RewriteCond pattern)  */
         expand_backref_inbuffer(r->pool, env, sizeof(env), briRC, '%');
+        /*  4. expand %{...} (i.e. variables) */
+        expand_variables_inbuffer(r, env, sizeof(env));
+        /*  5. expand ${...} (RewriteMap lookups)  */
+        expand_map_lookups(r, env, sizeof(env));
         /*  and add the variable to Apache's structures  */
         add_env_variable(r, env);
     }
@@ -1965,6 +1973,8 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p,
     expand_backref_inbuffer(r->pool, input, sizeof(input), briRC, '%');
     /*  4. expand %{...} (i.e. variables) */
     expand_variables_inbuffer(r, input, sizeof(input));
+    /*  5. expand ${...} (RewriteMap lookups)  */
+    expand_map_lookups(r, input, sizeof(input));
 
     /*
      *   Apply the patterns
