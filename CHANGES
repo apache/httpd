@@ -522,7 +522,7 @@ Changes with Apache 2.0.36
 
   *) Fix AcceptPathInfo. PR 8234  [Cliff Woolley]
 
-  *) [Security] Added the APLOG_TOCLIENT flag to ap_log_rerror() to
+  *) SECURITY: Added the APLOG_TOCLIENT flag to ap_log_rerror() to
      explicitly tell the server that warning messages should be sent 
      to the client in addition to being recorded in the error log. 
      Prior to this change, ap_log_rerror() always sent warning 
@@ -1929,7 +1929,7 @@ Changes with Apache 2.0.25
      only runs against real <Directory > blocks.
      [William Rowe]
 
-  *) Fix a security problem in mod_include which would allow
+  *) SECURITY: Fix a security problem in mod_include which would allow
      an SSI document to be passed to the client unparsed.
      [Cliff Woolley, Brian Pane]
 
@@ -2727,10 +2727,10 @@ Changes with Apache 2.0.15
      to fork() new child processes. 
      [Bill Stoddard]
 
-  *) Fix a major security problem with double-reverse lookup checking.  
-     Previously, a client connecting over IPv4 would not be matched 
-     properly when the server had an IPv6 listening socket.  PR #7407
-     [Taketo Kabe <kiabe@sra-tohoku.co.jp>]
+  *) SECURITY: Fix a major security problem with double-reverse lookup 
+     checking.  Previously, a client connecting over IPv4 would not be 
+     matched properly when the server had an IPv6 listening socket.  
+     PR #7407   [Taketo Kabe <kiabe@sra-tohoku.co.jp>]
 
   *) Change the way the beos MPM handles polling to allow it to stop and
      restart.  Problem was the sockets being polled were being reset by
@@ -2768,8 +2768,8 @@ Changes with Apache 2.0.15
      Mike Abbot's Accelerating Apache patch number 6.
      [Mike Abbot <mja@trudge.engr.sgi.com>, Bill Stoddard]
 
-  *) Fix a security exposure in mod_access.  Previously when IPv6 
-     listening sockets were used, allow/deny-from-IPv4-address rules 
+  *) SECURITY: Fix a security exposure in mod_access.  Previously when 
+     IPv6 listening sockets were used, allow/deny-from-IPv4-address rules 
      were not evaluated properly (PR #7407).  Also, add the ability to 
      specify IPv6 address strings with optional prefix length on Allow 
      and Deny.  [Jeff Trawick]
@@ -4309,7 +4309,8 @@ Changes with Apache 2.0a5
      container is VirtualHost or Directory or whatever.
      [Jeff Trawick]
 
-  *) SECURITY: Prevent the source code for CGIs from being revealed when 
+  *) SECURITY: CAN-2000-1204 (cve.mitre.org)
+     Prevent the source code for CGIs from being revealed when 
      using mod_vhost_alias and the CGI directory is under the document root
      and a user makes a request like http://www.example.com//cgi-bin/cgi
      as reported in <news:960999105.344321@ernani.logica.co.uk>
