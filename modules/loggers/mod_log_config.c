@@ -230,8 +230,8 @@ static void *ap_default_log_writer_init(apr_pool_t *p, server_rec *s,
 static void *ap_buffered_log_writer_init(apr_pool_t *p, server_rec *s, 
                                         const char* name);
 
-static void ap_log_set_writer_init(ap_log_writer_init *handle);
-static void ap_log_set_writer(ap_log_writer *handle);
+static ap_log_writer_init* ap_log_set_writer_init(ap_log_writer_init *handle);
+static ap_log_writer* ap_log_set_writer(ap_log_writer *handle);
 static ap_log_writer *log_writer = ap_default_log_writer;
 static ap_log_writer_init *log_writer_init = ap_default_log_writer_init;
 static int buffered_logs = 0; /* default unbuffered */
@@ -1223,14 +1223,20 @@ static void ap_register_log_handler(apr_pool_t *p, char *tag,
 
     apr_hash_set(log_hash, tag, 1, (const void *)log_struct);
 }
-static void ap_log_set_writer_init(ap_log_writer_init *handle)
+static ap_log_writer_init* ap_log_set_writer_init(ap_log_writer_init *handle)
 {
+    ap_log_writer_init *old = log_writer_init; 
     log_writer_init = handle;
 
+    return old;
+
 }
-static void ap_log_set_writer(ap_log_writer *handle)
+static ap_log_writer *ap_log_set_writer(ap_log_writer *handle)
 {
+    ap_log_writer *old = log_writer; 
     log_writer = handle;
+
+    return old;
 }
 
 static apr_status_t ap_default_log_writer( request_rec *r,
