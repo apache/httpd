@@ -1279,6 +1279,7 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
             }
             else {
                 new->left = current->right;
+                new->left->parent = new;
                 current->right = new;
                 new->parent = current;
             }
@@ -1373,6 +1374,7 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
             }
             else {
                 new->left = current->right;
+                new->left->parent = new;
                 current->right = new;
                 new->parent = current;
             }
