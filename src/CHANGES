@@ -1,7 +1,10 @@
 Changes with Apache 1.3.5
 
+  *) Fix O(n^2) memory consumption in mod_speling.  [Dean Gaudet]
+
   *) SECURITY: Avoid some buffer overflow problems when escaping
-     quoted strings.  [Rick Perry <perry@ece.vill.edu>]
+     quoted strings.  (This overflow was on the heap and we believe
+     impossible to exploit.)  [Rick Perry <perry@ece.vill.edu>]
 
   *) Let src/Configure be aware of CFLAGS options starting with plus
      signs as it's the case for the HP/UX compiler.
