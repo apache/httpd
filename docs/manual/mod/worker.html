@@ -1,33 +1,9 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta name="generator" content="HTML Tidy, see www.w3.org" />
-
-    <title>Apache MPM worker</title>
-  </head>
-  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
-
-  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
-  vlink="#000080" alink="#FF0000">
-    <!--#include virtual="header.html" -->
-
-    <h1 align="CENTER">Multi-Processing Module worker</h1>
-
-    <p>This Multi-Processing Module implements a hybrid
-    multi-threaded multi-process web server.</p>
-
-    <p><a href="module-dict.html#Status"
-    rel="Help"><strong>Status:</strong></a> MPM<br />
-     <a href="module-dict.html#SourceFile"
-    rel="Help"><strong>Source File:</strong></a> worker.c<br />
-     <a href="module-dict.html#ModuleIdentifier"
-    rel="Help"><strong>Module Identifier:</strong></a>
-    mpm_worker_module</p>
-
-    <h2>Summary</h2>
-
+<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!--
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+     This file is generated from xml source: DO NOT EDIT
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+--><title>worker - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img alt="[APACHE DOCUMENTATION]" src="../images/sub.gif"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module worker</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td valign="top"><span class="help">Description:</span></td><td><description>Multi-Processing Module implementing a hybrid
+    multi-threaded multi-process web server</description></td></tr><tr><td><a href="module-dict.html#Status" class="help">Status:</a></td><td>MPM</td></tr><tr><td><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:</a></td><td>mpm_worker_module</td></tr></table></td></tr></table><h2>Summary</h2><summary>
     <p>This Multi-Processing Module (MPM) is the default for most
     unix-like operating systems. It implements a hybrid
     multi-process multi-threaded server. Each process has a fixed
@@ -62,8 +38,7 @@
     set the privileges of the Apache child processes. The child
     processes must be able to read all the content that will be
     served, but should have as few privileges beyond that as
-    possible. In addition, unless <a
-    href="../suexec.html">suexec</a> is used, these directives also
+    possible. In addition, unless <a href="../suexec.html">suexec</a> is used, these directives also
     set the privileges which will be inherited by CGI scripts.</p>
 
     <p><code>MaxRequestsPerChild</code> controls how frequently the
@@ -72,56 +47,4 @@
 
     <p>See also: <a href="../bind.html">Setting which addresses and
     ports Apache uses</a>.</p>
-
-    <h2>Directives</h2>
-
-    <ul>
-      <li><a
-      href="mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></li>
-
-      <li><a href="mpm_common.html#group">Group</a></li>
-
-      <li><a href="mpm_common.html#pidfile">PidFile</a></li>
-
-      <li><a href="mpm_common.html#listen">Listen</a></li>
-
-      <li><a
-      href="mpm_common.html#listenbacklog">ListenBacklog</a></li>
-
-      <li><a href="mpm_common.html#lockfile">LockFile</a></li>
-
-      <li><a href="mpm_common.html#maxclients">MaxClients</a></li>
-
-      <li><a
-      href="mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></li>
-
-      <li><a
-      href="mpm_common.html#maxsparethreads">MaxSpareThreads</a></li>
-
-      <li><a
-      href="mpm_common.html#minsparethreads">MinSpareThreads</a></li>
-
-      <li><a
-      href="mpm_common.html#scoreboardfile">ScoreBoardFile</a></li>
-
-      <li><a
-      href="mpm_common.html#sendbuffersize">SendBufferSize</a></li>
-
-      <li><a
-      href="mpm_common.html#serverlimit">ServerLimit</a></li>
-
-      <li><a
-      href="mpm_common.html#startservers">StartServers</a></li>
-
-      <li><a
-      href="mpm_common.html#threadlimit">ThreadLimit</a></li>
-
-      <li><a
-      href="mpm_common.html#threadsperchild">ThreadsPerChild</a></li>
-
-      <li><a href="mpm_common.html#user">User</a></li>
-    </ul>
-    <!--#include virtual="footer.html" -->
-  </body>
-</html>
-
+</summary><h2>Directives</h2><ul><li><a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></li><li><a href="mpm_common.html#group">Group</a></li><li><a href="mpm_common.html#listen">Listen</a></li><li><a href="mpm_common.html#listenbacklog">ListenBacklog</a></li><li><a href="mpm_common.html#lockfile">LockFile</a></li><li><a href="mpm_common.html#maxclients">MaxClients</a></li><li><a href="mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></li><li><a href="mpm_common.html#maxsparethreads">MaxSpareThreads</a></li><li><a href="mpm_common.html#minsparethreads">MinSpareThreads</a></li><li><a href="mpm_common.html#pidfile">PidFile</a></li><li><a href="mpm_common.html#scoreboardfile">ScoreBoardFile</a></li><li><a href="mpm_common.html#sendbuffersize">SendBufferSize</a></li><li><a href="mpm_common.html#serverlimit">ServerLimit</a></li><li><a href="mpm_common.html#startservers">StartServers</a></li><li><a href="mpm_common.html#threadlimit">ThreadLimit</a></li><li><a href="mpm_common.html#threadsperchild">ThreadsPerChild</a></li><li><a href="mpm_common.html#user">User</a></li></ul><hr/><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img alt="Index" src="../images/index.gif"/></a><a href="../"><img alt="Home" src="../images/home.gif"/></a></blockquote></body></html>

@@ -33,6 +33,7 @@
 <modulefile>mod_rewrite.xml</modulefile>
 <modulefile>mod_setenvif.xml</modulefile>
 <modulefile>mod_so.xml</modulefile>
+<modulefile>mod_ssl.xml</modulefile>
 <modulefile>mod_speling.xml</modulefile>
 <modulefile>mod_status.xml</modulefile>
 <modulefile>mod_suexec.xml</modulefile>

@@ -1,56 +1,16 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<html>
-<head>
-<title>Apache module mod_proxy</title>
-</head>
-
-<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
-<body
- bgcolor="#ffffff"
- text="#000000"
- link="#0000ff"
- vlink="#000080"
- alink="#ff0000"
->
-<!--#include virtual="header.html" -->
-
-<blockquote><strong>Warning:</strong>
+<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!--
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+     This file is generated from xml source: DO NOT EDIT
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+--><title>mod_proxy - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img alt="[APACHE DOCUMENTATION]" src="../images/sub.gif"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_proxy</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td valign="top"><span class="help">Description:</span></td><td><description>HTTP/1.1 proxy/gateway server</description></td></tr><tr><td><a href="module-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:</a></td><td>proxy_module</td></tr></table></td></tr></table><h2>Summary</h2><summary>
+<blockquote><table><tr><td bgcolor="#ffe5f5"><p align="center"><strong>Warning</strong></p>
 This document has been updated to take into account changes
 made in the 2.0 version of the Apache HTTP Server.  Some of the
 information may still be inaccurate, please use it
 with care.
-</blockquote>
+</td></tr></table></blockquote>
 
-
-<h1 align="center">Apache module mod_proxy</h1>
-
-<p>This module provides for an <strong>HTTP 1.1</strong> proxy / gateway
-server.</p>
-
-<p><a
-href="module-dict.html#Status"
-rel="Help"
-><strong>Status:</strong></a> Extension
-<br>
-<a
-href="module-dict.html#SourceFile"
-rel="Help"
-><strong>Source File:</strong></a> mod_proxy.c
-<br>
-<a
-href="module-dict.html#ModuleIdentifier"
-rel="Help"
-><strong>Module Identifier:</strong></a> proxy_module
-<br>
-<a
-href="module-dict.html#Compatibility"
-rel="Help"
-><strong>Compatibility:</strong></a> Available in Apache 1.1 and later.
-</p>
-
-<h2>Summary</h2>
-
-This module implements a proxy/gateway for Apache. It implements
+<p>This module implements a proxy/gateway for Apache. It implements
 proxying capability for
 <code>FTP</code>,
 <code>CONNECT</code> (for SSL),
@@ -58,73 +18,52 @@ proxying capability for
 <code>HTTP/1.0</code>, and
 <code>HTTP/1.1</code>.
 The module can be configured to connect to other proxy modules for these
-and other protocols.
+and other protocols.</p>
 
 <p>This module was experimental in Apache 1.1.x. Improvements and bugfixes
 were made in Apache v1.2.x and Apache v1.3.x, then the module underwent a major
 overhaul for Apache v2.0. The protocol support was upgraded to HTTP/1.1,
-and filter support was enabled.
+and filter support was enabled.</p>
 
-<p>Please note that the <strong>caching</strong> function present in mod_proxy up to Apache
-v1.3.x has been <strong>removed</strong> from mod_proxy and will be incorporated
-into a new module, mod_cache.
-<p>
-
-<h2>Directives</h2>
-<ul>
-<li><a href="#allowconnect">AllowCONNECT</a>
-<li><a href="#noproxy">NoProxy</a>
-<li><a href="#proxyblock">ProxyBlock</a>
-<li><a href="#proxydomain">ProxyDomain</a>
-<li><a href="#proxyerroroverride">ProxyErrorOverride</a>
-<li><a href="#proxymaxforwards">ProxyMaxForwards</a>
-<li><a href="#proxypass">ProxyPass</a>
-<li><a href="#proxypassreverse">ProxyPassReverse</a>
-<li><a href="#proxypreservehost">ProxyPreserveHost</a>
-<li><a href="#proxyreceivebuffersize">ProxyReceiveBufferSize</a>
-<li><a href="#proxyremote">ProxyRemote</a>
-<li><a href="#proxyrequests">ProxyRequests</a>
-<li><a href="#proxytimeout">ProxyTimeout</a>
-<li><a href="#proxyvia">ProxyVia</a>
-
-</ul>
-
-<h2><a name="configs">Common configuration topics</a></h2>
+<p>Please note that the <strong>caching</strong> function present in
+mod_proxy up to Apache v1.3.x has been <strong>removed</strong> from
+mod_proxy and will be incorporated into a new module, mod_cache.</p>
+</summary><h2>Directives</h2><ul><li><a href="#allowconnect">AllowCONNECT</a></li><li><a href="#noproxy">NoProxy</a></li><li><a href="#proxyblock">ProxyBlock</a></li><li><a href="#proxydomain">ProxyDomain</a></li><li><a href="#proxyerroroverride">ProxyErrorOverride</a></li><li><a href="#proxymaxforwards">ProxyMaxForwards</a></li><li><a href="#proxypass">ProxyPass</a></li><li><a href="#proxypassreverse">ProxyPassReverse</a></li><li><a href="#proxypreservehost">ProxyPreserveHost</a></li><li><a href="#proxyreceivebuffersize">ProxyReceiveBufferSize</a></li><li><a href="#proxyremote">ProxyRemote</a></li><li><a href="#proxyrequests">ProxyRequests</a></li><li><a href="#proxytimeout">ProxyTimeout</a></li><li><a href="#proxyvia">ProxyVia</a></li></ul><h2><a name="configs">Common configuration topics</a></h2>
 
 <ul>
-<li><a href="#forwardreverse">Forward and Reverse Proxies</a>
-<li><a href="#access">Controlling access to your proxy</a>
-<li><a href="#shortname">Using Netscape hostname shortcuts</a>
-<li><a href="#mimetypes">Why doesn't file type <em>xxx</em> download via FTP?</a>
+<li><a href="#forwardreverse">Forward and Reverse Proxies</a></li>
+<li><a href="#access">Controlling access to your proxy</a></li>
+<li><a href="#shortname">Using Netscape hostname shortcuts</a></li>
+<li><a href="#mimetypes">Why doesn't file type <em>xxx</em> download via FTP?</a></li>
 <li><a href="#type">How can I force an FTP ASCII download of File <em>xxx</em>?</a></li>
 <li><a href="#percent2fhack">How can I access FTP files outside of my home directory?</a></li>
 <li><a href="#ftppass">How can I hide the FTP cleartext password in my browser's URL line?</a></li>
 <li><a href="#startup">Why does Apache start more slowly when using the
-        proxy module?</a>
-<!--<li><a href="#socks">Can I use the Apache proxy module with my SOCKS proxy?</a>-->
-<li><a href="#intranet">What other functions are useful for an intranet proxy server?</a>
+        proxy module?</a></li>
+
+<li><a href="#intranet">What other functions are useful for an intranet proxy server?</a></li>
 </ul>
 
-<h2><a name="forwardreverse">Forward and Reverse Proxies</a></h2>
+<h3><a name="forwardreverse">Forward and Reverse Proxies</a></h3>
 
-Apache can be configured in both a <em>forward</em> and <em>reverse</em>
-proxy configuration.
+<p>Apache can be configured in both a <em>forward</em> and <em>reverse</em>
+proxy configuration.</p>
 
 <p>A <em>forward proxy</em> is an intermediate system that enables a browser to connect to a
 remote network to which it normally does not have access. A forward proxy
 can also be used to cache data, reducing load on the networks between the
-forward proxy and the remote webserver.
+forward proxy and the remote webserver.</p>
 
-<p>Apache's mod_proxy can be figured to
-behave like a forward proxy using the <a href="#proxyremote">ProxyRemote</a>
+<p>Apache's mod_proxy can be figured to behave like a forward proxy
+using the <a href="#proxyremote" class="directive"><code class="directive">ProxyRemote</code></a>
 directive. In addition, caching of data can be achieved by configuring
-Apache mod_cache. Other dedicated forward proxy packages include
-<a href="http://www.squid.org">Squid</a>.
+Apache <code><a href="mod_cache.html">mod_cache</a></code>. Other dedicated forward proxy
+packages include <a href="http://www.squid.org">Squid</a>.</p>
 
 <p>A <em>reverse proxy</em> is a webserver system that is capable of serving webpages
 sourced from other webservers - in addition to webpages on disk or generated
 dynamically by CGI - making these pages look like they originated at the
-reverse proxy.
+reverse proxy.</p>
 
 <p>When configured with the mod_cache module the reverse
 proxy can act as a cache for slower backend webservers. The reverse proxy
@@ -133,91 +72,96 @@ webpages served using different webserver systems or architectures to
 coexist inside the same URL space. Reverse proxy systems are also ideal for
 implementing centralised logging websites with many or diverse website
 backends. Complex multi-tier webserver systems can be constructed using an
-Apache mod_proxy frontend and any number of backend webservers.
+Apache mod_proxy frontend and any number of backend webservers.</p>
 
 <p>The reverse proxy is configured using the
-<a href="#proxypass">ProxyPass</a> and <a
-href="#proxypassreverse">ProxyPassReverse</a> directives. Caching can be
-enabled using mod_cache as with the forward proxy.
+<a href="#proxypass" class="directive"><code class="directive">ProxyPass</code></a> and <a href="#proxypassreverse" class="directive"><code class="directive">ProxyPassReverse</code></a> directives. Caching can be
+enabled using mod_cache as with the forward proxy.</p>
 
-<h2><a name="access">Controlling access to your proxy</a></h2>
 
-You can control who can access your proxy via the normal &lt;Directory&gt;
-control block using the following example:<p>
 
-<pre>
-&lt;Directory proxy:*&gt;
-Order Deny,Allow
-Deny from [machines you'd like *not* to allow by IP address or name]
-Allow from [machines you'd like to allow by IP address or name]
+<h3><a name="access">Controlling access to your proxy</a></h3>
+
+<p>You can control who can access your proxy via the normal <a href="core.html#directory" class="directive"><code class="directive">&lt;Directory&gt;</code></a>
+control block using the following example:</p>
+
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+&lt;Directory proxy:*&gt;<br>
+Order Deny,Allow<br>
+Deny from all<br>
+Allow from 192.168.0<br>
 &lt;/Directory&gt;
-</pre><p>
+</code></td></tr></table></blockquote>
 
-A &lt;Files&gt; block will also work, and is the only method known to work
-for all possible URLs in Apache versions earlier than 1.2b10.<p>
+<p>A <a href="core.html#files" class="directive"><code class="directive">&lt;Files&gt;</code></a> block
+will also work, and is the only method known to work for all possible
+URLs in Apache versions earlier than 1.2b10.</p>
 
-When configuring a reverse proxy, access control takes on the attributes of
-the normal server <directory> configuration.
+<p>When configuring a reverse proxy, access control takes on the
+attributes of the normal server <a href="core.html#directory" class="directive"><code class="directive">&lt;directory&gt;</code></a> configuration.</p>
 
-<!--<h2><a name="shortname">Using Netscape hostname shortcuts</a></h2>
 
-There is an optional patch to the proxy module to allow Netscape-like
-hostname shortcuts to be used. It's available from the
-<a href="http://www.apache.org/dist/contrib/patches/1.2/netscapehost.patch"
-><samp>contrib/patches/1.2</samp></a> directory on the Apache Web
-site.<p>-->
 
-<h2><a name="mimetypes">Why doesn't file type <em>xxx</em> download via FTP?</a></h2>
 
-You probably don't have that particular file type defined as
+
+
+<h3><a name="mimetypes">Why doesn't file type <em>xxx</em>
+download via FTP?</a></h3>
+
+<p>You probably don't have that particular file type defined as
 <em>application/octet-stream</em> in your proxy's mime.types configuration
-file. A useful line can be<p>
+file. A useful line can be</p>
 
-<pre>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
 application/octet-stream        bin dms lha lzh exe class tgz taz
-</pre>
+</code></td></tr></table></blockquote>
 
-<h2><a name="type">How can I force an FTP ASCII download of File <em>xxx</em>?</a></h2>
 
-In the rare situation where you must download a specific file using the FTP
+<h3><a name="type">How can I force an FTP ASCII download of
+File <em>xxx</em>?</a></h3>
+
+<p>In the rare situation where you must download a specific file using the FTP
 <strong>ASCII</strong> transfer method (while the default transfer is in
 <strong>binary</strong> mode), you can override mod_proxy's default by
-suffixing the request with <samp>;type=a</samp> to force an ASCII transfer.
+suffixing the request with <code>;type=a</code> to force an ASCII transfer.
 (FTP Directory listings are always executed in ASCII mode, however.)</p>
 
-<h2><a name="percent2fhack">How can I access FTP files outside of my home directory?</a></h2>
+
+<h3><a name="percent2fhck">How can I access FTP files outside
+of my home directory?</a></h3>
 
 <p>
-An FTP URI is interpreted relative to the home directory of
-the user who is logging in. Alas, to reach higher directory
-levels you cannot use  /../, as the dots are interpreted by the
-browser and not actually sent to the FTP server. To address
-this problem, the so called "Squid %2f hack" was implemented in
-the Apache FTP proxy; it is is a solution which is also used by
-other popular proxy servers like the
-<a href="http://www.squid-cache.org/">Squid Proxy Cache</a>.
-By prepending /%2f to the path of your request, you can make
-such a proxy change the FTP starting directory to / (instead
-of the home directory). <br />
-<b>Example:</b> To retrieve the file <code>/etc/motd</code>,
-you would use the URL <blockquote>
-<code>ftp://<em>user@host</em>/%2f/etc/motd</code></blockquote>
-</p>
+An FTP URI is interpreted relative to the home directory of the user
+who is logging in. Alas, to reach higher directory levels you cannot
+use /../, as the dots are interpreted by the browser and not actually
+sent to the FTP server. To address this problem, the so called "Squid
+%2f hack" was implemented in the Apache FTP proxy; it is is a solution
+which is also used by other popular proxy servers like the <a href="http://www.squid-cache.org/">Squid Proxy Cache</a>.  By
+prepending /%2f to the path of your request, you can make such a proxy
+change the FTP starting directory to / (instead of the home
+directory). </p> 
 
-<h2><a id="ftppass" name="ftppass">How can I hide the FTP cleartext password in my browser's URL line?</a></h2>
+<p><strong>Example:</strong> To retrieve the file
+<code>/etc/motd</code>, you would use the URL</p>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>ftp://<em>user@host</em>/%2f/etc/motd</code></td></tr></table></blockquote>
+
+
+<h3><a name="ftppass">How can I hide the FTP cleartext password
+in my browser's URL line?</a></h3>
 
 <p>
 To log in to an FTP server by username and password, Apache
 uses different strategies.
 In absense of a user name and password in the URL altogether,
-Apache sends an anomymous login to the FTP server, i.e.,
-<blockquote><code>
-user: anonymous<br />
+Apache sends an anomymous login to the FTP server, i.e.,</p>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+user: anonymous<br>
 password: apache_proxy@
-</code></blockquote>
-This works for all popular FTP servers which are configured for
-anonymous access.<br>
-For a personal login with a specific username, you can embed
+</code></td></tr></table></blockquote>
+<p>This works for all popular FTP servers which are configured for
+anonymous access.</p>
+
+<p>For a personal login with a specific username, you can embed
 the user name into the URL, like in:
 <code>ftp://<em>username@host</em>/myfile</code>. If the FTP server
 asks for a password when given this username (which it should),
@@ -228,9 +172,10 @@ and if successful, the requested resource is presented.
 The advantage of this procedure is that your browser does not
 display the password in cleartext (which it would if you had used
 <code>ftp://<em>username:password@host</em>/myfile</code> in
-the first place).
-<br />
-<b>Note</b> that the password which is transmitted in such a way
+the first place).</p>
+
+<blockquote><table><tr><td bgcolor="#e0e5f5"><p align="center"><strong>Note</strong></p>
+The password which is transmitted in such a way
 is not encrypted on its way. It travels between your browser and
 the Apache proxy server in a base64-encoded cleartext string, and
 between the Apache proxy and the FTP server as plaintext. You should
@@ -238,582 +183,96 @@ therefore think twice before accessing your FTP server via HTTP
 (or before accessing your personal files via FTP at all!) When
 using unsecure channels, an eavesdropper might intercept your
 password on its way.
-</p>
+</td></tr></table></blockquote>
 
-<h2><a name="startup">Why does Apache start more slowly when using the
-        proxy module?</a></h2>
 
-If you're using the <code>ProxyBlock</code>
+<h3><a name="startup">Why does Apache start more slowly when
+using the proxy module?</a></h3>
+
+<p>If you're using the <a href="#proxyblock" class="directive"><code class="directive">ProxyBlock</code></a>
 directive, hostnames' IP addresses are looked up and cached during
 startup for later match test. This may take a few seconds (or more)
-depending on the speed with which the hostname lookups occur.<p>
+depending on the speed with which the hostname lookups occur.</p>
 
-<!--<h2><a name="socks">Can I use the Apache proxy module with my SOCKS proxy?</a></h2>
 
-Yes. Just build Apache with the rule <code>SOCKS4=yes</code> in your
-<em>Configuration</em> file, and follow the instructions there. SOCKS5
-capability can be added in a similar way (there's no <code>SOCKS5</code>
-rule yet), so use the <code>EXTRA_LDFLAGS</code> definition, or build Apache
-normally and run it with the <em>runsocks</em> wrapper provided with SOCKS5,
-if your OS supports dynamically linked libraries.<p>
 
-Some users have reported problems when using SOCKS version 4.2 on Solaris.
-The problem was solved by upgrading to SOCKS 4.3.<p>
 
-Remember that you'll also have to grant access to your Apache proxy machine by
-permitting connections on the appropriate ports in your SOCKS daemon's
-configuration.<p>
--->
-<h2><a name="intranet">What other functions are useful for an intranet proxy server?</a></h2>
+<h3><a name="intranet">What other functions are useful for an
+intranet proxy server?</a></h3>
 
-<p>An Apache proxy server situated in an intranet needs to forward external
-requests through the company's firewall. However, when it has to access
-resources within the intranet, it can bypass the firewall when accessing
-hosts. The <a href="#noproxy">NoProxy</a> directive is useful for specifying
-which hosts belong to the intranet and should be accessed directly.</p>
+<p>An Apache proxy server situated in an intranet needs to forward
+external requests through the company's firewall. However, when it has
+to access resources within the intranet, it can bypass the firewall
+when accessing hosts. The <a href="#noproxy" class="directive"><code class="directive">NoProxy</code></a> directive is useful for
+specifying which hosts belong to the intranet and should be accessed
+directly.</p>
 
 <p>Users within an intranet tend to omit the local domain name from their
 WWW requests, thus requesting "http://somehost/" instead of
 "http://somehost.my.dom.ain/". Some commercial proxy servers let them get
 away with this and simply serve the request, implying a configured
-local domain. When the <a href="#proxydomain">ProxyDomain</a> directive
+local domain. When the <a href="#proxydomain" class="directive"><code class="directive">ProxyDomain</code></a> directive
 is used and the server is <a href="#proxyrequests">configured for
 proxy service</a>, Apache can return a redirect response and send the client
 to the correct, fully qualified, server address. This is the preferred method
 since the user's bookmark files will then contain fully qualified hosts.</p>
 
-<hr>
-<h2><a name="proxyrequests">ProxyPreserveHost</a> directive</h2>
-<a
- href="directive-dict.html#Syntax"
- REL="Help"
- ><strong>Syntax:</strong></a> ProxyPreserveHost on|off<br>
-<a
- href="directive-dict.html#Default"
- REL="Help"
-><strong>Default:</strong></a> <code>ProxyPreserveHost Off</code><br>
-<a
- href="directive-dict.html#Context"
- REL="Help"
-><strong>Context:</strong></a> server config, virtual host<br>
-<a
- href="directive-dict.html#Override"
- REL="Help"
-><strong>Override:</strong></a> <em>Not applicable</em><br>
-<a
- href="directive-dict.html#Status"
- REL="Help"
-><strong>Status:</strong></a> Base<br>
-<a
- href="directive-dict.html#Module"
- REL="Help"
-><strong>Module:</strong></a> mod_proxy<br>
-<a
- href="directive-dict.html#Compatibility"
- REL="Help"
-><strong>Compatibility:</strong></a> ProxyPreserveHost is only available in
-Apache 2.0.31 and later.<p>
 
-When enabled, this option will pass the Host: line from the incoming request to
-the proxied host, instead of the hostname specified in the proxypass line.
-</p>
-<p>This option should normally be turned 'off'.</p>
+<hr/><h2><a name="AllowCONNECT">AllowCONNECT</a> <a name="allowconnect">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>AllowCONNECT <em>port</em> [<em>port</em>] ...</syntax></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>AllowCONNECT 443 563</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_proxy</td></tr></table></td></tr></table><usage>
+<p>The <code class="directive">AllowCONNECT</code> directive specifies a list
+of port numbers to which the proxy <code>CONNECT</code> method may
+connect.  Today's browsers use this method when a <em>https</em>
+connection is requested and proxy tunneling over <em>http</em> is in
+effect.<br> By default, only the default https port (443) and the
+default snews port (563) are enabled. Use the
+<code class="directive">AllowCONNECT</code> directive to overrride this default and
+allow connections to the listed ports only.</p>
+</usage><hr/><h2><a name="NoProxy">NoProxy</a> <a name="noproxy">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>NoProxy 
+ <em>Domain</em>|
+ <em>SubNet</em>|
+ <em>IpAddr</em>| 
+ <em>Hostname</em>
+[<em>Domain</em>| 
+ <em>SubNet</em>|
+ <em>IpAddr</em>| 
+ <em>Hostname</em>] ...</syntax></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_proxy</td></tr></table></td></tr></table><usage>
+<p>This directive is only useful for Apache proxy servers within
+intranets.  The <code class="directive">NoProxy</code> directive specifies a
+list of subnets, IP addresses, hosts and/or domains, separated by
+spaces. A request to a host which matches one or more of these is
+always served directly, without forwarding to the configured
+<a href="#proxyremote" class="directive"><code class="directive">ProxyRemote</code></a> proxy server(s).</p>
 
-<hr>
-
-
-<h2><a name="proxyrequests">ProxyRequests</a> directive</h2>
-<a
- href="directive-dict.html#Syntax"
- REL="Help"
-><strong>Syntax:</strong></a> ProxyRequests on|off<br>
-<a
- href="directive-dict.html#Default"
- REL="Help"
-><strong>Default:</strong></a> <code>ProxyRequests Off</code><br>
-<a
- href="directive-dict.html#Context"
- REL="Help"
-><strong>Context:</strong></a> server config, virtual host<br>
-<a
- href="directive-dict.html#Override"
- REL="Help"
-><strong>Override:</strong></a> <em>Not applicable</em><br>
-<a
- href="directive-dict.html#Status"
- REL="Help"
-><strong>Status:</strong></a> Base<br>
-<a
- href="directive-dict.html#Module"
- REL="Help"
-><strong>Module:</strong></a> mod_proxy<br>
-<a
- href="directive-dict.html#Compatibility"
- REL="Help"
-><strong>Compatibility:</strong></a> ProxyRequests is only available in
-Apache 1.1 and later.<p>
-
-This allows or prevents Apache from functioning as a forward proxy
-server. (Setting ProxyRequests to 'off' does not disable use of the <a
-href="#proxypass">ProxyPass</a> directive.)
-
-<p>In a typical reverse proxy configuration, this option should be set to
-'off'.
-
-<hr>
-
-<h2><a name="proxyremote">ProxyRemote</a> directive</h2>
-<a
- href="directive-dict.html#Syntax"
- REL="Help"
-><strong>Syntax:</strong></a> ProxyRemote <em>match remote-server</em><br>
-<a
- href="directive-dict.html#Default"
- REL="Help"
-><strong>Default:</strong></a> <em>None</em><br>
-<a
- href="directive-dict.html#Context"
- REL="Help"
-><strong>Context:</strong></a> server config, virtual host<br>
-<a
- href="directive-dict.html#Override"
- REL="Help"
-><strong>Override:</strong></a> <em>Not applicable</em><br>
-<a
- href="directive-dict.html#Status"
- REL="Help"
-><strong>Status:</strong></a> Base<br>
-<a
- href="directive-dict.html#Module"
- REL="Help"
-><strong>Module:</strong></a> mod_proxy<br>
-<a
- href="directive-dict.html#Compatibility"
- REL="Help"
-><strong>Compatibility:</strong></a> ProxyRemote is only available in
-Apache 1.1 and later.<p>
-
-This defines remote proxies to this proxy. <em>match</em> is either the
-name of a URL-scheme that the remote server supports, or a partial URL
-for which the remote server should be used, or '*' to indicate the
-server should be contacted for all requests. <em>remote-server</em> is a
-partial URL for the remote server. Syntax:
-
-<pre>
-  remote-server = protocol://hostname[:port]
-</pre>
-
-<em>protocol</em> is the protocol that should be used to communicate
-with the remote server; only "http" is supported by this module.
-<p>
-Example:
-<pre>
-  ProxyRemote http://goodguys.com/ http://mirrorguys.com:8000
-  ProxyRemote * http://cleversite.com
-  ProxyRemote ftp http://ftpproxy.mydomain.com:8080
-</pre>
-
-In the last example, the proxy will forward FTP requests, encapsulated
-as yet another HTTP proxy request, to another proxy which can handle
-them.
-
-<p>This option also supports reverse proxy configuration - a backend webserver
-can be embedded within a virtualhost URL space even if that server is hidden
-by another forward proxy.
-
-<hr>
-
-<h2><a name="proxypass">ProxyPass</a> directive</h2>
-<a
- href="directive-dict.html#Syntax"
- REL="Help"
-><strong>Syntax:</strong></a> ProxyPass <em>path url</em><br> 
-or: ProxyPass <em>url</em> when placed in a &lt;location&gt; directive <em>(Apache 2.0 only)</em><br>
-or: ProxyPass <em>path !</em> to exclude a path from being proxied.
-<br>
-<a
- href="directive-dict.html#Default"
- REL="Help"
-><strong>Default:</strong></a> <em>None</em><br>
-<a
- href="directive-dict.html#Context"
- REL="Help"
-><strong>Context:</strong></a> server config, virtual host<br>
-<a
- href="directive-dict.html#Override"
- REL="Help"
-><strong>Override:</strong></a> <em>Not applicable</em><br>
-<a
- href="directive-dict.html#Status"
- REL="Help"
-><strong>Status:</strong></a> Base<br>
-<a
- href="directive-dict.html#Module"
- REL="Help"
-><strong>Module:</strong></a> mod_proxy<br>
-<a
- href="directive-dict.html#Compatibility"
- REL="Help"
-><strong>Compatibility:</strong></a> ProxyPass is only available in
-Apache 1.1 and later.<p>
-
-This directive allows remote servers to be mapped into the space of the local
-server; the local server does not act as a proxy in the conventional sense,
-but appears to be a mirror of the remote server. <em>path</em> is the name of
-a local virtual path; <em>url</em> is a partial URL for the remote server.
-<p>
-Suppose the local server has address <samp>http://wibble.org/</samp>; then
-<pre>
-   ProxyPass /mirror/foo/ http://foo.com/
-</pre>
-will cause a local request for the
-&lt;<samp>http://wibble.org/mirror/foo/bar</samp>&gt; to be
-internally converted into a proxy request to
-&lt;<samp>http://foo.com/bar</samp>&gt;.
-<p>
-The ! directive is useful in situations where you don't want to reverse-proxy
-a subdirectory. eg.
-<pre>
-        ProxyPass /mirror/foo/i !
-        ProxyPass /mirror/foo http://foo.com
-</pre>
-will proxy all requests to /mirror/foo to foo.com EXCEPT requests made to /mirror/foo/i
-<b>NB: order is important. you need to put the exclusions BEFORE the general proxypass directive</b>
-</p>
-<hr>
-
-<h2><a name="proxypassreverse">ProxyPassReverse</a> directive</h2>
-<a
- href="directive-dict.html#Syntax"
- REL="Help"
-><strong>Syntax:</strong></a> ProxyPassReverse <em>path url</em><br>
-or: ProxyPassReverse <em>url</em> when placed in a &lt;location&gt; directive <em>(Apache 2.0 only)</em><br>
-<a
- href="directive-dict.html#Default"
- REL="Help"
-><strong>Default:</strong></a> <em>None</em><br>
-<a
- href="directive-dict.html#Context"
- REL="Help"
-><strong>Context:</strong></a> server config, virtual host<br>
-<a
- href="directive-dict.html#Override"
- REL="Help"
-><strong>Override:</strong></a> <em>Not applicable</em><br>
-<a
- href="directive-dict.html#Status"
- REL="Help"
-><strong>Status:</strong></a> Base<br>
-<a
- href="directive-dict.html#Module"
- REL="Help"
-><strong>Module:</strong></a> mod_proxy<br>
-<a
- href="directive-dict.html#Compatibility"
- REL="Help"
-><strong>Compatibility:</strong></a> ProxyPassReverse is only available in
-Apache 1.3b6 and later.<p>
-
-This directive lets Apache adjust the URL in the <tt>Location</tt>,
-<tt>Content-Location</tt> and <tt>URI</tt> headers on
-HTTP redirect responses. This is essential when Apache is used as
-a reverse proxy to avoid by-passing the reverse proxy because of HTTP
-redirects on the backend servers which stay behind the reverse proxy.
-<p>
-<em>path</em> is the name of a local virtual path.<br>
-<em>url</em> is a partial URL for the remote server - the same way they are
-used for the <tt>ProxyPass</tt> directive.
-<p>
-Example:<br>
-Suppose the local server has address <samp>http://wibble.org/</samp>; then
-<pre>
-   ProxyPass         /mirror/foo/ http://foo.com/
-   ProxyPassReverse  /mirror/foo/ http://foo.com/
-</pre>
-will not only cause a local request for the
-&lt;<samp>http://wibble.org/mirror/foo/bar</samp>&gt; to be internally
-converted into a proxy request to &lt;<samp>http://foo.com/bar</samp>&gt; (the
-functionality <samp>ProxyPass</samp> provides here). It also takes care of
-redirects the server foo.com sends: when <samp>http://foo.com/bar</samp> is
-redirected by him to <samp>http://foo.com/quux</samp> Apache adjusts this to
-<samp>http://wibble.org/mirror/foo/quux</samp> before forwarding the HTTP
-redirect response to the client. 
-<p>
-Note that this <samp>ProxyPassReverse</samp> directive can also be used in
-conjunction with the proxy pass-through feature ("<samp>RewriteRule ...
-[P]</samp>") from
-<a
- href="mod_rewrite.html#RewriteRule"
-><tt>mod_rewrite</tt></a> because its doesn't depend on a corresponding
-<samp>ProxyPass</samp> directive.
-
-<hr>
-
-<h2><a name="allowconnect">AllowCONNECT</a> directive</h2>
-<a
- href="directive-dict.html#Syntax"
- REL="Help"
-><strong>Syntax:</strong></a> AllowCONNECT <em>port</em> 
-    [<em>port</em>] ...<br>
-<a
- href="directive-dict.html#Default"
- REL="Help"
-><strong>Default:</strong></a> <em><samp>AllowCONNECT</samp> 443 563</em><br>
-<a
- href="directive-dict.html#Context"
- REL="Help"
-><strong>Context:</strong></a> server config, virtual host<br>
-<a
- href="directive-dict.html#Override"
- REL="Help"
-><strong>Override:</strong></a> <em>Not applicable</em><br>
-<a
- href="directive-dict.html#Status"
- REL="Help"
-><strong>Status:</strong></a> Base<br>
-<a
- href="directive-dict.html#Module"
- REL="Help"
-><strong>Module:</strong></a> mod_proxy<br>
-<a
- href="directive-dict.html#Compatibility"
- REL="Help"
-><strong>Compatibility:</strong></a> <samp>AllowCONNECT</samp> is only
-available in Apache 1.3.2 and later.<p>
-
-The <samp>AllowCONNECT</samp> directive specifies a list of port numbers
-to which the proxy <samp>CONNECT</samp> method may connect.
-Today's browsers use this method when a <em>https</em> connection
-is requested and proxy tunneling over <em>http</em> is in effect.<br>
-By default, only the default https port (443) and the default
-snews port (563) are enabled. Use the <samp>AllowCONNECT</samp>
-directive to overrride this default and allow connections to the
-listed ports only.
-
-<hr>
-
-<h2><a name="proxyblock">ProxyBlock</a> directive</h2>
-<a
- href="directive-dict.html#Syntax"
- REL="Help"
-><strong>Syntax:</strong></a> ProxyBlock *|<em>word|host|domain</em>
-    [<em>word|host|domain</em>] ...<br>
-<a
- href="directive-dict.html#Default"
- REL="Help"
-><strong>Default:</strong></a> <em>None</em><br>
-<a
- href="directive-dict.html#Context"
- REL="Help"
-><strong>Context:</strong></a> server config, virtual host<br>
-<a
- href="directive-dict.html#Override"
- REL="Help"
-><strong>Override:</strong></a> <em>Not applicable</em><br>
-<a
- href="directive-dict.html#Status"
- REL="Help"
-><strong>Status:</strong></a> Base<br>
-<a
- href="directive-dict.html#Module"
- REL="Help"
-><strong>Module:</strong></a> mod_proxy<br>
-<a
- href="directive-dict.html#Compatibility"
- REL="Help"
-><strong>Compatibility:</strong></a> ProxyBlock is only available in
-Apache 1.2 and later.<p>
-
-The ProxyBlock directive specifies a list of words, hosts and/or domains,
-separated by spaces.  HTTP, HTTPS, and FTP document requests to sites whose
-names contain matched words, hosts or domains are <em>blocked</em> by the
-proxy server. The proxy module will also attempt to determine IP addresses of
-list items which may be hostnames during startup, and cache them for match
-test as well. Example:
-
-<pre>
-  ProxyBlock joes-garage.com some-host.co.uk rocky.wotsamattau.edu
-</pre>
-
-'rocky.wotsamattau.edu' would also be matched if referenced by IP address.<p>
-
-Note that 'wotsamattau' would also be sufficient to match 'wotsamattau.edu'.<p>
-
-Note also that
-
-<pre>
-ProxyBlock *
-</pre>
-
-blocks connections to all sites.
-
-<hr>
-
-<h2><a name="proxyreceivebuffersize">ProxyReceiveBufferSize</a> directive</h2>
-<a
- href="directive-dict.html#Syntax"
- REL="Help"
-><strong>Syntax:</strong></a> ProxyReceiveBufferSize <em>bytes</em><br>
-<a
- href="directive-dict.html#Default"
- REL="Help"
-><strong>Default:</strong></a> <em>None</em><br>
-<a
- href="directive-dict.html#Context"
- REL="Help"
-><strong>Context:</strong></a> server config, virtual host<br>
-<a
- href="directive-dict.html#Override"
- REL="Help"
-><strong>Override:</strong></a> <em>Not applicable</em><br>
-<a
- href="directive-dict.html#Status"
- REL="Help"
-><strong>Status:</strong></a> Base<br>
-<a
- href="directive-dict.html#Module"
- REL="Help"
-><strong>Module:</strong></a> mod_proxy<br>
-<a
- href="directive-dict.html#Compatibility"
- REL="Help"
-><strong>Compatibility:</strong></a> ProxyReceiveBufferSize is only available in
-Apache 1.3 and later.<p>
-
-The ProxyReceiveBufferSize directive specifies an explicit network buffer size
-for outgoing HTTP and FTP connections, for increased throughput.  It has to be
-greater than 512 or set to 0 to indicate that the system's default buffer size
-should be used. 
-
-<p>
-Example:
-
-<pre>
-  ProxyReceiveBufferSize 2048
-</pre>
-
-<hr>
-
-<h2><a name="proxymaxforwards">ProxyMaxForwards</a> directive</h2>
-<a
- href="directive-dict.html#Syntax"
- REL="Help"
-><strong>Syntax:</strong></a> ProxyMaxForwards <em>bytes</em><br>
-<a
- href="directive-dict.html#Default"
- REL="Help"
-><strong>Default:</strong></a> <em>10</em><br>
-<a
- href="directive-dict.html#Context"
- REL="Help"
-><strong>Context:</strong></a> server config, virtual host<br>
-<a
- href="directive-dict.html#Override"
- REL="Help"
-><strong>Override:</strong></a> <em>Not applicable</em><br>
-<a
- href="directive-dict.html#Status"
- REL="Help"
-><strong>Status:</strong></a> Base<br>
-<a
- href="directive-dict.html#Module"
- REL="Help"
-><strong>Module:</strong></a> mod_proxy<br>
-<a
- href="directive-dict.html#Compatibility"
- REL="Help"
-><strong>Compatibility:</strong></a> ProxyMaxForwards is only available in
-Apache 2.0 and later.<p>
-
-The ProxyMaxForwards directive specifies the maximum number of proxies
-through which a request may pass. This is set to prevent infinite proxy
-loops, or a DoS attack.
-
-<p>
-Example:
-
-<pre>
-  ProxyMaxForwards 10
-</pre>
-
-<hr>
-
-<h2><a name="noproxy">NoProxy</a> directive</h2>
-<a
- href="directive-dict.html#Syntax"
- REL="Help"
-><strong>Syntax:</strong></a> NoProxy 
- <a href="#domain"><em>Domain</em></a>|<a 
-    href="#subnet"><em>SubNet</em></a>|<a
-    href="#ipaddr"><em>IpAddr</em></a>|<a 
-    href="#hostname"><em>Hostname</em></a>
-[<a href="#domain"><em>Domain</em></a>|<a 
-    href="#subnet"><em>SubNet</em></a>|<a
-    href="#ipaddr"><em>IpAddr</em></a>|<a 
-    href="#hostname"><em>Hostname</em></a>] ...<br>
-<a
- href="directive-dict.html#Default"
- REL="Help"
-><strong>Default:</strong></a> <em>None</em><br>
-<a
- href="directive-dict.html#Context"
- REL="Help"
-><strong>Context:</strong></a> server config, virtual host<br>
-<a
- href="directive-dict.html#Override"
- REL="Help"
-><strong>Override:</strong></a> <em>Not applicable</em><br>
-<a
- href="directive-dict.html#Status"
- REL="Help"
-><strong>Status:</strong></a> Base<br>
-<a
- href="directive-dict.html#Module"
- REL="Help"
-><strong>Module:</strong></a> mod_proxy<br>
-<a
- href="directive-dict.html#Compatibility"
- REL="Help"
-><strong>Compatibility:</strong></a> NoProxy is only available in
-Apache 1.3 and later.<p>
-
-This directive is only useful for Apache proxy servers within intranets.
-The NoProxy directive specifies a list of subnets, IP addresses, hosts
-and/or domains, separated by spaces. A request to a host which matches
-one or more of these is always served directly, without forwarding to
-the configured ProxyRemote proxy server(s).
-<p>
-Example:
-
-<pre>
-  ProxyRemote  *  http://firewall.mycompany.com:81
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
+  ProxyRemote  *  http://firewall.mycompany.com:81<br>
   NoProxy         .mycompany.com 192.168.112.0/21 
-</pre>
-The arguments to the NoProxy directive are one of the following type list:
+</code></td></tr></table></blockquote>
+
+<p>The arguments to the NoProxy directive are one of the following type list:</p>
    <dl>
-    <!-- ===================== Domain ======================= -->
-    <a name="domain">
-    <dt><em>Domain</em></a>
+    
+    <dt><a name="domain">
+    <em>Domain</em></a></dt>
     <dd>A <em>Domain</em> is a partially qualified DNS domain name, preceded
         by a period.
         It represents a list of hosts which logically belong to the same DNS
         domain or zone (<em>i.e.</em>, the suffixes of the hostnames are all ending in 
         <em>Domain</em>).<br>
-		Examples: <samp>.com</samp>   <samp>.apache.org.</samp><br>
+		Examples: <code>.com</code>   <code>.apache.org.</code><br>
         To distinguish <em>Domain</em>s from <a href="#hostname"><em>Hostname</em></a>s (both
         syntactically and semantically; a DNS domain can have a DNS A record,
         too!), <em>Domain</em>s are always written
         with a leading period.<br>
         Note: Domain name comparisons are done without regard to the case,
         and <em>Domain</em>s are always assumed to be anchored in the root 
-        of the DNS tree, therefore two domains <samp>.MyDomain.com</samp> and
-        <samp>.mydomain.com.</samp> (note the trailing period) are
+        of the DNS tree, therefore two domains <code>.MyDomain.com</code> and
+        <code>.mydomain.com.</code> (note the trailing period) are
         considered equal. Since a domain comparison does not involve a DNS
-	lookup, it is much more efficient than subnet comparison.
+	lookup, it is much more efficient than subnet comparison.</dd>
 
-    <!-- ===================== SubNet ======================= -->
-    <a name="subnet">
-    <dt><em>SubNet</em></a>
+    
+    <dt><a name="subnet">
+    <em>SubNet</em></a></dt>
     <dd>A <em>SubNet</em> is a partially qualified internet address in
         numeric (dotted quad) form, optionally followed by a slash and the
         netmask, specified as the number of significant bits in the
@@ -824,44 +283,40 @@ The arguments to the NoProxy directive are one of the following type list:
         only be multiples of 8 bits wide.)<br>
         Examples:
         <dl>
-         <dt><samp>192.168</samp> or <samp>192.168.0.0</samp>
+         <dt><code>192.168</code> or <code>192.168.0.0</code></dt>
          <dd>the subnet 192.168.0.0 with an implied netmask of 16 valid bits
-             (sometimes used in the netmask form <samp>255.255.0.0</samp>)
-         <dt><samp>192.168.112.0/21</samp>
-         <dd>the subnet <samp>192.168.112.0/21</samp> with a netmask of 21
-             valid bits (also used in the form 255.255.248.0)
+             (sometimes used in the netmask form <code>255.255.0.0</code>)</dd>
+         <dt><code>192.168.112.0/21</code></dt>
+         <dd>the subnet <code>192.168.112.0/21</code> with a netmask of 21
+             valid bits (also used in the form 255.255.248.0)</dd>
         </dl>
 		As a degenerate case, a <em>SubNet</em> with 32 valid bits is the
         equivalent to an <em>IPAddr</em>, while a <em>SubNet</em> with zero
         valid bits (<em>e.g.</em>, 0.0.0.0/0) is the same as the constant
-        <em>_Default_</em>, matching any IP address. 
+        <em>_Default_</em>, matching any IP address. </dd>
 
-    <!-- ===================== IPAddr ======================= -->
-    <a name="ipaddr">
-    <dt><em>IPAddr</em></a>
+    
+    <dt><a name="ipaddr">
+    <em>IPAddr</em></a></dt>
     <dd>A <em>IPAddr</em> represents a fully qualified internet address in
         numeric (dotted quad) form. Usually, this address represents a
         host, but there need not necessarily be a DNS domain name
         connected with the address.<br>
 		Example: 192.168.123.7<br>
         Note: An <em>IPAddr</em> does not need to be resolved by the DNS
-	system, so it can result in more effective apache performance.
-        <p><strong>See Also:</strong>
-	<a href="../dns-caveats.html">DNS Issues</a></p>
+	system, so it can result in more effective apache performance.</dd>
 
-    <!-- ===================== Hostname ======================= -->
-    <a name="hostname">
-    <dt><em>Hostname</em></a>
+    
+    <dt><a name="hostname">
+    <em>Hostname</em></a></dt>
     <dd>A <em>Hostname</em> is a fully qualified DNS domain name which can
-        be resolved to one or more <a
-	href="#ipaddr"><em>IPAddrs</em></a> via the DNS domain name service. 
+        be resolved to one or more <a href="#ipaddr"><em>IPAddrs</em></a> via the DNS domain name service. 
         It represents a logical host (in contrast to
 	<a href="#domain"><em>Domain</em></a>s, see 
-        above) and must be resolvable to at least one <a
-	href="#ipaddr"><em>IPAddr</em></a> (or often to a list of hosts
+        above) and must be resolvable to at least one <a href="#ipaddr"><em>IPAddr</em></a> (or often to a list of hosts
 	with different <a href="#ipaddr"><em>IPAddr</em></a>'s).<br> 
-		Examples: <samp>prep.ai.mit.edu</samp>
-                  <samp>www.apache.org.</samp><br>
+		Examples: <code>prep.ai.mit.edu</code>
+                  <code>www.apache.org.</code><br>
         Note: In many situations, it is more effective to specify an
         <a href="#ipaddr"><em>IPAddr</em></a> in place of a
 	<em>Hostname</em> since a DNS lookup 
@@ -870,190 +325,207 @@ The arguments to the NoProxy directive are one of the following type list:
         link.<br>
         Note: <em>Hostname</em> comparisons are done without regard to the case,
         and <em>Hostname</em>s are always assumed to be anchored in the root
-        of the DNS tree, therefore two hosts <samp>WWW.MyDomain.com</samp>
-        and <samp>www.mydomain.com.</samp> (note the trailing period) are
-        considered equal.<br>
-<p><strong>See Also:</strong>
-<a href="../dns-caveats.html">DNS Issues</a></p>
-   </dl>
+        of the DNS tree, therefore two hosts <code>WWW.MyDomain.com</code>
+        and <code>www.mydomain.com.</code> (note the trailing period) are
+        considered equal.</dd>
+</dl>
+</usage><p><strong>See also </strong></p><ul><li><a href="../dns-caveats.html">DNS Issues</a></li></ul><hr/><h2><a name="ProxyBlock">ProxyBlock</a> <a name="proxyblock">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>ProxyBlock *|<em>word|host|domain</em>
+[<em>word|host|domain</em>] ...</syntax></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_proxy</td></tr></table></td></tr></table><usage>
+<p>The <code class="directive">ProxyBlock</code> directive specifies a list of
+words, hosts and/or domains, separated by spaces.  HTTP, HTTPS, and
+FTP document requests to sites whose names contain matched words,
+hosts or domains are <em>blocked</em> by the proxy server. The proxy
+module will also attempt to determine IP addresses of list items which
+may be hostnames during startup, and cache them for match test as
+well. Example:</p>
 
-<hr>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+  ProxyBlock joes-garage.com some-host.co.uk rocky.wotsamattau.edu
+</code></td></tr></table></blockquote>
 
-<h2><a name="proxytimeout">ProxyTimeout</a> directive</h2>
-<a
- href="directive-dict.html#Syntax"
- REL="Help"
-><strong>Syntax:</strong></a> ProxyTimeout <em>n</em> seconds<br>
-<a
- href="directive-dict.html#Default"
- REL="Help"
-><strong>Default:</strong></a> <em>server default timeout</em><br>
-<a
- href="directive-dict.html#Context"
- REL="Help"
-><strong>Context:</strong></a> server config, virtual host<br>
-<a
- href="directive-dict.html#Override"
- REL="Help"
-><strong>Override:</strong></a> <em>Not applicable</em><br>
-<a
- href="directive-dict.html#Status"
- REL="Help"
-><strong>Status:</strong></a> Base<br>
-<a
- href="directive-dict.html#Module"
- REL="Help"
-><strong>Module:</strong></a> mod_proxy<br>
-<a
- href="directive-dict.html#Compatibility"
- REL="Help"
-><strong>Compatibility:</strong></a> ProxyDomain is only available in
-Apache 2.0.31 and later.<p>
+<p>'rocky.wotsamattau.edu' would also be matched if referenced by IP
+address.</p>
 
+<p>Note that 'wotsamattau' would also be sufficient to match
+'wotsamattau.edu'.</p>
+
+<p>Note also that</p>
+
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+ProxyBlock *
+</code></td></tr></table></blockquote>
+
+<p>blocks connections to all sites.</p>
+
+</usage><hr/><h2><a name="ProxyDomain">ProxyDomain</a> <a name="proxydomain">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>ProxyDomain <em>Domain</em></syntax></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_proxy</td></tr></table></td></tr></table><usage>
+<p>This directive is only useful for Apache proxy servers within
+intranets.  The <code class="directive">ProxyDomain</code> directive specifies
+the default domain which the apache proxy server will belong to. If a
+request to a host without a domain name is encountered, a redirection
+response to the same host with the configured <em>Domain</em> appended
+will be generated.</p>
+
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
+  ProxyRemote  *  http://firewall.mycompany.com:81<br>
+  NoProxy         .mycompany.com 192.168.112.0/21<br>
+  ProxyDomain     .mycompany.com
+</code></td></tr></table></blockquote>
+</usage><hr/><h2><a name="ProxyErrorOverride">ProxyErrorOverride</a> <a name="proxyerroroverride">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>ProxyErrorOverride On|Off</syntax></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>ProxyErrorOverride Off</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_proxy</td></tr><tr><td align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:</a></td><td>Available in version 2.0 and later</td></tr></table></td></tr></table><usage>
+<p>This directive is useful for reverse-proxy setups, where you want to 
+have a common look and feel on the error pages seen by the end user. 
+This also allows for included files (via mod_include's SSI) to get
+the error code and act accordingly (default behavior would display
+the error page of the proxied server, turning this on shows the SSI
+Error message).</p>
+</usage><hr/><h2><a name="ProxyMaxForwards">ProxyMaxForwards</a> <a name="proxymaxforwards">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>ProxyMaxForwards <em>number</em></syntax></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>ProxyMaxForwards 10</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_proxy</td></tr><tr><td align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:</a></td><td>Available in Apache 2.0 and later</td></tr></table></td></tr></table><usage>
+<p>The <code class="directive">ProxyMaxForwards</code> directive specifies the
+maximum number of proxies through which a request may pass. This is
+set to prevent infinite proxy loops, or a DoS attack.</p>
+
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
+  ProxyMaxForwards 10
+</code></td></tr></table></blockquote>
+</usage><hr/><h2><a name="ProxyPass">ProxyPass</a> <a name="proxypass">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>ProxyPass [<em>path</em>] !|<em>url</em></syntax></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_proxy</td></tr></table></td></tr></table><usage>
+
+<p>This directive allows remote servers to be mapped into the space of
+the local server; the local server does not act as a proxy in the
+conventional sense, but appears to be a mirror of the remote
+server. <em>path</em> is the name of a local virtual path;
+<em>url</em> is a partial URL for the remote server.</p>
+
+<p>Suppose the local server has address <code>http://wibble.org/</code>; 
+then</p>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+   ProxyPass /mirror/foo/ http://foo.com/
+</code></td></tr></table></blockquote>
+<p>will cause a local request for the
+&lt;<code>http://wibble.org/mirror/foo/bar</code>&gt; to be
+internally converted into a proxy request to
+&lt;<code>http://foo.com/bar</code>&gt;.</p>
+<p>
+The ! directive is useful in situations where you don't want to reverse-proxy
+a subdirectory. eg.</p>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+        ProxyPass /mirror/foo/i !<br>
+        ProxyPass /mirror/foo http://foo.com
+</code></td></tr></table></blockquote>
+<p>will proxy all requests to /mirror/foo to foo.com EXCEPT requests made to /mirror/foo/i</p>
+
+<blockquote><table><tr><td bgcolor="#e0e5f5">NB: order is important. you need to put the exclusions BEFORE the general proxypass directive</td></tr></table></blockquote>
+</usage><hr/><h2><a name="ProxyPassReverse">ProxyPassReverse</a> <a name="proxypassreverse">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>ProxyPassReverse [<em>path</em>] <em>url</em></syntax></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_proxy</td></tr></table></td></tr></table><usage>
+
+<p>This directive lets Apache adjust the URL in the <code>Location</code>,
+<code>Content-Location</code> and <code>URI</code> headers on
+HTTP redirect responses. This is essential when Apache is used as
+a reverse proxy to avoid by-passing the reverse proxy because of HTTP
+redirects on the backend servers which stay behind the reverse proxy.</p>
+
+<p><em>path</em> is the name of a local virtual path.<br>
+<em>url</em> is a partial URL for the remote server - the same way they are
+used for the <a href="#proxypass" class="directive"><code class="directive">ProxyPass</code></a> directive.</p>
+
+<p>
+Example:<br>
+Suppose the local server has address <code>http://wibble.org/</code>; then</p>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+   ProxyPass         /mirror/foo/ http://foo.com/<br>
+   ProxyPassReverse  /mirror/foo/ http://foo.com/
+</code></td></tr></table></blockquote>
+<p>will not only cause a local request for the
+&lt;<code>http://wibble.org/mirror/foo/bar</code>&gt; to be internally
+converted into a proxy request to &lt;<code>http://foo.com/bar</code>&gt; (the
+functionality <code>ProxyPass</code> provides here). It also takes care of
+redirects the server foo.com sends: when <code>http://foo.com/bar</code> is
+redirected by him to <code>http://foo.com/quux</code> Apache adjusts this to
+<code>http://wibble.org/mirror/foo/quux</code> before forwarding the HTTP
+redirect response to the client. </p>
+<p>
+Note that this <code class="directive">ProxyPassReverse</code> directive can
+also be used in conjunction with the proxy pass-through feature
+("<code>RewriteRule ...  [P]</code>") from
+<code><a href="mod_rewrite.html">mod_rewrite</a></code> because its doesn't depend on a
+corresponding <a href="#proxypass" class="directive"><code class="directive">ProxyPass</code></a>
+directive.</p>
+</usage><hr/><h2><a name="ProxyPreserveHost">ProxyPreserveHost</a> <a name="proxypreservehost">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>ProxyPreserveHost on|off</syntax></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>ProxyPreserveHost Off</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_proxy</td></tr><tr><td align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:</a></td><td>Available in
+Apache 2.0.31 and later.</td></tr></table></td></tr></table><usage>
+<p>When enabled, this option will pass the Host: line from the
+incoming request to the proxied host, instead of the hostname
+specified in the proxypass line.
+</p>
+<p>This option should normally be turned 'off'.</p>
+</usage><hr/><h2><a name="ProxyReceiveBufferSize">ProxyReceiveBufferSize</a> <a name="proxyreceivebuffersize">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>ProxyReceiveBufferSize <em>bytes</em></syntax></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_proxy</td></tr></table></td></tr></table><usage>
+<p>The <code class="directive">ProxyReceiveBufferSize</code> directive
+specifies an explicit network buffer size for outgoing HTTP and FTP
+connections, for increased throughput.  It has to be greater than 512
+or set to 0 to indicate that the system's default buffer size should
+be used.</p>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
+  ProxyReceiveBufferSize 2048
+</code></td></tr></table></blockquote>
+</usage><hr/><h2><a name="ProxyRemote">ProxyRemote</a> <a name="proxyremote">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>ProxyRemote <em>match remote-server</em></syntax></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_proxy</td></tr></table></td></tr></table><usage>
+<p>This defines remote proxies to this proxy. <em>match</em> is either the
+name of a URL-scheme that the remote server supports, or a partial URL
+for which the remote server should be used, or '*' to indicate the
+server should be contacted for all requests. <em>remote-server</em> is a
+partial URL for the remote server. Syntax:</p>
+
+<pre>
+  remote-server = protocol://hostname[:port]
+</pre>
+
+<p><em>protocol</em> is the protocol that should be used to communicate
+with the remote server; only "http" is supported by this module.</p>
+
+<p>
+Example:</p>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+  ProxyRemote http://goodguys.com/ http://mirrorguys.com:8000<br>
+  ProxyRemote * http://cleversite.com<br>
+  ProxyRemote ftp http://ftpproxy.mydomain.com:8080
+</code></td></tr></table></blockquote>
+
+<p>In the last example, the proxy will forward FTP requests, encapsulated
+as yet another HTTP proxy request, to another proxy which can handle
+them.</p>
+
+<p>This option also supports reverse proxy configuration - a backend
+webserver can be embedded within a virtualhost URL space even if that
+server is hidden by another forward proxy.</p>
+</usage><hr/><h2><a name="ProxyRequests">ProxyRequests</a> <a name="proxyrequests">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>ProxyRequests on|off</syntax></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>ProxyRequests Off</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_proxy</td></tr></table></td></tr></table><usage>
+<p>This allows or prevents Apache from functioning as a forward proxy
+server. (Setting ProxyRequests to 'off' does not disable use of the 
+<a href="#proxypass" class="directive"><code class="directive">ProxyPass</code></a> directive.)</p>
+
+<p>In a typical reverse proxy configuration, this option should be set to
+'off'.</p>
+</usage><hr/><h2><a name="ProxyTimeout">ProxyTimeout</a> <a name="proxytimeout">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>ProxyTimeout <em>seconds</em></syntax></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>ProxyTimeout 300</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_proxy</td></tr><tr><td align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:</a></td><td>Available in
+Apache 2.0.31 and later</td></tr></table></td></tr></table><usage>
 <p>This directive allows a user to specifiy a timeout on proxy requests.
 This is usefull when you have a slow/buggy appserver which hangs,
 and you would rather just return a timeout and fail gracefully instead
 of waiting however long it takes the server to return
 </p>
-<hr>
+</usage><hr/><h2><a name="ProxyVia">ProxyVia</a> <a name="proxyvia">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>ProxyVia on|off|full|block</syntax></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>ProxyVia off</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_proxy</td></tr></table></td></tr></table><usage>
+<p>This directive controls the use of the <code>Via:</code> HTTP
+header by the proxy. Its intended use is to control the flow of of
+proxy requests along a chain of proxy servers.  See RFC2068 (HTTP/1.1)
+for an explanation of <code>Via:</code> header lines.</p>
 
+<ul> <li>If set
+to <em>off</em>, which is the default, no special processing is
+performed. If a request or reply contains a <code>Via:</code> header,
+it is passed through unchanged.</li>
 
-<h2><a name="proxydomain">ProxyDomain</a> directive</h2>
-<a
- href="directive-dict.html#Syntax"
- REL="Help"
-><strong>Syntax:</strong></a> ProxyDomain <em>Domain</em><br>
-<a
- href="directive-dict.html#Default"
- REL="Help"
-><strong>Default:</strong></a> <em>None</em><br>
-<a
- href="directive-dict.html#Context"
- REL="Help"
-><strong>Context:</strong></a> server config, virtual host<br>
-<a
- href="directive-dict.html#Override"
- REL="Help"
-><strong>Override:</strong></a> <em>Not applicable</em><br>
-<a
- href="directive-dict.html#Status"
- REL="Help"
-><strong>Status:</strong></a> Base<br>
-<a
- href="directive-dict.html#Module"
- REL="Help"
-><strong>Module:</strong></a> mod_proxy<br>
-<a
- href="directive-dict.html#Compatibility"
- REL="Help"
-><strong>Compatibility:</strong></a> ProxyDomain is only available in
-Apache 1.3 and later.<p>
+<li>If set to <em>on</em>, each
+request and reply will get a <code>Via:</code> header line added for
+the current host.</li>
 
-This directive is only useful for Apache proxy servers within intranets.
-The ProxyDomain directive specifies the default domain which the apache
-proxy server will belong to. If a request to a host without a domain name
-is encountered, a redirection response to the same host
-with the configured <em>Domain</em> appended will be generated. 
-<p>
-Example:
+<li>If set to <em>full</em>, each generated <code>Via:</code> header
+line will additionally have the Apache server version shown as a
+<code>Via:</code> comment field.</li>
 
-<pre>
-  ProxyRemote  *  http://firewall.mycompany.com:81
-  NoProxy         .mycompany.com 192.168.112.0/21 
-  ProxyDomain     .mycompany.com
-</pre>
-
-<hr>
-
-<h2><a name="proxyvia">ProxyVia</a> directive</h2>
-<a
- href="directive-dict.html#Syntax"
- REL="Help"
-><strong>Syntax:</strong></a> ProxyVia on|off|full|block<br>
-<a
- href="directive-dict.html#Default"
- REL="Help"
-><strong>Default:</strong></a> <em>ProxyVia off</em><br>
-<a
- href="directive-dict.html#Context"
- REL="Help"
-><strong>Context:</strong></a> server config, virtual host<br>
-<a
- href="directive-dict.html#Override"
- REL="Help"
-><strong>Override:</strong></a> <em>Not applicable</em><br>
-<a
- href="directive-dict.html#Status"
- REL="Help"
-><strong>Status:</strong></a> Base<br>
-<a
- href="directive-dict.html#Module"
- REL="Help"
-><strong>Module:</strong></a> mod_proxy<br>
-<a
- href="directive-dict.html#Compatibility"
- REL="Help"
-><strong>Compatibility:</strong></a> ProxyVia is only available in
-Apache 1.3.2 and later.<p>
-
-This directive controls the use of the <samp>Via:</samp> HTTP header
-by the proxy. Its intended use is to control the flow of of proxy
-requests along a chain of proxy servers.
-See RFC2068 (HTTP/1.1) for an explanation of <samp>Via:</samp> header lines.<ul>
-<li>If set to <em>off</em>, which is the default, no special
-processing is performed. If a request or reply contains a <samp>Via:</samp> header,
-it is passed through unchanged.
-<li>If set to <em>on</em>, each request and reply will get a <samp>Via:</samp> header
-line added for the current host.
-<li>If set to <em>full</em>, each generated <samp>Via:</samp> header line will
-additionally have the Apache server version shown as a <samp>Via:</samp> comment field.
-<li>If set to <em>block</em>, every proxy request will have all its
-<samp>Via:</samp> header lines removed. No new <samp>Via:</samp> header will be generated.
+<li>If set to <em>block</em>, every
+proxy request will have all its <code>Via:</code> header lines
+removed. No new <code>Via:</code> header will be generated.</li>
 </ul>
-
-<hr>
-
-<h2><a name="proxyerroroverride">ProxyErrorOverride</a> directive</h2>
-<a
- href="directive-dict.html#Syntax"
- REL="Help"
-><strong>Syntax:</strong></a> ProxyErrorOverride<em>on</em><br>
-<a
- href="directive-dict.html#Default"
- REL="Help"
-><strong>Default:</strong></a> <em>off</em><br>
-<a
- href="directive-dict.html#Context"
- REL="Help"
-><strong>Context:</strong></a> server config, virtual host<br>
-<a
- href="directive-dict.html#Override"
- REL="Help"
-><strong>Override:</strong></a> <em>Not applicable</em><br>
-<a
- href="directive-dict.html#Status"
- REL="Help"
-><strong>Status:</strong></a> Base<br>
-<a
- href="directive-dict.html#Module"
- REL="Help"
-><strong>Module:</strong></a> mod_proxy<br>
-<a
- href="directive-dict.html#Compatibility"
- REL="Help"
-><strong>Compatibility:</strong></a> ProxyErrorOverride
-Apache 2.0 and later.<p>
-
-This directive is useful for reverse-proxy setups, where you want to 
-have a common look and feel on the error pages seen by the end user. 
-This also allows for included files (via mod_include's SSI) to get
-the error code and act accordingly (default behavior would display
-the error page of the proxied server, turning this on shows the SSI
-Error message).
-
-<p>
-
-<!--#include virtual="footer.html" -->
-</body>
-</html>
-
+</usage><hr/><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img alt="Index" src="../images/index.gif"/></a><a href="../"><img alt="Home" src="../images/home.gif"/></a></blockquote></body></html>
