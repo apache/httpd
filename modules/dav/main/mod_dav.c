@@ -125,7 +125,7 @@ typedef struct {
 
 
 /* forward-declare for use in configuration lookup */
-extern module MODULE_VAR_EXPORT dav_module;
+extern module DAV_DECLARE_DATA dav_module;
 
 static void dav_init_handler(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
                              server_rec *s)
@@ -1172,8 +1172,8 @@ static int dav_method_put(request_rec *r)
 }
 
 /* ### move this to dav_util? */
-void dav_add_response(dav_walker_ctx *ctx, const char *href, int status,
-		      dav_get_props_result *propstats)
+DAV_DECLARE(void) dav_add_response(dav_walker_ctx *ctx, const char *href, 
+                                   int status, dav_get_props_result *propstats)
 {
     dav_response *resp;
 
@@ -3259,7 +3259,7 @@ static const handler_rec dav_handlers[] =
     { NULL }
 };
 
-module MODULE_VAR_EXPORT dav_module =
+module DAV_DECLARE_DATA dav_module =
 {
     STANDARD20_MODULE_STUFF,
     dav_create_dir_config,	/* dir config creater */
@@ -3276,13 +3276,15 @@ AP_HOOK_STRUCT(
     AP_HOOK_LINK(find_liveprop)
     AP_HOOK_LINK(insert_all_liveprops)
     )
-AP_IMPLEMENT_HOOK_VOID(gather_propsets, (apr_array_header_t *uris), (uris))
-AP_IMPLEMENT_HOOK_RUN_FIRST(int, find_liveprop,
-                            (request_rec *r,
-                             const char *ns_uri, const char *name,
-                             const dav_hooks_liveprop **hooks),
-                            (r, ns_uri, name, hooks), 0);
-AP_IMPLEMENT_HOOK_VOID(insert_all_liveprops,
-                       (request_rec *r, const dav_resource *resource,
-                        int insvalue, ap_text_header *phdr),
-                       (r, resource, insvalue, phdr));
+AP_IMPLEMENT_EXTERNAL_HOOK_VOID(DAV, gather_propsets,
+                                (apr_array_header_t *uris),
+                                (uris))
+AP_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(DAV, int, find_liveprop,
+                                     (request_rec *r, const char *ns_uri,
+                                      const char *name,
+                                      const dav_hooks_liveprop **hooks),
+                                     (r, ns_uri, name, hooks), 0);
+AP_IMPLEMENT_EXTERNAL_HOOK_VOID(DAV, insert_all_liveprops,
+                                (request_rec *r, const dav_resource *resource,
+                                 int insvalue, ap_text_header *phdr),
+                                (r, resource, insvalue, phdr));

@@ -67,7 +67,8 @@
 
 #include "apr_strings.h"
 
-dav_error *dav_new_error(apr_pool_t *p, int status, int error_id, const char *desc)
+DAV_DECLARE(dav_error*) dav_new_error(apr_pool_t *p, int status, 
+                                      int error_id, const char *desc)
 {
     int save_errno = errno;
     dav_error *err = apr_pcalloc(p, sizeof(*err));
@@ -82,8 +83,9 @@ dav_error *dav_new_error(apr_pool_t *p, int status, int error_id, const char *de
     return err;
 }
 
-dav_error *dav_push_error(apr_pool_t *p, int status, int error_id, const char *desc,
-			  dav_error *prev)
+DAV_DECLARE(dav_error*) dav_push_error(apr_pool_t *p, int status, 
+                                       int error_id, const char *desc, 
+                                       dav_error *prev)
 {
     dav_error *err = apr_pcalloc(p, sizeof(*err));
 
@@ -95,7 +97,8 @@ dav_error *dav_push_error(apr_pool_t *p, int status, int error_id, const char *d
     return err;
 }
 
-void dav_check_bufsize(apr_pool_t * p, dav_buffer *pbuf, size_t extra_needed)
+DAV_DECLARE(void) dav_check_bufsize(apr_pool_t * p, dav_buffer *pbuf, 
+                                    apr_size_t extra_needed)
 {
     /* grow the buffer if necessary */
     if (pbuf->cur_len + extra_needed > pbuf->alloc_len) {
@@ -108,7 +111,8 @@ void dav_check_bufsize(apr_pool_t * p, dav_buffer *pbuf, size_t extra_needed)
     }
 }
 
-void dav_set_bufsize(apr_pool_t * p, dav_buffer *pbuf, size_t size)
+DAV_DECLARE(void) dav_set_bufsize(apr_pool_t * p, dav_buffer *pbuf, 
+                                  apr_size_t size)
 {
     /* NOTE: this does not retain prior contents */
 
@@ -129,14 +133,16 @@ void dav_set_bufsize(apr_pool_t * p, dav_buffer *pbuf, size_t size)
 
 
 /* initialize a buffer and copy the specified (null-term'd) string into it */
-void dav_buffer_init(apr_pool_t *p, dav_buffer *pbuf, const char *str)
+DAV_DECLARE(void) dav_buffer_init(apr_pool_t *p, dav_buffer *pbuf, 
+                                  const char *str)
 {
     dav_set_bufsize(p, pbuf, strlen(str));
     memcpy(pbuf->buf, str, pbuf->cur_len + 1);
 }
 
 /* append a string to the end of the buffer, adjust length */
-void dav_buffer_append(apr_pool_t *p, dav_buffer *pbuf, const char *str)
+DAV_DECLARE(void) dav_buffer_append(apr_pool_t *p, dav_buffer *pbuf, 
+                                    const char *str)
 {
     size_t len = strlen(str);
 
@@ -146,7 +152,8 @@ void dav_buffer_append(apr_pool_t *p, dav_buffer *pbuf, const char *str)
 }
 
 /* place a string on the end of the buffer, do NOT adjust length */
-void dav_buffer_place(apr_pool_t *p, dav_buffer *pbuf, const char *str)
+DAV_DECLARE(void) dav_buffer_place(apr_pool_t *p, dav_buffer *pbuf, 
+                                   const char *str)
 {
     size_t len = strlen(str);
 
@@ -155,8 +162,9 @@ void dav_buffer_place(apr_pool_t *p, dav_buffer *pbuf, const char *str)
 }
 
 /* place some memory on the end of a buffer; do NOT adjust length */
-void dav_buffer_place_mem(apr_pool_t *p, dav_buffer *pbuf, const void *mem,
-                          size_t amt, size_t pad)
+DAV_DECLARE(void) dav_buffer_place_mem(apr_pool_t *p, dav_buffer *pbuf, 
+                                       const void *mem, apr_size_t amt, 
+                                       apr_size_t pad)
 {
     dav_check_bufsize(p, pbuf, amt + pad);
     memcpy(pbuf->buf + pbuf->cur_len, mem, amt);
@@ -654,7 +662,7 @@ static dav_error * dav_validate_resource_state(apr_pool_t *p,
     int num_matched;
     int num_that_apply;
     int seen_locktoken;
-    size_t uri_len;
+    apr_size_t uri_len;
     const char *reason = NULL;
 
     /* DBG1("validate: <%s>", resource->uri); */

@@ -69,8 +69,8 @@ static apr_status_t dav_cleanup_providers(void *ctx)
     return APR_SUCCESS;
 }
 
-void dav_register_provider(apr_pool_t *p, const char *name,
-                           const dav_provider *provider)
+DAV_DECLARE(void) dav_register_provider(apr_pool_t *p, const char *name,
+                                       const dav_provider *provider)
 {
     /* ### ignore the pool; it is NULL right now */
     p = ap_global_hook_pool;

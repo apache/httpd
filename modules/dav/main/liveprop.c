@@ -74,7 +74,8 @@ static apr_status_t dav_cleanup_liveprops(void *ctx)
     return APR_SUCCESS;
 }
 
-void dav_register_liveprop_namespace(apr_pool_t *p, const char *uri)
+DAV_DECLARE(void) dav_register_liveprop_namespace(apr_pool_t *p, 
+                                                  const char *uri)
 {
     int value;
 
@@ -96,7 +97,7 @@ void dav_register_liveprop_namespace(apr_pool_t *p, const char *uri)
     apr_hash_set(dav_liveprop_uris, uri, 0, (void *)++dav_liveprop_count);
 }
 
-int dav_get_liveprop_ns_index(const char *uri)
+DAV_DECLARE(int) dav_get_liveprop_ns_index(const char *uri)
 {
     return (int)apr_hash_get(dav_liveprop_uris, uri, 0);
 }
