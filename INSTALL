@@ -162,7 +162,7 @@
 
      Use the --prefix=PREFIX and --exec-prefix=EPREFIX options to configure
      Apache to use a particular installation prefix. The default is
-     PREFIX=/usr/local and EPREFIX=PREFIX.
+     PREFIX=/usr/local/apache and EPREFIX=PREFIX.
 
      Use the --bindir=DIR, --sbindir=DIR, --libexecdir=DIR, --mandir=DIR,
      --sysconfdir=DIR, --datadir=DIR and --localstatedir=DIR option to change

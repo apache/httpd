@@ -128,7 +128,7 @@ PERL="`echo $PERL | sed -e 's://:/:'`"
 ##
 
 #   default paths
-prefix='/usr/local'
+prefix='/usr/local/apache'
 exec_prefix='$prefix'
 bindir='$exec_prefix/bin'
 sbindir='$exec_prefix/sbin'
