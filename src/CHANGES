@@ -1,5 +1,9 @@
 Changes with Apache 1.3b8
 
+  *) Have NT properly set the directory for CGI scripts 
+     (& other spawned children)
+     [W G Stoddard <wgstodda@us.ibm.com>]
+
   *) Propagate environment to CGI scripts correctly in Win32.
      [W G Stoddard <wgstodda@us.ibm.com>] PR#2294
 

@@ -17,8 +17,6 @@ WIN32 1.3 FINAL RELEASE SHOWSTOPPERS:
 	for buffer overflow, someone should rewrite or verify
 	they're safe
 
-    * CGI: chdir() needs to be reinstated for CGI.
-
     * Win95: when authentication is required for directory /foobar/, direct 
       access to /foobar/bletch is permitted.  PR #2145
 
