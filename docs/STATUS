@@ -1,5 +1,5 @@
 Apache HTTP Server 2.0 Documentation Status File.
-Last modified: $Date: 2002/10/05 23:03:58 $
+Last modified: $Date: 2002/10/26 00:00:36 $
 
 If you are interested in helping accomplish some of the tasks on this
 list or otherwise improving the documentation, please join the
@@ -52,10 +52,10 @@ Things That Need Fixing
       the program in the site-tools repository, but nobody seems
       willing to update the nroff files at the moment.
       What should we do?
-
-      - we should be able to setup an XSLT to convert XML to nroff,
-        shouldn't we? --nd
-        - Theoretically?  Yes.  ;-) --Joshua
+      - One idea is write them in xml and use xsl to convert to nroff
+        An example: http://cyberelk.net/tim/data/xmlto/db2man/
+        This is designed for docbook, but it could be adapted.
+        I'm not sure what the license is.
 
 - MPM documentation
      - Non unix/windows MPMs still need to be completed.
