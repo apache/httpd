@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/02/15 07:43:19 $]
+Last modified at [$Date: 2002/02/15 17:16:54 $]
 
 Release:
 
@@ -48,7 +48,7 @@ CURRENT RELEASE NOTES:
         http://www.apache.org/dist/httpd/httpd-2.0.32-alpha.tar.gz
       Tested on: Linux 2.4, Win2K, FreeBSD 3.4, AIX 
       Release .32 as beta:
-        +1: trawick, Justin, FirstBill, Ian
+        +1: trawick, Justin, FirstBill, Ian, Cliff
 
 FINAL RELEASE SHOWSTOPPERS:
 
