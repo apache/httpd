@@ -598,6 +598,8 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
                                ap_make_content_type(r, r->content_type));
             }
 
+            headers_out = apr_table_overlay(r->pool, headers_out,
+                                            r->err_headers_out);
             rv = store_table(dobj->hfd, headers_out);
             if (rv != APR_SUCCESS) {
                 return rv;
