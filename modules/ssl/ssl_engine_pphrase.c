@@ -90,6 +90,40 @@ static apr_status_t exists_and_readable(char *fname, apr_pool_t *pool, apr_time_
     return APR_SUCCESS;
 }
 
+/*
+ * reuse vhost keys for asn1 tables where keys are allocated out
+ * of s->process->pool to prevent "leaking" each time we format
+ * a vhost key.  since the key is stored in a table with lifetime
+ * of s->process->pool, the key needs to have the same lifetime.
+ *
+ * XXX: probably seems silly to use a hash table with keys and values
+ * being the same, but it is easier than doing a linear search
+ * and will make it easier to remove keys if needed in the future.
+ * also have the problem with apr_array_header_t that if we
+ * underestimate the number of vhost keys when we apr_array_make(),
+ * the array will get resized when we push past the initial number
+ * of elts.  this resizing in the s->process->pool means "leaking"
+ * since apr_array_push() will apr_alloc arr->nalloc * 2 elts,
+ * leaving the original arr->elts to waste.
+ */
+static char *asn1_table_vhost_key(SSLModConfigRec *mc, apr_pool_t *p,
+                                  char *id, char *an)
+{
+    /* 'p' pool used here is cleared on restarts */
+    char *key = apr_psprintf(p, "%s:%s", id, an);
+    void *keyptr = apr_hash_get(mc->tVHostKeys, key,
+                                APR_HASH_KEY_STRING);
+
+    if (!keyptr) {
+        /* make a copy out of s->process->pool */
+        keyptr = apr_pstrdup(mc->pPool, key);
+        apr_hash_set(mc->tVHostKeys, keyptr,
+                     APR_HASH_KEY_STRING, keyptr);
+    }
+
+    return (char *)keyptr;
+}
+
 /*  _________________________________________________________________
 **
 **  Pass Phrase and Private Key Handling
@@ -199,7 +233,7 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
              * certificate is actually used to configure mod_ssl's per-server
              * configuration structures).
              */
-            cp = apr_psprintf(mc->pPool, "%s:%s", cpVHostID, an);
+            cp = asn1_table_vhost_key(mc, p, cpVHostID, an);
             length = i2d_X509(pX509Cert, NULL);
             ucp = ssl_asn1_table_set(mc->tPublicCert, cp, length);
             (void)i2d_X509(pX509Cert, &ucp); /* 2nd arg increments */
@@ -426,7 +460,7 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
              * because the SSL library uses static variables inside a
              * RSA structure which do not survive DSO reloads!)
              */
-            cp = apr_psprintf(mc->pPool, "%s:%s", cpVHostID, an);
+            cp = asn1_table_vhost_key(mc, p, cpVHostID, an);
             length = i2d_PrivateKey(pPrivateKey, NULL);
             ucp = ssl_asn1_table_set(mc->tPrivateKey, cp, length);
             (void)i2d_PrivateKey(pPrivateKey, &ucp); /* 2nd arg increments */
