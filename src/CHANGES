@@ -1,4 +1,8 @@
-Changes with Apache 1.3a2
+Changes with Apache 1.3b1
+
+  *) *Really* disable all mod_rewrite operations if the engine is off.
+     Some things (like RewriteMaps) were checked/performed even if they
+     weren't supposed to be.  [Ken Coar, PR #991]
 
   *) Implement a new timer scheme which eliminates the need to call alarm() all
      the time.  Instead a counter in the scoreboard for each child is used to

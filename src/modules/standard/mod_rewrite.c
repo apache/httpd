@@ -1,4 +1,3 @@
- 
 /* ====================================================================
  * Copyright (c) 1996,1997 The Apache Group.  All rights reserved.
  *
@@ -455,9 +454,9 @@ static const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, char *a1, char *a
     new->fpin  = 0;
     new->fpout = 0;
 
-    if (new->checkfile)
-        if (stat(new->checkfile, &st) == -1)
-            return pstrcat(cmd->pool, "RewriteMap: map file or program not found:", new->checkfile, NULL);
+    if (new->checkfile && (sconf->state == ENGINE_ENABLED)
+        && (stat(new->checkfile, &st) == -1))
+	return pstrcat(cmd->pool, "RewriteMap: map file or program not found:", new->checkfile, NULL);
 
     return NULL;
 }
@@ -2192,7 +2191,14 @@ static char *lookup_map(request_rec *r, char *name, char *key)
         s = &entries[i];
         if (strcmp(s->name, name) == 0) {
             if (s->type == MAPTYPE_TXT) {
-                stat(s->checkfile, &st); /* existence was checked at startup! */
+                if (stat(s->checkfile, &st) == -1) {
+		    aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+			        "mod_rewrite: can't access text RewriteMap file %s: %s",
+			        s->checkfile, strerror(errno));
+		    rewritelog(r, 1,
+			       "can't open RewriteMap file, see error log");
+		    return NULL;
+		}
                 value = get_cache_string(cachep, s->name, CACHEMODE_TS, st.st_mtime, key);
                 if (value == NULL) {
                     rewritelog(r, 6, "cache lookup FAILED, forcing new map lookup");
@@ -2213,7 +2219,14 @@ static char *lookup_map(request_rec *r, char *name, char *key)
             }
             else if (s->type == MAPTYPE_DBM) {
 #if HAS_NDBM_LIB
-                stat(s->checkfile, &st); /* existence was checked at startup! */
+                if (stat(s->checkfile, &st) == -1) {
+		    aplog_error(APLOG_MARK, APLOG_ERROR, r->server,
+			        "mod_rewrite: can't access dbm RewriteMap file %s: %s",
+			        s->checkfile, strerror(errno));
+		    rewritelog(r, 1,
+			       "can't open RewriteMap file, see error log");
+		    return NULL;
+		}
                 value = get_cache_string(cachep, s->name, CACHEMODE_TS, st.st_mtime, key);
                 if (value == NULL) {
                     rewritelog(r, 6, "cache lookup FAILED, forcing new map lookup");
@@ -2535,6 +2548,13 @@ static void run_rewritemap_programs(server_rec *s, pool *p)
     int rc;
   
     conf = get_module_config(s->module_config, &rewrite_module);
+    /*
+     * If the engine isn't turned on, don't even try to do anything.
+     */
+    if (conf->state == ENGINE_DISABLED) {
+	return;
+    }
+    
 
     rewritemaps = conf->rewritemaps;
     entries = (rewritemap_entry *)rewritemaps->elts;
