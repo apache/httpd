@@ -461,7 +461,7 @@ typedef struct {
     int loglevel;
     
     /* Access control */
-    apr_array_header_t *sec;
+    apr_array_header_t *sec_file;
     regex_t *r;
 
 #ifdef WIN32
@@ -490,7 +490,7 @@ typedef struct {
     /* Access control */
 
     char *access_name;
-    apr_array_header_t *sec;
+    apr_array_header_t *sec_dir;
     apr_array_header_t *sec_url;
 } core_server_config;
 

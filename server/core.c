@@ -171,7 +171,7 @@ static void *create_core_dir_config(apr_pool_t *a, char *dir)
 
     conf->limit_req_body = 0;
     conf->limit_xml_body = AP_LIMIT_UNSET;
-    conf->sec = apr_array_make(a, 2, sizeof(ap_conf_vector_t *));
+    conf->sec_file = apr_array_make(a, 2, sizeof(ap_conf_vector_t *));
 #ifdef WIN32
     conf->script_interpreter_source = INTERPRETER_SOURCE_UNSET;
 #endif
@@ -301,7 +301,7 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
     else
         conf->limit_xml_body = base->limit_xml_body;
 
-    conf->sec = apr_array_append(a, base->sec, new->sec);
+    conf->sec_file = apr_array_append(a, base->sec_file, new->sec_file);
 
     if (new->satisfy != SATISFY_NOSPEC) {
         conf->satisfy = new->satisfy;
@@ -342,7 +342,7 @@ static void *create_core_server_config(apr_pool_t *a, server_rec *s)
 #endif
     conf->access_name = is_virtual ? NULL : DEFAULT_ACCESS_FNAME;
     conf->ap_document_root = is_virtual ? NULL : DOCUMENT_LOCATION;
-    conf->sec = apr_array_make(a, 40, sizeof(ap_conf_vector_t *));
+    conf->sec_dir = apr_array_make(a, 40, sizeof(ap_conf_vector_t *));
     conf->sec_url = apr_array_make(a, 40, sizeof(ap_conf_vector_t *));
     
     return (void *)conf;
@@ -362,7 +362,7 @@ static void *merge_core_server_configs(apr_pool_t *p, void *basev, void *virtv)
     if (!conf->ap_document_root) {
         conf->ap_document_root = base->ap_document_root;
     }
-    conf->sec = apr_array_append(p, base->sec, virt->sec);
+    conf->sec_dir = apr_array_append(p, base->sec_dir, virt->sec_dir);
     conf->sec_url = apr_array_append(p, base->sec_url, virt->sec_url);
 
     return conf;
@@ -376,7 +376,7 @@ AP_CORE_DECLARE(void) ap_add_per_dir_conf(server_rec *s, void *dir_config)
 {
     core_server_config *sconf = ap_get_module_config(s->module_config,
 						     &core_module);
-    void **new_space = (void **)apr_array_push(sconf->sec);
+    void **new_space = (void **)apr_array_push(sconf->sec_dir);
     
     *new_space = dir_config;
 }
@@ -392,7 +392,7 @@ AP_CORE_DECLARE(void) ap_add_per_url_conf(server_rec *s, void *url_config)
 
 AP_CORE_DECLARE(void) ap_add_file_conf(core_dir_config *conf, void *url_config)
 {
-    void **new_space = (void **)apr_array_push(conf->sec);
+    void **new_space = (void **)apr_array_push(conf->sec_file);
     
     *new_space = url_config;
 }
@@ -469,7 +469,7 @@ static int reorder_sorter(const void *va, const void *vb)
 void ap_core_reorder_directories(apr_pool_t *p, server_rec *s)
 {
     core_server_config *sconf;
-    apr_array_header_t *sec;
+    apr_array_header_t *sec_dir;
     struct reorder_sort_rec *sortbin;
     int nelts;
     ap_conf_vector_t **elts;
@@ -477,13 +477,13 @@ void ap_core_reorder_directories(apr_pool_t *p, server_rec *s)
     apr_pool_t *tmp;
 
     sconf = ap_get_module_config(s->module_config, &core_module);
-    sec = sconf->sec;
-    nelts = sec->nelts;
-    elts = (ap_conf_vector_t **)sec->elts;
+    sec_dir = sconf->sec_dir;
+    nelts = sec_dir->nelts;
+    elts = (ap_conf_vector_t **)sec_dir->elts;
 
     /* we have to allocate tmp space to do a stable sort */
     apr_pool_create(&tmp, p);
-    sortbin = apr_palloc(tmp, sec->nelts * sizeof(*sortbin));
+    sortbin = apr_palloc(tmp, sec_dir->nelts * sizeof(*sortbin));
     for (i = 0; i < nelts; ++i) {
 	sortbin[i].orig_index = i;
 	sortbin[i].elt = elts[i];
@@ -1576,7 +1576,7 @@ static const char *dirsection(cmd_parms *cmd, void *mconfig, const char *arg)
     }
     else if (!strcmp(cmd->path, "~")) {
 	cmd->path = ap_getword_conf(cmd->pool, &arg);
-        if (!cmd->path) {
+        if (!cmd->path)
             return "<Directory ~ > block must specify a path";
 	r = ap_pregcomp(cmd->pool, cmd->path, REG_EXTENDED|USE_ICASE);
     }
