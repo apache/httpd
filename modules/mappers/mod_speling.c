@@ -64,6 +64,7 @@
 #include "http_request.h"
 #include "http_log.h"
 #include "apr_file_io.h"
+#include "apr_strings.h"
 
 /* mod_speling.c - by Alexei Kosut <akosut@organic.com> June, 1996
  *

@@ -104,6 +104,7 @@
 #include "http_config.h"
 #include "http_core.h"
 #include "http_request.h"
+#include "apr_strings.h"
 
 module MODULE_VAR_EXPORT usertrack_module;
 

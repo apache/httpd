@@ -155,6 +155,8 @@
 #include "util_script.h"
 #include "http_log.h"
 #include "http_request.h"
+#include "apr_strings.h"
+
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif

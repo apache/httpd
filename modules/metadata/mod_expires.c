@@ -201,6 +201,7 @@
 #include "http_config.h"
 #include "http_log.h"
 #include "http_request.h"
+#include "apr_strings.h"
 
 typedef struct {
     int active;

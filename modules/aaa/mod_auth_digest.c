@@ -114,6 +114,7 @@
 #include "apr_time.h"
 #include "apr_errno.h"
 #include "apr_lock.h"
+#include "apr_strings.h"
 
 
 #if APR_HAS_SHARED_MEMORY
@@ -498,7 +499,7 @@ static const char *set_group_file(cmd_parms *cmd, void *config,
 static const char *set_qop(cmd_parms *cmd, void *config, const char *op)
 {
     digest_config_rec *conf = (digest_config_rec *) config;
-    const char **tmp;
+    char **tmp;
     int cnt;
 
     if (!strcasecmp(op, "none")) {
