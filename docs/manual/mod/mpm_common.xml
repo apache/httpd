@@ -92,6 +92,10 @@ of the daemon</description>
     filename does not begin with a slash (/) then it is assumed to be
     relative to the <directive module="core">ServerRoot</directive>.</p>
 
+    <example><title>Example</title>
+    PidFile /var/run/apache.pid
+    </example>
+
     <p>It is often useful to be able to send the server a signal,
     so that it closes and then reopens its <directive
     module="core">ErrorLog</directive> and TransferLog, and
