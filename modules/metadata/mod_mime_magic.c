@@ -257,7 +257,7 @@ union record {
 static int ascmagic(request_rec *, unsigned char *, apr_size_t);
 static int is_tar(unsigned char *, apr_size_t);
 static int softmagic(request_rec *, unsigned char *, apr_size_t);
-static void tryit(request_rec *, unsigned char *, apr_size_t, int);
+static int tryit(request_rec *, unsigned char *, apr_size_t, int);
 static int zmagic(request_rec *, unsigned char *, apr_size_t);
 
 static int getvalue(server_rec *, struct magic *, char **);
@@ -903,11 +903,15 @@ static int magic_process(request_rec *r)
 	return HTTP_INTERNAL_SERVER_ERROR;
     }
 
-    if (nbytes == 0)
-	magic_rsl_puts(r, MIME_TEXT_UNKNOWN);
+    if (nbytes == 0) {
+        return DECLINED;
+    }
     else {
 	buf[nbytes++] = '\0';	/* null-terminate it */
-	tryit(r, buf, nbytes, 1); 
+        result = tryit(r, buf, nbytes, 1);
+	if (result != OK) {
+            return result;
+        }
     }
 
     (void) apr_file_close(fd);
@@ -917,32 +921,33 @@ static int magic_process(request_rec *r)
 }
 
 
-static void tryit(request_rec *r, unsigned char *buf, apr_size_t nb, int checkzmagic)
+static int tryit(request_rec *r, unsigned char *buf, apr_size_t nb,
+                 int checkzmagic)
 {
     /*
      * Try compression stuff
      */
 	if (checkzmagic == 1) {  
 			if (zmagic(r, buf, nb) == 1)
-			return;
+			return OK;
 	}
 
     /*
      * try tests in /etc/magic (or surrogate magic file)
      */
     if (softmagic(r, buf, nb) == 1)
-	return;
+	return OK;
 
     /*
      * try known keywords, check for ascii-ness too.
      */
     if (ascmagic(r, buf, nb) == 1)
-	return;
+	return OK;
 
     /*
      * abandon hope, all ye who remain here
      */
-    magic_rsl_puts(r, MIME_BINARY_UNKNOWN);
+    return DECLINED;
 }
 
 #define    EATAB {while (apr_isspace(*l))  ++l;}
@@ -2070,16 +2075,7 @@ static int ascmagic(request_rec *r, unsigned char *buf, apr_size_t nbytes)
     }
 
     /* all else fails, but it is ascii... */
-    if (has_escapes) {
-	/* text with escape sequences */
-	/* we leave this open for further differentiation later */
-	magic_rsl_puts(r, "text/plain");
-    }
-    else {
-	/* plain text */
-	magic_rsl_puts(r, "text/plain");
-    }
-    return 1;
+    return 0;
 }
 
 
@@ -2141,7 +2137,9 @@ static int zmagic(request_rec *r, unsigned char *buf, apr_size_t nbytes)
 	return 0;
 
     if ((newsize = uncompress(r, i, &newbuf, nbytes)) > 0) {
-	tryit(r, newbuf, newsize, 0);
+	if (tryit(r, newbuf, newsize, 0) != OK) {
+            return 0;
+        }
 
 	/* set encoding type in the request record */
 	r->content_encoding = compr[i].encoding;
