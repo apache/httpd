@@ -767,6 +767,7 @@ static int dav_parse_range(request_rec *r,
     char *range;
     char *dash;
     char *slash;
+    char *errp;
 
     range_c = apr_table_get(r->headers_in, "content-range");
     if (range_c == NULL)
@@ -780,15 +781,26 @@ static int dav_parse_range(request_rec *r,
         return 0;
     }
 
-    *dash = *slash = '\0';
+    *dash++ = *slash++ = '\0';
 
-    *range_start = apr_atoi64(range + 6);
-    *range_end = apr_atoi64(dash + 1);
-
-    if (*range_end < *range_start
-        || (slash[1] != '*' && apr_atoi64(slash + 1) <= *range_end)) {
-        /* invalid range. ignore it (per S14.16 of RFC2616) */
+    /* ignore invalid ranges. (per S14.16 of RFC2616) */
+    if (apr_strtoff(range_start, range + 6, &errp, 10)
+        || *errp || *range_start < 0) {
         return 0;
+    }
+
+    if (apr_strtoff(range_end, dash, &errp, 10)
+        || *errp || *range_end < 0 || *range_end < *range_start) {
+        return 0;
+    }
+
+    if (*slash != '*') {
+        apr_off_t dummy;
+
+        if (apr_strtoff(&dummy, slash, &errp, 10)
+            || *errp || dummy <= *range_end) {
+            return 0;
+        }
     }
 
     /* we now have a valid range */
