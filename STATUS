@@ -99,7 +99,8 @@ Committed Code Changes:
     * Ralf's additional manual pages for the support programs
     * Ben Hyde's Configure check for unknown command switch
     * Martin's fix for src/helpers/fp2rp
-    * Ralf's reanimation of an undocumented directive: ProxyReceiveBufferSize
+    * Ralf's reanim. of (undocumented) directive: ProxyReceiveBufferSize, PR#1348
+    * Ralf's mod_proxy fix to use FTP SIZE response for Content-Length, PR#1183
 
 Available Patches:
 

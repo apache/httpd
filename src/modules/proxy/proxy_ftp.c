@@ -213,6 +213,47 @@ static int ftp_getrc(BUFF *f)
     return status;
 }
 
+/*
+ * Like ftp_getrc but returns both the ftp status code and 
+ * remembers the response message in the supplied buffer
+ */
+static int ftp_getrc_msg(BUFF *f, char *msgbuf, int msglen)
+{
+    int len, status;
+    char linebuff[100], buff[5];
+    char *mb = msgbuf;
+    int ml = msglen;
+
+    len = bgets(linebuff, 100, f);
+    if (len == -1)
+	return -1;
+    if (len < 5 || !isdigit(linebuff[0]) || !isdigit(linebuff[1]) ||
+	!isdigit(linebuff[2]) || (linebuff[3] != ' ' && linebuff[3] != '-'))
+	status = 0;
+    else
+	status = 100 * linebuff[0] + 10 * linebuff[1] + linebuff[2] - 111 * '0';
+
+    mb = ap_cpystrn(mb, linebuff+4, len-4 < ml ? len-4 : ml);
+
+    if (linebuff[len - 1] != '\n')
+	(void)bskiplf(f);
+
+    if (linebuff[3] == '-') {
+	memcpy(buff, linebuff, 3);
+	buff[3] = ' ';
+	do {
+	    len = bgets(linebuff, 100, f);
+	    if (len == -1)
+		return -1;
+	    if (linebuff[len - 1] != '\n') {
+		(void)bskiplf(f);
+	    }
+            mb = ap_cpystrn(mb, linebuff+4, len-4 < ml ? len-4 : ml);
+	} while (memcmp(linebuff, buff, 4) != 0);
+    }
+    return status;
+}
+
 static long int send_dir(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c, char *url)
 {
     char buf[IOBUFSIZE];
@@ -441,10 +482,19 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
     char pasv[64];
     char *pstr;
 
+/* stuff for responses */
+    char *resp;
+    int resplen;
+    char *size = NULL;
+
 /* we only support GET and HEAD */
 
     if (r->method_number != M_GET)
 	return NOT_IMPLEMENTED;
+
+/* allocate a buffer for the response message */
+	resplen = MAX_STRING_LEN;
+	resp = (char *)palloc(r->pool, resplen);
 
 /* We break the URL into host, port, path-search */
 
@@ -833,8 +883,8 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	bputs(CRLF, f);
 	bflush(f);
 	Explain1("FTP: SIZE %s", path);
-	i = ftp_getrc(f);
-	Explain1("FTP: returned status %d", i);
+	i = ftp_getrc_msg(f, resp, resplen);
+	Explain2("FTP: returned status %d with response %s", i, resp);
 	if (i != 500) {		/* Size command not recognized */
 	    if (i == 550) {	/* Not a regular file */
 		Explain0("FTP: SIZE shows this is a directory");
@@ -860,6 +910,9 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 		}
 		path = "";
 		len = 0;
+	    }
+	    else if (i == 213) { /* Size command ok */
+	        size = resp;
 	    }
 	}
     }
@@ -935,6 +988,10 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	}
 	else {
 	    proxy_add_header(resp_hdrs, "Content-Type", "text/plain", HDR_REP);
+	}
+	if (size != NULL) {
+	    proxy_add_header(resp_hdrs, "Content-Length", size, HDR_REP);
+	    Explain1("FTP: Content-Length set to %s", size);
 	}
     }
 
