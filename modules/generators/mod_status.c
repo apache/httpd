@@ -326,11 +326,11 @@ static int status_handler(request_rec *r)
         return 0;
 
     for (i = 0; i < server_limit; ++i) {
+        ps_record = ap_get_scoreboard_process(i);
         for (j = 0; j < thread_limit; ++j) {
             int indx = (i * thread_limit) + j;
 
             ws_record = ap_get_scoreboard_worker(i, j);
-            ps_record = ap_get_scoreboard_process(i);
             res = ws_record->status;
             stat_buffer[indx] = status_flags[res];
 
