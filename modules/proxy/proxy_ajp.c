@@ -413,7 +413,8 @@ apr_status_t ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     }
 
     /* read the response */
-    status = ajp_read_header(p_conn->sock, r, &(p_conn->data));
+    status = ajp_read_header(p_conn->sock, r,
+                             (ajp_msg_t **)&(p_conn->data));
     if (status != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
                      "proxy: request failed to %pI (%s)",
@@ -485,7 +486,8 @@ apr_status_t ap_proxy_ajp_process_response(apr_pool_t * p, request_rec *r,
             break;
         }
         /* Read the next message */
-        status = ajp_read_header(p_conn->sock, r, &(p_conn->data));
+        status = ajp_read_header(p_conn->sock, r,
+                                 (ajp_msg_t **)&(p_conn->data));
         if (status != APR_SUCCESS) {
             break;
         }
