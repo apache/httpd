@@ -161,7 +161,7 @@ typedef struct digest_config_struct {
     const char  *pwfile;
     const char  *grpfile;
     const char  *realm;
-    const char **qop_list;
+    char **qop_list;
     apr_sha1_ctx_t  nonce_ctx;
     apr_time_t    nonce_lifetime;
     const char  *nonce_format;
