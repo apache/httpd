@@ -4,20 +4,20 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_access - Apache HTTP サーバ</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p><p class="apache">Apache HTTP サーバ バージョン 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.0</a> &gt; <a href="./">モジュール</a></div><div id="page-content"><div id="preamble"><h1>Apache モジュール mod_access</h1><table class="module"><tr><th><a href="module-dict.html#Description">説明:
-                  </a></th><td>クライアントのホスト名、IP アドレス、その他のクライアント
-のリクエストの特徴に基づいたアクセス制御機能を提供する</td></tr><tr><th><a href="module-dict.html#Status">ステータス:
+      --><title>mod_authz_host - Apache HTTP サーバ</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p><p class="apache">Apache HTTP サーバ バージョン 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.0</a> &gt; <a href="./">モジュール</a></div><div id="page-content"><div id="preamble"><h1>Apache モジュール mod_authz_host</h1><table class="module"><tr><th><a href="module-dict.html#Description">説明:
+                  </a></th><td>ホスト (名前もしくは IP アドレス) に基づいたグループ承認</td></tr><tr><th><a href="module-dict.html#Status">ステータス:
                   </a></th><td>Base</td></tr><tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:
-                  </a></th><td>access_module</td></tr><tr><th><a href="module-dict.html#SourceFile">ソースファイル:
-                  </a></th><td>mod_access.c</td></tr></table><h3>概要</h3>
-    <p>mod_access により提供されるディレクティブはサーバの特定の部分への
+                  </a></th><td>authz_host_module</td></tr><tr><th><a href="module-dict.html#SourceFile">ソースファイル:
+                  </a></th><td>mod_authz_host.c</td></tr><tr><th><a href="module-dict.html#Compatibility">互換性:
+                  </a></th><td>Apache 2.0.44 以降</td></tr></table><h3>概要</h3>
+    <p>mod_authz_host により提供されるディレクティブはサーバの特定の部分への
     アクセスを制御するために <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code>, <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>
     と <code><a href="core.html#accessfilename">.htaccess</a></code> ファイルで使用されます。クライアントのホスト名、IP
-    アドレスや <a href="../env.html">環境変数</a>として取得された、その他のリクエストの特徴に基づいて
+    アドレスや <a href="../env.html">環境変数</a>として取得された、その他のリクエストの特徴に基づいて
     アクセス制御を行なうことができます。<code class="directive"><a href="#allow">Allow</a></code> と
     <code class="directive"><a href="#deny">Deny</a></code> ディレクティブは
     どのようなクライアントにアクセスを
-    許可する、しないかを指定するために使用されます。一方、
+    許可する、しないかを指定するために使用されます。一方、
     <code class="directive"><a href="#order">Order</a></code> ディレクティブは
     デフォルトのアクセス状態と、
     <code class="directive"><a href="#allow">Allow</a></code> ディレクティブと
@@ -25,7 +25,7 @@
     ディレクティブとのお互いへの影響の仕方を設定します。
     </p>
 
-    <p>ホストによるアクセス制限とパスワードによる認証を同時に
+    <p>ホストによるアクセス制限とパスワードによる認証を同時に
     行なうことが可能です。その場合、その二つの制限の関係を指定するために
     <code class="directive"><a href="../mod/core.html#satisfy">Satisfy</a></code>
     ディレクティブを使用します。</p>
@@ -44,12 +44,12 @@
               </a></th><td>ディレクトリ, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">上書き:
               </a></th><td>Limit</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
-              </a></th><td>mod_access</td></tr></table>
+              </a></th><td>mod_authz_host</td></tr></table>
 
     <p><code class="directive">Allow</code> ディレクティブはどのホストが
     サーバのある領域をアクセスできるかに影響を与えます。
     アクセスはホスト名、IP アドレス、IP アドレスの範囲や、
-    環境変数として取得された、その他のクライアントのリクエストの
+    環境変数として取得された、その他のクライアントのリクエストの
     特徴によって制御することができます。</p> 
 
     <p>このディレクティブの最初の引数は常に <code>from</code> です。
@@ -99,7 +99,7 @@
       となっているものからなること以外は前のものと同じです。</dd>
     </dl>
 
-    <p>注: 最後の三つの例はまったく同じホストに合います。</p>
+    <p>注: 最後の三つの例はまったく同じホストに合います。</p>
 
 
     <p>IPv6 アドレスと IPv6 のサブネットは以下のように指定できます:</p>
@@ -146,7 +146,7 @@ SetEnvIf User-Agent ^KnockKnock/2.0 let_me_in<br />
               </a></th><td>ディレクトリ, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">上書き:
               </a></th><td>Limit</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
-              </a></th><td>mod_access</td></tr></table>
+              </a></th><td>mod_authz_host</td></tr></table>
     <p>このディレクティブはホスト名、IP
     アドレス、環境変数に基づいてサーバへのアクセスを制限します。
     <code class="directive">Deny</code> ディレクティブの引数は <code class="directive"><a href="#allow">Allow</a></code>
@@ -159,7 +159,7 @@ Deny が評価される順番を制御する</td></tr><tr><th><a href="directive-dict.h
               </a></th><td>ディレクトリ, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">上書き:
               </a></th><td>Limit</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
-              </a></th><td>mod_access</td></tr></table>
+              </a></th><td>mod_authz_host</td></tr></table>
 
     <p><code class="directive">Order</code> ディレクティブはデフォルトのアクセスの状態と
     <code class="directive"><a href="#allow">Allow</a></code> ディレクティブと
