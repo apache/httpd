@@ -50,6 +50,10 @@
  *
  */
 
+#include "conf.h"
+#include "alloc.h"
+#include "buff.h"
+
 #include <errno.h>
 #include <stdio.h>
 #include <stdarg.h>
@@ -58,12 +62,9 @@
 #include <unistd.h>
 #endif
 #ifndef NO_WRITEV
+#include <sys/types.h>
 #include <sys/uio.h>
 #endif
-
-#include "conf.h"
-#include "alloc.h"
-#include "buff.h"
 
 #ifdef HAVE_BSTRING_H
 #include <bstring.h>		/* for IRIX, FD_SET calls bzero() */
