@@ -250,7 +250,10 @@ struct ap_filter_rec_t {
     const char *name;
     /** The function to call when this filter is invoked. */
     ap_filter_func filter_func;
-    /** The function to call before the handlers are invoked. */
+    /** The function to call before the handlers are invoked. Notice
+     * that this function is called only for filters participating in
+     * the http protocol. Filters for other protocols are to be
+     * initiliazed by the protocols themselves. */
     ap_init_filter_func filter_init_func;
     /** The type of filter, either AP_FTYPE_CONTENT or AP_FTYPE_CONNECTION.  
      * An AP_FTYPE_CONTENT filter modifies the data based on information 
