@@ -112,6 +112,7 @@ for HTTP Basic authentication.</td></tr>
           <li><a href="#reqgroup">require ldap-group</a></li>
           <li><a href="#reqdn">require ldap-dn</a></li>
           <li><a href="#reqattribute">require ldap-attribute</a></li>
+          <li><a href="#reqfilter">require ldap-filter</a></li>
         </ul>
       </li>
 
@@ -236,6 +237,11 @@ for HTTP Basic authentication.</td></tr>
       directive, and the attribute fetched from the LDAP directory
       matches the given value.</li> 
 
+      <li>Grant access if there is a <a href="#reqfilter">
+      <code>require ldap-filter</code></a> 
+      directive, and the search filter successfully finds a single user
+      object that matches the dn of the authenticated user.</li> 
+
       <li>otherwise, deny or decline access</li>
     </ul>
 
@@ -301,9 +307,9 @@ for HTTP Basic authentication.</td></tr>
     directives are used during the authorization phase to ensure that
     a user is allowed to access a resource.  mod_authnz_ldap extends the 
     authorization types with <code>ldap-user</code>, <code>ldap-dn</code>, 
-    <code>ldap-group</code> and <code>ldap-attribute</code>.  Other 
-    authorization types may also be used but may require that additional 
-    authorization modules be loaded.</p>
+    <code>ldap-group</code>, <code>ldap-attribute</code> and 
+    <code>ldap-filter</code>.  Other authorization types may also be 
+    used but may require that additional authorization modules be loaded.</p>
 
 <h3><a name="reqvaliduser" id="reqvaliduser">require valid-user</a></h3>
 
@@ -415,6 +421,28 @@ uniqueMember: cn=Fred User, o=Airius<br />
     the city attribute equal to "San Jose" or status equal to "Active"</p>
 
     <div class="example"><p><code>require ldap-attribute city="San Jose" status=active</code></p></div>
+
+
+
+<h3><a name="reqfilter" id="reqfilter">require ldap-filter</a></h3>
+
+    <p>The <code>require ldap-filter</code> directive allows the
+    administrator to grant access based on a complex LDAP search filter.
+    If the dn returned by the filter search matches the authenticated user
+    dn, access is granted.</p>
+    
+    <p>The following directive would grant access to anyone having a cell phone
+    and is in the marketing department</p>
+
+    <div class="example"><p><code>require ldap-filter &amp;(cell=*)(department=marketing)</code></p></div>
+
+    <p>The difference between the <code>require ldap-filter</code> directive and the 
+    <code>require ldap-attribute</code> directive is that <code>ldap-filter</code> 
+    performs a search operation on the LDAP directory using the specified search 
+    filter rather than a simple attribute comparison. If a simple attribute 
+    comparison is all that is required, the comparison operation performed by 
+    <code>ldap-attribute</code> will be faster than the search operation 
+    used by <code>ldap-filter</code> especially within a large directory.</p>
 
 
 
