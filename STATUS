@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/07/31 22:58:57 $]
+Last modified at [$Date: 2003/07/31 23:15:12 $]
 
 Release:
 
@@ -274,9 +274,9 @@ PATCHES TO PORT FROM 2.1
       it will be redirected to http://host//bar (double slash).
       In 2.1 this was fixed while I rewrote the subst_prefix_path function,
       which is responsible for this behaviour. I'd suggest to backport that
-      function rewrite at all (it's even much better code :-).
+      function rewrite at all (it's even much better code :-). (2.0 + 1.3)
         modules/mappers/mod_rewrite.c: r1.162
-      +1: nd, trawick
+      +1: nd, trawick (?)
 
     * mod_rewrite: don't exit(1) if the logfile could not be opened. Return
       internal server error instead to shutdown cleanly.
