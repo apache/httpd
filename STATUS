@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/06/28 05:15:01 $]
+Last modified at [$Date: 2001/07/01 21:09:40 $]
 
 Release:
 
@@ -162,16 +162,6 @@ RELEASE SHOWSTOPPERS:
 	    installed and a "make clean" in aprutil would make Apache
 	    fail to load.
 
-    * users who want to install third-party modules into the Apache
-      source tree (for static linking) need to have autoconf and
-      libtool installed. This is because the module needs to have its
-      config.m4 incorporated into ./configure, which means "buildconf"
-      must be run.
-      Note: This is in part because we have removed the "extra" directory.
-            In the Apache-2.0 repository, this directory had a config.m4
-            file that allowed people to add external modules by
-            specifying --with-module on the configure line.
-
     * ap_vrprintf() needs to handle more than 4K
         Status: Greg volunteers
 
@@ -249,10 +239,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       what we do right now just doesn't seem to fully fit into how autoconf
       works, eg. AC_PREFIX_DEFAULT issues.
         Message-ID: <Pine.BSF.4.20.0104031557420.20876-100000@alive.znep.com>
-
-    * All of our MPMs should use APR for threads/processes.  This 
-      will allow us to error out if a threaded MPM is chosen on a
-      platform that doesn't support threads.
 
     * Combine log_child and piped_log_spawn. Clean up http_log.c.
       Common logging API.
