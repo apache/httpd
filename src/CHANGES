@@ -1,5 +1,9 @@
 Changes with Apache 1.3b6
  
+  *) Adding DSO support for the HP/UX platform by emulating the dlopen-style
+     interface via the similar but proprietary HP/UX shl_xxx-style system
+     calls. [Ralf S. Engelschall]
+
   *) PORT: Updated UnixWare 2.0.x and 2.1.x entries for DSO support and made
      APACI Makefile.tmpl "install" target more robust for sensible UnixWare
      Make. [Ralf S. Engelschall]

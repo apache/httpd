@@ -858,6 +858,22 @@ if [ "x$using_shlib" = "x1" ] ; then
             LDFLAGS_SHLIB_EXPORT=""
             DEF_SHARED_CORE=yes
             ;;
+        *-hp-hpux9.*)
+            case $CC in
+                */gcc|gcc ) CFLAGS_SHLIB="-fpic" ;;
+                */cc|cc   ) CFLAGS_SHLIB="+z" ;;
+            esac
+            LDFLAGS_SHLIB="-b"
+            LDFLAGS_SHLIB_EXPORT="-Wl,-E -Wl,-B,deferred"
+            ;;
+        *-hp-hpux10.*)
+            case $CC in
+                */gcc|gcc ) CFLAGS_SHLIB="-fpic" ;;
+                */cc|cc   ) CFLAGS_SHLIB="+z" ;;
+            esac
+            LDFLAGS_SHLIB="-b"
+            LDFLAGS_SHLIB_EXPORT="-Wl,-E -Wl,-B,deferred"
+            ;;
         *)
             ##  ok, no known explict support for shared objects
             ##  on this platform, but we give not up immediately.

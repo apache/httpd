@@ -178,6 +178,7 @@ Committed Code Changes:
     * Ralf's and Martin's DSO support for all SVR4-derivate Unix platforms
     * THE BIG SYMBOL RENAMING
     * Ralf's DSO configuration updates for the UnixWare platform
+    * Ralf's DSO support for the HP/UX platform by emulating dlopen
 
 Available Patches:
 

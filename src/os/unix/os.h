@@ -116,10 +116,19 @@ int dlclose (void *);
 # define RTLD_NOW 1
 #endif
 
+#if defined(HPUX) || defined(HPUX10)
+#include <dl.h>
+#define os_dl_module_handle_type void *
+void *os_dl_load(char *path);
+void os_dl_unload(void *handle);
+void *os_dl_sym(void *handle, char *symname);
+char *os_dl_error(void);
+#else
 #define os_dl_module_handle_type void *
 #define os_dl_load(l)   dlopen(l, RTLD_NOW)
 #define os_dl_unload(l) dlclose(l)
 #define os_dl_sym(h,s)  dlsym(h,s)
 #define os_dl_error()   dlerror()
+#endif
 
 #endif	/* !APACHE_OS_H */
