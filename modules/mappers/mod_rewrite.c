@@ -97,6 +97,7 @@
 #include "http_protocol.h"
 #include "mod_rewrite.h"
 #include "apr_strings.h"
+#include "apr_user.h"
 
 #if !defined(OS2) && !defined(WIN32)
 #include "unixd.h"
@@ -1257,7 +1258,7 @@ static int hook_uri2file(request_rec *r)
             /* it was finally rewritten to a local path */
 
             /* expand "/~user" prefix */
-#if !defined(WIN32) && !defined(NETWARE)
+#if APR_HAS_USER
             r->filename = expand_tildepaths(r, r->filename);
 #endif
             rewritelog(r, 2, "local path result: %s", r->filename);
@@ -2619,22 +2620,17 @@ static int is_absolute_uri(char *uri)
 
 /*
 **
-**  Expand tilde-paths (/~user) through
-**  Unix /etc/passwd database information
+**  Expand tilde-paths (/~user) through Unix /etc/passwd 
+**  database information (or other OS-specific database)
 **
 */
-#if !defined(WIN32) && !defined(NETWARE)
+#if APR_HAS_USER
 static char *expand_tildepaths(request_rec *r, char *uri)
 {
     char user[LONG_STRING_LEN];
-    struct passwd *pw;
     char *newuri;
     int i, j;
-#if APR_HAS_THREADS && defined(_POSIX_THREAD_SAFE_FUNCTIONS)
-    struct passwd pwd;
-    size_t buflen = sysconf(_SC_GETPW_R_SIZE_MAX);
-    char *buf = apr_pcalloc(r->pool, buflen);
-#endif
+    char *homedir;
 
     newuri = uri;
     if (uri != NULL && strlen(uri) > 2 && uri[0] == '/' && uri[1] == '~') {
@@ -2647,28 +2643,24 @@ static char *expand_tildepaths(request_rec *r, char *uri)
         user[j] = '\0';
 
         /* lookup username in systems passwd file */
-#if APR_HAS_THREADS && defined(_POSIX_THREAD_SAFE_FUNCTIONS)
-        if (!getpwnam_r(user, &pwd, buf, buflen, &pw)) {
-#else
-        if ((pw = getpwnam(user)) != NULL) {
-#endif
+        if (apr_get_home_directory(&homedir, user, r->pool) == APR_SUCCESS) {
             /* ok, user was found, so expand the ~user string */
             if (uri[i] != '\0') {
                 /* ~user/anything...  has to be expanded */
-                if (pw->pw_dir[strlen(pw->pw_dir)-1] == '/') {
-                    pw->pw_dir[strlen(pw->pw_dir)-1] = '\0';
+                if (homedir[strlen(homedir)-1] == '/') {
+                    homedir[strlen(homedir)-1] = '\0';
                 }
-                newuri = apr_pstrcat(r->pool, pw->pw_dir, uri+i, NULL);
+                newuri = apr_pstrcat(r->pool, homedir, uri+i, NULL);
             }
             else {
                 /* only ~user has to be expanded */
-                newuri = apr_pstrdup(r->pool, pw->pw_dir);
+                newuri = homedir;
             }
         }
     }
     return newuri;
 }
-#endif
+#endif  /* if APR_HAS_USER */
 
 
 
