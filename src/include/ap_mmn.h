@@ -227,6 +227,7 @@
  *                        ap_base64decode_binary(), ap_base64decode_len(),
  *                        ap_pbase64decode(), ap_pbase64encode()
  * 19990320.7           - add ap_strcasestr()
+ * 19990320.8           - add request_rec.case_preserved_filename
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503133UL /* "AP13" */
