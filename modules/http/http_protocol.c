@@ -2025,6 +2025,12 @@ AP_DECLARE(void) ap_send_error_response(request_rec *r, int recursive_error)
      */
     r->eos_sent = 0;
 
+    /* and we need to get rid of any RESOURCE filters that might be lurking 
+     * around, thinking they are in the middle of the original request
+     */
+
+    r->output_filters = r->proto_output_filters;
+
     /*
      * It's possible that the Location field might be in r->err_headers_out
      * instead of r->headers_out; use the latter if possible, else the
