@@ -1,5 +1,5 @@
 APACHE 2.1 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/12/12 10:24:59 $]
+Last modified at [$Date: 2004/01/04 15:08:00 $]
 
 Release [NOTE that only Alpha/Beta releases occur in 2.1 development]:
 
@@ -14,13 +14,12 @@ on related projects:
 
 Contributors looking for a mission:
 
-    * just do an egrep on "TODO" or "XXX" in the source.
+    * Just do an egrep on "TODO" or "XXX" in the source.
 
     * Review the "PatchAvailable" bugs in the bug database.
       Append a comment saying "Reviewed and tested".
 
     * Open bugs in the bug database.
-
 
 CURRENT RELEASE NOTES:
 
