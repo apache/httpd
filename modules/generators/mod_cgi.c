@@ -423,11 +423,6 @@ static int cgi_handler(request_rec *r)
     if (S_ISDIR(r->finfo.st_mode))
 	return log_scripterror(r, conf, FORBIDDEN, APLOG_NOERRNO,
 			       "attempt to invoke directory as script");
-    if (!ap_suexec_enabled) {
-	if (!ap_can_exec(&r->finfo))
-	    return log_scripterror(r, conf, FORBIDDEN, APLOG_NOERRNO,
-				   "file permissions deny server execution");
-    }
 
     if ((retval = ap_setup_client_block(r, REQUEST_CHUNKED_ERROR)))
 	return retval;
