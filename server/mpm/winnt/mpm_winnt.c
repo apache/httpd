@@ -845,7 +845,7 @@ static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT pCompContext)
 
     g_blocked_threads--;    
 
-    if ((rc = apr_pool_create(&pCompContext->ptrans, NULL)) != APR_SUCCESS) {
+    if ((rc = apr_pool_create(&pCompContext->ptrans, pconf)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK,APLOG_DEBUG, rc, server_conf,
                      "Child %d: apr_pool_create failed with rc %d", my_pid, rc);
     }
