@@ -26,8 +26,9 @@ To do this:
 
 2) Run the "Configure" script:
 
-      % Configure
-      Using 'Configuration' as config file
+      % ./Configure
+      Using config file: Configuration
+      Using Makefile template file: Makefile.tmpl
        + configured for <whatever> platform
        + setting C compiler to <whatever> *
        + setting C compiler optimization-level to <whatever> *
@@ -36,8 +37,9 @@ To do this:
    This generates new versions of the Makefile and of modules.c.  (If
    you want to maintain multiple configurations, you can say, e.g.,
 
-      % Configure -file Configuration.ai
-      Using alternate config file Configuration.ai
+      % ./Configure -file Configuration.ai
+      Using config file: Configuration.ai
+      Using Makefile template file: Makefile.tmpl
        + configured for <whatever> platform
        + setting C compiler to <whatever> *
        + setting C compiler optimization-level to <whatever> *
