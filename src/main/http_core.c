@@ -1286,9 +1286,16 @@ static const char *server_type (cmd_parms *cmd, void *dummy, char *arg)
 static const char *server_port (cmd_parms *cmd, void *dummy, char *arg)
 {
     const char *err = check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
-    if (err != NULL) return err;
+    int port;
 
-    cmd->server->port = atoi (arg);
+    if (err != NULL) 
+	return err;
+    port = atoi(arg);
+    if (port <= 0 || port >= 65536) /* 65536 == 1<<16 */
+	return pstrcat(cmd->temp_pool, "The port number \"", arg, 
+		       "\" is outside the appropriate range (i.e. 1..65535).",
+		       NULL);
+    cmd->server->port = port;
     return NULL;
 }
 
