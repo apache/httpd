@@ -18,6 +18,13 @@ SUBDIRS = \
 	filters \
 	$(EOLIST) 
 
+# If LDAPSDK has been defined then build the util_ldap module
+ifneq "$(LDAPSDK)" ""
+SUBDIRS += ldap \
+	$(EOLIST)
+endif
+
+
 #If the mod_edir directory exists then build the mod_edir module
 ifeq "$(wildcard $(AP_WORK)\modules\mod_edir)" "$(AP_WORK)\modules\mod_edir"
 SUBDIRS += mod_edir \

@@ -159,13 +159,6 @@ TARGET_nlm = \
 	$(OBJDIR)/dsk_cach.nlm \
 	$(EOLIST)
 	
-# If LDAPSDK has been defined then build the auth_ldap module
-ifneq "$(LDAPSDK)" ""
-TARGET_nlm += $(OBJDIR)/authldap.nlm \
-	$(OBJDIR)/utilldap.nlm \
-	$(EOLIST)
-endif
-
 #
 # If there is an LIB target, put it here
 #

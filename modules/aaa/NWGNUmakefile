@@ -158,13 +158,18 @@ TARGET_nlm = \
 	$(OBJDIR)/authndbm.nlm \
 	$(OBJDIR)/authndef.nlm \
 	$(OBJDIR)/authnfil.nlm \
-	$(OBJDIR)/authnzldap.nlm \
 	$(OBJDIR)/authzdbm.nlm \
 	$(OBJDIR)/authzdef.nlm \
 	$(OBJDIR)/authzgrp.nlm \
 	$(OBJDIR)/authzusr.nlm \
 	$(OBJDIR)/authzusr.nlm \
 	$(EOLIST)
+
+# If LDAPSDK has been defined then build the authnz_ldap module
+ifneq "$(LDAPSDK)" ""
+TARGET_nlm += $(OBJDIR)/authnzldap.nlm \
+	$(EOLIST)
+endif
 
 #
 # If there is an LIB target, put it here
