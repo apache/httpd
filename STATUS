@@ -1,5 +1,5 @@
 APACHE 2.1 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/02/19 07:21:43 $]
+Last modified at [$Date: 2003/02/24 00:00:05 $]
 
 Release [NOTE that only Alpha/Beta releases occur in 2.1 development]:
 
@@ -57,15 +57,15 @@ CURRENT VOTES:
       "hot spare").
       See: Message-ID: <3C58232C.FE91F19F@Golux.Com>
 
-      Self-destruct: Ken, Martin
+      Self-destruct: Ken, Martin, Lars
       Not self-destruct: BrianP, Ian, Cliff, BillS
       Make it runtime configurable: Aaron, jim, Justin, wrowe, rederpj, nd
 
       /* The below was a concept on *how* to handle the problem */
       Have 2 parents: +1: jim
                       -1: Justin, wrowe, rederpj, nd
-                      +0: Martin (while standing by, could it do
-                                  something useful?)
+                      +0: Lars, Martin (while standing by, could it do
+                                        something useful?)
 
     * Make the worker MPM the default MPM for threaded Unix boxes.
       +1:   Justin, Ian, Cliff, BillS, striker, wrowe, nd
