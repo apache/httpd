@@ -688,7 +688,7 @@ static apr_status_t get_combined_directive (include_ctx_t *ctx,
 static void decodehtml(char *s)
 {
     int val, i, j;
-    char *p = s;
+    char *p;
     const char *ents;
     static const char * const entlist[MAXENTLEN + 1] =
     {
@@ -708,7 +708,16 @@ egrave\350eacute\351igrave\354iacute\355ntilde\361ograve\362oacute\363\
 otilde\365oslash\370ugrave\371uacute\372yacute\375"     /* 6 */
     };
 
-    for (; *s != '\0'; s++, p++) {
+    /* Do a fast scan through the string until we find anything
+     * that needs more complicated handling
+     */
+    for (; *s != '&'; s++) {
+        if (*s == '\0') {
+            return;
+        }
+    }
+
+    for (p = s; *s != '\0'; s++, p++) {
         if (*s != '&') {
             *p = *s;
             continue;
