@@ -94,24 +94,6 @@ dav_error *dav_push_error(ap_pool_t *p, int status, int error_id, const char *de
     return err;
 }
 
-void dav_text_append(ap_pool_t * p, dav_text_header *hdr, const char *text)
-{
-    dav_text *t = ap_palloc(p, sizeof(*t));
-
-    t->text = text;
-    t->next = NULL;
-
-    if (hdr->first == NULL) {
-	/* no text elements yet */
-	hdr->first = hdr->last = t;
-    }
-    else {
-	/* append to the last text element */
-	hdr->last->next = t;
-	hdr->last = t;
-    }
-}
-
 void dav_check_bufsize(ap_pool_t * p, dav_buffer *pbuf, size_t extra_needed)
 {
     /* grow the buffer if necessary */
@@ -178,51 +160,6 @@ void dav_buffer_place_mem(ap_pool_t *p, dav_buffer *pbuf, const void *mem,
     dav_check_bufsize(p, pbuf, amt + pad);
     memcpy(pbuf->buf + pbuf->cur_len, mem, amt);
 }
-
-
-#if APACHE_RELEASE == 10304100
-/* ### this code can be used for 1.3.4 installations. use this function
- * ### instead of ap_sub_req_method_uri()
- */
-/*
- * ### don't look at this code.
- * ### it is a Crime Against All That is Right and Good
- */
-#include "http_core.h"		/* for SATISFY_* */
-static request_rec *gross_hack(const char *new_file, const request_rec * r)
-{
-    request_rec *rnew = ap_sub_req_lookup_uri(new_file, r);
-    int res;
-
-    /* ### these aren't exported properly from the headers */
-    extern int ap_check_access(request_rec *);	/* check access on non-auth basis */
-    extern int ap_check_user_id(request_rec *);		/* obtain valid username from client auth */
-    extern int ap_check_auth(request_rec *);	/* check (validated) user is authorized here */
-
-    if (rnew->status != HTTP_OK)
-	return rnew;
-
-    /* re-run portions with a modified method */
-    rnew->method = r->method;
-    rnew->method_number = r->method_number;
-
-    if ((ap_satisfies(rnew) == SATISFY_ALL
-	 || ap_satisfies(rnew) == SATISFY_NOSPEC)
-	? ((res = ap_check_access(rnew))
-	   || (ap_some_auth_required(rnew)
-	       && ((res = ap_check_user_id(rnew))
-		   || (res = ap_check_auth(rnew)))))
-	: ((res = ap_check_access(rnew))
-	   && (!ap_some_auth_required(rnew)
-	       || ((res = ap_check_user_id(rnew))
-		   || (res = ap_check_auth(rnew)))))
-	) {
-	rnew->status = res;
-    }
-
-    return rnew;
-}
-#endif /* APACHE_RELEASE == 10304100 */
 
 /*
 ** dav_lookup_uri()
@@ -329,11 +266,7 @@ dav_lookup_result dav_lookup_uri(const char *uri, request_rec * r)
      * same HTTP method on the destination. This allows the destination
      * to apply appropriate restrictions (e.g. readonly).
      */
-#if APACHE_RELEASE == 10304100
-    result.rnew = gross_hack(new_file, r);
-#else
     result.rnew = ap_sub_req_method_uri(r->method, new_file, r);
-#endif
 
     return result;
 }
@@ -344,371 +277,22 @@ dav_lookup_result dav_lookup_uri(const char *uri, request_rec * r)
 */
 
 /* validate that the root element uses a given DAV: tagname (TRUE==valid) */
-int dav_validate_root(const dav_xml_doc *doc, const char *tagname)
+int dav_validate_root(const ap_xml_doc *doc, const char *tagname)
 {
     return doc->root &&
-	doc->root->ns == DAV_NS_DAV_ID &&
+	doc->root->ns == AP_XML_NS_DAV_ID &&
 	strcmp(doc->root->name, tagname) == 0;
 }
 
 /* find and return the (unique) child with a given DAV: tagname */
-dav_xml_elem *dav_find_child(const dav_xml_elem *elem, const char *tagname)
+ap_xml_elem *dav_find_child(const ap_xml_elem *elem, const char *tagname)
 {
-    dav_xml_elem *child = elem->first_child;
+    ap_xml_elem *child = elem->first_child;
 
     for (; child; child = child->next)
-	if (child->ns == DAV_NS_DAV_ID && !strcmp(child->name, tagname))
+	if (child->ns == AP_XML_NS_DAV_ID && !strcmp(child->name, tagname))
 	    return child;
     return NULL;
-}
-
-
-/* how many characters for the given integer? */
-#define DAV_NS_LEN(ns)	((ns) < 10 ? 1 : (ns) < 100 ? 2 : (ns) < 1000 ? 3 : \
-			 (ns) < 10000 ? 4 : (ns) < 100000 ? 5 : \
-			 (ns) < 1000000 ? 6 : (ns) < 10000000 ? 7 : \
-			 (ns) < 100000000 ? 8 : (ns) < 1000000000 ? 9 : 10)
-
-static int dav_text_size(const dav_text *t)
-{
-    int size = 0;
-
-    for (; t; t = t->next)
-	size += strlen(t->text);
-    return size;
-}
-
-static size_t dav_elem_size(const dav_xml_elem *elem, int style,
-                            ap_array_header_t *namespaces, int *ns_map)
-{
-    size_t size;
-
-    if (style == DAV_X2T_FULL || style == DAV_X2T_FULL_NS_LANG) {
-	const dav_xml_attr *attr;
-
-	size = 0;
-
-	if (style == DAV_X2T_FULL_NS_LANG) {
-	    int i;
-
-	    /*
-	    ** The outer element will contain xmlns:ns%d="%s" attributes
-	    ** and an xml:lang attribute, if applicable.
-	    */
-
-	    for (i = namespaces->nelts; i--;) {
-		/* compute size of: ' xmlns:ns%d="%s"' */
-		size += (9 + DAV_NS_LEN(i) + 2 +
-			 strlen(DAV_GET_URI_ITEM(namespaces, i)) + 1);
-	    }
-
-	    if (elem->lang != NULL) {
-		/* compute size of: ' xml:lang="%s"' */
-		size += 11 + strlen(elem->lang) + 1;
-	    }
-	}
-
-	if (elem->ns == DAV_NS_NONE) {
-	    /* compute size of: <%s> */
-	    size += 1 + strlen(elem->name) + 1;
-	}
-	else {
-	    int ns = ns_map ? ns_map[elem->ns] : elem->ns;
-
-	    /* compute size of: <ns%d:%s> */
-	    size += 3 + DAV_NS_LEN(ns) + 1 + strlen(elem->name) + 1;
-	}
-
-	if (DAV_ELEM_IS_EMPTY(elem)) {
-	    /* insert a closing "/" */
-	    size += 1;
-	}
-	else {
-	    /*
-	     * two of above plus "/":
-	     *     <ns%d:%s> ... </ns%d:%s>
-	     * OR  <%s> ... </%s>
-	     */
-	    size = 2 * size + 1;
-	}
-
-	for (attr = elem->attr; attr; attr = attr->next) {
-	    if (attr->ns == DAV_NS_NONE) {
-		/* compute size of: ' %s="%s"' */
-		size += 1 + strlen(attr->name) + 2 + strlen(attr->value) + 1;
-	    }
-	    else {
-		/* compute size of: ' ns%d:%s="%s"' */
-		size += 3 + DAV_NS_LEN(attr->ns) + 1 + strlen(attr->name) + 2 + strlen(attr->value) + 1;
-	    }
-	}
-
-	/*
-	** If the element has an xml:lang value that is *different* from
-	** its parent, then add the thing in: ' xml:lang="%s"'.
-	**
-	** NOTE: we take advantage of the pointer equality established by
-	** the parsing for "inheriting" the xml:lang values from parents.
-	*/
-	if (elem->lang != NULL &&
-	    (elem->parent == NULL || elem->lang != elem->parent->lang)) {
-	    size += 11 + strlen(elem->lang) + 1;
-	}
-    }
-    else if (style == DAV_X2T_LANG_INNER) {
-	/*
-	 * This style prepends the xml:lang value plus a null terminator.
-	 * If a lang value is not present, then we insert a null term.
-	 */
-	size = elem->lang ? strlen(elem->lang) + 1 : 1;
-    }
-    else
-	size = 0;
-
-    size += dav_text_size(elem->first_cdata.first);
-
-    for (elem = elem->first_child; elem; elem = elem->next) {
-	/* the size of the child element plus the CDATA that follows it */
-	size += (dav_elem_size(elem, DAV_X2T_FULL, NULL, ns_map) +
-		 dav_text_size(elem->following_cdata.first));
-    }
-
-    return size;
-}
-
-static char *dav_write_text(char *s, const dav_text *t)
-{
-    for (; t; t = t->next) {
-	size_t len = strlen(t->text);
-	memcpy(s, t->text, len);
-	s += len;
-    }
-    return s;
-}
-
-static char *dav_write_elem(char *s, const dav_xml_elem *elem, int style,
-			    ap_array_header_t *namespaces, int *ns_map)
-{
-    const dav_xml_elem *child;
-    size_t len;
-    int ns;
-
-    if (style == DAV_X2T_FULL || style == DAV_X2T_FULL_NS_LANG) {
-	int empty = DAV_ELEM_IS_EMPTY(elem);
-	const dav_xml_attr *attr;
-
-	if (elem->ns == DAV_NS_NONE) {
-	    len = sprintf(s, "<%s", elem->name);
-	}
-	else {
-	    ns = ns_map ? ns_map[elem->ns] : elem->ns;
-	    len = sprintf(s, "<ns%d:%s", ns, elem->name);
-	}
-	s += len;
-
-	for (attr = elem->attr; attr; attr = attr->next) {
-	    if (attr->ns == DAV_NS_NONE)
-		len = sprintf(s, " %s=\"%s\"", attr->name, attr->value);
-	    else
-		len = sprintf(s, " ns%d:%s=\"%s\"", attr->ns, attr->name, attr->value);
-	    s += len;
-	}
-
-	/* add the xml:lang value if necessary */
-	if (elem->lang != NULL &&
-	    (style == DAV_X2T_FULL_NS_LANG ||
-	     elem->parent == NULL ||
-	     elem->lang != elem->parent->lang)) {
-	    len = sprintf(s, " xml:lang=\"%s\"", elem->lang);
-	    s += len;
-	}
-
-	/* add namespace definitions, if required */
-	if (style == DAV_X2T_FULL_NS_LANG) {
-	    int i;
-
-	    for (i = namespaces->nelts; i--;) {
-		len = sprintf(s, " xmlns:ns%d=\"%s\"", i,
-			      DAV_GET_URI_ITEM(namespaces, i));
-		s += len;
-	    }
-	}
-
-	/* no more to do. close it up and go. */
-	if (empty) {
-	    *s++ = '/';
-	    *s++ = '>';
-	    return s;
-	}
-
-	/* just close it */
-	*s++ = '>';
-    }
-    else if (style == DAV_X2T_LANG_INNER) {
-	/* prepend the xml:lang value */
-	if (elem->lang != NULL) {
-	    len = strlen(elem->lang);
-	    memcpy(s, elem->lang, len);
-	    s += len;
-	}
-	*s++ = '\0';
-    }
-
-    s = dav_write_text(s, elem->first_cdata.first);
-
-    for (child = elem->first_child; child; child = child->next) {
-	s = dav_write_elem(s, child, DAV_X2T_FULL, NULL, ns_map);
-	s = dav_write_text(s, child->following_cdata.first);
-    }
-
-    if (style == DAV_X2T_FULL || style == DAV_X2T_FULL_NS_LANG) {
-	if (elem->ns == DAV_NS_NONE) {
-	    len = sprintf(s, "</%s>", elem->name);
-	}
-	else {
-	    ns = ns_map ? ns_map[elem->ns] : elem->ns;
-	    len = sprintf(s, "</ns%d:%s>", ns, elem->name);
-	}
-	s += len;
-    }
-
-    return s;
-}
-
-/* convert an element to a text string */
-void dav_xml2text(ap_pool_t * p,
-		  const dav_xml_elem *elem,
-		  int style,
-		  ap_array_header_t *namespaces,
-		  int *ns_map,
-		  const char **pbuf,
-		  size_t *psize)
-{
-    /* get the exact size, plus a null terminator */
-    size_t size = dav_elem_size(elem, style, namespaces, ns_map) + 1;
-    char *s = ap_palloc(p, size);
-
-    (void) dav_write_elem(s, elem, style, namespaces, ns_map);
-    s[size - 1] = '\0';
-
-    *pbuf = s;
-    if (psize)
-	*psize = size;
-}
-
-const char *dav_empty_elem(ap_pool_t * p, const dav_xml_elem *elem)
-{
-    if (elem->ns == DAV_NS_NONE) {
-	/*
-	 * The prefix (xml...) is already within the prop name, or
-	 * the element simply has no prefix.
-	 */
-	return ap_psprintf(p, "<%s/>" DEBUG_CR, elem->name);
-    }
-
-    return ap_psprintf(p, "<ns%d:%s/>" DEBUG_CR, elem->ns, elem->name);
-}
-
-/*
-** dav_quote_string: quote an XML string
-**
-** Replace '<', '>', and '&' with '&lt;', '&gt;', and '&amp;'.
-** If quotes is true, then replace '"' with '&quot;'.
-**
-** quotes is typically set to true for XML strings that will occur within
-** double quotes -- attribute values.
-*/
-const char * dav_quote_string(ap_pool_t *p, const char *s, int quotes)
-{
-    const char *scan;
-    int len = 0;
-    int extra = 0;
-    char *qstr;
-    char *qscan;
-    char c;
-
-    for (scan = s; (c = *scan) != '\0'; ++scan, ++len) {
-	if (c == '<' || c == '>')
-	    extra += 3;		/* &lt; or &gt; */
-	else if (c == '&')
-	    extra += 4;		/* &amp; */
-	else if (quotes && c == '"')
-	    extra += 5;		/* &quot; */
-    }
-
-    /* nothing to do? */
-    if (extra == 0)
-	return s;
-
-    qstr = ap_palloc(p, len + extra + 1);
-    for (scan = s, qscan = qstr; (c = *scan) != '\0'; ++scan) {
-	if (c == '<') {
-	    *qscan++ = '&';
-	    *qscan++ = 'l';
-	    *qscan++ = 't';
-	    *qscan++ = ';';
-	}
-	else if (c == '>') {
-	    *qscan++ = '&';
-	    *qscan++ = 'g';
-	    *qscan++ = 't';
-	    *qscan++ = ';';
-	}
-	else if (c == '&') {
-	    *qscan++ = '&';
-	    *qscan++ = 'a';
-	    *qscan++ = 'm';
-	    *qscan++ = 'p';
-	    *qscan++ = ';';
-	}
-	else if (quotes && c == '"') {
-	    *qscan++ = '&';
-	    *qscan++ = 'q';
-	    *qscan++ = 'u';
-	    *qscan++ = 'o';
-	    *qscan++ = 't';
-	    *qscan++ = ';';
-	}
-	else {
-	    *qscan++ = c;
-	}
-    }
-
-    *qscan = '\0';
-    return qstr;
-}
-
-void dav_quote_xml_elem(ap_pool_t *p, dav_xml_elem *elem)
-{
-    dav_text *scan_txt;
-    dav_xml_attr *scan_attr;
-    dav_xml_elem *scan_elem;
-
-    /* convert the element's text */
-    for (scan_txt = elem->first_cdata.first;
-	 scan_txt != NULL;
-	 scan_txt = scan_txt->next) {
-	scan_txt->text = dav_quote_string(p, scan_txt->text, 0);
-    }
-    for (scan_txt = elem->following_cdata.first;
-	 scan_txt != NULL;
-	 scan_txt = scan_txt->next) {
-	scan_txt->text = dav_quote_string(p, scan_txt->text, 0);
-    }
-
-    /* convert the attribute values */
-    for (scan_attr = elem->attr;
-	 scan_attr != NULL;
-	 scan_attr = scan_attr->next) {
-	scan_attr->value = dav_quote_string(p, scan_attr->value, 1);
-    }
-
-    /* convert the child elements */
-    for (scan_elem = elem->first_child;
-	 scan_elem != NULL;
-	 scan_elem = scan_elem->next) {
-	dav_quote_xml_elem(p, scan_elem);
-    }
 }
 
 /* ---------------------------------------------------------------
@@ -1805,7 +1389,7 @@ dav_error * dav_validate_request(request_rec *r, dav_resource *resource,
     ** to construct a standard 207 response.
     */
     if (err == NULL && response != NULL && *response != NULL) {
-        dav_text *propstat = NULL;
+        ap_text *propstat = NULL;
 
         if ((flags & DAV_VALIDATE_USE_424) != 0) {
             /* manufacture a 424 error to hold the multistatus response(s) */
@@ -2108,20 +1692,4 @@ dav_error *dav_revert_resource_writability(request_rec *r,
     }
 
     return NULL;
-}
-
-/* return the URI's (existing) index, or insert it and return a new index */
-int dav_insert_uri(ap_array_header_t *uri_array, const char *uri)
-{
-    int i;
-    const char **pelt;
-
-    for (i = uri_array->nelts; i--;) {
-	if (strcmp(uri, DAV_GET_URI_ITEM(uri_array, i)) == 0)
-	    return i;
-    }
-
-    pelt = ap_push_array(uri_array);
-    *pelt = uri;		/* assume uri is const or in a pool */
-    return uri_array->nelts - 1;
 }

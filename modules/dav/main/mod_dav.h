@@ -64,6 +64,8 @@ extern "C" {
 #endif
 
 #include "httpd.h"
+#include "util_xml.h"
+
 #include <limits.h>     /* for INT_MAX */
 
 
@@ -333,24 +335,11 @@ void dav_buffer_place_mem(ap_pool_t *p, dav_buffer *pbuf, const void *mem,
 ** HANDY UTILITIES
 */
 
-/* simple strutures to keep a linked list of pieces of text */
-typedef struct dav_text
-{
-    const char *text;
-    struct dav_text *next;
-} dav_text;
-
-typedef struct
-{
-    dav_text *first;
-    dav_text *last;
-} dav_text_header;
-
 /* contains results from one of the getprop functions */
 typedef struct
 {
-    dav_text * propstats;	/* <propstat> element text */
-    dav_text * xmlns;		/* namespace decls for <response> elem */
+    ap_text * propstats;	/* <propstat> element text */
+    ap_text * xmlns;		/* namespace decls for <response> elem */
 } dav_get_props_result;
 
 /* holds the contents of a <response> element */
@@ -374,16 +363,18 @@ typedef struct
 } dav_lookup_result;
 
 
-void dav_text_append(ap_pool_t *p, dav_text_header *hdr, const char *text);
-
 dav_lookup_result dav_lookup_uri(const char *uri, request_rec *r);
 
+/* ### this stuff is private to dav/fs/repos.c; move it... */
 /* format a time string (buf must be at least DAV_TIMEBUF_SIZE chars) */
 #define DAV_STYLE_ISO8601	1
 #define DAV_STYLE_RFC822	2
 #define DAV_TIMEBUF_SIZE	30
 
 int dav_get_depth(request_rec *r, int def_depth);
+
+int dav_validate_root(const ap_xml_doc *doc, const char *tagname);
+ap_xml_elem *dav_find_child(const ap_xml_elem *elem, const char *tagname);
 
 
 /* --------------------------------------------------------------------
@@ -628,147 +619,6 @@ dav_error * dav_get_locktoken_list(request_rec *r, dav_locktoken_list **ltl);
 
 /* --------------------------------------------------------------------
 **
-** XML PARSING
-*/
-
-/*
-** Qualified namespace values
-**
-** DAV_NS_DAV_ID
-**    We always insert the "DAV:" namespace URI at the head of the
-**    namespace array. This means that it will always be at ID==0,
-**    making it much easier to test for.
-**
-** DAV_NS_NONE
-**    This special ID is used for two situations:
-**
-**    1) The namespace prefix begins with "xml" (and we do not know
-**       what it means). Namespace prefixes with "xml" (any case) as
-**       their first three characters are reserved by the XML Namespaces
-**       specification for future use. mod_dav will pass these through
-**       unchanged. When this identifier is used, the prefix is LEFT in
-**       the element/attribute name. Downstream processing should not
-**       prepend another prefix.
-**
-**    2) The element/attribute does not have a namespace.
-**
-**       a) No prefix was used, and a default namespace has not been
-**          defined.
-**       b) No prefix was used, and the default namespace was specified
-**          to mean "no namespace". This is done with a namespace
-**          declaration of:  xmlns=""
-**          (this declaration is typically used to override a previous
-**          specification for the default namespace)
-**
-**       In these cases, we need to record that the elem/attr has no
-**       namespace so that we will not attempt to prepend a prefix.
-**       All namespaces that are used will have a prefix assigned to
-**       them -- mod_dav will never set or use the default namespace
-**       when generating XML. This means that "no prefix" will always
-**       mean "no namespace".
-**
-**    In both cases, the XML generation will avoid prepending a prefix.
-**    For the first case, this means the original prefix/name will be
-**    inserted into the output stream. For the latter case, it means
-**    the name will have no prefix, and since we never define a default
-**    namespace, this means it will have no namespace.
-**
-** Note: currently, mod_dav understands the "xmlns" prefix and the
-**     "xml:lang" attribute. These are handled specially (they aren't
-**     left within the XML tree), so the DAV_NS_NONE value won't ever
-**     really apply to these values.
-*/
-#define DAV_NS_DAV_ID		0	/* namespace ID for "DAV:" */
-#define DAV_NS_NONE		-10	/* no namespace for this elem/attr */
-
-#define DAV_NS_ERROR_BASE	-100	/* used only during processing */
-#define DAV_NS_IS_ERROR(e)	((e) <= DAV_NS_ERROR_BASE)
-
-
-/*
-** dav_xml_doc: holds a parsed XML document
-** dav_xml_elem: holds a parsed XML element
-** dav_xml_attr: holds a parsed XML attribute
-**
-** dav_xml_ns_scope: internal struct used during processing to scope
-**                   namespace declarations
-*/
-
-typedef struct dav_xml_attr
-{
-    const char *name;			/* attribute name */
-    int ns;				/* index into namespace array */
-
-    const char *value;			/* attribute value */
-
-    struct dav_xml_attr *next;		/* next attribute */
-} dav_xml_attr;
-
-typedef struct dav_xml_elem
-{
-    const char *name;			/* element name */
-    int ns;				/* index into namespace array */
-    const char *lang;			/* xml:lang for attrs/contents */
-
-    dav_text_header first_cdata;	/* cdata right after start tag */
-    dav_text_header following_cdata;	/* cdata after MY end tag */
-
-    struct dav_xml_elem *parent;	/* parent element */
-    struct dav_xml_elem *next;		/* next (sibling) element */
-    struct dav_xml_elem *first_child;	/* first child element */
-    struct dav_xml_attr *attr;		/* first attribute */
-
-    /* used only during parsing */
-    struct dav_xml_elem *last_child;	/* last child element */
-    struct dav_xml_ns_scope *ns_scope;	/* namespaces scoped by this elem */
-
-    /* used during request processing */
-    int propid;				/* live property ID */
-    const dav_hooks_liveprop *provider;	/* the provider defining this prop */
-    const int *ns_map;			/* ns map for this provider */
-
-} dav_xml_elem;
-
-#define DAV_ELEM_IS_EMPTY(e)	((e)->first_child == NULL && \
-				 (e)->first_cdata.first == NULL)
-
-typedef struct dav_xml_doc
-{
-    dav_xml_elem *root;                 /* root element */
-    ap_array_header_t *namespaces;      /* array of namespaces used */
-
-} dav_xml_doc;
-
-
-int dav_parse_input(request_rec *r, dav_xml_doc **pdoc);
-
-int dav_validate_root(const dav_xml_doc *doc, const char *tagname);
-
-dav_xml_elem *dav_find_child(
-    const dav_xml_elem *elem,
-    const char *tagname);
-
-void dav_xml2text(
-    ap_pool_t *p,
-    const dav_xml_elem *elem,
-    int style,
-    ap_array_header_t *namespaces,
-    int *ns_map,
-    const char **pbuf,
-    size_t *psize
-    );
-#define DAV_X2T_FULL		0	/* start tag, contents, end tag */
-#define DAV_X2T_INNER		1	/* contents only */
-#define DAV_X2T_LANG_INNER	2	/* xml:lang + inner contents */
-#define DAV_X2T_FULL_NS_LANG	3	/* FULL + ns defns + xml:lang */
-
-const char *dav_empty_elem(ap_pool_t *p, const dav_xml_elem *elem);
-void dav_quote_xml_elem(ap_pool_t *p, dav_xml_elem *elem);
-const char * dav_quote_string(ap_pool_t *p, const char *s, int quotes);
-
-
-/* --------------------------------------------------------------------
-**
 ** LIVE PROPERTY HANDLING
 */
 
@@ -835,7 +685,7 @@ struct dav_hooks_liveprop
     */
     dav_prop_insert (*insert_prop)(const dav_resource *resource,
 				   int propid, int insvalue,
-				   const int *ns_map, dav_text_header *phdr);
+				   const int *ns_map, ap_text_header *phdr);
 
     /*
     ** Insert all known/defined property names (and values). This is
@@ -843,7 +693,7 @@ struct dav_hooks_liveprop
     ** rather than specific, individual properties.
     */
     void (*insert_all)(const dav_resource *resource, int insvalue,
-		       const int *ns_map, dav_text_header *phdr);
+		       const int *ns_map, ap_text_header *phdr);
 
     /*
     ** Determine whether a given property is writeable.
@@ -896,14 +746,14 @@ struct dav_hooks_liveprop
     ** database. Note: it will be set to zero on entry.
     */
     dav_error * (*patch_validate)(const dav_resource *resource,
-				  const dav_xml_elem *elem,
+				  const ap_xml_elem *elem,
 				  int operation,
 				  void **context,
 				  int *defer_to_dead);
 
     /* ### doc... */
     dav_error * (*patch_exec)(dav_resource *resource,
-			      const dav_xml_elem *elem,
+			      const ap_xml_elem *elem,
 			      int operation,
 			      void *context,
 			      dav_liveprop_rollback **rollback_ctx);
@@ -1091,7 +941,7 @@ const char *dav_get_lockdb_path(const request_rec *r);
 dav_error * dav_lock_parse_lockinfo(request_rec *r,
 				    const dav_resource *resrouce,
 				    dav_lockdb *lockdb,
-				    const dav_xml_doc *doc,
+				    const ap_xml_doc *doc,
 				    dav_lock **lock_request);
 int dav_unlock(request_rec *r, const dav_resource *resource,
 	       const dav_locktoken *locktoken);
@@ -1351,7 +1201,7 @@ void dav_close_propdb(dav_propdb *db);
 
 dav_get_props_result dav_get_props(
     dav_propdb *db,
-    dav_xml_doc *doc);
+    ap_xml_doc *doc);
 
 dav_get_props_result dav_get_allprops(
     dav_propdb *db,
@@ -1402,7 +1252,7 @@ typedef struct dav_prop_ctx
 #define DAV_PROP_OP_DELETE	2	/* delete a prop value */
 /* ### add a GET? */
 
-    dav_xml_elem *prop;			/* property to affect */
+    ap_xml_elem *prop;			/* property to affect */
 
     dav_error *err;			/* error (if any) */
 
@@ -1463,13 +1313,13 @@ typedef struct dav_walker_ctx
     dav_response *response;		/* OUT: multistatus responses */
 
     /* for PROPFIND operations */
-    dav_xml_doc *doc;
+    ap_xml_doc *doc;
     int propfind_type;
 #define DAV_PROPFIND_IS_ALLPROP		1
 #define DAV_PROPFIND_IS_PROPNAME	2
 #define DAV_PROPFIND_IS_PROP		3
 
-    dav_text *propstat_404;	/* (cached) propstat giving a 404 error */
+    ap_text *propstat_404;	/* (cached) propstat giving a 404 error */
 
     /* for COPY and MOVE operations */
     int is_move;
@@ -1835,12 +1685,11 @@ ap_table_t *dav_get_dir_params(const request_rec *r);
 /* fetch the "LimitXMLRequestBody" in force for this resource */
 size_t dav_get_limit_xml_body(const request_rec *r);
 
-/* manage an array of unique URIs: dav_insert_uri() and DAV_GET_URI_ITEM() */
-
-/* return the URI's (existing) index, or insert it and return a new index */
-int dav_insert_uri(ap_array_header_t *uri_array, const char *uri);
-#define DAV_GET_URI_ITEM(ary, i)    (((const char * const *)(ary)->elts)[i])
-
+typedef struct {
+    int propid;				/* live property ID */
+    const dav_hooks_liveprop *provider;	/* the provider defining this prop */
+    const int *ns_map;			/* ns map for this provider */
+} dav_elem_private;    
 
 #ifdef __cplusplus
 }

@@ -194,13 +194,13 @@ const char *dav_lock_get_activelock(request_rec *r, dav_lock *lock,
 dav_error * dav_lock_parse_lockinfo(request_rec *r,
 				    const dav_resource *resource,
 				    dav_lockdb *lockdb,
-				    const dav_xml_doc *doc,
+				    const ap_xml_doc *doc,
 				    dav_lock **lock_request)
 {
     const dav_hooks_locks *hooks = DAV_GET_HOOKS_LOCKS(r);
     ap_pool_t *p = r->pool;
     dav_error *err;
-    dav_xml_elem *child;
+    ap_xml_elem *child;
     dav_lock *lock;
 	
     if (!dav_validate_root(doc, "lockinfo")) {
@@ -248,14 +248,14 @@ dav_error * dav_lock_parse_lockinfo(request_rec *r,
 	    const char *text;
 
 	    /* quote all the values in the <DAV:owner> element */
-	    dav_quote_xml_elem(p, child);
+	    ap_xml_quote_elem(p, child);
 
 	    /*
 	    ** Store a full <DAV:owner> element with namespace definitions
 	    ** and an xml:lang definition, if applicable.
 	    */
-	    dav_xml2text(p, child, DAV_X2T_FULL_NS_LANG, doc->namespaces, NULL,
-			 &text, NULL);
+	    ap_xml_to_text(p, child, AP_XML_X2T_FULL_NS_LANG, doc->namespaces, 
+			   NULL, &text, NULL);
 	    lock->owner = text;
 
 	    continue;
