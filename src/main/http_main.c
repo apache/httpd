@@ -83,6 +83,7 @@
 #include "http_request.h"	/* for process_request */
 #include "http_conf_globals.h"
 #include "http_core.h"		/* for get_remote_host */
+#include "http_vhost.h"
 #include "scoreboard.h"
 #include "multithread.h"
 #include <sys/stat.h>
@@ -194,23 +195,6 @@ static int max_daemons_limit = -1;
  */
 listen_rec *listeners;
 static listen_rec *head_listener;
-
-/* A (n) bucket hash table, each entry has a pointer to a server rec and
- * a pointer to the other entries in that bucket.  Each individual address,
- * even for virtualhosts with multiple addresses, has an entry in this hash
- * table.  There are extra buckets for _default_, and name-vhost entries.
- *
- * The main_server's addresses appear in the main part of this table.
- * They're differentiated from real vhosts by server->is_virtual == 0.
- *
- * The VHASH_DEFAULT_BUCKET is a list of all the _default_ server_addr_recs.
- *
- * The VHASH_MAIN_BUCKET is a list of one server_addr_rec from each name
- * based vhost.  At the moment none of the name based vhost code is hashed,
- * and it's just more convenient to have a list of all the name-based vhosts
- * rather than a list of all the names of name-based vhosts.
- */
-server_rec_chain *vhash_table[VHASH_TABLE_SIZE + VHASH_EXTRA_SLOP];
 
 char server_root[MAX_STRING_LEN];
 char server_confname[MAX_STRING_LEN];
@@ -2226,243 +2210,6 @@ int init_suexec(void)
  * Connection structures and accounting...
  */
 
-/* This hashing function is designed to get good distribution in the cases
- * where the server is handling entire "networks" of servers.  i.e. a
- * whack of /24s.  This is probably the most common configuration for
- * ISPs with large virtual servers.
- *
- * Hash function provided by David Hankins.
- */
-static ap_inline unsigned hash_inaddr(unsigned key)
-{
-    key ^= (key >> 16);
-    return ((key >> 8) ^ key) % VHASH_TABLE_SIZE;
-}
-
-static server_rec *find_virtual_server(struct in_addr server_ip,
-				       unsigned port, server_rec *server)
-{
-    server_addr_rec *sar;
-    server_rec_chain *trav;
-    unsigned buk;
-
-    /* scan the hash table for an exact match first */
-    buk = hash_inaddr(server_ip.s_addr);
-    for (trav = vhash_table[buk]; trav; trav = trav->next) {
-	sar = trav->sar;
-	if ((sar->host_addr.s_addr == server_ip.s_addr)
-	    && (sar->host_port == 0 || sar->host_port == port)) {
-	    if (trav->server->is_virtual) {
-		return trav->server;
-	    }
-	    /* otherwise it's the "main server address", and we need
-	     * to do _default_ handling
-	     */
-	    break;
-	}
-    }
-
-    /* return the main server for now, might switch to a _default_ later */
-    return server_conf;
-}
-
-
-static void add_to_vhash_bucket(unsigned buk, server_rec *s,
-				server_addr_rec *sar)
-{
-    server_rec_chain *hashme;
-
-    hashme = palloc(pconf, sizeof(*hashme));
-    hashme->server = s;
-    hashme->sar = sar;
-    hashme->next = vhash_table[buk];
-    vhash_table[buk] = hashme;
-}
-
-
-/* hash table statistics, keep this in here for the beta period so
- * we can find out if the hash function is ok
- */
-#define VHASH_STATISTICS
-#ifdef VHASH_STATISTICS
-static int vhash_compare(const void *a, const void *b)
-{
-    return (*(const int *) b - *(const int *) a);
-}
-
-static void dump_vhash_statistics(void)
-{
-    unsigned count[VHASH_TABLE_SIZE + VHASH_EXTRA_SLOP];
-    int i;
-    server_rec_chain *src;
-    unsigned total;
-    char buf[HUGE_STRING_LEN];
-    char *p;
-
-    total = 0;
-    for (i = 0; i < VHASH_TABLE_SIZE + VHASH_EXTRA_SLOP; ++i) {
-	count[i] = 0;
-	for (src = vhash_table[i]; src; src = src->next) {
-	    ++count[i];
-	    if (i < VHASH_TABLE_SIZE) {
-		/* don't count the slop buckets in the total */
-		++total;
-	    }
-	}
-    }
-    qsort(count, VHASH_TABLE_SIZE, sizeof(count[0]), vhash_compare);
-    p = buf + ap_snprintf(buf, sizeof(buf),
-		 "vhash: total hashed = %u, avg chain = %u, #default = %u, "
-			  "#name-vhost = %u, chain lengths (count x len):",
-	       total, total / VHASH_TABLE_SIZE, count[VHASH_DEFAULT_BUCKET],
-			  count[VHASH_MAIN_BUCKET]);
-    total = 1;
-    for (i = 1; i < VHASH_TABLE_SIZE; ++i) {
-	if (count[i - 1] != count[i]) {
-	    p += ap_snprintf(p, sizeof(buf) - (p - buf), " %ux%u",
-			     total, count[i - 1]);
-	    total = 1;
-	}
-	else {
-	    ++total;
-	}
-    }
-    p += ap_snprintf(p, sizeof(buf) - (p - buf), " %ux%u",
-		     total, count[VHASH_TABLE_SIZE - 1]);
-    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, server_conf, buf);
-}
-#endif
-
-
-void default_server_hostnames(server_rec *main_s)
-{
-    struct hostent *h;
-    char *def_hostname;
-    int n;
-    server_addr_rec *sar;
-    server_addr_rec *main_sar;
-    int has_default_vhost_addr;
-    int from_local = 0;
-    server_rec *s;
-    int is_namevhost;
-
-    /* Main host first */
-    s = main_s;
-
-    if (!s->server_hostname) {
-	s->server_hostname = get_local_host(pconf);
-	from_local = 1;
-    }
-
-    def_hostname = s->server_hostname;
-    h = gethostbyname(def_hostname);
-    if (h == NULL) {
-	fprintf(stderr, "httpd: cannot determine the IP address of ");
-	if (from_local) {
-	    fprintf(stderr, "the local host (%s). Use ServerName to set it manually.\n",
-		    s->server_hostname ? s->server_hostname : "<NULL>");
-	}
-	else {
-	    fprintf(stderr, "the specified ServerName (%s).\n",
-		    s->server_hostname ? s->server_hostname : "<NULL>");
-	};
-	exit(1);
-    }
-
-    /* we fill in s->addrs for two reasons.  One so that we have
-     * server_addr_recs for the hash table.  And also because gethostbyname
-     * and gethostbyaddr share a static data area and our result would be
-     * clobbered here if we didn't copy it somewhere. -djg
-     */
-    for (n = 0; h->h_addr_list[n] != NULL; n++) {
-	main_sar = pcalloc(pconf, sizeof(*main_sar));
-	main_sar->host_addr = *(struct in_addr *) h->h_addr_list[n];
-	main_sar->host_port = 0;	/* we want this to match all ports */
-	main_sar->virthost = s->server_hostname;
-	main_sar->next = s->addrs;
-	s->addrs = main_sar;
-	add_to_vhash_bucket(hash_inaddr(main_sar->host_addr.s_addr),
-			    s, main_sar);
-    }
-
-    /* Then virtual hosts */
-
-    for (s = s->next; s; s = s->next) {
-	/* Check to see if we might be a HTTP/1.1 virtual host - same IP */
-	has_default_vhost_addr = 0;
-	for (sar = s->addrs; sar; sar = sar->next) {
-	    is_namevhost = 0;	/* guess addr doesn't match main server */
-	    for (main_sar = main_s->addrs; main_sar; main_sar = main_sar->next) {
-		if (sar->host_addr.s_addr == main_sar->host_addr.s_addr
-		    && s->port == main_s->port) {
-		    add_to_vhash_bucket(VHASH_MAIN_BUCKET, s, sar);
-		    /* XXX: only add it to the main bucket once since we're
-		     * not optimizing name-vhosts yet */
-		    s->is_virtual = 2;
-		    is_namevhost = 1;
-		    break;
-		}
-	    }
-	    if (sar->host_addr.s_addr == DEFAULT_VHOST_ADDR
-		|| sar->host_addr.s_addr == INADDR_ANY) {
-		/* XXX: this probably isn't the best handling of INADDR_ANY */
-		/* add it to default bucket for each appropriate sar
-		 * since we need to do a port test
-		 */
-		has_default_vhost_addr = 1;
-		add_to_vhash_bucket(VHASH_DEFAULT_BUCKET, s, sar);
-	    }
-	    else if (!is_namevhost) {
-		add_to_vhash_bucket(hash_inaddr(sar->host_addr.s_addr),
-				    s, sar);
-	    }
-	}
-
-	/* FIXME: some of this decision doesn't make a lot of sense in
-	   the presence of multiple addresses on the <VirtualHost>
-	   directive.  It should issue warnings here perhaps. -djg */
-	if (!s->server_hostname) {
-	    if (s->is_virtual == 2) {
-		if (s->addrs) {
-		    s->server_hostname = s->addrs->virthost;
-		}
-		else {
-		    /* what else can we do?  at this point this vhost has
-		       no configured name, probably because they used
-		       DNS in the VirtualHost statement.  It's disabled
-		       anyhow by the host matching code.  -djg */
-		    s->server_hostname =
-			pstrdup(pconf, "bogus_host_without_forward_dns");
-		}
-	    }
-	    else if (has_default_vhost_addr) {
-		s->server_hostname = def_hostname;
-	    }
-	    else {
-		if (s->addrs
-		    && (h = gethostbyaddr((char *) &(s->addrs->host_addr),
-					sizeof(struct in_addr), AF_INET))) {
-		    s->server_hostname = pstrdup(pconf, (char *) h->h_name);
-		}
-		else {
-		    /* again, what can we do?  They didn't specify a
-		       ServerName, and their DNS isn't working. -djg */
-		    if (s->addrs) {
-			fprintf(stderr, "Failed to resolve server name "
-				"for %s (check DNS)\n",
-				inet_ntoa(s->addrs->host_addr));
-		    }
-		    s->server_hostname =
-			pstrdup(pconf, "bogus_host_without_reverse_dns");
-		}
-	    }
-	}
-    }
-
-#ifdef VHASH_STATISTICS
-    dump_vhash_statistics();
-#endif
-}
 
 conn_rec *new_connection(pool *p, server_rec *server, BUFF *inout,
 			 const struct sockaddr_in *remaddr,
@@ -2479,8 +2226,8 @@ conn_rec *new_connection(pool *p, server_rec *server, BUFF *inout,
 
     conn->pool = p;
     conn->local_addr = *saddr;
-    conn->server = find_virtual_server(saddr->sin_addr, ntohs(saddr->sin_port),
-				       server);
+    conn->server = server; /* just a guess for now */
+    update_vhost_given_ip(conn);
     conn->base_server = conn->server;
     conn->client = inout;
 
@@ -3397,7 +3144,6 @@ void standalone_main(int argc, char **argv)
 	    note_cleanups_for_fd(pconf, scoreboard_fd);
 	}
 #endif
-	default_server_hostnames(server_conf);
 
 	set_signals();
 	log_pid(pconf, pid_fname);
@@ -3659,7 +3405,6 @@ int main(int argc, char *argv[])
 	open_logs(server_conf, pconf);
 	init_modules(pconf, server_conf);
 	set_group_privs();
-	default_server_hostnames(server_conf);
 
 #ifdef MPE
 	/* Only try to switch if we're running as MANAGER.SYS */
@@ -4088,7 +3833,6 @@ void worker_main()
     restart_time = time(NULL);
 
     reinit_scoreboard(pconf);
-    default_server_hostnames(server_conf);
 
     acquire_mutex(start_mutex);
 

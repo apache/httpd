@@ -57,7 +57,7 @@
 #include "http_protocol.h"	/* For index_of_response().  Grump. */
 #include "http_request.h"
 #include "http_conf_globals.h"
-
+#include "http_vhost.h"
 #include "http_main.h"		/* For the default_handler below... */
 #include "http_log.h"
 #include "rfc1413.h"
@@ -990,7 +990,10 @@ const char *virtualhost_section (cmd_parms *cmd, void *dummy, char *arg)
     if (main_server->is_virtual)
 	return "<VirtualHost> doesn't nest!";
     
-    s = init_virtual_host (p, arg, main_server);
+    errmsg = init_virtual_host (p, arg, main_server, &s);
+    if (errmsg)
+	return errmsg;
+
     s->next = main_server->next;
     main_server->next = s;
 	
@@ -1554,6 +1557,8 @@ command_rec core_cmds[] = {
 { "CoreDumpDirectory", set_coredumpdir, NULL, RSRC_CONF, TAKE1, "The location of the directory Apache changes to before dumping core" },
 { "Include", include_config, NULL, RSRC_CONF, TAKE1, "config file to be included" },
 { "LogLevel", set_loglevel, NULL, RSRC_CONF, TAKE1, "set level of verbosity in error logging" },
+{ "NameVirtualHost", set_name_virtual_host, NULL, RSRC_CONF, TAKE1,
+  "a numeric ip address:port, or the name of a host with a single address" },
 { NULL },
 };
 

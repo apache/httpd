@@ -297,6 +297,7 @@ void show_modules(void);
 void *create_request_config(pool *p);
 void *create_per_dir_config(pool *p);
 void *merge_per_dir_configs(pool *p, void *base, void *new);
+void *create_empty_config(pool *p);
 
 void core_reorder_directories(pool *, server_rec *);
 
@@ -306,8 +307,8 @@ int parse_htaccess(void **result, request_rec *r, int override,
 		const char *path, const char *access_name);
 const char *srm_command_loop(cmd_parms *parms, void *config);
 
-server_rec *init_virtual_host(pool *p, const char *hostname, server_rec *main_server);
-int is_virtual_server(server_rec *);
+const char *init_virtual_host(pool *p, const char *hostname,
+				server_rec *main_server, server_rec **);
 void process_resource_config(server_rec *s, char *fname, pool *p, pool *ptemp);
 
 /* Module-method dispatchers, also for http_request.c */

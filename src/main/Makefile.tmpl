@@ -11,7 +11,7 @@ LDFLAGS=$(LDFLAGS1) $(EXTRA_LDFLAGS)
 OBJS= alloc.o http_main.o http_core.o http_config.o http_request.o \
   http_log.o http_protocol.o rfc1413.o util.o util_script.o buff.o\
   md5c.o util_md5.o explain.o http_bprintf.o util_date.o util_snprintf.o \
-  fnmatch.o
+  fnmatch.o http_vhost.o
 
 .c.o:
 	$(CC) -c $(INCLUDES) $(CFLAGS) $(SPACER) $<
@@ -46,7 +46,7 @@ gnu-fnmatch.o: gnu-fnmatch.c fnmatch.h
 http_bprintf.o: http_bprintf.c httpd.h conf.h alloc.h buff.h
 http_config.o: http_config.c httpd.h conf.h alloc.h buff.h \
  http_config.h http_core.h http_log.h http_request.h \
- http_conf_globals.h explain.h
+ http_conf_globals.h explain.h http_vhost.h
 http_core.o: http_core.c httpd.h conf.h alloc.h buff.h http_config.h \
  http_core.h http_protocol.h http_conf_globals.h http_main.h \
  http_log.h rfc1413.h util_md5.h md5.h scoreboard.h fnmatch.h
@@ -54,10 +54,11 @@ http_log.o: http_log.c httpd.h conf.h alloc.h buff.h http_config.h \
  http_core.h http_log.h
 http_main.o: http_main.c httpd.h conf.h alloc.h buff.h http_main.h \
  http_log.h http_config.h http_protocol.h http_request.h \
- http_conf_globals.h http_core.h scoreboard.h multithread.h explain.h
+ http_conf_globals.h http_core.h scoreboard.h multithread.h explain.h \
+ http_vhost.h
 http_protocol.o: http_protocol.c httpd.h conf.h alloc.h buff.h \
  http_config.h http_core.h http_protocol.h http_main.h http_log.h \
- util_date.h
+ util_date.h http_vhost.h
 http_request.o: http_request.c httpd.h conf.h alloc.h buff.h \
  http_config.h http_request.h http_core.h http_protocol.h http_log.h \
  http_main.h scoreboard.h fnmatch.h

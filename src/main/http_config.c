@@ -73,6 +73,7 @@
 #include "http_log.h"		/* for errors in parse_htaccess */
 #include "http_request.h"	/* for default_handler (see invoke_handler) */
 #include "http_conf_globals.h"	/* Sigh... */
+#include "http_vhost.h"
 #include "explain.h"
 
 DEF_Explain
@@ -1019,96 +1020,11 @@ int parse_htaccess(void **result, request_rec *r, int override,
     return OK;
 }
 
-/*****************************************************************
- *
- * Virtual host stuff; note that the commands that invoke this stuff
- * are with the command table in http_core.c.
- */
 
-/*
- * Parses a host of the form <address>[:port]
- * paddr is used to create a list in the order of input
- * **paddr is the ->next pointer of the last entry (or s->addrs)
- * *paddr is the variable used to keep track of **paddr between calls
- * port is the default port to assume
- */
-static void get_addresses(pool *p, char *w, server_addr_rec ***paddr, unsigned port)
-{
-    struct hostent *hep;
-    unsigned long my_addr;
-    server_addr_rec *sar;
-    char *t;
-    int i, is_an_ip_addr;
-
-    if (*w == 0)
-	return;
-
-    t = strchr(w, ':');
-    if (t) {
-	if (strcmp(t + 1, "*") == 0) {
-	    port = 0;
-	}
-	else if ((i = atoi(t + 1))) {
-	    port = i;
-	}
-	else {
-	    fprintf(stderr, "Port must be numeric\n");
-	}
-	*t = 0;
-    }
-
-    is_an_ip_addr = 0;
-    if (strcmp(w, "*") == 0) {
-	my_addr = htonl(INADDR_ANY);
-	is_an_ip_addr = 1;
-    }
-    else if (strcmp(w, "_default_") == 0
-	     || strcmp(w, "255.255.255.255") == 0) {
-	my_addr = DEFAULT_VHOST_ADDR;
-	is_an_ip_addr = 1;
-    }
-    else if ((my_addr = ap_inet_addr(w)) != INADDR_NONE) {
-	is_an_ip_addr = 1;
-    }
-    if (is_an_ip_addr) {
-	sar = pcalloc(p, sizeof(server_addr_rec));
-	**paddr = sar;
-	*paddr = &sar->next;
-	sar->host_addr.s_addr = my_addr;
-	sar->host_port = port;
-	sar->virthost = pstrdup(p, w);
-	if (t != NULL)
-	    *t = ':';
-	return;
-    }
-
-    hep = gethostbyname(w);
-
-    if ((!hep) || (hep->h_addrtype != AF_INET || !hep->h_addr_list[0])) {
-	fprintf(stderr, "Cannot resolve host name %s --- ignoring!\n", w);
-	if (t != NULL)
-	    *t = ':';
-	return;
-    }
-
-    for (i = 0; hep->h_addr_list[i]; ++i) {
-	sar = pcalloc(p, sizeof(server_addr_rec));
-	**paddr = sar;
-	*paddr = &sar->next;
-	sar->host_addr = *(struct in_addr *) hep->h_addr_list[i];
-	sar->host_port = port;
-	sar->virthost = pstrdup(p, w);
-    }
-
-    if (t != NULL)
-	*t = ':';
-}
-
-server_rec *init_virtual_host(pool *p, const char *hostname,
-			      server_rec *main_server)
+const char *init_virtual_host(pool *p, const char *hostname,
+			      server_rec *main_server, server_rec **ps)
 {
     server_rec *s = (server_rec *) pcalloc(p, sizeof(server_rec));
-    server_addr_rec **addrs;
 
 #ifdef RLIMIT_NOFILE
     struct rlimit limits;
@@ -1134,24 +1050,8 @@ server_rec *init_virtual_host(pool *p, const char *hostname,
     s->keep_alive_max = -1;
     s->error_log = main_server->error_log;
     s->loglevel = main_server->loglevel;
-
-    /* start the list of addreses */
-    addrs = &s->addrs;
-    while (hostname[0]) {
-	get_addresses(p, getword_conf(p, &hostname), &addrs,
-		      main_server->port);
-    }
-    /* terminate the list */
-    *addrs = NULL;
-    if (s->addrs) {
-	if (s->addrs->host_port) {
-	    s->port = s->addrs->host_port;	/* set them the same, by default */
-	}
-	else {
-	    /* otherwise we get a port of 0 on redirects */
-	    s->port = main_server->port;
-	}
-    }
+    /* useful default, otherwise we get a port of 0 on redirects */
+    s->port = main_server->port;
     s->next = NULL;
 
     s->is_virtual = 1;
@@ -1163,13 +1063,11 @@ server_rec *init_virtual_host(pool *p, const char *hostname,
     s->server_uid = user_id;
     s->server_gid = group_id;
 
-    return s;
+    *ps = s;
+
+    return parse_vhost_addrs(p, hostname, s);
 }
 
-int is_virtual_server(server_rec *s)
-{
-    return s->is_virtual;
-}
 
 void fixup_virtual_hosts(pool *p, server_rec *main_server)
 {
@@ -1240,8 +1138,7 @@ void init_config_globals(pool *p)
     listenbacklog = DEFAULT_LISTENBACKLOG;
 
     /* Global virtual host hash bucket pointers.  Init to null. */
-    memset(vhash_table, 0,
-	   (VHASH_TABLE_SIZE + VHASH_EXTRA_SLOP) * sizeof(vhash_table[0]));
+    init_vhost_config(p);
 
     strncpy(coredump_dir, server_root, sizeof(coredump_dir) - 1);
     coredump_dir[sizeof(coredump_dir) - 1] = '\0';
@@ -1309,6 +1206,7 @@ server_rec *read_config(pool *p, pool *ptemp, char *confname)
 
     fixup_virtual_hosts(p, s);
     default_listeners(p, s);
+    fini_vhost_config(p, s);
 
     return s;
 }

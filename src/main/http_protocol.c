@@ -64,6 +64,7 @@
 #include "http_protocol.h"
 #include "http_main.h"
 #include "http_request.h"
+#include "http_vhost.h"
 #include "http_log.h"           /* For errors detected in basic auth common
                                  * support code... */
 #include "util_date.h"          /* For parseHTTPdate and BAD_DATE */
@@ -757,114 +758,6 @@ void get_mime_headers(request_rec *r)
     }
 }
 
-static void check_hostalias(request_rec *r)
-{
-    const char *hostname = r->hostname;
-    char *host = getword(r->pool, &hostname, ':');      /* Get rid of port */
-    unsigned port = (*hostname) ? atoi(hostname) : 80;
-    server_rec *s;
-    int l;
-    server_rec_chain *src;
-
-    if (port && (port != r->server->port))
-        return;
-
-    l = strlen(host) - 1;
-    if ((host[l]) == '.') {
-        host[l] = '\0';
-    }
-
-    r->hostname = host;
-
-    for (src = vhash_table[VHASH_MAIN_BUCKET]; src; src = src->next) {
-        const char *names;
-        server_addr_rec *sar;
-
-        s = src->server;
-
-        /* s->addrs != NULL because it's in a hash bucket.
-         *
-         * Note that default_server_hostnames has ensured that each
-         * name-vhost appears only once in the VHASH_MAIN_BUCKET.
-         */
-
-        if ((!strcasecmp(host, s->server_hostname)) && (port == s->port)) {
-            r->server = r->connection->server = s;
-            if (r->hostlen && !strncmp(r->uri, "http://", 7)) {
-                r->uri += r->hostlen;
-                parse_uri(r, r->uri);
-            }
-        }
-
-        /* search all the names from <VirtualHost> directive */
-        for (sar = s->addrs; sar; sar = sar->next) {
-            if (!strcasecmp(sar->virthost, host) &&
-                ((sar->host_port == 0) || (port == sar->host_port))) {
-                r->server = r->connection->server = s;
-                if (r->hostlen && !strncmp(r->uri, "http://", 7)) {
-                    r->uri += r->hostlen;
-                    r->proxyreq = 0;
-                }
-            }
-        }
-
-        /* search all the aliases from ServerAlias directive */
-        names = s->names;
-        if (names) {
-            while (*names) {
-                char *name = getword_conf(r->pool, &names);
-
-                if ((is_matchexp(name) && !strcasecmp_match(host, name)) ||
-                    (!strcasecmp(host, name))) {
-                    r->server = r->connection->server = s;
-                    if (r->hostlen && !strncmp(r->uri, "http://", 7)) {
-                        r->uri += r->hostlen;
-                        r->proxyreq = 0;
-                    }
-                }
-            }
-        }
-    }
-}
-
-void check_serverpath(request_rec *r)
-{
-    server_rec *s;
-    server_rec_chain *src;
-
-    /*
-     * This is in conjunction with the ServerPath code in http_core, so we
-     * get the right host attached to a non- Host-sending request.
-     */
-
-    for (src = vhash_table[VHASH_MAIN_BUCKET]; src; src = src->next) {
-        s = src->server;
-        if (s->addrs && s->path && !strncmp(r->uri, s->path, s->pathlen) &&
-            (s->path[s->pathlen - 1] == '/' ||
-             r->uri[s->pathlen] == '/' ||
-             r->uri[s->pathlen] == '\0'))
-            r->server = r->connection->server = s;
-    }
-}
-
-
-static void check_default_server(request_rec *r)
-{
-    server_addr_rec *sar;
-    server_rec_chain *trav;
-    unsigned port;
-
-    port = ntohs(r->connection->local_addr.sin_port);
-    for (trav = vhash_table[VHASH_DEFAULT_BUCKET]; trav; trav = trav->next) {
-        sar = trav->sar;
-        if (sar->host_port == 0 || sar->host_port == port) {
-            /* match! */
-            r->server = r->connection->server = trav->server;
-            return;
-        }
-    }
-}
-
 request_rec *read_request(conn_rec *conn)
 {
     request_rec *r = (request_rec *) pcalloc(conn->pool, sizeof(request_rec));
@@ -912,23 +805,10 @@ request_rec *read_request(conn_rec *conn)
 
     r->status = HTTP_OK;                         /* Until further notice. */
 
-    /* if it's the main server so far, we have to do name-vhost style lookups */
-
-    if (r->server->is_virtual == 0) {
-        if (r->hostname || (r->hostname = table_get(r->headers_in, "Host")))
-            check_hostalias(r);
-        else
-            check_serverpath(r);
-        /* if that failed, then look for a default server */
-        if (r->server->is_virtual == 0) {
-            check_default_server(r);
-        }
-    }
-    else if (!r->hostname) {
-        /* must set this for HTTP/1.1 support */
-        r->hostname = table_get(r->headers_in, "Host");
-    }
-    /* we have finished the search for a vhost */
+    /* update what we think the virtual host is based on the headers we've
+     * now read
+     */
+    update_vhost_from_headers(r);
 
     /* we may have switched to another server */
     r->per_dir_config = r->server->lookup_defaults;

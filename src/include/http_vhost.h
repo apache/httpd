@@ -50,44 +50,27 @@
  *
  */
 
-/* 
- * Process config --- what the process ITSELF is doing
- */
+#ifndef HTTP_VHOST_H
+#define HTTP_VHOST_H
 
-extern int standalone;
-extern uid_t user_id;
-extern char *user_name;
-extern gid_t group_id;
-#ifdef MULTIPLE_GROUPS
-extern gid_t group_id_list[NGROUPS_MAX];
+/* called before any config is read */
+void init_vhost_config(pool *p);
+
+/* called after the config has been read */
+void fini_vhost_config(pool *p, server_rec *main_server);
+
+/* handle addresses in <VirtualHost> statement */
+const char *parse_vhost_addrs(pool *p, const char *hostname, server_rec *s);
+
+/* handle NameVirtualHost directive */
+const char *set_name_virtual_host (cmd_parms *cmd, void *dummy, char *arg);
+
+/* given an ip address only, give our best guess as to what vhost it is */
+void update_vhost_given_ip(conn_rec *conn);
+
+/* The above is never enough, and this is always called after the headers
+ * have been read.  It may change r->server.
+ */
+void update_vhost_from_headers(request_rec *r);
+
 #endif
-extern int max_requests_per_child;
-extern int threads_per_child;
-extern int excess_requests_per_child;
-extern struct in_addr bind_address;
-extern listen_rec *listeners;
-extern int daemons_to_start;
-extern int daemons_min_free;
-extern int daemons_max_free;
-extern int daemons_limit;
-extern MODULE_VAR_EXPORT int suexec_enabled;
-extern int listenbacklog;
-
-extern char *pid_fname;
-extern char *scoreboard_fname;
-extern char *lock_fname;
-extern MODULE_VAR_EXPORT char *server_argv0;
-
-/* Trying to allocate these in the config pool gets us into some *nasty*
- * chicken-and-egg problems in http_main.c --- where do you stick them
- * when pconf gets cleared?  Better to just allocate a little space
- * statically...
- */
-
-extern char server_root[MAX_STRING_LEN];
-extern char server_confname[MAX_STRING_LEN];
-
-/* We want this to have the least chance of being correupted if there
- * is some memory corruption, so we allocate it statically.
- */
-extern char coredump_dir[MAX_STRING_LEN];
