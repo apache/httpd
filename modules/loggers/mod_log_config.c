@@ -187,6 +187,7 @@
 #include "apr_lib.h"
 #include "apr_hash.h"
 #include "apr_optional.h"
+#include "apr_anylock.h"
 
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
@@ -199,6 +200,7 @@
 #include "http_log.h"
 #include "http_protocol.h"
 #include "util_time.h"
+#include "ap_mpm.h"
 
 #if APR_HAVE_UNISTD_H
 #include <unistd.h>
@@ -237,6 +239,7 @@ static ap_log_writer* ap_log_set_writer(ap_log_writer *handle);
 static ap_log_writer *log_writer = ap_default_log_writer;
 static ap_log_writer_init *log_writer_init = ap_default_log_writer_init;
 static int buffered_logs = 0; /* default unbuffered */
+static apr_array_header_t *all_buffered_logs = NULL;
 
 /* POSIX.1 defines PIPE_BUF as the maximum number of bytes that is
  * guaranteed to be atomic when writing a pipe.  And PIPE_BUF >= 512
@@ -290,6 +293,7 @@ typedef struct {
     apr_file_t *handle;
     apr_size_t outcnt;
     char outbuf[LOG_BUFSIZE];
+    apr_anylock_t mutex;
 } buffered_log;
 
 typedef struct {
@@ -1215,6 +1219,10 @@ static apr_status_t flush_all_logs(void *data)
 
 static int init_config_log(apr_pool_t *pc, apr_pool_t *p, apr_pool_t *pt, server_rec *s)
 {
+    if (buffered_logs) {
+        all_buffered_logs = apr_array_make(p, 5, sizeof(buffered_log *));
+    }
+
     /* First, do "physical" server, which gets default log fd and format
      * for the virtual servers, if they don't override...
      */
@@ -1231,9 +1239,41 @@ static int init_config_log(apr_pool_t *pc, apr_pool_t *p, apr_pool_t *pt, server
 
 static void init_child(apr_pool_t *p, server_rec *s)
 {
+    int mpm_threads;
+
+    ap_mpm_query(AP_MPMQ_MAX_THREADS, &mpm_threads);
+
     /* Now register the last buffer flush with the cleanup engine */
     if (buffered_logs) {
+        int i;
+        buffered_log **array = (buffered_log **)all_buffered_logs->elts;
+        
         apr_pool_cleanup_register(p, s, flush_all_logs, flush_all_logs);
+
+        for (i = 0; i < all_buffered_logs->nelts; i++) {
+            buffered_log *this = array[i];
+            
+#if APR_HAS_THREADS
+            if (mpm_threads > 1) {
+                apr_status_t rv;
+
+                this->mutex.type = apr_anylock_threadmutex;
+                rv = apr_thread_mutex_create(&this->mutex.lock.tm,
+                                             APR_THREAD_MUTEX_DEFAULT,
+                                             p);
+                if (rv != APR_SUCCESS) {
+                    ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
+                                 "could not initialize buffered log mutex, "
+                                 "transfer log may become corrupted");
+                    this->mutex.type = apr_anylock_none;
+                }
+            }
+            else
+#endif
+            {
+                this->mutex.type = apr_anylock_none;
+            }
+        }
     }
 }
 
@@ -1321,12 +1361,13 @@ static void *ap_buffered_log_writer_init(apr_pool_t *p, server_rec *s,
                                         const char* name)
 {
     buffered_log *b;
-    b = apr_palloc(p, sizeof(buffered_log));
+    b = apr_pcalloc(p, sizeof(buffered_log));
     b->handle = ap_default_log_writer_init(p, s, name);
-    b->outcnt = 0;
     
-    if (b->handle)
+    if (b->handle) {
+        *(buffered_log **)apr_array_push(all_buffered_logs) = b;
         return b;
+    }
     else
         return NULL;
 }
@@ -1344,6 +1385,9 @@ static apr_status_t ap_buffered_log_writer(request_rec *r,
     apr_status_t rv;
     buffered_log *buf = (buffered_log*)handle;
 
+    if ((rv = APR_ANYLOCK_LOCK(&buf->mutex)) != APR_SUCCESS) {
+        return rv;
+    }
 
     if (len + buf->outcnt > LOG_BUFSIZE) {
         flush_log(buf);
@@ -1368,6 +1412,8 @@ static apr_status_t ap_buffered_log_writer(request_rec *r,
         buf->outcnt += len;
         rv = APR_SUCCESS;
     }
+
+    APR_ANYLOCK_UNLOCK(&buf->mutex);
     return rv;
 }
 
