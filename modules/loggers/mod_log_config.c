@@ -1343,19 +1343,18 @@ static apr_status_t ap_default_log_writer( request_rec *r,
                            apr_size_t len)
 
 {
-    char *str;
-    char *s;
     int i;
     apr_status_t rv;
+    struct iovec *vec;
 
-    str = apr_palloc(r->pool, len + 1);
+    vec = apr_palloc(r->pool, nelts * sizeof(struct iovec));
 
-    for (i = 0, s = str; i < nelts; ++i) {
-        memcpy(s, strs[i], strl[i]);
-        s += strl[i];
+    for (i = 0; i < nelts; ++i) {
+        vec[i].iov_base = strs[i];
+        vec[i].iov_len = strl[i];
     }
 
-    rv = apr_file_write((apr_file_t*)handle, str, &len);
+    rv = apr_file_writev((apr_file_t*)handle, vec, nelts, &i);
 
     return rv;
 }
