@@ -485,7 +485,7 @@ static int ssl_io_hook_read(SSL *ssl, char *buf, int len)
 
     rc = SSL_read(ssl, buf, len);
 
-    if (rc < 0) {
+    if (rc <= 0) {
         int ssl_err = SSL_get_error(ssl, rc);
 
         if (ssl_err == SSL_ERROR_WANT_READ) {
@@ -673,6 +673,10 @@ static apr_status_t ssl_io_input_read(ssl_io_input_ctx_t *ctx,
         if (ctx->inbio.mode == AP_MODE_SPECULATIVE) {
             char_buffer_write(&ctx->cbuf, buf, rc);
         }
+    }
+    else if ((rc == 0) && (errno != EINTR)) {
+        /* something other than SSL_ERROR_WANT_READ */
+        return APR_EOF;
     }
     else if ((rc == -1) && (ctx->inbio.rc == APR_SUCCESS)) {
         /*
