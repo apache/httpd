@@ -163,17 +163,17 @@ CACHE_DECLARE(int) ap_cache_liststr(const char *list, const char *key, char **va
             i--;
         if (i == len && strncasecmp(list, key, len) == 0) {
             if (val) {
-            p = strchr((char *) list, ',');
-            while (ap_isspace(*list)) {
-                list++;
-            }
-            if ('=' == list[0])
-                list++;
-            while (ap_isspace(*list)) {
-                list++;
-            }
-            strncpy(valbuf, list, MIN(p-list, sizeof(valbuf)-1));
-            *val = valbuf;
+                p = strchr((char *) list, ',');
+                while (ap_isspace(*list)) {
+                    list++;
+                }
+                if ('=' == list[0])
+                    list++;
+                while (ap_isspace(*list)) {
+                    list++;
+                }
+                strncpy(valbuf, list, MIN(p-list, sizeof(valbuf)-1));
+                *val = valbuf;
             }
             return 1;
         }
