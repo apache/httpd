@@ -553,6 +553,7 @@ static void parse_string(request_rec *r, char *in, char *out, int length,
 static int include_cgi(char *s, request_rec *r)
 {
     request_rec *rr = sub_req_lookup_uri(s, r);
+    int rr_status;
 
     if (rr->status != HTTP_OK) {
         return -1;
@@ -580,7 +581,8 @@ static int include_cgi(char *s, request_rec *r)
 
     /* Run it. */
 
-    if (run_sub_req(rr) == REDIRECT) {
+    rr_status = run_sub_req(rr);
+    if (is_HTTP_REDIRECT(rr_status)) {
         char *location = table_get(rr->headers_out, "Location");
         location = escape_html(rr->pool, location);
         rvputs(r, "<A HREF=\"", location, "\">", location, "</A>", NULL);
