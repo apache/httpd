@@ -30,6 +30,8 @@ if test "$abs_builddir" != "$abs_srcdir"; then
   USE_VPATH=1
 fi
 
+AC_CANONICAL_SYSTEM
+
 dnl
 dnl ## Preload our OS configuration
 APR_PRELOAD
