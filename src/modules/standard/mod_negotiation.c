@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: mod_negotiation.c,v 1.18 1996/09/24 12:44:59 mjc Exp $ */
+/* $Id: mod_negotiation.c,v 1.19 1996/09/28 02:30:56 brian Exp $ */
 
 /*
  * mod_negotiation.c: keeps track of MIME types the client is willing to
@@ -995,11 +995,11 @@ void set_language_quality(negotiation_state *neg, var_rec *variant)
     accept_rec *accs, *best = NULL, *star = NULL;
     int i;
     char *lang = variant->content_language;
-    int prefixlen;
+    int prefixlen = 0;
     char *p;
     int naccept = neg->accept_langs->nelts;
     int index;
-    neg_dir_config *conf;
+    neg_dir_config *conf = NULL;
     int longest_lang_range_len = 0;
     int len;
 
@@ -1060,7 +1060,7 @@ void set_language_quality(negotiation_state *neg, var_rec *variant)
 		 * of any other language listed on the Accept-Language
 		 * header
 		 */
-	        if (p = strchr(accs[i].type_name, '-')) {
+	        if ((p = strchr(accs[i].type_name, '-'))) {
 		    int plen = p - accs[i].type_name;
 		    if (!strncmp(lang, accs[i].type_name, plen))
 			fiddle_q = 0.001;
@@ -1183,7 +1183,6 @@ void set_charset_quality(negotiation_state *neg, var_rec *variant)
 {
     int i;
     accept_rec *accept_recs = (accept_rec *)neg->accept_charsets->elts;
-    float q = 0.0;
     char *charset = variant->content_charset;
 
     if (!charset)
