@@ -697,6 +697,26 @@ if [ "x$using_shlib" = "x1" ] ; then
             LDFLAGS_SHLIB="-assert pure-text"
             LDFLAGS_SHLIB_EXPORT=""
             ;;
+        *-sgi-irix32)
+            case $CC in
+                */gcc|gcc ) CFLAGS_SHLIB="-fpic" ;;
+                */cc|cc   ) CFLAGS_SHLIB="-KPIC" ;;
+            esac
+            if [ "$RULE_IRIXN32" = "yes" ]; then
+                LDFLAGS_SHLIB="-n32 -shared"
+            else
+                LDFLAGS_SHLIB="-shared"
+            fi
+            LDFLAGS_SHLIB_EXPORT=""
+            ;;
+        *-sgi-irix)
+            case $CC in
+                */gcc|gcc ) CFLAGS_SHLIB="-fpic" ;;
+                */cc|cc   ) CFLAGS_SHLIB="-KPIC" ;;
+            esac
+            LDFLAGS_SHLIB="-shared"
+            LDFLAGS_SHLIB_EXPORT=""
+            ;;
     esac
 fi
 
