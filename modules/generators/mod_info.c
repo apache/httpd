@@ -25,6 +25,7 @@
  * GET /server-info?server - Returns server configuration only
  * GET /server-info?module_name - Returns configuration for a single module
  * GET /server-info?list - Returns quick list of included modules
+ * GET /server-info?config - Returns full configuration
  *
  * Rasmus Lerdorf <rasmus@vex.net>, May 1996
  *
@@ -39,6 +40,12 @@
  * 8.11.00 Port to Apache 2.0.  Read configuation from the configuration
  * tree rather than reparse the entire configuation file.
  * 
+ * Rici Lake <rici@ricilake.net>
+ *
+ * 2004-08-28 Rewrote config tree walk using recursion the way God intended.
+ * Added ?config option. Added printout of config filename and line numbers.
+ * Fixed indentation.
+ *
  */
 
 #define CORE_PRIVATE
@@ -86,108 +93,97 @@ static void *merge_info_config(apr_pool_t *p, void *basev, void *overridesv)
     return new;
 }
 
-static void mod_info_html_cmd_string(request_rec *r, const char *string,
-                                     int close)
+static void mod_info_indent(request_rec * r, int nest, const char* thisfn, int linenum)
 {
-    const char *s;
-
-    s = string;
-    /* keep space for \0 byte */
-    while (*s) {
-        if (*s == '<') {
-	    if (close) {
-                ap_rputs("&lt;/", r);
-	    } else {
-                ap_rputs("&lt;", r);
-	    }
-        }
-        else if (*s == '>') {
-            ap_rputs("&gt;", r);
-        }
-        else if (*s == '&') {
-            ap_rputs("&amp;", r);
-        }
-	else if (*s == ' ') {
-	    if (close) {
-	        ap_rputs("&gt;", r);
-	        break;
-	    } else {
-                ap_rputc(*s, r);
-            }
-	} else {
-            ap_rputc(*s, r);
-        }
-        s++;
+    int i;
+    const char *prevfn = ap_get_module_config(r->request_config, &info_module);
+    char buf[32];
+    if (thisfn == NULL) thisfn = "*UNKNOWN*";
+    if (prevfn == NULL || 0 != strcmp(prevfn, thisfn)) {
+        thisfn = ap_escape_html(r->pool, thisfn);
+        ap_rprintf(r, "<dd><tt><strong>In file: %s</strong></tt></dd>\n", thisfn);
+        ap_set_module_config(r->request_config, &info_module, thisfn);
     }
+    ap_rputs("<dd><tt>", r);
+    if (linenum > 0) sprintf(buf, "%d", linenum);
+    else             buf[0] = '\0';
+    for (i = strlen(buf); i < 4; ++i) ap_rputs("&nbsp;", r);
+    ap_rputs(buf, r);
+    ap_rputs(":&nbsp;", r);
+    for (i = 1; i <= nest; ++i) ap_rputs("&nbsp;&nbsp;", r);
 }
 
-static void mod_info_module_cmds(request_rec * r, const command_rec * cmds,
-				 ap_directive_t * conftree)
+static void mod_info_show_cmd(request_rec * r, const ap_directive_t * dir,
+                                int nest)
 {
-    const command_rec *cmd;
-    ap_directive_t *tmptree = conftree;
-    char htmlstring[MAX_STRING_LEN];
-    int block_start = 0;
-    int nest = 0;
+    mod_info_indent(r, nest, dir->filename, dir->line_num);
+    ap_rprintf(r, "%s <i>%s</i></tt></dd>\n",
+        ap_escape_html(r->pool, dir->directive),
+        ap_escape_html(r->pool, dir->args));
+}
 
-    while (tmptree != NULL) {
-	cmd = cmds;
-	while (cmd->name) {
-	    if ((cmd->name[0] != '<') && 
-                (strcasecmp(cmd->name, tmptree->directive) == 0)) {
-		if (nest > block_start) {
-		    block_start++;
-		    apr_snprintf(htmlstring, sizeof(htmlstring), "%s %s",
-                                tmptree->parent->directive,
-				tmptree->parent->args);
-                    ap_rputs("<dd><tt>", r);
-                    mod_info_html_cmd_string(r, htmlstring, 0);
-                    ap_rputs("</tt></dd>\n", r);
-		}
-		if (nest == 2) {
-		    ap_rprintf(r, "<dd><tt>&nbsp;&nbsp;&nbsp;&nbsp;%s "
-			       "<i>%s</i></tt></dd>\n",
-                               ap_escape_html(r->pool,tmptree->directive), 
-                               ap_escape_html(r->pool,tmptree->args));
-		} else if (nest == 1) {
-		    ap_rprintf(r,
-			       "<dd><tt>&nbsp;&nbsp;%s <i>%s</i></tt></dd>\n",
-                               ap_escape_html(r->pool,tmptree->directive), 
-                               ap_escape_html(r->pool,tmptree->args));
-		} else {
-                    ap_rputs("<dd><tt>", r);
-                    mod_info_html_cmd_string(r, tmptree->directive, 0);
-                    ap_rprintf(r, " <i>%s</i></tt></dd>\n", 
-                               ap_escape_html(r->pool,tmptree->args));
-		}
-	    }
-	    ++cmd;
-	}
-	if (tmptree->first_child != NULL) {
-	    tmptree = tmptree->first_child;
-	    nest++;
-	} else if (tmptree->next != NULL) {
-	    tmptree = tmptree->next;
-	} else {
-	    if (block_start) {
-		apr_snprintf(htmlstring, sizeof(htmlstring), "%s %s",
-			    tmptree->parent->directive,
-			    tmptree->parent->args);
-		ap_rputs("<dd><tt>", r);
-                mod_info_html_cmd_string(r, htmlstring, 1);
-                ap_rputs("</tt></dd>\n", r);
-		block_start--;
-	    }
-            if (tmptree->parent) {
-                tmptree = tmptree->parent->next;
+static void mod_info_show_open(request_rec * r, const ap_directive_t * dir,
+                                int nest)
+{
+    mod_info_indent(r, nest, dir->filename, dir->line_num);
+    ap_rprintf(r, "%s %s</tt></dd>\n", 
+                  ap_escape_html(r->pool, dir->directive),
+                  ap_escape_html(r->pool, dir->args));
+}
+
+static void mod_info_show_close(request_rec * r, const ap_directive_t * dir,
+                                int nest)
+{
+    const char *dirname = dir->directive;
+    mod_info_indent(r, nest, dir->filename, 0);
+    if (*dirname == '<') {
+        ap_rprintf(r, "&lt;/%s&gt;</tt></dd>",
+                   ap_escape_html(r->pool, dirname + 1));
             }
             else {
-                tmptree = NULL;
+        ap_rprintf(r, "/%s</tt></dd>",
+                   ap_escape_html(r->pool, dirname));
             }
-	    nest--;
+}
+    
+static int mod_info_has_cmd(const command_rec * cmds, ap_directive_t * dir)
+{
+    const command_rec * cmd;
+    if (cmds == NULL) return 1;
+    for (cmd = cmds; cmd->name; ++cmd) {
+        if (strcasecmp(cmd->name, dir->directive) == 0) return 1;
 	}
+    return 0;
+}
 
+static void mod_info_show_parents(request_rec * r, ap_directive_t * node, 
+                                    int from, int to) {
+    if (from < to) mod_info_show_parents(r, node->parent, from, to - 1);
+    mod_info_show_open(r, node, to);
+}
+
+static int mod_info_module_cmds(request_rec * r, const command_rec * cmds,
+                                ap_directive_t * node, int from, int level)
+{
+    int shown = from;
+    ap_directive_t * dir;
+    if (level == 0) ap_set_module_config(r->request_config, &info_module, NULL);
+    for (dir = node; dir; dir = dir->next) {
+        if (dir->first_child != NULL) {
+            if (level < mod_info_module_cmds(r, cmds, dir->first_child,
+                                                 shown, level + 1)) {
+                shown = level;
+                mod_info_show_close(r, dir, level);
+            }
+        } else if (mod_info_has_cmd(cmds, dir)) {
+            if (shown < level) {
+                mod_info_show_parents(r, dir->parent, shown, level - 1);
+                shown = level;
+            }
+            mod_info_show_cmd(r, dir, level);
     }
+    }
+    return shown;
 }
 
 typedef struct { /*XXX: should get something from apr_hooks.h instead */
@@ -368,6 +364,12 @@ static int display_info(request_rec *r)
 		       "<tt>%s</tt></dt>\n", ap_conftree->filename);
             ap_rputs("</dl><hr />", r);
         }
+        if (r->args && 0 == strcasecmp(r->args, "config")) {
+            ap_rputs("<dl><dt><strong>Configuration:</strong>\n", r);
+            mod_info_module_cmds(r, NULL, ap_conftree, 0, 0);
+            ap_rputs("</dl><hr />", r);
+        }
+        else {
         for (modp = ap_top_module; modp; modp = modp->next) {
             if (!r->args || !strcasecmp(modp->name, r->args)) {
                 ap_rprintf(r, "<dl><dt><a name=\"%s\"><strong>Module Name:</strong> "
@@ -444,9 +446,9 @@ static int display_info(request_rec *r)
                     ap_rputs("<dt><strong>Module Directives:</strong></dt>", r);
                     while (cmd) {
                         if (cmd->name) {
-                            ap_rputs("<dd><tt>", r);
-                            mod_info_html_cmd_string(r, cmd->name, 0);
-                            ap_rputs(" - <i>", r);
+                            ap_rprintf(r, "<dd><tt>%s%s - <i>",
+                                ap_escape_html(r->pool, cmd->name),
+                                cmd->name[0] == '<' ? "&gt;" : "");
                             if (cmd->errmsg) {
                                 ap_rputs(cmd->errmsg, r);
                             }
@@ -458,7 +460,7 @@ static int display_info(request_rec *r)
                         cmd++;
                     }
                     ap_rputs("<dt><strong>Current Configuration:</strong></dt>\n", r);
-                    mod_info_module_cmds(r, modp->cmds, ap_conftree);
+                    mod_info_module_cmds(r, modp->cmds, ap_conftree, 0, 0);
                 }
                 else {
                     ap_rputs("<dt><strong>Module Directives:</strong> <tt>none</tt></dt>", r);
@@ -478,6 +480,7 @@ static int display_info(request_rec *r)
         }
         if (!modp && r->args && strcasecmp(r->args, "server")) {
             ap_rputs("<p><b>No such module</b></p>\n", r);
+        }
         }
     }
     else {
