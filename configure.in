@@ -12,7 +12,8 @@ dnl ## This is the central place where Apache's version should be kept.
 APACHE_VERSION=$VERSION
 AC_SUBST(APACHE_VERSION)
 
-dnl XXX - doesn't actually work, because of the APACHE_OUTPUT_FILES error
+dnl XXX - make will sometimes die as annoyingly as automake with this option
+dnl just remake and continue
 AM_MAINTAINER_MODE
 
 dnl We want this one before the checks, so the checks can modify CFLAGS
@@ -43,14 +44,30 @@ dnl I think these are just used all over the place, so just check for
 dnl them at the base of the tree. If some are specific to a single
 dnl directory, they should be moved (Comment #Spoon)
 
+AC_HEADER_STDC
 AC_CHECK_HEADERS( \
 unistd.h \
+sys/stat.h \
 sys/time.h \
+sys/types.h \
+sys/socket.h \
+netinet/in.h \
+arpa/inet.h \
+netdb.h \
+pwd.h \
+grp.h \
 )
+AC_HEADER_SYS_WAIT
+
+dnl ## Check for C preprocessor symbols
+
+AC_CHECK_DEFINE(EAGAIN, errno.h)
 
 dnl ## Check for typedefs, structures, and compiler characteristics.
 
+AC_C_CONST
 AC_C_INLINE
+AC_TYPE_PID_T
 
 dnl ## Check for library functions
 
@@ -67,7 +84,22 @@ waitpid \
 difftime \
 gettimeofday \
 memmove \
+bzero \
 )
+
+AC_CHECK_FUNCS(inet_addr inet_network, break, [
+  AC_MSG_ERROR(inet_addr function not found)
+])
+
+AC_FUNC_SELECT_ARGTYPES
+
+dnl Check if we'll actually need to cast select args all the time
+if test "$ac_cv_func_select_arg1" != "int" \
+        -o "$ac_cv_func_select_arg234" != "fd_set *" \
+        -o "$ac_cv_func_select_arg5" != "struct timeval *" ; then
+
+    AC_DEFINE(SELECT_NEEDS_CAST)
+fi
 
 AM_PROG_LIBTOOL
 

@@ -62,6 +62,11 @@
 extern "C" {
 #endif
 
+#ifdef HAVE_CONFIG_H
+#include "ap_ac_config.h"       /* If we're using autoconf, go to the new
+                                   ap_config.h replacement */
+#else /* HAVE_CONFIG_H */
+
 /*
  * ap_config.h: system-dependant #defines and includes...
  * See PORTING for a listing of what they mean
@@ -1406,6 +1411,10 @@ long vfprintf(FILE *, const char *, va_list);
 #define HAVE_SYS_TIMES_H
 #endif
 
+#if !defined(NO_RELIABLE_PIPED_LOGS)
+#define HAVE_RELIABLE_PIPED_LOGS
+#endif
+
 #endif /* HAVE_CONFIG_H */
 
 /* The assumption is that when the functions are missing,
@@ -1462,6 +1471,7 @@ extern double difftime(time_t time1, time_t time0);
 #undef USE_SYSVSEM_SERIALIZED_ACCEPT
 #undef USE_PTHREAD_SERIALIZED_ACCEPT
 #endif
+#endif /* HAVE_CONFIG_H */
 
 #ifdef __cplusplus
 }
