@@ -164,12 +164,12 @@ API_EXPORT(table *) copy_table(pool *p, const table *);
 API_EXPORT(void) clear_table(table *);
 API_EXPORT(char *) table_get(const table *, const char *);
 API_EXPORT(void) table_set(table *, const char *name, const char *val);
-API_EXPORT(void) table_setn(table *, char *name, char *val);
+API_EXPORT(void) table_setn(table *, const char *name, const char *val);
 API_EXPORT(void) table_merge(table *, const char *name, const char *more_val);
-API_EXPORT(void) table_mergen(table *, char *name, char *more_val);
+API_EXPORT(void) table_mergen(table *, const char *name, const char *more_val);
 API_EXPORT(void) table_unset(table *, const char *key);
 API_EXPORT(void) table_add(table *, const char *name, const char *val);
-API_EXPORT(void) table_addn(table *, char *name, char *val);
+API_EXPORT(void) table_addn(table *, const char *name, const char *val);
 API_EXPORT(void) table_do(int (*comp) (void *, const char *, const char *), void *rec,
 			  const table *t,...);
 

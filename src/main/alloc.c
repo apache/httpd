@@ -1003,7 +1003,7 @@ API_EXPORT(void) table_set(table *t, const char *key, const char *val)
     }
 }
 
-API_EXPORT(void) table_setn(table *t, char *key, char *val)
+API_EXPORT(void) table_setn(table *t, const char *key, const char *val)
 {
     register int i, j, k;
     table_entry *elts = (table_entry *) t->a.elts;
@@ -1025,7 +1025,7 @@ API_EXPORT(void) table_setn(table *t, char *key, char *val)
     for (i = 0; i < t->a.nelts; ) {
 	if (!strcasecmp(elts[i].key, key)) {
 	    if (!done) {
-		elts[i].val =  val;
+		elts[i].val = (char *)val;
 		done = 1;
 		++i;
 	    }
@@ -1044,8 +1044,8 @@ API_EXPORT(void) table_setn(table *t, char *key, char *val)
 
     if (!done) {
 	elts = (table_entry *) table_push(t);
-	elts->key = key;
-	elts->val = val;
+	elts->key = (char *)key;
+	elts->val = (char *)val;
     }
 }
 
@@ -1090,7 +1090,7 @@ API_EXPORT(void) table_merge(table *t, const char *key, const char *val)
     elts->val = pstrdup(t->a.pool, val);
 }
 
-API_EXPORT(void) table_mergen(table *t, char *key, char *val)
+API_EXPORT(void) table_mergen(table *t, const char *key, const char *val)
 {
     table_entry *elts = (table_entry *) t->a.elts;
     int i;
@@ -1116,8 +1116,8 @@ API_EXPORT(void) table_mergen(table *t, char *key, char *val)
     }
 
     elts = (table_entry *) table_push(t);
-    elts->key = key;
-    elts->val = val;
+    elts->key = (char *)key;
+    elts->val = (char *)val;
 }
 
 API_EXPORT(void) table_add(table *t, const char *key, const char *val)
@@ -1129,7 +1129,7 @@ API_EXPORT(void) table_add(table *t, const char *key, const char *val)
     elts->val = pstrdup(t->a.pool, val);
 }
 
-API_EXPORT(void) table_addn(table *t, char *key, char *val)
+API_EXPORT(void) table_addn(table *t, const char *key, const char *val)
 {
     table_entry *elts = (table_entry *) t->a.elts;
 
@@ -1147,8 +1147,8 @@ API_EXPORT(void) table_addn(table *t, char *key, char *val)
 #endif
 
     elts = (table_entry *) table_push(t);
-    elts->key = key;
-    elts->val = val;
+    elts->key = (char *)key;
+    elts->val = (char *)val;
 }
 
 API_EXPORT(table *) overlay_tables(pool *p, const table *overlay, const table *base)
