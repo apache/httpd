@@ -68,7 +68,6 @@
 #include "apr_file_io.h"
 #include "apr_lib.h"
 
-#define APR_WANT_STDIO          /* for EOF */
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
 
@@ -729,7 +728,7 @@ static enum header_state get_header_line(char *buffer, int len, apr_file_t *map)
     while (apr_file_getc(&c, map) != APR_EOF) {
         if (c == '#') {
             /* Comment line */
-            while (apr_file_getc(&c, map) != EOF && c != '\n') {
+            while (apr_file_getc(&c, map) != APR_EOF && c != '\n') {
                 continue;
             }
         }
@@ -752,7 +751,7 @@ static enum header_state get_header_line(char *buffer, int len, apr_file_t *map)
 
             /* Continuation */
 
-            while (cp < buf_end - 2 && (apr_file_getc(&c, map)) != EOF && c != '\n') {
+            while (cp < buf_end - 2 && (apr_file_getc(&c, map)) != APR_EOF && c != '\n') {
                 *cp++ = c;
             }
 
