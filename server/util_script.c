@@ -636,7 +636,7 @@ static int getsfunc_BRIGADE(char *buf, int len, void *arg)
 
         rv = apr_bucket_read(e, &bucket_data, &bucket_data_len,
                              APR_BLOCK_READ);
-        if (!APR_STATUS_IS_SUCCESS(rv)) {
+        if (!APR_STATUS_IS_SUCCESS(rv) || (bucket_data_len == 0)) {
             return 0;
         }
         src = bucket_data;
