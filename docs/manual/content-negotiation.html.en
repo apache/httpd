@@ -189,7 +189,7 @@ Negotiation</a></li>
     <p><code>MultiViews</code> is a per-directory option, meaning it
     can be set with an <code class="directive"><a href="./mod/core.html#options">Options</a></code>
     directive within a <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code> or <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code> section in
-    <code>access.conf</code>, or (if <code class="directive"><a href="./mod/core.html#allowoverride">AllowOverride</a></code> is properly set) in
+    <code>httpd.conf</code>, or (if <code class="directive"><a href="./mod/core.html#allowoverride">AllowOverride</a></code> is properly set) in
     <code>.htaccess</code> files. Note that <code>Options All</code>
     does not set <code>MultiViews</code>; you have to ask for it by
     name.</p>

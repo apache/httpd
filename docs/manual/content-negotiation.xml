@@ -171,7 +171,7 @@
     type="section">Directory</directive>, <directive module="core"
     type="section">Location</directive> or <directive module="core"
     type="section">Files</directive> section in
-    <code>access.conf</code>, or (if <directive
+    <code>httpd.conf</code>, or (if <directive
     module="core">AllowOverride</directive> is properly set) in
     <code>.htaccess</code> files. Note that <code>Options All</code>
     does not set <code>MultiViews</code>; you have to ask for it by
