@@ -92,19 +92,21 @@
 	<code>&lt;VirtualHost&gt;</code> directive should be the same as the
 	argument to the <code>NameVirtualHost</code> directive (ie, an IP
 	address, or <code>*</code> for all addresses).  Inside each
-	<code>&lt;VirtualHost&gt;</code> block, you will need at minimum a /
+	<code>&lt;VirtualHost&gt;</code> block, you will need at minimum a
 	<directive module="core">ServerName</directive> directive to
 	designate which host is served and a <directive
 	module="core">DocumentRoot</directive> directive to
 	show where in the filesystem the content for that host lives.</p>
 
-	<p>If you are adding virtual hosts to an existing web server, you
+    <note><title>Main host goes away</title>
+	If you are adding virtual hosts to an existing web server, you
 	must also create a &lt;VirtualHost&gt; block for the existing host.
 	The <code>ServerName</code> and <code>DocumentRoot</code> included in
 	this virtual host should be the same as the global
 	<code>ServerName</code> and <code>DocumentRoot</code>.  List this
 	virtual host first in the configuration file so that it will act as
-	the default host.</p>
+	the default host.
+    </note>
 
 	<p>For example, suppose that you are serving the domain
 	<code>www.domain.tld</code> and you wish to add the virtual host
@@ -115,28 +117,37 @@
     NameVirtualHost *<br />
     <br />
     &lt;VirtualHost *&gt;<br />
+    <indent>
     ServerName www.domain.tld<br />
+    ServerAlias domain.tld *.domain.tld<br />
     DocumentRoot /www/domain<br />
+    </indent>
     &lt;/VirtualHost&gt;<br />
     <br />
     &lt;VirtualHost *&gt;<br />
-    ServerName www.otherdomain.tld<br />
+    <indent>ServerName www.otherdomain.tld<br />
     DocumentRoot /www/otherdomain<br />
+    </indent>
     &lt;/VirtualHost&gt;<br />
 	</example>
 
 	<p>You can alternatively specify an explicit IP address in place of
 	the * in both the <code>NameVirtualHost</code> and
-	<code>&lt;VirtualHost&gt;</code> directives.</p>
+	<code>&lt;VirtualHost&gt;</code> directives. For example, you might
+    want to do this in order to run some name-based virtual hosts on one
+    IP address, and either IP-based, or another set of name-based
+    virtual hosts on another address.</p>
 
 	<p>Many servers want to be accessible by more than one name.  This is
 	possible with the <directive module="core">ServerAlias</directive>
 	directive, placed inside the &lt;VirtualHost&gt; section. For
-	example if you add this to the first &lt;VirtualHost&gt; block
-	above</p>
+	example in the first &lt;VirtualHost&gt; block above, the <directive
+    module="core">ServerAlias</directive> directive indicates that the
+    listed names are other names which people can use to see that same
+    web site:</p>
 
 	<example>
-	ServerAlias domain.tld *.domain.tld
+    ServerAlias domain.tld *.domain.tld
 	</example>
 
 	<p>then requests for all hosts in the <code>domain.tld</code> domain
@@ -188,6 +199,13 @@
     pages from the first virtual host listed for that IP address
     (the <cite>primary</cite> name-based virtual host).</p>
 
+    <note><title>How much older?</title>
+    Please note that when we say older, we really do mean older. You are
+    very unlikely to encounter one of these browsers in use today. All
+    current versions of any browser send the <code>Host</code> header as
+    required for name-based virtual hosts.
+    </note>
+
     <p>There is a possible workaround with the <directive
     module="core">ServerPath</directive>
     directive, albeit a slightly cumbersome one:</p>
@@ -198,9 +216,11 @@
     NameVirtualHost 111.22.33.44<br />
     <br />
     &lt;VirtualHost 111.22.33.44&gt;<br />
+    <indent>
     ServerName www.domain.tld<br />
     ServerPath /domain<br />
     DocumentRoot /web/domain<br />
+    </indent>
     &lt;/VirtualHost&gt;<br />
  	  </example>
 
