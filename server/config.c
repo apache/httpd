@@ -373,9 +373,9 @@ void ap_register_hooks(module *m)
 	if(getenv("SHOW_HOOKS"))
 	    {
 	    printf("Registering hooks for %s\n",m->name);
-	    g_bDebugHooks=1;
+	    ap_debug_module_hooks=1;
 	    }
-	g_szCurrentHookName=m->name;
+	ap_debug_module_name=m->name;
 	m->register_hooks();
 	}
     }
@@ -539,7 +539,7 @@ void ap_setup_prelinked_modules(process_rec *process)
     module **m;
     module **m2;
 
-    g_pHookPool=process->pconf;
+    ap_global_hook_pool=process->pconf;
 
     /*
      *  Initialise total_modules variable and module indices
