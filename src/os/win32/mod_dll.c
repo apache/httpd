@@ -111,7 +111,8 @@ char *load_module (cmd_parms *cmd, void *dummy, char *modname, char *filename)
 
     if (been_there_done_that) return NULL;
     
-    if (!(modhandle = LoadLibrary(szModuleFile)))
+    if (!(modhandle = LoadLibraryEx(szModuleFile, NULL,
+				    LOAD_WITH_ALTERED_SEARCH_PATH)))
 	return pstrcat (cmd->pool, "Cannot load ", szModuleFile, " into server",
 			NULL);
  
