@@ -561,7 +561,8 @@ Changes with Apache 2.0.37
      the pipes and spawning functionality working.
      [Brad Nicholes]
 
-  *) Detect overflow when reading the hex bytes forming a chunk line.
+  *) SECURITY: CAN-2002-0392 (cve.mitre.org) [CERT VU#944335]
+     Detect overflow when reading the hex bytes forming a chunk line.
      [Aaron Bannert]
 
   *) Allow RewriteMap prg:'s to take command-line arguments.  PR 8464.
