@@ -233,6 +233,10 @@ static int log_after(request_rec *r)
         return DECLINED;
 
     rcfg = ap_get_module_config(r->request_config, &log_forensic_module);
+
+    if (!rcfg)
+        return DECLINED;
+
     s = ap_pstrcat(r->pool, "-", rcfg->id, "\n", NULL);
     write(cfg->fd, s, strlen(s));
 

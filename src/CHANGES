@@ -1,5 +1,9 @@
 Changes with Apache 1.3.32
 
+  *) Fix trivial bug in mod_log_forensic that caused the child
+     to seg fault when certain invalid requests were fired at it with
+     forensic logging is enabled. [Will Slater <Will Slater orbisuk.com>]
+
   *) Fix memory leak in the cache handling of mod_rewrite. PR 27862.
      [chunyan sheng <shengperson yahoo.com>, André Malo]
 
