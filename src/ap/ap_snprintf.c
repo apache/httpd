@@ -63,6 +63,9 @@
 #include <ctype.h>
 #include <sys/types.h>
 #include <stdarg.h>
+#include <string.h>
+#include <stdlib.h>
+#include <math.h>
 
 #ifdef HAVE_CVT
 
@@ -76,9 +79,6 @@
  * cvt.c - IEEE floating point formatting routines for FreeBSD
  * from GNU libc-4.6.27
  */
-
-#include <stdlib.h>
-#include <math.h>
 
 /*
  *    ap_ecvt converts to decimal
@@ -252,9 +252,9 @@ typedef enum {
 #define INT_NULL		((int *)0)
 #define WIDE_INT		long
 
-typedef WIDE_INT wide_int;
-typedef unsigned WIDE_INT u_wide_int;
-typedef int bool_int;
+typedef WIDE_INT		wide_int;
+typedef unsigned WIDE_INT	u_wide_int;
+typedef int			bool_int;
 
 #define S_NULL			"(null)"
 #define S_NULL_LEN		6
@@ -273,12 +273,12 @@ typedef int bool_int;
 /*
  * Descriptor for buffer area
  */
-struct __buf_area {
+struct buf_area {
     char *buf_end;
     char *nextb;		/* pointer to next byte to read/write   */
 };
 
-typedef struct __buf_area __buffy;
+typedef struct buf_area buffy;
 
 /*
  * The INS_CHAR macro inserts a character in the buffer and writes
@@ -327,11 +327,11 @@ typedef struct __buf_area __buffy;
  * Macro that does padding. The padding is done by printing
  * the character ch.
  */
-#define PAD( width, len, ch )	do			\
-	{						\
+#define PAD( width, len, ch )	do		\
+	{					\
 	    INS_CHAR( ch, sp, bep, cc ) ;	\
-	    width-- ;					\
-	}						\
+	    width-- ;				\
+	}					\
 	while ( width > len )
 
 /*
@@ -416,8 +416,6 @@ boolean_e add_dp, int precision, bool_int * is_negative, char *buf, int *len)
     register char *s = buf;
     register char *p;
     int decimal_point;
-    extern char *ap_ecvt(), *ap_fcvt();
-    char *strcpy(char *, const char *);
 
     if (format == 'f')
 	p = ap_fcvt(num, precision, &decimal_point, is_negative);
@@ -528,7 +526,7 @@ static char *
 /*
  * Do format conversion placing the output in buffer
  */
-static int __format_converter(register __buffy * odp, const char *fmt,
+static int format_converter(register buffy * odp, const char *fmt,
 			      va_list ap)
 {
     register char *sp;
@@ -565,11 +563,6 @@ static int __format_converter(register __buffy * odp, const char *fmt,
     boolean_e adjust_precision;
     boolean_e adjust_width;
     bool_int is_negative;
-
-    extern char *ap_gcvt();
-    char *strchr(const char *, int);
-    int isascii(int);
-
 
     sp = odp->nextb;
     bep = odp->buf_end;
@@ -847,7 +840,7 @@ static int __format_converter(register __buffy * odp, const char *fmt,
 		 * We print %<char> to help the user identify what
 		 * option is not understood.
 		 * This is also useful in case the user wants to pass
-		 * the output of __format_converter to another function
+		 * the output of format_converter to another function
 		 * that understands some other %<char> (like syslog).
 		 * Note that we can't point s inside fmt because the
 		 * unknown <char> could be preceded by width etc.
@@ -900,7 +893,7 @@ static int __format_converter(register __buffy * odp, const char *fmt,
 static void strx_printv(int *ccp, char *buf, size_t len, const char *format,
 			va_list ap)
 {
-    __buffy od;
+    buffy od;
     int cc;
 
     /*
@@ -914,7 +907,7 @@ static void strx_printv(int *ccp, char *buf, size_t len, const char *format,
     /*
      * Do the conversion
      */
-    cc = __format_converter(&od, format, ap);
+    cc = format_converter(&od, format, ap);
     if (len == 0 || od.nextb <= od.buf_end)
 	*(od.nextb) = '\0';
     if (ccp)
