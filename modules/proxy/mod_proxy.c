@@ -825,6 +825,7 @@ static void * merge_proxy_config(apr_pool_t *p, void *basev, void *overridesv)
     ps->preserve_host = (overrides->preserve_host_set == 0) ? base->preserve_host : overrides->preserve_host;
     ps->timeout= (overrides->timeout_set == 0) ? base->timeout : overrides->timeout;
     ps->badopt = (overrides->badopt_set == 0) ? base->badopt : overrides->badopt;
+    ps->proxy_status = (overrides->proxy_status_set == 0) ? base->proxy_status : overrides->proxy_status;
     ps->pool = p;
     return ps;
 }
