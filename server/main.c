@@ -95,18 +95,18 @@ static void show_compile_settings(void)
 #ifdef HAVE_SHMGET
     printf(" -D HAVE_SHMGET\n");
 #endif
-#ifdef USE_FILE_BASED_SCOREBOARD
-    printf(" -D USE_FILE_BASED_SCOREBOARD\n");
+#ifdef AP_USE_FILE_BASED_SCOREBOARD
+    printf(" -D AP_USE_FILE_BASED_SCOREBOARD\n");
 #endif
-#ifdef USE_MEM_BASED_SCOREBOARD
-    printf(" -D USE_MEM_BASED_SCOREBOARD\n");
+#ifdef AP_USE_MEM_BASED_SCOREBOARD
+    printf(" -D AP_USE_MEM_BASED_SCOREBOARD\n");
 #endif
-#ifdef USE_MMAP_FILES
-    printf(" -D USE_MMAP_FILES\n");
+#ifdef AP_USE_MMAP_FILES
+    printf(" -D AP_USE_MMAP_FILES\n");
 #ifdef MMAP_SEGMENT_SIZE
 	printf(" -D MMAP_SEGMENT_SIZE=%ld\n",(long)MMAP_SEGMENT_SIZE);
 #endif
-#endif /*USE_MMAP_FILES*/
+#endif /*AP_USE_MMAP_FILES*/
 #ifdef NO_WRITEV
     printf(" -D NO_WRITEV\n");
 #endif
@@ -134,8 +134,8 @@ static void show_compile_settings(void)
 #if APR_HAS_OTHER_CHILD
     printf(" -D APR_HAS_OTHER_CHILD\n");
 #endif
-#ifdef HAVE_RELIABLE_PIPED_LOGS
-    printf(" -D HAVE_RELIABLE_PIPED_LOGS\n");
+#ifdef AP_HAVE_RELIABLE_PIPED_LOGS
+    printf(" -D AP_HAVE_RELIABLE_PIPED_LOGS\n");
 #endif
 #ifdef BUFFERED_LOGS
     printf(" -D BUFFERED_LOGS\n");

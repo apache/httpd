@@ -75,7 +75,7 @@ extern "C" {
 
 /* The optimized timeout code only works if we're not using a scoreboard file
  */
-#if defined(USE_MEM_BASED_SCOREBOARD)
+#if defined(AP_USE_MEM_BASED_SCOREBOARD)
 #define OPTIMIZE_TIMEOUTS
 #endif
 

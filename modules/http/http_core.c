@@ -94,7 +94,7 @@
 #define MIN_SIZE_TO_WRITE  9000
 
 /* Allow Apache to use ap_mmap */
-#ifdef USE_MMAP_FILES
+#ifdef AP_USE_MMAP_FILES
 #include "apr_mmap.h"
 
 /* mmap support for static files based on ideas from John Heidemann's
@@ -116,7 +116,7 @@
 #ifndef MMAP_LIMIT
 #define MMAP_LIMIT              (4*1024*1024)
 #endif
-#endif /* USE_MMAP_FILES */
+#endif /* AP_USE_MMAP_FILES */
 
 /* LimitXMLRequestBody handling */
 #define AP_LIMIT_UNSET                  ((long) -1)
@@ -2926,7 +2926,7 @@ static int default_handler(request_rec *r)
     int rangestatus, errstatus;
     apr_file_t *fd = NULL;
     apr_status_t status;
-#ifdef USE_MMAP_FILES
+#ifdef AP_USE_MMAP_FILES
     apr_mmap_t *mm = NULL;
 #endif
     /* XXX if/when somebody writes a content-md5 filter we either need to
@@ -2985,7 +2985,7 @@ static int default_handler(request_rec *r)
         return errstatus;
     }
 
-#ifdef USE_MMAP_FILES
+#ifdef AP_USE_MMAP_FILES
     if ((r->finfo.size >= MMAP_THRESHOLD)
 	&& (r->finfo.size < MMAP_LIMIT)
 	&& (!r->header_only || bld_content_md5)) {
@@ -3038,7 +3038,7 @@ static int default_handler(request_rec *r)
 	    }
 	}
 
-#ifdef USE_MMAP_FILES
+#ifdef AP_USE_MMAP_FILES
     }
     else {
 	unsigned char *addr;
