@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Rewrite of aaa modules to an authn/authz model.
+     [Dirk-Willem van Gulik, Justin Erenkrantz]
+
 
 
 Changes with Apache 2.0.44
@@ -216,9 +219,6 @@ Changes with Apache 2.0.44
 
   *) Add ap_register_provider/ap_lookup_provider API.
      [John K. Sterling <john@sterls.com>, Justin Erenkrantz]
-
-  *) Rewrite of aaa modules to an authn/authz model.
-     [Dirk-Willem van Gulik, Justin Erenkrantz]
 
 Changes with Apache 2.0.43
 
