@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 1.7.2.2 (outdated: 1.7.2.8) -->
+<!-- English Revision: 1.7.2.8 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -107,10 +107,14 @@
       各部分が完全に合うものだけに適用されますので、上の例は
       <code>foo.apache.org</code> にはマッチしますが、
       <code>fooapache.org</code> にはマッチしません。
-      この設定をすると、サーバは
+      この設定をすると、Apache は
       <directive module="core">HostnameLookups</directive>
       の設定に関わらず、クライアントの IP アドレスに対して
-      DNS の逆引きを行ないます。</p></dd>
+      二重の DNS の逆引きを行ないます。まず IP アドレスに対して DNS の
+      逆引きを行なってホスト名を得、そのホスト名に対して正引きを
+      行ない、元の IP アドレスと一致するかを調べます。DNS の正引きと
+      逆引きが無矛盾かつホスト名が一致するときにのみ
+      アクセスが許可されます。</p></dd>
 
       <dt>完全な IP アドレス</dt>
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 1.12.2.5 (outdated: 1.12.2.9) -->
+<!-- English Revision: 1.12.2.9 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -34,13 +34,15 @@
 </summary>
 <seealso><a href="../filter.html">Filters</a></seealso>
 
-<section id="recommended"><title>推奨設定</title>
-    <p>下にせっかちな人向けの設定例を示します。しかしぜひ時間を取って
-    下記の詳細もお読み下さい!</p>
+<section id="recommended"><title>サンプル設定</title>
+    <p>下にせっかちな人向けの簡単な設定例を示します。</p>
 
     <example><title>数タイプのみ圧縮する</title>
       AddOutputFilterByType DEFLATE text/html text/plain text/xml
     </example>
+
+    <p>以下の設定はコンテンツをより圧縮しますが、ずっと複雑な設定になります。
+    設定の隅々までよく理解しないで使わないでください。</p>
 
     <example><title>画像以外全て圧縮する</title>
       &lt;Location /&gt;<br />
@@ -141,6 +143,7 @@
         フィルタの後になります。
         DEFLATE フィルタは内部的なサブリクエストを関知しません。
       </note>
+
     </section>
 
     <section id="input"><title>入力の伸張</title>

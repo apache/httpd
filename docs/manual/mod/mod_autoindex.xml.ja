@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 1.12 (outdated: 1.12.2.9) -->
+<!-- English Revision: 1.12.2.9 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -20,8 +20,8 @@
 -->
 
 <modulesynopsis metafile="mod_autoindex.xml.meta">
-<name>mod_autoindex</name>
 
+<name>mod_autoindex</name>
 <description>Unix の <code>ls</code> コマンドや
     Win32 の <code>dir</code> シェルコマンドに似た
     ディレクトリインデックスを生成する</description>
@@ -54,7 +54,7 @@
     <p>望むならば、自動インデックス生成を完全に除去 (あるいは置換)
     できるように、この二つの機能は分離されています。</p>
 
-    <p>自動インデックス生成は <code>Optioins +Indexes</code>
+    <p>自動インデックス生成は <code>Options +Indexes</code>
     を使うことで有効になります。詳細については、
     <directive module="core">Options</directive>
     ディレクティブをご覧下さい。</p>
@@ -299,10 +299,7 @@
     <var>file</var> は説明するファイルのファイル拡張子、
     ファイル名の一部、ワイルドカード表現、完全なファイル名の
     どれかになります。
-    <var>string</var> は二重引用符 (<code>"</code>) で囲まれます。
-    この文字列は、クライアントが画像を表示できない場合や
-    画像のロードを無効にしている場合や
-    アイコンの取得に失敗したときに表示されます。</p>
+    <var>string</var> は二重引用符 (<code>"</code>) で囲まれます。</p>
 
     <example><title>例</title>
       AddDescription "The planet Mars" /web/pics/mars.gif
@@ -395,7 +392,7 @@
     <p><code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code>
     において、ファイルの隣に表示するアイコンを設定します。
     <var>icon</var> は、(% でエスケープされた) アイコンへの相対 URL
-    か、他の書式 (<var>alttext</var>, <var>url</var>) です。
+    か、他の書式 <code>(<var>alttext</var>, <var>url</var>)</code> です。
     ここで <var>alttext</var>
     は、非グラフィカルブラウザ向けにアイコンに付けられたテキストタグです。
     </p>
@@ -518,7 +515,7 @@ MIME タイプによって選択</description>
       <p><directive module="core">Options</directive> <code>MultiViews</code> が
       有効になっている場合は、
       <a href="../content-negotiation.html">コンテントネゴシエーション</a>
-      が行われます。
+      が行なわれます。
       もし <var>filename</var> が (CGI スクリプトでない) 静的な 
       <code>text/html</code> ドキュメントで解決され、
       <directive module="core">options</directive>
@@ -529,7 +526,7 @@ MIME タイプによって選択</description>
     </note>
 
     <p>もし <directive>HeaderName</directive> で指定されたファイルが
-    HTML ドキュメントの開始部分 (&lt;HTML&gt;, &lt;HEAD&gt;, 
+    HTML ドキュメントの開始部分 (&lt;html&gt;, &lt;head&gt;, 
     等) を含んでいたら、
     <a href="#indexoptions.suppresshtmlpreamble"><code>IndexOptions
     +SuppressHTMLPreamble</code></a>
@@ -551,14 +548,14 @@ MIME タイプによって選択</description>
 <usage>
     <p><directive>IndexIgnore</directive> ディレクティブは、
     ディレクトリの一覧を行う際に無視すべきファイルリストに追加します。
-    <var>file</var> は、無視するファイル名のファイル拡張子か、ファイル名の一部か、
-    ワイルドカード表現か完全なファイル名です。
+    <var>file</var> は、
+    シェル形式のワイルドカード表現か完全なファイル名です。
     IndexIgnore が複数ある場合は、無視するリストに追加が行われ、
     置換は行われません。デフォルトではリストには <code>.</code>
     (カレントディレクトリ) が含まれています。</p>
 
     <example>
-      IndexIgnore README .htaccess *~
+      IndexIgnore README .htaccess *.bak *~
     </example>
 </usage>
 </directivesynopsis>
@@ -615,7 +612,7 @@ MIME タイプによって選択</description>
       その後に続きます。
       一覧は基本的には、ファイルとディレクトリの二つの部分に分けられて、
       それぞれは別々にソートされ、その後サブディレクトリを先にして
-      表示が行われます。例えばソート順が名前の降順になっていて、
+      表示が行なわれます。例えばソート順が名前の降順になっていて、
       <code>FoldersFirst</code> が有効になっている場合は、
       サブディレクトリ <code>Zed</code> はサブディレクトリ
       <code>Beta</code> よりも前にリストされ、通常のファイル
@@ -659,7 +656,7 @@ MIME タイプによって選択</description>
                id="indexoptions.iconwidth">IconWidth[=<var
 	       >pixels</var>]</a></dt>
 
-      <dd>このオプションが、IconHeightとともに使われている場合は、
+      <dd>このオプションが、<code>IconHeight</code> とともに使われている場合は、
       サーバはファイルアイコンのための <code>img</code>
       タグに <code>height</code> と <code>width</code>
       属性を取り込むようになります。
@@ -668,6 +665,14 @@ MIME タイプによって選択</description>
       このオプションに何も値が与えられなければ、Apache
       ソフトウェアで提供されているアイコンの標準の高さが
       デフォルトなります。</dd>
+
+      <dt><a name="indexoptions.ignorecase"
+               id="indexoptions.ignorecase">IgnoreCase</a></dt>
+
+      <dd>このオプションが有効であると、ファイル名は大文字小文字を区別せずにソートされます。
+      例えばファイル名が昇順でソートされ、IgnoreCase が有効であれば、
+      Zeta は alfa の後にリストされます
+      (注意: GAMMA は常に gamma の前になります)。</dd>
 
       <dt><a name="indexoptions.ignoreclient"
                id="indexoptions.ignoreclient">IgnoreClient</a></dt>
@@ -840,6 +845,13 @@ MIME タイプによって選択</description>
         foo-1.04
       </example>
       </dd>
+
+      <dt><a name="indexoptions.xhtml"
+               id="indexoptions.xhtml">XHTML</a>
+      (<em>Apache 2.0.49 以降</em>)</dt>
+
+      <dd><code>XHTML</code> キーワードを指定すると、<module>mod_autoindex</module>
+      は HTML 3.2 の代わりに XHTML 1.0 のコードを出力するようになります。</dd>
     </dl>
 
    <!--

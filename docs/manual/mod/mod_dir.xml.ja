@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 1.4.2.4 (outdated: 1.4.2.7) -->
+<!-- English Revision: 1.4.2.7 (outdated: 1.4.2.6) -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -99,6 +99,64 @@
     <p>とした場合、<code>index.html</code> と <code>index.txt</code>
     のどちらもディレクトリ内に存在しない場合、CGI スクリプト
     <code>/cgi-bin/index.pl</code> が実行されます。</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>DirectorySlash</name>
+<description>パス末尾のスラッシュでリダイレクトするかどうかのオンオフをトグルさせる</description>
+<syntax>DirectorySlash On|Off</syntax>
+<default>DirectorySlash On</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>Indexes</override>
+<compatibility>2.0.51 以降</compatibility>
+
+<usage>
+    <p>要求のあった URL がディレクトリを指すかどうかを、
+    <module>mod_dir</module> が調整するべきかどうかを
+    <directive>DirectorySlash</directive>
+    ディレクティブで設定します。</p>
+
+    <p>典型的には、ユーザが末尾のスラッシュ無しでリソースへのリクエストを発行し、
+    そして、そのリソースがディレクトリを指していた場合、<module>mod_dir</module>
+    は、末尾にスラッシュを<em>付加</em>した上で同じリソースにリダイレクトさせます。
+    この挙動には幾つか理由があります:</p>
+
+    <ul>
+    <li>ユーザは、最終的にはリソースの別名 URL をリクエストすることになる。</li>
+    <li><module>mod_autoindex</module> が期待通りに動く。<module>mod_autoindex</module> 
+    の生成するリンクはパスを出力しませんので、スラッシュがない場合は間違ったパスを
+    指してしまうことになります。</li>
+    <li><directive module="mod_dir">DirectoryIndex</directive> は、
+    末尾にスラッシュがついているリクエストについて<em>のみ</em>評価される。</li>
+    <li>HTML ページの相対 URL 参照が正しく動作する。</li>
+    </ul>
+
+    <p>とはいえ、もしこういった効果を望まない、かつ、
+    上記のような理由が当てはまらない場合は、リダイレクトを次のようにしてオフにできます:</p>
+
+    <example>
+        # see security warning below!<br />
+        &lt;Location /some/path&gt;<br />
+        <indent>
+            DirectorySlash Off<br />
+            SetHandler some-handler<br />
+        </indent>
+        &lt;/Location&gt;
+    </example>
+
+    <note type="warning"><title>セキュリティ警告</title>
+    <p>末尾のスラッシュでのリダイレクトをオフにすると、結果的に情報漏洩を
+    招くことになるかもしれません。
+    <module>mod_autoindex</module> が有効 (<code>Options +Indexes</code>) で、
+    <directive module="mod_dir">DirectoryIndex</directive> が有効なリソース (例えば
+    <code>index.html</code>) を指していて、また、要求のあった URL に特別な
+    ハンドラが設定されていない場合を考えてみてください。
+    この場合末尾にスラッシュのついているリクエストに対しては <code>index.html</code>
+    ファイルが返されます。<strong>しかしスラッシュのないリクエストに対しては、
+    ディレクトリの内容一覧を返してしまいます。</strong></p>
+    </note>
 </usage>
 </directivesynopsis>
 

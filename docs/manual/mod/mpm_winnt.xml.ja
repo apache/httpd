@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 1.4 (outdated: 1.4.2.8) -->
+<!-- English Revision: 1.4.2.8 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -20,6 +20,7 @@
 -->
 
 <modulesynopsis metafile="mpm_winnt.xml.meta">
+
 <name>mpm_winnt</name>
 <description>Windows NT
 向けに最適化されたマルチプロセッシングモジュール</description>
@@ -45,11 +46,39 @@
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>MaxRequestsPerChild</name>
 </directivesynopsis>
+<directivesynopsis location="mpm_common"><name>MaxMemFree</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ScoreBoardFile</name>
+</directivesynopsis>
 <directivesynopsis location="mpm_common"><name>SendBufferSize</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>ThreadLimit</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>ThreadsPerChild</name>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>Win32DisableAcceptEx</name>
+<description>ネットワーク接続の受け付けに accept() をAcceptEx の代わりに使う</description>
+<syntax>Win32DisableAcceptEx</syntax>
+<default>AcceptEx() はデフォルトで有効になっています。AcceptEx() を無効にする
+ためにこのディレクティブを使います。</default>
+<contextlist><context>server config</context></contextlist>
+<compatibility>2.0.49 バージョン以降で使用可能</compatibility>
+
+<usage>
+    <p>AcceptEx() は Microsoft WinSock v2 API で、場合によっては
+    BSD 形式の <code>accept()</code> API よりもよい性能を発揮します。
+    よく使われている Windows 製品の中で、特にウィルススキャナや VPN パッケージ
+    の中には、バグが原因で <code>AcceptEx()</code> の適切な動作を妨げるものがあります。
+    以下のようなエラーに遭遇した場合は、このディレクティブを使用して
+    <code>AcceptEx()</code> を使用しないようにしてください。</p>
+
+    <example>
+        [error] (730038)An operation was attempted on something that is
+        not a socket.: winnt_accept: AcceptEx failed. Attempting to recover.
+    </example>
+</usage>
 </directivesynopsis>
 
 </modulesynopsis>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 1.9.2.4 (outdated: 1.9.2.10) -->
+<!-- English Revision: 1.9.2.10 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -47,10 +47,46 @@
     クライアントに違った
     URL に新しいリクエストを送るように指示します。これは、
     リソースが新しい場所に移動したときによく使用されます。</p>
+
+    <p><module>mod_alias</module> は簡単な URL 操作向けに設計されています。
+    より複雑な操作、クエリーストリングの操作には、<module>mod_rewrite</module>
+    で提供されるツールを使用してください。</p>
+
 </summary>
 
 <seealso><module>mod_rewrite</module></seealso> <seealso><a
 href="../urlmapping.html">URL からファイルシステム上の位置へのマッピング</a></seealso>
+
+<section id="order"><title>処理の順番</title>
+
+<p>様々なコンテキスト中での Alias や Redirect は他のディレクティブと
+同じように標準の <a href="../sections.html#mergin">マージ規則</a> に
+従って処理されます。ただし、(例えば <directive type="section" module="core"
+>VirtualHost</directive> セクションの中のように) 複数の Alias や Redirect が
+同じコンテキスト中に現れた場合は決まった順番で処理されます。</p>
+
+<p>まず、Alias の前にすべての Redirect が処理されます。ですから、<directive
+module="mod_alias">Redirect</directive> か <directive
+module="mod_alias">RedirectMatch</directive> にマッチするリクエストには
+Alias は決して適用されません。次に、Alias と Redirect が設定ファイル中の
+順番に適用され、最初にマッチしたものが優先されます。</p>
+
+<p>ですから、二つ以上のディレクティブが同じパスに適用されるときは、
+すべてのディレクティブの効果を得るためにはより詳しいパスを先に書く
+必要があります。例えば、次の設定は期待通りの動作をします:</p>
+
+<example>
+Alias /foo/bar /baz<br />
+Alias /foo /gaq
+</example>
+
+<p>しかし、上記の二つのディレクティブの順番が逆になると、
+<code>/foo</code> <directive module="mod_alias">Alias</directive> が
+常に <code>/foo/bar</code> <directive
+module="mod_alias">Alias</directive> より先にマッチしますので、後者は
+決して適用されることはありません。</p>
+
+</section>
 
 <directivesynopsis>
 <name>Alias</name>
@@ -172,7 +208,7 @@ Redirect 系のディレクティブは Alias
 また、.htaccess ファイルや <directive
 type="section" module="core">Directory</directive>
 セクションの中で使われていたとしても、<var>URL-path</var>
-は相対パスではなく、絶対パスでなければなりません。</p></note>
+は相対パスではなく、完全な URL でなければなりません。</p></note>
 
     <p>もし <var>status</var> 引数が与えられていなければ、リダイレクトは
     "temporary" (HTTP ステータス 302) になります。これはクライアントに
