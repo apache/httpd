@@ -210,6 +210,16 @@
     <P>
     </P>
    </DD>
+   <DT><STRONG>MPM</STRONG>
+   </DT>
+   <DD>A directive labeled as having &quot;MPM&quot; status is
+    provided by a <a href="../mpm.html">Multi-Processing Module</a>.
+    This type of directive will be available if and only if you are
+    using one of the MPMs lised on the <a href="#Module">Module</a>
+    line of the directive definition.
+    <P>
+    </P>
+   </DD>
    <DT><STRONG>Base</STRONG>
    </DT>
    <DD>A directive labeled as having &quot;Base&quot; status is
