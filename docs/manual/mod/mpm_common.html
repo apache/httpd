@@ -145,11 +145,10 @@ Note: if you start the server as a non-root user, it will fail to change
 to the specified group, and will instead continue to run as the group of the
 original user. <P>
 
-Special note: Use of this directive in &lt;VirtualHost&gt; requires a
-properly configured <A HREF="../suexec.html">suEXEC wrapper</A>.
-When used inside a &lt;VirtualHost&gt; in this manner, only the group
-that CGIs are run as is affected.  Non-CGI requests are still processed
-as the group specified in the main Group directive.<P>
+Special note: Use of this directive in &lt;VirtualHost&lt; is no longer
+supported.  To implement the <A HREF="../suexec.html">suEXEC wrapper</A>
+with Apache 2.0, use the <A HREF=mod_suexec.html#suexecusergroup>
+SuexecUserGroup</A> directive.
 
 SECURITY: See <A HREF="#user">User</A> for a discussion of the security
 considerations.<P><HR>
@@ -759,11 +758,9 @@ to the lesser privileged user, and will instead continue to run as
 that original user. If you do start the server as root, then it is normal
 for the parent process to remain running as root.<P>
 
-Special note: Use of this directive in &lt;VirtualHost&gt; requires a
-properly configured <A HREF="../suexec.html">suEXEC wrapper</A>.
-When used inside a &lt;VirtualHost&gt; in this manner, only the user
-that CGIs are run as is affected.  Non-CGI requests are still processed
-with the user specified in the main User directive.<P>
+Special note: Use of this directive in &lt;VirtualHost&gt; is no longer
+supported.  To configure your server for <A HREF="mod_suexec.html">
+suexec</A> use <A HREF="mod_suexec.html#suexecusergroup">SuexecUserGroup</A>.
 
 SECURITY: Don't set User (or <A HREF="#group">Group</A>) to
 <CODE>root</CODE> unless you know exactly what you are doing, and what the
