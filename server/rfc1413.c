@@ -131,7 +131,7 @@ static int get_rfc1413(ap_socket_t *sock, const char *local_ip,
 		    "bind: rfc1413: Error binding to local port");
 	return -1;
     }
-    ap_getport(sock, &sav_our_port);
+    ap_getport(&sav_our_port, sock);
 
 /*
  * errors from connect usually imply the remote machine doesn't support
@@ -142,7 +142,7 @@ static int get_rfc1413(ap_socket_t *sock, const char *local_ip,
                     
     if (ap_connect(sock, NULL) != APR_SUCCESS)
         return -1;
-    ap_getport(sock, &sav_rmt_port);
+    ap_getport(&sav_rmt_port, sock);
 
 /* send the data */
     buflen = ap_snprintf(buffer, sizeof(buffer), "%u,%u\r\n", sav_rmt_port,

@@ -2047,7 +2047,7 @@ static void child_main(int child_num_arg)
 		}
 		first_lr=lr;
 		do {
-                    ap_get_os_sock(lr->sd, &sockdes);
+                    ap_get_os_sock(&sockdes, lr->sd);
 		    if (FD_ISSET(sockdes, &main_fds))
 			goto got_listener;
 		    lr = lr->next;
@@ -2206,7 +2206,7 @@ static void child_main(int child_num_arg)
 	 * socket options, file descriptors, and read/write buffers.
 	 */
 
-        ap_get_os_sock(csd, &sockdes);
+        ap_get_os_sock(&sockdes, csd);
 
 	clen = sizeof(sa_server);
 	if (getsockname(sockdes, &sa_server, &clen) < 0) {
@@ -2544,7 +2544,7 @@ static int setup_listeners(server_rec *s)
     listenmaxfd = -1;
     FD_ZERO(&listenfds);
     for (lr = ap_listeners; lr; lr = lr->next) {
-        ap_get_os_sock(lr->sd, &sockdes);
+        ap_get_os_sock(&sockdes, lr->sd);
 	FD_SET(sockdes, &listenfds);
 	if (sockdes > listenmaxfd) {
 	    listenmaxfd = sockdes;

@@ -160,7 +160,7 @@ static void alloc_listener(process_rec *process, char *addr, unsigned int port)
 
     /* see if we've got an old listener for this address:port */
     for (walk = &old_listeners; *walk; walk = &(*walk)->next) {
-        ap_getport((*walk)->sd, &oldport);
+        ap_getport(&oldport, (*walk)->sd);
 	ap_getipaddr(oldaddr,sizeof oldaddr,(*walk)->sd);
 	if (!strcmp(oldaddr, addr) && port == oldport) {
 	    /* re-use existing record */

@@ -353,7 +353,7 @@ static ap_inline ap_listen_rec *find_ready_listener(fd_set * main_fds)
     SOCKET nsd;
 
     for (lr = head_listener; lr ; lr = lr->next) {
-        ap_get_os_sock(lr->sd, &nsd);
+        ap_get_os_sock(&nsd, lr->sd);
 	if (FD_ISSET(nsd, main_fds)) {
 	    head_listener = lr->next;
             if (head_listener == NULL)
@@ -379,7 +379,7 @@ static int setup_listeners(ap_context_t *pconf, server_rec *s)
     for (lr = ap_listeners; lr; lr = lr->next) {
         num_listeners++;
         if (lr->sd != NULL) {
-            ap_get_os_sock(lr->sd, &nsd);
+            ap_get_os_sock(&nsd, lr->sd);
             FD_SET(nsd, &listenfds);
             if (listenmaxfd == INVALID_SOCKET || nsd > listenmaxfd) {
                 listenmaxfd = nsd;
@@ -749,7 +749,7 @@ static int create_and_queue_completion_context(ap_context_t *p, ap_listen_rec *l
     context->conn_io =  ap_bcreate(context->ptrans, B_RDWR);
     context->recv_buf = context->conn_io->inbase;
     context->recv_buf_size = context->conn_io->bufsiz - 2*PADDED_ADDR_SIZE;
-    ap_get_os_sock(context->lr->sd, &nsd);
+    ap_get_os_sock(&nsd, context->lr->sd);
 
     AcceptEx(nsd,//context->lr->fd, 
              context->accept_socket,
@@ -779,7 +779,7 @@ static ap_inline void reset_completion_context(PCOMP_CONTEXT context)
     context->conn_io =  ap_bcreate(context->ptrans, B_RDWR);
     context->recv_buf = context->conn_io->inbase;
     context->recv_buf_size = context->conn_io->bufsiz - 2*PADDED_ADDR_SIZE;
-    ap_get_os_sock(context->lr->sd, &nsd);
+    ap_get_os_sock(&nsd, context->lr->sd);
 
     rc = AcceptEx(nsd, //context->lr->fd, 
                   context->accept_socket,
@@ -1082,7 +1082,7 @@ static void worker_main()
 
         /* Associate each listener with the completion port */
         for (lr = ap_listeners; lr != NULL; lr = lr->next) {
-            ap_get_os_sock(lr->sd, &nsd);
+            ap_get_os_sock(&nsd, lr->sd);
             CreateIoCompletionPort((HANDLE) nsd, //(HANDLE)lr->fd,
                                    AcceptExCompPort,
                                    0,

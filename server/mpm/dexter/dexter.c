@@ -952,7 +952,7 @@ static void *worker_thread(void *arg)
             pthread_mutex_unlock(&idle_thread_count_mutex);
 	    break;
 	}
-        ap_get_os_sock(csd, &native_socket);
+        ap_get_os_sock(&native_socket, csd);
         process_socket(ptrans, &sa_client, native_socket, conn_id);
         ap_clear_pool(ptrans);
         requests_this_child--;
@@ -1011,7 +1011,7 @@ static void child_main(int child_num_arg)
     listenfds[0].events = POLLIN;
     listenfds[0].revents = 0;
     for (lr = ap_listeners, i = 1; i <= num_listenfds; lr = lr->next, ++i) {
-        ap_get_os_sock(lr->sd, &listenfds[i].fd);
+        ap_get_os_sock(&listenfds[i].fd, lr->sd);
         listenfds[i].events = POLLIN; /* should we add POLLPRI ?*/
         listenfds[i].revents = 0;
     }
