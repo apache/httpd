@@ -30,6 +30,9 @@ first icon listed that matches the file is displayed.
 <h2>Directives</h2>
 
 <menu>
+<li><A HREF="#addalt">AddAlt</A>
+<li><A HREF="#addaltbyencoding">AddAltByEncoding</A>
+<li><A HREF="#addaltbytype">AddAltByType</A>
 <li><A HREF="#adddescription">AddDescription</A>
 <li><A HREF="#addicon">AddIcon</A>
 <li><A HREF="#addiconbyencoding">AddIconByEncoding</A>
@@ -44,6 +47,55 @@ first icon listed that matches the file is displayed.
 </menu>
 <hr>
 
+<A name="addalt"><h2>AddAlt</h2></A>
+<!--%plaintext &lt;?INDEX {\tt AddAlt} directive&gt; -->
+<strong>Syntax:</strong> AddAlt <em>string file file...</em><br>
+<Strong>Context:</strong> server config, virtual host, directory, .htaccess<br>
+<Strong>Override:</strong> Indexes<br>
+<strong>Status:</strong> Base<br>
+<strong>Module:</strong> mod_dir<p>
+
+This sets the alternate text to display for a file, instead of an icon, for
+<A HREF="#fancyindexing">FancyIndexing</A>. <em>File</em> is a file
+extension, partial filename, wild-card expression or full filename for files
+to describe. <em>String</em> is enclosed in double quotes
+(<code>&quot;</code>).  This alternate text is displayed if the client is
+image-incapable or has image loading disabled.
+
+<HR>
+<A name="addaltbyencoding"><h2>AddAltByEncoding</h2></A>
+<!--%plaintext &lt;?INDEX {\tt AddAltByEncoding} directive&gt; -->
+<strong>Syntax:</strong> AddAltByEncoding <em>string MIME-encoding
+    MIME-encoding...</em><br>
+<Strong>Context:</strong> server config, virtual host, directory, .htaccess<br>
+<Strong>Override:</strong> Indexes<br>
+<strong>Status:</strong> Base<br>
+<strong>Module:</strong> mod_dir<p>
+
+This sets the alternate text to display for a file, instead of an icon, for
+<A HREF="#fancyindexing">FancyIndexing</A>. <em>MIME-encoding</em> is a
+valid content-encoding, such as <SAMP>x-compress</SAMP>.
+<em>String</em> is enclosed in double quotes
+(<code>&quot;</code>).  This alternate text is displayed if the client is
+image-incapable or has image loading disabled.
+
+<HR>
+<A name="addaltbytype"><h2>AddAltByType</h2></A>
+<!--%plaintext &lt;?INDEX {\tt AddAltByType} directive&gt; -->
+<strong>Syntax:</strong> AddAltByType <em>string MIME-type MIME-type...</em><br>
+<Strong>Context:</strong> server config, virtual host, directory, .htaccess<br>
+<Strong>Override:</strong> Indexes<br>
+<strong>Status:</strong> Base<br>
+<strong>Module:</strong> mod_dir<p>
+
+This sets the alternate text to display for a file, instead of an icon, for
+<A HREF="#fancyindexing">FancyIndexing</A>. <em>MIME-type</em> is a
+valid content-type, such as <SAMP>text/html</SAMP>.
+<em>String</em> is enclosed in double quotes
+(<code>&quot;</code>).  This alternate text is displayed if the client is
+image-incapable or has image loading disabled.
+
+<HR>
 
 <A name="adddescription"><h2>AddDescription</h2></A>
 <!--%plaintext &lt;?INDEX {\tt AddDescription} directive&gt; -->

@@ -36,10 +36,11 @@ allows users to share URLs.
 <h2><a name="Directives">Directives</a></h2>
 <ul>
 <li><A HREF="#anonymous">Anonymous</A>
-<li><A HREF="#LogEmail">Anonymous_LogEmail</A>
-<li><A HREF="#VerifyEmail">Anonymous_VerifyEmail</A>
-<li><A HREF="#NoUser">Anonymous_NoUser</A>
 <li><A HREF="#Authoritative">Anonymous_Authoritative</A>
+<li><A HREF="#LogEmail">Anonymous_LogEmail</A>
+<li><A HREF="#MustGiveEmail">Anonymous_MustGiveEmail</A>
+<li><A HREF="#NoUserID">Anonymous_NoUserID</A>
+<li><A HREF="#VerifyEmail">Anonymous_VerifyEmail</A>
 </ul>
 
 <hr>
@@ -70,47 +71,7 @@ allows users to share URLs.
 	This would allow the user to enter without password verification
 	by using the userId's 'anonymous', 'AnonyMous','Not Registered' and
 	'I Don't Know'.
-<hr>
-
-<A name="LogEmail"><h2>Anonymous_LogEmail</h2></A>
-<strong>Syntax:</strong> Anonymous_LogEmail <em>on | off</em><br>
-<strong>Default:</strong> <code>off</code><br>
-<strong>Context:</strong> directory, .htaccess<br>
-<strong>Override:</strong> AuthConfig<br>
-<strong>Status:</strong> Extension<br>
-<strong>Module:</strong> mod_auth_anon<p>
-
-	When set 'on', the default, the 'password' entered (which hopefully
-	contains a sensible email address) is logged in the httpd-log file.
-<hr>
-
-<A name="VerifyEmail"><h2>Anonymous_VerifyEmail</h2></A>
-<strong>Syntax:</strong> Anonymous <em>on | off</em><br>
-<strong>Default:</strong> <code>Anonymous_VerifyEmail off</code><br>
-<strong>Context:</strong> directory, .htaccess<br>
-<strong>Override:</strong> AuthConfig<br>
-<strong>Status:</strong> Extension<br>
-<strong>Module:</strong> mod_auth_anon<p>
-
-	When set 'on' the 'password' entered is
-	checked for at least one '@' and a '.' to encourage users to enter
-	valid email addresses (see the above <code>Auth_LogEmail</code>).
-
 <HR>
-
-<A name="NoUser"><h2>Anonymous_NoUser</h2></A>
-<strong>Syntax:</strong> Anonymous_NoUser <em>on | off</em><br>
-<strong>Default:</strong> <code>Anonymous_NoUser off</code><br>
-<strong>Context:</strong> directory, .htaccess<br>
-<strong>Override:</strong> AuthConfig<br>
-<strong>Status:</strong> Extension<br>
-<strong>Module:</strong> mod_auth_anon<p>
-
-	When set 'on', users can leave
-	the userID (and perhaps the password field) empty. This
-	can be very convenient for MS-Explorer users who can
-	just hit return or click directly on the OK button; which
-	seems a natural reaction.
 
 <A name="Authoritative"><h2>Anonymous_Authoritative</h2></A>
 <strong>Syntax:</strong> Anonymous_Authoritative <em>on | off</em><br>
@@ -129,6 +90,60 @@ allows users to share URLs.
 	it on. And remember that it is the linking order of the modules
 	(in the Configuration / Make file) which details the order
 	in which the Authorization modules are queried.
+<hr>
+
+<A name="LogEmail"><h2>Anonymous_LogEmail</h2></A>
+<strong>Syntax:</strong> Anonymous_LogEmail <em>on | off</em><br>
+<strong>Default:</strong> <code>off</code><br>
+<strong>Context:</strong> directory, .htaccess<br>
+<strong>Override:</strong> AuthConfig<br>
+<strong>Status:</strong> Extension<br>
+<strong>Module:</strong> mod_auth_anon<p>
+
+	When set 'on', the default, the 'password' entered (which hopefully
+	contains a sensible email address) is logged in the httpd-log file.
+<hr>
+
+<A name="MustGiveEmail"><h2>Anonymous_MustGiveEmail</h2></a>
+<!--%plaintext &lt;?INDEX {\tt Anonymous_MustGiveEmail} directive&gt; -->
+<strong>Syntax:</strong> Anonymous_MustGiveEmail <em>on</em> | <em>off</em><br>
+<strong>Default:</strong> off<br>
+<strong>Context:</strong> directory, .htaccess<br>
+<strong>Override:</strong> AuthConfig<br>
+<strong>Status:</strong> Extension<br>
+<strong>Module:</strong> mod_auth_anon<p>
+
+	Specifies whether the user must specify an email
+	address as the password.  This prohibits blank passwords.
+<HR>
+
+<A name="NoUserID"><h2>Anonymous_NoUserID</h2></A>
+<strong>Syntax:</strong> Anonymous_NoUserID <em>on | off</em><br>
+<strong>Default:</strong> <code>Anonymous_NoUserID off</code><br>
+<strong>Context:</strong> directory, .htaccess<br>
+<strong>Override:</strong> AuthConfig<br>
+<strong>Status:</strong> Extension<br>
+<strong>Module:</strong> mod_auth_anon<p>
+
+	When set 'on', users can leave
+	the userID (and perhaps the password field) empty. This
+	can be very convenient for MS-Explorer users who can
+	just hit return or click directly on the OK button; which
+	seems a natural reaction.
+
+<hr>
+
+<A name="VerifyEmail"><h2>Anonymous_VerifyEmail</h2></A>
+<strong>Syntax:</strong> Anonymous <em>on | off</em><br>
+<strong>Default:</strong> <code>Anonymous_VerifyEmail off</code><br>
+<strong>Context:</strong> directory, .htaccess<br>
+<strong>Override:</strong> AuthConfig<br>
+<strong>Status:</strong> Extension<br>
+<strong>Module:</strong> mod_auth_anon<p>
+
+	When set 'on' the 'password' entered is
+	checked for at least one '@' and a '.' to encourage users to enter
+	valid email addresses (see the above <code>Auth_LogEmail</code>).
 
 <hr><a name="Example"><h2>Example</h2></a>
 
