@@ -73,6 +73,8 @@ always available.
 <LI><A HREF="#serversignature">ServerSignature</A>
 <LI><A HREF="#servertokens">ServerTokens</A>
 <LI><A HREF="#servertype">ServerType</A>
+<LI><A HREF="#setinputfilter">SetInputFilter</A>
+<LI><A HREF="#setoutputfilter">SetOutputFilter</A>
 <LI><A HREF="#timeout">TimeOut</A>
 <LI><A HREF="#usecanonicalname">UseCanonicalName</A>
 <LI><A HREF="#virtualhost">&lt;VirtualHost&gt;</A>
@@ -2479,6 +2481,73 @@ subsequent connections. If you intend running Apache to serve a busy site,
 standalone will probably be your only option.<P>
 <HR>
 
+<H2><A NAME="setinputfilter">SetInputFilter directive</A></H2>
+<P><A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> SetInputFilter <EM>filter</EM> 
+[<EM>filter</EM>] ...<BR>
+<A
+ HREF="directive-dict.html#Default"
+ REL="Help"
+><STRONG>Default:</STRONG></A> none<BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> directory<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> core</P>
+
+<p>The <code>SetInputFilter</code> directive sets the filters
+which will process client requests when they are received by the
+server.</p>
+
+<p>The order of the arguments determines the order in which the
+filters will process the content.</p>
+
+<p>See also the <a href="../filter.html">Filters</a> documentation.</p>
+
+
+<P><HR>
+<H2><A NAME="setoutputfilter">SetOutputFilter directive</A></H2>
+<P><A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> SetOutputFilter <EM>filter</EM>
+[<EM>filter</EM>] ...<BR>
+<A
+ HREF="directive-dict.html#Default"
+ REL="Help"
+><STRONG>Default:</STRONG></A> none<BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> directory<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> core</P>
+
+<P>The <code>SetOutputFilter</code> directive sets the filters which
+will process responses from the server before they are sent to the
+client.  For example, the following configuration will process
+all files in the <code>/www/data/</code> directory for 
+server-side includes.</P>
+
+<BLOCKQUOTE><CODE>
+&lt;Directory /www/data/&gt;<BR>
+&nbsp;&nbsp;SetOutputFilter INCLUDES<BR>
+&lt;/Directory&gt;
+</CODE></BLOCKQUOTE>
+
+<p>The order of the arguments determines the order in which the
+filters will process the content.</p>
+
+<p>See also the <a href="../filter.html">Filters</a> documentation.</p>
+
+<P><HR>
 <H2><A NAME="timeout">TimeOut directive</A></H2>
 <!--%plaintext &lt;?INDEX {\tt TimeOut} directive&gt; -->
 <A

@@ -133,6 +133,8 @@ Modules: <A HREF="mod/index-bytype.html">By Type</A> or
 </td></tr><tr><td>
 <A HREF="handler.html">Handlers</A>
 </td></tr><tr><td>
+<A HREF="filter.html">Filters</A>
+</td></tr><tr><td>
 <A HREF="content-negotiation.html">Content negotiation</A>
 </td></tr><tr><td>
 <A HREF="env.html">Environment Variables</A>
