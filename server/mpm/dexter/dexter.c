@@ -936,6 +936,8 @@ static void *worker_thread(void *arg)
                 }
             }
             pthread_mutex_unlock(&idle_thread_count_mutex);
+            process_socket(ptrans, csd, conn_id);
+            requests_this_child--;
 	} else {
             SAFE_ACCEPT(accept_mutex_off(0));
             SAFE_ACCEPT(intra_mutex_off(0));
@@ -944,9 +946,7 @@ static void *worker_thread(void *arg)
             pthread_mutex_unlock(&idle_thread_count_mutex);
 	    break;
 	}
-        process_socket(ptrans, csd, conn_id);
         ap_clear_pool(ptrans);
-        requests_this_child--;
     }
 
     ap_destroy_pool(tpool);
