@@ -155,6 +155,31 @@ AP_DECLARE(void) ap_add_input_filter(const char *name, void *ctx,
     }
 }
 
+AP_DECLARE(void) ap_remove_output_filter(ap_filter_t *f)
+{
+    ap_filter_t *curr;
+
+    curr = f->r ? f->r->output_filters : f->c->output_filters;
+
+    if (curr == f) {
+        if (f->r) {
+            f->r->output_filters = f->r->output_filters->next;
+        }
+        else {
+            f->c->output_filters = f->c->output_filters->next;
+        }
+        return;
+    }
+
+    while (curr->next != f) {
+        if (curr == NULL) {
+            return;
+        }
+        curr = curr->next;
+    }
+    curr->next = f->next ? f->next : NULL;
+}
+
 AP_DECLARE(void) ap_add_output_filter(const char *name, void *ctx, 
                                       request_rec *r, conn_rec *c)
 {
