@@ -90,7 +90,7 @@ DEFS = -I. -I$(srcdir) -I$(top_srcdir)/modules/mpm/$(MPM_NAME)
 
 .c.slo:
 	$(APACHE_SH_COMPILE)
-	
+
 .y.c:
 	$(YACC) $(YFLAGS) $< && mv y.tab.c $*.c
 	if test -f y.tab.h; then \
