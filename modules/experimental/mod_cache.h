@@ -240,7 +240,7 @@ APR_DECLARE_EXTERNAL_HOOK(cache, CACHE, int, create_entity,
                           (cache_handle **hp, const char *type,
                            char *url, apr_size_t len))
 APR_DECLARE_EXTERNAL_HOOK(cache, CACHE, int, open_entity,  
-                          (cache_handle **hp, const char *type,
+                          (cache_handle *h, const char *type,
                            char *url))
 APR_DECLARE_EXTERNAL_HOOK(cache, CACHE, int, remove_url, 
                           (const char *type, char *url))

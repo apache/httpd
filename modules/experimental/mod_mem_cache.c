@@ -263,10 +263,9 @@ static int create_entity(cache_handle **hp, const char *type, char *key, apr_siz
     return OK;
 }
 
-static int open_entity(cache_handle **hp, const char *type, char *key) 
+static int open_entity(cache_handle *h, const char *type, char *key) 
 {
     cache_object_t *obj;
-    cache_handle *h;
 
     /* Look up entity keyed to 'url' */
     if (strcasecmp(type, "mem")) {
@@ -284,13 +283,7 @@ static int open_entity(cache_handle **hp, const char *type, char *key)
         return DECLINED;
     }
 
-    /* Allocate the cache_handle and initialize it */
-    h = malloc(sizeof(cache_handle));
-    *hp = h;
-    if (!h) {
-        /* handle the error */
-        return DECLINED;
-    }
+    /* Initialize the cache_handle */
     h->read_body = &read_body;
     h->read_headers = &read_headers;
     h->write_body = &write_body;
@@ -319,8 +312,6 @@ static int remove_entity(cache_handle *h)
     /* Reinit the cache_handle fields? */
     h->cache_obj = NULL;
 
-    /* The caller should free the cache_handle ? */
-    free(h);
     return OK;
 }
 
