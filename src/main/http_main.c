@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: http_main.c,v 1.65 1996/09/08 17:14:58 ben Exp $ */
+/* $Id: http_main.c,v 1.66 1996/09/08 17:24:55 ben Exp $ */
 
 /*
  * httpd.c: simple http daemon for answering WWW file requests
@@ -958,6 +958,23 @@ void reap_children()
  * a while...
  */
 
+#if 1
+
+static int wait_or_timeout(int *status)
+    {
+    int ret;
+
+    ret=waitpid(-1,status,WNOHANG);
+    if(ret <= 0)
+	{
+	sleep(1);
+	return -1;
+	}
+    return ret;
+    }
+
+#else
+
 static JMP_BUF wait_timeout_buf;
 
 static void longjmp_out_of_alarm (int sig) {
@@ -1001,6 +1018,7 @@ int wait_or_timeout (int *status)
     return wait_or_timeout_retval;
 }
 
+#endif
 
 /*****************************************************************
  * Here follows a long bunch of generic server bookkeeping stuff...

@@ -1,6 +1,9 @@
-$Id: CHANGES,v 1.60 1996/08/24 14:39:30 ben Exp $
+$Id: CHANGES,v 1.61 1996/09/08 17:24:55 ben Exp $
 
 Changes with Apache 1.2b1:
+
+  *) Fix a race condition which could cause the parent server to hang on
+      heavily loaded systems. [Ben Laurie]
 
   *) Configuration flags should be either "on" or "off". Apache was not
       enforcing this restriction. Fixed. [Ben Laurie]
