@@ -969,28 +969,37 @@ apr_status_t ap_http_filter(ap_filter_t *f, ap_bucket_brigade *b, ap_input_mode_
         const char *str;
         apr_size_t length;
 
-        if (AP_BRIGADE_EMPTY(ctx->b)) {
-            return APR_EOF;
-        }
-
-        e = AP_BRIGADE_FIRST(ctx->b);
-        while (e->length == 0) {
-            AP_BUCKET_REMOVE(e);
-            ap_bucket_destroy(e);
-
-        if (AP_BRIGADE_EMPTY(ctx->b)) {
+        /* The purpose of this loop is to ignore any CRLF (or LF) at the end
+         * of a request.  Many browsers send extra lines at the end of POST
+         * requests.  We use the PEEK method to determine if there is more
+         * data on the socket, so that we know if we should delay sending the
+         * end of one request until we have served the second request in a
+         * pipelined situation.  We don't want to actually delay sending a
+         * response if the server finds a CRLF (or LF), becuause that doesn't
+         * mean that there is another request, just a blank line.
+         */
+        while (1) {
+            if (AP_BRIGADE_EMPTY(ctx->b)) {
                 e = NULL;
-                break;
             }
-
-            e = AP_BRIGADE_FIRST(ctx->b);
-        }    
-
-        if (!e || ap_bucket_read(e, &str, &length, AP_NONBLOCK_READ) != APR_SUCCESS) {
-            return APR_EOF;
-        }
-        else {
-            return APR_SUCCESS;
+            else {
+                e = AP_BRIGADE_FIRST(ctx->b);
+            }
+            if (!e || ap_bucket_read(e, &str, &length, AP_NONBLOCK_READ) != APR_SUCCESS) {
+                return APR_EOF;
+            }
+            else {
+                const char *c = str;
+                while (c - str < length) {
+                    if (*c == ASCII_LF)
+                        c++;
+                    else if (*c == ASCII_CR && *(c + 1) == ASCII_LF)
+                        c += 2;
+                    else return APR_SUCCESS;
+                }
+                AP_BUCKET_REMOVE(e);
+                ap_bucket_destroy(e);
+            }
         }
     }
 
