@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
-<!-- English revision: 1.46.2.19 -->
+<!-- English revision: 1.46.2.21 -->
 
 <modulesynopsis metafile="core.xml.meta">
 
@@ -2552,19 +2552,55 @@ Die Option <code>Registry-Strict</code> ist verf&uuml;gbar seit Apache
 2.0.</compatibility>
 
 <usage>
-    <p>Die Direktive wird dazu verwendet, zu steuern, wie der Apache
-    den Interpreter zur Ausf&uuml;hrung von CGI-Skripten findet. Die
-    voreingestellte Methode ist, den Interpreter zu verwenden, auf den
-    die <code>#!</code>-Zeile im Skript zeigt.</p>
+    <p>Die Direktive steuert, wie der Apache den Interpreter zur Ausf&uuml;hrung
+    von CGI-Skripten bestimmt. Die Voreinstellung ist <code>Script</code>. Dies
+    veranla&szlig;t den Apache, den Interpreter zu verwenden, auf den die
+    Shebang-Zeile (erste Zeile, beginnt mit <code>#!</code>) im Skript zeigt.
+    Auf Win32-Systemen sieht diese Zeile &uuml;blicherweise so aus:</p>
+
+    <example>
+      #!C:/Perl/bin/perl.exe
+    </example>
+
+    <p>oder, wenn perl im Pfad (Umgebungsvariable <code>PATH</code>) liegt,
+      einfach:</p>
+
+    <example>
+      #!perl
+    </example>
 
     <p>Die Einstellung <code>ScriptInterpreterSource Registry</code>
-    veranla&szlig;t eine Suche in der Windows-Registrierungsdatenbank und
-    verwendet die Endung der Skript-Datei (z.B. <code>.pl</code>) als
-    Suchargument.</p>
+    veranla&szlig;t eine Suche in <code>HKEY_CLASSES_ROOT</code> der
+    Windows-Registrierungsdatenbank und verwendet die Endung der Skript-Datei
+    (z.B. <code>.pl</code>) als Suchargument. Der durch den Unterschl&uuml;ssel
+    <code>Shell\ExecCGI\Command</code> oder, falls dieser nicht existiert,
+    <code>Shell\Open\Command</code> definierte Befehl wird zum &Ouml;ffnen der
+    Skript-Datei verwendet. Wenn der Schl&uuml;ssel zur Dateiendung oder
+    beide Unterschl&uuml;ssel fehlen, dann verwendet der Apache die Option
+    <code>Script</code>.</p>
 
-    <p>Die Option <code>Registry-Strict</code>, die neu im Apache 2.0
-    ist, macht das gleiche wie <code>Registry</code>, f&uuml;hrt jedoch eine
-    strengere Suche in der Registrierungsdatenbank durch.</p>
+    <note type="warning"><title>Sicherheit</title>
+      <p>Seien Sie vorsichtig, <code>ScriptInterpreterSource Registry</code> bei
+      Verzeichnissen zu verwenden, auf die eine <directive
+        module="mod_alias">ScriptAlias</directive>-Anweisung zeigt, denn der
+      Apache versucht <strong>jede</strong> Datei innerhalb des Verzeichnisses
+      auszuf&uuml;hren. Die Einstellung <code>Registry</code> kann
+      unerw&uuml;nschte Programmaufrufe bei Dateien verursachen, die
+      &uuml;blicherweise nicht ausgef&uuml;hrt werden. Auf den meisten
+      Windows-Systemen beispielsweise startet der voreingestellte
+      &Ouml;ffnen-Befehl f&uuml;r <code>.htm</code>-Dateien den Microsoft
+      Internet Explorer, so dass jede HTTP-Anfrage nach einer existierenden
+      <code>.htm</code>-Datei im Skript-Verzeichnis den Browser im Hintergrund
+      starten w&uuml;rde. Dies ist eine wirksame Methode, Ihr System binnen
+      etwa einer Minute zum Absturz zu bringen.</p>
+    </note>
+          
+    <p>Die seit Apache 2.0 neue Option <code>Registry-Strict</code>
+    macht das gleiche wie <code>Registry</code>, verwendet jedoch nur den
+    Unterschl&uuml;ssel <code>Shell\ExecCGI\Command</code>. Der Schl&uuml;ssel
+    <code>ExecCGI</code> ist gew&ouml;hnlich nicht voreingestellt. Er muss
+    manuell eingerichtet werden und sch&uuml;tzt Ihr System so for
+    versehentlichen Programmaufrufen.</p>
 </usage>
 </directivesynopsis>
 
