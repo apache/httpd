@@ -472,10 +472,9 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
        return OK;
     }
 
-    /*
-     * r->path_info tracks the remaining source path.
-     * r->filename  tracks the path as we build it.
-     * we begin our adventure at the root...
+    /* Canonicalize the file path without resolving filename case or aliases
+     * so we can begin by checking the cache for a recent directory walk.
+     * This call will ensure we have an absolute path in the same pass.
      */
     if ((rv = apr_filepath_merge(&entry_dir, NULL, r->filename, 
                                  APR_FILEPATH_NOTRELATIVE, r->pool)) 
@@ -486,16 +485,29 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
                       r->filename, r->uri);
         return OK;
     }
+
+    /* XXX Notice that this forces path_info to be canonical.  That might
+     * not be desired by all apps.  However, some of those same apps likely
+     * have significant security holes.
+     */
     r->filename = entry_dir;
 
-    /*
-     * 
-     * Go down the directory hierarchy.  Where we have to check for symlinks,
-     * do so.  Where a .htaccess file has permission to override anything,
-     * try to find one.
-     */
     cache = prep_walk_cache("ap_directory_walk::cache", r);
-    
+
+    /* If this is not a dirent subrequest with a preconstructed 
+     * r->finfo value, then we can simply stat the filename to
+     * save burning mega-cycles with unneeded stats - if this is
+     * an exact file match.  We don't care about failure... we
+     * will stat by component failing this meager attempt.
+     *
+     * It would be nice to distinguish APR_ENOENT from other
+     * types of failure, such as APR_ENOTDIR.  We can do something
+     * with APR_ENOENT, knowing that the path is good.
+     */
+    if (!r->finfo.filetype) {
+        apr_lstat(&r->finfo, r->filename, APR_FINFO_MIN, r->pool);
+    }
+
     if (r->finfo.filetype == APR_REG) {
         entry_dir = ap_make_dirstr_parent(r->pool, entry_dir);
     }
@@ -541,6 +553,8 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
         allow_options_t opts_remove;
         overrides_t override;
 
+        apr_finfo_t thisinfo;
+        char *save_path_info;
         apr_size_t buflen;
         char *buf;
         unsigned int seg, startseg;
@@ -548,7 +562,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
         /* Invariant: from the first time filename_len is set until
          * it goes out of scope, filename_len==strlen(r->filename)
          */
-        size_t filename_len;
+        apr_size_t filename_len;
 
         /*
          * We must play our own mimi-merge game here, for the few 
@@ -562,15 +576,19 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
         opts_remove = this_dir->opts_remove;
         override = this_dir->override;
 
-        /* XXX: Remerge path_info, or we are broken.  Needs more thought.
+        /* Save path_info to merge back onto path_info later. If this
+         * isn't really path_info, what would it be doing here?
          */
-        if (r->path_info) {
-            r->path_info = ap_make_full_path(r->pool, r->filename, 
-                                             r->path_info);
-        }
-        else {
-            r->path_info = r->filename;
-        }
+        save_path_info = r->path_info;
+
+        /* Now begin to build r->filename from components, set aside the
+         * segments we have yet to work with in r->path_info (where they
+         * will stay when the current element resolves to a regular file.)
+         *
+         * r->path_info tracks the remaining source path.
+         * r->filename  tracks the path as we build it.
+         */
+        r->path_info = r->filename;
         rv = apr_filepath_root((const char **)&r->filename,
                                (const char **)&r->path_info,
                                APR_FILEPATH_TRUENAME, r->pool);
@@ -580,8 +598,8 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
         buf = apr_palloc(r->pool, buflen);
         memcpy(buf, r->filename, filename_len + 1);
         r->filename = buf;
-        r->finfo.valid = APR_FINFO_TYPE;
-        r->finfo.filetype = APR_DIR; /* It's the root, of course it's a dir */
+        thisinfo.valid = APR_FINFO_TYPE;
+        thisinfo.filetype = APR_DIR; /* It's the root, of course it's a dir */
 
         /*
          * seg keeps track of which segment we've copied.
@@ -590,6 +608,12 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
          */
         startseg = seg = ap_count_dirs(r->filename);
         sec_idx = 0;
+
+        /*
+         * Go down the directory hierarchy.  Where we have to check for symlinks,
+         * do so.  Where a .htaccess file has permission to override anything,
+         * try to find one.
+         */
         do {
             int res;
             char *seg_name;
@@ -807,10 +831,29 @@ minimerge2:
                 break;
             }
 
+            /* First optimization;
+             * If...we knew r->filename was a file, and
+             * if...we have strict (case-sensitive) filenames, or
+             *      we know the canonical_filename matches to _this_ name, and
+             * if...we have allowed symlinks
+             * skip the lstat and dummy up an APR_DIR value for thisinfo.
+             */
+            if (r->finfo.filetype 
+#ifdef CASE_BLIND_FILESYSTEM
+                && (r->canonical_filename 
+                    && (strncmp(r->filename, 
+                                r->canonical_filename, filename_len) == 0))
+#endif
+                && ((opts & (OPT_SYM_OWNER | OPT_SYM_LINKS)) == OPT_SYM_LINKS)) {
+                thisinfo.filetype = APR_DIR;
+                ++seg;
+                continue;
+            }
+                
             /* XXX: Optimization required:
              * If...we have allowed symlinks, and
              * if...we find the segment exists in the directory list
-             * skip the lstat and dummy up an APR_DIR value for r->finfo
+             * skip the lstat and dummy up an APR_DIR value for thisinfo
              * this means case sensitive platforms go quite quickly.
              * Case insensitive platforms might be given the wrong path,
              * but if it's not found in the cache, then we know we have
@@ -821,16 +864,16 @@ minimerge2:
              * capture this path object rather than its target.  We will
              * replace the info with our target's info below.  We especially
              * want the name of this 'link' object, not the name of its
-             * target, if we are fixing case.
+             * target, if we are fixing the filename case/resolving aliases.
              */
-            rv = apr_lstat(&r->finfo, r->filename,
+            rv = apr_lstat(&thisinfo, r->filename,
                            APR_FINFO_MIN | APR_FINFO_NAME, r->pool);
 
             if (APR_STATUS_IS_ENOENT(rv)) {
                 /* Nothing?  That could be nice.  But our directory
                  * walk is done.
                  */
-                r->finfo.filetype = APR_NOFILE;
+                thisinfo.filetype = APR_NOFILE;
                 break;
             }
             else if (APR_STATUS_IS_EACCES(rv)) {
@@ -839,7 +882,7 @@ minimerge2:
                 return r->status = HTTP_FORBIDDEN;
             }
             else if ((rv != APR_SUCCESS && rv != APR_INCOMPLETE) 
-                     || !(r->finfo.valid & APR_FINFO_TYPE)) {
+                     || !(thisinfo.valid & APR_FINFO_TYPE)) {
                 /* If we hit ENOTDIR, we must have over-optimized, deny 
                  * rather than assume not found.
                  */
@@ -854,22 +897,21 @@ minimerge2:
 
             /* Fix up the path now if we have a name, and they don't agree
              */
-            if ((r->finfo.valid & APR_FINFO_NAME) 
-                && strcmp(seg_name, r->finfo.name)) {
+            if ((thisinfo.valid & APR_FINFO_NAME) 
+                && strcmp(seg_name, thisinfo.name)) {
                 /* TODO: provide users an option that an internal/external
                  * redirect is required here?  We need to walk the URI and
                  * filename in tandem to properly correlate these.
                  */
-                strcpy(seg_name, r->finfo.name);
+                strcpy(seg_name, thisinfo.name);
                 filename_len = strlen(r->filename);
             }
 
-            if (r->finfo.filetype == APR_LNK) {
-                /* Is this an possibly acceptable symlink?
+            if (thisinfo.filetype == APR_LNK) {
+                /* Is this a possibly acceptable symlink?
                  */
-                if ((res = resolve_symlink(r->filename, &r->finfo, 
-                                           opts, r->pool))
-                    != OK) {
+                if ((res = resolve_symlink(r->filename, &thisinfo, 
+                                           opts, r->pool)) != OK) {
                     ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
                                   "Symbolic link not allowed: %s",
                                   r->filename);
@@ -878,12 +920,12 @@ minimerge2:
 
                 /* Ok, we are done with the link's info, test the real target
                  */
-                if (r->finfo.filetype == APR_REG) {
+                if (thisinfo.filetype == APR_REG) {
                     /* That was fun, nothing left for us here
                      */
                     break;
                 }
-                else if (r->finfo.filetype != APR_DIR) {
+                else if (thisinfo.filetype != APR_DIR) {
                     ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
                                   "symlink doesn't point to a file or directory: %s",
                                   r->filename);
@@ -892,7 +934,26 @@ minimerge2:
             }
 
             ++seg;
-        } while (r->finfo.filetype == APR_DIR);
+        } while (thisinfo.filetype == APR_DIR);
+
+        /* If we have _not_ optimized, this is the time to recover
+         * the final stat result.
+         */
+        if (!r->finfo.filetype) {
+            r->finfo = thisinfo;
+        }
+
+        /* Now splice the saved path_info back onto any new path_info
+         */
+        if (save_path_info) {
+            if (r->path_info && *r->path_info) {
+                r->path_info = ap_make_full_path(r->pool, r->path_info, 
+                                                 save_path_info);
+            }
+            else {
+                r->path_info = save_path_info;
+            }
+        }
 
         /*
          * Now we'll deal with the regexes, note we pick up sec_idx
