@@ -136,8 +136,10 @@ typedef struct param_s {
 } param;
 
 typedef struct {
-    char *type;
-    char *subtype;
+    const char *type;
+    apr_size_t type_len;
+    const char *subtype;
+    apr_size_t subtype_len;
     param *param;
 } content_type;
 
@@ -533,7 +535,7 @@ static int is_quoted_pair(const char *s)
 
 static content_type *analyze_ct(request_rec *r, const char *s)
 {
-    const char *cp, *mp, *tmp;
+    const char *cp, *mp;
     char *attribute, *value;
     int quoted = 0;
     server_rec * ss = r->server;
@@ -551,51 +553,63 @@ static content_type *analyze_ct(request_rec *r, const char *s)
     mp = s;
 
     /* getting a type */
-    if (!(cp = ap_strchr_c(mp, '/'))) {
+    cp = mp;
+    while (cp && apr_isspace(*cp)) {
+        cp++;
+    }
+    if (!*cp) {
+	ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss,
+		     "mod_mime: analyze_ct: cannot get media type from '%s'",
+                     (const char *) mp);
+	return (NULL);
+    }
+    ctp->type = cp;
+    do {
+        cp++;
+    } while (*cp && (*cp != '/') && !apr_isspace(*cp) && (*cp != ';'));
+    if (!*cp || (*cp == ';')) {
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss,
+                     "Cannot get media type from '%s'",
+                     (const char *) mp);
+        return (NULL);
+    }
+    while (apr_isspace(*cp)) {
+        cp++;
+    }
+    if (*cp != '/') {
 	ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss,
 		     "mod_mime: analyze_ct: cannot get media type from '%s'",
 		     (const char *) mp);
 	return (NULL);
     }
-    ctp->type = zap_sp_and_dup(p, mp, cp, NULL);
-    if (ctp->type == NULL || *(ctp->type) == '\0') {
-	ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss,
-		     "Cannot get media subtype.");
-	return (NULL);
-    }
-    for (tmp = ctp->type; *tmp; tmp++) {
-        if ((*tmp == ';') || (*tmp == ' ') || (*tmp == '\t')) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss,
-                         "Cannot get media subtype.");
-            return (NULL);
-        }
-    }
+    ctp->type_len = cp - ctp->type;
+
+    cp++; /* skip the '/' */
 
     /* getting a subtype */
-    cp++;
-    mp = cp;
-
-    for (; *cp != ';' && *cp != '\0'; cp++)
-        continue;
-    ctp->subtype = zap_sp_and_dup(p, mp, cp, NULL);
-    if ((ctp->subtype == NULL) || (*(ctp->subtype) == '\0')) {
+    while (apr_isspace(*cp)) {
+        cp++;
+    }
+    if (!*cp) {
 	ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss,
 		     "Cannot get media subtype.");
 	return (NULL);
     }
-    for (tmp = ctp->subtype; *tmp; tmp++) {
-        if ((*tmp == ' ') || (*tmp == '\t')) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss,
-                         "Cannot get media subtype.");
-            return (NULL);
-        }
+    ctp->subtype = cp;
+    do {
+        cp++;
+    } while (*cp && !apr_isspace(*cp) && (*cp != ';'));
+    ctp->subtype_len = cp - ctp->subtype;
+    while (apr_isspace(*cp)) {
+        cp++;
     }
+
     if (*cp == '\0') {
         return (ctp);
     }
 
     /* getting parameters */
-    cp++;
+    cp++; /* skip the ';' */
     cp = zap_sp(cp);
     if (cp == NULL || *cp == '\0') {
 	ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss,
@@ -877,8 +891,17 @@ static int find_ct(request_rec *r)
 
 	if ((ctp = analyze_ct(r, r->content_type))) {
 	    param *pp = ctp->param;
-	    ap_set_content_type(r, apr_pstrcat(r->pool, ctp->type, "/",
-                                               ctp->subtype, NULL));
+            char *base_content_type = apr_palloc(r->pool, ctp->type_len +
+                                                 ctp->subtype_len +
+                                                 sizeof("/"));
+            char *tmp = base_content_type;
+            memcpy(tmp, ctp->type, ctp->type_len);
+            tmp += ctp->type_len;
+            *tmp++ = '/';
+            memcpy(tmp, ctp->subtype, ctp->subtype_len);
+            tmp += ctp->subtype_len;
+            *tmp = 0;
+	    ap_set_content_type(r, base_content_type);
 	    while (pp != NULL) {
 		if (charset && !strcmp(pp->attr, "charset")) {
 		    if (!override) {
