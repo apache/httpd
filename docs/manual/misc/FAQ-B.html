@@ -31,7 +31,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.2 $ ($Date: 1999/08/19 21:52:01 $)
+  $Revision: 1.3 $ ($Date: 2000/01/30 15:47:42 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -91,6 +91,7 @@
    </LI>
    <LI><A HREF="#regex">What are "regular expressions"?</A>
    </LI>
+   <li><a href="#binaries">Why isn't there a binary for my platform?</a></li>
   </OL>
  </LI>
 <!--#endif -->
@@ -397,6 +398,44 @@
    </P>
   <HR>
  </LI>
+
+ <li><a name="binaries">
+      <b>Why isn't there a binary for my platform?</b></a>
+   <p>
+   The developers make sure that the software builds and works
+   correctly on the platforms available to them; this does
+   <i>not</i> necessarily mean that <i>your</i> platform
+   is one of them.  In addition, the Apache HTTP server project
+   is primarily source oriented, meaning that distributing
+   valid and buildable source code is the purpose of a release,
+   not making sure that there is a binary package for all of the
+   supported platforms.
+   </p>
+   <p>
+   If you don't see a kit for your platform listed in the
+   binary distribution area
+   (&lt;URL:<a href="http://www.apache.org/dist/binaries/"
+            >http://www.apache.org/dist/binaries/</a>&gt;),
+   it means either that the platform isn't available to any of
+   the developers, or that they just haven't gotten around to
+   preparing a binary for it.  As this is a voluntary project,
+   they are under no obligation to do so.  Users are encouraged
+   and expected to build the software themselves.
+   </p>
+   <p>
+   The sole exception to these practices is the Windows package.
+   Unlike most Unix and Unix-like platforms, Windows systems
+   do not come with a bundled software development environment,
+   so we <i>do</i> prepare binary kits for Windows when we make
+   a release.  Again, however, it's a voluntary thing and only
+   a limited number of the developers have the capability to build
+   the InstallShield package, so the Windows release may lag
+   somewhat behind the source release.  This lag should be
+   no more than a few days at most.
+   </p>
+  <hr>
+ </li>
+
 </OL>
 <!--#endif -->
 <!--#if expr="$STANDALONE" -->
