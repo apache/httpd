@@ -937,6 +937,9 @@ typedef int rlim_t;
 /*#define USE_TPF_DAEMON*/
 #define USE_TPF_SCOREBOARD
 #define USE_TPF_SELECT
+#define S_IREAD S_IRUSR
+#define S_IWRITE S_IWUSR
+#define S_IEXEC S_IXUSR
 #define crypt(buf,salt) ((char *)buf)
 #undef  offsetof
 #define offsetof(s_type,field) ((size_t)&(((s_type*)0)->field))

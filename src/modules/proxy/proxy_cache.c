@@ -73,6 +73,9 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #endif
+#ifdef TPF
+#include "os.h"
+#endif
 
 DEF_Explain
 
@@ -123,7 +126,7 @@ static int sub_garbage_coll(request_rec *r, array_header *files,
 			    const char *cachedir, const char *cachesubdir);
 static void help_proxy_garbage_coll(request_rec *r);
 static int should_proxy_garbage_coll(request_rec *r);
-#if !defined(WIN32) && !defined(MPE) && !defined(OS2) && !defined(NETWARE)
+#if !defined(WIN32) && !defined(MPE) && !defined(OS2) && !defined(NETWARE) && !defined(TPF)
 static void detached_proxy_garbage_coll(request_rec *r);
 #endif
 
@@ -143,7 +146,7 @@ void ap_proxy_garbage_coll(request_rec *r)
 
     ap_block_alarms();		/* avoid SIGALRM on big cache cleanup */
     if (should_proxy_garbage_coll(r))
-#if !defined(WIN32) && !defined(MPE) && !defined(OS2) && !defined(NETWARE)
+#if !defined(WIN32) && !defined(MPE) && !defined(OS2) && !defined(NETWARE) && !defined(TPF)
         detached_proxy_garbage_coll(r);
 #else
         help_proxy_garbage_coll(r);
@@ -203,7 +206,7 @@ static int gcdiff(const void *ap, const void *bp)
 	return 0;
 }
 
-#if !defined(WIN32) && !defined(MPE) && !defined(OS2) && !defined(NETWARE)
+#if !defined(WIN32) && !defined(MPE) && !defined(OS2) && !defined(NETWARE) && !defined(TPF)
 static void detached_proxy_garbage_coll(request_rec *r)
 {
     pid_t pid;
@@ -465,9 +468,19 @@ static int sub_garbage_coll(request_rec *r, array_header *files,
 	/*      if (strlen(ent->d_name) != HASH_LEN) continue; */
 
 /* under OS/2 use dirent's d_attr to identify a diretory */
-#ifdef OS2
+/* under TPF use stat to identify a directory */
+#if defined(OS2) || defined(TPF)
 /* is it a directory? */
+#ifdef OS2
 	if (ent->d_attr & A_DIR) {
+#elif defined(TPF)
+    if (stat(filename, &buf) == -1) {
+        if (errno != ENOENT)
+            ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+                 "proxy gc: stat(%s)", filename);
+    }
+    if (S_ISDIR(buf.st_mode)) {
+#endif
 	    char newcachedir[HUGE_STRING_LEN];
 	    ap_snprintf(newcachedir, sizeof(newcachedir),
 			"%s%s/", cachesubdir, ent->d_name);
@@ -500,8 +513,8 @@ static int sub_garbage_coll(request_rec *r, array_header *files,
 	    continue;
 	}
 
-/* In OS/2 this has already been done above */
-#ifndef OS2
+/* In OS/2 and TPF this has already been done above */
+#if !defined(OS2) && !defined(TPF)
 	if (S_ISDIR(buf.st_mode)) {
 	    char newcachedir[HUGE_STRING_LEN];
 	    close(fd);
@@ -1029,6 +1042,7 @@ int ap_proxy_cache_update(cache_req *c, table *resp_hdrs,
     buff[35] = ' ';
 
 /* open temporary file */
+#ifndef TPF
 #define TMPFILESTR	"/tmpXXXXXX"
     if (conf->cache.root == NULL)
 	return DECLINED;
@@ -1037,6 +1051,15 @@ int ap_proxy_cache_update(cache_req *c, table *resp_hdrs,
     strcat(c->tempfile, TMPFILESTR);
 #undef TMPFILESTR
     p = mktemp(c->tempfile);
+#else
+    if (conf->cache.root == NULL)
+    return DECLINED;
+    c->tempfile = ap_palloc(r->pool, strlen(conf->cache.root) +1+ L_tmpnam);
+    strcpy(c->tempfile, conf->cache.root);
+    strcat(c->tempfile, "/");
+    p = tmpnam(NULL);
+    strcat(c->tempfile, p);
+#endif
     if (p == NULL)
 	return DECLINED;
 

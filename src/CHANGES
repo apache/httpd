@@ -1,5 +1,8 @@
 Changes with Apache 1.3.10
 
+  *) mod_proxy now works on TPF.
+     [Joe Moenich <moenich@us.ibm.com>]
+
   *) Enhance mod_actions' Script handling to be able to deal with
      arbitrary methods and not just the well-known ones.  This allows
      experimental or organisation-private methods to be used without

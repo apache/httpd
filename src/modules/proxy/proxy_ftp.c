@@ -564,6 +564,7 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 	return HTTP_INTERNAL_SERVER_ERROR;
     }
 
+#ifndef TPF
     if (conf->recv_buffer_size > 0
 	&& setsockopt(sock, SOL_SOCKET, SO_RCVBUF,
 		       (const char *) &conf->recv_buffer_size, sizeof(int))
@@ -571,6 +572,7 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 	    ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
 			 "setsockopt(SO_RCVBUF): Failed to set ProxyReceiveBufferSize, using default");
     }
+#endif
 
     if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (void *) &one,
 		   sizeof(one)) == -1) {
@@ -816,6 +818,7 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 	return HTTP_INTERNAL_SERVER_ERROR;
     }
 
+#ifndef TPF
     if (conf->recv_buffer_size) {
 	if (setsockopt(dsock, SOL_SOCKET, SO_RCVBUF,
 	       (const char *) &conf->recv_buffer_size, sizeof(int)) == -1) {
@@ -823,6 +826,7 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 			 "setsockopt(SO_RCVBUF): Failed to set ProxyReceiveBufferSize, using default");
 	}
     }
+#endif
 
     ap_bputs("PASV" CRLF, f);
     ap_bflush(f);

@@ -285,10 +285,9 @@ static ap_inline int buff_read(BUFF *fb, void *buf, int nbyte)
 
     ap_check_signals();
     if (fb->flags & B_SOCKET) {
-        alarm(rv = alarm(0));
         FD_ZERO(&fds);
         FD_SET(fb->fd_in, &fds);
-        tv.tv_sec = rv+1;
+        tv.tv_sec = 1;
         tv.tv_usec = 0;
         rv = ap_select(fb->fd_in + 1, &fds, NULL, NULL, &tv);
         if (rv > 0)
