@@ -419,3 +419,17 @@ EXPORTS
         ap_sort_hooks		 @412
 	ap_fini_vhost_config	 @413
 	ap_fixup_virtual_hosts	 @414
+	ap_global_hook_pool      @415 DATA
+
+; 
+; util_xml.h
+       ap_text_append      @416
+       ap_xml_parse_input  @451
+       ap_xml_to_text      @452
+       ap_xml_empty_elem   @453
+       ap_xml_quote_string @454
+       ap_xml_quote_elem   @455
+       ap_xml_insert_uri   @456
+	
+	
+        
