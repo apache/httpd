@@ -62,6 +62,28 @@ http://developer.netscape.com/library/documentation/enterprise/unix/svrplug.htm#
 
 */
 
+/*
+ * Module definition information
+ *
+ * MODULE-DEFINITION-START
+ * Name: so_module
+ * ConfigStart
+    if ./helpers/TestCompile func dlopen; then
+	:
+    else
+        DL_LIB=""
+        if ./helpers/TestCompile lib dl; then
+	    DL_LIB="-ldl"
+        fi
+        LIBS="$LIBS $DL_LIB"
+        if [ "X$DL_LIB" != "X" ]; then
+ 	    echo " + using $DL_LIB for dynamic loading (mod_so)"
+        fi
+    fi
+ * ConfigEnd
+ * MODULE-DEFINITION-END
+ */
+
 #include "httpd.h"
 #include "http_config.h"
 #include "http_log.h"
