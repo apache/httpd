@@ -1,5 +1,8 @@
 Changes with Apache 1.3.3
 
+  *) Fix problem with scripts and finehandle inheritance on Win32.
+     [Ken Parzygnat <kparz@raleigh.ibm.com>]  PR#2884, 2910
+
   *) Win32 name canonicalisation could end up using the server's
      working directory to fill in some blanks.  [Ken Parzygnat
      <kparz@raleigh.ibm.com>] PR#3001
