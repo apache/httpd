@@ -110,6 +110,7 @@ fi
 echo "buildconf: setting up APR"
 
 cd lib/apr
+rm -f config.cache
 
 mv configure configure.old 2>/dev/null
 autoheader
@@ -125,6 +126,6 @@ cd ../..
 
 # Now run the configs...
 
-rm config.cache
+rm -f config.cache
 ./configure
 
