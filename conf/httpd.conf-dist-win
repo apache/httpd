@@ -581,7 +581,7 @@ AddLanguage fr .fr      # Frech
 AddLanguage de .de      # German
 AddLanguage el .el      # Greek (Modern)
 AddLanguage it .it      # Italian
-AddLanguage pt .pl      # Portugese
+AddLanguage pt .pt      # Portugese
 AddLanguage ltz .lu     # Luxembourgeois* 
 AddLanguage es .es      # Spanish
 AddLanguage sv .se      # Swedish
