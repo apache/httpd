@@ -14,6 +14,11 @@ Release:
            o Linux / Debian 1.3.1           Ralf S. Engelschall
            o FreeBSD 2.2.6                  Ralf S. Engelschall
            o FreeBSD 3.0-CURRENT            Ralf S. Engelschall
+           o Sparc-Linux                    Lars Eilebrecht
+           o Linux (glibc6)                 Lars Eilebrecht
+           o AIX 4.1                        Lars Eilebrecht
+           o Solaris 2.6                    Lars Eilebrecht
+           o Digital Unix 4.0               Lars Eilebrecht
 
     1.3b7: Tagged and Released 26/5/98.
 
