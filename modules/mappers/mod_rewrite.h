@@ -253,6 +253,7 @@ typedef struct {
     apr_file_t *fperr;              /* err file pointer for program maps */
     char *(*func)(request_rec *,   /* function pointer for internal maps */
                   char *);
+    char **argv;
 } rewritemap_entry;
 
 typedef struct {
@@ -456,7 +457,8 @@ static apr_status_t rewritelock_remove(void *data);
 
     /* program map support */
 static apr_status_t run_rewritemap_programs(server_rec *s, apr_pool_t *p);
-static apr_status_t rewritemap_program_child(apr_pool_t *p, const char *progname,
+static apr_status_t rewritemap_program_child(apr_pool_t *p, 
+                                             const char *progname, char **argv,
                                              apr_file_t **fpout, apr_file_t **fpin,
                                              apr_file_t **fperr);
 
