@@ -80,7 +80,11 @@
  * registered HandlerRoutine.
  */
 
-#define DBG 1
+/* This debugging define turns on output to COM1, although you better init
+ * the port first (even using hyperterm).  It's the only way to catch the
+ * goings on within system logoff/shutdown.
+ * #define DBG 1
+ */
 
 #include <windows.h>
 
