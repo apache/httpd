@@ -87,7 +87,6 @@ LINK32=link.exe
 
 # Name "mod_cache - Win32 Release"
 # Name "mod_cache - Win32 Debug"
-# End Group
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;hpj;bat;for;f90"
@@ -135,6 +134,7 @@ SOURCE=.\cache_pqueue.h
 
 SOURCE=.\mod_cache.h
 # End Source File
+# End Group
 # Begin Source File
 
 SOURCE=..\..\build\win32\win32ver.awk
