@@ -248,6 +248,10 @@ ServerAdmin you@your.address
 # You will have to access it by its address (e.g., http://123.45.67.89/)
 # anyway, and this will make redirections work in a sensible way.
 #
+# 127.0.0.1 is the TCP/IP local loop-back address, often named localhost. Your 
+# machine always knows itself by this address. If you use Apache strictly for 
+# local testing and development, you may use 127.0.0.1 as the server name.
+#
 #ServerName new.host.name
 
 
@@ -501,9 +505,14 @@ ServerSignature On
 # use the Registry to match files by extention.  The command to execute 
 # a file of this type is retrieved from the registry by the same method as 
 # the Windows Explorer would use to handle double-clicking on a file.
+# These script actions can be configured from the Windows Explorer View menu, 
+# 'Folder Options', and reviewing the 'File Types' tab.  Clicking the Edit
+# button allows you to modify the Actions, of which Apache 1.3 attempts to
+# perform the 'Open' Action, and failing that it will try the shebang line.
+# This behavior is subject to change in Apache release 2.0.
 #
 # Each mechanism has it's own specific security weaknesses, from the means
-# to run a program you didn't intent the website owner to invoke, and the
+# to run a program you didn't intend the website owner to invoke, and the
 # best method is a matter of great debate.
 #
 # To enable the this Windows specific behavior (and therefore -disable- the

@@ -267,6 +267,10 @@ ServerAdmin you@your.address
 # You will have to access it by its address (e.g., http://123.45.67.89/)
 # anyway, and this will make redirections work in a sensible way.
 #
+# 127.0.0.1 is the TCP/IP local loop-back address, often named localhost. Your 
+# machine always knows itself by this address. If you use Apache strictly for 
+# local testing and development, you may use 127.0.0.1 as the server name.
+#
 #ServerName new.host.name
 
 #
