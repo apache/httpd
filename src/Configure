@@ -175,6 +175,17 @@ case "$PLAT" in
 # Note: We'd like to see patches to compile 64-bit, but for now...
 	CFLAGS="$CFLAGS -n32"
 	LFLAGS="$LFLAGS -n32"
+	DEF_WANTHSREGEX=yes
+        DBM_LIB=""
+	if [ "$RULE_IRIXNIS" = "yes" ]; then
+	    OS='SGI IRIX w/NIS'
+	    CFLAGS="$CFLAGS -DIRIX"
+	    LIBS="$LIBS -lsun"
+	else
+	    OS='SGI IRIX'
+	    CFLAGS="$CFLAGS -DIRIX"
+	fi
+	;;
     *-sgi-irix)
 	DEF_WANTHSREGEX=yes
         DBM_LIB=""
