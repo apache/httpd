@@ -1,5 +1,10 @@
 Changes with Apache 1.3.27
 
+  *) The protocol version (eg: HTTP/1.1) in the request line parsing
+     is now case insensitive. This closes a few PRs and implies that
+     ProtocolReqCheck will trigger on *true* invalid protocols.
+     [Jim Jagielski]
+
   *) Relaxed mod_digest its parsing in order to make it work
      with iCal's "WebDAVFS/1.2 (01208000) Darwin/6.0 (Power Macintosh)"
      User-Agent. Apache (incorrectly) insisted on a quoted URI's

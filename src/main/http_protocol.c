@@ -1002,7 +1002,6 @@ static int read_request_line(request_rec *r)
     unsigned int major = 1, minor = 0;   /* Assume HTTP/1.0 if non-"HTTP" protocol */
     int len = 0;
     int valid_protocol = 1;
-    char *kruft;
 
     /* Read past empty lines until we get a real request line,
      * a read error, the connection closes (EOF), or we timeout.
@@ -1073,9 +1072,12 @@ static int read_request_line(request_rec *r)
         r->proto_num = HTTP_VERSION(r->protocol[5] - '0', r->protocol[7] - '0');
     }
     else {
-	kruft = ap_palloc(r->pool, strlen(r->protocol)+1);
-	if (2 == sscanf(r->protocol, "HTTP/%u.%u%s", &major, &minor, kruft)
-	    && minor < HTTP_VERSION(1,0)) /* don't allow HTTP/0.1000 */
+        char *lint;
+        char http[5];
+	lint = ap_palloc(r->pool, strlen(r->protocol)+1);
+	if (3 == sscanf(r->protocol, "%4s/%u.%u%s", http, &major, &minor, lint)
+            && (strcasecmp("http", http) == 0)
+	    && (minor < HTTP_VERSION(1,0)) ) /* don't allow HTTP/0.1000 */
 	    r->proto_num = HTTP_VERSION(major, minor);
 	else {
 	    r->proto_num = HTTP_VERSION(1,0);
