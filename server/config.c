@@ -95,13 +95,13 @@
 #include "mpm.h"
 
 
-AP_DECLARE_DATA const char *ap_server_argv0;
+AP_DECLARE_DATA const char *ap_server_argv0 = NULL;
 
 AP_DECLARE_DATA const char *ap_server_root = NULL;
 
-AP_DECLARE_DATA apr_array_header_t *ap_server_pre_read_config;
-AP_DECLARE_DATA apr_array_header_t *ap_server_post_read_config;
-AP_DECLARE_DATA apr_array_header_t *ap_server_config_defines;
+AP_DECLARE_DATA apr_array_header_t *ap_server_pre_read_config = NULL;
+AP_DECLARE_DATA apr_array_header_t *ap_server_post_read_config = NULL;
+AP_DECLARE_DATA apr_array_header_t *ap_server_config_defines = NULL;
 
 AP_DECLARE_DATA ap_directive_t *ap_conftree = NULL;
 
