@@ -43,7 +43,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /YX /c
-# ADD CPP /nologo /MD /W3 /GX /O2 /I "..\..\modules\dav\main" /I "..\..\lib\sdbm" /I "..\..\lib\expat-lite" /I "..\..\lib\apr\include" /I "..\..\include" /I "..\..\os\win32" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /YX /FD /c
+# ADD CPP /nologo /MD /W3 /GX /O2 /I "..\..\modules\dav\main" /I "..\..\lib\aputil" /I "..\..\lib\sdbm" /I "..\..\lib\expat-lite" /I "..\..\lib\apr\include" /I "..\..\include" /I "..\..\os\win32" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /YX /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x809 /d "NDEBUG"
@@ -68,8 +68,8 @@ LINK32=link.exe
 # PROP Intermediate_Dir ".\mod_dav_fsD"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /YX /c
-# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /I "..\..\modules\dav\main" /I "..\..\lib\sdbm" /I "..\..\lib\expat-lite" /I "..\..\lib\apr\include" /I "..\..\include" /I "..\..\os\win32" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /YX /FD /c
+# ADD BASE CPP /nologo /MTd /W3 /GX /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /YX /ZI /c
+# ADD CPP /nologo /MDd /W3 /GX /Od /I "..\..\modules\dav\main" /I "..\..\lib\aputil" /I "..\..\lib\sdbm" /I "..\..\lib\expat-lite" /I "..\..\lib\apr\include" /I "..\..\include" /I "..\..\os\win32" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /YX /FD /ZI /c
 # ADD BASE MTL /nologo /D "_DEBUG" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x809 /d "_DEBUG"

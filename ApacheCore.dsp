@@ -43,7 +43,7 @@ RSC=rc.exe
 # ADD BASE RSC /l 0x409
 # ADD RSC /l 0x409
 # ADD BASE CPP /nologo /MD /W3 /GX /O2 /I ".\include" /I ".\lib\apr\include" /I ".\os\win32" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /c
-# ADD CPP /nologo /MD /W3 /GX /O2 /I ".\include" /I ".\lib\apr\include" /I ".\os\win32" /I ".\modules\mpm\winnt" /I ".\lib\expat-lite" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /c
+# ADD CPP /nologo /MD /W3 /GX /O2 /I ".\include" /I ".\lib\apr\include" /I ".\lib\aputil" /I ".\lib\sdbm" /I ".\os\win32" /I ".\modules\mpm\winnt" /I ".\lib\expat-lite" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /c
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -68,7 +68,7 @@ RSC=rc.exe
 # ADD BASE RSC /l 0x409
 # ADD RSC /l 0x409
 # ADD BASE CPP /nologo /MDd /W3 /GX /ZI /Od /I ".\include" /I ".\lib\apr\include" /I ".\os\win32" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /c
-# ADD CPP /nologo /MDd /W3 /GX /ZI /Od /I ".\include" /I ".\lib\apr\include" /I ".\os\win32" /I ".\modules\mpm\winnt" /I ".\lib\expat-lite" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /c
+# ADD CPP /nologo /MDd /W3 /GX /ZI /Od /I ".\include" /I ".\lib\apr\include" /I ".\lib\aputil" /I ".\lib\sdbm" /I ".\os\win32" /I ".\modules\mpm\winnt" /I ".\lib\expat-lite" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /c
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -118,6 +118,35 @@ SOURCE=.\os\win32\os.h
 # Begin Group "Generated Files"
 
 # PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\lib\aputil\apu_private.hw
+
+!IF  "$(CFG)" == "ApacheCore - Win32 Release"
+
+# Begin Custom Build
+InputPath=.\lib\aputil\apu_private.hw
+
+".\lib\aputil\apu_private.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	copy .\lib\aputil\apu_private.hw .\lib\aputil\apu_private.h >nul 
+	echo Created aputil apu_private.h from apu_private.hw 
+	
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
+
+# Begin Custom Build
+InputPath=.\lib\aputil\apu_private.hw
+
+".\lib\aputil\apu_private.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	copy .\lib\aputil\apu_private.hw .\lib\aputil\apu_private.h >nul 
+	echo Created aputil apu_private.h from apu_private.hw 
+	
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
 # Begin Source File
 
 SOURCE=.\main\gen_test_char.exe
@@ -263,6 +292,10 @@ SOURCE=.\ap\ap_sha1.c
 # Begin Source File
 
 SOURCE=.\include\ap_sha1.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\lib\aputil\apu_dbm.c
 # End Source File
 # End Group
 # Begin Group "httpd"
