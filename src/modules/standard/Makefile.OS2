@@ -102,7 +102,7 @@ speling.dll: mod_speling.o mod_speling.def
 status.dll: mod_status.o mod_status.def
 	$(mkdll)
 
-uniqueid.dll: mod_unique_id.o mod_unique_id.def
+unique_i.dll: mod_unique_id.o mod_unique_id.def
 	$(mkdll)
 
 userdir.dll: mod_userdir.o mod_userdir.def
