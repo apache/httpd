@@ -55,36 +55,6 @@ typedef struct {
     mod_filter_chain *chain;
 } mod_filter_cfg;
 
-static const char *filter_bucket_type(apr_bucket *b)
-{
-    static struct {
-        const apr_bucket_type_t *fn;
-        const char *desc;
-    } types[] = {
-        { &apr_bucket_type_heap,      "HEAP"      },
-        { &apr_bucket_type_transient, "TRANSIENT" },
-        { &apr_bucket_type_immortal,  "IMMORTAL"  },
-        { &apr_bucket_type_pool,      "POOL"      },
-        { &apr_bucket_type_eos,       "EOS"       },
-        { &apr_bucket_type_flush,     "FLUSH"     },
-        { &apr_bucket_type_file,      "FILE"      },
-#if APR_HAS_MMAP
-        { &apr_bucket_type_mmap,      "MMAP"      },
-#endif
-        { &apr_bucket_type_pipe,      "PIPE"      },
-        { &apr_bucket_type_socket,    "SOCKET"    },
-        { NULL, NULL }
-    };
-    int i = 0;
-
-    do {
-        if (b->type == types[i].fn) {
-            return types[i].desc;
-        }
-    } while (types[++i].fn != NULL);
-
-    return "(error)";
-}
 
 static void filter_trace(apr_pool_t *pool, int debug, const char *fname,
                          apr_bucket_brigade *bb)
@@ -98,8 +68,11 @@ static void filter_trace(apr_pool_t *pool, int debug, const char *fname,
         for (b = APR_BRIGADE_FIRST(bb);
              b != APR_BRIGADE_SENTINEL(bb);
              b = APR_BUCKET_NEXT(b)) {
-            ap_log_perror(APLOG_MARK, APLOG_NOTICE, 0, pool, "   %s: %s %d",
-                          fname, filter_bucket_type(b), b->length);
+
+            ap_log_perror(APLOG_MARK, APLOG_NOTICE, 0, pool,
+                          "%s: type: %s, length: %" APR_SIZE_T_FMT,
+                          fname, b->type->name ? b->type->name : "(unknown)",
+                          b->length);
         }
         break;
     }
