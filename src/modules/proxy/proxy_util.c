@@ -1554,6 +1554,85 @@ int ap_proxy_table_replace(table *base, table *overlay)
     return q;
 }
 
+/* read the response line
+ * This function reads a single line of response from the server,
+ * and returns a status code.
+ * The timeout flag if non-zero means we return BAD_GATEWAY on timeout
+ * errors, otherwise we silently return to handle 100-continue.
+ * It also populates the request_rec with the resultant status, and
+ * returns backasswards status (HTTP/0.9).
+ */
+int ap_proxy_read_response_line(BUFF *f, request_rec *r, char *buffer, int size, int timeout, int *backasswards, int *major, int *minor) {
+
+    long len;
+
+    len = ap_getline(buffer, size-1, f, 0);
+    if (len == -1) {
+        if (!timeout && errno == ETIMEDOUT) {
+            /* emulate 100-continue */
+            r->status = 100;
+            r->status_line = "100 Continue";
+            return OK;
+        }
+        ap_bclose(f);
+        ap_kill_timeout(r);
+        return ap_proxyerror(r, HTTP_BAD_GATEWAY,
+                             "Error reading from remote server");
+    }
+    else if (len == 0) {
+        ap_bclose(f);
+        ap_kill_timeout(r);
+        return ap_proxyerror(r, HTTP_BAD_GATEWAY,
+                             "Document contains no data");
+    }
+
+    /*
+     * Is it an HTTP/1 response? Do some sanity checks on the response. (This
+     * is buggy if we ever see an HTTP/1.10)
+     */
+    if (ap_checkmask(buffer, "HTTP/#.# ###*")) {
+
+        if (2 != sscanf(buffer, "HTTP/%u.%u", major, minor)) {
+            /* if no response, default to HTTP/1.1 - is this correct? */
+            *major = 1;
+            *minor = 1;
+        }
+
+        /* If not an HTTP/1 message */
+        if (*major < 1) {
+            ap_bclose(f);
+            ap_kill_timeout(r);
+            return HTTP_BAD_GATEWAY;
+        }
+        *backasswards = 0;
+
+        buffer[12] = '\0';
+        r->status = atoi(&buffer[9]);
+        buffer[12] = ' ';
+        r->status_line = ap_pstrdup(r->pool, &buffer[9]);
+
+        /* if the response was 100 continue, soak up any headers */
+        if (r->status == 100) {
+            ap_proxy_read_headers(r, buffer, size, f);
+        }
+
+    }
+    else {
+
+        /* an http/0.9 response */
+        *backasswards = 1;
+        r->status = 200;
+        r->status_line = "200 OK";
+        *major = 0;
+        *minor = 9;
+
+    }
+
+    return OK;
+
+}
+
+
 #if defined WIN32
 
 static DWORD tls_index;

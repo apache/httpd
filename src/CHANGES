@@ -1,5 +1,8 @@
 Changes with Apache 1.3.25
 
+  *) Correct proxy to be able to handle the unexpected 100-continue
+     reponses sent during PUT or POST requests. [Graham Leggett]
+
   *) Correct a timeout problem within proxy which would force long
      or slow POST requests to close after 300 seconds.
      [Martin Lichtin <martin@lichtin.net>, Brian Bothwell

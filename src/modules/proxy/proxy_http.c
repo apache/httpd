@@ -168,6 +168,7 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
     char *destportstr = NULL;
     const char *urlptr = NULL;
     const char *datestr, *urlstr;
+    int result, major, minor;
     const char *content_length;
 
     void *sconf = r->server->module_config;
@@ -386,70 +387,76 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
     /* the obligatory empty line to mark the end of the headers */
     ap_bputs(CRLF, f);
 
-    /* send the request data, if any. */
-    if (ap_should_client_block(r)) {
-        while ((i = ap_get_client_block(r, buffer, sizeof buffer)) > 0) {
-            ap_reset_timeout(r);
-            ap_bwrite(f, buffer, i);
-        }
-    }
+    /* and flush the above away */
     ap_bflush(f);
+
+    /* and kill the send timeout */
     ap_kill_timeout(r);
 
 
-    /*
-     * Right - now it's time to listen for a response.
+    /* read the request data, and pass it to the backend.
+     * we might encounter a stray 100-continue reponse from a PUT or POST,
+     * if this happens we ignore the 100 continue status line and read the
+     * response again.
      */
-    ap_hard_timeout("proxy receive", r);
+    {
+        /* send the request data, if any. */
+        ap_hard_timeout("proxy receive request data", r);
+        if (ap_should_client_block(r)) {
+            while ((i = ap_get_client_block(r, buffer, sizeof buffer)) > 0) {
+                ap_reset_timeout(r);
+                ap_bwrite(f, buffer, i);
+            }
+        }
+        ap_bflush(f);
+        ap_kill_timeout(r);
 
-    len = ap_bgets(buffer, sizeof buffer - 1, f);
-    if (len == -1) {
-        ap_bclose(f);
+
+        /* then, read a response line */
+        ap_hard_timeout("proxy receive response status line", r);
+        result = ap_proxy_read_response_line(f, r, buffer, sizeof(buffer)-1, 1, &backasswards, &major, &minor);
         ap_kill_timeout(r);
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
-                      "ap_bgets() - proxy receive - Error reading from remote server %s (length %d)",
-                      proxyhost ? proxyhost : desthost, len);
-        return ap_proxyerror(r, HTTP_BAD_GATEWAY,
-                             "Error reading from remote server");
+
+        /* trap any errors */
+        if (result != OK) {
+            ap_bclose(f);
+            return result;
+        }
+
+        /* if this response was 100-continue, a stray response has been caught.
+         * read the line again for the real response
+         */
+        if (r->status == 100) {
+            ap_hard_timeout("proxy receive response status line", r);
+            result = ap_proxy_read_response_line(f, r, buffer, sizeof(buffer)-1, 1, &backasswards, &major, &minor);
+            ap_kill_timeout(r);
+
+            /* trap any errors */
+            if (result != OK) {
+                ap_bclose(f);
+                return result;
+            }
+        }
     }
-    else if (len == 0) {
-        ap_bclose(f);
-        ap_kill_timeout(r);
-        return ap_proxyerror(r, HTTP_BAD_GATEWAY,
-                             "Document contains no data");
-    }
+
+
+    /*
+     * We have our response status line from the convoluted code above,
+     * now we read the headers to continue.
+     */
+    ap_hard_timeout("proxy receive response headers", r);
 
     /*
      * Is it an HTTP/1 response? Do some sanity checks on the response. (This
      * is buggy if we ever see an HTTP/1.10)
      */
-    if (ap_checkmask(buffer, "HTTP/#.# ###*")) {
-        int major, minor;
-        if (2 != sscanf(buffer, "HTTP/%u.%u", &major, &minor)) {
-            /* if no response, default to HTTP/1.1 - is this correct? */
-            major = 1;
-            minor = 1;
-        }
-
-        /* If not an HTTP/1 message or if the status line was > 8192 bytes */
-        if (buffer[5] != '1' || buffer[len - 1] != '\n') {
-            ap_bclose(f);
-            ap_kill_timeout(r);
-            return HTTP_BAD_GATEWAY;
-        }
-        backasswards = 0;
-        buffer[--len] = '\0';
-
-        buffer[12] = '\0';
-        r->status = atoi(&buffer[9]);
-        buffer[12] = ' ';
-        r->status_line = ap_pstrdup(p, &buffer[9]);
+    if (backasswards == 0) {
 
         /* read the response headers. */
         /* N.B. for HTTP/1.0 clients, we have to fold line-wrapped headers */
         /* Also, take care with headers with multiple occurences. */
 
-        resp_hdrs = ap_proxy_read_headers(r, buffer, HUGE_STRING_LEN, f);
+        resp_hdrs = ap_proxy_read_headers(r, buffer, sizeof(buffer), f);
         if (resp_hdrs == NULL) {
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_NOERRNO, r->server,
                          "proxy: Bad HTTP/%d.%d header returned by %s (%s)",
@@ -489,17 +496,15 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
         ap_proxy_clear_connection(p, resp_hdrs);
 
         content_length = ap_table_get(resp_hdrs, "Content-Length");
-        if (content_length != NULL)
+        if (content_length != NULL) {
             c->len = strtol(content_length, NULL, 10);
+        }
 
         /* Now add out bound headers set by other modules */
         resp_hdrs = ap_overlay_tables(r->pool, r->err_headers_out, resp_hdrs);
     }
     else {
         /* an http/0.9 response */
-        backasswards = 1;
-        r->status = 200;
-        r->status_line = "200 OK";
 
         /* no headers */
         resp_hdrs = ap_make_table(p, 20);
