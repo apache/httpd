@@ -342,7 +342,7 @@ SOURCE=.\include\httpd.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\include\md5.h
+SOURCE=.\include\ap_md5.h
 # End Source File
 # Begin Source File
 

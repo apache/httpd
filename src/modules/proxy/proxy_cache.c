@@ -67,7 +67,7 @@
 #include <utime.h>
 #endif /* WIN32 */
 #include "multithread.h"
-#include "md5.h"
+#include "ap_md5.h"
 
 DEF_Explain
 

@@ -82,7 +82,7 @@ http_core.o: http_core.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
  $(INCDIR)/http_protocol.h $(INCDIR)/http_request.h \
  $(INCDIR)/http_conf_globals.h $(INCDIR)/http_vhost.h \
  $(INCDIR)/http_main.h $(INCDIR)/http_log.h $(INCDIR)/rfc1413.h \
- $(INCDIR)/util_md5.h $(INCDIR)/md5.h $(INCDIR)/scoreboard.h \
+ $(INCDIR)/util_md5.h $(INCDIR)/ap_md5.h $(INCDIR)/scoreboard.h \
  $(INCDIR)/fnmatch.h
 http_log.o: http_log.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
  $(OSDIR)/os.h $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
@@ -114,7 +114,7 @@ http_vhost.o: http_vhost.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
  $(INCDIR)/util_uri.h $(INCDIR)/http_config.h \
  $(INCDIR)/http_conf_globals.h $(INCDIR)/http_log.h \
  $(INCDIR)/http_vhost.h $(INCDIR)/http_protocol.h
-md5c.o: md5c.c $(INCDIR)/conf.h $(OSDIR)/os.h $(INCDIR)/md5.h
+md5c.o: md5c.c $(INCDIR)/conf.h $(OSDIR)/os.h $(INCDIR)/ap_md5.h
 rfc1413.o: rfc1413.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
  $(OSDIR)/os.h $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
  $(INCDIR)/util_uri.h $(INCDIR)/http_log.h $(INCDIR)/rfc1413.h \
@@ -127,7 +127,7 @@ util_date.o: util_date.c $(INCDIR)/conf.h $(OSDIR)/os.h \
  $(INCDIR)/util_date.h
 util_md5.o: util_md5.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
  $(OSDIR)/os.h $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
- $(INCDIR)/util_uri.h $(INCDIR)/util_md5.h $(INCDIR)/md5.h
+ $(INCDIR)/util_uri.h $(INCDIR)/util_md5.h $(INCDIR)/ap_md5.h
 util_script.o: util_script.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
  $(OSDIR)/os.h $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
  $(INCDIR)/util_uri.h $(INCDIR)/http_config.h \

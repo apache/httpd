@@ -91,7 +91,7 @@
 #include <string.h>
 
 #include "conf.h"
-#include "md5.h"
+#include "ap_md5.h"
 #ifdef CHARSET_EBCDIC
 #include "ebcdic.h"
 #endif /*CHARSET_EBCDIC*/

@@ -58,7 +58,7 @@
 /* Utility routines for Apache proxy */
 #include "mod_proxy.h"
 #include "http_main.h"
-#include "md5.h"
+#include "ap_md5.h"
 #include "multithread.h"
 #include "http_log.h"
 #include "util_uri.h"

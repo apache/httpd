@@ -191,7 +191,7 @@ DEP_CPP_MOD_D=\
 	"..\..\include\http_log.h"\
 	"..\..\include\http_protocol.h"\
 	"..\..\include\httpd.h"\
-	"..\..\include\md5.h"\
+	"..\..\include\ap_md5.h"\
 	"..\..\include\util_md5.h"\
 	"..\..\include\util_uri.h"\
 	".\os.h"\
@@ -222,7 +222,7 @@ DEP_CPP_MOD_D=\
 	"..\..\include\http_log.h"\
 	"..\..\include\http_protocol.h"\
 	"..\..\include\httpd.h"\
-	"..\..\include\md5.h"\
+	"..\..\include\ap_md5.h"\
 	"..\..\include\util_md5.h"\
 	"..\..\include\util_uri.h"\
 	".\os.h"\

@@ -1,5 +1,8 @@
 Changes with Apache 1.3b8
 
+  *) Rename md5.h to ap_md5.h to avoid conflicts with native MD5 on
+     some systems. [Randy Terbush]
+
   *) Change usage of perror()+fprintf(stderr,...) in mod_rewrite to
      more proper ap_log_error() variants.
      [Ralf S. Engelschall]

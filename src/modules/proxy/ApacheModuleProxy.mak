@@ -269,7 +269,7 @@ DEP_CPP_PROXY=\
 	"..\..\include\http_main.h"\
 	"..\..\include\http_protocol.h"\
 	"..\..\include\httpd.h"\
-	"..\..\include\md5.h"\
+	"..\..\include\ap_md5.h"\
 	"..\..\include\multithread.h"\
 	"..\..\include\util_date.h"\
 	"..\..\include\util_uri.h"\
@@ -303,7 +303,7 @@ DEP_CPP_PROXY=\
 	"..\..\include\http_main.h"\
 	"..\..\include\http_protocol.h"\
 	"..\..\include\httpd.h"\
-	"..\..\include\md5.h"\
+	"..\..\include\ap_md5.h"\
 	"..\..\include\multithread.h"\
 	"..\..\include\util_date.h"\
 	"..\..\include\util_uri.h"\
@@ -507,7 +507,7 @@ DEP_CPP_PROXY_U=\
 	"..\..\include\http_main.h"\
 	"..\..\include\http_protocol.h"\
 	"..\..\include\httpd.h"\
-	"..\..\include\md5.h"\
+	"..\..\include\ap_md5.h"\
 	"..\..\include\multithread.h"\
 	"..\..\include\util_uri.h"\
 	"..\..\os\win32\os.h"\
@@ -539,7 +539,7 @@ DEP_CPP_PROXY_U=\
 	"..\..\include\http_main.h"\
 	"..\..\include\http_protocol.h"\
 	"..\..\include\httpd.h"\
-	"..\..\include\md5.h"\
+	"..\..\include\ap_md5.h"\
 	"..\..\include\multithread.h"\
 	"..\..\include\util_uri.h"\
 	"..\..\os\win32\os.h"\

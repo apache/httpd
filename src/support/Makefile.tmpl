@@ -64,7 +64,7 @@ $(OBJS): Makefile
 # DO NOT REMOVE
 ab.o: ab.c $(INCDIR)/conf.h $(OSDIR)/os.h
 htdigest.o: htdigest.c $(INCDIR)/conf.h $(OSDIR)/os.h \
- ../main/md5c.c $(INCDIR)/md5.h
+ ../main/md5c.c $(INCDIR)/ap_md5.h
 htpasswd.o: htpasswd.c $(INCDIR)/conf.h $(OSDIR)/os.h
 logresolve.o: logresolve.c $(INCDIR)/conf.h $(OSDIR)/os.h
 rotatelogs.o: rotatelogs.c $(INCDIR)/conf.h $(OSDIR)/os.h

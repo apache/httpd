@@ -707,7 +707,7 @@ DEP_CPP_HTTP_C=\
 	".\include\http_request.h"\
 	".\include\http_vhost.h"\
 	".\include\httpd.h"\
-	".\include\md5.h"\
+	".\include\ap_md5.h"\
 	".\include\rfc1413.h"\
 	".\include\scoreboard.h"\
 	".\include\util_md5.h"\
@@ -745,7 +745,7 @@ DEP_CPP_HTTP_C=\
 	".\include\http_request.h"\
 	".\include\http_vhost.h"\
 	".\include\httpd.h"\
-	".\include\md5.h"\
+	".\include\ap_md5.h"\
 	".\include\rfc1413.h"\
 	".\include\scoreboard.h"\
 	".\include\util_md5.h"\
@@ -1090,7 +1090,7 @@ SOURCE=.\main\md5c.c
 DEP_CPP_MD5C_=\
 	".\include\conf.h"\
 	".\include\hsregex.h"\
-	".\include\md5.h"\
+	".\include\ap_md5.h"\
 	".\os\win32\os.h"\
 	{$(INCLUDE)}"sys\stat.h"\
 	{$(INCLUDE)}"sys\types.h"\
@@ -1108,7 +1108,7 @@ NODEP_CPP_MD5C_=\
 DEP_CPP_MD5C_=\
 	".\include\conf.h"\
 	".\include\hsregex.h"\
-	".\include\md5.h"\
+	".\include\ap_md5.h"\
 	".\os\win32\os.h"\
 	
 
@@ -2515,7 +2515,7 @@ DEP_CPP_UTIL_M=\
 	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\httpd.h"\
-	".\include\md5.h"\
+	".\include\ap_md5.h"\
 	".\include\util_md5.h"\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
@@ -2542,7 +2542,7 @@ DEP_CPP_UTIL_M=\
 	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\httpd.h"\
-	".\include\md5.h"\
+	".\include\ap_md5.h"\
 	".\include\util_md5.h"\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
