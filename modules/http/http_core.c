@@ -764,7 +764,7 @@ AP_DECLARE(const char *) ap_get_server_name(request_rec *r)
     return r->server->server_hostname;
 }
 
-AP_DECLARE(unsigned) ap_get_server_port(const request_rec *r)
+AP_DECLARE(apr_port_t) ap_get_server_port(const request_rec *r)
 {
     apr_port_t port;
     core_dir_config *d =

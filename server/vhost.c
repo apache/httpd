@@ -798,7 +798,7 @@ static int matches_aliases(server_rec *s, const char *host)
  * the ServerName and/or ServerAliases.
  */
 AP_DECLARE(int) ap_matches_request_vhost(request_rec *r, const char *host,
-    unsigned port)
+    apr_port_t port)
 {
     server_rec *s;
     server_addr_rec *sar;
