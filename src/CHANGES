@@ -1,5 +1,8 @@
 Changes with Apache 1.3b6
 
+  *) API: Clarification, pstrndup() will always copy n bytes of the source
+     and NUL terminate at the (n+1)st byte.  [Dean Gaudet]
+
   *) Mark module command_rec and handler_rec structures const so that they
      end up in the read-only data section (and are friendlier to systems
      that don't do optimistic memory allocation on fork()). [Dean Gaudet]
