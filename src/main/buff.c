@@ -325,7 +325,7 @@ saferead( BUFF *fb, void *buf, int nbyte )
     }
     do {
 	rv = read( fb->fd_in, buf, nbyte );
-    } while ( rv == -1 && errno == EINTR );
+    } while (rv == -1 && errno == EINTR && !(fb->flags & B_EOUT));
     return( rv );
 }
 
