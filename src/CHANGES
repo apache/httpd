@@ -8,11 +8,29 @@ Changes with Apache 1.3
 
 Changes with Apache 1.2.1
   
+  *) Improved unix error response logging.  [Marc Slemko]
+
+  *) Update mod_rewrite from 3.0.5 to 3.0.6.  New ruleflag
+     QSA=query_string_append.  Also fixed a nasty bug in per-dir context:
+     when a URL http://... was used in concunction with a special
+     redirect flag, e.g. R=permanent, the permanent status was lost.
+     [Ronald Tschalaer <Ronald.Tschalaer@psi.ch>, Ralf S. Engelschall]
+
+  *) If an object has multiple variants that are otherwise equal Apache
+     would prefer the last listed variant rather than the first.
+     [Paul Sutton] PR#94
+
+  *) "HostnameLookups" now defaults to off because it is far better for
+     the net if we require people that actually need this data to
+     enable it.  [Linus Torvalds]
+
+  *) "make clean" at the top level now removes *.o.  [Dean Gaudet] PR#752
+
   *) Don't serve file system objects unless they are plain files, symlinks,
      or directories.  This prevents local users from using pipes or
      named sockets to invoke programs for an extremely crude form of
      CGI.  [Dean Gaudet]
-  
+
   *) HeaderName and ReadmeName were settable in .htaccess and could
      contain "../" allowing a local user to "publish" any file on the
      system.  No slashes are allowed now.  [Dean Gaudet]
@@ -47,6 +65,14 @@ Changes with Apache 1.2.1
      log files more feasible.  If this causes trouble please report it,
      you can disable this workaround by adding -DNO_SLACK to EXTRA_CFLAGS.
      [Dean Gaudet] various PRs
+
+  *) Related to the last entry, network sockets are now opened before
+     log files are opened.  The only known case where this can cause
+     problems is under Solaris with many virtualhosts and many Listen
+     directives.  But using -DHIGH_SLACK_LINE=256 described above will
+     work around this problem.  [Dean Gaudet]
+
+  *) pregsub had an off-by-1 in its error checking code. [Alexei Kosut]
 
 Changes with Apache 1.2
 
