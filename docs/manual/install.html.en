@@ -159,7 +159,7 @@ files in directories accessed by the server.
 
 To start the server, simply run <CODE>httpd</CODE>. This will look for
 <CODE>httpd.conf</CODE> in the location compiled into the code (by
-default <CODE>/usr/locale/etc/httpd/conf/httpd.conf</CODE>). If
+default <CODE>/usr/local/etc/httpd/conf/httpd.conf</CODE>). If
 this file is somewhere else, you can give the real
 location with the -f argument. For example:
 
