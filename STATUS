@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/10/02 21:21:55 $]
+Last modified at [$Date: 2001/10/03 17:47:50 $]
 
 Release:
 
@@ -95,12 +95,9 @@ RELEASE SHOWSTOPPERS:
       to make it agree with the operation of the StartServers
       directive.
 
-    * configure --enable-mods-shared=most option has issues.  Example: 
-
-      ./configure --enable-mods-shared=most
-
-        This builds mod_headers as a DSO (good) but builds mod_mime
-        as a compiled-in module (bad).
+    * Fix the configure script to add a LoadModule directive to
+      the default httpd.conf for any module that was compiled
+      as a DSO.
 
     * revamp the input filter semantics, per discussions since
       February (and especially at the hackathon last

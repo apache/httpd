@@ -196,10 +196,11 @@ dnl
 dnl APACHE_MODULE(name, helptext[, objects[, structname[, default[, config]]]])
 dnl
 dnl default is one of:
-dnl   yes  -- enabled by default. user must explicitly disable.
-dnl   no   -- disabled under default, most, all. user must explicitly enable.
-dnl   most -- disabled by default. enabled explicitly or with most or all.
-dnl   ""   -- disabled under default, most. enabled explicitly or with all.
+dnl   yes    -- enabled by default. user must explicitly disable.
+dnl   no     -- disabled under default, most, all. user must explicitly enable.
+dnl   most   -- disabled by default. enabled explicitly or with most or all.
+dnl   static -- enabled as static by default, must be explicitly changed.
+dnl   ""     -- disabled under default, most. enabled explicitly or with all.
 dnl
 dnl basically: yes/no is a hard setting. "most" means follow the "most"
 dnl            setting. otherwise, fall under the "all" setting.
@@ -218,11 +219,16 @@ AC_DEFUN(APACHE_MODULE,[
   else
     _apmod_error_fatal="yes"
   fi
-  if test "$enable_$1" = "most"; then
+  if test "$enable_$1" = "static"; then
+    enable_$1=yes
+  elif test "$enable_$1" = "yes"; then
+    enable_$1=$module_default
+    _apmod_extra_msg=" ($module_selection)"
+  elif test "$enable_$1" = "most"; then
     if test "$module_selection" = "most" -o "$module_selection" = "all"; then
       enable_$1=$module_default
       _apmod_extra_msg=" ($module_selection)"
-    else
+    elif test "$enable_$1" != "yes"; then
       enable_$1=no
     fi
   elif test "$enable_$1" = "maybe-all"; then

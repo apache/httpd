@@ -18,7 +18,7 @@ APACHE_MODULE(rewrite, regex URL translation, , , most, [
 ])
 
 if test "$sharedobjs" = "yes"; then
-    APACHE_MODULE(so, DSO capability, , , yes)
+    APACHE_MODULE(so, DSO capability, , , static)
 else
     APACHE_MODULE(so, DSO capability, , , no)
 fi
