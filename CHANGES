@@ -1,5 +1,9 @@
 Changes with Apache 2.0.27-dev
 
+  *) Some syntax errors in mod_mime_magic's magic file can result
+     in a 500 error, which previously was unlogged.  Now we log the
+     error.  [Jeff Trawick]
+
   *) Add the support/checkgid helper app, which checks the run-time
      validity of group identifiers usable in the Group directive.
      [Ken Coar]
