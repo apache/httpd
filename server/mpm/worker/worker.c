@@ -825,8 +825,6 @@ static void * APR_THREAD_FUNC worker_thread(apr_thread_t *thd, void * dummy)
 
     ap_update_child_status_from_indexes(process_slot, thread_slot, SERVER_STARTING, NULL);
 
-    bucket_alloc = apr_bucket_alloc_create(apr_thread_pool_get(thd));
-
     while (!workers_may_exit) {
         if (!is_idle) {
             rv = ap_queue_info_set_idle(worker_queue_info, last_ptrans);
@@ -878,6 +876,7 @@ worker_pop:
         }
         is_idle = 0;
         worker_sockets[thread_slot] = csd;
+        bucket_alloc = apr_bucket_alloc_create(ptrans);
         process_socket(ptrans, csd, process_slot, thread_slot, bucket_alloc);
         worker_sockets[thread_slot] = NULL;
         requests_this_child--; /* FIXME: should be synchronized - aaron */
@@ -887,8 +886,6 @@ worker_pop:
 
     ap_update_child_status_from_indexes(process_slot, thread_slot,
         (dying) ? SERVER_DEAD : SERVER_GRACEFUL, (request_rec *) NULL);
-
-    apr_bucket_alloc_destroy(bucket_alloc);
 
     apr_thread_exit(thd, APR_SUCCESS);
     return NULL;

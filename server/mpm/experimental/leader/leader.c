@@ -715,9 +715,10 @@ static void *worker_thread(apr_thread_t *thd, void * dummy)
 
     apr_allocator_create(&allocator);
     apr_allocator_max_free_set(allocator, ap_max_mem_free);
+    /* XXX: why is ptrans's parent not tpool?  --jcw 08/2003 */
     apr_pool_create_ex(&ptrans, NULL, NULL, allocator);
     apr_allocator_owner_set(allocator, ptrans);
-    bucket_alloc = apr_bucket_alloc_create(tpool);
+    bucket_alloc = apr_bucket_alloc_create_ex(allocator);
 
     apr_poll_setup(&pollset, num_listensocks, tpool);
     for(lr = ap_listeners ; lr != NULL ; lr = lr->next)
