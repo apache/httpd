@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/08/31 19:38:46 $]
+Last modified at [$Date: 2004/09/01 18:54:14 $]
 
 Release:
 
@@ -109,7 +109,13 @@ PATCHES TO BACKPORT FROM 2.1
        UTC.  PR 24417.  [Ken Coar, Uli Zappe <uli ritual.org>]
          support/rotatelogs.c: r1.33, r1.34, r1.35
        +1: trawick, nd
-    
+
+    *) Fix the handling of URIs containing %2F when AllowEncodedSlashes
+       is enabled.  Previously, such urls would still be rejected with
+       404.
+         server/util.c: r1.148
+       +1: trawick
+
     *) Remove LDAP toolkit specific code from util_ldap and mod_auth_ldap.
          modules/experimental/mod_auth_ldap.c: 1.28
          modules/experimental/util_ldap.c: 1.36
