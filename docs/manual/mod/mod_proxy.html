@@ -328,9 +328,10 @@ by another forward proxy.
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> ProxyPass <EM>path url</EM><br> 
-or: ProxyPass <EM>url</EM> when placed in a &lt;location&gt; directive <em>(Apache 2.0 only)</em>
-<br>
+><STRONG>Syntax:</STRONG></A> ProxyPass <EM>path url</EM><BR> 
+or: ProxyPass <EM>url</EM> when placed in a &lt;location&gt; directive <em>(Apache 2.0 only)</EM><br>
+or: ProxyPass <EM>path !</EM> to exclude a path from being proxied.
+<BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
@@ -370,8 +371,15 @@ will cause a local request for the
 &lt;<SAMP>http://wibble.org/mirror/foo/bar</SAMP>&gt; to be
 internally converted into a proxy request to
 &lt;<SAMP>http://foo.com/bar</SAMP>&gt;.
-
-
+<P>
+The ! directive is usefull in situations where you don't want to reverse-proxy
+a subdirectory. eg.
+<PRE>
+        ProxyPass /mirror/foo http://foo.com
+        ProxyPass /mirror/foo/i !
+</PRE>
+will proxy all requests to /mirror/foo to foo.com EXCEPT requests made to /mirror/foo/i
+</P>
 <HR>
 
 <H2><A NAME="proxypassreverse">ProxyPassReverse</A> directive</H2>

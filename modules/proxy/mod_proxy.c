@@ -188,6 +188,10 @@ static int proxy_trans(request_rec *r)
         len = alias_match(r->uri, ent[i].fake);
 	    
        if (len > 0) {
+           if ((ent[i].real[0] == '!' ) & ( ent[i].real[1] == 0 )) {
+               return DECLINED;
+           }
+
            r->filename = apr_pstrcat(r->pool, "proxy:", ent[i].real,
                                  (r->uri + len ), NULL);
            r->handler = "proxy-server";
