@@ -806,7 +806,8 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_sub_req_output_filter(ap_filter_t *f,
 
 AP_DECLARE(request_rec *) ap_sub_req_method_uri(const char *method,
                                                 const char *new_file,
-                                                const request_rec *r)
+                                                const request_rec *r,
+                                                ap_filter_t *next_filter)
 {
     request_rec *rnew;
     int res;
@@ -830,7 +831,12 @@ AP_DECLARE(request_rec *) ap_sub_req_method_uri(const char *method,
     ap_copy_method_list(rnew->allowed_methods, r->allowed_methods);
 
     /* start with the same set of output filters */
-    rnew->output_filters = r->output_filters;
+    if (next_filter) {
+        rnew->output_filters = next_filter;
+    }
+    else {
+        rnew->output_filters = r->output_filters;
+    }
     ap_add_output_filter("SUBREQ_CORE", NULL, rnew, rnew->connection); 
 
     /* no input filters for a subrequest */
@@ -902,13 +908,15 @@ AP_DECLARE(request_rec *) ap_sub_req_method_uri(const char *method,
 }
 
 AP_DECLARE(request_rec *) ap_sub_req_lookup_uri(const char *new_file,
-                                                const request_rec *r)
+                                                const request_rec *r,
+                                                ap_filter_t *next_filter)
 {
-    return ap_sub_req_method_uri("GET", new_file, r);
+    return ap_sub_req_method_uri("GET", new_file, r, next_filter);
 }
 
 AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
-                                              const request_rec *r)
+                                              const request_rec *r,
+                                              ap_filter_t *next_filter)
 {
     request_rec *rnew;
     int res;
@@ -932,7 +940,12 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
     ap_copy_method_list(rnew->allowed_methods, r->allowed_methods);
 
     /* start with the same set of output filters */
-    rnew->output_filters = r->output_filters;
+    if (next_filter) {
+        rnew->output_filters = next_filter;
+    }
+    else {
+        rnew->output_filters = r->output_filters;
+    }
     ap_add_output_filter("SUBREQ_CORE", NULL, rnew, rnew->connection); 
 
     /* no input filters for a subrequest */

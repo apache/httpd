@@ -949,7 +949,7 @@ static int read_types_multi(negotiation_state *neg)
          * which we'll be slapping default_type on later).
          */
 
-        sub_req = ap_sub_req_lookup_file(d_name, r);
+        sub_req = ap_sub_req_lookup_file(d_name, r, NULL);
 
         /* If it has a handler, we'll pretend it's a CGI script,
          * since that's a good indication of the sort of thing it
@@ -2314,7 +2314,7 @@ static int setup_choice_response(request_rec *r, negotiation_state *neg,
     if (!variant->sub_req) {
         int status;
 
-        sub_req = ap_sub_req_lookup_file(variant->file_name, r);
+        sub_req = ap_sub_req_lookup_file(variant->file_name, r, NULL);
         status = sub_req->status;
 
         if (status != HTTP_OK && 
@@ -2625,7 +2625,7 @@ static int handle_multi(request_rec *r)
          * a sub_req structure yet.  Get one now.
          */
 
-        sub_req = ap_sub_req_lookup_file(best->file_name, r);
+        sub_req = ap_sub_req_lookup_file(best->file_name, r, NULL);
         if (sub_req->status != HTTP_OK) {
             res = sub_req->status;
             ap_destroy_sub_req(sub_req);
