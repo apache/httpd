@@ -110,14 +110,12 @@
     </div> <!-- /page-header -->
 
     <div class="up">
-      <xsl:choose>
-        <xsl:when test="parentdocument">
-          <a href="{parentdocument/@href}"><img src="{$path}/images/left.gif" alt="&lt;-" title="&lt;-" /></a>
-        </xsl:when>
-        <xsl:otherwise>
-          <a href="./"><img src="{$path}/images/left.gif" alt="&lt;-" title="&lt;-" /></a>
-        </xsl:otherwise>
-      </xsl:choose>
+      <a href="./">
+        <xsl:if test="parentdocument">
+          <xsl:attribute name="href"><xsl:value-of select="parentdocument/@href"/></xsl:attribute>
+        </xsl:if>
+        <img src="{$path}/images/left.gif" alt="&lt;-" title="&lt;-" />
+      </a>
     </div>
 
     <div id="path">
@@ -160,11 +158,10 @@
   <xsl:template name="bottom">
     <div id="footer">
       <p class="apache">
-
-            <xsl:value-of select="$messages/message[@name='maintainedby']"/>
-
+        <xsl:value-of select="$messages/message[@name='maintainedby']"/>
         <xsl:text> </xsl:text>
-        <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a>
+        <a href="http://httpd.apache.org/docs-project/"
+          >Apache HTTP Server Documentation Project</a>
       </p>
 
       <xsl:call-template name="super-menu"/>
@@ -424,19 +421,13 @@
   <!-- ground colors, depending on type of note.          -->
   <!--                                                    -->
   <xsl:template match="note">
-    <xsl:choose>
-       <xsl:when test="@type='warning'">
-         <div class="warning">
-           <xsl:apply-templates/>
-         </div>
-       </xsl:when>
+    <div class="note">
+      <xsl:if test="@type='warning'">
+        <xsl:attribute name="class">warning</xsl:attribute>
+      </xsl:if>
 
-       <xsl:otherwise>
-         <div class="note">
-           <xsl:apply-templates/>
-         </div>
-       </xsl:otherwise>
-     </xsl:choose>
+      <xsl:apply-templates/>
+    </div>
   </xsl:template>  
   <!-- /note -->
 
@@ -575,74 +566,54 @@
   <!-- <table>                                            -->
   <!--                                                    -->
   <xsl:template match="table">
-    <xsl:variable name="content"><xsl:choose>
-      <xsl:when test="@style = 'zebra'">
-        <xsl:for-each select="tr">
+    <table>
+      <xsl:if test="@border">
+        <xsl:attribute name="class">bordered</xsl:attribute>
+      </xsl:if>
 
-          <!-- catch content -->
-          <xsl:variable name="current">
-            <xsl:apply-templates />
-          </xsl:variable>
-          
-          <!-- header line -->
-          <xsl:if test="count(td) = 0">
-            <tr class="header"><xsl:copy-of select="$current" /></tr>
-          </xsl:if>
-          
-          <!-- data line -->
-          <xsl:if test="count(td) &gt; 0">
-            <xsl:variable name="offset" select="count(preceding-sibling::*[count(td) = 0]) mod 2" />
+      <xsl:choose>
+        <xsl:when test="@style = 'zebra'">
+          <xsl:for-each select="tr">
 
-            <xsl:if test="position() mod 2 = $offset">
-              <tr class="odd"><xsl:copy-of select="$current" /></tr>
-            </xsl:if>
+            <tr><xsl:choose>
+              <xsl:when test="count(td) = 0">
+                <xsl:attribute name="class">header</xsl:attribute>
+              </xsl:when>
 
-            <xsl:if test="position() mod 2 != $offset">
-              <tr><xsl:copy-of select="$current" /></tr>
-            </xsl:if>
-          </xsl:if>
+              <xsl:when test="position() mod 2 = (count(preceding-sibling::*[count(td) = 0]) mod 2)">
+                <xsl:attribute name="class">odd</xsl:attribute>
+              </xsl:when></xsl:choose>
+
+              <xsl:apply-templates />
+            </tr>
 
 <xsl:text>
 </xsl:text> <!-- insert line break -->
 
-        </xsl:for-each>
-      </xsl:when>
+          </xsl:for-each>
+        </xsl:when>
 
-      <xsl:otherwise>
-        <xsl:apply-templates />
-      </xsl:otherwise></xsl:choose>
-    </xsl:variable>
+        <xsl:otherwise>
+          <xsl:apply-templates />
+        </xsl:otherwise>
+      </xsl:choose>
+    </table>
     
-    <xsl:if test="@border">
-      <table class="bordered">
-        <xsl:copy-of select="$content" />
-      </table>
-    </xsl:if>
-
-    <xsl:if test="not(@border)">
-      <table>
-        <xsl:copy-of select="$content" />
-      </table>
-    </xsl:if>
   </xsl:template>
-  <!-- /table border -->
+  <!-- /table -->
 
 
   <!--                                                    -->
   <!-- <ol type                                           -->
   <!--                                                    -->
   <xsl:template match="ol">
-    <xsl:if test="@type = 'A'">
-      <ol class="up-A">
-        <xsl:apply-templates/>
-      </ol>
-    </xsl:if>
+    <ol>
+      <xsl:if test="@type = 'A'">
+        <xsl:attribute name="class">up-A</xsl:attribute>
+      </xsl:if>
 
-    <xsl:if test="not(@type)">
-      <ol>
-        <xsl:apply-templates/>
-      </ol>
-    </xsl:if>
+      <xsl:apply-templates/>
+    </ol>
   </xsl:template>
   <!-- /ol type -->
 

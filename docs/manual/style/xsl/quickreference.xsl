@@ -93,20 +93,20 @@
     <xsl:for-each select="$directives[$letter=translate(substring(normalize-space(name),1,1),$lowercase,$uppercase)]">
     <xsl:sort select="name"/>
 
-      <!-- create the content -->
-      <xsl:variable name="current-row">
-        <td><xsl:choose>
-          <xsl:when test="position()=1">
-            <a name="{$letter}" id="{$letter}" href="{../name}.html#{translate(name,$uppercase,$lowercase)}">
-              <xsl:apply-templates select="syntax"/>
-            </a>
-          </xsl:when>
+      <tr>
+        <xsl:if test="position() mod 2 = $offset">
+          <xsl:attribute name="class">odd</xsl:attribute>
+        </xsl:if>
 
-          <xsl:otherwise>
-            <a href="{../name}.html#{translate(name,$uppercase,$lowercase)}">
-              <xsl:apply-templates select="syntax"/>
-            </a>
-          </xsl:otherwise></xsl:choose>
+        <td>
+          <a href="{../name}.html#{translate(name,$uppercase,$lowercase)}">
+            <xsl:if test="position()=1">
+              <xsl:attribute name="id"><xsl:value-of select="$letter"/></xsl:attribute>
+              <xsl:attribute name="name"><xsl:value-of select="$letter"/></xsl:attribute>
+            </xsl:if>
+
+            <xsl:apply-templates select="syntax"/>
+          </a>
         </td>
 
         <td>
@@ -132,9 +132,13 @@
             <xsl:when test="../status='Experimental'">X</xsl:when>
           </xsl:choose>
         </td>
-      </xsl:variable>
+      </tr>
 
-      <xsl:variable name="descr">
+      <tr>
+        <xsl:if test="position() mod 2 = $offset">
+          <xsl:attribute name="class">odd</xsl:attribute>
+        </xsl:if>
+
         <td colspan="4" class="descr"><xsl:choose>
           <xsl:when test="string-length(normalize-space(description)) &gt; 0">
             <xsl:apply-templates select="description"/>
@@ -144,18 +148,7 @@
             <xsl:text>-</xsl:text>
           </xsl:otherwise></xsl:choose>
         </td>
-      </xsl:variable>
-
-      <!-- and now choose between odd n even --><xsl:choose>
-      <xsl:when test="position() mod 2 = $offset">
-        <tr class="odd"><xsl:copy-of select="$current-row"/></tr>
-        <tr class="odd"><xsl:copy-of select="$descr"/></tr>
-      </xsl:when>
-
-      <xsl:otherwise>
-        <tr><xsl:copy-of select="$current-row"/></tr>
-        <tr><xsl:copy-of select="$descr"/></tr>
-      </xsl:otherwise></xsl:choose>
+      </tr>
 
 <xsl:text>
 </xsl:text> <!-- insert a line break -->
