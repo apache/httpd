@@ -49,6 +49,41 @@
 <seealso><module>mod_rewrite</module></seealso> <seealso><a
 href="../urlmapping.html">Mapping URLs to the filesystem</a></seealso>
 
+<section id="order"><title>Order of Processing</title>
+
+<p>Aliases and Redirects occuring in different contexts are processed
+like other directives according to standard <a
+href="../sections.html#mergin">merging rules</a>.  But when multiple
+Aliases or Redirects occur in the same context (for example, in the
+same <directive type="section" module="core">VirtualHost</directive>
+section) they are processed in a particular order.</p>
+
+<p>First, all Redirects are processed before Aliases are processed,
+and therefore a request that matches a <directive
+module="mod_alias">Redirect</directive> or <directive
+module="mod_alias">RedirectMatch</directive> will never have Aliases
+applied.  Second, the Aliases and Redirects are processed in the order
+they appear in the configuration files, with the first match taking
+precedence.</p>
+
+<p>For this reason, when two or more of these directives apply to the
+same sub-path, you must list the most specific path first in order for
+all the directives to have an effect.  For example, the following
+configuration will work as expected:</p>
+
+<example>
+Alias /foo/bar /baz<br />
+Alias /foo /gaq
+</example>
+
+<p>But if the above two directives were reversed in order, the
+<code>/foo</code> <directive module="mod_alias">Alias</directive>
+would always match before the <code>/foo/bar</code> <directive
+module="mod_alias">Alias</directive>, so the latter directive would be
+ignored.</p>
+
+</section>
+
 <directivesynopsis>
 <name>Alias</name>
 <description>Maps URLs to filesystem locations</description>

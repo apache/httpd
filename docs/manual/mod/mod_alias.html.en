@@ -56,12 +56,46 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#scriptalias">ScriptAlias</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#scriptaliasmatch">ScriptAliasMatch</a></li>
 </ul>
-<h3>See also</h3>
+<h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#order">Order of Processing</a></li>
+</ul><h3>See also</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code></li>
 <li><a href="../urlmapping.html">Mapping URLs to the filesystem</a></li>
 </ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="order" id="order">Order of Processing</a></h2>
 
+<p>Aliases and Redirects occuring in different contexts are processed
+like other directives according to standard <a href="../sections.html#mergin">merging rules</a>.  But when multiple
+Aliases or Redirects occur in the same context (for example, in the
+same <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
+section) they are processed in a particular order.</p>
+
+<p>First, all Redirects are processed before Aliases are processed,
+and therefore a request that matches a <code class="directive"><a href="#redirect">Redirect</a></code> or <code class="directive"><a href="#redirectmatch">RedirectMatch</a></code> will never have Aliases
+applied.  Second, the Aliases and Redirects are processed in the order
+they appear in the configuration files, with the first match taking
+precedence.</p>
+
+<p>For this reason, when two or more of these directives apply to the
+same sub-path, you must list the most specific path first in order for
+all the directives to have an effect.  For example, the following
+configuration will work as expected:</p>
+
+<div class="example"><p><code>
+Alias /foo/bar /baz<br />
+Alias /foo /gaq
+</code></p></div>
+
+<p>But if the above two directives were reversed in order, the
+<code>/foo</code> <code class="directive"><a href="#alias">Alias</a></code>
+would always match before the <code>/foo/bar</code> <code class="directive"><a href="#alias">Alias</a></code>, so the latter directive would be
+ignored.</p>
+
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Alias" id="Alias">Alias</a> <a name="alias" id="alias">Directive</a></h2>
 <table class="directive">
