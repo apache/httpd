@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/03/27 01:10:59 $]
+Last modified at [$Date: 2003/03/27 21:07:32 $]
 
 Release:
 
@@ -198,6 +198,11 @@ PATCHES TO PORT FROM 2.1
       modules/http/http_request.c: r1.155
       +1: nd
 
+    * fix seg faults in ap_get_mime_headers_core's error leg for overlength
+      headers caused by using an uninitialized length returned by ap_rgetline.
+      server/protocol.c: r1.129
+      +1: gregames
+                            
 CURRENT RELEASE NOTES:
 
     * Backwards compatibility is expected of future Apache 2.0 releases,
