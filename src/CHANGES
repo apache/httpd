@@ -1,5 +1,8 @@
 Changes with Apache 1.3b4
 
+  *) Variable 'cwd' was being used pointlessly before being set.
+     [Ken Coar] PR#1738
+
   *) r->allowed handling cleaned up in the standard modules.
      [Dean Gaudet]
 
