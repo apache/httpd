@@ -588,7 +588,7 @@ int          ssl_callback_proxy_cert(SSL *ssl, MODSSL_CLIENT_CERT_CB_ARG_TYPE **
 int          ssl_callback_NewSessionCacheEntry(SSL *, SSL_SESSION *);
 SSL_SESSION *ssl_callback_GetSessionCacheEntry(SSL *, unsigned char *, int, int *);
 void         ssl_callback_DelSessionCacheEntry(SSL_CTX *, SSL_SESSION *);
-void         ssl_callback_LogTracingState(SSL *, int, int);
+void         ssl_callback_LogTracingState(const SSL *, int, int);
 
 /*  Session Cache Support  */
 void         ssl_scache_init(server_rec *, apr_pool_t *);
