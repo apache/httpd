@@ -156,6 +156,8 @@ table *overlay_tables (pool *p, const table *overlay, const table *base);
 
 array_header *table_elts (table *);     
 
+#define is_empty_table(t) (((t) == NULL)||((t)->nelts == 0))
+
 /* routines to remember allocation of other sorts of things...
  * generic interface first.  Note that we want to have two separate
  * cleanup functions in the general case, one for exec() preparation,

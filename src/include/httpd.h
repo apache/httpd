@@ -474,7 +474,7 @@ struct request_rec {
    * write modules to add to that environment.
    *
    * The difference between headers_out and err_headers_out is that the
-   * latter persist across internal redirects
+   * latter are printed even on error, and persist across internal redirects
    * (so the headers printed for ErrorDocument handlers will have them).
    *
    * The 'notes' table is for notes from one module to another, with no

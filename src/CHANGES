@@ -2,7 +2,7 @@ Changes with Apache 1.2
 
   *) If the lookup for a DirectoryIndex name with content negotiation
      has found matching variants, but none are acceptable, return the
-     negotiation result if there are no more DirectoryIndex names lookup.
+     negotiation result if there are no more DirectoryIndex names to lookup.
      [Petr Lampa and Roy Fielding]
 
   *) If a soft_timeout occurs after keepalive is set, then the main child
@@ -22,6 +22,11 @@ Changes with Apache 1.2
      reset the content_language(s) and content_encoding of the response
      before generating or redirecting to an error message, since the new
      message will have its own Content-* definitions. [Dean Gaudet]
+
+  *) Restored the semantics of headers_out (headers sent only with 200..299
+     and 304 responses) and err_headers_out (headers sent with all responses).
+     Avoid the overhead of copying tables if err_headers_out is empty
+     (the usual case).  [Roy Fielding]
 
   *) Fixed a couple places where a check for the default Content-Type was
      not properly checking both the value configured by the DefaultType
