@@ -15,16 +15,16 @@
 <!--#include virtual="header.html" -->
 
 <blockquote><strong>Warning:</strong>
-This document has not been updated to take into account changes
+This document has been updated to take into account changes
 made in the 2.0 version of the Apache HTTP Server.  Some of the
-information may still be relevant, but please use it
+information may still be inaccurate, please use it
 with care.
 </blockquote>
 
 
 <H1 ALIGN="CENTER">Apache module mod_proxy</H1>
 
-<p>This module provides for an <STRONG>HTTP 1.0</STRONG> caching proxy
+<p>This module provides for an <STRONG>HTTP 1.1</STRONG> proxy / gateway
 server.</p>
 
 <P><A
@@ -50,18 +50,25 @@ REL="Help"
 
 <H2>Summary</H2>
 
-This module implements a proxy/cache for Apache. It implements
+This module implements a proxy/gateway for Apache. It implements
 proxying capability for
 <CODE>FTP</CODE>,
 <CODE>CONNECT</CODE> (for SSL),
-<CODE>HTTP/0.9</CODE>, and
-<CODE>HTTP/1.0</CODE>.
+<CODE>HTTP/0.9</CODE>,
+<CODE>HTTP/1.0</CODE>, and
+<CODE>HTTP/1.1</CODE>.
 The module can be configured to connect to other proxy modules for these
 and other protocols.
 
-<P>This module was experimental in Apache 1.1.x. As of Apache 1.2, mod_proxy
-stability is <EM>greatly</EM> improved.<P>
+<P>This module was experimental in Apache 1.1.x. Improvements and bugfixes
+were made in Apache v1.2.x and Apache v1.3.x, then the module underwent a major
+overhaul for Apache v2.0. The protocol support was upgraded to HTTP/1.1,
+and filter support was enabled.
 
+<P>Please note that the <STRONG>caching</STRONG> function present in mod_proxy up to Apache
+v1.3.x has been <STRONG>removed</STRONG> from mod_proxy and will be incorporated
+into a new module, mod_cache.
+<P>
 
 <H2>Directives</H2>
 <UL>
@@ -75,20 +82,55 @@ stability is <EM>greatly</EM> improved.<P>
 <LI><A HREF="#noproxy">NoProxy</A>
 <LI><A HREF="#proxydomain">ProxyDomain</A>
 <LI><A HREF="#proxyvia">ProxyVia</A>
-<LI><A HREF="#nocache">NoCache</A>
 </UL>
 
 <H2><A NAME="configs">Common configuration topics</A></H2>
 
 <UL>
+<LI><A HREF="#forwardreverse">Forward and Reverse Proxies</A>
 <LI><A HREF="#access">Controlling access to your proxy</A>
 <LI><A HREF="#shortname">Using Netscape hostname shortcuts</A>
 <LI><A HREF="#mimetypes">Why doesn't file type <EM>xxx</EM> download via FTP?</A>
 <LI><A HREF="#startup">Why does Apache start more slowly when using the
         proxy module?</A>
-<LI><A HREF="#socks">Can I use the Apache proxy module with my SOCKS proxy?</A>
+<!--<LI><A HREF="#socks">Can I use the Apache proxy module with my SOCKS proxy?</A>-->
 <LI><A HREF="#intranet">What other functions are useful for an intranet proxy server?</A>
 </UL>
+
+<H2><A NAME="forwardreverse">Forward and Reverse Proxies</A></H2>
+
+Apache can be configured in both a <EM>forward</EM> and <EM>reverse</EM>
+proxy configuration.
+
+<P>A <EM>forward proxy</EM> is an intermediate system that enables a browser to connect to a
+remote network to which it normally does not have access. A forward proxy
+can also be used to cache data, reducing load on the networks between the
+forward proxy and the remote webserver.
+
+<P>Apache's mod_proxy can be figured to
+behave like a forward proxy using the <A HREF="#proxyremote">ProxyRemote</A>
+directive. In addition, caching of data can be achieved by configuring
+Apache mod_cache. Other dedicated forward proxy packages include
+<A HREF="http://www.squid.org">Squid</A>.
+
+<P>A <EM>reverse proxy</EM> is a webserver system that is capable of serving webpages
+sourced from other webservers - in addition to webpages on disk or generated
+dynamically by CGI - making these pages look like they originated at the
+reverse proxy.
+
+<P>When configured with the mod_cache module the reverse
+proxy can act as a cache for slower backend webservers. The reverse proxy
+can also enable advanced URL strategies and management techniques, allowing
+webpages served using different webserver systems or architectures to
+coexist inside the same URL space. Reverse proxy systems are also ideal for
+implementing centralised logging websites with many or diverse website
+backends. Complex multi-tier webserver systems can be constructed using an
+Apache mod_proxy frontend and any number of backend webservers.
+
+<P>The reverse proxy is configured using the
+<A HREF="#proxypass">ProxyPass</A> and <A
+HREF="#proxypassreverse">ProxyPassReverse</A> directives. Caching can be
+enabled using mod_cache as with the forward proxy.
 
 <H2><A NAME="access">Controlling access to your proxy</A></H2>
 
@@ -106,12 +148,16 @@ Allow from [machines you'd like to allow by IP address or name]
 A &lt;Files&gt; block will also work, and is the only method known to work
 for all possible URLs in Apache versions earlier than 1.2b10.<P>
 
-<H2><A NAME="shortname">Using Netscape hostname shortcuts</A></H2>
+When configuring a reverse proxy, access control takes on the attributes of
+the normal server <Directory> configuration.
+
+<!--<H2><A NAME="shortname">Using Netscape hostname shortcuts</A></H2>
 
 There is an optional patch to the proxy module to allow Netscape-like
 hostname shortcuts to be used. It's available from the
 <A HREF="http://www.apache.org/dist/contrib/patches/1.2/netscapehost.patch"
-><SAMP>contrib/patches/1.2</SAMP></A> directory on the Apache Web site.<P>
+><SAMP>contrib/patches/1.2</SAMP></A> directory on the Apache Web
+site.<P>-->
 
 <H2><A NAME="mimetypes">Why doesn't file type <EM>xxx</EM> download via FTP?</A></H2>
 
@@ -133,12 +179,12 @@ suffixing the request with <SAMP>;type=a</SAMP> to force an ASCII transfer.<P>
 <H2><A NAME="startup">Why does Apache start more slowly when using the
         proxy module?</A></H2>
 
-If you're using the <CODE>ProxyBlock</CODE> or <CODE>NoCache</CODE>
-directives, hostnames' IP addresses are looked up and cached during
+If you're using the <CODE>ProxyBlock</CODE>
+directive, hostnames' IP addresses are looked up and cached during
 startup for later match test. This may take a few seconds (or more)
 depending on the speed with which the hostname lookups occur.<P>
 
-<H2><A NAME="socks">Can I use the Apache proxy module with my SOCKS proxy?</A></H2>
+<!--<H2><A NAME="socks">Can I use the Apache proxy module with my SOCKS proxy?</A></H2>
 
 Yes. Just build Apache with the rule <CODE>SOCKS4=yes</CODE> in your
 <EM>Configuration</EM> file, and follow the instructions there. SOCKS5
@@ -153,7 +199,7 @@ The problem was solved by upgrading to SOCKS 4.3.<P>
 Remember that you'll also have to grant access to your Apache proxy machine by
 permitting connections on the appropriate ports in your SOCKS daemon's
 configuration.<P>
-
+-->
 <H2><A NAME="intranet">What other functions are useful for an intranet proxy server?</A></H2>
 
 <P>An Apache proxy server situated in an intranet needs to forward external
@@ -205,9 +251,12 @@ since the user's bookmark files will then contain fully qualified hosts.</P>
 ><STRONG>Compatibility:</STRONG></A> ProxyRequests is only available in
 Apache 1.1 and later.<P>
 
-This allows or prevents Apache from functioning as a proxy
-server. Setting ProxyRequests to 'off' does not disable use of the <A
-HREF="#proxypass">ProxyPass</A> directive.
+This allows or prevents Apache from functioning as a forward proxy
+server. (Setting ProxyRequests to 'off' does not disable use of the <A
+HREF="#proxypass">ProxyPass</A> directive.)
+
+<P>In a typical reverse proxy configuration, this option should be set to
+'off'.
 
 <HR>
 
@@ -265,6 +314,10 @@ Example:
 In the last example, the proxy will forward FTP requests, encapsulated
 as yet another HTTP proxy request, to another proxy which can handle
 them.
+
+<P>This option also supports reverse proxy configuration - a backend webserver
+can be embedded within a virtualhost URL space even if that server is hidden
+by another forward proxy.
 
 <HR>
 
@@ -346,8 +399,9 @@ internally converted into a proxy request to
 ><STRONG>Compatibility:</STRONG></A> ProxyPassReverse is only available in
 Apache 1.3b6 and later.<P>
 
-This directive lets Apache adjust the URL in the <TT>Location</TT> header on
-HTTP redirect responses. For instance this is essential when Apache is used as
+This directive lets Apache adjust the URL in the <TT>Location</TT>,
+<TT>Content-Location</TT> and <TT>URI</TT> headers on
+HTTP redirect responses. This is essential when Apache is used as
 a reverse proxy to avoid by-passing the reverse proxy because of HTTP
 redirects on the backend servers which stay behind the reverse proxy.
 <P>
@@ -759,64 +813,7 @@ additionally have the Apache server version shown as a <SAMP>Via:</SAMP> comment
 <SAMP>Via:</SAMP> header lines removed. No new <SAMP>Via:</SAMP> header will be generated.
 </UL>
 
-<HR>
-
-<H2><A NAME="nocache">NoCache</A> directive</H2>
-<A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A> NoCache *|<EM>word|host|domain</EM>
-   [<em>word|host|domain</em>] ...<BR>
-<A
- HREF="directive-dict.html#Default"
- REL="Help"
-><STRONG>Default:</STRONG></A> <EM>None</EM><BR>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> server config, virtual host<BR>
-<A
- HREF="directive-dict.html#Override"
- REL="Help"
-><STRONG>Override:</STRONG></A> <EM>Not applicable</EM><BR>
-<A
- HREF="directive-dict.html#Status"
- REL="Help"
-><STRONG>Status:</STRONG></A> Base<BR>
-<A
- HREF="directive-dict.html#Module"
- REL="Help"
-><STRONG>Module:</STRONG></A> mod_proxy<BR>
-<A
- HREF="directive-dict.html#Compatibility"
- REL="Help"
-><STRONG>Compatibility:</STRONG></A> NoCache is only available in
-Apache 1.1 and later. In addition, in Apache 2.0 and later, it is
-always on, for all hosts.<P>
-
-From httpd-1.3:
-The NoCache directive specifies a list of words, hosts and/or domains, separated
-by spaces. HTTP and non-passworded FTP documents from matched words, hosts or
-domains are <EM>not</EM> cached by the proxy server. The proxy module will
-also attempt to determine IP addresses of list items which may be hostnames
-during startup, and cache them for match test as well. Example:
-
-<PRE>
-  NoCache joes-garage.com some-host.co.uk bullwinkle.wotsamattau.edu
-</PRE>
-
-'bullwinkle.wotsamattau.edu' would also be matched if referenced by IP
-address.<P>
-
-Note that 'wotsamattau' would also be sufficient to match 'wotsamattau.edu'.<P>
-
-Note also that
-
-<PRE>
-NoCache *
-</PRE>
-
-disables caching completely.<P>
+<P>
 
 <!--#include virtual="footer.html" -->
 </BODY>
