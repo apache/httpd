@@ -69,6 +69,7 @@
  */
 
 #include <apr_shm.h>
+#include <apr_rmm.h> /* EDD */
 
 typedef struct util_cache_node_t {
     void *payload;		/* Pointer to the payload */
@@ -102,7 +103,8 @@ typedef struct util_ald_cache_t {
 } util_ald_cache_t;
 
 #if APR_HAS_SHARED_MEMORY
-apr_shmem_t *util_ldap_shm;
+apr_shm_t *util_ldap_shm;
+apr_rmm_t *util_ldap_rmm;
 #endif
 util_ald_cache_t *util_ldap_cache;
 apr_thread_rwlock_t *util_ldap_cache_lock;
