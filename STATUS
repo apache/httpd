@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/04/05 21:52:41 $]
+Last modified at [$Date: 2003/04/05 22:01:28 $]
 
 Release:
 
@@ -59,17 +59,10 @@ Contributors looking for a mission:
 
 RELEASE SHOWSTOPPERS:
 
-    * PR 18649, --enable-layout breakage
-      configure.in 1.247
-      +1: trawick, thommay, nd
-
-      jerenkrantz notes that the above wouldn't work if we generated
-      configure with autoconf-2.54 (which is what I used for 2.0.45).
-      An alternative is:
-
+    * --enable-layout breakage, a better fix for PR 18649
       configure.in r1.248
       apr/build/apr_common.m4 r1.55
-      +1: jerenkrantz
+      +1: jerenkrantz, trawick
       -1:
 
 PATCHES TO PORT FROM 2.1
