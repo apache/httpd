@@ -185,7 +185,7 @@ Allows additional information to be listed along with a specified module.
 	speedups on configs with a lot of sections.
     <li>The critical path for static requests has fewer system calls.  This
 	generally helps all requests.  (45 syscalls for a static request
-	in 1.2 versus 22 in 1.3).
+	in 1.2 versus 22 in 1.3 in a well tuned configuration).
     <li><a href="mod/mod_proxy.html#ReceiveBufferSize">ReceiveBufferSize</a>
 	directive gives mod_proxy's outgoing connections larger network
 	buffers, for increased throughput.
@@ -213,7 +213,7 @@ Allows additional information to be listed along with a specified module.
     </ul>
 
 <li><strong>Unique Identifiers</strong><br>
-    mod_uniqid can be included to generate a unique identifier that
+    mod_unique_id can be included to generate a unique identifier that
     distinguishes a hit from every other hit.  ("Unique" has
     some restrictions on it.)  Documentation to be written.  The
     identifier is available in the environment variable
