@@ -61,42 +61,55 @@
 
 /**
  * @file ap_config.h
- * @brief Symbol Export Macros
+ * @brief Symbol export macros and hook functions
  */
 
 /* Although this file doesn't declare any hooks, declare the hook group here */
 /** @defgroup hooks Apache Hooks */
 
+#ifdef DOXYGEN
+/* define these just so doxygen documents them */
+
 /**
- * AP_DECLARE_EXPORT is defined when building the Apache Core dynamic
- * library, so that all public symbols are exported.
- *
  * AP_DECLARE_STATIC is defined when including Apache's Core headers,
  * to provide static linkage when the dynamic library may be unavailable.
+ *
+ * @see AP_DECLARE_EXPORT
  *
  * AP_DECLARE_STATIC and AP_DECLARE_EXPORT are left undefined when
  * including Apache's Core headers, to import and link the symbols from the 
  * dynamic Apache Core library and assure appropriate indirection and calling 
  * conventions at compile time.
- *
- * @deffunc AP_DECLARE_EXPORT/AP_DECLARE_STATIC
  */
+# define AP_DECLARE_STATIC
+/**
+ * AP_DECLARE_EXPORT is defined when building the Apache Core dynamic
+ * library, so that all public symbols are exported.
+ *
+ * @see AP_DECLARE_STATIC
+ */
+# define AP_DECLARE_EXPORT
+
+#endif /* def DOXYGEN */
 
 #if !defined(WIN32)
 /**
  * Apache Core dso functions are declared with AP_DECLARE(), so they may
  * use the most appropriate calling convention.  Hook functions and other
  * Core functions with variable arguments must use AP_DECLARE_NONSTD().
- *
- * @deffunc AP_DECLARE(rettype) ap_func(args)
+ * @code
+ * AP_DECLARE(rettype) ap_func(args)
+ * @endcode
  */
 #define AP_DECLARE(type)            type
 
 /**
  * Apache Core dso variable argument and hook functions are declared with 
  * AP_DECLARE_NONSTD(), as they must use the C language calling convention.
- *
- * @deffunc AP_DECLARE_NONSTD(rettype) ap_func(args [...])
+ * @see AP_DECLARE
+ * @code
+ * AP_DECLARE_NONSTD(rettype) ap_func(args [...])
+ * @endcode
  */
 #define AP_DECLARE_NONSTD(type)     type
 
@@ -104,9 +117,11 @@
  * Apache Core dso variables are declared with AP_MODULE_DECLARE_DATA.
  * This assures the appropriate indirection is invoked at compile time.
  *
- * @tip AP_DECLARE_DATA extern type apr_variable; syntax is required for
+ * @note AP_DECLARE_DATA extern type apr_variable; syntax is required for
  * declarations within headers to properly import the variable.
- * @deffunc AP_DECLARE_DATA type apr_variable
+ * @code
+ * AP_DECLARE_DATA type apr_variable
+ * @endcode
  */
 #define AP_DECLARE_DATA
 
@@ -130,8 +145,9 @@
  *
  * Unless AP_MODULE_DECLARE_STATIC is defined at compile time, symbols 
  * declared with AP_MODULE_DECLARE_DATA are always exported.
- *
- * @deffunc module AP_MODULE_DECLARE_DATA mod_tag
+ * @code
+ * module AP_MODULE_DECLARE_DATA mod_tag
+ * @endcode
  */
 #if defined(WIN32)
 #define AP_MODULE_DECLARE(type)            type __stdcall
@@ -147,8 +163,6 @@
  *
  * The old SHARED_MODULE compile-time symbol is now the default behavior, 
  * so it is no longer referenced anywhere with Apache 2.0.
- *
- * @deffunc AP_MODULE_DECLARE_EXPORT
  */
 #define AP_MODULE_DECLARE_EXPORT
 #define AP_MODULE_DECLARE(type)          __declspec(dllexport) type __stdcall
@@ -157,12 +171,15 @@
 #endif
 
 /**
- * @package Hook Functions
+ * Declare a hook function
+ * @param ret The return type of the hook
+ * @param name The hook's name (as a literal)
+ * @param args The arguments the hook function takes, in brackets.
  */
-
 #define AP_DECLARE_HOOK(ret,name,args) \
 	APR_DECLARE_EXTERNAL_HOOK(ap,AP,ret,name,args)
 
+/** @internal */
 #define AP_IMPLEMENT_HOOK_BASE(name) \
 	APR_IMPLEMENT_EXTERNAL_HOOK_BASE(ap,AP,name)
 
@@ -176,9 +193,8 @@
  * "(int x,void *y)"
  * @param args_use The arguments for the hook as used in a call, for example
  * "(x,y)"
- * @tip If IMPLEMENTing a hook that is not linked into the Apache core,
+ * @note If IMPLEMENTing a hook that is not linked into the Apache core,
  * (e.g. within a dso) see APR_IMPLEMENT_EXTERNAL_HOOK_VOID.
- * @deffunc AP_IMPLEMENT_HOOK_VOID(name, args_decl, args_use)
  */
 #define AP_IMPLEMENT_HOOK_VOID(name,args_decl,args_use) \
 	APR_IMPLEMENT_EXTERNAL_HOOK_VOID(ap,AP,name,args_decl,args_use)
@@ -200,9 +216,8 @@
  * @param ok The "ok" return value
  * @param decline The "decline" return value
  * @return ok, decline or an error.
- * @tip If IMPLEMENTing a hook that is not linked into the Apache core,
+ * @note If IMPLEMENTing a hook that is not linked into the Apache core,
  * (e.g. within a dso) see APR_IMPLEMENT_EXTERNAL_HOOK_RUN_ALL.
- * @deffunc AP_IMPLEMENT_HOOK_RUN_ALL(ret, name, args_decl, args_use, ok, decline)
  */
 #define AP_IMPLEMENT_HOOK_RUN_ALL(ret,name,args_decl,args_use,ok,decline) \
 	APR_IMPLEMENT_EXTERNAL_HOOK_RUN_ALL(ap,AP,ret,name,args_decl, \
@@ -222,9 +237,8 @@
  * "(x,y)"
  * @param decline The "decline" return value
  * @return decline or an error.
- * @tip If IMPLEMENTing a hook that is not linked into the Apache core
+ * @note If IMPLEMENTing a hook that is not linked into the Apache core
  * (e.g. within a dso) see APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST.
- * @deffunc AP_IMPLEMENT_HOOK_RUN_FIRST(ret, name, args_decl, args_use, decline)
  */
 #define AP_IMPLEMENT_HOOK_RUN_FIRST(ret,name,args_decl,args_use,decline) \
 	APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(ap,AP,ret,name,args_decl, \
