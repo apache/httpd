@@ -82,7 +82,6 @@
 #include "apr_lib.h"
 #include "apr_errno.h"
 #include "ap_config.h"
-#include "ap.h"
 #include "apr_md5.h"
 #include "ap_sha1.h"
 #include <signal.h>
