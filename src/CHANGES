@@ -1,5 +1,25 @@
 Changes with Apache 1.2b8
 
+  *) Fixed the handling of module and script-added header fields.
+     Improved the interface for sending header fields and reduced
+     the duplication of code between sending okay responses and errors.
+     We now always send both headers_out and err_headers_out, and
+     ensure that the server-reserved fields are not being overridden,
+     while not overriding those that are not reserved.  [Roy Fielding]
+
+  *) Fixed the determination of whether or not we should make the
+     connection persistent for all of the cases where some other part
+     of the server has already indicated that we should not.  Also
+     improved the ordering of the test so that chunked encoding will
+     be set whenever it is desired instead of only when KeepAlive
+     is enabled. Added persistent connection capability for most error
+     responses (those that do not indicate a bad input stream) when
+     accessed by an HTTP/1.1 client. [Roy Fielding]
+
+  *) Added missing timeouts for sending header fields, error responses,
+     and the last chunk of chunked encoding, each of which could have
+     resulted in a process being stuck in write forever. [Roy Fielding]
+
   *) mod_auth_anon required an @ or a . in the email address, not both.
      [Dirk vanGulik]
 

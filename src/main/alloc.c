@@ -571,45 +571,50 @@ char *table_get (const table *t, const char *key)
 
 void table_set (table *t, const char *key, const char *val)
 {
+    register int i, j, k;
     table_entry *elts = (table_entry *)t->elts;
-    int i;
+    int done = 0;
 
     for (i = 0; i < t->nelts; ++i)
-        if (!strcasecmp (elts[i].key, key)) {
-	    elts[i].val = pstrdup (t->pool, val);
-	    return;
+	if (!strcasecmp (elts[i].key, key)) {
+	    if (!done) {
+	        elts[i].val = pstrdup(t->pool, val);
+	        done = 1;
+	    }
+	    else {     /* delete an extraneous element */
+                for (j = i, k = i + 1; k < t->nelts; ++j, ++k) {
+                    elts[j].key = elts[k].key;
+                    elts[j].val = elts[k].val;
+                }
+                --t->nelts;
+	    }
 	}
 
-    elts = (table_entry *)push_array(t);
-    elts->key = pstrdup (t->pool, key);
-    elts->val = pstrdup (t->pool, val);
+    if (!done) {
+        elts = (table_entry *)push_array(t);
+        elts->key = pstrdup (t->pool, key);
+        elts->val = pstrdup (t->pool, val);
+    }
 }
 
 void table_unset( table *t, const char *key ) 
 {
+    register int i, j, k;   
     table_entry *elts = (table_entry *)t->elts;
-    int i;   
-    int j;   
  
     for (i = 0; i < t->nelts; ++i)
         if (!strcasecmp (elts[i].key, key)) {
  
-            /* found the element to skip over
+            /* found an element to skip over
              * there are any number of ways to remove an element from
              * a contiguous block of memory.  I've chosen one that
              * doesn't do a memcpy/bcopy/array_delete, *shrug*...
              */
-            j = i;
-            ++i;
-            for ( ; i < t->nelts; ) {
-                elts[j].key = elts[i].key;
-                elts[j].val = elts[i].val;
-                ++i;
-                ++j;
-            };
+            for (j = i, k = i + 1; k < t->nelts; ++j, ++k) {
+                elts[j].key = elts[k].key;
+                elts[j].val = elts[k].val;
+            }
             --t->nelts;
-
-            return;
         }
 }     
 
@@ -641,6 +646,50 @@ void table_add (table *t, const char *key, const char *val)
 table* overlay_tables (pool *p, const table *overlay, const table *base)
 {
     return append_arrays (p, overlay, base);
+}
+
+/* And now for something completely abstract ...
+ *
+ * For each key value given as a vararg:
+ *   run the function pointed to as
+ *     int comp(void *r, char *key, char *value);
+ *   on each valid key-value pair in the table t that matches the vararg key,
+ *   or once for every valid key-value pair if the vararg list is empty,
+ *   until the function returns false (0) or we finish the table.
+ *
+ * Note that we restart the traversal for each vararg, which means that
+ * duplicate varargs will result in multiple executions of the function
+ * for each matching key.  Note also that if the vararg list is empty,
+ * only one traversal will be made and will cut short if comp returns 0.
+ *
+ * Note that the table_get and table_merge functions assume that each key in
+ * the table is unique (i.e., no multiple entries with the same key).  This
+ * function does not make that assumption, since it (unfortunately) isn't
+ * true for some of Apache's tables.
+ *
+ * Note that rec is simply passed-on to the comp function, so that the
+ * caller can pass additional info for the task.
+ */
+void table_do (int (*comp)(void *, char *, char *), void *rec, table *t, ...)
+{
+    va_list vp;
+    char *argp;
+    table_entry *elts = (table_entry *)t->elts;
+    int rv, i;
+  
+    va_start(vp, t);
+
+    argp = va_arg(vp, char *);
+
+    do {
+        for (rv = 1, i = 0; rv && (i < t->nelts); ++i) {
+            if (elts[i].key && (!argp || !strcasecmp(elts[i].key, argp))) {
+                rv = (*comp)(rec, elts[i].key, elts[i].val);
+            }
+        }
+    } while (argp && ((argp = va_arg(vp, char *)) != NULL));
+
+    va_end(vp);
 }
 
 /*****************************************************************

@@ -676,6 +676,22 @@ int find_token (pool *p, const char *line, const char *tok) {
     return 0;
 }
 
+int find_last_token (pool *p, const char *line, const char *tok)
+{
+    int llen, tlen, lidx;
+
+    if (!line) return 0;
+
+    llen = strlen(line);
+    tlen = strlen(tok);
+    lidx = llen - tlen;
+
+    if ((lidx < 0) ||
+        ((lidx > 0) && !(isspace(line[lidx-1]) || line[lidx-1] == ',')))
+        return 0;
+
+    return (strncasecmp(&line[lidx], tok, tlen) == 0);
+}
 
 char *escape_shell_cmd(pool *p, const char *s) {
     register int x,y,l;

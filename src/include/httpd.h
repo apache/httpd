@@ -330,6 +330,14 @@
 #define is_HTTP_CLIENT_ERROR(x) (((x) >= 400)&&((x) < 500))
 #define is_HTTP_SERVER_ERROR(x) (((x) >= 500)&&((x) < 600))
 
+#define status_drops_connection(x) (((x) == HTTP_BAD_REQUEST)           || \
+                                    ((x) == HTTP_REQUEST_TIME_OUT)      || \
+                                    ((x) == HTTP_LENGTH_REQUIRED)       || \
+                                    ((x) == HTTP_REQUEST_ENTITY_TOO_LARGE) || \
+                                    ((x) == HTTP_REQUEST_URI_TOO_LARGE) || \
+                                    ((x) == HTTP_INTERNAL_SERVER_ERROR) || \
+                                    ((x) == HTTP_SERVICE_UNAVAILABLE))
+
 
 #define METHODS 8
 #define M_GET 0
@@ -459,7 +467,7 @@ struct request_rec {
    * write modules to add to that environment.
    *
    * The difference between headers_out and err_headers_out is that the
-   * latter are printed even on error, and persist across internal redirects
+   * latter persist across internal redirects
    * (so the headers printed for ErrorDocument handlers will have them).
    *
    * The 'notes' table is for notes from one module to another, with no
@@ -647,6 +655,7 @@ char *getword_conf_nc (pool *p, char **line);
 
 char *get_token (pool *p, char **accept_line, int accept_white);
 int find_token (pool *p, const char *line, const char *tok);
+int find_last_token (pool *p, const char *line, const char *tok);
      
 int is_url(const char *u);
 extern int unescape_url(char *url);

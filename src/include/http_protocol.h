@@ -59,7 +59,11 @@
 
 request_rec *read_request (conn_rec *c);
 
-/* Send header for http response */
+/* Send a single HTTP header field */
+
+int send_header_field (request_rec *r, char *fieldname, char *fieldval);
+
+/* Send the Status-Line and header fields for HTTP response */
 
 void send_http_header (request_rec *l);     
 

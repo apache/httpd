@@ -110,53 +110,54 @@ static int internal_byterange(int, long*, request_rec*, char**, long*, long*);
 
 int set_byterange (request_rec *r)
 {
-    char *range = table_get (r->headers_in, "Range");
-    char *if_range = table_get (r->headers_in, "If-Range");
-    char ts[MAX_STRING_LEN], *match;
+    char *range, *if_range, *match;
+    char ts[MAX_STRING_LEN];
     long range_start, range_end;
 
-    /* Also check, for backwards-compatibility with second-draft
-     * Luotonen/Franks byte-ranges (e.g. Netscape Navigator 2-3)
+    if (!r->clength || r->assbackwards) return 0;
+
+    /* Check for Range request-header (HTTP/1.1) or Request-Range for
+     * backwards-compatibility with second-draft Luotonen/Franks
+     * byte-ranges (e.g. Netscape Navigator 2-3).
      *
      * We support this form, with Request-Range, and (farther down) we
      * send multipart/x-byteranges instead of multipart/byteranges for
      * Request-Range based requests to work around a bug in Netscape
-     * Navigator 2 and 3.
+     * Navigator 2-3 and MSIE 3.
      */
 
-    if (!range) range = table_get (r->headers_in, "Request-Range");
+    if (!(range = table_get(r->headers_in, "Range")))
+          range = table_get(r->headers_in, "Request-Range");
 
-    /* Reasons we won't do ranges... */
-
-    if (!r->clength || r->assbackwards) return 0;
     if (!range || strncmp(range, "bytes=", 6)) {
 	table_set (r->headers_out, "Accept-Ranges", "bytes");
 	return 0;
     }
 
-    /* Check the If-Range header. Golly, this is a long if statement */
+    /* Check the If-Range header for Etag or Date */
 
-    if (if_range
-	&& !((if_range[0] == '"') /* an entity tag */
-	     && (match = table_get(r->headers_out, "Etag"))
-	     && (match[0] == '"') && !strcasecmp(if_range, match))
-	&& !((if_range[0] != '"') /* a date */
-	     && (match = table_get(r->headers_out, "Last-Modified"))
-	     && (!strcasecmp(if_range, match))))
-	return 0;
+    if ((if_range = table_get(r->headers_in, "If-Range"))) {
+        if (if_range[0] == '"') {
+            if (!(match = table_get(r->headers_out, "Etag")) ||
+                (strcasecmp(if_range, match) != 0))
+                return 0;
+        }
+        else if (!(match = table_get(r->headers_out, "Last-Modified")) ||
+                 (strcasecmp(if_range, match) != 0))
+            return 0;
+    }
     
     if (!strchr(range, ',')) {
 	/* A single range */
 	if (!parse_byterange(pstrdup(r->pool, range + 6), r->clength,
-			     &range_start, &range_end))
+	                     &range_start, &range_end))
 	    return 0;
 
 	r->byterange = 1;
 
-	ap_snprintf(ts, sizeof(ts), "bytes %ld-%ld/%ld", range_start, range_end,
-		r->clength);
-	table_set(r->headers_out, "Content-Range",
-		  pstrdup(r->pool, ts));
+	ap_snprintf(ts, sizeof(ts), "bytes %ld-%ld/%ld",
+	            range_start, range_end, r->clength);
+	table_set(r->headers_out, "Content-Range", ts);
 	ap_snprintf(ts, sizeof(ts), "%ld", range_end - range_start + 1);
 	table_set(r->headers_out, "Content-Length", ts);
     }
@@ -167,7 +168,8 @@ int set_byterange (request_rec *r)
 	long tlength = 0;
 	
 	r->byterange = 2;
-	ap_snprintf(boundary, sizeof(boundary), "%lx%lx", r->request_time, (long)getpid());
+	ap_snprintf(boundary, sizeof(boundary), "%lx%lx",
+	            r->request_time, (long)getpid());
 	r->boundary = pstrdup(r->pool, boundary);
 	while (internal_byterange(0, &tlength, r, &r_range, NULL, NULL));
 	ap_snprintf(ts, sizeof(ts), "%ld", tlength);
@@ -180,7 +182,8 @@ int set_byterange (request_rec *r)
     return 1;
 }
 
-int each_byterange (request_rec *r, long *offset, long *length) {
+int each_byterange (request_rec *r, long *offset, long *length)
+{
     return internal_byterange(1, NULL, r, &r->range, offset, length);
 }
 
@@ -197,7 +200,8 @@ int each_byterange (request_rec *r, long *offset, long *length) {
  */
 
 static int internal_byterange(int realreq, long *tlength, request_rec *r,
-			      char **r_range, long *offset, long *length) {
+			      char **r_range, long *offset, long *length)
+{
     long range_start, range_end;
     char *range;
 
@@ -248,34 +252,62 @@ int set_content_length (request_rec *r, long clength)
     r->clength = clength;
 
     ap_snprintf (ts, sizeof(ts), "%ld", clength);
-    table_set (r->headers_out, "Content-Length", pstrdup (r->pool, ts));
+    table_set (r->headers_out, "Content-Length", ts);
 
     return 0;
 }
 
 int set_keepalive(request_rec *r)
 {
-    char *conn   = table_get(r->headers_in,  "Connection");
-    char *length = table_get(r->headers_out, "Content-Length");
-    char *tenc   = table_get(r->headers_out, "Transfer-Encoding");
-    int ka_sent;
+    int ka_sent = 0;
+    int wimpy   = find_token(r->pool,
+                             table_get(r->headers_out, "Connection"), "close");
+    char *conn  = table_get(r->headers_in, "Connection");
 
-    if (r->connection->keepalive == -1)  /* Did we get bad input? */
-        r->connection->keepalive = 0;
-    else if (r->server->keep_alive && (!r->server->keep_alive_max ||
-	(r->server->keep_alive_max > r->connection->keepalives)) &&
-	(r->server->keep_alive_timeout > 0) &&
-	(r->status == HTTP_NOT_MODIFIED || r->status == HTTP_NO_CONTENT
-	 || r->header_only || length || tenc ||
-	 ((r->proto_num >= 1001) && (r->chunked = 1))) &&
-	(!find_token(r->pool, conn, "close")) &&
-	((ka_sent = find_token(r->pool, conn, "keep-alive")) ||
-	 r->proto_num >= 1001)) {
-	/*
-	 * The (r->chunked = 1) in the above expression is a side-effect
-	 * that sets the output to chunked encoding if it is not already
-	 * length-delimited.  It is not a bug, though it is annoying.
-	 */
+    /* The following convoluted conditional determines whether or not
+     * the current connection should remain persistent after this response
+     * (a.k.a. HTTP Keep-Alive) and whether or not the output message
+     * body should use the HTTP/1.1 chunked transfer-coding.  In English,
+     *
+     *   IF  we have not marked this connection as errored;
+     *   and the response body has a defined length due to the status code
+     *       being 304 or 204, the request method being HEAD, already
+     *       having defined Content-Length or Transfer-Encoding: chunked, or
+     *       the request version being HTTP/1.1 and thus capable of being set
+     *       as chunked [we know the (r->chunked = 1) side-effect is ugly];
+     *   and the server configuration enables keep-alive;
+     *   and the server configuration has a reasonable inter-request timeout;
+     *   and there is no maximum # requests or the max hasn't been reached;
+     *   and the response status does not require a close;
+     *   and the response generator has not already indicated close;
+     *   and the client did not request non-persistence (Connection: close);
+     *   and    the client is requesting an HTTP/1.0-style keep-alive
+     *          and we haven't been configured to ignore the buggy twit,
+     *       or the client claims to be HTTP/1.1 compliant (perhaps a proxy);
+     *   THEN we can be persistent, which requires more headers be output.
+     *
+     * Note that the condition evaluation order is extremely important.
+     */
+    if ((r->connection->keepalive != -1) &&
+        ((r->status == HTTP_NOT_MODIFIED) ||
+         (r->status == HTTP_NO_CONTENT) ||
+         r->header_only ||
+         table_get(r->headers_out, "Content-Length") ||
+         find_last_token(r->pool,
+                         table_get(r->headers_out, "Transfer-Encoding"),
+                         "chunked") ||
+         ((r->proto_num >= 1001) && (r->chunked = 1))) &&
+        r->server->keep_alive &&
+        (r->server->keep_alive_timeout > 0) &&
+        ((r->server->keep_alive_max == 0) ||
+         (r->server->keep_alive_max > r->connection->keepalives)) &&
+        !status_drops_connection(r->status) &&
+        !wimpy &&
+        !find_token(r->pool, conn, "close") &&
+        (((ka_sent = find_token(r->pool, conn, "keep-alive")) &&
+          !table_get(r->subprocess_env, "nokeepalive")) ||
+         (r->proto_num >= 1001))
+       ) {
 	char header[256];
 	int left = r->server->keep_alive_max - r->connection->keepalives;
 	
@@ -290,19 +322,24 @@ int set_keepalive(request_rec *r)
 	    else
 		ap_snprintf(header, sizeof(header), "timeout=%d",
 			    r->server->keep_alive_timeout);
-	    rputs("Connection: Keep-Alive\015\012", r);
-	    rvputs(r, "Keep-Alive: ", header, "\015\012", NULL);
+	    table_set(r->headers_out, "Keep-Alive", header);
+	    table_merge(r->headers_out, "Connection", "Keep-Alive");
 	}
 
 	return 1;
     }
 
-    /* We only really need to send this to HTTP/1.1 clients, but we
+    /* Otherwise, we need to indicate that we will be closing this
+     * connection immediately after the current response.
+     *
+     * We only really need to send "close" to HTTP/1.1 clients, but we
      * always send it anyway, because a broken proxy may identify itself
      * as HTTP/1.0, but pass our request along with our HTTP/1.1 tag
      * to a HTTP/1.1 client. Better safe than sorry.
      */
-    rputs("Connection: close\015\012", r);
+    table_merge(r->headers_out, "Connection", "close");
+
+    r->connection->keepalive = 0;
 
     return 0;
 }
@@ -310,10 +347,7 @@ int set_keepalive(request_rec *r)
 int set_last_modified(request_rec *r, time_t mtime)
 {
     char *etag, weak_etag[MAX_STRING_LEN];
-    char *if_modified_since = table_get(r->headers_in, "If-Modified-Since");
-    char *if_unmodified     = table_get(r->headers_in, "If-Unmodified-Since");
-    char *if_nonematch      = table_get(r->headers_in, "If-None-Match");
-    char *if_match          = table_get(r->headers_in, "If-Match");
+    char *if_match, *if_modified_since, *if_unmodified, *if_nonematch;
     time_t now = time(NULL);
 
     if (now < 0)
@@ -343,7 +377,7 @@ int set_last_modified(request_rec *r, time_t mtime)
 		(unsigned long)mtime);
 
     etag = weak_etag + ((r->request_time - mtime > 1) ? 2 : 0);
-    table_set (r->headers_out, "ETag", etag);
+    table_set(r->headers_out, "ETag", etag);
 
     /* Check for conditional requests --- note that we only want to do
      * this if we are successful so far and we are not processing a
@@ -362,7 +396,7 @@ int set_last_modified(request_rec *r, time_t mtime)
      *    respond with a status of 412 (Precondition Failed).
      */
 
-    if (if_match) {
+    if ((if_match = table_get(r->headers_in, "If-Match")) != NULL) {
         if ((if_match[0] != '*') && !find_token(r->pool, if_match, etag))
             return HTTP_PRECONDITION_FAILED;
     }
@@ -373,7 +407,8 @@ int set_last_modified(request_rec *r, time_t mtime)
      *    respond with a status of 412 (Precondition Failed).
      */
 
-    else if (if_unmodified) {
+    else if ((if_unmodified = table_get(r->headers_in, "If-Unmodified-Since"))
+             != NULL) {
         time_t ius = parseHTTPdate(if_unmodified);
 
         if ((ius != BAD_DATE) && (mtime > ius))
@@ -389,7 +424,7 @@ int set_last_modified(request_rec *r, time_t mtime)
      *       respond with a status of 412 (Precondition Failed).
      */
 
-    if (if_nonematch) {
+    if ((if_nonematch = table_get(r->headers_in, "If-None-Match")) != NULL) {
         if ((if_nonematch[0] == '*') || find_token(r->pool,if_nonematch,etag))
             return (r->method_number == M_GET) ? HTTP_NOT_MODIFIED
                                                : HTTP_PRECONDITION_FAILED;
@@ -403,7 +438,8 @@ int set_last_modified(request_rec *r, time_t mtime)
      * A date later than the server's current request time is invalid.
      */
 
-    else if (if_modified_since && (r->method_number == M_GET)) {
+    else if ((r->method_number == M_GET) && ((if_modified_since =
+              table_get(r->headers_in, "If-Modified-Since")) != NULL)) {
         time_t ims = parseHTTPdate(if_modified_since);
 
         if ((ims >= mtime) && (ims <= r->request_time))
@@ -746,11 +782,18 @@ request_rec *read_request (conn_rec *conn)
 
     /* Get the request... */
     
-    keepalive_timeout ("read", r);
-    if (!read_request_line (r)) return NULL;
-    if (!r->assbackwards) get_mime_headers (r);
+    keepalive_timeout("read request line", r);
+    if (!read_request_line (r)) {
+        kill_timeout(r);
+        return NULL;
+    }
+    if (!r->assbackwards) {
+        hard_timeout("read request headers", r);
+        get_mime_headers (r);
+    }
+    kill_timeout(r);
 
-/* handle Host header here, to get virtual server */
+    /* handle Host header here, to get virtual server */
 
     if (r->hostname || (r->hostname = table_get(r->headers_in, "Host")))
       check_hostalias(r);
@@ -760,8 +803,7 @@ request_rec *read_request (conn_rec *conn)
     /* we may have switched to another server */
     r->per_dir_config = r->server->lookup_defaults;
 
-    kill_timeout (r);
-    conn->keptalive = 0;   /* We now have a request - so no more short timeouts */
+    conn->keptalive = 0;   /* We now have a request to play with */
     
     if(!strcmp(r->method, "HEAD")) {
         r->header_only=1;
@@ -966,50 +1008,41 @@ int index_of_response(int status)
    return LEVEL_500;                  /* 600 or above is also illegal */
 }
 
+/* Send a single HTTP header field to the client.  Note that this function
+ * is used in calls to table_do(), so their interfaces are co-dependent.
+ * In other words, don't change this one without checking table_do in alloc.c.
+ * It returns true unless there was a write error of some kind.
+ */
+int send_header_field (request_rec *r, char *fieldname, char *fieldval)
+{
+    return (0 < bvputs(r->connection->client,
+                       fieldname, ": ", fieldval, "\015\012", NULL));
+}
 
 void basic_http_header (request_rec *r)
 {
-    BUFF *fd = r->connection->client;
-    char *t;
+    char *protocol;
     
     if (r->assbackwards) return;
     
     if (!r->status_line)
         r->status_line = status_lines[index_of_response(r->status)];
     
-    if(table_get(r->subprocess_env,"force-response-1.0"))
-	t="HTTP/1.0";
+    if (table_get(r->subprocess_env,"force-response-1.0"))
+	protocol = "HTTP/1.0";
     else
-	t=SERVER_PROTOCOL;
-    bvputs(fd, t, " ", r->status_line, "\015\012", NULL);
-    bvputs(fd,"Date: ",gm_timestr_822 (r->pool, r->request_time),
-	   "\015\012", NULL);
-    bvputs(fd,"Server: ", SERVER_VERSION, "\015\012", NULL);
-}
+	protocol = SERVER_PROTOCOL;
 
-char *nuke_mime_parms (pool *p, char *content_type)
-{
-    /* How marvelous.  Arena doesn't *accept* "text/html; level=3"
-     * as a MIME type, so we have to strip off the parms.
-     */
+    /* Output the HTTP/1.x Status-Line and the Date and Server fields */
 
-#ifndef ARENA_BUG_WORKAROUND
-    return content_type;
-#else
+    bvputs(r->connection->client,
+           protocol, " ", r->status_line, "\015\012", NULL);
 
-    char *cp = strchr(content_type, ';');
+    send_header_field(r, "Date", gm_timestr_822(r->pool, r->request_time));
+    send_header_field(r, "Server", SERVER_VERSION);
 
-    if (cp) {
-        content_type = pstrdup (p, content_type);
-	cp = strchr (content_type, ';');
-	
-        while (cp > content_type && isspace (cp[-1]))
-	    --cp;
-	*cp = '\0';
-    }
-
-    return content_type;
-#endif
+    table_unset(r->headers_out, "Date");    /* Avoid bogosity */
+    table_unset(r->headers_out, "Server");
 }
 
 static char *make_allow(request_rec *r)
@@ -1037,14 +1070,10 @@ static char *make_allow(request_rec *r)
 
 int send_http_trace (request_rec *r)
 {
-    array_header *hdrs_arr = table_elts(r->headers_in);
-    table_entry *hdrs = (table_entry *)hdrs_arr->elts;
-    int i;
-
     /* Get the original request */
     while (r->prev) r = r->prev;
 
-    soft_timeout ("send", r);
+    soft_timeout ("send TRACE", r);
 
     r->content_type = "message/http";
     send_http_header(r);
@@ -1053,10 +1082,9 @@ int send_http_trace (request_rec *r)
 
     rvputs( r, r->the_request, "\015\012", NULL );
 
-    for (i = 0; i < hdrs_arr->nelts; ++i) {
-      if (!hdrs[i].key) continue;
-      rvputs(r, hdrs[i].key, ": ", hdrs[i].val, "\015\012", NULL);
-    }
+    table_do((int (*)(void *, char *, char *))send_header_field,
+             (void *)r, r->headers_in, NULL);
+    bputs("\015\012", r->connection->client);
 
     kill_timeout(r);
     return OK;
@@ -1064,20 +1092,24 @@ int send_http_trace (request_rec *r)
 
 int send_http_options(request_rec *r)
 {
-    BUFF *fd = r->connection->client;
-    const long int zero=0L;
+    const long int zero = 0L;
 
     if (r->assbackwards) return DECLINED;
 
-    soft_timeout ("send", r);
+    soft_timeout("send OPTIONS", r);
 
     basic_http_header(r);
-    bputs("Connection: close\015\012", fd);
-    bvputs(fd, "Allow: ", make_allow(r), "\015\012", NULL);
-    bputs("\015\012", fd);
 
-    bsetopt(fd, BO_BYTECT, &zero);
-    kill_timeout (r);
+    table_set(r->headers_out, "Content-Length", "0");
+    table_set(r->headers_out, "Allow", make_allow(r));
+    set_keepalive(r);
+
+    table_do((int (*)(void *, char *, char *))send_header_field,
+             (void *)r, r->headers_out, NULL);
+    bputs("\015\012", r->connection->client);
+
+    kill_timeout(r);
+    bsetopt(r->connection->client, BO_BYTECT, &zero);
 
     return OK;
 }
@@ -1099,106 +1131,97 @@ static int use_range_x(request_rec *r) {
 
 void send_http_header(request_rec *r)
 {
-    conn_rec *c = r->connection;
-    BUFF *fd = c->client;
-    const long int zero=0L;
-    array_header *hdrs_arr;
-    table_entry *hdrs;
     int i;
-    
+    const long int zero = 0L;
     core_dir_config *dir_conf =
       (core_dir_config *)get_module_config(r->per_dir_config, &core_module);
     char *default_type = dir_conf->default_type;
   
     if (r->assbackwards) {
         if(!r->main)
-	    bsetopt(fd, BO_BYTECT, &zero);
+	    bsetopt(r->connection->client, BO_BYTECT, &zero);
 	r->sent_bodyct = 1;
 	return;
     }
-    
-    basic_http_header (r);
 
-    if (!table_get(r->subprocess_env, "nokeepalive"))
-        set_keepalive (r);
+    /* Now that we are ready to send a response, we need to combine the two
+     * header field tables into a single table.  If we don't do this, our
+     * later attempts to set or unset a given fieldname might be bypassed.
+     */
+    r->headers_out=overlay_tables(r->pool, r->err_headers_out, r->headers_out);
+    
+    soft_timeout("send headers", r);
+
+    basic_http_header(r);
+
+    set_keepalive(r);
 
     if (r->chunked) {
-	bputs("Transfer-Encoding: chunked\015\012", fd);
-	/* RFC2068 #4.4: Messages MUST NOT include both a Content-Length
-	 * header field and the "chunked" transfer coding. */
+        table_merge(r->headers_out, "Transfer-Encoding", "chunked");
         table_unset(r->headers_out, "Content-Length");
     }
 
     if (r->byterange > 1)
-        bvputs(fd, "Content-Type: multipart/",
-	       use_range_x(r) ? "x-byteranges" : "byteranges",
-	       "; boundary=", r->boundary, "\015\012", NULL);
+        table_set(r->headers_out, "Content-Type",
+                  pstrcat(r->pool, "multipart", use_range_x(r) ? "/x-" : "/",
+                          "byteranges; boundary=", r->boundary, NULL));
     else if (r->content_type)
-        bvputs(fd, "Content-Type: ", 
-		 nuke_mime_parms (r->pool, r->content_type), "\015\012", NULL);
+        table_set(r->headers_out, "Content-Type", r->content_type);
     else if (default_type)
-        bvputs(fd, "Content-Type: ", default_type, "\015\012", NULL);
+        table_set(r->headers_out, "Content-Type", default_type);
     
     if (r->content_encoding)
-        bvputs(fd,"Content-Encoding: ", r->content_encoding, "\015\012", NULL);
+        table_set(r->headers_out, "Content-Encoding", r->content_encoding);
     
     if (r->content_languages && r->content_languages->nelts) {
-	int i;
-	bputs("Content-Language: ", fd);
-	for (i = 0; i < r->content_languages->nelts; ++i) {
-	    char *lang = ((char**)(r->content_languages->elts))[i];
-	    bvputs(fd, i ? ", " : "", lang, NULL);
-	}
-	bputs("\015\012", fd);
+        for (i = 0; i < r->content_languages->nelts; ++i) {
+            table_merge(r->headers_out, "Content-Language",
+                        ((char**)(r->content_languages->elts))[i]);
+        }
     }
     else if (r->content_language)
-        bvputs(fd,"Content-Language: ", r->content_language, "\015\012", NULL);
+        table_set(r->headers_out, "Content-Language", r->content_language);
 
-    /* We now worry about this here */
+    /* Control cachability for non-cachable responses if not already set
+     * by some other part of the server configuration.
+     */
+    if (r->no_cache) {
+        if ((r->proto_num >= 1001) &&
+            !table_get(r->headers_out, "Cache-Control"))
+            table_add(r->headers_out, "Cache-Control", "private");
 
-    if (r->no_cache && (r->proto_num >= 1001))
-        bputs ("Cache-Control: private\015\012", fd);
-    else if (r->no_cache)
-        bvputs(fd,"Expires: ", gm_timestr_822(r->pool, r->request_time),
-	       "\015\012", NULL);
-
-    hdrs_arr = table_elts(r->headers_out);
-    hdrs = (table_entry *)hdrs_arr->elts;
-    for (i = 0; i < hdrs_arr->nelts; ++i) {
-        if (!hdrs[i].key) continue;
-	if (r->no_cache && !strcasecmp(hdrs[i].key, "Expires")) continue;
-	bvputs(fd, hdrs[i].key, ": ", hdrs[i].val, "\015\012", NULL);
+        if (!table_get(r->headers_out, "Expires"))
+            table_add(r->headers_out, "Expires",
+                      gm_timestr_822(r->pool, r->request_time));
     }
 
-    hdrs_arr = table_elts(r->err_headers_out);
-    hdrs = (table_entry *)hdrs_arr->elts;
-    for (i = 0; i < hdrs_arr->nelts; ++i) {
-        if (!hdrs[i].key) continue;
-	if (r->no_cache && !strcasecmp(hdrs[i].key, "Expires")) continue;
-	bvputs(fd, hdrs[i].key, ": ", hdrs[i].val, "\015\012", NULL);
-    }
+    /* Send the entire table of header fields, terminated by an empty line. */
 
-    bputs("\015\012",fd);
+    table_do((int (*)(void *, char *, char *))send_header_field,
+             (void *)r, r->headers_out, NULL);
+    bputs("\015\012", r->connection->client);
 
-    bsetopt(fd, BO_BYTECT, &zero);
+    kill_timeout(r);
+
+    bsetopt(r->connection->client, BO_BYTECT, &zero);
     r->sent_bodyct = 1;		/* Whatever follows is real body stuff... */
 
     /* Set buffer flags for the body */
-    if (r->chunked) bsetflag(fd, B_CHUNK, 1);
+    if (r->chunked) bsetflag(r->connection->client, B_CHUNK, 1);
 }
 
-void finalize_request_protocol (request_rec *r) {
-    BUFF *fd = r->connection->client;
-
+void finalize_request_protocol (request_rec *r)
+{
     /* Turn off chunked encoding */
 
     if (r->chunked) {
-        bsetflag(fd, B_CHUNK, 0);
-	bputs("0\015\012", fd);
+        soft_timeout("send ending chunk", r);
+        bsetflag(r->connection->client, B_CHUNK, 0);
+	bputs("0\015\012", r->connection->client);
 	/* If we had footer "headers", we'd send them now */
-	bputs("\015\012", fd);
+	bputs("\015\012", r->connection->client);
+        kill_timeout(r);
     }
-
 }
 
 /* Here we deal with getting the request message body from the client.
@@ -1243,7 +1266,7 @@ void finalize_request_protocol (request_rec *r) {
 int setup_client_block (request_rec *r, int read_policy)
 {
     char *tenc = table_get(r->headers_in, "Transfer-Encoding");
-    char *lenp = table_get(r->headers_in, "Content-length");
+    char *lenp = table_get(r->headers_in, "Content-Length");
 
     r->read_body    = read_policy;
     r->read_chunked = 0;
@@ -1482,7 +1505,7 @@ long send_fd_length(FILE *f, request_rec *r, long length)
             w=bwrite(c->client, &buf[o], n);
 	    if(w <= 0)
 		break;
-	    reset_timeout(r); /* reset timeout after successfule write */
+	    reset_timeout(r); /* reset timeout after successful write */
             n-=w;
 	    o+=w;
         }
@@ -1500,8 +1523,7 @@ int rputc (int c, request_rec *r)
     return c;
 }
 
-int
-rputs(const char *str, request_rec *r)
+int rputs(const char *str, request_rec *r)
 {
     if (r->connection->aborted) return EOF;
     SET_BYTES_SENT(r);
@@ -1518,7 +1540,7 @@ int rwrite(const void *buf, int nbyte, request_rec *r)
 }
 
 int rprintf(request_rec *r,const char *fmt,...)
-    {
+{
     va_list vlist;
     int n;
 
@@ -1528,10 +1550,9 @@ int rprintf(request_rec *r,const char *fmt,...)
     va_end(vlist);
     SET_BYTES_SENT(r);
     return n;
-    }
+}
 
-int
-rvputs(request_rec *r, ...)
+int rvputs(request_rec *r, ...)
 {
     va_list args;
     int i, j, k;
@@ -1564,80 +1585,64 @@ int rflush (request_rec *r) {
     return bflush(r->connection->client);
 }
 
-static void send_header(request_rec *r, char *hdr)
-{
-    char *val = table_get(r->headers_out, hdr);
-    if (val) bvputs(r->connection->client, hdr, ": ", val, "\015\012", NULL);
-}
-
 void send_error_response (request_rec *r, int recursive_error)
 {
-    conn_rec *c = r->connection;
-    char *custom_response;
-    char *location = table_get (r->headers_out, "Location");
+    BUFF *fd = r->connection->client;
     int status = r->status;
     int idx = index_of_response (status);
+    char *custom_response;
+    char *location = pstrdup(r->pool, table_get(r->headers_out, "Location"));
 
     if (!r->assbackwards) {
-	int i;
-	table *err_hdrs_arr = r->err_headers_out;
-	table_entry *err_hdrs = (table_entry *)err_hdrs_arr->elts;
-	table *hdrs_arr = r->headers_out;
-	table_entry *hdrs = (table_entry *)hdrs_arr->elts;
   
-        basic_http_header (r);
-	
 	/* For non-error statuses (2xx and 3xx), send out all the normal
 	 * headers unless it is a 304. Don't send a Location unless its
 	 * a redirect status (3xx).
 	 */
 
-	if ((is_HTTP_SUCCESS(status) || is_HTTP_REDIRECT(status)) &&
-	    status != HTTP_NOT_MODIFIED) {
-	    for (i = 0; i < hdrs_arr->nelts; ++i) {
-		if (!hdrs[i].key) continue;
-		if (!strcasecmp(hdrs[i].key, "Location") &&
-		    !is_HTTP_REDIRECT(status))
-		    continue;
-		bvputs(c->client, hdrs[i].key, ": ", hdrs[i].val,
-		       "\015\012", NULL);
-	    }
-	}
-	
 	if (status == HTTP_NOT_MODIFIED) {
-	    send_header(r, "ETag");
-	    send_header(r, "Content-Location");
-	    send_header(r, "Expires");
-	    send_header(r, "Cache-Control");
-	    send_header(r, "Vary");
-	    send_header(r, "Warning");
-	    send_header(r, "WWW-Authenticate");
+	    r->headers_out = overlay_tables(r->pool, r->err_headers_out,
+	                                             r->headers_out);
+	    soft_timeout("send 304", r);
+
+	    basic_http_header(r);
 	    set_keepalive(r);
-	    bputs("\015\012", c->client);
+
+	    table_do((int (*)(void *, char *, char *))send_header_field,
+	             (void *)r, r->headers_out,
+	             "Connection",
+	             "Keep-Alive",
+	             "ETag",
+	             "Content-Location",
+	             "Expires",
+	             "Cache-Control",
+	             "Vary",
+	             "Warning",
+	             "WWW-Authenticate",
+	             NULL);
+	    bputs("\015\012", fd);
+
+	    kill_timeout(r);
 	    return;
 	}
 
-	/* Someday, we'd like to have persistent connections here.
-	 * They're especially useful for redirects, multiple choices
-	 * and auth requests. But we need to rewrite the rest of thi
-	 * section, so for now, we don't use it.
-	 */
-	bputs("Connection: close\015\012", c->client);
-
 	if ((status == METHOD_NOT_ALLOWED) || (status == NOT_IMPLEMENTED))
-	    bvputs(c->client, "Allow: ", make_allow(r), "\015\012", NULL);
-	
-	for (i = 0; i < err_hdrs_arr->nelts; ++i) {
-	    if (!err_hdrs[i].key) continue;
-	    bvputs(c->client, err_hdrs[i].key, ": ", err_hdrs[i].val,
-		   "\015\012", NULL);
+	    table_set(r->headers_out, "Allow", make_allow(r));
+
+	if (!is_HTTP_REDIRECT(status))
+	    table_unset(r->headers_out, "Location");
+
+	r->content_type = "text/html";
+	send_http_header(r);
+
+	if (r->header_only || (status == HTTP_NO_CONTENT)) {
+	    finalize_request_protocol(r);
+	    return;
 	}
-
-	bputs("Content-type: text/html\015\012\015\012", c->client);
     }
-
-    if (r->header_only) return;
     
+    soft_timeout("send error body", r);
+
     if ((custom_response = response_code_string (r, idx))) {
         /*
 	 * We have a custom response output. This should only be
@@ -1651,21 +1656,22 @@ void send_error_response (request_rec *r, int recursive_error)
 	 * "). If it doesn't, we've got a recursive error, so find
 	 * the original error and output that as well.
 	 */
-        if (custom_response[0] == '\"') { 
-            bputs(custom_response+1, c->client);
-	      return;
+	if (custom_response[0] == '\"') { 
+	    bputs(custom_response+1, fd);
+	    kill_timeout(r);
+	    finalize_request_protocol(r);
+	    return;
 	}
 	/* Redirect failed, so get back the original error
 	 */
 	while (r->prev && (r->prev->status != HTTP_OK))
-          r = r->prev;
+	    r = r->prev;
     }
     {
 	char *title = status_lines[idx];
 	/* folks decided they didn't want the error code in the H1 text */
 
 	char *h1 = 4 + status_lines[idx];
-	BUFF *fd = c->client;
 	
         bvputs
 	    (
@@ -1800,18 +1806,16 @@ void send_error_response (request_rec *r, int recursive_error)
 	    break;
 	}
 
-        if (recursive_error) {
-	    char x[80];
-	    ap_snprintf (x, sizeof(x), 
-		"Additionally, an error of type %d was encountered\n",
-		recursive_error);
-	    bputs(x, fd);
-	    bputs("while trying to use an ErrorDocument to\n", fd);
-	    bputs("handle the request.\n", fd);
+	if (recursive_error) {
+	    bvputs(fd, "<P>Additionally, a ",
+	           status_lines[index_of_response(recursive_error)],
+	           "\nerror was encountered while trying to use an "
+	           "ErrorDocument to handle the request.\n", NULL);
 	}
 	bputs("</BODY></HTML>\n", fd);
     }
-        
+    kill_timeout(r);
+    finalize_request_protocol(r);
 }
 
 /* Finally, this... it's here to support nph- scripts
