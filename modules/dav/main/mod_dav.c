@@ -4724,8 +4724,8 @@ APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(dav, DAV, int, find_liveprop,
                                       (const dav_resource *resource,
                                        const char *ns_uri, const char *name,
                                        const dav_hooks_liveprop **hooks),
-                                     (resource, ns_uri, name, hooks), 0);
+                                     (resource, ns_uri, name, hooks), 0)
 APR_IMPLEMENT_EXTERNAL_HOOK_VOID(dav, DAV, insert_all_liveprops,
                                  (request_rec *r, const dav_resource *resource,
                                   dav_prop_insert what, ap_text_header *phdr),
-                                 (r, resource, what, phdr));
+                                 (r, resource, what, phdr))
