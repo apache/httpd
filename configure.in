@@ -260,7 +260,7 @@ dnl ## Set up any appropriate OS-specific environment variables for apachectl
 case $host in
     *aix*)
         # for 32-bit builds, increase MAXDATA to allow lots of threads
-        if test x$COMPILE_MODE != 64; then
+        if test x$OBJECT_MODE != x64; then
             OS_SPECIFIC_VARS="set LDR_CNTRL=\"MAXDATA=0x80000000\" ; export LDR_CNTRL ;"
         fi
         OS_SPECIFIC_VARS="$OS_SPECIFIC_VARS set AIXTHREAD_SCOPE=S ; export AIXTHREAD_SCOPE"
