@@ -12,21 +12,6 @@ APACHE_MODPATH_INIT(proxy)
 
 APACHE_CHECK_PROXY_MODULE(proxy, , no)
 
-dnl APACHE_CHECK_STANDARD_MODULE(auth_db, , no, [
-dnl   AC_CHECK_HEADERS(db.h)
-dnl   AC_CHECK_LIB(db,main)
-dnl ]) 
-
-dnl APACHE_CHECK_STANDARD_MODULE(usertrack, , no, [
-dnl   AC_CHECK_HEADERS(sys/times.h)
-dnl   AC_CHECK_FUNCS(times)
-dnl ])
-
 APACHE_MODPATH_FINISH
 
-if test "$sharedobjs" = "yes"; then
-    LIBS="$LIBS -ldl"
-    LTFLAGS="$LTFLAGS -export-dynamic"
-fi
-    
 APACHE_SUBST(STANDARD_LIBS)

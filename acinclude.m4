@@ -241,17 +241,20 @@ int main(void) {
 
 dnl APACHE_MODPATH_INIT(modpath)
 AC_DEFUN(APACHE_MODPATH_INIT,[
+  current_dir=$1
   modpath_current=modules/$1
   modpath_static=
   modpath_shared=
   test -d $1 || $srcdir/helpers/mkdir.sh $modpath_current
   > $modpath_current/modules.mk
-  MODULE_DIRS="$MODULE_DIRS $1"
 ])dnl
 dnl
 AC_DEFUN(APACHE_MODPATH_FINISH,[
   echo "static = $modpath_static" >> $modpath_current/modules.mk
   echo "shared = $modpath_shared" >> $modpath_current/modules.mk
+  if test ! -z "$modpath_static" -o ! -z "$modpath_shared"; then
+    MODULE_DIRS="$MODULE_DIRS $current_dir"
+  fi
   APACHE_FAST_OUTPUT($modpath_current/Makefile)
 ])dnl
 dnl
