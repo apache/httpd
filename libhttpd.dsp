@@ -464,7 +464,7 @@ SOURCE=.\build\win32\win32ver.awk
 InputPath=.\build\win32\win32ver.awk
 
 ".\build\win32\libhttpd.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ./build/win32/win32ver.awk libhttpd "Apache http Server Core"\
+	awk -f ./build/win32/win32ver.awk libhttpd "Apache HTTP Server Core"\
  ./include/ap_release.h > .\build\win32\libhttpd.rc
 
 # End Custom Build
@@ -476,7 +476,7 @@ InputPath=.\build\win32\win32ver.awk
 InputPath=.\build\win32\win32ver.awk
 
 ".\build\win32\libhttpd.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ./build/win32/win32ver.awk libhttpd "Apache http Server Core"\
+	awk -f ./build/win32/win32ver.awk libhttpd "Apache HTTP Server Core"\
  ./include/ap_release.h > .\build\win32\libhttpd.rc
 
 # End Custom Build

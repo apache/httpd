@@ -78,9 +78,9 @@ BEGIN {
   print "  BEGIN";
   print "    BLOCK \"040904b0\"";
   print "    BEGIN";
-  print "      VALUE \"Comments\", \"All rights reserved.  The "\
-        "license is available at <http://www.apache.org/LICENSE.txt>.  "\
-        "The new-httpd page is at <http://httpd.apache.org/>.\\0\"";
+  print "      VALUE \"Comments\", \"All rights reserved.  The license "\
+        "is available at <http://www.apache.org/LICENSE.txt>.  The Apache "\
+        "HTTP Server project pages are at <http://httpd.apache.org/>.\\0\"";
   print "      VALUE \"CompanyName\", \"Apache Software Foundation\\0\"";
   print "      VALUE \"FileDescription\", \"" desc "\\0\"";
   print "      VALUE \"FileVersion\", \"" ver "\\0\"";
@@ -94,7 +94,7 @@ BEGIN {
   if (special) {
     print "      VALUE \"SpecialBuild\", \"" vendor "\\0\"";
   }
-  print "      VALUE \"ProductName\", \"Apache http Server\\0\"";
+  print "      VALUE \"ProductName\", \"Apache HTTP Server\\0\"";
   print "      VALUE \"ProductVersion\", \"" ver "\\0\"";
   print "    END";
   print "  END";
