@@ -25,7 +25,7 @@
 # --------------------                              --------------------
 # 
 # the path to your PID file
-PIDFILE=@prefix@/logs/httpd.pid
+PIDFILE=@prefix@/logs/@progname@.pid
 #
 # the path to your httpd binary, including options if necessary
 HTTPD='@prefix@/bin/@progname@'
@@ -54,27 +54,27 @@ do
     if [ -f $PIDFILE ] ; then
 	PID=`cat $PIDFILE`
 	if [ "x$PID" != "x" ] && kill -0 $PID 2>/dev/null ; then
-	    STATUS="httpd (pid $PID) running"
+	    STATUS="@progname@ (pid $PID) running"
 	    RUNNING=1
 	else
-	    STATUS="httpd (pid $PID?) not running"
+	    STATUS="@progname@ (pid $PID?) not running"
 	    RUNNING=0
 	fi
     else
-	STATUS="httpd (no pid file) not running"
+	STATUS="@progname@ (no pid file) not running"
 	RUNNING=0
     fi
 
     case $ARG in
     start)
 	if [ $RUNNING -eq 1 ]; then
-	    echo "$0 $ARG: httpd (pid $PID) already running"
+	    echo "$0 $ARG: @progname@ (pid $PID) already running"
 	    continue
 	fi
 	if $HTTPD ; then
-	    echo "$0 $ARG: httpd started"
+	    echo "$0 $ARG: @progname@ started"
 	else
-	    echo "$0 $ARG: httpd could not be started"
+	    echo "$0 $ARG: @progname@ could not be started"
 	    ERROR=3
 	fi
 	;;
@@ -84,27 +84,27 @@ do
 	    continue
 	fi
 	if kill $PID ; then
-	    echo "$0 $ARG: httpd stopped"
+	    echo "$0 $ARG: @progname@ stopped"
 	else
-	    echo "$0 $ARG: httpd could not be stopped"
+	    echo "$0 $ARG: @progname@ could not be stopped"
 	    ERROR=4
 	fi
 	;;
     restart)
 	if [ $RUNNING -eq 0 ]; then
-	    echo "$0 $ARG: httpd not running, trying to start"
+	    echo "$0 $ARG: @progname@ not running, trying to start"
 	    if $HTTPD ; then
-		echo "$0 $ARG: httpd started"
+		echo "$0 $ARG: @progname@ started"
 	    else
-		echo "$0 $ARG: httpd could not be started"
+		echo "$0 $ARG: @progname@ could not be started"
 		ERROR=5
 	    fi
 	else
 	    if $HTTPD -t >/dev/null 2>&1; then
 		if kill -HUP $PID ; then
-		    echo "$0 $ARG: httpd restarted"
+		    echo "$0 $ARG: @progname@ restarted"
 		else
-		    echo "$0 $ARG: httpd could not be restarted"
+		    echo "$0 $ARG: @progname@ could not be restarted"
 		    ERROR=6
 		fi
 	    else
@@ -116,19 +116,19 @@ do
 	;;
     graceful)
 	if [ $RUNNING -eq 0 ]; then
-	    echo "$0 $ARG: httpd not running, trying to start"
+	    echo "$0 $ARG: @progname@ not running, trying to start"
 	    if $HTTPD ; then
-		echo "$0 $ARG: httpd started"
+		echo "$0 $ARG: @progname@ started"
 	    else
-		echo "$0 $ARG: httpd could not be started"
+		echo "$0 $ARG: @progname@ could not be started"
 		ERROR=5
 	    fi
 	else
 	    if $HTTPD -t >/dev/null 2>&1; then
 		if kill -@AP_SIG_GRACEFUL_SHORT@ $PID ; then
-		    echo "$0 $ARG: httpd gracefully restarted"
+		    echo "$0 $ARG: @progname@ gracefully restarted"
 		else
-		    echo "$0 $ARG: httpd could not be restarted"
+		    echo "$0 $ARG: @progname@ could not be restarted"
 		    ERROR=7
 		fi
 	    else
@@ -155,9 +155,9 @@ do
 	echo "usage: $0 (start|stop|restart|fullstatus|status|graceful|configtest|help)"
 	cat <<EOF
 
-start      - start httpd
-stop       - stop httpd
-restart    - restart httpd if running by sending a SIGHUP or start if 
+start      - start @progname@
+stop       - stop @progname@
+restart    - restart @progname@ if running by sending a SIGHUP or start if 
              not running
 fullstatus - dump a full status screen; requires lynx and mod_status enabled
 status     - dump a short status screen; requires lynx and mod_status enabled
