@@ -942,19 +942,6 @@ static int cgi_handler(request_rec *r)
         }
 
         rv = ap_pass_brigade(r->output_filters, bb);
-
-        /* don't soak up script output if errors occurred
-         * writing it out...  otherwise, we prolong the
-         * life of the script when the connection drops
-         * or we stopped sending output for some other
-         * reason
-         */
-        if (rv == APR_SUCCESS && !r->connection->aborted) {
-            apr_file_pipe_timeout_set(script_err, r->server->timeout);
-            log_script_err(r, script_err);
-        }
-
-        apr_file_close(script_err);
     }
     else /* nph */ {
         struct ap_filter_t *cur;
@@ -970,8 +957,19 @@ static int cgi_handler(request_rec *r)
         }
         r->output_filters = r->proto_output_filters = cur;
 
-        ap_pass_brigade(r->output_filters, bb);
+        rv = ap_pass_brigade(r->output_filters, bb);
     }
+
+    /* don't soak up script output if errors occurred writing it
+     * out...  otherwise, we prolong the life of the script when the
+     * connection drops or we stopped sending output for some other
+     * reason */
+    if (rv == APR_SUCCESS && !r->connection->aborted) {
+        apr_file_pipe_timeout_set(script_err, r->server->timeout);
+        log_script_err(r, script_err);
+    }
+    
+    apr_file_close(script_err);
 
     return OK;                      /* NOT r->status, even if it has changed. */
 }
