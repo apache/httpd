@@ -148,6 +148,14 @@ APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(ap, STATUS, int, status_hook,
                                     (r, flags),
                                     OK, DECLINED)
 
+#ifdef HAVE_TIMES
+/* ugh... need to know if we're running with a pthread implementation
+ * such as linuxthreads that treats individual threads as distinct
+ * processes; that affects how we add up CPU time in a process
+ */
+static pid_t child_pid;
+#endif
+
 /*
  * command-related code. This is here to prevent use of ExtendedStatus
  * without status_module included.
@@ -256,6 +264,7 @@ static int status_handler(request_rec *r)
     long req_time;
 #ifdef HAVE_TIMES
     float tick;
+    int times_per_thread = getpid() != child_pid;
 #endif
     int short_report;
     int no_table_report;
@@ -342,6 +351,11 @@ static int status_handler(request_rec *r)
     }
 
     for (i = 0; i < server_limit; ++i) {
+#ifdef HAVE_TIMES
+        clock_t proc_tu = 0, proc_ts = 0, proc_tcu = 0, proc_tcs = 0;
+        clock_t tmp_tu, tmp_ts, tmp_tcu, tmp_tcs;
+#endif
+        
         ps_record = ap_get_scoreboard_process(i);
         for (j = 0; j < thread_limit; ++j) {
             int indx = (i * thread_limit) + j;
@@ -370,10 +384,28 @@ static int status_handler(request_rec *r)
 
                 if (lres != 0 || (res != SERVER_READY && res != SERVER_DEAD)) {
 #ifdef HAVE_TIMES
-                    tu += ws_record->times.tms_utime;
-                    ts += ws_record->times.tms_stime;
-                    tcu += ws_record->times.tms_cutime;
-                    tcs += ws_record->times.tms_cstime;
+                    tmp_tu = ws_record->times.tms_utime;
+                    tmp_ts = ws_record->times.tms_stime;
+                    tmp_tcu = ws_record->times.tms_cutime;
+                    tmp_tcs = ws_record->times.tms_cstime;
+
+                    if (times_per_thread) {
+                        proc_tu += tmp_tu;
+                        proc_ts += tmp_ts;
+                        proc_tcu += tmp_tcu;
+                        proc_tcs += proc_tcs;
+                    }
+                    else {
+                        if (tmp_tu > proc_tu ||
+                            tmp_ts > proc_ts ||
+                            tmp_tcu > proc_tcu ||
+                            tmp_tcs > proc_tcs) {
+                            proc_tu = tmp_tu;
+                            proc_ts = tmp_ts;
+                            proc_tcu = tmp_tcu;
+                            proc_tcs = proc_tcs;
+                        }
+                    }
 #endif /* HAVE_TIMES */
 
                     count += lres;
@@ -386,7 +418,12 @@ static int status_handler(request_rec *r)
                 }
             }
         }
-
+#ifdef HAVE_TIMES
+        tu += proc_tu;
+        ts += proc_ts;
+        tcu += proc_tcu;
+        tcs += proc_tcs;
+#endif
         pid_buffer[i] = ps_record->pid;
     }
 
@@ -831,10 +868,20 @@ static int status_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
     return OK;
 }
 
+#ifdef HAVE_TIMES
+static void status_child_init(apr_pool_t *p, server_rec *s)
+{
+    child_pid = getpid();
+}
+#endif
+
 static void register_hooks(apr_pool_t *p)
 {
     ap_hook_handler(status_handler, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_post_config(status_init, NULL, NULL, APR_HOOK_MIDDLE);
+#ifdef HAVE_TIMES
+    ap_hook_child_init(status_child_init, NULL, NULL, APR_HOOK_MIDDLE);
+#endif
 }
 
 module AP_MODULE_DECLARE_DATA status_module =

@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_status: Report total CPU time accurately when using a threaded
+     MPM.  PR 23795.  [Jeff Trawick]
+
   *) mod_ssl: Fix segfault on a non-SSL request if the the 'c' log
      format code is used. PR 22741. [Gary E. Miller <gem@rellim.com>]
 
