@@ -141,6 +141,7 @@ typedef struct autoindex_config_struct {
     int name_adjust;
     int icon_width;
     int icon_height;
+    char *default_order;
 
     array_header *icon_list, *alt_list, *desc_list, *ign_list;
     array_header *hdr_list, *rdme_list;
@@ -442,6 +443,48 @@ static const char *add_opts(cmd_parms *cmd, void *d, const char *optstr)
     return NULL;
 }
 
+static const char *set_default_order(cmd_parms *cmd, void *m, char *direction,
+				     char *key)
+{
+    char temp[4];
+    autoindex_config_rec *d_cfg = (autoindex_config_rec *) m;
+
+    ap_cpystrn(temp, "k=d", sizeof(temp));
+    if (!strcasecmp(direction, "Ascending")) {
+	temp[2] = D_ASCENDING;
+    }
+    else if (!strcasecmp(direction, "Descending")) {
+	temp[2] = D_DESCENDING;
+    }
+    else {
+	return "First keyword must be 'Ascending' or 'Descending'";
+    }
+
+    if (!strcasecmp(key, "Name")) {
+	temp[0] = K_NAME;
+    }
+    else if (!strcasecmp(key, "Date")) {
+	temp[0] = K_LAST_MOD;
+    }
+    else if (!strcasecmp(key, "Size")) {
+	temp[0] = K_SIZE;
+    }
+    else if (!strcasecmp(key, "Description")) {
+	temp[0] = K_DESC;
+    }
+    else {
+	return "Second keyword must be 'Name', 'Date', 'Size', or "
+	    "'Description'";
+    }
+
+    if (d_cfg->default_order == NULL) {
+	d_cfg->default_order = ap_palloc(cmd->pool, 4);
+	d_cfg->default_order[3] = '\0';
+    }
+    ap_cpystrn(d_cfg->default_order, temp, sizeof(temp));
+    return NULL;
+}
+
 #define DIR_CMD_PERMS OR_INDEXES
 
 static const command_rec autoindex_cmds[] =
@@ -460,6 +503,8 @@ static const command_rec autoindex_cmds[] =
      "alternate descriptive text followed by one or more content encodings"},
     {"IndexOptions", add_opts, NULL, DIR_CMD_PERMS, RAW_ARGS,
      "one or more index options"},
+    {"IndexOrderDefault", set_default_order, NULL, DIR_CMD_PERMS, TAKE2,
+     "{Ascending,Descending} {Name,Size,Description,Date}"},
     {"IndexIgnore", add_ignore, NULL, DIR_CMD_PERMS, ITERATE,
      "one or more file extensions"},
     {"AddDescription", add_desc, BY_PATH, DIR_CMD_PERMS, ITERATE2,
@@ -492,6 +537,7 @@ static void *create_autoindex_config(pool *p, char *dummy)
     new->opts = 0;
     new->incremented_opts = 0;
     new->decremented_opts = 0;
+    new->default_order = NULL;
 
     return (void *) new;
 }
@@ -570,6 +616,8 @@ static void *merge_autoindex_configs(pool *p, void *basev, void *addv)
 	new->name_adjust = add->name_adjust;
     }
 
+    new->default_order = (add->default_order != NULL)
+	? add->default_order : base->default_order;
     return new;
 }
 
@@ -1326,9 +1374,13 @@ static int index_directory(request_rec *r,
 	qstring = r->args;
 
 	/*
-	 * If no QUERY_STRING was specified, we use the default: ascending
-	 * by name.
+	 * If no QUERY_STRING was specified, we use the default specified
+	 * by the IndexOrderDefault directive (if there is one); otherwise,
+	 * we fall back to ascending by name.
 	 */
+	if ((qstring == NULL) || (*qstring == '\0')) {
+	    qstring = autoindex_conf->default_order;
+	}
 	if ((qstring == NULL) || (*qstring == '\0')) {
 	    keyid = K_NAME;
 	    direction = D_ASCENDING;

@@ -74,6 +74,7 @@ order) even though they both are shown as &quot;1K&quot;.
 <LI><A HREF="#headername">HeaderName</A>
 <LI><A HREF="#indexignore">IndexIgnore</A>
 <LI><A HREF="#indexoptions">IndexOptions</A>
+<LI><A HREF="#indexorderdefault">IndexOrderDefault</A>
 <LI><A HREF="#readmename">ReadmeName</A>
 </MENU>
 <HR>
@@ -668,6 +669,66 @@ keywords without either '+' or '-' prefixes.
 </P>
 </DD>
 </DL>
+
+<HR>
+
+<H2><A NAME="indexorderdefault">IndexOrderDefault</A></H2>
+<!--%plaintext &lt;?INDEX {\tt IndexOrderDefault} directive&gt; -->
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> IndexOrderDefault
+    <EM>Ascending|Descending</EM> <EM>Name|Date|Size|Description</EM>
+<BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> server config, virtual host, directory,
+    .htaccess
+<BR>
+<A
+ HREF="directive-dict.html#Override"
+ REL="Help"
+><STRONG>Override:</STRONG></A> Indexes
+<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Base
+<BR>
+<A
+ HREF="directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mod_autoindex
+<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> IndexOrderDefault is only available in
+Apache 1.3.4 and later.
+
+<P>
+The <SAMP>IndexOrderDefault</SAMP> directive is used in combination with
+the <A HREF="#indexoptions:fancyindexing"><SAMP>FancyIndexing</SAMP></A>
+index option.  By default, fancyindexed directory listings are displayed in ascending order by filename; the <SAMP>IndexOrderDefault</SAMP> allows
+you to change this initial display order.
+</P>
+<P>
+<SAMP>IndexOrderDefault</SAMP> takes two arguments.  The first must be either
+<SAMP>Ascending</SAMP> or <SAMP>Descending</SAMP>, indicating the direction
+of the sort.  The second argument must be one of the keywords
+<SAMP>Name</SAMP>, <SAMP>Date</SAMP>, <SAMP>Size</SAMP>, or
+<SAMP>Description</SAMP>, and identifies the primary key.  The secondary
+key is <EM>always</EM> the ascending filename.
+</P>
+<P>
+You can force a directory listing to only be displayed in a particular
+order by combining this directive with the
+<A HREF="#indexoptions:suppresscolumnsorting"
+><SAMP>SuppressColumnSorting</SAMP></A> index option; this will prevent
+the client from requesting the directory listing in a different order.
+</P>
+
 <HR>
 
 <H2><A NAME="readmename">ReadmeName</A></H2>
