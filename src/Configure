@@ -109,7 +109,7 @@ fi
 ## Now see if Configuration.tmpl is more recent than $file. If
 ## so, then we complain and bail out
 ##
-if ls -lt Configuration.tmpl $file | head -1 | \
+if ls -lt $file Configuration.tmpl | head -1 | \
   grep 'Configuration.tmpl' > /dev/null
 then
   echo "Configuration.tmpl is more recent than $file;"
