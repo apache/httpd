@@ -1,95 +1,91 @@
-                            Apache for Windows
-                           Version 1.3 (and up)
 
-What is it?
------------
+                                 Apache
+                             Version 1.3 (and up)
 
-Apache is an HTTP server, originally designed for Unix systems. This
-is the first major release of Apache for Windows systems, including
-Microsoft Windows NT, 98, and 95.  Like the Unix version, it includes
-many frequently requested new features, and has an API that allows it
-to be extended to meet users' needs more easily. It also allows ISAPI
-extensions.
+  What is it?
+  -----------
 
-Documentation
--------------
+  Apache is an HTTP server, originally designed for Unix systems. This
+  is the version of Apache for Microsoft Windows NT, 98, and 95
+  systems.  Like the Unix version, it includes many frequently
+  requested new features, and has an API that allows it to be extended
+  to meet users' needs more easily. It also allows ISAPI extensions.
 
-The documentation available as of the date of this release is also
-included, in HTML format, in the <./htdocs/manual/> directory.
-For the most up-to-date documentation, visit us on the WWW at
-<http://www.apache.org/>. For Windows specific information, see
-<http://www.apache.org/docs/windows.html>.
 
-WARNING
--------
+  The Latest Version
+  ------------------
 
-Apache on Win32 has not yet been optimized for performance.  Apache still
-performs best, and is most reliable on Unix platforms.  Over time we
-will improve performance for Windows NT. Folks doing comparative reviews
-of webserver performance are asked to compare against Apache on a Unix
-platform such as Solaris, FreeBSD, or Linux.
+  Details of the latest version can be found on the Apache HTTP
+  server project page under http://www.apache.org/.
 
-Apache on Win32 should still be considered beta quality code.  It does not
-meet the normal standards of stability and security that Unix releases do.
+  Documentation
+  -------------
 
-Installation or Compilation Instructions
-----------------------------------------
+  The documentation available as of the date of this release is
+  also included, in HTML format, in the htdocs/manual/ directory.
+  For the most up-to-date documentation can be found on
+  http://www.apache.org/docs/. For Windows specific information, see
+  http://www.apache.org/docs/windows.html.
 
-See the website <http://www.apache.org/docs/windows.html> for details of
-how to install Apache from a binary release or how to compile Apache
-from scratch. This file is also included in the distribution as
-<./htdocs/manual/windows.html>.
+  WARNING
+  -------
 
-Known Problems
---------------
+  Apache on Win32 has not yet been optimized for performance.  Apache
+  still performs best, and is most reliable on Unix platforms.  Over
+  time we will improve performance for Windows NT. Folks doing
+  comparative reviews of webserver performance are asked to compare
+  against Apache on a Unix platform such as Solaris, FreeBSD, or
+  Linux.
 
-To get information about the current set of known problems, see our
-online bug reporting database at <http://www.apache.org/bug_report.html>.
-In particular, search for problem reports under the category "os-windows".
+  Apache on Win32 should still be considered beta quality code.  It
+  does not meet the normal standards of stability and security that
+  Unix releases do.
 
-This is a rough list of what we know has not been implemented on Win32.
+  Installation
+  ------------
 
-- The User directive is not supported. If you run apache as a service,
-  you can change the user it runs as by going to 
-  Control Panel->Services->Startup
+  If you have installed Apache as a pre-compiled binary, you can
+  now run the server by selecting "Start Apache as console app"
+  from the Start menu. You can configure Apache for your system
+  by editing the file conf/httpd.conf in the directory where you
+  installed Apache.
 
-- suexec doesn't work
+  See the http://www.apache.org/docs/windows.html for details of how
+  to run and configure Apache, or select the "Apache Documentation"
+  icon read the local copy installed with Apache.
 
-- RFC 1413 (IdentityCheck) is not yet ported
+  Known Problems
+  --------------
 
-- If you have a very busy server, when a server child process exits,
-  any connections made to that child process that have not yet been
-  accepted by it are aborted.
+  To get information about the current set of known problems, see the
+  online bug reporting database at
+  http://www.apache.org/bug_report.html.  Bugs which affect Apache on
+  Windows and not Apache on Unix can be found under the category
+  "os-windows".
 
-- The regex library build does not generate *.ih headers.
+  Licensing
+  ---------
 
-- Multithreading is not properly abstracted
+  Please see the file called LICENSE.
 
-- htpasswd passwords are stored in plain text because Windows lacks a
-  crypt() function
+  Acknowledgments
+  ----------------
 
-Licensing
----------
+  We wish to acknowledge the following copyrighted works that
+  make up portions of the Apache software:
 
-Please see the file called LICENSE.
+  Portions of this software were developed at the National Center
+  for Supercomputing Applications (NCSA) at the University of
+  Illinois at Urbana-Champaign.
 
-Acknowledgments
-----------------
+  This software contains code derived from the RSA Data Security
+  Inc. MD5 Message-Digest Algorithm, including various
+  modifications by Spyglass Inc., Carnegie Mellon University, and
+  Bell Communications Research, Inc (Bellcore).
 
-We wish to acknowledge the following copyrighted works that make up
-portions of the Apache software:
+  This package contains software written and copyrighted by Henry
+  Spencer.  Please see the file called src/regex/COPYRIGHT. 
 
-Portions of this software were developed at the National Center for
-Supercomputing Applications at the University of Illinois at
-Urbana-Champaign.
+  The NT port was started with code provided to the Apache Group
+  by Ambarish Malpani of ValiCert, Inc. (http://www.valicert.com/).
 
-This software contains code derived from the RSA Data Security Inc. MD5
-Message-Digest Algorithm, including various modifications by Spyglass Inc.,
-Carnegie Mellon University, and Bell Communications Research, Inc.
-(Bellcore).
-
-This package contains software written and copyrighted by Henry Spencer.
-Please see the file called src/regex/COPYRIGHT.
-
-The NT port was started with code provided to the Apache Group
-by Ambarish Malpani of ValiCert, Inc. (www.valicert.com).
