@@ -198,12 +198,11 @@ SOURCE=.\server\gen_test_char.exe
 
 # PROP Ignore_Default_Tool 1
 USERDEP__WIN32=".\include\os.h"	
-# Begin Custom Build - Generating test_char.h
+# Begin Custom Build - Generating test_char.h from gen_test_char.exe
 InputPath=.\server\gen_test_char.exe
 
 ".\server\test_char.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	.\server\gen_test_char.exe >.\server\test_char.h 
-	echo Generated test_char.h from gen_test_char.exe 
 	
 # End Custom Build
 
@@ -211,12 +210,11 @@ InputPath=.\server\gen_test_char.exe
 
 # PROP Ignore_Default_Tool 1
 USERDEP__WIN32=".\include\os.h"	
-# Begin Custom Build - Generating test_char.h
+# Begin Custom Build - Generating test_char.h from gen_test_char.exe
 InputPath=.\server\gen_test_char.exe
 
 ".\server\test_char.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	.\server\gen_test_char.exe >.\server\test_char.h 
-	echo Generated test_char.h from gen_test_char.exe 
 	
 # End Custom Build
 
@@ -230,24 +228,22 @@ SOURCE=.\modules\http\mod_core.h
 !IF  "$(CFG)" == "libhttpd - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
-# Begin Custom Build - Generating mod_core.h
+# Begin Custom Build - Creating include/mod_core.h
 InputPath=.\modules\http\mod_core.h
 
 ".\include\mod_core.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	xcopy /y .\modules\http\mod_core.h .\include
-	echo Created mod_core.h
+	type .\modules\http\mod_core.h > .\include\mod_core.h
 	
 # End Custom Build
 
 !ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
 
 # PROP Ignore_Default_Tool 1
-# Begin Custom Build - Generating mod_core.h
+# Begin Custom Build - Creating include/mod_core.h
 InputPath=.\modules\http\mod_core.h
 
 ".\include\mod_core.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	xcopy /y .\modules\http\mod_core.h .\include
-	echo Created mod_core.h
+	type .\modules\http\mod_core.h > .\include\mod_core.h
 	
 # End Custom Build
 
@@ -261,24 +257,22 @@ SOURCE=.\modules\dav\main\mod_dav.h
 !IF  "$(CFG)" == "libhttpd - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
-# Begin Custom Build - Generating mod_dav.h
+# Begin Custom Build - Creating include/mod_dav.h
 InputPath=.\modules\dav\main\mod_dav.h
 
 ".\include\mod_dav.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	xcopy /y .\modules\dav\main\mod_dav.h .\include
-	echo Created mod_dav.h
+	type .\modules\dav\main\mod_dav.h > .\include\mod_dav.h
 	
 # End Custom Build
 
 !ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
 
 # PROP Ignore_Default_Tool 1
-# Begin Custom Build - Generating mod_dav.h
+# Begin Custom Build - Creating include/mod_dav.h
 InputPath=.\modules\dav\main\mod_dav.h
 
 ".\include\mod_dav.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	xcopy /y .\modules\dav\main\mod_dav.h .\include
-	echo Created mod_dav.h
+	type .\modules\dav\main\mod_dav.h > .\include\mod_dav.h
 	
 # End Custom Build
 
@@ -292,24 +286,22 @@ SOURCE=.\modules\proxy\mod_proxy.h
 !IF  "$(CFG)" == "libhttpd - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
-# Begin Custom Build - Generating mod_proxy.h
+# Begin Custom Build - Creating include/mod_proxy.h
 InputPath=.\modules\proxy\mod_proxy.h
 
 ".\include\mod_proxy.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	xcopy /y .\modules\proxy\mod_proxy.h .\include
-	echo Created mod_proxy.h
+	type .\modules\proxy\mod_proxy.h > .\include\mod_proxy.h
 	
 # End Custom Build
 
 !ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
 
 # PROP Ignore_Default_Tool 1
-# Begin Custom Build - Generating mod_proxy.h
+# Begin Custom Build - Creating include/mod_proxy.h
 InputPath=.\modules\proxy\mod_proxy.h
 
 ".\include\mod_proxy.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	xcopy /y .\modules\proxy\mod_proxy.h .\include
-	echo Created mod_proxy.h
+	type .\modules\proxy\mod_proxy.h > .\include\mod_proxy.h
 	
 # End Custom Build
 
@@ -323,24 +315,22 @@ SOURCE=.\server\mpm\winnt\mpm.h
 !IF  "$(CFG)" == "libhttpd - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
-# Begin Custom Build - Generating mpm.h
+# Begin Custom Build - Creating include/mpm.h
 InputPath=.\server\mpm\winnt\mpm.h
 
 ".\include\mpm.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	xcopy /y .\server\mpm\winnt\mpm.h .\include
-	echo Created mpm.h
+	type .\server\mpm\winnt\mpm.h > .\include\mpm.h
 	
 # End Custom Build
 
 !ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
 
 # PROP Ignore_Default_Tool 1
-# Begin Custom Build - Generating mpm.h
+# Begin Custom Build - Creating include/mpm.h
 InputPath=.\server\mpm\winnt\mpm.h
 
 ".\include\mpm.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	xcopy /y .\server\mpm\winnt\mpm.h .\include
-	echo Created mpm.h
+	type .\server\mpm\winnt\mpm.h > .\include\mpm.h
 	
 # End Custom Build
 
@@ -354,24 +344,22 @@ SOURCE=.\server\mpm\winnt\mpm_default.h
 !IF  "$(CFG)" == "libhttpd - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
-# Begin Custom Build - Generating mpm_default.h
+# Begin Custom Build - Creating include/mpm_default.h
 InputPath=.\server\mpm\winnt\mpm_default.h
 
 ".\include\mpm_default.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	xcopy /y .\server\mpm\winnt\mpm_default.h .\include
-	echo Created mpm_default.h
+	type .\server\mpm\winnt\mpm_default.h > .\include\mpm_default.h
 	
 # End Custom Build
 
 !ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
 
 # PROP Ignore_Default_Tool 1
-# Begin Custom Build - Generating mpm_default.h
+# Begin Custom Build - Creating include/mpm_default.h
 InputPath=.\server\mpm\winnt\mpm_default.h
 
 ".\include\mpm_default.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	xcopy /y .\server\mpm\winnt\mpm_default.h .\include
-	echo Created mpm_default.h
+	type .\server\mpm\winnt\mpm_default.h > .\include\mpm_default.h
 	
 # End Custom Build
 
@@ -385,24 +373,22 @@ SOURCE=.\os\win32\os.h
 !IF  "$(CFG)" == "libhttpd - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
-# Begin Custom Build - Generating os.h
+# Begin Custom Build - Creating include/os.h
 InputPath=.\os\win32\os.h
 
 ".\include\os.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	xcopy /y .\os\win32\os.h .\include
-	echo Created os.h
+	type .\os\win32\os.h > .\include\os.h
 	
 # End Custom Build
 
 !ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
 
 # PROP Ignore_Default_Tool 1
-# Begin Custom Build - Generating os.h
+# Begin Custom Build - Creating include/os.h
 InputPath=.\os\win32\os.h
 
 ".\include\os.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	xcopy /y .\os\win32\os.h .\include
-	echo Created os.h
+	type .\os\win32\os.h > .\include\os.h
 	
 # End Custom Build
 
