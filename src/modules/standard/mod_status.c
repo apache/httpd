@@ -187,7 +187,7 @@ int status_handler (request_rec *r)
 	       NULL);
 	rputs("Server up for: ",r);
 	show_time(r,up_time);
-	rputs("<hr>",r);
+	rputs("<p>",r);
     }
 
     sync_scoreboard_image();
@@ -208,19 +208,21 @@ int status_handler (request_rec *r)
     }
     if(!short_report) {
 	rputs("</PRE>",r);
-	rputs("Server States:<ul>",r);
-	rputs("<li>\"<code>_</code>\" Waiting for Connection",r);
-	rputs("<li>\"<code>S</code>\" Starting up",r);
-	rputs("<li>\"<code>R</code>\" Reading Request",r);
-	rputs("<li>\"<code>W</code>\" Sending Reply</ul>",r);
+	rputs("Key: ",r);
+	rputs("\"<code>_</code>\" Waiting for Connection, ",r);
+	rputs("\"<code>S</code>\" Starting up, ",r);
+	rputs("\"<code>R</code>\" Reading Request, ",r);
+	rputs("\"<code>W</code>\" Sending Reply<p>",r);
     }
     if (short_report)
         sprintf(buffer,"\nBusyServers: %d\nIdleServers: %d\n",busy,ready);
     else 
-        sprintf(buffer,"\n%d requests currently being processed,\n %d idle servers\n\n",busy,ready);
+        sprintf(buffer,"\n%d requests currently being processed,\n %d idle servers\n",busy,ready);
     rputs(buffer,r);
 
 #ifdef STATUS_INSTRUMENTATION
+    if (!short_report)
+      rputs("<hr><h2>Server Details</h2>",r);
     for (i = 0; i<HARD_SERVER_MAX; ++i) {
         score_record=get_scoreboard_info(i);
         lres = score_record.access_count;
@@ -229,7 +231,7 @@ int status_handler (request_rec *r)
 	my_bytes= score_record.my_bytes_served;
         if (lres!=0 || (score_record.status != SERVER_READY && score_record.status != SERVER_DEAD)) {
 	    if (!short_report) {
-	        sprintf(buffer,"<br>Server %d (%d): %ld|%ld [",
+	        sprintf(buffer,"<b>Server %d</b> (%d): %ld|%ld [",
 		 i,(int)score_record.pid,my_lres,lres);
 		rputs(buffer,r);
 
@@ -261,7 +263,7 @@ int status_handler (request_rec *r)
 		rputs("|",r);
 		format_byte_out(r,bytes);
 		rputs(")",r);
-		sprintf(buffer," %s {%s}", score_record.client,
+		sprintf(buffer," <i>%s {%s}</i><br>", score_record.client,
 			score_record.request);
 		rputs(buffer,r);
 	    }
