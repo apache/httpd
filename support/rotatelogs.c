@@ -62,6 +62,7 @@
 
 
 #include "apr.h"
+#include <string.h>
 #include <stdlib.h>
 #include <time.h>
 #include <errno.h>
