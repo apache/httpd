@@ -16,6 +16,7 @@
 #define MD5Final                       ap_MD5Final
 #define MD5Init                        ap_MD5Init
 #define MD5Update                      ap_MD5Update
+#define acquire_mutex                  ap_acquire_mutex
 #define add_cgi_vars                   ap_add_cgi_vars
 #define add_common_vars                ap_add_common_vars
 #define add_module                     ap_add_module
@@ -86,6 +87,7 @@
 #define coredump_dir                   ap_coredump_dir
 #define count_dirs                     ap_count_dirs
 #define create_environment             ap_create_environment
+#define create_mutex                   ap_create_mutex
 #define create_per_dir_config          ap_create_per_dir_config
 #define create_request_config          ap_create_request_config
 #define daemons_limit                  ap_daemons_limit
@@ -96,6 +98,7 @@
 #define default_port_for_request       ap_default_port_for_request
 #define default_port_for_scheme        ap_default_port_for_scheme
 #define default_type                   ap_default_type
+#define destroy_mutex                  ap_destroy_mutex
 #define destroy_pool                   ap_destroy_pool
 #define destroy_sub_req                ap_destroy_sub_req
 #define die                            ap_die
@@ -203,7 +206,9 @@
 #define note_subprocess                ap_note_subprocess
 #define null_cleanup                   ap_null_cleanup
 #define open_logs                      ap_open_logs
+#define open_mutex                     ap_open_mutex
 #define open_piped_log                 ap_open_piped_log
+#define os_canonical_filename          ap_canonical_filename
 #define os_escape_path                 ap_escape_path
 #define os_is_path_absolute            ap_is_path_absolute
 #define overlay_tables                 ap_overlay_tables
@@ -282,6 +287,7 @@
 #define read_request                   ap_read_request
 #define register_cleanup               ap_register_cleanup
 #define register_other_child           ap_register_other_child
+#define release_mutex                  ap_release_mutex
 #define remove_module                  ap_remove_module
 #define requires                       ap_requires
 #define reset_timeout                  ap_reset_timeout
