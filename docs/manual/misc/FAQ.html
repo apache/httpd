@@ -15,7 +15,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.99 $ ($Date: 1998/01/23 00:36:30 $)
+  $Revision: 1.100 $ ($Date: 1998/01/23 16:13:50 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -1803,11 +1803,12 @@
   <A HREF="http://www.linuxhq.com/HOWTO/META-FAQ.html"
   >Linux newsgroup/mailing list</A>.
   As a last-resort workaround, you can
-  comment out the <CODE>#define USE_SHMGET_SCOREBOARD</CODE> definition in the
+  comment out the <CODE>#define&nbsp;USE_SHMGET_SCOREBOARD</CODE>
+  definition in the
   <SAMP>LINUX</SAMP> section of
   <SAMP>src/conf.h</SAMP> and rebuild the server (prior to 1.3b4, simply
-  removing <CODE>#define HAVE_SHMGET</CODE> would have sufficed).  This will
-  produce a server which is slower and less reliable.
+  removing <CODE>#define&nbsp;HAVE_SHMGET</CODE> would have sufficed).
+  This will produce a server which is slower and less reliable.
   </P>
   <HR>
  </LI>
@@ -1892,8 +1893,8 @@
      </A>
   <P>
   You have probably configured the Host by specifying a FQHN,
-  and thus the libmsql will use a full blown tcp/ip socket to talk to
-  the database, rather than a fast internal device.  The
+  and thus the <SAMP>libmsql</SAMP> will use a full blown TCP/IP socket
+  to talk to the database, rather than a fast internal device.  The
   <SAMP>libmsql</SAMP>, the mSQL FAQ, and the <SAMP>mod_auth_msql</SAMP>
   documentation warn you about this.  If you have to use different
   hosts, check out the <SAMP>mod_auth_msql</SAMP> code for
