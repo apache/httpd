@@ -4,16 +4,16 @@ dnl APACHE_MODULE(name, helptext[, objects[, structname[, default[, config]]]])
 
 APACHE_MODPATH_INIT(mappers)
 
-APACHE_MODULE(vhost_alias, mass hosting module, , , most)
+APACHE_MODULE(vhost_alias, mass virtual hosting module, , , most)
 APACHE_MODULE(negotiation, content negotiation, , , yes)
 APACHE_MODULE(dir, directory request handling, , , yes)
-APACHE_MODULE(imap, internal imagemaps, , , yes)
+APACHE_MODULE(imap, server-side imagemaps, , , yes)
 APACHE_MODULE(actions, Action triggering on requests, , , yes)
 APACHE_MODULE(speling, correct common URL misspellings, , , most)
-APACHE_MODULE(userdir, mapping of user requests, , , yes)
-APACHE_MODULE(alias, translation of requests, , , yes)
+APACHE_MODULE(userdir, mapping of requests to user-specific directories, , , yes)
+APACHE_MODULE(alias, mapping of requests to different filesystem parts, , , yes)
 
-APACHE_MODULE(rewrite, regex URL translation, , , most)
+APACHE_MODULE(rewrite, rule based URL manipulation, , , most)
 
 
 APR_CHECK_APR_DEFINE(APR_HAS_DSO)
