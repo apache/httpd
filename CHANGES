@@ -1,5 +1,8 @@
 Changes with Apache 2.0.15-dev
 
+  *) Handle ap_discard_request_body() being called more than once.
+     [Greg Ames, Jeff Trawick]
+
   *) Get rid of an inadvertent close of file descriptor 2 in
      mod_mime_magic.  [Greg Ames, Jeff Trawick]
 

@@ -1450,8 +1450,10 @@ AP_DECLARE(int) ap_discard_request_body(request_rec *r)
 {
     int rv;
 
-    if ((rv = ap_setup_client_block(r, REQUEST_CHUNKED_DECHUNK)))
-        return rv;
+    if (r->read_length == 0) { /* if not read already */
+        if ((rv = ap_setup_client_block(r, REQUEST_CHUNKED_DECHUNK)))
+            return rv;
+    }
 
     /* In order to avoid sending 100 Continue when we already know the
      * final response status, and yet not kill the connection if there is
