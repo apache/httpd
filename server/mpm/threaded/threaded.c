@@ -705,8 +705,8 @@ static void *start_threads(apr_thread_t *thd, void * dummy)
   	    /* We are creating threads right now */
 	    (void) ap_update_child_status(my_child_num, i, SERVER_STARTING, 
 	  			          (request_rec *) NULL);
-	    /* We let each thread update it's own scoreboard entry.  This is 
-             * done because it let's us deal with tid better.
+            /* We let each thread update its own scoreboard entry.  This is
+             * done because it lets us deal with tid better.
 	     */
 	    if ((rv = apr_thread_create(&threads[i], thread_attr, worker_thread, my_info, pchild))) {
 	        ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf,
@@ -722,7 +722,7 @@ static void *start_threads(apr_thread_t *thd, void * dummy)
         if (workers_may_exit || threads_created == ap_threads_per_child) {
             break;
         }
-        sleep(1);
+        sleep(1); /* wait for previous generation to clean up an entry */
     }
     
     /* What state should this child_main process be listed as in the scoreboard...?
