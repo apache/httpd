@@ -779,6 +779,7 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0,
 	int i, sz;
 	char *dot;
 	char *exename;
+        char *quoted_filename;
 	int is_exe = 0;
 	STARTUPINFO si;
 	PROCESS_INFORMATION pi;
@@ -791,6 +792,8 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0,
 
 	interpreter[0] = 0;
 	pid = -1;
+
+        quoted_filename = ap_pstrcat(r->pool, "\"", r->filename, "\"", NULL);
 
 	exename = strrchr(r->filename, '/');
 	if (!exename) {
@@ -877,7 +880,7 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0,
 	         * When the CGI is a straight binary executable, 
 		 * we can run it as is
 	         */
-	        pCommand = r->filename;
+	        pCommand = quoted_filename;
 	    }
 	    else if (is_script) {
                 /* When an interpreter is needed, we need to create 
@@ -885,14 +888,14 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0,
                  * followed by the CGI script name.  
 		 */
 	        pCommand = ap_pstrcat(r->pool, interpreter + 2, " ", 
-				      r->filename, NULL);
+				      quoted_filename, NULL);
 	    }
 	    else {
 	        /* If not an executable or script, just execute it
                  * from a command prompt.  
                  */
 	        pCommand = ap_pstrcat(r->pool, SHELL_PATH, " /C ", 
-				      r->filename, NULL);
+				      quoted_filename, NULL);
 	    }
 	}
 	else {
@@ -938,16 +941,16 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0,
 	     * so now build the command line.
 	     */
 	    if (is_exe || is_binary) {
-	        pCommand = ap_pstrcat(r->pool, r->filename, " ", 
+	        pCommand = ap_pstrcat(r->pool, quoted_filename, " ", 
 				      arguments, NULL);
 	    }
 	    else if (is_script) {
 	        pCommand = ap_pstrcat(r->pool, interpreter + 2, " ", 
-				      r->filename, " ", arguments, NULL);
+				      quoted_filename, " ", arguments, NULL);
 	    }
 	    else {
 	        pCommand = ap_pstrcat(r->pool, SHELL_PATH, " /C ", 
-				      r->filename, " ", arguments, NULL);
+				      quoted_filename, " ", arguments, NULL);
 	    }
 	}
   
