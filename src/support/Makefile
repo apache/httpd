@@ -18,7 +18,7 @@ RM= /bin/rm -f
 .c.o: 
 	$(CC) -c $(CFLAGS) $(INCLUDES) $<
 
-TARGETS=htpasswd unescape inc2shtml httpd_monitor rotatelogs
+TARGETS=htpasswd htdigest unescape inc2shtml httpd_monitor rotatelogs
 
 all: $(TARGETS)
 
@@ -55,6 +55,9 @@ tar: htpasswd unescape
 
 htpasswd: htpasswd.c
 	$(CC) $(CFLAGS) htpasswd.c -o htpasswd $(EXTRA_LIBS)
+
+htdigest: htdigest.c
+	$(CC) $(CFLAGS) htdigest.c -o htdigest
 
 unescape: unescape.c
 	$(CC) $(CFLAGS) unescape.c -o unescape

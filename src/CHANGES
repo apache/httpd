@@ -1,3 +1,6 @@
+  *) htdigest utility included for use with digest authentication
+     module.
+
 Changes with Apache 1.1b2.
 
   *) Bugfixes:
