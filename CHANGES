@@ -1,5 +1,9 @@
 Changes with Apache 2.0.34-dev
 
+  *) Scrap CacheMaxExpireMin and CacheDefaultExpireMin. Change
+     CacheMaxExpire and CacheDefaultExpire to use seconds rather than
+     hours. [Graham Leggett, Bill Stoddard]
+
   *) New Directive SSIUndefinedEcho. to change the '(none)' echoed
      for a undefined variable. [Ian Holsman]
 

@@ -118,12 +118,13 @@
 /* default completion is 60% */
 #define DEFAULT_CACHE_COMPLETION (60)
 #define MAX_URL_LENGTH 1024
-#define MSEC_ONE_DAY ((apr_time_t)(86400*APR_USEC_PER_SEC)) /* one day, in microseconds */
-#define MSEC_ONE_HR  ((apr_time_t)(3600*APR_USEC_PER_SEC))  /* one hour, in microseconds */
-#define MSEC_ONE_MIN  ((apr_time_t)(60*APR_USEC_PER_SEC))   /* one minute, in microseconds */
+#define MSEC_ONE_DAY    ((apr_time_t)(86400*APR_USEC_PER_SEC)) /* one day, in microseconds */
+#define MSEC_ONE_HR     ((apr_time_t)(3600*APR_USEC_PER_SEC))  /* one hour, in microseconds */
+#define MSEC_ONE_MIN    ((apr_time_t)(60*APR_USEC_PER_SEC))    /* one minute, in microseconds */
+#define MSEC_ONE_SEC    ((apr_time_t)(APR_USEC_PER_SEC))       /* one second, in microseconds */
 #define DEFAULT_CACHE_MAXEXPIRE MSEC_ONE_DAY
 #define DEFAULT_CACHE_EXPIRE    MSEC_ONE_HR
-#define DEFAULT_CACHE_LMFACTOR (0.1)
+#define DEFAULT_CACHE_LMFACTOR  (0.1)
 
 /* Create a set of PROXY_DECLARE(type), PROXY_DECLARE_NONSTD(type) and 
  * PROXY_DECLARE_DATA with appropriate export and import tags for the platform
