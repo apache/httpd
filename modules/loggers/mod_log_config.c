@@ -367,15 +367,16 @@ static const char *log_remote_user(request_rec *r, char *a)
 
 static const char *log_request_line(request_rec *r, char *a)
 {
-	    /* NOTE: If the original request contained a password, we
-	     * re-write the request line here to contain XXXXXX instead:
-	     * (note the truncation before the protocol string for HTTP/0.9 requests)
-	     * (note also that r->the_request contains the unmodified request)
-	     */
-    return (r->parsed_uri.password) ? apr_pstrcat(r->pool, r->method, " ",
-					 apr_uri_unparse(r->pool, &r->parsed_uri, 0),
-					 r->assbackwards ? NULL : " ", r->protocol, NULL)
-					: r->the_request;
+    /* NOTE: If the original request contained a password, we
+     * re-write the request line here to contain XXXXXX instead:
+     * (note the truncation before the protocol string for HTTP/0.9 requests)
+     * (note also that r->the_request contains the unmodified request)
+     */
+    return (r->parsed_uri.password) 
+                ? apr_pstrcat(r->pool, r->method, " ",
+                              apr_uri_unparse(r->pool, &r->parsed_uri, 0),
+                              r->assbackwards ? NULL : " ", r->protocol, NULL)
+                : r->the_request;
 }
 
 static const char *log_request_file(request_rec *r, char *a)
@@ -410,7 +411,7 @@ static const char *clf_log_bytes_sent(request_rec *r, char *a)
         return "-";
     }
     else {
-	return apr_off_t_toa(r->pool, r->bytes_sent);
+        return apr_off_t_toa(r->pool, r->bytes_sent);
     }
 }
 
@@ -420,7 +421,7 @@ static const char *log_bytes_sent(request_rec *r, char *a)
         return "0";
     }
     else {
-	return apr_psprintf(r->pool, "%" APR_OFF_T_FMT, r->bytes_sent);
+        return apr_psprintf(r->pool, "%" APR_OFF_T_FMT, r->bytes_sent);
     }
 }
 
@@ -496,17 +497,16 @@ static const char *log_request_time(request_rec *r, char *a)
 {
     apr_time_exp_t xt;
 
-    /*
-	hi.  i think getting the time again at the end of the request
-	just for logging is dumb.  i know it's "required" for CLF.
-	folks writing log parsing tools don't realise that out of order
-	times have always been possible (consider what happens if one
-	process calculates the time to log, but then there's a context
-	switch before it writes and before that process is run again the
-	log rotation occurs) and they should just fix their tools rather
-	than force the server to pay extra cpu cycles.	if you've got
-	a problem with this, you can set the define.  -djg
-    */
+    /* ###  I think getting the time again at the end of the request
+     * just for logging is dumb.  i know it's "required" for CLF.
+     * folks writing log parsing tools don't realise that out of order
+     * times have always been possible (consider what happens if one
+     * process calculates the time to log, but then there's a context
+     * switch before it writes and before that process is run again the
+     * log rotation occurs) and they should just fix their tools rather
+     * than force the server to pay extra cpu cycles.  if you've got
+     * a problem with this, you can set the define.  -djg
+     */
     if (a && *a) {              /* Custom format */
         /* The custom time formatting uses a very large temp buffer
          * on the stack.  To avoid using so much stack space in the
@@ -591,7 +591,7 @@ static const char *log_virtual_host(request_rec *r, char *a)
 static const char *log_server_port(request_rec *r, char *a)
 {
     return apr_psprintf(r->pool, "%u",
-	r->server->port ? r->server->port : ap_default_port(r));
+                        r->server->port ? r->server->port : ap_default_port(r));
 }
 
 /* This respects the setting of UseCanonicalName so that
@@ -636,7 +636,7 @@ static char *parse_log_misc_string(apr_pool_t *p, log_format_item *it,
 
     s = *sa;
     while (*s && *s != '%') {
-	s++;
+        s++;
     }
     /*
      * This might allocate a few chars extra if there's a backslash
@@ -647,39 +647,39 @@ static char *parse_log_misc_string(apr_pool_t *p, log_format_item *it,
     d = it->arg;
     s = *sa;
     while (*s && *s != '%') {
-	if (*s != '\\') {
-	    *d++ = *s++;
-	}
-	else {
-	    s++;
-	    switch (*s) {
-	    case '\\':
-		*d++ = '\\';
-		s++;
-		break;
-	    case 'r':
-		*d++ = '\r';
-		s++;
-		break;
-	    case 'n':
-		*d++ = '\n';
-		s++;
-		break;
-	    case 't':	
-		*d++ = '\t';
-		s++;
-		break;
-	    default:
-		/* copy verbatim */
-		*d++ = '\\';
-		/*
-		 * Allow the loop to deal with this *s in the normal
-		 * fashion so that it handles end of string etc.
-		 * properly.
-		 */
-		break;
-	    }
-	}
+        if (*s != '\\') {
+            *d++ = *s++;
+        }
+        else {
+            s++;
+            switch (*s) {
+            case '\\':
+                *d++ = '\\';
+                s++;
+                break;
+            case 'r':
+                *d++ = '\r';
+                s++;
+                break;
+            case 'n':
+                *d++ = '\n';
+                s++;
+                break;
+            case 't':
+                *d++ = '\t';
+                s++;
+                break;
+            default:
+                /* copy verbatim */
+                *d++ = '\\';
+                /*
+                 * Allow the loop to deal with this *s in the normal
+                 * fashion so that it handles end of string etc.
+                 * properly.
+                 */
+                break;
+            }
+        }
     }
     *d = '\0';
 
@@ -865,17 +865,17 @@ static int config_log_transaction(request_rec *r, config_log_state *cls,
      * to make.
      */
     if (cls->condition_var != NULL) {
-	envar = cls->condition_var;
-	if (*envar != '!') {
-	    if (apr_table_get(r->subprocess_env, envar) == NULL) {
-		return DECLINED;
-	    }
-	}
-	else {
-	    if (apr_table_get(r->subprocess_env, &envar[1]) != NULL) {
-		return DECLINED;
-	    }
-	}
+        envar = cls->condition_var;
+        if (*envar != '!') {
+            if (apr_table_get(r->subprocess_env, envar) == NULL) {
+                return DECLINED;
+            }
+        }
+        else {
+            if (apr_table_get(r->subprocess_env, &envar[1]) != NULL) {
+                return DECLINED;
+            }
+        }
     }
 
     format = cls->format ? cls->format : default_format;
@@ -912,7 +912,7 @@ static int config_log_transaction(request_rec *r, config_log_state *cls,
 static int multi_log_transaction(request_rec *r)
 {
     multi_log_state *mls = ap_get_module_config(r->server->module_config,
-						&log_config_module);
+                                                &log_config_module);
     config_log_state *clsarray;
     int i;
 
@@ -988,7 +988,7 @@ static const char *log_format(cmd_parms *cmd, void *dummy, const char *fmt,
 {
     const char *err_string = NULL;
     multi_log_state *mls = ap_get_module_config(cmd->server->module_config,
-						&log_config_module);
+                                                &log_config_module);
 
     /*
      * If we were given two arguments, the second is a name to be given to the
@@ -1014,20 +1014,20 @@ static const char *add_custom_log(cmd_parms *cmd, void *dummy, const char *fn,
 {
     const char *err_string = NULL;
     multi_log_state *mls = ap_get_module_config(cmd->server->module_config,
-						&log_config_module);
+                                                &log_config_module);
     config_log_state *cls;
 
     cls = (config_log_state *) apr_array_push(mls->config_logs);
     cls->condition_var = NULL;
     if (envclause != NULL) {
-	if (strncasecmp(envclause, "env=", 4) != 0) {
-	    return "error in condition clause";
-	}
-	if ((envclause[4] == '\0')
-	    || ((envclause[4] == '!') && (envclause[5] == '\0'))) {
-	    return "missing environment variable name";
-	}
-	cls->condition_var = apr_pstrdup(cmd->pool, &envclause[4]);
+        if (strncasecmp(envclause, "env=", 4) != 0) {
+            return "error in condition clause";
+        }
+        if ((envclause[4] == '\0')
+            || ((envclause[4] == '!') && (envclause[5] == '\0'))) {
+            return "missing environment variable name";
+        }
+        cls->condition_var = apr_pstrdup(cmd->pool, &envclause[4]);
     }
 
     cls->fname = fn;
@@ -1044,7 +1044,7 @@ static const char *add_custom_log(cmd_parms *cmd, void *dummy, const char *fn,
 }
 
 static const char *set_transfer_log(cmd_parms *cmd, void *dummy,
-				    const char *fn)
+                                    const char *fn)
 {
     return add_custom_log(cmd, dummy, fn, NULL, NULL);
 }
@@ -1106,10 +1106,10 @@ static int open_multi_logs(server_rec *s, apr_pool_t *p)
     const char *format;
 
     if (mls->default_format_string) {
-	format = apr_table_get(mls->formats, mls->default_format_string);
-	if (format) {
-	    mls->default_format = parse_log_string(p, format, &dummy);
-	}
+        format = apr_table_get(mls->formats, mls->default_format_string);
+        if (format) {
+            mls->default_format = parse_log_string(p, format, &dummy);
+        }
     }    
 
     if (!mls->default_format) {
@@ -1121,12 +1121,12 @@ static int open_multi_logs(server_rec *s, apr_pool_t *p)
         for (i = 0; i < mls->config_logs->nelts; ++i) {
             config_log_state *cls = &clsarray[i];
 
-	    if (cls->format_string) {
-		format = apr_table_get(mls->formats, cls->format_string);
-		if (format) {
-		    cls->format = parse_log_string(p, format, &dummy);
-		}
-	    }
+            if (cls->format_string) {
+                format = apr_table_get(mls->formats, cls->format_string);
+                if (format) {
+                    cls->format = parse_log_string(p, format, &dummy);
+                }
+            }
 
             if (!open_config_log(s, p, cls, mls->default_format)) {
                 /* Failure already logged by open_config_log */
@@ -1139,12 +1139,12 @@ static int open_multi_logs(server_rec *s, apr_pool_t *p)
         for (i = 0; i < mls->server_config_logs->nelts; ++i) {
             config_log_state *cls = &clsarray[i];
 
-	    if (cls->format_string) {
-		format = apr_table_get(mls->formats, cls->format_string);
-		if (format) {
-		    cls->format = parse_log_string(p, format, &dummy);
-		}
-	    }
+            if (cls->format_string) {
+                format = apr_table_get(mls->formats, cls->format_string);
+                if (format) {
+                    cls->format = parse_log_string(p, format, &dummy);
+                }
+            }
 
             if (!open_config_log(s, p, cls, mls->default_format)) {
                 /* Failure already logged by open_config_log */
@@ -1208,9 +1208,10 @@ static int init_config_log(apr_pool_t *pc, apr_pool_t *p, apr_pool_t *pt, server
 
 static void init_child(apr_pool_t *p, server_rec *s)
 {
-	/* Now register the last buffer flush with the cleanup engine */
-    if (buffered_logs)
-	    apr_pool_cleanup_register(p, s, flush_all_logs, flush_all_logs);
+    /* Now register the last buffer flush with the cleanup engine */
+    if (buffered_logs) {
+        apr_pool_cleanup_register(p, s, flush_all_logs, flush_all_logs);
+    }
 }
 
 static void ap_register_log_handler(apr_pool_t *p, char *tag, 
