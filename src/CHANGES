@@ -163,7 +163,10 @@ Changes with Apache 1.3.4
      to convert binary bytes to hex digits.
      [Ronald Tschalär <ronald@innovation.ch>] PR#3409
 
-  *) ap_exists_config_define() function is now "public"
+  *) Fix SEGV in TCN negotiation if no variants are acceptable.
+     [Martin Plechsmid <plechsmi@karlin.mff.cuni.cz>] PR#1987
+
+  *) API: ap_exists_config_define() function is now "public" [Doug MacEachern]
 
   *) Fix documentation of `Action' directive: It can activate a CGI script
      when either a handler or a MIME content type is triggered by the request.
