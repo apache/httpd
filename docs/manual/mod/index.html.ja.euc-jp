@@ -134,7 +134,7 @@ by other LDAP modules</dd>
 <dt><a href="mod_negotiation.html" id="N" name="N">mod_negotiation</a></dt><dd><a href="../content-negotiation.html">コンテントネゴシエーション</a>
   機能を提供する</dd>
 <dt><a href="mod_nw_ssl.html">mod_nw_ssl</a></dt><dd>Enable SSL encryption for NetWare</dd>
-<dt><a href="mod_proxy.html" id="P" name="P">mod_proxy</a></dt><dd>HTTP/1.1 proxy/gateway server</dd>
+<dt><a href="mod_proxy.html" id="P" name="P">mod_proxy</a></dt><dd>HTTP/1.1 プロキシ/ゲートウェイサーバ</dd>
 <dt><a href="mod_proxy_ajp.html">mod_proxy_ajp</a></dt><dd><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> で AJP 
 をサポートするためのモジュール</dd>
 <dt><a href="mod_proxy_balancer.html">mod_proxy_balancer</a></dt><dd>負荷分散のための <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> 拡張</dd>
