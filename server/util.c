@@ -1649,7 +1649,7 @@ AP_DECLARE(char *) ap_escape_html(apr_pool_t *p, const char *s)
 	    j += 4;
 
     if (j == 0)
-	return apr_pstrndup(p, s, i);
+	return apr_pstrmemdup(p, s, i);
 
     x = apr_palloc(p, i + j + 1);
     for (i = 0, j = 0; s[i] != '\0'; i++, j++)
