@@ -132,7 +132,7 @@ install-other:
 	@for ext in dll x; do \
 		file=apachecore.$$ext; \
 		if test -f $$file; then \
-			cp -p $$file $(bindir); \
+			cp -p $$file $(libdir); \
 		fi; \
 	done; \
 	file=httpd.dll; \
