@@ -908,7 +908,7 @@ static config_log_state *open_config_log(server_rec *s, pool *p,
         if (pl == NULL) {
             exit(1);
         }
-        cls->log_fd = piped_log_write_fd(pl);
+        cls->log_fd = ap_piped_log_write_fd(pl);
     }
     else {
         char *fname = ap_server_root_relative(p, cls->fname);

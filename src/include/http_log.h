@@ -129,11 +129,11 @@ typedef struct piped_log {
 API_EXPORT(piped_log *) ap_open_piped_log (pool *p, const char *program);
 API_EXPORT(void) ap_close_piped_log (piped_log *);
 #ifndef NO_RELIABLE_PIPED_LOGS
-#define piped_log_read_fd(pl)	((pl)->fds[0])
-#define piped_log_write_fd(pl)	((pl)->fds[1])
+#define ap_piped_log_read_fd(pl)	((pl)->fds[0])
+#define ap_piped_log_write_fd(pl)	((pl)->fds[1])
 #else
-#define piped_log_read_fd(pl)	(-1)
-#define piped_log_write_fd(pl)	(fileno((pl)->write_f))
+#define ap_piped_log_read_fd(pl)	(-1)
+#define ap_piped_log_write_fd(pl)	(fileno((pl)->write_f))
 #endif
 
 #endif	/* !APACHE_HTTP_LOG_H */

@@ -1,5 +1,10 @@
 Changes with Apache 1.3b7
 
+  *) Manually fix some symbols which were not renamed to prefix ap_ in the BIG
+     RENAMING process because they are defined as pre-processor macros instead
+     of real functions: bputc, bgetc, piped_log_write_fd, piped_log_read_fd
+     [Ralf S. Engelschall]
+
   *) Workaround braindead AWK's when generating ap_config.h: The split() and
      substr() functions cannot be nested under vendor AWK from Solaris 2.6.
      [Ralf S. Engelschall] PR#2139

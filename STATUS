@@ -67,6 +67,7 @@ Committed Code Changes:
     * Fix for the DEBUG_CGI (#ifdef'ed) situation in mod_cgi.c, PR#2114
     * Ralf's various bugfixes and cleanups for the configure script
     * Ralf's workaround for braindead awk when generating ap_config.h, PR#2139
+    * Ralf's manual renaming of forgotten non-ap_-symbols because of #define
 
 Available Patches:
 

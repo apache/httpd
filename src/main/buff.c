@@ -87,7 +87,7 @@
  * which can result in a writev().  It's a little more work to set up the
  * writev() rather than copy bytes into the buffer, so we don't do it for small
  * writes.  This is especially important when chunking (which is a very likely
- * source of small writes if it's a module using bputc/bputs)... because we
+ * source of small writes if it's a module using ap_bputc/ap_bputs)...because we
  * have the expense of actually building two chunks for each writev().
  */
 #ifndef LARGE_WRITE_THRESHOLD
@@ -394,7 +394,7 @@ static int bflush_core(BUFF *fb);
 /*
  * Start chunked encoding.
  *
- * Note that in order for bputc() to be an efficient macro we have to guarantee
+ * Note that in order for ap_bputc() to be an efficient macro we have to guarantee
  * that start_chunk() has always been called on the buffer before we leave any
  * routine in this file.  Said another way, if a routine here uses end_chunk()
  * and writes something on the wire, then it has to call start_chunk() or set

@@ -1528,8 +1528,8 @@ API_EXPORT(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
     r->remaining -= len_read;
 
     if (r->remaining == 0) {    /* End of chunk, get trailing CRLF */
-        if ((c = bgetc(r->connection->client)) == CR) {
-            c = bgetc(r->connection->client);
+        if ((c = ap_bgetc(r->connection->client)) == CR) {
+            c = ap_bgetc(r->connection->client);
         }
         if (c != LF) {
             r->connection->keepalive = -1;
@@ -1815,7 +1815,7 @@ API_EXPORT(int) ap_rputc(int c, request_rec *r)
 {
     if (r->connection->aborted)
         return EOF;
-    bputc(c, r->connection->client);
+    ap_bputc(c, r->connection->client);
     SET_BYTES_SENT(r);
     return c;
 }

@@ -39,6 +39,7 @@
 #define bfileno                        ap_bfileno
 #define bflsbuf                        ap_bflsbuf
 #define bflush                         ap_bflush
+#define bgetc                          ap_bgetc
 #define bgetopt                        ap_bgetopt
 #define bgets                          ap_bgets
 #define bhalfduplex                    ap_bhalfduplex
@@ -49,6 +50,7 @@
 #define bonerror                       ap_bonerror
 #define bprintf                        ap_bprintf
 #define bpushfd                        ap_bpushfd
+#define bputc                          ap_bputc
 #define bputs                          ap_bputs
 #define bread                          ap_bread
 #define bsetflag                       ap_bsetflag
@@ -209,6 +211,10 @@
 #define open_mutex                     ap_open_mutex
 #define open_piped_log                 ap_open_piped_log
 #define os_canonical_filename          ap_os_canonical_filename
+#define os_dl_load                     ap_os_dso_load
+#define os_dl_unload                   ap_os_dso_unload
+#define os_dl_sym                      ap_os_dso_sym
+#define os_dl_error                    ap_os_dso_error
 #define os_escape_path                 ap_os_escape_path
 #define os_is_path_absolute            ap_os_is_path_absolute
 #define overlay_tables                 ap_overlay_tables
@@ -231,6 +237,8 @@
 #define pfopen                         ap_pfopen
 #define pgethostbyname                 ap_pgethostbyname
 #define pid_fname                      ap_pid_fname
+#define piped_log_read_fd              ap_piped_log_read_fd
+#define piped_log_write_fd             ap_piped_log_write_fd
 #define pool_is_ancestor               ap_pool_is_ancestor
 #define pool_join                      ap_pool_join
 #define popendir                       ap_popendir
@@ -389,9 +397,5 @@
 #define util_uri_init                  ap_util_uri_init
 #define uudecode                       ap_uudecode
 #define vbprintf                       ap_vbprintf
-#define os_dl_load                     ap_os_dso_load
-#define os_dl_unload                   ap_os_dso_unload
-#define os_dl_sym                      ap_os_dso_sym
-#define os_dl_error                    ap_os_dso_error
 
 #endif /* APACHE_COMPAT_H */

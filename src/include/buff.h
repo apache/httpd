@@ -168,20 +168,20 @@ API_EXPORT(int) ap_bfilbuf(BUFF *fb);
 
 #ifndef CHARSET_EBCDIC
 
-#define bgetc(fb)   ( ((fb)->incnt == 0) ? ap_bfilbuf(fb) : \
+#define ap_bgetc(fb)   ( ((fb)->incnt == 0) ? ap_bfilbuf(fb) : \
 		    ((fb)->incnt--, *((fb)->inptr++)) )
 
-#define bputc(c, fb) ((((fb)->flags & (B_EOUT|B_WRERR|B_WR)) != B_WR || \
+#define ap_bputc(c, fb) ((((fb)->flags & (B_EOUT|B_WRERR|B_WR)) != B_WR || \
 		     (fb)->outcnt == (fb)->bufsiz) ? ap_bflsbuf(c, (fb)) : \
 		     ((fb)->outbase[(fb)->outcnt++] = (c), 0))
 
 #else /*CHARSET_EBCDIC*/
 
-#define bgetc(fb)   ( ((fb)->incnt == 0) ? ap_bfilbuf(fb) : \
+#define ap_bgetc(fb)   ( ((fb)->incnt == 0) ? ap_bfilbuf(fb) : \
 		    ((fb)->incnt--, (fb->flags & B_ASCII2EBCDIC)\
 		    ?os_toebcdic[(unsigned char)*((fb)->inptr++)]:*((fb)->inptr++)) )
 
-#define bputc(c, fb) ((((fb)->flags & (B_EOUT|B_WRERR|B_WR)) != B_WR || \
+#define ap_bputc(c, fb) ((((fb)->flags & (B_EOUT|B_WRERR|B_WR)) != B_WR || \
 		     (fb)->outcnt == (fb)->bufsiz) ? ap_bflsbuf(c, (fb)) : \
 		     ((fb)->outbase[(fb)->outcnt++] = (fb->flags & B_EBCDIC2ASCII)\
 		     ?os_toascii[(unsigned char)c]:(c), 0))

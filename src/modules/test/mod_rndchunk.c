@@ -56,8 +56,8 @@
  */
 
 /*
- * This module is inteded to be used for testing chunked encoding.  It
- * generates a whole whack of output using bputc() and bputs().  It
+ * This module is intended to be used for testing chunked encoding.  It
+ * generates a whole whack of output using ap_bputc() and ap_bputs().  It
  * also exercises start_chunk() and end_chunk() in buff.c.  To use it
  * you should use a tool like netcat and the src/test/check_chunked
  * tool.  Add something like this to your access.conf file:
