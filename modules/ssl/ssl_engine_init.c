@@ -255,8 +255,6 @@ int ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
             sc->server->pphrase_dialog_type = SSL_PPTYPE_BUILTIN;
         }
 
-        /* Open the dedicated SSL logfile */
-        ssl_log_open(base_server, s, p);
     }
 
     ssl_init_SSLLibrary(base_server);
@@ -499,8 +497,8 @@ static void ssl_init_ctx_callbacks(server_rec *s,
     SSL_CTX_set_tmp_rsa_callback(ctx, ssl_callback_TmpRSA);
     SSL_CTX_set_tmp_dh_callback(ctx,  ssl_callback_TmpDH);
 
-    if (mctx->sc->log_level >= SSL_LOG_INFO) {
-        /* this callback only logs if SSLLogLevel >= info */
+    if (s->loglevel >= APLOG_DEBUG) {
+        /* this callback only logs if LogLevel >= info */
         SSL_CTX_set_info_callback(ctx, ssl_callback_LogTracingState);
     }
 }

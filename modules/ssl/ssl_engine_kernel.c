@@ -145,7 +145,7 @@ apr_status_t ssl_hook_CloseConnection(SSLFilterRec *filter)
     SSL_smart_shutdown(ssl);
 
     /* and finally log the fact that we've closed the connection */
-    if (SSLConnLogApplies(sslconn, SSL_LOG_INFO)) {
+    if (conn->base_server->loglevel >= APLOG_INFO) {
         ap_log_error(APLOG_MARK, APLOG_INFO|APLOG_NOERRNO, 0, conn->base_server,
                      "Connection to child %ld closed with %s shutdown"
                      "(server %s, client %s)",
@@ -243,7 +243,7 @@ int ssl_hook_Translate(request_rec *r)
     /*
      * Log information about incoming HTTPS requests
      */
-    if (SSLConnLogApplies(sslconn, SSL_LOG_INFO) && ap_is_initial_req(r)) {
+    if (r->server->loglevel >= APLOG_INFO && ap_is_initial_req(r)) {
         ap_log_error(APLOG_MARK, APLOG_INFO|APLOG_NOERRNO, 0, r->server,
                      "%s HTTPS request received for child %ld (server %s)",
                      (r->connection->keepalives <= 0 ?
@@ -1280,7 +1280,7 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
     /*
      * Log verification information
      */
-    if (sc->log_level >= SSL_LOG_TRACE) {
+    if (s->loglevel >= APLOG_DEBUG) {
         X509 *cert  = X509_STORE_CTX_get_current_cert(ctx);
         char *sname = X509_NAME_oneline(X509_get_subject_name(cert), NULL, 0);
         char *iname = X509_NAME_oneline(X509_get_issuer_name(cert),  NULL, 0);
@@ -1455,7 +1455,7 @@ int ssl_callback_SSLVerify_CRL(int ok, X509_STORE_CTX *ctx, conn_rec *c)
          * Log information about CRL
          * (A little bit complicated because of ASN.1 and BIOs...)
          */
-        if (sc->log_level >= SSL_LOG_TRACE) {
+        if (s->loglevel >= APLOG_DEBUG) {
             char buff[512]; /* should be plenty */
             BIO *bio = BIO_new(BIO_s_mem());
 
@@ -1541,7 +1541,7 @@ int ssl_callback_SSLVerify_CRL(int ok, X509_STORE_CTX *ctx, conn_rec *c)
             ASN1_INTEGER *sn = X509_REVOKED_get_serialNumber(revoked);
 
             if (!ASN1_INTEGER_cmp(sn, X509_get_serialNumber(cert))) {
-                if (sc->log_level >= SSL_LOG_INFO) {
+                if (s->loglevel >= APLOG_DEBUG) {
                     char *cp = X509_NAME_oneline(issuer, NULL, 0);
                     long serial = ASN1_INTEGER_get(sn);
 
@@ -1577,7 +1577,7 @@ static void modssl_proxy_info_log(server_rec *s,
     X509_NAME *name;
     const char *dn;
 
-    if (sc->log_level < SSL_LOG_TRACE) {
+    if (s->loglevel < APLOG_DEBUG) {
         return;
     }
 
@@ -1671,11 +1671,10 @@ static void ssl_session_log(server_rec *s,
                             const char *result,
                             long timeout)
 {
-    SSLSrvConfigRec *sc = mySrvConfig(s);
     char buf[SSL_SESSION_ID_STRING_LEN];
     char timeout_str[56] = {'\0'};
 
-    if (sc->log_level < SSL_LOG_TRACE) {
+    if (s->loglevel < APLOG_DEBUG) {
         return;
     }
 
@@ -1836,7 +1835,7 @@ void ssl_callback_LogTracingState(SSL *ssl, int where, int rc)
     /*
      * create the various trace messages
      */
-    if (sc->log_level >= SSL_LOG_TRACE) {
+    if (s->loglevel >= APLOG_DEBUG) {
         if (where & SSL_CB_HANDSHAKE_START) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s,
                          "%s: Handshake: start", SSL_LIBRARY_NAME);
