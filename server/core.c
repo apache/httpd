@@ -1607,7 +1607,6 @@ static const char *server_hostname_port(cmd_parms *cmd, void *dummy, const char 
 {
     const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
     const char *portstr;
-    const char *server;
     int port;
 
     if (err != NULL) {
