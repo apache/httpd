@@ -116,7 +116,7 @@ int ap_main(int argc, char *argv[]);
 #endif
 #ifdef WIN32
 #include "../os/win32/getopt.h"
-#elif !defined(BEOS)
+#elif !defined(BEOS) && !defined(TPF)
 #include <netinet/tcp.h>
 #endif
 
@@ -1096,6 +1096,7 @@ static void timeout(int sig)
     }
 }
 
+#ifndef TPF
 /*
  * These two called from alloc.c to protect its critical sections...
  * Note that they can nest (as when destroying the sub_pools of a pool
@@ -1129,7 +1130,7 @@ API_EXPORT(void) ap_unblock_alarms(void)
 	}
     }
 }
-
+#endif /* TPF */
 
 static APACHE_TLS void (*volatile alarm_fn) (int) = NULL;
 #ifdef WIN32
@@ -2781,7 +2782,7 @@ static void detach(void)
     int x;
 
     chdir("/");
-#if !defined(MPE) && !defined(OS2)
+#if !defined(MPE) && !defined(OS2) && !defined(TPF)
 /* Don't detach for MPE because child processes can't survive the death of
    the parent. */
     if ((x = fork()) > 0)
@@ -2805,7 +2806,7 @@ static void detach(void)
 	fprintf(stderr, "httpd: setpgrp or getpgrp failed\n");
 	exit(1);
     }
-#elif defined(OS2)
+#elif defined(OS2) || defined(TPF)
     /* OS/2 don't support process group IDs */
     pgrp = getpid();
 #elif defined(MPE)
@@ -4102,7 +4103,17 @@ static void perform_idle_server_maintenance(void)
 		    idle_count, total_non_dead);
 	    }
 	    for (i = 0; i < free_length; ++i) {
+#ifdef TPF
+        if(make_child(server_conf, free_slots[i], now) == -1) {
+            if(free_length == 1) {
+                shutdown_pending = 1;
+                ap_log_error(APLOG_MARK, APLOG_EMERG, server_conf,
+                "No active child processes: shutting down");
+            }
+        }
+#else
 		make_child(server_conf, free_slots[i], now);
+#endif /* TPF */
 	    }
 	    /* the next time around we want to spawn twice as many if this
 	     * wasn't good enough, but not if we've just done a graceful
@@ -4427,6 +4438,8 @@ int REALMAIN(int argc, char *argv[])
 {
     int c;
     int configtestonly = 0;
+    int sock_in;
+    int sock_out;
 
 #ifdef SecureWare
     if (set_auth_parameters(argc, argv) < 0)
@@ -4452,6 +4465,7 @@ int REALMAIN(int argc, char *argv[])
 
     ap_setup_prelinked_modules();
 
+#ifndef TPF
     while ((c = getopt(argc, argv,
 				    "D:C:c:Xd:f:vVhlL:St"
 #ifdef DEBUG_SIGSTOP
@@ -4520,6 +4534,7 @@ int REALMAIN(int argc, char *argv[])
 	    usage(argv[0]);
 	}
     }
+#endif /* TPF */
 
     ap_suexec_enabled = init_suexec();
     server_conf = ap_read_config(pconf, ptrans, ap_server_confname);
@@ -4575,33 +4590,46 @@ int REALMAIN(int argc, char *argv[])
 	    exit(0);
 	}
 
+#ifdef TPF
+    signal(SIGALRM, alrm_handler);
+    ecbptr()->ebrout = PRIMECRAS;
+#endif /* TPF */
+
+#ifdef TPF
+/* TPF only passes the incoming socket number from the internet daemon
+   in ebw000 */
+    sock_in = * (int*)(&(ecbptr()->ebw000));
+    sock_out = * (int*)(&(ecbptr()->ebw000));
+#elif defined(MPE)
+/* HP MPE 5.5 inetd only passes the incoming socket as stdin (fd 0), whereas
+   HPUX inetd passes the incoming socket as stdin (fd 0) and stdout (fd 1).
+   Go figure.  SR 5003355016 has been submitted to request that the existing
+   functionality be documented, and then to enhance the functionality to be
+   like HPUX. */
+    sock_in = fileno(stdin);
+    sock_out = fileno(stdin);
+#else
+    sock_in = fileno(stdin);
+    sock_out = fileno(stdout);
+#endif
+
 	l = sizeof(sa_client);
-	if ((getpeername(fileno(stdin), &sa_client, &l)) < 0) {
+	if ((getpeername(sock_in, &sa_client, &l)) < 0) {
 /* get peername will fail if the input isn't a socket */
 	    perror("getpeername");
 	    memset(&sa_client, '\0', sizeof(sa_client));
 	}
 
 	l = sizeof(sa_server);
-	if (getsockname(fileno(stdin), &sa_server, &l) < 0) {
+	if (getsockname(sock_in, &sa_server, &l) < 0) {
 	    perror("getsockname");
 	    fprintf(stderr, "Error getting local address\n");
 	    exit(1);
 	}
 	server_conf->port = ntohs(((struct sockaddr_in *) &sa_server)->sin_port);
 	cio = ap_bcreate(ptrans, B_RDWR | B_SOCKET);
-#ifdef MPE
-/* HP MPE 5.5 inetd only passes the incoming socket as stdin (fd 0), whereas
-   HPUX inetd passes the incoming socket as stdin (fd 0) and stdout (fd 1).
-   Go figure.  SR 5003355016 has been submitted to request that the existing
-   functionality be documented, and then to enhance the functionality to be
-   like HPUX. */
-
-	cio->fd = fileno(stdin);
-#else
-	cio->fd = fileno(stdout);
-#endif
-	cio->fd_in = fileno(stdin);
+        cio->fd = sock_out;
+        cio->fd_in = sock_in;
 	conn = new_connection(ptrans, server_conf, cio,
 			          (struct sockaddr_in *) &sa_client,
 			          (struct sockaddr_in *) &sa_server, -1);

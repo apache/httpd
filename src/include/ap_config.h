@@ -92,7 +92,7 @@ stat() properly */
 #include "os.h"
 #endif
 
-#if !defined(QNX) && !defined(MPE) && !defined(WIN32)
+#if !defined(QNX) && !defined(MPE) && !defined(WIN32) && !defined(TPF)
 #include <sys/param.h>
 #endif
 
@@ -801,6 +801,36 @@ typedef int rlim_t;
 
 /* All windows stuff is now in os/win32/os.h */
 
+#elif defined(TPF) /* IBM Transaction Processing Facility operating system */
+
+#include <tpfeq.h>
+#include <tpfio.h>
+#include <sysapi.h>
+#include <sysgtime.h>
+#define PRIMECRAS 0x010000
+#define JMP_BUF jmp_buf
+#define NEED_INITGROUPS
+#define NEED_STRCASECMP
+#define NEED_STRDUP
+#define NEED_STRNCASECMP
+#define NO_DBM_REWRITEMAP
+#define NO_GETTIMEOFDAY
+#define NO_KILLPG
+#define NO_LINGCLOSE
+#define NO_MMAP
+#define NO_OTHER_CHILD
+#define NO_RELIABLE_PIPED_LOGS
+#define NO_SETSID
+#define NO_SHMGET
+#define NO_SLACK
+#define NO_TIMES
+#define NO_USE_SIGACTION
+#define NO_WRITEV
+#define USE_LONGJMP
+#define USE_TPF_SELECT
+#undef  offsetof
+#define offsetof(s_type,field) ((size_t)&(((s_type*)0)->field))
+
 #else
 /* Unknown system - Edit these to match */
 #ifdef BSD
@@ -906,7 +936,7 @@ typedef int rlim_t;
 #include <stdlib.h>
 #include <string.h>
 #include "ap_ctype.h"
-#if !defined(MPE) && !defined(WIN32)
+#if !defined(MPE) && !defined(WIN32) && !defined(TPF)
 #include <sys/file.h>
 #endif
 #ifndef WIN32
@@ -914,10 +944,12 @@ typedef int rlim_t;
 #ifdef HAVE_SYS_SELECT_H
 #include <sys/select.h>
 #endif /* HAVE_SYS_SELECT_H */
+#ifndef TPF
 #include <netinet/in.h>
+#endif /* TPF */
 #include <netdb.h>
 #include <sys/ioctl.h>
-#if !defined(MPE) && !defined(BEOS)
+#if !defined(MPE) && !defined(BEOS) && !defined(TPF)
 #include <arpa/inet.h>		/* for inet_ntoa */
 #endif
 #include <sys/wait.h>
@@ -943,7 +975,7 @@ typedef int rlim_t;
 #endif
 #include <signal.h>
 #include <errno.h>
-#if !defined(QNX) && !defined(CONVEXOS11) && !defined(NEXT)
+#if !defined(QNX) && !defined(CONVEXOS11) && !defined(NEXT) && !defined(TPF)
 #include <memory.h>
 #endif
 
@@ -1047,6 +1079,8 @@ Sigfunc *signal(int signo, Sigfunc * func);
 #ifdef SELECT_NEEDS_CAST
 #define ap_select(_a, _b, _c, _d, _e)	\
     select((_a), (int *)(_b), (int *)(_c), (int *)(_d), (_e))
+#elif defined(USE_TPF_SELECT)
+#define ap_select   tpf_select
 #else
 #define ap_select	select
 #endif

@@ -259,6 +259,24 @@ static ap_inline int buff_read(BUFF *fb, void *buf, int nbyte)
     }
     else
 	rv = ap_read(fb, buf, nbyte);
+#elif defined(TPF)
+    fd_set fds;
+    struct timeval tv;
+
+    tpf_process_signals();
+    if (fb->flags & B_SOCKET) {
+        alarm(rv = alarm(0));
+        FD_ZERO(&fds);
+        FD_SET(fb->fd_in, &fds);
+        tv.tv_sec = rv+1;
+        tv.tv_usec = 0;
+        rv = ap_select(fb->fd_in + 1, &fds, NULL, NULL, &tv);
+        if (rv < 1) {
+            tpf_process_signals();
+            return(rv);
+        }
+    }
+    rv = ap_read(fb, buf, nbyte);
 #else
     rv = ap_read(fb, buf, nbyte);
 #endif /* WIN32 */
@@ -1578,3 +1596,4 @@ API_EXPORT(int) ap_vbprintf(BUFF *fb, const char *fmt, va_list ap)
     }
     return res;
 }
+ 

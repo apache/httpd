@@ -275,6 +275,13 @@ if [ -d /usr/apollo ]; then
     exit 0
 fi
 
+# Apache is not compiled on the TPF platform
+# therefore an environment variable is used
+if [ "$TPF" = "YES" ]; then
+    echo "TPF"
+    exit 0	
+fi
+
 # Now NeXT
 ISNEXT=`hostinfo 2>/dev/null`
 case "$ISNEXT" in

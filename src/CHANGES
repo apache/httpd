@@ -1,5 +1,8 @@
 Changes with Apache 1.3.4
 
+  *) PORT: Add a port to the TPF OS. [Joe Moenich <moenich@us.ibm.com> and
+     others at IBM]
+
   *) Fix internal handling of registered cleanups in alloc.c by making sure
      that NULL-specified callback functions (we don't do this in the official
      set of modules, but third-party modules do) for ap_register_cleanup()

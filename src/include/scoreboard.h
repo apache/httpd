@@ -63,7 +63,11 @@ extern "C" {
 #endif
 
 #ifndef WIN32
+#ifdef TPF
+#include <time.h>
+#else
 #include <sys/times.h>
+#endif /* TPF */
 #endif
 
 /* Scoreboard info on a process is, for now, kept very brief --- 
