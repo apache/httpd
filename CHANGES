@@ -1,5 +1,13 @@
 Changes with Apache 2.0.33-dev
 
+  *) Fix for multiple file buckets on Win32, where the first file
+     bucket would cause the immediate closure of the socket on any
+     non-keepalive requests.  [Ryan Morgan <rmorgan@covalent.net>]
+
+  *) Correct Win32 failure of mmap of a segment beyond start of the
+     file; fixes large SSL and similar transfers.  [William Rowe]
+     PR 9898
+
   *) Implement apr_proc_detach changes and allow -DNO_DETACH in the
      multi-process mode to not "daemonize" while detaching from the
      controlling terminal. This is necessary for Apache to work with
