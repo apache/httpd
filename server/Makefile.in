@@ -30,7 +30,7 @@ test_char.h: gen_test_char
 
 util.lo: test_char.h
 
-EXPORT_DIRS = $(top_srcdir)/include $(top_srcdir)/os/$OS_DIR $APR_INCLUDEDIR $APU_INCLUDEDIR $(top_srcdir)/modules/http
+EXPORT_DIRS = $(top_srcdir)/include $(top_srcdir)/os/$(OS_DIR) $(APR_INCLUDEDIR) $(APU_INCLUDEDIR) $(top_srcdir)/modules/http
 
 delete-exports: export_files
 	@if test -f exports.c; then \
