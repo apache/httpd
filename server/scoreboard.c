@@ -230,12 +230,15 @@ apr_status_t ap_cleanup_scoreboard(void *d) {
 void ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e sb_type)
 {
     int running_gen = 0;
+#if APR_HAS_SHARED_MEMORY
     apr_status_t rv;
+#endif
 
     if (ap_scoreboard_image)
 	running_gen = ap_scoreboard_image->global->running_generation;
     if (ap_scoreboard_image == NULL) {
         ap_calc_scoreboard_size();
+#if APR_HAS_SHARED_MEMORY
         if (sb_type == SB_SHARED) {
             void *sb_shared;
             rv = open_scoreboard(p);
@@ -253,7 +256,9 @@ void ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e sb_type)
             }
             ap_init_scoreboard(sb_shared);
         }
-        else {
+        else 
+#endif
+        {
             /* A simple malloc will suffice */
             void *sb_mem = calloc(1, scoreboard_size);
             if (sb_mem == NULL) {
