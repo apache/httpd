@@ -5,7 +5,7 @@
   <head>
 
     <title>Apache サーバのバーチャルホストのサポート</title>
-    <!-- English revision: 1.4 -->
+    <!-- English revision: 1.7 -->
   </head>
   <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
 
@@ -29,10 +29,10 @@
     以下のような場合にはうまくいかないかもしれません。</p>
 
     <ol>
-      <li>利用しているシステムで setrlimit()
+      <li>利用しているシステムで <code>setrlimit()</code>
       システムコールが提供されていない。</li>
 
-      <li>システム上で setrlimit(RLIMIT_NOFILE) が動作しない
+      <li>システム上で <code>setrlimit</code>(RLIMIT_NOFILE) が動作しない
       (たとえば Solaris 2.3 のように)。</li>
 
       <li>要求されるファイル記述子の数が
@@ -45,9 +45,12 @@
     問題が発生した時に取り得る対処方法は次のとおり:
 
     <ul>
-      <li>ログファイルの数を減らす。VirtualHost
+      <li>ログファイルの数を減らす。<code><a 
+      href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
       セクションでログファイルを指定せず、
-      メインのログファイルにのみ記録する。</li>
+      メインのログファイルにのみ記録する。
+      (これに関する詳しい情報は以下の<a
+      href="#splitlogs">ログファイルの分割</a>を読んでください。)</li>
 
       <li>
         もし、前述の 1 または 2 の場合であれば、
@@ -67,6 +70,48 @@
     href="../misc/descriptors.html">ファイル記述子と
     Apache</a>」の文書を参照してください。
     </p>
+
+<h2><a name="splitlogs">ログファイルの分割</a></h2>
+
+<p>複数のバーチャルホストのログを同じログファイルに収集しようとしているときには、
+各バーチャルホストについて統計的な解析を実行するために後でログファイルを
+分割したくなるかもしれません。これは以下のようにして実現できます。</p>
+
+<p>まず、バーチャルホストの情報をログのエントリに追加する必要があります。
+これは <code><a
+href="../mod/mod_log_config.html#logformat">LogFormat</a></code> ディレクティブの
+<code>%v</code> 変数を使うことでできます。これをログのフォーマット文字列の
+先頭に追加します:</p>
+
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+ LogFormat "%v %h %l %u %t \"%r\" %>s %b" vhost<br>
+ CustomLog logs/multiple_vhost_log vhost
+</code></td></tr></table></blockquote>
+
+<p>これは common log format のログを作成しますが、それぞれの行の先頭に
+正規化されたバーチャルホストの名前
+(<a href="../mod/core.html#servername">ServerName</a>
+ディレクティブに書かれているもの) が付加されます。
+(ログファイルのカスタマイズの詳細については <a 
+href="../mod/mod_log_config.html#formats">Custom Log Formats</a> を
+読んでください。)</p>
+
+<p>ログファイルを各部分 (バーチャルホスト毎に 1 ファイル) に分けたいときは、
+<code><a
+href="../programs/other.html">split-logfile</a></code> を使って行なうことが
+できます。プログラムは Apache 配布の <code>support</code> ディレクトリに
+あります。</p>
+
+<p>以下のようなコマンドでこのプログラムを実行します:</p>
+
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee">
+<code>split-logfile &lt; /logs/multiple_vhost_log</code>
+</td></tr></table></blockquote>
+
+<p>このプログラムはバーチャルホストのログファイルの名前とともに実行され、
+ログファイルに現れるそれぞれのバーチャルホスト毎に一つのファイルを作成します。
+それぞれのファイルは <code>ホスト名.log</code> という名前になります。</p>
+
     <!--#include virtual="footer.html" -->
   </body>
 </html>
