@@ -792,7 +792,7 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
         }
 
         if (last_field != NULL) {
-            if ((len > 0) && (*field == '\t')) {
+            if ((len > 0) && ((*field == '\t') || *field == ' ')) {
                 /* This line is a continuation of the preceding line(s),
                  * so append it to the line that we've set aside.
                  * Note: this uses a power-of-two allocator to avoid
