@@ -422,9 +422,8 @@ int ssl_hook_process_connection(SSLFilterRec *pRec)
          * Remember the peer certificate's DN
          */
         if ((xs = SSL_get_peer_certificate(pRec->pssl)) != NULL) {
-            char *cp = X509_NAME_oneline(X509_get_subject_name(xs), NULL, 0);
-            sslconn->client_dn = apr_pstrdup(c->pool, cp);
-            free(cp);
+            sslconn->client_cert = xs;
+            sslconn->client_dn = NULL;
         }
 
         /*
@@ -432,7 +431,7 @@ int ssl_hook_process_connection(SSLFilterRec *pRec)
          * is required we really got one... (be paranoid)
          */
         if (sc->nVerifyClient == SSL_CVERIFY_REQUIRE
-            && sslconn->client_dn == NULL) {
+            && sslconn->client_cert == NULL) {
             ssl_log(c->base_server, SSL_LOG_ERROR,
                     "No acceptable peer certificate available");
             return ssl_abort(pRec, c);
