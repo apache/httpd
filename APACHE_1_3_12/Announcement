@@ -1,0 +1,78 @@
+Apache 1.3.12 Released
+======================
+
+The Apache Software Foundation and The Apache Server Project are
+pleased to announce the release of version 1.3.12 of the Apache HTTP server.
+
+The primary changes in this version of Apache are those related to
+the ``cross site scripting'' security alerts described at
+
+   http://www.cert.org/advisories/CA-2000-02.html
+      - and -
+   http://www.apache.org/info/css-security/index.html
+
+Specifically, charset handling has been improved and reinforced
+(including a new directive: AddDefaultCharset) and server generated
+pages properly escape ``userland'' input.
+
+A complete listing with detailed descriptions is provided in the
+src/CHANGES file.
+
+We consider Apache 1.3.12 to be the best version of Apache available and
+we strongly recommend that users of older versions, especially of the
+1.1.x and 1.2.x family, upgrade as soon as possible.  No further releases
+will be made in the 1.2.x family.
+
+
+Apache 1.3.12 is available for download from
+
+    http://www.apache.org/dist/
+
+Please see the CHANGES_1.3 file in the same directory for a full
+list of changes.
+
+Binary distributions are available from
+
+   http://www.apache.org/dist/binaries/
+
+As of Apache 1.3.12 binary distributions contain all standard Apache
+modules as shared objects (if supported by the platform) and include
+full source code.  Installation is easily done by executing the
+included install script.  See the README.bindist and INSTALL.bindist
+files for a complete explanation.  Please note that the binary
+distributions are only provided for your convenience and current
+distributions for specific platforms are not always available.
+
+The source and binary distributions are also available via any of the
+mirrors listed at
+
+    http://www.apache.org/mirrors/
+
+For an overview of new features in 1.3 please see
+
+    http://www.apache.org/docs/new_features_1_3.html
+
+In general, Apache 1.3 offers several substantial improvements
+over version 1.2, including better performance, reliability and a
+wider range of supported platforms, including Windows 95/98 and NT
+(which fall under the "Win32" label).
+
+Apache is the most popular web server in the known universe; over
+half of the servers on the Internet are running Apache or one of
+its variants.
+
+IMPORTANT NOTE FOR WIN32 USERS: Over the years, many users have
+come to trust Apache as a secure and stable server.  It must
+be realized that the current Win32 code has not yet reached the
+levels of the Unix version, but is of acceptable quality. Any
+Win32 stability or security problems do not impact, in any way,
+Apache on other platforms.  With the continued donation of time
+and resources by individuals and companies, we hope that the Win32
+version of Apache will grow stronger through the 1.3.x release cycle.
+
+
+Thank you for using Apache.
+--
+See you at ApacheCon 2000 in Orlanda, Florida, March 8-10, 2000.
+                http://www.Apachecon.com/
+

@@ -1,0 +1,189 @@
+#!/usr/local/bin/perl
+
+# ====================================================================
+# Copyright (c) 1995-1999 The Apache Group.  All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+#
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer. 
+#
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+#
+# 3. All advertising materials mentioning features or use of this
+#    software must display the following acknowledgment:
+#    "This product includes software developed by the Apache Group
+#    for use in the Apache HTTP server project (http://www.apache.org/)."
+#
+# 4. The names "Apache Server" and "Apache Group" must not be used to
+#    endorse or promote products derived from this software without
+#    prior written permission. For written permission, please contact
+#    apache@apache.org.
+#
+# 5. Products derived from this software may not be called "Apache"
+#    nor may "Apache" appear in their names without prior written
+#    permission of the Apache Group.
+#
+# 6. Redistributions of any form whatsoever must retain the following
+#    acknowledgment:
+#    "This product includes software developed by the Apache Group
+#    for use in the Apache HTTP server project (http://www.apache.org/)."
+#
+# THIS SOFTWARE IS PROVIDED BY THE APACHE GROUP ``AS IS'' AND ANY
+# EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+# PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE APACHE GROUP OR
+# ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+# NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+# HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+# STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+# OF THE POSSIBILITY OF SUCH DAMAGE.
+# ====================================================================
+#
+# This software consists of voluntary contributions made by many
+# individuals on behalf of the Apache Group and was originally based
+# on public domain software written at the National Center for
+# Supercomputing Applications, University of Illinois, Urbana-Champaign.
+# For more information on the Apache Group and the Apache HTTP server
+# project, please see <http://www.apache.org/>.
+
+#for more functionality see the HTTPD::UserAdmin module:
+# http://www.perl.com/CPAN/modules/by-module/HTTPD/HTTPD-Tools-x.xx.tar.gz
+#
+# usage: dbmmanage <DBMfile> <command> <key> <value>
+
+package dbmmanage;
+#                               -ldb    -lndbm    -lgdbm
+BEGIN { @AnyDBM_File::ISA = qw(DB_File NDBM_File GDBM_File) }
+use strict;
+use Fcntl;
+use AnyDBM_File ();
+
+my($file,$command,$key,$crypted_pwd) = @ARGV;
+
+usage() unless $file and $command and defined &{$dbmc::{$command}};
+
+# if your osname is in $newstyle_salt, then use new style salt (starts with '_' and contains
+# four bytes of iteration count and four bytes of salt).  Otherwise, just use
+# the traditional two-byte salt.
+# see the man page on your system to decide if you have a newer crypt() lib.
+# I believe that 4.4BSD derived systems do (at least BSD/OS 2.0 does).
+# The new style crypt() allows up to 20 characters of the password to be
+# significant rather than only 8.
+my $newstyle_salt = join '|', qw{bsdos}; #others?
+
+# remove extension if any
+my $chop = join '|', qw{db.? pag dir};
+$file =~ s/\.($chop)$//;
+
+my $is_update = $command eq "update";
+my $Is_Win32  = $^O eq "MSWin32"; 
+my %DB = ();
+my @range = ();
+my($mode, $flags) = $command =~ 
+    /^(?:view|check)$/ ? (0644, O_RDONLY) : (0644, O_RDWR|O_CREAT);
+
+tie (%DB, "AnyDBM_File", $file, $flags, $mode) || die "Can't tie $file: $!";
+dbmc->$command();
+untie %DB;
+
+sub usage {
+    my $cmds = join "|", sort keys %dbmc::;
+    die "usage: $0 filename [$cmds] [username]\n";
+}
+
+my $x;
+sub genseed {
+    my $psf;
+    for (qw(-xlwwa -le)) { 
+	`ps $_ 2>/dev/null`;
+	$psf = $_, last unless $?;
+    }
+    srand (time ^ $$ ^ unpack("%L*", `ps $psf | gzip -f`));
+    @range = (qw(. /), '0'..'9','a'..'z','A'..'Z');
+    $x = int scalar @range;
+}
+
+sub randchar { 
+    join '', map $range[rand $x], 1..shift||1;
+}
+
+sub salt {
+    my $newstyle = $^O =~ /(?:$newstyle_salt)/;
+    genseed() unless @range; 
+    return $newstyle ? 
+	join '', "_", randchar, "a..", randchar(4) :
+        randchar(2);
+}
+
+sub getpass {
+    my $prompt = shift || "Enter password:";
+
+    unless($Is_Win32) { 
+	open STDIN, "/dev/tty" or warn "couldn't open /dev/tty $!\n";
+	system "stty -echo;";
+    }
+
+    my($c,$pwd);
+    print STDERR $prompt;
+    while (($c = getc(STDIN)) ne '' and $c ne "\n" and $c ne "\r") {
+	$pwd .= $c;
+    }
+
+    system "stty echo" unless $Is_Win32;
+    print STDERR "\n";
+    die "Can't use empty password!\n" unless length $pwd;
+    return $pwd;
+}
+
+sub dbmc::update {
+    die "Sorry, user `$key' doesn't exist!\n" unless $DB{$key};
+    dbmc->adduser;
+}
+
+sub dbmc::add {
+    die "Can't use empty password!\n" unless $crypted_pwd;
+    unless($is_update) {
+	die "Sorry, user `$key' already exists!\n" if $DB{$key};
+    }
+    $DB{$key} = $crypted_pwd;
+    my $action = $is_update ? "updated" : "added";
+    print "User $key $action with password encrypted to $DB{$key}\n";
+}
+
+sub dbmc::adduser {
+    my $value = getpass "New password:";
+    die "They don't match, sorry.\n" unless getpass("Re-type new password:") eq $value;
+    $crypted_pwd = crypt $value, caller->salt;
+    dbmc->add;
+}
+
+sub dbmc::delete {
+    die "Sorry, user `$key' doesn't exist!\n" unless $DB{$key};
+    delete $DB{$key}, print "`$key' deleted\n";
+}
+
+sub dbmc::view {
+    print $key ? "$key:$DB{$key}\n" : map { "$_:$DB{$_}\n" if $DB{$_} } keys %DB;
+}
+
+sub dbmc::check {
+    die "Sorry, user `$key' doesn't exist!\n" unless $DB{$key};
+    print crypt(getpass(), $DB{$key}) eq $DB{$key} ? "password ok\n" : "password mismatch\n";
+}
+
+sub dbmc::import {
+    while(defined($_ = <STDIN>) and chomp) {
+	($key,$crypted_pwd) = split /:/, $_, 2;
+	dbmc->add;
+    }
+}
+

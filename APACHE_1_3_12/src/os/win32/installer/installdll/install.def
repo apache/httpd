@@ -1,0 +1,6 @@
+LIBRARY      INSTALL
+DESCRIPTION  'Installer DLL For Apache'
+
+EXPORTS
+		BeforeExit @1
+		DllMain @2

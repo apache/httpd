@@ -1,0 +1,55 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+    <HEAD>
+     <TITLE>Pagina teste para a instalacao do Apache no Web Site</TITLE>
+     <!-- original translation Dulce Lajas, dulce.lajas@jrc.it, Thu Aug 19 13:12:00 GMT 1999 -->
+    </HEAD>
+   <!-- Background white, links blue (unvisited), navy (visited), red
+   (active) -->
+    <BODY
+     BGCOLOR="#FFFFFF"
+     TEXT="#000000"
+     LINK="#0000FF"
+     VLINK="#000080"
+     ALINK="#FF0000"
+    >
+     <H1 ALIGN="CENTER">
+      Funcionou!  O Apache Web Server esta instalado neste Web Site!
+     </H1>
+     <P>
+     Se conseguir ver esta pagina, entao as pessoas que possuem este
+   dominio acabaram
+     de instalar o software <A HREF="http://www.apache.org/httpd">Apache Web
+   server</A>
+     com sucesso.  Agora tem de adicionar o conteudo a esta directoria
+     e substituir esta pagina "placeholder", ou apontar o servidor para o
+   seu conteudo real.
+     </P>
+     <HR>
+     <BLOCKQUOTE>
+      Se esta a ver esta pagina em vez do site que esperava, por favor
+      <STRONG>contacte o administrador do site envolvido.</STRONG>
+      (Tente enviar um e-mail para
+   <SAMP>&lt;Webmaster@<EM>domain</EM>&gt;</SAMP>.)
+      Apesar de neste site estar a
+      correr o software Apache e quase certo que nao tem
+      outra ligacao com o Grupo Apache, por isso por favor nao envie
+   e-mails acerca deste
+      site ou do seu conteudo para os autores do Apache.  Se o fizer, a
+   sua mensagem vai ser
+      <STRONG><BIG>ignorada</BIG></STRONG>.
+     </BLOCKQUOTE>
+     <HR>
+     <P>
+     O Apache <A HREF="manual/index.html" >documentation</A>
+     foi incluido com esta distribuicao.
+     </P>
+     <P>
+     O Webmaster deste site e livre para utilizar a imagem abaixo num
+     Web server instalado com o Apache. Obrigado por utilizar o Apache!
+     </P>
+     <DIV ALIGN="CENTER">
+      <IMG SRC="apache_pb.gif" ALT="">
+     </DIV>
+    </BODY>
+</HTML>
