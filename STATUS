@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/03/28 00:07:37 $]
+Last modified at [$Date: 2003/03/28 00:13:04 $]
 
 Release:
 
@@ -57,11 +57,6 @@ Contributors looking for a mission:
     * just do an egrep on "TODO", "XXX" and see what's there
 
 RELEASE SHOWSTOPPERS:
-
-    * fix seg faults in ap_get_mime_headers_core's error leg for overlength
-      headers caused by using an uninitialized length returned by ap_rgetline.
-      server/protocol.c: r1.129
-      +1: gregames, trawick, wrowe
 
 PATCHES TO PORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
