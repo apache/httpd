@@ -110,45 +110,45 @@ install-htdocs:
 	-@if [ -d $(DESTDIR)$(htdocsdir) ]; then \
            echo "[PRESERVING EXISTING HTDOCS SUBDIR: $(DESTDIR)$(htdocsdir)]"; \
         else \
-	    @echo Installing HTML documents ; \
+	    echo Installing HTML documents ; \
 	    $(MKINSTALLDIRS) $(DESTDIR)$(htdocsdir) ; \
-	    @test -d $(htdocs-srcdir) && (cd $(htdocs-srcdir) && cp -rp * $(DESTDIR)$(htdocsdir)) ; \
+	    test -d $(htdocs-srcdir) && (cd $(htdocs-srcdir) && cp -rp * $(DESTDIR)$(htdocsdir)) ; \
 	fi
 	-@if [ -d $(DESTDIR)$(manualdir) ]; then \
            echo "[PRESERVING EXISTING MANUAL SUBDIR: $(DESTDIR)$(manualdir)]"; \
         else \
 	    $(MKINSTALLDIRS) $(DESTDIR)$(manualdir) ; \
-	    @test -d $(top_srcdir)/docs/manual && (cd $(top_srcdir)/docs/manual && cp -rp * $(DESTDIR)$(manualdir)) ; \
-	    -@test "x$(htdocsdir)" != "x" && cd $(DESTDIR)$(htdocsdir) && find . -name "CVS" -print | xargs rm -rf ; \
+	    test -d $(top_srcdir)/docs/manual && (cd $(top_srcdir)/docs/manual && cp -rp * $(DESTDIR)$(manualdir)) ; \
+	    test "x$(htdocsdir)" != "x" && cd $(DESTDIR)$(htdocsdir) && find . -name "CVS" -print | xargs rm -rf ; \
 	fi
 
 install-error:
 	-@if [ -d $(DESTDIR)$(errordir) ]; then \
            echo "[PRESERVING EXISTING ERROR SUBDIR: $(DESTDIR)$(errordir)]"; \
         else \
-	    @echo Installing error documents ; \
+	    echo Installing error documents ; \
 	    $(MKINSTALLDIRS) $(DESTDIR)$(errordir) ; \
-	    @cd $(top_srcdir)/docs/error && cp -rp * $(DESTDIR)$(errordir) ; \
-	    -@test "x$(errordir)" != "x" && cd $(DESTDIR)$(errordir) && find . -name "CVS" -print | xargs rm -rf ; \
+	    cd $(top_srcdir)/docs/error && cp -rp * $(DESTDIR)$(errordir) ; \
+	    test "x$(errordir)" != "x" && cd $(DESTDIR)$(errordir) && find . -name "CVS" -print | xargs rm -rf ; \
 	fi
 
 install-icons:
 	-@if [ -d $(DESTDIR)$(iconsdir) ]; then \
            echo "[PRESERVING EXISTING ICONS SUBDIR: $(DESTDIR)$(iconsdir)]"; \
         else \
-	    @echo Installing icons ; \
+	    echo Installing icons ; \
 	    $(MKINSTALLDIRS) $(DESTDIR)$(iconsdir) ; \
-	    @cd $(top_srcdir)/docs/icons && cp -rp * $(DESTDIR)$(iconsdir) ; \
-	    -@test "x$(iconsdir)" != "x" && cd $(DESTDIR)$(iconsdir) && find . -name "CVS" -print | xargs rm -rf ; \
+	    cd $(top_srcdir)/docs/icons && cp -rp * $(DESTDIR)$(iconsdir) ; \
+	    test "x$(iconsdir)" != "x" && cd $(DESTDIR)$(iconsdir) && find . -name "CVS" -print | xargs rm -rf ; \
 	fi
 
 install-cgi:
 	-@if [ -d $(DESTDIR)$(cgidir) ];then \
 	    echo "[PRESERVING EXISTING CGI SUBDIR: $(DESTDIR)$(cgidir)]"; \
 	else \
-	   @echo Installing CGIs ; \
+	   echo Installing CGIs ; \
 	   $(MKINSTALLDIRS) $(DESTDIR)$(cgidir) ; \
-	   @cd $(top_srcdir)/docs/cgi-examples && cp -rp * $(DESTDIR)$(cgidir) ; \
+	   cd $(top_srcdir)/docs/cgi-examples && cp -rp * $(DESTDIR)$(cgidir) ; \
 	   test "x$(cgidir)" != "x" && cd $(DESTDIR)$(cgidir) && find . -name "CVS" -print | xargs rm -rf ; \
 	fi
 
