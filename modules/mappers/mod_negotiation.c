@@ -204,7 +204,7 @@ typedef struct var_rec {
 
     /* Now some special values */
     float level;                /* Auxiliary to content-type... */
-    float bytes;                /* content length, if known */
+    long  bytes;                /* content length, if known */
     int lang_index;             /* pre HTTP/1.1 language priority stuff */
     int is_pseudo_html;         /* text/html, *or* the INCLUDES_MAGIC_TYPEs */
 
@@ -266,7 +266,7 @@ static void clean_var_rec(var_rec *mime_info)
     mime_info->is_pseudo_html = 0;
     mime_info->level = 0.0f;
     mime_info->level_matched = 0.0f;
-    mime_info->bytes = 0.0f;
+    mime_info->bytes = 0;
     mime_info->lang_index = -1;
     mime_info->mime_stars = 0;
     mime_info->definite = 1;
@@ -401,10 +401,10 @@ static const char *get_entry(apr_pool_t *p, accept_rec *result,
 
         if (parm[0] == 'q'
             && (parm[1] == '\0' || (parm[1] == 's' && parm[2] == '\0'))) {
-            result->quality = atof(cp);
+            result->quality = (float)atof(cp);
         }
         else if (parm[0] == 'l' && !strcmp(&parm[1], "evel")) {
-            result->level = atof(cp);
+            result->level = (float)atof(cp);
         }
         else if (!strcmp(parm, "charset")) {
             result->charset = cp;
@@ -832,7 +832,7 @@ static int read_type_map(negotiation_state *neg, request_rec *rr)
                 has_content = 1;
             }
             else if (!strncmp(buffer, "content-length:", 15)) {
-                mime_info.bytes = atof(body);
+                mime_info.bytes = atol(body);
                 has_content = 1;
             }
             else if (!strncmp(buffer, "content-language:", 17)) {
@@ -1453,7 +1453,7 @@ static void set_language_quality(negotiation_state *neg, var_rec *variant)
  * machinery.  At some point, that ought to be fixed.
  */
 
-static float find_content_length(negotiation_state *neg, var_rec *variant)
+static long find_content_length(negotiation_state *neg, var_rec *variant)
 {
     apr_finfo_t statb;
 
@@ -1463,8 +1463,7 @@ static float find_content_length(negotiation_state *neg, var_rec *variant)
 
         if (apr_stat(&statb, fullname,
                      APR_FINFO_SIZE, neg->pool) == APR_SUCCESS) {
-            /* Note, precision may be lost */
-            variant->bytes = (float) statb.size;
+            variant->bytes = statb.size;
         }
     }
 
