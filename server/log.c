@@ -75,7 +75,7 @@
 #include "http_log.h"
 #include "http_main.h"
 
-#ifdef HAVE_STDARG_H
+#ifdef APR_HAVE_STDARG_H
 #include <stdarg.h>
 #endif
 #ifdef HAVE_STRINGS_H
