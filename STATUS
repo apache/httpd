@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/07/27 14:39:13 $]
+Last modified at [$Date: 2000/07/28 18:16:47 $]
 
 Release:
 
@@ -184,11 +184,6 @@ Other bugs that need fixing:
     * SIGSEGV on Linux (glibc 2.1.2) isn't caught properly by a
       sigwaiting thread. We need to work around this, perhaps unless
       there is hope soon for a fixed glibc.
-
-    * The mod_cgid daemon process isn't always cleaned up when httpd
-      gets SIGTERM.  Jeff thinks it may be as simple as registering
-      the daemon process for cleanup with the proper pool, but he hasn't
-      looked at it in enough detail.
 
     * The MM library is built as static and shared library. This should
       be set up to build only the required version.
