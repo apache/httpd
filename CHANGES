@@ -517,8 +517,13 @@ Changes with Apache 2.0.53
 
 Changes with Apache 2.0.52
 
-  *) Fix the global mutex crash when the global mutex is never allocated due
-     to disabled/empty caches. [Jess Holle <jessh ptc.com>]
+  *) Use HTML 2.0 <hr> for error pages. PR 30732 [André Malo]
+
+  *) Fix the global mutex crash when the global mutex is never allocated
+     due to disabled/empty caches. [Jess Holle <jessh ptc.com>]
+
+  *) Fix a segfault in the LDAP cache when it is configured switched
+     off. [Jess Holle <jessh ptc.com>]
 
   *) SECURITY: CAN-2004-0811 (cve.mitre.org)
      Fix merging of the Satisfy directive, which was applied to
@@ -541,6 +546,18 @@ Changes with Apache 2.0.52
      processing.  PR 29696.  [Alois Treindl <alois astro.ch>]
 
 Changes with Apache 2.0.51
+
+  *) SECURITY: CAN-2004-0786 (cve.mitre.org)
+     Fix an input validation issue in apr-util which could be
+     triggered by malformed IPv6 literal addresses.  [Joe Orton]
+
+  *) SECURITY: CAN-2004-0747 (cve.mitre.org)
+     Fix buffer overflow in expansion of environment variables in
+     configuration file parsing.  [André Malo]
+
+  *) SECURITY: CAN-2004-0809 (cve.mitre.org)
+     mod_dav_fs: Fix a segfault in the handling of an indirect lock
+     refresh.  PR 31183.  [Joe Orton]
 
   *) mod_include no longer checks for recursion, because that's done
      in the core. This allows for careful usage of recursive SSI.
