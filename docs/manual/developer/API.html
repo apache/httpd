@@ -14,7 +14,7 @@
 <H1 ALIGN="CENTER">Apache API notes</H1>
 
 These are some notes on the Apache API and the data structures you
-have to deal with, etc.  They are not yet nearly complete, but
+have to deal with, <EM>etc.</EM>  They are not yet nearly complete, but
 hopefully, they will help you get your bearings.  Keep in mind that
 the API is still subject to change as we gain experience with it.
 (See the TODO file for what <EM>might</EM> be coming).  However,
@@ -109,7 +109,7 @@ checking, all handlers always run (barring an error).  Also, the
 response phase is unique in that modules may declare multiple handlers
 for it, via a dispatch table keyed on the MIME type of the requested
 object.  Modules may declare a response-phase handler which can handle
-<EM>any</EM> request, by giving it the key <CODE>*/*</CODE> (i.e., a
+<EM>any</EM> request, by giving it the key <CODE>*/*</CODE> (<EM>i.e.</EM>, a
 wildcard MIME type specification).  However, wildcard handlers are
 only invoked if the server has already tried and failed to find a more
 specific response handler for the MIME type of the requested object
@@ -151,7 +151,7 @@ where they are permitted, and how they are to be invoked.  <P>
 A final note on the declared types of the arguments of some of these
 commands: a <CODE>pool</CODE> is a pointer to a <EM>resource pool</EM>
 structure; these are used by the server to keep track of the memory
-which has been allocated, files opened, etc., either to service a
+which has been allocated, files opened, <EM>etc.</EM>, either to service a
 particular request, or to handle the process of configuring itself.
 That way, when the request is over (or, for the configuration pool,
 when the server is restarting), the memory can be freed, and the files
@@ -306,8 +306,8 @@ struct request_rec {
 
   int header_only;     /* HEAD request, as opposed to GET */
   char *protocol;      /* Protocol, as given to us, or HTTP/0.9 */
-  char *method;        /* GET, HEAD, POST, etc. */
-  int method_number;   /* M_GET, M_POST, etc. */
+  char *method;        /* GET, HEAD, POST, <EM>etc.</EM> */
+  int method_number;   /* M_GET, M_POST, <EM>etc.</EM> */
 
   /* Info for logging */
 
@@ -325,7 +325,7 @@ struct request_rec {
    * (the thing pointed to being the module's business).
    */
 
-  void *per_dir_config;   /* Options set in config files, etc. */
+  void *per_dir_config;   /* Options set in config files, <EM>etc.</EM> */
   void *request_config;   /* Notes on *this* request */
 
 };
@@ -339,7 +339,7 @@ request from a client, and filling in the fields.  However, there are
 a few exceptions:
 
 <UL>
-  <LI> If the request is to an imagemap, a type map (i.e., a
+  <LI> If the request is to an imagemap, a type map (<EM>i.e.</EM>, a
        <CODE>*.var</CODE> file), or a CGI script which returned a
        local `Location:', then the resource which the user requested
        is going to be ultimately located by some URI other than what
@@ -503,7 +503,7 @@ response was actually sent).
 <P>
 One of the problems of writing and designing a server-pool server is
 that of preventing leakage, that is, allocating resources (memory,
-open files, etc.), without subsequently releasing them.  The resource
+open files, <EM>etc.</EM>), without subsequently releasing them.  The resource
 pool machinery is designed to make it easy to prevent this from
 happening, by allowing resource to be allocated in such a way that
 they are <EM>automatically</EM> released when the server is done with
@@ -511,7 +511,7 @@ them.
 </P>
 <P>
 The way this works is as follows:  the memory which is allocated, file
-opened, etc., to deal with a particular request are tied to a
+opened, <EM>etc.</EM>, to deal with a particular request are tied to a
 <EM>resource pool</EM> which is allocated for the request.  The pool
 is a data structure which itself tracks the resources in question.
 </P>
@@ -785,7 +785,7 @@ which the file stuff is implemented; also, <CODE>spawn_process</CODE>.
 Pool cleanups live until clear_pool() is called:  clear_pool(a) recursively
 calls destroy_pool() on all subpools of a; then calls all the cleanups for a; 
 then releases all the memory for a.  destroy_pool(a) calls clear_pool(a) 
-and then releases the pool structure itself.  i.e. clear_pool(a) doesn't
+and then releases the pool structure itself.  <EM>i.e.</EM>, clear_pool(a) doesn't
 delete a, it just frees up all the resources and you can start using it
 again immediately. 
 </P>
@@ -968,7 +968,7 @@ void *merge_mime_dir_configs (pool *p, void *parent_dirv, void *subdirv)
 
 As a note --- if there is no per-directory merge function present, the
 server will just use the subdirectory's configuration info, and ignore
-the parent's.  For some modules, that works just fine (e.g., for the
+the parent's.  For some modules, that works just fine (<EM>e.g.</EM>, for the
 includes module, whose per-directory configuration information
 consists solely of the state of the <CODE>XBITHACK</CODE>), and for
 those modules, you can just not declare one, and leave the
@@ -1025,7 +1025,7 @@ command_rec mime_cmds[] = {
 { "AddType", add_type, NULL, OR_FILEINFO, TAKE2,
     "a mime type followed by a file extension" },
 { "AddEncoding", add_encoding, NULL, OR_FILEINFO, TAKE2,
-    "an encoding (e.g., gzip), followed by a file extension" },
+    "an encoding (<EM>e.g.</EM>, gzip), followed by a file extension" },
 { NULL }
 };
 </PRE>

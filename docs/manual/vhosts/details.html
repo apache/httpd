@@ -307,7 +307,7 @@ taken to be a proxy request.
     number for the request. The request is only caught if the port number
     to which the client sent the request matches the port number of your
     <CODE>_default_</CODE> vhost which is your standard <CODE>Port</CODE>
-    by default. A wildcard port can be specified (i.e.
+    by default. A wildcard port can be specified (<EM>i.e.</EM>
     <CODE>_default_:*</CODE>) to catch requests to any available port.
     <P>
     
@@ -322,7 +322,7 @@ taken to be a proxy request.
 <LI>A <CODE>_default_</CODE> vhost or the main_server is <EM>never</EM>
     matched for a request with an unknown or missing <CODE>Host:</CODE> header
     field if the client connected to an address (and port) which is used
-    for name-based vhosts, e.g. in a <CODE>NameVirtualHost</CODE> directive.
+    for name-based vhosts, <EM>e.g.</EM>, in a <CODE>NameVirtualHost</CODE> directive.
     <P>
     
 <LI>You should never specify DNS names in <CODE>VirtualHost</CODE>

@@ -503,7 +503,7 @@ The arguments to the NoProxy directive are one of the following type list:
         </DL>
 		As a degenerate case, a <EM>SubNet</EM> with 32 valid bits is the
         equivalent to an <EM>IPAddr</EM>, while a <EM>SubNet</EM> with zero
-        valid bits (e.g., 0.0.0.0/0) is the same as the constant
+        valid bits (<EM>e.g.</EM>, 0.0.0.0/0) is the same as the constant
         <EM>_Default_</EM>, matching any IP address. 
 
     <!-- ===================== IPAddr ======================= -->
@@ -722,7 +722,7 @@ Apache 1.1 and later.<P>
 
 Sets the name of the directory to contain cache files; this must be
 writable by the httpd server.
-(see the <A HREF="core.html#user"><CODE>User</CODE></A> directive</A>).<BR>
+(see the <A HREF="core.html#user"><CODE>User</CODE></A> directive).<BR>
 Setting <CODE>CacheRoot</CODE> enables proxy cacheing; without defining
 a <CODE>CacheRoot</CODE>, proxy functionality will be available
 if <CODE>ProxyRequests</CODE> are set to <CODE>On</CODE>, but no
