@@ -8,7 +8,7 @@ Changes with Apache 2.0.47
 
   *) SECURITY [CAN-2003-0253]: Fixed a bug in prefork MPM causing
      temporary denial of service when accept() on a rarely accessed port
-     returns certain errors.  Reported by Saheed Akhtar
+     returns certain errors.  Reported by Saheed Akhtar 
      <S.Akhtar@talis.com>.  [Jeff Trawick]
 
   *) SECURITY [CAN-2003-0254]: Fixed a bug in ftp proxy causing denial
