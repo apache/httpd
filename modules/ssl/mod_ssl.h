@@ -234,6 +234,7 @@ ap_set_module_config(c->conn_config, &ssl_module, val)
 #define SSL_NO_TIMESTAMP (1<<11)
 #define SSL_NO_LEVELID   (1<<12)
 #define SSL_NO_NEWLINE   (1<<13)
+#define SSL_INIT         (1<<14)
 
 /*
  * Defaults for the configuration

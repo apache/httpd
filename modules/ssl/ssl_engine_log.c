@@ -169,7 +169,7 @@ static char *ssl_log_annotation(char *error)
 void ssl_log(server_rec *s, int level, const char *msg, ...)
 {
     char tstr[80];
-    char lstr[20];
+    char lstr[256];
     char vstr[1024];
     char str[1024];
     char *nstr;
@@ -236,6 +236,12 @@ void ssl_log(server_rec *s, int level, const char *msg, ...)
         for (i = strlen(lstr); i <= 7; i++)
             lstr[i] = ' ';
         lstr[i] = NUL;
+    }
+
+    if (add & SSL_INIT) {
+        len = strlen(lstr);
+        apr_snprintf(&lstr[len], sizeof(lstr) - len,
+                     "Init: (%s) ", sc->szVHostID);
     }
 
     /*  create custom message  */

@@ -206,18 +206,17 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
             continue;
 
         cpVHostID = ssl_util_vhostid(p, pServ);
-        ssl_log(pServ, SSL_LOG_INFO,
-                "Init: Loading certificate & private key of SSL-aware server %s",
-                cpVHostID);
+        ssl_log(pServ, SSL_LOG_INFO|SSL_INIT,
+                "Loading certificate & private key of SSL-aware server");
 
         /*
          * Read in server certificate(s): This is the easy part
          * because this file isn't encrypted in any way.
          */
         if (sc->szPublicCertFiles[0] == NULL) {
-            ssl_log(pServ, SSL_LOG_ERROR,
-                    "Init: Server %s should be SSL-aware but has no certificate configured "
-                    "[Hint: SSLCertificateFile]", cpVHostID);
+            ssl_log(pServ, SSL_LOG_ERROR|SSL_INIT,
+                    "Server should be SSL-aware but has no certificate configured "
+                    "[Hint: SSLCertificateFile]");
             ssl_die();
         }
         algoCert = SSL_ALGO_UNKNOWN;
@@ -470,20 +469,20 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
              * Log the type of reading
              */
             if (nPassPhraseDialogCur == 0) {
-                ssl_log(pServ, SSL_LOG_TRACE, 
-                        "Init: (%s) unencrypted %s private key - pass phrase not required", 
-                        cpVHostID, an);
+                ssl_log(pServ, SSL_LOG_TRACE|SSL_INIT, 
+                        "unencrypted %s private key - pass phrase not required", 
+                        an);
             }
             else {
                 if (cpPassPhraseCur != NULL) {
-                    ssl_log(pServ, SSL_LOG_TRACE, 
-                            "Init: (%s) encrypted %s private key - pass phrase requested", 
-                            cpVHostID, an);
+                    ssl_log(pServ, SSL_LOG_TRACE|SSL_INIT, 
+                            "encrypted %s private key - pass phrase requested", 
+                            an);
                 }
                 else {
-                    ssl_log(pServ, SSL_LOG_TRACE, 
-                            "Init: (%s) encrypted %s private key - pass phrase reused", 
-                            cpVHostID, an);
+                    ssl_log(pServ, SSL_LOG_TRACE|SSL_INIT, 
+                            "encrypted %s private key - pass phrase reused", 
+                            an);
                 }
             }
 
