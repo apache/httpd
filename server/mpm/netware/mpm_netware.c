@@ -962,9 +962,11 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
             "caught SIGTERM, shutting down");
 
-        DBPRINT0 ("Shutdown pending. Waiting for threads to terminate...\n");
-        while (worker_thread_count > 0)
+        while (worker_thread_count > 0) {
+            printf ("\rShutdown pending. Waiting for %d thread(s) to terminate...", 
+                    worker_thread_count);
             apr_thread_yield();
+        }
 
         return 1;
     }
@@ -980,8 +982,9 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 		    "Graceful restart requested, doing restart");
 
         /* Wait for all of the threads to terminate before initiating the restart */
-        DBPRINT0 ("Restart pending. Waiting for threads to terminate...\n");
         while (worker_thread_count > 0) {
+            printf ("Restart pending. Waiting for %d thread(s) to terminate...",
+                    worker_thread_count);
             apr_thread_yield();
         }
         DBPRINT0 ("restarting...\n");
