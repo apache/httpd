@@ -119,7 +119,7 @@
       <dt><code>HSE_REQ_SEND_URL_REDIRECT_RESP</code></dt>
       <dd>사용자를 다른 위치로 리다이렉션한다.<br />
       완전한 URL을 사용해야 한다 (<em>예를 들어,</em>
-      <code>http://server/location</code>).</dd>.
+      <code>http://server/location</code>).</dd>
 
       <dt><code>HSE_REQ_SEND_URL</code></dt>
       <dd>사용자를 다른 위치로 리다이렉션한다.<br />
