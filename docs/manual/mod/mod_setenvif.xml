@@ -211,6 +211,10 @@ of</p>
     begin with "TS" whose values begins with any character in the
     set [a-z].</p>
 </usage>
+
+<seealso><a href="../env.html">Environment Variables in Apache</a>,
+for additional examples.
+</seealso>
 </directivesynopsis>
 
 <directivesynopsis>
