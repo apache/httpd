@@ -28,6 +28,10 @@ APACHE_MODULE(authz_user, 'require user' authorization control, , , yes)
 APACHE_MODULE(authz_dbm, DBM-based authorization control, , , most)
 APACHE_MODULE(authz_owner, 'require file-owner' authorization control, , , most)
 
+dnl LDAP authentication module. This module has both the authn and authz
+dnl modules in one, so as to share the LDAP server config directives.
+APACHE_MODULE(authnz_ldap, LDAP based authentication, , , no)
+
 dnl - and just in case all of the above punt; a default handler to
 dnl keep the bad guys out.
 APACHE_MODULE(authz_default, authorization control backstopper, , , yes)
