@@ -13,6 +13,7 @@ include $(top_builddir)/build/rules.mk
 
 install:
 	@test -d $(bindir) || $(MKINSTALLDIRS) $(bindir)
+	@test -d $(sbindir) || $(MKINSTALLDIRS) $(sbindir)
 	@test -d $(libexecdir) || $(MKINSTALLDIRS) $(libexecdir)
 	@cp -p $(top_builddir)/server/httpd.exp $(libexecdir)
 	@for i in apxs apachectl dbmmanage; do \
