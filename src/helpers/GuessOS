@@ -187,7 +187,7 @@ case "${SYSTEM}:${RELEASE}:${VERSION}:${MACHINE}" in
 	;;
 
     *:4.0:3.0:[345][0-9]?? | *:4.0:3.0:3[34]??[/,]* | library:*)
-	echo "intel-ncr-sysv4"; exit 0
+	echo "x86-ncr-sysv4"; exit 0
 	;;
 
     ULTRIX:*)
