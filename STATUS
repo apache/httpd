@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1998/12/26 23:53:52 $]
+  Last modified at [$Date: 1998/12/27 00:07:09 $]
 
 Release:
 
@@ -101,10 +101,6 @@ Documentation that needs writing:
          vhost-xxx.html document out of it. -- rse
 
 Available Patches:
-
-    * Brian Havard's proxy_util.c patch (WIN32 -> CASE_BLIND_FILESYSTEM)
-        Message-ID: <199812240056.LAA20487@silk.apana.org.au>
-        Status: Martin +1, Lars +1
 
     * Lars' 'binbuild' patch
         Message-ID: <XFMail.981226052910.sfx@unix-ag.org>
