@@ -2,6 +2,9 @@ Changes with Apache 2.1.3
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_proxy: Handle client-aborted connections correctly.  PR 32443.
+     [Janne Hietamäki, Joe Orton]
+
   *) mod_cache: Remove unimplemented CacheForceCompletion directive.
      [Justin Erenkrantz]
 

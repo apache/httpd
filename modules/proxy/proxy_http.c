@@ -928,7 +928,8 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                         /* flush to the client and switch to blocking mode */
                         e = apr_bucket_flush_create(c->bucket_alloc);
                         APR_BRIGADE_INSERT_TAIL(bb, e);
-                        if (ap_pass_brigade(r->output_filters, bb)) {
+                        if (ap_pass_brigade(r->output_filters, bb) 
+                            || c->aborted) {
                             backend->close = 1;
                             break;
                         }
@@ -972,7 +973,8 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                     }
 
                     /* try send what we read */
-                    if (ap_pass_brigade(r->output_filters, bb) != APR_SUCCESS) {
+                    if (ap_pass_brigade(r->output_filters, bb) != APR_SUCCESS
+                        || c->aborted) {
                         /* Ack! Phbtt! Die! User aborted! */
                         backend->close = 1;  /* this causes socket close below */
                         finish = TRUE;
