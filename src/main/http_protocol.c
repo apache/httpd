@@ -326,7 +326,7 @@ int set_keepalive(request_rec *r)
 
 int set_last_modified(request_rec *r, time_t mtime)
 {
-    char *ts, etag[MAX_STRING_LEN];
+    char *ts, *etag, weak_etag[MAX_STRING_LEN];
     char *if_modified_since = table_get (r->headers_in, "If-Modified-Since");
     char *if_unmodified = table_get (r->headers_in, "If-Unmodified-Since");
     char *if_nonematch = table_get (r->headers_in, "If-None-Match");
@@ -351,12 +351,13 @@ int set_last_modified(request_rec *r, time_t mtime)
      */
 
     if (r->finfo.st_mode != 0)
-        sprintf(etag, "W/\"%lx-%lx-%lx\"", r->finfo.st_ino, r->finfo.st_size,
-		mtime);
+        sprintf(weak_etag, "W/\"%lx-%lx-%lx\"", r->finfo.st_ino,
+		r->finfo.st_size, mtime);
     else
-        sprintf(etag, "W/\"%lx\"", mtime);
-    table_set (r->headers_out, "ETag",
-	       etag + ((r->request_time - mtime > 1) ? 2 : 0));
+        sprintf(weak_etag, "W/\"%lx\"", mtime);
+
+    etag = weak_etag + ((r->request_time - mtime > 1) ? 2 : 0);
+    table_set (r->headers_out, "ETag", etag);
 
     /* We now do the no_cache stuff using an Expires: header (we used to
      * withhold Last-modified). However, we still want to enforce this by
