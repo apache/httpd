@@ -95,13 +95,21 @@
 	    RULE_DEV_RANDOM="/dev/urandom"
 	else
 	    RULE_DEV_RANDOM="truerand"
+	    if helpers/TestCompile func trand32; then
+		:
+	    elif helpers/TestCompile lib rand trand32; then
+		:
+	    else
+		echo "      (mod_auth_digest) truerand library missing!"
+		echo "** This will most probably defeat successful compilation."
+	    fi
 	fi
     fi
     if [ "$RULE_DEV_RANDOM" = "truerand" ]; then
-	echo "      (mod_auth_digest) using truerand library for the random seed"
+	echo "    o mod_auth_digest using truerand library (-lrand) for the random seed"
 	LIBS="$LIBS -L/usr/local/lib -lrand"
     else
-	echo "      (mod_auth_digest) using $RULE_DEV_RANDOM for the random seed"
+	echo "    o mod_auth_digest using $RULE_DEV_RANDOM for the random seed"
 	CFLAGS="$CFLAGS -DDEV_RANDOM=$RULE_DEV_RANDOM"
     fi
 
@@ -1203,7 +1211,7 @@ static client_entry *gen_client(const request_rec *r) { return NULL; }
  * contacting the password server and retrieving the hash from it.
  *
  * TBD: This function should probably be in a seperate source file so that
- * people need not modify mod_digest.c each time they install a new version
+ * people need not modify mod_auth_digest.c each time they install a new version
  * of apache.
  */
 static const char *get_userpw_hash(const request_rec *r,
