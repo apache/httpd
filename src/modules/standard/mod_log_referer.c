@@ -198,7 +198,7 @@ int referer_log_transaction(request_rec *orig)
 
 	  for(ptrptr = (char **) cls->referer_ignore_list->elts;
 	      ptrptr < ptrptr2;
-	      ptrptr += cls->referer_ignore_list->elt_size) 
+	      ptrptr = (char **)((char *)ptrptr + cls->referer_ignore_list->elt_size)) 
 	    {
 		if(strstr(referer, *ptrptr))
 		  return OK;
