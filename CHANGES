@@ -1,5 +1,8 @@
 Changes with Apache 2.0.34-dev
 
+  *) Fix for virtual host processing where the requested hostname
+     has a '.' at the end (PR 9187) [Ryan Cruse <ryan@estara.com>]
+
   *) mod_dav's APIs for REPORT response handling was changed so that
      providers can generate the content directly into the output filter
      stack, rather than buffering the response into memory. [Greg Stein]
