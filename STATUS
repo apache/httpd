@@ -15,6 +15,12 @@ Release:
 RELEASE SHOWSTOPPERS:
 
     * Win32 device file issues (nul/aux/...)
+      Patch: Available /* anyone have message-id? */
+
+    * 'kill -HUP' broken on FreeBSD and others: child processes die or
+       do not restart.
+
+RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
     * How should an Apache binary release tarball look?
 
