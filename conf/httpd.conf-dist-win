@@ -189,19 +189,19 @@ ThreadsPerChild 50
 # Note: The order in which modules are loaded is important.  Don't change
 # the order below without expert advice.
 #
-#LoadModule anon_auth_module modules/ApacheModuleAuthAnon.dll
-#LoadModule dbm_auth_module modules/ApacheModuleAuthDBM.dll
-#LoadModule digest_auth_module modules/ApacheModuleAuthDigest.dll
-#LoadModule cern_meta_module modules/ApacheModuleCERNMeta.dll
-#LoadModule digest_module modules/ApacheModuleDigest.dll
-#LoadModule expires_module modules/ApacheModuleExpires.dll
-#LoadModule headers_module modules/ApacheModuleHeaders.dll
-#LoadModule proxy_module modules/ApacheModuleProxy.dll
-#LoadModule rewrite_module modules/ApacheModuleRewrite.dll
-#LoadModule speling_module modules/ApacheModuleSpeling.dll
-#LoadModule info_module modules/ApacheModuleInfo.dll
-#LoadModule status_module modules/ApacheModuleStatus.dll
-#LoadModule usertrack_module modules/ApacheModuleUserTrack.dll
+#LoadModule anon_auth_module modules/mod_auth_anon.so
+#LoadModule dbm_auth_module modules/mod_auth_dbm.so
+#LoadModule digest_auth_module modules/mod_auth_digest.so
+#LoadModule cern_meta_module modules/mod_cern_meta.so
+#LoadModule digest_module modules/mod_digest.so
+#LoadModule expires_module modules/mod_expires.so
+#LoadModule headers_module modules/mod_headers.so
+#LoadModule proxy_module modules/mod_proxy.so
+#LoadModule rewrite_module modules/mod_rewrite.so
+#LoadModule speling_module modules/mod_speling.so
+#LoadModule info_module modules/mod_info.so
+#LoadModule status_module modules/mod_status.so
+#LoadModule usertrack_module modules/mod_usertrack.so
 
 #
 # ExtendedStatus controls whether Apache will generate "full" status

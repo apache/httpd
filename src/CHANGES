@@ -1,5 +1,12 @@
 Changes with Apache 1.3.15
 
+  *) The Win32 build is overhauled to use mod_foo.so for all dynamic
+     Apache modules.  [William Rowe]
+
+  *) The Win32 build scripts (makefile.win, Apache.dsw) now build
+     all the usual targets, including the directories htdocs, include,
+     lib, libexec, and cgi-bin.  [William Rowe]
+
   *) WinNT/2K service can be started from the command line with any
      desired args (e.g. Apache -k start -n apache-1.3 -D FOO will
      start the service with the -D FOO option.)  This extends what

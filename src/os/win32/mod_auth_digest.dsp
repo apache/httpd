@@ -1,24 +1,24 @@
-# Microsoft Developer Studio Project File - Name="ApacheModuleAuthDigest" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="mod_auth_digest" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Dynamic-Link Library" 0x0102
 
-CFG=ApacheModuleAuthDigest - Win32 Debug
+CFG=mod_auth_digest - Win32 Debug
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
-!MESSAGE NMAKE /f "ApacheModuleAuthDigest.mak".
+!MESSAGE NMAKE /f "mod_auth_digest.mak".
 !MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "ApacheModuleAuthDigest.mak" CFG="ApacheModuleAuthDigest - Win32 Debug"
+!MESSAGE NMAKE /f "mod_auth_digest.mak" CFG="mod_auth_digest - Win32 Debug"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "ApacheModuleAuthDigest - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
-!MESSAGE "ApacheModuleAuthDigest - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "mod_auth_digest - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "mod_auth_digest - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
 !MESSAGE 
 
 # Begin Project
@@ -29,7 +29,7 @@ CPP=cl.exe
 MTL=midl.exe
 RSC=rc.exe
 
-!IF  "$(CFG)" == "ApacheModuleAuthDigest - Win32 Release"
+!IF  "$(CFG)" == "mod_auth_digest - Win32 Release"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
@@ -43,7 +43,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /FD /c
-# ADD CPP /nologo /MD /W3 /O2 /I "..\..\include" /I "..\..\os\win32" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "SHARED_MODULE" /Fd"Release\ApacheModuleAuthDigest" /FD /c
+# ADD CPP /nologo /MD /W3 /O2 /I "..\..\include" /I "..\..\os\win32" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "SHARED_MODULE" /Fd"Release\mod_auth_digest" /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /o NUL /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /o NUL /win32
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
@@ -52,10 +52,10 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib advapi32.lib /nologo /subsystem:windows /dll /incremental:no /map /machine:I386 /base:@"BaseAddr.ref",mod_auth_digest
-# ADD LINK32 kernel32.lib advapi32.lib /nologo /subsystem:windows /dll /incremental:no /map /machine:I386 /base:@"BaseAddr.ref",mod_auth_digest
+# ADD BASE LINK32 kernel32.lib advapi32.lib /nologo /subsystem:windows /dll /incremental:no /map /machine:I386 /out:"Release/mod_auth_digest.so" /base:@"BaseAddr.ref",mod_auth_digest
+# ADD LINK32 kernel32.lib advapi32.lib /nologo /subsystem:windows /dll /incremental:no /map /machine:I386 /out:"Release/mod_auth_digest.so" /base:@"BaseAddr.ref",mod_auth_digest
 
-!ELSEIF  "$(CFG)" == "ApacheModuleAuthDigest - Win32 Debug"
+!ELSEIF  "$(CFG)" == "mod_auth_digest - Win32 Debug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
@@ -69,7 +69,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /FD /c
-# ADD CPP /nologo /MDd /W3 /GX /ZI /Od /I "..\..\include" /I "..\..\os\win32" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "SHARED_MODULE" /Fd"Debug\ApacheModuleAuthDigest" /FD /c
+# ADD CPP /nologo /MDd /W3 /GX /ZI /Od /I "..\..\include" /I "..\..\os\win32" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "SHARED_MODULE" /Fd"Debug\mod_auth_digest" /FD /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /o NUL /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /o NUL /win32
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
@@ -78,15 +78,15 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib advapi32.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /base:@"BaseAddr.ref",mod_auth_digest
-# ADD LINK32 kernel32.lib advapi32.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /base:@"BaseAddr.ref",mod_auth_digest
+# ADD BASE LINK32 kernel32.lib advapi32.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /out:"Debug/mod_auth_digest.so" /base:@"BaseAddr.ref",mod_auth_digest
+# ADD LINK32 kernel32.lib advapi32.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /out:"Debug/mod_auth_digest.so" /base:@"BaseAddr.ref",mod_auth_digest
 
 !ENDIF 
 
 # Begin Target
 
-# Name "ApacheModuleAuthDigest - Win32 Release"
-# Name "ApacheModuleAuthDigest - Win32 Debug"
+# Name "mod_auth_digest - Win32 Release"
+# Name "mod_auth_digest - Win32 Debug"
 # Begin Source File
 
 SOURCE=..\..\modules\experimental\mod_auth_digest.c

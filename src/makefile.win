@@ -92,20 +92,19 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f ApacheCore.mak CFG="ApacheCore - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f Apache.mak CFG="Apache - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd os\win32
-	 set CFG=ApacheModuleStatus - Win32 $(LONG)
-	 $(MAKE) $(MAKEOPT) -f ApacheModuleStatus.mak CFG="ApacheModuleStatus - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f ApacheModuleInfo.mak CFG="ApacheModuleInfo - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f ApacheModuleAuthAnon.mak CFG="ApacheModuleAuthAnon - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f ApacheModuleDigest.mak CFG="ApacheModuleDigest - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f ApacheModuleCERNMeta.mak CFG="ApacheModuleCERNMeta - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f ApacheModuleExpires.mak CFG="ApacheModuleExpires - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f ApacheModuleHeaders.mak CFG="ApacheModuleHeaders - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f ApacheModuleSpeling.mak CFG="ApacheModuleSpeling - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f ApacheModuleUserTrack.mak CFG="ApacheModuleUserTrack - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f ApacheModuleRewrite.mak CFG="ApacheModuleRewrite - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f ApacheModuleAuthDigest.mak CFG="ApacheModuleAuthDigest - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f ApacheModuleAuthDBM.mak CFG="ApacheModuleAuthDBM - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f ApacheModuleProxy.mak CFG="ApacheModuleProxy - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_status.mak CFG="mod_status - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_info.mak CFG="mod_info - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_auth_anon.mak CFG="mod_auth_anon - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_digest.mak CFG="mod_digest - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_cern_meta.mak CFG="mod_cern_meta - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_expires.mak CFG="mod_expires - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_headers.mak CFG="mod_headers - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_speling.mak CFG="mod_speling - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_usertrack.mak CFG="mod_usertrack - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_rewrite.mak CFG="mod_rewrite - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_auth_digest.mak CFG="mod_auth_digest - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_auth_dbm.mak CFG="mod_auth_dbm - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_proxy.mak CFG="mod_proxy - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 
 _install:
@@ -129,27 +128,27 @@ _install:
 	copy os\win32\$(LONG)\Win9xConHook.dll "$(INSTDIR)"
 	copy lib\expat-lite\$(LONG)\xmltok.dll "$(INSTDIR)"
 	copy lib\expat-lite\$(LONG)\xmlparse.dll "$(INSTDIR)"
-	copy os\win32\$(LONG)\ApacheModuleStatus.dll "$(INSTDIR)\modules"
-	copy os\win32\$(LONG)\ApacheModuleInfo.dll "$(INSTDIR)\modules"
-	copy os\win32\$(LONG)\ApacheModuleAuthAnon.dll "$(INSTDIR)\modules"
-	copy os\win32\$(LONG)\ApacheModuleDigest.dll "$(INSTDIR)\modules"
-	copy os\win32\$(LONG)\ApacheModuleCERNMeta.dll "$(INSTDIR)\modules"
-	copy os\win32\$(LONG)\ApacheModuleExpires.dll "$(INSTDIR)\modules"
-	copy os\win32\$(LONG)\ApacheModuleHeaders.dll "$(INSTDIR)\modules"
-	copy os\win32\$(LONG)\ApacheModuleRewrite.dll "$(INSTDIR)\modules"
-	copy os\win32\$(LONG)\ApacheModuleSpeling.dll "$(INSTDIR)\modules"
-	copy os\win32\$(LONG)\ApacheModuleUserTrack.dll "$(INSTDIR)\modules"
-	copy os\win32\$(LONG)\ApacheModuleAuthDigest.dll "$(INSTDIR)\modules"
-	copy os\win32\$(LONG)\ApacheModuleAuthDBM.dll "$(INSTDIR)\modules"
-	copy os\win32\$(LONG)\ApacheModuleProxy.dll "$(INSTDIR)\modules"
+	copy os\win32\$(LONG)\mod_status.so "$(INSTDIR)\modules"
+	copy os\win32\$(LONG)\mod_info.so "$(INSTDIR)\modules"
+	copy os\win32\$(LONG)\mod_auth_anon.so "$(INSTDIR)\modules"
+	copy os\win32\$(LONG)\mod_digest.so "$(INSTDIR)\modules"
+	copy os\win32\$(LONG)\mod_cern_meta.so "$(INSTDIR)\modules"
+	copy os\win32\$(LONG)\mod_expires.so "$(INSTDIR)\modules"
+	copy os\win32\$(LONG)\mod_headers.so "$(INSTDIR)\modules"
+	copy os\win32\$(LONG)\mod_rewrite.so "$(INSTDIR)\modules"
+	copy os\win32\$(LONG)\mod_speling.so "$(INSTDIR)\modules"
+	copy os\win32\$(LONG)\mod_usertrack.so "$(INSTDIR)\modules"
+	copy os\win32\$(LONG)\mod_auth_digest.so "$(INSTDIR)\modules"
+	copy os\win32\$(LONG)\mod_auth_dbm.so "$(INSTDIR)\modules"
+	copy os\win32\$(LONG)\mod_proxy.so "$(INSTDIR)\modules"
 	copy support\$(LONG)\htpasswd.exe "$(INSTDIR)\bin"
 	copy support\$(LONG)\htdigest.exe "$(INSTDIR)\bin"
 	copy support\$(LONG)\logresolve.exe "$(INSTDIR)\bin"
 	copy support\$(LONG)\rotatelogs.exe "$(INSTDIR)\bin"
+	copy ..\cgi-bin\printenv "$(INSTDIR)\cgi-bin\printenv.pl"
         -xcopy ..\htdocs "$(INSTDIR)\htdocs" /s /d < <<
 A
 <<
-	copy ..\cgi-bin\printenv "$(INSTDIR)\cgi-bin\printenv.pl"
 	xcopy include\*.h "$(INSTDIR)\include" /d < <<
 A
 <<
