@@ -6,20 +6,21 @@
 # This script falls under the Apache License.
 # See http://www.apache.org/docs/LICENSE
 
-OS=`./srclib/apr/build/config.guess`
+OS=`./build/config.guess`
+PRINTPATH="build/PrintPath"
 APFULLDIR=`pwd`
 BUILD_DIR="$APFULLDIR/bindist"
 DEFAULT_DIR="/usr/local/apache2"
-APDIR=$APFULLDIR
+APDIR="$APFULLDIR"
 APDIR=`basename $APDIR`
 CONFIGPARAM="--enable-layout=Apache --prefix=$BUILD_DIR --enable-mods-shared=most --with-expat=$APFULLDIR/srclib/apr-util/xml/expat --enable-static-support"
 VER=`echo $APDIR | sed s/httpd-//`
-TAR="`srclib/apr/build/PrintPath tar`"
-GZIP="`srclib/apr/build/PrintPath gzip`"
-COMPRESS="`srclib/apr/build/PrintPath compress`"
-MD5="`srclib/apr/build/PrintPath md5`"
+TAR="`$PRINTPATH tar`"
+GZIP="`$PRINTPATH gzip`"
+COMPRESS="`$PRINTPATH compress`"
+MD5="`$PRINTPATH md5`"
 if [ x$MD5 = x ]; then
-  OPENSSL="`srclib/apr/build/PrintPath openssl`"
+  OPENSSL="`$PRINTPATH openssl`"
   if [ x$OPENSSL != x ]; then
     MD5="$OPENSSL md5"
   fi
