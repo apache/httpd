@@ -421,7 +421,9 @@ static apr_status_t init_ext_filter_process(ap_filter_t *f)
      * be open.
      */
 
-    apr_register_cleanup(ctx->p, ctx->proc->in, NULL, ef_close_file);
+    apr_register_cleanup(ctx->p, ctx->proc->in, 
+                         apr_null_cleanup, /* other mechanism */
+                         ef_close_file);
 
 #if APR_FILES_AS_SOCKETS
     {
