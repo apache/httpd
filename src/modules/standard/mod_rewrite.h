@@ -1,6 +1,3 @@
-#ifndef _MOD_REWRITE_H
-#define _MOD_REWRITE_H 1
-
 /* ====================================================================
  * Copyright (c) 1996 The Apache Group.  All rights reserved.
  *
@@ -53,6 +50,8 @@
  *
  */
 
+#ifndef _MOD_REWRITE_H
+#define _MOD_REWRITE_H 1
 
 /*
 **  mod_rewrite.h
