@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/01 13:20:33 $]
+Last modified at [$Date: 2003/05/01 13:52:43 $]
 
 Release:
 
@@ -238,6 +238,10 @@ PATCHES TO PORT FROM 2.1
       PR 19207.
       server/core.c r1.232
       +1: trawick
+
+    * Fix for a pair of potential buffer overflows in htdigest.
+      support/htdigest.c r1.36
+      +1: thommay
 
 CURRENT RELEASE NOTES:
 
