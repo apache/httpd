@@ -247,7 +247,6 @@ typedef struct deflate_ctx_t
     apr_bucket_brigade *bb, *proc_bb;
 } deflate_ctx;
 
-static void* const deflate_yes = (void*)"YES";
 static apr_status_t deflate_out_filter(ap_filter_t *f,
                                        apr_bucket_brigade *bb)
 {
@@ -255,13 +254,13 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
     request_rec *r = f->r;
     deflate_ctx *ctx = f->ctx;
     int zRC;
-    char* buf;
-    int eos_only = 1;
-    apr_bucket *bkt;
-    char *token;
-    const char *encoding = NULL;
     deflate_filter_config *c = ap_get_module_config(r->server->module_config,
                                                     &deflate_module);
+
+    /* Do nothing if asked to filter nothing. */
+    if (APR_BRIGADE_EMPTY(bb)) {
+        return APR_SUCCESS;
+    }
 
     /* If we don't have a context, we need to ensure that it is okay to send
      * the deflated content.  If we have a context, that means we've done
@@ -270,6 +269,8 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
      * we're in better shape.
      */
     if (!ctx) {
+        char *buf, *token;
+        const char *encoding;
 
         /* only work on main request/no subrequests */
         if (r->main) {
@@ -349,7 +350,6 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
          */
         apr_table_setn(r->headers_out, "Vary", "Accept-Encoding");
 
-
         /* force-gzip will just force it out regardless if the browser
          * can actually do anything with it.
          */
@@ -384,28 +384,11 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
             }
         }
 
-        /* don't deflate responses with zero length e.g. proxied 304's but
-         * we do set the header on eos_only at this point for headers_filter
-         *
-         * if we get eos_only and come round again, we want to avoid redoing
-         * what we've already done, so set f->ctx to a flag here
+        /* Deflating a zero-length response would make it longer; the
+         * proxy may pass through an empty response for a 304 too.
+         * So we just need to fix up the headers as if we had a body.
          */
-        f->ctx = ctx = deflate_yes;
-    }
-    if (ctx == deflate_yes) {
-        /* deal with the pathological case of lots of empty brigades and
-         * no knowledge of whether content will follow
-         */
-        for (bkt = APR_BRIGADE_FIRST(bb);
-             bkt != APR_BRIGADE_SENTINEL(bb);
-             bkt = APR_BUCKET_NEXT(bkt))
-        {
-            if (!APR_BUCKET_IS_EOS(bkt)) {
-                 eos_only = 0;                 
-                 break;
-            }
-        }
-        if (eos_only) {
+        if (APR_BUCKET_IS_EOS(APR_BRIGADE_FIRST(bb))) {
             if (!encoding || !strcasecmp(encoding, "identity")) {
                 apr_table_set(r->headers_out, "Content-Encoding", "gzip");
             }
@@ -413,10 +396,10 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
                 apr_table_merge(r->headers_out, "Content-Encoding", "gzip");
             }
             apr_table_unset(r->headers_out, "Content-Length");
+
+            ap_remove_output_filter(f);
             return ap_pass_brigade(f->next, bb);
         }
-    }
-    if (!ctx || (ctx==deflate_yes)) {
 
         /* We're cool with filtering this. */
         ctx = f->ctx = apr_pcalloc(r->pool, sizeof(*ctx));
@@ -912,6 +895,11 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
     apr_status_t rv;
     deflate_filter_config *c;
 
+    /* Do nothing if asked to filter nothing. */
+    if (APR_BRIGADE_EMPTY(bb)) {
+        return APR_SUCCESS;
+    }
+
     c = ap_get_module_config(r->server->module_config, &deflate_module);
 
     if (!ctx) {
@@ -950,6 +938,13 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
         }
         apr_table_unset(r->headers_out, "Content-Encoding");
 
+        /* No need to inflate HEAD or 204/304 */
+        if (APR_BUCKET_IS_EOS(APR_BRIGADE_FIRST(bb))) {
+            ap_remove_output_filter(f);
+            return ap_pass_brigade(f->next, bb);
+        }
+
+
         f->ctx = ctx = apr_pcalloc(f->r->pool, sizeof(*ctx));
         ctx->proc_bb = apr_brigade_create(r->pool, f->c->bucket_alloc);
         ctx->buffer = apr_palloc(r->pool, c->bufferSize);
@@ -983,9 +978,10 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
         apr_size_t len;
 
         /* If we actually see the EOS, that means we screwed up! */
+        /* no it doesn't - not in a HEAD or 204/304 */
         if (APR_BUCKET_IS_EOS(bkt)) {
             inflateEnd(&ctx->stream);
-            return APR_EGENERAL;
+            return ap_pass_brigade(f->next, bb);
         }
 
         if (APR_BUCKET_IS_FLUSH(bkt)) {
