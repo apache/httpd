@@ -433,7 +433,7 @@ static void worker_main(void *vpArg)
         current_conn = ap_new_connection(pconn, ap_server_conf, worker_args->conn_sd, conn_id, sbh);
 
         if (current_conn) {
-            ap_process_connection(current_conn);
+            ap_process_connection(current_conn, worker_args->conn_sd);
             ap_lingering_close(current_conn);
         }
 

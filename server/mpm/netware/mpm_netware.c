@@ -526,7 +526,7 @@ got_listener:
         current_conn = ap_new_connection(ptrans, ap_server_conf, csd, 
                                          my_worker_num, sbh);
         if (current_conn) {
-            ap_process_connection(current_conn);
+            ap_process_connection(current_conn, csd);
             ap_lingering_close(current_conn);
         }
         request_count++;

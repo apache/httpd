@@ -936,10 +936,6 @@ struct conn_rec {
     void *vhost_lookup_data;
 
     /* Information about the connection itself */
-
-    /** Connection to the client */
-    apr_socket_t *client_socket;
-
     /** local address */
     apr_sockaddr_t *local_addr;
     /** remote address */
@@ -1093,6 +1089,17 @@ typedef struct core_output_filter_ctx {
 typedef struct core_filter_ctx {
     apr_bucket_brigade *b;
 } core_ctx_t;
+ 
+typedef struct core_net_rec {
+    /** Connection to the client */
+    apr_socket_t *client_socket;
+
+    /** connection record */
+    conn_rec *c;
+ 
+    core_output_filter_ctx_t *out_ctx;
+    core_ctx_t *in_ctx;
+} core_net_rec;
 
 /**
  * Examine a field value (such as a media-/content-type) string and return

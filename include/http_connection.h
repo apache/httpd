@@ -78,13 +78,14 @@ extern "C" {
  */
 AP_CORE_DECLARE(conn_rec *)ap_new_connection(apr_pool_t *ptrans, server_rec *server, 
                                              apr_socket_t *csd, long id, void *sbh);
+
 /**
  * This is the protocol module driver.  This calls all of the
  * pre-connection and connection hooks for all protocol modules.
  * @param c The connection on which the request is read
  * @deffunc void ap_process_connection(conn_rec *)
  */
-AP_CORE_DECLARE(void) ap_process_connection(conn_rec *);
+AP_CORE_DECLARE(void) ap_process_connection(conn_rec *, apr_socket_t *csd);
 
 AP_CORE_DECLARE(void) ap_flush_conn(conn_rec *c);
 
@@ -107,6 +108,19 @@ AP_DECLARE(void) ap_lingering_close(conn_rec *c);
 #endif
 
   /* Hooks */
+/**
+ * This hook is used to install the bottom most input and output
+ * filters (e.g., CORE_IN and CORE_OUT) used to interface to the 
+ * network. This filter is a RUN_FIRST hook that runs right before
+ * the pre_connection filter. This filter hook can use vhost 
+ * configuration to influence its operation.
+ * @param c The socket to the client
+ * @param csd Pointer to the client apr_socket_t struct.
+ * @return OK or DECLINED
+ * @deffunc int ap_run_install_transport_filters(conn_rec *c, apr_socket_t *csd)
+ */
+AP_DECLARE_HOOK(int, install_transport_filters, (conn_rec *c, apr_socket_t *csd))
+
 /**
  * This hook gives protocol modules an opportunity to set everything up
  * before calling the protocol handler.  All pre-connection hooks are
