@@ -121,6 +121,7 @@
 typedef int uid_t;
 typedef int gid_t;
 typedef int pid_t;
+typedef int tid_t;
 #ifdef _MSC_VER
 /* modified to match declaration in sys/stat.h */
 typedef unsigned short mode_t;
@@ -220,6 +221,8 @@ API_EXPORT(const char *) ap_os_dso_error(void);
 #define isnan(n) _isnan(n)
 #define HAVE_ISINF
 #define isinf(n) (!_finite(n))
+
+#define gettid() ((tid_t)GetCurrentThreadId())
 
 #endif /* WIN32 */
 
