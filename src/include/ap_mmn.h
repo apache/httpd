@@ -171,10 +171,11 @@
  *                        ap_proxy_del_header(). Change interface of 
  *                        ap_proxy_send_fb() and ap_proxy_cache_error(). 
  *                        Add ap_proxy_send_hdr_line() and ap_proxy_bputs2().
+ * 19980825 (1.3.2-dev) - renamed is_HTTP_xxx() macros to ap_is_HTTP_xxx()
  */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 19980816
+#define MODULE_MAGIC_NUMBER_MAJOR 19980825
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
 #define MODULE_MAGIC_NUMBER MODULE_MAGIC_NUMBER_MAJOR	/* backward compat */

@@ -823,7 +823,7 @@ int ap_proxy_cache_update(cache_req *c, table *resp_hdrs,
  * protocol requests nocache (e.g. ftp with user/password)
  */
 /* @@@ XXX FIXME: is the test "r->status != HTTP_MOVED_PERMANENTLY" corerct?
- * or shouldn't it be "is_HTTP_REDIRECT(r->status)" ? -MnKr */
+ * or shouldn't it be "ap_is_HTTP_REDIRECT(r->status)" ? -MnKr */
     if ((r->status != HTTP_OK && r->status != HTTP_MOVED_PERMANENTLY && r->status != HTTP_NOT_MODIFIED) ||
 	(expire != NULL && expc == BAD_DATE) ||
 	(r->status == HTTP_NOT_MODIFIED && (c == NULL || c->fp == NULL)) ||

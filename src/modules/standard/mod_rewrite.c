@@ -853,7 +853,7 @@ static const char *cmd_rewriterule_setflag(pool *p, rewriterule_entry *cfg,
             else if (ap_isdigit(*val)) {
                 status = atoi(val);
             }
-            if (!is_HTTP_REDIRECT(status)) {
+            if (!ap_is_HTTP_REDIRECT(status)) {
                 return "RewriteRule: invalid HTTP response code "
                        "for flag 'R'";
             }
@@ -1157,7 +1157,7 @@ static int hook_uri2file(request_rec *r)
             }
 
             /* determine HTTP redirect response code */
-            if (is_HTTP_REDIRECT(r->status)) {
+            if (ap_is_HTTP_REDIRECT(r->status)) {
                 n = r->status;
                 r->status = HTTP_OK; /* make Apache kernel happy */
             }
@@ -1446,7 +1446,7 @@ static int hook_fixup(request_rec *r)
             }
 
             /* determine HTTP redirect response code */
-            if (is_HTTP_REDIRECT(r->status)) {
+            if (ap_is_HTTP_REDIRECT(r->status)) {
                 n = r->status;
                 r->status = HTTP_OK; /* make Apache kernel happy */
             }

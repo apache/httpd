@@ -391,7 +391,7 @@ API_EXPORT(int) ap_meets_conditions(request_rec *r)
      * complicated.
      */
 
-    if (!is_HTTP_SUCCESS(r->status) || r->no_local_copy) {
+    if (!ap_is_HTTP_SUCCESS(r->status) || r->no_local_copy) {
         return OK;
     }
 
@@ -588,7 +588,7 @@ CORE_EXPORT(void) ap_parse_uri(request_rec *r, const char *uri)
 	status = ap_parse_uri_components(r->pool, uri, &r->parsed_uri);
     }
 
-    if (is_HTTP_SUCCESS(status)) {
+    if (ap_is_HTTP_SUCCESS(status)) {
 	/* if it has a scheme we may need to do absoluteURI vhost stuff */
 	if (r->parsed_uri.scheme
 	    && !strcasecmp(r->parsed_uri.scheme, ap_http_method(r))) {
@@ -2053,7 +2053,7 @@ void ap_send_error_response(request_rec *r, int recursive_error)
         ap_clear_table(r->err_headers_out);
 
         if (location && *location
-            && (is_HTTP_REDIRECT(status) || status == HTTP_CREATED))
+            && (ap_is_HTTP_REDIRECT(status) || status == HTTP_CREATED))
             ap_table_setn(r->headers_out, "Location", location);
 
         r->content_language = NULL;

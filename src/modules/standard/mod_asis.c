@@ -89,7 +89,7 @@ static int asis_handler(request_rec *r)
     location = ap_table_get(r->headers_out, "Location");
 
     if (location && location[0] == '/' &&
-	((r->status == HTTP_OK) || is_HTTP_REDIRECT(r->status))) {
+	((r->status == HTTP_OK) || ap_is_HTTP_REDIRECT(r->status))) {
 
 	ap_pfclose(r->pool, f);
 

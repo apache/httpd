@@ -176,7 +176,7 @@ static int handle_dir(request_rec *r)
 
         /* If the request returned a redirect, propagate it to the client */
 
-        if (is_HTTP_REDIRECT(rr->status) ||
+        if (ap_is_HTTP_REDIRECT(rr->status) ||
             (rr->status == HTTP_NOT_ACCEPTABLE && num_names == 1)) {
 
             error_notfound = rr->status;

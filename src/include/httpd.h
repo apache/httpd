@@ -503,12 +503,12 @@ API_EXPORT(const char *) ap_get_server_built(void);
 #define BAD_GATEWAY         HTTP_BAD_GATEWAY
 #define VARIANT_ALSO_VARIES HTTP_VARIANT_ALSO_VARIES
 
-#define is_HTTP_INFO(x)         (((x) >= 100)&&((x) < 200))
-#define is_HTTP_SUCCESS(x)      (((x) >= 200)&&((x) < 300))
-#define is_HTTP_REDIRECT(x)     (((x) >= 300)&&((x) < 400))
-#define is_HTTP_ERROR(x)        (((x) >= 400)&&((x) < 600))
-#define is_HTTP_CLIENT_ERROR(x) (((x) >= 400)&&((x) < 500))
-#define is_HTTP_SERVER_ERROR(x) (((x) >= 500)&&((x) < 600))
+#define ap_is_HTTP_INFO(x)         (((x) >= 100)&&((x) < 200))
+#define ap_is_HTTP_SUCCESS(x)      (((x) >= 200)&&((x) < 300))
+#define ap_is_HTTP_REDIRECT(x)     (((x) >= 300)&&((x) < 400))
+#define ap_is_HTTP_ERROR(x)        (((x) >= 400)&&((x) < 600))
+#define ap_is_HTTP_CLIENT_ERROR(x) (((x) >= 400)&&((x) < 500))
+#define ap_is_HTTP_SERVER_ERROR(x) (((x) >= 500)&&((x) < 600))
 
 #define status_drops_connection(x) (((x) == HTTP_BAD_REQUEST)           || \
                                     ((x) == HTTP_REQUEST_TIME_OUT)      || \

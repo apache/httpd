@@ -407,7 +407,7 @@ static int add_expires(request_rec *r)
     time_t expires;
     char age[20];
 
-    if (is_HTTP_ERROR(r->status))       /* Don't add Expires headers to errors */
+    if (ap_is_HTTP_ERROR(r->status))       /* Don't add Expires headers to errors */
         return DECLINED;
 
     if (r->main != NULL)        /* Say no to subrequests */

@@ -190,7 +190,7 @@ static const char *add_redirect_internal(cmd_parms *cmd, alias_dir_conf * dircon
 	    return "Regular expression could not be compiled.";
     }
 
-    if (is_HTTP_REDIRECT(status)) {
+    if (ap_is_HTTP_REDIRECT(status)) {
 	if (!url)
 	    return "URL to redirect to is missing";
 	if (!use_regex && !ap_is_url(url))
@@ -357,7 +357,7 @@ static int translate_alias_redir(request_rec *r)
 	return DECLINED;
 
     if ((ret = try_alias_list(r, serverconf->redirects, 1, &status)) != NULL) {
-	if (is_HTTP_REDIRECT(status)) {
+	if (ap_is_HTTP_REDIRECT(status)) {
 	    /* include QUERY_STRING if any */
 	    if (r->args) {
 		ret = ap_pstrcat(r->pool, ret, "?", r->args, NULL);
@@ -386,7 +386,7 @@ static int fixup_redir(request_rec *r)
     /* It may have changed since last time, so try again */
 
     if ((ret = try_alias_list(r, dirconf->redirects, 1, &status)) != NULL) {
-	if (is_HTTP_REDIRECT(status))
+	if (ap_is_HTTP_REDIRECT(status))
 	    ap_table_setn(r->headers_out, "Location", ret);
 	return status;
     }

@@ -1,5 +1,9 @@
 Changes with Apache 1.3.2
 
+  *) Renamed is_HTTP_xxx() macros to ap_is_HTTP_xxx() name. They are used inside
+     modules as API functions and we forgot them at the big symbol renaming.
+     [Ralf S. Engelschall]
+
   *) Remove bad reference to non-existing SERVER_VERSION in mod_rewrite.html
      [Youichirou Koga <y-koga@jp.FreeBSD.ORG>] PR#2895
 

@@ -330,7 +330,7 @@ static int proxy_handler(request_rec *r)
     /* If the host doesn't have a domain name, add one and redirect. */
     if (conf->domain != NULL) {
 	rc = proxy_needsdomain(r, url, conf->domain);
-	if (is_HTTP_REDIRECT(rc))
+	if (ap_is_HTTP_REDIRECT(rc))
 	    return HTTP_MOVED_PERMANENTLY;
     }
 
