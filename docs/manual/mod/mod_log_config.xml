@@ -47,6 +47,9 @@
     <tr><th>Format&nbsp;String</th>
         <th>Description</th></tr>
 
+    <tr><td><code>%%</code></td>
+        <td>The percent sign (<em>Apache 2.0.44 and later</em>)</td></tr>
+
     <tr><td><code>%...a</code></td>
         <td>Remote IP-address</td></tr>
 
