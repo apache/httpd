@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/12/05 21:22:30 $]
+Last modified at [$Date: 2003/12/09 02:02:41 $]
 
 Release:
 
@@ -73,6 +73,10 @@ RELEASE SHOWSTOPPERS:
 PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
+
+    * mod_include: fix silent INCLUDES ignoring when Options aren't
+      set http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/filters/mod_include.c?r1=1.290&r2=1.291
+      +1: stas, nd
 
     * mod_dav: Return a WWW-Auth header for MOVE/COPY requests where
       the destination resource gives a 401.
