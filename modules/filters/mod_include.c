@@ -422,7 +422,7 @@ static apr_bucket *find_start_sequence(apr_bucket *dptr, include_ctx_t *ctx,
         if (ctx->state == PARSE_HEAD)
         {
             apr_size_t tmpLen;
-            tmpLen = (len > (slen - 1)) ? len : (slen - 1);
+            tmpLen = (len < (slen - 1)) ? len : (slen - 1);
 
             while (c < buf + tmpLen && *c == str[ctx->parse_pos])
             {
@@ -434,6 +434,10 @@ static apr_bucket *find_start_sequence(apr_bucket *dptr, include_ctx_t *ctx,
             {
                 ctx->bytes_parsed += c - buf;
                 return found_start_sequence(dptr, ctx, c - buf);
+            }
+            else if (c == buf + tmpLen) {
+                dptr = APR_BUCKET_NEXT(dptr);
+                continue;
             }
 
             /* False alarm... 
