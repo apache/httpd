@@ -91,9 +91,9 @@
 /* XXXXX - fix me - See note with NOT_PROXY 
  */
 
-typedef struct handlers_info {
+typedef struct attrib_info {
     char *name;
-} handlers_info;
+} attrib_info;
 
 typedef struct {
     apr_table_t *forced_types;        /* Additional AddTyped stuff */
@@ -102,6 +102,9 @@ typedef struct {
     apr_table_t *handlers;            /* Added with AddHandler...  */
     apr_table_t *charset_types;       /* Added with AddCharset... */       
     apr_array_header_t *handlers_remove;     /* List of handlers to remove */
+    apr_array_header_t *types_remove;       /* List of MIME types to remove */
+    apr_array_header_t *encodings_remove; /* List of encodings to remove */
+
 
     char *type;                 /* Type forced with ForceType  */
     char *handler;              /* Handler forced with SetHandler */
@@ -140,7 +143,9 @@ static void *create_mime_dir_config(apr_pool_t *p, char *dummy)
     new->charset_types = apr_make_table(p, 4);
     new->language_types = apr_make_table(p, 4);
     new->handlers = apr_make_table(p, 4);
-    new->handlers_remove = apr_make_array(p, 4, sizeof(handlers_info));
+    new->handlers_remove = apr_make_array(p, 4, sizeof(attrib_info));
+    new->types_remove = apr_make_array(p, 4, sizeof(attrib_info));
+    new->encodings_remove = apr_make_array(p, 4, sizeof(attrib_info));
 
     new->type = NULL;
     new->handler = NULL;
@@ -156,12 +161,7 @@ static void *merge_mime_dir_configs(apr_pool_t *p, void *basev, void *addv)
     mime_dir_config *new =
         (mime_dir_config *) apr_palloc(p, sizeof(mime_dir_config));
     int i;
-    handlers_info *hand;
-
-    hand = (handlers_info *) add->handlers_remove->elts;
-    for (i = 0; i < add->handlers_remove->nelts; i++) {
-        apr_table_unset(base->handlers, hand[i].name);
-    }
+    attrib_info *suffix;
 
     new->forced_types = apr_overlay_tables(p, add->forced_types,
 					 base->forced_types);
@@ -173,6 +173,22 @@ static void *merge_mime_dir_configs(apr_pool_t *p, void *basev, void *addv)
                                          base->language_types);
     new->handlers = apr_overlay_tables(p, add->handlers,
                                    base->handlers);
+
+    suffix = (attrib_info *) add->handlers_remove->elts;
+    for (i = 0; i < add->handlers_remove->nelts; i++) {
+        apr_table_unset(base->handlers, suffix[i].name);
+    }
+
+    suffix = (attrib_info *) add->types_remove->elts;
+    for (i = 0; i < add->types_remove->nelts; i++) {
+        apr_table_unset(base->forced_types, suffix[i].name);
+    }
+
+    suffix = (attrib_info *) add->encodings_remove->elts;
+    for (i = 0; i < add->encodings_remove->nelts; i++) {
+        apr_table_unset(base->encoding_types, suffix[i].name);
+    }
+
 
     new->type = add->type ? add->type : base->type;
     new->handler = add->handler ? add->handler : base->handler;
@@ -258,13 +274,47 @@ static const char *add_handler(cmd_parms *cmd, void *m_, const char *hdlr_,
 static const char *remove_handler(cmd_parms *cmd, void *m, const char *ext)
 {
     mime_dir_config *mcfg = (mime_dir_config *) m;
-    handlers_info *hand;
+    attrib_info *suffix;
 
     if (*ext == '.') {
         ++ext;
     }
-    hand = (handlers_info *) apr_push_array(mcfg->handlers_remove);
-    hand->name = apr_pstrdup(cmd->pool, ext);
+    suffix = (attrib_info *) apr_push_array(mcfg->handlers_remove);
+    suffix->name = apr_pstrdup(cmd->pool, ext);
+    return NULL;
+}
+
+/*
+ * Just like the previous function, except that it records encoding
+ * associations to be undone.
+ */
+static const char *remove_encoding(cmd_parms *cmd, void *m, char *ext)
+{
+    mime_dir_config *mcfg = (mime_dir_config *) m;
+    attrib_info *suffix;
+
+    if (*ext == '.') {
+        ++ext;
+    }
+    suffix = (attrib_info *) apr_push_array(mcfg->encodings_remove);
+    suffix->name = apr_pstrdup(cmd->pool, ext);
+    return NULL;
+}
+
+/*
+ * Similar to the previous functions, except that it deals with filename
+ * suffix/MIME-type associations.
+ */
+static const char *remove_type(cmd_parms *cmd, void *m, char *ext)
+{
+    mime_dir_config *mcfg = (mime_dir_config *) m;
+    attrib_info *suffix;
+
+    if (*ext == '.') {
+        ++ext;
+    }
+    suffix = (attrib_info *) apr_push_array(mcfg->types_remove);
+    suffix->name = apr_pstrdup(cmd->pool, ext);
     return NULL;
 }
 
@@ -296,6 +346,10 @@ AP_INIT_TAKE1("ForceType", ap_set_string_slot_lower,
      (void *)XtOffsetOf(mime_dir_config, type), OR_FILEINFO,
      "a media type"),
 AP_INIT_ITERATE("RemoveHandler", remove_handler, NULL, OR_FILEINFO,
+     "one or more file extensions"),
+AP_INIT_ITERATE("RemoveEncoding", remove_handler, NULL, OR_FILEINFO,
+     "one or more file extensions"),
+AP_INIT_ITERATE("RemoveType", remove_handler, NULL, OR_FILEINFO,
      "one or more file extensions"),
 AP_INIT_TAKE1("SetHandler", ap_set_string_slot_lower, 
      (void *)XtOffsetOf(mime_dir_config, handler), OR_FILEINFO,
