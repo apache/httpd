@@ -1,5 +1,5 @@
 # This is a comment. I love comments.
-# $Id: mime.types,v 1.7 1996/08/20 13:18:56 paul Exp $
+# $Id: mime.types,v 1.8 1996/09/19 17:13:12 fielding Exp $
 
 
 application/activemessage
@@ -34,7 +34,6 @@ application/x-dvi		dvi
 application/x-gtar		gtar
 application/x-gzip
 application/x-hdf		hdf
-application/x-httpd-cgi		cgi
 application/x-koan		skp skd skt skm
 application/x-latex		latex
 application/x-mif		mif
