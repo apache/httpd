@@ -97,7 +97,7 @@
 
 module AP_MODULE_DECLARE_DATA status_module;
 
-int server_limit, thread_limit;
+static int server_limit, thread_limit;
 
 /* Implement 'ap_run_status_hook'. */
 APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(ap, STATUS, int, status_hook,
