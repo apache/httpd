@@ -261,7 +261,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                 break;
             case CMD_AJP13_SEND_HEADERS:
                 /* AJP13_SEND_HEADERS: process them */
-                status = ajp_parse_header(r, conn->data);
+                status = ajp_parse_header(r, conf, conn->data);
                 if (status != APR_SUCCESS) {
                     isok=0;
                 }

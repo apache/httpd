@@ -446,8 +446,9 @@ body_chunk :=
  */
 
 
-static apr_status_t ajp_unmarshal_response(ajp_msg_t   *msg,
-                                  request_rec  *r)
+static apr_status_t ajp_unmarshal_response(ajp_msg_t *msg,
+                                           request_rec *r,
+                                           proxy_server_conf *conf)
 {
     apr_uint16_t status;
     apr_status_t rc;
@@ -491,8 +492,8 @@ static apr_status_t ajp_unmarshal_response(ajp_msg_t   *msg,
 
     for(i = 0 ; i < (int) num_headers ; i++) {
         apr_uint16_t name;
-        char *stringname;
-        char *value;
+        const char *stringname;
+        const char *value;
         rc  = ajp_msg_peek_uint16(msg, &name);
         if (rc != APR_SUCCESS) {
             return APR_EGENERAL;
@@ -500,7 +501,7 @@ static apr_status_t ajp_unmarshal_response(ajp_msg_t   *msg,
                 
         if ((name & 0XFF00) == 0XA000) {
             ajp_msg_peek_uint16(msg, &name);
-            stringname = (char *)long_res_header_for_sc(name);
+            stringname = long_res_header_for_sc(name);
             if (stringname == NULL) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                        "Error ajp_unmarshal_response - "
@@ -530,12 +531,25 @@ static apr_status_t ajp_unmarshal_response(ajp_msg_t   *msg,
             return APR_EGENERAL;
         }
 
+        /* Set-Cookie need additional processing */
+        if (!strcasecmp(stringname, "Set-Cookie")) {
+            value = ap_proxy_cookie_reverse_map(r, conf, value);
+        }
+        /* Location, Content-Location and URI need additional processing */
+        else if (!strcasecmp(stringname, "Location")
+                 || !strcasecmp(stringname, "Content-Location")
+                 || !strcasecmp(stringname, "URI"))
+        {
+          value = ap_proxy_location_reverse_map(r, conf, value);
+        }
+
 #if defined(AS400) || defined(_OSD_POSIX)
         ap_xlate_proto_from_ascii(value, strlen(value));
 #endif
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                "ajp_unmarshal_response: Header[%d] [%s] = [%s]", 
                        i, stringname, value);
+
         apr_table_add(r->headers_out, stringname, value);
 
         /* Content-type needs an additional handling */
@@ -624,7 +638,8 @@ int ajp_parse_type(request_rec  *r, ajp_msg_t *msg)
 }
 
 /* parse the header */
-apr_status_t ajp_parse_header(request_rec  *r, ajp_msg_t *msg)
+apr_status_t ajp_parse_header(request_rec  *r, proxy_server_conf *conf,
+                              ajp_msg_t *msg)
 {
     apr_byte_t result;
     apr_status_t rc;
@@ -640,7 +655,7 @@ apr_status_t ajp_parse_header(request_rec  *r, ajp_msg_t *msg)
                "ajp_parse_headers: wrong type %02x expecting 0x04", result);
         return APR_EGENERAL;
     }
-    return ajp_unmarshal_response(msg, r);
+    return ajp_unmarshal_response(msg, r, conf);
 }
 
 /* parse the body and return data address and length */

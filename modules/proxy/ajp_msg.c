@@ -417,7 +417,7 @@ apr_status_t ajp_msg_get_uint8(ajp_msg_t *msg, apr_byte_t *rvalue)
  * @param rvalue    Pointer where value will be returned
  * @return          APR_SUCCESS or error
  */
-apr_status_t ajp_msg_get_string(ajp_msg_t *msg, char **rvalue)
+apr_status_t ajp_msg_get_string(ajp_msg_t *msg, const char **rvalue)
 {
     apr_uint16_t size;
     apr_size_t   start;
@@ -433,7 +433,7 @@ apr_status_t ajp_msg_get_string(ajp_msg_t *msg, char **rvalue)
     msg->pos += (apr_size_t)size;
     msg->pos++;                   /* a String in AJP is NULL terminated */
 
-    *rvalue = (char *)(msg->buf + start);
+    *rvalue = (const char *)(msg->buf + start);
     return APR_SUCCESS;
 }
 

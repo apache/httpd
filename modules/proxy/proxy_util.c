@@ -997,6 +997,131 @@ PROXY_DECLARE(void) ap_proxy_table_unmerge(apr_pool_t *p, apr_table_t *t, char *
     apr_table_add(t, key, value + offset);
 }
 
+PROXY_DECLARE(const char *) ap_proxy_location_reverse_map(request_rec *r,
+                              proxy_server_conf *conf, const char *url)
+{
+    struct proxy_alias *ent;
+    int i, l1, l2;
+    char *u;
+
+    /* XXX FIXME: Make sure this handled the ambiguous case of the :<PORT>
+     * after the hostname */
+
+    l1 = strlen(url);
+    ent = (struct proxy_alias *)conf->raliases->elts;
+    for (i = 0; i < conf->raliases->nelts; i++) {
+        l2 = strlen(ent[i].real);
+        if (l1 >= l2 && strncasecmp(ent[i].real, url, l2) == 0) {
+            u = apr_pstrcat(r->pool, ent[i].fake, &url[l2], NULL);
+            return ap_construct_url(r->pool, u, r);
+        }
+    }
+
+    return url;
+}
+
+/* Cookies are a bit trickier to match: we've got two substrings to worry
+ * about, and we can't just find them with strstr 'cos of case.  Regexp
+ * matching would be an easy fix, but for better consistency with all the
+ * other matches we'll refrain and use apr_strmatch to find path=/domain=
+ * and stick to plain strings for the config values.
+ */
+PROXY_DECLARE(const char *) ap_proxy_cookie_reverse_map(request_rec *r,
+                              proxy_server_conf *conf, const char *str)
+{
+    struct proxy_alias *ent;
+    size_t len = strlen(str);
+    const char *newpath = NULL;
+    const char *newdomain = NULL;
+    const char *pathp;
+    const char *domainp;
+    const char *pathe = NULL;
+    const char *domaine = NULL;
+    size_t l1, l2, poffs = 0, doffs = 0;
+    int i;
+    int ddiff = 0;
+    int pdiff = 0;
+    char *ret;
+
+   /* Find the match and replacement, but save replacing until we've done
+    * both path and domain so we know the new strlen
+    */
+    if (pathp = apr_strmatch(conf->cookie_path_str, str, len) ,pathp) {
+        pathp += 5 ;
+        poffs = pathp - str;
+        pathe = ap_strchr_c(pathp, ';');
+        l1 = pathe ? (pathe - pathp) : strlen(pathp);
+        pathe = pathp + l1 ;
+        ent = (struct proxy_alias *)conf->cookie_paths->elts;
+        for (i = 0; i < conf->cookie_paths->nelts; i++) {
+            l2 = strlen(ent[i].fake);
+            if (l1 >= l2 && strncmp(ent[i].fake, pathp, l2) == 0) {
+                newpath = ent[i].real;
+                pdiff = strlen(newpath) - l1;
+                break;
+            }
+        }
+    }
+    
+    if (domainp = apr_strmatch(conf->cookie_domain_str, str, len), domainp) {
+        domainp += 7;
+        doffs = domainp - str;
+        domaine = ap_strchr_c(domainp, ';');
+        l1 = domaine ? (domaine - domainp) : strlen(domainp);
+        domaine = domainp + l1;
+        ent = (struct proxy_alias *)conf->cookie_domains->elts;
+        for (i = 0; i < conf->cookie_domains->nelts; i++) {
+            l2 = strlen(ent[i].fake);
+            if (l1 >= l2 && strncasecmp(ent[i].fake, domainp, l2) == 0) {
+                newdomain = ent[i].real;
+                ddiff = strlen(newdomain) - l1;
+                break;
+            }
+        }
+    }
+
+    if (newpath) {
+        ret = apr_palloc(r->pool, len + pdiff + ddiff + 1);
+        l1 = strlen(newpath);
+        if (newdomain) {
+            l2 = strlen(newdomain);
+            if (doffs > poffs) {
+                memcpy(ret, str, poffs);
+                memcpy(ret + poffs, newpath, l1);
+                memcpy(ret + poffs + l1, pathe, domainp - pathe);
+                memcpy(ret + doffs + pdiff, newdomain, l2);
+                strcpy(ret + doffs + pdiff + l2, domaine);
+            }
+            else {
+                memcpy(ret, str, doffs) ;
+                memcpy(ret + doffs, newdomain, l2);
+                memcpy(ret + doffs + l2, domaine, pathp - domaine);
+                memcpy(ret + poffs + ddiff, newpath, l1);
+                strcpy(ret + poffs + ddiff + l1, pathe);
+            }
+        }
+        else {
+            memcpy(ret, str, poffs);
+            memcpy(ret + poffs, newpath, l1);
+            strcpy(ret + poffs + l1, pathe);
+        }
+    }
+    else {
+        if (newdomain) {
+            ret = apr_palloc(r->pool, len + pdiff + ddiff + 1);
+            l2 = strlen(newdomain);
+            memcpy(ret, str, doffs);
+            memcpy(ret + doffs, newdomain, l2);
+            strcpy(ret + doffs+l2, domaine);
+        }
+        else {
+            ret = (char *)str; /* no change */
+        }
+    }
+    
+    return ret;
+}
+
 PROXY_DECLARE(proxy_balancer *) ap_proxy_get_balancer(apr_pool_t *p,
                                                       proxy_server_conf *conf,
                                                       const char *url)
