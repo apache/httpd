@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) If mod_mime_magic does not know the content-type, do not attempt to
+     guess.  PR 16908.  [Andrew Gapon <agapon@telcordia.com>]
+
   *) Fix apxs to insert LoadModule directives only outside of sections.
      PR 9012.  [André Malo]
 
