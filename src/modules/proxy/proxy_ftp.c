@@ -220,8 +220,8 @@ send_dir(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c, char *url)
     char buf2[IOBUFSIZE];
     char *filename;
     char *tempurl;
-    char *searchptr = NULL;
     int searchidx = 0;
+    char *searchptr = NULL;
     int firstfile = 1;
     char urlptr[HUGE_STRING_LEN];
     long total_bytes_sent;
@@ -263,8 +263,17 @@ send_dir(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c, char *url)
 	    buf[sizeof(buf)-1] = '\0';
             n=strlen(buf);
         }
-        else if(buf[0]=='d' || buf[0]=='-' || buf[0]=='l')
+        else if(buf[0]=='d' || buf[0]=='-' || buf[0]=='l' || isdigit(buf[0]))
         {
+	    if(isdigit(buf[0])) {		/* handle DOS dir */
+	        searchptr = strchr(buf, '<');
+	        if(searchptr != NULL)
+		    *searchptr = '[';
+	        searchptr = strchr(buf, '>');
+	        if(searchptr != NULL)
+		    *searchptr = ']';
+	    }
+		
             filename=strrchr(buf, ' ');
             *(filename++)=0;
             filename[strlen(filename)-1]=0;
@@ -272,11 +281,9 @@ send_dir(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c, char *url)
             /* handle filenames with spaces in 'em */
             if(!strcmp(filename, ".") || !strcmp(filename, "..") || firstfile) {
 		firstfile = 0;
-                searchptr = filename;
                 searchidx = filename - buf;
             }
-            else if (searchptr != NULL && searchidx != 0 &&
-	      buf[searchidx] != 0) {
+            else if (searchidx != 0 && buf[searchidx] != 0) {
                 *(--filename) = ' ';
                 buf[searchidx - 1] = 0;
                 filename = &buf[searchidx];    
