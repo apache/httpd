@@ -1314,16 +1314,19 @@ API_EXPORT(int) spawn_child_err_buff (pool *p, int (*func)(void *), void *data,
   
     if (pipe_out) {
 	*pipe_out = bcreate(p, B_RD);
+	note_cleanups_for_fd (p, fd_out);
 	bpushfd(*pipe_out, fd_out, fd_out);
     }
 
     if (pipe_in) {
 	*pipe_in = bcreate(p, B_WR);
+	note_cleanups_for_fd (p, fd_in);
 	bpushfd(*pipe_in, fd_in, fd_in);
     }
 
     if (pipe_err) {
 	*pipe_err = bcreate(p, B_RD);
+	note_cleanups_for_fd (p, fd_err);
 	bpushfd(*pipe_err, fd_err, fd_err);
     }
 
