@@ -73,7 +73,7 @@ int ap_process_http_connection(conn_rec *);
 #endif
 
   /* Hooks */
-AP_DECLARE_HOOK(void,pre_connection,(conn_rec *))
+AP_DECLARE_HOOK(int,pre_connection,(conn_rec *))
 AP_DECLARE_HOOK(int,process_connection,(conn_rec *))
 
 #ifdef __cplusplus
