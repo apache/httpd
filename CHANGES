@@ -1,5 +1,9 @@
 Changes with Apache 2.0.25-dev
 
+  *) Fix a performance problem with the worker MPM.  We now create
+     transaction pools once, and re-use them for each connection.
+     [Aaron Bannert <aaron@clove.org>]
+
   *) Modfied mod_mime to prevent mod_negotation from serving a multiview
      of a 'handler' or 'filter', so that any filename extension that does 
      not contribute to the negotiated metadata can't be served without
