@@ -1,6 +1,6 @@
 APACHE 2.1+ ROADMAP:
 
-Last modified at [$Date: 2001/11/27 05:19:39 $]
+Last modified at [$Date: 2001/11/28 06:34:32 $]
 
 DEFERRRED FOR APACHE 2.1
 
@@ -35,5 +35,6 @@ DEFERRRED FOR APACHE 3.0
 
     * The Async Apache Server implemented in terms of APR.
       [Bill Stoddard's pet project.]
+      Justin says: "What is this?  Event-based?"
 
     
