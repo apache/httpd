@@ -1,5 +1,8 @@
 Changes with Apache 2.0.26-dev
 
+  *) Port the MaxClients changes from the worker MPM to the threaded
+     MPM.  [Ryan Bloom]
+
   *) Fix mod_proxy so that it handles chunked transfer-encoding and works
      with the new input filtering system.  [Justin Erenkrantz]
 
