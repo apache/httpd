@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/02/22 01:02:17 $]
+Last modified at [$Date: 2003/02/22 05:05:00 $]
 
 Release:
 
@@ -171,7 +171,7 @@ PATCHES TO PORT FROM 2.1
       same, but will be used (more or less) twice (LoadModule and AddModule)
       (PR 9072)
       support/apxs.in: r1.52, r1.53
-      +1: nd
+      +1: nd, jerenkrantz
 
 CURRENT RELEASE NOTES:
 
