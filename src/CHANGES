@@ -1,5 +1,8 @@
 Changes with Apache 1.3.28
 
+  *) Prevent obscenely large values of precision in ap_vformatter
+     from clobbering a buffer. [Sander Striker, Jim Jagielski]
+
   *) NetWare: implemented ap_os_default_port() to resolve the 
      correct default port based on the request method. This fixes
      a URL reconstruction problem on a redirect. 
