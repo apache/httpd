@@ -118,10 +118,6 @@ AP_DECLARE(const ap_regkey_t *) ap_regkey_const(int i);
  *           APR_EXCL             return error if APR_CREATE and key exists
  * </PRE>
  * @param pool The pool in which newkey is allocated
- * @ingroup apr_file_open
- * @remark If perm is APR_OS_DEFAULT and the file is being created, appropriate 
- *      default permissions will be used.  *arg1 must point to a valid file_t, 
- *      or NULL (in which case it will be allocated)
  */
 AP_DECLARE(apr_status_t) ap_regkey_open(ap_regkey_t **newkey, 
                                         const ap_regkey_t *parentkey,
