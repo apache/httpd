@@ -55,6 +55,9 @@ _build:
 	cd ap
 	 nmake /nologo CFG="ap - Win32 %LONG%" -f ap.mak
 	cd ..
+	cd support
+	 nmake /nologo CFG="htpasswd - Win32 %LONG%" -f htpasswd.mak
+	cd ..
 	cd main
 	 nmake /nologo CFG="gen_uri_delims - Win32 %LONG%" -f gen_uri_delims.mak
 	 nmake /nologo CFG="gen_test_char - Win32 %LONG%" -f gen_test_char.mak
