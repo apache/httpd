@@ -1,6 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>
-<head><title>Apache HTTP Server Version 2.0 Documentation</title></head>
+<head><title>Apache HTTP サーバ バージョン 2.0 ドキュメント</title></head>
+<!-- English revision: 1.21 -->
 <body
  bgcolor="#FFFFFF"
  text="#000000"
@@ -8,12 +9,11 @@
  vlink="#000080"
  alink="#FF0000"
 >
-
 <div align="center">
 <table cellspacing="0" cellpadding="0" border="0" width="600">
 <tr>
 <td align="center">
-    <img src="images/apache_header.gif" width=600 height=62 border=0 alt="[Apache Documentation]"></td>
+    <img src="images/apache_header.gif" width=600 height=62 border=0 alt="[Apache ドキュメント]"></td>
 </tr>
 <tr>
 <td align="center" bgcolor="#4f4f4f">
@@ -23,13 +23,13 @@
     <a href="misc/FAQ.html"><strong>FAQ</strong></a>
     </td>
     <td align="center" bgcolor="#bebebe">
-    <a href="mod/directives.html"><strong>Directives</strong></a>
+    <a href="mod/directives.html"><strong>ディレクティブ</strong></a>
     </td>
     <td align="center" bgcolor="#bebebe">
-    <a href="mod/"><strong>Modules</strong></a>
+    <a href="mod/"><strong>モジュール</strong></a>
     </td>
     <td align="center" bgcolor="#bebebe">
-    <a href="http://www.apache.org/search.html"><strong>Search</strong></a>
+    <a href="http://www.apache.org/search.html"><strong>検索</strong></a>
     </td>
     </tr></table>
 </td>
@@ -71,47 +71,47 @@
 <td align="center" valign="top">
 <table border="0" cellpadding="4" cellspacing="0" bgcolor="#ffffff" width="280">
 <tr><td align="center" bgcolor="#e9e9e9">
-  <strong>Release Notes</strong>
+  <strong>リリースノート</strong>
 </td></tr><tr><td>
-<A HREF="new_features_2_0.html">New Features in Version 2.0</A>
+<a href="new_features_2_0.html">Apache 2.0 の新機能</a>
 </td></tr><tr><td>
-<A HREF="upgrading.html">Upgrading to Version 2.0</A>
+<a href="upgrading.html">Apache 2.0 へのアップグレード</a>
 </td></tr><tr><td>
-<A HREF="LICENSE">Apache License</A>
+<a href="LICENSE">Apache のライセンス</a>
 </td></tr>
 </table>
 
 <p>
 <table border="0" cellpadding="4" cellspacing="0" bgcolor="#ffffff" width="280">
 <tr><td align="center" bgcolor="#e9e9e9">
-<strong>Reference Manual</strong>
+<strong>リファレンスマニュアル</strong>
 </td></tr><tr><td>
-<A HREF="install.html">Compiling and Installing</A>
+<a href="install.html">コンパイルとインストール</a>
 </td></tr><tr><td>
-<A HREF="invoking.html">Starting</A>
+<a href="invoking.html">起動</a>
 </td></tr><tr><td>
-<A HREF="stopping.html">Stopping or Restarting</A>
+<a href="stopping.html">終了または再起動</a>
 </td></tr><tr><td>
-<A HREF="mod/directives.html">Run-time Configuration Directives</A>
+<a href="mod/directives.html">実行時の設定方法</a>
 </td></tr><tr><td>
-Modules: <A HREF="mod/index-bytype.html">By Type</A> or 
-    <A HREF="mod/">Alphabetical</A>
+モジュール: <a href="mod/index-bytype.html">種類別</a> と 
+    <a href="mod/">アルファベット順</a>
 </td></tr><tr><td>
-<a href="mpm.html">Multi-Processing Modules (MPMs)</a>
+<a href="mpm.html">Multi-Processing Modules (MPM)</a>
 </td></tr><tr><td>
-<a href="programs/">Server and Supporting Programs</a>
+<a href="programs/">サーバとサポートプログラム</a>
 </td></tr><tr><td>
-<A HREF="dso.html">Dynamic Shared Object (DSO) Support</A>
+<a href="dso.html">Dynamic Shared Object (DSO) のサポート</a>
 </td></tr></table>
 
 <p>
 <table border="0" cellpadding="4" cellspacing="0" bgcolor="#ffffff" width="280">
 <tr><td align="center" bgcolor="#e9e9e9">
-<strong>Platform Specific Notes</strong>
+<strong>プラットフォーム固有の情報</strong>
 </td></tr><tr><td>
-<A HREF="platform/windows.html">Microsoft Windows</A>
+<a href="platform/windows.html">Microsoft Windows</a>
 </td></tr><tr><td>
-<A HREF="platform/">Other Platform Specific Notes</a>
+<a href="platform/">他のプラットフォーム特有の情報</a>
 </td></tr></table>
 	
 </td>
@@ -123,45 +123,45 @@ Modules: <A HREF="mod/index-bytype.html">By Type</A> or
 <td align="center" valign="top">
 <table border="0" cellpadding="4" cellspacing="0" bgcolor="#ffffff" width="280">
 <tr><td align="center" bgcolor="#e9e9e9">
-<strong>Using the Apache HTTP Server</strong>
+<strong>Apache HTTP サーバを使う</strong>
 </td></tr><tr><td>
-<A HREF="configuring.html">Configuration Files</A>
+<a href="configuring.html">設定ファイル</a>
 </td></tr><tr><td>
-<a href="server-wide.html">Server-Wide Configuration</A>
+<a href="server-wide.html">サーバ全体の設定</a>
 </td></tr><tr><td>
-<A HREF="urlmapping.html">Mapping URLs to the Filesystem</A>
+<a href="urlmapping.html">URL をファイルシステムにマップする<a>
 </td></tr><tr><td>
-<A HREF="vhosts/">Virtual Hosts</A>
+<a href="vhosts/">バーチャルホスト</a>
 </td></tr><tr><td>
-<A HREF="handler.html">Handlers</A>
+<a href="handler.html">ハンドラ</a>
 </td></tr><tr><td>
-<A HREF="filter.html">Filters</A>
+<a href="filter.html">フィルタ</a>
 </td></tr><tr><td>
-<A HREF="content-negotiation.html">Content negotiation</A>
+<a href="content-negotiation.html">コンテントネゴシエーション</a>
 </td></tr><tr><td>
-<A HREF="env.html">Environment Variables</A>
+<a href="env.html">環境変数</a>
 </td></tr><tr><td>
-<A HREF="suexec.html">Using SetUserID Execution for CGI</A>
+<a href="suexec.html">CGI で SetUserID 実行を使う</a>
 </td></tr><tr><td>
-<A HREF="misc/perf-tuning.html">General Performance hints</A>
+<a href="misc/perf-tuning.html">一般的な性能に関するヒント</a>
 </td></tr><tr><td>
-<A HREF="misc/security_tips.html">Security tips</A>
+<a href="misc/security_tips.html">セキュリティ情報</a>
 </td></tr><tr><td>
-<A HREF="misc/rewriteguide.html">URL Rewriting Guide</A>
+<a href="misc/rewriteguide.html">URL Rewriting のガイド</a>
 </td></tr></table>
 
 <p>
 <table border="0" cellpadding="4" cellspacing="0" bgcolor="#ffffff" width="280">
 <tr><td align="center" bgcolor="#e9e9e9">
-<strong>Other Topics</strong>
+<strong>その他</strong>
 </td></tr><tr><td>
-<A HREF="misc/FAQ.html">Frequently Asked Questions</A>
+<a href="misc/FAQ.html">FAQ</a>
 </td></tr><tr><td>
-<A HREF="misc/tutorials.html">Tutorials</A>
+<a href="misc/tutorials.html">チュートリアル</a>
 </td></tr><tr><td>
-<A HREF="developer/">Documentation for Developers</A>
+<a href="developer/">開発者のためのドキュメント</a>
 </td></tr><tr><td>
-<A HREF="misc/">Other Notes</A>
+<a href="misc/">その他</a>
 </td></tr></table>
 </td>
 </tr>
@@ -169,10 +169,11 @@ Modules: <A HREF="mod/index-bytype.html">By Type</A> or
 
 </div>
 
-<p align="center">Maintained by the <a
+<p align="center"><a
 href="http://httpd.apache.org/docs-project/">Apache HTTP Server
-Documentation Project</a>.</p>
+Documentation Project</a> によりメンテナンスされています。</p>
 
 <!--#include virtual="footer.html" -->
 </body>
 </html>
+
