@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/11/11 00:46:41 $]
+Last modified at [$Date: 2001/11/11 01:04:44 $]
 
 Release:
 
@@ -117,6 +117,11 @@ RELEASE SHOWSTOPPERS:
     * Fold mod_auth_db features back into mod_auth_dbm, and depricate it.
         This can't wait until we have a 2.0-gold release, if folks need
         to move over to auth_dbm, we can't do that to them after 2.0 gold.
+
+    * Source code should follow style guidelines.
+        This can't wait until we have a 2.0-gold release because then
+        style corrections will conflict with bug fixes found after
+        release which is not nice.
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
