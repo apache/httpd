@@ -69,8 +69,8 @@ static apr_status_t dav_cleanup_providers(void *ctx)
     return APR_SUCCESS;
 }
 
-void dav_register_repository(apr_pool_t *p, const char *name,
-                             const dav_hooks_repository *hooks)
+void dav_register_provider(apr_pool_t *p, const char *name,
+                           const dav_provider *provider)
 {
     /* ### ignore the pool; it is NULL right now */
     p = ap_global_hook_pool;
@@ -81,10 +81,10 @@ void dav_register_repository(apr_pool_t *p, const char *name,
     }
 
     /* just set it. no biggy if it was there before. */
-    apr_hash_set(dav_repos_providers, name, 0, hooks);
+    apr_hash_set(dav_repos_providers, name, 0, provider);
 }
 
-const dav_hooks_repository * dav_lookup_repository(const char *name)
+const dav_provider * dav_lookup_provider(const char *name)
 {
     return apr_hash_get(dav_repos_providers, name, 0);
 }

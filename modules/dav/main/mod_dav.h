@@ -410,9 +410,25 @@ ap_xml_elem *dav_find_child(const ap_xml_elem *elem, const char *tagname);
 
 /* ### docco ... */
 
-AP_DECLARE_HOOK(const dav_hooks_locks *, get_lock_hooks, (request_rec *r))
-AP_DECLARE_HOOK(const dav_hooks_propdb *, get_propdb_hooks, (request_rec *r))
-AP_DECLARE_HOOK(const dav_hooks_vsn *, get_vsn_hooks, (request_rec *r))
+/*
+** dav_provider
+**
+** This structure wraps up all of the hooks that a mod_dav provider can
+** supply. The provider MUST supply <repos> and <propdb>. The rest are
+** optional and should contain NULL if that feature is not supplied.
+**
+** Note that a provider cannot pick and choose portions. There are too many
+** dependencies between a dav_resource (defined by <repos>) and the other
+** functionality.
+*/
+typedef struct {
+    const dav_hooks_repository *repos;
+    const dav_hooks_propdb *propdb;
+    const dav_hooks_locks *locks;
+    const dav_hooks_liveprop *liveprop;
+    const dav_hooks_vsn *vsn;
+
+} dav_provider;
 
 AP_DECLARE_HOOK(void, gather_propsets, (apr_array_header_t *uris))
 AP_DECLARE_HOOK(int, find_liveprop, (request_rec *r,
@@ -423,18 +439,16 @@ AP_DECLARE_HOOK(void, insert_all_liveprops, (request_rec *r,
                                              int insvalue,
                                              ap_text_header *phdr))
 
+/* ### make this internal to mod_dav.c ? */
 #define DAV_KEY_RESOURCE        "dav-resource"
-#define DAV_KEY_LOCK_HOOKS      "dav-lock-hooks"
-#define DAV_KEY_PROPDB_HOOKS    "dav-propdb-hooks"
-#define DAV_KEY_VSN_HOOKS       "dav-vsn-hooks"
 
 const dav_hooks_locks *dav_get_lock_hooks(request_rec *r);
 const dav_hooks_propdb *dav_get_propdb_hooks(request_rec *r);
 const dav_hooks_vsn *dav_get_vsn_hooks(request_rec *r);
 
-void dav_register_repository(apr_pool_t *p, const char *name,
-                             const dav_hooks_repository *hooks);
-const dav_hooks_repository * dav_lookup_repository(const char *name);
+void dav_register_provider(apr_pool_t *p, const char *name,
+                           const dav_provider *hooks);
+const dav_provider * dav_lookup_provider(const char *name);
 
 void dav_register_liveprop_namespace(apr_pool_t *pool, const char *uri);
 int dav_get_liveprop_ns_index(const char *uri);
