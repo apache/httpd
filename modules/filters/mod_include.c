@@ -3453,9 +3453,8 @@ static apr_status_t send_parsed_content(ap_filter_t *f, apr_bucket_brigade *bb)
     }
     else {
         rv = APR_SUCCESS;
+        apr_brigade_destroy(pass_bb);
     }
-
-    apr_brigade_destroy(pass_bb);
     return rv;
 }
 
