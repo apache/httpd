@@ -1752,8 +1752,9 @@ static const char *get_canned_error_string(int status,
 
 static void reset_filters(request_rec *r)
 {
-    r->connection->output_filters = r->output_filters = NULL;
-    ap_add_output_filter("CORE", NULL, NULL, r->connection);
+    /* only reset request level filters,
+     * connection level filters need to remain in tact
+     */
     r->output_filters = r->connection->output_filters;
     ap_add_output_filter("CONTENT_LENGTH", NULL, r, r->connection);
     ap_add_output_filter("HTTP_HEADER", NULL, r, r->connection);
