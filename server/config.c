@@ -1032,7 +1032,7 @@ static const char *ap_walk_config_sub(const ap_directive_t *current,
             parms->err_directive = current;
             return apr_pstrcat(parms->pool, "Invalid command '",
                                current->directive,
-                               "', perhaps mis-spelled or defined by a module "
+                               "', perhaps misspelled or defined by a module "
                                "not included in the server configuration",
                                NULL);
         }
@@ -1319,7 +1319,7 @@ static const char *execute_now(char *cmd_line, const char *args,
     if (!(cmd = ap_find_command_in_modules(cmd_line, &mod))) {
         return apr_pstrcat(parms->pool, "Invalid command '",
                            cmd_line,
-                           "', perhaps mis-spelled or defined by a module "
+                           "', perhaps misspelled or defined by a module "
                            "not included in the server configuration",
                            NULL);
     }
