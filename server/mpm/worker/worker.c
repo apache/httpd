@@ -101,7 +101,6 @@
 #include "http_core.h"          /* for get_remote_host */ 
 #include "http_connection.h"
 #include "ap_mpm.h"
-#include "unixd.h"
 #include "mpm_common.h"
 #include "ap_listen.h"
 #include "scoreboard.h" 
