@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Correct the code in ap_check_cache_feshness to check max_age,
+     smax_age, and expires correctly. Patch submitted by Thomas
+     Castelle [Paul J. Reder]
+
   *) mod_cgid: Restart the cgid daemon if it crashes.  PR 19849
      [Glenn Nielsen <glenn@apache.org>]
 
