@@ -1133,7 +1133,7 @@ static void child_main(int child_num_arg)
     /* If we are only running in one_process mode, we will want to
      * still handle signals. */
     if (one_process) {
-        /* Set up a signal handler for this thread. */
+        /* Block until we get a terminating signal. */
         apr_signal_thread(check_signal);
         /* make sure the start thread has finished; signal_workers() 
          * and join_workers() depend on that
