@@ -1,5 +1,5 @@
 # Microsoft Developer Studio Project File - Name="ApacheCore" - Package Owner=<4>
-# Microsoft Developer Studio Generated Build File, Format Version 6.00
+# Microsoft Developer Studio Generated Build File, Format Version 5.00
 # ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Static Library" 0x0104
@@ -22,7 +22,6 @@ CFG=ApacheCore - Win32 Debug
 !MESSAGE 
 
 # Begin Project
-# PROP AllowPerConfigDependencies 0
 # PROP Scc_ProjName ""
 # PROP Scc_LocalPath ""
 CPP=cl.exe
@@ -67,8 +66,8 @@ LIB32=link.exe -lib
 RSC=rc.exe
 # ADD BASE RSC /l 0x409
 # ADD RSC /l 0x409
-# ADD BASE CPP /nologo /MDd /W3 /GX /ZI /Od /I ".\include" /I ".\lib\apr\include" /I ".\os\win32" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /c
-# ADD CPP /nologo /MDd /W3 /GX /ZI /Od /I ".\include" /I ".\lib\apr\include" /I ".\os\win32" /I ".\modules\mpm\winnt" /I ".\lib\expat-lite" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /c
+# ADD BASE CPP /nologo /MDd /W3 /GX /Od /I ".\include" /I ".\lib\apr\include" /I ".\os\win32" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /ZI /c
+# ADD CPP /nologo /MDd /W3 /GX /Od /I ".\include" /I ".\lib\apr\include" /I ".\os\win32" /I ".\modules\mpm\winnt" /I ".\lib\expat-lite" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /ZI /c
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -120,6 +119,10 @@ SOURCE=.\ap\ap_buckets_refcount.c
 # Begin Source File
 
 SOURCE=.\ap\ap_buckets_simple.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\ap\ap_buckets_socket.c
 # End Source File
 # Begin Source File
 
