@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/04/21 21:30:26 $]
+Last modified at [$Date: 2004/04/21 22:01:32 $]
 
 Release:
 
@@ -71,6 +71,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
+
+    *) export ap_set_sub_req_protocol and ap_finalize_sub_req_protocol on Win32.
+       (should be a minor MMN bump). PR 28523.
+         server/protocol.c: r1.147
+       +1: nd
 
     *) allow symlinks on directories to be processed by Include directives
        and stop possible recursion by a counter. PR 28492
