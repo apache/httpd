@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/01/13 00:16:24 $]
+Last modified at [$Date: 2004/01/13 00:33:54 $]
 
 Release:
 
@@ -310,7 +310,12 @@ PATCHES TO BACKPORT FROM 2.1
 
     * Don't let mod_usertrack overwrite other cookies. (2.0 + 1.3)
       PR 26002.
-        modules/metadata/mod_usertrack.c: 1.44
+        modules/metadata/mod_usertrack.c: r1.44
+      +1: nd
+
+    * mod_usertrack: Use always the Cookie header to determine
+      the cookie name (2.0 + 1.3). PR 11475.
+        modules/metadata/mod_usertrack.c: r1.45
       +1: nd
 
 CURRENT RELEASE NOTES:
