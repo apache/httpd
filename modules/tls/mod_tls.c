@@ -280,6 +280,7 @@ static apr_status_t tls_out_filter(ap_filter_t *f,apr_bucket_brigade *pbbIn)
 {
     TLSFilterCtx *pCtx=f->ctx;
     apr_bucket *pbktIn;
+    apr_size_t zero = 0;
 
     APR_BRIGADE_FOREACH(pbktIn,pbbIn) {
 	const char *data;
@@ -295,7 +296,7 @@ static apr_status_t tls_out_filter(ap_filter_t *f,apr_bucket_brigade *pbbIn)
 		ret=churn_output(pCtx);
 		if(ret != APR_SUCCESS)
 		    return ret;
-		ret=churn(pCtx,APR_NONBLOCK_READ);
+		ret=churn(pCtx,APR_NONBLOCK_READ,&zero);
 		if(ret != APR_SUCCESS)
 		    if(ret == APR_EOF)
 			return APR_SUCCESS;
@@ -307,7 +308,7 @@ static apr_status_t tls_out_filter(ap_filter_t *f,apr_bucket_brigade *pbbIn)
 
 	if(APR_BUCKET_IS_FLUSH(pbktIn)) {
 	    // assume that churn will flush (or already has) if there's output
-	    ret=churn(pCtx,APR_NONBLOCK_READ);
+	    ret=churn(pCtx,APR_NONBLOCK_READ,&zero);
 	    if(ret != APR_SUCCESS)
 		return ret;
 	    continue;
