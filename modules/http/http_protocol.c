@@ -115,7 +115,6 @@ static void check_first_conn_error(const request_rec *r, const char *operation,
         ap_log_rerror(APLOG_MARK, APLOG_INFO, status, r,
                       "client stopped connection before %s completed",
                       operation);
-        ap_bsetflag(r->connection->client, B_EOUT, 1);
         r->connection->aborted = 1;
     }
 }
