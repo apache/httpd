@@ -577,16 +577,8 @@ static void child_main(int child_num_arg)
 
     (void) ap_update_child_status(AP_CHILD_THREAD_FROM_ID(my_child_num), SERVER_READY, (request_rec *) NULL);
 
-    apr_signal(SIGHUP, please_die_gracefully);
-
     ap_sync_scoreboard_image();
     while (!die_now) {
-
-	/* Prepare to receive a SIGWINCH due to graceful restart so that
-	 * we can exit cleanly.
-	 */
-        apr_signal(SIGTERM, just_die);
-
 	/*
 	 * (Re)initialize this child to a pre-connection state.
 	 */
@@ -887,11 +879,10 @@ static int make_child(server_rec *s, int slot)
 	}
 #endif
 	RAISE_SIGSTOP(MAKE_CHILD);
-	/* Disable the restart signal handlers and enable the please_die_gracefully stuff.
-	 * Note that since restart() just notes that a restart has been
-	 * requested there's no race condition here.
+        /* Disable the parent's signal handlers and set up proper handling in
+         * the child.
 	 */
-	apr_signal(SIGHUP, please_die_gracefully);
+	apr_signal(SIGHUP, just_die);
 	apr_signal(SIGTERM, just_die);
         /* The child process doesn't do anything for SIGWINCH.  Instead, the
          * pod is used for signalling graceful restart.
