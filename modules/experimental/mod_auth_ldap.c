@@ -81,7 +81,7 @@
 /* per directory configuration */
 typedef struct {
     apr_pool_t *pool;			/* Pool that this config is allocated from */
-    apr_lock_t *lock;			/* Lock for this config */
+    apr_thread_mutex_t *lock;			/* Lock for this config */
     int auth_authoritative;		/* Is this auth method the one and only? */
     int enabled;			/* Is auth_ldap enabled in this directory? */
 
@@ -370,12 +370,12 @@ int mod_auth_ldap_auth_checker(request_rec *r)
      */
     if (sec->groupattr->nelts == 0) {
         struct mod_auth_ldap_groupattr_entry_t *grp;
-        apr_lock_acquire(sec->lock);
+        apr_thread_mutex_lock(sec->lock);
         grp = apr_array_push(sec->groupattr);
         grp->name = "member";
         grp = apr_array_push(sec->groupattr);
         grp->name = "uniquemember";
-        apr_lock_release(sec->lock);
+        apr_thread_mutex_unlock(sec->lock);
     }
 
     if (!reqs_arr) {
@@ -575,7 +575,7 @@ void *mod_auth_ldap_create_dir_config(apr_pool_t *p, char *d)
         (mod_auth_ldap_config_t *)apr_pcalloc(p, sizeof(mod_auth_ldap_config_t));
 
     sec->pool = p;
-    apr_lock_create(&sec->lock, APR_MUTEX, APR_INTRAPROCESS, NULL, p);
+    apr_thread_mutex_create(&sec->lock, APR_THREAD_MUTEX_DEFAULT, p);
     sec->auth_authoritative = 1;
     sec->enabled = 1;
     sec->groupattr = apr_array_make(p, GROUPATTR_MAX_ELTS, 

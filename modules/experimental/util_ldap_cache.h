@@ -68,7 +68,7 @@
  * LDAP Cache Manager
  */
 
-#include <apr_shmem.h>
+#include <apr_shm.h>
 
 typedef struct util_cache_node_t {
     void *payload;		/* Pointer to the payload */
@@ -105,7 +105,7 @@ typedef struct util_ald_cache_t {
 apr_shmem_t *util_ldap_shm;
 #endif
 util_ald_cache_t *util_ldap_cache;
-apr_lock_t *util_ldap_cache_lock;
+apr_thread_rwlock_t *util_ldap_cache_lock;
 
 #ifndef WIN32
 #define ALD_MM_FILE_MODE ( S_IRUSR|S_IWUSR )
