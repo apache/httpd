@@ -647,37 +647,36 @@ static void accept_mutex_on(void)
 	perror("sigprocmask(SIG_BLOCK)");
 	clean_child_exit(APEXIT_CHILDFATAL);
     }
+    /* We need to block alarms here, since if we get killed *right* after 
+     * locking the mutex, have_accept_mutex will not be set, and our
+     * child cleanup will not work.
+     */
+    ap_block_alarms();
     if ((err = pthread_mutex_lock(accept_mutex))) {
 	errno = err;
 	perror("pthread_mutex_lock");
 	clean_child_exit(APEXIT_CHILDFATAL);
     }
     have_accept_mutex = 1;
+    ap_unblock_alarms();
 }
 
 static void accept_mutex_off(void)
 {
     int err;
 
+    /* Have to block alarms here, or else we might have a double-unlock, which
+     * is possible with pthread mutexes, since they are designed to be fast,
+     * and hence not necessarily make checks for ownership or multiple unlocks.
+     */
+    ap_block_alarms(); 
     if ((err = pthread_mutex_unlock(accept_mutex))) {
 	errno = err;
 	perror("pthread_mutex_unlock");
 	clean_child_exit(APEXIT_CHILDFATAL);
     }
-    /* There is a slight race condition right here... if we were to die right
-     * now, we'd do another pthread_mutex_unlock.  Now, doing that would let
-     * another process into the mutex.  pthread mutexes are designed to be
-     * fast, as such they don't have protection for things like testing if the
-     * thread owning a mutex is actually unlocking it (or even any way of
-     * testing who owns the mutex).
-     *
-     * If we were to unset have_accept_mutex prior to releasing the mutex
-     * then the race could result in the server unable to serve hits.  Doing
-     * it this way means that the server can continue, but an additional
-     * child might be in the critical section ... at least it's still serving
-     * hits.
-     */
     have_accept_mutex = 0;
+    ap_unblock_alarms();
     if (sigprocmask(SIG_SETMASK, &accept_previous_mask, NULL)) {
 	perror("sigprocmask(SIG_SETMASK)");
 	clean_child_exit(1);
