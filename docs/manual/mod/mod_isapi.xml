@@ -20,27 +20,29 @@
     parties. The Apache Group does not author these modules, so we
     provide no support for them. Please contact the ISAPI's author
     directly if you are experiencing problems running their ISAPI
-    extention. <strong>Please <em>do not</em> post such problems to
+    extension. <strong>Please <em>do not</em> post such problems to
     Apache's lists or bug reporting pages.</strong></p>
 </summary>
 
-<section><title>Usage</title> <p>In the server configuration file, use
-the <directive module="mod_mime">AddHandler</directive> directive to
-associate ISAPI files with the <code>isapi-isa</code> handler, and map
-it to the with their file extensions. To enable any .dll file to be
-processed as an ISAPI extention, edit the httpd.conf file and add the
-following line:</p>
-<example>
-    AddHandler isapi-isa .dll
-</example>
+<section id="usage"><title>Usage</title>
+
+    <p>In the server configuration file, use
+    the <directive module="mod_mime">AddHandler</directive> directive to
+    associate ISAPI files with the <code>isapi-isa</code> handler, and map
+    it to them with their file extensions. To enable any .dll file to be
+    processed as an ISAPI extension, edit the httpd.conf file and add the
+    following line:</p>
+    <example>
+        AddHandler isapi-isa .dll
+    </example>
 
     <p>There is no capability within the Apache server to leave a
     requested module loaded. However, you may preload and keep a
     specific module loaded by using the following syntax in your
     httpd.conf:</p>
-<example>
-    ISAPICacheFile c:/WebWork/Scripts/ISAPI/mytest.dll
-</example>
+    <example>
+        ISAPICacheFile c:/WebWork/Scripts/ISAPI/mytest.dll
+    </example>
 
     <p>Whether or not you have preloaded an ISAPI extension, all
     ISAPI extensions are governed by the same permissions and
