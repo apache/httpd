@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE indexpage SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
-<!-- English Revision: 105989 -->
+<!-- English Revision: 106861 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -25,6 +25,7 @@
 <title>Dokumentation zum Apache HTTP Server Version 2.1</title>
 
 <category id="release"><title>Hinweise zur Version</title>
+    <page href="new_features_2_2.html">Neue Funktionen in Version 2.1/2.2</page>
     <page href="new_features_2_0.html">Neue Funktionen in Version 2.0</page>
     <page href="upgrading.html">Upgrade auf Version 2.0</page>
     <page href="license.html">Apache-Lizenz</page>
