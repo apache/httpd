@@ -102,10 +102,8 @@ _build:
          $(MAKE) $(MAKEOPT) -f mod_status.mak CFG="mod_status - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_usertrack.mak CFG="mod_usertrack - Win32 $(LONG)" RECURSE=0 $(CTARGET)
          $(MAKE) $(MAKEOPT) -f mod_rewrite.mak CFG="mod_rewrite - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	cd ..\..
-#       cd modules\proxy
 #        $(MAKE) $(MAKEOPT) -f mod_proxy.mak CFG="mod_proxy - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-#       cd ..\..
+        cd ..\..
 	cd support
          $(MAKE) $(MAKEOPT) -f ab.mak CFG="ab - Win32 $(LONG)" RECURSE=0 $(CTARGET)
          $(MAKE) $(MAKEOPT) -f htpasswd.mak CFG="htpasswd - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -125,19 +123,19 @@ _install:
 	copy lib\apr\$(LONG)\aprlib.dll $(INSTDIR)
         copy lib\expat-lite\XMLParse$(SHORT)\xmlparse.dll $(INSTDIR)
         copy lib\expat-lite\XMLTok$(SHORT)\xmltok.dll $(INSTDIR)
-        copy os\win32\mod_status$(SHORT)\mod_status.dll $(INSTDIR)\modules
-#       copy os\win32\mod_info$(SHORT)\mod_info.dll $(INSTDIR)\modules
 	copy os\win32\mod_auth_anon$(SHORT)\mod_auth_anon.dll $(INSTDIR)\modules
+	copy os\win32\mod_auth_dbm$(SHORT)\mod_auth_dbm.dll $(INSTDIR)\modules
 	copy os\win32\mod_auth_digest$(SHORT)\mod_auth_digest.dll $(INSTDIR)\modules
 	copy os\win32\mod_cern_meta$(SHORT)\mod_cern_meta.dll $(INSTDIR)\modules
 	copy os\win32\mod_expires$(SHORT)\mod_expires.dll $(INSTDIR)\modules
 	copy os\win32\mod_file_cache$(SHORT)\mod_file_cache.dll $(INSTDIR)\modules
 	copy os\win32\mod_headers$(SHORT)\mod_headers.dll $(INSTDIR)\modules
+#       copy os\win32\mod_info$(SHORT)\mod_info.dll $(INSTDIR)\modules
         copy os\win32\mod_rewrite$(SHORT)\mod_rewrite.dll $(INSTDIR)\modules
 	copy os\win32\mod_speling$(SHORT)\mod_speling.dll $(INSTDIR)\modules
+        copy os\win32\mod_status$(SHORT)\mod_status.dll $(INSTDIR)\modules
 	copy os\win32\mod_user_track$(SHORT)\mod_user_track.dll $(INSTDIR)\modules
-	copy os\win32\mod_auth_dbm$(SHORT)\mod_auth_dbm.dll $(INSTDIR)\modules
-#       copy modules\proxy\$(LONG)\mod_proxy.dll $(INSTDIR)\modules
+#       copy os\win32\mod_proxy$(SHORT)\mod_proxy.dll $(INSTDIR)\modules
         copy support\$(LONG)\ab.exe $(INSTDIR)\bin
         copy support\$(LONG)\htpasswd.exe $(INSTDIR)\bin
 	copy support\$(LONG)\htdigest.exe $(INSTDIR)\bin
