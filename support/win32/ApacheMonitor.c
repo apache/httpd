@@ -1492,7 +1492,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
             {
                 ApacheManageService(g_stServices[LOWORD(wParam) - IDM_SM_STOP].szServiceName,
                                     g_stServices[LOWORD(wParam) - IDM_SM_STOP].szImagePath,
-                                    g_stServices[LOWORD(wParam) - IDM_SM_START].szComputerName,
+                                    g_stServices[LOWORD(wParam) - IDM_SM_STOP].szComputerName,
                                     SERVICE_CONTROL_STOP);                
                 return TRUE;
             }
@@ -1500,7 +1500,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
             {
                 ApacheManageService(g_stServices[LOWORD(wParam) - IDM_SM_RESTART].szServiceName,
                                     g_stServices[LOWORD(wParam) - IDM_SM_RESTART].szImagePath,
-                                    g_stServices[LOWORD(wParam) - IDM_SM_START].szComputerName,
+                                    g_stServices[LOWORD(wParam) - IDM_SM_RESTART].szComputerName,
                                     SERVICE_APACHE_RESTART);                
                 return TRUE;
             }
