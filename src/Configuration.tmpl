@@ -124,12 +124,12 @@ Rule SHARED_CHAIN=default
 # functions. The format is: Rule RULE=value
 #
 # At present, only the following RULES are known: WANTHSREGEX, SOCKS4,
-# SOCKS5, IRIXNIS, IRIXN32 and PARANOID.
+# SOCKS5, IRIXNIS, IRIXN32, PARANOID, and DEV_RANDOM.
 #
-# For all Rules, if set to "yes", then Configure knows we want that
-# capability and does what is required to add it in. If set to "default"
-# then Configure makes a "best guess"; if set to anything else, or not
-# present, then nothing is done.
+# For all Rules except DEV_RANDOM, if set to "yes", then Configure knows
+# we want that capability and does what is required to add it in. If set
+# to "default" then Configure makes a "best guess"; if set to anything
+# else, or not present, then nothing is done.
 #
 # SOCKS4:
 #  If SOCKS4 is set to 'yes', be sure that you add the socks library
@@ -173,6 +173,19 @@ Rule IRIXNIS=no
 Rule IRIXN32=yes
 Rule PARANOID=no
 Rule EXPAT=default
+
+# DEV_RANDOM:
+#  Note: this rule is only used when compiling mod_auth_digest.
+#  mod_auth_digest requires a cryptographically strong random seed for its
+#  random number generator. It knows two ways of getting this: 1) from
+#  a file or device (such as "/dev/random"), or 2) from the truerand
+#  library. If this rule is set to 'default' then Configure will choose
+#  to use /dev/random if it exists, else /dev/urandom if it exists,
+#  else the truerand library. To override this behaviour set DEV_RANDOM
+#  either to 'truerand' (to use the library) or to a device or file
+#  (e.g. '/dev/urandom'). If the truerand library is selected, Configure
+#  will assume "-L/usr/local/lib -lrand".
+Rule DEV_RANDOM=default
 
 # The following rules should be set automatically by Configure. However, if
 # they are not set by Configure (because we don't know the correct value for
@@ -308,6 +321,13 @@ AddModule modules/standard/mod_actions.o
 ## and a common prefix, e.g., /~<user> , /usr/web/<user> , etc.
 
 AddModule modules/standard/mod_userdir.o
+
+## "digest" implements HTTP Digest Authentication rather than the less 
+## secure Basic Auth used by the other modules. This is an updated
+## version of mod_digest, but it is not well tested and is therefore
+## marked experimental
+
+# AddModule modules/experimental/mod_auth_digest.o
 
 ## The proxy module enables the server to act as a proxy for outside
 ## http and ftp services. It's not as complete as it could be yet.
