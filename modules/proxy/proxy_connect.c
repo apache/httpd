@@ -99,12 +99,6 @@ allowed_port(proxy_server_conf *conf, int port)
     return 0;
 }
 
-/* a NULL filter for the connect tunnel */
-apr_status_t ap_proxy_null_filter(ap_filter_t *f, apr_bucket_brigade *bb)
-{
-    return APR_SUCCESS;
-}
-
 int ap_proxy_connect_handler(request_rec *r, char *url,
 			  const char *proxyname, int proxyport)
 {
@@ -262,7 +256,6 @@ int ap_proxy_connect_handler(request_rec *r, char *url,
      */
     r->output_filters = NULL;
     r->connection->output_filters = NULL;
-    ap_add_output_filter("PROXY_NULL", NULL, r, r->connection);
 
 
     /* If we are connecting through a remote proxy, we need to pass

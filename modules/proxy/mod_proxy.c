@@ -721,7 +721,6 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_translate_name(proxy_trans, NULL, NULL, APR_HOOK_FIRST);
     /* filters */
     ap_register_output_filter("PROXY_SEND_DIR", ap_proxy_send_dir_filter, AP_FTYPE_CONNECTION);
-    ap_register_output_filter("PROXY_NULL", ap_proxy_null_filter, AP_FTYPE_NETWORK);
     /* fixups */
     ap_hook_fixups(proxy_fixup, NULL, NULL, APR_HOOK_FIRST);
     /* post read_request handling */
