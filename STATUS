@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/08/31 16:20:34 $]
+Last modified at [$Date: 2003/08/31 20:48:15 $]
 
 Release:
 
@@ -334,6 +334,12 @@ PATCHES TO PORT FROM 2.1
         modules/filters/mod_include.c: r1.235, r1.236
         modules/filters/mod_include.h: r1.35
       jerenkrantz asks: Doesn't this require a MMN bump?
+      nd replies: The rewrite contains a wrapper around the new API that
+                  emulates the old one. The only difference is that
+                  foo_start_bucket/_index fields are not filled as before
+                  (and ssi_tag_brigade is always NULL). Since they are only of
+                  internal meaning I do not think that the change requires a
+                  bump.
       +1: nd, brianp
 
     * Fix include_cmd in mod_cgid, not to treat the cmd output (partially)
