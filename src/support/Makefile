@@ -18,7 +18,9 @@ RM= /bin/rm -f
 .c.o: 
 	$(CC) -c $(CFLAGS) $(INCLUDES) $<
 
-all: htpasswd unescape inc2shtml httpd_monitor
+TARGETS=htpasswd unescape inc2shtml httpd_monitor rotatelogs
+
+all: $(TARGETS)
 
 aux:
 	make all CC=gcc CFLAGS=-O2
@@ -45,7 +47,7 @@ sco5:
 	make all CC=cc
 
 sco3:
-	make all CC=cc EXTRA_LIB=-lcrypt_i
+	make all CC=cc EXTRA_LIBS=-lcrypt_i
 
 
 tar: htpasswd unescape
@@ -64,5 +66,5 @@ httpd_monitor: httpd_monitor.c
 	$(CC) $(INCLUDES) $(CFLAGS) httpd_monitor.c -o httpd_monitor
 
 clean:
-	rm -f htpasswd unescape inc2shtml httpd_monitor
+	rm -f $(TARGETS)
 
