@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/03/03 06:04:08 $]
+Last modified at [$Date: 2002/03/04 14:44:28 $]
 
 Release:
 
@@ -404,10 +404,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
     * Win32: Get Apache working on Windows 95/98. The following work
         (at least) needs to be done:
-        - winnt MPM: Fix 95/98 code paths in the winnt MPM. There is some NT
-        specific code that is still not in NT only code paths
-        - IOL binds to APR sendfile, implemented with TransmitFile, which 
-        is not available on 95/98.
         - Document warning that OSR2 is required (for Crypt functions, in
         rand.c, at least.)  This could be resolved with an SSL library, or
         randomization in APR itself.
