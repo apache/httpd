@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/02/09 20:20:22 $]
+  Last modified at [$Date: 1999/02/10 11:48:42 $]
 
 Release:
 
@@ -52,10 +52,6 @@ Available Patches:
       Allows use of C-style backslash escapes in mod_log_config format strings
         MID: <E108UEU-0000FX-00@fanf.noc.demon.net>
         Status: 
-
-    * chaz@reliant.com's Configure(modules/Makefile) patch for no modules
-        MID: <199902021944.LAA19314@user2.teleport.com>
-        Status: Roy +1, Jim +1
 
     * John Bley's [PATCH] malloc checks
         MID: <Pine.SOL.3.91.990202065837.23002A-100000@soc11.acpub.duke.edu>
