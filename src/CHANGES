@@ -1,5 +1,16 @@
 Changes with Apache 1.3b4
 
+  *) SECURITY: Fix a possible buffer overflow in logresolve.  This is
+     only an issue on systems without a MAXDNAME define or where
+     the resolver returns domain names longer than MAXDNAME.  [Marc Slemko]
+
+  *) SECURITY: Eliminate possible buffer overflow in cfg_getline, which
+     is used to read various types of files such as htaccess and
+     htpasswd files.  [Marc Slemko]
+  
+  *) SECURITY: Ensure that the buffer returned by ht_time is always
+     properly null terminated.  [Marc Slemko]
+
   *) The "Connection" header could be sent back with multiple "close"
      tokens.  Not an error, but a waste.
      [Ronald.Tschalaer@psi.ch] PR#1683

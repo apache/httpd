@@ -90,6 +90,7 @@ Committed Code Changes:
     * general/1666: Apache uses a case sensitive match for "Basic" auth scheme
     * mod_rewrite/1684: RewriteLog directive does the equivalent of "HostnameLookups on"
     * protocol/1683: The Connection header may contain multiple close tokens
+    * some of Marc's 1.2.5 security patches (minus proxy fixes)
 
 Available Patches:
 
@@ -176,6 +177,8 @@ Needs patch:
 	Status: Jim'll look into it
     
     * os_ abstract is_only_below() in mod_include.c
+
+    * proxy security fixes from 1.2.5 need to be brought forward
 
 Closed issues:
 
