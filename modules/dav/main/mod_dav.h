@@ -59,16 +59,17 @@
 #ifndef _MOD_DAV_H_
 #define _MOD_DAV_H_
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include "httpd.h"
 #include "util_xml.h"
 #include "ap_hooks.h"
 #include "apr_hash.h"
+#include "apu_dbm.h"
 
 #include <limits.h>     /* for INT_MAX */
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 
 #define DAV_VERSION		AP_SERVER_BASEREVISION
@@ -517,12 +518,16 @@ ap_xml_elem *dav_find_child(const ap_xml_elem *elem, const char *tagname);
 ** Note that a provider cannot pick and choose portions. There are too many
 ** dependencies between a dav_resource (defined by <repos>) and the other
 ** functionality.
+**
+** Live properties are not part of the dav_provider structure because they
+** are handled through the AP_HOOK interface (to allow for multiple liveprop
+** providers). The core always provides some properties, and then a given
+** provider will add more properties.
 */
 typedef struct {
     const dav_hooks_repository *repos;
     const dav_hooks_propdb *propdb;
     const dav_hooks_locks *locks;
-    const dav_hooks_liveprop *liveprop;
     const dav_hooks_vsn *vsn;
     const dav_hooks_binding *binding;
 
@@ -939,11 +944,7 @@ enum {
 */
 
 typedef struct dav_db dav_db;
-typedef struct
-{
-    char *dptr;
-    apr_size_t dsize;
-} dav_datum;
+typedef apu_datum_t dav_datum;
 
 /* hook functions to enable pluggable databases */
 struct dav_hooks_propdb

@@ -1986,8 +1986,8 @@ static const dav_provider dav_fs_provider =
     &dav_hooks_repository_fs,
     &dav_hooks_db_dbm,
     &dav_hooks_locks_fs,
-    &dav_hooks_liveprop_fs,
-    NULL
+    NULL,               /* vsn */
+    NULL                /* binding */
 };
 
 void dav_fs_gather_propsets(apr_array_header_t *uris)
