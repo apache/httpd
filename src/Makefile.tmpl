@@ -14,6 +14,10 @@ OBJS= \
 .c.o:
 	$(CC) -c $(INCLUDES) $(CFLAGS) $<
 
+# Used to generate import library for OS/2
+.def.a:
+	emximp -o $@ $<
+
 all: @@Configuration@@ $(TARGET)
 
 @@Configuration@@: Configuration.tmpl
@@ -33,10 +37,10 @@ target_static: subdirs modules.o
 target_compile_only: subdirs modules.o
 	$(CC) -c $(INCLUDES) $(CFLAGS) buildmark.c
 
-target_shared: lib$(TARGET).ep
+target_shared: $(SHCORE_IMPLIB) $(SHARED_CORE_EP) lib$(TARGET).$(SHLIB_SUFFIX_NAME)
 	$(CC) $(INCLUDES) $(CFLAGS) $(LDFLAGS) $(LDFLAGS_SHLIB_EXPORT) \
 	      -o $(TARGET) -DSHARED_CORE_BOOTSTRAP main/http_main.c \
-	      ap/libap.a $(LIBS)
+	      ap/libap.a $(LIBS) $(SHCORE_IMPLIB)
 
 lib$(TARGET).ep: lib$(TARGET).$(SHLIB_SUFFIX_NAME)
 	$(CC) $(INCLUDES) $(CFLAGS) $(LDFLAGS) $(LDFLAGS_SHLIB_EXPORT) \
@@ -45,7 +49,7 @@ lib$(TARGET).ep: lib$(TARGET).$(SHLIB_SUFFIX_NAME)
 
 lib$(TARGET).$(SHLIB_SUFFIX_NAME): subdirs modules.o
 	$(CC) -c $(INCLUDES) $(CFLAGS) buildmark.c
-	$(LD_SHLIB) $(LDFLAGS_SHLIB) -o lib$(TARGET).$(SHLIB_SUFFIX_NAME) buildmark.o $(OBJS) $(REGLIB)
+	$(LD_SHLIB) $(LDFLAGS_SHLIB) -o lib$(TARGET).$(SHLIB_SUFFIX_NAME) buildmark.o $(OBJS) $(REGLIB) $(LD_SHCORE_DEF) $(LD_SHCORE_LIBS)
 	@if [ ".$(SHLIB_SUFFIX_LIST)" != . ]; then \
 		rm -f lib$(TARGET).$(SHLIB_SUFFIX_NAME).*; \
 		for suffix in $(SHLIB_SUFFIX_LIST) ""; do \

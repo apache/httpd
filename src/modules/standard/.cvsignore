@@ -1,3 +1,5 @@
 Makefile
 *.lo
 *.so
+*.dll
+*.def

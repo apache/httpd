@@ -1,5 +1,8 @@
 Changes with Apache 1.3.7
 
+  *) OS/2: Add support for building loadable modules using DLLs.
+     [Brian Havard]
+
   *) Add iconsdir, htdocsdir, and cgidir to config.layout.
      [Wilfredo Sanchez]
 

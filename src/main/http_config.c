@@ -99,7 +99,7 @@ static int total_modules = 0;
  */
 static int dynamic_modules = 0;
 API_VAR_EXPORT module *top_module = NULL;
-API_VAR_EXPORT module **ap_loaded_modules;
+API_VAR_EXPORT module **ap_loaded_modules=NULL;
 
 typedef int (*handler_func) (request_rec *);
 typedef void *(*dir_maker_func) (pool *, char *);

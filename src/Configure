@@ -331,8 +331,8 @@ case "$PLAT" in
 	OSDIR="os/os2"
 	DEF_WANTHSREGEX=yes
 	OS='EMX OS/2'
-	CFLAGS="$CFLAGS -DOS2 -Zbsd-signals -Zbin-files -DTCPIPV4 -g"
-	LDFLAGS="$LDFLAGS -Zexe"
+	CFLAGS="$CFLAGS -DOS2 -Zbsd-signals -Zbin-files -Zcrtdll -DTCPIPV4 -g"
+	LDFLAGS="$LDFLAGS -Zexe -Zcrtdll"
 	LIBS="$LIBS -lsocket -lufc -lbsd"
 	DBM_LIB="-lgdbm"
 	SHELL=sh
@@ -947,6 +947,8 @@ if [ "x$using_shlib" = "x1" ] ; then
     SHLIB_SUFFIX_NAME=so
     SHLIB_SUFFIX_DEPTH=all
     SHLIB_EXPORT_FILES=no
+    SHARED_CORE_EP='lib$(TARGET).ep'
+    SHCORE_IMPLIB=''
     case "$PLAT" in
 	*-linux1)
 	    CFLAGS_SHLIB="-fpic"
@@ -1168,6 +1170,19 @@ if [ "x$using_shlib" = "x1" ] ; then
 	    LDFLAGS_SHLIB="-Zlink=so"
 	    LDFLAGS_SHLIB_EXPORT="-Zlink=dynamic -Wl,-Bexport"
 	    CFLAGS_SHLIB='-Zpic'
+	    ;;
+	*-OS/2*)
+	    DEF_SHARED_CORE=yes
+	    LDFLAGS_SHLIB="`echo $LDFLAGS|sed -e s/-Zexe//` -Zdll"
+	    SHLIB_SUFFIX_NAME=dll
+	    SHLIB_SUFFIX_DEPTH=0
+	    LD_SHLIB=$CC
+	    LD_SHCORE_DEF="ApacheCoreOS2.def"
+	    LD_SHCORE_LIBS="$LIBS"
+	    LIBS_SHLIB='$(SRCDIR)/ApacheCoreOS2.a -lsocket -lbsd'
+	    SHARED_CORE_EP=''
+	    SHCORE_IMPLIB='ApacheCoreOS2.a'
+	    OS_MODULE_INCLUDE='Makefile.OS2'
 	    ;;
 	*)
 	    ##  ok, no known explict support for shared objects
@@ -1518,7 +1533,7 @@ for modfile in $MODFILES ; do
 		    . ./$tmpfile3
 		fi
 		rm -f $tmpfile2 $tmpfile3
-		if [ "x$ext" != "xso" ]; then
+		if [ "x$ext" != "x$SHLIB_SUFFIX_NAME" ]; then
 		    ext=o
 		fi
 	fi
@@ -1526,11 +1541,11 @@ for modfile in $MODFILES ; do
 		modname=`echo $modbase | sed 's/^.*\///' | \
 			sed 's/^mod_//' | sed 's/^lib//' | sed 's/$/_module/'`
 	fi
-	if [ "x$ext" != "xso" ]; then
+	if [ "x$ext" != "x$SHLIB_SUFFIX_NAME" ]; then
 		echo "Module $modname $modbase.$ext" >>$tmpfile
 	fi
 	#   optionally generate export file for some linkers 
-	if [ "x$ext" = "xso" -a "x$SHLIB_EXPORT_FILES" = "xyes" ]; then
+	if [ "x$ext" = "x$SHLIB_SUFFIX_NAME" -a "x$SHLIB_EXPORT_FILES" = "xyes" ]; then
 		echo "$modname" >$modbase.exp
 	fi
 done
@@ -1549,7 +1564,6 @@ fi
 ####################################################################
 ## Now the SHARED_CHAIN stuff
 ##
-LIBS_SHLIB=''
 if [ "x$using_shlib" = "x1" ] ; then
     if [ "x$RULE_SHARED_CHAIN" = "xdefault" ] ; then
 	RULE_SHARED_CHAIN=$DEF_SHARED_CHAIN
@@ -1618,6 +1632,10 @@ if [ "x$using_shlib" = "x1" ] ; then
     if [ "x$TLDFLAGS_SHLIB_EXPORT" = "x" ]; then
 	echo "LDFLAGS_SHLIB_EXPORT=$LDFLAGS_SHLIB_EXPORT" >> Makefile.config
     fi
+    echo "LD_SHCORE_DEF=$LD_SHCORE_DEF" >> Makefile.config
+    echo "LD_SHCORE_LIBS=$LD_SHCORE_LIBS" >> Makefile.config
+    echo "SHARED_CORE_EP=$SHARED_CORE_EP" >> Makefile.config
+    echo "SHCORE_IMPLIB=$SHCORE_IMPLIB" >> Makefile.config
 fi
 
 ####################################################################
@@ -2006,7 +2024,7 @@ dummy $(LIB): $(OBJS)
 	ar cr $@ $(OBJS)
 	$(RANLIB) $@
 
-.SUFFIXES: .o .so
+.SUFFIXES: .o .so .dll
 
 .c.o:
 	$(CC) -c $(INCLUDES) $(CFLAGS) $<
@@ -2032,6 +2050,10 @@ depend:
 	    && rm Makefile.new
 
 EOF
+	fi
+
+	if [ "x$OS_MODULE_INCLUDE" != "x" ]; then
+		echo "include $OS_MODULE_INCLUDE" >> $moddir/Makefile
 	fi
 
 	$CAT << 'EOF' >> $moddir/Makefile

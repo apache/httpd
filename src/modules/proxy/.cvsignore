@@ -8,3 +8,5 @@ ApacheModuleProxy.plg
 Makefile
 *.lo
 *.so
+*.dll
+*.def

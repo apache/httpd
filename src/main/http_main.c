@@ -229,26 +229,26 @@ void *ap_dummy_mutex = &ap_dummy_mutex;
  * for the most part the only code that acts on 'em.  (Hmmm... mod_main.c?)
  */
 
-int ap_standalone;
-uid_t ap_user_id;
-char *ap_user_name;
-gid_t ap_group_id;
+int ap_standalone=0;
+uid_t ap_user_id=0;
+char *ap_user_name=NULL;
+gid_t ap_group_id=0;
 #ifdef MULTIPLE_GROUPS
 gid_t group_id_list[NGROUPS_MAX];
 #endif
-int ap_max_requests_per_child;
-int ap_threads_per_child;
-int ap_excess_requests_per_child;
-char *ap_pid_fname;
-char *ap_scoreboard_fname;
+int ap_max_requests_per_child=0;
+int ap_threads_per_child=0;
+int ap_excess_requests_per_child=0;
+char *ap_pid_fname=NULL;
+char *ap_scoreboard_fname=NULL;
 char *ap_lock_fname;
-char *ap_server_argv0;
+char *ap_server_argv0=NULL;
 struct in_addr ap_bind_address;
-int ap_daemons_to_start;
-int ap_daemons_min_free;
-int ap_daemons_max_free;
-int ap_daemons_limit;
-time_t ap_restart_time;
+int ap_daemons_to_start=0;
+int ap_daemons_min_free=0;
+int ap_daemons_max_free=0;
+int ap_daemons_limit=0;
+time_t ap_restart_time=0;
 int ap_suexec_enabled = 0;
 int ap_listenbacklog;
 int ap_dump_settings = 0;
@@ -281,8 +281,8 @@ static int max_daemons_limit = -1;
 listen_rec *ap_listeners;
 static listen_rec *head_listener;
 
-API_VAR_EXPORT char ap_server_root[MAX_STRING_LEN];
-char ap_server_confname[MAX_STRING_LEN];
+API_VAR_EXPORT char ap_server_root[MAX_STRING_LEN]="";
+char ap_server_confname[MAX_STRING_LEN]="";
 char ap_coredump_dir[MAX_STRING_LEN];
 
 array_header *ap_server_pre_read_config;
@@ -2651,7 +2651,7 @@ static void usr1_handler(int sig)
 static int volatile shutdown_pending;
 static int volatile restart_pending;
 static int volatile is_graceful;
-ap_generation_t volatile ap_my_generation;
+ap_generation_t volatile ap_my_generation=0;
 
 #ifdef WIN32
 /*
@@ -6355,6 +6355,18 @@ int main(int argc, char *argv[])
 #endif /* ndef SHARED_CORE_TIESTATIC */
 #else  /* ndef SHARED_CORE_BOOTSTRAP */
 
+#ifdef OS2
+/* Shared core loader for OS/2 */
+
+int ap_main(int argc, char *argv[]); /* Load time linked from libhttpd.dll */
+
+int main(int argc, char *argv[])
+{
+    return ap_main(argc, argv);
+}
+
+#else
+
 /*
 **  Standalone Bootstrap Program for Shared Core support
 **
@@ -6476,6 +6488,7 @@ int main(int argc, char *argv[], char *envp[])
 	return 0;
 }
 
+#endif /* def OS2 */
 #endif /* ndef SHARED_CORE_BOOTSTRAP */
 
 

@@ -251,7 +251,7 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
 		       "' in file ", szModuleFile, ": ", ap_os_dso_error(), NULL);
     }
     modi->modp = modp;
-    modp->dynamic_load_handle = modhandle;
+    modp->dynamic_load_handle = (void *)modhandle;
 
     /* 
      * Make sure the found module structure is really a module structure
@@ -291,7 +291,7 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
 
 static const char *load_file(cmd_parms *cmd, void *dummy, char *filename)
 {
-    void *handle;
+    ap_os_dso_handle_t handle;
     char *file;
 
     file = ap_server_root_relative(cmd->pool, filename);
@@ -307,7 +307,7 @@ static const char *load_file(cmd_parms *cmd, void *dummy, char *filename)
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, NULL,
 		"loaded file %s", filename);
 
-    ap_register_cleanup(cmd->pool, handle, unload_file, ap_null_cleanup);
+    ap_register_cleanup(cmd->pool, (void *)handle, unload_file, ap_null_cleanup);
 
     return NULL;
 }

@@ -38,4 +38,12 @@ int ap_os_kill(int pid, int sig);
 /* OS/2 doesn't have symlinks so S_ISLNK is always false */
 #define S_ISLNK(m) 0
 
+/* Dynamic loading functions */
+#define     ap_os_dso_handle_t  unsigned long
+void        ap_os_dso_init(void);
+ap_os_dso_handle_t ap_os_dso_load(const char *);
+void        ap_os_dso_unload(ap_os_dso_handle_t);
+void *      ap_os_dso_sym(ap_os_dso_handle_t, const char *);
+const char *ap_os_dso_error(void);
+
 #endif   /* ! APACHE_OS_H */

@@ -4,3 +4,57 @@
  */
 
 #include "os.h"
+#define INCL_DOS
+#include <os2.h>
+#include <stdio.h>
+
+static int rc=0;
+
+void ap_os_dso_init(void)
+{
+}
+
+
+
+ap_os_dso_handle_t ap_os_dso_load(const char *module_name)
+{
+    char errorstr[200];
+    HMODULE handle;
+
+    rc = DosLoadModule(errorstr, sizeof(errorstr), module_name, &handle);
+
+    if (rc == 0)
+        return handle;
+
+    return 0;
+}
+
+
+
+void ap_os_dso_unload(ap_os_dso_handle_t handle)
+{
+    DosFreeModule(handle);
+}
+
+
+
+void *ap_os_dso_sym(ap_os_dso_handle_t handle, const char *funcname)
+{
+    PFN func;
+    
+    rc = DosQueryProcAddr( handle, 0, funcname, &func );
+    
+    if (rc == 0)
+        return func;
+
+    return NULL;
+}
+
+
+
+const char *ap_os_dso_error(void)
+{
+    static char message[30];
+    sprintf( message, "OS/2 error code %d", rc );
+    return message;
+}
