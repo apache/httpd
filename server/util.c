@@ -1581,7 +1581,7 @@ AP_DECLARE(int) ap_unescape_url_keep2f(char *url)
             else {
                 char decoded;
                 decoded = x2c(y + 1);
-                if (IS_SLASH(decoded)) {
+                if (!IS_SLASH(decoded)) {
                     *x++ = *y++;
                     *x = *y;
                 }
