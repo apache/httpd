@@ -1,5 +1,15 @@
 Changes with Apache 2.0.22-dev
 
+  *) Apache/Win32 now fills in the service description with Apache's
+     server version string, including loaded and advertised modules.
+     [William Rowe]
+
+  *) Improved support for the Win32 build, to recover gracefully from
+     missing apr or apr-util directories or the awk interpreter, 
+     create the proper cgi-bin examples, including a test-cgi.bat, and 
+     fix the perl shebang line for printenv.pl, when installing from 
+     the build environment.  [William Rowe]
+
   *) Fix a segfault in threaded.c caused by passing uninitialized
      apr_thread_t * to apr_thread_join().  [Jeff Trawick]
 
@@ -29,6 +39,10 @@ Changes with Apache 2.0.22-dev
      [Sander Striker <striker@apache.org>]
 
 Changes with Apache 2.0.21
+
+  *) Resolve the Win32 htpasswd bug, where a file that existed would be
+     overwritten, regardless of the -c flag.
+     [William Rowe, Mladen Turk <mladen.turk@mail.inet.hr>]
 
   *) Introduce connection sub-pools into ab.  Truncating the lifetime
      of these allocations means that ab no longer perpetually grows
