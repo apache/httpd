@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="EUC-KR" ?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
+<!-- English revision: 1.9 -->
+<modulesynopsis metafile="mod_cern_meta.xml.meta">
+
+<name>mod_cern_meta</name>
+<description>CERN 웹서버 메타파일 지원</description>
+<status>Extension</status>
+<sourcefile>mod_cern_meta.c</sourcefile>
+<identifier>cern_meta_module</identifier>
+
+<summary>
+    <p>CERN 웹서버 메타파일을 흉내낸다. 메타파일은 접근하는
+    파일에 대해 일반적인 헤더외에 추가로 출력할 HTTP 헤더를
+    담고있다. 아파치 .asis 파일과 비슷하고, Expires: 헤더를
+    수정하거나 다른 신기한 일들을 할 수 있다. 메타 정보를 다루는
+    방법은 다양하지만, 이미 이 모듈을 사용하는 많은 CERN 사용자들을
+    위해 이 방법을 선택했다.</p>
+
+    <p>더 자세한 정보는 <a
+    href="http://www.w3.org/pub/WWW/Daemon/User/Config/General.html#MetaDir"
+    >CERN metafile semantics</a>를 참고하라.</p>
+</summary>
+
+<seealso><module>mod_headers</module></seealso>
+<seealso><module>mod_asis</module></seealso>
+
+<directivesynopsis>
+<name>MetaFiles</name>
+<description>CERN 메타파일을 처리한다</description>
+<syntax>MetaFiles on|off</syntax>
+<default>MetaFiles off</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>Indexes</override>
+
+<usage>
+    <p>디렉토리별로 메타파일 처리여부를 결정한다.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>MetaDir</name>
+<description>CERN 메타정보를 찾을 디렉토리 이름</description>
+<syntax>MetaDir <var>directory</var></syntax>
+<default>MetaDir .web</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>Indexes</override>
+
+<usage>
+    <p>아파치가 메타정보 파일을 찾을 디렉토리명을 지정한다.
+    디렉토리는 보통 접근할 파일이 있는 디렉토리의 '감춰진'
+    하위디렉토리다. "<code>.</code>"으로 지정하면 같은 디렉토리에서
+    파일을 찾는다:</p>
+
+    <example>MetaDir .</example>
+
+    <p>아니면 파일이 있는 하위디렉토리를 지정한다:</p>
+
+    <example>MetaDir .meta</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>MetaSuffix</name>
+<description>CERN 메타정보를 저장하는 파일의 접미사</description>
+<syntax>MetaSuffix <var>suffix</var></syntax>
+<default>MetaSuffix .meta</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>Indexes</override>
+
+<usage>
+    <p>메타정보를 저장하는 파일의 접미사를 지정한다. 예를 들어,
+    두 지시어의 기본값을 사용할 경우
+    <code>DOCUMENT_ROOT/somedir/index.html</code>을 요청하면
+    <code>DOCUMENT_ROOT/somedir/.web/index.html.meta</code>의
+    내용을 참고하여 MIME 헤더 정보를 추가한다.</p>
+
+    <example><title>예제:</title>
+      MetaSuffix .meta
+    </example>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

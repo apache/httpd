@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding='EUC-KR' ?>
+<!DOCTYPE directiveindex SYSTEM "../style/modulesynopsis.dtd"
+  [ <!ENTITY allmodules SYSTEM "allmodules.xml.ko"> ]
+>
+<?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
+<!-- English revision: 1.9 -->
+
+<directiveindex metafile="directives.xml.meta">
+  <title>지시어 목록</title>
+  <summary>
+    <p>
+      다음은 표준 아파치 배포본에서 사용가능한 지시어 목록이다.
+      이들을 동일한 형식으로 설명하였고, 설명에 사용한 용어
+      <a href="directive-dict.html" rel="Glossary">사전</a>도 있다.
+    </p>
+
+    <p>
+      각 지시어를 요약하여 설명한 <a
+      href="quickreference.html">지시어 빠른참조</a>도 있다.
+    </p>
+  </summary>
+
+  &allmodules;
+</directiveindex>
