@@ -1004,7 +1004,7 @@ API_EXPORT(char *) ap_os_canonical_filename(pool *p, const char *file);
 
 #ifdef _OSD_POSIX
 extern const char *os_set_account(pool *p, const char *account);
-extern int os_init_job_environment(server_rec *s, const char *user_name);
+extern int os_init_job_environment(server_rec *s, const char *user_name, int one_process);
 #endif /* _OSD_POSIX */
 
 char *ap_get_local_host(pool *);

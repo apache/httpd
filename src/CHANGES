@@ -1,5 +1,9 @@
 Changes with Apache 1.3.4
 
+  *) Update BS2000 OS code to work with recent versions. Starting with
+     release A17, the child fork() must be replaced by a _rfork().
+     (BS2000 only) [Martin Kraemer]
+
   *) Add the actual server_rec structure of the specific Vhost to the
      scoreboard file and avoid a string copy (as well as allow some
      further future enhancements). [Harrie Hazewinkel

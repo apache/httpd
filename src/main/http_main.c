@@ -3532,7 +3532,7 @@ static void child_main(int child_num_arg)
     /* Only try to switch if we're running as root */
     if (!geteuid() && (
 #ifdef _OSD_POSIX
-	os_init_job_environment(server_conf, ap_user_name) != 0 || 
+	os_init_job_environment(server_conf, ap_user_name, one_process) != 0 || 
 #endif
 	setuid(ap_user_id) == -1)) {
 	ap_log_error(APLOG_MARK, APLOG_ALERT, server_conf,
@@ -3904,7 +3904,12 @@ static int make_child(server_rec *s, int slot, time_t now)
     Explain1("Starting new child in slot %d", slot);
     (void) ap_update_child_status(slot, SERVER_STARTING, (request_rec *) NULL);
 
+#ifndef _OSD_POSIX
     if ((pid = fork()) == -1) {
+#else /*_OSD_POSIX*/
+    /* BS2000 requires a "special" version of fork() before a setuid() call */
+    if ((pid = os_fork()) == -1) {
+#endif /*_OSD_POSIX*/
 	ap_log_error(APLOG_MARK, APLOG_ERR, s, "fork: Unable to fork new process");
 
 	/* fork didn't succeed. Fix the scoreboard or else
