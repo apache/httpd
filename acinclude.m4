@@ -217,6 +217,16 @@ AC_DEFUN(APACHE_MODULE,[
       enable_$1=no
     fi
   fi
+  if test "$enable_$1" != "no"; then
+    dnl If we plan to enable it, allow the module to run some autoconf magic
+    dnl that may disable it because of missing dependencies.
+    ifelse([$6],,:,[AC_MSG_RESULT([checking dependencies])
+                    $6
+                    AC_MSG_CHECKING(whether to enable mod_$1)
+                    if test "$enable_$1" = "no"; then
+                      _apmod_extra_msg=" (disabled)"
+                    fi])
+  fi
   AC_MSG_RESULT($enable_$1$_apmod_extra_msg)
   if test "$enable_$1" != "no"; then
     case "$enable_$1" in
@@ -231,7 +241,6 @@ AC_DEFUN(APACHE_MODULE,[
       fi
       shared="";;
     esac
-    ifelse([$6],,:,[$6])
     APACHE_MODPATH_ADD($1, $shared, $3)
   fi
 ])dnl
