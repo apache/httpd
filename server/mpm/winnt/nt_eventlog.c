@@ -111,13 +111,13 @@ static DWORD WINAPI service_stderr_thread(LPVOID hPipe)
 
     while (ReadFile(hPipeRead, errmsg, 1, &errres, NULL) && (errres == 1))
     {
-        if ((errmsg > errbuf) || !isspace(*errmsg))
+        if ((errmsg > errbuf) || !apr_isspace(*errmsg))
         {
             ++errmsg;
             if ((*(errmsg - 1) == '\n') 
                     || (errmsg >= errbuf + sizeof(errbuf) - 1))
             {
-                while ((errmsg > errbuf) && isspace(*(errmsg - 1))) {
+                while ((errmsg > errbuf) && apr_isspace(*(errmsg - 1))) {
                     --errmsg;
                 }
                 *errmsg = '\0';
