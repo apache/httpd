@@ -2906,7 +2906,7 @@ API_EXPORT(void) ap_send_error_response(request_rec *r, int recursive_error)
 		      "This indicates a configuration error.<P>\n", NULL);
 	    break;
 	case HTTP_REQUEST_TIME_OUT:
-	    ap_rputs("I'm tired of waiting for your request.\n", r);
+	    ap_rputs("Server timeout waiting for the HTTP request from the client.\n", r);
 	    break;
 	case HTTP_GONE:
 	    ap_rvputs(r, "The requested resource<BR>",
