@@ -1244,8 +1244,11 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(
      *
      * We can only set a C-L in the response header if we haven't already
      * sent any buckets on to the next output filter for this request.
+     *
+     * Also check against cases of zero bytes sent, to avoid a bogus
+     * C-L on HEAD requests, or no-body GETs like 204s.
      */
-    if (ctx->data_sent == 0 && eos) {
+    if (ctx->data_sent == 0 && eos && r->bytes_sent > 0 ) {
         ap_set_content_length(r, r->bytes_sent);
     }
 
