@@ -68,17 +68,6 @@ extern "C" {
 
 #ifdef CORE_PRIVATE
 /**
- * Create a new connection. 
- * @param p Pool to allocate data structures out of
- * @param server The server to create the connection for
- * @param inout The socket to use for all communication with the client
- * @param id ID of this connection; unique at any point in time.
- * @return new conn_rec, or NULL if the connection has already been reset
- */
-AP_CORE_DECLARE(conn_rec *)ap_new_connection(apr_pool_t *p, server_rec *server, 
-                            apr_socket_t *inout, long id);
-
-/**
  * This is the protocol module driver.  This calls all of the
  * pre-connection and connection hooks for all protocol modules.
  * @param c The connection on which the request is read
