@@ -1045,7 +1045,7 @@ static const char
 {
     apr_size_t val;
 
-    if (sscanf(arg, "%d", &val) != 1) {
+    if (sscanf(arg, "%" APR_SIZE_T_FMT, &val) != 1) {
         return "MCacheSize argument must be an integer representing the max cache size in KBytes.";
     }
     sconf->max_cache_size = val*1024;
@@ -1056,7 +1056,7 @@ static const char
 {
     apr_size_t val;
 
-    if (sscanf(arg, "%d", &val) != 1) {
+    if (sscanf(arg, "%" APR_SIZE_T_FMT, &val) != 1) {
         return "MCacheMinObjectSize value must be an integer (bytes)";
     }
     sconf->min_cache_object_size = val;
@@ -1067,7 +1067,7 @@ static const char
 {
     apr_size_t val;
 
-    if (sscanf(arg, "%d", &val) != 1) {
+    if (sscanf(arg, "%" APR_SIZE_T_FMT, &val) != 1) {
         return "MCacheMaxObjectSize value must be an integer (bytes)";
     }
     sconf->max_cache_object_size = val;
@@ -1078,7 +1078,7 @@ static const char
 {
     apr_size_t val;
 
-    if (sscanf(arg, "%d", &val) != 1) {
+    if (sscanf(arg, "%" APR_SIZE_T_FMT, &val) != 1) {
         return "MCacheMaxObjectCount value must be an integer";
     }
     sconf->max_object_cnt = val;

@@ -427,11 +427,6 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *type, cons
     return OK;
 }
 
-static int remove_url(const char *type, char *key) 
-{
-  return OK;
-}
-
 static int remove_entity(cache_handle_t *h) 
 {
     /* Null out the cache object pointer so next time we start from scratch  */
