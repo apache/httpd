@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/03/22 10:37:23 $]
+  Last modified at [$Date: 1999/03/22 20:18:43 $]
 
 Release:
 
@@ -32,7 +32,7 @@ Binaries (1.3.5):
  i386-unixware-svr4            no      Sameer Parekh
  i386-unknown-freebsd2.1       no      Andrew Wilson, Brian Tao
  i386-unknown-freebsd2.2.8     yes     Jim Jagielski
- i386-whatever-freebsd3.0      no      Ken Coar
+ i386-whatever-freebsd3.0      yes     Ken Coar
  i686-pc-freebsd3.1            yes     Ralf S. Engelschall
  i586-unknown-linux2           yes     Ralf S. Engelschall, Lars Eilebrecht
  i686-unknown-linux2           yes     Lars Eilebrecht
