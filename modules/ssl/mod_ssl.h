@@ -64,12 +64,13 @@
 #ifndef __MOD_SSL_H__
 #define __MOD_SSL_H__
 
+#define MOD_SSL_VERSION "3.0a0"
+
 /* 
  * Optionally enable the experimental stuff, but allow the user to
  * override the decision which experimental parts are included by using
  * CFLAGS="-DSSL_EXPERIMENTAL_xxxx_IGNORE".
  */
-#if 0 /* XXX */
 #ifdef SSL_EXPERIMENTAL
 #ifndef SSL_EXPERIMENTAL_PERDIRCA_IGNORE
 #define SSL_EXPERIMENTAL_PERDIRCA
@@ -83,7 +84,6 @@
 #endif
 #endif
 #endif /* SSL_EXPERIMENTAL */
-#endif /* XXX */
 
 /*
  * Power up our brain...
@@ -116,23 +116,24 @@
 
 /* Apache headers */
 #define CORE_PRIVATE
-#include "ap_config.h"
 #include "httpd.h"
 #include "http_config.h"
-#include "http_protocol.h"
-#include "http_request.h"
-#include "http_main.h"
 #include "http_core.h"
 #include "http_log.h"
+#include "http_main.h"
+#include "http_connection.h"
+#include "http_request.h"
+#include "http_protocol.h"
+#include "util_script.h"
+#include "util_filter.h"
 #include "scoreboard.h"
-#include "util_md5.h"
-#include "apr.h"
+#include "unixd.h"
+#include "apr_strings.h"
+#include "apr_tables.h"
 #include "apr_lib.h"
 #include "apr_fnmatch.h"
 #include "apr_strings.h"
-#include "apr_pools.h"
-#include "apr_tables.h"
-#include "apr_file_info.h"
+#include "apr_dbm.h"
 #undef CORE_PRIVATE
 
 /* mod_ssl headers */
@@ -191,26 +192,25 @@
 
 #define strIsEmpty(s)    (s == NULL || s[0] == NUL)
 
-#if 0 /* XXX */
 #define cfgMerge(el,unset)  new->el = add->el == unset ? base->el : add->el
-#define cfgMergeArray(el)   new->el = ap_append_arrays(p, add->el, base->el)
-#define cfgMergeTable(el)   new->el = ap_overlay_tables(p, add->el, base->el)
-#define cfgMergeCtx(el)     new->el = ap_ctx_overlay(p, add->el, base->el)
+#define cfgMergeArray(el)   new->el = apr_array_append(p, add->el, base->el)
+#define cfgMergeTable(el)   new->el = apr_table_overlay(p, add->el, base->el)
+#define cfgMergeCtx(el)     new->el = apr_table_overlay(p, add->el, base->el)
 #define cfgMergeString(el)  cfgMerge(el, NULL)
 #define cfgMergeBool(el)    cfgMerge(el, UNSET)
 #define cfgMergeInt(el)     cfgMerge(el, UNSET)
-#endif /* XXX */
 
-#if 0 /* XXX */
-#define myModConfig()    (SSLModConfigRec *)ap_ctx_get(ap_global_ctx, "ssl_module")
-#endif /* XXX */
+#define myModConfig(srv) (SSLModConfigRec *)ssl_util_getmodconfig(srv, "ssl_module")
 #define mySrvConfig(srv) (SSLSrvConfigRec *)ap_get_module_config(srv->module_config,  &ssl_module)
 #define myDirConfig(req) (SSLDirConfigRec *)ap_get_module_config(req->per_dir_config, &ssl_module)
 
-#if 0 /* XXX */
 #define myCtxVarSet(mc,num,val)  mc->rCtx.pV##num = val
 #define myCtxVarGet(mc,num,type) (type)(mc->rCtx.pV##num)
-#endif /* XXX */
+
+#define AP_CTX_NUM2PTR(n) (void *)(((unsigned long)(n))+1)
+#define AP_CTX_PTR2NUM(p) (unsigned long)(((char *)(p))-1)
+
+#define AP_CTX_MAX_ENTRIES 1024
 
 /*
  * SSL Logging
@@ -240,12 +240,12 @@
 /*
  * Support for MM library
  */
-#define SSL_MM_FILE_MODE ( S_IRUSR|S_IWUSR )
+#define SSL_MM_FILE_MODE ( APR_UREAD | APR_UWRITE | APR_GREAD | APR_WREAD )
 
 /*
  * Support for DBM library
  */
-#define SSL_DBM_FILE_MODE ( S_IRUSR|S_IWUSR )
+#define SSL_DBM_FILE_MODE ( APR_UREAD | APR_UWRITE | APR_GREAD | APR_WREAD )
 
 #if !defined(SSL_DBM_FILE_SUFFIX_DIR) && !defined(SSL_DBM_FILE_SUFFIX_PAG)
 #if defined(DBM_SUFFIX)
@@ -298,7 +298,6 @@ typedef int ssl_algo_t;
 #define SSL_AIDX_DSA     (1)
 #define SSL_AIDX_MAX     (2)
 
-#if 0 /* XXX */
 
 /*
  * Define IDs for the temporary RSA keys and DH params
@@ -357,7 +356,6 @@ typedef enum {
     SSL_PPTYPE_BUILTIN = 0,
     SSL_PPTYPE_FILTER  = 1
 } ssl_pphrase_t;
-#endif /* XXX */
 
 /*
  * Define the Path Checking modes
@@ -367,8 +365,6 @@ typedef enum {
 #define SSL_PCM_ISDIR      4
 #define SSL_PCM_ISNONZERO  8
 typedef unsigned int ssl_pathcheck_t;
-
-#if 0 /* XXX */
 
 /*
  * Define the SSL session cache modes and structures
@@ -434,18 +430,30 @@ typedef struct {
  */
 
 typedef struct {
-    pool           *pPool;
+    SSL                *pssl;
+    BIO                *pbioRead;
+    BIO                *pbioWrite;
+    ap_filter_t        *pInputFilter;
+    ap_filter_t        *pOutputFilter;
+    apr_bucket_brigade *pbbInput;        /* encrypted input */
+    apr_bucket_brigade *pbbPendingInput; /* decrypted input */
+} SSLFilterRec;
+
+typedef struct {
+    apr_pool_t     *pPool;
     BOOL            bFixed;
     int             nInitCount;
     int             nSessionCacheMode;
     char           *szSessionCacheDataFile;
     int             nSessionCacheDataSize;
+#if 0 /* XXX */
     AP_MM          *pSessionCacheDataMM;
-    table_t        *tSessionCacheDataTable;
+#endif
+    apr_table_t    *tSessionCacheDataTable;
     ssl_mutexmode_t nMutexMode;
     char           *szMutexFile;
     apr_lock_t     *pMutex;
-    array_header   *aRandSeed;
+    apr_array_header_t   *aRandSeed;
     ssl_ds_table   *tTmpKeys;
     void           *pTmpKeys[SSL_TKPIDX_MAX];
     ssl_ds_table   *tPublicCert;
@@ -463,10 +471,9 @@ typedef struct {
  * (i.e. the configuration for the main server
  *  and all <VirtualHost> contexts)
  */
-#endif /* XXX */
 typedef struct {
     BOOL         bEnabled;
-#if 0 /* XXX */
+    apr_table_t *ap_server_ctx;
     char        *szPublicCertFile[SSL_AIDX_MAX];
     char        *szPrivateKeyFile[SSL_AIDX_MAX];
     char        *szCertificateChain;
@@ -474,7 +481,7 @@ typedef struct {
     char        *szCACertificateFile;
     char        *szLogFile;
     char        *szCipherSuite;
-    FILE        *fileLogFile;
+    apr_file_t  *fileLogFile;
     int          nLogLevel;
     int          nVerifyDepth;
     ssl_verify_t nVerifyClient;
@@ -501,20 +508,16 @@ typedef struct {
     SSL_CTX     *pSSLProxyCtx;
     STACK_OF(X509_INFO) *skProxyClientCerts;
 #endif
-#endif /* XXX */
 } SSLSrvConfigRec;
 
-#if 0 /* XXX */
 /*
  * Define the mod_ssl per-directory configuration structure
  * (i.e. the local configuration for all <Directory>
  *  and .htaccess contexts)
  */
-#endif /* XXX */
 typedef struct {
     BOOL          bSSLRequired;
-#if 0 /* XXX */
-    array_header *aRequirement;
+    apr_array_header_t *aRequirement;
     ssl_opt_t     nOptions;
     ssl_opt_t     nOptionsAdd;
     ssl_opt_t     nOptionsDel;
@@ -525,7 +528,6 @@ typedef struct {
     char         *szCACertificatePath;
     char         *szCACertificateFile;
 #endif
-#endif /* XXX */
 } SSLDirConfigRec;
 
 /*
@@ -536,36 +538,36 @@ typedef struct {
 extern module AP_MODULE_DECLARE_DATA ssl_module;
 
 /*  configuration handling   */
-void         ssl_config_global_create(void);
-void         ssl_config_global_fix(void);
-BOOL         ssl_config_global_isfixed(void);
+void         ssl_config_global_create(server_rec *);
+void         ssl_config_global_fix(SSLModConfigRec *);
+BOOL         ssl_config_global_isfixed(SSLModConfigRec *);
 void        *ssl_config_server_create(apr_pool_t *, server_rec *);
 void        *ssl_config_server_merge(apr_pool_t *, void *, void *);
 void        *ssl_config_perdir_create(apr_pool_t *, char *);
 void        *ssl_config_perdir_merge(apr_pool_t *, void *, void *);
-const char  *ssl_cmd_SSLMutex(cmd_parms *, char *, char *);
-const char  *ssl_cmd_SSLPassPhraseDialog(cmd_parms *, char *, char *);
-const char  *ssl_cmd_SSLCryptoDevice(cmd_parms *, char *, char *);
-const char  *ssl_cmd_SSLRandomSeed(cmd_parms *, char *, char *, char *, char *);
-const char  *ssl_cmd_SSLEngine(cmd_parms *, char *, int);
-const char  *ssl_cmd_SSLCipherSuite(cmd_parms *, SSLDirConfigRec *, char *);
-const char  *ssl_cmd_SSLCertificateFile(cmd_parms *, char *, char *);
-const char  *ssl_cmd_SSLCertificateKeyFile(cmd_parms *, char *, char *);
-const char  *ssl_cmd_SSLCertificateChainFile(cmd_parms *, char *, char *);
-const char  *ssl_cmd_SSLCACertificatePath(cmd_parms *, SSLDirConfigRec *, char *);
-const char  *ssl_cmd_SSLCACertificateFile(cmd_parms *, SSLDirConfigRec *, char *);
-const char  *ssl_cmd_SSLCARevocationPath(cmd_parms *, SSLDirConfigRec *, char *);
-const char  *ssl_cmd_SSLCARevocationFile(cmd_parms *, SSLDirConfigRec *, char *);
-const char  *ssl_cmd_SSLVerifyClient(cmd_parms *, SSLDirConfigRec *, char *);
-const char  *ssl_cmd_SSLVerifyDepth(cmd_parms *, SSLDirConfigRec *, char *);
-const char  *ssl_cmd_SSLSessionCache(cmd_parms *, char *, char *);
-const char  *ssl_cmd_SSLSessionCacheTimeout(cmd_parms *, char *, char *);
-const char  *ssl_cmd_SSLLog(cmd_parms *, char *, char *);
-const char  *ssl_cmd_SSLLogLevel(cmd_parms *, char *, char *);
-const char  *ssl_cmd_SSLProtocol(cmd_parms *, char *, const char *);
-const char  *ssl_cmd_SSLOptions(cmd_parms *, SSLDirConfigRec *, const char *);
-const char  *ssl_cmd_SSLRequireSSL(cmd_parms *, SSLDirConfigRec *, char *);
-const char  *ssl_cmd_SSLRequire(cmd_parms *, SSLDirConfigRec *, char *);
+const char  *ssl_cmd_SSLMutex(cmd_parms *, void *, const char *);
+const char  *ssl_cmd_SSLPassPhraseDialog(cmd_parms *, void *, const char *);
+const char  *ssl_cmd_SSLCryptoDevice(cmd_parms *, void *, const char *);
+const char  *ssl_cmd_SSLRandomSeed(cmd_parms *, void *, const char *, const char *, const char *);
+const char  *ssl_cmd_SSLEngine(cmd_parms *, void *, int);
+const char  *ssl_cmd_SSLCipherSuite(cmd_parms *, void *, const char *);
+const char  *ssl_cmd_SSLCertificateFile(cmd_parms *, void *, const char *);
+const char  *ssl_cmd_SSLCertificateKeyFile(cmd_parms *, void *, const char *);
+const char  *ssl_cmd_SSLCertificateChainFile(cmd_parms *, void *, const char *);
+const char  *ssl_cmd_SSLCACertificatePath(cmd_parms *, void *, const char *);
+const char  *ssl_cmd_SSLCACertificateFile(cmd_parms *, void *, const char *);
+const char  *ssl_cmd_SSLCARevocationPath(cmd_parms *, void *, const char *);
+const char  *ssl_cmd_SSLCARevocationFile(cmd_parms *, void *, const char *);
+const char  *ssl_cmd_SSLVerifyClient(cmd_parms *, void *, const char *);
+const char  *ssl_cmd_SSLVerifyDepth(cmd_parms *, void *, const char *);
+const char  *ssl_cmd_SSLSessionCache(cmd_parms *, void *, const char *);
+const char  *ssl_cmd_SSLSessionCacheTimeout(cmd_parms *, void *, const char *);
+const char  *ssl_cmd_SSLLog(cmd_parms *, void *, const char *);
+const char  *ssl_cmd_SSLLogLevel(cmd_parms *, void *, const char *);
+const char  *ssl_cmd_SSLProtocol(cmd_parms *, void *, const char *);
+const char  *ssl_cmd_SSLOptions(cmd_parms *, void *, const char *);
+const char  *ssl_cmd_SSLRequireSSL(cmd_parms *, void *);
+const char  *ssl_cmd_SSLRequire(cmd_parms *, void *, const char *);
 #ifdef SSL_EXPERIMENTAL_PROXY
 const char  *ssl_cmd_SSLProxyProtocol(cmd_parms *, char *, const char *);
 const char  *ssl_cmd_SSLProxyCipherSuite(cmd_parms *, char *, char *);
@@ -576,25 +578,24 @@ const char  *ssl_cmd_SSLProxyCACertificateFile(cmd_parms *, char *, char *);
 const char  *ssl_cmd_SSLProxyMachineCertificatePath(cmd_parms *, char *, char *);
 const char  *ssl_cmd_SSLProxyMachineCertificateFile(cmd_parms *, char *, char *);
 #endif
-#if 0 /* XXX */
 
 /*  module initialization  */
-void         ssl_init_Module(server_rec *, pool *);
+void         ssl_init_Module(apr_pool_t *, apr_pool_t *, apr_pool_t *, server_rec *);
 void         ssl_init_SSLLibrary(void);
-void         ssl_init_Engine(server_rec *, pool *);
-void         ssl_init_TmpKeysHandle(int, server_rec *, pool *);
-void         ssl_init_ConfigureServer(server_rec *, pool *, SSLSrvConfigRec *);
-void         ssl_init_CheckServers(server_rec *, pool *);
+void         ssl_init_Engine(server_rec *, apr_pool_t *);
+void         ssl_init_TmpKeysHandle(int, server_rec *, apr_pool_t *);
+void         ssl_init_ConfigureServer(server_rec *, apr_pool_t *, SSLSrvConfigRec *);
+void         ssl_init_CheckServers(server_rec *, apr_pool_t *);
 STACK_OF(X509_NAME) 
-            *ssl_init_FindCAList(server_rec *, pool *, char *, char *);
-void         ssl_init_Child(server_rec *, pool *);
-void         ssl_init_ChildKill(void *);
-void         ssl_init_ModuleKill(void *);
+            *ssl_init_FindCAList(server_rec *, apr_pool_t *, char *, char *);
+void         ssl_init_Child(apr_pool_t *, server_rec *);
+apr_status_t ssl_init_ChildKill(void *data);
+apr_status_t ssl_init_ModuleKill(void *data);
 
 /*  Apache API hooks  */
 void         ssl_hook_NewConnection(conn_rec *);
 void         ssl_hook_TimeoutConnection(int);
-void         ssl_hook_CloseConnection(conn_rec *);
+apr_status_t ssl_hook_CloseConnection(SSLFilterRec *);
 int          ssl_hook_Translate(request_rec *);
 int          ssl_hook_Auth(request_rec *);
 int          ssl_hook_UserCheck(request_rec *);
@@ -614,21 +615,22 @@ void         ssl_callback_DelSessionCacheEntry(SSL_CTX *, SSL_SESSION *);
 void         ssl_callback_LogTracingState(SSL *, int, int);
 
 /*  Session Cache Support  */
-void         ssl_scache_init(server_rec *, pool *);
+void         ssl_scache_init(server_rec *, apr_pool_t *);
 void         ssl_scache_kill(server_rec *);
 BOOL         ssl_scache_store(server_rec *, UCHAR *, int, time_t, SSL_SESSION *);
 SSL_SESSION *ssl_scache_retrieve(server_rec *, UCHAR *, int);
 void         ssl_scache_remove(server_rec *, UCHAR *, int);
 void         ssl_scache_expire(server_rec *);
-void         ssl_scache_status(server_rec *, pool *, void (*)(char *, void *), void *);
+void         ssl_scache_status(server_rec *, apr_pool_t *, void (*)(char *, void *), void *);
 char        *ssl_scache_id2sz(UCHAR *, int);
-void         ssl_scache_dbm_init(server_rec *, pool *);
+void         ssl_scache_dbm_init(server_rec *, apr_pool_t *);
 void         ssl_scache_dbm_kill(server_rec *);
 BOOL         ssl_scache_dbm_store(server_rec *, UCHAR *, int, time_t, SSL_SESSION *);
 SSL_SESSION *ssl_scache_dbm_retrieve(server_rec *, UCHAR *, int);
 void         ssl_scache_dbm_remove(server_rec *, UCHAR *, int);
 void         ssl_scache_dbm_expire(server_rec *);
-void         ssl_scache_dbm_status(server_rec *, pool *, void (*)(char *, void *), void *);
+void         ssl_scache_dbm_status(server_rec *, apr_pool_t *, void (*)(char *, void *), void *);
+#if 0 /* XXX */
 void         ssl_scache_shmht_init(server_rec *, pool *);
 void         ssl_scache_shmht_kill(server_rec *);
 BOOL         ssl_scache_shmht_store(server_rec *, UCHAR *, int, time_t, SSL_SESSION *);
@@ -643,10 +645,11 @@ SSL_SESSION *ssl_scache_shmcb_retrieve(server_rec *, UCHAR *, int);
 void         ssl_scache_shmcb_remove(server_rec *, UCHAR *, int);
 void         ssl_scache_shmcb_expire(server_rec *);
 void         ssl_scache_shmcb_status(server_rec *, pool *, void (*)(char *, void *), void *);
+#endif
 
 /*  Pass Phrase Support  */
-void         ssl_pphrase_Handle(server_rec *, pool *);
-int          ssl_pphrase_Handle_CB(char *, int, int);
+void         ssl_pphrase_Handle(server_rec *, apr_pool_t *);
+int          ssl_pphrase_Handle_CB(char *, int, int, void *);
 
 /*  Diffie-Hellman Parameter Support  */
 DH           *ssl_dh_GetTmpParam(int);
@@ -667,40 +670,40 @@ void          ssl_ds_table_wipeout(ssl_ds_table *);
 void          ssl_ds_table_kill(ssl_ds_table *);
 
 /*  Mutex Support  */
-#endif /* XXX */
 int          ssl_mutex_init(server_rec *, apr_pool_t *);
 int          ssl_mutex_reinit(server_rec *, apr_pool_t *);
 int          ssl_mutex_on(server_rec *);
 int          ssl_mutex_off(server_rec *);
 int          ssl_mutex_kill(server_rec *);
-#if 0 /* XXX */
 
 /*  Logfile Support  */
-void         ssl_log_open(server_rec *, server_rec *, pool *);
+void         ssl_log_open(server_rec *, server_rec *, apr_pool_t *);
 BOOL         ssl_log_applies(server_rec *, int);
 void         ssl_log(server_rec *, int, const char *, ...);
 void         ssl_die(void);
 
 /*  Variables  */
+#if 0 /* XXX */
 void         ssl_var_register(void);
 void         ssl_var_unregister(void);
 #endif /* XXX */
 char        *ssl_var_lookup(apr_pool_t *, server_rec *, conn_rec *, request_rec *, char *);
 
 /*  I/O  */
-#if 0 /* XXX */
 void         ssl_io_register(void);
 void         ssl_io_unregister(void);
+void         ssl_io_filter_init(conn_rec *, SSL *);
+void         ssl_io_filter_register(apr_pool_t *);
 long         ssl_io_data_cb(BIO *, int, const char *, int, long, long);
 
 /*  PRNG  */
-int          ssl_rand_seed(server_rec *, pool *, ssl_rsctx_t, char *);
+int          ssl_rand_seed(server_rec *, apr_pool_t *, ssl_rsctx_t, char *);
 
 /*  Extensions  */
+#if 0 /* XXX */
 void         ssl_ext_register(void);
 void         ssl_ext_unregister(void);
-
-#endif /* XXX */
+#endif
 
 /*  Utility Functions  */
 char        *ssl_util_vhostid(apr_pool_t *, server_rec *);
@@ -715,5 +718,8 @@ ssl_algo_t   ssl_util_algotypeof(X509 *, EVP_PKEY *);
 char        *ssl_util_algotypestr(ssl_algo_t);
 char        *ssl_util_ptxtsub(apr_pool_t *, const char *, const char *, char *);
 void         ssl_util_thread_setup(void);
+apr_status_t     ssl_util_setmodconfig(server_rec *, const char *, SSLModConfigRec *);
+SSLModConfigRec *ssl_util_getmodconfig(server_rec *, const char *);
+SSLModConfigRec *ssl_util_getmodconfig_ssl(SSL *, const char *);
 
 #endif /* __MOD_SSL_H__ */

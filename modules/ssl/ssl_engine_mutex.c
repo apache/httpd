@@ -62,11 +62,9 @@
                                              -- Unknown     */
 #include "mod_ssl.h"
 
-#if 0 /* XXX */
-
 int ssl_mutex_init(server_rec *s, apr_pool_t *p)
 {
-    SSLModConfigRec *mc = myModConfig();
+    SSLModConfigRec *mc = myModConfig(s);
 
     if (mc->nMutexMode == SSL_MUTEXMODE_NONE) 
         return TRUE;
@@ -78,7 +76,7 @@ int ssl_mutex_init(server_rec *s, apr_pool_t *p)
 
 int ssl_mutex_reinit(server_rec *s, apr_pool_t *p)
 {
-    SSLModConfigRec *mc = myModConfig();
+    SSLModConfigRec *mc = myModConfig(s);
 
     if (mc->nMutexMode == SSL_MUTEXMODE_NONE)
         return TRUE;
@@ -89,7 +87,7 @@ int ssl_mutex_reinit(server_rec *s, apr_pool_t *p)
 
 int ssl_mutex_on(server_rec *s)
 {
-    SSLModConfigRec *mc = myModConfig();
+    SSLModConfigRec *mc = myModConfig(s);
 
     if (mc->nMutexMode == SSL_MUTEXMODE_NONE)
         return TRUE;
@@ -102,7 +100,7 @@ int ssl_mutex_on(server_rec *s)
 
 int ssl_mutex_off(server_rec *s)
 {
-    SSLModConfigRec *mc = myModConfig();
+    SSLModConfigRec *mc = myModConfig(s);
 
     if (mc->nMutexMode == SSL_MUTEXMODE_NONE)
         return TRUE;
@@ -115,7 +113,7 @@ int ssl_mutex_off(server_rec *s)
 
 int ssl_mutex_kill(server_rec *s)
 {
-    SSLModConfigRec *mc = myModConfig();
+    SSLModConfigRec *mc = myModConfig(s);
 
     if (mc->nMutexMode == SSL_MUTEXMODE_NONE)
         return TRUE;
@@ -123,6 +121,4 @@ int ssl_mutex_kill(server_rec *s)
         return FALSE;
     return TRUE;
 }
-
-#endif /* XXX */
 

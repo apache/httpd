@@ -61,8 +61,6 @@
                                         -- Unknown   */
 #include "mod_ssl.h"
 
-#if 0 /* XXX */
-
 /*  _________________________________________________________________
 **
 **  Module Initialization
@@ -72,25 +70,25 @@
 /*
  *  Per-module initialization
  */
-void ssl_init_Module(server_rec *s, pool *p)
+void ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
+    apr_pool_t *ptemp, server_rec *s)
 {
-    SSLModConfigRec *mc = myModConfig();
+    SSLModConfigRec *mc = myModConfig(s);
     SSLSrvConfigRec *sc;
     server_rec *s2;
-    char *cp;
-
-    mc->nInitCount++;
 
     /*
      * Let us cleanup on restarts and exists
      */
-    ap_register_cleanup(p, s, ssl_init_ModuleKill, ssl_init_ChildKill);
+    apr_pool_cleanup_register(p, s, ssl_init_ModuleKill, ssl_init_ChildKill);
 
     /*
      * Any init round fixes the global config
      */
-    ssl_config_global_create(); /* just to avoid problems */
-    ssl_config_global_fix();
+    ssl_config_global_create(s); /* just to avoid problems */
+    ssl_config_global_fix(mc);
+
+    mc->nInitCount++;
 
     /*
      *  try to fix the configuration and open the dedicated SSL
@@ -123,10 +121,12 @@ void ssl_init_Module(server_rec *s, pool *p)
      * Identification
      */
     if (mc->nInitCount == 1) {
+#if 0 /* XXX */
         ssl_log(s, SSL_LOG_INFO, "Server: %s, Interface: %s, Library: %s",
-                SERVER_BASEVERSION,
+                AP_SERVER_BASEVERSION,
                 ssl_var_lookup(p, NULL, NULL, NULL, "SSL_VERSION_INTERFACE"),
                 ssl_var_lookup(p, NULL, NULL, NULL, "SSL_VERSION_LIBRARY"));
+#endif
     }
 
     /*
@@ -159,7 +159,7 @@ void ssl_init_Module(server_rec *s, pool *p)
      *     module segment (code & data) gets unloaded and re-loaded between
      *     the first and the second round. This means no global data survives
      *     between first and the second init round. We overcome this by using
-     *     an entry ("ssl_module") inside the ap_global_ctx.
+     *     an entry ("ssl_module") inside the process_rec->pool->user_data.
      *
      *  The situation as a table:
      *
@@ -257,10 +257,12 @@ void ssl_init_Module(server_rec *s, pool *p)
      *  Announce mod_ssl and SSL library in HTTP Server field
      *  as ``mod_ssl/X.X.X OpenSSL/X.X.X''
      */
+#if 0 /* XXX */
     if ((cp = ssl_var_lookup(p, NULL, NULL, NULL, "SSL_VERSION_PRODUCT")) != NULL && cp[0] != NUL)
-        ap_add_version_component(cp);
-    ap_add_version_component(ssl_var_lookup(p, NULL, NULL, NULL, "SSL_VERSION_INTERFACE"));
-    ap_add_version_component(ssl_var_lookup(p, NULL, NULL, NULL, "SSL_VERSION_LIBRARY"));
+        ap_add_version_component(p, cp);
+    ap_add_version_component(p, ssl_var_lookup(p, NULL, NULL, NULL, "SSL_VERSION_INTERFACE"));
+    ap_add_version_component(p, ssl_var_lookup(p, NULL, NULL, NULL, "SSL_VERSION_LIBRARY"));
+#endif
 
     return;
 }
@@ -283,9 +285,9 @@ void ssl_init_SSLLibrary(void)
  * a hardware accellerator card for crypto operations.
  */
 #ifdef SSL_EXPERIMENTAL_ENGINE
-void ssl_init_Engine(server_rec *s, pool *p)
+void ssl_init_Engine(server_rec *s, apr_pool_t *p)
 {
-    SSLModConfigRec *mc = myModConfig();
+    SSLModConfigRec *mc = myModConfig(s);
     ENGINE *e;
 
     if (mc->szCryptoDevice != NULL) {
@@ -310,9 +312,9 @@ void ssl_init_Engine(server_rec *s, pool *p)
 /*
  * Handle the Temporary RSA Keys and DH Params
  */
-void ssl_init_TmpKeysHandle(int action, server_rec *s, pool *p)
+void ssl_init_TmpKeysHandle(int action, server_rec *s, apr_pool_t *p)
 {
-    SSLModConfigRec *mc = myModConfig();
+    SSLModConfigRec *mc = myModConfig(s);
     ssl_asn1_t *asn1;
     unsigned char *ucp;
     RSA *rsa;
@@ -333,7 +335,7 @@ void ssl_init_TmpKeysHandle(int action, server_rec *s, pool *p)
         }
         asn1 = (ssl_asn1_t *)ssl_ds_table_push(mc->tTmpKeys, "RSA:512");
         asn1->nData  = i2d_RSAPrivateKey(rsa, NULL);
-        asn1->cpData = ap_palloc(mc->pPool, asn1->nData);
+        asn1->cpData = apr_palloc(mc->pPool, asn1->nData);
         ucp = asn1->cpData; i2d_RSAPrivateKey(rsa, &ucp); /* 2nd arg increments */
         RSA_free(rsa);
 
@@ -345,7 +347,7 @@ void ssl_init_TmpKeysHandle(int action, server_rec *s, pool *p)
         }
         asn1 = (ssl_asn1_t *)ssl_ds_table_push(mc->tTmpKeys, "RSA:1024");
         asn1->nData  = i2d_RSAPrivateKey(rsa, NULL);
-        asn1->cpData = ap_palloc(mc->pPool, asn1->nData);
+        asn1->cpData = apr_palloc(mc->pPool, asn1->nData);
         ucp = asn1->cpData; i2d_RSAPrivateKey(rsa, &ucp); /* 2nd arg increments */
         RSA_free(rsa);
 
@@ -358,7 +360,7 @@ void ssl_init_TmpKeysHandle(int action, server_rec *s, pool *p)
         }
         asn1 = (ssl_asn1_t *)ssl_ds_table_push(mc->tTmpKeys, "DH:512");
         asn1->nData  = i2d_DHparams(dh, NULL);
-        asn1->cpData = ap_palloc(mc->pPool, asn1->nData);
+        asn1->cpData = apr_palloc(mc->pPool, asn1->nData);
         ucp = asn1->cpData; i2d_DHparams(dh, &ucp); /* 2nd arg increments */
         /* no need to free dh, it's static */
 
@@ -369,7 +371,7 @@ void ssl_init_TmpKeysHandle(int action, server_rec *s, pool *p)
         }
         asn1 = (ssl_asn1_t *)ssl_ds_table_push(mc->tTmpKeys, "DH:1024");
         asn1->nData  = i2d_DHparams(dh, NULL);
-        asn1->cpData = ap_palloc(mc->pPool, asn1->nData);
+        asn1->cpData = apr_palloc(mc->pPool, asn1->nData);
         ucp = asn1->cpData; i2d_DHparams(dh, &ucp); /* 2nd arg increments */
         /* no need to free dh, it's static */
     }
@@ -463,9 +465,9 @@ void ssl_init_TmpKeysHandle(int action, server_rec *s, pool *p)
 /*
  * Configure a particular server
  */
-void ssl_init_ConfigureServer(server_rec *s, pool *p, SSLSrvConfigRec *sc)
+void ssl_init_ConfigureServer(server_rec *s, apr_pool_t *p, SSLSrvConfigRec *sc)
 {
-    SSLModConfigRec *mc = myModConfig();
+    SSLModConfigRec *mc = myModConfig(s);
     int nVerify;
     char *cpVHostID;
     EVP_PKEY *pKey;
@@ -515,9 +517,9 @@ void ssl_init_ConfigureServer(server_rec *s, pool *p, SSLSrvConfigRec *sc)
                 cpVHostID);
         ssl_die();
     }
-    cp = ap_pstrcat(p, (sc->nProtocol & SSL_PROTOCOL_SSLV2 ? "SSLv2, " : ""),
-                       (sc->nProtocol & SSL_PROTOCOL_SSLV3 ? "SSLv3, " : ""),
-                       (sc->nProtocol & SSL_PROTOCOL_TLSV1 ? "TLSv1, " : ""), NULL);
+    cp = apr_pstrcat(p, (sc->nProtocol & SSL_PROTOCOL_SSLV2 ? "SSLv2, " : ""),
+                        (sc->nProtocol & SSL_PROTOCOL_SSLV3 ? "SSLv3, " : ""),
+                        (sc->nProtocol & SSL_PROTOCOL_TLSV1 ? "TLSv1, " : ""), NULL);
     cp[strlen(cp)-2] = NUL;
     ssl_log(s, SSL_LOG_TRACE,
             "Init: (%s) Creating new SSL context (protocols: %s)", cpVHostID, cp);
@@ -633,7 +635,7 @@ void ssl_init_ConfigureServer(server_rec *s, pool *p, SSLSrvConfigRec *sc)
      *  Configure server certificate(s)
      */
     ok = FALSE;
-    cp = ap_psprintf(p, "%s:RSA", cpVHostID);
+    cp = apr_psprintf(p, "%s:RSA", cpVHostID);
     if ((asn1 = (ssl_asn1_t *)ssl_ds_table_get(mc->tPublicCert, cp)) != NULL) {
         ssl_log(s, SSL_LOG_TRACE,
                 "Init: (%s) Configuring RSA server certificate", cpVHostID);
@@ -652,7 +654,7 @@ void ssl_init_ConfigureServer(server_rec *s, pool *p, SSLSrvConfigRec *sc)
         }
         ok = TRUE;
     }
-    cp = ap_psprintf(p, "%s:DSA", cpVHostID);
+    cp = apr_psprintf(p, "%s:DSA", cpVHostID);
     if ((asn1 = (ssl_asn1_t *)ssl_ds_table_get(mc->tPublicCert, cp)) != NULL) {
         ssl_log(s, SSL_LOG_TRACE,
                 "Init: (%s) Configuring DSA server certificate", cpVHostID);
@@ -703,8 +705,8 @@ void ssl_init_ConfigureServer(server_rec *s, pool *p, SSLSrvConfigRec *sc)
                         cpVHostID, (i == SSL_AIDX_RSA ? "RSA" : "DSA"), pathlen);
             }
             if (SSL_X509_getCN(p, sc->pPublicCert[i], &cp)) {
-                if (ap_is_fnmatch(cp) &&
-                    !ap_fnmatch(cp, s->server_hostname, FNM_PERIOD|FNM_CASE_BLIND)) {
+                if (apr_is_fnmatch(cp) &&
+                    !apr_fnmatch(cp, s->server_hostname, FNM_PERIOD|FNM_CASE_BLIND)) {
                     ssl_log(s, SSL_LOG_WARN,
                         "Init: (%s) %s server certificate wildcard CommonName (CN) `%s' "
                         "does NOT match server name!?", cpVHostID, 
@@ -724,7 +726,7 @@ void ssl_init_ConfigureServer(server_rec *s, pool *p, SSLSrvConfigRec *sc)
      *  Configure server private key(s)
      */
     ok = FALSE;
-    cp = ap_psprintf(p, "%s:RSA", cpVHostID);
+    cp = apr_psprintf(p, "%s:RSA", cpVHostID);
     if ((asn1 = (ssl_asn1_t *)ssl_ds_table_get(mc->tPrivateKey, cp)) != NULL) {
         ssl_log(s, SSL_LOG_TRACE,
                 "Init: (%s) Configuring RSA server private key", cpVHostID);
@@ -744,7 +746,7 @@ void ssl_init_ConfigureServer(server_rec *s, pool *p, SSLSrvConfigRec *sc)
         }
         ok = TRUE;
     }
-    cp = ap_psprintf(p, "%s:DSA", cpVHostID);
+    cp = apr_psprintf(p, "%s:DSA", cpVHostID);
     if ((asn1 = (ssl_asn1_t *)ssl_ds_table_get(mc->tPrivateKey, cp)) != NULL) {
         ssl_log(s, SSL_LOG_TRACE,
                 "Init: (%s) Configuring DSA server private key", cpVHostID);
@@ -819,13 +821,13 @@ void ssl_init_ConfigureServer(server_rec *s, pool *p, SSLSrvConfigRec *sc)
     return;
 }
 
-void ssl_init_CheckServers(server_rec *sm, pool *p)
+void ssl_init_CheckServers(server_rec *sm, apr_pool_t *p)
 {
     server_rec *s;
     server_rec **ps;
     SSLSrvConfigRec *sc;
     ssl_ds_table *t;
-    pool *sp;
+    apr_pool_t *sp;
     char *key;
     BOOL bConflict;
 
@@ -851,14 +853,14 @@ void ssl_init_CheckServers(server_rec *sm, pool *p)
      * just the certificate/keys of one virtual host (which one cannot be said
      * easily - but that doesn't matter here).
      */
-    sp = ap_make_sub_pool(p);
+    apr_pool_create(&sp, p);
     t = ssl_ds_table_make(sp, sizeof(server_rec *));
     bConflict = FALSE;
     for (s = sm; s != NULL; s = s->next) {
         sc = mySrvConfig(s);
         if (!sc->bEnabled)
             continue;
-        key = ap_psprintf(sp, "%pA:%u", &s->addrs->host_addr, s->addrs->host_port);
+        key = apr_psprintf(sp, "%pA:%u", &s->addrs->host_addr, s->addrs->host_port);
         ps = ssl_ds_table_get(t, key);
         if (ps != NULL) {
             ssl_log(sm, SSL_LOG_WARN,
@@ -876,7 +878,8 @@ void ssl_init_CheckServers(server_rec *sm, pool *p)
         *ps = s;
     }
     ssl_ds_table_kill(t);
-    ap_destroy_pool(sp);
+    /* XXX - It was giving some problem earlier - check it out - TBD */
+    apr_pool_destroy(sp);
     if (bConflict)
         ssl_log(sm, SSL_LOG_WARN,
                 "Init: You should not use name-based virtual hosts in conjunction with SSL!!");
@@ -889,14 +892,14 @@ static int ssl_init_FindCAList_X509NameCmp(X509_NAME **a, X509_NAME **b)
     return(X509_NAME_cmp(*a, *b));
 }
 
-STACK_OF(X509_NAME) *ssl_init_FindCAList(server_rec *s, pool *pp, char *cpCAfile, char *cpCApath)
+STACK_OF(X509_NAME) *ssl_init_FindCAList(server_rec *s, apr_pool_t *pp, char *cpCAfile, char *cpCApath)
 {
     STACK_OF(X509_NAME) *skCAList;
     STACK_OF(X509_NAME) *sk;
-    DIR *dir;
-    struct DIR_TYPE *direntry;
+    apr_dir_t *dir;
+    apr_finfo_t direntry;
     char *cp;
-    pool *p;
+    apr_pool_t *p;
     int n;
 
     /*
@@ -904,7 +907,7 @@ STACK_OF(X509_NAME) *ssl_init_FindCAList(server_rec *s, pool *pp, char *cpCAfile
      * is remains in memory for the complete operation time of
      * the server.
      */
-    p = ap_make_sub_pool(pp);
+    p = apr_pool_sub_make(pp, NULL);
 
     /*
      * Start with a empty stack/list where new
@@ -930,9 +933,9 @@ STACK_OF(X509_NAME) *ssl_init_FindCAList(server_rec *s, pool *pp, char *cpCAfile
      * Process CA certificate path files
      */
     if (cpCApath != NULL) {
-        dir = ap_popendir(p, cpCApath);
-        while ((direntry = readdir(dir)) != NULL) {
-            cp = ap_pstrcat(p, cpCApath, "/", direntry->d_name, NULL);
+        apr_dir_open(&dir, cpCApath, p);
+        while ((apr_dir_read(&direntry, APR_FINFO_DIRENT, dir)) != APR_SUCCESS) {
+            cp = apr_pstrcat(p, cpCApath, "/", direntry.name, NULL);
             sk = SSL_load_client_CA_file(cp);
             for(n = 0; sk != NULL && n < sk_X509_NAME_num(sk); n++) {
                 ssl_log(s, SSL_LOG_TRACE,
@@ -942,32 +945,33 @@ STACK_OF(X509_NAME) *ssl_init_FindCAList(server_rec *s, pool *pp, char *cpCAfile
                     sk_X509_NAME_push(skCAList, sk_X509_NAME_value(sk, n));
             }
         }
-        ap_pclosedir(p, dir);
+        apr_dir_close(dir);
     }
 
     /*
      * Cleanup
      */
     sk_X509_NAME_set_cmp_func(skCAList, NULL);
-    ap_destroy_pool(p);
+    apr_pool_destroy(p);
 
     return skCAList;
 }
 
-void ssl_init_Child(server_rec *s, pool *p)
+void ssl_init_Child(apr_pool_t *p, server_rec *s)
 {
      /* open the mutex lockfile */
      ssl_mutex_reinit(s, p);
      return;
 }
 
-void ssl_init_ChildKill(void *data)
+apr_status_t ssl_init_ChildKill(void *data)
 {
+    /* server_rec *s = (server_rec *)data; */
     /* currently nothing to do */
-    return;
+    return APR_SUCCESS;
 }
 
-void ssl_init_ModuleKill(void *data)
+apr_status_t ssl_init_ModuleKill(void *data)
 {
     SSLSrvConfigRec *sc;
     server_rec *s = (server_rec *)data;
@@ -976,7 +980,9 @@ void ssl_init_ModuleKill(void *data)
      * Drop the session cache and mutex
      */
     ssl_scache_kill(s);
+#if 0 /* XXX */
     ssl_mutex_kill(s);
+#endif
 
     /* 
      * Destroy the temporary keys and params
@@ -1020,8 +1026,6 @@ void ssl_init_ModuleKill(void *data)
     EVP_cleanup();
 #endif
 
-    return;
+    return APR_SUCCESS;
 }
-
-#endif /* XXX */
 

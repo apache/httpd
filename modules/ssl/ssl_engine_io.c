@@ -68,10 +68,9 @@
 **  _________________________________________________________________
 */
 
-#if 0 /* XXX */
-static int ssl_io_hook_read(BUFF *fb, char *buf, int len);
-static int ssl_io_hook_write(BUFF *fb, char *buf, int len);
-#endif /* XXX */
+/* XXX THIS STUFF NEEDS A MAJOR CLEANUP -RSE XXX */
+
+static const char ssl_io_filter[] = "SSL/TLS Filter";
 
 void ssl_io_register(void)
 {
@@ -91,15 +90,12 @@ void ssl_io_unregister(void)
     return;
 }
 
-#if 0 /* XXX */
-
-static int ssl_io_hook_read(BUFF *fb, char *buf, int len)
+static int ssl_io_hook_read(SSL *ssl, unsigned char *buf, int len)
 {
-    SSL *ssl;
     conn_rec *c;
     int rc;
 
-    if ((ssl = ap_ctx_get(fb->ctx, "ssl")) != NULL) {
+    if (ssl != NULL) {
         rc = SSL_read(ssl, buf, len);
         /*
          * Simulate an EINTR in case OpenSSL wants to read more.
@@ -113,27 +109,30 @@ static int ssl_io_hook_read(BUFF *fb, char *buf, int len)
          */
         if (rc < 0 && SSL_get_error(ssl, rc) == SSL_ERROR_SSL) {
             c = (conn_rec *)SSL_get_app_data(ssl);
-            ssl_log(c->server, SSL_LOG_ERROR|SSL_ADD_SSLERR,
+            ssl_log(c->base_server, SSL_LOG_ERROR|SSL_ADD_SSLERR,
                     "SSL error on reading data");
         }
         /*
          * read(2) returns only the generic error number -1
          */
         if (rc < 0)
-            rc = -1;
+            /*
+             * XXX - Just trying to reflect the behaviour in 
+             * openssl_state_machine.c [mod_tls]. TBD
+             */
+            rc = 0;
     }
     else
-        rc = read(fb->fd_in, buf, len);
+        rc = -1;
     return rc;
 }
 
-static int ssl_io_hook_write(BUFF *fb, char *buf, int len)
+static int ssl_io_hook_write(SSL *ssl, unsigned char *buf, int len)
 {
-    SSL *ssl;
     conn_rec *c;
     int rc;
 
-    if ((ssl = ap_ctx_get(fb->ctx, "ssl")) != NULL) {
+    if (ssl != NULL) {
         rc = SSL_write(ssl, buf, len);
         /*
          * Simulate an EINTR in case OpenSSL wants to write more.
@@ -145,18 +144,294 @@ static int ssl_io_hook_write(BUFF *fb, char *buf, int len)
          */
         if (rc < 0 && SSL_get_error(ssl, rc) == SSL_ERROR_SSL) {
             c = (conn_rec *)SSL_get_app_data(ssl);
-            ssl_log(c->server, SSL_LOG_ERROR|SSL_ADD_SSLERR,
+            ssl_log(c->base_server, SSL_LOG_ERROR|SSL_ADD_SSLERR,
                     "SSL error on writing data");
         }
         /*
          * write(2) returns only the generic error number -1
          */
         if (rc < 0)
-            rc = -1;
+            /*
+             * XXX - Just trying to reflect the behaviour in 
+             * openssl_state_machine.c [mod_tls]. TBD
+             */
+            rc = 0;
     }
     else
-        rc = write(fb->fd, buf, len);
+        rc = -1;
     return rc;
+}
+
+static apr_status_t churn_output(SSLFilterRec *pRec)
+{
+    apr_bucket_brigade *pbbOutput=NULL;
+    int done;
+
+    do {
+	char buf[1024];
+	int n;
+	apr_bucket *pbkt;
+
+	done=0;
+
+	if (BIO_pending(pRec->pbioWrite)) {
+            n = BIO_read(pRec->pbioWrite,buf,sizeof buf);
+            if(n > 0) {
+		char *pbuf;
+
+		if(!pbbOutput)
+		    pbbOutput=apr_brigade_create(pRec->pOutputFilter->c->pool);
+
+		pbuf=apr_pmemdup(pRec->pOutputFilter->c->pool,buf,n);
+		pbkt=apr_bucket_pool_create(pbuf,n,
+					    pRec->pOutputFilter->c->pool);
+		APR_BRIGADE_INSERT_TAIL(pbbOutput,pbkt);
+		done=1;
+                /*      } else if(n == 0) {
+                        apr_bucket *pbktEOS=apr_bucket_create_eos();
+                        APR_BRIGADE_INSERT_TAIL(pbbOutput,pbktEOS);*/
+	    }
+            assert (n > 0); /* XXX => Check if required */
+#if 0 /* XXX */ 
+            }
+            else if (n == 0)
+                done = 1;
+            else
+                 assert (n > 0);
+#endif
+	}
+#if 0 /* XXX */
+        else
+        {
+            done = 1;
+        }
+#endif
+    } while(done);
+    
+    /* XXX: check for errors */
+    if(pbbOutput) {
+	apr_bucket *pbkt;
+
+	/* XXX: it may be possible to not always flush */
+	pbkt=apr_bucket_flush_create();
+	APR_BRIGADE_INSERT_TAIL(pbbOutput,pbkt);
+	ap_pass_brigade(pRec->pOutputFilter->next,pbbOutput);
+    }
+
+    return APR_SUCCESS;
+}
+
+static apr_status_t churn (SSLFilterRec *pRec,
+        apr_read_type_e eReadType, apr_size_t *readbytes)
+{
+    apr_bucket *pbktIn;
+    ap_input_mode_t eMode = (eReadType == APR_BLOCK_READ) 
+                            ? AP_MODE_BLOCKING : AP_MODE_NONBLOCKING;
+
+/* XXX : Errrr... bad way of doing things TBD */
+eReadType = APR_BLOCK_READ;
+eMode     = AP_MODE_BLOCKING;
+
+    if(APR_BRIGADE_EMPTY(pRec->pbbInput)) {
+	ap_get_brigade(pRec->pInputFilter->next,pRec->pbbInput,eMode,readbytes);
+	if(APR_BRIGADE_EMPTY(pRec->pbbInput))
+	    return APR_EOF;
+    }
+
+    APR_BRIGADE_FOREACH(pbktIn,pRec->pbbInput) {
+	const char *data;
+	apr_size_t len;
+	int n;
+	char buf[1024];
+	apr_status_t ret;
+
+	if(APR_BUCKET_IS_EOS(pbktIn)) {
+	    break;
+	}
+
+	/* read filter */
+	ret=apr_bucket_read(pbktIn,&data,&len,eReadType);
+
+	APR_BUCKET_REMOVE(pbktIn);
+
+	if(ret == APR_SUCCESS && len == 0 && eReadType == APR_BLOCK_READ)
+	    ret=APR_EOF;
+
+	if(len == 0) {
+	    /* Lazy frickin browsers just reset instead of shutting down. */
+            if(ret == APR_EOF || APR_STATUS_IS_ECONNRESET(ret)) {
+		if(APR_BRIGADE_EMPTY(pRec->pbbPendingInput))
+		    return APR_EOF;
+		else
+		    /* Next time around, the incoming brigade will be empty,
+		     * so we'll return EOF then
+		     */
+		    return APR_SUCCESS;
+	    }
+		
+	    if(eReadType != APR_NONBLOCK_READ)
+		ap_log_error(APLOG_MARK,APLOG_ERR,ret,NULL,
+			     "Read failed in tls_in_filter");
+	    assert(eReadType == APR_NONBLOCK_READ);
+	    assert(ret == APR_SUCCESS || APR_STATUS_IS_EAGAIN(ret));
+	    /* In this case, we have data in the output bucket, or we were
+	     * non-blocking, so returning nothing is fine.
+	     */
+	    return APR_SUCCESS;
+	}
+
+	assert(len > 0);
+
+        n = BIO_write (pRec->pbioRead, data, len);
+        assert(n == len);
+
+        ssl_hook_process_connection (pRec);
+
+        n = ssl_io_hook_read(pRec->pssl, (unsigned char *)buf, sizeof(buf));
+	if(n > 0) {
+	    apr_bucket *pbktOut;
+	    char *pbuf;
+
+	    pbuf=apr_pmemdup(pRec->pInputFilter->c->pool,buf,n);
+	    /* XXX: should we use a heap bucket instead? Or a transient (in
+	     * which case we need a separate brigade for each bucket)?
+	     */
+	    pbktOut=apr_bucket_pool_create(pbuf,n,pRec->pInputFilter->c->pool);
+	    APR_BRIGADE_INSERT_TAIL(pRec->pbbPendingInput,pbktOut);
+
+	    /* Once we've read something, we can move to non-blocking mode (if
+	     * we weren't already).
+	     */
+	    eReadType=APR_NONBLOCK_READ;
+
+	    /* XXX: deal with EOF! */
+	    /*	} else if(n == 0) {
+	    apr_bucket *pbktEOS=apr_bucket_create_eos();
+	    APR_BRIGADE_INSERT_TAIL(pbbInput,pbktEOS);*/
+	}
+	assert(n >= 0);
+
+	ret=churn_output(pRec);
+	if(ret != APR_SUCCESS)
+	    return ret;
+    }
+
+    return churn_output(pRec);
+}
+
+apr_status_t ssl_io_filter_Output(ap_filter_t *f,apr_bucket_brigade *pbbIn)
+{
+    SSLFilterRec *pRec=f->ctx;
+    apr_bucket *pbktIn;
+conn_rec *c = SSL_get_app_data (pRec->pssl);
+
+    APR_BRIGADE_FOREACH(pbktIn,pbbIn) {
+	const char *data;
+	apr_size_t len, n;
+	apr_status_t ret;
+
+	if(APR_BUCKET_IS_EOS(pbktIn)) {
+	    /* XXX: demote to debug */
+            ssl_log(c->base_server, SSL_LOG_INFO, "EOS in output");
+
+            if (ssl_hook_CloseConnection (pRec) != APR_SUCCESS)
+                ssl_log(c->base_server, SSL_LOG_INFO,
+                    "Error in ssl_hook_CloseConnection");
+#if 0
+	    /* XXX: dubious - does this always terminate? Does it return the right thing? */
+	    for( ; ; ) {
+		ret=churn_output(pRec);
+		if(ret != APR_SUCCESS)
+		    return ret;
+                /* XXX - Verify if passing &len is okay for churn - TBD */
+                len = 0;
+		ret=churn(pRec,APR_NONBLOCK_READ,&len);
+		if(ret != APR_SUCCESS) {
+		    if(ret == APR_EOF)
+			return APR_SUCCESS;
+		    else
+			return ret;
+		}
+	    }
+#endif
+	    break;
+	}
+
+	if(APR_BUCKET_IS_FLUSH(pbktIn)) {
+	    /* assume that churn will flush (or already has) if there's output */
+            /* XXX - Verify if passing &len is okay for churn - TBD */
+            ssl_log(c->base_server, SSL_LOG_INFO, "FLUSH in output");
+            len = 0;
+	    ret=churn(pRec,APR_NONBLOCK_READ,&len);
+	    if(ret != APR_SUCCESS)
+		return ret;
+	    continue;
+	}
+
+        ssl_log(c->base_server, SSL_LOG_INFO, "DATA in output");
+	/* read filter */
+	apr_bucket_read(pbktIn,&data,&len,APR_BLOCK_READ);
+
+	/* write SSL */
+        n = ssl_io_hook_write(pRec->pssl, (unsigned char *)data, len);
+        assert (n == len);
+
+
+	/* churn the state machine */
+	ret=churn_output(pRec);
+	if(ret != APR_SUCCESS)
+	    return ret;
+    }
+    return APR_SUCCESS;
+}
+
+apr_status_t ssl_io_filter_Input(ap_filter_t *f,apr_bucket_brigade *pbbOut,
+                          ap_input_mode_t eMode, apr_size_t *readbytes)
+{
+    apr_status_t ret;
+    SSLFilterRec *pRec        = f->ctx;
+    apr_read_type_e eReadType = 
+        (eMode == AP_MODE_BLOCKING) ? APR_BLOCK_READ : APR_NONBLOCK_READ;
+
+    /* XXX: we don't currently support peek */
+    assert(eMode != AP_MODE_PEEK);
+
+    /* churn the state machine */
+    ret = churn(pRec,eReadType,readbytes);
+    if(ret != APR_SUCCESS)
+	return ret;
+
+    /* XXX: shame that APR_BRIGADE_FOREACH doesn't work here */
+    while(!APR_BRIGADE_EMPTY(pRec->pbbPendingInput)) {
+	apr_bucket *pbktIn=APR_BRIGADE_FIRST(pRec->pbbPendingInput);
+	APR_BUCKET_REMOVE(pbktIn);
+	APR_BRIGADE_INSERT_TAIL(pbbOut,pbktIn);
+    }
+
+    return APR_SUCCESS;
+}
+
+void ssl_io_filter_init(conn_rec *c, SSL *ssl)
+{
+    SSLFilterRec *filter;
+
+    filter = apr_pcalloc(c->pool, sizeof(SSLFilterRec));
+    filter->pInputFilter    = ap_add_input_filter(ssl_io_filter, filter, NULL, c);
+    filter->pOutputFilter   = ap_add_output_filter(ssl_io_filter, filter, NULL, c);
+    filter->pbbInput        = apr_brigade_create(c->pool);
+    filter->pbbPendingInput = apr_brigade_create(c->pool);
+    filter->pbioRead        = BIO_new(BIO_s_mem());
+    filter->pbioWrite       = BIO_new(BIO_s_mem());
+    SSL_set_bio(ssl, filter->pbioRead, filter->pbioWrite);
+    filter->pssl            = ssl;
+    return;
+}
+
+void ssl_io_filter_register(apr_pool_t *p)
+{
+    ap_register_input_filter  (ssl_io_filter, ssl_io_filter_Input,  AP_FTYPE_NETWORK);
+    ap_register_output_filter (ssl_io_filter, ssl_io_filter_Output, AP_FTYPE_NETWORK);
+    return;
 }
 
 /*  _________________________________________________________________
@@ -183,28 +458,28 @@ static void ssl_io_data_dump(server_rec *srvr, const char *s, long len)
     ssl_log(srvr, SSL_LOG_DEBUG|SSL_NO_TIMESTAMP|SSL_NO_LEVELID,
             "+-------------------------------------------------------------------------+");
     for(i = 0 ; i< rows; i++) {
-        ap_snprintf(tmp, sizeof(tmp), "| %04x: ", i * DUMP_WIDTH);
-        ap_cpystrn(buf, tmp, sizeof(buf));
+        apr_snprintf(tmp, sizeof(tmp), "| %04x: ", i * DUMP_WIDTH);
+        apr_cpystrn(buf, tmp, sizeof(buf));
         for (j = 0; j < DUMP_WIDTH; j++) {
             if (((i * DUMP_WIDTH) + j) >= len)
-                ap_cpystrn(buf+strlen(buf), "   ", sizeof(buf)-strlen(buf));
+                apr_cpystrn(buf+strlen(buf), "   ", sizeof(buf)-strlen(buf));
             else {
                 ch = ((unsigned char)*((char *)(s) + i * DUMP_WIDTH + j)) & 0xff;
-                ap_snprintf(tmp, sizeof(tmp), "%02x%c", ch , j==7 ? '-' : ' ');
-                ap_cpystrn(buf+strlen(buf), tmp, sizeof(buf)-strlen(buf));
+                apr_snprintf(tmp, sizeof(tmp), "%02x%c", ch , j==7 ? '-' : ' ');
+                apr_cpystrn(buf+strlen(buf), tmp, sizeof(buf)-strlen(buf));
             }
         }
-        ap_cpystrn(buf+strlen(buf), " ", sizeof(buf)-strlen(buf));
+        apr_cpystrn(buf+strlen(buf), " ", sizeof(buf)-strlen(buf));
         for (j = 0; j < DUMP_WIDTH; j++) {
             if (((i * DUMP_WIDTH) + j) >= len)
-                ap_cpystrn(buf+strlen(buf), " ", sizeof(buf)-strlen(buf));
+                apr_cpystrn(buf+strlen(buf), " ", sizeof(buf)-strlen(buf));
             else {
                 ch = ((unsigned char)*((char *)(s) + i * DUMP_WIDTH + j)) & 0xff;
-                ap_snprintf(tmp, sizeof(tmp), "%c", ((ch >= ' ') && (ch <= '~')) ? ch : '.');
-                ap_cpystrn(buf+strlen(buf), tmp, sizeof(buf)-strlen(buf));
+                apr_snprintf(tmp, sizeof(tmp), "%c", ((ch >= ' ') && (ch <= '~')) ? ch : '.');
+                apr_cpystrn(buf+strlen(buf), tmp, sizeof(buf)-strlen(buf));
             }
         }
-        ap_cpystrn(buf+strlen(buf), " |", sizeof(buf)-strlen(buf));
+        apr_cpystrn(buf+strlen(buf), " |", sizeof(buf)-strlen(buf));
         ssl_log(srvr, SSL_LOG_DEBUG|SSL_NO_TIMESTAMP|SSL_NO_LEVELID, "%s", buf);
     }
     if (trunc > 0)
@@ -225,7 +500,7 @@ long ssl_io_data_cb(BIO *bio, int cmd, const char *argp, int argi, long argl, lo
         return rc;
     if ((c = (conn_rec *)SSL_get_app_data(ssl)) == NULL)
         return rc;
-    s = c->server;
+    s = c->base_server;
 
     if (   cmd == (BIO_CB_WRITE|BIO_CB_RETURN)
         || cmd == (BIO_CB_READ |BIO_CB_RETURN) ) {
@@ -250,6 +525,3 @@ long ssl_io_data_cb(BIO *bio, int cmd, const char *argp, int argi, long argl, lo
     }
     return rc;
 }
-
-#endif /* XXX */
-
