@@ -1,5 +1,5 @@
 # access.conf: Global access configuration
-# $Id: access.conf-dist,v 1.7 1996/10/08 21:12:05 brian Exp $
+# $Id: access.conf-dist,v 1.8 1996/10/08 21:12:49 brian Exp $
 # Online docs at http://www.apache.org/
 
 # This file defines server settings which affect which types of services
@@ -59,7 +59,7 @@ Options None
 # days.  This bug involved a CGI script distributed as a part of Apache.
 # By uncommenting these lines you can redirect these attacks to a logging 
 # script on www.apache.org.  Or, you can record them yourself, using the script
-# contrib/phf_abuse_log.cgi.
+# support/phf_abuse_log.cgi.
 
 #<Location /cgi-bin/phf*>
 #deny from all
