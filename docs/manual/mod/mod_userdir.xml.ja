@@ -5,7 +5,7 @@
 <modulesynopsis>
 
 <name>mod_userdir</name>
-<description>ユーザ専用のディレクトリを提供します
+<description>ユーザ専用のディレクトリを提供
   </description>
 <status>Base</status>
 <sourcefile>mod_userdir.c</sourcefile>

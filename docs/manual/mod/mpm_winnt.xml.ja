@@ -4,8 +4,8 @@
 <modulesynopsis>
 <!-- English revision: 1.3 -->
 <name>mpm_winnt</name>
-<description>このマルチプロセッシングモジュールは Windows NT
-向けに最適化されています。</description>
+<description>Windows NT
+向けに最適化されたマルチプロセッシングモジュール</description>
 <status>MPM</status>
 <sourcefile>mpm_winnt.c</sourcefile>
 <identifier>mpm_winnt_module</identifier>
