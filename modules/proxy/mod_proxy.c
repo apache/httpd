@@ -1048,8 +1048,10 @@ static const command_rec proxy_cmds[] =
 };
 
 APR_DECLARE_OPTIONAL_FN(int, ssl_proxy_enable, (conn_rec *));
+APR_DECLARE_OPTIONAL_FN(int, ssl_engine_disable, (conn_rec *));
 
 static APR_OPTIONAL_FN_TYPE(ssl_proxy_enable) *proxy_ssl_enable = NULL;
+static APR_OPTIONAL_FN_TYPE(ssl_engine_disable) *proxy_ssl_disable = NULL;
 
 PROXY_DECLARE(int) ap_proxy_ssl_enable(conn_rec *c)
 {
@@ -1064,10 +1066,20 @@ PROXY_DECLARE(int) ap_proxy_ssl_enable(conn_rec *c)
     return 0;
 }
 
+PROXY_DECLARE(int) ap_proxy_ssl_disable(conn_rec *c)
+{
+    if (proxy_ssl_disable) {
+        return proxy_ssl_disable(c);
+    }
+
+    return 0;
+}
+
 static int proxy_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                              apr_pool_t *ptemp, server_rec *s)
 {
     proxy_ssl_enable = APR_RETRIEVE_OPTIONAL_FN(ssl_proxy_enable);
+    proxy_ssl_disable = APR_RETRIEVE_OPTIONAL_FN(ssl_engine_disable);
 
     return OK;
 }

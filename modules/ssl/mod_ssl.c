@@ -252,6 +252,24 @@ int ssl_proxy_enable(conn_rec *c)
     }
 
     sslconn->is_proxy = 1;
+    sslconn->disabled = 0;
+
+    return 1;
+}
+
+int ssl_engine_disable(conn_rec *c)
+{
+    SSLSrvConfigRec *sc = mySrvConfig(c->base_server);
+
+    SSLConnRec *sslconn;
+
+    if (!sc->enabled) {
+        return 0;
+    }
+
+    sslconn = ssl_init_connection_ctx(c);
+
+    sslconn->disabled = 1;
 
     return 1;
 }
@@ -277,6 +295,10 @@ static int ssl_hook_pre_connection(conn_rec *c, void *csd)
      */
     if (!sslconn) {
         sslconn = ssl_init_connection_ctx(c);
+    }
+
+    if (sslconn->disabled) {
+        return DECLINED;
     }
 
     sslconn->log_level = sc->log_level;
@@ -560,6 +582,7 @@ static void ssl_register_hooks(apr_pool_t *p)
     ssl_var_register();
 
     APR_REGISTER_OPTIONAL_FN(ssl_proxy_enable);
+    APR_REGISTER_OPTIONAL_FN(ssl_engine_disable);
 }
 
 module AP_MODULE_DECLARE_DATA ssl_module = {
