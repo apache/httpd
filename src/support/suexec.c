@@ -53,6 +53,16 @@
 /*
  * suexec.c -- "Wrapper" support program for suEXEC behaviour for Apache
  *
+ ***********************************************************************
+ *
+ * NOTE! : DO NOT edit this code!!!  Unless you know what you are doing,
+ *         editing this code might open up your system in unexpected 
+ *         ways to would-be crackers.  Every precaution has been taken 
+ *         to make this code as safe as possible; alter it at your own
+ *         risk.
+ *
+ ***********************************************************************
+ *
  * A MotherSoft Product for the Apache WWW server.
  * (http://www.louisville.edu/~jadour01/mothersoft/)
  *
@@ -60,6 +70,12 @@
  * Heavy modifications by:
  *    Jason A. Dour (jad@bcc.louisville.edu)
  *    Randy Terbush (randy@zyzzyva.com)
+ *
+ * Version 0.1.0 - Jason A. Dour
+ *    First beta.  Removed HAVE_RLIMIT and related rlimit code
+ * now that the server handles the funcitonality.  Moved user-
+ * defined code to suexec.h.  Added "DON'T EDIT" warning in code.
+ * No more "security by obscurity"...comments added at each step.
  *
  * Version 0.0.3 - Jason A. Dour
  *    Third alpha.  Added NNAME and NGID directives to fix
@@ -85,46 +101,7 @@
  */
 
 
-/* ********** USER-DEFINED VARIABLES ********** */
-
-/*
- * HTTPD_USER -- Define as the username under which Apache normally
- *               runs.  This is the only user allowed to execute
- *               this program.
- */
-#define HTTPD_USER "www"
-
-/*
- * LOG_EXEC -- Define this as a filename if you want all suEXEC
- *             transactions and errors logged for auditing and
- *             debugging purposes.
- */
-#define LOG_EXEC "/usr/local/etc/httpd/logs/cgi.log" /* Need me? */
-
-/*
- * DOC_ROOT -- Define as the DocuemntRoot set for Apache.  This
- *             will be the only hierarchy (aside from UserDirs)
- *             that can be used for suEXEC behaviour.
- */
-#define DOC_ROOT "/usr/local/etc/httpd/htdocs"
-
-/*
- * NNAME -- Define this as the name for the nobody account
- *          on your operating system.  Most systems will just
- *          need the default 'nobody'.
- */
-#define NNAME "nobody"
-
-/* NGID -- Define this as the *number* for the nogroup group
- *         on your operating system.  Most systems will have
- *         a -1 or -2.  Others might have something above
- *         65000.
- */
-#define NGID -1
-
-
-
-/* ********** DO NOT EDIT BELOW THIS LINE ********** */
+#include "suexec.h"
 
 #include <sys/param.h>
 #include <stdlib.h>
@@ -137,7 +114,6 @@
 #include <grp.h>
 #include <time.h>
 #include <sys/stat.h>
-#include <sys/resource.h>
 
 
 static FILE *log;
@@ -183,41 +159,40 @@ log_err (const char *fmt, ...)
 int
 main(int argc, char *argv[], char **env)
 {
-    int doclen;
-    int homedir = 0;
-    uid_t uid;
-    char *server_uid;
-    char *server_gid;
-    char *prog;
-    char *cmd;
-    char *cwd;
-    char *buf = NULL;
-    struct passwd *pw;
-    struct group *gr;
-    struct stat dir_info;
-    struct stat prg_info;
-    struct rlimit limits;
+    int doclen;             /* length of the docroot     */
+    int userdir = 0;        /* ~userdir flag             */
+    uid_t uid;              /* user information          */
+    char *target_uname;     /* target user name          */
+    char *target_gname;     /* target group name         */
+    char *prog;             /* name of this program      */
+    char *cmd;              /* command to be executed    */
+    char *cwd;              /* current working directory */
+    char *buf = NULL;       /* temporary buffer          */
+    struct passwd *pw;      /* password entry holder     */
+    struct group *gr;       /* group entry holder        */
+    struct stat dir_info;   /* directory info holder     */
+    struct stat prg_info;   /* program info holder       */
 
     
 
+    /*
+     * If there are a proper number of arguments, set
+     * all of them to variables.  Otherwise, error out.
+     */
     prog = argv[0];
     if (argc < 4)
     {
 	log_err ("too few arguments\n");
 	exit(101);
     }
-    server_uid = argv[1];
-    server_gid = argv[2];
+    target_uname = argv[1];
+    target_gname = argv[2];
     cmd = argv[3];
 
-    getrlimit ( RLIMIT_NOFILE, &limits );
-    if (limits.rlim_cur < limits.rlim_max)
-    {
-      limits.rlim_cur = 256;
-      if (setrlimit (RLIMIT_NOFILE, &limits) < 0)
-	log_err ("Cannot exceed hard limit for open files\n");
-    }
-
+    /*
+     * Check existence/validity of the UID of the user
+     * running this program.  Error out if invalid.
+     */
     uid = getuid();
     if ((pw = getpwuid (uid)) == NULL)
     {
@@ -225,86 +200,136 @@ main(int argc, char *argv[], char **env)
 	exit (102);
     }
     
+    /*
+     * Check to see if the user running this program
+     * is the user allowed to do so as defined in
+     * suexec.h.  If not the allowed user, error out.
+     */
     if (strcmp (HTTPD_USER, pw->pw_name))
     {
 	log_err ("user mismatch (%s)\n", pw->pw_name);
 	exit (103);
     }
     
+    /*
+     * Check for a '/' in the command to be executed,
+     * to protect against attacks.  If a '/' is
+     * found, error out.  Naughty naughty crackers.
+     */
     if (strchr (cmd, '/') != (char) NULL )
     {
 	log_err ("invalid command (%s)\n", cmd);
 	exit (104);
     }
 
-    if (!strncmp( "~", server_uid, 1))
+    /*
+     * Check to see if this is a ~userdir request.  If
+     * so, set the flag, and remove the '~' from the
+     * target username.
+     */
+    if (!strncmp( "~", target_uname, 1))
     {
-	server_uid++;
-	homedir = 1;
+	target_uname++;
+	userdir = 1;
     }
 
-    cwd = getcwd (buf, MAXPATHLEN);
-
-    if (homedir)
+    /*
+     * Get the current working directory, as well as
+     * the proper document root (dependant upon whether
+     * or not it is a ~userdir request.  Error out if
+     * we cannot get either one, or if the command is
+     * not in the docroot.
+     */
+    if ((cwd = getcwd (buf, MAXPATHLEN)) == NULL)
+    {
+        log_err ("cannot get current working directory\n");
+        exit (105);
+    }
+    if (userdir)
     {
 	doclen = strlen (pw->pw_dir);
 	if (strncmp (cwd, pw->pw_dir, doclen))
-	{   
-	    log_err ("invalid command (%s/%s)\n", cwd, cmd);
-	    exit (105);
+        {   
+	    log_err ("command not in docroot (%s/%s)\n", cwd, cmd);
+	    exit (106);
 	}
     } else {
 	doclen = strlen (DOC_ROOT);
 	if (strncmp (cwd, DOC_ROOT, doclen))
-	{
-	    log_err ("invalid command (%s/%s)\n", cwd, cmd);
-	    exit (105);
+        {
+	    log_err ("command not in docroot (%s/%s)\n", cwd, cmd);
+	    exit (106);
 	}
     }
 
+    /*
+     * Stat the cwd and verify it is a directory, or error out.
+     */
     if ( (lstat (cwd, &dir_info))     ||
          !(S_ISDIR(dir_info.st_mode)) )
     {
 	log_err ("cannot stat directory: (%s)\n", cwd);
-	exit (106);
-    }
-    
-    if ((dir_info.st_mode & S_IWOTH) || (dir_info.st_mode & S_IWGRP))
-    {
-	log_err ("directory is writable by others: (%s)\n", cwd);
 	exit (107);
     }
 
-    if ((lstat (cmd, &prg_info)) || (S_ISLNK(prg_info.st_mode)))
+    /*
+     * Error out if cwd is writable by others.
+     */
+    if ((dir_info.st_mode & S_IWOTH) || (dir_info.st_mode & S_IWGRP))
     {
-	log_err ("cannot stat program: (%s)\n", cmd);
+	log_err ("directory is writable by others: (%s)\n", cwd);
 	exit (108);
     }
 
-    if ((prg_info.st_mode & S_IWOTH) || (prg_info.st_mode & S_IWGRP))
+    /*
+     * Error out if we cannot stat the program.
+     */
+    if ((lstat (cmd, &prg_info)) || (S_ISLNK(prg_info.st_mode)))
     {
-	log_err ("file is writable by others: (%s/%s)\n", cwd, cmd);
+	log_err ("cannot stat program: (%s)\n", cmd);
 	exit (109);
     }
 
-    if ((prg_info.st_mode & S_ISUID) || (prg_info.st_mode & S_ISGID))
+    /*
+     * Error out if the program is writable by others.
+     */
+    if ((prg_info.st_mode & S_IWOTH) || (prg_info.st_mode & S_IWGRP))
     {
-	log_err ("file is either setuid or setgid: (%s/%s)\n",cwd,cmd);
+	log_err ("file is writable by others: (%s/%s)\n", cwd, cmd);
 	exit (110);
     }
 
-    if ( (pw = getpwnam (server_uid)) == NULL )
+    /*
+     * Error out if the file is setuid or setgid.
+     */
+    if ((prg_info.st_mode & S_ISUID) || (prg_info.st_mode & S_ISGID))
     {
-	log_err ("invalid target user name: (%s)\n", server_uid);
+	log_err ("file is either setuid or setgid: (%s/%s)\n",cwd,cmd);
 	exit (111);
     }
 
-    if ( (gr = getgrnam (server_gid)) == NULL )
+    /*
+     * Error out if the target username is invalid.
+     */
+    if ( (pw = getpwnam (target_uname)) == NULL )
     {
-	log_err ("invalid target group name: (%s)\n", server_gid);
+	log_err ("invalid target user name: (%s)\n", target_uname);
 	exit (112);
     }
 
+    /*
+     * Error out if the target group name is invalid.
+     */
+    if ( (gr = getgrnam (target_gname)) == NULL )
+    {
+	log_err ("invalid target group name: (%s)\n", target_gname);
+	exit (113);
+    }
+
+    /*
+     * Error out if the target name/group is different from
+     * the name/group of the cwd or the program.
+     */
     if ( (pw->pw_uid != dir_info.st_uid) ||
 	 (gr->gr_gid != dir_info.st_gid) ||
 	 (pw->pw_uid != prg_info.st_uid) ||
@@ -314,39 +339,66 @@ main(int argc, char *argv[], char **env)
 		 pw->pw_uid, gr->gr_gid,
 		 dir_info.st_uid, dir_info.st_gid,
 		 prg_info.st_uid, prg_info.st_gid);
-	exit (113);
+	exit (114);
     }
 
+    /*
+     * Error out if attempt is made to execute as root.  Tsk tsk.
+     */
     if (pw->pw_uid == 0)
     {
 	log_err ("cannot run as uid 0 (%s)\n", cmd);
-	exit (114);
-    }
-	
-    if (gr->gr_gid == 0)
-    {
-	log_err ("cannot run as gid 0 (%s)\n", cmd);
 	exit (115);
     }
 
-    /* log the transaction here to be sure we have an open log before setuid() */
-    log_err ("uid: (%s) gid: (%s) %s\n", server_uid, server_gid, cmd);
+    /*
+     * Error out if attempt is made to execute as root group.  Tsk tsk.
+     */
+    if (gr->gr_gid == 0)
+    {
+	log_err ("cannot run as gid 0 (%s)\n", cmd);
+	exit (116);
+    }
 
+    /*
+     * Log the transaction here to be sure we have an open log 
+     * before we setuid().
+     */
+    log_err ("uid: (%s) gid: (%s) %s\n", target_uname, target_gname, cmd);
+
+    /*
+     * Initialize the group access list for the target user,
+     * and setgid() to the target group. If unsuccessful, error out.
+     */
     if ( (initgroups (NNAME,NGID) != 0) ||
          (setgid (gr->gr_gid)      != 0) )
     {
         log_err ("failed to initialize groups or setgid (%ld: %s/%s)\n", gr->gr_gid, cwd, cmd);
-        exit (116);
+        exit (117);
     }
 
+    /*
+     * setuid() to the target user.  Error out on fail.
+     */
     if ((setuid (pw->pw_uid)) != 0)
     {
 	log_err ("failed to setuid (%ld: %s/%s)\n", pw->pw_uid, cwd, cmd);
-	exit (117);
+	exit (118);
     }
 
+    /*
+     * Execute the command, replacing our image with its own.
+     */
     execve (cmd, &argv[3], env);
 
+    /*
+     * (I can't help myself...sorry.)
+     *
+     * Uh oh.  Still here.  Where's the kaboom?  There was supposed to be an
+     * EARTH-shattering kaboom!
+     *
+     * Oh well, log the failure and error out.
+     */
     log_err ("exec failed (%s)\n", cmd);
     exit(255);
 }
