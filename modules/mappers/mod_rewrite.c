@@ -3162,11 +3162,11 @@ static void rewritelog(request_rec *r, int level, const char *text, ...)
         return;
     }
 
-    if (conn->user == NULL) {
+    if (r->user == NULL) {
         ruser = "-";
     }
-    else if (strlen(conn->user) != 0) {
-        ruser = conn->user;
+    else if (strlen(r->user) != 0) {
+        ruser = r->user;
     }
     else {
         ruser = "\"\"";
@@ -3557,7 +3557,7 @@ static char *lookup_variable(request_rec *r, char *var)
                                          r->per_dir_config, REMOTE_NAME);
     }
     else if (strcasecmp(var, "REMOTE_USER") == 0) {
-        result = r->connection->user;
+        result = r->user;
     }
     else if (strcasecmp(var, "REMOTE_IDENT") == 0) {
         result = (char *)ap_get_remote_logname(r);
@@ -3584,7 +3584,7 @@ static char *lookup_variable(request_rec *r, char *var)
         result = r->args;
     }
     else if (strcasecmp(var, "AUTH_TYPE") == 0) {
-        result = r->connection->ap_auth_type;
+        result = r->ap_auth_type;
     }
     else if (strcasecmp(var, "IS_SUBREQ") == 0) { /* non-standard */
         result = (r->main != NULL ? "true" : "false");

@@ -216,7 +216,6 @@ static int anon_authenticate_basic_user(request_rec *r)
     anon_auth_config_rec *sec =
     (anon_auth_config_rec *) ap_get_module_config(r->per_dir_config,
 					       &anon_auth_module);
-    conn_rec *c = r->connection;
     const char *sent_pw;
     int res = DECLINED;
 
@@ -230,14 +229,14 @@ static int anon_authenticate_basic_user(request_rec *r)
     /* Do we allow an empty userID and/or is it the magic one
      */
 
-    if ((!(c->user[0])) && (sec->auth_anon_nouserid)) {
+    if ((!(r->user[0])) && (sec->auth_anon_nouserid)) {
 	res = OK;
     }
     else {
 	auth_anon *p = sec->auth_anon_passwords;
 	res = DECLINED;
 	while ((res == DECLINED) && (p != NULL)) {
-	    if (!(strcasecmp(c->user, p->password)))
+	    if (!(strcasecmp(r->user, p->password)))
 		res = OK;
 	    p = p->next;
 	}

@@ -351,7 +351,7 @@ static int match_headers(request_rec *r)
 					  REMOTE_NAME);
 		break;
 	    case SPECIAL_REMOTE_USER:
-		val = r->connection->user;
+		val = r->user;
 		break;
 	    case SPECIAL_REQUEST_URI:
 		val = r->uri;
