@@ -1404,8 +1404,9 @@ static void process_command_config(server_rec *s, apr_array_header_t *arr,
     errmsg = ap_build_config(&parms, p, ptemp, conftree);
     if (errmsg) {
         ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                     "Syntax error in -C/-c directive:" APR_EOL_STR "%s",
-                     errmsg);
+                     "Syntax error in -C/-c directive:");
+        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
+                     "%s", errmsg);
         exit(1);
     }
 

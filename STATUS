@@ -98,12 +98,6 @@ PATCHES TO BACKPORT FROM TRUNK:
        svn rev 124104
        +1: minfrin, trawick
 
-    *) Get some control chars out of ap_log_error() invocations.
-       Patch from Eric Covener with tweak by trawick:
-       http://httpd.apache.org/~trawick/covener-removecontrolchars-2.0.patch
-       (2.1-dev already has these fixes)
-       +1: trawick, jorton, pquerna
-
     *) util_ldap: Add the directive LDAPConnectionTimeout to control
        the socket timeout value when binding to an LDAP server
        svn rev 126565

@@ -668,7 +668,7 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
     if ((rv = apr_procattr_io_set(attr, APR_FULL_BLOCK, 
                                   APR_NO_PIPE, APR_NO_PIPE)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
-                        "Parent: Unable to create child stdin pipe.\n");
+                        "Parent: Unable to create child stdin pipe.");
         apr_pool_destroy(ptemp);
         return -1;
     }
@@ -679,7 +679,7 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
         || ((rv = apr_procattr_child_out_set(attr, child_out, NULL)) 
                 != APR_SUCCESS)) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
-                        "Parent: Unable to connect child stdout to NUL.\n");
+                        "Parent: Unable to connect child stdout to NUL.");
         apr_pool_destroy(ptemp);
         return -1;
     }
@@ -697,7 +697,7 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
         if ((rv = apr_procattr_child_err_set(attr, child_err, NULL))
                 != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
-                            "Parent: Unable to connect child stderr.\n");
+                            "Parent: Unable to connect child stderr.");
             apr_pool_destroy(ptemp);
             return -1;
         }
