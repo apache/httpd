@@ -4,6 +4,7 @@
 
 <manualpage>
   <relativepath href=".." />
+  <parentdocument href="./">Platform Specific Notes</parentdocument>
 
   <title>Running a High-Performance Web Server on HPUX</title>
 

@@ -4,6 +4,7 @@
 
 <manualpage>
   <relativepath href=".." />
+  <parentdocument href="../"/>
 
   <title>Apache Miscellaneous Documentation</title>
 
@@ -59,11 +60,12 @@
         does some things, and why it doesn't do other things (which
         make it slower/faster).</p>
 
-        <note type="warning"><strong>Warning:</strong>
-        This document has not been fully updated
+        <note type="warning"><title>Warning</title>
+        <p>This document has not been fully updated
         to take into account changes made in the 2.0 version of the
         Apache HTTP Server. Some of the information may still be
-        relevant, but please use it with care.</note>
+        relevant, but please use it with care.</p>
+        </note>
 
       </dd>
 
@@ -72,6 +74,15 @@
       <dd>
         <p>Some "do"s - and "don't"s - for keeping your Apache web
         site secure.</p>
+      </dd>
+
+      <dt><a href="rewriteguide.html">URL Rewriting Guide</a></dt>
+      <dd>
+        <p>This document supplements the <module>mod_rewrite</module>
+        <a href="../mod/mod_rewrite.html">reference documentation</a>.
+        It describes how one can use Apache's <module>mod_rewrite</module>
+        to solve typical URL-based problems webmasters are usually confronted
+        with in practice.</p>
       </dd>
     </dl>
 
