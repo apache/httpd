@@ -44,12 +44,6 @@ Available Patches:
       <19980611171746.A23845@engelschall.com>
       Status: Ralf +1
 
-    * Ralf's "configure generates config.status":
-      A tiny addition for the APACI configure script to provide an easy way
-      (like GNU Autoconf) to re-create the configuration
-      See: http://www.engelschall.com/sw/apache/ [configstatus]
-      Status (for 1.3.1-dev): Ralf +1, Martin +1, Jim +1
-
     * Ralf's "<IfDefine>...</IfDefine>":
       This patch adds a useful <IfDefine>...</IfDefine> section to the core
       module very similar to the existing <IfModule>...<IfModule> sections.

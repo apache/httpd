@@ -75,6 +75,7 @@ src=src
 aux=src/helpers
 sedsubst=src/.apaci.sedsubst
 addconf=src/.apaci.addconf
+configstatus=config.status
 
 ##
 ##  pre-determine runtime modes
@@ -237,6 +238,43 @@ for var in CFLAGS LDFLAGS LIBS INCLUDES; do
     fi
 done
 IFS="$OIFS"
+
+#   create a config status script for restoring
+#   the configuration via a simple shell script
+rm -f $configstatus 2>/dev/null
+echo "#!/bin/sh" >$configstatus
+echo "##" >>$configstatus
+echo "##  $configstatus -- APACI auto-generated configuration restore script" >>$configstatus
+echo "##" >>$configstatus
+echo "##  Use this shell script to re-run the APACI configure script for" >>$configstatus
+echo "##  restoring your configuration. Additional parameters can be supplied." >>$configstatus
+echo "##" >>$configstatus
+echo "" >>$configstatus
+for var in CC OPTIM CFLAGS CFLAGS_SHLIB LDFLAGS LD_SHLIB LDFLAGS_SHLIB \
+           LDFLAGS_SHLIB_EXPORT LIBS INCLUDES RANLIB; do
+    eval "val=\"\$$var\""
+    if [ ".$val" != . ]; then
+        echo "$var=$val" |\
+        sed -e 's:\(["$\\]\):\\\1:g' \
+            -e 's:\([A-Z]*=\):\1":' \
+            -e 's:$:" \\:' >>$configstatus
+    fi
+done
+if [ $# -eq 0 ]; then
+    echo "./configure" >>$configstatus
+else
+    echo "./configure \\" >>$configstatus
+    for arg
+    do
+        echo "$arg" |\
+        sed -e 's:\(["$\\]\):\\\1:g' \
+            -e 's:^:":' \
+            -e 's:$:" \\:' >>$configstatus
+    done
+fi
+echo '$*' >>$configstatus
+echo '' >>$configstatus
+chmod a+x $configstatus
 
 ##
 ##  parse argument line options
