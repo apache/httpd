@@ -194,7 +194,7 @@ void add_common_vars(request_rec *r)
     table_set (e, "SERVER_ADMIN", s->server_admin); /* Apache */
     table_set (e, "SCRIPT_FILENAME", r->filename); /* Apache */
     
-    sprintf(port, "%d", c->remote_addr.sin_port);
+    sprintf(port, "%d", ntohs(c->remote_addr.sin_port));
     table_set (e, "REMOTE_PORT", port);            /* Apache */
 
     if (c->user) table_set(e, "REMOTE_USER", c->user);
