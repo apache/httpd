@@ -1,5 +1,10 @@
 Changes with Apache 1.3a2
 
+  *) (set_file_slot): New function, allowing auth directives to be
+     independent of the server root, so the server documents can be
+     moved to a different directory or machine more easily.
+     [David J. MacKenzie]
+
   *) If no TransferLog is given explicitly, decline
      to log.  This supports coexistence with other logging modules,
      such as the custom one that UUNET uses. [David J. MacKenzie]
