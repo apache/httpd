@@ -35,7 +35,7 @@
         <module>mod_actions</module>
         <module>mod_asis</module>
         <module>mod_cgi</module>
-        <module>mod_imap</module>
+        <module>mod_imagemap</module>
         <module>mod_info</module>
         <module>mod_mime</module>
         <module>mod_negotiation</module>
@@ -83,7 +83,7 @@
       script. (<module>mod_cgi</module>)</li>
 
       <li><strong>imap-file</strong>: Parse as an imagemap rule
-      file. (<module>mod_imap</module>)</li>
+      file. (<module>mod_imagemap</module>)</li>
 
       <li><strong>server-info</strong>: Get the server's
       configuration information. (<module>mod_info</module>)</li>

@@ -40,7 +40,7 @@
   <modulefile>mod_filter.xml</modulefile>
   <modulefile>mod_headers.xml</modulefile>
   <modulefile>mod_ident.xml</modulefile>
-  <modulefile>mod_imap.xml</modulefile>
+  <modulefile>mod_imagemap.xml</modulefile>
   <modulefile>mod_include.xml</modulefile>
   <modulefile>mod_info.xml</modulefile>
   <modulefile>mod_isapi.xml</modulefile>

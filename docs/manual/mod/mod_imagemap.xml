@@ -20,12 +20,12 @@
  limitations under the License.
 -->
 
-<modulesynopsis metafile="mod_imap.xml.meta">
+<modulesynopsis metafile="mod_imagemap.xml.meta">
 
-<name>mod_imap</name>
+<name>mod_imagemap</name>
 <description>Server-side imagemap processing</description>
 <status>Base</status>
-<sourcefile>mod_imap.c</sourcefile>
+<sourcefile>mod_imagemap.c</sourcefile>
 <identifier>imap_module</identifier>
 
 <summary>
@@ -101,7 +101,7 @@
       <dd><p>Has the effect of <code>&lt;base href="<var>value</var>"&gt;
       </code>. The non-absolute URLs of the map-file are taken relative
       to this value. The <code>base</code> directive overrides
-      <directive module="mod_imap">ImapBase</directive> as set in a
+      <directive module="mod_imagemap">ImapBase</directive> as set in a
       <code>.htaccess</code> file or in the server configuration files.
       In the absence of an <directive>ImapBase</directive> configuration
       directive, <code>base</code> defaults to
@@ -115,7 +115,7 @@
       of the <code>poly</code>, <code>circle</code> or
       <code>rect</code> directives, and there are no
       <code>point</code> directives. Defaults to <code>nocontent</code>
-      in the absence of an <directive module="mod_imap"
+      in the absence of an <directive module="mod_imagemap"
       >ImapDefault</directive> configuration setting, causing a status
       code of <code>204 No Content</code> to be returned. The client
       should keep the same page displayed.</dd>
@@ -166,7 +166,7 @@
 
       <dd>Equivalent to the URL of the imagemap file itself. No
       coordinates are sent with this, so a menu will be generated
-      unless <directive module="mod_imap">ImapMenu</directive> is set to
+      unless <directive module="mod_imagemap">ImapMenu</directive> is set to
       <code>none</code>.</dd>
 
       <dt><code>menu</code></dt>

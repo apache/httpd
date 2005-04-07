@@ -352,9 +352,9 @@
             <br />
             Note: This module will always be linked statically.</dd> 
 
-        <dt><code>--disable-imap</code></dt>
+        <dt><code>--disable-imagemap</code></dt>
         <dd>Disable support for server based imagemaps, which provided by
-          <code class="module"><a href="../mod/mod_imap.html">mod_imap</a></code>.</dd>
+          <code class="module"><a href="../mod/mod_imagemap.html">mod_imagemap</a></code>.</dd>
 
         <dt><code>--disable-include</code></dt>
         <dd>Disable Server Side Includes provided by
