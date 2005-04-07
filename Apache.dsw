@@ -153,7 +153,7 @@ Package=<4>
     Project_Dep_Name mod_ident
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name mod_imap
+    Project_Dep_Name mod_imagemap
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_include
@@ -1323,7 +1323,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_imap"=.\modules\mappers\mod_imap.dsp - Package Owner=<4>
+Project: "mod_imagemap"=.\modules\mappers\mod_imagemap.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
