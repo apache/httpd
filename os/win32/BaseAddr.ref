@@ -37,7 +37,7 @@ mod_autoindex.so        0x6FCA0000    0x00010000
 mod_cgi.so              0x6FC90000    0x00010000
 mod_dir.so              0x6FC80000    0x00010000
 mod_env.so              0x6FC70000    0x00010000
-mod_imap.so             0x6FC60000    0x00010000
+mod_imagemap.so         0x6FC60000    0x00010000
 mod_include.so          0x6FC50000    0x00010000
 mod_isapi.so            0x6FC40000    0x00010000
 mod_log_config.so       0x6FC30000    0x00010000
@@ -71,3 +71,4 @@ mod_version.so          0x6FA70000    0x00010000
 mod_bucketeer.so        0x6FA60000    0x00010000
 mod_dumpio.so           0x6FA50000    0x00010000
 mod_echo.so             0x6FA40000    0x00010000
+mod_auth_config.so      0x6FA30000    0x00010000
