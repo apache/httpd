@@ -521,7 +521,7 @@ static apr_status_t emulate_sendfile(core_net_rec *c, apr_file_t *fd,
         o = 0;
         rv = apr_file_read(fd, buffer, &sendlen);
         if (rv == APR_SUCCESS && sendlen) {
-            while ((rv == APR_SUCCESS || rv == APR_EAGAIN) && sendlen) {
+            while ((rv == APR_SUCCESS || APR_STATUS_IS_EAGAIN(rv)) && sendlen) {
                 bytes_sent = sendlen;
                 rv = apr_socket_send(c->client_socket, &buffer[o], &bytes_sent);
                 *nbytes += bytes_sent;
