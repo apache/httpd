@@ -274,7 +274,7 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f mod_actions.mak     CFG="mod_actions - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_alias.mak       CFG="mod_alias - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_dir.mak         CFG="mod_dir - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f mod_imap.mak        CFG="mod_imap - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_imagemap.mak    CFG="mod_imagemap - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_negotiation.mak CFG="mod_negotiation - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_rewrite.mak     CFG="mod_rewrite - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_speling.mak     CFG="mod_speling - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -421,7 +421,7 @@ _copybin:
 	copy modules\mappers\$(LONG)\mod_actions.$(src_so) 	"$(inst_so)" <.y
 	copy modules\mappers\$(LONG)\mod_alias.$(src_so) 	"$(inst_so)" <.y
 	copy modules\mappers\$(LONG)\mod_dir.$(src_so) 		"$(inst_so)" <.y
-	copy modules\mappers\$(LONG)\mod_imap.$(src_so) 	"$(inst_so)" <.y
+	copy modules\mappers\$(LONG)\mod_imagemap.$(src_so) 	"$(inst_so)" <.y
 	copy modules\mappers\$(LONG)\mod_negotiation.$(src_so) 	"$(inst_so)" <.y
 	copy modules\mappers\$(LONG)\mod_rewrite.$(src_so) 	"$(inst_so)" <.y
 	copy modules\mappers\$(LONG)\mod_speling.$(src_so) 	"$(inst_so)" <.y

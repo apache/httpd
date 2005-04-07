@@ -1,24 +1,24 @@
-# Microsoft Developer Studio Project File - Name="mod_imap" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="mod_imagemap" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Dynamic-Link Library" 0x0102
 
-CFG=mod_imap - Win32 Release
+CFG=mod_imagemap - Win32 Release
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
-!MESSAGE NMAKE /f "mod_imap.mak".
+!MESSAGE NMAKE /f "mod_imagemap.mak".
 !MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "mod_imap.mak" CFG="mod_imap - Win32 Release"
+!MESSAGE NMAKE /f "mod_imagemap.mak" CFG="mod_imagemap - Win32 Release"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "mod_imap - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
-!MESSAGE "mod_imap - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "mod_imagemap - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "mod_imagemap - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
 !MESSAGE 
 
 # Begin Project
@@ -29,7 +29,7 @@ CPP=cl.exe
 MTL=midl.exe
 RSC=rc.exe
 
-!IF  "$(CFG)" == "mod_imap - Win32 Release"
+!IF  "$(CFG)" == "mod_imagemap - Win32 Release"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
@@ -43,7 +43,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /FD /c
-# ADD CPP /nologo /MD /W3 /Zi /O2 /I "../../include" /I "../../srclib/apr/include" /I "../../srclib/apr-util/include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /Fd"Release\mod_imap_src" /FD /c
+# ADD CPP /nologo /MD /W3 /Zi /O2 /I "../../include" /I "../../srclib/apr/include" /I "../../srclib/apr-util/include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /Fd"Release\mod_imagemap_src" /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
@@ -52,10 +52,10 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /machine:I386 /out:"Release/mod_imap.so" /base:@..\..\os\win32\BaseAddr.ref,mod_imap.so
-# ADD LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /debug /machine:I386 /out:"Release/mod_imap.so" /base:@..\..\os\win32\BaseAddr.ref,mod_imap.so /opt:ref
+# ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /machine:I386 /out:"Release/mod_imagemap.so" /base:@..\..\os\win32\BaseAddr.ref,mod_imagemap.so
+# ADD LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /debug /machine:I386 /out:"Release/mod_imagemap.so" /base:@..\..\os\win32\BaseAddr.ref,mod_imagemap.so /opt:ref
 
-!ELSEIF  "$(CFG)" == "mod_imap - Win32 Debug"
+!ELSEIF  "$(CFG)" == "mod_imagemap - Win32 Debug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
@@ -69,7 +69,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /FD /c
-# ADD CPP /nologo /MDd /W3 /GX /Zi /Od /I "../../include" /I "../../srclib/apr/include" /I "../../srclib/apr-util/include" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /Fd"Debug\mod_imap_src" /FD /c
+# ADD CPP /nologo /MDd /W3 /GX /Zi /Od /I "../../include" /I "../../srclib/apr/include" /I "../../srclib/apr-util/include" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /Fd"Debug\mod_imagemap_src" /FD /c
 # ADD BASE MTL /nologo /D "_DEBUG" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
@@ -78,46 +78,46 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /debug /machine:I386 /out:"Debug/mod_imap.so" /base:@..\..\os\win32\BaseAddr.ref,mod_imap.so
-# ADD LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /debug /machine:I386 /out:"Debug/mod_imap.so" /base:@..\..\os\win32\BaseAddr.ref,mod_imap.so
+# ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /debug /machine:I386 /out:"Debug/mod_imagemap.so" /base:@..\..\os\win32\BaseAddr.ref,mod_imagemap.so
+# ADD LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /debug /machine:I386 /out:"Debug/mod_imagemap.so" /base:@..\..\os\win32\BaseAddr.ref,mod_imagemap.so
 
 !ENDIF 
 
 # Begin Target
 
-# Name "mod_imap - Win32 Release"
-# Name "mod_imap - Win32 Debug"
+# Name "mod_imagemap - Win32 Release"
+# Name "mod_imagemap - Win32 Debug"
 # Begin Source File
 
-SOURCE=.\mod_imap.c
+SOURCE=.\mod_imagemap.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\mod_imap.rc
+SOURCE=.\mod_imagemap.rc
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\build\win32\win32ver.awk
 
-!IF  "$(CFG)" == "mod_imap - Win32 Release"
+!IF  "$(CFG)" == "mod_imagemap - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Creating Version Resource
 InputPath=..\..\build\win32\win32ver.awk
 
-".\mod_imap.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_imap.so "imap_module for Apache" ../../include/ap_release.h > .\mod_imap.rc
+".\mod_imagemap.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	awk -f ../../build/win32/win32ver.awk mod_imagemap.so "imagemap_module for Apache" ../../include/ap_release.h > .\mod_imagemap.rc
 
 # End Custom Build
 
-!ELSEIF  "$(CFG)" == "mod_imap - Win32 Debug"
+!ELSEIF  "$(CFG)" == "mod_imagemap - Win32 Debug"
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Creating Version Resource
 InputPath=..\..\build\win32\win32ver.awk
 
-".\mod_imap.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_imap.so "imap_module for Apache" ../../include/ap_release.h > .\mod_imap.rc
+".\mod_imagemap.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	awk -f ../../build/win32/win32ver.awk mod_imagemap.so "imagemap_module for Apache" ../../include/ap_release.h > .\mod_imagemap.rc
 
 # End Custom Build
 
