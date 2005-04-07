@@ -83,7 +83,7 @@
 double strtod();                /* SunOS needed this */
 #endif
 
-module AP_MODULE_DECLARE_DATA imap_module;
+module AP_MODULE_DECLARE_DATA imagemap_module;
 
 typedef struct {
     char *imap_menu;
@@ -593,7 +593,7 @@ static int imap_handler_internal(request_rec *r)
 
     ap_configfile_t *imap; 
 
-    icr = ap_get_module_config(r->per_dir_config, &imap_module);
+    icr = ap_get_module_config(r->per_dir_config, &imagemap_module);
 
     imap_menu = icr->imap_menu ? icr->imap_menu : IMAP_MENU_DEFAULT;
     imap_default = icr->imap_default
@@ -882,7 +882,7 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_handler(imap_handler,NULL,NULL,APR_HOOK_MIDDLE);
 }
 
-module AP_MODULE_DECLARE_DATA imap_module =
+module AP_MODULE_DECLARE_DATA imagemap_module =
 {
     STANDARD20_MODULE_STUFF,
     create_imap_dir_config,     /* dir config creater */

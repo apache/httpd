@@ -543,7 +543,7 @@ RewriteRule   (.*)                     netsw-lsdir.cgi/$1
 
     <section>
 
-      <title>NCSA imagemap to Apache <code>mod_imap</code></title>
+      <title>NCSA imagemap to Apache <code>mod_imagemap</code></title>
 
       <dl>
         <dt>Description:</dt>
@@ -553,7 +553,7 @@ RewriteRule   (.*)                     netsw-lsdir.cgi/$1
           modern Apache webserver a lot of people want a smooth
           transition. So they want pages which use their old NCSA
           <code>imagemap</code> program to work under Apache with the
-          modern <module>mod_imap</module>. The problem is that there
+          modern <module>mod_imagemap</module>. The problem is that there
           are a lot of hyperlinks around which reference the
           <code>imagemap</code> program via
           <code>/cgi-bin/imagemap/path/to/page.map</code>. Under

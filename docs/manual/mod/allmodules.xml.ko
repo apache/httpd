@@ -40,7 +40,7 @@
   <modulefile>mod_filter.xml</modulefile>
   <modulefile>mod_headers.xml.ko</modulefile>
   <modulefile>mod_ident.xml.ko</modulefile>
-  <modulefile>mod_imap.xml.ko</modulefile>
+  <modulefile>mod_imagemap.xml.ko</modulefile>
   <modulefile>mod_include.xml</modulefile>
   <modulefile>mod_info.xml.ko</modulefile>
   <modulefile>mod_isapi.xml.ko</modulefile>

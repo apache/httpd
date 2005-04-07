@@ -2,6 +2,9 @@ Changes with Apache 2.1.5
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Rename mod_imap to mod_imagemap.
+     [Paul Querna]
+
   *) util_ldap: Eliminate the load ordering of mod_ldap and mod_authnz_ldap
      by changing the mod_ldap exported functions to optional functions.
      [Brad Nicholes]

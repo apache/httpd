@@ -124,12 +124,12 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
     usually result in the request being by the module associated
     with the handler. For example, if the <code>.imap</code>
     extension is mapped to the handler <code>imap-file</code> (from
-    <module>mod_imap</module>) and the <code>.html</code> extension is
+    <module>mod_imagemap</module>) and the <code>.html</code> extension is
     mapped to the MIME-type <code>text/html</code>, then the file
     <code>world.imap.html</code> will be associated with both the
     <code>imap-file</code> handler and <code>text/html</code> MIME-type.
     When it is processed, the <code>imap-file</code> handler will be used,
-    and so it will be treated as a <module>mod_imap</module> imagemap
+    and so it will be treated as a <module>mod_imagemap</module> imagemap
     file.</p>
 </section>
 
