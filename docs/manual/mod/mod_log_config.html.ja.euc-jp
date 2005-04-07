@@ -25,8 +25,6 @@
 <a href="../ja/mod/mod_log_config.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_log_config.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>サーバへのリクエストのロギング</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>log_config_module</td></tr>
@@ -93,9 +91,9 @@
 <tr><td><code>%...A</code></td>
         <td>ローカル IP アドレス</td></tr>
 <tr class="odd"><td><code>%...B</code></td>
-        <td>HTTP ヘッダ以外の送られたバイト数</td></tr>
+        <td>レスポンスのバイト数。HTTP ヘッダは除く。</td></tr>
 <tr><td><code>%...b</code></td>
-        <td>HTTP ヘッダ以外の送られたバイト数。CLF 書式。
+        <td>レスポンスのバイト数。HTTP ヘッダは除く。CLF 書式。
         <em>すなわち</em>、1 バイトも送られなかったときは 0 ではなく、
         '<code>-</code>' になる</td></tr>
 <tr class="odd"><td><code>%...{<var>Foobar</var>}C</code></td>
@@ -222,6 +220,14 @@
     バックスラッシュを使ってエスケープされる <code>"</code> と <code>\</code> と、
     C 形式の表記法が使われる空白文字 (<code>\n</code>, <code>\t</code> など) が
     あります。</p>
+
+    <p>httpd 2.0 では 1.3 とは異なり、<code>%b</code> と <code>%B</code>
+    フォーマット文字列はクライアントに送信されたバイト数そのものではなく、
+    HTTP レスポンスのバイト数です (これらは異なるもので、たとえば、
+    コネクションが途中で破棄された場合や、SSL 使用時に一致しません) 。
+    <code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code> で提供されている <code>%O</code>
+    フォーマット文字列で、ネットワーク経由で実際に転送されたバイト数を
+    記録できます。</p>
 
     <p>よく使われるフォーマット文字列は:</p>
 
@@ -351,6 +357,14 @@
       SetEnvIf Request_URI \.gif$ gif-image<br />
       CustomLog gif-requests.log common env=gif-image<br />
       CustomLog nongif-requests.log common env=!gif-image
+    </code></p></div>
+
+    <p>古い RefererIgnore ディレクティブと同じ挙動をさせたい場合は、
+    次のようにします:</p>
+
+    <div class="example"><p><code>
+    SetEnvIf Referer example\.com localreferer<br />
+    CustomLog referer.log referer env=!localreferer
     </code></p></div>
 
 </div>

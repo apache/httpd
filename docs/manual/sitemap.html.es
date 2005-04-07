@@ -205,7 +205,7 @@ usados para describir las directivas de Apache</a></li>
 <li><a href="mod/mod_filter.html">Módulo Apache mod_filter</a></li>
 <li><a href="mod/mod_headers.html">Módulo Apache mod_headers</a></li>
 <li><a href="mod/mod_ident.html">Módulo Apache mod_ident</a></li>
-<li><a href="mod/mod_imap.html">Módulo Apache mod_imap</a></li>
+<li><a href="mod/mod_imagemap.html">Módulo Apache mod_imagemap</a></li>
 <li><a href="mod/mod_include.html">Módulo Apache mod_include</a></li>
 <li><a href="mod/mod_info.html">Módulo Apache mod_info</a></li>
 <li><a href="mod/mod_isapi.html">Módulo Apache mod_isapi</a></li>

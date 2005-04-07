@@ -197,9 +197,9 @@
 <li><a href="core.html#ifdefine">&lt;IfDefine&gt;</a></li>
 <li><a href="core.html#ifmodule">&lt;IfModule&gt;</a></li>
 <li><a href="mod_version.html#ifversion">&lt;IfVersion&gt;</a></li>
-<li><a href="mod_imap.html#imapbase">ImapBase</a></li>
-<li><a href="mod_imap.html#imapdefault">ImapDefault</a></li>
-<li><a href="mod_imap.html#imapmenu">ImapMenu</a></li>
+<li><a href="mod_imagemap.html#imapbase">ImapBase</a></li>
+<li><a href="mod_imagemap.html#imapdefault">ImapDefault</a></li>
+<li><a href="mod_imagemap.html#imapmenu">ImapMenu</a></li>
 <li><a href="core.html#include">Include</a></li>
 <li><a href="mod_autoindex.html#indexignore">IndexIgnore</a></li>
 <li><a href="mod_autoindex.html#indexoptions">IndexOptions</a></li>

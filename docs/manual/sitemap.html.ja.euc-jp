@@ -26,8 +26,6 @@
 <a href="./ja/sitemap.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/sitemap.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 
 <p>このページは現時点で利用可能な
 <a href="./">Apache HTTP サーババージョン 2.1 のドキュメンテーション</a>
@@ -131,6 +129,7 @@
 <li><a href="programs/configure.html">マニュアルページ: configure</a></li>
 <li><a href="programs/dbmmanage.html">マニュアルページ: dbmmanage</a></li>
 <li><a href="programs/htcacheclean.html">マニュアルページ: htcacheclean</a></li>
+<li><a href="programs/htdbm.html">マニュアルページ: htdbm</a></li>
 <li><a href="programs/htdigest.html">マニュアルページ: htdigest</a></li>
 <li><a href="programs/htpasswd.html">マニュアルページ: htpasswd</a></li>
 <li><a href="programs/logresolve.html">マニュアルページ: logresolve</a></li>
@@ -197,7 +196,7 @@
 <li><a href="mod/mod_filter.html">Apache モジュール mod_filter</a></li>
 <li><a href="mod/mod_headers.html">Apache モジュール mod_headers</a></li>
 <li><a href="mod/mod_ident.html">Apache モジュール mod_ident</a></li>
-<li><a href="mod/mod_imap.html">Apache モジュール mod_imap</a></li>
+<li><a href="mod/mod_imagemap.html">Apache モジュール mod_imagemap</a></li>
 <li><a href="mod/mod_include.html">Apache モジュール mod_include</a></li>
 <li><a href="mod/mod_info.html">Apache モジュール mod_info</a></li>
 <li><a href="mod/mod_isapi.html">Apache モジュール mod_isapi</a></li>
