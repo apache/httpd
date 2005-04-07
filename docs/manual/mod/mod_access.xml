@@ -100,7 +100,8 @@ server</description>
 
       <dd>
       <example><title>Example:</title>
-        Allow from apache.org
+        Allow from apache.org<br />
+        Allow from .net example.edu
       </example>
       <p>Hosts whose names match, or end in, this string are allowed
       access. Only complete components are matched, so the above
@@ -119,7 +120,8 @@ server</description>
 
       <dd>
       <example><title>Example:</title>
-        Allow from 10.1.2.3
+        Allow from 10.1.2.3<br />
+        Allow from 192.168.1.104 192.168.1.205
       </example>
       <p>An IP address of a host allowed access</p></dd>
 
@@ -127,7 +129,8 @@ server</description>
 
       <dd>
       <example><title>Example:</title>
-        Allow from 10.1
+        Allow from 10.1<br />
+        Allow from 10 172.20 192.168.2
       </example>
       <p>The first 1 to 3 bytes of an IP address, for subnet
       restriction.</p></dd>
