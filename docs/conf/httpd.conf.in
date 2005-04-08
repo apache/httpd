@@ -97,19 +97,8 @@ ServerAdmin you@example.com
 # it explicitly to prevent problems during startup.
 #
 # If your host doesn't have a registered DNS name, enter its IP address here.
-# You will have to access it by its address anyway, and this will make 
-# redirections work in a sensible way.
 #
 #ServerName www.example.com:80
-
-#
-# UseCanonicalName: Determines how Apache constructs self-referencing 
-# URLs and the SERVER_NAME and SERVER_PORT variables.
-# When set "Off", Apache will use the Hostname and Port supplied
-# by the client.  When set "On", Apache will use the value of the
-# ServerName directive.
-#
-UseCanonicalName Off
 
 #
 # DocumentRoot: The directory out of which you will serve your

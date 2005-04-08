@@ -876,8 +876,8 @@ AP_DECLARE(const char *) ap_get_server_name(request_rec *r)
     d = (core_dir_config *)ap_get_module_config(r->per_dir_config,
                                                 &core_module);
 
-    if (d->use_canonical_name == USE_CANONICAL_NAME_OFF) {
-        return r->hostname ? r->hostname : r->server->server_hostname;
+    if (d->use_canonical_name == USE_CANONICAL_NAME_ON) {
+        return r->server->server_hostname;
     }
 
     if (d->use_canonical_name == USE_CANONICAL_NAME_DNS) {
@@ -895,7 +895,7 @@ AP_DECLARE(const char *) ap_get_server_name(request_rec *r)
     }
 
     /* default */
-    return r->server->server_hostname;
+    return r->hostname ? r->hostname : r->server->server_hostname;
 }
 
 /*

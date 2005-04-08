@@ -29,6 +29,15 @@ MaxKeepAliveRequests 100
 KeepAliveTimeout 15
 
 #
+# UseCanonicalName: Determines how Apache constructs self-referencing 
+# URLs and the SERVER_NAME and SERVER_PORT variables.
+# When set "Off", Apache will use the Hostname and Port supplied
+# by the client.  When set "On", Apache will use the value of the
+# ServerName directive.
+#
+UseCanonicalName Off
+
+#
 # AccessFileName: The name of the file to look for in each directory
 # for additional configuration directives.  See also the AllowOverride 
 # directive.
