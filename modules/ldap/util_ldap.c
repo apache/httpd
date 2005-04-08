@@ -126,7 +126,9 @@ static void util_ldap_strdup (char **str, const char *newstr)
  */
 static int util_ldap_handler(request_rec *r)
 {
-    util_ldap_state_t *st = (util_ldap_state_t *)ap_get_module_config(r->server->module_config, &ldap_module);
+    util_ldap_state_t *st = (util_ldap_state_t *)
+                            ap_get_module_config(r->server->module_config, 
+                                                 &ldap_module);
 
     r->allowed |= (1 << M_GET);
     if (r->method_number != M_GET)
@@ -142,7 +144,8 @@ static int util_ldap_handler(request_rec *r)
 
     ap_rputs(DOCTYPE_HTML_3_2
              "<html><head><title>LDAP Cache Information</title></head>\n", r);
-    ap_rputs("<body bgcolor='#ffffff'><h1 align=center>LDAP Cache Information</h1>\n", r);
+    ap_rputs("<body bgcolor='#ffffff'><h1 align=center>LDAP Cache Information"
+             "</h1>\n", r);
 
     util_ald_cache_display(r, st);
 
@@ -367,7 +370,8 @@ static int uldap_connection_open(request_rec *r,
  *
  * Returns 1 on compare failure, 0 otherwise.
  */
-static int compare_client_certs(apr_array_header_t *srcs, apr_array_header_t *dests)
+static int compare_client_certs(apr_array_header_t *srcs, 
+                                apr_array_header_t *dests)
 {
     int i = 0;
     struct apr_ldap_opt_tls_cert_t *src, *dest;
@@ -403,9 +407,9 @@ static int compare_client_certs(apr_array_header_t *srcs, apr_array_header_t *de
  * Find an existing ldap connection struct that matches the
  * provided ldap connection parameters.
  *
- * If not found in the cache, a new ldc structure will be allocated from st->pool
- * and returned to the caller. If found in the cache, a pointer to the existing
- * ldc structure will be returned.
+ * If not found in the cache, a new ldc structure will be allocated 
+ * from st->pool and returned to the caller.  If found in the cache, 
+ * a pointer to the existing ldc structure will be returned.
  */
 static util_ldap_connection_t * 
             uldap_connection_find(request_rec *r,
@@ -424,7 +428,8 @@ static util_ldap_connection_t *
 #if APR_HAS_THREADS
     /* mutex lock this function */
     if (!st->mutex) {
-        apr_thread_mutex_create(&st->mutex, APR_THREAD_MUTEX_DEFAULT, st->pool);
+        apr_thread_mutex_create(&st->mutex, APR_THREAD_MUTEX_DEFAULT, 
+                                st->pool);
     }
     apr_thread_mutex_lock(st->mutex);
 #endif
@@ -440,12 +445,14 @@ static util_ldap_connection_t *
 #if APR_HAS_THREADS
         if (APR_SUCCESS == apr_thread_mutex_trylock(l->lock)) {
 #endif
-        if ((l->port == port) && (strcmp(l->host, host) == 0) && 
-            ((!l->binddn && !binddn) || (l->binddn && binddn && !strcmp(l->binddn, binddn))) && 
-            ((!l->bindpw && !bindpw) || (l->bindpw && bindpw && !strcmp(l->bindpw, bindpw))) && 
-            (l->deref == deref) && (l->secure == secureflag) &&
-            !compare_client_certs(st->client_certs, l->client_certs)) {
-
+        if (   (l->port == port) && (strcmp(l->host, host) == 0) 
+            && ((!l->binddn && !binddn) || (l->binddn && binddn 
+                                             && !strcmp(l->binddn, binddn))) 
+            && ((!l->bindpw && !bindpw) || (l->bindpw && bindpw 
+                                             && !strcmp(l->bindpw, bindpw))) 
+            && (l->deref == deref) && (l->secure == secureflag) 
+            && !compare_client_certs(st->client_certs, l->client_certs)) 
+        {
             break;
         }
 #if APR_HAS_THREADS
@@ -469,8 +476,8 @@ static util_ldap_connection_t *
 #endif
             if ((l->port == port) && (strcmp(l->host, host) == 0) && 
                 (l->deref == deref) && (l->secure == secureflag) &&
-                !compare_client_certs(st->client_certs, l->client_certs)) {
-
+                !compare_client_certs(st->client_certs, l->client_certs)) 
+            {
                 /* the bind credentials have changed */
                 l->bound = 0;
                 util_ldap_strdup((char**)&(l->binddn), binddn);
@@ -547,11 +554,11 @@ static util_ldap_connection_t *
 /* ------------------------------------------------------------------ */
 
 /*
- * Compares two DNs to see if they're equal. The only way to do this correctly is to 
- * search for the dn and then do ldap_get_dn() on the result. This should match the 
- * initial dn, since it would have been also retrieved with ldap_get_dn(). This is
- * expensive, so if the configuration value compare_dn_on_server is
- * false, just does an ordinary strcmp.
+ * Compares two DNs to see if they're equal. The only way to do this correctly
+ * is to search for the dn and then do ldap_get_dn() on the result. This should
+ * match the initial dn, since it would have been also retrieved with 
+ * ldap_get_dn(). This is expensive, so if the configuration value 
+ * compare_dn_on_server is false, just does an ordinary strcmp.
  *
  * The lock for the ldap cache should already be acquired.
  */
@@ -568,7 +575,9 @@ static int uldap_cache_comparedn(request_rec *r, util_ldap_connection_t *ldc,
     LDAPMessage *res, *entry;
     char *searchdn;
 
-    util_ldap_state_t *st =  (util_ldap_state_t *)ap_get_module_config(r->server->module_config, &ldap_module);
+    util_ldap_state_t *st = (util_ldap_state_t *)
+                            ap_get_module_config(r->server->module_config, 
+                                                 &ldap_module);
 
     /* get cache entry (or create one) */
     LDAP_CACHE_LOCK();
@@ -625,10 +634,13 @@ start_over:
     }
 
     /* search for reqdn */
-    if ((result = ldap_search_ext_s(ldc->ldap, (char *)reqdn, LDAP_SCOPE_BASE, 
+    if ((result = ldap_search_ext_s(ldc->ldap, (char *)reqdn, LDAP_SCOPE_BASE,
 				    "(objectclass=*)", NULL, 1, 
-				    NULL, NULL, NULL, -1, &res)) == LDAP_SERVER_DOWN) {
-        ldc->reason = "DN Comparison ldap_search_ext_s() failed with server down";
+				    NULL, NULL, NULL, -1, &res)) 
+            == LDAP_SERVER_DOWN) 
+    {
+        ldc->reason = "DN Comparison ldap_search_ext_s() "
+                      "failed with server down";
         uldap_connection_unbind(ldc);
         goto start_over;
     }
@@ -655,9 +667,10 @@ start_over:
             newnode.dn = (char *)dn;
             
             node = util_ald_cache_fetch(curl->dn_compare_cache, &newnode);
-            if ((node == NULL) || 
-                (strcmp(reqdn, node->reqdn) != 0) || (strcmp(dn, node->dn) != 0)) {
-
+            if (   (node == NULL)
+                || (strcmp(reqdn, node->reqdn) != 0) 
+                || (strcmp(dn, node->dn) != 0)) 
+            {
                 util_ald_cache_insert(curl->dn_compare_cache, &newnode);
             }
             LDAP_CACHE_UNLOCK();
@@ -690,9 +703,9 @@ static int uldap_cache_compare(request_rec *r, util_ldap_connection_t *ldc,
     apr_time_t curtime = 0; /* silence gcc -Wall */
     int failures = 0;
 
-    util_ldap_state_t *st = 
-        (util_ldap_state_t *)ap_get_module_config(r->server->module_config,
-        &ldap_module);
+    util_ldap_state_t *st = (util_ldap_state_t *)
+                            ap_get_module_config(r->server->module_config,
+                                                 &ldap_module);
 
     /* get cache entry (or create one) */
     LDAP_CACHE_LOCK();
@@ -713,7 +726,8 @@ static int uldap_cache_compare(request_rec *r, util_ldap_connection_t *ldc,
         the_compare_node.value = (char *)value;
         the_compare_node.result = 0;
     
-        compare_nodep = util_ald_cache_fetch(curl->compare_cache, &the_compare_node);
+        compare_nodep = util_ald_cache_fetch(curl->compare_cache, 
+                                             &the_compare_node);
     
         if (compare_nodep != NULL) {
             /* found it... */
@@ -778,14 +792,16 @@ start_over:
             the_compare_node.lastcompare = curtime;
             the_compare_node.result = result;
 
-            /* If the node doesn't exist then insert it, otherwise just update it with
-               the last results */
-            compare_nodep = util_ald_cache_fetch(curl->compare_cache, &the_compare_node);
-            if ((compare_nodep == NULL) || 
-                (strcmp(the_compare_node.dn, compare_nodep->dn) != 0) || 
-                (strcmp(the_compare_node.attrib, compare_nodep->attrib) != 0) || 
-                (strcmp(the_compare_node.value, compare_nodep->value) != 0)) {
-
+            /* If the node doesn't exist then insert it, otherwise just update
+             * it with the last results 
+             */
+            compare_nodep = util_ald_cache_fetch(curl->compare_cache, 
+                                                 &the_compare_node);
+            if (   (compare_nodep == NULL) 
+                || (strcmp(the_compare_node.dn, compare_nodep->dn) != 0) 
+                || (strcmp(the_compare_node.attrib,compare_nodep->attrib) != 0) 
+                || (strcmp(the_compare_node.value, compare_nodep->value) != 0))
+            {
                 util_ald_cache_insert(curl->compare_cache, &the_compare_node);
             }
             else {
@@ -836,7 +852,8 @@ static int uldap_cache_checkuserid(request_rec *r, util_ldap_connection_t *ldc,
     /* Get the cache node for this url */
     LDAP_CACHE_LOCK();
     curnode.url = url;
-    curl = (util_url_node_t *)util_ald_cache_fetch(st->util_ldap_cache, &curnode);
+    curl = (util_url_node_t *)util_ald_cache_fetch(st->util_ldap_cache, 
+                                                   &curnode);
     if (curl == NULL) {
         curl = util_ald_create_caches(st, url);
     }
@@ -845,23 +862,27 @@ static int uldap_cache_checkuserid(request_rec *r, util_ldap_connection_t *ldc,
     if (curl) {
         LDAP_CACHE_LOCK();
         the_search_node.username = filter;
-        search_nodep = util_ald_cache_fetch(curl->search_cache, &the_search_node);
+        search_nodep = util_ald_cache_fetch(curl->search_cache, 
+                                            &the_search_node);
         if (search_nodep != NULL) {
     
             /* found entry in search cache... */
             curtime = apr_time_now();
     
             /*
-             * Remove this item from the cache if its expired. If the sent password
-             * doesn't match the storepassword, the entry will be removed and readded
-             * later if the credentials pass authentication.
+             * Remove this item from the cache if its expired. If the sent 
+             * password doesn't match the storepassword, the entry will 
+             * be removed and readded later if the credentials pass 
+             * authentication.
              */
             if ((curtime - search_nodep->lastbind) > st->search_cache_ttl) {
                 /* ...but entry is too old */
                 util_ald_cache_remove(curl->search_cache, search_nodep);
             }
-            else if ((search_nodep->bindpw) && (search_nodep->bindpw[0] != '\0') && 
-                     (strcmp(search_nodep->bindpw, bindpw) == 0)) {
+            else if (   (search_nodep->bindpw) 
+                     && (search_nodep->bindpw[0] != '\0') 
+                     && (strcmp(search_nodep->bindpw, bindpw) == 0)) 
+            {
                 /* ...and entry is valid */
                 *binddn = search_nodep->dn;
                 *retvals = search_nodep->vals;
@@ -879,7 +900,7 @@ static int uldap_cache_checkuserid(request_rec *r, util_ldap_connection_t *ldc,
      */
 
     /*
-     * If any LDAP operation fails due to LDAP_SERVER_DOWN, control returns here.
+     * If LDAP operation fails due to LDAP_SERVER_DOWN, control returns here.
      */
 start_over:
     if (failures++ > 10) {
@@ -893,7 +914,9 @@ start_over:
     if ((result = ldap_search_ext_s(ldc->ldap,
 				    (char *)basedn, scope, 
 				    (char *)filter, attrs, 0, 
-				    NULL, NULL, NULL, -1, &res)) == LDAP_SERVER_DOWN) {
+				    NULL, NULL, NULL, -1, &res)) 
+            == LDAP_SERVER_DOWN) 
+    {
         ldc->reason = "ldap_search_ext_s() for user failed with server down";
         uldap_connection_unbind(ldc);
         goto start_over;
@@ -915,7 +938,8 @@ start_over:
         if (count == 0 )
             ldc->reason = "User not found";
         else
-            ldc->reason = "User is not unique (search found two or more matches)";
+            ldc->reason = "User is not unique (search found two "
+                          "or more matches)";
         ldap_msgfree(res);
         return LDAP_NO_SUCH_OBJECT;
     }
@@ -988,7 +1012,8 @@ start_over:
             /* get values */
             values = ldap_get_values(ldc->ldap, entry, attrs[i]);
             while (values && values[j]) {
-                str = str ? apr_pstrcat(r->pool, str, "; ", values[j], NULL) : apr_pstrdup(r->pool, values[j]);
+                str = str ? apr_pstrcat(r->pool, str, "; ", values[j], NULL) 
+                          : apr_pstrdup(r->pool, values[j]);
                 j++;
             }
             ldap_value_free(values);
@@ -1010,9 +1035,12 @@ start_over:
         the_search_node.vals = vals;
         the_search_node.numvals = numvals;
 
-        /* Search again to make sure that another thread didn't ready insert this node
-           into the cache before we got here. If it does exist then update the lastbind */
-        search_nodep = util_ald_cache_fetch(curl->search_cache, &the_search_node);
+        /* Search again to make sure that another thread didn't ready insert 
+         * this node into the cache before we got here. If it does exist then 
+         * update the lastbind 
+         */
+        search_nodep = util_ald_cache_fetch(curl->search_cache, 
+                                            &the_search_node);
         if ((search_nodep == NULL) || 
             (strcmp(*binddn, search_nodep->dn) != 0)) {
 
@@ -1070,7 +1098,8 @@ static int uldap_cache_getuserdn(request_rec *r, util_ldap_connection_t *ldc,
     /* Get the cache node for this url */
     LDAP_CACHE_LOCK();
     curnode.url = url;
-    curl = (util_url_node_t *)util_ald_cache_fetch(st->util_ldap_cache, &curnode);
+    curl = (util_url_node_t *)util_ald_cache_fetch(st->util_ldap_cache, 
+                                                   &curnode);
     if (curl == NULL) {
         curl = util_ald_create_caches(st, url);
     }
@@ -1079,7 +1108,8 @@ static int uldap_cache_getuserdn(request_rec *r, util_ldap_connection_t *ldc,
     if (curl) {
         LDAP_CACHE_LOCK();
         the_search_node.username = filter;
-        search_nodep = util_ald_cache_fetch(curl->search_cache, &the_search_node);
+        search_nodep = util_ald_cache_fetch(curl->search_cache, 
+                                            &the_search_node);
         if (search_nodep != NULL) {
     
             /* found entry in search cache... */
@@ -1110,7 +1140,7 @@ static int uldap_cache_getuserdn(request_rec *r, util_ldap_connection_t *ldc,
      */
 
     /*
-     * If any LDAP operation fails due to LDAP_SERVER_DOWN, control returns here.
+     * If LDAP operation fails due to LDAP_SERVER_DOWN, control returns here.
      */
 start_over:
     if (failures++ > 10) {
@@ -1124,7 +1154,9 @@ start_over:
     if ((result = ldap_search_ext_s(ldc->ldap,
 				    (char *)basedn, scope,
                                     (char *)filter, attrs, 0, 
-				    NULL, NULL, NULL, -1, &res)) == LDAP_SERVER_DOWN) {
+				    NULL, NULL, NULL, -1, &res)) 
+            == LDAP_SERVER_DOWN) 
+    {
         ldc->reason = "ldap_search_ext_s() for user failed with server down";
         uldap_connection_unbind(ldc);
         goto start_over;
@@ -1146,7 +1178,8 @@ start_over:
         if (count == 0 )
             ldc->reason = "User not found";
         else
-            ldc->reason = "User is not unique (search found two or more matches)";
+            ldc->reason = "User is not unique (search found two "
+                          "or more matches)";
         ldap_msgfree(res);
         return LDAP_NO_SUCH_OBJECT;
     }
@@ -1174,7 +1207,8 @@ start_over:
             /* get values */
             values = ldap_get_values(ldc->ldap, entry, attrs[i]);
             while (values && values[j]) {
-                str = str ? apr_pstrcat(r->pool, str, "; ", values[j], NULL) : apr_pstrdup(r->pool, values[j]);
+                str = str ? apr_pstrcat(r->pool, str, "; ", values[j], NULL) 
+                          : apr_pstrdup(r->pool, values[j]);
                 j++;
             }
             ldap_value_free(values);
@@ -1196,9 +1230,12 @@ start_over:
         the_search_node.vals = vals;
         the_search_node.numvals = numvals;
 
-        /* Search again to make sure that another thread didn't ready insert this node
-           into the cache before we got here. If it does exist then update the lastbind */
-        search_nodep = util_ald_cache_fetch(curl->search_cache, &the_search_node);
+        /* Search again to make sure that another thread didn't ready insert 
+         * this node into the cache before we got here. If it does exist then 
+         * update the lastbind 
+         */
+        search_nodep = util_ald_cache_fetch(curl->search_cache,
+                                            &the_search_node);
         if ((search_nodep == NULL) || 
             (strcmp(*binddn, search_nodep->dn) != 0)) {
 
@@ -1241,7 +1278,8 @@ static int uldap_ssl_supported(request_rec *r)
 /* config directives */
 
 
-static const char *util_ldap_set_cache_bytes(cmd_parms *cmd, void *dummy, const char *bytes)
+static const char *util_ldap_set_cache_bytes(cmd_parms *cmd, void *dummy, 
+                                             const char *bytes)
 {
     util_ldap_state_t *st = 
         (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config, 
@@ -1257,7 +1295,8 @@ static const char *util_ldap_set_cache_bytes(cmd_parms *cmd, void *dummy, const 
     return NULL;
 }
 
-static const char *util_ldap_set_cache_file(cmd_parms *cmd, void *dummy, const char *file)
+static const char *util_ldap_set_cache_file(cmd_parms *cmd, void *dummy, 
+                                            const char *file)
 {
     util_ldap_state_t *st = 
         (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config, 
@@ -1277,7 +1316,8 @@ static const char *util_ldap_set_cache_file(cmd_parms *cmd, void *dummy, const c
     return NULL;
 }
 
-static const char *util_ldap_set_cache_ttl(cmd_parms *cmd, void *dummy, const char *ttl)
+static const char *util_ldap_set_cache_ttl(cmd_parms *cmd, void *dummy, 
+                                           const char *ttl)
 {
     util_ldap_state_t *st = 
         (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config, 
@@ -1286,13 +1326,14 @@ static const char *util_ldap_set_cache_ttl(cmd_parms *cmd, void *dummy, const ch
     st->search_cache_ttl = atol(ttl) * 1000000;
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, cmd->server, 
-                      "[%d] ldap cache: Setting cache TTL to %ld microseconds.", 
-                      getpid(), st->search_cache_ttl);
+                 "[%d] ldap cache: Setting cache TTL to %ld microseconds.",
+                 getpid(), st->search_cache_ttl);
 
     return NULL;
 }
 
-static const char *util_ldap_set_cache_entries(cmd_parms *cmd, void *dummy, const char *size)
+static const char *util_ldap_set_cache_entries(cmd_parms *cmd, void *dummy, 
+                                               const char *size)
 {
     util_ldap_state_t *st = 
         (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config, 
@@ -1305,13 +1346,14 @@ static const char *util_ldap_set_cache_entries(cmd_parms *cmd, void *dummy, cons
     }
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, cmd->server, 
-                      "[%d] ldap cache: Setting search cache size to %ld entries.", 
-                      getpid(), st->search_cache_size);
+                 "[%d] ldap cache: Setting search cache size to %ld entries.",
+                 getpid(), st->search_cache_size);
 
     return NULL;
 }
 
-static const char *util_ldap_set_opcache_ttl(cmd_parms *cmd, void *dummy, const char *ttl)
+static const char *util_ldap_set_opcache_ttl(cmd_parms *cmd, void *dummy, 
+                                             const char *ttl)
 {
     util_ldap_state_t *st = 
         (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config, 
@@ -1320,13 +1362,14 @@ static const char *util_ldap_set_opcache_ttl(cmd_parms *cmd, void *dummy, const 
     st->compare_cache_ttl = atol(ttl) * 1000000;
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, cmd->server, 
-                      "[%d] ldap cache: Setting operation cache TTL to %ld microseconds.", 
-                      getpid(), st->compare_cache_ttl);
+                 "[%d] ldap cache: Setting operation cache TTL to %ld microseconds.", 
+                 getpid(), st->compare_cache_ttl);
 
     return NULL;
 }
 
-static const char *util_ldap_set_opcache_entries(cmd_parms *cmd, void *dummy, const char *size)
+static const char *util_ldap_set_opcache_entries(cmd_parms *cmd, void *dummy, 
+                                                 const char *size)
 {
     util_ldap_state_t *st = 
         (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config, 
@@ -1338,8 +1381,8 @@ static const char *util_ldap_set_opcache_entries(cmd_parms *cmd, void *dummy, co
     }
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, cmd->server, 
-                      "[%d] ldap cache: Setting operation cache size to %ld entries.", 
-                      getpid(), st->compare_cache_size);
+                 "[%d] ldap cache: Setting operation cache size to %ld "
+                 "entries.", getpid(), st->compare_cache_size);
 
     return NULL;
 }
@@ -1433,7 +1476,11 @@ static const int util_ldap_parse_cert_type(const char *type) {
  *
  * This directive may only be used globally.
  */
-static const char *util_ldap_set_trusted_global_cert(cmd_parms *cmd, void *dummy, const char *type, const char *file, const char *password)
+static const char *util_ldap_set_trusted_global_cert(cmd_parms *cmd, 
+                                                     void *dummy, 
+                                                     const char *type, 
+                                                     const char *file, 
+                                                     const char *password)
 {
     util_ldap_state_t *st =
         (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config,
@@ -1480,7 +1527,9 @@ static const char *util_ldap_set_trusted_global_cert(cmd_parms *cmd, void *dummy
 
         cert->path = ap_server_root_relative(cmd->pool, file);
         if (cert->path &&
-            ((rv = apr_stat (&finfo, cert->path, APR_FINFO_MIN, cmd->pool)) != APR_SUCCESS)) {
+            ((rv = apr_stat (&finfo, cert->path, APR_FINFO_MIN, cmd->pool)) 
+                != APR_SUCCESS)) 
+        {
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, cmd->server,
                          "LDAP: Could not open SSL trusted certificate "
                          "authority file - %s",
@@ -1502,7 +1551,11 @@ static const char *util_ldap_set_trusted_global_cert(cmd_parms *cmd, void *dummy
  * - certificate file / directory / nickname
  * - certificate password (optional)
  */
-static const char *util_ldap_set_trusted_client_cert(cmd_parms *cmd, void *config, const char *type, const char *file, const char *password)
+static const char *util_ldap_set_trusted_client_cert(cmd_parms *cmd, 
+                                                     void *config, 
+                                                     const char *type, 
+                                                     const char *file, 
+                                                     const char *password)
 {
     util_ldap_state_t *st =
         (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config,
@@ -1520,7 +1573,8 @@ static const char *util_ldap_set_trusted_client_cert(cmd_parms *cmd, void *confi
                                            "not recognised. It should be one "
                                            "of CERT_DER, CERT_BASE64, "
                                            "CERT_NICKNAME, CERT_PFX,"
-                                           "KEY_DER, KEY_BASE64, KEY_PFX", type);
+                                           "KEY_DER, KEY_BASE64, KEY_PFX", 
+                                           type);
         }
         else if (APR_LDAP_CA_TYPE_DER == cert_type ||
                  APR_LDAP_CA_TYPE_BASE64 == cert_type ||
@@ -1556,7 +1610,9 @@ static const char *util_ldap_set_trusted_client_cert(cmd_parms *cmd, void *confi
 
         cert->path = ap_server_root_relative(cmd->pool, file);
         if (cert->path &&
-            ((rv = apr_stat (&finfo, cert->path, APR_FINFO_MIN, cmd->pool)) != APR_SUCCESS)) {
+            ((rv = apr_stat (&finfo, cert->path, APR_FINFO_MIN, cmd->pool)) 
+                != APR_SUCCESS)) 
+        {
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, cmd->server,
                          "LDAP: Could not open SSL client certificate "
                          "file - %s",
@@ -1578,7 +1634,8 @@ static const char *util_ldap_set_trusted_client_cert(cmd_parms *cmd, void *confi
  * - SSL (SSL encryption)
  * - STARTTLS (TLS encryption)
  */ 
-static const char *util_ldap_set_trusted_mode(cmd_parms *cmd, void *dummy, const char *mode)
+static const char *util_ldap_set_trusted_mode(cmd_parms *cmd, void *dummy, 
+                                              const char *mode)
 {
     util_ldap_state_t *st =
     (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config,
@@ -1594,7 +1651,8 @@ static const char *util_ldap_set_trusted_mode(cmd_parms *cmd, void *dummy, const
     else if (0 == strcasecmp("SSL", mode)) {
         st->secure = APR_LDAP_SSL;
     }
-    else if (0 == strcasecmp("TLS", mode) || 0 == strcasecmp("STARTTLS", mode)) {
+    else if (   (0 == strcasecmp("TLS", mode))
+             || (0 == strcasecmp("STARTTLS", mode))) {
         st->secure = APR_LDAP_STARTTLS;
     }
     else {
@@ -1606,7 +1664,9 @@ static const char *util_ldap_set_trusted_mode(cmd_parms *cmd, void *dummy, const
     return(NULL);
 }
 
-static const char *util_ldap_set_connection_timeout(cmd_parms *cmd, void *dummy, const char *ttl)
+static const char *util_ldap_set_connection_timeout(cmd_parms *cmd, 
+                                                    void *dummy, 
+                                                    const char *ttl)
 {
     util_ldap_state_t *st = 
         (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config, 
@@ -1621,11 +1681,12 @@ static const char *util_ldap_set_connection_timeout(cmd_parms *cmd, void *dummy,
     st->connectionTimeout = atol(ttl);
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, cmd->server, 
-                      "[%d] ldap connection: Setting connection timeout to %ld seconds.", 
-                      getpid(), st->connectionTimeout);
+                 "[%d] ldap connection: Setting connection timeout to "
+                 "%ld seconds.", getpid(), st->connectionTimeout);
 #else
     ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, cmd->server,
-                     "LDAP: Connection timout option not supported by the LDAP SDK in use." );
+                 "LDAP: Connection timout option not supported by the "
+                 "LDAP SDK in use." );
 #endif
 
     return NULL;
@@ -1655,7 +1716,8 @@ static void *util_ldap_create_config(apr_pool_t *p, server_rec *s)
     return st;
 }
 
-static void *util_ldap_merge_config(apr_pool_t *p, void *basev, void *overridesv)
+static void *util_ldap_merge_config(apr_pool_t *p, void *basev, 
+                                    void *overridesv)
 {
     util_ldap_state_t *st = apr_pcalloc(p, sizeof(util_ldap_state_t));
     util_ldap_state_t *base = (util_ldap_state_t *) basev;
@@ -1670,9 +1732,12 @@ static void *util_ldap_merge_config(apr_pool_t *p, void *basev, void *overridesv
     st->compare_cache_size = base->compare_cache_size;
     st->connections = base->connections;
     st->ssl_supported = base->ssl_supported;
-    st->global_certs = apr_array_append(p, base->global_certs, overrides->global_certs);
-    st->client_certs = apr_array_append(p, base->client_certs, overrides->client_certs);
-    st->secure = (overrides->secure_set == 0) ? base->secure : overrides->secure;
+    st->global_certs = apr_array_append(p, base->global_certs, 
+                                           overrides->global_certs);
+    st->client_certs = apr_array_append(p, base->client_certs, 
+                                           overrides->client_certs);
+    st->secure = (overrides->secure_set == 0) ? base->secure 
+                                              : overrides->secure;
 
     return st;
 }
@@ -1700,8 +1765,9 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
     server_rec *s_vhost;
     util_ldap_state_t *st_vhost;
 
-    util_ldap_state_t *st =
-        (util_ldap_state_t *)ap_get_module_config(s->module_config, &ldap_module);
+    util_ldap_state_t *st = (util_ldap_state_t *)
+                            ap_get_module_config(s->module_config, 
+                                                 &ldap_module);
 
     void *data;
     const char *userdata_key = "util_ldap_init";
@@ -1721,7 +1787,8 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
         /* If the cache file already exists then delete it.  Otherwise we are
          * going to run into problems creating the shared memory. */
         if (st->cache_file) {
-            char *lck_file = apr_pstrcat (st->pool, st->cache_file, ".lck", NULL);
+            char *lck_file = apr_pstrcat(st->pool, st->cache_file, ".lck", 
+                                         NULL);
             apr_file_remove(st->cache_file, ptemp);
             apr_file_remove(lck_file, ptemp);
         }
@@ -1730,26 +1797,32 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
     }
 
 #if APR_HAS_SHARED_MEMORY
-    /* initializing cache if shared memory size is not zero and we already don't have shm address */
+    /* initializing cache if shared memory size is not zero and we already 
+     * don't have shm address 
+     */
     if (!st->cache_shm && st->cache_bytes > 0) {
 #endif
         result = util_ldap_cache_init(p, st);
         if (result != APR_SUCCESS) {
             apr_strerror(result, buf, sizeof(buf));
             ap_log_error(APLOG_MARK, APLOG_ERR, result, s,
-                         "LDAP cache: error while creating a shared memory segment: %s", buf);
+                         "LDAP cache: error while creating a shared memory "
+                         "segment: %s", buf);
         }
 
 
 #if APR_HAS_SHARED_MEMORY
         if (st->cache_file) {
-            st->lock_file = apr_pstrcat (st->pool, st->cache_file, ".lck", NULL);
+            st->lock_file = apr_pstrcat(st->pool, st->cache_file, ".lck", 
+                                        NULL);
         }
         else
 #endif
             st->lock_file = ap_server_root_relative(st->pool, tmpnam(NULL));
 
-        result = apr_global_mutex_create(&st->util_ldap_cache_lock, st->lock_file, APR_LOCK_DEFAULT, st->pool);
+        result = apr_global_mutex_create(&st->util_ldap_cache_lock, 
+                                         st->lock_file, APR_LOCK_DEFAULT, 
+                                         st->pool);
         if (result != APR_SUCCESS) {
             return result;
         }
@@ -1766,15 +1839,18 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
         /* merge config in all vhost */
         s_vhost = s->next;
         while (s_vhost) {
-            st_vhost = (util_ldap_state_t *)ap_get_module_config(s_vhost->module_config, &ldap_module);
+            st_vhost = (util_ldap_state_t *)
+                       ap_get_module_config(s_vhost->module_config, 
+                                            &ldap_module);
 
 #if APR_HAS_SHARED_MEMORY
             st_vhost->cache_shm = st->cache_shm;
             st_vhost->cache_rmm = st->cache_rmm;
             st_vhost->cache_file = st->cache_file;
             ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, result, s, 
-                         "LDAP merging Shared Cache conf: shm=0x%pp rmm=0x%pp for VHOST: %s",
-                         st->cache_shm, st->cache_rmm, s_vhost->server_hostname);
+                         "LDAP merging Shared Cache conf: shm=0x%pp rmm=0x%pp "
+                         "for VHOST: %s", st->cache_shm, st->cache_rmm, 
+                         s_vhost->server_hostname);
 #endif
             st_vhost->lock_file = st->lock_file;
             s_vhost = s_vhost->next;
@@ -1782,7 +1858,9 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
 #if APR_HAS_SHARED_MEMORY
     }
     else {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, "LDAP cache: LDAPSharedCacheSize is zero, disabling shared memory cache");
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, 
+                     "LDAP cache: LDAPSharedCacheSize is zero, disabling "
+                     "shared memory cache");
     }
 #endif
     
@@ -1822,7 +1900,8 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
     else {
         st->ssl_supported = 0;
         if (NULL != result_err) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, "%s", result_err->reason);
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, "%s", 
+                         result_err->reason);
         }
         ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s, 
                          "LDAP: SSL support unavailable" );
@@ -1838,7 +1917,7 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
                                  (void *)&timeOut, &(result_err));
         if (APR_SUCCESS != rc) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
-                             "LDAP: Could not set the connection timeout" );
+                             "LDAP: Could not set the connection timeout");
         }
     }
 #endif
@@ -1850,16 +1929,17 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
 static void util_ldap_child_init(apr_pool_t *p, server_rec *s)
 {
     apr_status_t sts;
-    util_ldap_state_t *st = ap_get_module_config(s->module_config, &ldap_module);
+    util_ldap_state_t *st = ap_get_module_config(s->module_config, 
+                                                 &ldap_module);
 
     if (!st->util_ldap_cache_lock) return;
 
-    sts = apr_global_mutex_child_init(&st->util_ldap_cache_lock, st->lock_file, p);
+    sts = apr_global_mutex_child_init(&st->util_ldap_cache_lock, 
+                                      st->lock_file, p);
     if (sts != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, sts, s,
                      "Failed to initialise global mutex %s in child process %"
-                     APR_PID_T_FMT
-                     ".",
+                     APR_PID_T_FMT ".",
                      st->lock_file, getpid());
         return;
     }
@@ -1873,74 +1953,68 @@ static void util_ldap_child_init(apr_pool_t *p, server_rec *s)
 }
 
 command_rec util_ldap_cmds[] = {
-    AP_INIT_TAKE1("LDAPSharedCacheSize", util_ldap_set_cache_bytes, NULL, RSRC_CONF,
-                  "Sets the size of the shared memory cache in bytes. "
-                  "Zero means disable the shared memory cache. Defaults to 100KB."),
+    AP_INIT_TAKE1("LDAPSharedCacheSize", util_ldap_set_cache_bytes, 
+                  NULL, RSRC_CONF,
+                  "Set the size of the shared memory cache (in bytes). Use "
+                  "0 to disable the shared memory cache. (default: 100000)"),
 
-    AP_INIT_TAKE1("LDAPSharedCacheFile", util_ldap_set_cache_file, NULL, RSRC_CONF,
-                  "Sets the file of the shared memory cache."
-                  "Nothing means disable the shared memory cache."),
+    AP_INIT_TAKE1("LDAPSharedCacheFile", util_ldap_set_cache_file, 
+                  NULL, RSRC_CONF,
+                  "Set the file name for the shared memory cache."),
 
-    AP_INIT_TAKE1("LDAPCacheEntries", util_ldap_set_cache_entries, NULL, RSRC_CONF,
-                  "Sets the maximum number of entries that are possible in the LDAP "
-                  "search cache. "
-                  "Zero means no limit; -1 disables the cache. Defaults to 1024 entries."),
+    AP_INIT_TAKE1("LDAPCacheEntries", util_ldap_set_cache_entries, 
+                  NULL, RSRC_CONF,
+                  "Set the maximum number of entries that are possible in the "
+                  "LDAP search cache. Use 0 for no limit. "
+                  "-1 disables the cache. (default: 1024)"),
 
-    AP_INIT_TAKE1("LDAPCacheTTL", util_ldap_set_cache_ttl, NULL, RSRC_CONF,
-                  "Sets the maximum time (in seconds) that an item can be cached in the LDAP "
-                  "search cache. Zero means no limit. Defaults to 600 seconds (10 minutes)."),
+    AP_INIT_TAKE1("LDAPCacheTTL", util_ldap_set_cache_ttl, 
+                  NULL, RSRC_CONF,
+                  "Set the maximum time (in seconds) that an item can be "
+                  "cached in the LDAP search cache. Use 0 for no limit. "
+                  "(default 600)"),
 
-    AP_INIT_TAKE1("LDAPOpCacheEntries", util_ldap_set_opcache_entries, NULL, RSRC_CONF,
-                  "Sets the maximum number of entries that are possible in the LDAP "
-                  "compare cache. "
-                  "Zero means no limit; -1 disables the cache. Defaults to 1024 entries."),
+    AP_INIT_TAKE1("LDAPOpCacheEntries", util_ldap_set_opcache_entries, 
+                  NULL, RSRC_CONF,
+                  "Set the maximum number of entries that are possible "
+                  "in the LDAP compare cache. Use 0 for no limit. "
+                  "Use -1 to disable the cache. (default: 1024)"),
 
-    AP_INIT_TAKE1("LDAPOpCacheTTL", util_ldap_set_opcache_ttl, NULL, RSRC_CONF,
-                  "Sets the maximum time (in seconds) that an item is cached in the LDAP "
-                  "operation cache. Zero means no limit. Defaults to 600 seconds (10 minutes)."),
+    AP_INIT_TAKE1("LDAPOpCacheTTL", util_ldap_set_opcache_ttl, 
+                  NULL, RSRC_CONF,
+                  "Set the maximum time (in seconds) that an item is cached "
+                  "in the LDAP operation cache. Use 0 for no limit. "
+                  "(default: 600)"),
 
-    AP_INIT_TAKE23("LDAPTrustedGlobalCert", util_ldap_set_trusted_global_cert, NULL, RSRC_CONF,
-                  "Sets the file and/or directory containing the trusted "
-                  "certificate authority certificates, and global client "
-                  "certificates (Netware). Used to validate the LDAP server "
-                  "certificate for SSL/TLS connections. "
-                  "The following types are supported:  "
-                  "  CA_DER        - Authority file in binary DER format "
-                  "  CA_BASE64     - Authority file in Base64 format "
-                  "  CA_CERT7_DB   - Netscape certificate database file/directory "
-                  "  CA_SECMOD     - Netscape secmod file/directory "
-                  "  CERT_DER      - Client cert file in DER format "
-                  "  CERT_BASE64   - Client cert file in Base64 format "
-                  "  CERT_KEY3_DB  - Netscape client cert database file/directory "
-                  "  CERT_NICKNAME - Netscape client cert nickname "
-                  "  KEY_DER       - Client cert key file in DER format "
-                  "  KEY_BASE64    - Client cert key file in Base64 format "),
+    AP_INIT_TAKE23("LDAPTrustedGlobalCert", util_ldap_set_trusted_global_cert,
+                   NULL, RSRC_CONF,
+                   "Takes three args; the file and/or directory containing "
+                   "the trusted CA certificates (and global client certs "
+                   "for Netware) used to validate the LDAP server.  Second "
+                   "arg is the cert type for the first arg, one of CA_DER, "
+                   "CA_BASE64, CA_CERT7_DB, CA_SECMOD, CERT_DER, CERT_BASE64, "
+                   "CERT_KEY3_DB, CERT_NICKNAME, KEY_DER, or KEY_BASE64. "
+                   "Third arg is an optional passphrase if applicable."),
 
-    AP_INIT_TAKE23("LDAPTrustedClientCert", util_ldap_set_trusted_client_cert, NULL, RSRC_CONF,
-                  "Specifies a file containing a client certificate or private "
-                  "key, or the ID of the certificate to usethe type of the Certificate Authority file.  "
-                 "The following types are supported:  "
-                 "  CA_DER        - Authority file in binary DER format "
-                 "  CA_BASE64     - Authority file in Base64 format "
-                 "  CA_CERT7_DB   - Netscape certificate database file/directory "
-                 "  CA_SECMOD     - Netscape secmod file/directory "
-                 "  CERT_DER      - Client cert file in DER format "
-                 "  CERT_BASE64   - Client cert file in Base64 format "
-                 "  CERT_KEY3_DB  - Netscape client cert database file/directory "
-                 "  CERT_NICKNAME - Netscape client cert nickname "
-                 "  KEY_DER       - Client cert key file in DER format "
-                 "  KEY_BASE64    - Client cert key file in Base64 format "),
+    AP_INIT_TAKE23("LDAPTrustedClientCert", util_ldap_set_trusted_client_cert,
+                   NULL, RSRC_CONF,
+                   "Takes three args; the file and/or directory containing "
+                   "the client certificate, or certificate ID used to "
+                   "validate this LDAP client.  Second arg is the cert type "
+                   "for the first arg, one of CA_DER, CA_BASE64, CA_CERT7_DB, "
+                   "CA_SECMOD, CERT_DER, CERT_BASE64, CERT_KEY3_DB, "
+                   "CERT_NICKNAME, KEY_DER, or KEY_BASE64. Third arg is an "
+                   "optional passphrase if applicable."),
 
-    AP_INIT_TAKE1("LDAPTrustedMode", util_ldap_set_trusted_mode, NULL, RSRC_CONF,
-                  "Specifies the type of security that should be applied to "
-                  "an LDAP connection. The types supported are: "
-                  "   NONE - no encryption enabled "
-                  "   SSL - SSL encryption enabled (forced by ldaps://) "
-                  "   STARTTLS - STARTTLS MUST be enabled "),
+    AP_INIT_TAKE1("LDAPTrustedMode", util_ldap_set_trusted_mode, 
+                  NULL, RSRC_CONF,
+                  "Specify the type of security that should be applied to "
+                  "an LDAP connection. One of; NONE, SSL or STARTTLS."),
 
-    AP_INIT_TAKE1("LDAPConnectionTimeout", util_ldap_set_connection_timeout, NULL, RSRC_CONF,
-                  "Specifies the LDAP socket connection timeout in seconds. "
-                  "Default is 10 seconds. "),
+    AP_INIT_TAKE1("LDAPConnectionTimeout", util_ldap_set_connection_timeout, 
+                  NULL, RSRC_CONF,
+                  "Specify the LDAP socket connection timeout in seconds "
+                  "(default: 10)"),
 
     {NULL}
 };
@@ -1963,11 +2037,11 @@ static void util_ldap_register_hooks(apr_pool_t *p)
     ap_hook_child_init(util_ldap_child_init, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
-module ldap_module = {
+module AP_MODULE_DECLARE_DATA ldap_module = {
    STANDARD20_MODULE_STUFF,
-   NULL,				/* dir config creater */
-   NULL,				/* dir merger --- default is to override */
-   util_ldap_create_config,		/* server config */
+   NULL,				/* create dir config */
+   NULL,				/* merge dir config */
+   util_ldap_create_config,		/* create server config */
    util_ldap_merge_config,		/* merge server config */
    util_ldap_cmds,			/* command table */
    util_ldap_register_hooks,		/* set up request processing hooks */
