@@ -31,16 +31,10 @@ extern module mime_module;
 extern module authz_host_module;
 extern module negotiation_module;
 extern module include_module;
-extern module autoindex_module;
 extern module dir_module;
-extern module cgi_module;
-extern module userdir_module;
 extern module alias_module;
 extern module env_module;
 extern module log_config_module;
-extern module asis_module;
-extern module imagemap_module;
-extern module actions_module;
 extern module setenvif_module;
 extern module nwssl_module;
 extern module netware_module;
@@ -54,16 +48,10 @@ module *ap_prelinked_modules[] = {
   &authz_host_module,
   &negotiation_module,
   &include_module,
-  &autoindex_module,
   &dir_module,
-  &cgi_module,
-  &userdir_module,
   &alias_module,
   &env_module,
   &log_config_module,
-  &asis_module,
-  &imagemap_module,
-  &actions_module,
   &setenvif_module,
   &nwssl_module,
   &netware_module,
@@ -79,16 +67,10 @@ ap_module_symbol_t ap_prelinked_module_symbols[] = {
   {"authz_host_module", &authz_host_module},
   {"negotiation_module", &negotiation_module},
   {"include_module", &include_module},
-  {"autoindex_module", &autoindex_module},
   {"dir_module", &dir_module},
-  {"cgi_module", &cgi_module},
-  {"userdir_module", &userdir_module},
   {"alias_module", &alias_module},
   {"env_module", &env_module},
   {"log_config_module", &log_config_module},
-  {"asis_module", &asis_module},
-  {"imagemap_module", &imagemap_module},
-  {"actions_module", &actions_module},
   {"setenvif_module", &setenvif_module},
   {"nwssl_module", &nwssl_module},
   {"netware_module", &netware_module},
@@ -104,16 +86,10 @@ module *ap_preloaded_modules[] = {
   &authz_host_module,
   &negotiation_module,
   &include_module,
-  &autoindex_module,
   &dir_module,
-  &cgi_module,
-  &userdir_module,
   &alias_module,
   &env_module,
   &log_config_module,
-  &asis_module,
-  &imagemap_module,
-  &actions_module,
   &setenvif_module,
   &nwssl_module,
   &netware_module,

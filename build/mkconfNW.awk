@@ -37,6 +37,7 @@ BEGIN {
 }
 
 /@@LoadModule@@/ {
+    print "#LoadModule actions_module modules/actions.nlm"
     print "#LoadModule auth_basic_module modules/authbasc.nlm"
     print "#LoadModule auth_digest_module modules/authdigt.nlm"
     print "#LoadModule authn_anon_module modules/authnano.nlm"
@@ -47,7 +48,10 @@ BEGIN {
     print "#LoadModule authz_default_module modules/authzdef.nlm"
     print "#LoadModule authz_groupfile_module modules/authzgrp.nlm"
     print "#LoadModule authz_user_module modules/authzusr.nlm"
+    print "#LoadModule asis_module modules/mod_asis.nlm"
+    print "LoadModule autoindex_module modules/autoindex.nlm"
     print "#LoadModule cern_meta_module modules/cernmeta.nlm"
+    print "#LoadModule cgi_module modules/mod_cgi.nlm"
     print "#LoadModule dav_module modules/mod_dav.nlm"
     print "#LoadModule dav_fs_module modules/moddavfs.nlm"
     print "#LoadModule dav_lock_module modules/moddavlk.nlm"
@@ -56,6 +60,7 @@ BEGIN {
     print "#LoadModule file_cache_module modules/filecach.nlm"
     print "#LoadModule headers_module modules/headers.nlm"
     print "#LoadModule ident_module modules/modident.nlm"
+    print "#LoadModule imagemap_module modules/imagemap.nlm"
     print "#LoadModule info_module modules/info.nlm"
     print "#LoadModule log_forensic_module modules/forensic.nlm"
     print "#LoadModule logio_module modules/modlogio.nlm"
@@ -70,6 +75,7 @@ BEGIN {
     print "#LoadModule unique_id_module modules/uniqueid.nlm"
     print "#LoadModule usertrack_module modules/usertrk.nlm"
     print "#LoadModule version_module modules/modversion.nlm"
+    print "#LoadModule userdir_module modules/userdir.nlm"
     print "#LoadModule vhost_alias_module modules/vhost.nlm"
     print ""
     next
