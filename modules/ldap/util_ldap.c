@@ -124,7 +124,7 @@ static void util_ldap_strdup (char **str, const char *newstr)
  * </Location>
  *
  */
-int util_ldap_handler(request_rec *r)
+static int util_ldap_handler(request_rec *r)
 {
     util_ldap_state_t *st = (util_ldap_state_t *)ap_get_module_config(r->server->module_config, &ldap_module);
 
@@ -157,7 +157,7 @@ int util_ldap_handler(request_rec *r)
  * uldap_connection_find() is called this connection will be
  * available for reuse.
  */
-LDAP_DECLARE(void) uldap_connection_close(util_ldap_connection_t *ldc)
+static void uldap_connection_close(util_ldap_connection_t *ldc)
 {
 
     /*
@@ -184,7 +184,7 @@ LDAP_DECLARE(void) uldap_connection_close(util_ldap_connection_t *ldc)
  * the LDAP server. It is used to bring the connection back to a known
  * state after an error, and during pool cleanup.
  */
-LDAP_DECLARE_NONSTD(apr_status_t) uldap_connection_unbind(void *param)
+static apr_status_t uldap_connection_unbind(void *param)
 {
     util_ldap_connection_t *ldc = param;
 
@@ -205,7 +205,7 @@ LDAP_DECLARE_NONSTD(apr_status_t) uldap_connection_unbind(void *param)
  * This function is registered with the pool cleanup function - causing
  * the LDAP connections to be shut down cleanly on graceful restart.
  */
-LDAP_DECLARE_NONSTD(apr_status_t) uldap_connection_cleanup(void *param)
+static apr_status_t uldap_connection_cleanup(void *param)
 {
     util_ldap_connection_t *ldc = param;
 
@@ -237,8 +237,8 @@ LDAP_DECLARE_NONSTD(apr_status_t) uldap_connection_cleanup(void *param)
  *
  * Returns LDAP_SUCCESS on success; and an error code on failure
  */
-LDAP_DECLARE(int) uldap_connection_open(request_rec *r, 
-                                            util_ldap_connection_t *ldc)
+static int uldap_connection_open(request_rec *r, 
+                                 util_ldap_connection_t *ldc)
 {
     int rc = 0;
     int failures = 0;
@@ -407,11 +407,12 @@ static int compare_client_certs(apr_array_header_t *srcs, apr_array_header_t *de
  * and returned to the caller. If found in the cache, a pointer to the existing
  * ldc structure will be returned.
  */
-LDAP_DECLARE(util_ldap_connection_t *)
-             uldap_connection_find(request_rec *r,
-                                       const char *host, int port,
-                                       const char *binddn, const char *bindpw,
-                                       deref_options deref, int secure) {
+static util_ldap_connection_t * 
+            uldap_connection_find(request_rec *r,
+                                  const char *host, int port,
+                                  const char *binddn, const char *bindpw,
+                                  deref_options deref, int secure) 
+{
     struct util_ldap_connection_t *l, *p; /* To traverse the linked list */
     int secureflag = secure;
 
@@ -554,9 +555,9 @@ LDAP_DECLARE(util_ldap_connection_t *)
  *
  * The lock for the ldap cache should already be acquired.
  */
-LDAP_DECLARE(int) uldap_cache_comparedn(request_rec *r, util_ldap_connection_t *ldc, 
-                            const char *url, const char *dn, const char *reqdn, 
-                            int compare_dn_on_server)
+static int uldap_cache_comparedn(request_rec *r, util_ldap_connection_t *ldc, 
+                                 const char *url, const char *dn, 
+                                 const char *reqdn, int compare_dn_on_server)
 {
     int result = 0;
     util_url_node_t *curl; 
@@ -677,9 +678,9 @@ start_over:
  * require user cache is owned by the 
  *
  */
-LDAP_DECLARE(int) uldap_cache_compare(request_rec *r, util_ldap_connection_t *ldc,
-                          const char *url, const char *dn,
-                          const char *attrib, const char *value)
+static int uldap_cache_compare(request_rec *r, util_ldap_connection_t *ldc,
+                               const char *url, const char *dn,
+                               const char *attrib, const char *value)
 {
     int result = 0;
     util_url_node_t *curl; 
@@ -809,10 +810,11 @@ start_over:
     return result;
 }
 
-LDAP_DECLARE(int) uldap_cache_checkuserid(request_rec *r, util_ldap_connection_t *ldc,
-                              const char *url, const char *basedn, int scope, char **attrs,
-                              const char *filter, const char *bindpw, const char **binddn,
-                              const char ***retvals)
+static int uldap_cache_checkuserid(request_rec *r, util_ldap_connection_t *ldc,
+                                   const char *url, const char *basedn, 
+                                   int scope, char **attrs, const char *filter,
+                                   const char *bindpw, const char **binddn, 
+                                   const char ***retvals)
 {
     const char **vals = NULL;
     int numvals = 0;
@@ -1036,17 +1038,17 @@ start_over:
     return LDAP_SUCCESS;
 }
 
-  /*
+/*
  * This function will return the DN of the entry matching userid.
  * It is used to get the DN in case some other module than mod_auth_ldap
  * has authenticated the user.
  * The function is basically a copy of uldap_cache_checkuserid
  * with password checking removed.
  */
-LDAP_DECLARE(int) uldap_cache_getuserdn(request_rec *r, util_ldap_connection_t *ldc,
-                              const char *url, const char *basedn, int scope, char **attrs,
-                              const char *filter, const char **binddn,
-                              const char ***retvals)
+static int uldap_cache_getuserdn(request_rec *r, util_ldap_connection_t *ldc,
+                                 const char *url, const char *basedn, 
+                                 int scope, char **attrs, const char *filter, 
+                                 const char **binddn, const char ***retvals)
 {
     const char **vals = NULL;
     int numvals = 0;
@@ -1226,7 +1228,7 @@ start_over:
  *
  * 1 = enabled, 0 = not enabled
  */
-LDAP_DECLARE(int) uldap_ssl_supported(request_rec *r)
+static int uldap_ssl_supported(request_rec *r)
 {
    util_ldap_state_t *st = (util_ldap_state_t *)ap_get_module_config(
                                 r->server->module_config, &ldap_module);
@@ -1630,7 +1632,7 @@ static const char *util_ldap_set_connection_timeout(cmd_parms *cmd, void *dummy,
 }
 
 
-void *util_ldap_create_config(apr_pool_t *p, server_rec *s)
+static void *util_ldap_create_config(apr_pool_t *p, server_rec *s)
 {
     util_ldap_state_t *st = 
         (util_ldap_state_t *)apr_pcalloc(p, sizeof(util_ldap_state_t));
