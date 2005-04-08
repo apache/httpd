@@ -152,6 +152,9 @@ XDCDATA         =
 # If there is an NLM target, put it here
 #
 TARGET_nlm = \
+	$(OBJDIR)/mod_asis.nlm \
+	$(OBJDIR)/autoindex.nlm \
+	$(OBJDIR)/mod_cgi.nlm \
 	$(OBJDIR)/info.nlm \
 	$(OBJDIR)/status.nlm \
 	$(EOLIST)

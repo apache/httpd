@@ -152,8 +152,11 @@ XDCDATA         =
 # If there is an NLM target, put it here
 #
 TARGET_nlm = \
+	$(OBJDIR)/actions.nlm \
+	$(OBJDIR)/imagemap.nlm \
 	$(OBJDIR)/rewrite.nlm \
 	$(OBJDIR)/speling.nlm \
+	$(OBJDIR)/userdir.nlm \
 	$(OBJDIR)/vhost.nlm \
 	$(EOLIST)
 

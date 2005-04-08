@@ -208,14 +208,9 @@ FILES_nlm_objs = \
 	$(OBJDIR)/log.o \
 	$(OBJDIR)/main.o \
 	$(OBJDIR)/mod_authz_host.o \
-	$(OBJDIR)/mod_actions.o \
 	$(OBJDIR)/mod_alias.o \
-	$(OBJDIR)/mod_asis.o \
-	$(OBJDIR)/mod_autoindex.o \
-	$(OBJDIR)/mod_cgi.o \
 	$(OBJDIR)/mod_dir.o \
 	$(OBJDIR)/mod_env.o \
-	$(OBJDIR)/mod_imagemap.o \
 	$(OBJDIR)/mod_include.o \
 	$(OBJDIR)/mod_log_config.o \
 	$(OBJDIR)/mod_mime.o \
@@ -224,7 +219,6 @@ FILES_nlm_objs = \
 	$(OBJDIR)/mod_nw_ssl.o \
 	$(OBJDIR)/mod_setenvif.o \
 	$(OBJDIR)/mod_so.o \
-	$(OBJDIR)/mod_userdir.o \
 	$(OBJDIR)/modules.o \
 	$(OBJDIR)/mpm_common.o \
 	$(OBJDIR)/mpm_netware.o \
