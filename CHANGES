@@ -2,6 +2,11 @@ Changes with Apache 2.1.5
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) NetWare: Reposition mod_asis, mod_actions, mod_cgi, mod_imagemap,
+     mod_userdir and mod_autoindex as shared modules rather than 
+     built-in modules within the NetWare build.
+     [Brad Nicholes]
+
   *) Rename mod_imap to mod_imagemap.
      [Paul Querna]
 
