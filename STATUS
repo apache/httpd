@@ -205,12 +205,6 @@ PATCHES TO BACKPORT FROM TRUNK:
                    it as-is.  For the one or two platforms that don't like 
                    which, they can write their own version of the script.
 
-    * modules/http/http_request.c (ap_internal_fast_redirect): Take over
-      important members of the subrequest. Especially the proxyreq copying
-      is interesting for proxying DirectoryIndex'd resources:
-        http://svn.apache.org/viewcvs.cgi?rev=102330&view=rev
-      +1: nd, jerenkrantz, pquerna, striker
-
     * Win32: Move call to mpm_service_install to the rewrite_args hook
       from the post_config hook.
       http://svn.apache.org/viewcvs?view=rev&rev=154319
