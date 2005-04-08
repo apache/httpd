@@ -215,7 +215,7 @@ FILES_nlm_objs = \
 	$(OBJDIR)/mod_cgi.o \
 	$(OBJDIR)/mod_dir.o \
 	$(OBJDIR)/mod_env.o \
-	$(OBJDIR)/mod_imap.o \
+	$(OBJDIR)/mod_imagemap.o \
 	$(OBJDIR)/mod_include.o \
 	$(OBJDIR)/mod_log_config.o \
 	$(OBJDIR)/mod_mime.o \

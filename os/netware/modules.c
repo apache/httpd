@@ -39,7 +39,7 @@ extern module alias_module;
 extern module env_module;
 extern module log_config_module;
 extern module asis_module;
-extern module imap_module;
+extern module imagemap_module;
 extern module actions_module;
 extern module setenvif_module;
 extern module nwssl_module;
@@ -62,7 +62,7 @@ module *ap_prelinked_modules[] = {
   &env_module,
   &log_config_module,
   &asis_module,
-  &imap_module,
+  &imagemap_module,
   &actions_module,
   &setenvif_module,
   &nwssl_module,
@@ -87,7 +87,7 @@ ap_module_symbol_t ap_prelinked_module_symbols[] = {
   {"env_module", &env_module},
   {"log_config_module", &log_config_module},
   {"asis_module", &asis_module},
-  {"imap_module", &imap_module},
+  {"imagemap_module", &imagemap_module},
   {"actions_module", &actions_module},
   {"setenvif_module", &setenvif_module},
   {"nwssl_module", &nwssl_module},
@@ -112,7 +112,7 @@ module *ap_preloaded_modules[] = {
   &env_module,
   &log_config_module,
   &asis_module,
-  &imap_module,
+  &imagemap_module,
   &actions_module,
   &setenvif_module,
   &nwssl_module,
