@@ -220,10 +220,12 @@ PATCHES TO BACKPORT FROM TRUNK:
       with no body
       http://svn.apache.org/viewcvs?view=rev&rev=158798
       http://svn.apache.org/viewcvs?view=rev&rev=159410
+      http://svn.apache.org/viewcvs?view=rev&rev=160573
       +1: gregames
       -1: jerenkrantz (read_length isn't a sufficient check to see if a body
                        is present in the request; presence of T-E and C-L in
                        the headers is the correct flag.)
+      gregames: done in rev 160573
 
     * mod_version: New Module, Backport from trunk.
       http://svn.apache.org/repos/asf/httpd/httpd/trunk/modules/metadata/mod_version.c
