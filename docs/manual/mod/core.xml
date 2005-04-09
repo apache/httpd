@@ -2956,7 +2956,7 @@ certain events before failing a request</description>
 <description>Configures how the server determines its own name and
 port</description>
 <syntax>UseCanonicalName On|Off|DNS</syntax>
-<default>UseCanonicalName On</default>
+<default>UseCanonicalName Off</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context></contextlist>
 

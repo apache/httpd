@@ -21,18 +21,11 @@
 # block. So, if available, use this one instead. Read the mod_ssl User
 # Manual for more details.
 #
-# Note: This must come before the <IfDefine SSL> container to support
-#       starting without SSL on platforms with no /dev/random equivalent
-#       but a statically compiled-in mod_ssl.
-#
-SSLRandomSeed startup builtin
-SSLRandomSeed connect builtin
 #SSLRandomSeed startup file:/dev/random  512
 #SSLRandomSeed startup file:/dev/urandom 512
 #SSLRandomSeed connect file:/dev/random  512
 #SSLRandomSeed connect file:/dev/urandom 512
 
-<IfDefine SSL>
 
 #
 # When we also provide SSL we have to listen to the 
@@ -236,5 +229,3 @@ CustomLog @exp_logfiledir@/ssl_request_log \
           "%t %h %{SSL_PROTOCOL}x %{SSL_CIPHER}x \"%r\" %b"
 
 </VirtualHost>                                  
-
-</IfDefine>
