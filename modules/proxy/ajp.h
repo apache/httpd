@@ -103,6 +103,9 @@
 #define AJP_EBAD_MESSAGE        (APR_OS_START_USERERR + 8) 
 /** Cant log via AJP14 */
 #define AJP_ELOGFAIL            (APR_OS_START_USERERR + 9) 
+/** Bad request method */
+#define AJP_EBAD_METHOD         (APR_OS_START_USERERR + 10) 
+
 
 /** A structure that represents ajp message */ 
 typedef struct ajp_msg ajp_msg_t;
