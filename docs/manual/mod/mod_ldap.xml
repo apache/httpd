@@ -340,4 +340,19 @@ valid</description>
 </usage>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>LDAPConnectionTimeout</name>
+<description>Specifies the socket connection timeout in seconds</description>
+<syntax>LDAPConnectionTimeout <var>seconds</var></syntax>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>Specifies the timeout value (in seconds) in which the module will
+    attempt to connect to the LDAP server.  If a connection is not
+    successful with the timeout period, either an error will be 
+    returned or the module will attempt to connect to a secondary LDAP 
+    server if one is specified. The default is 10 seconds.</p>
+</usage>
+</directivesynopsis>
+
 </modulesynopsis>

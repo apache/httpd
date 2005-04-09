@@ -1,5 +1,9 @@
 Changes with Apache 2.0.54
 
+  *) mod_ldap: Added the directive LDAPConnectionTimeout to configure
+     the ldap socket connection timeout value.  
+     [Brad Nicholes]
+
   *) Correctly export all mod_dav public functions.
      [Branko Èibej <brane xbc.nu>]
 
