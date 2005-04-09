@@ -1757,7 +1757,9 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
     if (!uri->port) {
         uri->port = apr_uri_port_of_scheme(uri->scheme);
     }
-
+    if (!uri->query) {
+        uri->query = r->args;
+    }
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                  "proxy: connecting %s to %s:%d", *url, uri->hostname,
                  uri->port);
