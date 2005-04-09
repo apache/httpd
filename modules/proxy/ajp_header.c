@@ -225,8 +225,7 @@ static apr_status_t ajp_marshal_into_msgb(ajp_msg_t *msg,
         return AJP_EBAD_METHOD;
     }
 
-    /* XXXX need something */
-    is_ssl = (apr_byte_t) 0; /* s->is_ssl */
+    is_ssl = (apr_byte_t) ap_proxy_conn_is_https(r->connection);
 
     if (r->headers_in && apr_table_elts(r->headers_in)) {
         const apr_array_header_t *t = apr_table_elts(r->headers_in);
@@ -342,7 +341,7 @@ static apr_status_t ajp_marshal_into_msgb(ajp_msg_t *msg,
  *   SetEnv SSL_SESSION_ID CUSTOM_SSL_SESSION_ID
  * </Location>
  */
-    if ((envvar = apr_table_get(r->subprocess_env,
+    if ((envvar = ap_proxy_ssl_val(r->pool, r->server, r->connection, r,
                                 AJP13_SSL_CLIENT_CERT_INDICATOR))) {
         if (ajp_msg_append_uint8(msg, SC_A_SSL_CERT) ||
             ajp_msg_append_string(msg, envvar)) {
@@ -353,7 +352,7 @@ static apr_status_t ajp_marshal_into_msgb(ajp_msg_t *msg,
         }
     }
 
-    if ((envvar = apr_table_get(r->subprocess_env,
+    if ((envvar = ap_proxy_ssl_val(r->pool, r->server, r->connection, r,
                                 AJP13_SSL_CIPHER_INDICATOR))) {
         if (ajp_msg_append_uint8(msg, SC_A_SSL_CIPHER) ||
             ajp_msg_append_string(msg, envvar)) {
@@ -364,7 +363,7 @@ static apr_status_t ajp_marshal_into_msgb(ajp_msg_t *msg,
         }
     }
 
-    if ((envvar = apr_table_get(r->subprocess_env,
+    if ((envvar = ap_proxy_ssl_val(r->pool, r->server, r->connection, r,
                                 AJP13_SSL_SESSION_INDICATOR))) {
         if (ajp_msg_append_uint8(msg, SC_A_SSL_SESSION) ||
             ajp_msg_append_string(msg, envvar)) {

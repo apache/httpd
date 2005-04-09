@@ -403,6 +403,8 @@ PROXY_DECLARE(void) ap_proxy_table_unmerge(apr_pool_t *p, apr_table_t *t, char *
 PROXY_DECLARE(int) ap_proxy_connect_to_backend(apr_socket_t **, const char *, apr_sockaddr_t *, const char *, proxy_server_conf *, server_rec *, apr_pool_t *);
 PROXY_DECLARE(int) ap_proxy_ssl_enable(conn_rec *c);
 PROXY_DECLARE(int) ap_proxy_ssl_disable(conn_rec *c);
+PROXY_DECLARE(int) ap_proxy_conn_is_https(conn_rec *c);
+PROXY_DECLARE(const char *) ap_proxy_ssl_val(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, const char *var);
 
 /* Header mapping functions, and a typedef of their signature */
 PROXY_DECLARE(const char *) ap_proxy_location_reverse_map(request_rec *r, proxy_server_conf *conf, const char *url);
