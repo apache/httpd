@@ -1,0 +1,27 @@
+#
+# Provide access to the documentation on your server as
+#  http://yourserver.example.com/manual/
+# The documentation is always available at
+#  http://httpd.apache.org/docs-2.1/
+#
+# Required modules: mod_alias, mod_setenvif, mod_negotiation
+#
+
+AliasMatch ^/manual(?:/(?:de|en|es|fr|ja|ko|pt-br|ru))?(/.*)?$ "@exp_manualdir@$1"
+
+<Directory "@exp_manualdir@">
+    Options Indexes
+    AllowOverride None
+    Order allow,deny
+    Allow from all
+
+    <Files *.html>
+        SetHandler type-map
+    </Files>
+
+    SetEnvIf Request_URI ^/manual/(de|en|es|fr|ja|ko|pt-br|ru)/ prefer-language=$1
+    RedirectMatch 301 ^/manual(?:/(de|en|es|fr|ja|ko|pt-br|ru)){2,}(/.*)?$ /manual/$1$2
+
+    LanguagePriority en de es fr ja ko pt-br ru 
+    ForceLanguagePriority Prefer Fallback
+</Directory>

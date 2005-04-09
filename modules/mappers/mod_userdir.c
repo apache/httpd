@@ -73,9 +73,12 @@
 #endif
 
 
-/* The default directory in user's home dir */
+/* 
+ * The default directory in user's home dir 
+ * In the default install, the module is disabled
+ */
 #ifndef DEFAULT_USER_DIR
-#define DEFAULT_USER_DIR "public_html"
+#define DEFAULT_USER_DIR NULL
 #endif
 
 module AP_MODULE_DECLARE_DATA userdir_module;
