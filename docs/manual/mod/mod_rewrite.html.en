@@ -1185,8 +1185,8 @@ When using the NOT character
           <strong>R</strong>-flag (see below).</p>
 </div>
 
-      <p>Additionally you can set special flags for
-      <em>Substitution</em> by appending</p>
+      <p>Additionally you can set special <a name="rewriteflags" id="rewriteflags">flags</a> for <em>Substitution</em> by 
+      appending</p>
 
       <p class="indent">
         <strong><code>[</code><em>flags</em><code>]</code></strong>
