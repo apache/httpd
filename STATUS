@@ -153,14 +153,6 @@ PATCHES TO BACKPORT FROM TRUNK:
                     have already.  *shrug*  Regardless, patch looks okay...
        +1: nd, jerenkrantz
 
-    *) mod_dav: Send an EOS at the end of the multistatus brigade.
-       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/dav/main/mod_dav.c?r1=1.105&r2=1.106
-       +1: jorton, jerenkrantz, pquerna
-         nd asks: Sure, you want to drop the return code of ap_pass_brigade?
-         jerenkrantz: They already did drop it.  Note that this really isn't
-                      a correctness fix; just a perf. fix.  We'd send the EOS
-                      later without it.
-
     * Rewrite how proxy sends its request to allow input bodies to 
       morph the request bodies.  Previously, if an input filter
       changed the request body, the original C-L would be sent which
