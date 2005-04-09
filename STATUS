@@ -105,6 +105,7 @@ PATCHES TO BACKPORT FROM TRUNK:
          http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/log.c?r1=1.150&r2=1.151
          http://cvs.apache.org/viewcvs.cgi/httpd-2.0/include/http_log.h?r1=1.46&r2=1.48
        +1: trawick, stoddard
+       -0: wrowe; seems this (valid) improvement would encourage non-compatible mods.
 
     *) mod_headers: Support {...}s tag for SSL variable lookup.
        http://www.apache.org/~jorton/mod_headers-2.0-ssl.diff
@@ -208,7 +209,7 @@ PATCHES TO BACKPORT FROM TRUNK:
     * Win32: Move call to mpm_service_install to the rewrite_args hook
       from the post_config hook.
       http://svn.apache.org/viewcvs?view=rev&rev=154319
-      +1: stoddard, striker
+      +1: stoddard, striker, wrowe (as corrected in subsequent patches)
 
     * don't propagate input headers describing a body to a GET subrequest
       with no body
@@ -219,12 +220,34 @@ PATCHES TO BACKPORT FROM TRUNK:
       -1: jerenkrantz (read_length isn't a sufficient check to see if a body
                        is present in the request; presence of T-E and C-L in
                        the headers is the correct flag.)
+      +/-0: wrowe (this has a negative impact on modules who wish to 'inspect'
+            the headers, e.g. an xml transformation affected by the query
+            string or request POST args.  The right solution is adopt apreq,
+            providing an API for filters to participate in POST bodies.)
       gregames: done in rev 160573
 
     * mod_version: New Module, Backport from trunk.
       http://svn.apache.org/repos/asf/httpd/httpd/trunk/modules/metadata/mod_version.c
       (Also need to backport docs, and build system stuff.)
-      +1: pquerna, jerenkrantz
+      +1: pquerna, jerenkrantz, wrowe (trivial, would even be cool in 1.3)
+
+    *) Provide TLS/SSL upgrade functionality in mod_ssl allowing an unsecure
+       connection to be upgraded to a secure connection upon request by the
+       client.  The full patch file is available at http://www.apache.org/~bnicholes/
+       as well as a test client tlsupgrade.c. This functionality is mainly used by
+       IPP clients today.
+          modules/ssl/mod_ssl.c: r1.75, r1.97, r1.100
+          modules/ssl/mod_ssl.h: r1.123
+          modules/ssl/ssl_engine_config.c: r1.71, r1.90
+          modules/ssl/ssl_engine_init.c: r1.107, r1.126
+          modules/ssl/ssl_engine_io.c: r1.102, r1.124
+          modules/ssl/ssl_engine_kernel.c: r1.83, r1.105, r1.108
+          modules/ssl/ssl_util.c: r1.36
+          modules/ssl/ssl_private.h: r1.2
+       +1: bnicholes, wrowe                             
+       -0: jerenkrantz (should wait for 2.2)
+       -0: pquerna (2.2)
+       -0: jorton (msgid <20040305083540.GA24529@redhat.com>)
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
@@ -262,24 +285,6 @@ PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
        0: nd: IMHO that's a public API change then and not applicable for
               2.0, just let 'em in
        -1: wrowe (as nd suggests, leave the dead horse in peace.)
-
-    *) Provide TLS/SSL upgrade functionality in mod_ssl allowing an unsecure
-       connection to be upgraded to a secure connection upon request by the
-       client.  The full patch file is available at http://www.apache.org/~bnicholes/
-       as well as a test client tlsupgrade.c. This functionality is mainly used by
-       IPP clients today.
-          modules/ssl/mod_ssl.c: r1.75, r1.97, r1.100
-          modules/ssl/mod_ssl.h: r1.123
-          modules/ssl/ssl_engine_config.c: r1.71, r1.90
-          modules/ssl/ssl_engine_init.c: r1.107, r1.126
-          modules/ssl/ssl_engine_io.c: r1.102, r1.124
-          modules/ssl/ssl_engine_kernel.c: r1.83, r1.105, r1.108
-          modules/ssl/ssl_util.c: r1.36
-          modules/ssl/ssl_private.h: r1.2
-       +1: bnicholes, wrowe                             
-       -0: jerenkrantz (should wait for 2.2)
-       -0: pquerna (2.2)
-       -0: jorton (msgid <20040305083540.GA24529@redhat.com>)
 
     * Replace some of the mutex locking in the worker MPM with
       atomic operations for higher concurrency.
@@ -436,18 +441,6 @@ CURRENT VOTES:
             nd (for 2.0)
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
-
-    * mod_ssl: We twiddle status bits rather than calling SSL_renegotiate 
-      to unset the current negotiation status.  This especially affects
-      sslc users who can't touch these internal bits (nor should OpenSSL
-      based apps do so.)  Flipping to SSL_renegotiate causes us to start 
-      failing perl-framework tests.  Needs some further research.
-        http://www.apache.org/~wrowe/ssl_renegotiate.patch for a clean 2.0 patch,
-        or for httpd-2.1 refer to:
-        modules/ssl/config.m4 1.15
-        modules/ssl/ssl_engine_io.c 1.08
-        modules/ssl/ssl_engine_kernel.c 1.93
-        modules/ssl/ssl_toolkit_compat.c 1.34
 
     * There is a bug in how we sort some hooks, at least the pre-config
       hook.  The first time we call the hooks, they are in the correct 
@@ -642,6 +635,9 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
         Questions; htdbm exists, time to kill dbmmanage, or does it remain
                    useful as a perl dbm management example?  If we keep it,
                    do we address the issue above?
+        March discussion summary; we are missing group support.  With that
+                   added to trunk, this script will go away.  It will remain
+                   in 2.0 based on our versioning approach.
 
     * Integrate mod_dav.
         Some additional items remaining:
