@@ -28,12 +28,10 @@ static int proxy_balancer_canon(request_rec *r, char *url)
 {
     char *host, *path, *search;
     const char *err;
-    const char *scheme;
     apr_port_t port = 0;
 
     if (strncasecmp(url, "balancer:", 9) == 0) {
         url += 9;
-        scheme = "balancer";
     }    
     else {
         return DECLINED;
@@ -70,7 +68,7 @@ static int proxy_balancer_canon(request_rec *r, char *url)
     if (path == NULL)
         return HTTP_BAD_REQUEST;
 
-    r->filename = apr_pstrcat(r->pool, "proxy:", scheme, "://", host,
+    r->filename = apr_pstrcat(r->pool, "proxy:balancer://", host,
             "/", path, (search) ? "?" : "", (search) ? search : "", NULL);
     return OK;
 }
