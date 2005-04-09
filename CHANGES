@@ -2,6 +2,22 @@ Changes with Apache 2.1.5
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Change the default (when not present in the config file) setting
+     for UseCanonicalName to Off.
+     [Joshua Slive]
+
+  *) mod_userdir: The module no longer does any remapping unless the
+     UserDir directive is present in the config file.
+     [Joshua Slive]
+
+  *) Massively simplify the distributed httpd.conf by removing
+     many features and many directives that are at their default
+     setting.  Add a selection of example config excerpts for adding
+     extra features in the conf/extra/ directory.  Install the
+     distributed config and the extra config examples in the
+     conf/original/ directory during make install.
+     [Joshua Slive, Justin Erenkrantz]
+
   *) NetWare: Reposition mod_asis, mod_actions, mod_cgi, mod_imagemap,
      mod_userdir and mod_autoindex as shared modules rather than 
      built-in modules within the NetWare build.
