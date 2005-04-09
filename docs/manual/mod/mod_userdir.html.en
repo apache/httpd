@@ -51,7 +51,6 @@ tutorial</a></li>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Location of the user-specific directories</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>UserDir <em>directory-filename</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>UserDir public_html</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_userdir</td></tr>
@@ -152,6 +151,11 @@ to http://www.foo.com/bob/one/two.html.</p>
 Apache cannot determine if the redirect succeeded or not, so if you have
 the redirect earlier in the list, that will always be the alternative
 that is used.</p>
+
+<p>User directory substitution is not active by default in versions
+2.1.4 and later.  In earlier versions, <code>UserDir public_html</code>
+was assumed if no <code class="directive"><a href="#userdir">UserDir</a></code>
+directive was present.</p>
 
 
 <h3>See also</h3>
