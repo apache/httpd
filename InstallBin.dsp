@@ -33,7 +33,7 @@ CFG=InstallBin - Win32 Debug
 # PROP BASE Intermediate_Dir "Release"
 # PROP BASE Cmd_Line "NMAKE /f InstallBin.mak"
 # PROP BASE Rebuild_Opt "/a"
-# PROP BASE Target_File "\Apache2.0\bin\Apache.exe"
+# PROP BASE Target_File "\Apache21\bin\httpd.exe"
 # PROP BASE Bsc_Name "InstallBin.bsc"
 # PROP BASE Target_Dir ""
 # PROP Use_Debug_Libraries 0
@@ -41,8 +41,8 @@ CFG=InstallBin - Win32 Debug
 # PROP Intermediate_Dir "Release"
 # PROP Cmd_Line "NMAKE /f makefile.win INSTDIR="\Apache21" SHORT=R LONG=Release _install"
 # PROP Rebuild_Opt ""
-# PROP Target_File "\Apache21\bin\Apache.exe"
-# PROP Bsc_Name "Browse\Apache.bsc"
+# PROP Target_File "\Apache21\bin\httpd.exe"
+# PROP Bsc_Name "Browse\httpd.bsc"
 # PROP Target_Dir ""
 
 !ELSEIF  "$(CFG)" == "InstallBin - Win32 Debug"
@@ -52,15 +52,15 @@ CFG=InstallBin - Win32 Debug
 # PROP BASE Intermediate_Dir "Debug"
 # PROP BASE Cmd_Line "NMAKE /f InstallBin.mak"
 # PROP BASE Rebuild_Opt "/a"
-# PROP BASE Target_File "\Apache2.0\bin\Apache.exe"
+# PROP BASE Target_File "\Apache21\bin\httpd.exe"
 # PROP BASE Bsc_Name "InstallBin.bsc"
 # PROP BASE Target_Dir ""
 # PROP Use_Debug_Libraries 1
 # PROP Output_Dir "Debug"
 # PROP Intermediate_Dir "Debug"
-# PROP Cmd_Line "NMAKE /f makefile.win INSTDIR="\Apache2" SHORT=D LONG=Debug _install"
+# PROP Cmd_Line "NMAKE /f makefile.win INSTDIR="\Apache21" SHORT=D LONG=Debug _install"
 # PROP Rebuild_Opt ""
-# PROP Target_File "\Apache2\bin\Apache.exe"
+# PROP Target_File "\Apache21\bin\httpd.exe"
 # PROP Bsc_Name ""
 # PROP Target_Dir ""
 
