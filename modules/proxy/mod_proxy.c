@@ -529,6 +529,7 @@ static int proxy_handler(request_rec *r)
     proxy_balancer *balancer = NULL;
     proxy_worker *worker = NULL;
     int attempts = 0, max_attempts = 0;
+    struct dirconn_entry *list = (struct dirconn_entry *)conf->dirconn->elts;
 
     /* is this for us? */
     if (!r->proxyreq || !r->filename || strncmp(r->filename, "proxy:", 6) != 0)
@@ -572,46 +573,36 @@ static int proxy_handler(request_rec *r)
     apr_table_set(r->headers_in, "Max-Forwards", 
                   apr_psprintf(r->pool, "%ld", (maxfwd > 0) ? maxfwd : 0));
 
-    do {
-        url = r->filename + 6;
-        p = strchr(url, ':');
-        if (p == NULL) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
-                          "proxy_handler no URL in %s", r->filename);
-            return HTTP_BAD_REQUEST;
-        }
+    url = r->filename + 6;
+    p = strchr(url, ':');
+    if (p == NULL) {
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                      "proxy_handler no URL in %s", r->filename);
+        return HTTP_BAD_REQUEST;
+    }
 
-        /* If the host doesn't have a domain name, add one and redirect. */
-        if (conf->domain != NULL) {
-            rc = proxy_needsdomain(r, url, conf->domain);
-            if (ap_is_HTTP_REDIRECT(rc))
-                return HTTP_MOVED_PERMANENTLY;
-        }
+    /* If the host doesn't have a domain name, add one and redirect. */
+    if (conf->domain != NULL) {
+        rc = proxy_needsdomain(r, url, conf->domain);
+        if (ap_is_HTTP_REDIRECT(rc))
+            return HTTP_MOVED_PERMANENTLY;
+    }
 
-        *p = '\0';
-        scheme = apr_pstrdup(r->pool, url);
-        *p = ':';
-
-        /* Check URI's destination host against NoProxy hosts */
-        /* Bypass ProxyRemote server lookup if configured as NoProxy */
-        /* we only know how to handle communication to a proxy via http */
-        /*if (strcasecmp(scheme, "http") == 0) */
-        {
-            int ii;
-            struct dirconn_entry *list = (struct dirconn_entry *)
-                                                conf->dirconn->elts;
-
-            for (direct_connect = ii = 0; ii < conf->dirconn->nelts &&
-                                               !direct_connect; ii++) {
-                direct_connect = list[ii].matcher(&list[ii], r);
-            }
+    scheme = apr_pstrndup(r->pool, url, p - url);
+    /* Check URI's destination host against NoProxy hosts */
+    /* Bypass ProxyRemote server lookup if configured as NoProxy */
+    for (direct_connect = i = 0; i < conf->dirconn->nelts &&
+                                        !direct_connect; i++) {
+        direct_connect = list[i].matcher(&list[i], r);
+    }
 #if DEBUGGING
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
-                      (direct_connect) ? "NoProxy for %s" : "UseProxy for %s",
-                      r->uri);
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                (direct_connect) ? "NoProxy for %s" : "UseProxy for %s",
+                r->uri);
 #endif
-        }
-    
+
+    do {
+
         /* Try to obtain the most suitable worker */
         access_status = ap_proxy_pre_request(&worker, &balancer, r, conf, &url);
         if (access_status != OK)
