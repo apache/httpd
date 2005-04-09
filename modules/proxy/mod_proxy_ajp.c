@@ -30,23 +30,15 @@ static int proxy_ajp_canon(request_rec *r, char *url)
 {
     char *host, *path, *search, sport[7];
     const char *err;
-    const char *scheme;
-    apr_port_t port, def_port;
+    apr_port_t port = AJP13_DEF_PORT;
 
     /* ap_port_of_scheme() */
     if (strncasecmp(url, "ajp:", 4) == 0) {
         url += 4;
-        scheme = "ajp";
     }    
-    /* XXX This is probably faulty */ 
-    else if (strncasecmp(url, "ajps:", 5) == 0) {
-        url += 5;
-        scheme = "ajps";
-    }
     else {
         return DECLINED;
     }
-    def_port = apr_uri_port_of_scheme(scheme);
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
              "proxy: AJP: canonicalising URL %s", url);
@@ -54,7 +46,6 @@ static int proxy_ajp_canon(request_rec *r, char *url)
     /* do syntatic check.
      * We break the URL into host, port, path, search
      */
-    port = def_port;
     err = ap_proxy_canon_netloc(r->pool, &url, NULL, NULL, &host, &port);
     if (err) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
@@ -81,15 +72,12 @@ static int proxy_ajp_canon(request_rec *r, char *url)
     if (path == NULL)
         return HTTP_BAD_REQUEST;
 
-    if (port != def_port)
-        apr_snprintf(sport, sizeof(sport), ":%d", port);
-    else
-        sport[0] = '\0';
+    apr_snprintf(sport, sizeof(sport), ":%d", port);
 
     if (ap_strchr_c(host, ':')) { /* if literal IPv6 address */
         host = apr_pstrcat(r->pool, "[", host, "]", NULL);
     }
-    r->filename = apr_pstrcat(r->pool, "proxy:", scheme, "://", host, sport, 
+    r->filename = apr_pstrcat(r->pool, "proxy:ajp://", host, sport, 
             "/", path, (search) ? "?" : "", (search) ? search : "", NULL);
     return OK;
 }
