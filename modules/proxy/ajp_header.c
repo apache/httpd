@@ -220,9 +220,9 @@ static apr_status_t ajp_marshal_into_msgb(ajp_msg_t *msg,
 
     if ((method = sc_for_req_method_by_id(r->method_number)) == UNKNOWN_METHOD) { 
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-               "Error ajp_marshal_into_msgb - No such method %s",
+               "ajp_marshal_into_msgb - No such method %s",
                r->method);
-        return APR_EGENERAL;
+        return AJP_EBAD_METHOD;
     }
 
     /* XXXX need something */
@@ -249,7 +249,7 @@ static apr_status_t ajp_marshal_into_msgb(ajp_msg_t *msg,
         ajp_msg_append_uint16(msg, (apr_uint16_t) num_headers)) {
 
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-               "Error ajp_marshal_into_msgb - "
+               "ajp_marshal_into_msgb: "
                "Error appending the message begining");
         return APR_EGENERAL;
     }
@@ -262,25 +262,25 @@ static apr_status_t ajp_marshal_into_msgb(ajp_msg_t *msg,
         if ((sc = sc_for_req_header(elts[i].key)) != UNKNOWN_METHOD) {
             if (ajp_msg_append_uint16(msg, (apr_uint16_t)sc)) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-                       "Error ajp_marshal_into_msgb - "
+                       "ajp_marshal_into_msgb: "
                        "Error appending the header name");
-                return APR_EGENERAL;
+                return AJP_EOVERFLOW;
             }
         }
         else {
             if (ajp_msg_append_string(msg, elts[i].key)) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-                       "Error ajp_marshal_into_msgb - "
+                       "ajp_marshal_into_msgb: "
                        "Error appending the header name");
-                return APR_EGENERAL;
+                return AJP_EOVERFLOW;
             }
         }
         
         if (ajp_msg_append_string(msg, elts[i].val)) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-                   "Error ajp_marshal_into_msgb - "
+                   "ajp_marshal_into_msgb: "
                    "Error appending the header value");
-            return APR_EGENERAL;
+            return AJP_EOVERFLOW;
         }
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                    "ajp_marshal_into_msgb: Header[%d] [%s] = [%s]",
@@ -303,18 +303,18 @@ static apr_status_t ajp_marshal_into_msgb(ajp_msg_t *msg,
         if (ajp_msg_append_uint8(msg, SC_A_REMOTE_USER) ||
             ajp_msg_append_string(msg, r->user)) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-                   "Error ajp_marshal_into_msgb - "
+                   "ajp_marshal_into_msgb: "
                    "Error appending the remote user");
-            return APR_EGENERAL;
+            return AJP_EOVERFLOW;
         }
     }
     if (r->ap_auth_type) {
         if (ajp_msg_append_uint8(msg, SC_A_AUTH_TYPE) ||
             ajp_msg_append_string(msg, r->ap_auth_type)) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-                   "Error ajp_marshal_into_msgb - "
+                   "ajp_marshal_into_msgb: "
                    "Error appending the auth type");
-            return APR_EGENERAL;
+            return AJP_EOVERFLOW;
         }
     }
     /* XXXX  ebcdic (args converted?) */
@@ -322,18 +322,18 @@ static apr_status_t ajp_marshal_into_msgb(ajp_msg_t *msg,
         if (ajp_msg_append_uint8(msg, SC_A_QUERY_STRING) ||
             ajp_msg_append_string(msg, uri->query)) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-                   "Error ajp_marshal_into_msgb - "
+                   "ajp_marshal_into_msgb: "
                    "Error appending the query string");
-            return APR_EGENERAL;
+            return AJP_EOVERFLOW;
         }
     }
     if ((session_route = apr_table_get(r->notes, "session-route"))) {
         if (ajp_msg_append_uint8(msg, SC_A_JVM_ROUTE) ||
             ajp_msg_append_string(msg, session_route)) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-                   "Error ajp_marshal_into_msgb - "
+                   "ajp_marshal_into_msgb: "
                    "Error appending the jvm route");
-            return APR_EGENERAL;
+            return AJP_EOVERFLOW;
         }
     }
 /* XXX: Is the subprocess_env a right place?
@@ -347,9 +347,9 @@ static apr_status_t ajp_marshal_into_msgb(ajp_msg_t *msg,
         if (ajp_msg_append_uint8(msg, SC_A_SSL_CERT) ||
             ajp_msg_append_string(msg, envvar)) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-                   "Error ajp_marshal_into_msgb - "
+                   "ajp_marshal_into_msgb: "
                    "Error appending the SSL certificates");
-            return APR_EGENERAL;
+            return AJP_EOVERFLOW;
         }
     }
 
@@ -358,9 +358,9 @@ static apr_status_t ajp_marshal_into_msgb(ajp_msg_t *msg,
         if (ajp_msg_append_uint8(msg, SC_A_SSL_CIPHER) ||
             ajp_msg_append_string(msg, envvar)) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-                   "Error ajp_marshal_into_msgb - "
+                   "ajp_marshal_into_msgb: "
                    "Error appending the SSL ciphers");
-            return APR_EGENERAL;
+            return AJP_EOVERFLOW;
         }
     }
 
@@ -369,9 +369,9 @@ static apr_status_t ajp_marshal_into_msgb(ajp_msg_t *msg,
         if (ajp_msg_append_uint8(msg, SC_A_SSL_SESSION) ||
             ajp_msg_append_string(msg, envvar)) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-                   "Error ajp_marshal_into_msgb - "
+                   "ajp_marshal_into_msgb: "
                    "Error appending the SSL session");
-            return APR_EGENERAL;
+            return AJP_EOVERFLOW;
         }
     }
 
@@ -400,23 +400,23 @@ static apr_status_t ajp_marshal_into_msgb(ajp_msg_t *msg,
                 ajp_msg_append_string(msg, elts[i].key + 4)   ||
                 ajp_msg_append_string(msg, elts[i].val)) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-                        "Error ajp_marshal_into_msgb - "
+                        "ajp_marshal_into_msgb: "
                         "Error appending attribute %s=%s",
                         elts[i].key, elts[i].val);
-                return APR_EGENERAL;
+                return AJP_EOVERFLOW;
             }
         }
     }
 
     if (ajp_msg_append_uint8(msg, SC_A_ARE_DONE)) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-               "Error ajp_marshal_into_msgb - "
+               "ajp_marshal_into_msgb: "
                "Error appending the message end");
-        return APR_EGENERAL;
+        return AJP_EOVERFLOW;
     }
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-           "ajp_marshal_into_msgb - Done");
+            "ajp_marshal_into_msgb: Done");
     return APR_SUCCESS;
 }
 
@@ -460,8 +460,8 @@ static apr_status_t ajp_unmarshal_response(ajp_msg_t *msg,
 
     if (rc != APR_SUCCESS) {
          ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-               "Error ajp_unmarshal_response - Null status");
-        return APR_EGENERAL;
+                "ajp_unmarshal_response: Null status");
+        return rc;
     }
     r->status = status;
 
@@ -496,7 +496,7 @@ static apr_status_t ajp_unmarshal_response(ajp_msg_t *msg,
         const char *value;
         rc  = ajp_msg_peek_uint16(msg, &name);
         if (rc != APR_SUCCESS) {
-            return APR_EGENERAL;
+            return rc;
         }
                 
         if ((name & 0XFF00) == 0XA000) {
@@ -504,19 +504,19 @@ static apr_status_t ajp_unmarshal_response(ajp_msg_t *msg,
             stringname = long_res_header_for_sc(name);
             if (stringname == NULL) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-                       "Error ajp_unmarshal_response - "
+                       "ajp_unmarshal_response: "
                        "No such sc (%08x)",
                        name);
-                return APR_EGENERAL;
+                return AJP_EBAD_HEADER;
             }
         } else {
             name = 0;
             rc = ajp_msg_get_string(msg, &stringname);
             if (rc != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-                       "Error ajp_unmarshal_response - "
+                       "ajp_unmarshal_response: "
                        "Null header name");
-                return APR_EGENERAL;
+                return rc;
             }
 #if defined(AS400) || defined(_OSD_POSIX)
             ap_xlate_proto_from_ascii(stringname, strlen(stringname));
@@ -526,9 +526,9 @@ static apr_status_t ajp_unmarshal_response(ajp_msg_t *msg,
         rc = ajp_msg_get_string(msg, &value);
         if (rc != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-                   "Error ajp_unmarshal_response - "
+                   "ajp_unmarshal_response: "
                    "Null header value");
-            return APR_EGENERAL;
+            return rc;
         }
 
         /* Set-Cookie need additional processing */
@@ -655,7 +655,7 @@ apr_status_t ajp_parse_header(request_rec  *r, proxy_server_conf *conf,
     if (result != CMD_AJP13_SEND_HEADERS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                "ajp_parse_headers: wrong type %02x expecting 0x04", result);
-        return APR_EGENERAL;
+        return AJP_EBAD_HEADER;
     }
     return ajp_unmarshal_response(msg, r, conf);
 }
@@ -676,11 +676,11 @@ apr_status_t  ajp_parse_data(request_rec  *r, ajp_msg_t *msg,
     if (result != CMD_AJP13_SEND_BODY_CHUNK) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                "ajp_parse_data: wrong type %02x expecting 0x03", result);
-        return APR_EGENERAL;
+        return AJP_EBAD_HEADER;
     }
     rc = ajp_msg_get_uint16(msg, len);
     if (rc != APR_SUCCESS) {
-        return APR_EGENERAL;
+        return rc;
     }
     *ptr = (char *)&(msg->buf[msg->pos]);
     return APR_SUCCESS;
