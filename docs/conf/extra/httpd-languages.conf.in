@@ -122,11 +122,11 @@ AddCharset ISO-10646-UCS-4 .ucs4
 AddCharset UTF-7   .utf7
 AddCharset UTF-8   .utf8
 AddCharset UTF-16  .utf16
-AddCharset UTF-16BE.utf16be
-AddCharset UTF-16LE.utf16le
+AddCharset UTF-16BE .utf16be
+AddCharset UTF-16LE .utf16le
 AddCharset UTF-32  .utf32
-AddCharset UTF-32BE.utf32be
-AddCharset UTF-32LE.utf32le
+AddCharset UTF-32BE .utf32be
+AddCharset UTF-32LE .utf32le
 AddCharset euc-cn  .euc-cn
 AddCharset euc-gb  .euc-gb
 AddCharset euc-jp  .euc-jp
