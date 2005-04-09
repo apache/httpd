@@ -33,9 +33,6 @@ static int proxy_ajp_canon(request_rec *r, char *url)
     const char *scheme;
     apr_port_t port, def_port;
 
-    ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-             "proxy: AJP: canonicalising URL %s", url);
-
     /* ap_port_of_scheme() */
     if (strncasecmp(url, "ajp:", 4) == 0) {
         url += 4;
