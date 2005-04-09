@@ -20,7 +20,7 @@
  limitations under the License.
 -->
 
-<modulesynopsis metafile="mod_imap.xml.meta">
+<modulesynopsis metafile="mod_imagemap.xml.meta">
 
 <name>mod_imap</name>
 <description>서버측 이미지맵(imagemap) 처리</description>
