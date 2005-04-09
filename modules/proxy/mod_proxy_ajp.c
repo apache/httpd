@@ -130,7 +130,10 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                      "proxy: AJP: request failed to %pI (%s)",
                      conn->worker->cp->addr,
                      conn->worker->hostname);
-        return HTTP_SERVICE_UNAVAILABLE;
+        if (status == AJP_EOVERFLOW)
+            return HTTP_BAD_REQUEST;
+        else
+            return HTTP_SERVICE_UNAVAILABLE;
     }
 
     /* allocate an AJP message to store the data of the buckets */
@@ -138,7 +141,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     if (status != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                      "proxy: ajp_alloc_data_msg failed");
-        return status;
+        return HTTP_INTERNAL_SERVER_ERROR;
     }
     /* read the first bloc of data */
     input_brigade = apr_brigade_create(p, r->connection->bucket_alloc);
