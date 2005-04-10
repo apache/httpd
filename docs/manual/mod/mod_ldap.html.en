@@ -53,6 +53,7 @@ by other LDAP modules</td></tr>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#ldapcacheentries">LDAPCacheEntries</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ldapcachettl">LDAPCacheTTL</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#ldapconnectiontimeout">LDAPConnectionTimeout</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ldapopcacheentries">LDAPOpCacheEntries</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ldapopcachettl">LDAPOpCacheTTL</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ldapsharedcachefile">LDAPSharedCacheFile</a></li>
@@ -272,6 +273,22 @@ by other LDAP modules</td></tr>
     <p>Specifies the time (in seconds) that an item in the
     search/bind cache remains valid. The default is 600 seconds (10
     minutes).</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="LDAPConnectionTimeout" id="LDAPConnectionTimeout">LDAPConnectionTimeout</a> <a name="ldapconnectiontimeout" id="ldapconnectiontimeout">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specifies the socket connection timeout in seconds</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LDAPConnectionTimeout <var>seconds</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
+</table>
+    <p>Specifies the timeout value (in seconds) in which the module will
+    attempt to connect to the LDAP server.  If a connection is not
+    successful with the timeout period, either an error will be 
+    returned or the module will attempt to connect to a secondary LDAP 
+    server if one is specified. The default is 10 seconds.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
