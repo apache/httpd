@@ -180,6 +180,9 @@ Package=<4>
     Project_Dep_Name mod_usertrack
     End Project Dependency
     Begin Project Dependency
+    Project_Dep_Name mod_version
+    End Project Dependency
+    Begin Project Dependency
     Project_Dep_Name mod_vhost_alias
     End Project Dependency
     Begin Project Dependency
@@ -1567,6 +1570,27 @@ Package=<4>
 ###############################################################################
 
 Project: "mod_usertrack"=".\modules\metadata\mod_usertrack.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_version"=".\modules\metadata\mod_version.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{

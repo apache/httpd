@@ -378,6 +378,25 @@ extern "C" {
 # define AP_CORE_DECLARE_NONSTD	AP_DECLARE_NONSTD
 #endif
 
+/** 
+ * The numeric version information is broken out into fields within this 
+ * structure. 
+ */
+typedef struct {
+    int major;              /**< major number */
+    int minor;              /**< minor number */
+    int patch;              /**< patch number */
+    const char *add_string; /**< additional string like "-dev" */
+} ap_version_t;
+
+/**
+ * Return httpd's version information in a numeric form.
+ *
+ *  @param version Pointer to a version structure for returning the version
+ *                 information.
+ */
+AP_DECLARE(void) ap_get_server_revision(ap_version_t *version);
+
 /**
  * Get the server version string
  * @return The server version string

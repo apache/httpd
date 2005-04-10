@@ -17,6 +17,8 @@
 #ifndef AP_RELEASE_H
 #define AP_RELEASE_H
 
+#include "apr_general.h" /* stringify */
+
 /*
  * The below defines the base string of the Server: header. Additional
  * tokens can be added via the ap_add_version_component() API call.
@@ -31,9 +33,18 @@
  */
 #define AP_SERVER_BASEVENDOR "Apache Software Foundation"
 #define AP_SERVER_BASEPRODUCT "Apache"
-#define AP_SERVER_MAJORVERSION "2"
-#define AP_SERVER_MINORVERSION "0"
-#define AP_SERVER_PATCHLEVEL "54-dev"
+
+#define AP_SERVER_MAJORVERSION_NUMBER 2
+#define AP_SERVER_MINORVERSION_NUMBER 0
+#define AP_SERVER_PATCHLEVEL_NUMBER   54
+#define AP_SERVER_ADD_STRING          "-dev"
+
+/* keep old macros as well */
+#define AP_SERVER_MAJORVERSION APR_STRINGIFY(AP_SERVER_MAJORVERSION_NUMBER)
+#define AP_SERVER_MINORVERSION APR_STRINGIFY(AP_SERVER_MINORVERSION_NUMBER)
+#define AP_SERVER_PATCHLEVEL APR_STRINGIFY(AP_SERVER_PATCHLEVEL_NUMBER) \
+                              AP_SERVER_ADD_STRING
+
 #define AP_SERVER_MINORREVISION AP_SERVER_MAJORVERSION "." AP_SERVER_MINORVERSION
 #define AP_SERVER_BASEREVISION  AP_SERVER_MINORREVISION "." AP_SERVER_PATCHLEVEL
 #define AP_SERVER_BASEVERSION AP_SERVER_BASEPRODUCT "/" AP_SERVER_BASEREVISION
