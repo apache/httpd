@@ -243,9 +243,6 @@ Changes with Apache 2.1.1
   *) core: Add a warning message if the request line read fails.
      [Paul Querna]
 
-  *) mod_cache: Add CacheIgnoreHeaders directive.  PR 30399.
-     [Rüiger Plü <r.pluem t-online.de>]
-
   *) mod_rewrite: Removed the MaxRedirects option in favor of the
      core LimitInternalRecursion directive.  [Andr� Malo]
 
@@ -645,6 +642,9 @@ Changes with Apache 2.1.1
 
 Changes with Apache 2.0.54
 
+  *) mod_cache: Add CacheIgnoreHeaders directive.  PR 30399.
+     [Rüiger Plü <r.pluem t-online.de>]
+
   *) mod_ldap: Added the directive LDAPConnectionTimeout to configure
      the ldap socket connection timeout value.  
      [Brad Nicholes]
@@ -658,6 +658,9 @@ Changes with Apache 2.0.54
   *) Remove formatting characters from ap_log_error() calls.  These
      were escaped as fallout from CAN-2003-0020.
      [Eric Covener <ecovener gmail.com>]
+
+  *) mod_ssl: If SSLUsername is used, set r->user earlier.  PR 31418.
+     [David Reid]
 
   *) htdigest: Fix permissions of created files.  PR 33765.  [Joe Orton]
 
