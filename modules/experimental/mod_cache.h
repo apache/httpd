@@ -134,6 +134,12 @@ typedef struct {
     /** ignore client's requests for uncached responses */
     int ignorecachecontrol;
     int ignorecachecontrol_set;
+    /** store the headers that should not be stored in the cache */
+    apr_array_header_t *ignore_headers;
+    /* flag if CacheIgnoreHeader has been set */
+    #define CACHE_IGNORE_HEADERS_SET   1
+    #define CACHE_IGNORE_HEADERS_UNSET 0
+    int ignore_headers_set;
 } cache_server_conf;
 
 /* cache info information */
@@ -257,7 +263,9 @@ CACHE_DECLARE(const char *)ap_cache_tokstr(apr_pool_t *p, const char *list, cons
 /* Create a new table consisting of those elements from a request_rec's
  * headers_out that are allowed to be stored in a cache
  */
-CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_hdrs_out(apr_pool_t *pool, apr_table_t *t);
+CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_hdrs_out(apr_pool_t *pool,
+                                                        apr_table_t *t,
+                                                        server_rec *s);
 
 /**
  * cache_storage.c

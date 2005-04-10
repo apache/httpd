@@ -745,13 +745,16 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
     /* Precompute how much storage we need to hold the headers */
     rc = serialize_table(&mobj->header_out, 
                          &mobj->num_header_out, 
-                         ap_cache_cacheable_hdrs_out(r->pool, r->headers_out));   
+                         ap_cache_cacheable_hdrs_out(r->pool, r->headers_out,
+                                                     r->server));
     if (rc != APR_SUCCESS) {
         return rc;
     }
     rc = serialize_table(&mobj->err_header_out, 
                          &mobj->num_err_header_out, 
-                         ap_cache_cacheable_hdrs_out(r->pool, r->err_headers_out));   
+                         ap_cache_cacheable_hdrs_out(r->pool,
+                                                     r->err_headers_out,
+                                                     r->server));
     if (rc != APR_SUCCESS) {
         return rc;
     }

@@ -333,4 +333,57 @@ will complete caching the file even if the request is cancelled.</description>
 </usage>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>CacheIgnoreHeaders</name>
+<description>Do not store the given HTTP header(s) in the cache.
+</description>
+<syntax>CacheIgnoreHeaders <var>header-string</var> [<var>header-string</var>] ...</syntax>
+<default>CacheIgnoreHeaders None</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>According to RFC 2616, hop-by-hop HTTP headers are not stored in
+    the cache.  The following HTTP headers are hop-by-hop headers and thus
+    do not get stored in the cache in <em>any</em> case regardless of the
+    setting of <directive>CacheIgnoreHeaders</directive>:</p>
+
+    <ul>
+      <li><code>Connection</code></li>
+      <li><code>Keep-Alive</code></li>
+      <li><code>Proxy-Authenticate</code></li>
+      <li><code>Proxy-Authorization</code></li>
+      <li><code>TE</code></li>
+      <li><code>Trailers</code></li>
+      <li><code>Transfer-Encoding</code></li>
+      <li><code>Upgrade</code></li>
+    </ul>
+
+    <p><directive>CacheIgnoreHeaders</directive> specifies additional HTTP
+    headers that should not to be stored in the cache.  For example, it makes
+    sense in some cases to prevent cookies from being stored in the cache.</p>
+
+    <p><directive>CacheIgnoreHeaders</directive> takes a space separated list
+    of HTTP headers that should not be stored in the cache. If only hop-by-hop
+    headers not should be stored in the cache (the RFC 2616 compliant
+    behaviour), <directive>CacheIgnoreHeaders</directive> can be set to
+    <code>None</code>.</p>
+
+    <example><title>Example 1</title>
+      CacheIgnoreHeaders Set-Cookie
+    </example>
+
+    <example><title>Example 2</title>
+      CacheIgnoreHeaders None
+    </example>
+
+    <note type="warning"><title>Warning:</title>
+      If headers like <code>Expires</code> which are needed for proper cache
+      management are not stored due to a
+      <directive>CacheIgnoreHeaders</directive> setting, the behaviour of
+      mod_cache is undefined.
+    </note>
+</usage>
+</directivesynopsis>
+
 </modulesynopsis>

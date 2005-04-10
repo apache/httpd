@@ -607,7 +607,8 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
         if (r->headers_out) {
             apr_table_t *headers_out;
 
-            headers_out = ap_cache_cacheable_hdrs_out(r->pool, r->headers_out);
+            headers_out = ap_cache_cacheable_hdrs_out(r->pool, r->headers_out,
+                                                      r->server);
 
             if (!apr_table_get(headers_out, "Content-Type") &&
                 r->content_type) {
@@ -628,7 +629,8 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
         if (r->headers_in) {
             apr_table_t *headers_in;
 
-            headers_in = ap_cache_cacheable_hdrs_out(r->pool, r->headers_in);
+            headers_in = ap_cache_cacheable_hdrs_out(r->pool, r->headers_in,
+                                                     r->server);
             rv = store_table(dobj->hfd, headers_in);
             if (rv != APR_SUCCESS) {
                 return rv;

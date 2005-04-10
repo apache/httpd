@@ -1,5 +1,8 @@
 Changes with Apache 2.0.54
 
+  *) mod_cache: Add CacheIgnoreHeaders directive.  PR 30399.
+     [Rüiger Plü <r.pluem t-online.de>]
+
   *) mod_ldap: Added the directive LDAPConnectionTimeout to configure
      the ldap socket connection timeout value.  
      [Brad Nicholes]
