@@ -202,10 +202,11 @@ PATCHES TO BACKPORT FROM TRUNK:
             providing an API for filters to participate in POST bodies.)
       gregames: done in rev 160573
 
-    * mod_version: New Module, Backport from trunk.
-      http://svn.apache.org/repos/asf/httpd/httpd/trunk/modules/metadata/mod_version.c
-      (Also need to backport docs, and build system stuff.)
-      +1: pquerna, jerenkrantz, wrowe (trivial, would even be cool in 1.3)
+    * mod_version: New Module, Backport from trunk. Requires Minor MMN Bump.
+      http://svn.apache.org/repos/asf/httpd/httpd/branches/mod_version_for_2.0.x
+      +1: pquerna 
+      Votes from before the integration branch:
+          +1: jerenkrantz, wrowe (trivial, would even be cool in 1.3)
 
     *) Provide TLS/SSL upgrade functionality in mod_ssl allowing an unsecure
        connection to be upgraded to a secure connection upon request by the
