@@ -107,13 +107,15 @@ match ($0,/@nonssl_.*@/) {
 
 
 END {
-    print
-    print "#"
-    print "# SecureListen: Allows you to securely bind Apache to specific IP addresses "
-    print "# and/or ports."
-    print "#"
-    print "# Change this to SecureListen on specific IP addresses as shown below to "
-    print "# prevent Apache from glomming onto all bound IP addresses (0.0.0.0)"
-    print "#"
-    print "#SecureListen 443 \"SSL CertificateDNS\""
+    if (SSL) {
+       print
+       print "#"
+       print "# SecureListen: Allows you to securely bind Apache to specific IP addresses "
+       print "# and/or ports."
+       print "#"
+       print "# Change this to SecureListen on specific IP addresses as shown below to "
+       print "# prevent Apache from glomming onto all bound IP addresses (0.0.0.0)"
+       print "#"
+       print "#SecureListen 443 \"SSL CertificateDNS\""
+    }
 }
