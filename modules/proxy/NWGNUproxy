@@ -226,6 +226,8 @@ FILES_nlm_exports = \
 	proxy_hook_post_request \
 	ap_proxy_ssl_enable \
 	ap_proxy_ssl_disable \
+	ap_proxy_conn_is_https \
+	ap_proxy_ssl_val \
 	proxy_run_fixups \
 	$(EOLIST)
 	
