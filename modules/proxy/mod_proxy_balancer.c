@@ -93,6 +93,13 @@ static int init_balancer_members(proxy_server_conf *conf, server_rec *s,
         workers[i].s->lbstatus = workers[i].s->lbfactor =
           (workers[i].lbfactor ? workers[i].lbfactor : 1);
     }
+    /* Set default number of attempts to the number of
+     * workers.
+     */
+    if (!balancer->max_attempts_set && balancer->workers->nelts > 1) {
+        balancer->max_attempts = balancer->workers->nelts - 1;
+        balancer->max_attempts_set = 1;
+    }
     return 0;
 }
 
@@ -440,8 +447,11 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
     *worker = NULL;
     /* Step 1: check if the url is for us 
      * The url we can handle starts with 'balancer://'
+     * If balancer is already provided skip the search
+     * for balancer, because this is failover attempt.
      */
-    if (!(*balancer = ap_proxy_get_balancer(r->pool, conf, *url)))
+    if (!*balancer &&
+        !(*balancer = ap_proxy_get_balancer(r->pool, conf, *url)))
         return DECLINED;
     
     /* Step 2: find the session route */
