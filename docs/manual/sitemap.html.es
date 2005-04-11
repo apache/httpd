@@ -221,6 +221,7 @@ usados para describir las directivas de Apache</a></li>
 <li><a href="mod/mod_unique_id.html">Módulo Apache mod_unique_id</a></li>
 <li><a href="mod/mod_userdir.html">Módulo Apache mod_userdir</a></li>
 <li><a href="mod/mod_usertrack.html">Módulo Apache mod_usertrack</a></li>
+<li><a href="mod/mod_version.html">Módulo Apache mod_version</a></li>
 <li><a href="mod/mod_vhost_alias.html">Módulo Apache mod_vhost_alias</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>

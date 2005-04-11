@@ -216,6 +216,7 @@
 <li><a href="mod/mod_unique_id.html">Apache モジュール mod_unique_id</a></li>
 <li><a href="mod/mod_userdir.html">Apache モジュール mod_userdir</a></li>
 <li><a href="mod/mod_usertrack.html">Apache モジュール mod_usertrack</a></li>
+<li><a href="mod/mod_version.html">Apache モジュール mod_version</a></li>
 <li><a href="mod/mod_vhost_alias.html">Apache モジュール mod_vhost_alias</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
