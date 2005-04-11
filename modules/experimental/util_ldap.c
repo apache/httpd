@@ -1055,6 +1055,7 @@ start_over:
 				    const_cast(filter), attrs, 0, 
 				    NULL, NULL, NULL, -1, &res)) == LDAP_SERVER_DOWN) {
         ldc->reason = "ldap_search_ext_s() for user failed with server down";
+        util_ldap_connection_unbind(ldc);
         goto start_over;
     }
 
