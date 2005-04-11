@@ -515,7 +515,7 @@ static int proxy_needsdomain(request_rec *r, const char *url, const char *domain
 
 static int proxy_handler(request_rec *r)
 {
-    char *url, *scheme, *p;
+    char *uri, *scheme, *p;
     const char *p2;
     void *sconf = r->server->module_config;
     proxy_server_conf *conf = (proxy_server_conf *)
@@ -573,8 +573,8 @@ static int proxy_handler(request_rec *r)
     apr_table_set(r->headers_in, "Max-Forwards", 
                   apr_psprintf(r->pool, "%ld", (maxfwd > 0) ? maxfwd : 0));
 
-    url = r->filename + 6;
-    p = strchr(url, ':');
+    uri = r->filename + 6;
+    p = strchr(uri, ':');
     if (p == NULL) {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                       "proxy_handler no URL in %s", r->filename);
@@ -583,12 +583,12 @@ static int proxy_handler(request_rec *r)
 
     /* If the host doesn't have a domain name, add one and redirect. */
     if (conf->domain != NULL) {
-        rc = proxy_needsdomain(r, url, conf->domain);
+        rc = proxy_needsdomain(r, uri, conf->domain);
         if (ap_is_HTTP_REDIRECT(rc))
             return HTTP_MOVED_PERMANENTLY;
     }
 
-    scheme = apr_pstrndup(r->pool, url, p - url);
+    scheme = apr_pstrndup(r->pool, uri, p - uri);
     /* Check URI's destination host against NoProxy hosts */
     /* Bypass ProxyRemote server lookup if configured as NoProxy */
     for (direct_connect = i = 0; i < conf->dirconn->nelts &&
@@ -602,7 +602,7 @@ static int proxy_handler(request_rec *r)
 #endif
 
     do {
-
+        char *url = uri;
         /* Try to obtain the most suitable worker */
         access_status = ap_proxy_pre_request(&worker, &balancer, r, conf, &url);
         if (access_status != OK)
@@ -648,10 +648,37 @@ static int proxy_handler(request_rec *r)
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                      "Running scheme %s handler (attempt %d)",
                      scheme, attempts);
-        if ((access_status = proxy_run_scheme_handler(r, worker, conf,
-                                                      url, NULL, 0)) == OK)
+        access_status = proxy_run_scheme_handler(r, worker, conf,
+                                                 url, NULL, 0);
+        if (access_status == OK)
             break;
-        
+        else if (access_status == HTTP_INTERNAL_SERVER_ERROR) {
+            /* Unrecoverable server error.
+             * We can not failover to another worker.
+             * Mark the worker as unusable if member of load balancer
+             */
+            if (balancer)
+                worker->s->status |= PROXY_WORKER_IN_ERROR;
+            break;
+        }
+        else if (access_status == HTTP_SERVICE_UNAVAILABLE) {
+            /* Recoverable server error.
+             * We can failover to another worker 
+             * Mark the worker as unusable if member of load balancer
+             */
+            if (balancer) {
+                worker->s->status |= PROXY_WORKER_IN_ERROR;
+            }
+        }
+        else {
+            /* Unrecoverable error.
+             * Return the origin status code to the client.
+             */
+            break;
+        }
+        /* Try again if the worker is unusable and the service is
+         * unavailable.
+         */
     } while (!PROXY_WORKER_IS_USABLE(worker) && 
              max_attempts > attempts++);
 
