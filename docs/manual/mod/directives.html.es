@@ -125,6 +125,7 @@
 <li><a href="mod_disk_cache.html#cachegcmemusage">CacheGcMemUsage</a></li>
 <li><a href="mod_disk_cache.html#cachegcunused">CacheGcUnused</a></li>
 <li><a href="mod_cache.html#cacheignorecachecontrol">CacheIgnoreCacheControl</a></li>
+<li><a href="mod_cache.html#cacheignoreheaders">CacheIgnoreHeaders</a></li>
 <li><a href="mod_cache.html#cacheignorenolastmod">CacheIgnoreNoLastMod</a></li>
 <li><a href="mod_cache.html#cachelastmodifiedfactor">CacheLastModifiedFactor</a></li>
 <li><a href="mod_cache.html#cachemaxexpire">CacheMaxExpire</a></li>
@@ -212,6 +213,7 @@
 <li><a href="mod_negotiation.html#languagepriority" id="L" name="L">LanguagePriority</a></li>
 <li><a href="mod_ldap.html#ldapcacheentries">LDAPCacheEntries</a></li>
 <li><a href="mod_ldap.html#ldapcachettl">LDAPCacheTTL</a></li>
+<li><a href="mod_ldap.html#ldapconnectiontimeout">LDAPConnectionTimeout</a></li>
 <li><a href="mod_ldap.html#ldapopcacheentries">LDAPOpCacheEntries</a></li>
 <li><a href="mod_ldap.html#ldapopcachettl">LDAPOpCacheTTL</a></li>
 <li><a href="mod_ldap.html#ldapsharedcachefile">LDAPSharedCacheFile</a></li>

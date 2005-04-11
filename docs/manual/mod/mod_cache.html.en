@@ -63,6 +63,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#cacheenable">CacheEnable</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cacheforcecompletion">CacheForceCompletion</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cacheignorecachecontrol">CacheIgnoreCacheControl</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#cacheignoreheaders">CacheIgnoreHeaders</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cacheignorenolastmod">CacheIgnoreNoLastMod</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cachelastmodifiedfactor">CacheLastModifiedFactor</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cachemaxexpire">CacheMaxExpire</a></li>
@@ -239,6 +240,59 @@ cached.</td></tr>
     <div class="example"><p><code>
       CacheIgnoreCacheControl On
     </code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CacheIgnoreHeaders" id="CacheIgnoreHeaders">CacheIgnoreHeaders</a> <a name="cacheignoreheaders" id="cacheignoreheaders">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Do not store the given HTTP header(s) in the cache.
+</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CacheIgnoreHeaders <var>header-string</var> [<var>header-string</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>CacheIgnoreHeaders None</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
+</table>
+    <p>According to RFC 2616, hop-by-hop HTTP headers are not stored in
+    the cache.  The following HTTP headers are hop-by-hop headers and thus
+    do not get stored in the cache in <em>any</em> case regardless of the
+    setting of <code class="directive">CacheIgnoreHeaders</code>:</p>
+
+    <ul>
+      <li><code>Connection</code></li>
+      <li><code>Keep-Alive</code></li>
+      <li><code>Proxy-Authenticate</code></li>
+      <li><code>Proxy-Authorization</code></li>
+      <li><code>TE</code></li>
+      <li><code>Trailers</code></li>
+      <li><code>Transfer-Encoding</code></li>
+      <li><code>Upgrade</code></li>
+    </ul>
+
+    <p><code class="directive">CacheIgnoreHeaders</code> specifies additional HTTP
+    headers that should not to be stored in the cache.  For example, it makes
+    sense in some cases to prevent cookies from being stored in the cache.</p>
+
+    <p><code class="directive">CacheIgnoreHeaders</code> takes a space separated list
+    of HTTP headers that should not be stored in the cache. If only hop-by-hop
+    headers not should be stored in the cache (the RFC 2616 compliant
+    behaviour), <code class="directive">CacheIgnoreHeaders</code> can be set to
+    <code>None</code>.</p>
+
+    <div class="example"><h3>Example 1</h3><p><code>
+      CacheIgnoreHeaders Set-Cookie
+    </code></p></div>
+
+    <div class="example"><h3>Example 2</h3><p><code>
+      CacheIgnoreHeaders None
+    </code></p></div>
+
+    <div class="warning"><h3>Warning:</h3>
+      If headers like <code>Expires</code> which are needed for proper cache
+      management are not stored due to a
+      <code class="directive">CacheIgnoreHeaders</code> setting, the behaviour of
+      mod_cache is undefined.
+    </div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
