@@ -132,6 +132,10 @@ PATCHES TO BACKPORT FROM TRUNK:
          do we have to wait for later APR 0.x release before putting
          calls to apr_procattr_addrspace_set() into httpd-2.0.x, or
          do we go ahead and introduce the prerequisite?
+       clar replies: I am ready to commit the apr 0.9.x patch, but then will need 
+         the changes in the httpd-2.0.x to be done in order for NetWare to work
+         as expected when calling apr_proc_create. Should I do both, APR and Http,
+         at the same time?
 
     *) mod_actions: Regression from 1.3: the file referred to must exist.
        Solve this by introducing the "virtual" modifier to the Action
