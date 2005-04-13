@@ -409,7 +409,7 @@
     <p>When keep-alives are in use, children will be kept busy
     doing nothing waiting for more requests on the already open
     connection. The default <directive module="core"
-    >KeepAliveTimeout</directive> of <code>15</code>
+    >KeepAliveTimeout</directive> of <code>5</code>
     seconds attempts to minimize this effect. The tradeoff here is
     between network bandwidth and server resources. In no event
     should you raise this above about <code>60</code> seconds, as <a
