@@ -149,7 +149,7 @@ extern "C" {
 
 /* The timeout for waiting for keepalive timeout until next request */
 #ifndef DEFAULT_KEEPALIVE_TIMEOUT
-#define DEFAULT_KEEPALIVE_TIMEOUT 15
+#define DEFAULT_KEEPALIVE_TIMEOUT 5
 #endif
 
 /* The number of requests to entertain per connection */

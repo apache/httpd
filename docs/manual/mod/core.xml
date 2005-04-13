@@ -1453,7 +1453,7 @@ the server configuration files</description>
 <description>Amount of time the server will wait for subsequent
 requests on a persistent connection</description>
 <syntax>KeepAliveTimeout <var>seconds</var></syntax>
-<default>KeepAliveTimeout 15</default>
+<default>KeepAliveTimeout 5</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
