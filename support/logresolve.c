@@ -305,7 +305,7 @@ int main (int argc, char *argv[])
     char *bar, hoststring[MAXDNAME + 1], line[MAXLINE], *statfile;
     int i, check;
 
-#if defined(WIN32) || defined(NETWARE)
+#if defined(WIN32) || (defined(NETWARE) && defined(USE_WINSOCK))
     /*  If we apr'ify this code, apr_pool_create/apr_pool_destroy
      *  should perform the WSAStartup/WSACleanup for us. 
      */
@@ -367,7 +367,7 @@ int main (int argc, char *argv[])
 	    puts(hoststring);
     }
 
-#if defined(WIN32) || defined(NETWARE)
+#if defined(WIN32) || (defined(NETWARE) && defined(USE_WINSOCK))
      WSACleanup();
 #endif
 

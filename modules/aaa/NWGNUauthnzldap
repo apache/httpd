@@ -36,6 +36,14 @@ XDEFINES	+= \
 			$(EOLIST)
 
 #
+#LDAP client requires the use of Winsock
+#
+ifdef USE_STDSOCKETS
+XDEFINES += -DUSE_WINSOCK \
+			$(EOLIST)
+endif
+
+#
 # These flags will be added to the link.opt file
 #
 XLFLAGS		+= \

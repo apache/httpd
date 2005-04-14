@@ -216,7 +216,6 @@ FILES_nlm_objs = \
 	$(OBJDIR)/mod_mime.o \
 	$(OBJDIR)/mod_negotiation.o \
 	$(OBJDIR)/mod_netware.o \
-	$(OBJDIR)/mod_nw_ssl.o \
 	$(OBJDIR)/mod_setenvif.o \
 	$(OBJDIR)/mod_so.o \
 	$(OBJDIR)/modules.o \
@@ -240,6 +239,12 @@ FILES_nlm_objs = \
 	$(OBJDIR)/util_xml.o \
 	$(OBJDIR)/vhost.o \
 	$(EOLIST)
+
+# Build in mod_nw_ssl if Winsock is being used
+ifndef USE_STDSOCKETS
+FILES_nlm_objs += $(OBJDIR)/mod_nw_ssl.o \
+	       $(EOLIST)
+endif
 
 #
 # These are the LIB files needed to create the NLM target above.
@@ -280,9 +285,14 @@ FILES_nlm_Ximports = \
 	@netware.imp \
 	@$(APR)/aprlib.imp \
 	@libc.imp \
-	@ws2nlm.imp \
 	GetCurrentAddressSpace \
 	$(EOLIST)
+
+# Build in mod_nw_ssl if Winsock is being used
+ifndef USE_STDSOCKETS
+FILES_nlm_Ximports += @ws2nlm.imp \
+	       $(EOLIST)
+endif
  
 #   
 # Any symbols exported to here
