@@ -105,7 +105,9 @@ do { \
             apr_bucket_delete(e); \
             e = d; \
         } \
-        e = APR_BUCKET_NEXT(e); \
+        else { \
+            e = APR_BUCKET_NEXT(e); \
+        } \
     } while (!APR_BRIGADE_EMPTY(b) && (e != APR_BRIGADE_SENTINEL(b))); \
 } while (0)
 
