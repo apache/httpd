@@ -241,6 +241,7 @@ endif
 ifneq "$(LDAPSDK)" ""
 	@echo -l $(LDAPSDK)/lib/nlm >> $@
 endif
+	@echo -l $(APULDAP)/$(OBJDIR) >> $@
 	@echo -l $(XML)/$(OBJDIR) >> $@
 	@echo -nodefaults >> $@
 	@echo -map $(OBJDIR)\$(NLM_NAME).map>> $@

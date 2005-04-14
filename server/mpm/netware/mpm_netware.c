@@ -57,6 +57,10 @@
 #include <sys/types.h>
 #endif
 
+#ifndef USE_WINSOCK
+#include <sys/select.h>
+#endif
+
 #define CORE_PRIVATE
 
 #include "ap_config.h"
@@ -385,7 +389,7 @@ void worker_main(void *arg)
 
             if (srv <= 0) {
                 if (srv < 0) {
-                    ap_log_error(APLOG_MARK, APLOG_NOTICE, WSAGetLastError(), ap_server_conf,
+                    ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
                         "select() failed on listen socket");
                     apr_thread_yield();
                 }
@@ -468,6 +472,7 @@ void worker_main(void *arg)
                     APR_STATUS_IS_ENETUNREACH(stat)) {
                         ;
                 }
+#ifdef USE_WINSOCK
                 else if (APR_STATUS_IS_ENETDOWN(stat)) {
                        /*
                         * When the network layer has been shut down, there
@@ -488,6 +493,7 @@ void worker_main(void *arg)
                         clean_child_exit(APEXIT_CHILDFATAL, my_worker_num, ptrans, 
                                          bucket_alloc);
                 }
+#endif
                 else {
                         ap_log_error(APLOG_MARK, APLOG_ERR, stat, ap_server_conf,
                             "apr_socket_accept: (client socket)");
@@ -970,8 +976,10 @@ static int netware_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp
         free (addrname);
     }
 
-    /* The following call has been moved to the mod_nw_ssl pre-config handler
-    ap_listen_pre_config(); */
+#ifndef USE_WINSOCK
+    /* The following call has been moved to the mod_nw_ssl pre-config handler */
+    ap_listen_pre_config();
+#endif
 
     ap_threads_to_start = DEFAULT_START_THREADS;
     ap_threads_min_free = DEFAULT_MIN_FREE_THREADS;

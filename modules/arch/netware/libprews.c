@@ -26,7 +26,9 @@
 ------------------------------------------------------------------*/
 #include <netware.h>
 //#include "stddef.h"
+#ifdef USE_WINSOCK
 #include "novsock2.h"
+#endif
 
 int _NonAppStart
 (
@@ -54,14 +56,22 @@ int _NonAppStart
 #pragma unused(messageCount)
 #pragma unused(messages)
 
+#ifdef USE_WINSOCK
     WSADATA wsaData;
     
     return WSAStartup((WORD) MAKEWORD(2, 0), &wsaData);
+#else
+    return 0;
+#endif
 }
 
 void _NonAppStop( void )
 {
+#ifdef USE_WINSOCK
     WSACleanup();
+#else
+    return;0;
+#endif
 }
 
 int  _NonAppCheckUnload( void )

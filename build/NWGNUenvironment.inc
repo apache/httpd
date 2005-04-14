@@ -127,6 +127,9 @@ INCDIRS := $(INCDIRS);$(ZLIBSDK)
 endif
 
 DEFINES		= -DNETWARE
+ifndef USE_STDSOCKETS
+DEFINES += -DUSE_WINSOCK
+endif
 
 #
 # MetroWerks static Libraries
@@ -271,6 +274,7 @@ SERVER		= $(AP_WORK)/server
 SRC		= $(AP_WORK)
 APR		= $(APR_WORK)
 APRUTIL		= $(APU_WORK)
+APULDAP		= $(APU_WORK)/ldap
 SUPMOD		= $(AP_WORK)/support
 PCRE		= $(AP_WORK)/srclib/pcre
 APRTEST		= $(APR_WORK)/test
@@ -284,6 +288,7 @@ PREBUILD_INST   = $(AP_WORK)\nwprebuild
 
 APRLIB		= $(APR)/$(OBJDIR)/aprlib.lib
 APRUTLIB	= $(APRUTIL)/$(OBJDIR)/aprutil.lib
+APULDAPLIB	= $(APULDAP)/$(OBJDIR)/apuldap.lib
 STMODLIB	= $(STDMOD)/$(OBJDIR)/stdmod.lib
 PCRELIB		= $(PCRE)/$(OBJDIR)/pcre.lib
 NWOSLIB		= $(NWOS)/$(OBJDIR)/netware.lib
