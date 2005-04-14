@@ -1238,7 +1238,7 @@ static char *lookup_map_txtfile(request_rec *r, const char *file, char *key)
     char line[REWRITE_MAX_TXT_MAP_LINE + 1]; /* +1 for \0 */
     char *value, *keylast;
 
-    if (apr_file_open(&fp, file, APR_READ, APR_OS_DEFAULT,
+    if (apr_file_open(&fp, file, APR_READ|APR_BUFFERED, APR_OS_DEFAULT,
                       r->pool) != APR_SUCCESS) {
         return NULL;
     }
