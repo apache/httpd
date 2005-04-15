@@ -2,6 +2,11 @@ Changes with Apache 2.1.5
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_rewrite: use buffered I/O for RewriteMap txt: files.  This
+     can result in a major performance improvement when the files are
+     large.
+     [Greg Ames]
+
   *) Change the default (when not present in the config file) setting
      for UseCanonicalName to Off.
      [Joshua Slive]
