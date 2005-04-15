@@ -545,11 +545,11 @@ static int ssl_print_cert_info(BIO *bio, X509 *x509cert)
         EVP_PKEY_bits(X509_get_pubkey(x509cert)));
 
     dn=X509_get_issuer_name(x509cert);
-    X509_NAME_oneline(dn, buf, BUFSIZ);
+    X509_NAME_oneline(dn, buf, sizeof buf);
     BIO_printf(bio,"The issuer name is %s\n", buf);
 
     dn=X509_get_subject_name(x509cert);
-    X509_NAME_oneline(dn, buf, BUFSIZ);
+    X509_NAME_oneline(dn, buf, sizeof buf);
     BIO_printf(bio,"The subject name is %s\n", buf);
 
     /* dump the extension list too */
@@ -665,7 +665,6 @@ static void ssl_start_connect(struct connection * c)
                 x509cert = (X509 *)sk_X509_value(sk,i);
 #endif
                 ssl_print_cert_info(bio_out,x509cert);
-                X509_free(x509cert);
             }
         }
 
@@ -1562,9 +1561,9 @@ static void test(void)
 
     now = apr_time_now();
 
-    con = calloc(concurrency * sizeof(struct connection), 1);
+    con = calloc(concurrency, sizeof(struct connection));
     
-    stats = calloc(requests * sizeof(struct data), 1);
+    stats = calloc(requests, sizeof(struct data));
 
     if ((status = apr_pollset_create(&readbits, concurrency, cntxt, 0)) != APR_SUCCESS) {
         apr_err("apr_pollset_create failed", status);
@@ -2171,6 +2170,12 @@ int main(int argc, const char * const argv[])
     if ((concurrency < 0) || (concurrency > MAX_CONCURRENCY)) {
         fprintf(stderr, "%s: Invalid Concurrency [Range 0..%d]\n",
                 argv[0], MAX_CONCURRENCY);
+        usage(argv[0]);
+    }
+
+    if (concurrency > requests) {
+        fprintf(stderr, "%s: Cannot use concurrency level greater than "
+                "total number of requests\n", argv[0]);
         usage(argv[0]);
     }
 
