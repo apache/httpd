@@ -1621,7 +1621,7 @@ static void test(void)
             return;
         }
         strcpy(buff, request);
-        strcpy(buff + reqlen, postdata);
+        memcpy(buff + reqlen, postdata, postlen);
         request = buff;
     }
 
