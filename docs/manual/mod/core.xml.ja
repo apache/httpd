@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 154184:160696 (outdated) -->
+<!-- English Revision: 161140 -->
 
 <!--
  Copyright 2003-2005 The Apache Software Foundation or its licensors,
@@ -1457,7 +1457,7 @@ module="core">Directory</directive></seealso>
 <name>KeepAliveTimeout</name>
 <description>持続的な接続で次のリクエストが来るまでサーバが待つ時間</description>
 <syntax>KeepAliveTimeout <var>seconds</var></syntax>
-<default>KeepAliveTimeout 15</default>
+<default>KeepAliveTimeout 5</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
@@ -2937,7 +2937,7 @@ module="core">Directory</directive></seealso>
 <name>UseCanonicalName</name>
 <description>サーバが自分自身の名前とポートを決定する方法を設定する</description>
 <syntax>UseCanonicalName On|Off|Dns</syntax>
-<default>UseCanonicalName On</default>
+<default>UseCanonicalName Off</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context></contextlist>
 
