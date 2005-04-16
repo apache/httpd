@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 151408:160696 (outdated) -->
+<!-- English Revision: 160696 -->
 
 <!--
- Copyright 2002-2005 The Apache Software Foundation or its licensors,
-                     as applicable.
+ Copyright 2002-2005 The Apache Software Foundation or its licensors, as
+ applicable.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -45,7 +45,6 @@
 <name>UserDir</name>
 <description>ユーザ専用ディレクトリの位置</description>
 <syntax>UserDir <em>directory-filename</em></syntax>
-<default>UserDir public_html</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 
@@ -154,6 +153,11 @@ Userdir public_html /usr/web http://www.foo.com/
 Apache はリダイレクトが成功するかどうかを決めることはできませんので、
 リストの前の方にリダイレクトを書くと、それが必ず使用される選択肢に
 なってしまいます。</p>
+
+<p>2.1.4 以降では、ユーザディレクトリ置換機能はデフォルトでは起動しません。
+それ以前のバージョンでは、<directive module="mod_userdir">UserDir</directive>
+ディレクティブが存在しなければ、<code>UserDir public_html</code> 
+であると仮定されていました。</p>
 
 </usage>
 

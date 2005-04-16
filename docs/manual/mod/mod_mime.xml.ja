@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 151408:160365 (outdated) -->
+<!-- English Revision: 160365 -->
 
 <!--
- Copyright 2002-2005 The Apache Software Foundation or its licensors,
-                     as applicable.
+ Copyright 2002-2005 The Apache Software Foundation or its licensors, as
+ applicable.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -123,12 +123,12 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
     タイプとハンドラの両方に関連付けられているときは注意する必要があります。
     その場合、普通はリクエストがハンドラに関連付けられた
     モジュールによって扱われることになります。たとえば、拡張子
-    <code>.imap</code> が (mod_imap の) <code>imap-file</code>
+    <code>.imap</code> が (<module>mod_imagemap</module> の) <code>imap-file</code>
     にマップされていて、<code>.html</code> が MIME タイプ <code>text/html</code>
     にマップされているときは、ファイル <code>world.imap.html</code> は
     <code>imap-file</code> ハンドラと <code>text/html</code> MIME
     タイプに関連付けられます。ファイルが処理されるときは <code>imap-file</code>
-    ハンドラが使用されますので、そのファイルは <module>mod_imap</module>
+    ハンドラが使用されますので、そのファイルは <module>mod_imagemap</module>
     のイメージマップファイルとして扱われることになります。</p>
 </section>
 

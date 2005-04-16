@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 151408:160356 (outdated) -->
+<!-- English Revision: 160356 -->
 
 <!--
- Copyright 2002-2005 The Apache Software Foundation or its licensors,
-                     as applicable.
+ Copyright 2002-2005 The Apache Software Foundation or its licensors, as
+ applicable.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -99,7 +99,8 @@
 
       <dd>
       <example><title>例</title>
-        Allow from apache.org
+        Allow from apache.org<br />
+        Allow from .net example.edu
       </example>
       <p>この文字列に合うか、これで終わる名前のホストのアクセスが許可されます。
       各部分が完全に合うものだけに適用されますので、上の例は
@@ -117,7 +118,8 @@
 
       <dd>
       <example><title>例</title>
-        Allow from 10.1.2.3
+        Allow from 10.1.2.3<br />
+        Allow from 192.168.1.104 192.168.1.205
       </example>
       <p>アクセスを許可する IP アドレスです。</p></dd>
 
@@ -125,7 +127,8 @@
 
       <dd>
       <example><title>例</title>
-        Allow from 10.1
+        Allow from 10.1<br />
+        Allow from 10 172.20 192.168.2
       </example>
       <p>サブネットの制限用の、IP
       アドレスの最初の一つから三つまでのバイトです。</p></dd>

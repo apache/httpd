@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="iso-2022-jp" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English Revision: 151408:160365 (outdated) -->
+<!-- English Revision: 160365 -->
 
 <!--
- Copyright 2002-2005 The Apache Software Foundation or its licensors,
-                     as applicable.
+ Copyright 2002-2005 The Apache Software Foundation or its licensors, as
+ applicable.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@
         <module>mod_actions</module>
         <module>mod_asis</module>
         <module>mod_cgi</module>
-        <module>mod_imap</module>
+        <module>mod_imagemap</module>
         <module>mod_info</module>
         <module>mod_mime</module>
         <module>mod_negotiation</module>
@@ -87,7 +87,7 @@
 
       <li><strong>imap-file</strong>:
       イメージマップのルールファイルとして解析します。
-      (<module>mod_imap</module>)</li>
+      (<module>mod_imagemap</module>)</li>
 
       <li><strong>server-info</strong>: サーバの設定情報を取得します。
       (<module>mod_info</module>)</li>
