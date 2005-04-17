@@ -25,8 +25,6 @@
 <a href="../ja/mod/mod_authz_host.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_authz_host.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>ホスト (名前もしくは IP アドレス) に基づいたグループ承認</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>authz_host_module</td></tr>
@@ -106,7 +104,8 @@
 
       <dd>
       <div class="example"><h3>例</h3><p><code>
-        Allow from apache.org
+        Allow from apache.org<br />
+        Allow from .net example.edu
       </code></p></div>
       <p>この文字列に合うか、これで終わる名前のホストのアクセスが許可されます。
       各部分が完全に合うものだけに適用されますので、上の例は
@@ -124,7 +123,8 @@
 
       <dd>
       <div class="example"><h3>例</h3><p><code>
-        Allow from 10.1.2.3
+        Allow from 10.1.2.3<br />
+        Allow from 192.168.1.104 192.168.1.205
       </code></p></div>
       <p>アクセスを許可する IP アドレスです。</p></dd>
 
@@ -132,7 +132,8 @@
 
       <dd>
       <div class="example"><h3>例</h3><p><code>
-        Allow from 10.1
+        Allow from 10.1<br />
+        Allow from 10 172.20 192.168.2
       </code></p></div>
       <p>サブネットの制限用の、IP
       アドレスの最初の一つから三つまでのバイトです。</p></dd>
