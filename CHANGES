@@ -1,6 +1,10 @@
 Changes with Apache 2.1.5
 
   [Remove entries to the current 2.0 section below, when backported]
+  
+  *) mod_deflate: Merge the Vary header, isntead of Setting it. Fixes
+     applications that send the Vary Header themselves, and also apply 
+     mod_defalte as an output filter. [Paul Querna]
 
   *) mod_rewrite: use buffered I/O for RewriteMap txt: files.  This
      can result in a major performance improvement when the files are
