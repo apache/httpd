@@ -25,8 +25,6 @@
 <a href="../ja/mod/mod_userdir.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_userdir.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>ユーザ専用のディレクトリを提供
   </td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
@@ -55,7 +53,6 @@
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ユーザ専用ディレクトリの位置</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>UserDir <em>directory-filename</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>UserDir public_html</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_userdir</td></tr>
@@ -164,6 +161,11 @@ Userdir public_html /usr/web http://www.foo.com/
 Apache はリダイレクトが成功するかどうかを決めることはできませんので、
 リストの前の方にリダイレクトを書くと、それが必ず使用される選択肢に
 なってしまいます。</p>
+
+<p>2.1.4 以降では、ユーザディレクトリ置換機能はデフォルトでは起動しません。
+それ以前のバージョンでは、<code class="directive"><a href="#userdir">UserDir</a></code>
+ディレクティブが存在しなければ、<code>UserDir public_html</code> 
+であると仮定されていました。</p>
 
 
 <h3>参照</h3>
