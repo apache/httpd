@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE sitemap SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
-<!-- English Revision: 151405:161235 (outdated) -->
+<!-- English Revision: 161235 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -122,6 +122,7 @@ HPUX betreiben</page>
 <page href="programs/apxs.html">apxs</page>
 <page href="programs/configure.html">configure</page>
 <page href="programs/dbmmanage.html">dbmmanage</page>
+<page href="programs/htdbm.html">htdbm</page>
 <page href="programs/htdigest.html">htdigest</page>
 <page href="programs/htpasswd.html">htpasswd</page>
 <page href="programs/logresolve.html">logresolve</page>
