@@ -212,8 +212,13 @@ FILES_nlm_Ximports = \
 	@$(APR)/aprlib.imp \
 	@$(NWOS)/httpd.imp \
 	@libc.imp \
-	@ws2nlm.imp \
 	$(EOLIST)
+ 
+# Don't link with Winsock if standard sockets are being used
+ifndef USE_STDSOCKETS
+FILES_nlm_Ximports += @ws2nlm.imp \
+	       $(EOLIST)
+endif
  
 #   
 # Any symbols exported to here
