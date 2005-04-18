@@ -600,6 +600,53 @@
 
     </section>
 
+    <section id="comp-mod_ssl">
+
+      <title>Building mod_ssl for the NetWare platform</title>
+
+      <p>By default Apache for NetWare uses the built-in module 
+      <module>mod_nw_ssl</module> to provide SSL services.  This module
+      simply enables the native SSL services implemented in NetWare OS
+      to handle all encryption for a given port.  Alternatively, mod_ssl
+      can also be used in the same manner as on other platforms.</p>
+
+      <p>Before mod_ssl can be built for the NetWare platform, the OpenSSL
+      libraries must be provided.  This can be done through the following 
+      steps:</p>
+
+      <ul>
+          <li>Download the latest NetWare patch for OpenSSL from the 
+          <a href="http://www.openssl.org/contrib/">OpenSSL Contribution</a>
+          page.</li>
+
+          <li>Download the corresponding OpenSSL source code from the
+          <a href="http://www.openssl.org/source/">OpenSSL Source</a>
+          page.</li>
+
+          <li>At the root of the OpenSSL source directory, apply the NetWare 
+          patch using the "patch" utility, for example:
+          <example>patch -p 1 -i netwarepatch-0.9.7g.diff</example></li>
+
+          <li>Edit the file <code>NetWare/set_env.bat</code> and modify any 
+          tools and utilities paths so that they correspond to your build 
+          environment.</li>
+
+          <li>From the root of the OpenSSL source directory, run the following
+          scripts:
+          <example>
+              Netware/set_env netware-libc<br />
+              Netware/build netware-libc
+          </example></li>
+
+          <li>Before building Apache, set the environment variable
+          <code>OSSLSDK</code> to the full path to the root of the openssl
+          source code directory.
+          <example>Set OSSLSDK=d:\openssl-0.9.7x</example></li>
+
+      </ul>
+
+    </section>
+
   </section>
 
 </manualpage>

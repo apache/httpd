@@ -288,7 +288,7 @@ FILES_nlm_Ximports = \
 	GetCurrentAddressSpace \
 	$(EOLIST)
 
-# Build in mod_nw_ssl if Winsock is being used
+# Don't link with Winsock if standard sockets are being used
 ifndef USE_STDSOCKETS
 FILES_nlm_Ximports += @ws2nlm.imp \
 	       $(EOLIST)
@@ -329,7 +329,11 @@ install :: nlms FORCE
 	-copy CHANGES                   $(INSTALL)\Apache2\*.*
 	-copy support\dbmmanage.in      $(INSTALL)\Apache2\bin\dbmmanage.pl
 	-copy support\logresolve.pl.in  $(INSTALL)\Apache2\bin\logresolve.pl
+ifdef USE_STDSOCKETS	
 	-awk  -f build\mkconfnw.awk docs\conf\httpd.conf.in >$(INSTALL)\Apache2\conf\httpd.conf
+else
+	-awk  -v SSL=1 -f build\mkconfnw.awk docs\conf\httpd.conf.in >$(INSTALL)\Apache2\conf\httpd.conf
+endif	
 	$(CHKNOT) $(INSTALL)\Apache2\conf\extra\nul mkdir $(INSTALL)\Apache2\conf\extra
 	-awk  -f build\mkconfnw.awk docs\conf\extra\httpd-autoindex.conf.in >$(INSTALL)\Apache2\conf\extra\httpd-autoindex.conf
 	-awk  -f build\mkconfnw.awk docs\conf\extra\httpd-dav.conf.in >$(INSTALL)\Apache2\conf\extra\httpd-dav.conf
@@ -339,7 +343,7 @@ install :: nlms FORCE
 	-awk  -f build\mkconfnw.awk docs\conf\extra\httpd-manual.conf.in >$(INSTALL)\Apache2\conf\extra\httpd-manual.conf
 	-awk  -f build\mkconfnw.awk docs\conf\extra\httpd-mpm.conf.in >$(INSTALL)\Apache2\conf\extra\httpd-mpm.conf
 	-awk  -f build\mkconfnw.awk docs\conf\extra\httpd-multilang-errordoc.conf.in >$(INSTALL)\Apache2\conf\extra\httpd-multilang-errordoc.conf
-	-awk  -v SSL=1 -f build\mkconfnw.awk <nul >$(INSTALL)\Apache2\conf\extra\httpd-ssl.conf
+	-awk  -f build\mkconfnw.awk docs\conf\extra\httpd-ssl.conf.in >$(INSTALL)\Apache2\conf\extra\httpd-ssl.conf
 	-awk  -f build\mkconfnw.awk docs\conf\extra\httpd-userdir.conf.in >$(INSTALL)\Apache2\conf\extra\httpd-userdir.conf
 	-awk  -f build\mkconfnw.awk docs\conf\extra\httpd-vhosts.conf.in >$(INSTALL)\Apache2\conf\extra\httpd-vhosts.conf
 	-copy docs\conf\magic           $(INSTALL)\Apache2\conf\magic
