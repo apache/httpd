@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
-<!-- English Revision: 154184:161140 (outdated) -->
+<!-- English Revision: 161140 -->
 
 <!--
  Copyright 2003-2005 The Apache Software Foundation or its licensors,
@@ -1546,7 +1546,7 @@ Server-Konfigurationsdatei ein</description>
 <description>Zeitspanne, die der Server w&auml;hrend persistenter Verbindungen
 auf nachfolgende Anfragen wartet</description>
 <syntax>KeepAliveTimeout <var>Sekunden</var></syntax>
-<default>KeepAliveTimeout 15</default>
+<default>KeepAliveTimeout 5</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
@@ -3101,7 +3101,7 @@ bevor er die Anfrage abbricht</description>
 <description>Bestimmt, wie der Server seinen eigenen Namen und Port
 ermittelt</description>
 <syntax>UseCanonicalName On|Off|DNS</syntax>
-<default>UseCanonicalName On</default>
+<default>UseCanonicalName Off</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context></contextlist>
 
