@@ -15,7 +15,7 @@
  */
 
 /*
- * mod_deflate.c: Perform deflate transfer-encoding on the fly
+ * mod_deflate.c: Perform deflate content-encoding on the fly
  *
  * Written by Ian Holsman, Justin Erenkrantz, and Nick Kew
  */
