@@ -2,6 +2,9 @@ Changes with Apache 2.1.5
 
   [Remove entries to the current 2.0 section below, when backported]
   
+  *) Added makefile and doc for building mod_ssl on the NetWare 
+     platform. [Guenter Knauf, Brad Nicholes]
+  
   *) mod_deflate: Merge the Vary header, isntead of Setting it. Fixes
      applications that send the Vary Header themselves, and also apply 
      mod_defalte as an output filter. [Paul Querna]

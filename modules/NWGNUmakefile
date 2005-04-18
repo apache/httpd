@@ -25,6 +25,13 @@ SUBDIRS += ldap \
 	$(EOLIST)
 endif
 
+# If OSSLSDK has been defined then build the mod_ssl module
+ifndef USE_STDSOCKETS
+ifneq "$(OSSLSDK)" ""
+SUBDIRS += ssl \
+	$(EOLIST)
+endif
+endif
 
 #If the mod_edir directory exists then build the mod_edir module
 ifeq "$(wildcard $(AP_WORK)\modules\mod_edir)" "$(AP_WORK)\modules\mod_edir"
