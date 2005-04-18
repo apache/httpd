@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <modulefilelist>
-  <modulefile>core.xml</modulefile>
+  <modulefile>core.xml.es</modulefile>
   <modulefile>mod_access.xml</modulefile>
   <modulefile>mod_actions.xml</modulefile>
   <modulefile>mod_alias.xml</modulefile>
