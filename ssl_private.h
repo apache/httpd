@@ -531,7 +531,6 @@ void         ssl_init_Child(apr_pool_t *, server_rec *);
 apr_status_t ssl_init_ModuleKill(void *data);
 
 /*  Apache API hooks  */
-int          ssl_hook_Translate(request_rec *);
 int          ssl_hook_Auth(request_rec *);
 int          ssl_hook_UserCheck(request_rec *);
 int          ssl_hook_Access(request_rec *);
