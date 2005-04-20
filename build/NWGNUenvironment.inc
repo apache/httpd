@@ -116,6 +116,12 @@ CPP		= mwccnlm
 LINK	= mwldnlm
 LIB		= mwldnlm -type library -w nocmdline
 
+ifdef IPV6
+ifndef USE_STDSOCKETS
+USE_STDSOCKETS=1
+endif
+endif
+
 NOVI	= $(NOVELLLIBC)\imports
 
 INCDIRS 	= $(NOVELLLIBC)\include;$(NOVELLLIBC)\include\nks;$(NOVELLLIBC)\include\winsock;
