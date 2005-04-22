@@ -231,6 +231,15 @@ PATCHES TO BACKPORT FROM TRUNK:
        -0: pquerna (2.2)
        -0: jorton (msgid <20040305083540.GA24529@redhat.com>)
 
+     *) mod_ssl: Fix issues picking up ssl-unclean-shutdown setting
+        for e.g. a reverse proxy config, breaking interop with MSIE
+        in some cases.
+        http://svn.apache.org/viewcvs?view=rev&rev=161958
+        rediffed for 2.0.x as:
+        http://issues.apache.org/bugzilla/attachment.cgi?id=14804
+        PR: 34452
+        +1: jorton
+
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
     *) Remove LDAP toolkit specific code from util_ldap and mod_auth_ldap.
