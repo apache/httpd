@@ -286,6 +286,29 @@
 </section>
 
 <directivesynopsis>
+<name>BufferedLogs</name>
+<description>Buffer log entries in memory before writing to disk</description>
+<syntax>BufferedLogs On|Off</syntax>
+<default>BufferedLogs Off</default>
+<contextlist><context>server config</context></contextlist>
+<compatibility>Available in versions 2.0.41 and later.</compatibility>
+<status>Experimental</status>
+
+<usage>
+    <p>The <directive>BufferedLogs</directive> directive causes
+    <module>mod_log_config</module> to store several log entries in
+    memory and write them together to disk, rather than writing them
+    after each request.  On some systems, this may result in more
+    efficient disk access and hence higher performance.  It may be
+    set only once for the entire server; it cannot be configured
+    per virtual-host.</p>
+
+    <note>This directive is experimental and should be used with
+    caution.</note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>CookieLog</name>
 <description>Sets filename for the logging of cookies</description>
 <syntax>CookieLog <var>filename</var></syntax>
