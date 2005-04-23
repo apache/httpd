@@ -1461,6 +1461,32 @@ When using the NOT character
          <strong>But be careful not to create an infinite
         loop!</strong></li>
 
+        <li>'<strong><code>nocase|NC</code></strong>'
+        (<strong>n</strong>o <strong>c</strong>ase)<br />
+         This makes the <em>Pattern</em> case-insensitive,
+        <em>i.e.</em>, there is no difference between 'A-Z' and
+        'a-z' when <em>Pattern</em> is matched against the current
+        URL.</li>
+
+        <li>
+          '<strong><code>noescape|NE</code></strong>'
+          (<strong>n</strong>o URI <strong>e</strong>scaping of
+          output)<br />
+           This flag keeps mod_rewrite from applying the usual URI
+          escaping rules to the result of a rewrite. Ordinarily,
+          special characters (such as '%', '$', ';', and so on)
+          will be escaped into their hexcode equivalents ('%25',
+          '%24', and '%3B', respectively); this flag prevents this
+          from being done. This allows percent symbols to appear in
+          the output, as in 
+<div class="example"><p><code>
+    RewriteRule /foo/(.*) /bar?arg=P1\%3d$1 [R,NE]
+</code></p></div>
+
+          which would turn '<code>/foo/zed</code>' into a safe
+          request for '<code>/bar?arg=P1=zed</code>'. 
+        </li>
+
         <li>
           '<strong><code>nosubreq|NS</code></strong>' (used only if
           <strong>n</strong>o internal
