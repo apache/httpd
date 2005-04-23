@@ -497,15 +497,21 @@
         </li>
         
         <li>Set the environment variable <code>AP_WORK</code> to the full path of
-        the <code>httpd</code> source code directory.</li>
+        the <code>httpd</code> source code directory.
+        <div class="example"><p><code>Set AP_WORK=D:\httpd-2.0.x</code></p></div>
+        </li>
 
         <li>Set the environment variable <code>APR_WORK</code> to the full path of
         the <code>apr</code> source code directory. Typically <code>\httpd\srclib\apr</code>
-        but the APR project can be outside of the httpd directory structure.</li>
+        but the APR project can be outside of the httpd directory structure.
+        <div class="example"><p><code>Set APR_WORK=D:\apr-1.x.x</code></p></div>
+        </li>
 
         <li>Set the environment variable <code>APU_WORK</code> to the full path of
         the <code>apr-util</code> source code directory. Typically <code>\httpd\srclib\apr-util</code>
-        but the APR-UTIL project can be outside of the httpd directory structure.</li>
+        but the APR-UTIL project can be outside of the httpd directory structure.
+        <div class="example"><p><code>Set APU_WORK=D:\apr-util-1.x.x</code></p></div>
+        </li>
 
         <li>Make sure that the path to the AWK utility and the GNU make utility
         (<code>gmake.exe</code>) have been included in the system's
@@ -569,6 +575,72 @@
 
         <li><code>gmake -f nwgnumakefile clobber_all</code><p>Same as clean and also deletes
         the distribution directory if it exists.</p></li>
+      </ul>
+
+    
+
+    <h3><a name="comp-add-env" id="comp-add-env">Additional environment variable options</a></h3>
+
+      
+
+      <ul>
+        <li>To build all of the experimental modules, set the environment 
+        variable <code>EXPERIMENTAL</code>:
+        <div class="example"><p><code>Set EXPERIMENTAL=1</code></p></div>
+        </li>
+
+        <li>To build Apache using standard BSD style sockets rather than
+        Winsock, set the environment variable <code>USE_STDSOCKETS</code>:
+        <div class="example"><p><code>Set USE_STDSOCKETS=1</code></p></div>
+        </li>
+
+      </ul>
+
+    
+
+    <h3><a name="comp-mod_ssl" id="comp-mod_ssl">Building mod_ssl for the NetWare platform</a></h3>
+
+      
+
+      <p>By default Apache for NetWare uses the built-in module 
+      <code class="module"><a href="../mod/mod_nw_ssl.html">mod_nw_ssl</a></code> to provide SSL services.  This module
+      simply enables the native SSL services implemented in NetWare OS
+      to handle all encryption for a given port.  Alternatively, mod_ssl
+      can also be used in the same manner as on other platforms.</p>
+
+      <p>Before mod_ssl can be built for the NetWare platform, the OpenSSL
+      libraries must be provided.  This can be done through the following 
+      steps:</p>
+
+      <ul>
+          <li>Download the latest NetWare patch for OpenSSL from the 
+          <a href="http://www.openssl.org/contrib/">OpenSSL Contribution</a>
+          page.</li>
+
+          <li>Download the corresponding OpenSSL source code from the
+          <a href="http://www.openssl.org/source/">OpenSSL Source</a>
+          page.</li>
+
+          <li>At the root of the OpenSSL source directory, apply the NetWare 
+          patch using the "patch" utility, for example:
+          <div class="example"><p><code>patch -p 1 -i netwarepatch-0.9.7g.diff</code></p></div></li>
+
+          <li>Edit the file <code>NetWare/set_env.bat</code> and modify any 
+          tools and utilities paths so that they correspond to your build 
+          environment.</li>
+
+          <li>From the root of the OpenSSL source directory, run the following
+          scripts:
+          <div class="example"><p><code>
+              Netware/set_env netware-libc<br />
+              Netware/build netware-libc
+          </code></p></div></li>
+
+          <li>Before building Apache, set the environment variable
+          <code>OSSLSDK</code> to the full path to the root of the openssl
+          source code directory.
+          <div class="example"><p><code>Set OSSLSDK=d:\openssl-0.9.7x</code></p></div></li>
+
       </ul>
 
     
