@@ -2,6 +2,9 @@ Changes with Apache 2.1.5
 
   [Remove entries to the current 2.0 section below, when backported]
   
+  *) Remove the never working ap_method_list_do and ap_method_list_vdo.
+     [Paul Querna]
+
   *) Added makefile and doc for building mod_ssl on the NetWare 
      platform. [Guenter Knauf, Brad Nicholes]
   

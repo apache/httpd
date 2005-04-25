@@ -261,14 +261,7 @@ AP_DECLARE(void) ap_method_registry_init(apr_pool_t *p);
 AP_DECLARE(ap_method_list_t *) ap_make_method_list(apr_pool_t *p, int nelts);
 AP_DECLARE(void) ap_copy_method_list(ap_method_list_t *dest,
 				     ap_method_list_t *src);
-AP_DECLARE_NONSTD(void) ap_method_list_do(int (*comp) (void *urec, const char *mname,
-						       int mnum),
-				          void *rec,
-				          const ap_method_list_t *ml, ...);
-AP_DECLARE(void) ap_method_list_vdo(int (*comp) (void *urec, const char *mname,
-						 int mnum),
-				    void *rec, const ap_method_list_t *ml,
-				    va_list vp);
+
 /**
  * Search for an HTTP method name in an ap_method_list_t structure, and
  * return true if found.
