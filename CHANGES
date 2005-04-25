@@ -2,6 +2,10 @@ Changes with Apache 2.1.5
 
   [Remove entries to the current 2.0 section below, when backported]
   
+  *) Add the ap_vhost_iterate_given_conn function to expose the information
+     used in Name Based Virtual Hosting. (minor MMN bump)
+     [Paul Querna]
+
   *) Remove the never working ap_method_list_do and ap_method_list_vdo.
      [Paul Querna]
 
