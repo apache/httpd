@@ -93,6 +93,7 @@
  *                        symbols from the public sector, and decorated real_exit_code
  *                        with ap_ in the win32 os.h.
  * 20050305.0 (2.1.4-dev) added pid and generation fields to worker_score
+ * 20050305.1 (2.1.5-dev) added ap_vhost_iterate_given_conn.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503230UL /* "AP20" */
@@ -100,7 +101,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20050305
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 1                     /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
