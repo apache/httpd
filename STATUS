@@ -95,6 +95,11 @@ PATCHES TO BACKPORT FROM TRUNK:
     identify exactly what the proposed changes are! ]
   [ please append new backports at the end of this list not the top. ]
 
+    *) ap_proxy_canonenc() is over-eager in handling '%' for reverse
+       proxies (PR: 29554).
+         http://svn.apache.org/viewcvs.cgi?rev=151153&view=rev
+       +1: jim
+
     *) several changes to improve logging of connection-oriented errors, including
        ap_log_cerror() API (needs minor bump in addition to changes below)
          http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/core.c?r1=1.289&r2=1.291
