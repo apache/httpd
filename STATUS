@@ -98,6 +98,11 @@ PATCHES TO BACKPORT FROM TRUNK:
     *) ap_proxy_canonenc() is over-eager in handling '%' for reverse
        proxies (PR: 29554).
          http://svn.apache.org/viewcvs.cgi?rev=151153&view=rev
+            - or (quick hack) -
+         Index: modules/proxy/proxy_util.c
+             -       if (isenc && ch == '%') {
+             +       if (isenc && (isenc != PROXYREQ_REVERSE) && ch == '%') {
+
        +1: jim
 
     *) several changes to improve logging of connection-oriented errors, including
