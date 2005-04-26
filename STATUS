@@ -368,6 +368,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
                    query cases; but I'm beginning to think that in these cases 
                    the app should be querying ap{r,u}-config directly
           gstein: agreed. apxs should deprecate the -q flag
+          pquerna: I vote for a httpd-config, and to deprecate the -q flag.
 
 TODO ISSUES REMAINING IN MOD_SSL:
 
