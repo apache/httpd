@@ -16,11 +16,11 @@ UserDir public_html
 <Directory /home/*/public_html>
     AllowOverride FileInfo AuthConfig Limit Indexes
     Options MultiViews Indexes SymLinksIfOwnerMatch IncludesNoExec
-    <Limit GET POST OPTIONS PROPFIND>
+    <Limit GET POST OPTIONS>
         Order allow,deny
         Allow from all
     </Limit>
-    <LimitExcept GET POST OPTIONS PROPFIND>
+    <LimitExcept GET POST OPTIONS>
         Order deny,allow
         Deny from all
     </LimitExcept>
