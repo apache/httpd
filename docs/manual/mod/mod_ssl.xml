@@ -1110,6 +1110,12 @@ This directive specifies a general access requirement which has to be
 fulfilled in order to allow access. It's a very powerful directive because the
 requirement specification is an arbitrarily complex boolean expression
 containing any number of access checks.</p>
+<note type="warning">
+<p>The implementation of <code>SSLRequire</code> is not thread safe.  
+   Using <code>SSLRequire</code> inside <code>.htaccess</code> files
+   on a threaded <a href="../mpm.html">MPM</a> may cause random crashes.
+</p>
+</note>
 <p>
 The <em>expression</em> must match the following syntax (given as a BNF
 grammar notation):</p>
