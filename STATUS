@@ -253,7 +253,8 @@ PATCHES TO BACKPORT FROM TRUNK:
      *) mod_userdir: fix to palloc(sizeof struct) not palloc(sizeof pointer)
         http://svn.apache.org/viewcvs?rev=165151&view=rev
         PR: 34588
-        +1: jorton
+        +1: jorton, trawick (isn't it worth a CHANGES entry for a storage
+            corruption fix?)
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
