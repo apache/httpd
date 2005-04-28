@@ -250,6 +250,11 @@ PATCHES TO BACKPORT FROM TRUNK:
         PR: 34452
         +1: jorton
 
+     *) mod_userdir: fix to palloc(sizeof struct) not palloc(sizeof pointer)
+        http://svn.apache.org/viewcvs?rev=165151&view=rev
+        PR: 34588
+        +1: jorton
+
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
     *) Remove LDAP toolkit specific code from util_ldap and mod_auth_ldap.
