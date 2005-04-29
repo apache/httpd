@@ -127,6 +127,9 @@ INCDIRS := $(INCDIRS);$(ZLIBSDK)
 endif
 
 DEFINES		= -DNETWARE
+ifndef DEBUG
+DEFINES += -DNDEBUG
+endif
 
 #
 # MetroWerks static Libraries
