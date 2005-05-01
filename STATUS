@@ -261,7 +261,7 @@ PATCHES TO BACKPORT FROM TRUNK:
 	http://svn.apache.org/viewcvs/httpd/httpd/trunk/modules/ldap/util_ldap.c?rev=164919&r1=164918&r2=164919&view=diff
 	or 2.0 view patch
 	http://issues.apache.org/bugzilla/attachment.cgi?id=14873
-	+1: bnicholes
+	+1: bnicholes, minfrin
 	
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
