@@ -261,7 +261,7 @@
         (<code>%t</code>)</dt>
 
         <dd>
-          The time that the server finished processing the request.
+          The time that the request was received.
           The format is: 
 
           <p class="indent">
