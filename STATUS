@@ -369,6 +369,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
                    the app should be querying ap{r,u}-config directly
           gstein: agreed. apxs should deprecate the -q flag
           pquerna: I vote for a httpd-config, and to deprecate the -q flag.
+          minfrin: +1 for httpd-config, and to deprecate -q.
 
 TODO ISSUES REMAINING IN MOD_SSL:
 
