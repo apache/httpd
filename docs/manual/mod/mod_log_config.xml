@@ -149,7 +149,7 @@
         for the last.</td></tr>
 
     <tr><td><code>%...t</code></td>
-        <td>Time, in common log format time format (standard english
+        <td>Time the request was received (standard english
         format)</td></tr>
 
     <tr><td><code>%...{<var>format</var>}t</code></td>
