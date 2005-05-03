@@ -55,8 +55,8 @@
 
 module AP_MODULE_DECLARE_DATA ldap_module;
 
-int util_ldap_handler(request_rec *r);
-void *util_ldap_create_config(apr_pool_t *p, server_rec *s);
+static int util_ldap_handler(request_rec *r);
+static void *util_ldap_create_config(apr_pool_t *p, server_rec *s);
 
 
 /*
