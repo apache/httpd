@@ -137,7 +137,7 @@
         the status of the *original* request --- <code>%...&gt;s</code>
         for the last.</td></tr>
 <tr><td><code>%...t</code></td>
-        <td>Time, in common log format time format (standard english
+        <td>Time the request was received (standard english
         format)</td></tr>
 <tr class="odd"><td><code>%...{<var>format</var>}t</code></td>
         <td>The time, in the form given by format, which should be in
