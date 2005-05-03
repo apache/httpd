@@ -1429,6 +1429,7 @@ static const char *process_resource_config_nofnmatch(server_rec *s,
     cmd_parms parms;
     ap_configfile_t *cfp;
     const char *error;
+    apr_status_t rv;
 
     if (ap_is_directory(p, fname)) {
         apr_dir_t *dirp;
@@ -1436,7 +1437,6 @@ static const char *process_resource_config_nofnmatch(server_rec *s,
         int current;
         apr_array_header_t *candidates = NULL;
         fnames *fnew;
-        apr_status_t rv;
         char *path = apr_pstrdup(p, fname);
 
         if (++depth > AP_MAX_INCLUDE_DIR_DEPTH) {
@@ -1499,9 +1499,11 @@ static const char *process_resource_config_nofnmatch(server_rec *s,
     parms.override = (RSRC_CONF | OR_ALL) & ~(OR_AUTHCFG | OR_LIMIT);
     parms.override_opts = OPT_ALL | OPT_INCNOEXEC | OPT_SYM_OWNER | OPT_MULTI;
 
-    if (ap_pcfg_openfile(&cfp, p, fname) != APR_SUCCESS) {
-        return apr_pstrcat(p, "Could not open document config file ",
-                           fname, NULL);
+    rv = ap_pcfg_openfile(&cfp, p, fname); 
+    if (rv != APR_SUCCESS) {
+        char errmsg[120];
+        return apr_psprintf(p, "Could not open configuration file %s: %s",
+                            fname, apr_strerror(rv, errmsg, sizeof errmsg));
     }
 
     parms.config_file = cfp;
