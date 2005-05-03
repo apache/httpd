@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "APACHECTL" 8 "2003-11-25" "Apache HTTP Server" "apachectl"
+.TH "APACHECTL" 8 "2005-05-03" "Apache HTTP Server" "apachectl"
 
 .SH NAME
 apachectl \- Apache HTTP Server Control Interface
@@ -83,10 +83,10 @@ configtest
 Run a configuration file syntax test\&. It parses the configuration files and either reports Syntax Ok or detailed information about the particular syntax error\&. This is equivalent to apachectl -t\&.  
  
 .PP
-The following additional option is available, but deprecated\&.
+The following option was available in earlier versions but has been removed\&.
  
  
 .TP
 startssl
-This is equivalent to apachectl -k start -DSSL\&. We recommend that you use that command explicitly, or you adjust your httpd\&.conf to remove the <IfDefine> section so that SSL will always be available\&.  
+To start httpd with SSL support, you should edit your configuration file to include the relevant directives and then use the normal apachectl start\&.  
  

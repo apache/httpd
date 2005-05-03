@@ -129,16 +129,15 @@ equivalent to <code>apachectl -t</code>.</dd>
 
 </dl>
 
-<p>The following additional option is available, but deprecated.</p>
+<p>The following option was available in earlier versions but has been removed.</p>
 
 <dl>
 
 <dt><code>startssl</code></dt>
 
-<dd>This is equivalent to <code>apachectl -k start -DSSL</code>.  We
-recommend that you use that command explicitly, or you adjust your
-<code>httpd.conf</code> to remove the <code class="directive"><a href="../mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code> section so that SSL will always be
-available.</dd>
+<dd>To start <code class="program"><a href="../programs/httpd.html">httpd</a></code> with SSL support, you should edit
+your configuration file to include the relevant directives and then
+use the normal <code>apachectl start</code>.</dd>
 
 </dl>
 

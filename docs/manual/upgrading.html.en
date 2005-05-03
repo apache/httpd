@@ -62,6 +62,14 @@
       the <code>conf/extra/</code> directive of the installed
       server.</li>
 
+      <li>The <code class="program"><a href="./programs/apachectl.html">apachectl</a></code> option
+      <code>startssl</code> is no longer available.  To enable ssl
+      support, you should edit <code>httpd.conf</code> to include the
+      relevant <code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code> directives and then use
+      <code>apachectl start</code> to start the server.  An example
+      configuration to activate <code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code> has been included
+      in <code>conf/extra/httpd-ssl.conf</code>.</li>
+
       <li>The default setting of <code class="directive"><a href="./mod/core.html#usecanonicalname">UseCanonicalName</a></code> is now
       <code>Off</code>.  If you did not have this directive in your
       config file, you can add <code>UseCanonicalName On</code> to
