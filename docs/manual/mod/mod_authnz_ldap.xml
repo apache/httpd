@@ -819,6 +819,38 @@ environment variable</description>
     the username that was passed by the client. It is turned off by
     default.</p>
 </usage>
+<seealso><directive module="mod_authnz_ldap">AuthLDAPAllowDNAuth</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthLDAPAllowDNAuth</name>
+<description>Allow the user to authenticate by passing a fully distinguished
+user name.</description>
+<syntax>AuthLDAPAllowDNAuth on|off</syntax>
+<default>AuthLDAPAllowDNAuth off</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>If this directive is set to ON, users are allowed to pass a fully
+    distinguished user name as the user ID.  Regardless of this setting,
+    Auth_LDAP will still allow a contextless login. This directive is 
+    turned off by default.</p>
+
+    <note><title>Note</title>
+      <p>If a full user DN is allowed for authentication and the value of
+      <directive module="mod_authnz_ldap">AuthLDAPRemoteUserIsDN</directive> 
+      is set to OFF, the value of the REMOTE_USER environment variable
+      will contain the actual user name value passed in the request.  If 
+      this directive is set to ON, the REMOTE_USER environment variable 
+      will always be set to the user DN retrieved from the LDAP directory. 
+      If a contextless user ID is required in all cases instead of a 
+      full DN, it is possible to retrieve the desired attribute value 
+      from the user object by specifying an attribute list in the 
+      <directive module="mod_authnz_ldap">AuthLDAPUrl</directive> directive.</p>
+    </note>
+</usage>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -874,13 +906,16 @@ environment variable</description>
 
 <dt>attribute</dt>
 
-        <dd>The attribute to search for.
+        <dd>The attribute to search for as well as additional attribute
+        values to extract from the authenticated user object.
         Although RFC 2255 allows a comma-separated list of
         attributes, only the first attribute will be used, no
-        matter how many are provided. If no attributes are
-        provided, the default is to use <code>uid</code>. It's a good
-        idea to choose an attribute that will be unique across all
-        entries in the subtree you will be using.</dd>
+        matter how many are provided. The values of all other listed 
+        attributes will be extracted from the user object and assigned
+        to environment variables (AUTHENTICATE_&lt;Attribute&gt;=value). 
+        If no attributes are provided, the default is to use <code>uid</code>. 
+        It's a good idea to choose an attribute that will be unique across 
+        all entries in the subtree you will be searching.</dd>
 
 <dt>scope</dt>
 
