@@ -2,6 +2,9 @@ Changes with Apache 2.1.5
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) worker and event mpms: don't take down the whole server for a transient
+     thread creation failure.  PR 34514 [Greg Ames]
+
   *) ap_get_local_host() rewritten for APR. [Jim Jagielski]
 
   *) Add the ap_vhost_iterate_given_conn function to expose the information
