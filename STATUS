@@ -261,6 +261,15 @@ PATCHES TO BACKPORT FROM TRUNK:
 	http://issues.apache.org/bugzilla/attachment.cgi?id=14873
 	+1: bnicholes, minfrin
 	
+     *) mod_auth_ldap: Add the directive AuthLDAPAllowDNAuth to allow a 
+        user to authenticate against an LDAP directory using a full user 
+	DN.  This directive allows a user to authenticate against a 
+	subcontext that may contain non-unique user IDs.
+	  http://svn.apache.org/viewcvs?rev=168016&view=rev
+	or 2.0 patch
+	  http://people.apache.org/~bnicholes/ldapallowFDN.patch
+	+1: bnicholes
+	
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
