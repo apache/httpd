@@ -151,7 +151,8 @@ Header unset Author
     rel="Help"><strong>Module:</strong></a> mod_headers 
 
     <p>This directive can replace, merge or remove HTTP response
-    headers during 3xx, 4xx and 5xx replies. For normal replies
+    headers on all replies including errors, redirects, and successful
+    responses.  To add headers only on sucessful (status 2xx) responses,
     use the Header directive.
     </p>
     <p>This directive is identical to the <a href="#header">Header</a> 
