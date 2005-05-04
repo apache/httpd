@@ -312,8 +312,9 @@ static const char *add_readme(cmd_parms *cmd, void *d, const char *name)
     return NULL;
 }
 
-static const char *add_opts(cmd_parms *cmd, void *d, const char *optstr)
+static const char *add_opts(cmd_parms *cmd, void *d, int argc, char *const argv[])
 {
+    int i;
     char *w;
     apr_int32_t opts;
     apr_int32_t opts_add;
@@ -324,10 +325,11 @@ static const char *add_opts(cmd_parms *cmd, void *d, const char *optstr)
     opts = d_cfg->opts;
     opts_add = d_cfg->incremented_opts;
     opts_remove = d_cfg->decremented_opts;
-    while (optstr[0]) {
-        int option = 0;
 
-        w = ap_getword_conf(cmd->pool, &optstr);
+    for (i = 0; i < argc; i++) {
+        int option = 0;
+        w = argv[i];
+
         if ((*w == '+') || (*w == '-')) {
             action = *(w++);
         }
@@ -554,8 +556,8 @@ static const command_rec autoindex_cmds[] =
     AP_INIT_ITERATE2("AddAltByEncoding", add_alt, BY_ENCODING, DIR_CMD_PERMS,
                      "alternate descriptive text followed by one or more "
                      "content encodings"),
-    AP_INIT_RAW_ARGS("IndexOptions", add_opts, NULL, DIR_CMD_PERMS,
-                     "one or more index options [+|-][]"),
+    AP_INIT_TAKE_ARGV("IndexOptions", add_opts, NULL, DIR_CMD_PERMS,
+                      "one or more index options [+|-][]"),
     AP_INIT_TAKE2("IndexOrderDefault", set_default_order, NULL, DIR_CMD_PERMS,
                   "{Ascending,Descending} {Name,Size,Description,Date}"),
     AP_INIT_ITERATE("IndexIgnore", add_ignore, NULL, DIR_CMD_PERMS,
