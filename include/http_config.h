@@ -57,7 +57,8 @@ enum cmd_how {
     TAKE3,			/**< three arguments only */
     TAKE23,			/**< two or three arguments */
     TAKE123,			/**< one, two or three arguments */
-    TAKE13			/**< one or three arguments */
+    TAKE13,			/**< one or three arguments */
+    TAKE_ARGV			/**< an argc and argv are passed */
 };
 /**
  * This structure is passed to a command which is being invoked,
@@ -78,6 +79,9 @@ typedef union {
     /** function to call for a raw-args */
     const char *(*raw_args) (cmd_parms *parms, void *mconfig,
 			     const char *args);
+    /** function to call for a argv/argc */
+    const char *(*take_argv) (cmd_parms *parms, void *mconfig,
+			     int argc, char *const argv[]);
     /** function to call for a take1 */
     const char *(*take1) (cmd_parms *parms, void *mconfig, const char *w);
     /** function to call for a take2 */
@@ -94,6 +98,8 @@ typedef union {
 # define AP_NO_ARGS	func.no_args
 /** This configuration directive will handle it's own parsing of arguments*/
 # define AP_RAW_ARGS	func.raw_args
+/** This configuration directive will handle it's own parsing of arguments*/
+# define AP_TAKE_ARGV	func.take_argv
 /** This configuration directive takes 1 argument*/
 # define AP_TAKE1	func.take1
 /** This configuration directive takes 2 arguments */
@@ -109,6 +115,9 @@ typedef union {
 /** method of declaring a directive with raw argument parsing */
 # define AP_INIT_RAW_ARGS(directive, func, mconfig, where, help) \
     { directive, { .raw_args=func }, mconfig, where, RAW_ARGS, help }
+/** method of declaring a directive with raw argument parsing */
+# define AP_INIT_TAKE_ARGV(directive, func, mconfig, where, help) \
+    { directive, { .take_argv=func }, mconfig, where, TAKE_ARGV, help }
 /** method of declaring a directive which takes 1 argument */
 # define AP_INIT_TAKE1(directive, func, mconfig, where, help) \
     { directive, { .take1=func }, mconfig, where, TAKE1, help }
@@ -146,6 +155,7 @@ typedef const char *(*cmd_func) ();
 
 # define AP_NO_ARGS  func
 # define AP_RAW_ARGS func
+# define AP_TAKE_ARGV func
 # define AP_TAKE1    func
 # define AP_TAKE2    func
 # define AP_TAKE3    func
@@ -155,6 +165,8 @@ typedef const char *(*cmd_func) ();
     { directive, func, mconfig, where, RAW_ARGS, help }
 # define AP_INIT_RAW_ARGS(directive, func, mconfig, where, help) \
     { directive, func, mconfig, where, RAW_ARGS, help }
+# define AP_INIT_TAKE_ARGV(directive, func, mconfig, where, help) \
+    { directive, func, mconfig, where, TAKE_ARGV, help }
 # define AP_INIT_TAKE1(directive, func, mconfig, where, help) \
     { directive, func, mconfig, where, TAKE1, help }
 # define AP_INIT_ITERATE(directive, func, mconfig, where, help) \

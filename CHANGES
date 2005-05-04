@@ -2,6 +2,9 @@ Changes with Apache 2.1.5
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Add AP_INIT_TAKE_ARGV for configuration commands. (minor MMN bump) 
+     [Paul Querna]
+
   *) worker and event mpms: don't take down the whole server for a transient
      thread creation failure.  PR 34514 [Greg Ames]
 

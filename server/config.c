@@ -648,6 +648,8 @@ AP_DECLARE(module *) ap_find_linked_module(const char *name)
  * invoking the function...
  */
 
+#define AP_MAX_ARGC 64
+
 static const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms,
                               void *mconfig, const char *args)
 {
@@ -666,6 +668,23 @@ static const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms,
         args = ap_resolve_env(parms->pool,args);
 #endif
         return cmd->AP_RAW_ARGS(parms, mconfig, args);
+
+    case TAKE_ARGV:
+        {
+            char *argv[AP_MAX_ARGC];
+            int argc = 0;
+
+            do {
+                w = ap_getword_conf(parms->pool, &args);
+                if (*w == '\0' && *args == '\0') {
+                    break;
+                }
+                argv[argc] = w;
+                argc++;
+            } while (argc < AP_MAX_ARGC && *args != '\0');
+
+            return cmd->AP_TAKE_ARGV(parms, mconfig, argc, argv);
+        }
 
     case NO_ARGS:
         if (*args != 0)
