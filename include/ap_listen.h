@@ -65,17 +65,14 @@ AP_DECLARE_DATA extern ap_listen_rec *ap_listeners;
  * Setup all of the defaults for the listener list
  */
 AP_DECLARE(void) ap_listen_pre_config(void);
-#if !defined(SPMT_OS2_MPM)
+
 /**
  * Loop through the global ap_listen_rec list and create all of the required
  * sockets.  This executes the listen and bind on the sockets.
  * @param s The global server_rec
  * @return The number of open sockets.
- * @warning This function is not available to Windows platforms, or the
- * Prefork or SPMT_OS2 MPMs.
  */ 
 AP_DECLARE(int) ap_setup_listeners(server_rec *s);
-#endif
 
 /* Although these functions are exported from libmain, they are not really
  * public functions.  These functions are actually called while parsing the
