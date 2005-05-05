@@ -460,6 +460,8 @@ static void *create_core_server_config(apr_pool_t *a, server_rec *s)
     conf->redirect_limit = 0; /* 0 == unset */
     conf->subreq_limit = 0;
 
+    conf->protocol = NULL;
+
     return (void *)conf;
 }
 
@@ -480,6 +482,10 @@ static void *merge_core_server_configs(apr_pool_t *p, void *basev, void *virtv)
         conf->ap_document_root = base->ap_document_root;
     }
 
+    if (!conf->protocol) {
+        conf->protocol = base->protocol;
+    }
+
     conf->sec_dir = apr_array_append(p, base->sec_dir, virt->sec_dir);
     conf->sec_url = apr_array_append(p, base->sec_url, virt->sec_url);
 
@@ -490,7 +496,6 @@ static void *merge_core_server_configs(apr_pool_t *p, void *basev, void *virtv)
     conf->subreq_limit = virt->subreq_limit
                          ? virt->subreq_limit
                          : base->subreq_limit;
-
     return conf;
 }
 
@@ -2182,6 +2187,39 @@ static const char *set_server_alias(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
+AP_DECLARE(const char*) ap_get_server_protocol(server_rec* s) 
+{
+    core_server_config *conf = ap_get_module_config(s->module_config,
+                                                    &core_module);
+    return conf->protocol;
+} 
+
+AP_DECLARE(void) ap_set_server_protocol(server_rec* s, const char* proto) 
+{
+    core_server_config *conf = ap_get_module_config(s->module_config,
+                                                    &core_module);
+    conf->protocol = proto;
+} 
+
+static const char *set_protocol(cmd_parms *cmd, void *dummy,
+                                const char *arg)
+{
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    core_server_config *conf = ap_get_module_config(cmd->server->module_config,
+                                                    &core_module);
+    char* proto;
+
+    if (err != NULL) {
+        return err;
+    }
+
+    proto = apr_pstrdup(cmd->pool, arg);
+    ap_str_tolower(proto);
+    conf->protocol = proto;
+
+    return NULL;
+}
+
 static const char *set_server_string_slot(cmd_parms *cmd, void *dummy,
                                           const char *arg)
 {
@@ -3120,6 +3158,8 @@ AP_INIT_TAKE1("EnableSendfile", set_enable_sendfile, NULL, OR_FILEINFO,
 
 /* Old server config file commands */
 
+AP_INIT_TAKE1("Protocol", set_protocol, NULL, RSRC_CONF,
+  "Set the Protocol for httpd to use."),
 AP_INIT_TAKE1("Port", ap_set_deprecated, NULL, RSRC_CONF,
   "Port was replaced with Listen in Apache 2.0"),
 AP_INIT_TAKE1("HostnameLookups", set_hostname_lookups, NULL,

@@ -545,6 +545,8 @@ typedef struct {
     /* recursion backstopper */
     int redirect_limit; /* maximum number of internal redirects */
     int subreq_limit;   /* maximum nesting level of subrequests */
+
+    const char* protocol;
 } core_server_config;
 
 /* for AddOutputFiltersByType in core.c */
@@ -570,6 +572,8 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *b);
 
 #endif /* CORE_PRIVATE */
 
+AP_DECLARE(const char*) ap_get_server_protocol(server_rec* s);
+AP_DECLARE(void) ap_set_server_protocol(server_rec* s, const char* proto);
 
 /* ----------------------------------------------------------------------
  *

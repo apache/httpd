@@ -24,6 +24,7 @@
 #include "ap_config.h"
 #include "httpd.h"
 #include "http_config.h"
+#include "http_core.h"
 #include "ap_listen.h"
 #include "http_log.h"
 #include "mpm.h"
@@ -218,7 +219,8 @@ static apr_status_t close_listeners_on_exec(void *v)
 }
 
 
-static const char *alloc_listener(process_rec *process, char *addr, apr_port_t port)
+static const char *alloc_listener(process_rec *process, char *addr, 
+                                  apr_port_t port, const char* proto)
 {
     ap_listen_rec **walk, *last;
     apr_status_t status;
@@ -279,6 +281,7 @@ static const char *alloc_listener(process_rec *process, char *addr, apr_port_t p
         new->active = 0;
         new->next = 0;
         new->bind_addr = sa;
+        new->protocol = apr_pstrdup(process->pool, proto);
 
         /* Go to the next sockaddr. */
         sa = sa->next;
@@ -451,8 +454,42 @@ static int open_listeners(apr_pool_t *pool)
 
 AP_DECLARE(int) ap_setup_listeners(server_rec *s)
 {
+    server_rec *ls;
+    server_addr_rec *addr;
     ap_listen_rec *lr;
     int num_listeners = 0;
+    const char* proto;
+    int nfound;
+
+    for (ls = s; ls; ls = ls->next) {
+        proto = ap_get_server_protocol(ls);
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,"%s proto: %s", ls->server_hostname, proto);
+        if (!proto) {
+            nfound = 1;
+            /* No protocol was set for this vhost, 
+             * use the default for this listener. 
+             */
+            for (addr = ls->addrs; addr && nfound; addr = addr->next) {
+                for (lr = ap_listeners; lr; lr = lr->next) {
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,"%s compare proto: %s  %d = %d", ls->server_hostname, lr->protocol, 
+addr->host_port, lr->bind_addr->port);
+                    if (apr_sockaddr_equal(lr->bind_addr, addr->host_addr) &&
+                        lr->bind_addr->port == addr->host_port) {
+                        ap_set_server_protocol(ls, lr->protocol);
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,"%s match proto: %s", ls->server_hostname, lr->protocol);
+                        nfound = 0;
+                        break;
+                    }
+                }
+            }
+
+            if (nfound) {
+                /* TODO: set protocol defaults per-Port, eg 25=smtp */
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,"%s dproto: http", ls->server_hostname);
+                ap_set_server_protocol(ls, "http");
+            }
+        }
+    }
 
     if (open_listeners(s->process->pool)) {
        return 0;
@@ -474,9 +511,9 @@ AP_DECLARE(void) ap_listen_pre_config(void)
 
 
 AP_DECLARE_NONSTD(const char *) ap_set_listener(cmd_parms *cmd, void *dummy,
-                                                const char *ips)
+                                                int argc, char *const argv[])
 {
-    char *host, *scope_id;
+    char *host, *scope_id, *proto;
     apr_port_t port;
     apr_status_t rv;
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
@@ -485,7 +522,11 @@ AP_DECLARE_NONSTD(const char *) ap_set_listener(cmd_parms *cmd, void *dummy,
         return err;
     }
 
-    rv = apr_parse_addr_port(&host, &scope_id, &port, ips, cmd->pool);
+    if (argc < 1 || argc > 2) {
+        return "Listen requires 1 or 2 arguments.";
+    }
+
+    rv = apr_parse_addr_port(&host, &scope_id, &port, argv[0], cmd->pool);
     if (rv != APR_SUCCESS) {
         return "Invalid address or port";
     }
@@ -503,7 +544,15 @@ AP_DECLARE_NONSTD(const char *) ap_set_listener(cmd_parms *cmd, void *dummy,
         return "Port must be specified";
     }
 
-    return alloc_listener(cmd->server->process, host, port);
+    if (argc != 2) {
+        proto = "http";
+    }
+    else {
+        proto = apr_pstrdup(cmd->pool, argv[1]);
+        ap_str_tolower(proto);
+    }
+
+    return alloc_listener(cmd->server->process, host, port, proto);
 }
 
 AP_DECLARE_NONSTD(const char *) ap_set_listenbacklog(cmd_parms *cmd,

@@ -95,6 +95,7 @@
  * 20050305.0 (2.1.4-dev) added pid and generation fields to worker_score
  * 20050305.1 (2.1.5-dev) added ap_vhost_iterate_given_conn.
  * 20050305.2 (2.1.5-dev) added AP_INIT_TAKE_ARGV.
+ * 20050305.3 (2.1.5-dev) added Protocol Framework.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503230UL /* "AP20" */
@@ -102,7 +103,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20050305
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 2                     /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 3                     /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
