@@ -207,8 +207,13 @@ int ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
         sc->vhost_id = ssl_util_vhostid(p, s);
         sc->vhost_id_len = strlen(sc->vhost_id);
 
+        if (strcmp("https", ap_get_server_protocol(s)) == 0) {
+            sc->enabled = SSL_ENABLED_TRUE;
+        }
+
        /* If sc->enabled is UNSET, then SSL is optional on this vhost  */
         /* Fix up stuff that may not have been set */
+
         if (sc->enabled == SSL_ENABLED_UNSET) {
             sc->enabled = SSL_ENABLED_FALSE;
         }
@@ -879,7 +884,8 @@ static void ssl_init_server_certs(server_rec *s,
 
     if (!(have_rsa || have_dsa)) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
-                "Oops, no RSA or DSA server certificate found?!");
+                "Oops, no RSA or DSA server certificate found "
+                "for '%s:%d'?!", s->server_hostname, s->port);
         ssl_die();
     }
 
