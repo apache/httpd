@@ -315,13 +315,11 @@ static const char *alloc_listener(process_rec *process, char *addr, apr_port_t p
 }
 
 /**
- * Create and open a socket on the specified port.  This includes listening
- * and binding the socket.
+ * Create, open, listen, and bind all sockets.
  * @param process The process record for the currently running server
- * @param port The port to open a socket on.
  * @return The number of open sockets
  */
-static int open_listeners(apr_pool_t *pool, apr_port_t port)
+static int open_listeners(apr_pool_t *pool)
 {
     ap_listen_rec *lr;
     ap_listen_rec *next;
@@ -456,7 +454,7 @@ AP_DECLARE(int) ap_setup_listeners(server_rec *s)
     ap_listen_rec *lr;
     int num_listeners = 0;
 
-    if (open_listeners(s->process->pool, s->port)) {
+    if (open_listeners(s->process->pool)) {
        return 0;
     }
 
