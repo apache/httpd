@@ -463,7 +463,6 @@ AP_DECLARE(int) ap_setup_listeners(server_rec *s)
 
     for (ls = s; ls; ls = ls->next) {
         proto = ap_get_server_protocol(ls);
-        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,"%s proto: %s", ls->server_hostname, proto);
         if (!proto) {
             nfound = 1;
             /* No protocol was set for this vhost, 
@@ -471,12 +470,9 @@ AP_DECLARE(int) ap_setup_listeners(server_rec *s)
              */
             for (addr = ls->addrs; addr && nfound; addr = addr->next) {
                 for (lr = ap_listeners; lr; lr = lr->next) {
-        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,"%s compare proto: %s  %d = %d", ls->server_hostname, lr->protocol, 
-addr->host_port, lr->bind_addr->port);
                     if (apr_sockaddr_equal(lr->bind_addr, addr->host_addr) &&
                         lr->bind_addr->port == addr->host_port) {
                         ap_set_server_protocol(ls, lr->protocol);
-        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,"%s match proto: %s", ls->server_hostname, lr->protocol);
                         nfound = 0;
                         break;
                     }
@@ -485,7 +481,6 @@ addr->host_port, lr->bind_addr->port);
 
             if (nfound) {
                 /* TODO: set protocol defaults per-Port, eg 25=smtp */
-        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,"%s dproto: http", ls->server_hostname);
                 ap_set_server_protocol(ls, "http");
             }
         }
