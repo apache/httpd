@@ -1439,11 +1439,8 @@ static void child_main(int child_num_arg)
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf,
                      "apr_thread_create: unable to create worker thread");
-        /* In case system resources are maxxed out, we don't want
-           Apache running away with the CPU trying to fork over and
-           over and over again if we exit. */
-        apr_sleep(apr_time_from_sec(10));
-        clean_child_exit(APEXIT_CHILDFATAL);
+        /* let the parent decide how bad this really is */
+        clean_child_exit(APEXIT_CHILDSICK);
     }
 
     mpm_state = AP_MPMQ_RUNNING;
