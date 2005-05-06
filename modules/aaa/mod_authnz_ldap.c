@@ -73,7 +73,6 @@ typedef struct {
                                         it's the exact string passed by the HTTP client */
 
     int secure;                     /* True if SSL connections are requested */
-    int allow_fdn_auth;             /* Set to True if user is allowed to authenticate using an FDN */
 } authn_ldap_config_t;
 
 typedef struct {
@@ -151,10 +150,71 @@ static apr_xlate_t* get_conv_set (request_rec *r)
     return NULL;
 }
 
+
+/*
+ * Build the search filter, or at least as much of the search filter that
+ * will fit in the buffer. We don't worry about the buffer not being able
+ * to hold the entire filter. If the buffer wasn't big enough to hold the
+ * filter, ldap_search_s will complain, but the only situation where this
+ * is likely to happen is if the client sent a really, really long
+ * username, most likely as part of an attack.
+ *
+ * The search filter consists of the filter provided with the URL,
+ * combined with a filter made up of the attribute provided with the URL,
+ * and the actual username passed by the HTTP client. For example, assume
+ * that the LDAP URL is
+ * 
+ *   ldap://ldap.airius.com/ou=People, o=Airius?uid??(posixid=*)
+ *
+ * Further, assume that the userid passed by the client was `userj'.  The
+ * search filter will be (&(posixid=*)(uid=userj)).
+ */
 #define FILTER_LENGTH MAX_STRING_LEN
-static char* cat_escape_dn_element(char *filtbuf, char *user)
+static void authn_ldap_build_filter(char *filtbuf, 
+                             request_rec *r,
+                             const char* sent_user,
+                             const char* sent_filter,
+                             authn_ldap_config_t *sec)
 {
     char *p, *q, *filtbuf_end;
+    char *user, *filter;
+    apr_xlate_t *convset = NULL;
+    apr_size_t inbytes;
+    apr_size_t outbytes;
+    char *outbuf;
+
+    if (sent_user != NULL) {
+        user = apr_pstrdup (r->pool, sent_user);
+    }
+    else
+        return;
+
+    if (sent_filter != NULL) {
+        filter = apr_pstrdup (r->pool, sent_filter);
+    }
+    else
+        filter = sec->filter;
+
+    if (charset_conversions) {
+        convset = get_conv_set(r);
+    }
+
+    if (convset) {
+        inbytes = strlen(user);
+        outbytes = (inbytes+1)*3;
+        outbuf = apr_pcalloc(r->pool, outbytes);
+
+        /* Convert the user name to UTF-8.  This is only valid for LDAP v3 */
+        if (apr_xlate_conv_buffer(convset, user, &inbytes, outbuf, &outbytes) == APR_SUCCESS) {
+            user = apr_pstrdup(r->pool, outbuf);
+        }
+    }
+
+    /* 
+     * Create the first part of the filter, which consists of the 
+     * config-supplied portions.
+     */
+    apr_snprintf(filtbuf, FILTER_LENGTH, "(&(%s)(%s=", filter, sec->attribute);
 
     /* 
      * Now add the client-supplied username to the filter, ensuring that any
@@ -204,115 +264,12 @@ static char* cat_escape_dn_element(char *filtbuf, char *user)
 #endif
     *q = '\0';
 
-    return filtbuf;
-}
-
-/*
- * Build the search filter, or at least as much of the search filter that
- * will fit in the buffer. We don't worry about the buffer not being able
- * to hold the entire filter. If the buffer wasn't big enough to hold the
- * filter, ldap_search_s will complain, but the only situation where this
- * is likely to happen is if the client sent a really, really long
- * username, most likely as part of an attack.
- *
- * The search filter consists of the filter provided with the URL,
- * combined with a filter made up of the attribute provided with the URL,
- * and the actual username passed by the HTTP client. For example, assume
- * that the LDAP URL is
- * 
- *   ldap://ldap.airius.com/ou=People, o=Airius?uid??(posixid=*)
- *
- * Further, assume that the userid passed by the client was `userj'.  The
- * search filter will be (&(posixid=*)(uid=userj)).
- *
- * If a full DN is allowed for authentication, the a userid of 
- * cn=userj,o=dev will result in the following search filter:
- *  (&(objectclass=*)(&(cn:dn:=userj)(o:dn:=dev)))
- */
-static void authn_ldap_build_filter(char *filtbuf, 
-                             request_rec *r,
-                             const char* sent_user,
-                             const char* sent_filter,
-                             authn_ldap_config_t *sec)
-{
-    char *user, *filter;
-    apr_xlate_t *convset = NULL;
-    apr_size_t inbytes;
-    apr_size_t outbytes;
-    char *outbuf;
-	char **dnbuf = NULL;
-
-    if (sent_user != NULL) {
-        user = apr_pstrdup (r->pool, sent_user);
-    }
-    else
-        return;
-
-    if (sent_filter != NULL) {
-        filter = apr_pstrdup (r->pool, sent_filter);
-    }
-    else
-        filter = sec->filter;
-
-    if (charset_conversions) {
-        convset = get_conv_set(r);
-    }
-
-    if (convset) {
-        inbytes = strlen(user);
-        outbytes = (inbytes+1)*3;
-        outbuf = apr_pcalloc(r->pool, outbytes);
-
-        /* Convert the user name to UTF-8.  This is only valid for LDAP v3 */
-        if (apr_xlate_conv_buffer(convset, user, &inbytes, outbuf, &outbytes) == APR_SUCCESS) {
-            user = apr_pstrdup(r->pool, outbuf);
-        }
-    }
-
-    apr_snprintf(filtbuf, FILTER_LENGTH, "(&(%s)(&", filter);
-
-    /* If FDN authentication is not allowed then don't attempt to explode
-        the user ID.  The result is that dnbuf well be NULL which will
-        bypass building a FDN unique filter. */
-    if (sec->allow_fdn_auth) {
-        dnbuf = ldap_explode_dn (user, 0); 
-    }
-
-	if (dnbuf && (strchr(*dnbuf, '='))) {
-		char **buf;
-        char *dnfilter = "&";
-		for (buf = dnbuf; *buf; buf++) {
-            char *eq = strchr (*buf, '=');
-            char *newdn = *buf;
-
-            if (eq) {
-                newdn = apr_pstrcat (r->pool, apr_pstrndup (r->pool, *buf, eq-(*buf)),
-                                     ":dn:", eq, NULL);
-            }
-
-            apr_snprintf(filtbuf, FILTER_LENGTH, "%s(", filtbuf);
-            cat_escape_dn_element(filtbuf, newdn);
-            apr_snprintf(filtbuf, FILTER_LENGTH, "%s)", filtbuf);
-		}
-	}
-    else {
-        /* 
-         * Create the first part of the filter, which consists of the 
-         * config-supplied portions.
-         */
-        apr_snprintf(filtbuf, FILTER_LENGTH, "(&(%s)(%s=", filter, sec->attribute);
-        cat_escape_dn_element(filtbuf, user);
-    }
-    ldap_value_free (dnbuf); 
-
     /* 
      * Append the closing parens of the filter, unless doing so would 
      * overrun the buffer.
      */
-    apr_snprintf(filtbuf, FILTER_LENGTH, "%s))", filtbuf);
-
-    ap_log_rerror(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r,
-                  "[%d] auth_ldap authenticate: using filter %s", getpid(), filtbuf);
+    if (q + 2 <= filtbuf_end)
+        strcat(filtbuf, "))");
 }
 
 static void *create_authnz_ldap_dir_config(apr_pool_t *p, char *d)
@@ -338,7 +295,6 @@ static void *create_authnz_ldap_dir_config(apr_pool_t *p, char *d)
     sec->deref = always;
     sec->group_attrib_is_dn = 1;
     sec->auth_authoritative = 1;
-    sec->allow_fdn_auth = 0;
 
 /*
     sec->frontpage_hack = 0;
@@ -1096,11 +1052,6 @@ static const command_rec authnz_ldap_cmds[] =
     AP_INIT_TAKE1("AuthLDAPCharsetConfig", set_charset_config, NULL, RSRC_CONF,
                   "Character set conversion configuration file. If omitted, character set"
                   "conversion is disabled."),
-
-    AP_INIT_FLAG("AuthLDAPAllowDNAuth", ap_set_flag_slot,
-                 (void *)APR_OFFSETOF(authn_ldap_config_t, allow_fdn_auth), OR_AUTHCFG,
-                 "If set to 'on', auth_ldap allows the user to authenicate using a fully" 
-                 "distinguished user name. Defaults to 'off'."),
 
     {NULL}
 };
