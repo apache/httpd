@@ -313,7 +313,7 @@ type="section" module="core">Directory</directive>
 <usage>
     <p>このディレクティブはクライアントに Redirect が永久的なもの
     (ステータス 301) であることを知らせます。
-    <code>Redirect premanent</code> とまったく同じです。</p>
+    <code>Redirect permanent</code> とまったく同じです。</p>
 </usage>
 </directivesynopsis>
 
