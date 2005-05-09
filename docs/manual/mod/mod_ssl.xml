@@ -845,6 +845,80 @@ SSLCACertificateFile /usr/local/apache2/conf/ssl.crt/ca-bundle-client.crt
 </directivesynopsis>
 
 <directivesynopsis>
+<name>SSLCADNRequestFile</name>
+<description>File of concatenated PEM-encoded CA Certificates 
+for defining acceptable CA names</description>
+<syntax>SSLCADNRequestFile <em>file-path</em></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+
+<usage>
+<p>When a client certificate is requested by mod_ssl, a list of
+<em>acceptable Certificate Authority names</em> is sent to the client
+in the SSL handshake.  These CA names can be used by the client to
+select an appropriate client certificate out of those it has
+available.</p>
+
+<p>If neither of the directives <directive
+module="mod_ssl">SSLCADNRequestPath</directive> or <directive
+module="mod_ssl">SSLCADNRequestFile</directive> are given, then the
+set of acceptable CA names sent to the client is the names of all the
+CA certificates given by the <directive
+module="mod_ssl">SSLCACertificateFile</directive> and <directive
+module="mod_ssl">SSLCACertificatePath</directive> directives; in other
+words, the names of the CAs which will actually be used to verify the
+client certificate.</p>
+
+<p>In some circumstances, it is useful to be able to send a set of
+acceptable CA names which differs from the actual CAs used to verify
+the client certificate - for example, if the client certificates are
+signed by intermediate CAs.  In such cases, <directive
+module="mod_ssl">SSLCADNRequestPath</directive> and/or <directive
+module="mod_ssl">SSLCADNRequestFile</directive> can be used; the
+acceptable CA names are then taken from the complete set of
+certificates in the directory and/or file specified by this pair of
+directives.</p>
+
+<p><directive module="mod_ssl">SSLCADNRequestFile</directive> must
+specify an <em>all-in-one</em> file containing a concatenation of
+PEM-encoded CA certificates.</p>
+
+<example><title>Example</title>
+SSLCADNRequestFile /usr/local/apache2/conf/ca-names.crt
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLCADNRequestPath</name>
+<description>Directory of PEM-encoded CA Certificates for 
+defining acceptable CA names</description>
+<syntax>SSLCADNRequestPath <em>directory-path</em></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+
+<usage>
+
+<p>This optional directive can be used to specify the set of
+<em>acceptable CA names</em> which will be sent to the client when a
+client certificate is requested.  See the <directive
+module="mod_ssl">SSLCADNRequestFile</directive> directive for more
+details.</p>
+
+<p>The files in this directory have to be PEM-encoded and are accessed
+through hash filenames. So usually you can't just place the
+Certificate files there: you also have to create symbolic links named
+<em>hash-value</em><code>.N</code>. And you should always make sure
+this directory contains the appropriate symbolic links. Use the
+<code>Makefile</code> which comes with mod_ssl to accomplish this
+task.</p>
+<example><title>Example</title>
+SSLCADNRequestPath /usr/local/apache2/conf/ca-names.crt/
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>SSLCARevocationPath</name>
 <description>Directory of PEM-encoded CA CRLs for 
 Client Auth</description>
