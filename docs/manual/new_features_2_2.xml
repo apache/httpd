@@ -124,7 +124,7 @@
     <dl>
       <dt>APR 1.0 API</dt>
 
-      <dd>Apache 2.2 uses the APR 1.0 API.  All depreciated functions and 
+      <dd>Apache 2.2 uses the APR 1.0 API.  All deprecated functions and 
           symbols have been removed from <code>APR</code> and 
           <code>APR-Util</code>. For details, see the 
           <a href="http://apr.apache.org/">APR Website</a>.</dd>
