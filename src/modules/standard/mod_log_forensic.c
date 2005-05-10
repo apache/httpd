@@ -29,6 +29,7 @@
 #include "http_config.h"
 #include "http_log.h"
 #include <assert.h>
+#include "multithread.h"
 
 #ifdef NETWARE
 #include "test_char.h"
@@ -40,12 +41,61 @@
 
 module MODULE_VAR_EXPORT log_forensic_module;
 
+#ifdef WIN32
+
+static DWORD tls_index;
+
+BOOL WINAPI DllMain (HINSTANCE dllhandle, DWORD reason, LPVOID reserved)
+{
+    switch (reason) {
+    case DLL_PROCESS_ATTACH:
+	tls_index = TlsAlloc();
+    case DLL_THREAD_ATTACH: /* intentional no break */
+	TlsSetValue(tls_index, 0);
+	break;
+    }
+    return TRUE;
+}
+
+const char * get_forensic_id(pool *p)
+{
+    /* The 'error' default for Get undefined is 0 - a nice number
+     * for this purpose.  The cast might look evil, but the evil
+     * empire had switched this API out from underneath developers,
+     * and the DWORD flavor will truncate nicely for our purposes.
+     */
+    DWORD next_id = (DWORD)TlsGetValue(tls_index);
+    TlsSetValue(tls_index, (void*)(next_id + 1));
+
+    return ap_psprintf(p, "%x:%x:%lx:%x", GetCurrentProcessId(), 
+                                          GetCurrentThreadId(), 
+                                          time(NULL), next_id);
+}
+
+#else /* !WIN32 */
+
+/* Even when not MULTITHREAD, this will return a single structure, since
+ * APACHE_TLS should be defined as empty on single-threaded platforms.
+ */
+const char * get_forensic_id(pool *p)
+{
+    static APACHE_TLS next_id = 0;
+
+    /* we make the assumption that we can't go through all the PIDs in
+       under 1 second */
+#ifdef MULTITHREAD
+    return ap_psprintf(p, "%x:%lx:%x", getpid(), time(NULL), next_id++);
+#else
+    return ap_psprintf(p, "%x:%x:%lx:%x", getpid(), gettid(), time(NULL), next_id++);
+#endif
+}
+
+#endif /* !WIN32 */
+
 typedef struct fcfg {
     char *logname;
     int fd;
 } fcfg;
-
-static int next_id;
 
 static void *make_forensic_log_scfg(pool *p, server_rec *s)
 {
@@ -91,8 +141,7 @@ static void open_log(server_rec *s, pool *p)
         char *fname = ap_server_root_relative(p, cfg->logname);
 
         if ((cfg->fd = ap_popenf_ex(p, fname, O_WRONLY | O_APPEND | O_CREAT,
-                                    S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH, 1))
-            < 0) {
+                                    0644, 1)) < 0) {
             ap_log_error(APLOG_MARK, APLOG_ERR, s,
                          "could not open forensic log file %s.", fname);
             exit(1);
@@ -170,16 +219,10 @@ static int log_headers(void *h_, const char *key, const char *value)
     return 1;
 }
 
-/* this structure only exists to allow typesafety */
-typedef struct {
-    const char *id;
-} rcfg;
-
 static int log_before(request_rec *r)
 {
     fcfg *cfg = ap_get_module_config(r->server->module_config,
                                      &log_forensic_module);
-    static rcfg rcfg;
     const char *id;
     hlog h;
 
@@ -187,13 +230,8 @@ static int log_before(request_rec *r)
         return DECLINED;
 
     if (!(id = ap_table_get(r->subprocess_env, "UNIQUE_ID"))) {
-        /* we make the assumption that we can't go through all the PIDs in
-           under 1 second */
-        id = ap_psprintf(r->pool, "%lx:%lx:%x", (long)getpid(), time(NULL),
-                         next_id++);
+        id = get_forensic_id(r->pool);
     }
-    rcfg.id = id;
-    ap_set_module_config(r->request_config, &log_forensic_module, &rcfg);
 
     h.p = r->pool;
     h.count = 0;
