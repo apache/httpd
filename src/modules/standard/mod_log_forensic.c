@@ -227,18 +227,18 @@ static int log_after(request_rec *r)
 {
     fcfg *cfg = ap_get_module_config(r->server->module_config,
                                      &log_forensic_module);
+    const char *id;
     char *s;
-    rcfg *rcfg;
-    
+
     if(cfg->fd < 0)
         return DECLINED;
 
-    rcfg = ap_get_module_config(r->request_config, &log_forensic_module);
+    id = ap_table_get(r->notes, "forensic-id");
 
-    if (!rcfg)
+    if (!id)
         return DECLINED;
 
-    s = ap_pstrcat(r->pool, "-", rcfg->id, "\n", NULL);
+    s = ap_pstrcat(r->pool, "-", id, "\n", NULL);
     write(cfg->fd, s, strlen(s));
 
     return OK;
