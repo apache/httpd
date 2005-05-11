@@ -581,4 +581,18 @@ connection client certificates.</description>
 </usage>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>LDAPVerifyServerCert</name>
+<description>Force server certificate verification</description>
+<syntax>LDAPVerifyServerCert <var>On|Off</var></syntax>
+<default>LDAPVerifyServerCert On</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>Specifies whether to force the verification of a 
+     server certificate when establishing an SSL connection to the 
+     LDAP server.</p>
+</usage>
+</directivesynopsis>
+
 </modulesynopsis>

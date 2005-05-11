@@ -2,13 +2,14 @@ Changes with Apache 2.1.5
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_ldap: Add the directive LDAPVerifyServerCert to specify 
+     whether to force verification of the server certificate when
+     establishing an SSL connection to the LDAP server. 
+     [Brad Nicholes]
+     
   *) mod_proxy: Run mod_rewrite before mod_proxy in the translate_name
      hook. [Paul Querna]
 
-  *) mod_authnz_ldap: Add the directive AuthLDAPAllowDNAuth to allow 
-     a user to authenticate against an LDAP directory using a full 
-     user DN. [Brad Nicholes]
-     
   *) Add AP_INIT_TAKE_ARGV for configuration commands. (minor MMN bump) 
      [Paul Querna]
 
