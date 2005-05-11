@@ -330,6 +330,9 @@ static int uldap_connection_open(request_rec *r,
         /* always default to LDAP V3 */
         ldap_set_option(ldc->ldap, LDAP_OPT_PROTOCOL_VERSION, &version);
 
+        apr_ldap_set_option(ldc->pool, ldc->ldap, 
+                            APR_LDAP_OPT_VERIFY_CERT, &(st->verify_svr_cert), &(result));
+
 #ifdef LDAP_OPT_NETWORK_TIMEOUT
         if (st->connectionTimeout > 0) {
             timeOut.tv_sec = st->connectionTimeout;
@@ -1556,7 +1559,6 @@ static const char *util_ldap_set_trusted_global_cert(cmd_parms *cmd,
                          cert->path == NULL ? file : cert->path);
             return "Invalid global certificate file path";
         }
-
     }
 
     return(NULL);
@@ -1684,6 +1686,24 @@ static const char *util_ldap_set_trusted_mode(cmd_parms *cmd, void *dummy,
     return(NULL);
 }
 
+static const char *util_ldap_set_verify_srv_cert(cmd_parms *cmd, 
+                                                 void *dummy, 
+                                                 int mode)
+{
+    util_ldap_state_t *st =
+    (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config,
+                                              &ldap_module);
+
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, cmd->server,
+                      "LDAP: SSL verify server certificate - %s", 
+                      mode?"TRUE":"FALSE");
+
+    st->verify_svr_cert = mode;
+
+    return(NULL);
+}
+
+
 static const char *util_ldap_set_connection_timeout(cmd_parms *cmd, 
                                                     void *dummy, 
                                                     const char *ttl)
@@ -1732,6 +1752,7 @@ static void *util_ldap_create_config(apr_pool_t *p, server_rec *s)
     st->secure = APR_LDAP_NONE;
     st->secure_set = 0;
     st->connectionTimeout = 10;
+    st->verify_svr_cert = 1;
 
     return st;
 }
@@ -2013,6 +2034,11 @@ command_rec util_ldap_cmds[] = {
                   NULL, RSRC_CONF,
                   "Specify the type of security that should be applied to "
                   "an LDAP connection. One of; NONE, SSL or STARTTLS."),
+
+    AP_INIT_FLAG("LDAPVerifyServerCert", util_ldap_set_verify_srv_cert, 
+                  NULL, RSRC_CONF,
+                  "Set to 'ON' requires that the server certificate be verified "
+                  "before a secure LDAP connection can be establish.  Default 'ON'"),
 
     AP_INIT_TAKE1("LDAPConnectionTimeout", util_ldap_set_connection_timeout, 
                   NULL, RSRC_CONF,
