@@ -84,9 +84,9 @@ const char * get_forensic_id(pool *p)
     /* we make the assumption that we can't go through all the PIDs in
        under 1 second */
 #ifdef MULTITHREAD
-    return ap_psprintf(p, "%x:%lx:%x", getpid(), time(NULL), next_id++);
-#else
     return ap_psprintf(p, "%x:%x:%lx:%x", getpid(), gettid(), time(NULL), next_id++);
+#else
+    return ap_psprintf(p, "%x:%lx:%x", getpid(), time(NULL), next_id++);
 #endif
 }
 
