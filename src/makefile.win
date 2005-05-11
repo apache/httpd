@@ -106,6 +106,7 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f mod_unique_id.mak CFG="mod_unique_id - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_vhost_alias.mak CFG="mod_vhost_alias - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_mime_magic.mak CFG="mod_mime_magic - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_log_forensic.mak CFG="mod_log_forensic - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 
 _install:
@@ -151,6 +152,7 @@ _install:
 	copy os\win32\$(LONG)\mod_unique_id.so "$(INSTDIR)\modules"
 	copy os\win32\$(LONG)\mod_vhost_alias.so "$(INSTDIR)\modules"
 	copy os\win32\$(LONG)\mod_mime_magic.so "$(INSTDIR)\modules"
+	copy os\win32\$(LONG)\mod_log_forensic.so "$(INSTDIR)\modules"
 	copy support\$(LONG)\htpasswd.exe "$(INSTDIR)\bin"
 	copy support\$(LONG)\htdigest.exe "$(INSTDIR)\bin"
 	copy support\$(LONG)\logresolve.exe "$(INSTDIR)\bin"
@@ -210,6 +212,7 @@ A
 	copy os\win32\$(LONG)\mod_unique_id.pdb "$(INSTDIR)\modules"
 	copy os\win32\$(LONG)\mod_vhost_alias.pdb "$(INSTDIR)\modules"
 	copy os\win32\$(LONG)\mod_mime_magic.pdb "$(INSTDIR)\modules"
+	copy os\win32\$(LONG)\mod_log_forensic.pdb "$(INSTDIR)\modules"
 	copy support\$(LONG)\htpasswd.pdb "$(INSTDIR)\bin"
 	copy support\$(LONG)\htdigest.pdb "$(INSTDIR)\bin"
 	copy support\$(LONG)\logresolve.pdb "$(INSTDIR)\bin"

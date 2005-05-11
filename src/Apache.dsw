@@ -99,6 +99,9 @@ Package=<4>
     Project_Dep_Name mod_info
     End Project Dependency
     Begin Project Dependency
+    Project_Dep_Name mod_log_forensic
+    End Project Dependency
+    Begin Project Dependency
     Project_Dep_Name mod_mime_magic
     End Project Dependency
     Begin Project Dependency
@@ -337,6 +340,21 @@ Package=<4>
 ###############################################################################
 
 Project: "mod_info"=".\os\win32\mod_info.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name ApacheCore
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_log_forensic"=".\os\win32\mod_log_forensic.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
