@@ -1,6 +1,8 @@
 Changes with Apache 2.1.5
 
   [Remove entries to the current 2.0 section below, when backported]
+  
+  *) mod_info: Show the Quick Handler [Paul Querna]
 
   *) mod_ldap: Add the directive LDAPVerifyServerCert to specify 
      whether to force verification of the server certificate when
