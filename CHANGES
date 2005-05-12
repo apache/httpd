@@ -1,6 +1,8 @@
 Changes with Apache 2.1.5
 
   [Remove entries to the current 2.0 section below, when backported]
+  
+  *) mod_info: Show the Quick Handler [Paul Querna]
 
   *) mod_authnz_ldap: Add the directive AuthLDAPAllowDNAuth to allow 
      a user to authenticate against an LDAP directory using a full 
