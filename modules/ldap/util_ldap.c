@@ -330,8 +330,31 @@ static int uldap_connection_open(request_rec *r,
         /* always default to LDAP V3 */
         ldap_set_option(ldc->ldap, LDAP_OPT_PROTOCOL_VERSION, &version);
 
+/*XXX All of the #ifdef's need to be removed once apr-util 1.2 is released */
+#ifdef APR_LDAP_OPT_VERIFY_CERT
         apr_ldap_set_option(ldc->pool, ldc->ldap, 
                             APR_LDAP_OPT_VERIFY_CERT, &(st->verify_svr_cert), &(result));
+#else
+#if defined(LDAPSSL_VERIFY_SERVER)
+        if (st->verify_svr_cert) {
+            result->rc = ldapssl_set_verify_mode(LDAPSSL_VERIFY_SERVER);
+        }
+        else {
+            result->rc = ldapssl_set_verify_mode(LDAPSSL_VERIFY_NONE);
+        }
+#elif defined(LDAP_OPT_X_TLS_REQUIRE_CERT)
+		/* This is not a per-connection setting so just pass NULL for the
+		   Ldap connection handle */
+        if (st->verify_svr_cert) {
+			int i = LDAP_OPT_X_TLS_DEMAND;
+			result->rc = ldap_set_option(NULL, LDAP_OPT_X_TLS_REQUIRE_CERT, &i);
+        }
+        else {
+			int i = LDAP_OPT_X_TLS_NEVER;
+			result->rc = ldap_set_option(NULL, LDAP_OPT_X_TLS_REQUIRE_CERT, &i);
+        }
+#endif
+#endif
 
 #ifdef LDAP_OPT_NETWORK_TIMEOUT
         if (st->connectionTimeout > 0) {
