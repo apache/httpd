@@ -41,7 +41,7 @@ RSC=rc.exe
 # PROP Intermediate_Dir "LibR"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MD /W3 /O2 /D "_WIN32" /D "NDEBUG" /D "_WINDOWS" /D "PCRE_STATIC" /FD /c
-# ADD CPP /nologo /MD /W3 /Zi /O2 /I "..\..\include" /D "_WIN32" /D "NDEBUG" /D "_WINDOWS" /D "PCRE_STATIC" /Fd"LibR/pcreposix_src" /FD /c
+# ADD CPP /nologo /MD /W3 /O2 /Oy- /Zi /I "..\..\include" /D "_WIN32" /D "NDEBUG" /D "_WINDOWS" /D "PCRE_STATIC" /Fd"LibR/pcreposix_src" /FD /c
 # ADD BASE RSC /l 0x409
 # ADD RSC /l 0x409
 BSC32=bscmake.exe

@@ -468,13 +468,15 @@ if ($opt_i or $opt_e) {
     my @cmds = ();
     my $f;
     foreach $f (@args) {
-        if ($f !~ m#(\.so$|\.la$)#) {
+        #  ack all potential gcc, hp/ux, win32+os2+aix and os/x extensions
+        if ($f !~ m#(\.so$|\.la$|\.sl$|\.dll$|\.dylib$|)#) {
             error("file $f is not a shared object");
             exit(1);
         }
         my $t = $f;
         $t =~ s|^.+/([^/]+)$|$1|;
-        $t =~ s|\.la$|\.so|;
+        #  use .so unambigiously for installed shared library modules
+        $t =~ s|\.[^./\\]+$|\.so|;
         if ($opt_i) {
 	    push(@cmds, "$installbuilddir/instdso.sh SH_LIBTOOL='" .
                  "$libtool' $f $CFG_LIBEXECDIR");
