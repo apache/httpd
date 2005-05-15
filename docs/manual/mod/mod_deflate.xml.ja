@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 151408 -->
+<!-- English Revision: 125277 -->
 
 <!--
  Copyright 2002-2005 The Apache Software Foundation or its licensors,
@@ -152,7 +152,7 @@
 
     </section>
     <section id="inflate"><title>出力の伸長</title>
-      <p><module>mod_defulate</module> モジュールは、gzip 圧縮されたレスポンス
+      <p><module>mod_deflate</module> モジュールは、gzip 圧縮されたレスポンス
       本文を inflate/uncompress するフィルタも提供しています。
       この機能を有効にするには、<directive module="core">SetOutputFilter</directive>
       や <directive module="mod_mime">AddOutputFilter</directive> を使って、
