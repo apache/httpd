@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='iso-2022-jp' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 151408 -->
+<!-- English Revision: 169327 -->
 
 <!--
- Copyright 2004-2005 The Apache Software Foundation or its licensors,
-                     as applicable.
+ Copyright 2004-2005 The Apache Software Foundation or its licensors, as
+ applicable.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -143,8 +143,8 @@
     欄を調べてください。</p>
 
     <p><a href="../suexec.html">suEXECラッパー</a>を使っている場合は、
-    <directive module="mpm_common">User</directive> と <directive
-    module="mpm_common">Group</directive> ディレクティブを VirtualHost
+    <directive module="mod_suexec">SuexecUserGroup</directive>
+    ディレクティブを VirtualHost
     ディレクティブの中で使用することができます。</p>
 
     <p><em>セキュリティ:</em> ログファイルを書く場所を指定するときは、

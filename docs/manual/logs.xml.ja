@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English Revision: 151408:165671 (outdated) -->
+<!-- English Revision: 165671 -->
 
 <!--
- Copyright 2002-2005 The Apache Software Foundation or its licensors,
-                     as applicable.
+ Copyright 2002-2005 The Apache Software Foundation or its licensors, as
+ applicable.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -242,7 +242,7 @@
 	(<code>%t</code>)</dt>
 
 	<dd>
-	  サーバがリクエストの処理を終えた時刻です。書式は:
+	  サーバがリクエストを受け取った時刻です。書式は:
 
 	    <p class="indent">
 	      <code>[day/month/year:hour:minute:second zone]<br />
