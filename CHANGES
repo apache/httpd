@@ -1,6 +1,9 @@
 Changes with Apache 2.1.5
 
   [Remove entries to the current 2.0 section below, when backported]
+
+  *) Prevent hangs of child processes when writing to piped loggers at
+     the time of graceful restart.  PR 26467.  [Jeff Trawick]
   
   *) mod_info: Show the Quick Handler [Paul Querna]
 
