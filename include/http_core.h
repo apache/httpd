@@ -332,6 +332,9 @@ typedef struct {
     char **response_code_strings; /* from ap_custom_response(), not from
                                    * ErrorDocument
                                    */
+    /* Should addition of charset= be suppressed for this request?
+     */
+    int suppress_charset;
 } core_request_config;
 
 /* Standard entries that are guaranteed to be accessible via
