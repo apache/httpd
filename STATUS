@@ -103,6 +103,11 @@ PATCHES TO BACKPORT FROM TRUNK:
 
        +1: jim
 
+    *) Prevent hang writing to piped logger at graceful restart time.
+       PR 26467
+         http://svn.apache.org/viewcvs?rev=170281&view=rev
+       +1: trawick
+
     *) several changes to improve logging of connection-oriented errors, including
        ap_log_cerror() API (needs minor bump in addition to changes below)
          http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/core.c?r1=1.289&r2=1.291
@@ -189,6 +194,7 @@ PATCHES TO BACKPORT FROM TRUNK:
       jerenkrantz says: r126224 fixes brokenness with r125495 on Solaris.
       +1: thommay, jerenkrantz, trawick
       trawick: "which" isn't portable; I've suggested a work-around on dev@
+        (not standing in way of backport)
       jorton said: NetBSD's which isn't sufficient either.
       jerenkrantz: Since it's not in the critical path (and depends on
                    mod_log_forensic), I think it's still worth it to backport
