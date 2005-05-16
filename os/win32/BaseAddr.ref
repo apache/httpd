@@ -71,4 +71,3 @@ mod_version.so          0x6FA70000    0x00010000
 mod_bucketeer.so        0x6FA60000    0x00010000
 mod_dumpio.so           0x6FA50000    0x00010000
 mod_echo.so             0x6FA40000    0x00010000
-mod_auth_config.so      0x6FA30000    0x00010000
