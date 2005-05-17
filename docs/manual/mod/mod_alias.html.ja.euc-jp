@@ -300,7 +300,7 @@ Redirect 系のディレクティブは Alias
 </table>
     <p>このディレクティブはクライアントに Redirect が永久的なもの
     (ステータス 301) であることを知らせます。
-    <code>Redirect premanent</code> とまったく同じです。</p>
+    <code>Redirect permanent</code> とまったく同じです。</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

@@ -86,7 +86,6 @@
 <li><a href="mod_auth_digest.html#authdigestqop">AuthDigestQop</a></li>
 <li><a href="mod_auth_digest.html#authdigestshmemsize">AuthDigestShmemSize</a></li>
 <li><a href="mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></li>
-<li><a href="mod_authnz_ldap.html#authldapallowdnauth">AuthLDAPAllowDNAuth</a></li>
 <li><a href="mod_authnz_ldap.html#authldapbinddn">AuthLDAPBindDN</a></li>
 <li><a href="mod_authnz_ldap.html#authldapbindpassword">AuthLDAPBindPassword</a></li>
 <li><a href="mod_authnz_ldap.html#authldapcharsetconfig">AuthLDAPCharsetConfig</a></li>
@@ -218,6 +217,7 @@
 <li><a href="mod_ldap.html#ldaptrustedclientcert">LDAPTrustedClientCert</a></li>
 <li><a href="mod_ldap.html#ldaptrustedglobalcert">LDAPTrustedGlobalCert</a></li>
 <li><a href="mod_ldap.html#ldaptrustedmode">LDAPTrustedMode</a></li>
+<li><a href="mod_ldap.html#ldapverifyservercert">LDAPVerifyServerCert</a></li>
 <li><a href="core.html#limit">&lt;Limit&gt;</a></li>
 <li><a href="core.html#limitexcept">&lt;LimitExcept&gt;</a></li>
 <li><a href="core.html#limitinternalrecursion">LimitInternalRecursion</a></li>
@@ -347,6 +347,8 @@
 <li><a href="mod_include.html#ssiundefinedecho">SSIUndefinedEcho</a></li>
 <li><a href="mod_ssl.html#sslcacertificatefile">SSLCACertificateFile</a></li>
 <li><a href="mod_ssl.html#sslcacertificatepath">SSLCACertificatePath</a></li>
+<li><a href="mod_ssl.html#sslcadnrequestfile">SSLCADNRequestFile</a></li>
+<li><a href="mod_ssl.html#sslcadnrequestpath">SSLCADNRequestPath</a></li>
 <li><a href="mod_ssl.html#sslcarevocationfile">SSLCARevocationFile</a></li>
 <li><a href="mod_ssl.html#sslcarevocationpath">SSLCARevocationPath</a></li>
 <li><a href="mod_ssl.html#sslcertificatechainfile">SSLCertificateChainFile</a></li>

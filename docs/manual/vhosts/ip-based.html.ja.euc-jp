@@ -135,7 +135,8 @@
     欄を調べてください。</p>
 
     <p><a href="../suexec.html">suEXECラッパー</a>を使っている場合は、
-    <code class="directive"><a href="../mod/mpm_common.html#user">User</a></code> と <code class="directive"><a href="../mod/mpm_common.html#group">Group</a></code> ディレクティブを VirtualHost
+    <code class="directive"><a href="../mod/mod_suexec.html#suexecusergroup">SuexecUserGroup</a></code>
+    ディレクティブを VirtualHost
     ディレクティブの中で使用することができます。</p>
 
     <p><em>セキュリティ:</em> ログファイルを書く場所を指定するときは、

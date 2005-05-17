@@ -25,6 +25,8 @@
 <a href="../ja/mod/mod_deflate.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_deflate.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
+<div class="outofdate">This translation may be out of date. Check the
+            English version for recent changes.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>クライアントへ送られる前にコンテンツを圧縮する</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>deflate_module</td></tr>
@@ -171,7 +173,7 @@
 
     
     <h3><a name="inflate" id="inflate">出力の伸長</a></h3>
-      <p><code class="module"><a href="../mod/mod_defulate.html">mod_defulate</a></code> モジュールは、gzip 圧縮されたレスポンス
+      <p><code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> モジュールは、gzip 圧縮されたレスポンス
       本文を inflate/uncompress するフィルタも提供しています。
       この機能を有効にするには、<code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code>
       や <code class="directive"><a href="../mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code> を使って、
