@@ -66,6 +66,7 @@ by other LDAP modules</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#ldaptrustedclientcert">LDAPTrustedClientCert</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ldaptrustedglobalcert">LDAPTrustedGlobalCert</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ldaptrustedmode">LDAPTrustedMode</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#ldapverifyservercert">LDAPVerifyServerCert</a></li>
 </ul>
 <h3>Topics</h3>
 <ul id="topics">
@@ -606,6 +607,21 @@ Certificate Authority or global client certificates</td></tr>
 
     <p>If an ldaps:// URL is specified, the mode becomes SSL and the setting
     of LDAPTrustedMode is ignored.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="LDAPVerifyServerCert" id="LDAPVerifyServerCert">LDAPVerifyServerCert</a> <a name="ldapverifyservercert" id="ldapverifyservercert">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Force server certificate verification</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LDAPVerifyServerCert <var>On|Off</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>LDAPVerifyServerCert On</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
+</table>
+    <p>Specifies whether to force the verification of a 
+     server certificate when establishing an SSL connection to the 
+     LDAP server.</p>
 
 </div>
 </div>
