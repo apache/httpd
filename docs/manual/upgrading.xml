@@ -54,7 +54,7 @@
       Apache HTTP Server has been greatly simplified by removing all
       but the most essential configuration settings.  A set of example
       configuration settings for more advanced features is present in
-      the <code>conf/extra/</code> directive of the installed
+      the <code>conf/extra/</code> directory of the installed
       server.</li>
 
       <li>The <program>apachectl</program> option
