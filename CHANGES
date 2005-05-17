@@ -2,6 +2,10 @@ Changes with Apache 2.1.5
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) ab: SSL support rewritten, improved, and enabled if SSL is enabled
+     during the build; -f and -Z arguments added to specify SSL protocol
+     options.  [Masaoki Kobayashi <masaoki techfirm.co.jp>]
+
   *) Support the suppress-error-charset setting, as with Apache 1.3.x.
      PR 31274.  [Jeff Trawick]
 
