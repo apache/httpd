@@ -104,9 +104,9 @@ PATCHES TO BACKPORT FROM TRUNK:
        +1: jim
 
     *) Prevent hang writing to piped logger at graceful restart time.
-       PR 26467
+       PR: 26467
          http://svn.apache.org/viewcvs?rev=170281&view=rev
-       +1: trawick
+       +1: trawick, jorton
 
     *) several changes to improve logging of connection-oriented errors, including
        ap_log_cerror() API (needs minor bump in addition to changes below)
@@ -399,6 +399,10 @@ PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
             inspect headers will in fact work better because the headers will
             reflect reality.
 
+    * Have configure refuse to build with doomed combinations of
+      internal/external APR/APR-util.
+      http://svn.apache.org/viewcvs?rev=170029&view=rev
+      +1: jorton
 
 CURRENT VOTES:
 
