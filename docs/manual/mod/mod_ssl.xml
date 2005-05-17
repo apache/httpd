@@ -1490,6 +1490,27 @@ SSLProxyCARevocationFile /usr/local/apache2/conf/ssl.crl/ca-bundle-remote-server
 </usage>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>SSLUserName</name>
+<description>Variable name to determine user name</description>
+<syntax>SSLUserName <em>varname</em></syntax>
+<contextlist><context>server config</context>
+<context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>AuthConfig</override>
+<compatibility>Available in Apache 2.0.51 and later</compatibility>
 
+<usage>
+<p>
+This directive sets the "user" field in the Apache request object.
+This is used by lower modules to identify the user with a character
+string. In particular, this may cause the environment variable
+<code>REMOTE_USER</code> to be set.  The <em>varname</em> can be
+any of the <a href="#envvars">SSL environment variables</a>.</p>
+<example><title>Example</title>
+SSLUserName SSL_CLIENT_S_DN_CN
+</example>
+</usage>
+</directivesynopsis>
 
 </modulesynopsis>
