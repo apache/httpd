@@ -58,7 +58,6 @@ for HTTP Basic authentication.</td></tr>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#authldapallowdnauth">AuthLDAPAllowDNAuth</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authldapbinddn">AuthLDAPBindDN</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authldapbindpassword">AuthLDAPBindPassword</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authldapcharsetconfig">AuthLDAPCharsetConfig</a></li>
@@ -647,37 +646,6 @@ require group <em>mygroupfile</em>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthLDAPAllowDNAuth" id="AuthLDAPAllowDNAuth">AuthLDAPAllowDNAuth</a> <a name="authldapallowdnauth" id="authldapallowdnauth">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Allow the user to authenticate by passing a fully distinguished
-user name.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthLDAPAllowDNAuth on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthLDAPAllowDNAuth off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_ldap</td></tr>
-</table>
-    <p>If this directive is set to ON, users are allowed to pass a fully
-    distinguished user name as the user ID.  Regardless of this setting,
-    Auth_LDAP will still allow a contextless login. This directive is 
-    turned off by default.</p>
-
-    <div class="note"><h3>Note</h3>
-      <p>If a full user DN is allowed for authentication and the value of
-      <code class="directive"><a href="#authldapremoteuserisdn">AuthLDAPRemoteUserIsDN</a></code> 
-      is set to OFF, the value of the REMOTE_USER environment variable
-      will contain the actual user name value passed in the request.  If 
-      this directive is set to ON, the REMOTE_USER environment variable 
-      will always be set to the user DN retrieved from the LDAP directory. 
-      If a contextless user ID is required in all cases instead of a 
-      full DN, it is possible to retrieve the desired attribute value 
-      from the user object by specifying an attribute list in the 
-      <code class="directive"><a href="#authldapurl">AuthLDAPUrl</a></code> directive.</p>
-    </div>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AuthLDAPBindDN" id="AuthLDAPBindDN">AuthLDAPBindDN</a> <a name="authldapbinddn" id="authldapbinddn">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Optional DN to use in binding to the LDAP server</td></tr>
@@ -832,10 +800,6 @@ environment variable</td></tr>
     the username that was passed by the client. It is turned off by
     default.</p>
 
-<h3>See also</h3>
-<ul>
-<li><code class="directive"><a href="#authldapallowdnauth">AuthLDAPAllowDNAuth</a></code></li>
-</ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AuthLDAPUrl" id="AuthLDAPUrl">AuthLDAPUrl</a> <a name="authldapurl" id="authldapurl">Directive</a></h2>
@@ -891,16 +855,13 @@ environment variable</td></tr>
 
 <dt>attribute</dt>
 
-        <dd>The attribute to search for as well as additional attribute
-        values to extract from the authenticated user object.
+        <dd>The attribute to search for.
         Although RFC 2255 allows a comma-separated list of
         attributes, only the first attribute will be used, no
-        matter how many are provided. The values of all other listed 
-        attributes will be extracted from the user object and assigned
-        to environment variables (AUTHENTICATE_&lt;Attribute&gt;=value). 
-        If no attributes are provided, the default is to use <code>uid</code>. 
-        It's a good idea to choose an attribute that will be unique across 
-        all entries in the subtree you will be searching.</dd>
+        matter how many are provided. If no attributes are
+        provided, the default is to use <code>uid</code>. It's a good
+        idea to choose an attribute that will be unique across all
+        entries in the subtree you will be using.</dd>
 
 <dt>scope</dt>
 
