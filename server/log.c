@@ -927,11 +927,9 @@ AP_DECLARE(piped_log *) ap_open_piped_log(apr_pool_t *p, const char *program)
     apr_pool_cleanup_register(p, pl, piped_log_cleanup,
                               piped_log_cleanup_for_exec);
     if (piped_log_spawn(pl) != APR_SUCCESS) {
-        int save_errno = errno;
         apr_pool_cleanup_kill(p, pl, piped_log_cleanup);
         apr_file_close(ap_piped_log_read_fd(pl));
         apr_file_close(ap_piped_log_write_fd(pl));
-        errno = save_errno;
         return NULL;
     }
     return pl;
