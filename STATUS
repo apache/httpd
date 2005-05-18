@@ -262,6 +262,11 @@ PATCHES TO BACKPORT FROM TRUNK:
 	http://issues.apache.org/bugzilla/attachment.cgi?id=14873
 	+1: bnicholes, minfrin
 	
+     *) Have configure refuse to build with doomed combinations of
+        internal/external APR/APR-util.
+          http://svn.apache.org/viewcvs?rev=170029&view=rev
+        +1: jorton, nd
+
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
@@ -408,11 +413,6 @@ PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
             subrequest bodies.  any modules or applications wishing to
             inspect headers will in fact work better because the headers will
             reflect reality.
-
-    * Have configure refuse to build with doomed combinations of
-      internal/external APR/APR-util.
-      http://svn.apache.org/viewcvs?rev=170029&view=rev
-      +1: jorton
 
 CURRENT VOTES:
 
