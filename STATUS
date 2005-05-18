@@ -418,6 +418,9 @@ PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
 CURRENT VOTES:
 
+    * Reverse proxy cookie patch from PR#10722 (c.f. comment 16)
+      +1: niq
+
     * Promote mod_ldap and mod_auth_ldap from experimental to
       non experimental status.
       +1: bnicholes, wrowe
