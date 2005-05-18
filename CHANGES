@@ -2,6 +2,10 @@ Changes with Apache 2.1.5
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_dbd: New additions: mod_dbd.c, mod_dbd.h, mod_dbd.xml
+     Provide module hooks for apr_dbd; optimise for httpd
+     threaded and non-threaded arch [Nick Kew]
+
   *) ab: SSL support rewritten, improved, and enabled if SSL is enabled
      during the build; -f and -Z arguments added to specify SSL protocol
      options.  [Masaoki Kobayashi <masaoki techfirm.co.jp>]
