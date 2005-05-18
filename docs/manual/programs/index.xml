@@ -63,6 +63,10 @@
       <dd>Create and update user authentication files for digest
       authentication</dd>
 
+      <dt><program>htdbm</program></dt>
+
+      <dd>Manipulate DBM password databases.</dd>
+
       <dt><program>htpasswd</program></dt>
 
       <dd>Create and update user authentication files for basic

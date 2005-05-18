@@ -147,8 +147,8 @@
     href="../mod/directive-dict.html#Context">Context</a> using the
     <a href="../mod/directives.html">directive index</a>.</p>
 
-    <p><directive module="mpm_common">User</directive> and <directive
-    module="mpm_common">Group</directive> may be used inside a
+    <p><directive module="mod_suexec">SuexecUserGroup</directive>
+    may be used inside a
     VirtualHost directive if the <a href="../suexec.html">suEXEC
     wrapper</a> is used.</p>
 

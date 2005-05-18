@@ -264,6 +264,37 @@ changes on a per-directory basis.</p>
     permitted, as only <code>Options Includes</code> is in effect, which
     completely overrides any earlier setting that may have been in
     place.</p>
+
+    <section id="merge"><title>Merging of .htaccess with the main
+    configuration files</title>
+
+    <p>As discussed in the documentation on <a
+    href="../sections.html">Configuration Sections</a>,
+    <code>.htaccess</code> files can override the <directive
+    type="section" module="core">Directory</directive> sections for
+    the corresponding directory, but will be overriden by other types
+    of configuration sections from the main configuration files.  This
+    fact can be used to enforce certain configurations, even in the
+    presence of a liberal <directive
+    module="core">AllowOverride</directive> setting.  For example, to
+    prevent script execution while allowing anything else to be set in
+    <code>.htaccess</code> you can use:</p>
+
+    <example>
+&lt;Directory /&gt;<br />
+<indent>
+Allowoverride All<br />
+</indent>
+&lt;/Directory&gt;<br />
+<br />
+&lt;Location /&gt;<br />
+<indent>
+Options +IncludesNoExec -ExecCGI<br />
+</indent>
+&lt;/Location&gt;
+    </example>
+</section>
+
 </section>
 
 <section id="auth"><title>Authentication example</title>

@@ -23,6 +23,7 @@
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../de/mod/core.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/core.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/mod/core.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Core Apache HTTP Server features that are always
@@ -946,9 +947,10 @@ in case of an error</td></tr>
     or a message. Apache will sometimes offer additional information
     regarding the problem/error.</p>
 
-    <p>URLs can begin with a slash (/) for local URLs, or be a full
-    URL which the client can resolve. Alternatively, a message can
-    be provided to be displayed by the browser. Examples:</p>
+    <p>URLs can begin with a slash (/) for local web-paths (relative
+    to the <code class="directive"><a href="#documentroot">DocumentRoot</a></code>), or be a
+    full URL which the client can resolve. Alternatively, a message
+    can be provided to be displayed by the browser. Examples:</p>
 
     <div class="example"><p><code>
       ErrorDocument 500 http://foo.example.com/cgi-bin/tester<br />
@@ -995,6 +997,14 @@ in case of an error</td></tr>
     greater than 512 bytes, then MSIE will show the server-generated
     error rather than masking it.  More information is available in
     Microsoft Knowledge Base article <a href="http://support.microsoft.com/default.aspx?scid=kb;en-us;Q294807">Q294807</a>.</p>
+
+    <p>Although most error messages can be overriden, there are certain
+    circumstances where the internal messages are used regardless of the
+    setting of <code class="directive"><a href="#errordocument">ErrorDocument</a></code>.  In
+    particular, if a malformed request is detected, normal request processing
+    will be immediately halted and the internal error message returned.
+    This is necessary to guard against security problems caused by
+    bad requests.</p>
 
     <p>Prior to version 2.0, messages were indicated by prefixing
     them with a single unmatched double quote character.</p>
@@ -3195,6 +3205,7 @@ hostname or IP address</td></tr>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../de/mod/core.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/core.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/mod/core.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 1995-2005 The Apache Software Foundation or its licensors, as applicable.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>

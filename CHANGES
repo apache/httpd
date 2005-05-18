@@ -1,4 +1,4 @@
-Changes with Apache 2.0.54
+Changes with Apache 2.0.55
 
   *) Added new module mod_version, which provides version dependent
      configuration containers.  [André Malo]
@@ -6,6 +6,8 @@ Changes with Apache 2.0.54
   *) Add core version query function (ap_get_server_revision) and
      accompanying ap_version_t structure (minor MMN bump).
      [André Malo]
+
+Changes with Apache 2.0.54
 
   *) mod_cache: Add CacheIgnoreHeaders directive.  PR 30399.
      [RÃ¼iger PlÃ¼ <r.pluem t-online.de>]

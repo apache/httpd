@@ -47,8 +47,8 @@
 <div class="section"><h2><a id="core" name="core">Funcionalidad Básica y Módulos
             de MultiProcesamiento</a></h2>
 <dl>
-<dt><a href="core.html">core</a></dt><dd>Core Apache HTTP Server features that are always
-available</dd>
+<dt><a href="core.html">core</a></dt><dd>Funcionalidades básicas del servidor HTTP Apache que
+están siempre presentes</dd>
 <dt><a href="mpm_common.html">mpm_common</a></dt><dd class="separate">Es una colección de directivas que están implementadas
 en más de un módulo de multiprocesamiento (MPM)</dd>
 <dt><a href="beos.html">beos</a></dt><dd>Este módulo de muiltiprocesamiento está

@@ -111,6 +111,7 @@
 <li><a href="mod_setenvif.html#browsermatch" id="B" name="B">BrowserMatch</a></li>
 <li><a href="mod_setenvif.html#browsermatchnocase">BrowserMatchNoCase</a></li>
 <li><a href="mpm_common.html#bs2000account">BS2000Account</a></li>
+<li><a href="mod_log_config.html#bufferedlogs">BufferedLogs</a></li>
 <li><a href="mod_cache.html#cachedefaultexpire" id="C" name="C">CacheDefaultExpire</a></li>
 <li><a href="mod_disk_cache.html#cachedirlength">CacheDirLength</a></li>
 <li><a href="mod_disk_cache.html#cachedirlevels">CacheDirLevels</a></li>
@@ -375,6 +376,7 @@
 <li><a href="mod_ssl.html#sslrequiressl">SSLRequireSSL</a></li>
 <li><a href="mod_ssl.html#sslsessioncache">SSLSessionCache</a></li>
 <li><a href="mod_ssl.html#sslsessioncachetimeout">SSLSessionCacheTimeout</a></li>
+<li><a href="mod_ssl.html#sslusername">SSLUserName</a></li>
 <li><a href="mod_ssl.html#sslverifyclient">SSLVerifyClient</a></li>
 <li><a href="mod_ssl.html#sslverifydepth">SSLVerifyDepth</a></li>
 <li><a href="mpm_common.html#startservers">StartServers</a></li>

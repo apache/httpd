@@ -36,7 +36,7 @@
 
 #define AP_SERVER_MAJORVERSION_NUMBER 2
 #define AP_SERVER_MINORVERSION_NUMBER 0
-#define AP_SERVER_PATCHLEVEL_NUMBER   54
+#define AP_SERVER_PATCHLEVEL_NUMBER   55
 #define AP_SERVER_ADD_STRING          "-dev"
 
 /* keep old macros as well */

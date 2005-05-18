@@ -1,10 +1,11 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.es.xsl"?>
-<!-- English Revision: 106090:159293 (outdated) -->
+<!-- English Revision: 159293 -->
 
 <!--
- Copyright 2004 The Apache Software Foundation
+ Copyright 2004-2005 The Apache Software Foundation or its licensors,
+ as applicable.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -24,8 +25,8 @@
   <title>M&#243;dulos de MultiProcesamiento (MPMs)</title>
 
 <summary>
-<p>Este documento describe que es un M&#243;dulo de Multiprocesamiento y
-como los usa Apache.</p>
+<p>Este documento explica que son los M&#243;dulos de
+Multiprocesamiento y como los usa Apache.</p>
 </summary>
 
 <section id="introduction"><title>Introducci&#243;n</title>
@@ -39,14 +40,14 @@ como los usa Apache.</p>
     manera para obtener una mayor eficiencia. Apache se ha adaptado
     siempre a una gran variedad de entornos a trav&#233;s de su
     dise&#241;o modular. Este dise&#241;o permite a los
-    administradores de sitios web elegir que caracter&#237;sticas van
-    a ser incluidas en el servidor seleccionando que m&#243;dulos se
-    van a cargar, ya sea al compilar o al ejecutar el servidor.</p>
+    administradores de sitios web elegir que funcionalidades van a ser
+    incluidas en el servidor seleccionando que m&#243;dulos se van a
+    usar, ya sea al compilar o al ejecutar el servidor.</p>
 
     <p>Apache 2.0 extiende este dise&#241;o modular hasta las
-    funciones m&#225;s b&#225;sicas de un servidor web. El servidor
-    viene con una serie de M&#243;dulos de MultiProcesamiento que son
-    responsables de conectar con los puertos de red de la
+    funcionalidades m&#225;s b&#225;sicas de un servidor web. El
+    servidor viene con una serie de M&#243;dulos de MultiProcesamiento
+    que son los responsables de conectar con los puertos de red de la
     m&#225;quina, acceptar las peticiones, y generar los procesos hijo
     que se encargan de servirlas.</p>
 
@@ -75,39 +76,40 @@ como los usa Apache.</p>
       (<module>perchild</module>).</li>
     </ul>
 
-    <p>A nivel de usuario, los MPMs son como cualquier otro
-    m&#243;dulo de Apache. La diferencia m&#225;s importante es que
-    solo un MPM puede estar cargado en el servidor en un determinado
-    momento. La lista de MPMs disponibles est&#225; en la <a
-    href="mod/">secci&#243;n &#237;ndice de M&#243;dulos</a>.</p>
+    <p>A nivel de usuario, los m&#243;dulos de multiprocesamiento
+    (MPMs) son como cualquier otro m&#243;dulo de Apache. La
+    diferencia m&#225;s importante es que solo un MPM puede estar
+    cargado en el servidor en un determinado momento. La lista de MPMs
+    disponibles est&#225; en la <a href="mod/">secci&#243;n de
+    &#237;ndice de m&#243;dulos</a>.</p>
 
 </section>
 
 <section id="choosing"><title>C&#243;mo Elegir un MPM</title>
 
-    <p>Los MPMs deben elegirse durante el proceso de
+    <p>Los m&#243;dulos de multiprocesamiento que se van a usar
+    posteriormente deben elegirse durante el proceso de
     configuraci&#243;n, y deben ser compilados en el servidor. Los
     compiladores son capaces de optimizar muchas funciones si se usan
-    hebras, pero solo si se sabe que se est&#225;n usando hebras. Como
-    algunos MPM usan hebras en Unix y otros no, Apache tendr&#225; un
-    mejor rendimiento si el MPM es elegido en el momento de compilar y
-    est&#225; incorporado en el servidor.</p>
+    hebras, pero solo si se sabe que se est&#225;n usando hebras.</p>
 
-    <p>Para elegir el MPM deseado, use el argumento --with-mpm=
-    <em>NAME</em> con el script ./configure.  <em>NAME</em> es el
-    nombre del MPM deseado.</p>
+    <p>Para elegir el m&#243;dulo de multiprocesamiento deseado, use
+    el argumento <code>--with-mpm= <em>NAME</em></code> con el script
+    <program>configure</program>. <em>NAME</em> es el nombre del MPM
+    deseado.</p>
 
     <p>Una vez que el servidor ha sido compilado, es posible
-    determinar que MPM ha sido elegido usando <code>./httpd
-    -l</code>. Este comando lista todos los m&#243;dulos compilados en
-    el servidor, incluido en MPM.</p>
+    determinar que m&#243;dulos de multiprocesamiento ha sido elegido
+    usando <code>./httpd -l</code>. Este comando lista todos los
+    m&#243;dulos compilados en el servidor, incluido en MPM.</p>
 </section>
 
 <section id="defaults"><title>MPM por defecto</title>
 
-<p>En la siguiente tabla se muestran los MPMs por defecto para varios
-sistemas operativos.  Estos ser&#225;n los MPM seleccionados si no se
-especifica lo contrario al compilar.</p>
+<p>En la siguiente tabla se muestran los m&#243;dulos de
+multiprocesamiento por defecto para varios sistemas operativos.  Estos
+ser&#225;n los m&#243;dulos de multiprocesamiento seleccionados si no
+se especifica lo contrario al compilar.</p>
 
 <table>
 <columnspec><column width=".2"/><column width=".2"/></columnspec>

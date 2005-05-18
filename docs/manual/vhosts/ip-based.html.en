@@ -137,7 +137,8 @@
     VirtualHost directive, check the <a href="../mod/directive-dict.html#Context">Context</a> using the
     <a href="../mod/directives.html">directive index</a>.</p>
 
-    <p><code class="directive"><a href="../mod/mpm_common.html#user">User</a></code> and <code class="directive"><a href="../mod/mpm_common.html#group">Group</a></code> may be used inside a
+    <p><code class="directive"><a href="../mod/mod_suexec.html#suexecusergroup">SuexecUserGroup</a></code>
+    may be used inside a
     VirtualHost directive if the <a href="../suexec.html">suEXEC
     wrapper</a> is used.</p>
 

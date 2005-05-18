@@ -62,6 +62,10 @@
       <dd>Create and update user authentication files for digest
       authentication</dd>
 
+      <dt><code class="program"><a href="../programs/htdbm.html">htdbm</a></code></dt>
+
+      <dd>Manipulate DBM password databases.</dd>
+
       <dt><code class="program"><a href="../programs/htpasswd.html">htpasswd</a></code></dt>
 
       <dd>Create and update user authentication files for basic

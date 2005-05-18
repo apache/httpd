@@ -6,7 +6,8 @@ http://svn.apache.org/repos/asf/httpd/httpd/branches/2.0.x/STATUS
 
 Release history:
 
-    2.0.54  : in development
+    2.0.55  : in development
+    2.0.54  : released April 17, 2005 as GA.
     2.0.53  : released February 7, 2005 as GA.
     2.0.52  : released September 28, 2004 as GA.
     2.0.51  : released September 15, 2004 as GA.
@@ -94,6 +95,31 @@ PATCHES TO BACKPORT FROM TRUNK:
     identify exactly what the proposed changes are! ]
   [ please append new backports at the end of this list not the top. ]
 
+    *) ap_proxy_canonenc() is over-eager in handling '%' for reverse
+       proxies (PR: 29554).
+         Index: modules/proxy/proxy_util.c
+             -       if (isenc && ch == '%') {
+             +       if (isenc && (isenc != PROXYREQ_REVERSE) && ch == '%') {
+
+       +1: jim, pquerna
+
+    *) Prevent hang writing to piped logger at graceful restart time.
+       PR: 26467
+         http://svn.apache.org/viewcvs?rev=170281&view=rev
+       +1: trawick, jorton
+       -0: pquerna: This adds a new public function.  It should be either a 
+           minor MMN bump, or be put under CORE_PRIVATE.
+
+    *) Fix fd leak in piped logging code, fix error handling, and remove
+       dead errno handling.
+         http://svn.apache.org/viewcvs?rev=170441&view=rev
+         http://svn.apache.org/viewcvs?rev=170537&view=rev
+         http://svn.apache.org/viewcvs?rev=170719&view=rev
+       all-in-one patch incremental to the PR 26467 fix:
+         http://people.apache.org/~jorton/ap_pipedlog2.diff
+       +1: jorton, trawick
+       [yes, I will write a CHANGES entry too]
+
     *) several changes to improve logging of connection-oriented errors, including
        ap_log_cerror() API (needs minor bump in addition to changes below)
          http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/core.c?r1=1.289&r2=1.291
@@ -131,6 +157,10 @@ PATCHES TO BACKPORT FROM TRUNK:
          do we have to wait for later APR 0.x release before putting
          calls to apr_procattr_addrspace_set() into httpd-2.0.x, or
          do we go ahead and introduce the prerequisite?
+       clar replies: I am ready to commit the apr 0.9.x patch, but then will need 
+         the changes in the httpd-2.0.x to be done in order for NetWare to work
+         as expected when calling apr_proc_create. Should I do both, APR and Http,
+         at the same time?
 
     *) mod_actions: Regression from 1.3: the file referred to must exist.
        Solve this by introducing the "virtual" modifier to the Action
@@ -176,6 +206,7 @@ PATCHES TO BACKPORT FROM TRUNK:
       jerenkrantz says: r126224 fixes brokenness with r125495 on Solaris.
       +1: thommay, jerenkrantz, trawick
       trawick: "which" isn't portable; I've suggested a work-around on dev@
+        (not standing in way of backport)
       jorton said: NetBSD's which isn't sufficient either.
       jerenkrantz: Since it's not in the critical path (and depends on
                    mod_log_forensic), I think it's still worth it to backport
@@ -187,25 +218,11 @@ PATCHES TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewcvs?view=rev&rev=154319
       +1: stoddard, striker, wrowe (as corrected in subsequent patches)
 
-    * don't propagate input headers describing a body to a GET subrequest
-      with no body
-      http://svn.apache.org/viewcvs?view=rev&rev=158798
-      http://svn.apache.org/viewcvs?view=rev&rev=159410
-      http://svn.apache.org/viewcvs?view=rev&rev=160573
-      +1: gregames
-      -1: jerenkrantz (read_length isn't a sufficient check to see if a body
-                       is present in the request; presence of T-E and C-L in
-                       the headers is the correct flag.)
-      +/-0: wrowe (this has a negative impact on modules who wish to 'inspect'
-            the headers, e.g. an xml transformation affected by the query
-            string or request POST args.  The right solution is adopt apreq,
-            providing an API for filters to participate in POST bodies.)
-      gregames: done in rev 160573
-
-    * mod_version: New Module, Backport from trunk.
-      http://svn.apache.org/repos/asf/httpd/httpd/trunk/modules/metadata/mod_version.c
-      (Also need to backport docs, and build system stuff.)
-      +1: pquerna, jerenkrantz, wrowe (trivial, would even be cool in 1.3)
+    * mod_version: New Module, Backport from trunk. Requires Minor MMN Bump.
+      http://svn.apache.org/repos/asf/httpd/httpd/branches/mod_version_for_2.0.x
+      +1: pquerna 
+      Votes from before the integration branch:
+          +1: jerenkrantz, wrowe (trivial, would even be cool in 1.3)
 
     *) Provide TLS/SSL upgrade functionality in mod_ssl allowing an unsecure
        connection to be upgraded to a secure connection upon request by the
@@ -224,6 +241,34 @@ PATCHES TO BACKPORT FROM TRUNK:
        -0: jerenkrantz (should wait for 2.2)
        -0: pquerna (2.2)
        -0: jorton (msgid <20040305083540.GA24529@redhat.com>)
+
+     *) mod_ssl: Fix issues picking up ssl-unclean-shutdown setting
+        for e.g. a reverse proxy config, breaking interop with MSIE
+        in some cases.
+        http://svn.apache.org/viewcvs?view=rev&rev=161958
+        rediffed for 2.0.x as:
+        http://issues.apache.org/bugzilla/attachment.cgi?id=14804
+        PR: 34452
+        +1: jorton
+
+     *) mod_userdir: fix to palloc(sizeof struct) not palloc(sizeof pointer)
+        http://svn.apache.org/viewcvs?rev=165151&view=rev
+        PR: 34588
+        +1: jorton, trawick (isn't it worth a CHANGES entry for a storage
+            corruption fix?)
+	    
+     *) mod_ldap: Change the LDAP connection timeout to per-connection rather
+        than global. Fixes PR: 34618
+	http://svn.apache.org/viewcvs/httpd/httpd/trunk/modules/ldap/util_ldap.c?rev=164919&r1=164918&r2=164919&view=diff
+	or 2.0 view patch
+	http://issues.apache.org/bugzilla/attachment.cgi?id=14873
+	+1: bnicholes, minfrin, pquerna
+	
+     *) Have configure refuse to build with doomed combinations of
+        internal/external APR/APR-util.
+          http://svn.apache.org/viewcvs?rev=170029&view=rev
+        +1: jorton, nd, trawick, pquerna
+
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
@@ -350,9 +395,31 @@ PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
     * ThreadStackSize for Win32 and threaded MPMs
       trawick will eventually put together a patch for httpd 2.0.next
       +1 concept: trawick, nd, stoddard, wrowe
-
+      
+    * don't propagate input headers describing a body to a GET subrequest
+      with no body
+      http://svn.apache.org/viewcvs?view=rev&rev=158798
+      http://svn.apache.org/viewcvs?view=rev&rev=159410
+      http://svn.apache.org/viewcvs?view=rev&rev=160573
+      +1: gregames
+      -1: jerenkrantz (read_length isn't a sufficient check to see if a body
+                       is present in the request; presence of T-E and C-L in
+                       the headers is the correct flag.)
+          gregames: done in rev 160573
+      ±0: wrowe (this has a negative impact on modules who wish to 'inspect'
+            the headers, e.g. an xml transformation affected by the query
+            string or request POST args.  The right solution is adopt apreq,
+            providing an API for filters to participate in POST bodies.)
+          gregames: this does not affect POSTs.  the affected function helps
+            create a GET subrequest with no body and is unprepared to deal with
+            subrequest bodies.  any modules or applications wishing to
+            inspect headers will in fact work better because the headers will
+            reflect reality.
 
 CURRENT VOTES:
+
+    * Reverse proxy cookie patch from PR#10722 (c.f. comment 16)
+      +1: niq
 
     * Promote mod_ldap and mod_auth_ldap from experimental to
       non experimental status.

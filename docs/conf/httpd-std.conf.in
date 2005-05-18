@@ -930,6 +930,7 @@ AddHandler type-map var
 #    ErrorDocument 403 /error/HTTP_FORBIDDEN.html.var
 #    ErrorDocument 404 /error/HTTP_NOT_FOUND.html.var
 #    ErrorDocument 405 /error/HTTP_METHOD_NOT_ALLOWED.html.var
+#    ErrorDocument 406 /error/HTTP_NOT_ACCEPTABLE.html.var
 #    ErrorDocument 408 /error/HTTP_REQUEST_TIME_OUT.html.var
 #    ErrorDocument 410 /error/HTTP_GONE.html.var
 #    ErrorDocument 411 /error/HTTP_LENGTH_REQUIRED.html.var
@@ -963,7 +964,7 @@ BrowserMatch "JDK/1\.0" force-response-1.0
 #
 BrowserMatch "Microsoft Data Access Internet Publishing Provider" redirect-carefully
 BrowserMatch "^WebDrive" redirect-carefully
-BrowserMatch "^WebDAVFS/1.[012]" redirect-carefully
+BrowserMatch "^WebDAVFS/1.[0123]" redirect-carefully
 BrowserMatch "^gnome-vfs" redirect-carefully
 
 #

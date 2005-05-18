@@ -121,6 +121,7 @@ Server on HPUX</page>
 <page href="programs/apxs.html">Manual Page: apxs</page>
 <page href="programs/configure.html">Manual Page: configure</page>
 <page href="programs/dbmmanage.html">Manual Page: dbmmanage</page>
+<page href="programs/htdbm.html">Manual Page: htdbm</page>
 <page href="programs/htdigest.html">Manual Page: htdigest</page>
 <page href="programs/htpasswd.html">Manual Page: htpasswd</page>
 <page href="programs/logresolve.html">Manual Page: logresolve</page>

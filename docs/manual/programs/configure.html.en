@@ -809,9 +809,8 @@
       <dt><code>--enable-static-checkgid</code></dt>
       <dd>Build a statically linked version of <code>checkgid</code>.</dd>
 
-      
       <dt><code>--enable-static-htdbm</code></dt>
-      <dd>Build a statically linked version of <code>htdbm</code>.</dd>
+      <dd>Build a statically linked version of <code class="program"><a href="../programs/htdbm.html">htdbm</a></code>.</dd>
 
       <dt><code>--enable-static-htdigest</code></dt>
       <dd>Build a statically linked version of <code class="program"><a href="../programs/htdigest.html">htdigest</a></code>.</dd>
