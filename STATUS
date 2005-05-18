@@ -101,12 +101,14 @@ PATCHES TO BACKPORT FROM TRUNK:
              -       if (isenc && ch == '%') {
              +       if (isenc && (isenc != PROXYREQ_REVERSE) && ch == '%') {
 
-       +1: jim
+       +1: jim, pquerna
 
     *) Prevent hang writing to piped logger at graceful restart time.
        PR: 26467
          http://svn.apache.org/viewcvs?rev=170281&view=rev
        +1: trawick, jorton
+       -0: pquerna: This adds a new public function.  It should be either a 
+           minor MMN bump, or be put under CORE_PRIVATE.
 
     *) Fix fd leak in piped logging code, fix error handling, and remove
        dead errno handling.
@@ -260,12 +262,12 @@ PATCHES TO BACKPORT FROM TRUNK:
 	http://svn.apache.org/viewcvs/httpd/httpd/trunk/modules/ldap/util_ldap.c?rev=164919&r1=164918&r2=164919&view=diff
 	or 2.0 view patch
 	http://issues.apache.org/bugzilla/attachment.cgi?id=14873
-	+1: bnicholes, minfrin
+	+1: bnicholes, minfrin, pquerna
 	
      *) Have configure refuse to build with doomed combinations of
         internal/external APR/APR-util.
           http://svn.apache.org/viewcvs?rev=170029&view=rev
-        +1: jorton, nd, trawick
+        +1: jorton, nd, trawick, pquerna
 
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
