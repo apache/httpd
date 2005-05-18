@@ -27,6 +27,7 @@
   <modulefile>mod_dav.xml.ja</modulefile>
   <modulefile>mod_dav_fs.xml.ja</modulefile>
   <modulefile>mod_dav_lock.xml.ja</modulefile>
+  <modulefile>mod_dbd.xml</modulefile>
   <modulefile>mod_deflate.xml.ja</modulefile>
   <modulefile>mod_dir.xml.ja</modulefile>
   <modulefile>mod_disk_cache.xml.ja</modulefile>

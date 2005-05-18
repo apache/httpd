@@ -147,6 +147,14 @@
 <li><a href="mod_dav_lock.html#davgenericlockdb">DavGenericLockDB</a></li>
 <li><a href="mod_dav_fs.html#davlockdb">DavLockDB</a></li>
 <li><a href="mod_dav.html#davmintimeout">DavMinTimeout</a></li>
+<li><a href="mod_dbd.html#dbdexptime">DBDExptime</a></li>
+<li><a href="mod_dbd.html#dbdkeep">DBDKeep</a></li>
+<li><a href="mod_dbd.html#dbdmax">DBDMax</a></li>
+<li><a href="mod_dbd.html#dbdmin">DBDMin</a></li>
+<li><a href="mod_dbd.html#dbdparams">DBDParams</a></li>
+<li><a href="mod_dbd.html#dbdpersist">DBDPersist</a></li>
+<li><a href="mod_dbd.html#dbdpreparesql">DBDPrepareSQL</a></li>
+<li><a href="mod_dbd.html#dbdriver">DBDriver</a></li>
 <li><a href="mod_autoindex.html#defaulticon">DefaultIcon</a></li>
 <li><a href="mod_mime.html#defaultlanguage">DefaultLanguage</a></li>
 <li><a href="core.html#defaulttype">DefaultType</a></li>
