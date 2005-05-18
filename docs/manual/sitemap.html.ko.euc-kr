@@ -190,6 +190,7 @@
 <li><a href="mod/mod_dav.html">아파치 모듈 mod_dav</a></li>
 <li><a href="mod/mod_dav_fs.html">아파치 모듈 mod_dav_fs</a></li>
 <li><a href="mod/mod_dav_lock.html">아파치 모듈 mod_dav_lock</a></li>
+<li><a href="mod/mod_dbd.html">아파치 모듈 mod_dbd</a></li>
 <li><a href="mod/mod_deflate.html">아파치 모듈 mod_deflate</a></li>
 <li><a href="mod/mod_dir.html">아파치 모듈 mod_dir</a></li>
 <li><a href="mod/mod_disk_cache.html">아파치 모듈 mod_disk_cache</a></li>
