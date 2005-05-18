@@ -30,7 +30,7 @@
 <compatibility>Version 2.1 and higher</compatibility>
 
 <summary>
-    <p>mod_dbd manages SQL database connections using
+    <p><module>mod_dbd</module> manages SQL database connections using
     <a href="http://people.apache.org/~niq/dbd.html">apr_dbd</a>.
     It provides database connections on request to modules
     requiring SQL database functions, and takes care of
@@ -38,7 +38,7 @@
     for both threaded and non-threaded MPMs.</p>
 </summary>
 
-<section id="reslist"><title>Connection Pooling</title>
+<section id="pooling"><title>Connection Pooling</title>
     <p>This module manages database connections, in a manner
     optimised for the platform.  On non-threaded platforms,
     it provides a persistent connection in the manner of
@@ -46,13 +46,15 @@
     On threaded platform, it provides an altogether more
     scalable and efficient <em>connection pool</em>, as
     described in <a href="http://www.apachetutor.org/dev/reslist"
-    title="Connection pooling in Apache">this article at ApacheTutor</a>.
-    mod_dbd supersedes the modules presented in that article.</p>
+    >this article at ApacheTutor</a>. <module>mod_dbd</module> supersedes
+    the modules presented in that article.</p>
 </section>
 
 <section id="API"><title>Apache DBD API</title>
-    <p>mod_dbd exports three functions for other modules to use.
-    The API is as follows:</p>
+    <p><module>mod_dbd</module> exports three functions for other modules
+    to use. The API is as follows:</p>
+
+    <example>
 <pre><code>typedef struct {
     apr_dbd_t *handle;
     apr_dbd_driver_t *driver;
@@ -78,18 +80,19 @@ AP_DECLARE(ap_dbd_t*) ap_dbd_acquire(request_rec*);
 /* Also export them as optional functions for modules that prefer it */
 APR_DECLARE_OPTIONAL_FN(ap_dbd_t*, ap_dbd_open, (apr_pool_t*, server_rec*));
 APR_DECLARE_OPTIONAL_FN(void, ap_dbd_close, (server_rec*, ap_dbd_t*));
-APR_DECLARE_OPTIONAL_FN(ap_dbd_t*, ap_dbd_acquire, (request_rec*));
-</code></pre>
+APR_DECLARE_OPTIONAL_FN(ap_dbd_t*, ap_dbd_acquire, (request_rec*));</code></pre>
+    </example>
 </section>
 
 <section id="prepared"><title>SQL Prepared Statements</title>
-    <p>mod_dbd supports SQL prepared statements on behalf of
-    modules that may wish to use them.  Each prepared statement
+    <p><module>mod_dbd</module> supports SQL prepared statements on behalf
+    of modules that may wish to use them.  Each prepared statement
     must be assigned a name (label), and they are stored in a hash:
     the <code>prepared</code> field of an <code>ap_dbd_t</code>.
     Hash entries are of type <code>apr_dbd_prepared_t</code>
     and can be used in any of the apr_dbd prepared statement
     SQL query or select commands.</p>
+
     <p>It is up to dbd user modules to use the prepared statements
     and document what statements can be specified in httpd.conf.</p>
 </section>
@@ -112,7 +115,8 @@ APR_DECLARE_OPTIONAL_FN(ap_dbd_t*, ap_dbd_acquire, (request_rec*));
 <directivesynopsis>
 <name>DBDParams</name>
 <description>Parameters for database connection</description>
-<syntax>DBDParams <var>param1=value1,param2=value2</var></syntax>
+<syntax>DBDParams
+<var>param1</var>=<var>value1</var>[,<var>param2</var>=<var>value2</var>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
@@ -126,7 +130,7 @@ APR_DECLARE_OPTIONAL_FN(ap_dbd_t*, ap_dbd_acquire, (request_rec*));
 <directivesynopsis>
 <name>DBDPersist</name>
 <description>Whether to use persistent connections</description>
-<syntax>DBDPersist <var>[0|1]</var></syntax>
+<syntax>DBDPersist 0|1</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
@@ -135,6 +139,7 @@ APR_DECLARE_OPTIONAL_FN(ap_dbd_t*, ap_dbd_acquire, (request_rec*));
     A new database connection is opened when requested by a client,
     and closed immediately on release.  This option is for debugging
     and low-usage servers.</p>
+
     <p>The default is to enable a pool of persistent connections
     (or a single LAMP-style persistent connection in the case of a
     non-threaded server), and should almost always be used in operation.</p>
@@ -182,6 +187,7 @@ APR_DECLARE_OPTIONAL_FN(ap_dbd_t*, ap_dbd_acquire, (request_rec*));
     platforms only).</p>
 </usage>
 </directivesynopsis>
+
 <directivesynopsis>
 <name>DBDMax</name>
 <description>Maximum number of connections</description>
@@ -209,6 +215,4 @@ APR_DECLARE_OPTIONAL_FN(ap_dbd_t*, ap_dbd_acquire, (request_rec*));
 </usage>
 </directivesynopsis>
 
-
 </modulesynopsis>
-
