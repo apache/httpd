@@ -820,7 +820,11 @@ static apr_status_t piped_log_spawn(piped_log *pl)
 
         if (status == APR_SUCCESS) {
             pl->pid = procnew;
-            ap_piped_log_write_fd(pl) = procnew->in;
+            /* procnew->in was dup2'd from ap_piped_log_write_fd(pl);
+             * since the original fd is still valid, close the copy to
+             * avoid a leak. */
+            apr_file_close(procnew->in);
+            procnew->in = NULL;
             apr_proc_other_child_register(procnew, piped_log_maintenance, pl,
                                           ap_piped_log_write_fd(pl), pl->p);
             close_handle_in_child(pl->p, ap_piped_log_read_fd(pl));
