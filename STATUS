@@ -115,7 +115,7 @@ PATCHES TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewcvs?rev=170719&view=rev
        all-in-one patch incremental to the PR 26467 fix:
          http://people.apache.org/~jorton/ap_pipedlog2.diff
-       +1: jorton
+       +1: jorton, trawick
        [yes, I will write a CHANGES entry too]
 
     *) several changes to improve logging of connection-oriented errors, including
@@ -265,7 +265,7 @@ PATCHES TO BACKPORT FROM TRUNK:
      *) Have configure refuse to build with doomed combinations of
         internal/external APR/APR-util.
           http://svn.apache.org/viewcvs?rev=170029&view=rev
-        +1: jorton, nd
+        +1: jorton, nd, trawick
 
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
