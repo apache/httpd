@@ -104,7 +104,7 @@ APR_DECLARE_OPTIONAL_FN(ap_dbd_t*, ap_dbd_acquire, (request_rec*));
 <usage>
     <p>Selects an apr_dbd driver by name.  The driver must be installed
     on your system (on most systems, it will be a shared object or dll).
-    For example, <samp>DBDriver mysql</samp> will select the MySQL
+    For example, <code>DBDriver mysql</code> will select the MySQL
     driver in apr_dbd_mysql.so.</p>
 </usage>
 </directivesynopsis>
