@@ -27,7 +27,7 @@
 typedef const char *ap_log_handler_fn_t(request_rec *r, char *a);
 
 /**
- * callback function prototype for a external writer initilization.
+ * callback function prototype for external writer initialization.
  */
 typedef void *ap_log_writer_init(apr_pool_t *p, server_rec *s, 
                                  const char *name);
