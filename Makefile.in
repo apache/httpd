@@ -95,7 +95,7 @@ install-build:
 	@test -d $(DESTDIR)$(installbuilddir) || $(MKINSTALLDIRS) $(DESTDIR)$(installbuilddir) 
 	@cp $(top_srcdir)/build/*.mk $(DESTDIR)$(installbuilddir); \
 	cp build/*.mk $(DESTDIR)$(installbuilddir); \
-	sed 's#LIBTOOL = \(.*\)#LIBTOOL = $(SHELL) $(installbuilddir)/libtool $(LTFLAGS)#' \
+	sed "/^LIBTOOL/s#/[^ ]*/libtool \(.*\)#`$(APR_CONFIG) --apr-libtool` $(LTFLAGS)#" \
 	    build/config_vars.mk > $(DESTDIR)$(installbuilddir)/config_vars.mk; \
 	cp $(top_srcdir)/build/instdso.sh $(DESTDIR)$(installbuilddir); \
 	cp $(top_builddir)/config.nice $(DESTDIR)$(installbuilddir);
