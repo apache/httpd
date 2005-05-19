@@ -220,7 +220,7 @@ PATCHES TO BACKPORT FROM TRUNK:
 
     * mod_version: New Module, Backport from trunk. Requires Minor MMN Bump.
       http://svn.apache.org/repos/asf/httpd/httpd/branches/mod_version_for_2.0.x
-      +1: pquerna 
+      +1: pquerna, nd
       Votes from before the integration branch:
           +1: jerenkrantz, wrowe (trivial, would even be cool in 1.3)
 
