@@ -55,7 +55,7 @@
 <div class="directive-section"><h2><a name="AuthDBMAuthoritative" id="AuthDBMAuthoritative">AuthDBMAuthoritative</a> <a name="authdbmauthoritative" id="authdbmauthoritative">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets whether authentication and authorization will be
-passwed on to lower level modules</td></tr>
+passed on to lower level modules</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthDBMAuthoritative On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthDBMAuthoritative On</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>

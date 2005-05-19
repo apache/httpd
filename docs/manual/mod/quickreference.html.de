@@ -144,7 +144,7 @@ formatted email address</td></tr>
 <tr><td><a href="mod_auth.html#authauthoritative">AuthAuthoritative On|Off</a></td><td> On </td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Sets whether authorization and authentication are
 passed to lower level modules</td></tr>
 <tr class="odd"><td><a href="mod_auth_dbm.html#authdbmauthoritative">AuthDBMAuthoritative On|Off</a></td><td> On </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets whether authentication and authorization will be
-passwed on to lower level modules</td></tr>
+passed on to lower level modules</td></tr>
 <tr><td><a href="mod_auth_dbm.html#authdbmgroupfile">AuthDBMGroupFile <var>file-path</var></a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets the name of the database file containing the list
 of user groups for authentication</td></tr>
 <tr class="odd"><td><a href="mod_auth_dbm.html#authdbmtype">AuthDBMType default|SDBM|GDBM|NDBM|DB</a></td><td> default </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the type of database file that is used to
