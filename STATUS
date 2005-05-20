@@ -107,11 +107,10 @@ PATCHES TO BACKPORT FROM TRUNK:
        PR: 26467
          http://svn.apache.org/viewcvs?rev=170281&view=rev
          http://svn.apache.org/viewcvs.cgi?rev=171093&view=rev
-       +1: trawick
+       +1: trawick, jorton
        -0: pquerna: This adds a new public function.  It should be either a 
            minor MMN bump, or be put under CORE_PRIVATE.
            trawick: I resolved this via second commit above.  Thanks!
-       jorton was +1 prior to addition of the second commit.
 
     *) Fix fd leak in piped logging code, fix error handling, and remove
        dead errno handling.
@@ -128,7 +127,7 @@ PATCHES TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewcvs.cgi?rev=168182&view=rev
          http://svn.apache.org/viewcvs.cgi?rev=168649&view=rev
            (ignore changes to event MPM, which don't apply to 2.0.x)
-       +1: trawick
+       +1: trawick, jorton
 
     *) several changes to improve logging of connection-oriented errors, including
        ap_log_cerror() API (needs minor bump in addition to changes below)
@@ -266,11 +265,6 @@ PATCHES TO BACKPORT FROM TRUNK:
         PR: 34588
         +1: jorton, trawick (isn't it worth a CHANGES entry for a storage
             corruption fix?)
-	    
-     *) Have configure refuse to build with doomed combinations of
-        internal/external APR/APR-util.
-          http://svn.apache.org/viewcvs?rev=170029&view=rev
-        +1: jorton, nd, trawick, pquerna
 
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
