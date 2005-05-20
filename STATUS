@@ -120,6 +120,13 @@ PATCHES TO BACKPORT FROM TRUNK:
        +1: jorton, trawick
        [yes, I will write a CHANGES entry too]
 
+    *) worker mpm: don't take down the whole server for a transient
+       thread creation failure. PR 34514
+         http://svn.apache.org/viewcvs.cgi?rev=168182&view=rev
+         http://svn.apache.org/viewcvs.cgi?rev=168649&view=rev
+           (ignore changes to event MPM, which don't apply to 2.0.x)
+       +1: trawick
+
     *) several changes to improve logging of connection-oriented errors, including
        ap_log_cerror() API (needs minor bump in addition to changes below)
          http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/core.c?r1=1.289&r2=1.291
