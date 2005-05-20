@@ -168,32 +168,6 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
     }
 #endif
 
-#if APR_HAS_SO_ACCEPTFILTER
-#ifndef ACCEPT_FILTER_NAME
-#define ACCEPT_FILTER_NAME "httpready"
-#ifdef __FreeBSD_version
-#if __FreeBSD_version < 411000 /* httpready broken before 4.1.1 */
-#undef ACCEPT_FILTER_NAME
-#define ACCEPT_FILTER_NAME "dataready"
-#endif
-#endif
-#endif
-    stat = apr_socket_accept_filter(s, ACCEPT_FILTER_NAME, "");
-    if (stat != APR_SUCCESS && !APR_STATUS_IS_ENOTIMPL(stat)) {
-        ap_log_perror(APLOG_MARK, APLOG_WARNING, stat, p,
-                      "Failed to enable the '%s' Accept Filter",
-                      ACCEPT_FILTER_NAME);
-    }
-#else
-#ifdef APR_TCP_DEFER_ACCEPT
-    stat = apr_socket_opt_set(s, APR_TCP_DEFER_ACCEPT, 1);   
-    if (stat != APR_SUCCESS && !APR_STATUS_IS_ENOTIMPL(stat)) {
-        ap_log_perror(APLOG_MARK, APLOG_WARNING, stat, p,
-                              "Failed to enable APR_TCP_DEFER_ACCEPT");
-    }
-#endif
-#endif
-
     server->sd = s;
     server->active = 1;
 
@@ -204,6 +178,61 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
 #endif
 
     return APR_SUCCESS;
+}
+
+static const char* find_accf_name(server_rec *s, const char *proto)
+{
+    const char* accf;
+    core_server_config *conf = ap_get_module_config(s->module_config,
+                                                    &core_module);
+    if (!proto) {
+        return NULL;
+    }
+
+    accf = apr_table_get(conf->accf_map, proto);
+
+    if (accf && !strcmp("none", accf)) {
+        return NULL;
+    }
+
+    return accf;
+}
+
+static void ap_apply_accept_filter(apr_pool_t *p, ap_listen_rec *lis, 
+                                           server_rec *server)
+{
+    apr_socket_t *s = lis->sd;
+    const char *accf;
+    apr_status_t rv;
+    const char *proto;
+
+    proto = lis->protocol;
+
+    if (!proto) {
+        proto = ap_get_server_protocol(server);
+    }
+
+
+    accf = find_accf_name(server, proto);
+
+    if (accf) {
+#if APR_HAS_SO_ACCEPTFILTER
+        rv = apr_socket_accept_filter(s, ACCEPT_FILTER_NAME, "");
+        if (rv != APR_SUCCESS && !APR_STATUS_IS_ENOTIMPL(rv)) {
+            ap_log_perror(APLOG_MARK, APLOG_WARNING, rv, p,
+                          "Failed to enable the '%s' Accept Filter",
+                          ACCEPT_FILTER_NAME);
+        }
+#else
+#ifdef APR_TCP_DEFER_ACCEPT
+        rv = apr_socket_opt_set(s, APR_TCP_DEFER_ACCEPT, 1);   
+        if (rv != APR_SUCCESS && !APR_STATUS_IS_ENOTIMPL(rv)) {
+            ap_log_perror(APLOG_MARK, APLOG_WARNING, rv, p,
+                              "Failed to enable APR_TCP_DEFER_ACCEPT");
+        }
+#endif
+#endif
+    }
 }
 
 static apr_status_t close_listeners_on_exec(void *v)
@@ -459,27 +488,27 @@ AP_DECLARE(int) ap_setup_listeners(server_rec *s)
     ap_listen_rec *lr;
     int num_listeners = 0;
     const char* proto;
-    int nfound;
+    int found;
 
     for (ls = s; ls; ls = ls->next) {
         proto = ap_get_server_protocol(ls);
         if (!proto) {
-            nfound = 1;
+            found = 0;
             /* No protocol was set for this vhost, 
              * use the default for this listener. 
              */
-            for (addr = ls->addrs; addr && nfound; addr = addr->next) {
+            for (addr = ls->addrs; addr && !found; addr = addr->next) {
                 for (lr = ap_listeners; lr; lr = lr->next) {
                     if (apr_sockaddr_equal(lr->bind_addr, addr->host_addr) &&
                         lr->bind_addr->port == addr->host_port) {
                         ap_set_server_protocol(ls, lr->protocol);
-                        nfound = 0;
+                        found = 1;
                         break;
                     }
                 }
             }
 
-            if (nfound) {
+            if (!found) {
                 /* TODO: set protocol defaults per-Port, eg 25=smtp */
                 ap_set_server_protocol(ls, "http");
             }
@@ -492,6 +521,20 @@ AP_DECLARE(int) ap_setup_listeners(server_rec *s)
 
     for (lr = ap_listeners; lr; lr = lr->next) {
         num_listeners++;
+        found = 0;
+        for (ls = s; ls && !found; ls = ls->next) {
+            for (addr = ls->addrs; addr && !found; addr = addr->next) {
+                if (apr_sockaddr_equal(lr->bind_addr, addr->host_addr) &&
+                    lr->bind_addr->port == addr->host_port) {
+                    found = 1;
+                    ap_apply_accept_filter(s->process->pool, lr, ls);
+                }
+            }
+        }
+
+        if (!found) {
+            ap_apply_accept_filter(s->process->pool, lr, s);
+        }
     }
 
     return num_listeners;

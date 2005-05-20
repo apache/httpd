@@ -546,7 +546,8 @@ typedef struct {
     int redirect_limit; /* maximum number of internal redirects */
     int subreq_limit;   /* maximum nesting level of subrequests */
 
-    const char* protocol;
+    const char *protocol;
+    apr_table_t *accf_map;
 } core_server_config;
 
 /* for AddOutputFiltersByType in core.c */
