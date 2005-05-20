@@ -205,7 +205,7 @@ PATCHES TO BACKPORT FROM TRUNK:
       been committed to trunk.  The equivalent patch for 2.0.x is at:
          http://www.apache.org/~trawick/20reqbody.txt
 
-      +1: trawick, jerenkrantz, +1
+      +1: trawick, jerenkrantz, jim
      Previous votes (before trawick's recent 2.1 commits):
       +1: stoddard, striker, jim
       -1: brianp (we need a more robust solution than what's in 2.1 right now),
