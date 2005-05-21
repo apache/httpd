@@ -1,5 +1,10 @@
 Changes with Apache 2.0.55
 
+  *) proxy HTTP: Rework the handling of request bodies to handle
+     chunked input and input filters which modify content length, and
+     avoid spooling arbitrary-sized request bodies in memory.
+     PR 15859.  [Jeff Trawick]
+
 Changes with Apache 2.0.54
 
   *) mod_cache: Add CacheIgnoreHeaders directive.  PR 30399.
