@@ -3492,46 +3492,50 @@ static int default_handler(request_rec *r)
         ap_set_etag(r);
         apr_table_setn(r->headers_out, "Accept-Ranges", "bytes");
         ap_set_content_length(r, r->finfo.size);
-        if ((errstatus = ap_meets_conditions(r)) != OK) {
-            apr_file_close(fd);
-            return errstatus;
-        }
-
-        if (bld_content_md5) {
-            apr_table_setn(r->headers_out, "Content-MD5",
-                           ap_md5digest(r->pool, fd));
-        }
 
         bb = apr_brigade_create(r->pool, c->bucket_alloc);
 
-        /* For platforms where the size of the file may be larger than
-         * that which can be stored in a single bucket (where the
-         * length field is an apr_size_t), split it into several
-         * buckets: */
-        if (sizeof(apr_off_t) > sizeof(apr_size_t) 
-            && r->finfo.size > AP_MAX_SENDFILE) {
-            apr_off_t fsize = r->finfo.size;
-            e = apr_bucket_file_create(fd, 0, AP_MAX_SENDFILE, r->pool,
-                                       c->bucket_alloc);
-            while (fsize > AP_MAX_SENDFILE) {
-                apr_bucket *ce;
-                apr_bucket_copy(e, &ce);
-                APR_BRIGADE_INSERT_TAIL(bb, ce);
-                e->start += AP_MAX_SENDFILE;
-                fsize -= AP_MAX_SENDFILE;
+        if ((errstatus = ap_meets_conditions(r)) != OK) {
+            apr_file_close(fd);
+            r->status = errstatus;
+        } 
+        else {
+            if (bld_content_md5) {
+                apr_table_setn(r->headers_out, "Content-MD5",
+                               ap_md5digest(r->pool, fd));
             }
-            e->length = (apr_size_t)fsize; /* Resize just the last bucket */
-        }
-        else
-            e = apr_bucket_file_create(fd, 0, (apr_size_t)r->finfo.size,
-                                       r->pool, c->bucket_alloc);
+
+            /* For platforms where the size of the file may be larger than
+             * that which can be stored in a single bucket (where the
+             * length field is an apr_size_t), split it into several
+             * buckets: */
+            if (sizeof(apr_off_t) > sizeof(apr_size_t) 
+                && r->finfo.size > AP_MAX_SENDFILE) {
+                apr_off_t fsize = r->finfo.size;
+                e = apr_bucket_file_create(fd, 0, AP_MAX_SENDFILE, r->pool,
+                                           c->bucket_alloc);
+                while (fsize > AP_MAX_SENDFILE) {
+                    apr_bucket *ce;
+                    apr_bucket_copy(e, &ce);
+                    APR_BRIGADE_INSERT_TAIL(bb, ce);
+                    e->start += AP_MAX_SENDFILE;
+                    fsize -= AP_MAX_SENDFILE;
+                }
+                e->length = (apr_size_t)fsize; /* Resize just the last bucket */
+            }
+            else {
+                e = apr_bucket_file_create(fd, 0, (apr_size_t)r->finfo.size,
+                                           r->pool, c->bucket_alloc);
+            }
 
 #if APR_HAS_MMAP
-        if (d->enable_mmap == ENABLE_MMAP_OFF) {
-            (void)apr_bucket_file_enable_mmap(e, 0);
-        }
+            if (d->enable_mmap == ENABLE_MMAP_OFF) {
+                (void)apr_bucket_file_enable_mmap(e, 0);
+            }
 #endif
-        APR_BRIGADE_INSERT_TAIL(bb, e);
+            APR_BRIGADE_INSERT_TAIL(bb, e);
+        }
+
         e = apr_bucket_eos_create(c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(bb, e);
 
