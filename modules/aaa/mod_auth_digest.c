@@ -1358,9 +1358,13 @@ static authn_status get_hash(request_rec *r, const char *user,
             provider = current_provider->provider;
         }
 
+        apr_table_setn(r->notes, AUTHN_PROVIDER_NAME_NOTE, current_provider->provider_name);
+
         /* We expect the password to be md5 hash of user:realm:password */
         auth_result = provider->get_realm_hash(r, user, conf->realm,
                                                &password);
+
+        apr_table_unset(r->notes, AUTHN_PROVIDER_NAME_NOTE);
 
         /* Something occured.  Stop checking. */
         if (auth_result != AUTH_USER_NOT_FOUND) {
