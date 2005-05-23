@@ -17,6 +17,9 @@ dnl - and just in case all of the above punt; a default handler to
 dnl keep the bad guys out.
 APACHE_MODULE(authn_default, authentication backstopper, , , yes)
 
+dnl Provider alias module.
+APACHE_MODULE(authn_alias, auth provider alias, , , no)
+
 dnl Authorization modules: modules which verify a certain property such as
 dnl membership of a group, value of the IP address against a list of pre
 dnl configured directives (e.g. require, allow) or against an external file
