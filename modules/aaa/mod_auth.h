@@ -30,6 +30,7 @@ extern "C" {
 #define AUTHN_DEFAULT_PROVIDER "file"
     
 #define AUTHZ_GROUP_NOTE "authz_group_note"
+#define AUTHN_PROVIDER_NAME_NOTE "authn_provider_name"
 
 typedef enum {
     AUTH_DENIED,
