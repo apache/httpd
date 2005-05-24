@@ -2,6 +2,9 @@ Changes with Apache 2.1.5
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) EBCDIC: Handle chunked input from client or, with proxy, origin
+     server.  [Jeff Trawick]
+
   *) authn_provider_alias: Adds the configuration block tag
      <AuthnProviderAlias baseProvider Alias>
      Authentication directives contained within this block can be
