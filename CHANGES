@@ -2,6 +2,14 @@ Changes with Apache 2.1.5
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) authn_provider_alias: Adds the configuration block tag
+     <AuthnProviderAlias baseProvider Alias>
+     Authentication directives contained within this block can be
+     referenced as a new authProvider using the AuthBasicProvider or
+     AuthDigestProvider directive.  These directives will be merged in to
+     the per_dir configuration just before the base provider is called.
+     [Brad Nicholes]
+
   *) ap_getword_conf: Fix backslashes at the end of configuration directives. 
      PR 34834. [Timo Viipuri <viipuri dlc.fi>]
 
