@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 153116:170637 (outdated) -->
+<!-- English Revision: 170637 -->
 
 <!--
  Copyright 2005 The Apache Software Foundation or its licensors, as
@@ -382,143 +382,6 @@
       &lt;/Proxy&gt;
     </example>
 
-    <p>2.1 の新機能で、バックエンドサーバとの接続に様々な
-    コネクションパラメータを設定できるようになりました。
-    コネクションパラメータは <code>key=value</code> の形式になります。
-    </p>
-    <table>
-    <tr><th>パラメータ</th>
-        <th>デフォルト値</th>
-        <th>説明</th></tr>
-    <tr><td>min</td>
-        <td>0</td>
-        <td>バックエンドサーバとの接続で
-            常に開いているコネクション数の最小値</td></tr>
-    <tr><td>max</td>
-        <td>1...n</td>
-        <td>バックエンドサーバとの接続数の Hard Maximum
-        <transnote>ハードリミット</transnote>。
-        デフォルト値は、使用している MPM のプロセスあたりのスレッド数になっています。
-        Prefork MPM では常に 1 で、Worker MPM では <directive>ThreadsPerChild</directive>
-        で調節できます。Hard Maximum 以上にバックエンドサーバとのコネクションを
-        生成することはありません。</td></tr>
-    <tr><td>smax</td>
-        <td>max</td>
-        <td>接続数の Soft Maximum <transnote>ソフトリミット</transnote>まで、
-        コネクションは必要に応じて生成されます。
-        <code>smax</code> を超えた数のコネクションは生存時間 <code>ttl</code>
-        で切断されます。
-    </td></tr>
-    <tr><td>ttl</td>
-        <td>-</td>
-        <td><code>smax</code> 数を超えた非活動状態のコネクションの生存時間を、
-        秒で指定します。この期間内に使用されなかったコネクションは、
-        全て閉じられます。
-    </td></tr>
-    <tr><td>timeout</td>
-        <td><directive>Timeout</directive></td>
-        <td>コネクションタイムアウトを秒で指定します。特に指定されなければ、
-        フリーなコネクションを取得できるまで待ちます。このディレクティブは
-        <code>max</code> パラメータと合わせて使うことで、バックエンドサーバとの
-        接続数を制御するのに使います。
-    </td></tr>
-    <tr><td>acquire</td>
-        <td>-</td>
-        <td>設定すると、コネクションプールからフリーのコネクションを取得するために
-        待機する待ち時間の最大値になります。フリーのコネクションがプールになかった場合は、
-        <code>SERVER_BUSY</code> ステータスがクライアントに返されます。
-    </td></tr>
-    <tr><td>keepalive</td>
-        <td>Off</td>
-        <td>バックエンドサーバと Apache の間にファイアーウォールがある場合には、
-        このパラメータを使ってください。ファイアウォールは往々にして、
-        非活動状態のコネクションを落とそうとします。
-        このフラグは OS に指示して、<code>KEEP_ALIVE</code> メッセージを非活動状態の
-        コネクションでも送るようにします (間隔は OS のグローバル設定に依存し、
-        通常は 120ms 間隔) 。これによってファイアウォールによってコネクションが
-        落とされることを防げます。keepalive を有効にするには、このプロパティを
-        <code>On</code> にしてください。
-    </td></tr>
-    <tr><td>retry</td>
-        <td>60</td>
-        <td>コネクションをプーリングするための、リトライのタイムアウトを秒で
-        指定します。バックエンドサーバへのコネクションプーリングが失敗した場合は、
-        タイムアウトの期間が過ぎるまで、そのサーバにリクエストをフォワードしません。
-        この機能を使うと、バックエンドサーバをメンテナンスのためにシャットダウンし、
-        後でオンラインに復帰させるといったことができます。
-    </td></tr>
-    <tr><td>loadfactor</td>
-        <td>1</td>
-        <td>ワーカーあたりの負荷係数です。BalancerMember で使います。
-        1 から 100 までの数字でそのワーカーに対する正規化された負荷率を指定します。
-    </td></tr>
-    <tr><td>route</td>
-        <td>-</td>
-        <td>ロードバランサで使った場合、ワーカーのルーティングをします。
-        ルートはセッション ID に付加された値になります。
-    </td></tr>
-    <tr><td>redirect</td>
-        <td>-</td>
-        <td>ワーカーのリダイレクション経路です。この値は通常は、
-        安全にクラスタからノードを取り去る設定を動的に入れるために使います。
-        セッション ID の無いリクエスト全てを指定した場合は、
-        この値と同じルーティングパラメータを持つ 
-        BalancerMember にリダイレクトされます。
-    </td></tr>
-
-    </table>
-
-    <p>Proxy ディレクティブのスキームが <code>balancer://</code> になっている場合は、
-    バックエンドサーバと実際には通信しない仮想ワーカーが生成されます。
-    このワーカーは幾つかの "本物の" ワーカーの管理をつかさどります。
-    この場合パラメータは、この仮想ワーカーに対して設定されます。
-    </p>
-    <table>
-    <tr><th>パラメータ</th>
-        <th>デフォルト値</th>
-        <th>説明</th></tr>
-    <tr><td>lbmethod</td>
-        <td>-</td>
-        <td>Balancer のロードバランス方法。使用するロードバランスの
-        スケジューリング方法を選びます。処理したリクエストの数で重み付けする
-        <code>requests</code> か、転送量のバイト数で重み付けする
-        <code>traffic</code> を設定できます。デフォルトは
-        <code>requests</code> です。
-    </td></tr>
-    <tr><td>stickysession</td>
-        <td>-</td>
-        <td>バランサーのスティッキーセッション名です。通常はこの値は <code>JSESSIONID</code>
-        や <code>PHPSESSIONID</code> といったものになりますが、この値は
-        バックエンドアプリケーションのサポートするセッションに依存します。
-    </td></tr>
-    <tr><td>nofailover</td>
-        <td>Off</td>
-        <td><code>On</code> になっていると、ワーカーがエラーを起こしたり
-        無効になっている場合にセッションが切れます。
-        バックエンドサーバがセッションレプリケーションをサポートしていない場合は、
-        On にしてください。
-    </td></tr>
-    <tr><td>timeout</td>
-        <td>0</td>
-        <td>バランサーのタイムアウトを秒で指定します。
-        この値を設定すると、フリーのワーカーを取得するまでの最大待機時間になります。
-        デフォルトでは待機しません。
-    </td></tr>
-    <tr><td>maxattempts</td>
-        <td>1</td>
-        <td>フェイルオーバーを試みる最大の回数を指定します。
-    </td></tr>
-    
-    </table>
-    <example>
-      &lt;Proxy balancer://mycluster stickysession=jsessionid nofailover=On&gt;<br />
-      <indent>
-        BalancerMember http://1.2.3.4:8009<br />
-        BalancerMember http://1.2.3.5:8009<br />
-        BalancerMember http://1.2.3.6:8009<br />
-      </indent>
-      &lt;/Proxy&gt;
-    </example>
     
 </usage>
 </directivesynopsis>
@@ -689,6 +552,11 @@
     <var>path</var> はローカルの仮想パスの名前です。<var>url</var> は
     リモートサーバの部分 URL になり、クエリー文字列を含むことはできません。</p>
 
+    <note type="warning"><directive>ProxyPass</directive> ディレクティブを
+    使っているときは <directive
+    module="mod_proxy">ProxyRequests</directive> ディレクティブは通常は
+    <strong>off</strong> に設定されているべきです。</note>
+
     <p>ローカルサーバのアドレスが <code>http://example.com/</code> であると
     します。すると、</p>
 
@@ -736,15 +604,147 @@
         ProxyPass /example http://backend.example.com smax=5 max=20 ttl=120 retry=300
     </example>
 
+    <table>
+    <tr><th>パラメータ</th>
+        <th>デフォルト値</th>
+        <th>説明</th></tr>
+    <tr><td>min</td>
+        <td>0</td>
+        <td>バックエンドサーバとの接続で
+            常に開いているコネクション数の最小値</td></tr>
+    <tr><td>max</td>
+        <td>1...n</td>
+        <td>バックエンドサーバとの接続数の Hard Maximum
+        <transnote>ハードリミット</transnote>。
+        デフォルト値は、使用している MPM のプロセスあたりのスレッド数になっています。
+        Prefork MPM では常に 1 で、Worker MPM では <directive>ThreadsPerChild</directive>
+        で調節できます。Hard Maximum 以上にバックエンドサーバとのコネクションを
+        生成することはありません。</td></tr>
+    <tr><td>smax</td>
+        <td>max</td>
+        <td>接続数の Soft Maximum <transnote>ソフトリミット</transnote>まで、
+        コネクションは必要に応じて生成されます。
+        <code>smax</code> を超えた数のコネクションは生存時間 <code>ttl</code>
+        で切断されます。
+    </td></tr>
+    <tr><td>ttl</td>
+        <td>-</td>
+        <td><code>smax</code> 数を超えた非活動状態のコネクションの生存時間を、
+        秒で指定します。この期間内に使用されなかったコネクションは、
+        全て閉じられます。
+    </td></tr>
+    <tr><td>timeout</td>
+        <td><directive>Timeout</directive></td>
+        <td>コネクションタイムアウトを秒で指定します。特に指定されなければ、
+        フリーなコネクションを取得できるまで待ちます。このディレクティブは
+        <code>max</code> パラメータと合わせて使うことで、バックエンドサーバとの
+        接続数を制御するのに使います。
+    </td></tr>
+    <tr><td>acquire</td>
+        <td>-</td>
+        <td>設定すると、コネクションプールからフリーのコネクションを取得するために
+        待機する待ち時間の最大値になります。フリーのコネクションがプールになかった場合は、
+        <code>SERVER_BUSY</code> ステータスがクライアントに返されます。
+    </td></tr>
+    <tr><td>keepalive</td>
+        <td>Off</td>
+        <td>バックエンドサーバと Apache の間にファイアーウォールがある場合には、
+        このパラメータを使ってください。ファイアウォールは往々にして、
+        非活動状態のコネクションを落とそうとします。
+        このフラグは OS に指示して、<code>KEEP_ALIVE</code> メッセージを非活動状態の
+        コネクションでも送るようにします (間隔は OS のグローバル設定に依存し、
+        通常は 120ms 間隔) 。これによってファイアウォールによってコネクションが
+        落とされることを防げます。keepalive を有効にするには、このプロパティを
+        <code>On</code> にしてください。
+    </td></tr>
+    <tr><td>retry</td>
+        <td>60</td>
+        <td>コネクションをプーリングするための、リトライのタイムアウトを秒で
+        指定します。バックエンドサーバへのコネクションプーリングが失敗した場合は、
+        タイムアウトの期間が過ぎるまで、そのサーバにリクエストをフォワードしません。
+        この機能を使うと、バックエンドサーバをメンテナンスのためにシャットダウンし、
+        後でオンラインに復帰させるといったことができます。
+    </td></tr>
+    <tr><td>loadfactor</td>
+        <td>1</td>
+        <td>ワーカーあたりの負荷係数です。BalancerMember で使います。
+        1 から 100 までの数字でそのワーカーに対する正規化された負荷率を指定します。
+    </td></tr>
+    <tr><td>route</td>
+        <td>-</td>
+        <td>ロードバランサで使った場合、ワーカーのルーティングをします。
+        ルートはセッション ID に付加された値になります。
+    </td></tr>
+    <tr><td>redirect</td>
+        <td>-</td>
+        <td>ワーカーのリダイレクション経路です。この値は通常は、
+        安全にクラスタからノードを取り去る設定を動的に入れるために使います。
+        セッション ID の無いリクエスト全てを指定した場合は、
+        この値と同じルーティングパラメータを持つ 
+        BalancerMember にリダイレクトされます。
+    </td></tr>
+
+    </table>
+
+    <p>Proxy ディレクティブのスキームが <code>balancer://</code> になっている場合は、
+    バックエンドサーバと実際には通信しない仮想ワーカーが生成されます。
+    このワーカーは幾つかの "本物の" ワーカーの管理をつかさどります。
+    この場合パラメータは、この仮想ワーカーに対して設定されます。
+    </p>
+    <table>
+    <tr><th>パラメータ</th>
+        <th>デフォルト値</th>
+        <th>説明</th></tr>
+    <tr><td>lbmethod</td>
+        <td>-</td>
+        <td>Balancer のロードバランス方法。使用するロードバランスの
+        スケジューリング方法を選びます。処理したリクエストの数で重み付けする
+        <code>requests</code> か、転送量のバイト数で重み付けする
+        <code>traffic</code> を設定できます。デフォルトは
+        <code>requests</code> です。
+    </td></tr>
+    <tr><td>stickysession</td>
+        <td>-</td>
+        <td>バランサーのスティッキーセッション名です。通常はこの値は <code>JSESSIONID</code>
+        や <code>PHPSESSIONID</code> といったものになりますが、この値は
+        バックエンドアプリケーションのサポートするセッションに依存します。
+    </td></tr>
+    <tr><td>nofailover</td>
+        <td>Off</td>
+        <td><code>On</code> になっていると、ワーカーがエラーを起こしたり
+        無効になっている場合にセッションが切れます。
+        バックエンドサーバがセッションレプリケーションをサポートしていない場合は、
+        On にしてください。
+    </td></tr>
+    <tr><td>timeout</td>
+        <td>0</td>
+        <td>バランサーのタイムアウトを秒で指定します。
+        この値を設定すると、フリーのワーカーを取得するまでの最大待機時間になります。
+        デフォルトでは待機しません。
+    </td></tr>
+    <tr><td>maxattempts</td>
+        <td>1</td>
+        <td>フェイルオーバーを試みる最大の回数を指定します。
+    </td></tr>
+    
+    </table>
+    <example>
+      ProxyPass /special-area http://special.example.com/ smax=5 max=10<br />
+      ProxyPass / balancer://mycluster stickysession=jsessionid nofailover=On<br />
+      &lt;Proxy balancer://mycluster&gt;<br />
+      <indent>
+        BalancerMember http://1.2.3.4:8009<br />
+        BalancerMember http://1.2.3.5:8009 smax=10<br />
+        # Less powerful server, don't send as many requests there<br />
+        BalancerMember http://1.2.3.6:8009 smax=1 loadfactor=20<br />
+      </indent>
+      &lt;/Proxy&gt;
+    </example>
+
     <p><directive type="section" module="core"
     >Location</directive> セクションの中で使われた場合、最初の引数は
     省略され、ローカルディレクトリは <directive type="section" module="core"
     >Location</directive> から取得されます。</p>
-
-    <note type="warning"><directive>ProxyPass</directive> ディレクティブを
-    使っているときは <directive
-    module="mod_proxy">ProxyRequests</directive> ディレクティブは通常は
-    <strong>off</strong> に設定されているべきです。</note>
 
     <p>より柔軟なリバースプロキシの設定が必要な場合は、<code>[P]</code>
     フラグ付きの <directive module="mod_rewrite">RewriteRule</directive>

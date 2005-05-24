@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 161140:167959 (outdated) -->
+<!-- English Revision: 167959 -->
 
 <!--
  Copyright 2003-2005 The Apache Software Foundation or its licensors,
@@ -895,8 +895,9 @@ module="core">Directory</directive></seealso>
     HTTP のレスポンスコードと、メッセージか URL を指定することで設定します。
     Apache が問題もしくはエラーに関する追加情報を提供することがあります。</p>
 
-    <p>URL の場合は、ローカルの URL の指定としてスラッシュで始まる (/) パスか、
-    クライアントが解釈できるフル URL を指定します。<br />
+    <p>URL の場合は、スラッシュで始まる (/) ローカルの web-path (
+    <directive module="core">DocumentRoot</directive> からの相対パス
+    ) か、クライアントが解決できる完全な URL を指定します。
     もしくは、ブラウザに表示されるメッセージを指定できます。
     例:</p>
 
@@ -946,6 +947,14 @@ module="core">Directory</directive></seealso>
     Knowledge Base の記事 <a
     href="http://support.microsoft.com/default.aspx?scid=kb;en-us;Q294807">Q294807</a>
     にあります。</p>
+
+    <p>ほとんどのエラーメッセージを上書きすることができますが、特定の状況下では
+    <directive module="core">ErrorDocument</directive> の設定にかかわらず
+    内蔵のメッセージが使われます。
+    特に、不正な形式のリクエストが検出された場合、通常のリクエスト処理は
+    即座に中止され、内蔵のエラーメッセージが返されます。
+    この処置は不正なリクエストによって引き起こされる、セキュリティ問題から
+    守るために必要な措置です。</p>
 
     <p>2.0 より前のバージョンでは、対になっていない二重引用符を
     先頭に付けることによりメッセージであることを指定していました。</p>
