@@ -252,6 +252,21 @@ PATCHES TO BACKPORT FROM TRUNK:
         +1: jorton, bnicholes, trawick (isn't it worth a CHANGES entry for a storage
             corruption fix?)
 
+     *) fix z/OS annoyance with pathname on debug messages in error log
+        http://svn.apache.org/viewcvs?rev=178299&view=rev
+        +1: trawick
+
+     *) EBCDIC: Handle chunked input from client or, with proxy, origin
+        server.
+        http://svn.apache.org/viewcvs?rev=178262&view=rev
+        (With 2.0.x it is the same code in the same function, but in 
+        a different source file.)
+        +1: trawick
+
+     *) Support the suppress-error-charset setting, as with Apache 1.3.x.
+        PR 31274. (current docs say it works with Apache from 2.0.40 ;) )
+        http://svn.apache.org/viewcvs?rev=170354&view=rev
+        +1: trawick
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
