@@ -31,7 +31,7 @@
 <summary>
     <note type="warning"><title>警告</title>
       <p><a href="#access"
-      >サーバをを安全にする</a>まで <directive module="mod_proxy"
+      >サーバを安全にする</a>まで <directive module="mod_proxy"
       >ProxyRequests</directive> は有効にしないでください。
       オープンプロキシサーバはあなた自身のネットワークにとっても、
       インターネット全体にとっても危険です。</p>
@@ -269,7 +269,7 @@
       (Authorization required) を返します。これにより、ブラウザはユーザ名
       パスワードの入力ダイアログを表示します。パスワードが入力された後、
       再び接続を試み、成功すればリクエストしたリソースが表示されます。
-      この方法の利点はブラウザがパスワードを平文を表示しないことです。
+      この方法の利点はブラウザがパスワードを平文で表示しないことです。
       (もし最初から</p>
 
       <example>
@@ -448,7 +448,7 @@
 
     <p>このオプションは通常は <code>Off</code> に設定してください。
     ほとんどの場合、これは大量の名前ベースのバーチャルホスティングを行なっていて、
-    元々の Header ヘッダをバックエンドサーバが解釈する必要のあるときのような、
+    元々の Host ヘッダをバックエンドサーバが解釈する必要のあるときのような、
     特別な設定が必要な場合にのみ有用です。</p>
 </usage>
 </directivesynopsis>
@@ -476,7 +476,7 @@
 
     <note type="warning"><title>警告</title>
       <p><a href="#access"
-      >サーバをを安全にする</a>まで <directive module="mod_proxy"
+      >サーバを安全にする</a>まで <directive module="mod_proxy"
       >ProxyRequests</directive> は有効にしないでください。
       オープンプロキシサーバはあなた自身のネットワークにとっても、
       インターネット全体にとっても危険です。</p>
@@ -996,7 +996,7 @@ URL を調整する</description>
     <p><dfn>Domain</dfn> は先頭にピリオドの着いた部分 DNS ドメイン名です。
     同一 DNS ドメイン及びゾーン (<em>すなわち</em>、ホスト名の末尾がすべて
     <var>Domain</var> で終わっているということ) に属するホストのリストを
-    現します)。</p>
+    表します)。</p>
 
     <example><title>例</title>
       .com .apache.org.
@@ -1023,7 +1023,7 @@ URL を調整する</description>
     部分インターネットアドレスです。後にスラッシュと <var>Subnet</var>
     の意味のあるビット数を指定するネットマスクとを続けることができます。
     共通のネットワークインタフェースを使って到達することのできるサブネットを
-    現すために使われます。明示的にネットマスクを指定しない場合は
+    表すために使われます。明示的にネットマスクを指定しない場合は
     最後の省略された (もしくは値が 0 の) 数字がマスクを指定します。
     (この場合は、ネットマスクは 8 ビット単位でしか指定できません。)
     例:</p>
@@ -1042,7 +1042,7 @@ URL を調整する</description>
     <p>特別な場合に、32 ビット有効な <em>SubNet</em> は
     <var><a href="#ipadr">IPAddr</a></var> と同等で、
     0 ビット有効な <var>SubNet</var> (<em>例えば</em>、0.0.0.0/0) は
-    すべの IP アドレスにマッチする定数 <var>_Default_</var> と同じです。</p>
+    すべての IP アドレスにマッチする定数 <var>_Default_</var> と同じです。</p>
     </dd>
 
     <!-- ===================== IPAddr ======================= -->
@@ -1050,7 +1050,7 @@ URL を調整する</description>
     <dd>
     <p><dfn>IPAddr</dfn> は数値形式 (ドットで区切られた四つの数字) の
     完全インターネットアドレスです。通常はこのアドレスはホストを
-    現しますが、必ずしもアドレスに対応する DNS ドメイン名があるわけでは
+    表しますが、必ずしもアドレスに対応する DNS ドメイン名があるわけでは
     ありません。</p>
 
     <example><title>例</title>
@@ -1066,9 +1066,9 @@ URL を調整する</description>
     <dt><var><a name="hostname" id="hostname">Hostname</a></var></dt>
     <dd>
     <p><dfn>Hostname</dfn> は DNS ドメインサービスにより一つもしくは
-    複数の <var><a href="#ipaddr">IPAddrs</a></var> に解決可能な
+    複数の <var><a href="#ipaddr">IPAddr</a></var> に解決可能な
     完全な DNS ドメイン名です。これは (<var><a href="#domain">Domain</a></var>
-    と違って、説明は上記を参照) 論理的なホストを現し、少くとも一つの
+    と違って、説明は上記を参照) 論理的なホストを表し、少くとも一つの
     <var><a href="#ipaddr">IPAddr</a></var> (もしくは違う
     <var><a href="#ipaddr">IPAddr</a></var> のホストのリスト) に解決
     されなければなりません)。</p>
