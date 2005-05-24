@@ -732,10 +732,13 @@ AP_DECLARE(char *) ap_getword_conf(apr_pool_t *p, const char **line)
     if ((quote = *str) == '"' || quote == '\'') {
         strend = str + 1;
         while (*strend && *strend != quote) {
-            if (*strend == '\\' && strend[1] && strend[1] == quote)
+            if (*strend == '\\' && strend[1] && 
+                (strend[1] == quote || strend[1] == '\\')) {
                 strend += 2;
-            else
+            }
+            else {
                 ++strend;
+            }
         }
         res = substring_conf(p, str + 1, strend - str - 1, quote);
 
