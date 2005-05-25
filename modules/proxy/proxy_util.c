@@ -1243,35 +1243,22 @@ PROXY_DECLARE(const char *) ap_proxy_add_worker(proxy_worker **worker,
                                                 proxy_server_conf *conf,
                                                 const char *url)
 {
-    char *c, *q, *uri = apr_pstrdup(p, url);
-    int port;
-    
-    c = strchr(uri, ':');   
-    if (c == NULL || c[1] != '/' || c[2] != '/' || c[3] == '\0')
-       return "Bad syntax for a remote proxy server";
-    /* remove path from uri */
-    if ((q = strchr(c + 3, '/')))
-        *q = '\0';
+    int rv;
+    apr_uri_t uri;
 
-    q = strchr(c + 3, ':');
-    if (q != NULL) {
-        if (sscanf(q + 1, "%u", &port) != 1 || port > 65535) {
-            return "Bad syntax for a remote proxy server (bad port number)";
-        }
+    rv = apr_uri_parse(p, url, &uri);
+
+    if (rv != APR_SUCCESS) {
+        return "Unable to parse URL";
     }
-    else
-        port = -1;
-    ap_str_tolower(uri);
+
+    ap_str_tolower(uri.hostname);
     *worker = apr_array_push(conf->workers);
     memset(*worker, 0, sizeof(proxy_worker));
-    (*worker)->name = apr_pstrdup(p, uri);
-    *c = '\0';
-    (*worker)->scheme = uri;
-    (*worker)->hostname = c + 3;
-
-    if (port == -1)
-        port = apr_uri_port_of_scheme((*worker)->scheme);
-    (*worker)->port = port;
+    (*worker)->name = apr_uri_unparse(p, &uri, APR_URI_UNP_REVEALPASSWORD);
+    (*worker)->scheme = uri.scheme;
+    (*worker)->hostname = uri.hostname;
+    (*worker)->port = uri.port;
     (*worker)->id   = proxy_lb_workers;
     /* Increase the total worker count */
     proxy_lb_workers++;
