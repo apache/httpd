@@ -25,8 +25,6 @@
 <a href="../ja/mod/mod_log_config.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_log_config.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>サーバへのリクエストのロギング</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>log_config_module</td></tr>
@@ -51,6 +49,7 @@
 </div>
 <div id="quickview"><h3 class="directives">ディレクティブ</h3>
 <ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#bufferedlogs">BufferedLogs</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cookielog">CookieLog</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#customlog">CustomLog</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#logformat">LogFormat</a></li>
@@ -143,7 +142,8 @@
          リクエストのステータス --- 最後のステータスは <code>%...&gt;s</code>
     </td></tr>
 <tr><td><code>%...t</code></td>
-        <td>時刻。CLF の時刻の書式 (標準の英語の書式)</td></tr>
+        <td>リクエストを受付けた時刻。
+        CLF の時刻の書式 (標準の英語の書式)</td></tr>
 <tr class="odd"><td><code>%...{<var>format</var>}t</code></td>
         <td><var>format</var> で与えられた書式による時刻。format は
          <code>strftime (3)</code> の
@@ -265,6 +265,31 @@
     <p>ログファイルが保存されているディレクトリがサーバを起動した以外のユーザで
     書き込み可能なときにセキュリティの問題が発生する理由の詳細は<a href="../misc/security_tips.html#serverroot">セキュリティのこつ</a>
     を参照してください。</p>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="BufferedLogs" id="BufferedLogs">BufferedLogs</a> <a name="bufferedlogs" id="bufferedlogs">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ディスクに書き出す前にメモリにログエントリをバッファする</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>BufferedLogs On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>BufferedLogs Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_log_config</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>2.0.41 以降</td></tr>
+</table>
+    <p><code class="directive">BufferedLogs</code> ディレクティブを使うと
+    <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code> の挙動が変化して、
+    複数のログを書き出す際に、それぞれのリクエスト処理後毎に
+    書き出すのではなく、いったんメモリに蓄えてから、
+    まとめてディスクに書き出すようになります。
+    この結果ディスクアクセスがより効率的になり、
+    高いパフォーマンスの得られるシステムもあるでしょう。
+    このディレクティブはサーバ全体で一度だけ設定できます; 
+    バーチャルホストごとに設定することはできません。</p>
+
+    <div class="note">このディレクティブは実験的なものですので、
+    使用する際は注意してください。</div>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CookieLog" id="CookieLog">CookieLog</a> <a name="cookielog" id="cookielog">ディレクティブ</a></h2>

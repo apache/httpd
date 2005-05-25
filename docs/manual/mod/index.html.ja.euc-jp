@@ -76,6 +76,8 @@ CGI スクリプトを実行する機能を提供</dd>
 <dt><a href="mod_auth_basic.html">mod_auth_basic</a></dt><dd>基本認証</dd>
 <dt><a href="mod_auth_digest.html">mod_auth_digest</a></dt><dd>User authentication using MD5
     Digest Authentication.</dd>
+<dt><a href="mod_authn_alias.html">mod_authn_alias</a></dt><dd>Provides the ability to create extended authentication 
+    providers based on actual providers</dd>
 <dt><a href="mod_authn_anon.html">mod_authn_anon</a></dt><dd>認証が必要な領域への "anonymous" ユーザのアクセスを許可する
 </dd>
 <dt><a href="mod_authn_dbm.html">mod_authn_dbm</a></dt><dd>DBM ファイルを用いたユーザ認証</dd>

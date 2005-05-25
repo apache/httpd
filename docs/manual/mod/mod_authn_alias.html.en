@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>mod_authn_alias - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.1</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.1</a> &gt; <a href="./">Modules</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache Module mod_authn_alias</h1>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_authn_alias.html" title="English">&nbsp;en&nbsp;</a></p>
+</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Provides the ability to create extended authentication 
+    providers based on actual providers</td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>authn_alias_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_authn_alias.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.1 and later</td></tr></table>
+<h3>Summary</h3>
+
+    <p>This module allows extended authentication providers to be created 
+    within the configuration file and assigned an alias name.  The alias 
+    providers can then be referenced through the directives 
+    <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code> or 
+    <code class="directive"><a href="../mod/mod_auth_digest.html#authdigestprovider">AuthDigestProvider</a></code> in
+    the same way as a base authentication provider.  Besides the ability
+    to create and alias an extended provider, it also allows the same 
+    extended authentication provider to be reference by multiple 
+    locations.</p>
+
+</div>
+<div id="quickview"><h3 class="directives">Directives</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#authnprovideralias">&lt;AuthnProviderAlias&gt;</a></li>
+</ul>
+<h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#example">Example</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="example" id="example">Example</a></h2>
+    <p>The example below creates two different ldap authentication 
+    provider aliases based on the ldap provider.  This allows
+    a single authenticated location can be serviced by multiple 
+    ldap hosts:</p>
+
+    <div class="example"><h3>Example</h3><p><code>
+      LoadModule authn_alias_module modules/mod_authn_alias.so<br /><br />
+      &lt;AuthnProviderAlias ldap ldap-alias1&gt;<br />
+      <span class="indent">
+         AuthLDAPBindDN cn=youruser,o=ctx<br />
+         AuthLDAPBindPassword yourpassword<br />
+         AuthLDAPURL ldap://ldap.host/o=ctx<br />
+      </span>
+      &lt;/AuthnProviderAlias&gt;<br /><br />
+      &lt;AuthnProviderAlias ldap ldap-other-alias&gt;<br />
+      <span class="indent">
+         AuthLDAPBindDN cn=yourotheruser,o=dev<br />
+         AuthLDAPBindPassword yourotherpassword<br />
+         AuthLDAPURL ldap://other.ldap.host/o=dev?cn<br />
+      </span>
+      &lt;/AuthnProviderAlias&gt;<br /><br />
+
+      Alias /secure /webpages/secure<br />
+      &lt;Directory /webpages/secure&gt;<br />
+      <span class="indent">
+         Order deny,allow<br />
+         Allow from all<br /><br />
+    
+         AuthBasicProvider ldap-other-alias  ldap-alias1<br /><br />
+    
+         AuthType Basic<br />
+         AuthName LDAP_Protected_Place<br />
+         AuthzLDAPAuthoritative off<br />
+         require valid-user<br />
+      </span>
+      &lt;/Directory&gt;<br />
+    </code></p></div>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthnProviderAlias" id="AuthnProviderAlias">&lt;AuthnProviderAlias&gt;</a> <a name="authnprovideralias" id="authnprovideralias">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enclose a group of directives that represent an
+extension of a base authentication provider and referenced by
+the specified alias</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>&lt;AuthnProviderAlias <var>baseProvider Alias</var>&gt;
+... &lt;/AuthnProviderAlias&gt;</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authn_alias</td></tr>
+</table>
+    <p><code class="directive">&lt;AuthnProviderAlias&gt;</code> and
+    <code>&lt;/AuthnProviderAlias&gt;</code> are used to enclose a group of
+    authentication directives that can be referenced by the alias name 
+    using one of the directives <code class="directive"><a href="../mod/mod_auth_basic.html#&#10;    authbasicprovider">
+    AuthBasicProvider</a></code> or <code class="directive"><a href="../mod/mod_auth_digest.html#&#10;    authdigestprovider">
+    AuthDigestProvider</a></code>.</p>
+
+
+</div>
+</div>
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_authn_alias.html" title="English">&nbsp;en&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 1995-2005 The Apache Software Foundation or its licensors, as applicable.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>

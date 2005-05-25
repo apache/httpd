@@ -101,6 +101,7 @@
 <li><a href="mod_authnz_ldap.html#authldapremoteuserisdn">AuthLDAPRemoteUserIsDN</a></li>
 <li><a href="mod_authnz_ldap.html#authldapurl">AuthLDAPUrl</a></li>
 <li><a href="core.html#authname">AuthName</a></li>
+<li><a href="mod_authn_alias.html#authnprovideralias">&lt;AuthnProviderAlias&gt;</a></li>
 <li><a href="core.html#authtype">AuthType</a></li>
 <li><a href="mod_authn_file.html#authuserfile">AuthUserFile</a></li>
 <li><a href="mod_authz_dbm.html#authzdbmauthoritative">AuthzDBMAuthoritative</a></li>

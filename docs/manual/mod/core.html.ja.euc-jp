@@ -25,8 +25,6 @@
 <a href="../en/mod/core.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/core.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>常に使用可能な Apache HTTP サーバのコア機能</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Core</td></tr></table>
 </div>
@@ -948,8 +946,9 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
     HTTP のレスポンスコードと、メッセージか URL を指定することで設定します。
     Apache が問題もしくはエラーに関する追加情報を提供することがあります。</p>
 
-    <p>URL の場合は、ローカルの URL の指定としてスラッシュで始まる (/) パスか、
-    クライアントが解釈できるフル URL を指定します。<br />
+    <p>URL の場合は、スラッシュで始まる (/) ローカルの web-path (
+    <code class="directive"><a href="#documentroot">DocumentRoot</a></code> からの相対パス
+    ) か、クライアントが解決できる完全な URL を指定します。
     もしくは、ブラウザに表示されるメッセージを指定できます。
     例:</p>
 
@@ -998,6 +997,14 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
     サーバが生成したエラーを隠さずに表示します。詳しい情報は Microsoft
     Knowledge Base の記事 <a href="http://support.microsoft.com/default.aspx?scid=kb;en-us;Q294807">Q294807</a>
     にあります。</p>
+
+    <p>ほとんどのエラーメッセージを上書きすることができますが、特定の状況下では
+    <code class="directive"><a href="#errordocument">ErrorDocument</a></code> の設定にかかわらず
+    内蔵のメッセージが使われます。
+    特に、不正な形式のリクエストが検出された場合、通常のリクエスト処理は
+    即座に中止され、内蔵のエラーメッセージが返されます。
+    この処置は不正なリクエストによって引き起こされる、セキュリティ問題から
+    守るために必要な措置です。</p>
 
     <p>2.0 より前のバージョンでは、対になっていない二重引用符を
     先頭に付けることによりメッセージであることを指定していました。</p>
