@@ -1,4 +1,7 @@
 Changes with Apache 2.0.55
+  
+  *) mod_rewrite: use buffered I/O to improve performance with large
+     RewriteMap txt: files.  [Greg Ames]
 
   *) proxy HTTP: Rework the handling of request bodies to handle
      chunked input and input filters which modify content length, and
