@@ -7,6 +7,7 @@
   <modulefile>mod_asis.xml</modulefile>
   <modulefile>mod_auth_basic.xml</modulefile>
   <modulefile>mod_auth_digest.xml</modulefile>
+  <modulefile>mod_authn_alias.xml</modulefile>
   <modulefile>mod_authn_anon.xml</modulefile>
   <modulefile>mod_authn_dbm.xml</modulefile>
   <modulefile>mod_authn_default.xml</modulefile>
