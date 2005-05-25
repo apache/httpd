@@ -522,16 +522,14 @@ static apr_status_t emulate_sendfile(core_net_rec *c, apr_file_t *fd,
         sendlen = togo > sizeof(buffer) ? sizeof(buffer) : togo;
         o = 0;
         rv = apr_file_read(fd, buffer, &sendlen);
-        if (rv == APR_SUCCESS && sendlen) {
-            while ((rv == APR_SUCCESS || APR_STATUS_IS_EAGAIN(rv)) && sendlen) {
-                bytes_sent = sendlen;
-                rv = apr_socket_send(c->client_socket, &buffer[o], &bytes_sent);
-                *nbytes += bytes_sent;
-                if (rv == APR_SUCCESS) {
-                    sendlen -= bytes_sent; /* sendlen != bytes_sent ==> partial write */
-                    o += bytes_sent;       /* o is where we are in the buffer */
-                    togo -= bytes_sent;    /* track how much of the file we've sent */
-                }
+        while (rv == APR_SUCCESS && sendlen) {
+            bytes_sent = sendlen;
+            rv = apr_socket_send(c->client_socket, &buffer[o], &bytes_sent);
+            *nbytes += bytes_sent;
+            if (rv == APR_SUCCESS) {
+                sendlen -= bytes_sent; /* sendlen != bytes_sent ==> partial write */
+                o += bytes_sent;       /* o is where we are in the buffer */
+                togo -= bytes_sent;    /* track how much of the file we've sent */
             }
         }
     }
