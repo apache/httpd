@@ -675,8 +675,8 @@ BEGIN {
 	print $$0;
     }
 <<
-	if not exist "$(INSTDIR)\conf\extra\httpd-dav.conf" \
-	    copy "$(INSTDIR)\conf\original\extra\httpd-dav.conf" "$(INSTDIR)\conf\extra\httpd-dav.conf"
+	if not exist "$(INSTDIR)\conf\extra\httpd-autoindex.conf" \
+	    copy "$(INSTDIR)\conf\original\extra\httpd-autoindex.conf" "$(INSTDIR)\conf\extra\httpd-autoindex.conf"
 	copy docs\conf\extra\httpd-dav.conf.in "$(INSTDIR)\conf\original\httpd-dav.conf" <.y
 	-awk -f <<script.awk "docs/conf/extra/httpd-dav.conf.in" "$(INSTDIR)" > "$(INSTDIR)\conf\original\extra\httpd-dav.conf"
     BEGIN { 
@@ -780,16 +780,16 @@ BEGIN {
 <<
 	if not exist "$(INSTDIR)\conf\extra\httpd-mpm.conf" \
 	    copy "$(INSTDIR)\conf\original\extra\httpd-mpm.conf" "$(INSTDIR)\conf\extra\httpd-mpm.conf"
-	copy docs\conf\extra\httpd-default.conf.in "$(INSTDIR)\conf\original\httpd-default.conf" <.y
+	copy docs\conf\extra\httpd-default.conf.in "$(INSTDIR)\conf\original\extra\httpd-default.conf" <.y
 	if not exist "$(INSTDIR)\conf\extra\httpd-default.conf" \
 	    copy "$(INSTDIR)\conf\original\extra\httpd-default.conf" "$(INSTDIR)\conf\extra\httpd-default.conf"
-	copy docs\conf\extra\httpd-info.conf.in "$(INSTDIR)\conf\original\httpd-info.conf" <.y
+	copy docs\conf\extra\httpd-info.conf.in "$(INSTDIR)\conf\original\extra\httpd-info.conf" <.y
 	if not exist "$(INSTDIR)\conf\extra\httpd-info.conf" \
 	    copy "$(INSTDIR)\conf\original\extra\httpd-info.conf" "$(INSTDIR)\conf\extra\httpd-info.conf"
-	copy docs\conf\extra\httpd-languages.conf.in "$(INSTDIR)\conf\original\httpd-languages.conf" <.y
+	copy docs\conf\extra\httpd-languages.conf.in "$(INSTDIR)\conf\original\extra\httpd-languages.conf" <.y
 	if not exist "$(INSTDIR)\conf\extra\httpd-languages.conf" \
 	    copy "$(INSTDIR)\conf\original\extra\httpd-languages.conf" "$(INSTDIR)\conf\extra\httpd-languages.conf"
-	copy docs\conf\extra\httpd-vhosts.conf.in "$(INSTDIR)\conf\original\httpd-vhosts.conf" <.y
+	copy docs\conf\extra\httpd-vhosts.conf.in "$(INSTDIR)\conf\original\extra\httpd-vhosts.conf" <.y
 	if not exist "$(INSTDIR)\conf\extra\httpd-vhosts.conf" \
 	    copy "$(INSTDIR)\conf\original\extra\httpd-vhosts.conf" "$(INSTDIR)\conf\extra\httpd-vhosts.conf"
 	-awk -f <<script.awk "support/dbmmanage.in" >"$(INSTDIR)\bin\dbmmanage.pl"
