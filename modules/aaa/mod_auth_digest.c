@@ -1353,12 +1353,13 @@ static authn_status get_hash(request_rec *r, const char *user,
                 auth_result = AUTH_GENERAL_ERROR;
                 break;
             }
+            apr_table_setn(r->notes, AUTHN_PROVIDER_NAME_NOTE, AUTHN_DEFAULT_PROVIDER);
         }
         else {
             provider = current_provider->provider;
+            apr_table_setn(r->notes, AUTHN_PROVIDER_NAME_NOTE, current_provider->provider_name);
         }
 
-        apr_table_setn(r->notes, AUTHN_PROVIDER_NAME_NOTE, current_provider->provider_name);
 
         /* We expect the password to be md5 hash of user:realm:password */
         auth_result = provider->get_realm_hash(r, user, conf->realm,
