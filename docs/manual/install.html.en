@@ -345,14 +345,15 @@ $ tar xvf httpd-2_0_<em>NN</em>.tar
     work.  (This is only valid for versions after 2.0.41; earlier
     versions have incompatible changes.)</p>
 
-    <p>If you kept the source tree from your last installation,
-    upgrading is even easier.  The file <code>config.nice</code> in
-    the root of the old source tree contains the exact
-    <code class="program"><a href="./programs/configure.html">configure</a></code> command line that you used to configure the
-    source tree.  Then to upgrade from one version to the next, you
-    need only copy the <code>config.nice</code> file to the source
-    tree of the new version, edit it to make any desired changes, and
-    then run:</p>
+    <p>To upgrade across minor versions, start by finding the file
+    <code>config.nice</code> in the <code>build</code> directory of
+    your installed server or at the root of the source tree for your
+    old install.  This will contain the exact
+    <code class="program"><a href="./programs/configure.html">configure</a></code> command line that you used to
+    configure the source tree.  Then to upgrade from one version to
+    the next, you need only copy the <code>config.nice</code> file to
+    the source tree of the new version, edit it to make any desired
+    changes, and then run:</p>
 
     <div class="example"><p><code>
     $ ./config.nice<br />
