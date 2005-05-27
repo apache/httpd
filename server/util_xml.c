@@ -120,7 +120,7 @@ AP_DECLARE(int) ap_xml_parse_input(request_rec * r, apr_xml_doc **pdoc)
   parser_error:
     (void) apr_xml_parser_geterror(parser, errbuf, sizeof(errbuf));
     ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                  "%s", errbuf);
+                  "XML Parser Error: %s", errbuf);
 
     /* FALLTHRU */
 
