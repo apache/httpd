@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='iso-2022-jp' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 105989:151408 (outdated) -->
+<!-- English Revision: 151408  -->
 
 <!--
- Copyright 2004-2005 The Apache Software Foundation or its licensors,
-                     as applicable.
+ Copyright 2002-2005 The Apache Software Foundation or its licensors, as
+ applicable.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -31,8 +31,7 @@
     href="name-based.html">名前ベース</a> や <a
     href="ip-based.html">IP ベース</a> のバーチャルホストを使って
     一つのサーバで複数のウェブサイトを運用している状況です。
-    一つのプロキシサーバの後ろで複数のサーバを運用するサイト向けの
-    説明は近々書かれるはずです。</p>
+    </p>
 
 </summary>
 
@@ -302,7 +301,7 @@
 
     <p>サーバマシンはそれぞれ <code>www.example.com</code> と
     <code>www.example.org</code> にそれぞれ解決される、IP アドレスを二つ
-    (<code>192.168.1.1</code> と <code>172.20.30.40</code>) 持っています。
+    (<code>172.20.30.40</code> と <code>172.20.30.50</code>) 持っています。
     どちらもポート 80 と 8080 でホストを走らせます。</p>
 
     <example>
@@ -396,6 +395,27 @@
 
     </section>
 
+    <section id="proxy"><title><code>Virtual_host</code> と
+    mod_proxy を併用する</title>
+
+    <p>次の例は、フロント側のバーチャルホストで他のマシンへプロクシします。
+    例では <code>192.168.111.2</code> のマシンではバーチャルホスト名は
+    同じ名前で設定されています。複数のホスト名を一台のマシンにプロクシする
+    場合は、<directive module="mod_proxy">ProxyPreserveHost On</directive>
+    ディレクティブを使って、希望のホスト名を渡せるようになります。
+    </p>
+
+    <example>
+    &lt;VirtualHost *:*&gt;<br />
+        ProxyPreserveHost On<br />
+        ProxyPass / http://192.168.111.2<br />
+        ProxyPassReverse / http://192.168.111.2/<br />
+        ServerName hostname.example.com<br />
+    &lt;/VirtualHost&gt;
+    </example>
+
+    </section>
+
     <section id="default"><title><code>_default_</code> のバーチャルホストを
     使う</title> 
 
@@ -457,7 +477,7 @@
     </example>
 
     <p>80 番ポートのデフォルトバーチャルホスト (ワイルドカードポートの
-    デフォルトバーチャルホストよりも前に書かれていなければなりません) は
+    デフォルトバーチャルホストよりも前に書かれていなければ<em>なりません</em>) は
     未指定の IP アドレスに送られたすべてのリクエストを扱います。
     主サーバはリクエストを扱いません。</p>
     </section>
