@@ -182,6 +182,8 @@ static int dynamic_modules = 0;
 AP_DECLARE_DATA module *ap_top_module = NULL;
 AP_DECLARE_DATA module **ap_loaded_modules=NULL;
 
+static apr_hash_t *ap_config_hash = NULL;
+
 typedef int (*handler_func)(request_rec *);
 typedef void *(*dir_maker_func)(apr_pool_t *, char *);
 typedef void *(*merger_func)(apr_pool_t *, void *, void *);
@@ -408,6 +410,40 @@ AP_DECLARE(void) ap_register_hooks(module *m, apr_pool_t *p)
     }
 }
 
+
+typedef struct ap_mod_list_struct ap_mod_list;
+struct ap_mod_list_struct {
+    struct ap_mod_list_struct *next;
+    module *m;
+    const command_rec *cmd;
+};
+
+static void ap_add_module_commands(module *m) 
+{
+    apr_pool_t* tpool;
+    ap_mod_list* mln;
+    const command_rec *cmd;
+    char* dir;
+
+    cmd = m->cmds;
+
+    tpool = apr_hash_pool_get(ap_config_hash);
+
+    while (cmd && cmd->name) {
+        mln = apr_palloc(tpool, sizeof(ap_mod_list));
+        mln->cmd = cmd;
+        mln->m = m;
+        dir = apr_pstrdup(tpool, cmd->name);
+
+        ap_str_tolower(dir);
+
+        mln->next = apr_hash_get(ap_config_hash, dir, APR_HASH_KEY_STRING);
+        apr_hash_set(ap_config_hash, dir, APR_HASH_KEY_STRING, mln);
+        ++cmd;
+    }
+}
+
+
 /* One-time setup for precompiled modules --- NOT to be done on restart */
 
 AP_DECLARE(const char *) ap_add_module(module *m, apr_pool_t *p)
@@ -465,6 +501,7 @@ AP_DECLARE(const char *) ap_add_module(module *m, apr_pool_t *p)
     }
 #endif /*_OSD_POSIX*/
 
+    ap_add_module_commands(m);
     /*  FIXME: is this the right place to call this?
      *  It doesn't appear to be
      */
@@ -584,6 +621,8 @@ AP_DECLARE(const char *) ap_setup_prelinked_modules(process_rec *process)
     const char *error;
 
     apr_hook_global_pool=process->pconf;
+
+    ap_config_hash = apr_hash_make(process->pool);
 
     /*
      *  Initialise total_modules variable and module indices
@@ -1042,54 +1081,53 @@ static const char *ap_walk_config_sub(const ap_directive_t *current,
                                       cmd_parms *parms,
                                       ap_conf_vector_t *section_vector)
 {
-    module *mod = ap_top_module;
+    const command_rec *cmd;
+    ap_mod_list* ml;
+    char* dir = apr_pstrdup(parms->pool, current->directive);
 
-    while (1) {
-        const command_rec *cmd;
+    ap_str_tolower(dir);
 
-        if (!(cmd = ap_find_command_in_modules(current->directive, &mod))) {
-            parms->err_directive = current;
-            return apr_pstrcat(parms->pool, "Invalid command '",
-                               current->directive,
-                               "', perhaps misspelled or defined by a module "
-                               "not included in the server configuration",
-                               NULL);
+    ml = apr_hash_get(ap_config_hash, dir, APR_HASH_KEY_STRING);
+
+    if (ml == NULL) {
+        parms->err_directive = current;
+        return apr_pstrcat(parms->pool, "Invalid command '",
+                           current->directive,
+                           "', perhaps misspelled or defined by a module "
+                           "not included in the server configuration",
+                           NULL);
+    }
+
+    for ( ; ml != NULL; ml = ml->next) {
+        void *dir_config = ap_set_config_vectors(parms->server,
+                                                 section_vector,
+                                                 parms->path,
+                                                 ml->m,
+                                                 parms->pool);
+        const char *retval;
+        cmd = ml->cmd;
+
+        /* Once was enough? */
+        if (cmd->req_override & EXEC_ON_READ) {
+            continue;
         }
-        else {
-            void *dir_config = ap_set_config_vectors(parms->server,
-                                                     section_vector,
-                                                     parms->path,
-                                                     mod,
-                                                     parms->pool);
-            const char *retval;
 
-            /* Once was enough? */
-            if (cmd->req_override & EXEC_ON_READ) {
-                return NULL;
+        retval = invoke_cmd(cmd, parms, dir_config, current->args);
+
+        if (retval != NULL && strcmp(retval, DECLINE_CMD) != 0) {
+            /* If the directive in error has already been set, don't
+             * replace it.  Otherwise, an error inside a container 
+             * will be reported as occuring on the first line of the
+             * container.
+             */
+            if (!parms->err_directive) {
+                parms->err_directive = current;
             }
-
-            retval = invoke_cmd(cmd, parms, dir_config, current->args);
-            if (retval == NULL) {
-                return NULL;
-            }
-
-            if (strcmp(retval, DECLINE_CMD) != 0) {
-                /* If the directive in error has already been set, don't
-                 * replace it.  Otherwise, an error inside a container 
-                 * will be reported as occuring on the first line of the
-                 * container.
-                 */
-                if (!parms->err_directive) {
-                    parms->err_directive = current;
-                }
-
-                return retval;
-            }
-
-            mod = mod->next; /* Next time around, skip this one */
+            return retval; 
         }
     }
-    /* NOTREACHED */
+
+    return NULL;
 }
 
 AP_DECLARE(const char *) ap_walk_config(ap_directive_t *current,
@@ -1332,19 +1370,34 @@ static const char *execute_now(char *cmd_line, const char *args,
                                ap_directive_t **sub_tree,
                                ap_directive_t *parent)
 {
-    module *mod = ap_top_module;
     const command_rec *cmd;
+    ap_mod_list* ml;
+    char* dir = apr_pstrdup(parms->pool, cmd_line);
 
-    if (!(cmd = ap_find_command_in_modules(cmd_line, &mod))) {
+    ap_str_tolower(dir);
+
+    ml = apr_hash_get(ap_config_hash, dir, APR_HASH_KEY_STRING);
+
+    if (ml == NULL) {
         return apr_pstrcat(parms->pool, "Invalid command '",
                            cmd_line,
                            "', perhaps misspelled or defined by a module "
                            "not included in the server configuration",
                            NULL);
     }
-    else {
-        return invoke_cmd(cmd, parms, sub_tree, args);
+
+    for ( ; ml != NULL; ml = ml->next) {
+        const char *retval;
+        cmd = ml->cmd;
+
+        retval = invoke_cmd(cmd, parms, sub_tree, args);
+
+        if (retval != NULL) {
+            return retval; 
+        }
     }
+
+    return NULL;
 }
 
 /* This structure and the following functions are needed for the
