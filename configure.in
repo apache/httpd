@@ -94,6 +94,16 @@ if test "$apu_found" = "no"; then
   AC_MSG_ERROR([APR-util not found.  Please read the documentation.])
 fi
 
+# Catch some misconfigurations:
+case ${apr_found}.${apu_found} in
+reconfig.yes)
+  AC_MSG_ERROR([Cannot use an external APR-util with the bundled APR])
+  ;;
+yes.reconfig)
+  AC_MSG_ERROR([Cannot use an external APR with the bundled APR-util])
+  ;;
+esac  
+
 if test "$apu_found" = "reconfig"; then
   APR_SUBDIR_CONFIG(srclib/apr-util,
                     [--with-apr=../apr --prefix=$prefix --exec-prefix=$exec_prefix --libdir=$libdir --includedir=$includedir --bindir=$bindir],

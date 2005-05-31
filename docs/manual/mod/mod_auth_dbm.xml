@@ -165,7 +165,7 @@ store passwords</description>
 <directivesynopsis>
 <name>AuthDBMAuthoritative</name>
 <description>Sets whether authentication and authorization will be
-passwed on to lower level modules</description>
+passed on to lower level modules</description>
 <syntax>AuthDBMAuthoritative On|Off</syntax>
 <default>AuthDBMAuthoritative On</default>
 <contextlist><context>directory</context><context>.htaccess</context>

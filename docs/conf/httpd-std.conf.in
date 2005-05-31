@@ -930,7 +930,6 @@ AddHandler type-map var
 #    ErrorDocument 403 /error/HTTP_FORBIDDEN.html.var
 #    ErrorDocument 404 /error/HTTP_NOT_FOUND.html.var
 #    ErrorDocument 405 /error/HTTP_METHOD_NOT_ALLOWED.html.var
-#    ErrorDocument 406 /error/HTTP_NOT_ACCEPTABLE.html.var
 #    ErrorDocument 408 /error/HTTP_REQUEST_TIME_OUT.html.var
 #    ErrorDocument 410 /error/HTTP_GONE.html.var
 #    ErrorDocument 411 /error/HTTP_LENGTH_REQUIRED.html.var

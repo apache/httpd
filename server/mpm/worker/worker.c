@@ -134,6 +134,7 @@ static int resource_shortage = 0;
 static fd_queue_t *worker_queue;
 static fd_queue_info_t *worker_queue_info;
 static int mpm_state = AP_MPMQ_STARTING;
+static int sick_child_detected;
 
 /* The structure used to pass unique initialization info to each thread */
 typedef struct {
@@ -872,14 +873,8 @@ static void create_listener_thread(thread_starter *ts)
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf,
                      "apr_thread_create: unable to create listener thread");
-        /* In case system resources are maxxed out, we don't want
-         * Apache running away with the CPU trying to fork over and
-         * over and over again if we exit.
-         * XXX Jeff doesn't see how Apache is going to try to fork again since
-         * the exit code is APEXIT_CHILDFATAL
-         */
-        apr_sleep(apr_time_from_sec(10));
-        clean_child_exit(APEXIT_CHILDFATAL);
+        /* let the parent decide how bad this really is */
+        clean_child_exit(APEXIT_CHILDSICK);
     }
     apr_os_thread_get(&listener_os_thread, ts->listener);
 }
@@ -956,11 +951,8 @@ static void * APR_THREAD_FUNC start_threads(apr_thread_t *thd, void *dummy)
             if (rv != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf,
                     "apr_thread_create: unable to create worker thread");
-                /* In case system resources are maxxed out, we don't want
-                   Apache running away with the CPU trying to fork over and
-                   over and over again if we exit. */
-                apr_sleep(apr_time_from_sec(10));
-                clean_child_exit(APEXIT_CHILDFATAL);
+                /* let the parent decide how bad this really is */
+                clean_child_exit(APEXIT_CHILDSICK);
             }
             threads_created++;
         }
@@ -1153,11 +1145,8 @@ static void child_main(int child_num_arg)
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf,
                      "apr_thread_create: unable to create worker thread");
-        /* In case system resources are maxxed out, we don't want
-           Apache running away with the CPU trying to fork over and
-           over and over again if we exit. */
-        apr_sleep(apr_time_from_sec(10));
-        clean_child_exit(APEXIT_CHILDFATAL);
+        /* let the parent decide how bad this really is */
+        clean_child_exit(APEXIT_CHILDSICK);
     }
 
     mpm_state = AP_MPMQ_RUNNING;
@@ -1345,6 +1334,7 @@ static void perform_idle_server_maintenance(void)
     int free_slots[MAX_SPAWN_RATE];
     int last_non_dead;
     int total_non_dead;
+    int active_thread_count = 0;
 
     /* initialize the free_list */
     free_length = 0;
@@ -1382,14 +1372,16 @@ static void perform_idle_server_maintenance(void)
              * So we hopefully won't need to fork more if we count it.
              * This depends on the ordering of SERVER_READY and SERVER_STARTING.
              */
-            if (status <= SERVER_READY && status != SERVER_DEAD &&
-                    !ps->quiescing &&
-                    ps->generation == ap_my_generation &&
-                 /* XXX the following shouldn't be necessary if we clean up 
-                  *     properly after seg faults, but we're not yet    GLA 
-                  */     
-                    ps->pid != 0) {
-                ++idle_thread_count;
+            if (ps->pid != 0) { /* XXX just set all_dead_threads in outer for
+                                   loop if no pid?  not much else matters */
+                if (status <= SERVER_READY && status != SERVER_DEAD &&
+                        !ps->quiescing &&
+                        ps->generation == ap_my_generation) {
+                    ++idle_thread_count;
+                }
+                if (status >= SERVER_READY && status < SERVER_GRACEFUL) {
+                    ++active_thread_count;
+                }
             }
         }
         if (any_dead_threads && totally_free_length < idle_spawn_rate
@@ -1420,6 +1412,28 @@ static void perform_idle_server_maintenance(void)
             ++total_non_dead;
         }
     }
+
+    if (sick_child_detected) {
+        if (active_thread_count > 0) {
+            /* some child processes appear to be working.  don't kill the
+             * whole server.
+             */
+            sick_child_detected = 0;
+        }
+        else {
+            /* looks like a basket case.  give up.  
+             */
+            shutdown_pending = 1;
+            child_fatal = 1;
+            ap_log_error(APLOG_MARK, APLOG_ALERT, 0,
+                         ap_server_conf,
+                         "No active workers found..."
+                         " Apache is exiting!");
+            /* the child already logged the failure details */
+            return;
+        }
+    }
+                                                    
     ap_max_daemons_limit = last_non_dead + 1;
 
     if (idle_thread_count > max_spare_threads) {
@@ -1492,6 +1506,12 @@ static void server_main_loop(int remaining_children_to_start)
                 shutdown_pending = 1;
                 child_fatal = 1;
                 return;
+            }
+            else if (processed_status == APEXIT_CHILDSICK) {
+                /* tell perform_idle_server_maintenance to check into this
+                 * on the next timer pop
+                 */
+                sick_child_detected = 1;
             }
             /* non-fatal death... note that it's gone in the scoreboard. */
             child_slot = find_child_by_pid(&pid);

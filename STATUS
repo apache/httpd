@@ -106,9 +106,11 @@ PATCHES TO BACKPORT FROM TRUNK:
     *) Prevent hang writing to piped logger at graceful restart time.
        PR: 26467
          http://svn.apache.org/viewcvs?rev=170281&view=rev
+         http://svn.apache.org/viewcvs.cgi?rev=171093&view=rev
        +1: trawick, jorton
        -0: pquerna: This adds a new public function.  It should be either a 
            minor MMN bump, or be put under CORE_PRIVATE.
+           trawick: I resolved this via second commit above.  Thanks!
 
     *) Fix fd leak in piped logging code, fix error handling, and remove
        dead errno handling.
@@ -183,24 +185,6 @@ PATCHES TO BACKPORT FROM TRUNK:
                     have already.  *shrug*  Regardless, patch looks okay...
        +1: nd, jerenkrantz
 
-    * Rewrite how proxy sends its request to allow input bodies to 
-      morph the request bodies.  Previously, if an input filter
-      changed the request body, the original C-L would be sent which
-      would be incorrect.
-
-      Due to HTTP compliance, we must either send the body T-E: chunked
-      or include a C-L for the request body.  Connection: Close is not
-      an option. 
-
-      A newer version of this fix that acts even better (spools to disk) has
-      been committed to trunk.  The equivalent patch for 2.0.x is at:
-         http://www.apache.org/~trawick/20reqbody.txt
-
-      +1: trawick, jerenkrantz, +1
-     Previous votes (before trawick's recent 2.1 commits):
-      +1: stoddard, striker, jim
-      -1: brianp (we need a more robust solution than what's in 2.1 right now),
-
     * support/check_forensic: Fix tempfile usage
       svn rev 125495, 126224
       jerenkrantz says: r126224 fixes brokenness with r125495 on Solaris.
@@ -220,7 +204,7 @@ PATCHES TO BACKPORT FROM TRUNK:
 
     * mod_version: New Module, Backport from trunk. Requires Minor MMN Bump.
       http://svn.apache.org/repos/asf/httpd/httpd/branches/mod_version_for_2.0.x
-      +1: pquerna 
+      +1: pquerna, nd
       Votes from before the integration branch:
           +1: jerenkrantz, wrowe (trivial, would even be cool in 1.3)
 
@@ -254,21 +238,24 @@ PATCHES TO BACKPORT FROM TRUNK:
      *) mod_userdir: fix to palloc(sizeof struct) not palloc(sizeof pointer)
         http://svn.apache.org/viewcvs?rev=165151&view=rev
         PR: 34588
-        +1: jorton, trawick (isn't it worth a CHANGES entry for a storage
+        +1: jorton, bnicholes, trawick (isn't it worth a CHANGES entry for a storage
             corruption fix?)
-	    
-     *) mod_ldap: Change the LDAP connection timeout to per-connection rather
-        than global. Fixes PR: 34618
-	http://svn.apache.org/viewcvs/httpd/httpd/trunk/modules/ldap/util_ldap.c?rev=164919&r1=164918&r2=164919&view=diff
-	or 2.0 view patch
-	http://issues.apache.org/bugzilla/attachment.cgi?id=14873
-	+1: bnicholes, minfrin, pquerna
-	
-     *) Have configure refuse to build with doomed combinations of
-        internal/external APR/APR-util.
-          http://svn.apache.org/viewcvs?rev=170029&view=rev
-        +1: jorton, nd, trawick, pquerna
 
+     *) fix z/OS annoyance with pathname on debug messages in error log
+        http://svn.apache.org/viewcvs?rev=178299&view=rev
+        +1: trawick
+
+     *) EBCDIC: Handle chunked input from client or, with proxy, origin
+        server.
+        http://svn.apache.org/viewcvs?rev=178262&view=rev
+        (With 2.0.x it is the same code in the same function, but in 
+        a different source file.)
+        +1: trawick
+
+     *) Support the suppress-error-charset setting, as with Apache 1.3.x.
+        PR 31274. (current docs say it works with Apache from 2.0.40 ;) )
+        http://svn.apache.org/viewcvs?rev=170354&view=rev
+        +1: trawick
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
