@@ -257,6 +257,12 @@ PATCHES TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewcvs?rev=170354&view=rev
         +1: trawick
 
+     *) Downgrade the log level of a worker MPM apr_proc_mutex_foo error
+        message when it occurs during restart (as we already do for a couple
+        of other calls).
+        http://svn.apache.org/viewcvs?rev=179317&view=rev
+        +1: trawick
+
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
     *) Remove LDAP toolkit specific code from util_ldap and mod_auth_ldap.
