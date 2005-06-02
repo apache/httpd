@@ -410,6 +410,7 @@ AP_DECLARE(void) ap_register_hooks(module *m, apr_pool_t *p)
     }
 }
 
+static void ap_add_module_commands(module *m, apr_pool_t *p);
 
 typedef struct ap_mod_list_struct ap_mod_list;
 struct ap_mod_list_struct {
@@ -418,7 +419,28 @@ struct ap_mod_list_struct {
     const command_rec *cmd;
 };
 
-static void ap_add_module_commands(module *m) 
+static apr_status_t reload_conf_hash(void* baton) 
+{
+    ap_config_hash = NULL;
+    return APR_SUCCESS;
+}
+
+static void rebuild_conf_hash(apr_pool_t *p, int add_prelinked) 
+{
+    module **m;
+
+    ap_config_hash = apr_hash_make(p);
+
+    apr_pool_cleanup_register(p, NULL, reload_conf_hash, 
+                              apr_pool_cleanup_null);
+    if (add_prelinked) {
+        for (m = ap_prelinked_modules; *m != NULL; m++) {
+            ap_add_module_commands(*m, p);
+        }
+    }
+}
+
+static void ap_add_module_commands(module *m, apr_pool_t *p) 
 {
     apr_pool_t* tpool;
     ap_mod_list* mln;
@@ -426,6 +448,10 @@ static void ap_add_module_commands(module *m)
     char* dir;
 
     cmd = m->cmds;
+
+    if (ap_config_hash == NULL) {
+        rebuild_conf_hash(p, 0);
+    }
 
     tpool = apr_hash_pool_get(ap_config_hash);
 
@@ -501,7 +527,7 @@ AP_DECLARE(const char *) ap_add_module(module *m, apr_pool_t *p)
     }
 #endif /*_OSD_POSIX*/
 
-    ap_add_module_commands(m);
+    ap_add_module_commands(m, p);
     /*  FIXME: is this the right place to call this?
      *  It doesn't appear to be
      */
@@ -622,7 +648,7 @@ AP_DECLARE(const char *) ap_setup_prelinked_modules(process_rec *process)
 
     apr_hook_global_pool=process->pconf;
 
-    ap_config_hash = apr_hash_make(process->pool);
+    rebuild_conf_hash(process->pconf, 0);
 
     /*
      *  Initialise total_modules variable and module indices
@@ -1456,6 +1482,10 @@ static const char *process_command_config(server_rec *s,
 
     arr_parms.curr_idx = 0;
     arr_parms.array = arr;
+
+    if (ap_config_hash == NULL) {
+        rebuild_conf_hash(s->process->pconf, 1);
+    }
 
     parms = default_parms;
     parms.pool = p;
