@@ -2,6 +2,9 @@ Changes with Apache 2.1.5
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_mime_magic: Handle CRLF-format magic files so that it works with
+     the default installation on Windows.  [Jeff Trawick]
+
   *) core: Allow multiple modules to register interest in a single 
      configuration command. [Paul Querna]
 
