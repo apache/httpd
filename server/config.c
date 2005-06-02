@@ -419,7 +419,7 @@ struct ap_mod_list_struct {
     const command_rec *cmd;
 };
 
-static apr_status_t reload_conf_hash(void* baton) 
+static apr_status_t reload_conf_hash(void *baton) 
 {
     ap_config_hash = NULL;
     return APR_SUCCESS;
@@ -442,10 +442,10 @@ static void rebuild_conf_hash(apr_pool_t *p, int add_prelinked)
 
 static void ap_add_module_commands(module *m, apr_pool_t *p) 
 {
-    apr_pool_t* tpool;
-    ap_mod_list* mln;
+    apr_pool_t *tpool;
+    ap_mod_list *mln;
     const command_rec *cmd;
-    char* dir;
+    char *dir;
 
     cmd = m->cmds;
 
@@ -1108,8 +1108,8 @@ static const char *ap_walk_config_sub(const ap_directive_t *current,
                                       ap_conf_vector_t *section_vector)
 {
     const command_rec *cmd;
-    ap_mod_list* ml;
-    char* dir = apr_pstrdup(parms->pool, current->directive);
+    ap_mod_list *ml;
+    char *dir = apr_pstrdup(parms->pool, current->directive);
 
     ap_str_tolower(dir);
 
@@ -1397,8 +1397,8 @@ static const char *execute_now(char *cmd_line, const char *args,
                                ap_directive_t *parent)
 {
     const command_rec *cmd;
-    ap_mod_list* ml;
-    char* dir = apr_pstrdup(parms->pool, cmd_line);
+    ap_mod_list *ml;
+    char *dir = apr_pstrdup(parms->pool, cmd_line);
 
     ap_str_tolower(dir);
 
