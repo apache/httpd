@@ -2,6 +2,10 @@ Changes with Apache 2.1.5
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) proxy FTP: Fix confusion about globbing characters which could lead
+     to getting a directory listing when a file was requested.  PR 34512.
+     [Sean <infamous41md hotmail.com>]
+
   *) mod_mime_magic: Handle CRLF-format magic files so that it works with
      the default installation on Windows.  [Jeff Trawick]
 
