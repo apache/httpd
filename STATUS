@@ -263,6 +263,16 @@ PATCHES TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewcvs?rev=179317&view=rev
         +1: trawick
 
+     *) proxy FTP: Fix confusion about globbing characters which could lead
+        to getting a directory listing when a file was requested.  PR 34512.
+        http://svn.apache.org/viewcvs?rev=179704&view=rev
+        +1: trawick
+
+     *) mod_mime_magic: Handle CRLF-format magic files so that it works with
+        the default installation on Windows. 
+        http://svn.apache.org/viewcvs?rev=179622&view=rev
+        +1: trawick
+
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
     *) Remove LDAP toolkit specific code from util_ldap and mod_auth_ldap.
