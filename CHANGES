@@ -2,6 +2,9 @@ Changes with Apache 2.1.5
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_cache: Rename 'generate_name' to 'ap_cache_generate_name'. 
+     [Paul Querna]
+
   *) SECURITY: CAN-2005-1268 (cve.mitre.org)
      mod_ssl: Fix possible crash on printing CRL details when
      debugging is enabled, if configured to use a CRL from
