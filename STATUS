@@ -265,9 +265,9 @@ PATCHES TO BACKPORT FROM TRUNK:
 
      *) proxy FTP: Fix confusion about globbing characters which could lead
         to getting a directory listing when a file was requested.  PR 34512.
-        http://svn.apache.org/viewcvs?rev=179704&view=rev
+        2.1 patch was http://svn.apache.org/viewcvs?rev=179704&view=rev
+        2.0 version: http://people.apache.org/~trawick/179704-20.txt
         +1: trawick
-        jorton: this doesn't apply to 2.0.x as-is, needs a rediff
 
      *) mod_mime_magic: Handle CRLF-format magic files so that it works with
         the default installation on Windows. 
@@ -277,7 +277,7 @@ PATCHES TO BACKPORT FROM TRUNK:
      *) mod_ssl: Fix off-by-one, CVE CAN-2005-1268.
         PR: 35081
         http://svn.apache.org/viewcvs?rev=179781&view=rev
-        +1: jorton
+        +1: jorton, trawick
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
