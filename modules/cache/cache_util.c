@@ -489,8 +489,8 @@ static void cache_hash(const char *it, char *val, int ndepth, int nlength)
     val[i + 22 - k] = '\0';
 }
 
-CACHE_DECLARE(char *)generate_name(apr_pool_t *p, int dirlevels,
-                                   int dirlength, const char *name)
+CACHE_DECLARE(char *)ap_cache_generate_name(apr_pool_t *p, int dirlevels,
+                                            int dirlength, const char *name)
 {
     char hashfile[66];
     cache_hash(name, hashfile, dirlevels, dirlength);
