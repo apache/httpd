@@ -2,6 +2,11 @@ Changes with Apache 2.1.5
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) SECURITY: CAN-2005-1268 (cve.mitre.org)
+     mod_ssl: Fix possible crash on printing CRL details when
+     debugging is enabled, if configured to use a CRL from
+     a malicious source.  PR 35081.  [Marc Stern <mstern csc.com>]
+
   *) proxy FTP: Fix confusion about globbing characters which could lead
      to getting a directory listing when a file was requested.  PR 34512.
      [Sean <infamous41md hotmail.com>]
