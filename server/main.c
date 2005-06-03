@@ -713,18 +713,6 @@ int main(int argc, const char * const argv[])
     return 0; /* Termination 'ok' */
 }
 
-#ifndef SHARED_CORE_BOOTSTRAP
-/*
- * Force apr_password_validate() into the image so that modules like
- * mod_auth can use it even if they're dynamically loaded.
- */
-void suck_in_apr_password_validate(void);
-void suck_in_apr_password_validate(void)
-{
-    apr_password_validate("a", "b");
-}
-#endif
-
 #ifdef AP_USING_AUTOCONF
 /* This ugly little hack pulls any function referenced in exports.c into
  * the web server.  exports.c is generated during the build, and it
