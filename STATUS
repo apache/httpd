@@ -274,6 +274,11 @@ PATCHES TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewcvs?rev=179622&view=rev
         +1: trawick
 
+     *) mod_ssl: Fix off-by-one, CVE CAN-2005-1268.
+        PR: 35081
+        http://svn.apache.org/viewcvs?rev=179781&view=rev
+        +1: jorton
+
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
     *) Remove LDAP toolkit specific code from util_ldap and mod_auth_ldap.
