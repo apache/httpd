@@ -1699,10 +1699,10 @@ static apr_status_t handle_include(include_ctx_t *ctx, ap_filter_t *f,
             SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
         }
 
-        /* destroy the sub request */
-        if (rr) {
-            ap_destroy_sub_req(rr);
-        }
+        /* Do *not* destroy the subrequest here; it may have allocated
+         * variables in this r->subprocess_env in the subrequest's
+         * r->pool, so that pool must survive as long as this request.
+         * Yes, this is a memory leak. */
 
         if (error_fmt) {
             break;
