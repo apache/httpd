@@ -102,6 +102,8 @@
 apr_file_t *errfile;
 apr_file_t *ftemp = NULL;
 
+#define NL APR_EOL_STR
+
 static void to64(char *s, unsigned long v, int n)
 {
     static unsigned char itoa64[] =         /* 0 ... 63 => ASCII - 64 */
@@ -203,35 +205,35 @@ static int mkrecord(char *user, char *record, apr_size_t rlen, char *passwd,
 
 static void usage(void)
 {
-    apr_file_printf(errfile, "Usage:\n");
-    apr_file_printf(errfile, "\thtpasswd [-cmdpsD] passwordfile username\n");
+    apr_file_printf(errfile, "Usage:" NL);
+    apr_file_printf(errfile, "\thtpasswd [-cmdpsD] passwordfile username" NL);
     apr_file_printf(errfile, "\thtpasswd -b[cmdpsD] passwordfile username "
-                    "password\n\n");
-    apr_file_printf(errfile, "\thtpasswd -n[mdps] username\n");
-    apr_file_printf(errfile, "\thtpasswd -nb[mdps] username password\n");
-    apr_file_printf(errfile, " -c  Create a new file.\n");
+                    "password" NL NL);
+    apr_file_printf(errfile, "\thtpasswd -n[mdps] username" NL);
+    apr_file_printf(errfile, "\thtpasswd -nb[mdps] username password" NL);
+    apr_file_printf(errfile, " -c  Create a new file." NL);
     apr_file_printf(errfile, " -n  Don't update file; display results on "
-                    "stdout.\n");
+                    "stdout." NL);
     apr_file_printf(errfile, " -m  Force MD5 encryption of the password"
 #if defined(WIN32) || defined(TPF) || defined(NETWARE)
         " (default)"
 #endif
-        ".\n");
+        "." NL);
     apr_file_printf(errfile, " -d  Force CRYPT encryption of the password"
 #if (!(defined(WIN32) || defined(TPF) || defined(NETWARE)))
             " (default)"
 #endif
-            ".\n");
-    apr_file_printf(errfile, " -p  Do not encrypt the password (plaintext).\n");
-    apr_file_printf(errfile, " -s  Force SHA encryption of the password.\n");
+            "." NL);
+    apr_file_printf(errfile, " -p  Do not encrypt the password (plaintext)." NL);
+    apr_file_printf(errfile, " -s  Force SHA encryption of the password." NL);
     apr_file_printf(errfile, " -b  Use the password from the command line "
-            "rather than prompting for it.\n");
-    apr_file_printf(errfile, " -D  Delete the specified user.\n");
+            "rather than prompting for it." NL);
+    apr_file_printf(errfile, " -D  Delete the specified user." NL);
     apr_file_printf(errfile,
             "On Windows, NetWare and TPF systems the '-m' flag is used by "
-            "default.\n");
+            "default." NL);
     apr_file_printf(errfile,
-            "On all other systems, the '-p' flag will probably not work.\n");
+            "On all other systems, the '-p' flag will probably not work." NL);
     exit(ERR_SYNTAX);
 }
 
@@ -330,15 +332,15 @@ static void check_args(apr_pool_t *pool, int argc, const char *const argv[],
     }
 
     if ((*mask & APHTP_NEWFILE) && (*mask & APHTP_NOFILE)) {
-        apr_file_printf(errfile, "%s: -c and -n options conflict\n", argv[0]);
+        apr_file_printf(errfile, "%s: -c and -n options conflict" NL, argv[0]);
         exit(ERR_SYNTAX);
     }
     if ((*mask & APHTP_NEWFILE) && (*mask & APHTP_DELUSER)) {
-        apr_file_printf(errfile, "%s: -c and -D options conflict\n", argv[0]);
+        apr_file_printf(errfile, "%s: -c and -D options conflict" NL, argv[0]);
         exit(ERR_SYNTAX);
     }
     if ((*mask & APHTP_NOFILE) && (*mask & APHTP_DELUSER)) {
-        apr_file_printf(errfile, "%s: -n and -D options conflict\n", argv[0]);
+        apr_file_printf(errfile, "%s: -n and -D options conflict" NL, argv[0]);
         exit(ERR_SYNTAX);
     }
     /*
@@ -355,12 +357,12 @@ static void check_args(apr_pool_t *pool, int argc, const char *const argv[],
     }
     else {
         if (strlen(argv[i]) > (APR_PATH_MAX - 1)) {
-            apr_file_printf(errfile, "%s: filename too long\n", argv[0]);
+            apr_file_printf(errfile, "%s: filename too long" NL, argv[0]);
             exit(ERR_OVERFLOW);
         }
         *pwfilename = apr_pstrdup(pool, argv[i]);
         if (strlen(argv[i + 1]) > (MAX_STRING_LEN - 1)) {
-            apr_file_printf(errfile, "%s: username too long (> %d)\n",
+            apr_file_printf(errfile, "%s: username too long (> %d)" NL,
                 argv[0], MAX_STRING_LEN - 1);
             exit(ERR_OVERFLOW);
         }
@@ -368,12 +370,12 @@ static void check_args(apr_pool_t *pool, int argc, const char *const argv[],
     *user = apr_pstrdup(pool, argv[i + 1]);
     if ((arg = strchr(*user, ':')) != NULL) {
         apr_file_printf(errfile, "%s: username contains illegal "
-                        "character '%c'\n", argv[0], *arg);
+                        "character '%c'" NL, argv[0], *arg);
         exit(ERR_BADUSER);
     }
     if (*mask & APHTP_NONINTERACTIVE) {
         if (strlen(argv[i + 2]) > (MAX_STRING_LEN - 1)) {
-            apr_file_printf(errfile, "%s: password too long (> %d)\n",
+            apr_file_printf(errfile, "%s: password too long (> %d)" NL,
                 argv[0], MAX_STRING_LEN);
             exit(ERR_OVERFLOW);
         }
@@ -415,17 +417,17 @@ int main(int argc, const char * const argv[])
 #if APR_CHARSET_EBCDIC
     rv = apr_xlate_open(&to_ascii, "ISO-8859-1", APR_DEFAULT_CHARSET, pool);
     if (rv) {
-        apr_file_printf(errfile, "apr_xlate_open(to ASCII)->%d\n", rv);
+        apr_file_printf(errfile, "apr_xlate_open(to ASCII)->%d" NL, rv);
         exit(1);
     }
     rv = apr_SHA1InitEBCDIC(to_ascii);
     if (rv) {
-        apr_file_printf(errfile, "apr_SHA1InitEBCDIC()->%d\n", rv);
+        apr_file_printf(errfile, "apr_SHA1InitEBCDIC()->%d" NL, rv);
         exit(1);
     }
     rv = apr_MD5InitEBCDIC(to_ascii);
     if (rv) {
-        apr_file_printf(errfile, "apr_MD5InitEBCDIC()->%d\n", rv);
+        apr_file_printf(errfile, "apr_MD5InitEBCDIC()->%d" NL, rv);
         exit(1);
     }
 #endif /*APR_CHARSET_EBCDIC*/
@@ -436,14 +438,14 @@ int main(int argc, const char * const argv[])
 #if defined(WIN32) || defined(NETWARE)
     if (alg == ALG_CRYPT) {
         alg = ALG_APMD5;
-        apr_file_printf(errfile, "Automatically using MD5 format.\n");
+        apr_file_printf(errfile, "Automatically using MD5 format." NL);
     }
 #endif
 
 #if (!(defined(WIN32) || defined(TPF) || defined(NETWARE)))
     if (alg == ALG_PLAIN) {
         apr_file_printf(errfile,"Warning: storing passwords as plain text "
-                        "might just not work on this platform.\n");
+                        "might just not work on this platform." NL);
     }
 #endif
 
@@ -458,7 +460,7 @@ int main(int argc, const char * const argv[])
              */
             if (!accessible(pool, pwfilename, APR_READ | APR_APPEND)) {
                 apr_file_printf(errfile, "%s: cannot open file %s for "
-                                "read/write access\n", argv[0], pwfilename);
+                                "read/write access" NL, argv[0], pwfilename);
                 exit(ERR_FILEPERM);
             }
         }
@@ -468,7 +470,7 @@ int main(int argc, const char * const argv[])
              */
             if (!(mask & APHTP_NEWFILE)) {
                 apr_file_printf(errfile,
-                        "%s: cannot modify file %s; use '-c' to create it\n",
+                        "%s: cannot modify file %s; use '-c' to create it" NL,
                         argv[0], pwfilename);
                 exit(ERR_FILEPERM);
             }
@@ -476,7 +478,7 @@ int main(int argc, const char * const argv[])
              * As it doesn't exist yet, verify that we can create it.
              */
             if (!accessible(pool, pwfilename, APR_CREATE | APR_WRITE)) {
-                apr_file_printf(errfile, "%s: cannot create file %s\n",
+                apr_file_printf(errfile, "%s: cannot create file %s" NL,
                                 argv[0], pwfilename);
                 exit(ERR_FILEPERM);
             }
@@ -494,11 +496,11 @@ int main(int argc, const char * const argv[])
         i = mkrecord(user, record, sizeof(record) - 1,
                      password, alg);
         if (i != 0) {
-            apr_file_printf(errfile, "%s: %s\n", argv[0], record);
+            apr_file_printf(errfile, "%s: %s" NL, argv[0], record);
             exit(i);
         }
         if (mask & APHTP_NOFILE) {
-            printf("%s\n", record);
+            printf("%s" NL, record);
             exit(0);
         }
     }
@@ -508,14 +510,14 @@ int main(int argc, const char * const argv[])
      * to add or update.  Let's do it..
      */
     if (apr_temp_dir_get((const char**)&dirname, pool) != APR_SUCCESS) {
-        apr_file_printf(errfile, "%s: could not determine temp dir\n",
+        apr_file_printf(errfile, "%s: could not determine temp dir" NL,
                         argv[0]);
         exit(ERR_FILEPERM);
     }
     dirname = apr_psprintf(pool, "%s/%s", dirname, tn);
 
     if (apr_file_mktemp(&ftemp, dirname, 0, pool) != APR_SUCCESS) {
-        apr_file_printf(errfile, "%s: unable to create temporary file %s\n", 
+        apr_file_printf(errfile, "%s: unable to create temporary file %s" NL, 
                         argv[0], dirname);
         exit(ERR_FILEPERM);
     }
@@ -527,7 +529,7 @@ int main(int argc, const char * const argv[])
     if (existing_file && !(mask & APHTP_NEWFILE)) {
         if (apr_file_open(&fpw, pwfilename, APR_READ | APR_BUFFERED,
                           APR_OS_DEFAULT, pool) != APR_SUCCESS) {
-            apr_file_printf(errfile, "%s: unable to read file %s\n", 
+            apr_file_printf(errfile, "%s: unable to read file %s" NL, 
                             argv[0], pwfilename);
             exit(ERR_FILEPERM);
         }
@@ -557,8 +559,8 @@ int main(int argc, const char * const argv[])
                  * not be a valid htpasswd file.
                  * We should bail at this point.
                  */
-                apr_file_printf(errfile, "\n%s: The file %s does not appear "
-                                         "to be a valid htpasswd file.\n",
+                apr_file_printf(errfile, "%s: The file %s does not appear "
+                                         "to be a valid htpasswd file." NL,
                                 argv[0], pwfilename);
                 apr_file_close(fpw);
                 exit(ERR_INVALID);
@@ -592,16 +594,16 @@ int main(int argc, const char * const argv[])
         putline(ftemp, record);
     }
     else if (!found && (mask & APHTP_DELUSER)) {
-        apr_file_printf(errfile, "User %s not found\n", user);
+        apr_file_printf(errfile, "User %s not found" NL, user);
         exit(0);
     }
-    apr_file_printf(errfile, "password for user %s\n", user);
+    apr_file_printf(errfile, "password for user %s" NL, user);
 
     /* The temporary file has all the data, just copy it to the new location.
      */
     if (apr_file_copy(dirname, pwfilename, APR_FILE_SOURCE_PERMS, pool) !=
         APR_SUCCESS) {
-        apr_file_printf(errfile, "%s: unable to update file %s\n", 
+        apr_file_printf(errfile, "%s: unable to update file %s" NL, 
                         argv[0], pwfilename);
         exit(ERR_FILEPERM);
     }
