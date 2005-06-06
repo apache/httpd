@@ -2,6 +2,9 @@ Changes with Apache 2.1.5
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_cache: Fix 'Vary: *' behavior to be RFC compliant. PR 16125. 
+     [Paul Querna]
+
   *) mod_cache: Rename 'generate_name' to 'ap_cache_generate_name'. 
      [Paul Querna]
 

@@ -236,7 +236,7 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
     cache_request_rec *cache;
     cache_server_conf *conf;
     char *url = r->unparsed_uri;
-    const char *cc_in, *cc_out, *cl;
+    const char *cc_in, *cc_out, *cl, *vary_out;
     const char *exps, *lastmods, *dates, *etag;
     apr_time_t exp, date, lastmod, now;
     apr_off_t size;
@@ -251,7 +251,9 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
      * unless CacheStoreNoStore is active.
      */
     cc_in = apr_table_get(r->headers_in, "Cache-Control");
+    vary_out = apr_table_get(r->headers_out, "Vary");
     if (r->no_cache ||
+        ap_cache_liststr(NULL, vary_out, "*", NULL) ||
         (!conf->store_nostore &&
          ap_cache_liststr(NULL, cc_in, "no-store", NULL))) {
         ap_remove_output_filter(f);
