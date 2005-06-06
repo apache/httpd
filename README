@@ -13,7 +13,11 @@ WORKING COPY httpd/branches/ssl-fips-dev
  subset of permitted cryptography.
 
  This effort is initially coordinated by Ben Laurie and Will Rowe; of course
- all voulenteers and feedback are welcome.
+ all voulenteers and feedback are welcome.  To use this branch, checkout
+ httpd/trunk, cd to the modules/ssl directory and use the command:
+
+ svn switch https://svn.apache.org/repos/asf/httpd/httpd/branches/ssl-fips-dev
+ (substitute http: for https: if using public read-only svn.)
 
 SYNOPSIS
 
