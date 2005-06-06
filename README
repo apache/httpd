@@ -1,3 +1,20 @@
+WORKING COPY httpd/branches/ssl-fips-dev
+
+ This sandbox is for development around the FIPS 140-2 standard as implemented
+ by Ben Laurie and team of OpenSSL with the 0.9.7 verisons.  The effort for
+ OpenSSL FIPS certification is coordinated by the Open Source Software
+ Institute.  OpenSSL 0.9.7 is in the process of certification testing.  See:
+
+ http://oss-institute.org/index.php?option=content&task=view&id=109
+
+ The crypto layer, itself, is the object of certification.  In this case,
+ that is encompased in libcrypto.so.  But libcrypto.so needs to be told to
+ enforce FIPS 140 policy, and mod_ssl needs to be adjusted to the FIPS 140
+ subset of permitted cryptography.
+
+ This effort is initially coordinated by Ben Laurie and Will Rowe; of course
+ all voulenteers and feedback are welcome.
+
 SYNOPSIS
 
  This Apache module provides strong cryptography for the Apache 2 webserver
