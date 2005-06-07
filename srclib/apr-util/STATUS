@@ -1,0 +1,57 @@
+APRUTIL LIBRARY STATUS:						-*-text-*-
+Last modified at [$Date$]
+
+Release:
+    1.1.2     : released March 17, 2005
+    1.1.1     : not released
+    1.1.0     : released January 25, 2005
+    1.0.1     : released November 18, 2004
+    1.0.0     : released September 1, 2004
+    0.9.5     : released November 19, 2004
+    0.9.4     : released September 25, 2003
+    0.9.3     : tagged March 30, 2002
+    0.9.2     : released March 22, 2002      (alpha)
+    0.9.1     : released September 11, 2002  (alpha)
+    0.9.0     : not released
+
+    2.0a9     : released December 12, 2000
+
+
+RELEASE SHOWSTOPPERS:
+
+RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
+
+    * Solaris's Sun Freeware (sfw) package has a busted gcc/ld setup.
+      This gcc passes -L/opt/sfw/lib to /usr/ccs/bin/ld, but does not 
+      pass -R.  Therefore, when trying to run the code using a
+      library from /opt/sfw/lib (say, libdb), the run-time linker
+      will not look in /opt/sfw/lib and the program will die.
+        Status: Workaround is to add "-R/opt/sfw/lib" to LDFLAGS.
+                Should check latest sfw package set and see if Sun
+                may have fixed this.
+
+    * GDBM usage of errno is not-thread-safe.  Fix.
+
+Other bugs that need fixing:
+
+
+
+Other features that need writing:
+
+    * possibly move test/testdbm* to util/dbu
+      Justin says: Do we still want to do this?  testdate is now in test.
+      Status: Greg +1 (volunteers)
+
+Documentation that needs writing:
+
+    * API documentation
+        Status:
+
+    * doc the lifetimes of apr_dbm return values
+
+
+Available Patches:
+
+
+Open Issues:
+
