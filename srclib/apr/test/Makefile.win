@@ -1,0 +1,101 @@
+
+LINK=link /nologo
+
+PROGRAMS = \
+        globalmutexchild.exe \
+	sendfile.exe \
+	proc_child.exe \
+        tryread.exe \
+	occhild.exe \
+	readchild.exe \
+	sockchild.exe \
+	testlockperf.exe \
+	testshmproducer.exe \
+	testshmconsumer.exe \
+	testmutexscope.exe \
+	testall.exe \
+	mod_test.so
+
+
+TARGETS = $(PROGRAMS)
+
+LOCAL_LIBS=..\LibD\apr-1.lib 
+ALL_LIBS=kernel32.lib advapi32.lib ws2_32.lib mswsock.lib ole32.lib shell32.lib rpcrt4.lib
+
+CLEAN_TARGETS = mod_test.lib mod_test.exp
+
+INCDIR=../include
+INCLUDES=/I "$(INCDIR)"
+
+all: $(TARGETS)
+
+clean:
+	-del $(CLEAN_TARGETS) $(PROGRAMS) *.obj *.pdb *.ilk 2>NUL
+
+.c.obj:
+	cl /nologo /c /MDd /W3 /GX /Zi /Od /DWIN32 /D_DEBUG /D_WINDOWS /DAPR_DECLARE_STATIC $(INCLUDES) $<
+
+tryread.exe: tryread.obj $(LOCAL_LIBS)
+	$(LINK) tryread.obj $(LOCAL_LIBS) $(ALL_LIBS)
+
+occhild.exe: occhild.obj $(LOCAL_LIBS)
+	$(LINK) occhild.obj $(LOCAL_LIBS) $(ALL_LIBS)
+
+readchild.exe: readchild.obj $(LOCAL_LIBS)
+	$(LINK) readchild.obj $(LOCAL_LIBS) $(ALL_LIBS)
+
+proc_child.exe: proc_child.obj $(LOCAL_LIBS)
+	$(LINK) /debug /subsystem:console /machine:I386 \
+		proc_child.obj $(LOCAL_LIBS) $(ALL_LIBS)
+
+# FIXME: This is BS ... we should deal with namespace decoration within the
+# apr_dso_sym() function or within the test (take y'r pick) since many platforms
+# have decoration and decoration issues.
+mod_test.so: mod_test.obj
+	$(LINK) mod_test.obj /dll /out:mod_test.so $(LOCAL_LIBS) $(ALL_LIBS) \
+		/export:print_hello /export:count_reps
+
+testlockperf.exe: testlockperf.obj $(LOCAL_LIBS)
+	$(LINK) testlockperf.obj $(LOCAL_LIBS) $(ALL_LIBS)
+
+sockchild.exe: sockchild.obj $(LOCAL_LIBS)
+	$(LINK) sockchild.obj $(LOCAL_LIBS) $(ALL_LIBS)
+
+sendfile.exe: sendfile.obj $(LOCAL_LIBS)
+	$(LINK) sendfile.obj $(LOCAL_LIBS) $(ALL_LIBS)
+
+testshm.exe: testshm.obj $(LOCAL_LIBS) testshmproducer.exe testshmconsumer.exe
+	$(LINK) testshm.obj $(LOCAL_LIBS) $(ALL_LIBS)
+
+testshmproducer.exe: testshmproducer.obj $(LOCAL_LIBS)
+	$(LINK) testshmproducer.obj $(LOCAL_LIBS) $(ALL_LIBS)
+
+testshmconsumer.exe: testshmconsumer.obj $(LOCAL_LIBS)
+	$(LINK) testshmconsumer.obj $(LOCAL_LIBS) $(ALL_LIBS)
+
+testprocmutex.exe: testprocmutex.obj $(LOCAL_LIBS)
+	$(LINK) testprocmutex.obj $(LOCAL_LIBS) $(ALL_LIBS)
+
+globalmutexchild.exe: globalmutexchild.obj $(LOCAL_LIBS)
+	$(LINK) globalmutexchild.obj $(LOCAL_LIBS) $(ALL_LIBS)
+
+testmutexscope.exe: testmutexscope.obj $(LOCAL_LIBS)
+	$(LINK) testmutexscope.obj $(LOCAL_LIBS) $(ALL_LIBS)
+
+TESTS = abts.obj testtime.obj teststr.obj testvsn.obj testipsub.obj \
+	testmmap.obj testud.obj testtable.obj testsleep.obj testpools.obj \
+	testfmt.obj testfile.obj testdir.obj testfileinfo.obj testrand.obj \
+	testdso.obj testoc.obj testdup.obj testsockets.obj testproc.obj \
+	testpoll.obj testlock.obj testsockopt.obj testpipe.obj testthread.obj \
+	testhash.obj testargs.obj testnames.obj testuser.obj testpath.obj \
+	testenv.obj testprocmutex.obj testrand2.obj testfnmatch.obj \
+        testatomic.obj testflock.obj testshm.obj testsock.obj \
+        testglobalmutex.obj teststrnatcmp.obj testfilecopy.obj \
+        testtemp.obj testlfs.obj testutil.obj
+
+testall.exe: $(TESTS) $(LOCAL_LIBS)
+	$(LINK) /debug /subsystem:console /machine:I386 /out:$@ $(TESTS) \
+		$(LOCAL_LIBS) $(ALL_LIBS)
+
+
+# DO NOT REMOVE
