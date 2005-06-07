@@ -48,6 +48,7 @@ install-conf:
 	for j in $(top_srcdir)/docs/conf $(top_builddir)/docs/conf ; do \
 	    cd $$j ; \
 	    for i in httpd.conf extra/httpd-*.conf; do \
+	    	if [ -f $$i ] ; then \
 	    	( \
 	    		n_lm=`awk 'BEGIN {n=0} /@@LoadModule@@/ {n+=1} END {print n}' < $$i`; \
 	    		if test $$n_lm -eq 0 -o "x$(DSO_MODULES)" = "x"; then \
@@ -74,12 +75,13 @@ install-conf:
 	    		fi \
 	    	) > $(DESTDIR)$(sysconfdir)/original/$$i; \
 	    	chmod 0644 $(DESTDIR)$(sysconfdir)/original/$$i; \
-		file=$$i; \
+	    	file=$$i; \
 	    	if [ "$$i" = "httpd.conf" ]; then \
 	    		file=`echo $$i|sed s/.*.conf/$(PROGRAM_NAME).conf/`; \
 	    	fi; \
 	    	if test ! -f $(DESTDIR)$(sysconfdir)/$$file; then \
 	    		$(INSTALL_DATA) $(DESTDIR)$(sysconfdir)/original/$$i $(DESTDIR)$(sysconfdir)/$$file; \
+	    	fi; \
 	    	fi; \
 	    done ; \
 	done ; \
