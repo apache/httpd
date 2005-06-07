@@ -1,0 +1,511 @@
+APACHE 2.1 STATUS:                                              -*-text-*-
+Last modified at [$Date$]
+
+The current version of this file can be found at:
+http://svn.apache.org/repos/asf/httpd/httpd/trunk/STATUS
+
+Release history:
+    [NOTE that only Alpha/Beta releases occur in 2.1 development]
+
+    2.1.5   : in development
+    2.1.4   : not released.
+    2.1.3   : Released on  2/22/2005 as alpha.
+    2.1.2   : Released on 12/08/2004 as alpha.
+    2.1.1   : Released on 11/19/2004 as alpha.
+    2.1.0   : not released.
+
+Please consult the following STATUS files for information on related projects:
+
+    * http://svn.apache.org/repos/asf/apr/apr/trunk/STATUS
+    * http://svn.apache.org/repos/asf/apr/apr-util/trunk/STATUS
+    * http://svn.apache.org/repos/asf/httpd/httpd/trunk/docs/STATUS
+
+Contributors looking for a mission:
+
+    * Just do an egrep on "TODO" or "XXX" in the source.
+
+    * Review the bug database at: http://issues.apache.org/bugzilla/
+
+    * Review the "PatchAvailable" bugs in the bug database:
+
+      http://issues.apache.org/bugzilla/buglist.cgi?bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED&product=Apache+httpd-2.0&keywords=PatchAvailable
+
+      After testing, you can append a comment saying "Reviewed and tested".
+
+    * Open bugs in the bug database.
+
+CURRENT RELEASE NOTES:
+
+RELEASE SHOWSTOPPERS:
+
+    * Handling of non-trailing / config by non-default handler is broken
+      http://marc.theaimsgroup.com/?l=apache-httpd-dev&m=105451701628081&w=2
+      jerenkrantz asks: Why should this block a release?
+
+    * the edge connection filter cannot be removed 
+      http://marc.theaimsgroup.com/?l=apache-httpd-dev&m=105366252619530&w=2
+      jerenkrantz asks: Why should this block a release?
+      stas replies: because it requires a rewrite of the filters stack
+            implementation (you have suggested that) and once 2.2 is
+            released you can't do that anymore. 
+
+CURRENT VOTES:
+
+    * httpd-std.conf and friends
+
+      a) httpd-std.conf should be tailored by install (from src or
+         binbuild) even if user has existing httpd.conf
+         +1:   trawick, slive, gregames, ianh, Ken, wrowe, jwoolley, jim, nd,
+               erikabele
+           wrowe - prefer httpd.default.conf to avoid ambiguity with cvs
+
+      b) tailored httpd-std.conf should be copied by install to
+         sysconfdir/examples
+         -0:   striker
+
+      c) tailored httpd-std.conf should be installed to
+         sysconfdir/examples or manualdir/exampleconf/
+         +1:   slive, trawick, Ken, nd (prefer the latter), erikabele
+
+      d) Installing a set of default config files when upgrading a server
+         doesn't make ANY sense at all.
+         +1:   ianh - medium/big sites don't use 'standard config' anyway, as it
+                      usually needs major customizations
+         -1:   Ken, wrowe, jwoolley, jim, nd, erikabele
+           wrowe - diff is wonderful when comparing old/new default configs,
+                   even for customized sites that ianh mentions
+           jim - ... assuming that the default configs have been updated
+                     with the required inline docs to explain the
+                     changes
+
+    * If the parent process dies, should the remaining child processes
+      "gracefully" self-terminate. Or maybe we should make it a runtime
+      option, or have a concept of 2 parent processes (one being a 
+      "hot spare").
+      See: Message-ID: <3C58232C.FE91F19F@Golux.Com>
+
+      Self-destruct: Ken, Martin, Lars
+      Not self-destruct: BrianP, Ian, Cliff, BillS
+      Make it runtime configurable: Aaron, jim, Justin, wrowe, rederpj, nd
+
+      /* The below was a concept on *how* to handle the problem */
+      Have 2 parents: +1: jim
+                      -1: Justin, wrowe, rederpj, nd
+                      +0: Lars, Martin (while standing by, could it do
+                                        something useful?)
+
+    * Make the worker MPM the default MPM for threaded Unix boxes.
+      +1:   Justin, Ian, Cliff, BillS, striker, wrowe, nd
+      +0:   BrianP, Aaron (mutex contention is looking better with the
+            latest code, let's continue tuning and testing), rederpj, jim
+      -0:   Lars
+
+      pquerna: Do we want to change this for 2.2?
+
+RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
+
+    * Patches submitted to the bug database:
+      http://issues.apache.org/bugzilla/buglist.cgi?bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED&product=Apache+httpd-2.0&keywords=PatchAvailable
+
+    * The Event MPM does not work on Solaris 10. PR 34040.
+
+    * Filter stacks and subrequests, redirects and fast redirects.
+      There's at least one PR that suffers from the current unclean behaviour
+      (which lets the server send garbage): PR 17629
+      nd says: Every subrequest should get its own filter stack with the
+               subreq_core filter as bottom-most. That filter does two things:
+                 - swallow EOS buckets
+                 - redirect the data stream to the upper request's (rr->main)
+                   filter chain directly after the subrequest's starting
+                   point.
+               Once we have a clean solution, we can try to optimize
+               it, so that the server won't be slow down too much.
+
+    * RFC 2616 violations.
+      Closed PRs: 15857.
+      Open PRs: 15852, 15859, 15861, 15864, 15865, 15866, 15868, 15869,
+                15870, 16120, 16125, 16126, 16133, 16135, 16136, 16137,
+                16138, 16139, 16140, 16142, 16518, 16520, 16521, 
+      jerenkrantz says: need to decide how many we need to backport and/or
+                        if these rise to showstopper status.
+      wrowe suggests: it would be nice to see "MUST" v.s. "SHOULD" v.s. "MAY"
+                      out of this list, without reviewing them individually.
+
+    * There is a bug in how we sort some hooks, at least the pre-config
+      hook.  The first time we call the hooks, they are in the correct 
+      order, but the second time, we don't sort them correctly.  Currently,
+      the modules/http/config.m4 file has been renamed to 
+      modules/http/config2.m4 to work around this problem, it should moved
+      back when this is fixed.
+
+        OtherBill offers that this is a SERIOUS problem.  We do not sort
+        correctly by the ordering arguments passed to the register hook
+        functions.  This was proven when I reordered the open_logs hook
+        to attempt to open the error logs prior to the access logs.  Possibly
+        the entire sorting code needs to be refactored.
+
+    * pipes deadlock on all platforms with limited pipe buffers (e.g. both
+      Linux and Win32, as opposed to only Win32 on 1.3).  The right solution
+      is either GStein's proposal for a "CGI Brigade", or OtherBill's proposal
+      for "Poll Buckets" for "Polling Filter Chains".  Or maybe both :-)
+
+    * All handlers should always send content down even if r->header_only
+      is set.  If not, it means that the HEAD requests don't generate the
+      same headers as a GET which is wrong.
+
+    * exec cmd and suexec arg-passing enhancements
+      Status: Patches proposed
+      Message-ID: <20020526041748.A29148@prodigy.Redbrick.DCU.IE>
+      (see the "proc.patch" and "suexec-shell.patch" links in this message)
+
+    * The 2.0.36 worker MPM graceless shutdown changes work but are
+      a bit clunky on some platforms; eg, on Linux, the loop to
+      join each worker thread seems to hang, and the parent ends up
+      killing off the child with SIGKILL.  But at least it shuts down.
+
+    * --enable-mods-shared="foo1 foo2" is busted on Darwin.  Pier
+        posted a patch (Message-ID: <B8DBBE8D.575A%pier@betaversion.org>).
+
+    * We do not properly substitute the prefix-variables in the configuration
+      scripts or generated-configs.  (i.e. if sysconfdir is etc,
+      httpd-std.conf points to conf.)
+
+    * If any request gets through ap_process_request_internal() and is
+      scheduled to be served by the core handler, without a flag that this 
+      r->filename was tested by dir/file_walk, we need to 500 at the very 
+      end of the ap_process_request_internal() processing so sub_req-esters
+      know this request cannot be run.  This provides authors of older 
+      modules better compatibility, while still improving the security and 
+      robustness of 2.0. 
+
+        Status: still need to decide where this goes, OtherBill comments...
+        Message-ID: <065701c14526$495203b0$96c0b0d0@roweclan.net>
+        [Deleted comments regarding the ap_run_handler phase, as irrelevant
+            as BillS points out that "common case will be caught in
+  	    default_handler already (with the r->finfo.filetype == 0 check)"
+            and the issue is detecting this -before- we try to run the req.]
+
+	gregames says: can this happen somehow without a broken module
+            being involved?  If not, why waste cycles trying to defend against
+            potential broken modules?  It seems futile.
+        wrowe counters: no, it shouldn't happen unless the module is broken.
+            But the right answer is to fail the request up-front in dir/file
+            walk if the path was entirely invalid; and we can't do that either
+            UNTIL 2.1 or we break modules that haven't hooked map_to_storage.
+
+    * With AP_MODE_EXHAUSTIVE in the core, it is finally clear to me
+      how the Perchild MPM should be re-written.  It hasn't worked
+      correctly since filters were added because it wasn't possible to
+      get the content that had already been written and the socket at
+      the same time.  This mode lets us do that, so the MPM can be
+      fixed.
+
+    * Can a static httpd be built reliably?
+        Message-ID: <20020207142751.T31582@clove.org>
+
+    * Usage of APR_BRIGADE_NORMALIZE in core_input_filter should be
+      removed if possible.
+        Message-ID: <Pine.LNX.4.33.0201202232430.318-100000@deepthought.cs.virginia.edu>
+        Jeff wonders if we still care about this.  It is no longer an
+        API issue but simply an extra trip through the brigade.
+
+    * Get perchild to work on platforms other than Linux. This
+      will require a portable mechanism to pass data and file/socket
+      descriptors between vhost child groups. An API was proposed
+      on dev@apr:
+        Message-ID: <20020111115006.K1529@clove.org>
+
+    * Try to get libtool inter-library dependency code working on AIX.
+        Message-ID: <cm3n10lx555.fsf@rdu163-40-092.nc.rr.com>
+
+      Justin says: If we get it working on AIX, we can enable this
+                   on all platforms and clean up our build system
+                   somewhat.
+      Jeff says:   I thought I tested a patch for you sometime in
+                   January that you were going to commit within a few
+                   days.
+
+    * Handling of %2f in URIs.  Currently both 1.3 and 2.0
+      completely disallow %2f in the request URI path (see
+      ap_unescape_url() in util.c).  It's permitted and passed
+      through in the query string, however.  Roy says the
+      original reason for disallowing it, from five years ago,
+      was to protect CGI scripts that applied PATH_INFO to
+      a filesystem location and which might be tricked by
+      ..%2f..%2f(...).  We *should* allow path-info of the
+      form 'http://foo.com/index.cgi/path/to/path%2finfo'.
+      Since we've revamped a lot of our processing of path
+      segments, it would be nice to allow this, or at least
+      allow it conditionally with a directive.
+
+        OtherBill adds that %2f as the SECOND character of a multibyte
+        sequence causes the request to fail!  This happens notably in
+        the ja-jis encoding.
+
+    * FreeBSD, threads, and worker MPM.  All seems to work fine 
+      if you only have one worker process with many threads.  Add 
+      a second worker process and the accept lock seems to be
+      lost.  This might be an APR issue with how it deals with
+      the child_init hook (i.e. the fcntl lock needs to be resynced).
+      More examination and analysis is required.
+        Status: Works with FreeBSD 5.3. Does not work in previous versions.
+                This has also been reported on Cygwin.
+
+    * There is increasing demand from module writers for an API
+      that will allow them to control the server à la apachectl.
+      Reasons include sole-function servers that need to die if
+      an external dependency (e.g., a database) fails, et cetera.
+      Perhaps something in the (ever more abused) scoreboard?
+        
+             On the other hand, we already have a pipe that goes between parent
+             and child for graceful shutdown events, along with an API that
+             can be used to send a message down that pipe.  In threaded MPMs,
+             it is easy enough to make that one pipe be used for graceful
+             and graceless events, and it is also easy to open that pipe
+             to both parent and child for writing.  Then we just need to
+             figure out how to do graceless on non-threaded MPMs.
+
+    * Allow the DocumentRoot directive within <Location > scopes?  This
+      allows the beloved (crusty) Alias /foo/ /somepath/foo/ followed
+      by a <Directory /somepath/foo> to become simply 
+      <Location /foo/> DocumentRoot /somefile/foo (IMHO a bit more legible
+      and in-your-face.)  DocumentRoot unset would be accepted [and would
+      not permit content to be served, only virtual resources such as
+      server-info or server-status.
+      This proposed change would _not_ depricate Alias.
+        striker: See the thread starting with Message-ID:
+          JLEGKKNELMHCJPNMOKHOGEEJFBAA.striker@apache.org.
+
+    * Win32: Rotatelogs sometimes is not terminated when Apache
+      goes down hard.  FirstBill was looking at possibly tracking the 
+      child's-child processes in the parent process.
+        stoddard: Shared scoreboard might offer a good way for the parent 
+        to keep track of 'other child' processes and whack them if the child 
+        goes down.
+        Other thoughts on walking the process chain using the NT kernel
+        have also been proposed on APR.
+
+    * Eliminate unnecessary creation of pipes in mod_cgid
+
+    * Combine log_child and piped_log_spawn. Clean up http_log.c.
+      Common logging API.
+
+    * Platforms that do not support fork (primarily Win32 and AS/400)
+      Architect start-up code that avoids initializing all the modules 
+      in the parent process on platforms that do not support fork.
+
+    * There are still a number of places in the code where we are
+      losing error status (i.e. throwing away the error returned by a
+      system call and replacing it with a generic error code)
+
+    * Mass vhosting version of suEXEC.
+
+    * All DBMs suffer from confusion in support/dbmmanage (perl script) since 
+      the dbmmanage employs the first-matched dbm format.  This is not
+      necessarily the library that Apache was built with.  Aught to
+      rewrite dbmmanage upon installation to bin/ with the proper library 
+      for predictable mod_auth_dbm administration.
+        Questions; htdbm exists, time to kill dbmmanage, or does it remain
+                   useful as a perl dbm management example?  If we keep it,
+                   do we address the issue above?
+
+    * Integrate mod_dav.
+        Some additional items remaining:
+        - case_preserved_filename stuff
+            (use the new canonical name stuff?)
+        - find a new home for ap_text(_header)
+        - is it possible to remove the DAV: namespace stuff from util_xml?
+
+    * ap_core_translate() and its use by mod_mmap_static and mod_file_cache
+      are a bit wonky.  The function should probably be exposed as a utility 
+      function (such as ap_translate_url2fs() or ap_validate_fs_url() or 
+      something).  Another approach would be a new hook phase after
+      "translate" which would allow the module to munge what the
+      translation has decided to do.
+        Status: Greg +1 (volunteers)
+
+    * Explore use of a post-config hook for the code in http_main.c which
+      calls ap_fixup_virutal_hosts(), ap_fini_vhost_config(), and
+      ap_sort_hooks()  [to reduce the logic in main()]
+
+    * read the config tree just once, and process N times (as necessary)
+
+    * (possibly) use UUIDs in mod_unique_id and/or mod_usertrack
+
+    * (possibly) port the bug fix for PR 6942 (segv when LoadModule is put
+      into a VirtualHost container) to 2.0.
+
+    * shift stuff to mod_core.h
+
+    * callers of ap_run_create_request() should check the return value
+      for failure (Doug volunteers)
+
+    * Win32: Get Apache working on Windows 95/98. The following work
+        (at least) needs to be done:
+        - Document warning that OSR2 is required (for Crypt functions, in
+        rand.c, at least.)  This could be resolved with an SSL library, or
+        randomization in APR itself.
+        - Bring the Win9xConHook.dll from 1.3 into 2.0 (no sense till it
+        actually works) and add in a splash of Win9x service code.
+
+    * Fix the worker MPM to use POD to kill child processes instead
+      of ap_os_killpg, regardless of how they should die.
+
+    * Scoreboard structures could be changed in the future such that
+      proper alignment is not maintained, leading to segfaults on 
+      some systems.  Cliff posted a patch to deal with this issue but
+      later recanted. See this message to dev@apr.apache.org:
+      Message-ID: <Pine.LNX.4.44.0203011354090.16457-200000@deepthought
+                  .cs.virginia.edu>
+
+    * APXS either needs to be fixed completely for use when apr is out of tree,
+      or it should drop query mode altogether, and we just grow an 
+      httpd-config or similar arrangement. 
+      To quote a discussion in STATUS earlier:
+
+          thommay: this doesn't fix all the problems with apxs and out of
+                   tree apr/apr-util, but it's a good start. There's still the 
+                   query cases; but I'm beginning to think that in these cases 
+                   the app should be querying ap{r,u}-config directly
+          gstein: agreed. apxs should deprecate the -q flag
+          pquerna: I vote for a httpd-config, and to deprecate the -q flag.
+          minfrin: +1 for httpd-config, and to deprecate -q.
+
+TODO ISSUES REMAINING IN MOD_SSL:
+
+    * In order to use a DSO version of mod_ssl we have to link with
+      -lssl and -lcrypto. A workaround is in place right now where the
+      entire EXTRA_LIBS macro is being appended to the objects list, but
+      this is a hack. We should either revamp the APACHE_CHECK_SSL_TOOLKIT
+      autoconf function or come up with some other autoconf checks to
+      search for libssl and libcrypto and properly add them to mod_ssl's
+      link flags.
+
+    * SSL renegotiations in combination with POST request
+
+    * Port or dispose all code inside #if 0...#endif blocks that remain
+      from the porting effort.
+
+    * Do we need SSL_set_read_ahead()?
+
+    * the ssl_expr api is NOT THREAD SAFE.  race conditions exist:
+       -in ssl_expr_comp() if SSLRequire is used in .htaccess
+        (ssl_expr_info is global)
+       -is ssl_expr_eval() if there is an error
+        (ssl_expr_error is global)
+
+    * SSLRequire directive (parsing of) leaks memory
+
+    * Diffie-Hellman-Parameters for temporary keys are hardcoded in
+      ssl_engine_dh.c, while the comment in ssl_engine_kernel.c says:
+      "it is suggested that keys be changed daily or every 500
+      transactions, and more often if possible."
+
+    * ssl_var_lookup could be rewritten to be MUCH faster
+
+    * CRL callback should be pluggable
+
+    * session cache store should be pluggable
+
+    * init functions should return status code rather than ssl_die()
+
+    * ssl_engine_pphrase.c needs to be reworked so it is generic enough
+      to also decrypt proxy keys
+
+    * the shmcb code should just align its memory segment rather than
+      jumping through all the "safe" memcpy and memset hoops
+
+WISH LIST
+    * mod_proxy: Ability to run SSL over proxy gateway connections,
+      encrypting (or reencrypting) at the proxy.
+
+    * mod_cache: Handle ESI tags.
+
+    * mod_cache: Resolve issue of how to cache page fragements (or perhaps
+      -if- we want to cache page fragements). Today, mod_cache/mod_mem_cache
+      will cache #include 'virtual' requests (but not #include 'file'
+      requests). This was accomplished by making CACHE_IN a
+      CONTENT_SET-1 filter to force it to run before the SUBREQ_CORE
+      filter.  But now responses cannot be cached that include the
+      effects of having been run through CONTENT_SET filters
+      (mod_deflate, mod_expires, etc).  We could rerun all the
+      CONTENT_SET filters on the cached response, but this will not
+      work in all cases. For example, mod_expires relies on installing
+      the EXPIRATION filter during fixups. Contents served out of
+      mod_cache (out of the quick_handler) bypass -all- the request
+      line server hooks (Ryan really hated this. It is great for
+      performance, but bad because of the complications listed above).
+
+    mod_cache/mod_mem_cache/mod_disk_cache:
+
+    * mod_mem_cache: Consider adding a RevalidateTimeout directive to
+      specify time at which local cached content is to be revalidated
+      (ie, underlying file stat'ed to see if it has changed).
+
+    * mod_cache: CacheEnable/CacheDisable should accept regular expressions.
+      jerenkrantz says: Too slow.  Get regexs away from speedy caches by
+                        default.  Introduce a new CacheEnableRegex if you want.
+
+    * mod_mem_cache/mod_disk_cache: Need to be able to query cache
+      status (num of entries, cache object properties, etc.).
+      mod_status could be extended to query optional hooks defined
+      by modules for the purpose of reporting module status.
+      mod_cache (et. al.) could define optional hooks that are called
+      to collect status.  Status should be queryable by
+      HTTP or SNMP?
+      jerenkrantz says: Yawn.  Who cares.
+
+EXPERIMENTAL MODULES:
+
+    Experimental modules should eventually be be promoted to fully supported
+    status or removed from the repository entirely (ie, the
+    'experiment' failed). This section tracks what needs to happen to 
+    get the modules promoted to fully supported status.
+
+
+Other bugs that need fixing:
+
+    * MaxRequestsPerChild measures connections, not requests.
+        Until someone has a better way, we'll probably just rename it
+        "MaxConnectionsPerChild".
+    
+    * Regex containers don't work in an intutive way
+        Status: No one has come up with an efficient way to fix this
+        behavior. Dean has suggested getting rid of regex containers
+        completely.
+        OtherBill suggests: We at least seem to agree on eliminating
+                            the <Container ~ foo> forms, and using only
+                            <ContainerMatch foo> semantics.
+
+    * orig_ct in the byterange/multipart handling may not be
+      needed. Apache 1.3 just never stashed "multipart" into
+      r->content_type. We should probably follow suit since the
+      byterange stuff doesn't want the rest of the code to see the
+      multipart content-type; the other code should still think it is
+      dealing with the <orig_ct> stuff.
+        Status: Greg volunteers to investigate (esp. since he was most 
+                likely the one to break it :-)
+
+Binaries (probably not till beta):
+
+ Platform                      Avail.  Volunteer
+ ------------------------------------------------------------------
+ AIX 4.3.3                     no      Bill Stoddard
+ Mandrake 8.1                  no      open
+ FreeBSD 4.1                   no      open
+ hppa2.0w-hp-hpux11.00         no      Cliff Woolley
+ i386-pc-solaris2.8            no      Aaron Bannert
+ i386-unknown-freebsd4.5       no
+ i386-unknown-freebsd4.6       no      Cliff Woolley
+ i686-pc-linux-gnu-slackware81 no      Cliff Woolley
+ i686-pc-linux-gnu-rh70        no      Aaron Bannert
+ i686-pc-linux-gnu-rh73        no      Cliff Woolley
+ ia64-hp-hpux11.20             no
+ powerpc-apple-darwin5.5       no      Aaron Bannert
+ powerpc-unknown-linux-gnu     no      Graham Leggett
+ s390-ibm-linux                no      Greg Ames
+ sparc-sun-solaris2.8          no      Jim Jagielski
+ NetWare                       no      Brad Nicholes
+ OS/2                          no      Brian Havard
+ OS/390                        no      Greg Ames
+ Win32-x86                     no      William Rowe

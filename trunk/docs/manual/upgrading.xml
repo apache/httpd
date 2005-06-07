@@ -1,0 +1,93 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
+<!-- $LastChangedRevision$ -->
+
+<!--
+ Copyright 2002-2005 The Apache Software Foundation or its licensors, as
+ applicable.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="upgrading.xml.meta">
+
+<title>Upgrading to 2.1 from 2.0</title>
+
+<summary>
+  <p>In order to assist folks upgrading, we maintain a document
+  describing information critical to existing Apache users. These
+  are intended to be brief notes, and you should be able to find
+  more information in either the <a
+  href="new_features_2_2.html">New Features</a> document, or in
+  the <code>src/CHANGES</code> file.</p>
+
+  <p>This document describes only the changes from 2.0 to 2.2.  If you
+  are upgrading from version 1.3, you should also consult the <a
+  href="http://httpd.apache.org/docs-2.0/upgrading.html">1.3 to 2.0
+  upgrading document.</a></p>
+
+</summary>
+<seealso><a href="new_features_2_2.html">Overview of new features in
+  Apache 2.2</a></seealso>
+
+  <section id="compile-time">
+    <title>Compile-Time Configuration Changes</title>
+
+  </section>
+
+  <section id="run-time">
+    <title>Run-Time Configuration Changes</title>
+
+    <ul>
+      <li>The config file <code>httpd.conf</code> distributed with the
+      Apache HTTP Server has been greatly simplified by removing all
+      but the most essential configuration settings.  A set of example
+      configuration settings for more advanced features is present in
+      the <code>conf/extra/</code> directory of the installed
+      server.</li>
+
+      <li>The <program>apachectl</program> option
+      <code>startssl</code> is no longer available.  To enable ssl
+      support, you should edit <code>httpd.conf</code> to include the
+      relevant <module>mod_ssl</module> directives and then use
+      <code>apachectl start</code> to start the server.  An example
+      configuration to activate <module>mod_ssl</module> has been included
+      in <code>conf/extra/httpd-ssl.conf</code>.</li>
+
+      <li>The default setting of <directive
+      module="core">UseCanonicalName</directive> is now
+      <code>Off</code>.  If you did not have this directive in your
+      config file, you can add <code>UseCanonicalName On</code> to
+      retain the old behavior.</li>
+
+      <li>The module <module>mod_userdir</module> will no longer act
+      on requests unless a <directive
+      module="mod_userdir">UserDir</directive> directive specifying a
+      directory name is present in the config file.  To restore the
+      old default behavior, place the directive <code>UserDir
+      public_html</code> in your config file.</li>
+
+    </ul>
+  </section>
+
+  <section id="misc">
+    <title>Misc Changes</title>
+
+  </section>
+
+  <section id="third-party">
+    <title>Third Party Modules</title>
+
+  </section>
+</manualpage>

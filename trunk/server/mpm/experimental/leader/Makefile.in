@@ -1,0 +1,5 @@
+
+LTLIBRARY_NAME    = libleader.la
+LTLIBRARY_SOURCES = leader.c
+
+include $(top_srcdir)/build/ltlib.mk

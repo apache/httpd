@@ -1,0 +1,112 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision$ -->
+
+<!--
+ Copyright 2002-2005 The Apache Software Foundation or its licensors, as
+ applicable.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_auth_basic.xml.meta">
+
+<name>mod_auth_basic</name>
+<description>Basic authentication</description>
+<status>Base</status>
+<sourcefile>mod_auth_basic.c</sourcefile>
+<identifier>auth_basic_module</identifier>
+<compatibility>Available in Apache 2.1 and later</compatibility>
+
+<summary>
+    <p>This module allows the use of HTTP Basic Authentication to
+    restrict access by looking up users in the given providers.
+    HTTP Digest Authentication is provided by
+    <module>mod_auth_digest</module>.</p>
+</summary>
+<seealso><directive module="core">AuthName</directive></seealso>
+<seealso><directive module="core">AuthType</directive></seealso>
+
+<directivesynopsis>
+<name>AuthBasicProvider</name>
+<description>Sets the authentication provider(s) for this location</description>
+<syntax>AuthBasicProvider On|Off|<var>provider-name</var>
+[<var>provider-name</var>] ...</syntax>
+<default>AuthBasicProvider On</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>The <directive>AuthBasicProvider</directive> directive sets 
+    which provider is used to authenticate the users for this location.
+    Setting the value to <code>On</code> will choose the default provider
+    (<code>file</code>). Since the <code>file</code> provider is implemented
+    by the <module>mod_authn_file</module> module, you have to make sure,
+    that the module is present in the server.</p>
+
+    <example><title>Example</title>
+      &lt;Location /secure&gt;<br />
+      <indent>
+        AuthBasicProvider  dbm<br />
+        AuthDBMType        SDBM<br />
+        AuthDBMUserFile    /www/etc/dbmpasswd<br />
+        Require            valid-user<br />
+      </indent>
+      &lt;/Location&gt;
+    </example>
+
+    <p>See <module>mod_authn_dbm</module> and <module>mod_authn_file</module>
+    for providers.</p>
+
+    <p>The value <code>Off</code> clears the provider list and sets it back
+    to the default.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthBasicAuthoritative</name>
+<description>Sets whether authorization and authentication are passed to
+lower level modules</description>
+<syntax>AuthBasicAuthoritative On|Off</syntax>
+<default>AuthBasicAuthoritative On</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>Setting the <directive>AuthBasicAuthoritative</directive> directive
+    explicitly to <code>Off</code> allows for both
+    authentication and authorization to be passed on to lower level
+    modules (as defined in the <code>modules.c</code> files) if there is
+    <strong>no userID</strong> or <strong>rule</strong> matching the
+    supplied userID. If there is a userID and/or rule specified, the usual
+    password and access checks will be applied and a failure will give
+    an "Authentication Required" reply.</p>
+
+    <p>So if a userID appears in the database of more than one module;
+    or if a valid <directive module="core">Require</directive>
+    directive applies to more than one module; then the first module
+    will verify the credentials; and no access is passed on;
+    regardless of the <directive>AuthBasicAuthoritative</directive>
+    setting.</p>
+
+    <p>By default control is not passed on and an unknown userID or
+    rule will result in an "Authentication Required" reply. Not setting
+    it thus keeps the system secure and forces an NCSA compliant
+    behaviour.</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

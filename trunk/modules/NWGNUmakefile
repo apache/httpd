@@ -1,0 +1,74 @@
+#
+# Declare the sub-directories to be built here
+#
+# To build with exerimental modules set the environment 
+#  variable EXPERIMENTAL=1
+
+SUBDIRS = \
+	aaa \
+	cache \
+	dav\main \
+	dav\fs \
+	dav\lock \
+	echo \
+	generators \
+	loggers \
+	mappers \
+	metadata \
+	proxy \
+	filters \
+	$(EOLIST) 
+
+# If LDAPSDK has been defined then build the util_ldap module
+ifneq "$(LDAPSDK)" ""
+SUBDIRS += ldap \
+	$(EOLIST)
+endif
+
+# If OSSLSDK has been defined then build the mod_ssl module
+ifndef USE_STDSOCKETS
+ifneq "$(OSSLSDK)" ""
+SUBDIRS += ssl \
+	$(EOLIST)
+endif
+endif
+
+#If the mod_edir directory exists then build the mod_edir module
+ifeq "$(wildcard $(AP_WORK)\modules\mod_edir)" "$(AP_WORK)\modules\mod_edir"
+SUBDIRS += mod_edir \
+	       $(EOLIST)
+endif
+
+# Allow the experimental modules to be built if EXPERIMENTAL is defined
+ifdef EXPERIMENTAL
+SUBDIRS += experimental \
+	       $(EOLIST)
+endif
+
+# Allow the experimental modules to be built if EXPERIMENTAL is defined
+ifdef DEBUG
+SUBDIRS += debug \
+	       $(EOLIST)
+endif
+
+
+#
+# Get the 'head' of the build environment.  This includes default targets and
+# paths to tools
+#
+
+include $(AP_WORK)\build\NWGNUhead.inc
+
+#
+# build this level's files
+
+ifeq "$(wildcard NWGNUmakefile.mak)" "NWGNUmakefile.mak" 
+include NWGNUmakefile.mak
+endif
+
+#
+# You can use this target if all that is needed is to copy files to the
+# installation area
+#
+install :: nlms FORCE
+	

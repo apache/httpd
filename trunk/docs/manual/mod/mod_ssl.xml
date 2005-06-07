@@ -1,0 +1,1679 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision$ -->
+
+<!--
+ Copyright 2002-2005 The Apache Software Foundation or its licensors, as
+ applicable.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_ssl.xml.meta">
+
+<name>mod_ssl</name>
+<description>Strong cryptography using the Secure Sockets
+Layer (SSL) and Transport Layer Security (TLS) protocols</description>
+<status>Extension</status>
+<sourcefile>mod_ssl.c</sourcefile>
+<identifier>ssl_module</identifier>
+
+<summary>
+<p>This module provides SSL v2/v3 and TLS v1 support for the Apache
+HTTP Server.  It was contributed by Ralf S. Engeschall based on his
+mod_ssl project and originally derived from work by Ben Laurie.</p>
+
+<p>This module relies on <a href="http://www.openssl.org/">OpenSSL</a>
+to provide the cryptography engine.</p>
+
+<p>Further details, discussion, and examples are provided in the
+<a href="../ssl/">SSL documentation</a>.</p>
+</summary>
+
+<section id="envvars"><title>Environment Variables</title>
+
+<p>This module provides a lot of SSL information as additional environment
+variables to the SSI and CGI namespace. The generated variables are listed in
+the table below. For backward compatibility the information can
+be made available under different names, too. Look in the <a
+href="../ssl/ssl_compat.html">Compatibility</a> chapter for details on the
+compatibility variables.</p>
+
+<table border="1">
+<columnspec><column width=".3"/><column width=".2"/><column width=".5"/>
+</columnspec>
+<tr>
+ <th><a name="table3">Variable Name:</a></th>
+ <th>Value Type:</th>
+ <th>Description:</th>
+</tr>
+<tr><td><code>HTTPS</code></td>                         <td>flag</td>      <td>HTTPS is being used.</td></tr>
+<tr><td><code>SSL_PROTOCOL</code></td>                  <td>string</td>    <td>The SSL protocol version (SSLv2, SSLv3, TLSv1)</td></tr>
+<tr><td><code>SSL_SESSION_ID</code></td>                <td>string</td>    <td>The hex-encoded SSL session id</td></tr>
+<tr><td><code>SSL_CIPHER</code></td>                    <td>string</td>    <td>The cipher specification name</td></tr>
+<tr><td><code>SSL_CIPHER_EXPORT</code></td>             <td>string</td>    <td><code>true</code> if cipher is an export cipher</td></tr>
+<tr><td><code>SSL_CIPHER_USEKEYSIZE</code></td>         <td>number</td>    <td>Number of cipher bits (actually used)</td></tr>
+<tr><td><code>SSL_CIPHER_ALGKEYSIZE</code></td>         <td>number</td>    <td>Number of cipher bits (possible)</td></tr>
+<tr><td><code>SSL_VERSION_INTERFACE</code></td>         <td>string</td>    <td>The mod_ssl program version</td></tr>
+<tr><td><code>SSL_VERSION_LIBRARY</code></td>           <td>string</td>    <td>The OpenSSL program version</td></tr>
+<tr><td><code>SSL_CLIENT_M_VERSION</code></td>          <td>string</td>    <td>The version of the client certificate</td></tr>
+<tr><td><code>SSL_CLIENT_M_SERIAL</code></td>           <td>string</td>    <td>The serial of the client certificate</td></tr>
+<tr><td><code>SSL_CLIENT_S_DN</code></td>               <td>string</td>    <td>Subject DN in client's certificate</td></tr>
+<tr><td><code>SSL_CLIENT_S_DN_</code><em>x509</em></td> <td>string</td>    <td>Component of client's Subject DN</td></tr>
+<tr><td><code>SSL_CLIENT_I_DN</code></td>               <td>string</td>    <td>Issuer DN of client's certificate</td></tr>
+<tr><td><code>SSL_CLIENT_I_DN_</code><em>x509</em></td> <td>string</td>    <td>Component of client's Issuer DN</td></tr>
+<tr><td><code>SSL_CLIENT_V_START</code></td>            <td>string</td>    <td>Validity of client's certificate (start time)</td></tr>
+<tr><td><code>SSL_CLIENT_V_END</code></td>              <td>string</td>    <td>Validity of client's certificate (end time)</td></tr>
+<tr><td><code>SSL_CLIENT_V_REMAIN</code></td>           <td>string</td>    <td>Number of days until client's certificate expires</td></tr>
+<tr><td><code>SSL_CLIENT_A_SIG</code></td>              <td>string</td>    <td>Algorithm used for the signature of client's certificate</td></tr>
+<tr><td><code>SSL_CLIENT_A_KEY</code></td>              <td>string</td>    <td>Algorithm used for the public key of client's certificate</td></tr>
+<tr><td><code>SSL_CLIENT_CERT</code></td>               <td>string</td>    <td>PEM-encoded client certificate</td></tr>
+<tr><td><code>SSL_CLIENT_CERT_CHAIN_</code><em>n</em></td> <td>string</td>    <td>PEM-encoded certificates in client certificate chain</td></tr>
+<tr><td><code>SSL_CLIENT_VERIFY</code></td>             <td>string</td>    <td><code>NONE</code>, <code>SUCCESS</code>, <code>GENEROUS</code> or <code>FAILED:</code><em>reason</em></td></tr>
+<tr><td><code>SSL_SERVER_M_VERSION</code></td>          <td>string</td>    <td>The version of the server certificate</td></tr>
+<tr><td><code>SSL_SERVER_M_SERIAL</code></td>           <td>string</td>    <td>The serial of the server certificate</td></tr>
+<tr><td><code>SSL_SERVER_S_DN</code></td>               <td>string</td>    <td>Subject DN in server's certificate</td></tr>
+<tr><td><code>SSL_SERVER_S_DN_</code><em>x509</em></td> <td>string</td>    <td>Component of server's Subject DN</td></tr>
+<tr><td><code>SSL_SERVER_I_DN</code></td>               <td>string</td>    <td>Issuer DN of server's certificate</td></tr>
+<tr><td><code>SSL_SERVER_I_DN_</code><em>x509</em></td> <td>string</td>    <td>Component of server's Issuer DN</td></tr>
+<tr><td><code>SSL_SERVER_V_START</code></td>            <td>string</td>    <td>Validity of server's certificate (start time)</td></tr>
+<tr><td><code>SSL_SERVER_V_END</code></td>              <td>string</td>    <td>Validity of server's certificate (end time)</td></tr>
+<tr><td><code>SSL_SERVER_A_SIG</code></td>              <td>string</td>    <td>Algorithm used for the signature of server's certificate</td></tr>
+<tr><td><code>SSL_SERVER_A_KEY</code></td>              <td>string</td>    <td>Algorithm used for the public key of server's certificate</td></tr>
+<tr><td><code>SSL_SERVER_CERT</code></td>               <td>string</td>    <td>PEM-encoded server certificate</td></tr>
+</table>
+
+<p><em>x509</em> specifies a component of an X.509 DN; one of
+<code>C,ST,L,O,OU,CN,T,I,G,S,D,UID,Email</code>.  In Apache 2.1 and
+later, <em>x509</em> may also include a numeric <code>_n</code>
+suffix.  If the DN in question contains multiple attributes of the
+same name, this suffix is used as an index to select a particular
+attribute.  For example, where the server certificate subject DN
+included two OU fields, <code>SSL_SERVER_S_DN_OU_0</code> and
+<code>SSL_SERVER_S_DN_OU_1</code> could be used to reference each.</p>
+
+<p><code>SSL_CLIENT_V_REMAIN</code> is only available in version 2.1
+and later.</p>
+
+</section>
+
+<section id="logformats"><title>Custom Log Formats</title>
+
+<p>When <module>mod_ssl</module> is built into Apache or at least
+loaded (under DSO situation) additional functions exist for the <a
+href="mod_log_config.html#formats">Custom Log Format</a> of 
+<module>mod_log_config</module>. First there is an
+additional ``<code>%{</code><em>varname</em><code>}x</code>''
+eXtension format function which can be used to expand any variables
+provided by any module, especially those provided by mod_ssl which can
+you find in the above table.</p>
+<p>
+For backward compatibility there is additionally a special
+``<code>%{</code><em>name</em><code>}c</code>'' cryptography format function
+provided. Information about this function is provided in the <a
+href="../ssl/ssl_compat.html">Compatibility</a> chapter.</p>
+<example><title>Example</title>
+CustomLog logs/ssl_request_log \
+          "%t %h %{SSL_PROTOCOL}x %{SSL_CIPHER}x \"%r\" %b"
+</example>
+</section>
+
+<directivesynopsis>
+<name>SSLPassPhraseDialog</name>
+<description>Type of pass phrase dialog for encrypted private 
+keys</description>
+<syntax>SSLPassPhraseDialog <em>type</em></syntax>
+<default>SSLPassPhraseDialog builtin</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+<p>
+When Apache starts up it has to read the various Certificate (see
+<directive module="mod_ssl">SSLCertificateFile</directive>) and
+Private Key (see <directive
+module="mod_ssl">SSLCertificateKeyFile</directive>) files of the
+SSL-enabled virtual servers. Because for security reasons the Private
+Key files are usually encrypted, mod_ssl needs to query the
+administrator for a Pass Phrase in order to decrypt those files. This
+query can be done in two ways which can be configured by
+<em>type</em>:</p>
+<ul>
+<li><code>builtin</code>
+    <p>
+    This is the default where an interactive terminal dialog occurs at startup
+    time just before Apache detaches from the terminal. Here the administrator
+    has to manually enter the Pass Phrase for each encrypted Private Key file.
+    Because a lot of SSL-enabled virtual hosts can be configured, the
+    following reuse-scheme is used to minimize the dialog: When a Private Key
+    file is encrypted, all known Pass Phrases (at the beginning there are
+    none, of course) are tried. If one of those known Pass Phrases succeeds no
+    dialog pops up for this particular Private Key file. If none succeeded,
+    another Pass Phrase is queried on the terminal and remembered for the next
+    round (where it perhaps can be reused).</p>
+    <p>
+    This scheme allows mod_ssl to be maximally flexible (because for N encrypted
+    Private Key files you <em>can</em> use N different Pass Phrases - but then
+    you have to enter all of them, of course) while minimizing the terminal
+    dialog (i.e. when you use a single Pass Phrase for all N Private Key files
+    this Pass Phrase is queried only once).</p></li>
+
+<li><code>|/path/to/program [args...]</code> 
+
+   <p>This mode allows an external program to be used which acts as a
+   pipe to a particular input device; the program is sent the standard
+   prompt text used for the <code>builtin</code> mode on
+   <code>stdin</code>, and is expected to write password strings on
+   <code>stdout</code>.  If several passwords are needed (or an
+   incorrect password is entered), additional prompt text will be
+   written subsequent to the first password being returned, and more
+   passwords must then be written back.</p></li>
+
+<li><code>exec:/path/to/program</code>
+    <p>
+    Here an external program is configured which is called at startup for each
+    encrypted Private Key file. It is called with two arguments (the first is
+    of the form ``<code>servername:portnumber</code>'', the second is either
+    ``<code>RSA</code>'' or ``<code>DSA</code>''), which indicate for which
+    server and algorithm it has to print the corresponding Pass Phrase to
+    <code>stdout</code>. The intent is that this external program first runs
+    security checks to make sure that the system is not compromised by an
+    attacker, and only when these checks were passed successfully it provides
+    the Pass Phrase.</p>
+    <p>
+    Both these security checks, and the way the Pass Phrase is determined, can
+    be as complex as you like. Mod_ssl just defines the interface: an
+    executable program which provides the Pass Phrase on <code>stdout</code>.
+    Nothing more or less! So, if you're really paranoid about security, here
+    is your interface. Anything else has to be left as an exercise to the
+    administrator, because local security requirements are so different.</p>
+    <p>
+    The reuse-algorithm above is used here, too. In other words: The external
+    program is called only once per unique Pass Phrase.</p></li>
+</ul>
+<example><title>Example</title>
+SSLPassPhraseDialog exec:/usr/local/apache/sbin/pp-filter
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLMutex</name>
+<description>Semaphore for internal mutual exclusion of 
+operations</description>
+<syntax>SSLMutex <em>type</em></syntax>
+<default>SSLMutex none</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+<p>
+This configures the SSL engine's semaphore (aka. lock) which is used for mutual
+exclusion of operations which have to be done in a synchronized way between the
+pre-forked Apache server processes. This directive can only be used in the
+global server context because it's only useful to have one global mutex.
+This directive is designed to closely match the
+<a href="http://httpd.apache.org/docs-2.0/mod/mpm_common.html#acceptmutex">AcceptMutex</a> directive</p>
+<p>
+The following Mutex <em>types</em> are available:</p>
+<ul>
+<li><code>none | no</code>
+    <p>
+    This is the default where no Mutex is used at all. Use it at your own
+    risk. But because currently the Mutex is mainly used for synchronizing
+    write access to the SSL Session Cache you can live without it as long
+    as you accept a sometimes garbled Session Cache. So it's not recommended
+    to leave this the default. Instead configure a real Mutex.</p></li>
+<li><code>posixsem</code>
+    <p>
+    This is an elegant Mutex variant where a Posix Semaphore is used when possible.
+    It is only available when the underlying platform
+    and APR supports it.</p></li>
+<li><code>sysvsem</code>
+    <p>
+    This is a somewhat elegant Mutex variant where a SystemV IPC Semaphore is used when
+    possible. It is possible to "leak" SysV semaphores if processes crash before
+    the semaphore is removed. It is only available when the underlying platform
+    and APR supports it.</p></li>
+<li><code>sem</code>
+    <p>
+    This directive tells the SSL Module to pick the "best" semaphore implementation
+    available to it, choosing between Posix and SystemV IPC, in that order. It is only
+    available when the underlying platform and APR supports at least one of the 2.</p></li>
+<li><code>pthread</code>
+    <p>
+    This directive tells the SSL Module to use Posix thread mutexes. It is only available
+    if the underlying platform and APR supports it.</p></li>
+<li><code>fcntl:/path/to/mutex</code>
+    <p>
+    This is a portable Mutex variant where a physical (lock-)file and the <code>fcntl()</code>
+    fucntion are used as the Mutex.
+    Always use a local disk filesystem for <code>/path/to/mutex</code> and never a file
+    residing on a NFS- or AFS-filesystem. It is only available when the underlying platform
+    and APR supports it. Note: Internally, the Process ID (PID) of the
+    Apache parent process is automatically appended to
+    <code>/path/to/mutex</code> to make it unique, so you don't have to worry
+    about conflicts yourself. Notice that this type of mutex is not available
+    under the Win32 environment. There you <em>have</em> to use the semaphore
+    mutex.</p></li>
+<li><code>flock:/path/to/mutex</code>
+    <p>
+    This is similar to the <code>fcntl:/path/to/mutex</code> method with the
+    exception that the <code>flock()</code> function is used to provide file
+    locking. It is only available when the underlying platform
+    and APR supports it.</p></li>
+<li><code>file:/path/to/mutex</code>
+    <p>
+    This directive tells the SSL Module to pick the "best" file locking implementation
+    available to it, choosing between <code>fcntl</code> and <code>flock</code>,
+    in that order. It is only available when the underlying platform and APR supports
+    at least one of the 2.</p></li>
+<li><code>default | yes</code>
+    <p>
+    This directive tells the SSL Module to pick the default locking implementation
+    as determined by the platform and APR.</p></li>
+</ul>
+<example><title>Example</title>
+SSLMutex file:/usr/local/apache/logs/ssl_mutex
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLRandomSeed</name>
+<description>Pseudo Random Number Generator (PRNG) seeding 
+source</description>
+<syntax>SSLRandomSeed <em>context</em> <em>source</em> 
+[<em>bytes</em>]</syntax>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+<p>
+This configures one or more sources for seeding the Pseudo Random Number
+Generator (PRNG) in OpenSSL at startup time (<em>context</em> is
+<code>startup</code>) and/or just before a new SSL connection is established
+(<em>context</em> is <code>connect</code>). This directive can only be used
+in the global server context because the PRNG is a global facility.</p>
+<p>
+The following <em>source</em> variants are available:</p>
+<ul>
+<li><code>builtin</code>
+    <p> This is the always available builtin seeding source. It's usage
+    consumes minimum CPU cycles under runtime and hence can be always used
+    without drawbacks. The source used for seeding the PRNG contains of the
+    current time, the current process id and (when applicable) a randomly
+    choosen 1KB extract of the inter-process scoreboard structure of Apache.
+    The drawback is that this is not really a strong source and at startup
+    time (where the scoreboard is still not available) this source just
+    produces a few bytes of entropy. So you should always, at least for the
+    startup, use an additional seeding source.</p></li>
+<li><code>file:/path/to/source</code>
+    <p>
+    This variant uses an external file <code>/path/to/source</code> as the
+    source for seeding the PRNG. When <em>bytes</em> is specified, only the
+    first <em>bytes</em> number of bytes of the file form the entropy (and
+    <em>bytes</em> is given to <code>/path/to/source</code> as the first
+    argument). When <em>bytes</em> is not specified the whole file forms the
+    entropy (and <code>0</code> is given to <code>/path/to/source</code> as
+    the first argument). Use this especially at startup time, for instance
+    with an available <code>/dev/random</code> and/or
+    <code>/dev/urandom</code> devices (which usually exist on modern Unix
+    derivates like FreeBSD and Linux).</p>
+    <p>
+    <em>But be careful</em>: Usually <code>/dev/random</code> provides only as
+    much entropy data as it actually has, i.e. when you request 512 bytes of
+    entropy, but the device currently has only 100 bytes available two things
+    can happen: On some platforms you receive only the 100 bytes while on
+    other platforms the read blocks until enough bytes are available (which
+    can take a long time). Here using an existing <code>/dev/urandom</code> is
+    better, because it never blocks and actually gives the amount of requested
+    data. The drawback is just that the quality of the received data may not
+    be the best.</p>
+    <p>
+    On some platforms like FreeBSD one can even control how the entropy is
+    actually generated, i.e. by which system interrupts. More details one can
+    find under <em>rndcontrol(8)</em> on those platforms. Alternatively, when
+    your system lacks such a random device, you can use tool
+    like <a href="http://www.lothar.com/tech/crypto/">EGD</a>
+    (Entropy Gathering Daemon) and run it's client program with the
+    <code>exec:/path/to/program/</code> variant (see below) or use
+    <code>egd:/path/to/egd-socket</code> (see below).</p></li>
+
+<li><code>exec:/path/to/program</code>
+    <p>
+    This variant uses an external executable
+    <code>/path/to/program</code> as the source for seeding the
+    PRNG. When <em>bytes</em> is specified, only the first
+    <em>bytes</em> number of bytes of its <code>stdout</code> contents
+    form the entropy. When <em>bytes</em> is not specified, the
+    entirety of the data produced on <code>stdout</code> form the
+    entropy. Use this only at startup time when you need a very strong
+    seeding with the help of an external program (for instance as in
+    the example above with the <code>truerand</code> utility you can
+    find in the mod_ssl distribution which is based on the AT&amp;T
+    <em>truerand</em> library). Using this in the connection context
+    slows down the server too dramatically, of course.  So usually you
+    should avoid using external programs in that context.</p></li>
+<li><code>egd:/path/to/egd-socket</code> (Unix only)
+    <p>
+    This variant uses the Unix domain socket of the
+    external Entropy Gathering Daemon (EGD) (see <a
+    href="http://www.lothar.com/tech/crypto/">http://www.lothar.com/tech
+    /crypto/</a>) to seed the PRNG. Use this if no random device exists
+    on your platform.</p></li>
+</ul>
+<example><title>Example</title>
+SSLRandomSeed startup builtin<br />
+SSLRandomSeed startup file:/dev/random<br />
+SSLRandomSeed startup file:/dev/urandom 1024<br />
+SSLRandomSeed startup exec:/usr/local/bin/truerand 16<br />
+SSLRandomSeed connect builtin<br />
+SSLRandomSeed connect file:/dev/random<br />
+SSLRandomSeed connect file:/dev/urandom 1024<br />
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLSessionCache</name>
+<description>Type of the global/inter-process SSL Session 
+Cache</description>
+<syntax>SSLSessionCache <em>type</em></syntax>
+<default>SSLSessionCache none</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+<p>
+This configures the storage type of the global/inter-process SSL Session
+Cache. This cache is an optional facility which speeds up parallel request
+processing. For requests to the same server process (via HTTP keep-alive),
+OpenSSL already caches the SSL session information locally. But because modern
+clients request inlined images and other data via parallel requests (usually
+up to four parallel requests are common) those requests are served by
+<em>different</em> pre-forked server processes. Here an inter-process cache
+helps to avoid unneccessary session handshakes.</p>
+<p>
+The following four storage <em>type</em>s are currently supported:</p>
+<ul>
+<li><code>none</code>
+
+    <p>This disables the global/inter-process Session Cache.  This
+    will incur a noticeable speed penalty and may cause problems if
+    using certain browsers, particularly if client certificates are
+    enabled.  This setting is not recommended.</p></li>
+
+<li><code>dbm:/path/to/datafile</code>
+
+    <p>This makes use of a DBM hashfile on the local disk to
+    synchronize the local OpenSSL memory caches of the server
+    processes.  This session cache may suffer reliability issues under
+    high load.</p></li>
+
+<li><code>shm:/path/to/datafile</code>[<code>(</code><em>size</em><code>)</code>]
+
+    <p>This makes use of a high-performance cyclic buffer
+    (approx. <em>size</em> bytes in size) inside a shared memory
+    segment in RAM (established via <code>/path/to/datafile</code>) to
+    synchronize the local OpenSSL memory caches of the server
+    processes.  This is the recommended session cache.</p></li>
+
+<li><code>dc:UNIX:/path/to/socket</code>
+
+    <p>This makes use of the <a
+    href="http://www.distcache.org/">distcache</a> distributed session
+    caching libraries.  The argument should specify the location of
+    the server or proxy to be used using the distcache address syntax;
+    for example, <code>UNIX:/path/to/socket</code> specifies a UNIX
+    domain socket (typically a local dc_client proxy);
+    <code>IP:server.example.com:9001</code> specifies an IP
+    address.</p></li>
+
+</ul>
+<example><title>Examples</title>
+SSLSessionCache dbm:/usr/local/apache/logs/ssl_gcache_data<br />
+SSLSessionCache shm:/usr/local/apache/logs/ssl_gcache_data(512000)
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLSessionCacheTimeout</name>
+<description>Number of seconds before an SSL session expires
+in the Session Cache</description>
+<syntax>SSLSessionCacheTimeout <em>seconds</em></syntax>
+<default>SSLSessionCacheTimeout 300</default>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+
+<usage>
+<p>
+This directive sets the timeout in seconds for the information stored in the
+global/inter-process SSL Session Cache and the OpenSSL internal memory cache.
+It can be set as low as 15 for testing, but should be set to higher
+values like 300 in real life.</p>
+<example><title>Example</title>
+SSLSessionCacheTimeout 600
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLEngine</name>
+<description>SSL Engine Operation Switch</description>
+<syntax>SSLEngine on|off|optional</syntax>
+<default>SSLEngine off</default>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+
+<usage>
+<p>
+This directive toggles the usage of the SSL/TLS Protocol Engine. This
+is usually used inside a <directive module="core"
+type="section">VirtualHost</directive> section to enable SSL/TLS for a
+particular virtual host. By default the SSL/TLS Protocol Engine is
+disabled for both the main server and all configured virtual hosts.</p>
+<example><title>Example</title>
+&lt;VirtualHost _default_:443&gt;<br />
+SSLEngine on<br />
+...<br />
+&lt;/VirtualHost&gt;
+</example>
+<p>New in Apache 2.1, <directive>SSLEngine</directive> can be set to <code>
+optional</code>. This enables support for 
+<a href="http://www.ietf.org/rfc/rfc2817.txt">RFC 2817</a>, Upgrading to TLS 
+Within HTTP/1.1. At this time no web browsers support RFC 2817.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLProtocol</name>
+<description>Configure usable SSL protocol flavors</description>
+<syntax>SSLProtocol [+|-]<em>protocol</em> ...</syntax>
+<default>SSLProtocol all</default>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<override>Options</override>
+
+<usage><!-- XXX Why does this have an override and not .htaccess context? -->
+<p>
+This directive can be used to control the SSL protocol flavors mod_ssl should
+use when establishing its server environment. Clients then can only connect
+with one of the provided protocols.</p>
+<p>
+The available (case-insensitive) <em>protocol</em>s are:</p>
+<ul>
+<li><code>SSLv2</code>
+    <p>
+    This is the Secure Sockets Layer (SSL) protocol, version 2.0. It is the
+    original SSL protocol as designed by Netscape Corporation.</p></li>
+
+<li><code>SSLv3</code>
+    <p>
+    This is the Secure Sockets Layer (SSL) protocol, version 3.0. It is the
+    successor to SSLv2 and the currently (as of February 1999) de-facto
+    standardized SSL protocol from Netscape Corporation. It's supported by
+    almost all popular browsers.</p></li>
+
+<li><code>TLSv1</code>
+    <p>
+    This is the Transport Layer Security (TLS) protocol, version 1.0. It is the
+    successor to SSLv3 and currently (as of February 1999) still under
+    construction by the Internet Engineering Task Force (IETF). It's still
+    not supported by any popular browsers.</p></li>
+
+<li><code>All</code>
+    <p>
+    This is a shortcut for ``<code>+SSLv2 +SSLv3 +TLSv1</code>'' and a
+    convinient way for enabling all protocols except one when used in
+    combination with the minus sign on a protocol as the example above 
+    shows.</p></li>
+</ul>
+<example><title>Example</title>
+#   enable SSLv3 and TLSv1, but not SSLv2<br />
+SSLProtocol all -SSLv2
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLCipherSuite</name>
+<description>Cipher Suite available for negotiation in SSL 
+handshake</description>
+<syntax>SSLCipherSuite <em>cipher-spec</em></syntax>
+<default>SSLCipherSuite ALL:!ADH:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>AuthConfig</override>
+
+<usage>
+<p>
+This complex directive uses a colon-separated <em>cipher-spec</em> string
+consisting of OpenSSL cipher specifications to configure the Cipher Suite the
+client is permitted to negotiate in the SSL handshake phase. Notice that this
+directive can be used both in per-server and per-directory context. In
+per-server context it applies to the standard SSL handshake when a connection
+is established. In per-directory context it forces a SSL renegotation with the
+reconfigured Cipher Suite after the HTTP request was read but before the HTTP
+response is sent.</p>
+<p>
+An SSL cipher specification in <em>cipher-spec</em> is composed of 4 major
+attributes plus a few extra minor ones:</p>
+<ul>
+<li><em>Key Exchange Algorithm</em>:<br />
+    RSA or Diffie-Hellman variants.
+</li>
+<li><em>Authentication Algorithm</em>:<br />
+    RSA, Diffie-Hellman, DSS or none.
+</li>
+<li><em>Cipher/Encryption Algorithm</em>:<br />
+    DES, Triple-DES, RC4, RC2, IDEA or none.
+</li>
+<li><em>MAC Digest Algorithm</em>:<br />
+    MD5, SHA or SHA1.
+</li>
+</ul>
+<p>An SSL cipher can also be an export cipher and is either a SSLv2 or SSLv3/TLSv1
+cipher (here TLSv1 is equivalent to SSLv3). To specify which ciphers to use,
+one can either specify all the Ciphers, one at a time, or use aliases to
+specify the preference and order for the ciphers (see <a href="#table1">Table
+1</a>).</p>
+
+<table border="1">
+<columnspec><column width=".5"/><column width=".5"/></columnspec>
+<tr><th><a name="table1">Tag</a></th> <th>Description</th></tr>
+<tr><td colspan="2"><em>Key Exchange Algorithm:</em></td></tr>
+<tr><td><code>kRSA</code></td>   <td>RSA key exchange</td></tr>
+<tr><td><code>kDHr</code></td>   <td>Diffie-Hellman key exchange with RSA key</td></tr>
+<tr><td><code>kDHd</code></td>   <td>Diffie-Hellman key exchange with DSA key</td></tr>
+<tr><td><code>kEDH</code></td>   <td>Ephemeral (temp.key) Diffie-Hellman key exchange (no cert)</td>   </tr>
+<tr><td colspan="2"><em>Authentication Algorithm:</em></td></tr>
+<tr><td><code>aNULL</code></td>  <td>No authentication</td></tr>
+<tr><td><code>aRSA</code></td>   <td>RSA authentication</td></tr>
+<tr><td><code>aDSS</code></td>   <td>DSS authentication</td> </tr>
+<tr><td><code>aDH</code></td>    <td>Diffie-Hellman authentication</td></tr>
+<tr><td colspan="2"><em>Cipher Encoding Algorithm:</em></td></tr>
+<tr><td><code>eNULL</code></td>  <td>No encoding</td>         </tr>
+<tr><td><code>DES</code></td>    <td>DES encoding</td>        </tr>
+<tr><td><code>3DES</code></td>   <td>Triple-DES encoding</td> </tr>
+<tr><td><code>RC4</code></td>    <td>RC4 encoding</td>       </tr>
+<tr><td><code>RC2</code></td>    <td>RC2 encoding</td>       </tr>
+<tr><td><code>IDEA</code></td>   <td>IDEA encoding</td>       </tr>
+<tr><td colspan="2"><em>MAC Digest Algorithm</em>:</td></tr>
+<tr><td><code>MD5</code></td>    <td>MD5 hash function</td></tr>
+<tr><td><code>SHA1</code></td>   <td>SHA1 hash function</td></tr>
+<tr><td><code>SHA</code></td>    <td>SHA hash function</td> </tr>
+<tr><td colspan="2"><em>Aliases:</em></td></tr>
+<tr><td><code>SSLv2</code></td>  <td>all SSL version 2.0 ciphers</td></tr>
+<tr><td><code>SSLv3</code></td>  <td>all SSL version 3.0 ciphers</td> </tr>
+<tr><td><code>TLSv1</code></td>  <td>all TLS version 1.0 ciphers</td> </tr>
+<tr><td><code>EXP</code></td>    <td>all export ciphers</td>  </tr>
+<tr><td><code>EXPORT40</code></td> <td>all 40-bit export ciphers only</td>  </tr>
+<tr><td><code>EXPORT56</code></td> <td>all 56-bit export ciphers only</td>  </tr>
+<tr><td><code>LOW</code></td>    <td>all low strength ciphers (no export, single DES)</td></tr>
+<tr><td><code>MEDIUM</code></td> <td>all ciphers with 128 bit encryption</td> </tr>
+<tr><td><code>HIGH</code></td>   <td>all ciphers using Triple-DES</td>     </tr>
+<tr><td><code>RSA</code></td>    <td>all ciphers using RSA key exchange</td> </tr>
+<tr><td><code>DH</code></td>     <td>all ciphers using Diffie-Hellman key exchange</td> </tr>
+<tr><td><code>EDH</code></td>    <td>all ciphers using Ephemeral Diffie-Hellman key exchange</td> </tr>
+<tr><td><code>ADH</code></td>    <td>all ciphers using Anonymous Diffie-Hellman key exchange</td> </tr>
+<tr><td><code>DSS</code></td>    <td>all ciphers using DSS authentication</td> </tr>
+<tr><td><code>NULL</code></td>   <td>all ciphers using no encryption</td> </tr>
+</table>
+<p>
+Now where this becomes interesting is that these can be put together
+to specify the order and ciphers you wish to use. To speed this up
+there are also aliases (<code>SSLv2, SSLv3, TLSv1, EXP, LOW, MEDIUM,
+HIGH</code>) for certain groups of ciphers. These tags can be joined
+together with prefixes to form the <em>cipher-spec</em>. Available
+prefixes are:</p>
+<ul>
+<li>none: add cipher to list</li>
+<li><code>+</code>: add ciphers to list and pull them to current location in list</li>
+<li><code>-</code>: remove cipher from list (can be added later again)</li>
+<li><code>!</code>: kill cipher from list completely (can <strong>not</strong> be added later again)</li>
+</ul>
+<p>A simpler way to look at all of this is to use the ``<code>openssl ciphers
+-v</code>'' command which provides a nice way to successively create the
+correct <em>cipher-spec</em> string. The default <em>cipher-spec</em> string
+is ``<code>ALL:!ADH:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP</code>'' which
+means the following: first, remove from consideration any ciphers that do not
+authenticate, i.e. for SSL only the Anonymous Diffie-Hellman ciphers. Next,
+use ciphers using RC4 and RSA. Next include the high, medium and then the low
+security ciphers. Finally <em>pull</em> all SSLv2 and export ciphers to the
+end of the list.</p>
+<example>
+<pre>
+$ openssl ciphers -v 'ALL:!ADH:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP'
+NULL-SHA                SSLv3 Kx=RSA      Au=RSA  Enc=None      Mac=SHA1
+NULL-MD5                SSLv3 Kx=RSA      Au=RSA  Enc=None      Mac=MD5
+EDH-RSA-DES-CBC3-SHA    SSLv3 Kx=DH       Au=RSA  Enc=3DES(168) Mac=SHA1
+...                     ...               ...     ...           ...
+EXP-RC4-MD5             SSLv3 Kx=RSA(512) Au=RSA  Enc=RC4(40)   Mac=MD5  export
+EXP-RC2-CBC-MD5         SSLv2 Kx=RSA(512) Au=RSA  Enc=RC2(40)   Mac=MD5  export
+EXP-RC4-MD5             SSLv2 Kx=RSA(512) Au=RSA  Enc=RC4(40)   Mac=MD5  export
+</pre>
+</example>
+<p>The complete list of particular RSA &amp; DH ciphers for SSL is given in <a
+href="#table2">Table 2</a>.</p>
+<example><title>Example</title>
+SSLCipherSuite RSA:!EXP:!NULL:+HIGH:+MEDIUM:-LOW
+</example>
+<table border="1">
+<columnspec><column width=".3"/><column width=".1"/><column width=".13"/>
+<column width=".1"/><column width=".13"/><column width=".1"/>
+<column width=".13"/></columnspec>
+<tr><th><a name="table2">Cipher-Tag</a></th> <th>Protocol</th> <th>Key Ex.</th> <th>Auth.</th> <th>Enc.</th> <th>MAC</th> <th>Type</th> </tr>
+<tr><td colspan="7"><em>RSA Ciphers:</em></td></tr>
+<tr><td><code>DES-CBC3-SHA</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>3DES(168)</td> <td>SHA1</td> <td></td> </tr>
+<tr><td><code>DES-CBC3-MD5</code></td> <td>SSLv2</td> <td>RSA</td> <td>RSA</td> <td>3DES(168)</td> <td>MD5</td> <td></td> </tr>
+<tr><td><code>IDEA-CBC-SHA</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>IDEA(128)</td> <td>SHA1</td> <td></td> </tr>
+<tr><td><code>RC4-SHA</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>RC4(128)</td> <td>SHA1</td> <td></td> </tr>
+<tr><td><code>RC4-MD5</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>RC4(128)</td> <td>MD5</td> <td></td> </tr>
+<tr><td><code>IDEA-CBC-MD5</code></td> <td>SSLv2</td> <td>RSA</td> <td>RSA</td> <td>IDEA(128)</td> <td>MD5</td> <td></td> </tr>
+<tr><td><code>RC2-CBC-MD5</code></td> <td>SSLv2</td> <td>RSA</td> <td>RSA</td> <td>RC2(128)</td> <td>MD5</td> <td></td> </tr>
+<tr><td><code>RC4-MD5</code></td> <td>SSLv2</td> <td>RSA</td> <td>RSA</td> <td>RC4(128)</td> <td>MD5</td> <td></td> </tr>
+<tr><td><code>DES-CBC-SHA</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>DES(56)</td> <td>SHA1</td> <td></td> </tr>
+<tr><td><code>RC4-64-MD5</code></td> <td>SSLv2</td> <td>RSA</td> <td>RSA</td> <td>RC4(64)</td> <td>MD5</td> <td></td> </tr>
+<tr><td><code>DES-CBC-MD5</code></td> <td>SSLv2</td> <td>RSA</td> <td>RSA</td> <td>DES(56)</td> <td>MD5</td> <td></td> </tr>
+<tr><td><code>EXP-DES-CBC-SHA</code></td> <td>SSLv3</td> <td>RSA(512)</td> <td>RSA</td> <td>DES(40)</td> <td>SHA1</td> <td> export</td> </tr>
+<tr><td><code>EXP-RC2-CBC-MD5</code></td> <td>SSLv3</td> <td>RSA(512)</td> <td>RSA</td> <td>RC2(40)</td> <td>MD5</td> <td>  export</td> </tr>
+<tr><td><code>EXP-RC4-MD5</code></td> <td>SSLv3</td> <td>RSA(512)</td> <td>RSA</td> <td>RC4(40)</td> <td>MD5</td> <td>  export</td> </tr>
+<tr><td><code>EXP-RC2-CBC-MD5</code></td> <td>SSLv2</td> <td>RSA(512)</td> <td>RSA</td> <td>RC2(40)</td> <td>MD5</td> <td>  export</td> </tr>
+<tr><td><code>EXP-RC4-MD5</code></td> <td>SSLv2</td> <td>RSA(512)</td> <td>RSA</td> <td>RC4(40)</td> <td>MD5</td> <td>  export</td> </tr>
+<tr><td><code>NULL-SHA</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>None</td> <td>SHA1</td> <td></td> </tr>
+<tr><td><code>NULL-MD5</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>None</td> <td>MD5</td> <td></td> </tr>
+<tr><td colspan="7"><em>Diffie-Hellman Ciphers:</em></td></tr>
+<tr><td><code>ADH-DES-CBC3-SHA</code></td> <td>SSLv3</td> <td>DH</td> <td>None</td> <td>3DES(168)</td> <td>SHA1</td> <td></td> </tr>
+<tr><td><code>ADH-DES-CBC-SHA</code></td> <td>SSLv3</td> <td>DH</td> <td>None</td> <td>DES(56)</td> <td>SHA1</td> <td></td> </tr>
+<tr><td><code>ADH-RC4-MD5</code></td> <td>SSLv3</td> <td>DH</td> <td>None</td> <td>RC4(128)</td> <td>MD5</td> <td></td> </tr>
+<tr><td><code>EDH-RSA-DES-CBC3-SHA</code></td> <td>SSLv3</td> <td>DH</td> <td>RSA</td> <td>3DES(168)</td> <td>SHA1</td> <td></td> </tr>
+<tr><td><code>EDH-DSS-DES-CBC3-SHA</code></td> <td>SSLv3</td> <td>DH</td> <td>DSS</td> <td>3DES(168)</td> <td>SHA1</td> <td></td> </tr>
+<tr><td><code>EDH-RSA-DES-CBC-SHA</code></td> <td>SSLv3</td> <td>DH</td> <td>RSA</td> <td>DES(56)</td> <td>SHA1</td> <td></td> </tr>
+<tr><td><code>EDH-DSS-DES-CBC-SHA</code></td> <td>SSLv3</td> <td>DH</td> <td>DSS</td> <td>DES(56)</td> <td>SHA1</td> <td></td> </tr>
+<tr><td><code>EXP-EDH-RSA-DES-CBC-SHA</code></td> <td>SSLv3</td> <td>DH(512)</td> <td>RSA</td> <td>DES(40)</td> <td>SHA1</td> <td> export</td> </tr>
+<tr><td><code>EXP-EDH-DSS-DES-CBC-SHA</code></td> <td>SSLv3</td> <td>DH(512)</td> <td>DSS</td> <td>DES(40)</td> <td>SHA1</td> <td> export</td> </tr>
+<tr><td><code>EXP-ADH-DES-CBC-SHA</code></td> <td>SSLv3</td> <td>DH(512)</td> <td>None</td> <td>DES(40)</td> <td>SHA1</td> <td> export</td> </tr>
+<tr><td><code>EXP-ADH-RC4-MD5</code></td> <td>SSLv3</td> <td>DH(512)</td> <td>None</td> <td>RC4(40)</td> <td>MD5</td> <td>  export</td> </tr>
+</table>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLCertificateFile</name>
+<description>Server PEM-encoded X.509 Certificate file</description>
+<syntax>SSLCertificateFile <em>file-path</em></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+
+<usage>
+<p>
+This directive points to the PEM-encoded Certificate file for the server and
+optionally also to the corresponding RSA or DSA Private Key file for it
+(contained in the same file). If the contained Private Key is encrypted the
+Pass Phrase dialog is forced at startup time. This directive can be used up to
+two times (referencing different filenames) when both a RSA and a DSA based
+server certificate is used in parallel.</p>
+<example><title>Example</title>
+SSLCertificateFile /usr/local/apache2/conf/ssl.crt/server.crt
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLCertificateKeyFile</name>
+<description>Server PEM-encoded Private Key file</description>
+<syntax>SSLCertificateKeyFile <em>file-path</em></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+
+<usage>
+<p>
+This directive points to the PEM-encoded Private Key file for the
+server. If the Private Key is not combined with the Certificate in the
+<directive>SSLCertificateFile</directive>, use this additional directive to
+point to the file with the stand-alone Private Key. When
+<directive>SSLCertificateFile</directive> is used and the file
+contains both the Certificate and the Private Key this directive need
+not be used. But we strongly discourage this practice.  Instead we
+recommend you to separate the Certificate and the Private Key. If the
+contained Private Key is encrypted, the Pass Phrase dialog is forced
+at startup time. This directive can be used up to two times
+(referencing different filenames) when both a RSA and a DSA based
+private key is used in parallel.</p>
+<example><title>Example</title>
+SSLCertificateKeyFile /usr/local/apache2/conf/ssl.key/server.key
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLCertificateChainFile</name>
+<description>File of PEM-encoded Server CA Certificates</description>
+<syntax>SSLCertificateChainFile <em>file-path</em></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+
+<usage>
+<p>
+This directive sets the optional <em>all-in-one</em> file where you can
+assemble the certificates of Certification Authorities (CA) which form the
+certificate chain of the server certificate. This starts with the issuing CA
+certificate of of the server certificate and can range up to the root CA
+certificate. Such a file is simply the concatenation of the various
+PEM-encoded CA Certificate files, usually in certificate chain order.</p>
+<p>
+This should be used alternatively and/or additionally to <directive
+module="mod_ssl">SSLCACertificatePath</directive> for explicitly
+constructing the server certificate chain which is sent to the browser
+in addition to the server certificate. It is especially useful to
+avoid conflicts with CA certificates when using client
+authentication. Because although placing a CA certificate of the
+server certificate chain into <directive
+module="mod_ssl">SSLCACertificatePath</directive> has the same effect
+for the certificate chain construction, it has the side-effect that
+client certificates issued by this same CA certificate are also
+accepted on client authentication. That's usually not one expect.</p>
+<p>
+But be careful: Providing the certificate chain works only if you are using a
+<em>single</em> (either RSA <em>or</em> DSA) based server certificate. If you are
+using a coupled RSA+DSA certificate pair, this will work only if actually both
+certificates use the <em>same</em> certificate chain. Else the browsers will be
+confused in this situation.</p>
+<example><title>Example</title>
+SSLCertificateChainFile /usr/local/apache2/conf/ssl.crt/ca.crt
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLCACertificatePath</name>
+<description>Directory of PEM-encoded CA Certificates for 
+Client Auth</description>
+<syntax>SSLCACertificatePath <em>directory-path</em></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+
+<usage>
+<p>
+This directive sets the directory where you keep the Certificates of
+Certification Authorities (CAs) whose clients you deal with. These are used to
+verify the client certificate on Client Authentication.</p>
+<p>
+The files in this directory have to be PEM-encoded and are accessed through
+hash filenames. So usually you can't just place the Certificate files
+there: you also have to create symbolic links named
+<em>hash-value</em><code>.N</code>. And you should always make sure this directory
+contains the appropriate symbolic links. Use the <code>Makefile</code> which
+comes with mod_ssl to accomplish this task.</p>
+<example><title>Example</title>
+SSLCACertificatePath /usr/local/apache2/conf/ssl.crt/
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLCACertificateFile</name>
+<description>File of concatenated PEM-encoded CA Certificates 
+for Client Auth</description>
+<syntax>SSLCACertificateFile <em>file-path</em></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+
+<usage>
+<p>
+This directive sets the <em>all-in-one</em> file where you can assemble the
+Certificates of Certification Authorities (CA) whose <em>clients</em> you deal
+with. These are used for Client Authentication. Such a file is simply the
+concatenation of the various PEM-encoded Certificate files, in order of
+preference. This can be used alternatively and/or additionally to 
+<directive module="mod_ssl">SSLCACertificatePath</directive>.</p>
+<example><title>Example</title>
+SSLCACertificateFile /usr/local/apache2/conf/ssl.crt/ca-bundle-client.crt
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLCADNRequestFile</name>
+<description>File of concatenated PEM-encoded CA Certificates 
+for defining acceptable CA names</description>
+<syntax>SSLCADNRequestFile <em>file-path</em></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+
+<usage>
+<p>When a client certificate is requested by mod_ssl, a list of
+<em>acceptable Certificate Authority names</em> is sent to the client
+in the SSL handshake.  These CA names can be used by the client to
+select an appropriate client certificate out of those it has
+available.</p>
+
+<p>If neither of the directives <directive
+module="mod_ssl">SSLCADNRequestPath</directive> or <directive
+module="mod_ssl">SSLCADNRequestFile</directive> are given, then the
+set of acceptable CA names sent to the client is the names of all the
+CA certificates given by the <directive
+module="mod_ssl">SSLCACertificateFile</directive> and <directive
+module="mod_ssl">SSLCACertificatePath</directive> directives; in other
+words, the names of the CAs which will actually be used to verify the
+client certificate.</p>
+
+<p>In some circumstances, it is useful to be able to send a set of
+acceptable CA names which differs from the actual CAs used to verify
+the client certificate - for example, if the client certificates are
+signed by intermediate CAs.  In such cases, <directive
+module="mod_ssl">SSLCADNRequestPath</directive> and/or <directive
+module="mod_ssl">SSLCADNRequestFile</directive> can be used; the
+acceptable CA names are then taken from the complete set of
+certificates in the directory and/or file specified by this pair of
+directives.</p>
+
+<p><directive module="mod_ssl">SSLCADNRequestFile</directive> must
+specify an <em>all-in-one</em> file containing a concatenation of
+PEM-encoded CA certificates.</p>
+
+<example><title>Example</title>
+SSLCADNRequestFile /usr/local/apache2/conf/ca-names.crt
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLCADNRequestPath</name>
+<description>Directory of PEM-encoded CA Certificates for 
+defining acceptable CA names</description>
+<syntax>SSLCADNRequestPath <em>directory-path</em></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+
+<usage>
+
+<p>This optional directive can be used to specify the set of
+<em>acceptable CA names</em> which will be sent to the client when a
+client certificate is requested.  See the <directive
+module="mod_ssl">SSLCADNRequestFile</directive> directive for more
+details.</p>
+
+<p>The files in this directory have to be PEM-encoded and are accessed
+through hash filenames. So usually you can't just place the
+Certificate files there: you also have to create symbolic links named
+<em>hash-value</em><code>.N</code>. And you should always make sure
+this directory contains the appropriate symbolic links. Use the
+<code>Makefile</code> which comes with mod_ssl to accomplish this
+task.</p>
+<example><title>Example</title>
+SSLCADNRequestPath /usr/local/apache2/conf/ca-names.crt/
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLCARevocationPath</name>
+<description>Directory of PEM-encoded CA CRLs for 
+Client Auth</description>
+<syntax>SSLCARevocationPath <em>directory-path</em></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+
+<usage>
+<p>
+This directive sets the directory where you keep the Certificate Revocation
+Lists (CRL) of Certification Authorities (CAs) whose clients you deal with.
+These are used to revoke the client certificate on Client Authentication.</p>
+<p>
+The files in this directory have to be PEM-encoded and are accessed through
+hash filenames. So usually you have not only to place the CRL files there.
+Additionally you have to create symbolic links named
+<em>hash-value</em><code>.rN</code>. And you should always make sure this directory
+contains the appropriate symbolic links. Use the <code>Makefile</code> which
+comes with <module>mod_ssl</module> to accomplish this task.</p>
+<example><title>Example</title>
+SSLCARevocationPath /usr/local/apache2/conf/ssl.crl/
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLCARevocationFile</name>
+<description>File of concatenated PEM-encoded CA CRLs for 
+Client Auth</description>
+<syntax>SSLCARevocationFile <em>file-path</em></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+
+<usage>
+<p>
+This directive sets the <em>all-in-one</em> file where you can
+assemble the Certificate Revocation Lists (CRL) of Certification
+Authorities (CA) whose <em>clients</em> you deal with. These are used
+for Client Authentication.  Such a file is simply the concatenation of
+the various PEM-encoded CRL files, in order of preference. This can be
+used alternatively and/or additionally to <directive
+module="mod_ssl">SSLCARevocationPath</directive>.</p>
+<example><title>Example</title>
+SSLCARevocationFile /usr/local/apache2/conf/ssl.crl/ca-bundle-client.crl
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLVerifyClient</name>
+<description>Type of Client Certificate verification</description>
+<syntax>SSLVerifyClient <em>level</em></syntax>
+<default>SSLVerifyClient none</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>AuthConfig</override>
+
+<usage>
+<p>
+This directive sets the Certificate verification level for the Client
+Authentication. Notice that this directive can be used both in per-server and
+per-directory context. In per-server context it applies to the client
+authentication process used in the standard SSL handshake when a connection is
+established. In per-directory context it forces a SSL renegotation with the
+reconfigured client verification level after the HTTP request was read but
+before the HTTP response is sent.</p>
+<p>
+The following levels are available for <em>level</em>:</p>
+<ul>
+<li><strong>none</strong>:
+     no client Certificate is required at all</li>
+<li><strong>optional</strong>:
+     the client <em>may</em> present a valid Certificate</li>
+<li><strong>require</strong>:
+     the client <em>has to</em> present a valid Certificate</li>
+<li><strong>optional_no_ca</strong>:
+     the client may present a valid Certificate<br />
+     but it need not to be (successfully) verifiable.</li>
+</ul>
+<p>In practice only levels <strong>none</strong> and
+<strong>require</strong> are really interesting, because level
+<strong>optional</strong> doesn't work with all browsers and level
+<strong>optional_no_ca</strong> is actually against the idea of
+authentication (but can be used to establish SSL test pages, etc.)</p>
+<example><title>Example</title>
+SSLVerifyClient require
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLVerifyDepth</name>
+<description>Maximum depth of CA Certificates in Client 
+Certificate verification</description>
+<syntax>SSLVerifyDepth <em>number</em></syntax>
+<default>SSLVerifyDepth 1</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>AuthConfig</override>
+
+<usage>
+<p>
+This directive sets how deeply mod_ssl should verify before deciding that the
+clients don't have a valid certificate. Notice that this directive can be
+used both in per-server and per-directory context. In per-server context it
+applies to the client authentication process used in the standard SSL
+handshake when a connection is established. In per-directory context it forces
+a SSL renegotation with the reconfigured client verification depth after the
+HTTP request was read but before the HTTP response is sent.</p>
+<p>
+The depth actually is the maximum number of intermediate certificate issuers,
+i.e. the number of CA certificates which are max allowed to be followed while
+verifying the client certificate. A depth of 0 means that self-signed client
+certificates are accepted only, the default depth of 1 means the client
+certificate can be self-signed or has to be signed by a CA which is directly
+known to the server (i.e. the CA's certificate is under
+<directive module="mod_ssl">SSLCACertificatePath</directive>), etc.</p>
+<example><title>Example</title>
+SSLVerifyDepth 10
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLOptions</name>
+<description>Configure various SSL engine run-time options</description>
+<syntax>SSLOptions [+|-]<em>option</em> ...</syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>Options</override>
+
+<usage>
+<p>
+This directive can be used to control various run-time options on a
+per-directory basis. Normally, if multiple <code>SSLOptions</code>
+could apply to a directory, then the most specific one is taken
+completely; the options are not merged. However if <em>all</em> the
+options on the <code>SSLOptions</code> directive are preceded by a
+plus (<code>+</code>) or minus (<code>-</code>) symbol, the options
+are merged. Any options preceded by a <code>+</code> are added to the
+options currently in force, and any options preceded by a
+<code>-</code> are removed from the options currently in force.</p>
+<p>
+The available <em>option</em>s are:</p>
+<ul>
+<li><code>StdEnvVars</code>
+    <p>
+    When this option is enabled, the standard set of SSL related CGI/SSI
+    environment variables are created. This per default is disabled for
+    performance reasons, because the information extraction step is a
+    rather expensive operation. So one usually enables this option for
+    CGI and SSI requests only.</p>
+</li>
+<li><code>CompatEnvVars</code>
+    <p>
+    When this option is enabled, additional CGI/SSI environment variables are
+    created for backward compatibility to other Apache SSL solutions. Look in
+    the <a href="../ssl/ssl_compat.html">Compatibility</a> chapter for details
+    on the particular variables generated.</p>
+</li>
+<li><code>ExportCertData</code>
+    <p>
+    When this option is enabled, additional CGI/SSI environment variables are
+    created: <code>SSL_SERVER_CERT</code>, <code>SSL_CLIENT_CERT</code> and
+    <code>SSL_CLIENT_CERT_CHAIN_</code><em>n</em> (with <em>n</em> = 0,1,2,..).
+    These contain the PEM-encoded X.509 Certificates of server and client for
+    the current HTTPS connection and can be used by CGI scripts for deeper
+    Certificate checking. Additionally all other certificates of the client
+    certificate chain are provided, too. This bloats up the environment a
+    little bit which is why you have to use this option to enable it on
+    demand.</p>
+</li>
+<li><code>FakeBasicAuth</code>
+    <p>
+    When this option is enabled, the Subject Distinguished Name (DN) of the
+    Client X509 Certificate is translated into a HTTP Basic Authorization
+    username. This means that the standard Apache authentication methods can
+    be used for access control. The user name is just the Subject of the
+    Client's X509 Certificate (can be determined by running OpenSSL's
+    <code>openssl x509</code> command: <code>openssl x509 -noout -subject -in
+    </code><em>certificate</em><code>.crt</code>). Note that no password is
+    obtained from the user. Every entry in the user file needs this password:
+    ``<code>xxj31ZMTZzkVA</code>'', which is the DES-encrypted version of the
+    word `<code>password</code>''. Those who live under MD5-based encryption
+    (for instance under FreeBSD or BSD/OS, etc.) should use the following MD5
+    hash of the same word: ``<code>$1$OXLyS...$Owx8s2/m9/gfkcRVXzgoE/</code>''.</p>
+</li>
+<li><code>StrictRequire</code>
+    <p>
+    This <em>forces</em> forbidden access when <code>SSLRequireSSL</code> or
+    <code>SSLRequire</code> successfully decided that access should be
+    forbidden. Usually the default is that in the case where a ``<code>Satisfy
+    any</code>'' directive is used, and other access restrictions are passed,
+    denial of access due to <code>SSLRequireSSL</code> or
+    <code>SSLRequire</code> is overridden (because that's how the Apache
+    <code>Satisfy</code> mechanism should work.) But for strict access restriction
+    you can use <code>SSLRequireSSL</code> and/or <code>SSLRequire</code> in
+    combination with an ``<code>SSLOptions +StrictRequire</code>''. Then an
+    additional ``<code>Satisfy Any</code>'' has no chance once mod_ssl has
+    decided to deny access.</p>
+</li>
+<li><code>OptRenegotiate</code>
+    <p>
+    This enables optimized SSL connection renegotiation handling when SSL
+    directives are used in per-directory context. By default a strict
+    scheme is enabled where <em>every</em> per-directory reconfiguration of
+    SSL parameters causes a <em>full</em> SSL renegotiation handshake. When this
+    option is used mod_ssl tries to avoid unnecessary handshakes by doing more
+    granular (but still safe) parameter checks. Nevertheless these granular
+    checks sometimes maybe not what the user expects, so enable this on a
+    per-directory basis only, please.</p>
+</li>
+</ul>
+<example><title>Example</title>
+SSLOptions +FakeBasicAuth -StrictRequire<br />
+&lt;Files ~ "\.(cgi|shtml)$"&gt;<br />
+    SSLOptions +StdEnvVars +CompatEnvVars -ExportCertData<br />
+&lt;Files&gt;
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLRequireSSL</name>
+<description>Deny access when SSL is not used for the 
+HTTP request</description>
+<syntax>SSLRequireSSL</syntax>
+<contextlist><context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>AuthConfig</override>
+
+<usage>
+<p><!-- XXX: I think the syntax is wrong -->
+This directive forbids access unless HTTP over SSL (i.e. HTTPS) is enabled for
+the current connection. This is very handy inside the SSL-enabled virtual
+host or directories for defending against configuration errors that expose
+stuff that should be protected. When this directive is present all requests
+are denied which are not using SSL.</p>
+<example><title>Example</title>
+SSLRequireSSL
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLRequire</name>
+<description>Allow access only when an arbitrarily complex 
+boolean expression is true</description>
+<syntax>SSLRequire <em>expression</em></syntax>
+<contextlist><context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>AuthConfig</override>
+
+<usage>
+<p>
+This directive specifies a general access requirement which has to be
+fulfilled in order to allow access. It's a very powerful directive because the
+requirement specification is an arbitrarily complex boolean expression
+containing any number of access checks.</p>
+<note type="warning">
+<p>The implementation of <code>SSLRequire</code> is not thread safe.  
+   Using <code>SSLRequire</code> inside <code>.htaccess</code> files
+   on a threaded <a href="../mpm.html">MPM</a> may cause random crashes.
+</p>
+</note>
+<p>
+The <em>expression</em> must match the following syntax (given as a BNF
+grammar notation):</p>
+<blockquote>
+<pre>
+expr     ::= "<strong>true</strong>" | "<strong>false</strong>"
+           | "<strong>!</strong>" expr
+           | expr "<strong>&amp;&amp;</strong>" expr
+           | expr "<strong>||</strong>" expr
+           | "<strong>(</strong>" expr "<strong>)</strong>"
+           | comp
+
+comp     ::= word "<strong>==</strong>" word | word "<strong>eq</strong>" word
+           | word "<strong>!=</strong>" word | word "<strong>ne</strong>" word
+           | word "<strong>&lt;</strong>"  word | word "<strong>lt</strong>" word
+           | word "<strong>&lt;=</strong>" word | word "<strong>le</strong>" word
+           | word "<strong>&gt;</strong>"  word | word "<strong>gt</strong>" word
+           | word "<strong>&gt;=</strong>" word | word "<strong>ge</strong>" word
+           | word "<strong>in</strong>" "<strong>{</strong>" wordlist "<strong>}</strong>"
+           | word "<strong>=~</strong>" regex
+           | word "<strong>!~</strong>" regex
+
+wordlist ::= word
+           | wordlist "<strong>,</strong>" word
+
+word     ::= digit
+           | cstring
+           | variable
+           | function
+
+digit    ::= [0-9]+
+cstring  ::= "..."
+variable ::= "<strong>%{</strong>" varname "<strong>}</strong>"
+function ::= funcname "<strong>(</strong>" funcargs "<strong>)</strong>"
+</pre>
+</blockquote>
+<p>while for <code>varname</code> any variable from <a
+href="#table3">Table 3</a> can be used. Finally for
+<code>funcname</code> the following functions are available:</p>
+<ul>
+<li><code>file(</code><em>filename</em><code>)</code>
+    <p>
+    This function takes one string argument and expands to the contents of the
+    file. This is especially useful for matching this contents against a
+    regular expression, etc.</p>
+</li>
+</ul>
+<p>Notice that <em>expression</em> is first parsed into an internal machine
+representation and then evaluated in a second step. Actually, in Global and
+Per-Server Class context <em>expression</em> is parsed at startup time and
+at runtime only the machine representation is executed. For Per-Directory
+context this is different: here <em>expression</em> has to be parsed and
+immediately executed for every request.</p>
+<example><title>Example</title>
+SSLRequire (    %{SSL_CIPHER} !~ m/^(EXP|NULL)-/ \<br />
+            and %{SSL_CLIENT_S_DN_O} eq "Snake Oil, Ltd." \<br />
+            and %{SSL_CLIENT_S_DN_OU} in {"Staff", "CA", "Dev"} \<br />
+            and %{TIME_WDAY} &gt;= 1 and %{TIME_WDAY} &lt;= 5 \<br />
+            and %{TIME_HOUR} &gt;= 8 and %{TIME_HOUR} &lt;= 20       ) \<br />
+           or %{REMOTE_ADDR} =~ m/^192\.76\.162\.[0-9]+$/
+</example>
+
+<p><em>Standard CGI/1.0 and Apache variables:</em></p>
+<pre>
+HTTP_USER_AGENT        PATH_INFO             AUTH_TYPE
+HTTP_REFERER           QUERY_STRING          SERVER_SOFTWARE
+HTTP_COOKIE            REMOTE_HOST           API_VERSION
+HTTP_FORWARDED         REMOTE_IDENT          TIME_YEAR
+HTTP_HOST              IS_SUBREQ             TIME_MON
+HTTP_PROXY_CONNECTION  DOCUMENT_ROOT         TIME_DAY
+HTTP_ACCEPT            SERVER_ADMIN          TIME_HOUR
+HTTP:headername        SERVER_NAME           TIME_MIN
+THE_REQUEST            SERVER_PORT           TIME_SEC
+REQUEST_METHOD         SERVER_PROTOCOL       TIME_WDAY
+REQUEST_SCHEME         REMOTE_ADDR           TIME
+REQUEST_URI            REMOTE_USER           ENV:<strong>variablename</strong>
+REQUEST_FILENAME
+</pre>
+<p><em>SSL-related variables:</em></p>
+<pre>
+HTTPS                  SSL_CLIENT_M_VERSION   SSL_SERVER_M_VERSION
+                       SSL_CLIENT_M_SERIAL    SSL_SERVER_M_SERIAL
+SSL_PROTOCOL           SSL_CLIENT_V_START     SSL_SERVER_V_START
+SSL_SESSION_ID         SSL_CLIENT_V_END       SSL_SERVER_V_END
+SSL_CIPHER             SSL_CLIENT_S_DN        SSL_SERVER_S_DN
+SSL_CIPHER_EXPORT      SSL_CLIENT_S_DN_C      SSL_SERVER_S_DN_C
+SSL_CIPHER_ALGKEYSIZE  SSL_CLIENT_S_DN_ST     SSL_SERVER_S_DN_ST
+SSL_CIPHER_USEKEYSIZE  SSL_CLIENT_S_DN_L      SSL_SERVER_S_DN_L
+SSL_VERSION_LIBRARY    SSL_CLIENT_S_DN_O      SSL_SERVER_S_DN_O
+SSL_VERSION_INTERFACE  SSL_CLIENT_S_DN_OU     SSL_SERVER_S_DN_OU
+                       SSL_CLIENT_S_DN_CN     SSL_SERVER_S_DN_CN
+                       SSL_CLIENT_S_DN_T      SSL_SERVER_S_DN_T
+                       SSL_CLIENT_S_DN_I      SSL_SERVER_S_DN_I
+                       SSL_CLIENT_S_DN_G      SSL_SERVER_S_DN_G
+                       SSL_CLIENT_S_DN_S      SSL_SERVER_S_DN_S
+                       SSL_CLIENT_S_DN_D      SSL_SERVER_S_DN_D
+                       SSL_CLIENT_S_DN_UID    SSL_SERVER_S_DN_UID
+                       SSL_CLIENT_S_DN_Email  SSL_SERVER_S_DN_Email
+                       SSL_CLIENT_I_DN        SSL_SERVER_I_DN
+                       SSL_CLIENT_I_DN_C      SSL_SERVER_I_DN_C
+                       SSL_CLIENT_I_DN_ST     SSL_SERVER_I_DN_ST
+                       SSL_CLIENT_I_DN_L      SSL_SERVER_I_DN_L
+                       SSL_CLIENT_I_DN_O      SSL_SERVER_I_DN_O
+                       SSL_CLIENT_I_DN_OU     SSL_SERVER_I_DN_OU
+                       SSL_CLIENT_I_DN_CN     SSL_SERVER_I_DN_CN
+                       SSL_CLIENT_I_DN_T      SSL_SERVER_I_DN_T
+                       SSL_CLIENT_I_DN_I      SSL_SERVER_I_DN_I
+                       SSL_CLIENT_I_DN_G      SSL_SERVER_I_DN_G
+                       SSL_CLIENT_I_DN_S      SSL_SERVER_I_DN_S
+                       SSL_CLIENT_I_DN_D      SSL_SERVER_I_DN_D
+                       SSL_CLIENT_I_DN_UID    SSL_SERVER_I_DN_UID
+                       SSL_CLIENT_I_DN_Email  SSL_SERVER_I_DN_Email
+                       SSL_CLIENT_A_SIG       SSL_SERVER_A_SIG
+                       SSL_CLIENT_A_KEY       SSL_SERVER_A_KEY
+                       SSL_CLIENT_CERT        SSL_SERVER_CERT
+                       SSL_CLIENT_CERT_CHAIN_<strong>n</strong>
+                       SSL_CLIENT_VERIFY
+</pre>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLProxyMachineCertificatePath</name>
+<description>Directory of PEM-encoded client certificates and keys to be used by the proxy</description>
+<syntax>SSLProxyMachineCertificatePath <em>directory</em></syntax>
+<contextlist><context>server config</context></contextlist>
+<override>Not applicable</override>
+
+<usage>
+<p>
+This directive sets the directory where you keep the certificates and
+keys used for authentication of the proxy server to remote servers.
+</p>
+<p>The files in this directory must be PEM-encoded and are accessed through
+hash filenames. Additionally, you must create symbolic links named
+<code><em>hash-value</em>.N</code>. And you should always make sure this
+directory contains the appropriate symbolic links. Use the Makefile which
+comes with mod_ssl to accomplish this task.
+</p>
+<note type="warning">
+<p>Currently there is no support for encrypted private keys</p>
+</note>
+<example><title>Example</title>
+SSLProxyMachineCertificatePath /usr/local/apache2/conf/proxy.crt/
+</example> 
+</usage> 
+</directivesynopsis>
+
+
+<directivesynopsis>
+<name>SSLProxyMachineCertificateFile</name>
+<description>File of concatenated PEM-encoded client certificates and keys to be used by the proxy</description>
+<syntax>SSLProxyMachineCertificateFile <em>filename</em></syntax>
+<contextlist><context>server config</context></contextlist>
+<override>Not applicable</override>
+
+<usage>
+<p>
+This directive sets the all-in-one file where you keep the certificates and
+keys used for authentication of the proxy server to remote servers.
+</p>
+<p>
+This referenced file is simply the concatenation of the various PEM-encoded
+certificate files, in order of preference. Use this directive alternatively
+or additionally to <code>SSLProxyMachineCertificatePath</code>.
+</p>
+<note type="warning">
+<p>Currently there is no support for encrypted private keys</p>
+</note>
+<example><title>Example</title>
+SSLProxyMachineCertificateFile /usr/local/apache2/conf/ssl.crt/proxy.pem
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLProxyVerify</name>
+<description>Type of remote server Certificate verification</description>
+<syntax>SSLProxyVerify <em>level</em></syntax>
+<default>SSLProxyVerify none</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>AuthConfig</override>
+
+<usage>
+<p>
+This directive sets the Certificate verification level for the remote server
+Authentication. Notice that this directive can be used both in per-server and
+per-directory context. In per-server context it applies to the remote server
+authentication process used in the standard SSL handshake when a connection is
+established. In per-directory context it forces a SSL renegotation with the
+reconfigured remote server verification level after the HTTP request was read but
+before the HTTP response is sent.</p>
+<p>
+The following levels are available for <em>level</em>:</p>
+<ul>
+<li><strong>none</strong>:
+     no remote server Certificate is required at all</li>
+<li><strong>optional</strong>:
+     the remote server <em>may</em> present a valid Certificate</li>
+<li><strong>require</strong>:
+     the remote server <em>has to</em> present a valid Certificate</li>
+<li><strong>optional_no_ca</strong>:
+     the remote server may present a valid Certificate<br />
+     but it need not to be (successfully) verifiable.</li>
+</ul>
+<p>In practice only levels <strong>none</strong> and
+<strong>require</strong> are really interesting, because level
+<strong>optional</strong> doesn't work with all servers and level
+<strong>optional_no_ca</strong> is actually against the idea of
+authentication (but can be used to establish SSL test pages, etc.)</p>
+<example><title>Example</title>
+SSLProxyVerify require
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLProxyVerifyDepth</name>
+<description>Maximum depth of CA Certificates in Remote Server
+Certificate verification</description>
+<syntax>SSLProxyVerifyDepth <em>number</em></syntax>
+<default>SSLProxyVerifyDepth 1</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>AuthConfig</override>
+
+<usage>
+<p>
+This directive sets how deeply mod_ssl should verify before deciding that the
+remote server does not have a valid certificate. Notice that this directive can be
+used both in per-server and per-directory context. In per-server context it
+applies to the client authentication process used in the standard SSL
+handshake when a connection is established. In per-directory context it forces
+a SSL renegotation with the reconfigured remote server verification depth after the
+HTTP request was read but before the HTTP response is sent.</p>
+<p>
+The depth actually is the maximum number of intermediate certificate issuers,
+i.e. the number of CA certificates which are max allowed to be followed while
+verifying the remote server certificate. A depth of 0 means that self-signed
+remote server certificates are accepted only, the default depth of 1 means
+the remote server certificate can be self-signed or has to be signed by a CA
+which is directly known to the server (i.e. the CA's certificate is under
+<directive module="mod_ssl">SSLProxyCACertificatePath</directive>), etc.</p>
+<example><title>Example</title>
+SSLProxyVerifyDepth 10
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLProxyEngine</name>
+<description>SSL Proxy Engine Operation Switch</description>
+<syntax>SSLProxyEngine on|off</syntax>
+<default>SSLProxyEngine off</default>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+
+<usage>
+<p>
+This directive toggles the usage of the SSL/TLS Protocol Engine for proxy. This
+is usually used inside a <directive module="core"
+type="section">VirtualHost</directive> section to enable SSL/TLS for proxy
+usage in a particular virtual host. By default the SSL/TLS Protocol Engine is
+disabled for proxy image both for the main server and all configured virtual hosts.</p>
+<example><title>Example</title>
+&lt;VirtualHost _default_:443&gt;<br />
+SSLProxyEngine on<br />
+...<br />
+&lt;/VirtualHost&gt;
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLProxyProtocol</name>
+<description>Configure usable SSL protocol flavors for proxy usage</description>
+<syntax>SSLProxyProtocol [+|-]<em>protocol</em> ...</syntax>
+<default>SSLProxyProtocol all</default>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<override>Options</override>
+
+<usage>
+<!-- XXX Why does this have an override and not .htaccess context? -->
+<p>
+This directive can be used to control the SSL protocol flavors mod_ssl should
+use when establishing its server environment for proxy . It will only connect
+to servers using one of the provided protocols.</p>
+<p>Please refer to <directive module="mod_ssl">SSLProtocol</directive>
+for additional information.
+</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLProxyCipherSuite</name>
+<description>Cipher Suite available for negotiation in SSL 
+proxy handshake</description>
+<syntax>SSLProxyCipherSuite <em>cipher-spec</em></syntax>
+<default>SSLProxyCipherSuite ALL:!ADH:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>AuthConfig</override>
+<usage>
+<p>Equivalent to <code>SSLCipherSuite</code>, but for the proxy connection.
+Please refer to <directive module="mod_ssl">SSLCipherSuite</directive>
+for additional information.</p>
+</usage>
+
+</directivesynopsis>
+<directivesynopsis>
+<name>SSLProxyCACertificatePath</name>
+<description>Directory of PEM-encoded CA Certificates for 
+Remote Server Auth</description>
+<syntax>SSLProxyCACertificatePath <em>directory-path</em></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+
+<usage>
+<p>
+This directive sets the directory where you keep the Certificates of
+Certification Authorities (CAs) whose remote servers you deal with. These are used to
+verify the remote server certificate on Remote Server Authentication.</p>
+<p>
+The files in this directory have to be PEM-encoded and are accessed through
+hash filenames. So usually you can't just place the Certificate files
+there: you also have to create symbolic links named
+<em>hash-value</em><code>.N</code>. And you should always make sure this directory
+contains the appropriate symbolic links. Use the <code>Makefile</code> which
+comes with mod_ssl to accomplish this task.</p>
+<example><title>Example</title>
+SSLProxyCACertificatePath /usr/local/apache2/conf/ssl.crt/
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLProxyCACertificateFile</name>
+<description>File of concatenated PEM-encoded CA Certificates 
+for Remote Server Auth</description>
+<syntax>SSLProxyCACertificateFile <em>file-path</em></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+
+<usage>
+<p>
+This directive sets the <em>all-in-one</em> file where you can assemble the
+Certificates of Certification Authorities (CA) whose <em>remote servers</em> you deal
+with. These are used for Remote Server Authentication. Such a file is simply the
+concatenation of the various PEM-encoded Certificate files, in order of
+preference. This can be used alternatively and/or additionally to 
+<directive module="mod_ssl">SSLProxyCACertificatePath</directive>.</p>
+<example><title>Example</title>
+SSLProxyCACertificateFile /usr/local/apache2/conf/ssl.crt/ca-bundle-remote-server.crt
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLProxyCARevocationPath</name>
+<description>Directory of PEM-encoded CA CRLs for 
+Remote Server Auth</description>
+<syntax>SSLProxyCARevocationPath <em>directory-path</em></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+
+<usage>
+<p>
+This directive sets the directory where you keep the Certificate Revocation
+Lists (CRL) of Certification Authorities (CAs) whose remote servers you deal with.
+These are used to revoke the remote server certificate on Remote Server Authentication.</p>
+<p>
+The files in this directory have to be PEM-encoded and are accessed through
+hash filenames. So usually you have not only to place the CRL files there.
+Additionally you have to create symbolic links named
+<em>hash-value</em><code>.rN</code>. And you should always make sure this directory
+contains the appropriate symbolic links. Use the <code>Makefile</code> which
+comes with <module>mod_ssl</module> to accomplish this task.</p>
+<example><title>Example</title>
+SSLProxyCARevocationPath /usr/local/apache2/conf/ssl.crl/
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLProxyCARevocationFile</name>
+<description>File of concatenated PEM-encoded CA CRLs for 
+Remote Server Auth</description>
+<syntax>SSLProxyCARevocationFile <em>file-path</em></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+
+<usage>
+<p>
+This directive sets the <em>all-in-one</em> file where you can
+assemble the Certificate Revocation Lists (CRL) of Certification
+Authorities (CA) whose <em>remote servers</em> you deal with. These are used
+for Remote Server Authentication.  Such a file is simply the concatenation of
+the various PEM-encoded CRL files, in order of preference. This can be
+used alternatively and/or additionally to <directive
+module="mod_ssl">SSLProxyCARevocationPath</directive>.</p>
+<example><title>Example</title>
+SSLProxyCARevocationFile /usr/local/apache2/conf/ssl.crl/ca-bundle-remote-server.crl
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLUserName</name>
+<description>Variable name to determine user name</description>
+<syntax>SSLUserName <em>varname</em></syntax>
+<contextlist><context>server config</context>
+<context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>AuthConfig</override>
+<compatibility>Available in Apache 2.0.51 and later</compatibility>
+
+<usage>
+<p>
+This directive sets the "user" field in the Apache request object.
+This is used by lower modules to identify the user with a character
+string. In particular, this may cause the environment variable
+<code>REMOTE_USER</code> to be set.  The <em>varname</em> can be
+any of the <a href="#envvars">SSL environment variables</a>.</p>
+
+<p>Note that this directive has no effect if the
+<code>FakeBasic</code> option is used (see <a
+href="#ssloptions">SSLOptions</a>).</p>
+
+<example><title>Example</title>
+SSLUserName SSL_CLIENT_S_DN_CN
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLHonorCipherOrder</name>
+<description>Option to prefer the server's cipher preference order</description>
+<syntax>SSLHonorCiperOrder <em>flag</em></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>Available in Apache 2.1 and later, if using OpenSSL 0.9.7 or later</compatibility>
+
+<usage>
+<p>When choosing a cipher during an SSLv3 or TLSv1 handshake, normally
+the client's preference is used.  If this directive is enabled, the
+server's preference will be used instead.</p>
+<example><title>Example</title>
+SSLHonorCipherOrder on
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLCryptoDevice</name>
+<description>Enable use of a cryptographic hardware accelerator</description>
+<syntax>SSLCryptoDevice <em>engine</em></syntax>
+<default>SSLCryptoDevice builtin</default>
+<contextlist><context>server config</context></contextlist>
+<compatibility>Available if mod_ssl is built using <code>-DSSL_ENGINE_EXPERIMENTAL</code></compatibility>
+
+<usage>
+<p>
+This directive enables use of a cryptographic hardware accelerator
+board to offload some of the SSL processing overhead.  This directive
+can only be used if the SSL toolkit is built with "engine" support;
+OpenSSL 0.9.7 and later releases have "engine" support by default, the
+separate "-engine" releases of OpenSSL 0.9.6 must be used.</p>
+
+<p>To discover which engine names are supported, run the command
+&quot;<code>openssl engine</code>&quot;.</p>
+
+<example><title>Example</title>
+# For a Broadcom accelerator:<br />
+SSLCryptoDevice ubsec
+</example>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

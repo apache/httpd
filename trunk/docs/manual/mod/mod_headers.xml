@@ -1,0 +1,343 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision$ -->
+
+<!--
+ Copyright 2002-2005 The Apache Software Foundation or its licensors, as
+ applicable.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_headers.xml.meta">
+
+<name>mod_headers</name>
+<description>Customization of HTTP request and response
+headers</description>
+<status>Extension</status>
+<sourcefile>mod_headers.c</sourcefile>
+<identifier>headers_module</identifier>
+<compatibility><directive module="mod_headers">RequestHeader</directive>
+is available only in Apache 2.0</compatibility>
+
+<summary>
+    <p>This module provides directives to control and modify HTTP
+    request and response headers. Headers can be merged, replaced
+    or removed.</p>
+</summary>
+
+<section id="order"><title>Order of Processing</title>
+
+    <p>The directives provided by <module>mod_headers</module> can
+    occur almost anywhere within the server configuration, and can be
+    limited in scope by enclosing them in <a
+    href="../sections.html">configuration sections</a>.</p>
+
+    <p>Order of processing is important and is affected both by the
+    order in the configuration file and by placement in <a
+    href="../sections.html#mergin">configuration sections</a>. These
+    two headers have a different effect if reversed:</p>
+
+    <example>
+      RequestHeader append MirrorID "mirror 12"<br />
+      RequestHeader unset MirrorID
+    </example>
+
+    <p>This way round, the <code>MirrorID</code> header is not set. If
+    reversed, the MirrorID header is set to "mirror 12".</p>
+</section>
+
+<section id="early"><title>Early and Late Processing</title>
+    <p><module>mod_headers</module> can be applied either early or late
+    in the request.  The normal mode is late, when Request Headers are
+    set immediately before running the content generator and Response
+    Headers just as the response is sent down the wire.  Always use
+    Late mode in an operational server.</p>
+
+    <p>Early mode is designed as a test/debugging aid for developers.
+    Directives defined using the <code>early</code> keyword are set
+    right at the beginning of processing the request.  This means
+    they can be used to simulate different requests and set up test
+    cases, but it also means that headers may be changed at any time
+    by other modules before generating a Response.</p>
+
+    <p>Because early directives are processed before the request path's
+    configuration is traversed, early headers can only be set in a
+    main server or virtual host context.  Early directives cannot depend
+    on a request path, so they will fail in contexts such as
+    <code>&lt;Directory&gt;</code> or <code>&lt;Location&gt;</code>.</p>
+</section>
+
+<section id="examples"><title>Examples</title>
+
+    <ol>
+      <li>
+        Copy all request headers that begin with "TS" to the
+        response headers:
+
+        <example>
+          Header echo ^TS
+        </example>
+      </li>
+
+      <li>
+        Add a header, <code>MyHeader</code>, to the response including a
+        timestamp for when the request was received and how long it
+        took to begin serving the request. This header can be used by
+        the client to intuit load on the server or in isolating
+        bottlenecks between the client and the server.
+
+        <example>
+          Header add MyHeader "%D %t"
+        </example>
+
+        <p>results in this header being added to the response:</p>
+
+        <example>
+          MyHeader: D=3775428 t=991424704447256
+        </example>
+      </li>
+
+      <li>
+        Say hello to Joe
+
+        <example>
+          Header add MyHeader "Hello Joe. It took %D microseconds \<br />
+          for Apache to serve this request."
+        </example>
+
+        <p>results in this header being added to the response:</p>
+
+        <example>
+          MyHeader: Hello Joe. It took D=3775428 microseconds for Apache
+          to serve this request.
+        </example>
+      </li>
+
+      <li>
+        Conditionally send <code>MyHeader</code> on the response if and
+        only if header "MyRequestHeader" is present on the request. This
+        is useful for constructing headers in response to some client
+        stimulus. Note that this example requires the services of the
+        <module>mod_setenvif</module> module.
+
+        <example>
+          SetEnvIf MyRequestHeader value HAVE_MyRequestHeader<br />
+          Header add MyHeader "%D %t mytext" env=HAVE_MyRequestHeader<br />
+       </example>
+
+       <p>If the header <code>MyRequestHeader: value</code> is present on
+       the HTTP request, the response will contain the following header:</p>
+
+       <example>
+         MyHeader: D=3775428 t=991424704447256 mytext
+       </example>
+      </li>
+    </ol>
+</section>
+
+<directivesynopsis>
+<name>RequestHeader</name>
+<description>Configure HTTP request headers</description>
+<syntax>RequestHeader set|append|add|unset <var>header</var>
+[<var>value</var>] [early|env=[!]<var>variable</var>]</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p>This directive can replace, merge or remove HTTP request
+    headers. The header is modified just before the content handler
+    is run, allowing incoming headers to be modified. The action it
+    performs is determined by the first argument. This can be one
+    of the following values:</p>
+
+    <dl>
+    <dt><code>set</code></dt>
+    <dd>The request header is set, replacing any previous header
+    with this name</dd>
+
+    <dt><code>append</code></dt>
+    <dd>The request header is appended to any existing header of the
+    same name. When a new value is merged onto an existing header
+    it is separated from the existing header with a comma. This
+    is the HTTP standard way of giving a header multiple
+    values.</dd>
+
+    <dt><code>add</code></dt>
+    <dd>The request header is added to the existing set of headers,
+    even if this header already exists. This can result in two
+    (or more) headers having the same name. This can lead to
+    unforeseen consequences, and in general <code>append</code> should be
+    used instead.</dd>
+
+    <dt><code>unset</code></dt>
+    <dd>The request header of this name is removed, if it exists. If
+    there are multiple headers of the same name, all will be removed.
+    <var>value</var> must be omitted.</dd>
+    </dl>
+
+    <p>This argument is followed by a header name, which can
+    include the final colon, but it is not required. Case is
+    ignored. For <code>add</code>, <code>append</code> and
+    <code>set</code> a <var>value</var> is given as the third argument. If
+    <var>value</var> contains spaces, it should be surrounded by double
+    quotes. For unset, no <var>value</var> should be given.
+    <var>value</var> may be a character string, a string containing format
+    specifiers or a combination of both. The supported format specifiers
+    are the same as for the <directive module="mod_headers">Header</directive>,
+    please have a look there for details.</p>
+
+    <p>The <directive>RequestHeader</directive> directive may be followed by
+    an additional argument, which may be used to specify conditions under
+    which the action will be taken, or may be the keyword <code>early</code>
+    to specify <a href="#early">early processing</a>. If the
+    <a href="../env.html">environment
+    variable</a> specified in the <code>env=<var>...</var></code> argument
+    exists (or if the environment variable does not exist and
+    <code>env=!<var>...</var></code> is specified) then the action specified
+    by the <directive>RequestHeader</directive> directive will take effect.
+    Otherwise, the directive will have no effect on the request.</p>
+
+    <p>Except in <a href="#early">early</a> mode, the
+    <directive>RequestHeader</directive> directive is processed
+    just before the request is run by its handler in the fixup phase.
+    This should allow headers generated by the browser, or by Apache
+    input filters to be overridden or modified.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>Header</name>
+<description>Configure HTTP response headers</description>
+<syntax>Header [<var>condition</var>] set|append|add|unset|echo
+<var>header</var> [<var>value</var>] [early|env=[!]<var>variable</var>]</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p>This directive can replace, merge or remove HTTP response
+    headers. The header is modified just after the content handler
+    and output filters are run, allowing outgoing headers to be
+    modified.</p>
+
+    <p>The optional <var>condition</var> can be either <code>onsuccess</code>
+    or <code>always</code>. It determines, which internal header table should be
+    operated on. <code>onsuccess</code> stands for <code>2<var>xx</var></code>
+    status codes and <code>always</code> for all status codes (including
+    <code>2<var>xx</var></code>). Especially if you want to unset headers
+    set by certain modules, you should try out, which table is affected.</p>
+
+    <p>The action it performs is determined by the second
+    argument. This can be one of the following values:</p>
+
+    <dl>
+    <dt><code>set</code></dt>
+    <dd>The response header is set, replacing any previous header
+    with this name. The <var>value</var> may be a format string.</dd>
+
+    <dt><code>append</code></dt>
+    <dd>The response header is appended to any existing header of
+    the same name. When a new value is merged onto an existing
+    header it is separated from the existing header with a comma.
+    This is the HTTP standard way of giving a header multiple values.</dd>
+
+    <dt><code>add</code></dt>
+    <dd>The response header is added to the existing set of headers,
+    even if this header already exists. This can result in two
+    (or more) headers having the same name. This can lead to
+    unforeseen consequences, and in general "append" should be
+    used instead.</dd>
+
+    <dt><code>unset</code></dt>
+    <dd>The response header of this name is removed, if it exists.
+    If there are multiple headers of the same name, all will be
+    removed. <var>value</var> must be omitted.</dd>
+
+    <dt><code>echo</code></dt>
+    <dd>Request headers with this name are echoed back in the
+    response headers. <var>header</var> may be a regular expression.
+    <var>value</var> must be omitted.</dd>
+    </dl>
+
+    <p>This argument is followed by a <var>header</var> name, which
+    can include the final colon, but it is not required. Case is
+    ignored for <code>set</code>, <code>append</code>, <code>add</code>
+    and <code>unset</code>. The <var>header</var> name for <code>echo</code>
+    is case sensitive and may be a regular expression.</p>
+
+    <p>For <code>add</code>, <code>append</code> and <code>set</code> a
+    <var>value</var> is specified as the third argument. If <var>value</var>
+    contains spaces, it should be surrounded by doublequotes.
+    <var>value</var> may be a character string, a string containing format
+    specifiers or a combination of both. The following format specifiers
+    are supported in <var>value</var>:</p>
+
+    <table border="1" style="zebra">
+    <columnspec><column width=".25"/><column width=".75"/></columnspec>
+    <tr><th>Format</th><th>Description</th></tr>
+    <tr><td><code>%%</code></td>
+        <td>The percent sign</td></tr>
+
+    <tr><td><code>%t</code></td>
+        <td>The time the request was received in Universal Coordinated Time
+        since the epoch (Jan. 1, 1970) measured in microseconds. The value
+        is preceded by <code>t=</code>.</td></tr>
+
+    <tr><td><code>%D</code></td>
+        <td>The time from when the request was received to the time the
+        headers are sent on the wire. This is a measure of the duration
+        of the request. The value is preceded by <code>D=</code>.</td></tr>
+
+    <tr><td><code>%{FOOBAR}e</code></td>
+        <td>The contents of the <a href="../env.html">environment
+        variable</a> <code>FOOBAR</code>.</td></tr>
+
+    <tr><td><code>%{FOOBAR}s</code></td>
+        <td>The contents of the <a href="mod_ssl.html#envvars">SSL environment
+        variable</a> <code>FOOBAR</code>, if <module>mod_ssl</module> is enabled.</td></tr>
+
+    </table>
+
+    <note><title>Note</title>
+      <p>The <code>%s</code> format specifier is only available in
+      Apache 2.1 and later; it can be used instead of <code>%e</code>
+      to avoid the overhead of enabling <code>SSLOptions
+      +StdEnvVars</code>.  If <code>SSLOptions +StdEnvVars</code> must
+      be enabled anyway for some other reason, <code>%e</code> will be
+      more efficient than <code>%s</code>.</p>
+    </note> 
+
+    <p>The <directive>Header</directive> directive may be followed by an
+    an additional argument, which may be used to specify conditions under
+    which the action will be taken, or may be the keyword <code>early</code>
+    to specify <a href="#early">early processing</a>. If the
+    <a href="../env.html">environment variable</a> specified in the
+    <code>env=<var>...</var></code> argument exists (or if the environment
+    variable does not exist and <code>env=!<var>...</var></code> is specified)
+    then the action specified by the <directive>Header</directive> directive
+    will take effect. Otherwise, the directive will have no effect
+    on the request.</p>
+
+    <p>Except in <a href="#early">early</a> mode, the
+    <directive>Header</directive> directives are processed just
+    before the response is sent to the network. These means that it is
+    possible to set and/or override most headers, except for those headers
+    added by the header filter.</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
+

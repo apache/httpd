@@ -1,0 +1,789 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>URL Rewriting Guide - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.1</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./index.html"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.1</a></div><div id="page-content"><div id="preamble"><h1>URL Rewriting Guide</h1>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="../en/rewrite/rewrite_guide.html" title="English">&nbsp;en&nbsp;</a></p>
+</div>
+
+
+    <p>This document supplements the <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+    <a href="../mod/mod_rewrite.html">reference documentation</a>.
+    It describes how one can use Apache's <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+    to solve typical URL-based problems with which webmasters are
+    commonony confronted. We give detailed descriptions on how to
+    solve each problem by configuring URL rewriting rulesets.</p>
+
+    <div class="warning">ATTENTION: Depending on your server configuration
+    it may be necessary to slightly change the examples for your
+    situation, e.g. adding the <code>[PT]</code> flag when
+    additionally using <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code> and
+    <code class="module"><a href="../mod/mod_userdir.html">mod_userdir</a></code>, etc. Or rewriting a ruleset
+    to fit in <code>.htaccess</code> context instead
+    of per-server context. Always try to understand what a
+    particular ruleset really does before you use it. This
+    avoids many problems.</div>
+
+  </div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#canonicalurl">Canonical URLs</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#canonicalhost">Canonical Hostnames</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#moveddocroot">Moved <code>DocumentRoot</code></a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#trailingslash">Trailing Slash Problem</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#movehomedirs">Move Homedirs to Different Webserver</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#multipledirs">Search pages in more than one directory</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#setenvvars">Set Environment Variables According To URL Parts</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#uservhosts">Virtual User Hosts</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#redirecthome">Redirect Homedirs For Foreigners</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#redirectanchors">Redirecting Anchors</a></li>
+<li><img alt="" src="../images/down.gif" /> Time-Dependent Rewriting</li>
+<li><img alt="" src="../images/down.gif" /> Backward Compatibility for YYYY to XXXX migration</li>
+<li><img alt="" src="../images/down.gif" /> <a href="#content">Content Handling</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#access">Access Restriction</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#other">Other</a></li>
+</ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module
+documentation</a></li><li><a href="rewrite_intro.html">mod_rewrite
+introduction</a></li><li><a href="rewrite_guide_advanced.html">Practical solutions to
+advanced problems</a></li><li><a href="rewrite_tech.html">Technical details</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="canonicalurl" id="canonicalurl">Canonical URLs</a></h2>
+
+
+
+<dl>
+ <dt>Description:</dt>
+
+   <dd>
+     <p>On some webservers there are more than one URL for a
+     resource. Usually there are canonical URLs (which should be
+     actually used and distributed) and those which are just
+     shortcuts, internal ones, etc. Independent of which URL the
+     user supplied with the request he should finally see the
+     canonical one only.</p>
+   </dd>
+
+   <dt>Solution:</dt>
+
+     <dd>
+       <p>We do an external HTTP redirect for all non-canonical
+       URLs to fix them in the location view of the Browser and
+       for all subsequent requests. In the example ruleset below
+       we replace <code>/~user</code> by the canonical
+       <code>/u/user</code> and fix a missing trailing slash for
+       <code>/u/user</code>.</p>
+
+<div class="example"><pre>
+RewriteRule   ^/<strong>~</strong>([^/]+)/?(.*)    /<strong>u</strong>/$1/$2  [<strong>R</strong>]
+RewriteRule   ^/([uge])/(<strong>[^/]+</strong>)$  /$1/$2<strong>/</strong>   [<strong>R</strong>]
+</pre></div>
+        </dd>
+      </dl>
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="canonicalhost" id="canonicalhost">Canonical Hostnames</a></h2>
+
+      <dl>
+        <dt>Description:</dt>
+
+        <dd>The goal of this rule is to force the use of a particular
+        hostname, in preference to other hostnames which may be used to
+        reach the same site. For example, if you wish to force the use
+        of <strong>www.example.com</strong> instead of
+        <strong>example.com</strong>, you might use a variant of the
+        following recipe.</dd>
+
+        <dt>Solution:</dt>
+
+        <dd>
+<p>For sites running on a port other than 80:</p>
+<div class="example"><pre>
+RewriteCond %{HTTP_HOST}   !^fully\.qualified\.domain\.name [NC]
+RewriteCond %{HTTP_HOST}   !^$
+RewriteCond %{SERVER_PORT} !^80$
+RewriteRule ^/(.*)         http://fully.qualified.domain.name:%{SERVER_PORT}/$1 [L,R]
+</pre></div>
+
+<p>And for a site running on port 80</p>
+<div class="example"><pre>
+RewriteCond %{HTTP_HOST}   !^fully\.qualified\.domain\.name [NC]
+RewriteCond %{HTTP_HOST}   !^$
+RewriteRule ^/(.*)         http://fully.qualified.domain.name/$1 [L,R]
+</pre></div>
+        </dd>
+      </dl>
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="moveddocroot" id="moveddocroot">Moved <code>DocumentRoot</code></a></h2>
+
+      
+
+      <dl>
+        <dt>Description:</dt>
+
+        <dd>
+<p>Usually the <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>
+of the webserver directly relates to the URL "<code>/</code>".
+But often this data is not really of top-level priority. For example,
+you may wish for visitors, on first entering a site, to go to a
+particular subdirectory <code>/about/</code>. This may be accomplished
+using the following ruleset:</p>
+</dd>
+
+        <dt>Solution:</dt>
+
+        <dd>
+          <p>We redirect the URL <code>/</code> to
+          <code>/about/</code>:
+          </p>
+         
+<div class="example"><pre>
+RewriteEngine on
+RewriteRule   <strong>^/$</strong>  /about/  [<strong>R</strong>]
+</pre></div>
+
+    <p>Note that this can also be handled using the <code class="directive"><a href="../mod/mod_alias.html#redirectmatch">RedirectMatch</a></code> directive:</p>
+
+<div class="example"><p><code>
+RedirectMatch ^/$ http://example.com/e/www/
+</code></p></div>
+</dd>
+</dl>
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="trailingslash" id="trailingslash">Trailing Slash Problem</a></h2>
+
+      
+
+      <dl>
+        <dt>Description:</dt>
+
+    <dd><p>The vast majority of "trailing slash" problems can be dealt
+    with using the techniques discussed in the <a href="http://httpd.apache.org/docs/misc/FAQ-E.html#set-servername">FAQ
+    entry</a>. However, occasionally, there is a need to use mod_rewrite
+    to handle a case where a missing trailing slash causes a URL to
+    fail. This can happen, for example, after a series of complex
+    rewrite rules.</p>
+    </dd>
+
+        <dt>Solution:</dt>
+
+        <dd>
+          <p>The solution to this subtle problem is to let the server
+          add the trailing slash automatically. To do this
+          correctly we have to use an external redirect, so the
+          browser correctly requests subsequent images etc. If we
+          only did a internal rewrite, this would only work for the
+          directory page, but would go wrong when any images are
+          included into this page with relative URLs, because the
+          browser would request an in-lined object. For instance, a
+          request for <code>image.gif</code> in
+          <code>/~quux/foo/index.html</code> would become
+          <code>/~quux/image.gif</code> without the external
+          redirect!</p>
+
+          <p>So, to do this trick we write:</p>
+
+<div class="example"><pre>
+RewriteEngine  on
+RewriteBase    /~quux/
+RewriteRule    ^foo<strong>$</strong>  foo<strong>/</strong>  [<strong>R</strong>]
+</pre></div>
+
+   <p>Alternately, you can put the following in a
+   top-level <code>.htaccess</code> file in the content directory.
+   But note that this creates some processing overhead.</p>
+
+<div class="example"><pre>
+RewriteEngine  on
+RewriteBase    /~quux/
+RewriteCond    %{REQUEST_FILENAME}  <strong>-d</strong>
+RewriteRule    ^(.+<strong>[^/]</strong>)$           $1<strong>/</strong>  [R]
+</pre></div>
+        </dd>
+      </dl>
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="movehomedirs" id="movehomedirs">Move Homedirs to Different Webserver</a></h2>
+
+      
+
+      <dl>
+        <dt>Description:</dt>
+
+        <dd>
+          <p>Many webmasters have asked for a solution to the
+          following situation: They wanted to redirect just all
+          homedirs on a webserver to another webserver. They usually
+          need such things when establishing a newer webserver which
+          will replace the old one over time.</p>
+        </dd>
+
+        <dt>Solution:</dt>
+
+        <dd>
+          <p>The solution is trivial with <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.
+          On the old webserver we just redirect all
+          <code>/~user/anypath</code> URLs to
+          <code>http://newserver/~user/anypath</code>.</p>
+
+<div class="example"><pre>
+RewriteEngine on
+RewriteRule   ^/~(.+)  http://<strong>newserver</strong>/~$1  [R,L]
+</pre></div>
+        </dd>
+      </dl>
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="multipledirs" id="multipledirs">Search pages in more than one directory</a></h2>
+
+      
+
+      <dl>
+        <dt>Description:</dt>
+
+        <dd>
+          <p>Sometimes it is necessary to let the webserver search
+          for pages in more than one directory. Here MultiViews or
+          other techniques cannot help.</p>
+        </dd>
+
+        <dt>Solution:</dt>
+
+        <dd>
+          <p>We program a explicit ruleset which searches for the
+          files in the directories.</p>
+
+<div class="example"><pre>
+RewriteEngine on
+
+#   first try to find it in custom/...
+#   ...and if found stop and be happy:
+RewriteCond         /your/docroot/<strong>dir1</strong>/%{REQUEST_FILENAME}  -f
+RewriteRule  ^(.+)  /your/docroot/<strong>dir1</strong>/$1  [L]
+
+#   second try to find it in pub/...
+#   ...and if found stop and be happy:
+RewriteCond         /your/docroot/<strong>dir2</strong>/%{REQUEST_FILENAME}  -f
+RewriteRule  ^(.+)  /your/docroot/<strong>dir2</strong>/$1  [L]
+
+#   else go on for other Alias or ScriptAlias directives,
+#   etc.
+RewriteRule   ^(.+)  -  [PT]
+</pre></div>
+        </dd>
+      </dl>
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="setenvvars" id="setenvvars">Set Environment Variables According To URL Parts</a></h2>
+
+      
+
+      <dl>
+        <dt>Description:</dt>
+
+        <dd>
+          <p>Perhaps you want to keep status information between
+          requests and use the URL to encode it. But you don't want
+          to use a CGI wrapper for all pages just to strip out this
+          information.</p>
+        </dd>
+
+        <dt>Solution:</dt>
+
+        <dd>
+          <p>We use a rewrite rule to strip out the status information
+          and remember it via an environment variable which can be
+          later dereferenced from within XSSI or CGI. This way a
+          URL <code>/foo/S=java/bar/</code> gets translated to
+          <code>/foo/bar/</code> and the environment variable named
+          <code>STATUS</code> is set to the value "java".</p>
+
+<div class="example"><pre>
+RewriteEngine on
+RewriteRule   ^(.*)/<strong>S=([^/]+)</strong>/(.*)    $1/$3 [E=<strong>STATUS:$2</strong>]
+</pre></div>
+        </dd>
+      </dl>
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="uservhosts" id="uservhosts">Virtual User Hosts</a></h2>
+
+      
+
+      <dl>
+        <dt>Description:</dt>
+
+        <dd>
+          <p>Assume that you want to provide
+          <code>www.<strong>username</strong>.host.domain.com</code>
+          for the homepage of username via just DNS A records to the
+          same machine and without any virtualhosts on this
+          machine.</p>
+        </dd>
+
+        <dt>Solution:</dt>
+
+        <dd>
+          <p>For HTTP/1.0 requests there is no solution, but for
+          HTTP/1.1 requests which contain a Host: HTTP header we
+          can use the following ruleset to rewrite
+          <code>http://www.username.host.com/anypath</code>
+          internally to <code>/home/username/anypath</code>:</p>
+
+<div class="example"><pre>
+RewriteEngine on
+RewriteCond   %{<strong>HTTP_HOST</strong>}                 ^www\.<strong>[^.]+</strong>\.host\.com$
+RewriteRule   ^(.+)                        %{HTTP_HOST}$1          [C]
+RewriteRule   ^www\.<strong>([^.]+)</strong>\.host\.com(.*) /home/<strong>$1</strong>$2
+</pre></div>
+        </dd>
+      </dl>
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="redirecthome" id="redirecthome">Redirect Homedirs For Foreigners</a></h2>
+
+      
+
+      <dl>
+        <dt>Description:</dt>
+
+        <dd>
+          <p>We want to redirect homedir URLs to another webserver
+          <code>www.somewhere.com</code> when the requesting user
+          does not stay in the local domain
+          <code>ourdomain.com</code>. This is sometimes used in
+          virtual host contexts.</p>
+        </dd>
+
+        <dt>Solution:</dt>
+
+        <dd>
+          <p>Just a rewrite condition:</p>
+
+<div class="example"><pre>
+RewriteEngine on
+RewriteCond   %{REMOTE_HOST}  <strong>!^.+\.ourdomain\.com$</strong>
+RewriteRule   ^(/~.+)         http://www.somewhere.com/$1 [R,L]
+</pre></div>
+        </dd>
+      </dl>
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="redirectanchors" id="redirectanchors">Redirecting Anchors</a></h2>
+
+      
+
+      <dl>
+        <dt>Description:</dt>
+
+        <dd>
+        <p>By default, redirecting to an HTML anchor doesn't work,
+        because mod_rewrite escapes the <code>#</code> character,
+        turning it into <code>%23</code>. This, in turn, breaks the
+        redirection.</p>
+        </dd>
+
+        <dt>Solution:</dt>
+
+        <dd>
+          <p>Use the <code>[NE]</code> flag on the
+          <code>RewriteRule</code>. NE stands for No Escape.
+          </p>
+        </dd>
+      </dl>
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2>Time-Dependent Rewriting</h2>
+
+      
+
+      <dl>
+        <dt>Description:</dt>
+
+        <dd>
+          <p>When tricks like time-dependent content should happen a
+          lot of webmasters still use CGI scripts which do for
+          instance redirects to specialized pages. How can it be done
+          via <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>?</p>
+        </dd>
+
+        <dt>Solution:</dt>
+
+        <dd>
+          <p>There are a lot of variables named <code>TIME_xxx</code>
+          for rewrite conditions. In conjunction with the special
+          lexicographic comparison patterns <code>&lt;STRING</code>,
+          <code>&gt;STRING</code> and <code>=STRING</code> we can
+          do time-dependent redirects:</p>
+
+<div class="example"><pre>
+RewriteEngine on
+RewriteCond   %{TIME_HOUR}%{TIME_MIN} &gt;0700
+RewriteCond   %{TIME_HOUR}%{TIME_MIN} &lt;1900
+RewriteRule   ^foo\.html$             foo.day.html
+RewriteRule   ^foo\.html$             foo.night.html
+</pre></div>
+
+          <p>This provides the content of <code>foo.day.html</code>
+          under the URL <code>foo.html</code> from
+          <code>07:00-19:00</code> and at the remaining time the
+          contents of <code>foo.night.html</code>. Just a nice
+          feature for a homepage...</p>
+        </dd>
+      </dl>
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2>Backward Compatibility for YYYY to XXXX migration</h2>
+
+      
+
+      <dl>
+        <dt>Description:</dt>
+
+        <dd>
+          <p>How can we make URLs backward compatible (still
+          existing virtually) after migrating <code>document.YYYY</code>
+          to <code>document.XXXX</code>, e.g. after translating a
+          bunch of <code>.html</code> files to <code>.phtml</code>?</p>
+        </dd>
+
+        <dt>Solution:</dt>
+
+        <dd>
+          <p>We just rewrite the name to its basename and test for
+          existence of the new extension. If it exists, we take
+          that name, else we rewrite the URL to its original state.</p>
+
+
+<div class="example"><pre>
+#   backward compatibility ruleset for
+#   rewriting document.html to document.phtml
+#   when and only when document.phtml exists
+#   but no longer document.html
+RewriteEngine on
+RewriteBase   /~quux/
+#   parse out basename, but remember the fact
+RewriteRule   ^(.*)\.html$              $1      [C,E=WasHTML:yes]
+#   rewrite to document.phtml if exists
+RewriteCond   %{REQUEST_FILENAME}.phtml -f
+RewriteRule   ^(.*)$ $1.phtml                   [S=1]
+#   else reverse the previous basename cutout
+RewriteCond   %{ENV:WasHTML}            ^yes$
+RewriteRule   ^(.*)$ $1.html
+</pre></div>
+        </dd>
+      </dl>
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="content" id="content">Content Handling</a></h2>
+
+    
+
+    <h3>From Old to New (intern)</h3>
+
+      
+
+      <dl>
+        <dt>Description:</dt>
+
+        <dd>
+          <p>Assume we have recently renamed the page
+          <code>foo.html</code> to <code>bar.html</code> and now want
+          to provide the old URL for backward compatibility. Actually
+          we want that users of the old URL even not recognize that
+          the pages was renamed.</p>
+        </dd>
+
+        <dt>Solution:</dt>
+
+        <dd>
+          <p>We rewrite the old URL to the new one internally via the
+          following rule:</p>
+
+<div class="example"><pre>
+RewriteEngine  on
+RewriteBase    /~quux/
+RewriteRule    ^<strong>foo</strong>\.html$  <strong>bar</strong>.html
+</pre></div>
+        </dd>
+      </dl>
+
+    
+
+    <h3>From Old to New (extern)</h3>
+
+      
+
+      <dl>
+        <dt>Description:</dt>
+
+        <dd>
+          <p>Assume again that we have recently renamed the page
+          <code>foo.html</code> to <code>bar.html</code> and now want
+          to provide the old URL for backward compatibility. But this
+          time we want that the users of the old URL get hinted to
+          the new one, i.e. their browsers Location field should
+          change, too.</p>
+        </dd>
+
+        <dt>Solution:</dt>
+
+        <dd>
+          <p>We force a HTTP redirect to the new URL which leads to a
+          change of the browsers and thus the users view:</p>
+
+<div class="example"><pre>
+RewriteEngine  on
+RewriteBase    /~quux/
+RewriteRule    ^<strong>foo</strong>\.html$  <strong>bar</strong>.html  [<strong>R</strong>]
+</pre></div>
+        </dd>
+      </dl>
+
+    
+
+    <h3>From Static to Dynamic</h3>
+
+      
+
+      <dl>
+        <dt>Description:</dt>
+
+        <dd>
+          <p>How can we transform a static page
+          <code>foo.html</code> into a dynamic variant
+          <code>foo.cgi</code> in a seamless way, i.e. without notice
+          by the browser/user.</p>
+        </dd>
+
+        <dt>Solution:</dt>
+
+        <dd>
+          <p>We just rewrite the URL to the CGI-script and force the
+          correct MIME-type so it gets really run as a CGI-script.
+          This way a request to <code>/~quux/foo.html</code>
+          internally leads to the invocation of
+          <code>/~quux/foo.cgi</code>.</p>
+
+<div class="example"><pre>
+RewriteEngine  on
+RewriteBase    /~quux/
+RewriteRule    ^foo\.<strong>html</strong>$  foo.<strong>cgi</strong>  [T=<strong>application/x-httpd-cgi</strong>]
+</pre></div>
+        </dd>
+      </dl>
+
+    
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="access" id="access">Access Restriction</a></h2>
+
+    
+
+    <h3>Blocking of Robots</h3>
+
+      
+
+      <dl>
+        <dt>Description:</dt>
+
+        <dd>
+          <p>How can we block a really annoying robot from
+          retrieving pages of a specific webarea? A
+          <code>/robots.txt</code> file containing entries of the
+          "Robot Exclusion Protocol" is typically not enough to get
+          rid of such a robot.</p>
+        </dd>
+
+        <dt>Solution:</dt>
+
+        <dd>
+          <p>We use a ruleset which forbids the URLs of the webarea
+          <code>/~quux/foo/arc/</code> (perhaps a very deep
+          directory indexed area where the robot traversal would
+          create big server load). We have to make sure that we
+          forbid access only to the particular robot, i.e. just
+          forbidding the host where the robot runs is not enough.
+          This would block users from this host, too. We accomplish
+          this by also matching the User-Agent HTTP header
+          information.</p>
+
+<div class="example"><pre>
+RewriteCond %{HTTP_USER_AGENT}   ^<strong>NameOfBadRobot</strong>.*
+RewriteCond %{REMOTE_ADDR}       ^<strong>123\.45\.67\.[8-9]</strong>$
+RewriteRule ^<strong>/~quux/foo/arc/</strong>.+   -   [<strong>F</strong>]
+</pre></div>
+        </dd>
+      </dl>
+
+    
+
+    <h3>Blocked Inline-Images</h3>
+
+      
+
+      <dl>
+        <dt>Description:</dt>
+
+        <dd>
+          <p>Assume we have under <code>http://www.quux-corp.de/~quux/</code>
+          some pages with inlined GIF graphics. These graphics are
+          nice, so others directly incorporate them via hyperlinks to
+          their pages. We don't like this practice because it adds
+          useless traffic to our server.</p>
+        </dd>
+
+        <dt>Solution:</dt>
+
+        <dd>
+          <p>While we cannot 100% protect the images from inclusion,
+          we can at least restrict the cases where the browser
+          sends a HTTP Referer header.</p>
+
+<div class="example"><pre>
+RewriteCond %{HTTP_REFERER} <strong>!^$</strong>
+RewriteCond %{HTTP_REFERER} !^http://www.quux-corp.de/~quux/.*$ [NC]
+RewriteRule <strong>.*\.gif$</strong>        -                                    [F]
+</pre></div>
+
+<div class="example"><pre>
+RewriteCond %{HTTP_REFERER}         !^$
+RewriteCond %{HTTP_REFERER}         !.*/foo-with-gif\.html$
+RewriteRule <strong>^inlined-in-foo\.gif$</strong>   -                        [F]
+</pre></div>
+        </dd>
+      </dl>
+
+    
+
+    <h3>Proxy Deny</h3>
+
+      
+
+      <dl>
+        <dt>Description:</dt>
+
+        <dd>
+          <p>How can we forbid a certain host or even a user of a
+          special host from using the Apache proxy?</p>
+        </dd>
+
+        <dt>Solution:</dt>
+
+        <dd>
+          <p>We first have to make sure <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+          is below(!) <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> in the Configuration
+          file when compiling the Apache webserver. This way it gets
+          called <em>before</em> <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>. Then we
+          configure the following for a host-dependent deny...</p>
+
+<div class="example"><pre>
+RewriteCond %{REMOTE_HOST} <strong>^badhost\.mydomain\.com$</strong>
+RewriteRule !^http://[^/.]\.mydomain.com.*  - [F]
+</pre></div>
+
+          <p>...and this one for a user@host-dependent deny:</p>
+
+<div class="example"><pre>
+RewriteCond %{REMOTE_IDENT}@%{REMOTE_HOST}  <strong>^badguy@badhost\.mydomain\.com$</strong>
+RewriteRule !^http://[^/.]\.mydomain.com.*  - [F]
+</pre></div>
+        </dd>
+      </dl>
+
+    
+
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="other" id="other">Other</a></h2>
+
+    
+
+    <h3>External Rewriting Engine</h3>
+
+      
+
+      <dl>
+        <dt>Description:</dt>
+
+        <dd>
+          <p>A FAQ: How can we solve the FOO/BAR/QUUX/etc.
+          problem? There seems no solution by the use of
+          <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>...</p>
+        </dd>
+
+        <dt>Solution:</dt>
+
+        <dd>
+          <p>Use an external <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>, i.e. a program which acts
+          like a <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>. It is run once on startup of Apache
+          receives the requested URLs on <code>STDIN</code> and has
+          to put the resulting (usually rewritten) URL on
+          <code>STDOUT</code> (same order!).</p>
+
+<div class="example"><pre>
+RewriteEngine on
+RewriteMap    quux-map       <strong>prg:</strong>/path/to/map.quux.pl
+RewriteRule   ^/~quux/(.*)$  /~quux/<strong>${quux-map:$1}</strong>
+</pre></div>
+
+<div class="example"><pre>
+#!/path/to/perl
+
+#   disable buffered I/O which would lead
+#   to deadloops for the Apache server
+$| = 1;
+
+#   read URLs one per line from stdin and
+#   generate substitution URL on stdout
+while (&lt;&gt;) {
+    s|^foo/|bar/|;
+    print $_;
+}
+</pre></div>
+
+          <p>This is a demonstration-only example and just rewrites
+          all URLs <code>/~quux/foo/...</code> to
+          <code>/~quux/bar/...</code>. Actually you can program
+          whatever you like. But notice that while such maps can be
+          <strong>used</strong> also by an average user, only the
+          system administrator can <strong>define</strong> it.</p>
+        </dd>
+      </dl>
+
+    
+
+  </div></div>
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="../en/rewrite/rewrite_guide.html" title="English">&nbsp;en&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 1995-2005 The Apache Software Foundation or its licensors, as applicable.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>

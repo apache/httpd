@@ -1,0 +1,186 @@
+Content-language: cs
+Content-type: text/html; charset=ISO-8859-2
+Body:----------cs--
+<!--#set var="CONTENT_LANGUAGE" value="cs"
+--><!--#set var="CHARACTER_ENCODING" value="ISO-8859-2"
+--><!--#set var="TITLE" value="Chybný po¾adavek!"
+--><!--#include virtual="include/top.html" -->
+
+    Vá¹ prohlí¾eè (nebo proxy server) vyslal po¾adavek,
+    kterému tento server nerozumìl.
+
+<!--#include virtual="include/bottom.html" -->
+----------cs--
+
+Content-language: de
+Content-type: text/html; charset=ISO-8859-1
+Body:----------de--
+<!--#set var="CONTENT_LANGUAGE" value="de"
+--><!--#set var="TITLE" value="Fehlerhafte Anfrage!"
+--><!--#include virtual="include/top.html" -->
+
+    Ihr Browser (oder Proxy) hat eine ung&uuml;ltige Anfrage
+    gesendet, die vom Server nicht beantwortet werden kann.
+
+<!--#include virtual="include/bottom.html" -->
+----------de--
+
+Content-language: en
+Content-type: text/html; charset=ISO-8859-1
+Body:----------en--
+<!--#set var="TITLE" value="Bad request!"
+--><!--#include virtual="include/top.html" -->
+
+    Your browser (or proxy) sent a request that
+    this server could not understand.
+
+<!--#include virtual="include/bottom.html" -->
+----------en--
+
+Content-language: es
+Content-type: text/html; charset=ISO-8859-1
+Body:----------es--
+<!--#set var="CONTENT_LANGUAGE" value="es"
+--><!--#set var="TITLE" value="&iexcl;Solicitud err&oacute;nea!"
+--><!--#include virtual="include/top.html" -->
+
+	El navegador ha solicitado una operaci&oacute;n
+	que no puede ser procesada por el servidor.
+
+<!--#include virtual="include/bottom.html" -->
+----------es--
+
+Content-language: fr
+Content-type: text/html; charset=ISO-8859-1
+Body:----------fr--
+<!--#set var="CONTENT_LANGUAGE" value="fr"
+--><!--#set var="TITLE" value="Demande incorrecte!"
+--><!--#include virtual="include/top.html" -->
+
+    Votre navigateur (ou votre proxy) a envoy&eacute;
+    une demande que ce serveur n'a pas comprise.
+
+<!--#include virtual="include/bottom.html" -->  
+----------fr--
+
+Content-language: it
+Content-type: text/html; charset=ISO-8859-1
+Body:----------it--
+<!--#set var="CONTENT_LANGUAGE" value="it"
+--><!--#set var="TITLE" value="Richiesta incomprensibile!"
+--><!--#include virtual="include/top.html" -->
+
+    Il tuo browser (o il proxy) ha inviato a
+    questo server una richiesta incomprensibile.
+
+<!--#include virtual="include/bottom.html" -->
+----------it--
+
+Content-language: ja
+Content-type: text/html; charset=ISO-2022-JP
+Body:----------ja--
+<!--#set var="CONTENT_LANGUAGE" value="ja"
+--><!--#set var="CHARACTER_ENCODING" value="iso-2022-jp"
+--><!--#set var="TITLE" value="Bad request!"
+--><!--#include virtual="include/top.html" -->
+
+    $B$*;H$$$N%V%i%&%6(B ($B$^$?$O%W%m%/%7(B)
+    $B$,!"%5!<%P$NM}2r$G$-$J$$%j%/%(%9%H$rAw?.$7$^$7$?!#(B
+
+<!--#include virtual="include/bottom.html" -->
+----------ja--
+
+Content-language: ko
+Content-type: text/html; charset=EUC-KR
+Body:----------ko--
+<!--#set var="CONTENT_LANGUAGE" value="ko"
+--><!--#set var="TITLE" value="Àß¸øµÈ ¿äÃ»!"
+--><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+--><!--#include virtual="include/top.html" -->
+
+    ºê¶ó¿ìÀú ¶Ç´Â ÇÁ·Ï½Ã°¡
+    ÀÌ ¼­¹ö°¡ Ã³¸®ÇÒ ¼ö ¾ø´Â Àß¸øµÈ ¿äÃ»À» º¸³Â½À´Ï´Ù.
+
+<!--#include virtual="include/bottom.html" -->
+----------ko--
+
+Content-language: nl
+Content-type: text/html; charset=ISO-8859-1
+Body:----------nl--
+<!--#set var="CONTENT_LANGUAGE" value="nl"
+--><!--#set var="TITLE" value="Slechte vraag!"
+--><!--#include virtual="include/top.html" -->
+
+    Uw browser (of proxy) stuurde een vraag die
+    deze server niet kon begrijpen.
+
+<!--#include virtual="include/bottom.html" -->
+----------nl--
+
+Content-language: pl
+Content-type: text/html; charset=ISO-8859-2
+Body:----------pl--
+<!--#set var="CONTENT_LANGUAGE" value="pl"
+--><!--#set var="TITLE" value="Nieprawid³owe ¿±danie!"
+--><!--#set var="CHARACTER_ENCODING" value="ISO-8859-2"
+--><!--#include virtual="include/top.html" -->
+
+    Twoja przegl±darka (lub serwer po¶rednicz±cy) wys³a³ ¿±danie,
+    którego ten serwer nie potrafi obs³u¿yæ.
+
+<!--#include virtual="include/bottom.html" -->
+----------pl--
+
+Content-language: pt-br
+Content-type: text/html; charset=ISO-8859-1
+Body:-------pt-br--
+<!--#set var="CONTENT_LANGUAGE" value="pt-br"
+--><!--#set var="TITLE" value="Requisi&ccedil;&atilde;o Inv&aacute;lida!"
+--><!--#include virtual="include/top.html" -->
+
+    Seu "browser" (ou o servidor proxy) enviou uma
+    requisi&ccedil;&atilde;o inv&aacute;lida ao servidor.
+
+<!--#include virtual="include/bottom.html" -->
+-------pt-br--
+
+Content-language: ro
+Content-type: text/html; charset=ISO-8859-1
+Body:----------ro--
+<!--#set var="CONTENT_LANGUAGE" value="ro"
+--><!--#set var="TITLE" value="Cerere incomprensibila!"
+--><!--#include virtual="include/top.html" -->
+
+    Browserul (sau proxy-ul) dumneavoastra a trimis
+    serverului o cerere ce nu poate fi procesata.
+
+<!--#include virtual="include/bottom.html" -->
+----------ro--
+
+Content-language: sv
+Content-type: text/html; charset=ISO-8859-1
+Body:----------sv--
+<!--#set var="CONTENT_LANGUAGE" value="sv"
+--><!--#set var="TITLE" value="Felaktig f&ouml;rfr&aring;gan!"
+--><!--#include virtual="include/top.html" -->
+
+    Din webbl&auml;sare eller proxy skickade en f&ouml;rfr&aring;gan
+    som denna server inte kunde f&ouml;rst&aring;.
+
+<!--#include virtual="include/bottom.html" -->  
+----------sv--
+
+Content-language: tr
+Content-type: text/html; charset=ISO-8859-9
+Body:----------tr--
+<!--#set var="CONTENT_LANGUAGE" value="tr"
+--><!--#set var="CHARACTER_ENCODING" value="ISO-8859-9"
+--><!--#set var="TITLE" value="Bad request!"
+--><!--#include virtual="include/top.html" -->
+
+    Gezgininiz (veya vekil sunucunuz) bu sunucunun
+    tan&#305;mad&#305;&#287;&#305;
+    bir istemde bulundu.
+
+<!--#include virtual="include/bottom.html" -->
+----------tr--

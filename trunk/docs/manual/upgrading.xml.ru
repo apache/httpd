@@ -1,0 +1,200 @@
+<?xml version='1.0' encoding='KOI8-R' ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.ru.xsl"?>
+<!-- English Revision: 96997:170636 (outdated) -->
+
+<!--
+ Copyright 2002-2005 The Apache Software Foundation or its licensors,
+                     as applicable.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<!--***************************************************-->
+<!-- Translator: Ilia Soldis (rkai@tversu.ru)          -->
+<!-- Reviewers:                                        -->
+<!--             Ivan Shvedov (ivan@tversu.ru)         -->
+<!--             Arthur Reznikov (art@altair.tversu.ru)-->
+<!--***************************************************-->
+
+<manualpage metafile="upgrading.xml.meta">
+
+<title>Переход от версии 1.3 к версии 2.0</title>
+
+<summary>
+  <p>Этот документ необходим для того, чтобы помочь пользователям
+  перейти к использованию сервера версии 2.0. Здесь вы найдете лишь
+  краткие замечания; более подробную информацию о нововведениях можно
+  найти либо в документе <a href="new_features_2_0.html"
+  >Новые возможности</a>, либо в файле <code>src/CHANGES</code>.</p>
+</summary>
+
+  <section id="compile-time">
+    <title>Изменения в конфигурировании сборки сервера</title>
+
+    <ul>
+      <li>Apache теперь использует систему <code>autoconf</code> и
+      <code>libtool</code> для <a
+      href="install.html">конфигурирования процесса сборки</a>.
+      Использование этой системы похоже на использование
+      APACI в Apache 1.3, хотя и не является абсолютно тем же самым.</li>
+
+      <li>В добавок к обычному списку модулей, которые вы можете
+      выбрать при сборке сервера, в Apache 2.0 появились <a href="mpm.html"
+      >мульти - процессные модули</a> (МП - модули), в которых теперь
+      сконцентрирована основная часть кода, отвечающего за обработку
+      запросов.</li>
+    </ul>
+  </section>
+
+  <section id="run-time">
+    <title>Изменения в конфигурировании работы сервера</title>
+
+    <ul>
+      <li>Многие из тех директив, которые обслуживались ядром сервера
+      Apache 1.3, теперь перенесены в мульти - процессные модули. Если вы
+      хотите, чтобы поведение сервера было наиболее приближено к поведению
+      Apache 1.3, то при сборке вы должны выбрать МП-модуль <a
+      href="mod/prefork.html">prefork</a>. Другие МП-модули предоставляют
+      иные директивы, отвечающие за работу процессов сервера и обработку
+      запросов.</li>
+
+      <li><a href="mod/mod_proxy.html">Прокси модуль</a> был переписан,
+      и теперь поддерживает спецификацию HTTP/1.1. Одним из наиболее
+      важных изменений является то, что директивы, контролирующие работу
+      модуля, теперь располагаются в секции &lt;Proxy&gt;, а не в
+      &lt;Directory proxy:&gt;, как это было ранее.</li>
+
+      <li>Обработка PATH_INFO (путевой информации, следующей за
+      именем запрашиваемого документа) изменилась для некоторых модулей.
+      Модули, которые раньше были написаны как обработчики (handler), а
+      теперь выполняют роль фильтров, могут более не принимать запросы,
+      содержащие PATH_INFO. Такие фильтры, как <a
+      href="mod/mod_include.html">INCLUDES</a> реализованы первыми в базовом
+      обработчике, таким образом они не могут принимать запросы, содержащие
+      PATH_INFO. Вы можете использовать директиву <directive
+      module="core">AcceptPathInfo</directive>, чтобы заставить базовый
+      обработчик принимать подобные запросы, и таким образом восстановить
+      возможность использования PATH_INFO в документах, использующих включения
+      на стороне сервера (SSI).</li>
+
+      <li>Директива <directive
+      module="mod_negotiation">CacheNegotiatedDocs</directive>
+      теперь может принимать аргументы <code>on</code> и
+      <code>off</code>. Уже существующие экземпляры директивы
+      <code>CacheNegotiatedDocs</code> должны быть заменены на
+      <code>CacheNegotiatedDocs on</code>.</li>
+
+      <li>
+        Директива <directive module="core">ErrorDocument</directive>
+        более не использует открывающую кавычку в начале аргумента
+        для обозначения того, что аргумент является текстовым сообщением.
+        Вместо этого вам необходимо заключать весь текст сообщения
+        в двойные кавычки. Например, существующие директивы
+
+        <example>
+          ErrorDocument 403 "Некоторое сообщение
+        </example>
+        должны быть заменены на
+
+        <example>
+          ErrorDocument 403 "Некоторое сообщение"
+        </example>
+        Если второй аргумент не является правильно оформленным
+        идентификатором ресурса (URL) или путевым именем, то он
+        будет интерпретироваться как текстовое сообщение.
+      </li>
+
+      <li>Директивы <code>AccessConfig</code> и
+      <code>ResourceConfig</code> более не существуют.
+      Имеющиеся их копии могут быть заменены директивой
+      <directive module="core">Include</directive>, которая имеет
+      ту же функциональность. Если прежде вы не включали их в конфигурационные
+      файлы, тем самым используя их значения по умолчанию, то сейчас,
+      для достижения того же результата, вам надо
+      добавить следующие строки в файл httpd.conf: <code
+      >Include conf/access.conf</code> и <code>Include
+      conf/srm.conf</code>. Для того чтобы быть уверенным в том, что
+      Apache считывает конфигурационные файлы именно в том порядке,
+      который был предусмотрен старыми директивами, надо поместить
+      директивы <code>Include</code> в конце файла httpd.conf, причем
+      сперва ту, что включает <code>srm.conf</code>, а затем ту, что
+      включает <code>access.conf</code>.</li>
+
+      <li>Директивы <code>BindAddress</code> и <code>Port</code>
+      более не существуют. Эквивалентная функциональность предоставляется
+      более гибкой директивой <directive module="mpm_common">Listen</directive>.
+      </li>
+
+      <li>В Apache 1.3 директива <code>Port</code>
+      использовалась, кроме всего прочего, для того чтобы сервер
+      мог формировать правильные ссылки на самого себя. В Apache 2.0 для
+      тех же целей служит новый синтаксис директивы <directive module="core"
+      >ServerName</directive>: он был изменен таким образом, что теперь
+      имя хоста <em>и</em> номер порта можно указывать в одной этой директиве.</li>
+
+      <li>Директива <code>ServerType</code> более не существует.
+      Метод обработки запросов теперь определяется посредством
+      выбора МП-модуля. В настоящее время нет такого МП-модуля,
+      который мог бы запускаться посредством демона inetd.</li>
+
+      <li>Модули mod_log_agent и mod_log_referer, которые предоставляли
+      такие директивы, как <code>AgentLog</code>, <code>RefererLog</code>
+      и <code>RefererIgnore</code>, были убраны. Ведение журнала агентов
+      пользователей (agent logs) и отправителей (referer logs) по-прежнему
+      возможно посредством использования директивы <directive
+      module="mod_log_config">CustomLog</directive> модуля <module>mod_log_config</module>.</li>
+
+      <li>Директивы <code>AddModule</code> и
+      <code>ClearModuleList</code> более не существуют. Они использовались
+      для обеспечения правильного порядка загрузки модулей. Новый API для
+      Apache 2.0 позволяет модулям самим указывать порядок их загрузки, что
+      делает эти директивы ненужными.</li>
+
+      <li>Директива <code>FancyIndexing</code> была убрана. Ее функциональность
+      теперь обеспечивается опцией <code>FancyIndexing</code> в директиве <directive
+      module="mod_autoindex">IndexOptions</directive></li>
+    </ul>
+  </section>
+
+  <section id="misc">
+    <title>Другие изменения</title>
+
+    <ul>
+      <li>Опция командной строки <code>httpd</code> <code> -S</code>,
+      позволявшая распечатывать конфигурацию виртуальных хостов, теперь заменена
+      опцией <code>-t -D DUMP_VHOSTS</code>.</li>
+
+      <li>Модуль <module>mod_auth_digest</module>, который имел экспериментальный статус в
+      Apache 1.3, теперь является стандартным модулем.</li>
+
+      <li>Модуль <code>mod_mmap_static</code>, который имел экспериментальный статус в
+      Apache 1.3, заменен модулем <module>mod_file_cache</module>.</li>
+
+      <li>Организация дистрибутива полностью изменена и теперь
+      более не содержит независимого каталога <code>src</code>. Вместо этого
+      исходные коды логически организованы в основном каталоге дистрибутива, а
+      установка скомпилированного сервера производится в отдельный каталог.</li>
+    </ul>
+  </section>
+
+  <section id="third-party">
+    <title>Модули третьих фирм</title>
+
+    <p>Значительные изменения были внесены в API для Apache 2.0.
+    Существующие модули, написанные с использованием Apache 1.3 API,
+    <strong>не</strong> будут работать под Apache 2.0, если не внести
+    в них необходимые изменения. Более подробная информация по этому поводу
+    доступна в <a href="developer/">документации для разработчиков</a>.</p>
+  </section>
+</manualpage>

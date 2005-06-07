@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>mod_ext_filter - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.1</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.1</a> &gt; <a href="./">Modules</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache Module mod_ext_filter</h1>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_ext_filter.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/mod/mod_ext_filter.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/mod/mod_ext_filter.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Pass the response body through an external program before
+delivery to the client</td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>ext_filter_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_ext_filter.c</td></tr></table>
+<h3>Summary</h3>
+
+    <p><code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code> presents a simple and familiar
+    programming model for <a href="../filter.html">filters</a>. With
+    this module, a program which reads from stdin and writes to stdout
+    (i.e., a Unix-style filter command) can be a filter for
+    Apache. This filtering mechanism is much slower than using a
+    filter which is specially written for the Apache API and runs
+    inside of the Apache server process, but it does have the
+    following benefits:</p>
+
+    <ul>
+      <li>the programming model is much simpler</li>
+
+      <li>any programming/scripting language can be used, provided
+      that it allows the program to read from standard input and
+      write to standard output</li>
+
+      <li>existing programs can be used unmodified as Apache
+      filters</li>
+    </ul>
+
+    <p>Even when the performance characteristics are not suitable
+    for production use, <code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code> can be used as
+    a prototype environment for filters.</p>
+
+</div>
+<div id="quickview"><h3 class="directives">Directives</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#extfilterdefine">ExtFilterDefine</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#extfilteroptions">ExtFilterOptions</a></li>
+</ul>
+<h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#examples">Examples</a></li>
+</ul><h3>See also</h3>
+<ul class="seealso">
+<li><a href="../filter.html">Filters</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="examples" id="examples">Examples</a></h2>
+
+    <h3>Generating HTML from some other type of response</h3>
+      <div class="example"><p><code>
+        # mod_ext_filter directive to define a filter<br />
+        # to HTML-ize text/c files using the external<br />
+        # program /usr/bin/enscript, with the type of<br />
+        # the result set to text/html<br />
+        ExtFilterDefine c-to-html mode=output \<br />
+        <span class="indent">
+          intype=text/c outtype=text/html \<br />
+          cmd="/usr/bin/enscript --color -W html -Ec -o - -"<br />
+        </span>
+        <br />
+        &lt;Directory "/export/home/trawick/apacheinst/htdocs/c"&gt;<br />
+        <span class="indent">
+          # core directive to cause the new filter to<br />
+          # be run on output<br />
+          SetOutputFilter c-to-html<br />
+          <br />
+          # mod_mime directive to set the type of .c<br />
+          # files to text/c<br />
+          AddType text/c .c<br />
+          <br />
+          # mod_ext_filter directive to set the debug<br />
+          # level just high enough to see a log message<br />
+          # per request showing the configuration in force<br />
+          ExtFilterOptions DebugLevel=1<br />
+        </span>
+        &lt;/Directory&gt;
+      </code></p></div>
+    
+
+    <h3>Implementing a content encoding filter</h3>
+      <p>Note: this gzip example is just for the purposes of illustration.
+      Please refer to <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> for a practical
+      implementation.</p>
+
+      <div class="example"><p><code>
+        # mod_ext_filter directive to define the external filter<br />
+        ExtFilterDefine gzip mode=output cmd=/bin/gzip<br />
+        <br />
+        &lt;Location /gzipped&gt;<br />
+        <span class="indent">
+          # core directive to cause the gzip filter to be<br />
+          # run on output<br />
+          SetOutputFilter gzip<br />
+          <br />
+          # mod_header directive to add<br />
+          # "Content-Encoding: gzip" header field<br />
+          Header set Content-Encoding gzip<br />
+        </span>
+        &lt;/Location&gt;
+      </code></p></div>
+    
+
+    <h3>Slowing down the server</h3>
+      <div class="example"><p><code>
+        # mod_ext_filter directive to define a filter<br />
+        # which runs everything through cat; cat doesn't<br />
+        # modify anything; it just introduces extra pathlength<br />
+        # and consumes more resources<br />
+        ExtFilterDefine slowdown mode=output cmd=/bin/cat \<br />
+        <span class="indent">
+          preservescontentlength<br />
+        </span>
+        <br />
+        &lt;Location /&gt;<br />
+        <span class="indent">
+          # core directive to cause the slowdown filter to<br />
+          # be run several times on output<br />
+          #<br />
+          SetOutputFilter slowdown;slowdown;slowdown<br />
+        </span>
+        &lt;/Location&gt;
+      </code></p></div>
+    
+
+    <h3>Using sed to replace text in the response</h3>
+      <div class="example"><p><code>
+        # mod_ext_filter directive to define a filter which<br />
+        # replaces text in the response<br />
+        #<br />
+        ExtFilterDefine fixtext mode=output intype=text/html \<br />
+        <span class="indent">
+          cmd="/bin/sed s/verdana/arial/g"<br />
+        </span>
+        <br />
+        &lt;Location /&gt;<br />
+        <span class="indent">
+          # core directive to cause the fixtext filter to<br />
+          # be run on output<br />
+          SetOutputFilter fixtext<br />
+        </span>
+        &lt;/Location&gt;
+      </code></p></div>
+    
+
+    <h3>Tracing another filter</h3>
+      <div class="example"><p><code>
+        # Trace the data read and written by mod_deflate<br />
+        # for a particular client (IP 192.168.1.31)<br />
+        # experiencing compression problems.<br />
+        # This filter will trace what goes into mod_deflate.<br />
+        ExtFilterDefine tracebefore \<br />
+        <span class="indent">
+          cmd="/bin/tracefilter.pl /tmp/tracebefore" \<br />
+          EnableEnv=trace_this_client<br />
+        </span>
+        <br />
+        # This filter will trace what goes after mod_deflate.<br />
+        # Note that without the ftype parameter, the default<br />
+        # filter type of AP_FTYPE_RESOURCE would cause the<br />
+        # filter to be placed *before* mod_deflate in the filter<br />
+        # chain.  Giving it a numeric value slightly higher than<br />
+        # AP_FTYPE_CONTENT_SET will ensure that it is placed<br />
+        # after mod_deflate.<br />
+        ExtFilterDefine traceafter \<br />
+        <span class="indent">
+          cmd="/bin/tracefilter.pl /tmp/traceafter" \<br />
+          EnableEnv=trace_this_client ftype=21<br />
+        </span>
+        <br />
+        &lt;Directory /usr/local/docs&gt;<br />
+        <span class="indent">
+          SetEnvIf Remote_Addr 192.168.1.31 trace_this_client<br />
+          SetOutputFilter tracebefore;deflate;traceafter<br />
+        </span>
+        &lt;/Directory&gt;
+      </code></p></div>
+
+      <div class="example"><h3>Here is the filter which traces the data:</h3><p><code>
+        #!/usr/local/bin/perl -w<br />
+        use strict;<br />
+        <br />
+        open(SAVE, "&gt;$ARGV[0]")<br />
+        <span class="indent">
+          or die "can't open $ARGV[0]: $?";<br />
+        </span>
+        <br />
+        while (&lt;STDIN&gt;) {<br />
+        <span class="indent">
+          print SAVE $_;<br />
+          print $_;<br />
+        </span>
+        }<br />
+        <br />
+        close(SAVE);
+      </code></p></div>
+    
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ExtFilterDefine" id="ExtFilterDefine">ExtFilterDefine</a> <a name="extfilterdefine" id="extfilterdefine">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Define an external filter</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ExtFilterDefine <var>filtername</var> <var>parameters</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ext_filter</td></tr>
+</table>
+    <p>The <code class="directive">ExtFilterDefine</code> directive defines the
+    characteristics of an external filter, including the program to
+    run and its arguments.</p>
+
+    <p><var>filtername</var> specifies the name of the filter being
+    defined. This name can then be used in <code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code>
+    directives. It must be unique among all registered filters.
+    <em>At the present time, no error is reported by the
+    register-filter API, so a problem with duplicate names isn't
+    reported to the user.</em></p>
+
+    <p>Subsequent parameters can appear in any order and define the
+    external command to run and certain other characteristics. The
+    only required parameter is <code>cmd=</code>. These parameters
+    are:</p>
+
+    <dl>
+      <dt><code>cmd=<var>cmdline</var></code></dt>
+
+      <dd>The <code>cmd=</code> keyword allows you to specify the
+      external command to run. If there are arguments after the
+      program name, the command line should be surrounded in
+      quotation marks (<em>e.g.</em>, <code>cmd="<var>/bin/mypgm</var>
+      <var>arg1</var> <var>arg2</var>"</code>.) Normal shell quoting is
+      not necessary since the program is run directly, bypassing the shell.
+      Program arguments are blank-delimited. A backslash can be used to
+      escape blanks which should be part of a program argument. Any
+      backslashes which are part of the argument must be escaped with
+      backslash themselves.  In addition to the standard CGI environment
+      variables, DOCUMENT_URI, DOCUMENT_PATH_INFO, and 
+      QUERY_STRING_UNESCAPED will also be set for the program.</dd>
+
+      <dt><code>mode=<var>mode</var></code></dt>
+
+      <dd>Use <code>mode=output</code> (the default) for filters which
+      process the response.  Use <code>mode=input</code> for filters
+      which process the request.  <code>mode=input</code> is new with
+      Apache 2.1.</dd>
+
+      <dt><code>intype=<var>imt</var></code></dt>
+
+      <dd>This parameter specifies the internet media type (<em>i.e.</em>,
+      MIME type) of documents which should be filtered. By default,
+      all documents are filtered. If <code>intype=</code> is
+      specified, the filter will be disabled for documents of other
+      types.</dd>
+
+      <dt><code>outtype=<var>imt</var></code></dt>
+
+      <dd>This parameter specifies the internet media type (<em>i.e.</em>,
+      MIME type) of filtered documents. It is useful when the
+      filter changes the internet media type as part of the
+      filtering operation. By default, the internet media type is
+      unchanged.</dd>
+
+      <dt><code>PreservesContentLength</code></dt>
+
+      <dd>The <code>PreservesContentLength</code> keyword specifies
+      that the filter preserves the content length. This is not the
+      default, as most filters change the content length. In the
+      event that the filter doesn't modify the length, this keyword
+      should be specified.</dd>
+
+      <dt><code>ftype=<var>filtertype</var></code></dt>
+
+      <dd>This parameter specifies the numeric value for filter type
+      that the filter should be registered as.  The default value,
+      AP_FTYPE_RESOURCE, is sufficient in most cases.  If the filter
+      needs to operate at a different point in the filter chain than
+      resource filters, then this parameter will be necessary.  See
+      the AP_FTYPE_foo definitions in util_filter.h for appropriate
+      values.</dd>
+
+      <dt><code>disableenv=<var>env</var></code></dt>
+
+      <dd>This parameter specifies the name of an environment variable
+      which, if set, will disable the filter.</dd>
+
+      <dt><code>enableenv=<var>env</var></code></dt>
+
+      <dd>This parameter specifies the name of an environment variable
+      which must be set, or the filter will be disabled.</dd>
+    </dl>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ExtFilterOptions" id="ExtFilterOptions">ExtFilterOptions</a> <a name="extfilteroptions" id="extfilteroptions">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure <code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code> options</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ExtFilterOptions <var>option</var> [<var>option</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ExtFilterOptions DebugLevel=0 NoLogStderr</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ext_filter</td></tr>
+</table>
+    <p>The <code class="directive">ExtFilterOptions</code> directive specifies
+    special processing options for <code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code>.
+    <var>Option</var> can be one of</p>
+
+    <dl>
+      <dt><code>DebugLevel=<var>n</var></code></dt>
+
+      <dd>
+        The <code>DebugLevel</code> keyword allows you to specify
+        the level of debug messages generated by
+        <code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code>. By default, no debug messages
+        are generated. This is equivalent to
+        <code>DebugLevel=0</code>. With higher numbers, more debug
+        messages are generated, and server performance will be
+        degraded. The actual meanings of the numeric values are
+        described with the definitions of the DBGLVL_ constants
+        near the beginning of <code>mod_ext_filter.c</code>. 
+
+        <p>Note: The core directive <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code> should be used to cause debug messages to
+        be stored in the Apache error log.</p>
+      </dd>
+
+      <dt><code>LogStderr | NoLogStderr</code></dt>
+
+      <dd>The <code>LogStderr</code> keyword specifies that
+      messages written to standard error by the external filter
+      program will be saved in the Apache error log.
+      <code>NoLogStderr</code> disables this feature.</dd>
+    </dl>
+
+    <div class="example"><h3>Example</h3><p><code>
+      ExtFilterOptions LogStderr DebugLevel=0
+    </code></p></div>
+
+    <p>Messages written to the filter's standard error will be stored
+    in the Apache error log. No debug messages will be generated by
+    <code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code>. </p>
+
+</div>
+</div>
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_ext_filter.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/mod/mod_ext_filter.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/mod/mod_ext_filter.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 1995-2005 The Apache Software Foundation or its licensors, as applicable.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>

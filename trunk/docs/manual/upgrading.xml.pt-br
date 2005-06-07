@@ -1,0 +1,215 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.pt-br.xsl"?>
+<!-- English Revision: 151408:170636 (outdated) -->
+
+<!--
+ Copyright 2005 The Apache Software Foundation or its licensors,
+                as applicable.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="upgrading.xml.meta">
+
+<title>Atualizando da vers&#227;o 1.3 para 2.0</title>
+
+<summary>
+  <p>Com a finalidade de ajudar as pessoas na atualiza&#231;&#227;o do servidor,
+  n&#243;s mantemos um documento que descreve informa&#231;&#245;es cr&#237;ticas para
+  os usu&#225;rios j&#225; existentes do Apache. Essas informa&#231;&#245;es tem o
+  intuito de serem breves notas e voc&#234; dever&#225; encontrar mais
+  informa&#231;&#245;es no documento <a
+  href="new_features_2_0.html">Novas Funcionalidades</a>, ou no
+  arquivo <code>src/CHANGES</code>.</p>
+</summary>
+<seealso><a href="new_features_2_0.html">Descri&#231;&#227;o das novas
+  funcionalidades do Apache 2.0</a></seealso>
+
+  <section id="compile-time">
+    <title>Mudan&#231;as na Configura&#231;&#227;o em tempo de Compila&#231;&#227;o</title>
+
+    <ul>
+      <li>O Apache agora usa o sistema <code>autoconf</code>
+      e <code>libtool</code> para <a href="install.html">
+      configurar o processo de constru&#231;&#227;o</a>.
+      A utiliza&#231;&#227;o desse sistema &#233; similar, mas n&#227;o o 
+      mesmo, a usar o sistema APACI do Apache 1.3</li>
+
+      <li>Al&#233;m da sele&#231;&#227;o habitual de m&#243;dulos que voc&#234; 
+      pode escolher para compilar, o Apache 2.0 mudou a parte
+      principal de processamentos de pedidos para os <a
+      href="mpm.html">M&#243;dulos Multi-Processamento</a> (MPMs).</li>
+    </ul>
+  </section>
+
+  <section id="run-time">
+    <title>Mudan&#231;as na Configura&#231;&#227;o em tempo de Execu&#231;&#227;o</title>
+
+    <ul>
+      <li>Muitas diretrizes que estavam no n&#250;cleo do servidor
+      no Apache 1.3 est&#227;o agora nos MPMs. Se voc&#234; desejar que
+      o funcionamento do servidor seja o mais similar poss&#237;vel ao
+      do Apache 1.3, voc&#234; deve selecionar o MPM <module>prefork</module>. 
+      Os outros MPMs ter&#227;o diretrizes diferentes para controlar
+      a cria&#231;&#227;o de processos e o processamento de pedidos.</li>
+
+      <li>O <a href="mod/mod_proxy.html">m&#243;dulo proxy</a> foi reconstru&#237;do
+      para o padr&#227;o HTTP/1.1. Ao longo das mudan&#231;as importantes,
+      o controle de acesso ao proxy agora fica dentro de um bloco
+      <directive type="section" module="mod_proxy">Proxy</directive>,
+      ao inv&#233;s de um bloco <code>&lt;Directory proxy:&gt;</code>.</li>
+
+      <li>A opera&#231;&#227;o com <code>PATH_INFO</code> (informa&#231;&#227;o de
+      caminho procedente depois do nome do arquivo verdadeiro) mudou
+      para alguns m&#243;dulos. M&#243;dulos que eram previamente implementados
+      como manipuladores mas agora s&#227;o implementados como filtros
+      n&#227;o podem mais aceitar pedidos com <code>PATH_INFO</code>.
+      Filtros como <a href="mod/mod_include.html">INCLUDES</a>
+      ou <a href="http://www.php.net/">PHP</a> s&#227;o implementados
+      no topo dos manipuladores principais, rejeitando pedidos
+      com <code>PATH_INFO</code>. Voc&#234; pode usar a diretriz
+      <directive module="core">AcceptPathInfo</directive>
+      para for&#231;ar o manipulador principal a aceitar pedidos
+      com <code>PATH_INFO</code> e assim restaurar a habilidade
+      de us&#225;-lo em inclus&#245;es por parte do servidor (SSI).</li>
+
+      <li>A diretriz <directive 
+      module="mod_negotiation">CacheNegotiatedDocs</directive> agora aceita 
+      o argumento <code>on</code> ou <code>off</code>. Inst&#226;ncias 
+      existentes de <directive>CacheNegotiatedDocs</directive> dever&#227;o 
+      ser substitu&#237;das por <code>CacheNegotiatedDocs on</code>.</li>
+
+      <li>
+        A diretriz <directive module="core">ErrorDocument</directive>
+        n&#227;o usa mais aspas no come&#231;o do argumento para indicar
+        mensagens de texto. Ao inv&#233;s disso, voc&#234; deve colocar
+        a mensagem inteira entre aspas. Por exemplo, inst&#226;ncias
+        existentes de
+
+        <example>
+          ErrorDocument 403 "Alguma mensagem
+        </example>
+        devem ser substitu&#237;das por
+
+        <example>
+          ErrorDocument 403 "Alguma mensagem"
+        </example>
+
+        Contanto que o segundo argumento n&#227;o seja uma
+        URL v&#225;lida ou um caminho de arquivo, ir&#225; ser
+        tratado como uma mensagem de texto.
+      </li>
+
+      <li>As diretrizes <code>AccessConfig</code> e
+      <code>ResourceConfig</code> n&#227;o existem mais.
+      Inst&#226;ncias existentes dessas diretrizes podem ser substitu&#237;das
+      com a diretriz <directive module="core">Include</directive>
+      que possui uma funcionalidade equivalente. Se voc&#234; estava
+      fazendo uso dos valores padr&#245;es dessas diretrizes sem inclu&#237;-las
+      nos arquivos de configura&#231;&#227;o, voc&#234; provavelmente ter&#225; 
+      que adicionar <code>Include conf/access.conf</code> e 
+      <code>Include conf/srm.conf</code> ao seu <code>httpd.conf</code>. 
+      Com o fim de assegurar que o Apache leia os arquivos de 
+      configura&#231;&#227;o na mesma ordem que as diretrizes velhas usavam, 
+      a diretriz <directive module="core">Include</directive> deve ser colocada 
+      no final do <code>httpd.conf</code>, com uma entrada para 
+      <code>srm.conf</code> antes de <code>access.conf</code>.</li>
+
+      <li>As diretrizes <code>BindAddress</code> and <code>Port</code>
+      n&#227;o existem mais. Uma funcionalidade equivalente &#233; fornecida com
+      uma diretriz mais flex&#237;vel <directive 
+      module="mpm_common">Listen</directive>.</li>
+
+      <li>Outro uso da diretriz <code>Port</code> no Apache-1.3
+      era ajustar o n&#250;mero da porta usada em URLs auto-referenci&#225;veis.
+      O equivalente no Apache-2.0 &#233; a nova sintaxe <directive 
+      module="core">ServerName</directive>: ela foi modificada para permitir que
+      sejam especificados ambos "hostname" <em>e</em> o n&#250;mero da porta
+      para URLs auto-referenci&#225;veis em uma s&#243; diretriz.</li>
+
+      <li>A diretriz <code>ServerType</code> n&#227;o existe mais.
+      O m&#233;todo usado para atender pedidos &#233; determinado pela
+      sele&#231;&#227;o de MPM. Atualmente n&#227;o existe nenhuma MPM projetada
+      para ser executada pelo inetd.</li>
+
+      <li>Os m&#243;dulos <code>mod_log_agent</code> e <code>mod_log_referer</code>
+      que forneciam as diretrizes <code>AgentLog</code>, 
+      <code>RefererLog</code> e <code>RefererIgnore</code> foram removidas.
+      Registros de agentes e refer&#234;ncias ainda est&#227;o dispon&#237;veis
+      usando a diretriz <directive 
+      module="mod_log_config">CustomLog</directive> do 
+      <module>mod_log_config</module>.</li>
+
+      <li>As diretrizes <code>AddModule</code> e
+      <code>ClearModuleList</code> n&#227;o existem mais.
+      Essas diretrizes eram usadas para garantir que m&#243;dulos
+      pudessem ser habilitados na ordem correta. A nova API do
+      Apache 2.0 permite que os m&#243;dulos especifiquem explicitamente
+      a sua ordem, eliminando a necessidade dessas diretrizes.</li>
+
+      <li>A diretriz <code>FancyIndexing</code> foi removida.
+      A mesma funcionalidade est&#225; dispon&#237;vel atrav&#233;s da
+      op&#231;&#227;o <code>FancyIndexing</code> da diretriz <directive
+      module="mod_autoindex">IndexOptions</directive>.</li>
+
+      <li>A t&#233;cnica de negocia&#231;&#227;o de conte&#250;do (content-negotiation)
+      MultiViews fornecida pelo <module>mod_negotiation</module>
+      se tornou mais rigorosa em sua combina&#231;&#227;o de arquivo
+      padr&#227;o. Ela ir&#225; selecionar apenas arquivos negoci&#225;veis
+      (<em>negotiable</em>). O comportamento antigo pode ser restaurado usando a
+      diretriz <directive module="mod_mime">MultiviewsMatch</directive>.</li>
+
+      <li>(<em>desde a vers&#227;o 2.0.51</em>)
+      <p>A funcionalidade da diretriz <code>ErrorHeader</code>
+      foi colocada em conjunto com a diretriz <directive
+      module="mod_headers">Header</directive>, j&#225; que era um
+      uso de um nome impr&#243;prio. Utilize</p>
+
+      <example>
+        Header always set foo bar
+      </example>
+
+      <p>para obter o comportamento desejado.</p></li>
+    </ul>
+  </section>
+
+  <section id="misc">
+    <title>Mudan&#231;as Gerais</title>
+
+    <ul>
+      <li>O m&#243;dulo <module>mod_auth_digest</module>, que era
+      experimental no Apache 1.3, &#233; agora um m&#243;dulo padr&#227;o.</li>
+
+      <li>O m&#243;dulo <code>mod_mmap_static</code>, que era experimental no
+      Apache 1.3, foi substitu&#237;do com <module>mod_file_cache</module>.</li>
+
+      <li>A distribui&#231;&#227;o foi completamente reorganizada para
+      n&#227;o conter mais um diret&#243;rio <code>src</code> independente.
+      Em seu lugar, os fontes s&#227;o organizados
+      logicamente no diret&#243;rio principal da distribui&#231;&#227;o e
+      a instala&#231;&#227;o do servidor compilado deve ser direcionada
+      &#224; um diret&#243;rio separado.</li>
+    </ul>
+  </section>
+
+  <section id="third-party">
+    <title>M&#243;dulos de Terceiros</title>
+
+    <p>Mudan&#231;as extensivas foram feitas na API do servidor
+    no Apache 2.0. M&#243;dulos existentes projetados para a API
+    do Apache 1.3, <strong>n&#227;o</strong> funcionar&#227;o no Apache
+    2.0 sem modifica&#231;&#245;es. Detalhes ser&#227;o fornecidos na
+    <a href="developer/">documenta&#231;&#227;o do desenvolvedor</a>.</p>
+  </section>
+</manualpage>

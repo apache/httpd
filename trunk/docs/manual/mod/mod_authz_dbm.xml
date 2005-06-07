@@ -1,0 +1,169 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision$ -->
+
+<!--
+ Copyright 2002-2005 The Apache Software Foundation or its licensors, as
+ applicable.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_authz_dbm.xml.meta">
+
+<name>mod_authz_dbm</name>
+<description>Group authorization using DBM files</description>
+<status>Extension</status>
+<sourcefile>mod_authz_dbm.c</sourcefile>
+<identifier>authz_dbm_module</identifier>
+<compatibility>Available in Apache 2.1 and later</compatibility>
+
+<summary>
+    <p>This module provides authorization capabilities so that
+       authenticated users can be allowed or denied access to portions
+       of the web site by group membership. Similar functionality is
+       provided by <module>mod_authz_groupfile</module>.</p>
+</summary>
+
+<seealso><directive module="core">Require</directive></seealso>
+<seealso><directive module="core">Satisfy</directive></seealso>
+
+<directivesynopsis>
+<name>AuthDBMGroupFile</name>
+<description>Sets the name of the database file containing the list
+of user groups for authorization</description>
+<syntax>AuthDBMGroupFile <var>file-path</var></syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>The <directive>AuthDBMGroupFile</directive> directive sets the
+    name of a DBM file containing the list of user groups for user
+    authorization.  <var>File-path</var> is the absolute path to the
+    group file.</p>
+
+    <p>The group file is keyed on the username. The value for a
+    user is a comma-separated list of the groups to which the users
+    belongs. There must be no whitespace within the value, and it
+    must never contain any colons.</p>
+
+    <note type="warning"><title>Security</title>
+      <p>Make sure that the <directive>AuthDBMGroupFile</directive> is
+      stored outside the document tree of the web-server. Do
+      <strong>not</strong> put it in the directory that it protects.
+      Otherwise, clients will be able to download the
+      <directive>AuthDBMGroupFile</directive> unless otherwise
+      protected.</p>
+    </note>
+
+    <p>Combining Group and Password DBM files: In some cases it is
+    easier to manage a single database which contains both the
+    password and group details for each user. This simplifies any
+    support programs that need to be written: they now only have to
+    deal with writing to and locking a single DBM file. This can be
+    accomplished by first setting the group and password files to
+    point to the same DBM:</p>
+
+    <example>
+      AuthDBMGroupFile /www/userbase<br />
+      AuthDBMUserFile /www/userbase
+    </example>
+
+    <p>The key for the single DBM is the username. The value consists
+    of</p>
+
+    <example>
+      Encrypted Password : List of Groups [ : (ignored) ]
+    </example>
+
+    <p>The password section contains the encrypted
+    password as before. This is followed by a colon and the comma
+    separated list of groups. Other data may optionally be left in the
+    DBM file after another colon; it is ignored by the authorization
+    module. This is what www.telescope.org uses for its combined
+    password and group database.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthzDBMType</name>
+<description>Sets the type of database file that is used to
+store list of user groups</description>
+<syntax>AuthzDBMType default|SDBM|GDBM|NDBM|DB</syntax>
+<default>AuthzDBMType default</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>Sets the type of database file that is used to store the list
+    of user groups.
+    The default database type is determined at compile time.  The
+    availability of other types of database files also depends on
+    <a href="../install.html#dbm">compile-time settings</a>.</p>
+
+    <p>It is crucial that whatever program you use to create your group
+    files is configured to use the same type of database.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthzDBMAuthoritative</name>
+<description>Sets whether authorization will be passed on to lower level
+modules</description>
+<syntax>AuthzDBMAuthoritative On|Off</syntax>
+<default>AuthzDBMAuthoritative On</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>Setting the <directive>AuthzDBMAuthoritative</directive>
+    directive explicitly to <code>Off</code> allows group authorization
+    to be passed on to lower level modules (as defined in the
+    <code>modules.c</code> file) if there is no group found
+    for the the supplied userID. If there are any groups
+    specified, the usual checks will be applied and a failure will
+    give an Authentication Required reply.</p>
+
+    <p>So if a userID appears in the database of more than one module;
+    or if a valid <directive module="core">Require</directive>
+    directive applies to more than one module; then the first module
+    will verify the credentials; and no access is passed on;
+    regardless of the <directive>AuthAuthoritative</directive> setting.</p>
+
+    <p>A common use for this is in conjunction with one of the
+    auth providers; such as <module>mod_authn_dbm</module> or
+    <module>mod_authn_file</module>. Whereas this DBM module supplies
+    the bulk of the user credential checking; a few (administrator) related
+    accesses fall through to a lower level with a well protected
+    <code>.htpasswd</code> file.</p>
+
+    <p>By default, control is not passed on and an unknown group
+    will result in an Authentication Required reply. Not
+    setting it thus keeps the system secure and forces an NCSA
+    compliant behaviour.</p>
+
+    <note type="warning"><title>Security</title>
+      <p>Do consider the implications of allowing a user to
+      allow fall-through in his .htaccess file; and verify that this
+      is really what you want; Generally it is easier to just secure
+      a single <code>.htpasswd</code> file, than it is to secure a
+      database which might have more access interfaces.</p>
+    </note>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

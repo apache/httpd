@@ -1,0 +1,186 @@
+Content-language: cs
+Content-type: text/html; charset=ISO-8859-2
+Body:----------cs--
+<!--#set var="CONTENT_LANGUAGE" value="cs"
+--><!--#set var="CHARACTER_ENCODING" value="ISO-8859-2"
+--><!--#set var="TITLE" value="Metoda nepovolena!"
+--><!--#include virtual="include/top.html" -->
+
+    Metoda <!--#echo var="REDIRECT_REQUEST_METHOD" -->
+    není pro po¾adované URL povolena.
+    
+<!--#include virtual="include/bottom.html" -->
+----------cs--
+
+Content-language: de
+Content-type: text/html; charset=ISO-8859-1
+Body:----------de--
+<!--#set var="CONTENT_LANGUAGE" value="de"
+--><!--#set var="TITLE" value="Methode nicht erlaubt!"
+--><!--#include virtual="include/top.html" -->
+
+    Die <!--#echo var="REDIRECT_REQUEST_METHOD" -->-Methode
+    ist f&uuml;r den angeforderten URL nicht erlaubt.
+
+<!--#include virtual="include/bottom.html" -->
+----------de--
+
+Content-language: en
+Content-type: text/html; charset=ISO-8859-1
+Body:----------en--
+<!--#set var="TITLE" value="Method not allowed!"
+--><!--#include virtual="include/top.html" -->
+
+    The <!--#echo var="REDIRECT_REQUEST_METHOD" -->
+    method is not allowed for the requested URL.
+    
+<!--#include virtual="include/bottom.html" -->
+----------en--
+
+Content-language: es
+Content-type: text/html; charset=ISO-8859-1
+Body:----------es--
+<!--#set var="CONTENT_LANGUAGE" value="es"
+--><!--#set var="TITLE" value="&iexcl;M&eacute;todo no permitido!"
+--><!--#include virtual="include/top.html" -->
+
+	El <!--#echo var="REDIRECT_REQUEST_METHOD" -->
+	m&eacute;todo utilizado por su solicitud no est&aacute; 
+	permitido por el enlace.
+    
+<!--#include virtual="include/bottom.html" -->
+----------es--
+
+Content-language: fr
+Content-type: text/html; charset=ISO-8859-1
+Body:----------fr--
+<!--#set var="CONTENT_LANGUAGE" value="fr"
+--><!--#set var="TITLE" value="M&eacute;thode interdite!"
+--><!--#include virtual="include/top.html" -->
+
+    La m&eacute;thode <!--#echo var="REDIRECT_REQUEST_METHOD" -->
+    n'est pas utilisable pour l'URL requise.
+
+<!--#include virtual="include/bottom.html" -->
+----------fr--
+
+Content-language: it
+Content-type: text/html; charset=ISO-8859-1
+Body:----------it--
+<!--#set var="CONTENT_LANGUAGE" value="it"
+--><!--#set var="TITLE" value="Metodo non consentito!"
+--><!--#include virtual="include/top.html" -->
+
+    Il metodo <!--#echo var="REDIRECT_REQUEST_METHOD" -->
+    non &egrave; consentito per l'URL richiesto.
+
+<!--#include virtual="include/bottom.html" -->
+----------it--
+
+Content-language: ja
+Content-type: text/html; charset=ISO-2022-JP
+Body:----------ja--
+<!--#set var="CONTENT_LANGUAGE" value="ja"
+--><!--#set var="CHARACTER_ENCODING" value="iso-2022-jp"
+--><!--#set var="TITLE" value="Method not allowed!"
+--><!--#include virtual="include/top.html" -->
+
+    <!--#echo var="REDIRECT_REQUEST_METHOD"-->
+    $B%a%=%C%I$O!"MW5a$5$l$?(B URL $B$KBP$7$F$O5v2D$5$l$F$$$^$;$s!#(B
+    
+<!--#include virtual="include/bottom.html" -->
+----------ja--
+
+Content-language: ko
+Content-type: text/html; charset=EUC-KR
+Body:----------ko--
+<!--#set var="CONTENT_LANGUAGE" value="ko"
+--><!--#set var="TITLE" value="Çã¿ëµÇÁö ¾Ê´Â ¿äÃ» ¹æ½Ä!"
+--><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+--><!--#include virtual="include/top.html" -->
+
+    <!--#echo encoding="none" var="REDIRECT_REQUEST_METHOD"--> ¹æ½ÄÀº
+    ¿äÃ»ÇÑ URL¿¡ »ç¿ëÇÒ ¼ö ¾ø½À´Ï´Ù.
+
+<!--#include virtual="include/bottom.html" -->
+----------ko--
+
+Content-language: nl
+Content-type: text/html; charset=ISO-8859-1
+Body:----------nl--
+<!--#set var="CONTENT_LANGUAGE" value="nl"
+--><!--#set var="TITLE" value="Type methode niet toegelaten!"
+--><!--#include virtual="include/top.html" -->
+
+    Het <!--#echo var="REDIRECT_REQUEST_METHOD" -->
+    type methode is niet toegelaten voor de gevraagde URL.
+
+<!--#include virtual="include/bottom.html" -->
+----------nl--
+
+Content-language: pl
+Content-type: text/html; charset=ISO-8859-2
+Body:----------pl--
+<!--#set var="CONTENT_LANGUAGE" value="pl"
+--><!--#set var="TITLE" value="Niedozwolona metoda!"
+--><!--#set var="CHARACTER_ENCODING" value="ISO-8859-2"
+--><!--#include virtual="include/top.html" -->
+
+    Metoda <!--#echo var="REDIRECT_REQUEST_METHOD" -->
+    jest niedozwolona dla podanego URLa.
+
+<!--#include virtual="include/bottom.html" -->
+----------pl--
+
+Content-language: pt-br
+Content-type: text/html; charset=ISO-8859-1
+Body:-------pt-br--
+<!--#set var="CONTENT_LANGUAGE" value="pt-br"
+--><!--#set var="TITLE" value="M&eacute;todo n&atilde;o permitido!"
+--><!--#include virtual="include/top.html" -->
+
+    O m&eacute;todo <!--#echo var="REDIRECT_REQUEST_METHOD" -->
+    n&atilde;o &eacute; permitido para a URL requisitada.
+
+<!--#include virtual="include/bottom.html" -->
+-------pt-br--
+
+Content-language: ro
+Content-type: text/html; charset=ISO-8859-1
+Body:----------ro--
+<!--#set var="CONTENT_LANGUAGE" value="ro"
+--><!--#set var="TITLE" value="Metoda nepermisa!"
+--><!--#include virtual="include/top.html" -->
+
+    Metoda <!--#echo var="REDIRECT_REQUEST_METHOD" -->
+    nu este permisa pentru URL-ul cerut.
+
+<!--#include virtual="include/bottom.html" -->
+----------ro--
+
+Content-language: sv
+Content-type: text/html; charset=ISO-8859-1
+Body:----------sv--
+<!--#set var="CONTENT_LANGUAGE" value="sv"
+--><!--#set var="TITLE" value="Metoden inte till&aring;ten!"
+--><!--#include virtual="include/top.html" -->
+
+    <!--#echo var="REDIRECT_REQUEST_METHOD" -->
+    metoden &auml;r inte till&aring;ten f&ouml;r den f&ouml;rfr&aring;gade
+    adressen.
+
+<!--#include virtual="include/bottom.html" -->
+----------sv--
+
+Content-language: tr
+Content-type: text/html; charset=ISO-8859-9
+Body:----------tr--
+<!--#set var="CONTENT_LANGUAGE" value="tr"
+--><!--#set var="CHARACTER_ENCODING" value="ISO-8859-9"
+--><!--#set var="TITLE" value="Method not allowed!"
+--><!--#include virtual="include/top.html" -->
+
+    <!--#echo var="REDIRECT_REQUEST_METHOD" --> yöntemi talep etti&#287;iniz URL için kullan&#305;lamaz.
+    
+<!--#include virtual="include/bottom.html" -->
+----------tr--

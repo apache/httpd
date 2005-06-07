@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Per-user web directories - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.1</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.1</a> &gt; <a href="./">How-To / Tutorials</a></div><div id="page-content"><div id="preamble"><h1>Per-user web directories</h1>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="../en/howto/public_html.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/howto/public_html.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/howto/public_html.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+</div>
+
+<p>On systems with multiple users, each user can be permitted to have a
+    web site in their home directory using the <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> directive. Visitors
+    to a URL <code>http://example.com/~username/</code> will get content
+    out of the home directory of the user "<code>username</code>", out of
+    the subdirectory specified by the <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> directive.</p>
+
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">Per-user web directories</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#userdir">Setting the file path with UserDir</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#enable">Restricting what users are permitted to use this 
+    feature</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#cgi">Enabling a cgi directory for each user</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#htaccess">Allowing users to alter configuration</a></li>
+</ul><h3>See also</h3><ul class="seealso"><li><a href="../urlmapping.html">Mapping URLs to the Filesystem</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="related" id="related">Per-user web directories</a></h2>
+    
+    <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_userdir.html">mod_userdir</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code></li><li><code class="directive"><a href="../mod/core.html#directorymatch">DirectoryMatch</a></code></li><li><code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code></li></ul></td></tr></table>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="userdir" id="userdir">Setting the file path with UserDir</a></h2>
+    
+
+    <p>The <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code>
+    directive specifies a directory out of which per-user
+    content is loaded. This directive may take several different forms.</p>
+
+    <p>If a path is given which does not start with a leading slash, it is
+    assumed to be a directory path relative to the home directory of the
+    specified user. Given this configuration:</p>
+
+    <div class="example"><p><code>
+      UserDir public_html
+    </code></p></div>
+
+    <p>the URL <code>http://example.com/~rbowen/file.html</code> will be
+    translated to the file path
+    <code>/home/rbowen/public_html/file.html</code></p>
+
+    <p>If a path is given starting with a slash, a directory path will be
+    constructed using that path, plus the username specified. Given this
+    configuration:</p>
+
+    <div class="example"><p><code>
+      UserDir /var/html
+    </code></p></div>
+
+    <p>the URL <code>http://example.com/~rbowen/file.html</code> will be
+    translated to the file path <code>/var/html/rbowen/file.html</code></p>
+
+    <p>If a path is provided which contains an asterisk (*), a path is used
+    in which the asterisk is replaced with the username. Given this
+    configuration:</p>
+
+    <div class="example"><p><code>
+      UserDir /var/www/*/docs
+    </code></p></div>
+
+    <p>the URL <code>http://example.com/~rbowen/file.html</code> will be
+    translated to the file path
+    <code>/var/www/rbowen/docs/file.html</code></p>
+
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="enable" id="enable">Restricting what users are permitted to use this 
+    feature</a></h2>
+    
+
+    <p>Using the syntax shown in the UserDir documentation, you can restrict
+    what users are permitted to use this functionality:</p>
+
+    <div class="example"><p><code>
+      UserDir enabled<br />
+      UserDir disabled root jro fish
+    </code></p></div>
+
+    <p>The configuration above will enable the feature for all users
+    except for those listed in the <code>disabled</code> statement.
+    You can, likewise, disable the feature for all but a few users by
+    using a configuration like the following:</p>
+
+    <div class="example"><p><code>
+      UserDir disabled<br />
+      UserDir enabled rbowen krietz
+    </code></p></div>
+
+    <p>See <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code>
+    documentation for additional examples.</p>
+
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="cgi" id="cgi">Enabling a cgi directory for each user</a></h2>
+  
+
+   <p>In order to give each user their own cgi-bin directory, you can use
+    a <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>
+    directive to make a particular subdirectory of a user's home directory
+    cgi-enabled.</p>
+
+    <div class="example"><p><code>
+      &lt;Directory /home/*/public_html/cgi-bin/&gt;<br />
+       Options ExecCGI<br />
+       SetHandler cgi-script<br />
+       &lt;/Directory&gt;
+    </code></p></div>
+
+    <p>Then, presuming that <code>UserDir</code> is set to
+    <code>public_html</code>, a cgi program <code>example.cgi</code>
+    could be loaded from that directory as:</p>
+
+    <div class="example"><p><code>
+    http://example.com/~rbowen/cgi-bin/example.cgi
+    </code></p></div>
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="htaccess" id="htaccess">Allowing users to alter configuration</a></h2>
+    
+
+    <p>If you want to allows users to modify the server configuration in
+    their web space, they will need to use <code>.htaccess</code> files to
+    make these changed. Ensure that you have set <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> to a
+    value sufficient for the directives that you want to permit the users
+    to modify. See the <a href="htaccess.html">.htaccess tutorial</a> for
+    additional details on how this works.</p>
+
+  </div></div>
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="../en/howto/public_html.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/howto/public_html.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/howto/public_html.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 1995-2005 The Apache Software Foundation or its licensors, as applicable.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>

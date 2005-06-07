@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>mod_proxy_balancer - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.1</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.1</a> &gt; <a href="./">Modules</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache Module mod_proxy_balancer</h1>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_proxy_balancer.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/mod/mod_proxy_balancer.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
+</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> extension for load balancing </td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>proxy_balancer_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>proxy_balancer.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.1 and later</td></tr></table>
+<h3>Summary</h3>
+
+    <p>This module <em>requires</em> the service of <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>. It provides load balancing support for
+    <code>HTTP</code>, <code>FTP</code> and <code>AJP13</code> protocols
+    </p>
+
+    <p>Thus, in order to get the ability of load balancing,
+    <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> and <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code>
+    have to be present in the server.</p>
+
+    <div class="warning"><h3>Warning</h3>
+      <p>Do not enable proxying until you have <a href="mod_proxy.html#access">secured your server</a>. Open proxy
+      servers are dangerous both to your network and to the Internet at
+      large.</p>
+    </div>
+</div>
+<div id="quickview"><h3 class="directives">Directives</h3>
+<p>This module provides no
+            directives.</p>
+<h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#scheduler">Load balancer scheduler algorithm</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#requests">Request Counting Algorithm</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#traffic">Weighted Traffic Counting Algorithm</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#enable">Enabling Balancer Manager Support</a></li>
+</ul><h3>See also</h3>
+<ul class="seealso">
+<li><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="scheduler" id="scheduler">Load balancer scheduler algorithm</a></h2>
+    
+    <p>At present, there are 2 load balancer scheduler algorithms available
+    for use: Request Counting and Weighted Traffic Counting. These are controlled
+    via the <code>lbmethod</code> value of the Balancer definition. See
+    the <code class="directive"><a href="../mod/mod_proxy.html#proxy">Proxy</a></code> directive for
+    more information.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="requests" id="requests">Request Counting Algorithm</a></h2>
+    
+    <p>Enabled via <code>lbmethod=requests</code>, the idea behind this
+    scheduler is that we distribute the requests among the
+    various workers to ensure that each gets their configured share
+    of the number of requests. It works as follows:</p>
+
+    <p><dfn>lbfactor</dfn> is <em>how much we expect this worker
+    to work</em>, or <em>the workers's work quota</em>. This is
+    a normalized value representing their "share" of the amount of
+    work to be done.</p>
+
+    <p><dfn>lbstatus</dfn> is <em>how urgent this worker has to work
+    to fulfill its quota of work</em>.</p>
+
+    <p>The <dfn>worker</dfn> is a member of the load balancer,
+    usually a remote host serving one of the supported protocols.</p>
+
+    <p>We distribute each worker's work quota to the worker, and then look
+    which of them needs to work most urgently (biggest lbstatus).  This
+    worker is then selected for work, and its lbstatus reduced by the
+    total work quota we distributed to all workers.  Thus the sum of all
+    lbstatus does not change(*) and we distribute the requests
+    as desired.</p>
+
+    <p>If some workers are disabled, the others will
+    still be scheduled correctly.</p>
+
+    <div class="example"><pre><code>for each worker in workers
+    worker lbstatus += worker lbfactor
+    total factor    += worker lbfactor
+    if worker lbstatus &gt; candidate lbstatus
+        candidate = worker
+
+candidate lbstatus -= total factor</code></pre></div>
+
+    <p>If a balancer is configured as follows:</p>
+    
+    <table><tr><th>worker</th>
+        <th class="data">a</th>
+        <th class="data">b</th>
+        <th class="data">c</th>
+        <th class="data">d</th></tr>
+<tr><th>lbfactor</th>
+        <td class="data">25</td>
+        <td class="data">25</td>
+        <td class="data">25</td>
+        <td class="data">25</td></tr>
+<tr><th>lbstatus</th>
+        <td class="data">0</td>
+        <td class="data">0</td>
+        <td class="data">0</td>
+        <td class="data">0</td></tr>
+</table>
+
+    <p>And <var>b</var> gets disabled, the following schedule is produced:</p>
+
+    <table><tr><th>worker</th>
+        <th class="data">a</th>
+        <th class="data">b</th>
+        <th class="data">c</th>
+        <th class="data">d</th></tr>
+<tr><th>lbstatus</th>
+        <td class="data"><em>-50</em></td>
+        <td class="data">0</td>
+        <td class="data">25</td>
+        <td class="data">25</td></tr>
+<tr><th>lbstatus</th>
+        <td class="data">-25</td>
+        <td class="data">0</td>
+        <td class="data"><em>-25</em></td>
+        <td class="data">50</td></tr>
+<tr><th>lbstatus</th>
+        <td class="data">0</td>
+        <td class="data">0</td>
+        <td class="data">0</td>
+        <td class="data"><em>0</em></td></tr>
+<tr><td class="data" colspan="5">(repeat)</td></tr>
+</table>
+
+    <p>That is it schedules: <var>a</var> <var>c</var> <var>d</var>
+    <var>a</var> <var>c</var> <var>d</var> <var>a</var> <var>c</var>
+    <var>d</var> ... Please note that:</p>
+
+    <table><tr><th>worker</th>
+        <th class="data">a</th>
+        <th class="data">b</th>
+        <th class="data">c</th>
+        <th class="data">d</th></tr>
+<tr><th>lbfactor</th>
+        <td class="data">25</td>
+        <td class="data">25</td>
+        <td class="data">25</td>
+        <td class="data">25</td></tr>
+</table>
+
+    <p>Has the exact same behavior as:</p>
+
+    <table><tr><th>worker</th>
+        <th class="data">a</th>
+        <th class="data">b</th>
+        <th class="data">c</th>
+        <th class="data">d</th></tr>
+<tr><th>lbfactor</th>
+        <td class="data">1</td>
+        <td class="data">1</td>
+        <td class="data">1</td>
+        <td class="data">1</td></tr>
+</table>
+
+    <p>This is because all values of <dfn>lbfactor</dfn> are normalized
+    with respect to the others. For:</p>
+
+    <table><tr><th>worker</th>
+        <th class="data">a</th>
+        <th class="data">b</th>
+        <th class="data">c</th></tr>
+<tr><th>lbfactor</th>
+        <td class="data">1</td>
+        <td class="data">4</td>
+        <td class="data">1</td></tr>
+</table>
+
+    <p>worker <var>b</var> will, on average, get 4 times the requests
+    that <var>a</var> and <var>c</var> will.</p>
+
+    <p>The following asymmetric configuration works as one would expect:</p>
+
+    <table><tr><th>worker</th>
+        <th class="data">a</th>
+        <th class="data">b</th></tr>
+<tr><th>lbfactor</th>
+        <td class="data">70</td>
+        <td class="data">30</td></tr>
+<tr><td class="data" colspan="2">&nbsp;</td></tr>
+<tr><th>lbstatus</th>
+        <td class="data"><em>-30</em></td>
+        <td class="data">30</td></tr>
+<tr><th>lbstatus</th>
+        <td class="data">40</td>
+        <td class="data"><em>-40</em></td></tr>
+<tr><th>lbstatus</th>
+        <td class="data"><em>10</em></td>
+        <td class="data">-10</td></tr>
+<tr><th>lbstatus</th>
+        <td class="data"><em>-20</em></td>
+        <td class="data">20</td></tr>
+<tr><th>lbstatus</th>
+        <td class="data"><em>-50</em></td>
+        <td class="data">50</td></tr>
+<tr><th>lbstatus</th>
+        <td class="data">20</td>
+        <td class="data"><em>-20</em></td></tr>
+<tr><th>lbstatus</th>
+        <td class="data"><em>-10</em></td>
+        <td class="data">10</td></tr>
+<tr><th>lbstatus</th>
+        <td class="data"><em>-40</em></td>
+        <td class="data">40</td></tr>
+<tr><th>lbstatus</th>
+        <td class="data">30</td>
+        <td class="data"><em>-30</em></td></tr>
+<tr><th>lbstatus</th>
+        <td class="data"><em>0</em></td>
+        <td class="data">0</td></tr>
+<tr><td class="data" colspan="3">(repeat)</td></tr>
+</table>
+
+    <p>That is after 10 schedules, the schedule repeats and 7 <var>a</var>
+    are selected with 3 <var>b</var> interspersed.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="traffic" id="traffic">Weighted Traffic Counting Algorithm</a></h2>
+    
+    <p>Enabled via <code>lbmethod=traffic</code>, the idea behind this
+    scheduler is very similar to the Request Counting method, with
+    the following changes:</p>
+
+    <p><dfn>lbfactor</dfn> is <em>how much traffic, in bytes, we want
+    this worker to handle</em>. This is also a normalized value
+    representing their "share" of the amount of work to be done,
+    but instead of simply counting the number of requests, we take
+    into account the amount of traffic this worker has seen.</p>
+
+    <p>If a balancer is configured as follows:</p>
+    
+    <table><tr><th>worker</th>
+        <th class="data">a</th>
+        <th class="data">b</th>
+        <th class="data">c</th></tr>
+<tr><th>lbfactor</th>
+        <td class="data">1</td>
+        <td class="data">2</td>
+        <td class="data">1</td></tr>
+</table>
+
+    <p>Then we mean that we want <var>b</var> to process twice the
+    amount of bytes than <var>a</var> or <var>c</var> should. It does
+    not necessarily mean that <var>b</var> would handle twice as
+    many requests, but it would process twice the I/O. Thus, the
+    size of the request and response are applied to the weighting
+    and selection algorithm.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="enable" id="enable">Enabling Balancer Manager Support</a></h2>
+    
+    <p>This module <em>requires</em> the service of 
+    <code class="module"><a href="../mod/mod_status.html">mod_status</a></code>.
+    Balancer manager enables dynamic update of balancer
+    members. You can use balancer manager to change the balance
+    factor or a particular member, or put it in the off line
+    mode.
+    </p>
+
+    <p>Thus, in order to get the ability of load balancer management,
+    <code class="module"><a href="../mod/mod_status.html">mod_status</a></code> and <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code>
+    have to be present in the server.</p>
+
+    <p>To enable load balancer management for browsers from the foo.com
+    domain add this code to your <code>httpd.conf</code>
+    configuration file</p>
+<div class="example"><p><code>
+    &lt;Location /balancer-manager&gt;<br />
+    SetHandler balancer-manager<br />
+<br />
+    Order Deny,Allow<br />
+    Deny from all<br />
+    Allow from .foo.com<br />
+    &lt;/Location&gt;
+</code></p></div>
+
+    <p>You can now access load balancer manager by using a Web browser
+    to access the page
+    <code>http://your.server.name/balancer-manager</code></p>
+</div>
+</div>
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_proxy_balancer.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/mod/mod_proxy_balancer.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 1995-2005 The Apache Software Foundation or its licensors, as applicable.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>

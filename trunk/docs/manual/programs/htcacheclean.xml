@@ -1,0 +1,105 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision$ -->
+
+<!--
+ Copyright 2004-2005 The Apache Software Foundation or its licensors, as
+ applicable.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="htcacheclean.xml.meta">
+<parentdocument href="./">Programs</parentdocument>
+
+<title>htcacheclean - Clean up the disk cache</title>
+
+<summary>
+    <p><code>htcacheclean</code> is used to keep the size of
+    <module>mod_disk_cache</module>'s storage within a certain limit. This
+    tool can run either manually or in daemon mode. When running in
+    daemon mode, it sleeps in the background and checks the cache directories
+    at regular intervals for cached content to be removed. You can stop the daemon
+    cleanly by sending it a TERM or INT signal.</p>
+</summary>
+<seealso><module>mod_disk_cache</module></seealso>
+
+<section id="synopsis"><title>Synopsis</title>
+    <p><code><strong>htcacheclean</strong>
+    [ -<strong>D</strong> ]
+    [ -<strong>v</strong> ]
+    [ -<strong>r</strong> ]
+    [ -<strong>n</strong> ]
+    -<strong>p</strong><var>path</var>
+    -<strong>l</strong><var>limit</var></code></p>
+
+    <p><code><strong>htcacheclean</strong> -<strong>b</strong>
+    [ -<strong>n</strong> ]
+    [ -<strong>i</strong> ]
+    -<strong>d</strong><var>interval</var>
+    -<strong>p</strong><var>path</var>
+    -<strong>l</strong><var>limit</var></code></p>
+</section>
+
+<section id="options"><title>Options</title>
+    <dl>
+    <dt><code>-d<var>interval</var></code></dt>
+    <dd>Daemonize and repeat cache cleaning every <var>interval</var> minutes.
+    This option is mutually exclusive with the <code>-D</code>, <code>-v</code>
+    and <code>-r</code> options. To shutdown the daemon cleanly, just send it
+    a <code>SIGTERM</code> or <code>SIGINT</code>.</dd>
+
+    <dt><code>-D</code></dt>
+    <dd>Do a dry run and don't delete anything. This option is mutually
+    exclusive with the <code>-d</code> option.</dd>
+
+    <dt><code>-v</code></dt>
+    <dd>Be verbose and print statistics. This option is mutually exclusive
+    with the <code>-d</code> option.</dd>
+
+    <dt><code>-r</code></dt>
+    <dd>Clean thoroughly. This assumes that the Apache web server is
+    not running (otherwise you may get garbage in the cache). This option
+    is mutually exclusive with the <code>-d</code> option.</dd>
+
+    <dt><code>-n</code></dt>
+    <dd>Be nice. This causes slower processing in favour of other
+    processes. <code>htcacheclean</code> will sleep from time to time
+    so that (a) the disk IO will be delayed and (b) the kernel can schedule
+    other processes in the meantime.</dd>
+
+    <dt><code>-p<var>path</var></code></dt>
+    <dd>Specify <var>path</var> as the root directory of the disk cache. This
+    should be the same value as specified with the <directive
+    module="mod_disk_cache">CacheRoot</directive> directive.</dd>
+
+    <dt><code>-l<var>limit</var></code></dt>
+    <dd>Specify <var>limit</var> as the total disk cache size limit. The value
+    is expressed in bytes by default (or attaching <code>B</code> to the
+    number). Attach <code>K</code> for Kbytes or <code>M</code> for
+    MBytes.</dd>
+
+    <dt><code>-i</code></dt>
+    <dd>Be intelligent and run only when there was a modification of the disk
+    cache. This option is only possible together with the <code>-d</code>
+    option.</dd>
+    </dl>
+</section>
+
+<section id="exit"><title>Exit Status</title>
+    <p><code>htcacheclean</code> returns a zero status ("true") if all
+    operations were successful, <code>1</code> otherwise.</p>
+</section>
+
+</manualpage>

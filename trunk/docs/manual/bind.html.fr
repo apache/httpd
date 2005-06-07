@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Liaison - Serveur Apache HTTP</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p>
+<p class="apache">Serveur Apache HTTP Version 2.1</p>
+<img alt="" src="./images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="./">Version 2.1</a></div><div id="page-content"><div id="preamble"><h1>Liaison</h1>
+<div class="toplang">
+<p><span>Langues Disponibles: </span><a href="./de/bind.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="./en/bind.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./fr/bind.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./ja/bind.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="./ko/bind.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+</div>
+<div class="outofdate">Cette traduction peut être périmée. Verifiez la version
+            Anglaise pour les changements récents.</div>
+
+        <p>Configuration des adresses et ports sur lesquels Apache écoute.</p>
+    </div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#overview">Informations générales</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#ipv6">Considérations Spéciales avec IPv6</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#virtualhost">Faire fonctionner tout ceci avec les Serveurs Virtuels</a></li>
+</ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="vhosts/">Serveurs Virtuels</a></li><li><a href="dns-caveats.html">Problémes DNS</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="overview" id="overview">Informations générales</a></h2>
+        
+
+        <table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td><ul><li><code class="module"><a href="./mod/core.html">core</a></code></li><li><code class="module"><a href="./mod/mpm_common.html">mpm_common</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code></li></ul></td></tr></table>
+
+
+        <p>Au moment de son démarrage, Apache se lie à un port et à une 
+        adresse IP sur la machine locale et se met en attente de requètes.
+        Par défaut, Apache écoute sur toutes les adresses de la machine.
+        Apache accepte d'écouter sur un ou plusieurs ports spécifiques, 
+        sur une seule ou plusieurs adresses, ou encore sur une combinaison port-adresse.
+        Il est fréquent d'utiliser ces possibilités avec les fonctionnalités
+        de Serveurs Virtuels, qui permettent de faire répondre le serveur de
+        manière différente en fonction de l'adresse IP, du nom d'hôte ou 
+        du port.</p>
+
+        <p>Le serveur interprète la directive 
+        <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>
+        en acceptant les requètes seulement sur le port ou la combinaison
+        adresse IP + port passée en argument. Dans le cas où seul un port 
+        est spécifié avec la directive 
+        <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>,
+        le serveur se met à l'écoute sur le port spécifié, sur toutes
+        les interfaces et adresses de la machine. Si une adresse IP est 
+        spécifiée en plus du port, le serveur n'écoute que sur l'adresse 
+        et le port spécifié.  Il est possible de configurer plusieurs adresses
+        et ports avec la directives 
+        <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> 
+        pour écoute par le serveur. Le serveur répond aux requètes faites 
+        à toutes les adresses et ports énumérés.</p>
+      
+
+        <p>Par exemple, pour que le serveur accepte les connexions sur
+        les ports 80 et 8000, spécifiez :</p>
+
+        <div class="example"><p><code>
+            Listen 80<br />
+            Listen 8000
+        </code></p></div>
+
+        <p>Pour qu'Apache accepte les connexions sur deux combinaisons
+        adresses + ports, spécifiez :</p>
+
+        <div class="example"><p><code>
+            Listen 192.170.2.1:80<br />
+            Listen 192.170.2.5:8000
+        </code></p></div>
+
+        <p>Les adresses IPv6 sont acceptées, pourvu qu'elles soient spécifiées 
+        entre crochets de la façon suivante :</p>
+
+        <div class="example"><p><code>
+            Listen [fe80::a00:20ff:fea7:ccea]:80
+        </code></p></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="ipv6" id="ipv6">Considérations Spéciales avec IPv6</a></h2>
+        
+
+        <p>De plus en plus de plate-formes implémentent IPv6. APR
+        supporte IPv6 sur la plupart d'entre elles, si bien qu'Apache
+        peut assigner des interfaces de connexions IPv6 et répondre aux 
+        requètes utilisant IPv6.</p>
+
+        <p>Une complication possible pour les administrateurs Apache est de
+        savoir si une interface de connexion IPv6 peut répondre aux deux types de
+        connexions IPv4 et IPv6.
+        Manipuler les connexions IPv4 avec une interface de connexion IPv6
+        suppose l'utilisation d'adresses IPv6 mappées en IPv4, ce qui est
+        le cas par defaut sur la plupart des plate-formes, à l'exeption de FreeBSD, 
+        NetBSD, et OpenBSD, cela en raison des politiques systèmes de ces plate-formes.
+        Mème sur des systèmes où cette fonctionnalité n'est pas activée par
+        défaut, une option de compilation permet de changer ce 
+        fonctionnement pour Apache.</p>
+        <p>Pour qu'Apache puisse gérer à la fois les connexions IPv4 et IPv6
+        avec un minimum d'interfaces de connexions, il faut permettre l'utilisation
+        des adresses 
+        IPv6 mappées en IPv4, ce qui est possible en spécifiant l'option
+
+        de compilation <code>--enable-v4-mapped</code> et en utilisant la
+        directive <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> 
+        comme suit:</p>
+    
+        <div class="example"><p><code>
+            Listen 80
+        </code></p></div>
+
+        <p>Si <code>--enable-v4-mapped</code> a été spécifié à la compilation,
+        les directives <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> 
+        de la configuration par défaut sont de la forme ci-dessus. 
+        <code>--enable-v4-mapped</code> est l'option de compilation
+        par défaut sur toutes les plate-formes, sauf FreeBSD, NetBSD, et 
+        OpenBSD.</p>
+
+
+        <p>Pour qu'Apache ne manipule que les connexions IPv4, en ignorant l'éventuel
+        support IPv6 de la plate-forme ou d'APR, une adresse IPv4 peut être
+        spécifié pour toutes les directives 
+        <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>, 
+        comme dans les exemples suivantss:</p>
+
+        <div class="example"><p><code>
+            Listen 0.0.0.0:80<br />
+            Listen 192.170.2.1:80
+        </code></p></div>
+
+        <p>Pour qu'Apache manipule les connexions IPv4 et IPv6 sur des interfaces
+        différentes (c'est-à-dire, pour ne pas accepter les addresse IPv6 mappées
+        en IPv4), spécifier l'option de compilation <code>--disable-v4-mapped</code> 
+        et utiliser des directives <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> 
+        spécifiques telles que:</p>
+        <div class="example"><p><code>
+            Listen [::]:80<br />
+            Listen 0.0.0.0:80
+        </code></p></div>
+
+        <p>Avec <code>--disable-v4-mapped</code>, la directive 
+        <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> à l'intérieur
+        du fichier de configuration par défaut créé par Apache utilise la forme 
+        ci-dessus. 
+        <code>--disable-v4-mapped</code> est l'option de compilation par défaut sous
+        FreeBSD, NetBSD, et OpenBSD.</p>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="virtualhost" id="virtualhost">Faire fonctionner tout ceci avec les Serveurs Virtuels</a></h2>
+        
+
+        <p><code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> 
+        n'implémente aucun Serveur Virtuel. Cette directive sert simplement
+        à informer le serveur principal sur quels addresses et ports écouter.
+        Dans le cas où aucune section
+        <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
+        n'est utilisée, le serveur répondra de la mème manière pour toutes
+        les requètes qu'il acceptera. Cependant des sections 
+        <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
+        peuvent être utilisées pour qu'Apache réagisse de façon différente à
+        une requète selon l'adresse ou le port. Avant d'implémenter
+        un Serveur Virtuel au moyen de la directive 
+        <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>, la directive
+        <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> 
+        doit tre utilisée pour que le serveur écoute sur l'adresse
+        ou le port spécifié. Une section 
+        <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
+        peut alors être utilisée pour définir la réaction du Serveur Virtuel pour une
+        adresse et un port spécifique. À noter que si un Serveur Virtuel est 
+        positionné au moyen de la directive
+        <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
+        sur une adresse et un port sur lesquels le serveur n'est pas à l'écoute,
+        le Serveur Virtuel ne sera pas accessible.</p>
+    </div></div>
+<div class="bottomlang">
+<p><span>Langues Disponibles: </span><a href="./de/bind.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="./en/bind.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./fr/bind.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./ja/bind.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="./ko/bind.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 1995-2005 The Apache Software Foundation or its licensors, as applicable.<br />Authorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p></div>
+</body></html>

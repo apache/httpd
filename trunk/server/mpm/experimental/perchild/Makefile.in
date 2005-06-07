@@ -1,0 +1,5 @@
+
+LTLIBRARY_NAME    = libperchild.la
+LTLIBRARY_SOURCES = perchild.c
+
+include $(top_srcdir)/build/ltlib.mk

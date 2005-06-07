@@ -1,0 +1,125 @@
+.\" XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+.\" DO NOT EDIT! Generated from XML source.
+.\" XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+.de Sh \" Subsection
+.br
+.if t .Sp
+.ne 5
+.PP
+\fB\\$1\fR
+.PP
+..
+.de Sp \" Vertical space (when we can't use .PP)
+.if t .sp .5v
+.if n .sp
+..
+.de Ip \" List item
+.br
+.ie \\n(.$>=3 .ne \\$3
+.el .ne 3
+.IP "\\$1" \\$2
+..
+.TH "AB" 8 "2004-11-14" "Apache HTTP Server" "ab"
+
+.SH NAME
+ab \- Apache HTTP server benchmarking tool
+
+.SH "SYNOPSIS"
+ 
+.PP
+\fBab\fR [ -\fBA\fR \fIauth-username\fR:\fIpassword\fR ] [ -\fBc\fR \fIconcurrency\fR ] [ -\fBC\fR \fIcookie-name\fR=\fIvalue\fR ] [ -\fBd\fR ] [ -\fBe\fR \fIcsv-file\fR ] [ -\fBg\fR \fIgnuplot-file\fR ] [ -\fBh\fR ] [ -\fBH\fR \fIcustom-header\fR ] [ -\fBi\fR ] [ -\fBk\fR ] [ -\fBn\fR \fIrequests\fR ] [ -\fBp\fR \fIPOST-file\fR ] [ -\fBP\fR \fIproxy-auth-username\fR:\fIpassword\fR ] [ -\fBq\fR ] [ -\fBs\fR ] [ -\fBS\fR ] [ -\fBt\fR \fItimelimit\fR ] [ -\fBT\fR \fIcontent-type\fR ] [ -\fBv\fR \fIverbosity\fR] [ -\fBV\fR ] [ -\fBw\fR ] [ -\fBx\fR \fI<table>-attributes\fR ] [ -\fBX\fR \fIproxy\fR[:\fIport\fR] ] [ -\fBy\fR \fI<tr>-attributes\fR ] [ -\fBz\fR \fI<td>-attributes\fR ] [http://]\fIhostname\fR[:\fIport\fR]/\fIpath\fR
+ 
+
+.SH "SUMMARY"
+ 
+.PP
+ab is a tool for benchmarking your Apache Hypertext Transfer Protocol (HTTP) server\&. It is designed to give you an impression of how your current Apache installation performs\&. This especially shows you how many requests per second your Apache installation is capable of serving\&.
+ 
+
+.SH "OPTIONS"
+ 
+ 
+.TP
+-A \fIauth-username\fR:\fIpassword\fR
+Supply BASIC Authentication credentials to the server\&. The username and password are separated by a single : and sent on the wire base64 encoded\&. The string is sent regardless of whether the server needs it (\fIi\&.e\&.\fR, has sent an 401 authentication needed)\&.  
+.TP
+-c \fIconcurrency\fR
+Number of multiple requests to perform at a time\&. Default is one request at a time\&.  
+.TP
+-C \fIcookie-name\fR=\fIvalue\fR
+Add a Cookie: line to the request\&. The argument is typically in the form of a \fIname\fR=\fIvalue\fR pair\&. This field is repeatable\&.  
+.TP
+-d
+Do not display the "percentage served within XX [ms] table"\&. (legacy support)\&.  
+.TP
+-e \fIcsv-file\fR
+Write a Comma separated value (CSV) file which contains for each percentage (from 1% to 100%) the time (in milliseconds) it took to serve that percentage of the requests\&. This is usually more useful than the 'gnuplot' file; as the results are already 'binned'\&.  
+.TP
+-g \fIgnuplot-file\fR
+Write all measured values out as a 'gnuplot' or TSV (Tab separate values) file\&. This file can easily be imported into packages like Gnuplot, IDL, Mathematica, Igor or even Excel\&. The labels are on the first line of the file\&.  
+.TP
+-h
+Display usage information\&.  
+.TP
+-H \fIcustom-header\fR
+Append extra headers to the request\&. The argument is typically in the form of a valid header line, containing a colon-separated field-value pair (\fIi\&.e\&.\fR, "Accept-Encoding: zip/zop;8bit")\&.  
+.TP
+-i
+Do HEAD requests instead of GET\&.  
+.TP
+-k
+Enable the HTTP KeepAlive feature, \fIi\&.e\&.\fR, perform multiple requests within one HTTP session\&. Default is no KeepAlive\&.  
+.TP
+-n \fIrequests\fR
+Number of requests to perform for the benchmarking session\&. The default is to just perform a single request which usually leads to non-representative benchmarking results\&.  
+.TP
+-p \fIPOST-file\fR
+File containing data to POST\&.  
+.TP
+-P \fIproxy-auth-username\fR:\fIpassword\fR
+Supply BASIC Authentication credentials to a proxy en-route\&. The username and password are separated by a single : and sent on the wire base64 encoded\&. The string is sent regardless of whether the proxy needs it (\fIi\&.e\&.\fR, has sent an 407 proxy authentication needed)\&.  
+.TP
+-q
+When processing more than 150 requests, ab outputs a progress count on stderr every 10% or 100 requests or so\&. The -q flag will suppress these messages\&.  
+.TP
+-s
+When compiled in (ab -h will show you) use the SSL protected https rather than the http protocol\&. This feature is experimental and \fIvery\fR rudimentary\&. You probably do not want to use it\&.  
+.TP
+-S
+Do not display the median and standard deviation values, nor display the warning/error messages when the average and median are more than one or two times the standard deviation apart\&. And default to the min/avg/max values\&. (legacy support)\&.  
+.TP
+-t \fItimelimit\fR
+Maximum number of seconds to spend for benchmarking\&. This implies a -n 50000 internally\&. Use this to benchmark the server within a fixed total amount of time\&. Per default there is no timelimit\&.  
+.TP
+-T \fIcontent-type\fR
+Content-type header to use for POST data\&.  
+.TP
+-v \fIverbosity\fR
+Set verbosity level - 4 and above prints information on headers, 3 and above prints response codes (404, 200, etc\&.), 2 and above prints warnings and info\&.  
+.TP
+-V
+Display version number and exit\&.  
+.TP
+-w
+Print out results in HTML tables\&. Default table is two columns wide, with a white background\&.  
+.TP
+-x \fI<table>-attributes\fR
+String to use as attributes for <table>\&. Attributes are inserted <table \fIhere\fR >\&.  
+.TP
+-X \fIproxy\fR[:\fIport\fR]
+Use a proxy server for the requests\&.  
+.TP
+-y \fI<tr>-attributes\fR
+String to use as attributes for <tr>\&.  
+.TP
+-z \fI<td>-attributes\fR
+String to use as attributes for <td>\&.  
+ 
+.SH "BUGS"
+ 
+.PP
+There are various statically declared buffers of fixed length\&. Combined with the lazy parsing of the command line arguments, the response headers from the server and other external inputs, this might bite you\&.
+ 
+.PP
+It does not implement HTTP/1\&.x fully; only accepts some 'expected' forms of responses\&. The rather heavy use of strstr(3) shows up top in profile, which might indicate a performance problem; \fIi\&.e\&.\fR, you would measure the ab performance rather than the server's\&.
+ 

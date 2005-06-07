@@ -1,0 +1,3 @@
+IMPORT  @mod_cache.imp
+EXPORT  mem_cache_module
+

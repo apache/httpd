@@ -1,0 +1,223 @@
+******************************************
+* PLEASE NOTE: Now that development for  *
+* mod_proxy has been folded back into    *
+* the httpd-2.1 tree, this file has      *
+* been depreciated. Proxy changes should *
+* be noted in httpd-2.1's CHANGES file.  *
+* This file exists for historical        *
+* purposes.                              *
+******************************************
+
+mod_proxy changes for httpd 2.0.29-dev
+  *) don't do keepalives for sub-requests. [Ian Holsman]
+  
+  *) fix up proxypass handling [Ian Holsman]
+
+  *) don't send If-Modified-Since, Cache-Control, or If-None-Match on 
+     a subrequest [Ian Holsman]
+
+mod_proxy changes for httpd 2.0.26-dev
+  *) Add New option 'HTTPProxyOverrideReturnedErrors'. By Turning the
+     Flag on, you will mask the error pages returned by the proxied
+     server, and will it will be handled as if your server generated
+     the error. This change was put in so that a 404 on a included
+     r-proxied component will act in the same manner as a 404 on a 
+     included file. [Ian Holsman <ianh@cnet.com>]
+
+mod_proxy changes for httpd 2.0.25-dev
+
+  *) Split proxy: space using <Proxy[Match] > directive blocks from
+     the <Directory[Match] > and <Files[Match] > blocks.  Mod_proxy
+     now bypasses the directory and files testing phase (and skips 
+     the http TRACE default handler on it's own, as well).  Note that 
+     <Location > blocks continue to be processed for proxy: requests.
+     [William Rowe <wrowe@covalent.net>]
+
+  *) apr_uri type/function namespace changes in apr_uri functions
+     [Doug MacEachern <dougm@covalent.net>]
+
+mod_proxy changes for httpd 2.0.23-dev
+
+  *) break the proxy_http_handler into multiple smaller functions.
+     [John Barbee <barbee@veribox.net>]
+
+  *) Fix the proxy when the origin server sends back a 100
+     Continue response.  [John Barbee <barbee@veribox.net>]
+
+  *) Change 'readbytes' from apr_size_t to apr_off_t due to change
+     in ap_get_brigade's parameters [John Barbee <barbee@veribox.net>]
+
+mod_proxy changes for httpd 2.0.20-dev
+  *) Timeout added for backend connections.
+     [Victor Orlikowski <v.j.orlikowski@gte.net>]
+
+  *) Fix abort code path in proxy_http.c, similar to FTP fix.
+     [Chuck Murcko <chuck@topsail.org>]
+
+  *) Fix FTP ABOR command execution path.
+     [Victor Orlikowski <v.j.orlikowski@gte.net>]
+
+  *) FTP return code variable cleanup; fixed problem in login
+     [Chuck Murcko <chuck@topsail.org>]
+
+  *) Get PORT working again in the ftp proxy.
+     [Victor Orlikowski <v.j.orlikowski@gte.net>]
+
+  *) Return result code check for FTP QUIT, after fixing
+     problems with passive connection handling.
+     [Victor Orlikowski <v.j.orlikowski@gte.net>]
+
+  *) Reorganize ap_proxy_string_read() internally to not process eos
+     buckets.
+     [Chuck Murcko <chuck@topsail.org>]
+     [Victor Orlikowski <v.j.orlikowski@gte.net>]
+
+  *) Remove result code check for FTP QUIT command. Some servers send
+     nothing at all back in response to QUIT.
+     [Chuck Murcko <chuck@topsail.org>]
+     [Victor Orlikowski <v.j.orlikowski@gte.net>]
+
+mod_proxy changes for httpd 2.0.19
+
+  *) Reverse previous patch since the core reverted.
+     [Chuck Murcko <chuck@topsail.org>]
+
+  *) Remove indirection on number of bytes to read for input filters.
+     [Chuck Murcko <chuck@topsail.org>]
+
+  *) Fixed a problem with directory listing corruption in the
+     PROXY_DIR filter.
+     [Graham Leggett <minfrin@sharp.fm>]
+
+  *) mod_proxy and the proxy submodules now build properly as DSOs.
+     [Graham Leggett <minfrin@sharp.fm>]
+
+  *) Stopped the HTTP proxy from trying to read entity bodies when there
+     wasn't one (response was 1xx, 204, 205 or 304).
+     [Graham Leggett <minfrin@sharp.fm>]
+
+  *) Made sure dates were canonicalised correctly when passed to the client
+     browser through the HTTP proxy.
+     [Graham Leggett <minfrin@sharp.fm>]
+
+  *) Split each individual proxy protocol into separate modules.
+     [Graham Leggett <minfrin@sharp.fm>]
+
+  *) Added Max-Forwards support for all request types so as to prevent
+     loops.
+     [Graham Leggett <minfrin@sharp.fm>]
+
+  *) Fix warnings about byte count type on Darwin (connect handler).
+     [Chuck Murcko <chuck@topsail.org>]
+
+mod_proxy changes for httpd 2.0.18
+
+  *) IPV6 EPSV support for IPV6 in FTP proxy.
+     [Graham Leggett <minfrin@sharp.fm>]
+
+  *) FTP directory filter works now.
+     [Graham Leggett <minfrin@sharp.fm>]
+
+  *) Fixed some thread-safety issues with the HTTP proxy in mod_proxy.
+     [Graham Leggett <minfrin@sharp.fm>]
+
+  *) PASV FTP works now.
+     [Graham Leggett <minfrin@sharp.fm>]
+
+  *) Reworked the line-at-a-time read from the control connection to
+     workaround a stray empty bucket returned by the HTTP_IN filter.
+     [Graham Leggett <minfrin@sharp.fm>]
+
+  *) Stopped the CORE filter from sending off an HTTP response when a
+     CONNECT tunnel was closed.
+     [Graham Leggett <minfrin@sharp.fm>]
+
+  *) Fixed the poll() loop in proxy_connect.c -> it works now!!!
+     [Graham Leggett <minfrin@sharp.fm>]
+
+  *) Converted send_dir() to ap_proxy_send_dir_filter() in proxy_ftp.c.
+     [Graham Leggett <minfrin@sharp.fm>]
+
+mod_proxy changes for httpd 2.0.17
+
+  *) Major rework of ap_proxy_ftp_handler() to use filters (begone foul
+     BUFF!!!). It compiles, but is untested, and the build environment needs
+     to be fixed to include proxy_ftp.c.
+     [Graham Leggett <minfrin@sharp.fm>]
+
+  *) Cleanup of dead functions within proxy_util.c.
+     [Graham Leggett <minfrin@sharp.fm>]
+
+  *) Reworked the storage of the client socket between keepalive connections
+     to fix some nasty problems with the socket lasting longer than the
+     memory pool it was allocated from.
+     [Graham Leggett <minfrin@sharp.fm>]
+
+  *) Fixed bug where a hostname without a "." in it (such as "localhost")
+     would not trigger an IP address check with ProxyBlock.
+     [Graham Leggett <minfrin@sharp.fm>]
+
+mod_proxy changes for httpd 2.0.16
+
+  *) Fixed ProxyBlock bugs with ap_proxy_http_handler() and
+     ap_proxy_connect_handler().
+     [Graham Leggett <minfrin@sharp.fm>]
+
+  *) Updated ap_proxy_connect_handler() to support APR, while
+     moving some common code between http_handler and connect_handler
+     to proxy_util.c.
+     [Graham Leggett <minfrin@sharp.fm>]
+
+  *) Updated mod_proxy.html docs to include v2.0 configuration.
+     [Graham Leggett <minfrin@sharp.fm>]
+
+  *) Fixed problem where responses without entity bodies would cause
+     the directly following proxy keepalive request to fail.
+     [Graham Leggett <minfrin@sharp.fm>]
+
+mod_proxy changes for httpd 2.0.15
+
+  *) Added support for downstream keepalives in mod_proxy.
+     [Graham Leggett <minfrin@sharp.fm>]
+
+  *) Changed mod_proxy ap_proxy_http_handler() to support APR properly.
+     [Graham Leggett <minfrin@sharp.fm>]
+
+  *) Fix problem where incoming response headers were not being returned
+     to the client in mod_proxy.
+     [Graham Leggett <minfrin@sharp.fm>]
+
+  *) Added X-Forwarded-For, X-Forwarded-Host and X-Forwarded-Server to
+     reverse proxied request headers in mod_proxy.
+     [Graham Leggett <minfrin@sharp.fm>]
+
+  *) replace INADDR_NONE with APR_INADDR_NONE [Ian Holsman <IanH@cnet.com>]
+
+  *) Fix problem with proxy configuration where globally set
+     configuration options were overridden inside virtual hosts.
+     [Graham Leggett <minfrin@sharp.fm>]
+
+  *) Fix ProxyReceiveBufferSize where default value was left
+     uninitialised.
+     [Graham Leggett <minfrin@sharp.fm>]
+
+  *) Some small changes:
+     - Ensured hop-by-hop headers were stripped as per
+       RFC2616 13.5.1.
+     - Upgraded version code to HTTP/1.1.
+     - Added Connection: close until Keepalives come.
+     - Some cosmetic fixes and commenting.
+     [Graham Leggett <minfrin@sharp.fm>]
+
+mod_proxy changes for httpd 2.0.14
+
+  *) removed ProxyNoCache and ProxyCacheForceCompletion config directives,
+     since we no longer directly cache from this module
+     [Chuck Murcko <chuck@topsail.org>]
+
+  *) removed cache
+     [Chuck Murcko <chuck@topsail.org>]
+
+  *) initial rerebuild for 2.0
+     [Chuck Murcko <chuck@topsail.org>]
+

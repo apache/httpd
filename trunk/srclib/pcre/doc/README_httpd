@@ -1,0 +1,6 @@
+The documentation directory has been omitted from this copy of PCRE
+inside the httpd codebase because it's huge--over a megabyte of PCRE docs.
+
+The PCRE documentation directory is available in unmodified form in the
+vendor branch.  You can access it via web browser or Subversion checkout at
+http://svn.apache.org/repos/asf/httpd/httpd/vendor/pcre/current/doc/

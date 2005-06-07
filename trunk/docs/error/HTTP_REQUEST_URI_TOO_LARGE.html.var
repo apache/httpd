@@ -1,0 +1,190 @@
+Content-language: cs
+Content-type: text/html; charset=ISO-8859-2
+Body:----------cs--
+<!--#set var="CONTENT_LANGUAGE" value="cs"
+--><!--#set var="CHARACTER_ENCODING" value="ISO-8859-2"
+--><!--#set var="TITLE" value="Po¾adované URI je pøíli¹ velké!"
+--><!--#include virtual="include/top.html" -->
+
+    Délka po¾adovaného URL pøesahuje kapacitní limit tohoto
+    serveru. Po¾adavek nemù¾e být zpracován.
+   
+<!--#include virtual="include/bottom.html" -->
+----------cs--
+
+Content-language: de
+Content-type: text/html; charset=ISO-8859-1
+Body:----------de--
+<!--#set var="CONTENT_LANGUAGE" value="de"
+--><!--#set var="TITLE" value="&Uuml;bergebener URI zu gro&szlig;!"
+--><!--#include virtual="include/top.html" -->
+
+    Der bei der Anfrage &uuml;bermittelte URI &uuml;berschreitet
+    die maximale L&auml;nge.
+    Die Anfrage kann nicht ausgef&uuml;hrt werden.
+    
+<!--#include virtual="include/bottom.html" -->
+----------de--
+
+Content-language: en
+Content-type: text/html; charset=ISO-8859-1
+Body:----------en--
+<!--#set var="TITLE" value="Submitted URI too large!"
+--><!--#include virtual="include/top.html" -->
+
+    The length of the requested URL exceeds the capacity limit for
+	this server. The request cannot be processed.
+   
+<!--#include virtual="include/bottom.html" -->
+----------en--
+
+Content-language: es
+Content-type: text/html; charset=ISO-8859-1
+Body:----------es--
+<!--#set var="CONTENT_LANGUAGE" value="es"
+--><!--#set var="TITLE" value="&iexcl;Direcci&oacute;n suministrada demasiado larga!"
+--><!--#include virtual="include/top.html" -->
+
+	Su solicitud no puede procesarse debido a que la
+	longitud del enlace excede la capacidad l&iacute;mite del 
+	servidor. 
+    
+<!--#include virtual="include/bottom.html" -->
+----------es--
+
+Content-language: fr
+Content-type: text/html; charset=ISO-8859-1
+Body:----------fr--
+<!--#set var="CONTENT_LANGUAGE" value="fr"
+--><!--#set var="TITLE" value="L'URI demandee est trop longue!"
+--><!--#include virtual="include/top.html" -->
+
+    La longueur de l'URL demand&eacute;e exc&egrave;de la limite de
+    capacit&egrave; pour ce serveur. Nous ne pouvons donner suite
+    &agrave; votre requ&ecirc;te.
+
+<!--#include virtual="include/bottom.html" -->
+----------fr--
+
+Content-language: it
+Content-type: text/html; charset=ISO-8859-1
+Body:----------it--
+<!--#set var="CONTENT_LANGUAGE" value="it"
+--><!--#set var="TITLE" value="URI troppo lungo!"
+--><!--#include virtual="include/top.html" -->
+
+    La lunghezza dell'indirizzo (URL) trasmesso supera il
+    limite massimo imposto da questo server.
+    La richiesta non pu&ograve; essere soddisfatta.
+
+<!--#include virtual="include/bottom.html" -->
+----------it--
+
+Content-language: ja
+Content-type: text/html; charset=ISO-2022-JP
+Body:----------ja--
+<!--#set var="CONTENT_LANGUAGE" value="ja"
+--><!--#set var="CHARACTER_ENCODING" value="iso-2022-jp"
+--><!--#set var="TITLE" value="Submitted URI too large!"
+--><!--#include virtual="include/top.html" -->
+
+    $B%j%/%(%9%H$N(B URL $B$ND9$5$,!"07$($kD9$5$rD6$($F$$$^$9!#(B
+    $B%j%/%(%9%H$N=hM}$rB3$1$i$l$^$;$s!#(B
+   
+<!--#include virtual="include/bottom.html" -->
+----------ja--
+
+Content-language: ko
+Content-type: text/html; charset=EUC-KR
+Body:----------ko--
+<!--#set var="CONTENT_LANGUAGE" value="ko"
+--><!--#set var="TITLE" value="³Ê¹« ±ä URI!"
+--><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+--><!--#include virtual="include/top.html" -->
+
+    ¿äÃ»ÇÑ URLÀÌ ³Ê¹« ±æ¾î¼­ ÀÌ ¼­¹ö°¡ Ã³¸®ÇÒ ¼ö ¾ø½À´Ï´Ù.
+
+<!--#include virtual="include/bottom.html" -->
+----------ko--
+
+Content-language: nl
+Content-type: text/html; charset=ISO-8859-1
+Body:----------nl--
+<!--#set var="CONTENT_LANGUAGE" value="nl"
+--><!--#set var="TITLE" value="Aangeboden URI te groot!"
+--><!--#include virtual="include/top.html" -->
+
+   De lengte van de aangeboden URL overschreidt het maximum
+   voor deze server. De vraag kan niet verwerkt worden.
+
+<!--#include virtual="include/bottom.html" -->
+----------nl--
+
+Content-language: pl
+Content-type: text/html; charset=ISO-8859-2
+Body:----------pl--
+<!--#set var="CONTENT_LANGUAGE" value="pl"
+--><!--#set var="TITLE" value="Zbyt d³ugie URI!"
+--><!--#set var="CHARACTER_ENCODING" value="ISO-8859-2"
+--><!--#include virtual="include/top.html" -->
+
+    D³ugo¶æ ¿±danego URLa przekracza limit ustanowiony dla tego
+    serwera. ¯±danie nie mo¿e zostaæ zrealizowane.
+
+<!--#include virtual="include/bottom.html" -->
+----------pl--
+
+Content-language: pt-br
+Content-type: text/html; charset=ISO-8859-1
+Body:-------pt-br--
+<!--#set var="CONTENT_LANGUAGE" value="pt-br"
+--><!--#set var="TITLE" value="URL excede limite!"
+--><!--#include virtual="include/top.html" -->
+
+   O tamanho do endere&ccedil;o (URL) excede a capacidade limite
+   desse servidor. A requisi&ccedil;&atilde;o n&atilde;o pode ser
+   processada.
+
+<!--#include virtual="include/bottom.html" -->
+-------pt-br--
+
+Content-language: ro
+Content-type: text/html; charset=ISO-8859-1
+Body:----------ro--
+<!--#set var="CONTENT_LANGUAGE" value="ro"
+--><!--#set var="TITLE" value="URL-ul submis este prea mare!"
+--><!--#include virtual="include/top.html" -->
+
+    Lungimea URL-ului cerut depaseste limita capacitatii pentru
+    acest server. Cererea nu poate fi procesata.
+
+<!--#include virtual="include/bottom.html" -->
+----------ro--
+
+Content-language: sv
+Content-type: text/html; charset=ISO-8859-1
+Body:----------sv--
+<!--#set var="CONTENT_LANGUAGE" value="sv"
+--><!--#set var="TITLE" value="Efterfr&aring;gad URI f&ouml;r stor!"
+--><!--#include virtual="include/top.html" -->
+
+    L&auml;ngden p&aring; adressen som efterfr&aring;gas &ouml;verskrider
+    kapacitetsgr&auml;nsen f&ouml;r denna server. F&ouml;rfr&aring;gan kan
+    inte verkst&auml;llas.
+
+<!--#include virtual="include/bottom.html" -->
+----------sv--
+
+Content-language: tr
+Content-type: text/html; charset=ISO-8859-9
+Body:----------tr--
+<!--#set var="CONTENT_LANGUAGE" value="tr"
+--><!--#set var="CHARACTER_ENCODING" value="ISO-8859-9"
+--><!--#set var="TITLE" value="Submitted URI too large!"
+--><!--#include virtual="include/top.html" -->
+
+    Talep edilen URL'nin uzunlu&#287;u, sunucunun kapasite limitlerini a&#351;&#305;yor.
+    Talep i&#351;lenemiyor.
+
+<!--#include virtual="include/bottom.html" -->
+----------tr--

@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision$ -->
+
+<!--
+ Copyright 2002-2005 The Apache Software Foundation or its licensors, as
+ applicable.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_authn_default.xml.meta">
+
+<name>mod_authn_default</name>
+<description>Authentication fallback module</description>
+<status>Base</status>
+<sourcefile>mod_authn_default.c</sourcefile>
+<identifier>authn_default_module</identifier>
+<compatibility>Available in Apache 2.1 and later</compatibility>
+
+<summary>
+    <p>This module is designed to be the fallback module, if you don't
+    have configured an authentication module like
+    <module>mod_auth_basic</module>. It simply rejects any
+    credentials supplied by the user.</p>
+</summary>
+
+<directivesynopsis>
+<name>AuthDefaultAuthoritative</name>
+<description>Sets whether authentication is passed to lower level
+modules</description>
+<syntax>AuthDefaultAuthoritative On|Off</syntax>
+<default>AuthDefaultAuthoritative On</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>Setting the <directive>AuthDefaultAuthoritative</directive> directive
+    explicitly to <code>Off</code> allows for authentication to be passed on
+    to lower level modules (as defined in the <code>modules.c</code>
+    files).</p>
+
+    <note><title>Note</title>
+      <p>Normally there are no lower level modules, since
+      <module>mod_authn_default</module> is defined to be already on
+      a <em>very low</em> level. Therefore you should leave the value of
+      <directive>AuthDefaultAuthoritative</directive> as default
+      (<code>On</code>).</p>
+    </note>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

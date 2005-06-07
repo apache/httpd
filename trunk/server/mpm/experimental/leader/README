@@ -1,0 +1,15 @@
+Leader MPM:
+This is an experimental variant of the standard worker MPM.
+It uses a Leader/Followers design pattern to coordinate work among threads:
+http://deuce.doc.wustl.edu/doc/pspdfs/lf.pdf
+
+To use the leader MPM, add "--with-mpm=leader" to the configure
+script's arguments when building the httpd.
+  
+This MPM depends on APR's atomic compare-and-swap operations for
+thread synchronization.  If you are compiling for an x86 target
+and you don't need to support 386s, or you're compiling for a
+SPARC and you don't need to run on pre-UltraSPARC chips, add
+"--enable-nonportable-atomics=yes" to the configure script's
+arguments.  This will cause APR to implement atomic operations
+using efficient opcodes not available in older CPUs.

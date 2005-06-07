@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Running a High-Performance Web Server on HPUX - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page" class="no-sidebar"><div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.1</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.1</a> &gt; <a href="./">Platform Specific Notes</a></div><div id="page-content"><div id="preamble"><h1>Running a High-Performance Web Server on HPUX</h1>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="../en/platform/perf-hp.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ko/platform/perf-hp.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+</div>
+
+
+<pre>
+Date: Wed, 05 Nov 1997 16:59:34 -0800
+From: Rick Jones &lt;<a href="mailto:raj@cup.hp.com">raj@cup.hp.com</a>&gt;
+Reply-To: <a href="mailto:raj@cup.hp.com">raj@cup.hp.com</a>
+Organization: Network Performance
+Subject: HP-UX tuning tips
+</pre>
+
+    <p>Here are some tuning tips for HP-UX to add to the tuning page.</p>
+
+    <p>For HP-UX 9.X: Upgrade to 10.20<br />
+    For HP-UX 10.[00|01|10]: Upgrade to 10.20</p>
+
+    <p>For HP-UX 10.20:</p>
+
+    <p>Install the latest cumulative ARPA Transport Patch. This
+    will allow you to configure the size of the TCP connection
+    lookup hash table. The default is 256 buckets and must be set
+    to a power of two. This is accomplished with adb against the
+    *disc* image of the kernel. The variable name is <code>tcp_hash_size</code>.
+    Notice that it's critically important that you use "<code>W</code>"
+    to write a 32 bit quantity, not "<code>w</code>" to write a 16 bit
+    value when patching the disc image because the <code>tcp_hash_size</code>
+    variable is a 32 bit quantity.</p>
+
+    <p>How to pick the value? Examine the output of <a href="ftp://ftp.cup.hp.com/dist/networking/tools/connhist">ftp://ftp.cup.hp.com/dist/networking/tools/connhist</a>
+    and see how many total TCP connections exist on the system. You
+    probably want that number divided by the hash table size to be
+    reasonably small, say less than 10. Folks can look at HP's
+    SPECweb96 disclosures for some common settings. These can be
+    found at <a href="http://www.specbench.org/">http://www.specbench.org/</a>.
+    If an HP-UX system was performing at 1000 SPECweb96 connections
+    per second, the <code>TIME_WAIT</code> time of 60 seconds would mean
+    60,000 TCP "connections" being tracked.</p>
+
+    <p>Folks can check their listen queue depths with <a href="ftp://ftp.cup.hp.com/dist/networking/misc/listenq">ftp://ftp.cup.hp.com/dist/networking/misc/listenq</a>.</p>
+
+    <p>If folks are running Apache on a PA-8000 based system, they
+    should consider "chatr'ing" the Apache executable to have a
+    large page size. This would be "<code>chatr +pi L &lt;BINARY&gt;</code>".
+    The GID of the running executable must have <code>MLOCK</code> privileges.
+    <code>Setprivgrp(1m)</code> should be consulted for assigning
+    <code>MLOCK</code>. The change can be validated by running Glance
+    and examining the memory regions of the server(s) to make sure that
+    they show a non-trivial fraction of the text segment being locked.</p>
+
+    <p>If folks are running Apache on MP systems, they might
+    consider writing a small program that uses <code>mpctl()</code>
+    to bind processes to processors. A simple <code>pid % numcpu</code>
+    algorithm is probably sufficient. This might even go into the
+    source code.</p>
+
+    <p>If folks are concerned about the number of <code>FIN_WAIT_2</code>
+    connections, they can use nettune to shrink the value of
+    <code>tcp_keepstart</code>. However, they should be careful there -
+    certainly do not make it less than oh two to four minutes. If
+    <code>tcp_hash_size</code> has been set well, it is probably OK to
+    let the <code>FIN_WAIT_2</code>'s take longer to timeout (perhaps
+    even the default two hours) - they will not on average have a big
+    impact on performance.</p>
+
+    <p>There are other things that could go into the code base, but
+    that might be left for another email. Feel free to drop me a
+    message if you or others are interested.</p>
+
+    <p>sincerely,</p>
+
+    <p>rick jones</p>
+
+    <p><a href="http://www.cup.hp.com/netperf/NetperfPage.html">http://www.cup.hp.com/netperf/NetperfPage.html</a></p>
+
+  </div>
+</div>
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="../en/platform/perf-hp.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ko/platform/perf-hp.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 1995-2005 The Apache Software Foundation or its licensors, as applicable.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>

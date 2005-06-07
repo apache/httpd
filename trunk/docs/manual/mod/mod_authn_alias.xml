@@ -1,0 +1,107 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision$ -->
+
+<!--
+ Copyright 2002-2005 The Apache Software Foundation or its licensors, as
+ applicable.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_authn_alias.xml.meta">
+
+<name>mod_authn_alias</name>
+<description>Provides the ability to create extended authentication 
+    providers based on actual providers</description>
+<status>Extension</status>
+<sourcefile>mod_authn_alias.c</sourcefile>
+<identifier>authn_alias_module</identifier>
+<compatibility>Available in Apache 2.1 and later</compatibility>
+
+<summary>
+    <p>This module allows extended authentication providers to be created 
+    within the configuration file and assigned an alias name.  The alias 
+    providers can then be referenced through the directives 
+    <directive module="mod_auth_basic">AuthBasicProvider</directive> or 
+    <directive module="mod_auth_digest">AuthDigestProvider</directive> in
+    the same way as a base authentication provider.  Besides the ability
+    to create and alias an extended provider, it also allows the same 
+    extended authentication provider to be reference by multiple 
+    locations.</p>
+
+</summary>
+
+<section id="example"><title>Example</title>
+    <p>The example below creates two different ldap authentication 
+    provider aliases based on the ldap provider.  This allows
+    a single authenticated location can be serviced by multiple 
+    ldap hosts:</p>
+
+    <example><title>Example</title>
+      LoadModule authn_alias_module modules/mod_authn_alias.so<br /><br />
+      &lt;AuthnProviderAlias ldap ldap-alias1&gt;<br />
+      <indent>
+         AuthLDAPBindDN cn=youruser,o=ctx<br />
+         AuthLDAPBindPassword yourpassword<br />
+         AuthLDAPURL ldap://ldap.host/o=ctx<br />
+      </indent>
+      &lt;/AuthnProviderAlias&gt;<br /><br />
+      &lt;AuthnProviderAlias ldap ldap-other-alias&gt;<br />
+      <indent>
+         AuthLDAPBindDN cn=yourotheruser,o=dev<br />
+         AuthLDAPBindPassword yourotherpassword<br />
+         AuthLDAPURL ldap://other.ldap.host/o=dev?cn<br />
+      </indent>
+      &lt;/AuthnProviderAlias&gt;<br /><br />
+
+      Alias /secure /webpages/secure<br />
+      &lt;Directory /webpages/secure&gt;<br />
+      <indent>
+         Order deny,allow<br />
+         Allow from all<br /><br />
+    
+         AuthBasicProvider ldap-other-alias  ldap-alias1<br /><br />
+    
+         AuthType Basic<br />
+         AuthName LDAP_Protected_Place<br />
+         AuthzLDAPAuthoritative off<br />
+         require valid-user<br />
+      </indent>
+      &lt;/Directory&gt;<br />
+    </example>
+</section>
+
+<directivesynopsis type="section">
+<name>AuthnProviderAlias</name>
+<description>Enclose a group of directives that represent an
+extension of a base authentication provider and referenced by
+the specified alias</description>
+<syntax>&lt;AuthnProviderAlias <var>baseProvider Alias</var>&gt;
+... &lt;/AuthnProviderAlias&gt;</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p><directive type="section">AuthnProviderAlias</directive> and
+    <code>&lt;/AuthnProviderAlias&gt;</code> are used to enclose a group of
+    authentication directives that can be referenced by the alias name 
+    using one of the directives <directive module="mod_auth_basic">
+    AuthBasicProvider</directive> or <directive module="mod_auth_digest">
+    AuthDigestProvider</directive>.</p>
+
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

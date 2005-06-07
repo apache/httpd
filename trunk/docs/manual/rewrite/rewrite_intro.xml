@@ -1,0 +1,167 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision$ -->
+
+<!--
+ Copyright 2002-2005 The Apache Software Foundation or its licensors, as
+ applicable.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="rewrite_intro.xml.meta">
+<parentdocument href="./index.html"/>
+
+  <title>Apache mod_rewrite Introduction</title>
+
+<summary>
+<p>This document supplements the <module>mod_rewrite</module>
+<a href="../mod/mod_rewrite.html">reference documentation</a>. It
+describes the basic concepts necessary for use of
+<module>mod_rewrite</module>. Other documents go into greater detail,
+but this doc should help the beginner get their feet wet.
+</p>
+</summary>
+
+<seealso><a href="../mod/mod_rewrite.html">Module
+documentation</a></seealso>
+<seealso><a href="rewrite_tech.html">Technical details</a></seealso>
+<seealso><a href="rewrite_guide.html">Practical solutions to common
+problems</a></seealso>
+<seealso><a href="rewrite_guide_advanced.html">Practical solutions to
+advanced problems</a></seealso>
+
+<section id="introduction"><title>Introduction</title>
+<p>The Apache module <module>mod_rewrite</module> is a very powerful and
+sophisticated module which provides a way to do URL manipulations. With
+it, you can do nearly all types of URL rewriting that you may need. It
+is, however, somewhat complex, and may be intimidating to the beginner.
+There is also a tendency to treat rewrite rules as magic incantation,
+using them without actually understanding what they do.</p>
+
+<p>This document attempts to give sufficient background so that what
+follows is understood, rather than just copied blindly.
+</p>
+</section>
+
+<section id="regex"><title>Regular Expressions</title>
+
+<p>mod_rewrite uses the <a href="http://pcre.org/">Perl Compatible
+Regular Expression</a> vocabulary. In this document, we do not attempt
+to provide a detailed reference to regular expressions. For that, we
+recommend the <a href="http://pcre.org/pcre.txt">PCRE man pages</a>, the
+<a href="http://www.perldoc.com/perl5.8.0/pod/perlre.html">Perl regular
+expression man page</a>, and <a
+href="http://www.oreilly.com/catalog/regex2/index.html">Mastering
+Regular Expressions, by Jeffrey Friedl</a>.</p>
+
+<p>In this document, we attempt to provide enough of a regex vocabulary
+to get you started, without being overwhelming, in the hope that
+<directive module="mod_rewrite">RewriteRule</directive>s will be scientific
+formulae, rather than magical incantations.</p>
+
+<section id="regexvocab"><title>Regex vocabulary</title>
+
+<p>The following are the minimal building blocks you will need, in order
+to write regular expressions and <directive
+module="mod_rewrite">RewriteRule</directive>s.</p>
+
+<table>
+<tr>
+<th>Character</th>
+<th>Meaning</th>
+</tr>
+
+<tr><td><code>.</code></td><td>Matches any character</td></tr>
+
+</table>
+
+</section>
+
+<section id="InternalBackRefs"><title>Regex Back-Reference Availability</title>
+
+      <p>One important thing here has to be remembered: Whenever you
+      use parentheses in <em>Pattern</em> or in one of the
+      <em>CondPattern</em>, back-references are internally created
+      which can be used with the strings <code>$N</code> and
+      <code>%N</code> (see below). These are available for creating
+      the strings <em>Substitution</em> and <em>TestString</em>.
+      Figure 2 shows to which locations the back-references are
+      transferred for expansion.</p>
+
+<p class="figure">
+      <img src="../images/mod_rewrite_fig2.gif" width="381"
+           height="179" alt="[Needs graphics capability to display]" /><br />
+      <dfn>Figure 2:</dfn> The back-reference flow through a rule.
+</p>
+
+</section>
+</section>
+
+<section id="rewriterule"><title>RewriteRule basics</title>
+<p>
+Basic anatomy of a RewriteRule, with exhaustively annotated simple
+examples.
+</p>
+</section>
+
+<section id="flags"><title>Rewrite Flags</title>
+<p>Discussion of the flags to RewriteRule, and when and why one might
+use them.</p>
+</section>
+
+<section id="rewritecond"><title>Rewrite conditions</title>
+<p>Discussion of RewriteCond, looping, and other related concepts.
+</p>
+</section>
+
+<section id="rewritemap"><title>Rewrite maps</title>
+<p>Discussion of RewriteMap, including simple, but heavily annotated,
+examples.</p>
+</section>
+
+<section id="htaccess"><title>.htaccess files</title>
+<p>Discussion of the differences between rewrite rules in httpd.conf and
+in .htaccess files.</p>
+</section>
+
+<section id="EnvVar"><title>Environment Variables</title>
+
+<p>This module keeps track of two additional (non-standard)
+CGI/SSI environment variables named <code>SCRIPT_URL</code>
+and <code>SCRIPT_URI</code>. These contain the
+<em>logical</em> Web-view to the current resource, while the
+standard CGI/SSI variables <code>SCRIPT_NAME</code> and
+<code>SCRIPT_FILENAME</code> contain the <em>physical</em>
+System-view. </p>
+
+<p>Notice: These variables hold the URI/URL <em>as they were
+initially requested</em>, <em>i.e.</em>, <em>before</em> any
+rewriting. This is important because the rewriting process is
+primarily used to rewrite logical URLs to physical
+pathnames.</p>
+
+<example><title>Example</title>
+<pre>
+SCRIPT_NAME=/sw/lib/w3s/tree/global/u/rse/.www/index.html
+SCRIPT_FILENAME=/u/rse/.www/index.html
+SCRIPT_URL=/u/rse/
+SCRIPT_URI=http://en1.engelschall.com/u/rse/
+</pre>
+</example>
+
+</section>
+
+</manualpage>
+

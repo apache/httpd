@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Filtres - Serveur Apache HTTP</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page" class="no-sidebar"><div id="page-header">
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p>
+<p class="apache">Serveur Apache HTTP Version 2.1</p>
+<img alt="" src="./images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="./">Version 2.1</a></div><div id="page-content"><div id="preamble"><h1>Filtres</h1>
+<div class="toplang">
+<p><span>Langues Disponibles: </span><a href="./en/filter.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./es/filter.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="./fr/filter.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./ja/filter.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="./ko/filter.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+</div>
+
+    <p>Ce document explique le fonctionnement des filtres avec Apache.</p>
+  </div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="filters" id="filters">Filtres</a></h2>
+    
+    <table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_deflate.html">mod_deflate</a></code></li><li><code class="module"><a href="./mod/mod_ext_filter.html">mod_ext_filter</a></code></li><li><code class="module"><a href="./mod/mod_include.html">mod_include</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_mime.html#addinputfilter">AddInputFilter</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#removeinputfilter">RemoveInputFilter</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#removeoutputfilter">RemoveOutputFilter</a></code></li><li><code class="directive"><a href="./mod/mod_ext_filter.html#extfilterdefine">ExtFilterDefine</a></code></li><li><code class="directive"><a href="./mod/mod_ext_filter.html#extfilteroptions">ExtFilterOptions</a></code></li><li><code class="directive"><a href="./mod/core.html#setinputfilter">SetInputFilter</a></code></li><li><code class="directive"><a href="./mod/core.html#setoutputfilter">SetOutputFilter</a></code></li></ul></td></tr></table>
+
+    <p>On appelle <em>filtre</em> un processus qui s'applique aux données reçues
+    ou envoyées par le serveur. Les <em>filtres en entrée ("input filters")</em>
+    servent à filtrer les données envoyées par les clients au serveur, tandis
+    que les <em>filtres en sortie ("output filters")</em> travaillent sur les
+    données envoyées par le serveur à un client. Il est possible d'appliquer
+    plusieurs filtres à un flux de données, et l'ordre de ces filtres peux être
+    spécifiée de façon explicite.</p>
+    
+    <p>Apache utilise des filtres en interne pour par exemple gérer les "grosses" requêtes
+    (chunked) ou les requêtes partielles (NDT : "byte-range" : requêtes sur seulement une
+    partie d'un fichier spécifiée par un pointeur de départ, et de fin). 
+    Certains modules permettent en plus d'utiliser des filtres
+    en utilisant des directives de configuration. Les filtres sont utilisables
+    au moyen des directives
+    <code class="directive"><a href="./mod/core.html#setinputfilter">SetInputFilter</a></code>,
+    <code class="directive"><a href="./mod/core.html#setoutputfilter">SetOutputFilter</a></code>,
+    <code class="directive"><a href="./mod/mod_mime.html#addinputfilter">AddInputFilter</a></code>,
+    <code class="directive"><a href="./mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code>,
+    <code class="directive"><a href="./mod/mod_mime.html#removeinputfilter">RemoveInputFilter</a></code> et
+    <code class="directive"><a href="./mod/mod_mime.html#removeoutputfilter">RemoveOutputFilter</a></code>
+    .</p>
+
+    <p>Les filtres listés ci-dessous sont fournis dans la distribution d'Apache, et
+    peuvent être utilisés par tout administrateur.</p>
+
+    <dl>
+      <dt>INCLUDES</dt>
+      <dd>Le module <code class="module"><a href="./mod/mod_include.html">mod_include</a></code> travaille au moyen de
+      "Server-Side Includes"</dd>
+      <dt>DEFLATE</dt>
+      <dd>Le module <code class="module"><a href="./mod/mod_deflate.html">mod_deflate</a></code> compresse les données avant leur envoi au 
+      client (filtre en sortie).</dd>
+    </dl>
+
+    <p>En outre, le module <code class="module"><a href="./mod/mod_ext_filter.html">mod_ext_filter</a></code> permet d'utiliser des
+    programes externes à Apache en tant que filtres.</p>
+  </div></div>
+<div class="bottomlang">
+<p><span>Langues Disponibles: </span><a href="./en/filter.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./es/filter.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="./fr/filter.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./ja/filter.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="./ko/filter.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 1995-2005 The Apache Software Foundation or its licensors, as applicable.<br />Authorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p></div>
+</body></html>

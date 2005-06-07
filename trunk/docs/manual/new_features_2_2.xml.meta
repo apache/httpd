@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<metafile>
+  <basename>new_features_2_2</basename>
+  <path>/</path>
+  <relpath>.</relpath>
+
+  <variants>
+    <variant>en</variant>
+    <variant outdated="yes">ko</variant>
+    <variant outdated="yes">pt-br</variant>
+  </variants>
+</metafile>

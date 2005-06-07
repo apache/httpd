@@ -1,0 +1,5 @@
+
+LTLIBRARY_NAME    = libos.la
+LTLIBRARY_SOURCES = os.c beosd.c
+
+include $(top_srcdir)/build/ltlib.mk

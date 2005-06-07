@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<metafile>
+  <basename>index</basename>
+  <path>/</path>
+  <relpath>.</relpath>
+
+  <variants>
+    <variant>de</variant>
+    <variant>en</variant>
+    <variant outdated="yes">es</variant>
+    <variant outdated="yes">fr</variant>
+    <variant>ja</variant>
+    <variant outdated="yes">ko</variant>
+    <variant outdated="yes">pt-br</variant>
+  </variants>
+</metafile>

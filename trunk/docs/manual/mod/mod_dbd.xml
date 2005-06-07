@@ -1,0 +1,218 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision$ -->
+
+<!--
+ Copyright 2005 The Apache Software Foundation or its licensors, as
+ applicable.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_dbd.xml.meta">
+
+<name>mod_dbd</name>
+<description>Manages SQL database connections</description>
+<status>Experimental</status>
+<sourcefile>mod_dbd.c</sourcefile>
+<identifier>dbd_module</identifier>
+<compatibility>Version 2.1 and higher</compatibility>
+
+<summary>
+    <p><module>mod_dbd</module> manages SQL database connections using
+    <a href="http://people.apache.org/~niq/dbd.html">apr_dbd</a>.
+    It provides database connections on request to modules
+    requiring SQL database functions, and takes care of
+    managing databases with optimal efficiency and scalability
+    for both threaded and non-threaded MPMs.</p>
+</summary>
+
+<section id="pooling"><title>Connection Pooling</title>
+    <p>This module manages database connections, in a manner
+    optimised for the platform.  On non-threaded platforms,
+    it provides a persistent connection in the manner of
+    classic LAMP (Linux, Apache, Mysql, Perl/PHP/Python).
+    On threaded platform, it provides an altogether more
+    scalable and efficient <em>connection pool</em>, as
+    described in <a href="http://www.apachetutor.org/dev/reslist"
+    >this article at ApacheTutor</a>. <module>mod_dbd</module> supersedes
+    the modules presented in that article.</p>
+</section>
+
+<section id="API"><title>Apache DBD API</title>
+    <p><module>mod_dbd</module> exports three functions for other modules
+    to use. The API is as follows:</p>
+
+    <example>
+<pre><code>typedef struct {
+    apr_dbd_t *handle;
+    apr_dbd_driver_t *driver;
+    apr_hash_t *prepared;
+} ap_dbd_t;
+
+/* Export functions to access the database */
+
+/* acquire a connection that MUST be explicitly closed.
+ * Returns NULL on error
+ */
+AP_DECLARE(ap_dbd_t*) ap_dbd_open(apr_pool_t*, server_rec*);
+
+/* release a connection acquired with ap_dbd_open */
+AP_DECLARE(void) ap_dbd_close(server_rec*, ap_dbd_t*);
+
+/* acquire a connection that will have the lifetime of a request
+ * and MUST NOT be explicitly closed.  Return NULL on error.
+ * This is the preferred function for most applications.
+ */
+AP_DECLARE(ap_dbd_t*) ap_dbd_acquire(request_rec*);
+
+/* Also export them as optional functions for modules that prefer it */
+APR_DECLARE_OPTIONAL_FN(ap_dbd_t*, ap_dbd_open, (apr_pool_t*, server_rec*));
+APR_DECLARE_OPTIONAL_FN(void, ap_dbd_close, (server_rec*, ap_dbd_t*));
+APR_DECLARE_OPTIONAL_FN(ap_dbd_t*, ap_dbd_acquire, (request_rec*));</code></pre>
+    </example>
+</section>
+
+<section id="prepared"><title>SQL Prepared Statements</title>
+    <p><module>mod_dbd</module> supports SQL prepared statements on behalf
+    of modules that may wish to use them.  Each prepared statement
+    must be assigned a name (label), and they are stored in a hash:
+    the <code>prepared</code> field of an <code>ap_dbd_t</code>.
+    Hash entries are of type <code>apr_dbd_prepared_t</code>
+    and can be used in any of the apr_dbd prepared statement
+    SQL query or select commands.</p>
+
+    <p>It is up to dbd user modules to use the prepared statements
+    and document what statements can be specified in httpd.conf.</p>
+</section>
+
+<directivesynopsis>
+<name>DBDriver</name>
+<description>Specify an SQL driver</description>
+<syntax>DBDriver <var>name</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>Selects an apr_dbd driver by name.  The driver must be installed
+    on your system (on most systems, it will be a shared object or dll).
+    For example, <code>DBDriver mysql</code> will select the MySQL
+    driver in apr_dbd_mysql.so.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>DBDParams</name>
+<description>Parameters for database connection</description>
+<syntax>DBDParams
+<var>param1</var>=<var>value1</var>[,<var>param2</var>=<var>value2</var>]</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>As required by the underlying driver.  Typically this will be
+    used to pass whatever cannot be defaulted amongst username,
+    password, database name, hostname and port number for connection.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>DBDPersist</name>
+<description>Whether to use persistent connections</description>
+<syntax>DBDPersist 0|1</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>If set to 0, persistent and pooled connections are disabled.
+    A new database connection is opened when requested by a client,
+    and closed immediately on release.  This option is for debugging
+    and low-usage servers.</p>
+
+    <p>The default is to enable a pool of persistent connections
+    (or a single LAMP-style persistent connection in the case of a
+    non-threaded server), and should almost always be used in operation.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>DBDPrepareSQL</name>
+<description>Define an SQL prepared statement</description>
+<syntax>DBDPrepareSQL <var>"SQL statement"</var> <var>label</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>For modules such as authentication that use repeatedly use a
+    single SQL statement, optimum performance is achieved by preparing
+    the statement at startup rather than every time it is used.
+    This directive prepares an SQL statement and assigns it a label.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>DBDMin</name>
+<description>Minimum number of connections</description>
+<syntax>DBDMin <var>number</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>Set the minimum number of connections per process (threaded
+    platforms only).</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>DBDKeep</name>
+<description>Maximum sustainednumber of connections</description>
+<syntax>DBDKeep <var>number</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>Set the maximum number of connections per process to be
+    sustained, other than for handling peak demand (threaded
+    platforms only).</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>DBDMax</name>
+<description>Maximum number of connections</description>
+<syntax>DBDMax <var>number</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>Set the hard maximum number of connections per process
+    (threaded platforms only).</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>DBDExptime</name>
+<description>Keepalive time for idle connections</description>
+<syntax>DBDExptime <var>time-in-seconds</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>Set the time to keep idle connections alive where the number
+    of connections specified in DBDKeep has been exceeded (threaded
+    platforms only).</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

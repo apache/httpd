@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Apache mod_rewrite Introduction - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.1</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./index.html"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.1</a></div><div id="page-content"><div id="preamble"><h1>Apache mod_rewrite Introduction</h1>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="../en/rewrite/rewrite_intro.html" title="English">&nbsp;en&nbsp;</a></p>
+</div>
+
+<p>This document supplements the <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+<a href="../mod/mod_rewrite.html">reference documentation</a>. It
+describes the basic concepts necessary for use of
+<code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>. Other documents go into greater detail,
+but this doc should help the beginner get their feet wet.
+</p>
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#introduction">Introduction</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#regex">Regular Expressions</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#rewriterule">RewriteRule basics</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flags">Rewrite Flags</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#rewritecond">Rewrite conditions</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#rewritemap">Rewrite maps</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#htaccess">.htaccess files</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#EnvVar">Environment Variables</a></li>
+</ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module
+documentation</a></li><li><a href="rewrite_tech.html">Technical details</a></li><li><a href="rewrite_guide.html">Practical solutions to common
+problems</a></li><li><a href="rewrite_guide_advanced.html">Practical solutions to
+advanced problems</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="introduction" id="introduction">Introduction</a></h2>
+<p>The Apache module <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> is a very powerful and
+sophisticated module which provides a way to do URL manipulations. With
+it, you can do nearly all types of URL rewriting that you may need. It
+is, however, somewhat complex, and may be intimidating to the beginner.
+There is also a tendency to treat rewrite rules as magic incantation,
+using them without actually understanding what they do.</p>
+
+<p>This document attempts to give sufficient background so that what
+follows is understood, rather than just copied blindly.
+</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="regex" id="regex">Regular Expressions</a></h2>
+
+<p>mod_rewrite uses the <a href="http://pcre.org/">Perl Compatible
+Regular Expression</a> vocabulary. In this document, we do not attempt
+to provide a detailed reference to regular expressions. For that, we
+recommend the <a href="http://pcre.org/pcre.txt">PCRE man pages</a>, the
+<a href="http://www.perldoc.com/perl5.8.0/pod/perlre.html">Perl regular
+expression man page</a>, and <a href="http://www.oreilly.com/catalog/regex2/index.html">Mastering
+Regular Expressions, by Jeffrey Friedl</a>.</p>
+
+<p>In this document, we attempt to provide enough of a regex vocabulary
+to get you started, without being overwhelming, in the hope that
+<code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>s will be scientific
+formulae, rather than magical incantations.</p>
+
+<h3><a name="regexvocab" id="regexvocab">Regex vocabulary</a></h3>
+
+<p>The following are the minimal building blocks you will need, in order
+to write regular expressions and <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>s.</p>
+
+<table>
+<tr>
+<th>Character</th>
+<th>Meaning</th>
+</tr>
+
+<tr><td><code>.</code></td><td>Matches any character</td></tr>
+
+</table>
+
+
+
+<h3><a name="InternalBackRefs" id="InternalBackRefs">Regex Back-Reference Availability</a></h3>
+
+      <p>One important thing here has to be remembered: Whenever you
+      use parentheses in <em>Pattern</em> or in one of the
+      <em>CondPattern</em>, back-references are internally created
+      which can be used with the strings <code>$N</code> and
+      <code>%N</code> (see below). These are available for creating
+      the strings <em>Substitution</em> and <em>TestString</em>.
+      Figure 2 shows to which locations the back-references are
+      transferred for expansion.</p>
+
+<p class="figure">
+      <img src="../images/mod_rewrite_fig2.gif" width="381" height="179" alt="[Needs graphics capability to display]" /><br />
+      <dfn>Figure 2:</dfn> The back-reference flow through a rule.
+</p>
+
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="rewriterule" id="rewriterule">RewriteRule basics</a></h2>
+<p>
+Basic anatomy of a RewriteRule, with exhaustively annotated simple
+examples.
+</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flags" id="flags">Rewrite Flags</a></h2>
+<p>Discussion of the flags to RewriteRule, and when and why one might
+use them.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="rewritecond" id="rewritecond">Rewrite conditions</a></h2>
+<p>Discussion of RewriteCond, looping, and other related concepts.
+</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="rewritemap" id="rewritemap">Rewrite maps</a></h2>
+<p>Discussion of RewriteMap, including simple, but heavily annotated,
+examples.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="htaccess" id="htaccess">.htaccess files</a></h2>
+<p>Discussion of the differences between rewrite rules in httpd.conf and
+in .htaccess files.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="EnvVar" id="EnvVar">Environment Variables</a></h2>
+
+<p>This module keeps track of two additional (non-standard)
+CGI/SSI environment variables named <code>SCRIPT_URL</code>
+and <code>SCRIPT_URI</code>. These contain the
+<em>logical</em> Web-view to the current resource, while the
+standard CGI/SSI variables <code>SCRIPT_NAME</code> and
+<code>SCRIPT_FILENAME</code> contain the <em>physical</em>
+System-view. </p>
+
+<p>Notice: These variables hold the URI/URL <em>as they were
+initially requested</em>, <em>i.e.</em>, <em>before</em> any
+rewriting. This is important because the rewriting process is
+primarily used to rewrite logical URLs to physical
+pathnames.</p>
+
+<div class="example"><h3>Example</h3><pre>
+SCRIPT_NAME=/sw/lib/w3s/tree/global/u/rse/.www/index.html
+SCRIPT_FILENAME=/u/rse/.www/index.html
+SCRIPT_URL=/u/rse/
+SCRIPT_URI=http://en1.engelschall.com/u/rse/
+</pre></div>
+
+</div></div>
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="../en/rewrite/rewrite_intro.html" title="English">&nbsp;en&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 1995-2005 The Apache Software Foundation or its licensors, as applicable.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>

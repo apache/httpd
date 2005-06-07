@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pt-br" xml:lang="pt-br"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Descrição das novas funcionalidades do Apache 2.2 - Servidor HTTP Apache</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="./mod/">Módulos</a> | <a href="./mod/directives.html">Diretrizes</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossário</a> | <a href="./sitemap.html">Mapa do site</a></p>
+<p class="apache">Servidor HTTP Apache Versão 2.1</p>
+<img alt="" src="./images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentação</a> &gt; <a href="./">Versão 2.1</a></div><div id="page-content"><div id="preamble"><h1>Descrição das novas funcionalidades do Apache 2.2</h1>
+<div class="toplang">
+<p><span>Línguas Disponíveis: </span><a href="./en/new_features_2_2.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./ko/new_features_2_2.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="./pt-br/new_features_2_2.html" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a></p>
+</div>
+<div class="outofdate">Esta tradução pode estar desatualizada. 
+        Verifique a versão em Inglês para mudanças recentes.</div>
+
+  <p>Esse documento descreve algumas das principais mudanças
+     entre as versões 2.0 e 2.2 do Servidor HTTP Apache.
+     Para a lista de mudanças desde a versão 1.3, veja a página
+     de documentação <a href="new_features_2_0.html">novas funcionalidades
+     do Apache 2.0</a>.</p>
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#core">Principais Melhorias</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#module">Melhorias nos Módulos</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#developer">Mudanças ao Desenvolvedor de Módulos</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="core" id="core">Principais Melhorias</a></h2>
+    
+    <dl>
+
+      <dt>Authn/Authz</dt>
+      <dd>...</dd>
+
+      <dt>Caching</dt>
+      <dd>...</dd>
+
+      <dt>Proxying</dt>
+      <dd>O novo módulo <code class="module"><a href="./mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code> fornece
+          serviços de carregamento de balenceamento para <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code>. O novo módulo <code class="module"><a href="./mod/mod_proxy_ajp.html">mod_proxy_ajp</a></code> oferece suporte para o <code>Protocolo Apache JServ
+          versão 1.3</code>, usado pelo <a href="http://jakarta.apache.org/tomcat/">Apache Tomcat</a>.</dd>
+
+      <dt>Filtragem Inteligente (Smart Filtering)</dt>
+      <dd>O <code class="module"><a href="./mod/mod_filter.html">mod_filter</a></code> introduz configuração dinâmica para
+          o filtro de saída de dados. Permitindo que os filtros sejam
+	  condicionalmente inseridos, baseando-se nos cabeçalhos <em>Request</em> ou <em>Response</em> ou em variáveis do
+	  ambiente, ele acaba com os problemas de dependências e pedidos
+          da arquitetura 2.0.</dd>
+
+    </dl>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="module" id="module">Melhorias nos Módulos</a></h2>
+    
+    <dl>
+      <dt><code class="module"><a href="./mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code></dt>
+      <dd>Este módulo é uma migração do <code>mod_auth_ldap</code>,
+          da versão 2.0 para a estrutura 2.2 de <code>Authn/Authz</code>.
+	  As novas funcionalidades incluem o uso de atributos LDAP e
+	  filtros de procura complexos na diretriz <code class="directive"><a href="./mod/core.html#require">Require</a></code>.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_info.html">mod_info</a></code></dt>
+      <dd>Adicionado um novo argumento <code>?config</code> que
+          mostra a configuração das diretrizes analisadas pelo
+	  Apache, incluindo o nome do arquivo e o número da linha.
+	  Esse módulo também mostra a ordem de todos os ganchos de
+          pedidos (request hooks) e informações adicionais sobre
+          a compilação, similar ao comando <code>httpd -V</code>.</dd>
+    </dl>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="developer" id="developer">Mudanças ao Desenvolvedor de Módulos</a></h2>
+    
+    <dl>
+      <dt>API do APR 1.0</dt>
+
+      <dd>O Apache 2.2 utiliza a API do APR 1.0. Todas as funções e
+          símbolos antigos foram removidos do <code>APR</code> e
+	  <code>APR-Util</code>. Para mais detalhes, visite o
+          <a href="http://apr.apache.org/">Website do APR</a>.</dd>
+
+      <dt>Registros de Erros de Conexão (logs)</dt>
+
+      <dd>Uma nova função <code>ap_log_cerror</code>, foi adicionada
+          para registrar erros que ocorrem na conexão do cliente.
+	  Quando documentado no diário de log, a mensagem inclui o
+	  endereço IP do cliente.</dd>
+
+      <dt>Adicionado Gancho de Teste de Configuração</dt>
+
+      <dd>Um novo gancho (hook), <code>test_config</code> foi
+          adicionado para auxiliar módulos que querem executar
+	  códigos especiais apenas quando o usuário passa o
+	  parâmetro <code>-t</code> para o httpd.</dd>
+
+      <dt>Ajustar o Stacksize dos "Threaded MPM's"</dt>
+
+      <dd>Uma nova diretriz chamada <code>ThreadStackSize</code>,
+          foi adicionada para ajustar o tamanho das stacks em todos
+          os threadeds MPMs. Essa é uma prática necessário para alguns
+	  módulos de terceiros em plataformas com tamanhos de stacks
+	  pequenos por padrão.</dd>
+
+      <dt>Negociação de Protocolo para filtros de saída</dt>
+
+      <dd>No passado, todo filtro era responsável por garantir
+          a geração de cabeçalhos de resposta correto que os afetava.
+	  Os filtros agora podem delegar o gerenciamento de protocolos
+	  comuns para <code class="module"><a href="./mod/mod_filter.html">mod_filter</a></code>, usando chamadas
+	  de <code>ap_register_output_filter_protocol</code> ou
+          <code>ap_filter_protocol</code>.</dd>
+
+    </dl>
+
+  </div></div>
+<div class="bottomlang">
+<p><span>Línguas Disponíveis: </span><a href="./en/new_features_2_2.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./ko/new_features_2_2.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="./pt-br/new_features_2_2.html" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 1995-2005 The Apache Software Foundation or its licensors, as applicable.<br />Licenciado sob a <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">Módulos</a> | <a href="./mod/directives.html">Diretrizes</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossário</a> | <a href="./sitemap.html">Mapa do site</a></p></div>
+</body></html>

@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
+<!-- English Revision: 151408 -->
+
+<!--
+ Copyright 2003-2005 The Apache Software Foundation or its licensors,
+                     as applicable.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mpm_winnt.xml.meta">
+
+<name>mpm_winnt</name>
+<description> Das Multi-Processing-Modul ist optimiert f&uuml;r
+  Windows NT.</description>
+<status>MPM</status>
+<sourcefile>mpm_winnt.c</sourcefile>
+<identifier>mpm_winnt_module</identifier>
+
+<summary>
+    <p>Dieses Multi-Processing-Modul (MPM) ist die Voreinstellung
+    f&uuml;r das Betriebssystem Windows NT. Es verwendet einen einzelnen
+    Steuerprozess, der einen einzelnen Kindprozess startet, welcher
+    wiederum Threads zur Bedienung von Anfragen erstellt.</p>
+</summary>
+
+<directivesynopsis location="mpm_common"><name>CoreDumpDirectory</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>PidFile</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>Listen</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ListenBacklog</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>MaxMemFree</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>MaxRequestsPerChild</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ScoreBoardFile</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>SendBufferSize</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ThreadLimit</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ThreadsPerChild</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ThreadStackSize</name>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>Win32DisableAcceptEx</name>
+<description>F&uuml;r die Annahme von Netzwerkverbindungen wird accept() anstelle von AcceptEx() verwendet</description>
+<syntax>Win32DisableAcceptEx</syntax>
+<default>AcceptEx() ist standardm&auml;&szlig;ig aktiviert. Verwenden Sie diese
+Direktive, um den Gebrauch von AcceptEx() zu deaktivieren.</default>
+<contextlist><context>server config</context></contextlist>
+<compatibility>Verf&uuml;gbar ab Version 2.0.49</compatibility>
+
+<usage>
+    <p><code>AcceptEx()</code> ist eine Schnittstelle zu Microsoft Winsock v2,
+    die unter bestimmten Umst&auml;nden einige Leistungsverbesserungen
+    gegen&uuml;ber der <code>accept()</code>-API von BSD bietet. Einige beliebte
+    Windows-Produkte, typischerweise Virenscanner oder VPN-Pakete, besitzen
+    jedoch Fehler, welche den einwandfreien Betrieb von <code>AcceptEx()</code>
+    st&ouml;ren. Wenn Sie einen Fehler wie:</p>
+
+    <example>
+        [error] (730038)An operation was attempted on something that is
+        not a socket.: winnt_accept: AcceptEx failed. Attempting to recover.
+    </example>
+
+    <p>erhalten, sollten Sie diese Direktive verwenden, um den Gebrauch von
+    <code>AcceptEx()</code> zu unterbinden.</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

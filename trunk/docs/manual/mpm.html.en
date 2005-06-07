@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Multi-Processing Modules (MPMs) - Apache HTTP Server</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.1</p>
+<img alt="" src="./images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="./">Version 2.1</a></div><div id="page-content"><div id="preamble"><h1>Multi-Processing Modules (MPMs)</h1>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="./de/mpm.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="./en/mpm.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="./es/mpm.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="./ja/mpm.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="./ko/mpm.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+</div>
+
+<p>This document describes what a Multi-Processing Module is and
+how they are used by the Apache HTTP Server.</p>
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#introduction">Introduction</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#choosing">Choosing an MPM</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#defaults">MPM Defaults</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="introduction" id="introduction">Introduction</a></h2>
+
+    <p>The Apache HTTP Server is designed to be a powerful and
+    flexible web server that can work on a very wide variety of
+    platforms in a range of different environments. Different
+    platforms and different environments often require different
+    features, or may have different ways of implementing the same
+    feature most efficiently. Apache has always accommodated a wide
+    variety of environments through its modular design. This design
+    allows the webmaster to choose which features will be included
+    in the server by selecting which modules to load either at
+    compile-time or at run-time.</p>
+
+    <p>Apache 2.0 extends this modular design to the most basic
+    functions of a web server. The server ships with a selection of
+    Multi-Processing Modules (MPMs) which are responsible for
+    binding to network ports on the machine, accepting requests,
+    and dispatching children to handle the requests.</p>
+
+    <p>Extending the modular design to this level of the server
+    allows two important benefits:</p>
+
+    <ul>
+      <li>Apache can more cleanly and efficiently support a wide
+      variety of operating systems. In particular, the Windows
+      version of Apache is now much more efficient, since
+      <code class="module"><a href="./mod/mpm_winnt.html">mpm_winnt</a></code> can use native
+      networking features in place of the POSIX layer used in
+      Apache 1.3. This benefit also extends to other operating
+      systems that implement specialized MPMs.</li>
+
+      <li>The server can be better customized for the needs of the
+      particular site. For example, sites that need a great deal of
+      scalability can choose to use a threaded MPM like 
+      <code class="module"><a href="./mod/worker.html">worker</a></code> or <code class="module"><a href="./mod/event.html">event</a></code>, while sites requiring
+      stability or compatibility with older software can use a
+      <code class="module"><a href="./mod/prefork.html">prefork</a></code>. In addition,
+      special features like serving different hosts under different
+      userids (<code class="module"><a href="./mod/perchild.html">perchild</a></code>) can be
+      provided.</li>
+    </ul>
+
+    <p>At the user level, MPMs appear much like other Apache
+    modules. The main difference is that one and only one MPM must
+    be loaded into the server at any time. The list of available
+    MPMs appears on the <a href="mod/">module index page</a>.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="choosing" id="choosing">Choosing an MPM</a></h2>
+
+    <p>MPMs must be chosen during configuration, and compiled into
+    the server. Compilers are capable of optimizing a lot of
+    functions if threads are used, but only if they know that
+    threads are being used.</p>
+
+    <p>To actually choose the desired MPM, use the argument
+      <code>--with-mpm=<em>NAME</em></code> with the
+      <code class="program"><a href="./programs/configure.html">configure</a></code> script. <em>NAME</em> is the name of the
+      desired MPM.</p>
+
+    <p>Once the server has been compiled, it is possible to
+    determine which MPM was chosen by using <code>./httpd
+    -l</code>. This command will list every module that is compiled
+    into the server, including the MPM.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="defaults" id="defaults">MPM Defaults</a></h2>
+
+<p>The following table lists the default MPMs for various operating
+systems.  This will be the MPM selected if you do not make another
+choice at compile-time.</p>
+
+<table>
+
+<tr><td>BeOS</td><td><code class="module"><a href="./mod/beos.html">beos</a></code></td></tr>
+<tr><td>Netware</td><td><code class="module"><a href="./mod/mpm_netware.html">mpm_netware</a></code></td></tr>
+<tr><td>OS/2</td><td><code class="module"><a href="./mod/mpmt_os2.html">mpmt_os2</a></code></td></tr>
+<tr><td>Unix</td><td><code class="module"><a href="./mod/prefork.html">prefork</a></code></td></tr>
+<tr><td>Windows</td><td><code class="module"><a href="./mod/mpm_winnt.html">mpm_winnt</a></code></td></tr>
+</table>
+</div></div>
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="./de/mpm.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="./en/mpm.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="./es/mpm.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="./ja/mpm.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="./ko/mpm.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 1995-2005 The Apache Software Foundation or its licensors, as applicable.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div>
+</body></html>

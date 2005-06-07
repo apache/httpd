@@ -1,0 +1,164 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision$ -->
+
+<!--
+ Copyright 2002-2005 The Apache Software Foundation or its licensors, as
+ applicable.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_disk_cache.xml.meta">
+
+<name>mod_disk_cache</name>
+<description>Content cache storage manager keyed to URIs</description>
+<status>Extension</status>
+<sourcefile>mod_disk_cache.c</sourcefile>
+<identifier>disk_cache_module</identifier>
+
+<summary>
+    <p><module>mod_disk_cache</module> implements a disk based storage
+    manager. It is primarily of use in conjunction
+    <module>mod_cache</module>.</p>
+
+    <p>Content is stored in and retrieved from the cache using URI based
+    keys. Content with access protection is not cached.</p>
+
+    <p><program>htcacheclean</program> can be used to maintain the cache
+       size at a maximum level.</p>
+
+    <note><title>Note:</title>
+      <p><module>mod_disk_cache</module> requires the services of
+      <module>mod_cache</module>.</p>
+    </note>
+</summary>
+
+<directivesynopsis>
+<name>CacheRoot</name>
+<description>The directory root under which cache files are
+stored</description>
+<syntax>CacheRoot <var>directory</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>The <directive>CacheRoot</directive> directive defines the name of
+    the directory on the disk to contain cache files. If the <module
+    >mod_disk_cache</module> module has been loaded or compiled in to the
+    Apache server, this directive <em>must</em> be defined. Failing to
+    provide a value for <directive>CacheRoot</directive> will result in
+    a configuration file processing error. The <directive
+    module="mod_disk_cache">CacheDirLevels</directive> and <directive
+    module="mod_disk_cache">CacheDirLength</directive> directives define
+    the structure of the directories under the specified root directory.</p>
+
+    <example>
+      CacheRoot c:/cacheroot
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheDirLevels</name>
+<description>The number of levels of subdirectories in the
+cache.</description>
+<syntax>CacheDirLevels <var>levels</var></syntax>
+<default>CacheDirLevels 3</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>The <directive>CacheDirLevels</directive> directive sets the number
+    of subdirectory levels in the cache. Cached data will be saved this
+    many directory levels below the <directive module="mod_disk_cache"
+    >CacheRoot</directive> directory.</p>
+
+    <note>
+      <p>The result of <directive>CacheDirLevels</directive>*
+      <directive module="mod_disk_cache">CacheDirLength</directive> must
+      not be higher than 20.</p>
+    </note>
+
+    <example>
+      CacheDirLevels  5
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheDirLength</name>
+<description>The number of characters in subdirectory names</description>
+<syntax>CacheDirLength <var>length</var></syntax>
+<default>CacheDirLength 2</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>The <directive>CacheDirLength</directive> directive sets the number
+    of characters for each subdirectory name in the cache hierarchy.</p>
+
+    <note>
+      <p>The result of <directive module="mod_disk_cache"
+      >CacheDirLevels</directive>* <directive>CacheDirLength</directive>
+      must not be higher than 20.</p>
+    </note>
+
+    <example>
+      CacheDirLength  4
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheMinFileSize</name>
+<description>The minimum size (in bytes) of a document to be placed in the
+cache</description>
+<syntax>CacheMinFileSize <var>bytes</var></syntax>
+<default>CacheMinFileSize 1</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>The <directive>CacheMinFileSize</directive> directive sets the
+    minimum size, in bytes, for a document to be considered for storage
+    in the cache.</p>
+
+    <example>
+      CacheMinFileSize 64
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheMaxFileSize</name>
+<description>The maximum size (in bytes) of a document to be placed in the
+cache</description>
+<syntax>CacheMaxFileSize <var>bytes</var></syntax>
+<default>CacheMaxFileSize 1000000</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>The <directive>CacheMaxFileSize</directive> directive sets the
+    maximum size, in bytes, for a document to be considered for storage in
+    the cache.</p>
+
+    <example>
+      CacheMaxFileSize 64000
+    </example>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

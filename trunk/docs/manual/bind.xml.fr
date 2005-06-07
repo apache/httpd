@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
+<!-- English Revision: 103425:151408 (outdated) -->
+
+<!--
+ Copyright 2004-2005 The Apache Software Foundation or its licensors,
+                     as applicable.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="bind.xml.meta">
+
+    <title>Liaison</title>
+
+    <summary>
+        <p>Configuration des adresses et ports sur lesquels Apache &#233;coute.</p>
+    </summary>
+
+    <seealso><a href="vhosts/">Serveurs Virtuels</a></seealso>
+    <seealso><a href="dns-caveats.html">Probl&#233;mes DNS</a></seealso>
+
+    <section id="overview">
+        <title>Informations g&#233;n&#233;rales</title>
+
+        <related>
+            <modulelist>
+                <module>core</module>
+                <module>mpm_common</module>
+            </modulelist>
+            <directivelist>
+                <directive module="core" type="section">VirtualHost</directive>
+                <directive module="mpm_common">Listen</directive>
+            </directivelist>
+        </related>
+
+
+        <p>Au moment de son d&#233;marrage, Apache se lie &#224; un port et &#224; une 
+        adresse IP sur la machine locale et se met en attente de requ&#232;tes.
+        Par d&#233;faut, Apache &#233;coute sur toutes les adresses de la machine.
+        Apache accepte d'&#233;couter sur un ou plusieurs ports sp&#233;cifiques, 
+        sur une seule ou plusieurs adresses, ou encore sur une combinaison port-adresse.
+        Il est fr&#233;quent d'utiliser ces possibilit&#233;s avec les fonctionnalit&#233;s
+        de Serveurs Virtuels, qui permettent de faire r&#233;pondre le serveur de
+        mani&#232;re diff&#233;rente en fonction de l'adresse IP, du nom d'h&#244;te ou 
+        du port.</p>
+
+        <p>Le serveur interpr&#232;te la directive 
+        <directive module="mpm_common">Listen</directive>
+        en acceptant les requ&#232;tes seulement sur le port ou la combinaison
+        adresse IP + port pass&#233;e en argument. Dans le cas o&#249; seul un port 
+        est sp&#233;cifi&#233; avec la directive 
+        <directive module="mpm_common">Listen</directive>,
+        le serveur se met &#224; l'&#233;coute sur le port sp&#233;cifi&#233;, sur toutes
+        les interfaces et adresses de la machine. Si une adresse IP est 
+        sp&#233;cifi&#233;e en plus du port, le serveur n'&#233;coute que sur l'adresse 
+        et le port sp&#233;cifi&#233;.  Il est possible de configurer plusieurs adresses
+        et ports avec la directives 
+        <directive module="mpm_common">Listen</directive> 
+        pour &#233;coute par le serveur. Le serveur r&#233;pond aux requ&#232;tes faites 
+        &#224; toutes les adresses et ports &#233;num&#233;r&#233;s.</p>
+      
+
+        <p>Par exemple, pour que le serveur accepte les connexions sur
+        les ports 80 et 8000, sp&#233;cifiez :</p>
+
+        <example>
+            Listen 80<br />
+            Listen 8000
+        </example>
+
+        <p>Pour qu'Apache accepte les connexions sur deux combinaisons
+        adresses + ports, sp&#233;cifiez :</p>
+
+        <example>
+            Listen 192.170.2.1:80<br />
+            Listen 192.170.2.5:8000
+        </example>
+
+        <p>Les adresses IPv6 sont accept&#233;es, pourvu qu'elles soient sp&#233;cifi&#233;es 
+        entre crochets de la fa&#231;on suivante :</p>
+
+        <example>
+            Listen [fe80::a00:20ff:fea7:ccea]:80
+        </example>
+    </section>
+
+    <section id="ipv6">
+        <title>Consid&#233;rations Sp&#233;ciales avec IPv6</title>
+
+        <p>De plus en plus de plate-formes impl&#233;mentent IPv6. APR
+        supporte IPv6 sur la plupart d'entre elles, si bien qu'Apache
+        peut assigner des interfaces de connexions IPv6 et r&#233;pondre aux 
+        requ&#232;tes utilisant IPv6.</p>
+
+        <p>Une complication possible pour les administrateurs Apache est de
+        savoir si une interface de connexion IPv6 peut r&#233;pondre aux deux types de
+        connexions IPv4 et IPv6.
+        Manipuler les connexions IPv4 avec une interface de connexion IPv6
+        suppose l'utilisation d'adresses IPv6 mapp&#233;es en IPv4, ce qui est
+        le cas par defaut sur la plupart des plate-formes, &#224; l'exeption de FreeBSD, 
+        NetBSD, et OpenBSD, cela en raison des politiques syst&#232;mes de ces plate-formes.
+        M&#232;me sur des syst&#232;mes o&#249; cette fonctionnalit&#233; n'est pas activ&#233;e par
+        d&#233;faut, une option de compilation permet de changer ce 
+        fonctionnement pour Apache.</p>
+        <p>Pour qu'Apache puisse g&#233;rer &#224; la fois les connexions IPv4 et IPv6
+        avec un minimum d'interfaces de connexions, il faut permettre l'utilisation
+        des adresses 
+        IPv6 mapp&#233;es en IPv4, ce qui est possible en sp&#233;cifiant l'option
+
+        de compilation <code>--enable-v4-mapped</code> et en utilisant la
+        directive <directive module="mpm_common">Listen</directive> 
+        comme suit:</p>
+    
+        <example>
+            Listen 80
+        </example>
+
+        <p>Si <code>--enable-v4-mapped</code> a &#233;t&#233; sp&#233;cifi&#233; &#224; la compilation,
+        les directives <directive module="mpm_common">Listen</directive> 
+        de la configuration par d&#233;faut sont de la forme ci-dessus. 
+        <code>--enable-v4-mapped</code> est l'option de compilation
+        par d&#233;faut sur toutes les plate-formes, sauf FreeBSD, NetBSD, et 
+        OpenBSD.</p>
+
+
+        <p>Pour qu'Apache ne manipule que les connexions IPv4, en ignorant l'&#233;ventuel
+        support IPv6 de la plate-forme ou d'APR, une adresse IPv4 peut &#234;tre
+        sp&#233;cifi&#233; pour toutes les directives 
+        <directive module="mpm_common">Listen</directive>, 
+        comme dans les exemples suivantss:</p>
+
+        <example>
+            Listen 0.0.0.0:80<br />
+            Listen 192.170.2.1:80
+        </example>
+
+        <p>Pour qu'Apache manipule les connexions IPv4 et IPv6 sur des interfaces
+        diff&#233;rentes (c'est-&#224;-dire, pour ne pas accepter les addresse IPv6 mapp&#233;es
+        en IPv4), sp&#233;cifier l'option de compilation <code>--disable-v4-mapped</code> 
+        et utiliser des directives <directive module="mpm_common">Listen</directive> 
+        sp&#233;cifiques telles que:</p>
+        <example>
+            Listen [::]:80<br />
+            Listen 0.0.0.0:80
+        </example>
+
+        <p>Avec <code>--disable-v4-mapped</code>, la directive 
+        <directive module="mpm_common">Listen</directive> &#224; l'int&#233;rieur
+        du fichier de configuration par d&#233;faut cr&#233;&#233; par Apache utilise la forme 
+        ci-dessus. 
+        <code>--disable-v4-mapped</code> est l'option de compilation par d&#233;faut sous
+        FreeBSD, NetBSD, et OpenBSD.</p>
+    </section>
+
+    <section id="virtualhost">
+        <title>Faire fonctionner tout ceci avec les Serveurs Virtuels</title>
+
+        <p><directive module="mpm_common">Listen</directive> 
+        n'impl&#233;mente aucun Serveur Virtuel. Cette directive sert simplement
+        &#224; informer le serveur principal sur quels addresses et ports &#233;couter.
+        Dans le cas o&#249; aucune section
+        <directive module="core" type="section">VirtualHost</directive>
+        n'est utilis&#233;e, le serveur r&#233;pondra de la m&#232;me mani&#232;re pour toutes
+        les requ&#232;tes qu'il acceptera. Cependant des sections 
+        <directive module="core" type="section">VirtualHost</directive>
+        peuvent &#234;tre utilis&#233;es pour qu'Apache r&#233;agisse de fa&#231;on diff&#233;rente &#224;
+        une requ&#232;te selon l'adresse ou le port. Avant d'impl&#233;menter
+        un Serveur Virtuel au moyen de la directive 
+        <directive module="core" type="section">VirtualHost</directive>, la directive
+        <directive module="mpm_common">Listen</directive> 
+        doit tre utilis&#233;e pour que le serveur &#233;coute sur l'adresse
+        ou le port sp&#233;cifi&#233;. Une section 
+        <directive module="core" type="section">VirtualHost</directive>
+        peut alors &#234;tre utilis&#233;e pour d&#233;finir la r&#233;action du Serveur Virtuel pour une
+        adresse et un port sp&#233;cifique. &#192; noter que si un Serveur Virtuel est 
+        positionn&#233; au moyen de la directive
+        <directive module="core" type="section">VirtualHost</directive>
+        sur une adresse et un port sur lesquels le serveur n'est pas &#224; l'&#233;coute,
+        le Serveur Virtuel ne sera pas accessible.</p>
+    </section>
+</manualpage>
+

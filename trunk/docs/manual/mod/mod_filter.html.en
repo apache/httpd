@@ -1,0 +1,435 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>mod_filter - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.1</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.1</a> &gt; <a href="./">Modules</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache Module mod_filter</h1>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_filter.html" title="English">&nbsp;en&nbsp;</a></p>
+</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Context-sensitive smart filter configuration module</td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>filter_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_filter.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Version 2.1 and higher</td></tr></table>
+<h3>Summary</h3>
+
+    <p>This module enables smart, context-sensitive configuration of
+    output content filters.  For example, apache can be configured to
+    process different content-types through different filters, even
+    when the content-type is not known in advance (e.g. in a proxy).</p>
+
+    <p><code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code> works by introducing indirection into
+    the filter chain.  Instead of inserting filters in the chain, we insert
+    a filter harness which in turn dispatches conditionally
+    to a filter provider.  Any content filter may be used as a provider
+    to <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code>; no change to existing filter modules is
+    required (although it may be possible to simplify them).</p>
+</div>
+<div id="quickview"><h3 class="directives">Directives</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#filterchain">FilterChain</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#filterdeclare">FilterDeclare</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#filterprotocol">FilterProtocol</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#filterprovider">FilterProvider</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#filtertrace">FilterTrace</a></li>
+</ul>
+<h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#smart">Smart Filtering</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#terms">Filter Declarations, Providers and Chains</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#config">Configuring the Chain</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#examples">Examples</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#protocol">Protocol Handling</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="smart" id="smart">Smart Filtering</a></h2>
+    <p>In the traditional filtering model, filters are inserted unconditionally
+    using <code class="directive"><a href="../mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code> and family.
+    Each filter then needs to determine whether to run, and there is little
+    flexibility available for server admins to allow the chain to be
+    configured dynamically.</p>
+
+    <p><code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code> by contrast gives server administrators a
+    great deal of flexibility in configuring the filter chain.  In fact,
+    filters can be inserted based on any Request Header, Response Header
+    or Environment Variable.  This generalises the limited flexibility offered
+    by <code class="directive"><a href="../mod/core.html#addoutputfilterbytype">AddOutputFilterByType</a></code>, and fixes
+    it to work correctly with dynamic content, regardless of the
+    content generator.  The ability to dispatch based on Environment
+    Variables offers the full flexibility of configuration with
+    <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> to anyone who needs it.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="terms" id="terms">Filter Declarations, Providers and Chains</a></h2>
+    <p class="figure">
+    <img src="../images/mod_filter_old.gif" width="160" height="310" alt="[This image displays the traditional filter model]" /><br />
+    <dfn>Figure 1:</dfn> The traditional filter model</p>
+
+    <p>In the traditional model, output filters are a simple chain
+    from the content generator (handler) to the client.  This works well
+    provided the filter chain can be correctly configured, but presents
+    problems when the filters need to be configured dynamically based on
+    the outcome of the handler.</p>
+
+    <p class="figure">
+    <img src="../images/mod_filter_new.gif" width="423" height="331" alt="[This image shows the mod_filter model]" /><br />
+    <dfn>Figure 2:</dfn> The <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code> model</p>
+
+    <p><code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code> works by introducing indirection into
+    the filter chain.  Instead of inserting filters in the chain, we insert
+    a filter harness which in turn dispatches conditionally
+    to a filter provider.  Any content filter may be used as a provider
+    to <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code>; no change to existing filter modules
+    is required (although it may be possible to simplify them).  There can be
+    multiple providers for one filter, but no more than one provider will
+    run for any single request.</p>
+
+    <p>A filter chain comprises any number of instances of the filter
+    harness, each of which may have any number of providers.  A special
+    case is that of a single provider with unconditional dispatch: this
+    is equivalent to inserting the provider filter directly into the chain.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="config" id="config">Configuring the Chain</a></h2>
+    <p>There are three stages to configuring a filter chain with
+    <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code>. For details of the directives, see below.</p>
+
+    <dl>
+    <dt>Declare Filters</dt>
+    <dd>The <code class="directive"><a href="#filterdeclare">FilterDeclare</a></code> directive
+    declares a filter, assigning it a name and filter type.  Required
+    only if the filter is not the default type AP_FTYPE_RESOURCE.</dd>
+
+    <dt>Register Providers</dt>
+    <dd>The <code class="directive"><a href="#filterprovider">FilterProvider</a></code>
+    directive registers a provider with a filter. The filter may have
+    been declared with <code class="directive"><a href="#filterdeclare">FilterDeclare</a></code>; if not, FilterProvider will implicitly
+    declare it with the default type AP_FTYPE_RESOURCE. The provider
+    must have been
+    registered with <code>ap_register_output_filter</code> by some module.
+    The remaining arguments to <code class="directive"><a href="#filterprovider">FilterProvider</a></code> are a dispatch criterion and a match string.
+    The former may be an HTTP request or response header, an environment
+    variable, or the Handler used by this request.  The latter is matched
+    to it for each request, to determine whether this provider will be
+    used to implement the filter for this request.</dd>
+
+    <dt>Configure the Chain</dt>
+    <dd>The above directives build components of a smart filter chain,
+    but do not configure it to run.  The <code class="directive"><a href="#filterchain">FilterChain</a></code> directive builds a filter chain from smart
+    filters declared, offering the flexibility to insert filters at the
+    beginning or end of the chain, remove a filter, or clear the chain.</dd>
+</dl>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="examples" id="examples">Examples</a></h2>
+    <dl>
+    <dt>Server side Includes (SSI)</dt>
+    <dd>A simple case of using <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code> in place of
+    <code class="directive"><a href="../mod/core.html#addoutputfilterbytype">AddOutputFilterByType</a></code>
+    <div class="example"><p><code>
+      FilterDeclare SSI<br />
+      FilterProvider SSI INCLUDES resp=Content-Type $text/html<br />
+      FilterChain SSI
+    </code></p></div>
+    </dd>
+
+    <dt>Server side Includes (SSI)</dt>
+    <dd>The same as the above but dispatching on handler (classic
+    SSI behaviour; .shtml files get processed).
+    <div class="example"><p><code>
+      FilterProvider SSI INCLUDES Handler server-parsed<br />
+      FilterChain SSI
+    </code></p></div>
+    </dd>
+
+    <dt>Emulating mod_gzip with mod_deflate</dt>
+    <dd>Insert INFLATE filter only if "gzip" is NOT in the
+    Accept-Encoding header.  This filter runs with ftype CONTENT_SET.
+    <div class="example"><p><code>
+      FilterDeclare gzip CONTENT_SET<br />
+      FilterProvider gzip inflate req=Accept-Encoding !$gzip<br />
+      FilterChain gzip
+    </code></p></div>
+    </dd>
+
+    <dt>Image Downsampling</dt>
+    <dd>Suppose we want to downsample all web images, and have filters
+    for GIF, JPEG and PNG.
+    <div class="example"><p><code>
+      FilterProvider unpack jpeg_unpack Content-Type $image/jpeg<br />
+      FilterProvider unpack gif_unpack Content-Type $image/gif<br />
+      FilterProvider unpack png_unpack Content-Type $image/png<br />
+      <br />
+      FilterProvider downsample downsample_filter Content-Type $image<br />
+      FilterProtocol downsample "change=yes"<br />
+      <br />
+      FilterProvider repack jpeg_pack Content-Type $image/jpeg<br />
+      FilterProvider repack gif_pack Content-Type $image/gif<br />
+      FilterProvider repack png_pack Content-Type $image/png<br />
+      &lt;Location /image-filter&gt;<br />
+      <span class="indent">
+        FilterChain unpack downsample repack<br />
+      </span>
+      &lt;/Location&gt;
+    </code></p></div>
+    </dd>
+    </dl>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="protocol" id="protocol">Protocol Handling</a></h2>
+    <p>Historically, each filter is responsible for ensuring that whatever
+    changes it makes are correctly represented in the HTTP response headers,
+    and that it does not run when it would make an illegal change.  This
+    imposes a burden on filter authors to re-implement some common
+    functionality in every filter:</p>
+
+    <ul>
+    <li>Many filters will change the content, invalidating existing content
+    tags, checksums, hashes, and lengths.</li>
+
+    <li>Filters that require an entire, unbroken response in input need to
+    ensure they don't get byteranges from a backend.</li>
+
+    <li>Filters that transform output in a filter need to ensure they don't
+    violate a <code>Cache-Control: no-transform</code> header from the
+    backend.</li>
+
+    <li>Filters may make responses uncacheable.</li>
+    </ul>
+
+    <p><code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code> aims to offer generic handling of these
+    details of filter implementation, reducing the complexity required of
+    content filter modules. This is work-in-progress; the
+    <code class="directive"><a href="#filterprotocol">FilterProtocol</a></code> implements
+    some of this functionality, but there are no API calls yet.</p>
+
+    <p>At the same time, <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code> should not interfere
+    with a filter that wants to handle all aspects of the protocol.  By
+    default (i.e. in the absence of any <code class="directive"><a href="#filterprotocol">FilterProtocol</a></code> directives), <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code>
+    will leave the headers untouched.</p>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="FilterChain" id="FilterChain">FilterChain</a> <a name="filterchain" id="filterchain">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure the filter chain</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>FilterChain [+=-@!]<var>filter-name</var> <var>...</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Options</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_filter</td></tr>
+</table>
+    <p>This configures an actual filter chain, from declared filters.
+    <code class="directive">FilterChain</code> takes any number of arguments,
+    each optionally preceded with a single-character control that
+    determines what to do:</p>
+
+    <dl>
+    <dt><code>+<var>filter-name</var></code></dt>
+    <dd>Add <var>filter-name</var> to the end of the filter chain</dd>
+
+    <dt><code>@<var>filter-name</var></code></dt>
+    <dd>Insert <var>filter-name</var> at the start of the filter chain</dd>
+
+    <dt><code>-<var>filter-name</var></code></dt>
+    <dd>Remove <var>filter-name</var> from the filter chain</dd>
+
+    <dt><code>=<var>filter-name</var></code></dt>
+    <dd>Empty the filter chain and insert <var>filter-name</var></dd>
+
+    <dt><code>!</code></dt>
+    <dd>Empty the filter chain</dd>
+
+    <dt><code><var>filter-name</var></code></dt>
+    <dd>Equivalent to <code>+<var>filter-name</var></code></dd>
+    </dl>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="FilterDeclare" id="FilterDeclare">FilterDeclare</a> <a name="filterdeclare" id="filterdeclare">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Declare a smart filter</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>FilterDeclare <var>filter-name</var> <var>[type]</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Options</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_filter</td></tr>
+</table>
+    <p>This directive declares an output filter together with a
+    header or environment variable that will determine runtime
+    configuration.  The first argument is a <var>filter-name</var>
+    for use in <code class="directive"><a href="#filterprovider">FilterProvider</a></code>,
+    <code class="directive"><a href="#filterchain">FilterChain</a></code> and
+    <code class="directive"><a href="#filterprotocol">FilterProtocol</a></code> directives.</p>
+
+    <p>The final (optional) argument
+    is the type of filter, and takes values of <code>ap_filter_type</code>
+    - namely <code>RESOURCE</code> (the default), <code>CONTENT_SET</code>,
+    <code>PROTOCOL</code>, <code>TRANSCODE</code>, <code>CONNECTION</code>
+    or <code>NETWORK</code>.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="FilterProtocol" id="FilterProtocol">FilterProtocol</a> <a name="filterprotocol" id="filterprotocol">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Deal with correct HTTP protocol handling</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>FilterProtocol <var>filter-name</var> [<var>provider-name</var>]
+    <var>proto-flags</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Options</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_filter</td></tr>
+</table>
+    <p>This directs <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code> to deal with ensuring the
+    filter doesn't run when it shouldn't, and that the HTTP response
+    headers are correctly set taking into account the effects of the
+    filter.</p>
+
+    <p>There are two forms of this directive.  With three arguments, it
+    applies specifically to a <var>filter-name</var> and a
+    <var>provider-name</var> for that filter.
+    With two arguments it applies to a <var>filter-name</var> whenever the
+    filter runs <em>any</em> provider.</p>
+
+    <p><var>proto-flags</var> is one or more of</p>
+
+    <dl>
+    <dt><code>change=yes</code></dt>
+    <dd>The filter changes the content, including possibly the content
+    length</dd>
+
+    <dt><code>change=1:1</code></dt>
+    <dd>The filter changes the content, but will not change the content
+    length</dd>
+
+    <dt><code>byteranges=no</code></dt>
+    <dd>The filter cannot work on byteranges and requires complete input</dd>
+
+    <dt><code>proxy=no</code></dt>
+    <dd>The filter should not run in a proxy context</dd>
+
+    <dt><code>proxy=transform</code></dt>
+    <dd>The filter transforms the response in a manner incompatible with
+    the HTTP <code>Cache-Control: no-transform</code> header.</dd>
+
+    <dt><code>cache=no</code></dt>
+    <dd>The filter renders the output uncacheable (eg by introducing randomised
+    content changes)</dd>
+    </dl>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="FilterProvider" id="FilterProvider">FilterProvider</a> <a name="filterprovider" id="filterprovider">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Register a content filter</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>FilterProvider <var>filter-name</var> <var>provider-name</var>
+ [req|resp|env]=<var>dispatch</var> <var>match</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Options</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_filter</td></tr>
+</table>
+    <p>This directive registers a <em>provider</em> for the smart filter.
+    The provider will be called if and only if the <var>match</var> declared
+    here matches the value of the header or environment variable declared
+    as <var>dispatch</var>.</p>
+
+    <p>
+    <var>provider-name</var> must have been registered by loading
+    a module that registers the name with
+    <code>ap_register_output_filter</code>.
+
+    </p>
+
+    <p>The <var>dispatch</var> argument is a string with optional
+    <code>req=</code>, <code>resp=</code> or <code>env=</code> prefix
+    causing it to dispatch on (respectively) the request header, response
+    header, or environment variable named.  In the absence of a
+    prefix, it defaults to a response header.  A special case is the
+    word <code>handler</code>, which causes <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code>
+    to dispatch on the content handler.</p>
+
+    <p>The <var>match</var> argument specifies a match that will be applied to
+    the filter's <var>dispatch</var> criterion.  The <var>match</var> may be
+    a string match (exact match or substring), a regexp, an integer (greater,
+    lessthan or equals), or unconditional.  The first characters of the
+    <var>match</var> argument determines this:</p>
+
+    <p><strong>First</strong>, if the first character is an exclamation mark
+    (<code>!</code>), this reverses the rule, so the provider will be used
+    if and only if the match <em>fails</em>.</p>
+
+    <p><strong>Second</strong>, it interprets the first character excluding
+    any leading <code>!</code> as follows:</p>
+
+    <table class="bordered"><tr class="header"><th>Character</th><th>Description</th></tr>
+<tr><td><em>(none)</em></td><td>exact match</td></tr>
+<tr class="odd"><td><code>$</code></td><td>substring match</td></tr>
+<tr><td><code>/</code></td><td>regexp match (delimited by a second <code>/</code>)</td></tr>
+<tr class="odd"><td><code>=</code></td><td>integer equality</td></tr>
+<tr><td><code>&lt;</code></td><td>integer less-than</td></tr>
+<tr class="odd"><td><code>&lt;=</code></td><td>integer less-than or equal</td></tr>
+<tr><td><code>&gt;</code></td><td>integer greater-than</td></tr>
+<tr class="odd"><td><code>&gt;=</code></td><td>integer greater-than or equal</td></tr>
+<tr><td><code>*</code></td><td>Unconditional match</td></tr>
+</table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="FilterTrace" id="FilterTrace">FilterTrace</a> <a name="filtertrace" id="filtertrace">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Get debug/diagnostic information from
+    <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>FilterTrace <var>filter-name</var> <var>level</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_filter</td></tr>
+</table>
+    <p>This directive generates debug information from
+    <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code>.
+    It is designed to help test and debug providers (filter modules), although
+    it may also help with <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code> itself.</p>
+
+    <p>The debug output depends on the <var>level</var> set:</p>
+    <dl>
+    <dt><code>0</code> (default)</dt>
+    <dd>No debug information is generated.</dd>
+
+    <dt><code>1</code></dt>
+    <dd><code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code> will record buckets and brigades
+    passing through the filter to the error log, before the provider has
+    processed them. This is similar to the information generated by
+    <a href="http://apache.webthing.com/mod_diagnostics/">mod_diagnostics</a>.
+    </dd>
+
+    <dt><code>2</code> (not yet implemented)</dt>
+    <dd>Will dump the full data passing through to a tempfile before the
+    provider. <strong>For single-user debug only</strong>; this will not
+    support concurrent hits.</dd>
+    </dl>
+
+</div>
+</div>
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_filter.html" title="English">&nbsp;en&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 1995-2005 The Apache Software Foundation or its licensors, as applicable.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>

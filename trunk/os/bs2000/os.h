@@ -1,0 +1,34 @@
+/* Copyright 1999-2005 The Apache Software Foundation or its licensors, as
+ * applicable.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+#ifndef APACHE_OS_BS2000_H
+#define APACHE_OS_BS2000_H
+
+#define PLATFORM "BS2000"
+
+#include "../unix/os.h"
+
+/*
+ * This file in included in all Apache source code. It contains definitions
+ * of facilities available on _this_ operating system (HAVE_* macros),
+ * and prototypes of OS specific functions defined in os.c or os-inline.c
+ */
+
+/* Other ap_os_ routines not used by this platform */
+
+extern pid_t os_fork(const char *user);
+
+#endif /* APACHE_OS_BS2000_H */

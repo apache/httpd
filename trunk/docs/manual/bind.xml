@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
+<!-- $LastChangedRevision$ -->
+
+<!--
+ Copyright 2002-2005 The Apache Software Foundation or its licensors, as
+ applicable.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="bind.xml.meta">
+
+  <title>Binding</title>
+
+  <summary>
+    <p>Configuring Apache to listen on specific addresses and ports.</p>
+  </summary>
+
+  <seealso><a href="vhosts/">Virtual Hosts</a></seealso>
+  <seealso><a href="dns-caveats.html">DNS Issues</a></seealso>
+
+  <section id="overview">
+    <title>Overview</title>
+
+    <related>
+      <modulelist>
+        <module>core</module>
+        <module>mpm_common</module>
+      </modulelist>
+      <directivelist>
+        <directive module="core" type="section">VirtualHost</directive>
+        <directive module="mpm_common">Listen</directive>
+      </directivelist>
+    </related>
+
+
+    <p>When Apache starts, it binds to some port and address on
+    the local machine and waits for incoming requests. By default,
+    it listens to all addresses on the machine.  However, it needs to
+    be told to listen on specific ports, or to listen on only selected 
+    addresses, or a combination. This is often combined with the 
+    Virtual Host feature which determines how Apache responds to 
+    different IP addresses, hostnames and ports.</p>
+
+    <p>The <directive module="mpm_common">Listen</directive>
+    directive tells the server to accept
+    incoming requests only on the specified port or
+    address-and-port combinations. If only a port number is
+    specified in the <directive module="mpm_common">Listen</directive>
+    directive, the server
+    listens to the given port on all interfaces. If an IP address
+    is given as well as a port, the server will listen on the given
+    port and interface. Multiple <directive 
+    module="mpm_common">Listen</directive> directives may be used to
+    specify a number of addresses and ports to listen on. The
+    server will respond to requests from any of the listed
+    addresses and ports.</p>
+
+    <p>For example, to make the server accept connections on both
+    port 80 and port 8000, use:</p>
+
+    <example>
+      Listen 80<br />
+      Listen 8000
+    </example>
+
+    <p>To make the server accept connections on two specified
+    interfaces and port numbers, use</p>
+
+    <example>
+      Listen 192.170.2.1:80<br />
+      Listen 192.170.2.5:8000
+    </example>
+
+    <p>IPv6 addresses must be surrounded in square brackets, as in the
+    following example:</p>
+
+    <example>
+      Listen [fe80::a00:20ff:fea7:ccea]:80
+    </example>
+  </section>
+
+  <section id="ipv6">
+    <title>Special IPv6 Considerations</title>
+
+    <p>A growing number of platforms implement IPv6, and APR supports 
+    IPv6 on most of these platforms, allowing Apache to allocate IPv6 
+    sockets and handle requests which were sent over IPv6.</p>
+
+    <p>One complicating factor for Apache administrators is whether or
+    not an IPv6 socket can handle both IPv4 connections and IPv6 
+    connections.  Handling IPv4 connections with an IPv6 socket uses 
+    IPv4-mapped IPv6 addresses, which are allowed by default on most 
+    platforms but are disallowed by default on FreeBSD, NetBSD, and 
+    OpenBSD in order to match the system-wide policy on those
+    platforms.  But even on systems where it is disallowed by default, a 
+    special <program>configure</program> parameter can change this behavior
+    for Apache.</p>
+
+    <p>On the other hand, on some platforms such as Linux and Tru64 the 
+    <strong>only</strong> way to handle both IPv6 and IPv4 is to use 
+    mapped addresses. If you want Apache to handle IPv4 and IPv6 connections 
+    with a minimum of sockets, which requires using IPv4-mapped IPv6 
+    addresses, specify the <code>--enable-v4-mapped</code> <program>
+    configure</program> option.</p>
+
+    <p><code>--enable-v4-mapped</code> is the default on all platforms but 
+    FreeBSD, NetBSD, and OpenBSD, so this is probably how your Apache was 
+    built.</p>
+
+    <p>If you want Apache to handle IPv4 connections only, regardless of 
+    what your platform and APR will support, specify an IPv4 address on all 
+    <directive module="mpm_common">Listen</directive> directives, as in the
+    following examples:</p>
+
+    <example>
+      Listen 0.0.0.0:80<br />
+      Listen 192.170.2.1:80
+    </example>
+
+    <p>If your platform supports it and you want Apache to handle IPv4 and 
+    IPv6  connections on separate sockets (i.e., to disable IPv4-mapped 
+    addresses), specify the <code>--disable-v4-mapped</code> <program>
+    configure</program> option. <code>--disable-v4-mapped</code> is the
+    default on FreeBSD, NetBSD, and OpenBSD.</p>
+  </section>
+
+  <section id="virtualhost">
+    <title>How This Works With Virtual Hosts</title>
+
+    <p> <directive
+    module="mpm_common">Listen</directive> does not implement 
+    Virtual Hosts. It only tells the
+    main server what addresses and ports to listen to. If no
+    <directive module="core" type="section">VirtualHost</directive>
+    directives are used, the server will behave
+    the same for all accepted requests. However,
+    <directive module="core" type="section">VirtualHost</directive>
+    can be used to specify a different behavior
+    for one or more of the addresses and ports. To implement a
+    VirtualHost, the server must first be told to listen to the
+    address and port to be used. Then a
+    <directive module="core" type="section">VirtualHost</directive> section
+    should be created for a specified address and port to set the
+    behavior of this virtual host. Note that if the
+    <directive module="core" type="section">VirtualHost</directive>
+    is set for an address and port that the
+    server is not listening to, it cannot be accessed.</p>
+  </section>
+</manualpage>
+

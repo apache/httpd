@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<metafile>
+  <basename>upgrading</basename>
+  <path>/</path>
+  <relpath>.</relpath>
+
+  <variants>
+    <variant>de</variant>
+    <variant>en</variant>
+    <variant htmlonly="yes">fr</variant>
+    <variant outdated="yes">ja</variant>
+    <variant outdated="yes">ko</variant>
+    <variant outdated="yes">pt-br</variant>
+    <variant outdated="yes">ru</variant>
+  </variants>
+</metafile>

@@ -1,0 +1,5 @@
+
+LTLIBRARY_NAME    = libevent.la
+LTLIBRARY_SOURCES = event.c fdqueue.c pod.c
+
+include $(top_srcdir)/build/ltlib.mk
