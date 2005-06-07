@@ -59,6 +59,21 @@
 #include <unistd.h>
 #endif
 
+APR_HOOK_STRUCT(
+#if AP_ENABLE_EXCEPTION_HOOK
+    APR_HOOK_LINK(fatal_exception)
+#endif
+    APR_HOOK_LINK(monitor)
+)
+
+#if AP_ENABLE_EXCEPTION_HOOK
+AP_IMPLEMENT_HOOK_RUN_ALL(int, fatal_exception,
+                          (ap_exception_info_t *ei), (ei), OK, DECLINED)
+#endif
+AP_IMPLEMENT_HOOK_RUN_ALL(int, monitor,
+                          (apr_pool_t *p), (p), OK, DECLINED)
+
+
 #ifdef AP_MPM_WANT_RECLAIM_CHILD_PROCESSES
 
 typedef enum {DO_NOTHING, SEND_SIGTERM, SEND_SIGKILL, GIVEUP} action_t;
@@ -275,6 +290,7 @@ void ap_wait_or_timeout(apr_exit_why_e *status, int *exitcode, apr_proc_t *ret,
     ++wait_or_timeout_counter;
     if (wait_or_timeout_counter == INTERVAL_OF_WRITABLE_PROBES) {
         wait_or_timeout_counter = 0;
+        ap_run_monitor(p);
     }
 
     rv = apr_proc_wait_all_procs(ret, exitcode, status, APR_NOWAIT, p);
@@ -1027,13 +1043,6 @@ const char *ap_mpm_set_exception_hook(cmd_parms *cmd, void *dummy,
 
     return NULL;
 }
-
-APR_HOOK_STRUCT(
-    APR_HOOK_LINK(fatal_exception)
-)
-
-AP_IMPLEMENT_HOOK_RUN_ALL(int, fatal_exception,
-                          (ap_exception_info_t *ei), (ei), OK, DECLINED)
 
 static void run_fatal_exception_hook(int sig)
 {

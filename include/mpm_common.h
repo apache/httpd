@@ -296,6 +296,8 @@ extern const char *ap_mpm_set_exception_hook(cmd_parms *cmd, void *dummy,
                                              const char *arg);
 #endif
 
+AP_DECLARE_HOOK(int,monitor,(apr_pool_t *p))
+
 #ifdef __cplusplus
 }
 #endif
