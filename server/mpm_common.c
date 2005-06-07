@@ -59,16 +59,17 @@
 #include <unistd.h>
 #endif
 
-APR_HOOK_STRUCT(
 #if AP_ENABLE_EXCEPTION_HOOK
+APR_HOOK_STRUCT(
     APR_HOOK_LINK(fatal_exception)
-#endif
     APR_HOOK_LINK(monitor)
 )
-
-#if AP_ENABLE_EXCEPTION_HOOK
 AP_IMPLEMENT_HOOK_RUN_ALL(int, fatal_exception,
                           (ap_exception_info_t *ei), (ei), OK, DECLINED)
+#else
+APR_HOOK_STRUCT(
+    APR_HOOK_LINK(monitor)
+)
 #endif
 AP_IMPLEMENT_HOOK_RUN_ALL(int, monitor,
                           (apr_pool_t *p), (p), OK, DECLINED)
