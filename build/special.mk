@@ -1,4 +1,4 @@
-# Copyright 2000-2004 The Apache Software Foundation
+# Copyright 2000-2005 The Apache Software Foundation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,20 +18,18 @@
 all: all-recursive
 
 include $(builddir)/modules.mk
+
 TARGETS = $(static)
 SHARED_TARGETS = $(shared)
-INSTALL_TARGETS = install-modules
-
-install-modules:
-	@test -d $(DESTDIR)$(libexecdir) || $(MKINSTALLDIRS) $(DESTDIR)$(libexecdir)
-	@builtin='$(BUILTIN_LIBS)'; \
-	has_mod_so=`echo $$builtin|sed 's/^.*libmod_so.*$$/has_mod_so/'`; \
-	if [ "x$$has_mod_so" = "xhas_mod_so" ]; then \
-		list='$(shared)'; \
-		for i in $$list; do \
-			$(top_srcdir)/build/instdso.sh SH_LIBTOOL='$(SH_LIBTOOL)' $$i $(DESTDIR)$(libexecdir); \
-		done; \
-	fi	
+INSTALL_TARGETS = install-modules-$(INSTALL_DSO)
 
 include $(top_builddir)/build/rules.mk
+
+install-modules-yes:
+	@$(MKINSTALLDIRS) $(DESTDIR)$(libexecdir)
+	@list='$(shared)'; for i in $$list; do \
+	  $(top_srcdir)/build/instdso.sh SH_LIBTOOL='$(SH_LIBTOOL)' $$i $(DESTDIR)$(libexecdir); \
+	done
+
+install-modules-no:
 
