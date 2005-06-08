@@ -43,7 +43,11 @@ fi
 
 if test "x$enable_so" = "xstatic"; then
     APR_ADDTO(HTTPD_LDFLAGS, [-export-dynamic])
+    INSTALL_DSO=yes
+else
+    INSTALL_DSO=no
 fi
+APACHE_SUBST(INSTALL_DSO)
 
 if test "$sharedobjs" = "yes"; then
     if test $ac_cv_define_APR_HAS_DSO = "no"; then
