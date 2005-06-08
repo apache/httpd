@@ -678,7 +678,15 @@ static apr_status_t cgi_bucket_read(apr_bucket *b, const char **str,
 
         rv = apr_pollset_poll(data->pollset, timeout, &num, &results);
         if (APR_STATUS_IS_TIMEUP(rv)) {
-            return timeout == 0 ? APR_EAGAIN : rv;
+            if (timeout) {
+                ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, data->r,
+                              "Timeout waiting for output from CGI script %s",
+                              data->r->filename);
+                return rv;
+            }
+            else {
+                return APR_EAGAIN;
+            }
         }
         else if (APR_STATUS_IS_EINTR(rv)) {
             continue;
