@@ -268,11 +268,6 @@ PATCHES TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewcvs?rev=179622&view=rev
         +1: trawick
 
-     *) mod_ssl: Fix off-by-one, CVE CAN-2005-1268.
-        PR: 35081
-        http://svn.apache.org/viewcvs?rev=179781&view=rev
-        +1: jorton, trawick, pquerna
-
      *) mod_cache: Fix handling of 'Vary: *". PR 16125.
         Trunk: r180341
         2.0.x Patch: http://issues.apache.org/bugzilla/attachment.cgi?id=15297

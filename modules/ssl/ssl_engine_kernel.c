@@ -1398,7 +1398,7 @@ int ssl_callback_SSLVerify_CRL(int ok, X509_STORE_CTX *ctx, conn_rec *c)
             BIO_printf(bio, ", nextUpdate: ");
             ASN1_UTCTIME_print(bio, X509_CRL_get_nextUpdate(crl));
 
-            n = BIO_read(bio, buff, sizeof(buff));
+            n = BIO_read(bio, buff, sizeof(buff) - 1);
             buff[n] = '\0';
 
             BIO_free(bio);

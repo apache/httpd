@@ -1,5 +1,10 @@
 Changes with Apache 2.0.55
 
+  *) SECURITY: CAN-2005-1268 (cve.mitre.org)
+     mod_ssl: Fix off-by-one overflow whilst printing CRL information
+     at "LogLevel debug" which could be triggered if configured 
+     to use a "malicious" CRL.  PR 35081.  [Marc Stern <mstern csc.com>]
+
   *) mod_userdir: Fix possible memory corruption issue.  PR 34588.
      [David Leonard <dleonard vintela.com>]
 
