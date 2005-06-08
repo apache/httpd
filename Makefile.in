@@ -29,18 +29,10 @@ include $(top_builddir)/build/rules.mk
 include $(top_srcdir)/build/program.mk
 
 install-conf:
-	@echo Installing configuration files ; \
-	if [ ! -d $(DESTDIR)$(sysconfdir) ]; then \
-	    $(MKINSTALLDIRS) $(DESTDIR)$(sysconfdir) ; \
-	fi ; \
-	if [ ! -d $(DESTDIR)$(sysconfdir)/extra ]; then \
-	    $(MKINSTALLDIRS) $(DESTDIR)$(sysconfdir)/extra ; \
-	fi ; \
-	if [ ! -d $(DESTDIR)$(sysconfdir)/original ]; then \
-	    $(MKINSTALLDIRS) $(DESTDIR)$(sysconfdir)/original ; \
-	    $(MKINSTALLDIRS) $(DESTDIR)$(sysconfdir)/original/extra ; \
-	fi ; \
-	cd $(top_srcdir)/docs/conf; \
+	@echo Installing configuration files
+	@$(MKINSTALLDIRS) $(DESTDIR)$(sysconfdir) $(DESTDIR)$(sysconfdir)/extra
+	@$(MKINSTALLDIRS) $(DESTDIR)$(sysconfdir)/original/extra
+	@cd $(top_srcdir)/docs/conf; \
 	for i in mime.types magic; do \
 	    if test ! -f $(DESTDIR)$(sysconfdir)/$$i; then \
 	        $(INSTALL_DATA) $$i $(DESTDIR)$(sysconfdir); \
@@ -95,13 +87,13 @@ install-conf:
 
 install-build:
 	@echo Installing build system files 
-	@test -d $(DESTDIR)$(installbuilddir) || $(MKINSTALLDIRS) $(DESTDIR)$(installbuilddir) 
-	@cp $(top_srcdir)/build/*.mk $(DESTDIR)$(installbuilddir); \
-	cp build/*.mk $(DESTDIR)$(installbuilddir); \
-	sed "/^LIBTOOL/s#/[^ ]*/libtool \(.*\)#`$(APR_CONFIG) --apr-libtool` $(LTFLAGS)#" \
-	    build/config_vars.mk > $(DESTDIR)$(installbuilddir)/config_vars.mk; \
-	cp $(top_srcdir)/build/instdso.sh $(DESTDIR)$(installbuilddir); \
-	cp $(top_builddir)/config.nice $(DESTDIR)$(installbuilddir);
+	@$(MKINSTALLDIRS) $(DESTDIR)$(installbuilddir) 
+	@for f in $(top_srcdir)/build/*.mk build/*.mk \
+		  $(top_srcdir)/build/instdso.sh $(top_builddir)/config.nice; do \
+	 $(INSTALL_DATA) $$f $(DESTDIR)$(installbuilddir); \
+	done
+	@sed "/^LIBTOOL/s#/[^ ]*/libtool \(.*\)#`$(APR_CONFIG) --apr-libtool` $(LTFLAGS)#" \
+	    build/config_vars.mk > $(DESTDIR)$(installbuilddir)/config_vars.mk
 
 htdocs-srcdir = $(top_srcdir)/docs/docroot
 
@@ -166,27 +158,28 @@ install-other:
 		cp -p $$file $(DESTDIR)$(bindir); \
 	fi;
 
+INSTALL_HEADERS = \
+	include/*.h \
+	$(srcdir)/include/*.h \
+	$(srcdir)/os/$(OS_DIR)/os.h \
+	$(srcdir)/server/mpm/$(MPM_SUBDIR_NAME)/*.h \
+	$(srcdir)/modules/aaa/mod_auth.h \
+	$(srcdir)/modules/dav/main/mod_dav.h \
+	$(srcdir)/modules/filters/mod_include.h \
+	$(srcdir)/modules/generators/mod_cgi.h \
+	$(srcdir)/modules/generators/mod_status.h \
+	$(srcdir)/modules/loggers/mod_log_config.h \
+	$(srcdir)/modules/http/mod_core.h \
+	$(srcdir)/modules/proxy/mod_proxy.h \
+	$(srcdir)/modules/ssl/mod_ssl.h \
+	$(srcdir)/os/$(OS_DIR)/*.h
+
 install-include:
 	@echo Installing header files
-	@test -d $(DESTDIR)$(includedir) || $(MKINSTALLDIRS) $(DESTDIR)$(includedir)
-	@cp -p include/*.h $(DESTDIR)$(includedir)
-	@cp -p $(srcdir)/include/*.h $(DESTDIR)$(includedir)
-	@cp -p $(srcdir)/os/$(OS_DIR)/os.h $(DESTDIR)$(includedir)
-	@if test -f $(srcdir)/os/$(OS_DIR)/os-inline.c; then \
-            cp -p $(srcdir)/os/$(OS_DIR)/os-inline.c $(DESTDIR)$(includedir); \
-        fi;
-	@cp -p $(srcdir)/server/mpm/$(MPM_SUBDIR_NAME)/*.h $(DESTDIR)$(includedir)
-	@cp -p $(srcdir)/modules/aaa/mod_auth.h $(DESTDIR)$(includedir)
-	@cp -p $(srcdir)/modules/dav/main/mod_dav.h $(DESTDIR)$(includedir)
-	@cp -p $(srcdir)/modules/filters/mod_include.h $(DESTDIR)$(includedir)
-	@cp -p $(srcdir)/modules/generators/mod_cgi.h $(DESTDIR)$(includedir)
-	@cp -p $(srcdir)/modules/generators/mod_status.h $(DESTDIR)$(includedir)
-	@cp -p $(srcdir)/modules/loggers/mod_log_config.h $(DESTDIR)$(includedir)
-	@cp -p $(srcdir)/modules/http/mod_core.h $(DESTDIR)$(includedir)
-	@cp -p $(srcdir)/modules/proxy/mod_proxy.h $(DESTDIR)$(includedir)
-	@cp -p $(srcdir)/modules/ssl/mod_ssl.h $(DESTDIR)$(includedir)
-	@cp -p $(srcdir)/os/$(OS_DIR)/*.h $(DESTDIR)$(includedir)
-	@chmod 644 $(DESTDIR)$(includedir)/*.h
+	@$(MKINSTALLDIRS) $(DESTDIR)$(includedir)
+	@for hdr in $(INSTALL_HEADERS); do \
+	  $(INSTALL_DATA) $$hdr $(DESTDIR)$(includedir); \
+	done
 
 install-man:
 	@echo Installing man pages and online manual
