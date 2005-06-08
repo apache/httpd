@@ -8,11 +8,6 @@ Changes with Apache 2.1.5
   *) mod_cache: Rename 'generate_name' to 'ap_cache_generate_name'. 
      [Paul Querna]
 
-  *) SECURITY: CAN-2005-1268 (cve.mitre.org)
-     mod_ssl: Fix possible crash on printing CRL details when
-     debugging is enabled, if configured to use a CRL from
-     a malicious source.  PR 35081.  [Marc Stern <mstern csc.com>]
-
   *) proxy FTP: Fix confusion about globbing characters which could lead
      to getting a directory listing when a file was requested.  PR 34512.
      [Sean <infamous41md hotmail.com>]
@@ -64,9 +59,6 @@ Changes with Apache 2.1.5
   *) Add AP_INIT_TAKE_ARGV for configuration commands. (minor MMN bump) 
      [Paul Querna]
 
-  *) worker and event mpms: don't take down the whole server for a transient
-     thread creation failure.  PR 34514 [Greg Ames]
-
   *) ap_get_local_host() rewritten for APR. [Jim Jagielski]
 
   *) Add the ap_vhost_iterate_given_conn function to expose the information
@@ -82,11 +74,6 @@ Changes with Apache 2.1.5
   *) mod_deflate: Merge the Vary header, isntead of Setting it. Fixes
      applications that send the Vary Header themselves, and also apply 
      mod_defalte as an output filter. [Paul Querna]
-
-  *) mod_rewrite: use buffered I/O for RewriteMap txt: files.  This
-     can result in a major performance improvement when the files are
-     large.
-     [Greg Ames]
 
   *) Change the default (when not present in the config file) setting
      for UseCanonicalName to Off.
@@ -722,7 +709,21 @@ Changes with Apache 2.1.1
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.55
+
+  *) SECURITY: CAN-2005-1268 (cve.mitre.org)
+     mod_ssl: Fix off-by-one overflow whilst printing CRL information
+     at "LogLevel debug" which could be triggered if configured 
+     to use a "malicious" CRL.  PR 35081.  [Marc Stern <mstern csc.com>]
+
+  *) mod_userdir: Fix possible memory corruption issue.  PR 34588.
+     [David Leonard <dleonard vintela.com>]
+
+  *) worker MPM: don't take down the whole server for a transient
+     thread creation failure.  PR 34514.  [Greg Ames]
   
+  *) mod_rewrite: use buffered I/O to improve performance with large
+     RewriteMap txt: files.  [Greg Ames]
+
   *) proxy HTTP: Rework the handling of request bodies to handle
      chunked input and input filters which modify content length, and
      avoid spooling arbitrary-sized request bodies in memory.
