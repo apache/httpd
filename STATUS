@@ -235,12 +235,6 @@ PATCHES TO BACKPORT FROM TRUNK:
         PR: 34452
         +1: jorton
 
-     *) mod_userdir: fix to palloc(sizeof struct) not palloc(sizeof pointer)
-        http://svn.apache.org/viewcvs?rev=165151&view=rev
-        PR: 34588
-        +1: jorton, bnicholes, trawick (isn't it worth a CHANGES entry for a storage
-            corruption fix?)
-
      *) fix z/OS annoyance with pathname on debug messages in error log
         http://svn.apache.org/viewcvs?rev=178299&view=rev
         +1: trawick
@@ -267,7 +261,7 @@ PATCHES TO BACKPORT FROM TRUNK:
         to getting a directory listing when a file was requested.  PR 34512.
         2.1 patch was http://svn.apache.org/viewcvs?rev=179704&view=rev
         2.0 version: http://people.apache.org/~trawick/179704-20.txt
-        +1: trawick
+        +1: trawick, jorton
 
      *) mod_mime_magic: Handle CRLF-format magic files so that it works with
         the default installation on Windows. 

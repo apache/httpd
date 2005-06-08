@@ -1,5 +1,8 @@
 Changes with Apache 2.0.55
-  
+
+  *) mod_userdir: Fix possible memory corruption issue.  PR 34588.
+     [David Leonard <dleonard vintela.com>]
+
   *) worker mpm: don't take down the whole server for a transient
      thread creation failure. PR 34514 [Greg Ames]
   
