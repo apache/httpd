@@ -341,8 +341,8 @@ if test "x$ap_ssltk_configured" = "x"; then
     if test "x$withval" != "xyes" -a "x$withval" != "x"; then
       dnl This ensures $withval is actually a directory and that it is absolute
       ap_ssltk_base="`cd $withval && pwd`"
-      if test "x$ap_ssltk_base" == "x"; then
-	exit
+      if test "x$ap_ssltk_base" = "x"; then
+        AC_MSG_ERROR([...$withval does not exist])
       fi
     fi
     ap_ssltk_type="sslc"
@@ -352,8 +352,8 @@ if test "x$ap_ssltk_configured" = "x"; then
     if test "x$withval" != "xyes" -a "x$withval" != "x"; then
       dnl This ensures $withval is actually a directory and that it is absolute
       ap_ssltk_base="`cd $withval && pwd`"
-      if test "x$ap_ssltk_base" == "x"; then
-	exit
+      if test "x$ap_ssltk_base" = "x"; then
+        AC_MSG_ERROR([...$withval does not exist])
       fi
     fi
   ])
@@ -441,7 +441,7 @@ if test "x$ap_ssltk_configured" = "x"; then
     else
       ap_ssltk_lib="$ap_ssltk_base"
     fi
-    LDFLAGS="$LDFLAGS -L$ap_ssltk_lib"
+    LDFLAGS="-L$ap_ssltk_lib $LDFLAGS"
   fi
   dnl make sure "other" flags are available so libcrypto and libssl can link
   LIBS="$LIBS `$apr_config --libs`"
@@ -477,7 +477,7 @@ if test "x$ap_ssltk_configured" = "x"; then
   fi
   dnl (c) hook up linker paths
   if test "x$ap_ssltk_lib" != "x"; then
-    APR_ADDTO(LDFLAGS, ["-L$ap_ssltk_lib"])
+    APR_SETVAR(LDFLAGS, [-L$ap_ssltk_lib $LDFLAGS])
     if test "x$ap_platform_runtime_link_flag" != "x"; then
       APR_ADDTO(LDFLAGS, ["$ap_platform_runtime_link_flag$ap_ssltk_lib"])
     fi
