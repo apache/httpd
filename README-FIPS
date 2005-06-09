@@ -1,0 +1,24 @@
+SANDBOX httpd/branches/fips-dev explained:
+
+This sandbox is for development around the FIPS 140-2 standard as implemented
+by Ben Laurie and team of OpenSSL with the 0.9.7 verisons.  The effort for
+OpenSSL FIPS certification is coordinated by the Open Source Software
+Institute.  OpenSSL 0.9.7 is in the process of certification testing.  See:
+
+  http://oss-institute.org/index.php?option=content&task=view&id=109
+
+The crypto layer, itself, is the object of certification.  In this case,
+that is encompased in libcrypto.so.  But libcrypto.so needs to be told to
+enforce FIPS 140 policy, and mod_ssl needs to be adjusted to the FIPS 140
+subset of permitted cryptography.
+
+This effort is initially coordinated by Ben Laurie and Will Rowe; of course
+all voulenteers and feedback are welcome!
+
+It is something of the cart before the horse; meant to demonstrate both the
+need for the NIST to certify OpenSSL, and the proper application of a fips
+build of the OpenSSL library.
+
+Note this branch includes apr and apr-util, while the authors figure out what
+to do about apr MD5 and other fips issues are resolved.  That work will be
+submitted to the apr project, once the least distruptive change is ascertained.
