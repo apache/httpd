@@ -951,7 +951,7 @@ URL を調整する</td></tr>
     <p>ディレクティブで明示されている HTTP 応答ヘッダのみが書き換えられます。
     Apache は他の応答ヘッダを書き換えたり、HTML ページの中の URL 参照を
     書き換えたりすることはありません。HTML の中を見て、URL 参照を書き換える
-    モジュールに Nick Kew さんの <a href="http://apache.webthing.com/software/mod_proxy_html/">mod_proxy_html</a> があります。</p>
+    モジュールに Nick Kew さんの <a href="http://apache.webthing.com/mod_proxy_html/">mod_proxy_html</a> があります。</p>
 
     <p><var>path</var> はローカル仮想パスの名前です。<var>url</var> は
     リモートサーバの部分 URL です。これらは <code class="directive"><a href="#proxypass">ProxyPass</a></code> ディレクティブと同様です。</p>
