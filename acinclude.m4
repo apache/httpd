@@ -340,7 +340,10 @@ if test "x$ap_ssltk_configured" = "x"; then
     dnl If --with-sslc specifies a directory, we use that directory or fail
     if test "x$withval" != "xyes" -a "x$withval" != "x"; then
       dnl This ensures $withval is actually a directory and that it is absolute
-      ap_ssltk_base="`cd $withval ; pwd`"
+      ap_ssltk_base="`cd $withval && pwd`"
+      if test "x$ap_ssltk_base" == "x"; then
+	exit
+      fi
     fi
     ap_ssltk_type="sslc"
   ])
@@ -348,7 +351,10 @@ if test "x$ap_ssltk_configured" = "x"; then
     dnl If --with-ssl specifies a directory, we use that directory or fail
     if test "x$withval" != "xyes" -a "x$withval" != "x"; then
       dnl This ensures $withval is actually a directory and that it is absolute
-      ap_ssltk_base="`cd $withval ; pwd`"
+      ap_ssltk_base="`cd $withval && pwd`"
+      if test "x$ap_ssltk_base" == "x"; then
+	exit
+      fi
     fi
   ])
   if test "x$ap_ssltk_base" = "x"; then
