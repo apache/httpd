@@ -55,6 +55,7 @@
 
 
 AP_DECLARE_DATA const char *ap_server_argv0 = NULL;
+AP_DECLARE_DATA const char *ap_server_full_argv0 = NULL;
 
 AP_DECLARE_DATA const char *ap_server_root = NULL;
 

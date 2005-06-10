@@ -22,3 +22,13 @@ build of the OpenSSL library.
 Note this branch includes apr and apr-util, while the authors figure out what
 to do about apr MD5 and other fips issues are resolved.  That work will be
 submitted to the apr project, once the least distruptive change is ascertained.
+
+Stuff FIPS requires
+-------------------
+
+Random number seeding: strangeness about the FIPS PRNG means that at
+least one random source must supply at least 24 bytes of randomness in
+a single chunk (note that this could be relaxed at the cost of more
+code).
+
+Certificates: must be signed using SHA-1.

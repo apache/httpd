@@ -254,6 +254,7 @@ void *ssl_config_server_merge(apr_pool_t *p, void *basev, void *addv)
 
     cfgMerge(mc, NULL);
     cfgMerge(enabled, SSL_ENABLED_UNSET);
+    cfgMerge(fips, SSL_FIPS_UNSET); // FIPS-XXX: make more than one setting an error?
     cfgMergeBool(proxy_enabled);
     cfgMergeInt(session_cache_timeout);
     cfgMergeBool(cipher_server_pref);
@@ -617,6 +618,22 @@ const char *ssl_cmd_SSLEngine(cmd_parms *cmd, void *dcfg, const char *arg)
     }
 
     return "Argument must be On, Off, or Optional";
+}
+// FIPS-XXX: this is global, i.e. can only be set once, not per-server.
+const char *ssl_cmd_SSLFIPS(cmd_parms *cmd, void *dcfg, const char *arg)
+{
+    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+
+    if (!strcasecmp(arg, "On")) {
+        sc->fips = SSL_FIPS_TRUE;
+	return NULL;
+    }
+    else if (!strcasecmp(arg, "Off")) {
+        sc->fips = SSL_FIPS_FALSE;
+        return NULL;
+    }
+
+    return "Argument must be On or Off";
 }
 
 const char *ssl_cmd_SSLCipherSuite(cmd_parms *cmd,

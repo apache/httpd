@@ -429,6 +429,7 @@ int main(int argc, const char * const argv[])
 
     AP_MONCONTROL(0); /* turn off profiling of startup */
 
+    ap_server_full_argv0 = argv[0];
     apr_app_initialize(&argc, &argv, NULL);
 
     process = create_process(argc, argv);

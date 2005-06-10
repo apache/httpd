@@ -36,11 +36,29 @@
 */
 
 static int ssl_rand_choosenum(int, int);
-static int ssl_rand_feedfp(apr_pool_t *, apr_file_t *, int);
+static int ssl_rand_feedfp(int, apr_pool_t *, apr_file_t *, int);
+
+/* Deal with the arcanity of the FIPS PRNG, which requires keying
+ * indepently of seeding. */
+// FIPS-XXX: this means at least one random source _must_ inject 24 bytes or
+// FIPS will not be seeded and keyed
+static void inject_rand(int fips, const void *buf, int num)
+{
+    if(!fips)
+	RAND_seed(buf, num);
+
+    if(num > 16) {
+	FIPS_set_prng_key(buf, buf+8);
+	num -= 16;
+	buf += 16;
+    }
+    RAND_seed(buf, num);
+}
 
 int ssl_rand_seed(server_rec *s, apr_pool_t *p, ssl_rsctx_t nCtx, char *prefix)
 {
     SSLModConfigRec *mc;
+    SSLSrvConfigRec *sc = mySrvConfig(s);
     apr_array_header_t *apRandSeed;
     ssl_randseed_t *pRandSeeds;
     ssl_randseed_t *pRandSeed;
@@ -65,7 +83,8 @@ int ssl_rand_seed(server_rec *s, apr_pool_t *p, ssl_rsctx_t nCtx, char *prefix)
                 if (apr_file_open(&fp, pRandSeed->cpPath, 
                                   APR_READ, APR_OS_DEFAULT, p) != APR_SUCCESS)
                     continue;
-                nDone += ssl_rand_feedfp(p, fp, pRandSeed->nBytes);
+                nDone += ssl_rand_feedfp(sc->fips == SSL_FIPS_TRUE, p, fp,
+					 pRandSeed->nBytes);
                 apr_file_close(fp);
             }
             else if (pRandSeed->nSrc == SSL_RSSRC_EXEC) {
@@ -80,7 +99,8 @@ int ssl_rand_seed(server_rec *s, apr_pool_t *p, ssl_rsctx_t nCtx, char *prefix)
 
                 if ((fp = ssl_util_ppopen(s, p, cmd, argv)) == NULL)
                     continue;
-                nDone += ssl_rand_feedfp(p, fp, pRandSeed->nBytes);
+                nDone += ssl_rand_feedfp(sc->fips == SSL_FIPS_TRUE, p, fp,
+					 pRandSeed->nBytes);
                 ssl_util_ppclose(s, p, fp);
             }
 #ifdef HAVE_SSL_RAND_EGD
@@ -111,14 +131,14 @@ int ssl_rand_seed(server_rec *s, apr_pool_t *p, ssl_rsctx_t nCtx, char *prefix)
                 my_seed.pid = mc->pid;
 
                 l = sizeof(my_seed);
-                RAND_seed((unsigned char *)&my_seed, l);
+                inject_rand(sc->fips == SSL_FIPS_TRUE, &my_seed, l);
                 nDone += l;
                 
                 /*
                  * seed in some current state of the run-time stack (128 bytes)
                  */
                 n = ssl_rand_choosenum(0, sizeof(stackdata)-128-1);
-                RAND_seed(stackdata+n, 128);
+                inject_rand(sc->fips == SSL_FIPS_TRUE, stackdata+n, 128);
                 nDone += 128;
 
             }
@@ -136,7 +156,7 @@ int ssl_rand_seed(server_rec *s, apr_pool_t *p, ssl_rsctx_t nCtx, char *prefix)
 
 #define BUFSIZE 8192
 
-static int ssl_rand_feedfp(apr_pool_t *p, apr_file_t *fp, int nReq)
+static int ssl_rand_feedfp(int fips, apr_pool_t *p, apr_file_t *fp, int nReq)
 {
     apr_size_t nDone;
     unsigned char caBuf[BUFSIZE];
@@ -153,7 +173,7 @@ static int ssl_rand_feedfp(apr_pool_t *p, apr_file_t *fp, int nReq)
         nBuf = nRead;
         if (apr_file_read(fp, caBuf, &nBuf) != APR_SUCCESS)
             break;
-        RAND_seed(caBuf, nBuf);
+        inject_rand(fips, caBuf, nBuf);
         nDone += nBuf;
         if (nReq > 0) {
             nTodo -= nBuf;

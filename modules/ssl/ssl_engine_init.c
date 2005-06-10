@@ -87,6 +87,20 @@ static void ssl_add_version_components(apr_pool_t *p,
     MODSSL_TMP_KEY_FREE(mc, type, SSL_TMP_KEY_##type##_512); \
     MODSSL_TMP_KEY_FREE(mc, type, SSL_TMP_KEY_##type##_1024)
 
+/* FIPS-140 prevents automatic rekeying in child processes, so we have
+ * to do it */
+
+static void fips_rand_reseed(server_rec *s, apr_pool_t *ptemp)
+{
+    static int rand_seeded;
+    SSLSrvConfigRec *sc = mySrvConfig(s);
+
+    if(sc->fips == SSL_FIPS_TRUE && !rand_seeded) {
+	ssl_rand_seed(s, ptemp, SSL_RSCTX_STARTUP, "FIPS Child Init: ");
+	rand_seeded=1;
+    }
+}
+
 static void ssl_tmp_keys_free(server_rec *s)
 {
     SSLModConfigRec *mc = myModConfig(s);
@@ -95,8 +109,7 @@ static void ssl_tmp_keys_free(server_rec *s)
     MODSSL_TMP_KEYS_FREE(mc, DH);
 }
 
-static int ssl_tmp_key_init_rsa(server_rec *s,
-                                int bits, int idx)
+static int ssl_tmp_key_init_rsa(server_rec *s, int bits, int idx)
 {
     SSLModConfigRec *mc = myModConfig(s);
 
@@ -106,6 +119,7 @@ static int ssl_tmp_key_init_rsa(server_rec *s,
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                      "Init: Failed to generate temporary "
                      "%d bit RSA private key", bits);
+	ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, s);
         return !OK;
     }
 
@@ -157,8 +171,7 @@ static int ssl_tmp_keys_init(server_rec *s)
 }
 
 /*
- *  Per-module initialization
- */
+ * Per-module initialization */
 int ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
                     apr_pool_t *ptemp,
                     server_rec *base_server)
@@ -166,6 +179,7 @@ int ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
     SSLModConfigRec *mc = myModConfig(base_server);
     SSLSrvConfigRec *sc;
     server_rec *s;
+    static int fips_done;
 
     /* We initialize mc->pid per-process in the child init,
      * but it should be initialized for startup before we
@@ -212,6 +226,10 @@ int ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
         if (sc->enabled == SSL_ENABLED_UNSET) {
             sc->enabled = SSL_ENABLED_FALSE;
         }
+
+	if(sc->fips == SSL_FIPS_UNSET)
+	    sc->enabled = SSL_FIPS_FALSE;
+
         if (sc->proxy_enabled == UNSET) {
             sc->proxy_enabled = FALSE;
         }
@@ -246,6 +264,25 @@ int ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
      * needs to live once we return from ssl_rand_seed().
      */
     ssl_rand_seed(base_server, ptemp, SSL_RSCTX_STARTUP, "Init: ");
+
+    /* Do this after randomness has been seeded */
+    // XXX: also need to set FIPS mode for APR (i.e. exclude all crypto/randomness from APR)
+    if(!fips_done) {
+	if(sc->fips == SSL_FIPS_TRUE) {
+	    if(FIPS_mode_set(1,ap_server_full_argv0))
+		ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s,
+			     "FIPS mode enabled");
+	    else {
+		ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
+			     "FIPS mode failed (%s)",ap_server_full_argv0);
+		ssl_log_ssl_error(APLOG_MARK, APLOG_EMERG, s);
+		exit(1);
+	    }
+	}
+	else
+	    ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s, "FIPS mode disabled");
+	fips_done=1;
+    }
 
     /*
      * read server private keys/public certs into memory.
@@ -1185,6 +1222,7 @@ STACK_OF(X509_NAME) *ssl_init_FindCAList(server_rec *s,
 void ssl_init_Child(apr_pool_t *p, server_rec *s)
 {
     SSLModConfigRec *mc = myModConfig(s);
+
     mc->pid = getpid(); /* only call getpid() once per-process */
 
     /* XXX: there should be an ap_srand() function */
@@ -1192,6 +1230,8 @@ void ssl_init_Child(apr_pool_t *p, server_rec *s)
 
     /* open the mutex lockfile */
     ssl_mutex_reinit(s, p);
+
+    fips_rand_reseed(s, p);
 }
 
 #define MODSSL_CFG_ITEM_FREE(func, item) \

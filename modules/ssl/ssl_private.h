@@ -278,8 +278,14 @@ typedef enum {
     SSL_ENABLED_UNSET    = UNSET,
     SSL_ENABLED_FALSE    = 0,
     SSL_ENABLED_TRUE     = 1,
-	SSL_ENABLED_OPTIONAL = 3
+    SSL_ENABLED_OPTIONAL = 3
 } ssl_enabled_t;
+
+typedef enum {
+    SSL_FIPS_UNSET	= UNSET,
+    SSL_FIPS_FALSE	= 0,
+    SSL_FIPS_TRUE	= 1
+} fips_enabled_t;
 
 /*
  * Define the SSL requirement structure
@@ -436,6 +442,7 @@ typedef struct {
 struct SSLSrvConfigRec {
     SSLModConfigRec *mc;
     ssl_enabled_t    enabled;
+    fips_enabled_t   fips;
     BOOL             proxy_enabled;
     const char      *vhost_id;
     int              vhost_id_len;
@@ -487,6 +494,7 @@ const char  *ssl_cmd_SSLPassPhraseDialog(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLCryptoDevice(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLRandomSeed(cmd_parms *, void *, const char *, const char *, const char *);
 const char  *ssl_cmd_SSLEngine(cmd_parms *, void *, const char *);
+const char  *ssl_cmd_SSLFIPS(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLCipherSuite(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLCertificateFile(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLCertificateKeyFile(cmd_parms *, void *, const char *);
