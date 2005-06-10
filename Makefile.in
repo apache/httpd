@@ -89,9 +89,11 @@ install-build:
 	@echo Installing build system files 
 	@$(MKINSTALLDIRS) $(DESTDIR)$(installbuilddir) 
 	@for f in $(top_srcdir)/build/*.mk build/*.mk \
-		  $(top_srcdir)/build/instdso.sh $(top_builddir)/config.nice; do \
+		  $(top_builddir)/config.nice; do \
 	 $(INSTALL_DATA) $$f $(DESTDIR)$(installbuilddir); \
 	done
+	@(INSTALL_PROGRAM) $(top_srcdir)/build/mkdir.sh $(DESTDIR)$(installbuilddir)
+	@(INSTALL_PROGRAM) $(top_srcdir)/build/instdso.sh $(DESTDIR)$(installbuilddir)
 	@sed "/^LIBTOOL/s#/[^ ]*/libtool \(.*\)#`$(APR_CONFIG) --apr-libtool` $(LTFLAGS)#" \
 	    build/config_vars.mk > $(DESTDIR)$(installbuilddir)/config_vars.mk
 
