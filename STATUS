@@ -273,6 +273,11 @@ PATCHES TO BACKPORT FROM TRUNK:
         2.0.x Patch: http://issues.apache.org/bugzilla/attachment.cgi?id=15297
         +1: pquerna
 
+     *) mod_ssl: Fix buffering in SSL output filter.
+        http://svn.apache.org/viewcvs?rev=189971&view=rev
+        PR: 35279
+        +1: jorton
+
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
     *) Remove LDAP toolkit specific code from util_ldap and mod_auth_ldap.
