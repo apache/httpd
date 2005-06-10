@@ -45,8 +45,14 @@ $libtoolize --copy --automake
 if [ -f libtool.m4 ]; then 
    ltfile=`pwd`/libtool.m4
 else
-   ltpath=`dirname $libtoolize`
-   ltfile=${LIBTOOL_M4-`cd $ltpath/../share/aclocal ; pwd`/libtool.m4}
+   ltfindcmd="`sed -n \"/=[^\\\`]/p;/libtool_m4=/{s/.*=/echo /p;q;}\" \
+                   < $libtoolize`"
+   ltfile=${LIBTOOL_M4-`eval "$ltfindcmd"`}
+   # Expecting the code above to be very portable, but just in case...
+   if [ -e "$ltfile" -o ! -f "$ltfile" ]; then
+     ltpath=`dirname $libtoolize`
+     ltfile=`cd $ltpath/../share/aclocal ; pwd`/libtool.m4
+   fi
 fi
   
 if [ ! -f $ltfile ]; then
