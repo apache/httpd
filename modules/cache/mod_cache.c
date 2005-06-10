@@ -236,7 +236,7 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
     cache_request_rec *cache;
     cache_server_conf *conf;
     char *url = r->unparsed_uri;
-    const char *cc_in, *cc_out, *cl, *vary_out;
+    const char *cc_out, *cl;
     const char *exps, *lastmods, *dates, *etag;
     apr_time_t exp, date, lastmod, now;
     apr_off_t size;
@@ -246,19 +246,6 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
 
     conf = (cache_server_conf *) ap_get_module_config(r->server->module_config,
                                                       &cache_module);
-
-    /* If the request has Cache-Control: no-store from RFC 2616, don't store
-     * unless CacheStoreNoStore is active.
-     */
-    cc_in = apr_table_get(r->headers_in, "Cache-Control");
-    vary_out = apr_table_get(r->headers_out, "Vary");
-    if (r->no_cache ||
-        ap_cache_liststr(NULL, vary_out, "*", NULL) ||
-        (!conf->store_nostore &&
-         ap_cache_liststr(NULL, cc_in, "no-store", NULL))) {
-        ap_remove_output_filter(f);
-        return ap_pass_brigade(f->next, in);
-    }
 
     /* Setup cache_request_rec */
     cache = (cache_request_rec *) ap_get_module_config(r->request_config,
@@ -295,6 +282,8 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
          */
         rv = cache->provider->store_body(cache->handle, r, in);
         if (rv != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, r->server,
+                         "cache: Cache provider's store_body failed!");
             ap_remove_output_filter(f);
         }
         return ap_pass_brigade(f->next, in);
@@ -434,9 +423,14 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
          */
         reason = "Authorization required";
     }
+    else if (ap_cache_liststr(NULL, 
+                              apr_table_get(r->headers_out, "Vary"),
+                              "*", NULL)) {
+        reason = "Vary header contains '*'";
+    }
     else if (r->no_cache) {
         /* or we've been asked not to cache it above */
-        reason = "no_cache present";
+        reason = "r->no_cache present";
     }
 
     if (reason) {
@@ -707,6 +701,8 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         rv = cache->provider->store_body(cache->handle, r, in);
     }
     if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, r->server,
+                     "cache: store_body failed");
         ap_remove_output_filter(f);
     }
 
