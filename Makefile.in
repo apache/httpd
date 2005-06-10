@@ -92,8 +92,8 @@ install-build:
 		  $(top_builddir)/config.nice; do \
 	 $(INSTALL_DATA) $$f $(DESTDIR)$(installbuilddir); \
 	done
-	@(INSTALL_PROGRAM) $(top_srcdir)/build/mkdir.sh $(DESTDIR)$(installbuilddir)
-	@(INSTALL_PROGRAM) $(top_srcdir)/build/instdso.sh $(DESTDIR)$(installbuilddir)
+	@$(INSTALL_PROGRAM) $(top_srcdir)/build/mkdir.sh $(DESTDIR)$(installbuilddir)
+	@$(INSTALL_PROGRAM) $(top_srcdir)/build/instdso.sh $(DESTDIR)$(installbuilddir)
 	@sed "/^LIBTOOL/s#/[^ ]*/libtool \(.*\)#`$(APR_CONFIG) --apr-libtool` $(LTFLAGS)#" \
 	    build/config_vars.mk > $(DESTDIR)$(installbuilddir)/config_vars.mk
 
