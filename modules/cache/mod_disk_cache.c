@@ -535,21 +535,14 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
     /* This is flaky... we need to manage the cache_info differently */
     h->cache_obj->info = *info;
 
-    /* Remove old file with the same name. If remove fails, then
-     * perhaps we need to create the directory tree where we are
-     * about to write the new headers file.
-     */
-    rv = apr_file_remove(dobj->hdrsfile, r->pool);
-    if (rv != APR_SUCCESS) {
-        mkdir_structure(conf, dobj->hdrsfile, r->pool);
-    }
+    rv = apr_file_mktemp(&dobj->hfd, dobj->tempfile,
+                         APR_CREATE | APR_WRITE | APR_BINARY |
+                         APR_BUFFERED | APR_EXCL, r->pool);
 
-    rv = apr_file_open(&dobj->hfd, dobj->hdrsfile,
-                       APR_WRITE | APR_CREATE | APR_EXCL,
-                       APR_OS_DEFAULT, r->pool);
     if (rv != APR_SUCCESS) {
         return rv;
     }
+
     dobj->name = h->cache_obj->key;
 
     disk_info.format = DISK_FORMAT_VERSION;
@@ -606,6 +599,26 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
     }
     
     apr_file_close(dobj->hfd); /* flush and close */
+
+    /* Remove old file with the same name. If remove fails, then
+     * perhaps we need to create the directory tree where we are
+     * about to write the new headers file.
+     */
+    rv = apr_file_remove(dobj->hdrsfile, r->pool);
+    if (rv != APR_SUCCESS) {
+        mkdir_structure(conf, dobj->hdrsfile, r->pool);
+    }
+    
+    rv = apr_file_rename(dobj->tempfile, dobj->hdrsfile, r->pool);
+
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
+                     "disk_cache: rename tempfile to hdrsfile failed: %s -> %s",
+                     dobj->tempfile, dobj->hdrsfile);
+        return rv;
+    }
+
+    dobj->tempfile = apr_pstrcat(r->pool, conf->cache_root, AP_TEMPFILE, NULL);
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                  "disk_cache: Stored headers for URL %s",  dobj->name);
