@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.es.xsl"?>
-<!-- English Revision: 151405:178522 (outdated) -->
+<!-- English Revision: 178522 -->
 
 <!--
  Copyright 2004-2005 The Apache Software Foundation
@@ -394,17 +394,20 @@ prrevia</title>
     posteriores a la 2.0.41; las versiones anteriores contienen
     cambios incompatibles.)</p>
 
-    <p>Si va a conservar la estructura de directorios de su anterior
-    instalaci&#243;n, la actualizaci&#243;n es m&#225;s f&#225;cil
-    incluso.  El fichero <code>config.nice</code> que est&#225; en el
-    directorio raiz de la estructura de directorios antigua contiene
-    exactamente el comando <program>configure</program> que usted us&#243;
-    para configurar la estructura de directorios de Apache.  Entonces,
-    para actualizar su instalaci&#243;n de una vers&#243;on a la
-    siguinete, solo tiene que copiar el archivo
-    <code>config.nice</code> a la estructura de directorios del
-    c&#243;digo fuente de la nueva versi&#243;n, editarlo, hacer
-    cualquier cambio que desee, y ejecutarlo :</p>
+    <p>Si la actualizaci&#243;n es entre versiones menores (por
+    ejemplo, de la 2.0.55 a la 2.0.57), lo primero que debe hacer es
+    encontrar el fichero <code>config.nice</code> en el directorio
+    <code>build</code> de la instalaci&#243;n antigua de Apache que
+    desea actualizar o en el directorio raiz de la estructura de
+    directorios con las fuentes del servidor que uso para su anterior
+    instalaci&#243;n. Ese fichero contiene el comando
+    <program>configure</program> exacto que us&#243; originalmente
+    para configurar la estructura de directorios de las fuentes de
+    Apache.  Para actualizar su instalaci&#243;n de una versi&#243;n a
+    la siguiente, solo tiene que copiar el archivo
+    <code>config.nice</code> a la estructura de directorios que
+    contiene las fuentes de la nueva versi&#243;n de Apache, editarlo,
+    hacer cualquier cambio que desee, y ejecutar:</p>
 
     <example>
     $ ./config.nice<br />

@@ -25,10 +25,6 @@
 <a href="./ko/install.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./ru/install.html" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a></p>
 </div>
-<div class="outofdate">Esta traducción podría estar
-            obsoleta. Consulte la versión en inglés de la
-            documentación para comprobar si se han producido cambios
-            recientemente.</div>
 
 
     <p>Este documento explica cómo compilar e instalar Apache en
@@ -399,17 +395,20 @@ prrevia</a></h2>
     posteriores a la 2.0.41; las versiones anteriores contienen
     cambios incompatibles.)</p>
 
-    <p>Si va a conservar la estructura de directorios de su anterior
-    instalación, la actualización es más fácil
-    incluso.  El fichero <code>config.nice</code> que está en el
-    directorio raiz de la estructura de directorios antigua contiene
-    exactamente el comando <code class="program"><a href="./programs/configure.html">configure</a></code> que usted usó
-    para configurar la estructura de directorios de Apache.  Entonces,
-    para actualizar su instalación de una versóon a la
-    siguinete, solo tiene que copiar el archivo
-    <code>config.nice</code> a la estructura de directorios del
-    código fuente de la nueva versión, editarlo, hacer
-    cualquier cambio que desee, y ejecutarlo :</p>
+    <p>Si la actualización es entre versiones menores (por
+    ejemplo, de la 2.0.55 a la 2.0.57), lo primero que debe hacer es
+    encontrar el fichero <code>config.nice</code> en el directorio
+    <code>build</code> de la instalación antigua de Apache que
+    desea actualizar o en el directorio raiz de la estructura de
+    directorios con las fuentes del servidor que uso para su anterior
+    instalación. Ese fichero contiene el comando
+    <code class="program"><a href="./programs/configure.html">configure</a></code> exacto que usó originalmente
+    para configurar la estructura de directorios de las fuentes de
+    Apache.  Para actualizar su instalación de una versión a
+    la siguiente, solo tiene que copiar el archivo
+    <code>config.nice</code> a la estructura de directorios que
+    contiene las fuentes de la nueva versión de Apache, editarlo,
+    hacer cualquier cambio que desee, y ejecutar:</p>
 
     <div class="example"><p><code>
     $ ./config.nice<br />
