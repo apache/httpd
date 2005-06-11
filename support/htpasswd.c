@@ -45,6 +45,7 @@
 #include "apr_file_io.h"
 #include "apr_general.h"
 #include "apr_signal.h"
+#include "ap_config_auto.h"
 
 #if APR_HAVE_STDIO_H
 #include <stdio.h>
@@ -82,8 +83,10 @@
 
 #define MAX_STRING_LEN 256
 #define ALG_PLAIN 0
-#define ALG_CRYPT 1
-#define ALG_APMD5 2
+#ifndef AP_FIPS
+# define ALG_CRYPT 1
+# define ALG_APMD5 2
+#endif
 #define ALG_APSHA 3 
 
 #define ERR_FILEPERM 1
@@ -132,7 +135,9 @@ static int mkrecord(char *user, char *record, apr_size_t rlen, char *passwd,
     char cpw[120];
     char pwin[MAX_STRING_LEN];
     char pwv[MAX_STRING_LEN];
+#ifndef AP_FIPS
     char salt[9];
+#endif
     apr_size_t bufsize;
 
     if (passwd != NULL) {
@@ -161,6 +166,7 @@ static int mkrecord(char *user, char *record, apr_size_t rlen, char *passwd,
         apr_sha1_base64(pw,strlen(pw),cpw);
         break;
 
+#ifndef AP_FIPS
     case ALG_APMD5: 
         (void) srand((int) time((time_t *) NULL));
         to64(&salt[0], rand(), 8);
@@ -169,13 +175,14 @@ static int mkrecord(char *user, char *record, apr_size_t rlen, char *passwd,
         apr_md5_encode((const char *)pw, (const char *)salt,
                      cpw, sizeof(cpw));
         break;
+#endif
 
     case ALG_PLAIN:
         /* XXX this len limitation is not in sync with any HTTPd len. */
         apr_cpystrn(cpw,pw,sizeof(cpw));
         break;
 
-#if !(defined(WIN32) || defined(NETWARE))
+#if !(defined(WIN32) || defined(NETWARE)) && !defined(AP_FIPS)
     case ALG_CRYPT:
     default:
         (void) srand((int) time((time_t *) NULL));
@@ -306,17 +313,19 @@ static void check_args(apr_pool_t *pool, int argc, const char *const argv[],
                 *mask |= APHTP_NOFILE;
                 args_left--;
             }
+#ifndef AP_FIPS
             else if (*arg == 'm') {
                 *alg = ALG_APMD5;
             }
+            else if (*arg == 'd') {
+                *alg = ALG_CRYPT;
+            }
+#endif
             else if (*arg == 's') {
                 *alg = ALG_APSHA;
             }
             else if (*arg == 'p') {
                 *alg = ALG_PLAIN;
-            }
-            else if (*arg == 'd') {
-                *alg = ALG_CRYPT;
             }
             else if (*arg == 'b') {
                 *mask |= APHTP_NONINTERACTIVE;
@@ -400,7 +409,11 @@ int main(int argc, const char * const argv[])
     char *scratch, cp[MAX_STRING_LEN];
     int found = 0;
     int i;
+#ifdef AP_FIPS
+    int alg = ALG_APSHA;
+#else
     int alg = ALG_CRYPT;
+#endif
     int mask = 0;
     apr_pool_t *pool;
     int existing_file = 0;

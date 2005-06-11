@@ -41,6 +41,7 @@
 #include "apr_strings.h"
 #include "apr_md4.h"
 #include "apr_lib.h"
+#include "apu_config.h"
 
 #if APR_HAVE_STRING_H
 #include <string.h>
@@ -49,9 +50,10 @@
 #include <unistd.h>
 #endif
 
+#ifndef APU_FIPS
 /* Constants for MD4Transform routine.
  */
- 
+
 #define S11 3
 #define S12 7
 #define S13 11
@@ -402,3 +404,5 @@ APU_DECLARE(apr_status_t) apr_MD4InitEBCDIC(apr_xlate_t *xlate)
     return APR_SUCCESS;
 }
 #endif
+
+#endif /*ndef APU_FIPS */

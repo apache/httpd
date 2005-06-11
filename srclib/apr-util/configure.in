@@ -16,6 +16,10 @@ sinclude(build/find_apr.m4)
 sinclude(build/dbm.m4)
 sinclude(build/dbd.m4)
 
+dnl Allow FIPS mode
+AC_ARG_ENABLE(fips,[Enable FIPS mode (i.e. disable or replace all crypto)],
+	[AC_DEFINE([APU_FIPS],1,[Set to 1 if FIPS mode is enabled])])
+
 dnl Generate ./config.nice for reproducing runs of configure
 dnl 
 APR_CONFIG_NICE(config.nice)

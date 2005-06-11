@@ -29,6 +29,10 @@
 
 #include "ssl_private.h"
 
+#ifdef AP_FIPS
+# include <openssl/fips_rand.h>
+#endif
+
 /*  _________________________________________________________________
 **
 **  Support for better seeding of SSL library's RNG
@@ -36,6 +40,8 @@
 */
 
 static int ssl_rand_choosenum(int, int);
+
+#ifdef AP_FIPS
 static int ssl_rand_feedfp(int, apr_pool_t *, apr_file_t *, int);
 
 /* Deal with the arcanity of the FIPS PRNG, which requires keying
@@ -54,6 +60,13 @@ static void inject_rand(int fips, const void *buf, int num)
     }
     RAND_seed(buf, num);
 }
+#else
+
+static int ssl_rand_feedfp(apr_pool_t *, apr_file_t *, int);
+
+# define inject_rand(fips, buf, num)    RAND_seed(buf, num)
+
+#endif
 
 int ssl_rand_seed(server_rec *s, apr_pool_t *p, ssl_rsctx_t nCtx, char *prefix)
 {
@@ -83,8 +96,12 @@ int ssl_rand_seed(server_rec *s, apr_pool_t *p, ssl_rsctx_t nCtx, char *prefix)
                 if (apr_file_open(&fp, pRandSeed->cpPath, 
                                   APR_READ, APR_OS_DEFAULT, p) != APR_SUCCESS)
                     continue;
+#ifdef AP_FIPS
                 nDone += ssl_rand_feedfp(sc->fips == SSL_FIPS_TRUE, p, fp,
 					 pRandSeed->nBytes);
+#else
+                nDone += ssl_rand_feedfp(p, fp, pRandSeed->nBytes);
+#endif
                 apr_file_close(fp);
             }
             else if (pRandSeed->nSrc == SSL_RSSRC_EXEC) {
@@ -99,8 +116,12 @@ int ssl_rand_seed(server_rec *s, apr_pool_t *p, ssl_rsctx_t nCtx, char *prefix)
 
                 if ((fp = ssl_util_ppopen(s, p, cmd, argv)) == NULL)
                     continue;
+#ifdef AP_FIPS
                 nDone += ssl_rand_feedfp(sc->fips == SSL_FIPS_TRUE, p, fp,
 					 pRandSeed->nBytes);
+#else
+                nDone += ssl_rand_feedfp(p, fp, pRandSeed->nBytes);
+#endif
                 ssl_util_ppclose(s, p, fp);
             }
 #ifdef HAVE_SSL_RAND_EGD
@@ -156,7 +177,11 @@ int ssl_rand_seed(server_rec *s, apr_pool_t *p, ssl_rsctx_t nCtx, char *prefix)
 
 #define BUFSIZE 8192
 
+#ifdef AP_FIPS
 static int ssl_rand_feedfp(int fips, apr_pool_t *p, apr_file_t *fp, int nReq)
+#else
+static int ssl_rand_feedfp(apr_pool_t *p, apr_file_t *fp, int nReq)
+#endif
 {
     apr_size_t nDone;
     unsigned char caBuf[BUFSIZE];

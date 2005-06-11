@@ -3501,8 +3501,14 @@ static int default_handler(request_rec *r)
         } 
         else {
             if (bld_content_md5) {
+#ifndef AP_NO_FIPS
+		// FIPS-XXX: is it safe to continue despite this?
+		ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+			      "Can't do Content-MD5 in FIPS mode");
+#else
                 apr_table_setn(r->headers_out, "Content-MD5",
                                ap_md5digest(r->pool, fd));
+#endif
             }
 
             /* For platforms where the size of the file may be larger than

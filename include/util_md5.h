@@ -26,7 +26,20 @@ extern "C" {
  */
 
 #include "apr_md5.h"
+#include "ap_config_auto.h"
 
+#ifdef AP_FIPS
+/**
+ * Create a SHA-1 checksum of a string of binary data
+ * @param a Pool to allocate out of
+ * @param buf Buffer to generate checksum for
+ * @param len The length of the buffer
+ * @return The checksum in hex
+ * @deffunc char *ap_md5_binary(apr_pool_t *a, const unsigned char *buf, int len)
+ */
+AP_DECLARE(char *) ap_sha1_binary(apr_pool_t *a, const unsigned char *buf, int len);
+
+#else
 /**
  * Create an MD5 checksum of a given string
  * @param a Pool to allocate out of
@@ -62,6 +75,8 @@ AP_DECLARE(char *) ap_md5contextTo64(apr_pool_t *p, apr_md5_ctx_t *context);
  * @deffunc char *ap_md5digest(apr_pool_t *p, apr_file_t *infile)
  */
 AP_DECLARE(char *) ap_md5digest(apr_pool_t *p, apr_file_t *infile);
+
+#endif /*ndef AP_FIPS */
 
 #ifdef __cplusplus
 }

@@ -21,7 +21,11 @@ build of the OpenSSL library.
 
 Note this branch includes apr and apr-util, while the authors figure out what
 to do about apr MD5 and other fips issues are resolved.  That work will be
-submitted to the apr project, once the least distruptive change is ascertained.
+submitted to the apr project, once the least distruptive change is
+ascertained.
+
+Note also that even with FIPS mode is off, operations using MD5 are
+not possible.
 
 Stuff FIPS requires
 -------------------
@@ -32,3 +36,5 @@ a single chunk (note that this could be relaxed at the cost of more
 code).
 
 Certificates: must be signed using SHA-1.
+
+Passwords: must be SHA-1 hashed.

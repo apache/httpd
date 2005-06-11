@@ -48,10 +48,13 @@
 #include "apr_base64.h"
 #include "apr_strings.h"
 #include "apr_lib.h"
+#include "apu_config.h"
 #if APR_CHARSET_EBCDIC
 #include "apr_xlate.h"
 #endif /*APR_CHARSET_EBCDIC*/
 #include <string.h>
+
+#ifndef APU_FIPS
 
 /* a bit faster & bigger, if defined */
 #define UNROLL_LOOPS
@@ -344,7 +347,6 @@ APU_DECLARE(void) apr_sha1_final(unsigned char digest[APR_SHA1_DIGESTSIZE],
     }
 }
 
-
 APU_DECLARE(void) apr_sha1_base64(const char *clear, int len, char *out)
 {
     int l;
@@ -370,3 +372,30 @@ APU_DECLARE(void) apr_sha1_base64(const char *clear, int len, char *out)
      * output of base64 encoded SHA1 is always 28 chars + APR_SHA1PW_IDLEN
      */
 }
+#else /*def APR_FIPS */
+
+APU_DECLARE(void) apr_sha1_base64(const char *clear, int len, char *out)
+{
+    int l;
+    apr_byte_t digest[APR_SHA1_DIGESTSIZE];
+
+    if (strncmp(clear, APR_SHA1PW_ID, APR_SHA1PW_IDLEN) == 0) {
+	clear += APR_SHA1PW_IDLEN;
+    }
+
+    SHA1(clear, len, digest);
+
+    /* private marker. */
+    apr_cpystrn(out, APR_SHA1PW_ID, APR_SHA1PW_IDLEN + 1);
+
+    /* SHA1 hash is always 20 chars */
+    l = apr_base64_encode_binary(out + APR_SHA1PW_IDLEN, digest, sizeof(digest));
+    out[l + APR_SHA1PW_IDLEN] = '\0';
+
+    /*
+     * output of base64 encoded SHA1 is always 28 chars + APR_SHA1PW_IDLEN
+     */
+}
+
+#endif /*def APR_FIPS */
+

@@ -33,6 +33,9 @@
 #include "apr_general.h"
 #include "apr_signal.h"
 #include "apr_strings.h"        /* for apr_pstrdup() */
+#include "ap_config_auto.h"
+
+#ifndef AP_FIPS
 
 #define APR_WANT_STDIO
 #define APR_WANT_STRFUNC
@@ -289,3 +292,13 @@ int main(int argc, const char * const argv[])
 
     return 0;
 }
+
+#else /*def AP_FIPS */
+
+int main(int argc, const char * const argv[])
+{
+    fprintf(stderr,"HTTP Digest uses MD5 and so is not available if FIPS mode.\n");
+    exit(1);
+}
+
+#endif

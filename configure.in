@@ -18,6 +18,10 @@ sinclude(build/find_apr.m4)
 sinclude(build/find_apu.m4)
 sinclude(acinclude.m4)
 
+dnl Allow FIPS mode
+AC_ARG_ENABLE(fips,[Enable FIPS mode (i.e. disable or replace all crypto)],
+	[AC_DEFINE([AP_FIPS],1,[Set to 1 if FIPS mode is enabled])])
+
 dnl XXX we can't just use AC_PREFIX_DEFAULT because that isn't subbed in
 dnl by configure until it is too late.  Is that how it should be or not?
 dnl Something seems broken here.                                               
@@ -106,8 +110,11 @@ yes.reconfig)
 esac  
 
 if test "$apu_found" = "reconfig"; then
+  if test "${enable_fips+set}" = set; then
+    fips_option="--enable-fips"
+  fi
   APR_SUBDIR_CONFIG(srclib/apr-util,
-                    [--with-apr=../apr --prefix=$prefix --exec-prefix=$exec_prefix --libdir=$libdir --includedir=$includedir --bindir=$bindir],
+                    [--with-apr=../apr --prefix=$prefix --exec-prefix=$exec_prefix --libdir=$libdir --includedir=$includedir --bindir=$bindir $fips_option],
                     [--enable-layout=*|\'--enable-layout=*])
   dnl We must be the last to build and the first to be cleaned
   AP_BUILD_SRCLIB_DIRS="$AP_BUILD_SRCLIB_DIRS apr-util"

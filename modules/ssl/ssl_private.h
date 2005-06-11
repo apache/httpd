@@ -281,11 +281,13 @@ typedef enum {
     SSL_ENABLED_OPTIONAL = 3
 } ssl_enabled_t;
 
+#ifdef AP_FIPS
 typedef enum {
     SSL_FIPS_UNSET	= UNSET,
     SSL_FIPS_FALSE	= 0,
     SSL_FIPS_TRUE	= 1
 } fips_enabled_t;
+#endif
 
 /*
  * Define the SSL requirement structure
@@ -442,7 +444,9 @@ typedef struct {
 struct SSLSrvConfigRec {
     SSLModConfigRec *mc;
     ssl_enabled_t    enabled;
+#ifdef AP_FIPS
     fips_enabled_t   fips;
+#endif
     BOOL             proxy_enabled;
     const char      *vhost_id;
     int              vhost_id_len;

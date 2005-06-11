@@ -32,6 +32,7 @@
 #include "apr_md5.h"
 #include "apr_sha1.h"
 #include "apr_dbm.h"
+#include "ap_config_auto.h"
 
 #if APR_HAVE_STDLIB_H
 #include <stdlib.h>
@@ -63,7 +64,9 @@
 
 #define MAX_STRING_LEN 256
 #define ALG_PLAIN 0
-#define ALG_APMD5 1
+#ifndef AP_FIPS
+# define ALG_APMD5 1
+#endif
 #define ALG_APSHA 2
  
 #if APR_HAVE_CRYPT_H
@@ -161,8 +164,12 @@ static apr_status_t htdbm_init(apr_pool_t **pool, htdbm_t **hdbm)
     }
 #endif /*APR_CHARSET_EBCDIC*/
 
+#ifdef AP_FIPS
+    (*hdbm)->alg = ALG_APSHA;
+#else
     /* Set MD5 as default */
     (*hdbm)->alg = ALG_APMD5;
+#endif
     (*hdbm)->type = "default";
     return APR_SUCCESS;
 }
@@ -298,6 +305,7 @@ static apr_status_t htdbm_make(htdbm_t *htdbm)
             apr_sha1_base64(htdbm->userpass,strlen(htdbm->userpass),cpw);
         break;
 
+#ifndef AP_FIPS
         case ALG_APMD5: 
             (void) srand((int) time((time_t *) NULL));
             to64(&salt[0], rand(), 8);
@@ -305,6 +313,8 @@ static apr_status_t htdbm_make(htdbm_t *htdbm)
             apr_md5_encode((const char *)htdbm->userpass, (const char *)salt,
                             cpw, sizeof(cpw));
         break;
+#endif
+
         case ALG_PLAIN:
             /* XXX this len limitation is not in sync with any HTTPd len. */
             apr_cpystrn(cpw,htdbm->userpass,sizeof(cpw));
@@ -458,9 +468,11 @@ int main(int argc, const char * const argv[])
                 need_pwd = 0;
                 cmd = HTDBM_DELETE;
                 break;
+#ifndef AP_FIPS
             case 'm':
                 h->alg = ALG_APMD5;
                 break;
+#endif
             case 'p':
                 h->alg = ALG_PLAIN;
                 break;

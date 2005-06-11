@@ -76,6 +76,13 @@
 #include <pthread.h>
 #endif
 
+/*
+ * Define the Magic String prefix that identifies a password as being
+ * hashed using our algorithm.
+ */
+static const char *apr1_id = "$apr1$";
+
+#ifndef APU_FIPS
 /* Constants for MD5Transform routine.
  */
 
@@ -462,12 +469,6 @@ APU_DECLARE(apr_status_t) apr_MD5InitEBCDIC(apr_xlate_t *xlate)
 #endif
 
 /*
- * Define the Magic String prefix that identifies a password as being
- * hashed using our algorithm.
- */
-static const char *apr1_id = "$apr1$";
-
-/*
  * The following MD5 password encryption code was largely borrowed from
  * the FreeBSD 3.0 /usr/src/lib/libcrypt/crypt.c file, which is
  * licenced as stated at the top of this file.
@@ -665,6 +666,8 @@ static void crypt_mutex_unlock(void)
 #endif
 #endif
 
+#endif /* ndef APU_FIPS */
+
 /*
  * Validate a plaintext password against a smashed one.  Uses either
  * crypt() (if available) or apr_md5_encode() or apr_sha1_base64(), depending
@@ -680,15 +683,22 @@ APU_DECLARE(apr_status_t) apr_password_validate(const char *passwd,
     char *crypt_pw;
 #endif
     if (!strncmp(hash, apr1_id, strlen(apr1_id))) {
+#ifdef APU_FIPS
+	return APR_EMISMATCH;
+#else
         /*
          * The hash was created using our custom algorithm.
          */
         apr_md5_encode(passwd, hash, sample, sizeof(sample));
+#endif
     }
     else if (!strncmp(hash, APR_SHA1PW_ID, APR_SHA1PW_IDLEN)) {
          apr_sha1_base64(passwd, strlen(passwd), sample);
     }
     else {
+#ifdef APU_FIPS
+	return APR_EMISMATCH;
+#else
         /*
          * It's not our algorithm, so feed it to crypt() if possible.
          */
@@ -728,6 +738,7 @@ APU_DECLARE(apr_status_t) apr_password_validate(const char *passwd,
         apr_cpystrn(sample, crypt_pw, sizeof(sample) - 1);
         crypt_mutex_unlock();
 #endif
+#endif /*ndef APU_FIPS */
     }
     return (strcmp(sample, hash) == 0) ? APR_SUCCESS : APR_EMISMATCH;
 }

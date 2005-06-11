@@ -16,7 +16,15 @@
 # The build environment was provided by Sascha Schumann.
 
 PROGRAM_OBJECTS = $(PROGRAM_SOURCES:.c=.lo)
+TOP=/home/ben/work/openssl-0.9.7
+
+# XXX: I don't know how to work out the correct path for the real executable
+TO_FINGERPRINT = $(PROGRAM_NAME:httpd=.libs/lt-httpd)
+FINGERPRINT = $(TO_FINGERPRINT).sha1
 
 $(PROGRAM_NAME): $(PROGRAM_DEPENDENCIES) $(PROGRAM_OBJECTS)
 	$(PROGRAM_PRELINK)
 	$(LINK) $(PROGRAM_LDFLAGS) $(PROGRAM_OBJECTS) $(PROGRAM_LDADD)
+# blearg - force libtool to do its stupid magic
+	-./$(PROGRAM_NAME) --help
+	TOP=$(TOP) $(TOP)/fips/openssl_fips_fingerprint $(TOP)/libcrypto.a $(TO_FINGERPRINT) > $(FINGERPRINT)

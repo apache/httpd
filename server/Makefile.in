@@ -66,7 +66,7 @@ export_files:
 	rm -f $$tmp
 
 exports.c: export_files
-	$(AWK) -f $(top_srcdir)/build/make_exports.awk `cat $?` > $@
+	$(AWK) -f $(top_srcdir)/build/make_exports.awk `cat $?` | $(top_srcdir)/build/fipsify_exports $(top_srcdir)/include/ap_config_auto.h > $@
 
 export_vars.h: export_files
 	$(AWK) -f $(top_srcdir)/build/make_var_export.awk `cat $?` > $@

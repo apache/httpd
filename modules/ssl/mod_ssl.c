@@ -99,9 +99,11 @@ static const command_rec ssl_config_cmds[] = {
     SSL_CMD_SRV(Engine, TAKE1,
                 "SSL switch for the protocol engine "
                 "(`on', `off')")
+#ifdef AP_FIPS
     SSL_CMD_SRV(FIPS, TAKE1,
 		"Enable FIPS-140 compliance "
                 "(`on', `off')")
+#endif
     SSL_CMD_ALL(CipherSuite, TAKE1,
                 "Colon-delimited list of permitted SSL Ciphers "
                 "(`XXX:...:XXX' - see manual)")
@@ -343,7 +345,7 @@ int ssl_init_ssl_connection(conn_rec *c)
     SSLSrvConfigRec *sc = mySrvConfig(c->base_server);
     SSL *ssl;
     SSLConnRec *sslconn = myConnConfig(c);
-    char *vhost_md5;
+    char *vhost_digest;
     modssl_ctx_t *mctx;
 
     /*
@@ -373,14 +375,20 @@ int ssl_init_ssl_connection(conn_rec *c)
         return DECLINED; /* XXX */
     }
 
-    vhost_md5 = ap_md5_binary(c->pool, (unsigned char *)sc->vhost_id,
-                              sc->vhost_id_len);
-
-    if (!SSL_set_session_id_context(ssl, (unsigned char *)vhost_md5,
+#ifdef AP_FIPS
+    vhost_digest = ap_sha1_binary(c->pool, (unsigned char *)sc->vhost_id,
+				  sc->vhost_id_len);
+#else
+    vhost_digest = ap_md5_binary(c->pool, (unsigned char *)sc->vhost_id,
+				 sc->vhost_id_len);
+#endif
+    
+/* Using only 32 bytes is deliberate */
+    if (!SSL_set_session_id_context(ssl, (unsigned char *)vhost_digest,
                                     APR_MD5_DIGESTSIZE*2))
     {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c,
-                      "Unable to set session id context to `%s'", vhost_md5);
+                      "Unable to set session id context to `%s'", vhost_digest);
         ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, c->base_server);
 
         c->aborted = 1;

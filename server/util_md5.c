@@ -50,6 +50,38 @@
 #include "util_md5.h"
 #include "util_ebcdic.h"
 
+#ifdef AP_FIPS
+#include <openssl/sha.h>
+
+AP_DECLARE(char *) ap_sha1_binary(apr_pool_t *p, const unsigned char *buf, int length)
+{
+    const char *hex = "0123456789abcdef";
+    SHA_CTX my_sha1;
+    unsigned char hash[SHA_DIGEST_LENGTH];
+    char *r, result[SHA_DIGEST_LENGTH*2+1];
+    int i;
+
+    /*
+     * Take the SHA-1 hash of the string argument.
+     */
+
+    SHA1_Init(&my_sha1);
+#if APR_CHARSET_EBCDIC
+# error no EBCDIC support
+#endif
+    SHA1_Update(&my_sha1, buf, (unsigned int)length);
+    SHA1_Final(hash, &my_sha1);
+
+    for (i = 0, r = result; i < APR_MD5_DIGESTSIZE; i++) {
+	*r++ = hex[hash[i] >> 4];
+	*r++ = hex[hash[i] & 0xF];
+    }
+    *r = '\0';
+
+    return apr_pstrndup(p, result, SHA_DIGEST_LENGTH*2);
+}
+
+#else
 AP_DECLARE(char *) ap_md5_binary(apr_pool_t *p, const unsigned char *buf, int length)
 {
     const char *hex = "0123456789abcdef";
@@ -170,3 +202,4 @@ AP_DECLARE(char *) ap_md5digest(apr_pool_t *p, apr_file_t *infile)
     return ap_md5contextTo64(p, &context);
 }
 
+#endif /*ndef AP_FIPS */
