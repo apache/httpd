@@ -22,10 +22,6 @@
 #include "util_script.h"
 #include "util_charset.h"
 
-#if APR_HAVE_UNISTD_H
-#include <unistd.h> /* needed for unlink/link */
-#endif
-
 /* Our on-disk header format is:
  *
  * disk_cache_info_t
