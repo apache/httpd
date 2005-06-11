@@ -6,7 +6,7 @@ CLEAN_TARGETS = suexec
 PROGRAMS = htpasswd htdigest rotatelogs logresolve ab checkgid htdbm htcacheclean
 TARGETS  = $(PROGRAMS)
 
-PROGRAM_LDADD        = $(UTIL_LDFLAGS) $(PROGRAM_DEPENDENCIES) $(EXTRA_LIBS) $(AP_LIBS)
+PROGRAM_LDADD        = $(UTIL_LDFLAGS) $(PROGRAM_DEPENDENCIES) $(EXTRA_LIBS) $(AP_LIBS) $(SSL_LIBS)
 PROGRAM_DEPENDENCIES = 
 
 include $(top_builddir)/build/rules.mk
