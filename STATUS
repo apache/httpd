@@ -235,12 +235,6 @@ PATCHES TO BACKPORT FROM TRUNK:
         PR: 34452
         +1: jorton
 
-     *) mod_userdir: fix to palloc(sizeof struct) not palloc(sizeof pointer)
-        http://svn.apache.org/viewcvs?rev=165151&view=rev
-        PR: 34588
-        +1: jorton, bnicholes, trawick (isn't it worth a CHANGES entry for a storage
-            corruption fix?)
-
      *) fix z/OS annoyance with pathname on debug messages in error log
         http://svn.apache.org/viewcvs?rev=178299&view=rev
         +1: trawick
@@ -255,7 +249,34 @@ PATCHES TO BACKPORT FROM TRUNK:
      *) Support the suppress-error-charset setting, as with Apache 1.3.x.
         PR 31274. (current docs say it works with Apache from 2.0.40 ;) )
         http://svn.apache.org/viewcvs?rev=170354&view=rev
+        +1: trawick, jorton
+
+     *) Downgrade the log level of a worker MPM apr_proc_mutex_foo error
+        message when it occurs during restart (as we already do for a couple
+        of other calls).
+        http://svn.apache.org/viewcvs?rev=179317&view=rev
+        +1: trawick, jorton
+
+     *) proxy FTP: Fix confusion about globbing characters which could lead
+        to getting a directory listing when a file was requested.  PR 34512.
+        2.1 patch was http://svn.apache.org/viewcvs?rev=179704&view=rev
+        2.0 version: http://people.apache.org/~trawick/179704-20.txt
+        +1: trawick, jorton
+
+     *) mod_mime_magic: Handle CRLF-format magic files so that it works with
+        the default installation on Windows. 
+        http://svn.apache.org/viewcvs?rev=179622&view=rev
         +1: trawick
+
+     *) mod_cache: Fix handling of 'Vary: *". PR 16125.
+        Trunk: r180341
+        2.0.x Patch: http://issues.apache.org/bugzilla/attachment.cgi?id=15297
+        +1: pquerna
+
+     *) mod_ssl: Fix buffering in SSL output filter.
+        http://svn.apache.org/viewcvs?rev=189971&view=rev
+        PR: 35279
+        +1: jorton
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 

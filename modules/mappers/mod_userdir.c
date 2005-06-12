@@ -330,7 +330,7 @@ static ap_unix_identity_t *get_suexec_id_doer(const request_rec *r)
         return NULL;
     }
 
-    if ((ugid = apr_palloc(r->pool, sizeof(ap_unix_identity_t *))) == NULL) {
+    if ((ugid = apr_palloc(r->pool, sizeof(*ugid))) == NULL) {
         return NULL;
     }
 
