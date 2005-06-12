@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
-<!-- English Revision: 161140:167959 (outdated) -->
+<!-- English Revision: 167959 -->
 
 <!--
  Copyright 2003-2005 The Apache Software Foundation or its licensors,
@@ -962,10 +962,11 @@ sich im Apache 2.0 ge&auml;ndert</compatibility>
     URL oder Nachricht folgen. Abh&auml;ngig vom Problem bzw. Fehler bietet
     der Apache manchmal zus&auml;tzliche Informationen an.</p>
 
-    <p>URLs k&ouml;nnen bei lokalen Adressen mit einem Schr&auml;gstrich
-    (/) beginnen oder eine komplette URL bilden, die der Client
-    aufl&ouml;sen kann. Alternativ kann eine Nachricht f&uuml;r die
-    Anzeige im Browser angeboten werden. Beispiel:</p>
+    <p>URLs k&ouml;nnen bei lokalen Webpfaden mit einem Schr&auml;gstrich
+    (/) beginnen (relativ zum <directive module="core"
+    >DocumentRoot</directive>-Verzeichnis) oder eine vollst&auml;ndige URL
+    bilden, die der Client aufl&ouml;sen kann. Alternativ kann eine
+    Nachricht f&uuml;r die Anzeige im Browser angeboten werden. Beispiel:</p>
 
     <example>
       ErrorDocument 500 http://foo.example.com/cgi-bin/tester<br />
@@ -1018,7 +1019,16 @@ sich im Apache 2.0 ge&auml;ndert</compatibility>
     Fehlerdokument gr&ouml;&szlig;er als 512 Bytes ist. Weitere Informationen
     sind im Artikel  <a
     href="http://support.microsoft.com/default.aspx?scid=kb;en-us;Q294807"
-    >Q294807</a> in der Microsoft Knowledgebase article verf&uuml;gbar.</p>
+    >Q294807</a> in der Microsoft Knowledgebase verf&uuml;gbar.</p>
+
+    <p>Obwohl die meisten Fehlermeldungen &uuml;berschrieben werden
+    k&ouml;nnen, werden unter bestimmten Umst&auml;nden die internen
+    Meldungen ungeachtet der Einstellung der <directive module="core"
+    >ErrorDocument</directive>-Direktive verwendet. Insbesondere bei
+    einer fehlerhaften Anfrage werden der normale Bearbeitungsprozess sofort
+    beendet und die interne Meldung zur&uuml;ckgegeben. Das ist notwendig, um
+    Sicherheitsprobleme zu vermeiden, die auf Grund fehlerhafter Anfragen
+    entstehen.</p>
 
     <p>In Versionen vor 2.0 wurden Meldungen durch ein einzelnes
     vorangestelltes Anf&uuml;hrungszeichen (") erkannt.</p>
