@@ -25,9 +25,6 @@
 <a href="./ko/install.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./ru/install.html" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a></p>
 </div>
-<div class="outofdate">Diese Übersetzung ist möglicherweise
-            nicht mehr aktuell. Bitte prüfen Sie die englische Version auf
-            die neuesten Änderungen.</div>
 
     <p>Dieses Dokument umfaßt nur die Kompilierung und Installation des
     Apache auf Unix und Unix-ähnlichen Systemen. Für die
@@ -368,14 +365,15 @@
     seit Version 2.0.41 -- frühere Versionen enthielten noch inkompatible
     Änderungen).</p>
 
-    <p>Wenn Sie den Quellcode von Ihrer letzten Installation aufgehoben haben,
-    ist ein Upgrade sogar noch einfacher. Die Datei <code>config.nice</code> im
-    Wurzelverzeichnis des alten Quelltextbaums enthält den genauen
-    <code class="program"><a href="./programs/configure.html">configure</a></code>-Befehl, der verwendet wurde, um den Quellcode
-    zu konfigurieren. Um jetzt von einer Version auf die nächste zu
-    aktualisieren, kopieren Sie einfach die <code>config.nice</code> in das
-    Verzeichnis der neuen Version, passen sie bei Bedarf an, und
-    führen Sie sie aus:</p>
+    <p>Um auf eine neue Unterversion zu aktualisieren, suchen Sie zunächst
+    die Datei <code>config.nice</code> im <code>build</code>-Verzeichnis
+    Ihrer Serverinstallation oder im Wurzelverzeichnis des Quelltextbaums
+    der alten Installation. Die Datei enthält den genauen
+    <code class="program"><a href="./programs/configure.html">configure</a></code>-Befehl, der verwendet wurde, um den
+    Quellcode zu konfigurieren. Um jetzt von einer Version auf die
+    nächste zu aktualisieren, kopieren Sie einfach die
+    <code>config.nice</code> in das Verzeichnis der neuen Version,
+    passen sie bei Bedarf an, und führen Sie sie aus:</p>
 
     <div class="example"><p><code>
       $ ./config.nice<br />
