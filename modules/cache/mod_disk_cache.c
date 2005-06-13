@@ -22,19 +22,40 @@
 #include "util_script.h"
 #include "util_charset.h"
 
-/* Our on-disk header format is:
+/*
+ * mod_disk_cache: Disk Based HTTP 1.1 Cache.
  *
- * disk_cache_info_t
- * entity name (dobj->name) [length is in disk_cache_info_t->name_len]
- * r->headers_out (delimited by CRLF)
- * CRLF
- * r->headers_in (delimited by CRLF)
- * CRLF
+ * Flow to Find the .data file:
+ *   Incoming client requests URI /foo/bar/baz
+ *   Generate <hash> off of /foo/bar/baz
+ *   Open <hash>.header
+ *   Read in <hash>.header file (may contain Format #1 or Format #2)
+ *   If format #1 (Contains a list of Vary Headers):
+ *      Use each header name (from .header) with our request values (headers_in) to
+ *      regenerate <hash> using HeaderName+HeaderValue+.../foo/bar/baz
+ *      re-read in <hash>.header (must be format #2)
+ *   read in <hash>.data
+ *   
+ * Format #1:
+ *   apr_uint32_t format;
+ *   apr_time_t expire;
+ *   apr_array_t vary_headers (delimited by CRLF)
+ *
+ * Format #2: 
+ *   disk_cache_info_t (first sizeof(apr_uint32_t) bytes is the format)
+ *   entity name (dobj->name) [length is in disk_cache_info_t->name_len]
+ *   r->headers_out (delimited by CRLF)
+ *   CRLF
+ *   r->headers_in (delimited by CRLF)
+ *   CRLF
  */
-#define DISK_FORMAT_VERSION 0
+
+#define VARY_FORMAT_VERSION 1
+#define DISK_FORMAT_VERSION 2
+
 typedef struct {
     /* Indicates the format of the header struct stored on-disk. */
-    int format;
+    apr_uint32_t format;
     /* The HTTP status code returned for this response.  */
     int status;
     /* The size of the entity name that follows. */
@@ -62,7 +83,8 @@ typedef struct disk_cache_object {
     char *datafile;          /* name of file where the data will go */
     char *hdrsfile;          /* name of file where the hdrs will go */
     char *hashfile;          /* Computed hash key for this URI */
-    char *name;
+    char *name;   /* Requested URI without vary bits - suitable for mortals. */
+    char *key;    /* On-disk prefix; URI with Vary bits (if present) */
     apr_file_t *fd;          /* data file */
     apr_file_t *hfd;         /* headers file */
     apr_file_t *tfd;         /* temporary file for data */
@@ -98,6 +120,8 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
 static apr_status_t store_body(cache_handle_t *h, request_rec *r, apr_bucket_brigade *b);
 static apr_status_t recall_headers(cache_handle_t *h, request_rec *r);
 static apr_status_t recall_body(cache_handle_t *h, apr_pool_t *p, apr_bucket_brigade *bb);
+static apr_status_t read_array(request_rec *r, apr_array_header_t* arr, 
+                               apr_file_t *file);
 
 /*
  * Local static functions
@@ -207,13 +231,6 @@ static int file_cache_recall_mydata(apr_file_t *fd, cache_info *info,
         return rv;
     }
 
-    if (disk_info.format != DISK_FORMAT_VERSION) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-                     "cache_disk: URL %s had a on-disk version mismatch",
-                     r->uri);
-        return APR_EGENERAL;
-    }
-
     /* Store it away so we can get it later. */
     dobj->disk_info = disk_info;
 
@@ -240,6 +257,81 @@ static int file_cache_recall_mydata(apr_file_t *fd, cache_info *info,
     }
 
     return APR_SUCCESS;
+}
+
+static char* regen_key(apr_pool_t *p, apr_table_t *headers,
+                       apr_array_header_t *varray, const char *oldkey)
+{
+    struct iovec *iov;
+    int i, k;
+    int nvec;
+    const char *header;
+    const char **elts;
+
+    nvec = (varray->nelts * 2) + 1;
+    iov = apr_palloc(p, sizeof(struct iovec) * nvec);
+    elts = (const char **) varray->elts;
+
+    /* TODO: 
+     *    - Handle multiple-value headers better. (sort them?)
+     *    - Handle Case in-sensitive Values better.
+     *        This isn't the end of the world, since it just lowers the cache 
+     *        hit rate, but it would be nice to fix.
+     *  
+     * The majority are case insenstive if they are values (encoding etc).
+     * Most of rfc2616 is case insensitive on header contents.
+     *
+     * So the better solution may be to identify headers which should be
+     * treated case-sensitive?
+     *  HTTP URI's (3.2.3) [host and scheme are insensitive]
+     *  HTTP method (5.1.1)
+     *  HTTP-date values (3.3.1)
+     *  3.7 Media Types [exerpt]
+     *     The type, subtype, and parameter attribute names are case-
+     *     insensitive. Parameter values might or might not be case-sensitive,
+     *     depending on the semantics of the parameter name.
+     *  4.20 Except [exerpt]
+     *     Comparison of expectation values is case-insensitive for unquoted
+     *     tokens (including the 100-continue token), and is case-sensitive for
+     *     quoted-string expectation-extensions.
+     */
+
+    for(i=0, k=0; i < varray->nelts; i++) {
+        header = apr_table_get(headers, elts[i]);
+        if (!header) {
+            header = "";
+        }
+        iov[k].iov_base = (char*) elts[i];
+        iov[k].iov_len = strlen(elts[i]);
+        k++;
+        iov[k].iov_base = (char*) header;
+        iov[k].iov_len = strlen(header);
+        k++;
+    }
+    iov[k].iov_base = (char*) oldkey;
+    iov[k].iov_len = strlen(oldkey);
+    k++;
+
+    return apr_pstrcatv(p, iov, k, NULL);
+}
+
+static int array_alphasort(const void *fn1, const void *fn2)
+{
+    return strcmp(*(char**)fn1, *(char**)fn2);
+}
+
+static void tokens_to_array(apr_pool_t *p, const char *data,
+                            apr_array_header_t *arr)
+{
+    char *token;
+
+    while ((token = ap_get_list_item(p, &data)) != NULL) {
+        *((const char **) apr_array_push(arr)) = token;
+    }
+
+    /* Sort it so that "Vary: A, B" and "Vary: B, A" are stored the same. */
+    qsort((void *) arr->elts, arr->nelts,
+         sizeof(char *), array_alphasort);
 }
 
 /*
@@ -273,6 +365,9 @@ static int create_entity(cache_handle_t *h, request_rec *r, const char *key, apr
 
 static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
 {
+    apr_uint32_t format;
+    apr_size_t len;
+    char *nkey;
     apr_status_t rc;
     static int error_logged = 0;
     disk_cache_conf *conf = ap_get_module_config(r->server->module_config,
@@ -300,10 +395,70 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
     obj->vobj = dobj = apr_pcalloc(r->pool, sizeof(disk_cache_object_t));
 
     info = &(obj->info);
-    obj->key = (char *) key;
-    dobj->name = (char *) key;
-    dobj->datafile = data_file(r->pool, conf, dobj, key);
+
+    /* Open the headers file */
     dobj->hdrsfile = header_file(r->pool, conf, dobj, key);
+    flags = APR_READ|APR_BINARY|APR_BUFFERED;
+    rc = apr_file_open(&dobj->hfd, dobj->hdrsfile, flags, 0, r->pool);
+    if (rc != APR_SUCCESS) {
+        return DECLINED;
+    }
+
+    /* read the format from the cache file */
+    len = sizeof(format);
+    apr_file_read_full(dobj->hfd, &format, len, &len);
+
+    if (format == VARY_FORMAT_VERSION) {
+        apr_array_header_t* varray;
+        apr_time_t expire;
+
+        len = sizeof(expire);
+        apr_file_read_full(dobj->hfd, &expire, len, &len);
+
+        if (expire < r->request_time) {
+            return DECLINED;
+        }
+
+        varray = apr_array_make(r->pool, 5, sizeof(char*));
+        rc = read_array(r, varray, dobj->hfd);
+        if (rc != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, rc, r->server,
+                         "disk_cache: Cannot parse vary header file: %s", 
+                         dobj->hdrsfile);
+            return DECLINED;
+        }
+        apr_file_close(dobj->hfd);
+
+        nkey = regen_key(r->pool, r->headers_in, varray, key);
+
+        dobj->hashfile = NULL;
+        dobj->hdrsfile = header_file(r->pool, conf, dobj, nkey);
+
+        flags = APR_READ|APR_BINARY|APR_BUFFERED;
+        rc = apr_file_open(&dobj->hfd, dobj->hdrsfile, flags, 0, r->pool);
+        if (rc != APR_SUCCESS) {
+            return DECLINED;
+        }
+    }
+    else if (format != DISK_FORMAT_VERSION) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
+                     "cache_disk: File '%s' has a version mismatch. File had version: %d.",
+                     dobj->hdrsfile, format);
+        return DECLINED;
+    }
+    else {
+        apr_off_t offset = 0;
+        /* This wasn't a Vary Format file, so we must seek to the 
+         * start of the file again, so that later reads work. 
+         */
+        apr_file_seek(dobj->hfd, APR_SET, &offset);
+        nkey = (char*)key;
+    }
+
+    obj->key = nkey;
+    dobj->key = nkey;
+    dobj->name = (char*)key;
+    dobj->datafile = data_file(r->pool, conf, dobj, nkey);
     dobj->tempfile = apr_pstrcat(r->pool, conf->cache_root, AP_TEMPFILE, NULL);
 
     /* Open the data file */
@@ -312,14 +467,6 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
     flags |= APR_SENDFILE_ENABLED;
 #endif
     rc = apr_file_open(&dobj->fd, dobj->datafile, flags, 0, r->pool);
-    if (rc != APR_SUCCESS) {
-        /* XXX: Log message */
-        return DECLINED;
-    }
-
-    /* Open the headers file */
-    flags = APR_READ|APR_BINARY|APR_BUFFERED;
-    rc = apr_file_open(&dobj->hfd, dobj->hdrsfile, flags, 0, r->pool);
     if (rc != APR_SUCCESS) {
         /* XXX: Log message */
         return DECLINED;
@@ -354,6 +501,72 @@ static int remove_url(const char *key)
 {
     /* XXX: Delete file from cache! */
     return OK;
+}
+
+static apr_status_t read_array(request_rec *r, apr_array_header_t* arr, 
+                               apr_file_t *file)
+{
+    char w[MAX_STRING_LEN];
+    int p;
+    apr_status_t rv;
+
+    while (1) {
+        rv = apr_file_gets(w, MAX_STRING_LEN - 1, file);
+        if (rv != APR_SUCCESS) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                          "Premature end of vary array.");
+            return rv;
+        }
+
+        p = strlen(w);
+        if (p > 0 && w[p - 1] == '\n') {
+            if (p > 1 && w[p - 2] == CR) {
+                w[p - 2] = '\0';
+            }
+            else {
+                w[p - 1] = '\0';
+            }
+        }
+
+        /* If we've finished reading the array, break out of the loop. */
+        if (w[0] == '\0') {
+            break;
+        }
+
+       *((const char **) apr_array_push(arr)) = apr_pstrdup(r->pool, w);
+    }
+
+    return APR_SUCCESS;
+}
+
+static apr_status_t store_array(apr_file_t *fd, apr_array_header_t* arr)
+{
+    int i;
+    apr_status_t rv;
+    struct iovec iov[2];
+    apr_size_t amt;
+    const char **elts;
+
+    elts = (const char **) arr->elts;
+
+    for (i = 0; i < arr->nelts; i++) {
+        iov[0].iov_base = (char*) elts[i];
+        iov[0].iov_len = strlen(elts[i]);
+        iov[1].iov_base = CRLF;
+        iov[1].iov_len = sizeof(CRLF) - 1;
+
+        rv = apr_file_writev(fd, (const struct iovec *) &iov, 2,
+                             &amt);
+        if (rv != APR_SUCCESS) {
+            return rv;
+        }
+    }
+
+    iov[0].iov_base = CRLF;
+    iov[0].iov_len = sizeof(CRLF) - 1;
+
+    return apr_file_writev(fd, (const struct iovec *) &iov, 1,
+                         &amt);
 }
 
 static apr_status_t read_table(cache_handle_t *handle, request_rec *r,
@@ -530,6 +743,57 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
 
     /* This is flaky... we need to manage the cache_info differently */
     h->cache_obj->info = *info;
+
+    if (r->headers_out) {
+        const char *tmp;
+
+        tmp = apr_table_get(r->headers_out, "Vary");
+
+        if (tmp) {
+            apr_array_header_t* varray;
+            apr_uint32_t format = VARY_FORMAT_VERSION; 
+
+            mkdir_structure(conf, dobj->hdrsfile, r->pool);
+
+            rv = apr_file_mktemp(&dobj->tfd, dobj->tempfile,
+                                 APR_CREATE | APR_WRITE | APR_BINARY | APR_EXCL,
+                                 r->pool);
+
+            if (rv != APR_SUCCESS) {
+                return rv;
+            }
+
+            amt = sizeof(format);
+            apr_file_write(dobj->tfd, &format, &amt);
+
+            amt = sizeof(info->expire);
+            apr_file_write(dobj->tfd, &info->expire, &amt);
+
+            varray = apr_array_make(r->pool, 6, sizeof(char*));
+            tokens_to_array(r->pool, tmp, varray);
+
+            store_array(dobj->tfd, varray);
+
+            apr_file_close(dobj->tfd);
+
+            dobj->tfd = NULL;
+
+            rv = apr_file_rename(dobj->tempfile, dobj->hdrsfile, r->pool);
+            if (rv != APR_SUCCESS) {
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, r->server,
+                    "disk_cache: rename tempfile to varyfile failed: %s -> %s",
+                    dobj->tempfile, dobj->hdrsfile);
+                return rv;
+            }
+
+            dobj->tempfile = apr_pstrcat(r->pool, conf->cache_root, AP_TEMPFILE, NULL);
+            tmp = regen_key(r->pool, r->headers_in, varray, dobj->name);
+            dobj->hashfile = NULL;
+            dobj->datafile = data_file(r->pool, conf, dobj, tmp);
+            dobj->hdrsfile = header_file(r->pool, conf, dobj, tmp);
+        }
+    }
+
 
     rv = apr_file_mktemp(&dobj->hfd, dobj->tempfile,
                          APR_CREATE | APR_WRITE | APR_BINARY |
