@@ -21,7 +21,7 @@ INSTALL_TARGETS = install-conf install-htdocs install-error install-icons \
 DISTCLEAN_TARGETS  = include/ap_config_auto.h include/ap_config_layout.h \
 	modules.c config.cache config.log config.status build/config_vars.mk \
 	build/rules.mk docs/conf/httpd.conf docs/conf/extra/*.conf shlibtool \
-	build/pkg/pkginfo
+	build/pkg/pkginfo build/config_vars.sh
 EXTRACLEAN_TARGETS = configure include/ap_config_auto.h.in generated_lists \
 	httpd.spec
 
@@ -85,7 +85,11 @@ install-conf:
 	    fi ; \
 	fi
 
-install-build:
+# Create a sanitized config_vars.mk
+build/config_vars.out: build/config_vars.mk
+	@$(SHELL) build/config_vars.sh < build/config_vars.mk > build/config_vars.out
+
+install-build: build/config_vars.out
 	@echo Installing build system files 
 	@$(MKINSTALLDIRS) $(DESTDIR)$(installbuilddir) 
 	@for f in $(top_srcdir)/build/*.mk build/*.mk; do \
@@ -96,8 +100,8 @@ install-build:
 		  $(top_srcdir)/build/instdso.sh; do \
 	 $(INSTALL_PROGRAM) $$f $(DESTDIR)$(installbuilddir); \
 	done
-	@sed "/^LIBTOOL/s#/[^ ]*/libtool \(.*\)#`$(APR_CONFIG) --apr-libtool` $(LTFLAGS)#" \
-	    build/config_vars.mk > $(DESTDIR)$(installbuilddir)/config_vars.mk
+	@$(INSTALL_DATA) build/config_vars.out $(DESTDIR)$(installbuilddir)/config_vars.mk
+	@rm build/config_vars.out
 
 htdocs-srcdir = $(top_srcdir)/docs/docroot
 
