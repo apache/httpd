@@ -28,6 +28,8 @@ APR_LIBTOOL="`${APR_CONFIG} --apr-libtool`"
 APR_INCLUDEDIR="`${APR_CONFIG} --includedir`"
 APU_INCLUDEDIR="`${APU_CONFIG} --includedir`"
 
+installbuilddir="@exp_installbuilddir@"
+
 exec sed "
 /^[A-Z_]*_LDADD/d
 /MPM_LIB/d
@@ -52,6 +54,8 @@ exec sed "
   s, -I\$(top_srcdir)/[^ ]*,,g
   s, -I\$(top_builddir)/[^ ]*,,g
 }
+/^MKINSTALLDIRS/s,\$(abs_srcdir)/build,$installbuilddir,
+/^INSTALL /s,\$(abs_srcdir)/build,$installbuilddir,
 /^HTTPD_LDFLAGS/d
 /^UTIL_LDFLAGS/d
 /^APR_INCLUDEDIR.*$/s,.*,APR_INCLUDEDIR = ${APR_INCLUDEDIR},

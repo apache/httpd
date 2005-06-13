@@ -303,11 +303,16 @@ dnl ## Check for programs
 AC_PATH_PROG(RM, rm)
 AC_PATH_PROG(PKGCONFIG, pkg-config)
 AC_PROG_AWK
-AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_CHECK_TOOL(RANLIB, ranlib, true)
 dnl AC_PATH_PROG(PERL_PATH, perl)
 AC_CHECK_PROGS(LYNX_PATH,[lynx links elinks], [lynx])
+
+# Hard-coded install programs
+MKINSTALLDIRS="\$(abs_srcdir)/build/mkdir.sh"
+INSTALL="\$(LIBTOOL) --mode=install \$(abs_srcdir)/build/install.sh -c"
+APACHE_SUBST(MKINSTALLDIRS)
+APACHE_SUBST(INSTALL)
 
 dnl various OS checks that apparently set required flags
 AC_AIX
