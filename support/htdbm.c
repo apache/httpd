@@ -389,7 +389,7 @@ int main(int argc, const char * const argv[])
     int  need_pwd  = 1;
     int  need_cmnt = 0;
     int  pwd_supplied = 0;
-    int  changed;
+    int  changed = 0;
     int  cmd = HTDBM_MAKE;
     int  i;
     int args_left = 2;
