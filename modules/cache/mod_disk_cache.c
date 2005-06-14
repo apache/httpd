@@ -75,7 +75,7 @@ typedef struct {
  */
 typedef struct disk_cache_object {
     const char *root;        /* the location of the cache directory */
-    const char *tempfile;    /* temp file tohold the content */
+    char *tempfile;    /* temp file tohold the content */
     const char *datafile;    /* name of file where the data will go */
     const char *hdrsfile;    /* name of file where the hdrs will go */
     const char *hashfile;    /* Computed hash key for this URI */
