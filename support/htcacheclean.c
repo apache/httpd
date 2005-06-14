@@ -44,10 +44,12 @@
 
 /* mod_disk_cache.c extract start */
 
-#define DISK_FORMAT_VERSION 0
+#define VARY_FORMAT_VERSION 1
+#define DISK_FORMAT_VERSION 2
+
 typedef struct {
     /* Indicates the format of the header struct stored on-disk. */
-    int format;
+    apr_uint32_t format;
     /* The HTTP status code returned for this response.  */
     int status;
     /* The size of the entity name that follows. */
@@ -476,6 +478,7 @@ static int process_dir(char *path, apr_pool_t *pool)
 
     for (i = apr_hash_first(p, h); i && !interrupted; i = apr_hash_next(i)) {
         void *hvalue;
+        apr_uint32_t format;
 
         apr_hash_this(i, NULL, NULL, &hvalue);
         d = hvalue;
@@ -486,28 +489,50 @@ static int process_dir(char *path, apr_pool_t *pool)
                                    CACHE_HEADER_SUFFIX, NULL);
             if (apr_file_open(&fd, nextpath, APR_READ, APR_OS_DEFAULT,
                               p) == APR_SUCCESS) {
-                len = sizeof(disk_cache_info_t);
-                if (apr_file_read_full(fd, &disk_info, len,
+                len = sizeof(format);
+                if (apr_file_read_full(fd, &format, len, 
                                        &len) == APR_SUCCESS) {
-                    apr_file_close(fd);
-                    if (disk_info.format == DISK_FORMAT_VERSION) {
-                        e = apr_palloc(pool, sizeof(ENTRY));
-                        APR_RING_INSERT_TAIL(&root, e, _entry, link);
-                        e->expire = disk_info.expire;
-                        e->response_time = disk_info.response_time;
-                        e->htime = d->htime;
-                        e->dtime = d->dtime;
-                        e->hsize = d->hsize;
-                        e->dsize = d->dsize;
-                        e->basename = apr_palloc(pool,
-                                                 strlen(d->basename) + 1);
-                        strcpy(e->basename, d->basename);
-                        break;
+                    if (format == DISK_FORMAT_VERSION) {
+                        apr_off_t offset = 0;
+
+                        apr_file_seek(fd, APR_SET, &offset);
+
+                        len = sizeof(disk_cache_info_t);
+
+                        if (apr_file_read_full(fd, &disk_info, len,
+                                               &len) == APR_SUCCESS) {
+                            apr_file_close(fd);
+                            e = apr_palloc(pool, sizeof(ENTRY));
+                            APR_RING_INSERT_TAIL(&root, e, _entry, link);
+                            e->expire = disk_info.expire;
+                            e->response_time = disk_info.response_time;
+                            e->htime = d->htime;
+                            e->dtime = d->dtime;
+                            e->hsize = d->hsize;
+                            e->dsize = d->dsize;
+                            e->basename = apr_palloc(pool,
+                                                     strlen(d->basename) + 1);
+                            strcpy(e->basename, d->basename);
+                            break;
+                        }
+                        else {
+                            apr_file_close(fd);
+                        }
+                    }
+                    else if (format == VARY_FORMAT_VERSION) {
+                        /* This must be a URL that added Vary headers later, 
+                         * so kill the orphaned .data file
+                         */
+                        apr_file_close(fd);
+                        apr_file_remove(apr_pstrcat(p, path, "/", d->basename, 
+                                                    CACHE_DATA_SUFFIX, NULL),
+                                        p);
                     }
                 }
                 else {
                     apr_file_close(fd);
                 }
+
             }
             /* we have a somehow unreadable headers file which is associated
              * with a data file. this may be caused by apache currently
@@ -533,6 +558,31 @@ static int process_dir(char *path, apr_pool_t *pool)
          */
         case HEADER:
             current = apr_time_now();
+            nextpath = apr_pstrcat(p, path, "/", d->basename,
+                                   CACHE_HEADER_SUFFIX, NULL);
+            if (apr_file_open(&fd, nextpath, APR_READ, APR_OS_DEFAULT,
+                              p) == APR_SUCCESS) {
+                len = sizeof(format);
+                if (apr_file_read_full(fd, &format, len, 
+                                       &len) == APR_SUCCESS) {
+                    if (format == VARY_FORMAT_VERSION) {
+                        apr_time_t expires;
+
+                        len = sizeof(expires);
+
+                        apr_file_read_full(fd, &expires, len, &len);
+
+                        apr_file_close(fd);
+
+                        if (expires < current) {
+                            delete_entry(path, d->basename, p);
+                        }
+                        break;
+                    }
+                }
+                apr_file_close(fd);
+            }
+
             if (realclean || d->htime < current - deviation
                 || d->htime > current + deviation) {
                 delete_entry(path, d->basename, p);
