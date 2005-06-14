@@ -24,6 +24,7 @@
 #include "ap_config.h"
 #include "httpd.h"
 #include "http_config.h"
+#include "http_core.h"
 #include "ap_listen.h"
 #include "http_log.h"
 #include "mpm.h"
@@ -167,32 +168,6 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
     }
 #endif
 
-#if APR_HAS_SO_ACCEPTFILTER
-#ifndef ACCEPT_FILTER_NAME
-#define ACCEPT_FILTER_NAME "httpready"
-#ifdef __FreeBSD_version
-#if __FreeBSD_version < 411000 /* httpready broken before 4.1.1 */
-#undef ACCEPT_FILTER_NAME
-#define ACCEPT_FILTER_NAME "dataready"
-#endif
-#endif
-#endif
-    stat = apr_socket_accept_filter(s, ACCEPT_FILTER_NAME, "");
-    if (stat != APR_SUCCESS && !APR_STATUS_IS_ENOTIMPL(stat)) {
-        ap_log_perror(APLOG_MARK, APLOG_WARNING, stat, p,
-                      "Failed to enable the '%s' Accept Filter",
-                      ACCEPT_FILTER_NAME);
-    }
-#else
-#ifdef APR_TCP_DEFER_ACCEPT
-    stat = apr_socket_opt_set(s, APR_TCP_DEFER_ACCEPT, 1);   
-    if (stat != APR_SUCCESS && !APR_STATUS_IS_ENOTIMPL(stat)) {
-        ap_log_perror(APLOG_MARK, APLOG_WARNING, stat, p,
-                              "Failed to enable APR_TCP_DEFER_ACCEPT");
-    }
-#endif
-#endif
-
     server->sd = s;
     server->active = 1;
 
@@ -203,6 +178,62 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
 #endif
 
     return APR_SUCCESS;
+}
+
+static const char* find_accf_name(server_rec *s, const char *proto)
+{
+    const char* accf;
+    core_server_config *conf = ap_get_module_config(s->module_config,
+                                                    &core_module);
+    if (!proto) {
+        return NULL;
+    }
+
+    accf = apr_table_get(conf->accf_map, proto);
+
+    if (accf && !strcmp("none", accf)) {
+        return NULL;
+    }
+
+    return accf;
+}
+
+static void ap_apply_accept_filter(apr_pool_t *p, ap_listen_rec *lis, 
+                                           server_rec *server)
+{
+    apr_socket_t *s = lis->sd;
+    const char *accf;
+    apr_status_t rv;
+    const char *proto;
+
+    proto = lis->protocol;
+
+    if (!proto) {
+        proto = ap_get_server_protocol(server);
+    }
+
+
+    accf = find_accf_name(server, proto);
+
+    if (accf) {
+#if APR_HAS_SO_ACCEPTFILTER
+        rv = apr_socket_accept_filter(s, apr_pstrdup(p, accf), 
+                                      apr_pstrdup(p,""));
+        if (rv != APR_SUCCESS && !APR_STATUS_IS_ENOTIMPL(rv)) {
+            ap_log_perror(APLOG_MARK, APLOG_WARNING, rv, p,
+                          "Failed to enable the '%s' Accept Filter",
+                          accf);
+        }
+#else
+#ifdef APR_TCP_DEFER_ACCEPT
+        rv = apr_socket_opt_set(s, APR_TCP_DEFER_ACCEPT, 1);   
+        if (rv != APR_SUCCESS && !APR_STATUS_IS_ENOTIMPL(rv)) {
+            ap_log_perror(APLOG_MARK, APLOG_WARNING, rv, p,
+                              "Failed to enable APR_TCP_DEFER_ACCEPT");
+        }
+#endif
+#endif
+    }
 }
 
 static apr_status_t close_listeners_on_exec(void *v)
@@ -218,7 +249,8 @@ static apr_status_t close_listeners_on_exec(void *v)
 }
 
 
-static const char *alloc_listener(process_rec *process, char *addr, apr_port_t port)
+static const char *alloc_listener(process_rec *process, char *addr, 
+                                  apr_port_t port, const char* proto)
 {
     ap_listen_rec **walk, *last;
     apr_status_t status;
@@ -279,6 +311,7 @@ static const char *alloc_listener(process_rec *process, char *addr, apr_port_t p
         new->active = 0;
         new->next = 0;
         new->bind_addr = sa;
+        new->protocol = apr_pstrdup(process->pool, proto);
 
         /* Go to the next sockaddr. */
         sa = sa->next;
@@ -451,8 +484,37 @@ static int open_listeners(apr_pool_t *pool)
 
 AP_DECLARE(int) ap_setup_listeners(server_rec *s)
 {
+    server_rec *ls;
+    server_addr_rec *addr;
     ap_listen_rec *lr;
     int num_listeners = 0;
+    const char* proto;
+    int found;
+
+    for (ls = s; ls; ls = ls->next) {
+        proto = ap_get_server_protocol(ls);
+        if (!proto) {
+            found = 0;
+            /* No protocol was set for this vhost, 
+             * use the default for this listener. 
+             */
+            for (addr = ls->addrs; addr && !found; addr = addr->next) {
+                for (lr = ap_listeners; lr; lr = lr->next) {
+                    if (apr_sockaddr_equal(lr->bind_addr, addr->host_addr) &&
+                        lr->bind_addr->port == addr->host_port) {
+                        ap_set_server_protocol(ls, lr->protocol);
+                        found = 1;
+                        break;
+                    }
+                }
+            }
+
+            if (!found) {
+                /* TODO: set protocol defaults per-Port, eg 25=smtp */
+                ap_set_server_protocol(ls, "http");
+            }
+        }
+    }
 
     if (open_listeners(s->process->pool)) {
        return 0;
@@ -460,6 +522,20 @@ AP_DECLARE(int) ap_setup_listeners(server_rec *s)
 
     for (lr = ap_listeners; lr; lr = lr->next) {
         num_listeners++;
+        found = 0;
+        for (ls = s; ls && !found; ls = ls->next) {
+            for (addr = ls->addrs; addr && !found; addr = addr->next) {
+                if (apr_sockaddr_equal(lr->bind_addr, addr->host_addr) &&
+                    lr->bind_addr->port == addr->host_port) {
+                    found = 1;
+                    ap_apply_accept_filter(s->process->pool, lr, ls);
+                }
+            }
+        }
+
+        if (!found) {
+            ap_apply_accept_filter(s->process->pool, lr, s);
+        }
     }
 
     return num_listeners;
@@ -474,9 +550,9 @@ AP_DECLARE(void) ap_listen_pre_config(void)
 
 
 AP_DECLARE_NONSTD(const char *) ap_set_listener(cmd_parms *cmd, void *dummy,
-                                                const char *ips)
+                                                int argc, char *const argv[])
 {
-    char *host, *scope_id;
+    char *host, *scope_id, *proto;
     apr_port_t port;
     apr_status_t rv;
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
@@ -485,7 +561,11 @@ AP_DECLARE_NONSTD(const char *) ap_set_listener(cmd_parms *cmd, void *dummy,
         return err;
     }
 
-    rv = apr_parse_addr_port(&host, &scope_id, &port, ips, cmd->pool);
+    if (argc < 1 || argc > 2) {
+        return "Listen requires 1 or 2 arguments.";
+    }
+
+    rv = apr_parse_addr_port(&host, &scope_id, &port, argv[0], cmd->pool);
     if (rv != APR_SUCCESS) {
         return "Invalid address or port";
     }
@@ -503,7 +583,15 @@ AP_DECLARE_NONSTD(const char *) ap_set_listener(cmd_parms *cmd, void *dummy,
         return "Port must be specified";
     }
 
-    return alloc_listener(cmd->server->process, host, port);
+    if (argc != 2) {
+        proto = "http";
+    }
+    else {
+        proto = apr_pstrdup(cmd->pool, argv[1]);
+        ap_str_tolower(proto);
+    }
+
+    return alloc_listener(cmd->server->process, host, port, proto);
 }
 
 AP_DECLARE_NONSTD(const char *) ap_set_listenbacklog(cmd_parms *cmd,
