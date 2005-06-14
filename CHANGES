@@ -2,6 +2,14 @@ Changes with Apache 2.1.5
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_ssl: Setting the Protocol to 'https' can replace the use of the 
+     'SSLEngine on' command. [Paul Querna]
+
+  *) core: Refactor the mapping of Accept Filters to Sockets. Add the 
+     AcceptFilter and Protocol directives to aid in mapping filter types.
+     Extend the Listen directive to optionally take a protocol name.
+     [Paul Querna]
+
   *) mod_disk_cache: Support storing multiple variations of one URL. PR 35211.
      [Paul Querna]
 

@@ -53,7 +53,10 @@ struct ap_listen_rec {
      * Is this socket currently active 
      */
     int active;
-/* more stuff here, like which protocol is bound to the port */
+    /**
+     * The default protocol for this listening socket.
+     */
+    const char* protocol;
 };
 
 /**
@@ -82,7 +85,8 @@ AP_DECLARE(int) ap_setup_listeners(server_rec *s);
  * called.
  */ 
 AP_DECLARE_NONSTD(const char *) ap_set_listenbacklog(cmd_parms *cmd, void *dummy, const char *arg);
-AP_DECLARE_NONSTD(const char *) ap_set_listener(cmd_parms *cmd, void *dummy, const char *ips);
+AP_DECLARE_NONSTD(const char *) ap_set_listener(cmd_parms *cmd, void *dummy, 
+                                                int argc, char *const argv[]);
 AP_DECLARE_NONSTD(const char *) ap_set_send_buffer_size(cmd_parms *cmd, void *dummy,
 				    const char *arg);
 AP_DECLARE_NONSTD(const char *) ap_set_receive_buffer_size(cmd_parms *cmd,
@@ -92,8 +96,8 @@ AP_DECLARE_NONSTD(const char *) ap_set_receive_buffer_size(cmd_parms *cmd,
 #define LISTEN_COMMANDS	\
 AP_INIT_TAKE1("ListenBacklog", ap_set_listenbacklog, NULL, RSRC_CONF, \
   "Maximum length of the queue of pending connections, as used by listen(2)"), \
-AP_INIT_TAKE1("Listen", ap_set_listener, NULL, RSRC_CONF, \
-  "A port number or a numeric IP address and a port number"), \
+AP_INIT_TAKE_ARGV("Listen", ap_set_listener, NULL, RSRC_CONF, \
+  "A port number or a numeric IP address and a port number, and an optional protocol"), \
 AP_INIT_TAKE1("SendBufferSize", ap_set_send_buffer_size, NULL, RSRC_CONF, \
   "Send buffer size in bytes"), \
 AP_INIT_TAKE1("ReceiveBufferSize", ap_set_receive_buffer_size, NULL, \
