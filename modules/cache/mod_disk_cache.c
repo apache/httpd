@@ -75,12 +75,12 @@ typedef struct {
  */
 typedef struct disk_cache_object {
     const char *root;        /* the location of the cache directory */
-    char *tempfile;          /* temp file tohold the content */
-    char *datafile;          /* name of file where the data will go */
-    char *hdrsfile;          /* name of file where the hdrs will go */
-    char *hashfile;          /* Computed hash key for this URI */
-    char *name;   /* Requested URI without vary bits - suitable for mortals. */
-    char *key;    /* On-disk prefix; URI with Vary bits (if present) */
+    const char *tempfile;    /* temp file tohold the content */
+    const char *datafile;    /* name of file where the data will go */
+    const char *hdrsfile;    /* name of file where the hdrs will go */
+    const char *hashfile;    /* Computed hash key for this URI */
+    const char *name;   /* Requested URI without vary bits - suitable for mortals. */
+    const char *key;    /* On-disk prefix; URI with Vary bits (if present) */
     apr_file_t *fd;          /* data file */
     apr_file_t *hfd;         /* headers file */
     apr_file_t *tfd;         /* temporary file for data */
@@ -146,12 +146,12 @@ static char *data_file(apr_pool_t *p, disk_cache_conf *conf,
                        CACHE_DATA_SUFFIX, NULL);
 }
 
-static void mkdir_structure(disk_cache_conf *conf, char *file, apr_pool_t *pool)
+static void mkdir_structure(disk_cache_conf *conf, const char *file, apr_pool_t *pool)
 {
     apr_status_t rv;
     char *p;
 
-    for (p = file + conf->cache_root_len + 1;;) {
+    for (p = (char*)file + conf->cache_root_len + 1;;) {
         p = strchr(p, '/');
         if (!p)
             break;
@@ -255,8 +255,8 @@ static int file_cache_recall_mydata(apr_file_t *fd, cache_info *info,
     return APR_SUCCESS;
 }
 
-static char* regen_key(apr_pool_t *p, apr_table_t *headers,
-                       apr_array_header_t *varray, const char *oldkey)
+static const char* regen_key(apr_pool_t *p, apr_table_t *headers,
+                             apr_array_header_t *varray, const char *oldkey)
 {
     struct iovec *iov;
     int i, k;
@@ -363,7 +363,7 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
 {
     apr_uint32_t format;
     apr_size_t len;
-    char *nkey;
+    const char *nkey;
     apr_status_t rc;
     static int error_logged = 0;
     disk_cache_conf *conf = ap_get_module_config(r->server->module_config,
@@ -448,12 +448,12 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
          * start of the file again, so that later reads work. 
          */
         apr_file_seek(dobj->hfd, APR_SET, &offset);
-        nkey = (char*)key;
+        nkey = key;
     }
 
     obj->key = nkey;
     dobj->key = nkey;
-    dobj->name = (char*)key;
+    dobj->name = key;
     dobj->datafile = data_file(r->pool, conf, dobj, nkey);
     dobj->tempfile = apr_pstrcat(r->pool, conf->cache_root, AP_TEMPFILE, NULL);
 
@@ -813,7 +813,7 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
 
     iov[0].iov_base = (void*)&disk_info;
     iov[0].iov_len = sizeof(disk_cache_info_t);
-    iov[1].iov_base = dobj->name;
+    iov[1].iov_base = (void*)dobj->name;
     iov[1].iov_len = disk_info.name_len;
 
     rv = apr_file_writev(dobj->hfd, (const struct iovec *) &iov, 2, &amt);

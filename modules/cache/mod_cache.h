@@ -167,7 +167,7 @@ struct cache_info {
  */
 typedef struct cache_object cache_object_t;
 struct cache_object {
-    char *key;
+    const char *key;
     cache_object_t *next;
     cache_info info;
     /* Opaque portion (specific to the implementation) of the cache object */
