@@ -218,7 +218,7 @@ static void cleanup_cache_object(cache_object_t *obj)
 
     /* Cleanup the cache_object_t */
     if (obj->key) {
-        free(obj->key);
+        free((void*)obj->key);
     }
 
     free(obj);
@@ -381,7 +381,7 @@ static int create_entity(cache_handle_t *h, cache_type_e type_e,
         cleanup_cache_object(obj);
         return DECLINED;
     }
-    memcpy(obj->key, key, key_len);
+    memcpy((void*)obj->key, key, key_len);
 
     /* Allocate and init mem_cache_object_t */
     mobj = calloc(1, sizeof(*mobj));
