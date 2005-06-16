@@ -31,6 +31,7 @@ available</td></tr>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#acceptfilter">AcceptFilter</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#acceptpathinfo">AcceptPathInfo</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#accessfilename">AccessFileName</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#adddefaultcharset">AddDefaultCharset</a></li>
@@ -95,6 +96,58 @@ available</td></tr>
 </ul>
 </div>
 
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AcceptFilter" id="AcceptFilter">AcceptFilter</a> <a name="acceptfilter" id="acceptfilter">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configures optimizations for a Protocol's Listener Sockets</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AcceptFilter <var>protocol</var> <var>accept_filter</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.1.5 and later</td></tr>
+</table>
+    <p>This directive enables operating system specific optimizations for a 
+       listening socket by the Protocol type. The basic premise is for the 
+       kernel to not send a socket to the server process until either data 
+       is received or an entire HTTP Request is buffered. Only
+       <a href="http://www.freebsd.org/cgi/man.cgi?query=accept_filter&amp;sektion=9">
+       FreeBSD's Accept Filters</a> and Linux's more primitive 
+       <code>TCP_DEFER_ACCEPT</code> are currently supported.</p>
+
+    <p>The default values on FreeBSD are:</p>
+    <div class="example"><p><code>
+        AcceptFilter http httpready <br />
+        AcceptFilter https dataready
+    </code></p></div>
+    
+    <p>The <code>httpready</code> accept filter buffers entire HTTP requests at
+       the kernel level.  Once an entire request is recieved, the kernel then 
+       sends it to the server. See the 
+       <a href="http://www.freebsd.org/cgi/man.cgi?query=accf_http&amp;sektion=9">
+       accf_http(9)</a> man page for more details.  Since HTTPS requests are 
+       encrypted only the <a href="http://www.freebsd.org/cgi/man.cgi?query=accf_data&amp;sektion=9">
+       accf_data(9)</a> filter is used.</p>
+
+    <p>The default values on Linux are:</p>
+    <div class="example"><p><code>
+        AcceptFilter http data <br />
+        AcceptFilter https data
+    </code></p></div>
+
+    <p>Linux's <code>TCP_DEFER_ACCEPT</code> does not support buffering http
+       requests.  Any value besides <code>none</code> will enable 
+       <code>TCP_DEFER_ACCEPT</code> on that listener. For more details
+       see the Linux 
+       <a href="http://homepages.cwi.nl/~aeb/linux/man2html/man7/tcp.7.html">
+       tcp(7)</a> man page.</p>
+
+    <p>Using <code>none</code> for an argument will disable any accept filters 
+       for that protocol.  This is useful for protocols that require a server
+       send data first, such as <code>nntp</code>:</p>
+    <div class="example"><p><code>AcceptFilter nttp none</code></p></div>
+
+
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AcceptPathInfo" id="AcceptPathInfo">AcceptPathInfo</a> <a name="acceptpathinfo" id="acceptpathinfo">Directive</a></h2>
 <table class="directive">
