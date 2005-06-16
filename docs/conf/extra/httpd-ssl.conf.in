@@ -187,7 +187,7 @@ SSLCertificateKeyFile @exp_sysconfdir@/server.key
 #     This enables optimized SSL connection renegotiation handling when SSL
 #     directives are used in per-directory context. 
 #SSLOptions +FakeBasicAuth +ExportCertData +StrictRequire
-<FilesMatch "\.(cgi|shtml|phtml|php3?)$">
+<FilesMatch "\.(cgi|shtml|phtml|php)$">
     SSLOptions +StdEnvVars
 </FilesMatch>
 <Directory "@exp_cgidir@">
