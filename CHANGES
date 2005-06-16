@@ -2,6 +2,11 @@ Changes with Apache 2.1.5
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) SECURITY: 
+     core: If a request contains both Transfer-Encoding and a Content-Length,
+     remove the Content-Length, stopping some HTTP Request smuggling attacks.
+     [Paul Querna]
+
   *) mod_ssl: Setting the Protocol to 'https' can replace the use of the 
      'SSLEngine on' command. [Paul Querna]
 
