@@ -229,11 +229,12 @@ requests</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>IP addresses and ports that the server
 listens to</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Listen [<var>IP-address</var>:]<var>portnumber</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Listen [<var>IP-address</var>:]<var>portnumber</var> [<var>protocol</var>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/beos.html">beos</a></code>, <code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Required directive since Apache 2.0</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/beos.html">beos</a></code>, <code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/event.html">event</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Required directive since Apache 2.0<br />
+The <var>protocol</var> argument was added in 2.1.5</td></tr>
 </table>
     <p>The <code class="directive">Listen</code> directive instructs Apache to
     listen to only specific IP addresses or ports; by default it
@@ -276,11 +277,26 @@ listens to</td></tr>
       Listen [fe80::a00:20ff:fea7:ccea]:80
     </code></p></div>
 
+    <p>The optional <var>protocol</var> argument is not required for most 
+       configurations. If not specified, <code>https</code> is the default for 
+       port 443 and <code>http</code> the default for all other ports.  The 
+       protocol is used to determine which module should handle a request, and
+       to apply protocol specific optimizations with the 
+       <code class="directive"><a href="../mod/core.html#acceptfilter">AcceptFilter</a></code> directive.</p>
+
+    <p>You only need to set the protocol if you are running on non-standard 
+       ports.  For example, running an <code>https</code> site on port 443:</p>
+
+    <div class="example"><p><code>
+      Listen 192.170.2.1:8443 https
+    </code></p></div>
+
     <div class="note"><h3>Error condition</h3>
       Multiple <code class="directive">Listen</code> directives for the same ip
       address and port will result in an <code>Address already in use</code>
       error message.
     </div>
+
 
 <h3>See also</h3>
 <ul>

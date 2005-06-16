@@ -28,6 +28,57 @@ available</description>
 <status>Core</status>
 
 <directivesynopsis>
+<name>AcceptFilter</name>
+<description>Configures optimizations for a Protocol's Listener Sockets</description>
+<syntax>AcceptFilter <var>protocol</var> <var>accept_filter</var></syntax>
+<contextlist><context>server config</context></contextlist>
+<compatibility>Available in Apache 2.1.5 and later</compatibility>
+
+<usage>
+    <p>This directive enables operating system specific optimizations for a 
+       listening socket by the Protocol type. The basic premise is for the 
+       kernel to not send a socket to the server process until either data 
+       is received or an entire HTTP Request is buffered. Only
+       <a href="http://www.freebsd.org/cgi/man.cgi?query=accept_filter&amp;sektion=9">
+       FreeBSD's Accept Filters</a> and Linux's more primitive 
+       <code>TCP_DEFER_ACCEPT</code> are currently supported.</p>
+
+    <p>The default values on FreeBSD are:</p>
+    <example>
+        AcceptFilter http httpready <br/>
+        AcceptFilter https dataready
+    </example>
+    
+    <p>The <code>httpready</code> accept filter buffers entire HTTP requests at
+       the kernel level.  Once an entire request is recieved, the kernel then 
+       sends it to the server. See the 
+       <a href="http://www.freebsd.org/cgi/man.cgi?query=accf_http&amp;sektion=9">
+       accf_http(9)</a> man page for more details.  Since HTTPS requests are 
+       encrypted only the <a href="http://www.freebsd.org/cgi/man.cgi?query=accf_data&amp;sektion=9">
+       accf_data(9)</a> filter is used.</p>
+
+    <p>The default values on Linux are:</p>
+    <example>
+        AcceptFilter http data <br/>
+        AcceptFilter https data
+    </example>
+
+    <p>Linux's <code>TCP_DEFER_ACCEPT</code> does not support buffering http
+       requests.  Any value besides <code>none</code> will enable 
+       <code>TCP_DEFER_ACCEPT</code> on that listener. For more details
+       see the Linux 
+       <a href="http://homepages.cwi.nl/~aeb/linux/man2html/man7/tcp.7.html">
+       tcp(7)</a> man page.</p>
+
+    <p>Using <code>none</code> for an argument will disable any accept filters 
+       for that protocol.  This is useful for protocols that require a server
+       send data first, such as <code>nntp</code>:</p>
+    <example>AcceptFilter nttp none</example>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>AcceptPathInfo</name>
 <description>Resources accept trailing pathname information</description>
 <syntax>AcceptPathInfo On|Off|Default</syntax>
