@@ -1,6 +1,7 @@
-Changes with Apache 2.1.5
-
+Changes with Apache 2.1.6
   [Remove entries to the current 2.0 section below, when backported]
+
+Changes with Apache 2.1.5
 
   *) SECURITY: 
      core: If a request contains both Transfer-Encoding and a Content-Length,
