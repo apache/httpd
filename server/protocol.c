@@ -906,7 +906,7 @@ request_rec *ap_read_request(conn_rec *conn)
              * the RFC says we MUST ignore the C-L header.  We kill it here
              * to prevent more work later on in modules like mod_proxy.
              */
-            if (te && !strcasecmp("identity", te)) {
+            if (te && strcasecmp("identity", te) != 0) {
                 apr_table_unset(r->headers_in, "Content-Length");
             }
         }
