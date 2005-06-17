@@ -811,7 +811,7 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
 
     disk_info.name_len = strlen(dobj->name);
 
-    iov[0].iov_base = (caddr_t)&disk_info;
+    iov[0].iov_base = (void*)&disk_info;
     iov[0].iov_len = sizeof(disk_cache_info_t);
     iov[1].iov_base = (void*)dobj->name;
     iov[1].iov_len = disk_info.name_len;
