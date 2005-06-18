@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.es.xsl"?>
-<!-- English Revision: 151405:165672 (outdated) -->
+<!-- English Revision: 165672 -->
 
 <!--
  Copyright 2005 The Apache Software Foundation or it licensors,
@@ -291,7 +291,7 @@
         (<code>%t</code>)</dt>
 
         <dd>
-          La hora a la que el servidor termin&#243; de procesar la
+          La hora a la que el servidor recibi#243; la
           petici&#243;n. El formato es:
 
           <p class="indent">
