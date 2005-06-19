@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
-<!-- English Revision: 151405:178522 (outdated) -->
+<!-- English Revision: 178522 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -368,14 +368,15 @@
     seit Version 2.0.41 -- fr&uuml;here Versionen enthielten noch inkompatible
     &Auml;nderungen).</p>
 
-    <p>Wenn Sie den Quellcode von Ihrer letzten Installation aufgehoben haben,
-    ist ein Upgrade sogar noch einfacher. Die Datei <code>config.nice</code> im
-    Wurzelverzeichnis des alten Quelltextbaums enth&auml;lt den genauen
-    <program>configure</program>-Befehl, der verwendet wurde, um den Quellcode
-    zu konfigurieren. Um jetzt von einer Version auf die n&auml;chste zu
-    aktualisieren, kopieren Sie einfach die <code>config.nice</code> in das
-    Verzeichnis der neuen Version, passen sie bei Bedarf an, und
-    f&uuml;hren Sie sie aus:</p>
+    <p>Um auf eine neue Unterversion zu aktualisieren, suchen Sie zun&auml;chst
+    die Datei <code>config.nice</code> im <code>build</code>-Verzeichnis
+    Ihrer Serverinstallation oder im Wurzelverzeichnis des Quelltextbaums
+    der alten Installation. Die Datei enth&auml;lt den genauen
+    <program>configure</program>-Befehl, der verwendet wurde, um den
+    Quellcode zu konfigurieren. Um jetzt von einer Version auf die
+    n&auml;chste zu aktualisieren, kopieren Sie einfach die
+    <code>config.nice</code> in das Verzeichnis der neuen Version,
+    passen sie bei Bedarf an, und f&uuml;hren Sie sie aus:</p>
 
     <example>
       $ ./config.nice<br />

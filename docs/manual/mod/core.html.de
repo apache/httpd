@@ -26,9 +26,6 @@
 <a href="../es/mod/core.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">Diese Übersetzung ist möglicherweise
-            nicht mehr aktuell. Bitte prüfen Sie die englische Version auf
-            die neuesten Änderungen.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Beschreibung:</a></th><td>Ständig verfügbare Kernfunktionen des Apache HTTP
 Servers</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Core</td></tr></table>
@@ -1010,10 +1007,10 @@ sich im Apache 2.0 geändert</td></tr>
     URL oder Nachricht folgen. Abhängig vom Problem bzw. Fehler bietet
     der Apache manchmal zusätzliche Informationen an.</p>
 
-    <p>URLs können bei lokalen Adressen mit einem Schrägstrich
-    (/) beginnen oder eine komplette URL bilden, die der Client
-    auflösen kann. Alternativ kann eine Nachricht für die
-    Anzeige im Browser angeboten werden. Beispiel:</p>
+    <p>URLs können bei lokalen Webpfaden mit einem Schrägstrich
+    (/) beginnen (relativ zum <code class="directive"><a href="#documentroot">DocumentRoot</a></code>-Verzeichnis) oder eine vollständige URL
+    bilden, die der Client auflösen kann. Alternativ kann eine
+    Nachricht für die Anzeige im Browser angeboten werden. Beispiel:</p>
 
     <div class="example"><p><code>
       ErrorDocument 500 http://foo.example.com/cgi-bin/tester<br />
@@ -1064,7 +1061,15 @@ sich im Apache 2.0 geändert</td></tr>
     Art des Fehlers, im Allgemeinen zeigt der MSIE jedoch den
     serverseitig generierten Fehler, anstatt ihn zu verstecken, wenn Ihr
     Fehlerdokument größer als 512 Bytes ist. Weitere Informationen
-    sind im Artikel  <a href="http://support.microsoft.com/default.aspx?scid=kb;en-us;Q294807">Q294807</a> in der Microsoft Knowledgebase article verfügbar.</p>
+    sind im Artikel  <a href="http://support.microsoft.com/default.aspx?scid=kb;en-us;Q294807">Q294807</a> in der Microsoft Knowledgebase verfügbar.</p>
+
+    <p>Obwohl die meisten Fehlermeldungen überschrieben werden
+    können, werden unter bestimmten Umständen die internen
+    Meldungen ungeachtet der Einstellung der <code class="directive"><a href="#errordocument">ErrorDocument</a></code>-Direktive verwendet. Insbesondere bei
+    einer fehlerhaften Anfrage werden der normale Bearbeitungsprozess sofort
+    beendet und die interne Meldung zurückgegeben. Das ist notwendig, um
+    Sicherheitsprobleme zu vermeiden, die auf Grund fehlerhafter Anfragen
+    entstehen.</p>
 
     <p>In Versionen vor 2.0 wurden Meldungen durch ein einzelnes
     vorangestelltes Anführungszeichen (") erkannt.</p>
