@@ -271,7 +271,7 @@
         (<code>%t</code>)</dt>
 
         <dd>
-          La hora a la que el servidor recibi#243; la
+          La hora a la que el servidor recibió la
           petición. El formato es:
 
           <p class="indent">
