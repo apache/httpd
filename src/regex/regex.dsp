@@ -39,7 +39,7 @@ CPP=cl.exe
 # PROP Output_Dir "LibR"
 # PROP Intermediate_Dir "LibR"
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MD /W3 /O2 /Zi /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /FD /c
+# ADD BASE CPP /nologo /MD /W3 /O2 /Oy- /Zi /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /FD /c
 # ADD CPP /nologo /MD /W3 /O2 /Zi /I "..\include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /Fd"LibR\regex" /FD /c
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo

@@ -59,7 +59,7 @@ CLEAN :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo /MD /W3 /Zi /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\Apache_src" /FD /c 
+CPP_PROJ=/nologo /MD /W3 /Zi /O2 /Oy- /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\Apache_src" /FD /c 
 
 .c{$(INTDIR)}.obj::
    $(CPP) @<<

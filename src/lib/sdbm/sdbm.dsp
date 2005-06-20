@@ -43,7 +43,7 @@ RSC=rc.exe
 # ADD BASE RSC /l 0x409
 # ADD RSC /l 0x409
 # ADD BASE CPP /nologo /MD /W3 /O2 /Zi /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /FD /c
-# ADD CPP /nologo /MD /W3 /O2 /Zi /I "..\..\include" /I "..\..\os\win32" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /Fd"LibR\sdbm" /FD /c
+# ADD CPP /nologo /MD /W3 /O2 /Oy- /Zi /I "..\..\include" /I "..\..\os\win32" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /Fd"LibR\sdbm" /FD /c
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo

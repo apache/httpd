@@ -42,7 +42,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MD /W3 /O2 /Zi /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /c
-# ADD CPP /nologo /MD /W3 /O2 /Zi /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /Fd"Release\Apache_src" /FD /c
+# ADD CPP /nologo /MD /W3 /O2 /Oy- /Zi /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /Fd"Release\Apache_src" /FD /c
 # ADD BASE RSC /l 0x809 /d "NDEBUG"
 # ADD RSC /l 0x809 /d "NDEBUG"
 BSC32=bscmake.exe

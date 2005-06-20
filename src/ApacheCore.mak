@@ -35,11 +35,11 @@ OutDir=.\Release
 
 !IF "$(RECURSE)" == "0" 
 
-ALL : "$(OUTDIR)\ApacheCore.dll"
+ALL : ".\main\uri_delims.h" ".\main\test_char.h" "$(OUTDIR)\ApacheCore.dll"
 
 !ELSE 
 
-ALL : "Win9xConHook - Win32 Release" "regex - Win32 Release" "gen_uri_delims - Win32 Release" "gen_test_char - Win32 Release" "ApacheOS - Win32 Release" "ap - Win32 Release" "$(OUTDIR)\ApacheCore.dll"
+ALL : "Win9xConHook - Win32 Release" "regex - Win32 Release" "gen_uri_delims - Win32 Release" "gen_test_char - Win32 Release" "ApacheOS - Win32 Release" "ap - Win32 Release" ".\main\uri_delims.h" ".\main\test_char.h" "$(OUTDIR)\ApacheCore.dll"
 
 !ENDIF 
 
@@ -94,12 +94,14 @@ CLEAN :
 	-@erase "$(OUTDIR)\ApacheCore.exp"
 	-@erase "$(OUTDIR)\ApacheCore.lib"
 	-@erase "$(OUTDIR)\ApacheCore.pdb"
+	-@erase ".\main\test_char.h"
+	-@erase ".\main\uri_delims.h"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo /MD /W3 /Zi /O2 /I ".\include" /I ".\os\win32" /I ".\os\win32\win9xconhook" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "WIN32_LEAN_AND_MEAN" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\ApacheCore_src" /FD /c 
+CPP_PROJ=/nologo /MD /W3 /Zi /O2 /Oy- /I ".\include" /I ".\os\win32" /I ".\os\win32\win9xconhook" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "WIN32_LEAN_AND_MEAN" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\ApacheCore_src" /FD /c 
 
 .c{$(INTDIR)}.obj::
    $(CPP) @<<
@@ -588,7 +590,7 @@ SOURCE=.\os\win32\service.c
 
 SOURCE=.\main\util.c
 
-"$(INTDIR)\util.obj" : $(SOURCE) "$(INTDIR)" ".\main\test_char.h"
+"$(INTDIR)\util.obj" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -612,7 +614,7 @@ SOURCE=.\main\util_script.c
 
 SOURCE=.\main\util_uri.c
 
-"$(INTDIR)\util_uri.obj" : $(SOURCE) "$(INTDIR)" ".\main\uri_delims.h"
+"$(INTDIR)\util_uri.obj" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

@@ -61,7 +61,7 @@ CLEAN :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo /MD /W3 /Zi /O2 /I "..\xmltok" /I "..\xmlwf" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D XMLTOKAPI=__declspec(dllimport) /D XMLPARSEAPI=__declspec(dllexport) /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\xmlparse_src" /FD /c 
+CPP_PROJ=/nologo /MD /W3 /Zi /O2 /Oy- /I "..\xmltok" /I "..\xmlwf" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D XMLTOKAPI=__declspec(dllimport) /D XMLPARSEAPI=__declspec(dllexport) /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\xmlparse_src" /FD /c 
 
 .c{$(INTDIR)}.obj::
    $(CPP) @<<
