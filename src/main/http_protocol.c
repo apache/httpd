@@ -1186,6 +1186,7 @@ API_EXPORT(request_rec *) ap_read_request(conn_rec *conn)
 
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
                          "request failed: URI too long");
+            r->connection->keepalive = 0;
             ap_send_error_response(r, 0);
             ap_log_transaction(r);
             return r;
@@ -1194,6 +1195,7 @@ API_EXPORT(request_rec *) ap_read_request(conn_rec *conn)
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
                          "request failed: erroneous characters after protocol string: %s",
 			 ap_escape_logitem(r->pool, r->the_request));
+            r->connection->keepalive = 0;
             ap_send_error_response(r, 0);
             ap_log_transaction(r);
             return r;
@@ -1207,6 +1209,7 @@ API_EXPORT(request_rec *) ap_read_request(conn_rec *conn)
         if (r->status != HTTP_REQUEST_TIME_OUT) {
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
                          "request failed: error reading the headers");
+            r->connection->keepalive = 0;
             ap_send_error_response(r, 0);
             ap_log_transaction(r);
             return r;
@@ -1260,6 +1263,7 @@ API_EXPORT(request_rec *) ap_read_request(conn_rec *conn)
                       "(see RFC2616 section 14.23): %s", r->uri);
     }
     if (r->status != HTTP_OK) {
+        r->connection->keepalive = 0;
         ap_send_error_response(r, 0);
         ap_log_transaction(r);
         return r;
