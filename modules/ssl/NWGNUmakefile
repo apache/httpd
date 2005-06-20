@@ -127,7 +127,7 @@ NLM_DESCRIPTION	= Apache $(VERSION_STR) SSL module
 # This is used by the '-threadname' directive.  If left blank,
 # NLM_NAME Thread will be used.
 #
-NLM_THREAD_NAME	= mod_ssl
+NLM_THREAD_NAME	= $(NLM_NAME)
 
 #
 # If this is specified, it will override VERSION value in 
@@ -176,7 +176,7 @@ XDCDATA		=
 # If there is an NLM target, put it here
 #
 TARGET_nlm = \
-	$(OBJDIR)/mod_ssl.nlm \
+	$(OBJDIR)/$(NLM_NAME).nlm \
 	$(EOLIST)
 
 #
@@ -277,6 +277,16 @@ install :: nlms FORCE
 # Any specialized rules here
 #
 vpath %.c $(AP_WORK)/modules/arch/netware
+
+# Make sure that the build doesn't attempt to regenerate the shipping files.
+# This requires a 'touch' utility.  Can be downloaded from 'coreutils' at
+#  http://sourceforge.net/projects/gnuwin32/
+ssl_expr_parse.h : ssl_expr_parse.y
+	touch ssl_expr_parse.h
+ssl_expr_parse.c : ssl_expr_parse.y
+	touch ssl_expr_parse.c
+ssl_expr_scan.c : ssl_expr_scan.l
+	touch ssl_expr_scan.c
 
 #
 # Include the 'tail' makefile that has targets that depend on variables defined
