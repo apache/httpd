@@ -234,7 +234,7 @@ PATCHES TO BACKPORT FROM TRUNK:
 
      *) fix z/OS annoyance with pathname on debug messages in error log
         http://svn.apache.org/viewcvs?rev=178299&view=rev
-        +1: trawick
+        +1: trawick, pquerna
 
      *) EBCDIC: Handle chunked input from client or, with proxy, origin
         server.
@@ -252,7 +252,7 @@ PATCHES TO BACKPORT FROM TRUNK:
         message when it occurs during restart (as we already do for a couple
         of other calls).
         http://svn.apache.org/viewcvs?rev=179317&view=rev
-        +1: trawick, jorton
+        +1: trawick, jorton, pquerna
 
      *) proxy FTP: Fix confusion about globbing characters which could lead
         to getting a directory listing when a file was requested.  PR 34512.
