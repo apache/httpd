@@ -107,10 +107,7 @@ PATCHES TO BACKPORT FROM TRUNK:
        PR: 26467
          http://svn.apache.org/viewcvs?rev=170281&view=rev
          http://svn.apache.org/viewcvs.cgi?rev=171093&view=rev
-       +1: trawick, jorton
-       -0: pquerna: This adds a new public function.  It should be either a 
-           minor MMN bump, or be put under CORE_PRIVATE.
-           trawick: I resolved this via second commit above.  Thanks!
+       +1: trawick, jorton, pquerna
 
     *) Fix fd leak in piped logging code, fix error handling, and remove
        dead errno handling.
