@@ -191,7 +191,7 @@ LINK32_OBJS= \
 	".\os\win32\Release\Win9xConHook.lib"
 
 "$(OUTDIR)\ApacheCore.dll" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
-   cl.exe /nologo /MD /W3 /O2 /Zi /I "./include" /I ".\os\win32" /I ".\os\win32\win9xconhook" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "WIN32_LEAN_AND_MEAN" /Fd"Release\ApacheCore_src" /FD /c .\buildmark.c /Fo"Release\buildmark.obj"
+   cl.exe /nologo /MD /W3 /O2 /Oy- /Zi /I "./include" /I ".\os\win32" /I ".\os\win32\win9xconhook" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "WIN32_LEAN_AND_MEAN" /Fd"Release\ApacheCore_src" /FD /c .\buildmark.c /Fo"Release\buildmark.obj"
 	 $(LINK32) @<<
   $(LINK32_FLAGS) $(LINK32_OBJS)
 <<

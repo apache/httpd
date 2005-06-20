@@ -57,7 +57,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
 PreLink_Desc=Compiling buildmark
-PreLink_Cmds=cl.exe /nologo /MD /W3 /O2 /Zi /I "./include" /I ".\os\win32" /I ".\os\win32\win9xconhook" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "WIN32_LEAN_AND_MEAN" /Fd"Release\ApacheCore_src" /FD /c .\buildmark.c /Fo"Release\buildmark.obj"
+PreLink_Cmds=cl.exe /nologo /MD /W3 /O2 /Oy- /Zi /I "./include" /I ".\os\win32" /I ".\os\win32\win9xconhook" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "WIN32_LEAN_AND_MEAN" /Fd"Release\ApacheCore_src" /FD /c .\buildmark.c /Fo"Release\buildmark.obj"
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
