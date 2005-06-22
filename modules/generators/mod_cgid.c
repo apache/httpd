@@ -597,7 +597,7 @@ static int cgid_server(void *data)
 
     memset(&unix_addr, 0, sizeof(unix_addr));
     unix_addr.sun_family = AF_UNIX;
-    strcpy(unix_addr.sun_path, sockname);
+    apr_cpystrn(unix_addr.sun_path, sockname, sizeof unix_addr.sun_path);
 
     omask = umask(0077); /* so that only Apache can use socket */
     rc = bind(sd, (struct sockaddr *)&unix_addr, sizeof(unix_addr));
@@ -1112,7 +1112,7 @@ static int connect_to_daemon(int *sdptr, request_rec *r,
 
     memset(&unix_addr, 0, sizeof(unix_addr));
     unix_addr.sun_family = AF_UNIX;
-    strcpy(unix_addr.sun_path, sockname);
+    apr_cpystrn(unix_addr.sun_path, sockname, sizeof unix_addr.sun_path);
 
     connect_tries = 0;
     sliding_timer = 100000; /* 100 milliseconds */

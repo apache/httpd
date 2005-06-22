@@ -1,6 +1,9 @@
 Changes with Apache 2.1.6
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_cgid: Fix buffer overflow processing ScriptSock directive.
+     [Steve Kemp <steve steve.org.uk>]
+
 Changes with Apache 2.1.5
 
   *) SECURITY: 
