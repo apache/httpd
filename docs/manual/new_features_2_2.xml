@@ -80,6 +80,11 @@
           This dedicated worker could not be used again until the Keep Alive 
           timeout was reached.</dd>
 
+      <dt>SQL Database Support</dt>
+      <dd><module>mod_dbd</module>, together with the apr_dbd framework,
+          brings direct SQL support to modules that need it.  Supports
+          connection pooling in threaded MPMs.</dd>
+
     </dl>
   </section>
 
@@ -156,6 +161,10 @@
           <module>mod_filter</module>, using the
           <code>ap_register_output_filter_protocol</code> or
           <code>ap_filter_protocol</code> calls.</dd>
+
+      <dt>Monitor hook added</dt>
+      <dd>Monitor hook enables modules to run regular/scheduled jobs
+          in the parent (root) process.</dd>
     </dl>
   </section>
 </manualpage>
