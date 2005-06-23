@@ -84,6 +84,11 @@
           This dedicated worker could not be used again until the Keep Alive 
           timeout was reached.</dd>
 
+      <dt>SQL Database Support</dt>
+      <dd><code class="module"><a href="./mod/mod_dbd.html">mod_dbd</a></code>, together with the apr_dbd framework,
+          brings direct SQL support to modules that need it.  Supports
+          connection pooling in threaded MPMs.</dd>
+
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -160,6 +165,10 @@
           <code class="module"><a href="./mod/mod_filter.html">mod_filter</a></code>, using the
           <code>ap_register_output_filter_protocol</code> or
           <code>ap_filter_protocol</code> calls.</dd>
+
+      <dt>Monitor hook added</dt>
+      <dd>Monitor hook enables modules to run regular/scheduled jobs
+          in the parent (root) process.</dd>
     </dl>
   </div></div>
 <div class="bottomlang">
