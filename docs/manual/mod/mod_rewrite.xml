@@ -507,7 +507,7 @@ Apache 2.0.41 and later</compatibility>
       <directive>RewriteRule</directive> as follows:</p>
 
       <example>
-      RewriteRule ^/ex/(.*) %{examplemap:$1}
+      RewriteRule ^/ex/(.*) ${examplemap:$1}
       </example>
 
       <p>The following combinations for <em>MapType</em> and

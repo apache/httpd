@@ -978,7 +978,7 @@ Apache 2.0.41 and later</td></tr>
       <code class="directive">RewriteRule</code> as follows:</p>
 
       <div class="example"><p><code>
-      RewriteRule ^/ex/(.*) %{examplemap:$1}
+      RewriteRule ^/ex/(.*) ${examplemap:$1}
       </code></p></div>
 
       <p>The following combinations for <em>MapType</em> and
