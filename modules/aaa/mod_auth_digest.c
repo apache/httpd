@@ -1575,6 +1575,8 @@ static void copy_uri_components(apr_uri_t *dst,
     else {
         dst->query = src->query;
     }
+
+    dst->hostinfo = src->hostinfo;
 }
 
 /* These functions return 0 if client is OK, and proper error status
@@ -1709,7 +1711,7 @@ static int authenticate_digest_user(request_rec *r)
         }
 
         if (r->method_number == M_CONNECT) {
-            if (strcmp(resp->uri, r_uri.hostinfo)) {
+            if (!r_uri.hostinfo || strcmp(resp->uri, r_uri.hostinfo)) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                               "Digest: uri mismatch - <%s> does not match "
                               "request-uri <%s>", resp->uri, r_uri.hostinfo);
