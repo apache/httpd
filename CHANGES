@@ -1,6 +1,9 @@
 Changes with Apache 2.1.6
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Fix htdbm password validation for records which included comments.
+     [Eric Covener <covener gmail.com>]
+
   *) SECURITY: 
      proxy HTTP: If a response contains both Transfer-Encoding and a 
      Content-Length, remove the Content-Length and don't reuse the
