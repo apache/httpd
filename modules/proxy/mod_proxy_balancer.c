@@ -441,7 +441,7 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
 {
     int access_status;
     proxy_worker *runtime;
-    char *route;
+    char *route = NULL;
     apr_status_t rv;
 
     *worker = NULL;
