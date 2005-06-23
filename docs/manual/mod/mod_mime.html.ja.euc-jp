@@ -893,7 +893,7 @@
     ほとんどの管理者は、よく使われるファイル名の拡張子を
     IANA に登録されたコンテントタイプに関連付けている、
     Apache の <code>mime.types</code> ファイルを使います。
-    現在の一覧は <a href="http://www.isi.edu/in-notes/iana/assignments/media-types/media-types">http://www.isi.edu/in-notes/iana/assignments/media-types/media-types</a>
+    現在の一覧は <a href="http://www.iana.org/assignments/media-types/index.html">http://www.iana.org/assignments/media-types/index.html</a>
     で管理されています。これは、主要なメディアタイプの定義を提供して、
     必要ところを <code class="directive"><a href="#addtype">AddType</a></code> で
     上書きする、という方法で <code>httpd.conf</code> を簡略にします。
