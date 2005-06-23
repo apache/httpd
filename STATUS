@@ -42,10 +42,15 @@ RELEASE SHOWSTOPPERS:
     * Handling of non-trailing / config by non-default handler is broken
       http://marc.theaimsgroup.com/?l=apache-httpd-dev&m=105451701628081&w=2
       jerenkrantz asks: Why should this block a release?
+      wsanchez agrees: this may be a change in behavior, but isn't
+        clearly wrong, and even if so, it doesn't seem like a
+        showstopper.
 
     * the edge connection filter cannot be removed 
       http://marc.theaimsgroup.com/?l=apache-httpd-dev&m=105366252619530&w=2
+
       jerenkrantz asks: Why should this block a release?
+
       stas replies: because it requires a rewrite of the filters stack
             implementation (you have suggested that) and once 2.2 is
             released you can't do that anymore. 
@@ -67,6 +72,7 @@ CURRENT VOTES:
       c) tailored httpd-std.conf should be installed to
          sysconfdir/examples or manualdir/exampleconf/
          +1:   slive, trawick, Ken, nd (prefer the latter), erikabele
+         +1:   wsanchez (propose sysconfdir/examples/<version> for diffiness)
 
       d) Installing a set of default config files when upgrading a server
          doesn't make ANY sense at all.
