@@ -496,6 +496,20 @@ Apache 2.0.41 and later</compatibility>
       substituted by <em>DefaultValue</em> or by the empty string
       if no <em>DefaultValue</em> was specified.</p>
 
+      <p>For example, you might define a
+      <directive>RewriteMap</directive> as:</p>
+
+      <example>
+      RewriteMap examplemap txt:/path/to/file/map.txt
+      </example>
+
+      <p>You would then be able to use this map in a
+      <directive>RewriteRule</directive> as follows:</p>
+
+      <example>
+      RewriteRule ^/ex/(.*) %{examplemap:$1}
+      </example>
+
       <p>The following combinations for <em>MapType</em> and
       <em>MapSource</em> can be used:</p>
 
