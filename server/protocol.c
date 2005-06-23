@@ -899,16 +899,13 @@ request_rec *ap_read_request(conn_rec *conn)
             return r;
         }
 
-        if (apr_table_get(r->headers_in, "Content-Length")) {
-            const char* te = apr_table_get(r->headers_in, "Transfer-Encoding");
-            /*
-             * If the client sent any Transfer-Encoding besides "identity",
-             * the RFC says we MUST ignore the C-L header.  We kill it here
-             * to prevent more work later on in modules like mod_proxy.
-             */
-            if (te && strcasecmp("identity", te) != 0) {
-                apr_table_unset(r->headers_in, "Content-Length");
-            }
+        if (apr_table_get(r->headers_in, "Transfer-Encoding")
+            && apr_table_get(r->headers_in, "Content-Length")) {
+            /* 2616 section 4.4, point 3: "if both Transfer-Encoding
+             * and Content-Length are received, the latter MUST be
+             * ignored"; so unset it here to prevent any confusion
+             * later. */
+            apr_table_unset(r->headers_in, "Content-Length");
         }
     }
     else {
