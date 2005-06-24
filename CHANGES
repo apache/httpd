@@ -1,5 +1,7 @@
-Changes with Apache 2.1.6
+Changes with Apache 2.1.7
   [Remove entries to the current 2.0 section below, when backported]
+
+Changes with Apache 2.1.6
 
   *) Fix htdbm password validation for records which included comments.
      [Eric Covener <covener gmail.com>]
