@@ -1172,30 +1172,3 @@ Other bugs that need fixing:
         Status: Greg volunteers to investigate (esp. since he was most 
                 likely the one to break it :-)
 
-
-Binaries (2.0.52):
-
- Platform                      Avail.  Volunteer
- ------------------------------------------------------------------
- AIX 4.3.3                     no      Bill Stoddard
- Mandrake 8.1                  no      open
- FreeBSD 4.1                   no      open
- hppa2.0w-hp-hpux11.00         no      Cliff Woolley
- i386-pc-solaris2.9            no      Aaron Bannert
- i386-unknown-freebsd4.5       no
- i386-unknown-freebsd4.6       no      Cliff Woolley
- i386-unknown-freebsd4.10      no      Aaron Bannert
- i686-pc-linux-gnu-slackware81 no      Cliff Woolley
- i686-pc-linux-gnu-rh70        no      Aaron Bannert
- i686-pc-linux-gnu-rh73        no      Cliff Woolley
- i686-pc-linux-gnu             no      Graham Leggett
- ia64-hp-hpux11.20             no
- powerpc-apple-darwin7.4.0     no      Aaron Bannert
- powerpc-unknown-linux-gnu     no      Graham Leggett
- s390-ibm-linux                no      Greg Ames
- sparc-sun-solaris2.8          no      Jim Jagielski
- NetWare                       no      Brad Nicholes
- OS/2                          no      Brian Havard
- OS/390                        no      Greg Ames
- Win32-x86                     yes     William Rowe
- x86_64-unknown-linux-gnu      no      Aaron Bannert
