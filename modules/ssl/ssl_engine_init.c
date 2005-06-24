@@ -207,7 +207,8 @@ int ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
         sc->vhost_id = ssl_util_vhostid(p, s);
         sc->vhost_id_len = strlen(sc->vhost_id);
 
-        if (strcmp("https", ap_get_server_protocol(s)) == 0) {
+        if (ap_get_server_protocol(s) && 
+            strcmp("https", ap_get_server_protocol(s)) == 0) {
             sc->enabled = SSL_ENABLED_TRUE;
         }
 
