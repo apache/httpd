@@ -90,9 +90,7 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
-PATCHES TO BACKPORT FROM TRUNK:
-  [ please place SVN revisions from trunk here, so it is easy to
-    identify exactly what the proposed changes are! ]
+PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ please append new backports at the end of this list not the top. ]
 
     *) ap_proxy_canonenc() is over-eager in handling '%' for reverse
@@ -101,7 +99,7 @@ PATCHES TO BACKPORT FROM TRUNK:
              -       if (isenc && ch == '%') {
              +       if (isenc && (isenc != PROXYREQ_REVERSE) && ch == '%') {
 
-       +1: jim, pquerna
+       +1: jim, pquerna, wrowe
 
     *) Prevent hang writing to piped logger at graceful restart time.
        PR: 26467
@@ -116,7 +114,7 @@ PATCHES TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewcvs?rev=170719&view=rev
        all-in-one patch incremental to the PR 26467 fix:
          http://people.apache.org/~jorton/ap_pipedlog2.diff
-       +1: jorton, trawick
+       +1: jorton, trawick, wrowe
        [yes, I will write a CHANGES entry too]
 
     *) several changes to improve logging of connection-oriented errors, including
@@ -124,24 +122,10 @@ PATCHES TO BACKPORT FROM TRUNK:
          http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/core.c?r1=1.289&r2=1.291
          http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/log.c?r1=1.150&r2=1.151
          http://cvs.apache.org/viewcvs.cgi/httpd-2.0/include/http_log.h?r1=1.46&r2=1.48
-       +1: trawick, stoddard
-       -0: wrowe; seems this (valid) improvement would encourage non-compatible mods.
-
-    *) mod_headers: Support {...}s tag for SSL variable lookup.
-       http://www.apache.org/~jorton/mod_headers-2.0-ssl.diff
-       +1: jorton, trawick
-       nd: two comments:
-         (1) is the use of APR_ASCII_* ebcdic-safe? I.e. shouldn't we use the
-             native chars here and it will be converted later? (I'm not sure)
-       jorton: I have no idea, let an EBCDIC-er complain if it breaks?
-       trawick: seems that '\r' and '\n' are the better chars to check
-                for; this is not raw data read from the network (or directly
-                from SSL) but instead it is either protocol data that has 
-                already been converted to the native charset or it is other
-                data which was created inside the server in the native charset
-         (2) I'd put out (null) only if val is NULL, not if it's empty.
-       jorton: ssl_var_lookup() returns "" in place of NULL, that was really
-          a deliberate choice... but maybe you're right.
+       +1: trawick, stoddard, wrowe 
+       [wrowe notes that his previous objection is moot, based on security fixes
+        applied between .44 and .54 - but -please- doxygen the version of Apache
+        required in the API header note, for users who adopt this alternative.]
 
     *) mod_cgi: Added API call and overload of detached field in
        cgi_exec_info_t structure to support loading in current or new address
@@ -160,6 +144,9 @@ PATCHES TO BACKPORT FROM TRUNK:
          the changes in the httpd-2.0.x to be done in order for NetWare to work
          as expected when calling apr_proc_create. Should I do both, APR and Http,
          at the same time?
+       wrowe: commit to APR.  Use an APR version test to determine if the
+         old or new behavior should be used in httpd.  In future versions
+         you could remove the test altogether.
 
     *) mod_actions: Regression from 1.3: the file referred to must exist.
        Solve this by introducing the "virtual" modifier to the Action
@@ -170,17 +157,6 @@ PATCHES TO BACKPORT FROM TRUNK:
        -0: by rbb (inconsistent to 1.3, discussion on dev@)
           nd: I'm going to reverse the default
           jerenkrantz, striker: I'm confused as to the status of this backport.
-
-    *) mod_log_config: Cleanup log_header_out function to allow multiple headers
-       like Set-Cookie to be logged properly. PR 27787 (2.0 + 1.3)
-         modules/loggers/mod_log_config.c: r1.116
-       jerenkrantz asks: Isn't this what apr_table_merge is for?
-       nd replies: yep. But cookies won't be merged, because browsers don't
-                   support it.
-       jerenkrantz: Couldn't we copy the table and merge the values somehow?
-                    This just seems like a lot of code to duplicate what we
-                    have already.  *shrug*  Regardless, patch looks okay...
-       +1: nd, jerenkrantz
 
     * support/check_forensic: Fix tempfile usage
       svn rev 125495, 126224
@@ -204,6 +180,47 @@ PATCHES TO BACKPORT FROM TRUNK:
       +1: pquerna, nd
       Votes from before the integration branch:
           +1: jerenkrantz, wrowe (trivial, would even be cool in 1.3)
+
+     *) fix z/OS annoyance with pathname on debug messages in error log
+        http://svn.apache.org/viewcvs?rev=178299&view=rev
+        +1: trawick, pquerna, wrowe
+
+     *) Downgrade the log level of a worker MPM apr_proc_mutex_foo error
+        message when it occurs during restart (as we already do for a couple
+        of other calls).
+        http://svn.apache.org/viewcvs?rev=179317&view=rev
+        +1: trawick, jorton, pquerna
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ please place SVN revisions from trunk here, so it is easy to
+    identify exactly what the proposed changes are! ]
+
+    *) mod_headers: Support {...}s tag for SSL variable lookup.
+       http://www.apache.org/~jorton/mod_headers-2.0-ssl.diff
+       +1: jorton, trawick
+       nd: two comments:
+         (1) is the use of APR_ASCII_* ebcdic-safe? I.e. shouldn't we use the
+             native chars here and it will be converted later? (I'm not sure)
+       jorton: I have no idea, let an EBCDIC-er complain if it breaks?
+       trawick: seems that '\r' and '\n' are the better chars to check
+                for; this is not raw data read from the network (or directly
+                from SSL) but instead it is either protocol data that has 
+                already been converted to the native charset or it is other
+                data which was created inside the server in the native charset
+         (2) I'd put out (null) only if val is NULL, not if it's empty.
+       jorton: ssl_var_lookup() returns "" in place of NULL, that was really
+          a deliberate choice... but maybe you're right.
+
+    *) mod_log_config: Cleanup log_header_out function to allow multiple headers
+       like Set-Cookie to be logged properly. PR 27787 (2.0 + 1.3)
+         modules/loggers/mod_log_config.c: r1.116
+       jerenkrantz asks: Isn't this what apr_table_merge is for?
+       nd replies: yep. But cookies won't be merged, because browsers don't
+                   support it.
+       jerenkrantz: Couldn't we copy the table and merge the values somehow?
+                    This just seems like a lot of code to duplicate what we
+                    have already.  *shrug*  Regardless, patch looks okay...
+       +1: nd, jerenkrantz
 
     *) Provide TLS/SSL upgrade functionality in mod_ssl allowing an unsecure
        connection to be upgraded to a secure connection upon request by the
@@ -232,10 +249,6 @@ PATCHES TO BACKPORT FROM TRUNK:
         PR: 34452
         +1: jorton
 
-     *) fix z/OS annoyance with pathname on debug messages in error log
-        http://svn.apache.org/viewcvs?rev=178299&view=rev
-        +1: trawick, pquerna
-
      *) EBCDIC: Handle chunked input from client or, with proxy, origin
         server.
         http://svn.apache.org/viewcvs?rev=178262&view=rev
@@ -247,12 +260,6 @@ PATCHES TO BACKPORT FROM TRUNK:
         PR 31274. (current docs say it works with Apache from 2.0.40 ;) )
         http://svn.apache.org/viewcvs?rev=170354&view=rev
         +1: trawick, jorton
-
-     *) Downgrade the log level of a worker MPM apr_proc_mutex_foo error
-        message when it occurs during restart (as we already do for a couple
-        of other calls).
-        http://svn.apache.org/viewcvs?rev=179317&view=rev
-        +1: trawick, jorton, pquerna
 
      *) proxy FTP: Fix confusion about globbing characters which could lead
         to getting a directory listing when a file was requested.  PR 34512.
