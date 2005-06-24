@@ -58,11 +58,13 @@ Release history:
     2.0a2   : released March 31, 2000
     2.0a1   : released March 10, 2000
 
+
 Please consult the following STATUS files for information on related projects:
 
     * http://svn.apache.org/repos/asf/apr/apr/branches/0.9.x/STATUS
     * http://svn.apache.org/repos/asf/apr/apr-util/branches/0.9.x/STATUS
     * http://svn.apache.org/repos/asf/httpd/httpd/branches/2.0.x/docs/STATUS
+
 
 Contributors looking for a mission:
 
@@ -78,6 +80,7 @@ Contributors looking for a mission:
 
     * Open bugs in the bug database.
 
+
 CURRENT RELEASE NOTES:
 
     * Forward binary compatibility is expected of Apache 2.0.x releases, such
@@ -88,7 +91,18 @@ CURRENT RELEASE NOTES:
       as well, if they apply.  Logical progression is commit to trunk,
       get feedback and votes in STATUS, and then merge into branches/2.0.x.
 
+
 RELEASE SHOWSTOPPERS:
+
+    * Watchfire identified an obscure behavior of modules/proxy/proxy_http.c
+      where C-L would be stripped from a HEAD response but the HEAD result
+      would have neither the T-E or C-L to reflect what GET should do, in
+      violation of RFC2616.
+
+    * Various fixes to T-E and C-L processing from trunk
+
+    * proxy_http.c accepts TRACE with a body, violating RFC2616
+
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ please append new backports at the end of this list not the top. ]
@@ -191,6 +205,7 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewcvs?rev=179317&view=rev
         +1: trawick, jorton, pquerna
 
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ please place SVN revisions from trunk here, so it is easy to
     identify exactly what the proposed changes are! ]
@@ -281,6 +296,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewcvs?rev=189971&view=rev
         PR: 35279
         +1: jorton
+
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
@@ -428,6 +444,7 @@ PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
             inspect headers will in fact work better because the headers will
             reflect reality.
 
+
 CURRENT VOTES:
 
     * Reverse proxy cookie patch from PR#10722 (c.f. comment 16)
@@ -494,6 +511,7 @@ CURRENT VOTES:
             latest code, let's continue tuning and testing), rederpj, jim
       -0:   Lars, wrowe (let's make this defacto for the 2.2 release.),
             nd (for 2.0)
+
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
@@ -746,6 +764,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       later recanted. See this message to dev@apr.apache.org:
       Message-ID: <Pine.LNX.4.44.0203011354090.16457-200000@deepthought
                   .cs.virginia.edu>
+
 
 TODO ISSUES REMAINING IN MOD_SSL:
 
@@ -1152,6 +1171,7 @@ Other bugs that need fixing:
       dealing with the <orig_ct> stuff.
         Status: Greg volunteers to investigate (esp. since he was most 
                 likely the one to break it :-)
+
 
 Binaries (2.0.52):
 
