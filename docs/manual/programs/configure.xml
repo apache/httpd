@@ -440,7 +440,7 @@
         <dt><code>--enable-dav</code></dt>
         <dd>Enable the WebDAV protocol handling provided by
           <module>mod_dav</module>. Support for filesystem resources is
-          provided by the seperate module <module>mod_dav_fs</module>. This
+          provided by the separate module <module>mod_dav_fs</module>. This
           module is also automatically enabled with
           <code>--enable-dav</code>.<br/>
           Note: <module>mod_dav</module> can only be used together with the
@@ -510,7 +510,7 @@
         <dd>Enable the proxy/gateway functionality provided by
           <module>mod_proxy</module>. The proxying capabilities for
           <code>AJP13</code>, <code>CONNECT</code>, <code>FTP</code>,
-          <code>HTTP</code> and the balancer are provided by the seperate
+          <code>HTTP</code> and the balancer are provided by the separate
           modules <module>mod_proxy_ajp</module>,
           <module>mod_proxy_connect</module>, <module>mod_proxy_ftp</module>,
           <module>mod_proxy_http</module> and

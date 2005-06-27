@@ -34,7 +34,7 @@
      looked up the first time it is found in the log file.</p>
 
      <p>Takes an Apache log file on standard input.  The IP addresses
-     must be the first thing on each line and must be seperated from
+     must be the first thing on each line and must be separated from
      the remainder of the line by a space.</p>
 </summary>
 
