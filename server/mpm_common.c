@@ -546,7 +546,7 @@ static apr_status_t pod_signal_internal(ap_pod_t *pod)
  */
 static apr_status_t dummy_connection(ap_pod_t *pod)
 {
-    const char* srequest = "GET / HTTP/1.0\r\n\r\n";
+    const char *srequest = "GET / HTTP/1.0\r\n\r\n";
     apr_status_t rv;
     apr_socket_t *sock;
     apr_pool_t *p;
