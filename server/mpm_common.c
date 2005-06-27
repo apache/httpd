@@ -546,6 +546,7 @@ static apr_status_t pod_signal_internal(ap_pod_t *pod)
  */
 static apr_status_t dummy_connection(ap_pod_t *pod)
 {
+    const char* srequest = "GET / HTTP/1.0\r\n\r\n";
     apr_status_t rv;
     apr_socket_t *sock;
     apr_pool_t *p;
@@ -596,6 +597,16 @@ static apr_status_t dummy_connection(ap_pod_t *pod)
                      "connect to listener on %pI", ap_listeners->bind_addr);
     }
 
+    /* Since some operating systems support buffering of data or entire 
+     * requests in the kernel, we send a simple request, to make sure 
+     * the server pops out of a blocking accept(). 
+     */
+    /* XXX: This is HTTP specific. We should look at the Protocol for each 
+     * listener, and send the correct type of request to trigger any Accept
+     * Filters.
+     */
+    apr_socket_send(sock, srequest, strlen(srequest));
+    apr_socket_shutdown(sock, APR_SHUTDOWN_WRITE);
     apr_socket_close(sock);
     apr_pool_destroy(p);
 

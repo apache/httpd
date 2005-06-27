@@ -1,6 +1,10 @@
 Changes with Apache 2.1.7
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Fix shutdown for the Worker MPM when an Accept Filter is used. Instead of 
+     just closing the socket, a HTTP request is made, to make sure the child is 
+     always awakened. [Paul Querna]
+
 Changes with Apache 2.1.6
 
   *) Fix htdbm password validation for records which included comments.
