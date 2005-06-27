@@ -307,6 +307,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         PR: 35279
         +1: jorton
 
+     *) mod_include: Fix possible variable corruption with nested
+        includes.
+        http://svn.apache.org/viewcvs?rev=179763&view=rev
+        2.0.x patch: http://people.apache.org/~jorton/ap_pr12655.patch
+        PR: 12655
+        +1: jorton
+
+     *) mod_auth_digest: Fix hostinfo validation for CONNECT requests.
+        http://svn.apache.org/viewcvs.cgi?rev=193127&view=rev
+        +1: jorton
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
