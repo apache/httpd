@@ -44,51 +44,10 @@ down running Win9x services.  See the service.c code for how
 I accomplished this pretty simply in the -k stop/-k restart
 handler.
 
-Taskbar Monitor App
--------------------
-
-Basic requirements: a C code application using strictly the
-Win32 API, and not MFC or other Win32 frameworks.  Could use
-the service.c module to share some basic functions.  That
-module could be extended in Apache 2.0 to make this all easier.
-
-I think we are looking for an external app that simply acts 
-as a monitor or allows a stopped service to be started.  If 
-the user logs off, we loose the monitor app, but installed as 
-a shortcut in the Start group or in the registry key
-HKLM/Software/Microsoft/Windows/CurrentVersion/Run
-we will be just fine.  I'd like to see the monitor run only
-one instance to monitor all running services, for memory
-and resource conservation.
-
-I was thinking that the hover/iconbar title would tell them 
-"Test service is running", or "Test service is stopped".
-If they left click, they could stop or restart, or simply
-start if it is stopped.  There could be a preference that
-each service doesn't get it's own individual task icon unless 
-it is running, if it is a manual start service (or missing 
-from the RunServices list, which is the equivilant under 9x).
-
-If a specific service is set to Auto start or is in the 
-RunServices Win9x registry key, we must show them the stopped 
-icon, of course.  We might also keep the icon for any running
-service that stops abruptly.  But there could be a 'single 
-icon' option for the taskbar icon monitor that says show only
-a single status icon, for simplicity if the administrator runs
-many Apache services.
-
-But I was hoping that any right click would provide a menu
-of all Apache services with their status.  e.g.
-  Test service is stopped
-  Apache_2 service is running
-  MyWeb service is running
-and each would do the logical submenu, same as if that
-specific taskbar icon were left clicked, offering to start or
-offering to stop or restart the server, as appropriate.
-
 Finally, to identify all installed Apache services, just query 
 the registry key HKLM\SYSTEM\CurrentControlSet\Services for any 
-key that has the ImagePath value of "...\Apache.exe"... (quotes
-are significant here, if the leading quote is ommitted the 
-entire string ends with the text \Apache.exe - based on Apache's 
-own service installer in every released version.)
+key that has the ImagePath value of "...\Apache.exe"... or else
+"...\httpd.exe"... (quotes are significant here, if the leading 
+quote is ommitted the entire string ends with the text \Apache.exe
+based on Apache's own service installer in every released version.)
+
