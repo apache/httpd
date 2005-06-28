@@ -1,5 +1,8 @@
 Changes with Apache 2.0.55
 
+  *) Prevent hangs of child processes when writing to piped loggers at
+     the time of graceful restart.  PR 26467.  [Jeff Trawick]
+
   *) SECURITY: CAN-2005-1268 (cve.mitre.org)
      mod_ssl: Fix off-by-one overflow whilst printing CRL information
      at "LogLevel debug" which could be triggered if configured 

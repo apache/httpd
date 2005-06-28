@@ -116,6 +116,20 @@ AP_DECLARE(apr_status_t) ap_replace_stderr_log(apr_pool_t *p,
 int ap_open_logs(apr_pool_t *pconf, apr_pool_t *plog, 
                  apr_pool_t *ptemp, server_rec *s_main);
 
+#ifdef CORE_PRIVATE
+
+/**
+ * Perform special processing for piped loggers in MPM child
+ * processes.
+ * @param p Not used
+ * @param s Not used
+ * @tip ap_logs_child_init is not for use by modules; it is an
+ * internal core function
+ */
+void ap_logs_child_init(apr_pool_t *p, server_rec *s);
+
+#endif /* CORE_PRIVATE */
+
 /* 
  * The three primary logging functions, ap_log_error, ap_log_rerror, and 
  * ap_log_perror use a printf style format string to build the log message.  
