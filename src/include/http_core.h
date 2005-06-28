@@ -344,7 +344,17 @@ typedef struct {
     int recursion_limit_set; /* boolean */
     int redirect_limit;      /* maximum number of internal redirects */
     int subreq_limit;        /* maximum nesting level of subrequests */
+
+    /* TRACE control */
+    int trace_enable;        /* see AP_TRACE_ below */
+
 } core_server_config;
+
+/* trace_enable options */
+#define AP_TRACE_UNSET    -1
+#define AP_TRACE_DISABLE   0
+#define AP_TRACE_ENABLE    1
+#define AP_TRACE_EXTENDED  2
 
 /* for http_config.c */
 CORE_EXPORT(void) ap_core_reorder_directories(pool *, server_rec *);

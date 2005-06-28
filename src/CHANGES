@@ -1,5 +1,12 @@
 Changes with Apache 1.3.34
 
+  *) Added TraceEnable [on|off|extended] per-server directive to alter
+     the behavior of the TRACE method.  This addresses a flaw in proxy
+     conformance to RFC 2616 - previously the proxy server would accept
+     a TRACE request body although the RFC prohibited it.  The default
+     remains 'TraceEnable on'.
+     [William Rowe]
+
   *) mod_digest: Fix another nonce string calculation issue.
      [Eric Covener]
 

@@ -15,6 +15,7 @@
 
 /* HTTP routines for Apache proxy */
 
+#define CORE_PRIVATE   /* To inspect core_server_conf->trace_enable */
 #include "mod_proxy.h"
 #include "http_log.h"
 #include "http_main.h"
@@ -141,6 +142,24 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
     memset(&server, '\0', sizeof(server));
     server.sin_family = AF_INET;
 
+    if (r->method_number == M_TRACE) {
+        core_server_config *coreconf = (core_server_config *)
+             ap_get_module_config(r->server->module_config, &core_module);
+
+        if (coreconf->trace_enable == AP_TRACE_DISABLE)
+            return ap_proxyerror(r, HTTP_FORBIDDEN,
+                                 "TRACE denied by server configuration");
+
+        /* Can't test ap_should_client_block, we aren't ready to send
+         * the client a 100 Continue response till the connection has
+         * been established
+         */
+        if (coreconf->trace_enable != AP_TRACE_EXTENDED 
+            && (r->read_length || (!r->read_chunked && (r->remaining <= 0))))
+            return ap_proxyerror(r, HTTP_REQUEST_ENTITY_TOO_LARGE,
+                                 "TRACE with request body is not allowed");
+    }
+    
     /* We break the URL into host, port, path-search */
 
     urlptr = strstr(url, "://");

@@ -203,6 +203,7 @@
  * 19990320.16          - ap_escape_errorlog_item()
  * 19990320.17          - ap_auth_nonce() and ap_auth_nonce added
  *                        in core_dir_config.
+ * 19990320.18          - trace_enable member added to core server_config
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503133UL /* "AP13" */
@@ -210,7 +211,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 19990320
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 17                    /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 18                    /* 0...n */
 
 /* Useful for testing for features. */
 #define AP_MODULE_MAGIC_AT_LEAST(major,minor)		\

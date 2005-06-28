@@ -341,6 +341,8 @@ static void *create_core_server_config(pool *a, server_rec *s)
     conf->subreq_limit = 0;
     conf->recursion_limit_set = 0;
 
+    conf->trace_enable = AP_TRACE_UNSET;
+
     return (void *)conf;
 }
 
@@ -368,6 +370,10 @@ static void *merge_core_server_configs(pool *p, void *basev, void *virtv)
     conf->subreq_limit = virt->recursion_limit_set
                          ? virt->subreq_limit
                          : base->subreq_limit;
+
+    conf->trace_enable = (virt->trace_enable != AP_TRACE_UNSET)
+                         ? virt->trace_enable
+                         : base->trace_enable;
 
     return conf;
 }
@@ -1492,7 +1498,7 @@ CORE_EXPORT_NONSTD(const char *) ap_limit_section(cmd_parms *cmd, void *dummy,
         int  methnum = ap_method_number_of(method);
 
         if (methnum == M_TRACE && !tog) {
-            return "TRACE cannot be controlled by <Limit>";
+            return "TRACE cannot be controlled by <Limit>, see TraceEnable";
         }
         else if (methnum == M_INVALID) {
             return ap_pstrcat(cmd->pool, "unknown method \"", method,
@@ -3341,6 +3347,28 @@ static const char *set_recursion_limit(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
+static const char *set_trace_enable(cmd_parms *cmd, void *dummy,
+                                    const char *arg1)
+{
+    core_server_config *conf = ap_get_module_config(cmd->server->module_config,
+                                                    &core_module);
+    
+    if (strcasecmp(arg1, "on") == 0) {
+        conf->trace_enable = AP_TRACE_ENABLE;
+    }
+    else if (strcasecmp(arg1, "off") == 0) {
+        conf->trace_enable = AP_TRACE_DISABLE;
+    }
+    else if (strcasecmp(arg1, "extended") == 0) {
+        conf->trace_enable = AP_TRACE_EXTENDED;
+    }
+    else {
+        return "TraceEnable must be one of 'on', 'off', or 'extended'";
+    }
+
+    return NULL;
+}
+
 static void log_backtrace(const request_rec *r)
 {
     const request_rec *top = r;
@@ -3742,6 +3770,8 @@ static const command_rec core_cmds[] = {
 { "LimitInternalRecursion", set_recursion_limit, NULL, RSRC_CONF, TAKE12,
   "maximum recursion depth of internal redirects and subrequests"},
 
+{ "TraceEnable", set_trace_enable, NULL, RSRC_CONF, TAKE1, 
+  "'on' (default), 'off' or 'extended' to trace request body content"},
 { NULL }
 };
 
