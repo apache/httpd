@@ -998,7 +998,9 @@ BOOL GetApacheServicesStatus()
                         lstrcpy(szBuf, szImagePath);
                         CharLower(szBuf);
                         /* the service name could be Apache*.exe */
-                        if ((strstr(szBuf, "\\apache") != NULL)
+                        /* the service name could be httpd*.exe or Apache*.exe */
+                        if (((strstr(szBuf, "\\apache") != NULL)
+                             || (strstr(szBuf, "\\httpd") != NULL))
                                 && strstr(szBuf, ".exe") 
                                 && (strstr(szBuf, "--ntservice") != NULL 
                                        || strstr(szBuf, "-k ") != NULL))
