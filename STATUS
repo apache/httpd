@@ -111,6 +111,10 @@ RELEASE SHOWSTOPPERS:
 
     * Various fixes to T-E and C-L processing from trunk
 
+      + proxy HTTP - ignore C-L and disable keepalive to origin server
+          http://people.apache.org/~trawick/20.te-cl.txt
+        +1: trawick
+
     * proxy_http.c accepts TRACE with a body, violating RFC2616
 
 
@@ -124,12 +128,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
              +       if (isenc && (isenc != PROXYREQ_REVERSE) && ch == '%') {
 
        +1: jim, pquerna, wrowe
-
-    *) Prevent hang writing to piped logger at graceful restart time.
-       PR: 26467
-         http://svn.apache.org/viewcvs?rev=170281&view=rev
-         http://svn.apache.org/viewcvs.cgi?rev=171093&view=rev
-       +1: trawick, jorton, pquerna
 
     *) Fix fd leak in piped logging code, fix error handling, and remove
        dead errno handling.
@@ -204,16 +202,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       +1: pquerna, nd
       Votes from before the integration branch:
           +1: jerenkrantz, wrowe (trivial, would even be cool in 1.3)
-
-     *) fix z/OS annoyance with pathname on debug messages in error log
-        http://svn.apache.org/viewcvs?rev=178299&view=rev
-        +1: trawick, pquerna, wrowe
-
-     *) Downgrade the log level of a worker MPM apr_proc_mutex_foo error
-        message when it occurs during restart (as we already do for a couple
-        of other calls).
-        http://svn.apache.org/viewcvs?rev=179317&view=rev
-        +1: trawick, jorton, pquerna
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
