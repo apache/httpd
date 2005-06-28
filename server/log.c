@@ -439,7 +439,7 @@ static void log_error_core(const char *file, int line, int level,
 
 #ifndef TPF
     if (file && level_and_mask == APLOG_DEBUG) {
-#if defined(_OSD_POSIX) || defined(WIN32)
+#if defined(_OSD_POSIX) || defined(WIN32) || defined(__MVS__)
         char tmp[256];
         char *e = strrchr(file, '/');
 #ifdef WIN32
