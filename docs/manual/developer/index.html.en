@@ -63,6 +63,15 @@
 
       <li><a href="http://www.onlamp.com/pub/ct/38">Some notes on 
       Apache module development by Ryan Bloom</a></li>
+
+      <li>Developer articles at <a href="http://www.apachetutor.org/">apachetutor</a> include:
+      <ul>
+        <li><a href="http://www.apachetutor.org/dev/request">Request Processing in Apache</a></li>
+        <li><a href="http://www.apachetutor.org/dev/config">Configuration for Modules</a></li>
+        <li><a href="http://www.apachetutor.org/dev/pools">Resource Management in Apache</a></li>
+        <li><a href="http://www.apachetutor.org/dev/reslist">Connection Pooling in Apache</a></li>
+        <li><a href="http://www.apachetutor.org/dev/brigades">Introduction to Buckets and Brigades</a></li>
+      </ul></li>
     </ul>
 </div></div>
 <div class="bottomlang">
