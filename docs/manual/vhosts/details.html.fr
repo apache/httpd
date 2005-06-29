@@ -22,8 +22,6 @@
 <a href="../fr/vhosts/details.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ko/vhosts/details.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Verifiez la version
-            Anglaise pour les changements récents.</div>
 
 
     <p>Le code gérant les serveurs virtuels a été réécrit à partir de 

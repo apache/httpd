@@ -23,8 +23,6 @@
 <a href="../ja/vhosts/ip-based.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/vhosts/ip-based.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Verifiez la version
-            Anglaise pour les changements récents.</div>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#requirements">Système requis</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#howto">Comment configurer Apache</a></li>
@@ -161,9 +159,9 @@ résident pour des serveurs virtuels</a></h2>
     l'<a href="../mod/directives.html">Index des directives</a>.</p>
 
 
-    <a href="../mod/mod_suexec.html/#suexecusergroup">SuexecUserGroup</a> peut être
-    utilisées à l'intérieur d'une directive VirtualHost si l'exécution se fait sous
-    suEXEC. (Voir <a href="../suexec.html">suEXEC</a>).
+    <p><code class="directive"><a href="../mod/mod_suexec.html#suexecusergroup">SuexecUserGroup</a></code> peut être
+    utilisées à l'intérieur d'une directive VirtualHost si l'exécution se fait
+    sous suEXEC. (Voir <a href="../suexec.html">suEXEC</a>).</p>
 
     <p><em>SÉCURITÉ&nbsp;:</em> lorsque vous spécifiez où écrire les 
     fichiers journaux, soyez attentif aux risques si quelqu'un d'autre 

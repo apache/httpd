@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "LOGRESOLVE" 8 "2003-11-25" "Apache HTTP Server" "logresolve"
+.TH "LOGRESOLVE" 8 "2005-06-29" "Apache HTTP Server" "logresolve"
 
 .SH NAME
 logresolve \- Resolve IP-addresses to hostnames in Apache log files
@@ -36,7 +36,7 @@ logresolve \- Resolve IP-addresses to hostnames in Apache log files
 logresolve is a post-processing program to resolve IP-addresses in Apache's access logfiles\&. To minimize impact on your nameserver, logresolve has its very own internal hash-table cache\&. This means that each IP number will only be looked up the first time it is found in the log file\&.
  
 .PP
-Takes an Apache log file on standard input\&. The IP addresses must be the first thing on each line and must be seperated from the remainder of the line by a space\&.
+Takes an Apache log file on standard input\&. The IP addresses must be the first thing on each line and must be separated from the remainder of the line by a space\&.
  
 
 .SH "OPTIONS"
