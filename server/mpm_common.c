@@ -550,6 +550,7 @@ static apr_status_t dummy_connection(ap_pod_t *pod)
     apr_status_t rv;
     apr_socket_t *sock;
     apr_pool_t *p;
+    apr_size_t len;
 
     /* create a temporary pool for the socket.  pconf stays around too long */
     rv = apr_pool_create(&p, pod->p);
@@ -605,8 +606,8 @@ static apr_status_t dummy_connection(ap_pod_t *pod)
      * listener, and send the correct type of request to trigger any Accept
      * Filters.
      */
-    apr_socket_send(sock, srequest, strlen(srequest));
-    apr_socket_shutdown(sock, APR_SHUTDOWN_WRITE);
+    len = strlen(srequest);
+    apr_socket_send(sock, srequest, &len);
     apr_socket_close(sock);
     apr_pool_destroy(p);
 
