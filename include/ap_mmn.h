@@ -96,7 +96,7 @@
  * 20050305.1 (2.1.5-dev) added ap_vhost_iterate_given_conn.
  * 20050305.2 (2.1.5-dev) added AP_INIT_TAKE_ARGV.
  * 20050305.3 (2.1.5-dev) added Protocol Framework.
- * 20050701.0 (2.1.7-dev) trace_enable member added to core server_config
+ * 20050701.0 (2.1.7-dev) Bump MODULE_MAGIC_COOKIE to "AP21"!
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503231UL /* "AP21" */
