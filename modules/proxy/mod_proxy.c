@@ -541,7 +541,23 @@ static int proxy_handler(request_rec *r)
         if (maxfwd < 1) {
             switch (r->method_number) {
             case M_TRACE: {
+                core_server_config *coreconf = (core_server_config *)
+                                    ap_get_module_config(sconf, &core_module);
                 int access_status;
+
+                if (coreconf->trace_enable == AP_TRACE_DISABLE)
+                    return ap_proxyerror(r, HTTP_NOT_IMPLEMENTED,
+                                         "TRACE denied by server configuration");
+
+                /* Can't test ap_should_client_block, we aren't ready to send
+                 * the client a 100 Continue response till the connection has
+                 * been established
+                 */
+                if (coreconf->trace_enable != AP_TRACE_EXTENDED 
+                    && (r->read_length || (!r->read_chunked && (r->remaining <= 0))))
+                    return ap_proxyerror(r, HTTP_REQUEST_ENTITY_TOO_LARGE,
+                                         "TRACE with request body is not allowed");
+
                 r->proxyreq = PROXYREQ_NONE;
                 if ((access_status = ap_send_http_trace(r)))
                     ap_die(access_status, r);

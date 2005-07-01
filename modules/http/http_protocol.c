@@ -754,6 +754,9 @@ static char *make_allow(request_rec *r)
     apr_int64_t mask;
     apr_array_header_t *allow = apr_array_make(r->pool, 10, sizeof(char *));
     apr_hash_index_t *hi = apr_hash_first(r->pool, methods_registry);
+    /* For TRACE below */
+    core_server_config *conf =
+        ap_get_module_config(r->server->module_config, &core_module);
 
     mask = r->allowed_methods->method_mask;
 
@@ -771,8 +774,9 @@ static char *make_allow(request_rec *r)
         }
     }
 
-    /* TRACE is always allowed */
-    *(const char **)apr_array_push(allow) = "TRACE";
+    /* TRACE is tested on a per-server basis */
+    if (conf->trace_enable != AP_TRACE_DISABLE)
+        *(const char **)apr_array_push(allow) = "TRACE";
 
     list = apr_array_pstrcat(r->pool, allow, ',');
 
