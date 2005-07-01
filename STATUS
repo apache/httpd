@@ -112,12 +112,13 @@ RELEASE SHOWSTOPPERS:
     * Various fixes to T-E and C-L processing from trunk
 
       + proxy HTTP - ignore C-L and disable keepalive to origin server
-        CAN-2005-2088
           http://people.apache.org/~trawick/20.te-cl.txt
-        +1: trawick
+        +1: trawick, jorton
 
-    * proxy_http.c accepts TRACE with a body, violating RFC2616
-
+      + core: strip C-L from any request with a T-E header
+          http://people.apache.org/~jorton/ap_tevscl.diff
+          (CVE CAN-2005-2088)
+        +1: jorton
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ please append new backports at the end of this list not the top. ]
