@@ -551,6 +551,14 @@ typedef struct {
 
     const char *protocol;
     apr_table_t *accf_map;
+
+    /* TRACE control */
+#define AP_TRACE_UNSET    -1
+#define AP_TRACE_DISABLE   0
+#define AP_TRACE_ENABLE    1
+#define AP_TRACE_EXTENDED  2
+    int trace_enable;
+
 } core_server_config;
 
 /* for AddOutputFiltersByType in core.c */
