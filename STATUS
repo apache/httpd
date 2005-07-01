@@ -112,6 +112,7 @@ RELEASE SHOWSTOPPERS:
     * Various fixes to T-E and C-L processing from trunk
 
       + proxy HTTP - ignore C-L and disable keepalive to origin server
+        CAN-2005-2088
           http://people.apache.org/~trawick/20.te-cl.txt
         +1: trawick
 
