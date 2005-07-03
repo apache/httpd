@@ -579,7 +579,7 @@ static const char *log_request_time(request_rec *r, char *a)
 #endif
         unsigned t_seconds = (unsigned)apr_time_sec(request_time);
         unsigned i = t_seconds & TIME_CACHE_MASK;
-        memcpy(cached_time, &(request_time_cache[i]), sizeof(*cached_time));
+        *cached_time = request_time_cache[i];
         if ((t_seconds != cached_time->t) ||
             (t_seconds != cached_time->t_validate)) {
 
@@ -605,8 +605,7 @@ static const char *log_request_time(request_rec *r, char *a)
                          xt.tm_year+1900, xt.tm_hour, xt.tm_min, xt.tm_sec,
                          sign, timz / (60*60), (timz % (60*60)) / 60);
             cached_time->t_validate = t_seconds;
-            memcpy(&(request_time_cache[i]), cached_time,
-                   sizeof(*cached_time));
+            request_time_cache[i] = *cached_time;
         }
         return cached_time->timestr;
     }
