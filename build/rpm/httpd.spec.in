@@ -289,11 +289,29 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/httpd/run
 %dir %{_sysconfdir}/httpd/conf
 %config(noreplace) %{_sysconfdir}/httpd/conf/httpd.conf
-%{_sysconfdir}/httpd/conf/httpd-std.conf
-%config(noreplace) %{_sysconfdir}/httpd/conf/highperformance.conf
-%{_sysconfdir}/httpd/conf/highperformance-std.conf
 %config(noreplace) %{_sysconfdir}/httpd/conf/magic
 %config(noreplace) %{_sysconfdir}/httpd/conf/mime.types
+%config(noreplace) %{_sysconfdir}/httpd/conf/extra/httpd-autoindex.conf
+%config(noreplace) %{_sysconfdir}/httpd/conf/extra/httpd-dav.conf
+%config(noreplace) %{_sysconfdir}/httpd/conf/extra/httpd-default.conf
+%config(noreplace) %{_sysconfdir}/httpd/conf/extra/httpd-info.conf
+%config(noreplace) %{_sysconfdir}/httpd/conf/extra/httpd-languages.conf
+%config(noreplace) %{_sysconfdir}/httpd/conf/extra/httpd-manual.conf
+%config(noreplace) %{_sysconfdir}/httpd/conf/extra/httpd-mpm.conf
+%config(noreplace) %{_sysconfdir}/httpd/conf/extra/httpd-multilang-errordoc.conf
+%config(noreplace) %{_sysconfdir}/httpd/conf/extra/httpd-userdir.conf
+%config(noreplace) %{_sysconfdir}/httpd/conf/extra/httpd-vhosts.conf
+%config(noreplace) %{_sysconfdir}/httpd/conf/original/extra/httpd-autoindex.conf
+%config(noreplace) %{_sysconfdir}/httpd/conf/original/extra/httpd-dav.conf
+%config(noreplace) %{_sysconfdir}/httpd/conf/original/extra/httpd-default.conf
+%config(noreplace) %{_sysconfdir}/httpd/conf/original/extra/httpd-info.conf
+%config(noreplace) %{_sysconfdir}/httpd/conf/original/extra/httpd-languages.conf
+%config(noreplace) %{_sysconfdir}/httpd/conf/original/extra/httpd-manual.conf
+%config(noreplace) %{_sysconfdir}/httpd/conf/original/extra/httpd-mpm.conf
+%config(noreplace) %{_sysconfdir}/httpd/conf/original/extra/httpd-multilang-errordoc.conf
+%config(noreplace) %{_sysconfdir}/httpd/conf/original/extra/httpd-userdir.conf
+%config(noreplace) %{_sysconfdir}/httpd/conf/original/extra/httpd-vhosts.conf
+%config(noreplace) %{_sysconfdir}/httpd/conf/original/httpd.conf
 
 %config %{_sysconfdir}/logrotate.d/httpd
 %config %{_sysconfdir}/rc.d/init.d/httpd
@@ -349,8 +367,6 @@ rm -rf $RPM_BUILD_ROOT
 %files -n mod_ssl
 %defattr(-,root,root)
 %{_libdir}/httpd/modules/mod_ssl.so
-%config(noreplace) %{_sysconfdir}/httpd/conf/ssl.conf
-%{_sysconfdir}/httpd/conf/ssl-std.conf
 %attr(0700,root,root) %dir %{_sysconfdir}/httpd/conf/ssl.crl
 %attr(0700,root,root) %dir %{_sysconfdir}/httpd/conf/ssl.crt
 %attr(0700,root,root) %dir %{_sysconfdir}/httpd/conf/ssl.csr
@@ -358,6 +374,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0700,root,root) %dir %{_sysconfdir}/httpd/conf/ssl.prm
 #%config %{_sysconfdir}/httpd/conf/Makefile
 #%dir %{_sysconfdir}/httpd/conf/ssl.*
+%config(noreplace) %{_sysconfdir}/httpd/conf/original/extra/httpd-ssl.conf
+%config(noreplace) %{_sysconfdir}/httpd/conf/extra/httpd-ssl.conf
 %attr(0700,apache,root) %dir %{_localstatedir}/cache/mod_ssl
 %attr(0600,apache,root) %ghost %{_localstatedir}/cache/mod_ssl/scache.dir
 %attr(0600,apache,root) %ghost %{_localstatedir}/cache/mod_ssl/scache.pag
@@ -376,8 +394,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/httpd/build/*.mk
 %{_libdir}/httpd/build/instdso.sh
 %{_libdir}/httpd/build/config.nice
+%{_libdir}/httpd/build/mkdir.sh
 
 %changelog
+* Sat Jul 2 2005 Graham Leggett <minfrin@apache.org> 2.1.7-dev
+- Fixed complaints about unpackaged files with new config file changes.
+
 * Thu Dec 16 2004 Graham Leggett <minfrin@apache.org> 2.1.3-dev
 - Changed build to use external apr and apr-util
 
