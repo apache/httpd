@@ -93,7 +93,7 @@
       <code>/usr/local/apache2/cgi-bin/</code> から提供し、それらを
       CGI プログラムとして扱うよう Apache に示します。</p>
 
-      <p>例えば、URL <code>http://dev.rcbowen.com/cgi-bin/test.pl</code>
+      <p>例えば、URL <code>http://www.example.com/cgi-bin/test.pl</code>
       が要求された場合、Apache は ファイル
       <code>/usr/local/apache2/cgi-bin/test.pl</code>
       を実行し、その出力を返すことを試みます。
@@ -154,7 +154,7 @@
     </section>
 
     <section id="htaccess">
-      <title>.htaccess files</title>
+      <title>.htaccess ファイル</title>
 
       <p><a href="htaccess.html"><code>.htaccess</code> チュートリアル</a>
       は <code>httpd.conf</code> を変更できない場合にどうやって CGI プログラムを
@@ -280,7 +280,7 @@
       <dt>メッセージが "Forbidden" で始まっている</dt>
       <dd>これはパーミッションの問題ということを意味します。
       <a href="#errorlogs">Apache のエラーログ</a>と、後述の<a
-      href="#filepermissions">「ファイルのパーミッション」</a>
+      href="#permissions">「ファイルのパーミッション」</a>
       の章をチェックしてください。
       </dd>
 
@@ -337,8 +337,12 @@
         #!/usr/bin/perl
       </example>
 
-      <p>これがインタープリタへの実際のパスであることを確実にしておきます。</p>
+      <p>これがインタープリタへの実際のパスであることを確認しておきます。</p>
     </section>
+
+      <p>また、CGI プログラムが他の<a
+      href="#env">環境変数</a>に依存している場合は、その環境変数が
+      Apache から渡されるようにする必要があります。</p>
 
     <section id="syntaxerrors">
       <title>プログラムエラー</title>
@@ -408,7 +412,7 @@
     <title>裏で何が起こっているのか?</title>
 
     <p>CGI プログラミングに習熟すると、
-    裏で起こっていることについて更に理解すること役に立ちます。
+    裏で起こっていることについて更に理解することの役に立ちます。
     ブラウザとサーバがどのように相互通信するかについては特にそうです。
     なぜなら、"Hello, World."
     を印字するプログラムを書くことはおおいに結構ですが、
