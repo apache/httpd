@@ -292,7 +292,7 @@ static int proxy_handler(request_rec *r)
             ap_table_setn(r->notes, "error-notes",
                            "TRACE forbidden by server configuration");
             ap_table_setn(r->notes, "verbose-error-to", "*");
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, r,
                           "proxy: TRACE forbidden by server configuration");
             return HTTP_FORBIDDEN;
         }
@@ -306,7 +306,7 @@ static int proxy_handler(request_rec *r)
             ap_table_setn(r->notes, "error-notes",
                            "TRACE with request body is not allowed");
             ap_table_setn(r->notes, "verbose-error-to", "*");
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, r,
                           "proxy: TRACE with request body is not allowed");
             return HTTP_REQUEST_ENTITY_TOO_LARGE;
         }

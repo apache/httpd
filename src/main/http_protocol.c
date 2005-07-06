@@ -1687,9 +1687,12 @@ API_EXPORT(int) ap_send_http_trace(request_rec *r)
     conf = ap_get_module_config(r->server->module_config, &core_module);
 
     if (conf->trace_enable == AP_TRACE_DISABLE) {
-	ap_table_setn(r->notes, "error-notes",
-                      "TRACE denied by server configuration");
-        return HTTP_FORBIDDEN;
+        ap_table_setn(r->notes, "error-notes",
+                      "TRACE forbidden by server configuration");
+        ap_table_setn(r->notes, "verbose-error-to", "*");
+        ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, r,
+                      "TRACE forbidden by server configuration");
+	return HTTP_FORBIDDEN;
     }
 
     if (conf->trace_enable == AP_TRACE_EXTENDED)
@@ -2112,7 +2115,7 @@ API_EXPORT(int) ap_setup_client_block(request_rec *r, int read_policy)
     }
 
     if ((r->read_body == REQUEST_NO_BODY) &&
-        (r->read_chunked || (r->remaining > 0))) {
+        && (r->read_length || r->read_chunked || r->remaining)) {
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
                     "%s with body is not allowed for %s", r->method, r->uri);
         return HTTP_REQUEST_ENTITY_TOO_LARGE;
