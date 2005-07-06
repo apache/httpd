@@ -308,6 +308,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewcvs.cgi?rev=193127&view=rev
         +1: jorton
 
+     *) Add httxt2dbm for creating RewriteMap DBM Files.
+        http://svn.apache.org/viewcvs.cgi?rev=209539&view=rev
+        +1: pquerna
+
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
     *) Remove LDAP toolkit specific code from util_ldap and mod_auth_ldap.
