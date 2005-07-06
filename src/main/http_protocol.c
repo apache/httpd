@@ -2114,7 +2114,7 @@ API_EXPORT(int) ap_setup_client_block(request_rec *r, int read_policy)
         }
     }
 
-    if ((r->read_body == REQUEST_NO_BODY) &&
+    if ((r->read_body == REQUEST_NO_BODY)
         && (r->read_length || r->read_chunked || r->remaining)) {
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
                     "%s with body is not allowed for %s", r->method, r->uri);
