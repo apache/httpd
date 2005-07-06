@@ -50,6 +50,7 @@ static char *ssl_var_lookup_ssl_cert_verify(apr_pool_t *p, conn_rec *c);
 static char *ssl_var_lookup_ssl_cipher(apr_pool_t *p, conn_rec *c, char *var);
 static void  ssl_var_lookup_ssl_cipher_bits(SSL *ssl, int *usekeysize, int *algkeysize);
 static char *ssl_var_lookup_ssl_version(apr_pool_t *p, char *var);
+static char *ssl_var_lookup_ssl_compress_meth(SSL *ssl);
 
 static int ssl_is_https(conn_rec *c)
 {
@@ -295,6 +296,9 @@ static char *ssl_var_lookup_ssl(apr_pool_t *p, conn_rec *c, char *var)
     else if (ssl != NULL && strlen(var) > 7 && strcEQn(var, "SERVER_", 7)) {
         if ((xs = SSL_get_certificate(ssl)) != NULL)
             result = ssl_var_lookup_ssl_cert(p, xs, var+7);
+    }
+    else if (ssl != NULL && strcEQ(var, "COMPRESS_METHOD")) {
+        result = ssl_var_lookup_ssl_compress_meth(ssl);
     }
     return result;
 }
@@ -708,6 +712,39 @@ const char *ssl_ext_lookup(apr_pool_t *p, conn_rec *c, int peer,
     }
 
     ERR_clear_error();
+    return result;
+}
+
+static char *ssl_var_lookup_ssl_compress_meth(SSL *ssl)
+{
+    char *result = "NULL";
+#ifdef OPENSSL_VERSION_NUMBER
+#if (OPENSSL_VERSION_NUMBER >= 0x00908000)
+    SSL_SESSION *pSession = SSL_get_session(ssl);
+
+    if (pSession) {
+        switch (pSession->compress_meth) {
+        case 0:
+            /* default "NULL" already set */
+            break;
+
+            /* Defined by RFC 3749, deflate is coded by "1" */
+        case 1:
+            result = "DEFLATE";
+            break;
+
+            /* IANA assigned compression number for LZS */
+        case 0x40:
+            result = "LZS";
+            break;
+
+        default:
+            result = "UNKNOWN";
+            break;
+        }
+    }
+#endif
+#endif
     return result;
 }
 
