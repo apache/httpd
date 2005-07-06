@@ -680,6 +680,7 @@ browsers complain that they cannot verify the server certificate?</title>
 <li><a href="#vhosts">HTTPS and name-based vhosts</a></li>
 <li><a href="#vhosts2">Why is it not possible to use Name-Based Virtual
 Hosting to identify different SSL virtual hosts?</a></li>
+<li><a href="#comp">How do I get SSL compression working?</a></li>
 <li><a href="#lockicon">The lock icon in Netscape locks very late</a></li>
 <li><a href="#msie">Why do I get I/O errors with MSIE clients?</a></li>
 <li><a href="#nn">Why do I get I/O errors with NS clients?</a></li>
@@ -802,6 +803,23 @@ Virtual Hosting to identify different SSL virtual hosts?</title>
 
     <p>Use separate IP addresses for different SSL hosts. 
     Use different port numbers for different SSL hosts.</p> 
+</section>
+
+<section id="comp"><title>How do I get SSL compression working?</title>
+<p>Although SSL compression negotiation was already defined in the specification
+of SSLv2 and TLS, it took until May 2004 when RFC 3749 defined DEFLATE as
+a negotiable standard compression method.
+</p>
+<p>OpenSSL 0.9.8 started to support this by default when compiled with the
+<code>zlib</code> option. If both the client and the server support compression,
+it will be used. However, most clients still try to initially connect with an
+SSLv2 Hello. As SSLv2 did not include an array of prefered compression algorithms
+in its handshake, compression can not be negotiated with these clients.
+If the client disables support for SSLv2, based on the used SSL library 
+a SSLv3 or TLS Hello might be sent and compression might be set up.
+You can verify if clients make use of SSL compression by logging the
+<code>%{SSL_COMPRESS_METHOD}x</code> variable.
+</p>
 </section>
 
 <section id="lockicon"><title>When I use Basic Authentication over HTTPS the lock icon in Netscape browsers
