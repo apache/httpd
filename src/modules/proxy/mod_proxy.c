@@ -18,6 +18,7 @@
 #define CORE_PRIVATE
 
 #include "http_log.h"
+#include "http_core.h"
 #include "http_vhost.h"
 #include "http_request.h"
 
@@ -278,6 +279,38 @@ static int proxy_handler(request_rec *r)
 
     if ((rc = ap_setup_client_block(r, REQUEST_CHUNKED_ERROR)))
         return rc;
+
+    if (r->method_number == M_TRACE) {
+        core_server_config *coreconf = (core_server_config *)
+             ap_get_module_config(r->server->module_config, &core_module);
+
+        if (coreconf->trace_enable == AP_TRACE_DISABLE)
+        {
+            /* Allow "error-notes" string to be printed by ap_send_error_response()
+             * Note; this goes nowhere, canned error response need an overhaul.
+             */
+            ap_table_setn(r->notes, "error-notes",
+                           "TRACE forbidden by server configuration");
+            ap_table_setn(r->notes, "verbose-error-to", "*");
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
+                          "proxy: TRACE forbidden by server configuration");
+            return HTTP_FORBIDDEN;
+        }
+
+        if (coreconf->trace_enable != AP_TRACE_EXTENDED 
+            && (r->read_length || r->read_chunked || r->remaining))
+        {
+            /* Allow "error-notes" string to be printed by ap_send_error_response()
+             * Note; this goes nowhere, canned error response need an overhaul.
+             */
+            ap_table_setn(r->notes, "error-notes",
+                           "TRACE with request body is not allowed");
+            ap_table_setn(r->notes, "verbose-error-to", "*");
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
+                          "proxy: TRACE with request body is not allowed");
+            return HTTP_REQUEST_ENTITY_TOO_LARGE;
+        }
+    }
 
     url = r->filename + 6;
     p = strchr(url, ':');
