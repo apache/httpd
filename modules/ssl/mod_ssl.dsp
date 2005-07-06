@@ -227,10 +227,10 @@ BuildCmds= \
 	del y.tab.h \
 	
 
-"ssl_expr_parse.c" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"ssl_expr_parse.c" : $(SOURCE)
    $(BuildCmds)
 
-"ssl_expr_parse.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"ssl_expr_parse.h" : $(SOURCE)
    $(BuildCmds)
 # End Custom Build
 
@@ -247,10 +247,10 @@ BuildCmds= \
 	del y.tab.h \
 	
 
-"ssl_expr_parse.c" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"ssl_expr_parse.c" : $(SOURCE)
    $(BuildCmds)
 
-"ssl_expr_parse.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"ssl_expr_parse.h" : $(SOURCE)
    $(BuildCmds)
 # End Custom Build
 
@@ -267,7 +267,7 @@ SOURCE=.\ssl_expr_scan.l
 # Begin Custom Build - Generating ssl_expr_scan.c from ssl_expr_scan.l
 InputPath=.\ssl_expr_scan.l
 
-"ssl_expr_scan.c" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"ssl_expr_scan.c" : $(SOURCE)
 	flex -Pssl_expr_yy -s -B ssl_expr_scan.l 
 	sed -e "/$$Header:/d" <lex.ssl_expr_yy.c >ssl_expr_scan.c 
 	del lex.ssl_expr_yy.c 
@@ -280,7 +280,7 @@ InputPath=.\ssl_expr_scan.l
 # Begin Custom Build - Generating ssl_expr_scan.c from ssl_expr_scan.l
 InputPath=.\ssl_expr_scan.l
 
-"ssl_expr_scan.c" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"ssl_expr_scan.c" : $(SOURCE)
 	flex -Pssl_expr_yy -s -B ssl_expr_scan.l 
 	sed -e "/$$Header:/d" <lex.ssl_expr_yy.c >ssl_expr_scan.c 
 	del lex.ssl_expr_yy.c 
@@ -305,7 +305,7 @@ SOURCE=..\..\build\win32\win32ver.awk
 # Begin Custom Build - Creating Version Resource
 InputPath=..\..\build\win32\win32ver.awk
 
-".\mod_ssl.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+".\mod_ssl.rc" : $(SOURCE)
 	awk -f ../../build/win32/win32ver.awk mod_ssl.so "ssl_module for Apache" ../../include/ap_release.h > .\mod_ssl.rc
 
 # End Custom Build
@@ -316,7 +316,7 @@ InputPath=..\..\build\win32\win32ver.awk
 # Begin Custom Build - Creating Version Resource
 InputPath=..\..\build\win32\win32ver.awk
 
-".\mod_ssl.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+".\mod_ssl.rc" : $(SOURCE)
 	awk -f ../../build/win32/win32ver.awk mod_ssl.so "ssl_module for Apache" ../../include/ap_release.h > .\mod_ssl.rc
 
 # End Custom Build
