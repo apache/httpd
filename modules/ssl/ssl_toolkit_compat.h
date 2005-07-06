@@ -113,6 +113,13 @@ typedef int (modssl_read_bio_cb_fn)(char*,int,int,void*);
 
 #define HAVE_SSL_X509V3_EXT_d2i
 
+#ifndef PEM_F_DEF_CALLBACK
+#ifdef PEM_F_PEM_DEF_CALLBACK
+/* In OpenSSL 0.9.8 PEM_F_DEF_CALLBACK was renamed */
+#define PEM_F_DEF_CALLBACK PEM_F_PEM_DEF_CALLBACK 
+#endif
+#endif
+
 #elif defined(HAVE_SSLC)
 
 #include <bio.h>
