@@ -78,12 +78,18 @@
 #define MODSSL_BIO_CB_ARG_TYPE const char
 #define MODSSL_CRYPTO_CB_ARG_TYPE const char
 #if (OPENSSL_VERSION_NUMBER < 0x00907000)
-#define MODSSL_INFO_CB_ARG_TYPE SSL*
+# define MODSSL_INFO_CB_ARG_TYPE SSL*
 #else
-#define MODSSL_INFO_CB_ARG_TYPE const SSL*
+# define MODSSL_INFO_CB_ARG_TYPE const SSL*
 #endif
 #define MODSSL_CLIENT_CERT_CB_ARG_TYPE X509
 #define MODSSL_PCHAR_CAST
+#if (OPENSSL_VERSION_NUMBER < 0x0090707f)
+# define MODSSL_D2I_DATUM_TYPE unsigned char *
+#else
+# define MODSSL_D2I_DATUM_TYPE const unsigned char *
+#endif
+
 
 #define modssl_X509_verify_cert X509_verify_cert
 
@@ -146,6 +152,7 @@ typedef int (modssl_read_bio_cb_fn)(char*,int,int,void*);
 #define MODSSL_INFO_CB_ARG_TYPE SSL*
 #define MODSSL_CLIENT_CERT_CB_ARG_TYPE void
 #define MODSSL_PCHAR_CAST (char *)
+#define MODSSL_D2I_DATUM_TYPE unsigned char *
 
 typedef int (modssl_read_bio_cb_fn)(char*,int,int);
 
