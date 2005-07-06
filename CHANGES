@@ -1,6 +1,9 @@
 Changes with Apache 2.1.7
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Add httxt2dbm to support/ for creating RewriteMap DBM Files.
+     [Paul Querna]
+
   *) Fixed complaints about unpackaged files within the RPM build
      after changes to the config files. [Graham Leggett]
 
