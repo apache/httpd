@@ -4,6 +4,9 @@ Changes with Apache 2.1.7
   *) Add httxt2dbm to support/ for creating RewriteMap DBM Files.
      [Paul Querna]
 
+  *) Add SSL_COMPRESS_METHOD variable (included in +StdEnvVars) to note
+     the negotiated compression.  [Georg v. Zezschwitz <gvz 2scale.de>]
+
   *) Fixed complaints about unpackaged files within the RPM build
      after changes to the config files. [Graham Leggett]
 
