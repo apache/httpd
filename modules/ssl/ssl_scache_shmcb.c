@@ -1184,7 +1184,12 @@ static SSL_SESSION *shmcb_lookup_session_id(
     SHMCBHeader *header;
     SSL_SESSION *pSession = NULL;
     unsigned int curr_pos, loop, count;
-    MODSSL_D2I_DATUM_TYPE ptr;
+#ifdef OPENSSL_VERSION_NUMBER
+#if (OPENSSL_VERSION_NUMBER >= 0x0090707f)
+    const /* ...shifting sands of openssl... */
+#endif
+#endif
+        unsigned char *ptr;
     time_t now;
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
@@ -1262,7 +1267,12 @@ static BOOL shmcb_remove_session_id(
     SHMCBIndex *idx;
     SHMCBHeader *header;
     unsigned int curr_pos, loop, count;
-    MODSSL_D2I_DATUM_TYPE ptr;
+#ifdef OPENSSL_VERSION_NUMBER
+#if (OPENSSL_VERSION_NUMBER >= 0x0090707f)
+    const /* ...shifting sands of openssl... */
+#endif
+#endif
+        unsigned char *ptr;
     BOOL to_return = FALSE;
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
