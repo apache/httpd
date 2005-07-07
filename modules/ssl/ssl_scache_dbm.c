@@ -196,7 +196,12 @@ SSL_SESSION *ssl_scache_dbm_retrieve(server_rec *s, UCHAR *id, int idlen)
     apr_datum_t dbmkey;
     apr_datum_t dbmval;
     SSL_SESSION *sess = NULL;
-    MODSSL_D2I_DATUM_TYPE ucpData;
+#ifdef OPENSSL_VERSION_NUMBER
+#if (OPENSSL_VERSION_NUMBER >= 0x0090707f)
+    const /* ...shifting sands of openssl... */
+#endif
+#endif
+        unsigned char *ucpData;
     int nData;
     time_t expiry;
     time_t now;
