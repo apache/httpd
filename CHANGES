@@ -30,8 +30,7 @@ Changes with Apache 2.1.6
 
   *) proxy HTTP: If a response contains both Transfer-Encoding and a 
      Content-Length, remove the Content-Length and don't reuse the
-     connection, stopping some HTTP Request smuggling attacks.
-     [Jeff Trawick]
+     connection.  [Jeff Trawick]
 
   *) mod_cgid: Fix buffer overflow processing ScriptSock directive.
      [Steve Kemp <steve steve.org.uk>]
@@ -122,7 +121,7 @@ Changes with Apache 2.1.5
   
   *) mod_deflate: Merge the Vary header, isntead of Setting it. Fixes
      applications that send the Vary Header themselves, and also apply 
-     mod_defalte as an output filter. [Paul Querna]
+     mod_deflate as an output filter. [Paul Querna]
 
   *) Change the default (when not present in the config file) setting
      for UseCanonicalName to Off.
