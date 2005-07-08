@@ -1008,6 +1008,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                                             char *server_portstr) {
     conn_rec *c = r->connection;
     char buffer[HUGE_STRING_LEN];
+    const char *buf;
     char keepchar;
     request_rec *rp;
     apr_bucket *e;
@@ -1048,9 +1049,9 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
         /* XXX: Is this a real headers length send from remote? */
         backend->worker->s->read += len;
 
-       /* Is it an HTTP/1 response?
-        * This is buggy if we ever see an HTTP/1.10
-        */
+        /* Is it an HTTP/1 response?
+         * This is buggy if we ever see an HTTP/1.10
+         */
         if (apr_date_checkmask(buffer, "HTTP/#.# ###*")) {
             int major, minor;
 
@@ -1094,7 +1095,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
             apr_table_do(addit_dammit, save_table, r->headers_out,
                          "Set-Cookie", NULL);
 
-        /* shove the headers direct into r->headers_out */
+            /* shove the headers direct into r->headers_out */
             ap_proxy_read_headers(r, rp, buffer, sizeof(buffer), origin,
                                   &pread_len);
 
@@ -1113,47 +1114,48 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                 r->status = HTTP_BAD_GATEWAY;
                 r->status_line = "bad gateway";
                 return r->status;
+            }
 
-            } else {
-                const char *buf;
-
-                /* Now, add in the just read cookies */
-                apr_table_do(addit_dammit, save_table, r->headers_out,
+            /* Now, add in the just read cookies */
+            apr_table_do(addit_dammit, save_table, r->headers_out,
                          "Set-Cookie", NULL);
 
-                /* and now load 'em all in */
-                if (!apr_is_empty_table(save_table)) {
-                    apr_table_unset(r->headers_out, "Set-Cookie");
-                    r->headers_out = apr_table_overlay(r->pool,
-                                                       r->headers_out,
-                                                       save_table);
-                }
-
-                /* can't have both Content-Length and Transfer-Encoding */
-                if (apr_table_get(r->headers_out, "Transfer-Encoding")
-                    && apr_table_get(r->headers_out, "Content-Length")) {
-                    /* 2616 section 4.4, point 3: "if both Transfer-Encoding
-                     * and Content-Length are received, the latter MUST be
-                     * ignored"; so unset it here to prevent any confusion
-                     * later. */
-                    apr_table_unset(r->headers_out, "Content-Length");
-                    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0,
-                                 r->server,
-                                 "proxy: server %s returned Transfer-Encoding and Content-Length",
-                                 backend->hostname);
-                    backend->close += 1;
-                }
-
-                /* strip connection listed hop-by-hop headers from response */
-                backend->close += ap_proxy_liststr(apr_table_get(r->headers_out,
-                                                                 "Connection"),
-                                                  "close");
-                ap_proxy_clear_connection(p, r->headers_out);
-                if ((buf = apr_table_get(r->headers_out, "Content-Type"))) {
-                    ap_set_content_type(r, apr_pstrdup(p, buf));
-                }            
-                ap_proxy_pre_http_request(origin,rp);
+            /* and now load 'em all in */
+            if (!apr_is_empty_table(save_table)) {
+                apr_table_unset(r->headers_out, "Set-Cookie");
+                r->headers_out = apr_table_overlay(r->pool,
+                                                   r->headers_out,
+                                                   save_table);
             }
+
+            /* can't have both Content-Length and Transfer-Encoding */
+            if (apr_table_get(r->headers_out, "Transfer-Encoding")
+                    && apr_table_get(r->headers_out, "Content-Length")) {
+                /* 
+                 * 2616 section 4.4, point 3: "if both Transfer-Encoding
+                 * and Content-Length are received, the latter MUST be
+                 * ignored"; 
+                 *
+                 * To help mitigate HTTP Splitting, unset Content-Length
+                 * and shut down the backend server connection
+                 * XXX: We aught to treat such a response as uncachable
+                 */
+                apr_table_unset(r->headers_out, "Content-Length");
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                             "proxy: server %s returned Transfer-Encoding"
+                             " and Content-Length", backend->hostname);
+                backend->close += 1;
+            }
+
+            /* strip connection listed hop-by-hop headers from response */
+            backend->close += ap_proxy_liststr(apr_table_get(r->headers_out,
+                                                             "Connection"),
+                                              "close");
+            ap_proxy_clear_connection(p, r->headers_out);
+            if ((buf = apr_table_get(r->headers_out, "Content-Type"))) {
+                ap_set_content_type(r, apr_pstrdup(p, buf));
+            }            
+            ap_proxy_pre_http_request(origin,rp);
 
             /* handle Via header in response */
             if (conf->viaopt != via_off && conf->viaopt != via_block) {
