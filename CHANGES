@@ -1,6 +1,13 @@
 Changes with Apache 2.1.7
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Added TraceEnable [on|off|extended] per-server directive to alter
+     the behavior of the TRACE method.  This addresses a flaw in proxy
+     conformance to RFC 2616 - previously the proxy server would accept
+     a TRACE request body although the RFC prohibited it.  The default
+     remains 'TraceEnable on'.
+     [William Rowe]
+
   *) Add additional SSLSessionCache option, 'nonenotnull', which is
      similar to 'none' (disabling any external shared cache) but forces
      OpenSSL to provide a non-null session ID.  [Jim Jagielski]
@@ -21,16 +28,17 @@ Changes with Apache 2.1.7
 Changes with Apache 2.1.6
 
   *) SECURITY: CAN-2005-2088
-     core: If a request contains both Transfer-Encoding and a Content-Length,
-     remove the Content-Length, stopping some HTTP Request smuggling attacks.
-     [Paul Querna]
+     core: If a request contains both Transfer-Encoding and Content-Length
+     headers, remove the Content-Length, mitigating some HTTP Request 
+     Splitting/Spoofing attacks.  [Paul Querna]
 
   *) Fix htdbm password validation for records which included comments.
      [Eric Covener <covener gmail.com>]
 
   *) proxy HTTP: If a response contains both Transfer-Encoding and a 
      Content-Length, remove the Content-Length and don't reuse the
-     connection.  [Jeff Trawick]
+     connection, mitigating some HTTP Response Splitting attacks.
+     [Jeff Trawick]
 
   *) mod_cgid: Fix buffer overflow processing ScriptSock directive.
      [Steve Kemp <steve steve.org.uk>]
