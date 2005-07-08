@@ -1001,8 +1001,8 @@ const char *ssl_cmd_SSLSessionCache(cmd_parms *cmd,
         mc->nSessionCacheMode      = SSL_SCMODE_NONE;
         mc->szSessionCacheDataFile = NULL;
     }
-    else if (strcEQ(arg, "internal")) {
-        mc->nSessionCacheMode      = SSL_SCMODE_OPENSSL_INTERNAL;
+    else if (strcEQ(arg, "nonenotnull")) {
+        mc->nSessionCacheMode      = SSL_SCMODE_NONE_NOT_NULL;
         mc->szSessionCacheDataFile = NULL;
     }
     else if ((arglen > 4) && strcEQn(arg, "dbm:", 4)) {

@@ -1532,12 +1532,11 @@ The following four storage <em>type</em>s are currently supported:</p>
     using certain browsers, particularly if client certificates are
     enabled.  This setting is not recommended.</p></li>
 
-<li><code>internal</code>
+<li><code>nonenotnull</code>
 
     <p>This disables any global/inter-process Session Cache.  However
-    it does allow OpenSSL to use its own internal session cache. This in
-    mainly useful in situations where a global cache cannot be used
-    but the client requires a non-null session ID.</p></li>
+    it does force OpenSSL to send a non-null session ID to
+    accommodate buggy clients that require one.</p></li>
 
 <li><code>dbm:/path/to/datafile</code>
 

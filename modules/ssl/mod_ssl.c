@@ -83,7 +83,7 @@ static const command_rec ssl_config_cmds[] = {
                 "or `exec:/path/to/cgi_program')")
     SSL_CMD_SRV(SessionCache, TAKE1,
                 "SSL Session Cache storage "
-                "(`none', `internal', `dbm:/path/to/file')")
+                "(`none', `nonenotnull', `dbm:/path/to/file')")
 #if defined(HAVE_OPENSSL_ENGINE_H) && defined(HAVE_ENGINE_INIT)
     SSL_CMD_SRV(CryptoDevice, TAKE1,
                 "SSL external Crypto Device usage "
