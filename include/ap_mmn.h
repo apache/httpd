@@ -98,14 +98,15 @@
  * 20050305.3 (2.1.5-dev) added Protocol Framework.
  * 20050701.0 (2.1.7-dev) Bump MODULE_MAGIC_COOKIE to "AP21"!
  * 20050701.1 (2.1.7-dev) trace_enable member added to core server_config
+ * 20050708.0 (2.1.7-dev) Bump MODULE_MAGIC_COOKIE to "AP22"!
   */
 
-#define MODULE_MAGIC_COOKIE 0x41503231UL /* "AP21" */
+#define MODULE_MAGIC_COOKIE 0x41503232UL /* "AP22" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20050701
+#define MODULE_MAGIC_NUMBER_MAJOR 20050708
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 1                     /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
