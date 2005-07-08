@@ -69,6 +69,21 @@
 #define MODSSL_CLIENT_CERT_CB_ARG_TYPE X509
 #define MODSSL_PCHAR_CAST
 
+/* ...shifting sands of openssl... */
+#if (OPENSSL_VERSION_NUMBER >= 0x0090707f)
+# define MODSSL_D2I_SSL_SESSION_CONST    const
+#else
+# define MODSSL_D2I_SSL_SESSION_CONST
+#endif
+
+#if (OPENSSL_VERSION_NUMBER >= 0x00908000)
+# define MODSSL_D2I_PrivateKey_CONST const
+# define MODSSL_D2I_X509_CONST const
+#else
+# define MODSSL_D2I_PrivateKey_CONST
+# define MODSSL_D2I_X509_CONST
+#endif
+
 #define modssl_X509_verify_cert X509_verify_cert
 
 typedef int (modssl_read_bio_cb_fn)(char*,int,int,void*);
@@ -123,6 +138,9 @@ typedef int (modssl_read_bio_cb_fn)(char*,int,int,void*);
 #define MODSSL_INFO_CB_ARG_TYPE SSL*
 #define MODSSL_CLIENT_CERT_CB_ARG_TYPE void
 #define MODSSL_PCHAR_CAST (char *)
+#define MODSSL_D2I_SSL_SESSION_CONST
+#define MODSSL_D2I_PrivateKey_CONST
+#define MODSSL_D2I_X509_CONST
 
 typedef int (modssl_read_bio_cb_fn)(char*,int,int);
 
