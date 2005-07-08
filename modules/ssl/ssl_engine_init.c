@@ -467,7 +467,6 @@ static void ssl_init_ctx_session_cache(server_rec *s,
     SSL_CTX *ctx = mctx->ssl_ctx;
     SSLModConfigRec *mc = myModConfig(s);
     long cache_mode = SSL_SESS_CACHE_OFF;
-
     if (mc->nSessionCacheMode != SSL_SCMODE_NONE) {
         /* SSL_SESS_CACHE_NO_INTERNAL will force OpenSSL
          * to ignore process local-caching and
