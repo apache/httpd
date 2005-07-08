@@ -259,7 +259,8 @@ typedef enum {
     SSL_SCMODE_NONE  = 0,
     SSL_SCMODE_DBM   = 1,
     SSL_SCMODE_SHMCB = 3,
-    SSL_SCMODE_DC    = 4
+    SSL_SCMODE_DC    = 4,
+    SSL_SCMODE_OPENSSL_INTERNAL = 5
 } ssl_scmode_t;
 
 /*
