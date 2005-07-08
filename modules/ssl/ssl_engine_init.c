@@ -719,12 +719,7 @@ static int ssl_server_import_cert(server_rec *s,
 {
     SSLModConfigRec *mc = myModConfig(s);
     ssl_asn1_t *asn1;
-#ifdef OPENSSL_VERSION_NUMBER
-#if (OPENSSL_VERSION_NUMBER >= 0x00908000)
-    const /* ...shifting sands of openssl... */
-#endif
-#endif
-        unsigned char *ptr;
+    MODSSL_D2I_X509_CONST unsigned char *ptr;
     const char *type = ssl_asn1_keystr(idx);
     X509 *cert;
 
@@ -762,12 +757,7 @@ static int ssl_server_import_key(server_rec *s,
 {
     SSLModConfigRec *mc = myModConfig(s);
     ssl_asn1_t *asn1;
-#ifdef OPENSSL_VERSION_NUMBER
-#if (OPENSSL_VERSION_NUMBER >= 0x00908000)
-    const /* ...shifting sands of openssl... */
-#endif
-#endif
-        unsigned char *ptr;
+    MODSSL_D2I_PrivateKey_CONST unsigned char *ptr;
     const char *type = ssl_asn1_keystr(idx);
     int pkey_type = (idx == SSL_AIDX_RSA) ? EVP_PKEY_RSA : EVP_PKEY_DSA;
     EVP_PKEY *pkey;
