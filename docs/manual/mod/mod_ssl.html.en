@@ -108,6 +108,7 @@ compatibility variables.</p>
 <tr><td><code>SSL_CIPHER_EXPORT</code></td>             <td>string</td>    <td><code>true</code> if cipher is an export cipher</td></tr>
 <tr><td><code>SSL_CIPHER_USEKEYSIZE</code></td>         <td>number</td>    <td>Number of cipher bits (actually used)</td></tr>
 <tr><td><code>SSL_CIPHER_ALGKEYSIZE</code></td>         <td>number</td>    <td>Number of cipher bits (possible)</td></tr>
+<tr><td><code>SSL_COMPRESS_METHOD</code></td>           <td>string</td>    <td>SSL compression method negotiated</td></tr>
 <tr><td><code>SSL_VERSION_INTERFACE</code></td>         <td>string</td>    <td>The mod_ssl program version</td></tr>
 <tr><td><code>SSL_VERSION_LIBRARY</code></td>           <td>string</td>    <td>The OpenSSL program version</td></tr>
 <tr><td><code>SSL_CLIENT_M_VERSION</code></td>          <td>string</td>    <td>The version of the client certificate</td></tr>
@@ -1530,6 +1531,13 @@ The following four storage <em>type</em>s are currently supported:</p>
     will incur a noticeable speed penalty and may cause problems if
     using certain browsers, particularly if client certificates are
     enabled.  This setting is not recommended.</p></li>
+
+<li><code>internal</code>
+
+    <p>This disables any global/inter-process Session Cache.  However
+    it does allow OpenSSL to use its own internal session cache. This in
+    mainly useful in situations where a global cache cannot be used
+    but the client requires a non-null session ID.</p></li>
 
 <li><code>dbm:/path/to/datafile</code>
 
