@@ -20,11 +20,15 @@ Changes with Apache 2.1.7
 
 Changes with Apache 2.1.6
 
+  *) SECURITY: CAN-2005-2088
+     core: If a request contains both Transfer-Encoding and a Content-Length,
+     remove the Content-Length, stopping some HTTP Request smuggling attacks.
+     [Paul Querna]
+
   *) Fix htdbm password validation for records which included comments.
      [Eric Covener <covener gmail.com>]
 
-  *) SECURITY: CAN-2005-2088
-     proxy HTTP: If a response contains both Transfer-Encoding and a 
+  *) proxy HTTP: If a response contains both Transfer-Encoding and a 
      Content-Length, remove the Content-Length and don't reuse the
      connection, stopping some HTTP Request smuggling attacks.
      [Jeff Trawick]
@@ -33,11 +37,6 @@ Changes with Apache 2.1.6
      [Steve Kemp <steve steve.org.uk>]
 
 Changes with Apache 2.1.5
-
-  *) SECURITY: CAN-2005-2088
-     core: If a request contains both Transfer-Encoding and a Content-Length,
-     remove the Content-Length, stopping some HTTP Request smuggling attacks.
-     [Paul Querna]
 
   *) mod_ssl: Setting the Protocol to 'https' can replace the use of the 
      'SSLEngine on' command. [Paul Querna]
