@@ -244,7 +244,8 @@ SSL_SESSION *ssl_scache_dbm_retrieve(server_rec *s, UCHAR *id, int idlen)
         return NULL;
     }
     /* Cast needed, ucpData may be const */
-    memcpy((UCHAR *)ucpData, (char *)dbmval.dptr+sizeof(time_t), nData);
+    memcpy((unsigned char *)ucpData, 
+           (char *)dbmval.dptr + sizeof(time_t), nData);
     memcpy(&expiry, dbmval.dptr, sizeof(time_t));
 
     apr_dbm_close(dbm);
