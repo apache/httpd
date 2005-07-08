@@ -1,11 +1,9 @@
 Changes with Apache 2.1.7
   [Remove entries to the current 2.0 section below, when backported]
 
-  *) Add additional SSLSessionCache option, 'internal', which makes
-     mod_ssl just use OpenSSL's own internal session ID cache. Useful
-     when one needs to disable any external, shared caches but
-     requires the server to send non-null session IDs.
-     [Jim Jagielski]
+  *) Add additional SSLSessionCache option, 'nonenotnull', which is
+     similar to 'none' (disabling any external shared cache) but forces
+     OpenSSL to provide a non-null session ID.  [Jim Jagielski]
 
   *) Add httxt2dbm to support/ for creating RewriteMap DBM Files.
      [Paul Querna]
