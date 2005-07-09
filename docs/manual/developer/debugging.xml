@@ -26,7 +26,7 @@
 <title>Debugging Memory Allocation in APR</title>
 
 <summary>
-    <p>The allocation mechanism's within APR have a number of debugging modes
+    <p>The allocation mechanisms within APR have a number of debugging modes
     that can be used to assist in finding memory problems. This document
     describes the modes available and gives instructions on activating
     them.</p>
@@ -100,7 +100,8 @@
 
       <note>Provide some statistics on the cost of allocations.</note>
 
-      <p>This requires a bit of an understanding of how alloc.c works.</p>
+      <p>This requires a bit of an understanding of how <code>alloc.c</code>
+      works.</p>
     </section>
 </section>
 
