@@ -21,7 +21,7 @@
 <p><span>Available Languages: </span><a href="../en/developer/debugging.html" title="English">&nbsp;en&nbsp;</a></p>
 </div>
 
-    <p>The allocation mechanism's within APR have a number of debugging modes
+    <p>The allocation mechanisms within APR have a number of debugging modes
     that can be used to assist in finding memory problems. This document
     describes the modes available and gives instructions on activating
     them.</p>
@@ -100,7 +100,8 @@
 
       <div class="note">Provide some statistics on the cost of allocations.</div>
 
-      <p>This requires a bit of an understanding of how alloc.c works.</p>
+      <p>This requires a bit of an understanding of how <code>alloc.c</code>
+      works.</p>
     
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
