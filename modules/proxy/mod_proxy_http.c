@@ -525,94 +525,6 @@ static apr_status_t spool_reqbody_cl(apr_pool_t *p,
     return status;
 }
 
-static apr_status_t send_request_body(apr_pool_t *p,
-                                      request_rec *r,
-                                      proxy_conn_rec *conn,
-                                      conn_rec *origin,
-                                      apr_bucket_brigade *header_brigade,
-                                      int force10)
-{
-    enum {RB_INIT, RB_STREAM_CL, RB_STREAM_CHUNKED, RB_SPOOL_CL} rb_method = RB_INIT;
-    const char *old_cl_val, *te_val;
-    int cl_zero; /* client sent "Content-Length: 0", which we forward on to server */
-    apr_status_t status;
-
-    /* send CL or use chunked encoding?
-     *
-     * . CL is the most friendly to the origin server since it is the
-     *   most widely supported
-     * . CL stinks if we don't know the length since we have to buffer
-     *   the data in memory or on disk until we get the entire data
-     *
-     * special cases to check for:
-     * . if we're using HTTP/1.0 to origin server, then we must send CL
-     * . if client sent C-L and there are no input resource filters, the
-     *   the body size can't change so we send the same CL and stream the
-     *   body
-     * . if client used chunked or proxy-sendchunks is set, we'll use
-     *   chunked
-     *
-     * normal case:
-     *   we have to compute content length by reading the entire request
-     *   body; if request body is not small, we'll spool the remaining input
-     *   to a temporary file
-     *
-     * special envvars to override the normal decision:
-     * . proxy-sendchunks
-     *   use chunked encoding; not compatible with force-proxy-request-1.0
-     * . proxy-sendcl
-     *   spool the request body to compute C-L
-     * . proxy-sendunchangedcl
-     *   use C-L from client and spool the request body
-     */
-    old_cl_val = apr_table_get(r->headers_in, "Content-Length");
-    cl_zero = old_cl_val && !strcmp(old_cl_val, "0");
-
-    if (!force10
-        && !cl_zero
-        && apr_table_get(r->subprocess_env, "proxy-sendchunks")) {
-        rb_method = RB_STREAM_CHUNKED;
-    }
-    else if (!cl_zero
-             && apr_table_get(r->subprocess_env, "proxy-sendcl")) {
-        rb_method = RB_SPOOL_CL;
-    }
-    else {
-        if (old_cl_val &&
-            (r->input_filters == r->proto_input_filters
-             || cl_zero
-             || apr_table_get(r->subprocess_env, "proxy-sendunchangedcl"))) {
-            rb_method = RB_STREAM_CL;
-        }
-        else if (force10) {
-            rb_method = RB_SPOOL_CL;
-        }
-        else if ((te_val = apr_table_get(r->headers_in, "Transfer-Encoding"))
-                  && !strcasecmp(te_val, "chunked")) {
-            rb_method = RB_STREAM_CHUNKED;
-        }
-        else {
-            rb_method = RB_SPOOL_CL;
-        }
-    }
-
-    switch(rb_method) {
-    case RB_STREAM_CHUNKED:
-        status = stream_reqbody_chunked(p, r, conn, origin, header_brigade);
-        break;
-    case RB_STREAM_CL:
-        status = stream_reqbody_cl(p, r, conn, origin, header_brigade, old_cl_val);
-        break;
-    case RB_SPOOL_CL:
-        status = spool_reqbody_cl(p, r, conn, origin, header_brigade);
-        break;
-    default:
-        ap_assert(1 != 1);
-    }
-
-    return status;
-}
-
 static
 apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
                                    proxy_conn_rec *conn, conn_rec *origin, 
@@ -628,6 +540,11 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
     int counter;
     apr_status_t status;
     apr_bucket_brigade *header_brigade;
+    enum rb_methods {RB_INIT, RB_STREAM_CL, RB_STREAM_CHUNKED, RB_SPOOL_CL};
+    rb_method = RB_INIT;
+    const char *old_cl_val = NULL;
+    const char *old_te_val = NULL;
+    int cl_zero; /* client sent "Content-Length: 0", which we forward */
     int force10;
 
     header_brigade = apr_brigade_create(p, origin->bucket_alloc);
@@ -790,34 +707,42 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
         if (headers_in[counter].key == NULL 
              || headers_in[counter].val == NULL
 
-        /* Clear out hop-by-hop request headers not to send
-         * RFC2616 13.5.1 says we should strip these headers
-         */
-                /* Already sent */
+            /* Already sent */
              || !strcasecmp(headers_in[counter].key, "Host")
 
+            /* Clear out hop-by-hop request headers not to send
+             * RFC2616 13.5.1 says we should strip these headers
+             */
              || !strcasecmp(headers_in[counter].key, "Keep-Alive")
              || !strcasecmp(headers_in[counter].key, "TE")
              || !strcasecmp(headers_in[counter].key, "Trailer")
-             || !strcasecmp(headers_in[counter].key, "Transfer-Encoding")
              || !strcasecmp(headers_in[counter].key, "Upgrade")
 
-            /* We'll add appropriate Content-Length later, if appropriate.
+            /* XXX: @@@ FIXME: "Proxy-Authorization" should *only* be 
+             * suppressed if THIS server requested the authentication,
+             * not when a frontend proxy requested it!
+             *
+             * The solution to this problem is probably to strip out
+             * the Proxy-Authorisation header in the authorisation
+             * code itself, not here. This saves us having to signal
+             * somehow whether this request was authenticated or not.
              */
-             || !strcasecmp(headers_in[counter].key, "Content-Length")
-        /* XXX: @@@ FIXME: "Proxy-Authorization" should *only* be 
-         * suppressed if THIS server requested the authentication,
-         * not when a frontend proxy requested it!
-         *
-         * The solution to this problem is probably to strip out
-         * the Proxy-Authorisation header in the authorisation
-         * code itself, not here. This saves us having to signal
-         * somehow whether this request was authenticated or not.
-         */
              || !strcasecmp(headers_in[counter].key,"Proxy-Authorization")
              || !strcasecmp(headers_in[counter].key,"Proxy-Authenticate")) {
             continue;
         }
+
+        /* Skip Transfer-Encoding and Content-Length for now.
+         */
+        if (!strcasecmp(headers_in[counter].key, "Transfer-Encoding")) {
+            old_te_val = headers_in[counter].key;
+            continue;
+        }
+        if (!strcasecmp(headers_in[counter].key, "Content-Length")) {
+            old_cl_val = headers_in[counter].key;
+            continue;
+        }
+
         /* for sub-requests, ignore freshness/expiry headers */
         if (r->main) {
             if (headers_in[counter].key == NULL
@@ -839,8 +764,77 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
         APR_BRIGADE_INSERT_TAIL(header_brigade, e);
     }
 
+    /* send CL or use chunked encoding?
+     *
+     * . CL is the most friendly to the origin server since it is the
+     *   most widely supported
+     * . CL stinks if we don't know the length since we have to buffer
+     *   the data in memory or on disk until we get the entire data
+     *
+     * special cases to check for:
+     * . if we're using HTTP/1.0 to origin server, then we must send CL
+     * . if client sent C-L and there are no input resource filters, the
+     *   the body size can't change so we send the same CL and stream the
+     *   body
+     * . if client used chunked or proxy-sendchunks is set, we'll use
+     *   chunked
+     *
+     * normal case:
+     *   we have to compute content length by reading the entire request
+     *   body; if request body is not small, we'll spool the remaining input
+     *   to a temporary file
+     *
+     * special envvars to override the normal decision:
+     * . proxy-sendchunks
+     *   use chunked encoding; not compatible with force-proxy-request-1.0
+     * . proxy-sendcl
+     *   spool the request body to compute C-L
+     * . proxy-sendunchangedcl
+     *   use C-L from client and spool the request body
+     */
+    cl_zero = old_cl_val && !strcmp(old_cl_val, "0");
+
+    if (!force10
+        && !cl_zero
+        && apr_table_get(r->subprocess_env, "proxy-sendchunks")) {
+        rb_method = RB_STREAM_CHUNKED;
+    }
+    else if (!cl_zero
+             && apr_table_get(r->subprocess_env, "proxy-sendcl")) {
+        rb_method = RB_SPOOL_CL;
+    }
+    else {
+        if (old_cl_val &&
+            (r->input_filters == r->proto_input_filters
+             || cl_zero
+             || apr_table_get(r->subprocess_env, "proxy-sendunchangedcl"))) {
+            rb_method = RB_STREAM_CL;
+        }
+        else if (force10) {
+            rb_method = RB_SPOOL_CL;
+        }
+        else if (old_te_val && !strcasecmp(te_val, "chunked")) {
+            rb_method = RB_STREAM_CHUNKED;
+        }
+        else {
+            rb_method = RB_SPOOL_CL;
+        }
+    }
+
     /* send the request data, if any. */
-    status = send_request_body(p, r, conn, origin, header_brigade, force10);
+    switch(rb_method) {
+    case RB_STREAM_CHUNKED:
+        status = stream_reqbody_chunked(p, r, conn, origin, header_brigade);
+        break;
+    case RB_STREAM_CL:
+        status = stream_reqbody_cl(p, r, conn, origin, header_brigade, old_cl_val);
+        break;
+    case RB_SPOOL_CL:
+        status = spool_reqbody_cl(p, r, conn, origin, header_brigade);
+        break;
+    default:
+        ap_assert(1 != 1);
+    }
     if (status != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
                      "proxy: pass request data failed to %pI (%s)",
