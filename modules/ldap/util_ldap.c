@@ -436,8 +436,8 @@ static int compare_client_certs(apr_array_header_t *srcs,
     src = (struct apr_ldap_opt_tls_cert_t *)srcs->elts;
     dest = (struct apr_ldap_opt_tls_cert_t *)dests->elts;
     for (i = 0; i < srcs->nelts; i++) {
-        if (apr_strnatcmp(src[i].path, dest[i].path) ||
-            apr_strnatcmp(src[i].password, dest[i].password) ||
+        if (strcmp(src[i].path, dest[i].path) ||
+            strcmp(src[i].password, dest[i].password) ||
             src[i].type != dest[i].type) {
             return 1;
         }
