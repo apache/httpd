@@ -541,7 +541,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
     apr_status_t status;
     apr_bucket_brigade *header_brigade;
     enum rb_methods {RB_INIT, RB_STREAM_CL, RB_STREAM_CHUNKED, RB_SPOOL_CL};
-    rb_method = RB_INIT;
+    enum rb_methods rb_method = RB_INIT;
     const char *old_cl_val = NULL;
     const char *old_te_val = NULL;
     int cl_zero; /* client sent "Content-Length: 0", which we forward */
@@ -813,7 +813,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
         else if (force10) {
             rb_method = RB_SPOOL_CL;
         }
-        else if (old_te_val && !strcasecmp(te_val, "chunked")) {
+        else if (old_te_val && !strcasecmp(old_te_val, "chunked")) {
             rb_method = RB_STREAM_CHUNKED;
         }
         else {
