@@ -1072,7 +1072,7 @@ static const char *
 
     /* Don't duplicate entries */
     for (i = 0; i < conf->noproxies->nelts; i++) {
-        if (apr_strnatcasecmp(arg, list[i].name) == 0) { /* ignore case for host names */
+        if (strcasecmp(arg, list[i].name) == 0) { /* ignore case for host names */
             found = 1;
         }
     }
