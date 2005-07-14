@@ -121,7 +121,7 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
     char portstr[32];
     pool *p = r->pool;
     int destport = 0;
-    int chunked = 0;
+    const char *chunked = NULL;
     char *destportstr = NULL;
     const char *urlptr = NULL;
     const char *datestr, *urlstr;
@@ -338,7 +338,12 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
         ap_table_mergen(req_hdrs, "X-Forwarded-Server", r->server->server_hostname);
     } 
 
-    /* we don't yet support keepalives - but we will soon, I promise! */
+    /* we don't yet support keepalives - but we will soon, I promise! 
+     * XXX: This introduces various HTTP Request vulnerabilies if not
+     * properly implemented.  Before changing this .. be certain to
+     * add a hard-close of the connection if the T-E and C-L headers
+     * are both present, or the C-L header is malformed.
+     */
     ap_table_set(req_hdrs, "Connection", "close");
 
     reqhdrs_arr = ap_table_elts(req_hdrs);
@@ -475,25 +480,40 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
         }
 
         /* is this content chunked? */
-        chunked = ap_find_last_token(r->pool,
-                                     ap_table_get(resp_hdrs, "Transfer-Encoding"),
-                                     "chunked");
+        chunked = ap_table_get(resp_hdrs, "Transfer-Encoding");
+        if (chunked && (strcasecmp(chunked, "chunked") != 0)) {
+            ap_kill_timeout(r);
+            return ap_proxyerror(r, HTTP_BAD_GATEWAY, ap_pstrcat(r->pool,
+                                 "Unsupported Transfer-Encoding ", chunked,
+                                 " from remote server", NULL));
+        }
 
         /* strip hop-by-hop headers defined by Connection and RFC2616 */
         ap_proxy_clear_connection(p, resp_hdrs);
 
         content_length = ap_table_get(resp_hdrs, "Content-Length");
         if (content_length != NULL) {
-            c->len = ap_strtol(content_length, NULL, 10);
+            if (chunked) {
+                /* XXX: We would unset keep-alive here, to the proxy
+                 * origin server, for safety's sake but we aren't using
+                 * keep-alives (we force Connection: close  above)
+                 */
+                nocache = 1;        /* do not cache this suspect file */
+                ap_table_unset(resp_hdrs, "Content-Length");
+            }
+            else {
+                char *len_end;
+                errno = 0;
+                c->len = ap_strtol(content_length, &len_end, 10);
 
-	    if (c->len < 0) {
-		ap_kill_timeout(r);
-		return ap_proxyerror(r, HTTP_BAD_GATEWAY, ap_pstrcat(r->pool,
-				     "Invalid Content-Length from remote server",
-                                      NULL));
+                if (errno || (c->len < 0) || (len_end && *len_end)) {
+                    ap_kill_timeout(r);
+                    return ap_proxyerror(r, HTTP_BAD_GATEWAY, 
+                                         "Invalid Content-Length from remote"
+                                         " server");
+                }
 	    }
         }
-
     }
     else {
         /* an http/0.9 response */
@@ -612,7 +632,8 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
  * content length is not known. We need to make 100% sure c->len is always
  * set correctly before we get here to correctly do keepalive.
  */
-        ap_proxy_send_fb(f, r, c, c->len, 0, chunked, conf->io_buffer_size);
+        ap_proxy_send_fb(f, r, c, c->len, 0, chunked != NULL, 
+                         conf->io_buffer_size);
     }
 
     /* ap_proxy_send_fb() closes the socket f for us */
