@@ -332,6 +332,7 @@ static apr_status_t stream_reqbody_cl(apr_pool_t *p,
         }
 
         apr_brigade_length(input_brigade, 1, &bytes);
+        bytes_streamed += bytes;
 
         /* If this brigade contains EOS, either stop or remove it. */
         if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(input_brigade))) {
@@ -349,6 +350,18 @@ static apr_status_t stream_reqbody_cl(apr_pool_t *p,
             apr_bucket_delete(e);
         }
 
+        /* C-L < bytes streamed?!?
+         * We will error out after the body is completely
+         * consumed, but we can't stream more bytes at the
+         * back end since they would in part be interpreted
+         * as another request!  If nothing is sent, then
+         * just send nothing.
+         *
+         * Prevents HTTP Response Splitting.
+         */
+        if (bytes_streamed > cl_val)
+             continue;
+
         if (header_brigade) {
             /* we never sent the header brigade, so go ahead and
              * take care of that now
@@ -365,8 +378,6 @@ static apr_status_t stream_reqbody_cl(apr_pool_t *p,
         if (status != APR_SUCCESS) {
             return status;
         }
-
-        bytes_streamed += bytes;
     } while (!seen_eos);
 
     if (bytes_streamed != cl_val) {
