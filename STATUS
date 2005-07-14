@@ -111,6 +111,41 @@ RELEASE SHOWSTOPPERS:
 
     * Various fixes to T-E and C-L processing from trunk
 
+      Refactor mod_proxy_http.c's Transfer-Encoding/Content-Length elections
+      since they didn't follow RFC 2616, in fact didn't seem to make much
+      sense at all.  Patch to migrate request-body-handling from trunk/...
+          http://people.apache.org/~wrowe/httpd-2.0-proxy-request.patch
+      Revert r219061 to properly test this patch.
+
+       +1 wrowe, jimjag
+
+         trawick noted on list: we elected C-L not for efficiency, but because
+                 it's the most widely supported [paraphrasing]
+         wrowe   notes: I agree - this new patch always chooses C-L for any
+                 C-L body received.  If the origin kicks out LENGTH_REQUIRED
+                 for a T-E body it's always up to the client to react.
+         trawick noted on list: why force-proxy-http-1.0 if the client is an
+                 HTTP/1.0 request? [p]
+         wrowe   Because we aren't going to keep it alive if the client is an
+                 HTTP/1.0 who's about to disconnect on us anyways.  Minimize
+                 possible confusion over expected request/response headers.
+         trawick We are counting bytes in stream_reqbody_cl but filters can
+                 change the size? [p]
+         wrowe   Yes - which is why the patch prefers spool_reqbody_cl unless
+                 the filter stack is unchanged from proto_input_filters.  The
+                 protocol filters shouldn't be changing content size.  And when
+                 it happens, we have to barf or we have a split request.
+         trawick What specifically was done for conformance to RFC 2616? [p]
+         wrowe   Elect the appropriate body handling, and ensure that body
+                 request contains the required *single* T-E or C-L header.
+         trawick Please split philosophy from rfc violations from security 
+                 fixes in the CHANGES log? [p]
+         wrowe   Well, I'll split that default HTTP/1.0 -> HTTP/1.0 requests
+                 behavior and envvar.  The others are all a bit to intertwined, 
+                 the Watchfire report spelled out that it's different behavior 
+                 and RFC 2616 deviations that cause the vulnerability, so I 
+                 don't see how we can divide the issues.
+
 
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
@@ -161,8 +196,8 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
          the changes in the httpd-2.0.x to be done in order for NetWare to work
          as expected when calling apr_proc_create. Should I do both, APR and Http,
          at the same time?
-       wrowe: commit to APR.  Use an APR version test to determine if the
-         old or new behavior should be used in httpd.  In future versions
+       wrowe: commit to APR.  Use an APR version test *in httpd* to determine 
+         if the old or new behavior should be used in httpd.  In future versions
          you could remove the test altogether.
 
     *) mod_actions: Regression from 1.3: the file referred to must exist.
@@ -202,6 +237,14 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ please place SVN revisions from trunk here, so it is easy to
     identify exactly what the proposed changes are! ]
+
+    *) Correct RFC 2616 non-compliance by refusing to proxy a request body 
+       in a TRACE request, unless TraceEnable extended is configured.
+       Introduces TraceEnable [on|off|extended] to give the administrator
+       full control of TRACE request handling.  RFC 2616 does NOT require
+       TRACE (although to disable remains silly).  Current patch at;
+          http://people.apache.org/~wrowe/httpd-2.0-trace.patch
+       +1 wrowe, jimjag
 
     *) mod_headers: Support {...}s tag for SSL variable lookup.
        http://www.apache.org/~jorton/mod_headers-2.0-ssl.diff
