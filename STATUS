@@ -111,10 +111,6 @@ RELEASE SHOWSTOPPERS:
 
     * Various fixes to T-E and C-L processing from trunk
 
-      + proxy HTTP - ignore C-L and disable keepalive to origin server
-          http://people.apache.org/~trawick/20.te-cl.txt
-        +1: trawick, jorton
-
       + core: strip C-L from any request with a T-E header
           http://people.apache.org/~jorton/ap_tevscl.diff
           (CVE CAN-2005-2088)

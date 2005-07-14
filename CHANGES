@@ -1,5 +1,10 @@
 Changes with Apache 2.0.55
 
+  *) proxy HTTP: If a response contains both Transfer-Encoding and a 
+     Content-Length, remove the Content-Length and don't reuse the
+     connection, mitigating some HTTP Response Splitting attacks.
+     [Jeff Trawick]
+
   *) Prevent hangs of child processes when writing to piped loggers at
      the time of graceful restart.  PR 26467.  [Jeff Trawick]
 
