@@ -1,5 +1,10 @@
 Changes with Apache 2.0.55
 
+  *) SECURITY: CAN-2005-2088
+     core: If a request contains both Transfer-Encoding and Content-Length
+     headers, remove the Content-Length, mitigating some HTTP Request 
+     Splitting/Spoofing attacks.  [Paul Querna, Joe Orton]
+
   *) proxy HTTP: If a response contains both Transfer-Encoding and a 
      Content-Length, remove the Content-Length and don't reuse the
      connection, mitigating some HTTP Response Splitting attacks.
