@@ -104,18 +104,16 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
-    * Watchfire identified an obscure behavior of modules/proxy/proxy_http.c
-      where C-L would be stripped from a HEAD response but the HEAD result
-      would have neither the T-E or C-L to reflect what GET should do, in
-      violation of RFC2616.
-
     * Various fixes to T-E and C-L processing from trunk
 
       Refactor mod_proxy_http.c's Transfer-Encoding/Content-Length elections
       since they didn't follow RFC 2616, in fact didn't seem to make much
-      sense at all.  Patch to migrate request-body-handling from trunk/...
+      sense at all.  Patch to migrate request-body-handling from trunk/ based
+      on 2.1-dev request body handling behavior (although just a bit more
+      conservative on the side of C-L spooling)...
           http://people.apache.org/~wrowe/httpd-2.0-proxy-request.patch
-      Revert r219061 to properly test this patch.
+      Revert r219061 to properly test this patch, as r219061 masks the
+      underlying bug (although it is a -good- patch in and of itself).
 
        +1 wrowe, jimjag
 
