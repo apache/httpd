@@ -3,11 +3,10 @@ Changes with Apache 2.1.7
 
   *) SECURITY: CAN-2005-2088
      proxy: Correctly handle the Transfer-Encoding and Content-Length
-     headers, discard the request Content-Length whenever T-E: chunked
+     headers.  Discard the request Content-Length whenever T-E: chunked
      is used, always passing one of either C-L or T-E: chunked whenever 
-     the request includes a request body, and no longer upgrade HTTP/1.0 
-     requests to the origin server as HTTP/1.1.  Resolves an entire class
-     of proxy HTTP Request Splitting/Spoofing attacks.  [William Rowe]
+     the request includes a request body.  Resolves an entire class of
+     proxy HTTP Request Splitting/Spoofing attacks.  [William Rowe]
 
   *) Added TraceEnable [on|off|extended] per-server directive to alter
      the behavior of the TRACE method.  This addresses a flaw in proxy
@@ -34,18 +33,8 @@ Changes with Apache 2.1.7
 
 Changes with Apache 2.1.6
 
-  *) SECURITY: CAN-2005-2088
-     core: If a request contains both Transfer-Encoding and Content-Length
-     headers, remove the Content-Length, mitigating some HTTP Request 
-     Splitting/Spoofing attacks.  [Paul Querna]
-
   *) Fix htdbm password validation for records which included comments.
      [Eric Covener <covener gmail.com>]
-
-  *) proxy HTTP: If a response contains both Transfer-Encoding and a 
-     Content-Length, remove the Content-Length and don't reuse the
-     connection, mitigating some HTTP Response Splitting attacks.
-     [Jeff Trawick]
 
   *) mod_cgid: Fix buffer overflow processing ScriptSock directive.
      [Steve Kemp <steve steve.org.uk>]
@@ -772,6 +761,16 @@ Changes with Apache 2.1.1
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.55
+
+  *) SECURITY: CAN-2005-2088
+     core: If a request contains both Transfer-Encoding and Content-Length
+     headers, remove the Content-Length, mitigating some HTTP Request 
+     Splitting/Spoofing attacks.  [Paul Querna, Joe Orton]
+
+  *) proxy HTTP: If a response contains both Transfer-Encoding and a 
+     Content-Length, remove the Content-Length and don't reuse the
+     connection, mitigating some HTTP Response Splitting attacks.
+     [Jeff Trawick]
 
   *) SECURITY: CAN-2005-1268 (cve.mitre.org)
      mod_ssl: Fix off-by-one overflow whilst printing CRL information
