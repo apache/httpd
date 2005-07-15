@@ -596,15 +596,13 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
         p_conn->close++;
     }
 
-    if (apr_table_get(r->subprocess_env, "force-proxy-request-1.0")
-         || ((r->proto_num < HTTP_VERSION(1,1)) 
-             && !apr_table_get(r->subprocess_env, "force-proxy-request-1.1"))) {
+    if (apr_table_get(r->subprocess_env, "force-proxy-request-1.0")) {
         buf = apr_pstrcat(p, r->method, " ", url, " HTTP/1.0" CRLF, NULL);
         force10 = 1;
+        p_conn->close++;
     } else {
         buf = apr_pstrcat(p, r->method, " ", url, " HTTP/1.1" CRLF, NULL);
         force10 = 0;
-        p_conn->close++;
     }
     if (apr_table_get(r->subprocess_env, "proxy-nokeepalive")) {
         origin->keepalive = AP_CONN_CLOSE;
