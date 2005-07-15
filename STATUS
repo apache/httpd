@@ -111,39 +111,50 @@ RELEASE SHOWSTOPPERS:
       sense at all.  Patch to migrate request-body-handling from trunk/ based
       on 2.1-dev request body handling behavior (although just a bit more
       conservative on the side of C-L spooling)...
-          http://people.apache.org/~wrowe/httpd-2.0-proxy-request.patch
+          http://people.apache.org/~wrowe/httpd-2.0-proxy-request-2.patch
       Revert r219061 to properly test this patch, as r219061 masks the
       underlying bug (although it is a -good- patch in and of itself).
 
-       +1 wrowe, jimjag
+       +1 wrowe
 
          trawick noted on list: we elected C-L not for efficiency, but because
                  it's the most widely supported [paraphrasing]
          wrowe   notes: I agree - this new patch always chooses C-L for any
                  C-L body received.  If the origin kicks out LENGTH_REQUIRED
                  for a T-E body it's always up to the client to react.
+                 Note proxy-sendchunks can override this behavior.
+
          trawick noted on list: why force-proxy-http-1.0 if the client is an
                  HTTP/1.0 request? [p]
          wrowe   Because we aren't going to keep it alive if the client is an
                  HTTP/1.0 who's about to disconnect on us anyways.  Minimize
                  possible confusion over expected request/response headers.
+         roy     noted on list: that violates the RFC
+         wrowe   this change is dropped then :)
+
          trawick We are counting bytes in stream_reqbody_cl but filters can
                  change the size? [p]
          wrowe   Yes - which is why the patch prefers spool_reqbody_cl unless
                  the filter stack is unchanged from proto_input_filters.  The
                  protocol filters shouldn't be changing content size.  And when
                  it happens, we have to barf or we have a split request.
+
          trawick What specifically was done for conformance to RFC 2616? [p]
          wrowe   Elect the appropriate body handling, and ensure that body
                  request contains the required *single* T-E or C-L header.
+
          trawick Please split philosophy from rfc violations from security 
                  fixes in the CHANGES log? [p]
-         wrowe   Well, I'll split that default HTTP/1.0 -> HTTP/1.0 requests
-                 behavior and envvar.  The others are all a bit to intertwined, 
-                 the Watchfire report spelled out that it's different behavior 
-                 and RFC 2616 deviations that cause the vulnerability, so I 
-                 don't see how we can divide the issues.
+         wrowe   The others are all a bit to intertwined, the Watchfire report 
+                 spelled out that it's different behavior and RFC 2616 deviations 
+                 that cause the vulnerability, so I don't see how we can divide 
+                 the issues of correctly sending the body and choosing the
+                 transport flavor.
 
+         roy     Notes on list: we must always prefer C-L if it's going to fit
+                 in our brigade.
+         wrowe   good point; the revised patch prereads MAX_MEM_SPOOL and will
+                 try reading that before choosing C-L or T-E.
 
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
