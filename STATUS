@@ -115,7 +115,7 @@ RELEASE SHOWSTOPPERS:
       Revert r219061 to properly test this patch, as r219061 masks the
       underlying bug (although it is a -good- patch in and of itself).
 
-       +1 wrowe
+       +1 wrowe, jim
 
          trawick noted on list: we elected C-L not for efficiency, but because
                  it's the most widely supported [paraphrasing]
