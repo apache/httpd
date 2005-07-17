@@ -1,5 +1,10 @@
 Changes with Apache 2.1.7
   [Remove entries to the current 2.0 section below, when backported]
+  
+  *)  new hook (request_status) that gets ran in proxy_handler just before 
+      the final return.  This gives modules an opportunity to do something 
+      based on the proxy status. (major MMN bump)
+      [Brian Akins <bakins turner.com>, Ian Holsman]
 
   *) SECURITY: CAN-2005-2088
      proxy: Correctly handle the Transfer-Encoding and Content-Length

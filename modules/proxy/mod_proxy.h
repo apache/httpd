@@ -375,6 +375,13 @@ APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, post_request, (proxy_worker *worker
                           proxy_balancer *balancer, request_rec *r,
                           proxy_server_conf *conf))
 
+/**
+ * request status hook
+ * It is called after all proxy processing has been done.  This gives other
+ * modules a chance to create default content on failure, for example
+ */
+APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, request_status,
+                          (int *status, request_rec *r))
 
 /* proxy_util.c */
 
@@ -541,6 +548,14 @@ PROXY_DECLARE(int) ap_proxy_post_request(proxy_worker *worker,
                                          proxy_balancer *balancer,
                                          request_rec *r,
                                          proxy_server_conf *conf);
+
+/**
+ * Request status function
+ * @param status   status of proxy request
+ * @return         OK or DECLINED
+ */
+ PROXY_DECLARE(int) ap_proxy_request_status(int *status, request_rec *r);
+
 /**
  * Deternime backend hostname and port
  * @param p       memory pool used for processing
