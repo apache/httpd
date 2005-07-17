@@ -315,6 +315,33 @@ Body:----------ro--
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
 
+Content-language: sr
+Content-type: text/html; charset=ISO-8859-5
+Body:----------sr--
+<!--#set var="CONTENT_LANGUAGE" value="sr"
+--><!--#set var="CHARACTER_ENCODING" value="ISO-8859-5"
+--><!--#set var="TITLE" value="Ресурс није више доступан!"
+--><!--#include virtual="include/top.html" -->
+
+    Захтевани УРЛ није више доступан на овом серверу и нема
+    адресе на коју бисте могли бити прослеђени.
+
+  <!--#if expr="$HTTP_REFERER" -->
+
+    Молимо обавестите аутора
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">исходишне
+    странице</a> да је веза застарела.
+
+  <!--#else -->
+
+    Ако сте пратили везу са спољне странице, молимо обавестите
+    аутора те странице.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------sr--
+
 Content-language: sv
 Content-type: text/html; charset=ISO-8859-1
 Body:----------sv--

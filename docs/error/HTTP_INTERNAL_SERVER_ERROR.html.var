@@ -339,6 +339,35 @@ Body:----------ro--
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
 
+Content-language: sr
+Content-type: text/html; charset=ISO-8859-5
+Body:----------sr--
+<!--#set var="CONTENT_LANGUAGE" value="sr"
+--><!--#set var="CHARACTER_ENCODING" value="ISO-8859-5"
+--><!--#set var="TITLE" value="Грешка сервера!"
+--><!--#include virtual="include/top.html" -->
+
+  <!--#if expr="$REDIRECT_ERROR_NOTES" -->
+
+    Сервер је имао унутрашњу грешку и није био
+    у могућности да испуни ваш захтев.
+
+    <!--#include virtual="include/spacer.html" -->
+
+    Порука о грешци:
+    <br /><!--#echo encoding="none" var="REDIRECT_ERROR_NOTES" -->
+
+  <!--#else -->
+
+    Сервер је имао унутрашњу грешку и није био
+    у могућности да испуни ваш захтев. Могуће је да је сервер
+    преоптерећен, или да се десила грешка у CGI скрипти.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------sr--
+
 Content-language: sv
 Content-type: text/html; charset=ISO-8859-1
 Body:----------sv--

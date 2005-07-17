@@ -251,6 +251,27 @@ Body:----------ro--
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
 
+Content-language: sr
+Content-type: text/html; charset=ISO-8859-5
+Body:----------sr--
+<!--#set var="CONTENT_LANGUAGE" value="sr"
+--><!--#set var="CHARACTER_ENCODING" value="ISO-8859-5"
+--><!--#set var="TITLE" value="Обавезна аутентификација!"
+--><!--#include virtual="include/top.html" -->
+
+    Овај сервер није могао да потврди да сте овлашћени да приступите
+    УРЛ-у "<!--#echo encoding="url" var="REDIRECT_URL" -->".
+    Могуће је или да сте навели погрешне личне податке (нпр. нетачну лозинку), или да
+    ваш читач не разуме како да пошаље захтеване личне податке.
+
+  <!--#include virtual="include/spacer.html" -->
+
+    Уколико вам је дозвољено да преузимате документ, молимо да
+    проверите своје корисничко име и лозинку и пробате поново.
+
+<!--#include virtual="include/bottom.html" -->
+----------sr--
+
 Content-language: sv
 Content-type: text/html; charset=ISO-8859-1
 Body:----------sv--
