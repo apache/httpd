@@ -732,9 +732,12 @@ cleanup:
         int post_status = proxy_run_post_request(worker, balancer, r, conf);
         if (post_status == DECLINED) {
             post_status = OK; /* no post_request handler available */
-            /* TODO: reclycle direct worker */
+            /* TODO: recycle direct worker */
         }
     }
+
+    proxy_run_request_status(&access_status, r);
+
     return access_status;
 }
 
@@ -1881,6 +1884,7 @@ APR_HOOK_STRUCT(
     APR_HOOK_LINK(canon_handler)
     APR_HOOK_LINK(pre_request)
     APR_HOOK_LINK(post_request)
+    APR_HOOK_LINK(request_status)
 )
 
 APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(proxy, PROXY, int, scheme_handler, 
@@ -1907,4 +1911,8 @@ APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(proxy, PROXY, int, post_request,
                                        balancer,r,conf),DECLINED)
 APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(proxy, PROXY, int, fixups,
                                     (request_rec *r), (r),
+                                    OK, DECLINED)
+APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(proxy, PROXY, int, request_status,
+                                    (int *status, request_rec *r), 
+                                    (status, r),
                                     OK, DECLINED)
