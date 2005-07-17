@@ -277,6 +277,29 @@ Body:----------ro--
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
 
+Content-language: sr
+Content-type: text/html; charset=ISO-8859-5
+Body:----------sr--
+<!--#set var="CONTENT_LANGUAGE" value="sr"
+--><!--#set var="CHARACTER_ENCODING" value="ISO-8859-5"
+--><!--#set var="TITLE" value="Забрањен приступ!"
+--><!--#include virtual="include/top.html" -->
+
+  <!--#if expr="$REDIRECT_URL = /\/$/" -->
+
+    Немате дозволу да приступите захтеваном директоријуму.
+    Могуће је да нема индексног документа, или да је директоријум заштићен од читања.
+
+  <!--#else -->
+
+    Немате дозволу да приступите захтеваном објекту.
+    Могуће је да је заштићен од читања, или да га сервер не може прочитати.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------sr--
+
 Content-language: sv
 Content-type: text/html; charset=ISO-8859-1
 Body:----------sv--
