@@ -161,6 +161,20 @@ Body:----------ro--
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
 
+Content-language: sr
+Content-type: text/html; charset=ISO-8859-5
+Body:----------sr--
+<!--#set var="CONTENT_LANGUAGE" value="sr"
+--><!--#set var="CHARACTER_ENCODING" value="ISO-8859-5"
+--><!--#set var="TITLE" value="Захтеву је истекло време!"
+--><!--#include virtual="include/top.html" -->
+
+    Сервер је прекинуо везу са мрежом јер читач
+    није завршио захтев за дозвољено време.
+
+<!--#include virtual="include/bottom.html" -->
+----------sr--
+
 Content-language: sv
 Content-type: text/html; charset=ISO-8859-1
 Body:----------sv--

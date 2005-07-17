@@ -88,6 +88,13 @@ Va rugam sa il contactati pe
 in cazul in care credeti ca aceasta este o eroare a serverului.
 ----------ro--
 
+Content-language: sr
+Content-type: text/html; charset=ISO-8859-5
+Body:----------sr--
+Ако мислите да је ово грешка сервера, молимо обавестите
+<a href="mailto:<!--#echo encoding="url" var="SERVER_ADMIN" -->">вебмастера</a>.
+----------sr--
+
 Content-language: sv
 Content-type: text/html; charset=ISO-8859-1
 Body:----------sv--
