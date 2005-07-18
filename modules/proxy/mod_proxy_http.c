@@ -184,7 +184,7 @@ static apr_status_t pass_brigade(apr_bucket_alloc_t *bucket_alloc,
     status = ap_pass_brigade(origin->output_filters, bb);
     if (status != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
-                     "proxy: pass request data failed to %pI (%s)",
+                     "proxy: pass request body failed to %pI (%s)",
                      conn->addr, conn->hostname);
         return status;
     }
@@ -310,7 +310,7 @@ static apr_status_t stream_reqbody_cl(apr_pool_t *p,
     apr_bucket_alloc_t *bucket_alloc = r->connection->bucket_alloc;
     apr_bucket_brigade *bb;
     apr_bucket *e;
-    apr_off_t cl_val;
+    apr_off_t cl_val = 0;
     apr_off_t bytes;
     apr_off_t bytes_streamed = 0;
 
@@ -381,9 +381,8 @@ static apr_status_t stream_reqbody_cl(apr_pool_t *p,
         if (status != APR_SUCCESS) {
             return status;
         }
-
-    } while (!seen_eos);
-
+    }
+    
     if (bytes_streamed != cl_val) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                      "proxy: client %s given Content-Length did not match",
@@ -501,8 +500,7 @@ static apr_status_t spool_reqbody_cl(apr_pool_t *p,
         if (status != APR_SUCCESS) {
             return status;
         }
-
-    };
+    }
 
     if (bytes_spooled || force_cl) {
         add_cl(p, bucket_alloc, header_brigade, apr_off_t_toa(p, bytes_spooled));
@@ -548,6 +546,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
     apr_bucket_alloc_t *bucket_alloc = c->bucket_alloc;
     apr_bucket_brigade *header_brigade;
     apr_bucket_brigade *input_brigade;
+    apr_bucket_brigade *temp_brigade;
     apr_bucket *e;
     char *buf;
     const apr_array_header_t *headers_in_array;
@@ -558,6 +557,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
     enum rb_methods rb_method = RB_INIT;
     const char *old_cl_val = NULL;
     const char *old_te_val = NULL;
+    apr_off_t bytes_read = 0;
     apr_off_t bytes;
     int force10;
 
@@ -795,18 +795,31 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
      * reasonable size.
      */
     input_brigade = apr_brigade_create(p, bucket_alloc);
-    status = ap_get_brigade(r->input_filters, input_brigade,
-                            AP_MODE_READBYTES, APR_BLOCK_READ,
-                            MAX_MEM_SPOOL);
+    temp_brigade = apr_brigade_create(p, bucket_alloc);
+    do {
+        status = ap_get_brigade(r->input_filters, temp_brigade,
+                                AP_MODE_READBYTES, APR_BLOCK_READ,
+                                MAX_MEM_SPOOL + 1024 - bytes_read);
+        if (status != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
+                         "proxy: prefetch request body failed to %pI (%s)"
+                         " from %s (%s)",
+                         p_conn->addr, p_conn->hostname ? p_conn->hostname: "",
+                         c->remote_ip, c->remote_host ? c->remote_host: "");
+            return status;
+        }
 
-    if (status != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
-                     "proxy: prefetch request body failed to %pI (%s)"
-                     " from %s (%s)",
-                     p_conn->addr, p_conn->hostname ? p_conn->hostname: "",
-                     c->remote_ip, c->remote_host ? c->remote_host: "");
-        return status;
-    }
+        apr_brigade_length(temp_brigade, 1, &bytes);
+        APR_BRIGADE_CONCAT(input_brigade, temp_brigade);
+        bytes_read += bytes;
+
+    /* Ensure we don't hit a wall where we have a buffer too small
+     * for ap_get_brigade's filters to fetch us another bucket,
+     * surrender once we hit 80 bytes less than MAX_MEM_SPOOL
+     * (an arbitrary value.)
+     */
+    } while ((bytes_read < MAX_MEM_SPOOL - 80) 
+              && !APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(input_brigade)));
 
     if (old_cl_val && old_te_val) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_ENOTIMPL, r->server,
@@ -860,9 +873,8 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
          * If we expected no body, and read no body, do not set
          * the Content-Length.
          */
-        apr_brigade_length(input_brigade, 1, &bytes);
-        if (old_cl_val || old_te_val || bytes) {
-            old_cl_val = apr_off_t_toa(r->pool, bytes);
+        if (old_cl_val || old_te_val || bytes_read) {
+            old_cl_val = apr_off_t_toa(r->pool, bytes_read);
         }
         rb_method = RB_STREAM_CL;
     }
@@ -905,7 +917,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
         APR_BRIGADE_INSERT_TAIL(header_brigade, e);
     }
 
-    /* send the request data, if any. */
+    /* send the request body, if any. */
     switch(rb_method) {
     case RB_STREAM_CHUNKED:
         status = stream_reqbody_chunked(p, r, p_conn, origin, header_brigade, 
@@ -919,12 +931,12 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
         status = spool_reqbody_cl(p, r, p_conn, origin, header_brigade,
                                   input_brigade, (old_cl_val != NULL)
                                               || (old_te_val != NULL)
-                                              || (bytes > 0));
+                                              || (bytes_read > 0));
         break;
     }
     if (status != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
-                     "proxy: pass request data failed to %pI (%s)"
+                     "proxy: pass request body failed to %pI (%s)"
                      " from %s (%s)",
                      p_conn->addr, 
                      p_conn->hostname ? p_conn->hostname: "",
