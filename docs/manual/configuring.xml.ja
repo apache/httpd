@@ -4,8 +4,8 @@
 <!-- English Revision: 151408 -->
 
 <!--
- Copyright 2002-2005 The Apache Software Foundation or its licensors,
-                     as applicable.
+ Copyright 2002-2005 The Apache Software Foundation or its licensors, as
+ applicable.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -100,7 +100,7 @@
     コアサーバには最も基本的な機能だけが含まれています。拡張機能は
     Apache にロードされる<a href="mod/">モジュール</a
     >として利用可能です。デフォルトでは、コンパイル時にモジュールの
-    <a href="mod/module-dict.html#status">Base</a> セット (基本セット) が
+    <a href="mod/module-dict.html#Status">Base</a> セット (基本セット) が
     サーバに含まれます。サーバが<a href="dso.html">動的ロード</a
     >モジュールを使うようにコンパイルされている場合は、
     モジュールを別にコンパイルして、いつでも
@@ -157,7 +157,7 @@
     例えば、プロセスの作成を制御しているディレクティブはメインサーバの
     コンテキストにのみ書くことができます。
     どのディレクティブをどのセクションに書くことができるかを知るためには
-    ディレクティブの <a href="mod/directive-dict.html#context"
+    ディレクティブの <a href="mod/directive-dict.html#Context"
     >コンテキスト</a> を調べてください。詳しい情報は、
     <a href="sections.html">Directory, Location, Files
     セクションの動作法</a>にあります。</p>
@@ -181,13 +181,15 @@
     <code>.htaccess</code>
     ファイルに書かれたディレクティブはファイルを置いた
     ディレクトリとその全てのサブディレクトリに適用されます。
+    <code>.htaccess</code> ファイルは、メインの設定ファイルと同じ
+    構文を使います。
     <code>.htaccess</code>
     ファイルはすべてのリクエストで読み込まれるため、
     変更はすぐに反映されます。</p>
 
     <p>どのディレクティブが <code>.htaccess</code>
     ファイルに書けるかを調べるには、ディレクティブの<a
-    href="mod/directive-dict.html#context">コンテキスト</a>
+    href="mod/directive-dict.html#Context">コンテキスト</a>
     を調べてください。サーバ管理者はさらにメイン設定ファイルの
     <directive module="core">AllowOverride</directive>
     を設定することでどのディレクティブを <code>.htaccess</code>
