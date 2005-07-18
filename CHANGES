@@ -3,7 +3,7 @@ Changes with Apache 2.1.7
   
   *)  new hook (request_status) that gets ran in proxy_handler just before 
       the final return.  This gives modules an opportunity to do something 
-      based on the proxy status. (major MMN bump)
+      based on the proxy status. (minor MMN bump)
       [Brian Akins <bakins turner.com>, Ian Holsman]
 
   *) SECURITY: CAN-2005-2088
