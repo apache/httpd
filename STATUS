@@ -115,7 +115,17 @@ RELEASE SHOWSTOPPERS:
       Revert r219061 to properly test this patch, as r219061 masks the
       underlying bug (although it is a -good- patch in and of itself).
 
-       +1 wrowe, jim
+       +1: wrowe, jim
+       -1: jorton: this is a massive patch and extremely hard to review
+           for actual interesting content; it is mixed in with all sorts
+           of unrelated stuff.  It needs to at least be split up or
+           the unrelated stuff removed.
+
+           unrelated change: s/apr_strnatcasecmp/strcasecmp/
+           unrelated change: s/b/bb/ on variable+parameter names a few times
+           unrelated change: whitespaces changes all over the shop
+           spurious change:? send_request_body() appears to have been inlined
+           unrelated change: Via header handling
 
          trawick noted on list: we elected C-L not for efficiency, but because
                  it's the most widely supported [paraphrasing]
