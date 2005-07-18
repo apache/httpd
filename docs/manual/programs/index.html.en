@@ -73,6 +73,10 @@
       <dd>Create and update user authentication files for basic
       authentication</dd>
 
+      <dt><code class="program"><a href="../programs/httxt2dbm.html">httxt2dbm</a></code></dt>
+
+      <dd>Create dbm files for use with RewriteMap</dd>
+
       <dt><code class="program"><a href="../programs/logresolve.html">logresolve</a></code></dt>
 
       <dd>Resolve hostnames for IP-addresses in Apache
