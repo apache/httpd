@@ -584,11 +584,6 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
     }
     ap_proxy_clear_connection(p, r->headers_in);
 
-    /* sub-requests never use keepalives */
-    if (r->main) {
-        p_conn->close++;
-    }
-
     if (apr_table_get(r->subprocess_env, "force-proxy-request-1.0")) {
         buf = apr_pstrcat(p, r->method, " ", url, " HTTP/1.0" CRLF, NULL);
         force10 = 1;
@@ -752,9 +747,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
 
         /* for sub-requests, ignore freshness/expiry headers */
         if (r->main) {
-            if (headers_in[counter].key == NULL
-                 || headers_in[counter].val == NULL
-                 || !strcasecmp(headers_in[counter].key, "If-Match")
+            if (    !strcasecmp(headers_in[counter].key, "If-Match")
                  || !strcasecmp(headers_in[counter].key, "If-Modified-Since")
                  || !strcasecmp(headers_in[counter].key, "If-Range")
                  || !strcasecmp(headers_in[counter].key, "If-Unmodified-Since")
@@ -769,6 +762,32 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
         ap_xlate_proto_to_ascii(buf, strlen(buf));
         e = apr_bucket_pool_create(buf, strlen(buf), p, c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(header_brigade, e);
+    }
+
+    /* We have headers, let's figure out our request body... */
+    input_brigade = apr_brigade_create(p, bucket_alloc);
+
+    /* sub-requests never use keepalives, and mustn't pass request bodies.
+     * Because the new logic looks at input_brigade, we will self-terminate
+     * input_brigade and jump past all of the request body logic...
+     * Reading anything with ap_get_brigade is likely to consume the
+     * main request's body or read beyond EOS - which would be unplesant.
+     */
+    if (r->main) {
+        /* XXX: Why DON'T sub-requests use keepalives? */
+        p_conn->close++;
+        if (old_cl_val) {
+            old_cl_val = NULL;
+            apr_table_unset(r->headers_in, "Content-Length");
+        }
+        if (old_te_val) {
+            old_te_val = NULL;
+            apr_table_unset(r->headers_in, "Transfer-Encoding");
+        }
+        rb_method = RB_STREAM_CL;
+        e = apr_bucket_eos_create(input_brigade->bucket_alloc);
+        APR_BRIGADE_INSERT_TAIL(input_brigade, e);
+        goto skip_body;
     }
 
     /* WE only understand chunked.  Other modules might inject
@@ -786,6 +805,17 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
         return APR_EINVAL;
     }
 
+    if (old_cl_val && old_te_val) {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_ENOTIMPL, r->server,
+                     "proxy: client %s (%s) requested Transfer-Encoding "
+                     "chunked body with Content-Length (C-L ignored)",
+                     c->remote_ip, c->remote_host ? c->remote_host: "");
+        apr_table_unset(r->headers_in, "Content-Length");
+        old_cl_val = NULL;
+        origin->keepalive = AP_CONN_CLOSE;
+        p_conn->close++;
+    }
+
     /* Prefetch MAX_MEM_SPOOL bytes
      *
      * This helps us avoid any election of C-L v.s. T-E
@@ -794,7 +824,6 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
      * us an instant C-L election if the body is of some
      * reasonable size.
      */
-    input_brigade = apr_brigade_create(p, bucket_alloc);
     temp_brigade = apr_brigade_create(p, bucket_alloc);
     do {
         status = ap_get_brigade(r->input_filters, temp_brigade,
@@ -820,15 +849,6 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
      */
     } while ((bytes_read < MAX_MEM_SPOOL - 80) 
               && !APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(input_brigade)));
-
-    if (old_cl_val && old_te_val) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_ENOTIMPL, r->server,
-                     "proxy: client %s (%s) requested Transfer-Encoding "
-                     "chunked body with Content-Length (C-L ignored)",
-                     c->remote_ip, c->remote_host ? c->remote_host: "");
-        origin->keepalive = AP_CONN_CLOSE;
-        p_conn->close++;
-    }
 
     /* Use chunked request body encoding or send a content-length body?
      *
@@ -909,6 +929,8 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
         rb_method = RB_SPOOL_CL;
     }
 
+/* Yes I hate gotos.  This is the subrequest shortcut */
+skip_body:
     /* Handle Connection: header */
     if (!force10 && p_conn->close) {
         buf = apr_pstrdup(p, "Connection: close" CRLF);
