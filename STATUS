@@ -167,6 +167,26 @@ RELEASE SHOWSTOPPERS:
                  the issues of correctly sending the body and choosing the
                  transport flavor.
 
+    * http://svn.apache.org/viewcvs?rev=171205&view=rev [committed]
+      backport this fix from 2.1-dev:
+      proxy HTTP: Rework the handling of request bodies to handle
+      chunked input and input filters which modify content length, and
+      avoid spooling arbitrary-sized request bodies in memory.
+      PR: 15859
+
+        +1 trawick, jerenkrantz, jim
+        -1 wrowe
+           This patch needs to be reverted or ammended by the patch above;
+           this resulting code is more complex, yet equally faulty in it's
+           C-L/T-E elections for a number of specific cases.  No opinion
+           between the choice of reverting and re-backporting, or simply
+           patching-the-patch.
+
+    * TRACE must not have a request body per RFC2616; see the -trace.patch
+      below for one of two alternatives.  The other alternative; simply
+      hack mod_proxy.c to reject TRACE when a body is seen, again see that
+      -trace.patch for an illustration.
+
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ please append new backports at the end of this list not the top. ]
