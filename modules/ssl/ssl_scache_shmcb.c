@@ -1203,7 +1203,7 @@ static SSL_SESSION *shmcb_lookup_session_id(
     SHMCBHeader *header;
     SSL_SESSION *pSession = NULL;
     unsigned int curr_pos, loop, count;
-    unsigned char *ptr;
+    MODSSL_D2I_SSL_SESSION_CONST unsigned char *ptr;
     time_t now;
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
@@ -1281,7 +1281,7 @@ static BOOL shmcb_remove_session_id(
     SHMCBIndex *idx;
     SHMCBHeader *header;
     unsigned int curr_pos, loop, count;
-    unsigned char *ptr;
+    MODSSL_D2I_SSL_SESSION_CONST unsigned char *ptr;
     BOOL to_return = FALSE;
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,

@@ -967,6 +967,20 @@ Apache 2.0.41 and later</td></tr>
       substituted by <em>DefaultValue</em> or by the empty string
       if no <em>DefaultValue</em> was specified.</p>
 
+      <p>For example, you might define a
+      <code class="directive">RewriteMap</code> as:</p>
+
+      <div class="example"><p><code>
+      RewriteMap examplemap txt:/path/to/file/map.txt
+      </code></p></div>
+
+      <p>You would then be able to use this map in a
+      <code class="directive">RewriteRule</code> as follows:</p>
+
+      <div class="example"><p><code>
+      RewriteRule ^/ex/(.*) ${examplemap:$1}
+      </code></p></div>
+
       <p>The following combinations for <em>MapType</em> and
       <em>MapSource</em> can be used:</p>
 
@@ -1012,12 +1026,14 @@ RewriteMap real-to-user txt:/path/to/file/map.txt
           ``<code>|</code>'' characters which have the meaning of
           ``or''. In other words they indicate a set of
           alternatives from which the actual returned value is
-          chosen randomly. Although this sounds crazy and useless,
-          it was actually designed for load balancing in a reverse
-          proxy situation where the looked up values are server
-          names. Example:</p>
+          chosen randomly. For example, you might use the following map
+          file and directives to provide a random load balancing between
+          several back-end server, via a reverse-proxy. Images are sent
+          to one of the servers in the 'static' pool, while everything
+          else is sent to one of the 'dynamic' pool.</p>
+          <p>Example:</p>
 
-<div class="example"><pre>
+<div class="example"><h3>Rewrite map file</h3><pre>
 ##
 ##  map.txt -- rewriting map
 ##
@@ -1026,8 +1042,12 @@ static   www1|www2|www3|www4
 dynamic  www5|www6
 </pre></div>
 
-<div class="example"><p><code>
-RewriteMap servers rnd:/path/to/file/map.txt
+<div class="example"><h3>Configuration directives</h3><p><code>
+RewriteMap servers rnd:/path/to/file/map.txt<br />
+<br />
+RewriteRule ^/(.*\.(png|gif|jpg)) http://${servers:static}/$1
+[NC,P,L]<br />
+RewriteRule ^/(.*) http://${servers:dynamic}/$1 [P,L]
 </code></p></div>
         </li>
 

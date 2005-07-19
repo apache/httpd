@@ -885,6 +885,15 @@ request_rec *ap_read_request(conn_rec *conn)
             apr_brigade_destroy(tmp_bb);
             return r;
         }
+
+        if (apr_table_get(r->headers_in, "Transfer-Encoding")
+            && apr_table_get(r->headers_in, "Content-Length")) {
+            /* 2616 section 4.4, point 3: "if both Transfer-Encoding
+             * and Content-Length are received, the latter MUST be
+             * ignored"; so unset it here to prevent any confusion
+             * later. */
+            apr_table_unset(r->headers_in, "Content-Length");
+        }
     }
     else {
         if (r->header_only) {

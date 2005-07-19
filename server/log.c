@@ -145,6 +145,45 @@ static const TRANS priorities[] = {
 
 static apr_file_t *stderr_log = NULL;
 
+/* track pipe handles to close in child process */
+typedef struct read_handle_t {
+    struct read_handle_t *next;
+    apr_file_t *handle;
+} read_handle_t;
+
+static read_handle_t *read_handles;
+
+/* clear_handle_list() is called when plog is cleared; at that
+ * point we need to forget about our old list of pipe read
+ * handles
+ */
+static apr_status_t clear_handle_list(void *v)
+{
+    read_handles = NULL;
+    return APR_SUCCESS;
+}
+
+/* remember to close this handle in the child process */
+static void close_handle_in_child(apr_pool_t *p, apr_file_t *f)
+{
+    read_handle_t *new_handle;
+
+    new_handle = apr_pcalloc(p, sizeof(read_handle_t));
+    new_handle->next = read_handles;
+    new_handle->handle = f;
+    read_handles = new_handle;
+}
+
+void ap_logs_child_init(apr_pool_t *p, server_rec *s)
+{
+    read_handle_t *cur = read_handles;
+
+    while (cur) {
+        apr_file_close(cur->handle);
+        cur = cur->next;
+    }
+}
+
 AP_DECLARE(void) ap_open_stderr_log(apr_pool_t *p)
 {
     apr_file_open_stderr(&stderr_log, p);
@@ -220,6 +259,9 @@ static int log_child(apr_pool_t *p, const char *progname,
         if (rc == APR_SUCCESS) {
             apr_pool_note_subprocess(p, procnew, APR_KILL_AFTER_TIMEOUT);
             (*fpin) = procnew->in;
+            /* read handle to pipe not kept open, so no need to call
+             * close_handle_in_child()
+             */
         }
     }
 
@@ -296,6 +338,8 @@ int ap_open_logs(apr_pool_t *pconf, apr_pool_t *p /* plog */,
     int replace_stderr;
     apr_file_t *errfile = NULL;
 
+    apr_pool_cleanup_register(p, NULL, clear_handle_list,
+                              apr_pool_cleanup_null);
     if (open_error_log(s_main, p) != OK) {
         return DONE;
     }
@@ -439,7 +483,7 @@ static void log_error_core(const char *file, int line, int level,
 
 #ifndef TPF
     if (file && level_and_mask == APLOG_DEBUG) {
-#if defined(_OSD_POSIX) || defined(WIN32)
+#if defined(_OSD_POSIX) || defined(WIN32) || defined(__MVS__)
         char tmp[256];
         char *e = strrchr(file, '/');
 #ifdef WIN32
@@ -756,6 +800,7 @@ static int piped_log_spawn(piped_log *pl)
             ap_piped_log_write_fd(pl) = procnew->in;
             apr_proc_other_child_register(procnew, piped_log_maintenance, pl,
                                           ap_piped_log_write_fd(pl), pl->p);
+            close_handle_in_child(pl->p, ap_piped_log_read_fd(pl));
         }
         else {
             char buf[120];

@@ -894,7 +894,7 @@ extensions</td></tr>
     the default list of mappings from filename extensions to content
     types. Most administrators use the provided <code>mime.types</code>
     file, which associates common filename extensions with IANA registered
-    content types. The current list is maintained at <a href="http://www.isi.edu/in-notes/iana/assignments/media-types/media-types">http://www.isi.edu/in-notes/iana/assignments/media-types/media-types</a>.
+    content types. The current list is maintained at <a href="http://www.iana.org/assignments/media-types/index.html">http://www.iana.org/assignments/media-types/index.html</a>.
     This simplifies the <code>httpd.conf</code> file by providing the
     majority of media-type definitions, and may be overridden by
     <code class="directive"><a href="#addtype">AddType</a></code> directives as

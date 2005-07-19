@@ -215,6 +215,25 @@ Body:----------ro--
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
 
+Content-language: sr
+Content-type: text/html; charset=ISO-8859-5
+Body:----------sr--
+<!--#set var="CONTENT_LANGUAGE" value="sr"
+--><!--#set var="CHARACTER_ENCODING" value="ISO-8859-5"
+--><!--#set var="TITLE" value="Лош пролаз!"
+--><!--#include virtual="include/top.html" -->
+
+    Посреднички сервер је примио неисправан
+    одговор од следећег сервера у низу.
+
+  <!--#if expr="$REDIRECT_ERROR_NOTES" -->
+    <!--#include virtual="include/spacer.html" -->
+    <!--#echo encoding="none" var="REDIRECT_ERROR_NOTES" -->
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------sr--
+
 Content-language: sv
 Content-type: text/html; charset=ISO-8859-1
 Body:----------sv--

@@ -496,6 +496,20 @@ Apache 2.0.41 and later</compatibility>
       substituted by <em>DefaultValue</em> or by the empty string
       if no <em>DefaultValue</em> was specified.</p>
 
+      <p>For example, you might define a
+      <directive>RewriteMap</directive> as:</p>
+
+      <example>
+      RewriteMap examplemap txt:/path/to/file/map.txt
+      </example>
+
+      <p>You would then be able to use this map in a
+      <directive>RewriteRule</directive> as follows:</p>
+
+      <example>
+      RewriteRule ^/ex/(.*) ${examplemap:$1}
+      </example>
+
       <p>The following combinations for <em>MapType</em> and
       <em>MapSource</em> can be used:</p>
 
@@ -543,12 +557,14 @@ RewriteMap real-to-user txt:/path/to/file/map.txt
           ``<code>|</code>'' characters which have the meaning of
           ``or''. In other words they indicate a set of
           alternatives from which the actual returned value is
-          chosen randomly. Although this sounds crazy and useless,
-          it was actually designed for load balancing in a reverse
-          proxy situation where the looked up values are server
-          names. Example:</p>
+          chosen randomly. For example, you might use the following map
+          file and directives to provide a random load balancing between
+          several back-end server, via a reverse-proxy. Images are sent
+          to one of the servers in the 'static' pool, while everything
+          else is sent to one of the 'dynamic' pool.</p>
+          <p>Example:</p>
 
-<example>
+<example><title>Rewrite map file</title>
 <pre>
 ##
 ##  map.txt -- rewriting map
@@ -559,8 +575,12 @@ dynamic  www5|www6
 </pre>
 </example>
 
-<example>
-RewriteMap servers rnd:/path/to/file/map.txt
+<example><title>Configuration directives</title>
+RewriteMap servers rnd:/path/to/file/map.txt<br />
+<br />
+RewriteRule ^/(.*\.(png|gif|jpg)) http://${servers:static}/$1
+[NC,P,L]<br />
+RewriteRule ^/(.*) http://${servers:dynamic}/$1 [P,L]
 </example>
         </li>
 

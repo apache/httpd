@@ -7,6 +7,19 @@ Changes with Apache 2.0.55
      accompanying ap_version_t structure (minor MMN bump).
      [André Malo]
 
+  *) SECURITY: CAN-2005-2088
+     core: If a request contains both Transfer-Encoding and Content-Length
+     headers, remove the Content-Length, mitigating some HTTP Request 
+     Splitting/Spoofing attacks.  [Paul Querna, Joe Orton]
+
+  *) proxy HTTP: If a response contains both Transfer-Encoding and a 
+     Content-Length, remove the Content-Length and don't reuse the
+     connection, mitigating some HTTP Response Splitting attacks.
+     [Jeff Trawick]
+
+  *) Prevent hangs of child processes when writing to piped loggers at
+     the time of graceful restart.  PR 26467.  [Jeff Trawick]
+
   *) SECURITY: CAN-2005-1268 (cve.mitre.org)
      mod_ssl: Fix off-by-one overflow whilst printing CRL information
      at "LogLevel debug" which could be triggered if configured 
