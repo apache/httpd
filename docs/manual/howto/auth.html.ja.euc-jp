@@ -22,8 +22,6 @@
 <a href="../ja/howto/auth.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/auth.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 
     <p>「認証」とは、誰かが自分は誰であるかを主張した場合に、
     それを確認するための全過程を指します。「承認」とは、
@@ -159,7 +157,7 @@
     で、これは <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code>
     で実装されています。しかしながら、
     これは気を付けるべき重要なポイントなのですが、
-    Basic 認証はクライアントからブラウザへ、
+    Basic 認証はクライアントからサーバへ、
     パスワードを暗号化せずに送ります。ですから、
     この方法は特に機密性の高いデータに対しては用いるべきでは
     ありません。 Apache ではもう一つ別の認証方法:

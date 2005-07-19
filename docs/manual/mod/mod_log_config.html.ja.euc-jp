@@ -25,8 +25,6 @@
 <a href="../ja/mod/mod_log_config.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_log_config.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>サーバへのリクエストのロギング</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>log_config_module</td></tr>
@@ -89,80 +87,80 @@
         <th>説明</th></tr>
 <tr><td><code>%%</code></td>
         <td>パーセント記号</td></tr>
-<tr class="odd"><td><code>%...a</code></td>
+<tr class="odd"><td><code>%a</code></td>
         <td>リモート IP アドレス</td></tr>
-<tr><td><code>%...A</code></td>
+<tr><td><code>%A</code></td>
         <td>ローカル IP アドレス</td></tr>
-<tr class="odd"><td><code>%...B</code></td>
+<tr class="odd"><td><code>%B</code></td>
         <td>レスポンスのバイト数。HTTP ヘッダは除く。</td></tr>
-<tr><td><code>%...b</code></td>
+<tr><td><code>%b</code></td>
         <td>レスポンスのバイト数。HTTP ヘッダは除く。CLF 書式。
         <em>すなわち</em>、1 バイトも送られなかったときは 0 ではなく、
         '<code>-</code>' になる</td></tr>
-<tr class="odd"><td><code>%...{<var>Foobar</var>}C</code></td>
+<tr class="odd"><td><code>%{<var>Foobar</var>}C</code></td>
         <td>サーバに送られたリクエスト中のクッキー <var>Foobar</var> の値</td></tr>
-<tr><td><code>%...D</code></td>
+<tr><td><code>%D</code></td>
         <td>リクエストを処理するのにかかった時間、ミリ秒単位</td></tr>
-<tr class="odd"><td><code>%...{<var>FOOBAR</var>}e</code></td>
+<tr class="odd"><td><code>%{<var>FOOBAR</var>}e</code></td>
         <td>環境変数 <var>FOOBAR</var> の内容</td></tr>
-<tr><td><code>%...f</code></td>
+<tr><td><code>%f</code></td>
         <td>ファイル名</td></tr>
-<tr class="odd"><td><code>%...h</code></td>
+<tr class="odd"><td><code>%h</code></td>
         <td>リモートホスト</td></tr>
-<tr><td><code>%...H</code></td>
+<tr><td><code>%H</code></td>
         <td>リクエストプロトコル</td></tr>
-<tr class="odd"><td><code>%...{<var>Foobar</var>}i</code></td>
+<tr class="odd"><td><code>%{<var>Foobar</var>}i</code></td>
         <td>サーバに送られたリクエストの <code><var>Foobar</var>:</code>
         ヘッダの内容</td></tr>
-<tr><td><code>%...l</code></td>
+<tr><td><code>%l</code></td>
         <td>(identd からもし提供されていれば) リモートログ名。
         これは <code class="module"><a href="../mod/mod_ident.html">mod_ident</a></code> がサーバに存在して、
         <code class="directive"><a href="../mod/mod_ident.html#identitycheck">IdentityCheck</a></code>
         ディレクティブが <code>On</code> に設定されていない限り、
         <code>-</code> になります。</td></tr>
-<tr class="odd"><td><code>%...m</code></td>
+<tr class="odd"><td><code>%m</code></td>
         <td>リクエストメソッド</td></tr>
-<tr><td><code>%...{<var>Foobar</var>}n</code></td>
+<tr><td><code>%{<var>Foobar</var>}n</code></td>
         <td>他のモジュールからのメモ <var>Foobar</var> の内容</td></tr>
-<tr class="odd"><td><code>%...{<var>Foobar</var>}o</code></td>
+<tr class="odd"><td><code>%{<var>Foobar</var>}o</code></td>
         <td>応答の <code><var>Foobar</var>:</code> ヘッダの内容</td></tr>
-<tr><td><code>%...p</code></td>
+<tr><td><code>%p</code></td>
         <td>リクエストを扱っているサーバの正式なポート</td></tr>
-<tr class="odd"><td><code>%...P</code></td>
+<tr class="odd"><td><code>%P</code></td>
         <td>リクエストを扱った子プロセスのプロセス ID</td></tr>
-<tr><td><code>%...{<var>format</var>}P</code></td>
+<tr><td><code>%{<var>format</var>}P</code></td>
         <td>リクエストを扱ったワーカーのプロセス ID かスレッド ID。
         <var>format</var> として有効な値は <code>pid</code> と <code>tid</code>
         </td></tr>
-<tr class="odd"><td><code>%...q</code></td>
+<tr class="odd"><td><code>%q</code></td>
         <td>問い合せ文字列 (存在する場合は前に <code>?</code> が追加される。
         そうでない場合は空文字列)</td></tr>
-<tr><td><code>%...r</code></td>
+<tr><td><code>%r</code></td>
         <td>リクエストの最初の行</td></tr>
-<tr class="odd"><td><code>%...s</code></td>
+<tr class="odd"><td><code>%s</code></td>
         <td>ステータス。内部でリダイレクトされたリクエストは、元々の
-         リクエストのステータス --- 最後のステータスは <code>%...&gt;s</code>
+         リクエストのステータス --- 最後のステータスは <code>%&gt;s</code>
     </td></tr>
-<tr><td><code>%...t</code></td>
+<tr><td><code>%t</code></td>
         <td>リクエストを受付けた時刻。
         CLF の時刻の書式 (標準の英語の書式)</td></tr>
-<tr class="odd"><td><code>%...{<var>format</var>}t</code></td>
+<tr class="odd"><td><code>%{<var>format</var>}t</code></td>
         <td><var>format</var> で与えられた書式による時刻。format は
          <code>strftime (3)</code> の
          書式である必要がある。(地域化されている可能性がある)</td></tr>
-<tr><td><code>%...T</code></td>
+<tr><td><code>%T</code></td>
         <td>リクエストを扱うのにかかった時間、秒単位</td></tr>
-<tr class="odd"><td><code>%...u</code></td>
+<tr class="odd"><td><code>%u</code></td>
         <td>リモートユーザ (認証によるもの。ステータス (<code>%s</code>) が
         401 のときは意味がないものである可能性がある)
     </td></tr>
-<tr><td><code>%...U</code></td>
+<tr><td><code>%U</code></td>
         <td>リクエストされた URL パス。クエリ文字列は含まない</td></tr>
-<tr class="odd"><td><code>%...v</code></td>
+<tr class="odd"><td><code>%v</code></td>
         <td>リクエストを扱っているサーバの正式な <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code></td></tr>
-<tr><td><code>%...V</code></td>
+<tr><td><code>%V</code></td>
         <td><code class="directive"><a href="../mod/core.html#usecanonicalname">UseCanonicalName</a></code> の設定によるサーバ名</td></tr>
-<tr class="odd"><td><code>%...X</code></td>
+<tr class="odd"><td><code>%X</code></td>
         <td>応答が完了したときの接続ステータス:
 
         <table>
@@ -176,91 +174,87 @@
         </table>
 
         <p>(このディレクティブは Apache
-        1.3 の後期のバージョンでは <code>%...c</code> に割り当てられて
+        1.3 の後期のバージョンでは <code>%c</code> に割り当てられて
         いましたが、これは歴史的に ssl が使用している
-        <code>%...{<var>var</var>}c</code>
+        <code>%{<var>var</var>}c</code>
         構文と衝突していました。)</p></td></tr>
-<tr><td><code>%...I</code></td>
+<tr><td><code>%I</code></td>
         <td>リクエストとヘッダを含む、受け取ったバイト数。
         0 にはならない。
         これを使用するためには <code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code> が必要</td></tr>
-<tr class="odd"><td><code>%...O</code></td>
+<tr class="odd"><td><code>%O</code></td>
         <td>ヘッダを含む、送信したバイト数。0 にはならない。
         これを使用するためには <code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code> が必要</td></tr>
 </table>
 
-    <p><var>"..."</var> は何もないか (<em>例えば</em>、
-    <code>"%h %u %r %s %b"</code> のように)、
-    その項目を含めるかどうかの条件 (もし条件に合わなかったときは
-    その項目は "-" になります) にすることができます。条件の形式は
-    HTTP ステータスコードのリストで、前に "!" を付けることもできます。
-    ですから、"%400,501{User-agent}i" は 400 エラーと 501 エラー
-    (Bad Request と Not Implemented) のときのみ <code>User-agent:</code>
-    をログ収集します。
-    "%!200,304,302{Referer}i" は普通のステータスを<em>返さなかった</em>
-    すべてのリクエストで <code>Referer:</code> をログ収集します。</p>
+    <h3><a name="modifiers" id="modifiers">修飾子</a></h3>
 
-    <p>修飾子 "&lt;" と "&gt;" は内部リダイレクトされたリクエストのログに
-    元のリクエストか最終的なリクエストのどちらを使用するかを
-    指定するために使います。デフォルトでは、<code>%</code> ディレクティブの
-    <code>%s, %U, %T, %D, %r</code> は元のリクエストを、他は最終的なリクエストを
-    使用します。例えば、リクエストの最終ステータスを記録するには
-    <code>%&gt;s</code> を、内部的に認証されていないリソースへリダイレクトされた
-    リクエストで元のリクエストで認証されたユーザを記録するためには
-    <code>%&lt;u</code> を使うことができます。</p>
+      <p>特定の要素は "%" の直後に HTTP ステータスコードをカンマ区切りで
+      指定することで、表示を制限することができます。例えば 
+      <code>"%400,501{User-agent}i"</code> では、
+      400 と 500 番エラーでのみ <code>User-agent</code> をログします。
+      他のステータスコードでは <code>"-"</code> という文字列が
+      ログされます。ステータスコードのリストは "<code>!</code>" 
+      で否定を指定することができます :
+      <code>"%!200,304,302{Referer}i"</code> は、指定された
+      3 つのコードの<em>どれにも該当しない</em>リクエスト全てで
+      <code>Referer</code> をログします。</p>
 
-    <p>httpd 2.0 の 1.3.25 より前のバージョンでは、
-    <code>%...r</code>, <code>%...i</code>,
-    <code>%...o</code> の文字列は
-    エスケープされていなかったことに
-    注意してください。これは主に Common Log Format からの要求によるものです。
-    これは、クライアントがログに制御文字を挿入することができるということで、
-    生のログファイルを扱うときには非常に注意が必要でした。</p>
+      <p>修飾子 "&lt;" と "&gt;" は内部リダイレクトされたリクエストのログに
+      元のリクエストか最終的なリクエストのどちらを使用するかを
+      指定するために使います。デフォルトでは、<code>%</code> ディレクティブの
+      <code>%s, %U, %T, %D, %r</code> は元のリクエストを、他は最終的なリクエストを
+      使用します。例えば、リクエストの最終ステータスを記録するには
+      <code>%&gt;s</code> を、内部的に認証されていないリソースへリダイレクトされた
+      リクエストで元のリクエストで認証されたユーザを記録するためには
+      <code>%&lt;u</code> を使うことができます。</p>
 
-    <p>セキュリティ上の理由により 2.0.46 より印字不可能な文字と
-    他の特別な文字は、ほとんど <code>\x<var>hh</var></code> という
-    文字列でエスケープされるようになりました。ここで、<var>hh</var> は
-    そのままのバイトの値の 16 進での値です。この規則の例外には、
-    バックスラッシュを使ってエスケープされる <code>"</code> と <code>\</code> と、
-    C 形式の表記法が使われる空白文字 (<code>\n</code>, <code>\t</code> など) が
-    あります。</p>
+    
 
-    <p>httpd 2.0 では 1.3 とは異なり、<code>%b</code> と <code>%B</code>
-    フォーマット文字列はクライアントに送信されたバイト数そのものではなく、
-    HTTP レスポンスのバイト数です (これらは異なるもので、たとえば、
-    コネクションが途中で破棄された場合や、SSL 使用時に一致しません) 。
-    <code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code> で提供されている <code>%O</code>
-    フォーマット文字列で、ネットワーク経由で実際に転送されたバイト数を
-    記録できます。</p>
+    <h3><a name="format-notes" id="format-notes">その他注意点</a></h3>
 
-    <p>よく使われるフォーマット文字列は:</p>
+      <p>セキュリティ上の理由により 2.0.46 より、
+      <code>%r</code>, <code>%i</code>, <code>%o</code> に入っている、
+      印字不可能な文字と他の特別な文字は、<code>\x<var>hh</var></code> 
+      という形式の文字列でエスケープされるようになりました。<var>hh</var> は
+      そのままのバイトの値の 16 進での値です。この規則の例外には、
+      バックスラッシュを使ってエスケープされる <code>"</code> と <code>\</code> と、
+      C 形式の表記法が使われる空白文字 (<code>\n</code>, <code>\t</code> など)
+      があります。2.0.46 以前のバージョンではエスケープ処理は行われませんので、
+      生ログファイルを扱う際に注意が必要です。</p>
 
-    <dl>
-      <dt>Common Log Format (CLF)</dt>
-      <dd><code>"%h %l %u %t \"%r\" %&gt;s %b"</code></dd>
+      <p>httpd 2.0 では 1.3 とは異なり、<code>%b</code> と <code>%B</code>
+      フォーマット文字列はクライアントに送信されたバイト数そのものではなく、
+      HTTP レスポンスのバイト数です (これらは異なるもので、たとえば、
+      コネクションが途中で破棄された場合や、SSL 使用時に一致しません) 。
+      <code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code> で提供されている <code>%O</code>
+      フォーマット文字列で、ネットワーク経由で実際に転送されたバイト数を
+      記録できます。</p>
 
-      <dt>バーチャルホスト付き Common Log Format</dt>
-      <dd><code>"%v %h %l %u %t \"%r\" %&gt;s %b"</code></dd>
+    
 
-      <dt>NCSA extended/combined ログ書式</dt>
-      <dd><code>"%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\"
-      \"%{User-agent}i\""</code></dd>
+    <h3><a name="examples" id="examples">例</a></h3>
 
-      <dt>Referer ログ書式</dt>
-      <dd><code>"%{Referer}i -&gt; %U"</code></dd>
+      <p>よく使われるフォーマット文字列は:</p>
 
-      <dt>Agent (ブラウザ) ログ書式</dt>
-      <dd><code>"%{User-agent}i"</code></dd>
-    </dl>
+      <dl>
+        <dt>Common Log Format (CLF)</dt>
+        <dd><code>"%h %l %u %t \"%r\" %&gt;s %b"</code></dd>
 
-    <p><code>%v</code> と <code>%p</code> にはそれぞれ、
-    リクエストを扱っているサーバの正規化された
-    <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> と <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code> が使われるということに注意してください。
-    これは <code class="directive"><a href="../mod/core.html#usecanonicalname">UseCanonicalName</a></code> の
-    設定に関わらず、常にそうなります。そうしないとどの
-    ホストが実際にリクエストを扱ったのかを知るために、
-    ログ解析プログラムがバーチャルホストのマッチングをとるアルゴリズム全体を
-    再実装しなければならなくなるからです。</p>
+        <dt>バーチャルホスト付き Common Log Format</dt>
+        <dd><code>"%v %h %l %u %t \"%r\" %&gt;s %b"</code></dd>
+
+        <dt>NCSA extended/combined ログ書式</dt>
+        <dd><code>"%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\"
+        \"%{User-agent}i\""</code></dd>
+
+        <dt>Referer ログ書式</dt>
+        <dd><code>"%{Referer}i -&gt; %U"</code></dd>
+
+        <dt>Agent (ブラウザ) ログ書式</dt>
+        <dd><code>"%{User-agent}i"</code></dd>
+      </dl>
+    
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="security" id="security">セキュリティに関して</a></h2>
@@ -427,7 +421,7 @@
     <code class="directive">CustomLog</code> ディレクティブで使うことができます。
     Nickname を定義する <code class="directive">LogFormat</code> ディレクティブは
     <strong>他には何もしません</strong> -- すなわち、ニックネームを定義
-    するだけで、実際に書式を適用してデフォルトにするということは行ないません。
+    する<em>だけ</em>で、実際に書式を適用してデフォルトにするということは行ないません。
     ですから、これは続く <code class="directive"><a href="#transferlog">TransferLog</a></code>
     ディレクティブには影響を与えません。
     さらに、<code class="directive">LogFormat</code> ディレクティブは既存の nickname を
