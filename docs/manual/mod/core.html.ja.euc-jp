@@ -25,13 +25,12 @@
 <a href="../en/mod/core.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/core.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>常に使用可能な Apache HTTP サーバのコア機能</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Core</td></tr></table>
 </div>
 <div id="quickview"><h3 class="directives">ディレクティブ</h3>
 <ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#acceptfilter">AcceptFilter</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#acceptpathinfo">AcceptPathInfo</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#accessfilename">AccessFileName</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#adddefaultcharset">AddDefaultCharset</a></li>
@@ -96,6 +95,55 @@
 </ul>
 </div>
 
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AcceptFilter" id="AcceptFilter">AcceptFilter</a> <a name="acceptfilter" id="acceptfilter">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>プロトコルを Listen しているソケットの最適化を設定する</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>AcceptFilter <var>protocol</var> <var>accept_filter</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>2.1.5 以降</td></tr>
+</table>
+    <p>Listen しているソケットに対して、OS が固有に持っているプロトコルについての最適化を
+       有効にするディレクティブです。大前提となる条件は、データが受信されるか
+       HTTP リクエスト全体がバッファされるかするまで、カーネルがサーバプロセスに
+       ソケットを送らないようになっている、ということです。現在サポートされているのは、
+       <a href="http://www.freebsd.org/cgi/man.cgi?query=accept_filter&amp;sektion=9">
+       FreeBSD の Accept Filter</a> と Linux のプリミティブな
+       <code>TCP_DEFER_ACCEPT</code> のみです。</p>
+
+    <p>FreeBSD のデフォルト値は :</p>
+    <div class="example"><p><code>
+        AcceptFilter http httpready <br />
+        AcceptFilter https dataready
+    </code></p></div>
+    
+    <p><code>httpready</code> Accept Filter は HTTP リクエスト全体を、
+       カーネルレベルでバッファリングします。リクエスト全体を受信し終わると、
+       その後サーバプロセスにそれを送ります。詳細については <a href="http://www.freebsd.org/cgi/man.cgi?query=accf_http&amp;sektion=9">accf_http(9)</a> 
+       を参照してください。HTTPS のリクエストは暗号化されているので <a href="http://www.freebsd.org/cgi/man.cgi?query=accf_data&amp;sektion=9">accf_data(9)</a>
+       フィルタのみが使用されます。</p>
+
+    <p>Linux でのデフォルト値は :</p>
+    <div class="example"><p><code>
+        AcceptFilter http data <br />
+        AcceptFilter https data
+    </code></p></div>
+
+    <p>Linux の <code>TCP_DEFER_ACCEPT</code> は HTTP リクエストのバッファリングを
+       サポートしていません。<code>none</code> 以外の値で
+       <code>TCP_DEFER_ACCEPT</code> が有効になります。詳細については Linux 
+       man ページ <a href="http://homepages.cwi.nl/~aeb/linux/man2html/man7/tcp.7.html">tcp(7)</a>
+       を参照してください。</p>
+
+    <p>引数に <code>none</code> を指定すると、プロトコルに対する全ての Accept 
+       Filter が無効になります。<code>nntp</code> といった、先にサーバにデータを
+       送る必要のあるプロトコルに有効です :</p>
+    <div class="example"><p><code>AcceptFilter nttp none</code></p></div>
+
+
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AcceptPathInfo" id="AcceptPathInfo">AcceptPathInfo</a> <a name="acceptpathinfo" id="acceptpathinfo">ディレクティブ</a></h2>
 <table class="directive">
