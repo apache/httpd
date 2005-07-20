@@ -2,6 +2,9 @@
 Changes with Apache 2.1.7
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_cache: Store varied contents all in the same prefix for a varied URI.
+     [Paul Querna]
+
   *) mod_cache: Run the CACHE_SAVE and CACHE_OUT Filters after other content
      filters. [Paul Querna]
 

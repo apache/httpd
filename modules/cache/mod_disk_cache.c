@@ -50,8 +50,8 @@
  *   CRLF
  */
 
-#define VARY_FORMAT_VERSION 1
-#define DISK_FORMAT_VERSION 2
+#define VARY_FORMAT_VERSION 3
+#define DISK_FORMAT_VERSION 4
 
 typedef struct {
     /* Indicates the format of the header struct stored on-disk. */
@@ -76,6 +76,7 @@ typedef struct {
 typedef struct disk_cache_object {
     const char *root;        /* the location of the cache directory */
     char *tempfile;    /* temp file tohold the content */
+    const char *prefix;
     const char *datafile;    /* name of file where the data will go */
     const char *hdrsfile;    /* name of file where the hdrs will go */
     const char *hashfile;    /* Computed hash key for this URI */
@@ -124,6 +125,8 @@ static apr_status_t read_array(request_rec *r, apr_array_header_t* arr,
  */
 #define CACHE_HEADER_SUFFIX ".header"
 #define CACHE_DATA_SUFFIX   ".data"
+#define CACHE_VDIR_SUFFIX   ".vary"
+
 static char *header_file(apr_pool_t *p, disk_cache_conf *conf,
                          disk_cache_object_t *dobj, const char *name)
 {
@@ -131,8 +134,15 @@ static char *header_file(apr_pool_t *p, disk_cache_conf *conf,
         dobj->hashfile = ap_cache_generate_name(p, conf->dirlevels, 
                                                 conf->dirlength, name);
     }
-    return apr_pstrcat(p, conf->cache_root, "/", dobj->hashfile,
-                       CACHE_HEADER_SUFFIX, NULL);
+
+    if (dobj->prefix) {
+        return apr_pstrcat(p, dobj->prefix, CACHE_VDIR_SUFFIX, "/",
+                           dobj->hashfile, CACHE_HEADER_SUFFIX, NULL);
+     }
+     else {
+        return apr_pstrcat(p, conf->cache_root, "/", dobj->hashfile,
+                           CACHE_HEADER_SUFFIX, NULL);
+     }
 }
 
 static char *data_file(apr_pool_t *p, disk_cache_conf *conf,
@@ -142,8 +152,15 @@ static char *data_file(apr_pool_t *p, disk_cache_conf *conf,
         dobj->hashfile = ap_cache_generate_name(p, conf->dirlevels, 
                                                 conf->dirlength, name);
     }
-    return apr_pstrcat(p, conf->cache_root, "/", dobj->hashfile,
-                       CACHE_DATA_SUFFIX, NULL);
+
+    if (dobj->prefix) {
+        return apr_pstrcat(p, dobj->prefix, CACHE_VDIR_SUFFIX, "/",
+                           dobj->hashfile, CACHE_DATA_SUFFIX, NULL);
+     }
+     else {
+        return apr_pstrcat(p, conf->cache_root, "/", dobj->hashfile,
+                           CACHE_DATA_SUFFIX, NULL);
+     }
 }
 
 static void mkdir_structure(disk_cache_conf *conf, const char *file, apr_pool_t *pool)
@@ -352,6 +369,7 @@ static int create_entity(cache_handle_t *h, request_rec *r, const char *key, apr
     obj->key = apr_pstrdup(r->pool, key);
 
     dobj->name = obj->key;
+    dobj->prefix = NULL;
     dobj->datafile = data_file(r->pool, conf, dobj, key);
     dobj->hdrsfile = header_file(r->pool, conf, dobj, key);
     dobj->tempfile = apr_pstrcat(r->pool, conf->cache_root, AP_TEMPFILE, NULL);
@@ -393,6 +411,8 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
     info = &(obj->info);
 
     /* Open the headers file */
+    dobj->prefix = NULL;
+
     dobj->hdrsfile = header_file(r->pool, conf, dobj, key);
     flags = APR_READ|APR_BINARY|APR_BUFFERED;
     rc = apr_file_open(&dobj->hfd, dobj->hdrsfile, flags, 0, r->pool);
@@ -428,6 +448,7 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
         nkey = regen_key(r->pool, r->headers_in, varray, key);
 
         dobj->hashfile = NULL;
+        dobj->prefix = dobj->hdrsfile;
         dobj->hdrsfile = header_file(r->pool, conf, dobj, nkey);
 
         flags = APR_READ|APR_BINARY|APR_BUFFERED;
@@ -784,6 +805,7 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
 
             dobj->tempfile = apr_pstrcat(r->pool, conf->cache_root, AP_TEMPFILE, NULL);
             tmp = regen_key(r->pool, r->headers_in, varray, dobj->name);
+            dobj->prefix = dobj->hdrsfile;
             dobj->hashfile = NULL;
             dobj->datafile = data_file(r->pool, conf, dobj, tmp);
             dobj->hdrsfile = header_file(r->pool, conf, dobj, tmp);
