@@ -1,7 +1,10 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.1.7
   [Remove entries to the current 2.0 section below, when backported]
-  
+
+  *) mod_negotiation: Correctly report 404 instead of 403 for missing files.
+     [Paul Querna]
+
   *)  new hook (request_status) that gets ran in proxy_handler just before 
       the final return.  This gives modules an opportunity to do something 
       based on the proxy status. (minor MMN bump)
