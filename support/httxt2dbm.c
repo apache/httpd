@@ -30,6 +30,9 @@
 #include "apu.h"
 #include "apr_dbm.h"
 
+#if APR_HAVE_STDLIB_H
+#include <stdlib.h> /* for atexit() */
+#endif
 
 static const char *input;
 static const char *output;
