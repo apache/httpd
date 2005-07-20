@@ -2,6 +2,9 @@
 Changes with Apache 2.1.7
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_cache: Run the CACHE_SAVE and CACHE_OUT Filters after other content
+     filters. [Paul Querna]
+
   *) mod_negotiation: Correctly report 404 instead of 403 for missing files.
      [Paul Querna]
 
