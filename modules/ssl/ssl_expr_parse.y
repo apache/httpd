@@ -61,6 +61,7 @@
 %token  T_OP_REG
 %token  T_OP_NRE
 %token  T_OP_IN
+%token  T_OP_OID
 
 %token  T_OP_OR
 %token  T_OP_AND
@@ -75,6 +76,7 @@
 %type   <exVal>   funccall
 %type   <exVal>   regex
 %type   <exVal>   words
+%type   <exVal>   wordlist
 %type   <exVal>   word
 
 %%
@@ -97,10 +99,14 @@ comparison: word T_OP_EQ word            { $$ = ssl_expr_make(op_EQ,  $1, $3); }
           | word T_OP_LE word            { $$ = ssl_expr_make(op_LE,  $1, $3); }
           | word T_OP_GT word            { $$ = ssl_expr_make(op_GT,  $1, $3); }
           | word T_OP_GE word            { $$ = ssl_expr_make(op_GE,  $1, $3); }
-          | word T_OP_IN '{' words '}'   { $$ = ssl_expr_make(op_IN,  $1, $4); }
+          | word T_OP_IN wordlist        { $$ = ssl_expr_make(op_IN,  $1, $3); }
           | word T_OP_REG regex          { $$ = ssl_expr_make(op_REG, $1, $3); }
           | word T_OP_NRE regex          { $$ = ssl_expr_make(op_NRE, $1, $3); }
           ;
+
+wordlist  : T_OP_OID '(' word ')'	 { $$ = ssl_expr_make(op_OidListElement, $3, NULL); }
+          | '{' words '}'                { $$ = $2 ; }
+	  ;
 
 words     : word                         { $$ = ssl_expr_make(op_ListElement, $1, NULL); }
           | words ',' word               { $$ = ssl_expr_make(op_ListElement, $3, $1);   }

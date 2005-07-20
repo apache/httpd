@@ -173,6 +173,7 @@ int yyinput(char *buf, int max_size);
 "not" { return T_OP_NOT; }
 "!"   { return T_OP_NOT; }
 "in"  { return T_OP_IN; }
+[Oo][Ii][Dd] { return T_OP_OID; }
 
  /*
   * Functions
