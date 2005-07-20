@@ -167,7 +167,7 @@ static int dbm_check_auth(request_rec *r)
         t = reqs[x].requirement;
         w = ap_getword_white(r->pool, &t);
  
-        if (!strcmp(w, "file-group")) {
+        if (!cmpstri(w, "file-group")) {
             filegroup = apr_table_get(r->notes, AUTHZ_GROUP_NOTE);
             
             if (!filegroup) {
@@ -179,7 +179,7 @@ static int dbm_check_auth(request_rec *r)
             }
         }
 
-        if (!strcmp(w, "group") || filegroup) {
+        if (!cmpstri(w, "group") || filegroup) {
             const char *realm = ap_auth_name(r);
             const char *groups;
             char *v;
