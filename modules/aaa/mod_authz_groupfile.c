@@ -185,7 +185,7 @@ static int check_user_access(request_rec *r)
         w = ap_getword_white(r->pool, &t);
 
         /* needs mod_authz_owner to be present */
-        if (!cmpstri(w, "file-group")) {
+        if (!strcasecmp(w, "file-group")) {
             filegroup = apr_table_get(r->notes, AUTHZ_GROUP_NOTE);
             
             if (!filegroup) {
@@ -197,7 +197,7 @@ static int check_user_access(request_rec *r)
             }
         }
 
-        if (!cmpstri(w, "group") || filegroup) {
+        if (!strcasecmp(w, "group") || filegroup) {
             required_group = 1; /* remember the requirement */
 
             /* create group table only if actually needed. */

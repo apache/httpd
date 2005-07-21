@@ -77,10 +77,10 @@ static int check_user_access(request_rec *r)
 
         t = reqs[x].requirement;
         w = ap_getword_white(r->pool, &t);
-        if (!cmpstri(w, "valid-user")) {
+        if (!strcasecmp(w, "valid-user")) {
             return OK;
         }
-        if (!cmpstri(w, "user")) {
+        if (!strcasecmp(w, "user")) {
             /* And note that there are applicable requirements 
              * which we consider ourselves the owner of.
              */
