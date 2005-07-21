@@ -1366,14 +1366,8 @@ When using the NOT character
           to map some remote stuff into the namespace of the local
           server. 
 
-          <p>Notice: To use this functionality make sure you have
-          the proxy module compiled into your Apache server
-          program. If you don't know please check whether
-          <code>mod_proxy.c</code> is part of the ``<code>httpd
-          -l</code>'' output. If yes, this functionality is
-          available to mod_rewrite. If not, then you first have to
-          rebuild the <code class="program"><a href="../programs/httpd.html">httpd</a></code> program with mod_proxy
-          enabled.</p>
+          <p>Notice: <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> must be enabled in order
+          to use this flag.</p>
         </li>
 
         <li>
