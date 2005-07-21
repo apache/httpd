@@ -203,7 +203,7 @@ static int cache_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     /* restore status of cached response */
     /* XXX: This exposes a bug in mem_cache, since it does not 
      * restore the status into it's handle. */
-    r->status = cache->handle->status;
+    r->status = cache->handle->cache_obj->info.status;
 
     /* recall_headers() was called in cache_select_url() */
     cache->provider->recall_body(cache->handle, r->pool, bb);
