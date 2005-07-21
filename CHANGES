@@ -2,6 +2,9 @@
 Changes with Apache 2.1.7
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_cache: Restore the HTTP status of cached responses.
+     [Hansjoerg Pehofer <hansjoerg.pehofer uibk.ac.at>]
+
   *) mod_cache: Store varied contents all in the same prefix for a varied URI.
      [Paul Querna]
 
