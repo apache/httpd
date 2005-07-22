@@ -72,8 +72,8 @@
 
 <section id="examples"><title>Examples</title>
     <example>
-      httxt2dbm -i rewritemap.txt -i rewritemap.dbm<br />
-      httxt2dbm -f SDBM -i rewritemap.txt -i rewritemap.dbm<br />
+      httxt2dbm -i rewritemap.txt -o rewritemap.dbm<br />
+      httxt2dbm -f SDBM -i rewritemap.txt -o rewritemap.dbm<br />
     </example>
 </section>
 
