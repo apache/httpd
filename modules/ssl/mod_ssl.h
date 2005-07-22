@@ -49,4 +49,7 @@ APR_DECLARE_OPTIONAL_FN(int, ssl_proxy_enable, (conn_rec *));
 
 APR_DECLARE_OPTIONAL_FN(int, ssl_engine_disable, (conn_rec *));
 
+extern apr_array_header_t *ssl_extlist_by_oid(request_rec *r, const char *oidstr);
+APR_DECLARE_OPTIONAL_FN(apr_array_header_t *, ssl_extlist_by_oid, (request_rec *r, const char *oidstr));
+
 #endif /* __MOD_SSL_H__ */
