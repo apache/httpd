@@ -42,7 +42,7 @@
 <xsl:text># RewriteMap dir2url </xsl:text>
 <xsl:text>txt:/path/to/convenience.map</xsl:text>&lf;
 <xsl:text># RewriteCond ${dir2url:$1} (.+)</xsl:text>&lf;
-<xsl:text># RewriteRule ^/+([^/]+) /manual/%1 [R=301,NE,L]</xsl:text>&lf;&lf;
+<xsl:text># RewriteRule ^/+([^/]+)$ /manual/%1 [R=301,NE,L]</xsl:text>&lf;&lf;
 
 <xsl:apply-templates
     select="document(modulefile)/modulesynopsis[status!='Obsolete']
