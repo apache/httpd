@@ -4,7 +4,7 @@
 # RewriteEngine On
 # RewriteMap dir2url txt:/path/to/convenience.map
 # RewriteCond ${dir2url:$1} (.+)
-# RewriteRule ^/+([^/]+) /manual/%1 [R=301,NE,L]
+# RewriteRule ^/+([^/]+)$ /manual/%1 [R=301,NE,L]
 
 acceptfilter	mod/core.html#acceptfilter
 acceptmutex	mod/mpm_common.html#acceptmutex
