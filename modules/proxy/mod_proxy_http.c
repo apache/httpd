@@ -385,7 +385,7 @@ static apr_status_t stream_reqbody_cl(apr_pool_t *p,
     
     if (bytes_streamed != cl_val) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-                     "proxy: client %s given Content-Length did not match",
+                     "proxy: client %s given Content-Length did not match"
                      " number of body bytes read", r->connection->remote_ip);
         return APR_EOF;
     }
@@ -954,6 +954,9 @@ skip_body:
                                   input_brigade, (old_cl_val != NULL)
                                               || (old_te_val != NULL)
                                               || (bytes_read > 0));
+        break;
+    default:
+        ap_assert(1 != 1);
         break;
     }
     if (status != APR_SUCCESS) {
