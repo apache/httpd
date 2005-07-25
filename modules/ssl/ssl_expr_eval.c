@@ -257,7 +257,6 @@ apr_array_header_t *ssl_extlist_by_oid(request_rec *r, const char *oidstr)
 
 static BOOL ssl_expr_eval_oid(request_rec *r, const char *word, const char *oidstr)
 {
-    SSLConnRec *sslconn = myConnConfig(r->connection);
     int j;
     BOOL result = FALSE;
     apr_array_header_t *oid_array;
