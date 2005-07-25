@@ -94,6 +94,7 @@
 #include "http_log.h"
 #include "http_protocol.h"
 
+#include "mod_ssl.h"
 
 enum special {
     SPECIAL_NOT,
@@ -121,11 +122,7 @@ typedef struct {
 } sei_cfg_rec;
 
 module AP_MODULE_DECLARE_DATA setenvif_module;
-#if (MODULE_MAGIC_NUMBER_MAJOR > 20020903)
-#include "mod_ssl.h"
-#else
-APR_DECLARE_OPTIONAL_FN(apr_array_header_t *, ssl_extlist_by_oid, (request_rec *r, const char *oidstr));
-#endif
+
 static APR_OPTIONAL_FN_TYPE(ssl_extlist_by_oid) *ssl_extlist_by_oid_func = NULL;
 
 /*
@@ -630,8 +627,8 @@ static int match_headers(request_rec *r)
     return DECLINED;
 }
 
-static int
-setenvif_post_config()
+static int setenvif_post_config(apr_pool_t *pconf, apr_pool_t *plog,
+                                apr_pool_t *ptemp, server_rec *s)
 {
     ssl_extlist_by_oid_func = APR_RETRIEVE_OPTIONAL_FN(ssl_extlist_by_oid);
     return OK;
