@@ -486,7 +486,6 @@ static int authz_ldap_check_user_access(request_rec *r)
     char filtbuf[FILTER_LENGTH];
     const char *dn = NULL;
     const char **vals = NULL;
-    const char *type = ap_auth_type(r);
 
 /*
     if (!sec->enabled) {
