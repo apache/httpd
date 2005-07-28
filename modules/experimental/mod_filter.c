@@ -127,7 +127,7 @@ static void filter_trace(conn_rec *c, int debug, const char *fname,
     case 0:        /* normal, operational use */
         return;
     case 1:        /* mod_diagnostics level */
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, fname);
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, "%s", fname);
         for (b = APR_BRIGADE_FIRST(bb);
              b != APR_BRIGADE_SENTINEL(bb);
              b = APR_BUCKET_NEXT(b)) {
