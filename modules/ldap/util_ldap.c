@@ -91,13 +91,15 @@ static void *util_ldap_create_config(apr_pool_t *p, server_rec *s);
                           "\"http://www.w3.org/TR/REC-html40/frameset.dtd\">\n"
 #endif
 
-#define LDAP_CACHE_LOCK() \
-    if (st->util_ldap_cache_lock) \
-      apr_global_mutex_lock(st->util_ldap_cache_lock)
-#define LDAP_CACHE_UNLOCK() \
-    if (st->util_ldap_cache_lock) \
-      apr_global_mutex_unlock(st->util_ldap_cache_lock)
+#define LDAP_CACHE_LOCK() do {                                  \
+    if (st->util_ldap_cache_lock)                               \
+        apr_global_mutex_lock(st->util_ldap_cache_lock);        \
+} while (0)
 
+#define LDAP_CACHE_UNLOCK() do {                                \
+    if (st->util_ldap_cache_lock)                               \
+        apr_global_mutex_unlock(st->util_ldap_cache_lock);      \
+} while (0)
 
 static void util_ldap_strdup (char **str, const char *newstr)
 {
