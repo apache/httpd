@@ -2001,7 +2001,7 @@ static void util_ldap_child_init(apr_pool_t *p, server_rec *s)
     }
 }
 
-command_rec util_ldap_cmds[] = {
+static const command_rec util_ldap_cmds[] = {
     AP_INIT_TAKE1("LDAPSharedCacheSize", util_ldap_set_cache_bytes, 
                   NULL, RSRC_CONF,
                   "Set the size of the shared memory cache (in bytes). Use "
