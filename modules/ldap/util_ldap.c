@@ -55,42 +55,6 @@
 
 module AP_MODULE_DECLARE_DATA ldap_module;
 
-static int util_ldap_handler(request_rec *r);
-static void *util_ldap_create_config(apr_pool_t *p, server_rec *s);
-
-
-/*
- * Some definitions to help between various versions of apache.
- */
-
-#ifndef DOCTYPE_HTML_2_0
-#define DOCTYPE_HTML_2_0  "<!DOCTYPE HTML PUBLIC \"-//IETF//" \
-                          "DTD HTML 2.0//EN\">\n"
-#endif
-
-#ifndef DOCTYPE_HTML_3_2
-#define DOCTYPE_HTML_3_2  "<!DOCTYPE HTML PUBLIC \"-//W3C//" \
-                          "DTD HTML 3.2 Final//EN\">\n"
-#endif
-
-#ifndef DOCTYPE_HTML_4_0S
-#define DOCTYPE_HTML_4_0S "<!DOCTYPE HTML PUBLIC \"-//W3C//" \
-                          "DTD HTML 4.0//EN\"\n" \
-                          "\"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-#endif
-
-#ifndef DOCTYPE_HTML_4_0T
-#define DOCTYPE_HTML_4_0T "<!DOCTYPE HTML PUBLIC \"-//W3C//" \
-                          "DTD HTML 4.0 Transitional//EN\"\n" \
-                          "\"http://www.w3.org/TR/REC-html40/loose.dtd\">\n"
-#endif
-
-#ifndef DOCTYPE_HTML_4_0F
-#define DOCTYPE_HTML_4_0F "<!DOCTYPE HTML PUBLIC \"-//W3C//" \
-                          "DTD HTML 4.0 Frameset//EN\"\n" \
-                          "\"http://www.w3.org/TR/REC-html40/frameset.dtd\">\n"
-#endif
-
 #define LDAP_CACHE_LOCK() do {                                  \
     if (st->util_ldap_cache_lock)                               \
         apr_global_mutex_lock(st->util_ldap_cache_lock);        \
