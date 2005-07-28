@@ -388,6 +388,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewcvs.cgi?rev=209539&view=rev
         +1: pquerna
 
+     *) mod_ldap: Fix for use of OpenLDAP < 2.2.21
+        (regression since 2.0.54)
+        http://people.apache.org/~jorton/ap_ldapver.diff
+        +1: jorton
+
+     *) mod_ldap: Fix cache corruption case.
+        http://svn.apache.org/viewcvs?rev=225746&view=rev
+        PR: 34209
+        +1: jorton
+
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
     *) Remove LDAP toolkit specific code from util_ldap and mod_auth_ldap.
