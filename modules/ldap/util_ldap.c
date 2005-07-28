@@ -73,8 +73,7 @@ static void util_ldap_strdup (char **str, const char *newstr)
     }
 
     if (newstr) {
-        *str = calloc(1, strlen(newstr)+1);
-        strcpy (*str, newstr);
+        *str = strdup(newstr);
     }
 }
 
@@ -1299,7 +1298,7 @@ static const char *util_ldap_set_cache_bytes(cmd_parms *cmd, void *dummy,
 
     st->cache_bytes = atol(bytes);
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, cmd->server, 
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server, 
                  "[%" APR_PID_T_FMT "] ldap cache: Setting shared memory "
                  " cache size to %" APR_SIZE_T_FMT " bytes.", 
                  getpid(), st->cache_bytes);
@@ -1321,7 +1320,7 @@ static const char *util_ldap_set_cache_file(cmd_parms *cmd, void *dummy,
         st->cache_file = NULL;
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, cmd->server, 
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server, 
                  "LDAP cache: Setting shared memory cache file to %s bytes.", 
                  st->cache_file);
 
@@ -1337,7 +1336,7 @@ static const char *util_ldap_set_cache_ttl(cmd_parms *cmd, void *dummy,
 
     st->search_cache_ttl = atol(ttl) * 1000000;
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, cmd->server, 
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server, 
                  "[%d] ldap cache: Setting cache TTL to %ld microseconds.",
                  getpid(), st->search_cache_ttl);
 
@@ -1357,7 +1356,7 @@ static const char *util_ldap_set_cache_entries(cmd_parms *cmd, void *dummy,
         st->search_cache_size = 0;
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, cmd->server, 
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server, 
                  "[%d] ldap cache: Setting search cache size to %ld entries.",
                  getpid(), st->search_cache_size);
 
@@ -1373,7 +1372,7 @@ static const char *util_ldap_set_opcache_ttl(cmd_parms *cmd, void *dummy,
 
     st->compare_cache_ttl = atol(ttl) * 1000000;
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, cmd->server, 
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server, 
                  "[%d] ldap cache: Setting operation cache TTL to %ld microseconds.", 
                  getpid(), st->compare_cache_ttl);
 
@@ -1392,7 +1391,7 @@ static const char *util_ldap_set_opcache_entries(cmd_parms *cmd, void *dummy,
         st->compare_cache_size = 0;
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, cmd->server, 
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server, 
                  "[%d] ldap cache: Setting operation cache size to %ld "
                  "entries.", getpid(), st->compare_cache_size);
 
@@ -1523,7 +1522,7 @@ static const char *util_ldap_set_trusted_global_cert(cmd_parms *cmd,
         return "Certificate type was not specified.";
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, cmd->server,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server,
                       "LDAP: SSL trusted global cert - %s (type %s)",
                        file, type);
 
@@ -1605,7 +1604,7 @@ static const char *util_ldap_set_trusted_client_cert(cmd_parms *cmd,
         return "Certificate type was not specified.";
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, cmd->server,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server,
                       "LDAP: SSL trusted client cert - %s (type %s)",
                        file, type);
 
@@ -1652,7 +1651,7 @@ static const char *util_ldap_set_trusted_mode(cmd_parms *cmd, void *dummy,
     (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config,
                                               &ldap_module);
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, cmd->server,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server,
                       "LDAP: SSL trusted mode - %s",
                        mode);
 
@@ -1683,7 +1682,7 @@ static const char *util_ldap_set_verify_srv_cert(cmd_parms *cmd,
     (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config,
                                               &ldap_module);
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, cmd->server,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server,
                       "LDAP: SSL verify server certificate - %s", 
                       mode?"TRUE":"FALSE");
 
@@ -1709,7 +1708,7 @@ static const char *util_ldap_set_connection_timeout(cmd_parms *cmd,
 #ifdef LDAP_OPT_NETWORK_TIMEOUT
     st->connectionTimeout = atol(ttl);
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, cmd->server, 
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server, 
                  "[%d] ldap connection: Setting connection timeout to "
                  "%ld seconds.", getpid(), st->connectionTimeout);
 #else
@@ -1876,7 +1875,7 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
             st_vhost->cache_shm = st->cache_shm;
             st_vhost->cache_rmm = st->cache_rmm;
             st_vhost->cache_file = st->cache_file;
-            ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, result, s, 
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, result, s, 
                          "LDAP merging Shared Cache conf: shm=0x%pp rmm=0x%pp "
                          "for VHOST: %s", st->cache_shm, st->cache_rmm, 
                          s_vhost->server_hostname);
@@ -1957,7 +1956,7 @@ static void util_ldap_child_init(apr_pool_t *p, server_rec *s)
         return;
     }
     else {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s, 
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, 
                      "Initialisation of global mutex %s in child process %"
                      APR_PID_T_FMT
                      " successful.",
