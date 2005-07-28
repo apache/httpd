@@ -228,7 +228,8 @@ struct proxy_conn_pool {
 #define PROXY_WORKER_IGNORE_ERRORS  0x0002
 #define PROXY_WORKER_IN_SHUTDOWN    0x0010
 #define PROXY_WORKER_DISABLED       0x0020
-#define PROXY_WORKER_IN_ERROR       0x0040
+#define PROXY_WORKER_STOPPED        0x0040
+#define PROXY_WORKER_IN_ERROR       0x0080
 
 #define PROXY_WORKER_IS_USABLE(f)   (!((f)->s->status & 0x00F0))
 
@@ -260,6 +261,7 @@ struct proxy_worker {
     const char      *hostname;  /* remote backend address */
     const char      *route;     /* balancing route */
     const char      *redirect;  /* temporary balancing redirection route */
+    int             status;     /* temporary worker status */
     apr_port_t      port;
     int             min;        /* Desired minimum number of available connections */
     int             smax;       /* Soft maximum on the total number of connections */

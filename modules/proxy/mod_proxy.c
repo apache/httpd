@@ -181,6 +181,43 @@ static const char *set_worker_param(apr_pool_t *p,
             return "Redirect length must be < 64 characters";
         worker->redirect = apr_pstrdup(p, val);
     }
+    else if (!strcasecmp(key, "status")) {
+        const char *v;
+        int mode = 1;
+        /* Worker status.
+         */
+        for (v = val; *v; v++) {
+            if (*v == '+') {
+                mode = 1;
+                v++;    
+            }
+            else if (*v == '-') {
+                mode = 0;
+                v++;    
+            }
+            if (*v == 'D' || *v == 'd') {
+                if (mode)
+                    worker->status |= PROXY_WORKER_DISABLED;
+                else
+                    worker->status &= ~PROXY_WORKER_DISABLED;                    
+            }
+            else if (*v == 'S' || *v == 's') {
+                if (mode)
+                    worker->status |= PROXY_WORKER_STOPPED;
+                else
+                    worker->status &= ~PROXY_WORKER_STOPPED;                    
+            }
+            else if (*v == 'E' || *v == 'e') {
+                if (mode)
+                    worker->status |= PROXY_WORKER_IN_ERROR;
+                else
+                    worker->status &= ~PROXY_WORKER_IN_ERROR;                    
+            }
+            else {
+                return "Unknow status parameter option";    
+            }
+        }
+    }    
     else {
         return "unknown Worker parameter";
     }

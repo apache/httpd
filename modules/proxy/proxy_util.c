@@ -1620,7 +1620,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
              worker->id, getpid(), worker->hostname);
     }
     if (rv == APR_SUCCESS)
-        worker->s->status |= PROXY_WORKER_INITIALIZED;
+        worker->s->status |= (worker->status | PROXY_WORKER_INITIALIZED);
     return rv;
 }
 
