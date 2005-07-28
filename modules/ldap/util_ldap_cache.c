@@ -378,10 +378,7 @@ void util_ldap_dn_compare_node_display(request_rec *r, util_ald_cache_t *cache, 
 
 
 /* ------------------------------------------------------------------ */
-apr_status_t util_ldap_cache_child_kill(void *data);
-apr_status_t util_ldap_cache_module_kill(void *data);
-
-apr_status_t util_ldap_cache_module_kill(void *data)
+static apr_status_t util_ldap_cache_module_kill(void *data)
 {
     util_ldap_state_t *st = (util_ldap_state_t *)data;
 
