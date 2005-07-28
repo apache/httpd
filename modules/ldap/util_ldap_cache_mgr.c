@@ -356,7 +356,7 @@ void util_ald_destroy_cache(util_ald_cache_t *cache)
 
 void *util_ald_cache_fetch(util_ald_cache_t *cache, void *payload)
 {
-    int hashval;
+    unsigned long hashval;
     util_cache_node_t *p;
 
     if (cache == NULL)
@@ -384,7 +384,7 @@ void *util_ald_cache_fetch(util_ald_cache_t *cache, void *payload)
  */
 void *util_ald_cache_insert(util_ald_cache_t *cache, void *payload)
 {
-    int hashval;
+    unsigned long hashval;
     util_cache_node_t *node;
 
     /* sanity check */
@@ -433,7 +433,7 @@ void *util_ald_cache_insert(util_ald_cache_t *cache, void *payload)
 
 void util_ald_cache_remove(util_ald_cache_t *cache, void *payload)
 {
-    int hashval;
+    unsigned long hashval;
     util_cache_node_t *p, *q;
   
     if (cache == NULL)
