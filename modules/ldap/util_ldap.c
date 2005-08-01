@@ -1817,7 +1817,6 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
         if (st->cache_file) {
             char *lck_file = apr_pstrcat(st->pool, st->cache_file, ".lck", 
                                          NULL);
-            apr_file_remove(st->cache_file, ptemp);
             apr_file_remove(lck_file, ptemp);
         }
 #endif

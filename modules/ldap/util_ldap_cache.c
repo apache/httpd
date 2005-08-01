@@ -391,9 +391,6 @@ static apr_status_t util_ldap_cache_module_kill(void *data)
     if (st->cache_shm != NULL) {
         apr_status_t result = apr_shm_destroy(st->cache_shm);
         st->cache_shm = NULL;
-        if (st->cache_file) {
-            apr_file_remove(st->cache_file, st->pool);
-        }
         return result;
     }
 #endif
@@ -406,16 +403,12 @@ apr_status_t util_ldap_cache_init(apr_pool_t *pool, util_ldap_state_t *st)
     apr_status_t result;
     apr_size_t size;
 
+    /* Remove any existing shm segment with this name. */
+    apr_shm_remove(st->cache_file, st->pool);
+
     size = APR_ALIGN_DEFAULT(st->cache_bytes);
 
     result = apr_shm_create(&st->cache_shm, size, st->cache_file, st->pool);
-    if (result == APR_EEXIST) {
-        /*
-         * The cache could have already been created (i.e. we may be a child process).  See
-         * if we can attach to the existing shared memory
-         */
-        result = apr_shm_attach(&st->cache_shm, st->cache_file, st->pool);
-    } 
     if (result != APR_SUCCESS) {
         return result;
     }
