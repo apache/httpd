@@ -80,7 +80,6 @@ void util_ldap_url_node_display(request_rec *r, util_ald_cache_t *cache, void *n
 {
     util_url_node_t *node = n;
     char date_str[APR_CTIME_LEN+1];
-    char *buf;
     const char *type_str;
     util_ald_cache_t *cache_node;
     int x;
@@ -108,24 +107,22 @@ void util_ldap_url_node_display(request_rec *r, util_ald_cache_t *cache, void *n
         else 
             date_str[0] = 0;
 
-        buf = apr_psprintf(r->pool, 
-                 "<tr valign='top'>"
-                 "<td nowrap>%s (%s)</td>"
-                 "<td nowrap>%ld</td>"
-                 "<td nowrap>%ld</td>"
-                 "<td nowrap>%ld</td>"
-                 "<td nowrap>%ld</td>"
-                 "<td nowrap>%s</td>"
-                 "<tr>",
-             node->url,
-             type_str,
-             cache_node->size,
-             cache_node->maxentries,
-             cache_node->numentries,
-             cache_node->fullmark,
-             date_str);
-    
-        ap_rputs(buf, r);
+        ap_rprintf(r, 
+                   "<tr valign='top'>"
+                   "<td nowrap>%s (%s)</td>"
+                   "<td nowrap>%ld</td>"
+                   "<td nowrap>%ld</td>"
+                   "<td nowrap>%ld</td>"
+                   "<td nowrap>%ld</td>"
+                   "<td nowrap>%s</td>"
+                   "</tr>",
+                   node->url,
+                   type_str,
+                   cache_node->size,
+                   cache_node->maxentries,
+                   cache_node->numentries,
+                   cache_node->fullmark,
+                   date_str);
     }
 
 }
@@ -222,21 +219,18 @@ void util_ldap_search_node_display(request_rec *r, util_ald_cache_t *cache, void
 {
     util_search_node_t *node = n;
     char date_str[APR_CTIME_LEN+1];
-    char *buf;
 
     apr_ctime(date_str, node->lastbind);
 
-    buf = apr_psprintf(r->pool, 
-             "<tr valign='top'>"
-             "<td nowrap>%s</td>"
-             "<td nowrap>%s</td>"
-             "<td nowrap>%s</td>"
-             "<tr>",
-         node->username,
-         node->dn,
-         date_str);
-
-    ap_rputs(buf, r);
+    ap_rprintf(r,
+               "<tr valign='top'>"
+               "<td nowrap>%s</td>"
+               "<td nowrap>%s</td>"
+               "<td nowrap>%s</td>"
+               "</tr>",
+               node->username,
+               node->dn,
+               date_str);
 }
 
 /* ------------------------------------------------------------------ */
@@ -291,7 +285,7 @@ void util_ldap_compare_node_display(request_rec *r, util_ald_cache_t *cache, voi
 {
     util_compare_node_t *node = n;
     char date_str[APR_CTIME_LEN+1];
-    char *buf, *cmp_result;
+    char *cmp_result;
 
     apr_ctime(date_str, node->lastcompare);
 
@@ -305,21 +299,19 @@ void util_ldap_compare_node_display(request_rec *r, util_ald_cache_t *cache, voi
         cmp_result = apr_itoa(r->pool, node->result);
     }
 
-    buf = apr_psprintf(r->pool, 
-             "<tr valign='top'>"
-             "<td nowrap>%s</td>"
-             "<td nowrap>%s</td>"
-             "<td nowrap>%s</td>"
-             "<td nowrap>%s</td>"
-             "<td nowrap>%s</td>"
-             "<tr>",
-         node->dn,
-         node->attrib,
-         node->value,
-         date_str,
-         cmp_result);
-
-    ap_rputs(buf, r);
+    ap_rprintf(r, 
+               "<tr valign='top'>"
+               "<td nowrap>%s</td>"
+               "<td nowrap>%s</td>"
+               "<td nowrap>%s</td>"
+               "<td nowrap>%s</td>"
+               "<td nowrap>%s</td>"
+               "</tr>",
+               node->dn,
+               node->attrib,
+               node->value,
+               date_str,
+               cmp_result);
 }
 
 /* ------------------------------------------------------------------ */
@@ -367,17 +359,14 @@ void util_ldap_dn_compare_node_free(util_ald_cache_t *cache, void *n)
 void util_ldap_dn_compare_node_display(request_rec *r, util_ald_cache_t *cache, void *n)
 {
     util_dn_compare_node_t *node = n;
-    char *buf;
 
-    buf = apr_psprintf(r->pool, 
-             "<tr valign='top'>"
-             "<td nowrap>%s</td>"
-             "<td nowrap>%s</td>"
-             "<tr>",
-         node->reqdn,
-         node->dn);
-
-    ap_rputs(buf, r);
+    ap_rprintf(r, 
+               "<tr valign='top'>"
+               "<td nowrap>%s</td>"
+               "<td nowrap>%s</td>"
+               "</tr>",
+               node->reqdn,
+               node->dn);
 }
 
 
