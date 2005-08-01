@@ -29,10 +29,6 @@
 
 #if APR_HAS_LDAP
 
-#if APR_HAS_SHARED_MEMORY
-#define MODLDAP_SHMEM_CACHE "/tmp/mod_ldap_cache"
-#endif
-
 /* ------------------------------------------------------------------ */
 
 unsigned long util_ldap_url_node_hash(void *n)
