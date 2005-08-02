@@ -396,8 +396,10 @@ apr_status_t util_ldap_cache_init(apr_pool_t *pool, util_ldap_state_t *st)
     apr_status_t result;
     apr_size_t size;
 
-    /* Remove any existing shm segment with this name. */
-    apr_shm_remove(st->cache_file, st->pool);
+    if (st->cache_file) {
+        /* Remove any existing shm segment with this name. */
+        apr_shm_remove(st->cache_file, st->pool);
+    }
 
     size = APR_ALIGN_DEFAULT(st->cache_bytes);
 
