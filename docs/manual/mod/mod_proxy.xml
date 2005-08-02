@@ -800,7 +800,7 @@ proxied server</description>
     <p>Note that this <directive>ProxyPassReverse</directive> directive can
     also be used in conjunction with the proxy pass-through feature
     (<code>RewriteRule ...  [P]</code>) from <module>mod_rewrite</module>
-    because its doesn't depend on a corresponding <directive module="mod_proxy"
+    because it doesn't depend on a corresponding <directive module="mod_proxy"
     >ProxyPass</directive> directive.</p>
 
     <p>When used inside a <directive type="section" module="core"
