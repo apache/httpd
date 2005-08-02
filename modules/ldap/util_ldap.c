@@ -1790,7 +1790,6 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
                                  apr_pool_t *ptemp, server_rec *s)
 {
     apr_status_t result;
-    char buf[MAX_STRING_LEN];
     server_rec *s_vhost;
     util_ldap_state_t *st_vhost;
 
@@ -1831,10 +1830,9 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
 #endif
         result = util_ldap_cache_init(p, st);
         if (result != APR_SUCCESS) {
-            apr_strerror(result, buf, sizeof(buf));
             ap_log_error(APLOG_MARK, APLOG_ERR, result, s,
-                         "LDAP cache: error while creating a shared memory "
-                         "segment: %s", buf);
+                         "LDAP cache: could not create shared memory segment");
+            return DONE;
         }
 
 
@@ -1897,7 +1895,7 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
         apr_ldap_err_t *result = NULL;
         apr_ldap_info(p, &(result));
         if (result != NULL) {
-            ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s, "%s", result->reason);
+            ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "%s", result->reason);
         }
     }
 
@@ -1921,17 +1919,15 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
 
     if (APR_SUCCESS == rc) {
         st->ssl_supported = 1;
-        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s,
-                         "LDAP: SSL support available" );
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,
+                     "LDAP: SSL support available" );
     }
     else {
         st->ssl_supported = 0;
-        if (NULL != result_err) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, "%s", 
-                         result_err->reason);
-        }
-        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s, 
-                         "LDAP: SSL support unavailable" );
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, 
+                     "LDAP: SSL support unavailable%s%s",
+                     result_err ? ": " : "",
+                     result_err ? result_err->reason : "");
     }
 
     return(OK);
@@ -1951,14 +1947,6 @@ static void util_ldap_child_init(apr_pool_t *p, server_rec *s)
         ap_log_error(APLOG_MARK, APLOG_CRIT, sts, s,
                      "Failed to initialise global mutex %s in child process %"
                      APR_PID_T_FMT ".",
-                     st->lock_file, getpid());
-        return;
-    }
-    else {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, 
-                     "Initialisation of global mutex %s in child process %"
-                     APR_PID_T_FMT
-                     " successful.",
                      st->lock_file, getpid());
     }
 }
