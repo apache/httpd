@@ -325,7 +325,7 @@ LDAP_DECLARE(int) util_ldap_connection_open(request_rec *r,
         }
 
         if (st->connectionTimeout >= 0) {
-            rc = ldap_set_option(NULL, LDAP_OPT_NETWORK_TIMEOUT, (void *)&timeOut);
+            rc = ldap_set_option(ldc->ldap, LDAP_OPT_NETWORK_TIMEOUT, (void *)&timeOut);
             if (APR_SUCCESS != rc) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                                  "LDAP: Could not set the connection timeout" );

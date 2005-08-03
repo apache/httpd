@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.0.55
 
+  *) mod_ldap: Avoid segfaults when opening connections if using a version
+     of OpenLDAP older than 2.2.21.  [Brad Nicholes]
+
   *) mod_ssl: Fix build with OpenSSL 0.9.8.  PR 35757.  [William Rowe]
 
   *) SECURITY: CAN-2005-2088
