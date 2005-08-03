@@ -391,18 +391,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      *) mod_ldap: Fix cache corruption case.
         http://svn.apache.org/viewcvs?rev=225746&view=rev
         PR: 34209
-        +1: jorton, bnicholes
+        +1: jorton, bnicholes, minfrin
 
      *) mod_ldap: Use the correct shm segment size, fail on
         apr_rmm_init errors.
         http://svn.apache.org/viewcvs?rev=225753&view=rev
-        +1: jorton
+        +1: jorton, minfrin
 
      *) mod_ldap: Initialize mutex permissions properly so that
         locking actually works.
         http://svn.apache.org/viewcvs?rev=105412&view=rev
         rediff for 2.0.x: http://people.apache.org/~jorton/ap_ldapmutex20.diff
-        +1: jorton
+        +1: jorton, minfrin
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
