@@ -1841,9 +1841,7 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
             st->lock_file = apr_pstrcat(st->pool, st->cache_file, ".lck", 
                                         NULL);
         }
-        else
 #endif
-            st->lock_file = ap_server_root_relative(st->pool, tmpnam(NULL));
 
         result = apr_global_mutex_create(&st->util_ldap_cache_lock, 
                                          st->lock_file, APR_LOCK_DEFAULT, 
