@@ -390,13 +390,24 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
      *) mod_ldap: Fix for use of OpenLDAP < 2.2.21
         (regression since 2.0.54)
-        http://people.apache.org/~jorton/ap_ldapver.diff
-        +1: jorton, bnicholes
+        http://people.apache.org/~jorton/ap_ldapver2.diff
+        +1: jorton
 
      *) mod_ldap: Fix cache corruption case.
         http://svn.apache.org/viewcvs?rev=225746&view=rev
         PR: 34209
         +1: jorton, bnicholes
+
+     *) mod_ldap: Use the correct shm segment size, fail on
+        apr_rmm_init errors.
+        http://svn.apache.org/viewcvs?rev=225753&view=rev
+        +1: jorton
+
+     *) mod_ldap: Initialize mutex permissions properly so that
+        locking actually works.
+        http://svn.apache.org/viewcvs?rev=105412&view=rev
+        rediff for 2.0.x: http://people.apache.org/~jorton/ap_ldapmutex20.diff
+        +1: jorton
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
