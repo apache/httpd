@@ -373,7 +373,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      *) mod_ldap: Use the correct shm segment size, fail on
         apr_rmm_init errors.
         http://svn.apache.org/viewcvs?rev=225753&view=rev
-        +1: jorton, minfrin
+        +1: jorton, minfrin, bnicholes
 
      *) mod_ldap: Initialize mutex permissions properly so that
         locking actually works.
