@@ -402,11 +402,18 @@ void *util_ald_cache_insert(util_ald_cache_t *cache, void *payload)
         return NULL;
     }
 
+    /* Take a copy of the payload before proceeeding. */
+    payload = (*cache->copy)(cache, payload);
+    if (!payload) {
+        util_ald_free(cache, node);
+        return NULL;
+    }
+
     /* populate the entry */
     cache->inserts++;
     hashval = (*cache->hash)(payload) % cache->size;
     node->add_time = apr_time_now();
-    node->payload = (*cache->copy)(cache, payload);
+    node->payload = payload;
     node->next = cache->nodes[hashval];
     cache->nodes[hashval] = node;
 

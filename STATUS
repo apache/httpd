@@ -378,11 +378,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewcvs.cgi?rev=209539&view=rev
         +1: pquerna
 
-     *) mod_ldap: Fix cache corruption case.
-        http://svn.apache.org/viewcvs?rev=225746&view=rev
-        PR: 34209
-        +1: jorton, bnicholes, minfrin
-
      *) mod_ldap: Use the correct shm segment size, fail on
         apr_rmm_init errors.
         http://svn.apache.org/viewcvs?rev=225753&view=rev
