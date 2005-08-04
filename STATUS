@@ -199,16 +199,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 
        +1: jim, pquerna, wrowe
 
-    *) Fix fd leak in piped logging code, fix error handling, and remove
-       dead errno handling.
-         http://svn.apache.org/viewcvs?rev=170441&view=rev
-         http://svn.apache.org/viewcvs?rev=170537&view=rev
-         http://svn.apache.org/viewcvs?rev=170719&view=rev
-       all-in-one patch incremental to the PR 26467 fix:
-         http://people.apache.org/~jorton/ap_pipedlog2.diff
-       +1: jorton, trawick, wrowe
-       [yes, I will write a CHANGES entry too]
-
     *) several changes to improve logging of connection-oriented errors, including
        ap_log_cerror() API (needs minor bump in addition to changes below)
          http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/core.c?r1=1.289&r2=1.291

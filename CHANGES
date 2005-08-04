@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.0.55
 
+  *) Fix a file descriptor leak when starting piped loggers.  [Joe Orton]
+
   *) mod_ldap: Avoid segfaults when opening connections if using a version
      of OpenLDAP older than 2.2.21.  [Brad Nicholes]
 
