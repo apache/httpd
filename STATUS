@@ -191,14 +191,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ please append new backports at the end of this list not the top. ]
 
-    *) ap_proxy_canonenc() is over-eager in handling '%' for reverse
-       proxies (PR: 29554).
-         Index: modules/proxy/proxy_util.c
-             -       if (isenc && ch == '%') {
-             +       if (isenc && (isenc != PROXYREQ_REVERSE) && ch == '%') {
-
-       +1: jim, pquerna, wrowe
-
     *) several changes to improve logging of connection-oriented errors, including
        ap_log_cerror() API (needs minor bump in addition to changes below)
          http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/core.c?r1=1.289&r2=1.291
