@@ -182,12 +182,18 @@ static const char *get_addresses(apr_pool_t *p, const char *w_,
 
     if (strcmp(host, "*") == 0) {
         rv = apr_sockaddr_info_get(&my_addr, "0.0.0.0", APR_INET, port, 0, p);
-        ap_assert(rv == APR_SUCCESS); /* must be bug or out of storage */
+        if (rv) {
+            return "Cannot not resolve address '0.0.0.0' -- "
+                "check resolver configuration.";
+        }
     }
     else if (strcasecmp(host, "_default_") == 0
         || strcmp(host, "255.255.255.255") == 0) {
         rv = apr_sockaddr_info_get(&my_addr, "255.255.255.255", APR_INET, port, 0, p);
-        ap_assert(rv == APR_SUCCESS); /* must be bug or out of storage */
+        if (rv) {
+            return "Cannot resolve address '255.255.255.255' -- "
+                "check resolver configuration.";
+        }
     }
     else {
         rv = apr_sockaddr_info_get(&my_addr, host, APR_UNSPEC, port, 0, p);
