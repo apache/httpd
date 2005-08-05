@@ -7,7 +7,8 @@ Changes with Apache 2.0.55
   *) mod_ldap: Fix a possible crash in shared memory cache handling.
      PR 34209.  [Joe Orton]
 
-  *) Fix a file descriptor leak when starting piped loggers.  [Joe Orton]
+  *) Fix a file descriptor leak when starting piped loggers.  PR 33748. 
+     [Joe Orton]
 
   *) mod_ldap: Avoid segfaults when opening connections if using a version
      of OpenLDAP older than 2.2.21.  [Brad Nicholes]
