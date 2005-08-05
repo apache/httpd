@@ -2,7 +2,7 @@
 Changes with Apache 2.0.55
 
   *) mod_proxy: Fix over-eager handling of '%' for reverse proxies.
-     PR 29554. [Jim Jagielski]
+     PR 15207.  [Jim Jagielski]
 
   *) mod_ldap: Fix a possible crash in shared memory cache handling.
      PR 34209.  [Joe Orton]
