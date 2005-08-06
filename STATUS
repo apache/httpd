@@ -104,14 +104,23 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
-    * Various fixes to T-E and C-L processing from trunk
+    * Various fixes to T-E and C-L processing from trunk and
+      backport this fix from 2.1-dev:
+
+          http://people.apache.org/~wrowe/httpd-2.0.54-proxy-request.patch
+
+
+      proxy HTTP: Rework the handling of request bodies to handle
+      chunked input and input filters which modify content length, and
+      avoid spooling arbitrary-sized request bodies in memory.
+      PR: 15859 [Jeff Trawick]
 
       Refactor mod_proxy_http.c's Transfer-Encoding/Content-Length elections
       since they didn't follow RFC 2616, in fact didn't seem to make much
       sense at all.  Patch to migrate request-body-handling from trunk/ based
       on 2.1-dev request body handling behavior (although just a bit more
       conservative on the side of C-L spooling)...
-          http://people.apache.org/~wrowe/httpd-2.0-proxy-request-3.patch
+
       Revert r219061 to properly test this patch, as r219061 masks the
       underlying bug (although it is a -good- patch in and of itself).
 
@@ -122,10 +131,30 @@ RELEASE SHOWSTOPPERS:
            the unrelated stuff removed.
 
            unrelated change: s/apr_strnatcasecmp/strcasecmp/
+             wrowe notes: for correctness, will commit seperately
            unrelated change: s/b/bb/ on variable+parameter names a few times
+             wrowe notes: for legibility, will commit seperately
            unrelated change: whitespaces changes all over the shop
+             wrowe notes: for legibility, will commit seperately
            spurious change:? send_request_body() appears to have been inlined
+             wrowe notes: to better integrate request handling, both performance
+                          and legibility of the resulting code, matching trunk/
+                          This is moot as the original backport is reverted.
            unrelated change: Via header handling
+             wrowe notes: per the current mod_proxy_http.c behavior in trunk,
+                          this request passing issue too should be fixed.
+                          Can commit this seperately
+
+           wrowe offers; this is a backport of cumulative changes, yes it's
+           not unit by unit, as it is ment to *closely* reflect the current
+           state of trunk/, to help developers identify what has been fixed
+           in 2.0, and what is not in sync with trunk/.  If you prefer, some
+           of the simple changes you mention, strcasecmp, bb, whitespace, will
+           be layered one-at-a-time to improve the legibility of history.
+           However, it was clearly impossible for most devs to even review the
+           current state of code, never mind the patch.  This is the net-total
+           change, as opposed to expecting developers to layer a set of four
+           or five patches.
 
          trawick noted on list: we elected C-L not for efficiency, but because
                  it's the most widely supported [paraphrasing]
@@ -140,7 +169,9 @@ RELEASE SHOWSTOPPERS:
          wrowe   adds; After testing, I've determined one brigade isn't enough,
                  so I've extended this to a loop up to MAX_MEM_SPOOL, we will
                  fetch up enough body to fill MAX_MEM_SPOOL and hopefully
-                 hit the C-L code path most of the time.
+                 hit the C-L code path most of the time.  There is a small pad
+                 in case an input filter cannot process enough of the body as
+                 a single 'unit' and refuses to proceed without a larger buffer.
 
          trawick We are counting bytes in stream_reqbody_cl but filters can
                  change the size? [p]
@@ -167,25 +198,11 @@ RELEASE SHOWSTOPPERS:
                  the issues of correctly sending the body and choosing the
                  transport flavor.
 
-    * http://svn.apache.org/viewcvs?rev=171205&view=rev [committed]
-      backport this fix from 2.1-dev:
-      proxy HTTP: Rework the handling of request bodies to handle
-      chunked input and input filters which modify content length, and
-      avoid spooling arbitrary-sized request bodies in memory.
-      PR: 15859
-
-        +1 trawick, jerenkrantz, jim
-        -1 wrowe
-           This patch needs to be reverted or ammended by the patch above;
-           this resulting code is more complex, yet equally faulty in it's
-           C-L/T-E elections for a number of specific cases.  No opinion
-           between the choice of reverting and re-backporting, or simply
-           patching-the-patch.
-
-    * TRACE must not have a request body per RFC2616; see the -trace.patch
-      below for one of two alternatives.  The other alternative; simply
-      hack mod_proxy.c to reject TRACE when a body is seen, again see that
-      -trace.patch for an illustration.
+    * TRACE must not have a request body per RFC2616; see the 
+      http://people.apache.org/~wrowe/httpd-2.0-trace.patch below for one of two 
+      alternatives.  The other alternative; simply hack mod_proxy.c to reject 
+      TRACE when a body is seen, although wrowe believes the whole solution is
+      the better option.
 
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
