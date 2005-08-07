@@ -1014,20 +1014,20 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
              || headers_in[counter].val == NULL
 
             /* Already sent */
-             || !apr_strnatcasecmp(headers_in[counter].key, "Host")
+             || !strcasecmp(headers_in[counter].key, "Host")
 
             /* Clear out hop-by-hop request headers not to send
              * RFC2616 13.5.1 says we should strip these headers
              */
-             || !apr_strnatcasecmp(headers_in[counter].key, "Keep-Alive")
-             || !apr_strnatcasecmp(headers_in[counter].key, "TE")
-             || !apr_strnatcasecmp(headers_in[counter].key, "Trailer")
-             || !apr_strnatcasecmp(headers_in[counter].key, "Transfer-Encoding")
-             || !apr_strnatcasecmp(headers_in[counter].key, "Upgrade")
+             || !strcasecmp(headers_in[counter].key, "Keep-Alive")
+             || !strcasecmp(headers_in[counter].key, "TE")
+             || !strcasecmp(headers_in[counter].key, "Trailer")
+             || !strcasecmp(headers_in[counter].key, "Transfer-Encoding")
+             || !strcasecmp(headers_in[counter].key, "Upgrade")
 
             /* We'll add appropriate Content-Length later, if appropriate.
              */
-             || !apr_strnatcasecmp(headers_in[counter].key, "Content-Length")
+             || !strcasecmp(headers_in[counter].key, "Content-Length")
 
             /* XXX: @@@ FIXME: "Proxy-Authorization" should *only* be 
              * suppressed if THIS server requested the authentication,
@@ -1038,18 +1038,18 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
              * code itself, not here. This saves us having to signal
              * somehow whether this request was authenticated or not.
              */
-             || !apr_strnatcasecmp(headers_in[counter].key,"Proxy-Authorization")
-             || !apr_strnatcasecmp(headers_in[counter].key,"Proxy-Authenticate")) {
+             || !strcasecmp(headers_in[counter].key,"Proxy-Authorization")
+             || !strcasecmp(headers_in[counter].key,"Proxy-Authenticate")) {
             continue;
         }
         /* for sub-requests, ignore freshness/expiry headers */
         if (r->main) {
             if (headers_in[counter].key == NULL || headers_in[counter].val == NULL
-                 || !apr_strnatcasecmp(headers_in[counter].key, "If-Match")
-                 || !apr_strnatcasecmp(headers_in[counter].key, "If-Modified-Since")
-                 || !apr_strnatcasecmp(headers_in[counter].key, "If-Range")
-                 || !apr_strnatcasecmp(headers_in[counter].key, "If-Unmodified-Since")                     
-                 || !apr_strnatcasecmp(headers_in[counter].key, "If-None-Match")) {
+                 || !strcasecmp(headers_in[counter].key, "If-Match")
+                 || !strcasecmp(headers_in[counter].key, "If-Modified-Since")
+                 || !strcasecmp(headers_in[counter].key, "If-Range")
+                 || !strcasecmp(headers_in[counter].key, "If-Unmodified-Since")                     
+                 || !strcasecmp(headers_in[counter].key, "If-None-Match")) {
                 continue;
             }
 
@@ -1065,9 +1065,8 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
              * forever, waiting for a request body that will never
              * arrive.
              */
-            if ((r->method_number == M_GET) && headers_in[counter].key &&
-                !apr_strnatcasecmp(headers_in[counter].key,
-                                   "Content-Length")) {
+            if ((r->method_number == M_GET) && headers_in[counter].key 
+                 && !strcasecmp(headers_in[counter].key, "Content-Length")) {
                 continue;
             }
         }
