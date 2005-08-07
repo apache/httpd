@@ -455,17 +455,16 @@ static apr_status_t stream_reqbody_chunked(apr_pool_t *p,
                                            request_rec *r,
                                            proxy_http_conn_t *p_conn,
                                            conn_rec *origin,
-                                           apr_bucket_brigade *header_brigade)
+                                           apr_bucket_brigade *header_brigade,
+                                           apr_bucket_brigade *input_brigade)
 {
     int seen_eos = 0;
     apr_size_t hdr_len;
     apr_off_t bytes;
     apr_status_t status;
     apr_bucket_alloc_t *bucket_alloc = r->connection->bucket_alloc;
-    apr_bucket_brigade *b, *input_brigade;
+    apr_bucket_brigade *b;
     apr_bucket *e;
-
-    input_brigade = apr_brigade_create(p, bucket_alloc);
 
     do {
         char chunk_hdr[20];  /* must be here due to transient bucket. */
@@ -562,15 +561,14 @@ static apr_status_t stream_reqbody_cl(apr_pool_t *p,
                                       proxy_http_conn_t *p_conn,
                                       conn_rec *origin,
                                       apr_bucket_brigade *header_brigade,
+                                      apr_bucket_brigade *input_brigade,
                                       const char *old_cl_val)
 {
     int seen_eos = 0;
     apr_status_t status;
     apr_bucket_alloc_t *bucket_alloc = r->connection->bucket_alloc;
-    apr_bucket_brigade *b, *input_brigade;
+    apr_bucket_brigade *b;
     apr_bucket *e;
-
-    input_brigade = apr_brigade_create(p, bucket_alloc);
 
     do {
         status = ap_get_brigade(r->input_filters, input_brigade,
@@ -642,18 +640,18 @@ static apr_status_t spool_reqbody_cl(apr_pool_t *p,
                                      request_rec *r,
                                      proxy_http_conn_t *p_conn,
                                      conn_rec *origin,
-                                     apr_bucket_brigade *header_brigade)
+                                     apr_bucket_brigade *header_brigade,
+                                     apr_bucket_brigade *input_brigade)
 {
     int seen_eos = 0;
     apr_status_t status;
     apr_bucket_alloc_t *bucket_alloc = r->connection->bucket_alloc;
-    apr_bucket_brigade *body_brigade, *input_brigade;
+    apr_bucket_brigade *body_brigade;
     apr_bucket *e;
     apr_off_t bytes, bytes_spooled = 0, fsize = 0;
     apr_file_t *tmpfile = NULL;
 
     body_brigade = apr_brigade_create(p, bucket_alloc);
-    input_brigade = apr_brigade_create(p, bucket_alloc);
 
     do {
         status = ap_get_brigade(r->input_filters, input_brigade,
@@ -778,6 +776,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
                                    char *url, apr_bucket_brigade *bb,
                                    char *server_portstr) {
     conn_rec *c = r->connection;
+    apr_bucket_brigade *input_brigade;
     char *buf;
     apr_bucket *e;
     const apr_array_header_t *headers_in_array;
@@ -985,6 +984,9 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
         APR_BRIGADE_INSERT_TAIL(bb, e);
     }
 
+    /* We have headers, let's figure out our request body... */
+    input_brigade = apr_brigade_create(p, bucket_alloc);
+
     /* sub-requests never use keepalives, and mustn't pass request bodies.
      * Because the new logic looks at input_brigade, we must self-terminate
      * input_brigade and jump past all of the request body logic...
@@ -1061,13 +1063,16 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
 
     switch(rb_method) {
     case RB_STREAM_CHUNKED:
-        status = stream_reqbody_chunked(p, r, p_conn, origin, bb);
+        status = stream_reqbody_chunked(p, r, p_conn, origin, bb, 
+                                        input_brigade);
         break;
     case RB_STREAM_CL:
-        status = stream_reqbody_cl(p, r, p_conn, origin, bb, old_cl_val);
+        status = stream_reqbody_cl(p, r, p_conn, origin, bb, 
+                                   input_brigade, old_cl_val);
         break;
     case RB_SPOOL_CL:
-        status = spool_reqbody_cl(p, r, p_conn, origin, bb);
+        status = spool_reqbody_cl(p, r, p_conn, origin, bb,
+                                  input_brigade);
         break;
     default:
         ap_assert(1 != 1);
