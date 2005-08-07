@@ -1010,67 +1010,67 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
     headers_in_array = apr_table_elts(r->headers_in);
     headers_in = (const apr_table_entry_t *) headers_in_array->elts;
     for (counter = 0; counter < headers_in_array->nelts; counter++) {
-        if (headers_in[counter].key == NULL || headers_in[counter].val == NULL
+        if (headers_in[counter].key == NULL 
+             || headers_in[counter].val == NULL
 
-        /* Clear out hop-by-hop request headers not to send
-         * RFC2616 13.5.1 says we should strip these headers
-         */
-                /* Already sent */
-            || !apr_strnatcasecmp(headers_in[counter].key, "Host")
+            /* Already sent */
+             || !apr_strnatcasecmp(headers_in[counter].key, "Host")
 
-            || !apr_strnatcasecmp(headers_in[counter].key, "Keep-Alive")
-            || !apr_strnatcasecmp(headers_in[counter].key, "TE")
-            || !apr_strnatcasecmp(headers_in[counter].key, "Trailer")
-            || !apr_strnatcasecmp(headers_in[counter].key, "Transfer-Encoding")
-            || !apr_strnatcasecmp(headers_in[counter].key, "Upgrade")
+            /* Clear out hop-by-hop request headers not to send
+             * RFC2616 13.5.1 says we should strip these headers
+             */
+             || !apr_strnatcasecmp(headers_in[counter].key, "Keep-Alive")
+             || !apr_strnatcasecmp(headers_in[counter].key, "TE")
+             || !apr_strnatcasecmp(headers_in[counter].key, "Trailer")
+             || !apr_strnatcasecmp(headers_in[counter].key, "Transfer-Encoding")
+             || !apr_strnatcasecmp(headers_in[counter].key, "Upgrade")
 
             /* We'll add appropriate Content-Length later, if appropriate.
              */
-            || !apr_strnatcasecmp(headers_in[counter].key, "Content-Length")
+             || !apr_strnatcasecmp(headers_in[counter].key, "Content-Length")
 
-        /* XXX: @@@ FIXME: "Proxy-Authorization" should *only* be 
-         * suppressed if THIS server requested the authentication,
-         * not when a frontend proxy requested it!
-         *
-         * The solution to this problem is probably to strip out
-         * the Proxy-Authorisation header in the authorisation
-         * code itself, not here. This saves us having to signal
-         * somehow whether this request was authenticated or not.
-         */
-            || !apr_strnatcasecmp(headers_in[counter].key,"Proxy-Authorization")
-            || !apr_strnatcasecmp(headers_in[counter].key,"Proxy-Authenticate")) {
+            /* XXX: @@@ FIXME: "Proxy-Authorization" should *only* be 
+             * suppressed if THIS server requested the authentication,
+             * not when a frontend proxy requested it!
+             *
+             * The solution to this problem is probably to strip out
+             * the Proxy-Authorisation header in the authorisation
+             * code itself, not here. This saves us having to signal
+             * somehow whether this request was authenticated or not.
+             */
+             || !apr_strnatcasecmp(headers_in[counter].key,"Proxy-Authorization")
+             || !apr_strnatcasecmp(headers_in[counter].key,"Proxy-Authenticate")) {
             continue;
         }
         /* for sub-requests, ignore freshness/expiry headers */
         if (r->main) {
-                if (headers_in[counter].key == NULL || headers_in[counter].val == NULL
-                     || !apr_strnatcasecmp(headers_in[counter].key, "If-Match")
-                     || !apr_strnatcasecmp(headers_in[counter].key, "If-Modified-Since")
-                     || !apr_strnatcasecmp(headers_in[counter].key, "If-Range")
-                     || !apr_strnatcasecmp(headers_in[counter].key, "If-Unmodified-Since")                     
-                     || !apr_strnatcasecmp(headers_in[counter].key, "If-None-Match")) {
-                    continue;
-                }
+            if (headers_in[counter].key == NULL || headers_in[counter].val == NULL
+                 || !apr_strnatcasecmp(headers_in[counter].key, "If-Match")
+                 || !apr_strnatcasecmp(headers_in[counter].key, "If-Modified-Since")
+                 || !apr_strnatcasecmp(headers_in[counter].key, "If-Range")
+                 || !apr_strnatcasecmp(headers_in[counter].key, "If-Unmodified-Since")                     
+                 || !apr_strnatcasecmp(headers_in[counter].key, "If-None-Match")) {
+                continue;
+            }
 
-                /* If you POST to a page that gets server-side parsed
-                 * by mod_include, and the parsing results in a reverse
-                 * proxy call, the proxied request will be a GET, but
-                 * its request_rec will have inherited the Content-Length
-                 * of the original request (the POST for the enclosing
-                 * page).  We can't send the original POST's request body
-                 * as part of the proxied subrequest, so we need to avoid
-                 * sending the corresponding content length.  Otherwise,
-                 * the server to which we're proxying will sit there
-                 * forever, waiting for a request body that will never
-                 * arrive.
-                 */
-                if ((r->method_number == M_GET) && headers_in[counter].key &&
-                    !apr_strnatcasecmp(headers_in[counter].key,
-                                       "Content-Length")) {
-                    continue;
-                }
+            /* If you POST to a page that gets server-side parsed
+             * by mod_include, and the parsing results in a reverse
+             * proxy call, the proxied request will be a GET, but
+             * its request_rec will have inherited the Content-Length
+             * of the original request (the POST for the enclosing
+             * page).  We can't send the original POST's request body
+             * as part of the proxied subrequest, so we need to avoid
+             * sending the corresponding content length.  Otherwise,
+             * the server to which we're proxying will sit there
+             * forever, waiting for a request body that will never
+             * arrive.
+             */
+            if ((r->method_number == M_GET) && headers_in[counter].key &&
+                !apr_strnatcasecmp(headers_in[counter].key,
+                                   "Content-Length")) {
+                continue;
+            }
         }
-
 
         buf = apr_pstrcat(p, headers_in[counter].key, ": ",
                           headers_in[counter].val, CRLF,
@@ -1141,9 +1141,9 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                                  "Error reading from remote server");
         }
 
-       /* Is it an HTTP/1 response?
-        * This is buggy if we ever see an HTTP/1.10
-        */
+        /* Is it an HTTP/1 response?
+         * This is buggy if we ever see an HTTP/1.10
+         */
         if (apr_date_checkmask(buffer, "HTTP/#.# ###*")) {
             int major, minor;
 
@@ -1178,7 +1178,6 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
             }
             r->status_line = apr_pstrdup(p, &buffer[9]);
             
-
             /* read the headers. */
             /* N.B. for HTTP/1.0 clients, we have to fold line-wrapped headers*/
             /* Also, take care with headers with multiple occurences. */
@@ -1200,34 +1199,32 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                 r->status = HTTP_BAD_GATEWAY;
                 r->status_line = "bad gateway";
                 return r->status;
-
-            } else {
-
-                /* can't have both Content-Length and Transfer-Encoding */
-                if (apr_table_get(r->headers_out, "Transfer-Encoding")
-                    && apr_table_get(r->headers_out, "Content-Length")) {
-                    /* 2616 section 4.4, point 3: "if both Transfer-Encoding
-                     * and Content-Length are received, the latter MUST be
-                     * ignored"; so unset it here to prevent any confusion
-                     * later. */
-                    apr_table_unset(r->headers_out, "Content-Length");
-                    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0,
-                                 r->server,
-                                 "proxy: server %s returned Transfer-Encoding and Content-Length",
-                                 p_conn->name);
-                    p_conn->close += 1;
-                }
-                
-                /* strip connection listed hop-by-hop headers from response */
-                p_conn->close += ap_proxy_liststr(apr_table_get(r->headers_out,
-                                                                "Connection"),
-                                                  "close");
-                ap_proxy_clear_connection(p, r->headers_out);
-                if ((buf = apr_table_get(r->headers_out, "Content-Type"))) {
-                    ap_set_content_type(r, apr_pstrdup(p, buf));
-                }            
-                ap_proxy_pre_http_request(origin,rp);
             }
+
+            /* can't have both Content-Length and Transfer-Encoding */
+            if (apr_table_get(r->headers_out, "Transfer-Encoding")
+                && apr_table_get(r->headers_out, "Content-Length")) {
+                /* 2616 section 4.4, point 3: "if both Transfer-Encoding
+                 * and Content-Length are received, the latter MUST be
+                 * ignored"; so unset it here to prevent any confusion
+                 * later. */
+                apr_table_unset(r->headers_out, "Content-Length");
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0,
+                             r->server,
+                             "proxy: server %s returned Transfer-Encoding and Content-Length",
+                             p_conn->name);
+                p_conn->close += 1;
+            }
+            
+            /* strip connection listed hop-by-hop headers from response */
+            p_conn->close += ap_proxy_liststr(apr_table_get(r->headers_out,
+                                                            "Connection"),
+                                              "close");
+            ap_proxy_clear_connection(p, r->headers_out);
+            if ((buf = apr_table_get(r->headers_out, "Content-Type"))) {
+                ap_set_content_type(r, apr_pstrdup(p, buf));
+            }            
+            ap_proxy_pre_http_request(origin,rp);
 
             /* handle Via header in response */
             if (conf->viaopt != via_off && conf->viaopt != via_block) {
@@ -1269,37 +1266,33 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
         }
 
         /* we must accept 3 kinds of date, but generate only 1 kind of date */
-        {
-            if ((buf = apr_table_get(r->headers_out, "Date")) != NULL) {
-                apr_table_set(r->headers_out, "Date",
-                              ap_proxy_date_canon(p, buf));
-            }
-            if ((buf = apr_table_get(r->headers_out, "Expires")) != NULL) {
-                apr_table_set(r->headers_out, "Expires",
-                              ap_proxy_date_canon(p, buf));
-            }
-            if ((buf = apr_table_get(r->headers_out, "Last-Modified")) != NULL) {
-                apr_table_set(r->headers_out, "Last-Modified",
-                              ap_proxy_date_canon(p, buf));
-            }
+        if ((buf = apr_table_get(r->headers_out, "Date")) != NULL) {
+            apr_table_set(r->headers_out, "Date",
+                          ap_proxy_date_canon(p, buf));
+        }
+        if ((buf = apr_table_get(r->headers_out, "Expires")) != NULL) {
+            apr_table_set(r->headers_out, "Expires",
+                          ap_proxy_date_canon(p, buf));
+        }
+        if ((buf = apr_table_get(r->headers_out, "Last-Modified")) != NULL) {
+            apr_table_set(r->headers_out, "Last-Modified",
+                          ap_proxy_date_canon(p, buf));
         }
 
         /* munge the Location and URI response headers according to
          * ProxyPassReverse
          */
-        {
-            if ((buf = apr_table_get(r->headers_out, "Location")) != NULL) {
-                apr_table_set(r->headers_out, "Location",
-                              ap_proxy_location_reverse_map(r, conf, buf));
-            }
-            if ((buf = apr_table_get(r->headers_out, "Content-Location")) != NULL) {
-                apr_table_set(r->headers_out, "Content-Location",
-                              ap_proxy_location_reverse_map(r, conf, buf));
-            }
-            if ((buf = apr_table_get(r->headers_out, "URI")) != NULL) {
-                apr_table_set(r->headers_out, "URI",
-                              ap_proxy_location_reverse_map(r, conf, buf));
-            }
+        if ((buf = apr_table_get(r->headers_out, "Location")) != NULL) {
+            apr_table_set(r->headers_out, "Location",
+                          ap_proxy_location_reverse_map(r, conf, buf));
+        }
+        if ((buf = apr_table_get(r->headers_out, "Content-Location")) != NULL) {
+            apr_table_set(r->headers_out, "Content-Location",
+                          ap_proxy_location_reverse_map(r, conf, buf));
+        }
+        if ((buf = apr_table_get(r->headers_out, "URI")) != NULL) {
+            apr_table_set(r->headers_out, "URI",
+                          ap_proxy_location_reverse_map(r, conf, buf));
         }
 
         if ((r->status == 401) && (conf->error_override != 0)) {
