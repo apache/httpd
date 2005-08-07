@@ -443,7 +443,7 @@ static apr_status_t pass_brigade(apr_bucket_alloc_t *bucket_alloc,
     status = ap_pass_brigade(origin->output_filters, b);
     if (status != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
-                     "proxy: pass request data failed to %pI (%s)",
+                     "proxy: pass request body failed to %pI (%s)",
                      p_conn->addr, p_conn->name);
         return status;
     }
@@ -1075,8 +1075,10 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
 
     if (status != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
-                     "proxy: request failed to %pI (%s)",
-                     p_conn->addr, p_conn->name);
+                     "proxy: pass request body failed to %pI (%s)"
+                     " from %s (%s)",
+                     p_conn->addr, p_conn->name ? p_conn->name: "",
+                     c->remote_ip, c->remote_host ? c->remote_host: "");
         return status;
     }
 
