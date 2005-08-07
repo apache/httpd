@@ -786,7 +786,8 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
     apr_status_t status;
     enum rb_methods {RB_INIT, RB_STREAM_CL, RB_STREAM_CHUNKED, RB_SPOOL_CL};
     enum rb_methods rb_method = RB_INIT;
-    const char *old_cl_val, *te_val;
+    const char *old_cl_val = NULL;
+    const char *old_te_val = NULL;
     int cl_zero; /* client sent "Content-Length: 0", which we forward on to server */
     int force10;
 
@@ -928,7 +929,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
     for (counter = 0; counter < headers_in_array->nelts; counter++) {
         if (headers_in[counter].key == NULL 
              || headers_in[counter].val == NULL
-
+                
             /* Already sent */
              || !strcasecmp(headers_in[counter].key, "Host")
 
@@ -938,12 +939,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
              || !strcasecmp(headers_in[counter].key, "Keep-Alive")
              || !strcasecmp(headers_in[counter].key, "TE")
              || !strcasecmp(headers_in[counter].key, "Trailer")
-             || !strcasecmp(headers_in[counter].key, "Transfer-Encoding")
              || !strcasecmp(headers_in[counter].key, "Upgrade")
-
-            /* We'll add appropriate Content-Length later, if appropriate.
-             */
-             || !strcasecmp(headers_in[counter].key, "Content-Length")
 
             /* XXX: @@@ FIXME: "Proxy-Authorization" should *only* be 
              * suppressed if THIS server requested the authentication,
@@ -958,31 +954,25 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
              || !strcasecmp(headers_in[counter].key,"Proxy-Authenticate")) {
             continue;
         }
+
+        /* Skip Transfer-Encoding and Content-Length for now.
+         */
+        if (!strcasecmp(headers_in[counter].key, "Transfer-Encoding")) {
+            old_te_val = headers_in[counter].val;
+            continue;
+        }
+        if (!strcasecmp(headers_in[counter].key, "Content-Length")) {
+            old_cl_val = headers_in[counter].val;
+            continue;
+        }
+
         /* for sub-requests, ignore freshness/expiry headers */
         if (r->main) {
-            if (headers_in[counter].key == NULL || headers_in[counter].val == NULL
-                 || !strcasecmp(headers_in[counter].key, "If-Match")
+            if (    !strcasecmp(headers_in[counter].key, "If-Match")
                  || !strcasecmp(headers_in[counter].key, "If-Modified-Since")
                  || !strcasecmp(headers_in[counter].key, "If-Range")
-                 || !strcasecmp(headers_in[counter].key, "If-Unmodified-Since")                     
+                 || !strcasecmp(headers_in[counter].key, "If-Unmodified-Since")
                  || !strcasecmp(headers_in[counter].key, "If-None-Match")) {
-                continue;
-            }
-
-            /* If you POST to a page that gets server-side parsed
-             * by mod_include, and the parsing results in a reverse
-             * proxy call, the proxied request will be a GET, but
-             * its request_rec will have inherited the Content-Length
-             * of the original request (the POST for the enclosing
-             * page).  We can't send the original POST's request body
-             * as part of the proxied subrequest, so we need to avoid
-             * sending the corresponding content length.  Otherwise,
-             * the server to which we're proxying will sit there
-             * forever, waiting for a request body that will never
-             * arrive.
-             */
-            if ((r->method_number == M_GET) && headers_in[counter].key 
-                 && !strcasecmp(headers_in[counter].key, "Content-Length")) {
                 continue;
             }
         }
@@ -993,6 +983,23 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
         ap_xlate_proto_to_ascii(buf, strlen(buf));
         e = apr_bucket_pool_create(buf, strlen(buf), p, c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(bb, e);
+    }
+
+    /* sub-requests never use keepalives, and mustn't pass request bodies.
+     * Because the new logic looks at input_brigade, we must self-terminate
+     * input_brigade and jump past all of the request body logic...
+     * Reading anything with ap_get_brigade is likely to consume the
+     * main request's body or read beyond EOS - which would be unplesant.
+     */
+    if (r->main) {
+        if (old_cl_val) {
+            old_cl_val = NULL;
+            apr_table_unset(r->headers_in, "Content-Length");
+        }
+        if (old_te_val) {
+            old_te_val = NULL;
+            apr_table_unset(r->headers_in, "Transfer-Encoding");
+        }
     }
 
     /* send CL or use chunked encoding?
@@ -1023,7 +1030,6 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
      * . proxy-sendunchangedcl
      *   use C-L from client and spool the request body
      */
-    old_cl_val = apr_table_get(r->headers_in, "Content-Length");
     cl_zero = old_cl_val && !strcmp(old_cl_val, "0");
 
     if (!force10
@@ -1045,8 +1051,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
         else if (force10) {
             rb_method = RB_SPOOL_CL;
         }
-        else if ((te_val = apr_table_get(r->headers_in, "Transfer-Encoding"))
-                  && !strcasecmp(te_val, "chunked")) {
+        else if (!strcasecmp(old_te_val, "chunked")) {
             rb_method = RB_STREAM_CHUNKED;
         }
         else {
