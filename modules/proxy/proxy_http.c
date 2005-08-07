@@ -1102,6 +1102,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                                             char *server_portstr) {
     conn_rec *c = r->connection;
     char buffer[HUGE_STRING_LEN];
+    const char *buf;
     char keepchar;
     request_rec *rp;
     apr_bucket *e;
@@ -1201,7 +1202,6 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                 return r->status;
 
             } else {
-                const char *buf;
 
                 /* can't have both Content-Length and Transfer-Encoding */
                 if (apr_table_get(r->headers_out, "Transfer-Encoding")
@@ -1270,7 +1270,6 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
 
         /* we must accept 3 kinds of date, but generate only 1 kind of date */
         {
-            const char *buf;
             if ((buf = apr_table_get(r->headers_out, "Date")) != NULL) {
                 apr_table_set(r->headers_out, "Date",
                               ap_proxy_date_canon(p, buf));
@@ -1289,7 +1288,6 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
          * ProxyPassReverse
          */
         {
-            const char *buf;
             if ((buf = apr_table_get(r->headers_out, "Location")) != NULL) {
                 apr_table_set(r->headers_out, "Location",
                               ap_proxy_location_reverse_map(r, conf, buf));
@@ -1305,7 +1303,6 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
         }
 
         if ((r->status == 401) && (conf->error_override != 0)) {
-            const char *buf;
             const char *wa = "WWW-Authenticate";
             if ((buf = apr_table_get(r->headers_out, wa))) {
                 apr_table_set(r->err_headers_out, wa, buf);
