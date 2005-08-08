@@ -1144,7 +1144,8 @@ skip_body:
     case RB_SPOOL_CL:
         status = spool_reqbody_cl(p, r, p_conn, origin, bb,
                                   input_brigade, (old_cl_val != NULL)
-                                              || (old_te_val != NULL));
+                                              || (old_te_val != NULL)
+                                              || (bytes_read > 0));
         break;
     default:
         ap_assert(1 != 1);
