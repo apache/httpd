@@ -104,83 +104,23 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
-    * Various fixes to T-E and C-L processing from trunk
-
-      Refactor mod_proxy_http.c's Transfer-Encoding/Content-Length elections
-      since they didn't follow RFC 2616, in fact didn't seem to make much
-      sense at all.  Patch to migrate request-body-handling from trunk/ based
-      on 2.1-dev request body handling behavior (although just a bit more
-      conservative on the side of C-L spooling)...
-          http://people.apache.org/~wrowe/httpd-2.0-proxy-request-3.patch
-      Revert r219061 to properly test this patch, as r219061 masks the
-      underlying bug (although it is a -good- patch in and of itself).
+    * Copy the backport branch of all of the mod_proxy_http.c's request body 
+      handling security, protocol and bug fixes; by svn copy'ing the file
+      httpd/httpd/branches/proxy-reqbody-2.0.x/modules/proxy/proxy_http.c back to
+      httpd/branches/2.0.x/... preserving the detail of all of the individually
+      backported changes.
 
        +1: wrowe, jim
-       -1: jorton: this is a massive patch and extremely hard to review
-           for actual interesting content; it is mixed in with all sorts
-           of unrelated stuff.  It needs to at least be split up or
-           the unrelated stuff removed.
+       -1:
 
-           unrelated change: s/apr_strnatcasecmp/strcasecmp/
-           unrelated change: s/b/bb/ on variable+parameter names a few times
-           unrelated change: whitespaces changes all over the shop
-           spurious change:? send_request_body() appears to have been inlined
-           unrelated change: Via header handling
+      For a complete history of individual unit changes, see r230703 - r230729 in
+      http://svn.apache.org/viewcvs.cgi/httpd/httpd/branches/proxy-reqbody-2.0.x/
+      [...]  modules/proxy/proxy_http.c?&view=log
+      Cite the specific patch with justification for each specific objection.
 
-         trawick noted on list: we elected C-L not for efficiency, but because
-                 it's the most widely supported [paraphrasing]
-         wrowe   notes: I agree - this new patch always chooses C-L for any
-                 C-L body received.  If the origin kicks out LENGTH_REQUIRED
-                 for a T-E body it's always up to the client to react.
-                 Note proxy-sendchunks can override this behavior.
-         roy     Notes on list: we must always prefer C-L if it's going to fit
-                 in our brigade.
-         wrowe   good point; the revised patch prereads MAX_MEM_SPOOL and will
-                 try reading that before choosing C-L or T-E.
-         wrowe   adds; After testing, I've determined one brigade isn't enough,
-                 so I've extended this to a loop up to MAX_MEM_SPOOL, we will
-                 fetch up enough body to fill MAX_MEM_SPOOL and hopefully
-                 hit the C-L code path most of the time.
-
-         trawick We are counting bytes in stream_reqbody_cl but filters can
-                 change the size? [p]
-         wrowe   Yes - which is why the patch prefers spool_reqbody_cl unless
-                 the filter stack is unchanged from proto_input_filters.  The
-                 protocol filters shouldn't be changing content size.  And when
-                 it happens, we have to barf or we have a split request.
-                 The old behavior was worse; we would stream the request body
-                 in additional cases without looking to see if the byte count
-                 matched Content-Length.  Easy opportunity for split requests.
-
-         trawick What specifically was done for conformance to RFC 2616? [p]
-         wrowe   Elect the appropriate body handling, and ensure that body
-                 request contains the required *single* T-E or C-L header,
-                 and there are far few code paths to stream_reqbody_cl which
-                 was most likely to create split requests by reporting the
-                 wrong C-L.
-
-         trawick Please split philosophy from rfc violations from security 
-                 fixes in the CHANGES log? [p]
-         wrowe   The others are all a bit to intertwined, the Watchfire report 
-                 spelled out that it's different behavior and RFC 2616 deviations 
-                 that cause the vulnerability, so I don't see how we can divide 
-                 the issues of correctly sending the body and choosing the
-                 transport flavor.
-
-    * http://svn.apache.org/viewcvs?rev=171205&view=rev [committed]
-      backport this fix from 2.1-dev:
-      proxy HTTP: Rework the handling of request bodies to handle
-      chunked input and input filters which modify content length, and
-      avoid spooling arbitrary-sized request bodies in memory.
-      PR: 15859
-
-        +1 trawick, jerenkrantz, jim
-        -1 wrowe
-           This patch needs to be reverted or ammended by the patch above;
-           this resulting code is more complex, yet equally faulty in it's
-           C-L/T-E elections for a number of specific cases.  No opinion
-           between the choice of reverting and re-backporting, or simply
-           patching-the-patch.
+      Suggested; revert r219061 to thoroughly test this patch, as r219061 masks 
+      some underlying bugs (although it is a -good- patch in and of itself and
+      provides additional protection to other content-handling modules).      
 
     * TRACE must not have a request body per RFC2616; see the -trace.patch
       below for one of two alternatives.  The other alternative; simply
