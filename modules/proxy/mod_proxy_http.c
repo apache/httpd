@@ -398,7 +398,6 @@ static apr_status_t stream_reqbody_cl(apr_pool_t *p,
         /* we never sent the header brigade since there was no request
          * body; send it now with the flush flag
          */
-        terminate_headers(bucket_alloc, header_brigade);
         bb = header_brigade;
         status = pass_brigade(bucket_alloc, r, p_conn, origin, bb, 1);
     }
