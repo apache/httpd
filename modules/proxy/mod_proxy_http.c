@@ -332,13 +332,6 @@ static apr_status_t stream_reqbody_cl(apr_pool_t *p,
         if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(input_brigade))) {
             seen_eos = 1;
 
-            /* As a shortcut, if this brigade is simply an EOS bucket,
-             * don't send anything down the filter chain.
-             */
-            if (APR_BUCKET_IS_EOS(APR_BRIGADE_FIRST(input_brigade))) {
-                break;
-            }
-
             /* We can't pass this EOS to the output_filters. */
             e = APR_BRIGADE_LAST(input_brigade);
             apr_bucket_delete(e);
