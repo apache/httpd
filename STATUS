@@ -316,7 +316,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         locking actually works.
         http://svn.apache.org/viewcvs?rev=105412&view=rev
         rediff for 2.0.x: http://people.apache.org/~jorton/ap_ldapmutex20.diff
-        +1: jorton, minfrin
+        +1: jorton, minfrin, wrowe
+        wrowe asks: where is AP_NEED_SET_MUTEX_PERMS when you need it?
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
