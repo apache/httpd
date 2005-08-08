@@ -586,13 +586,6 @@ static apr_status_t stream_reqbody_cl(apr_pool_t *p,
         if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(input_brigade))) {
             seen_eos = 1;
 
-            /* As a shortcut, if this brigade is simply an EOS bucket,
-             * don't send anything down the filter chain.
-             */
-            if (APR_BUCKET_IS_EOS(APR_BRIGADE_FIRST(input_brigade))) {
-                break;
-            }
-
             /* We can't pass this EOS to the output_filters. */
             e = APR_BRIGADE_LAST(input_brigade);
             apr_bucket_delete(e);
@@ -622,7 +615,8 @@ static apr_status_t stream_reqbody_cl(apr_pool_t *p,
             b = input_brigade;
         }
         
-        status = pass_brigade(bucket_alloc, r, p_conn, origin, b, 0);
+        /* Once we hit EOS, we are ready to flush. */
+        status = pass_brigade(bucket_alloc, r, p_conn, origin, b, seen_eos);
         if (status != APR_SUCCESS) {
             return status;
         }
@@ -649,15 +643,11 @@ static apr_status_t stream_reqbody_cl(apr_pool_t *p,
 
     if (header_brigade) {
         /* we never sent the header brigade since there was no request
-         * body; send it now
+         * body; send it now with the flush flag
          */
         b = header_brigade;
+        status = pass_brigade(bucket_alloc, r, p_conn, origin, b, 1);
     }
-    else {
-        /* need to flush any pending data */
-        b = input_brigade; /* empty now; pass_brigade() will add flush */
-    }
-    status = pass_brigade(bucket_alloc, r, p_conn, origin, b, 1);
     return status;
 }
 
