@@ -816,7 +816,6 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
     const char *old_te_val = NULL;
     apr_off_t bytes_read = 0;
     apr_off_t bytes;
-    int cl_zero; /* client sent "Content-Length: 0", which we forward on to server */
     int force10;
 
     /*
@@ -1095,67 +1094,89 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
     } while ((bytes_read < MAX_MEM_SPOOL - 80) 
               && !APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(input_brigade)));
 
-    /* send CL or use chunked encoding?
+    /* Use chunked request body encoding or send a content-length body?
      *
-     * . CL is the most friendly to the origin server since it is the
-     *   most widely supported
-     * . CL stinks if we don't know the length since we have to buffer
-     *   the data in memory or on disk until we get the entire data
+     * Prefer C-L when:
      *
-     * special cases to check for:
-     * . if we're using HTTP/1.0 to origin server, then we must send CL
-     * . if client sent C-L and there are no input resource filters, the
-     *   the body size can't change so we send the same CL and stream the
-     *   body
-     * . if client used chunked or proxy-sendchunks is set, we'll also
-     *   use chunked
+     *   We have no request body (handled by RB_STREAM_CL)
      *
-     * normal case:
-     *   we have to compute content length by reading the entire request
-     *   body; if request body is not small, we'll spool the remaining input
-     *   to a temporary file
+     *   We have a request body length <= MAX_MEM_SPOOL 
      *
-     * special envvars to override the normal decision:
-     * . proxy-sendchunks
-     *   use chunked encoding; not compatible with force-proxy-request-1.0
-     * . proxy-sendcl
-     *   spool the request body to compute C-L
-     * . proxy-sendunchangedcl
-     *   use C-L from client and spool the request body
+     *   The administrator has setenv force-proxy-request-1.0
+     *   
+     *   The client sent a C-L body, and the administrator has
+     *   not setenv proxy-sendchunked or has set setenv proxy-sendcl
+     *
+     *   The client sent a T-E body, and the administrator has
+     *   setenv proxy-sendcl, and not setenv proxy-sendchunked
+     *
+     * If both proxy-sendcl and proxy-sendchunked are set, the
+     * behavior is the same as if neither were set, large bodies
+     * that can't be read will be forwarded in their original
+     * form of C-L, or T-E.
+     *
+     * To ensure maximum compatibility, setenv proxy-sendcl
+     * To reduce server resource use,   setenv proxy-sendchunked
+     *
+     * Then address specific servers with conditional setenv
+     * options to restore the default behavior where desireable.
+     *
+     * We have to compute content length by reading the entire request
+     * body; if request body is not small, we'll spool the remaining
+     * input to a temporary file.  Chunked is always preferable.
+     *
+     * We can only trust the client-provided C-L if the T-E header
+     * is absent, and the filters are unchanged (the body won't 
+     * be resized by another content filter).
      */
-    cl_zero = old_cl_val && !strcmp(old_cl_val, "0");
-
-    if (!force10
-        && !cl_zero
-        && (old_cl_val || old_te_val)
-        && apr_table_get(r->subprocess_env, "proxy-sendchunks")) {
-        rb_method = RB_STREAM_CHUNKED;
-    }
-    else if (!cl_zero
-             && apr_table_get(r->subprocess_env, "proxy-sendcl")) {
-        rb_method = RB_SPOOL_CL;
-    }
-    else {
-        if (old_cl_val &&
-            (r->input_filters == r->proto_input_filters
-             || cl_zero
-             || apr_table_get(r->subprocess_env, "proxy-sendunchangedcl"))) {
-            rb_method = RB_STREAM_CL;
+    if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(input_brigade))) {
+        /* The whole thing fit, so our decision is trivial, use
+         * the filtered bytes read from the client for the request 
+         * body Content-Length.
+         *
+         * If we expected no body, and read no body, do not set
+         * the Content-Length.
+         */
+        if (old_cl_val || old_te_val || bytes_read) {
+            old_cl_val = apr_off_t_toa(r->pool, bytes_read);
         }
-        else if (force10) {
+        rb_method = RB_STREAM_CL;
+    }
+    else if (old_te_val) {
+        if (force10 
+             || (apr_table_get(r->subprocess_env, "proxy-sendcl")
+                  && !apr_table_get(r->subprocess_env, "proxy-sendchunks"))) {
             rb_method = RB_SPOOL_CL;
         }
-        else if (!strcasecmp(old_te_val, "chunked")) {
+        else {
+            rb_method = RB_STREAM_CHUNKED;
+        }
+    }
+    else if (old_cl_val) {
+        if (r->input_filters == r->proto_input_filters) {
+            rb_method = RB_STREAM_CL;
+        }
+        else if (!force10 
+                  && apr_table_get(r->subprocess_env, "proxy-sendchunks")
+                  && !apr_table_get(r->subprocess_env, "proxy-sendcl")) {
             rb_method = RB_STREAM_CHUNKED;
         }
         else {
             rb_method = RB_SPOOL_CL;
         }
     }
+    else {
+        /* This is an appropriate default; very efficient for no-body
+         * requests, and has the behavior that it will not add any C-L
+         * when the old_cl_val is NULL.
+         */
+        rb_method = RB_SPOOL_CL;
+    }
 
 /* Yes I hate gotos.  This is the subrequest shortcut */
 skip_body:
 
+    /* send the request body, if any. */
     switch(rb_method) {
     case RB_STREAM_CHUNKED:
         status = stream_reqbody_chunked(p, r, p_conn, origin, bb, 
