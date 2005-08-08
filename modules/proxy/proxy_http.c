@@ -799,7 +799,8 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
                                    proxy_server_conf *conf,
                                    apr_uri_t *uri,
                                    char *url, apr_bucket_brigade *bb,
-                                   char *server_portstr) {
+                                   char *server_portstr) 
+{
     conn_rec *c = r->connection;
     apr_bucket_alloc_t *bucket_alloc = c->bucket_alloc;
     apr_bucket_brigade *input_brigade;
@@ -828,29 +829,28 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
      * that subsequent client requests will hit this thread/process, so
      * we cancel server keepalive if the client does.
      */
-    p_conn->close += ap_proxy_liststr(apr_table_get(r->headers_in,
-                                                     "Connection"), "close");
-    /* sub-requests never use keepalives */
-    if (r->main) {
+    if (ap_proxy_liststr(apr_table_get(r->headers_in,
+                         "Connection"), "close")) {
         p_conn->close++;
+        /* XXX: we are abusing r->headers_in rather than a copy,
+         * give the core output handler a clue the client would
+         * rather just close.
+         */
+        c->keepalive = AP_CONN_CLOSE;
     }
-
     ap_proxy_clear_connection(p, r->headers_in);
-    if (p_conn->close) {
-        apr_table_setn(r->headers_in, "Connection", "close");
-        origin->keepalive = AP_CONN_CLOSE;
-    }
 
     if ( apr_table_get(r->subprocess_env,"force-proxy-request-1.0")) {
         buf = apr_pstrcat(p, r->method, " ", url, " HTTP/1.0" CRLF, NULL);
         force10 = 1;
+        p_conn->close++;
     } else {
         buf = apr_pstrcat(p, r->method, " ", url, " HTTP/1.1" CRLF, NULL);
         force10 = 0;
     }
     if ( apr_table_get(r->subprocess_env,"proxy-nokeepalive")) {
-        apr_table_unset(r->headers_in, "Connection");
         origin->keepalive = AP_CONN_CLOSE;
+        p_conn->close++;
     }
     ap_xlate_proto_to_ascii(buf, strlen(buf));
     e = apr_bucket_pool_create(buf, strlen(buf), p, c->bucket_alloc);
@@ -1022,6 +1022,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
      * main request's body or read beyond EOS - which would be unplesant.
      */
     if (r->main) {
+        p_conn->close++;
         if (old_cl_val) {
             old_cl_val = NULL;
             apr_table_unset(r->headers_in, "Content-Length");
@@ -1175,6 +1176,13 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
 
 /* Yes I hate gotos.  This is the subrequest shortcut */
 skip_body:
+    /* Handle Connection: header */
+    if (!force10 && p_conn->close) {
+        buf = apr_pstrdup(p, "Connection: close" CRLF);
+        ap_xlate_proto_to_ascii(buf, strlen(buf));
+        e = apr_bucket_pool_create(buf, strlen(buf), p, c->bucket_alloc);
+        APR_BRIGADE_INSERT_TAIL(bb, e);
+    }
 
     /* send the request body, if any. */
     switch(rb_method) {
