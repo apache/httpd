@@ -707,6 +707,13 @@ static int authz_ldap_check_user_access(request_rec *r)
             }
         }
         else if (strcmp(w, "ldap-attribute") == 0) {
+            if (req->dn == NULL || strlen(req->dn) == 0) {
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                              "[%d] auth_ldap authorise: "
+                              "require ldap-attribute: user's DN has not been defined; failing authorisation", 
+                              getpid());
+                return sec->auth_authoritative? HTTP_UNAUTHORIZED : DECLINED;
+            }
             while (t[0]) {
                 w = ap_getword(r->pool, &t, '=');
                 value = ap_getword_conf(r->pool, &t);
@@ -735,6 +742,13 @@ static int authz_ldap_check_user_access(request_rec *r)
             }
         }
         else if (strcmp(w, "ldap-filter") == 0) {
+            if (req->dn == NULL || strlen(req->dn) == 0) {
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                              "[%d] auth_ldap authorise: "
+                              "require ldap-filter: user's DN has not been defined; failing authorisation", 
+                              getpid());
+                return sec->auth_authoritative? HTTP_UNAUTHORIZED : DECLINED;
+            }
             if (t[0]) {
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                               "[%d] auth_ldap authorise: checking filter %s", 
