@@ -431,23 +431,23 @@ static void terminate_headers(apr_bucket_alloc_t *bucket_alloc,
 
 static apr_status_t pass_brigade(apr_bucket_alloc_t *bucket_alloc,
                                  request_rec *r, proxy_http_conn_t *p_conn,
-                                 conn_rec *origin, apr_bucket_brigade *b,
+                                 conn_rec *origin, apr_bucket_brigade *bb,
                                  int flush)
 {
     apr_status_t status;
 
     if (flush) {
         apr_bucket *e = apr_bucket_flush_create(bucket_alloc);
-        APR_BRIGADE_INSERT_TAIL(b, e);
+        APR_BRIGADE_INSERT_TAIL(bb, e);
     }
-    status = ap_pass_brigade(origin->output_filters, b);
+    status = ap_pass_brigade(origin->output_filters, bb);
     if (status != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
                      "proxy: pass request body failed to %pI (%s)",
                      p_conn->addr, p_conn->name);
         return status;
     }
-    apr_brigade_cleanup(b);
+    apr_brigade_cleanup(bb);
     return APR_SUCCESS;
 }
 
@@ -463,7 +463,7 @@ static apr_status_t stream_reqbody_chunked(apr_pool_t *p,
     apr_off_t bytes;
     apr_status_t status;
     apr_bucket_alloc_t *bucket_alloc = r->connection->bucket_alloc;
-    apr_bucket_brigade *b;
+    apr_bucket_brigade *bb;
     apr_bucket *e;
 
     add_te_chunked(p, bucket_alloc, header_brigade);
@@ -476,6 +476,7 @@ static apr_status_t stream_reqbody_chunked(apr_pool_t *p,
         /* If this brigade contains EOS, either stop or remove it. */
         if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(input_brigade))) {
             seen_eos = 1;
+
             /* We can't pass this EOS to the output_filters. */
             e = APR_BRIGADE_LAST(input_brigade);
             apr_bucket_delete(e);
@@ -502,15 +503,16 @@ static apr_status_t stream_reqbody_chunked(apr_pool_t *p,
             /* we never sent the header brigade, so go ahead and
              * take care of that now
              */
-            b = header_brigade;
-            APR_BRIGADE_CONCAT(b, input_brigade);
+            bb = header_brigade;
+            APR_BRIGADE_CONCAT(bb, input_brigade);
             header_brigade = NULL;
         }
         else {
-            b = input_brigade;
+            bb = input_brigade;
         }
         
-        status = pass_brigade(bucket_alloc, r, p_conn, origin, b, 0);
+        /* The request is flushed below this loop with chunk EOS header */
+        status = pass_brigade(bucket_alloc, r, p_conn, origin, bb, 0);
         if (status != APR_SUCCESS) {
             return status;
         }
@@ -532,7 +534,7 @@ static apr_status_t stream_reqbody_chunked(apr_pool_t *p,
         /* we never sent the header brigade because there was no request body;
          * send it now
          */
-        b = header_brigade;
+        bb = header_brigade;
     }
     else {
         if (!APR_BRIGADE_EMPTY(input_brigade)) {
@@ -541,16 +543,17 @@ static apr_status_t stream_reqbody_chunked(apr_pool_t *p,
             AP_DEBUG_ASSERT(APR_BUCKET_IS_EOS(e));
             apr_bucket_delete(e);
         }
-        b = input_brigade;
+        bb = input_brigade;
     }
 
     e = apr_bucket_immortal_create(ASCII_ZERO ASCII_CRLF
                                    /* <trailers> */
                                    ASCII_CRLF,
                                    5, bucket_alloc);
-    APR_BRIGADE_INSERT_TAIL(b, e);
-    
-    status = pass_brigade(bucket_alloc, r, p_conn, origin, b, 1);
+    APR_BRIGADE_INSERT_TAIL(bb, e);
+
+    /* Now we have headers-only, or the chunk EOS mark; flush it */
+    status = pass_brigade(bucket_alloc, r, p_conn, origin, bb, 1);
     return status;
 }
 
@@ -565,7 +568,7 @@ static apr_status_t stream_reqbody_cl(apr_pool_t *p,
     int seen_eos = 0;
     apr_status_t status;
     apr_bucket_alloc_t *bucket_alloc = r->connection->bucket_alloc;
-    apr_bucket_brigade *b;
+    apr_bucket_brigade *bb;
     apr_bucket *e;
     apr_off_t cl_val = 0;
     apr_off_t bytes;
@@ -607,16 +610,16 @@ static apr_status_t stream_reqbody_cl(apr_pool_t *p,
             /* we never sent the header brigade, so go ahead and
              * take care of that now
              */
-            b = header_brigade;
-            APR_BRIGADE_CONCAT(b, input_brigade);
+            bb = header_brigade;
+            APR_BRIGADE_CONCAT(bb, input_brigade);
             header_brigade = NULL;
         }
         else {
-            b = input_brigade;
+            bb = input_brigade;
         }
         
         /* Once we hit EOS, we are ready to flush. */
-        status = pass_brigade(bucket_alloc, r, p_conn, origin, b, seen_eos);
+        status = pass_brigade(bucket_alloc, r, p_conn, origin, bb, seen_eos);
         if (status != APR_SUCCESS) {
             return status;
         }
@@ -633,7 +636,7 @@ static apr_status_t stream_reqbody_cl(apr_pool_t *p,
             return status;
         }
     }
-
+    
     if (bytes_streamed != cl_val) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                      "proxy: client %s given Content-Length did not match"
@@ -645,8 +648,8 @@ static apr_status_t stream_reqbody_cl(apr_pool_t *p,
         /* we never sent the header brigade since there was no request
          * body; send it now with the flush flag
          */
-        b = header_brigade;
-        status = pass_brigade(bucket_alloc, r, p_conn, origin, b, 1);
+        bb = header_brigade;
+        status = pass_brigade(bucket_alloc, r, p_conn, origin, bb, 1);
     }
     return status;
 }
@@ -797,8 +800,8 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
     apr_bucket_alloc_t *bucket_alloc = c->bucket_alloc;
     apr_bucket_brigade *input_brigade;
     apr_bucket_brigade *temp_brigade;
-    char *buf;
     apr_bucket *e;
+    char *buf;
     const apr_array_header_t *headers_in_array;
     const apr_table_entry_t *headers_in;
     int counter;
@@ -818,8 +821,8 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
     /* strip connection listed hop-by-hop headers from the request */
     /* even though in theory a connection: close coming from the client
      * should not affect the connection to the server, it's unlikely
-     * that subsequent client requests will hit this thread/process, so
-     * we cancel server keepalive if the client does.
+     * that subsequent client requests will hit this thread/process, 
+     * so we cancel server keepalive if the client does.
      */
     if (ap_proxy_liststr(apr_table_get(r->headers_in,
                          "Connection"), "close")) {
@@ -924,7 +927,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
          * determine, where the original request came from.
          */
         apr_table_mergen(r->headers_in, "X-Forwarded-For",
-                       r->connection->remote_ip);
+                         r->connection->remote_ip);
 
         /* Add X-Forwarded-Host: so that upstream knows what the
          * original request hostname was.
@@ -938,7 +941,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
          * XXX: This duplicates Via: - do we strictly need it?
          */
         apr_table_mergen(r->headers_in, "X-Forwarded-Server",
-                       r->server->server_hostname);
+                         r->server->server_hostname);
     }
 
     /* send request headers */
@@ -948,7 +951,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
     for (counter = 0; counter < headers_in_array->nelts; counter++) {
         if (headers_in[counter].key == NULL 
              || headers_in[counter].val == NULL
-                
+
             /* Already sent */
              || !strcasecmp(headers_in[counter].key, "Host")
 
@@ -1008,7 +1011,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
     input_brigade = apr_brigade_create(p, bucket_alloc);
 
     /* sub-requests never use keepalives, and mustn't pass request bodies.
-     * Because the new logic looks at input_brigade, we must self-terminate
+     * Because the new logic looks at input_brigade, we will self-terminate
      * input_brigade and jump past all of the request body logic...
      * Reading anything with ap_get_brigade is likely to consume the
      * main request's body or read beyond EOS - which would be unplesant.
