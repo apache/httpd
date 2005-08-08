@@ -789,7 +789,8 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
                                    proxy_http_conn_t *p_conn, conn_rec *origin, 
                                    proxy_server_conf *conf,
                                    apr_uri_t *uri,
-                                   char *url, apr_bucket_brigade *bb,
+                                   char *url, 
+                                   apr_bucket_brigade *header_brigade,
                                    char *server_portstr) 
 {
     conn_rec *c = r->connection;
@@ -831,7 +832,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
     }
     ap_proxy_clear_connection(p, r->headers_in);
 
-    if ( apr_table_get(r->subprocess_env,"force-proxy-request-1.0")) {
+    if (apr_table_get(r->subprocess_env, "force-proxy-request-1.0")) {
         buf = apr_pstrcat(p, r->method, " ", url, " HTTP/1.0" CRLF, NULL);
         force10 = 1;
         p_conn->close++;
@@ -839,17 +840,17 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
         buf = apr_pstrcat(p, r->method, " ", url, " HTTP/1.1" CRLF, NULL);
         force10 = 0;
     }
-    if ( apr_table_get(r->subprocess_env,"proxy-nokeepalive")) {
+    if (apr_table_get(r->subprocess_env, "proxy-nokeepalive")) {
         origin->keepalive = AP_CONN_CLOSE;
         p_conn->close++;
     }
     ap_xlate_proto_to_ascii(buf, strlen(buf));
     e = apr_bucket_pool_create(buf, strlen(buf), p, c->bucket_alloc);
-    APR_BRIGADE_INSERT_TAIL(bb, e);
-    if ( conf->preserve_host == 0 ) {
+    APR_BRIGADE_INSERT_TAIL(header_brigade, e);
+    if (conf->preserve_host == 0) {
         if (uri->port_str && uri->port != DEFAULT_HTTP_PORT) {
-            buf = apr_pstrcat(p, "Host: ", uri->hostname, ":", uri->port_str, CRLF,
-                            NULL);
+            buf = apr_pstrcat(p, "Host: ", uri->hostname, ":", uri->port_str,
+                              CRLF, NULL);
         } else {
             buf = apr_pstrcat(p, "Host: ", uri->hostname, CRLF, NULL);
         }
@@ -872,7 +873,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
     }
     ap_xlate_proto_to_ascii(buf, strlen(buf));
     e = apr_bucket_pool_create(buf, strlen(buf), p, c->bucket_alloc);        
-    APR_BRIGADE_INSERT_TAIL(bb, e);
+    APR_BRIGADE_INSERT_TAIL(header_brigade, e);
 
     /* handle Via */
     if (conf->viaopt == via_block) {
@@ -1000,7 +1001,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
                           NULL);
         ap_xlate_proto_to_ascii(buf, strlen(buf));
         e = apr_bucket_pool_create(buf, strlen(buf), p, c->bucket_alloc);
-        APR_BRIGADE_INSERT_TAIL(bb, e);
+        APR_BRIGADE_INSERT_TAIL(header_brigade, e);
     }
 
     /* We have headers, let's figure out our request body... */
@@ -1174,27 +1175,28 @@ skip_body:
         buf = apr_pstrdup(p, "Connection: close" CRLF);
         ap_xlate_proto_to_ascii(buf, strlen(buf));
         e = apr_bucket_pool_create(buf, strlen(buf), p, c->bucket_alloc);
-        APR_BRIGADE_INSERT_TAIL(bb, e);
+        APR_BRIGADE_INSERT_TAIL(header_brigade, e);
     }
 
     /* send the request body, if any. */
     switch(rb_method) {
     case RB_STREAM_CHUNKED:
-        status = stream_reqbody_chunked(p, r, p_conn, origin, bb, 
+        status = stream_reqbody_chunked(p, r, p_conn, origin, header_brigade, 
                                         input_brigade);
         break;
     case RB_STREAM_CL:
-        status = stream_reqbody_cl(p, r, p_conn, origin, bb, 
+        status = stream_reqbody_cl(p, r, p_conn, origin, header_brigade, 
                                    input_brigade, old_cl_val);
         break;
     case RB_SPOOL_CL:
-        status = spool_reqbody_cl(p, r, p_conn, origin, bb,
+        status = spool_reqbody_cl(p, r, p_conn, origin, header_brigade,
                                   input_brigade, (old_cl_val != NULL)
                                               || (old_te_val != NULL)
                                               || (bytes_read > 0));
         break;
     default:
         ap_assert(1 != 1);
+        break;
     }
 
     if (status != APR_SUCCESS) {
