@@ -1048,6 +1048,8 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
                      "proxy: client %s (%s) requested Transfer-Encoding body"
                      " with Content-Length (C-L ignored)",
                      c->remote_ip, c->remote_host ? c->remote_host: "");
+        apr_table_unset(r->headers_in, "Content-Length");
+        old_cl_val = NULL;
         origin->keepalive = AP_CONN_CLOSE;
         p_conn->close++;
     }
