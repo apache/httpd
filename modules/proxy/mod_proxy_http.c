@@ -952,6 +952,7 @@ skip_body:
         ap_assert(1 != 1);
         break;
     }
+
     if (status != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
                      "proxy: pass request body failed to %pI (%s)"
@@ -962,6 +963,7 @@ skip_body:
                      c->remote_host ? c->remote_host: "");
         return status;
     }
+
     return APR_SUCCESS;
 }
 
