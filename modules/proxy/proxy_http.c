@@ -469,28 +469,13 @@ static apr_status_t stream_reqbody_chunked(apr_pool_t *p,
     add_te_chunked(p, bucket_alloc, header_brigade);
     terminate_headers(bucket_alloc, header_brigade);
 
-    do {
+    while (!APR_BUCKET_IS_EOS(APR_BRIGADE_FIRST(input_brigade)))
+    {
         char chunk_hdr[20];  /* must be here due to transient bucket. */
-
-        status = ap_get_brigade(r->input_filters, input_brigade,
-                                AP_MODE_READBYTES, APR_BLOCK_READ,
-                                HUGE_STRING_LEN);
-
-        if (status != APR_SUCCESS) {
-            return status;
-        }
 
         /* If this brigade contains EOS, either stop or remove it. */
         if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(input_brigade))) {
             seen_eos = 1;
-
-            /* As a shortcut, if this brigade is simply an EOS bucket,
-             * don't send anything down the filter chain.
-             */
-            if (APR_BUCKET_IS_EOS(APR_BRIGADE_FIRST(input_brigade))) {
-                break;
-            }
-
             /* We can't pass this EOS to the output_filters. */
             e = APR_BRIGADE_LAST(input_brigade);
             apr_bucket_delete(e);
@@ -529,7 +514,19 @@ static apr_status_t stream_reqbody_chunked(apr_pool_t *p,
         if (status != APR_SUCCESS) {
             return status;
         }
-    } while (!seen_eos);
+
+        if (seen_eos) {
+            break;
+        }
+
+        status = ap_get_brigade(r->input_filters, input_brigade,
+                                AP_MODE_READBYTES, APR_BLOCK_READ,
+                                HUGE_STRING_LEN);
+
+        if (status != APR_SUCCESS) {
+            return status;
+        }
+    }
 
     if (header_brigade) {
         /* we never sent the header brigade because there was no request body;
@@ -580,15 +577,8 @@ static apr_status_t stream_reqbody_cl(apr_pool_t *p,
     }
     terminate_headers(bucket_alloc, header_brigade);
 
-    do {
-        status = ap_get_brigade(r->input_filters, input_brigade,
-                                AP_MODE_READBYTES, APR_BLOCK_READ,
-                                HUGE_STRING_LEN);
-
-        if (status != APR_SUCCESS) {
-            return status;
-        }
-
+    while (!APR_BUCKET_IS_EOS(APR_BRIGADE_FIRST(input_brigade)))
+    {
         apr_brigade_length(input_brigade, 1, &bytes);
         bytes_streamed += bytes;
 
@@ -636,7 +626,19 @@ static apr_status_t stream_reqbody_cl(apr_pool_t *p,
         if (status != APR_SUCCESS) {
             return status;
         }
-    } while (!seen_eos);
+
+        if (seen_eos) {
+            break;
+        }
+
+        status = ap_get_brigade(r->input_filters, input_brigade,
+                                AP_MODE_READBYTES, APR_BLOCK_READ,
+                                HUGE_STRING_LEN);
+
+        if (status != APR_SUCCESS) {
+            return status;
+        }
+    }
 
     if (bytes_streamed != cl_val) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
@@ -679,25 +681,11 @@ static apr_status_t spool_reqbody_cl(apr_pool_t *p,
 
     body_brigade = apr_brigade_create(p, bucket_alloc);
 
-    do {
-        status = ap_get_brigade(r->input_filters, input_brigade,
-                                AP_MODE_READBYTES, APR_BLOCK_READ,
-                                HUGE_STRING_LEN);
-
-        if (status != APR_SUCCESS) {
-            return status;
-        }
-
+    while (!APR_BUCKET_IS_EOS(APR_BRIGADE_FIRST(input_brigade)))
+    {
         /* If this brigade contains EOS, either stop or remove it. */
         if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(input_brigade))) {
             seen_eos = 1;
-
-            /* As a shortcut, if this brigade is simply an EOS bucket,
-             * don't send anything down the filter chain.
-             */
-            if (APR_BUCKET_IS_EOS(APR_BRIGADE_FIRST(input_brigade))) {
-                break;
-            }
 
             /* We can't pass this EOS to the output_filters. */
             e = APR_BRIGADE_LAST(input_brigade);
@@ -759,7 +747,18 @@ static apr_status_t spool_reqbody_cl(apr_pool_t *p,
         
         bytes_spooled += bytes;
 
-    } while (!seen_eos);
+        if (seen_eos) {
+            break;
+        }
+
+        status = ap_get_brigade(r->input_filters, input_brigade,
+                                AP_MODE_READBYTES, APR_BLOCK_READ,
+                                HUGE_STRING_LEN);
+
+        if (status != APR_SUCCESS) {
+            return status;
+        }
+    }
 
     if (bytes_spooled || force_cl) {
         add_cl(p, bucket_alloc, header_brigade, apr_off_t_toa(p, bytes_spooled));
@@ -804,6 +803,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
     conn_rec *c = r->connection;
     apr_bucket_alloc_t *bucket_alloc = c->bucket_alloc;
     apr_bucket_brigade *input_brigade;
+    apr_bucket_brigade *temp_brigade;
     char *buf;
     apr_bucket *e;
     const apr_array_header_t *headers_in_array;
@@ -814,6 +814,8 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
     enum rb_methods rb_method = RB_INIT;
     const char *old_cl_val = NULL;
     const char *old_te_val = NULL;
+    apr_off_t bytes_read = 0;
+    apr_off_t bytes;
     int cl_zero; /* client sent "Content-Length: 0", which we forward on to server */
     int force10;
 
@@ -1030,6 +1032,40 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
             apr_table_unset(r->headers_in, "Transfer-Encoding");
         }
     }
+
+    /* Prefetch MAX_MEM_SPOOL bytes
+     *
+     * This helps us avoid any election of C-L v.s. T-E
+     * request bodies, since we are willing to keep in
+     * memory this much data, in any case.  This gives
+     * us an instant C-L election if the body is of some
+     * reasonable size.
+     */
+    temp_brigade = apr_brigade_create(p, bucket_alloc);
+    do {
+        status = ap_get_brigade(r->input_filters, temp_brigade,
+                                AP_MODE_READBYTES, APR_BLOCK_READ,
+                                MAX_MEM_SPOOL - bytes_read);
+        if (status != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
+                         "proxy: prefetch request body failed to %s"
+                         " from %s (%s)",
+                         p_conn->name ? p_conn->name: "",
+                         c->remote_ip, c->remote_host ? c->remote_host: "");
+            return status;
+        }
+
+        apr_brigade_length(temp_brigade, 1, &bytes);
+        APR_BRIGADE_CONCAT(input_brigade, temp_brigade);
+        bytes_read += bytes;
+
+    /* Ensure we don't hit a wall where we have a buffer too small
+     * for ap_get_brigade's filters to fetch us another bucket,
+     * surrender once we hit 80 bytes less than MAX_MEM_SPOOL
+     * (an arbitrary value.)
+     */
+    } while ((bytes_read < MAX_MEM_SPOOL - 80) 
+              && !APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(input_brigade)));
 
     /* send CL or use chunked encoding?
      *
