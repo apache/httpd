@@ -195,6 +195,11 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       Votes from before the integration branch:
           +1: jerenkrantz, wrowe (trivial, would even be cool in 1.3)
 
+     *) proxy FTP: Fix confusion about globbing characters which could lead
+        to getting a directory listing when a file was requested.  PR 34512.
+        2.1 patch was http://svn.apache.org/viewcvs?rev=179704&view=rev
+        2.0 version: http://people.apache.org/~trawick/179704-20.txt
+        +1: trawick, jorton, wrowe
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ please place SVN revisions from trunk here, so it is easy to
@@ -267,23 +272,20 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewcvs?rev=178262&view=rev
         (With 2.0.x it is the same code in the same function, but in 
         a different source file.)
-        +1: trawick
+        +1: trawick, wrowe
 
      *) Support the suppress-error-charset setting, as with Apache 1.3.x.
         PR 31274. (current docs say it works with Apache from 2.0.40 ;) )
         http://svn.apache.org/viewcvs?rev=170354&view=rev
         +1: trawick, jorton
 
-     *) proxy FTP: Fix confusion about globbing characters which could lead
-        to getting a directory listing when a file was requested.  PR 34512.
-        2.1 patch was http://svn.apache.org/viewcvs?rev=179704&view=rev
-        2.0 version: http://people.apache.org/~trawick/179704-20.txt
-        +1: trawick, jorton
-
      *) mod_mime_magic: Handle CRLF-format magic files so that it works with
         the default installation on Windows. 
         http://svn.apache.org/viewcvs?rev=179622&view=rev
-        +1: trawick
+        +1: trawick, wrowe
+        wrowe asks: is it possible to simply strip trailing whitespace instead
+                    of special handling for the end of line characters?  
+                    Seems more portable.
 
      *) mod_cache: Fix handling of 'Vary: *". PR 16125.
         Trunk: r180341
