@@ -1,5 +1,12 @@
 Changes with Apache 1.3.34
 
+  *) SECURITY: core: If a request contains both Transfer-Encoding and 
+     Content-Length headers, remove the Content-Length, mitigating some 
+     HTTP Request Splitting/Spoofing attacks.  This has no impact on
+     mod_proxy_http, yet affects any module which supports chunked
+     encoding yet fails to prefer T-E: chunked over the Content-Length
+     purported value.  [Paul Querna, Joe Orton]
+
   *) Added TraceEnable [on|off|extended] per-server directive to alter
      the behavior of the TRACE method.  This addresses a flaw in proxy
      conformance to RFC 2616 - previously the proxy server would accept

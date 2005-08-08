@@ -1214,6 +1214,14 @@ API_EXPORT(request_rec *) ap_read_request(conn_rec *conn)
             ap_log_transaction(r);
             return r;
         }
+        if (ap_table_get(r->headers_in, "Transfer-Encoding")
+            && ap_table_get(r->headers_in, "Content-Length")) {
+            /* 2616 section 4.4, point 3: "if both Transfer-Encoding
+             * and Content-Length are received, the latter MUST be
+             * ignored"; so unset it here to prevent any confusion
+             * later. */
+            ap_table_unset(r->headers_in, "Content-Length");
+        }
     }
     else {
         ap_kill_timeout(r);
