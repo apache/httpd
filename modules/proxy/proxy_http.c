@@ -1031,6 +1031,10 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
             old_te_val = NULL;
             apr_table_unset(r->headers_in, "Transfer-Encoding");
         }
+        rb_method = RB_STREAM_CL;
+        e = apr_bucket_eos_create(input_brigade->bucket_alloc);
+        APR_BRIGADE_INSERT_TAIL(input_brigade, e);
+        goto skip_body;
     }
 
     /* Prefetch MAX_MEM_SPOOL bytes
@@ -1124,6 +1128,9 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
             rb_method = RB_SPOOL_CL;
         }
     }
+
+/* Yes I hate gotos.  This is the subrequest shortcut */
+skip_body:
 
     switch(rb_method) {
     case RB_STREAM_CHUNKED:
