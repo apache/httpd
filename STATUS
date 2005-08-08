@@ -113,7 +113,7 @@ RELEASE SHOWSTOPPERS:
        +1: wrowe, jim
        -1:
 
-      For a complete history of individual unit changes, see r230703 - r230729 in
+      For a complete history of individual unit changes, see r230703 - r230744 in
       http://svn.apache.org/viewcvs.cgi/httpd/httpd/branches/proxy-reqbody-2.0.x/
       [...]  modules/proxy/proxy_http.c?&view=log
       Cite the specific patch with justification for each specific objection.
