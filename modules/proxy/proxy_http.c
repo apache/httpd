@@ -544,14 +544,14 @@ static apr_status_t stream_reqbody_chunked(apr_pool_t *p,
             AP_DEBUG_ASSERT(APR_BUCKET_IS_EOS(e));
             apr_bucket_delete(e);
         }
+        b = input_brigade;
     }
 
     e = apr_bucket_immortal_create(ASCII_ZERO ASCII_CRLF
                                    /* <trailers> */
                                    ASCII_CRLF,
                                    5, bucket_alloc);
-    APR_BRIGADE_INSERT_TAIL(input_brigade, e);
-    b = input_brigade;
+    APR_BRIGADE_INSERT_TAIL(b, e);
     
     status = pass_brigade(bucket_alloc, r, p_conn, origin, b, 1);
     return status;
