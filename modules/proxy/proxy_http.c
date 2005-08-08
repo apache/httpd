@@ -1037,6 +1037,30 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
         goto skip_body;
     }
 
+    /* WE only understand chunked.  Other modules might inject
+     * (and therefore, decode) other flavors but we don't know
+     * that the can and have done so unless they they remove
+     * their decoding from the headers_in T-E list.
+     * XXX: Make this extensible, but in doing so, presume the
+     * encoding has been done by the extensions' handler, and 
+     * do not modify add_te_chunked's logic
+     */
+    if (old_te_val && strcmp(old_te_val, "chunked") != 0) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
+                     "proxy: %s Transfer-Encoding is not supported",
+                     old_te_val);
+        return APR_EINVAL;
+    }
+
+    if (old_cl_val && old_te_val) {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_ENOTIMPL, r->server,
+                     "proxy: client %s (%s) requested Transfer-Encoding body"
+                     " with Content-Length (C-L ignored)",
+                     c->remote_ip, c->remote_host ? c->remote_host: "");
+        origin->keepalive = AP_CONN_CLOSE;
+        p_conn->close++;
+    }
+
     /* Prefetch MAX_MEM_SPOOL bytes
      *
      * This helps us avoid any election of C-L v.s. T-E
