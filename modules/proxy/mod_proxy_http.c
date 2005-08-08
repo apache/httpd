@@ -821,7 +821,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
     do {
         status = ap_get_brigade(r->input_filters, temp_brigade,
                                 AP_MODE_READBYTES, APR_BLOCK_READ,
-                                MAX_MEM_SPOOL + 1024 - bytes_read);
+                                MAX_MEM_SPOOL - bytes_read);
         if (status != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
                          "proxy: prefetch request body failed to %pI (%s)"
