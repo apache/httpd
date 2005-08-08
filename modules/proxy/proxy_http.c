@@ -779,6 +779,7 @@ static apr_status_t spool_reqbody_cl(apr_pool_t *p,
         }
         APR_BRIGADE_INSERT_TAIL(header_brigade, e);
     }
+    /* This is all a single brigade, pass with flush flagged */
     status = pass_brigade(bucket_alloc, r, p_conn, origin, header_brigade, 1);
     return status;
 }
