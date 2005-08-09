@@ -215,7 +215,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        mod_auth_ldap_check_user_id() was never (fully) called.
        Similar behavior to that in 2.1/2.2.
          http://people.apache.org/~jim/mod_auth_ldap-2.0.patch
-       +1: jim, minfrin
+       +1: jim, minfrin, bnicholes
 
     *) Correct RFC 2616 non-compliance by refusing to proxy a request body 
        in a TRACE request, unless TraceEnable extended is configured.
