@@ -1408,8 +1408,8 @@ static const char *util_ldap_set_opcache_entries(cmd_parms *cmd, void *dummy,
  *
  * If no matches are found, APR_LDAP_CA_TYPE_UNKNOWN is returned.
  */
-static const int util_ldap_parse_cert_type(const char *type) {
-
+static int util_ldap_parse_cert_type(const char *type)
+{
     /* Authority file in binary DER format */
     if (0 == strcasecmp("CA_DER", type)) {
         return APR_LDAP_CA_TYPE_DER;
