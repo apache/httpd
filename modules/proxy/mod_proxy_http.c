@@ -949,7 +949,8 @@ skip_body:
                                               || (bytes_read > 0));
         break;
     default:
-        ap_assert(1 != 1);
+        /* shouldn't be possible */
+        status = APR_EINVAL;
         break;
     }
 
