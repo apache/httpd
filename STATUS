@@ -312,13 +312,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewcvs.cgi?rev=209539&view=rev
         +1: pquerna
 
-     *) mod_ldap: Initialize mutex permissions properly so that
-        locking actually works.
-        http://svn.apache.org/viewcvs?rev=105412&view=rev
-        rediff for 2.0.x: http://people.apache.org/~jorton/ap_ldapmutex20.diff
-        +1: jorton, minfrin, wrowe
-        wrowe asks: where is AP_NEED_SET_MUTEX_PERMS when you need it?
-
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
     *) Remove LDAP toolkit specific code from util_ldap and mod_auth_ldap.
