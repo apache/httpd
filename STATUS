@@ -205,6 +205,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ please place SVN revisions from trunk here, so it is easy to
     identify exactly what the proposed changes are! ]
 
+    *) Remove the base href tag from mod_proxy_ftp, as it breaks relative
+       links for clients not using an Authorization header.
+         modules/proxy/mod_proxy_ftp.c: r231044
+       +1: minfrin
+
     *) Prevent bad dereferencing of non-existent req struct in
        mod_auth_ldap's mod_auth_ldap_auth_checker() if
        mod_auth_ldap_check_user_id() was never (fully) called.
