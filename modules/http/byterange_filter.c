@@ -215,9 +215,9 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
             continue;
         }
 
-        /* these calls to apr_brigade_partition() should theoretically
-         * never fail because of the above call to apr_brigade_length(),
-         * but what the heck, we'll check for an error anyway */
+        /* These calls to apr_brigage_partition should only fail in
+         * pathological cases, e.g. a file being truncated whilst
+         * being served. */
         if ((rv = apr_brigade_partition(bb, range_start, &ec)) != APR_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                           PARTITION_ERR_FMT, range_start, clength);
@@ -260,12 +260,10 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
             apr_size_t len;
 
             if (apr_bucket_copy(ec, &foo) != APR_SUCCESS) {
-                /* this shouldn't ever happen due to the call to
-                 * apr_brigade_length() above which normalizes
-                 * indeterminate-length buckets.  just to be sure,
-                 * though, this takes care of uncopyable buckets that
-                 * do somehow manage to slip through.
-                 */
+                /* As above; this should not fail since the bucket has
+                 * a known length, but just to be sure, this takes
+                 * care of uncopyable buckets that do somehow manage
+                 * to slip through.  */
                 /* XXX: check for failure? */
                 apr_bucket_read(ec, &str, &len, APR_BLOCK_READ);
                 apr_bucket_copy(ec, &foo);
