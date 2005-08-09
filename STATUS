@@ -208,7 +208,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     *) Remove the base href tag from mod_proxy_ftp, as it breaks relative
        links for clients not using an Authorization header.
          modules/proxy/mod_proxy_ftp.c: r231044
-       +1: minfrin
+       +1: minfrin, jim
 
     *) Prevent bad dereferencing of non-existent req struct in
        mod_auth_ldap's mod_auth_ldap_auth_checker() if
