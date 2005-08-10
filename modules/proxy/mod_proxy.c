@@ -788,11 +788,6 @@ static void * create_proxy_config(apr_pool_t *p, server_rec *s)
     ps->sec_proxy = apr_array_make(p, 10, sizeof(ap_conf_vector_t *));
     ps->proxies = apr_array_make(p, 10, sizeof(struct proxy_remote));
     ps->aliases = apr_array_make(p, 10, sizeof(struct proxy_alias));
-    ps->raliases = apr_array_make(p, 10, sizeof(struct proxy_alias));
-    ps->cookie_paths = apr_array_make(p, 10, sizeof(struct proxy_alias));
-    ps->cookie_domains = apr_array_make(p, 10, sizeof(struct proxy_alias));
-    ps->cookie_path_str = apr_strmatch_precompile(p, "path=", 0);
-    ps->cookie_domain_str = apr_strmatch_precompile(p, "domain=", 0);
     ps->noproxies = apr_array_make(p, 10, sizeof(struct noproxy_entry));
     ps->dirconn = apr_array_make(p, 10, sizeof(struct dirconn_entry));
     ps->allowed_connect_ports = apr_array_make(p, 10, sizeof(int));
@@ -832,13 +827,6 @@ static void * merge_proxy_config(apr_pool_t *p, void *basev, void *overridesv)
     ps->proxies = apr_array_append(p, base->proxies, overrides->proxies);
     ps->sec_proxy = apr_array_append(p, base->sec_proxy, overrides->sec_proxy);
     ps->aliases = apr_array_append(p, base->aliases, overrides->aliases);
-    ps->raliases = apr_array_append(p, base->raliases, overrides->raliases);
-    ps->cookie_paths
-        = apr_array_append(p, base->cookie_paths, overrides->cookie_paths);
-    ps->cookie_domains
-        = apr_array_append(p, base->cookie_domains, overrides->cookie_domains);
-    ps->cookie_path_str = base->cookie_path_str;
-    ps->cookie_domain_str = base->cookie_domain_str;
     ps->noproxies = apr_array_append(p, base->noproxies, overrides->noproxies);
     ps->dirconn = apr_array_append(p, base->dirconn, overrides->dirconn);
     ps->allowed_connect_ports = apr_array_append(p, base->allowed_connect_ports, overrides->allowed_connect_ports);
@@ -869,6 +857,13 @@ static void *create_proxy_dir_config(apr_pool_t *p, char *dummy)
 
     /* Filled in by proxysection, when applicable */
 
+    /* Put these in the dir config so they work inside <Location> */
+    new->raliases = apr_array_make(p, 10, sizeof(struct proxy_alias));
+    new->cookie_paths = apr_array_make(p, 10, sizeof(struct proxy_alias));
+    new->cookie_domains = apr_array_make(p, 10, sizeof(struct proxy_alias));
+    new->cookie_path_str = apr_strmatch_precompile(p, "path=", 0);
+    new->cookie_domain_str = apr_strmatch_precompile(p, "domain=", 0);
+
     return (void *) new;
 }
 
@@ -880,6 +875,15 @@ static void *merge_proxy_dir_config(apr_pool_t *p, void *basev, void *addv)
     new->p = add->p;
     new->p_is_fnmatch = add->p_is_fnmatch;
     new->r = add->r;
+
+    /* Put these in the dir config so they work inside <Location> */
+    new->raliases = apr_array_append(p, base->raliases, overrides->raliases);
+    new->cookie_paths
+        = apr_array_append(p, base->cookie_paths, overrides->cookie_paths);
+    new->cookie_domains
+        = apr_array_append(p, base->cookie_domains, overrides->cookie_domains);
+    new->cookie_path_str = base->cookie_path_str;
+    new->cookie_domain_str = base->cookie_domain_str;
     return new;
 }
 
@@ -1042,14 +1046,11 @@ static const char *
 }
 
 static const char *
-    add_pass_reverse(cmd_parms *cmd, void *dummy, const char *f, const char *r)
+    add_pass_reverse(cmd_parms *cmd, void *dconf, const char *f, const char *r)
 {
-    server_rec *s = cmd->server;
-    proxy_server_conf *conf;
+    proxy_dir_conf *conf = dconf;
     struct proxy_alias *new;
 
-    conf = (proxy_server_conf *)ap_get_module_config(s->module_config, 
-                                                     &proxy_module);
     if (r!=NULL && cmd->path == NULL ) {
         new = apr_array_push(conf->raliases);
         new->fake = f;
@@ -1068,14 +1069,11 @@ static const char *
     return NULL;
 }
 static const char*
-    cookie_path(cmd_parms *cmd, void *dummy, const char *f, const char *r)
+    cookie_path(cmd_parms *cmd, void *dconf, const char *f, const char *r)
 {
-    server_rec *s = cmd->server;
-    proxy_server_conf *conf;
+    proxy_dir_conf *conf = dconf;
     struct proxy_alias *new;
 
-    conf = (proxy_server_conf *)ap_get_module_config(s->module_config,
-                                                     &proxy_module);
     new = apr_array_push(conf->cookie_paths);
     new->fake = f;
     new->real = r;
@@ -1083,14 +1081,11 @@ static const char*
     return NULL;
 }
 static const char*
-    cookie_domain(cmd_parms *cmd, void *dummy, const char *f, const char *r)
+    cookie_domain(cmd_parms *cmd, void *dconf, const char *f, const char *r)
 {
-    server_rec *s = cmd->server;
-    proxy_server_conf *conf;
+    proxy_dir_conf *conf = dconf;
     struct proxy_alias *new;
 
-    conf = (proxy_server_conf *)ap_get_module_config(s->module_config,
-                                                     &proxy_module);
     new = apr_array_push(conf->cookie_domains);
     new->fake = f;
     new->real = r;
