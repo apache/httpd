@@ -143,6 +143,7 @@ static int verbose;     /* flag: true means print statistics */
 static int benice;      /* flag: true means nice mode is activated */
 static int dryrun;      /* flag: true means dry run, don't actually delete
                                  anything */
+static int deldirs;     /* flag: true means directories should be deleted */
 static int baselen;     /* string length of the path to the proxy directory */
 static apr_time_t now;  /* start time of this processing run */
 
@@ -319,6 +320,32 @@ static void delete_entry(char *path, char *basename, apr_pool_t *pool)
 }
 
 /*
+ * Determine if a directory is empty
+ */
+static int directory_empty(char *path, apr_pool_t *pool)
+{
+    apr_dir_t *dir;
+    apr_finfo_t info;
+    
+    if (apr_dir_open(&dir, path, pool) != APR_SUCCESS) {
+        return 0;
+    }
+
+    while (apr_dir_read(&info, 0, dir) == APR_SUCCESS && !interrupted) {
+        if (!strcmp(info.name, ".") || !strcmp(info.name, "..")) {
+            continue;
+        }
+        
+        /* If we're here, the directory is not empty */
+        apr_dir_close(dir);
+        return 0;
+    }
+
+    apr_dir_close(dir);
+    return 1;
+}
+
+/*
  * walk the cache directory tree
  */
 static int process_dir(char *path, apr_pool_t *pool)
@@ -332,7 +359,7 @@ static int process_dir(char *path, apr_pool_t *pool)
     apr_finfo_t info;
     apr_size_t len;
     apr_time_t current, deviation;
-    char *nextpath, *base, *ext;
+    char *nextpath, *base, *ext, *orig_basename;
     APR_RING_ENTRY(_direntry) anchor;
     DIRENTRY *d, *t, *n;
     ENTRY *e;
@@ -413,8 +440,17 @@ static int process_dir(char *path, apr_pool_t *pool)
         }
 
         if (info.filetype == APR_DIR) {
+            /* Make a copy of the basename, as process_dir modifies it */
+            orig_basename = apr_pstrdup(pool, d->basename);
             if (process_dir(d->basename, pool)) {
                 return 1;
+            }
+
+            /* If asked to delete dirs, do so now. We don't care if it fails.
+             * If it fails, it likely means there was something else there.
+             */
+            if (deldirs && !dryrun) {
+                apr_dir_remove(orig_basename, pool);
             }
             continue;
         }
@@ -740,8 +776,8 @@ static void usage(void)
 {
     apr_file_printf(errfile,
     "%s -- program for cleaning the disk cache."                             NL
-    "Usage: %s [-Dvrn] -pPATH -lLIMIT"                                       NL
-    "       %s [-ni] -dINTERVAL -pPATH -lLIMIT"                              NL
+    "Usage: %s [-Dvtrn] -pPATH -lLIMIT"                                      NL
+    "       %s [-nti] -dINTERVAL -pPATH -lLIMIT"                             NL
                                                                              NL
     "Options:"                                                               NL
     "  -d   Daemonize and repeat cache cleaning every INTERVAL minutes."     NL
@@ -756,10 +792,14 @@ static void usage(void)
                                                                              NL
     "  -r   Clean thoroughly. This assumes that the Apache web server is "   NL
     "       not running. This option is mutually exclusive with the -d"      NL
-    "       option."                                                         NL
+    "       option and implies -t."                                          NL
                                                                              NL
     "  -n   Be nice. This causes slower processing in favour of other"       NL
     "       processes."                                                      NL
+                                                                             NL
+    "  -t   Delete all empty directories. By default only cache files are"   NL
+    "       removed, however with some configurations the large number of"   NL
+    "       directories created may require attention."                      NL
                                                                              NL
     "  -p   Specify PATH as the root directory of the disk cache."           NL
                                                                              NL
@@ -803,6 +843,7 @@ int main(int argc, const char * const argv[])
     verbose = 0;
     realclean = 0;
     benice = 0;
+    deldirs = 0;
     intelligent = 0;
     previous = 0; /* avoid compiler warning */
     proxypath = NULL;
@@ -827,7 +868,7 @@ int main(int argc, const char * const argv[])
     apr_getopt_init(&o, pool, argc, argv);
 
     while (1) {
-        status = apr_getopt(o, "iDnvrd:l:L:p:", &opt, &arg);
+        status = apr_getopt(o, "iDnvrtd:l:L:p:", &opt, &arg);
         if (status == APR_EOF) {
             break;
         }
@@ -856,6 +897,13 @@ int main(int argc, const char * const argv[])
                 }
                 benice = 1;
                 break;
+		
+            case 't':
+                if (deldirs) {
+                    usage();
+                }
+                deldirs = 1;
+                break;
 
             case 'v':
                 if (verbose) {
@@ -869,6 +917,7 @@ int main(int argc, const char * const argv[])
                     usage();
                 }
                 realclean = 1;
+                deldirs = 1;
                 break;
 
             case 'd':

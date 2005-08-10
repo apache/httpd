@@ -39,6 +39,7 @@
     <p><code><strong>htcacheclean</strong>
     [ -<strong>D</strong> ]
     [ -<strong>v</strong> ]
+    [ -<strong>t</strong> ]
     [ -<strong>r</strong> ]
     [ -<strong>n</strong> ]
     -<strong>p</strong><var>path</var>
@@ -46,6 +47,7 @@
 
     <p><code><strong>htcacheclean</strong> -<strong>b</strong>
     [ -<strong>n</strong> ]
+    [ -<strong>t</strong> ]
     [ -<strong>i</strong> ]
     -<strong>d</strong><var>interval</var>
     -<strong>p</strong><var>path</var>
@@ -71,13 +73,22 @@
     <dt><code>-r</code></dt>
     <dd>Clean thoroughly. This assumes that the Apache web server is
     not running (otherwise you may get garbage in the cache). This option
-    is mutually exclusive with the <code>-d</code> option.</dd>
+    is mutually exclusive with the <code>-d</code> option and implies
+    the <code>-t</code> option.</dd>
 
     <dt><code>-n</code></dt>
     <dd>Be nice. This causes slower processing in favour of other
     processes. <code>htcacheclean</code> will sleep from time to time
     so that (a) the disk IO will be delayed and (b) the kernel can schedule
     other processes in the meantime.</dd>
+
+    <dt><code>-t</code></dt>
+    <dd>Delete all empty directories. By default only cache files are
+    removed, however with some configurations the large number of
+    directories created may require attention. If your configuration
+    requires a very large number of directories, to the point that
+    inode or file allocation table exhaustion may become an issue, use 
+    of this option is advised.</dd>
 
     <dt><code>-p<var>path</var></code></dt>
     <dd>Specify <var>path</var> as the root directory of the disk cache. This
