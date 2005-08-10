@@ -1,6 +1,12 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.3.0
 
+  *) mod_disk_cache: Support htcacheclean removing directories.
+     [Andreas Steinmetz]
+
+  *) htcacheclean: Add -t option to remove empty directories.
+     [Colm MacCarthaigh <colm stdlib.net>]
+
   *) Remove the base href tag from mod_proxy_ftp, as it breaks relative
      links for clients not using an Authorization header. [Graham Leggett,
      Jon Snow <jsnow27 gatesec.net>]
