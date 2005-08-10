@@ -125,7 +125,6 @@ typedef struct {
     apr_array_header_t *proxies;
     apr_array_header_t *sec_proxy;
     apr_array_header_t *aliases;
-    apr_array_header_t *raliases;
     apr_array_header_t *noproxies;
     apr_array_header_t *dirconn;
     apr_array_header_t *allowed_connect_ports;
@@ -173,10 +172,6 @@ typedef struct {
  * the strmatch_patterns are really a const just to have a
  * case-independent strstr.
  */
-    apr_array_header_t* cookie_paths;
-    apr_array_header_t* cookie_domains;
-    const apr_strmatch_pattern* cookie_path_str;
-    const apr_strmatch_pattern* cookie_domain_str;
     enum {
         status_off,
         status_on,
@@ -191,6 +186,19 @@ typedef struct {
     const char *p;            /* The path */
     int         p_is_fnmatch; /* Is this path an fnmatch candidate? */
     ap_regex_t  *r;            /* Is this a regex? */
+
+/* ProxyPassReverse and friends are documented as working inside
+ * <Location>.  But in fact they never have done in the case of
+ * more than one <Location>, because the server_conf can't see it.
+ * We need to move them to the per-dir config.
+ * Discussed in February:
+ * http://marc.theaimsgroup.com/?l=apache-httpd-dev&m=110726027118798&w=2
+ */
+    apr_array_header_t *raliases;
+    apr_array_header_t* cookie_paths;
+    apr_array_header_t* cookie_domains;
+    const apr_strmatch_pattern* cookie_path_str;
+    const apr_strmatch_pattern* cookie_domain_str;
 } proxy_dir_conf;
 
 typedef struct {

@@ -968,7 +968,7 @@ skip_body:
     return APR_SUCCESS;
 }
 
-static void process_proxy_header(request_rec* r, proxy_server_conf* c,
+static void process_proxy_header(request_rec* r, proxy_dir_conf* c,
                       const char* key, const char* value)
 {
     static const char* date_hdrs[]
@@ -1021,7 +1021,9 @@ static void ap_proxy_read_headers(request_rec *r, request_rec *rr,
     int saw_headers = 0;
     void *sconf = r->server->module_config;
     proxy_server_conf *psc;
+    proxy_dir_conf *dconf;
 
+    dconf = ap_get_module_config(r->per_dir_config, &proxy_module);
     psc = (proxy_server_conf *) ap_get_module_config(sconf, &proxy_module);
 
     r->headers_out = apr_table_make(r->pool, 20);
@@ -1096,7 +1098,7 @@ end)
          * Modify headers requiring canonicalisation and/or affected
          * by ProxyPassReverse and family with process_proxy_header
          */
-        process_proxy_header(r, psc, buffer, value) ;
+        process_proxy_header(r, dconf, buffer, value) ;
         saw_headers = 1;
 
         /* the header was too long; at the least we should skip extra data */
