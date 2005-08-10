@@ -34,7 +34,6 @@
 
 #include "apr_dbd.h"
 #include "mod_dbd.h"
-
 extern module AP_MODULE_DECLARE_DATA dbd_module;
 
 /************ svr cfg: manage db connection pool ****************/
@@ -368,6 +367,11 @@ void ap_dbd_close(server_rec *s, ap_dbd_t *sql)
     }
 #endif
 }
+static apr_status_t dbd_close(void *CONN)
+{
+    ap_dbd_t *conn = CONN;
+    return apr_dbd_close(conn->driver, conn->handle);
+}
 #if APR_HAS_THREADS
 typedef struct {
     ap_dbd_t *conn;
@@ -395,8 +399,7 @@ ap_dbd_t *ap_dbd_acquire(request_rec *r)
                                           apr_pool_cleanup_null);
             }
             else {
-                apr_pool_cleanup_register(r->pool, req->conn->handle,
-                                          (void*)req->conn->driver->close,
+                apr_pool_cleanup_register(r->pool, req->conn, dbd_close,
                                           apr_pool_cleanup_null);
             }
         }
@@ -414,8 +417,7 @@ ap_dbd_t *ap_dbd_acquire(request_rec *r)
         if ( ret ) {
             ap_set_module_config(r->request_config, &dbd_module, ret);
             if (!svr->persist) {
-                apr_pool_cleanup_register(r->pool, svr->conn->handle,
-                                          (void*)svr->conn->driver->close,
+                apr_pool_cleanup_register(r->pool, svr->conn, dbd_close,
                                           apr_pool_cleanup_null);
             }
             /* if persist then dbd_open registered cleanup on proc pool */
