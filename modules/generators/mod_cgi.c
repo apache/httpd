@@ -929,7 +929,18 @@ static int cgi_handler(request_rec *r)
         int ret;
 
         if ((ret = ap_scan_script_header_err_brigade(r, bb, sbuf))) {
-            return log_script(r, conf, ret, dbuf, sbuf, bb, script_err);
+            ret = log_script(r, conf, ret, dbuf, sbuf, bb, script_err);
+
+            /* Set our status. */
+            r->status = ret;
+
+            /* Pass EOS bucket down the filter chain. */
+            apr_brigade_cleanup(bb);
+            b = apr_bucket_eos_create(c->bucket_alloc);
+            APR_BRIGADE_INSERT_TAIL(bb, b);
+            ap_pass_brigade(r->output_filters, bb);
+
+            return ret;
         }
 
         location = apr_table_get(r->headers_out, "Location");
