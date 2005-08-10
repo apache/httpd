@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "HTCACHECLEAN" 8 "2004-11-10" "Apache HTTP Server" "htcacheclean"
+.TH "HTCACHECLEAN" 8 "2005-08-08" "Apache HTTP Server" "htcacheclean"
 
 .SH NAME
 htcacheclean \- Clean up the disk cache
@@ -27,10 +27,10 @@ htcacheclean \- Clean up the disk cache
 .SH "SYNOPSIS"
  
 .PP
-\fBhtcacheclean\fR [ -\fBD\fR ] [ -\fBv\fR ] [ -\fBr\fR ] [ -\fBn\fR ] -\fBp\fR\fIpath\fR -\fBl\fR\fIlimit\fR
+\fBhtcacheclean\fR [ -\fBD\fR ] [ -\fBv\fR ] [ -\fBt\fR ] [ -\fBr\fR ] [ -\fBn\fR ] -\fBp\fR\fIpath\fR -\fBl\fR\fIlimit\fR
  
 .PP
-\fBhtcacheclean\fR -\fBb\fR [ -\fBn\fR ] [ -\fBi\fR ] -\fBd\fR\fIinterval\fR -\fBp\fR\fIpath\fR -\fBl\fR\fIlimit\fR
+\fBhtcacheclean\fR -\fBb\fR [ -\fBn\fR ] [ -\fBt\fR ] [ -\fBi\fR ] -\fBd\fR\fIinterval\fR -\fBp\fR\fIpath\fR -\fBl\fR\fIlimit\fR
  
 
 .SH "SUMMARY"
@@ -53,10 +53,13 @@ Do a dry run and don't delete anything\&. This option is mutually exclusive with
 Be verbose and print statistics\&. This option is mutually exclusive with the -d option\&.  
 .TP
 -r
-Clean thoroughly\&. This assumes that the Apache web server is not running (otherwise you may get garbage in the cache)\&. This option is mutually exclusive with the -d option\&.  
+Clean thoroughly\&. This assumes that the Apache web server is not running (otherwise you may get garbage in the cache)\&. This option is mutually exclusive with the -d option and implies the -t option\&.  
 .TP
 -n
 Be nice\&. This causes slower processing in favour of other processes\&. htcacheclean will sleep from time to time so that (a) the disk IO will be delayed and (b) the kernel can schedule other processes in the meantime\&.  
+.TP
+-t
+Delete all empty directories\&. By default only cache files are removed, however with some configurations the large number of directories created may require attention\&. If your configuration requires a very large number of directories, to the point that inode or file allocation table exhaustion may become an issue, use of this option is advised\&.  
 .TP
 -p\fIpath\fR
 Specify \fIpath\fR as the root directory of the disk cache\&. This should be the same value as specified with the CacheRoot directive\&.  
