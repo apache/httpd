@@ -184,6 +184,33 @@ static void mkdir_structure(disk_cache_conf *conf, const char *file, apr_pool_t 
     }
 }
 
+/* htcacheclean may remove directories underneath us.
+ * So, we'll try renaming three times at a cost of 0.002 seconds.
+ */
+static apr_status_t safe_file_rename(disk_cache_conf *conf,
+                                     const char *src, const char *dest,
+                                     apr_pool_t *pool)
+{
+    apr_status_t rv;
+
+    rv = apr_file_rename(src, dest, pool);
+
+    if (rv != APR_SUCCESS) {
+        int i;
+
+        for (i = 0; i < 2 && rv != APR_SUCCESS; i++) {
+            /* 1000 micro-seconds aka 0.001 seconds. */
+            apr_sleep(1000);
+
+            mkdir_structure(conf, dest, pool);
+
+            rv = apr_file_rename(src, dest, pool);
+        }
+    }
+
+    return rv;
+}
+
 static apr_status_t file_cache_el_final(disk_cache_object_t *dobj,
                                         request_rec *r)
 {
@@ -795,7 +822,8 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
 
             dobj->tfd = NULL;
 
-            rv = apr_file_rename(dobj->tempfile, dobj->hdrsfile, r->pool);
+            rv = safe_file_rename(conf, dobj->tempfile, dobj->hdrsfile,
+                                  r->pool);
             if (rv != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, r->server,
                     "disk_cache: rename tempfile to varyfile failed: %s -> %s",
@@ -886,9 +914,8 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
     if (rv != APR_SUCCESS) {
         mkdir_structure(conf, dobj->hdrsfile, r->pool);
     }
-    
-    rv = apr_file_rename(dobj->tempfile, dobj->hdrsfile, r->pool);
 
+    rv = safe_file_rename(conf, dobj->tempfile, dobj->hdrsfile, r->pool);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
                      "disk_cache: rename tempfile to hdrsfile failed: %s -> %s",
