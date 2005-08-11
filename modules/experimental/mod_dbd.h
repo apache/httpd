@@ -29,7 +29,7 @@
 
 typedef struct {
     apr_dbd_t *handle;
-    apr_dbd_driver_t *driver;
+    const apr_dbd_driver_t *driver;
     apr_hash_t *prepared;
 } ap_dbd_t;
 

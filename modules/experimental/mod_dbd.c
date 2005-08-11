@@ -71,7 +71,7 @@ typedef enum { cmd_name, cmd_params, cmd_persist,
 static const char *dbd_param(cmd_parms *cmd, void *cfg, const char *val)
 {
     const char *p;
-    apr_dbd_driver_t *driver = NULL;
+    const apr_dbd_driver_t *driver = NULL;
     svr_cfg *svr = (svr_cfg*) ap_get_module_config
         (cmd->server->module_config, &dbd_module);
 
