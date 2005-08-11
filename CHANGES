@@ -1,6 +1,10 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.3.0
 
+  *) mod_cache: Fix incorrectly served 304 responses when expired cache
+     entity is valid, but cache is unwritable and headers cannot be
+     updated.  [Colm MacCarthaigh <colm stdlib.net>]
+
   *) mod_cache: Remove entities from the cache when re-validation
      receives a 404 or other content-no-longer-present error.
      [Rüdiger Plüm ruediger.pluem vodafone.com]

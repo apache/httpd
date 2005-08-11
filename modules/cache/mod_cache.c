@@ -682,7 +682,13 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         ap_cache_accept_headers(cache->handle, r, 1);
     }
 
-    /* Write away header information to cache. */
+    /* Write away header information to cache. It is possible that we are
+     * trying to update headers for an entity which has already been cached.
+     *
+     * This may fail, due to an unwritable cache area. E.g. filesystem full,
+     * permissions problems or a read-only (re)mount. This must be handled 
+     * later.
+     */
     rv = cache->provider->store_headers(cache->handle, r, info);
 
     /* Did we just update the cached headers on a revalidated response?
@@ -691,7 +697,7 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
      * the same way as with a regular response, but conditions are now checked
      * against the cached or merged response headers.
      */
-    if (rv == APR_SUCCESS && cache->stale_handle) {
+    if (cache->stale_handle) {
         apr_bucket_brigade *bb;
         apr_bucket *bkt;
         int status;
@@ -715,12 +721,39 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         }
 
         cache->block_response = 1;
+
+        /* Before returning we need to handle the possible case of an
+         * unwritable cache. Rather than leaving the entity in the cache
+         * and having it constantly re-validated, now that we have recalled 
+         * the body it is safe to try and remove the url from the cache.
+         */
+        if (rv != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, r->server,
+                         "cache: updating headers with store_headers failed. "
+                         "Removing cached url.");
+
+            rv = cache->provider->remove_url(cache->stale_handle, r->pool);
+            if (rv != OK) {
+                /* Probably a mod_disk_cache cache area has been (re)mounted 
+                 * read-only, or that there is a permissions problem. 
+                 */
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, r->server,
+                     "cache: attempt to remove url from cache unsuccessful.");
+            }
+        }
+
         return ap_pass_brigade(f->next, bb);
     }
 
-    if (rv == APR_SUCCESS) {
-        rv = cache->provider->store_body(cache->handle, r, in);
+    if(rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, r->server,
+                     "cache: store_headers failed");
+        ap_remove_output_filter(f);
+
+        return ap_pass_brigade(f->next, in);
     }
+
+    rv = cache->provider->store_body(cache->handle, r, in);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, r->server,
                      "cache: store_body failed");
