@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.3.0
 
+  *) mod_disk_cache: Properly remove files from cache when needed.
+     [Rüdiger Plüm ruediger.pluem vodafone.com]
+
   *) mod_disk_cache: Support htcacheclean removing directories.
      [Andreas Steinmetz]
 

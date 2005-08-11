@@ -541,9 +541,51 @@ static int remove_entity(cache_handle_t *h)
     return OK;
 }
 
-static int remove_url(const char *key)
+static int remove_url(cache_handle_t *h, apr_pool_t *p)
 {
-    /* XXX: Delete file from cache! */
+    apr_status_t rc;
+    disk_cache_object_t *dobj;
+
+    /* Get disk cache object from cache handle */
+    dobj = (disk_cache_object_t *) h->cache_obj->vobj;
+    if (!dobj) {
+        return DECLINED;
+    }
+
+    /* Delete headers file */
+    if (dobj->hdrsfile) {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, NULL,
+                     "disk_cache: Deleting %s from cache.", dobj->hdrsfile);
+
+        rc = apr_file_remove(dobj->hdrsfile, p);
+        if ((rc != APR_SUCCESS) && (rc != APR_ENOENT)) {
+            /* Will only result in an output if httpd is started with -e debug.
+             * For reason see log_error_core for the case s == NULL.
+             */
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, rc, NULL,
+                   "disk_cache: Failed to delete headers file %s from cache.",
+                         dobj->hdrsfile);
+            return DECLINED;
+        }
+    }
+
+     /* Delete data file */
+    if (dobj->datafile) {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, NULL,
+                     "disk_cache: Deleting %s from cache.", dobj->datafile);
+
+        rc = apr_file_remove(dobj->datafile, p);
+        if ((rc != APR_SUCCESS) && (rc != APR_ENOENT)) {
+            /* Will only result in an output if httpd is started with -e debug.
+             * For reason see log_error_core for the case s == NULL.
+             */
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, rc, NULL,
+                      "disk_cache: Failed to delete data file %s from cache.",
+                         dobj->datafile);
+            return DECLINED;
+        }
+    }
+
     return OK;
 }
 
