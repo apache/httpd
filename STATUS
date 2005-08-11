@@ -473,8 +473,11 @@ PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
 CURRENT VOTES:
 
-    * Reverse proxy cookie patch from PR#10722 (c.f. comment 16)
-      +1: niq
+    * Reverse Proxy fixes: <Location> bug and Cookie support
+      Patch is at
+      http://marc.theaimsgroup.com/?l=apache-httpd-dev&m=112365629308138&q=p4
+      and is in production with Clients.
+      +1: niq: I'm seeing *a lot* of demand for this.
 
     * Promote mod_ldap and mod_auth_ldap from experimental to
       non experimental status.
