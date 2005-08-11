@@ -601,7 +601,7 @@ static int unserialize_table( cache_header_tbl_t *ctbl,
 /* remove_url()
  * Notes:
  */
-static int remove_url(const char *key) 
+static int remove_url(cache_handle_t *h, apr_pool_t *p) 
 {
     cache_object_t *obj;
     int cleanup = 0;
@@ -609,8 +609,8 @@ static int remove_url(const char *key)
     if (sconf->lock) {
         apr_thread_mutex_lock(sconf->lock);
     }
-  
-    obj = cache_find(sconf->cache_cache, key);       
+ 
+    obj = h->cache_obj; 
     if (obj) {
         cache_remove(sconf->cache_cache, obj);
         /* For performance, cleanup cache object after releasing the lock */

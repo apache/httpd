@@ -1,6 +1,10 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.3.0
 
+  *) mod_cache: Remove entities from the cache when re-validation
+     receives a 404 or other content-no-longer-present error.
+     [Rüdiger Plüm ruediger.pluem vodafone.com]
+
   *) mod_disk_cache: Properly remove files from cache when needed.
      [Rüdiger Plüm ruediger.pluem vodafone.com]
 

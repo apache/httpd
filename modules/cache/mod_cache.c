@@ -29,6 +29,7 @@ APR_OPTIONAL_FN_TYPE(ap_cache_generate_key) *cache_generate_key;
  */
 static ap_filter_rec_t *cache_save_filter_handle;
 static ap_filter_rec_t *cache_out_filter_handle;
+static ap_filter_rec_t *cache_remove_url_filter_handle;
 
 /*
  * CACHE handler
@@ -123,6 +124,19 @@ static int cache_url_handler(request_rec *r, int lookup)
                 /* add cache_save filter to cache this request */
                 ap_add_output_filter_handle(cache_save_filter_handle, NULL, r,
                                             r->connection);
+
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r->server,
+                             "Adding CACHE_REMOVE_URL filter.");
+
+                /* Add cache_remove_url filter to this request to remove a
+                 * stale cache entry if needed. Also put the current cache
+                 * request rec in the filter context, as the request that
+                 * is available later during running the filter maybe
+                 * different due to an internal redirect.
+                 */
+                cache->remove_url_filter =
+                    ap_add_output_filter_handle(cache_remove_url_filter_handle, 
+                                                cache, r, r->connection);
             }
             else if (cache->stale_headers) {
                 ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r->server,
@@ -441,11 +455,6 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
     if (reason) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                      "cache: %s not cached. Reason: %s", url, reason);
-        /* remove this object from the cache 
-         * BillS Asks.. Why do we need to make this call to remove_url?
-         * leave it in for now..
-         */
-        cache_remove_url(r, url);
 
         /* remove this filter from the chain */
         ap_remove_output_filter(f);
@@ -545,6 +554,13 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                  "cache: Caching url: %s", url);
+
+    /* We are actually caching this response. So it does not
+     * make sense to remove this entity any more.
+     */
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                 "cache: Removing CACHE_REMOVE_URL filter.");
+    ap_remove_output_filter(cache->remove_url_filter);
 
     /*
      * We now want to update the cache file header information with
@@ -711,6 +727,57 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         ap_remove_output_filter(f);
     }
 
+    return ap_pass_brigade(f->next, in);
+}
+
+/*
+ * CACHE_REMOVE_URL filter
+ * ---------------
+ *
+ * This filter gets added in the quick handler every time the CACHE_SAVE filter
+ * gets inserted. Its purpose is to remove a confirmed stale cache entry from
+ * the cache.
+ *
+ * CACHE_REMOVE_URL has to be a protocol filter to ensure that is run even if
+ * the response is a canned error message, which removes the content filters
+ * and thus the CACHE_SAVE filter from the chain.
+ *
+ * CACHE_REMOVE_URL expects cache request rec within its context because the
+ * request this filter runs on can be different from the one whose cache entry
+ * should be removed, due to internal redirects.
+ *
+ * Note that CACHE_SAVE_URL (as a content-set filter, hence run before the
+ * protocol filters) will remove this filter if it decides to cache the file.
+ * Therefore, if this filter is left in, it must mean we need to toss any
+ * existing files.
+ */
+static int cache_remove_url_filter(ap_filter_t *f, apr_bucket_brigade *in)
+{
+    request_rec *r = f->r;
+    cache_request_rec *cache;
+
+    /* Setup cache_request_rec */
+    cache = (cache_request_rec *) f->ctx;
+
+    if (!cache) {
+        /* user likely configured CACHE_REMOVE_URL manually; they should really 
+         * use mod_cache configuration to do that. So:
+         * 1. Remove ourselves 
+         * 2. Do nothing and bail out
+         */
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                     "cache: CACHE_REMOVE_URL enabled unexpectedly");
+        ap_remove_output_filter(f);
+        return ap_pass_brigade(f->next, in);
+    }
+    /*
+     * Now remove this cache entry from the cache
+     */
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                 "cache: Removing url %s from the cache", f->r->unparsed_uri);
+    cache_remove_url(cache, r->pool);
+    /* remove ourselves */
+    ap_remove_output_filter(f);
     return ap_pass_brigade(f->next, in);
 }
 
@@ -967,6 +1034,7 @@ static int cache_post_config(apr_pool_t *p, apr_pool_t *plog,
     return OK;
 }
 
+
 static const command_rec cache_cmds[] =
 {
     /* XXX
@@ -1033,6 +1101,15 @@ static void register_hooks(apr_pool_t *p)
                                   cache_out_filter, 
                                   NULL,
                                   AP_FTYPE_CONTENT_SET+1);
+    /* CACHE_REMOVE_URL has to be a protocol filter to ensure that is
+     * run even if the response is a canned error message, which
+     * removes the content filters.
+     */
+    cache_remove_url_filter_handle =
+        ap_register_output_filter("CACHE_REMOVE_URL",
+                                  cache_remove_url_filter,
+                                  NULL,
+                                  AP_FTYPE_PROTOCOL);
     ap_hook_post_config(cache_post_config, NULL, NULL, APR_HOOK_REALLY_FIRST);
 }
 

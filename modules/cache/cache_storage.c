@@ -28,24 +28,28 @@ extern module AP_MODULE_DECLARE_DATA cache_module;
  * delete all URL entities from the cache
  *
  */
-int cache_remove_url(request_rec *r, char *url)
+int cache_remove_url(cache_request_rec *cache, apr_pool_t *p)
 {
     cache_provider_list *list;
     apr_status_t rv;
-    char *key;
-    cache_request_rec *cache = (cache_request_rec *) 
-                         ap_get_module_config(r->request_config, &cache_module);
+    cache_handle_t *h;
 
-    rv = cache_generate_key(r,r->pool,&key);
-    if (rv != APR_SUCCESS) {
-        return rv;
-    }
+    char *key;
 
     list = cache->providers;
 
+    /* Remove the stale cache entry if present. If not, we're
+     * being called from outside of a request; remove the 
+     * non-stalle handle.
+     */
+    h = cache->stale_handle ? cache->stale_handle : cache->handle;
+    if (!h) {
+       return OK;
+    }
+
     /* for each specified cache type, delete the URL */
     while(list) {
-        list->provider->remove_url(key);
+        list->provider->remove_url(h, p);
         list = list->next;
     }
     return OK;
