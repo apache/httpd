@@ -1050,8 +1050,8 @@ PROXY_DECLARE(const char *) ap_proxy_cookie_reverse_map(request_rec *r,
    /* Find the match and replacement, but save replacing until we've done
     * both path and domain so we know the new strlen
     */
-    if (pathp = apr_strmatch(conf->cookie_path_str, str, len) ,pathp) {
-        pathp += 5 ;
+    if ((pathp = apr_strmatch(conf->cookie_path_str, str, len)) != NULL) {
+        pathp += 5;
         poffs = pathp - str;
         pathe = ap_strchr_c(pathp, ';');
         l1 = pathe ? (pathe - pathp) : strlen(pathp);
@@ -1067,7 +1067,7 @@ PROXY_DECLARE(const char *) ap_proxy_cookie_reverse_map(request_rec *r,
         }
     }
     
-    if (domainp = apr_strmatch(conf->cookie_domain_str, str, len), domainp) {
+    if ((domainp = apr_strmatch(conf->cookie_domain_str, str, len)) != NULL) {
         domainp += 7;
         doffs = domainp - str;
         domaine = ap_strchr_c(domainp, ';');
@@ -1508,6 +1508,7 @@ static apr_status_t connection_constructor(void **resource, void *params,
     return APR_SUCCESS;
 }
 
+#if APR_HAS_THREADS /* only needed when threads are used */
 /* reslist destructor */
 static apr_status_t connection_destructor(void *resource, void *params,
                                           apr_pool_t *pool)
@@ -1520,6 +1521,7 @@ static apr_status_t connection_destructor(void *resource, void *params,
 
     return APR_SUCCESS;
 }
+#endif
 
 PROXY_DECLARE(void) ap_proxy_initialize_worker_share(proxy_server_conf *conf,
                                                      proxy_worker *worker,
