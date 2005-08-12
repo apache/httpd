@@ -120,6 +120,7 @@ struct noproxy_entry {
 typedef struct proxy_balancer  proxy_balancer;
 typedef struct proxy_worker    proxy_worker;
 typedef struct proxy_conn_pool proxy_conn_pool;
+typedef struct proxy_balancer_method proxy_balancer_method;
 
 typedef struct {
     apr_array_header_t *proxies;
@@ -179,6 +180,7 @@ typedef struct {
     } proxy_status;             /* Status display options */
     char proxy_status_set;
     apr_pool_t *pool;           /* Pool used for allocating this struct */
+    apr_array_header_t *lbmethods;
 } proxy_server_conf;
 
 
@@ -257,6 +259,7 @@ typedef struct {
     apr_size_t      elected;    /* Number of times the worker was elected */
     char            route[PROXY_WORKER_MAX_ROUTE_SIZ+1];
     char            redirect[PROXY_WORKER_MAX_ROUTE_SIZ+1];
+    void            *context;   /* general purpose storage */
 } proxy_worker_stat;
 
 /* Worker configuration */
@@ -293,6 +296,7 @@ struct proxy_worker {
 #if APR_HAS_THREADS
     apr_thread_mutex_t  *mutex;  /* Thread lock for updating address cache */
 #endif
+    void            *context;   /* general purpose storage */
 };
 
 struct proxy_balancer {
@@ -303,10 +307,7 @@ struct proxy_balancer {
     apr_interval_time_t timeout; /* Timeout for waiting on free connection */
     int                 max_attempts; /* Number of attempts before failing */
     char                max_attempts_set;
-    enum {
-       lbmethod_requests = 1,
-       lbmethod_traffic = 2
-    } lbmethod;
+    proxy_balancer_method *lbmethod;
 
     /* XXX: Perhaps we will need the proc mutex too.
      * Altrough we are only using arithmetic operations
@@ -316,6 +317,14 @@ struct proxy_balancer {
 #if APR_HAS_THREADS
     apr_thread_mutex_t  *mutex;  /* Thread lock for updating lb params */
 #endif
+    void            *context;   /* general purpose storage */
+};
+
+struct proxy_balancer_method {
+    const char *name;            /* name of the load balancer method*/
+    proxy_worker *(*finder)(proxy_balancer *balancer,
+                            request_rec *r);
+    void            *context;   /* general purpose storage */
 };
 
 #if APR_HAS_THREADS
@@ -364,6 +373,14 @@ APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, canon_handler, (request_rec *r,
 
 APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, create_req, (request_rec *r, request_rec *pr))
 APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, fixups, (request_rec *r)) 
+
+/*
+ * Useful hook run within the create per-server phase which
+ * adds the required lbmethod structs, so they exist at
+ * configure time
+ */
+APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, load_lbmethods,
+                                     (proxy_server_conf *conf))
 
 /**
  * pre request hook.

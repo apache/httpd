@@ -1,6 +1,11 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.3.0
 
+  *) mod_proxy/mod_proxy_balancer: Provide a simple, functional
+     interface to add additional balancer lb selection methods
+     without requiring code changes to mod_proxy/mod_proxy_balancer;
+     these can be implemented via sub-modules now. [Jim Jagielski]
+
   *) mod_cache: Fix incorrectly served 304 responses when expired cache
      entity is valid, but cache is unwritable and headers cannot be
      updated.  [Colm MacCarthaigh <colm stdlib.net>]

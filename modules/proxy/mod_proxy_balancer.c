@@ -21,6 +21,7 @@
 #include "mod_proxy.h"
 #include "ap_mpm.h"
 #include "apr_version.h"
+#include "apr_hooks.h"
 
 module AP_MODULE_DECLARE_DATA proxy_balancer_module;
 
@@ -262,13 +263,14 @@ static proxy_worker *find_session_route(proxy_balancer *balancer,
  *   b a d c d a c d b d ...
  *
  */
+ 
 static proxy_worker *find_best_byrequests(proxy_balancer *balancer,
-                                      request_rec *r)
+                                request_rec *r)
 {
     int i;
     int total_factor = 0;
     proxy_worker *worker = (proxy_worker *)balancer->workers->elts;
-    proxy_worker *candidate = NULL;
+    proxy_worker *mycandidate = NULL;
     
     /* First try to see if we have available candidate */
     for (i = 0; i < balancer->workers->nelts; i++) {
@@ -286,18 +288,18 @@ static proxy_worker *find_best_byrequests(proxy_balancer *balancer,
         if (PROXY_WORKER_IS_USABLE(worker)) {
             worker->s->lbstatus += worker->s->lbfactor;
             total_factor += worker->s->lbfactor;
-            if (!candidate || worker->s->lbstatus > candidate->s->lbstatus)
-                candidate = worker;
+            if (!mycandidate || worker->s->lbstatus > mycandidate->s->lbstatus)
+                mycandidate = worker;
         }
         worker++;
     }
 
-    if (candidate) {
-        candidate->s->lbstatus -= total_factor;
-        candidate->s->elected++;
+    if (mycandidate) {
+        mycandidate->s->lbstatus -= total_factor;
+        mycandidate->s->elected++;
     }
 
-    return candidate;
+    return mycandidate;
 }
 
 /*
@@ -318,13 +320,13 @@ static proxy_worker *find_best_byrequests(proxy_balancer *balancer,
  * chosen more often, to even things out.
  */
 static proxy_worker *find_best_bytraffic(proxy_balancer *balancer,
-                                          request_rec *r)
+                                         request_rec *r)
 {
     int i;
     apr_off_t mytraffic = 0;
     apr_off_t curmin = 0;
     proxy_worker *worker = (proxy_worker *)balancer->workers->elts;
-    proxy_worker *candidate = NULL;
+    proxy_worker *mycandidate = NULL;
     
     /* First try to see if we have available candidate */
     for (i = 0; i < balancer->workers->nelts; i++) {
@@ -342,19 +344,19 @@ static proxy_worker *find_best_bytraffic(proxy_balancer *balancer,
         if (PROXY_WORKER_IS_USABLE(worker)) {
             mytraffic = (worker->s->transferred/worker->s->lbfactor) +
                         (worker->s->read/worker->s->lbfactor);
-            if (!candidate || mytraffic < curmin) {
-                candidate = worker;
+            if (!mycandidate || mytraffic < curmin) {
+                mycandidate = worker;
                 curmin = mytraffic;
             }
         }
         worker++;
     }
     
-    if (candidate) {
-        candidate->s->elected++;
+    if (mycandidate) {
+        mycandidate->s->elected++;
     }
 
-    return candidate;
+    return mycandidate;
 }
 
 static proxy_worker *find_best_worker(proxy_balancer *balancer,
@@ -365,14 +367,12 @@ static proxy_worker *find_best_worker(proxy_balancer *balancer,
     if (PROXY_THREAD_LOCK(balancer) != APR_SUCCESS)
         return NULL;    
 
-    if (balancer->lbmethod == lbmethod_requests) {
-        candidate = find_best_byrequests(balancer, r);
-    } else if (balancer->lbmethod == lbmethod_traffic) {
-        candidate = find_best_bytraffic(balancer, r);
-    } else {
+    candidate = (*balancer->lbmethod->finder)(balancer, r);
+
+/*    
         PROXY_THREAD_UNLOCK(balancer);
         return NULL;
-    }
+*/
 
     PROXY_THREAD_UNLOCK(balancer);
 
@@ -657,18 +657,15 @@ static int balancer_handler(request_rec *r)
             bsel->max_attempts_set = 1;
         }
         if ((val = apr_table_get(params, "lm"))) {
-            int ival = atoi(val);
-            switch(ival) {
-                case 0:
+            struct proxy_balancer_method *ent =
+               (struct proxy_balancer_method *) conf->lbmethods->elts;
+            int i;
+            for (i = 0; i < conf->lbmethods->nelts; i++) {
+                if (!strcasecmp(val, ent->name)) {
+                    bsel->lbmethod = ent;
                     break;
-                case lbmethod_traffic:
-                    bsel->lbmethod = lbmethod_traffic;
-                    break;
-                case lbmethod_requests:
-                    bsel->lbmethod = lbmethod_requests;
-                    break;
-                default:
-                    break;
+                }
+                ent++;
             }
         }
     }
@@ -755,8 +752,7 @@ static int balancer_handler(request_rec *r)
                 apr_time_sec(balancer->timeout));
             ap_rprintf(r, "<td>%d</td>\n", balancer->max_attempts);
             ap_rprintf(r, "<td>%s</td>\n",
-                       balancer->lbmethod == lbmethod_requests ? "Requests" :
-                       balancer->lbmethod == lbmethod_traffic  ? "Traffic" : "Unknown");
+                       balancer->lbmethod->name);
             ap_rputs("</table>\n", r);
             ap_rputs("\n\n<table border=\"0\"><tr>"
                 "<th>Scheme</th><th>Host</th>"
@@ -834,10 +830,17 @@ static int balancer_handler(request_rec *r)
             ap_rprintf(r, "value=\"%d\"></td></tr>\n",
                        bsel->max_attempts);
             ap_rputs("<tr><td>LB Method:</td><td><select name=\"lm\">", r);
-            ap_rprintf(r, "<option value=\"%d\" %s>Requests</option>", lbmethod_requests,
-                       bsel->lbmethod == lbmethod_requests ? "selected" : "");
-            ap_rprintf(r, "<option value=\"%d\" %s>Traffic</option>", lbmethod_traffic,
-                       bsel->lbmethod == lbmethod_traffic ? "selected" : "");
+            {
+                struct proxy_balancer_method *ent =
+                   (struct proxy_balancer_method *) conf->lbmethods->elts;
+                int i;
+                for (i = 0; i < conf->lbmethods->nelts; i++) {
+                    ap_rprintf(r, "<option value=\"%s\" %s>%s</option>", ent->name,
+                       (!strcasecmp(bsel->lbmethod->name, ent->name)) ? "selected" : "",
+                       ent->name);
+                    ent++;
+                }
+            }
             ap_rputs("</select></td></tr>\n", r);
             ap_rputs("<tr><td colspan=2><input type=submit value=\"Submit\"></td></tr>\n", r);
             ap_rvputs(r, "</table>\n<input type=hidden name=\"b\" ", NULL);
@@ -871,6 +874,30 @@ static void child_init(apr_pool_t *p, server_rec *s)
 
 }
 
+/*
+ * How to add additional lbmethods:
+ *   1. Create func which determines "best" candidate worker
+ *      (eg: find_best_bytraffic, above)
+ *   2. Create proxy_balancer_method struct which
+ *      defines the method and add it to
+ *      available server methods using
+ *      the proxy_hook_load_lbmethods hook
+ *      (eg: add_lbmethods below).
+ */
+static int add_lbmethods(proxy_server_conf *conf)
+{
+    proxy_balancer_method *new;
+
+    new  = apr_array_push(conf->lbmethods);
+    new->name = "byrequests";
+    new->finder = find_best_byrequests;
+    new  = apr_array_push(conf->lbmethods);
+    new->name = "bytraffic";
+    new->finder = find_best_bytraffic;
+
+    return OK;
+}
+
 static void ap_proxy_balancer_register_hook(apr_pool_t *p)
 {
     /* Only the mpm_winnt has child init hook handler.
@@ -880,10 +907,11 @@ static void ap_proxy_balancer_register_hook(apr_pool_t *p)
     static const char *const aszPred[] = { "mpm_winnt.c", "mod_proxy.c", NULL};
      /* manager handler */
     ap_hook_handler(balancer_handler, NULL, NULL, APR_HOOK_FIRST);
-    ap_hook_child_init(child_init, aszPred, NULL, APR_HOOK_MIDDLE); 
+    ap_hook_child_init(child_init, aszPred, NULL, APR_HOOK_MIDDLE);
     proxy_hook_pre_request(proxy_balancer_pre_request, NULL, NULL, APR_HOOK_FIRST);    
     proxy_hook_post_request(proxy_balancer_post_request, NULL, NULL, APR_HOOK_FIRST);    
     proxy_hook_canon_handler(proxy_balancer_canon, NULL, NULL, APR_HOOK_FIRST);
+    proxy_hook_load_lbmethods(add_lbmethods, NULL, NULL, APR_HOOK_FIRST);
 }
 
 module AP_MODULE_DECLARE_DATA proxy_balancer_module = {

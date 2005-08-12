@@ -1155,6 +1155,8 @@ PROXY_DECLARE(const char *) ap_proxy_add_balancer(proxy_balancer **balancer,
                                                   const char *url)
 {
     char *c, *q, *uri = apr_pstrdup(p, url);
+    int i;
+    proxy_balancer_method *lbmethod;
 
     c = strchr(uri, ':');   
     if (c == NULL || c[1] != '/' || c[2] != '/' || c[3] == '\0')
@@ -1167,8 +1169,20 @@ PROXY_DECLARE(const char *) ap_proxy_add_balancer(proxy_balancer **balancer,
     *balancer = apr_array_push(conf->balancers);
     memset(*balancer, 0, sizeof(proxy_balancer));
 
+    /*
+     * NOTE: The default method is byrequests, which we assume
+     * exists!
+     */
+    lbmethod = (proxy_balancer_method *)conf->lbmethods->elts;
+    for (i = 0; i < conf->lbmethods->nelts; i++) {
+        if (!strcasecmp(lbmethod->name, "byrequests")) {
+            break;
+        }
+        lbmethod++;
+    }
+
     (*balancer)->name = uri;
-    (*balancer)->lbmethod = lbmethod_requests;
+    (*balancer)->lbmethod = lbmethod;
     (*balancer)->workers = apr_array_make(p, 5, sizeof(proxy_worker));
     /* XXX Is this a right place to create mutex */
 #if APR_HAS_THREADS
