@@ -320,32 +320,6 @@ static void delete_entry(char *path, char *basename, apr_pool_t *pool)
 }
 
 /*
- * Determine if a directory is empty
- */
-static int directory_empty(char *path, apr_pool_t *pool)
-{
-    apr_dir_t *dir;
-    apr_finfo_t info;
-    
-    if (apr_dir_open(&dir, path, pool) != APR_SUCCESS) {
-        return 0;
-    }
-
-    while (apr_dir_read(&info, 0, dir) == APR_SUCCESS && !interrupted) {
-        if (!strcmp(info.name, ".") || !strcmp(info.name, "..")) {
-            continue;
-        }
-        
-        /* If we're here, the directory is not empty */
-        apr_dir_close(dir);
-        return 0;
-    }
-
-    apr_dir_close(dir);
-    return 1;
-}
-
-/*
  * walk the cache directory tree
  */
 static int process_dir(char *path, apr_pool_t *pool)
