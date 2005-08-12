@@ -75,6 +75,7 @@ typedef struct {
  */
 typedef struct disk_cache_object {
     const char *root;        /* the location of the cache directory */
+    apr_size_t root_len;
     char *tempfile;    /* temp file tohold the content */
     const char *prefix;
     const char *datafile;    /* name of file where the data will go */
@@ -397,6 +398,9 @@ static int create_entity(cache_handle_t *h, request_rec *r, const char *key, apr
 
     dobj->name = obj->key;
     dobj->prefix = NULL;
+    /* Save the cache root */
+    dobj->root = apr_pstrndup(r->pool, conf->cache_root, conf->cache_root_len);
+    dobj->root_len = conf->cache_root_len;
     dobj->datafile = data_file(r->pool, conf, dobj, key);
     dobj->hdrsfile = header_file(r->pool, conf, dobj, key);
     dobj->tempfile = apr_pstrcat(r->pool, conf->cache_root, AP_TEMPFILE, NULL);
@@ -439,6 +443,10 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
 
     /* Open the headers file */
     dobj->prefix = NULL;
+
+    /* Save the cache root */
+    dobj->root = apr_pstrndup(r->pool, conf->cache_root, conf->cache_root_len);
+    dobj->root_len = conf->cache_root_len;
 
     dobj->hdrsfile = header_file(r->pool, conf, dobj, key);
     flags = APR_READ|APR_BINARY|APR_BUFFERED;
@@ -558,7 +566,7 @@ static int remove_url(cache_handle_t *h, apr_pool_t *p)
                      "disk_cache: Deleting %s from cache.", dobj->hdrsfile);
 
         rc = apr_file_remove(dobj->hdrsfile, p);
-        if ((rc != APR_SUCCESS) && (rc != APR_ENOENT)) {
+        if ((rc != APR_SUCCESS) && !APR_STATUS_IS_ENOENT(rc)) {
             /* Will only result in an output if httpd is started with -e debug.
              * For reason see log_error_core for the case s == NULL.
              */
@@ -575,7 +583,7 @@ static int remove_url(cache_handle_t *h, apr_pool_t *p)
                      "disk_cache: Deleting %s from cache.", dobj->datafile);
 
         rc = apr_file_remove(dobj->datafile, p);
-        if ((rc != APR_SUCCESS) && (rc != APR_ENOENT)) {
+        if ((rc != APR_SUCCESS) && !APR_STATUS_IS_ENOENT(rc)) {
             /* Will only result in an output if httpd is started with -e debug.
              * For reason see log_error_core for the case s == NULL.
              */
@@ -583,6 +591,45 @@ static int remove_url(cache_handle_t *h, apr_pool_t *p)
                       "disk_cache: Failed to delete data file %s from cache.",
                          dobj->datafile);
             return DECLINED;
+        }
+    }
+
+    /* now delete directories as far as possible up to our cache root */
+    if (dobj->root) {
+        const char *str_to_copy;
+
+        str_to_copy = dobj->hdrsfile ? dobj->hdrsfile : dobj->datafile;
+        if (str_to_copy) {
+            char *dir, *slash, *q;
+
+            dir = apr_pstrdup(p, str_to_copy);
+
+            /* remove filename */
+            slash = strrchr(dir, '/');
+            *slash = '\0';
+
+            /*
+             * now walk our way back to the cache root, delete everything
+             * in the way as far as possible
+             *
+             * Note: due to the way we constructed the file names in
+             * header_file and data_file, we are guaranteed that the
+             * cache_root is suffixed by at least one '/' which will be
+             * turned into a terminating null by this loop.  Therefore,
+             * we won't either delete or go above our cache root.
+             */
+            for (q = dir + dobj->root_len; *q ; ) {
+                 ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, NULL,
+                              "disk_cache: Deleting directory %s from cache",
+                              dir);
+
+                 rc = apr_dir_remove(dir, p);
+                 if (rc != APR_SUCCESS && !APR_STATUS_IS_ENOENT(rc)) {
+                    break;
+                 }
+                 slash = strrchr(q, '/');
+                 *slash = '\0';
+            }
         }
     }
 
