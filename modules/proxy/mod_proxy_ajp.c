@@ -88,7 +88,7 @@ static int proxy_ajp_canon(request_rec *r, char *url)
 static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                                 proxy_conn_rec *conn, 
                                 conn_rec *origin, 
-                                proxy_server_conf *conf,
+                                proxy_dir_conf *conf,
                                 apr_uri_t *uri,
                                 char *url, char *server_portstr)
 {
@@ -348,6 +348,8 @@ static int proxy_ajp_handler(request_rec *r, proxy_worker *worker,
     conn_rec *origin = NULL;
     proxy_conn_rec *backend = NULL;
     const char *scheme = "AJP";
+    proxy_dir_conf *dconf = ap_get_module_config(r->per_dir_config,
+                                                 &proxy_module);
 
     /* Note: Memory pool allocation.
      * A downstream keepalive connection is always connected to the existence
@@ -436,7 +438,7 @@ static int proxy_ajp_handler(request_rec *r, proxy_worker *worker,
    
    
     /* Step Four: Process the Request */
-    status = ap_proxy_ajp_request(p, r, backend, origin, conf, uri, url,
+    status = ap_proxy_ajp_request(p, r, backend, origin, dconf, uri, url,
                                   server_portstr);
     if (status != OK)
         goto cleanup;

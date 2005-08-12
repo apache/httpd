@@ -424,23 +424,23 @@ PROXY_DECLARE(int) ap_proxy_conn_is_https(conn_rec *c);
 PROXY_DECLARE(const char *) ap_proxy_ssl_val(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, const char *var);
 
 /* Header mapping functions, and a typedef of their signature */
-PROXY_DECLARE(const char *) ap_proxy_location_reverse_map(request_rec *r, proxy_server_conf *conf, const char *url);
-PROXY_DECLARE(const char *) ap_proxy_cookie_reverse_map(request_rec *r, proxy_server_conf *conf, const char *str);
+PROXY_DECLARE(const char *) ap_proxy_location_reverse_map(request_rec *r, proxy_dir_conf *conf, const char *url);
+PROXY_DECLARE(const char *) ap_proxy_cookie_reverse_map(request_rec *r, proxy_dir_conf *conf, const char *str);
 
 #if !defined(WIN32)
 typedef const char *(*ap_proxy_header_reverse_map_fn)(request_rec *,
-                       proxy_server_conf *, const char *);
+                       proxy_dir_conf *, const char *);
 #elif defined(PROXY_DECLARE_STATIC)
 typedef const char *(__stdcall *ap_proxy_header_reverse_map_fn)(request_rec *,
-                                 proxy_server_conf *, const char *);
+                                 proxy_dir_conf *, const char *);
 #elif defined(PROXY_DECLARE_EXPORT)
 typedef __declspec(dllexport) const char *
   (__stdcall *ap_proxy_header_reverse_map_fn)(request_rec *,
-               proxy_server_conf *, const char *);
+               proxy_dir_conf *, const char *);
 #else
 typedef __declspec(dllimport) const char *
   (__stdcall *ap_proxy_header_reverse_map_fn)(request_rec *,
-               proxy_server_conf *, const char *);
+               proxy_dir_conf *, const char *);
 #endif
 
 
