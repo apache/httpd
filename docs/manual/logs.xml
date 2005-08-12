@@ -425,7 +425,7 @@
       </example>
 
       <p>Although we have just shown that conditional logging is very
-      powerful and flexibly, it is not the only way to control the
+      powerful and flexible, it is not the only way to control the
       contents of the logs. Log files are more useful when they
       contain a complete record of server activity. It is often
       easier to simply post-process the log files to remove requests
