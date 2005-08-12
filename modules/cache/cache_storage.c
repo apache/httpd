@@ -31,10 +31,7 @@ extern module AP_MODULE_DECLARE_DATA cache_module;
 int cache_remove_url(cache_request_rec *cache, apr_pool_t *p)
 {
     cache_provider_list *list;
-    apr_status_t rv;
     cache_handle_t *h;
-
-    char *key;
 
     list = cache->providers;
 
