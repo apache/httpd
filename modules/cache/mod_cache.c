@@ -803,12 +803,9 @@ static int cache_remove_url_filter(ap_filter_t *f, apr_bucket_brigade *in)
         ap_remove_output_filter(f);
         return ap_pass_brigade(f->next, in);
     }
-    /*
-     * Now remove this cache entry from the cache
-     */
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                 "cache: Removing url %s from the cache", f->r->unparsed_uri);
+    /* Now remove this cache entry from the cache */
     cache_remove_url(cache, r->pool);
+
     /* remove ourselves */
     ap_remove_output_filter(f);
     return ap_pass_brigade(f->next, in);
