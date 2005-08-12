@@ -224,7 +224,8 @@ static const char *set_worker_param(apr_pool_t *p,
     return NULL;
 }
 
-static const char *set_balancer_param(apr_pool_t *p,
+static const char *set_balancer_param(proxy_server_conf *conf,
+                                      apr_pool_t *p,
                                       proxy_balancer *balancer,
                                       const char *key,
                                       const char *val)
@@ -272,13 +273,17 @@ static const char *set_balancer_param(apr_pool_t *p,
         balancer->max_attempts_set = 1;
     }
     else if (!strcasecmp(key, "lbmethod")) {
-        /* Which LB scheduler method */
-        if (!strcasecmp(val, "traffic"))
-            balancer->lbmethod = lbmethod_traffic;
-        else if (!strcasecmp(val, "requests"))
-            balancer->lbmethod = lbmethod_requests;
-        else
-            return "lbmethod must be Traffic|Requests";
+        struct proxy_balancer_method *ent =
+           (struct proxy_balancer_method *) conf->lbmethods->elts;
+        int i;
+        for (i = 0; i < conf->lbmethods->nelts; i++) {
+           if (!strcasecmp(val, ent->name)) {
+               balancer->lbmethod = ent;
+               return NULL;
+           }
+           ent++;
+        }
+        return "unknown lbmethod";
     }
     else {
         return "unknown Balancer parameter";
@@ -793,6 +798,7 @@ static void * create_proxy_config(apr_pool_t *p, server_rec *s)
     ps->allowed_connect_ports = apr_array_make(p, 10, sizeof(int));
     ps->workers = apr_array_make(p, 10, sizeof(proxy_worker));
     ps->balancers = apr_array_make(p, 10, sizeof(proxy_balancer));
+    ps->lbmethods = apr_array_make(p, 10, sizeof(proxy_balancer_method));
     ps->forward = NULL;
     ps->reverse = NULL;
     ps->domain = NULL;
@@ -815,6 +821,9 @@ static void * create_proxy_config(apr_pool_t *p, server_rec *s)
     ps->badopt = bad_error;
     ps->badopt_set = 0;
     ps->pool = p;
+    
+    proxy_run_load_lbmethods(ps);
+    
     return ps;
 }
 
@@ -832,6 +841,7 @@ static void * merge_proxy_config(apr_pool_t *p, void *basev, void *overridesv)
     ps->allowed_connect_ports = apr_array_append(p, base->allowed_connect_ports, overrides->allowed_connect_ports);
     ps->workers = apr_array_append(p, base->workers, overrides->workers);
     ps->balancers = apr_array_append(p, base->balancers, overrides->balancers);
+    ps->lbmethods = apr_array_append(p, base->lbmethods, overrides->lbmethods);
     ps->forward = overrides->forward ? overrides->forward : base->forward;
     ps->reverse = overrides->reverse ? overrides->reverse : base->reverse;
 
@@ -1021,7 +1031,7 @@ static const char *
                 return apr_pstrcat(cmd->temp_pool, "ProxyPass ", err, NULL);
         }        
         for (i = 0; i < arr->nelts; i++) {
-            const char *err = set_balancer_param(cmd->pool, balancer, elts[i].key,
+            const char *err = set_balancer_param(conf, cmd->pool, balancer, elts[i].key,
                                                  elts[i].val);
             if (err)
                 return apr_pstrcat(cmd->temp_pool, "ProxyPass ", err, NULL);
@@ -1509,7 +1519,7 @@ static const char *
         if (worker)
             err = set_worker_param(cmd->pool, worker, word, val);
         else
-            err = set_balancer_param(cmd->pool, balancer, word, val);
+            err = set_balancer_param(conf, cmd->pool, balancer, word, val);
 
         if (err)
             return apr_pstrcat(cmd->temp_pool, "ProxySet ", err, " ", word, " ", name, NULL);
@@ -1754,9 +1764,7 @@ static int proxy_status_hook(request_rec *r, int flags)
         ap_rprintf(r, "</td><td>%" APR_TIME_T_FMT "</td>",
                    apr_time_sec(balancer->timeout));
         ap_rprintf(r, "<td>%s</td>\n",
-                   balancer->lbmethod == lbmethod_requests ? "Requests" :
-                   balancer->lbmethod == lbmethod_traffic ? "Traffic" :
-                   "Unknown");
+                   balancer->lbmethod->name);
         ap_rputs("</table>\n", r);
         ap_rputs("\n\n<table border=\"0\"><tr>"
                  "<th>Sch</th><th>Host</th><th>Stat</th>"
@@ -1917,6 +1925,7 @@ APR_HOOK_STRUCT(
     APR_HOOK_LINK(canon_handler)
     APR_HOOK_LINK(pre_request)
     APR_HOOK_LINK(post_request)
+    APR_HOOK_LINK(load_lbmethods)
     APR_HOOK_LINK(request_status)
 )
 
@@ -1942,6 +1951,10 @@ APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(proxy, PROXY, int, post_request,
                                        request_rec *r,
                                        proxy_server_conf *conf),(worker,
                                        balancer,r,conf),DECLINED)
+APR_IMPLEMENT_EXTERNAL_HOOK_RUN_ALL(proxy, PROXY, int, load_lbmethods,
+                                    (proxy_server_conf *conf), 
+                                    (conf),
+                                    OK, DECLINED)
 APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(proxy, PROXY, int, fixups,
                                     (request_rec *r), (r),
                                     OK, DECLINED)
