@@ -1002,7 +1002,7 @@ PROXY_DECLARE(void) ap_proxy_table_unmerge(apr_pool_t *p, apr_table_t *t, char *
 }
 
 PROXY_DECLARE(const char *) ap_proxy_location_reverse_map(request_rec *r,
-                              proxy_server_conf *conf, const char *url)
+                              proxy_dir_conf *conf, const char *url)
 {
     struct proxy_alias *ent;
     int i, l1, l2;
@@ -1031,7 +1031,7 @@ PROXY_DECLARE(const char *) ap_proxy_location_reverse_map(request_rec *r,
  * and stick to plain strings for the config values.
  */
 PROXY_DECLARE(const char *) ap_proxy_cookie_reverse_map(request_rec *r,
-                              proxy_server_conf *conf, const char *str)
+                              proxy_dir_conf *conf, const char *str)
 {
     struct proxy_alias *ent;
     size_t len = strlen(str);
