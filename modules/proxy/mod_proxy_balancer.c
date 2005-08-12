@@ -691,10 +691,12 @@ static int balancer_handler(request_rec *r)
             else
                 *wsel->s->redirect = '\0';
         }
-        if ((val = apr_table_get(params, "dw")))
-            wsel->s->status |= PROXY_WORKER_DISABLED;
-        else
-            wsel->s->status &= ~PROXY_WORKER_DISABLED;
+        if ((val = apr_table_get(params, "dw"))) {
+            if (!strcasecmp(val, "Disable"))
+                wsel->s->status |= PROXY_WORKER_DISABLED;
+            else if (!strcasecmp(val, "Enable"))
+                wsel->s->status &= ~PROXY_WORKER_DISABLED;
+        }
 
     }
     if (apr_table_get(params, "xml")) {
@@ -801,8 +803,11 @@ static int balancer_handler(request_rec *r)
             ap_rputs("<tr><td>Route Redirect:</td><td><input name=\"rr\" type=text ", r);
             ap_rvputs(r, "value=\"", wsel->redirect, NULL); 
             ap_rputs("\"></td><tr>\n", r);            
-            ap_rputs("<tr><td>Disabled:</td><td><input name=\"dw\" type=checkbox", r);
+            ap_rputs("<tr><td>Status:</td><td>Disabled: <input name=\"dw\" value=\"Disable\" type=radio", r);
             if (wsel->s->status & PROXY_WORKER_DISABLED)
+                ap_rputs(" checked", r);
+            ap_rputs("> | Enabled: <input name=\"dw\" value=\"Enable\" type=radio", r);
+            if (!(wsel->s->status & PROXY_WORKER_DISABLED))
                 ap_rputs(" checked", r);
             ap_rputs("></td><tr>\n", r);            
             ap_rputs("<tr><td colspan=2><input type=submit value=\"Submit\"></td></tr>\n", r);
