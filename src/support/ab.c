@@ -1655,7 +1655,7 @@ int main(int argc, char **argv)
 
 #ifdef USE_SSL
     SSL_library_init();
-    if (!(ctx = SSL_CTX_new(SSLv2_client_method()))) {
+    if (!(ctx = SSL_CTX_new(SSLv23_client_method()))) {
 	fprintf(stderr, "Could not init SSL CTX: ");
 	ERR_print_errors_fp(stderr);
 	exit(1);
