@@ -32,15 +32,90 @@
     FAQ</a> to see if your question is answered there.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#topics">Topics</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#background">Background</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#support">Support</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#error">Error Messages</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a id="topics" name="topics">Topics</a></h2>
-<dl><dt><a href="#support">Support</a></dt><dd>What do I do when I have problems?</dd>
+<dl><dt><a href="#background">Background</a></dt><dd />
+<dt><a href="#support">Support</a></dt><dd>What do I do when I have problems?</dd>
 <dt><a href="#error">Error Messages</a></dt><dd>What does this error message mean?</dd>
 </dl></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="background" id="background">Background</a></h2>
+
+    <ul>
+    <li><a href="#background.what-is-apache">What is Apache?</a></li>
+    <li><a href="#background.what-is-httpd">What is the Apache HTTP 
+    Server?</a></li>
+    <li><a href="#background.tested">How thoroughly tested is 
+    Apache?</a></li>
+    <li><a href="#background.logo">May I use the Apache logo on my 
+    product or Web site?</a></li>
+    </ul>
+    
+    <h3><a name="background.what-is-apache" id="background.what-is-apache">What is Apache?</a></h3>
+      
+
+      <p>The Apache Software Foundation (ASF) is a 501(c)3 non-profit 
+      organization, originating from the development of the Apache HTTPD 
+      Server.  For details on the history of the ASF, please see the 
+      <a href="">Foundation FAQ</a></p>
+	
+	
+	<h3><a name="background.what-is-httpd" id="background.what-is-httpd">What is the Apache HTTP Server?</a></h3>
+      
+      <ul>
+        <li>is a powerful, flexible, HTTP/1.1 compliant web server</li>
+        <li>implements the latest protocols, including HTTP/1.1 (RFC2616)</li>
+        <li>is highly configurable and extensible with third-party modules</li>
+        <li>can be customised by writing 'modules' using the Apache 
+        module API</li>
+        <li>provides full source code and comes with an 
+        <a href="http://www.apache.org/licenses/LICENSE-2.0">unrestrictive 
+        license</a></li>
+        <li>runs on Windows 2003/XP/2000/NT/9x, Netware 5.x and above, OS/2, 
+        and most versions of Unix, as well as several other operating 
+        systems</li>
+        <li>is actively being developed</li>
+        <li>encourages user feedback through new ideas, bug reports and
+        patches</li>
+      </ul>
+	
+	
+	<h3><a name="background.tested" id="background.tested">How thoroughly tested is Apache?</a></h3>
+      
+      Apache is run on millions of Internet servers.
+      It has been tested thoroughly by both developers and users. The Apache
+      HTTP Server Project maintains rigorous standards before releasing new 
+      versions of our server, and our server runs without a hitch on over 
+      70% of all WWW servers available on the Internet. When bugs do show 
+      up, we release patches and new versions as soon as they are available.
+    
+
+	<h3><a name="background.logo" id="background.logo">How thoroughly tested is Apache?</a></h3>
+      
+      You may <em>NOT</em> use any original artwork from the Apache
+      Software Foundation, nor make or use modified versions of such
+      artwork, except under the following conditions:
+      <ul>
+        <li>You may use the <a href="http://httpd.apache.org/docs/apache_pb.gif">'Powered by Apache'
+        graphic</a> on a Web site that is being served by the Apache HTTP
+        server software.</li>
+        <li>You may use the aforementioned <a href="http://httpd.apache.org/docs/apache_pb.gif">'Powered by Apache'
+        graphic</a> or the <a href="http://www.apache.org/images/asf_logo.gif">Apache Software
+        Foundation logo</a> in product description and promotional material
+        <em>IF and ONLY IF</em> such use can in no way be interpreted as
+        anything other than an attribution. Using the Apache name and 
+        artwork in a manner that implies endorsement of a product or
+        service is <a href="">strictly forbidden.</a></li>
+      </ul>
+      For details, or related issues, please contact the Apache Software
+      Foundation's <a href="">Public Relations Committee</a>.
+    
+ </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="support" id="support">Support</a></h2>
     <ul>
@@ -58,7 +133,7 @@
       take the following steps:</p>
 
       <dl>
-      <dt>Check the errorlog!</dt>
+      <dt>Check the ErrorLog!</dt>
       <dd>Apache tries to be helpful when it encounters a problem. In many
       cases, it will provide some details by writing one or more messages to the
       server error log. Sometimes this is enough for you to diagnose &amp; fix
@@ -67,7 +142,10 @@
       <code>/usr/local/apache2/logs/error_log</code>, but see the <code class="directive"><a href="../mod/core.html#errorlog">ErrorLog</a></code> directive in your config files for the
       location on your server.</dd>
 
-      <dt>Check the <a href="http://httpd.apache.org/docs-2.1/faq/">FAQ</a>!</dt>
+      <dt>Check the ErrorLog again!</dt>
+      <dd>Nearly all problems can be solved by reading the error log.</dd>
+      
+      <dt>Check the <a href="http://httpd.apache.org/docs/2.3/faq/">FAQ</a>!</dt>
       <dd>The latest version of the Apache Frequently-Asked Questions list can
       always be found at the main Apache web site.</dd>
 
@@ -90,49 +168,26 @@
       <p><a href="http://httpd.apache.org/userslist.html">Users
       mailing list</a></p>
 
-      <p>USENET newsgroups:</p>
-
-      <ul>
-      <li>comp.infosystems.www.servers.unix
-      [<a href="news:comp.infosystems.www.servers.unix">news</a>]
-      [<a href="http://groups.google.com/groups?group=comp.infosystems.www.servers.unix">google</a>]
-      </li>
-
-      <li>comp.infosystems.www.servers.ms-windows
-      [<a href="news:comp.infosystems.www.servers.ms-windows">news</a>]
-      [<a href="http://groups.google.com/groups?group=comp.infosystems.www.servers.ms-windows">google</a>]
-      </li>
-
-      <li>comp.infosystems.www.authoring.cgi
-      [<a href="news:comp.infosystems.www.authoring.cgi">news</a>]
-      [<a href="http://groups.google.com/groups?group=comp.infosystems.www.authoring.cgi">google</a>]
-      </li>
-      </ul></dd>
-
-      <dt>If all else fails, report the problem in the bug database</dt>
+      <p><a href="irc://irc.freenode.net/#apache">#apache</a> on 
+      <a href="http://freenode.net">Freenode IRC</a> is also available for 
+      user support issues.</p>
+      </dd>
+      
+      <dt>Please use the bug database for bugs!</dt>
       <dd><p>If you've gone through those steps above that are appropriate and
       have obtained no relief, then please <em>do</em> let the httpd developers
       know about the problem by <a href="http://httpd.apache.org/bug_report.html">logging a bug
       report</a>.</p>
 
       <p>If your problem involves the server crashing and generating a core
-      dump, please include a backtrace (if possible). As an example,</p>
-
-      <div class="example"><p><code>
-        # cd <var>ServerRoot</var><br />
-        # dbx <var>httpd</var> <var>core</var><br />
-        (dbx) where
-      </code></p></div>
-
-      <p>(Substitute the appropriate locations for your <var>ServerRoot</var>
-      and your <var>httpd</var> and <var>core</var> files. You may have to use
-      <code>gdb</code> instead of <code>dbx</code>.)</p>
+      dump, please <a href="http://httpd.apache.org/dev/debugging.html">
+      include a backtrace</a> (if possible).</p>
       </dd>
       </dl>
     
 
     <h3><a name="support.support" id="support.support">Whom do I contact for support?</a></h3>
-      <p>With several million users and fewer than forty volunteer developers,
+      <p>With millions of users and fewer than sixty volunteer developers,
       we cannot provide personal support for Apache. For free support, we
       suggest participating in a <a href="#support.what2do.user-support">user forum</a>.</p>
 
