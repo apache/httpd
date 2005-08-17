@@ -41,7 +41,7 @@
       take the following steps:</p>
 
       <dl>
-      <dt>Check the errorlog!</dt>
+      <dt>Check the ErrorLog!</dt>
       <dd>Apache tries to be helpful when it encounters a problem. In many
       cases, it will provide some details by writing one or more messages to the
       server error log. Sometimes this is enough for you to diagnose &amp; fix
@@ -50,7 +50,10 @@
       <code>/usr/local/apache2/logs/error_log</code>, but see the <code class="directive"><a href="../mod/core.html#errorlog">ErrorLog</a></code> directive in your config files for the
       location on your server.</dd>
 
-      <dt>Check the <a href="http://httpd.apache.org/docs-2.1/faq/">FAQ</a>!</dt>
+      <dt>Check the ErrorLog again!</dt>
+      <dd>Nearly all problems can be solved by reading the error log.</dd>
+      
+      <dt>Check the <a href="http://httpd.apache.org/docs/2.3/faq/">FAQ</a>!</dt>
       <dd>The latest version of the Apache Frequently-Asked Questions list can
       always be found at the main Apache web site.</dd>
 
@@ -73,49 +76,26 @@
       <p><a href="http://httpd.apache.org/userslist.html">Users
       mailing list</a></p>
 
-      <p>USENET newsgroups:</p>
-
-      <ul>
-      <li>comp.infosystems.www.servers.unix
-      [<a href="news:comp.infosystems.www.servers.unix">news</a>]
-      [<a href="http://groups.google.com/groups?group=comp.infosystems.www.servers.unix">google</a>]
-      </li>
-
-      <li>comp.infosystems.www.servers.ms-windows
-      [<a href="news:comp.infosystems.www.servers.ms-windows">news</a>]
-      [<a href="http://groups.google.com/groups?group=comp.infosystems.www.servers.ms-windows">google</a>]
-      </li>
-
-      <li>comp.infosystems.www.authoring.cgi
-      [<a href="news:comp.infosystems.www.authoring.cgi">news</a>]
-      [<a href="http://groups.google.com/groups?group=comp.infosystems.www.authoring.cgi">google</a>]
-      </li>
-      </ul></dd>
-
-      <dt>If all else fails, report the problem in the bug database</dt>
+      <p><a href="irc://irc.freenode.net/#apache">#apache</a> on 
+      <a href="http://freenode.net">Freenode IRC</a> is also available for 
+      user support issues.</p>
+      </dd>
+      
+      <dt>Please use the bug database for bugs!</dt>
       <dd><p>If you've gone through those steps above that are appropriate and
       have obtained no relief, then please <em>do</em> let the httpd developers
       know about the problem by <a href="http://httpd.apache.org/bug_report.html">logging a bug
       report</a>.</p>
 
       <p>If your problem involves the server crashing and generating a core
-      dump, please include a backtrace (if possible). As an example,</p>
-
-      <div class="example"><p><code>
-        # cd <var>ServerRoot</var><br />
-        # dbx <var>httpd</var> <var>core</var><br />
-        (dbx) where
-      </code></p></div>
-
-      <p>(Substitute the appropriate locations for your <var>ServerRoot</var>
-      and your <var>httpd</var> and <var>core</var> files. You may have to use
-      <code>gdb</code> instead of <code>dbx</code>.)</p>
+      dump, please <a href="http://httpd.apache.org/dev/debugging.html">
+      include a backtrace</a> (if possible).</p>
       </dd>
       </dl>
     
 
     <h3><a name="support.support" id="support.support">Whom do I contact for support?</a></h3>
-      <p>With several million users and fewer than forty volunteer developers,
+      <p>With millions of users and fewer than sixty volunteer developers,
       we cannot provide personal support for Apache. For free support, we
       suggest participating in a <a href="#support.what2do.user-support">user forum</a>.</p>
 
