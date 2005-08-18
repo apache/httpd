@@ -324,6 +324,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewcvs.cgi?rev=209539&view=rev
         +1: pquerna
 
+     *) Prevent the byterange filter from buffering responses into
+        memory; a common cause of "why does httpd eat all my memory".
+        http://svn.apache.org/viewcvs?rev=188797&view=rev
+        rediff for 2.0.x: http://people.apache.org/~jorton/ap_byterange.diff
+        PR: 29962
+        +1: jorton
+
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
     *) Remove LDAP toolkit specific code from util_ldap and mod_auth_ldap.
