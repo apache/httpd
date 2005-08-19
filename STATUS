@@ -322,7 +322,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
      *) Add httxt2dbm for creating RewriteMap DBM Files.
         http://svn.apache.org/viewcvs.cgi?rev=209539&view=rev
-        +1: pquerna
+        +1: pquerna, jorton
 
      *) Prevent the byterange filter from buffering responses into
         memory; a common cause of "why does httpd eat all my memory".
