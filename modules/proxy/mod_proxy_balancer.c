@@ -367,6 +367,13 @@ static proxy_worker *find_best_worker(proxy_balancer *balancer,
     if (PROXY_THREAD_LOCK(balancer) != APR_SUCCESS)
         return NULL;    
 
+    if (!(*balancer->lbmethod->finder)) {
+        /* XXX: UGLY HACK!!!
+         * Where is the finder function setup? 
+         */
+        balancer->lbmethod->finder = find_best_byrequests;
+    }
+
     candidate = (*balancer->lbmethod->finder)(balancer, r);
 
 /*    
