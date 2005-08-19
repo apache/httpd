@@ -359,11 +359,6 @@ static proxy_worker *find_best_bytraffic(proxy_balancer *balancer,
     return mycandidate;
 }
 
-static proxy_balancer_method _default_lbmethod = {
-      "byrequests",
-      find_best_byrequests
-};
-    
 static proxy_worker *find_best_worker(proxy_balancer *balancer,
                                       request_rec *r)
 {
@@ -877,9 +872,6 @@ static void child_init(apr_pool_t *p, server_rec *s)
         balancer = (proxy_balancer *)conf->balancers->elts;
         for (i = 0; i < conf->balancers->nelts; i++) {
             init_balancer_members(conf, s, balancer);
-            if (!balancer->lbmethod->finder) {
-                balancer->lbmethod->finder = _default_lbmethod;
-            }
             balancer++;
         }
         s = s->next;
