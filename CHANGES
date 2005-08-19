@@ -1,6 +1,11 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.3.0
 
+  *) SECURITY: CAN-2005-2491 (cve.mitre.org): 
+     Fix integer overflows in PCRE in quantifier parsing which could
+     be triggered by a local user through use of a carefully-crafted 
+     regex in an .htaccess file.  [Philip Hazel]
+
   *) mod_proxy/mod_proxy_balancer: Provide a simple, functional
      interface to add additional balancer lb selection methods
      without requiring code changes to mod_proxy/mod_proxy_balancer;
