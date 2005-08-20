@@ -442,7 +442,7 @@ int ajp_parse_type(request_rec  *r, ajp_msg_t *msg);
  * @param msg       AJP message
  * @return          APR_SUCCESS or error
  */
-apr_status_t ajp_parse_header(request_rec *r, proxy_server_conf *conf,
+apr_status_t ajp_parse_header(request_rec *r, proxy_dir_conf *conf,
                               ajp_msg_t *msg);
 
 /** 

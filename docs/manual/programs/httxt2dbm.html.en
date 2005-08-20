@@ -70,8 +70,8 @@
 <div class="section">
 <h2><a name="examples" id="examples">Examples</a></h2>
     <div class="example"><p><code>
-      httxt2dbm -i rewritemap.txt -i rewritemap.dbm<br />
-      httxt2dbm -f SDBM -i rewritemap.txt -i rewritemap.dbm<br />
+      httxt2dbm -i rewritemap.txt -o rewritemap.dbm<br />
+      httxt2dbm -f SDBM -i rewritemap.txt -o rewritemap.dbm<br />
     </code></p></div>
 </div></div>
 <div class="bottomlang">

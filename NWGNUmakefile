@@ -41,6 +41,7 @@ XINCDIRS	+= \
 			$(AP_WORK)/server/mpm/NetWare \
 			$(AP_WORK)/srclib/pcre \
 			$(NWOS) \
+			$(AP_WORK)/modules/ssl \
 			$(EOLIST)
 
 #

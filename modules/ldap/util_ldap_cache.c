@@ -29,30 +29,26 @@
 
 #if APR_HAS_LDAP
 
-#if APR_HAS_SHARED_MEMORY
-#define MODLDAP_SHMEM_CACHE "/tmp/mod_ldap_cache"
-#endif
-
 /* ------------------------------------------------------------------ */
 
 unsigned long util_ldap_url_node_hash(void *n)
 {
-    util_url_node_t *node = (util_url_node_t *)n;
+    util_url_node_t *node = n;
     return util_ald_hash_string(1, node->url);
 }
 
 int util_ldap_url_node_compare(void *a, void *b)
 {
-    util_url_node_t *na = (util_url_node_t *)a;
-    util_url_node_t *nb = (util_url_node_t *)b;
+    util_url_node_t *na = a;
+    util_url_node_t *nb = b;
 
-    return(strcmp(na->url, nb->url) == 0);
+    return (strcmp(na->url, nb->url) == 0);
 }
 
 void *util_ldap_url_node_copy(util_ald_cache_t *cache, void *c)
 {
-    util_url_node_t *n = (util_url_node_t *)c;
-    util_url_node_t *node = (util_url_node_t *)util_ald_alloc(cache, sizeof(util_url_node_t));
+    util_url_node_t *n = c;
+    util_url_node_t *node = util_ald_alloc(cache, sizeof *node);
 
     if (node) {
         if (!(node->url = util_ald_strdup(cache, n->url))) {
@@ -71,7 +67,7 @@ void *util_ldap_url_node_copy(util_ald_cache_t *cache, void *c)
 
 void util_ldap_url_node_free(util_ald_cache_t *cache, void *n)
 {
-    util_url_node_t *node = (util_url_node_t *)n;
+    util_url_node_t *node = n;
 
     util_ald_free(cache, node->url);
     util_ald_destroy_cache(node->search_cache);
@@ -82,9 +78,8 @@ void util_ldap_url_node_free(util_ald_cache_t *cache, void *n)
 
 void util_ldap_url_node_display(request_rec *r, util_ald_cache_t *cache, void *n)
 {
-    util_url_node_t *node = (util_url_node_t *)n;
+    util_url_node_t *node = n;
     char date_str[APR_CTIME_LEN+1];
-    char *buf;
     const char *type_str;
     util_ald_cache_t *cache_node;
     int x;
@@ -112,24 +107,22 @@ void util_ldap_url_node_display(request_rec *r, util_ald_cache_t *cache, void *n
         else 
             date_str[0] = 0;
 
-        buf = apr_psprintf(r->pool, 
-                 "<tr valign='top'>"
-                 "<td nowrap>%s (%s)</td>"
-                 "<td nowrap>%ld</td>"
-                 "<td nowrap>%ld</td>"
-                 "<td nowrap>%ld</td>"
-                 "<td nowrap>%ld</td>"
-                 "<td nowrap>%s</td>"
-                 "<tr>",
-             node->url,
-             type_str,
-             cache_node->size,
-             cache_node->maxentries,
-             cache_node->numentries,
-             cache_node->fullmark,
-             date_str);
-    
-        ap_rputs(buf, r);
+        ap_rprintf(r, 
+                   "<tr valign='top'>"
+                   "<td nowrap>%s (%s)</td>"
+                   "<td nowrap>%ld</td>"
+                   "<td nowrap>%ld</td>"
+                   "<td nowrap>%ld</td>"
+                   "<td nowrap>%ld</td>"
+                   "<td nowrap>%s</td>"
+                   "</tr>",
+                   node->url,
+                   type_str,
+                   cache_node->size,
+                   cache_node->maxentries,
+                   cache_node->numentries,
+                   cache_node->fullmark,
+                   date_str);
     }
 
 }
@@ -139,20 +132,22 @@ void util_ldap_url_node_display(request_rec *r, util_ald_cache_t *cache, void *n
 /* Cache functions for search nodes */
 unsigned long util_ldap_search_node_hash(void *n)
 {
-    util_search_node_t *node = (util_search_node_t *)n;
-    return util_ald_hash_string(1, ((util_search_node_t *)(node))->username);
+    util_search_node_t *node = n;
+    return util_ald_hash_string(1, node->username);
 }
 
 int util_ldap_search_node_compare(void *a, void *b)
 {
-    return(strcmp(((util_search_node_t *)a)->username,
-		  ((util_search_node_t *)b)->username) == 0);
+    util_search_node_t *na = a;
+    util_search_node_t *nb = b;
+
+    return (strcmp(na->username, nb->username) == 0);
 }
 
 void *util_ldap_search_node_copy(util_ald_cache_t *cache, void *c)
 {
-    util_search_node_t *node = (util_search_node_t *)c;
-    util_search_node_t *newnode = util_ald_alloc(cache, sizeof(util_search_node_t));
+    util_search_node_t *node = c;
+    util_search_node_t *newnode = util_ald_alloc(cache, sizeof *newnode);
 
     /* safety check */
     if (newnode) {
@@ -203,8 +198,9 @@ void *util_ldap_search_node_copy(util_ald_cache_t *cache, void *c)
 void util_ldap_search_node_free(util_ald_cache_t *cache, void *n)
 {
     int i = 0;
-    util_search_node_t *node = (util_search_node_t *)n;
+    util_search_node_t *node = n;
     int k = node->numvals;
+
     if (node->vals) {
         for (;k;k--,i++) {
             if (node->vals[i]) {
@@ -221,37 +217,35 @@ void util_ldap_search_node_free(util_ald_cache_t *cache, void *n)
 
 void util_ldap_search_node_display(request_rec *r, util_ald_cache_t *cache, void *n)
 {
-    util_search_node_t *node = (util_search_node_t *)n;
+    util_search_node_t *node = n;
     char date_str[APR_CTIME_LEN+1];
-    char *buf;
 
     apr_ctime(date_str, node->lastbind);
 
-    buf = apr_psprintf(r->pool, 
-             "<tr valign='top'>"
-             "<td nowrap>%s</td>"
-             "<td nowrap>%s</td>"
-             "<td nowrap>%s</td>"
-             "<tr>",
-         node->username,
-         node->dn,
-         date_str);
-
-    ap_rputs(buf, r);
+    ap_rprintf(r,
+               "<tr valign='top'>"
+               "<td nowrap>%s</td>"
+               "<td nowrap>%s</td>"
+               "<td nowrap>%s</td>"
+               "</tr>",
+               node->username,
+               node->dn,
+               date_str);
 }
 
 /* ------------------------------------------------------------------ */
 
 unsigned long util_ldap_compare_node_hash(void *n)
 {
-    util_compare_node_t *node = (util_compare_node_t *)n;
+    util_compare_node_t *node = n;
     return util_ald_hash_string(3, node->dn, node->attrib, node->value);
 }
 
 int util_ldap_compare_node_compare(void *a, void *b)
 {
-    util_compare_node_t *na = (util_compare_node_t *)a;
-    util_compare_node_t *nb = (util_compare_node_t *)b;
+    util_compare_node_t *na = a;
+    util_compare_node_t *nb = b;
+
     return (strcmp(na->dn, nb->dn) == 0 &&
 	    strcmp(na->attrib, nb->attrib) == 0 &&
 	    strcmp(na->value, nb->value) == 0);
@@ -259,8 +253,8 @@ int util_ldap_compare_node_compare(void *a, void *b)
 
 void *util_ldap_compare_node_copy(util_ald_cache_t *cache, void *c)
 {
-    util_compare_node_t *n = (util_compare_node_t *)c;
-    util_compare_node_t *node = (util_compare_node_t *)util_ald_alloc(cache, sizeof(util_compare_node_t));
+    util_compare_node_t *n = c;
+    util_compare_node_t *node = util_ald_alloc(cache, sizeof *node);
 
     if (node) {
         if (!(node->dn = util_ald_strdup(cache, n->dn)) ||
@@ -280,7 +274,7 @@ void *util_ldap_compare_node_copy(util_ald_cache_t *cache, void *c)
 
 void util_ldap_compare_node_free(util_ald_cache_t *cache, void *n)
 {
-    util_compare_node_t *node = (util_compare_node_t *)n;
+    util_compare_node_t *node = n;
     util_ald_free(cache, node->dn);
     util_ald_free(cache, node->attrib);
     util_ald_free(cache, node->value);
@@ -289,9 +283,9 @@ void util_ldap_compare_node_free(util_ald_cache_t *cache, void *n)
 
 void util_ldap_compare_node_display(request_rec *r, util_ald_cache_t *cache, void *n)
 {
-    util_compare_node_t *node = (util_compare_node_t *)n;
+    util_compare_node_t *node = n;
     char date_str[APR_CTIME_LEN+1];
-    char *buf, *cmp_result;
+    char *cmp_result;
 
     apr_ctime(date_str, node->lastcompare);
 
@@ -305,40 +299,42 @@ void util_ldap_compare_node_display(request_rec *r, util_ald_cache_t *cache, voi
         cmp_result = apr_itoa(r->pool, node->result);
     }
 
-    buf = apr_psprintf(r->pool, 
-             "<tr valign='top'>"
-             "<td nowrap>%s</td>"
-             "<td nowrap>%s</td>"
-             "<td nowrap>%s</td>"
-             "<td nowrap>%s</td>"
-             "<td nowrap>%s</td>"
-             "<tr>",
-         node->dn,
-         node->attrib,
-         node->value,
-         date_str,
-         cmp_result);
-
-    ap_rputs(buf, r);
+    ap_rprintf(r, 
+               "<tr valign='top'>"
+               "<td nowrap>%s</td>"
+               "<td nowrap>%s</td>"
+               "<td nowrap>%s</td>"
+               "<td nowrap>%s</td>"
+               "<td nowrap>%s</td>"
+               "</tr>",
+               node->dn,
+               node->attrib,
+               node->value,
+               date_str,
+               cmp_result);
 }
 
 /* ------------------------------------------------------------------ */
 
 unsigned long util_ldap_dn_compare_node_hash(void *n)
 {
-    return util_ald_hash_string(1, ((util_dn_compare_node_t *)n)->reqdn);
+    util_dn_compare_node_t *node = n;
+    return util_ald_hash_string(1, node->reqdn);
 }
 
 int util_ldap_dn_compare_node_compare(void *a, void *b)
 {
-    return (strcmp(((util_dn_compare_node_t *)a)->reqdn,
-		   ((util_dn_compare_node_t *)b)->reqdn) == 0);
+    util_dn_compare_node_t *na = a;
+    util_dn_compare_node_t *nb = b;
+
+    return (strcmp(na->reqdn, nb->reqdn) == 0);
 }
 
 void *util_ldap_dn_compare_node_copy(util_ald_cache_t *cache, void *c)
 {
-    util_dn_compare_node_t *n = (util_dn_compare_node_t *)c;
-    util_dn_compare_node_t *node = (util_dn_compare_node_t *)util_ald_alloc(cache, sizeof(util_dn_compare_node_t));
+    util_dn_compare_node_t *n = c;
+    util_dn_compare_node_t *node = util_ald_alloc(cache, sizeof *node);
+
     if (node) {
         if (!(node->reqdn = util_ald_strdup(cache, n->reqdn)) ||
             !(node->dn = util_ald_strdup(cache, n->dn))) {
@@ -354,7 +350,7 @@ void *util_ldap_dn_compare_node_copy(util_ald_cache_t *cache, void *c)
 
 void util_ldap_dn_compare_node_free(util_ald_cache_t *cache, void *n)
 {
-    util_dn_compare_node_t *node = (util_dn_compare_node_t *)n;
+    util_dn_compare_node_t *node = n;
     util_ald_free(cache, node->reqdn);
     util_ald_free(cache, node->dn);
     util_ald_free(cache, node);
@@ -362,28 +358,22 @@ void util_ldap_dn_compare_node_free(util_ald_cache_t *cache, void *n)
 
 void util_ldap_dn_compare_node_display(request_rec *r, util_ald_cache_t *cache, void *n)
 {
-    util_dn_compare_node_t *node = (util_dn_compare_node_t *)n;
-    char *buf;
+    util_dn_compare_node_t *node = n;
 
-    buf = apr_psprintf(r->pool, 
-             "<tr valign='top'>"
-             "<td nowrap>%s</td>"
-             "<td nowrap>%s</td>"
-             "<tr>",
-         node->reqdn,
-         node->dn);
-
-    ap_rputs(buf, r);
+    ap_rprintf(r, 
+               "<tr valign='top'>"
+               "<td nowrap>%s</td>"
+               "<td nowrap>%s</td>"
+               "</tr>",
+               node->reqdn,
+               node->dn);
 }
 
 
 /* ------------------------------------------------------------------ */
-apr_status_t util_ldap_cache_child_kill(void *data);
-apr_status_t util_ldap_cache_module_kill(void *data);
-
-apr_status_t util_ldap_cache_module_kill(void *data)
+static apr_status_t util_ldap_cache_module_kill(void *data)
 {
-    util_ldap_state_t *st = (util_ldap_state_t *)data;
+    util_ldap_state_t *st = data;
 
     util_ald_destroy_cache(st->util_ldap_cache);
 #if APR_HAS_SHARED_MEMORY
@@ -394,9 +384,6 @@ apr_status_t util_ldap_cache_module_kill(void *data)
     if (st->cache_shm != NULL) {
         apr_status_t result = apr_shm_destroy(st->cache_shm);
         st->cache_shm = NULL;
-        if (st->cache_file) {
-            apr_file_remove(st->cache_file, st->pool);
-        }
         return result;
     }
 #endif
@@ -407,21 +394,31 @@ apr_status_t util_ldap_cache_init(apr_pool_t *pool, util_ldap_state_t *st)
 {
 #if APR_HAS_SHARED_MEMORY
     apr_status_t result;
+    apr_size_t size;
 
-    result = apr_shm_create(&st->cache_shm, st->cache_bytes, st->cache_file, st->pool);
-    if (result == APR_EEXIST) {
-        /*
-         * The cache could have already been created (i.e. we may be a child process).  See
-         * if we can attach to the existing shared memory
-         */
-        result = apr_shm_attach(&st->cache_shm, st->cache_file, st->pool);
-    } 
+    if (st->cache_file) {
+        /* Remove any existing shm segment with this name. */
+        apr_shm_remove(st->cache_file, st->pool);
+    }
+
+    size = APR_ALIGN_DEFAULT(st->cache_bytes);
+
+    result = apr_shm_create(&st->cache_shm, size, st->cache_file, st->pool);
     if (result != APR_SUCCESS) {
         return result;
     }
 
+    /* Determine the usable size of the shm segment. */
+    size = apr_shm_size_get(st->cache_shm);
+
     /* This will create a rmm "handler" to get into the shared memory area */
-    apr_rmm_init(&st->cache_rmm, NULL, (void *)apr_shm_baseaddr_get(st->cache_shm), st->cache_bytes, st->pool);
+    result = apr_rmm_init(&st->cache_rmm, NULL, 
+                          apr_shm_baseaddr_get(st->cache_shm), size, 
+                          st->pool);
+    if (result != APR_SUCCESS) {
+        return result;
+    }
+
 #endif
 
     apr_pool_cleanup_register(st->pool, st , util_ldap_cache_module_kill, apr_pool_cleanup_null);

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE faq SYSTEM "../style/faq.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision: 151408 $ -->
+
+<!--
+ Copyright 2003-2005 The Apache Software Foundation or its licensors, as
+ applicable.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<faq metafile="background.xml.meta">
+<parentdocument href="./">FAQ</parentdocument>
+
+<title>Background - Frequently Asked Questions</title>
+<section id="background"><title>Background</title>
+
+    <ul>
+    <li><a href="#background.what-is-apache">What is Apache?</a></li>
+    <li><a href="#background.what-is-httpd">What is the Apache HTTP 
+    Server?</a></li>
+    <li><a href="#background.tested">How thoroughly tested is 
+    Apache?</a></li>
+    <li><a href="#background.logo">May I use the Apache logo on my 
+    product or Web site?</a></li>
+    </ul>
+    
+    <section id="background.what-is-apache">
+      <title>What is Apache?</title>
+
+      <p>The Apache Software Foundation (ASF) is a 501(c)3 non-profit 
+      organization, originating from the development of the Apache HTTPD 
+      Server.  For details on the history of the ASF, please see the 
+      <a href="">Foundation FAQ</a></p>
+	</section>
+	
+	<section id="background.what-is-httpd">
+      <title>What is the Apache HTTP Server?</title>
+      <ul>
+        <li>is a powerful, flexible, HTTP/1.1 compliant web server</li>
+        <li>implements the latest protocols, including HTTP/1.1 (RFC2616)</li>        <li>is highly configurable and extensible with third-party modules</li>        <li>can be customised by writing 'modules' using the Apache 
+        module API</li>        <li>provides full source code and comes with an 
+        <a href="http://www.apache.org/licenses/LICENSE-2.0">unrestrictive 
+        license</a></li>        <li>runs on Windows 2003/XP/2000/NT/9x, Netware 5.x and above, OS/2, 
+        and most versions of Unix, as well as several other operating 
+        systems</li>        <li>is actively being developed</li>        <li>encourages user feedback through new ideas, bug reports and
+        patches</li>
+      </ul>
+	</section>
+	
+	<section id="background.tested">
+      <title>How thoroughly tested is Apache?</title>
+      Apache is run on millions of Internet servers.
+      It has been tested thoroughly by both developers and users. The Apache
+      HTTP Server Project maintains rigorous standards before releasing new 
+      versions of our server, and our server runs without a hitch on over 
+      70% of all WWW servers available on the Internet. When bugs do show 
+      up, we release patches and new versions as soon as they are available.
+    </section>
+
+	<section id="background.logo">
+      <title>How thoroughly tested is Apache?</title>
+      You may <em>NOT</em> use any original artwork from the Apache
+      Software Foundation, nor make or use modified versions of such
+      artwork, except under the following conditions:
+      <ul>
+        <li>You may use the <a 
+        href="http://httpd.apache.org/docs/apache_pb.gif">'Powered by Apache'
+        graphic</a> on a Web site that is being served by the Apache HTTP
+        server software.</li>
+        <li>You may use the aforementioned <a 
+        href="http://httpd.apache.org/docs/apache_pb.gif">'Powered by Apache'
+        graphic</a> or the <a 
+        href="http://www.apache.org/images/asf_logo.gif">Apache Software
+        Foundation logo</a> in product description and promotional material
+        <em>IF and ONLY IF</em> such use can in no way be interpreted as
+        anything other than an attribution. Using the Apache name and 
+        artwork in a manner that implies endorsement of a product or
+        service is <a href="">strictly forbidden.</a></li>
+      </ul>
+      For details, or related issues, please contact the Apache Software
+      Foundation's <a href="">Public Relations Committee</a>.
+    </section>
+ </section>
+</faq>

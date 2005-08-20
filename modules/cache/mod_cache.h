@@ -197,7 +197,7 @@ typedef struct {
                            const char *urlkey, apr_off_t len);
     int (*open_entity) (cache_handle_t *h, request_rec *r,
                            const char *urlkey);
-    int (*remove_url) (const char *urlkey);
+    int (*remove_url) (cache_handle_t *h, apr_pool_t *p);
 } cache_provider;
 
 /* A linked-list of authn providers. */
@@ -225,6 +225,7 @@ typedef struct {
     apr_time_t exp;                     /* expiration */
     apr_time_t lastmod;                 /* last-modified time */
     cache_info *info;                   /* current cache info */
+    ap_filter_t *remove_url_filter;     /* Enable us to remove the filter */
 } cache_request_rec;
 
 
@@ -271,7 +272,7 @@ CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_hdrs_out(apr_pool_t *pool,
 /**
  * cache_storage.c
  */
-int cache_remove_url(request_rec *r, char *url);
+int cache_remove_url(cache_request_rec *cache, apr_pool_t *p);
 int cache_create_entity(request_rec *r, char *url, apr_off_t size);
 int cache_select_url(request_rec *r, char *url);
 apr_status_t cache_generate_key_default( request_rec *r, apr_pool_t*p, char**key );

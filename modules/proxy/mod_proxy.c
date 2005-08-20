@@ -181,13 +181,51 @@ static const char *set_worker_param(apr_pool_t *p,
             return "Redirect length must be < 64 characters";
         worker->redirect = apr_pstrdup(p, val);
     }
+    else if (!strcasecmp(key, "status")) {
+        const char *v;
+        int mode = 1;
+        /* Worker status.
+         */
+        for (v = val; *v; v++) {
+            if (*v == '+') {
+                mode = 1;
+                v++;    
+            }
+            else if (*v == '-') {
+                mode = 0;
+                v++;    
+            }
+            if (*v == 'D' || *v == 'd') {
+                if (mode)
+                    worker->status |= PROXY_WORKER_DISABLED;
+                else
+                    worker->status &= ~PROXY_WORKER_DISABLED;                    
+            }
+            else if (*v == 'S' || *v == 's') {
+                if (mode)
+                    worker->status |= PROXY_WORKER_STOPPED;
+                else
+                    worker->status &= ~PROXY_WORKER_STOPPED;                    
+            }
+            else if (*v == 'E' || *v == 'e') {
+                if (mode)
+                    worker->status |= PROXY_WORKER_IN_ERROR;
+                else
+                    worker->status &= ~PROXY_WORKER_IN_ERROR;                    
+            }
+            else {
+                return "Unknow status parameter option";    
+            }
+        }
+    }    
     else {
         return "unknown Worker parameter";
     }
     return NULL;
 }
 
-static const char *set_balancer_param(apr_pool_t *p,
+static const char *set_balancer_param(proxy_server_conf *conf,
+                                      apr_pool_t *p,
                                       proxy_balancer *balancer,
                                       const char *key,
                                       const char *val)
@@ -235,13 +273,17 @@ static const char *set_balancer_param(apr_pool_t *p,
         balancer->max_attempts_set = 1;
     }
     else if (!strcasecmp(key, "lbmethod")) {
-        /* Which LB scheduler method */
-        if (!strcasecmp(val, "traffic"))
-            balancer->lbmethod = lbmethod_traffic;
-        else if (!strcasecmp(val, "requests"))
-            balancer->lbmethod = lbmethod_requests;
-        else
-            return "lbmethod must be Traffic|Requests";
+        struct proxy_balancer_method *ent =
+           (struct proxy_balancer_method *) conf->lbmethods->elts;
+        int i;
+        for (i = 0; i < conf->lbmethods->nelts; i++) {
+           if (!strcasecmp(val, ent->name)) {
+               balancer->lbmethod = ent;
+               return NULL;
+           }
+           ent++;
+        }
+        return "unknown lbmethod";
     }
     else {
         return "unknown Balancer parameter";
@@ -751,16 +793,12 @@ static void * create_proxy_config(apr_pool_t *p, server_rec *s)
     ps->sec_proxy = apr_array_make(p, 10, sizeof(ap_conf_vector_t *));
     ps->proxies = apr_array_make(p, 10, sizeof(struct proxy_remote));
     ps->aliases = apr_array_make(p, 10, sizeof(struct proxy_alias));
-    ps->raliases = apr_array_make(p, 10, sizeof(struct proxy_alias));
-    ps->cookie_paths = apr_array_make(p, 10, sizeof(struct proxy_alias));
-    ps->cookie_domains = apr_array_make(p, 10, sizeof(struct proxy_alias));
-    ps->cookie_path_str = apr_strmatch_precompile(p, "path=", 0);
-    ps->cookie_domain_str = apr_strmatch_precompile(p, "domain=", 0);
     ps->noproxies = apr_array_make(p, 10, sizeof(struct noproxy_entry));
     ps->dirconn = apr_array_make(p, 10, sizeof(struct dirconn_entry));
     ps->allowed_connect_ports = apr_array_make(p, 10, sizeof(int));
     ps->workers = apr_array_make(p, 10, sizeof(proxy_worker));
     ps->balancers = apr_array_make(p, 10, sizeof(proxy_balancer));
+    ps->lbmethods = apr_array_make(p, 10, sizeof(proxy_balancer_method));
     ps->forward = NULL;
     ps->reverse = NULL;
     ps->domain = NULL;
@@ -783,6 +821,9 @@ static void * create_proxy_config(apr_pool_t *p, server_rec *s)
     ps->badopt = bad_error;
     ps->badopt_set = 0;
     ps->pool = p;
+    
+    proxy_run_load_lbmethods(ps);
+    
     return ps;
 }
 
@@ -795,18 +836,12 @@ static void * merge_proxy_config(apr_pool_t *p, void *basev, void *overridesv)
     ps->proxies = apr_array_append(p, base->proxies, overrides->proxies);
     ps->sec_proxy = apr_array_append(p, base->sec_proxy, overrides->sec_proxy);
     ps->aliases = apr_array_append(p, base->aliases, overrides->aliases);
-    ps->raliases = apr_array_append(p, base->raliases, overrides->raliases);
-    ps->cookie_paths
-        = apr_array_append(p, base->cookie_paths, overrides->cookie_paths);
-    ps->cookie_domains
-        = apr_array_append(p, base->cookie_domains, overrides->cookie_domains);
-    ps->cookie_path_str = base->cookie_path_str;
-    ps->cookie_domain_str = base->cookie_domain_str;
     ps->noproxies = apr_array_append(p, base->noproxies, overrides->noproxies);
     ps->dirconn = apr_array_append(p, base->dirconn, overrides->dirconn);
     ps->allowed_connect_ports = apr_array_append(p, base->allowed_connect_ports, overrides->allowed_connect_ports);
     ps->workers = apr_array_append(p, base->workers, overrides->workers);
     ps->balancers = apr_array_append(p, base->balancers, overrides->balancers);
+    ps->lbmethods = apr_array_append(p, base->lbmethods, overrides->lbmethods);
     ps->forward = overrides->forward ? overrides->forward : base->forward;
     ps->reverse = overrides->reverse ? overrides->reverse : base->reverse;
 
@@ -832,6 +867,13 @@ static void *create_proxy_dir_config(apr_pool_t *p, char *dummy)
 
     /* Filled in by proxysection, when applicable */
 
+    /* Put these in the dir config so they work inside <Location> */
+    new->raliases = apr_array_make(p, 10, sizeof(struct proxy_alias));
+    new->cookie_paths = apr_array_make(p, 10, sizeof(struct proxy_alias));
+    new->cookie_domains = apr_array_make(p, 10, sizeof(struct proxy_alias));
+    new->cookie_path_str = apr_strmatch_precompile(p, "path=", 0);
+    new->cookie_domain_str = apr_strmatch_precompile(p, "domain=", 0);
+
     return (void *) new;
 }
 
@@ -839,10 +881,20 @@ static void *merge_proxy_dir_config(apr_pool_t *p, void *basev, void *addv)
 {
     proxy_dir_conf *new = (proxy_dir_conf *) apr_pcalloc(p, sizeof(proxy_dir_conf));
     proxy_dir_conf *add = (proxy_dir_conf *) addv;
+    proxy_dir_conf *base = (proxy_dir_conf *) basev;
 
     new->p = add->p;
     new->p_is_fnmatch = add->p_is_fnmatch;
     new->r = add->r;
+
+    /* Put these in the dir config so they work inside <Location> */
+    new->raliases = apr_array_append(p, base->raliases, add->raliases);
+    new->cookie_paths
+        = apr_array_append(p, base->cookie_paths, add->cookie_paths);
+    new->cookie_domains
+        = apr_array_append(p, base->cookie_domains, add->cookie_domains);
+    new->cookie_path_str = base->cookie_path_str;
+    new->cookie_domain_str = base->cookie_domain_str;
     return new;
 }
 
@@ -979,7 +1031,7 @@ static const char *
                 return apr_pstrcat(cmd->temp_pool, "ProxyPass ", err, NULL);
         }        
         for (i = 0; i < arr->nelts; i++) {
-            const char *err = set_balancer_param(cmd->pool, balancer, elts[i].key,
+            const char *err = set_balancer_param(conf, cmd->pool, balancer, elts[i].key,
                                                  elts[i].val);
             if (err)
                 return apr_pstrcat(cmd->temp_pool, "ProxyPass ", err, NULL);
@@ -1005,14 +1057,11 @@ static const char *
 }
 
 static const char *
-    add_pass_reverse(cmd_parms *cmd, void *dummy, const char *f, const char *r)
+    add_pass_reverse(cmd_parms *cmd, void *dconf, const char *f, const char *r)
 {
-    server_rec *s = cmd->server;
-    proxy_server_conf *conf;
+    proxy_dir_conf *conf = dconf;
     struct proxy_alias *new;
 
-    conf = (proxy_server_conf *)ap_get_module_config(s->module_config, 
-                                                     &proxy_module);
     if (r!=NULL && cmd->path == NULL ) {
         new = apr_array_push(conf->raliases);
         new->fake = f;
@@ -1031,14 +1080,11 @@ static const char *
     return NULL;
 }
 static const char*
-    cookie_path(cmd_parms *cmd, void *dummy, const char *f, const char *r)
+    cookie_path(cmd_parms *cmd, void *dconf, const char *f, const char *r)
 {
-    server_rec *s = cmd->server;
-    proxy_server_conf *conf;
+    proxy_dir_conf *conf = dconf;
     struct proxy_alias *new;
 
-    conf = (proxy_server_conf *)ap_get_module_config(s->module_config,
-                                                     &proxy_module);
     new = apr_array_push(conf->cookie_paths);
     new->fake = f;
     new->real = r;
@@ -1046,14 +1092,11 @@ static const char*
     return NULL;
 }
 static const char*
-    cookie_domain(cmd_parms *cmd, void *dummy, const char *f, const char *r)
+    cookie_domain(cmd_parms *cmd, void *dconf, const char *f, const char *r)
 {
-    server_rec *s = cmd->server;
-    proxy_server_conf *conf;
+    proxy_dir_conf *conf = dconf;
     struct proxy_alias *new;
 
-    conf = (proxy_server_conf *)ap_get_module_config(s->module_config,
-                                                     &proxy_module);
     new = apr_array_push(conf->cookie_domains);
     new->fake = f;
     new->real = r;
@@ -1476,7 +1519,7 @@ static const char *
         if (worker)
             err = set_worker_param(cmd->pool, worker, word, val);
         else
-            err = set_balancer_param(cmd->pool, balancer, word, val);
+            err = set_balancer_param(conf, cmd->pool, balancer, word, val);
 
         if (err)
             return apr_pstrcat(cmd->temp_pool, "ProxySet ", err, " ", word, " ", name, NULL);
@@ -1721,9 +1764,7 @@ static int proxy_status_hook(request_rec *r, int flags)
         ap_rprintf(r, "</td><td>%" APR_TIME_T_FMT "</td>",
                    apr_time_sec(balancer->timeout));
         ap_rprintf(r, "<td>%s</td>\n",
-                   balancer->lbmethod == lbmethod_requests ? "Requests" :
-                   balancer->lbmethod == lbmethod_traffic ? "Traffic" :
-                   "Unknown");
+                   balancer->lbmethod->name);
         ap_rputs("</table>\n", r);
         ap_rputs("\n\n<table border=\"0\"><tr>"
                  "<th>Sch</th><th>Host</th><th>Stat</th>"
@@ -1884,6 +1925,7 @@ APR_HOOK_STRUCT(
     APR_HOOK_LINK(canon_handler)
     APR_HOOK_LINK(pre_request)
     APR_HOOK_LINK(post_request)
+    APR_HOOK_LINK(load_lbmethods)
     APR_HOOK_LINK(request_status)
 )
 
@@ -1909,6 +1951,10 @@ APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(proxy, PROXY, int, post_request,
                                        request_rec *r,
                                        proxy_server_conf *conf),(worker,
                                        balancer,r,conf),DECLINED)
+APR_IMPLEMENT_EXTERNAL_HOOK_RUN_ALL(proxy, PROXY, int, load_lbmethods,
+                                    (proxy_server_conf *conf), 
+                                    (conf),
+                                    OK, DECLINED)
 APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(proxy, PROXY, int, fixups,
                                     (request_rec *r), (r),
                                     OK, DECLINED)

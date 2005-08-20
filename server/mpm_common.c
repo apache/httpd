@@ -546,7 +546,7 @@ static apr_status_t pod_signal_internal(ap_pod_t *pod)
  */
 static apr_status_t dummy_connection(ap_pod_t *pod)
 {
-    const char *srequest = "GET / HTTP/1.0\r\n\r\n";
+    char *srequest;
     apr_status_t rv;
     apr_socket_t *sock;
     apr_pool_t *p;
@@ -598,6 +598,14 @@ static apr_status_t dummy_connection(ap_pod_t *pod)
                      "connect to listener on %pI", ap_listeners->bind_addr);
     }
 
+    /* Create the request string. We include a User-Agent so that
+     * adminstrators can track down the cause of the odd-looking
+     * requests in their logs.
+     */
+    srequest = apr_pstrcat(p, "GET / HTTP/1.0\r\nUser-Agent: ", 
+                           ap_get_server_version(), 
+                           " (internal dummy connection)\r\n\r\n", NULL);
+    
     /* Since some operating systems support buffering of data or entire 
      * requests in the kernel, we send a simple request, to make sure 
      * the server pops out of a blocking accept(). 

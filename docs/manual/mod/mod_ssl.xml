@@ -1188,7 +1188,7 @@ boolean expression is true</description>
 <usage>
 <p>
 This directive specifies a general access requirement which has to be
-fulfilled in order to allow access. It's a very powerful directive because the
+fulfilled in order to allow access. It is a very powerful directive because the
 requirement specification is an arbitrarily complex boolean expression
 containing any number of access checks.</p>
 <note type="warning">
@@ -1216,6 +1216,7 @@ comp     ::= word "<strong>==</strong>" word | word "<strong>eq</strong>" word
            | word "<strong>&gt;</strong>"  word | word "<strong>gt</strong>" word
            | word "<strong>&gt;=</strong>" word | word "<strong>ge</strong>" word
            | word "<strong>in</strong>" "<strong>{</strong>" wordlist "<strong>}</strong>"
+           | word "<strong>in</strong>" "<strong>OID(</strong>" word "<strong>)</strong>"
            | word "<strong>=~</strong>" regex
            | word "<strong>!~</strong>" regex
 
@@ -1258,6 +1259,11 @@ SSLRequire (    %{SSL_CIPHER} !~ m/^(EXP|NULL)-/ \<br />
             and %{TIME_HOUR} &gt;= 8 and %{TIME_HOUR} &lt;= 20       ) \<br />
            or %{REMOTE_ADDR} =~ m/^192\.76\.162\.[0-9]+$/
 </example>
+<p>The <code>OID()</code> function expects to find zero or more instances
+of the given OID in the client certificate, and compares the left-hand side
+string against the value of matching OID attributes. Every matching OID is
+checked, until a match is found.
+</p>
 
 <p><em>Standard CGI/1.0 and Apache variables:</em></p>
 <pre>

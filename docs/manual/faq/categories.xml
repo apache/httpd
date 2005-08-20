@@ -18,6 +18,7 @@
 -->
 
 <categories>
+  <categoryfile>background.xml</categoryfile>
   <categoryfile>support.xml</categoryfile>
   <categoryfile>error.xml</categoryfile>
 </categories>

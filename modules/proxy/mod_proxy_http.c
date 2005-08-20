@@ -254,6 +254,7 @@ static apr_status_t stream_reqbody_chunked(apr_pool_t *p,
             bb = input_brigade;
         }
         
+        /* The request is flushed below this loop with chunk EOS header */
         status = pass_brigade(bucket_alloc, r, p_conn, origin, bb, 0);
         if (status != APR_SUCCESS) {
             return status;
@@ -285,14 +286,16 @@ static apr_status_t stream_reqbody_chunked(apr_pool_t *p,
             AP_DEBUG_ASSERT(APR_BUCKET_IS_EOS(e));
             apr_bucket_delete(e);
         }
-        e = apr_bucket_immortal_create(ASCII_ZERO ASCII_CRLF
-                                       /* <trailers> */
-                                       ASCII_CRLF,
-                                       5, bucket_alloc);
-        APR_BRIGADE_INSERT_TAIL(input_brigade, e);
         bb = input_brigade;
     }
-    
+
+    e = apr_bucket_immortal_create(ASCII_ZERO ASCII_CRLF
+                                   /* <trailers> */
+                                   ASCII_CRLF,
+                                   5, bucket_alloc);
+    APR_BRIGADE_INSERT_TAIL(bb, e);
+
+    /* Now we have headers-only, or the chunk EOS mark; flush it */
     status = pass_brigade(bucket_alloc, r, p_conn, origin, bb, 1);
     return status;
 }
@@ -306,7 +309,7 @@ static apr_status_t stream_reqbody_cl(apr_pool_t *p,
                                       const char *old_cl_val)
 {
     int seen_eos = 0;
-    apr_status_t status;
+    apr_status_t status = APR_SUCCESS;
     apr_bucket_alloc_t *bucket_alloc = r->connection->bucket_alloc;
     apr_bucket_brigade *bb;
     apr_bucket *e;
@@ -328,13 +331,6 @@ static apr_status_t stream_reqbody_cl(apr_pool_t *p,
         /* If this brigade contains EOS, either stop or remove it. */
         if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(input_brigade))) {
             seen_eos = 1;
-
-            /* As a shortcut, if this brigade is simply an EOS bucket,
-             * don't send anything down the filter chain.
-             */
-            if (APR_BUCKET_IS_EOS(APR_BRIGADE_FIRST(input_brigade))) {
-                break;
-            }
 
             /* We can't pass this EOS to the output_filters. */
             e = APR_BRIGADE_LAST(input_brigade);
@@ -365,7 +361,8 @@ static apr_status_t stream_reqbody_cl(apr_pool_t *p,
             bb = input_brigade;
         }
         
-        status = pass_brigade(bucket_alloc, r, p_conn, origin, bb, 0);
+        /* Once we hit EOS, we are ready to flush. */
+        status = pass_brigade(bucket_alloc, r, p_conn, origin, bb, seen_eos);
         if (status != APR_SUCCESS) {
             return status;
         }
@@ -385,23 +382,18 @@ static apr_status_t stream_reqbody_cl(apr_pool_t *p,
     
     if (bytes_streamed != cl_val) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-                     "proxy: client %s given Content-Length did not match",
+                     "proxy: client %s given Content-Length did not match"
                      " number of body bytes read", r->connection->remote_ip);
         return APR_EOF;
     }
 
     if (header_brigade) {
         /* we never sent the header brigade since there was no request
-         * body; send it now
+         * body; send it now with the flush flag
          */
-        terminate_headers(bucket_alloc, header_brigade);
         bb = header_brigade;
+        status = pass_brigade(bucket_alloc, r, p_conn, origin, bb, 1);
     }
-    else {
-        /* need to flush any pending data */
-        bb = input_brigade; /* empty now; pass_brigade() will add flush */
-    }
-    status = pass_brigade(bucket_alloc, r, p_conn, origin, bb, 1);
     return status;
 }
 
@@ -531,6 +523,7 @@ static apr_status_t spool_reqbody_cl(apr_pool_t *p,
         }
         APR_BRIGADE_INSERT_TAIL(header_brigade, e);
     }
+    /* This is all a single brigade, pass with flush flagged */
     status = pass_brigade(bucket_alloc, r, p_conn, origin, header_brigade, 1);
     return status;
 }
@@ -828,7 +821,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
     do {
         status = ap_get_brigade(r->input_filters, temp_brigade,
                                 AP_MODE_READBYTES, APR_BLOCK_READ,
-                                MAX_MEM_SPOOL + 1024 - bytes_read);
+                                MAX_MEM_SPOOL - bytes_read);
         if (status != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
                          "proxy: prefetch request body failed to %pI (%s)"
@@ -955,7 +948,12 @@ skip_body:
                                               || (old_te_val != NULL)
                                               || (bytes_read > 0));
         break;
+    default:
+        /* shouldn't be possible */
+        status = APR_EINVAL;
+        break;
     }
+
     if (status != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
                      "proxy: pass request body failed to %pI (%s)"
@@ -966,10 +964,11 @@ skip_body:
                      c->remote_host ? c->remote_host: "");
         return status;
     }
+
     return APR_SUCCESS;
 }
 
-static void process_proxy_header(request_rec* r, proxy_server_conf* c,
+static void process_proxy_header(request_rec* r, proxy_dir_conf* c,
                       const char* key, const char* value)
 {
     static const char* date_hdrs[]
@@ -1022,7 +1021,9 @@ static void ap_proxy_read_headers(request_rec *r, request_rec *rr,
     int saw_headers = 0;
     void *sconf = r->server->module_config;
     proxy_server_conf *psc;
+    proxy_dir_conf *dconf;
 
+    dconf = ap_get_module_config(r->per_dir_config, &proxy_module);
     psc = (proxy_server_conf *) ap_get_module_config(sconf, &proxy_module);
 
     r->headers_out = apr_table_make(r->pool, 20);
@@ -1097,7 +1098,7 @@ end)
          * Modify headers requiring canonicalisation and/or affected
          * by ProxyPassReverse and family with process_proxy_header
          */
-        process_proxy_header(r, psc, buffer, value) ;
+        process_proxy_header(r, dconf, buffer, value) ;
         saw_headers = 1;
 
         /* the header was too long; at the least we should skip extra data */

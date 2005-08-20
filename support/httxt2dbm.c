@@ -30,6 +30,9 @@
 #include "apu.h"
 #include "apr_dbm.h"
 
+#if APR_HAVE_STDLIB_H
+#include <stdlib.h> /* for atexit() */
+#endif
 
 static const char *input;
 static const char *output;
@@ -51,10 +54,10 @@ static int verbose;
 
 static void usage(void)
 {
-    const char* have_sdbm;
-    const char* have_gdbm;
-    const char* have_ndbm;
-    const char* have_db;
+    const char *have_sdbm;
+    const char *have_gdbm;
+    const char *have_ndbm;
+    const char *have_db;
 
 #if APU_HAVE_SDBM
     have_sdbm = AVAIL;
@@ -135,7 +138,7 @@ static apr_status_t to_dbm(apr_dbm_t *dbm, apr_file_t *fp, apr_pool_t *pool)
         dbmkey.dptr = apr_pstrmemdup(p, line,  c - line);
         dbmkey.dsize = (c - line);
 
-        while(*c && apr_isspace(*c)) {
+        while (*c && apr_isspace(*c)) {
             ++c;
         }
 
@@ -146,7 +149,7 @@ static apr_status_t to_dbm(apr_dbm_t *dbm, apr_file_t *fp, apr_pool_t *pool)
 
         value = c;
 
-        while(*c && !apr_isspace(*c)) {
+        while (*c && !apr_isspace(*c)) {
             ++c;
         }
 
@@ -170,7 +173,7 @@ static apr_status_t to_dbm(apr_dbm_t *dbm, apr_file_t *fp, apr_pool_t *pool)
     return rv;
 }
 
-int main(int argc, const char* const argv[]) 
+int main(int argc, const char *const argv[]) 
 {
     apr_pool_t *pool;
     apr_status_t rv = APR_SUCCESS;

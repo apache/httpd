@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 151408:190982 (outdated) -->
+<!-- English Revision: 190982 -->
 
 <!--
- Copyright 2002-2005 The Apache Software Foundation or its licensors,
-                     as applicable.
+ Copyright 2002-2005 The Apache Software Foundation or its licensors, as
+ applicable.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -87,7 +87,7 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 
   <note type="warning"><title>$B7Y9p(B</title>
      <p>$B$[$H$s$I$N%7%9%F%`$K$*$$$F$O!"(B<code>pthread</code> $B%*%W%7%g%s$,(B
-     $BA*$P$l$F$$$k$H!";R%W%m%;%9$,(B <code>ApacheCntl</code> mutex $B$r(B
+     $BA*$P$l$F$$$k$H!";R%W%m%;%9$,(B <code>AcceptCntl</code> mutex $B$r(B
      $BJ];}$7$F$$$k$H$-$K0[>o=*N;$7$?>l9g!"%5!<%P$O%j%/%(%9%H$X$N1~Ez$r(B
      $BDd;_$7$F$7$^$$$^$9!#$3$l$,H/@8$7$?>l9g$O!"%5!<%P$rI|5l$5$;$k$?$a$K$O(B
      $B<jF0$G:F5/F0$5$;$kI,MW$,$"$j$^$9!#(B</p>
@@ -220,6 +220,7 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 $B$r%5!<%P$,5-O?$9$k$?$a$N%U%!%$%k(B</description>
 <syntax>PidFile <var>filename</var></syntax>
 <default>PidFile logs/httpd.pid</default>
+<contextlist><context>server config</context></contextlist>
 <modulelist><module>beos</module><module>leader</module>
 <module>mpm_winnt</module><module>mpmt_os2</module>
 <module>perchild</module><module>prefork</module>
@@ -260,14 +261,16 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 <directivesynopsis>
 <name>Listen</name>
 <description>$B%5!<%P$,(B listen $B$9$k(BIP $B%"%I%l%9$H%]!<%HHV9f(B</description>
-<syntax>Listen [<var>IP-address</var>:]<var>portnumber</var></syntax>
+<syntax>Listen [<var>IP-address</var>:]<var>portnumber</var> [<var>protocol</var>]</syntax>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>beos</module><module>leader</module>
 <module>mpm_netware</module><module>mpm_winnt</module>
 <module>mpmt_os2</module><module>perchild</module>
 <module>prefork</module><module>threadpool</module><module>worker</module>
+<module>event</module>
 </modulelist>
-<compatibility>Apache 2.0 $B$+$iI,MW$J%G%#%l%/%F%#%V(B</compatibility>
+<compatibility>Apache 2.0 $B$+$iI,?\%G%#%l%/%F%#%V!#(B<var>protocol</var>
+$B0z?t$O(B 2.1.5 $B$GDI2C!#(B</compatibility>
 
 <usage>
     <p><directive>Listen</directive> $B%G%#%l%/%F%#%V$O(B Apache
@@ -315,9 +318,23 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
        Listen [fe80::a00:20ff:fea7:ccea]:80
     </example>
 
+    <p><var>protocol</var> $B%*%W%7%g%s0z?t$ODL>o$N@_Dj$G$OI,MW$"$j$^$;$s!#(B
+       $BL5;XDj$N>l9g!"(B443 $BHV%]!<%H$K$O(B <code>https</code> $B$,!"B>$N%]!<%H$K$O(B
+       <code>http</code> $B$,%G%U%)%k%HCM$H$7$F;HMQ$5$l$^$9!#(B
+       protocol $B;XDj$O!"$I$N%b%8%e!<%k$,%j%/%(%9%H$r=hM}$9$k$+$r7hDj$7!"(B
+       <directive module="core">AcceptFilter</directive> 
+       $B$K$h$k%W%m%H%3%kFCM-$N:GE,2=$r9T$&$h$&$K$7$^$9!#(B</p>
+
+    <p>$BHsI8=`$J%]!<%H$G1?MQ$7$F$$$k:]$K$N$_(B protocol $B;XDj$,I,MW$K$J$j$^$9!#(B
+       $B$?$H$($P(B <code>https</code> $B$J%5%$%H$r(B 8443 $BHV%]!<%H$G1?MQ$7$F$$$k>l9g(B :</p>
+
+    <example>
+      Listen 192.170.2.1:8443 https
+    </example>
+
     <note><title>$B%(%i!<>r7o(B</title>
-      $BF10l(B IP $B%"%I%l%9$H%]!<%H$NAH$K!"J#?t$N(B <code>Listen</code> 
-      $B%G%#%l%/%F%#%V$r;XDj$7$F$7$^$&$H!"(B'Address already in use' 
+      $BF10l(B IP $B%"%I%l%9$H%]!<%H$NAH$K!"J#?t$N(B <directive>Listen</directive> 
+      $B%G%#%l%/%F%#%V$r;XDj$7$F$7$^$&$H!"(B<code>Address already in use</code> 
       $B$H$$$&%(%i!<%a%C%;!<%8$r<u$1$k$3$H$K$J$j$^$9!#(B
     </note>
 
@@ -421,7 +438,7 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
     $B$G$O!"(B<directive>MaxClients</directive> 
     $B$O!"%/%i%$%"%s%H$K1~Ez$G$-$k%9%l%C%I$NAm?t$r@)8B$7$^$9!#(B
     <module>beos</module> $B$G$N%G%U%)%k%HCM$O(B <code>50</code> $B$G$9!#(B
-    $B%O%$%V%j%C%I(B MPM $B$G$N%G%U%)%k%HCM$O(B 16
+    $B%O%$%V%j%C%I(B MPM $B$G$N%G%U%)%k%HCM$O(B <code>16</code>
     <directive module="mpm_common">ServerLimit</directive>
     $B$N(B <code>25</code> $BG\(B (<directive
     module="mpm_common">ThreadsPerChild</directive>) $B$G$9!#(B
@@ -582,8 +599,8 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
     $B$b$7;R%W%m%;%9$K==J,$J?t$N%9%l%C%I$,$J$1$l$P!"(B
     $B%5!<%P$O$=$N;R%W%m%;%9$K?7$7$$%9%l%C%I$r:n$j;O$a$^$9!#(B
     $B$G$9$+$i!"(B<directive module="perchild">NumServers</directive>
-    $B$r(B 10 $B$K!"(B<directive>MinSpareThreads</directive> $B$r(B
-    5 $B$K$7$?>l9g$O!":G>.$G$b(B 50 $B$N%"%$%I%k%9%l%C%I$,(B
+    $B$r(B <code>10</code> $B$K!"(B<directive>MinSpareThreads</directive> $B$r(B
+    <code>5</code> $B$K$7$?>l9g$O!":G>.$G$b(B 50 $B$N%"%$%I%k%9%l%C%I$,(B
     $B%7%9%F%`>e$K$"$k$3$H$K$J$j$^$9!#(B</p>
 
     <p><module>worker</module>, <module>leader</module>,
@@ -821,8 +838,8 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
     </p>
 
     <p><directive>ThreadLimit</directive> $B$N%G%U%)%k%HCM$O(B
-    <module>mpm_winnt</module> $B$N$H$-$O(B 1920 $B$G!"(B
-    $BB>$N>l9g$O(B 64 $B$G$9!#(B</p>
+    <module>mpm_winnt</module> $B$N$H$-$O(B <code>1920</code> $B$G!"(B
+    $BB>$N>l9g$O(B <code>64</code> $B$G$9!#(B</p>
 
     <note><title>$BCm0U(B</title>
       <p><code>ThreadLimit 20000</code> (<module>mpm_winnt</module>
@@ -923,7 +940,7 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
     <p><directive>User</directive> $B%G%#%l%/%F%#%V$O(B
     $B%5!<%P$,%j%/%(%9%H$K1~Ez$9$k:]$KMQ$$$k%f!<%6(B ID $B$r@_Dj$7$^$9!#(B
     $B$3$N%G%#%l%/%F%#%V$r;HMQ$9$k$?$a$K$O!"%9%?%s%I%"%m%s7?$N(B
-    $B%5!<%P$O:G=i$K(B root $B8"8B$G5/F0$5$l$F$$$kI,MW$,$"$j$^$9!#(B
+    $B%5!<%P$O:G=i$K(B <code>root</code> $B8"8B$G5/F0$5$l$F$$$kI,MW$,$"$j$^$9!#(B
     $BHs(B root $B%f!<%6$G%5!<%P$r5/F0$7$?>l9g$O!"(B
     $B8"8B$NDc$$%f!<%6$X$HJQ$o$k$3$H$,$G$-$:!"(B
     $B7k6I85$N%f!<%6$N%W%m%;%9$H$7$F<B9T$5$lB3$1$^$9!#(B

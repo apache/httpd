@@ -765,10 +765,10 @@ AP_DECLARE_NONSTD(int) ap_send_http_trace(request_rec *r)
     header_struct h;
     apr_bucket *b;
     int body;
-    char *bodyread, *bodyoff;
+    char *bodyread = NULL, *bodyoff;
     apr_size_t bodylen = 0;
     apr_size_t bodybuf;
-    long res;
+    long res = -1; /* init to avoid gcc -Wall warning */
 
     if (r->method_number != M_TRACE) {
         return DECLINED;
