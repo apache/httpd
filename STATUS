@@ -201,6 +201,17 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
         2.0 version: http://people.apache.org/~trawick/179704-20.txt
         +1: trawick, jorton, wrowe
 
+    *) Prevent bad dereferencing of non-existent req struct in
+       mod_auth_ldap's mod_auth_ldap_auth_checker() if
+       mod_auth_ldap_check_user_id() was never (fully) called.
+       Similar behavior to that in 2.1/2.2.
+         http://people.apache.org/~jim/mod_auth_ldap-2.0.patch
+       +1: jim, minfrin, bnicholes
+
+     *) Add httxt2dbm for creating RewriteMap DBM Files.
+        http://svn.apache.org/viewcvs.cgi?rev=209539&view=rev
+        +1: pquerna, jorton, trawick
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ please place SVN revisions from trunk here, so it is easy to
     identify exactly what the proposed changes are! ]
@@ -209,13 +220,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        links for clients not using an Authorization header.
          modules/proxy/mod_proxy_ftp.c: r231044
        +1: minfrin, jim
-
-    *) Prevent bad dereferencing of non-existent req struct in
-       mod_auth_ldap's mod_auth_ldap_auth_checker() if
-       mod_auth_ldap_check_user_id() was never (fully) called.
-       Similar behavior to that in 2.1/2.2.
-         http://people.apache.org/~jim/mod_auth_ldap-2.0.patch
-       +1: jim, minfrin, bnicholes
 
     *) Correct RFC 2616 non-compliance by refusing to proxy a request body 
        in a TRACE request, unless TraceEnable extended is configured.
@@ -298,6 +302,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         wrowe asks: is it possible to simply strip trailing whitespace instead
                     of special handling for the end of line characters?  
                     Seems more portable.
+        trawick says: makes sense; searching for bandwidth
 
      *) mod_cache: Fix handling of 'Vary: *". PR 16125.
         Trunk: r180341
@@ -320,16 +325,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewcvs.cgi?rev=193127&view=rev
         +1: jorton
 
-     *) Add httxt2dbm for creating RewriteMap DBM Files.
-        http://svn.apache.org/viewcvs.cgi?rev=209539&view=rev
-        +1: pquerna, jorton
-
      *) Prevent the byterange filter from buffering responses into
         memory; a common cause of "why does httpd eat all my memory".
         http://svn.apache.org/viewcvs?rev=188797&view=rev
         rediff for 2.0.x: http://people.apache.org/~jorton/ap_byterange.diff
         PR: 29962
-        +1: jorton
+        +1: jorton, trawick
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
