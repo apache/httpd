@@ -55,49 +55,15 @@
 
 module AP_MODULE_DECLARE_DATA ldap_module;
 
-static int util_ldap_handler(request_rec *r);
-static void *util_ldap_create_config(apr_pool_t *p, server_rec *s);
+#define LDAP_CACHE_LOCK() do {                                  \
+    if (st->util_ldap_cache_lock)                               \
+        apr_global_mutex_lock(st->util_ldap_cache_lock);        \
+} while (0)
 
-
-/*
- * Some definitions to help between various versions of apache.
- */
-
-#ifndef DOCTYPE_HTML_2_0
-#define DOCTYPE_HTML_2_0  "<!DOCTYPE HTML PUBLIC \"-//IETF//" \
-                          "DTD HTML 2.0//EN\">\n"
-#endif
-
-#ifndef DOCTYPE_HTML_3_2
-#define DOCTYPE_HTML_3_2  "<!DOCTYPE HTML PUBLIC \"-//W3C//" \
-                          "DTD HTML 3.2 Final//EN\">\n"
-#endif
-
-#ifndef DOCTYPE_HTML_4_0S
-#define DOCTYPE_HTML_4_0S "<!DOCTYPE HTML PUBLIC \"-//W3C//" \
-                          "DTD HTML 4.0//EN\"\n" \
-                          "\"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-#endif
-
-#ifndef DOCTYPE_HTML_4_0T
-#define DOCTYPE_HTML_4_0T "<!DOCTYPE HTML PUBLIC \"-//W3C//" \
-                          "DTD HTML 4.0 Transitional//EN\"\n" \
-                          "\"http://www.w3.org/TR/REC-html40/loose.dtd\">\n"
-#endif
-
-#ifndef DOCTYPE_HTML_4_0F
-#define DOCTYPE_HTML_4_0F "<!DOCTYPE HTML PUBLIC \"-//W3C//" \
-                          "DTD HTML 4.0 Frameset//EN\"\n" \
-                          "\"http://www.w3.org/TR/REC-html40/frameset.dtd\">\n"
-#endif
-
-#define LDAP_CACHE_LOCK() \
-    if (st->util_ldap_cache_lock) \
-      apr_global_mutex_lock(st->util_ldap_cache_lock)
-#define LDAP_CACHE_UNLOCK() \
-    if (st->util_ldap_cache_lock) \
-      apr_global_mutex_unlock(st->util_ldap_cache_lock)
-
+#define LDAP_CACHE_UNLOCK() do {                                \
+    if (st->util_ldap_cache_lock)                               \
+        apr_global_mutex_unlock(st->util_ldap_cache_lock);      \
+} while (0)
 
 static void util_ldap_strdup (char **str, const char *newstr)
 {
@@ -107,8 +73,7 @@ static void util_ldap_strdup (char **str, const char *newstr)
     }
 
     if (newstr) {
-        *str = calloc(1, strlen(newstr)+1);
-        strcpy (*str, newstr);
+        *str = strdup(newstr);
     }
 }
 
@@ -1333,7 +1298,7 @@ static const char *util_ldap_set_cache_bytes(cmd_parms *cmd, void *dummy,
 
     st->cache_bytes = atol(bytes);
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, cmd->server, 
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server, 
                  "[%" APR_PID_T_FMT "] ldap cache: Setting shared memory "
                  " cache size to %" APR_SIZE_T_FMT " bytes.", 
                  getpid(), st->cache_bytes);
@@ -1355,7 +1320,7 @@ static const char *util_ldap_set_cache_file(cmd_parms *cmd, void *dummy,
         st->cache_file = NULL;
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, cmd->server, 
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server, 
                  "LDAP cache: Setting shared memory cache file to %s bytes.", 
                  st->cache_file);
 
@@ -1371,7 +1336,7 @@ static const char *util_ldap_set_cache_ttl(cmd_parms *cmd, void *dummy,
 
     st->search_cache_ttl = atol(ttl) * 1000000;
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, cmd->server, 
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server, 
                  "[%d] ldap cache: Setting cache TTL to %ld microseconds.",
                  getpid(), st->search_cache_ttl);
 
@@ -1391,7 +1356,7 @@ static const char *util_ldap_set_cache_entries(cmd_parms *cmd, void *dummy,
         st->search_cache_size = 0;
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, cmd->server, 
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server, 
                  "[%d] ldap cache: Setting search cache size to %ld entries.",
                  getpid(), st->search_cache_size);
 
@@ -1407,7 +1372,7 @@ static const char *util_ldap_set_opcache_ttl(cmd_parms *cmd, void *dummy,
 
     st->compare_cache_ttl = atol(ttl) * 1000000;
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, cmd->server, 
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server, 
                  "[%d] ldap cache: Setting operation cache TTL to %ld microseconds.", 
                  getpid(), st->compare_cache_ttl);
 
@@ -1426,7 +1391,7 @@ static const char *util_ldap_set_opcache_entries(cmd_parms *cmd, void *dummy,
         st->compare_cache_size = 0;
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, cmd->server, 
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server, 
                  "[%d] ldap cache: Setting operation cache size to %ld "
                  "entries.", getpid(), st->compare_cache_size);
 
@@ -1443,8 +1408,8 @@ static const char *util_ldap_set_opcache_entries(cmd_parms *cmd, void *dummy,
  *
  * If no matches are found, APR_LDAP_CA_TYPE_UNKNOWN is returned.
  */
-static const int util_ldap_parse_cert_type(const char *type) {
-
+static int util_ldap_parse_cert_type(const char *type)
+{
     /* Authority file in binary DER format */
     if (0 == strcasecmp("CA_DER", type)) {
         return APR_LDAP_CA_TYPE_DER;
@@ -1557,7 +1522,7 @@ static const char *util_ldap_set_trusted_global_cert(cmd_parms *cmd,
         return "Certificate type was not specified.";
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, cmd->server,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server,
                       "LDAP: SSL trusted global cert - %s (type %s)",
                        file, type);
 
@@ -1639,7 +1604,7 @@ static const char *util_ldap_set_trusted_client_cert(cmd_parms *cmd,
         return "Certificate type was not specified.";
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, cmd->server,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server,
                       "LDAP: SSL trusted client cert - %s (type %s)",
                        file, type);
 
@@ -1686,7 +1651,7 @@ static const char *util_ldap_set_trusted_mode(cmd_parms *cmd, void *dummy,
     (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config,
                                               &ldap_module);
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, cmd->server,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server,
                       "LDAP: SSL trusted mode - %s",
                        mode);
 
@@ -1717,7 +1682,7 @@ static const char *util_ldap_set_verify_srv_cert(cmd_parms *cmd,
     (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config,
                                               &ldap_module);
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, cmd->server,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server,
                       "LDAP: SSL verify server certificate - %s", 
                       mode?"TRUE":"FALSE");
 
@@ -1743,7 +1708,7 @@ static const char *util_ldap_set_connection_timeout(cmd_parms *cmd,
 #ifdef LDAP_OPT_NETWORK_TIMEOUT
     st->connectionTimeout = atol(ttl);
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, cmd->server, 
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server, 
                  "[%d] ldap connection: Setting connection timeout to "
                  "%ld seconds.", getpid(), st->connectionTimeout);
 #else
@@ -1825,7 +1790,6 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
                                  apr_pool_t *ptemp, server_rec *s)
 {
     apr_status_t result;
-    char buf[MAX_STRING_LEN];
     server_rec *s_vhost;
     util_ldap_state_t *st_vhost;
 
@@ -1852,7 +1816,6 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
         if (st->cache_file) {
             char *lck_file = apr_pstrcat(st->pool, st->cache_file, ".lck", 
                                          NULL);
-            apr_file_remove(st->cache_file, ptemp);
             apr_file_remove(lck_file, ptemp);
         }
 #endif
@@ -1867,10 +1830,9 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
 #endif
         result = util_ldap_cache_init(p, st);
         if (result != APR_SUCCESS) {
-            apr_strerror(result, buf, sizeof(buf));
             ap_log_error(APLOG_MARK, APLOG_ERR, result, s,
-                         "LDAP cache: error while creating a shared memory "
-                         "segment: %s", buf);
+                         "LDAP cache: could not create shared memory segment");
+            return DONE;
         }
 
 
@@ -1879,9 +1841,7 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
             st->lock_file = apr_pstrcat(st->pool, st->cache_file, ".lck", 
                                         NULL);
         }
-        else
 #endif
-            st->lock_file = ap_server_root_relative(st->pool, tmpnam(NULL));
 
         result = apr_global_mutex_create(&st->util_ldap_cache_lock, 
                                          st->lock_file, APR_LOCK_DEFAULT, 
@@ -1910,7 +1870,7 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
             st_vhost->cache_shm = st->cache_shm;
             st_vhost->cache_rmm = st->cache_rmm;
             st_vhost->cache_file = st->cache_file;
-            ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, result, s, 
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, result, s, 
                          "LDAP merging Shared Cache conf: shm=0x%pp rmm=0x%pp "
                          "for VHOST: %s", st->cache_shm, st->cache_rmm, 
                          s_vhost->server_hostname);
@@ -1933,7 +1893,7 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
         apr_ldap_err_t *result = NULL;
         apr_ldap_info(p, &(result));
         if (result != NULL) {
-            ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s, "%s", result->reason);
+            ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "%s", result->reason);
         }
     }
 
@@ -1957,17 +1917,15 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
 
     if (APR_SUCCESS == rc) {
         st->ssl_supported = 1;
-        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s,
-                         "LDAP: SSL support available" );
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,
+                     "LDAP: SSL support available" );
     }
     else {
         st->ssl_supported = 0;
-        if (NULL != result_err) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, "%s", 
-                         result_err->reason);
-        }
-        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s, 
-                         "LDAP: SSL support unavailable" );
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, 
+                     "LDAP: SSL support unavailable%s%s",
+                     result_err ? ": " : "",
+                     result_err ? result_err->reason : "");
     }
 
     return(OK);
@@ -1988,18 +1946,10 @@ static void util_ldap_child_init(apr_pool_t *p, server_rec *s)
                      "Failed to initialise global mutex %s in child process %"
                      APR_PID_T_FMT ".",
                      st->lock_file, getpid());
-        return;
-    }
-    else {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s, 
-                     "Initialisation of global mutex %s in child process %"
-                     APR_PID_T_FMT
-                     " successful.",
-                     st->lock_file, getpid());
     }
 }
 
-command_rec util_ldap_cmds[] = {
+static const command_rec util_ldap_cmds[] = {
     AP_INIT_TAKE1("LDAPSharedCacheSize", util_ldap_set_cache_bytes, 
                   NULL, RSRC_CONF,
                   "Set the size of the shared memory cache (in bytes). Use "

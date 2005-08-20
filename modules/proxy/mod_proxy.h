@@ -120,12 +120,12 @@ struct noproxy_entry {
 typedef struct proxy_balancer  proxy_balancer;
 typedef struct proxy_worker    proxy_worker;
 typedef struct proxy_conn_pool proxy_conn_pool;
+typedef struct proxy_balancer_method proxy_balancer_method;
 
 typedef struct {
     apr_array_header_t *proxies;
     apr_array_header_t *sec_proxy;
     apr_array_header_t *aliases;
-    apr_array_header_t *raliases;
     apr_array_header_t *noproxies;
     apr_array_header_t *dirconn;
     apr_array_header_t *allowed_connect_ports;
@@ -173,10 +173,6 @@ typedef struct {
  * the strmatch_patterns are really a const just to have a
  * case-independent strstr.
  */
-    apr_array_header_t* cookie_paths;
-    apr_array_header_t* cookie_domains;
-    const apr_strmatch_pattern* cookie_path_str;
-    const apr_strmatch_pattern* cookie_domain_str;
     enum {
         status_off,
         status_on,
@@ -184,6 +180,7 @@ typedef struct {
     } proxy_status;             /* Status display options */
     char proxy_status_set;
     apr_pool_t *pool;           /* Pool used for allocating this struct */
+    apr_array_header_t *lbmethods;
 } proxy_server_conf;
 
 
@@ -191,6 +188,19 @@ typedef struct {
     const char *p;            /* The path */
     int         p_is_fnmatch; /* Is this path an fnmatch candidate? */
     ap_regex_t  *r;            /* Is this a regex? */
+
+/* ProxyPassReverse and friends are documented as working inside
+ * <Location>.  But in fact they never have done in the case of
+ * more than one <Location>, because the server_conf can't see it.
+ * We need to move them to the per-dir config.
+ * Discussed in February:
+ * http://marc.theaimsgroup.com/?l=apache-httpd-dev&m=110726027118798&w=2
+ */
+    apr_array_header_t *raliases;
+    apr_array_header_t* cookie_paths;
+    apr_array_header_t* cookie_domains;
+    const apr_strmatch_pattern* cookie_path_str;
+    const apr_strmatch_pattern* cookie_domain_str;
 } proxy_dir_conf;
 
 typedef struct {
@@ -228,7 +238,8 @@ struct proxy_conn_pool {
 #define PROXY_WORKER_IGNORE_ERRORS  0x0002
 #define PROXY_WORKER_IN_SHUTDOWN    0x0010
 #define PROXY_WORKER_DISABLED       0x0020
-#define PROXY_WORKER_IN_ERROR       0x0040
+#define PROXY_WORKER_STOPPED        0x0040
+#define PROXY_WORKER_IN_ERROR       0x0080
 
 #define PROXY_WORKER_IS_USABLE(f)   (!((f)->s->status & 0x00F0))
 
@@ -248,6 +259,7 @@ typedef struct {
     apr_size_t      elected;    /* Number of times the worker was elected */
     char            route[PROXY_WORKER_MAX_ROUTE_SIZ+1];
     char            redirect[PROXY_WORKER_MAX_ROUTE_SIZ+1];
+    void            *context;   /* general purpose storage */
 } proxy_worker_stat;
 
 /* Worker configuration */
@@ -260,6 +272,7 @@ struct proxy_worker {
     const char      *hostname;  /* remote backend address */
     const char      *route;     /* balancing route */
     const char      *redirect;  /* temporary balancing redirection route */
+    int             status;     /* temporary worker status */
     apr_port_t      port;
     int             min;        /* Desired minimum number of available connections */
     int             smax;       /* Soft maximum on the total number of connections */
@@ -283,6 +296,7 @@ struct proxy_worker {
 #if APR_HAS_THREADS
     apr_thread_mutex_t  *mutex;  /* Thread lock for updating address cache */
 #endif
+    void            *context;   /* general purpose storage */
 };
 
 struct proxy_balancer {
@@ -293,10 +307,7 @@ struct proxy_balancer {
     apr_interval_time_t timeout; /* Timeout for waiting on free connection */
     int                 max_attempts; /* Number of attempts before failing */
     char                max_attempts_set;
-    enum {
-       lbmethod_requests = 1,
-       lbmethod_traffic = 2
-    } lbmethod;
+    proxy_balancer_method *lbmethod;
 
     /* XXX: Perhaps we will need the proc mutex too.
      * Altrough we are only using arithmetic operations
@@ -306,6 +317,14 @@ struct proxy_balancer {
 #if APR_HAS_THREADS
     apr_thread_mutex_t  *mutex;  /* Thread lock for updating lb params */
 #endif
+    void            *context;   /* general purpose storage */
+};
+
+struct proxy_balancer_method {
+    const char *name;            /* name of the load balancer method*/
+    proxy_worker *(*finder)(proxy_balancer *balancer,
+                            request_rec *r);
+    void            *context;   /* general purpose storage */
 };
 
 #if APR_HAS_THREADS
@@ -354,6 +373,14 @@ APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, canon_handler, (request_rec *r,
 
 APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, create_req, (request_rec *r, request_rec *pr))
 APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, fixups, (request_rec *r)) 
+
+/*
+ * Useful hook run within the create per-server phase which
+ * adds the required lbmethod structs, so they exist at
+ * configure time
+ */
+APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, load_lbmethods,
+                                     (proxy_server_conf *conf))
 
 /**
  * pre request hook.
@@ -414,23 +441,23 @@ PROXY_DECLARE(int) ap_proxy_conn_is_https(conn_rec *c);
 PROXY_DECLARE(const char *) ap_proxy_ssl_val(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, const char *var);
 
 /* Header mapping functions, and a typedef of their signature */
-PROXY_DECLARE(const char *) ap_proxy_location_reverse_map(request_rec *r, proxy_server_conf *conf, const char *url);
-PROXY_DECLARE(const char *) ap_proxy_cookie_reverse_map(request_rec *r, proxy_server_conf *conf, const char *str);
+PROXY_DECLARE(const char *) ap_proxy_location_reverse_map(request_rec *r, proxy_dir_conf *conf, const char *url);
+PROXY_DECLARE(const char *) ap_proxy_cookie_reverse_map(request_rec *r, proxy_dir_conf *conf, const char *str);
 
 #if !defined(WIN32)
 typedef const char *(*ap_proxy_header_reverse_map_fn)(request_rec *,
-                       proxy_server_conf *, const char *);
+                       proxy_dir_conf *, const char *);
 #elif defined(PROXY_DECLARE_STATIC)
 typedef const char *(__stdcall *ap_proxy_header_reverse_map_fn)(request_rec *,
-                                 proxy_server_conf *, const char *);
+                                 proxy_dir_conf *, const char *);
 #elif defined(PROXY_DECLARE_EXPORT)
 typedef __declspec(dllexport) const char *
   (__stdcall *ap_proxy_header_reverse_map_fn)(request_rec *,
-               proxy_server_conf *, const char *);
+               proxy_dir_conf *, const char *);
 #else
 typedef __declspec(dllimport) const char *
   (__stdcall *ap_proxy_header_reverse_map_fn)(request_rec *,
-               proxy_server_conf *, const char *);
+               proxy_dir_conf *, const char *);
 #endif
 
 

@@ -447,7 +447,7 @@ body_chunk :=
 
 static apr_status_t ajp_unmarshal_response(ajp_msg_t *msg,
                                            request_rec *r,
-                                           proxy_server_conf *conf)
+                                           proxy_dir_conf *dconf)
 {
     apr_uint16_t status;
     apr_status_t rc;
@@ -532,7 +532,7 @@ static apr_status_t ajp_unmarshal_response(ajp_msg_t *msg,
 
         /* Set-Cookie need additional processing */
         if (!strcasecmp(stringname, "Set-Cookie")) {
-            value = ap_proxy_cookie_reverse_map(r, conf, value);
+            value = ap_proxy_cookie_reverse_map(r, dconf, value);
         }
         /* Location, Content-Location, URI and Destination need additional
          * processing */
@@ -541,7 +541,7 @@ static apr_status_t ajp_unmarshal_response(ajp_msg_t *msg,
                  || !strcasecmp(stringname, "URI")
                  || !strcasecmp(stringname, "Destination"))
         {
-          value = ap_proxy_location_reverse_map(r, conf, value);
+          value = ap_proxy_location_reverse_map(r, dconf, value);
         }
 
 #if defined(AS400) || defined(_OSD_POSIX)
@@ -639,7 +639,7 @@ int ajp_parse_type(request_rec  *r, ajp_msg_t *msg)
 }
 
 /* parse the header */
-apr_status_t ajp_parse_header(request_rec  *r, proxy_server_conf *conf,
+apr_status_t ajp_parse_header(request_rec  *r, proxy_dir_conf *conf,
                               ajp_msg_t *msg)
 {
     apr_byte_t result;

@@ -1002,7 +1002,7 @@ PROXY_DECLARE(void) ap_proxy_table_unmerge(apr_pool_t *p, apr_table_t *t, char *
 }
 
 PROXY_DECLARE(const char *) ap_proxy_location_reverse_map(request_rec *r,
-                              proxy_server_conf *conf, const char *url)
+                              proxy_dir_conf *conf, const char *url)
 {
     struct proxy_alias *ent;
     int i, l1, l2;
@@ -1031,7 +1031,7 @@ PROXY_DECLARE(const char *) ap_proxy_location_reverse_map(request_rec *r,
  * and stick to plain strings for the config values.
  */
 PROXY_DECLARE(const char *) ap_proxy_cookie_reverse_map(request_rec *r,
-                              proxy_server_conf *conf, const char *str)
+                              proxy_dir_conf *conf, const char *str)
 {
     struct proxy_alias *ent;
     size_t len = strlen(str);
@@ -1050,8 +1050,8 @@ PROXY_DECLARE(const char *) ap_proxy_cookie_reverse_map(request_rec *r,
    /* Find the match and replacement, but save replacing until we've done
     * both path and domain so we know the new strlen
     */
-    if (pathp = apr_strmatch(conf->cookie_path_str, str, len) ,pathp) {
-        pathp += 5 ;
+    if ((pathp = apr_strmatch(conf->cookie_path_str, str, len)) != NULL) {
+        pathp += 5;
         poffs = pathp - str;
         pathe = ap_strchr_c(pathp, ';');
         l1 = pathe ? (pathe - pathp) : strlen(pathp);
@@ -1067,7 +1067,7 @@ PROXY_DECLARE(const char *) ap_proxy_cookie_reverse_map(request_rec *r,
         }
     }
     
-    if (domainp = apr_strmatch(conf->cookie_domain_str, str, len), domainp) {
+    if ((domainp = apr_strmatch(conf->cookie_domain_str, str, len)) != NULL) {
         domainp += 7;
         doffs = domainp - str;
         domaine = ap_strchr_c(domainp, ';');
@@ -1155,6 +1155,8 @@ PROXY_DECLARE(const char *) ap_proxy_add_balancer(proxy_balancer **balancer,
                                                   const char *url)
 {
     char *c, *q, *uri = apr_pstrdup(p, url);
+    int i;
+    proxy_balancer_method *lbmethod;
 
     c = strchr(uri, ':');   
     if (c == NULL || c[1] != '/' || c[2] != '/' || c[3] == '\0')
@@ -1167,8 +1169,20 @@ PROXY_DECLARE(const char *) ap_proxy_add_balancer(proxy_balancer **balancer,
     *balancer = apr_array_push(conf->balancers);
     memset(*balancer, 0, sizeof(proxy_balancer));
 
+    /*
+     * NOTE: The default method is byrequests, which we assume
+     * exists!
+     */
+    lbmethod = (proxy_balancer_method *)conf->lbmethods->elts;
+    for (i = 0; i < conf->lbmethods->nelts; i++) {
+        if (!strcasecmp(lbmethod->name, "byrequests")) {
+            break;
+        }
+        lbmethod++;
+    }
+
     (*balancer)->name = uri;
-    (*balancer)->lbmethod = lbmethod_requests;
+    (*balancer)->lbmethod = lbmethod;
     (*balancer)->workers = apr_array_make(p, 5, sizeof(proxy_worker));
     /* XXX Is this a right place to create mutex */
 #if APR_HAS_THREADS
@@ -1494,6 +1508,7 @@ static apr_status_t connection_constructor(void **resource, void *params,
     return APR_SUCCESS;
 }
 
+#if APR_HAS_THREADS /* only needed when threads are used */
 /* reslist destructor */
 static apr_status_t connection_destructor(void *resource, void *params,
                                           apr_pool_t *pool)
@@ -1506,6 +1521,7 @@ static apr_status_t connection_destructor(void *resource, void *params,
 
     return APR_SUCCESS;
 }
+#endif
 
 PROXY_DECLARE(void) ap_proxy_initialize_worker_share(proxy_server_conf *conf,
                                                      proxy_worker *worker,
@@ -1620,7 +1636,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
              worker->id, getpid(), worker->hostname);
     }
     if (rv == APR_SUCCESS)
-        worker->s->status |= PROXY_WORKER_INITIALIZED;
+        worker->s->status |= (worker->status | PROXY_WORKER_INITIALIZED);
     return rv;
 }
 

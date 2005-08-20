@@ -36,6 +36,7 @@
 
 static BOOL  ssl_expr_eval_comp(request_rec *, ssl_expr *);
 static char *ssl_expr_eval_word(request_rec *, ssl_expr *);
+static BOOL  ssl_expr_eval_oid(request_rec *r, const char *word, const char *oidstr);
 static char *ssl_expr_eval_func_file(request_rec *, char *);
 static int   ssl_expr_eval_strcmplex(char *, char *);
 
@@ -113,8 +114,19 @@ static BOOL ssl_expr_eval_comp(request_rec *r, ssl_expr *node)
             char *w1 = ssl_expr_eval_word(r, e1);
             BOOL found = FALSE;
             do {
+                ssl_expr_node_op op = e2->node_op;
                 e3 = (ssl_expr *)e2->node_arg1;
                 e2 = (ssl_expr *)e2->node_arg2;
+
+                if (op == op_OidListElement) {
+                    char *w3 = ssl_expr_eval_word(r, e3);
+
+                    found = ssl_expr_eval_oid(r, w1, w3);
+
+                    /* There will be no more nodes on the list, so the result is authoritative */
+                    break;
+                }
+
                 if (strcmp(w1, ssl_expr_eval_word(r, e3)) == 0) {
                     found = TRUE;
                     break;
@@ -185,6 +197,85 @@ static char *ssl_expr_eval_word(request_rec *r, ssl_expr *node)
         }
     }
 }
+
+#define NUM_OID_ELTS 8 /* start with 8 oid slots, resize when needed */
+
+apr_array_header_t *ssl_extlist_by_oid(request_rec *r, const char *oidstr)
+{
+    int count = 0, j;
+    X509 *xs = NULL;
+    ASN1_OBJECT *oid;
+    apr_array_header_t *val_array;
+    SSLConnRec *sslconn = myConnConfig(r->connection);
+
+    /* trivia */
+    if (oidstr == NULL || sslconn == NULL || sslconn->ssl == NULL)
+        return NULL;
+
+    /* Determine the oid we are looking for */
+    if ((oid = OBJ_txt2obj(oidstr, 1)) == NULL) {
+        ERR_clear_error();
+        return NULL;
+    }
+
+    /* are there any extensions in the cert? */
+    if ((xs = SSL_get_peer_certificate(sslconn->ssl)) == NULL ||
+        (count = X509_get_ext_count(xs)) == 0) {
+        return NULL;
+    }
+
+    val_array = apr_array_make(r->pool, NUM_OID_ELTS, sizeof(char *));
+
+    /* Loop over all extensions, extract the desired oids */
+    for (j = 0; j < count; j++) {
+        X509_EXTENSION *ext = X509_get_ext(xs, j);
+
+        if (OBJ_cmp(ext->object, oid) == 0) {
+            BIO *bio = BIO_new(BIO_s_mem());
+
+            if (X509V3_EXT_print(bio, ext, 0, 0) == 1) {
+                BUF_MEM *buf;
+                char **new = apr_array_push(val_array);
+
+                BIO_get_mem_ptr(bio, &buf);
+
+                *new = apr_pstrdup(r->pool, buf->data);
+            }
+
+            BIO_vfree(bio);
+        }
+    }
+
+    X509_free(xs);
+    ERR_clear_error();
+
+    if (val_array->nelts == 0)
+        return NULL;
+    else
+        return val_array;
+}
+
+static BOOL ssl_expr_eval_oid(request_rec *r, const char *word, const char *oidstr)
+{
+    int j;
+    BOOL result = FALSE;
+    apr_array_header_t *oid_array;
+    char **oid_value;
+
+    if (NULL == (oid_array = ssl_extlist_by_oid(r, oidstr))) {
+        return FALSE;
+    }
+
+    oid_value = (char **) oid_array->elts;
+    for (j = 0; j < oid_array->nelts; j++) {
+        if (strcmp(word, oid_value[j]) == 0) {
+            result = TRUE;
+            break;
+        }
+    }
+    return result;
+}
+
 
 static char *ssl_expr_eval_func_file(request_rec *r, char *filename)
 {

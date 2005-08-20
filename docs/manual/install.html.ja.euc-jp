@@ -25,8 +25,6 @@
 <a href="./ja/install.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/install.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 
 
     <p>この文書で扱う範囲は、Unix や Unix に類似したシステムでの
@@ -359,13 +357,15 @@ $ tar xvf httpd-2_1_<em>NN</em>.tar
     (2.0.41 以降ではそのようになっています。それ以前のバージョンには
     不整合が存在します。)</p>
 
-    <p>前回のインストール時のソースツリーが残されているのであれば、
-    アップグレードはさらに簡単です。古いソースツリーのルートに存在する
-    <code>config.nice</code> ファイルには、前回ソースツリーを設定した時の
-    <code class="program"><a href="./programs/configure.html">configure</a></code> コマンドラインが入っています。
-    次のバージョンにアップグレードする場合は、<code>config.nice</code>
+    <p>マイナーバージョンでアップグレードする場合は、
+    既にインストールされているサーバの <code>build</code> ディレクトリ内か、
+    以前インストールに使ったソースコードツリーの最上位ディレクトリ内にある、
+    <code>config.nice</code> ファイルを探してください。
+    このファイルにはソースツリーを設定した時に使った
+    <code class="program"><a href="./programs/configure.html">configure</a></code> コマンドラインが、そのまま入っています。
+    次のバージョンにアップグレードする場合は <code>config.nice</code>
     ファイルを新しいバージョンのソースツリーにコピーし、
-    それを編集し必要な変更を行なって、次のように実行します。</p>
+    必要であればそれを編集した後に、次のように実行します。</p>
 
     <div class="example"><p><code>
     $ ./config.nice<br />

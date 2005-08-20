@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <metafile>
-  <basename>mod_log_config</basename>
-  <path>/mod/</path>
+  <basename>background</basename>
+  <path>/faq/</path>
   <relpath>..</relpath>
 
   <variants>
     <variant>en</variant>
-    <variant>ja</variant>
-    <variant outdated="yes">ko</variant>
   </variants>
 </metafile>

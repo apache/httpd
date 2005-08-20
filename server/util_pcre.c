@@ -213,9 +213,15 @@ else
     case PCRE_ERROR_BADMAGIC: return AP_REG_INVARG;
     case PCRE_ERROR_UNKNOWN_NODE: return AP_REG_ASSERT;
     case PCRE_ERROR_NOMEMORY: return AP_REG_ESPACE;
+#ifdef PCRE_ERROR_MATCHLIMIT
     case PCRE_ERROR_MATCHLIMIT: return AP_REG_ESPACE;
+#endif
+#ifdef PCRE_ERROR_BADUTF8
     case PCRE_ERROR_BADUTF8: return AP_REG_INVARG;
+#endif
+#ifdef PCRE_ERROR_BADUTF8_OFFSET
     case PCRE_ERROR_BADUTF8_OFFSET: return AP_REG_INVARG;
+#endif
     default: return AP_REG_ASSERT;
     }
   }

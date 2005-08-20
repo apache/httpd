@@ -957,7 +957,12 @@ static int read_type_map(apr_file_t **map, negotiation_state *neg,
                 APR_OS_DEFAULT, neg->pool)) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
                       "cannot access type map file: %s", rr->filename);
-        return APR_STATUS_IS_ENOENT(status) ? HTTP_NOT_FOUND : HTTP_FORBIDDEN;
+        if (APR_STATUS_IS_ENOTDIR(status) || APR_STATUS_IS_ENOENT(status)) {
+            return HTTP_NOT_FOUND;
+        }
+        else {
+            return HTTP_FORBIDDEN;
+        }
     }
 
     clean_var_rec(&mime_info);

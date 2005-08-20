@@ -643,6 +643,8 @@ void         ssl_var_register(void);
 char        *ssl_var_lookup(apr_pool_t *, server_rec *, conn_rec *, request_rec *, char *);
 const char  *ssl_ext_lookup(apr_pool_t *p, conn_rec *c, int peer, const char *oid);
 
+extern apr_array_header_t *ssl_extlist_by_oid(request_rec *r, const char *oidstr);
+
 void         ssl_var_log_config_register(apr_pool_t *p);
 
 #define APR_SHM_MAXSIZE (64 * 1024 * 1024)

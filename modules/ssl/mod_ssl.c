@@ -263,6 +263,7 @@ static int ssl_hook_pre_config(apr_pool_t *pconf,
     ENGINE_load_builtin_engines();
 #endif
 #ifdef HAVE_OPENSSL
+    OpenSSL_add_all_algorithms();
 #if OPENSSL_VERSION_NUMBER >= 0x00907001
     OPENSSL_load_builtin_modules();
 #endif
@@ -503,6 +504,8 @@ static void ssl_register_hooks(apr_pool_t *p)
 
     APR_REGISTER_OPTIONAL_FN(ssl_proxy_enable);
     APR_REGISTER_OPTIONAL_FN(ssl_engine_disable);
+
+    APR_REGISTER_OPTIONAL_FN(ssl_extlist_by_oid);
 }
 
 module AP_MODULE_DECLARE_DATA ssl_module = {

@@ -27,7 +27,7 @@
     Apache users the ability
     to run <strong>CGI</strong> and <strong>SSI</strong> programs
     under user IDs different from the user ID of the calling
-    web-server. Normally, when a CGI or SSI program executes, it
+    web server. Normally, when a CGI or SSI program executes, it
     runs as the same user who is running the web server.</p>
 
     <p>Used properly, this feature can reduce
@@ -464,7 +464,7 @@
     filesystem permissions to ensure that only the group Apache 
     runs as may execute suEXEC.</p>
 
-    <p>If for example, your web-server is configured to run as:</p>
+    <p>If for example, your web server is configured to run as:</p>
 
 <div class="example"><p><code>
     User www<br />

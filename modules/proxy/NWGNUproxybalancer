@@ -216,6 +216,7 @@ FILES_nlm_Ximports = \
 	proxy_hook_canon_handler \
 	proxy_hook_pre_request \
 	proxy_hook_post_request \
+	proxy_hook_load_lbmethods \
 	proxy_run_fixups \
 	ap_proxy_ssl_enable \
 	ap_proxy_ssl_disable \
