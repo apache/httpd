@@ -49,9 +49,13 @@ AP_DECLARE(void) ap_dbd_close(server_rec*, ap_dbd_t*);
  */
 AP_DECLARE(ap_dbd_t*) ap_dbd_acquire(request_rec*);
 
+/* Prepare a statement for use by a client module */
+AP_DECLARE(void) ap_dbd_prepare(server_rec*, const char*, const char*);
+
 /* Also export them as optional functions for modules that prefer it */
 APR_DECLARE_OPTIONAL_FN(ap_dbd_t*, ap_dbd_open, (apr_pool_t*, server_rec*));
 APR_DECLARE_OPTIONAL_FN(void, ap_dbd_close, (server_rec*, ap_dbd_t*));
 APR_DECLARE_OPTIONAL_FN(ap_dbd_t*, ap_dbd_acquire, (request_rec*));
+APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const char*));
 
 #endif

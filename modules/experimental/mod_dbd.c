@@ -1,5 +1,4 @@
-/* Copyright 2003-5 WebThing Ltd
- * Copyright 2005 The Apache Software Foundation or its licensors, as
+/* Copyright 2003-5 The Apache Software Foundation or its licensors, as
  * applicable.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,9 +19,6 @@
  * or
  * http://apache.webthing.com/database/
  */
-
-/* Bump the version for committing to apache svn */
-#define VERSION "0.2"
 
 #include <ctype.h>
 
@@ -123,16 +119,19 @@ static const char *dbd_param(cmd_parms *cmd, void *cfg, const char *val)
     }
     return NULL;
 }
-static const char *dbd_prepare(cmd_parms *cmd, void *cfg, const char *query,
-                               const char *label)
+void ap_dbd_prepare(server_rec *s, const char *query, const char *label)
 {
-    svr_cfg *svr = (svr_cfg*) ap_get_module_config
-        (cmd->server->module_config, &dbd_module);
-    dbd_prepared *prepared = apr_pcalloc(cmd->pool, sizeof(dbd_prepared));
+    svr_cfg *svr = ap_get_module_config(s->module_config, &dbd_module);
+    dbd_prepared *prepared = apr_pcalloc(s->process->pool, sizeof(dbd_prepared));
     prepared->label = label;
     prepared->query = query;
     prepared->next = svr->prepared;
     svr->prepared = prepared;
+}
+static const char *dbd_prepare(cmd_parms *cmd, void *cfg, const char *query,
+                               const char *label)
+{
+    ap_dbd_prepare(cmd->server, query, label);
     return NULL;
 }
 static const command_rec dbd_cmds[] = {
@@ -203,14 +202,40 @@ static apr_status_t dbd_prepared_init(apr_pool_t *pool, svr_cfg *svr,
     }
     return ret;
 }
-#if APR_HAS_THREADS
 /************ svr cfg: manage db connection pool ****************/
-/* an apr_reslist_constructor for SQL connections */
+/* an apr_reslist_constructor for SQL connections
+ * Also use this for opening in non-reslist modes, since it gives
+ * us all the error-handling in one place.
+ */
 static apr_status_t dbd_construct(void **db, void *params, apr_pool_t *pool)
 {
     svr_cfg *svr = (svr_cfg*) params;
     ap_dbd_t *rec = apr_pcalloc(pool, sizeof(ap_dbd_t));
     apr_status_t rv = apr_dbd_get_driver(pool, svr->name, &rec->driver);
+
+/* Error-checking get_driver isn't necessary now (because it's done at
+ * config-time).  But in case that changes in future ...
+ */
+    switch (rv) {
+    case APR_ENOTIMPL:
+        ap_log_perror(APLOG_MARK, APLOG_CRIT, 0, pool,
+                      "DBD: driver for %s not available", svr->name);
+        return rv;
+    case APR_EDSOOPEN:
+        ap_log_perror(APLOG_MARK, APLOG_CRIT, 0, pool,
+                      "DBD: can't find driver for %s", svr->name);
+        return rv;
+    case APR_ESYMNOTFOUND:
+        ap_log_perror(APLOG_MARK, APLOG_CRIT, 0, pool,
+                      "DBD: driver for %s is invalid or corrupted", svr->name);
+        return rv;
+    default:
+        ap_log_perror(APLOG_MARK, APLOG_CRIT, 0, pool,
+                      "DBD: mod_dbd not compatible with apr in get_driver");
+        return rv;
+    case APR_SUCCESS:
+        break;
+    }
 
     rv = apr_dbd_open(rec->driver, pool, svr->params, &rec->handle);
     switch (rv) {
@@ -218,11 +243,18 @@ static apr_status_t dbd_construct(void **db, void *params, apr_pool_t *pool)
         ap_log_perror(APLOG_MARK, APLOG_CRIT, 0, pool,
                       "DBD: Can't connect to %s[%s]", svr->name, svr->params);
         return rv;
+    default:
+        ap_log_perror(APLOG_MARK, APLOG_CRIT, 0, pool,
+                      "DBD: mod_dbd not compatible with apr in open");
+        return rv;
+    case APR_SUCCESS:
+        break;
     }
     *db = rec;
-    dbd_prepared_init(pool, svr, rec);
+    rv = dbd_prepared_init(pool, svr, rec);
     return rv;
 }
+#if APR_HAS_THREADS
 static apr_status_t dbd_destruct(void *sql, void *params, apr_pool_t *pool)
 {
     ap_dbd_t *rec = sql;
@@ -265,19 +297,9 @@ ap_dbd_t* ap_dbd_open(apr_pool_t *pool, server_rec *s)
     const char *errmsg;
 
     if (!svr->persist) {
-        rec = apr_pcalloc(pool, sizeof(ap_dbd_t));
-        rv = apr_dbd_get_driver(pool, svr->name, &rec->driver);
-
-        rv = apr_dbd_open(rec->driver, pool, svr->params, &rec->handle);
-        switch (rv) {
-        case APR_EGENERAL:
-            ap_log_perror(APLOG_MARK, APLOG_CRIT, 0, pool,
-                          "DBD: Can't connect to %s[%s]",
-                          svr->name, svr->params);
-            return NULL;
-        }
-        dbd_prepared_init(pool, svr, rec);
-        return rec;
+        /* Return a once-only connection */
+        rv = dbd_construct((void**)&rec, svr, pool);
+        return (rv == APR_SUCCESS) ? rec : NULL;
     }
 
     if (!svr->dbpool) {
@@ -311,21 +333,13 @@ ap_dbd_t* ap_dbd_open(apr_pool_t *pool, server_rec *s)
     svr_cfg *svr = ap_get_module_config(s->module_config, &dbd_module);
 
     if (!svr->persist) {
-        rec = apr_pcalloc(pool, sizeof(ap_dbd_t));
-        rv = apr_dbd_get_driver(pool, svr->name, &rec->driver);
-
-        rv = apr_dbd_open(rec->driver, pool, svr->params, &rec->handle);
-        switch (rv) {
-        case APR_EGENERAL:
-            ap_log_perror(APLOG_MARK, APLOG_CRIT, 0, pool,
-                          "DBD: Can't connect to %s[%s]",
-                          svr->name, svr->params);
-            return NULL;
-        }
-        dbd_prepared_init(pool, svr, rec);
-        return rec;
+        /* Return a once-only connection */
+        rv = dbd_construct((void**)&rec, svr, pool);
+        return (rv == APR_SUCCESS) ? rec : NULL;
     }
+
 /* since we're in nothread-land, we can mess with svr->conn with impunity */
+/* If we have a persistent connection and it's good, we'll use it */
     if (svr->conn) {
         if (apr_dbd_check_conn(svr->conn->driver, pool, svr->conn->handle) != 0){
             errmsg = apr_dbd_error(rec->driver, rec->handle, rv);
@@ -337,20 +351,10 @@ ap_dbd_t* ap_dbd_open(apr_pool_t *pool, server_rec *s)
             svr->conn = NULL;
         }
     }
+/* We don't have a connection right now, so we'll open one */
     if (!svr->conn) {
-        svr->conn = apr_pcalloc(pool, sizeof(ap_dbd_t));
-        rv = apr_dbd_get_driver(pool, svr->name, &svr->conn->driver);
-
-        rv = apr_dbd_open(svr->conn->driver, pool, svr->params,
-                          &svr->conn->handle);
-        switch (rv) {
-        case APR_EGENERAL:
-            ap_log_perror(APLOG_MARK, APLOG_CRIT, 0, pool,
-                          "DBD: Can't connect to %s[%s]",
-                          svr->name, svr->params);
-            return NULL;
-        }
-        dbd_prepared_init(pool, svr, rec);
+        rv = dbd_construct((void**)&rec, svr, pool);
+        svr->conn = (rv == APR_SUCCESS) ? rec : NULL;
     }
     return svr->conn;
 }
@@ -426,29 +430,16 @@ ap_dbd_t *ap_dbd_acquire(request_rec *r)
     return ret;
 }
 #endif
-static int dbd_token(apr_pool_t *pool,  apr_pool_t *p0,
-                     apr_pool_t *p1, server_rec *s)
-{
-    svr_cfg *svr = ap_get_module_config(s->module_config, &dbd_module);
-    if (svr && svr->name) {
-        ap_add_version_component(pool, apr_psprintf(pool, "DBD:%s/%s",
-                                                    svr->name, VERSION));
-    }
-    else {
-        ap_add_version_component(pool, "DBD/" VERSION);
-    }
-    return OK;
-}
 
 static void dbd_hooks(apr_pool_t *pool)
 {
 #if APR_HAS_THREADS
     ap_hook_child_init((void*)dbd_setup, NULL, NULL, APR_HOOK_MIDDLE);
 #endif
-    ap_hook_post_config(dbd_token, NULL, NULL, APR_HOOK_MIDDLE);
     APR_REGISTER_OPTIONAL_FN(ap_dbd_open);
     APR_REGISTER_OPTIONAL_FN(ap_dbd_close);
     APR_REGISTER_OPTIONAL_FN(ap_dbd_acquire);
+    APR_REGISTER_OPTIONAL_FN(ap_dbd_prepare);
     apr_dbd_init(pool);
 }
 
