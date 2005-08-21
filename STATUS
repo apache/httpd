@@ -330,7 +330,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewcvs?rev=188797&view=rev
         rediff for 2.0.x: http://people.apache.org/~jorton/ap_byterange.diff
         PR: 29962
-        +1: jorton, trawick
+        +1: jorton, trawick, niq
+
+     *) Reverse Proxy fixes: <Location> bug and Cookie support
+        Patch is at
+        http://marc.theaimsgroup.com/?l=apache-httpd-dev&m=112365629308138&q=p4
+        and is in production with Clients.
+        +1: niq: I'm seeing *a lot* of demand for this.
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
@@ -480,12 +486,6 @@ PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
 
 CURRENT VOTES:
-
-    * Reverse Proxy fixes: <Location> bug and Cookie support
-      Patch is at
-      http://marc.theaimsgroup.com/?l=apache-httpd-dev&m=112365629308138&q=p4
-      and is in production with Clients.
-      +1: niq: I'm seeing *a lot* of demand for this.
 
     * Promote mod_ldap and mod_auth_ldap from experimental to
       non experimental status.
