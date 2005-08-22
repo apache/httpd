@@ -118,9 +118,10 @@
     been created, then create enough to pick up the slack. Hence the
     code tries to maintain both the number of children appropriate for
     the current load on the server, and respect your wishes with the
-    <code class="directive">StartServers</code> parameter.</p>
+    <code class="directive"><a href="./mod/mpm_common.html#startservers">StartServers</a></code> 
+    parameter.</p>
 
-    <p>Users of the <code class="module"><a href="./mod/mod_status.html">mod_status</a></code>
+    <p>Users of <code class="module"><a href="./mod/mod_status.html">mod_status</a></code>
     will notice that the server statistics are <strong>not</strong>
     set to zero when a <code>USR1</code> is sent. The code was
     written to both minimize the time in which the server is unable
@@ -187,24 +188,25 @@ error. See above for a method of avoiding this.</div>
 <h2><a name="race" id="race">Appendix: signals and race conditions</a></h2>
 
     <p>Prior to Apache 1.2b9 there were several <em>race
-    conditions</em> involving the restart and die signals (a simple
-    description of race condition is: a time-sensitive problem, as
-    in if something happens at just the wrong time it won't behave
-    as expected). For those architectures that have the "right"
+    conditions</em> involving the restart and die signals (a simply put, 
+    a race condition is a time-sensitive problem - if something happens 
+    at just the wrong time or things happen in the wrong order, 
+    undesired behaviour will result. If the same thing happens at the right 
+    time, all will be well). For those architectures that have the "right"
     feature set we have eliminated as many as we can. But it should
-    be noted that there still do exist race conditions on certain
+    be noted that race conditions do still exist on certain
     architectures.</p>
 
-    <p>Architectures that use an on disk <code class="directive"><a href="./mod/mpm_common.html#scoreboardfile">ScoreBoardFile</a></code> have the potential
-    to corrupt their scoreboards. This can result in the "bind:
+    <p>Architectures that use an on-disk <code class="directive"><a href="./mod/mpm_common.html#scoreboardfile">ScoreBoardFile</a></code> can potentially have 
+    their scoreboards corrupted. This can result in the "bind:
     Address already in use" (after <code>HUP</code>) or "long lost
     child came home!" (after <code>USR1</code>). The former is a fatal
     error, while the latter just causes the server to lose a
-    scoreboard slot. So it might be advisable to use graceful
+    scoreboard slot. So it may be advisable to use graceful
     restarts, with an occasional hard restart. These problems are very
     difficult to work around, but fortunately most architectures do
-    not require a scoreboard file. See the <code class="directive"><a href="./mod/mpm_common.html#scoreboardfile">ScoreBoardFile</a></code> documentation for a
-    architecture uses it.</p>
+    not require a scoreboard file. See the <code class="directive"><a href="./mod/mpm_common.html#scoreboardfile">ScoreBoardFile</a></code> documentation for
+    architecture which uses it.</p>
 
     <p>All architectures have a small race condition in each child
     involving the second and subsequent requests on a persistent
