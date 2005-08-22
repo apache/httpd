@@ -61,19 +61,20 @@
 	
 	<section id="background.tested">
       <title>How thoroughly tested is Apache?</title>
-      Apache is run on millions of Internet servers.
+      <p>Apache is run on millions of Internet servers.
       It has been tested thoroughly by both developers and users. The Apache
       HTTP Server Project maintains rigorous standards before releasing new 
       versions of our server, and our server runs without a hitch on over 
       70% of all WWW servers available on the Internet. When bugs do show 
-      up, we release patches and new versions as soon as they are available.
+      up, we release patches and new versions as soon as they are
+      available.</p>
     </section>
 
 	<section id="background.logo">
       <title>How thoroughly tested is Apache?</title>
-      You may <em>NOT</em> use any original artwork from the Apache
+      <p>You may <em>NOT</em> use any original artwork from the Apache
       Software Foundation, nor make or use modified versions of such
-      artwork, except under the following conditions:
+      artwork, except under the following conditions:</p>
       <ul>
         <li>You may use the <a 
         href="http://httpd.apache.org/docs/apache_pb.gif">'Powered by Apache'
@@ -89,8 +90,8 @@
         artwork in a manner that implies endorsement of a product or
         service is <a href="">strictly forbidden.</a></li>
       </ul>
-      For details, or related issues, please contact the Apache Software
-      Foundation's <a href="">Public Relations Committee</a>.
+      <p>For details, or related issues, please contact the Apache Software
+      Foundation's <a href="">Public Relations Committee</a>.</p>
     </section>
  </section>
 </faq>
