@@ -24,6 +24,8 @@
 <parentdocument href="./">FAQ</parentdocument>
 
 <title>Background - Frequently Asked Questions</title>
+<description>Background information about the Apache HTTP Server.</description>
+
 <section id="background"><title>Background</title>
 
     <ul>
