@@ -39,7 +39,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a id="topics" name="topics">Topics</a></h2>
-<dl><dt><a href="#background">Background</a></dt><dd />
+<dl><dt><a href="#background">Background</a></dt><dd>Background information about the Apache HTTP Server.</dd>
 <dt><a href="#support">Support</a></dt><dd>What do I do when I have problems?</dd>
 <dt><a href="#error">Error Messages</a></dt><dd>What does this error message mean?</dd>
 </dl></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -71,8 +71,8 @@
         <li>is a powerful, flexible, HTTP/1.1 compliant web server</li>
         <li>implements the latest protocols, including HTTP/1.1 (RFC2616)</li>
         <li>is highly configurable and extensible with third-party modules</li>
-        <li>can be customised by writing 'modules' using the Apache 
-        module API</li>
+        <li>can be customised by writing 'modules' using the Apache module
+        API</li>
         <li>provides full source code and comes with an 
         <a href="http://www.apache.org/licenses/LICENSE-2.0">unrestrictive 
         license</a></li>
@@ -87,19 +87,20 @@
 	
 	<h3><a name="background.tested" id="background.tested">How thoroughly tested is Apache?</a></h3>
       
-      Apache is run on millions of Internet servers.
+      <p>Apache is run on millions of Internet servers.
       It has been tested thoroughly by both developers and users. The Apache
       HTTP Server Project maintains rigorous standards before releasing new 
       versions of our server, and our server runs without a hitch on over 
       70% of all WWW servers available on the Internet. When bugs do show 
-      up, we release patches and new versions as soon as they are available.
+      up, we release patches and new versions as soon as they are
+      available.</p>
     
 
 	<h3><a name="background.logo" id="background.logo">How thoroughly tested is Apache?</a></h3>
       
-      You may <em>NOT</em> use any original artwork from the Apache
+      <p>You may <em>NOT</em> use any original artwork from the Apache
       Software Foundation, nor make or use modified versions of such
-      artwork, except under the following conditions:
+      artwork, except under the following conditions:</p>
       <ul>
         <li>You may use the <a href="http://httpd.apache.org/docs/apache_pb.gif">'Powered by Apache'
         graphic</a> on a Web site that is being served by the Apache HTTP
@@ -112,8 +113,8 @@
         artwork in a manner that implies endorsement of a product or
         service is <a href="">strictly forbidden.</a></li>
       </ul>
-      For details, or related issues, please contact the Apache Software
-      Foundation's <a href="">Public Relations Committee</a>.
+      <p>For details, or related issues, please contact the Apache Software
+      Foundation's <a href="">Public Relations Committee</a>.</p>
     
  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
