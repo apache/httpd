@@ -31,7 +31,7 @@
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">Módulos y Directivas relacionadas</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#introduction">Introducción</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#theprerequisites">Los Prerequisitos</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#theprerequisites">Los Prerrequisitos</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#gettingitworking">Puesta en funcionamiento</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#lettingmorethanonepersonin">Permitir el acceso a más
 de una persona</a></li>
@@ -57,7 +57,7 @@ sencilla y efectiva puedo hacer?</a></li>
     partes de su sitio web que la mayoría de ustedes van a usar.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="theprerequisites" id="theprerequisites">Los Prerequisitos</a></h2>
+<h2><a name="theprerequisites" id="theprerequisites">Los Prerrequisitos</a></h2>
     <p>Las directivas tratadas en éste artículo necesitarán
     ir en el archivo de configuración principal de su servidor
     (típicamente en una sección del tipo
