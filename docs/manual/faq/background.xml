@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE faq SYSTEM "../style/faq.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $LastChangedRevision: 151408 $ -->
+<!-- $LastChangedRevision$ -->
 
 <!--
- Copyright 2003-2005 The Apache Software Foundation or its licensors, as
+ Copyright 2005 The Apache Software Foundation or its licensors, as
  applicable.
 
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -49,12 +49,18 @@
       <title>What is the Apache HTTP Server?</title>
       <ul>
         <li>is a powerful, flexible, HTTP/1.1 compliant web server</li>
-        <li>implements the latest protocols, including HTTP/1.1 (RFC2616)</li>        <li>is highly configurable and extensible with third-party modules</li>        <li>can be customised by writing 'modules' using the Apache 
-        module API</li>        <li>provides full source code and comes with an 
+        <li>implements the latest protocols, including HTTP/1.1 (RFC2616)</li>
+        <li>is highly configurable and extensible with third-party modules</li>
+        <li>can be customised by writing 'modules' using the Apache module
+        API</li>
+        <li>provides full source code and comes with an 
         <a href="http://www.apache.org/licenses/LICENSE-2.0">unrestrictive 
-        license</a></li>        <li>runs on Windows 2003/XP/2000/NT/9x, Netware 5.x and above, OS/2, 
+        license</a></li>
+        <li>runs on Windows 2003/XP/2000/NT/9x, Netware 5.x and above, OS/2, 
         and most versions of Unix, as well as several other operating 
-        systems</li>        <li>is actively being developed</li>        <li>encourages user feedback through new ideas, bug reports and
+        systems</li>
+        <li>is actively being developed</li>
+        <li>encourages user feedback through new ideas, bug reports and
         patches</li>
       </ul>
 	</section>
