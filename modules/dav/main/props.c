@@ -479,12 +479,12 @@ static void dav_output_prop_name(apr_pool_t *pool,
     apr_text_append(pool, phdr, s);
 }
 
-static void dav_insert_xmlns(apr_pool_t *p, const char *pre_prefix, int ns,
+static void dav_insert_xmlns(apr_pool_t *p, const char *pre_prefix, long ns,
                              const char *ns_uri, apr_text_header *phdr)
 {
     const char *s;
 
-    s = apr_psprintf(p, " xmlns:%s%d=\"%s\"", pre_prefix, ns, ns_uri);
+    s = apr_psprintf(p, " xmlns:%s%ld=\"%s\"", pre_prefix, ns, ns_uri);
     apr_text_append(p, phdr, s);
 }
 
@@ -765,7 +765,7 @@ DAV_DECLARE(dav_get_props_result) dav_get_props(dav_propdb *propdb,
                     for (scan_ns_uri = priv->provider->namespace_uris;
                          *scan_ns_uri != NULL;
                          ++scan_ns_uri) {
-                        int ns;
+                        long ns;
 
                         ns = dav_get_liveprop_ns_index(*scan_ns_uri);
                         if (marks_liveprop[ns])

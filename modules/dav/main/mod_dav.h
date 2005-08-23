@@ -876,19 +876,19 @@ DAV_DECLARE(int) dav_do_find_liveprop(const char *ns_uri, const char *name,
                                       const dav_hooks_liveprop **hooks);
 
 /* ### docco */
-DAV_DECLARE(int) dav_get_liveprop_info(int propid,
-                                       const dav_liveprop_group *group,
-                                       const dav_liveprop_spec **info);
+DAV_DECLARE(long) dav_get_liveprop_info(int propid,
+                                        const dav_liveprop_group *group,
+                                        const dav_liveprop_spec **info);
 
 /* ### docco */
 DAV_DECLARE(void) dav_register_liveprop_group(apr_pool_t *pool, 
                                               const dav_liveprop_group *group);
 
 /* ### docco */
-DAV_DECLARE(int) dav_get_liveprop_ns_index(const char *uri);
+DAV_DECLARE(long) dav_get_liveprop_ns_index(const char *uri);
 
 /* ### docco */
-DAV_DECLARE(int) dav_get_liveprop_ns_count(void);
+DAV_DECLARE(long) dav_get_liveprop_ns_count(void);
 
 /* ### docco */
 DAV_DECLARE(void) dav_add_all_liveprop_xmlns(apr_pool_t *p,
