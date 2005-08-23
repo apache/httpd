@@ -304,7 +304,7 @@ static apr_datum_t dav_build_key(dav_db *db, const dav_prop_name *name)
         l_ns = 0;
     }
     else {
-        int ns_id = (int)apr_hash_get(db->uri_index, name->ns,
+        long ns_id = (long)apr_hash_get(db->uri_index, name->ns,
                                       APR_HASH_KEY_STRING);
 
 
@@ -313,7 +313,7 @@ static apr_datum_t dav_build_key(dav_db *db, const dav_prop_name *name)
             return key;         /* zeroed */
         }
 
-        l_ns = sprintf(nsbuf, "%d", ns_id - 1);
+        l_ns = sprintf(nsbuf, "%ld", ns_id - 1);
     }
 
     /* assemble: #:name */
@@ -430,7 +430,7 @@ static dav_error * dav_propdb_open(apr_pool_t *pool,
     }
     else {
         dav_propdb_metadata m;
-        int ns;
+        long ns;
         const char *uri;
 
         dav_set_bufsize(pool, &db->ns_table, value.dsize);
@@ -568,7 +568,7 @@ static dav_error * dav_propdb_map_namespaces(
 
         const char *uri = *puri;
         apr_size_t uri_len = strlen(uri);
-        int ns_id = (int)apr_hash_get(db->uri_index, uri, uri_len);
+        long ns_id = (long)apr_hash_get(db->uri_index, uri, uri_len);
 
         if (ns_id == 0) {
             dav_check_bufsize(db->pool, &db->ns_table, uri_len + 1);
@@ -578,7 +578,7 @@ static dav_error * dav_propdb_map_namespaces(
             /* copy the uri in case the passed-in namespaces changes in
                some way. */
             apr_hash_set(db->uri_index, apr_pstrdup(db->pool, uri), uri_len,
-                         (void *)(db->ns_count + 1));
+                         (void *)((long)(db->ns_count + 1)));
 
             db->ns_table_dirty = 1;
 
