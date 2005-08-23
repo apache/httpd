@@ -34,6 +34,7 @@
 #include "apr_getopt.h"
 #include "apr_ring.h"
 #include "apr_date.h"
+#include "../modules/cache/mod_disk_cache.h"
 
 #if APR_HAVE_UNISTD_H
 #include <unistd.h>
@@ -41,55 +42,6 @@
 #if APR_HAVE_STDLIB_H
 #include <stdlib.h>
 #endif
-
-/* mod_disk_cache.c extract start */
-
-#define VARY_FORMAT_VERSION 3
-#define DISK_FORMAT_VERSION 4
-
-typedef struct {
-    /* Indicates the format of the header struct stored on-disk. */
-    apr_uint32_t format;
-    /* The HTTP status code returned for this response.  */
-    int status;
-    /* The size of the entity name that follows. */
-    apr_size_t name_len;
-    /* The number of times we've cached this entity. */
-    apr_size_t entity_version;
-    /* Miscellaneous time values. */
-    apr_time_t date;
-    apr_time_t expire;
-    apr_time_t request_time;
-    apr_time_t response_time;
-} disk_cache_info_t;
-
-#define CACHE_HEADER_SUFFIX ".header"
-#define CACHE_DATA_SUFFIX   ".data"
-/* mod_disk_cache.c extract end */
-
-/* mod_disk_cache.c related definitions start */
-
-/*
- * this is based on #define AP_TEMPFILE "/aptmpXXXXXX"
- *
- * the above definition could be reworked into the following:
- *
- * #define AP_TEMPFILE_PREFIX "/"
- * #define AP_TEMPFILE_BASE   "aptmp"
- * #define AP_TEMPFILE_SUFFIX "XXXXXX"
- * #define AP_TEMPFILE_BASELEN strlen(AP_TEMPFILE_BASE)
- * #define AP_TEMPFILE_NAMELEN strlen(AP_TEMPFILE_BASE AP_TEMPFILE_SUFFIX)
- * #define AP_TEMPFILE AP_TEMPFILE_PREFIX AP_TEMPFILE_BASE AP_TEMPFILE_SUFFIX
- *
- * these definitions would then match the definitions below:
- */
-
-#define AP_TEMPFILE_BASE    "aptmp"
-#define AP_TEMPFILE_SUFFIX  "XXXXXX"
-#define AP_TEMPFILE_BASELEN strlen(AP_TEMPFILE_BASE)
-#define AP_TEMPFILE_NAMELEN strlen(AP_TEMPFILE_BASE AP_TEMPFILE_SUFFIX)
-
-/* mod_disk_cache.c related definitions end */
 
 /* define the following for debugging */
 #undef DEBUG
