@@ -232,8 +232,6 @@ esac
 APACHE_SUBST(SHLTCFLAGS)
 APACHE_SUBST(LTCFLAGS)
 
-AP_SIG_GRACEFUL=USR1
-
 case $host in
   *-apple-aux3*)
       APR_SETVAR(APACHE_MPM, [prefork])
@@ -249,9 +247,6 @@ case $host in
       ;;
   *-linux-*)
       case `uname -r` in
-        2.0* ) 
-            AP_SIG_GRACEFUL=WINCH
-            ;;
         2.[[2-9]]* ) 
             APR_SETVAR(SINGLE_LISTEN_UNSERIALIZED_ACCEPT, [1])
             ;;
@@ -575,14 +570,6 @@ if test "$AP_NONBLOCK_WHEN_MULTI_LISTEN" = "1"; then
               [Listening sockets are non-blocking when there are more than 1])
 fi
 
-AC_DEFINE_UNQUOTED(AP_SIG_GRACEFUL, SIG$AP_SIG_GRACEFUL, [Signal used to gracefully restart])
-AC_DEFINE_UNQUOTED(AP_SIG_GRACEFUL_STRING, "SIG$AP_SIG_GRACEFUL", [Signal used to gracefully restart (as a quoted string)])
-AC_DEFINE_UNQUOTED(AP_SIG_GRACEFUL_SHORT, $AP_SIG_GRACEFUL, [Signal used to gracefully restart (without SIG prefix)])
-AP_SIG_GRACEFUL_SHORT=$AP_SIG_GRACEFUL
-AP_SIG_GRACEFUL=SIG$AP_SIG_GRACEFUL_SHORT
-AC_SUBST(AP_SIG_GRACEFUL)
-AC_SUBST(AP_SIG_GRACEFUL_STRING)
-AC_SUBST(AP_SIG_GRACEFUL_SHORT)
 
 APACHE_FAST_OUTPUT(Makefile modules/Makefile srclib/Makefile) 
 APACHE_FAST_OUTPUT(os/Makefile server/Makefile)

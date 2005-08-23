@@ -917,7 +917,7 @@ int ap_signal_server(int *exit_status, apr_pool_t *pconf)
             printf("httpd not running, trying to start\n");
         }
         else {
-            *exit_status = send_signal(otherpid, SIGUSR1);
+            *exit_status = send_signal(otherpid, AP_SIG_GRACEFUL);
             return 1;
         }
     }
