@@ -52,6 +52,7 @@
 <ul><li><a href="bind.html">Binding</a></li>
 <li><a href="configuring.html">Configuration Files</a></li>
 <li><a href="sections.html">Configuration Sections</a></li>
+<li><a href="caching.html">Content Caching</a></li>
 <li><a href="content-negotiation.html">Content Negotiation</a></li>
 <li><a href="dso.html">Dynamic Shared Objects (DSO)</a></li>
 <li><a href="env.html">Environment Variables</a></li>
