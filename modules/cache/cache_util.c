@@ -24,23 +24,65 @@
 
 extern module AP_MODULE_DECLARE_DATA cache_module;
 
+/* Determine if "url" matches the hostname, scheme and port and path
+ * in "filter". All but the path comparisons are case-insensitive.
+ */
+static int uri_meets_conditions(apr_uri_t filter, int pathlen, apr_uri_t url)
+{
+    /* Compare the hostnames */
+    if(filter.hostname) {
+        if (!url.hostname) {
+            return 0;
+        }
+        else if (strcasecmp(filter.hostname, url.hostname)) {
+            return 0;
+        }
+    }
+
+    /* Compare the schemes */
+    if(filter.scheme) {
+        if (!url.scheme) {
+            return 0;
+        }
+        else if (strcasecmp(filter.scheme, url.scheme)) {
+            return 0;
+        }
+    }
+    
+    /* Compare the ports */
+    if(filter.port_str) {
+        if (url.port_str && filter.port != url.port) {
+            return 0;
+        }
+        /* NOTE:  ap_port_of_scheme will return 0 if given NULL input */
+        else if (filter.port != apr_uri_port_of_scheme(url.scheme)) {
+            return 0;
+        }
+    }
+    else if(url.port_str && filter.scheme) {
+        if (apr_uri_port_of_scheme(filter.scheme) == url.port) {
+            return 0;
+        }
+    }
+    
+    /* Url has met all of the filter conditions so far, determine
+     * if the paths match.
+     */
+    return !strncmp(filter.path, url.path, pathlen);
+}
 
 CACHE_DECLARE(cache_provider_list *)ap_cache_get_providers(request_rec *r,
                                                   cache_server_conf *conf, 
-                                                  const char *url)
+                                                  apr_uri_t uri)
 {
     cache_provider_list *providers = NULL;
     int i;
-
-    /* we can't cache if there's no URL */
-    /* Is this case even possible?? */
-    if (!url) return NULL;
 
     /* loop through all the cacheenable entries */
     for (i = 0; i < conf->cacheenable->nelts; i++) {
         struct cache_enable *ent = 
                                 (struct cache_enable *)conf->cacheenable->elts;
-        if ((ent[i].url) && !strncasecmp(url, ent[i].url, ent[i].urllen)) {
+        if (uri_meets_conditions(ent[i].url, ent[i].pathlen, uri)) {
             /* Fetch from global config and add to the list. */
             cache_provider *provider;
             provider = ap_lookup_provider(CACHE_PROVIDER_GROUP, ent[i].type,
@@ -77,7 +119,7 @@ CACHE_DECLARE(cache_provider_list *)ap_cache_get_providers(request_rec *r,
     for (i = 0; i < conf->cachedisable->nelts; i++) {
         struct cache_disable *ent = 
                                (struct cache_disable *)conf->cachedisable->elts;
-        if ((ent[i].url) && !strncasecmp(url, ent[i].url, ent[i].urllen)) {
+        if (uri_meets_conditions(ent[i].url, ent[i].pathlen, uri)) {
             /* Stop searching now. */
             return NULL;
         }

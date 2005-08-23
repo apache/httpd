@@ -50,8 +50,6 @@ static int cache_url_handler(request_rec *r, int lookup)
 {
     apr_status_t rv;
     const char *auth;
-    apr_uri_t uri;
-    char *path;
     cache_provider_list *providers;
     cache_request_rec *cache;
     cache_server_conf *conf;
@@ -62,16 +60,13 @@ static int cache_url_handler(request_rec *r, int lookup)
         return DECLINED;
     }
 
-    uri = r->parsed_uri;
-    path = uri.path;
-
     conf = (cache_server_conf *) ap_get_module_config(r->server->module_config,
                                                       &cache_module);
 
     /*
      * Which cache module (if any) should handle this request?
      */
-    if (!(providers = ap_cache_get_providers(r, conf, path))) {
+    if (!(providers = ap_cache_get_providers(r, conf, r->parsed_uri))) {
         return DECLINED;
     }
 
@@ -984,8 +979,15 @@ static const char *add_cache_enable(cmd_parms *parms, void *dummy,
                                                   &cache_module);
     new = apr_array_push(conf->cacheenable);
     new->type = type;
-    new->url = url;
-    new->urllen = strlen(url);
+    if (apr_uri_parse(parms->pool, url, &(new->url))) {
+        return NULL;
+    }
+    if (new->url.path) {
+        new->pathlen = strlen(new->url.path);
+    } else {
+        new->pathlen = 1;
+        new->url.path = "/";
+    }
     return NULL;
 }
 
@@ -999,8 +1001,15 @@ static const char *add_cache_disable(cmd_parms *parms, void *dummy,
         (cache_server_conf *)ap_get_module_config(parms->server->module_config,
                                                   &cache_module);
     new = apr_array_push(conf->cachedisable);
-    new->url = url;
-    new->urllen = strlen(url);
+    if (apr_uri_parse(parms->pool, url, &(new->url))) {
+        return NULL;
+    }
+    if (new->url.path) {
+        new->pathlen = strlen(new->url.path);
+    } else {
+        new->pathlen = 1;
+        new->url.path = "/";
+    }
     return NULL;
 }
 
