@@ -50,6 +50,7 @@
     <page href="bind.html">Binding</page>
     <page href="configuring.html">Configuration Files</page>
     <page href="sections.html">Configuration Sections</page>
+    <page href="caching.html">Content Caching</page>
     <page href="content-negotiation.html">Content Negotiation</page>
     <page href="dso.html">Dynamic Shared Objects (DSO)</page>
     <page href="env.html">Environment Variables</page>
