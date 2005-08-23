@@ -51,10 +51,8 @@ static int cache_url_handler(request_rec *r, int lookup)
     apr_status_t rv;
     const char *auth;
     apr_uri_t uri;
-    char *url;
     char *path;
     cache_provider_list *providers;
-    cache_info *info;
     cache_request_rec *cache;
     cache_server_conf *conf;
     apr_bucket_brigade *out;
@@ -65,9 +63,7 @@ static int cache_url_handler(request_rec *r, int lookup)
     }
 
     uri = r->parsed_uri;
-    url = r->unparsed_uri;
     path = uri.path;
-    info = NULL;
 
     conf = (cache_server_conf *) ap_get_module_config(r->server->module_config,
                                                       &cache_module);
@@ -114,7 +110,7 @@ static int cache_url_handler(request_rec *r, int lookup)
      *   add cache_out filter
      *   return OK
      */
-    rv = cache_select_url(r, url);
+    rv = cache_select(r);
     if (rv != OK) {
         if (rv == DECLINED) {
             if (!lookup) {
@@ -219,7 +215,7 @@ static int cache_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
      * restore the status into it's handle. */
     r->status = cache->handle->cache_obj->info.status;
 
-    /* recall_headers() was called in cache_select_url() */
+    /* recall_headers() was called in cache_select() */
     cache->provider->recall_body(cache->handle, r->pool, bb);
 
     /* This filter is done once it has served up its content */
