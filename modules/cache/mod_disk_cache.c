@@ -918,7 +918,7 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
     }
 
     /* Parse the vary header and dump those fields from the headers_in. */
-    /* FIXME: Make call to the same thing cache_select_url calls to crack Vary. */
+    /* FIXME: Make call to the same thing cache_select calls to crack Vary. */
     if (r->headers_in) {
         apr_table_t *headers_in;
 

@@ -274,7 +274,7 @@ CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_hdrs_out(apr_pool_t *pool,
  */
 int cache_remove_url(cache_request_rec *cache, apr_pool_t *p);
 int cache_create_entity(request_rec *r, char *url, apr_off_t size);
-int cache_select_url(request_rec *r, char *url);
+int cache_select(request_rec *r);
 apr_status_t cache_generate_key_default( request_rec *r, apr_pool_t*p, char**key );
 /**
  * create a key for the cache based on the request record

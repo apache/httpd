@@ -169,7 +169,7 @@ CACHE_DECLARE(void) ap_cache_accept_headers(cache_handle_t *h, request_rec *r,
  * This function returns OK if successful, DECLINED if no
  * cached entity fits the bill.
  */
-int cache_select_url(request_rec *r, char *url)
+int cache_select(request_rec *r)
 {
     cache_provider_list *list;
     apr_status_t rv;
