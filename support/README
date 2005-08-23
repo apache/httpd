@@ -17,6 +17,9 @@ dbmmanage
 	Create and update user authentication files in the faster
 	DBM format used by mod_auth_db.
 
+htcacheclean
+    Keep the size of mod_disk_cache store within a certain limit.
+
 htdigest
 	Create and update user authentication files used in
 	DIGEST authentification. See mod_auth_digest.
