@@ -449,8 +449,8 @@ static int process_dir(char *path, apr_pool_t *pool)
         case HEADERDATA:
             nextpath = apr_pstrcat(p, path, "/", d->basename,
                                    CACHE_HEADER_SUFFIX, NULL);
-            if (apr_file_open(&fd, nextpath, APR_READ, APR_OS_DEFAULT,
-                              p) == APR_SUCCESS) {
+            if (apr_file_open(&fd, nextpath, APR_FOPEN_READ | APR_FOPEN_BINARY, 
+                              APR_OS_DEFAULT, p) == APR_SUCCESS) {
                 len = sizeof(format);
                 if (apr_file_read_full(fd, &format, len, 
                                        &len) == APR_SUCCESS) {
@@ -522,8 +522,8 @@ static int process_dir(char *path, apr_pool_t *pool)
             current = apr_time_now();
             nextpath = apr_pstrcat(p, path, "/", d->basename,
                                    CACHE_HEADER_SUFFIX, NULL);
-            if (apr_file_open(&fd, nextpath, APR_READ, APR_OS_DEFAULT,
-                              p) == APR_SUCCESS) {
+            if (apr_file_open(&fd, nextpath, APR_FOPEN_READ | APR_FOPEN_BINARY,
+                              APR_OS_DEFAULT, p) == APR_SUCCESS) {
                 len = sizeof(format);
                 if (apr_file_read_full(fd, &format, len, 
                                        &len) == APR_SUCCESS) {
