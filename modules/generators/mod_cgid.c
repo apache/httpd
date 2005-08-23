@@ -684,7 +684,7 @@ static int cgid_server(void *data)
         if (cgid_req.req_type == GETPID_REQ) {
             pid_t pid;
 
-            pid = (pid_t)apr_hash_get(script_hash, &cgid_req.conn_id, sizeof(cgid_req.conn_id));
+            pid = (pid_t)((long)apr_hash_get(script_hash, &cgid_req.conn_id, sizeof(cgid_req.conn_id)));
             if (write(sd2, &pid, sizeof(pid)) != sizeof(pid)) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, 0,
                              main_server,
@@ -782,7 +782,7 @@ static int cgid_server(void *data)
                     memcpy(key, &cgid_req.conn_id, sizeof(cgid_req.conn_id));
                 }
                 apr_hash_set(script_hash, key, sizeof(cgid_req.conn_id),
-                             (void *)procnew->pid);
+                             (void *)((long)procnew->pid));
             }
         }
     } 
@@ -1097,7 +1097,7 @@ static int log_script(request_rec *r, cgid_server_conf * conf, int ret,
 
 static apr_status_t close_unix_socket(void *thefd)
 {
-    int fd = (int)thefd;
+    int fd = (int)((long)thefd);
     
     return close(fd);
 }
@@ -1140,8 +1140,8 @@ static int connect_to_daemon(int *sdptr, request_rec *r,
             }
         }
         else {
-            apr_pool_cleanup_register(r->pool, (void *)sd, close_unix_socket,
-                                      apr_pool_cleanup_null);
+            apr_pool_cleanup_register(r->pool, (void *)((long)sd),
+                                      close_unix_socket, apr_pool_cleanup_null);
             break; /* we got connected! */
         }
         /* gotta try again, but make sure the cgid daemon is still around */
@@ -1377,7 +1377,7 @@ static int cgid_handler(request_rec *r)
      */
     
     apr_os_pipe_put_ex(&tempsock, &sd, 1, r->pool);
-    apr_pool_cleanup_kill(r->pool, (void *)sd, close_unix_socket);
+    apr_pool_cleanup_kill(r->pool, (void *)((long)sd), close_unix_socket);
 
     if ((argv0 = strrchr(r->filename, '/')) != NULL) 
         argv0++; 
@@ -1672,7 +1672,7 @@ static int include_cmd(include_ctx_t *ctx, ap_filter_t *f,
      * get rid of the cleanup we registered when we created the socket.
      */
     apr_os_pipe_put_ex(&tempsock, &sd, 1, r->pool);
-    apr_pool_cleanup_kill(r->pool, (void *)sd, close_unix_socket);
+    apr_pool_cleanup_kill(r->pool, (void *)((long)sd), close_unix_socket);
 
     APR_BRIGADE_INSERT_TAIL(bb, apr_bucket_pipe_create(tempsock,
                             f->c->bucket_alloc));
