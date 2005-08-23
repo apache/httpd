@@ -104,14 +104,14 @@
 #endif
 
 struct cache_enable {
-    const char *url;
+    apr_uri_t url;
     const char *type;
-    apr_size_t urllen;
+    apr_size_t pathlen;
 };
 
 struct cache_disable {
-    const char *url;
-    apr_size_t urllen;
+    apr_uri_t url;
+    apr_size_t pathlen;
 };
 
 /* static information about the local cache */
@@ -257,7 +257,7 @@ CACHE_DECLARE(void) ap_cache_usec2hex(apr_time_t j, char *y);
 CACHE_DECLARE(char *) ap_cache_generate_name(apr_pool_t *p, int dirlevels, 
                                              int dirlength, 
                                              const char *name);
-CACHE_DECLARE(cache_provider_list *)ap_cache_get_providers(request_rec *r, cache_server_conf *conf, const char *url);
+CACHE_DECLARE(cache_provider_list *)ap_cache_get_providers(request_rec *r, cache_server_conf *conf, apr_uri_t uri);
 CACHE_DECLARE(int) ap_cache_liststr(apr_pool_t *p, const char *list,
                                     const char *key, char **val);
 CACHE_DECLARE(const char *)ap_cache_tokstr(apr_pool_t *p, const char *list, const char **str);
