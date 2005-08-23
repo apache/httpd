@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.0.55
 
+  *) Fix cases where the byterange filter would buffer responses
+     into memory.  PR 29962.  [Joe Orton]
+
   *) mod_proxy: Fix over-eager handling of '%' for reverse proxies.
      PR 15207.  [Jim Jagielski]
 

@@ -2856,18 +2856,35 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
 #define MIN_LENGTH(len1, len2) ((len1 > len2) ? len2 : len1)
     request_rec *r = f->r;
     conn_rec *c = r->connection;
-    byterange_ctx *ctx = f->ctx;
+    byterange_ctx *ctx;
     apr_bucket *e;
     apr_bucket_brigade *bsend;
     apr_off_t range_start;
     apr_off_t range_end;
     char *current;
-    apr_off_t bb_length;
     apr_off_t clength = 0;
     apr_status_t rv;
     int found = 0;
 
-    if (!ctx) {
+    /* Iterate through the brigade until reaching EOS or a bucket with
+     * unknown length. */
+    for (e = APR_BRIGADE_FIRST(bb);
+         (e != APR_BRIGADE_SENTINEL(bb) && !APR_BUCKET_IS_EOS(e)
+          && e->length != (apr_size_t)-1);
+         e = APR_BUCKET_NEXT(e)) {
+        clength += e->length;
+    }
+
+    /* Don't attempt to do byte range work if this brigade doesn't
+     * contain an EOS, or if any of the buckets has an unknown length;
+     * this avoids the cases where it is expensive to perform
+     * byteranging (i.e. may require arbitrary amounts of memory). */
+    if (!APR_BUCKET_IS_EOS(e) || clength <= 0) {
+        ap_remove_output_filter(f);
+        return ap_pass_brigade(f->next, bb);
+    }
+
+    {
         int num_ranges = ap_set_byterange(r);
 
         /* We have nothing to do, get out of the way. */
@@ -2876,7 +2893,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
             return ap_pass_brigade(f->next, bb);
         }
 
-        ctx = f->ctx = apr_pcalloc(r->pool, sizeof(*ctx));
+        ctx = apr_pcalloc(r->pool, sizeof(*ctx));
         ctx->num_ranges = num_ranges;
         /* create a brigade in case we never call ap_save_brigade() */
         ctx->bb = apr_brigade_create(r->pool, c->bucket_alloc);
@@ -2902,29 +2919,6 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
             ap_xlate_proto_to_ascii(ctx->bound_head, strlen(ctx->bound_head));
         }
     }
-
-    /* We can't actually deal with byte-ranges until we have the whole brigade
-     * because the byte-ranges can be in any order, and according to the RFC,
-     * we SHOULD return the data in the same order it was requested.
-     *
-     * XXX: We really need to dump all bytes prior to the start of the earliest
-     * range, and only slurp up to the end of the latest range.  By this we
-     * mean that we should peek-ahead at the lowest first byte of any range,
-     * and the highest last byte of any range.
-     */
-    if (!APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(bb))) {
-        ap_save_brigade(f, &ctx->bb, &bb, r->pool);
-        return APR_SUCCESS;
-    }
-
-    /* Prepend any earlier saved brigades. */
-    APR_BRIGADE_PREPEND(bb, ctx->bb);
-
-    /* It is possible that we won't have a content length yet, so we have to
-     * compute the length before we can actually do the byterange work.
-     */
-    apr_brigade_length(bb, 1, &bb_length);
-    clength = (apr_off_t)bb_length;
 
     /* this brigade holds what we will be sending */
     bsend = apr_brigade_create(r->pool, c->bucket_alloc);

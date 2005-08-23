@@ -332,13 +332,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewcvs.cgi?rev=193127&view=rev
         +1: jorton
 
-     *) Prevent the byterange filter from buffering responses into
-        memory; a common cause of "why does httpd eat all my memory".
-        http://svn.apache.org/viewcvs?rev=188797&view=rev
-        rediff for 2.0.x: http://people.apache.org/~jorton/ap_byterange.diff
-        PR: 29962
-        +1: jorton, trawick, niq
-
      *) Reverse Proxy fixes: <Location> bug and Cookie support
         Patch is at
         http://marc.theaimsgroup.com/?l=apache-httpd-dev&m=112365629308138&q=p4
