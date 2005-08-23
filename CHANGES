@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) Linux 2.0: remove support for threaded MPM's due to linuxthreads use
+     of SIGUSR1 clashing with graceful restart signal. [Colm MacCarthaigh]
+
   *) mod_cache: Enhance CacheEnable/CacheDisable to control caching on a
      per-protocol, per-host and per-path basis. Intended for proxy
      configurations. [Colm MacCarthaigh]

@@ -56,6 +56,15 @@ extern "C" {
 #define DEFAULT_LISTENBACKLOG 511
 #endif
         
+/* Signal used to gracefully restart */
+#define AP_SIG_GRACEFUL SIGUSR1
+
+/* Signal used to gracefully restart (without SIG prefix) */
+#define AP_SIG_GRACEFUL_SHORT USR1
+
+/* Signal used to gracefully restart (as a quoted string) */
+#define AP_SIG_GRACEFUL_STRING "SIGUSR1"
+
 /**
  * Make sure all child processes that have been spawned by the parent process
  * have died.  This includes process registered as "other_children".
