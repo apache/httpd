@@ -155,14 +155,15 @@
       [OPTIONAL]</dt>
       <dd>For some of the support scripts like <code class="program"><a href="./programs/apxs.html">apxs</a></code> or <code class="program"><a href="./programs/dbmmanage.html">dbmmanage</a></code> (which are
       written in Perl) the Perl 5 interpreter is required (versions
-      5.003 or newer are sufficient). If no such interpreter is found by
-      the <code class="program"><a href="./programs/configure.html">configure</a></code> script there is no harm. Of course, you
-      still can build and install Apache 2.0. Only those support scripts
-      cannot be used. If you have multiple Perl interpreters
-      installed (perhaps a Perl 4 from the vendor and a Perl 5 from
-      your own), then it is recommended to use the <code>--with-perl</code>
-      option (see below) to make sure the correct one is selected
-      by <code class="program"><a href="./programs/configure.html">configure</a></code>.</dd>
+      5.003 or newer are sufficient). If you have multiple Perl 
+      interpreters (for example, a systemwide install of Perl 4, and 
+      your own install of Perl 5), you are advised to use the 
+      <code>--with-perl</code> option (see below) to make sure the 
+      correct one is used by <code class="program"><a href="./programs/configure.html">configure</a></code>.
+      If no Perl 5 interpreter is found by the 
+      <code class="program"><a href="./programs/configure.html">configure</a></code> script, you will not be able to use 
+      the affected support scripts. Of course, you will still be able to 
+      build and use Apache 2.0.</dd>
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">

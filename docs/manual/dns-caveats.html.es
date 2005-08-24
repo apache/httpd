@@ -47,8 +47,8 @@
     
 
     <div class="example"><p><code>
-      &lt;VirtualHost www.abc.com&gt; <br />
-      ServerAdmin webgirl@abc.com <br />
+      &lt;VirtualHost www.abc.dom&gt; <br />
+      ServerAdmin webgirl@abc.dom <br />
       DocumentRoot /www/abc <br />
       &lt;/VirtualHost&gt;
     </code></p></div>
@@ -60,7 +60,7 @@
     responderá a las peticiones que se produzcan. El ejemplo
     mostrado arriba no incluye la direccion IP, de manera que Apache
     tiene que usar una resolución DNS para encontrar la
-    dirección IP correspondiente a <code>www.abc.com</code>. Si
+    dirección IP correspondiente a <code>www.abc.dom</code>. Si
     por alguna razón la resolución DNS no está
     disponible en el momento en que su servidor está analizando
     sintánticamente su fichero de configuración, entonces
@@ -69,12 +69,12 @@
     hagan a ese host virtual (en las versiones de Apache anteriores a
     la 1.2 el servidor ni siquiera se iniciaba).</p>
 
-    <p>Suponga que <code>www.abc.com</code> tiene como dirección
+    <p>Suponga que <code>www.abc.dom</code> tiene como dirección
     IP la 10.0.0.1. Considere la siguiente configuración:</p>
 
     <div class="example"><p><code>
       &lt;VirtualHost 10.0.0.1&gt; <br />
-      ServerAdmin webgirl@abc.com <br />
+      ServerAdmin webgirl@abc.dom <br />
       DocumentRoot /www/abc <br />
       &lt;/VirtualHost&gt;
     </code></p></div>
@@ -95,8 +95,8 @@
 
     <div class="example"><p><code>
       &lt;VirtualHost 10.0.0.1&gt; <br />
-      ServerName www.abc.com <br />
-      ServerAdmin webgirl@abc.com <br />
+      ServerName www.abc.dom <br />
+      ServerAdmin webgirl@abc.dom <br />
       DocumentRoot /www/abc <br />
       &lt;/VirtualHost&gt;
     </code></p></div>
@@ -111,17 +111,17 @@
     de las dos búsquedas de DNS mencionadas arriba falla para
     cualquiera de sus hosts virtuales. En algunos casos estas
     búsquedas DNS puede que no estén bajo su control; por
-    ejemplo, si <code>abc.com</code> es uno de sus clientes y ellos
+    ejemplo, si <code>abc.dom</code> es uno de sus clientes y ellos
     controlan su propia DNS, pueden forzar a su servidor (pre-1.2) a
     fallar al iniciarse simplemente borrando el registro
-    <code>www.abc.com</code>.</p>
+    <code>www.abc.dom</code>.</p>
 
     <p>Otra formas pueden ser bastante más complicadas. Fíjese
     en esta configuración:</p>
 
     <div class="example"><p><code>
-      &lt;VirtualHost www.abc.com&gt; <br />
-      &nbsp;&nbsp;ServerAdmin webgirl@abc.com <br />
+      &lt;VirtualHost www.abc.dom&gt; <br />
+      &nbsp;&nbsp;ServerAdmin webgirl@abc.dom <br />
       &nbsp;&nbsp;DocumentRoot /www/abc <br />
       &lt;/VirtualHost&gt; <br />
       <br />
@@ -132,19 +132,19 @@
     </code></p></div>
 
     <p>Suponga que ha asignado la dirección 10.0.0.1 a
-    <code>www.abc.com</code> y 10.0.0.2 a
+    <code>www.abc.dom</code> y 10.0.0.2 a
     <code>www.def.com</code>. Todavía más, suponga que
     <code>def.com</code> tiene el control de sus propias DNS. Con esta
     configuración ha puesto <code>def.com</code> en una
     posición en la que puede robar todo el trafico destinado a
-    <code>abc.com</code>. Para conseguirlo, todo lo que tiene que
+    <code>abc.dom</code>. Para conseguirlo, todo lo que tiene que
     hacer es asignarle a <code>www.def.com</code> la dirección
     10.0.0.1. Como ellos controlan sus propias DNS no puede evitar que
     apunten el registro <code>www.def.com</code> a donde quieran.</p>
 
     <p>Las peticiones dirigidas a la dirección 10.0.0.1
     (incluídas aquellas en las los usuarios escriben URLs de tipo
-    <code>http://www.abc.com/whatever</code>) serán todas
+    <code>http://www.abc.dom/whatever</code>) serán todas
     servidas por el host virtual <code>def.com</code>. Comprender por
     qué ocurre esto requiere una discusión más profunda
     acerca de como Apache asigna las peticiones que recibe a los hosts

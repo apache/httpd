@@ -763,9 +763,9 @@ AP_DECLARE(void) ap_log_assert(const char *szExp, const char *szFile,
 /* forward declaration */
 static void piped_log_maintenance(int reason, void *data, apr_wait_t status);
 
-static int piped_log_spawn(piped_log *pl)
+/* Spawn the piped logger process pl->program. */
+static apr_status_t piped_log_spawn(piped_log *pl)
 {
-    int rc = 0;
     apr_procattr_t *procattr;
     apr_proc_t *procnew = NULL;
     apr_status_t status;
@@ -783,7 +783,6 @@ static int piped_log_spawn(piped_log *pl)
         ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                      "piped_log_spawn: unable to setup child process '%s': %s",
                      pl->program, apr_strerror(status, buf, sizeof(buf)));
-        rc = -1;
     }
     else {
         char **args;
@@ -797,7 +796,11 @@ static int piped_log_spawn(piped_log *pl)
 
         if (status == APR_SUCCESS) {
             pl->pid = procnew;
-            ap_piped_log_write_fd(pl) = procnew->in;
+            /* procnew->in was dup2'd from ap_piped_log_write_fd(pl);
+             * since the original fd is still valid, close the copy to
+             * avoid a leak. */
+            apr_file_close(procnew->in);
+            procnew->in = NULL;
             apr_proc_other_child_register(procnew, piped_log_maintenance, pl,
                                           ap_piped_log_write_fd(pl), pl->p);
             close_handle_in_child(pl->p, ap_piped_log_read_fd(pl));
@@ -808,11 +811,10 @@ static int piped_log_spawn(piped_log *pl)
             ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                          "unable to start piped log program '%s': %s",
                          pl->program, apr_strerror(status, buf, sizeof(buf)));
-            rc = -1;
         }
     }
 
-    return rc;
+    return status;
 }
 
 
@@ -904,12 +906,10 @@ AP_DECLARE(piped_log *) ap_open_piped_log(apr_pool_t *p, const char *program)
     }
     apr_pool_cleanup_register(p, pl, piped_log_cleanup,
                               piped_log_cleanup_for_exec);
-    if (piped_log_spawn(pl) == -1) {
-        int save_errno = errno;
+    if (piped_log_spawn(pl) != APR_SUCCESS) {
         apr_pool_cleanup_kill(p, pl, piped_log_cleanup);
         apr_file_close(ap_piped_log_read_fd(pl));
         apr_file_close(ap_piped_log_write_fd(pl));
-        errno = save_errno;
         return NULL;
     }
     return pl;

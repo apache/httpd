@@ -161,7 +161,7 @@ PROXY_DECLARE(char *)ap_proxy_canonenc(apr_pool_t *p, const char *x, int len, en
 	    continue;
 	}
 /* decode it if not already done */
-	if (isenc && ch == '%') {
+	if (isenc && (isenc != PROXYREQ_REVERSE) && (ch == '%')) {
 	    if (!apr_isxdigit(x[i + 1]) || !apr_isxdigit(x[i + 2]))
 		return NULL;
 	    ch = ap_proxy_hex2c(&x[i + 1]);
