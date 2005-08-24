@@ -51,7 +51,7 @@
 </section>
 
 <section id="API"><title>Apache DBD API</title>
-    <p><module>mod_dbd</module> exports three functions for other modules
+    <p><module>mod_dbd</module> exports four functions for other modules
     to use. The API is as follows:</p>
 
     <example>
@@ -77,10 +77,14 @@ AP_DECLARE(void) ap_dbd_close(server_rec*, ap_dbd_t*);
  */
 AP_DECLARE(ap_dbd_t*) ap_dbd_acquire(request_rec*);
 
+/* Prepare a statement for use by a client module */
+AP_DECLARE(void) ap_dbd_prepare(server_rec*, const char*, const char*);
+
 /* Also export them as optional functions for modules that prefer it */
 APR_DECLARE_OPTIONAL_FN(ap_dbd_t*, ap_dbd_open, (apr_pool_t*, server_rec*));
 APR_DECLARE_OPTIONAL_FN(void, ap_dbd_close, (server_rec*, ap_dbd_t*));
 APR_DECLARE_OPTIONAL_FN(ap_dbd_t*, ap_dbd_acquire, (request_rec*));</code></pre>
+APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const char*));
     </example>
 </section>
 
@@ -94,7 +98,8 @@ APR_DECLARE_OPTIONAL_FN(ap_dbd_t*, ap_dbd_acquire, (request_rec*));</code></pre>
     SQL query or select commands.</p>
 
     <p>It is up to dbd user modules to use the prepared statements
-    and document what statements can be specified in httpd.conf.</p>
+    and document what statements can be specified in httpd.conf,
+    or to provide their own directives and use <code>ap_dbd_prepare</code>.</p>
 </section>
 
 <directivesynopsis>
