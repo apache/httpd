@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE sitemap SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
-<!-- English Revision: 159098 -->
+<!-- English Revision: 239681 -->
 
 <!--
  Copyright 2002-2005 The Apache Software Foundation or its licensors,
-                     as applicable.
+ as applicable.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -43,6 +43,7 @@
 <page href="stopping.html">Beenden und Neustarten des Servers</page>
 <page href="configuring.html">Konfigurationsdateien</page>
 <page href="sections.html">Konfigurationsabschnitte</page>
+<page href="caching.html">Caching von Inhalten</page>
 <page href="server-wide.html">Serverweite Konfiguration</page>
 <page href="logs.html">Log-Dateien</page>
 <page href="urlmapping.html">URLs auf das Dateisystem abbilden</page>
@@ -78,6 +79,7 @@
 <category id="faq">
 <title>H&#228;ufig gestellte Fragen (FAQ)</title>
 <page href="faq/">&#220;bersicht</page>
+<page href="faq/background.html">Hintergrundinformationen</page>
 <page href="faq/support.html">Support</page>
 <page href="faq/error.html">Fehlermeldungen</page>
 </category>
