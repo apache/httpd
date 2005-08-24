@@ -775,6 +775,7 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
         }
     }
 
+    ap_close_listeners();
     ap_queue_term(worker_queue);
     dying = 1;
     ap_scoreboard_image->parent[process_slot].quiescing = 1;
