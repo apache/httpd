@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE indexpage SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
-<!-- English Revision: 160701:239459 (outdated) -->
+<!-- English Revision: 239459 -->
 
 <!--
  Copyright 2003-2005 The Apache Software Foundation or its licensors,
-                     as applicable.
+ as applicable.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -50,6 +50,7 @@
     <page href="bind.html">Bindung</page>
     <page href="configuring.html">Konfigurationsdateien</page>
     <page href="sections.html">Konfigurationsabschnitte</page>
+    <page href="caching.html">Caching von Inhalten</page>
     <page href="content-negotiation.html">Content Negotiation</page>
     <page href="dso.html">Dynamic Shared Objects (DSO)</page>
     <page href="env.html">Umgebungsvariablen</page>
