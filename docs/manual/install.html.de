@@ -25,9 +25,6 @@
 <a href="./ko/install.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./ru/install.html" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a></p>
 </div>
-<div class="outofdate">Diese Übersetzung ist möglicherweise
-            nicht mehr aktuell. Bitte prüfen Sie die englische Version auf
-            die neuesten Änderungen.</div>
 
     <p>Dieses Dokument umfaßt nur die Kompilierung und Installation des
     Apache auf Unix und Unix-ähnlichen Systemen. Für die
@@ -162,17 +159,17 @@
       <dd>Für einige Hilfsskripte wie <code class="program"><a href="./programs/apxs.html">apxs</a></code>
       oder <code class="program"><a href="./programs/dbmmanage.html">dbmmanage</a></code> (die in Perl
       geschrieben sind) wird der Perl 5 Interpreter benötigt (die
-      Versionen ab 5.003 sind ausreichend). Wenn kein derartiger Interpreter
-      vom <code class="program"><a href="./programs/configure.html">configure</a></code>-Skript gefunden werden kann, macht das
-      jedoch nichts. Selbstverständlich können Sie den Apache 2.0
-      auch so generieren und installieren. Lediglich diese Pflegeskripte
-      können dann nicht verwendet werden. Wenn Sie mehrere Perl
-      Interpreter installiert haben (vielleicht Perl 4 durch Ihren
-      Händler und Perl 5 durch Sie selbst), dann ist die Verwendung der
-      <code>--with-perl</code> Option (siehe unten) empfehlenswert, um
+      Versionen ab 5.003 sind ausreichend). Wenn Sie mehrere Perl
+      Interpreter haben (beispielsweise eine systemweite Installation von
+      Perl 4 und Ihre eigene Perl 5-Installation), dann sollten Sie die
+      <code>--with-perl</code>-Option (siehe unten) verwenden, um
       sicherzustellen, dass der richtige Interpreter von
-      <code class="program"><a href="./programs/./configure.html">./configure</a></code> ausgewählt wird.</dd>
-    </dl>
+      <code class="program"><a href="./programs/configure.html">configure</a></code> ausgewählt wird.
+      Wenn kein Perl 5-Interpreter vom <code class="program"><a href="./programs/configure.html">configure</a></code>-Skript
+      gefunden werden kann, können Sie die betroffenen Hilfsskripte nicht
+      verwenden, sind jedoch selbstverständlich nach wie vor in der Lage,
+      den Apache 2.0 zu bauen und zu installieren.</dd>
+      </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="download" id="download">Download</a></h2>
