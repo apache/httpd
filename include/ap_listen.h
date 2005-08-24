@@ -77,6 +77,11 @@ AP_DECLARE(void) ap_listen_pre_config(void);
  */ 
 AP_DECLARE(int) ap_setup_listeners(server_rec *s);
 
+/**
+ * Loop through the global ap_listen_rec list and close each of the sockets.
+ */
+AP_DECLARE_NONSTD(void) ap_close_listeners();
+
 /* Although these functions are exported from libmain, they are not really
  * public functions.  These functions are actually called while parsing the
  * config file, when one of the LISTEN_COMMANDS directives is read.  These
