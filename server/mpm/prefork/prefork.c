@@ -331,6 +331,11 @@ static void just_die(int sig)
     clean_child_exit(0);
 }
 
+static void stop_listening(int sig)
+{
+    ap_close_listeners();
+}
+
 /* volatile just in case */
 static int volatile shutdown_pending;
 static int volatile restart_pending;
@@ -715,10 +720,10 @@ static int make_child(server_rec *s, int slot)
          */
         apr_signal(SIGHUP, just_die);
         apr_signal(SIGTERM, just_die);
-        /* The child process doesn't do anything for AP_SIG_GRACEFUL.  
-         * Instead, the pod is used for signalling graceful restart.
+        /* The child process just closes listeners on AP_SIG_GRACEFUL.  
+         * The pod is used for signalling the graceful restart.
          */
-        apr_signal(AP_SIG_GRACEFUL, SIG_IGN);
+        apr_signal(AP_SIG_GRACEFUL, stop_listening);
         child_main(slot);
     }
 
@@ -1096,6 +1101,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
     /* we've been told to restart */
     apr_signal(SIGHUP, SIG_IGN);
+    apr_signal(AP_SIG_GRACEFUL, SIG_IGN);
     if (one_process) {
         /* not worth thinking about */
         return 1;
@@ -1123,6 +1129,14 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         for (index = 0; index < ap_daemons_limit; ++index) {
             if (ap_scoreboard_image->servers[index][0].status != SERVER_DEAD) {
                 ap_scoreboard_image->servers[index][0].status = SERVER_GRACEFUL;
+                /* Ask each child to close its listeners.
+                 *
+                 * NOTE: we use the scoreboard, because if we send SIGUSR1 
+                 * to every process in the group, this may include CGI's, 
+                 * piped loggers, etc. They almost certainly won't handle 
+                 * it gracefully. 
+                 */
+                kill(ap_scoreboard_image->parent[index].pid, AP_SIG_GRACEFUL);
             }
         }
     }
