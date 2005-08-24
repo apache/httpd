@@ -238,16 +238,9 @@ static void ap_apply_accept_filter(apr_pool_t *p, ap_listen_rec *lis,
 
 static apr_status_t close_listeners_on_exec(void *v)
 {
-    ap_listen_rec *lr;
-
-    for (lr = ap_listeners; lr; lr = lr->next) {
-        apr_socket_close(lr->sd);
-        lr->active = 0;
-    }
-
+    ap_close_listeners();
     return APR_SUCCESS;
 }
-
 
 static const char *alloc_listener(process_rec *process, char *addr, 
                                   apr_port_t port, const char* proto)
@@ -539,6 +532,15 @@ AP_DECLARE(int) ap_setup_listeners(server_rec *s)
     }
 
     return num_listeners;
+}
+
+AP_DECLARE_NONSTD(void) ap_close_listeners() {
+    ap_listen_rec *lr;
+
+    for (lr = ap_listeners; lr; lr = lr->next) {
+        apr_socket_close(lr->sd);
+        lr->active = 0;
+    }
 }
 
 AP_DECLARE(void) ap_listen_pre_config(void)
