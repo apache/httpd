@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.0.55
 
+  *) Fix core dump if mod_auth_ldap's mod_auth_ldap_auth_checker()
+     was called even if mod_auth_ldap_check_user_id() was not
+     (or if it didn't succeed) for non-authoritative cases.
+     [Jim Jagielski]
+
   *) Fix cases where the byterange filter would buffer responses
      into memory.  PR 29962.  [Joe Orton]
 

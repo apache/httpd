@@ -201,13 +201,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
         2.0 version: http://people.apache.org/~trawick/179704-20.txt
         +1: trawick, jorton, wrowe
 
-    *) Prevent bad dereferencing of non-existent req struct in
-       mod_auth_ldap's mod_auth_ldap_auth_checker() if
-       mod_auth_ldap_check_user_id() was never (fully) called.
-       Similar behavior to that in 2.1/2.2.
-         http://people.apache.org/~jim/mod_auth_ldap-2.0.patch
-       +1: jim, minfrin, bnicholes
-
      *) Add httxt2dbm for creating RewriteMap DBM Files.
         http://svn.apache.org/viewcvs.cgi?rev=209539&view=rev
         +1: pquerna, jorton, trawick
