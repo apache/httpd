@@ -2,11 +2,11 @@
 Changes with Apache 2.0.55
 
   *) Added new module mod_version, which provides version dependent
-     configuration containers.  [André Malo]
+     configuration containers.  [AndrÃ© Malo]
 
   *) Add core version query function (ap_get_server_revision) and
      accompanying ap_version_t structure (minor MMN bump).
-     [André Malo]
+     [AndrÃ© Malo]
 
   *) Fix cases where the byterange filter would buffer responses
      into memory.  PR 29962.  [Joe Orton]
