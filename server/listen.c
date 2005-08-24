@@ -534,7 +534,8 @@ AP_DECLARE(int) ap_setup_listeners(server_rec *s)
     return num_listeners;
 }
 
-AP_DECLARE_NONSTD(void) ap_close_listeners() {
+AP_DECLARE_NONSTD(void) ap_close_listeners(void) 
+{
     ap_listen_rec *lr;
 
     for (lr = ap_listeners; lr; lr = lr->next) {
