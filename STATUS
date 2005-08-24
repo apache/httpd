@@ -220,12 +220,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewcvs?rev=233493&view=rev
        rediff for 2.0: http://people.apache.org/~jorton/CAN-2005-2491.patch
        test case: perl-framework/t/security/CAN-2005-2491.t
-       +1: jorton
+       +1: jorton, nd
 
     *) Remove the base href tag from mod_proxy_ftp, as it breaks relative
        links for clients not using an Authorization header.
          modules/proxy/mod_proxy_ftp.c: r231044
-       +1: minfrin, jim
+       +1: minfrin, jim, nd
 
     *) Correct RFC 2616 non-compliance by refusing to proxy a request body 
        in a TRACE request, unless TraceEnable extended is configured.
@@ -294,12 +294,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewcvs?rev=178262&view=rev
         (With 2.0.x it is the same code in the same function, but in 
         a different source file.)
-        +1: trawick, wrowe
+        +1: trawick, wrowe, nd
 
      *) Support the suppress-error-charset setting, as with Apache 1.3.x.
         PR 31274. (current docs say it works with Apache from 2.0.40 ;) )
         http://svn.apache.org/viewcvs?rev=170354&view=rev
-        +1: trawick, jorton
+        +1: trawick, jorton, nd
 
      *) mod_mime_magic: Handle CRLF-format magic files so that it works with
         the default installation on Windows. 
@@ -326,17 +326,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         2.0.x patch: http://people.apache.org/~jorton/ap_pr12655.patch
         test case in perl-framework/t/modules/include.t
         PR: 12655
-        +1: jorton
+        +1: jorton, nd
 
      *) mod_auth_digest: Fix hostinfo validation for CONNECT requests.
         http://svn.apache.org/viewcvs.cgi?rev=193127&view=rev
-        +1: jorton
+        +1: jorton, nd
 
      *) Reverse Proxy fixes: <Location> bug and Cookie support
         Patch is at
         http://marc.theaimsgroup.com/?l=apache-httpd-dev&m=112365629308138&q=p4
         and is in production with Clients.
-        +1: niq: I'm seeing *a lot* of demand for this.
+        +1: niq, nd
+          niq: I'm seeing *a lot* of demand for this.
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
