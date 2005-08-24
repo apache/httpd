@@ -695,9 +695,9 @@ expressions</description>
     <tr><td>lbmethod</td>
         <td>-</td>
         <td>Balancer load-balance method. Select the load-balancing scheduler
-        method to use. Either <code>requests</code>, to perform weighted
-        request counting or <code>traffic</code>, to perform weighted
-        traffic byte count balancing. Default is <code>requests</code>.
+        method to use. Either <code>byrequests</code>, to perform weighted
+        request counting or <code>bytraffic</code>, to perform weighted
+        traffic byte count balancing. Default is <code>byrequests</code>.
     </td></tr>
     <tr><td>stickysession</td>
         <td>-</td>

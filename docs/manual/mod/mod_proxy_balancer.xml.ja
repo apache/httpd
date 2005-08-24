@@ -60,7 +60,7 @@
 
 <section id="requests">
     <title>Request Counting アルゴリズム</title>
-    <p><code>lbmethod=requests</code> で有効になります。
+    <p><code>lbmethod=byrequests</code> で有効になります。
     このスケジューラの背景にある考え方は、様々なワーカーがそれぞれ、
     設定されている分担リクエスト数をきちんと受け取れるように、
     リクエストを扱うという考え方です。次のように動作します:</p>
@@ -241,7 +241,7 @@ candidate lbstatus -= total factor</code></pre>
 
 <section id="traffic">
     <title>Weighted Traffic Counting アルゴリズム</title>
-    <p><code>lbmethod=traffic</code> で有効になります。
+    <p><code>lbmethod=bytraffic</code> で有効になります。
     このスケジューラの背景にある考え方は、Request Counting 
     と非常に似ていますが、次の違いがあります:</p>
 
