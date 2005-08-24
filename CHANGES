@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.0.55
 
+  *) Fix bad globbing comparison which could result in getting
+     a directory listing when a file was requested. PR 34512.
+     [sean <infamous41md hotmail.com>]
+
   *) Fix core dump if mod_auth_ldap's mod_auth_ldap_auth_checker()
      was called even if mod_auth_ldap_check_user_id() was not
      (or if it didn't succeed) for non-authoritative cases.
