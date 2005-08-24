@@ -127,8 +127,6 @@
     <section>
       <title>Improving Cache Hits</title>
 
-      <indent>
-
       <p>When caching locally generated content, ensuring that  
       <directive module="core">UseCanonicalName</directive> is set to 
       <code>On</code> can dramatically improve the ratio of cache hits. This
@@ -156,13 +154,11 @@
       <p>If you are using Server Side Includes, and want the benefit of speedy
       serves from the cache, you should use <code>virtual</code> include
       types.</p>
-      </indent>
     </section>
     
     <section>
       <title>Expiry Periods</title>
     
-      <indent>
       <p>The default expiry period for cached entities is one hour, however 
       this can be easily over-ridden by using the <directive 
       module="mod_cache">CacheDefaultExpire</directive> directive. This
@@ -179,14 +175,12 @@
 
       <p>The maximum expiry period may also be controlled by using the
       <directive module="mod_cache">CacheMaxExpire</directive>.</p>
-      </indent>
 
     </section>
 
     <section>
       <title>A Brief Guide to Conditional Requests</title>
 
-      <indent>
       <p>When content expires from the cache and is re-requested from the 
       backend or content provider, rather than pass on the original request,
       Aoache will use a conditional request instead.</p>
@@ -222,13 +216,11 @@
       from the cache if it has not changed. As long as reading from the cache
       store is faster than reading from the backend (e.g. an in-memory cache 
       compared to reading from disk).</p> 
-      </indent>
     </section>
 
     <section>
       <title>What Can be Cached?</title>
 
-      <indent>
       <p>As mentioned already, the two styles of caching in Apache work 
       differently, <module>mod_file_cache</module> caching maintains file 
       contents as they were when Apache was started. When a request is 
@@ -281,15 +273,11 @@
         <li>A response will not be stored if it includes a "Vary:" header
         containing the match-all "*".</li>
       </ol>
-
-      </indent>
     </section>
 
     <section>
       <title>What Should Not be Cached?</title>
     
-      <indent>
-
       <p>In short, any content which is highly time-sensitive, or which varies
       depending on the particulars of the request that are not covered by
       HTTP negotiation, should not be cached.</p>
@@ -301,13 +289,11 @@
       <p>If on the other hand, the content served differs depending on the
       values of various HTTP headers, it is possible that it might be possible
       to cache it intelligently through the use of a "Vary" header.</p>
-      </indent>
     </section>
 
     <section>
       <title>Variable/Negotiated Content</title>
 
-      <indent>
       <p>If a response with a "Vary" header is received by 
       <module>mod_cache</module> when requesting content by the backend it
       will attempt to handle it intelligently. If possible, 
@@ -324,7 +310,6 @@ Vary: negotiate,accept-language,accept-charset
       <p><module>mod_cache</module> will only serve the cached content to
       requesters with matching accept-language and accept-charset headers
       matching those of the original request.</p>
-      </indent>
     </section>
  
   </section>
@@ -335,7 +320,6 @@ Vary: negotiate,accept-language,accept-charset
     <section>
       <title>Local exploits</title>
 
-      <indent>
       <p>As requests to end-users can be served from the cache, the cache
       itself can become a target for those wishing to deface or interfere with
       content. It is important to bear in mind that the cache must at all
@@ -354,14 +338,11 @@ Vary: negotiate,accept-language,accept-charset
       ensure you upgrade Apache when security upgrades are announced and 
       run CGI processes as a non-Apache user using <a 
       href="suexec.html">suEXEC</a> if possible.</p>
-      </indent>
 
     </section>
 
     <section>
       <title>Cache Poisoning</title>
-
-      <indent>
 
       <p>When running Apache as a caching proxy server, there is also the
       potential for so-called cache poisoning. Cache Poisoning is a broad 
@@ -380,7 +361,6 @@ Vary: negotiate,accept-language,accept-charset
       a series of requests, and to exploit a vulnerability on an origin
       webserver such that the attacker can entirely control the content
       retrieved by the proxy.</p>
-      </indent>
     </section>
   </section>
 
@@ -407,7 +387,6 @@ Vary: negotiate,accept-language,accept-charset
     <section>
       <title>CacheFile</title>
 
-      <indent>
       <p>The most basic form of caching present in Apache is the file-handle
       caching provided by <module>mod_file_cache</module>. Rather than caching 
       file-contents, this cache maintains a table of open file descriptors. Files 
@@ -440,13 +419,11 @@ Vary: negotiate,accept-language,accept-charset
       will have been deleted, and not show up on the filesystem, extra free
       space will not be recovered until Apache is stopped and the file
       descriptor closed.</p>
-      </indent>
     </section>
 
     <section>
       <title>CacheEnable fd</title>
 
-      <indent>
       <p><module>mod_mem_cache</module> also provides its own file-handle 
       caching scheme, which can be enabled via the 
       <directive module="mod_cache">CacheEnable</directive> directive.</p>
@@ -458,8 +435,6 @@ Vary: negotiate,accept-language,accept-charset
       <p>As with all of <module>mod_cache</module> this type of file-handle
       caching is intelligent, and handles will not be maintained beyond
       the expiry time of the cached content.</p>
-  
-      </indent>
     </section>
   </section>
   
@@ -498,7 +473,6 @@ Vary: negotiate,accept-language,accept-charset
     <section>
       <title>Operating System Caching</title>
 
-      <indent>
       <p>Almost all modern operating systems cache file-data in memory managed
       directly by the kernel. This is a powerful feature, and for the most
       part operating systems get it right. For example, on Linux, let's look at
@@ -529,7 +503,6 @@ sys     0m0.000s</pre>
       deleted or modified, it can automatically remove file contents from the 
       cache when neccessary. This is a big advantage over Apache's in-memory 
       caching which has no way of knowing when a file has changed.</p>
-      </indent>
     </section>
 
     <p>Despite the performance and advantages of automatic operating system
@@ -544,7 +517,6 @@ sys     0m0.000s</pre>
     <section>
       <title>MMapStatic Caching</title>
 
-      <indent>
       <p><module>mod_file_cache</module> provides the 
       <directive module="mod_file_cache">MMapStatic</directive> directive, which
       allows you to have Apache map a static file's contents into memory at
@@ -566,14 +538,11 @@ sys     0m0.000s</pre>
       process will replicate this memory, so it is critically important
       to ensure that the files mapped are not so large as to cause the
       system to swap memory.</p>
-      </indent>
-    
     </section>
 
     <section>
       <title>mod_mem_cache Caching</title>
 
-      <indent>
       <p><module>mod_mem_cache</module> provides a HTTP-aware intelligent
       in-memory cache. It also uses heap memory directly, which means that
       even if <var>MMap</var> is not supported on your system, 
@@ -588,9 +557,6 @@ CacheEnable mem /
 # Limit the size of the cache to 1 Megabyte
 MCacheSize 1024</pre>
       </example>
-
-      </indent>
-
     </section>
   </section>
              
@@ -631,7 +597,6 @@ CacheDirLength 1</pre>
     <section>
       <title>Understanding the Cache-Store</title>
 
-      <indent>
       <p>To store items in the cache, <module>mod_disk_cache</module> creates
       a 22 character hash of the url being requested. Thie hash incorporates
       the hostname, protocol, port, path and any CGI arguments to the URL,
@@ -682,13 +647,11 @@ CacheDirLength 1</pre>
       ".vary" directory will be created for the url in question. This 
       directory will have multiple ".data" files corresponding to the
       differently negotiated content.</p>
-      </indent>
     </section>
 
     <section>
       <title>Maintaining the Disk Cache</title>
     
-      <indent>    
       <p>Although <module>mod_disk_cache</module> will remove cached content
       as it is expired, it does not maintain any information on the total
       size of the cache or how little free space may be left.</p>
@@ -719,8 +682,6 @@ CacheDirLength 1</pre>
       to how much space is used you should ensure that 
       <a href="programs/htcacheclean.html">htcacheclean</a> is configured to 
       leave enough "grow room" following a clean.</p>
-
-      </indent>
     </section>
 
   </section>
