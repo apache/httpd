@@ -43,6 +43,7 @@
 <page href="stopping.html">Stopping and Restarting the Server</page>
 <page href="configuring.html">Configuration Files</page>
 <page href="sections.html">How Directory, Location and Files sections work</page>
+<page href="caching.html">Content Caching</page>
 <page href="server-wide.html">Server-Wide Configuration</page>
 <page href="logs.html">Log Files</page>
 <page href="urlmapping.html">Mapping URLs to Filesystem Locations</page>
@@ -75,6 +76,7 @@
 <category id="faq">
 <title>Apache Server Frequently Asked Questions</title>
 <page href="faq/">Overview</page>
+<page href="faq/background.html">Background Information</page>
 <page href="faq/support.html">Support</page>
 <page href="faq/error.html">Error Messages</page>
 </category>
