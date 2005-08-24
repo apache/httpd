@@ -72,7 +72,7 @@
 <div class="section">
 <h2><a name="requests" id="requests">Request Counting Algorithm</a></h2>
     
-    <p>Enabled via <code>lbmethod=requests</code>, the idea behind this
+    <p>Enabled via <code>lbmethod=byrequests</code>, the idea behind this
     scheduler is that we distribute the requests among the
     various workers to ensure that each gets their configured share
     of the number of requests. It works as follows:</p>
@@ -244,7 +244,7 @@ candidate lbstatus -= total factor</code></pre></div>
 <div class="section">
 <h2><a name="traffic" id="traffic">Weighted Traffic Counting Algorithm</a></h2>
     
-    <p>Enabled via <code>lbmethod=traffic</code>, the idea behind this
+    <p>Enabled via <code>lbmethod=bytraffic</code>, the idea behind this
     scheduler is very similar to the Request Counting method, with
     the following changes:</p>
 
