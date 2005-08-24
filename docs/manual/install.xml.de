@@ -1,10 +1,11 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
-<!-- English Revision: 178522:239259 (outdated) -->
+<!-- English Revision: 239259 -->
 
 <!--
- Copyright 2002-2004 The Apache Software Foundation
+ Copyright 2002-2005 The Apache Software Foundation or its licensors,
+ as applicable
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -152,17 +153,17 @@
       <dd>F&#252;r einige Hilfsskripte wie <program>apxs</program>
       oder <program>dbmmanage</program> (die in Perl
       geschrieben sind) wird der Perl 5 Interpreter ben&#246;tigt (die
-      Versionen ab 5.003 sind ausreichend). Wenn kein derartiger Interpreter
-      vom <program>configure</program>-Skript gefunden werden kann, macht das
-      jedoch nichts. Selbstverst&#228;ndlich k&#246;nnen Sie den Apache 2.0
-      auch so generieren und installieren. Lediglich diese Pflegeskripte
-      k&#246;nnen dann nicht verwendet werden. Wenn Sie mehrere Perl
-      Interpreter installiert haben (vielleicht Perl 4 durch Ihren
-      H&#228;ndler und Perl 5 durch Sie selbst), dann ist die Verwendung der
-      <code>--with-perl</code> Option (siehe unten) empfehlenswert, um
+      Versionen ab 5.003 sind ausreichend). Wenn Sie mehrere Perl
+      Interpreter haben (beispielsweise eine systemweite Installation von
+      Perl 4 und Ihre eigene Perl 5-Installation), dann sollten Sie die
+      <code>--with-perl</code>-Option (siehe unten) verwenden, um
       sicherzustellen, dass der richtige Interpreter von
-      <program>./configure</program> ausgew&#228;hlt wird.</dd>
-    </dl>
+      <program>configure</program> ausgew&#228;hlt wird.
+      Wenn kein Perl 5-Interpreter vom <program>configure</program>-Skript
+      gefunden werden kann, k&ouml;nnen Sie die betroffenen Hilfsskripte nicht
+      verwenden, sind jedoch selbstverst&auml;ndlich nach wie vor in der Lage,
+      den Apache 2.0 zu bauen und zu installieren.</dd>
+      </dl>
 </section>
 
 <section id="download"><title>Download</title>
