@@ -195,12 +195,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       Votes from before the integration branch:
           +1: jerenkrantz, wrowe (trivial, would even be cool in 1.3)
 
-     *) proxy FTP: Fix confusion about globbing characters which could lead
-        to getting a directory listing when a file was requested.  PR 34512.
-        2.1 patch was http://svn.apache.org/viewcvs?rev=179704&view=rev
-        2.0 version: http://people.apache.org/~trawick/179704-20.txt
-        +1: trawick, jorton, wrowe
-
      *) Add httxt2dbm for creating RewriteMap DBM Files.
         http://svn.apache.org/viewcvs.cgi?rev=209539&view=rev
         +1: pquerna, jorton, trawick
