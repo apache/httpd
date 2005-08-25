@@ -376,6 +376,30 @@ static int open_listeners(apr_pool_t *pool)
         else {
 #if APR_HAVE_IPV6
             int v6only_setting;
+
+            /* If we have the unspecified IPv4 address (0.0.0.0) and
+             * the unspecified IPv6 address (::) is next, we need to
+             * swap the order of these in the list. We always try to
+             * bind to IPv6 first, then IPv4, since an IPv6 socket
+             * might be able to receive IPv4 packets if V6ONLY is not
+             * enabled, but never the other way around. */
+            if (lr->next != NULL
+                && IS_INADDR_ANY(lr->bind_addr)
+                && lr->bind_addr->port == lr->next->bind_addr->port
+                && IS_IN6ADDR_ANY(lr->next->bind_addr)) {
+                /* Exchange lr and lr->next */
+                ap_listen_rec *next = lr->next;
+                lr->next = next->next;
+                next->next = lr;
+                if (previous) {
+                    previous->next = next;
+                }
+                else {
+                    ap_listeners = next;
+                }
+                lr = next;
+            }
+
             /* If we are trying to bind to 0.0.0.0 and the previous listener
              * was :: on the same port and in turn that socket does not have
              * the IPV6_V6ONLY flag set; we must skip the current attempt to
