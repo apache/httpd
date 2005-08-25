@@ -74,7 +74,7 @@
 
 <directivesynopsis>
 <name>ScriptSock</name>
-<description>The name of the socket to use for communication with
+<description>The filename prefix of the socket to use for communication with
 the cgi daemon</description>
 <syntax>ScriptSock <var>file-path</var></syntax>
 <default>ScriptSock logs/cgisock</default>
@@ -82,8 +82,9 @@ the cgi daemon</description>
 <context>virtual host</context></contextlist>
 
 <usage>
-    <p>This directive sets the name of the socket to use for
-    communication with the CGI daemon. The socket will be opened
+    <p>This directive sets the filename prefix of the socket to use for
+    communication with the CGI daemon, an extension correspondening to
+    the process ID of the server will be appended. The socket will be opened
     using the permissions of the user who starts Apache (usually
     root). To maintain the security of communications with CGI
     scripts, it is important that no other user has permission to
