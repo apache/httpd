@@ -936,7 +936,7 @@ static const char *set_script_socket(cmd_parms *cmd, void *dummy, const char *ar
     sockname = ap_server_root_relative(cmd->pool, arg); 
 
     if (!sockname) {
-        return apr_pstrcat(cmd->pool, "Invalid Scriptsock path",
+        return apr_pstrcat(cmd->pool, "Invalid ScriptSock path",
                            arg, NULL);
     }
 
@@ -951,7 +951,7 @@ static const command_rec cgid_cmds[] =
                   "the maximum length (in bytes) of the script debug log"), 
     AP_INIT_TAKE1("ScriptLogBuffer", set_scriptlog_buffer, NULL, RSRC_CONF,
                   "the maximum size (in bytes) to record of a POST request"), 
-    AP_INIT_TAKE1("Scriptsock", set_script_socket, NULL, RSRC_CONF,
+    AP_INIT_TAKE1("ScriptSock", set_script_socket, NULL, RSRC_CONF,
                   "the name of the socket to use for communication with "
                   "the cgi daemon."), 
     {NULL} 
