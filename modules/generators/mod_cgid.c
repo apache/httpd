@@ -268,6 +268,15 @@ static void cgid_maint(int reason, void *data, apr_wait_t status)
              * up when pconf gets cleaned up
              */
             kill(proc->pid, SIGHUP); /* send signal to daemon telling it to die */
+
+            /* Remove the cgi socket, we must do it here in order to try and
+             * guarantee the same permissions as when the socket was created.
+             */
+            if (unlink(sockname) < 0 && errno != ENOENT) {
+                ap_log_error(APLOG_MARK, APLOG_ERR, errno, NULL,
+                             "Couldn't unlink unix domain socket %s",
+                             sockname);
+            }
             break;
     }
 }
@@ -582,13 +591,6 @@ static int cgid_server(void *data)
     apr_signal(SIGCHLD, SIG_IGN); 
     apr_signal(SIGHUP, daemon_signal_handler);
 
-    if (unlink(sockname) < 0 && errno != ENOENT) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, errno, main_server,
-                     "Couldn't unlink unix domain socket %s",
-                     sockname);
-        /* just a warning; don't bail out */
-    }
-
     if ((sd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0) {
         ap_log_error(APLOG_MARK, APLOG_ERR, errno, main_server, 
                      "Couldn't create unix domain socket");
@@ -818,7 +820,8 @@ static int cgid_start(apr_pool_t *p, server_rec *main_server,
 static int cgid_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
                            apr_pool_t *ptemp)
 {
-    sockname = DEFAULT_SOCKET;
+    sockname = apr_psprintf(pconf, "%s.%" APR_PID_T_FMT, DEFAULT_SOCKET, 
+                            getpid());
     return OK;
 }
 
@@ -932,8 +935,10 @@ static const char *set_script_socket(cmd_parms *cmd, void *dummy, const char *ar
     if (err != NULL) {
         return err;
     }
-
-    sockname = ap_server_root_relative(cmd->pool, arg); 
+    
+    /* Make sure the pid is appended to the sockname */
+    sockname = apr_psprintf(cmd->pool, "%s.%" APR_PID_T_FMT, arg, getpid());
+    sockname = ap_server_root_relative(cmd->pool, sockname); 
 
     if (!sockname) {
         return apr_pstrcat(cmd->pool, "Invalid ScriptSock path",
