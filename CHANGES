@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_cgid: Append .PID to the script socket filename and remove the
+     script socket on exit. [Colm MacCarthaigh]
+
   *) prefork and worker MPM's: Prevent children from holding open listening
      ports upon graceful restart. PR28167. 
      [Colm MacCarthaigh, Brian Pinkerton <bp thinkpink.com>]
