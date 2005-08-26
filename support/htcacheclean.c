@@ -63,6 +63,7 @@
 #define SECS_PER_MIN  60
 #define KBYTE         1024
 #define MBYTE         1048576
+#define GBYTE         1073741824
 
 #define DIRINFO (APR_FINFO_MTIME|APR_FINFO_SIZE|APR_FINFO_TYPE|APR_FINFO_LINK)
 
@@ -873,6 +874,9 @@ int main(int argc, const char * const argv[])
                         }
                         else if ((*end == 'M' || *end == 'm') && !end[1]) {
                             max *= MBYTE;
+                        }
+                        else if ((*end == 'G' || *end == 'g') && !end[1]) {
+                            max *= GBYTE;
                         }
                         else if (*end &&        /* neither empty nor [Bb] */
                                  ((*end != 'B' && *end != 'b') || end[1])) {
