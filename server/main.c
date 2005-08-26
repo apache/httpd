@@ -318,7 +318,7 @@ static void usage(process_rec *process)
                  pad);
 #endif
 #ifdef AP_MPM_WANT_SIGNAL_SERVER
-#ifdef AP_MPM_SUPPORTS_GRACEFUL_STOP
+#ifdef AP_MPM_WANT_SET_GRACEFUL_SHUTDOWN
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                  "       %s [-k start|restart|graceful|graceful-stop|stop]",
                  pad);
@@ -326,7 +326,7 @@ static void usage(process_rec *process)
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                  "       %s [-k start|restart|graceful|stop]",
                  pad);
-#endif /* AP_MPM_SUPPORTS_GRACEFUL_STOP */
+#endif /* AP_MPM_WANT_SET_GRACEFUL_SHUTDOWN */
 #endif
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                  "       %s [-v] [-V] [-h] [-l] [-L] [-t] [-S]", pad);
