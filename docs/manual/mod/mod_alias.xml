@@ -184,27 +184,32 @@ a different URL</description>
 <override>FileInfo</override>
 
 <usage>
-    <p>The Redirect directive maps an old URL into a new one. The
-    new URL is returned to the client which attempts to fetch it
-    again with the new address. <var>URL-path</var> a (%-decoded)
-    path; any requests for documents beginning with this path will
-    be returned a redirect error to a new (%-encoded) URL beginning
-    with <var>URL</var>.</p>
+    <p>The Redirect directive maps an old URL into a new one by asking
+    the client to refetch the resource at the new location.</p>
+
+    <p>The old <em>URL-path</em> is a (%-decoded) path beginning with
+    a slash.  A relative path is not allowed.  The new <em>URL</em>
+    should be an absolute URL beginning with a scheme and hostname,
+    but a URL-path beginning with a slash may also be used, in which
+    case the scheme and hostname of the current server will be
+    added.</p>
+
+    <p>Then any request beginning with <em>URL-Path</em> will return a
+    redirect request to the client at the location of the target
+    <em>URL</em>.  Additional path information beyond the matched
+    <em>URL-Path</em> will be appended to the target URL.</p>
 
     <example><title>Example:</title>
-      Redirect /service http://foo2.bar.com/service
+      Redirect /service http://foo2.example.com/service
     </example>
 
-    <p>If the client requests http://myserver/service/foo.txt, it
-    will be told to access http://foo2.bar.com/service/foo.txt
+    <p>If the client requests http://example.com/service/foo.txt, it
+    will be told to access http://foo2.example.com/service/foo.txt
     instead.</p>
 
 <note><title>Note</title> <p>Redirect directives take precedence over
 Alias and ScriptAlias directives, irrespective of their ordering in
-the configuration file. Also, <var>URL-path</var> must be a fully
-qualified URL, not a relative path, even when used with .htaccess files or
-inside of <directive type="section" module="core">Directory</directive>
-sections.</p></note>
+the configuration file.</p></note>
 
     <p>If no <var>status</var> argument is given, the redirect will
     be "temporary" (HTTP status 302). This indicates to the client
