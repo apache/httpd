@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "APACHECTL" 8 "2005-05-03" "Apache HTTP Server" "apachectl"
+.TH "APACHECTL" 8 "2005-08-26" "Apache HTTP Server" "apachectl"
 
 .SH NAME
 apachectl \- Apache HTTP Server Control Interface
@@ -78,6 +78,9 @@ Displays a brief status report\&. Similar to the fullstatus option, except that 
 .TP
 graceful
 Gracefully restarts the Apache httpd daemon\&. If the daemon is not running, it is started\&. This differs from a normal restart in that currently open connections are not aborted\&. A side effect is that old log files will not be closed immediately\&. This means that if used in a log rotation script, a substantial delay may be necessary to ensure that the old log files are closed before processing them\&. This command automatically checks the configuration files as in configtest before initiating the restart to make sure Apache doesn't die\&. This is equivalent to apachectl -k graceful\&.  
+.TP
+graceful-stop
+Gracefully stops the Apache httpd daemon\&. This differs from a normal stop in that currently open connections are not aborted\&. A side effect is that old log files will not be closed immediately\&. This is equivalent to apachectl -k graceful-stop\&.  
 .TP
 configtest
 Run a configuration file syntax test\&. It parses the configuration files and either reports Syntax Ok or detailed information about the particular syntax error\&. This is equivalent to apachectl -t\&.  
