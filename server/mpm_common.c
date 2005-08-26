@@ -921,6 +921,20 @@ int ap_signal_server(int *exit_status, apr_pool_t *pconf)
             return 1;
         }
     }
+    
+    if (!strcmp(dash_k_arg, "graceful-stop")) {
+#ifdef AP_MPM_SUPPORTS_GRACEFUL_STOP
+        if (!running) {
+            printf("%s\n", status);
+        }
+        else {
+            *exit_status = send_signal(otherpid, AP_SIG_GRACEFUL_STOP);
+        }
+#else
+        printf("httpd MPM \"" MPM_NAME "\" does not support graceful-stop\n");
+#endif
+        return 1;
+    }
 
     return 0;
 }
@@ -949,7 +963,8 @@ void ap_mpm_rewrite_args(process_rec *process)
         case 'k':
             if (!dash_k_arg) {
                 if (!strcmp(optarg, "start") || !strcmp(optarg, "stop") ||
-                    !strcmp(optarg, "restart") || !strcmp(optarg, "graceful")) {
+                    !strcmp(optarg, "restart") || !strcmp(optarg, "graceful") ||
+                    !strcmp(optarg, "graceful-stop")) {
                     dash_k_arg = optarg;
                     break;
                 }
