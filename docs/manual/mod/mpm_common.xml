@@ -157,6 +157,26 @@ after a crash</description>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>GracefulShutdownTimeout</name>
+<description>Specify a timeout after which a gracefully shutdown server
+will exit.</description>
+<syntax>GracefulShutDownTimeout <var>seconds</var></syntax>
+<default>GracefulShutDownTimeout 0</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>prefork</module></modulelist>
+<compatibility>Available in version 2.4 and later</compatibility>
+
+<usage>
+    <p>The <directive>GracefulShutdownTimeout</directive> specifies
+    how many seconds after receiving a "graceful-stop" signal, a 
+    server should continue to run, handling the existing connections.</p>
+
+    <p>Setting this value to zero means that the server will wait
+    indefinitely until all remaining requests have been fully served.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>Group</name>
 <description>Group under which the server will answer
 requests</description>

@@ -61,7 +61,7 @@
 
     <p>The second method of signaling the <program>httpd</program> processes
     is to use the <code>-k</code> command line options: <code>stop</code>,
-    <code>restart</code>, and <code>graceful</code>,
+    <code>restart</code>, <code>graceful</code> and <code>graceful-stop</code>,
     as described below.  These are arguments to the <program>
     httpd</program> binary, but we recommend that
     you send them using the <program>apachectl</program> control script, which
@@ -180,6 +180,31 @@
 restart then your parent will not restart, it will exit with an
 error. See above for a method of avoiding this.</note>
 </section>
+
+<section id="gracefulstop"><title>Graceful Stop</title>
+
+<dl><dt>Signal: WINCH</dt>
+<dd><code>apachectl -k graceful-stop</code></dd>
+</dl>
+
+    <p>The <code>WINCH</code> or <code>graceful-stop</code> signal causes
+    the parent process to <em>advise</em> the children to exit after
+    their current request (or to exit immediately if they're not
+    serving anything). The parent will then remove it's <directive 
+    module="mpm_common">PidFile</directive> and cease listening on
+    all ports. The parent will continue to run, and monitor children
+    which are handling requests. Once all children have finalised
+    and exited or the timeout specified by the <directive 
+    module="mpm_common">GracefulShutdownTimeout</directive> has been
+    reached, the parent will also exit.</p>
+    
+    <p>A <code>TERM</code> signal will immediately terminate the 
+    parent process and all children when in the "graceful" state. However
+    as the <directive module="mpm_common">PidFile</directive> will
+    have been removed, you will not be able to use 
+    <code>apachectl</code> or <code>httpd</code> to send this signal,</p>
+</section>
+
 
 <section id="race"><title>Appendix: signals and race conditions</title>
 
