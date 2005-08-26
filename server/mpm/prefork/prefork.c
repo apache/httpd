@@ -96,6 +96,7 @@ static int ap_daemons_to_start=0;
 static int ap_daemons_min_free=0;
 static int ap_daemons_max_free=0;
 static int ap_daemons_limit=0;      /* MaxClients */
+static int graceful_shutdown_timeout = 0;
 static int server_limit = DEFAULT_SERVER_LIMIT;
 static int first_server_limit;
 static int changed_limit_at_restart;
@@ -334,6 +335,9 @@ static void just_die(int sig)
 static void stop_listening(int sig)
 {
     ap_close_listeners();
+
+    /* For a graceful stop, we want the child to exit when done */
+    die_now = 1;
 }
 
 /* volatile just in case */
@@ -351,6 +355,7 @@ static void sig_term(int sig)
         return;
     }
     shutdown_pending = 1;
+    is_graceful = (sig == AP_SIG_GRACEFUL_STOP);
 }
 
 /* restart() is the signal handler for SIGHUP and AP_SIG_GRACEFUL
@@ -383,6 +388,11 @@ static void set_signals(void)
     sa.sa_handler = sig_term;
     if (sigaction(SIGTERM, &sa, NULL) < 0)
         ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "sigaction(SIGTERM)");
+#ifdef AP_SIG_GRACEFUL_STOP
+    if (sigaction(AP_SIG_GRACEFUL_STOP, &sa, NULL) < 0)
+        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, 
+                     "sigaction(" AP_SIG_GRACEFUL_STOP_STRING ")");
+#endif
 #ifdef SIGINT
     if (sigaction(SIGINT, &sa, NULL) < 0)
         ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "sigaction(SIGINT)");
@@ -429,6 +439,9 @@ static void set_signals(void)
 #endif /* SIGHUP */
 #ifdef AP_SIG_GRACEFUL
     apr_signal(AP_SIG_GRACEFUL, restart);
+#endif /* AP_SIG_GRACEFUL */
+#ifdef AP_SIG_GRACEFUL_STOP
+    apr_signal(AP_SIG_GRACEFUL_STOP, sig_term);
 #endif /* AP_SIG_GRACEFUL */
 #ifdef SIGPIPE
     apr_signal(SIGPIPE, SIG_IGN);
@@ -1074,8 +1087,8 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
     mpm_state = AP_MPMQ_STOPPING;
 
-    if (shutdown_pending) {
-        /* Time to gracefully shut down:
+    if (shutdown_pending && !is_graceful) {
+        /* Time to shut down:
          * Kill child processes, tell them to call child_exit, etc...
          */
         if (unixd_killpg(getpgrp(), SIGTERM) < 0) {
@@ -1096,6 +1109,103 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
         ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
                     "caught SIGTERM, shutting down");
+
+        return 1;
+    } else if (shutdown_pending) {
+        /* Time to perform a graceful shut down:
+         * Reap the inactive children, and ask the active ones
+         * to close their listeners, then wait until they are
+         * all done to exit.
+         */
+        int active_children;
+        apr_exit_why_e exitwhy;
+        int status;
+        int child_slot;
+        apr_proc_t pid;
+        apr_time_t cutoff;
+
+        /* Stop listening */
+        ap_close_listeners();
+
+        /* kill off the idle ones */
+        ap_mpm_pod_killpg(pod, ap_max_daemons_limit);
+
+        /* Send SIGUSR1 to the active children */
+        active_children = 0;
+        for (index = 0; index < ap_daemons_limit; ++index) {
+            if (ap_scoreboard_image->servers[index][0].status != SERVER_DEAD) {
+                ap_scoreboard_image->servers[index][0].status = SERVER_GRACEFUL;
+                /* Ask each child to close its listeners. */
+                kill(ap_scoreboard_image->parent[index].pid, AP_SIG_GRACEFUL);
+                active_children++;
+            }
+        }
+
+        /* Allow each child which actually finished to exit */
+        for (; active_children; active_children--) {
+            ap_wait_or_timeout(&exitwhy, &status, &pid, pconf);
+            
+            if (pid.pid != -1) {
+                child_slot = find_child_by_pid(&pid);
+                if (child_slot >= 0) {
+                    (void) ap_update_child_status_from_indexes(child_slot, 0, 
+                                            SERVER_DEAD, (request_rec *) NULL);
+                }
+            }
+        }
+
+        /* cleanup pid file */
+        {
+            const char *pidfile = NULL;
+            pidfile = ap_server_root_relative (pconf, ap_pid_fname);
+            if ( pidfile != NULL && unlink(pidfile) == 0)
+                ap_log_error(APLOG_MARK, APLOG_INFO,
+                                0, ap_server_conf,
+                                "removed PID file %s (pid=%ld)",
+                                pidfile, (long)getpid());
+        }
+
+        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
+           "caught " AP_SIG_GRACEFUL_STOP_STRING ", shutting down gracefully");
+
+        if (graceful_shutdown_timeout) {
+            cutoff = apr_time_now() + 
+                     apr_time_from_sec(graceful_shutdown_timeout);
+        }
+
+        /* Don't really exit until each child has finished */
+        shutdown_pending = 0;
+        do {
+            active_children = 0;
+            for (index = 0; index < ap_daemons_limit; ++index) {
+                if (ap_scoreboard_image->servers[index][0].status != SERVER_DEAD) {
+                    if (kill(ap_scoreboard_image->parent[index].pid, 0) == 0) {
+                        active_children++;
+                    }
+                }
+            }
+
+            for (index = 0; index < active_children; ++index) {
+                /* Gather any now finished children */
+                ap_wait_or_timeout(&exitwhy, &status, &pid, pconf);
+
+                if (pid.pid != -1) {
+                    child_slot = find_child_by_pid(&pid);
+                    if (child_slot >= 0) {
+                        (void) ap_update_child_status_from_indexes(child_slot, 
+                                         0, SERVER_DEAD, (request_rec *) NULL);
+                    }
+                }
+            }
+        } while (!shutdown_pending && active_children &&
+                 (!graceful_shutdown_timeout || apr_time_now() < cutoff));
+
+        /* We might be here because we received SIGTERM, either
+         * way, try and make sure that all of our processes are
+         * really dead.
+         */
+        unixd_killpg(getpgrp(), SIGTERM);
+
         return 1;
     }
 
@@ -1363,6 +1473,16 @@ static const char *set_server_limit (cmd_parms *cmd, void *dummy, const char *ar
     return NULL;
 }
 
+static const char *set_graceful_shutdown(cmd_parms *cmd, void *dummy, const char *arg) 
+{
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+    graceful_shutdown_timeout = atoi(arg);
+    return NULL;
+}
+
 static const command_rec prefork_cmds[] = {
 UNIX_DAEMON_COMMANDS,
 LISTEN_COMMANDS,
@@ -1376,6 +1496,9 @@ AP_INIT_TAKE1("MaxClients", set_max_clients, NULL, RSRC_CONF,
               "Maximum number of children alive at the same time"),
 AP_INIT_TAKE1("ServerLimit", set_server_limit, NULL, RSRC_CONF,
               "Maximum value of MaxClients for this run of Apache"),
+AP_INIT_TAKE1("GracefulShutdownTimeout", set_graceful_shutdown, NULL, RSRC_CONF,
+              "Time in seconds to wait for child processes to complete " 
+              "transactions during shutdown"),
 { NULL }
 };
 
