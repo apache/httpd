@@ -41,11 +41,21 @@
     <section id="background.what-is-apache">
       <title>What is Apache?</title>
 
-      <p>The Apache Software Foundation (ASF) is a 501(c)3 non-profit 
-      organization, originating from the development of the Apache HTTPD 
-      Server.  For details on the history of the ASF, please see the 
-      <a href="">Foundation FAQ</a></p>
-	</section>
+      <p>The Apache Software Foundation (ASF) is a 501(c)3 non-profit
+      organization providing support for the Apache community of
+      open-sourced software projects.  For more details, please see the <a
+      href="http://www.apache.org/foundation/faq.html">Apache Software
+      Foundation FAQ</a></p>
+
+      <p>The Apache HTTP Server -- sometimes called Apache httpd -- is
+      a project of the Apache Software foundation aimed at creating a
+      robust, commercial-grade, featureful, and freely-available
+      source code implementation of an HTTP (Web) server.  For more
+      information, please see the <a
+      href="http://httpd.apache.org/ABOUT_APACHE.html">About
+      Apache</a> page.</p>
+
+    </section>
 	
 	<section id="background.what-is-httpd">
       <title>What is the Apache HTTP Server?</title>
@@ -79,7 +89,7 @@
     </section>
 
 	<section id="background.logo">
-      <title>How thoroughly tested is Apache?</title>
+      <title>>May I use the Apache logo on my product or Web site?</title>
       <p>You may <em>NOT</em> use any original artwork from the Apache
       Software Foundation, nor make or use modified versions of such
       artwork, except under the following conditions:</p>
@@ -98,8 +108,6 @@
         artwork in a manner that implies endorsement of a product or
         service is <a href="">strictly forbidden.</a></li>
       </ul>
-      <p>For details, or related issues, please contact the Apache Software
-      Foundation's <a href="">Public Relations Committee</a>.</p>
     </section>
  </section>
 </faq>

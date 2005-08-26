@@ -35,6 +35,7 @@
     <li><a href="#error.acceptex">AcceptEx failed</a></li>
     <li><a href="#error.scriptheaders">Premature end of script 
     headers</a></li>
+    <li><a href="#error.permissiondenied">Permission denied</a></li>
     </ul>
 
     <section id="error.sendfile"><title>Invalid argument:
@@ -77,6 +78,32 @@
     available in the <a href="../howto/cgi.html#troubleshoot">CGI
     tutorial</a>.</p>
     </section>
+
+    <section id="error.permissiondenied"><title>Permission denied</title>
+
+    <p>A <code>Permission denied</code> error in the
+    <code>error_log</code>, accompanied by a <code>Forbidden</code>
+    message to the client usually indicates a problem with your
+    filesystem permissions, rather than a problem in the Apache HTTP
+    Server configuration files.  Check to make sure that the
+    <directive module="mpm_common">User</directive> and <directive
+    module="mpm_common">Group</directive> running the child processes
+    has adequate permission to access the files in question.  Also
+    check that the directory and all parent directories are at least
+    searchable for that user and group (i.e., <code>chmod
+    +x</code>).</p>
+
+    <p>Recent Redhat versions and other Linux distributions using
+    SELinux have additional access restrictions beyond those used by
+    the basic filesystem.  Violations of these restrictions will also
+    result in a <code>Permission denied</code> message.  See the
+    Redhat <a
+    href="http://fedora.redhat.com/docs/selinux-faq-fc3/">SELinux
+    FAQ</a> and <a
+    href="http://fedora.redhat.com/docs/selinux-apache-fc3/">Apache
+    SELinux Policy Document</a>.</p>
+
+   </section>
 
 </section>
 
