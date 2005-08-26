@@ -65,6 +65,15 @@ extern "C" {
 /* Signal used to gracefully restart (as a quoted string) */
 #define AP_SIG_GRACEFUL_STRING "SIGUSR1"
 
+/* Signal used to gracefully stop */
+#define AP_SIG_GRACEFUL_STOP SIGWINCH
+
+/* Signal used to gracefully stop (without SIG prefix) */
+#define AP_SIG_GRACEFUL_STOP_SHORT WINCH
+
+/* Signal used to gracefully stop (as a quoted string) */
+#define AP_SIG_GRACEFUL_STOP_STRING "SIGWINCH"
+
 /**
  * Make sure all child processes that have been spawned by the parent process
  * have died.  This includes process registered as "other_children".
