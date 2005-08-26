@@ -300,12 +300,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      *) mod_cache: Fix handling of 'Vary: *". PR 16125.
         Trunk: r180341
         2.0.x Patch: http://issues.apache.org/bugzilla/attachment.cgi?id=15297
-        +1: pquerna
+        +1: pquerna, jerenkrantz
+        jerenkrantz notes: I do prefer the version from r190033 (own if check).
 
      *) mod_ssl: Fix buffering in SSL output filter.
         http://svn.apache.org/viewcvs?rev=189971&view=rev
         PR: 35279
-        +1: jorton
+        +1: jorton, jerenkrantz
 
      *) mod_include: Fix possible variable corruption with nested
         includes.
@@ -313,11 +314,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         2.0.x patch: http://people.apache.org/~jorton/ap_pr12655.patch
         test case in perl-framework/t/modules/include.t
         PR: 12655
-        +1: jorton, nd
+        +1: jorton, nd, jerenkrantz
 
      *) mod_auth_digest: Fix hostinfo validation for CONNECT requests.
         http://svn.apache.org/viewcvs.cgi?rev=193127&view=rev
-        +1: jorton, nd
+        +1: jorton, nd, jerenkrantz
 
      *) Reverse Proxy fixes: <Location> bug and Cookie support
         Patch is at
@@ -325,6 +326,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         and is in production with Clients.
         +1: niq, nd
           niq: I'm seeing *a lot* of demand for this.
+          jerenkrantz: Didn't a variant of this get committed to trunk?
+                       If so, what revision?  And, is there a clean patch for
+                       2.0?  (The patch in that message isn't clean.)
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
