@@ -96,7 +96,6 @@ static int ap_daemons_to_start=0;
 static int ap_daemons_min_free=0;
 static int ap_daemons_max_free=0;
 static int ap_daemons_limit=0;      /* MaxClients */
-static int graceful_shutdown_timeout = 0;
 static int server_limit = DEFAULT_SERVER_LIMIT;
 static int first_server_limit;
 static int changed_limit_at_restart;
@@ -1122,7 +1121,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         int status;
         int child_slot;
         apr_proc_t pid;
-        apr_time_t cutoff;
+        apr_time_t cutoff = 0;
 
         /* Stop listening */
         ap_close_listeners();
@@ -1168,9 +1167,9 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
            "caught " AP_SIG_GRACEFUL_STOP_STRING ", shutting down gracefully");
 
-        if (graceful_shutdown_timeout) {
+        if (ap_graceful_shutdown_timeout) {
             cutoff = apr_time_now() + 
-                     apr_time_from_sec(graceful_shutdown_timeout);
+                     apr_time_from_sec(ap_graceful_shutdown_timeout);
         }
 
         /* Don't really exit until each child has finished */
@@ -1198,7 +1197,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
                 }
             }
         } while (!shutdown_pending && active_children &&
-                 (!graceful_shutdown_timeout || apr_time_now() < cutoff));
+                 (!ap_graceful_shutdown_timeout || apr_time_now() < cutoff));
 
         /* We might be here because we received SIGTERM, either
          * way, try and make sure that all of our processes are
@@ -1473,16 +1472,6 @@ static const char *set_server_limit (cmd_parms *cmd, void *dummy, const char *ar
     return NULL;
 }
 
-static const char *set_graceful_shutdown(cmd_parms *cmd, void *dummy, const char *arg) 
-{
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
-    graceful_shutdown_timeout = atoi(arg);
-    return NULL;
-}
-
 static const command_rec prefork_cmds[] = {
 UNIX_DAEMON_COMMANDS,
 LISTEN_COMMANDS,
@@ -1496,9 +1485,9 @@ AP_INIT_TAKE1("MaxClients", set_max_clients, NULL, RSRC_CONF,
               "Maximum number of children alive at the same time"),
 AP_INIT_TAKE1("ServerLimit", set_server_limit, NULL, RSRC_CONF,
               "Maximum value of MaxClients for this run of Apache"),
-AP_INIT_TAKE1("GracefulShutdownTimeout", set_graceful_shutdown, NULL, RSRC_CONF,
-              "Time in seconds to wait for child processes to complete " 
-              "transactions during shutdown"),
+AP_INIT_TAKE1("GracefulShutdownTimeout", ap_mpm_set_graceful_shutdown, NULL, 
+              RSRC_CONF, "Time in seconds to wait for child processes to " 
+              "complete transactions during shutdown"),
 { NULL }
 };
 

@@ -760,6 +760,21 @@ const char *ap_mpm_set_coredumpdir(cmd_parms *cmd, void *dummy,
 }
 #endif
 
+#ifdef AP_MPM_WANT_SET_GRACEFUL_SHUTDOWN
+int ap_graceful_shutdown_timeout = 0;
+
+const char * ap_mpm_set_graceful_shutdown(cmd_parms *cmd, void *dummy,
+                                          const char *arg)
+{
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+    ap_graceful_shutdown_timeout = atoi(arg);
+    return NULL;
+}
+#endif
+
 #ifdef AP_MPM_WANT_SET_ACCEPT_LOCK_MECH
 apr_lockmech_e ap_accept_lock_mech = APR_LOCK_DEFAULT;
 
@@ -923,7 +938,7 @@ int ap_signal_server(int *exit_status, apr_pool_t *pconf)
     }
     
     if (!strcmp(dash_k_arg, "graceful-stop")) {
-#ifdef AP_MPM_SUPPORTS_GRACEFUL_STOP
+#ifdef AP_MPM_WANT_SET_GRACEFUL_SHUTDOWN
         if (!running) {
             printf("%s\n", status);
         }

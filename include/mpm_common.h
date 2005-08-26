@@ -287,6 +287,16 @@ const char *ap_mpm_set_coredumpdir(cmd_parms *cmd, void *dummy,
                                    const char *arg);
 #endif
 
+/**
+ * Set the timeout period for a graceful shutdown.
+ */
+#ifdef AP_MPM_WANT_SET_GRACEFUL_SHUTDOWN
+extern int ap_graceful_shutdown_timeout;
+const char *ap_mpm_set_graceful_shutdown(cmd_parms *cmd, void *dummy,
+                                         const char *arg);
+#endif
+
+
 #ifdef AP_MPM_WANT_SIGNAL_SERVER
 int ap_signal_server(int *, apr_pool_t *);
 void ap_mpm_rewrite_args(process_rec *);
