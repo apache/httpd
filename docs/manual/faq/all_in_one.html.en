@@ -59,11 +59,19 @@
     <h3><a name="background.what-is-apache" id="background.what-is-apache">What is Apache?</a></h3>
       
 
-      <p>The Apache Software Foundation (ASF) is a 501(c)3 non-profit 
-      organization, originating from the development of the Apache HTTPD 
-      Server.  For details on the history of the ASF, please see the 
-      <a href="">Foundation FAQ</a></p>
-	
+      <p>The Apache Software Foundation (ASF) is a 501(c)3 non-profit
+      organization providing support for the Apache community of
+      open-sourced software projects.  For more details, please see the <a href="http://www.apache.org/foundation/faq.html">Apache Software
+      Foundation FAQ</a></p>
+
+      <p>The Apache HTTP Server -- sometimes called Apache httpd -- is
+      a project of the Apache Software foundation aimed at creating a
+      robust, commercial-grade, featureful, and freely-available
+      source code implementation of an HTTP (Web) server.  For more
+      information, please see the <a href="http://httpd.apache.org/ABOUT_APACHE.html">About
+      Apache</a> page.</p>
+
+    
 	
 	<h3><a name="background.what-is-httpd" id="background.what-is-httpd">What is the Apache HTTP Server?</a></h3>
       
@@ -96,7 +104,7 @@
       available.</p>
     
 
-	<h3><a name="background.logo" id="background.logo">How thoroughly tested is Apache?</a></h3>
+	<h3><a name="background.logo" id="background.logo">&gt;May I use the Apache logo on my product or Web site?</a></h3>
       
       <p>You may <em>NOT</em> use any original artwork from the Apache
       Software Foundation, nor make or use modified versions of such
@@ -113,8 +121,6 @@
         artwork in a manner that implies endorsement of a product or
         service is <a href="">strictly forbidden.</a></li>
       </ul>
-      <p>For details, or related issues, please contact the Apache Software
-      Foundation's <a href="">Public Relations Committee</a>.</p>
     
  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -205,6 +211,7 @@
     <li><a href="#error.acceptex">AcceptEx failed</a></li>
     <li><a href="#error.scriptheaders">Premature end of script 
     headers</a></li>
+    <li><a href="#error.permissiondenied">Permission denied</a></li>
     </ul>
 
     <h3><a name="error.sendfile" id="error.sendfile">Invalid argument:
@@ -246,6 +253,29 @@
     available in the <a href="../howto/cgi.html#troubleshoot">CGI
     tutorial</a>.</p>
     
+
+    <h3><a name="error.permissiondenied" id="error.permissiondenied">Permission denied</a></h3>
+
+    <p>A <code>Permission denied</code> error in the
+    <code>error_log</code>, accompanied by a <code>Forbidden</code>
+    message to the client usually indicates a problem with your
+    filesystem permissions, rather than a problem in the Apache HTTP
+    Server configuration files.  Check to make sure that the
+    <code class="directive"><a href="../mod/mpm_common.html#user">User</a></code> and <code class="directive"><a href="../mod/mpm_common.html#group">Group</a></code> running the child processes
+    has adequate permission to access the files in question.  Also
+    check that the directory and all parent directories are at least
+    searchable for that user and group (i.e., <code>chmod
+    +x</code>).</p>
+
+    <p>Recent Redhat versions and other Linux distributions using
+    SELinux have additional access restrictions beyond those used by
+    the basic filesystem.  Violations of these restrictions will also
+    result in a <code>Permission denied</code> message.  See the
+    Redhat <a href="http://fedora.redhat.com/docs/selinux-faq-fc3/">SELinux
+    FAQ</a> and <a href="http://fedora.redhat.com/docs/selinux-apache-fc3/">Apache
+    SELinux Policy Document</a>.</p>
+
+   
 
 </div></div>
 <div class="bottomlang">
