@@ -1117,10 +1117,6 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
          * all done to exit.
          */
         int active_children;
-        apr_exit_why_e exitwhy;
-        int status;
-        int child_slot;
-        apr_proc_t pid;
         apr_time_t cutoff = 0;
 
         /* Stop listening */
@@ -1133,25 +1129,14 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         active_children = 0;
         for (index = 0; index < ap_daemons_limit; ++index) {
             if (ap_scoreboard_image->servers[index][0].status != SERVER_DEAD) {
-                ap_scoreboard_image->servers[index][0].status = SERVER_GRACEFUL;
                 /* Ask each child to close its listeners. */
-                kill(ap_scoreboard_image->parent[index].pid, AP_SIG_GRACEFUL);
+                kill(MPM_CHILD_PID(index), AP_SIG_GRACEFUL);
                 active_children++;
             }
         }
 
         /* Allow each child which actually finished to exit */
-        for (; active_children; active_children--) {
-            ap_wait_or_timeout(&exitwhy, &status, &pid, pconf);
-            
-            if (pid.pid != -1) {
-                child_slot = find_child_by_pid(&pid);
-                if (child_slot >= 0) {
-                    (void) ap_update_child_status_from_indexes(child_slot, 0, 
-                                            SERVER_DEAD, (request_rec *) NULL);
-                }
-            }
-        }
+        ap_relieve_child_processes();
 
         /* cleanup pid file */
         {
@@ -1175,24 +1160,18 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         /* Don't really exit until each child has finished */
         shutdown_pending = 0;
         do {
+            /* Pause for a second */
+            sleep(1);
+                
+            /* Relieve any children which have now exited */
+            ap_relieve_child_processes();
+            
             active_children = 0;
             for (index = 0; index < ap_daemons_limit; ++index) {
-                if (ap_scoreboard_image->servers[index][0].status != SERVER_DEAD) {
-                    if (kill(ap_scoreboard_image->parent[index].pid, 0) == 0) {
-                        active_children++;
-                    }
-                }
-            }
-
-            for (index = 0; index < active_children; ++index) {
-                /* Gather any now finished children */
-                ap_wait_or_timeout(&exitwhy, &status, &pid, pconf);
-
-                if (pid.pid != -1) {
-                    child_slot = find_child_by_pid(&pid);
-                    if (child_slot >= 0) {
-                        (void) ap_update_child_status_from_indexes(child_slot, 
-                                         0, SERVER_DEAD, (request_rec *) NULL);
+                if (MPM_CHILD_PID(index) != 0) {
+                    if (kill(MPM_CHILD_PID(index), 0) == 0) {
+                            active_children = 1;
+                            /* Having just one child is enough to stay around */
                     }
                 }
             }
