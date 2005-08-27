@@ -591,6 +591,9 @@ static int cgid_server(void *data)
     apr_signal(SIGCHLD, SIG_IGN); 
     apr_signal(SIGHUP, daemon_signal_handler);
 
+    /* Close our copy of the listening sockets */
+    ap_close_listeners();
+    
     if ((sd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0) {
         ap_log_error(APLOG_MARK, APLOG_ERR, errno, main_server, 
                      "Couldn't create unix domain socket");
