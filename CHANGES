@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.0.55
 
+  *) EBCDIC: Handle chunked input from client or, with proxy, origin
+     server.  [Jeff Trawick]
+
   *) Fix bad globbing comparison which could result in getting
      a directory listing when a file was requested. PR 34512.
      [sean <infamous41md hotmail.com>]

@@ -1816,6 +1816,8 @@ static long get_chunk_size(char *b)
     long chunksize = 0;
     size_t chunkbits = sizeof(long) * 8;
 
+    ap_xlate_proto_from_ascii(b, strlen(b));
+
     /* Skip leading zeros */
     while (*b == '0') {
         ++b;
