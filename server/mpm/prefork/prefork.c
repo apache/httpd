@@ -1172,6 +1172,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
                     if (kill(MPM_CHILD_PID(index), 0) == 0) {
                             active_children = 1;
                             /* Having just one child is enough to stay around */
+                            break;
                     }
                 }
             }
