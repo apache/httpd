@@ -2338,7 +2338,19 @@ AP_DECLARE(void) ap_send_error_response(request_rec *r, int recursive_error)
         r->content_languages = NULL;
         r->content_encoding = NULL;
         r->clength = 0;
-        ap_set_content_type(r, "text/html; charset=iso-8859-1");
+
+        if (apr_table_get(r->subprocess_env,
+                          "suppress-error-charset") != NULL) {
+            core_request_config *request_conf =
+                        ap_get_module_config(r->request_config, &core_module);
+            request_conf->suppress_charset = 1; /* avoid adding default
+                                                 * charset later
+                                                 */
+            ap_set_content_type(r, "text/html");
+        }
+        else {
+            ap_set_content_type(r, "text/html; charset=iso-8859-1");
+        }
 
         if ((status == HTTP_METHOD_NOT_ALLOWED)
             || (status == HTTP_NOT_IMPLEMENTED)) {

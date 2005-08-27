@@ -276,11 +276,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         PR: 34452
         +1: jorton
 
-     *) Support the suppress-error-charset setting, as with Apache 1.3.x.
-        PR 31274. (current docs say it works with Apache from 2.0.40 ;) )
-        http://svn.apache.org/viewcvs?rev=170354&view=rev
-        +1: trawick, jorton, nd
-
      *) mod_mime_magic: Handle CRLF-format magic files so that it works with
         the default installation on Windows. 
         http://svn.apache.org/viewcvs?rev=179622&view=rev

@@ -106,6 +106,7 @@ AP_DECLARE(const char *)ap_make_content_type(request_rec *r, const char *type)
     core_dir_config *conf =
         (core_dir_config *)ap_get_module_config(r->per_dir_config,
                                                 &core_module);
+    core_request_config *request_conf;
     apr_size_t type_len;
 
     if (!type) {
@@ -113,6 +114,12 @@ AP_DECLARE(const char *)ap_make_content_type(request_rec *r, const char *type)
     }
 
     if (conf->add_default_charset != ADD_DEFAULT_CHARSET_ON) {
+        return type;
+    }
+
+    request_conf =
+        ap_get_module_config(r->request_config, &core_module);
+    if (request_conf->suppress_charset) {
         return type;
     }
 
