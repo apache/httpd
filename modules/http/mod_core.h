@@ -14,6 +14,16 @@
  * limitations under the License.
  */
 
+
+/**
+ * @file  mod_core.h
+ * @brief mod_core private header file
+ *
+ * @defgroup MOD_CORE mod_core
+ * @ingroup  APACHE_MODS
+ * @{
+ */
+
 #ifndef MOD_CORE_H
 #define MOD_CORE_H
 
@@ -27,10 +37,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-/**
- * @package mod_core private header file
- */
 
 /* Handles for core filters */
 extern AP_DECLARE_DATA ap_filter_rec_t *ap_http_input_filter_handle;
@@ -81,3 +87,4 @@ AP_DECLARE(int) ap_send_http_options(request_rec *r);
 #endif
 
 #endif	/* !MOD_CORE_H */
+/** @} */

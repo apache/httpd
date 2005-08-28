@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 
+/**
+ * @file  threadpool/mpm.h
+ * @brief Unix Threadpool MPM
+ *
+ * @defgroup APACHE_MPM_THREADPOOL Unix Threadpool MPM
+ * @ingroup  APACHE_OS_UNIX APACHE_MPM
+ * @{
+ */
+
 #include "scoreboard.h"
 #include "unixd.h"
 
@@ -49,3 +58,4 @@ extern server_rec *ap_server_conf;
 extern char ap_coredump_dir[MAX_STRING_LEN];
 
 #endif /* APACHE_MPM_THREADPOOL_H */
+/** @} */

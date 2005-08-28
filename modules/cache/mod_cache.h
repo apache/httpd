@@ -14,12 +14,17 @@
  * limitations under the License.
  */
 
+/**
+ * @file mod_cache.h
+ * @brief Main include file for the Apache Transparent Cache
+ *
+ * @defgroup MOD_CACHE mod_cache
+ * @ingroup  APACHE_MODS
+ * @{
+ */
+
 #ifndef MOD_CACHE_H
 #define MOD_CACHE_H 
-
-/*
- * Main include file for the Apache Transparent Cache
- */
 
 #define CORE_PRIVATE
 
@@ -319,3 +324,4 @@ APR_DECLARE_OPTIONAL_FN(apr_status_t,
 
 
 #endif /*MOD_CACHE_H*/
+/** @} */

@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 
+/**
+ * @file  http_protocol.h
+ * @brief HTTP protocol handling
+ *
+ * @defgroup APACHE_CORE_PROTO HTTP Protocol Handling
+ * @ingroup  APACHE_CORE
+ * @{
+ */
+
 #ifndef APACHE_HTTP_PROTOCOL_H
 #define APACHE_HTTP_PROTOCOL_H
 
@@ -29,17 +38,13 @@ extern "C" {
 #endif
 
 /**
- * @package HTTP protocol handling
- */
-
-/**
  * This hook allows modules to insert filters for the current error response
  * @param r the current request
  * @ingroup hooks
  */
 AP_DECLARE_HOOK(void,insert_error_filter,(request_rec *r))
 
-/* This is an optimization.  We keep a record of the filter_rec that
+/** This is an optimization.  We keep a record of the filter_rec that
  * stores the old_write filter, so that we can avoid strcmp's later.
  */
 AP_DECLARE_DATA extern ap_filter_rec_t *ap_old_write_func;
@@ -77,7 +82,6 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r,
  * Called at completion of sending the response.  It sends the terminating
  * protocol information.
  * @param r The current request
- * @deffunc void ap_finalize_request_protocol(request_rec *r)
  */
 AP_DECLARE(void) ap_finalize_request_protocol(request_rec *r);
 
@@ -89,7 +93,6 @@ AP_DECLARE(void) ap_finalize_request_protocol(request_rec *r);
  *      to handle some other error.  In that case, we print the default 
  *      report for the first thing that went wrong, and more briefly report 
  *      on the problem with the ErrorDocument.
- * @deffunc void ap_send_error_response(request_rec *r, int recursive_error)
  */
 AP_DECLARE(void) ap_send_error_response(request_rec *r, int recursive_error);
 
@@ -104,7 +107,6 @@ AP_DECLARE(void) ap_send_error_response(request_rec *r, int recursive_error);
  * Set the content length for this request
  * @param r The current request
  * @param length The new content length
- * @deffunc void ap_set_content_length(request_rec *r, apr_off_t length)
  */
 AP_DECLARE(void) ap_set_content_length(request_rec *r, apr_off_t length);
 
@@ -112,7 +114,6 @@ AP_DECLARE(void) ap_set_content_length(request_rec *r, apr_off_t length);
  * Set the keepalive status for this request
  * @param r The current request
  * @return 1 if keepalive can be set, 0 otherwise
- * @deffunc int ap_set_keepalive(request_rec *r)
  */
 AP_DECLARE(int) ap_set_keepalive(request_rec *r);
 
@@ -122,7 +123,6 @@ AP_DECLARE(int) ap_set_keepalive(request_rec *r);
  * @param r The current request
  * @param mtime The last modified time
  * @return the latest rational time.
- * @deffunc apr_time_t ap_rationalize_mtime(request_rec *r, apr_time_t mtime)
  */
 AP_DECLARE(apr_time_t) ap_rationalize_mtime(request_rec *r, apr_time_t mtime);
 
@@ -134,8 +134,8 @@ AP_DECLARE(apr_time_t) ap_rationalize_mtime(request_rec *r, apr_time_t mtime);
  *    - then, if there are no parameters on type, add the default charset
  *    - return type
  * @param r The current request
+ * @param type The content type
  * @return The content-type
- * @deffunc const char *ap_make_content_type(request_rec *r, const char *type);
  */ 
 AP_DECLARE(const char *) ap_make_content_type(request_rec *r,
                                               const char *type);
@@ -143,8 +143,7 @@ AP_DECLARE(const char *) ap_make_content_type(request_rec *r,
 #ifdef CORE_PRIVATE
 /**
  * Precompile metadata structures used by ap_make_content_type()
- * @param r The pool to use for allocations
- * @deffunc void ap_setup_make_content_type(apr_pool_t *pool)
+ * @param pool The pool to use for allocations
  */
 AP_DECLARE(void) ap_setup_make_content_type(apr_pool_t *pool);
 #endif /* CORE_PRIVATE */
@@ -156,21 +155,18 @@ AP_DECLARE(void) ap_setup_make_content_type(apr_pool_t *pool);
  * @param force_weak Force the entity tag to be weak - it could be modified
  *                   again in as short an interval.
  * @return The entity tag
- * @deffunc char *ap_make_etag(request_rec *r, int force_weak)
  */ 
 AP_DECLARE(char *) ap_make_etag(request_rec *r, int force_weak);
 
 /**
  * Set the E-tag outgoing header
- * @param The current request
- * @deffunc void ap_set_etag(request_rec *r)
+ * @param r The current request
  */
 AP_DECLARE(void) ap_set_etag(request_rec *r);
 
 /**
  * Set the last modified time for the file being sent
  * @param r The current request
- * @deffunc void ap_set_last_modified(request_rec *r)
  */
 AP_DECLARE(void) ap_set_last_modified(request_rec *r);
 
@@ -181,7 +177,6 @@ AP_DECLARE(void) ap_set_last_modified(request_rec *r);
  * @param r The current request
  * @return OK if the response fulfills the condition GET rules, some
  *         other status code otherwise
- * @deffunc int ap_meets_conditions(request_rec *r)
  */
 AP_DECLARE(int) ap_meets_conditions(request_rec *r);
 
@@ -204,7 +199,6 @@ AP_DECLARE(int) ap_meets_conditions(request_rec *r);
  * @param offset Offset into the file to start sending.
  * @param length Amount of data to send
  * @param nbytes Amount of data actually sent
- * @deffunc apr_status_t ap_send_fd(apr_file_t *fd, request_rec *r, apr_off_t offset, apr_size_t length, apr_size_t *nbytes);
  */
 AP_DECLARE(apr_status_t) ap_send_fd(apr_file_t *fd, request_rec *r, apr_off_t offset, 
                                    apr_size_t length, apr_size_t *nbytes);
@@ -217,7 +211,6 @@ AP_DECLARE(apr_status_t) ap_send_fd(apr_file_t *fd, request_rec *r, apr_off_t of
  * @param offset The offset into the MMAP to start sending
  * @param length The amount of data to send
  * @return The number of bytes sent
- * @deffunc size_t ap_send_mmap(apr_mmap_t *mm, request_rec *r, size_t offset, size_t length)
  */
 AP_DECLARE(size_t) ap_send_mmap(apr_mmap_t *mm, request_rec *r, size_t offset,
                              size_t length);
@@ -241,7 +234,7 @@ AP_DECLARE(int) ap_method_register(apr_pool_t *p, const char *methname);
  */
 AP_DECLARE(void) ap_method_registry_init(apr_pool_t *p);
 
-/*
+/**
  * This is a convenience macro to ease with checking a mask
  * against a method name.
  */
@@ -256,9 +249,16 @@ AP_DECLARE(void) ap_method_registry_init(apr_pool_t *p);
  *                  allocated.
  * @param   nelts   Number of preallocated extension slots
  * @return  Pointer to the newly created structure.
- * @deffunc ap_method_list_t ap_make_method_list(apr_pool_t *p, int nelts)
  */
 AP_DECLARE(ap_method_list_t *) ap_make_method_list(apr_pool_t *p, int nelts);
+
+
+/**
+ * Copy a method list
+ *
+ * @param   dest List to copy to
+ * @param   src  List to copy from
+ */
 AP_DECLARE(void) ap_copy_method_list(ap_method_list_t *dest,
 				     ap_method_list_t *src);
 
@@ -269,7 +269,6 @@ AP_DECLARE(void) ap_copy_method_list(ap_method_list_t *dest,
  * @param   method  String containing the name of the method to check.
  * @param   l       Pointer to a method list, such as cmd->methods_limited.
  * @return  1 if method is in the list, otherwise 0
- * @deffunc int ap_method_in_list(const char *method, ap_method_list_t *l)
  */
 AP_DECLARE(int) ap_method_in_list(ap_method_list_t *l, const char *method);
 
@@ -280,7 +279,6 @@ AP_DECLARE(int) ap_method_in_list(ap_method_list_t *l, const char *method);
  * @param   method  String containing the name of the method to check.
  * @param   l       Pointer to a method list, such as cmd->methods_limited.
  * @return  None.
- * @deffunc void ap_method_in_list(ap_method_list_t *l, const char *method)
  */
 AP_DECLARE(void) ap_method_list_add(ap_method_list_t *l, const char *method);
     
@@ -290,7 +288,6 @@ AP_DECLARE(void) ap_method_list_add(ap_method_list_t *l, const char *method);
  * @param   l       Pointer to a method list, such as cmd->methods_limited.
  * @param   method  String containing the name of the method to remove.
  * @return  None.
- * @deffunc void ap_method_list_remove(ap_method_list_t *l, const char *method)
  */
 AP_DECLARE(void) ap_method_list_remove(ap_method_list_t *l,
 				       const char *method);
@@ -300,7 +297,6 @@ AP_DECLARE(void) ap_method_list_remove(ap_method_list_t *l,
  *
  * @param   l       Pointer to a method list, such as cmd->methods_limited.
  * @return  None.
- * @deffunc void ap_clear_method_list(ap_method_list_t *l)
  */
 AP_DECLARE(void) ap_clear_method_list(ap_method_list_t *l);
     
@@ -308,7 +304,6 @@ AP_DECLARE(void) ap_clear_method_list(ap_method_list_t *l);
  * Set the content type for this request (r->content_type). 
  * @param r The current request
  * @param ct The new content type
- * @deffunc void ap_set_content_type(request_rec *r, const char* ct)
  * @warning This function must be called to set r->content_type in order 
  * for the AddOutputFilterByType directive to work correctly.
  */
@@ -323,7 +318,6 @@ AP_DECLARE(void) ap_set_content_type(request_rec *r, const char *ct);
  * @param c the character to output
  * @param r the current request
  * @return The number of bytes sent
- * @deffunc int ap_rputc(int c, request_rec *r)
  */
 AP_DECLARE(int) ap_rputc(int c, request_rec *r);
 
@@ -332,7 +326,6 @@ AP_DECLARE(int) ap_rputc(int c, request_rec *r);
  * @param str The string to output
  * @param r The current request
  * @return The number of bytes sent
- * @deffunc int ap_rputs(const char *str, request_rec *r)
  */
 AP_DECLARE(int) ap_rputs(const char *str, request_rec *r);
 
@@ -342,7 +335,6 @@ AP_DECLARE(int) ap_rputs(const char *str, request_rec *r);
  * @param nbyte The number of bytes to send from the buffer
  * @param r The current request
  * @return The number of bytes sent
- * @deffunc int ap_rwrite(const void *buf, int nbyte, request_rec *r)
  */
 AP_DECLARE(int) ap_rwrite(const void *buf, int nbyte, request_rec *r);
 
@@ -351,7 +343,6 @@ AP_DECLARE(int) ap_rwrite(const void *buf, int nbyte, request_rec *r);
  * @param r The current request
  * @param ... The strings to write
  * @return The number of bytes sent
- * @deffunc int ap_rvputs(request_rec *r, ...)
  */
 AP_DECLARE_NONSTD(int) ap_rvputs(request_rec *r,...);
 
@@ -361,7 +352,6 @@ AP_DECLARE_NONSTD(int) ap_rvputs(request_rec *r,...);
  * @param fmt The format string
  * @param vlist The arguments to use to fill out the format string
  * @return The number of bytes sent
- * @deffunc int ap_vrprintf(request_rec *r, const char *fmt, va_list vlist)
  */
 AP_DECLARE(int) ap_vrprintf(request_rec *r, const char *fmt, va_list vlist);
 
@@ -371,15 +361,14 @@ AP_DECLARE(int) ap_vrprintf(request_rec *r, const char *fmt, va_list vlist);
  * @param fmt The format string
  * @param ... The arguments to use to fill out the format string
  * @return The number of bytes sent
- * @deffunc int ap_rprintf(request_rec *r, const char *fmt, ...)
  */
 AP_DECLARE_NONSTD(int) ap_rprintf(request_rec *r, const char *fmt,...)
 				__attribute__((format(printf,2,3)));
+
 /**
  * Flush all of the data for the current request to the client
  * @param r The current request
  * @return The number of bytes sent
- * @deffunc int ap_rflush(request_rec *r)
  */
 AP_DECLARE(int) ap_rflush(request_rec *r);
 
@@ -388,7 +377,6 @@ AP_DECLARE(int) ap_rflush(request_rec *r);
  * (only use outside protocol.c is in getting them configured).
  * @param status HTTP status code
  * @return The index of the response
- * @deffunc int ap_index_of_response(int status)
  */
 AP_DECLARE(int) ap_index_of_response(int status);
 
@@ -398,7 +386,6 @@ AP_DECLARE(int) ap_index_of_response(int status);
  * passed, "500 Internal Server Error" will be returned. 
  * @param status The HTTP status code
  * @return The Status-Line
- * @deffunc const char *ap_get_status_line(int status)
  */
 AP_DECLARE(const char *) ap_get_status_line(int status);
 
@@ -414,7 +401,6 @@ AP_DECLARE(const char *) ap_get_status_line(int status);
  *    REQUEST_CHUNKED_DECHUNK  If chunked, remove the chunks for me.
  * </pre>
  * @return either OK or an error code
- * @deffunc int ap_setup_client_block(request_rec *r, int read_policy)
  */
 AP_DECLARE(int) ap_setup_client_block(request_rec *r, int read_policy);
 
@@ -425,7 +411,6 @@ AP_DECLARE(int) ap_setup_client_block(request_rec *r, int read_policy);
  * @warning Never call this function more than once.
  * @param r The current request
  * @return 0 if there is no message to read, 1 otherwise
- * @deffunc int ap_should_client_block(request_rec *r)
  */
 AP_DECLARE(int) ap_should_client_block(request_rec *r);
 
@@ -437,7 +422,6 @@ AP_DECLARE(int) ap_should_client_block(request_rec *r);
  * @param bufsiz The size of the buffer
  * @return Number of bytes inserted into the buffer.  When done reading, 0
  *         if EOF, or -1 if there was an error
- * @deffunc long ap_get_client_block(request_rec *r, char *buffer, apr_size_t bufsiz)
  */
 AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer, apr_size_t bufsiz);
 
@@ -450,17 +434,14 @@ AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer, apr_size_t bu
  * as the next request on a persistent connection.
  * @param r The current request
  * @return error status if request is malformed, OK otherwise 
- * @deffunc int ap_discard_request_body(request_rec *r)
  */
 AP_DECLARE(int) ap_discard_request_body(request_rec *r);
-
 
 /**
  * Setup the output headers so that the client knows how to authenticate
  * itself the next time, if an authentication request failed.  This function
  * works for both basic and digest authentication
  * @param r The current request
- * @deffunc void ap_note_auth_failure(request_rec *r)
  */ 
 AP_DECLARE(void) ap_note_auth_failure(request_rec *r);
 
@@ -469,7 +450,6 @@ AP_DECLARE(void) ap_note_auth_failure(request_rec *r);
  * itself the next time, if an authentication request failed.  This function
  * works only for basic authentication
  * @param r The current request
- * @deffunc void ap_note_basic_auth_failure(request_rec *r)
  */ 
 AP_DECLARE(void) ap_note_basic_auth_failure(request_rec *r);
 
@@ -478,7 +458,6 @@ AP_DECLARE(void) ap_note_basic_auth_failure(request_rec *r);
  * itself the next time, if an authentication request failed.  This function
  * works only for digest authentication
  * @param r The current request
- * @deffunc void ap_note_digest_auth_failure(request_rec *r)
  */ 
 AP_DECLARE(void) ap_note_digest_auth_failure(request_rec *r);
 
@@ -493,20 +472,17 @@ AP_DECLARE(void) ap_note_digest_auth_failure(request_rec *r);
  *         seemed to be in use, or DECLINED if there was authentication but 
  *         it wasn't Basic (in which case, the caller should presumably 
  *         decline as well).
- * @deffunc int ap_get_basic_auth_pw(request_rec *r, const char **pw)
  */
 AP_DECLARE(int) ap_get_basic_auth_pw(request_rec *r, const char **pw);
 
 /**
  * parse_uri: break apart the uri
- * @warning Side Effects: <pre>
- *    - sets r->args to rest after '?' (or NULL if no '?')
- *    - sets r->uri to request uri (without r->args part)
- *    - sets r->hostname (if not set already) from request (scheme://host:port)
- * </pre>
+ * @warning Side Effects: 
+ *    @li sets r->args to rest after '?' (or NULL if no '?')
+ *    @li sets r->uri to request uri (without r->args part)
+ *    @li sets r->hostname (if not set already) from request (scheme://host:port)
  * @param r The current request
  * @param uri The uri to break apart
- * @deffunc void ap_parse_uri(request_rec *r, const char *uri)
  */
 AP_CORE_DECLARE(void) ap_parse_uri(request_rec *r, const char *uri);
 
@@ -519,7 +495,6 @@ AP_CORE_DECLARE(void) ap_parse_uri(request_rec *r, const char *uri);
  * @return The length of the line, if successful
  *         n, if the line is too big to fit in the buffer
  *         -1 for miscellaneous errors
- * @deffunc int ap_method_number_of(const char *method)
  */
 AP_DECLARE(int) ap_getline(char *s, int n, request_rec *r, int fold);
 
@@ -554,6 +529,8 @@ AP_DECLARE(apr_status_t) ap_rgetline(char **s, apr_size_t n,
 #define ap_rgetline(s, n, read, r, fold, bb) \
         ap_rgetline_core((s), (n), (read), (r), (fold), (bb))
 #endif
+
+/** @see ap_rgetline */
 AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n, 
                                           apr_size_t *read,
                                           request_rec *r, int fold,
@@ -588,7 +565,6 @@ AP_DECLARE(const char *) ap_method_name_of(apr_pool_t *p, int methnum);
  * modules to make decisions based upon the input header fields
  * @param r The current request
  * @return OK or DECLINED
- * @deffunc ap_run_post_read_request(request_rec *r)
  */
 AP_DECLARE_HOOK(int,post_read_request,(request_rec *r))
 
@@ -597,7 +573,6 @@ AP_DECLARE_HOOK(int,post_read_request,(request_rec *r))
  * over and above the normal server things.
  * @param r The current request
  * @return OK, DECLINED, or HTTP_...
- * @deffunc int ap_run_log_transaction(request_rec *r)
  */
 AP_DECLARE_HOOK(int,log_transaction,(request_rec *r))
 
@@ -606,7 +581,6 @@ AP_DECLARE_HOOK(int,log_transaction,(request_rec *r))
  * allows Apache modules to easily extend the schemes that Apache understands
  * @param r The current request
  * @return The http scheme from the request
- * @deffunc const char *ap_run_http_scheme(const request_rec *r)
  */
 AP_DECLARE_HOOK(const char *,http_scheme,(const request_rec *r))
 
@@ -614,14 +588,16 @@ AP_DECLARE_HOOK(const char *,http_scheme,(const request_rec *r))
  * Return the default port from the current request
  * @param r The current request
  * @return The current port
- * @deffunc apr_port_t ap_run_default_port(const request_rec *r)
  */
 AP_DECLARE_HOOK(apr_port_t,default_port,(const request_rec *r))
 
+/** @see ap_bucket_type_error */
 typedef struct ap_bucket_error ap_bucket_error;
 
 /**
- * A bucket referring to an HTTP error
+ * @struct ap_bucket_error
+ * @brief  A bucket referring to an HTTP error
+ *
  * This bucket can be passed down the filter stack to indicate that an
  * HTTP error occurred while running a filter.  In order for this bucket
  * to be used successfully, it MUST be sent as the first bucket in the
@@ -636,6 +612,7 @@ struct ap_bucket_error {
     const char    *data;
 };
 
+/** @see ap_bucket_type_error */
 AP_DECLARE_DATA extern const apr_bucket_type_t ap_bucket_type_error;
 
 /**
@@ -652,7 +629,6 @@ AP_DECLARE_DATA extern const apr_bucket_type_t ap_bucket_type_error;
  * @param buf An optional error string to put in the bucket.
  * @param p A pool to allocate out of.
  * @return The new bucket, or NULL if allocation failed
- * @deffunc apr_bucket *ap_bucket_error_make(apr_bucket *b, int error, const char *buf, apr_pool_t *p)
  */
 AP_DECLARE(apr_bucket *) ap_bucket_error_make(apr_bucket *b, int error,
                 const char *buf, apr_pool_t *p);
@@ -664,7 +640,6 @@ AP_DECLARE(apr_bucket *) ap_bucket_error_make(apr_bucket *b, int error,
  * @param p A pool to allocate the error string out of.
  * @param list The bucket allocator from which to allocate the bucket
  * @return The new bucket, or NULL if allocation failed
- * @deffunc apr_bucket *ap_bucket_error_create(int error, const char *buf, apr_pool_t *p, apr_bucket_alloc_t *list)
  */
 AP_DECLARE(apr_bucket *) ap_bucket_error_create(int error, const char *buf,
                                                 apr_pool_t *p,
@@ -676,11 +651,18 @@ AP_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(ap_filter_t *,
                                                               apr_bucket_brigade *);
 AP_DECLARE_NONSTD(apr_status_t) ap_old_write_filter(ap_filter_t *f, apr_bucket_brigade *b);
 
-/*
- * Setting up the protocol fields for subsidiary requests...
- * Also, a wrapup function to keep the internal accounting straight.
+/**
+ * Sett up the protocol fields for subsidiary requests
+ * @param rnew New Sub Request
+ * @param r current request
  */
 AP_DECLARE(void) ap_set_sub_req_protocol(request_rec *rnew, const request_rec *r);
+
+/**
+ * A wrapup function to keep the internal accounting straight.
+ * Indicates that there is no more content coming.
+ * @param sub_r Subrequest that is now compete
+ */
 AP_DECLARE(void) ap_finalize_sub_req_protocol(request_rec *sub_r);
                                                                                 
 #ifdef __cplusplus
@@ -688,3 +670,4 @@ AP_DECLARE(void) ap_finalize_sub_req_protocol(request_rec *sub_r);
 #endif
 
 #endif	/* !APACHE_HTTP_PROTOCOL_H */
+/** @} */

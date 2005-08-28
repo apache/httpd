@@ -14,6 +14,17 @@
  * limitations under the License.
  */
 
+/**
+ * @file netware/os.h
+ * @brief This file in included in all Apache source code. It contains definitions
+ * of facilities available on _this_ operating system (HAVE_* macros),
+ * and prototypes of OS specific functions defined in os.c or os-inline.c
+ *
+ * @defgroup APACHE_OS_NETWARE netware
+ * @ingroup  APACHE_OS
+ * @{
+ */
+
 #ifndef APACHE_OS_H
 #define APACHE_OS_H
 
@@ -38,3 +49,4 @@ AP_DECLARE_DATA extern int hold_screen_on_exit; /* Indicates whether the screen 
 #define exit(s) {if((s||hold_screen_on_exit)&&(hold_screen_on_exit>=0)){pressanykey();}apr_terminate();exit(s);}
 
 #endif   /* ! APACHE_OS_H */
+/** @} */

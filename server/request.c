@@ -15,9 +15,10 @@
  */
 
 /*
- * http_request.c: functions to get and process requests
+ * @file  request.c
+ * @brief functions to get and process requests
  *
- * Rob McCool 3/21/93
+ * @author Rob McCool 3/21/93
  *
  * Thoroughly revamped by rst for Apache.  NB this file reads
  * best from the bottom up.

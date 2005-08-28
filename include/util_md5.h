@@ -14,16 +14,21 @@
  * limitations under the License.
  */
 
+/**
+ * @file  util_md5.h
+ * @brief Apache MD5 library
+ *
+ * @defgroup APACHE_CORE_MD5 MD5 Package Library
+ * @ingroup  APACHE_CORE
+ * @{
+ */
+
 #ifndef APACHE_UTIL_MD5_H
 #define APACHE_UTIL_MD5_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-/**
- * @package Apache MD5 library
- */
 
 #include "apr_md5.h"
 
@@ -68,3 +73,4 @@ AP_DECLARE(char *) ap_md5digest(apr_pool_t *p, apr_file_t *infile);
 #endif
 
 #endif	/* !APACHE_UTIL_MD5_H */
+/** @} */

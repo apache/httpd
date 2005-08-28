@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 
+/**
+ * @file mod_so.h
+ * @brief Shared Object Loader Extension Module for Apache
+ * 
+ * @defgroup MOD_SO mod_so
+ * @ingroup APACHE_MODS
+ * @{
+ */
+
 #ifndef MOD_SO_H
 #define MOD_SO_H 1
 
@@ -25,4 +34,5 @@ APR_DECLARE_OPTIONAL_FN(module *, ap_find_loaded_module_symbol,
                         (server_rec *s, const char *modname));
 
 #endif /* MOD_SO_H */
+/** @} */
 

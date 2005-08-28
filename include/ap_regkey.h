@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 
+/**
+ * @file ap_regkey.h
+ * @brief APR-style Win32 Registry Manipulation
+ */
+
 #ifndef AP_REGKEY_H
 #define AP_REGKEY_H
 
@@ -32,11 +37,6 @@ typedef struct ap_regkey_t ap_regkey_t;
 /* Used to recover AP_REGKEY_* constants 
  */
 AP_DECLARE(const ap_regkey_t *) ap_regkey_const(int i);
-
-/**
- * @file ap_regkey.h
- * @brief APR-style Win32 Registry Manipulation
- */
 
 /**
  * Win32 Only: Constants for ap_regkey_open()

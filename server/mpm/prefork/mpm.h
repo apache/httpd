@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 
+/**
+ * @file prefork/mpm.h
+ * @brief Unix Prefork MPM (default for Uinx systems)
+ *
+ * @defgroup APACHE_MPM_PREFORK Unix Prefork
+ * @ingroup  APACHE_MPM APACHE_OS_UNIX
+ * @{
+ */
+
 #include "httpd.h"
 #include "mpm_default.h"
 #include "scoreboard.h"
@@ -50,3 +59,4 @@ extern int ap_threads_per_child;
 extern int ap_max_daemons_limit;
 extern server_rec *ap_server_conf;
 #endif /* APACHE_MPM_PREFORK_H */
+/** @} */

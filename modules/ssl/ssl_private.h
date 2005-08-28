@@ -17,11 +17,16 @@
 #ifndef SSL_PRIVATE_H
 #define SSL_PRIVATE_H
 
-/*
- * Internal interfaces private to mod_ssl.
+/**
+ * @file  ssl_private.h 
+ * @brief Internal interfaces private to mod_ssl.
+ *
+ * @defgroup MOD_SSL_PRIVATE Private
+ * @ingroup MOD_SSL
+ * @{
  */
 
-/* Apache headers */
+/** Apache headers */
 #include "httpd.h"
 #include "http_config.h"
 #include "http_core.h"
@@ -50,22 +55,22 @@
 
 #define MOD_SSL_VERSION AP_SERVER_BASEREVISION
 
-/* mod_ssl headers */
+/** mod_ssl headers */
 #include "ssl_toolkit_compat.h"
 #include "ssl_expr.h"
 #include "ssl_util_ssl.h"
 
-/* The #ifdef macros are only defined AFTER including the above
+/** The #ifdef macros are only defined AFTER including the above
  * therefore we cannot include these system files at the top  :-(
  */
 #if APR_HAVE_SYS_TIME_H
 #include <sys/time.h>
 #endif
 #if APR_HAVE_UNISTD_H
-#include <unistd.h> /* needed for STDIN_FILENO et.al., at least on FreeBSD */
+#include <unistd.h> /** needed for STDIN_FILENO et.al., at least on FreeBSD */
 #endif
 
-/*
+/**
  * Provide reasonable default for some defines
  */
 #ifndef FALSE
@@ -91,7 +96,7 @@
 #define RAND_MAX INT_MAX
 #endif
 
-/*
+/**
  * Provide reasonable defines for some types
  */
 #ifndef BOOL
@@ -101,7 +106,7 @@
 #define UCHAR unsigned char
 #endif
 
-/*
+/**
  * Provide useful shorthands
  */
 #define strEQ(s1,s2)     (strcmp(s1,s2)        == 0)
@@ -128,19 +133,19 @@ ap_set_module_config(c->conn_config, &ssl_module, val)
 #define myCtxVarSet(mc,num,val)  mc->rCtx.pV##num = val
 #define myCtxVarGet(mc,num,type) (type)(mc->rCtx.pV##num)
 
-/*
+/**
  * Defaults for the configuration
  */
 #ifndef SSL_SESSION_CACHE_TIMEOUT
 #define SSL_SESSION_CACHE_TIMEOUT  300
 #endif
 
-/*
+/**
  * Support for MM library
  */
 #define SSL_MM_FILE_MODE ( APR_UREAD | APR_UWRITE | APR_GREAD | APR_WREAD )
 
-/*
+/**
  * Support for DBM library
  */
 #define SSL_DBM_FILE_MODE ( APR_UREAD | APR_UWRITE | APR_GREAD | APR_WREAD )
@@ -158,7 +163,7 @@ ap_set_module_config(c->conn_config, &ssl_module, val)
 #endif
 #endif
 
-/*
+/**
  * Define the certificate algorithm types
  */
 
@@ -174,7 +179,7 @@ typedef int ssl_algo_t;
 #define SSL_AIDX_MAX     (2)
 
 
-/*
+/**
  * Define IDs for the temporary RSA keys and DH params
  */
 
@@ -184,7 +189,7 @@ typedef int ssl_algo_t;
 #define SSL_TMP_KEY_DH_1024  (3)
 #define SSL_TMP_KEY_MAX      (4)
 
-/*
+/**
  * Define the SSL options
  */
 #define SSL_OPT_NONE           (0)
@@ -197,7 +202,7 @@ typedef int ssl_algo_t;
 #define SSL_OPT_ALL            (SSL_OPT_STDENVVARS|SSL_OPT_EXPORTCERTDATA|SSL_OPT_FAKEBASICAUTH|SSL_OPT_STRICTREQUIRE|SSL_OPT_OPTRENEGOTIATE)
 typedef int ssl_opt_t;
 
-/*
+/**
  * Define the SSL Protocol options
  */
 #define SSL_PROTOCOL_NONE  (0)
@@ -207,7 +212,7 @@ typedef int ssl_opt_t;
 #define SSL_PROTOCOL_ALL   (SSL_PROTOCOL_SSLV2|SSL_PROTOCOL_SSLV3|SSL_PROTOCOL_TLSV1)
 typedef int ssl_proto_t;
 
-/*
+/**
  * Define the SSL verify levels
  */
 typedef enum {
@@ -232,7 +237,7 @@ typedef enum {
     || (errnum == X509_V_ERR_CERT_UNTRUSTED) \
     || (errnum == X509_V_ERR_UNABLE_TO_VERIFY_LEAF_SIGNATURE))
 
-/*
+/**
  * Define the SSL pass phrase dialog types
  */
 typedef enum {
@@ -242,7 +247,7 @@ typedef enum {
 	SSL_PPTYPE_PIPE    = 2
 } ssl_pphrase_t;
 
-/*
+/**
  * Define the Path Checking modes
  */
 #define SSL_PCM_EXISTS     1
@@ -251,7 +256,7 @@ typedef enum {
 #define SSL_PCM_ISNONZERO  8
 typedef unsigned int ssl_pathcheck_t;
 
-/*
+/**
  * Define the SSL session cache modes and structures
  */
 typedef enum {
@@ -263,7 +268,7 @@ typedef enum {
     SSL_SCMODE_NONE_NOT_NULL = 5
 } ssl_scmode_t;
 
-/*
+/**
  * Define the SSL mutex modes
  */
 typedef enum {
@@ -272,7 +277,7 @@ typedef enum {
     SSL_MUTEXMODE_USED   = 1
 } ssl_mutexmode_t;
 
-/*
+/**
  * Define the SSL enabled state
  */
 typedef enum {
@@ -282,7 +287,7 @@ typedef enum {
 	SSL_ENABLED_OPTIONAL = 3
 } ssl_enabled_t;
 
-/*
+/**
  * Define the SSL requirement structure
  */
 typedef struct {
@@ -290,7 +295,7 @@ typedef struct {
     ssl_expr *mpExpr;
 } ssl_require_t;
 
-/*
+/**
  * Define the SSL random number generator seeding source
  */
 typedef enum {
@@ -310,7 +315,7 @@ typedef struct {
     int          nBytes;
 } ssl_randseed_t;
 
-/*
+/**
  * Define the structure of an ASN.1 anything
  */
 typedef struct {
@@ -319,7 +324,7 @@ typedef struct {
     apr_time_t     source_mtime;
 } ssl_asn1_t;
 
-/*
+/**
  * Define the mod_ssl per-module configuration structure
  * (i.e. the global configuration for each httpd process)
  */
@@ -371,9 +376,9 @@ typedef struct {
     } rCtx;
 } SSLModConfigRec;
 
-/* public cert/private key */
+/** public cert/private key */
 typedef struct {
-    /* 
+    /** 
      * server only has 1-2 certs/keys
      * 1 RSA and/or 1 DSA
      */
@@ -382,28 +387,28 @@ typedef struct {
     X509        *certs[SSL_AIDX_MAX];
     EVP_PKEY    *keys[SSL_AIDX_MAX];
 
-    /* Certificates which specify the set of CA names which should be
+    /** Certificates which specify the set of CA names which should be
      * sent in the CertificateRequest message: */
     const char  *ca_name_path;
     const char  *ca_name_file;
 } modssl_pk_server_t;
 
 typedef struct {
-    /* proxy can have any number of cert/key pairs */
+    /** proxy can have any number of cert/key pairs */
     const char  *cert_file;
     const char  *cert_path;
     STACK_OF(X509_INFO) *certs;
 } modssl_pk_proxy_t;
 
-/* stuff related to authentication that can also be per-dir */
+/** stuff related to authentication that can also be per-dir */
 typedef struct {
-    /* known/trusted CAs */
+    /** known/trusted CAs */
     const char  *ca_cert_path;
     const char  *ca_cert_file;
 
     const char  *cipher_suite;
 
-    /* for client or downstream server authentication */
+    /** for client or downstream server authentication */
     int          verify_depth;
     ssl_verify_t verify_mode;
 } modssl_auth_ctx_t;
@@ -411,22 +416,22 @@ typedef struct {
 typedef struct SSLSrvConfigRec SSLSrvConfigRec;
 
 typedef struct {
-    SSLSrvConfigRec *sc; /* pointer back to server config */
+    SSLSrvConfigRec *sc; /** pointer back to server config */
     SSL_CTX *ssl_ctx;
 
-    /* we are one or the other */
+    /** we are one or the other */
     modssl_pk_server_t *pks;
     modssl_pk_proxy_t  *pkp;
 
     ssl_proto_t  protocol;
 
-    /* config for handling encrypted keys */
+    /** config for handling encrypted keys */
     ssl_pphrase_t pphrase_dialog_type;
     const char   *pphrase_dialog_path;
 
     const char  *cert_chain;
 
-    /* certificate revocation list */
+    /** certificate revocation list */
     const char  *crl_path;
     const char  *crl_file;
     X509_STORE  *crl;
@@ -446,7 +451,7 @@ struct SSLSrvConfigRec {
     modssl_ctx_t    *proxy;
 };
 
-/*
+/**
  * Define the mod_ssl per-directory configuration structure
  * (i.e. the local configuration for all <Directory>
  *  and .htaccess contexts)
@@ -465,17 +470,17 @@ typedef struct {
     const char   *szUserName;
 } SSLDirConfigRec;
 
-/*
+/**
  *  function prototypes
  */
 
-/*  API glue structures  */
+/**  API glue structures  */
 extern module AP_MODULE_DECLARE_DATA ssl_module;
 
-/* "global" stuff */
+/** "global" stuff */
 extern const char ssl_valid_ssl_mutex_string[];
 
-/*  configuration handling   */
+/**  configuration handling   */
 SSLModConfigRec *ssl_config_global_create(server_rec *);
 void         ssl_config_global_fix(SSLModConfigRec *);
 BOOL         ssl_config_global_isfixed(SSLModConfigRec *);
@@ -521,7 +526,7 @@ const char  *ssl_cmd_SSLProxyCARevocationFile(cmd_parms *, void *, const char *)
 const char  *ssl_cmd_SSLProxyMachineCertificatePath(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLProxyMachineCertificateFile(cmd_parms *, void *, const char *);
 
-/*  module initialization  */
+/**  module initialization  */
 int          ssl_init_Module(apr_pool_t *, apr_pool_t *, apr_pool_t *, server_rec *);
 void         ssl_init_Engine(server_rec *, apr_pool_t *);
 void         ssl_init_ConfigureServer(server_rec *, apr_pool_t *, apr_pool_t *, SSLSrvConfigRec *);
@@ -531,7 +536,7 @@ STACK_OF(X509_NAME)
 void         ssl_init_Child(apr_pool_t *, server_rec *);
 apr_status_t ssl_init_ModuleKill(void *data);
 
-/*  Apache API hooks  */
+/**  Apache API hooks  */
 int          ssl_hook_Auth(request_rec *);
 int          ssl_hook_UserCheck(request_rec *);
 int          ssl_hook_Access(request_rec *);
@@ -540,7 +545,7 @@ int          ssl_hook_ReadReq(request_rec *);
 int          ssl_hook_Upgrade(request_rec *);
 void         ssl_hook_ConfigTest(apr_pool_t *pconf, server_rec *s);
 
-/*  OpenSSL callbacks */
+/**  OpenSSL callbacks */
 RSA         *ssl_callback_TmpRSA(SSL *, int, int);
 DH          *ssl_callback_TmpDH(SSL *, int, int);
 int          ssl_callback_SSLVerify(int, X509_STORE_CTX *);
@@ -551,7 +556,7 @@ SSL_SESSION *ssl_callback_GetSessionCacheEntry(SSL *, unsigned char *, int, int 
 void         ssl_callback_DelSessionCacheEntry(SSL_CTX *, SSL_SESSION *);
 void         ssl_callback_LogTracingState(MODSSL_INFO_CB_ARG_TYPE, int, int);
 
-/*  Session Cache Support  */
+/**  Session Cache Support  */
 void         ssl_scache_init(server_rec *, apr_pool_t *);
 void         ssl_scache_status_register(apr_pool_t *p);
 void         ssl_scache_kill(server_rec *);
@@ -581,19 +586,19 @@ SSL_SESSION *ssl_scache_dc_retrieve(server_rec *, UCHAR *, int);
 void         ssl_scache_dc_remove(server_rec *, UCHAR *, int);
 void         ssl_scache_dc_status(request_rec *r, int flags, apr_pool_t *pool);
 
-/* Proxy Support */
+/** Proxy Support */
 int ssl_proxy_enable(conn_rec *c);
 int ssl_engine_disable(conn_rec *c);
 
-/*  I/O  */
+/**  I/O  */
 void         ssl_io_filter_init(conn_rec *, SSL *);
 void         ssl_io_filter_register(apr_pool_t *);
 long         ssl_io_data_cb(BIO *, int, MODSSL_BIO_CB_ARG_TYPE *, int, long, long);
 
-/*  PRNG  */
+/**  PRNG  */
 int          ssl_rand_seed(server_rec *, apr_pool_t *, ssl_rsctx_t, char *);
 
-/*  Utility Functions  */
+/**  Utility Functions  */
 char        *ssl_util_vhostid(apr_pool_t *, server_rec *);
 apr_file_t  *ssl_util_ppopen(server_rec *, apr_pool_t *, const char *,
                              const char * const *);
@@ -606,10 +611,10 @@ char        *ssl_util_algotypestr(ssl_algo_t);
 void         ssl_util_thread_setup(apr_pool_t *);
 int          ssl_init_ssl_connection(conn_rec *c);
 
-/*  Pass Phrase Support  */
+/**  Pass Phrase Support  */
 void         ssl_pphrase_Handle(server_rec *, apr_pool_t *);
 
-/*  Diffie-Hellman Parameter Support  */
+/**  Diffie-Hellman Parameter Support  */
 DH           *ssl_dh_GetTmpParam(int);
 DH           *ssl_dh_GetParamFromFile(char *);
 
@@ -628,17 +633,17 @@ const char *ssl_asn1_keystr(int keytype);
 const char *ssl_asn1_table_keyfmt(apr_pool_t *p,
                                   const char *id,
                                   int keytype);
-/*  Mutex Support  */
+/**  Mutex Support  */
 int          ssl_mutex_init(server_rec *, apr_pool_t *);
 int          ssl_mutex_reinit(server_rec *, apr_pool_t *);
 int          ssl_mutex_on(server_rec *);
 int          ssl_mutex_off(server_rec *);
 
-/*  Logfile Support  */
+/**  Logfile Support  */
 void         ssl_die(void);
 void         ssl_log_ssl_error(const char *, int, int, server_rec *);
 
-/*  Variables  */
+/**  Variables  */
 void         ssl_var_register(void);
 char        *ssl_var_lookup(apr_pool_t *, server_rec *, conn_rec *, request_rec *, char *);
 const char  *ssl_ext_lookup(apr_pool_t *p, conn_rec *c, int peer, const char *oid);
@@ -650,3 +655,5 @@ void         ssl_var_log_config_register(apr_pool_t *p);
 #define APR_SHM_MAXSIZE (64 * 1024 * 1024)
 
 #endif /* SSL_PRIVATE_H */
+/** @} */
+

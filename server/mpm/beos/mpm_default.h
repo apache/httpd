@@ -14,6 +14,13 @@
  * limitations under the License.
  */
 
+/**
+ * @file  beos/mpm_default.h
+ * @brief beos MPM defaults
+ *
+ * @addtogroup APACHE_MPM_BEOS
+ * @{
+ */
 #ifndef APACHE_MPM_DEFAULT_H
 #define APACHE_MPM_DEFAULT_H
 
@@ -74,3 +81,4 @@
 #endif
 
 #endif /* AP_MPM_DEFAULT_H */
+/** @} */

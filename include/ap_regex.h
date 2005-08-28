@@ -47,6 +47,11 @@ POSSIBILITY OF SUCH DAMAGE.
 -----------------------------------------------------------------------------
 */
 
+/**
+ * @file ap_regex.h
+ * @brief Apache Regex defines
+ */
+
 #ifndef AP_REGEX_H
 #define AP_REGEX_H
 

@@ -14,13 +14,21 @@
  * limitations under the License.
  */
 
-#ifndef APACHE_MPM_H
-#define APACHE_MPM_H
-
-/* mpm.h is the place to make declarations that are MPM specific but that must be 
+/**
+ * @file  winnt/mpm.h
+ * @brief MPM for Windows NT
+ * 
+ * this is the place to make declarations that are MPM specific but that must be 
  * shared with non-mpm specific code in the server.  Hummm, perhaps we can
  * move most of this stuff to mpm_common.h?
+ *
+ * @defgroup APACHE_MPM_WINNT WinNT MPM
+ * @ingroup  APACHE_OS_WIN32 APACHE_MPM
+ * @{
  */
+
+#ifndef APACHE_MPM_H
+#define APACHE_MPM_H
 
 #include "scoreboard.h"
 
@@ -38,3 +46,4 @@ extern int ap_thread_limit;
 extern server_rec *ap_server_conf;
 
 #endif /* APACHE_MPM_H */
+/** @} */

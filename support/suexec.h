@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-/*
- * suexec.h -- user-definable variables for the suexec wrapper code.
- *             (See README.configure on how to customize these variables.)
+/**
+ * @file  suexec.h
+ * @brief user-definable variables for the suexec wrapper code.
+ *        (See README.configure on how to customize these variables.)
  */
 
 

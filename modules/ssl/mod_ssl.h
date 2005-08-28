@@ -14,20 +14,29 @@
  * limitations under the License.
  */
 
+/**
+ * @file mod_ssl.h
+ * @brief SSL extension module for Apache
+ *
+ * @defgroup MOD_SSL mod_ssl
+ * @ingroup  APACHE_MODS
+ * @{
+ */
+
 #ifndef __MOD_SSL_H__
 #define __MOD_SSL_H__
 
 #include "httpd.h"
 #include "apr_optional.h"
 
-/* The ssl_var_lookup() optional function retrieves SSL environment
+/** The ssl_var_lookup() optional function retrieves SSL environment
  * variables. */
 APR_DECLARE_OPTIONAL_FN(char *, ssl_var_lookup,
                         (apr_pool_t *, server_rec *,
                          conn_rec *, request_rec *,
                          char *));
 
-/* The ssl_ext_lookup() optional function retrieves the value of a SSL
+/** The ssl_ext_lookup() optional function retrieves the value of a SSL
  * certificate X.509 extension.  The client certificate is used if
  * peer is non-zero; the server certificate is used otherwise.  The
  * oidnum parameter specifies the numeric OID (e.g. "1.2.3.4") of the
@@ -37,11 +46,11 @@ APR_DECLARE_OPTIONAL_FN(const char *, ssl_ext_lookup,
                         (apr_pool_t *p, conn_rec *c, int peer,
                          const char *oidnum));
 
-/* An optional function which returns non-zero if the given connection
+/** An optional function which returns non-zero if the given connection
  * is using SSL/TLS. */
 APR_DECLARE_OPTIONAL_FN(int, ssl_is_https, (conn_rec *));
 
-/* The ssl_proxy_enable() and ssl_engine_disable() optional functions
+/** The ssl_proxy_enable() and ssl_engine_disable() optional functions
  * are used by mod_proxy to enable use of SSL for outgoing
  * connections. */
 
@@ -52,3 +61,4 @@ APR_DECLARE_OPTIONAL_FN(int, ssl_engine_disable, (conn_rec *));
 APR_DECLARE_OPTIONAL_FN(apr_array_header_t *, ssl_extlist_by_oid, (request_rec *r, const char *oidstr));
 
 #endif /* __MOD_SSL_H__ */
+/** @} */

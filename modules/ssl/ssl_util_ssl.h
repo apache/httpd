@@ -14,20 +14,27 @@
  * limitations under the License.
  */
 
-/*                      _             _
- *  _ __ ___   ___   __| |    ___ ___| |  mod_ssl
- * | '_ ` _ \ / _ \ / _` |   / __/ __| |  Apache Interface to OpenSSL
- * | | | | | | (_) | (_| |   \__ \__ \ |
- * |_| |_| |_|\___/ \__,_|___|___/___/_|
- *                      |_____|
- *  ssl_util_ssl.h
- *  Additional Utility Functions for OpenSSL
+/**
+ * @verbatim
+                        _             _
+    _ __ ___   ___   __| |    ___ ___| |  mod_ssl
+   | '_ ` _ \ / _ \ / _` |   / __/ __| |  Apache Interface to OpenSSL
+   | | | | | | (_) | (_| |   \__ \__ \ |
+   |_| |_| |_|\___/ \__,_|___|___/___/_|
+                        |_____|
+   @endverbatim
+ * @file  ssl_util_ssl.h
+ * @brief Additional Utility Functions for OpenSSL
+ *
+ * @defgroup MOD_SSL_UTIL Utilities
+ * @ingroup MOD_SSL
+ * @{
  */
 
 #ifndef __SSL_UTIL_SSL_H__
 #define __SSL_UTIL_SSL_H__
 
-/*
+/**
  * Determine SSL library version number
  */
 #ifdef OPENSSL_VERSION_NUMBER
@@ -40,18 +47,18 @@
 #define SSL_LIBRARY_TEXT    "OtherSSL 0.0.0 00 XXX 0000"
 #endif
 
-/*
+/**
  *  Maximum length of a DER encoded session.
  *  FIXME: There is no define in OpenSSL, but OpenSSL uses 1024*10,
  *         so this value should be ok. Although we have no warm feeling.
  */
 #define SSL_SESSION_MAX_DER 1024*10
 
-/* max length for SSL_SESSION_id2sz */
+/** max length for SSL_SESSION_id2sz */
 #define SSL_SESSION_ID_STRING_LEN \
     ((SSL_MAX_SSL_SESSION_ID_LENGTH + 1) * 2)
 
-/*  
+/**  
  *  Additional Functions
  */
 void        SSL_init_app_data2_idx(void);
@@ -71,10 +78,12 @@ BOOL        SSL_X509_INFO_load_path(apr_pool_t *, STACK_OF(X509_INFO) *, const c
 int         SSL_CTX_use_certificate_chain(SSL_CTX *, char *, int, modssl_read_bio_cb_fn *);
 char       *SSL_SESSION_id2sz(unsigned char *, int, char *, int);
 
-/* util functions for OpenSSL+sslc compat */
+/** util functions for OpenSSL+sslc compat */
 int modssl_session_get_time(SSL_SESSION *session);
 
 DH *modssl_dh_configure(unsigned char *p, int plen,
                         unsigned char *g, int glen);
 
 #endif /* __SSL_UTIL_SSL_H__ */
+/** @} */
+

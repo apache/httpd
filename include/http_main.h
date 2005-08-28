@@ -14,12 +14,21 @@
  * limitations under the License.
  */
 
+/**
+ * @file  http_main.h
+ * @brief Command line options
+ *
+ * @defgroup APACHE_CORE_MAIN Command line options
+ * @ingroup  APACHE_CORE
+ * @{
+ */
+
 #ifndef APACHE_HTTP_MAIN_H
 #define APACHE_HTTP_MAIN_H
 
 #include "apr_optional.h"
 
-/* AP_SERVER_BASEARGS is the command argument list parsed by http_main.c
+/** AP_SERVER_BASEARGS is the command argument list parsed by http_main.c
  * in apr_getopt() format.  Use this for default'ing args that the MPM
  * can safely ignore and pass on from its rewrite_args() handler.
  */
@@ -28,10 +37,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-/**
- * @package Command line options
- */
 
 /** The name of the Apache executable */
 AP_DECLARE_DATA extern const char *ap_server_argv0;
@@ -49,6 +54,13 @@ AP_DECLARE_DATA extern apr_array_header_t *ap_server_post_read_config;
  *  effect the server based on command line options */
 AP_DECLARE_DATA extern apr_array_header_t *ap_server_config_defines;
 
+/**
+ * An optional function to send signal to server on presence of '-k'
+ * command line argument.
+ * Called if MPM defines AP_MPM_WANT_SIGNAL_SERVER
+ * @param status The exit status after sending signal
+ * @param pool Memory pool to allocate from
+ */
 APR_DECLARE_OPTIONAL_FN(int, ap_signal_server, (int *, apr_pool_t *));
 
 #ifdef __cplusplus
@@ -56,3 +68,4 @@ APR_DECLARE_OPTIONAL_FN(int, ap_signal_server, (int *, apr_pool_t *));
 #endif
 
 #endif	/* !APACHE_HTTP_MAIN_H */
+/** @} */

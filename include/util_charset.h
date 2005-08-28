@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 
+/**
+ * @file  util_charset.h
+ * @brief charset conversion
+ *
+ * @defgroup APACHE_CORE_CHARSET Charset Conversion
+ * @ingroup  APACHE_CORE
+ * @{
+ */
+
 #ifndef APACHE_UTIL_CHARSET_H
 #define APACHE_UTIL_CHARSET_H
 
@@ -21,9 +30,6 @@
 extern "C" {
 #endif
 
-/**
- * @package charset conversion
- */
 #include "apr.h"
 
 #if APR_CHARSET_EBCDIC
@@ -46,3 +52,4 @@ extern apr_xlate_t *ap_hdrs_from_ascii;
 #endif
 
 #endif  /* !APACHE_UTIL_CHARSET_H */
+/** @} */

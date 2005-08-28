@@ -14,6 +14,17 @@
  * limitations under the License.
  */
 
+/**
+ * @file unix/os.h
+ * @brief This file in included in all Apache source code. It contains definitions
+ * of facilities available on _this_ operating system (HAVE_* macros),
+ * and prototypes of OS specific functions defined in os.c or os-inline.c
+ *
+ * @defgroup APACHE_OS_UNIX unix
+ * @ingroup  APACHE_OS
+ * @{
+ */
+
 #ifndef APACHE_OS_H
 #define APACHE_OS_H
 
@@ -34,3 +45,4 @@ pid_t os_fork(const char *user);
 #endif
 
 #endif	/* !APACHE_OS_H */
+/** @} */

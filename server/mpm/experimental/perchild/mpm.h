@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 
+/**
+ * @file  perchild/mpm.h
+ * @brief Unix Perchild MPM
+ *
+ * @defgroup APACHE_MPM_PERCHILD Uinx Perchild MPM
+ * @ingroup  APACHE_MPM APACHE_OS_UNIX
+ * @{
+ */
+
 #include "httpd.h"
 #include "mpm_default.h"
 #include "unixd.h"
@@ -58,3 +67,4 @@ extern int ap_max_daemons_limit;
 extern server_rec *ap_server_conf;
 
 #endif /* APACHE_MPM_PERCHILD_H */
+/** @} */

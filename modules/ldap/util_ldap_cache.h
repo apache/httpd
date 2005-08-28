@@ -17,8 +17,9 @@
 #ifndef APU_LDAP_CACHE_H
 #define APU_LDAP_CACHE_H
 
-/*
- * This switches LDAP support on or off.
+/**
+ * @file  util_ldap_cache.h
+ * @brief This switches LDAP support on or off.
  */
 
 /* this whole thing disappears if LDAP is not enabled */

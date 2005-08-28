@@ -14,6 +14,14 @@
  * limitations under the License.
  */
 
+/**
+ * @file  perchild/mpm_default.h
+ * @brief perchild MPM defaults
+ *
+ * @addtogroup APACHE_MPM_PERCHILD
+ * @{
+ */
+
 #ifndef APACHE_MPM_DEFAULT_H
 #define APACHE_MPM_DEFAULT_H
 
@@ -69,3 +77,4 @@
 #endif
 
 #endif /* AP_MPM_DEFAULT_H */
+/** @} */

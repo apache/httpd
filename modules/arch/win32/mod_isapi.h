@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 
+/**
+ * @file mod_isapi.h
+ * @brief ISAPI module extension to Apache
+ *
+ * @defgroup MOD_ISAPI mod_isapi
+ * @ingroup  APACHE_MODS
+ * @{
+ */
+
 #ifndef MOD_ISAPI_H
 #define MOD_ISAPI_H
 
@@ -258,3 +267,5 @@ typedef int (APR_THREAD_FUNC *PFN_TERMINATEEXTENSION)(apr_uint32_t flags);
 #endif
 
 #endif	/* !MOD_ISAPI_H */
+/** @} */
+

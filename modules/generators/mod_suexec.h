@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 
+/**
+ * @file mod_suexec.h
+ * @brief SuExec Extension Module for Apache
+ * 
+ * @defgroup MOD_SUEXEC mod_suexec
+ * @ingroup  APACHE_MODS
+ * @{
+ */
+
 #include "unixd.h"
 
 typedef struct {
@@ -21,3 +30,4 @@ typedef struct {
     int active;
 } suexec_config_t;
 
+/** @}*/

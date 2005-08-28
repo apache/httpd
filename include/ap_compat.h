@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 
+/**
+ * @file  ap_compat.h
+ * @brief Redefine Apache 1.3 symbols
+ */
+
 #ifndef AP_COMPAT_H
 #define AP_COMPAT_H
 

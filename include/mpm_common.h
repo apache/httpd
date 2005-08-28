@@ -25,6 +25,15 @@
  * does not belong in src/os/unix
  */
 
+/**
+ * @file  mpm_common.h
+ * @brief Multi-Processing Modules functions
+ *
+ * @defgroup APACHE_MPM Multi-Processing Modules
+ * @ingroup  APACHE
+ * @{
+ */
+
 #ifndef APACHE_MPM_COMMON_H
 #define APACHE_MPM_COMMON_H
 
@@ -39,10 +48,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-/**
- * @package Multi-Processing Modules functions
- */
 
 /* The maximum length of the queue of pending connections, as defined
  * by listen(2).  Under some systems, it should be increased if you
@@ -348,3 +353,4 @@ AP_DECLARE_HOOK(int,monitor,(apr_pool_t *p))
 #endif
 
 #endif /* !APACHE_MPM_COMMON_H */
+/** @} */

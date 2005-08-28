@@ -17,8 +17,13 @@
 #ifndef MOD_PROXY_H
 #define MOD_PROXY_H 
 
-/*
- * Main include file for the Apache proxy
+/**
+ * @file  mod_proxy.h
+ * @brief Proxy Extension Module for Apache
+ *
+ * @defgroup MOD_PROXY mod_proxy
+ * @ingroup  APACHE_MODS
+ * @{
  */
 
 /*
@@ -696,3 +701,4 @@ extern module PROXY_DECLARE_DATA proxy_module;
 extern int PROXY_DECLARE_DATA proxy_lb_workers;
 
 #endif /*MOD_PROXY_H*/
+/** @} */
