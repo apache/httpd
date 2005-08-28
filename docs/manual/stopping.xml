@@ -203,6 +203,25 @@ error. See above for a method of avoiding this.</note>
     as the <directive module="mpm_common">PidFile</directive> will
     have been removed, you will not be able to use 
     <code>apachectl</code> or <code>httpd</code> to send this signal,</p>
+
+    <note><p>The <code>graceful-stop</code> signal allows you to run multiple
+    identically configured instances of <program>httpd</program> at the 
+    same time. This is a powerful feature when performing graceful 
+    upgrades of Apache, however it can also cause deadlocks and race 
+    conditions with some configurations.</p> 
+
+    <p>Care has been taken to ensure that on-disk files
+    such as the <directive module="core">Lockfile</directive> and <directive 
+    module="mod_cgid">ScriptSock</directive> files contain the server
+    PID, and should co-exist without problem. However, if a configuration
+    directive, third-party module or persistent CGI utilises any other on-disk 
+    lock or  state files; care should be taken to ensure that multiple running 
+    instances of <program>httpd</program> do not clobber each others files.</p> 
+
+    <p>You should also be wary of other potential race conditions, such as
+    using <program>rotatelogs</program> style piped logging. Multiple running
+    instances of <program>rotatelogs</program> attempting to rotate the same
+    logfiles at the same time may destroy each other's logfiles.</p></note>
 </section>
 
 
