@@ -48,6 +48,16 @@
           has been introduced to cleanup <module>mod_disk_cache</module>
           setups.</dd>
 
+      <dt>Graceful stop</dt>
+      <dd>The <module>prefork</module> and <module>worker</module> MPMs now
+          allow <program>httpd</program> to be shutdown gracefully via the
+          <a href="stopping.html#gracefulstop"><code>graceful-stop</code></a> 
+          signal. The <directive 
+          module="mpm_common">GracefulShutdownTimeout</directive> directive
+          has been added to specify an optional timeout, after which
+          <program>httpd</program> will terminate regardless of the status
+          of any requests being served.</dd>
+
       <dt>Proxying</dt>
       <dd>The new <module>mod_proxy_balancer</module> module provides 
           load balancing services for <module>mod_proxy</module>.
