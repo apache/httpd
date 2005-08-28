@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 
+/**
+ * @file cache_cache.h
+ * @brief Cache Cache Functions
+ *
+ * @defgroup Cache_cache  Cache Functions
+ * @ingroup  MOD_CACHE
+ * @{
+ */
+
 #ifndef CACHE_CACHE_H
 #define CACHE_CACHE_H
 
@@ -23,16 +32,6 @@ extern "C" {
 
 #include "mod_cache.h"
 
-/**
- * @file cache_hash.h
- * @brief Cache Cache Functions
- */
-
-/**
- * @defgroup Cache_cache  Cache Functions
- * @ingroup CACHE
- * @{
- */
 /** ADT for the cache */
 typedef struct cache_cache_t cache_cache_t;
 
@@ -104,9 +103,9 @@ CACHE_DECLARE(void *)cache_pop(cache_cache_t* c);
  * @param entry the actual entry (from a find)
  */
 CACHE_DECLARE(apr_status_t) cache_remove(cache_cache_t* c, void *entry);
-/** @} */
 #ifdef __cplusplus
 }
 #endif
 
 #endif /* !CACHE_CACHE_H */
+/** @} */

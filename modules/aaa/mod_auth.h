@@ -14,6 +14,14 @@
  * limitations under the License.
  */
 
+/**
+ * @file  mod_auth.h
+ * @brief uthentication Extension Module for Apache
+ *
+ * @defgroup MOD_AUTH mod_auth
+ * @ingroup  APACHE_MODS
+ */
+
 #ifndef APACHE_MOD_AUTH_H
 #define APACHE_MOD_AUTH_H
 

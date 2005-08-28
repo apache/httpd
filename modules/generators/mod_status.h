@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 
+/**
+ * @file  mod_status.h
+ * @brief Status Report Extension Module to Apache
+ *
+ * @defgroup MOD_STATUS mod_status
+ * @ingroup  APACHE_MODS
+ * @{
+ */
+
 #ifndef MOD_STATUS_H
 #define MOD_STATUS_H
 
@@ -52,3 +61,4 @@
 APR_DECLARE_EXTERNAL_HOOK(ap, STATUS, int, status_hook,
                           (request_rec *r, int flags))
 #endif
+/** @} */

@@ -17,14 +17,19 @@
 #ifndef SSL_TOOLKIT_COMPAT_H
 #define SSL_TOOLKIT_COMPAT_H
 
-/*
- * this header file provides a compatiblity layer
- * between OpenSSL and RSA sslc
+/**
+ * @file ssl_toolkit_compat.h 
+ * @brief this header file provides a compatiblity layer
+ *        between OpenSSL and RSA sslc
+ *
+ * @defgroup MOD_SSL_TOOLKIT Toolkit
+ * @ingroup  MOD_SSL
+ * @{
  */
 
 #ifdef HAVE_OPENSSL
 
-/* OpenSSL headers */
+/** OpenSSL headers */
 #include <openssl/ssl.h>
 #include <openssl/err.h>
 #include <openssl/x509.h>
@@ -33,14 +38,14 @@
 #include <openssl/evp.h>
 #include <openssl/rand.h>
 #include <openssl/x509v3.h>
-/* Avoid tripping over an engine build installed globally and detected
+/** Avoid tripping over an engine build installed globally and detected
  * when the user points at an explicit non-engine flavor of OpenSSL
  */
 #if defined(HAVE_OPENSSL_ENGINE_H) && defined(HAVE_ENGINE_INIT)
 #include <openssl/engine.h>
 #endif
 
-/*
+/**
  * rsa sslc uses incomplete types for most structures
  * so we macroize for OpenSSL those which cannot be dereferenced
  * using the same sames as the sslc functions
@@ -66,7 +71,7 @@
 #define SSL_SESSION_get_session_id(s)      (s->session_id)
 #define SSL_SESSION_get_session_id_length(s) (s->session_id_length)
 
-/*
+/**
  * Support for retrieving/overriding states
  */
 #ifndef SSL_get_state
@@ -85,7 +90,7 @@
 #define MODSSL_CLIENT_CERT_CB_ARG_TYPE X509
 #define MODSSL_PCHAR_CAST
 
-/* ...shifting sands of openssl... */
+/** ...shifting sands of openssl... */
 #if (OPENSSL_VERSION_NUMBER >= 0x0090707f)
 # define MODSSL_D2I_SSL_SESSION_CONST    const
 #else
@@ -130,7 +135,7 @@ typedef int (modssl_read_bio_cb_fn)(char*,int,int,void*);
 
 #ifndef PEM_F_DEF_CALLBACK
 #ifdef PEM_F_PEM_DEF_CALLBACK
-/* In OpenSSL 0.9.8 PEM_F_DEF_CALLBACK was renamed */
+/** In OpenSSL 0.9.8 PEM_F_DEF_CALLBACK was renamed */
 #define PEM_F_DEF_CALLBACK PEM_F_PEM_DEF_CALLBACK 
 #endif
 #endif
@@ -146,10 +151,10 @@ typedef int (modssl_read_bio_cb_fn)(char*,int,int,void*);
 #include <objects.h>
 #include <sslc.h>
 
-/* sslc does not support this function, OpenSSL has since 9.5.1 */
+/** sslc does not support this function, OpenSSL has since 9.5.1 */
 #define RAND_status() 1
 
-/* sslc names this function a bit differently */
+/** sslc names this function a bit differently */
 #define CRYPTO_num_locks() CRYPTO_get_num_locks()
 
 #ifndef STACK_OF
@@ -179,7 +184,7 @@ typedef int (modssl_read_bio_cb_fn)(char*,int,int);
    PEM_read_bio_PrivateKey(b, k, cb)
 
 #ifndef HAVE_SSL_SET_STATE
-#define SSL_set_state(ssl, state) /* XXX: should throw an error */
+#define SSL_set_state(ssl, state) /** XXX: should throw an error */
 #endif
 
 #define modssl_set_cipher_list(ssl, l) \
@@ -202,13 +207,13 @@ typedef int (modssl_read_bio_cb_fn)(char*,int,int);
 #define modssl_set_verify(ssl, verify, cb) \
     SSL_set_verify(ssl, verify)
 
-#else /* SSLC_VERSION_NUMBER >= 0x2000 */
+#else /** SSLC_VERSION_NUMBER >= 0x2000 */
 
 #define CRYPTO_malloc_init R_malloc_init
 
 #define EVP_cleanup() 
 
-#endif /* SSLC_VERSION_NUMBER >= 0x2000 */
+#endif /** SSLC_VERSION_NUMBER >= 0x2000 */
 
 typedef void (*modssl_popfree_fn)(char *data);
 
@@ -238,7 +243,7 @@ typedef void (*modssl_popfree_fn)(char *data);
 #define sk_X509_REVOKED_num sk_num
 #define sk_X509_REVOKED_value (X509_REVOKED *)sk_value
 
-#else /* ! HAVE_OPENSSL && ! HAVE_SSLC */
+#else /** ! HAVE_OPENSSL && ! HAVE_SSLC */
 
 #error "Unrecognized SSL Toolkit!"
 
@@ -254,3 +259,5 @@ typedef void (*modssl_popfree_fn)(char *data);
 #endif
 
 #endif /* SSL_TOOLKIT_COMPAT_H */
+
+/** @} */

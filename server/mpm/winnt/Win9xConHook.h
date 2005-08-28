@@ -14,6 +14,14 @@
  * limitations under the License.
  */
 
+/**
+ * @file  Win9xConHook.h
+ * @brief ??? 
+ *
+ * @addtogroup APACHE_MPM_WINNT
+ * @{
+ */
+
 #ifndef AP_WIN9XCONHOOK_H
 #define AP_WIN9XCONHOOK_H
 
@@ -55,3 +63,4 @@ BOOL WINAPI FixConsoleCtrlHandler(PHANDLER_ROUTINE phandler, BOOL add);
 #endif /* WIN32 */
 
 #endif AP_WIN9XCONHOOK_H
+/** @} */

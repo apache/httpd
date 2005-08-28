@@ -14,6 +14,14 @@
  * limitations under the License.
  */
 
+/**
+ * @file  mpmt_os2/mpm_default.h
+ * @brief os2 MPM defaults
+ * 
+ * @addtogroup APACHE_MPM_OS2
+ * @{
+ */
+
 #ifndef APACHE_MPM_DEFAULT_H
 #define APACHE_MPM_DEFAULT_H
 
@@ -57,3 +65,4 @@
 #endif
 
 #endif /* AP_MPM_DEFAULT_H */
+/** @} */

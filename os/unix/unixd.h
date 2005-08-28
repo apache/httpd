@@ -14,6 +14,14 @@
  * limitations under the License.
  */
 
+/**
+ * @file  unixd.h
+ * @brief common stuff that unix MPMs will want 
+ *
+ * @addtogroup APACHE_OS_UNIX
+ * @{
+ */
+
 #ifndef UNIXD_H
 #define UNIXD_H
 
@@ -48,7 +56,6 @@ typedef struct {
 
 AP_DECLARE_HOOK(ap_unix_identity_t *, get_suexec_identity,(const request_rec *r))
 
-/* common stuff that unix MPMs will want */
 
 /* Default user name and group name. These may be specified as numbers by
  * placing a # before a number */
@@ -107,3 +114,4 @@ AP_INIT_TAKE1("Group", unixd_set_group, NULL, RSRC_CONF, \
   "Effective group id for this server")
 
 #endif
+/** @} */

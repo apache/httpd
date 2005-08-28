@@ -2,6 +2,8 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) Doxygen fixup [Neale Ranns neale ranns.org, Ian Holsman]
+
   *) prefork and worker MPMs: Support a graceful-stop procedure:
      Server will wait until existing requests are finished or until  
      "GracefulShutdownTimeout" number of seconds before exiting. 

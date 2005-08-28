@@ -14,9 +14,13 @@
  * limitations under the License.
  */
 
-/*
-** Declarations for the generic lock implementation
-*/
+/**
+ * @file  locks.h
+ * @brief Declarations for the generic lock implementation
+ *
+ * @addtogroup MOD_DAV
+ * @{
+ */
 
 #ifndef _DAV_LOCK_LOCKS_H_
 #define _DAV_LOCK_LOCKS_H_
@@ -25,3 +29,5 @@
 const char *dav_generic_get_lockdb_path(const request_rec *r);
 
 #endif /* _DAV_LOCK_LOCKS_H_ */
+/** @} */
+

@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 
+/**
+ * @file  http_connection.h
+ * @brief Apache connection library
+ *
+ * @defgroup APACHE_CORE_CONNECTION Connection Library
+ * @ingroup  APACHE_CORE
+ * @{
+ */
+
 #ifndef APACHE_HTTP_CONNECTION_H
 #define APACHE_HTTP_CONNECTION_H
 
@@ -24,10 +33,11 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 /**
- * @package Apache connection library
+ * @file  http_connection.h
+ * @brief Apache connection library
  */
+
 #ifdef CORE_PRIVATE
 /**
  * This is the protocol module driver.  This calls all of the
@@ -36,10 +46,13 @@ extern "C" {
  * @param csd The mechanism on which this connection is to be read.  
  *            Most times this will be a socket, but it is up to the module
  *            that accepts the request to determine the exact type.
- * @deffunc void ap_process_connection(conn_rec *c, void *csd)
  */
 AP_CORE_DECLARE(void) ap_process_connection(conn_rec *c, void *csd);
 
+/**
+ * Flushes all remain data in the client send buffer
+ * @param c The connection to flush
+ */
 AP_CORE_DECLARE(void) ap_flush_conn(conn_rec *c);
 
 /**
@@ -70,10 +83,12 @@ AP_DECLARE(void) ap_lingering_close(conn_rec *c);
  * if it encounters a fatal error condition.
  *
  * @param p The pool from which to allocate the connection record
+ * @param server The server record to create the connection too. 
  * @param csd The socket that has been accepted
  * @param conn_id A unique identifier for this connection.  The ID only
  *                needs to be unique at that time, not forever.
  * @param sbh A handle to scoreboard information for this connection.
+ * @param alloc The bucket allocator to use for all bucket/brigade creations
  * @return An allocated connection record or NULL.
  */
 AP_DECLARE_HOOK(conn_rec *, create_connection,
@@ -89,7 +104,6 @@ AP_DECLARE_HOOK(conn_rec *, create_connection,
  *            Most times this will be a socket, but it is up to the module
  *            that accepts the request to determine the exact type.
  * @return OK or DECLINED
- * @deffunc int ap_run_pre_connection(conn_rec *c, void *csd)
  */
 AP_DECLARE_HOOK(int,pre_connection,(conn_rec *c, void *csd))
 
@@ -100,12 +114,10 @@ AP_DECLARE_HOOK(int,pre_connection,(conn_rec *c, void *csd))
  * to handle the request is the last module run.
  * @param c The connection on which the request has been received.
  * @return OK or DECLINED
- * @deffunc int ap_run_process_connection(conn_rec *c)
  */
 AP_DECLARE_HOOK(int,process_connection,(conn_rec *c))
 
-/* End Of Connection (EOC) bucket */
-
+/** End Of Connection (EOC) bucket */
 AP_DECLARE_DATA extern const apr_bucket_type_t ap_bucket_type_eoc;
 
 /**
@@ -119,7 +131,6 @@ AP_DECLARE_DATA extern const apr_bucket_type_t ap_bucket_type_eoc;
  * Make the bucket passed in an End Of Connection (EOC) bucket
  * @param b The bucket to make into an EOC bucket
  * @return The new bucket, or NULL if allocation failed
- * @deffunc apr_bucket *ap_bucket_eoc_make(apr_bucket *b)
  */
 AP_DECLARE(apr_bucket *) ap_bucket_eoc_make(apr_bucket *b);
 
@@ -128,7 +139,6 @@ AP_DECLARE(apr_bucket *) ap_bucket_eoc_make(apr_bucket *b);
  * that the connection will be closed.
  * @param list The freelist from which this bucket should be allocated
  * @return The new bucket, or NULL if allocation failed
- * @deffunc apr_bucket *ap_bucket_eoc_create(apr_bucket_alloc_t *list)
  */
 AP_DECLARE(apr_bucket *) ap_bucket_eoc_create(apr_bucket_alloc_t *list);
 
@@ -137,3 +147,4 @@ AP_DECLARE(apr_bucket *) ap_bucket_eoc_create(apr_bucket_alloc_t *list);
 #endif
 
 #endif	/* !APACHE_HTTP_REQUEST_H */
+/** @} */

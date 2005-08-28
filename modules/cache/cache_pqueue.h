@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 
+/**
+ * @file  cache_pqueue.h
+ * @brief Cache Priority Queue function declarations
+ *
+ * @defgroup MOD_CACHE_QUEUE Priority Queue
+ * @ingroup  MOD_CACHE
+ * @{
+ */
+
 #ifndef CACHE_PQUEUE_H
 #define CACHE_PQUEUE_H
 
@@ -158,3 +167,4 @@ int cache_pq_is_valid(cache_pqueue_t *q);
 #endif
 
 #endif /* !CACHE_PQUEUE_H */
+/** @} */

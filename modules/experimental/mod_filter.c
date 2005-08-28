@@ -42,8 +42,9 @@
 module AP_MODULE_DECLARE_DATA filter_module;
 
 /**
- * ap_filter_provider_t is a filter provider, as defined and implemented
- * by mod_filter.  The struct is a linked list, with dispatch criteria
+ * @brief is a filter provider, as defined and implemented by mod_filter.  
+ *
+ * The struct is a linked list, with dispatch criteria
  * defined for each filter.  The provider implementation itself is a
  * (2.0-compatible) ap_filter_rec_t* frec.
  */

@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 
+/**
+ * @file event/mpm.h
+ * @brief Unix Exent driven MPM
+ *
+ * @defgroup APACHE_MPM_EVENT Unix Event MPM
+ * @ingroup  APACHE_OS_UNIX APACHE_MPM
+ * @{
+ */
+
 #include "scoreboard.h"
 #include "unixd.h"
 
@@ -49,3 +58,4 @@ extern server_rec *ap_server_conf;
 extern char ap_coredump_dir[MAX_STRING_LEN];
 
 #endif /* APACHE_MPM_EVENT_H */
+/** @} */

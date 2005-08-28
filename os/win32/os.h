@@ -14,6 +14,17 @@
  * limitations under the License.
  */
 
+/**
+ * @file win32/os.h
+ * @brief This file in included in all Apache source code. It contains definitions
+ * of facilities available on _this_ operating system (HAVE_* macros),
+ * and prototypes of OS specific functions defined in os.c or os-inline.c
+ * 
+ * @defgroup APACHE_OS_WIN32 win32
+ * @ingroup  APACHE_OS
+ * @{
+ */
+
 #ifdef WIN32
 
 #ifndef AP_OS_H
@@ -121,3 +132,4 @@ AP_DECLARE_LATE_DLL_FUNC(AP_DLL_WINBASEAPI, DWORD, WINAPI, RegisterServiceProces
 
 #endif  /* ndef AP_OS_H */
 #endif  /* def WIN32 */
+/** @} */

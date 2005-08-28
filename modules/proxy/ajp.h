@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 
+/**
+ * @file ajp.h
+ * @brief Apache Jserv Protocol
+ *
+ * @defgroup AJP_defines AJP definitions
+ * @ingroup  MOD_PROXY
+ * @{
+ */
+
 #ifndef AJP_H
 #define AJP_H
 
@@ -126,10 +135,6 @@ struct ajp_msg
 };
 
 /**
- * @defgroup AJP_defines AJP definitions 
- * @{
- */
-/**
  * Signature for the messages sent from Apache to tomcat
  */
 #define AJP13_WS_HEADER             0x1234
@@ -161,6 +166,7 @@ struct ajp_msg
 
 /**
  * @defgroup AJP_api AJP API functions
+ * @ingroup  MOD_PROXY
  * @{
  */
 /**

@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 
+/**
+ * @file  scoreboard.h
+ * @brief Apache scoreboard library
+ */
+
 #ifndef APACHE_SCOREBOARD_H
 #define APACHE_SCOREBOARD_H
 

@@ -14,14 +14,19 @@
  * limitations under the License.
  */
 
+/**
+ * @file  ap_provider.h
+ * @brief Apache Provider API
+ *
+ * @defgroup APACHE_CORE_PROVIDER Provider API
+ * @ingroup  APACHE_CORE
+ * @{
+ */
+
 #ifndef AP_PROVIDER_H
 #define AP_PROVIDER_H
 
 #include "ap_config.h"
-
-/**
- * @package Provider API
- */
 
 /**
  * This function is used to register a provider with the global
@@ -52,3 +57,4 @@ AP_DECLARE(void *) ap_lookup_provider(const char *provider_group,
                                       const char *provider_version);
 
 #endif
+/** @} */

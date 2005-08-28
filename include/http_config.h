@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 
+/**
+ * @file http_config.h
+ * @brief Apache Configuration
+ *
+ * @defgroup APACHE_CORE_CONFIG Configuration
+ * @ingroup  APACHE_CORE
+ * @{
+ */
+
 #ifndef APACHE_HTTP_CONFIG_H
 #define APACHE_HTTP_CONFIG_H
 
@@ -23,11 +32,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-/**
- * @file http_config.h
- * @brief Apache Configuration
- */
 
 /*
  * The central data structures around here...
@@ -694,7 +698,7 @@ AP_DECLARE(const char *) ap_walk_config(ap_directive_t *conftree,
                                         ap_conf_vector_t *section_vector);
 
 /**
- * @defgroup ap_check_cmd_context ap_check_cmd_context
+ * @defgroup ap_check_cmd_context Check command context
  * @{
  */
 /**
@@ -721,7 +725,7 @@ AP_DECLARE(const char *) ap_check_cmd_context(cmd_parms *cmd,
 #ifdef CORE_PRIVATE
 
 /**
- * This structure is used to assign symbol names to module pointers
+ * @brief This structure is used to assign symbol names to module pointers
  */
 typedef struct {
     const char *name;
@@ -1049,3 +1053,4 @@ AP_DECLARE_HOOK(void,optional_fn_retrieve,(void))
 #endif
 
 #endif	/* !APACHE_HTTP_CONFIG_H */
+/** @} */

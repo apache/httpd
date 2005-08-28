@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 
+/**
+ * @file cache_hash.h
+ * @brief Cache Hash Tables
+ *
+ * @defgroup Cache_Hash  Hash Tables
+ * @ingroup  MOD_CACHE
+ * @{
+ */
+
 #ifndef CACHE_HASH_H
 #define CACHE_HASH_H
 
@@ -22,17 +31,6 @@ extern "C" {
 #endif
 
 #include "mod_cache.h"
-
-/**
- * @file cache_hash.h
- * @brief Cache Hash Tables
- */
-
-/**
- * @defgroup Cache_Hash  Hash Tables
- * @ingroup CACHE
- * @{
- */
 
 /**
  * When passing a key to cache_hash_set or cache_hash_get, this value can be

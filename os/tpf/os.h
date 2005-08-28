@@ -14,6 +14,17 @@
  * limitations under the License.
  */
 
+/**
+ * @file tpf/os.h
+ * @brief This file in included in all Apache source code. It contains definitions
+ * of facilities available on _this_ operating system (HAVE_* macros),
+ * and prototypes of OS specific functions defined in os.c or os-inline.c
+ *
+ * @defgroup APACHE_OS_TPF tpf
+ * @ingroup  APACHE_OS
+ * @{
+ */
+
 #ifndef APACHE_OS_H
 #define APACHE_OS_H
 
@@ -22,12 +33,6 @@
 #ifdef errno
 #undef errno
 #endif
-
-/*
- * This file in included in all Apache source code. It contains definitions
- * of facilities available on _this_ operating system (HAVE_* macros),
- * and prototypes of OS specific functions defined in os.c or os-inline.c
- */
 
 #include "apr.h"
 #include "ap_config.h"
@@ -85,3 +90,4 @@ extern int scoreboard_fd;
 #undef NSIG
 #endif
 #endif /*! APACHE_OS_H*/
+/** @} */

@@ -14,12 +14,17 @@
  * limitations under the License.
  */
 
+/**
+ * @file  ap_mpm.h
+ * @brief Module Magic Number
+ *
+ * @defgroup APACHE_CORE_MMN Module Magic Number
+ * @ingroup  APACHE_CORE
+ * @{
+ */
+
 #ifndef APACHE_AP_MMN_H
 #define APACHE_AP_MMN_H
-
-/**
- * @package Module Magic Number
- */
 
 /*
  * MODULE_MAGIC_NUMBER_MAJOR
@@ -137,3 +142,4 @@
 #define MODULE_MAGIC_AT_LEAST old_broken_macro_we_hope_you_are_not_using
 
 #endif /* !APACHE_AP_MMN_H */
+/** @} */

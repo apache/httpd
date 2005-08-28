@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 
+/**
+ * @file ap_release.h
+ * @brief Version Release defines
+ */
+
 #ifndef AP_RELEASE_H
 #define AP_RELEASE_H
 

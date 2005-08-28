@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 
+/**
+ * @file  util_xml.h
+ * @brief Apache XML library
+ *
+ * @defgroup APACHE_CORE_XML XML Library
+ * @ingroup  APACHE_CORE
+ * @{
+ */
+
 #ifndef UTIL_XML_H
 #define UTIL_XML_H
 
@@ -24,10 +33,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-/**
- * @package Apache XML library
- */
 
 /**
  * Get XML post data and parse it
@@ -44,3 +49,4 @@ AP_DECLARE(int) ap_xml_parse_input(request_rec *r, apr_xml_doc **pdoc);
 #endif
 
 #endif /* UTIL_XML_H */
+/** @} */

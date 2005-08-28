@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 
+/**
+ * @file util_filter.h
+ * @brief Apache filter library
+ */
+
 #ifndef AP_FILTER_H
 #define AP_FILTER_H
 
@@ -30,11 +35,6 @@
 extern "C" {
 #endif
 
-/**
- * @file util_filter.h
- * @brief Apache filter library
- */
-
 /** Returned by the bottom-most filter if no data was written.
  *  @see ap_pass_brigade(). */
 #define AP_NOBODY_WROTE         -1
@@ -45,7 +45,7 @@ extern "C" {
 #define AP_FILTER_ERROR         -3
 
 /**
- * input filtering modes
+ * @brief input filtering modes
  */
 typedef enum {
     /** The filter should return at most readbytes data. */
@@ -72,7 +72,8 @@ typedef enum {
 } ap_input_mode_t;
 
 /**
- * @defgroup filter FILTER CHAIN
+ * @defgroup APACHE_CORE_FILTER Filter Chain
+ * @ingroup  APACHE_CORE
  *
  * Filters operate using a "chaining" mechanism. The filters are chained
  * together into a sequence. When output is generated, it is passed through
@@ -201,7 +202,7 @@ typedef struct ap_filter_rec_t ap_filter_rec_t;
 typedef struct ap_filter_provider_t ap_filter_provider_t;
 
 /**
- * This structure is used for recording information about the
+ * @brief This structure is used for recording information about the
  * registered filters. It associates a name with the filter's callback
  * and filter type.
  *
@@ -248,7 +249,9 @@ struct ap_filter_rec_t {
 };
 
 /**
- * The representation of a filter chain.  Each request has a list
+ * @brief The representation of a filter chain.  
+ *
+ * Each request has a list
  * of these structures which are called in turn to filter the data.  Sub
  * requests get an exact copy of the main requests filter chain.
  */

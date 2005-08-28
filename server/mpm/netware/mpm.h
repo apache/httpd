@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 
+/**
+ * @file  netware/mpm.h
+ * @brief Netware MPM
+ *
+ * @defgroup APACHE_MPM_NETWARE Netware MPM
+ * @ingroup  APACHE_OS_NETWARE APACHE_MPM
+ * @{
+ */
+
 #include "scoreboard.h"
 
 #ifndef APACHE_MPM_THREADED_H
@@ -46,3 +55,4 @@ extern int ap_max_workers_limit;
 extern server_rec *ap_server_conf;
 
 #endif /* APACHE_MPM_THREADED_H */
+/** @} */
