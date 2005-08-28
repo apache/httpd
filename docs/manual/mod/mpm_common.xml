@@ -164,7 +164,7 @@ will exit.</description>
 <default>GracefulShutDownTimeout 0</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>prefork</module><module>worker</module></modulelist>
-<compatibility>Available in version 2.4 and later</compatibility>
+<compatibility>Available in version 2.2 and later</compatibility>
 
 <usage>
     <p>The <directive>GracefulShutdownTimeout</directive> specifies
