@@ -319,6 +319,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                        If so, what revision?  And, is there a clean patch for
                        2.0?  (The patch in that message isn't clean.)
 
+    *) Correct mod_cgid's argv[0] so that the full path can be delved by the
+       invoked cgi application, to conform to the behavior of mod_cgi.
+       PR: 34542  Submitted by: Pradeep Kumar S <pradeep.smani gmail.com>
+         http://svn.apache.org/viewcvs?view=rev&rev=264623
+       +1: wrowe
+
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
