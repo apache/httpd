@@ -1465,9 +1465,7 @@ AP_INIT_TAKE1("MaxClients", set_max_clients, NULL, RSRC_CONF,
               "Maximum number of children alive at the same time"),
 AP_INIT_TAKE1("ServerLimit", set_server_limit, NULL, RSRC_CONF,
               "Maximum value of MaxClients for this run of Apache"),
-AP_INIT_TAKE1("GracefulShutdownTimeout", ap_mpm_set_graceful_shutdown, NULL, 
-              RSRC_CONF, "Time in seconds to wait for child processes to " 
-              "complete transactions during shutdown"),
+AP_GRACEFUL_SHUTDOWN_TIMEOUT_COMMAND,
 { NULL }
 };
 
