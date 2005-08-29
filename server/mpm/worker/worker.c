@@ -2214,7 +2214,7 @@ AP_INIT_TAKE1("ServerLimit", set_server_limit, NULL, RSRC_CONF,
   "Maximum number of child processes for this run of Apache"),
 AP_INIT_TAKE1("ThreadLimit", set_thread_limit, NULL, RSRC_CONF,
   "Maximum number of worker threads per child process for this run of Apache - Upper limit for ThreadsPerChild"),
-AP_GRACFUL_SHUTDOWN_TIMEOUT_COMMAND,
+AP_GRACEFUL_SHUTDOWN_TIMEOUT_COMMAND,
 { NULL }
 };
 
