@@ -189,15 +189,31 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewcvs?view=rev&rev=154319
       +1: stoddard, striker, wrowe (as corrected in subsequent patches)
 
-    * mod_version: New Module, Backport from trunk. Requires Minor MMN Bump.
-      http://svn.apache.org/repos/asf/httpd/httpd/branches/mod_version_for_2.0.x
-      +1: pquerna, nd
-      Votes from before the integration branch:
-          +1: jerenkrantz, wrowe (trivial, would even be cool in 1.3)
-
     *) Add httxt2dbm for creating RewriteMap DBM Files.
        http://svn.apache.org/viewcvs.cgi?rev=209539&view=rev
        +1: pquerna, jorton, trawick
+
+    *) Remove the base href tag from mod_proxy_ftp, as it breaks relative
+       links for clients not using an Authorization header.
+         modules/proxy/mod_proxy_ftp.c: r231044
+       +1: minfrin, jim, nd
+
+    *) mod_include: Fix possible variable corruption with nested
+       includes.
+         http://svn.apache.org/viewcvs?rev=179763&view=rev
+       2.0.x patch: http://people.apache.org/~jorton/ap_pr12655.patch
+       test case in perl-framework/t/modules/include.t
+       PR: 12655
+       +1: jorton, nd, jerenkrantz
+
+    *) mod_auth_digest: Fix hostinfo validation for CONNECT requests.
+         http://svn.apache.org/viewcvs.cgi?rev=193127&view=rev
+       +1: jorton, nd, jerenkrantz
+
+    *) mod_version: New Module, Backport from trunk. Requires Minor MMN Bump.
+       http://svn.apache.org/repos/asf/httpd/httpd/branches/mod_version_for_2.0.x
+       +1: pquerna, nd, wrowe
+       Votes from before the integration branch: +1: jerenkrantz
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -210,11 +226,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        rediff for 2.0: http://people.apache.org/~jorton/CAN-2005-2491.patch
        test case: perl-framework/t/security/CAN-2005-2491.t
        +1: jorton, nd
-
-    *) Remove the base href tag from mod_proxy_ftp, as it breaks relative
-       links for clients not using an Authorization header.
-         modules/proxy/mod_proxy_ftp.c: r231044
-       +1: minfrin, jim, nd
 
     *) Correct RFC 2616 non-compliance by refusing to proxy a request body 
        in a TRACE request, unless TraceEnable extended is configured.
@@ -298,18 +309,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         PR: 35279
         +1: jorton, jerenkrantz
 
-     *) mod_include: Fix possible variable corruption with nested
-        includes.
-        http://svn.apache.org/viewcvs?rev=179763&view=rev
-        2.0.x patch: http://people.apache.org/~jorton/ap_pr12655.patch
-        test case in perl-framework/t/modules/include.t
-        PR: 12655
-        +1: jorton, nd, jerenkrantz
-
-     *) mod_auth_digest: Fix hostinfo validation for CONNECT requests.
-        http://svn.apache.org/viewcvs.cgi?rev=193127&view=rev
-        +1: jorton, nd, jerenkrantz
-
      *) Reverse Proxy fixes: <Location> bug and Cookie support
         Patch is at
         http://marc.theaimsgroup.com/?l=apache-httpd-dev&m=112365629308138&q=p4
@@ -319,6 +318,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           jerenkrantz: Didn't a variant of this get committed to trunk?
                        If so, what revision?  And, is there a clean patch for
                        2.0?  (The patch in that message isn't clean.)
+
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
