@@ -163,7 +163,8 @@ will exit.</description>
 <syntax>GracefulShutDownTimeout <var>seconds</var></syntax>
 <default>GracefulShutDownTimeout 0</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>prefork</module><module>worker</module></modulelist>
+<modulelist><module>prefork</module><module>worker</module>
+<module>event</module></modulelist>
 <compatibility>Available in version 2.2 and later</compatibility>
 
 <usage>
