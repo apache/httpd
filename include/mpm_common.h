@@ -316,6 +316,10 @@ const char *ap_mpm_set_coredumpdir(cmd_parms *cmd, void *dummy,
 extern int ap_graceful_shutdown_timeout;
 const char *ap_mpm_set_graceful_shutdown(cmd_parms *cmd, void *dummy,
                                          const char *arg);
+#define AP_GRACFUL_SHUTDOWN_TIMEOUT_COMMAND \
+AP_INIT_TAKE1("GracefulShutdownTimeout", ap_mpm_set_graceful_shutdown, NULL, \
+              RSRC_CONF, "Maximum time in seconds to wait for child "        \
+              "processes to complete transactions during shutdown")
 #endif
 
 

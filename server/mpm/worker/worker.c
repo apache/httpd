@@ -2214,9 +2214,7 @@ AP_INIT_TAKE1("ServerLimit", set_server_limit, NULL, RSRC_CONF,
   "Maximum number of child processes for this run of Apache"),
 AP_INIT_TAKE1("ThreadLimit", set_thread_limit, NULL, RSRC_CONF,
   "Maximum number of worker threads per child process for this run of Apache - Upper limit for ThreadsPerChild"),
-AP_INIT_TAKE1("GracefulShutdownTimeout", ap_mpm_set_graceful_shutdown, NULL, 
-              RSRC_CONF, "Time in seconds to wait for child processes to " 
-              "complete transactions during shutdown"),
+AP_GRACFUL_SHUTDOWN_TIMEOUT_COMMAND,
 { NULL }
 };
 
