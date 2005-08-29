@@ -4,7 +4,7 @@ Changes with Apache 2.3.0
 
   *) Doxygen fixup [Neale Ranns neale ranns.org, Ian Holsman]
 
-  *) prefork and worker MPMs: Support a graceful-stop procedure:
+  *) prefork, worker and event MPMs: Support a graceful-stop procedure:
      Server will wait until existing requests are finished or until  
      "GracefulShutdownTimeout" number of seconds before exiting. 
      [Colm MacCarthaigh, Ken Coar, Bill Stoddard]
@@ -12,8 +12,8 @@ Changes with Apache 2.3.0
   *) mod_cgid: Append .PID to the script socket filename and remove the
      script socket on exit. [Colm MacCarthaigh]
 
-  *) prefork and worker MPMs: Prevent children from holding open listening
-     ports upon graceful restart or stop. PR28167. 
+  *) prefork, worker and event MPMs: Prevent children from holding open 
+     listening ports upon graceful restart or stop. PR28167. 
      [Colm MacCarthaigh, Brian Pinkerton <bp thinkpink.com>]
 
   *) Linux 2.0: remove support for threaded MPM's due to linuxthreads use

@@ -416,7 +416,7 @@ ap_generation_t volatile ap_my_generation;
  * child to force an exit) and so do an exit anyway.
  */
 
-static void ap_start_shutdown(void)
+static void ap_start_shutdown(int graceful)
 {
     mpm_state = AP_MPMQ_STOPPING;
     if (shutdown_pending == 1) {
@@ -427,6 +427,7 @@ static void ap_start_shutdown(void)
         return;
     }
     shutdown_pending = 1;
+    is_graceful = graceful;
 }
 
 /* do a graceful restart if graceful == 1 */
@@ -443,7 +444,7 @@ static void ap_start_restart(int graceful)
 
 static void sig_term(int sig)
 {
-    ap_start_shutdown();
+    ap_start_shutdown(sig == AP_SIG_GRACEFUL_STOP);
 }
 
 static void restart(int sig)
@@ -469,6 +470,11 @@ static void set_signals(void)
     if (sigaction(SIGTERM, &sa, NULL) < 0)
         ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf,
                      "sigaction(SIGTERM)");
+#ifdef AP_SIG_GRACEFUL_STOP
+    if (sigaction(AP_SIG_GRACEFUL_STOP, &sa, NULL) < 0)
+        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf,
+                     "sigaction(" AP_SIG_GRACEFUL_STOP_STRING ")");
+#endif
 #ifdef SIGINT
     if (sigaction(SIGINT, &sa, NULL) < 0)
         ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf,
@@ -521,6 +527,9 @@ static void set_signals(void)
 #ifdef AP_SIG_GRACEFUL
     apr_signal(AP_SIG_GRACEFUL, restart);
 #endif /* AP_SIG_GRACEFUL */
+#ifdef AP_SIG_GRACEFUL_STOP
+     apr_signal(AP_SIG_GRACEFUL_STOP, sig_term);
+#endif /* AP_SIG_GRACEFUL_STOP */
 #ifdef SIGPIPE
     apr_signal(SIGPIPE, SIG_IGN);
 #endif /* SIGPIPE */
@@ -1036,6 +1045,7 @@ static void *listener_thread(apr_thread_t * thd, void *dummy)
 
     }     /* listener main loop */
 
+    ap_close_listeners();
     ap_queue_term(worker_queue);
     dying = 1;
     ap_scoreboard_image->parent[process_slot].quiescing = 1;
@@ -1924,11 +1934,9 @@ int ap_mpm_run(apr_pool_t * _pconf, apr_pool_t * plog, server_rec * s)
     server_main_loop(remaining_children_to_start);
     mpm_state = AP_MPMQ_STOPPING;
 
-    if (shutdown_pending) {
-        /* Time to gracefully shut down:
+    if (shutdown_pending && !is_graceful) {
+        /* Time to shut down:
          * Kill child processes, tell them to call child_exit, etc...
-         * (By "gracefully" we don't mean graceful in the same sense as 
-         * "apachectl graceful" where we allow old connections to finish.)
          */
         ap_mpm_pod_killpg(pod, ap_daemons_limit, FALSE);
         ap_reclaim_child_processes(1);  /* Start with SIGTERM */
@@ -1947,7 +1955,64 @@ int ap_mpm_run(apr_pool_t * _pconf, apr_pool_t * plog, server_rec * s)
                          ap_server_conf, "caught SIGTERM, shutting down");
         }
         return 1;
-    }
+    } else if (shutdown_pending) {
+        /* Time to gracefully shut down:
+         * Kill child processes, tell them to call child_exit, etc...
+         */
+        int active_children;
+        int index;
+        apr_time_t cutoff = 0;
+
+        /* Close our listeners, and then ask our children to do same */
+        ap_close_listeners();
+        ap_mpm_pod_killpg(pod, ap_daemons_limit, TRUE);
+        ap_relieve_child_processes();
+
+        if (!child_fatal) {
+            /* cleanup pid file on normal shutdown */
+            const char *pidfile = NULL;
+            pidfile = ap_server_root_relative (pconf, ap_pid_fname);
+            if ( pidfile != NULL && unlink(pidfile) == 0)
+                ap_log_error(APLOG_MARK, APLOG_INFO, 0,
+                             ap_server_conf,
+                             "removed PID file %s (pid=%ld)",
+                             pidfile, (long)getpid());
+
+            ap_log_error(APLOG_MARK, APLOG_NOTICE, 0,
+                         ap_server_conf, "caught SIGTERM, shutting down");
+        }
+
+        /* Don't really exit until each child has finished */
+        shutdown_pending = 0;
+        do {
+            /* Pause for a second */
+            apr_sleep(apr_time_from_sec(1));
+
+            /* Relieve any children which have now exited */
+            ap_relieve_child_processes();
+
+            active_children = 0;
+            for (index = 0; index < ap_daemons_limit; ++index) {
+                if (MPM_CHILD_PID(index) != 0) {
+                    if (kill(MPM_CHILD_PID(index), 0) == 0) {
+                            active_children = 1;
+                            /* Having just one child is enough to stay around */
+                            break;
+                    }
+                }
+            }
+        } while (!shutdown_pending && active_children &&
+                 (!ap_graceful_shutdown_timeout || apr_time_now() < cutoff));
+
+        /* We might be here because we received SIGTERM, either
+         * way, try and make sure that all of our processes are
+         * really dead.
+         */
+        ap_mpm_pod_killpg(pod, ap_daemons_limit, FALSE);
+        ap_reclaim_child_processes(1);
+
+        return 1;
+    } 
 
     /* we've been told to restart */
     apr_signal(SIGHUP, SIG_IGN);
@@ -2370,6 +2435,7 @@ static const command_rec event_cmds[] = {
     AP_INIT_TAKE1("ThreadLimit", set_thread_limit, NULL, RSRC_CONF,
                   "Maximum number of worker threads per child process for this "
                   "run of Apache - Upper limit for ThreadsPerChild"),
+    AP_GRACEFUL_SHUTDOWN_TIMEOUT_COMMAND,
     {NULL}
 };
 
