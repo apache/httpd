@@ -183,6 +183,7 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
                     mod_log_forensic), I think it's still worth it to backport
                     it as-is.  For the one or two platforms that don't like 
                     which, they can write their own version of the script.
+       (jorton agrees)
 
     *) Win32: Move call to mpm_service_install to the rewrite_args hook
        from the post_config hook.
@@ -212,6 +213,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ please place SVN revisions from trunk here, so it is easy to
     identify exactly what the proposed changes are!  Add all new
     proposals to the end of this list. ]
+
+    *) Fix CAN-2005-2700, mod_ssl SSLVerifyClient bug
+         http://svn.apache.org/viewcvs?rev=264800&view=rev
+       test case: perl-framework/t/security/CAN-2005-2700.t
+       +1: jorton
 
     *) Fix CAN-2005-2491, integer overflow in pcre.
          http://svn.apache.org/viewcvs?rev=233493&view=rev
