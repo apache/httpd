@@ -11,7 +11,7 @@ Changes with Apache 2.3.0
      was configured in the vhost configuration.  [Joe Orton]
 
   *) mod_cgid: run the get_suexec_identity hook within the request-handler 
-     instead of within cgid. PR36410. [Colm MacCarthaigh]
+     instead of within cgid. PR 36410. [Colm MacCarthaigh]
 
   *) Correct mod_cgid's argv[0] so that the full path can be delved by the
      invoked cgi application, to conform to the behavior of mod_cgi.
@@ -28,7 +28,7 @@ Changes with Apache 2.3.0
      script socket on exit. [Colm MacCarthaigh]
 
   *) prefork, worker and event MPMs: Prevent children from holding open 
-     listening ports upon graceful restart or stop. PR28167. 
+     listening ports upon graceful restart or stop. PR 28167. 
      [Colm MacCarthaigh, Brian Pinkerton <bp thinkpink.com>]
 
   *) Linux 2.0: remove support for threaded MPM's due to linuxthreads use
