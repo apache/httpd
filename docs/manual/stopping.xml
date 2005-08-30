@@ -190,13 +190,15 @@ error. See above for a method of avoiding this.</note>
     <p>The <code>WINCH</code> or <code>graceful-stop</code> signal causes
     the parent process to <em>advise</em> the children to exit after
     their current request (or to exit immediately if they're not
-    serving anything). The parent will then remove it's <directive 
+    serving anything). The parent will then remove its <directive 
     module="mpm_common">PidFile</directive> and cease listening on
     all ports. The parent will continue to run, and monitor children
     which are handling requests. Once all children have finalised
     and exited or the timeout specified by the <directive 
     module="mpm_common">GracefulShutdownTimeout</directive> has been
-    reached, the parent will also exit.</p>
+    reached, the parent will also exit.  If the timeout is reached,
+    any remaining children will be sent the <code>TERM</code> signal
+    to force them to exit.</p>
     
     <p>A <code>TERM</code> signal will immediately terminate the 
     parent process and all children when in the "graceful" state. However
