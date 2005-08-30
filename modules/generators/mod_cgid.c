@@ -91,7 +91,7 @@ static server_rec *root_server = NULL;
 static apr_pool_t *root_pool = NULL;
 static const char *sockname;
 static pid_t parent_pid;
-static ap_unix_identity_t empty_ugid = { -1, -1, -1 };
+static ap_unix_identity_t empty_ugid = { (uid_t)-1, (gid_t)-1, -1 };
 
 /* Read and discard the data in the brigade produced by a CGI script */
 static void discard_script_output(apr_bucket_brigade *bb);
