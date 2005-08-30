@@ -323,6 +323,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewcvs?view=rev&rev=264623
        +1: wrowe
 
+    *) Block mod_cgid usage on Solaris 10 due to OS bugs.  PR 34264.
+       http://svn.apache.org/viewcvs?view=rev&rev=264866
+       +1: jerenkrantz
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
