@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_cgid: run the get_suexec_identity hook within the request-handler 
+     instead of within cgid. PR36410. [Colm MacCarthaigh]
+
   *) Correct mod_cgid's argv[0] so that the full path can be delved by the
      invoked cgi application, to conform to the behavior of mod_cgi.
      [Pradeep Kumar S <pradeep.smani gmail.com>]
