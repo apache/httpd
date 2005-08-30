@@ -788,11 +788,11 @@ static int handle_include(include_ctx_t *ctx, apr_bucket_brigade **bb,
                     CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, 
                                         *inserted_head);
                 }
-
-                /* destroy the sub request */
-                if (rr != NULL) {
-                    ap_destroy_sub_req(rr);
-                }
+                
+                /* Do *not* destroy the subrequest here; it may have allocated
+                 * variables in this r->subprocess_env in the subrequest's
+                 * r->pool, so that pool must survive as long as this request.
+                 * Yes, this is a memory leak. */
             }
             else {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,

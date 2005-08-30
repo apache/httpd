@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.0.55
 
+  *) mod_include: Fix possible environment variable corruption when 
+     using nested includes.  PR 12655.  [Joe Orton]
+
   *) Support the suppress-error-charset setting, as with Apache 1.3.x.
      PR 31274.  [Jeff Trawick]
 

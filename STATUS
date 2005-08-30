@@ -198,14 +198,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
          modules/proxy/mod_proxy_ftp.c: r231044
        +1: minfrin, jim, nd
 
-    *) mod_include: Fix possible variable corruption with nested
-       includes.
-         http://svn.apache.org/viewcvs?rev=179763&view=rev
-       2.0.x patch: http://people.apache.org/~jorton/ap_pr12655.patch
-       test case in perl-framework/t/modules/include.t
-       PR: 12655
-       +1: jorton, nd, jerenkrantz
-
     *) mod_auth_digest: Fix hostinfo validation for CONNECT requests.
          http://svn.apache.org/viewcvs.cgi?rev=193127&view=rev
        +1: jorton, nd, jerenkrantz
