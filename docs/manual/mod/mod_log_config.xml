@@ -132,7 +132,9 @@
 
     <tr><td><code>%{<var>format</var>}P</code></td>
         <td>The process ID or thread id of the child that serviced the 
-        request.  Valid formats are <code>pid</code> and <code>tid</code>.
+        request.  Valid formats are <code>pid</code>, <code>tid</code>,
+        and <code>hextid</code>.  <code>hextid</code> requires APR 1.2.0 or 
+        higher.
         </td></tr>
 
     <tr><td><code>%q</code></td>
