@@ -648,7 +648,7 @@ static const char *log_server_name(request_rec *r, char *a)
 static const char *log_pid_tid(request_rec *r, char *a)
 {
     if (*a == '\0' || !strcmp(a, "pid")) {
-        return apr_psprintf(r->pool, "%" APR_PID_T_FMT, getpid());
+        return ap_append_pid(r->pool, "", "");
     }
     else if (!strcmp(a, "tid") || !strcmp(a, "hextid")) {
 #if APR_HAS_THREADS

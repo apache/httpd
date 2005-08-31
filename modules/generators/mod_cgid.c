@@ -812,8 +812,7 @@ static int cgid_start(apr_pool_t *p, server_rec *main_server,
 static int cgid_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
                            apr_pool_t *ptemp)
 {
-    sockname = apr_psprintf(pconf, "%s.%" APR_PID_T_FMT, DEFAULT_SOCKET, 
-                            getpid());
+    sockname = ap_append_pid(pconf, DEFAULT_SOCKET, ".");
     return OK;
 }
 
@@ -929,7 +928,7 @@ static const char *set_script_socket(cmd_parms *cmd, void *dummy, const char *ar
     }
     
     /* Make sure the pid is appended to the sockname */
-    sockname = apr_psprintf(cmd->pool, "%s.%" APR_PID_T_FMT, arg, getpid());
+    sockname = ap_append_pid(cmd->pool, arg, ".");
     sockname = ap_server_root_relative(cmd->pool, sockname); 
 
     if (!sockname) {

@@ -2128,3 +2128,17 @@ AP_DECLARE(char *) ap_escape_quotes(apr_pool_t *p, const char *instring)
     *outchr = '\0';
     return outstring;
 }
+
+/*
+ * Given a string, append the PID deliminated by delim.
+ * Usually used to create a pid-appended filepath name
+ * (eg: /a/b/foo -> /a/b/foo.6726). A function, and not
+ * a macro, to avoid unistd.h dependency
+ */
+AP_DECLARE(char *) ap_append_pid(apr_pool_t *p, const char *string,
+                                    const char *delim)
+{
+    return apr_psprintf(p, "%s%s%" APR_PID_T_FMT, string,
+                        delim, getpid());
+
+}
