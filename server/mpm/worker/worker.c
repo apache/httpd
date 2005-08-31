@@ -1737,8 +1737,8 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
             if ( pidfile != NULL && unlink(pidfile) == 0)
                 ap_log_error(APLOG_MARK, APLOG_INFO, 0,
                              ap_server_conf,
-                             "removed PID file %s (pid=%ld)",
-                             pidfile, (long)getpid());
+                             "removed PID file %s (pid=%" APR_PID_T_FMT ")",
+                             pidfile, getpid());
     
             ap_log_error(APLOG_MARK, APLOG_NOTICE, 0,
                          ap_server_conf, "caught SIGTERM, shutting down");
@@ -1764,8 +1764,8 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
             if ( pidfile != NULL && unlink(pidfile) == 0)
                 ap_log_error(APLOG_MARK, APLOG_INFO, 0,
                              ap_server_conf,
-                             "removed PID file %s (pid=%ld)",
-                             pidfile, (long)getpid());
+                             "removed PID file %s (pid=%" APR_PID_T_FMT ")",
+                             pidfile, getpid());
     
             ap_log_error(APLOG_MARK, APLOG_NOTICE, 0,
                          ap_server_conf, "caught SIGTERM, shutting down");
