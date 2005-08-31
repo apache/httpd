@@ -2097,7 +2097,7 @@ static const char *set_threads_per_child (cmd_parms *cmd, void *dummy,
     }
 
     ap_threads_per_child = atoi(arg);
-    if (first_thread_limit && ap_threads_per_child > thread_limit) {
+    if (ap_threads_per_child > thread_limit) {
         ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
                      "WARNING: ThreadsPerChild of %d exceeds ThreadLimit "
                      "value of %d", ap_threads_per_child,
