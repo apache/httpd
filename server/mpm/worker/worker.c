@@ -120,9 +120,9 @@ static int min_spare_threads = 0;
 static int max_spare_threads = 0;
 static int ap_daemons_limit = 0;
 static int server_limit = DEFAULT_SERVER_LIMIT;
-static int first_server_limit;
+static int first_server_limit = 0;
 static int thread_limit = DEFAULT_THREAD_LIMIT;
-static int first_thread_limit;
+static int first_thread_limit = 0;
 static int changed_limit_at_restart;
 static int dying = 0;
 static int workers_may_exit = 0;
@@ -2097,7 +2097,7 @@ static const char *set_threads_per_child (cmd_parms *cmd, void *dummy,
     }
 
     ap_threads_per_child = atoi(arg);
-    if (ap_threads_per_child > thread_limit) {
+    if (first_thread_limit && ap_threads_per_child > thread_limit) {
         ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
                      "WARNING: ThreadsPerChild of %d exceeds ThreadLimit "
                      "value of %d", ap_threads_per_child,
