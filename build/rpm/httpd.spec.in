@@ -203,7 +203,6 @@ echo %{mmn} > $RPM_BUILD_ROOT%{_includedir}/httpd/.mmn
 # docroot
 mkdir $RPM_BUILD_ROOT%{contentdir}/html
 rm -r $RPM_BUILD_ROOT%{contentdir}/manual/style
-rm $RPM_BUILD_ROOT%{contentdir}/manual/*/*.xml
 
 # logs
 rmdir $RPM_BUILD_ROOT%{_sysconfdir}/httpd/logs
@@ -324,6 +323,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_sbindir}/logresolve
 %{_sbindir}/httpd
 %{_sbindir}/httpd.worker
+%{_sbindir}/httxt2dbm
 %{_sbindir}/apachectl
 %{_sbindir}/rotatelogs
 %attr(4510,root,%{suexec_caller}) %{_sbindir}/suexec
@@ -397,6 +397,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/httpd/build/mkdir.sh
 
 %changelog
+* Fri Aug 26 2005 Graham Leggett <minfrin@apache.org> 2.1.7
+- Deleting the xml doc files is no longer necessary.
+- Add httxt2dbm to the sbin directory
+
 * Sat Jul 2 2005 Graham Leggett <minfrin@apache.org> 2.1.7-dev
 - Fixed complaints about unpackaged files with new config file changes.
 
