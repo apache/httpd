@@ -97,7 +97,7 @@ static int ap_daemons_min_free=0;
 static int ap_daemons_max_free=0;
 static int ap_daemons_limit=0;      /* MaxClients */
 static int server_limit = DEFAULT_SERVER_LIMIT;
-static int first_server_limit;
+static int first_server_limit = 0;
 static int changed_limit_at_restart;
 static int mpm_state = AP_MPMQ_STARTING;
 static ap_pod_t *pod;
