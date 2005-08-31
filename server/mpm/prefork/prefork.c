@@ -156,16 +156,13 @@ static void chdir_for_gprof(void)
 
     if(dir) {
         apr_status_t res;
-        char buf[512];
+        char *buf = NULL ;
         int len = strlen(sconf->gprof_dir) - 1;
         if(*(dir + len) == '%') {
             dir[len] = '\0';
-            apr_snprintf(buf, sizeof(buf), "%sgprof.%d", dir, (int)getpid());
+            buf = ap_append_pid(pconf, dir, "gprof.");
         }
-        else {
-            buf[0] = '\0';
-        }
-        use_dir = ap_server_root_relative(pconf, buf[0] ? buf : dir);
+        use_dir = ap_server_root_relative(pconf, buf ? buf : dir);
         res = apr_dir_make(use_dir,
                            APR_UREAD | APR_UWRITE | APR_UEXECUTE |
                            APR_GREAD | APR_GEXECUTE |

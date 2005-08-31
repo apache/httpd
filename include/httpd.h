@@ -1681,6 +1681,19 @@ AP_DECLARE(int) ap_rind(const char *str, char c);
  */
 AP_DECLARE(char *) ap_escape_quotes(apr_pool_t *p, const char *instring);
 
+/**
+ * Given a string, append the PID deliminated by delim.
+ * Usually used to create a pid-appended filepath name
+ * (eg: /a/b/foo -> /a/b/foo.6726). A function, and not
+ * a macro, to avoid unistd.h dependency
+ * @param p The pool to allocate memory from
+ * @param string The string to append the PID to
+ * @param delim The string to use to deliminate the string from the PID
+ * @return A copy of the string with the PID appended 
+ */
+AP_DECLARE(char *) ap_append_pid(apr_pool_t *p, const char *string,
+                                 const char *delim);
+
 /* Misc system hackery */
 /**
  * Given the name of an object in the file system determine if it is a directory
