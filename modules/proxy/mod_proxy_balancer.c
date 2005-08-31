@@ -271,7 +271,12 @@ static proxy_worker *find_best_byrequests(proxy_balancer *balancer,
     int total_factor = 0;
     proxy_worker *worker = (proxy_worker *)balancer->workers->elts;
     proxy_worker *mycandidate = NULL;
-    
+ 
+
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                 "proxy: Entering byrequests for BALANCER (%s)",
+                 balancer->name);
+
     /* First try to see if we have available candidate */
     for (i = 0; i < balancer->workers->nelts; i++) {
         /* If the worker is in error state run
@@ -328,6 +333,10 @@ static proxy_worker *find_best_bytraffic(proxy_balancer *balancer,
     proxy_worker *worker = (proxy_worker *)balancer->workers->elts;
     proxy_worker *mycandidate = NULL;
     
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                 "proxy: Entering bytraffic for BALANCER (%s)",
+                 balancer->name);
+
     /* First try to see if we have available candidate */
     for (i = 0; i < balancer->workers->nelts; i++) {
         /* If the worker is in error state run
