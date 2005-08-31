@@ -346,6 +346,15 @@ static const char *alloc_listener(process_rec *process, char *addr,
 
     return NULL;
 }
+/* Evaluates to true if the (apr_sockaddr_t *) addr argument is the
+ * IPv4 match-any-address, 0.0.0.0. */
+#define IS_INADDR_ANY(addr) ((addr)->family == APR_INET \
+                             && (addr)->sa.sin.sin_addr.s_addr == INADDR_ANY)
+
+/* Evaluates to true if the (apr_sockaddr_t *) addr argument is the
+ * IPv6 match-any-address, [::]. */
+#define IS_IN6ADDR_ANY(addr) ((addr)->family == APR_INET6 \
+                              && IN6_IS_ADDR_UNSPECIFIED(&(addr)->sa.sin6.sin6_addr))
 
 /**
  * Create, open, listen, and bind all sockets.
@@ -374,22 +383,43 @@ static int open_listeners(apr_pool_t *pool)
         else {
 #if APR_HAVE_IPV6
             int v6only_setting;
+
+            /* If we have the unspecified IPv4 address (0.0.0.0) and
+             * the unspecified IPv6 address (::) is next, we need to
+             * swap the order of these in the list. We always try to
+             * bind to IPv6 first, then IPv4, since an IPv6 socket
+             * might be able to receive IPv4 packets if V6ONLY is not
+             * enabled, but never the other way around. */
+            if (lr->next != NULL
+                && IS_INADDR_ANY(lr->bind_addr)
+                && lr->bind_addr->port == lr->next->bind_addr->port
+                && IS_IN6ADDR_ANY(lr->next->bind_addr)) {
+                /* Exchange lr and lr->next */
+                ap_listen_rec *next = lr->next;
+                lr->next = next->next;
+                next->next = lr;
+                if (previous) {
+                    previous->next = next;
+                }
+                else {
+                    ap_listeners = next;
+                }
+                lr = next;
+            }
+
             /* If we are trying to bind to 0.0.0.0 and the previous listener
              * was :: on the same port and in turn that socket does not have
              * the IPV6_V6ONLY flag set; we must skip the current attempt to
              * listen (which would generate an error). IPv4 will be handled
              * on the established IPv6 socket.
              */
-            if (previous != NULL &&
-                lr->bind_addr->family == APR_INET &&
-                lr->bind_addr->sa.sin.sin_addr.s_addr == INADDR_ANY &&
-                lr->bind_addr->port == previous->bind_addr->port &&
-                previous->bind_addr->family == APR_INET6 &&
-                IN6_IS_ADDR_UNSPECIFIED(
-                    &previous->bind_addr->sa.sin6.sin6_addr) &&
-                apr_socket_opt_get(previous->sd, APR_IPV6_V6ONLY,
-                                   &v6only_setting) == APR_SUCCESS &&
-                v6only_setting == 0) {
+            if (previous != NULL
+                && IS_INADDR_ANY(lr->bind_addr)
+                && lr->bind_addr->port == previous->bind_addr->port
+                && IS_IN6ADDR_ANY(previous->bind_addr)
+                && apr_socket_opt_get(previous->sd, APR_IPV6_V6ONLY,
+                                      &v6only_setting) == APR_SUCCESS
+                && v6only_setting == 0) {
 
                 /* Remove the current listener from the list */
                 previous->next = lr->next;
@@ -407,12 +437,10 @@ static int open_listeners(apr_pool_t *pool)
                  * error. The user will still get a warning from make_sock
                  * though.
                  */
-                if (lr->next != NULL && lr->bind_addr->family == APR_INET6 &&
-                    IN6_IS_ADDR_UNSPECIFIED(
-                        &lr->bind_addr->sa.sin6.sin6_addr) &&
-                    lr->bind_addr->port == lr->next->bind_addr->port &&
-                    lr->next->bind_addr->family == APR_INET && 
-                    lr->next->bind_addr->sa.sin.sin_addr.s_addr == INADDR_ANY) {
+                if (lr->next != NULL
+                    && IS_IN6ADDR_ANY(lr->bind_addr)
+                    && lr->bind_addr->port == lr->next->bind_addr->port
+                    && IS_INADDR_ANY(lr->next->bind_addr)) {
 
                     /* Remove the current listener from the list */
                     if (previous) {

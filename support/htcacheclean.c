@@ -44,8 +44,8 @@
 
 /* mod_disk_cache.c extract start */
 
-#define VARY_FORMAT_VERSION 1
-#define DISK_FORMAT_VERSION 2
+#define VARY_FORMAT_VERSION 3
+#define DISK_FORMAT_VERSION 4
 
 typedef struct {
     /* Indicates the format of the header struct stored on-disk. */
