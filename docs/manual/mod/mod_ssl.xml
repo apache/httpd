@@ -1390,14 +1390,29 @@ SSLProxyMachineCertificateFile /usr/local/apache2/conf/ssl.crt/proxy.pem
 <override>AuthConfig</override>
 
 <usage>
-<p>
-This directive sets the Certificate verification level for the remote server
-Authentication. Notice that this directive can be used both in per-server and
-per-directory context. In per-server context it applies to the remote server
-authentication process used in the standard SSL handshake when a connection is
-established. In per-directory context it forces a SSL renegotation with the
-reconfigured remote server verification level after the HTTP request was read but
-before the HTTP response is sent.</p>
+
+<p>When a proxy is configured to forward requests to a remote SSL
+server, this directive can be used to configure certificate
+verification of the remote server.  Notice that this directive can be
+used both in per-server and per-directory context. In per-server
+context it applies to the remote server authentication process used in
+the standard SSL handshake when a connection is established by the
+proxy. In per-directory context it forces a SSL renegotation with the
+reconfigured remote server verification level after the HTTP request
+was read but before the HTTP response is sent.</p>
+
+<note type="warning">
+<p>Note that even when certificate verification is enabled,
+<module>mod_ssl</module> does <strong>not</strong> check whether the
+<code>commonName</code> (hostname) attribute of the server certificate
+matches the hostname used to connect to the server.  In other words,
+the proxy does not guarantee that the SSL connection to the backend
+server is "secure" beyond the fact that the certificate is signed by
+one of the CAs configured using the
+<directive>SSLProxyCACertificatePath</directive> and/or
+<directive>SSLProxyCACertificateFile</directive> directives.</p>
+</note>
+
 <p>
 The following levels are available for <em>level</em>:</p>
 <ul>
