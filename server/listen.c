@@ -388,7 +388,7 @@ static int open_listeners(apr_pool_t *pool)
                 && lr->bind_addr->port == lr->next->bind_addr->port
                 && IS_IN6ADDR_ANY(lr->next->bind_addr)) {
                 /* Exchange lr and lr->next */
-                ap_listen_rec *next = lr->next;
+                next = lr->next;
                 lr->next = next->next;
                 next->next = lr;
                 if (previous) {
