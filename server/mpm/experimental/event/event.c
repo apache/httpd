@@ -168,6 +168,9 @@ static struct timeout_head_t timeout_head;
 
 static apr_pollset_t *event_pollset;
 
+extern apr_status_t ap_mpm_custom_write_filter(ap_filter_t *f,
+                                                     apr_bucket_brigade *bb);
+
 /* The structure used to pass unique initialization info to each thread */
 typedef struct
 {
@@ -334,6 +337,9 @@ AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result)
         *result = AP_MPMQ_DYNAMIC;
         return APR_SUCCESS;
     case AP_MPMQ_IS_ASYNC:
+        *result = 1;
+        return APR_SUCCESS;
+    case AP_MPMQ_CUSTOM_WRITE:
         *result = 1;
         return APR_SUCCESS;
     case AP_MPMQ_HARD_LIMIT_DAEMONS:
@@ -2203,6 +2209,8 @@ static void event_hooks(apr_pool_t * p)
      * to retrieve it, so register as REALLY_FIRST
      */
     ap_hook_pre_config(worker_pre_config, NULL, NULL, APR_HOOK_REALLY_FIRST);
+
+    APR_REGISTER_OPTIONAL_FN(ap_mpm_custom_write_filter);
 }
 
 static const char *set_daemons_to_start(cmd_parms *cmd, void *dummy,

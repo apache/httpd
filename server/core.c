@@ -21,6 +21,7 @@
 #include "apr_hash.h"
 #include "apr_thread_proc.h"    /* for RLIMIT stuff */
 #include "apr_hooks.h"
+#include "apr_optional.h"
 
 #define APR_WANT_IOVEC
 #define APR_WANT_STRFUNC
@@ -48,6 +49,7 @@
 #include "mod_core.h"
 #include "mod_proxy.h"
 #include "ap_listen.h"
+#include "ap_mpm.h"
 
 #include "mod_so.h" /* for ap_find_loaded_module_symbol */
 
@@ -90,9 +92,12 @@ AP_IMPLEMENT_HOOK_RUN_ALL(int, get_mgmt_items,
 /* Handles for core filters */
 AP_DECLARE_DATA ap_filter_rec_t *ap_subreq_core_filter_handle;
 AP_DECLARE_DATA ap_filter_rec_t *ap_core_output_filter_handle;
+AP_DECLARE_DATA ap_filter_rec_t *ap_core_mpm_write_filter_handle;
 AP_DECLARE_DATA ap_filter_rec_t *ap_content_length_filter_handle;
 AP_DECLARE_DATA ap_filter_rec_t *ap_net_time_filter_handle;
 AP_DECLARE_DATA ap_filter_rec_t *ap_core_input_filter_handle;
+
+static APR_OPTIONAL_FN_TYPE(ap_mpm_custom_write_filter) *mpm_write_func;
 
 /* magic pointer for ErrorDocument xxx "default" */
 static char errordocument_default;
@@ -3676,8 +3681,24 @@ APR_OPTIONAL_FN_TYPE(ap_logio_add_bytes_out) *logio_add_bytes_out;
 
 static int core_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s)
 {
+    int mpm_write = 0;
+
     logio_add_bytes_out = APR_RETRIEVE_OPTIONAL_FN(ap_logio_add_bytes_out);
     ident_lookup = APR_RETRIEVE_OPTIONAL_FN(ap_ident_lookup);
+
+    if (ap_mpm_query(AP_MPMQ_CUSTOM_WRITE, &mpm_write) == APR_SUCCESS
+        && mpm_write == 1) {
+        mpm_write_func = APR_RETRIEVE_OPTIONAL_FN(ap_mpm_custom_write_filter);
+
+        ap_core_output_filter_handle =
+            ap_register_output_filter("CORE", mpm_write_func,
+                                      NULL, AP_FTYPE_NETWORK);
+    }
+    else {
+        ap_core_output_filter_handle =
+            ap_register_output_filter("CORE", ap_core_output_filter,
+                                      NULL, AP_FTYPE_NETWORK);
+    }
 
     ap_set_version(pconf);
     ap_setup_make_content_type(pconf);
@@ -3853,7 +3874,10 @@ static int core_pre_connection(conn_rec *c, void *csd)
 
     ap_set_module_config(net->c->conn_config, &core_module, csd);
     ap_add_input_filter_handle(ap_core_input_filter_handle, net, NULL, net->c);
-    ap_add_output_filter_handle(ap_core_output_filter_handle, net, NULL, net->c);
+
+    ap_add_output_filter_handle(ap_core_output_filter_handle, net, 
+                                NULL, net->c);
+
     return DONE;
 }
 
@@ -3898,9 +3922,8 @@ static void register_hooks(apr_pool_t *p)
     ap_content_length_filter_handle =
         ap_register_output_filter("CONTENT_LENGTH", ap_content_length_filter,
                                   NULL, AP_FTYPE_PROTOCOL);
-    ap_core_output_filter_handle =
-        ap_register_output_filter("CORE", ap_core_output_filter,
-                                  NULL, AP_FTYPE_NETWORK);
+
+
     ap_subreq_core_filter_handle =
         ap_register_output_filter("SUBREQ_CORE", ap_sub_req_output_filter,
                                   NULL, AP_FTYPE_CONTENT_SET);

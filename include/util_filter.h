@@ -24,6 +24,7 @@
 
 #include "apr.h"
 #include "apr_buckets.h"
+#include "apr_optional.h"
 
 #include "httpd.h"
 
@@ -586,6 +587,9 @@ AP_DECLARE(void) ap_filter_protocol(ap_filter_t* f, unsigned int proto_flags);
 
 /** Filter is incompatible with "Cache-Control: no-transform" */
 #define AP_FILTER_PROTO_TRANSFORM 0x20
+
+APR_DECLARE_OPTIONAL_FN(apr_status_t, ap_mpm_custom_write_filter,
+                        (ap_filter_t *f, apr_bucket_brigade *b)); 
 
 #ifdef __cplusplus
 }
