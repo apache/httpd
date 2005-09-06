@@ -1753,21 +1753,18 @@ client</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 </table>
-    <p>This directive specifies the number of <var>bytes</var> from 0
-    to the value of the compile-time constant
-    <code>DEFAULT_LIMIT_REQUEST_FIELDSIZE</code> (8190 as
-    distributed) that will be allowed in an HTTP request
-    header.</p>
+    <p>This directive specifies the number of <var>bytes</var>
+    that will be allowed in an HTTP request header.</p>
 
     <p>The <code class="directive">LimitRequestFieldSize</code> directive
-    allows the server administrator to reduce the limit on the allowed
-    size of an HTTP request header field below the normal input buffer
-    size compiled with the server. A server needs this value to be
-    large enough to hold any one header field from a normal client
-    request. The size of a normal request header field will vary
-    greatly among different client implementations, often depending
-    upon the extent to which a user has configured their browser to
-    support detailed content negotiation.</p>
+    allows the server administrator to reduce or increase the limit 
+    on the allowed size of an HTTP request header field. A server
+    needs this value to be large enough to hold any one header field 
+    from a normal client request. The size of a normal request header 
+    field will vary greatly among different client implementations, 
+    often depending upon the extent to which a user has configured
+    their browser to support detailed content negotiation. SPNEGO
+    authentication headers can be up to 12392 bytes.</p>
 
     <p>This directive gives the server administrator greater
     control over abnormal client request behavior, which may be
@@ -1781,6 +1778,11 @@ client</td></tr>
 
     <div class="note">Under normal conditions, the value should not be changed from
     the default.</div>
+
+    <div class="note">Apache 2.0.53 or higher is required for increasing the
+    limit above the compiled-in value of DEFAULT_LIMIT_REQUEST_FIELDSIZE
+    (8190 as distributed).
+    </div>
 
 
 </div>
