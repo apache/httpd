@@ -379,14 +379,6 @@ APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, canon_handler, (request_rec *r,
 APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, create_req, (request_rec *r, request_rec *pr))
 APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, fixups, (request_rec *r)) 
 
-/*
- * Useful hook run within the create per-server phase which
- * adds the required lbmethod structs, so they exist at
- * configure time
- */
-APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, load_lbmethods,
-                                     (proxy_server_conf *conf))
-
 /**
  * pre request hook.
  * It will return the most suitable worker at the moment
@@ -677,6 +669,14 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
 PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function,
                                               proxy_conn_rec *conn,
                                               conn_rec *c, server_rec *s);
+
+/**
+ * Load in available lb methods
+ * @param conf    server conf
+ * @return        OK or HTTP_XXX error
+ */                                         
+
+PROXY_DECLARE(int) ap_proxy_add_lbmethods(proxy_server_conf *conf);
 
 /* Scoreboard */
 #if MODULE_MAGIC_NUMBER_MAJOR > 20020903
