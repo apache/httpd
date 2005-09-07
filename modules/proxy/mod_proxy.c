@@ -822,7 +822,7 @@ static void * create_proxy_config(apr_pool_t *p, server_rec *s)
     ps->badopt_set = 0;
     ps->pool = p;
     
-    proxy_run_load_lbmethods(ps);
+    ap_proxy_add_lbmethods(ps);
     
     return ps;
 }
@@ -1925,7 +1925,6 @@ APR_HOOK_STRUCT(
     APR_HOOK_LINK(canon_handler)
     APR_HOOK_LINK(pre_request)
     APR_HOOK_LINK(post_request)
-    APR_HOOK_LINK(load_lbmethods)
     APR_HOOK_LINK(request_status)
 )
 
@@ -1951,10 +1950,6 @@ APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(proxy, PROXY, int, post_request,
                                        request_rec *r,
                                        proxy_server_conf *conf),(worker,
                                        balancer,r,conf),DECLINED)
-APR_IMPLEMENT_EXTERNAL_HOOK_RUN_ALL(proxy, PROXY, int, load_lbmethods,
-                                    (proxy_server_conf *conf), 
-                                    (conf),
-                                    OK, DECLINED)
 APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(proxy, PROXY, int, fixups,
                                     (request_rec *r), (r),
                                     OK, DECLINED)
