@@ -88,12 +88,12 @@
     searchable for that user and group (i.e., <code>chmod
     +x</code>).</p>
 
-    <p>Recent Redhat versions and other Linux distributions using
-    SELinux have additional access restrictions beyond those used by
-    the basic filesystem.  Violations of these restrictions will also
-    result in a <code>Permission denied</code> message.  See the
-    Redhat <a href="http://fedora.redhat.com/docs/selinux-faq-fc3/">SELinux
-    FAQ</a> and <a href="http://fedora.redhat.com/docs/selinux-apache-fc3/">Apache
+    <p>Recent releases of Fedora Core and other Linux distributions
+    using SELinux have additional access restrictions beyond those
+    used by the basic filesystem.  Violations of these restrictions
+    will also result in a <code>Permission denied</code> message.  See
+    the <a href="http://fedora.redhat.com/docs/selinux-faq-fc3/">Fedora
+    SELinux FAQ</a> and <a href="http://fedora.redhat.com/docs/selinux-apache-fc3/">Apache
     SELinux Policy Document</a>.</p>
 
    
