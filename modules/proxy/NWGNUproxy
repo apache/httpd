@@ -229,7 +229,6 @@ FILES_nlm_exports = \
 	proxy_hook_canon_handler \
 	proxy_hook_pre_request \
 	proxy_hook_post_request \
-	proxy_hook_load_lbmethods \
 	ap_proxy_ssl_enable \
 	ap_proxy_ssl_disable \
 	ap_proxy_conn_is_https \
