@@ -28,6 +28,11 @@
 
 #include "ap_config.h"
 
+typedef struct {
+    const char *provider_name;
+} ap_list_provider_names_t;
+
+
 /**
  * This function is used to register a provider with the global
  * provider pool.
@@ -55,6 +60,19 @@ AP_DECLARE(apr_status_t) ap_register_provider(apr_pool_t *pool,
 AP_DECLARE(void *) ap_lookup_provider(const char *provider_group,
                                       const char *provider_name,
                                       const char *provider_version);
+
+/**
+ * This function is used to retrieve a list (array) of provider
+ * names from the specified group with the specified version.
+ * @param pool The pool to create any storage from
+ * @param provider_group The group to look for this provider in
+ * @param provider_version The version for the provider
+ * @return pointer to array of ap_list_provider_names_t of provider names (could be empty)
+ */
+
+AP_DECLARE(apr_array_header_t *) ap_list_provider_names(apr_pool_t *pool,
+                                              const char *provider_group,
+                                              const char *provider_version);
 
 #endif
 /** @} */
