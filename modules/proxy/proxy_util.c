@@ -1155,7 +1155,6 @@ PROXY_DECLARE(const char *) ap_proxy_add_balancer(proxy_balancer **balancer,
                                                   const char *url)
 {
     char *c, *q, *uri = apr_pstrdup(p, url);
-    int i;
     proxy_balancer_method *lbmethod;
 
     c = strchr(uri, ':');   
@@ -1173,12 +1172,9 @@ PROXY_DECLARE(const char *) ap_proxy_add_balancer(proxy_balancer **balancer,
      * NOTE: The default method is byrequests, which we assume
      * exists!
      */
-    lbmethod = (proxy_balancer_method *)conf->lbmethods->elts;
-    for (i = 0; i < conf->lbmethods->nelts; i++) {
-        if (!strcasecmp(lbmethod->name, "byrequests")) {
-            break;
-        }
-        lbmethod++;
+    lbmethod = ap_lookup_provider(PROXY_LBMETHOD, "byrequests", "0");
+    if (!lbmethod) {
+        return "Can't find 'byrequests' lb method";
     }
 
     (*balancer)->name = uri;
@@ -2068,177 +2064,4 @@ int ap_proxy_lb_workers(void)
     if (!lb_workers_limit)
     lb_workers_limit = proxy_lb_workers + PROXY_DYNAMIC_BALANCER_LIMIT;
     return lb_workers_limit;
-}
-
-/*
- * The idea behind the find_best_byrequests scheduler is the following:
- *
- * lbfactor is "how much we expect this worker to work", or "the worker's
- * normalized work quota".
- *
- * lbstatus is "how urgent this worker has to work to fulfill its quota
- * of work".
- *
- * We distribute each worker's work quota to the worker, and then look
- * which of them needs to work most urgently (biggest lbstatus).  This
- * worker is then selected for work, and its lbstatus reduced by the
- * total work quota we distributed to all workers.  Thus the sum of all
- * lbstatus does not change.(*)
- *
- * If some workers are disabled, the others will
- * still be scheduled correctly.
- *
- * If a balancer is configured as follows:
- *
- * worker     a    b    c    d
- * lbfactor  25   25   25   25
- *
- * And b gets disabled, the following schedule is produced:
- *
- *    a c d a c d a c d ...
- *
- * Note that the above lbfactor setting is the *exact* same as:
- *
- * worker     a    b    c    d
- * lbfactor   1    1    1    1
- *
- * Asymmetric configurations work as one would expect. For
- * example:
- *
- * worker     a    b    c    d
- * lbfactor   1    1    1    2
- *
- * would have a, b and c all handling about the same
- * amount of load with d handling twice what a or b
- * or c handles individually. So we could see:
- *
- *   b a d c d a c d b d ...
- *
- */
- 
-static proxy_worker *find_best_byrequests(proxy_balancer *balancer,
-                                request_rec *r)
-{
-    int i;
-    int total_factor = 0;
-    proxy_worker *worker = (proxy_worker *)balancer->workers->elts;
-    proxy_worker *mycandidate = NULL;
- 
-
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                 "proxy: Entering byrequests for BALANCER (%s)",
-                 balancer->name);
-
-    /* First try to see if we have available candidate */
-    for (i = 0; i < balancer->workers->nelts; i++) {
-        /* If the worker is in error state run
-         * retry on that worker. It will be marked as
-         * operational if the retry timeout is elapsed.
-         * The worker might still be unusable, but we try
-         * anyway.
-         */
-        if (!PROXY_WORKER_IS_USABLE(worker))
-            ap_proxy_retry_worker("BALANCER", worker, r->server);
-        /* Take into calculation only the workers that are
-         * not in error state or not disabled.
-         */
-        if (PROXY_WORKER_IS_USABLE(worker)) {
-            worker->s->lbstatus += worker->s->lbfactor;
-            total_factor += worker->s->lbfactor;
-            if (!mycandidate || worker->s->lbstatus > mycandidate->s->lbstatus)
-                mycandidate = worker;
-        }
-        worker++;
-    }
-
-    if (mycandidate) {
-        mycandidate->s->lbstatus -= total_factor;
-        mycandidate->s->elected++;
-    }
-
-    return mycandidate;
-}
-
-/*
- * The idea behind the find_best_bytraffic scheduler is the following:
- *
- * We know the amount of traffic (bytes in and out) handled by each
- * worker. We normalize that traffic by each workers' weight. So assuming
- * a setup as below:
- *
- * worker     a    b    c
- * lbfactor   1    1    3
- *
- * the scheduler will allow worker c to handle 3 times the
- * traffic of a and b. If each request/response results in the
- * same amount of traffic, then c would be accessed 3 times as
- * often as a or b. If, for example, a handled a request that
- * resulted in a large i/o bytecount, then b and c would be
- * chosen more often, to even things out.
- */
-static proxy_worker *find_best_bytraffic(proxy_balancer *balancer,
-                                         request_rec *r)
-{
-    int i;
-    apr_off_t mytraffic = 0;
-    apr_off_t curmin = 0;
-    proxy_worker *worker = (proxy_worker *)balancer->workers->elts;
-    proxy_worker *mycandidate = NULL;
-    
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                 "proxy: Entering bytraffic for BALANCER (%s)",
-                 balancer->name);
-
-    /* First try to see if we have available candidate */
-    for (i = 0; i < balancer->workers->nelts; i++) {
-        /* If the worker is in error state run
-         * retry on that worker. It will be marked as
-         * operational if the retry timeout is elapsed.
-         * The worker might still be unusable, but we try
-         * anyway.
-         */
-        if (!PROXY_WORKER_IS_USABLE(worker))
-            ap_proxy_retry_worker("BALANCER", worker, r->server);
-        /* Take into calculation only the workers that are
-         * not in error state or not disabled.
-         */
-        if (PROXY_WORKER_IS_USABLE(worker)) {
-            mytraffic = (worker->s->transferred/worker->s->lbfactor) +
-                        (worker->s->read/worker->s->lbfactor);
-            if (!mycandidate || mytraffic < curmin) {
-                mycandidate = worker;
-                curmin = mytraffic;
-            }
-        }
-        worker++;
-    }
-    
-    if (mycandidate) {
-        mycandidate->s->elected++;
-    }
-
-    return mycandidate;
-}
-
-/*
- * How to add additional lbmethods:
- *   1. Create func which determines "best" candidate worker
- *      (eg: find_best_bytraffic, above)
- *   2. Create proxy_balancer_method struct which
- *      defines the method and add it to
- *      available server methods using
- *      ap_proxy_add_lbmethods.
- */
-PROXY_DECLARE(int) ap_proxy_add_lbmethods(proxy_server_conf *conf)
-{
-    proxy_balancer_method *new;
-
-    new  = apr_array_push(conf->lbmethods);
-    new->name = "byrequests";
-    new->finder = find_best_byrequests;
-    new  = apr_array_push(conf->lbmethods);
-    new->name = "bytraffic";
-    new->finder = find_best_bytraffic;
-
-    return OK;
 }
