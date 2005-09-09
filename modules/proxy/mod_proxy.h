@@ -73,6 +73,7 @@
 #include "http_connection.h"
 #include "util_filter.h"
 #include "util_ebcdic.h"
+#include "ap_provider.h"
 
 #if APR_HAVE_NETINET_IN_H
 #include <netinet/in.h>
@@ -185,7 +186,6 @@ typedef struct {
     } proxy_status;             /* Status display options */
     char proxy_status_set;
     apr_pool_t *pool;           /* Pool used for allocating this struct */
-    apr_array_header_t *lbmethods;
 } proxy_server_conf;
 
 
@@ -670,20 +670,14 @@ PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function,
                                               proxy_conn_rec *conn,
                                               conn_rec *c, server_rec *s);
 
-/**
- * Load in available lb methods
- * @param conf    server conf
- * @return        OK or HTTP_XXX error
- */                                         
-
-PROXY_DECLARE(int) ap_proxy_add_lbmethods(proxy_server_conf *conf);
-
 /* Scoreboard */
 #if MODULE_MAGIC_NUMBER_MAJOR > 20020903
 #define PROXY_HAS_SCOREBOARD 1
 #else
 #define PROXY_HAS_SCOREBOARD 0
 #endif
+
+#define PROXY_LBMETHOD "proxylbmethod"
 
 /* The number of dynamic workers that can be added when reconfiguring.
  * If this limit is reached you must stop and restart the server.

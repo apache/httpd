@@ -273,15 +273,10 @@ static const char *set_balancer_param(proxy_server_conf *conf,
         balancer->max_attempts_set = 1;
     }
     else if (!strcasecmp(key, "lbmethod")) {
-        struct proxy_balancer_method *ent =
-           (struct proxy_balancer_method *) conf->lbmethods->elts;
-        int i;
-        for (i = 0; i < conf->lbmethods->nelts; i++) {
-           if (!strcasecmp(val, ent->name)) {
-               balancer->lbmethod = ent;
-               return NULL;
-           }
-           ent++;
+        proxy_balancer_method *provider;
+        if (provider = ap_lookup_provider(PROXY_LBMETHOD, val, "0")) {
+            balancer->lbmethod = provider;
+            return NULL;
         }
         return "unknown lbmethod";
     }
@@ -798,7 +793,6 @@ static void * create_proxy_config(apr_pool_t *p, server_rec *s)
     ps->allowed_connect_ports = apr_array_make(p, 10, sizeof(int));
     ps->workers = apr_array_make(p, 10, sizeof(proxy_worker));
     ps->balancers = apr_array_make(p, 10, sizeof(proxy_balancer));
-    ps->lbmethods = apr_array_make(p, 10, sizeof(proxy_balancer_method));
     ps->forward = NULL;
     ps->reverse = NULL;
     ps->domain = NULL;
@@ -821,9 +815,7 @@ static void * create_proxy_config(apr_pool_t *p, server_rec *s)
     ps->badopt = bad_error;
     ps->badopt_set = 0;
     ps->pool = p;
-    
-    ap_proxy_add_lbmethods(ps);
-    
+        
     return ps;
 }
 
@@ -841,7 +833,6 @@ static void * merge_proxy_config(apr_pool_t *p, void *basev, void *overridesv)
     ps->allowed_connect_ports = apr_array_append(p, base->allowed_connect_ports, overrides->allowed_connect_ports);
     ps->workers = apr_array_append(p, base->workers, overrides->workers);
     ps->balancers = apr_array_append(p, base->balancers, overrides->balancers);
-    ps->lbmethods = base->lbmethods;
     ps->forward = overrides->forward ? overrides->forward : base->forward;
     ps->reverse = overrides->reverse ? overrides->reverse : base->reverse;
 
@@ -1522,7 +1513,7 @@ static const char *
             err = set_balancer_param(conf, cmd->pool, balancer, word, val);
 
         if (err)
-            return apr_pstrcat(cmd->temp_pool, "ProxySet ", err, " ", word, " ", name, NULL);
+            return apr_pstrcat(cmd->temp_pool, "ProxySet: ", err, " ", word, "=", val, "; ", name, NULL);
     }
 
     return NULL;
