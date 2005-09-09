@@ -660,12 +660,11 @@ static int process_socket(apr_pool_t * p, apr_socket_t * sock,
         cs->expiration_time = ap_server_conf->keep_alive_timeout + time_now;
         apr_thread_mutex_lock(timeout_mutex);
         APR_RING_INSERT_TAIL(&timeout_head, cs, conn_state_t, timeout_list);
+        apr_thread_mutex_unlock(timeout_mutex);
 
         pt->status = 0;
         /* Add work to pollset. These are always read events */
         rc = apr_pollset_add(event_pollset, &cs->pfd);
-
-        apr_thread_mutex_unlock(timeout_mutex);
 
         if (rc != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rc, ap_server_conf,
