@@ -753,6 +753,9 @@ int ssl_hook_Access(request_rec *r)
                                    r, (char *)dc->szUserName);
         if (val && val[0])
             r->user = val;
+        else
+            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
+                          "Failed to set r->user to '%s'", dc->szUserName);
     } 
 
     /*
