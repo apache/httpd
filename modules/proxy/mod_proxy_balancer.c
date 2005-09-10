@@ -517,7 +517,8 @@ static int balancer_handler(request_rec *r)
         }
         if ((val = apr_table_get(params, "lm"))) {
             proxy_balancer_method *provider;
-            if (provider = ap_lookup_provider(PROXY_LBMETHOD, val, "0")) {
+            provider = ap_lookup_provider(PROXY_LBMETHOD, val, "0");
+            if (provider) {
                 bsel->lbmethod = provider;
             }
         }
