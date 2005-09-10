@@ -992,7 +992,8 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
                 if ((res = resolve_symlink(r->filename, &thisinfo,
                                            opts.opts, r->pool)) != OK) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                                  "Symbolic link not allowed: %s",
+                                  "Symbolic link not allowed "
+                                  "or link target not accessible: %s",
                                   r->filename);
                     return r->status = res;
                 }
