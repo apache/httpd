@@ -274,7 +274,8 @@ static const char *set_balancer_param(proxy_server_conf *conf,
     }
     else if (!strcasecmp(key, "lbmethod")) {
         proxy_balancer_method *provider;
-        if (provider = ap_lookup_provider(PROXY_LBMETHOD, val, "0")) {
+        provider = ap_lookup_provider(PROXY_LBMETHOD, val, "0");
+        if (provider) {
             balancer->lbmethod = provider;
             return NULL;
         }
