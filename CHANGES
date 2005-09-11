@@ -24,10 +24,6 @@ Changes with Apache 2.3.0
   *) mod_cgid: run the get_suexec_identity hook within the request-handler 
      instead of within cgid. PR 36410. [Colm MacCarthaigh]
 
-  *) Correct mod_cgid's argv[0] so that the full path can be delved by the
-     invoked cgi application, to conform to the behavior of mod_cgi.
-     [Pradeep Kumar S <pradeep.smani gmail.com>]
-
   *) Doxygen fixup [Neale Ranns <neale ranns.org>, Ian Holsman]
 
   *) prefork, worker and event MPMs: Support a graceful-stop procedure:
@@ -162,18 +158,11 @@ Changes with Apache 2.1.5
   *) mod_cache: Rename 'generate_name' to 'ap_cache_generate_name'. 
      [Paul Querna]
 
-  *) proxy FTP: Fix confusion about globbing characters which could lead
-     to getting a directory listing when a file was requested.  PR 34512.
-     [Sean <infamous41md hotmail.com>]
-
   *) mod_mime_magic: Handle CRLF-format magic files so that it works with
      the default installation on Windows.  [Jeff Trawick]
 
   *) core: Allow multiple modules to register interest in a single 
      configuration command. [Paul Querna]
-
-  *) EBCDIC: Handle chunked input from client or, with proxy, origin
-     server.  [Jeff Trawick]
 
   *) authn_provider_alias: Adds the configuration block tag
      <AuthnProviderAlias baseProvider Alias>
@@ -194,12 +183,6 @@ Changes with Apache 2.1.5
      during the build; -f and -Z arguments added to specify SSL protocol
      options.  [Masaoki Kobayashi <masaoki techfirm.co.jp>]
 
-  *) Support the suppress-error-charset setting, as with Apache 1.3.x.
-     PR 31274.  [Jeff Trawick]
-
-  *) Prevent hangs of child processes when writing to piped loggers at
-     the time of graceful restart.  PR 26467.  [Jeff Trawick]
-  
   *) mod_info: Show the Quick Handler [Paul Querna]
 
   *) mod_ldap: Add the directive LDAPVerifyServerCert to specify 
@@ -329,8 +312,8 @@ Changes with Apache 2.1.3
   *) mod_proxy: Fix ProxyRemoteMatch directive.  PR 33170.
      [Rici Lake <rici ricilake.net>]
 
-  *) mod_proxy: Fix incorrect decoding/unescaping for reverse proxies.
-     PR 32459, 15207. [Jim Jagielski]
+  *) mod_proxy: Fix ap_proxy_canonenc API.
+     PR 32459. [Jim Jagielski]
 
   *) mod_cache: Add CacheStorePrivate and CacheStoreNoStore directive.
      [Justin Erenkrantz]
@@ -458,9 +441,6 @@ Changes with Apache 2.1.1
      generally means that the connection was dropped before data was
      sent.  Log the client IP address when reporting errors in the core
      output filter.  [Jeff Trawick]
-
-  *) Add ap_log_cerror() for logging messages associated with particular
-     client connections.  [Jeff Trawick]
 
   *) core: Add a warning message if the request line read fails.
      [Paul Querna]
@@ -864,7 +844,50 @@ Changes with Apache 2.1.1
 
 Changes with Apache 2.0.55
 
-  *) SECURITY: CAN-2005-2088
+  *) Add ap_log_cerror() for logging messages associated with particular
+     client connections.  [Jeff Trawick]
+
+  *) Correct mod_cgid's argv[0] so that the full path can be delved by the
+     invoked cgi application, to conform to the behavior of mod_cgi.
+     [Pradeep Kumar S <pradeep.smani gmail.com>]
+
+  *) mod_include: Fix possible environment variable corruption when 
+     using nested includes.  PR 12655.  [Joe Orton]
+
+  *) Support the suppress-error-charset setting, as with Apache 1.3.x.
+     PR 31274.  [Jeff Trawick]
+
+  *) EBCDIC: Handle chunked input from client or, with proxy, origin
+     server.  [Jeff Trawick]
+
+  *) Fix bad globbing comparison which could result in getting
+     a directory listing when a file was requested. PR 34512.
+     [sean <infamous41md hotmail.com>]
+
+  *) Fix core dump if mod_auth_ldap's mod_auth_ldap_auth_checker()
+     was called even if mod_auth_ldap_check_user_id() was not
+     (or if it didn't succeed) for non-authoritative cases.
+     [Jim Jagielski]
+
+  *) SECURITY: CAN-2005-2728 (cve.mitre.org)
+     Fix cases where the byterange filter would buffer responses
+     into memory.  PR 29962.  [Joe Orton]
+
+  *) mod_proxy: Fix over-eager handling of '%' for reverse proxies.
+     PR 15207.  [Jim Jagielski]
+
+  *) mod_ldap: Fix various shared memory cache handling bugs.
+     PR 34209.  [Joe Orton]
+
+  *) Fix a file descriptor leak when starting piped loggers.  PR 33748. 
+     [Joe Orton]
+
+  *) mod_ldap: Avoid segfaults when opening connections if using a version
+     of OpenLDAP older than 2.2.21.  PR 34618.  [Brad Nicholes]
+
+  *) mod_ssl: Fix build with OpenSSL 0.9.8.  PR 35757.  [William Rowe]
+
+  *) SECURITY: CAN-2005-2088 (cve.mitre.org)
      core: If a request contains both Transfer-Encoding and Content-Length
      headers, remove the Content-Length, mitigating some HTTP Request 
      Splitting/Spoofing attacks.  [Paul Querna, Joe Orton]
@@ -874,6 +897,9 @@ Changes with Apache 2.0.55
      connection, mitigating some HTTP Response Splitting attacks.
      [Jeff Trawick]
 
+  *) Prevent hangs of child processes when writing to piped loggers at
+     the time of graceful restart.  PR 26467.  [Jeff Trawick]
+
   *) SECURITY: CAN-2005-1268 (cve.mitre.org)
      mod_ssl: Fix off-by-one overflow whilst printing CRL information
      at "LogLevel debug" which could be triggered if configured 
@@ -882,8 +908,8 @@ Changes with Apache 2.0.55
   *) mod_userdir: Fix possible memory corruption issue.  PR 34588.
      [David Leonard <dleonard vintela.com>]
 
-  *) worker MPM: don't take down the whole server for a transient
-     thread creation failure.  PR 34514.  [Greg Ames]
+  *) worker mpm: don't take down the whole server for a transient
+     thread creation failure. PR 34514 [Greg Ames]
   
   *) mod_rewrite: use buffered I/O to improve performance with large
      RewriteMap txt: files.  [Greg Ames]
@@ -901,6 +927,11 @@ Changes with Apache 2.0.54
   *) mod_ldap: Added the directive LDAPConnectionTimeout to configure
      the ldap socket connection timeout value.  
      [Brad Nicholes]
+
+  *) Correctly export all mod_dav public functions.
+     [Branko Čibej <brane xbc.nu>]
+
+  *) Add a build script to create a solaris package. [Graham Leggett]
 
   *) worker MPM: Fix a problem which could cause httpd processes to
      remain active after shutdown.  [Jeff Trawick]
@@ -951,7 +982,7 @@ Changes with Apache 2.0.53
      modules/expermimental subdirectory.  [Jim Jagielski]
 
   *) mod_auth_ldap: Handle the inconsistent way in which the MS LDAP
-     library handles special characters. PR 24437.  [Jess Holle]
+     library handles special characters.  PR 24437.  [Jess Holle]
 
   *) Win32 MPM: Correct typo in debugging output.  [William Rowe]
 
@@ -960,10 +991,10 @@ Changes with Apache 2.0.53
      [Roy Fielding]
 
   *) Add charset to example CGI scripts.  [Roy Fielding]
- 
+
   *) mod_ssl: fail quickly if SSL connection is aborted rather than
      making many doomed ap_pass_brigade calls.  PR 32699.  [Joe Orton]
- 
+
   *) Remove compiled-in upper limit on LimitRequestFieldSize.
      [Bill Stoddard]
 
@@ -1013,11 +1044,11 @@ Changes with Apache 2.0.53
 
   *) apxs: fix handling of -Wc/-Wl and "-o mod_foo.so". PR 31448
      [Joe Orton]
-                                                                                
+
   *) mod_ldap: Fix format strings to use %APR_PID_T_FMT instead of %d.
      [Jeff Trawick]
-
-  *) mod_cache: CacheDisable will only disable the URLs it was meant to 
+ 
+  *) mod_cache: CacheDisable will only disable the URLs it was meant to
      disable, not all caching. PR 31128.
      [Edward Rudd <eddie omegaware.com>, Paul Querna]
 
@@ -1038,13 +1069,14 @@ Changes with Apache 2.0.53
      [Rüdiger Plüm <r.pluem t-online.de>]
 
   *) mod_ldap: prevent the possiblity of an infinite loop in the LDAP
-     statistics display. PR 29216.  [Graham Leggett]
+     statistics display. PR 29216. [Graham Leggett]
 
   *) mod_ldap: fix a bogus error message to tell the user which file
      is causing a potential problem with the LDAP shared memory cache.
      PR 31431 [Graham Leggett]
 
-  *) mod_disk_cache: Do not store hop-by-hop headers.  [Justin Erenkrantz]
+  *) SECURITY: CAN-2004-1834 (cve.mitre.org)
+     mod_disk_cache: Do not store hop-by-hop headers.  [Justin Erenkrantz]
 
   *) Fix the re-linking issue when purging elements from the LDAP cache
      PR 24801.  [Jess Holle <jessh ptc.com>]
@@ -1078,7 +1110,7 @@ Changes with Apache 2.0.52
   *) mod_mem_cache: Fixed race condition causing segfault because of memory being
      freed twice, or reused after being freed.
      [J. Clar, W. Stoddard, G. Ames]
-
+    
   *) Add -l option to rotatelogs to let it use local time rather than
      UTC.  PR 24417.  [Ken Coar, Uli Zappe <uli ritual.org>]
 
@@ -1252,11 +1284,11 @@ Changes with Apache 2.0.51
 
   *) Add the NOTICE file to the rpm spec file in compliance with the
      Apache v2.0 license. [Graham Leggett]
-
+ 
   *) RPM spec file changes: changed default dependancy to link to db4
      instead of db3. Fixed complaints about unpackaged files.
      [Graham Leggett]
-
+ 
 Changes with Apache 2.0.50
 
   *) SECURITY: CAN-2004-0493 (cve.mitre.org)
@@ -2070,7 +2102,8 @@ Changes with Apache 2.0.46
      names faulted the running OS2 worker process.  The fix is
      actually in APR 0.9.4.  [Brian Havard]
 
-  *) Forward port: Escape special characters (especially control
+  *) SECURITY: CAN-2003-0083 (cve.mitre.org)
+     Forward port: Escape special characters (especially control
      characters) in mod_log_config to make a clear distinction between
      client-supplied strings (with special characters) and server-side
      strings. This was already introduced in version 1.3.25.
@@ -3321,7 +3354,7 @@ Changes with Apache 2.0.36
 
   *) Fix AcceptPathInfo. PR 8234  [Cliff Woolley]
 
-  *) SECURITY:  CAN-2002-1592 (cve.mitre.org) [CERT VU#165803]
+  *) SECURITY: CAN-2002-1592 (cve.mitre.org) [CERT VU#165803]
      Added the APLOG_TOCLIENT flag to ap_log_rerror() to
      explicitly tell the server that warning messages should be sent 
      to the client in addition to being recorded in the error log. 
