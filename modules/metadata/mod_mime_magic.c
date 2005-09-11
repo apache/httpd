@@ -947,15 +947,15 @@ static int apprentice(server_rec *s, apr_pool_t *p)
     /* parse it */
     for (lineno = 1; apr_file_gets(line, BUFSIZ, f) == APR_SUCCESS; lineno++) {
 	int ws_offset;
-        char *last = line + strlen(line) - 1; /* guaranteed that len >= 1 */
+        char *last = line + strlen(line) - 1; /* guaranteed that len >= 1 since an
+                                               * "empty" line contains a '\n'
+                                               */
 
-	/* delete newline and potential carriage return */
-        if (*last == '\n') {
+	/* delete newline and any other trailing whitespace */
+        while (last >= line
+               && apr_isspace(*last)) {
             *last = '\0';
             --last;
-        }
-        if (*last == '\r') {
-            *last = '\0';
         }
         
 	/* skip leading whitespace */
