@@ -208,6 +208,11 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
        +1: pquerna, nd, wrowe
        Votes from before the integration branch: +1: jerenkrantz
 
+    *) Correct mod_cgid's argv[0] so that the full path can be delved by the
+       invoked cgi application, to conform to the behavior of mod_cgi.
+       PR: 34542  Submitted by: Pradeep Kumar S <pradeep.smani gmail.com>
+         http://svn.apache.org/viewcvs?view=rev&rev=264623
+       +1: wrowe, colm, trawick
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ please place SVN revisions from trunk here, so it is easy to
@@ -285,16 +290,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         rediffed for 2.0.x as:
         http://issues.apache.org/bugzilla/attachment.cgi?id=14804
         PR: 34452
-        +1: jorton
+        +1: jorton, trawick
 
-     *) mod_mime_magic: Handle CRLF-format magic files so that it works with
-        the default installation on Windows. 
+     *) mod_mime_magic: Handle CRLF-format^H^H^H^H^H^H^H magic files 
+        with any trailing whitespace so that it works with the
+        default installation on Windows.
         http://svn.apache.org/viewcvs?rev=179622&view=rev
-        +1: trawick, wrowe
-        wrowe asks: is it possible to simply strip trailing whitespace instead
-                    of special handling for the end of line characters?  
-                    Seems more portable.
-        trawick says: makes sense; searching for bandwidth
+        http://svn.apache.org/viewcvs?rev=280114&view=rev
+        +1: trawick
 
      *) mod_cache: Fix handling of 'Vary: *". PR 16125.
         Trunk: r180341
@@ -316,12 +319,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           jerenkrantz: Didn't a variant of this get committed to trunk?
                        If so, what revision?  And, is there a clean patch for
                        2.0?  (The patch in that message isn't clean.)
-
-    *) Correct mod_cgid's argv[0] so that the full path can be delved by the
-       invoked cgi application, to conform to the behavior of mod_cgi.
-       PR: 34542  Submitted by: Pradeep Kumar S <pradeep.smani gmail.com>
-         http://svn.apache.org/viewcvs?view=rev&rev=264623
-       +1: wrowe, colm
 
     *) Block mod_cgid usage on Solaris 10 due to OS bugs.  PR 34264.
        http://svn.apache.org/viewcvs?view=rev&rev=264866
