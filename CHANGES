@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.0.55
 
+  *) Add ap_log_cerror() for logging messages associated with particular
+     client connections.  [Jeff Trawick]
+
   *) Correct mod_cgid's argv[0] so that the full path can be delved by the
      invoked cgi application, to conform to the behavior of mod_cgi.
      [Pradeep Kumar S <pradeep.smani gmail.com>]

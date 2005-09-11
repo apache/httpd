@@ -131,16 +131,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    *) several changes to improve logging of connection-oriented errors, including
-       ap_log_cerror() API (needs minor bump in addition to changes below)
-         http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/core.c?r1=1.289&r2=1.291
-         http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/log.c?r1=1.150&r2=1.151
-         http://cvs.apache.org/viewcvs.cgi/httpd-2.0/include/http_log.h?r1=1.46&r2=1.48
-       +1: trawick, stoddard, wrowe 
-       [wrowe notes that his previous objection is moot, based on security fixes
-        applied between .44 and .54 - but -please- doxygen the version of Apache
-        required in the API header note, for users who adopt this alternative.]
-
     *) mod_cgi: Added API call and overload of detached field in
        cgi_exec_info_t structure to support loading in current or new address
        space for CGIs.  The patch change how NetWare use cmdtype for
