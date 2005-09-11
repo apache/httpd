@@ -406,9 +406,6 @@ Changes with Apache 2.1.1
      sent.  Log the client IP address when reporting errors in the core
      output filter.  [Jeff Trawick]
 
-  *) Add ap_log_cerror() for logging messages associated with particular
-     client connections.  [Jeff Trawick]
-
   *) core: Add a warning message if the request line read fails.
      [Paul Querna]
 
@@ -810,6 +807,13 @@ Changes with Apache 2.1.1
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.55
+
+  *) Add ap_log_cerror() for logging messages associated with particular
+     client connections.  [Jeff Trawick]
+
+  *) Correct mod_cgid's argv[0] so that the full path can be delved by the
+     invoked cgi application, to conform to the behavior of mod_cgi.
+     [Pradeep Kumar S <pradeep.smani gmail.com>]
 
   *) SECURITY: CAN-2005-2088
      core: If a request contains both Transfer-Encoding and Content-Length
