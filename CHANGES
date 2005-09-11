@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.0.55
 
+  *) Correct mod_cgid's argv[0] so that the full path can be delved by the
+     invoked cgi application, to conform to the behavior of mod_cgi.
+     [Pradeep Kumar S <pradeep.smani gmail.com>]
+
   *) mod_include: Fix possible environment variable corruption when 
      using nested includes.  PR 12655.  [Joe Orton]
 
