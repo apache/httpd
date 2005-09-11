@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
-<!-- English Revision: 167961:279024 (outdated) -->
+<!-- English Revision: 279024 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -1820,21 +1820,19 @@ HTTP-Request-Headers</description>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
-    <p>Die Direktive gibt die Anzahl der <var>Bytes</var> zwischen 0
-    und dem Wert der zur Kompilierungszeit definierten Konstante
-    <code>DEFAULT_LIMIT_REQUEST_FIELDSIZE</code> (<code>8190</code> bei
-    der Auslieferung) an, die in einem HTTP-Header erlaubt sind.</p>
+  <p>Die Direktive gibt die Anzahl der <var>Bytes</var> an, die in einem
+    HTTP-Header erlaubt sind.</p>
 
     <p>Die Direktive <directive>LimitRequestFieldsize</directive> erlaubt es
     dem Serveradministrator, die maximale Gr&ouml;&szlig;e eines
-    HTTP-Request-Headers auf einen Wert unterhalb der normalen, im Server
-    einkompilierten Gr&ouml;&szlig;e des Eingabepuffers zu verringern.
-    F&uuml;r den Server muss der Wert gro&szlig; genug sein, um eine beliebige
-    Headerzeile einer normalen Client-Anfrage vorzuhalten. Die
-    Gr&ouml;&szlig;e variiert stark zwischen den verschiedenen
-    Client-Ausf&uuml;hrungen, oft abh&auml;ngig vom Ausma&szlig;, mit dem
-    der Anwender die genaue Content-Negotiation-Unterst&uuml;tzung seines
-    Browsers konfiguriert hat.</p>
+    HTTP-Request-Headers zu verringern oder erh&ouml;hen. F&uuml;r den Server
+    muss der Wert gro&szlig; genug sein, um eine beliebige Headerzeile einer
+    normalen Client-Anfrage vorzuhalten. Die Gr&ouml;&szlig;e variiert stark
+    zwischen den verschiedenen Client-Ausf&uuml;hrungen, oft abh&auml;ngig vom
+    Ausma&szlig;, mit dem der Anwender die genaue
+    Content-Negotiation-Unterst&uuml;tzung seines Browsers konfiguriert hat.
+    SPNEGO-Authentisierungs-Header k&ouml;nnen bis zu 12392 Bytes lang
+    sein.</p>
 
     <p>Die Direktive gibt dem Serveradministrator eine gr&ouml;&szlig;ere
     Kontrolle gegen&uuml;ber abnormalem Verhalten von Clients, was bei der
@@ -1849,6 +1847,10 @@ HTTP-Request-Headers</description>
 
     <note>Unter normalen Umst&auml;nden sollte die Voreinstellung nicht
     ver&auml;ndert werden.</note>
+
+    <note>Sie ben&ouml;tigen mindestens Apache 2.0.53, um das Limit
+    &uuml;ber den einkompilierten Wert von DEFAULT_LIMIT_REQUEST_FIELDSIZE
+    hinaus zu setzen (8190 bei der Auslieferung).</note>
 </usage>
 </directivesynopsis>
 
