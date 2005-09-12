@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) Document the ReceiveBufferSize change done in r157583 [Murray
+     Nesbitt <murray@cpan.org>]
+
   *) Fix mod_dbd's config [Brian J. France <list firehawksystems.com>]
 
   *) New provider function to list all available provider names in a
