@@ -1,4 +1,9 @@
                                                         -*- coding: utf-8 -*-
+Changes in Apache 2.3.0 async-dev R&D branch
+
+  *) Added new connection states for handler and write completion
+     [Brian Pane]
+
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
