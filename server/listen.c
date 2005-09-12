@@ -121,7 +121,6 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
                           "make_sock: failed to set ReceiveBufferSize for "
                           "address %pI, using default",
                           server->bind_addr);
-            strerror(errno);
             /* not a fatal error */
         }
     }
