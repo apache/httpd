@@ -316,9 +316,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   
     *) Add ReceiveBufferSize directive to control the TCP receive buffer. 
        code: http://svn.apache.org/viewcvs?view=rev&rev=157583
+             http://svn.apache.org/viewcvs?rev=280401&view=rev
        docs: http://svn.apache.org/viewcvs?rev=280384&view=rev
        +1: stas
-         colm: What is the call to strerror() in listen.c about ?
+       -0: colm
+           colm: It's a useful feature, but TCP window size selection 
+                 algorithims can be pretty "interesting", probably more
+                 2.2. 
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
