@@ -1,15 +1,24 @@
 Leader MPM:
-This is an experimental variant of the standard worker MPM.
-It uses a Leader/Followers design pattern to coordinate work among threads:
+
+This is an experimental MPM that uses the Leader/Followers design
+pattern to coordinate work among threads:
 http://deuce.doc.wustl.edu/doc/pspdfs/lf.pdf
+
+As of httpd-2.3, the Leader MPM also incorporates a variant of the
+Event MPM's asynchronous socket I/O for keepalive connections.  The
+management of pollsets and timeouts is encapsulated within the
+io_multiplexer functions, with the aim of eventually supporting
+asynchronous write completion.
 
 To use the leader MPM, add "--with-mpm=leader" to the configure
 script's arguments when building the httpd.
   
-This MPM depends on APR's atomic compare-and-swap operations for
-thread synchronization.  If you are compiling for an x86 target
-and you don't need to support 386s, or you're compiling for a
-SPARC and you don't need to run on pre-UltraSPARC chips, add
-"--enable-nonportable-atomics=yes" to the configure script's
-arguments.  This will cause APR to implement atomic operations
-using efficient opcodes not available in older CPUs.
+IMPORTANT NOTES:
+
+* At the moment, with the async code under active development, the
+  Leader MPM is suitable for R&D use, but not for production use.
+
+* Like the Event MPM, the Leader MPM now requires a threadsafe
+  apr_pollset implementation, such as epoll on Linux or kqueue
+  on BSD.
+
