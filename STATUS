@@ -205,11 +205,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     identify exactly what the proposed changes are!  Add all new
     proposals to the end of this list. ]
 
-    *) Add ReceiveBufferSize directive to control the TCP receive buffer. 
-       code: http://svn.apache.org/viewcvs?view=rev&rev=157583
-       docs: http://svn.apache.org/viewcvs?rev=280384&view=rev
-       +1: stas
-
     *) Fix CAN-2005-2700, mod_ssl SSLVerifyClient bug
          http://svn.apache.org/viewcvs?rev=264800&view=rev
        test case: perl-framework/t/security/CAN-2005-2700.t
@@ -319,6 +314,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://people.apache.org/~colm/2.0.x-suexec-cgid.patch
        +1: colm
   
+    *) Add ReceiveBufferSize directive to control the TCP receive buffer. 
+       code: http://svn.apache.org/viewcvs?view=rev&rev=157583
+       docs: http://svn.apache.org/viewcvs?rev=280384&view=rev
+       +1: stas
+
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
     *) Remove LDAP toolkit specific code from util_ldap and mod_auth_ldap.
