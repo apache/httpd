@@ -308,7 +308,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     *) Block mod_cgid usage on Solaris 10 due to OS bugs.  PR 34264.
        http://svn.apache.org/viewcvs?view=rev&rev=264866
-       +1: jerenkrantz
+       +1: jerenkrantz, colm
 
     *) mod_cgid: Fix PR 36410. Invoke the set_suexec_identity hook from
        the non-cgid side of the handler, where the full per-server/dir/etc
