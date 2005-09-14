@@ -110,7 +110,7 @@ RELEASE SHOWSTOPPERS:
       httpd/branches/2.0.x/... preserving the detail of all of the individually
       backported changes.
 
-       +1: wrowe, jim
+       +1: wrowe, jim, minfrin
        -1:
 
       For a complete history of individual unit changes, see r230703 - r230744 in
