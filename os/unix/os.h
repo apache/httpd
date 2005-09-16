@@ -38,7 +38,7 @@
 /* On platforms where AP_NEED_SET_MUTEX_PERMS is defined, modules
  * should call unixd_set_*_mutex_perms on mutexes created in the
  * parent process. */
-#define AP_NEED_SET_MUTEX_PERMS
+#define AP_NEED_SET_MUTEX_PERMS 1
 
 #ifdef _OSD_POSIX
 pid_t os_fork(const char *user);
