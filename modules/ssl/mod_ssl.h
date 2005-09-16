@@ -36,15 +36,20 @@ APR_DECLARE_OPTIONAL_FN(char *, ssl_var_lookup,
                          conn_rec *, request_rec *,
                          char *));
 
-/** The ssl_ext_lookup() optional function retrieves the value of a SSL
- * certificate X.509 extension.  The client certificate is used if
- * peer is non-zero; the server certificate is used otherwise.  The
- * oidnum parameter specifies the numeric OID (e.g. "1.2.3.4") of the
- * desired extension.  The string value of the extension is returned,
- * or NULL on error. */
-APR_DECLARE_OPTIONAL_FN(const char *, ssl_ext_lookup,
+/** The ssl_ext_list() optional function attempts to build an array
+ * of all the values contained in the named X.509 extension. The 
+ * returned array will be created in the supplied pool.
+ * The client certificate is used if peer is non-zero; the server 
+ * certificate is used otherwise.
+ * Extension specifies the extensions to use as a string. This can be
+ * one of the "known" long or short names, or a numeric OID,
+ * e.g. "1.2.3.4", 'nsComment' and 'DN' are all valid.
+ * A pointer to an apr_array_header_t structure is returned if at
+ * least one matching extension is found, NULL otherwise.
+ */
+APR_DECLARE_OPTIONAL_FN(apr_array_header_t *, ssl_ext_list,
                         (apr_pool_t *p, conn_rec *c, int peer,
-                         const char *oidnum));
+                         const char *extension));
 
 /** An optional function which returns non-zero if the given connection
  * is using SSL/TLS. */
@@ -57,8 +62,6 @@ APR_DECLARE_OPTIONAL_FN(int, ssl_is_https, (conn_rec *));
 APR_DECLARE_OPTIONAL_FN(int, ssl_proxy_enable, (conn_rec *));
 
 APR_DECLARE_OPTIONAL_FN(int, ssl_engine_disable, (conn_rec *));
-
-APR_DECLARE_OPTIONAL_FN(apr_array_header_t *, ssl_extlist_by_oid, (request_rec *r, const char *oidstr));
 
 #endif /* __MOD_SSL_H__ */
 /** @} */
