@@ -607,9 +607,8 @@ static int process_socket(apr_pool_t * p, apr_socket_t * sock,
          * accept() with a socket readability check, like Win32, 
          * and there are measurable delays before the
          * socket is readable due to the first data packet arriving,
-         * it might be better to create the cs on the listener thread,
-         * set the state to CONN_STATE_CHECK_REQUEST_LINE_READABLE,
-         * and give it to the event thread.
+         * it might be better to create the cs on the listener thread
+         * with the state set to CONN_STATE_CHECK_REQUEST_LINE_READABLE
          *
          * FreeBSD users will want to enable the HTTP accept filter 
          * module in their kernel for the highest performance
