@@ -1,6 +1,10 @@
                                                         -*- coding: utf-8 -*-
+Changes with Apache 2.1.8
+
+  *) Linux 2.0: remove support for threaded MPM's due to linuxthreads use
+     of SIGUSR1 clashing with graceful restart signal. [Colm MacCarthaigh]
+
 Changes with Apache 2.1.7
-  [Remove entries to the current 2.0 section below, when backported]
 
   *) SECURITY: CAN-2005-2491 (cve.mitre.org): 
      Fix integer overflows in PCRE in quantifier parsing which could
