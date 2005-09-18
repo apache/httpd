@@ -31,9 +31,6 @@ Changes with Apache 2.3.0
      "GracefulShutdownTimeout" number of seconds before exiting. 
      [Colm MacCarthaigh, Ken Coar, Bill Stoddard]
 
-  *) mod_cgid: Append .PID to the script socket filename and remove the
-     script socket on exit. [Colm MacCarthaigh]
-
   *) prefork, worker and event MPMs: Prevent children from holding open 
      listening ports upon graceful restart or stop. PR 28167. 
      [Colm MacCarthaigh, Brian Pinkerton <bp thinkpink.com>]
@@ -48,6 +45,9 @@ Changes with Apache 2.3.0
      [Martin Kraemer, David Reid]
 
 Changes with Apache 2.1.8
+
+  *) mod_cgid: Append .PID to the script socket filename and remove the
+     script socket on exit. [Colm MacCarthaigh, Jim Jagielski]
 
   *) mod_cgid: run the get_suexec_identity hook within the request-handler 
      instead of within cgid. PR 36410. [Colm MacCarthaigh]
