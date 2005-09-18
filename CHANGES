@@ -24,9 +24,6 @@ Changes with Apache 2.3.0
      enforced in per-location context if "SSLVerifyClient optional"
      was configured in the vhost configuration.  [Joe Orton]
 
-  *) mod_cgid: run the get_suexec_identity hook within the request-handler 
-     instead of within cgid. PR 36410. [Colm MacCarthaigh]
-
   *) Doxygen fixup [Neale Ranns <neale ranns.org>, Ian Holsman]
 
   *) prefork, worker and event MPMs: Support a graceful-stop procedure:
@@ -51,6 +48,9 @@ Changes with Apache 2.3.0
      [Martin Kraemer, David Reid]
 
 Changes with Apache 2.1.8
+
+  *) mod_cgid: run the get_suexec_identity hook within the request-handler 
+     instead of within cgid. PR 36410. [Colm MacCarthaigh]
 
   *) Linux 2.0: remove support for threaded MPM's due to linuxthreads use
      of SIGUSR1 clashing with graceful restart signal. [Colm MacCarthaigh]
