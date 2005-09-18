@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.1.8
 
+  *) mod_cgid: Append .PID to the script socket filename and remove the
+     script socket on exit. [Colm MacCarthaigh, Jim Jagielski]
+
   *) mod_cgid: run the get_suexec_identity hook within the request-handler 
      instead of within cgid. PR 36410. [Colm MacCarthaigh]
 
