@@ -38,6 +38,22 @@ if ap_mpm_is_threaded; then
     AC_MSG_CHECKING(checking for replacement)
     AC_MSG_RESULT(prefork selected)
     apache_cv_mpm=prefork
+  else
+    case $host in
+      *-linux-*)
+        case `uname -r` in
+          2.0* )
+            dnl Threaded MPM's are not supported on Linux 2.0
+            dnl as on 2.0 the linuxthreads library uses SIGUSR1
+            dnl and SIGUSR2 internally
+            echo "Threaded MPM's are not supported on this platform"
+            AC_MSG_CHECKING(checking for replacement)
+            AC_MSG_RESULT(prefork selected)
+            apache_cv_mpm=prefork
+          ;;
+        esac
+      ;;
+    esac
   fi
 fi
 
