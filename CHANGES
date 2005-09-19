@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.1.8
 
+  *) mod_disk_cache: Canonicalise the storage key, for improved hit/miss
+     ratio. [Colm MacCarthaigh]
+
   *) mod_cgid: Append .PID to the script socket filename and remove the
      script socket on exit. [Colm MacCarthaigh, Jim Jagielski]
 
