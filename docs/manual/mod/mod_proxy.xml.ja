@@ -699,9 +699,9 @@
         <td>-</td>
         <td>Balancer のロードバランス方法。使用するロードバランスの
         スケジューリング方法を選びます。処理したリクエストの数で重み付けする
-        <code>requests</code> か、転送量のバイト数で重み付けする
-        <code>traffic</code> を設定できます。デフォルトは
-        <code>requests</code> です。
+        <code>byrequests</code> か、転送量のバイト数で重み付けする
+        <code>bytraffic</code> を設定できます。デフォルトは
+        <code>byrequests</code> です。
     </td></tr>
     <tr><td>stickysession</td>
         <td>-</td>
