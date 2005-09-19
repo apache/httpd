@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.1.8
 
+  *) New provider function to list all available provider names in a
+     specific group and version (ap_list_provider_names). [Jim Jagielski]
+
   *) mod_cache: Enhance CacheEnable/CacheDisable to control caching on a
      per-protocol, per-host and per-path basis. Intended for proxy
      configurations. [Colm MacCarthaigh]
