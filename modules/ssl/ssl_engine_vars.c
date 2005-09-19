@@ -431,8 +431,9 @@ static char *ssl_var_lookup_ssl_cert_dn(apr_pool_t *p, X509_NAME *xsname, char *
                 n =OBJ_obj2nid((ASN1_OBJECT *)X509_NAME_ENTRY_get_object(xsne));
 
                 if (n == ssl_var_lookup_ssl_cert_dn_rec[i].nid && idx-- == 0) {
-                    result = apr_pstrmemdup(p, 
-                                            X509_NAME_ENTRY_get_data_ptr(xsne),
+                    unsigned char *data = X509_NAME_ENTRY_get_data_ptr(xsne);
+                    /* cast needed from unsigned char to char */
+                    result = apr_pstrmemdup(p, (char *)data,
                                             X509_NAME_ENTRY_get_data_len(xsne));
 #if APR_CHARSET_EBCDIC
                     ap_xlate_proto_from_ascii(result, X509_NAME_ENTRY_get_data_len(xsne));

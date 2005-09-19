@@ -1,6 +1,14 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.1.8
 
+  *) SECURITY: CAN-2005-2700 (cve.mitre.org)
+     mod_ssl: Fix a security issue where "SSLVerifyClient" was not
+     enforced in per-location context if "SSLVerifyClient optional"
+     was configured in the vhost configuration.  [Joe Orton]
+
+  *) mod_ssl: Catch parse errors from misconfigured or malformed
+     CRLs.  PR 36438.  [Joe Orton]
+
   *) mod_proxy/mod_proxy_balancer: lbmethods now implemented as
      providers. Prevent problems when no Vhost containers were
      configured with proxy balancers. [Jim Jagielski]
