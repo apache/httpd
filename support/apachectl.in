@@ -76,7 +76,7 @@ if [ "x$ARGV" = "x" ] ; then
 fi
 
 case $ARGV in
-start|stop|restart|graceful)
+start|stop|restart|graceful|graceful-stop)
     $HTTPD -k $ARGV
     ERROR=$?
     ;;

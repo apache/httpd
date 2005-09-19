@@ -65,6 +65,15 @@ extern "C" {
 /* Signal used to gracefully restart (as a quoted string) */
 #define AP_SIG_GRACEFUL_STRING "SIGUSR1"
 
+/* Signal used to gracefully stop */
+#define AP_SIG_GRACEFUL_STOP SIGWINCH
+
+/* Signal used to gracefully stop (without SIG prefix) */
+#define AP_SIG_GRACEFUL_STOP_SHORT WINCH
+
+/* Signal used to gracefully stop (as a quoted string) */
+#define AP_SIG_GRACEFUL_STOP_STRING "SIGWINCH"
+
 /**
  * Make sure all child processes that have been spawned by the parent process
  * have died.  This includes process registered as "other_children".
@@ -86,8 +95,25 @@ void ap_reclaim_child_processes(int terminate);
 #endif
 
 /**
- * Tell ap_reclaim_child_processes() about an MPM child process which has no
- * entry in the scoreboard.
+ * Catch any child processes that have been spawned by the parent process
+ * which have exited. This includes processes registered as "other_children".
+ * @warning This is only defined if the MPM defines 
+ *          AP_MPM_WANT_RECLAIM_CHILD_PROCESSES
+ * @tip This function requires that some macros are defined by the MPM: <pre>
+ *  MPM_CHILD_PID -- Get the pid from the specified spot in the scoreboard
+ *  MPM_NOTE_CHILD_KILLED -- Note the child died in the scoreboard
+ * </pre>
+ * @tip The MPM child processes which are relieved are those listed
+ * in the scoreboard as well as those currently registered via
+ * ap_register_extra_mpm_process().
+ */
+#ifdef AP_MPM_WANT_RECLAIM_CHILD_PROCESSES
+void ap_relieve_child_processes(void);
+#endif
+
+/**
+ * Tell ap_reclaim_child_processes() and ap_relieve_child_processes() about 
+ * an MPM child process which has no entry in the scoreboard.
  * @warning This is only defined if the MPM defines
  *          AP_MPM_WANT_RECLAIM_CHILD_PROCESSES
  * @param pid The process id of an MPM child process which should be
@@ -277,6 +303,20 @@ extern int ap_coredumpdir_configured;
 const char *ap_mpm_set_coredumpdir(cmd_parms *cmd, void *dummy,
                                    const char *arg);
 #endif
+
+/**
+ * Set the timeout period for a graceful shutdown.
+ */
+#ifdef AP_MPM_WANT_SET_GRACEFUL_SHUTDOWN
+extern int ap_graceful_shutdown_timeout;
+const char *ap_mpm_set_graceful_shutdown(cmd_parms *cmd, void *dummy,
+                                         const char *arg);
+#define AP_GRACEFUL_SHUTDOWN_TIMEOUT_COMMAND \
+AP_INIT_TAKE1("GracefulShutdownTimeout", ap_mpm_set_graceful_shutdown, NULL, \
+              RSRC_CONF, "Maximum time in seconds to wait for child "        \
+              "processes to complete transactions during shutdown")
+#endif
+
 
 #ifdef AP_MPM_WANT_SIGNAL_SERVER
 int ap_signal_server(int *, apr_pool_t *);

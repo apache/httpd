@@ -273,6 +273,38 @@ void ap_reclaim_child_processes(int terminate)
     } while (not_dead_yet > 0 &&
              action_table[cur_action].action != GIVEUP);
 }
+
+void ap_relieve_child_processes(void)
+{
+    int i;
+    extra_process_t *cur_extra;
+    int max_daemons;
+
+    ap_mpm_query(AP_MPMQ_MAX_DAEMON_USED, &max_daemons);
+
+    /* now see who is done */
+    for (i = 0; i < max_daemons; ++i) {
+        pid_t pid = MPM_CHILD_PID(i);
+
+        if (pid == 0) {
+            continue; /* not every scoreboard entry is in use */
+        }
+
+        if (reclaim_one_pid(pid, DO_NOTHING)) {
+            MPM_NOTE_CHILD_KILLED(i);
+        }
+    }
+
+    cur_extra = extras;
+    while (cur_extra) {
+        extra_process_t *next = cur_extra->next;
+
+        if (reclaim_one_pid(cur_extra->pid, DO_NOTHING)) {
+            AP_DEBUG_ASSERT(1 == ap_unregister_extra_mpm_process(cur_extra->pid));
+        }
+        cur_extra = next;
+    }
+}
 #endif /* AP_MPM_WANT_RECLAIM_CHILD_PROCESSES */
 
 #ifdef AP_MPM_WANT_WAIT_OR_TIMEOUT
@@ -760,6 +792,21 @@ const char *ap_mpm_set_coredumpdir(cmd_parms *cmd, void *dummy,
 }
 #endif
 
+#ifdef AP_MPM_WANT_SET_GRACEFUL_SHUTDOWN
+int ap_graceful_shutdown_timeout = 0;
+
+const char * ap_mpm_set_graceful_shutdown(cmd_parms *cmd, void *dummy,
+                                          const char *arg)
+{
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+    ap_graceful_shutdown_timeout = atoi(arg);
+    return NULL;
+}
+#endif
+
 #ifdef AP_MPM_WANT_SET_ACCEPT_LOCK_MECH
 apr_lockmech_e ap_accept_lock_mech = APR_LOCK_DEFAULT;
 
@@ -921,6 +968,20 @@ int ap_signal_server(int *exit_status, apr_pool_t *pconf)
             return 1;
         }
     }
+    
+    if (!strcmp(dash_k_arg, "graceful-stop")) {
+#ifdef AP_MPM_WANT_SET_GRACEFUL_SHUTDOWN
+        if (!running) {
+            printf("%s\n", status);
+        }
+        else {
+            *exit_status = send_signal(otherpid, AP_SIG_GRACEFUL_STOP);
+        }
+#else
+        printf("httpd MPM \"" MPM_NAME "\" does not support graceful-stop\n");
+#endif
+        return 1;
+    }
 
     return 0;
 }
@@ -949,7 +1010,8 @@ void ap_mpm_rewrite_args(process_rec *process)
         case 'k':
             if (!dash_k_arg) {
                 if (!strcmp(optarg, "start") || !strcmp(optarg, "stop") ||
-                    !strcmp(optarg, "restart") || !strcmp(optarg, "graceful")) {
+                    !strcmp(optarg, "restart") || !strcmp(optarg, "graceful") ||
+                    !strcmp(optarg, "graceful-stop")) {
                     dash_k_arg = optarg;
                     break;
                 }
