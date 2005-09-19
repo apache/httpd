@@ -28,16 +28,16 @@ Changes with Apache 2.3.0
      "GracefulShutdownTimeout" number of seconds before exiting. 
      [Colm MacCarthaigh, Ken Coar, Bill Stoddard]
 
-  *) prefork, worker and event MPMs: Prevent children from holding open 
-     listening ports upon graceful restart or stop. PR 28167. 
-     [Colm MacCarthaigh, Brian Pinkerton <bp thinkpink.com>]
-
   *) Teach mod_ssl to use arbitrary OIDs in an SSLRequire directive,
      allowing string-valued client certificate attributes to be used for
      access control, as in: SSLRequire "value" in OID("1.3.6.1.4.1.18060.1")
      [Martin Kraemer, David Reid]
 
 Changes with Apache 2.1.8
+
+  *) prefork, worker and event MPMs: Prevent children from holding open 
+     listening ports upon graceful restart or stop. PR 28167. 
+     [Colm MacCarthaigh, Brian Pinkerton <bp thinkpink.com>]
 
   *) mod_proxy/mod_proxy_balancer: lbmethods now implemented as
      providers. Prevent problems when no Vhost containers were
