@@ -104,14 +104,15 @@
 #endif
 
 struct cache_enable {
-    const char *url;
+    apr_uri_t url;
     const char *type;
     apr_size_t urllen;
+    apr_size_t pathlen;
 };
 
 struct cache_disable {
-    const char *url;
-    apr_size_t urllen;
+    apr_uri_t url;
+    apr_size_t pathlen;
 };
 
 /* static information about the local cache */
@@ -257,7 +258,7 @@ CACHE_DECLARE(void) ap_cache_usec2hex(apr_time_t j, char *y);
 CACHE_DECLARE(char *) ap_cache_generate_name(apr_pool_t *p, int dirlevels, 
                                              int dirlength, 
                                              const char *name);
-CACHE_DECLARE(cache_provider_list *)ap_cache_get_providers(request_rec *r, cache_server_conf *conf, const char *url);
+CACHE_DECLARE(cache_provider_list *)ap_cache_get_providers(request_rec *r, cache_server_conf *conf, apr_uri_t uri);
 CACHE_DECLARE(int) ap_cache_liststr(apr_pool_t *p, const char *list,
                                     const char *key, char **val);
 CACHE_DECLARE(const char *)ap_cache_tokstr(apr_pool_t *p, const char *list, const char **str);
@@ -274,7 +275,7 @@ CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_hdrs_out(apr_pool_t *pool,
  */
 int cache_remove_url(cache_request_rec *cache, apr_pool_t *p);
 int cache_create_entity(request_rec *r, char *url, apr_off_t size);
-int cache_select_url(request_rec *r, char *url);
+int cache_select(request_rec *r);
 apr_status_t cache_generate_key_default( request_rec *r, apr_pool_t*p, char**key );
 /**
  * create a key for the cache based on the request record
