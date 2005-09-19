@@ -1,6 +1,10 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.1.8
 
+  *) mod_cache: Enhance CacheEnable/CacheDisable to control caching on a
+     per-protocol, per-host and per-path basis. Intended for proxy
+     configurations. [Colm MacCarthaigh]
+
   *) mod_disk_cache: Canonicalise the storage key, for improved hit/miss
      ratio. [Colm MacCarthaigh]
 
