@@ -1,6 +1,10 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.1.8
 
+  *) mod_proxy/mod_proxy_balancer: lbmethods now implemented as
+     providers. Prevent problems when no Vhost containers were
+     configured with proxy balancers. [Jim Jagielski]
+
   *) New provider function to list all available provider names in a
      specific group and version (ap_list_provider_names). [Jim Jagielski]
 
