@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
-<!-- English Revision: 151408:280384 (outdated) -->
+<!-- English Revision: 280384 -->
 
 <!--
  Copyright 2003-2005 The Apache Software Foundation or its licensors,
@@ -166,6 +166,8 @@
 <directivesynopsis location="mpm_common"><name>MinSpareThreads</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>ScoreBoardFile</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ReceiveBufferSize</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>SendBufferSize</name>
 </directivesynopsis>
