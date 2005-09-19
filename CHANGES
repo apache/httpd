@@ -1,6 +1,11 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.1.8
 
+  *) prefork, worker and event MPMs: Support a graceful-stop procedure:
+     Server will wait until existing requests are finished or until  
+     "GracefulShutdownTimeout" number of seconds before exiting. 
+     [Colm MacCarthaigh, Ken Coar, Bill Stoddard]
+
   *) prefork, worker and event MPMs: Prevent children from holding open 
      listening ports upon graceful restart or stop. PR 28167. 
      [Colm MacCarthaigh, Brian Pinkerton <bp thinkpink.com>]
