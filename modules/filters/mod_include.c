@@ -3091,7 +3091,7 @@ static apr_status_t send_parsed_content(ap_filter_t *f, apr_bucket_brigade *bb)
         apr_size_t len, index, release;
         apr_bucket *newb = NULL;
         char **store = &magic;
-        apr_size_t *store_len;
+        apr_size_t *store_len = NULL;
 
         /* handle meta buckets before reading any data */
         if (APR_BUCKET_IS_METADATA(b)) {
