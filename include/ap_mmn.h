@@ -84,6 +84,7 @@
  * 20020903.9 (2.0.51-dev) create pcommands and initialize arrays before
  *                         calling ap_setup_prelinked_modules
  * 20020903.10 (2.0.55-dev) added ap_get_server_revision / ap_version_t
+ *                          add ap_log_cerror()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503230UL /* "AP20" */

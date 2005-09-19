@@ -110,7 +110,7 @@ RELEASE SHOWSTOPPERS:
       httpd/branches/2.0.x/... preserving the detail of all of the individually
       backported changes.
 
-       +1: wrowe, jim
+       +1: wrowe, jim, minfrin
        -1:
 
       For a complete history of individual unit changes, see r230703 - r230744 in
@@ -129,17 +129,7 @@ RELEASE SHOWSTOPPERS:
 
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
-  [ please append new backports at the end of this list not the top. ]
-
-    *) several changes to improve logging of connection-oriented errors, including
-       ap_log_cerror() API (needs minor bump in addition to changes below)
-         http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/core.c?r1=1.289&r2=1.291
-         http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/log.c?r1=1.150&r2=1.151
-         http://cvs.apache.org/viewcvs.cgi/httpd-2.0/include/http_log.h?r1=1.46&r2=1.48
-       +1: trawick, stoddard, wrowe 
-       [wrowe notes that his previous objection is moot, based on security fixes
-        applied between .44 and .54 - but -please- doxygen the version of Apache
-        required in the API header note, for users who adopt this alternative.]
+  [ start all new proposals below, under PATCHES PROPOSED. ]
 
     *) mod_cgi: Added API call and overload of detached field in
        cgi_exec_info_t structure to support loading in current or new address
@@ -172,60 +162,54 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
           nd: I'm going to reverse the default
           jerenkrantz, striker: I'm confused as to the status of this backport.
 
-    * support/check_forensic: Fix tempfile usage
-      svn rev 125495, 126224
-      jerenkrantz says: r126224 fixes brokenness with r125495 on Solaris.
-      +1: thommay, jerenkrantz, trawick
-      trawick: "which" isn't portable; I've suggested a work-around on dev@
-        (not standing in way of backport)
-      jorton said: NetBSD's which isn't sufficient either.
-      jerenkrantz: Since it's not in the critical path (and depends on
-                   mod_log_forensic), I think it's still worth it to backport
-                   it as-is.  For the one or two platforms that don't like 
-                   which, they can write their own version of the script.
+    *) support/check_forensic: Fix tempfile usage
+       svn rev 125495, 126224
+       jerenkrantz says: r126224 fixes brokenness with r125495 on Solaris.
+       +1: thommay, jerenkrantz, trawick
+       trawick: "which" isn't portable; I've suggested a work-around on dev@
+         (not standing in way of backport)
+       jorton said: NetBSD's which isn't sufficient either.
+       jerenkrantz: Since it's not in the critical path (and depends on
+                    mod_log_forensic), I think it's still worth it to backport
+                    it as-is.  For the one or two platforms that don't like 
+                    which, they can write their own version of the script.
+       (jorton agrees)
 
-    * Win32: Move call to mpm_service_install to the rewrite_args hook
-      from the post_config hook.
-      http://svn.apache.org/viewcvs?view=rev&rev=154319
-      +1: stoddard, striker, wrowe (as corrected in subsequent patches)
+    *) Win32: Move call to mpm_service_install to the rewrite_args hook
+       from the post_config hook.
+         http://svn.apache.org/viewcvs?view=rev&rev=154319
+       +1: stoddard, striker, wrowe (as corrected in subsequent patches)
 
-    * mod_version: New Module, Backport from trunk. Requires Minor MMN Bump.
-      http://svn.apache.org/repos/asf/httpd/httpd/branches/mod_version_for_2.0.x
-      +1: pquerna, nd
-      Votes from before the integration branch:
-          +1: jerenkrantz, wrowe (trivial, would even be cool in 1.3)
-
-     *) proxy FTP: Fix confusion about globbing characters which could lead
-        to getting a directory listing when a file was requested.  PR 34512.
-        2.1 patch was http://svn.apache.org/viewcvs?rev=179704&view=rev
-        2.0 version: http://people.apache.org/~trawick/179704-20.txt
-        +1: trawick, jorton, wrowe
-
-    *) Prevent bad dereferencing of non-existent req struct in
-       mod_auth_ldap's mod_auth_ldap_auth_checker() if
-       mod_auth_ldap_check_user_id() was never (fully) called.
-       Similar behavior to that in 2.1/2.2.
-         http://people.apache.org/~jim/mod_auth_ldap-2.0.patch
-       +1: jim, minfrin, bnicholes
-
-     *) Add httxt2dbm for creating RewriteMap DBM Files.
-        http://svn.apache.org/viewcvs.cgi?rev=209539&view=rev
-        +1: pquerna, jorton, trawick
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ please place SVN revisions from trunk here, so it is easy to
-    identify exactly what the proposed changes are! ]
-
-    *) Fix CAN-2005-2491, integer overflow in pcre.
-         http://svn.apache.org/viewcvs?rev=233493&view=rev
-       rediff for 2.0: http://people.apache.org/~jorton/CAN-2005-2491.patch
-       test case: perl-framework/t/security/CAN-2005-2491.t
-       +1: jorton, nd
+    *) Add httxt2dbm for creating RewriteMap DBM Files.
+       http://svn.apache.org/viewcvs.cgi?rev=209539&view=rev
+       +1: pquerna, jorton, trawick
 
     *) Remove the base href tag from mod_proxy_ftp, as it breaks relative
        links for clients not using an Authorization header.
          modules/proxy/mod_proxy_ftp.c: r231044
        +1: minfrin, jim, nd
+
+    *) mod_version: New Module, Backport from trunk. Requires Minor MMN Bump.
+       http://svn.apache.org/repos/asf/httpd/httpd/branches/mod_version_for_2.0.x
+       +1: pquerna, nd, wrowe
+       Votes from before the integration branch: +1: jerenkrantz
+
+    *) Fix CAN-2005-2491, integer overflow in pcre.
+         http://svn.apache.org/viewcvs?rev=233493&view=rev
+       rediff for 2.0: http://people.apache.org/~jorton/CAN-2005-2491.patch
+       test case: perl-framework/t/security/CAN-2005-2491.t
+       +1: jorton, nd, wrowe
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ please place SVN revisions from trunk here, so it is easy to
+    identify exactly what the proposed changes are!  Add all new
+    proposals to the end of this list. ]
+
+    *) Fix CAN-2005-2700, mod_ssl SSLVerifyClient bug
+         http://svn.apache.org/viewcvs?rev=264800&view=rev
+       test case: perl-framework/t/security/CAN-2005-2700.t
+       +1: jorton, wrowe
+       wrowe cautions to backport to 2.2.x branch as well.
 
     *) Correct RFC 2616 non-compliance by refusing to proxy a request body 
        in a TRACE request, unless TraceEnable extended is configured.
@@ -233,7 +217,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        full control of TRACE request handling.  RFC 2616 does NOT require
        TRACE (although to disable remains silly).  Current patch at;
           http://people.apache.org/~wrowe/httpd-2.0-trace.patch
-       +1 wrowe, jimjag
+       +1 wrowe, jimjag, colm
+         colm notes: There are some \n's in apr_table_setn calls that are
+                     not consistent with other calls to apr_table_setn.
+                     There is no documentation for TraceEnable in trunk to 
+                     backport, shouldn't release while still undocumented.
 
     *) mod_headers: Support {...}s tag for SSL variable lookup.
        http://www.apache.org/~jorton/mod_headers-2.0-ssl.diff
@@ -287,50 +275,26 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         rediffed for 2.0.x as:
         http://issues.apache.org/bugzilla/attachment.cgi?id=14804
         PR: 34452
-        +1: jorton
+        +1: jorton, trawick
 
-     *) EBCDIC: Handle chunked input from client or, with proxy, origin
-        server.
-        http://svn.apache.org/viewcvs?rev=178262&view=rev
-        (With 2.0.x it is the same code in the same function, but in 
-        a different source file.)
-        +1: trawick, wrowe, nd
-
-     *) Support the suppress-error-charset setting, as with Apache 1.3.x.
-        PR 31274. (current docs say it works with Apache from 2.0.40 ;) )
-        http://svn.apache.org/viewcvs?rev=170354&view=rev
-        +1: trawick, jorton, nd
-
-     *) mod_mime_magic: Handle CRLF-format magic files so that it works with
-        the default installation on Windows. 
+     *) mod_mime_magic: Handle CRLF-format^H^H^H^H^H^H^H magic files 
+        with any trailing whitespace so that it works with the
+        default installation on Windows.
         http://svn.apache.org/viewcvs?rev=179622&view=rev
+        http://svn.apache.org/viewcvs?rev=280114&view=rev
         +1: trawick, wrowe
-        wrowe asks: is it possible to simply strip trailing whitespace instead
-                    of special handling for the end of line characters?  
-                    Seems more portable.
-        trawick says: makes sense; searching for bandwidth
+         backported 280114 to 2.2.x branch already
 
      *) mod_cache: Fix handling of 'Vary: *". PR 16125.
         Trunk: r180341
         2.0.x Patch: http://issues.apache.org/bugzilla/attachment.cgi?id=15297
-        +1: pquerna
+        +1: pquerna, jerenkrantz, colm
+        jerenkrantz notes: I do prefer the version from r190033 (own if check).
 
      *) mod_ssl: Fix buffering in SSL output filter.
         http://svn.apache.org/viewcvs?rev=189971&view=rev
         PR: 35279
-        +1: jorton
-
-     *) mod_include: Fix possible variable corruption with nested
-        includes.
-        http://svn.apache.org/viewcvs?rev=179763&view=rev
-        2.0.x patch: http://people.apache.org/~jorton/ap_pr12655.patch
-        test case in perl-framework/t/modules/include.t
-        PR: 12655
-        +1: jorton, nd
-
-     *) mod_auth_digest: Fix hostinfo validation for CONNECT requests.
-        http://svn.apache.org/viewcvs.cgi?rev=193127&view=rev
-        +1: jorton, nd
+        +1: jorton, jerenkrantz
 
      *) Reverse Proxy fixes: <Location> bug and Cookie support
         Patch is at
@@ -338,6 +302,39 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         and is in production with Clients.
         +1: niq, nd
           niq: I'm seeing *a lot* of demand for this.
+          jerenkrantz: Didn't a variant of this get committed to trunk?
+                       If so, what revision?  And, is there a clean patch for
+                       2.0?  (The patch in that message isn't clean.)
+
+    *) Block mod_cgid usage on Solaris 10 due to OS bugs.  PR 34264.
+       http://svn.apache.org/viewcvs?view=rev&rev=264866
+       +1: jerenkrantz, colm
+
+    *) mod_cgid: Fix PR 36410. Invoke the set_suexec_identity hook from
+       the non-cgid side of the handler, where the full per-server/dir/etc
+       configuration is available instead of using two mod_suexec and
+       mod_userdir specific hacks. See mod_vhost_ldap for an example
+       third-party get_suexec_identity implementation.
+         http://people.apache.org/~colm/2.0.x-suexec-cgid.patch
+       +1: colm
+  
+    *) Add ReceiveBufferSize directive to control the TCP receive buffer. 
+       code: http://svn.apache.org/viewcvs?view=rev&rev=157583
+             http://svn.apache.org/viewcvs?rev=280401&view=rev
+       docs: http://svn.apache.org/viewcvs?rev=280384&view=rev
+       +1: stas
+       -0: colm
+           colm: It's a useful feature, but TCP window size selection 
+                 algorithims can be pretty "interesting", probably more
+                 2.2. 
+
+    *) mod_ldap: Fix PR 36563. Keep track of the number of attributes
+       retrieved from LDAP so that all of the values can be properly 
+       cached even if the value is NULL.
+         http://issues.apache.org/bugzilla/attachment.cgi?id=16429
+	 or 
+	 http://svn.apache.org/viewcvs.cgi?rev=156587&view=rev
+       +1: bnicholes
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
@@ -376,125 +373,125 @@ PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
               2.0, just let 'em in
        -1: wrowe (as nd suggests, leave the dead horse in peace.)
 
-    * Replace some of the mutex locking in the worker MPM with
-      atomic operations for higher concurrency.
-      server/mpm/worker/fdqueue.c 1.24, 1.25
-      +1: brianp, ianh, jjclar
-      trawick: Doesn't this make Apache 2.0.next slower except
-               when the right atomic operations are available/
-               implemented?  (Due to under-the-covers mutex
-               operations when the dummy atomics are used?)
-      pquerna: Has anyone tested the performance differences 
-               for different platforms? At this point I would 
-               favour waiting for 2.2.
-      -0: stoddard (at least until the performance implications are clarified)
+    *) Replace some of the mutex locking in the worker MPM with
+       atomic operations for higher concurrency.
+         server/mpm/worker/fdqueue.c 1.24, 1.25
+       +1: brianp, ianh, jjclar
+       trawick: Doesn't this make Apache 2.0.next slower except
+                when the right atomic operations are available/
+                implemented?  (Due to under-the-covers mutex
+                operations when the dummy atomics are used?)
+       pquerna: Has anyone tested the performance differences 
+                for different platforms? At this point I would 
+                favour waiting for 2.2.
+       -0: stoddard (at least until the performance implications are clarified)
 
-    * Allow mod_dav to do weak entity comparison functions.
-      modules/dav/main/util.c: r1.45
-      [ This one is under review.  Don't merge.  ]
-      +1:
+    *) Allow mod_dav to do weak entity comparison functions.
+       modules/dav/main/util.c: r1.45
+       [ This one is under review.  Don't merge.  ]
+       +1:
 
-    * mod_negotiation: parse quality values independent from
-      the current locale and level values as integers. PR 17564.
-      (essentially: get a rid of atof()) (2.0 + 1.3)
-      modules/mappers/mod_negotiation.c: r1.114
-      +1: nd
+    *) mod_negotiation: parse quality values independent from
+       the current locale and level values as integers. PR 17564.
+       (essentially: get a rid of atof()) (2.0 + 1.3)
+       modules/mappers/mod_negotiation.c: r1.114
+       +1: nd
          We need to decide what happens with unparsable qvalues. RFC 2616
          states that q defaults to 1. (see 14.1 - 14.4). So should wrong
          qvalues be returned as 1.0 or 0.0 (as atof() did)?
          1.0: nd
          0.0: jim (a default != an "errored" value)
 
-    * Keep the same SSLMutex for the lifetime of the parent process
-      (instead of having children using different mutexes and failing
-      to lock the session cache across restarts.)
-      New patch forthcoming - JimJag's changes make the merge ugly.
-      +1: wrowe
-      +1 (concept): jim (final vote when the patch is available)
+    *) Keep the same SSLMutex for the lifetime of the parent process
+       (instead of having children using different mutexes and failing
+       to lock the session cache across restarts.)
+       New patch forthcoming - JimJag's changes make the merge ugly.
+       +1: wrowe
+       +1 (concept): jim (final vote when the patch is available)
 
-    * Fix the SSLMutex config parser so that all 'mechanisms' can take
-      a filename, even if ignored, and they are rooted to the full path
-      to the server (except for posixsem locks).  This allows a very
-      cross-platform default:logs/ssl_mutex to be used everywhere.  Also
-      eliminates the '.pid' suffix so that the name given is the name.
-      Allows Win32 and other non-unicies to use named locks.
-      New patch forthcoming - JimJag's changes make the merge ugly.
-      +1: wrowe
-      +1 (concept): jim (final vote when the patch is available)
+    *) Fix the SSLMutex config parser so that all 'mechanisms' can take
+       a filename, even if ignored, and they are rooted to the full path
+       to the server (except for posixsem locks).  This allows a very
+       cross-platform default:logs/ssl_mutex to be used everywhere.  Also
+       eliminates the '.pid' suffix so that the name given is the name.
+       Allows Win32 and other non-unicies to use named locks.
+       New patch forthcoming - JimJag's changes make the merge ugly.
+       +1: wrowe
+       +1 (concept): jim (final vote when the patch is available)
 
-    * mod_ssl: Drop SSL_EXPERIMENTAL_ENGINE test in favor of testing for the
-      ENGINE_init() function in config.m4, and use HAVE_ENGINE_INIT instead.
-      wrowe notes that this feature is a noop until configured with SSLEngine.
-      http://www.apache.org/~wrowe/have_engine_init.patch for a clean 2.0 patch.
-      modules/ssl/README 1.40
-      modules/ssl/config.m4 1.14
-      modules/ssl/mod_ssl.c 1.79
-      modules/ssl/mod_ssl.h 1.135
-      modules/ssl/ssl_engine_config.c 1.78
-      modules/ssl/ssl_engine_init.c 1.113
-      modules/ssl/ssl_toolkit_compat.c 1.33
-      +0: wrowe {Pending research into how to get AC to use -lsockets et. al.,
-                 shows breakage on Solaris which can't -lcrypto -lssl without
-                 the extra pkgconfig/openssl.pc Libs: * foo }
+    *) mod_ssl: Drop SSL_EXPERIMENTAL_ENGINE test in favor of testing for the
+       ENGINE_init() function in config.m4, and use HAVE_ENGINE_INIT instead.
+       wrowe notes that this feature is a noop until configured with SSLEngine.
+       http://www.apache.org/~wrowe/have_engine_init.patch for a clean 2.0 patch.
+       modules/ssl/README 1.40
+       modules/ssl/config.m4 1.14
+       modules/ssl/mod_ssl.c 1.79
+       modules/ssl/mod_ssl.h 1.135
+       modules/ssl/ssl_engine_config.c 1.78
+       modules/ssl/ssl_engine_init.c 1.113
+       modules/ssl/ssl_toolkit_compat.c 1.33
+       +0: wrowe {Pending research into how to get AC to use -lsockets et. al.,
+                  shows breakage on Solaris which can't -lcrypto -lssl without
+                  the extra pkgconfig/openssl.pc Libs: * foo }
 
-    * mod_ssl: fix a link failure when the openssl-engine libraries are
-      present but the engine headers are missing.
-        modules/ssl/mod_ssl.c: r1.87
-        modules/ssl/mod_ssl.h: r1.139
-        modules/ssl/ssl_engine_config.c: r1.82
-      PREREQ: Blow away of SSL_EXPERIMENTAL_ENGINE (see above)
-      +1: jwoolley, trawick, jim, jerenkrantz
+    *) mod_ssl: fix a link failure when the openssl-engine libraries are
+       present but the engine headers are missing.
+         modules/ssl/mod_ssl.c: r1.87
+         modules/ssl/mod_ssl.h: r1.139
+         modules/ssl/ssl_engine_config.c: r1.82
+       PREREQ: Blow away of SSL_EXPERIMENTAL_ENGINE (see above)
+       +1: jwoolley, trawick, jim, jerenkrantz
 
-    * When UseCanonicalName is set to OFF, allow ap_get_server_port to 
-      check r->connection->local_addr->port before defaulting to 
-      server->port or ap_default_port()
-        server/core.c r1.247
-      +1: bnicholes, jim, wrowe
+    *) When UseCanonicalName is set to OFF, allow ap_get_server_port to 
+       check r->connection->local_addr->port before defaulting to 
+       server->port or ap_default_port()
+         server/core.c r1.247
+       +1: bnicholes, jim, wrowe
        0: nd, jerenkrantz
-         nd: can the local_addr->port ever be 0?
-	 bnicholes response: I couldn't tell you for sure if local_addr->port
-	  could be 0.  But it makes sense that if it were then Apache 
-	  wouldn't be listening on any port so it wouldn't matter anyway.
-         nd replies: But if it can't be 0 the alternatives thereafter make no
-           sense anymore, right?
-	 jim proposes: UseCanonicalName Client directive
-	   which implements this, keeping UseCanonicalName Off
-	   "as is". 
+          nd: can the local_addr->port ever be 0?
+	  bnicholes response: I couldn't tell you for sure if local_addr->port
+	    could be 0.  But it makes sense that if it were then Apache 
+	    wouldn't be listening on any port so it wouldn't matter anyway.
+          nd replies: But if it can't be 0 the alternatives thereafter make no
+            sense anymore, right?
+	  jim proposes: UseCanonicalName Client directive
+	    which implements this, keeping UseCanonicalName Off
+ 	    "as is".
 
-    * ThreadStackSize for Win32 and threaded MPMs
-      trawick will eventually put together a patch for httpd 2.0.next
-      +1 concept: trawick, nd, stoddard, wrowe
+    *) ThreadStackSize for Win32 and threaded MPMs
+       trawick will eventually put together a patch for httpd 2.0.next
+       +1 concept: trawick, nd, stoddard, wrowe
       
-    * don't propagate input headers describing a body to a GET subrequest
-      with no body
-      http://svn.apache.org/viewcvs?view=rev&rev=158798
-      http://svn.apache.org/viewcvs?view=rev&rev=159410
-      http://svn.apache.org/viewcvs?view=rev&rev=160573
-      +1: gregames
-      -1: jerenkrantz (read_length isn't a sufficient check to see if a body
+    *) don't propagate input headers describing a body to a GET subrequest
+       with no body
+       http://svn.apache.org/viewcvs?view=rev&rev=158798
+       http://svn.apache.org/viewcvs?view=rev&rev=159410
+       http://svn.apache.org/viewcvs?view=rev&rev=160573
+       +1: gregames
+       -1: jerenkrantz (read_length isn't a sufficient check to see if a body
                        is present in the request; presence of T-E and C-L in
                        the headers is the correct flag.)
-          gregames: done in rev 160573
-      ±0: wrowe (this has a negative impact on modules who wish to 'inspect'
-            the headers, e.g. an xml transformation affected by the query
-            string or request POST args.  The right solution is adopt apreq,
-            providing an API for filters to participate in POST bodies.)
-          gregames: this does not affect POSTs.  the affected function helps
-            create a GET subrequest with no body and is unprepared to deal with
-            subrequest bodies.  any modules or applications wishing to
-            inspect headers will in fact work better because the headers will
-            reflect reality.
+           gregames: done in rev 160573
+       ±0: wrowe (this has a negative impact on modules who wish to 'inspect'
+             the headers, e.g. an xml transformation affected by the query
+             string or request POST args.  The right solution is adopt apreq,
+             providing an API for filters to participate in POST bodies.)
+           gregames: this does not affect POSTs.  the affected function helps
+             create a GET subrequest with no body and is unprepared to deal with
+             subrequest bodies.  any modules or applications wishing to
+             inspect headers will in fact work better because the headers will
+             reflect reality.
 
 
 CURRENT VOTES:
 
-    * Promote mod_ldap and mod_auth_ldap from experimental to
-      non experimental status.
-      +1: bnicholes, wrowe
-      +0: minfrin (wait till the last cache bugs are ironed out)
-      -1: jerenkrantz
+    *) Promote mod_ldap and mod_auth_ldap from experimental to
+       non experimental status.
+       +1: bnicholes, wrowe
+       +0: minfrin (wait till the last cache bugs are ironed out)
+       -1: jerenkrantz
 
-    * httpd-std.conf and friends;
+    *) httpd-std.conf and friends;
 
       a) httpd-std.conf should be tailored by install (from src or
          binbuild) even if user has existing httpd.conf
@@ -527,28 +524,28 @@ CURRENT VOTES:
                  include the updated directives and inline comments
                  that explain the changes and make the 'diff' more useful.
 
-    * If the parent process dies, should the remaining child processes
-      "gracefully" self-terminate. Or maybe we should make it a runtime
-      option, or have a concept of 2 parent processes (one being a 
-      "hot spare").
-      See: Message-ID: <3C58232C.FE91F19F@Golux.Com>
+    *) If the parent process dies, should the remaining child processes
+       "gracefully" self-terminate. Or maybe we should make it a runtime
+       option, or have a concept of 2 parent processes (one being a 
+       "hot spare").
+       See: Message-ID: <3C58232C.FE91F19F@Golux.Com>
 
-      Self-destruct: Ken, Martin
-      Not self-destruct: BrianP, Ian, Cliff, BillS
-      Make it runtime configurable: Aaron, Justin, wrowe, rederpj, jim, nd
+       Self-destruct: Ken, Martin
+       Not self-destruct: BrianP, Ian, Cliff, BillS
+       Make it runtime configurable: Aaron, Justin, wrowe, rederpj, jim, nd
 
-      /* The below was a concept on *how* to handle the problem */
-      Have 2 parents: +1: jim
-                      -1: Justin, wrowe, rederpj, nd
-                      +0: Martin (while standing by, could it do
+       /* The below was a concept on *how* to handle the problem */
+       Have 2 parents: +1: jim
+                       -1: Justin, wrowe, rederpj, nd
+                       +0: Martin (while standing by, could it do
                                   something useful?)
 
-    * Make the worker MPM the default MPM for threaded Unix boxes.
-      +1:   Justin, Ian, Cliff, BillS, striker
-      +0:   BrianP, Aaron (mutex contention is looking better with the
-            latest code, let's continue tuning and testing), rederpj, jim
-      -0:   Lars, wrowe (let's make this defacto for the 2.2 release.),
-            nd (for 2.0)
+    *) Make the worker MPM the default MPM for threaded Unix boxes.
+       +1:   Justin, Ian, Cliff, BillS, striker
+       +0:   BrianP, Aaron (mutex contention is looking better with the
+             latest code, let's continue tuning and testing), rederpj, jim
+       -0:   Lars, wrowe (let's make this defacto for the 2.2 release.),
+             nd (for 2.0)
 
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:

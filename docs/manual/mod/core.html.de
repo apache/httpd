@@ -1858,21 +1858,19 @@ HTTP-Request-Headers</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
 </table>
-    <p>Die Direktive gibt die Anzahl der <var>Bytes</var> zwischen 0
-    und dem Wert der zur Kompilierungszeit definierten Konstante
-    <code>DEFAULT_LIMIT_REQUEST_FIELDSIZE</code> (<code>8190</code> bei
-    der Auslieferung) an, die in einem HTTP-Header erlaubt sind.</p>
+  <p>Die Direktive gibt die Anzahl der <var>Bytes</var> an, die in einem
+    HTTP-Header erlaubt sind.</p>
 
     <p>Die Direktive <code class="directive">LimitRequestFieldsize</code> erlaubt es
     dem Serveradministrator, die maximale Größe eines
-    HTTP-Request-Headers auf einen Wert unterhalb der normalen, im Server
-    einkompilierten Größe des Eingabepuffers zu verringern.
-    Für den Server muss der Wert groß genug sein, um eine beliebige
-    Headerzeile einer normalen Client-Anfrage vorzuhalten. Die
-    Größe variiert stark zwischen den verschiedenen
-    Client-Ausführungen, oft abhängig vom Ausmaß, mit dem
-    der Anwender die genaue Content-Negotiation-Unterstützung seines
-    Browsers konfiguriert hat.</p>
+    HTTP-Request-Headers zu verringern oder erhöhen. Für den Server
+    muss der Wert groß genug sein, um eine beliebige Headerzeile einer
+    normalen Client-Anfrage vorzuhalten. Die Größe variiert stark
+    zwischen den verschiedenen Client-Ausführungen, oft abhängig vom
+    Ausmaß, mit dem der Anwender die genaue
+    Content-Negotiation-Unterstützung seines Browsers konfiguriert hat.
+    SPNEGO-Authentisierungs-Header können bis zu 12392 Bytes lang
+    sein.</p>
 
     <p>Die Direktive gibt dem Serveradministrator eine größere
     Kontrolle gegenüber abnormalem Verhalten von Clients, was bei der
@@ -1887,6 +1885,10 @@ HTTP-Request-Headers</td></tr>
 
     <div class="note">Unter normalen Umständen sollte die Voreinstellung nicht
     verändert werden.</div>
+
+    <div class="note">Sie benötigen mindestens Apache 2.0.53, um das Limit
+    über den einkompilierten Wert von DEFAULT_LIMIT_REQUEST_FIELDSIZE
+    hinaus zu setzen (8190 bei der Auslieferung).</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

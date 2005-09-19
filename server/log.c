@@ -405,6 +405,7 @@ AP_DECLARE(void) ap_error_log2stderr(server_rec *s) {
 
 static void log_error_core(const char *file, int line, int level,
                            apr_status_t status, const server_rec *s,
+                           const conn_rec *c,
                            const request_rec *r, apr_pool_t *pool,
                            const char *fmt, va_list args)
 {
@@ -416,6 +417,10 @@ static void log_error_core(const char *file, int line, int level,
     apr_file_t *logf = NULL;
     const char *referer;
     int level_and_mask = level & APLOG_LEVELMASK;
+
+    if (r && r->connection) {
+        c = r->connection;
+    }
 
     if (s == NULL) {
         /*
@@ -512,14 +517,14 @@ static void log_error_core(const char *file, int line, int level,
     }
 #endif /* TPF */
 
-    if (r && r->connection) {
+    if (c) {
         /* XXX: TODO: add a method of selecting whether logged client
          * addresses are in dotted quad or resolved form... dotted
          * quad is the most secure, which is why I'm implementing it
          * first. -djg
          */
         len += apr_snprintf(errstr + len, MAX_STRING_LEN - len,
-                            "[client %s] ", r->connection->remote_ip);
+                            "[client %s] ", c->remote_ip);
     }
     if (status != 0) {
         if (status < APR_OS_START_EAIERR) {
@@ -598,7 +603,7 @@ AP_DECLARE(void) ap_log_error(const char *file, int line, int level,
     va_list args;
 
     va_start(args, fmt);
-    log_error_core(file, line, level, status, s, NULL, NULL, fmt, args);
+    log_error_core(file, line, level, status, s, NULL, NULL, NULL, fmt, args);
     va_end(args);
 }
 
@@ -609,7 +614,7 @@ AP_DECLARE(void) ap_log_perror(const char *file, int line, int level,
     va_list args;
 
     va_start(args, fmt);
-    log_error_core(file, line, level, status, NULL, NULL, p, fmt, args);
+    log_error_core(file, line, level, status, NULL, NULL, NULL, p, fmt, args);
     va_end(args);
 }
 
@@ -620,7 +625,8 @@ AP_DECLARE(void) ap_log_rerror(const char *file, int line, int level,
     va_list args;
 
     va_start(args, fmt);
-    log_error_core(file, line, level, status, r->server, r, NULL, fmt, args);
+    log_error_core(file, line, level, status, r->server, NULL, r, NULL, fmt,
+                   args);
 
     /*
      * IF APLOG_TOCLIENT is set,
@@ -638,6 +644,18 @@ AP_DECLARE(void) ap_log_rerror(const char *file, int line, int level,
                        ap_escape_html(r->pool, apr_pvsprintf(r->pool, fmt,
                                                              args)));
     }
+    va_end(args);
+}
+
+AP_DECLARE(void) ap_log_cerror(const char *file, int line, int level,
+                               apr_status_t status, const conn_rec *c,
+                               const char *fmt, ...)
+{
+    va_list args;
+
+    va_start(args, fmt);
+    log_error_core(file, line, level, status, c->base_server, c, NULL, NULL,
+                   fmt, args);
     va_end(args);
 }
 

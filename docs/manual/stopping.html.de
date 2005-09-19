@@ -25,9 +25,6 @@
 <a href="./ko/stopping.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./ru/stopping.html" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a></p>
 </div>
-<div class="outofdate">Diese Übersetzung ist möglicherweise
-            nicht mehr aktuell. Bitte prüfen Sie die englische Version auf
-            die neuesten Änderungen.</div>
 
     <p>Dieses Dokument umfasst das Beenden und Neustarten des
     Apache auf Unix-ähnlichen Systemen. Anwender von Windows NT, 2000
@@ -129,7 +126,8 @@
     beschleunigen, entsprechend weitere erstellt. Auf diese Weise versucht
     der Code sowohl die Anzahl der Kinder entsprechend der Serverlast
     anzupassen als auch Ihre Wünsche hinsichtlich des Parameters
-    <code class="directive">StartServers</code> zu berücksichtigen.</p>
+    <code class="directive"><a href="./mod/mpm_common.html#startservers">StartServers</a></code> zu
+    berücksichtigen.</p>
 
     <p>Benutzer von <code class="module"><a href="./mod/mod_status.html">mod_status</a></code> werden feststellen,
     dass die Serverstatistiken <strong>nicht</strong> auf Null
@@ -209,10 +207,12 @@
 
     <p>Vor der Version 1.2b9 des Apache existierten verschiedene
     <em>Wettkampfsituationen</em> (race conditions), die den Neustart und
-    die Signale beeinflußt haben. (Eine einfache Beschreibung einer
-    Wettkampfsituation lautet: es ist ein zeitabhängiges Problem; wenn
-    etwas zum falschen Zeitpunkt erfolgt, wird es sich nicht wie erwartet
-    verhalten.) Bei Architekturen mit dem "richtigen" Funktionsumfang
+    die Signale beeinflußt haben. (Einfach erklärt ist eine
+    Wettkampfsituation ein zeitabhängiges Problem - wenn
+    etwas zum falschen Zeitpunkt erfolgt oder Dinge in der falschen
+    Reihenfolge passieren, ist unerwartetes Verhalten die Folge. Wenn die
+    gleichen Dinge zur richtigen Zeit geschehen, funktioniert alles korrekt.)
+    Bei Architekturen mit dem "richtigen" Funktionsumfang
     haben wir so viele eliminiert wie wir nur konnten. Dennoch
     sollte beachtet werden, dass noch immer Wettkampfsituationen auf
     bestimmten Architekturen existieren.</p>
