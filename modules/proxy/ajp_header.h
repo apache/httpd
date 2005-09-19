@@ -13,6 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/**
+ * @file ajp_header.h
+ * @brief AJP defines
+ *
+ * @addtogroup AJP_defines
+ * @{
+ */
+
 #ifndef AJP_HEADER_H
 #define AJP_HEADER_H
 
@@ -163,3 +172,4 @@
 #define SC_RES_HEADERS_NUM          11
 
 #endif /* AJP_HEADER_H */
+/** @} */

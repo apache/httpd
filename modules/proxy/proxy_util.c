@@ -1155,7 +1155,6 @@ PROXY_DECLARE(const char *) ap_proxy_add_balancer(proxy_balancer **balancer,
                                                   const char *url)
 {
     char *c, *q, *uri = apr_pstrdup(p, url);
-    int i;
     proxy_balancer_method *lbmethod;
 
     c = strchr(uri, ':');   
@@ -1173,12 +1172,9 @@ PROXY_DECLARE(const char *) ap_proxy_add_balancer(proxy_balancer **balancer,
      * NOTE: The default method is byrequests, which we assume
      * exists!
      */
-    lbmethod = (proxy_balancer_method *)conf->lbmethods->elts;
-    for (i = 0; i < conf->lbmethods->nelts; i++) {
-        if (!strcasecmp(lbmethod->name, "byrequests")) {
-            break;
-        }
-        lbmethod++;
+    lbmethod = ap_lookup_provider(PROXY_LBMETHOD, "byrequests", "0");
+    if (!lbmethod) {
+        return "Can't find 'byrequests' lb method";
     }
 
     (*balancer)->name = uri;

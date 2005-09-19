@@ -17,8 +17,13 @@
 #ifndef MOD_PROXY_H
 #define MOD_PROXY_H 
 
-/*
- * Main include file for the Apache proxy
+/**
+ * @file  mod_proxy.h
+ * @brief Proxy Extension Module for Apache
+ *
+ * @defgroup MOD_PROXY mod_proxy
+ * @ingroup  APACHE_MODS
+ * @{
  */
 
 /*
@@ -68,6 +73,7 @@
 #include "http_connection.h"
 #include "util_filter.h"
 #include "util_ebcdic.h"
+#include "ap_provider.h"
 
 #if APR_HAVE_NETINET_IN_H
 #include <netinet/in.h>
@@ -180,7 +186,6 @@ typedef struct {
     } proxy_status;             /* Status display options */
     char proxy_status_set;
     apr_pool_t *pool;           /* Pool used for allocating this struct */
-    apr_array_header_t *lbmethods;
 } proxy_server_conf;
 
 
@@ -373,14 +378,6 @@ APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, canon_handler, (request_rec *r,
 
 APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, create_req, (request_rec *r, request_rec *pr))
 APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, fixups, (request_rec *r)) 
-
-/*
- * Useful hook run within the create per-server phase which
- * adds the required lbmethod structs, so they exist at
- * configure time
- */
-APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, load_lbmethods,
-                                     (proxy_server_conf *conf))
 
 /**
  * pre request hook.
@@ -680,6 +677,8 @@ PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function,
 #define PROXY_HAS_SCOREBOARD 0
 #endif
 
+#define PROXY_LBMETHOD "proxylbmethod"
+
 /* The number of dynamic workers that can be added when reconfiguring.
  * If this limit is reached you must stop and restart the server.
  */
@@ -696,3 +695,4 @@ extern module PROXY_DECLARE_DATA proxy_module;
 extern int PROXY_DECLARE_DATA proxy_lb_workers;
 
 #endif /*MOD_PROXY_H*/
+/** @} */
