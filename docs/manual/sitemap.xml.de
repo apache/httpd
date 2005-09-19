@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE sitemap SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
-<!-- English Revision: 159098 -->
+<!-- English Revision: 290199 -->
 
 <!--
  Copyright 2002-2005 The Apache Software Foundation or its licensors,
@@ -78,6 +78,7 @@
 <category id="faq">
 <title>H&#228;ufig gestellte Fragen (FAQ)</title>
 <page href="faq/">&#220;bersicht</page>
+<page href="faq/background.html">Hintergrundinformationen</page>
 <page href="faq/support.html">Support</page>
 <page href="faq/error.html">Fehlermeldungen</page>
 </category>
