@@ -51,7 +51,7 @@ apr_status_t ajp_ilink_send(apr_socket_t *sock, ajp_msg_t *msg)
 }
 
 
-static apr_status_t ilink_read(apr_socket_t *sock, char * buf,
+static apr_status_t ilink_read(apr_socket_t *sock, apr_byte_t *buf,
                                apr_size_t len)
 {
     apr_size_t   length = len;
@@ -60,7 +60,7 @@ static apr_status_t ilink_read(apr_socket_t *sock, char * buf,
 
     while (rdlen < len) {
 
-        status = apr_socket_recv(sock, buf + rdlen, &length);
+        status = apr_socket_recv(sock, (char *)(buf + rdlen), &length);
 
         if (status == APR_EOF)
             return status;          /* socket closed. */
