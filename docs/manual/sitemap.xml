@@ -75,6 +75,7 @@
 <category id="faq">
 <title>Apache Server Frequently Asked Questions</title>
 <page href="faq/">Overview</page>
+<page href="faq/background.html">Background Information</page>
 <page href="faq/support.html">Support</page>
 <page href="faq/error.html">Error Messages</page>
 </category>
