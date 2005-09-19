@@ -566,6 +566,9 @@ static int cgid_server(void *data)
     apr_signal(SIGCHLD, SIG_IGN); 
     apr_signal(SIGHUP, daemon_signal_handler);
 
+    /* Close our copy of the listening sockets */
+    ap_close_listeners();
+
     /* cgid should use its own suexec doer */
     ap_hook_get_suexec_identity(cgid_suexec_id_doer, NULL, NULL,
                                 APR_HOOK_REALLY_FIRST);

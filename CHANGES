@@ -1,6 +1,10 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.1.8
 
+  *) prefork, worker and event MPMs: Prevent children from holding open 
+     listening ports upon graceful restart or stop. PR 28167. 
+     [Colm MacCarthaigh, Brian Pinkerton <bp thinkpink.com>]
+
   *) SECURITY: CAN-2005-2700 (cve.mitre.org)
      mod_ssl: Fix a security issue where "SSLVerifyClient" was not
      enforced in per-location context if "SSLVerifyClient optional"
