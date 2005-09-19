@@ -202,6 +202,9 @@ X509_STORE *SSL_X509_STORE_create(char *cpFile, char *cpPath)
 {
     X509_STORE *pStore;
     X509_LOOKUP *pLookup;
+    int rv = 1;
+
+    ERR_clear_error();
 
     if (cpFile == NULL && cpPath == NULL)
         return NULL;
@@ -213,17 +216,17 @@ X509_STORE *SSL_X509_STORE_create(char *cpFile, char *cpPath)
             X509_STORE_free(pStore);
             return NULL;
         }
-        X509_LOOKUP_load_file(pLookup, cpFile, X509_FILETYPE_PEM);
+        rv = X509_LOOKUP_load_file(pLookup, cpFile, X509_FILETYPE_PEM);
     }
-    if (cpPath != NULL) {
+    if (cpPath != NULL && rv == 1) {
         pLookup = X509_STORE_add_lookup(pStore, X509_LOOKUP_hash_dir());
         if (pLookup == NULL) {
             X509_STORE_free(pStore);
             return NULL;
         }
-        X509_LOOKUP_add_dir(pLookup, cpPath, X509_FILETYPE_PEM);
+        rv = X509_LOOKUP_add_dir(pLookup, cpPath, X509_FILETYPE_PEM);
     }
-    return pStore;
+    return rv == 1 ? pStore : NULL;
 }
 
 int SSL_X509_STORE_lookup(X509_STORE *pStore, int nType,
