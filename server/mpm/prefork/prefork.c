@@ -138,7 +138,7 @@ int tpf_child = 0;
 char tpf_server_name[INETD_SERVNAME_LENGTH+1];
 #endif /* TPF */
 
-static int die_now = 0;
+static volatile int die_now = 0;
 
 #ifdef GPROF
 /* 
