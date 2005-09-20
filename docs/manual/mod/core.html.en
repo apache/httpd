@@ -3028,27 +3028,30 @@ certain events before failing a request</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="TraceEnable" id="TraceEnable">TraceEnable</a> <a name="traceenable" id="traceenable">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Name of the distributed configuration file</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Determines the behaviour on <code>TRACE</code>
+requests</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>TraceEnable <var>[on|off|extended]</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>TraceEnable on</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Version 2.0.55 and later</td></tr>
 </table>
-    <p>This directive overrides the behavior of TRACE for both
-    the core server and mod_proxy.  The default <code>TraceEnable 
-    on</code> permits TRACE requests per RFC 2616, which disallows
-    any request body to accompany the request.  <code>TraceEnable
-    off</code> causes the core server and mod_proxy to return
-    a 405 FORBIDDEN error to the client.</p>
+    <p>This directive overrides the behavior of <code>TRACE</code> for both
+    the core server and <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>.  The default
+    <code>TraceEnable on</code> permits <code>TRACE</code> requests per
+    RFC 2616, which disallows any request body to accompany the request.
+    <code>TraceEnable off</code> causes the core server and
+    <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> to return a <code>405</code> (Method not
+    allowed) error to the client.</p>
 
     <p>Finally, for testing and diagnostic purposes only, request
     bodies may be allowed using the non-compliant <code>TraceEnable 
     extended</code> directive.  The core (as an origin server) will
     restrict the request body to 64k (plus 8k for chunk headers if
-    Transfer-Encoding: chunked is used).  The core will reflect the
-    full headers and all chunk headers with the request body.  As a
-    proxy server, the request body is not restricted to 64k.</p>
+    <code>Transfer-Encoding: chunked</code> is used).  The core will
+    reflect the full headers and all chunk headers with the response
+    body.  As a proxy server, the request body is not restricted to 64k.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
