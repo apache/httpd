@@ -104,29 +104,6 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
-    * Copy the backport branch of all of the mod_proxy_http.c's request body 
-      handling security, protocol and bug fixes; by svn copy'ing the file
-      httpd/httpd/branches/proxy-reqbody-2.0.x/modules/proxy/proxy_http.c back to
-      httpd/branches/2.0.x/... preserving the detail of all of the individually
-      backported changes.
-
-       +1: wrowe, jim, minfrin
-       -1:
-
-      For a complete history of individual unit changes, see r230703 - r230744 in
-      http://svn.apache.org/viewcvs.cgi/httpd/httpd/branches/proxy-reqbody-2.0.x/
-      [...]  modules/proxy/proxy_http.c?&view=log
-      Cite the specific patch with justification for each specific objection.
-
-      Suggested; revert r219061 to thoroughly test this patch, as r219061 masks 
-      some underlying bugs (although it is a -good- patch in and of itself and
-      provides additional protection to other content-handling modules).      
-
-    * TRACE must not have a request body per RFC2616; see the -trace.patch
-      below for one of two alternatives.  The other alternative; simply
-      hack mod_proxy.c to reject TRACE when a body is seen, again see that
-      -trace.patch for an illustration.
-
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]

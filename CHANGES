@@ -1,6 +1,13 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.0.55
 
+  *) SECURITY: CAN-2005-2088 (cve.mitre.org)
+     proxy: Correctly handle the Transfer-Encoding and Content-Length
+     headers.  Discard the request Content-Length whenever T-E: chunked
+     is used, always passing one of either C-L or T-E: chunked whenever 
+     the request includes a request body.  Resolves an entire class of
+     proxy HTTP Request Splitting/Spoofing attacks.  [William Rowe]
+
   *) Added TraceEnable [on|off|extended] per-server directive to alter
      the behavior of the TRACE method.  This addresses a flaw in proxy
      conformance to RFC 2616 - previously the proxy server would accept
