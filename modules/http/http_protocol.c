@@ -1321,6 +1321,9 @@ static char *make_allow(request_rec *r)
     apr_int64_t mask;
     apr_array_header_t *allow = apr_array_make(r->pool, 10, sizeof(char *));
     apr_hash_index_t *hi = apr_hash_first(r->pool, methods_registry);
+    /* For TRACE below */
+    core_server_config *conf =
+        ap_get_module_config(r->server->module_config, &core_module);
 
     mask = r->allowed_methods->method_mask;
 
@@ -1338,8 +1341,9 @@ static char *make_allow(request_rec *r)
         }
     }
 
-    /* TRACE is always allowed */
-    *(const char **)apr_array_push(allow) = "TRACE";
+    /* TRACE is tested on a per-server basis */
+    if (conf->trace_enable != AP_TRACE_DISABLE)
+        *(const char **)apr_array_push(allow) = "TRACE";
 
     list = apr_array_pstrcat(r->pool, allow, ',');
 
@@ -1364,9 +1368,16 @@ static char *make_allow(request_rec *r)
 
 AP_DECLARE_NONSTD(int) ap_send_http_trace(request_rec *r)
 {
+    core_server_config *conf;
     int rv;
-    apr_bucket_brigade *b;
+    apr_bucket_brigade *bb;
     header_struct h;
+    apr_bucket *b;
+    int body;
+    char *bodyread, *bodyoff;
+    apr_size_t bodylen = 0;
+    apr_size_t bodybuf;
+    long res;
 
     if (r->method_number != M_TRACE) {
         return DECLINED;
@@ -1376,23 +1387,87 @@ AP_DECLARE_NONSTD(int) ap_send_http_trace(request_rec *r)
     while (r->prev) {
         r = r->prev;
     }
+    conf = (core_server_config *)ap_get_module_config(r->server->module_config,
+                                                      &core_module);
 
-    if ((rv = ap_setup_client_block(r, REQUEST_NO_BODY))) {
+    if (conf->trace_enable == AP_TRACE_DISABLE) {
+	apr_table_setn(r->notes, "error-notes",
+                      "TRACE denied by server configuration");
+        return HTTP_FORBIDDEN;
+    }
+
+    if (conf->trace_enable == AP_TRACE_EXTENDED)
+        /* XX should be = REQUEST_CHUNKED_PASS */
+        body = REQUEST_CHUNKED_DECHUNK;
+    else
+        body = REQUEST_NO_BODY;
+
+    if ((rv = ap_setup_client_block(r, body))) {
+        if (rv == HTTP_REQUEST_ENTITY_TOO_LARGE)
+    	    apr_table_setn(r->notes, "error-notes",
+                          "TRACE with a request body is not allowed");
         return rv;
+    }
+
+    if (ap_should_client_block(r)) {
+
+        if (r->remaining > 0) {
+            if (r->remaining > 65536) {
+	        apr_table_setn(r->notes, "error-notes",
+                       "Extended TRACE request bodies cannot exceed 64k");
+                return HTTP_REQUEST_ENTITY_TOO_LARGE;
+            }
+            /* always 32 extra bytes to catch chunk header exceptions */
+            bodybuf = (apr_size_t)r->remaining + 32;
+        }
+        else {
+            /* Add an extra 8192 for chunk headers */
+            bodybuf = 73730;
+        }
+
+        bodyoff = bodyread = apr_palloc(r->pool, bodybuf);
+
+        /* only while we have enough for a chunked header */
+        while ((!bodylen || bodybuf >= 32) &&
+               (res = ap_get_client_block(r, bodyoff, bodybuf)) > 0) {
+            bodylen += res;
+            bodybuf -= res;
+            bodyoff += res;
+        }
+        if (res > 0 && bodybuf < 32) {
+            /* discard_rest_of_request_body into our buffer */
+            while (ap_get_client_block(r, bodyread, bodylen) > 0)
+                ;
+	    apr_table_setn(r->notes, "error-notes",
+                   "Extended TRACE request bodies cannot exceed 64k");
+            return HTTP_REQUEST_ENTITY_TOO_LARGE;
+        }
+
+        if (res < 0) {
+            return HTTP_BAD_REQUEST;
+        }
     }
 
     ap_set_content_type(r, "message/http");
 
     /* Now we recreate the request, and echo it back */
 
-    b = apr_brigade_create(r->pool, r->connection->bucket_alloc);
-    apr_brigade_putstrs(b, NULL, NULL, r->the_request, CRLF, NULL);
+    bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
+    apr_brigade_putstrs(bb, NULL, NULL, r->the_request, CRLF, NULL);
     h.pool = r->pool;
-    h.bb = b;
+    h.bb = bb;
     apr_table_do((int (*) (void *, const char *, const char *))
                  form_header_field, (void *) &h, r->headers_in, NULL);
-    apr_brigade_puts(b, NULL, NULL, CRLF);
-    ap_pass_brigade(r->output_filters, b);
+    apr_brigade_puts(bb, NULL, NULL, CRLF);
+
+    /* If configured to accept a body, echo the body */
+    if (bodylen) {
+        b = apr_bucket_pool_create(bodyread, bodylen, 
+                                   r->pool, bb->bucket_alloc);
+        APR_BRIGADE_INSERT_TAIL(bb, b);
+    }
+    
+    ap_pass_brigade(r->output_filters,  bb);
 
     return DONE;
 }

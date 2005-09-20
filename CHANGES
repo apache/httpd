@@ -1,6 +1,12 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.0.55
 
+  *) Added TraceEnable [on|off|extended] per-server directive to alter
+     the behavior of the TRACE method.  This addresses a flaw in proxy
+     conformance to RFC 2616 - previously the proxy server would accept
+     a TRACE request body although the RFC prohibited it.  The default
+     remains 'TraceEnable on'.  [William Rowe]
+
   *) Add ap_log_cerror() for logging messages associated with particular
      client connections.  [Jeff Trawick]
 

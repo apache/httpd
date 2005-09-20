@@ -211,18 +211,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        +1: jorton, wrowe
        wrowe cautions to backport to 2.2.x branch as well.
 
-    *) Correct RFC 2616 non-compliance by refusing to proxy a request body 
-       in a TRACE request, unless TraceEnable extended is configured.
-       Introduces TraceEnable [on|off|extended] to give the administrator
-       full control of TRACE request handling.  RFC 2616 does NOT require
-       TRACE (although to disable remains silly).  Current patch at;
-          http://people.apache.org/~wrowe/httpd-2.0-trace.patch
-       +1 wrowe, jimjag, colm
-         colm notes: There are some \n's in apr_table_setn calls that are
-                     not consistent with other calls to apr_table_setn.
-                     There is no documentation for TraceEnable in trunk to 
-                     backport, shouldn't release while still undocumented.
-
     *) mod_headers: Support {...}s tag for SSL variable lookup.
        http://www.apache.org/~jorton/mod_headers-2.0-ssl.diff
        +1: jorton, trawick
