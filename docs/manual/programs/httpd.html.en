@@ -43,7 +43,8 @@
      [ -<strong>C</strong> <var>directive</var> ] [ -<strong>c</strong>
      <var>directive</var> ] [ -<strong>D</strong> <var>parameter</var> ]
      [ -<strong>e</strong> <var>level</var> ] [ -<strong>E</strong>
-     <var>file</var> ] [ <strong>-k</strong> start|restart|graceful|stop ]
+     <var>file</var> ] 
+     [ <strong>-k</strong> start|restart|graceful|stop|graceful-stop ]
      [ -<strong>R</strong> <var>directory</var> ] [ -<strong>h</strong> ]
      [ -<strong>l</strong> ] [ -<strong>L</strong> ] [ -<strong>S</strong> ]
      [ -<strong>t</strong> ] [ -<strong>v</strong> ] [ -<strong>V</strong> ]
@@ -74,7 +75,7 @@ directive in the configuration file. The default is
 path relative to the <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>. The default is
 <code>conf/httpd.conf</code>.</dd>
 
-<dt><code>-k <code>start|restart|graceful|stop</code></code></dt>
+<dt><code>-k <code>start|restart|graceful|stop|graceful-stop</code></code></dt>
 
 <dd>Signals <code>httpd</code> to start, restart, or stop.  See <a href="../stopping.html">Stopping Apache</a> for more information.</dd>
 

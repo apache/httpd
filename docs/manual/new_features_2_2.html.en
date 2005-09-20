@@ -53,8 +53,9 @@
           setups.</dd>
 
       <dt>Graceful stop</dt>
-      <dd>The <code class="module"><a href="./mod/prefork.html">prefork</a></code> and <code class="module"><a href="./mod/worker.html">worker</a></code> MPMs now
-          allow <code class="program"><a href="./programs/httpd.html">httpd</a></code> to be shutdown gracefully via the
+      <dd>The <code class="module"><a href="./mod/prefork.html">prefork</a></code>, <code class="module"><a href="./mod/worker.html">worker</a></code> and 
+          <code class="module"><a href="./mod/event.html">event</a></code>  MPMs now allow <code class="program"><a href="./programs/httpd.html">httpd</a></code> 
+          to be shutdown gracefully via the
           <a href="stopping.html#gracefulstop"><code>graceful-stop</code></a> 
           signal. The <code class="directive"><a href="./mod/mpm_common.html#gracefulshutdowntimeout">GracefulShutdownTimeout</a></code> directive
           has been added to specify an optional timeout, after which
