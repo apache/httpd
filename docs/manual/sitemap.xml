@@ -43,6 +43,7 @@
 <page href="stopping.html">Stopping and Restarting the Server</page>
 <page href="configuring.html">Configuration Files</page>
 <page href="sections.html">How Directory, Location and Files sections work</page>
+<page href="caching.html">Content Caching</page>
 <page href="server-wide.html">Server-Wide Configuration</page>
 <page href="logs.html">Log Files</page>
 <page href="urlmapping.html">Mapping URLs to Filesystem Locations</page>

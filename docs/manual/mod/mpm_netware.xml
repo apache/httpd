@@ -73,6 +73,8 @@
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>MaxRequestsPerChild</name>
 </directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ReceiveBufferSize</name>
+</directivesynopsis>
 <directivesynopsis location="mpm_common"><name>SendBufferSize</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>MaxSpareThreads</name>
