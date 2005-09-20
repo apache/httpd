@@ -1180,14 +1180,29 @@ for additional information.
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 </table>
-<p>
-This directive sets the Certificate verification level for the remote server
-Authentication. Notice that this directive can be used both in per-server and
-per-directory context. In per-server context it applies to the remote server
-authentication process used in the standard SSL handshake when a connection is
-established. In per-directory context it forces a SSL renegotation with the
-reconfigured remote server verification level after the HTTP request was read but
-before the HTTP response is sent.</p>
+
+<p>When a proxy is configured to forward requests to a remote SSL
+server, this directive can be used to configure certificate
+verification of the remote server.  Notice that this directive can be
+used both in per-server and per-directory context. In per-server
+context it applies to the remote server authentication process used in
+the standard SSL handshake when a connection is established by the
+proxy. In per-directory context it forces a SSL renegotation with the
+reconfigured remote server verification level after the HTTP request
+was read but before the HTTP response is sent.</p>
+
+<div class="warning">
+<p>Note that even when certificate verification is enabled,
+<code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> does <strong>not</strong> check whether the
+<code>commonName</code> (hostname) attribute of the server certificate
+matches the hostname used to connect to the server.  In other words,
+the proxy does not guarantee that the SSL connection to the backend
+server is "secure" beyond the fact that the certificate is signed by
+one of the CAs configured using the
+<code class="directive">SSLProxyCACertificatePath</code> and/or
+<code class="directive">SSLProxyCACertificateFile</code> directives.</p>
+</div>
+
 <p>
 The following levels are available for <em>level</em>:</p>
 <ul>

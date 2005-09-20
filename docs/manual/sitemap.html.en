@@ -58,6 +58,7 @@
 <li><a href="stopping.html">Stopping and Restarting the Server</a></li>
 <li><a href="configuring.html">Configuration Files</a></li>
 <li><a href="sections.html">How Directory, Location and Files sections work</a></li>
+<li><a href="caching.html">Content Caching</a></li>
 <li><a href="server-wide.html">Server-Wide Configuration</a></li>
 <li><a href="logs.html">Log Files</a></li>
 <li><a href="urlmapping.html">Mapping URLs to Filesystem Locations</a></li>
