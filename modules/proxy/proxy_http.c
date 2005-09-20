@@ -566,7 +566,7 @@ static apr_status_t stream_reqbody_cl(apr_pool_t *p,
                                       const char *old_cl_val)
 {
     int seen_eos = 0;
-    apr_status_t status;
+    apr_status_t status = APR_SUCCESS;
     apr_bucket_alloc_t *bucket_alloc = r->connection->bucket_alloc;
     apr_bucket_brigade *bb;
     apr_bucket *e;
