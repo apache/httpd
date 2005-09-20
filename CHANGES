@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.1.8
 
+  *) Fix PR 25659 - Memory leak in ssl_util_algotypeof()
+     [David Blake <dblake hp com>, Martin Kraemer]
+
   *) Document the ReceiveBufferSize change done in r157583 [Murray
      Nesbitt <murray@cpan.org>]
 
