@@ -2,9 +2,6 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
-  *) Document the ReceiveBufferSize change done in r157583 [Murray
-     Nesbitt <murray@cpan.org>]
-
   *) Fix mod_dbd's config [Brian J. France <list firehawksystems.com>]
 
   *) httpd.exe/apachectl -V: display the DYNAMIC_MODULE_LIMIT setting, as
@@ -29,6 +26,9 @@ Changes with Apache 2.3.0
      [Martin Kraemer, David Reid]
 
 Changes with Apache 2.1.8
+
+  *) Document the ReceiveBufferSize change done in r157583 [Murray
+     Nesbitt <murray@cpan.org>]
 
   *) prefork, worker and event MPMs: Support a graceful-stop procedure:
      Server will wait until existing requests are finished or until  
