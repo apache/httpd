@@ -22,6 +22,8 @@
 <a href="../ja/faq/all_in_one.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/faq/all_in_one.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
+<div class="outofdate">이 문서는 최신판 번역이 아닙니다.
+            최근에 변경된 내용은 영어 문서를 참고하세요.</div>
 
     <p>FAQ 최신판은 아파치 웹사이트 &lt;<a href="http://httpd.apache.org/docs-2.1/faq/">http://httpd.apache.org/docs-2.1/faq/</a>&gt;에서 볼 수
     있다.</p>
