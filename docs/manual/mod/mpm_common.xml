@@ -157,6 +157,27 @@ after a crash</description>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>GracefulShutdownTimeout</name>
+<description>Specify a timeout after which a gracefully shutdown server
+will exit.</description>
+<syntax>GracefulShutDownTimeout <var>seconds</var></syntax>
+<default>GracefulShutDownTimeout 0</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>prefork</module><module>worker</module>
+<module>event</module></modulelist>
+<compatibility>Available in version 2.2 and later</compatibility>
+
+<usage>
+    <p>The <directive>GracefulShutdownTimeout</directive> specifies
+    how many seconds after receiving a "graceful-stop" signal, a 
+    server should continue to run, handling the existing connections.</p>
+
+    <p>Setting this value to zero means that the server will wait
+    indefinitely until all remaining requests have been fully served.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>Group</name>
 <description>Group under which the server will answer
 requests</description>
@@ -641,6 +662,26 @@ Apache</a></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>ReceiveBufferSize</name>
+<description>TCP receive buffer size</description>
+<syntax>ReceiveBufferSize <var>bytes</var></syntax>
+<default>ReceiveBufferSize 0</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>beos</module><module>leader</module>
+<module>mpm_netware</module><module>mpm_winnt</module>
+<module>mpmt_os2</module><module>perchild</module><module>prefork</module>
+<module>threadpool</module><module>worker</module></modulelist>
+
+<usage>
+    <p>The server will set the TCP receive buffer size to the number of
+    bytes specified.</p>
+
+    <p>If set to the value of <code>0</code>, the server will use the
+    OS default.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>SendBufferSize</name>
 <description>TCP buffer size</description>
 <syntax>SendBufferSize <var>bytes</var></syntax>
@@ -652,13 +693,13 @@ Apache</a></seealso>
 <module>threadpool</module><module>worker</module></modulelist>
 
 <usage>
-    <p>The server will set the TCP buffer size to the number of bytes
+    <p>The server will set the TCP send buffer size to the number of bytes
     specified. Very useful to increase past standard OS defaults on
     high speed high latency (<em>i.e.</em>, 100ms or so, such as
     transcontinental fast pipes).</p>
 
     <p>If set to the value of <code>0</code>, the server will use the
-    OS deault.</p>
+    OS default.</p>
 </usage>
 </directivesynopsis>
 

@@ -86,8 +86,8 @@
       &lt;IfModule mod_cache.c&gt;<br />
       <indent>
         #LoadModule disk_cache_module modules/mod_disk_cache.so<br />
-        # If you want to use mod_disk_cache instead of mod_mem_cache,
-        # uncomment the line above and comment out the LoadModule line below.
+        # If you want to use mod_disk_cache instead of mod_mem_cache,<br />
+        # uncomment the line above and comment out the LoadModule line below.<br />
         &lt;IfModule mod_disk_cache.c&gt;<br />
         <indent>
           CacheRoot c:/cacheroot<br />
@@ -107,6 +107,9 @@
           MCacheMaxObjectSize 2048<br />
         </indent>
         &lt;/IfModule&gt;<br />
+        <br />
+        # When acting as a proxy, don't cache the list of security updates<br />
+        CacheDisable http://security.update.server/update-list/<br />
       </indent>
       &lt;/IfModule&gt;
     </example>
@@ -145,6 +148,20 @@ manager</description>
       CacheEnable  fd    /images<br />
       CacheEnable  disk  /<br />
     </example>
+
+    <p>When acting as a forward proxy server, <var>url-string</var> can
+    also be used to specify remote sites and proxy protocols which 
+    caching should be enabled for.</p>
+ 
+    <example>
+      # Cache proxied url's<br />
+      CacheEnable  disk  /<br /><br />
+      # Cache FTP-proxied url's<br />
+      CacheEnable  disk  ftp://<br /><br />
+      # Cache content from www.apache.org<br />
+      CacheEnable  disk  http://www.apache.org/<br />
+    </example>
+
 </usage>
 </directivesynopsis>
 
