@@ -92,6 +92,7 @@ available</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#setinputfilter">SetInputFilter</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#setoutputfilter">SetOutputFilter</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#timeout">TimeOut</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#traceenable">TraceEnable</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#usecanonicalname">UseCanonicalName</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#virtualhost">&lt;VirtualHost&gt;</a></li>
 </ul>
@@ -3022,6 +3023,32 @@ certain events before failing a request</td></tr>
     necessary in most situations. It is not set any lower by
     default because there may still be odd places in the code where
     the timer is not reset when a packet is sent. </p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="TraceEnable" id="TraceEnable">TraceEnable</a> <a name="traceenable" id="traceenable">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Name of the distributed configuration file</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>TraceEnable <var>[on|off|extended]</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>TraceEnable on</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+</table>
+    <p>This directive overrides the behavior of TRACE for both
+    the core server and mod_proxy.  The default <code>TraceEnable 
+    on</code> permits TRACE requests per RFC 2616, which disallows
+    any request body to accompany the request.  <code>TraceEnable
+    off</code> causes the core server and mod_proxy to return
+    a 405 FORBIDDEN error to the client.</p>
+
+    <p>Finally, for testing and diagnostic purposes only, request
+    bodies may be allowed using the non-compliant <code>TraceEnable 
+    extended</code> directive.  The core (as an origin server) will
+    restrict the request body to 64k (plus 8k for chunk headers if
+    Transfer-Encoding: chunked is used).  The core will reflect the
+    full headers and all chunk headers with the request body.  As a
+    proxy server, the request body is not restricted to 64k.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

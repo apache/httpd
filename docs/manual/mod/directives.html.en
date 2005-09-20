@@ -383,6 +383,7 @@
 <li><a href="mpm_common.html#threadsperchild">ThreadsPerChild</a></li>
 <li><a href="mpm_netware.html#threadstacksize">ThreadStackSize</a></li>
 <li><a href="core.html#timeout">TimeOut</a></li>
+<li><a href="core.html#traceenable">TraceEnable</a></li>
 <li><a href="mod_log_config.html#transferlog">TransferLog</a></li>
 <li><a href="mod_mime.html#typesconfig">TypesConfig</a></li>
 <li><a href="mod_env.html#unsetenv" id="U" name="U">UnsetEnv</a></li>
