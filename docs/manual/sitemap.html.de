@@ -26,9 +26,6 @@
 <a href="./ja/sitemap.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/sitemap.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Diese Übersetzung ist möglicherweise
-            nicht mehr aktuell. Bitte prüfen Sie die englische Version auf
-            die neuesten Änderungen.</div>
 
 <p>Diese Seite verzeichnet die zur Zeit verfügbaren Dokumente der
 <a href="./">Dokumentation zum Apache HTTP Server Version 2.1</a>.</p>
@@ -61,6 +58,7 @@
 <li><a href="stopping.html">Beenden und Neustarten des Servers</a></li>
 <li><a href="configuring.html">Konfigurationsdateien</a></li>
 <li><a href="sections.html">Konfigurationsabschnitte</a></li>
+<li><a href="caching.html">Caching von Inhalten</a></li>
 <li><a href="server-wide.html">Serverweite Konfiguration</a></li>
 <li><a href="logs.html">Log-Dateien</a></li>
 <li><a href="urlmapping.html">URLs auf das Dateisystem abbilden</a></li>
