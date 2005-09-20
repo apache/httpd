@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.1.8
 
+  *) Document the ReceiveBufferSize change done in r157583 [Murray
+     Nesbitt <murray@cpan.org>]
+
   *) prefork, worker and event MPMs: Support a graceful-stop procedure:
      Server will wait until existing requests are finished or until  
      "GracefulShutdownTimeout" number of seconds before exiting. 
