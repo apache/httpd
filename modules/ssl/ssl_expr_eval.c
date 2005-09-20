@@ -118,7 +118,7 @@ static BOOL ssl_expr_eval_comp(request_rec *r, ssl_expr *node)
                 e3 = (ssl_expr *)e2->node_arg1;
                 e2 = (ssl_expr *)e2->node_arg2;
 
-                if (op == op_OidListElement) {
+                if (op == op_PeerExtElement) {
                     char *w3 = ssl_expr_eval_word(r, e3);
 
                     found = ssl_expr_eval_oid(r, w1, w3);
