@@ -61,7 +61,7 @@
 %token  T_OP_REG
 %token  T_OP_NRE
 %token  T_OP_IN
-%token  T_OP_OID
+%token  T_OP_PEEREXTLIST
 
 %token  T_OP_OR
 %token  T_OP_AND
@@ -104,7 +104,7 @@ comparison: word T_OP_EQ word            { $$ = ssl_expr_make(op_EQ,  $1, $3); }
           | word T_OP_NRE regex          { $$ = ssl_expr_make(op_NRE, $1, $3); }
           ;
 
-wordlist  : T_OP_OID '(' word ')'	 { $$ = ssl_expr_make(op_OidListElement, $3, NULL); }
+wordlist  : T_OP_PEEREXTLIST '(' word ')' { $$ = ssl_expr_make(op_PeerExtElement, $3, NULL); }
           | '{' words '}'                { $$ = $2 ; }
 	  ;
 

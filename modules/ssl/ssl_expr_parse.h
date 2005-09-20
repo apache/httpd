@@ -19,7 +19,7 @@
 #define T_OP_REG 271
 #define T_OP_NRE 272
 #define T_OP_IN 273
-#define T_OP_OID 274
+#define T_OP_PEEREXTLIST 274
 #define T_OP_OR 275
 #define T_OP_AND 276
 #define T_OP_NOT 277
