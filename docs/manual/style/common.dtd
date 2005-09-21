@@ -176,7 +176,7 @@ program | img | cite | q | dfn | var | transnote | glossary | phonetic">
 <!-- The glossary element defines a special case of link. The referenced
      target is the name of an anchor within the glossary -->
 <!ELEMENT glossary %Inline;>
-<!ATTLIST glossary ref CDATA #REQUIRED>
+<!ATTLIST glossary ref CDATA #IMPLIED>
 
 <!-- The phonetic element should be used only within the glossary. It
      describes a pronounciation -->
