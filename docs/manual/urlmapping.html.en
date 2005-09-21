@@ -84,13 +84,14 @@
     will be served from <code>/var/web/dir/file.html</code>. The
     <code class="directive"><a href="./mod/mod_alias.html#scriptalias">ScriptAlias</a></code> directive
     works the same way, with the additional effect that all content
-    located at the target path is treated as CGI scripts.</p>
+    located at the target path is treated as <a class="glossarylink" href="./glossary.html#cgi" title="see glossary">CGI</a> scripts.</p>
 
     <p>For situations where you require additional flexibility, you
-    can use the <code class="directive"><a href="./mod/mod_alias.html#aliasmatch">AliasMatch</a></code> and 
-    <code class="directive"><a href="./mod/mod_alias.html#scriptaliasmatch">ScriptAliasMatch</a></code>
-    directives to do powerful regular-expression based matching and
-    substitution. For example,</p>
+    can use the <code class="directive"><a href="./mod/mod_alias.html#aliasmatch">AliasMatch</a></code>
+    and <code class="directive"><a href="./mod/mod_alias.html#scriptaliasmatch">ScriptAliasMatch</a></code>
+    directives to do powerful <a class="glossarylink" href="./glossary.html#regex" title="see glossary">regular
+    expression</a> based matching and substitution. For
+    example,</p>
 
 <div class="example"><p><code>ScriptAliasMatch ^/~([a-zA-Z0-9]+)/cgi-bin/(.+)
       /home/$1/cgi-bin/$2</code></p></div>

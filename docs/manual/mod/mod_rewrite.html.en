@@ -1068,7 +1068,8 @@ later</td></tr>
       because any number of rules may already have matched and made
       alterations to it.</p>
 
-      <p>Some hints about the syntax of regular expressions:</p>
+      <p>Some hints about the syntax of <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular 
+      expressions</a>:</p>
 
 <div class="note"><pre>
 <strong>Text:</strong>

@@ -697,8 +697,8 @@ named file-system directory and sub-directories</td></tr>
       links.</p>
     </div>
 
-    <p>Extended regular
-    expressions can also be used, with the addition of the
+    <p><a class="glossarylink" href="../glossary.html#regex" title="see glossary">Regular
+    expressions</a> can also be used, with the addition of the
     <code>~</code> character. For example:</p>
 
     <div class="example"><p><code>
@@ -810,7 +810,8 @@ subdirectories</td></tr>
     <code>&lt;/DirectoryMatch&gt;</code> are used to enclose a group
     of directives which will apply only to the named directory and
     sub-directories of that directory, the same as <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code>. However, it
-    takes as an argument a regular expression. For example:</p>
+    takes as an argument a <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular 
+    expression</a>. For example:</p>
 
     <div class="example"><p><code>
       &lt;DirectoryMatch "^/www/(.+/)?[0-9]{3}"&gt;
@@ -1206,8 +1207,9 @@ filenames</td></tr>
 
     <p>The <var>filename</var> argument should include a filename, or
     a wild-card string, where <code>?</code> matches any single character,
-    and <code>*</code> matches any sequences of characters. Extended regular
-    expressions can also be used, with the addition of the
+    and <code>*</code> matches any sequences of characters.
+    <a class="glossarylink" href="../glossary.html#regex" title="see glossary">Regular expressions</a> 
+    can also be used, with the addition of the
     <code>~</code> character. For example:</p>
 
     <div class="example"><p><code>
@@ -1243,7 +1245,8 @@ filenames</td></tr>
     <p>The <code class="directive">&lt;FilesMatch&gt;</code> directive
     limits the scope of the enclosed directives by filename, just as the
     <code class="directive"><a href="#files">&lt;Files&gt;</a></code> directive
-    does. However, it accepts a regular expression. For example:</p>
+    does. However, it accepts a <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular 
+    expression</a>. For example:</p>
 
     <div class="example"><p><code>
       &lt;FilesMatch "\.(gif|jpe?g|png)$"&gt;
@@ -1918,8 +1921,8 @@ URLs</td></tr>
     any single character, and <code>*</code> matches any sequences of
     characters.</p>
 
-    <p>Extended regular
-    expressions can also be used, with the addition of the
+    <p><a class="glossarylink" href="../glossary.html#regex" title="see glossary">Regular expressions</a>
+    can also be used, with the addition of the
     <code>~</code> character. For example:</p>
 
     <div class="example"><p><code>
@@ -1987,8 +1990,8 @@ matching URLs</td></tr>
     <p>The <code class="directive">&lt;LocationMatch&gt;</code> directive
     limits the scope of the enclosed directives by URL, in an identical manner
     to <code class="directive"><a href="#location">&lt;Location&gt;</a></code>. However,
-    it takes a regular expression as an argument instead of a simple
-    string. For example:</p>
+    it takes a <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expression</a>
+    as an argument instead of a simple string. For example:</p>
 
     <div class="example"><p><code>
       &lt;LocationMatch "/(extra|special)/data"&gt;
