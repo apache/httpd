@@ -92,8 +92,8 @@
 
       <dt><em>regex</em></dt>
 
-      <dd>A Perl-compatible <a href="../glossary.html#regex">regular
-      expression</a>. The directive definition will specify what the
+      <dd>A Perl-compatible <glossary ref="regex">regular
+      expression</glossary>. The directive definition will specify what the
       <em>regex</em> is matching against.</dd>
 
       <dt><em>extension</em></dt>
