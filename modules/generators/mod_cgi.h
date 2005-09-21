@@ -19,6 +19,9 @@
 
 #include "mod_include.h"
 
+#define AP_PROC_DETACHED       1
+#define AP_PROC_NEWADDRSPACE   2
+
 typedef enum {RUN_AS_SSI, RUN_AS_CGI} prog_types;
 
 typedef struct {
@@ -27,7 +30,8 @@ typedef struct {
     apr_int32_t          err_pipe;
     int                  process_cgi;
     apr_cmdtype_e        cmd_type;
-    apr_int32_t          detached;
+    apr_int32_t          detached; /* used as a bitfield for detached_ & addrspace_set, */
+                                   /* when initializing apr_proc_attr structure */
     prog_types           prog_type;
     apr_bucket_brigade **bb;
     include_ctx_t       *ctx;
