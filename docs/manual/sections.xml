@@ -129,7 +129,7 @@ from databases or other locations.</p>
 
 <p>The <directive type="section" module="core">Directory</directive>
 and <directive type="section" module="core">Files</directive>
-directives, along with their regex counterparts, apply directives to
+directives, along with their <glossary>regex</glossary> counterparts, apply directives to
 parts of the filesystem.  Directives enclosed in a <directive
 type="section" module="core">Directory</directive> section apply to
 the named filesystem directory and all subdirectories of that
@@ -182,7 +182,7 @@ Deny from all<br />
 <section id="webspace"><title>Webspace Containers</title>
 
 <p>The <directive type="section" module="core">Location</directive>
-directive and its regex counterpart, on the other hand, change the
+directive and its <glossary>regex</glossary> counterpart, on the other hand, change the
 configuration for content in the webspace.  For example, the following
 configuration prevents access to any URL-path that begins in /private.
 In particular, it will apply to requests for
@@ -225,12 +225,12 @@ character will not be matched by any wildcard; it must be specified
 explicitly.</p>
 
 <p>If even more flexible matching is required, each
-container has a regular-expression (regex) counterpart <directive
+container has a regular expression (regex) counterpart <directive
 type="section" module="core">DirectoryMatch</directive>, <directive
 type="section" module="core">FilesMatch</directive>, and <directive
 type="section" module="core">LocationMatch</directive> that allow
 perl-compatible
-<a href="glossary.html#regex">regular expressions</a>
+<glossary ref="regex">regular expressions</glossary>
 to be used in choosing the matches.  But see the section below on
 configuration merging to find out how using regex sections will change
 how directives are applied.</p>

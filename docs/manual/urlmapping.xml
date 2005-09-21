@@ -109,13 +109,14 @@
     will be served from <code>/var/web/dir/file.html</code>. The
     <directive module="mod_alias">ScriptAlias</directive> directive
     works the same way, with the additional effect that all content
-    located at the target path is treated as CGI scripts.</p>
+    located at the target path is treated as <glossary>CGI</glossary> scripts.</p>
 
     <p>For situations where you require additional flexibility, you
-    can use the <directive module="mod_alias">AliasMatch</directive> and 
-    <directive module="mod_alias">ScriptAliasMatch</directive>
-    directives to do powerful regular-expression based matching and
-    substitution. For example,</p>
+    can use the <directive module="mod_alias">AliasMatch</directive>
+    and <directive module="mod_alias">ScriptAliasMatch</directive>
+    directives to do powerful <glossary ref="regex">regular
+    expression</glossary> based matching and substitution. For
+    example,</p>
 
 <example>ScriptAliasMatch ^/~([a-zA-Z0-9]+)/cgi-bin/(.+)
       /home/$1/cgi-bin/$2</example>

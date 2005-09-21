@@ -645,8 +645,8 @@ named file-system directory and sub-directories</description>
       links.</p>
     </note>
 
-    <p>Extended regular
-    expressions can also be used, with the addition of the
+    <p><glossary ref="regex">Regular
+    expressions</glossary> can also be used, with the addition of the
     <code>~</code> character. For example:</p>
 
     <example>
@@ -761,7 +761,8 @@ subdirectories</description>
     of directives which will apply only to the named directory and
     sub-directories of that directory, the same as <directive
     module="core" type="section">Directory</directive>. However, it
-    takes as an argument a regular expression. For example:</p>
+    takes as an argument a <glossary ref="regex">regular 
+    expression</glossary>. For example:</p>
 
     <example>
       &lt;DirectoryMatch "^/www/(.+/)?[0-9]{3}"&gt;
@@ -1161,8 +1162,9 @@ filenames</description>
 
     <p>The <var>filename</var> argument should include a filename, or
     a wild-card string, where <code>?</code> matches any single character,
-    and <code>*</code> matches any sequences of characters. Extended regular
-    expressions can also be used, with the addition of the
+    and <code>*</code> matches any sequences of characters.
+    <glossary ref="regex">Regular expressions</glossary> 
+    can also be used, with the addition of the
     <code>~</code> character. For example:</p>
 
     <example>
@@ -1200,7 +1202,8 @@ filenames</description>
     <p>The <directive type="section">FilesMatch</directive> directive
     limits the scope of the enclosed directives by filename, just as the
     <directive module="core" type="section">Files</directive> directive
-    does. However, it accepts a regular expression. For example:</p>
+    does. However, it accepts a <glossary ref="regex">regular 
+    expression</glossary>. For example:</p>
 
     <example>
       &lt;FilesMatch "\.(gif|jpe?g|png)$"&gt;
@@ -1890,8 +1893,8 @@ URLs</description>
     any single character, and <code>*</code> matches any sequences of
     characters.</p>
 
-    <p>Extended regular
-    expressions can also be used, with the addition of the
+    <p><glossary ref="regex">Regular expressions</glossary>
+    can also be used, with the addition of the
     <code>~</code> character. For example:</p>
 
     <example>
@@ -1961,8 +1964,8 @@ matching URLs</description>
     <p>The <directive type="section">LocationMatch</directive> directive
     limits the scope of the enclosed directives by URL, in an identical manner
     to <directive module="core" type="section">Location</directive>. However,
-    it takes a regular expression as an argument instead of a simple
-    string. For example:</p>
+    it takes a <glossary ref="regex">regular expression</glossary>
+    as an argument instead of a simple string. For example:</p>
 
     <example>
       &lt;LocationMatch "/(extra|special)/data"&gt;

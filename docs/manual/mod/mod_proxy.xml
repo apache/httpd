@@ -423,7 +423,7 @@ proxied resources</description>
     <p>The <directive type="section">ProxyMatch</directive> directive is
     identical to the <directive module="mod_proxy"
     type="section">Proxy</directive> directive, except it matches URLs
-    using regular expressions.</p>
+    using <glossary ref="regex">regular expressions</glossary>.</p>
 </usage>
 </directivesynopsis>
 
@@ -528,7 +528,8 @@ expressions</description>
 <usage>
     <p>The <directive>ProxyRemoteMatch</directive> is identical to the
     <directive module="mod_proxy">ProxyRemote</directive> directive, except the
-    first argument is a regular expression match against the requested URL.</p>
+    first argument is a <glossary ref="regex">regular expression</glossary>
+    match against the requested URL.</p>
 </usage>
 </directivesynopsis>
 
