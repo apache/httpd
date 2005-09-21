@@ -3987,8 +3987,8 @@ Syntax OK
      <a href="directive-dict.html#Status"
     rel="Help"><strong>Status:</strong></a> core (Windows,
     NetWare)<br />
-     <strong>Compatibility:</strong> Available only in Apache 1.3.34
-    and later 
+     <strong>Compatibility:</strong> Available only in Apache 1.3.34,
+    2.0.55 and later 
 
     <p>This directive overrides the behavior of TRACE for both
     the core server and mod_proxy.  The default <code>TraceEnable 
