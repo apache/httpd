@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
-<!-- English Revision: 159149 -->
+<!-- English Revision: 290723 -->
 
 <!--
  Copyright 2002-2005 The Apache Software Foundation or its licensors, as
@@ -65,9 +65,7 @@
       <module>worker</module> oder <module>event</module> w&auml;hlen,
       w&auml;hrend Sites, die Stabilit&auml;t oder Kompatibilit&auml;t mit
       &auml;lterer Software erfordern, <module>prefork</module> w&auml;hlen
-      k&ouml;nnen. Dar&uuml;ber hinaus k&ouml;nnen Spezialf&auml;higkeiten wie
-      die Bedienung verschiedener Hosts unter unterschiedlichen User-IDs
-      (<module>perchild</module>) angeboten werden.</li>
+      k&ouml;nnen.</li>
   </ul>
 
   <p>Auf Anwenderebene erscheinen MPMs fast wie andere Apache-Module. Der
