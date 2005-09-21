@@ -60,12 +60,13 @@
       <p>The character set name parameters of <directive
       module="mod_charset_lite">CharsetSourceEnc</directive> and
       <directive module="mod_charset_lite">CharsetDefault</directive>
-      must be acceptable to the translation mechanism used by APR on the
-      system where <module>mod_charset_lite</module> is deployed.  These
-      character set names are not standardized and are usually not the
-      same as the corresponding values used in http headers.  Currently,
-      APR can only use iconv(3), so you can easily test your character
-      set names using the iconv(1) program, as follows:</p>
+      must be acceptable to the translation mechanism used by
+      <glossary>APR</glossary> on the system where
+      <module>mod_charset_lite</module> is deployed.  These character
+      set names are not standardized and are usually not the same as
+      the corresponding values used in http headers.  Currently, APR
+      can only use iconv(3), so you can easily test your character set
+      names using the iconv(1) program, as follows:</p>
 
       <example>
         iconv -f charsetsourceenc-value -t charsetdefault-value
@@ -105,8 +106,8 @@
 
     <p>The value of the <var>charset</var> argument must be accepted
     as a valid character set name by the character set support in
-    APR. Generally, this means that it must be supported by
-    iconv.</p>
+    <glossary>APR</glossary>. Generally, this means that it must be
+    supported by iconv.</p>
     
     <example><title>Example</title>
       &lt;Directory /export/home/trawick/apacheinst/htdocs/convert&gt;<br />
@@ -139,8 +140,8 @@
 
     <p>The value of the <var>charset</var> argument must be accepted
     as a valid character set name by the character set support in
-    APR. Generally, this means that it must be supported by
-    iconv.</p>
+    <glossary>APR</glossary>. Generally, this means that it must be
+    supported by iconv.</p>
 
     <example><title>Example</title>
       &lt;Directory /export/home/trawick/apacheinst/htdocs/convert&gt;<br />
