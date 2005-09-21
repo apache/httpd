@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.0.55
 
+  *) SECURITY: CAN-2005-2491 (cve.mitre.org): 
+     Fix integer overflows in PCRE in quantifier parsing which could
+     be triggered by a local user through use of a carefully-crafted 
+     regex in an .htaccess file.  [Philip Hazel]
+
   *) SECURITY: CAN-2005-2088 (cve.mitre.org)
      proxy: Correctly handle the Transfer-Encoding and Content-Length
      headers.  Discard the request Content-Length whenever T-E: chunked

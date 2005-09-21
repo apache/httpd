@@ -171,12 +171,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
        +1: pquerna, nd, wrowe
        Votes from before the integration branch: +1: jerenkrantz
 
-    *) Fix CAN-2005-2491, integer overflow in pcre.
-         http://svn.apache.org/viewcvs?rev=233493&view=rev
-       rediff for 2.0: http://people.apache.org/~jorton/CAN-2005-2491.patch
-       test case: perl-framework/t/security/CAN-2005-2491.t
-       +1: jorton, nd, wrowe
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ please place SVN revisions from trunk here, so it is easy to
     identify exactly what the proposed changes are!  Add all new
