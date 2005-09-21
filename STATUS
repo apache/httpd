@@ -391,21 +391,28 @@ PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
        http://svn.apache.org/viewcvs?view=rev&rev=158798
        http://svn.apache.org/viewcvs?view=rev&rev=159410
        http://svn.apache.org/viewcvs?view=rev&rev=160573
-       +1: gregames
+       +1: gregames, wrowe (provided this is applied to ALL subreq types!)
        -1: jerenkrantz (read_length isn't a sufficient check to see if a body
                        is present in the request; presence of T-E and C-L in
                        the headers is the correct flag.)
-           gregames: done in rev 160573
-       ±0: wrowe (this has a negative impact on modules who wish to 'inspect'
+           gregames: addressed jerenkrantz' objection in rev 160573
+           wrowe: this has a negative impact on modules who wish to 'inspect'
              the headers, e.g. an xml transformation affected by the query
              string or request POST args.  The right solution is adopt apreq,
-             providing an API for filters to participate in POST bodies.)
+             providing an API for filters to participate in POST bodies.
            gregames: this does not affect POSTs.  the affected function helps
              create a GET subrequest with no body and is unprepared to deal with
              subrequest bodies.  any modules or applications wishing to
              inspect headers will in fact work better because the headers will
              reflect reality.
-
+           wrowe: I've reconsidered - the simple fact is that subrequests
+             don't have a good mechanism to 'share' the input body with the
+             main request, and it's gotta be up to the main request to handle
+             the input body.  If the module wants to use apreq-provided data,
+             then it's going to have to ask apreq for the data instead of
+             looking at the headers.  For that matter, why are subreq's even
+             propogating POST or other non-GET types?  It seems that almost
+             any subreq should be handled as a GET in 2.0.
 
 CURRENT VOTES:
 
