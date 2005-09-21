@@ -370,10 +370,10 @@
           to the server without this module.</dd>
 
         <dt><code>--disable-mime</code></dt>
-        <dd><module>mod_mime</module> associates the requested filename's
-          extensions with the file's behavior and content (mime-type,
-          language, character set and encoding). Disabling the mapping of
-          file-extensions to MIME is normally not recommended.</dd>
+        <dd><module>mod_mime</module> associates the requested
+        filename's extensions with the file's behavior and content
+        (<glossary>mime-type</glossary>, language, character set and
+        encoding). Disabling this module is normally not recommended.</dd>
 
         <dt><code>--disable-negotiation</code></dt>
         <dd>Disable content negotiation provided by
@@ -498,9 +498,11 @@
         <dd>Enable memory caching provided by
           <module>mod_mem_cache</module>.</dd>
 
-        <dt><code>--enable-mime-magic</code></dt>
-        <dd>Enable automatical determining of MIME types, which is provided by
-          <module>mod_mime_magic</module>.</dd>
+        <dt><code>--enable-mime-magic</code></dt> 
+        <dd>Enable
+        automatical determining of <glossary ref="mime-type">MIME
+        types</glossary>, which is provided by
+        <module>mod_mime_magic</module>.</dd>
 
         <dt><code>--enable-isapi</code></dt>
         <dd>Enable the isapi extension support provided by
