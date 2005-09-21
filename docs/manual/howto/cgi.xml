@@ -202,7 +202,7 @@
     programming, and CGI programming.</p>
 
     <p>First, all output from your CGI program must be preceded by
-    a MIME-type header. This is HTTP header that tells the client
+    a <glossary>MIME-type</glossary> header. This is HTTP header that tells the client
     what sort of content it is receiving. Most of the time, this
     will look like:</p>
 

@@ -247,7 +247,7 @@ content-type is <code>text/plain</code> or <code>text/html</code></description>
 <usage>
     <p>This directive activates a particular output <a
     href="../filter.html">filter</a> for a request depending on the
-    response MIME-type.</p>
+    response <glossary>MIME-type</glossary>.</p>
 
     <p>The following example uses the <code>DEFLATE</code> filter, which
     is provided by <module>mod_deflate</module>. It will compress all
@@ -281,7 +281,7 @@ content-type is <code>text/plain</code> or <code>text/html</code></description>
     <note type="warning"><title>Note</title>
       <p>Enabling filters with <directive>AddOutputFilterByType</directive>
       may fail partially or completely in some cases. For example, no
-      filters are applied if the MIME-type could not be determined  and falls
+      filters are applied if the <glossary>MIME-type</glossary> could not be determined  and falls
       back to the <directive module="core">DefaultType</directive> setting,
       even if the <directive module="core">DefaultType</directive> is the
       same.</p>
@@ -582,8 +582,8 @@ server cannot determine a type in any other way</description>
 
 <usage>
     <p>There will be times when the server is asked to provide a
-    document whose type cannot be determined by its MIME types
-    mappings.</p>
+    document whose type cannot be determined by its <glossary
+    ref="mime-type">MIME types</glossary> mappings.</p>
 
     <p>The server must inform the client of the content-type of the
     document, so in the event of an unknown type it uses the

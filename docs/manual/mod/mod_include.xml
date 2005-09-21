@@ -306,14 +306,14 @@
 
     <section id="element.include"><title>The include Element</title>
       <p>This command inserts the text of another document or file
-      into the parsed file. Any included file is subject to the
-      usual access control. If the directory containing the
-      parsed file has <a href="core.html#options">Options</a>
-      <code>IncludesNOEXEC</code> set, then only documents with
-      a text MIME type (<code>text/plain</code>, <code>text/html</code>
-      etc.) will be included. Otherwise CGI scripts are invoked as normal
-      using the complete URL given in the command, including any query
-      string.</p>
+      into the parsed file. Any included file is subject to the usual
+      access control. If the directory containing the parsed file has
+      <a href="core.html#options">Options</a>
+      <code>IncludesNOEXEC</code> set, then only documents with a text
+      <glossary>MIME-type</glossary> (<code>text/plain</code>,
+      <code>text/html</code> etc.) will be included. Otherwise CGI
+      scripts are invoked as normal using the complete URL given in
+      the command, including any query string.</p>
 
       <p>An attribute defines the location of the document; the
       inclusion is done for each attribute given to the include
@@ -757,7 +757,7 @@ set</description>
 <usage>
     <p>The <directive>XBitHack</directive> directive controls the parsing
     of ordinary html documents. This directive only affects files associated
-    with the MIME type <code>text/html</code>. <directive
+    with the <glossary>MIME-type</glossary> <code>text/html</code>. <directive
     >XBitHack</directive> can take on the following values:</p>
 
     <dl>
