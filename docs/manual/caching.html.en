@@ -39,11 +39,11 @@
 <h2><a name="introduction" id="introduction">Introduction</a></h2>
     
 
-    <p>As of Apache HTTP server version 2.2 <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> and 
-    <code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code> are no longer marked experimental and are 
-    considered suitable for production use. These caching architectures provide
-    a powerful means to accelerate HTTP handling, both as a webserver and as a 
-    proxy.</p>
+    <p>As of Apache HTTP server version 2.2 <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>
+    and <code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code> are no longer marked
+    experimental and are considered suitable for production use. These
+    caching architectures provide a powerful means to accelerate HTTP
+    handling, both as an origin webserver and as a proxy.</p>
 
     <p><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> and its provider modules 
     <code class="module"><a href="./mod/mod_mem_cache.html">mod_mem_cache</a></code> and <code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code> 
@@ -61,7 +61,7 @@
     the complexity of actively ensuring the cachability of URLs,
     <code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code> offers file-handle and memory-mapping 
     tricks to keep a cache of files as they were when Apache was last 
-    started. As such <code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code> is aimed at improving 
+    started. As such, <code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code> is aimed at improving 
     the access time to local static files which do not change very
     often.</p>
 
@@ -83,16 +83,17 @@
     
     <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code></li><li><code class="module"><a href="./mod/mod_mem_cache.html">mod_mem_cache</a></code></li><li><code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code></li><li><code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_cache.html#cacheenable">CacheEnable</a></code></li><li><code class="directive"><a href="./mod/mod_cache.html#cachedisable">CacheDisable</a></code></li><li><code class="directive"><a href="./mod/mod_file_cache.html#mmapstatic">MMapStatic</a></code></li><li><code class="directive"><a href="./mod/mod_file_cache.html#cachefile">CacheFile</a></code></li><li><code class="directive"><a href="./mod/mod_file_cache.html#cachefile">CacheFile</a></code></li><li><code class="directive"><a href="./mod/core.html#usecanonicalname">UseCanonicalName</a></code></li><li><code class="directive"><a href="./mod/mod_negotiation.html#cachenegotiateddocs">CacheNegotiatedDocs</a></code></li></ul></td></tr></table>
 
-    <p>There are two main stages in <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> which can
+    <p>There are two main stages in <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> that can
     occur in the lifetime of a request. First, <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>
     is a URL mapping module, which means that if a URL has been cached,
     and the cached version of that URL has not expired, the request will 
     be served directly by <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>.</p>
 
-    <p>This means that any other stages with might ordinarily happen in the 
-    process of serving a request, for example being handled by 
-    <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code>, or <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code> won't happen. 
-    But then this is the point of caching content in the first place.</p>
+    <p>This means that any other stages that might ordinarily happen
+    in the process of serving a request -- for example being handled
+    by <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code>, or <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code> --
+    won't happen.  But then this is the point of caching content in
+    the first place.</p>
 
     <p>If the URL is not found within the cache, <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>
     will add a <a href="filter.html">filter</a> to the request handling. After

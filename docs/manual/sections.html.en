@@ -112,7 +112,8 @@ from databases or other locations.</p>
 
 <p>The <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>
 and <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code>
-directives, along with their regex counterparts, apply directives to
+directives, along with their <a class="glossarylink" href="./glossary.html#regex" title="see glossary">regex</a>
+counterparts, apply directives to
 parts of the filesystem.  Directives enclosed in a <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> section apply to
 the named filesystem directory and all subdirectories of that
 directory.  The same effect can be obtained using <a href="howto/htaccess.html">.htaccess files</a>.  For example, in the
@@ -162,7 +163,8 @@ Deny from all<br />
 <h3><a name="webspace" id="webspace">Webspace Containers</a></h3>
 
 <p>The <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>
-directive and its regex counterpart, on the other hand, change the
+directive and its <a class="glossarylink" href="./glossary.html#regex" title="see glossary">regex</a> counterpart, on
+the other hand, change the
 configuration for content in the webspace.  For example, the following
 configuration prevents access to any URL-path that begins in /private.
 In particular, it will apply to requests for
@@ -205,9 +207,9 @@ character will not be matched by any wildcard; it must be specified
 explicitly.</p>
 
 <p>If even more flexible matching is required, each
-container has a regular-expression (regex) counterpart <code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code>, <code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code>, and <code class="directive"><a href="./mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code> that allow
+container has a regular expression (regex) counterpart <code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code>, <code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code>, and <code class="directive"><a href="./mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code> that allow
 perl-compatible
-<a href="glossary.html#regex">regular expressions</a>
+<a class="glossarylink" href="./glossary.html#regex" title="see glossary">regular expressions</a>
 to be used in choosing the matches.  But see the section below on
 configuration merging to find out how using regex sections will change
 how directives are applied.</p>

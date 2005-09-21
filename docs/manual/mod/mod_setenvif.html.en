@@ -198,10 +198,9 @@ used for the <em>attribute</em>.</li>
 </li>
 </ol>
 
-<p>The second argument (<em>regex</em>) is a <a href="http://www.pcre.org/">Perl compatible regular expression</a>.
-This is similar to a POSIX.2 egrep-style regular expression.
-If the <em>regex</em> matches against the <em>attribute</em>,
-then the remainder of the arguments are evaluated.</p>
+<p>The second argument (<em>regex</em>) is a <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expression</a>.  If the <em>regex</em>
+matches against the <em>attribute</em>, then the remainder of the
+arguments are evaluated.</p>
 
 <p>The rest of the arguments give the names of variables to set, and
 optionally values to which they should be set. These take the form

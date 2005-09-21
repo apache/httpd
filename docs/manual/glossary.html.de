@@ -37,13 +37,13 @@
     <dt><a name="algorithm" id="algorithm">Algorithmus</a></dt>
     <dd>Eine eindeutige Formel oder ein Satz von Regeln zur Lösung eines
       Problems in einer endlichen Anzahl von Schritten. Algorithmen zur
-      Verschlüsselung werden üblicherweise <span title="siehe Glossar">&#8594;</span>&nbsp;<a href="./glossary.html#cipher"><dfn>Chiffre</dfn></a> genannt.
+      Verschlüsselung werden üblicherweise <a class="glossarylink" href="./glossary.html#cipher" title="siehe Glossar"><dfn>Chiffre</dfn></a> genannt.
     </dd>
 
     <dt><a name="apacheextensiontool" id="apacheextensiontool">APache
       eXtension Tool</a> <a name="apxs" id="apxs">(apxs)</a></dt>
     <dd>Ein Perl-Skript zur Kompilierung von <a href="#module">Modul</a>-Quelltexten zu Dynamic-Shared-Objects
-      (<span title="siehe Glossar">&#8594;</span>&nbsp;<a href="./glossary.html#dso">DSOs</a>)  und zur Installation dieser zum
+      (<a class="glossarylink" href="./glossary.html#dso" title="siehe Glossar">DSOs</a>)  und zur Installation dieser zum
       Apache-Webserver.<br />
       Siehe: <code class="program"><a href="./programs/apxs.html">apxs</a></code>-Dokumentation
     </dd>
@@ -72,9 +72,9 @@
       <span class="phonetic">[s&#601;&#712;tifikit saini&#331;
       ri&#712;kwest]</span>  <a name="csr" id="csr">(CSR)</a></dt> 
     <dd><span class="transnote">(<em>Anm.d.Ü.:</em> Zertifikats-Signierungsanfrage)</span> Ein unsigniertes
-      <span title="siehe Glossar">&#8594;</span>&nbsp;<a href="./glossary.html#certificate">Zertifikat</a> zur Einreichung bei
-      einer <span title="siehe Glossar">&#8594;</span>&nbsp;<a href="./glossary.html#certificationauthority">Zertifizierungsstelle</a>, welche
-      es mit dem <span title="siehe Glossar">&#8594;</span>&nbsp;<a href="./glossary.html#privatekey">privaten Schlüssel</a>
+      <a class="glossarylink" href="./glossary.html#certificate" title="siehe Glossar">Zertifikat</a> zur Einreichung bei
+      einer <a class="glossarylink" href="./glossary.html#certificationauthority" title="siehe Glossar">Zertifizierungsstelle</a>, welche
+      es mit dem <a class="glossarylink" href="./glossary.html#privatekey" title="siehe Glossar">privaten Schlüssel</a>
       ihres CA-<em>Zertifikats</em> signiert. Durch die Signatur wird ein CSR
       zum echten Zertifikat.<br />
       Siehe: <a href="ssl/">SSL/TLS-Verschlüsselung</a>
@@ -89,8 +89,8 @@
     </dd>
 
     <dt><a name="ciphertext" id="ciphertext">Chiffretext</a></dt>
-    <dd>Das Ergebnis, nachdem ein <span title="siehe Glossar">&#8594;</span>&nbsp;<a href="./glossary.html#plaintext">Klartext</a>
-      eine <span title="siehe Glossar">&#8594;</span>&nbsp;<a href="./glossary.html#cipher">Chiffre</a> durchlaufen hat.<br />
+    <dd>Das Ergebnis, nachdem ein <a class="glossarylink" href="./glossary.html#plaintext" title="siehe Glossar">Klartext</a>
+      eine <a class="glossarylink" href="./glossary.html#cipher" title="siehe Glossar">Chiffre</a> durchlaufen hat.<br />
       Siehe: <a href="ssl/">SSL/TLS-Verschlüsselung</a>
     </dd>
     
@@ -108,7 +108,7 @@
 
     <dt><a name="connect" id="connect">CONNECT</a>
       <span class="phonetic">[k&#601;nekt]</span></dt> 
-    <dd>Eine <span title="siehe Glossar">&#8594;</span>&nbsp;<a href="./glossary.html#method">HTTP-Methode</a> zur Weiterleitung
+    <dd>Eine <a class="glossarylink" href="./glossary.html#method" title="siehe Glossar">HTTP-Methode</a> zur Weiterleitung
       von Rohdaten über HTTP. Sie kann dazu verwendet werden, andere
       Protokolle wie zum Beispiel das SSL-Protokoll zu kapseln.
     </dd>
@@ -116,8 +116,8 @@
     <dt><a name="digitalsignature" id="digitalsignature">Digitale
       Signatur</a></dt>
     <dd>Ein chiffrierter Textblock, der die Gültigkeit eines Zertifikats
-      oder einer anderen Datei bestätigt. Eine <span title="siehe Glossar">&#8594;</span>&nbsp;<a href="./glossary.html#certificationauthority">Zertifizierungsstelle</a> erstellt 
-      eine digitale Signatur durch Generierung eines <span title="siehe Glossar">&#8594;</span>&nbsp;<a href="./glossary.html#hash">Hashs</a> aus dem in einem <em>Zertifikat</em>
+      oder einer anderen Datei bestätigt. Eine <a class="glossarylink" href="./glossary.html#certificationauthority" title="siehe Glossar">Zertifizierungsstelle</a> erstellt 
+      eine digitale Signatur durch Generierung eines <a class="glossarylink" href="./glossary.html#hash" title="siehe Glossar">Hashs</a> aus dem in einem <em>Zertifikat</em>
       enthaltenen <em>öffentlichen Schlüssel</em> und
       anschließender Codierung des Hashs mit dem <em>privaten
       Schlüssel</em> des Zertifikats. Nur der öffentliche
@@ -129,7 +129,7 @@
 
     <dt><a name="directive" id="directive">Direktive</a></dt> 
     <dd>Eine Konfigurationsanweisung, die das Verhalten des Apache in einem
-      oder mehreren Punkten steuert. Direktiven werden in den <span title="siehe Glossar">&#8594;</span>&nbsp;<a href="./glossary.html#configurationfile">Konfigurationsdateien</a> gesetzt.<br />
+      oder mehreren Punkten steuert. Direktiven werden in den <a class="glossarylink" href="./glossary.html#configurationfile" title="siehe Glossar">Konfigurationsdateien</a> gesetzt.<br />
       Siehe: <a href="mod/directives.html">Verzeichnis der Direktiven</a>
     </dd>
 
@@ -138,7 +138,7 @@
       <span class="phonetic">[dai&#712;næmik &#643;&#603;&#601;d
       &#712;&#596;bd&#658;ikt]</span> <a name="dso" id="dso">(DSO)</a></dt>
     <dd>Separat von der Apache-Binärdatei <code class="program"><a href="./programs/httpd.html">httpd</a></code>
-      kompilierte <span title="siehe Glossar">&#8594;</span>&nbsp;<a href="./glossary.html#module">Module</a>, die bei Bedarf
+      kompilierte <a class="glossarylink" href="./glossary.html#module" title="siehe Glossar">Module</a>, die bei Bedarf
       geladen werden können.<br />
       Siehe: <a href="dso.html">Unterstützung für
       Dynamic-Shared-Objects</a>
@@ -160,7 +160,7 @@
       angewendet wird. Eingabefilter verarbeiten vom Client an den Server
       gesendetet Daten, während Ausgabefilter vom Server an den Client zu
       sendende Daten verarbeiten. Der Ausgabefilter <code>INCLUDES</code>
-      beispielsweise untersucht Dokumente nach <span title="siehe Glossar">&#8594;</span>&nbsp;<a href="./glossary.html#ssi">Server-Side-Includes</a> und führt sie aus.<br />
+      beispielsweise untersucht Dokumente nach <a class="glossarylink" href="./glossary.html#ssi" title="siehe Glossar">Server-Side-Includes</a> und führt sie aus.<br />
       Siehe: <a href="filter.html">Filter</a>
     </dd>
 
@@ -172,7 +172,7 @@
       vom Server bedient, einige Dateitypen werden jedoch separat "behandelt"
       <span class="transnote">(<em>Anm.d.Ü.:</em> besitzen einen separaten Handler)</span>. Der
       <code>cgi-script</code>-Handler beispielsweise kennzeichnet Dateien, die
-      als <span title="siehe Glossar">&#8594;</span>&nbsp;<a href="./glossary.html#cgi">CGI-Programme</a> ausgeführt werden
+      als <a class="glossarylink" href="./glossary.html#cgi" title="siehe Glossar">CGI-Programme</a> ausgeführt werden
       sollen.<br />
       Siehe: <a href="handler.html">Verwendung von Apache-Handlern</a>
     </dd>
@@ -188,23 +188,23 @@
 
     <dt><a name="header" id="header">Header</a>
       <span class="phonetic">[hed&#601;]</span></dt>
-    <dd>Der Teil der <span title="siehe Glossar">&#8594;</span>&nbsp;<a href="./glossary.html#http">HTTP</a>-Anfrage und -Antwort,
+    <dd>Der Teil der <a class="glossarylink" href="./glossary.html#http" title="siehe Glossar">HTTP</a>-Anfrage und -Antwort,
       der vor den eigentlichen Daten übermittelt wird und den Inhalt
       beschreibende Meta-Informationen enthält.
     </dd>
 
     <dt><a name="htaccess" id="htaccess">.htaccess</a></dt>
-    <dd>Eine <span title="siehe Glossar">&#8594;</span>&nbsp;<a href="./glossary.html#configurationfile">Konfigurationsdatei</a>,
+    <dd>Eine <a class="glossarylink" href="./glossary.html#configurationfile" title="siehe Glossar">Konfigurationsdatei</a>,
       die innerhalb des Web-Verzeichnisbaums abgelegt wird und zu dem
       Verzeichnis, in dem sie abgelegt ist, sowie allen Unterverzeichnissen
-      <span title="siehe Glossar">&#8594;</span>&nbsp;<a href="./glossary.html#directive">Konfigurationsdirektiven</a>
+      <a class="glossarylink" href="./glossary.html#directive" title="siehe Glossar">Konfigurationsdirektiven</a>
       enthält. Trotz ihres Namens kann diese Datei nahezu alle Arten von
       Direktiven enthalten, nicht nur Direktiven zur Zugriffskontrolle.<br />
       Siehe: <a href="configuring.html">Konfigurationsdateien</a>
     </dd>
 
     <dt><a name="httpd.conf" id="httpd.conf">httpd.conf</a></dt>
-    <dd>Die <span title="siehe Glossar">&#8594;</span>&nbsp;<a href="./glossary.html#configurationfile">Haupt-Konfigurationsdatei</a> ist
+    <dd>Die <a class="glossarylink" href="./glossary.html#configurationfile" title="siehe Glossar">Haupt-Konfigurationsdatei</a> ist
       <code>/usr/local/apache2/conf/httpd.conf</code>. Dies kann aber zur
       Laufzeit oder zur Kompilierungszeit anders konfiguriert werden.<br />
       Siehe: <a href="configuring.html">Konfigurationsdateien</a>
@@ -213,7 +213,7 @@
     <dt><a name="https" id="https">HTTPS</a></dt>
     <dd>Das HyperText-Transfer-Protokoll (Secure), der
       Standard-Verschlüsselungsmechanismus im World Wide Web.
-      Tatsächlich handelt es sich hierbei um HTTP über <span title="siehe Glossar">&#8594;</span>&nbsp;<a href="./glossary.html#ssl">SSL</a>.<br />
+      Tatsächlich handelt es sich hierbei um HTTP über <a class="glossarylink" href="./glossary.html#ssl" title="siehe Glossar">SSL</a>.<br />
       Siehe: <a href="ssl/">SSL/TLS-Verschlüsselung</a>
     </dd>
     
@@ -228,17 +228,17 @@
     <dd>Der unverschlüsselte Text.</dd>
 
     <dt><a name="configurationdirective" id="configurationdirective">Konfigurationsanweisung</a></dt>
-    <dd>Siehe: <span title="siehe Glossar">&#8594;</span>&nbsp;<a href="./glossary.html#directive">Direktive</a></dd>
+    <dd>Siehe: <a class="glossarylink" href="./glossary.html#directive" title="siehe Glossar">Direktive</a></dd>
 
     <dt><a name="configurationfile" id="configurationfile">Konfigurationsdatei</a></dt>
-    <dd>Eine Textdatei mit <span title="siehe Glossar">&#8594;</span>&nbsp;<a href="./glossary.html#directive">Direktiven</a>,
+    <dd>Eine Textdatei mit <a class="glossarylink" href="./glossary.html#directive" title="siehe Glossar">Direktiven</a>,
       welche die Konfiguration des Apache steuern.<br />
       Siehe: <a href="configuring.html">Konfigurationsdateien</a>
     </dd>
 
     <dt><a name="context" id="context">Kontext</a></dt>
-    <dd>Ein Bereich in den <span title="siehe Glossar">&#8594;</span>&nbsp;<a href="./glossary.html#configurationfile">Konfigurationsdateien</a>, in dem
-      verschiedene Typen von <span title="siehe Glossar">&#8594;</span>&nbsp;<a href="./glossary.html#directive">Direktiven</a>
+    <dd>Ein Bereich in den <a class="glossarylink" href="./glossary.html#configurationfile" title="siehe Glossar">Konfigurationsdateien</a>, in dem
+      verschiedene Typen von <a class="glossarylink" href="./glossary.html#directive" title="siehe Glossar">Direktiven</a>
       erlaubt sind.<br />
       Siehe: <a href="mod/directive-dict.html#Context">Erklärung der
       Fachbegriffe zu Apache-Direktiven</a>
@@ -254,7 +254,7 @@
     </dd>
 
     <dt><a name="method" id="method">Methode</a></dt>
-    <dd>Im <span title="siehe Glossar">&#8594;</span>&nbsp;<a href="./glossary.html#http">HTTP</a>-Kontext eine in der
+    <dd>Im <a class="glossarylink" href="./glossary.html#http" title="siehe Glossar">HTTP</a>-Kontext eine in der
       Anfrage(zeile) des Clients angegeben Aktion, die auf eine Ressource
       angewendet wird. <code>GET</code>, <code>POST</code> und <code>PUT</code>
       sind einige der verfügbaren HTTP-Methoden.
@@ -268,7 +268,7 @@
       einem Haupttyp und einem Untertyp, getrennt durch einen 
       Schrägstrich. Einige Beispiele sind <code>text/html</code>,
       <code>image/gif</code> und <code>application/octet-stream</code>.
-      Bei HTTP wird der MIME-Typ mit dem <span title="siehe Glossar">&#8594;</span>&nbsp;<a href="./glossary.html#header">Header</a> <code>Content-Type</code>
+      Bei HTTP wird der MIME-Typ mit dem <a class="glossarylink" href="./glossary.html#header" title="siehe Glossar">Header</a> <code>Content-Type</code>
       übermittelt.<br />
       Siehe: <a href="mod/mod_mime.html">mod_mime</a>
     </dd>
@@ -279,10 +279,10 @@
       oder entfernen können. In die Apache-Binärdatei <code class="program"><a href="./programs/httpd.html">httpd</a></code> einkompilierte Module werden <em>statische Module</em>
       genannt, während Module, die separat gespeichert sind und optional
       zur Laufzeit geladen werden können, <em>dynamische Module</em> oder
-      <span title="siehe Glossar">&#8594;</span>&nbsp;<a href="./glossary.html#dso">DSOs</a> genannt werden.
+      <a class="glossarylink" href="./glossary.html#dso" title="siehe Glossar">DSOs</a> genannt werden.
       Standardmäßig eingebundene Module werden <em>Basismodule</em>
       genannt. Für den Apache sind viele Module verfügbar, die nicht
-      als Bestandteil des <span title="siehe Glossar">&#8594;</span>&nbsp;<a href="./glossary.html#tarball">Apache-HTTP-Server-Tarballs</a> ausgeliefert
+      als Bestandteil des <a class="glossarylink" href="./glossary.html#tarball" title="siehe Glossar">Apache-HTTP-Server-Tarballs</a> ausgeliefert
       werden. Diese werden als <em>Drittmodule</em> bezeichnet.<br />
       Siehe: <a href="mod/">Modulverzeichnis</a>
     </dd>
@@ -304,7 +304,7 @@
 
     <dt><a name="publickey" id="publickey">Öffentlicher
       Schlüssel</a></dt>
-    <dd>Der öffentlich verfügbare Schlüssel in einem <span title="siehe Glossar">&#8594;</span>&nbsp;<a href="./glossary.html#publickeycryptography">Public-Key-Kryptographie</a>-System,
+    <dd>Der öffentlich verfügbare Schlüssel in einem <a class="glossarylink" href="./glossary.html#publickeycryptography" title="siehe Glossar">Public-Key-Kryptographie</a>-System,
       mit dem für seinen Eigentümer bestimmte Nachrichten
       verschlüsselt und Signaturen von seinem Eigentümer
       entschlüsselt werden.<br />
@@ -323,12 +323,12 @@
     <dd>Das Wort oder die Phrase, welches private Schlüssel-Dateien
       schützt. Sie verhindert die Entschlüsselung durch nicht
       authorisierte Benutzer. Normalerweise ist dies einfach der geheimen
-      (De-)Codierungsschlüssel, der für <span title="siehe Glossar">&#8594;</span>&nbsp;<a href="./glossary.html#cipher">Chiffren</a> verwendet wird.<br />
+      (De-)Codierungsschlüssel, der für <a class="glossarylink" href="./glossary.html#cipher" title="siehe Glossar">Chiffren</a> verwendet wird.<br />
       Siehe: <a href="ssl/">SSL/TLS-Verschlüsselung</a>
     </dd>
 
     <dt><a name="privatekey" id="privatekey">Privater Schlüssel</a></dt>
-    <dd>Der geheime Schlüssel in einem <span title="siehe Glossar">&#8594;</span>&nbsp;<a href="./glossary.html#publickeycryptography">Public-Key-Kryptographie</a>-System,
+    <dd>Der geheime Schlüssel in einem <a class="glossarylink" href="./glossary.html#publickeycryptography" title="siehe Glossar">Public-Key-Kryptographie</a>-System,
       mit dem hereinkommende Nachrichten decodiert und ausgehende signiert
       werden.<br />
       Siehe: <a href="ssl/">SSL/TLS-Verschlüsselung</a>
@@ -376,7 +376,7 @@
     <dt><a name="reverseproxy" id="reverseproxy">Reverse Proxy</a>
       <span class="phonetic">[ri&#720;v&#601;&#720;s
       &#712;pr&#596;ksi]</span></dt>
-    <dd>Ein <span title="siehe Glossar">&#8594;</span>&nbsp;<a href="./glossary.html#proxy">Proxy</a>-Server, der dem Client
+    <dd>Ein <a class="glossarylink" href="./glossary.html#proxy" title="siehe Glossar">Proxy</a>-Server, der dem Client
       gegenüber als <em>ursprünglicher Server</em> erscheint. Dies
       ist nützlich, um den tatsächlichen Server aus
       Sicherheitsgründen oder zur Lastverteilung vor dem Client zu
@@ -451,7 +451,7 @@
       <a name="url" id="url">(URL)</a></dt>
     <dd>Der Name bzw. die Adresse einer Ressource im Internet. Dies ist der
       allgemein gebräuchliche Audruck für die formale Bezeichnung
-      <span title="siehe Glossar">&#8594;</span>&nbsp;<a href="./glossary.html#uniformresourceidentifier">Uniform Resource
+      <a class="glossarylink" href="./glossary.html#uniformresourceidentifier" title="siehe Glossar">Uniform Resource
       Identifier</a>. URLs bestehen üblicherweise aus einem
       Schema wie <code>http</code> oder <code>https</code>, einem Hostnamen
       und einem Pfad. Die URL für diese Seite ist
@@ -465,7 +465,7 @@
     <dd>Eine kompakte Zeichenfolge zur Identifizierung einer abstrakten oder
       physischen Ressource. Er wird in dem <a href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a> formell
       definiert. Im World Wide Web verwendete URIs werden üblicherweise
-      als <span title="siehe Glossar">&#8594;</span>&nbsp;<a href="./glossary.html#url">URLs</a> bezeichnet.
+      als <a class="glossarylink" href="./glossary.html#url" title="siehe Glossar">URLs</a> bezeichnet.
     </dd>
 
     <dt><a name="virtualhosting" id="virtualhosting">Virtual-Hosting</a>
@@ -506,14 +506,14 @@
     </dd>
 
     <dt><a name="certificate" id="certificate">Zertifikat</a></dt>
-    <dd>Ein Datensatz zur <span title="siehe Glossar">&#8594;</span>&nbsp;<a href="./glossary.html#authentication">Authentisierung</a> einer 
+    <dd>Ein Datensatz zur <a class="glossarylink" href="./glossary.html#authentication" title="siehe Glossar">Authentisierung</a> einer 
       Nertzwerkeinheit wie Server oder Client. Ein Zertifikat
-      enthält <span title="siehe Glossar">&#8594;</span>&nbsp;<a href="./glossary.html#x.509">X.509</a>-Informationen
+      enthält <a class="glossarylink" href="./glossary.html#x.509" title="siehe Glossar">X.509</a>-Informationen
       über seinen Eigentümer (das sogenannte Betreff
       <span class="transnote">(<em>Anm.d.Ü.:</em> engl.: subject)</span>) und die
-      signierende <span title="siehe Glossar">&#8594;</span>&nbsp;<a href="./glossary.html#certificationauthority">Certification
+      signierende <a class="glossarylink" href="./glossary.html#certificationauthority" title="siehe Glossar">Certification
       Authority</a> (der sogenannte Aussteller <span class="transnote">(<em>Anm.d.Ü.:</em> engl.:
-      issuer)</span>) sowie den <span title="siehe Glossar">&#8594;</span>&nbsp;<a href="./glossary.html#publickey">öffentlichen Schlüssel</a> des
+      issuer)</span>) sowie den <a class="glossarylink" href="./glossary.html#publickey" title="siehe Glossar">öffentlichen Schlüssel</a> des
       Eigentümers und die Signatur der CA. Netzwerkeinheiten
       überprüfen diese Signatur mit Hilfe von CA-Zertifikaten.<br />
       Siehe: <a href="ssl/">SSL/TLS-Verschlüsselung</a>

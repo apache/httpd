@@ -48,8 +48,8 @@
     
     <dt><a name="apacheextensiontool" id="apacheextensiontool">APache
         eXtension Tool</a> <a name="apxs" id="apxs">(apxs)</a></dt>
-    <dd>A perl script that aids in compiling <span title="see glossary">&#8594;</span>&nbsp;<a href="./glossary.html#module">module</a> sources into Dynamic Shared Objects
-      (<span title="see glossary">&#8594;</span>&nbsp;<a href="./glossary.html#dso">DSO</a>s) and helps install them in the
+    <dd>A perl script that aids in compiling <a class="glossarylink" href="./glossary.html#module" title="see glossary">module</a> sources into Dynamic Shared Objects
+      (<a class="glossarylink" href="./glossary.html#dso" title="see glossary">DSO</a>s) and helps install them in the
       Apache Web server.<br />
       See: Manual Page: <code class="program"><a href="./programs/apxs.html">apxs</a></code>
     </dd>
@@ -64,8 +64,8 @@
     <dt><a name="certificate" id="certificate">Certificate</a></dt>
     <dd>A data record used for authenticating network entities such
       as a server or a client. A certificate contains X.509 information pieces
-      about its owner (called the subject) and the signing <span title="see glossary">&#8594;</span>&nbsp;<a href="./glossary.html#certificationauthority">Certification Authority</a> (called
-      the issuer), plus the owner's <span title="see glossary">&#8594;</span>&nbsp;<a href="./glossary.html#publickey">public
+      about its owner (called the subject) and the signing <a class="glossarylink" href="./glossary.html#certificationauthority" title="see glossary">Certification Authority</a> (called
+      the issuer), plus the owner's <a class="glossarylink" href="./glossary.html#publickey" title="see glossary">public
       key</a> and the
       signature made by the CA. Network entities verify these signatures
       using CA certificates.<br />
@@ -74,9 +74,9 @@
 
     <dt><a name="certificatsigningrequest" id="certificatsigningrequest">Certificate Signing Request</a>
       <a name="csr" id="csr">(CSR)</a></dt>
-    <dd>An unsigned <span title="see glossary">&#8594;</span>&nbsp;<a href="./glossary.html#certificate">certificate</a> for
-      submission to a <span title="see glossary">&#8594;</span>&nbsp;<a href="./glossary.html#certificationauthority">Certification
-      Authority</a>, which signs it with the <span title="see glossary">&#8594;</span>&nbsp;<a href="./glossary.html#privatekey">Private Key</a> of their CA
+    <dd>An unsigned <a class="glossarylink" href="./glossary.html#certificate" title="see glossary">certificate</a> for
+      submission to a <a class="glossarylink" href="./glossary.html#certificationauthority" title="see glossary">Certification
+      Authority</a>, which signs it with the <a class="glossarylink" href="./glossary.html#privatekey" title="see glossary">Private Key</a> of their CA
       <em>Certificate</em>. Once the CSR is signed, it becomes a real
       certificate.<br />
       See: <a href="ssl/">SSL/TLS Encryption</a>
@@ -98,8 +98,8 @@
     </dd>
 
     <dt><a name="ciphertext" id="ciphertext">Ciphertext</a></dt>
-    <dd>The result after <span title="see glossary">&#8594;</span>&nbsp;<a href="./glossary.html#plaintext">Plaintext</a> is
-      passed through a <span title="see glossary">&#8594;</span>&nbsp;<a href="./glossary.html#cipher">Cipher</a>.<br /> See: <a href="ssl/">SSL/TLS Encryption</a>
+    <dd>The result after <a class="glossarylink" href="./glossary.html#plaintext" title="see glossary">Plaintext</a> is
+      passed through a <a class="glossarylink" href="./glossary.html#cipher" title="see glossary">Cipher</a>.<br /> See: <a href="ssl/">SSL/TLS Encryption</a>
     </dd>
 
     <dt><a name="commongatewayinterface" id="commongatewayinterface">Common
@@ -112,24 +112,24 @@
     </dd>
 
     <dt><a name="configurationdirective" id="configurationdirective">Configuration Directive</a></dt>
-    <dd>See: <span title="see glossary">&#8594;</span>&nbsp;<a href="./glossary.html#directive">Directive</a></dd>
+    <dd>See: <a class="glossarylink" href="./glossary.html#directive" title="see glossary">Directive</a></dd>
 
     <dt><a name="configurationfile" id="configurationfile">Configuration
         File</a></dt>
-    <dd>A text file containing <span title="see glossary">&#8594;</span>&nbsp;<a href="./glossary.html#directive">Directives</a>
+    <dd>A text file containing <a class="glossarylink" href="./glossary.html#directive" title="see glossary">Directives</a>
       that control the configuration of Apache.<br />
       See: <a href="configuring.html">Configuration Files</a>
     </dd>
 
     <dt><a name="connect" id="connect">CONNECT</a></dt>
-    <dd>An HTTP <span title="see glossary">&#8594;</span>&nbsp;<a href="./glossary.html#method">method</a> for proxying raw data
+    <dd>An HTTP <a class="glossarylink" href="./glossary.html#method" title="see glossary">method</a> for proxying raw data
       channels over HTTP. It can be used to encapsulate other protocols, such as
       the SSL protocol.
     </dd>
     
     <dt><a name="context" id="context">Context</a></dt>
-    <dd>An area in the <span title="see glossary">&#8594;</span>&nbsp;<a href="./glossary.html#configurationfile">configuration
-      files</a> where certain types of <span title="see glossary">&#8594;</span>&nbsp;<a href="./glossary.html#directive">directives</a> are allowed.<br />
+    <dd>An area in the <a class="glossarylink" href="./glossary.html#configurationfile" title="see glossary">configuration
+      files</a> where certain types of <a class="glossarylink" href="./glossary.html#directive" title="see glossary">directives</a> are allowed.<br />
       See: <a href="mod/directive-dict.html#Context">Terms Used to Describe
       Apache Directives</a>
     </dd>
@@ -137,7 +137,7 @@
     <dt><a name="digitalsignature" id="digitalsignature">Digital
         Signature</a></dt>
     <dd>An encrypted text block that validates a certificate or other file. A
-      <span title="see glossary">&#8594;</span>&nbsp;<a href="./glossary.html#certificationauthority">Certification Authority</a>
+      <a class="glossarylink" href="./glossary.html#certificationauthority" title="see glossary">Certification Authority</a>
       creates a signature by generating a hash of the <em>Public Key</em>
       embedded in a <em>Certificate</em>, then encrypting the hash with its own
       <em>Private Key</em>. Only the CA's public key can decrypt the signature,
@@ -148,13 +148,13 @@
     
     <dt><a name="directive" id="directive">Directive</a></dt>
     <dd>A configuration command that controls one or more aspects of Apache's
-      behavior.  Directives are placed in the <span title="see glossary">&#8594;</span>&nbsp;<a href="./glossary.html#configurationfile">Configuration File</a><br />
+      behavior.  Directives are placed in the <a class="glossarylink" href="./glossary.html#configurationfile" title="see glossary">Configuration File</a><br />
     See: <a href="mod/directives.html">Directive Index</a>
     </dd>
 
     <dt><a name="dynamicsharedobject" id="dynamicsharedobject">Dynamic
         Shared Object</a> <a name="dso" id="dso">(DSO)</a></dt>
-    <dd><span title="see glossary">&#8594;</span>&nbsp;<a href="./glossary.html#module">Modules</a> compiled separately from the
+    <dd><a class="glossarylink" href="./glossary.html#module" title="see glossary">Modules</a> compiled separately from the
       Apache <code class="program"><a href="./programs/httpd.html">httpd</a></code> binary that can be loaded on-demand.<br />
       See: <a href="dso.html">Dynamic Shared Object Support</a>
     </dd>
@@ -183,7 +183,7 @@
       server.  Input filters process data sent by the client to the server,
       while output filters process documents on the server before they are sent
       to the client.  For example, the <code>INCLUDES</code> output filter
-      processes documents for <span title="see glossary">&#8594;</span>&nbsp;<a href="./glossary.html#ssi">Server Side
+      processes documents for <a class="glossarylink" href="./glossary.html#ssi" title="see glossary">Server Side
       Includes</a>.<br />
       See: <a href="filter.html">Filters</a>
     </dd>
@@ -202,7 +202,7 @@
       type. Normally, all files are simply served by the server, but certain
       file types are "handled" separately.  For example, the
       <code>cgi-script</code> handler designates files to be processed as
-      <span title="see glossary">&#8594;</span>&nbsp;<a href="./glossary.html#cgi">CGIs</a>.<br />
+      <a class="glossarylink" href="./glossary.html#cgi" title="see glossary">CGIs</a>.<br />
       See: <a href="handler.html">Apache's Handler Use</a>
     </dd>
 
@@ -213,21 +213,21 @@
     </dd>
 
     <dt><a name="header" id="header">Header</a></dt>
-    <dd>The part of the <span title="see glossary">&#8594;</span>&nbsp;<a href="./glossary.html#http">HTTP</a> request and
+    <dd>The part of the <a class="glossarylink" href="./glossary.html#http" title="see glossary">HTTP</a> request and
       response that is sent before the actual content, and that contains
       meta-information describing the content.
     </dd> 
     
     <dt><a name="htaccess" id="htaccess">.htaccess</a></dt> 
-    <dd>A <span title="see glossary">&#8594;</span>&nbsp;<a href="./glossary.html#configurationfile">configuration file</a> that
-      is placed inside the web tree and applies configuration <span title="see glossary">&#8594;</span>&nbsp;<a href="./glossary.html#directive">directives</a> to the directory where it is
+    <dd>A <a class="glossarylink" href="./glossary.html#configurationfile" title="see glossary">configuration file</a> that
+      is placed inside the web tree and applies configuration <a class="glossarylink" href="./glossary.html#directive" title="see glossary">directives</a> to the directory where it is
       placed and all sub-directories.  Despite its name, this file can hold
       almost any type of directive, not just access-control directives.<br />
       See: <a href="configuring.html">Configuration Files</a>
     </dd>
 
     <dt><a name="httpd.conf" id="httpd.conf">httpd.conf</a></dt>
-    <dd>The main Apache <span title="see glossary">&#8594;</span>&nbsp;<a href="./glossary.html#configurationfile">configuration
+    <dd>The main Apache <a class="glossarylink" href="./glossary.html#configurationfile" title="see glossary">configuration
       file</a>.  The default location is
       <code>/usr/local/apache2/conf/httpd.conf</code>, but it may be moved using
       run-time or compile-time configuration.<br />
@@ -244,12 +244,12 @@
     <dt><a name="https" id="https">HTTPS</a></dt>
     <dd>The HyperText Transfer Protocol (Secure), the standard encrypted
       communication mechanism on the World Wide Web. This is actually just HTTP
-      over <span title="see glossary">&#8594;</span>&nbsp;<a href="./glossary.html#ssl">SSL</a>.<br />
+      over <a class="glossarylink" href="./glossary.html#ssl" title="see glossary">SSL</a>.<br />
       See: <a href="ssl/">SSL/TLS Encryption</a>
     </dd> 
 
     <dt><a name="method" id="method">Method</a></dt>
-    <dd>In the context of <span title="see glossary">&#8594;</span>&nbsp;<a href="./glossary.html#http">HTTP</a>, an action to
+    <dd>In the context of <a class="glossarylink" href="./glossary.html#http" title="see glossary">HTTP</a>, an action to
       perform on a resource, specified on the request line by the client.  Some
       of the methods available in HTTP are <code>GET</code>, <code>POST</code>,
       and <code>PUT</code>.
@@ -268,7 +268,7 @@
       separated by a slash.  Some examples are <code>text/html</code>,
       <code>image/gif</code>, and <code>application/octet-stream</code>.  In
       HTTP, the MIME-type is transmitted in the <code>Content-Type</code>
-      <span title="see glossary">&#8594;</span>&nbsp;<a href="./glossary.html#header">header</a>.<br />
+      <a class="glossarylink" href="./glossary.html#header" title="see glossary">header</a>.<br />
       See: <a href="mod/mod_mime.html">mod_mime</a>
     </dd>
 
@@ -278,10 +278,10 @@
       that are compiled into the Apache <code class="program"><a href="./programs/httpd.html">httpd</a></code> binary are
       called <dfn>static modules</dfn>, while modules that are stored
       separately and can be optionally loaded at run-time are called
-      <dfn>dynamic modules</dfn> or <span title="see glossary">&#8594;</span>&nbsp;<a href="./glossary.html#dso">DSOs</a>.
+      <dfn>dynamic modules</dfn> or <a class="glossarylink" href="./glossary.html#dso" title="see glossary">DSOs</a>.
       Modules that are included by default
       are called <dfn>base modules</dfn>. Many modules are available for Apache
-      that are not distributed as part of the Apache HTTP Server <span title="see glossary">&#8594;</span>&nbsp;<a href="./glossary.html#tarball">tarball</a>.  These are referred to as
+      that are not distributed as part of the Apache HTTP Server <a class="glossarylink" href="./glossary.html#tarball" title="see glossary">tarball</a>.  These are referred to as
       <dfn>third-party modules</dfn>.<br />
       See: <a href="mod/">Module Index</a>
     </dd>
@@ -305,7 +305,7 @@
     <dt><a name="passphrase" id="passphrase">Pass Phrase</a></dt>
     <dd>The word or phrase that protects private key files. It prevents
       unauthorized users from encrypting them. Usually it's just the secret
-      encryption/decryption key used for <span title="see glossary">&#8594;</span>&nbsp;<a href="./glossary.html#cipher">Ciphers</a>.<br />
+      encryption/decryption key used for <a class="glossarylink" href="./glossary.html#cipher" title="see glossary">Ciphers</a>.<br />
       See: <a href="ssl/">SSL/TLS Encryption</a>
     </dd>
 
@@ -313,7 +313,7 @@
     <dd>The unencrypted text.</dd>
 
     <dt><a name="privatekey" id="privatekey">Private Key</a></dt>
-    <dd>The secret key in a <span title="see glossary">&#8594;</span>&nbsp;<a href="./glossary.html#publickeycryptography">Public Key
+    <dd>The secret key in a <a class="glossarylink" href="./glossary.html#publickeycryptography" title="see glossary">Public Key
       Cryptography</a> system, used to decrypt incoming messages and
       sign outgoing ones.<br />
       See: <a href="ssl/">SSL/TLS Encryption</a>
@@ -330,7 +330,7 @@
     </dd>
 
     <dt><a name="publickey" id="publickey">Public Key</a></dt>
-    <dd>The publicly available key in a <span title="see glossary">&#8594;</span>&nbsp;<a href="./glossary.html#publickeycryptography">Public Key Cryptography</a> system,
+    <dd>The publicly available key in a <a class="glossarylink" href="./glossary.html#publickeycryptography" title="see glossary">Public Key Cryptography</a> system,
       used to encrypt messages bound for its owner and to decrypt signatures
       made by its owner.<br />
       See: <a href="ssl/">SSL/TLS Encryption</a>
@@ -357,7 +357,7 @@
   </dd> 
 
   <dt><a name="reverseproxy" id="reverseproxy">Reverse Proxy</a></dt>
-  <dd>A <span title="see glossary">&#8594;</span>&nbsp;<a href="./glossary.html#proxy">proxy</a> server that appears to the client
+  <dd>A <a class="glossarylink" href="./glossary.html#proxy" title="see glossary">proxy</a> server that appears to the client
     as if it is an <em>origin server</em>.  This is useful to hide the real
     origin server from the client for security reasons, or to load balance.
   </dd>
@@ -410,7 +410,7 @@
   <dt><a name="uniformresourcelocator" id="uniformresourcelocator">Uniform
       Resource Locator</a> <a name="url" id="url">(URL)</a></dt>
   <dd>The name/address of a resource on the Internet.  This is the common
-    informal term for what is formally called a <span title="see glossary">&#8594;</span>&nbsp;<a href="./glossary.html#uniformresourceidentifier">Uniform Resource Identifier</a>.
+    informal term for what is formally called a <a class="glossarylink" href="./glossary.html#uniformresourceidentifier" title="see glossary">Uniform Resource Identifier</a>.
     URLs are usually made up of a scheme, like <code>http</code> or
     <code>https</code>, a hostname, and a path.  A URL for this page is
     <code>http://httpd.apache.org/docs-2.1/glossary.html</code>.
@@ -420,7 +420,7 @@
     <a name="URI" id="URI">(URI)</a></dt>
   <dd>A compact string of characters for identifying an abstract or physical
     resource.  It is formally defined by <a href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>.  URIs used on the
-    world-wide web are commonly referred to as <span title="see glossary">&#8594;</span>&nbsp;<a href="./glossary.html#url">URLs</a>.
+    world-wide web are commonly referred to as <a class="glossarylink" href="./glossary.html#url" title="see glossary">URLs</a>.
   </dd> 
 
   <dt><a name="virtualhosting" id="virtualhosting">Virtual Hosting</a></dt>
