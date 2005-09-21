@@ -173,6 +173,15 @@ div#quickview code.directive a:active {
     color: #287f00;
 }
 
+/* glossary [links] */
+/* ====================== */
+.glossarylink {
+    cursor: help;
+    border-bottom: 1px dashed #0073c7;
+    text-decoration: none;
+}
+
+
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  * Headings
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
