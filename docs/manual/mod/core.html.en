@@ -3035,7 +3035,7 @@ requests</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Version 2.0.55 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 1.3.34, 2.0.55 and later</td></tr>
 </table>
     <p>This directive overrides the behavior of <code>TRACE</code> for both
     the core server and <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>.  The default

@@ -2986,7 +2986,7 @@ requests</description>
 <syntax>TraceEnable <var>[on|off|extended]</var></syntax>
 <default>TraceEnable on</default>
 <contextlist><context>server config</context></contextlist>
-<compatibility>Version 2.0.55 and later</compatibility>
+<compatibility>Available in Apache 1.3.34, 2.0.55 and later</compatibility>
 
 <usage>
     <p>This directive overrides the behavior of <code>TRACE</code> for both
