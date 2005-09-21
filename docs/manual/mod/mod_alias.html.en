@@ -168,8 +168,9 @@ expressions</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_alias</td></tr>
 </table>
-    <p>This directive is equivalent to <code class="directive"><a href="#alias">Alias</a></code>, but makes use of standard
-    regular expressions, instead of simple prefix matching. The
+    <p>This directive is equivalent to <code class="directive"><a href="#alias">Alias</a></code>, but makes use of 
+    <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expressions</a>, 
+    instead of simple prefix matching. The
     supplied regular expression is matched against the URL-path, and
     if it matches, the server will substitute any parenthesized
     matches into the given string and use it as a filename. For
@@ -274,8 +275,9 @@ of the current URL</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_alias</td></tr>
 </table>
-    <p>This directive is equivalent to <code class="directive"><a href="#redirect">Redirect</a></code>, but makes use of standard
-    regular expressions, instead of simple prefix matching. The
+    <p>This directive is equivalent to <code class="directive"><a href="#redirect">Redirect</a></code>, but makes use of 
+    <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expressions</a>, 
+    instead of simple prefix matching. The
     supplied regular expression is matched against the URL-path, and
     if it matches, the server will substitute any parenthesized
     matches into the given string and use it as a filename. For
@@ -357,8 +359,9 @@ and designates the target as a CGI script</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_alias</td></tr>
 </table>
-    <p>This directive is equivalent to <code class="directive"><a href="#scriptalias">ScriptAlias</a></code>, but makes use of standard
-    regular expressions, instead of simple prefix matching. The
+    <p>This directive is equivalent to <code class="directive"><a href="#scriptalias">ScriptAlias</a></code>, but makes use of 
+    <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expressions</a>, 
+    instead of simple prefix matching. The
     supplied regular expression is matched against the URL-path,
     and if it matches, the server will substitute any parenthesized
     matches into the given string and use it as a filename. For

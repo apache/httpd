@@ -98,7 +98,7 @@
 
       <dt><em>regex</em></dt>
 
-      <dd>A Perl-compatible <a href="../glossary.html#regex">regular
+      <dd>A Perl-compatible <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular
       expression</a>. The directive definition will specify what the
       <em>regex</em> is matching against.</dd>
 
