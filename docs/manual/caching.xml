@@ -36,11 +36,11 @@
   <section id="introduction">
     <title>Introduction</title>
 
-    <p>As of Apache HTTP server version 2.2 <module>mod_cache</module> and 
-    <module>mod_file_cache</module> are no longer marked experimental and are 
-    considered suitable for production use. These caching architectures provide
-    a powerful means to accelerate HTTP handling, both as a webserver and as a 
-    proxy.</p>
+    <p>As of Apache HTTP server version 2.2 <module>mod_cache</module>
+    and <module>mod_file_cache</module> are no longer marked
+    experimental and are considered suitable for production use. These
+    caching architectures provide a powerful means to accelerate HTTP
+    handling, both as an origin webserver and as a proxy.</p>
 
     <p><module>mod_cache</module> and its provider modules 
     <module>mod_mem_cache</module> and <module>mod_disk_cache</module> 
@@ -58,7 +58,7 @@
     the complexity of actively ensuring the cachability of URLs,
     <module>mod_file_cache</module> offers file-handle and memory-mapping 
     tricks to keep a cache of files as they were when Apache was last 
-    started. As such <module>mod_file_cache</module> is aimed at improving 
+    started. As such, <module>mod_file_cache</module> is aimed at improving 
     the access time to local static files which do not change very
     often.</p>
 
@@ -98,16 +98,17 @@
       </directivelist>
     </related>
 
-    <p>There are two main stages in <module>mod_cache</module> which can
+    <p>There are two main stages in <module>mod_cache</module> that can
     occur in the lifetime of a request. First, <module>mod_cache</module>
     is a URL mapping module, which means that if a URL has been cached,
     and the cached version of that URL has not expired, the request will 
     be served directly by <module>mod_cache</module>.</p>
 
-    <p>This means that any other stages with might ordinarily happen in the 
-    process of serving a request, for example being handled by 
-    <module>mod_proxy</module>, or <module>mod_rewrite</module> won't happen. 
-    But then this is the point of caching content in the first place.</p>
+    <p>This means that any other stages that might ordinarily happen
+    in the process of serving a request -- for example being handled
+    by <module>mod_proxy</module>, or <module>mod_rewrite</module> --
+    won't happen.  But then this is the point of caching content in
+    the first place.</p>
 
     <p>If the URL is not found within the cache, <module>mod_cache</module>
     will add a <a href="filter.html">filter</a> to the request handling. After

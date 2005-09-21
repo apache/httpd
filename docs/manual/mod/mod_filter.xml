@@ -277,7 +277,8 @@
 
     <p>The <var>match</var> argument specifies a match that will be applied to
     the filter's <var>dispatch</var> criterion.  The <var>match</var> may be
-    a string match (exact match or substring), a regexp, an integer (greater,
+    a string match (exact match or substring), a <glossary>regex</glossary>, 
+    an integer (greater,
     lessthan or equals), or unconditional.  The first characters of the
     <var>match</var> argument determines this:</p>
 
@@ -292,7 +293,7 @@
     <tr><th>Character</th><th>Description</th></tr>
     <tr><td><em>(none)</em></td><td>exact match</td></tr>
     <tr><td><code>$</code></td><td>substring match</td></tr>
-    <tr><td><code>/</code></td><td>regexp match (delimited by a second <code>/</code>)</td></tr>
+    <tr><td><code>/</code></td><td>regex match (delimited by a second <code>/</code>)</td></tr>
     <tr><td><code>=</code></td><td>integer equality</td></tr>
     <tr><td><code>&lt;</code></td><td>integer less-than</td></tr>
     <tr><td><code>&lt;=</code></td><td>integer less-than or equal</td></tr>

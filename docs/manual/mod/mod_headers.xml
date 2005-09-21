@@ -268,7 +268,8 @@ is available only in Apache 2.0</compatibility>
 
     <dt><code>echo</code></dt>
     <dd>Request headers with this name are echoed back in the
-    response headers. <var>header</var> may be a regular expression.
+    response headers. <var>header</var> may be a 
+    <glossary ref="regex">regular expression</glossary>.
     <var>value</var> must be omitted.</dd>
     </dl>
 
@@ -276,7 +277,8 @@ is available only in Apache 2.0</compatibility>
     can include the final colon, but it is not required. Case is
     ignored for <code>set</code>, <code>append</code>, <code>add</code>
     and <code>unset</code>. The <var>header</var> name for <code>echo</code>
-    is case sensitive and may be a regular expression.</p>
+    is case sensitive and may be a <glossary ref="regex">regular 
+    expression</glossary>.</p>
 
     <p>For <code>add</code>, <code>append</code> and <code>set</code> a
     <var>value</var> is specified as the third argument. If <var>value</var>

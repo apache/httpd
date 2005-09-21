@@ -1080,7 +1080,8 @@ RewriteRule  ^/$                 /homepage.std.html  [L]
       because any number of rules may already have matched and made
       alterations to it.</p>
 
-      <p>Some hints about the syntax of regular expressions:</p>
+      <p>Some hints about the syntax of <glossary ref="regex">regular 
+      expressions</glossary>:</p>
 
 <note><pre>
 <strong>Text:</strong>
