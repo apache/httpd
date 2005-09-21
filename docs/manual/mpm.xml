@@ -65,10 +65,7 @@ how they are used by the Apache HTTP Server.</p>
       scalability can choose to use a threaded MPM like 
       <module>worker</module> or <module>event</module>, while sites requiring
       stability or compatibility with older software can use a
-      <module>prefork</module>. In addition,
-      special features like serving different hosts under different
-      userids (<module>perchild</module>) can be
-      provided.</li>
+      <module>prefork</module>.</li>
     </ul>
 
     <p>At the user level, MPMs appear much like other Apache

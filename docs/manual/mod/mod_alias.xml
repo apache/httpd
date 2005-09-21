@@ -159,8 +159,9 @@ expressions</description>
 
 <usage>
     <p>This directive is equivalent to <directive
-    module="mod_alias">Alias</directive>, but makes use of standard
-    regular expressions, instead of simple prefix matching. The
+    module="mod_alias">Alias</directive>, but makes use of 
+    <glossary ref="regex">regular expressions</glossary>, 
+    instead of simple prefix matching. The
     supplied regular expression is matched against the URL-path, and
     if it matches, the server will substitute any parenthesized
     matches into the given string and use it as a filename. For
@@ -266,8 +267,9 @@ of the current URL</description>
 
 <usage>
     <p>This directive is equivalent to <directive
-    module="mod_alias">Redirect</directive>, but makes use of standard
-    regular expressions, instead of simple prefix matching. The
+    module="mod_alias">Redirect</directive>, but makes use of 
+    <glossary ref="regex">regular expressions</glossary>, 
+    instead of simple prefix matching. The
     supplied regular expression is matched against the URL-path, and
     if it matches, the server will substitute any parenthesized
     matches into the given string and use it as a filename. For
@@ -351,8 +353,9 @@ and designates the target as a CGI script</description>
 
 <usage>
     <p>This directive is equivalent to <directive module="mod_alias"
-    >ScriptAlias</directive>, but makes use of standard
-    regular expressions, instead of simple prefix matching. The
+    >ScriptAlias</directive>, but makes use of 
+    <glossary ref="regex">regular expressions</glossary>, 
+    instead of simple prefix matching. The
     supplied regular expression is matched against the URL-path,
     and if it matches, the server will substitute any parenthesized
     matches into the given string and use it as a filename. For
