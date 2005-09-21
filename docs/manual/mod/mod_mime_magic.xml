@@ -30,9 +30,10 @@
 <identifier>mime_magic_module</identifier>
 
 <summary>
-    <p>This module determines the MIME type of files in the same
-    way the Unix <code>file(1)</code> command works: it looks at the first
-    few bytes of the file. It is intended as a "second line of defense"
+    <p>This module determines the <glossary ref="mime-type">MIME
+    type</glossary> of files in the same way the Unix
+    <code>file(1)</code> command works: it looks at the first few
+    bytes of the file. It is intended as a "second line of defense"
     for cases that <module>mod_mime</module> can't resolve.</p>
 
     <p>This module is derived from a free version of the
