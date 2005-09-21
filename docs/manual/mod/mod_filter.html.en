@@ -368,8 +368,7 @@
 
     <p>The <var>match</var> argument specifies a match that will be applied to
     the filter's <var>dispatch</var> criterion.  The <var>match</var> may be
-    a string match (exact match or substring), a <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regex</a>, 
-    an integer (greater,
+    a string match (exact match or substring), a <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regex</a>, an integer (greater,
     lessthan or equals), or unconditional.  The first characters of the
     <var>match</var> argument determines this:</p>
 
