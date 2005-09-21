@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
-<!-- English Revision: 290544 -->
+<!-- English Revision: 290733 -->
 
 <!--
  Copyright 2003-2005 The Apache Software Foundation or its licensors,
@@ -3129,7 +3129,7 @@ fest</description>
 <syntax>TraceEnable <var>[on|off|extended]</var></syntax>
 <default>TraceEnable on</default>
 <contextlist><context>server config</context></contextlist>
-<compatibility>Seit Version 2.0.55</compatibility>
+<compatibility>Seit den Versionen 1.3.34 und 2.0.55</compatibility>
 
 <usage>
     <p>Diese Direktive &uuml;berschreibt das Verhalten bei <code>TRACE</code>
