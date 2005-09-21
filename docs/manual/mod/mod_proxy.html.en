@@ -692,7 +692,7 @@ proxied resources</td></tr>
 </table>
     <p>The <code class="directive">&lt;ProxyMatch&gt;</code> directive is
     identical to the <code class="directive"><a href="#proxy">&lt;Proxy&gt;</a></code> directive, except it matches URLs
-    using regular expressions.</p>
+    using <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expressions</a>.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1112,7 +1112,8 @@ expressions</td></tr>
 </table>
     <p>The <code class="directive">ProxyRemoteMatch</code> is identical to the
     <code class="directive"><a href="#proxyremote">ProxyRemote</a></code> directive, except the
-    first argument is a regular expression match against the requested URL.</p>
+    first argument is a <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expression</a>
+    match against the requested URL.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
