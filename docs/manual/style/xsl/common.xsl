@@ -949,15 +949,23 @@
 <!-- link to a glossary anchor                                            -->
 <!-- ==================================================================== -->
 <xsl:template match="glossary">
-<span>
-    <xsl:attribute name="title">
+  <xsl:variable name="glosslink">
+    <xsl:choose>
+    <xsl:when test="@ref">
+      <xsl:value-of select="@ref"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select="translate(., $uppercase, $lowercase)"/>
+    </xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+
+  <a href="{$path}/glossary.html#{$glosslink}" class="glossarylink">
+     <xsl:attribute name="title">
         <xsl:value-of select="$message[@id='glossarylink']" />
-    </xsl:attribute>
-    <xsl:text>&#x2192;</xsl:text>
-</span>&nbsp;
-<a href="{$path}/glossary.html#{@ref}">
-    <xsl:apply-templates />
-</a>
+     </xsl:attribute>
+     <xsl:apply-templates />
+  </a>
 </xsl:template>
 <!-- /glossary -->
 
