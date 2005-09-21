@@ -3184,7 +3184,7 @@ fest</td></tr>
 <tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Kompatibilität:</a></th><td>Seit Version 2.0.55</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Kompatibilität:</a></th><td>Seit den Versionen 1.3.34 und 2.0.55</td></tr>
 </table>
     <p>Diese Direktive überschreibt das Verhalten bei <code>TRACE</code>
     sowohl für den Hauptserver als auch für
