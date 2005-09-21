@@ -1044,7 +1044,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_charset_lite"=.\modules\experimental\mod_charset_lite.dsp - Package Owner=<4>
+Project: "mod_charset_lite"=.\modules\filters\mod_charset_lite.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
