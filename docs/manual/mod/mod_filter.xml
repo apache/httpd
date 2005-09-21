@@ -277,10 +277,10 @@
 
     <p>The <var>match</var> argument specifies a match that will be applied to
     the filter's <var>dispatch</var> criterion.  The <var>match</var> may be
-    a string match (exact match or substring), a <glossary>regex</glossary>, 
-    an integer (greater,
-    lessthan or equals), or unconditional.  The first characters of the
-    <var>match</var> argument determines this:</p>
+    a string match (exact match or substring), a <glossary ref="regex"
+    >regex</glossary>, an integer (greater, lessthan or equals), or
+    unconditional.  The first characters of the <var>match</var> argument
+    determines this:</p>
 
     <p><strong>First</strong>, if the first character is an exclamation mark
     (<code>!</code>), this reverses the rule, so the provider will be used

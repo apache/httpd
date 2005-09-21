@@ -129,7 +129,8 @@ from databases or other locations.</p>
 
 <p>The <directive type="section" module="core">Directory</directive>
 and <directive type="section" module="core">Files</directive>
-directives, along with their <glossary>regex</glossary> counterparts, apply directives to
+directives, along with their <glossary ref="regex">regex</glossary>
+counterparts, apply directives to
 parts of the filesystem.  Directives enclosed in a <directive
 type="section" module="core">Directory</directive> section apply to
 the named filesystem directory and all subdirectories of that
@@ -182,7 +183,8 @@ Deny from all<br />
 <section id="webspace"><title>Webspace Containers</title>
 
 <p>The <directive type="section" module="core">Location</directive>
-directive and its <glossary>regex</glossary> counterpart, on the other hand, change the
+directive and its <glossary ref="regex">regex</glossary> counterpart, on
+the other hand, change the
 configuration for content in the webspace.  For example, the following
 configuration prevents access to any URL-path that begins in /private.
 In particular, it will apply to requests for
