@@ -63,7 +63,7 @@
       between the server and the operating system.  APR is developed
       parallel to the Apache HTTP Server as an independent project.<br />
       See: <a href="http://apr.apache.org/">Apache Portable Runtime
-      Project
+      Project</a>
     </dd>
 
     <dt><a name="authentication" id="authentication">Authentication</a></dt>
