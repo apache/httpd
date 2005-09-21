@@ -56,6 +56,16 @@
       See: Manual Page: <program>apxs</program>
     </dd>
 
+    <dt><a name="apacheportableruntime"
+       id="apacheportableruntime">Apache Portable Runtime</a> <a
+       name="apr" id="apr">(APR)</a></dt>
+    <dd>A set of libraries providing many of the basic interfaces
+      between the server and the operating system.  APR is developed
+      parallel to the Apache HTTP Server as an independent project.<br />
+      See: <a href="http://apr.apache.org/">Apache Portable Runtime
+      Project
+    </dd>
+
     <dt><a name="authentication" id="authentication">Authentication</a></dt>
     <dd>The positive identification of a network entity such as a server, a
       client, or a user.<br />

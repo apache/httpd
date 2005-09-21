@@ -38,14 +38,15 @@ MPM</description>
       <code>--with-mpm=event</code> to the <program>configure</program>
       script's arguments when building the <program>httpd</program>.</p>
   
-    <p>This MPM depends on APR's atomic compare-and-swap operations for
-    thread synchronization. If you are compiling for an x86 target
-    and you don't need to support 386s, or you are compiling for a
-    SPARC and you don't need to run on pre-UltraSPARC chips, add
+    <p>This MPM depends on <glossary>APR</glossary>'s atomic
+    compare-and-swap operations for thread synchronization. If you are
+    compiling for an x86 target and you don't need to support 386s, or
+    you are compiling for a SPARC and you don't need to run on
+    pre-UltraSPARC chips, add
     <code>--enable-nonportable-atomics=yes</code> to the
     <program>configure</program> script's arguments. This will cause
-    APR to implement atomic operations
-    using efficient opcodes not available in older CPUs.</p>
+    APR to implement atomic operations using efficient opcodes not
+    available in older CPUs.</p> 
 </summary>
 
 <directivesynopsis location="mpm_common"><name>AcceptMutex</name>

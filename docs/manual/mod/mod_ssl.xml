@@ -238,29 +238,29 @@ The following Mutex <em>types</em> are available:</p>
     <p>
     This is an elegant Mutex variant where a Posix Semaphore is used when possible.
     It is only available when the underlying platform
-    and APR supports it.</p></li>
+    and <glossary>APR</glossary> supports it.</p></li>
 <li><code>sysvsem</code>
     <p>
     This is a somewhat elegant Mutex variant where a SystemV IPC Semaphore is used when
     possible. It is possible to "leak" SysV semaphores if processes crash before
     the semaphore is removed. It is only available when the underlying platform
-    and APR supports it.</p></li>
+    and <glossary>APR</glossary> supports it.</p></li>
 <li><code>sem</code>
     <p>
     This directive tells the SSL Module to pick the "best" semaphore implementation
     available to it, choosing between Posix and SystemV IPC, in that order. It is only
-    available when the underlying platform and APR supports at least one of the 2.</p></li>
+    available when the underlying platform and <glossary>APR</glossary> supports at least one of the 2.</p></li>
 <li><code>pthread</code>
     <p>
     This directive tells the SSL Module to use Posix thread mutexes. It is only available
-    if the underlying platform and APR supports it.</p></li>
+    if the underlying platform and <glossary>APR</glossary> supports it.</p></li>
 <li><code>fcntl:/path/to/mutex</code>
     <p>
     This is a portable Mutex variant where a physical (lock-)file and the <code>fcntl()</code>
     fucntion are used as the Mutex.
     Always use a local disk filesystem for <code>/path/to/mutex</code> and never a file
     residing on a NFS- or AFS-filesystem. It is only available when the underlying platform
-    and APR supports it. Note: Internally, the Process ID (PID) of the
+    and <glossary>APR</glossary> supports it. Note: Internally, the Process ID (PID) of the
     Apache parent process is automatically appended to
     <code>/path/to/mutex</code> to make it unique, so you don't have to worry
     about conflicts yourself. Notice that this type of mutex is not available
@@ -271,17 +271,17 @@ The following Mutex <em>types</em> are available:</p>
     This is similar to the <code>fcntl:/path/to/mutex</code> method with the
     exception that the <code>flock()</code> function is used to provide file
     locking. It is only available when the underlying platform
-    and APR supports it.</p></li>
+    and <glossary>APR</glossary> supports it.</p></li>
 <li><code>file:/path/to/mutex</code>
     <p>
     This directive tells the SSL Module to pick the "best" file locking implementation
     available to it, choosing between <code>fcntl</code> and <code>flock</code>,
-    in that order. It is only available when the underlying platform and APR supports
+    in that order. It is only available when the underlying platform and <glossary>APR</glossary> supports
     at least one of the 2.</p></li>
 <li><code>default | yes</code>
     <p>
     This directive tells the SSL Module to pick the default locking implementation
-    as determined by the platform and APR.</p></li>
+    as determined by the platform and <glossary>APR</glossary>.</p></li>
 </ul>
 <example><title>Example</title>
 SSLMutex file:/usr/local/apache/logs/ssl_mutex

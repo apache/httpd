@@ -138,7 +138,7 @@
   <section id="developer">
     <title>Module Developer Changes</title>
     <dl>
-      <dt>APR 1.0 API</dt>
+      <dt><glossary>APR</glossary> 1.0 API</dt>
 
       <dd>Apache 2.2 uses the APR 1.0 API.  All deprecated functions and 
           symbols have been removed from <code>APR</code> and 
