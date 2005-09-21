@@ -112,13 +112,13 @@
 
    <section id="type-map"><title>Using a type-map file</title>
 
-    <p>A type map is a document which is associated with the
-    handler named <code>type-map</code> (or, for
-    backwards-compatibility with older Apache configurations, the
-    MIME type <code>application/x-type-map</code>). Note that to
-    use this feature, you must have a handler set in the
-    configuration that defines a file suffix as
-    <code>type-map</code>; this is best done with</p>
+    <p>A type map is a document which is associated with the handler
+    named <code>type-map</code> (or, for backwards-compatibility with
+    older Apache configurations, the <glossary>MIME-type</glossary>
+    <code>application/x-type-map</code>). Note that to use this
+    feature, you must have a handler set in the configuration that
+    defines a file suffix as <code>type-map</code>; this is best done
+    with</p>
 
 <example>AddHandler type-map .var</example>
 

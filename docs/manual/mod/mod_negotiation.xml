@@ -88,10 +88,11 @@ Negotiation</a></seealso>
       <dt><code>Content-Type:</code></dt>
 
       <dd>
-        The MIME media type of the document, with optional
-        parameters. Parameters are separated from the media type
-        and from one another by a semi-colon, with a syntax of
-        <code>name=value</code>. Common parameters include: 
+        The <glossary ref="mime-type">MIME media type</glossary> of
+        the document, with optional parameters. Parameters are
+        separated from the media type and from one another by a
+        semi-colon, with a syntax of <code>name=value</code>. Common
+        parameters include:
 
         <dl>
           <dt><code>level</code></dt>
