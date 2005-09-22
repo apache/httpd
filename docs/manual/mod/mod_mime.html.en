@@ -46,7 +46,7 @@
     <p>The directives <code class="directive"><a href="#addcharset">AddCharset</a></code>, <code class="directive"><a href="#addencoding">AddEncoding</a></code>, <code class="directive"><a href="#addlanguage">AddLanguage</a></code> and <code class="directive"><a href="#addtype">AddType</a></code> are all used to map file
     extensions onto the meta-information for that file. Respectively
     they set the character set, content-encoding, content-language,
-    and MIME-type (content-type) of documents.  The directive <code class="directive"><a href="#typesconfig">TypesConfig</a></code> is used to specify a
+    and <a class="glossarylink" href="../glossary.html#mime-type" title="see glossary">MIME-type</a> (content-type) of documents.  The directive <code class="directive"><a href="#typesconfig">TypesConfig</a></code> is used to specify a
     file which also maps extensions onto MIME types. </p>
 
     <p>In addition, <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code> may define the <a href="../handler.html">handler</a> and <a href="../filter.html">filters</a> that originate and process
@@ -115,14 +115,15 @@
     extensions is <em>normally</em> irrelevant. For example, if the
     file <code>welcome.html.fr</code> maps onto content type
     <code>text/html</code> and language French then the file
-    <code>welcome.fr.html</code> will map onto exactly the same information.
-    If more than one extension is given which maps onto the same
-    type of meta-information, then the one to the right will be
-    used, except for languages and content encodings. For example, if
-    <code>.gif</code> maps to the MIME-type <code>image/gif</code> and
-    <code>.html</code> maps to the MIME-type <code>text/html</code>, then the
-    file <code>welcome.gif.html</code> will be associated with the MIME-type
-    <code>text/html</code>.</p>
+    <code>welcome.fr.html</code> will map onto exactly the same
+    information.  If more than one extension is given which maps onto
+    the same type of meta-information, then the one to the right will
+    be used, except for languages and content encodings. For example,
+    if <code>.gif</code> maps to the <a class="glossarylink" href="../glossary.html#mime-type" title="see glossary">MIME-type</a>
+    <code>image/gif</code> and <code>.html</code> maps to the
+    MIME-type <code>text/html</code>, then the file
+    <code>welcome.gif.html</code> will be associated with the
+    MIME-type <code>text/html</code>.</p>
 
     <p><a href="#charset-lang">Languages</a> and <a href="#contentencoding">content encodings</a> are treated accumulative, because one can assign
     more than one language or encoding to a particular ressource. For example,
@@ -131,7 +132,7 @@
     text/html</code>.</p>
 
     <p>Care should be taken when a file with multiple extensions
-    gets associated with both a MIME-type and a handler. This will
+    gets associated with both a <a class="glossarylink" href="../glossary.html#mime-type" title="see glossary">MIME-type</a> and a handler. This will
     usually result in the request being by the module associated
     with the handler. For example, if the <code>.imap</code>
     extension is mapped to the handler <code>imap-file</code> (from
@@ -145,7 +146,7 @@
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="contentencoding" id="contentencoding">Content encoding</a></h2>
-    <p>A file of a particular MIME type can additionally be encoded a
+    <p>A file of a particular <a class="glossarylink" href="../glossary.html#mime-type" title="see glossary">MIME-type</a> can additionally be encoded a
     particular way to simplify transmission over the Internet.
     While this usually will refer to compression, such as
     <code>gzip</code>, it can also refer to encryption, such a
@@ -493,13 +494,14 @@ type</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime</td></tr>
 </table>
-    <p>The <code class="directive">AddType</code> directive maps the given filename
-    extensions onto the specified content type. <var>MIME-type</var> is the
-    MIME type to use for filenames containing <var>extension</var>. This
-    mapping is added to any already in force, overriding any mappings that
-    already exist for the same <var>extension</var>. This directive can
-    be used to add mappings not listed in the MIME types file (see the
-    <code class="directive"><a href="#typesconfig">TypesConfig</a></code> directive).</p>
+    <p>The <code class="directive">AddType</code> directive maps the given
+    filename extensions onto the specified content
+    type. <var>MIME-type</var> is the <a class="glossarylink" href="../glossary.html#mime-type" title="see glossary">MIME
+    type</a> to use for filenames containing
+    <var>extension</var>. This mapping is added to any already in
+    force, overriding any mappings that already exist for the same
+    <var>extension</var>. This directive can be used to add mappings
+    not listed in the MIME types file (see the <code class="directive"><a href="#typesconfig">TypesConfig</a></code> directive).</p>
     
     <div class="example"><h3>Example</h3><p><code>
       AddType image/gif .gif
@@ -853,11 +855,12 @@ extensions</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime</td></tr>
 </table>
-    <p>The <code class="directive">RemoveType</code> directive removes any MIME
-    type associations for files with the given extensions. This allows
-    <code>.htaccess</code> files in subdirectories to undo any
-    associations inherited from parent directories or the server
-    config files. An example of its use might be:</p>
+    <p>The <code class="directive">RemoveType</code> directive removes any
+    <a class="glossarylink" href="../glossary.html#mime-type" title="see glossary">MIME type</a> associations for files with
+    the given extensions. This allows <code>.htaccess</code> files in
+    subdirectories to undo any associations inherited from parent
+    directories or the server config files. An example of its use
+    might be:</p>
 
     <div class="example"><h3>/foo/.htaccess:</h3><p><code>
       RemoveType .cgi
@@ -888,18 +891,20 @@ extensions</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime</td></tr>
 </table>
-    <p>The <code class="directive">TypesConfig</code> directive sets the location
-    of the MIME types configuration file. <var>File-path</var> is relative
-    to the <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>. This file sets
+    <p>The <code class="directive">TypesConfig</code> directive sets the
+    location of the <a class="glossarylink" href="../glossary.html#mime-type" title="see glossary">MIME types</a>
+    configuration file. <var>File-path</var> is relative to the
+    <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>. This file sets
     the default list of mappings from filename extensions to content
-    types. Most administrators use the provided <code>mime.types</code>
-    file, which associates common filename extensions with IANA registered
-    content types. The current list is maintained at <a href="http://www.iana.org/assignments/media-types/index.html">http://www.iana.org/assignments/media-types/index.html</a>.
-    This simplifies the <code>httpd.conf</code> file by providing the
+    types. Most administrators use the provided
+    <code>mime.types</code> file, which associates common filename
+    extensions with IANA registered content types. The current list is
+    maintained at <a href="http://www.iana.org/assignments/media-types/index.html">http://www.iana.org/assignments/media-types/index.html</a>.  This
+    simplifies the <code>httpd.conf</code> file by providing the
     majority of media-type definitions, and may be overridden by
     <code class="directive"><a href="#addtype">AddType</a></code> directives as
-    needed. You should not edit the <code>mime.types</code> file, because
-    it may be replaced when you upgrade your server.</p>
+    needed. You should not edit the <code>mime.types</code> file,
+    because it may be replaced when you upgrade your server.</p>
 
     <p>The file contains lines in the format of the arguments to
     an <code class="directive"><a href="#addtype">AddType</a></code> directive:</p>

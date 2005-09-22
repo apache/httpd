@@ -318,7 +318,7 @@ content-type is <code>text/plain</code> or <code>text/html</code></td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.0.33 and later</td></tr>
 </table>
     <p>This directive activates a particular output <a href="../filter.html">filter</a> for a request depending on the
-    response MIME-type.</p>
+    response <a class="glossarylink" href="../glossary.html#mime-type" title="see glossary">MIME-type</a>.</p>
 
     <p>The following example uses the <code>DEFLATE</code> filter, which
     is provided by <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code>. It will compress all
@@ -352,7 +352,7 @@ content-type is <code>text/plain</code> or <code>text/html</code></td></tr>
     <div class="warning"><h3>Note</h3>
       <p>Enabling filters with <code class="directive">AddOutputFilterByType</code>
       may fail partially or completely in some cases. For example, no
-      filters are applied if the MIME-type could not be determined  and falls
+      filters are applied if the <a class="glossarylink" href="../glossary.html#mime-type" title="see glossary">MIME-type</a> could not be determined  and falls
       back to the <code class="directive"><a href="#defaulttype">DefaultType</a></code> setting,
       even if the <code class="directive"><a href="#defaulttype">DefaultType</a></code> is the
       same.</p>
@@ -635,8 +635,7 @@ server cannot determine a type in any other way</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 </table>
     <p>There will be times when the server is asked to provide a
-    document whose type cannot be determined by its MIME types
-    mappings.</p>
+    document whose type cannot be determined by its <a class="glossarylink" href="../glossary.html#mime-type" title="see glossary">MIME types</a> mappings.</p>
 
     <p>The server must inform the client of the content-type of the
     document, so in the event of an unknown type it uses the

@@ -47,7 +47,7 @@
 
     <dt><code>-f</code></dt>
     <dd>Specify the DBM type to be used for the output. If not specified, will
-    use the APR Default. Available types are:<br />
+    use the <a class="glossarylink" href="../glossary.html#apr" title="see glossary">APR</a> Default. Available types are:<br />
     <code>GDBM</code> for GDBM files<br />
     <code>SDBM</code> for SDBM files<br />
     <code>DB</code> for berkeley DB files<br />

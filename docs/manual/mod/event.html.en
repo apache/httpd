@@ -39,14 +39,15 @@ MPM</td></tr>
       <code>--with-mpm=event</code> to the <code class="program"><a href="../programs/configure.html">configure</a></code>
       script's arguments when building the <code class="program"><a href="../programs/httpd.html">httpd</a></code>.</p>
   
-    <p>This MPM depends on APR's atomic compare-and-swap operations for
-    thread synchronization. If you are compiling for an x86 target
-    and you don't need to support 386s, or you are compiling for a
-    SPARC and you don't need to run on pre-UltraSPARC chips, add
+    <p>This MPM depends on <a class="glossarylink" href="../glossary.html#apr" title="see glossary">APR</a>'s atomic
+    compare-and-swap operations for thread synchronization. If you are
+    compiling for an x86 target and you don't need to support 386s, or
+    you are compiling for a SPARC and you don't need to run on
+    pre-UltraSPARC chips, add
     <code>--enable-nonportable-atomics=yes</code> to the
     <code class="program"><a href="../programs/configure.html">configure</a></code> script's arguments. This will cause
-    APR to implement atomic operations
-    using efficient opcodes not available in older CPUs.</p>
+    APR to implement atomic operations using efficient opcodes not
+    available in older CPUs.</p> 
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
