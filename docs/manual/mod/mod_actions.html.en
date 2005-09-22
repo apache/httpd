@@ -34,12 +34,11 @@ media type or request method.</td></tr>
 <h3>Summary</h3>
 
     <p>This module has two directives. The <code class="directive"><a href="#action">Action</a></code> directive lets you run CGI
-    scripts whenever a file of a certain MIME content type is requested. The
+    scripts whenever a file of a certain <a class="glossarylink" href="../glossary.html#mime-type" title="see glossary">MIME content type</a> is requested. The
     <code class="directive"><a href="#script">Script</a></code> directive lets
     you run CGI scripts whenever a particular method is used in a
     request. This makes it much easier to execute scripts that process
-    files.</p>
-</div>
+    files.</p> </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#action">Action</a></li>
@@ -66,14 +65,14 @@ content-type</td></tr>
 introduced in Apache 2.1</td></tr>
 </table>
     <p>This directive adds an action, which will activate
-    <var>cgi-script</var> when <var>action-type</var> is triggered by the
-    request.  The <var>cgi-script</var> is the URL-path to a resource
-    that has been designated as a CGI script using <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code> or <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code>.  The
-    <var>action-type</var> can be either a <a href="../handler.html">handler</a> or a MIME content type. It
-    sends the URL and file path of the requested document using the
-    standard CGI <code>PATH_INFO</code> and <code>PATH_TRANSLATED</code>
-    environment variables. The handler used for the particular request is
-    passed using the <code>REDIRECT_HANDLER</code> variable.</p>
+    <var>cgi-script</var> when <var>action-type</var> is triggered by
+    the request.  The <var>cgi-script</var> is the URL-path to a
+    resource that has been designated as a CGI script using <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code> or <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code>.  The
+    <var>action-type</var> can be either a <a href="../handler.html">handler</a> or a <a class="glossarylink" href="../glossary.html#mime-type" title="see glossary">MIME content type</a>. It sends the URL and
+    file path of the requested document using the standard CGI
+    <code>PATH_INFO</code> and <code>PATH_TRANSLATED</code>
+    environment variables. The handler used for the particular request
+    is passed using the <code>REDIRECT_HANDLER</code> variable.</p>
 
     <div class="example"><h3>Examples</h3><p><code>
       # Requests for files of a particular MIME content type:<br />

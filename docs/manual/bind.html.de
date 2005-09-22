@@ -86,7 +86,8 @@
 <h2><a name="ipv6" id="ipv6">Betrachtung von IPv6-Besonderheiten</a></h2>
     
 
-    <p>Eine wachsende Anzahl von Plattformen implementiert IPv6. Die APR
+    <p>Eine wachsende Anzahl von Plattformen implementiert IPv6. Die
+      <a class="glossarylink" href="./glossary.html#apr" title="siehe Glossar">APR</a>
       unterstützt IPv6 auf den meisten dieser Plattformen und
       ermöglicht dem Apache, IPv6-Sockets zu verwenden und Anfragen zu
       behandeln, die über IPv6 gesendet wurden.</p>

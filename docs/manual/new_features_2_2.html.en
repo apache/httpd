@@ -72,7 +72,9 @@
       <dt>Regular Expression Library Updated</dt>
       <dd>Version 5.0 of the 
           <a href="http://www.pcre.org/">Perl Compatible Regular Expression
-          Library</a> (PCRE) is now included.</dd>
+          Library</a> (PCRE) is now included.  <code class="program"><a href="./programs/httpd.html">httpd</a></code> can be
+          configured to use a system installation of PCRE by passing the
+          <code>--with-pcre</code> flag to configure.</dd>
 
       <dt>Smart Filtering</dt>
       <dd><code class="module"><a href="./mod/mod_filter.html">mod_filter</a></code> introduces dynamic configuration
@@ -141,7 +143,7 @@
 <h2><a name="developer" id="developer">Module Developer Changes</a></h2>
     
     <dl>
-      <dt>APR 1.0 API</dt>
+      <dt><a class="glossarylink" href="./glossary.html#apr" title="see glossary">APR</a> 1.0 API</dt>
 
       <dd>Apache 2.2 uses the APR 1.0 API.  All deprecated functions and 
           symbols have been removed from <code>APR</code> and 
@@ -179,6 +181,17 @@
       <dt>Monitor hook added</dt>
       <dd>Monitor hook enables modules to run regular/scheduled jobs
           in the parent (root) process.</dd>
+          
+      <dt>Regular expression API changes</dt>
+
+      <dd>The <code>pcreposix.h</code> header is no longer available;
+      it is replaced by the new <code>ap_regex.h</code> header.  The
+      POSIX.2 <code>regex.h</code> implementation exposed by the old
+      header is now available under the <code>ap_</code> namespace
+      from <code>ap_regex.h</code>.  Calls to <code>regcomp</code>, 
+      <code>regexec</code> and so on can be replaced by calls to
+      <code>ap_regcomp</code>, <code>ap_regcomp</code>.</dd>
+
     </dl>
   </div></div>
 <div class="bottomlang">

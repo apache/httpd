@@ -122,13 +122,13 @@ Negotiation</a></li>
 
    <h3><a name="type-map" id="type-map">Using a type-map file</a></h3>
 
-    <p>A type map is a document which is associated with the
-    handler named <code>type-map</code> (or, for
-    backwards-compatibility with older Apache configurations, the
-    MIME type <code>application/x-type-map</code>). Note that to
-    use this feature, you must have a handler set in the
-    configuration that defines a file suffix as
-    <code>type-map</code>; this is best done with</p>
+    <p>A type map is a document which is associated with the handler
+    named <code>type-map</code> (or, for backwards-compatibility with
+    older Apache configurations, the <a class="glossarylink" href="./glossary.html#mime-type" title="see glossary">MIME-type</a>
+    <code>application/x-type-map</code>). Note that to use this
+    feature, you must have a handler set in the configuration that
+    defines a file suffix as <code>type-map</code>; this is best done
+    with</p>
 
 <div class="example"><p><code>AddHandler type-map .var</code></p></div>
 

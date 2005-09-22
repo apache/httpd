@@ -48,6 +48,15 @@
       Siehe: <code class="program"><a href="./programs/apxs.html">apxs</a></code>-Dokumentation
     </dd>
 
+    <dt><a name="apacheportableruntime" id="apacheportableruntime">Apache Portable Runtime</a> <a name="apr" id="apr">(APR)</a></dt>
+    <dd>Eine Menge von Bibliotheken, die viele grundlegende Schnittstellen
+      zwischen dem Server und dem Betriebssystem anbietet. Die APR
+      wird parallel zum Apache HTTP Server in einem eigenständigen Projekt
+      entwickelt.<br />
+      Siehe auch: <a href="http://apr.apache.org/">Apache Portable Runtime
+      Project</a>
+    </dd>
+
     <dt><a name="authentication" id="authentication">Authentifizierung</a></dt> 
     <dd>Die positive Identifizierung einer Netzwerkeinheit, wie z.B.
       eines Servers, eines Clients oder eines Benutzers.<br />

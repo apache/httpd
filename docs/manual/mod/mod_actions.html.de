@@ -34,12 +34,10 @@
 <h3>Zusammenfassung</h3>
 
     <p>Das Modul besitzt zwei Direktiven. Die Direktive <code class="directive"><a href="#action">Action</a></code> erlaubt die Ausführung von 
-      CGI-Skripten immer dann, wenn eine Anfrage zu einem bestimmten MIME-Type
-      erfolgt. Die Direktive <code class="directive"><a href="#script">Script</a></code>
-      erlaubt die Ausführung von CGI-Skripten abhängig von einer
-      bestimmten Methode, die in der Anfrage verwendet wird. Dies macht es
-      deutlich einfacher, Skripte auszuführen, die Dateien
-      verarbeiten.</p>
+      CGI-Skripten immer dann, wenn eine Anfrage zu einem bestimmten <a class="glossarylink" href="../glossary.html#mime-type" title="siehe Glossar">MIME-Type</a> erfolgt. Die Direktive <code class="directive"><a href="#script">Script</a></code> erlaubt die Ausführung von
+      CGI-Skripten abhängig von einer bestimmten Methode, die in der
+      Anfrage verwendet wird. Dies macht es deutlich einfacher, Skripte
+      auszuführen, die Dateien verarbeiten.</p>
 </div>
 <div id="quickview"><h3 class="directives">Direktiven</h3>
 <ul id="toc">
@@ -70,7 +68,7 @@
       <var>CGI-Skript</var> aktiviert, sobald die <var>Aktionsart</var> durch
       eine Anfrage ausgelöst wird. <var>CGI-Skript</var> ist der URL-Pfad
       zu einer Ressource, die unter Verwendung von <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code> oder <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code> als CGI-Skript gekennzeichnet
-      wurde. Die <var>Aktionsart</var> kann entweder ein <a href="../handler.html">Handler</a> oder ein MIME-Type sein. Die URL und
+      wurde. Die <var>Aktionsart</var> kann entweder ein <a href="../handler.html">Handler</a> oder ein <a class="glossarylink" href="../glossary.html#mime-type" title="siehe Glossar">MIME-Type</a> sein. Die URL und
       den Dateipfad des angeforderten Dokuments in den 
       Standard-CGI-Umgebungsvariablen <code>PATH_INFO</code> und
       <code>PATH_TRANSLATED</code> übergeben. Der für die jeweilige 
