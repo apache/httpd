@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
-<!-- English Revision: 151408 -->
+<!-- English Revision: 290801 -->
 
 <!--
  Copyright 2004-2005 The Apache Software Foundation or its licensors,
@@ -95,7 +95,8 @@
   <section id="ipv6">
     <title>Betrachtung von IPv6-Besonderheiten</title>
 
-    <p>Eine wachsende Anzahl von Plattformen implementiert IPv6. Die APR
+    <p>Eine wachsende Anzahl von Plattformen implementiert IPv6. Die
+      <glossary>APR</glossary>
       unterst&uuml;tzt IPv6 auf den meisten dieser Plattformen und
       erm&ouml;glicht dem Apache, IPv6-Sockets zu verwenden und Anfragen zu
       behandeln, die &uuml;ber IPv6 gesendet wurden.</p>

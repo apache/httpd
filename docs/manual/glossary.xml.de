@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
-<!-- English Revision: 151408 -->
+<!-- English Revision: 290803 -->
 
 <!--
  Copyright 2004-2005 The Apache Software Foundation or its licensors,
@@ -48,6 +48,17 @@
       (<glossary ref="dso">DSOs</glossary>)  und zur Installation dieser zum
       Apache-Webserver.<br />
       Siehe: <program>apxs</program>-Dokumentation
+    </dd>
+
+    <dt><a name="apacheportableruntime"
+       id="apacheportableruntime">Apache Portable Runtime</a> <a
+       name="apr" id="apr">(APR)</a></dt>
+    <dd>Eine Menge von Bibliotheken, die viele grundlegende Schnittstellen
+      zwischen dem Server und dem Betriebssystem anbietet. Die APR
+      wird parallel zum Apache HTTP Server in einem eigenst&auml;ndigen Projekt
+      entwickelt.<br />
+      Siehe auch: <a href="http://apr.apache.org/">Apache Portable Runtime
+      Project</a>
     </dd>
 
     <dt><a name="authentication" id="authentication">Authentifizierung</a></dt> 

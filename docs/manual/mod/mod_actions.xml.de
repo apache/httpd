@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
-<!-- English Revision: 151408 -->
+<!-- English Revision: 290816 -->
 
 <!--
  Copyright 2003-2005 The Apache Software Foundation or its licensors,
@@ -34,12 +34,12 @@
 <summary>
     <p>Das Modul besitzt zwei Direktiven. Die Direktive <directive
       module="mod_actions">Action</directive> erlaubt die Ausf&uuml;hrung von 
-      CGI-Skripten immer dann, wenn eine Anfrage zu einem bestimmten MIME-Type
-      erfolgt. Die Direktive <directive module="mod_actions">Script</directive>
-      erlaubt die Ausf&uuml;hrung von CGI-Skripten abh&auml;ngig von einer
-      bestimmten Methode, die in der Anfrage verwendet wird. Dies macht es
-      deutlich einfacher, Skripte auszuf&uuml;hren, die Dateien
-      verarbeiten.</p>
+      CGI-Skripten immer dann, wenn eine Anfrage zu einem bestimmten <glossary
+      ref="mime-type">MIME-Type</glossary> erfolgt. Die Direktive <directive
+      module="mod_actions">Script</directive> erlaubt die Ausf&uuml;hrung von
+      CGI-Skripten abh&auml;ngig von einer bestimmten Methode, die in der
+      Anfrage verwendet wird. Dies macht es deutlich einfacher, Skripte
+      auszuf&uuml;hren, die Dateien verarbeiten.</p>
 </summary>
 
 <seealso><module>mod_cgi</module></seealso>
@@ -67,7 +67,8 @@
       module="mod_alias">ScriptAlias</directive> oder <directive
       module="mod_mime">AddHandler</directive> als CGI-Skript gekennzeichnet
       wurde. Die <var>Aktionsart</var> kann entweder ein <a
-      href="../handler.html">Handler</a> oder ein MIME-Type sein. Die URL und
+      href="../handler.html">Handler</a> oder ein <glossary ref="mime-type"
+      >MIME-Type</glossary> sein. Die URL und
       den Dateipfad des angeforderten Dokuments in den 
       Standard-CGI-Umgebungsvariablen <code>PATH_INFO</code> und
       <code>PATH_TRANSLATED</code> &uuml;bergeben. Der f&uuml;r die jeweilige 
