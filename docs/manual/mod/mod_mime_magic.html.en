@@ -30,9 +30,10 @@
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_mime_magic.c</td></tr></table>
 <h3>Summary</h3>
 
-    <p>This module determines the MIME type of files in the same
-    way the Unix <code>file(1)</code> command works: it looks at the first
-    few bytes of the file. It is intended as a "second line of defense"
+    <p>This module determines the <a class="glossarylink" href="../glossary.html#mime-type" title="see glossary">MIME
+    type</a> of files in the same way the Unix
+    <code>file(1)</code> command works: it looks at the first few
+    bytes of the file. It is intended as a "second line of defense"
     for cases that <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code> can't resolve.</p>
 
     <p>This module is derived from a free version of the

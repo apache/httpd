@@ -87,9 +87,10 @@
 <h2><a name="ipv6" id="ipv6">Special IPv6 Considerations</a></h2>
     
 
-    <p>A growing number of platforms implement IPv6, and APR supports 
-    IPv6 on most of these platforms, allowing Apache to allocate IPv6 
-    sockets and handle requests which were sent over IPv6.</p>
+    <p>A growing number of platforms implement IPv6, and
+    <a class="glossarylink" href="./glossary.html#apr" title="see glossary">APR</a> supports IPv6 on most of these platforms,
+    allowing Apache to allocate IPv6 sockets and handle requests which
+    were sent over IPv6.</p>
 
     <p>One complicating factor for Apache administrators is whether or
     not an IPv6 socket can handle both IPv4 connections and IPv6 
