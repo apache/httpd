@@ -113,7 +113,7 @@ SSLCertificateKeyFile @exp_sysconfdir@/server.key
 #   certificate chain for the server certificate. Alternatively
 #   the referenced file can be the same as SSLCertificateFile
 #   when the CA certificates are directly appended to the server
-#   certificate for convinience.
+#   certificate for convenience.
 #SSLCertificateChainFile @exp_sysconfdir@/server-ca.crt
 
 #   Certificate Authority (CA):
