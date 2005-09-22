@@ -1456,7 +1456,7 @@ When using the NOT character
         <li>
         '<strong><code>type|T</code></strong>=<em>MIME-type</em>'
         (force MIME <strong>t</strong>ype)<br />
-         Force the MIME-type of the target file to be
+         Force the <a class="glossarylink" href="../glossary.html#mime-type" title="see glossary">MIME-type</a> of the target file to be
         <em>MIME-type</em>. For instance, this can be used to
         setup the content-type based on some conditions.
         For example, the following snippet allows <code>.php</code> files to

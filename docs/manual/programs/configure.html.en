@@ -366,10 +366,10 @@
           to the server without this module.</dd>
 
         <dt><code>--disable-mime</code></dt>
-        <dd><code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code> associates the requested filename's
-          extensions with the file's behavior and content (mime-type,
-          language, character set and encoding). Disabling the mapping of
-          file-extensions to MIME is normally not recommended.</dd>
+        <dd><code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code> associates the requested
+        filename's extensions with the file's behavior and content
+        (<a class="glossarylink" href="../glossary.html#mime-type" title="see glossary">mime-type</a>, language, character set and
+        encoding). Disabling this module is normally not recommended.</dd>
 
         <dt><code>--disable-negotiation</code></dt>
         <dd>Disable content negotiation provided by
@@ -494,9 +494,11 @@
         <dd>Enable memory caching provided by
           <code class="module"><a href="../mod/mod_mem_cache.html">mod_mem_cache</a></code>.</dd>
 
-        <dt><code>--enable-mime-magic</code></dt>
-        <dd>Enable automatical determining of MIME types, which is provided by
-          <code class="module"><a href="../mod/mod_mime_magic.html">mod_mime_magic</a></code>.</dd>
+        <dt><code>--enable-mime-magic</code></dt> 
+        <dd>Enable
+        automatical determining of <a class="glossarylink" href="../glossary.html#mime-type" title="see glossary">MIME
+        types</a>, which is provided by
+        <code class="module"><a href="../mod/mod_mime_magic.html">mod_mime_magic</a></code>.</dd>
 
         <dt><code>--enable-isapi</code></dt>
         <dd>Enable the isapi extension support provided by
@@ -735,7 +737,8 @@
     <h4><a name="packageopt" id="packageopt">Specific packages</a></h4>
       <dl>
         <dt><code>--with-apr=<var>DIR</var>|<var>FILE</var></code></dt>
-        <dd>The Apache Portable Runtime (APR) is part of the httpd
+        <dd>The <a class="glossarylink" href="../glossary.html#apr" title="see glossary">Apache Portable Runtime</a> (APR) 
+          is part of the httpd
           source distribution and will automatically be build together with the
           HTTP server. If you want to use an already installed APR instead you
           have to tell <code>configure</code> the path to the

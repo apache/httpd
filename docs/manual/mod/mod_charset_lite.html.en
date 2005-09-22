@@ -71,12 +71,13 @@
 
       <p>The character set name parameters of <code class="directive"><a href="#charsetsourceenc">CharsetSourceEnc</a></code> and
       <code class="directive"><a href="#charsetdefault">CharsetDefault</a></code>
-      must be acceptable to the translation mechanism used by APR on the
-      system where <code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code> is deployed.  These
-      character set names are not standardized and are usually not the
-      same as the corresponding values used in http headers.  Currently,
-      APR can only use iconv(3), so you can easily test your character
-      set names using the iconv(1) program, as follows:</p>
+      must be acceptable to the translation mechanism used by
+      <a class="glossarylink" href="../glossary.html#apr" title="see glossary">APR</a> on the system where
+      <code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code> is deployed.  These character
+      set names are not standardized and are usually not the same as
+      the corresponding values used in http headers.  Currently, APR
+      can only use iconv(3), so you can easily test your character set
+      names using the iconv(1) program, as follows:</p>
 
       <div class="example"><p><code>
         iconv -f charsetsourceenc-value -t charsetdefault-value
@@ -115,8 +116,8 @@
 
     <p>The value of the <var>charset</var> argument must be accepted
     as a valid character set name by the character set support in
-    APR. Generally, this means that it must be supported by
-    iconv.</p>
+    <a class="glossarylink" href="../glossary.html#apr" title="see glossary">APR</a>. Generally, this means that it must be
+    supported by iconv.</p>
 
     <div class="example"><h3>Example</h3><p><code>
       &lt;Directory /export/home/trawick/apacheinst/htdocs/convert&gt;<br />
@@ -183,8 +184,8 @@
 
     <p>The value of the <var>charset</var> argument must be accepted
     as a valid character set name by the character set support in
-    APR. Generally, this means that it must be supported by
-    iconv.</p>
+    <a class="glossarylink" href="../glossary.html#apr" title="see glossary">APR</a>. Generally, this means that it must be
+    supported by iconv.</p>
     
     <div class="example"><h3>Example</h3><p><code>
       &lt;Directory /export/home/trawick/apacheinst/htdocs/convert&gt;<br />
