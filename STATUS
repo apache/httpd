@@ -272,7 +272,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://issues.apache.org/bugzilla/attachment.cgi?id=16429
 	 or 
 	 http://svn.apache.org/viewcvs.cgi?rev=156587&view=rev
-       +1: bnicholes, minfrin
+       +1: bnicholes, minfrin, jim
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
