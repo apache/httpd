@@ -189,6 +189,20 @@
       <code>regexec</code> and so on can be replaced by calls to
       <code>ap_regcomp</code>, <code>ap_regcomp</code>.</dd>
 
+      <dt>DBD Framework (SQL Database API)</dt>
+
+      <dd><p>With Apache 1.x and 2.0, modules requiring an SQL backend
+      had to take responsibility for managing it themselves.  Apart
+      from reinventing the wheel, this can be very inefficient, for
+      example when several modules each maintain their own connections.</p>
+      <p>Apache 2.1 and up provides the <code>ap_dbd</code> API for
+      managing database connections (including optimised strategies
+      for threaded and unthreaded MPMs), while APR 1.2 and up provides
+      the <code>apr_dbd</code> API for interacting with the database.</p>
+      <p>New modules SHOULD now use these APIs for all SQL database
+      operations.  Existing applications SHOULD be upgraded to use it
+      where feasible, either transparently or as a recommended option
+      to their users.</p></dd>
     </dl>
   </section>
 </manualpage>
