@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.1.8
 
+  *) Fix regression since 2.0.x in AllowOverride Options handling. 
+     PR 35330.  [kabe <kabe sra-tohoku.co.jp>]
+
   *) Fix PR 25659 - Memory leak in ssl_util_algotypeof()
      [David Blake <dblake hp com>, Martin Kraemer]
 
