@@ -71,7 +71,7 @@ static const char *dbd_param(cmd_parms *cmd, void *cfg, const char *val)
     svr_cfg *svr = (svr_cfg*) ap_get_module_config
         (cmd->server->module_config, &dbd_module);
 
-    switch ((int) cmd->info) {
+    switch ((long) cmd->info) {
     case cmd_name:
         svr->name = val;
         /* loading the driver involves once-only dlloading that is
