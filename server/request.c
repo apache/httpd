@@ -446,8 +446,6 @@ static void core_opts_merge(const ap_conf_vector_t *sec, core_opts_t *opts)
 
     if (!(this_dir->override & OR_UNSET)) {
         opts->override = this_dir->override;
-    }
-    if (!(this_dir->override_opts & OR_UNSET)) {
         opts->override_opts = this_dir->override_opts;
     }
 }
