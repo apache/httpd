@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) Fix regression since 2.0.x in AllowOverride Options handling. 
+     PR 35330.  [kabe <kabe sra-tohoku.co.jp>]
+
   *) Move mod_dbd to /modules/database/ (Nick Kew)
 
   *) Move mod_filter and mod_charset_lite to /modules/filters/ (Nick Kew)
