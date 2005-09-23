@@ -266,14 +266,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  algorithims can be pretty "interesting", probably more
                  2.2. 
 
-    *) mod_ldap: Fix PR 36563. Keep track of the number of attributes
-       retrieved from LDAP so that all of the values can be properly 
-       cached even if the value is NULL.
-         http://issues.apache.org/bugzilla/attachment.cgi?id=16429
-	 or 
-	 http://svn.apache.org/viewcvs.cgi?rev=156587&view=rev
-       +1: bnicholes, minfrin, jim
-
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
     *) Replace some of the mutex locking in the worker MPM with

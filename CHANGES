@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.0.55
 
+  *) mod_ldap: Fix PR 36563. Keep track of the number of attributes
+     retrieved from LDAP so that all of the values can be properly 
+     cached even if the value is NULL. 
+     [Brad Nicholes, Ondrej Sury <ondrej sury.org>]
+       
   *) SECURITY: CAN-2005-2491 (cve.mitre.org): 
      Fix integer overflows in PCRE in quantifier parsing which could
      be triggered by a local user through use of a carefully-crafted 
