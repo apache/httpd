@@ -110,6 +110,7 @@ typedef struct util_search_node_t {
 					   NULL if the bind failed */
     apr_time_t lastbind;		/* Time of last successful bind */
     const char **vals;			/* Values of queried attributes */
+    int        numvals;			/* Number of queried attributes */
 } util_search_node_t;
 
 /*

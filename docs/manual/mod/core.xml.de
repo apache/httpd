@@ -1,10 +1,11 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
-<!-- English Revision: 279024 -->
+<!-- English Revision: 290733 -->
 
 <!--
- Copyright 2003-2004 The Apache Software Foundation
+ Copyright 2003-2005 The Apache Software Foundation or its licensors,
+ as applicable
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -3118,6 +3119,38 @@ bevor er die Anfrage abbricht</description>
     weiter herabgesetzt, da gelegentlich noch Stellen im Code existieren
     k&ouml;nnen, wo der Zeitgeber nicht zur&uuml;ckgesetzt wird, wenn ein
     Paket verschickt wird.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>TraceEnable</name>
+<description>Legt das Serververhalten bei <code>TRACE</code>-Anfragen
+fest</description>
+<syntax>TraceEnable <var>[on|off|extended]</var></syntax>
+<default>TraceEnable on</default>
+<contextlist><context>server config</context></contextlist>
+<compatibility>Seit den Versionen 1.3.34 und 2.0.55</compatibility>
+
+<usage>
+    <p>Diese Direktive &uuml;berschreibt das Verhalten bei <code>TRACE</code>
+    sowohl f&uuml;r den Hauptserver als auch f&uuml;r
+    <module>mod_proxy</module>. Die Voreinstellung <code>TraceEnable on</code>
+    erlaubt <code>TRACE</code>-Anfragen gem&auml;&szlig; RFC 2616, welcher
+    das Mitschicken von Request-Bodies verbietet. <code>TraceEnable off</code>
+    veranlasst den Hauptserver und <module>mod_proxy</module>, dem
+    Client mit dem Fehler <code>405</code> (Methode nicht erlaubt)
+    antworten.</p>
+
+    <p>Mit Hilfe der nicht konformen Direktive <code>TraceEnable
+    extended</code> k&ouml;nnen Request-Bodies zugelassen werden. Das ist
+    allerdings ausschlie&szlig;lich f&uuml;r Test- und Diagnosezwecke gedacht.
+    Der Hauptserver (als Ursprungsserver) <transnote>damit ist der
+    Normalbetrieb und nicht der Einsatz als Proxy-Server gemeint</transnote>
+    limitiert den Request-Body auf 64K (plus 8K f&uuml;r die Chunk-Header,
+    wenn <code>Transfer-Encoding: chunked</code> verwendet wird) und
+    reflektiert den vollen Headersatz sowie alle Chunk-Header in seiner
+    Antwort. Im Betrieb als Proxyserver wird der Request-Body nicht auf
+    64K begrenzt.</p>
 </usage>
 </directivesynopsis>
 

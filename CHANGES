@@ -8,6 +8,29 @@ Changes with Apache 2.0.55
      accompanying ap_version_t structure (minor MMN bump).
      [André Malo]
 
+  *) mod_ldap: Fix PR 36563. Keep track of the number of attributes
+     retrieved from LDAP so that all of the values can be properly 
+     cached even if the value is NULL. 
+     [Brad Nicholes, Ondrej Sury <ondrej sury.org>]
+       
+  *) SECURITY: CAN-2005-2491 (cve.mitre.org): 
+     Fix integer overflows in PCRE in quantifier parsing which could
+     be triggered by a local user through use of a carefully-crafted 
+     regex in an .htaccess file.  [Philip Hazel]
+
+  *) SECURITY: CAN-2005-2088 (cve.mitre.org)
+     proxy: Correctly handle the Transfer-Encoding and Content-Length
+     headers.  Discard the request Content-Length whenever T-E: chunked
+     is used, always passing one of either C-L or T-E: chunked whenever 
+     the request includes a request body.  Resolves an entire class of
+     proxy HTTP Request Splitting/Spoofing attacks.  [William Rowe]
+
+  *) Added TraceEnable [on|off|extended] per-server directive to alter
+     the behavior of the TRACE method.  This addresses a flaw in proxy
+     conformance to RFC 2616 - previously the proxy server would accept
+     a TRACE request body although the RFC prohibited it.  The default
+     remains 'TraceEnable on'.  [William Rowe]
+
   *) Add ap_log_cerror() for logging messages associated with particular
      client connections.  [Jeff Trawick]
 

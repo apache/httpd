@@ -549,6 +549,14 @@ typedef struct {
     /* recursion backstopper */
     int redirect_limit; /* maximum number of internal redirects */
     int subreq_limit;   /* maximum nesting level of subrequests */
+
+    /* TRACE control */
+#define AP_TRACE_UNSET    -1
+#define AP_TRACE_DISABLE   0
+#define AP_TRACE_ENABLE    1
+#define AP_TRACE_EXTENDED  2
+    int trace_enable;
+
 } core_server_config;
 
 /* for AddOutputFiltersByType in core.c */

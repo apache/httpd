@@ -2980,6 +2980,34 @@ certain events before failing a request</description>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>TraceEnable</name>
+<description>Determines the behaviour on <code>TRACE</code>
+requests</description>
+<syntax>TraceEnable <var>[on|off|extended]</var></syntax>
+<default>TraceEnable on</default>
+<contextlist><context>server config</context></contextlist>
+<compatibility>Available in Apache 1.3.34, 2.0.55 and later</compatibility>
+
+<usage>
+    <p>This directive overrides the behavior of <code>TRACE</code> for both
+    the core server and <module>mod_proxy</module>.  The default
+    <code>TraceEnable on</code> permits <code>TRACE</code> requests per
+    RFC 2616, which disallows any request body to accompany the request.
+    <code>TraceEnable off</code> causes the core server and
+    <module>mod_proxy</module> to return a <code>405</code> (Method not
+    allowed) error to the client.</p>
+
+    <p>Finally, for testing and diagnostic purposes only, request
+    bodies may be allowed using the non-compliant <code>TraceEnable 
+    extended</code> directive.  The core (as an origin server) will
+    restrict the request body to 64k (plus 8k for chunk headers if
+    <code>Transfer-Encoding: chunked</code> is used).  The core will
+    reflect the full headers and all chunk headers with the response
+    body.  As a proxy server, the request body is not restricted to 64k.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>UseCanonicalName</name>
 <description>Configures how the server determines its own name and
 port</description>

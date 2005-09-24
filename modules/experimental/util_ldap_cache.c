@@ -158,18 +158,22 @@ void *util_ldap_search_node_copy(util_ald_cache_t *cache, void *c)
 
         /* copy vals */
         if (node->vals) {
-            int k = 0;
+            int k = node->numvals;
             int i = 0;
-            while (node->vals[k++]);
             if (!(newnode->vals = util_ald_alloc(cache, sizeof(char *) * (k+1)))) {
                 util_ldap_search_node_free(cache, newnode);
                 return NULL;
             }
-            while (node->vals[i]) {
-                if (!(newnode->vals[i] = util_ald_strdup(cache, node->vals[i]))) {
-                    util_ldap_search_node_free(cache, newnode);
-                    return NULL;
+            newnode->numvals = node->numvals;
+            for (;k;k--) {
+                if (node->vals[i]) {
+                    if (!(newnode->vals[i] = util_ald_strdup(cache, node->vals[i]))) {
+                        util_ldap_search_node_free(cache, newnode);
+                        return NULL;
+                    }
                 }
+                else
+                    newnode->vals[i] = NULL;
                 i++;
             }
         }
@@ -199,9 +203,13 @@ void util_ldap_search_node_free(util_ald_cache_t *cache, void *n)
 {
     int i = 0;
     util_search_node_t *node = (util_search_node_t *)n;
+    int k = node->numvals;
+
     if (node->vals) {
-        while (node->vals[i]) {
-            util_ald_free(cache, node->vals[i++]);
+        for (;k;k--,i++) {
+            if (node->vals[i]) {
+                util_ald_free(cache, node->vals[i]);
+            }
         }
         util_ald_free(cache, node->vals);
     }

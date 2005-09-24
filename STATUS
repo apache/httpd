@@ -104,53 +104,9 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
-    * Copy the backport branch of all of the mod_proxy_http.c's request body 
-      handling security, protocol and bug fixes; by svn copy'ing the file
-      httpd/httpd/branches/proxy-reqbody-2.0.x/modules/proxy/proxy_http.c back to
-      httpd/branches/2.0.x/... preserving the detail of all of the individually
-      backported changes.
-
-       +1: wrowe, jim, minfrin
-       -1:
-
-      For a complete history of individual unit changes, see r230703 - r230744 in
-      http://svn.apache.org/viewcvs.cgi/httpd/httpd/branches/proxy-reqbody-2.0.x/
-      [...]  modules/proxy/proxy_http.c?&view=log
-      Cite the specific patch with justification for each specific objection.
-
-      Suggested; revert r219061 to thoroughly test this patch, as r219061 masks 
-      some underlying bugs (although it is a -good- patch in and of itself and
-      provides additional protection to other content-handling modules).      
-
-    * TRACE must not have a request body per RFC2616; see the -trace.patch
-      below for one of two alternatives.  The other alternative; simply
-      hack mod_proxy.c to reject TRACE when a body is seen, again see that
-      -trace.patch for an illustration.
-
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
-
-    *) mod_cgi: Added API call and overload of detached field in
-       cgi_exec_info_t structure to support loading in current or new address
-       space for CGIs.  The patch change how NetWare use cmdtype for
-       processes. It was made necessary by changes done to log.c r1.145.
-       The HTTP and the APR patches are available at:
-       <http://www.apache.org/~clar/detach-addrspace_HTTP_2_0.patch>
-       <http://www.apache.org/~clar/detach-addrspace_APR_0_9.patch>
-       +1: jjclar, bnicholes, trawick
-       jerenkrantz: I'm confused as to the status of this backport.
-       trawick: Somebody commits the APR 0.9 patch, then:
-         do we have to wait for later APR 0.x release before putting
-         calls to apr_procattr_addrspace_set() into httpd-2.0.x, or
-         do we go ahead and introduce the prerequisite?
-       clar replies: I am ready to commit the apr 0.9.x patch, but then will need 
-         the changes in the httpd-2.0.x to be done in order for NetWare to work
-         as expected when calling apr_proc_create. Should I do both, APR and Http,
-         at the same time?
-       wrowe: commit to APR.  Use an APR version test *in httpd* to determine 
-         if the old or new behavior should be used in httpd.  In future versions
-         you could remove the test altogether.
 
     *) mod_actions: Regression from 1.3: the file referred to must exist.
        Solve this by introducing the "virtual" modifier to the Action
@@ -194,12 +150,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
        +1: pquerna, nd, wrowe
        Votes from before the integration branch: +1: jerenkrantz
 
-    *) Fix CAN-2005-2491, integer overflow in pcre.
-         http://svn.apache.org/viewcvs?rev=233493&view=rev
-       rediff for 2.0: http://people.apache.org/~jorton/CAN-2005-2491.patch
-       test case: perl-framework/t/security/CAN-2005-2491.t
-       +1: jorton, nd, wrowe
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ please place SVN revisions from trunk here, so it is easy to
     identify exactly what the proposed changes are!  Add all new
@@ -210,18 +160,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        test case: perl-framework/t/security/CAN-2005-2700.t
        +1: jorton, wrowe
        wrowe cautions to backport to 2.2.x branch as well.
-
-    *) Correct RFC 2616 non-compliance by refusing to proxy a request body 
-       in a TRACE request, unless TraceEnable extended is configured.
-       Introduces TraceEnable [on|off|extended] to give the administrator
-       full control of TRACE request handling.  RFC 2616 does NOT require
-       TRACE (although to disable remains silly).  Current patch at;
-          http://people.apache.org/~wrowe/httpd-2.0-trace.patch
-       +1 wrowe, jimjag, colm
-         colm notes: There are some \n's in apr_table_setn calls that are
-                     not consistent with other calls to apr_table_setn.
-                     There is no documentation for TraceEnable in trunk to 
-                     backport, shouldn't release while still undocumented.
 
     *) mod_headers: Support {...}s tag for SSL variable lookup.
        http://www.apache.org/~jorton/mod_headers-2.0-ssl.diff
@@ -252,9 +190,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     *) Provide TLS/SSL upgrade functionality in mod_ssl allowing an unsecure
        connection to be upgraded to a secure connection upon request by the
-       client.  The full patch file is available at http://www.apache.org/~bnicholes/
-       as well as a test client tlsupgrade.c. This functionality is mainly used by
-       IPP clients today.
+       client.  The full patch is available at http://www.apache.org/~bnicholes/
+       as well as a test client tlsupgrade.c. This functionality is mainly used
+       by IPP clients today.
           modules/ssl/mod_ssl.c: r1.75, r1.97, r1.100
           modules/ssl/mod_ssl.h: r1.123
           modules/ssl/ssl_engine_config.c: r1.71, r1.90
@@ -328,50 +266,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  algorithims can be pretty "interesting", probably more
                  2.2. 
 
-    *) mod_ldap: Fix PR 36563. Keep track of the number of attributes
-       retrieved from LDAP so that all of the values can be properly 
-       cached even if the value is NULL.
-         http://issues.apache.org/bugzilla/attachment.cgi?id=16429
-	 or 
-	 http://svn.apache.org/viewcvs.cgi?rev=156587&view=rev
-       +1: bnicholes
-
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
-
-    *) Remove LDAP toolkit specific code from util_ldap and mod_auth_ldap.
-         modules/experimental/mod_auth_ldap.c: 1.28
-         modules/experimental/util_ldap.c: 1.36
-       +0: minfrin (this requires the apr-util LDAP overhaul to be ported to
-                    apr-util v0.9 first)
-       -0: jerenkrantz
-           jerenkrantz: I don't think we can change the APR 0.9 interfaces.
-                        They are supposed to be set in stone.
-       -1:  wrowe: agrees with jerenkrantz, further realized that this major
-                   change in APR 1.0 caused -every- apr-util linked app to have
-                   the ldap sdk (openldap etc) linked in, and our --static-support
-                   stuff is horribly broken by this change.  Not that it's wrong,
-                   we need to look at making it slightly more dynamic for those
-                   apps that don't touch ldap.
-
-    *) Add load balancer support to the scoreboard in preparation for
-       load balancing support in mod_proxy.
-         include/scoreboard.h: 1.52
-         server/scoreboard.c: 1.75
-       +0: minfrin: it makes sense for v2.1 or v2.2
-       -0: nd, jerenkrantz
-           nd: -0 as in "it should be considered as a 2.1 feature".
-              If the modified structures are public (are they?), I'm just -1.
-           jerenkrantz: Sounds like a good 2.1 feature...
-       -1: wrowe (make this a private score to the module and you would be fine;
-                  we don't need to keep overloading a single scoreboard.)
-
-    *) mod_ssl: Remove some unused functions (after CAN-2004-0488 fix is applied)
-       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_util.c?r1=1.46&r2=1.47
-       +1: jorton
-       trawick: need changes to mod_ssl.h to remove prototypes for those removed functions
-       0: nd: IMHO that's a public API change then and not applicable for
-              2.0, just let 'em in
-       -1: wrowe (as nd suggests, leave the dead horse in peace.)
 
     *) Replace some of the mutex locking in the worker MPM with
        atomic operations for higher concurrency.
@@ -467,29 +362,30 @@ PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
        http://svn.apache.org/viewcvs?view=rev&rev=158798
        http://svn.apache.org/viewcvs?view=rev&rev=159410
        http://svn.apache.org/viewcvs?view=rev&rev=160573
-       +1: gregames
+       +1: gregames, wrowe (provided this is applied to ALL subreq types!)
        -1: jerenkrantz (read_length isn't a sufficient check to see if a body
                        is present in the request; presence of T-E and C-L in
                        the headers is the correct flag.)
-           gregames: done in rev 160573
-       ±0: wrowe (this has a negative impact on modules who wish to 'inspect'
+           gregames: addressed jerenkrantz' objection in rev 160573
+           wrowe: this has a negative impact on modules who wish to 'inspect'
              the headers, e.g. an xml transformation affected by the query
              string or request POST args.  The right solution is adopt apreq,
-             providing an API for filters to participate in POST bodies.)
+             providing an API for filters to participate in POST bodies.
            gregames: this does not affect POSTs.  the affected function helps
              create a GET subrequest with no body and is unprepared to deal with
              subrequest bodies.  any modules or applications wishing to
              inspect headers will in fact work better because the headers will
              reflect reality.
-
+           wrowe: I've reconsidered - the simple fact is that subrequests
+             don't have a good mechanism to 'share' the input body with the
+             main request, and it's gotta be up to the main request to handle
+             the input body.  If the module wants to use apreq-provided data,
+             then it's going to have to ask apreq for the data instead of
+             looking at the headers.  For that matter, why are subreq's even
+             propogating POST or other non-GET types?  It seems that almost
+             any subreq should be handled as a GET in 2.0.
 
 CURRENT VOTES:
-
-    *) Promote mod_ldap and mod_auth_ldap from experimental to
-       non experimental status.
-       +1: bnicholes, wrowe
-       +0: minfrin (wait till the last cache bugs are ironed out)
-       -1: jerenkrantz
 
     *) httpd-std.conf and friends;
 
@@ -502,27 +398,9 @@ CURRENT VOTES:
                    (.default.conf rather than .conf.default so that win32
                     can recognize .conf files as text configuration files.)
 
-      b) tailored httpd-std.conf should be copied by install to
-         sysconfdir/examples
-         -0:   striker
-
       c) tailored httpd-std.conf should be installed to
          sysconfdir/examples or manualdir/exampleconf/
          +1:   slive, trawick, Ken, nd (prefer the latter), erikabele
-
-      d) tailored httpd-std.conf should be installed as httpd-std-<version>.conf.
-         +1:   striker
-
-      e) Installing a set of default config files when upgrading a server
-         doesn't make ANY sense at all.
-         +1:   ianh - medium/big sites don't use 'standard config' anyway, as it
-                      usually needs major customizations
-         -1:   Ken, wrowe, jwoolley, jim, nd, erikabele
-           wrowe - diff is wonderful when comparing old/new default configs,
-                   even for customized sites that ianh mentions
-           jim - it makes sense assuming that the default configs
-                 include the updated directives and inline comments
-                 that explain the changes and make the 'diff' more useful.
 
     *) If the parent process dies, should the remaining child processes
        "gracefully" self-terminate. Or maybe we should make it a runtime
