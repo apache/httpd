@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.1.8
 
+  *) mod_ssl: Support limited buffering of request bodies to allow 
+     per-location renegotiation to proceed.  PR 12355.  [Joe Orton]
+
   *) Fix regression since 2.0.x in AllowOverride Options handling. 
      PR 35330.  [kabe <kabe sra-tohoku.co.jp>]
 
