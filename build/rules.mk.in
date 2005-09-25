@@ -229,5 +229,5 @@ SHLIB_SUFFIX = so
 	clean clean-recursive local-clean x-local-clean \
 	distclean distclean-recursive local-distclean x-local-distclean \
 	extraclean extraclean-recursive local-extraclean x-local-extraclean \
-	install local-install $(INSTALL_TARGETS)
+	install local-install docs $(INSTALL_TARGETS)
 

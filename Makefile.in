@@ -105,11 +105,15 @@ install-build: build/config_vars.out
 
 htdocs-srcdir = $(top_srcdir)/docs/docroot
 
-docs::
-	mkdir -p ./docs/api
-	srclib/apr/build/scandoc.pl -i./build/default.pl -p./docs/api/ ./include/*.h
+docs:
+	@if test -d $(top_srcdir)/docs/manual/build; then \
+	    cd $(top_srcdir)/docs/manual/build && ./build.sh; \
+	else \
+	    echo 'For details on generating the docs, please read:'; \
+	    echo '  http://httpd.apache.org/docs-project/docsformat.html'; \
+	fi
 
-dox::
+dox:
 	doxygen $(top_srcdir)/docs/doxygen.conf
 
 install-htdocs:
