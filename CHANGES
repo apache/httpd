@@ -2,9 +2,6 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
-  *) Fix regression since 2.0.x in AllowOverride Options handling. 
-     PR 35330.  [kabe <kabe sra-tohoku.co.jp>]
-
   *) Move mod_dbd to /modules/database/ (Nick Kew)
 
   *) Move mod_filter and mod_charset_lite to /modules/filters/ (Nick Kew)
@@ -20,11 +17,6 @@ Changes with Apache 2.3.0
   *) mod_cgid: Refuse to work on Solaris 10 due to OS bugs.  PR 34264.
      [Justin Erenkrantz]
 
-  *) SECURITY: CAN-2005-2700 (cve.mitre.org)
-     mod_ssl: Fix a security issue where "SSLVerifyClient" was not
-     enforced in per-location context if "SSLVerifyClient optional"
-     was configured in the vhost configuration.  [Joe Orton]
-
   *) Doxygen fixup [Neale Ranns <neale ranns.org>, Ian Holsman]
 
   *) Teach mod_ssl to use arbitrary OIDs in an SSLRequire directive,
@@ -34,11 +26,17 @@ Changes with Apache 2.3.0
 
 Changes with Apache 2.1.8
 
-  *) Fix PR 25659 - Memory leak in ssl_util_algotypeof()
-     [David Blake <dblake hp com>, Martin Kraemer]
+  *) Fix lingering close implementation to match 1.3.x behaviour.
+     PR 35292.  [Joe Orton]
 
-  *) Document the ReceiveBufferSize change done in r157583 [Murray
-     Nesbitt <murray@cpan.org>]
+  *) mod_ssl: Support limited buffering of request bodies to allow 
+     per-location renegotiation to proceed.  PR 12355.  [Joe Orton]
+
+  *) Fix regression since 2.0.x in AllowOverride Options handling. 
+     PR 35330.  [kabe <kabe sra-tohoku.co.jp>]
+
+  *) mod_ssl: Fix memory leak in ssl_util_algotypeof().
+     PR 25659.  [David Blake <dblake hp com>, Martin Kraemer]
 
   *) prefork, worker and event MPMs: Support a graceful-stop procedure:
      Server will wait until existing requests are finished or until  
@@ -48,6 +46,14 @@ Changes with Apache 2.1.8
   *) prefork, worker and event MPMs: Prevent children from holding open 
      listening ports upon graceful restart or stop. PR 28167. 
      [Colm MacCarthaigh, Brian Pinkerton <bp thinkpink.com>]
+
+  *) SECURITY: CAN-2005-2700 (cve.mitre.org)
+     mod_ssl: Fix a security issue where "SSLVerifyClient" was not
+     enforced in per-location context if "SSLVerifyClient optional"
+     was configured in the vhost configuration.  [Joe Orton]
+
+  *) mod_ssl: Catch parse errors from misconfigured or malformed
+     CRLs.  PR 36438.  [Joe Orton]
 
   *) mod_proxy/mod_proxy_balancer: lbmethods now implemented as
      providers. Prevent problems when no Vhost containers were
