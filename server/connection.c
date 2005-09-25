@@ -98,9 +98,7 @@ AP_CORE_DECLARE(void) ap_flush_conn(conn_rec *c)
 AP_DECLARE(void) ap_lingering_close(conn_rec *c)
 {
     char dummybuf[512];
-    apr_size_t nbytes = sizeof(dummybuf);
-    apr_status_t rc;
-    apr_int32_t timeout;
+    apr_size_t nbytes;
     apr_time_t timeup = 0;
     apr_socket_t *csd = ap_get_module_config(c->conn_config, &core_module);
 
@@ -143,8 +141,7 @@ AP_DECLARE(void) ap_lingering_close(conn_rec *c)
      * does not send any data within 2 seconds (a value pulled from
      * Apache 1.3 which seems to work well), give up.
      */
-    timeout = apr_time_from_sec(SECONDS_TO_LINGER);
-    apr_socket_timeout_set(csd, timeout);
+    apr_socket_timeout_set(csd, apr_time_from_sec(SECONDS_TO_LINGER));
     apr_socket_opt_set(csd, APR_INCOMPLETE_READ, 1);
 
     /* The common path here is that the initial apr_socket_recv() call
@@ -153,8 +150,7 @@ AP_DECLARE(void) ap_lingering_close(conn_rec *c)
 
     do {
         nbytes = sizeof(dummybuf);
-        rc = apr_socket_recv(csd, dummybuf, &nbytes);
-        if (rc != APR_SUCCESS || nbytes == 0)
+        if (apr_socket_recv(csd, dummybuf, &nbytes) || nbytes == 0)
             break;
 
         if (timeup == 0) {
