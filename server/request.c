@@ -446,8 +446,6 @@ static void core_opts_merge(const ap_conf_vector_t *sec, core_opts_t *opts)
 
     if (!(this_dir->override & OR_UNSET)) {
         opts->override = this_dir->override;
-    }
-    if (!(this_dir->override_opts & OR_UNSET)) {
         opts->override_opts = this_dir->override_opts;
     }
 }
@@ -992,7 +990,8 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
                 if ((res = resolve_symlink(r->filename, &thisinfo,
                                            opts.opts, r->pool)) != OK) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                                  "Symbolic link not allowed: %s",
+                                  "Symbolic link not allowed "
+                                  "or link target not accessible: %s",
                                   r->filename);
                     return r->status = res;
                 }
