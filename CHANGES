@@ -1,6 +1,8 @@
                                                         -*- coding: utf-8 -*-
 Changes in Apache 2.3.0 async-dev R&D branch
 
+  *) Rewrite of ap_core_output_filter to do nonblocking writes [Brian Pane]
+
   *) Added new connection states for handler and write completion
      [Brian Pane]
 
