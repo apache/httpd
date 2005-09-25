@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.1.8
 
+  *) Fix lingering close implementation to match 1.3.x behaviour.
+     PR 35292.  [Joe Orton]
+
   *) mod_ssl: Support limited buffering of request bodies to allow 
      per-location renegotiation to proceed.  PR 12355.  [Joe Orton]
 
