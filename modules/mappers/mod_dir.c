@@ -178,8 +178,17 @@ static int fixup_dir(request_rec *r)
 
         rr = ap_sub_req_lookup_uri(name_ptr, r, NULL);
 
-        /* XXX: (filetype == APR_REG) - we can't use a non-file index??? */
-        if (   rr->status == HTTP_OK
+        /* The sub request lookup is very liberal, and the core map_to_storage
+         * handler will almost always result in HTTP_OK as /foo/index.html
+         * may be /foo with PATH_INFO="/index.html", or even / with 
+         * PATH_INFO="/foo/index.html". To get around this we insist that the
+         * the index be a regular filetype.
+         *
+         * Another reason is that the core handler also makes the assumption 
+         * that if r->finfo is still NULL by the time it gets called, the 
+         * file does not exist.
+         */
+        if (rr->status == HTTP_OK
             && (   (rr->handler && !strcmp(rr->handler, "proxy-server"))
                 || rr->finfo.filetype == APR_REG)) {
             ap_internal_fast_redirect(rr, r);
