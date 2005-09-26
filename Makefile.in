@@ -107,7 +107,7 @@ htdocs-srcdir = $(top_srcdir)/docs/docroot
 
 docs:
 	@if test -d $(top_srcdir)/docs/manual/build; then \
-	    cd $(top_srcdir)/docs/manual/build && ./build.sh; \
+	    cd $(top_srcdir)/docs/manual/build && ./build.sh all; \
 	else \
 	    echo 'For details on generating the docs, please read:'; \
 	    echo '  http://httpd.apache.org/docs-project/docsformat.html'; \
