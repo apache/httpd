@@ -110,14 +110,15 @@ static int cache_url_handler(request_rec *r, int lookup)
         if (rv == DECLINED) {
             if (!lookup) {
                 ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r->server,
-                  "Adding CACHE_SAVE filter.");
+                  "Adding CACHE_SAVE filter for %s", r->uri);
 
                 /* add cache_save filter to cache this request */
                 ap_add_output_filter_handle(cache_save_filter_handle, NULL, r,
                                             r->connection);
 
                 ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r->server,
-                             "Adding CACHE_REMOVE_URL filter.");
+                             "Adding CACHE_REMOVE_URL filter for %s", 
+                             r->uri);
 
                 /* Add cache_remove_url filter to this request to remove a
                  * stale cache entry if needed. Also put the current cache
@@ -129,11 +130,17 @@ static int cache_url_handler(request_rec *r, int lookup)
                     ap_add_output_filter_handle(cache_remove_url_filter_handle, 
                                                 cache, r, r->connection);
             }
-            else if (cache->stale_headers) {
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r->server,
-                  "Restoring request headers.");
+            else {
+                if (cache->stale_headers) {
+                    ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, 
+                                 r->server, "Restoring request headers for %s", 
+                                 r->uri);
 
-                r->headers_in = cache->stale_headers;
+                    r->headers_in = cache->stale_headers;
+                }
+                
+                /* Delete our per-request configuration. */
+                ap_set_module_config(r->request_config, &cache_module, NULL);
             }
         }
         else {
@@ -144,9 +151,29 @@ static int cache_url_handler(request_rec *r, int lookup)
         }
         return DECLINED;
     }
+ 
+    /* if we are a lookup, we are exiting soon one way or another; Restore
+     * the headers. */
+    if (lookup) {
+        if (cache->stale_headers) {
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r->server, 
+                         "Restoring request headers.");
+            r->headers_in = cache->stale_headers;
+        }
+
+        /* Delete our per-request configuration. */
+        ap_set_module_config(r->request_config, &cache_module, NULL);
+    }
 
     rv = ap_meets_conditions(r);
     if (rv != OK) {
+        /* If we are a lookup, we have to return DECLINED as we have no
+         * way of knowing if we will be able to serve the content. 
+         */
+        if (lookup) {
+            return DECLINED;
+        }
+
         /* Return cached status. */
         return rv;
     }
@@ -245,7 +272,6 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
     request_rec *r = f->r;
     cache_request_rec *cache;
     cache_server_conf *conf;
-    char *url = r->unparsed_uri;
     const char *cc_out, *cl;
     const char *exps, *lastmods, *dates, *etag;
     apr_time_t exp, date, lastmod, now;
@@ -445,7 +471,8 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
 
     if (reason) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                     "cache: %s not cached. Reason: %s", url, reason);
+                     "cache: %s not cached. Reason: %s", r->unparsed_uri, 
+                     reason);
 
         /* remove this filter from the chain */
         ap_remove_output_filter(f);
@@ -531,7 +558,7 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
 
     /* no cache handle, create a new entity */
     if (!cache->handle) {
-        rv = cache_create_entity(r, url, size);
+        rv = cache_create_entity(r, size);
         info = apr_pcalloc(r->pool, sizeof(cache_info));
         /* We only set info->status upon the initial creation. */
         info->status = r->status;
@@ -544,7 +571,7 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
     }
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                 "cache: Caching url: %s", url);
+                 "cache: Caching url: %s", r->unparsed_uri);
 
     /* We are actually caching this response. So it does not
      * make sense to remove this entity any more.
