@@ -216,15 +216,15 @@ struct cache_provider_list {
 
 /* per request cache information */
 typedef struct {
-    cache_provider_list *providers;         /* possible cache providers */
-    const cache_provider *provider;         /* current cache provider */
-    const char *provider_name;              /* current cache provider name */
-    int fresh;				/* is the entitey fresh? */
-    cache_handle_t *handle;		/* current cache handle */
-    cache_handle_t *stale_handle;	/* stale cache handle */
-    apr_table_t *stale_headers;		/* original request headers. */
-    int in_checked;			/* CACHE_SAVE must cache the entity */
-    int block_response;			/* CACHE_SAVE must block response. */
+    cache_provider_list *providers;     /* possible cache providers */
+    const cache_provider *provider;     /* current cache provider */
+    const char *provider_name;          /* current cache provider name */
+    int fresh;                          /* is the entitey fresh? */
+    cache_handle_t *handle;             /* current cache handle */
+    cache_handle_t *stale_handle;       /* stale cache handle */
+    apr_table_t *stale_headers;         /* original request headers. */
+    int in_checked;                     /* CACHE_SAVE must cache the entity */
+    int block_response;                 /* CACHE_SAVE must block response. */
     apr_bucket_brigade *saved_brigade;  /* copy of partial response */
     apr_off_t saved_size;               /* length of saved_brigade */
     apr_time_t exp;                     /* expiration */
@@ -278,7 +278,7 @@ CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_hdrs_out(apr_pool_t *pool,
  * cache_storage.c
  */
 int cache_remove_url(cache_request_rec *cache, apr_pool_t *p);
-int cache_create_entity(request_rec *r, char *url, apr_off_t size);
+int cache_create_entity(request_rec *r, apr_off_t size);
 int cache_select(request_rec *r);
 apr_status_t cache_generate_key_default( request_rec *r, apr_pool_t*p, char**key );
 /**
