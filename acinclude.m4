@@ -528,3 +528,44 @@ AC_DEFUN(APACHE_EXPORT_ARGUMENTS,[
   APACHE_SUBST_EXPANDED_ARG(proxycachedir)
 ])
 
+dnl 
+dnl APACHE_CHECK_APxVER({apr|apu}, major, minor, 
+dnl                     [actions-if-ok], [actions-if-not-ok])
+dnl
+dnl Checks for APR or APR-util of given major/minor version or later; 
+dnl if so, runs actions-if-ok; otherwise runs actions-if-not-ok if given.
+dnl If the version is not satisfactory and actions-if-not-ok is not
+dnl given, then an error is printed and the configure script is aborted.
+dnl
+dnl The first argument must be [apr] or [apu].
+dnl
+AC_DEFUN([APACHE_CHECK_APxVER], [
+define(ap_ckver_major, translit($1, [apru], [APRU])[_MAJOR_VERSION])
+define(ap_ckver_minor, translit($1, [apru], [APRU])[_MINOR_VERSION])
+define(ap_ckver_cvar, [ap_cv_$1ver$2$3])
+define(ap_ckver_name, ifelse([$1],[apr],[APR],[APR-util]))
+
+ap_ckver_CPPFLAGS="$CPPFLAGS"
+CPPFLAGS="$CPPFLAGS `$[$1]_config --includes`"
+
+AC_CACHE_CHECK([for ap_ckver_name version $2.$3.0 or later], ap_ckver_cvar, [
+AC_EGREP_CPP([good], [
+#include <$1_version.h>
+#if ]ap_ckver_major[ > $2 || (]ap_ckver_major[ == $2 && ]ap_ckver_minor[ >= $3)
+good
+#endif
+], [ap_ckver_cvar=yes], [ap_ckver_cvar=no])])
+
+if test "$ap_ckver_cvar" = "yes"; then
+  ifelse([$4],[],[:],[$4])
+else
+  ifelse([$5],[],[AC_MSG_ERROR([ap_ckver_name version $2.$3.0 or later is required])], [$5])
+fi
+
+CPPFLAGS="$ap_ckver_CPPFLAGS"
+
+undefine([ap_ckver_major])
+undefine([ap_ckver_minor])
+undefine([ap_ckver_cvar])
+undefine([ap_ckver_name])
+])
