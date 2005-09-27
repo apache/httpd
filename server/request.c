@@ -1609,10 +1609,18 @@ AP_DECLARE(request_rec *) ap_sub_req_method_uri(const char *method,
     /* lookup_uri 
      * If the content can be served by the quick_handler, we can
      * safely bypass request_internal processing.
+     *
+     * If next_filter is NULL we are expecting to be 
+     * internal_fast_redirect'ed to the subrequest, or the subrequest will 
+     * never be invoked. We need to make sure that the quickhandler is not 
+     * invoked by any lookups. Since an internal_fast_redirect will always 
+     * occur too late for the quickhandler to handle the request.
      */
-    res = ap_run_quick_handler(rnew, 1);
+    if (next_filter) {
+        res = ap_run_quick_handler(rnew, 1);
+    }
 
-    if (res != OK) {
+    if (next_filter == NULL || res != OK) {
         if ((res = ap_process_request_internal(rnew))) {
             rnew->status = res;
         }
