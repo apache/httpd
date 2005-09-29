@@ -14,6 +14,17 @@
  * limitations under the License.
  */
 
+/**
+ * @file  beos/os.h
+ * @brief This file in included in all Apache source code. It contains definitions
+ * of facilities available on _this_ operating system (HAVE_* macros),
+ * and prototypes of OS specific functions defined in os.c or os-inline.c
+ *
+ * @defgroup APACHE_OS_BEOS beos
+ * @ingroup  APACHE_OS
+ * @{
+ */
+
 #ifndef APACHE_OS_H
 #define APACHE_OS_H
 
@@ -28,3 +39,4 @@
 #endif
 
 #endif	/* !APACHE_OS_H */
+/** @} */

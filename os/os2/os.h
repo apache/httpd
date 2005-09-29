@@ -14,6 +14,17 @@
  * limitations under the License.
  */
 
+/**
+ * @file os2/os.h
+ * @brief This file in included in all Apache source code. It contains definitions
+ * of facilities available on _this_ operating system (HAVE_* macros),
+ * and prototypes of OS specific functions defined in os.c or os-inline.c
+ *
+ * @defgroup APACHE_OS_OS2 os2
+ * @ingroup  APACHE_OS
+ * @{
+ */
+
 #ifndef APACHE_OS_H
 #define APACHE_OS_H
 
@@ -24,10 +35,5 @@
 #define HAVE_UNC_PATHS
 #define CASE_BLIND_FILESYSTEM
 
-/*
- * This file in included in all Apache source code. It contains definitions
- * of facilities available on _this_ operating system (HAVE_* macros),
- * and prototypes of OS specific functions defined in os.c or os-inline.c
- */
-
 #endif   /* ! APACHE_OS_H */
+/** @} */

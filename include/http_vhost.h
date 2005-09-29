@@ -14,16 +14,21 @@
  * limitations under the License.
  */
 
+/**
+ * @file  http_vhost.h
+ * @brief Virtual Host package
+ *
+ * @defgroup APACHE_CORE_VHOST Virtual Host Package
+ * @ingroup  APACHE_CORE
+ * @{
+ */
+
 #ifndef APACHE_HTTP_VHOST_H
 #define APACHE_HTTP_VHOST_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-/**
- * @package Virtual Host package
- */
 
 /**
  * called before any config is read
@@ -36,19 +41,23 @@ AP_DECLARE(void) ap_init_vhost_config(apr_pool_t *p);
  * the run-time vhost lookups
  * @param p The pool to allocate out of
  * @param main_server The start of the virtual host list
- * @deffunc ap_fini_vhost_config(apr_pool_t *p, server_rec *main_server)
  */
 AP_DECLARE(void) ap_fini_vhost_config(apr_pool_t *p, server_rec *main_server);
 
 /**
- * handle addresses in <VirtualHost> statement
+ * handle addresses in "<VirtualHost>" statement
  * @param p The pool to allocate out of
  * @param hostname The hostname in the VirtualHost statement
  * @param s The list of Virtual Hosts.
  */
 const char *ap_parse_vhost_addrs(apr_pool_t *p, const char *hostname, server_rec *s);
 
-/* handle NameVirtualHost directive */
+/**
+ * handle NameVirtualHost directive 
+ * @param cmd Command Parameters structure
+ * @param dummy NOT USED
+ * @param arg a host of the form "<address>[:port]"
+ */
 const char *ap_set_name_virtual_host (cmd_parms *cmd, void *dummy,
 				      const char *arg);
 
@@ -97,7 +106,6 @@ AP_DECLARE(void) ap_update_vhost_from_headers(request_rec *r);
  * @param port The port from the headers
  * @return return 1 if the host:port matches any of the aliases of r->server,
  * return 0 otherwise
- * @deffunc int ap_matches_request_vhost(request_rec *r, const char *host, apr_port_t port)
  */
 AP_DECLARE(int) ap_matches_request_vhost(request_rec *r, const char *host,
     apr_port_t port);
@@ -107,3 +115,4 @@ AP_DECLARE(int) ap_matches_request_vhost(request_rec *r, const char *host,
 #endif
 
 #endif	/* !APACHE_HTTP_VHOST_H */
+/** @} */

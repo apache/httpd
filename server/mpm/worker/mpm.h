@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 
+/**
+ * @file worker/mpm.h
+ * @brief Unix Worker MPM
+ *
+ * @defgroup APACHE_MPM_WORKER Unix Worker MPM
+ * @ingroup  APACHE_OS_UNIX APACHE_MPM
+ * @{
+ */
+
 #include "scoreboard.h"
 #include "unixd.h"
 
@@ -50,3 +59,4 @@ extern server_rec *ap_server_conf;
 extern char ap_coredump_dir[MAX_STRING_LEN];
 
 #endif /* APACHE_MPM_WORKER_H */
+/** @} */

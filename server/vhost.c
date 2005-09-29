@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-/*
- * http_vhost.c: functions pertaining to virtual host addresses
- *      (configuration and run-time)
+/**
+ * @file  vhost.c 
+ * @brief functions pertaining to virtual host addresses
+ *        (configuration and run-time)
  */
 
 #include "apr.h"

@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 
+/**
+ * @file  util_time.h
+ * @brief Apache date-time handling functions
+ *
+ * @defgroup APACHE_CORE_TIME Date-time handling functions
+ * @ingroup  APACHE_CORE
+ * @{
+ */
+
 #ifndef APACHE_UTIL_TIME_H
 #define APACHE_UTIL_TIME_H
 
@@ -24,10 +33,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-/**
- * @package Apache date-time handling functions
- */
 
 /* Maximum delta from the current time, in seconds, for a past time
  * to qualify as "recent" for use in the ap_explode_recent_*() functions:
@@ -83,3 +88,4 @@ AP_DECLARE(apr_status_t) ap_recent_rfc822_date(char *date_str, apr_time_t t);
 #endif
 
 #endif  /* !APACHE_UTIL_TIME_H */
+/** @} */

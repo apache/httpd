@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 
+/**
+ * @file  ap_provider.h
+ * @brief Apache Provider API
+ *
+ * @defgroup APACHE_CORE_PROVIDER Provider API
+ * @ingroup  APACHE_CORE
+ * @{
+ */
+
 #ifndef AP_PROVIDER_H
 #define AP_PROVIDER_H
 
@@ -23,10 +32,6 @@ typedef struct {
     const char *provider_name;
 } ap_list_provider_names_t;
 
-
-/**
- * @package Provider API
- */
 
 /**
  * This function is used to register a provider with the global
@@ -70,3 +75,4 @@ AP_DECLARE(apr_array_header_t *) ap_list_provider_names(apr_pool_t *pool,
                                               const char *provider_version);
 
 #endif
+/** @} */

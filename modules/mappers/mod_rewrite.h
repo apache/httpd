@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 
+/**
+ * @file  mod_rewrite.h
+ * @brief Rewrite Extension module for Apache
+ * 
+ * @defgroup MOD_REWRITE mod_rewrite
+ * @ingroup APACHE_MODS
+ * @{
+ */
+
 #ifndef MOD_REWRITE_H
 #define MOD_REWRITE_H 1
 
@@ -28,3 +37,4 @@ APR_DECLARE_OPTIONAL_FN(void, ap_register_rewrite_mapfunc,
                         (char *name, rewrite_mapfunc_t *func));
 
 #endif /* MOD_REWRITE_H */
+/** @} */

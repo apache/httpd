@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 
+/**
+ * @file mod_log_config.h
+ * @brief Logging Configuration Extension Module for Apache
+ * 
+ * @defgroup MOD_LOG_CONFIG mod_log_config
+ * @ingroup APACHE_MODS
+ * @{
+ */
+
 #include "apr_optional.h"
 #include "httpd.h"
 #include "scoreboard.h"
@@ -61,3 +70,5 @@ APR_DECLARE_OPTIONAL_FN(ap_log_writer_init*, ap_log_set_writer_init,(ap_log_writ
 APR_DECLARE_OPTIONAL_FN(ap_log_writer*, ap_log_set_writer, (ap_log_writer* func));
 
 #endif /* MOD_LOG_CONFIG */
+/** @} */
+

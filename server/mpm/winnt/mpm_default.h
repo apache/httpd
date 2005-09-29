@@ -14,6 +14,14 @@
  * limitations under the License.
  */
 
+/**
+ * @file  winnt/mpm_default.h
+ * @brief win32 MPM defaults
+ *
+ * @addtogroup APACHE_MPM_WINNT
+ * @{
+ */
+
 #ifndef APACHE_MPM_DEFAULT_H
 #define APACHE_MPM_DEFAULT_H
 
@@ -78,3 +86,4 @@
 #endif
 
 #endif /* AP_MPM_DEFAULT_H */
+/** @} */

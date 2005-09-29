@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 
+/**
+ * @file  http_log.h
+ * @brief Apache Logging library
+ *
+ * @defgroup APACHE_CORE_LOG Logging library
+ * @ingroup  APACHE_CORE
+ * @{
+ */
+
 #ifndef APACHE_HTTP_LOG_H
 #define APACHE_HTTP_LOG_H
 
@@ -22,10 +31,6 @@ extern "C" {
 #endif
 
 #include "apr_thread_proc.h"
-
-/**
- * @package Apache logging library
- */
 
 #ifdef HAVE_SYSLOG
 #include <syslog.h>
@@ -110,7 +115,7 @@ AP_DECLARE(apr_status_t) ap_replace_stderr_log(apr_pool_t *p,
  * @param plog  The pool to allocate the logs from
  * @param ptemp Pool used for temporary allocations
  * @param s_main The main server
- * @tip ap_open_logs isn't expected to be used by modules, it is
+ * @note ap_open_logs isn't expected to be used by modules, it is
  * an internal core function 
  */
 int ap_open_logs(apr_pool_t *pconf, apr_pool_t *plog, 
@@ -123,7 +128,7 @@ int ap_open_logs(apr_pool_t *pconf, apr_pool_t *plog,
  * processes.
  * @param p Not used
  * @param s Not used
- * @tip ap_logs_child_init is not for use by modules; it is an
+ * @note ap_logs_child_init is not for use by modules; it is an
  * internal core function
  */
 void ap_logs_child_init(apr_pool_t *p, server_rec *s);
@@ -151,8 +156,8 @@ void ap_logs_child_init(apr_pool_t *p, server_rec *s);
  * @param s The server on which we are logging
  * @param fmt The format string
  * @param ... The arguments to use to fill out fmt.
- * @tip Use APLOG_MARK to fill out file and line
- * @tip If a request_rec is available, use that with ap_log_rerror()
+ * @note Use APLOG_MARK to fill out file and line
+ * @note If a request_rec is available, use that with ap_log_rerror()
  * in preference to calling this function.  Otherwise, if a conn_rec is
  * available, use that with ap_log_cerror() in preference to calling
  * this function.
@@ -162,7 +167,6 @@ void ap_logs_child_init(apr_pool_t *p, server_rec *s);
  * denial-of-service attack and other messy behavior.  Instead, use a 
  * simple format string like "%s", followed by the string containing the 
  * untrusted data.
- * @deffunc void ap_log_error(const char *file, int line, int level, apr_status_t status, const server_rec *s, const char *fmt, ...) 
  */
 AP_DECLARE(void) ap_log_error(const char *file, int line, int level, 
                              apr_status_t status, const server_rec *s, 
@@ -180,14 +184,13 @@ AP_DECLARE(void) ap_log_error(const char *file, int line, int level,
  * @param p The pool which we are logging for
  * @param fmt The format string
  * @param ... The arguments to use to fill out fmt.
- * @tip Use APLOG_MARK to fill out file and line
+ * @note Use APLOG_MARK to fill out file and line
  * @warning It is VERY IMPORTANT that you not include any raw data from 
  * the network, such as the request-URI or request header fields, within 
  * the format string.  Doing so makes the server vulnerable to a 
  * denial-of-service attack and other messy behavior.  Instead, use a 
  * simple format string like "%s", followed by the string containing the 
  * untrusted data.
- * @deffunc void ap_log_perror(const char *file, int line, int level, apr_status_t status, apr_pool_t *p, const char *fmt, ...) 
  */
 AP_DECLARE(void) ap_log_perror(const char *file, int line, int level, 
                              apr_status_t status, apr_pool_t *p, 
@@ -205,14 +208,13 @@ AP_DECLARE(void) ap_log_perror(const char *file, int line, int level,
  * @param r The request which we are logging for
  * @param fmt The format string
  * @param ... The arguments to use to fill out fmt.
- * @tip Use APLOG_MARK to fill out file and line
+ * @note Use APLOG_MARK to fill out file and line
  * @warning It is VERY IMPORTANT that you not include any raw data from 
  * the network, such as the request-URI or request header fields, within 
  * the format string.  Doing so makes the server vulnerable to a 
  * denial-of-service attack and other messy behavior.  Instead, use a 
  * simple format string like "%s", followed by the string containing the 
  * untrusted data.
- * @deffunc void ap_log_rerror(const char *file, int line, int level, apr_status_t status, const request_rec *r, const char *fmt, ...)
  */
 AP_DECLARE(void) ap_log_rerror(const char *file, int line, int level, 
                                apr_status_t status, const request_rec *r, 
@@ -230,8 +232,8 @@ AP_DECLARE(void) ap_log_rerror(const char *file, int line, int level,
  * @param c The connection which we are logging for
  * @param fmt The format string
  * @param ... The arguments to use to fill out fmt.
- * @tip Use APLOG_MARK to fill out file and line
- * @tip If a request_rec is available, use that with ap_log_rerror()
+ * @note Use APLOG_MARK to fill out file and line
+ * @note If a request_rec is available, use that with ap_log_rerror()
  * in preference to calling this function.
  * @warning It is VERY IMPORTANT that you not include any raw data from 
  * the network, such as the request-URI or request header fields, within 
@@ -239,7 +241,6 @@ AP_DECLARE(void) ap_log_rerror(const char *file, int line, int level,
  * denial-of-service attack and other messy behavior.  Instead, use a 
  * simple format string like "%s", followed by the string containing the 
  * untrusted data.
- * @deffunc void ap_log_cerror(const char *file, int line, int level, apr_status_t status, const conn_rec *c, const char *fmt, ...)
  */
 AP_DECLARE(void) ap_log_cerror(const char *file, int line, int level, 
                                apr_status_t status, const conn_rec *c, 
@@ -249,7 +250,6 @@ AP_DECLARE(void) ap_log_cerror(const char *file, int line, int level,
 /**
  * Convert stderr to the error log
  * @param s The current server
- * @deffunc void ap_error_log2stderr(server_rec *s)
  */
 AP_DECLARE(void) ap_error_log2stderr(server_rec *s);
 
@@ -268,11 +268,14 @@ AP_DECLARE(void) ap_log_pid(apr_pool_t *p, const char *fname);
  */
 AP_DECLARE(apr_status_t) ap_read_pid(apr_pool_t *p, const char *filename, pid_t *mypid);
 
+/** @see piped_log */
 typedef struct piped_log piped_log;
 
 /**
- * The piped logging structure.  Piped logs are used to move functionality
- * out of the main server.  For example, log rotation is done with piped logs.
+ * @brief The piped logging structure.  
+ *
+ * Piped logs are used to move functionality out of the main server.  
+ * For example, log rotation is done with piped logs.
  */
 struct piped_log {
     /** The pool to use for the piped log */
@@ -294,14 +297,12 @@ struct piped_log {
  * @param p The pool to allocate out of
  * @param program The program to run in the logging process
  * @return The piped log structure
- * @deffunc piped_log *ap_open_piped_log(apr_pool_t *p, const char *program)
  */
 AP_DECLARE(piped_log *) ap_open_piped_log(apr_pool_t *p, const char *program);
 
 /**
  * Close the piped log and kill the logging process
  * @param pl The piped log structure
- * @deffunc void ap_close_piped_log(piped_log *pl)
  */
 AP_DECLARE(void) ap_close_piped_log(piped_log *pl);
 
@@ -309,7 +310,6 @@ AP_DECLARE(void) ap_close_piped_log(piped_log *pl);
  * A macro to access the read side of the piped log pipe
  * @param pl The piped log structure
  * @return The native file descriptor
- * @deffunc ap_piped_log_read_fd(pl)
  */
 #define ap_piped_log_read_fd(pl)	((pl)->fds[0])
 
@@ -317,10 +317,21 @@ AP_DECLARE(void) ap_close_piped_log(piped_log *pl);
  * A macro to access the write side of the piped log pipe
  * @param pl The piped log structure
  * @return The native file descriptor
- * @deffunc ap_piped_log_read_fd(pl)
  */
 #define ap_piped_log_write_fd(pl)	((pl)->fds[1])
 
+/**
+ * hook method to log error messages 
+ * @ingroup hooks
+ * @param file The file in which this function is called
+ * @param line The line number on which this function is called
+ * @param level The level of this error message
+ * @param status The status code from the previous command
+ * @param s The server which we are logging for
+ * @param r The request which we are logging for
+ * @param pool Memory pool to allocate from
+ * @param errstr message to log 
+ */
 AP_DECLARE_HOOK(void, error_log, (const char *file, int line, int level,
                        apr_status_t status, const server_rec *s,
                        const request_rec *r, apr_pool_t *pool,
@@ -331,3 +342,4 @@ AP_DECLARE_HOOK(void, error_log, (const char *file, int line, int level,
 #endif
 
 #endif	/* !APACHE_HTTP_LOG_H */
+/** @} */

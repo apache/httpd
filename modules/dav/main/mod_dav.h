@@ -14,9 +14,14 @@
  * limitations under the License.
  */
 
-/*
-** DAV extension module for Apache 2.0.*
-*/
+/**
+ * @file  mod_dav.h 
+ * @brief DAV extension module for Apache 2.0.*
+ *
+ * @defgroup MOD_DAV mod_dav
+ * @ingroup APACHE_MODS
+ * @{
+ */
 
 #ifndef _MOD_DAV_H_
 #define _MOD_DAV_H_
@@ -2418,3 +2423,5 @@ typedef struct {
 #endif
 
 #endif /* _MOD_DAV_H_ */
+/** @} */
+

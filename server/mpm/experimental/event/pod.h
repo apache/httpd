@@ -14,6 +14,14 @@
  * limitations under the License.
  */
 
+/**
+ * @file  event/pod.h
+ * @brief pod definitions
+ *
+ * @addtogroup APACHE_MPM_EVENT
+ * @{
+ */
+
 #include "apr.h"
 #include "apr_strings.h"
 #define APR_WANT_STRFUNC
@@ -49,3 +57,4 @@ AP_DECLARE(int) ap_mpm_pod_check(ap_pod_t * pod);
 AP_DECLARE(apr_status_t) ap_mpm_pod_close(ap_pod_t * pod);
 AP_DECLARE(apr_status_t) ap_mpm_pod_signal(ap_pod_t * pod, int graceful);
 AP_DECLARE(void) ap_mpm_pod_killpg(ap_pod_t * pod, int num, int graceful);
+/** @} */

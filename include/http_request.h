@@ -14,25 +14,11 @@
  * limitations under the License.
  */
 
-#ifndef APACHE_HTTP_REQUEST_H
-#define APACHE_HTTP_REQUEST_H
-
-#include "apr_hooks.h"
-#include "util_filter.h"
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-#define AP_SUBREQ_NO_ARGS 0
-#define AP_SUBREQ_MERGE_ARGS 1
-
 /**
  * @file http_request.h
  * @brief Apache Request library
- */
-
-/* http_request.c is the code which handles the main line of request
+ *
+ * request.c is the code which handles the main line of request
  * processing, once a request has been read in (finding the right per-
  * directory configuration, building it if necessary, and calling all
  * the module dispatch functions in the right order).
@@ -52,6 +38,19 @@ extern "C" {
  * about which was allocated in its apr_pool_t elsewhere before doing this.
  */
 
+#ifndef APACHE_HTTP_REQUEST_H
+#define APACHE_HTTP_REQUEST_H
+
+#include "apr_hooks.h"
+#include "util_filter.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#define AP_SUBREQ_NO_ARGS 0
+#define AP_SUBREQ_MERGE_ARGS 1
+
 /**
  * An internal handler used by the ap_process_request, all subrequest mechanisms
  * and the redirect mechanism.
@@ -68,7 +67,6 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r);
  * @param next_filter The first filter the sub_request should use.  If this is
  *                    NULL, it defaults to the first filter for the main request
  * @return The new request record
- * @deffunc request_rec * ap_sub_req_lookup_uri(const char *new_uri, const request_rec *r)
  */
 AP_DECLARE(request_rec *) ap_sub_req_lookup_uri(const char *new_uri,
                                                 const request_rec *r,
@@ -82,7 +80,6 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_uri(const char *new_uri,
  * @param next_filter The first filter the sub_request should use.  If this is
  *                    NULL, it defaults to the first filter for the main request
  * @return The new request record
- * @deffunc request_rec * ap_sub_req_lookup_file(const char *new_file, const request_rec *r)
  */
 AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
                                               const request_rec *r,
@@ -100,8 +97,7 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
  * @param next_filter The first filter the sub_request should use.  If this is
  *                    NULL, it defaults to the first filter for the main request
  * @return The new request record
- * @deffunc request_rec * ap_sub_req_lookup_dirent(apr_finfo_t *finfo, int subtype, const request_rec *r)
- * @tip The apr_dir_read flags value APR_FINFO_MIN|APR_FINFO_NAME flag is the 
+ * @note The apr_dir_read flags value APR_FINFO_MIN|APR_FINFO_NAME flag is the 
  * minimum recommended query if the results will be passed to apr_dir_read.
  * The file info passed must include the name, and must have the same relative
  * directory as the current request.
@@ -119,7 +115,6 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *finfo,
  * @param next_filter The first filter the sub_request should use.  If this is
  *                    NULL, it defaults to the first filter for the main request
  * @return The new request record
- * @deffunc request_rec * ap_sub_req_method_uri(const char *method, const char *new_uri, const request_rec *r)
  */
 AP_DECLARE(request_rec *) ap_sub_req_method_uri(const char *method,
                                                 const char *new_uri,
@@ -130,7 +125,7 @@ AP_DECLARE(request_rec *) ap_sub_req_method_uri(const char *method,
  * has to be inserted at the end of a sub-requests filter stack.
  * @param f The current filter
  * @param bb The brigade to filter
- * @deffunc apr_status_t ap_sub_req_output_filter(ap_filter_t *f, apr_bucket_brigade *bb)
+ * @return status code
  */
 AP_CORE_DECLARE_NONSTD(apr_status_t) ap_sub_req_output_filter(ap_filter_t *f,
                                                         apr_bucket_brigade *bb);
@@ -139,14 +134,12 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_sub_req_output_filter(ap_filter_t *f,
  * Run the handler for the subrequest
  * @param r The subrequest to run
  * @return The return code for the subrequest
- * @deffunc int ap_run_sub_req(request_rec *r)
  */
 AP_DECLARE(int) ap_run_sub_req(request_rec *r);
 
 /**
  * Free the memory associated with a subrequest
  * @param r The subrequest to finish
- * @deffunc void ap_destroy_sub_req(request_rec *r)
  */
 AP_DECLARE(void) ap_destroy_sub_req(request_rec *r);
 
@@ -160,7 +153,6 @@ AP_DECLARE(void) ap_destroy_sub_req(request_rec *r);
  * Redirect the current request to some other uri
  * @param new_uri The URI to replace the current request with
  * @param r The current request
- * @deffunc void ap_internal_redirect(const char *new_uri, request_rec *r)
  */
 AP_DECLARE(void) ap_internal_redirect(const char *new_uri, request_rec *r);
 
@@ -170,7 +162,6 @@ AP_DECLARE(void) ap_internal_redirect(const char *new_uri, request_rec *r);
  * an internal redirect.
  * @param new_uri The URI to replace the current request with.
  * @param r The current request
- * @deffunc void ap_internal_redirect_handler(const char *new_uri, request_rec *r)
  */
 AP_DECLARE(void) ap_internal_redirect_handler(const char *new_uri, request_rec *r);
 
@@ -178,8 +169,7 @@ AP_DECLARE(void) ap_internal_redirect_handler(const char *new_uri, request_rec *
  * Redirect the current request to a sub_req, merging the pools
  * @param sub_req A subrequest created from this request
  * @param r The current request
- * @deffunc void ap_internal_fast_redirect(request_rec *sub_req, request_rec *r)
- * @tip the sub_req's pool will be merged into r's pool, be very careful
+ * @note the sub_req's pool will be merged into r's pool, be very careful
  * not to destroy this subrequest, it will be destroyed with the main request!
  */
 AP_DECLARE(void) ap_internal_fast_redirect(request_rec *sub_req, request_rec *r);
@@ -189,7 +179,6 @@ AP_DECLARE(void) ap_internal_fast_redirect(request_rec *sub_req, request_rec *r)
  * is required for the current request
  * @param r The current request
  * @return 1 if authentication is required, 0 otherwise
- * @deffunc int ap_some_auth_required(request_rec *r)
  */
 AP_DECLARE(int) ap_some_auth_required(request_rec *r);
  
@@ -197,7 +186,6 @@ AP_DECLARE(int) ap_some_auth_required(request_rec *r);
  * Determine if the current request is the main request or a subrequest
  * @param r The current request
  * @return 1 if this is the main request, 0 otherwise
- * @deffunc int ap_is_initial_req(request_rec *r)
  */
 AP_DECLARE(int) ap_is_initial_req(request_rec *r);
 
@@ -205,8 +193,7 @@ AP_DECLARE(int) ap_is_initial_req(request_rec *r);
  * Function to set the r->mtime field to the specified value if it's later
  * than what's already there.
  * @param r The current request
- * @param dependency_time Time to set the mtime to
- * @deffunc void ap_update_mtime(request_rec *r, apr_time_t dependency_mtime)
+ * @param dependency_mtime Time to set the mtime to
  */
 AP_DECLARE(void) ap_update_mtime(request_rec *r, apr_time_t dependency_mtime);
 
@@ -224,7 +211,6 @@ AP_DECLARE(void) ap_update_mtime(request_rec *r, apr_time_t dependency_mtime);
  * @param   ...   A NULL-terminated list of strings, each identifying a
  *                method name to add.
  * @return  None.
- * @deffunc void ap_allow_methods(request_rec *r, int reset, ...)
  */
 AP_DECLARE(void) ap_allow_methods(request_rec *r, int reset, ...);
 
@@ -243,7 +229,6 @@ AP_DECLARE(void) ap_allow_methods(request_rec *r, int reset, ...);
  *                defined in httpd.h, terminated with a value of -1
  *                (e.g., "M_GET, M_POST, M_OPTIONS, -1")
  * @return  None.
- * @deffunc void ap_allow_standard_methods(request_rec *r, int reset, ...)
  */
 AP_DECLARE(void) ap_allow_standard_methods(request_rec *r, int reset, ...);
 
@@ -251,13 +236,16 @@ AP_DECLARE(void) ap_allow_standard_methods(request_rec *r, int reset, ...);
 #define REPLACE_ALLOW 1
 
 #ifdef CORE_PRIVATE
-/* Function called by main.c to handle first-level request */
+/**
+ * Function called by main.c to handle first-level request 
+ * @param r The current request
+ */
 void ap_process_request(request_rec *);
+
 /**
  * Kill the current request
  * @param type Why the request is dieing
  * @param r The current request
- * @deffunc void ap_die(int type, request_rec *r)
  */
 AP_DECLARE(void) ap_die(int type, request_rec *r);
 #endif
@@ -284,7 +272,7 @@ AP_DECLARE_HOOK(int,translate_name,(request_rec *r))
 
 /**
  * This hook allow modules to set the per_dir_config based on their own
- * context (such as <Proxy > sections) and responds to contextless requests 
+ * context (such as "<Proxy>" sections) and responds to contextless requests 
  * such as TRACE that need no security or filesystem mapping.
  * based on the filesystem.
  * @param r The current request

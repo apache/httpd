@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 
+/**
+ * @file  beos/mpm.h
+ * @brief BEOS MPM 
+ * 
+ * @defgroup APACHE_MPM_BEOS BEOS MPM
+ * @ingroup  APACHE_MPM APACHE_OS_BEOS
+ * @{
+ */
+
 #ifndef APACHE_MPM_BEOS_H
 #define APACHE_MPM_BEOS_H
 
@@ -38,3 +47,4 @@ extern server_rec *ap_server_conf;
 extern int ap_threads_per_child;
 
 #endif /* APACHE_MPM_BEOS_H */
+/** @} */

@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 
+/**
+ * @file  ap_listen.h
+ * @brief Apache Listeners Library
+ *
+ * @defgroup APACHE_CORE_LISTEN Apache Listeners Library
+ * @ingroup  APACHE_CORE
+ * @{
+ */
+
 #ifndef AP_LISTEN_H
 #define AP_LISTEN_H
 
@@ -21,15 +30,13 @@
 #include "httpd.h"
 #include "http_config.h"
 
-/**
- * @package Apache Listeners Library
- */
-
 typedef struct ap_listen_rec ap_listen_rec;
 typedef apr_status_t (*accept_function)(void **csd, ap_listen_rec *lr, apr_pool_t *ptrans);
 
 /**
- * Apache's listeners record.  These are used in the Multi-Processing Modules
+ * @brief Apache's listeners record.  
+ *
+ * These are used in the Multi-Processing Modules
  * to setup all of the sockets for the MPM to listen to and accept on.
  */
 struct ap_listen_rec {
@@ -109,3 +116,4 @@ AP_INIT_TAKE1("ReceiveBufferSize", ap_set_receive_buffer_size, NULL, \
               RSRC_CONF, "Receive buffer size in bytes")
 
 #endif
+/** @} */

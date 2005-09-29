@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 
+/**
+ * @file  mod_cgi.h
+ * @brief CGI Script Execution Extension Module for Apache
+ * 
+ * @defgroup MOD_CGI mod_cgi
+ * @ingroup APACHE_MODS
+ * @{
+ */
+
 #ifndef _MOD_CGI_H
 #define _MOD_CGI_H 1
 
@@ -57,3 +66,5 @@ APR_DECLARE_OPTIONAL_FN(apr_status_t, ap_cgi_build_command,
                          cgi_exec_info_t *e_info));
 
 #endif /* _MOD_CGI_H */
+/** @} */
+

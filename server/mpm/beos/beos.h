@@ -14,6 +14,13 @@
  * limitations under the License.
  */
 
+/**
+ * @file  beos/beos.h
+ * @brief Extern functions/values for BEOS MPM
+ *
+ * @addtogroup APACHE_MPM_BEOS
+ * @{
+ */
 #ifndef APACHE_MPM_BEOS_H
 #define APACHE_MPM_BEOS_H
 
@@ -24,3 +31,4 @@ extern void clean_child_exit(int);
 extern int max_daemons_limit;
 
 #endif /* APACHE_MPM_BEOS_H */
+/** @} */

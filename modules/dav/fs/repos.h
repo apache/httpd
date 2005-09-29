@@ -14,9 +14,13 @@
  * limitations under the License.
  */
 
-/*
-** Declarations for the filesystem repository implementation
-*/
+/**
+ * @file  repos.h
+ * @brief Declarations for the filesystem repository implementation
+ *
+ * @addtogroup MOD_DAV
+ * @{
+ */
 
 #ifndef _DAV_FS_REPOS_H_
 #define _DAV_FS_REPOS_H_
@@ -76,3 +80,5 @@ void dav_fs_insert_all_liveprops(request_rec *r, const dav_resource *resource,
 void dav_fs_register(apr_pool_t *p);
 
 #endif /* _DAV_FS_REPOS_H_ */
+/** @} */
+

@@ -14,16 +14,23 @@
  * limitations under the License.
  */
 
-/*                      _             _
- *  _ __ ___   ___   __| |    ___ ___| |  mod_ssl
- * | '_ ` _ \ / _ \ / _` |   / __/ __| |  Apache Interface to OpenSSL
- * | | | | | | (_) | (_| |   \__ \__ \ |
- * |_| |_| |_|\___/ \__,_|___|___/___/_|
- *                      |_____|
- *  ssl_expr.h
- *  Expression Handling (Header)
+/**
+ * @verbatim
+                        _             _
+    _ __ ___   ___   __| |    ___ ___| |  mod_ssl
+   | '_ ` _ \ / _ \ / _` |   / __/ __| |  Apache Interface to OpenSSL
+   | | | | | | (_) | (_| |   \__ \__ \ |
+   |_| |_| |_|\___/ \__,_|___|___/___/_|
+                        |_____|
+ @endverbatim
+ *  @file  ssl_expr.h
+ *  @brief Expression Handling (Header).
+ *         ``May all your PUSHes be POPed.'' 
+ * 
+ * @defgroup MOD_SSL_EXPR Expression Handling
+ * @ingroup MOD_SSL
+ * @{
  */
-                             /* ``May all your PUSHes be POPed.'' */
 
 #ifndef __SSL_EXPR_H__
 #define __SSL_EXPR_H__
@@ -102,3 +109,5 @@ extern ssl_expr *ssl_expr_make(ssl_expr_node_op, void *, void *);
 extern BOOL      ssl_expr_eval(request_rec *, ssl_expr *);
 
 #endif /* __SSL_EXPR_H__ */
+/** @} */
+

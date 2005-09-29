@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-/*
- * core_filters.c --- Core input/output network filters.
+/**
+ * @file  core_filters.c 
+ * @brief Core input/output network filters.
  */
 
 #include "apr.h"

@@ -15,11 +15,20 @@
  * limitations under the License.
  */
 
-/* Overview of what this is and does:
+/**
+ * @file  mod_dbd.h
+ * @brief Database Acces Extension Module for Apache
+ *
+ * Overview of what this is and does:
  * http://www.apache.org/~niq/dbd.html
  * or
  * http://apache.webthing.com/database/
+ * 
+ * @defgroup MOD_DBD mod_dbd
+ * @ingroup APACHE_MODS
+ * @{
  */
+
 #ifndef DBD_H
 #define DBD_H
 
@@ -59,3 +68,5 @@ APR_DECLARE_OPTIONAL_FN(ap_dbd_t*, ap_dbd_acquire, (request_rec*));
 APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const char*));
 
 #endif
+/** @} */
+

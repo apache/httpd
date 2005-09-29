@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 
+/**
+ * @file leader/mpm.h
+ * @brief Unix Leader-Follower MPM
+ *
+ * @defgroup APACHE_MPM_LEADER Unix Leader-Follower MPM
+ * @ingroup APACHE_MPM APACHE_OS_UNIX
+ * @{
+ */
+ 
 #include "scoreboard.h"
 #include "unixd.h"
 
@@ -50,3 +59,4 @@ extern server_rec *ap_server_conf;
 extern char ap_coredump_dir[MAX_STRING_LEN];
 
 #endif /* APACHE_MPM_LEADER_H */
+/** @} */

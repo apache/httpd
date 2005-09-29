@@ -14,6 +14,13 @@
  * limitations under the License.
  */
 
+/**
+ * @file  netware/mpm_default.h
+ * @brief Defaults for Netware MPM
+ *
+ * @addtogroup APACHE_MPM_NETWARE
+ * @{
+ */
 #ifndef APACHE_MPM_DEFAULT_H
 #define APACHE_MPM_DEFAULT_H
 
@@ -112,3 +119,4 @@
 #endif
 
 #endif /* AP_MPM_DEFAULT_H */
+/** @} */
