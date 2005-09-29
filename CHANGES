@@ -1,4 +1,10 @@
                                                         -*- coding: utf-8 -*-
+Changes with Apache 2.1.9
+
+  *) mod_cache/mod_dir: Correct a subrequest lookup bug which was preventing
+     mod_dir from serving indexes correctly with mod_cache enabled. 
+     [Colm MacCarthaigh]
+
 Changes with Apache 2.1.8
 
   *) Fix lingering close implementation to match 1.3.x behaviour.
