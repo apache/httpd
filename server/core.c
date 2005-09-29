@@ -4485,9 +4485,10 @@ static conn_rec *core_create_conn(apr_pool_t *ptrans, server_rec *server,
 static int core_pre_connection(conn_rec *c, void *csd)
 {
     core_net_rec *net = apr_palloc(c->pool, sizeof(*net));
-    apr_status_t rv;
 
 #ifdef AP_MPM_DISABLE_NAGLE_ACCEPTED_SOCK
+    apr_status_t rv;
+
     /* BillS says perhaps this should be moved to the MPMs. Some OSes
      * allow listening socket attributes to be inherited by the
      * accept sockets which means this call only needs to be made
@@ -4576,7 +4577,8 @@ AP_DECLARE_DATA module core_module = {
     STANDARD20_MODULE_STUFF,
     create_core_dir_config,       /* create per-directory config structure */
     merge_core_dir_configs,       /* merge per-directory config structures */
-    create_core_server_config,    /* create per-server config structure */
+    create_core_se
+    er_config,    /* create per-server config structure */
     merge_core_server_configs,    /* merge per-server config structures */
     core_cmds,                    /* command apr_table_t */
     register_hooks                /* register hooks */
