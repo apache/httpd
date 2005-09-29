@@ -17,6 +17,7 @@
 #include "apr_file_io.h"
 #include "apr_strings.h"
 #include "mod_cache.h"
+#include "mod_disk_cache.h"
 #include "ap_provider.h"
 #include "util_filter.h"
 #include "util_script.h"
@@ -50,66 +51,6 @@
  *   CRLF
  */
 
-#define VARY_FORMAT_VERSION 3
-#define DISK_FORMAT_VERSION 4
-
-typedef struct {
-    /* Indicates the format of the header struct stored on-disk. */
-    apr_uint32_t format;
-    /* The HTTP status code returned for this response.  */
-    int status;
-    /* The size of the entity name that follows. */
-    apr_size_t name_len;
-    /* The number of times we've cached this entity. */
-    apr_size_t entity_version;
-    /* Miscellaneous time values. */
-    apr_time_t date;
-    apr_time_t expire;
-    apr_time_t request_time;
-    apr_time_t response_time;
-} disk_cache_info_t;
-
-/*
- * disk_cache_object_t
- * Pointed to by cache_object_t::vobj
- */
-typedef struct disk_cache_object {
-    const char *root;        /* the location of the cache directory */
-    apr_size_t root_len;
-    char *tempfile;    /* temp file tohold the content */
-    const char *prefix;
-    const char *datafile;    /* name of file where the data will go */
-    const char *hdrsfile;    /* name of file where the hdrs will go */
-    const char *hashfile;    /* Computed hash key for this URI */
-    const char *name;   /* Requested URI without vary bits - suitable for mortals. */
-    const char *key;    /* On-disk prefix; URI with Vary bits (if present) */
-    apr_file_t *fd;          /* data file */
-    apr_file_t *hfd;         /* headers file */
-    apr_file_t *tfd;         /* temporary file for data */
-    apr_off_t file_size;     /*  File size of the cached data file  */
-    disk_cache_info_t disk_info; /* Header information. */
-} disk_cache_object_t;
-
-
-/*
- * mod_disk_cache configuration
- */
-/* TODO: Make defaults OS specific */
-#define CACHEFILE_LEN 20        /* must be less than HASH_LEN/2 */
-#define DEFAULT_DIRLEVELS 3
-#define DEFAULT_DIRLENGTH 2
-#define DEFAULT_MIN_FILE_SIZE 1
-#define DEFAULT_MAX_FILE_SIZE 1000000
-
-typedef struct {
-    const char* cache_root;
-    apr_size_t cache_root_len;
-    int dirlevels;               /* Number of levels of subdirectories */
-    int dirlength;               /* Length of subdirectory names */
-    apr_size_t minfs;            /* minumum file size for cached files */
-    apr_size_t maxfs;            /* maximum file size for cached files */
-} disk_cache_conf;
-
 module AP_MODULE_DECLARE_DATA disk_cache_module;
 
 /* Forward declarations */
@@ -124,9 +65,6 @@ static apr_status_t read_array(request_rec *r, apr_array_header_t* arr,
 /*
  * Local static functions
  */
-#define CACHE_HEADER_SUFFIX ".header"
-#define CACHE_DATA_SUFFIX   ".data"
-#define CACHE_VDIR_SUFFIX   ".vary"
 
 static char *header_file(apr_pool_t *p, disk_cache_conf *conf,
                          disk_cache_object_t *dobj, const char *name)
@@ -378,7 +316,6 @@ static void tokens_to_array(apr_pool_t *p, const char *data,
 /*
  * Hook and mod_cache callback functions
  */
-#define AP_TEMPFILE "/aptmpXXXXXX"
 static int create_entity(cache_handle_t *h, request_rec *r, const char *key, apr_off_t len)
 {
     disk_cache_conf *conf = ap_get_module_config(r->server->module_config,
