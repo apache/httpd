@@ -14,6 +14,14 @@
  * limitations under the License.
  */
 
+/**
+ * @file  worker/fdqueue.h
+ * @brief fd queue declarations
+ *
+ * @addtogroup APACHE_MPM_WORKER
+ * @{
+ */
+
 #ifndef FDQUEUE_H
 #define FDQUEUE_H
 #include "httpd.h"
@@ -62,3 +70,4 @@ apr_status_t ap_queue_interrupt_all(fd_queue_t *queue);
 apr_status_t ap_queue_term(fd_queue_t *queue);
 
 #endif /* FDQUEUE_H */
+/** @} */

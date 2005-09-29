@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 
+/**
+ * @file util_ldap.h
+ * @brief Apache LDAP library
+ */
+
 #ifndef UTIL_LDAP_H
 #define UTIL_LDAP_H
 

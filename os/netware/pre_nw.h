@@ -14,6 +14,14 @@
  * limitations under the License.
  */
 
+/**
+ * @file  pre_nw.h
+ * @brief Definitions for Netware systems
+ *
+ * @addtogroup APACHE_OS_NETWARE
+ * @{
+ */
+
 #ifndef __pre_nw__
 #define __pre_nw__
 
@@ -65,6 +73,4 @@
 #define AP_MAX_INCLUDE_DEPTH    48
 
 #endif
-
-
-
+/** @} */

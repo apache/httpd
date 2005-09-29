@@ -14,6 +14,14 @@
  * limitations under the License.
  */
 
+/**
+ * @file  mpmt_os2/mpm.h
+ * @brief MPM for os2
+ *
+ * @defgroup APACHE_MPM_OS2 os2 MPM
+ * @ingroup  APACHE_OS_OS2 APACHE_MPM
+ */
+ 
 #ifndef APACHE_MPM_MPMT_OS2_H
 #define APACHE_MPM_MPMT_OS2_H
 
@@ -32,3 +40,4 @@ extern server_rec *ap_server_conf;
 #define AP_MPM_WANT_SET_MAX_MEM_FREE
 
 #endif /* APACHE_MPM_MPMT_OS2_H */
+/** @} */

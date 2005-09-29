@@ -14,14 +14,19 @@
  * limitations under the License.
  */
 
+/**
+ * @file  ap_mmn.h
+ * @brief Apache Multi-Processing Module library
+ *
+ * @defgroup APACHE_CORE_MPM Multi-Processing Module library
+ * @ingroup  APACHE_CORE
+ * @{
+ */
+
 #ifndef AP_MPM_H
 #define AP_MPM_H
 
 #include "apr_thread_proc.h"
-
-/**
- * @package Multi-Processing Module library
- */
 
 /*
     The MPM, "multi-processing model" provides an abstraction of the
@@ -175,3 +180,4 @@ AP_DECLARE_HOOK(int,fatal_exception,(ap_exception_info_t *ei))
 #endif /*AP_ENABLE_EXCEPTION_HOOK*/
 
 #endif
+/** @} */

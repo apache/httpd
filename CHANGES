@@ -1,6 +1,8 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.1.9
 
+  *) Doxygen fixup [Neale Ranns neale ranns.org, Ian Holsman]
+
   *) mod_cache/mod_dir: Correct a subrequest lookup bug which was preventing
      mod_dir from serving indexes correctly with mod_cache enabled. 
      [Colm MacCarthaigh]

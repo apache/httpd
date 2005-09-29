@@ -14,6 +14,14 @@
  * limitations under the License.
  */
 
+/**
+ * @file  worker/mpm_default.h
+ * @brief Worker MPM defaults
+ *
+ * @addtogroup APACHE_MPM_WORKER
+ * @{
+ */
+
 #ifndef APACHE_MPM_DEFAULT_H
 #define APACHE_MPM_DEFAULT_H
 
@@ -67,3 +75,4 @@
 #endif
 
 #endif /* AP_MPM_DEFAULT_H */
+/** @} */

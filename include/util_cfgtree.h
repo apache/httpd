@@ -14,19 +14,26 @@
  * limitations under the License.
  */
 
+/**
+ * @file  util_cfgtree.h
+ * @brief Config Tree Package
+ *
+ * @defgroup APACHE_CORE_CONFIG_TREE Config Tree Package
+ * @ingroup  APACHE_CORE_CONFIG
+ * @{
+ */
+
 #ifndef AP_CONFTREE_H
 #define AP_CONFTREE_H
 
 #include "ap_config.h"
 
-/**
- * @package Config Tree Package
- */
-
 typedef struct ap_directive_t ap_directive_t;
 
 /**
- * Structure used to build the config tree.  The config tree only stores
+ * @brief Structure used to build the config tree.  
+ *
+ * The config tree only stores
  * the directives that will be active in the running server.  Directives
  * that contain other directions, such as <Directory ...> cause a sub-level
  * to be created, where the included directives are stored.  The closing
@@ -77,3 +84,4 @@ ap_directive_t *ap_add_node(ap_directive_t **parent, ap_directive_t *current,
                             ap_directive_t *toadd, int child);
 
 #endif
+/** @} */

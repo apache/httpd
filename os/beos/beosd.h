@@ -14,12 +14,19 @@
  * limitations under the License.
  */
 
+/**
+ * @file  beosd.h
+ * @brief common stuff that beos MPMs will want 
+ *
+ * @addtogroup APACHE_OS_BEOS
+ * @{
+ */
+
 #ifndef BEOSD_H
 #define BEOSD_H
 
 #include "httpd.h"
 #include "ap_listen.h"
-/* common stuff that beos MPMs will want */
 
 /* Default user name and group name. These may be specified as numbers by
  * placing a # before a number */
@@ -58,3 +65,4 @@ AP_INIT_TAKE1("Group", beosd_set_group, NULL, RSRC_CONF, \
   "Effective group id for this server (NO-OP)")
 
 #endif /* BEOSD_H */
+/** @} */

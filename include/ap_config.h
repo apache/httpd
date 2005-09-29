@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 
+/**
+ * @file ap_config.h
+ * @brief Symbol export macros and hook functions
+ */
+
 #ifndef AP_CONFIG_H
 #define AP_CONFIG_H
 
@@ -21,13 +26,11 @@
 #include "apr_hooks.h"
 #include "apr_optional_hooks.h"
 
-/**
- * @file ap_config.h
- * @brief Symbol export macros and hook functions
- */
-
 /* Although this file doesn't declare any hooks, declare the hook group here */
-/** @defgroup hooks Apache Hooks */
+/** 
+ * @defgroup hooks Apache Hooks 
+ * @ingroup  APACHE_CORE
+ */
 
 #ifdef DOXYGEN
 /* define these just so doxygen documents them */

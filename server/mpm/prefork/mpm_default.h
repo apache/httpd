@@ -14,6 +14,14 @@
  * limitations under the License.
  */
 
+/**
+ * @file  prefork/mpm_default.h
+ * @brief Prefork MPM defaults
+ *
+ * @addtogroup APACHE_MPM_PREFORK
+ * @{
+ */
+
 #ifndef APACHE_MPM_DEFAULT_H
 #define APACHE_MPM_DEFAULT_H
 
@@ -63,3 +71,4 @@
 #endif
 
 #endif /* AP_MPM_DEFAULT_H */
+/** @} */

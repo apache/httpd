@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 
+/**
+ * @file  util_ebcdic.h
+ * @brief Utilities for EBCDIC conversion
+ *
+ * @defgroup APACHE_CORE_EBCDIC Utilities for EBCDIC conversion
+ * @ingroup  APACHE_CORE
+ * @{
+ */
+
 #ifndef APACHE_UTIL_EBCDIC_H
 #define APACHE_UTIL_EBCDIC_H
 
@@ -25,10 +34,6 @@ extern "C" {
 #include "apr_xlate.h"
 #include "httpd.h"
 #include "util_charset.h"
-
-/**
- * @package Utilities for EBCDIC conversion
- */
 
 #if APR_CHARSET_EBCDIC
 
@@ -76,3 +81,4 @@ int ap_rvputs_proto_in_ascii(request_rec *r, ...);
 #endif
 
 #endif  /* !APACHE_UTIL_EBCDIC_H */
+/** @} */

@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 
+
+/**
+ * @file  event/mpm_default.h
+ * @brief Event MPM defaults
+ *
+ * @addtogroup APACHE_MPM_EVENT
+ * @{
+ */
+
 #ifndef APACHE_MPM_DEFAULT_H
 #define APACHE_MPM_DEFAULT_H
 
@@ -67,3 +76,4 @@
 #endif
 
 #endif /* AP_MPM_DEFAULT_H */
+/** @} */

@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 
+/**
+ * @file  http_core.h
+ * @brief CORE HTTP Daemon
+ *
+ * @defgroup APACHE_CORE_HTTPD Core HTTP Daemon
+ * @ingroup  APACHE_CORE
+ * @{
+ */
+
 #ifndef APACHE_HTTP_CORE_H
 #define APACHE_HTTP_CORE_H
 
@@ -32,10 +41,6 @@
 extern "C" {
 #endif
 
-/**
- * @package CORE HTTP Daemon
- */
-
 /* ****************************************************************
  *
  * The most basic server code is encapsulated in a single module
@@ -48,61 +53,88 @@ extern "C" {
  * of one of them (allow_options).
  */
 
-#define OPT_NONE 0
-#define OPT_INDEXES 1
-#define OPT_INCLUDES 2
-#define OPT_SYM_LINKS 4
-#define OPT_EXECCGI 8
-#define OPT_UNSET 16
-#define OPT_INCNOEXEC 32
-#define OPT_SYM_OWNER 64
-#define OPT_MULTI 128
-#define OPT_ALL (OPT_INDEXES|OPT_INCLUDES|OPT_SYM_LINKS|OPT_EXECCGI)
+/**
+ * @defgroup APACHE_CORE_HTTPD_ACESSORS Acessors
+ *
+ * @brief File/Directory Accessor directives
+ *
+ * @{
+ */
 
-/* options for get_remote_host() */
-/* REMOTE_HOST returns the hostname, or NULL if the hostname
+/** No directives */
+#define OPT_NONE 0
+/** Indexes directive */
+#define OPT_INDEXES 1
+/**  Includes directive */
+#define OPT_INCLUDES 2
+/**  FollowSymLinks directive */
+#define OPT_SYM_LINKS 4
+/**  ExecCGI directive */
+#define OPT_EXECCGI 8
+/**  directive unset */
+#define OPT_UNSET 16
+/**  IncludesNOEXEC directive */
+#define OPT_INCNOEXEC 32
+/** SymLinksIfOwnerMatch directive */
+#define OPT_SYM_OWNER 64
+/** MultiViews directive */
+#define OPT_MULTI 128
+/**  All directives */
+#define OPT_ALL (OPT_INDEXES|OPT_INCLUDES|OPT_SYM_LINKS|OPT_EXECCGI)
+/** @} */
+
+/**
+ * @defgroup get_remote_host Remote Host Resolution 
+ * @ingroup APACHE_CORE_HTTPD
+ * @{
+ */
+/** REMOTE_HOST returns the hostname, or NULL if the hostname
  * lookup fails.  It will force a DNS lookup according to the
  * HostnameLookups setting.
  */
 #define REMOTE_HOST (0)
 
-/* REMOTE_NAME returns the hostname, or the dotted quad if the
+/** REMOTE_NAME returns the hostname, or the dotted quad if the
  * hostname lookup fails.  It will force a DNS lookup according
  * to the HostnameLookups setting.
  */
 #define REMOTE_NAME (1)
 
-/* REMOTE_NOLOOKUP is like REMOTE_NAME except that a DNS lookup is
+/** REMOTE_NOLOOKUP is like REMOTE_NAME except that a DNS lookup is
  * never forced.
  */
 #define REMOTE_NOLOOKUP (2)
 
-/* REMOTE_DOUBLE_REV will always force a DNS lookup, and also force
+/** REMOTE_DOUBLE_REV will always force a DNS lookup, and also force
  * a double reverse lookup, regardless of the HostnameLookups
  * setting.  The result is the (double reverse checked) hostname,
  * or NULL if any of the lookups fail.
  */
 #define REMOTE_DOUBLE_REV (3)
 
+/** @} // get_remote_host */
+
+/** all of the requirements must be met */
 #define SATISFY_ALL 0
+/**  any of the requirements must be met */
 #define SATISFY_ANY 1
+/** There are no applicable satisfy lines */
 #define SATISFY_NOSPEC 2
 
-/* Make sure we don't write less than 8000 bytes at any one time.
+/** Make sure we don't write less than 8000 bytes at any one time.
  */
 #define AP_MIN_BYTES_TO_WRITE  8000
 
-/* default maximum of internal redirects */
+/** default maximum of internal redirects */
 # define AP_DEFAULT_MAX_INTERNAL_REDIRECTS 10
 
-/* default maximum subrequest nesting level */
+/** default maximum subrequest nesting level */
 # define AP_DEFAULT_MAX_SUBREQ_DEPTH 10
 
 /**
  * Retrieve the value of Options for this request
  * @param r The current request
  * @return the Options bitmask
- * @deffunc int ap_allow_options(request_rec *r)
  */
 AP_DECLARE(int) ap_allow_options(request_rec *r);
 
@@ -110,7 +142,6 @@ AP_DECLARE(int) ap_allow_options(request_rec *r);
  * Retrieve the value of the AllowOverride for this request
  * @param r The current request
  * @return the overrides bitmask
- * @deffunc int ap_allow_overrides(request_rec *r)
  */
 AP_DECLARE(int) ap_allow_overrides(request_rec *r);
 
@@ -118,7 +149,6 @@ AP_DECLARE(int) ap_allow_overrides(request_rec *r);
  * Retrieve the value of the DefaultType directive, or text/plain if not set
  * @param r The current request
  * @return The default type
- * @deffunc const char *ap_default_type(request_rec *r)
  */
 AP_DECLARE(const char *) ap_default_type(request_rec *r);     
 
@@ -128,12 +158,12 @@ AP_DECLARE(const char *) ap_default_type(request_rec *r);
  * @warning Don't use this!  If your request went through a Userdir, or 
  * something like that, it'll screw you.  But it's back-compatible...
  * @return The document root
- * @deffunc const char *ap_document_root(request_rec *r)
  */
 AP_DECLARE(const char *) ap_document_root(request_rec *r);
 
 /**
  * Lookup the remote client's DNS name or IP address
+ * @ingroup get_remote_host
  * @param conn The current connection
  * @param dir_config The directory config vector from the request
  * @param type The type of lookup to perform.  One of:
@@ -154,7 +184,6 @@ AP_DECLARE(const char *) ap_document_root(request_rec *r);
  * @param str_is_ip unless NULL is passed, this will be set to non-zero on output when an IP address 
  *        string is returned
  * @return The remote hostname
- * @deffunc const char *ap_get_remote_host(conn_rec *conn, void *dir_config, int type, int *str_is_ip)
  */
 AP_DECLARE(const char *) ap_get_remote_host(conn_rec *conn, void *dir_config, int type, int *str_is_ip);
 
@@ -163,7 +192,6 @@ AP_DECLARE(const char *) ap_get_remote_host(conn_rec *conn, void *dir_config, in
  * determined
  * @param r The current request
  * @return The user logged in to the client machine
- * @deffunc const char *ap_get_remote_logname(request_rec *r)
  */
 AP_DECLARE(const char *) ap_get_remote_logname(request_rec *r);
 
@@ -176,7 +204,6 @@ AP_DECLARE(const char *) ap_get_remote_logname(request_rec *r);
  * @param uri The path to the requested file
  * @param r The current request
  * @return A fully qualified URL
- * @deffunc char *ap_construct_url(apr_pool_t *p, const char *uri, request_rec *r)
  */
 AP_DECLARE(char *) ap_construct_url(apr_pool_t *p, const char *uri, request_rec *r);
 
@@ -184,15 +211,13 @@ AP_DECLARE(char *) ap_construct_url(apr_pool_t *p, const char *uri, request_rec 
  * Get the current server name from the request
  * @param r The current request
  * @return the server name
- * @deffunc const char *ap_get_server_name(request_rec *r)
  */
 AP_DECLARE(const char *) ap_get_server_name(request_rec *r);
 
 /**
  * Get the current server port
- * @param The current request
+ * @param r The current request
  * @return The server's port
- * @deffunc apr_port_t ap_get_server_port(const request_rec *r)
  */
 AP_DECLARE(apr_port_t) ap_get_server_port(const request_rec *r);
 
@@ -200,7 +225,6 @@ AP_DECLARE(apr_port_t) ap_get_server_port(const request_rec *r);
  * Return the limit on bytes in request msg body 
  * @param r The current request
  * @return the maximum number of bytes in the request msg body
- * @deffunc apr_off_t ap_get_limit_req_body(const request_rec *r)
  */
 AP_DECLARE(apr_off_t) ap_get_limit_req_body(const request_rec *r);
 
@@ -208,7 +232,6 @@ AP_DECLARE(apr_off_t) ap_get_limit_req_body(const request_rec *r);
  * Return the limit on bytes in XML request msg body
  * @param r The current request
  * @return the maximum number of bytes in XML request msg body
- * @deffunc size_t ap_get_limit_xml_body(const request_rec *r)
  */
 AP_DECLARE(size_t) ap_get_limit_xml_body(const request_rec *r);
 
@@ -225,7 +248,6 @@ AP_DECLARE(void) ap_custom_response(request_rec *r, int status, const char *stri
  * Check if the current request is beyond the configured max. number of redirects or subrequests
  * @param r The current request
  * @return true (is exceeded) or false
- * @deffunc int ap_is_recursion_limit_exceeded(const request_rec *r)
  */
 AP_DECLARE(int) ap_is_recursion_limit_exceeded(const request_rec *r);
 
@@ -233,7 +255,6 @@ AP_DECLARE(int) ap_is_recursion_limit_exceeded(const request_rec *r);
  * Check for a definition from the server command line
  * @param name The define to check for
  * @return 1 if defined, 0 otherwise
- * @deffunc int ap_exists_config_define(const char *name)
  */
 AP_DECLARE(int) ap_exists_config_define(const char *name);
 /* FIXME! See STATUS about how */
@@ -245,9 +266,13 @@ AP_DECLARE_NONSTD(int) ap_core_translate(request_rec *r);
  * to maintain common state for all of them in the core, and make it
  * available to the other modules through interfaces.
  */
+
+/** @see require_line */
 typedef struct require_line require_line;
 
-/** A structure to keep track of authorization requirements */
+/** 
+ * @brief A structure to keep track of authorization requirements 
+*/
 struct require_line {
     /** Where the require line is in the config file. */
     apr_int64_t method_mask;
@@ -259,7 +284,6 @@ struct require_line {
  * Return the type of authorization required for this request
  * @param r The current request
  * @return The authorization required
- * @deffunc const char *ap_auth_type(request_rec *r)
  */
 AP_DECLARE(const char *) ap_auth_type(request_rec *r);
 
@@ -267,7 +291,6 @@ AP_DECLARE(const char *) ap_auth_type(request_rec *r);
  * Return the current Authorization realm
  * @param r The current request
  * @return The current authorization realm
- * @deffunc const char *ap_auth_name(request_rec *r)
  */
 AP_DECLARE(const char *) ap_auth_name(request_rec *r);     
 
@@ -280,7 +303,6 @@ AP_DECLARE(const char *) ap_auth_name(request_rec *r);
  *      SATISFY_ALL    -- all of the requirements must be met.
  *      SATISFY_NOSPEC -- There are no applicable satisfy lines
  * </pre>
- * @deffunc int ap_satisfies(request_rec *r)
  */
 AP_DECLARE(int) ap_satisfies(request_rec *r);
 
@@ -288,35 +310,34 @@ AP_DECLARE(int) ap_satisfies(request_rec *r);
  * Retrieve information about all of the requires directives for this request
  * @param r The current request
  * @return An array of all requires directives for this request
- * @deffunc const apr_array_header_t *ap_requires(request_rec *r)
  */
 AP_DECLARE(const apr_array_header_t *) ap_requires(request_rec *r);    
 
 #ifdef CORE_PRIVATE
 
-/*
+/**
  * Core is also unlike other modules in being implemented in more than
  * one file... so, data structures are declared here, even though most of
  * the code that cares really is in http_core.c.  Also, another accessor.
  */
-
 AP_DECLARE_DATA extern module core_module;
 
-/* Per-request configuration */
-
+/**
+ * @brief  Per-request configuration 
+*/
 typedef struct {
-    /* bucket brigade used by getline for look-ahead and 
+    /** bucket brigade used by getline for look-ahead and 
      * ap_get_client_block for holding left-over request body */
     struct apr_bucket_brigade *bb;
 
-    /* an array of per-request working data elements, accessed
+    /** an array of per-request working data elements, accessed
      * by ID using ap_get_request_note()
      * (Use ap_register_request_note() during initialization
      * to add elements)
      */
     void **notes;
 
-    /* There is a script processor installed on the output filter chain,
+    /** There is a script processor installed on the output filter chain,
      * so it needs the default_handler to deliver a (script) file into
      * the chain so it can process it. Normally, default_handler only
      * serves files on a GET request (assuming the file is actual content),
@@ -326,13 +347,13 @@ typedef struct {
      */
     int deliver_script;
 
-    /* Custom response strings registered via ap_custom_response(),
+    /** Custom response strings registered via ap_custom_response(),
      * or NULL; check per-dir config if nothing found here
      */
     char **response_code_strings; /* from ap_custom_response(), not from
                                    * ErrorDocument
                                    */
-    /* Should addition of charset= be suppressed for this request?
+    /** Should addition of charset= be suppressed for this request?
      */
     int suppress_charset;
 } core_request_config;
@@ -371,7 +392,6 @@ AP_DECLARE(apr_size_t) ap_register_request_note(void);
  */
 AP_DECLARE(void **) ap_get_request_note(request_rec *r, apr_size_t note_num);
 
-/* Per-directory configuration */
 
 typedef unsigned char allow_options_t;
 typedef unsigned char overrides_t;
@@ -392,6 +412,9 @@ typedef unsigned long etag_components_t;
 #define ETAG_BACKWARD (ETAG_MTIME | ETAG_INODE | ETAG_SIZE)
 #define ETAG_ALL   (ETAG_MTIME | ETAG_INODE | ETAG_SIZE)
 
+/**
+ * @brief Server Signature Enumeration
+ */
 typedef enum {
     srv_sig_unset,
     srv_sig_off,
@@ -399,13 +422,16 @@ typedef enum {
     srv_sig_withmail
 } server_signature_e;
 
+/** 
+ * @brief Per-directory configuration 
+ */
 typedef struct {
-    /* path of the directory/regex/etc. see also d_is_fnmatch/absolute below */
+    /** path of the directory/regex/etc. see also d_is_fnmatch/absolute below */
     char *d;
-    /* the number of slashes in d */
+    /** the number of slashes in d */
     unsigned d_components;
 
-    /* If (opts & OPT_UNSET) then no absolute assignment to options has
+    /** If (opts & OPT_UNSET) then no absolute assignment to options has
      * been made.
      * invariant: (opts_add & opts_remove) == 0
      * Which said another way means that the last relative (options + or -)
@@ -659,3 +685,4 @@ APR_DECLARE_OPTIONAL_FN(const char *, ap_ident_lookup,
 #endif
 
 #endif	/* !APACHE_HTTP_CORE_H */
+/** @} */

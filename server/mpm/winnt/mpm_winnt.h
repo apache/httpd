@@ -14,6 +14,14 @@
  * limitations under the License.
  */
 
+/**
+ * @file  mpm_winnt.h
+ * @brief WinNT MPM specific 
+ *
+ * @addtogroup APACHE_MPM_WINNT
+ * @{
+ */
+
 #ifndef APACHE_MPM_WINNT_H
 #define APACHE_MPM_WINNT_H
 
@@ -119,3 +127,4 @@ void          mpm_recycle_completion_context(PCOMP_CONTEXT pCompContext);
 apr_status_t  mpm_post_completion_context(PCOMP_CONTEXT pCompContext, io_state_e state);
 void hold_console_open_on_error(void);
 #endif /* APACHE_MPM_WINNT_H */
+/** @} */

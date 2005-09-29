@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-/* Resource definitions for ApacheMonitor.rc and ApacheMonitor.c
+/**
+ * @file  ApacheMonitor.h
+ * @brief Resource definitions for ApacheMonitor.rc and ApacheMonitor.c
  */
 
 #define IDD_DLGSERVICES                 101

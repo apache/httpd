@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 
+/**
+ * @file  util_script.h
+ * @brief Apache script tools
+ *
+ * @defgroup APACHE_CORE_SCRIPT Script Tools
+ * @ingroup  APACHE_CORE
+ * @{
+ */
+
 #ifndef APACHE_UTIL_SCRIPT_H
 #define APACHE_UTIL_SCRIPT_H
 
@@ -22,10 +31,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-/**
- * @package Apache script tools
- */
 
 #ifndef APACHE_ARG_MAX
 #ifdef _POSIX_ARG_MAX
@@ -140,3 +145,4 @@ AP_DECLARE(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
 #endif
 
 #endif	/* !APACHE_UTIL_SCRIPT_H */
+/** @} */
