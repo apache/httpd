@@ -122,8 +122,12 @@ install-htdocs:
         else \
 	    echo Installing HTML documents ; \
 	    $(MKINSTALLDIRS) $(DESTDIR)$(htdocsdir) ; \
-	    test -d $(htdocs-srcdir) && (cd $(htdocs-srcdir) && cp -rp * $(DESTDIR)$(htdocsdir)) ; \
-	    cd $(DESTDIR)$(htdocsdir) && find . -name ".svn" -type d -print | xargs rm -rf 2>/dev/null || true; \
+	    if test -d $(htdocs-srcdir) && test "x$(RSYNC)" != "x" && test -x $(RSYNC) ; then \
+		$(RSYNC) --exclude .svn -rlpt --numeric-ids $(htdocs-srcdir)/ $(DESTDIR)$(htdocsdir)/; \
+	    else \
+		test -d $(htdocs-srcdir) && (cd $(htdocs-srcdir) && cp -rp * $(DESTDIR)$(htdocsdir)) ; \
+		cd $(DESTDIR)$(htdocsdir) && find . -name ".svn" -type d -print | xargs rm -rf 2>/dev/null || true; \
+	    fi; \
 	fi
 
 install-error:
@@ -201,8 +205,12 @@ install-man:
 	@test -d $(DESTDIR)$(manualdir)   || $(MKINSTALLDIRS) $(DESTDIR)$(manualdir)
 	@cp -p $(top_srcdir)/docs/man/*.1 $(DESTDIR)$(mandir)/man1
 	@cp -p $(top_srcdir)/docs/man/*.8 $(DESTDIR)$(mandir)/man8
-	@(cd $(top_srcdir)/docs/manual && cp -rp * $(DESTDIR)$(manualdir))
-	@(cd $(DESTDIR)$(manualdir) && find . -name ".svn" -type d -print | xargs rm -rf 2>/dev/null ) || true
+	@if test "x$(RSYNC)" != "x" && test -x $(RSYNC) ; then \
+	  $(RSYNC) --exclude .svn -rlpt --numeric-ids $(top_srcdir)/docs/manual/ $(DESTDIR)$(manualdir)/; \
+	else \
+	  cd $(top_srcdir)/docs/manual && cp -rp * $(DESTDIR)$(manualdir); \
+	  cd $(DESTDIR)$(manualdir) && find . -name ".svn" -type d -print | xargs rm -rf 2>/dev/null; \
+	fi
 
 install-suexec:
 	@if test -f $(builddir)/support/suexec; then \
