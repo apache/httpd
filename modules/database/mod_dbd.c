@@ -155,6 +155,10 @@ static const command_rec dbd_cmds[] = {
 #endif
     {NULL}
 };
+#define DEFAULT_NMIN 0
+#define DEFAULT_NMAX 5
+#define DEFAULT_NKEEP 1
+#define DEFAULT_EXPTIME 120
 #define COND_PARAM(x,val) \
     if (cfg->x == val) {              \
         cfg->x = ((svr_cfg*)base)->x; \
@@ -167,10 +171,10 @@ static void *dbd_merge(apr_pool_t *pool, void *base, void *add) {
     COND_PARAM0(params);
     COND_PARAM1(persist);
 #if APR_HAS_THREADS
-    COND_PARAM0(nmin);
-    COND_PARAM0(nkeep);
-    COND_PARAM0(nmax);
-    COND_PARAM0(exptime);
+    COND_PARAM(nmin, DEFAULT_NMIN);
+    COND_PARAM(nkeep, DEFAULT_NKEEP);
+    COND_PARAM(nmax, DEFAULT_NMAX);
+    COND_PARAM(exptime, DEFAULT_EXPTIME);
 #endif
     return cfg;
 }
@@ -181,6 +185,12 @@ static void *dbd_cfg(apr_pool_t *p, server_rec *x)
 {
     svr_cfg *svr = (svr_cfg*) apr_pcalloc(p, sizeof(svr_cfg));
     svr->persist = -1;
+#if APR_HAS_THREADS
+    svr->nmin = DEFAULT_NMIN;
+    svr->nkeep = DEFAULT_NKEEP;
+    svr->nmax = DEFAULT_NMAX;
+    svr->exptime = DEFAULT_EXPTIME;
+#endif
     return svr;
 }
 static apr_status_t dbd_prepared_init(apr_pool_t *pool, svr_cfg *svr,
@@ -298,7 +308,7 @@ ap_dbd_t* ap_dbd_open(apr_pool_t *pool, server_rec *s)
 
     if (!svr->persist) {
         /* Return a once-only connection */
-        rv = dbd_construct(&rec, svr, pool);
+        rv = dbd_construct(&rec, svr, s->process->pool);
         return (rv == APR_SUCCESS) ? arec : NULL;
     }
 
@@ -334,7 +344,7 @@ ap_dbd_t* ap_dbd_open(apr_pool_t *pool, server_rec *s)
 
     if (!svr->persist) {
         /* Return a once-only connection */
-        rv = dbd_construct(&rec, svr, pool);
+        rv = dbd_construct(&rec, svr, s->process->pool);
         return (rv == APR_SUCCESS) ? arec : NULL;
     }
 
@@ -353,7 +363,7 @@ ap_dbd_t* ap_dbd_open(apr_pool_t *pool, server_rec *s)
     }
 /* We don't have a connection right now, so we'll open one */
     if (!svr->conn) {
-        rv = dbd_construct(&rec, svr, pool);
+        rv = dbd_construct(&rec, svr, s->process->pool);
         svr->conn = (rv == APR_SUCCESS) ? arec : NULL;
     }
     return svr->conn;
