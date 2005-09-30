@@ -27,9 +27,9 @@
 #include "http_log.h"
 #include "apr_reslist.h"
 #include "apr_strings.h"
-
 #include "apr_dbd.h"
 #include "mod_dbd.h"
+
 extern module AP_MODULE_DECLARE_DATA dbd_module;
 
 /************ svr cfg: manage db connection pool ****************/
@@ -71,7 +71,7 @@ static const char *dbd_param(cmd_parms *cmd, void *cfg, const char *val)
     svr_cfg *svr = (svr_cfg*) ap_get_module_config
         (cmd->server->module_config, &dbd_module);
 
-    switch ((int) cmd->info) {
+    switch ((long) cmd->info) {
     case cmd_name:
         svr->name = val;
         /* loading the driver involves once-only dlloading that is
@@ -155,6 +155,10 @@ static const command_rec dbd_cmds[] = {
 #endif
     {NULL}
 };
+#define DEFAULT_NMIN 0
+#define DEFAULT_NMAX 5
+#define DEFAULT_NKEEP 1
+#define DEFAULT_EXPTIME 120
 #define COND_PARAM(x,val) \
     if (cfg->x == val) {              \
         cfg->x = ((svr_cfg*)base)->x; \
@@ -167,10 +171,10 @@ static void *dbd_merge(apr_pool_t *pool, void *base, void *add) {
     COND_PARAM0(params);
     COND_PARAM1(persist);
 #if APR_HAS_THREADS
-    COND_PARAM0(nmin);
-    COND_PARAM0(nkeep);
-    COND_PARAM0(nmax);
-    COND_PARAM0(exptime);
+    COND_PARAM(nmin, DEFAULT_NMIN);
+    COND_PARAM(nkeep, DEFAULT_NKEEP);
+    COND_PARAM(nmax, DEFAULT_NMAX);
+    COND_PARAM(exptime, DEFAULT_EXPTIME);
 #endif
     return cfg;
 }
@@ -181,6 +185,12 @@ static void *dbd_cfg(apr_pool_t *p, server_rec *x)
 {
     svr_cfg *svr = (svr_cfg*) apr_pcalloc(p, sizeof(svr_cfg));
     svr->persist = -1;
+#if APR_HAS_THREADS
+    svr->nmin = DEFAULT_NMIN;
+    svr->nkeep = DEFAULT_NKEEP;
+    svr->nmax = DEFAULT_NMAX;
+    svr->exptime = DEFAULT_EXPTIME;
+#endif
     return svr;
 }
 static apr_status_t dbd_prepared_init(apr_pool_t *pool, svr_cfg *svr,
@@ -287,19 +297,19 @@ static apr_status_t dbd_setup(apr_pool_t *pool, server_rec *s)
         - open acquires a connection from the pool (opens one if necessary)
         - close releases it back in to the pool
 */
-
+#define arec ((ap_dbd_t*)rec)
 #if APR_HAS_THREADS
 ap_dbd_t* ap_dbd_open(apr_pool_t *pool, server_rec *s)
 {
-    ap_dbd_t *rec = NULL;
+    void *rec = NULL;
     svr_cfg *svr = ap_get_module_config(s->module_config, &dbd_module);
-    apr_status_t rv;
+    apr_status_t rv = APR_SUCCESS;
     const char *errmsg;
 
     if (!svr->persist) {
         /* Return a once-only connection */
-        rv = dbd_construct((void**)&rec, svr, pool);
-        return (rv == APR_SUCCESS) ? rec : NULL;
+        rv = dbd_construct(&rec, svr, s->process->pool);
+        return (rv == APR_SUCCESS) ? arec : NULL;
     }
 
     if (!svr->dbpool) {
@@ -307,13 +317,13 @@ ap_dbd_t* ap_dbd_open(apr_pool_t *pool, server_rec *s)
             return NULL;
         }
     }
-    if (apr_reslist_acquire(svr->dbpool, (void**)&rec) != APR_SUCCESS) {
+    if (apr_reslist_acquire(svr->dbpool, &rec) != APR_SUCCESS) {
         ap_log_perror(APLOG_MARK, APLOG_ERR, 0, pool,
                       "Failed to acquire DBD connection from pool!");
         return NULL;
     }
-    if (apr_dbd_check_conn(rec->driver, pool, rec->handle) != APR_SUCCESS) {
-        errmsg = apr_dbd_error(rec->driver, rec->handle, rv);
+    if (apr_dbd_check_conn(arec->driver, pool, arec->handle) != APR_SUCCESS) {
+        errmsg = apr_dbd_error(arec->driver, arec->handle, rv);
         if (!errmsg) {
             errmsg = "(unknown)";
         }
@@ -322,27 +332,27 @@ ap_dbd_t* ap_dbd_open(apr_pool_t *pool, server_rec *s)
         apr_reslist_invalidate(svr->dbpool, rec);
         return NULL;
     }
-    return rec;
+    return arec;
 }
 #else
 ap_dbd_t* ap_dbd_open(apr_pool_t *pool, server_rec *s)
 {
-    apr_status_t rv;
+    apr_status_t rv = APR_SUCCESS;
     const char *errmsg;
-    ap_dbd_t *rec = NULL;
+    void *rec = NULL;
     svr_cfg *svr = ap_get_module_config(s->module_config, &dbd_module);
 
     if (!svr->persist) {
         /* Return a once-only connection */
-        rv = dbd_construct((void**)&rec, svr, pool);
-        return (rv == APR_SUCCESS) ? rec : NULL;
+        rv = dbd_construct(&rec, svr, s->process->pool);
+        return (rv == APR_SUCCESS) ? arec : NULL;
     }
 
 /* since we're in nothread-land, we can mess with svr->conn with impunity */
 /* If we have a persistent connection and it's good, we'll use it */
     if (svr->conn) {
         if (apr_dbd_check_conn(svr->conn->driver, pool, svr->conn->handle) != 0){
-            errmsg = apr_dbd_error(rec->driver, rec->handle, rv);
+            errmsg = apr_dbd_error(arec->driver, arec->handle, rv);
             if (!errmsg) {
                 errmsg = "(unknown)";
             }
@@ -353,8 +363,8 @@ ap_dbd_t* ap_dbd_open(apr_pool_t *pool, server_rec *s)
     }
 /* We don't have a connection right now, so we'll open one */
     if (!svr->conn) {
-        rv = dbd_construct((void**)&rec, svr, pool);
-        svr->conn = (rv == APR_SUCCESS) ? rec : NULL;
+        rv = dbd_construct(&rec, svr, s->process->pool);
+        svr->conn = (rv == APR_SUCCESS) ? arec : NULL;
     }
     return svr->conn;
 }
