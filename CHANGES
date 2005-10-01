@@ -1,6 +1,10 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.1.9
 
+  *) SECURITY: CAN-2005-2970 (cve.mitre.org)
+     worker MPM: Fix a memory leak which can occur after an aborted
+     connection in some limited circumstances.  [Greg Ames, Jeff Trawick]
+
   *) Doxygen fixup [Neale Ranns <neale ranns.org>, Ian Holsman]
 
   *) mod_cache/mod_dir: Correct a subrequest lookup bug which was preventing
