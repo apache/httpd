@@ -1,6 +1,6 @@
 APACHE 2.x VERSIONING
 =====================
-Last modified at [$Date$]
+[$LastChangedDate$]
 
 
 INTRODUCTION
@@ -67,11 +67,11 @@ keeping the stable tree as safe as possible:
     to the 2.4-stable release if they cannot be incorporated in the current
     stable release due to API change requirements.
 
-  * The stable CVS tree should not remain unstable at any time.  Atomic commits 
-    aught be used to introduce code from the development version to the stable 
-    tree.  At any given time a security release may be in preparation, 
+  * The stable subversion tree should not remain unstable at any time.  Atomic 
+    commits aught be used to introduce code from the development version to the 
+    stable  tree.  At any given time a security release may be in preparation, 
     unbeknownst to other contributors.  At any given time, testers may be
-    checking out CVS head to confirm that a bug has been corrected.  And as
+    checking out SVN trunk to confirm that a bug has been corrected.  And as
     all code was well-tested in development prior to committing to the stable
     tree, there is really no reason for this tree to be broken for more than 
     a few minutes during a lengthy commit.
