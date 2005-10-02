@@ -1337,7 +1337,7 @@ static const char *util_ldap_set_cache_ttl(cmd_parms *cmd, void *dummy,
     st->search_cache_ttl = atol(ttl) * 1000000;
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server, 
-                 "[%d] ldap cache: Setting cache TTL to %ld microseconds.",
+                 "[%" APR_PID_T_FMT "] ldap cache: Setting cache TTL to %ld microseconds.",
                  getpid(), st->search_cache_ttl);
 
     return NULL;
@@ -1357,7 +1357,7 @@ static const char *util_ldap_set_cache_entries(cmd_parms *cmd, void *dummy,
     }
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server, 
-                 "[%d] ldap cache: Setting search cache size to %ld entries.",
+                 "[%" APR_PID_T_FMT "] ldap cache: Setting search cache size to %ld entries.",
                  getpid(), st->search_cache_size);
 
     return NULL;
@@ -1373,7 +1373,7 @@ static const char *util_ldap_set_opcache_ttl(cmd_parms *cmd, void *dummy,
     st->compare_cache_ttl = atol(ttl) * 1000000;
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server, 
-                 "[%d] ldap cache: Setting operation cache TTL to %ld microseconds.", 
+                 "[%" APR_PID_T_FMT "] ldap cache: Setting operation cache TTL to %ld microseconds.", 
                  getpid(), st->compare_cache_ttl);
 
     return NULL;
@@ -1392,7 +1392,7 @@ static const char *util_ldap_set_opcache_entries(cmd_parms *cmd, void *dummy,
     }
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server, 
-                 "[%d] ldap cache: Setting operation cache size to %ld "
+                 "[%" APR_PID_T_FMT "] ldap cache: Setting operation cache size to %ld "
                  "entries.", getpid(), st->compare_cache_size);
 
     return NULL;
@@ -1709,7 +1709,7 @@ static const char *util_ldap_set_connection_timeout(cmd_parms *cmd,
     st->connectionTimeout = atol(ttl);
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server, 
-                 "[%d] ldap connection: Setting connection timeout to "
+                 "[%" APR_PID_T_FMT "] ldap connection: Setting connection timeout to "
                  "%ld seconds.", getpid(), st->connectionTimeout);
 #else
     ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, cmd->server,
