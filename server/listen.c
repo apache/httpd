@@ -387,7 +387,7 @@ static int open_listeners(apr_pool_t *pool)
                 && lr->bind_addr->port == lr->next->bind_addr->port
                 && IS_IN6ADDR_ANY(lr->next->bind_addr)) {
                 /* Exchange lr and lr->next */
-                ap_listen_rec *next = lr->next;
+                next = lr->next;
                 lr->next = next->next;
                 next->next = lr;
                 if (previous) {
@@ -561,7 +561,8 @@ AP_DECLARE(int) ap_setup_listeners(server_rec *s)
     return num_listeners;
 }
 
-AP_DECLARE_NONSTD(void) ap_close_listeners(void) {
+AP_DECLARE_NONSTD(void) ap_close_listeners(void) 
+{
     ap_listen_rec *lr;
 
     for (lr = ap_listeners; lr; lr = lr->next) {
