@@ -679,8 +679,22 @@ static int proxy_handler(request_rec *r)
         char *url = uri;
         /* Try to obtain the most suitable worker */
         access_status = ap_proxy_pre_request(&worker, &balancer, r, conf, &url);
-        if (access_status != OK)
-            return access_status;
+        if (access_status != OK) {
+            /*
+             * Only return if access_status is not HTTP_SERVICE_UNAVAILABLE
+             * This gives other modules the chance to hook into the
+             * request_status hook and decide what to do in this situation.
+             */
+            if (access_status != HTTP_SERVICE_UNAVAILABLE)
+                return access_status;
+            /*
+             * Ensure that balancer is NULL if worker is NULL to prevent
+             * potential problems in the post_request hook.
+             */
+            if (!worker)
+                balancer = NULL;
+            goto cleanup;
+        }
         if (balancer && balancer->max_attempts_set && !max_attempts)
             max_attempts = balancer->max_attempts;
         /* firstly, try a proxy, unless a NoProxy directive is active */
