@@ -277,7 +277,7 @@ static void cgid_maint(int reason, void *data, apr_wait_t status)
             kill(proc->pid, SIGHUP); /* send signal to daemon telling it to die */
 
             /* Remove the cgi socket, we must do it here in order to try and
-             * guarantee the same permissions as when the socket was created
+             * guarantee the same permissions as when the socket was created.
              */
             if (unlink(sockname) < 0 && errno != ENOENT) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, errno, NULL,
@@ -927,11 +927,12 @@ static const char *set_script_socket(cmd_parms *cmd, void *dummy, const char *ar
         return err;
     }
 
+    /* Make sure the pid is appended to the sockname */
     sockname = ap_append_pid(cmd->pool, arg, ".");
     sockname = ap_server_root_relative(cmd->pool, sockname); 
 
     if (!sockname) {
-        return apr_pstrcat(cmd->pool, "Invalid Scriptsock path",
+        return apr_pstrcat(cmd->pool, "Invalid ScriptSock path",
                            arg, NULL);
     }
 
@@ -946,7 +947,7 @@ static const command_rec cgid_cmds[] =
                   "the maximum length (in bytes) of the script debug log"), 
     AP_INIT_TAKE1("ScriptLogBuffer", set_scriptlog_buffer, NULL, RSRC_CONF,
                   "the maximum size (in bytes) to record of a POST request"), 
-    AP_INIT_TAKE1("Scriptsock", set_script_socket, NULL, RSRC_CONF,
+    AP_INIT_TAKE1("ScriptSock", set_script_socket, NULL, RSRC_CONF,
                   "the name of the socket to use for communication with "
                   "the cgi daemon."), 
     {NULL} 
