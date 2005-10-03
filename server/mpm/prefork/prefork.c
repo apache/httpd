@@ -156,7 +156,7 @@ static void chdir_for_gprof(void)
 
     if(dir) {
         apr_status_t res;
-        char * buf = NULL;
+        char *buf = NULL ;
         int len = strlen(sconf->gprof_dir) - 1;
         if(*(dir + len) == '%') {
             dir[len] = '\0';
@@ -730,7 +730,7 @@ static int make_child(server_rec *s, int slot)
         apr_signal(SIGHUP, just_die);
         apr_signal(SIGTERM, just_die);
         /* The child process just closes listeners on AP_SIG_GRACEFUL.  
-         * The pod is used for signalling graceful restart.
+         * The pod is used for signalling the graceful restart.
          */
         apr_signal(AP_SIG_GRACEFUL, stop_listening);
         child_main(slot);
@@ -1105,6 +1105,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
         ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
                     "caught SIGTERM, shutting down");
+
         return 1;
     } else if (shutdown_pending) {
         /* Time to perform a graceful shut down:
