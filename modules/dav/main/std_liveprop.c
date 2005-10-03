@@ -63,7 +63,7 @@ static dav_prop_insert dav_core_insert_prop(const dav_resource *resource,
     const char *s;
     apr_pool_t *p = resource->pool;
     const dav_liveprop_spec *info;
-    int global_ns;
+    long global_ns;
 
     switch (propid)
     {
@@ -128,11 +128,11 @@ static dav_prop_insert dav_core_insert_prop(const dav_resource *resource,
                          info->name, dav_core_namespace_uris[info->ns]);
     }
     else if (what == DAV_PROP_INSERT_VALUE && *value != '\0') {
-        s = apr_psprintf(p, "<lp%d:%s>%s</lp%d:%s>" DEBUG_CR,
+        s = apr_psprintf(p, "<lp%ld:%s>%s</lp%ld:%s>" DEBUG_CR,
                          global_ns, info->name, value, global_ns, info->name);
     }
     else {
-        s = apr_psprintf(p, "<lp%d:%s/>" DEBUG_CR, global_ns, info->name);
+        s = apr_psprintf(p, "<lp%ld:%s/>" DEBUG_CR, global_ns, info->name);
     }
     apr_text_append(p, phdr, s);
 
