@@ -111,7 +111,6 @@
 struct cache_enable {
     apr_uri_t url;
     const char *type;
-    apr_size_t urllen;
     apr_size_t pathlen;
 };
 

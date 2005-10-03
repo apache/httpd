@@ -245,7 +245,7 @@ int cache_select(request_rec *r)
                     /* headers do not match, so Vary failed */
                     ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS,
                                 r->server,
-                                "cache_select(): Vary header mismatch.");
+                                "cache_select_url(): Vary header mismatch.");
                     return DECLINED;
                 }
             }
