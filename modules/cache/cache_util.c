@@ -48,7 +48,7 @@ static int uri_meets_conditions(apr_uri_t filter, int pathlen, apr_uri_t url)
             return 0;
         }
     }
-    
+
     /* Compare the ports */
     if(filter.port_str) {
         if (url.port_str && filter.port != url.port) {
@@ -64,7 +64,7 @@ static int uri_meets_conditions(apr_uri_t filter, int pathlen, apr_uri_t url)
             return 0;
         }
     }
-    
+
     /* Url has met all of the filter conditions so far, determine
      * if the paths match.
      */
