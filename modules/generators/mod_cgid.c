@@ -573,7 +573,7 @@ static int cgid_server(void *data)
     ap_hook_get_suexec_identity(cgid_suexec_id_doer, NULL, NULL,
                                 APR_HOOK_REALLY_FIRST);
     apr_hook_sort_all();
-    
+
     if ((sd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0) {
         ap_log_error(APLOG_MARK, APLOG_ERR, errno, main_server, 
                      "Couldn't create unix domain socket");
@@ -926,7 +926,7 @@ static const char *set_script_socket(cmd_parms *cmd, void *dummy, const char *ar
     if (err != NULL) {
         return err;
     }
-    
+
     /* Make sure the pid is appended to the sockname */
     sockname = ap_append_pid(cmd->pool, arg, ".");
     sockname = ap_server_root_relative(cmd->pool, sockname); 
