@@ -66,7 +66,8 @@ PROXY_DECLARE(int) ap_proxy_hex2c(const char *x)
     i += ch - ('a' - 10);
     return i;
 #else /*APR_CHARSET_EBCDIC*/
-    /* we assume that the hex value refers to an ASCII character
+    /*
+     * we assume that the hex value refers to an ASCII character
      * so convert to EBCDIC so that it makes sense locally;
      *
      * example:
@@ -141,9 +142,10 @@ PROXY_DECLARE(char *)ap_proxy_canonenc(apr_pool_t *p, const char *x, int len, en
     char *allowed;  /* characters which should not be encoded */
     char *reserved; /* characters which much not be en/de-coded */
 
-/* N.B. in addition to :@&=, this allows ';' in an http path
+/*
+ * N.B. in addition to :@&=, this allows ';' in an http path
  * and '?' in an ftp path -- this may be revised
- * 
+ *
  * Also, it makes a '+' character in a search string reserved, as
  * it may be form-encoded. (Although RFC 1738 doesn't allow this -
  * it only permits ; / ? : @ = & as reserved chars.)
@@ -175,7 +177,7 @@ PROXY_DECLARE(char *)ap_proxy_canonenc(apr_pool_t *p, const char *x, int len, en
         y[j] = ch;
         continue;
     }
-/* 
+/*
  * decode it if not already done. do not decode reverse proxied URLs
  * unless specifically forced
  */
@@ -258,7 +260,8 @@ PROXY_DECLARE(char *)
     *passwordp = password;
     }
 
-    /* Parse the host string to separate host portion from optional port.
+    /*
+     * Parse the host string to separate host portion from optional port.
      * Perform range checking on port.
      */
     rv = apr_parse_addr_port(&addr, &scope_id, &tmp_port, host, p);
@@ -546,17 +549,21 @@ PROXY_DECLARE(int) ap_proxy_is_ipaddr(struct dirconn_entry *This, apr_pool_t *p)
     int i, quads;
     long bits;
 
-    /* if the address is given with an explicit netmask, use that */
-    /* Due to a deficiency in apr_inet_addr(), it is impossible to parse */
-    /* "partial" addresses (with less than 4 quads) correctly, i.e.  */
-    /* 192.168.123 is parsed as 192.168.0.123, which is not what I want. */
-    /* I therefore have to parse the IP address manually: */
-    /*if (proxy_readmask(This->name, &This->addr.s_addr, &This->mask.s_addr) == 0) */
-    /* addr and mask were set by proxy_readmask() */
-    /*return 1; */
+    /*
+     * if the address is given with an explicit netmask, use that
+     * Due to a deficiency in apr_inet_addr(), it is impossible to parse
+     * "partial" addresses (with less than 4 quads) correctly, i.e.
+     * 192.168.123 is parsed as 192.168.0.123, which is not what I want.
+     * I therefore have to parse the IP address manually:
+     * if (proxy_readmask(This->name, &This->addr.s_addr, &This->mask.s_addr) == 0)
+     * addr and mask were set by proxy_readmask()
+     * return 1;
+     */
 
-    /* Parse IP addr manually, optionally allowing */
-    /* abbreviated net addresses like 192.168. */
+    /*
+     * Parse IP addr manually, optionally allowing
+     * abbreviated net addresses like 192.168.
+     */
 
     /* Iterate over up to 4 (dotted) quads. */
     for (quads = 0; quads < 4 && *addr != '\0'; ++quads) {
@@ -604,9 +611,11 @@ PROXY_DECLARE(int) ap_proxy_is_ipaddr(struct dirconn_entry *This, apr_pool_t *p)
 
     }
     else {
-    /* Determine (i.e., "guess") netmask by counting the */
-    /* number of trailing .0's; reduce #quads appropriately */
-    /* (so that 192.168.0.0 is equivalent to 192.168.)        */
+    /*
+     * Determine (i.e., "guess") netmask by counting the
+     * number of trailing .0's; reduce #quads appropriately
+     * (so that 192.168.0.0 is equivalent to 192.168.)
+     */
     while (quads > 0 && ip_addr[quads - 1] == 0)
         --quads;
 
@@ -799,7 +808,7 @@ PROXY_DECLARE(int) ap_proxy_is_hostname(struct dirconn_entry *This, apr_pool_t *
 
     if (host[i] != '\0' || apr_sockaddr_info_get(&addr, host, APR_UNSPEC, 0, 0, p) != APR_SUCCESS)
         return 0;
-    
+
     This->hostaddr = addr;
 
     /* Strip trailing dots */
@@ -905,9 +914,10 @@ PROXY_DECLARE(int) ap_proxy_pre_http_request(conn_rec *c, request_rec *r)
     return OK;
 }
 
-/* converts a series of buckets into a string 
- * XXX: BillS says this function performs essentially the same function as 
- * ap_rgetline() in protocol.c. Deprecate this function and use ap_rgetline() 
+/*
+ * converts a series of buckets into a string 
+ * XXX: BillS says this function performs essentially the same function as
+ * ap_rgetline() in protocol.c. Deprecate this function and use ap_rgetline()
  * instead? I think ap_proxy_string_read() will not work properly on non ASCII
  * (EBCDIC) machines either.
  */
@@ -948,8 +958,9 @@ PROXY_DECLARE(apr_status_t) ap_proxy_string_read(conn_rec *c, apr_bucket_brigade
                 if (APR_SUCCESS != apr_bucket_read(e, (const char **)&response, &len, APR_BLOCK_READ)) {
                     return rv;
                 }
-                /* is string LF terminated? 
-                 * XXX: This check can be made more efficient by simply checking 
+                /*
+                 * is string LF terminated?
+                 * XXX: This check can be made more efficient by simply checking
                  * if the last character in the 'response' buffer is an ASCII_LF.
                  * See ap_rgetline() for an example.
                  */
@@ -1008,8 +1019,10 @@ PROXY_DECLARE(const char *) ap_proxy_location_reverse_map(request_rec *r,
     int i, l1, l2;
     char *u;
 
-    /* XXX FIXME: Make sure this handled the ambiguous case of the :<PORT>
-     * after the hostname */
+    /*
+     * XXX FIXME: Make sure this handled the ambiguous case of the :<PORT>
+     * after the hostname
+     */
 
     l1 = strlen(url);
     ent = (struct proxy_alias *)conf->raliases->elts;
@@ -1024,7 +1037,8 @@ PROXY_DECLARE(const char *) ap_proxy_location_reverse_map(request_rec *r,
     return url;
 }
 
-/* Cookies are a bit trickier to match: we've got two substrings to worry
+/*
+ * Cookies are a bit trickier to match: we've got two substrings to worry
  * about, and we can't just find them with strstr 'cos of case.  Regexp
  * matching would be an easy fix, but for better consistency with all the
  * other matches we'll refrain and use apr_strmatch to find path=/domain=
@@ -1047,7 +1061,8 @@ PROXY_DECLARE(const char *) ap_proxy_cookie_reverse_map(request_rec *r,
     int pdiff = 0;
     char *ret;
 
-   /* Find the match and replacement, but save replacing until we've done
+   /*
+    * Find the match and replacement, but save replacing until we've done
     * both path and domain so we know the new strlen
     */
     if ((pathp = apr_strmatch(conf->cookie_path_str, str, len)) != NULL) {
@@ -1066,7 +1081,7 @@ PROXY_DECLARE(const char *) ap_proxy_cookie_reverse_map(request_rec *r,
             }
         }
     }
-    
+
     if ((domainp = apr_strmatch(conf->cookie_domain_str, str, len)) != NULL) {
         domainp += 7;
         doffs = domainp - str;
@@ -1122,7 +1137,7 @@ PROXY_DECLARE(const char *) ap_proxy_cookie_reverse_map(request_rec *r,
             ret = (char *)str; /* no change */
         }
     }
-    
+
     return ret;
 }
 
@@ -1133,7 +1148,7 @@ PROXY_DECLARE(proxy_balancer *) ap_proxy_get_balancer(apr_pool_t *p,
     proxy_balancer *balancer;
     char *c, *uri = apr_pstrdup(p, url);
     int i;
-    
+
     c = strchr(uri, ':');   
     if (c == NULL || c[1] != '/' || c[2] != '/' || c[3] == '\0')
        return NULL;
@@ -1157,7 +1172,7 @@ PROXY_DECLARE(const char *) ap_proxy_add_balancer(proxy_balancer **balancer,
     char *c, *q, *uri = apr_pstrdup(p, url);
     proxy_balancer_method *lbmethod;
 
-    c = strchr(uri, ':');   
+    c = strchr(uri, ':');
     if (c == NULL || c[1] != '/' || c[2] != '/' || c[3] == '\0')
        return "Bad syntax for a balancer name";
     /* remove path from uri */
@@ -1199,8 +1214,8 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
     proxy_worker *worker;
     char *c, *uri = apr_pstrdup(p, url);
     int i;
-    
-    c = strchr(uri, ':');   
+
+    c = strchr(uri, ':');
     if (c == NULL || c[1] != '/' || c[2] != '/' || c[3] == '\0')
        return NULL;
     /* remove path from uri */
@@ -1233,14 +1248,16 @@ static void init_conn_pool(apr_pool_t *p, proxy_worker *worker)
 {
     apr_pool_t *pool;
     proxy_conn_pool *cp;
-    
-    /* Create a connection pool's subpool. 
+
+    /*
+     * Create a connection pool's subpool. 
      * This pool is used for connection recycling.
      * Once the worker is added it is never removed but
      * it can be disabled.
      */
     apr_pool_create(&pool, p);
-    /* Alloc from the same pool as worker.
+    /*
+     * Alloc from the same pool as worker.
      * proxy_conn_pool is permanently attached to the worker. 
      */
     cp = (proxy_conn_pool *)apr_pcalloc(p, sizeof(proxy_conn_pool));
@@ -1317,7 +1334,7 @@ PROXY_DECLARE(int) ap_proxy_pre_request(proxy_worker **worker,
                                         proxy_server_conf *conf, char **url)
 {
     int access_status;
-    
+
     access_status = proxy_run_pre_request(worker, balancer, r, conf, url);
     if (access_status == DECLINED && *balancer == NULL) {
         *worker = ap_proxy_get_worker(r->pool, conf, *url);
@@ -1368,8 +1385,8 @@ PROXY_DECLARE(int) ap_proxy_post_request(proxy_worker *worker,
     int access_status;
     if (balancer)
         access_status = proxy_run_post_request(worker, balancer, r, conf);
-    else { 
-        
+    else {
+
 
         access_status = OK;
     }
@@ -1389,7 +1406,7 @@ PROXY_DECLARE(int) ap_proxy_connect_to_backend(apr_socket_t **newsock,
     apr_status_t rv;
     int connected = 0;
     int loglevel;
-    
+
     while (backend_addr && !connected) {
         if ((rv = apr_socket_create(newsock, backend_addr->family,
                                     SOCK_STREAM, 0, p)) != APR_SUCCESS) {
@@ -1399,7 +1416,8 @@ PROXY_DECLARE(int) ap_proxy_connect_to_backend(apr_socket_t **newsock,
                          proxy_function,
                          backend_addr->family,
                          backend_name);
-            /* this could be an IPv6 address from the DNS but the
+            /*
+             * this could be an IPv6 address from the DNS but the
              * local machine won't give us an IPv6 socket; hopefully the
              * DNS returned an additional address to try
              */
@@ -1453,8 +1471,9 @@ static apr_status_t connection_cleanup(void *theconn)
 {
     proxy_conn_rec *conn = (proxy_conn_rec *)theconn;
     proxy_worker *worker = conn->worker;
-    
-    /* If the connection pool is NULL the worker
+
+    /*
+     * If the connection pool is NULL the worker
      * cleanup has been run. Just return.
      */
     if (!worker->cp)
@@ -1489,8 +1508,9 @@ static apr_status_t connection_constructor(void **resource, void *params,
     apr_pool_t *ctx;
     proxy_conn_rec *conn;
     proxy_worker *worker = (proxy_worker *)params;
-    
-    /* Create the subpool for each connection
+
+    /*
+     * Create the subpool for each connection
      * This keeps the memory consumption constant
      * when disconnecting from backend.
      */
@@ -1625,7 +1645,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
     else
 #endif
     {
-        
+
         rv = connection_constructor((void **)&(worker->cp->conn), worker, worker->cp->pool);
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
              "proxy: initialized single connection worker %d in child %" APR_PID_T_FMT " for (%s)",
@@ -1669,7 +1689,7 @@ PROXY_DECLARE(int) ap_proxy_acquire_connection(const char *proxy_function,
     if (!PROXY_WORKER_IS_USABLE(worker)) {
         /* Retry the worker */
         ap_proxy_retry_worker(proxy_function, worker, s);
-    
+
         if (!PROXY_WORKER_IS_USABLE(worker)) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                          "proxy: %s: disabled connection for (%s)",
@@ -1742,7 +1762,7 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
 {
     int server_port;
     apr_status_t err = APR_SUCCESS;
-    
+
     /*
      * Break up the URL to determine the host to connect to
      */
@@ -1761,7 +1781,8 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
                  "proxy: connecting %s to %s:%d", *url, uri->hostname,
                  uri->port);
 
-    /* allocate these out of the specified connection pool 
+    /*
+     * allocate these out of the specified connection pool 
      * The scheme handler decides if this is permanent or
      * short living pool.
      */
@@ -1790,14 +1811,16 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
             conn->port = uri->port;
         }
     }
-    /* TODO: add address cache for generic forward proxies.
+    /*
+     * TODO: add address cache for generic forward proxies.
      * At least level 0 -> compare with previous hostname:port
      */
     if (r->proxyreq == PROXYREQ_PROXY || r->proxyreq == PROXYREQ_REVERSE ||
         !worker->is_address_reusable) {
-        /* TODO: Check if the connection can be reused
-         */            
-        if (conn->connection) {      
+        /*
+         * TODO: Check if the connection can be reused
+         */
+        if (conn->connection) {
             if (conn->sock) {
                 apr_socket_close(conn->sock);
                 conn->sock = NULL;
@@ -1817,11 +1840,12 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
             return HTTP_INTERNAL_SERVER_ERROR;
         }
 
-        /* Worker can have the single constant backend adress.
+        /*
+         * Worker can have the single constant backend adress.
          * The single DNS lookup is used once per worker.
-        * If dynamic change is needed then set the addr to NULL
-        * inside dynamic config to force the lookup.
-        */
+         * If dynamic change is needed then set the addr to NULL
+         * inside dynamic config to force the lookup.
+         */
         err = apr_sockaddr_info_get(&(worker->cp->addr),
                                     conn->hostname, APR_UNSPEC,
                                     conn->port, 0,
@@ -1866,7 +1890,7 @@ static int is_socket_connected(apr_socket_t *sock)
     char test_buffer[1]; 
     apr_status_t socket_status;
     apr_interval_time_t current_timeout;
-    
+
     /* save timeout */
     apr_socket_timeout_get(sock, &current_timeout);
     /* set no timeout */
@@ -1890,13 +1914,14 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
     int loglevel;
     apr_sockaddr_t *backend_addr = conn->addr;
     apr_socket_t *newsock;
-    
+
     if (conn->sock) {
-        /* This increases the connection pool size
+        /*
+         * This increases the connection pool size
          * but the number of dropped connections is
          * relatively small compared to connection lifetime
          */
-        if (!(connected = is_socket_connected(conn->sock))) {        
+        if (!(connected = is_socket_connected(conn->sock))) {
             apr_socket_close(conn->sock);
             conn->sock = NULL;
         }
@@ -1911,7 +1936,8 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
                          proxy_function,
                          backend_addr->family,
                          worker->hostname);
-            /* this could be an IPv6 address from the DNS but the
+            /*
+             * this could be an IPv6 address from the DNS but the
              * local machine won't give us an IPv6 socket; hopefully the
              * DNS returned an additional address to try
              */
@@ -1964,11 +1990,12 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
             backend_addr = backend_addr->next;
             continue;
         }
-        
+
         conn->sock   = newsock;
         connected    = 1;
     }
-    /* Put the entire worker to error state if
+    /*
+     * Put the entire worker to error state if
      * the PROXY_WORKER_IGNORE_ERRORS flag is not set.
      * Altrough some connections may be alive
      * no further connections to the worker could be made
@@ -1996,17 +2023,18 @@ PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function,
     apr_sockaddr_t *backend_addr = conn->addr;
     int rc;
 
-    /* The socket is now open, create a new backend server connection 
-    * 
-    */
+    /*
+     * The socket is now open, create a new backend server connection
+     */
     conn->connection = ap_run_create_connection(c->pool, s, conn->sock,
                                                 c->id, c->sbh,
                                                 c->bucket_alloc);
 
     if (!conn->connection) {
-        /* the peer reset the connection already; ap_run_create_connection() 
-        * closed the socket
-        */
+        /*
+         * the peer reset the connection already; ap_run_create_connection()
+         * closed the socket
+         */
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0,
                      s, "proxy: %s: an error occurred creating a "
                      "new connection to %pI (%s)", proxy_function,
@@ -2016,12 +2044,13 @@ PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function,
         conn->sock = NULL;
         return HTTP_INTERNAL_SERVER_ERROR;
     }
-    /* register the connection cleanup to client connection
+    /*
+     * register the connection cleanup to client connection
      * so that the connection can be closed or reused
      */
     apr_pool_cleanup_register(c->pool, (void *)conn,
                               connection_cleanup,
-                              apr_pool_cleanup_null);      
+                              apr_pool_cleanup_null);
 
     /* For ssl connection to backend */
     if (conn->is_ssl) {
@@ -2057,7 +2086,8 @@ PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function,
 
 int ap_proxy_lb_workers(void)
 {
-    /* Since we can't resize the scoreboard when reconfiguring, we
+    /*
+     * Since we can't resize the scoreboard when reconfiguring, we
      * have to impose a limit on the number of workers, we are
      * able to reconfigure to.
      */
