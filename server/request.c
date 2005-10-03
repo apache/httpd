@@ -1581,7 +1581,8 @@ AP_DECLARE(request_rec *) ap_sub_req_method_uri(const char *method,
                                                 ap_filter_t *next_filter)
 {
     request_rec *rnew;
-    int res;
+    /* Initialise res, to avoid a gcc warning */
+    int res = HTTP_INTERNAL_SERVER_ERROR; 
     char *udir;
 
     rnew = make_sub_request(r, next_filter);
