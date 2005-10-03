@@ -1217,10 +1217,10 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
                 ap_scoreboard_image->servers[index][0].status = SERVER_GRACEFUL;
                 /* Ask each child to close its listeners.
                  *
-                 * NOTE: we use the scoreboard, because if we send SIGUSR1 
-                 * to every process in the group, this may include CGI's, 
-                 * piped loggers, etc. They almost certainly won't handle 
-                 * it gracefully. 
+                 * NOTE: we use the scoreboard, because if we send SIGUSR1
+                 * to every process in the group, this may include CGI's,
+                 * piped loggers, etc. They almost certainly won't handle
+                 * it gracefully.
                  */
                 kill(ap_scoreboard_image->parent[index].pid, AP_SIG_GRACEFUL);
             }
