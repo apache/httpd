@@ -23,7 +23,7 @@
 
 
 static apr_hash_t *dav_liveprop_uris = NULL;
-static int dav_liveprop_count = 0;
+static long dav_liveprop_count = 0;
 
 
 static apr_status_t dav_cleanup_liveprops(void *ctx)
@@ -35,14 +35,14 @@ static apr_status_t dav_cleanup_liveprops(void *ctx)
 
 static void dav_register_liveprop_namespace(apr_pool_t *p, const char *uri)
 {
-    int value;
+    long value;
 
     if (dav_liveprop_uris == NULL) {
         dav_liveprop_uris = apr_hash_make(p);
         apr_pool_cleanup_register(p, NULL, dav_cleanup_liveprops, apr_pool_cleanup_null);
     }
 
-    value = (int)apr_hash_get(dav_liveprop_uris, uri, APR_HASH_KEY_STRING);
+    value = (long)apr_hash_get(dav_liveprop_uris, uri, APR_HASH_KEY_STRING);
     if (value != 0) {
         /* already registered */
         return;
@@ -53,12 +53,12 @@ static void dav_register_liveprop_namespace(apr_pool_t *p, const char *uri)
                  (void *)++dav_liveprop_count);
 }
 
-DAV_DECLARE(int) dav_get_liveprop_ns_index(const char *uri)
+DAV_DECLARE(long) dav_get_liveprop_ns_index(const char *uri)
 {
-    return (int)apr_hash_get(dav_liveprop_uris, uri, APR_HASH_KEY_STRING);
+    return (long)apr_hash_get(dav_liveprop_uris, uri, APR_HASH_KEY_STRING);
 }
 
-DAV_DECLARE(int) dav_get_liveprop_ns_count(void)
+DAV_DECLARE(long) dav_get_liveprop_ns_count(void)
 {
     return dav_liveprop_count;
 }
@@ -75,7 +75,7 @@ DAV_DECLARE(void) dav_add_all_liveprop_xmlns(apr_pool_t *p,
 
         apr_hash_this(idx, &key, NULL, &val);
 
-        s = apr_psprintf(p, " xmlns:lp%d=\"%s\"", (int)val, (const char *)key);
+        s = apr_psprintf(p, " xmlns:lp%ld=\"%s\"", (long)val, (const char *)key);
         apr_text_append(p, phdr, s);
     }
 }
@@ -108,7 +108,7 @@ DAV_DECLARE(int) dav_do_find_liveprop(const char *ns_uri, const char *name,
     return 0;
 }
 
-DAV_DECLARE(int) dav_get_liveprop_info(int propid,
+DAV_DECLARE(long) dav_get_liveprop_info(int propid,
                                        const dav_liveprop_group *group,
                                        const dav_liveprop_spec **info)
 {
