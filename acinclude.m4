@@ -570,3 +570,24 @@ undefine([ap_ckver_minor])
 undefine([ap_ckver_cvar])
 undefine([ap_ckver_name])
 ])
+
+dnl
+dnl APACHE_CHECK_VOID_PTR_LEN
+dnl
+dnl Checks if the size of a void pointer is at least as big as a "long" 
+dnl integer type.
+dnl
+AC_DEFUN([APACHE_CHECK_VOID_PTR_LEN], [
+
+AC_CACHE_CHECK([for void pointer length], [ap_void_ptr_lt_long],
+[AC_TRY_RUN([
+int main(void)
+{
+    return sizeof(void *) < sizeof(long); 
+}], [ap_void_ptr_lt_long=yes], [ap_void_ptr_lt_long=no], 
+    [ap_void_ptr_lt_long=no])])
+
+if test "$ap_void_ptr_lt_long" = "no"; then
+    AC_MSG_ERROR([Size of "void *" is less than size of "long"])
+fi
+])
