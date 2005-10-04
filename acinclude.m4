@@ -584,10 +584,10 @@ AC_CACHE_CHECK([for void pointer length], [ap_void_ptr_lt_long],
 int main(void)
 {
     return sizeof(void *) < sizeof(long); 
-}], [ap_void_ptr_lt_long=yes], [ap_void_ptr_lt_long=no], 
-    [ap_void_ptr_lt_long=no])])
+}], [ap_void_ptr_lt_long=no], [ap_void_ptr_lt_long=yes], 
+    [ap_void_ptr_lt_long=yes])])
 
-if test "$ap_void_ptr_lt_long" = "no"; then
+if test "$ap_void_ptr_lt_long" = "yes"; then
     AC_MSG_ERROR([Size of "void *" is less than size of "long"])
 fi
 ])
