@@ -1531,6 +1531,11 @@ static request_rec *make_sub_request(const request_rec *r,
      */
     ap_run_create_request(rnew);
 
+    /* Begin by presuming any module can make its own path_info assumptions,
+     * until some module interjects and changes the value.
+     */
+    rnew->used_path_info = AP_REQ_DEFAULT_PATH_INFO;
+
     return rnew;
 }
 
