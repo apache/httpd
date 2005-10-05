@@ -150,16 +150,16 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
        +1: pquerna, nd, wrowe
        Votes from before the integration branch: +1: jerenkrantz
 
+    *) Fix CAN-2005-2700, mod_ssl SSLVerifyClient bug
+         http://svn.apache.org/viewcvs?rev=264800&view=rev
+       test case: perl-framework/t/security/CAN-2005-2700.t
+       +1: jorton, wrowe, trawick
+       wrowe cautions to backport to 2.2.x branch as well.
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ please place SVN revisions from trunk here, so it is easy to
     identify exactly what the proposed changes are!  Add all new
     proposals to the end of this list. ]
-
-    *) Fix CAN-2005-2700, mod_ssl SSLVerifyClient bug
-         http://svn.apache.org/viewcvs?rev=264800&view=rev
-       test case: perl-framework/t/security/CAN-2005-2700.t
-       +1: jorton, wrowe
-       wrowe cautions to backport to 2.2.x branch as well.
 
     *) mod_headers: Support {...}s tag for SSL variable lookup.
        http://www.apache.org/~jorton/mod_headers-2.0-ssl.diff
