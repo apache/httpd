@@ -432,7 +432,7 @@ RewriteRule  ^/(.*)$                      %1/docs/$1<br />
 RewriteCond  %{REQUEST_URI}               ^/cgi-bin/<br />
 RewriteCond  ${lowercase:%{SERVER_NAME}}  ^(.+)$<br />
 RewriteCond  ${vhost:%1}                  ^(/.*)$<br />
-RewriteRule  ^/(.*)$                      %1/cgi-bin/$1
+RewriteRule  ^/(.*)$                      %1/cgi-bin/$1 [T=application/x-httpd-cgi]
 </code></p></div>
 
 </div></div>
