@@ -157,7 +157,6 @@ static int ap_process_http_async_connection(conn_rec *c)
 static int ap_process_http_connection(conn_rec *c)
 {
     request_rec *r;
-    int csd_set = 0;
     apr_socket_t *csd = NULL;
 
     /*
@@ -186,12 +185,13 @@ static int ap_process_http_connection(conn_rec *c)
  
         if (ap_graceful_stop_signalled())
             break;
-        /* Go straight to select() to wait for the next request */
-        if (!csd_set) {
+
+        if (!csd) {
             csd = ap_get_module_config(c->conn_config, &core_module);
-            csd_set = 1;
         }
         apr_socket_opt_set(csd, APR_INCOMPLETE_READ, 1);
+        apr_socket_timeout_set(csd, c->base_server->keep_alive_timeout);
+        /* Go straight to select() to wait for the next request */
     }
  
     return OK;

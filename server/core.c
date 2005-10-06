@@ -21,7 +21,6 @@
 #include "apr_hash.h"
 #include "apr_thread_proc.h"    /* for RLIMIT stuff */
 #include "apr_hooks.h"
-#include "apr_optional.h"
 
 #define APR_WANT_IOVEC
 #define APR_WANT_STRFUNC
@@ -49,7 +48,6 @@
 #include "mod_core.h"
 #include "mod_proxy.h"
 #include "ap_listen.h"
-#include "ap_mpm.h"
 
 #include "mod_so.h" /* for ap_find_loaded_module_symbol */
 
@@ -92,12 +90,8 @@ AP_IMPLEMENT_HOOK_RUN_ALL(int, get_mgmt_items,
 /* Handles for core filters */
 AP_DECLARE_DATA ap_filter_rec_t *ap_subreq_core_filter_handle;
 AP_DECLARE_DATA ap_filter_rec_t *ap_core_output_filter_handle;
-AP_DECLARE_DATA ap_filter_rec_t *ap_core_mpm_write_filter_handle;
 AP_DECLARE_DATA ap_filter_rec_t *ap_content_length_filter_handle;
-AP_DECLARE_DATA ap_filter_rec_t *ap_net_time_filter_handle;
 AP_DECLARE_DATA ap_filter_rec_t *ap_core_input_filter_handle;
-
-static APR_OPTIONAL_FN_TYPE(ap_mpm_custom_write_filter) *mpm_write_func;
 
 /* magic pointer for ErrorDocument xxx "default" */
 static char errordocument_default;
@@ -3681,24 +3675,8 @@ APR_OPTIONAL_FN_TYPE(ap_logio_add_bytes_out) *logio_add_bytes_out;
 
 static int core_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s)
 {
-    int mpm_write = 0;
-
     logio_add_bytes_out = APR_RETRIEVE_OPTIONAL_FN(ap_logio_add_bytes_out);
     ident_lookup = APR_RETRIEVE_OPTIONAL_FN(ap_ident_lookup);
-
-    if (ap_mpm_query(AP_MPMQ_CUSTOM_WRITE, &mpm_write) == APR_SUCCESS
-        && mpm_write == 1) {
-        mpm_write_func = APR_RETRIEVE_OPTIONAL_FN(ap_mpm_custom_write_filter);
-
-        ap_core_output_filter_handle =
-            ap_register_output_filter("CORE", mpm_write_func,
-                                      NULL, AP_FTYPE_NETWORK);
-    }
-    else {
-        ap_core_output_filter_handle =
-            ap_register_output_filter("CORE", ap_core_output_filter,
-                                      NULL, AP_FTYPE_NETWORK);
-    }
 
     ap_set_version(pconf);
     ap_setup_make_content_type(pconf);
@@ -3780,18 +3758,9 @@ static int core_create_req(request_rec *r)
     }
     else {
         req_cfg->bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
-        if (!r->prev) {
-            ap_add_input_filter_handle(ap_net_time_filter_handle,
-                                       NULL, r, r->connection);
-        }
     }
 
     ap_set_module_config(r->request_config, &core_module, req_cfg);
-
-    /* Begin by presuming any module can make its own path_info assumptions,
-     * until some module interjects and changes the value.
-     */
-    r->used_path_info = AP_REQ_DEFAULT_PATH_INFO;
 
     return OK;
 }
@@ -3840,7 +3809,7 @@ static conn_rec *core_create_conn(apr_pool_t *ptrans, server_rec *server,
 
     c->id = id;
     c->bucket_alloc = alloc;
-    
+
     c->cs = (conn_state_t *)apr_pcalloc(ptrans, sizeof(conn_state_t));
     APR_RING_INIT(&(c->cs->timeout_list), conn_state_t, timeout_list);
     c->cs->expiration_time = 0;
@@ -3855,10 +3824,9 @@ static conn_rec *core_create_conn(apr_pool_t *ptrans, server_rec *server,
 static int core_pre_connection(conn_rec *c, void *csd)
 {
     core_net_rec *net = apr_palloc(c->pool, sizeof(*net));
-
-#ifdef AP_MPM_DISABLE_NAGLE_ACCEPTED_SOCK
     apr_status_t rv;
 
+#ifdef AP_MPM_DISABLE_NAGLE_ACCEPTED_SOCK
     /* The Nagle algorithm says that we should delay sending partial
      * packets in hopes of getting more data.  We don't want to do
      * this; we are not telnet.  There are bad interactions between
@@ -3875,6 +3843,20 @@ static int core_pre_connection(conn_rec *c, void *csd)
                       "apr_socket_opt_set(APR_TCP_NODELAY)");
     }
 #endif
+
+    /* The core filter requires the timeout mode to be set, which
+     * incidentally sets the socket to be nonblocking.  If this
+     * is not initialized correctly, Linux - for example - will
+     * be initially blocking, while Solaris will be non blocking
+     * and any initial read will fail.
+     */
+    rv = apr_socket_timeout_set(csd, c->base_server->timeout);
+    if (rv != APR_SUCCESS) {
+        /* expected cause is that the client disconnected already */
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, rv, c,
+                      "apr_socket_timeout_set");
+    }
+
     net->c = c;
     net->in_ctx = NULL;
     net->out_ctx = NULL;
@@ -3882,10 +3864,7 @@ static int core_pre_connection(conn_rec *c, void *csd)
 
     ap_set_module_config(net->c->conn_config, &core_module, csd);
     ap_add_input_filter_handle(ap_core_input_filter_handle, net, NULL, net->c);
-
-    ap_add_output_filter_handle(ap_core_output_filter_handle, net, 
-                                NULL, net->c);
-
+    ap_add_output_filter_handle(ap_core_output_filter_handle, net, NULL, net->c);
     return DONE;
 }
 
@@ -3924,14 +3903,12 @@ static void register_hooks(apr_pool_t *p)
     ap_core_input_filter_handle =
         ap_register_input_filter("CORE_IN", ap_core_input_filter,
                                  NULL, AP_FTYPE_NETWORK);
-    ap_net_time_filter_handle =
-        ap_register_input_filter("NET_TIME", ap_net_time_filter,
-                                 NULL, AP_FTYPE_PROTOCOL);
     ap_content_length_filter_handle =
         ap_register_output_filter("CONTENT_LENGTH", ap_content_length_filter,
                                   NULL, AP_FTYPE_PROTOCOL);
-
-
+    ap_core_output_filter_handle =
+        ap_register_output_filter("CORE", ap_core_output_filter,
+                                  NULL, AP_FTYPE_NETWORK);
     ap_subreq_core_filter_handle =
         ap_register_output_filter("SUBREQ_CORE", ap_sub_req_output_filter,
                                   NULL, AP_FTYPE_CONTENT_SET);

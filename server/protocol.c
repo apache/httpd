@@ -832,6 +832,8 @@ request_rec *ap_read_request(conn_rec *conn)
     const char *expect;
     int access_status;
     apr_bucket_brigade *tmp_bb;
+    apr_socket_t *csd;
+    apr_interval_time_t cur_timeout;
 
     apr_pool_create(&p, conn->pool);
     apr_pool_tag(p, "request");
@@ -869,6 +871,11 @@ request_rec *ap_read_request(conn_rec *conn)
     r->status          = HTTP_REQUEST_TIME_OUT;  /* Until we get a request */
     r->the_request     = NULL;
 
+    /* Begin by presuming any module can make its own path_info assumptions,
+     * until some module interjects and changes the value.
+     */
+    r->used_path_info = AP_REQ_DEFAULT_PATH_INFO;
+
     tmp_bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
 
     /* Get the request... */
@@ -885,6 +892,17 @@ request_rec *ap_read_request(conn_rec *conn)
 
         apr_brigade_destroy(tmp_bb);
         return NULL;
+    }
+
+    /* We may have been in keep_alive_timeout mode, so toggle back
+     * to the normal timeout mode as we fetch the header lines,
+     * as necessary.
+     */
+    csd = ap_get_module_config(conn->conn_config, &core_module);
+    apr_socket_timeout_get(csd, &cur_timeout);
+    if (cur_timeout != conn->base_server->timeout) {
+        apr_socket_timeout_set(csd, conn->base_server->timeout);
+        cur_timeout = conn->base_server->timeout;
     }
 
     if (!r->assbackwards) {
@@ -936,6 +954,14 @@ request_rec *ap_read_request(conn_rec *conn)
      * now read. may update status.
      */
     ap_update_vhost_from_headers(r);
+
+    /* Toggle to the Host:-based vhost's timeout mode to fetch the 
+     * request body and send the response body, if needed.
+     */
+    if (cur_timeout != r->server->timeout) {
+        apr_socket_timeout_set(csd, r->server->timeout);
+        cur_timeout = r->server->timeout;
+    }
 
     /* we may have switched to another server */
     r->per_dir_config = r->server->lookup_defaults;
