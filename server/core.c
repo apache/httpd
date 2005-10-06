@@ -3767,11 +3767,6 @@ static int core_create_req(request_rec *r)
 
     ap_set_module_config(r->request_config, &core_module, req_cfg);
 
-    /* Begin by presuming any module can make its own path_info assumptions,
-     * until some module interjects and changes the value.
-     */
-    r->used_path_info = AP_REQ_DEFAULT_PATH_INFO;
-
     return OK;
 }
 
