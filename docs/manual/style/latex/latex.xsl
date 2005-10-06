@@ -107,7 +107,7 @@
 
 \section*{About The PDF Documentation}
 
-Copyright \copyright 2004 The Apache Software Foundation
+Copyright \copyright 2005 The Apache Software Foundation
 
 Licensed under the Apache License, Version 2.0 (the "License"); 
 you may not use this file except in compliance with the License. 
@@ -138,6 +138,9 @@ Server Documentation Project.  More information is available at
   <xsl:text>}
 </xsl:text>
     <xsl:apply-templates/>
+    <xsl:if test="@id = 'modules'">
+        <xsl:apply-templates select="document($allmodules)/modulefilelist" />
+    </xsl:if>
 </xsl:for-each>
 
 <xsl:text>\end{document}</xsl:text>
