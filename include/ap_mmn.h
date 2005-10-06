@@ -107,9 +107,10 @@
  * 20050708.1 (2.1.7-dev) add proxy request_status hook (minor)
  * 20050919.0 (2.1.8-dev) mod_ssl ssl_ext_list optional function added
  * 20051005.0 (2.1.8-dev) NET_TIME filter eliminated
+ * 20051005.0 (2.3.0-dev) Bump MODULE_MAGIC_COOKIE to "AP24"!
  */
 
-#define MODULE_MAGIC_COOKIE 0x41503232UL /* "AP22" */
+#define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20051005
