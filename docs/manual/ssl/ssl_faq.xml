@@ -620,9 +620,9 @@ Verisign, for installing my Verisign certificate?</title>
     Stronghold (a commercial Apache based server with SSL support).</p> 
     <p>To install your certificate, all you need to do is to save the 
     certificate to a file, and give the name of that file to the 
-    <module directive="mod_ssl">SSLCertificateFile</module> directive.
+    <directive module="mod_ssl">SSLCertificateFile</directive> directive.
     You will also need to give it the key file. For more information, 
-    see the <module directive="mod_ssl">SSLCertificateKeyFile</module> 
+    see the <directive module="mod_ssl">SSLCertificateKeyFile</directive> 
     directive.</p> 
 </section>
 
@@ -642,7 +642,7 @@ verify my Verisign Global ID server certificate?</title>
     certificate (which you installed on the server). You should have 
     received this additional CA certificate from Verisign.
     If not, complain to them. Then, configure this certificate with the
-    <module directive="mod_ssl">SSLCertificateChainFile</module> 
+    <directive module="mod_ssl">SSLCertificateChainFile</directive> 
     directive. This ensures that the intermediate CA certificate is 
     sent to the browser, filling the gap in the certificate chain.</p>
 </section>
@@ -697,10 +697,10 @@ that it serves SSL encrypted traffic?</title>
 <section id="establishing"><title>Why do HTTPS connections to my server 
 sometimes take up to 30 seconds to establish a connection?</title>
 <p>This is usually caused by a <code>/dev/random</code> device for
-    <module directive="mod_ssl">SSLRandomSeed</module> which blocks the 
+    <directive module="mod_ssl">SSLRandomSeed</directive> which blocks the 
     read(2) call until enough entropy is available to service the 
     request. More information is available in the reference
-    manual for the <module directive="mod_ssl">SSLRandomSeed</module>
+    manual for the <directive module="mod_ssl">SSLRandomSeed</directive>
     directive.</p>
 </section>
 
@@ -732,14 +732,14 @@ trying to use Anonymous Diffie-Hellman (ADH) ciphers?</title>
     if you choose to enable these ciphers.</p>
     <p>In order to use Anonymous Diffie-Hellman (ADH) ciphers, you must 
     build OpenSSL with ``<code>-DSSL_ALLOW_ADH</code>'', and then add
-    ``<code>ADH</code>'' into your <module directive="mod_ssl"
-    >SSLCipherSuite</module>.</p>
+    ``<code>ADH</code>'' into your <directive module="mod_ssl"
+    >SSLCipherSuite</directive>.</p>
 </section>
 
 <section id="sharedciphers"><title>Why do I get a 'no shared ciphers' 
 error when connecting to my newly installed server?</title>
 <p>Either you have made a mistake with your 
-    <module directive="mod_ssl">>SSLCipherSuite</module>
+    <directive module="mod_ssl">>SSLCipherSuite</directive>
     directive (compare it with the pre-configured example in
     <code>httpd.conf-dist</code>) or you chose to use DSA/DH
     algorithms instead of RSA when you generated your private key
