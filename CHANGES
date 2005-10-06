@@ -1,6 +1,10 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.1.9
 
+  *) mod_proxy: Run the request_status hook also if there are no free workers
+     or all workers are in error state.
+     [Ruediger Pluem, Brian Akins <brian.akins turner.com>]
+
   *) mod_proxy_connect: Fix high CPU loop on systems like UnixWare which
      trigger POLL_ERR or POLL_HUP on a terminated connection.  PR 36951.
      [Jeff Trawick, Ruediger Pluem]
