@@ -1,6 +1,10 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.1.9
 
+  *) mod_proxy_connect: Fix high CPU loop on systems like UnixWare which
+     trigger POLL_ERR or POLL_HUP on a terminated connection.  PR 36951.
+     [Jeff Trawick, Ruediger Pluem]
+
   *) mod_proxy_balancer: mod_proxy_balancer does not handle sticky sessions
      with tomcat correctly. PR36507. [Ruediger Pluem]
 

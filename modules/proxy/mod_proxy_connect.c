@@ -357,8 +357,10 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
                     else
                         break;
                 }
-                else if ((pollevent & APR_POLLERR) || (pollevent & APR_POLLHUP))
+                else if ((pollevent & APR_POLLERR) || (pollevent & APR_POLLHUP)) {
+                    rv = APR_EOF;
                     break;
+                }
             }
             else
                 break;
