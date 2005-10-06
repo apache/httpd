@@ -68,7 +68,7 @@
 #endif
 
 typedef enum {
-    op_NOP, op_ListElement, op_OidListElement,
+    op_NOP, op_ListElement, op_PeerExtElement,
     op_True, op_False, op_Not, op_Or, op_And, op_Comp,
     op_EQ, op_NE, op_LT, op_LE, op_GT, op_GE, op_IN, op_REG, op_NRE,
     op_Digit, op_String, op_Regex, op_Var, op_Func

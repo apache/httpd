@@ -62,7 +62,7 @@ void ssl_var_register(void)
 {
     APR_REGISTER_OPTIONAL_FN(ssl_is_https);
     APR_REGISTER_OPTIONAL_FN(ssl_var_lookup);
-    APR_REGISTER_OPTIONAL_FN(ssl_ext_lookup);
+    APR_REGISTER_OPTIONAL_FN(ssl_ext_list);
     return;
 }
 
@@ -431,8 +431,9 @@ static char *ssl_var_lookup_ssl_cert_dn(apr_pool_t *p, X509_NAME *xsname, char *
                 n =OBJ_obj2nid((ASN1_OBJECT *)X509_NAME_ENTRY_get_object(xsne));
 
                 if (n == ssl_var_lookup_ssl_cert_dn_rec[i].nid && idx-- == 0) {
-                    result = apr_pstrmemdup(p, 
-                                            X509_NAME_ENTRY_get_data_ptr(xsne),
+                    unsigned char *data = X509_NAME_ENTRY_get_data_ptr(xsne);
+                    /* cast needed from unsigned char to char */
+                    result = apr_pstrmemdup(p, (char *)data,
                                             X509_NAME_ENTRY_get_data_len(xsne));
 #if APR_CHARSET_EBCDIC
                     ap_xlate_proto_from_ascii(result, X509_NAME_ENTRY_get_data_len(xsne));
@@ -660,23 +661,30 @@ static char *ssl_var_lookup_ssl_version(apr_pool_t *p, char *var)
     return result;
 }
 
-const char *ssl_ext_lookup(apr_pool_t *p, conn_rec *c, int peer,
-                           const char *oidnum)
+apr_array_header_t *ssl_ext_list(apr_pool_t *p, conn_rec *c, int peer,
+                                 const char *extension)
 {
     SSLConnRec *sslconn = myConnConfig(c);
-    SSL *ssl;
+    SSL *ssl = NULL;
+    apr_array_header_t *array = NULL;
     X509 *xs = NULL;
-    ASN1_OBJECT *oid;
+    ASN1_OBJECT *oid = NULL;
     int count = 0, j;
-    char *result = NULL;
-    
-    if (!sslconn || !sslconn->ssl) {
+
+    if (!sslconn || !sslconn->ssl || !extension) {
         return NULL;
     }
     ssl = sslconn->ssl;
 
-    oid = OBJ_txt2obj(oidnum, 1);
+    /* We accept the "extension" string to be converted as 
+     * a long name (nsComment), short name (DN) or 
+     * numeric OID (1.2.3.4).
+     */
+    oid = OBJ_txt2obj(extension, 0);
     if (!oid) {
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, 
+                      "Failed to create an object for extension '%s'",
+                      extension);
         ERR_clear_error();
         return NULL;
     }
@@ -685,26 +693,42 @@ const char *ssl_ext_lookup(apr_pool_t *p, conn_rec *c, int peer,
     if (xs == NULL) {
         return NULL;
     }
-    
-    count = X509_get_ext_count(xs);
 
+    count = X509_get_ext_count(xs);
+    /* Create an array large enough to accomodate every extension. This is
+     * likely overkill, but safe.
+     */
+    array = apr_array_make(p, count, sizeof(char *));
     for (j = 0; j < count; j++) {
         X509_EXTENSION *ext = X509_get_ext(xs, j);
 
         if (OBJ_cmp(ext->object, oid) == 0) {
             BIO *bio = BIO_new(BIO_s_mem());
 
-            if (X509V3_EXT_print(bio, ext, 0, 0) == 1) {
+            /* We want to obtain a string representation of the extensions
+             * value and add it to the array we're building.
+             * X509V3_EXT_print() doesn't know about all the possible 
+             * data types, but the value is stored as an ASN1_OCTET_STRING
+             * allowing us a fallback in case of X509V3_EXT_print 
+             * not knowing how to handle the data.
+             */
+            if (X509V3_EXT_print(bio, ext, 0, 0) == 1 ||
+                ASN1_STRING_print(bio, ext->value) == 1) {
                 BUF_MEM *buf;
-
+                char **ptr = apr_array_push(array);
                 BIO_get_mem_ptr(bio, &buf);
-                result = apr_pstrmemdup(p, buf->data, buf->length);
+                *ptr = apr_pstrmemdup(p, buf->data, buf->length);
+            } else {
+                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c,
+                              "Found an extension '%s', but failed to "
+                              "create a string from it", extension); 
             }
-
             BIO_vfree(bio);
-            break;
         }
     }
+
+    if (array->nelts == 0)
+        array = NULL;
 
     if (peer) {
         /* only SSL_get_peer_certificate raises the refcount */
@@ -712,7 +736,7 @@ const char *ssl_ext_lookup(apr_pool_t *p, conn_rec *c, int peer,
     }
 
     ERR_clear_error();
-    return result;
+    return array;
 }
 
 static char *ssl_var_lookup_ssl_compress_meth(SSL *ssl)

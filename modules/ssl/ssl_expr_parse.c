@@ -43,7 +43,7 @@ typedef union {
 #define T_OP_REG 271
 #define T_OP_NRE 272
 #define T_OP_IN 273
-#define T_OP_OID 274
+#define T_OP_PEEREXTLIST 274
 #define T_OP_OR 275
 #define T_OP_AND 276
 #define T_OP_NOT 277
@@ -164,7 +164,7 @@ const char * const ssl_expr_yyname[] = {
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"T_TRUE",
 "T_FALSE","T_DIGIT","T_ID","T_STRING","T_REGEX","T_REGEX_I","T_FUNC_FILE",
 "T_OP_EQ","T_OP_NE","T_OP_LT","T_OP_LE","T_OP_GT","T_OP_GE","T_OP_REG",
-"T_OP_NRE","T_OP_IN","T_OP_OID","T_OP_OR","T_OP_AND","T_OP_NOT",
+"T_OP_NRE","T_OP_IN","T_OP_PEEREXTLIST","T_OP_OR","T_OP_AND","T_OP_NOT",
 };
 const char * const ssl_expr_yyrule[] = {
 "$accept : root",
@@ -185,7 +185,7 @@ const char * const ssl_expr_yyrule[] = {
 "comparison : word T_OP_IN wordlist",
 "comparison : word T_OP_REG regex",
 "comparison : word T_OP_NRE regex",
-"wordlist : T_OP_OID '(' word ')'",
+"wordlist : T_OP_PEEREXTLIST '(' word ')'",
 "wordlist : '{' words '}'",
 "words : word",
 "words : words ',' word",
@@ -498,7 +498,7 @@ case 17:
 break;
 case 18:
 #line 107 "ssl_expr_parse.y"
-{ ssl_expr_yyval.exVal = ssl_expr_make(op_OidListElement, ssl_expr_yyvsp[-1].exVal, NULL); }
+{ ssl_expr_yyval.exVal = ssl_expr_make(op_PeerExtElement, ssl_expr_yyvsp[-1].exVal, NULL); }
 break;
 case 19:
 #line 108 "ssl_expr_parse.y"

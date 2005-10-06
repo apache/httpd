@@ -123,7 +123,7 @@ typedef struct {
 
 module AP_MODULE_DECLARE_DATA setenvif_module;
 
-static APR_OPTIONAL_FN_TYPE(ssl_extlist_by_oid) *ssl_extlist_by_oid_func = NULL;
+static APR_OPTIONAL_FN_TYPE(ssl_ext_list) *ssl_ext_list_func = NULL;
 
 /*
  * These routines, the create- and merge-config functions, are called
@@ -531,7 +531,7 @@ static int match_headers(request_rec *r)
                 break;
             case SPECIAL_OID_VALUE:
                 /* If mod_ssl is not loaded, the accessor function is NULL */
-                if (ssl_extlist_by_oid_func != NULL)
+                if (ssl_ext_list_func != NULL)
                 {
                     apr_array_header_t *oid_array;
                     char **oid_value;
@@ -539,7 +539,8 @@ static int match_headers(request_rec *r)
                     char *retval = NULL;
 
                     /* The given oid can occur multiple times. Concatenate the values */
-                    if ((oid_array = ssl_extlist_by_oid_func(r, b->name)) != NULL) {
+                    if ((oid_array = ssl_ext_list_func(r->pool, r->connection, 1,
+                                                       b->name)) != NULL) {
                         oid_value = (char **) oid_array->elts;
                         /* pass 1: determine the size of the string */
                         for (len=j=0; j < oid_array->nelts; j++) {
@@ -630,7 +631,7 @@ static int match_headers(request_rec *r)
 static int setenvif_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                                 apr_pool_t *ptemp, server_rec *s)
 {
-    ssl_extlist_by_oid_func = APR_RETRIEVE_OPTIONAL_FN(ssl_extlist_by_oid);
+    ssl_ext_list_func = APR_RETRIEVE_OPTIONAL_FN(ssl_ext_list);
     return OK;
 }
 

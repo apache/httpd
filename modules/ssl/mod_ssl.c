@@ -504,8 +504,6 @@ static void ssl_register_hooks(apr_pool_t *p)
 
     APR_REGISTER_OPTIONAL_FN(ssl_proxy_enable);
     APR_REGISTER_OPTIONAL_FN(ssl_engine_disable);
-
-    APR_REGISTER_OPTIONAL_FN(ssl_extlist_by_oid);
 }
 
 module AP_MODULE_DECLARE_DATA ssl_module = {
