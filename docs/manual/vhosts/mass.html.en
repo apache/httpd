@@ -354,9 +354,9 @@ RewriteCond  %{REQUEST_URI}  !^/cgi-bin/<br />
 # do the magic<br />
 RewriteRule  ^/(.*)$  /www/hosts/${lowercase:%{SERVER_NAME}}/docs/$1<br />
 <br />
-## and now deal with CGIs - we have to force a MIME type<br />
+## and now deal with CGIs - we have to force a handler<br />
 RewriteCond  %{REQUEST_URI}  ^/cgi-bin/<br />
-RewriteRule  ^/(.*)$  /www/hosts/${lowercase:%{SERVER_NAME}}/cgi-bin/$1  [T=application/x-httpd-cgi]<br />
+RewriteRule  ^/(.*)$  /www/hosts/${lowercase:%{SERVER_NAME}}/cgi-bin/$1  [H=cgi-script]<br />
 <br />
 # that's it!
 </code></p></div>
@@ -432,7 +432,7 @@ RewriteRule  ^/(.*)$                      %1/docs/$1<br />
 RewriteCond  %{REQUEST_URI}               ^/cgi-bin/<br />
 RewriteCond  ${lowercase:%{SERVER_NAME}}  ^(.+)$<br />
 RewriteCond  ${vhost:%1}                  ^(/.*)$<br />
-RewriteRule  ^/(.*)$                      %1/cgi-bin/$1
+RewriteRule  ^/(.*)$                      %1/cgi-bin/$1 [H=cgi-script]
 </code></p></div>
 
 </div></div>
