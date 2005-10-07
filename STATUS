@@ -110,15 +110,6 @@ RELEASE SHOWSTOPPERS:
        +1: jorton, wrowe, trawick
        wrowe cautions to backport to 2.2.x branch as well.
 
-    *) SECURITY: CAN-2005-2970 (cve.mitre.org)
-       worker MPM: Fix a memory leak which can occur after an aborted
-       connection in some limited circumstances.
-       http://people.apache.org/~trawick/CAN-2005-2970.txt
-       +1: trawick, brianp
-       +0: wrowe [greg ames and jeff trawick were of two minds, I'm
-                  +1 on either patch they mutually agree upon.]
-
-
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
