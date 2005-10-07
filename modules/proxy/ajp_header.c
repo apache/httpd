@@ -341,55 +341,62 @@ static apr_status_t ajp_marshal_into_msgb(ajp_msg_t *msg,
  *   SetEnv SSL_SESSION_ID CUSTOM_SSL_SESSION_ID
  * </Location>
  */
-    if ((envvar = ap_proxy_ssl_val(r->pool, r->server, r->connection, r,
-                                AJP13_SSL_CLIENT_CERT_INDICATOR))) {
-        if (ajp_msg_append_uint8(msg, SC_A_SSL_CERT) ||
-            ajp_msg_append_string(msg, envvar)) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-                   "ajp_marshal_into_msgb: "
-                   "Error appending the SSL certificates");
-            return AJP_EOVERFLOW;
-        }
-    }
-
-    if ((envvar = ap_proxy_ssl_val(r->pool, r->server, r->connection, r,
-                                AJP13_SSL_CIPHER_INDICATOR))) {
-        if (ajp_msg_append_uint8(msg, SC_A_SSL_CIPHER) ||
-            ajp_msg_append_string(msg, envvar)) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-                   "ajp_marshal_into_msgb: "
-                   "Error appending the SSL ciphers");
-            return AJP_EOVERFLOW;
-        }
-    }
-
-    if ((envvar = ap_proxy_ssl_val(r->pool, r->server, r->connection, r,
-                                AJP13_SSL_SESSION_INDICATOR))) {
-        if (ajp_msg_append_uint8(msg, SC_A_SSL_SESSION) ||
-            ajp_msg_append_string(msg, envvar)) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-                   "ajp_marshal_into_msgb: "
-                   "Error appending the SSL session");
-            return AJP_EOVERFLOW;
-        }
-    }
-
     /*
-     * ssl_key_size is required by Servlet 2.3 API
-     * added support only in ajp14 mode
-     * JFC removed: ae->proto == AJP14_PROTO
+     * Only lookup SSL variables if we are currently running HTTPS.
+     * Furthermore ensure that only variables get set in the AJP message
+     * that are not NULL and not empty.
      */
- /* XXXX ignored for the moment
-    if (s->ssl_key_size != -1) {
-        if (ajp_msg_append_uint8(msg, SC_A_SSL_KEY_SIZE) ||
-            ajp_msg_append_uint16(msg, (unsigned short) s->ssl_key_size)) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-                   "Error ajp_marshal_into_msgb - "
-                   "Error appending the SSL key size");
-            return APR_EGENERAL;
+    if (is_ssl) {
+        if ((envvar = ap_proxy_ssl_val(r->pool, r->server, r->connection, r,
+                                       AJP13_SSL_CLIENT_CERT_INDICATOR))
+            && envvar[0]) {
+            if (ajp_msg_append_uint8(msg, SC_A_SSL_CERT)
+                || ajp_msg_append_string(msg, envvar)) {
+                ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
+                             "ajp_marshal_into_msgb: "
+                             "Error appending the SSL certificates");
+                return AJP_EOVERFLOW;
+            }
+        }
+
+        if ((envvar = ap_proxy_ssl_val(r->pool, r->server, r->connection, r,
+                                       AJP13_SSL_CIPHER_INDICATOR))
+            && envvar[0]) {
+            if (ajp_msg_append_uint8(msg, SC_A_SSL_CIPHER)
+                || ajp_msg_append_string(msg, envvar)) {
+                ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
+                             "ajp_marshal_into_msgb: "
+                             "Error appending the SSL ciphers");
+                return AJP_EOVERFLOW;
+            }
+        }
+
+        if ((envvar = ap_proxy_ssl_val(r->pool, r->server, r->connection, r,
+                                       AJP13_SSL_SESSION_INDICATOR))
+            && envvar[0]) {
+            if (ajp_msg_append_uint8(msg, SC_A_SSL_SESSION)
+                || ajp_msg_append_string(msg, envvar)) {
+                ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
+                             "ajp_marshal_into_msgb: "
+                             "Error appending the SSL session");
+                return AJP_EOVERFLOW;
+            }
+        }
+
+        /* ssl_key_size is required by Servlet 2.3 API */
+        if ((envvar = ap_proxy_ssl_val(r->pool, r->server, r->connection, r,
+                                       AJP13_SSL_KEY_SIZE_INDICATOR))
+            && envvar[0]) {
+
+            if (ajp_msg_append_uint8(msg, SC_A_SSL_KEY_SIZE)
+                || ajp_msg_append_uint16(msg, (unsigned short) atoi(envvar))) {
+                ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
+                             "Error ajp_marshal_into_msgb - "
+                             "Error appending the SSL key size");
+                return APR_EGENERAL;
+            }
         }
     }
- */
     /* Use the environment vars prefixed with AJP_
      * and pass it to the header striping that prefix.
      */
