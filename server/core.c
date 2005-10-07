@@ -91,7 +91,6 @@ AP_IMPLEMENT_HOOK_RUN_ALL(int, get_mgmt_items,
 AP_DECLARE_DATA ap_filter_rec_t *ap_subreq_core_filter_handle;
 AP_DECLARE_DATA ap_filter_rec_t *ap_core_output_filter_handle;
 AP_DECLARE_DATA ap_filter_rec_t *ap_content_length_filter_handle;
-AP_DECLARE_DATA ap_filter_rec_t *ap_net_time_filter_handle;
 AP_DECLARE_DATA ap_filter_rec_t *ap_core_input_filter_handle;
 
 /* magic pointer for ErrorDocument xxx "default" */
@@ -3759,10 +3758,6 @@ static int core_create_req(request_rec *r)
     }
     else {
         req_cfg->bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
-        if (!r->prev) {
-            ap_add_input_filter_handle(ap_net_time_filter_handle,
-                                       NULL, r, r->connection);
-        }
     }
 
     ap_set_module_config(r->request_config, &core_module, req_cfg);
@@ -3821,10 +3816,9 @@ static conn_rec *core_create_conn(apr_pool_t *ptrans, server_rec *server,
 static int core_pre_connection(conn_rec *c, void *csd)
 {
     core_net_rec *net = apr_palloc(c->pool, sizeof(*net));
-
-#ifdef AP_MPM_DISABLE_NAGLE_ACCEPTED_SOCK
     apr_status_t rv;
 
+#ifdef AP_MPM_DISABLE_NAGLE_ACCEPTED_SOCK
     /* The Nagle algorithm says that we should delay sending partial
      * packets in hopes of getting more data.  We don't want to do
      * this; we are not telnet.  There are bad interactions between
@@ -3841,6 +3835,20 @@ static int core_pre_connection(conn_rec *c, void *csd)
                       "apr_socket_opt_set(APR_TCP_NODELAY)");
     }
 #endif
+
+    /* The core filter requires the timeout mode to be set, which
+     * incidentally sets the socket to be nonblocking.  If this
+     * is not initialized correctly, Linux - for example - will
+     * be initially blocking, while Solaris will be non blocking
+     * and any initial read will fail.
+     */
+    rv = apr_socket_timeout_set(csd, c->base_server->timeout);
+    if (rv != APR_SUCCESS) {
+        /* expected cause is that the client disconnected already */
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, rv, c,
+                      "apr_socket_timeout_set");
+    }
+
     net->c = c;
     net->in_ctx = NULL;
     net->out_ctx = NULL;
@@ -3887,9 +3895,6 @@ static void register_hooks(apr_pool_t *p)
     ap_core_input_filter_handle =
         ap_register_input_filter("CORE_IN", ap_core_input_filter,
                                  NULL, AP_FTYPE_NETWORK);
-    ap_net_time_filter_handle =
-        ap_register_input_filter("NET_TIME", ap_net_time_filter,
-                                 NULL, AP_FTYPE_PROTOCOL);
     ap_content_length_filter_handle =
         ap_register_output_filter("CONTENT_LENGTH", ap_content_length_filter,
                                   NULL, AP_FTYPE_PROTOCOL);
