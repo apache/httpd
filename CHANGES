@@ -24,6 +24,10 @@ Changes with Apache 2.3.0
 
 Changes with Apache 2.1.9
 
+  *) mod_proxy_ajp: mod_proxy_ajp sends empty SSL attributes for non SSL
+     connections. PR36883.
+     [William Barker <william.barker wilshire.com>, Ruediger Pluem]
+
   *) Elimiated the NET_TIME filter, restructuring the timeout logic.
      This provides a working mod_echo on all platforms, and ensures any
      custom protocol module is at least given an initial timeout value
