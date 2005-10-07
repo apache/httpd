@@ -104,12 +104,6 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
-    *) Fix CAN-2005-2700, mod_ssl SSLVerifyClient bug
-         http://svn.apache.org/viewcvs?rev=264800&view=rev
-       test case: perl-framework/t/security/CAN-2005-2700.t
-       +1: jorton, wrowe, trawick
-       wrowe cautions to backport to 2.2.x branch as well.
-
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
