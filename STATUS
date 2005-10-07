@@ -104,6 +104,20 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
+    *) Fix CAN-2005-2700, mod_ssl SSLVerifyClient bug
+         http://svn.apache.org/viewcvs?rev=264800&view=rev
+       test case: perl-framework/t/security/CAN-2005-2700.t
+       +1: jorton, wrowe, trawick
+       wrowe cautions to backport to 2.2.x branch as well.
+
+    *) SECURITY: CAN-2005-2970 (cve.mitre.org)
+       worker MPM: Fix a memory leak which can occur after an aborted
+       connection in some limited circumstances.
+       http://people.apache.org/~trawick/CAN-2005-2970.txt
+       +1: trawick, brianp
+       +0: wrowe [greg ames and jeff trawick were of two minds, I'm
+                  +1 on either patch they mutually agree upon.]
+
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
@@ -150,11 +164,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
        +1: pquerna, nd, wrowe
        Votes from before the integration branch: +1: jerenkrantz
 
-    *) Fix CAN-2005-2700, mod_ssl SSLVerifyClient bug
-         http://svn.apache.org/viewcvs?rev=264800&view=rev
-       test case: perl-framework/t/security/CAN-2005-2700.t
-       +1: jorton, wrowe, trawick
-       wrowe cautions to backport to 2.2.x branch as well.
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ please place SVN revisions from trunk here, so it is easy to
@@ -272,11 +281,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  server.  (old way: use system-specific configuration
                  knobs that affect all applications.)
 
-    *) SECURITY: CAN-2005-2970 (cve.mitre.org)
-       worker MPM: Fix a memory leak which can occur after an aborted
-       connection in some limited circumstances.
-       http://people.apache.org/~trawick/CAN-2005-2970.txt
-       +1: trawick, brianp
+    *) Fix all non-http protocol modules that were modeled after the
+       broken mod_echo.c example; remove the -initial- timeout setting
+       from NET_TIME (never inserted by non-request based protocols)
+       and move it to the core pre_connection logic, so every core
+       connection can read with timeout on Linux, Solaris, instead of
+       read (untimed) blocking on Linux, and failing read non-block on
+       Solaris.  Leaves NET_TIME intact until after the 2.0.x branch.
+         http://people.apache.org/~wrowe/httpd-2.0-proto-timeout.patch
+         +1: wrowe
+
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
