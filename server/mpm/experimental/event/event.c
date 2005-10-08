@@ -828,16 +828,6 @@ static void *listener_thread(apr_thread_t * thd, void *dummy)
      */
 #define TIMEOUT_FUDGE_FACTOR 100000
 
-    /* POLLSET_SCALE_FACTOR * ap_threads_per_child sets the size of
-     * the pollset.  I've seen 15 connections per active worker thread
-     * running SPECweb99. 
-     *
-     * However, with the newer apr_pollset, this is the number of sockets that
-     * we will return to any *one* call to poll().  Therefore, there is no
-     * reason to make it more than ap_threads_per_child.
-     */
-#define POLLSET_SCALE_FACTOR 1
-
     rc = apr_thread_mutex_create(&timeout_mutex, APR_THREAD_MUTEX_DEFAULT,
                                  tpool);
     if (rc != APR_SUCCESS) {
@@ -852,7 +842,7 @@ static void *listener_thread(apr_thread_t * thd, void *dummy)
 
     /* Create the main pollset */
     rc = apr_pollset_create(&event_pollset,
-                            ap_threads_per_child * POLLSET_SCALE_FACTOR,
+                            ap_threads_per_child,
                             tpool, APR_POLLSET_THREADSAFE);
     if (rc != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rc, ap_server_conf,
