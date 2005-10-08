@@ -930,13 +930,12 @@ static void *listener_thread(apr_thread_t * thd, void *dummy)
             }
             else {
                 /* A Listener Socket is ready for an accept() */
-                apr_pool_t *recycled_pool = NULL;
 
                 lr = (ap_listen_rec *) pt->baton;
 
-                ap_pop_pool(&recycled_pool, worker_queue_info);
+                ap_pop_pool(&ptrans, worker_queue_info);
 
-                if (recycled_pool == NULL) {
+                if (ptrans == NULL) {
                     /* create a new transaction pool for each accepted socket */
                     apr_allocator_t *allocator;
 
@@ -952,9 +951,6 @@ static void *listener_thread(apr_thread_t * thd, void *dummy)
                         signal_threads(ST_GRACEFUL);
                         return NULL;
                     }
-                }
-                else {
-                    ptrans = recycled_pool;
                 }
 
                 apr_pool_tag(ptrans, "transaction");
