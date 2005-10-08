@@ -583,8 +583,7 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
     int process_slot = ti->pid;
     apr_pool_t *tpool = apr_thread_pool_get(thd);
     void *csd = NULL;
-    apr_pool_t *ptrans;                /* Pool for per-transaction stuff */
-    apr_pool_t *recycled_pool = NULL;
+    apr_pool_t *ptrans = NULL;            /* Pool for per-transaction stuff */
     apr_pollset_t *pollset;
     apr_status_t rv;
     ap_listen_rec *lr;
@@ -624,8 +623,11 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
         if (listener_may_exit) break;
 
         if (!have_idle_worker) {
+            /* the following pops a recycled ptrans pool off a stack
+             * if there is one, in addition to reserving a worker thread
+             */
             rv = ap_queue_info_wait_for_idler(worker_queue_info,
-                                              &recycled_pool);
+                                              &ptrans);
             if (APR_STATUS_IS_EOF(rv)) {
                 break; /* we've been signaled to die now */
             }
@@ -713,18 +715,15 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
         } /* if/else */
 
         if (!listener_may_exit) {
-            /* create a new transaction pool for each accepted socket */
-            if (recycled_pool == NULL) {
+            if (ptrans == NULL) {
+                /* we can't use a recycled transaction pool this time.
+                 * create a new transaction pool */
                 apr_allocator_t *allocator;
 
                 apr_allocator_create(&allocator);
                 apr_allocator_max_free_set(allocator, ap_max_mem_free);
                 apr_pool_create_ex(&ptrans, pconf, NULL, allocator);
                 apr_allocator_owner_set(allocator, ptrans);
-            }
-            else {
-                ptrans = recycled_pool;
-                recycled_pool = NULL;
             }
             apr_pool_tag(ptrans, "transaction");
             rv = lr->accept_func(&csd, lr, ptrans);
@@ -761,14 +760,10 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
                     apr_socket_close(csd);
                     ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
                                  "ap_queue_push failed");
-                    recycled_pool = ptrans;
                 }
                 else {
                     have_idle_worker = 0;
                 }
-            }
-            else {
-                recycled_pool = ptrans;
             }
         }
         else {
@@ -823,6 +818,7 @@ static void * APR_THREAD_FUNC worker_thread(apr_thread_t *thd, void * dummy)
     free(ti);
 
     ap_scoreboard_image->servers[process_slot][thread_slot].pid = ap_my_pid;
+    ap_scoreboard_image->servers[process_slot][thread_slot].tid = apr_os_thread_current();
     ap_scoreboard_image->servers[process_slot][thread_slot].generation = ap_my_generation;
     ap_update_child_status_from_indexes(process_slot, thread_slot, SERVER_STARTING, NULL);
 
