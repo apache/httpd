@@ -336,9 +336,6 @@ AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result)
     case AP_MPMQ_IS_ASYNC:
         *result = 1;
         return APR_SUCCESS;
-    case AP_MPMQ_CUSTOM_WRITE:
-        *result = 0;
-        return APR_SUCCESS;
     case AP_MPMQ_HARD_LIMIT_DAEMONS:
         *result = server_limit;
         return APR_SUCCESS;
@@ -610,9 +607,8 @@ static int process_socket(apr_pool_t * p, apr_socket_t * sock,
          * accept() with a socket readability check, like Win32, 
          * and there are measurable delays before the
          * socket is readable due to the first data packet arriving,
-         * it might be better to create the cs on the listener thread,
-         * set the state to CONN_STATE_CHECK_REQUEST_LINE_READABLE,
-         * and give it to the event thread.
+         * it might be better to create the cs on the listener thread
+         * with the state set to CONN_STATE_CHECK_REQUEST_LINE_READABLE
          *
          * FreeBSD users will want to enable the HTTP accept filter 
          * module in their kernel for the highest performance
@@ -663,12 +659,11 @@ static int process_socket(apr_pool_t * p, apr_socket_t * sock,
         cs->expiration_time = ap_server_conf->keep_alive_timeout + time_now;
         apr_thread_mutex_lock(timeout_mutex);
         APR_RING_INSERT_TAIL(&timeout_head, cs, conn_state_t, timeout_list);
+        apr_thread_mutex_unlock(timeout_mutex);
 
         pt->status = 0;
         /* Add work to pollset. These are always read events */
         rc = apr_pollset_add(event_pollset, &cs->pfd);
-
-        apr_thread_mutex_unlock(timeout_mutex);
 
         if (rc != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rc, ap_server_conf,
@@ -833,16 +828,6 @@ static void *listener_thread(apr_thread_t * thd, void *dummy)
      */
 #define TIMEOUT_FUDGE_FACTOR 100000
 
-    /* POLLSET_SCALE_FACTOR * ap_threads_per_child sets the size of
-     * the pollset.  I've seen 15 connections per active worker thread
-     * running SPECweb99. 
-     *
-     * However, with the newer apr_pollset, this is the number of sockets that
-     * we will return to any *one* call to poll().  Therefore, there is no
-     * reason to make it more than ap_threads_per_child.
-     */
-#define POLLSET_SCALE_FACTOR 1
-
     rc = apr_thread_mutex_create(&timeout_mutex, APR_THREAD_MUTEX_DEFAULT,
                                  tpool);
     if (rc != APR_SUCCESS) {
@@ -857,7 +842,7 @@ static void *listener_thread(apr_thread_t * thd, void *dummy)
 
     /* Create the main pollset */
     rc = apr_pollset_create(&event_pollset,
-                            ap_threads_per_child * POLLSET_SCALE_FACTOR,
+                            ap_threads_per_child,
                             tpool, APR_POLLSET_THREADSAFE);
     if (rc != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rc, ap_server_conf,
@@ -945,13 +930,12 @@ static void *listener_thread(apr_thread_t * thd, void *dummy)
             }
             else {
                 /* A Listener Socket is ready for an accept() */
-                apr_pool_t *recycled_pool = NULL;
 
                 lr = (ap_listen_rec *) pt->baton;
 
-                ap_pop_pool(&recycled_pool, worker_queue_info);
+                ap_pop_pool(&ptrans, worker_queue_info);
 
-                if (recycled_pool == NULL) {
+                if (ptrans == NULL) {
                     /* create a new transaction pool for each accepted socket */
                     apr_allocator_t *allocator;
 
@@ -967,9 +951,6 @@ static void *listener_thread(apr_thread_t * thd, void *dummy)
                         signal_threads(ST_GRACEFUL);
                         return NULL;
                     }
-                }
-                else {
-                    ptrans = recycled_pool;
                 }
 
                 apr_pool_tag(ptrans, "transaction");
