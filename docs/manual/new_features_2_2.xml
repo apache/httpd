@@ -69,7 +69,9 @@
       <dt>Regular Expression Library Updated</dt>
       <dd>Version 5.0 of the 
           <a href="http://www.pcre.org/">Perl Compatible Regular Expression
-          Library</a> (PCRE) is now included.</dd>
+          Library</a> (PCRE) is now included.  <program>httpd</program> can be
+          configured to use a system installation of PCRE by passing the
+          <code>--with-pcre</code> flag to configure.</dd>
 
       <dt>Smart Filtering</dt>
       <dd><module>mod_filter</module> introduces dynamic configuration
@@ -176,6 +178,31 @@
       <dt>Monitor hook added</dt>
       <dd>Monitor hook enables modules to run regular/scheduled jobs
           in the parent (root) process.</dd>
+          
+      <dt>Regular expression API changes</dt>
+
+      <dd>The <code>pcreposix.h</code> header is no longer available;
+      it is replaced by the new <code>ap_regex.h</code> header.  The
+      POSIX.2 <code>regex.h</code> implementation exposed by the old
+      header is now available under the <code>ap_</code> namespace
+      from <code>ap_regex.h</code>.  Calls to <code>regcomp</code>, 
+      <code>regexec</code> and so on can be replaced by calls to
+      <code>ap_regcomp</code>, <code>ap_regcomp</code>.</dd>
+
+      <dt>DBD Framework (SQL Database API)</dt>
+
+      <dd><p>With Apache 1.x and 2.0, modules requiring an SQL backend
+      had to take responsibility for managing it themselves.  Apart
+      from reinventing the wheel, this can be very inefficient, for
+      example when several modules each maintain their own connections.</p>
+      <p>Apache 2.1 and up provides the <code>ap_dbd</code> API for
+      managing database connections (including optimised strategies
+      for threaded and unthreaded MPMs), while APR 1.2 and up provides
+      the <code>apr_dbd</code> API for interacting with the database.</p>
+      <p>New modules SHOULD now use these APIs for all SQL database
+      operations.  Existing applications SHOULD be upgraded to use it
+      where feasible, either transparently or as a recommended option
+      to their users.</p></dd>
     </dl>
   </section>
 </manualpage>
