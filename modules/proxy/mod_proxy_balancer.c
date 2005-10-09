@@ -187,6 +187,8 @@ static proxy_worker *find_session_route(proxy_balancer *balancer,
                                         char **route,
                                         char **url)
 {
+    proxy_worker *worker = NULL;
+
     if (!balancer->sticky)
         return NULL;
     /* Try to find the sticky route inside url */
@@ -208,7 +210,7 @@ static proxy_worker *find_session_route(proxy_balancer *balancer,
         /* We have a route in path or in cookie
          * Find the worker that has this route defined.
          */
-        proxy_worker *worker =  find_route_worker(balancer, *route);
+        worker = find_route_worker(balancer, *route);
         if (worker && !PROXY_WORKER_IS_USABLE(worker)) {
             /* We have a worker that is unusable.
              * It can be in error or disabled, but in case
