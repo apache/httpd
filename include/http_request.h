@@ -237,7 +237,7 @@ AP_DECLARE(void) ap_allow_standard_methods(request_rec *r, int reset, ...);
 
 #ifdef CORE_PRIVATE
 /**
- * Function called by main.c to handle first-level request 
+ * Process a top-level request from a client
  * @param r The current request
  */
 void ap_process_request(request_rec *);
