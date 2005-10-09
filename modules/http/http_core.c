@@ -124,7 +124,7 @@ static int ap_process_http_async_connection(conn_rec *c)
             ap_update_child_status(c->sbh, SERVER_BUSY_WRITE, r);
             if (r->status == HTTP_OK) {
                 cs->state = CONN_STATE_HANDLER;
-                ap_process_request(r);
+                ap_process_async_request(r);
             }
 
             if (ap_extended_status)

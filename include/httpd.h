@@ -1066,6 +1066,8 @@ struct conn_rec {
     conn_state_t *cs;
     /** Is there data pending in the input filters? */ 
     int data_in_input_filters;
+    /** Is there data pending in the output filters? */
+    int data_in_output_filters;
 };
 
 /** 

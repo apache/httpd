@@ -307,6 +307,11 @@ int ap_core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
     return APR_SUCCESS;
 }
 
+static void setaside_remaining_output(ap_filter_t *f,
+                                      core_output_filter_ctx_t *ctx,
+                                      apr_bucket_brigade *bb,
+                                      int make_a_copy, conn_rec *c);
+
 static apr_status_t send_brigade_nonblocking(apr_socket_t *s,
                                              apr_bucket_brigade *bb,
                                              apr_size_t *bytes_written,
@@ -376,9 +381,13 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
         if (new_bb != NULL) {
             APR_BRIGADE_CONCAT(bb, new_bb);
         }
+        c->data_in_output_filters = 0;
     }
     else if (new_bb != NULL) {
         bb = new_bb;
+    }
+    else {
+        return;
     }
 
     /* Scan through the brigade and decide whether to attempt a write,
@@ -411,11 +420,10 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
         apr_status_t rv = send_brigade_nonblocking(net->client_socket, bb,
                                                    &(ctx->bytes_written), c);
         if (APR_STATUS_IS_EAGAIN(rv)) {
-            return APR_SUCCESS;
+            rv = APR_SUCCESS;
         }
-        else {
-            return rv;
-        }
+        setaside_remaining_output(f, ctx, bb, 0, c);
+        return rv;
     }
     
     bytes_in_brigade = 0;
@@ -473,24 +481,35 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
         }
     }
 
+    setaside_remaining_output(f, ctx, bb, 1, c);
+    return APR_SUCCESS;
+}
+
+static void setaside_remaining_output(ap_filter_t *f,
+                                      core_output_filter_ctx_t *ctx,
+                                      apr_bucket_brigade *bb,
+                                      int make_a_copy, conn_rec *c)
+{
+    if (bb == NULL) {
+        return;
+    }
+    remove_empty_buckets(bb);
     if (!APR_BRIGADE_EMPTY(bb)) {
-        if (new_bb == NULL) {
-            /* Everything in bb must have been in ctx->buffered_bb
-             * before this function was called.  Thus we can just
-             * move it back, without incurring the potential copying
-             * cost of a bucket setaside.
-             */
-            ctx->buffered_bb = bb;
-        }
-        else {
+        c->data_in_output_filters = 1;
+        if (make_a_copy) {
             /* XXX should this use a separate deferred write pool, like
              * the original ap_core_output_filter?
              */
             ap_save_brigade(f, &(ctx->buffered_bb), &bb, c->pool);
+            apr_brigade_destroy(bb);
+        }
+        else {
+            ctx->buffered_bb = bb;
         }
     }
-
-    return APR_SUCCESS;
+    else {
+        apr_brigade_destroy(bb);
+    }
 }
  
 #ifndef APR_MAX_IOVEC_SIZE 
@@ -533,18 +552,23 @@ static apr_status_t send_brigade_nonblocking(apr_socket_t *s,
             if ((apr_file_flags_get(fd) & APR_SENDFILE_ENABLED) &&
                 (bucket->length >= AP_MIN_SENDFILE_BYTES)) {
                 did_sendfile = 1;
-                (void)apr_socket_opt_set(s, APR_TCP_NOPUSH, 1);
-                rv = writev_nonblocking(s, vec, nvec, bb, bytes_written, c);
-                nvec = 0;
-                if (rv != APR_SUCCESS) {
-                    (void)apr_socket_opt_set(s, APR_TCP_NOPUSH, 0);
-                    return rv;
+                if (nvec > 0) {
+                    (void)apr_socket_opt_set(s, APR_TCP_NOPUSH, 1);
+                    rv = writev_nonblocking(s, vec, nvec, bb, bytes_written, c);
+                    nvec = 0;
+                    if (rv != APR_SUCCESS) {
+                        (void)apr_socket_opt_set(s, APR_TCP_NOPUSH, 0);
+                        return rv;
+                    }
                 }
                 rv = sendfile_nonblocking(s, bb, bytes_written, c);
-                (void)apr_socket_opt_set(s, APR_TCP_NOPUSH, 0);
+                if (nvec > 0) {
+                    (void)apr_socket_opt_set(s, APR_TCP_NOPUSH, 0);
+                }
                 if (rv != APR_SUCCESS) {
                     return rv;
                 }
+                break;
             }
         }
 #endif /* APR_HAS_SENDFILE */
@@ -566,6 +590,7 @@ static apr_status_t send_brigade_nonblocking(apr_socket_t *s,
                 if (rv != APR_SUCCESS) {
                     return rv;
                 }
+                break;
             }
         }
     }
@@ -703,21 +728,18 @@ static apr_status_t sendfile_nonblocking(apr_socket_t *s,
     file_length = bucket->length;
     file_offset = bucket->start;
 
-    while (bytes_written < file_length) {
+    if (bytes_written < file_length) {
         apr_size_t n = file_length - bytes_written;
         rv = apr_socket_sendfile(s, fd, NULL, &file_offset, &n, 0);
         if (rv == APR_SUCCESS) {
             bytes_written += n;
             file_offset += n;
         }
-        else {
-            break;
-        }
     }
     if ((logio_add_bytes_out != NULL) && (bytes_written > 0)) {
         logio_add_bytes_out(c, bytes_written);
     }
-    cumulative_bytes_written += bytes_written;
+    *cumulative_bytes_written += bytes_written;
     if ((bytes_written < file_length) && (bytes_written > 0)) {
         apr_bucket_split(bucket, bytes_written);
         APR_BUCKET_REMOVE(bucket);
