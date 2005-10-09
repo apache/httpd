@@ -420,6 +420,29 @@ ap_dbd_t *ap_dbd_acquire(request_rec *r)
     }
     return req->conn;
 }
+ap_dbd_t *ap_dbd_cacquire(conn_rec *c)
+{
+    svr_cfg *svr;
+    dbd_pool_rec *req = ap_get_module_config(c->conn_config, &dbd_module);
+    if (!req) {
+        req = apr_palloc(c->pool, sizeof(dbd_pool_rec));
+        req->conn = ap_dbd_open(c->pool, c->base_server);
+        if (req->conn) {
+            svr = ap_get_module_config(c->base_server->module_config, &dbd_module);
+            ap_set_module_config(c->conn_config, &dbd_module, req);
+            if (svr->persist) {
+                req->dbpool = svr->dbpool;
+                apr_pool_cleanup_register(c->pool, req, dbd_release,
+                                          apr_pool_cleanup_null);
+            }
+            else {
+                apr_pool_cleanup_register(c->pool, req->conn, dbd_close,
+                                          apr_pool_cleanup_null);
+            }
+        }
+    }
+    return req->conn;
+}
 #else
 ap_dbd_t *ap_dbd_acquire(request_rec *r)
 {
@@ -428,10 +451,28 @@ ap_dbd_t *ap_dbd_acquire(request_rec *r)
     if (!ret) {
         svr = ap_get_module_config(r->server->module_config, &dbd_module);
         ret = ap_dbd_open(r->pool, r->server);
-        if ( ret ) {
+        if (ret) {
             ap_set_module_config(r->request_config, &dbd_module, ret);
             if (!svr->persist) {
                 apr_pool_cleanup_register(r->pool, svr->conn, dbd_close,
+                                          apr_pool_cleanup_null);
+            }
+            /* if persist then dbd_open registered cleanup on proc pool */
+        }
+    }
+    return ret;
+}
+ap_dbd_t *ap_dbd_cacquire(conn_rec *c)
+{
+    svr_cfg *svr;
+    ap_dbd_t *ret = ap_get_module_config(c->conn_config, &dbd_module);
+    if (!ret) {
+        svr = ap_get_module_config(c->base_server->module_config, &dbd_module);
+        ret = ap_dbd_open(c->pool, c->base_server);
+        if (ret) {
+            ap_set_module_config(c->conn_config, &dbd_module, ret);
+            if (!svr->persist) {
+                apr_pool_cleanup_register(c->pool, svr->conn, dbd_close,
                                           apr_pool_cleanup_null);
             }
             /* if persist then dbd_open registered cleanup on proc pool */
@@ -449,6 +490,7 @@ static void dbd_hooks(apr_pool_t *pool)
     APR_REGISTER_OPTIONAL_FN(ap_dbd_open);
     APR_REGISTER_OPTIONAL_FN(ap_dbd_close);
     APR_REGISTER_OPTIONAL_FN(ap_dbd_acquire);
+    APR_REGISTER_OPTIONAL_FN(ap_dbd_cacquire);
     APR_REGISTER_OPTIONAL_FN(ap_dbd_prepare);
     apr_dbd_init(pool);
 }
