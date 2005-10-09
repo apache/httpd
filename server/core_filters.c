@@ -348,8 +348,17 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
     apr_size_t bytes_in_brigade, non_file_bytes_in_brigade;
        
     if (ctx == NULL) {
+        apr_status_t rv;
         ctx = apr_pcalloc(c->pool, sizeof(*ctx));
         net->out_ctx = (core_output_filter_ctx_t *)ctx;
+        rv = apr_socket_timeout_set(net->client_socket, 0);
+        if (rv != APR_SUCCESS) {
+            return rv;
+        }
+        rv = apr_socket_opt_set(net->client_socket, APR_SO_NONBLOCK, 1);
+        if (rv != APR_SUCCESS) {
+            return rv;
+        }
     }
 
     if (new_bb != NULL) {
@@ -501,18 +510,8 @@ static apr_status_t send_brigade_nonblocking(apr_socket_t *s,
 {
     apr_bucket *bucket, *next;
     apr_status_t rv;
-    apr_interval_time_t old_timeout;
     struct iovec vec[MAX_IOVEC_TO_WRITE];
     apr_size_t nvec = 0;
-
-    rv = apr_socket_timeout_get(s, &old_timeout);
-    if (rv != APR_SUCCESS) {
-        return rv;
-    }
-    rv = apr_socket_timeout_set(s, 0);
-    if (rv != APR_SUCCESS) {
-        return rv;
-    }
 
     remove_empty_buckets(bb);
 
@@ -539,13 +538,11 @@ static apr_status_t send_brigade_nonblocking(apr_socket_t *s,
                 nvec = 0;
                 if (rv != APR_SUCCESS) {
                     (void)apr_socket_opt_set(s, APR_TCP_NOPUSH, 0);
-                    (void)apr_socket_timeout_set(s, old_timeout);
                     return rv;
                 }
                 rv = sendfile_nonblocking(s, bb, bytes_written, c);
                 (void)apr_socket_opt_set(s, APR_TCP_NOPUSH, 0);
                 if (rv != APR_SUCCESS) {
-                    (void)apr_socket_timeout_set(s, old_timeout);
                     return rv;
                 }
             }
@@ -556,7 +553,6 @@ static apr_status_t send_brigade_nonblocking(apr_socket_t *s,
             apr_size_t length;
             rv = apr_bucket_read(bucket, &data, &length, APR_BLOCK_READ);
             if (rv != APR_SUCCESS) {
-                (void)apr_socket_timeout_set(s, old_timeout);
                 return rv;
             }
             /* reading may have split the bucket, so recompute next: */
@@ -568,7 +564,6 @@ static apr_status_t send_brigade_nonblocking(apr_socket_t *s,
                 rv = writev_nonblocking(s, vec, nvec, bb, bytes_written, c);
                 nvec = 0;
                 if (rv != APR_SUCCESS) {
-                    (void)apr_socket_timeout_set(s, old_timeout);
                     return rv;
                 }
             }
@@ -578,14 +573,12 @@ static apr_status_t send_brigade_nonblocking(apr_socket_t *s,
     if (nvec > 0) {
         rv = writev_nonblocking(s, vec, nvec, bb, bytes_written, c);
         if (rv != APR_SUCCESS) {
-            (void)apr_socket_timeout_set(s, old_timeout);
             return rv;
         }
     }
 
     remove_empty_buckets(bb);
 
-    (void)apr_socket_timeout_set(s, old_timeout);
     return APR_SUCCESS;
 }
 
@@ -604,21 +597,35 @@ static apr_status_t send_brigade_blocking(apr_socket_t *s,
                                           apr_size_t *bytes_written,
                                           conn_rec *c)
 {
+    apr_status_t rv, arv;
+
+    rv = apr_socket_timeout_set(s, c->base_server->timeout);
+    if (rv != APR_SUCCESS) {
+        return rv;
+    }
+
+    rv = APR_SUCCESS;
     while (!APR_BRIGADE_EMPTY(bb)) {
-        apr_status_t rv = send_brigade_nonblocking(s, bb, bytes_written, c);
+        rv = send_brigade_nonblocking(s, bb, bytes_written, c);
         if (rv != APR_SUCCESS) {
             if (APR_STATUS_IS_EAGAIN(rv)) {
                 rv = apr_wait_for_io_or_timeout(NULL, s, 0);
                 if (rv != APR_SUCCESS) {
-                    return rv;
+                    break;
                 }
             }
             else {
-                return rv;
+                break;
             }
         }
     }
-    return APR_SUCCESS;
+    arv = apr_socket_timeout_set(s, 0);
+    if (rv != APR_SUCCESS) {
+        return rv;
+    }
+    else {
+        return arv;
+    }
 }
 
 static apr_status_t writev_nonblocking(apr_socket_t *s,
