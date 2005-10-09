@@ -6,6 +6,16 @@ APACHE_MODPATH_INIT(filters)
 
 APACHE_MODULE(ext_filter, external filter module, , , most)
 APACHE_MODULE(include, Server Side Includes, , , yes)
+APACHE_MODULE(filter, Smart Filtering, , , yes)
+
+if test "$ac_cv_ebcdic" = "yes"; then
+# mod_charset_lite can be very useful on an ebcdic system,
+#   so include it by default
+    APACHE_MODULE(charset_lite, character set translation, , , yes)
+else
+    APACHE_MODULE(charset_lite, character set translation, , , no)
+fi
+
 
 APACHE_MODULE(deflate, Deflate transfer encoding support, , , most, [
   AC_ARG_WITH(z, APACHE_HELP_STRING(--with-z=DIR,use a specific zlib library),

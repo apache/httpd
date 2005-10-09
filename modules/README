@@ -10,6 +10,9 @@ cache/
   This directory houses modules that implement file and data caching
   capability.
 
+database/
+  The apache DBD framework manages connections to SQL backends efficiently.
+
 dav/
   This directory houses modules that implement WebDAV functionality.
 

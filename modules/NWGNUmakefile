@@ -17,6 +17,7 @@ SUBDIRS = \
 	metadata \
 	proxy \
 	filters \
+	database \
 	$(EOLIST) 
 
 # If LDAPSDK has been defined then build the util_ldap module
