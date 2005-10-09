@@ -1403,6 +1403,7 @@ void ssl_io_filter_init(conn_rec *c, SSL *ssl)
 
     filter_ctx = apr_palloc(c->pool, sizeof(ssl_filter_ctx_t));
 
+    filter_ctx->nobuffer        = 0;
     filter_ctx->pOutputFilter   = ap_add_output_filter(ssl_io_filter,
                                                    filter_ctx, NULL, c);
 

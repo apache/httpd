@@ -99,10 +99,12 @@ CURRENT RELEASE NOTES:
 
     * All commits to branches/2.0.x must be reflected in SVN trunk,
       as well, if they apply.  Logical progression is commit to trunk,
-      get feedback and votes in STATUS, and then merge into branches/2.0.x.
+      get feedback and votes on list or in STATUS, then merge into 
+      branches/2.2.x, and finally merge into branches/2.0.x, as applicable.
 
 
 RELEASE SHOWSTOPPERS:
+
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
@@ -222,11 +224,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         2.0.x Patch: http://issues.apache.org/bugzilla/attachment.cgi?id=15297
         +1: pquerna, jerenkrantz, colm
         jerenkrantz notes: I do prefer the version from r190033 (own if check).
-
-     *) mod_ssl: Fix buffering in SSL output filter.
-        http://svn.apache.org/viewcvs?rev=189971&view=rev
-        PR: 35279
-        +1: jorton, jerenkrantz
 
      *) Reverse Proxy fixes: <Location> bug and Cookie support
         Patch is at
