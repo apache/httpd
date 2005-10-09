@@ -1,6 +1,12 @@
                                                         -*- coding: utf-8 -*-
 Changes in Apache 2.3.0 async-dev R&D branch
 
+  *) Added an End-Of-Request bucket type.  The logging of a request and
+     the freeing of its pool are now done when the EOR bucket is destroyed.
+     This has the effect of delaying the logging until right after the last
+     of the response is sent; ap_core_output_filter() calls the access logger
+     indirectly when it destroys the EOR bucket. [Brian Pane]
+
   *) Rewrite of ap_core_output_filter to do nonblocking writes [Brian Pane]
 
   *) Added new connection states for handler and write completion

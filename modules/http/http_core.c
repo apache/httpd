@@ -143,8 +143,6 @@ static int ap_process_http_async_connection(conn_rec *c)
                  */
                 cs->state = CONN_STATE_READ_REQUEST_LINE;
             }
-
-            apr_pool_destroy(r->pool);
         }
         else {   /* ap_read_request failed - client may have closed */
             cs->state = CONN_STATE_LINGER;
@@ -181,7 +179,6 @@ static int ap_process_http_connection(conn_rec *c)
             break;
  
         ap_update_child_status(c->sbh, SERVER_BUSY_KEEPALIVE, r);
-        apr_pool_destroy(r->pool);
  
         if (ap_graceful_stop_signalled())
             break;

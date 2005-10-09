@@ -354,6 +354,36 @@ AP_DECLARE(int) ap_location_walk(request_rec *r);
 AP_DECLARE(int) ap_directory_walk(request_rec *r);
 AP_DECLARE(int) ap_file_walk(request_rec *r);
 
+/** End Of REQUEST (EOR) bucket */
+AP_DECLARE_DATA extern const apr_bucket_type_t ap_bucket_type_eor;
+
+/**
+ * Determine if a bucket is an End Of REQUEST (EOR) bucket
+ * @param e The bucket to inspect
+ * @return true or false
+ */
+#define AP_BUCKET_IS_EOR(e)         (e->type == &ap_bucket_type_eor)
+
+/**
+ * Make the bucket passed in an End Of REQUEST (EOR) bucket
+ * @param b The bucket to make into an EOR bucket
+ * @param r The request to destroy when this bucket is destroyed
+ * @return The new bucket, or NULL if allocation failed
+ */
+AP_DECLARE(apr_bucket *) ap_bucket_eor_make(apr_bucket *b, request_rec *r);
+
+/**
+ * Create a bucket referring to an End Of REQUEST (EOR). This bucket
+ * holds a pointer to the request_rec, so that the request can be
+ * destroyed right after all of the output has been sent to the client.
+ *
+ * @param list The freelist from which this bucket should be allocated
+ * @param r The request to destroy when this bucket is destroyed
+ * @return The new bucket, or NULL if allocation failed
+ */
+AP_DECLARE(apr_bucket *) ap_bucket_eor_create(apr_bucket_alloc_t *list,
+                                              request_rec *r);
+
 #ifdef __cplusplus
 }
 #endif

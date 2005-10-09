@@ -234,6 +234,8 @@ static void check_pipeline_flush(request_rec *r)
 void ap_process_request(request_rec *r)
 {
     int access_status;
+    apr_bucket_brigade *bb;
+    apr_bucket *b;
 
     /* Give quick handlers a shot at serving the request on the fast
      * path, bypassing all of the other Apache hooks.
@@ -271,6 +273,15 @@ void ap_process_request(request_rec *r)
         ap_die(access_status, r);
     }
     
+    /* Send an EOR bucket through the output filter chain.  When
+     * this bucket is destroyed, the request will be logged and
+     * its pool will be freed
+     */
+    bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
+    b = ap_bucket_eor_create(r->connection->bucket_alloc, r);
+    APR_BRIGADE_INSERT_HEAD(bb, b);
+    ap_pass_brigade(r->connection->output_filters, bb);
+
     /*
      * We want to flush the last packet if this isn't a pipelining connection
      * *before* we start into logging.  Suppose that the logging causes a DNS
@@ -280,7 +291,6 @@ void ap_process_request(request_rec *r)
      */
     check_pipeline_flush(r);
     ap_update_child_status(r->connection->sbh, SERVER_BUSY_LOG, r);
-    ap_run_log_transaction(r);
     if (ap_extended_status)
         ap_time_process_request(r->connection->sbh, STOP_PREQUEST);
 }
