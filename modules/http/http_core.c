@@ -130,18 +130,9 @@ static int ap_process_http_async_connection(conn_rec *c)
             if (ap_extended_status)
                 ap_increment_counts(c->sbh, r);
 
-            if (c->keepalive != AP_CONN_KEEPALIVE || c->aborted 
-                    || ap_graceful_stop_signalled()) {
+            if (cs->state != CONN_STATE_WRITE_COMPLETION) {
+                /* Something went wrong; close the connection */
                 cs->state = CONN_STATE_LINGER;
-            }
-            else if (!c->data_in_input_filters) {
-                cs->state = CONN_STATE_CHECK_REQUEST_LINE_READABLE;
-            }
-            else {
-                /* else we are pipelining.  Return to READ_REQUEST_LINE state
-                 *  and stay in the loop
-                 */
-                cs->state = CONN_STATE_READ_REQUEST_LINE;
             }
         }
         else {   /* ap_read_request failed - client may have closed */

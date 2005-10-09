@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes in Apache 2.3.0 async-dev R&D branch
 
+  *) For asynchronous MPMs, moved responsibility for write completion from
+     the core to the MPM.  [Brian Pane]
+
   *) Added an End-Of-Request bucket type.  The logging of a request and
      the freeing of its pool are now done when the EOR bucket is destroyed.
      This has the effect of delaying the logging until right after the last

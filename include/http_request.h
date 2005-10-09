@@ -237,10 +237,19 @@ AP_DECLARE(void) ap_allow_standard_methods(request_rec *r, int reset, ...);
 
 #ifdef CORE_PRIVATE
 /**
- * Process a top-level request from a client
+ * Process a top-level request from a client, and synchronously write
+ * the response to the client
  * @param r The current request
  */
 void ap_process_request(request_rec *);
+
+/**
+ * Process a top-level request from a client, allowing some or all of
+ * the response to remain buffered in the core output filter for later,
+ * asynchronous write completion
+ * @param r The current request
+ */
+void ap_process_async_request(request_rec *);
 
 /**
  * Kill the current request

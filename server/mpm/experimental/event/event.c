@@ -636,6 +636,27 @@ static int process_socket(apr_pool_t * p, apr_socket_t * sock,
             cs->state = CONN_STATE_LINGER;
         }
     }
+    
+    if (cs->state == CONN_STATE_WRITE_COMPLETION) {
+        /* For now, do blocking writes in this thread to transfer the
+         * rest of the response.  TODO: Hand off this connection to a
+         * pollset for asynchronous write completion.
+         */
+        apr_bucket_brigade *bb = apr_brigade_create(c->pool, c->bucket_alloc);
+        apr_bucket *b = apr_bucket_flush_create(c->bucket_alloc);
+        APR_BRIGADE_INSERT_HEAD(bb, b);
+        ap_pass_brigade(c->output_filters, bb);
+        if (c->keepalive != AP_CONN_KEEPALIVE || c->aborted || 
+            ap_graceful_stop_signalled()) {
+            c->cs->state = CONN_STATE_LINGER;
+        }
+        else if (c->data_in_input_filters) {
+            cs->state = CONN_STATE_READ_REQUEST_LINE;
+        }
+        else {
+            cs->state = CONN_STATE_CHECK_REQUEST_LINE_READABLE;
+        }
+    }
 
     if (cs->state == CONN_STATE_LINGER) {
         ap_lingering_close(c);
