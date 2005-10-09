@@ -644,9 +644,21 @@ static int process_socket(apr_pool_t * p, apr_socket_t * sock,
          */
         apr_bucket_brigade *bb = apr_brigade_create(c->pool, c->bucket_alloc);
         apr_bucket *b = apr_bucket_flush_create(c->bucket_alloc);
+        ap_filter_t *output_filter = c->output_filters;
+        apr_status_t rv;
         APR_BRIGADE_INSERT_HEAD(bb, b);
-        ap_pass_brigade(c->output_filters, bb);
-        if (c->keepalive != AP_CONN_KEEPALIVE || c->aborted || 
+        while (output_filter->next != NULL) {
+            output_filter = output_filter->next;
+        }
+        rv = output_filter->frec->filter_func.out_func(output_filter, bb);
+        if (rv != APR_SUCCESS) {
+            /* XXX log error */
+            cs->state = CONN_STATE_LINGER;
+        }
+        else if (c->data_in_output_filters) {
+            cs->state = CONN_STATE_WRITE_COMPLETION;
+        }
+        else if (c->keepalive != AP_CONN_KEEPALIVE || c->aborted || 
             ap_graceful_stop_signalled()) {
             c->cs->state = CONN_STATE_LINGER;
         }
