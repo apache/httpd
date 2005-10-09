@@ -322,16 +322,21 @@ static apr_status_t send_brigade_blocking(apr_socket_t *s,
 static apr_status_t writev_nonblocking(apr_socket_t *s,
                                        struct iovec *vec, apr_size_t nvec,
                                        apr_bucket_brigade *bb,
-                                       apr_size_t *cumulative_bytes_written);
+                                       apr_size_t *cumulative_bytes_written,
+                                       conn_rec *c);
 
 static apr_status_t sendfile_nonblocking(apr_socket_t *s,
                                          apr_bucket_brigade *bb,
-                                         apr_size_t *cumulative_bytes_written);
+                                         apr_size_t *cumulative_bytes_written,
+                                         conn_rec *c);
 
 #define THRESHOLD_MIN_WRITE 4096
 #define THRESHOLD_MAX_BUFFER 65536
 
-/* XXX Add mod_logio support back into ap_core_output_filter */
+/* Optional function coming from mod_logio, used for logging of output
+ * traffic
+ */
+extern APR_OPTIONAL_FN_TYPE(ap_logio_add_bytes_out) *logio_add_bytes_out;
 
 apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
 {
@@ -530,14 +535,14 @@ static apr_status_t send_brigade_nonblocking(apr_socket_t *s,
                 (bucket->length >= AP_MIN_SENDFILE_BYTES)) {
                 did_sendfile = 1;
                 (void)apr_socket_opt_set(s, APR_TCP_NOPUSH, 1);
-                rv = writev_nonblocking(s, vec, nvec, bb, bytes_written);
+                rv = writev_nonblocking(s, vec, nvec, bb, bytes_written, c);
                 nvec = 0;
                 if (rv != APR_SUCCESS) {
                     (void)apr_socket_opt_set(s, APR_TCP_NOPUSH, 0);
                     (void)apr_socket_timeout_set(s, old_timeout);
                     return rv;
                 }
-                rv = sendfile_nonblocking(s, bb, bytes_written);
+                rv = sendfile_nonblocking(s, bb, bytes_written, c);
                 (void)apr_socket_opt_set(s, APR_TCP_NOPUSH, 0);
                 if (rv != APR_SUCCESS) {
                     (void)apr_socket_timeout_set(s, old_timeout);
@@ -560,7 +565,7 @@ static apr_status_t send_brigade_nonblocking(apr_socket_t *s,
             vec[nvec].iov_len = length;
             nvec++;
             if (nvec == MAX_IOVEC_TO_WRITE) {
-                rv = writev_nonblocking(s, vec, nvec, bb, bytes_written);
+                rv = writev_nonblocking(s, vec, nvec, bb, bytes_written, c);
                 nvec = 0;
                 if (rv != APR_SUCCESS) {
                     (void)apr_socket_timeout_set(s, old_timeout);
@@ -571,7 +576,7 @@ static apr_status_t send_brigade_nonblocking(apr_socket_t *s,
     }
 
     if (nvec > 0) {
-        rv = writev_nonblocking(s, vec, nvec, bb, bytes_written);
+        rv = writev_nonblocking(s, vec, nvec, bb, bytes_written, c);
         if (rv != APR_SUCCESS) {
             (void)apr_socket_timeout_set(s, old_timeout);
             return rv;
@@ -619,7 +624,8 @@ static apr_status_t send_brigade_blocking(apr_socket_t *s,
 static apr_status_t writev_nonblocking(apr_socket_t *s,
                                        struct iovec *vec, apr_size_t nvec,
                                        apr_bucket_brigade *bb,
-                                       apr_size_t *cumulative_bytes_written)
+                                       apr_size_t *cumulative_bytes_written,
+                                       conn_rec *c)
 {
     apr_status_t rv = APR_SUCCESS;
     apr_size_t bytes_written = 0, bytes_to_write = 0;
@@ -660,13 +666,17 @@ static apr_status_t writev_nonblocking(apr_socket_t *s,
             break;
         }
     }
+    if ((logio_add_bytes_out != NULL) && (bytes_written > 0)) {
+        logio_add_bytes_out(c, bytes_written);
+    }
     *cumulative_bytes_written += bytes_written;
     return rv;
 }
 
 static apr_status_t sendfile_nonblocking(apr_socket_t *s,
                                          apr_bucket_brigade *bb,
-                                         apr_size_t *cumulative_bytes_written)
+                                         apr_size_t *cumulative_bytes_written,
+                                         conn_rec *c)
 {
     apr_status_t rv = APR_SUCCESS;
     apr_bucket *bucket;
@@ -696,6 +706,9 @@ static apr_status_t sendfile_nonblocking(apr_socket_t *s,
         else {
             break;
         }
+    }
+    if ((logio_add_bytes_out != NULL) && (bytes_written > 0)) {
+        logio_add_bytes_out(c, bytes_written);
     }
     cumulative_bytes_written += bytes_written;
     if ((bytes_written < file_length) && (bytes_written > 0)) {
