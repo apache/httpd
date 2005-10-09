@@ -2,12 +2,6 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
-  *) Move mod_dbd to /modules/database/ [Nick Kew]
-
-  *) Move mod_filter and mod_charset_lite to /modules/filters/ [Nick Kew]
-
-  *) Fix mod_dbd's config [Brian J. France <list firehawksystems.com>]
-
   *) httpd.exe/apachectl -V: display the DYNAMIC_MODULE_LIMIT setting, as
      in 1.3.  [Jeff Trawick]
 
@@ -23,6 +17,14 @@ Changes with Apache 2.3.0
      [Martin Kraemer, David Reid]
 
 Changes with Apache 2.1.9
+
+  *) Support dbd connections tied to the conn_rec [Nick Kew]
+
+  *) Move mod_dbd to /modules/database/ [Nick Kew]
+
+  *) Move mod_filter and mod_charset_lite to /modules/filters/ [Nick Kew]
+
+  *) Fix mod_dbd's config [Brian J. France <list firehawksystems.com>]
 
   *) mod_proxy_ajp: mod_proxy_ajp sends empty SSL attributes for non SSL
      connections. PR36883.
