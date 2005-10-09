@@ -58,6 +58,12 @@ AP_DECLARE(void) ap_dbd_close(server_rec*, ap_dbd_t*);
  */
 AP_DECLARE(ap_dbd_t*) ap_dbd_acquire(request_rec*);
 
+/* acquire a connection that will have the lifetime of a connection
+ * and MUST NOT be explicitly closed.  Return NULL on error.
+ * This is the preferred function for most applications.
+ */
+AP_DECLARE(ap_dbd_t*) ap_dbd_cacquire(conn_rec*);
+
 /* Prepare a statement for use by a client module */
 AP_DECLARE(void) ap_dbd_prepare(server_rec*, const char*, const char*);
 
@@ -65,6 +71,7 @@ AP_DECLARE(void) ap_dbd_prepare(server_rec*, const char*, const char*);
 APR_DECLARE_OPTIONAL_FN(ap_dbd_t*, ap_dbd_open, (apr_pool_t*, server_rec*));
 APR_DECLARE_OPTIONAL_FN(void, ap_dbd_close, (server_rec*, ap_dbd_t*));
 APR_DECLARE_OPTIONAL_FN(ap_dbd_t*, ap_dbd_acquire, (request_rec*));
+APR_DECLARE_OPTIONAL_FN(ap_dbd_t*, ap_dbd_cacquire, (conn_rec*));
 APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const char*));
 
 #endif

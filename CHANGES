@@ -1,6 +1,14 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.1.9
 
+  *) Support dbd connection tied to conn_rec in mod_dbd [Nick Kew]
+
+  *) Fix use of pools in mod_dbd [Brian J France, Nick Kew]
+
+  *) Move mod_dbd to modules/database [Nick Kew]
+
+  *) Move mod_filter and mod_charset_lite to modules/filters [Nick Kew]
+
   *) mod_proxy_ajp: mod_proxy_ajp sends empty SSL attributes for non SSL
      connections. PR36883.
      [William Barker <william.barker wilshire.com>, Ruediger Pluem]
