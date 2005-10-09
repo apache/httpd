@@ -623,6 +623,7 @@ static int process_socket(apr_pool_t * p, apr_socket_t * sock,
         c->sbh = sbh;
     }
 
+read_request:
     if (cs->state == CONN_STATE_READ_REQUEST_LINE) {
         if (!c->aborted) {
             ap_run_process_connection(c);
@@ -664,6 +665,7 @@ static int process_socket(apr_pool_t * p, apr_socket_t * sock,
         }
         else if (c->data_in_input_filters) {
             cs->state = CONN_STATE_READ_REQUEST_LINE;
+            goto read_request;
         }
         else {
             cs->state = CONN_STATE_CHECK_REQUEST_LINE_READABLE;
