@@ -1,6 +1,8 @@
                                                         -*- coding: utf-8 -*-
 Changes in Apache 2.3.0 async-dev R&D branch
 
+  *) Added asynchronous write completion for Event MPM.  [Brian Pane]
+
   *) For asynchronous MPMs, moved responsibility for write completion from
      the core to the MPM.  [Brian Pane]
 
