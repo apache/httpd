@@ -387,7 +387,7 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
         bb = new_bb;
     }
     else {
-        return;
+        return APR_SUCCESS;
     }
 
     /* Scan through the brigade and decide whether to attempt a write,
