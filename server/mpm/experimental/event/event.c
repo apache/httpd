@@ -653,7 +653,7 @@ read_request:
         rv = output_filter->frec->filter_func.out_func(output_filter, NULL);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_WARNING, rv, ap_server_conf,
-                     "core output filter");
+                     "network write failure in core output filter");
             cs->state = CONN_STATE_LINGER;
         }
         else if (c->data_in_output_filters) {
