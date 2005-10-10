@@ -33,7 +33,6 @@ install :: nlms FORCE
 	copy conf\mime.types $(INSTALL)\Apache\conf\mime.types
 	copy conf\srm.conf-dist $(INSTALL)\Apache\conf\srm.conf
 	copy ABOUT_APACHE $(INSTALL)\Apache\ABOUT_APACHE
-	copy Announcement.* $(INSTALL)\Apache\Announcement.*
 	copy src\CHANGES $(INSTALL)\Apache\CHANGES
 	copy LICENSE $(INSTALL)\Apache\LICENSE
 	copy README $(INSTALL)\Apache\README

@@ -126,7 +126,6 @@ _install:
 	-mkdir "$(INSTDIR)\modules"
 	-mkdir "$(INSTDIR)\proxy"
 	copy ..\ABOUT_APACHE "$(INSTDIR)\ABOUT_APACHE.TXT"
-	copy ..\Announcement "$(INSTDIR)\Announcement.txt"
 	copy ..\LICENSE "$(INSTDIR)\LICENSE.TXT"
 	copy ..\NOTICE "$(INSTDIR)\NOTICE.TXT"
 	copy ..\README-WIN.TXT "$(INSTDIR)"
