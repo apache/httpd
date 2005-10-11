@@ -2,9 +2,6 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
-  *) mod_log_config: %{hextid}P will log the thread id in hex with APR
-     versions 1.2.0 or higher.  [Jeff Trawick]
-
   *) mod_cgid: Refuse to work on Solaris 10 due to OS bugs.  PR 34264.
      [Justin Erenkrantz]
 
@@ -14,6 +11,9 @@ Changes with Apache 2.3.0
      [Martin Kraemer, David Reid]
 
 Changes with Apache 2.1.9
+
+  *) mod_log_config: %{hextid}P will log the thread id in hex with APR
+     versions 1.2.0 or higher.  [Jeff Trawick]
 
   *) httpd.exe/apachectl -V: display the DYNAMIC_MODULE_LIMIT setting, as
      in 1.3.  [Jeff Trawick]
