@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.1.9
 
+  *) mod_proxy_balancer: BalancerManager and proxies correctly handle
+     member workers with paths. PR36816. [Ruediger Pluem, Jim Jagielski]
+
   *) mod_log_config: %{hextid}P will log the thread id in hex with APR
      versions 1.2.0 or higher.  [Jeff Trawick]
 
