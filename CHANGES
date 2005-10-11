@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.1.9
 
+  *) mod_log_config: %{hextid}P will log the thread id in hex with APR
+     versions 1.2.0 or higher.  [Jeff Trawick]
+
   *) httpd.exe/apachectl -V: display the DYNAMIC_MODULE_LIMIT setting, as
      in 1.3.  [Jeff Trawick]
 
