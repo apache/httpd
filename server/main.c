@@ -196,6 +196,8 @@ static void show_compile_settings(void)
 #endif
 #endif
 
+    printf(" -D DYNAMIC_MODULE_LIMIT=%ld\n",(long)DYNAMIC_MODULE_LIMIT);
+
 #if APR_CHARSET_EBCDIC
     printf(" -D APR_CHARSET_EBCDIC\n");
 #endif
