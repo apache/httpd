@@ -1212,24 +1212,34 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
                                                   const char *url)
 {
     proxy_worker *worker;
-    char *c, *uri = apr_pstrdup(p, url);
+    proxy_worker *max_worker = NULL;
+    int max_match = 0;
+    int url_length;
+    int worker_name_length;
+    char *c;
     int i;
 
-    c = strchr(uri, ':');
+    c = strchr(url, ':');
     if (c == NULL || c[1] != '/' || c[2] != '/' || c[3] == '\0')
        return NULL;
-    /* remove path from uri */
-    if ((c = strchr(c + 3, '/')))
-        *c = '\0';
 
+    url_length = strlen(url);
     worker = (proxy_worker *)conf->workers->elts;
+
+    /*
+     * Do a "longest match" on the worker name to find the worker that
+     * fits best to the URL.
+     */
     for (i = 0; i < conf->workers->nelts; i++) {
-        if (strcasecmp(worker->name, uri) == 0) {
-            return worker;
+        if (((worker_name_length = strlen(worker->name)) <= url_length)
+            && (strncasecmp(url, worker->name, worker_name_length) == 0)
+            && (worker_name_length > max_match)) {
+            max_worker = worker;
+            max_match = worker_name_length;
         }
         worker++;
     }
-    return NULL;
+    return max_worker;
 }
 
 #if APR_HAS_THREADS

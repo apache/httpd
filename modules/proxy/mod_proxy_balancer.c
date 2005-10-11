@@ -477,8 +477,12 @@ static int balancer_handler(request_rec *r)
                 *val++ = '\0';
                 if ((tok = ap_strchr(val, '&')))
                     *tok++ = '\0';
+                /*
+                 * Special case: workers are allowed path information
+                 */
                 if ((access_status = ap_unescape_url(val)) != OK)
-                    return access_status;
+                    if (strcmp(args, "w") || (access_status !=  HTTP_NOT_FOUND))
+                        return access_status;
                 apr_table_setn(params, args, val);
                 args = tok;
             }
@@ -490,13 +494,9 @@ static int balancer_handler(request_rec *r)
         bsel = ap_proxy_get_balancer(r->pool, conf,
             apr_pstrcat(r->pool, "balancer://", name, NULL));
     if ((name = apr_table_get(params, "w"))) {
-        const char *sc = apr_table_get(params, "s");
-        char *asname = NULL;
-        proxy_worker *ws = NULL;
-        if (sc) {
-            asname = apr_pstrcat(r->pool, sc, "://", name, NULL);
-            ws = ap_proxy_get_worker(r->pool, conf, asname);
-        }
+        proxy_worker *ws;
+
+        ws = ap_proxy_get_worker(r->pool, conf, name);
         if (ws) {
             worker = (proxy_worker *)bsel->workers->elts;
             for (n = 0; n < bsel->workers->nelts; n++) {
@@ -613,7 +613,7 @@ static int balancer_handler(request_rec *r)
                       balancer->name + sizeof("balancer://") - 1,
                       "\">", NULL); 
             ap_rvputs(r, balancer->name, "</a></h3>\n\n", NULL);
-            ap_rputs("\n\n<table border=\"0\"><tr>"
+            ap_rputs("\n\n<table border=\"0\" style=\"text-align: left;\"><tr>"
                 "<th>StickySession</th><th>Timeout</th><th>FailoverAttempts</th><th>Method</th>"
                 "</tr>\n<tr>", r);                
             ap_rvputs(r, "<td>", balancer->sticky, NULL);
@@ -622,9 +622,9 @@ static int balancer_handler(request_rec *r)
             ap_rprintf(r, "<td>%d</td>\n", balancer->max_attempts);
             ap_rprintf(r, "<td>%s</td>\n",
                        balancer->lbmethod->name);
-            ap_rputs("</table>\n", r);
-            ap_rputs("\n\n<table border=\"0\"><tr>"
-                "<th>Scheme</th><th>Host</th>"
+            ap_rputs("</table>\n<br />", r);
+            ap_rputs("\n\n<table border=\"0\" style=\"text-align: left;\"><tr>"
+                "<th>Worker URL</th>"
                 "<th>Route</th><th>RouteRedir</th>"
                 "<th>Factor</th><th>Status</th>"
                 "</tr>\n", r);
@@ -632,12 +632,11 @@ static int balancer_handler(request_rec *r)
             worker = (proxy_worker *)balancer->workers->elts;
             for (n = 0; n < balancer->workers->nelts; n++) {
 
-                ap_rvputs(r, "<tr>\n<td>", worker->scheme, "</td><td>", NULL);
-                ap_rvputs(r, "<a href=\"", r->uri, "?b=", 
-                          balancer->name + sizeof("balancer://") - 1,
-                          "&s=", worker->scheme, "&w=", worker->hostname,
+                ap_rvputs(r, "<tr>\n<td><a href=\"", r->uri, "?b=",
+                          balancer->name + sizeof("balancer://") - 1, "&w=",
+                          ap_escape_uri(r->pool, worker->name),
                           "\">", NULL); 
-                ap_rvputs(r, worker->hostname, "</a></td>", NULL);
+                ap_rvputs(r, worker->name, "</a></td>", NULL);
                 ap_rvputs(r, "<td>", worker->s->route, NULL);
                 ap_rvputs(r, "</td><td>", worker->s->redirect, NULL);
                 ap_rprintf(r, "</td><td>%d</td><td>", worker->s->lbfactor);
@@ -678,10 +677,8 @@ static int balancer_handler(request_rec *r)
                 ap_rputs(" checked", r);
             ap_rputs("></td><tr>\n", r);            
             ap_rputs("<tr><td colspan=2><input type=submit value=\"Submit\"></td></tr>\n", r);
-            ap_rvputs(r, "</table>\n<input type=hidden name=\"s\" ", NULL);
-            ap_rvputs(r, "value=\"", wsel->scheme, "\">\n", NULL);
-            ap_rvputs(r, "<input type=hidden name=\"w\" ", NULL);
-            ap_rvputs(r, "value=\"", wsel->hostname, "\">\n", NULL);
+            ap_rvputs(r, "</table>\n<input type=hidden name=\"w\" ",  NULL);
+            ap_rvputs(r, "value=\"", ap_escape_uri(r->pool, wsel->name), "\">\n", NULL); 
             ap_rvputs(r, "<input type=hidden name=\"b\" ", NULL);
             ap_rvputs(r, "value=\"", bsel->name + sizeof("balancer://") - 1,
                       "\">\n</form>\n", NULL);
