@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.1.9
 
+  *) httpd.exe/apachectl -V: display the DYNAMIC_MODULE_LIMIT setting, as
+     in 1.3.  [Jeff Trawick]
+
   *) Support dbd connection tied to conn_rec in mod_dbd [Nick Kew]
 
   *) Fix use of pools in mod_dbd [Brian J France, Nick Kew]
