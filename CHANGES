@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_proxy_balancer: BalancerManager and proxies correctly handle
+     member workers with paths. PR36816. [Ruediger Pluem, Jim Jagielski]
+
   *) mod_cgid: Refuse to work on Solaris 10 due to OS bugs.  PR 34264.
      [Justin Erenkrantz]
 
