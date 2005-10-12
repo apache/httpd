@@ -344,15 +344,8 @@ AP_DECLARE(ap_filter_rec_t *) ap_register_input_filter(const char *name,
  *              ::AP_FTYPE_CONNECTION
  * @see ap_add_output_filter()
  */
-AP_DECLARE(ap_filter_rec_t *) ap_register_output_filter(const char *name,
-                                            ap_out_filter_func filter_func,
-                                            ap_init_filter_func filter_init,
-                                            ap_filter_type ftype);
-
-/* For httpd-2.2 I suggest replacing the above with
 #define ap_register_output_filter(name,ffunc,init,ftype) \
              ap_register_output_filter_protocol(name,ffunc,init,ftype,0)
-*/
 
 /**
  * This function is used to register an output filter with the system. 
