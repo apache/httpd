@@ -1681,6 +1681,7 @@ static void test(void)
                     }
                     else {
                         c->state = STATE_CONNECTED;
+                        started++;
 #ifdef USE_SSL
                         if (c->ssl)
                             ssl_proceed_handshake(c);
