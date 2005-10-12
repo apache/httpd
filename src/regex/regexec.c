@@ -21,27 +21,27 @@ static int nope = 0;		/* for use in asserts; shuts lint up */
 #endif
 
 /* macros for manipulating states, small version */
-#define	states	long
+#define	states	unsigned long
 #define	states1	states		/* for later use in regexec() decision */
-#define	CLEAR(v)	((v) = 0)
-#define	SET0(v, n)	((v) &= ~(1 << (n)))
-#define	SET1(v, n)	((v) |= 1 << (n))
-#define	ISSET(v, n)	((v) & (1 << (n)))
+#define	CLEAR(v)	((v) = 0uL)
+#define	SET0(v, n)	((v) &= ~(1uL << (n)))
+#define	SET1(v, n)	((v) |= 1uL << (n))
+#define	ISSET(v, n)	((v) & (1uL << (n)))
 #define	ASSIGN(d, s)	((d) = (s))
 #define	EQ(a, b)	((a) == (b))
 #define	STATEVARS	int dummy	/* dummy version */
 #define	STATESETUP(m, n)	/* nothing */
 #define	STATETEARDOWN(m)	/* nothing */
-#define	SETUP(v)	((v) = 0)
-#define	onestate	int
-#define	INIT(o, n)	((o) = (unsigned)1 << (n))
+#define	SETUP(v)	((v) = 0uL)
+#define	onestate	unsigned long
+#define	INIT(o, n)	((o) = 1uL << (n))
 #define	INC(o)	((o) <<= 1)
 #define	ISSTATEIN(v, o)	((v) & (o))
 /* some abbreviations; note that some of these know variable names! */
 /* do "if I'm here, I can also be there" etc without branches */
-#define	FWD(dst, src, n)	((dst) |= ((unsigned)(src)&(here)) << (n))
-#define	BACK(dst, src, n)	((dst) |= ((unsigned)(src)&(here)) >> (n))
-#define	ISSETBACK(v, n)	((v) & ((unsigned)here >> (n)))
+#define	FWD(dst, src, n)	((dst) |= ((src)&(here)) << (n))
+#define	BACK(dst, src, n)	((dst) |= ((src)&(here)) >> (n))
+#define	ISSETBACK(v, n)	((v) & (here >> (n))) != 0uL
 /* function names */
 #define SNAMES			/* engine.c looks after details */
 
