@@ -1231,9 +1231,9 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
      * fits best to the URL.
      */
     for (i = 0; i < conf->workers->nelts; i++) {
-        if (((worker_name_length = strlen(worker->name)) <= url_length)
-            && (strncasecmp(url, worker->name, worker_name_length) == 0)
-            && (worker_name_length > max_match)) {
+        if ( ((worker_name_length = strlen(worker->name)) <= url_length)
+           && (worker_name_length > max_match)
+           && (strncasecmp(url, worker->name, worker_name_length) == 0) ) {
             max_worker = worker;
             max_match = worker_name_length;
         }
