@@ -1216,10 +1216,10 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
     int max_match = 0;
     int url_length;
     int worker_name_length;
-    char *c;
+    const char *c;
     int i;
 
-    c = strchr(url, ':');
+    c = ap_strchr_c(url, ':');
     if (c == NULL || c[1] != '/' || c[2] != '/' || c[3] == '\0')
        return NULL;
 
