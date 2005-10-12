@@ -248,6 +248,15 @@ AP_DECLARE(ap_filter_rec_t *) ap_register_input_filter(const char *name,
                            &registered_input_filters);
 }                                                                    
 
+AP_DECLARE(ap_filter_rec_t *) ap_register_output_filter(const char *name,
+                                           ap_out_filter_func filter_func,
+                                           ap_init_filter_func filter_init,
+                                           ap_filter_type ftype)
+{
+    return ap_register_output_filter_protocol(name, filter_func,
+                                              filter_init, ftype, 0);
+}
+
 AP_DECLARE(ap_filter_rec_t *) ap_register_output_filter_protocol(
                                            const char *name,
                                            ap_out_filter_func filter_func,
