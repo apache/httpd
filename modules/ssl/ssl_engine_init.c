@@ -1053,14 +1053,16 @@ void ssl_init_CheckServers(server_rec *base_server, apr_pool_t *p)
     table = apr_hash_make(p);
 
     for (s = base_server; s; s = s->next) {
+        char *addr;
+
         sc = mySrvConfig(s);
 
         if (!((sc->enabled == SSL_ENABLED_TRUE) && s->addrs)) {
             continue;
         }
 
-        key = apr_psprintf(p, "%pA:%u",
-                           &s->addrs->host_addr, s->addrs->host_port);
+        apr_sockaddr_ip_get(&addr, s->addrs->host_addr);
+        key = apr_psprintf(p, "%s:%u", addr, s->addrs->host_port);
         klen = strlen(key);
 
         if ((ps = (server_rec *)apr_hash_get(table, key, klen))) {
