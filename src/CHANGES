@@ -1,3 +1,5 @@
+Changes with Apache 1.3.35
+
 Changes with Apache 1.3.34
 
   *) hsregex: fix potential core dumping on 64 bit machines, such as
