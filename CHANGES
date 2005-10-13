@@ -1,6 +1,12 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.1.9
 
+  *) mod_ssl: Fix issue which could cause spurious warnings about use
+     of name-based vhosts.  PR 37051.  [Joe Orton]
+
+  *) ab: Fix to ensure that only the expected number of requests are run.
+     PR 36966.  [Joe Orton]
+
   *) mod_proxy_balancer: BalancerManager and proxies correctly handle
      member workers with paths. PR36816. [Ruediger Pluem, Jim Jagielski]
 
