@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Apache module mod_dld</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Module mod_dld</h1>
+    <strong><font color="red">This module is obsolete. As of
+    version 1.3 of Apache, it has been replaced with <a
+    href="mod_so.html">mod_so</a>.</font></strong> This module is
+    contained in the <code>mod_dld.c</code> file, and is not
+    compiled in by default. It provides for loading of executable
+    code and modules into the server at start-up time, using the
+    GNU dld library. 
+
+    <h2>Summary</h2>
+    The optional dld module is a proof-of-concept piece of code
+    which loads other modules into the server as it is configuring
+    itself (the first time only; for now, rereading the config
+    files cannot affect the state of loaded modules), using the GNU
+    dynamic linking library, DLD. It isn't compiled into the server
+    by default, since not everyone has DLD, but it works when I try
+    it. (Famous last words.) 
+
+    <p>Note that for some reason, <code>LoadFile /lib/libc.a</code>
+    seems to be required for just about everything.</p>
+
+    <p>Note: that DLD needs to read the symbol table out of the
+    server binary when starting up; these commands will fail if the
+    server can't find its own binary when it starts up, or if that
+    binary is stripped.</p>
+
+    <h2>Directives</h2>
+
+    <ul>
+      <li><a href="#loadfile">LoadFile</a></li>
+
+      <li><a href="#loadmodule">LoadModule</a></li>
+    </ul>
+    <hr />
+
+    <h2><a id="loadfile" name="loadfile">LoadFile</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> LoadFile <em>filename
+    filename ...</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Experimental<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_dld 
+
+    <p>The LoadFile directive links in the named object files or
+    libraries when the server is started; this is used to load
+    additional code which may be required for some module to work.
+    <em>Filename</em> is relative to <a
+    href="core.html#serverroot">ServerRoot</a>.</p>
+    <hr />
+
+    <h2><a id="loadmodule" name="loadmodule">LoadModule</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> LoadModule <em>module
+    filename</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Experimental<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_dld 
+
+    <p>The LoadModule directive links in the object file or library
+    <em>filename</em> and adds the module structure named
+    <em>module</em> to the list of active modules. <em>Module</em>
+    is the name of the external variable of type
+    <code>module</code> in the file. Example:</p>
+
+    <blockquote>
+      <code>LoadModule ai_backcompat_module
+      modules/mod_ai_backcompat.o<br />
+       LoadFile /lib/libc.a</code>
+    </blockquote>
+    loads the module in the modules subdirectory of the ServerRoot.
+    
+
+    <p><!--#include virtual="footer.html" -->
+    </p>
+  </body>
+</html>
+

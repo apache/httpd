@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Apache Server Virtual Host Support</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">File Descriptor Limits</h1>
+
+    <p>When using a large number of Virtual Hosts, Apache may run
+    out of available file descriptors (sometimes called <cite>file
+    handles</cite> if each Virtual Host specifies different log
+    files. The total number of file descriptors used by Apache is
+    one for each distinct error log file, one for every other log
+    file directive, plus 10-20 for internal use. Unix operating
+    systems limit the number of file descriptors that may be used
+    by a process; the limit is typically 64, and may usually be
+    increased up to a large hard-limit.</p>
+
+    <p>Although Apache attempts to increase the limit as required,
+    this may not work if:</p>
+
+    <ol>
+      <li>Your system does not provide the setrlimit() system
+      call.</li>
+
+      <li>The setrlimit(RLIMIT_NOFILE) call does not function on
+      your system (such as Solaris 2.3)</li>
+
+      <li>The number of file descriptors required exceeds the hard
+      limit.</li>
+
+      <li>Your system imposes other limits on file descriptors,
+      such as a limit on stdio streams only using file descriptors
+      below 256. (Solaris 2)</li>
+    </ol>
+    In the event of problems you can: 
+
+    <ul>
+      <li>Reduce the number of log files; don't specify log files
+      in the VirtualHost sections, but only log to the main log
+      files.</li>
+
+      <li>
+        If you system falls into 1 or 2 (above), then increase the
+        file descriptor limit before starting Apache, using a
+        script like 
+
+        <blockquote>
+          <code>#!/bin/sh<br />
+           ulimit -S -n 100<br />
+           exec httpd</code>
+        </blockquote>
+      </li>
+    </ul>
+
+    <p>Please see the <a
+    href="../misc/descriptors.html">Descriptors and Apache</a>
+    document containing further details about file descriptor
+    problems and how they can be solved on your operating
+    system.</p>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+

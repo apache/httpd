@@ -1,0 +1,2340 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Apache 1.3 URL Rewriting Guide</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <blockquote>
+      <!--#include virtual="header.html" -->
+
+      <div align="CENTER">
+        <h1>Apache 1.3<br />
+         URL Rewriting Guide<br />
+        </h1>
+
+        <address>
+          Originally written by<br />
+           Ralf S. Engelschall &lt;rse@apache.org&gt;<br />
+           December 1997
+        </address>
+      </div>
+
+      <p>This document supplements the mod_rewrite <a
+      href="../mod/mod_rewrite.html">reference documentation</a>.
+      It describes how one can use Apache's mod_rewrite to solve
+      typical URL-based problems with which webmasters are often 
+      confronted. We give detailed descriptions on how to
+      solve each problem by configuring URL rewriting rulesets.</p>
+
+      <h2><a id="ToC1" name="ToC1">Introduction to
+      mod_rewrite</a></h2>
+      The Apache module mod_rewrite is a killer one, i.e. it is a
+      really sophisticated module which provides a powerful way to
+      do URL manipulations. With it you can do nearly all types of
+      URL manipulations you ever dreamed about. The price you have
+      to pay is to accept complexity, because mod_rewrite's major
+      drawback is that it is not easy to understand and use for the
+      beginner. And even Apache experts sometimes discover new
+      aspects where mod_rewrite can help. 
+
+      <p>In other words: With mod_rewrite you either shoot yourself
+      in the foot the first time and never use it again or love it
+      for the rest of your life because of its power. This paper
+      tries to give you a few initial success events to avoid the
+      first case by presenting already invented solutions to
+      you.</p>
+
+      <h2><a id="ToC2" name="ToC2">Practical Solutions</a></h2>
+      Here come a lot of practical solutions I've either invented
+      myself or collected from other peoples solutions in the past.
+      Feel free to learn the black magic of URL rewriting from
+      these examples. 
+
+      <table bgcolor="#FFE0E0" border="0" cellspacing="0"
+      cellpadding="5">
+        <tr>
+          <td>ATTENTION: Depending on your server-configuration it
+          can be necessary to slightly change the examples for your
+          situation, e.g. adding the [PT] flag when additionally
+          using mod_alias and mod_userdir, etc. Or rewriting a
+          ruleset to fit in <code>.htaccess</code> context instead
+          of per-server context. Always try to understand what a
+          particular ruleset really does before you use it in order to
+          avoid problems.</td>
+        </tr>
+      </table>
+
+      <h1>URL Layout</h1>
+
+      <h2>Canonical URLs</h2>
+
+      <dl>
+        <dt><strong>Description:</strong></dt>
+
+        <dd>On some webservers there are more than one URL for a
+        resource. Usually there are canonical URLs (which should be
+        actually used and distributed) and those which are just
+        shortcuts, internal ones, etc. Independent which URL the
+        user supplied with the request he should finally see the
+        canonical one only.</dd>
+
+        <dt><strong>Solution:</strong></dt>
+
+        <dd>
+          We do an external HTTP redirect for all non-canonical
+          URLs to fix them in the location view of the Browser and
+          for all subsequent requests. In the example ruleset below
+          we replace <code>/~user</code> by the canonical
+          <code>/u/user</code> and fix a missing trailing slash for
+          <code>/u/user</code>. 
+
+          <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+          cellpadding="5">
+            <tr>
+              <td>
+<pre>
+RewriteRule   ^/<strong>~</strong>([^/]+)/?(.*)    /<strong>u</strong>/$1/$2  [<strong>R</strong>]
+RewriteRule   ^/([uge])/(<strong>[^/]+</strong>)$  /$1/$2<strong>/</strong>   [<strong>R</strong>]
+</pre>
+              </td>
+            </tr>
+          </table>
+        </dd>
+      </dl>
+
+      <h2>Canonical Hostnames</h2>
+
+      <dl>
+        <dt><strong>Description:</strong></dt>
+
+        <dd>The goal of this rule is to force the use of a particular
+        hostname, in preference to other hostnames which may be used to
+        reach the same site. For example, if you wish to force the use
+        of <strong>www.example.com</strong> instead of
+        <strong>example.com</strong>, you might use a variant of the
+        following recipe.</dd>
+
+        <dt><strong>Solution:</strong></dt>
+
+        <dd>
+          <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+          cellpadding="5">
+            <tr>
+              <td>
+<pre>
+# For sites running on a port other than 80
+RewriteCond %{HTTP_HOST}   !^fully\.qualified\.domain\.name [NC]
+RewriteCond %{HTTP_HOST}   !^$
+RewriteCond %{SERVER_PORT} !^80$
+RewriteRule ^/(.*)         http://fully.qualified.domain.name:%{SERVER_PORT}/$1 [L,R]
+
+# And for a site running on port 80
+RewriteCond %{HTTP_HOST}   !^fully\.qualified\.domain\.name [NC]
+RewriteCond %{HTTP_HOST}   !^$
+RewriteRule ^/(.*)         http://fully.qualified.domain.name/$1 [L,R]
+</pre>
+              </td>
+            </tr>
+          </table>
+        </dd>
+      </dl>
+
+      <h2>Moved DocumentRoot</h2>
+
+      <dl>
+        <dt><strong>Description:</strong></dt>
+
+        <dd>Usually the DocumentRoot of the webserver directly
+        relates to the URL ``<code>/</code>''. But often this data
+        is not really of top-level priority, it is perhaps just one
+        entity of a lot of data pools. For instance at our Intranet
+        sites there are <code>/e/www/</code> (the homepage for
+        WWW), <code>/e/sww/</code> (the homepage for the Intranet)
+        etc. Now because the data of the DocumentRoot stays at
+        <code>/e/www/</code> we had to make sure that all inlined
+        images and other stuff inside this data pool work for
+        subsequent requests.</dd>
+
+        <dt><strong>Solution:</strong></dt>
+
+        <dd>
+          We just redirect the URL <code>/</code> to
+          <code>/e/www/</code>. While is seems trivial it is
+          actually trivial with mod_rewrite, only. Because the
+          typical old mechanisms of URL <em>Aliases</em> (as
+          provides by mod_alias and friends) only used
+          <em>prefix</em> matching. With this you cannot do such a
+          redirection because the DocumentRoot is a prefix of all
+          URLs. With mod_rewrite it is really trivial: 
+
+          <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+          cellpadding="5">
+            <tr>
+              <td>
+<pre>
+RewriteEngine on
+RewriteRule   <strong>^/$</strong>  /e/www/  [<strong>R</strong>]
+</pre>
+              </td>
+            </tr>
+          </table>
+        </dd>
+      </dl>
+
+      <h2>Trailing Slash Problem</h2>
+
+      <dl>
+        <dt><strong>Description:</strong></dt>
+
+        <dd>Every webmaster can sing a song about the problem of
+        the trailing slash on URLs referencing directories. If they
+        are missing, the server dumps an error, because if you say
+        <code>/~quux/foo</code> instead of <code>/~quux/foo/</code>
+        then the server searches for a <em>file</em> named
+        <code>foo</code>. And because this file is a directory it
+        complains. Actually is tries to fix it themself in most of
+        the cases, but sometimes this mechanism need to be emulated
+        by you. For instance after you have done a lot of
+        complicated URL rewritings to CGI scripts etc.</dd>
+
+        <dt><strong>Solution:</strong></dt>
+
+        <dd>
+          The solution to this subtle problem is to let the server
+          add the trailing slash automatically. To do this
+          correctly we have to use an external redirect, so the
+          browser correctly requests subsequent images etc. If we
+          only did a internal rewrite, this would only work for the
+          directory page, but would go wrong when any images are
+          included into this page with relative URLs, because the
+          browser would request an in-lined object. For instance, a
+          request for <code>image.gif</code> in
+          <code>/~quux/foo/index.html</code> would become
+          <code>/~quux/image.gif</code> without the external
+          redirect! 
+
+          <p>So, to do this trick we write:</p>
+
+          <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+          cellpadding="5">
+            <tr>
+              <td>
+<pre>
+RewriteEngine  on
+RewriteBase    /~quux/
+RewriteRule    ^foo<strong>$</strong>  foo<strong>/</strong>  [<strong>R</strong>]
+</pre>
+              </td>
+            </tr>
+          </table>
+
+          <p>The crazy and lazy can even do the following in the
+          top-level <code>.htaccess</code> file of their homedir.
+          But notice that this creates some processing
+          overhead.</p>
+
+          <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+          cellpadding="5">
+            <tr>
+              <td>
+<pre>
+RewriteEngine  on
+RewriteBase    /~quux/
+RewriteCond    %{REQUEST_FILENAME}  <strong>-d</strong>
+RewriteRule    ^(.+<strong>[^/]</strong>)$           $1<strong>/</strong>  [R]
+</pre>
+              </td>
+            </tr>
+          </table>
+        </dd>
+      </dl>
+
+      <h2>Webcluster through Homogeneous URL Layout</h2>
+
+      <dl>
+        <dt><strong>Description:</strong></dt>
+
+        <dd>We want to create a homogenous and consistent URL
+        layout over all WWW servers on a Intranet webcluster, i.e.
+        all URLs (per definition server local and thus server
+        dependent!) become actually server <em>independed</em>!
+        What we want is to give the WWW namespace a consistent
+        server-independend layout: no URL should have to include
+        any physically correct target server. The cluster itself
+        should drive us automatically to the physical target
+        host.</dd>
+
+        <dt><strong>Solution:</strong></dt>
+
+        <dd>
+          First, the knowledge of the target servers come from
+          (distributed) external maps which contain information
+          where our users, groups and entities stay. The have the
+          form 
+<pre>
+user1  server_of_user1
+user2  server_of_user2
+:      :
+</pre>
+
+          <p>We put them into files <code>map.xxx-to-host</code>.
+          Second we need to instruct all servers to redirect URLs
+          of the forms</p>
+<pre>
+/u/user/anypath
+/g/group/anypath
+/e/entity/anypath
+</pre>
+
+          <p>to</p>
+<pre>
+http://physical-host/u/user/anypath
+http://physical-host/g/group/anypath
+http://physical-host/e/entity/anypath
+</pre>
+
+          <p>when the URL is not locally valid to a server. The
+          following ruleset does this for us by the help of the map
+          files (assuming that server0 is a default server which
+          will be used if a user has no entry in the map):</p>
+
+          <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+          cellpadding="5">
+            <tr>
+              <td>
+<pre>
+RewriteEngine on
+
+RewriteMap      user-to-host   txt:/path/to/map.user-to-host
+RewriteMap     group-to-host   txt:/path/to/map.group-to-host
+RewriteMap    entity-to-host   txt:/path/to/map.entity-to-host
+
+RewriteRule   ^/u/<strong>([^/]+)</strong>/?(.*)   http://<strong>${user-to-host:$1|server0}</strong>/u/$1/$2
+RewriteRule   ^/g/<strong>([^/]+)</strong>/?(.*)  http://<strong>${group-to-host:$1|server0}</strong>/g/$1/$2
+RewriteRule   ^/e/<strong>([^/]+)</strong>/?(.*) http://<strong>${entity-to-host:$1|server0}</strong>/e/$1/$2
+
+RewriteRule   ^/([uge])/([^/]+)/?$          /$1/$2/.www/
+RewriteRule   ^/([uge])/([^/]+)/([^.]+.+)   /$1/$2/.www/$3\
+</pre>
+              </td>
+            </tr>
+          </table>
+        </dd>
+      </dl>
+
+      <h2>Move Homedirs to Different Webserver</h2>
+
+      <dl>
+        <dt><strong>Description:</strong></dt>
+
+        <dd>A lot of webmaster aksed for a solution to the
+        following situation: They wanted to redirect just all
+        homedirs on a webserver to another webserver. They usually
+        need such things when establishing a newer webserver which
+        will replace the old one over time.</dd>
+
+        <dt><strong>Solution:</strong></dt>
+
+        <dd>
+          The solution is trivial with mod_rewrite. On the old
+          webserver we just redirect all
+          <code>/~user/anypath</code> URLs to
+          <code>http://newserver/~user/anypath</code>. 
+
+          <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+          cellpadding="5">
+            <tr>
+              <td>
+<pre>
+RewriteEngine on
+RewriteRule   ^/~(.+)  http://<strong>newserver</strong>/~$1  [R,L]
+</pre>
+              </td>
+            </tr>
+          </table>
+        </dd>
+      </dl>
+
+      <h2>Structured Homedirs</h2>
+
+      <dl>
+        <dt><strong>Description:</strong></dt>
+
+        <dd>Some sites with thousend of users usually use a
+        structured homedir layout, i.e. each homedir is in a
+        subdirectory which begins for instance with the first
+        character of the username. So, <code>/~foo/anypath</code>
+        is <code>/home/<strong>f</strong>/foo/.www/anypath</code>
+        while <code>/~bar/anypath</code> is
+        <code>/home/<strong>b</strong>/bar/.www/anypath</code>.</dd>
+
+        <dt><strong>Solution:</strong></dt>
+
+        <dd>
+          We use the following ruleset to expand the tilde URLs
+          into exactly the above layout. 
+
+          <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+          cellpadding="5">
+            <tr>
+              <td>
+<pre>
+RewriteEngine on
+RewriteRule   ^/~(<strong>([a-z])</strong>[a-z0-9]+)(.*)  /home/<strong>$2</strong>/$1/.www$3
+</pre>
+              </td>
+            </tr>
+          </table>
+        </dd>
+      </dl>
+
+      <h2>Filesystem Reorganisation</h2>
+
+      <dl>
+        <dt><strong>Description:</strong></dt>
+
+        <dd>
+          This really is a hardcore example: a killer application
+          which heavily uses per-directory
+          <code>RewriteRules</code> to get a smooth look and feel
+          on the Web while its data structure is never touched or
+          adjusted. Background: <strong><em>net.sw</em></strong> is
+          my archive of freely available Unix software packages,
+          which I started to collect in 1992. It is both my hobby
+          and job to to this, because while I'm studying computer
+          science I have also worked for many years as a system and
+          network administrator in my spare time. Every week I need
+          some sort of software so I created a deep hierarchy of
+          directories where I stored the packages: 
+<pre>
+drwxrwxr-x   2 netsw  users    512 Aug  3 18:39 Audio/
+drwxrwxr-x   2 netsw  users    512 Jul  9 14:37 Benchmark/
+drwxrwxr-x  12 netsw  users    512 Jul  9 00:34 Crypto/
+drwxrwxr-x   5 netsw  users    512 Jul  9 00:41 Database/
+drwxrwxr-x   4 netsw  users    512 Jul 30 19:25 Dicts/
+drwxrwxr-x  10 netsw  users    512 Jul  9 01:54 Graphic/
+drwxrwxr-x   5 netsw  users    512 Jul  9 01:58 Hackers/
+drwxrwxr-x   8 netsw  users    512 Jul  9 03:19 InfoSys/
+drwxrwxr-x   3 netsw  users    512 Jul  9 03:21 Math/
+drwxrwxr-x   3 netsw  users    512 Jul  9 03:24 Misc/
+drwxrwxr-x   9 netsw  users    512 Aug  1 16:33 Network/
+drwxrwxr-x   2 netsw  users    512 Jul  9 05:53 Office/
+drwxrwxr-x   7 netsw  users    512 Jul  9 09:24 SoftEng/
+drwxrwxr-x   7 netsw  users    512 Jul  9 12:17 System/
+drwxrwxr-x  12 netsw  users    512 Aug  3 20:15 Typesetting/
+drwxrwxr-x  10 netsw  users    512 Jul  9 14:08 X11/
+</pre>
+
+          <p>In July 1996 I decided to make this archive public to
+          the world via a nice Web interface. "Nice" means that I
+          wanted to offer an interface where you can browse
+          directly through the archive hierarchy. And "nice" means
+          that I didn't wanted to change anything inside this
+          hierarchy - not even by putting some CGI scripts at the
+          top of it. Why? Because the above structure should be
+          later accessible via FTP as well, and I didn't want any
+          Web or CGI stuff to be there.</p>
+        </dd>
+
+        <dt><strong>Solution:</strong></dt>
+
+        <dd>
+          The solution has two parts: The first is a set of CGI
+          scripts which create all the pages at all directory
+          levels on-the-fly. I put them under
+          <code>/e/netsw/.www/</code> as follows: 
+<pre>
+-rw-r--r--   1 netsw  users    1318 Aug  1 18:10 .wwwacl
+drwxr-xr-x  18 netsw  users     512 Aug  5 15:51 DATA/
+-rw-rw-rw-   1 netsw  users  372982 Aug  5 16:35 LOGFILE
+-rw-r--r--   1 netsw  users     659 Aug  4 09:27 TODO
+-rw-r--r--   1 netsw  users    5697 Aug  1 18:01 netsw-about.html
+-rwxr-xr-x   1 netsw  users     579 Aug  2 10:33 netsw-access.pl
+-rwxr-xr-x   1 netsw  users    1532 Aug  1 17:35 netsw-changes.cgi
+-rwxr-xr-x   1 netsw  users    2866 Aug  5 14:49 netsw-home.cgi
+drwxr-xr-x   2 netsw  users     512 Jul  8 23:47 netsw-img/
+-rwxr-xr-x   1 netsw  users   24050 Aug  5 15:49 netsw-lsdir.cgi
+-rwxr-xr-x   1 netsw  users    1589 Aug  3 18:43 netsw-search.cgi
+-rwxr-xr-x   1 netsw  users    1885 Aug  1 17:41 netsw-tree.cgi
+-rw-r--r--   1 netsw  users     234 Jul 30 16:35 netsw-unlimit.lst
+</pre>
+
+          <p>The <code>DATA/</code> subdirectory holds the above
+          directory structure, i.e. the real
+          <strong><em>net.sw</em></strong> stuff and gets
+          automatically updated via <code>rdist</code> from time to
+          time. The second part of the problem remains: how to link
+          these two structures together into one smooth-looking URL
+          tree? We want to hide the <code>DATA/</code> directory
+          from the user while running the appropriate CGI scripts
+          for the various URLs. Here is the solution: first I put
+          the following into the per-directory configuration file
+          in the Document Root of the server to rewrite the
+          announced URL <code>/net.sw/</code> to the internal path
+          <code>/e/netsw</code>:</p>
+
+          <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+          cellpadding="5">
+            <tr>
+              <td>
+<pre>
+RewriteRule  ^net.sw$       net.sw/        [R]
+RewriteRule  ^net.sw/(.*)$  e/netsw/$1
+</pre>
+              </td>
+            </tr>
+          </table>
+
+          <p>The first rule is for requests which miss the trailing
+          slash! The second rule does the real thing. And then
+          comes the killer configuration which stays in the
+          per-directory config file
+          <code>/e/netsw/.www/.wwwacl</code>:</p>
+
+          <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+          cellpadding="5">
+            <tr>
+              <td>
+<pre>
+Options       ExecCGI FollowSymLinks Includes MultiViews 
+
+RewriteEngine on
+
+#  we are reached via /net.sw/ prefix
+RewriteBase   /net.sw/
+
+#  first we rewrite the root dir to 
+#  the handling cgi script
+RewriteRule   ^$                       netsw-home.cgi     [L]
+RewriteRule   ^index\.html$            netsw-home.cgi     [L]
+
+#  strip out the subdirs when
+#  the browser requests us from perdir pages
+RewriteRule   ^.+/(netsw-[^/]+/.+)$    $1                 [L]
+
+#  and now break the rewriting for local files
+RewriteRule   ^netsw-home\.cgi.*       -                  [L]
+RewriteRule   ^netsw-changes\.cgi.*    -                  [L]
+RewriteRule   ^netsw-search\.cgi.*     -                  [L]
+RewriteRule   ^netsw-tree\.cgi$        -                  [L]
+RewriteRule   ^netsw-about\.html$      -                  [L]
+RewriteRule   ^netsw-img/.*$           -                  [L]
+
+#  anything else is a subdir which gets handled
+#  by another cgi script
+RewriteRule   !^netsw-lsdir\.cgi.*     -                  [C]
+RewriteRule   (.*)                     netsw-lsdir.cgi/$1
+</pre>
+              </td>
+            </tr>
+          </table>
+
+          <p>Some hints for interpretation:</p>
+
+          <ol>
+            <li>Notice the L (last) flag and no substitution field
+            ('-') in the forth part</li>
+
+            <li>Notice the ! (not) character and the C (chain) flag
+            at the first rule in the last part</li>
+
+            <li>Notice the catch-all pattern in the last rule</li>
+          </ol>
+        </dd>
+      </dl>
+
+      <h2>NCSA imagemap to Apache mod_imap</h2>
+
+      <dl>
+        <dt><strong>Description:</strong></dt>
+
+        <dd>When switching from the NCSA webserver to the more
+        modern Apache webserver a lot of people want a smooth
+        transition. So they want pages which use their old NCSA
+        <code>imagemap</code> program to work under Apache with the
+        modern <code>mod_imap</code>. The problem is that there are
+        a lot of hyperlinks around which reference the
+        <code>imagemap</code> program via
+        <code>/cgi-bin/imagemap/path/to/page.map</code>. Under
+        Apache this has to read just
+        <code>/path/to/page.map</code>.</dd>
+
+        <dt><strong>Solution:</strong></dt>
+
+        <dd>
+          We use a global rule to remove the prefix on-the-fly for
+          all requests: 
+
+          <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+          cellpadding="5">
+            <tr>
+              <td>
+<pre>
+RewriteEngine  on
+RewriteRule    ^/cgi-bin/imagemap(.*)  $1  [PT]
+</pre>
+              </td>
+            </tr>
+          </table>
+        </dd>
+      </dl>
+
+      <h2>Search pages in more than one directory</h2>
+
+      <dl>
+        <dt><strong>Description:</strong></dt>
+
+        <dd>Sometimes it is neccessary to let the webserver search
+        for pages in more than one directory. Here MultiViews or
+        other techniques cannot help.</dd>
+
+        <dt><strong>Solution:</strong></dt>
+
+        <dd>
+          We program a explicit ruleset which searches for the
+          files in the directories. 
+
+          <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+          cellpadding="5">
+            <tr>
+              <td>
+<pre>
+RewriteEngine on
+
+#   first try to find it in custom/...
+#   ...and if found stop and be happy:
+RewriteCond         /your/docroot/<strong>dir1</strong>/%{REQUEST_FILENAME}  -f
+RewriteRule  ^(.+)  /your/docroot/<strong>dir1</strong>/$1  [L]
+
+#   second try to find it in pub/...
+#   ...and if found stop and be happy:
+RewriteCond         /your/docroot/<strong>dir2</strong>/%{REQUEST_FILENAME}  -f
+RewriteRule  ^(.+)  /your/docroot/<strong>dir2</strong>/$1  [L]
+
+#   else go on for other Alias or ScriptAlias directives,
+#   etc.
+RewriteRule   ^(.+)  -  [PT]
+</pre>
+              </td>
+            </tr>
+          </table>
+        </dd>
+      </dl>
+
+      <h2>Set Environment Variables According To URL Parts</h2>
+
+      <dl>
+        <dt><strong>Description:</strong></dt>
+
+        <dd>Perhaps you want to keep status information between
+        requests and use the URL to encode it. But you don't want
+        to use a CGI wrapper for all pages just to strip out this
+        information.</dd>
+
+        <dt><strong>Solution:</strong></dt>
+
+        <dd>
+          We use a rewrite rule to strip out the status information
+          and remember it via an environment variable which can be
+          later dereferenced from within XSSI or CGI. This way a
+          URL <code>/foo/S=java/bar/</code> gets translated to
+          <code>/foo/bar/</code> and the environment variable named
+          <code>STATUS</code> is set to the value "java". 
+
+          <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+          cellpadding="5">
+            <tr>
+              <td>
+<pre>
+RewriteEngine on
+RewriteRule   ^(.*)/<strong>S=([^/]+)</strong>/(.*)    $1/$3 [E=<strong>STATUS:$2</strong>]
+</pre>
+              </td>
+            </tr>
+          </table>
+        </dd>
+      </dl>
+
+      <h2>Virtual User Hosts</h2>
+
+      <dl>
+        <dt><strong>Description:</strong></dt>
+
+        <dd>Assume that you want to provide
+        <code>www.<strong>username</strong>.host.domain.com</code>
+        for the homepage of username via just DNS A records to the
+        same machine and without any virtualhosts on this
+        machine.</dd>
+
+        <dt><strong>Solution:</strong></dt>
+
+        <dd>
+          For HTTP/1.0 requests there is no solution, but for
+          HTTP/1.1 requests which contain a Host: HTTP header we
+          can use the following ruleset to rewrite
+          <code>http://www.username.host.com/anypath</code>
+          internally to <code>/home/username/anypath</code>: 
+
+          <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+          cellpadding="5">
+            <tr>
+              <td>
+<pre>
+RewriteEngine on
+RewriteCond   %{<strong>HTTP_HOST</strong>}                 ^www\.<strong>[^.]+</strong>\.host\.com$
+RewriteRule   ^(.+)                        %{HTTP_HOST}$1          [C]
+RewriteRule   ^www\.<strong>([^.]+)</strong>\.host\.com(.*) /home/<strong>$1</strong>$2
+</pre>
+              </td>
+            </tr>
+          </table>
+        </dd>
+      </dl>
+
+      <h2>Redirect Homedirs For Foreigners</h2>
+
+      <dl>
+        <dt><strong>Description:</strong></dt>
+
+        <dd>We want to redirect homedir URLs to another webserver
+        <code>www.somewhere.com</code> when the requesting user
+        does not stay in the local domain
+        <code>ourdomain.com</code>. This is sometimes used in
+        virtual host contexts.</dd>
+
+        <dt><strong>Solution:</strong></dt>
+
+        <dd>
+          Just a rewrite condition: 
+
+          <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+          cellpadding="5">
+            <tr>
+              <td>
+<pre>
+RewriteEngine on
+RewriteCond   %{REMOTE_HOST}  <strong>!^.+\.ourdomain\.com$</strong>
+RewriteRule   ^(/~.+)         http://www.somewhere.com/$1 [R,L]
+</pre>
+              </td>
+            </tr>
+          </table>
+        </dd>
+      </dl>
+
+      <h2>Redirect Failing URLs To Other Webserver</h2>
+
+      <dl>
+        <dt><strong>Description:</strong></dt>
+
+        <dd>A typical FAQ about URL rewriting is how to redirect
+        failing requests on webserver A to webserver B. Usually
+        this is done via ErrorDocument CGI-scripts in Perl, but
+        there is also a mod_rewrite solution. But notice that this
+        is less performant than using a ErrorDocument
+        CGI-script!</dd>
+
+        <dt><strong>Solution:</strong></dt>
+
+        <dd>
+          The first solution has the best performance but less
+          flexibility and is less error safe: 
+
+          <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+          cellpadding="5">
+            <tr>
+              <td>
+<pre>
+RewriteEngine on
+RewriteCond   /your/docroot/%{REQUEST_FILENAME} <strong>!-f</strong>
+RewriteRule   ^(.+)                             http://<strong>webserverB</strong>.dom/$1
+</pre>
+              </td>
+            </tr>
+          </table>
+
+          <p>The problem here is that this will only work for pages
+          inside the DocumentRoot. While you can add more
+          Conditions (for instance to also handle homedirs, etc.)
+          there is better variant:</p>
+
+          <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+          cellpadding="5">
+            <tr>
+              <td>
+<pre>
+RewriteEngine on
+RewriteCond   %{REQUEST_URI} <strong>!-U</strong>
+RewriteRule   ^(.+)          http://<strong>webserverB</strong>.dom/$1
+</pre>
+              </td>
+            </tr>
+          </table>
+
+          <p>This uses the URL look-ahead feature of mod_rewrite.
+          The result is that this will work for all types of URLs
+          and is a safe way. But it does a performance impact on
+          the webserver, because for every request there is one
+          more internal subrequest. So, if your webserver runs on a
+          powerful CPU, use this one. If it is a slow machine, use
+          the first approach or better a ErrorDocument
+          CGI-script.</p>
+        </dd>
+      </dl>
+
+      <h2>Extended Redirection</h2>
+
+      <dl>
+        <dt><strong>Description:</strong></dt>
+
+        <dd>Sometimes we need more control (concerning the
+        character escaping mechanism) of URLs on redirects. Usually
+        the Apache kernels URL escape function also escapes
+        anchors, i.e. URLs like "url#anchor". You cannot use this
+        directly on redirects with mod_rewrite because the
+        uri_escape() function of Apache would also escape the hash
+        character. How can we redirect to such a URL?</dd>
+
+        <dt><strong>Solution:</strong></dt>
+
+        <dd>
+          We have to use a kludge by the use of a NPH-CGI script
+          which does the redirect itself. Because here no escaping
+          is done (NPH=non-parseable headers). First we introduce a
+          new URL scheme <code>xredirect:</code> by the following
+          per-server config-line (should be one of the last rewrite
+          rules): 
+
+          <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+          cellpadding="5">
+            <tr>
+              <td>
+<pre>
+RewriteRule ^xredirect:(.+) /path/to/nph-xredirect.cgi/$1 \
+            [T=application/x-httpd-cgi,L]
+</pre>
+              </td>
+            </tr>
+          </table>
+
+          <p>This forces all URLs prefixed with
+          <code>xredirect:</code> to be piped through the
+          <code>nph-xredirect.cgi</code> program. And this program
+          just looks like:</p>
+
+          <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+          cellpadding="5">
+            <tr>
+              <td>
+<pre>
+#!/path/to/perl
+##
+##  nph-xredirect.cgi -- NPH/CGI script for extended redirects
+##  Copyright (c) 1997 Ralf S. Engelschall, All Rights Reserved. 
+##
+
+$| = 1;
+$url = $ENV{'PATH_INFO'};
+
+print "HTTP/1.0 302 Moved Temporarily\n";
+print "Server: $ENV{'SERVER_SOFTWARE'}\n";
+print "Location: $url\n";
+print "Content-type: text/html\n";
+print "\n";
+print "&lt;html&gt;\n";
+print "&lt;head&gt;\n";
+print "&lt;title&gt;302 Moved Temporarily (EXTENDED)&lt;/title&gt;\n";
+print "&lt;/head&gt;\n";
+print "&lt;body&gt;\n";
+print "&lt;h1&gt;Moved Temporarily (EXTENDED)&lt;/h1&gt;\n";
+print "The document has moved &lt;a HREF=\"$url\"&gt;here&lt;/a&gt;.&lt;p&gt;\n";
+print "&lt;/body&gt;\n";
+print "&lt;/html&gt;\n";
+
+##EOF##
+</pre>
+              </td>
+            </tr>
+          </table>
+
+          <p>This provides you with the functionality to do
+          redirects to all URL schemes, i.e. including the one
+          which are not directly accepted by mod_rewrite. For
+          instance you can now also redirect to
+          <code>news:newsgroup</code> via</p>
+
+          <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+          cellpadding="5">
+            <tr>
+              <td>
+<pre>
+RewriteRule ^anyurl  xredirect:news:newsgroup
+</pre>
+              </td>
+            </tr>
+          </table>
+
+          <p>Notice: You have not to put [R] or [R,L] to the above
+          rule because the <code>xredirect:</code> need to be
+          expanded later by our special "pipe through" rule
+          above.</p>
+        </dd>
+      </dl>
+
+      <h2>Archive Access Multiplexer</h2>
+
+      <dl>
+        <dt><strong>Description:</strong></dt>
+
+        <dd>Do you know the great CPAN (Comprehensive Perl Archive
+        Network) under <a
+        href="http://www.perl.com/CPAN">http://www.perl.com/CPAN</a>?
+        This does a redirect to one of several FTP servers around
+        the world which carry a CPAN mirror and is approximately
+        near the location of the requesting client. Actually this
+        can be called an FTP access multiplexing service. While
+        CPAN runs via CGI scripts, how can a similar approach
+        implemented via mod_rewrite?</dd>
+
+        <dt><strong>Solution:</strong></dt>
+
+        <dd>
+          First we notice that from version 3.0.0 mod_rewrite can
+          also use the "ftp:" scheme on redirects. And second, the
+          location approximation can be done by a rewritemap over
+          the top-level domain of the client. With a tricky chained
+          ruleset we can use this top-level domain as a key to our
+          multiplexing map. 
+
+          <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+          cellpadding="5">
+            <tr>
+              <td>
+<pre>
+RewriteEngine on
+RewriteMap    multiplex                txt:/path/to/map.cxan
+RewriteRule   ^/CxAN/(.*)              %{REMOTE_HOST}::$1                 [C]
+RewriteRule   ^.+\.<strong>([a-zA-Z]+)</strong>::(.*)$  ${multiplex:<strong>$1</strong>|ftp.default.dom}$2  [R,L]
+</pre>
+              </td>
+            </tr>
+          </table>
+
+          <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+          cellpadding="5">
+            <tr>
+              <td>
+<pre>
+##
+##  map.cxan -- Multiplexing Map for CxAN
+##
+
+de        ftp://ftp.cxan.de/CxAN/
+uk        ftp://ftp.cxan.uk/CxAN/
+com       ftp://ftp.cxan.com/CxAN/
+ :
+##EOF##
+</pre>
+              </td>
+            </tr>
+          </table>
+        </dd>
+      </dl>
+
+      <h2>Time-Dependend Rewriting</h2>
+
+      <dl>
+        <dt><strong>Description:</strong></dt>
+
+        <dd>When tricks like time-dependend content should happen a
+        lot of webmasters still use CGI scripts which do for
+        instance redirects to specialized pages. How can it be done
+        via mod_rewrite?</dd>
+
+        <dt><strong>Solution:</strong></dt>
+
+        <dd>
+          There are a lot of variables named <code>TIME_xxx</code>
+          for rewrite conditions. In conjunction with the special
+          lexicographic comparison patterns &lt;STRING, &gt;STRING
+          and =STRING we can do time-dependend redirects: 
+
+          <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+          cellpadding="5">
+            <tr>
+              <td>
+<pre>
+RewriteEngine on
+RewriteCond   %{TIME_HOUR}%{TIME_MIN} &gt;0700
+RewriteCond   %{TIME_HOUR}%{TIME_MIN} &lt;1900
+RewriteRule   ^foo\.html$             foo.day.html
+RewriteRule   ^foo\.html$             foo.night.html
+</pre>
+              </td>
+            </tr>
+          </table>
+
+          <p>This provides the content of <code>foo.day.html</code>
+          under the URL <code>foo.html</code> from 07:00-19:00 and
+          at the remaining time the contents of
+          <code>foo.night.html</code>. Just a nice feature for a
+          homepage...</p>
+        </dd>
+      </dl>
+
+      <h2>Backward Compatibility for YYYY to XXXX migration</h2>
+
+      <dl>
+        <dt><strong>Description:</strong></dt>
+
+        <dd>How can we make URLs backward compatible (still
+        existing virtually) after migrating document.YYYY to
+        document.XXXX, e.g. after translating a bunch of .html
+        files to .phtml?</dd>
+
+        <dt><strong>Solution:</strong></dt>
+
+        <dd>
+          We just rewrite the name to its basename and test for
+          existence of the new extension. If it exists, we take
+          that name, else we rewrite the URL to its original state.
+          
+
+          <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+          cellpadding="5">
+            <tr>
+              <td>
+<pre>
+#   backward compatibility ruleset for 
+#   rewriting document.html to document.phtml
+#   when and only when document.phtml exists
+#   but no longer document.html
+RewriteEngine on
+RewriteBase   /~quux/
+#   parse out basename, but remember the fact
+RewriteRule   ^(.*)\.html$              $1      [C,E=WasHTML:yes]
+#   rewrite to document.phtml if exists
+RewriteCond   %{REQUEST_FILENAME}.phtml -f
+RewriteRule   ^(.*)$ $1.phtml                   [S=1]
+#   else reverse the previous basename cutout
+RewriteCond   %{ENV:WasHTML}            ^yes$
+RewriteRule   ^(.*)$ $1.html
+</pre>
+              </td>
+            </tr>
+          </table>
+        </dd>
+      </dl>
+
+      <h1>Content Handling</h1>
+
+      <h2>From Old to New (intern)</h2>
+
+      <dl>
+        <dt><strong>Description:</strong></dt>
+
+        <dd>Assume we have recently renamed the page
+        <code>foo.html</code> to <code>bar.html</code> and now want
+        to provide the old URL for backward compatibility. Actually
+        we want that users of the old URL even not recognize that
+        the pages was renamed.</dd>
+
+        <dt><strong>Solution:</strong></dt>
+
+        <dd>
+          We rewrite the old URL to the new one internally via the
+          following rule: 
+
+          <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+          cellpadding="5">
+            <tr>
+              <td>
+<pre>
+RewriteEngine  on
+RewriteBase    /~quux/
+RewriteRule    ^<strong>foo</strong>\.html$  <strong>bar</strong>.html
+</pre>
+              </td>
+            </tr>
+          </table>
+        </dd>
+      </dl>
+
+      <h2>From Old to New (extern)</h2>
+
+      <dl>
+        <dt><strong>Description:</strong></dt>
+
+        <dd>Assume again that we have recently renamed the page
+        <code>foo.html</code> to <code>bar.html</code> and now want
+        to provide the old URL for backward compatibility. But this
+        time we want that the users of the old URL get hinted to
+        the new one, i.e. their browsers Location field should
+        change, too.</dd>
+
+        <dt><strong>Solution:</strong></dt>
+
+        <dd>
+          We force a HTTP redirect to the new URL which leads to a
+          change of the browsers and thus the users view: 
+
+          <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+          cellpadding="5">
+            <tr>
+              <td>
+<pre>
+RewriteEngine  on
+RewriteBase    /~quux/
+RewriteRule    ^<strong>foo</strong>\.html$  <strong>bar</strong>.html  [<strong>R</strong>]
+</pre>
+              </td>
+            </tr>
+          </table>
+        </dd>
+      </dl>
+
+      <h2>Browser Dependend Content</h2>
+
+      <dl>
+        <dt><strong>Description:</strong></dt>
+
+        <dd>At least for important top-level pages it is sometimes
+        necesarry to provide the optimum of browser dependend
+        content, i.e. one has to provide a maximum version for the
+        latest Netscape variants, a minimum version for the Lynx
+        browsers and a average feature version for all others.</dd>
+
+        <dt><strong>Solution:</strong></dt>
+
+        <dd>
+          We cannot use content negotiation because the browsers do
+          not provide their type in that form. Instead we have to
+          act on the HTTP header "User-Agent". The following condig
+          does the following: If the HTTP header "User-Agent"
+          begins with "Mozilla/3", the page <code>foo.html</code>
+          is rewritten to <code>foo.NS.html</code> and and the
+          rewriting stops. If the browser is "Lynx" or "Mozilla" of
+          version 1 or 2 the URL becomes <code>foo.20.html</code>.
+          All other browsers receive page <code>foo.32.html</code>.
+          This is done by the following ruleset: 
+
+          <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+          cellpadding="5">
+            <tr>
+              <td>
+<pre>
+RewriteCond %{HTTP_USER_AGENT}  ^<strong>Mozilla/3</strong>.*
+RewriteRule ^foo\.html$         foo.<strong>NS</strong>.html          [<strong>L</strong>]
+
+RewriteCond %{HTTP_USER_AGENT}  ^<strong>Lynx/</strong>.*         [OR]
+RewriteCond %{HTTP_USER_AGENT}  ^<strong>Mozilla/[12]</strong>.*
+RewriteRule ^foo\.html$         foo.<strong>20</strong>.html          [<strong>L</strong>]
+
+RewriteRule ^foo\.html$         foo.<strong>32</strong>.html          [<strong>L</strong>]
+</pre>
+              </td>
+            </tr>
+          </table>
+        </dd>
+      </dl>
+
+      <h2>Dynamic Mirror</h2>
+
+      <dl>
+        <dt><strong>Description:</strong></dt>
+
+        <dd>Assume there are nice webpages on remote hosts we want
+        to bring into our namespace. For FTP servers we would use
+        the <code>mirror</code> program which actually maintains an
+        explicit up-to-date copy of the remote data on the local
+        machine. For a webserver we could use the program
+        <code>webcopy</code> which acts similar via HTTP. But both
+        techniques have one major drawback: The local copy is
+        always just as up-to-date as often we run the program. It
+        would be much better if the mirror is not a static one we
+        have to establish explicitly. Instead we want a dynamic
+        mirror with data which gets updated automatically when
+        there is need (updated data on the remote host).</dd>
+
+        <dt><strong>Solution:</strong></dt>
+
+        <dd>
+          To provide this feature we map the remote webpage or even
+          the complete remote webarea to our namespace by the use
+          of the <i>Proxy Throughput</i> feature (flag [P]): 
+
+          <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+          cellpadding="5">
+            <tr>
+              <td>
+<pre>
+RewriteEngine  on
+RewriteBase    /~quux/
+RewriteRule    ^<strong>hotsheet/</strong>(.*)$  <strong>http://www.tstimpreso.com/hotsheet/</strong>$1  [<strong>P</strong>]
+</pre>
+              </td>
+            </tr>
+          </table>
+
+          <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+          cellpadding="5">
+            <tr>
+              <td>
+<pre>
+RewriteEngine  on
+RewriteBase    /~quux/
+RewriteRule    ^<strong>usa-news\.html</strong>$   <strong>http://www.quux-corp.com/news/index.html</strong>  [<strong>P</strong>]
+</pre>
+              </td>
+            </tr>
+          </table>
+        </dd>
+      </dl>
+
+      <h2>Reverse Dynamic Mirror</h2>
+
+      <dl>
+        <dt><strong>Description:</strong></dt>
+
+        <dd>...</dd>
+
+        <dt><strong>Solution:</strong></dt>
+
+        <dd>
+          <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+          cellpadding="5">
+            <tr>
+              <td>
+<pre>
+RewriteEngine on
+RewriteCond   /mirror/of/remotesite/$1           -U 
+RewriteRule   ^http://www\.remotesite\.com/(.*)$ /mirror/of/remotesite/$1
+</pre>
+              </td>
+            </tr>
+          </table>
+        </dd>
+      </dl>
+
+      <h2>Retrieve Missing Data from Intranet</h2>
+
+      <dl>
+        <dt><strong>Description:</strong></dt>
+
+        <dd>This is a tricky way of virtually running a corporates
+        (external) Internet webserver
+        (<code>www.quux-corp.dom</code>), while actually keeping
+        and maintaining its data on a (internal) Intranet webserver
+        (<code>www2.quux-corp.dom</code>) which is protected by a
+        firewall. The trick is that on the external webserver we
+        retrieve the requested data on-the-fly from the internal
+        one.</dd>
+
+        <dt><strong>Solution:</strong></dt>
+
+        <dd>
+          First, we have to make sure that our firewall still
+          protects the internal webserver and that only the
+          external webserver is allowed to retrieve data from it.
+          For a packet-filtering firewall we could for instance
+          configure a firewall ruleset like the following: 
+
+          <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+          cellpadding="5">
+            <tr>
+              <td>
+<pre>
+<strong>ALLOW</strong> Host www.quux-corp.dom Port &gt;1024 --&gt; Host www2.quux-corp.dom Port <strong>80</strong>  
+<strong>DENY</strong>  Host *                 Port *     --&gt; Host www2.quux-corp.dom Port <strong>80</strong>
+</pre>
+              </td>
+            </tr>
+          </table>
+
+          <p>Just adjust it to your actual configuration syntax.
+          Now we can establish the mod_rewrite rules which request
+          the missing data in the background through the proxy
+          throughput feature:</p>
+
+          <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+          cellpadding="5">
+            <tr>
+              <td>
+<pre>
+RewriteRule ^/~([^/]+)/?(.*)          /home/$1/.www/$2
+RewriteCond %{REQUEST_FILENAME}       <strong>!-f</strong>
+RewriteCond %{REQUEST_FILENAME}       <strong>!-d</strong>
+RewriteRule ^/home/([^/]+)/.www/?(.*) http://<strong>www2</strong>.quux-corp.dom/~$1/pub/$2 [<strong>P</strong>]
+</pre>
+              </td>
+            </tr>
+          </table>
+        </dd>
+      </dl>
+
+      <h2>Load Balancing</h2>
+
+      <dl>
+        <dt><strong>Description:</strong></dt>
+
+        <dd>Suppose we want to load balance the traffic to
+        <code>www.foo.com</code> over <code>www[0-5].foo.com</code>
+        (a total of 6 servers). How can this be done?</dd>
+
+        <dt><strong>Solution:</strong></dt>
+
+        <dd>
+          There are a lot of possible solutions for this problem.
+          We will discuss first a commonly known DNS-based variant
+          and then the special one with mod_rewrite: 
+
+          <ol>
+            <li>
+              <strong>DNS Round-Robin</strong> 
+
+              <p>The simplest method for load-balancing is to use
+              the DNS round-robin feature of BIND. Here you just
+              configure <code>www[0-9].foo.com</code> as usual in
+              your DNS with A(address) records, e.g.</p>
+
+              <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+              cellpadding="5">
+                <tr>
+                  <td>
+<pre>
+www0   IN  A       1.2.3.1
+www1   IN  A       1.2.3.2
+www2   IN  A       1.2.3.3
+www3   IN  A       1.2.3.4
+www4   IN  A       1.2.3.5
+www5   IN  A       1.2.3.6
+</pre>
+                  </td>
+                </tr>
+              </table>
+
+              <p>Then you additionally add the following entry:</p>
+
+              <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+              cellpadding="5">
+                <tr>
+                  <td>
+<pre>
+www    IN  CNAME   www0.foo.com.
+       IN  CNAME   www1.foo.com.
+       IN  CNAME   www2.foo.com.
+       IN  CNAME   www3.foo.com.
+       IN  CNAME   www4.foo.com.
+       IN  CNAME   www5.foo.com.
+       IN  CNAME   www6.foo.com.
+</pre>
+                  </td>
+                </tr>
+              </table>
+
+              <p>Notice that this seems wrong, but is actually an
+              intended feature of BIND and can be used in this way.
+              However, now when <code>www.foo.com</code> gets
+              resolved, BIND gives out <code>www0-www6</code> - but
+              in a slightly permutated/rotated order every time.
+              This way the clients are spread over the various
+              servers. But notice that this not a perfect load
+              balancing scheme, because DNS resolve information
+              gets cached by the other nameservers on the net, so
+              once a client has resolved <code>www.foo.com</code>
+              to a particular <code>wwwN.foo.com</code>, all
+              subsequent requests also go to this particular name
+              <code>wwwN.foo.com</code>. But the final result is
+              ok, because the total sum of the requests are really
+              spread over the various webservers.</p>
+            </li>
+
+            <li>
+              <strong>DNS Load-Balancing</strong> 
+
+              <p>A sophisticated DNS-based method for
+              load-balancing is to use the program
+              <code>lbnamed</code> which can be found at <a
+              href="http://www.stanford.edu/~schemers/docs/lbnamed/lbnamed.html">
+              http://www.stanford.edu/~schemers/docs/lbnamed/lbnamed.html</a>.
+              It is a Perl 5 program in conjunction with auxilliary
+              tools which provides a real load-balancing for
+              DNS.</p>
+            </li>
+
+            <li>
+              <strong>Proxy Throughput Round-Robin</strong> 
+
+              <p>In this variant we use mod_rewrite and its proxy
+              throughput feature. First we dedicate
+              <code>www0.foo.com</code> to be actually
+              <code>www.foo.com</code> by using a single</p>
+
+              <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+              cellpadding="5">
+                <tr>
+                  <td>
+<pre>
+www    IN  CNAME   www0.foo.com.
+</pre>
+                  </td>
+                </tr>
+              </table>
+
+              <p>entry in the DNS. Then we convert
+              <code>www0.foo.com</code> to a proxy-only server,
+              i.e. we configure this machine so all arriving URLs
+              are just pushed through the internal proxy to one of
+              the 5 other servers (<code>www1-www5</code>). To
+              accomplish this we first establish a ruleset which
+              contacts a load balancing script <code>lb.pl</code>
+              for all URLs.</p>
+
+              <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+              cellpadding="5">
+                <tr>
+                  <td>
+<pre>
+RewriteEngine on
+RewriteMap    lb      prg:/path/to/lb.pl
+RewriteRule   ^/(.+)$ ${lb:$1}           [P,L]
+</pre>
+                  </td>
+                </tr>
+              </table>
+
+              <p>Then we write <code>lb.pl</code>:</p>
+
+              <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+              cellpadding="5">
+                <tr>
+                  <td>
+<pre>
+#!/path/to/perl
+##
+##  lb.pl -- load balancing script
+##
+
+$| = 1;
+
+$name   = "www";     # the hostname base
+$first  = 1;         # the first server (not 0 here, because 0 is myself) 
+$last   = 5;         # the last server in the round-robin
+$domain = "foo.dom"; # the domainname
+
+$cnt = 0;
+while (&lt;STDIN&gt;) {
+    $cnt = (($cnt+1) % ($last+1-$first));
+    $server = sprintf("%s%d.%s", $name, $cnt+$first, $domain);
+    print "http://$server/$_";
+}
+
+##EOF##
+</pre>
+                  </td>
+                </tr>
+              </table>
+
+              <p>A last notice: Why is this useful? Seems like
+              <code>www0.foo.com</code> still is overloaded? The
+              answer is yes, it is overloaded, but with plain proxy
+              throughput requests, only! All SSI, CGI, ePerl, etc.
+              processing is completely done on the other machines.
+              This is the essential point.</p>
+            </li>
+
+            <li>
+              <strong>Hardware/TCP Round-Robin</strong> 
+
+              <p>There is a hardware solution available, too. Cisco
+              has a beast called LocalDirector which does a load
+              balancing at the TCP/IP level. Actually this is some
+              sort of a circuit level gateway in front of a
+              webcluster. If you have enough money and really need
+              a solution with high performance, use this one.</p>
+            </li>
+          </ol>
+        </dd>
+      </dl>
+
+      <h2>New MIME-type, New Service</h2>
+
+      <dl>
+        <dt><strong>Description:</strong></dt>
+
+        <dd>
+          On the net there are a lot of nifty CGI programs. But
+          their usage is usually boring, so a lot of webmaster
+          don't use them. Even Apache's Action handler feature for
+          MIME-types is only appropriate when the CGI programs
+          don't need special URLs (actually PATH_INFO and
+          QUERY_STRINGS) as their input. First, let us configure a
+          new file type with extension <code>.scgi</code> (for
+          secure CGI) which will be processed by the popular
+          <code>cgiwrap</code> program. The problem here is that
+          for instance we use a Homogeneous URL Layout (see above)
+          a file inside the user homedirs has the URL
+          <code>/u/user/foo/bar.scgi</code>. But
+          <code>cgiwrap</code> needs the URL in the form
+          <code>/~user/foo/bar.scgi/</code>. The following rule
+          solves the problem: 
+
+          <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+          cellpadding="5">
+            <tr>
+              <td>
+<pre>
+RewriteRule ^/[uge]/<strong>([^/]+)</strong>/\.www/(.+)\.scgi(.*) ...
+... /internal/cgi/user/cgiwrap/~<strong>$1</strong>/$2.scgi$3  [NS,<strong>T=application/x-http-cgi</strong>]
+</pre>
+              </td>
+            </tr>
+          </table>
+
+          <p>Or assume we have some more nifty programs:
+          <code>wwwlog</code> (which displays the
+          <code>access.log</code> for a URL subtree and
+          <code>wwwidx</code> (which runs Glimpse on a URL
+          subtree). We have to provide the URL area to these
+          programs so they know on which area they have to act on.
+          But usually this ugly, because they are all the times
+          still requested from that areas, i.e. typically we would
+          run the <code>swwidx</code> program from within
+          <code>/u/user/foo/</code> via hyperlink to</p>
+<pre>
+/internal/cgi/user/swwidx?i=/u/user/foo/
+</pre>
+
+          <p>which is ugly. Because we have to hard-code
+          <strong>both</strong> the location of the area
+          <strong>and</strong> the location of the CGI inside the
+          hyperlink. When we have to reorganise or area, we spend a
+          lot of time changing the various hyperlinks.</p>
+        </dd>
+
+        <dt><strong>Solution:</strong></dt>
+
+        <dd>
+          The solution here is to provide a special new URL format
+          which automatically leads to the proper CGI invocation.
+          We configure the following: 
+
+          <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+          cellpadding="5">
+            <tr>
+              <td>
+<pre>
+RewriteRule   ^/([uge])/([^/]+)(/?.*)/\*  /internal/cgi/user/wwwidx?i=/$1/$2$3/
+RewriteRule   ^/([uge])/([^/]+)(/?.*):log /internal/cgi/user/wwwlog?f=/$1/$2$3
+</pre>
+              </td>
+            </tr>
+          </table>
+
+          <p>Now the hyperlink to search at
+          <code>/u/user/foo/</code> reads only</p>
+<pre>
+HREF="*"
+</pre>
+
+          <p>which internally gets automatically transformed to</p>
+<pre>
+/internal/cgi/user/wwwidx?i=/u/user/foo/
+</pre>
+
+          <p>The same approach leads to an invocation for the
+          access log CGI program when the hyperlink
+          <code>:log</code> gets used.</p>
+        </dd>
+      </dl>
+
+      <h2>From Static to Dynamic</h2>
+
+      <dl>
+        <dt><strong>Description:</strong></dt>
+
+        <dd>How can we transform a static page
+        <code>foo.html</code> into a dynamic variant
+        <code>foo.cgi</code> in a seamless way, i.e. without notice
+        by the browser/user.</dd>
+
+        <dt><strong>Solution:</strong></dt>
+
+        <dd>
+          We just rewrite the URL to the CGI-script and force the
+          correct MIME-type so it gets really run as a CGI-script.
+          This way a request to <code>/~quux/foo.html</code>
+          internally leads to the invokation of
+          <code>/~quux/foo.cgi</code>. 
+
+          <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+          cellpadding="5">
+            <tr>
+              <td>
+<pre>
+RewriteEngine  on
+RewriteBase    /~quux/
+RewriteRule    ^foo\.<strong>html</strong>$  foo.<strong>cgi</strong>  [T=<strong>application/x-httpd-cgi</strong>]
+</pre>
+              </td>
+            </tr>
+          </table>
+        </dd>
+      </dl>
+
+      <h2>On-the-fly Content-Regeneration</h2>
+
+      <dl>
+        <dt><strong>Description:</strong></dt>
+
+        <dd>Here comes a really esoteric feature: Dynamically
+        generated but statically served pages, i.e. pages should be
+        delivered as pure static pages (read from the filesystem
+        and just passed through), but they have to be generated
+        dynamically by the webserver if missing. This way you can
+        have CGI-generated pages which are statically served unless
+        one (or a cronjob) removes the static contents. Then the
+        contents gets refreshed.</dd>
+
+        <dt><strong>Solution:</strong></dt>
+
+        <dd>
+          This is done via the following ruleset: 
+
+          <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+          cellpadding="5">
+            <tr>
+              <td>
+<pre>
+RewriteCond %{REQUEST_FILENAME}   <strong>!-s</strong>
+RewriteRule ^page\.<strong>html</strong>$          page.<strong>cgi</strong>   [T=application/x-httpd-cgi,L]
+</pre>
+              </td>
+            </tr>
+          </table>
+
+          <p>Here a request to <code>page.html</code> leads to a
+          internal run of a corresponding <code>page.cgi</code> if
+          <code>page.html</code> is still missing or has filesize
+          null. The trick here is that <code>page.cgi</code> is a
+          usual CGI script which (additionally to its STDOUT)
+          writes its output to the file <code>page.html</code>.
+          Once it was run, the server sends out the data of
+          <code>page.html</code>. When the webmaster wants to force
+          a refresh the contents, he just removes
+          <code>page.html</code> (usually done by a cronjob).</p>
+        </dd>
+      </dl>
+
+      <h2>Document With Autorefresh</h2>
+
+      <dl>
+        <dt><strong>Description:</strong></dt>
+
+        <dd>Wouldn't it be nice while creating a complex webpage if
+        the webbrowser would automatically refresh the page every
+        time we write a new version from within our editor?
+        Impossible?</dd>
+
+        <dt><strong>Solution:</strong></dt>
+
+        <dd>
+          No! We just combine the MIME multipart feature, the
+          webserver NPH feature and the URL manipulation power of
+          mod_rewrite. First, we establish a new URL feature:
+          Adding just <code>:refresh</code> to any URL causes this
+          to be refreshed every time it gets updated on the
+          filesystem. 
+
+          <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+          cellpadding="5">
+            <tr>
+              <td>
+<pre>
+RewriteRule   ^(/[uge]/[^/]+/?.*):refresh  /internal/cgi/apache/nph-refresh?f=$1
+</pre>
+              </td>
+            </tr>
+          </table>
+
+          <p>Now when we reference the URL</p>
+<pre>
+/u/foo/bar/page.html:refresh
+</pre>
+
+          <p>this leads to the internal invocation of the URL</p>
+<pre>
+/internal/cgi/apache/nph-refresh?f=/u/foo/bar/page.html
+</pre>
+
+          <p>The only missing part is the NPH-CGI script. Although
+          one would usually say "left as an exercise to the reader"
+          ;-) I will provide this, too.</p>
+<pre>
+#!/sw/bin/perl
+##
+##  nph-refresh -- NPH/CGI script for auto refreshing pages
+##  Copyright (c) 1997 Ralf S. Engelschall, All Rights Reserved. 
+##
+$| = 1;
+
+#   split the QUERY_STRING variable
+@pairs = split(/&amp;/, $ENV{'QUERY_STRING'});
+foreach $pair (@pairs) {
+    ($name, $value) = split(/=/, $pair);
+    $name =~ tr/A-Z/a-z/;
+    $name = 'QS_' . $name;
+    $value =~ s/%([a-fA-F0-9][a-fA-F0-9])/pack("C", hex($1))/eg;
+    eval "\$$name = \"$value\"";
+}
+$QS_s = 1 if ($QS_s eq '');
+$QS_n = 3600 if ($QS_n eq '');
+if ($QS_f eq '') {
+    print "HTTP/1.0 200 OK\n";
+    print "Content-type: text/html\n\n";
+    print "&amp;lt;b&amp;gt;ERROR&amp;lt;/b&amp;gt;: No file given\n";
+    exit(0);
+}
+if (! -f $QS_f) {
+    print "HTTP/1.0 200 OK\n";
+    print "Content-type: text/html\n\n";
+    print "&amp;lt;b&amp;gt;ERROR&amp;lt;/b&amp;gt;: File $QS_f not found\n";
+    exit(0);
+}
+
+sub print_http_headers_multipart_begin {
+    print "HTTP/1.0 200 OK\n";
+    $bound = "ThisRandomString12345";
+    print "Content-type: multipart/x-mixed-replace;boundary=$bound\n";
+    &amp;print_http_headers_multipart_next;
+}
+
+sub print_http_headers_multipart_next {
+    print "\n--$bound\n";
+}
+
+sub print_http_headers_multipart_end {
+    print "\n--$bound--\n";
+}
+
+sub displayhtml {
+    local($buffer) = @_;
+    $len = length($buffer);
+    print "Content-type: text/html\n";
+    print "Content-length: $len\n\n";
+    print $buffer;
+}
+
+sub readfile {
+    local($file) = @_;
+    local(*FP, $size, $buffer, $bytes);
+    ($x, $x, $x, $x, $x, $x, $x, $size) = stat($file);
+    $size = sprintf("%d", $size);
+    open(FP, "&amp;lt;$file");
+    $bytes = sysread(FP, $buffer, $size);
+    close(FP);
+    return $buffer;
+}
+
+$buffer = &amp;readfile($QS_f);
+&amp;print_http_headers_multipart_begin;
+&amp;displayhtml($buffer);
+
+sub mystat {
+    local($file) = $_[0];
+    local($time);
+
+    ($x, $x, $x, $x, $x, $x, $x, $x, $x, $mtime) = stat($file);
+    return $mtime;
+}
+
+$mtimeL = &amp;mystat($QS_f);
+$mtime = $mtime;
+for ($n = 0; $n &amp;lt; $QS_n; $n++) {
+    while (1) {
+        $mtime = &amp;mystat($QS_f);
+        if ($mtime ne $mtimeL) {
+            $mtimeL = $mtime;
+            sleep(2);
+            $buffer = &amp;readfile($QS_f);
+            &amp;print_http_headers_multipart_next;
+            &amp;displayhtml($buffer);
+            sleep(5);
+            $mtimeL = &amp;mystat($QS_f);
+            last;
+        }
+        sleep($QS_s);
+    }
+}
+
+&amp;print_http_headers_multipart_end;
+
+exit(0);
+
+##EOF##
+</pre>
+        </dd>
+      </dl>
+
+      <h2>Mass Virtual Hosting</h2>
+
+      <dl>
+        <dt><strong>Description:</strong></dt>
+
+        <dd>The <code>&lt;VirtualHost&gt;</code> feature of Apache
+        is nice and works great when you just have a few dozens
+        virtual hosts. But when you are an ISP and have hundreds of
+        virtual hosts to provide this feature is not the best
+        choice.</dd>
+
+        <dt><strong>Solution:</strong></dt>
+
+        <dd>
+          To provide this feature we map the remote webpage or even
+          the complete remote webarea to our namespace by the use
+          of the <i>Proxy Throughput</i> feature (flag [P]): 
+
+          <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+          cellpadding="5">
+            <tr>
+              <td>
+<pre>
+##
+##  vhost.map 
+## 
+www.vhost1.dom:80  /path/to/docroot/vhost1
+www.vhost2.dom:80  /path/to/docroot/vhost2
+     :
+www.vhostN.dom:80  /path/to/docroot/vhostN
+</pre>
+              </td>
+            </tr>
+          </table>
+
+          <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+          cellpadding="5">
+            <tr>
+              <td>
+<pre>
+##
+##  httpd.conf
+##
+    :
+#   use the canonical hostname on redirects, etc.
+UseCanonicalName on
+
+    :
+#   add the virtual host in front of the CLF-format
+CustomLog  /path/to/access_log  "%{VHOST}e %h %l %u %t \"%r\" %&gt;s %b"
+    :
+
+#   enable the rewriting engine in the main server
+RewriteEngine on
+
+#   define two maps: one for fixing the URL and one which defines
+#   the available virtual hosts with their corresponding
+#   DocumentRoot.
+RewriteMap    lowercase    int:tolower
+RewriteMap    vhost        txt:/path/to/vhost.map
+
+#   Now do the actual virtual host mapping
+#   via a huge and complicated single rule:
+#
+#   1. make sure we don't map for common locations
+RewriteCond   %{REQUEST_URI}  !^/commonurl1/.*
+RewriteCond   %{REQUEST_URI}  !^/commonurl2/.*
+    :
+RewriteCond   %{REQUEST_URI}  !^/commonurlN/.*
+#
+#   2. make sure we have a Host header, because
+#      currently our approach only supports 
+#      virtual hosting through this header
+RewriteCond   %{HTTP_HOST}  !^$
+#
+#   3. lowercase the hostname
+RewriteCond   ${lowercase:%{HTTP_HOST}|NONE}  ^(.+)$
+#
+#   4. lookup this hostname in vhost.map and
+#      remember it only when it is a path 
+#      (and not "NONE" from above)
+RewriteCond   ${vhost:%1}  ^(/.*)$
+#
+#   5. finally we can map the URL to its docroot location 
+#      and remember the virtual host for logging puposes
+RewriteRule   ^/(.*)$   %1/$1  [E=VHOST:${lowercase:%{HTTP_HOST}}]
+    : 
+</pre>
+              </td>
+            </tr>
+          </table>
+        </dd>
+      </dl>
+
+      <h1>Access Restriction</h1>
+
+      <h2>Blocking of Robots</h2>
+
+      <dl>
+        <dt><strong>Description:</strong></dt>
+
+        <dd>How can we block a really annoying robot from
+        retrieving pages of a specific webarea? A
+        <code>/robots.txt</code> file containing entries of the
+        "Robot Exclusion Protocol" is typically not enough to get
+        rid of such a robot.</dd>
+
+        <dt><strong>Solution:</strong></dt>
+
+        <dd>
+          We use a ruleset which forbids the URLs of the webarea
+          <code>/~quux/foo/arc/</code> (perhaps a very deep
+          directory indexed area where the robot traversal would
+          create big server load). We have to make sure that we
+          forbid access only to the particular robot, i.e. just
+          forbidding the host where the robot runs is not enough.
+          This would block users from this host, too. We accomplish
+          this by also matching the User-Agent HTTP header
+          information. 
+
+          <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+          cellpadding="5">
+            <tr>
+              <td>
+<pre>
+RewriteCond %{HTTP_USER_AGENT}   ^<strong>NameOfBadRobot</strong>.*      
+RewriteCond %{REMOTE_ADDR}       ^<strong>123\.45\.67\.[8-9]</strong>$
+RewriteRule ^<strong>/~quux/foo/arc/</strong>.+   -   [<strong>F</strong>]
+</pre>
+              </td>
+            </tr>
+          </table>
+        </dd>
+      </dl>
+
+      <h2>Blocked Inline-Images</h2>
+
+      <dl>
+        <dt><strong>Description:</strong></dt>
+
+        <dd>Assume we have under http://www.quux-corp.de/~quux/
+        some pages with inlined GIF graphics. These graphics are
+        nice, so others directly incorporate them via hyperlinks to
+        their pages. We don't like this practice because it adds
+        useless traffic to our server.</dd>
+
+        <dt><strong>Solution:</strong></dt>
+
+        <dd>
+          While we cannot 100% protect the images from inclusion,
+          we can at least restrict the cases where the browser
+          sends a HTTP Referer header. 
+
+          <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+          cellpadding="5">
+            <tr>
+              <td>
+<pre>
+RewriteCond %{HTTP_REFERER} <strong>!^$</strong>                                  
+RewriteCond %{HTTP_REFERER} !^http://www.quux-corp.de/~quux/.*$ [NC]
+RewriteRule <strong>.*\.gif$</strong>        -                                    [F]
+</pre>
+              </td>
+            </tr>
+          </table>
+
+          <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+          cellpadding="5">
+            <tr>
+              <td>
+<pre>
+RewriteCond %{HTTP_REFERER}         !^$                                  
+RewriteCond %{HTTP_REFERER}         !.*/foo-with-gif\.html$
+RewriteRule <strong>^inlined-in-foo\.gif$</strong>   -                        [F]
+</pre>
+              </td>
+            </tr>
+          </table>
+        </dd>
+      </dl>
+
+      <h2>Host Deny</h2>
+
+      <dl>
+        <dt><strong>Description:</strong></dt>
+
+        <dd>How can we forbid a list of externally configured hosts
+        from using our server?</dd>
+
+        <dt><strong>Solution:</strong></dt>
+
+        <dd>
+          For Apache &gt;= 1.3b6: 
+
+          <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+          cellpadding="5">
+            <tr>
+              <td>
+<pre>
+RewriteEngine on
+RewriteMap    hosts-deny  txt:/path/to/hosts.deny
+RewriteCond   ${hosts-deny:%{REMOTE_HOST}|NOT-FOUND} !=NOT-FOUND [OR]
+RewriteCond   ${hosts-deny:%{REMOTE_ADDR}|NOT-FOUND} !=NOT-FOUND
+RewriteRule   ^/.*  -  [F]
+</pre>
+              </td>
+            </tr>
+          </table>
+
+          <p>For Apache &lt;= 1.3b6:</p>
+
+          <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+          cellpadding="5">
+            <tr>
+              <td>
+<pre>
+RewriteEngine on
+RewriteMap    hosts-deny  txt:/path/to/hosts.deny
+RewriteRule   ^/(.*)$ ${hosts-deny:%{REMOTE_HOST}|NOT-FOUND}/$1
+RewriteRule   !^NOT-FOUND/.* - [F]
+RewriteRule   ^NOT-FOUND/(.*)$ ${hosts-deny:%{REMOTE_ADDR}|NOT-FOUND}/$1 
+RewriteRule   !^NOT-FOUND/.* - [F]
+RewriteRule   ^NOT-FOUND/(.*)$ /$1
+</pre>
+              </td>
+            </tr>
+          </table>
+
+          <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+          cellpadding="5">
+            <tr>
+              <td>
+<pre>
+##
+##  hosts.deny 
+##
+##  ATTENTION! This is a map, not a list, even when we treat it as such.
+##             mod_rewrite parses it for key/value pairs, so at least a
+##             dummy value "-" must be present for each entry.
+##
+
+193.102.180.41 -
+bsdti1.sdm.de  -
+192.76.162.40  -
+</pre>
+              </td>
+            </tr>
+          </table>
+        </dd>
+      </dl>
+
+      <h2>URL-Restricted Proxy</h2>
+
+      <dl>
+        <dt><strong>Description:</strong></dt>
+
+        <dd>How can we restrict the proxy to allow access to a
+        configurable set of internet sites only? The site list is
+        extracted from a prepared bookmarks file.</dd>
+
+        <dt><strong>Solution:</strong></dt>
+
+        <dd>
+          We first have to make sure mod_rewrite is below(!)
+          mod_proxy in the <code>Configuration</code> file when
+          compiling the Apache webserver (or in the
+          <code>AddModule</code> list of <code>httpd.conf</code> in
+          the case of dynamically loaded modules), as it must get
+          called <em>_before_</em> mod_proxy. 
+
+          <p>For simplicity, we generate the site list as a
+          textfile map (but see the <a
+          href="../mod/mod_rewrite.html#RewriteMap">mod_rewrite
+          documentation</a> for a conversion script to DBM format).
+          A typical Netscape bookmarks file can be converted to a
+          list of sites with a shell script like this:</p>
+
+          <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+          cellpadding="5">
+            <tr>
+              <td>
+<pre>
+#!/bin/sh
+cat ${1:-~/.netscape/bookmarks.html} |
+tr -d '\015' | tr '[A-Z]' '[a-z]' | grep href=\" |
+sed -e '/href="file:/d;' -e '/href="news:/d;' \
+    -e 's|^.*href="[^:]*://\([^:/"]*\).*$|\1 OK|;' \
+    -e '/href="/s|^.*href="\([^:/"]*\).*$|\1 OK|;' |
+sort -u
+</pre>
+              </td>
+            </tr>
+          </table>
+
+          <p>We redirect the resulting output into a text file
+          called <code>goodsites.txt</code>. It now looks similar
+          to this:</p>
+
+          <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+          cellpadding="5">
+            <tr>
+              <td>
+<pre>
+www.apache.org OK
+xml.apache.org OK
+jakarta.apache.org OK
+perl.apache.org OK
+...
+</pre>
+              </td>
+            </tr>
+          </table>
+
+          <p>We reference this site file within the configuration
+          for the <code>VirtualHost</code> which is responsible for
+          serving as a proxy (often not port 80, but 81, 8080 or
+          8008).</p>
+
+          <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+          cellpadding="5">
+            <tr>
+              <td>
+<pre>
+&lt;VirtualHost *:8008&gt;
+  ...
+  RewriteEngine   On
+  # Either use the (plaintext) allow list from goodsites.txt
+  RewriteMap      ProxyAllow   txt:/usr/local/apache/conf/goodsites.txt
+  # Or, for faster access, convert it to a DBM database:
+  #RewriteMap     ProxyAllow   dbm:/usr/local/apache/conf/goodsites
+  # Match lowercased hostnames
+  RewriteMap      lowercase    int:tolower
+  # Here we go:
+  # 1) first lowercase the site name and strip off a :port suffix
+  RewriteCond  ${lowercase:%{HTTP_HOST}}    ^([^:]*).*$
+  # 2) next look it up in the map file.
+  #    "%1" refers to the previous regex.
+  #    If the result is "OK", proxy access is granted.
+  RewriteCond  ${ProxyAllow:%1|DENY}        !^OK$          [NC]
+  # 3) Disallow proxy requests if the site was _not_ tagged "OK":
+  RewriteRule  ^proxy:                      -              [F]
+  ...
+&lt;/VirtualHost&gt;
+</pre>
+              </td>
+            </tr>
+          </table>
+        </dd>
+      </dl>
+
+      <h2>Proxy Deny</h2>
+
+      <dl>
+        <dt><strong>Description:</strong></dt>
+
+        <dd>How can we forbid a certain host or even a user of a
+        special host from using the Apache proxy?</dd>
+
+        <dt><strong>Solution:</strong></dt>
+
+        <dd>
+          We first have to make sure mod_rewrite is below(!)
+          mod_proxy in the <code>Configuration</code> file when
+          compiling the Apache webserver. This way it gets called
+          <em>_before_</em> mod_proxy. Then we configure the
+          following for a host-dependend deny... 
+
+          <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+          cellpadding="5">
+            <tr>
+              <td>
+<pre>
+RewriteCond %{REMOTE_HOST} <strong>^badhost\.mydomain\.com$</strong> 
+RewriteRule !^http://[^/.]\.mydomain.com.*  - [F]
+</pre>
+              </td>
+            </tr>
+          </table>
+
+          <p>...and this one for a user@host-dependend deny:</p>
+
+          <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+          cellpadding="5">
+            <tr>
+              <td>
+<pre>
+RewriteCond %{REMOTE_IDENT}@%{REMOTE_HOST}  <strong>^badguy@badhost\.mydomain\.com$</strong>
+RewriteRule !^http://[^/.]\.mydomain.com.*  - [F]
+</pre>
+              </td>
+            </tr>
+          </table>
+        </dd>
+      </dl>
+
+      <h2>Special Authentication Variant</h2>
+
+      <dl>
+        <dt><strong>Description:</strong></dt>
+
+        <dd>Sometimes a very special authentication is needed, for
+        instance a authentication which checks for a set of
+        explicitly configured users. Only these should receive
+        access and without explicit prompting (which would occur
+        when using the Basic Auth via mod_access).</dd>
+
+        <dt><strong>Solution:</strong></dt>
+
+        <dd>
+          We use a list of rewrite conditions to exclude all except
+          our friends: 
+
+          <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+          cellpadding="5">
+            <tr>
+              <td>
+<pre>
+RewriteCond %{REMOTE_IDENT}@%{REMOTE_HOST} <strong>!^friend1@client1.quux-corp\.com$</strong> 
+RewriteCond %{REMOTE_IDENT}@%{REMOTE_HOST} <strong>!^friend2</strong>@client2.quux-corp\.com$ 
+RewriteCond %{REMOTE_IDENT}@%{REMOTE_HOST} <strong>!^friend3</strong>@client3.quux-corp\.com$ 
+RewriteRule ^/~quux/only-for-friends/      -                                 [F]
+</pre>
+              </td>
+            </tr>
+          </table>
+        </dd>
+      </dl>
+
+      <h2>Referer-based Deflector</h2>
+
+      <dl>
+        <dt><strong>Description:</strong></dt>
+
+        <dd>How can we program a flexible URL Deflector which acts
+        on the "Referer" HTTP header and can be configured with as
+        many referring pages as we like?</dd>
+
+        <dt><strong>Solution:</strong></dt>
+
+        <dd>
+          Use the following really tricky ruleset... 
+
+          <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+          cellpadding="5">
+            <tr>
+              <td>
+<pre>
+RewriteMap  deflector txt:/path/to/deflector.map
+
+RewriteCond %{HTTP_REFERER} !=""
+RewriteCond ${deflector:%{HTTP_REFERER}} ^-$
+RewriteRule ^.* %{HTTP_REFERER} [R,L]
+
+RewriteCond %{HTTP_REFERER} !=""
+RewriteCond ${deflector:%{HTTP_REFERER}|NOT-FOUND} !=NOT-FOUND
+RewriteRule ^.* ${deflector:%{HTTP_REFERER}} [R,L]
+</pre>
+              </td>
+            </tr>
+          </table>
+
+          <p>... in conjunction with a corresponding rewrite
+          map:</p>
+
+          <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+          cellpadding="5">
+            <tr>
+              <td>
+<pre>
+##
+##  deflector.map
+##
+
+http://www.badguys.com/bad/index.html    -
+http://www.badguys.com/bad/index2.html   -
+http://www.badguys.com/bad/index3.html   http://somewhere.com/
+</pre>
+              </td>
+            </tr>
+          </table>
+
+          <p>This automatically redirects the request back to the
+          referring page (when "-" is used as the value in the map)
+          or to a specific URL (when an URL is specified in the map
+          as the second argument).</p>
+        </dd>
+      </dl>
+
+      <h1>Other</h1>
+
+      <h2>External Rewriting Engine</h2>
+
+      <dl>
+        <dt><strong>Description:</strong></dt>
+
+        <dd>A FAQ: How can we solve the FOO/BAR/QUUX/etc. problem?
+        There seems no solution by the use of mod_rewrite...</dd>
+
+        <dt><strong>Solution:</strong></dt>
+
+        <dd>
+          Use an external rewrite map, i.e. a program which acts
+          like a rewrite map. It is run once on startup of Apache
+          receives the requested URLs on STDIN and has to put the
+          resulting (usually rewritten) URL on STDOUT (same
+          order!). 
+
+          <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+          cellpadding="5">
+            <tr>
+              <td>
+<pre>
+RewriteEngine on
+RewriteMap    quux-map       <strong>prg:</strong>/path/to/map.quux.pl
+RewriteRule   ^/~quux/(.*)$  /~quux/<strong>${quux-map:$1}</strong>
+</pre>
+              </td>
+            </tr>
+          </table>
+
+          <table bgcolor="#E0E5F5" border="0" cellspacing="0"
+          cellpadding="5">
+            <tr>
+              <td>
+<pre>
+#!/path/to/perl
+
+#   disable buffered I/O which would lead 
+#   to deadloops for the Apache server
+$| = 1;
+
+#   read URLs one per line from stdin and
+#   generate substitution URL on stdout
+while (&lt;&gt;) {
+    s|^foo/|bar/|;
+    print $_;
+}
+</pre>
+              </td>
+            </tr>
+          </table>
+
+          <p>This is a demonstration-only example and just rewrites
+          all URLs <code>/~quux/foo/...</code> to
+          <code>/~quux/bar/...</code>. Actually you can program
+          whatever you like. But notice that while such maps can be
+          <strong>used</strong> also by an average user, only the
+          system administrator can <strong>define</strong> it.</p>
+        </dd>
+      </dl>
+      <!--#include virtual="footer.html" -->
+    </blockquote>
+  </body>
+</html>
+

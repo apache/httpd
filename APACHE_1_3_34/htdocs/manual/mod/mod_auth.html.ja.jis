@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+  <head>
+    <title>Apache module mod_auth</title>
+  </head>
+  <!-- English revision: 1.29 -->
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF" vlink="#000080"
+  alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="center">mod_auth モジュール</h1>
+
+    <p>
+    このモジュールはテキストファイルを使ってユーザの認証を行なう機能を
+    提供します。</p>
+
+    <p><a href="module-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> Base<br />
+    <a href="module-dict.html#SourceFile"
+    rel="Help"><strong>ソースファイル:</strong></a>
+    mod_auth.c<br />
+    <a href="module-dict.html#ModuleIdentifier"
+    rel="Help"><strong>モジュール識別子:</strong></a>
+    auth_module</p>
+
+    <h2>概要</h2>
+
+    <p>
+    このモジュールはユーザをプレーンテキストのパスワードとグループ
+    ファイルで調べることにより、HTTP
+    基本認証でアクセスを制限することを
+    可能にします。同様の機能でスケーラビリティのあるものは <a
+    href="mod_auth_dbm.html">mod_auth_dbm</a> と <a
+    href="mod_auth_db.html">mod_auth_db</a> により提供されます。
+    HTTP ダイジェスト認証は <a
+    href="mod_auth_digest.html">mod_auth_digest</a>
+    により提供されています。</p>
+
+    <p>
+    <b>これらの認証に基づいたセキュリティの機構はせいぜいウェブサーバの
+    セキュリティと同程度の強度であることに注意してください。
+    一般に、オペレーティングシステムのセキュリティシステムほどは
+    強く<i>ありません</i>。</b></p>
+
+    <h2>ディレクティブ</h2>
+
+    <ul>
+      <li><a href="#authgroupfile">AuthGroupFile</a></li>
+
+      <li><a href="#authuserfile">AuthUserFile</a></li>
+
+      <li><a href="#authauthoritative">AuthAuthoritative</a></li>
+    </ul>
+
+    <p>参照: <a href="core.html#require">require</a>, <a
+    href="core.html#satisfy">satisfy</a>, <a href="#require">mod_auth
+    require キーワード</a>。</p>
+    <hr />
+
+    <h2><a id="require" name="require"><code>mod_auth</code> Require
+    キーワード</a></h2>
+
+    <p><code>mod_auth</code> モジュールは <a
+    href="core.html#require">Require</a> ディレクティブに対する
+    以下のキーワードをサポートします:</p>
+
+    <dl compact="compact">
+      <dt><code>user <i>username</i> [...]</code></dt>
+
+      <dd>与えられたユーザ名とパスワードは <a
+      href="#authuserfile">AuthUserFile</a>
+      データベースに存在する 必要があり、さらにユーザ名が
+      Require ディレクティブにリスト
+      されている必要があります。</dd>
+
+      <dt><code>group <i>groupname</i> [...]</code></dt>
+
+      <dd>与えられたユーザ名とパスワードは <a
+      href="#authuserfile">AuthUserFile</a>
+      データベースに存在する 必要があり、さらにユーザ名が
+      <a href="#authgroupfile">AuthGroupFile</a>
+      データベースにある
+      指定されたグループのメンバである必要があります。</dd>
+
+      <dt><code>valid-user</code></dt>
+
+      <dd>与えられたユーザ名とパスワードが <a
+      href="#authuserfile">AuthUserFile</a>
+      データベースに存在する
+      必要があります。そのファイルにある有効なユーザ名はアクセスが許可
+      されます。</dd>
+
+      <dt><code>file-owner</code></dt>
+
+      <dd>[Apache 1.3.20 から]
+      与えられたユーザ名とパスワードは <a
+      href="#authuserfile">AuthUserFile</a>
+      データベースに存在する
+      必要があり、さらにユーザ名がリクエストされたファイルの
+      システムの所有者の名前と一致する必要があります。つまり、
+      オペレーティングシステムがリクエストされたファイルが
+      <code>jones</code> である、と言った場合は、Web
+      を通して アクセスするユーザ名も <code>jones</code>
+      である必要である、 ということです。</dd>
+
+      <dt><code>file-group</code></dt>
+
+      <dd>[Apache 1.3.20 から]
+      与えられたユーザ名とパスワードは <a
+      href="#authuserfile">AuthUserFile</a>
+      データベースに存在する
+      必要があり、ファイルを所有するグループ名が <a
+      href="#authgroupfile">AuthGroupFile</a> データベースに
+      ある必要があり、ユーザ名がそのグループのメンバである必要があります。
+      例えば、オペレーティングシステムがリクエストされたファイルが
+      グループ <code>accounts</code>
+      により所有されていると言った 場合、グループ
+      <code>accounts</code> が AuthGroupFile データベースに
+      属している必要があり、リクエストに使用されたユーザ名も
+      そのグループのメンバである必要があります。</dd>
+    </dl>
+    <hr />
+
+    <h2><a id="authgroupfile" name="authgroupfile">AuthGroupFile</a>
+    ディレクティブ</h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> AuthGroupFile
+    <em>filename</em><br />
+    <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a>
+    ディレクトリ、.htaccess<br />
+    <a href="directive-dict.html#Override"
+    rel="Help"><strong>上書き:</strong></a> AuthConfig<br />
+    <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> Base<br />
+    <a href="directive-dict.html#Module"
+    rel="Help"><strong>モジュール:</strong></a> mod_auth 
+
+    <p>AuthGroupFile ディレクティブはユーザ認証のための
+    ユーザグループのリストが書かれたテキストファイルの名前を設定します。
+    <em>Filename</em>
+    はグループファイルのパスです。絶対パスでないときは
+    (<em>すなわち</em>、スラッシュで始まらないときは)、ServerRoot
+    からの相対パスとして扱われます。</p>
+
+    <p>
+    グループファイルのそれぞれの行は、グループ名、コロン、空白で
+    区切られたグループに属するユーザ名、からなります。例:</p>
+
+    <blockquote>
+      <code>mygroup: bob joe anne</code>
+    </blockquote>
+
+    <p>
+    大きなテキストファイルを探すのは<em>非常</em>に効率が悪いということに
+    注意してください。そのような場合は、代わりに <a
+    href="mod_auth_dbm.html#authdbmgroupfile">AuthDBMGroupFile</a>
+    を 使ってください。</p>
+
+    <p>セキュリティ: AuthGroupFile
+    は必ずウェブサーバのドキュメントツリーの外に
+    保管してください。それが保護しているディレクトリには置か<em>ない</em>で
+    ください。そうでないと、クライアントが AuthGroupFile
+    をダウンロード できてしまいます。</p>
+
+    <p><a href="core.html#authname">AuthName</a>, <a
+    href="core.html#authtype">AuthType</a>, <a
+    href="#authuserfile">AuthUserFile</a>
+    も参照してください。</p>
+    <hr />
+
+    <h2><a id="authuserfile" name="authuserfile">AuthUserFile</a>
+    ディレクティブ</h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> AuthUserFile
+    <em>file-path</em><br />
+    <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a>
+    ディレクトリ、.htaccess<br />
+    <a href="directive-dict.html#Override"
+    rel="Help"><strong>上書き:</strong></a> AuthConfig<br />
+    <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> Base<br />
+    <a href="directive-dict.html#Module"
+    rel="Help"><strong>モジュール:</strong></a> mod_auth<br />
+     
+
+    <p>AuthUserFile
+    ディレクティブはユーザ認証のためのユーザとパスワードの
+    リストが書かれたテキストファイルを名前を設定します。<em>File-path</em>
+    は ユーザファイルへのパスです。絶対パスでないときは
+    (<em>すなわち</em>、
+    スラッシュで始まらないときは)、ServerRoot
+    からの相対パスとして扱われます。</p>
+
+    <p>
+    ユーザファイルのそれぞれの行は、ユーザ名、コロン、<code>crypt()</code>
+    により暗号化された
+    パスワード、からなります。同じユーザが複数回現れたときの動作は
+    不定です。</p>
+
+    <p>
+    バイナリ配布の一部としてインストールされているか、<code>src/support</code>
+    にある <a href="../programs/htpasswd.html">htpasswd</a>
+    ユーティリティは、
+    このパスワードファイルを維持するために使用されます。詳細は
+    <code>man</code>
+    ページを参照してください。手短かに説明すると</p>
+
+    <blockquote>
+      <code>htpasswd -c Filename username</code><br />
+       は 'username' を初期 ID としてパスワードファイル
+      'Filename' を
+      作成します。これはパスワードの入力を促します。 <code>htpasswd
+      Filename username2</code><br />
+      はパスワードファイル 'Filename' に 'username' を
+      追加するか、既にある 'username' を修正します。
+    </blockquote>
+
+    <p>
+    大きなテキストファイルを探すのは<em>非常</em>に効率が悪いということに
+    注意してください。そのような場合は、代わりに <a
+    href="mod_auth_dbm.html#authdbmuserfile">AuthDBMUserFile</a>
+    を 使ってください。</p>
+
+    <p>セキュリティ: AuthUserFile
+    は必ずウェブサーバのドキュメントツリーの外に
+    保管してください。それが保護している
+    ディレクトリには置かないでください。
+    そうでないと、クライアントが AuthUserFile
+    をダウンロードできてしまいます。</p>
+
+    <p><a href="core.html#authname">AuthName</a>, <a
+    href="core.html#authtype">AuthType</a>, <a
+    href="#authgroupfile">AuthGroupFile</a>
+    も参照してください。</p>
+    <hr />
+
+    <h2><a id="authauthoritative"
+    name="authauthoritative">AuthAuthoritative</a>
+    ディレクティブ</h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> AuthAuthoritative
+    on|off<br />
+    <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a>
+    <code>AuthAuthoritative on</code><br />
+    <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a>
+    ディレクトリ、.htaccess<br />
+    <a href="directive-dict.html#Override"
+    rel="Help"><strong>上書き:</strong></a> AuthConfig<br />
+    <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> Base<br />
+    <a href="directive-dict.html#Module"
+    rel="Help"><strong>モジュール:</strong></a> mod_auth 
+
+    <p>AuthAuthoritative ディレクティブを明示的に
+    <strong>'off'</strong> に 設定すると、userID
+    に合う <strong>userID が無い</strong> ときと、
+    それに合う<strong>ルール</strong>が無いときに、認証と権限の付与の両方を
+    (<code>設定</code> や <code>modules.c</code>
+    で定義されている 方法で)
+    下位のモジュールに渡すことを可能にします。 userID
+    かルールが指定されているときには、通常と同じパスワードと
+    アクセスのチェックが行なわれ、成功しなかった場合は
+    Authorization Required 応答が返されます。</p>
+
+    <p>ですから、userID
+    が複数のモジュールのデータベースに現れたり、 正しい
+    <code>Require</code>
+    ディレクティブが複数のモジュールに適用されたり
+    するときは、最初のモジュールが資格を調査します。AuthAuthoritative
+    の
+    設定に関わらず、アクセスの調査は別のモジュールには渡されません。</p>
+
+    <p>このディレクティブの普通の利用方法は、<a
+    href="mod_auth_db.html"><code>mod_auth_db.c</code></a>, <a
+    href="mod_auth_dbm.html"><code>mod_auth_dbm.c</code></a>,
+    <code>mod_auth_msql.c</code>, <a
+    href="mod_auth_anon.html"><code>mod_auth_anon.c</code></a>
+    のようなデータベースモジュールと一緒に使うものです。
+    これらのモジュールは大部分のユーザの資格調査を行なう機能を提供します。
+    しかし、小数の (管理者関連の) アクセスは良く保護されている AuthUserFile
+    に渡されます。</p>
+
+    <p><a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a>
+    デフォルトでは制御は渡されません。 知らない userID
+    やルールの結果は Authorization Require 応答になります。
+    ですから、このディレクティブを設定しないとシステムを安全に保つことができ、
+    NCSA と同じ動作をするようにできます。</p>
+
+    <dl>
+      <dt><b>セキュリティ:</b></dt>
+
+      <dd>AuthUserFile
+      は必ずウェブサーバのドキュメントツリーの外に保管してください。
+      それが保護している
+      ディレクトリには置か<em>ない</em>でください。
+      そうでないと、クライアントが AuthUserFile
+      をダウンロードできてしまいます。</dd>
+
+      <dd>
+      また、空のユーザ名や、空のパスワードが許可されることに注意してください
+      (Apache 1.3.20 から)。 AuthUserFile にコロン
+      (':') のみの行があれば、
+      認証時にユーザ名とパスワードが両方共省略されたときに
+      '<code>Require valid-user</code>'
+      はアクセスを許可します。</dd>
+    </dl>
+
+    <p><a href="core.html#authname">AuthName</a>, <a
+    href="core.html#authtype">AuthType</a>, <a
+    href="#authgroupfile">AuthGroupFile</a>
+    も参照してください。</p>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+

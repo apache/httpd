@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+  <head>
+
+    <title>Apache module mod_negotiation</title>
+
+  </head>
+  <!-- English revision: 1.18 -->
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+  <body bgcolor="#ffffff" text="#000000" link="#0000ff"
+  vlink="#000080" alink="#ff0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="center">mod_negotiation モジュール</h1>
+
+    <p>このモジュールは <a href="../content-negotiation.html"
+    >コンテントネゴシエーション</a>を提供します。</p>
+
+    <p><a href="module-dict.html#status"
+    rel="help"><strong>ステータス:</strong></a> Base<br />
+     <a href="module-dict.html#sourcefile"
+    rel="help"><strong>ソースファイル:</strong></a>
+    mod_negotiation.c<br />
+     <a href="module-dict.html#moduleidentifier"
+    rel="help"><strong>モジュール識別子:</strong></a>
+    negotiation_module</p>
+
+    <h2>概要</h2>
+    コンテントネゴシエーション、より正確にはコンテンツの選択機能は、
+    複数用意されているドキュメントから、クライアントの能力に一番合った
+    ドキュメントを選択する機能です。この実装は二つあります。
+
+
+    <ul>
+      <li>タイプマップ (<code>type-map</code>
+      ハンドラで扱われるファイル)。これは variants
+      を含んでいるファイルを明示的に指定します。</li>
+
+      <li>MultiViews の探索 (MultiViews <a
+      href="core.html#options">オプション</a> で使用するようになります)。
+      サーバが暗黙の内にファイル名のパターンマッチを行ない、
+      その結果から選択します。</li>
+    </ul>
+
+    <h2>ディレクティブ</h2>
+
+    <ul>
+      <li><a href="#cachenegotiateddocs">CacheNegotiatedDocs</a></li>
+
+
+      <li><a href="#languagepriority">LanguagePriority</a></li>
+    </ul>
+    <a href="./mod_mime.html#defaultlanguage">DefaultLanguage</a>,
+    <a href="./mod_mime.html#addencoding">AddEncoding</a>,
+    <a href="./mod_mime.html#addlanguage">AddLanguage</a>,
+    <a href="./mod_mime.html#addtype">AddType</a>,
+    <a href="core.html#options">Options</a>
+    <strong>も参照してください</strong>。
+
+    <h2>タイプマップ</h2>
+
+    タイプマップは RFC 822 のメールヘッダと同じ書式です。
+    ドキュメントの記述が空行で分離されて書かれていて、ハッシュ文字
+    ('#') で始まる行はコメントとして扱われます。
+    ドキュメントの説明は複数のヘッダレコードから構成されます。
+    レコードは、続きの行が空白で始まっていると複数の行にまたがります。
+    最初の空白が消去されて、前の行とつなげて 1 行として扱われます。
+    ヘッダレコードはキーワード名の後に値が続くという形式で、
+    キーワード名は常にコロンで終わります。空白はヘッダ名と値の間、
+    値のトークンの間に入れることができます。
+    使用可能なヘッダは以下のとおりです:
+    <dl>
+      <dt>Content-Encoding:</dt>
+      <dd>ファイルのエンコーディング。Apache は <a
+      href="mod_mime.html#addencoding">AddEncoding</a>
+      で定義されたエンコーディングだけを認識します。通常 compress
+      されたファイルのための <code>x-compress</code> と gzip
+      されたファイルのための <code>x-gzip</code> を含みます。
+      エンコーディングの比較をするときは、接頭辞 <code>x-</code>
+      は無視されます。</dd>
+
+
+    <dt>Content-Language:</dt>
+
+    <dd>インターネット標準の言語タグ (RFC 1766)
+    で定義されている言語の種類。例えば、<code>en</code>
+    は英語を表します。</dd>
+
+    <dt>Content-Length:</dt>
+
+    <dd>ファイルの長さ (バイト数)。
+    このヘッダがない場合、ファイルの実際の長さが使用されます。</dd>
+
+    <dt>Content-Type:</dt>
+
+    <dd>ドキュメントの MIME
+      メディアタイプ、オプショナルなパラメータ付き。パラメータの構文は
+      <code>name=value</code>
+      で、メディアタイプや他のパラメータとはセミコロンで分離されます。
+      共通のパラメータは以下のとおり:
+
+      <dl>
+        <dt>level</dt>
+
+        <dd>メディアタイプのバージョンを示す整数。
+        <code>text/html</code> では 2 がデフォルトで、その他の場合は
+        0 がデフォルトです。</dd>
+
+        <dt>qs</dt>
+
+        <dd>クライアントの能力に関係なく、variant
+        を他と比較したときの相対的な「品質」で、0.0 から 1.0
+        の範囲の浮動点小数。
+        例えば、写真を表現しようとしているときは普通は JPEG
+        ファイルの方が ASCII ファイルよりも高い品質になります。
+        しかし、リソースが ASCII アートで表現されているときは、ASCII
+        ファイルの方が JPEG
+        ファイルよりも高い品質になります。このように、qs
+        はリソース毎に特有の値を取ります。
+        </dd>
+      </dl>
+      例:
+
+        <blockquote>
+          <code>Content-Type: image/jpeg; qs=0.8</code>
+        </blockquote>
+      </dd>
+
+      <dt>URI:</dt>
+
+      <dd>マップファイルから相対パスで表わした、variant
+      のあるファイルへのパス</dd>
+    </dl>
+
+    <h2>MultiViews</h2>
+    MultiViews 探索は、Multiviews <a href="core.html#options"
+    >オプション</a>により有効になります。サーバが <code>/some/dir/foo</code>
+    へのリクエストを受け取り、<code>/some/dir/foo</code> が存在
+    <em>しない</em>場合、サーバはディレクトリを読んで、
+    <code>foo.*</code> にあてはまる全てのファイルを探し、
+    事実上それらのファイルをマップするタイプマップを作ります。
+    そのとき、メディアタイプとコンテントエンコーディングは、
+    そのファイル名を直接指定したときと同じものが割り当てられます。
+    それからクライアントの要求に一番合うものを選び、
+    そのドキュメントを返します。
+    <hr />
+
+    <h2><a id="cachenegotiateddocs"
+    name="cachenegotiateddocs">CacheNegotiatedDocs</a>
+    ディレクティブ</h2>
+     <a href="directive-dict.html#syntax"
+    rel="help"><strong>構文:</strong></a> CacheNegotiatedDocs<br />
+     <a href="directive-dict.html#context"
+    rel="help"><strong>コンテキスト:</strong></a>
+    サーバ設定ファイル<br />
+     <a href="directive-dict.html#status"
+    rel="help"><strong>ステータス:</strong></a> Base<br />
+     <a href="directive-dict.html#module"
+    rel="help"><strong>モジュール:</strong></a>
+     mod_negotiation<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="help"><strong>互換性:</strong></a>
+    CacheNegotiatedDocs は Apache 1.1 以降でのみ使用可能。<br />
+    <p>このディレクティブが設定されていると、コンテントネゴシエーション
+    をした結果のドキュメントのキャッシュを許可します。
+    これは、プロキシの後ろにいるクライアントが能力に一番合った
+    ドキュメントではなく、
+    キャッシュをより効果的にするものを得る可能性があるということです。</p>
+
+    <p>このディレクティブは HTTP/1.0 ブラウザからのリクエスト
+    のみに適用されます。HTTP/1.1 は、
+    交渉されたドキュメントのキャッシュに対してずっとよい制御が可能なので、
+    このディレクティブは HTTP/1.1 のリクエストには影響しません。</p>
+    <hr />
+
+    <h2><a id="languagepriority"
+    name="languagepriority">LanguagePriority</a> ディレクティブ</h2>
+    <!--%plaintext &lt;?INDEX {\tt LanguagePriority} directive&gt; -->
+     <a href="directive-dict.html#syntax"
+    rel="help"><strong>構文:</strong></a> LanguagePriority
+    <em>MIME-lang</em> [<em>MIME-lang</em>] ...<br />
+     <a href="directive-dict.html#context"
+    rel="help"><strong>コンテキスト:</strong></a>
+    サーバ設定ファイル、バーチャルホスト、ディレクトリ、.htaccess<br />
+     <a href="directive-dict.html#override"
+    rel="help"><strong>上書き:</strong></a> FileInfo<br />
+     <a href="directive-dict.html#status"
+    rel="help"><strong>ステータス:</strong></a> Base<br />
+     <a href="directive-dict.html#module"
+    rel="help"><strong>モジュール:</strong></a> mod_negotiation
+
+    <p>LanguagePriority は、MultiViews
+    リクエストを扱うときに、クライアントが優先順位を提供していない場合の
+    言語の優先順位を設定します。<em>MIME-lang</em>
+    のリストが優先度の降順に並びます。
+    例:</p>
+
+    <blockquote>
+      <code>LanguagePriority en fr de</code>
+    </blockquote>
+    <code>foo.html</code> がリクエストされ、<code>foo.html.fr</code>
+    と <code>foo.html.de</code> が両方存在し、
+    ブラウザが言語の優先順位を提供してない場合は
+    <code>foo.html.fr</code> が返されます。
+
+    <p>このディレクティブは他の方法で「最善」
+    の言語が決定できないときのみ効果があることに注意してください。
+    HTTP/1.1 リクエストが正しく実装されている場合には、
+    このディレクティブは無効になります。</p>
+
+    <p><a href="./mod_mime.html#defaultlanguage">DefaultLanguage</a>,
+    <a href="./mod_mime.html#addlanguage">AddLanguage</a>
+    <strong>も参照してください</strong>。</p>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>

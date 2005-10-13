@@ -1,0 +1,364 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>The Apache EBCDIC Port</title>
+  </head>
+  <!-- background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#ffffff" text="#000000" link="#0000ff"
+  vlink="#000080" alink="#ff0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="center">Overview of the Apache EBCDIC Port</h1>
+
+    <p>As of Version 1.3, the Apache HTTP Server includes a port to
+    (non-ASCII) mainframe machines which use the EBCDIC character
+    set as their native codeset.<br />
+     (Initially, that support covered only the Fujitsu-Siemens
+    family of mainframes running the <a
+    href="http://www.fujitsu-siemens.com/rl/products/software/bs2000bc.html">
+    BS2000/OSD operating system</a>, a mainframe OS which features
+    a SVR4-derived POSIX subsystem. Later, the two IBM mainframe
+    operating systems TPF and OS/390 were added).</p>
+    <hr />
+
+    <h2 align="center"><a id="ebcdic" name="ebcdic">EBCDIC-related
+    conversion functions</a></h2>
+    The EBCDIC related directives <a
+    href="mod/core.html#ebcdicconvert">EBCDICConvert</a>, <a
+    href="mod/core.html#ebcdicconvertbytype">EBCDICConvertByType</a>,
+    and <a href="mod/core.html#ebcdickludge">EBCDICKludge</a> are
+    available <b>only if the platform's character set is EBCDIC</b>
+    (This is currently only the case on Fujitsu-Siemens' BS2000/OSD
+    and IBM's OS/390 and TPF operating systems). EBCDIC stands for
+    <em>Extended Binary-Coded-Decimal Interchange Code</em> and is
+    the codeset used on mainframe machines, in contrast to ASCII
+    which is ubiquitous on almost all micro computers today. ASCII
+    (or its extension <em>latin1</em>) is the basis for the HTTP
+    transfer protocol, therefore all EBCDIC-based platforms need a
+    way to configure the code set conversion rules required between
+    the EBCDIC based mainframe host and the HTTP socket
+    protocol.<br />
+     
+
+    <p>On an EBCDIC based system, HTML files and other text files
+    are usually saved encoded in the native EBCDIC code set, while
+    image files and other binary data are stored with identical
+    encoding as on ASCII based machines. When the Apache server
+    accesses documents, it must therefore make a distinction
+    between text files (to be converted to/from ASCII, depending on
+    the transfer direction) and binary files (to be delivered
+    unconverted). Such a distinction can be made based on the
+    assigned MIME type, or based on the file extension
+    (<em>i.e.</em>, files sharing a common file suffix).</p>
+
+    <p>By default, the configuration is symmetric for input and
+    output (<em>i.e.</em>, when a PUT request is executed for a
+    document which was returned by a previous GET request, then the
+    resulting uploaded copy should be identical to the original
+    file). However, the conversion directives allow for specifying
+    different conversions for input and output.</p>
+
+    <p>The directives <a
+    href="mod/core.html#ebcdicconvert">EBCDICConvert</a> and <a
+    href="mod/core.html#ebcdicconvertbytype">EBCDICConvertByType</a>
+    are used to assign the conversion setting (On or Off) based on
+    file extensions or MIME types. Each configuration setting can
+    be defined for input only (<em>e.g.</em>, PUT method), output
+    only (<em>e.g.</em>, GET method), or both input and output. By
+    default, the conversion setting is applied for input and
+    output.</p>
+
+    <p>Note that after modifying the conversion settings for a
+    group of files, it is not sufficient to restart the server. The
+    reason for this is the fact that a cached copy of a document
+    (in a browser or proxy cache) will not get revalidated by
+    contents, but only by date. Since the modification time of the
+    document did not change, browsers will assume they can reuse
+    the cached copy.<br />
+     To recover from this situation, you must either clear all
+    cached copies (browser and proxy cache!), or update the
+    modification time of the documents (using the
+    <code>touch</code> command on the server).</p>
+
+    <p>Note also that server-parsed documents (CGI scripts, .shtml
+    files, and other interpreted files like PHP scripts etc.) are
+    not subject to any input conversion and must therefore be
+    stored in EBCDIC form on the server side.</p>
+
+    <p>In absense of any <a
+    href="mod/core.html#ebcdicconvertbytype">EBCDICConvertByType</a>
+    directive, and if no matching <a
+    href="mod/core.html#ebcdicconvert">EBCDICConvert</a> was found,
+    Apache falls back to an internal heuristic which assumes that
+    all documents with MIME types starting with
+    <samp>"text/"</samp>, <samp>"message/"</samp> or
+    <samp>"multipart/"</samp> as well as the MIME type
+    <samp>"application/x-www-form-urlencoded"</samp> are text
+    documents stored in EBCDIC, whereas all other documents are
+    binary files.</p>
+
+    <p>In order to provide backward compatibility with older
+    versions of apache, the <a
+    href="mod/core.html#ebcdickludge">EBCDICKludge</a> directive
+    allows for a less powerful mechanism to control the conversion
+    of documents to and from EBCDIC.</p>
+
+    <p><strong>Note</strong>:</p>
+
+    <blockquote>
+      The EBCDICKludge directive is deprecated, since its
+      functionality is superseded by the more powerful <a
+      href="mod/core.html#ebcdicconvert">EBCDICConvert</a> and <a
+      href="mod/core.html#ebcdicconvertbytype">EBCDICConvertByType</a>
+      directives.
+    </blockquote>
+    <br />
+     <br />
+     
+
+    <p>The directives are applied in the following order:</p>
+
+    <ol>
+      <li>First, the configured <a
+      href="mod/core.html#ebcdicconvert">EBCDICConvert</a>
+      directives in the current context are evaluated in
+      configuration file order. As soon as a matching file
+      extension is found, the search stops and the configured
+      conversion is applied.<br />
+       EBCDICConvert settings inherited from parent directories are
+      tested after the more specific (deeper) directory
+      levels.</li>
+
+      <li>If the <a
+      href="mod/core.html#ebcdickludge">EBCDICKludge</a> is in
+      effect, the next step tests for a MIME type of the format
+      <samp><i>type/</i><b>x-ascii-</b><i>subtype</i></samp>. If
+      the document has such a type, then the
+      <samp>"<b>x-ascii-</b>"</samp> substring is removed and the
+      conversion set to <samp>Off</samp>.</li>
+
+      <li>In the next step, the configured <a
+      href="mod/core.html#ebcdicconvertbytype">EBCDICConvertByType</a>
+      directives are evaluated in configuration file order. If the
+      document has a matching MIME type, the search stops and the
+      configured conversion is applied.<br />
+       EBCDICConvertByType settings inherited from parent
+      directories are tested after the more specific (deeper)
+      directory levels.<br />
+       If no <a
+      href="mod/core.html#ebcdicconvertbytype">EBCDICConvertByType</a>
+      directive at all exists in the current context, the server
+      falls back to the simple heuristics which assume that MIME
+      types starting with "text/", "message/" or "multipart/" (plus
+      the special type "application/x-www-form-urlencoded" used in
+      simple POST requests) imply a conversion, while all the rest
+      is delivered unconverted (<em>i.e.</em>, binary).</li>
+    </ol>
+    <br />
+     <br />
+     
+    <hr />
+
+    <h2 align="center"><a id="tech" name="tech">Technical
+    Details</a></h2>
+
+    <p>Since all Apache input and output is based upon the BUFF
+    data type and its methods, the easiest solution was to add the
+    actual conversion to the BUFF handling routines. The conversion
+    must be settable at any time, so BUFF flags were added which
+    define whether a BUFF object has currently enabled conversion
+    or not. Two such flags exist: one for data read from the client
+    (ASCII to EBCDIC conversion) and one for data returned to the
+    client (EBCDIC to ASCII conversion).</p>
+
+    <p>During sending of the header, Apache determines (based on
+    the returned MIME type for the request) whether conversion
+    should be used or the document returned unconverted. It uses
+    this decision to initialize the BUFF flag when the response
+    output begins. Modules should therefore determine the MIME type
+    for the current request before initiating the response by
+    calling ap_send_http_headers().</p>
+
+    <p>The BUFF flag is modified at several points in the HTTP
+    protocol:</p>
+
+    <ul>
+      <li><strong>set</strong> (In and Out) before a request is
+      received (because the request and the request header lines
+      are always in ASCII format)</li>
+
+      <li><strong>set/unset</strong> (for Input data) when the
+      request body is received - depending on the content type of
+      the request body (because the request body may contain ASCII
+      text or a binary file)</li>
+
+      <li><strong>set</strong> (for returned Output) before a
+      response header is sent (because the response header lines
+      are always in ASCII format)</li>
+
+      <li><strong>set/unset</strong> (for returned Output) when the
+      response body is sent - depending on the content type of the
+      response body (because the response body may contain text or
+      a binary file)</li>
+    </ul>
+    Additional transparent transitions may occur for
+    extracting/inserting the HTTP/1.1 chunking information
+    from/into the input/output body data stream, and for generating
+    <em>multipart</em> headers for <em>range</em> requests. (See
+    RFC2616 and src/main/http_protocol.c for details.) 
+    <hr />
+
+    <h2 align="center"><a id="port" name="port">Porting
+    Notes</a></h2>
+
+    <ol>
+      <li>
+        The relevant changes in the source are #ifdef'ed into two
+        categories: 
+
+        <dl>
+          <dt><code><strong>#ifdef
+          CHARSET_EBCDIC</strong></code></dt>
+
+          <dd>Code which is needed for any EBCDIC based machine.
+          This includes character translations, differences in
+          contiguity of the two character sets, flags which
+          indicate which part of the HTTP protocol has to be
+          converted and which part doesn't <em>etc.</em></dd>
+
+          <dt><code><strong>#ifdef _OSD_POSIX | TPF |
+          OS390</strong></code></dt>
+
+          <dd>Code which is needed for the Fujitsu-Siemens
+          BS2000/OSD | IBM TPF | IBM OS390 mainframe platforms
+          only. This deals with include file differences and socket
+          and fork implementation topics which are only required on
+          the respective platform.<br />
+          </dd>
+        </dl>
+      </li>
+
+      <li>The possibility to translate between ASCII and EBCDIC at
+      the socket level (on BS2000 POSIX, there is a socket option
+      which supports this) was intentionally <em>not</em> chosen,
+      because the byte stream at the HTTP protocol level consists
+      of a mixture of protocol related strings and non-protocol
+      related raw file data. HTTP protocol strings are always
+      encoded in ASCII (the GET request, any Header: lines, the
+      chunking information <em>etc.</em>) whereas the file transfer
+      parts (<em>i.e.</em>, GIF images, CGI output <em>etc.</em>)
+      should usually be just "passed through" by the server. This
+      separation between "protocol string" and "raw data" is
+      reflected in the server code by functions like bgets() or
+      rvputs() for strings, and functions like bwrite() for binary
+      data. A global translation of everything would therefore be
+      inadequate.<br />
+       (In the case of text files of course, provisions must be
+      made so that EBCDIC documents are always served in
+      ASCII)<br />
+       This port therefore features a built-in protocol level
+      conversion for the server-internal strings (which the
+      compiler translated to EBCDIC strings) and thus for all
+      server-generated documents.<br />
+      </li>
+
+      <li>By examining the call hierarchy for the BUFF management
+      routines, I added an "ebcdic/ascii conversion layer" which
+      would be crossed on every puts/write/get/gets, and conversion
+      flags which allowed enabling/disabling the conversions
+      on-the-fly. Usually, a document crosses this layer twice from
+      its origin source (a file or CGI output) to its destination
+      (the requesting client): <samp>file -&gt; Apache</samp>, and
+      <samp>Apache -&gt; client</samp>.<br />
+       The server can now read the header lines of a CGI-script
+      output in EBCDIC format, and then find out that the remainder
+      of the script's output is in ASCII (like in the case of the
+      output of a WWW Counter program: the document body contains a
+      GIF image). All header processing is done in the native
+      EBCDIC format; the server then determines, based on the type
+      of document being served, whether the document body (except
+      for the chunking information, of course) is in ASCII already
+      or must be converted from EBCDIC.<br />
+      </li>
+
+      <li>
+        By default, Apache assumes that documents with the MIME
+        types "text/*", "message/*", "multipart/*" and
+        "application/x-www-form-urlencoded" are text documents and
+        are stored as EBCDIC files, whereas all other files are
+        binary files (and stored in a byte-identical encoding as on
+        an ASCII machine).<br />
+         These defaults can be overridden on a <a
+        href="mod/core.html#ebcdicconvertbytype">by-MIME-type</a>
+        and/or <a
+        href="mod/core.html#ebcdicconvert">by-file-extension</a>
+        basis, using the directives 
+<pre>
+     <a
+href="mod/core.html#ebcdicconvertbytype">EBCDICConvertByType</a> {On|Off}[={In|Out|InOut}] <em>mimetype</em> [...]
+     <a
+href="mod/core.html#ebcdicconvert">EBCDICConvert</a>       {On|Off}[={In|Out|InOut}] <em>fileext</em> [...]
+   
+</pre>
+        where the <em>mimetype</em> argument may contain
+        wildcards.<br />
+      </li>
+
+      <li>Before adding the flexible conversion, non-text documents
+      were always served "binary" without conversion. This seemed
+      to be the most sensible choice for, .<em>e.g.</em>,
+      GIF/ZIP/AU file types (It of course requires the user to copy
+      them to the mainframe host using the "rcp -b" binary switch),
+      but proved to be inadequate for MIME types like
+      <samp>model/vrml</samp>, <samp>application/postscript</samp>
+      and <samp>application/x-javascript</samp>.<br />
+      </li>
+
+      <li>Server parsed files are always assumed to be in native
+      (<em>i.e.</em>, EBCDIC) format as used on the machine
+      (because they do not cross the conversion layer when being
+      read), and are converted after processing.<br />
+      </li>
+
+      <li>For CGI output, the CGI script determines whether a
+      conversion is needed or not: by setting the appropriate
+      Content-Type, text files can be converted, or GIF output can
+      be passed through unmodified (depending on the conversion
+      configured in the script's context).<br />
+      </li>
+    </ol>
+    <hr />
+
+    <h2 align="center"><a id="store" name="store">Document Storage
+    Notes</a></h2>
+
+    <h3 align="center">Binary Files</h3>
+
+    <p>When exchanging binary files between the mainframe host and
+    a Unix machine or Windows PC, be sure to use the ftp "binary"
+    (<samp>TYPE I</samp>) command, or use the
+    <samp>rcp&nbsp;-b</samp> command from the mainframe host (the
+    -b switch is not supported in unix rcp's).</p>
+
+    <h3 align="center">Text Documents</h3>
+
+    <p>The default assumption of the server is that Text Files
+    (<em>i.e.</em>, all files whose <samp>Content-Type:</samp>
+    starts with <samp>text/</samp>) are stored in the native
+    character set of the host, EBCDIC.</p>
+
+    <h3 align="center">Server Side Included Documents</h3>
+
+    <p>SSI documents must currently be stored in EBCDIC only. No
+    provision is made to convert them from ASCII before processing.
+    The same holds for other interpreted languages, like mod_perl
+    or mod_php.</p>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+

@@ -1,0 +1,142 @@
+This tab-separated-value file is for use as a checklist			
+for features against <draft-ietf-http-v11-spec-rev-03.txt>,			
+since two independently developed and interoperable			
+implementations are needed for each feature.  For each entry,
+	?	means not filled-in	
+	-	means not applicable	
+	n	means no	
+	y	means yes	
+	Y	means yes with the addition of a module that uses feature
+
+The contents should be placed in the form at <http://www.agranat.com:1998/>
+by someone who wants to be the contact for the Apache Group.
+			
+Section	Feature	Implemented	Tested
+8.1	Persistent Connections	y	y
+8.2.3	Automatic retrying of requests	-	-
+8.2.4	Use of the 100 (Continue) status	n	n
+9.2	OPTIONS	y	y
+9.3	GET	y	y
+9.4	HEAD	y	y
+9.5	POST	y	y
+9.6	PUT	Y	y
+9.7	DELETE 	Y	y
+9.8	TRACE	y	y
+9.9	CONNECT	y	y
+10.1.1	100 Continue	y	y
+10.1.2	101 Switching Protocols	Y	n
+10.2.1	200 OK 	y	y
+10.2.2	201 Created	y	y
+10.2.3	202 Accepted	y	y
+10.2.4	203 Non-Authoritative Information	y	y
+10.2.5	204 No Content	y	y
+10.2.6	205 Reset Content	y	y
+10.2.7	206 Partial Content	y	y
+10.3.1	300 Multiple Choices	y	y
+10.3.2	301 Moved Permanently	y	y
+10.3.3	302 Found	y	y
+10.3.4	303 See Other	y	y
+10.3.5	304 Not Modified	y	y
+10.3.6	305 Use Proxy	y	n
+10.3.7	307 Temporary Redirect	n	n
+10.4.1	400 Bad Request	y	y
+10.4.2	401 Unauthorized	y	y
+10.4.3	402 Payment Required	Y	n
+10.4.4	403 Forbidden	y	y
+10.4.5	404 Not Found	y	y
+10.4.6	405 Method Not Allowed	y	y
+10.4.7	406 Not Acceptable	y	y
+10.4.8	407 Proxy Authentication Required	y	y
+10.4.9	408 Request Timeout	y	y
+10.4.10	409 Conflict	Y	n
+10.4.11	410 Gone	y	y
+10.4.12	411 Length Required	y	y
+10.4.13	412 Precondition Failed	y	y
+10.4.14	413 Request Entity Too Large	y	y
+10.4.15	414 Request-URI Too Long	y	y
+10.4.16	415 Unsupported Media Type	y	n
+10.4.17	416 Requested range not satisfiable	n	n
+10.4.18	417 Expectation Failed	n	n
+10.5.1	500 Internal Server Error	y	y
+10.5.2	501 Not Implemented	y	y
+10.5.3	502 Bad Gateway	y	y
+10.5.4	503 Service Unavailable	y	y
+10.5.5	504 Gateway Timeout	y	y
+10.5.6	505 HTTP Version Not Supported	Y	n
+13.3.3	Strong entity tags	y	y
+13.3.3	Weak entity tags	y	y
+14.1	Accept 	y	y
+14.2	Accept-Charset	y	y
+14.3	Accept-Encoding	n	n
+14.4	Accept-Language	y	y
+14.5	Accept-Ranges	y	y
+14.6	Age	-	-
+14.7	Allow	y	y
+14.8	Authorization	y	y
+14.9	Cache-Control	y	y
+14.10	Connection	y	y
+14.11	Content-Encoding	y	y
+14.12	Content-Language	y	y
+14.13	Content-Length	y	y
+14.14	Content-Location	Y	n
+14.15	Content-MD5	y	n
+14.16	Content-Range	y	y
+14.17	Content-Type	y	y
+14.18	Date	y	y
+14.19	ETag	y	y
+14.20	Expect 	n	n
+14.21	Expires	y	y
+14.22	From	-	-
+14.23	Host	y	y
+14.24	If-Modified-Since	y	y
+14.25	If-Match	y	y
+14.26	If-None-Match	y	y
+14.27	If-Range	y	y
+14.28	If-Unmodified-Since	y	y
+14.29	Last-Modified	y	y
+14.30	Location	y	y
+14.31	Max-Forwards	n	n
+14.32	Pragma 	y	y
+14.33	Proxy-Authenticate	y	y
+14.34	Proxy-Authorization	y	y
+14.35	Range	y	y
+14.36	Referer	y	y
+14.37	Retry-After	y	y
+14.38	Server 	y	y
+14.39	TE	n	n
+14.40	Trailer	n	n
+14.41	Transfer-Encoding	y	y
+14.42	Upgrade	Y	n
+14.43	User-Agent	-	-
+14.44	Vary	y	y
+14.45	Via	n	n
+14.46	Warning	Y	n
+14.47	WWW-Authenticate	y	y
+=====	=====================================		
+Same for <draft-ietf-http-authentication-01.txt>:		
+			
+A 2	Basic Authentication	y	y
+A 3.2.1	WWW-Authenticate Digest	y	n
+A 3.2.1	qop-options auth	n	n
+A 3.2.1	qop-options auth-int	n	n
+A 3.2.2	Authorization Digest	y	n
+A 3.2.2	request qop auth	n	n
+A 3.2.2	request qop auth-int	n	n
+A 3.2.3	Authentication-Info Digest	n	n
+A 3.2.3	response qop auth	n	n
+A 3.2.3	response qop auth-int	n	n
+A 4.1	Proxy-Authenticate Basic	y	y
+A 4.2	Proxy-Authenticate Digest	y	n
+A 4.2	Proxy qop-options auth	n	n
+A 4.2	Proxy qop-options auth-int	n	n
+A 4.2	Proxy Authorization Digest	y	n
+A 4.2	Proxy request qop auth	n	n
+A 4.2	Proxy request qop auth-int	n	n
+A 4.2	Proxy Authentication-Info Digest	n	n
+A 4.2	Proxy response qop auth	n	n
+A 4.2	Proxy response qop auth-int	n	n
+
+
+NOTES:
+100 Continue sent on all bodied requests, as per RFC 2068.
+Accept-Encoding does not allow q-values, as per RFC 2068.

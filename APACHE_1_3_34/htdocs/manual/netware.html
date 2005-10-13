@@ -1,0 +1,402 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Using Apache with Novell NetWare</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <div align="CENTER">
+      <img src="images/sub.gif" alt="[APACHE DOCUMENTATION]" /> 
+
+      <h3>Apache HTTP Server Version 1.3</h3>
+    </div>
+
+    <h1 align="CENTER">Using Apache With Novell NetWare</h1>
+
+	<p>This document explains how to install, configure and run
+	   Apache 1.3 under Novell NetWare 5.x and above. If you find any bugs, 
+	   or wish to contribute in other ways, please
+	   use our <a HREF="http://httpd.apache.org/bug_report.html">bug reporting
+	   page.</a></p>
+
+	<p>The bug reporting page and new-httpd mailing list are <em>not</em> 
+	   provided to answer questions about configuration or running Apache.  
+	   Before you submit a bug report or request, first consult this document, the 
+	   <a HREF="misc/FAQ.html">Frequently Asked Questions</a> page and the other 
+	   relevant documentation topics.  If you still have a question or problem, 
+	   post it to the <a HREF="news://devforums.novell.com/novell.devsup.webserver">
+	   novell.devsup.webserver</a> newsgroup, where many 
+	   Apache users are more than willing to answer new 
+	   and obscure questions about using Apache on NetWare.</p>
+   
+    Most of this document assumes that you are installing Apache
+    from a binary distribution. If you want to compile Apache
+    yourself (possibly to help with development, or to track down
+    bugs), see the section on <a href="#comp">Compiling Apache for
+    NetWare</a> below. 
+    <hr />
+
+    <ul>
+      <li><a href="#req">Requirements</a></li>
+
+      <li><a href="#down">Downloading Apache for NetWare</a></li>
+
+      <li><a href="#inst">Installing Apache for NetWare</a></li>
+
+      <li><a href="#run">Running Apache for NetWare</a></li>
+
+      <li><a href="#use">Configuring Apache for NetWare</a></li>
+
+      <li><a href="#comp">Compiling Apache for NetWare</a></li>
+    </ul>
+    <hr />
+
+    <h2><a id="req" name="req">Requirements</a></h2>
+    Apache 1.3 is designed to run on NetWare 5.x and above and is 
+	installed by default on all NetWare 6 servers. 
+
+    <p><strong>If running on NetWare 5.0 you must install Service
+    Pack 5 or above.</strong></p>
+
+    <p><strong>If running on NetWare 5.1 you must install Service
+    Pack 1 or above.</strong></p>
+
+    <p>NetWare service packs are available <a
+    href="http://support.novell.com/misc/patlst.htm#nw">here.</a></p>
+
+    <h2><a id="down" name="down">Downloading Apache for NetWare</a></h2>
+
+    <p>Information on the latest version of Apache can be found on
+    the Apache web server at <a
+    href="http://www.apache.org/">http://www.apache.org/</a>. This
+    will list the current release, any more recent alpha or
+    beta-test releases, together with details of mirror web and
+    anonymous ftp sites.</p>
+
+    <h2><a id="inst" name="inst">Installing Apache for
+    NetWare</a></h2>
+    There is no Apache install program for NetWare currently. You
+    will need to compile apache and copy the files over to the
+    server manually. An install program will be posted at a later
+    date. If you are running NetWare 6, Apache for NetWare has been 
+	installed by default.
+
+    <p>Follow these steps to install Apache on NetWare from the
+    binary download (assuming you will install to sys:/apache):</p>
+
+    <ul>
+      <li>Unzip the binary download file to the root of the SYS:
+      volume (may be installed to any volume)</li>
+
+      <li>Edit the httpd.conf file setting ServerRoot and
+      ServerName to reflect your correct server settings</li>
+
+      <li>Add SYS:/APACHE to the search path. EXAMPLE: SEARCH ADD
+      SYS:\APACHE</li>
+    </ul>
+
+    <p>Follow these steps to install Apache on NetWare manually
+    from your own build source (assuming you will install to
+    sys:/apache):</p>
+
+    <ul>
+      <li>Create a directory called <code>Apache</code> on a
+      NetWare volume</li>
+
+      <li>Copy Apache.nlm, Apachec.nlm, htdigest.nlm, htpasswd.nlm,
+	  xmlparse.nlm, and xmltok.nlm to sys:/apache</li>
+
+      <li>Create a directory under SYS:/APACHE called CONF</li>
+
+      <li>Copy all the *.CONF-DIST-NW files to the SYS:/APACHE/CONF
+      directory and rename them all as *.CONF files</li>
+
+      <li>Copy the MIME.TYPES and magic files to SYS:/APACHE/CONF
+      directory</li>
+
+      <li>Copy all files and subdirectories in \apache-1.3\icons to
+      SYS:/APACHE/ICONS</li>
+
+      <li>Create the directory SYS:/APACHE/LOGS on the server</li>
+
+      <li>Create the directory SYS:/APACHE/CGI-BIN on the
+      server</li>
+
+      <li>Create the directory SYS:/APACHE/MODULES and copy all nlm
+      modules built into the modules directory</li>
+
+      <li>Edit the HTTPD.CONF file setting ServerRoot and
+      ServerName to reflect your correct server settings</li>
+
+      <li>Add SYS:/APACHE to the search path. EXAMPLE: SEARCH ADD
+      SYS:\APACHE</li>
+    </ul>
+
+    <p>Apache may be installed to other volumes besides the default
+    <code>sys</code> volume.</p>
+
+    <h2><a id="run" name="run">Running Apache for NetWare</a></h2>
+    To start Apache just type <strong>apache</strong> at the
+    console. This will load apache in the OS address space. If you
+    prefer to load Apache in a protected address space you may
+    specify the address space with the load statement as follows: 
+<pre>
+    load address space = apache apache
+</pre>
+
+    <p>This will load Apache into an address space called apache.
+    Running multiple instances of Apache concurrently on NetWare is
+    possible by loading each instance into its own protected
+    address space.</p>
+
+    <p>After starting Apache it will be listening to port 80
+    (unless you changed the <samp>Port</samp>, <samp>Listen</samp>
+    or <samp>BindAddress</samp> directives in the configuration
+    files). To connect to the server and access the default page,
+    launch a browser and enter the server's name or address. This
+    should respond with a welcome page, and a link to the Apache
+    manual. If nothing happens or you get an error, look in the
+    <samp>error_log</samp> file in the <samp>logs</samp>
+    directory.</p>
+
+    <p>Once your basic installation is working, you should
+    configure it properly by editing the files in the
+    <samp>conf</samp> directory.</p>
+
+    <p>To unload Apache running in the OS address space just type
+    the following at the console:</p>
+<pre>
+    unload apache
+</pre>
+    If apache is running in a protected address space specify the
+    address space in the unload statement: 
+<pre>
+    unload address space = apache apache
+</pre>
+
+    <p>When working with Apache it is important to know how it will
+    find the configuration files. You can specify a configuration
+    file on the command line in two ways:</p>
+
+    <ul>
+      <li>-f specifies a path to a particular configuration
+      file</li>
+    </ul>
+<pre>
+    apache -f "vol:/my server/conf/my.conf"
+</pre>
+<pre>
+    apache -f test/test.conf
+</pre>
+    In these cases, the proper ServerRoot should be set in the
+    configuration file. 
+
+    <p>If you don't specify a configuration file name with -f,
+    Apache will use the file name compiled into the server, usually
+    "conf/httpd.conf". Invoking Apache with the -V switch will
+    display this value labeled as SERVER_CONFIG_FILE. Apache will
+    then determine its ServerRoot by trying the following, in this
+    order:</p>
+
+    <ul>
+      <li>A ServerRoot directive via a -C switch.</li>
+
+      <li>The -d switch on the command line.</li>
+
+      <li>Current working directory</li>
+
+      <li>The server root compiled into the server.</li>
+    </ul>
+
+    <p>The server root compiled into the server is usually
+    "sys:/apache". invoking apache with the -V switch will display
+    this value labeled as HTTPD_ROOT.</p>
+
+    <h2><a id="use" name="use">Configuring Apache for
+    NetWare</a></h2>
+    Apache is configured by files in the <samp>conf</samp>
+    directory. These are the same as files used to configure the
+    Unix version, but there are a few different directives for
+    Apache on NetWare. See the <a href="./">Apache
+    documentation</a> for all the available directives. 
+
+    <p>The main differences in Apache for NetWare are:</p>
+
+    <ul>
+      <li>
+        <p>Because Apache for NetWare is multithreaded, it does not
+        use a separate process for each request, as Apache does
+        with Unix. Instead there are only threads running: a parent
+        thread, and a child which handles the requests. Within the
+        child each request is handled by a separate thread.</p>
+
+        <p>So the "process"-management directives are
+        different:</p>
+
+        <p><a
+        href="mod/core.html#maxrequestsperchild">MaxRequestsPerChild</a>
+        - Like the Unix directive, this controls how many requests
+        a process will serve before exiting. However, unlike Unix,
+        a process serves all the requests at once, not just one, so
+        if this is set, it is recommended that a very high number
+        is used. The recommended default, <code>MaxRequestsPerChild
+        0</code>, does not cause the process to ever exit.</p>
+
+        <p><a
+        href="mod/core.html#threadsperchild">ThreadsPerChild</a> -
+        This directive is new, and tells the server how many
+        threads it should use. This is the maximum number of
+        connections the server can handle at once; be sure and set
+        this number high enough for your site if you get a lot of
+        hits. The recommended default is <code>ThreadsPerChild
+        50</code>.</p>
+        <a href="mod/core.html#threadstacksize">ThreadStackSize</a>
+        - This directive tells the server what size of stack to use
+        for the individual threads. The recommended default is
+        <code>ThreadStackSize 65536</code>.
+        <p>LogRotateDaily - This directive allows all custom logs to be rotated
+        on a daily basis.&nbsp; The file name of each log will contain the date
+        and time that the log was created.&nbsp; The default for this directive
+        is &quot;Off&quot;.</p>
+        <p>LogRotateInterval - This directive allows all custom logs to be
+        rotated on a specified interval.&nbsp; The file name of each log will
+        contain the date and time that the log was created.&nbsp; The interval
+        is specified as N minutes.&nbsp; The default is no interval or
+        &quot;0&quot;.</p>
+        <p>&nbsp;
+      </li>
+
+      <li>
+        <p>The directives that accept filenames as arguments now
+        must use NetWare filenames instead of Unix ones. However,
+        because Apache uses Unix-style names internally, you must
+        use forward slashes, not backslashes. Volumes can be used;
+        if omitted, the drive with the Apache executable will be
+        assumed.</p>
+      </li>
+
+      <li>
+        <p>Apache for NetWare has the ability to load modules at
+        runtime, without recompiling the server. If Apache is
+        compiled normally, it will install a number of optional
+        modules in the <code>\Apache\modules</code> directory. To
+        activate these, or other modules, the new <a
+        href="mod/mod_so.html#loadmodule">LoadModule</a> directive
+        must be used. For example, to active the status module, use
+        the following (in addition to the status-activating
+        directives in <code>access.conf</code>):</p>
+<pre>
+    LoadModule status_module modules/status
+</pre>
+
+        <p>Information on <a
+        href="mod/mod_so.html#creating">creating loadable
+        modules</a> is also available.</p>
+      </li>
+    </ul>
+
+	<H2><A id="comp" NAME="comp">Compiling Apache for NetWare</A></H2>
+	<H3><FONT SIZE=3>Requirements:</FONT></H3>
+	The following development tools are required to build Apache
+	1.3 for NetWare:<BR>
+	<UL>
+		<LI>
+			Metowerks CodeWarrior 6.0 or higher with 
+			<A HREF="http://developer.novell.com/ndk/cwpdk.htm">NetWare
+			PDK 3.0</A> or higher.
+		</LI>
+		
+		<LI>
+			<a href="http://developer.novell.com/ndk/clib.htm">NLM and NetWare 
+			Libraries for C (including CLIB and XPlat)</a>
+		</LI>
+		<LI>
+			<a href="http://developer.novell.com/ndk/cldap.htm">LDAP Libraries
+			for C</a>
+		</LI>
+		<LI>
+			AWK, SED and gmake(ver. 3.78.1) utilties available at
+			<A HREF="http://developer.novell.com/ndk/apache.htm">http://developer.novell.com/ndk/apache.htm</A>
+		</LI>
+	</UL>
+	
+	<H3><FONT SIZE=3>Building Apache using the NetWare makefiles:</FONT></H3>
+	<UL>
+		<LI>
+			Set the following environment variables:
+			<UL>
+				<LI>
+					<code>set METROWERKS=&lt;Base location of the MW CodeWarrior
+					tools&gt;</code>
+				</LI>
+				<LI>
+					<code>set NWSDKDIR=c:\Novell\NDK\nwsdk</code> - Location of the NetWare CLib SDK
+				</LI>
+				<LI>
+					<code>set LDAPSDK=c:\Novell\NDK\cldapsdk</code> - Location of the NetWare LDAP SDK
+				</LI>
+				<LI>
+					<code>set AP_WORK=&lt;Base location of the apache-1.3 source
+					files&gt;</code>
+				</LI>
+				<LI>
+					<code>set GNUTOOLS=&lt;Location of the AWK, SED and GMAKE
+					utilities&gt;</code>
+				</LI>
+			</UL>
+		<LI>
+			Unpack the Apache source code distribution into an
+			appropriate directory.
+		</LI>
+		<LI>
+			Change directory to \apache-1.3 and build Apache by envoking
+			the <samp>gmake -f nwgnumakefile</samp> command. You can create a
+			distribution directory by adding the <samp>install</samp>
+			parameter to the command.
+		</LI>
+	</UL>
+	
+	<H3><FONT SIZE=3>Other Environment Variables:</FONT></H3>
+	<UL>
+		<LI>
+			<code>set DEBUG=1</code> &ndash; Builds debug versions
+			of all of the binaries and copies them to a <code>\debug</code> destination
+			directory.
+		</LI>
+		<LI>
+			<code>set MULTIPROC=1</code> &ndash; Builds multi-processor aware versions
+			of all of the binaries.
+		</LI>
+	</UL>
+	
+	<H3><FONT SIZE=3>Additional make options:</FONT></H3>
+	<UL>
+		<LI>
+			<code>gmake -f nwgnumakefile</code> &ndash; Builds release versions of all
+			of the binaries and copies them to a <code>\release</code> destination
+			directory.
+		</LI>
+		<LI>
+			<code>gmake -f nwgnumakefile install</code> &ndash; Creates a complete
+			Apache distribution with binaries, docs and additional support
+			files in a <code>\dist\apache</code> directory.
+		</LI>
+		<LI>
+			<code>gmake -f nwgnumakefile clean</code> &ndash; Cleans all object files
+			and binaries from the <code>\release</code> or <code>\debug</code> build areas depending on
+			whether <code>DEBUG</code> has been defined.
+		</LI>
+	</UL>
+
+	<HR />
+    <h3 align="CENTER">Apache HTTP Server Version 1.3</h3>
+    <a href="./"><img src="images/index.gif" alt="Index" /></a>
+  </body>
+</html>
+

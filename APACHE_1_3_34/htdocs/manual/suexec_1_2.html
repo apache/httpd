@@ -1,0 +1,180 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Apache suEXEC Support</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h3><a id="install" name="install">Configuring &amp; Installing
+    suEXEC</a></h3>
+
+    <p align="LEFT">This section describes the configuration and
+    installation of the suEXEC feature with the
+    "<code>src/Configure</code>" script.<br />
+     (If you use Apache 1.3 you may want to use the Apache
+    AutoConf-style interface (APACI) which is described in the <a
+    href="suexec.html">main suEXEC document</a>).</p>
+
+    <p align="LEFT"><strong>EDITING THE SUEXEC HEADER
+    FILE</strong><br />
+     - From the top-level of the Apache source tree,
+    type:&nbsp;&nbsp; <strong><code>cd support
+    [ENTER]</code></strong></p>
+
+    <p align="LEFT">Edit the <code>suexec.h</code> file and change
+    the following macros to match your local Apache
+    installation.</p>
+
+    <p align="LEFT"><em>From support/suexec.h</em></p>
+<pre>
+     /*
+      * HTTPD_USER -- Define as the username under which Apache normally
+      *               runs.  This is the only user allowed to execute
+      *               this program.
+      */
+     #define HTTPD_USER "www"
+
+     /*
+      * UID_MIN -- Define this as the lowest UID allowed to be a target user
+      *            for suEXEC.  For most systems, 500 or 100 is common.
+      */
+     #define UID_MIN 100
+
+     /*
+      * GID_MIN -- Define this as the lowest GID allowed to be a target group
+      *            for suEXEC.  For most systems, 100 is common.
+      */
+     #define GID_MIN 100
+
+     /*
+      * USERDIR_SUFFIX -- Define to be the subdirectory under users'
+      *                   home directories where suEXEC access should
+      *                   be allowed.  All executables under this directory
+      *                   will be executable by suEXEC as the user so
+      *                   they should be "safe" programs.  If you are
+      *                   using a "simple" UserDir directive (ie. one
+      *                   without a "*" in it) this should be set to
+      *                   the same value.  suEXEC will not work properly
+      *                   in cases where the UserDir directive points to
+      *                   a location that is not the same as the user's
+      *                   home directory as referenced in the passwd file.
+      *
+      *                   If you have VirtualHosts with a different
+      *                   UserDir for each, you will need to define them to
+      *                   all reside in one parent directory; then name that
+      *                   parent directory here.  IF THIS IS NOT DEFINED
+      *                   PROPERLY, ~USERDIR CGI REQUESTS WILL NOT WORK!
+      *                   See the suEXEC documentation for more detailed
+      *                   information.
+      */
+     #define USERDIR_SUFFIX "public_html"
+
+     /*
+      * LOG_EXEC -- Define this as a filename if you want all suEXEC
+      *             transactions and errors logged for auditing and
+      *             debugging purposes.
+      */
+     #define LOG_EXEC "/usr/local/apache/logs/cgi.log" /* Need me? */
+
+     /*
+      * DOC_ROOT -- Define as the DocumentRoot set for Apache.  This
+      *             will be the only hierarchy (aside from UserDirs)
+      *             that can be used for suEXEC behavior.
+      */
+     #define DOC_ROOT "/usr/local/apache/htdocs"
+
+     /*
+      * SAFE_PATH -- Define a safe PATH environment to pass to CGI executables.
+      *
+      */
+     #define SAFE_PATH "/usr/local/bin:/usr/bin:/bin"
+</pre>
+
+    <p align="LEFT"><strong>COMPILING THE SUEXEC
+    WRAPPER</strong><br />
+     You now need to compile the suEXEC wrapper. At the shell
+    command prompt, after compiling Apache,
+    type:&nbsp;&nbsp;<strong><code>make
+    suexec[ENTER]</code></strong>. This should create the
+    <strong><em>suexec</em></strong> wrapper executable.</p>
+
+    <p align="LEFT"><strong>COMPILING APACHE FOR USE WITH
+    SUEXEC</strong><br />
+     By default, Apache is compiled to look for the suEXEC wrapper
+    in the following location.</p>
+
+    <p align="LEFT"><em>From src/include/httpd.h</em></p>
+<pre>
+     /* The path to the suExec wrapper, can be overridden in Configuration */
+     #ifndef SUEXEC_BIN
+     #define SUEXEC_BIN  HTTPD_ROOT "/sbin/suexec"
+     #endif
+</pre>
+
+    <p align="LEFT">If your installation requires location of the
+    wrapper program in a different directory, either add
+    <code>-DSUEXEC_BIN=\"<em>&lt;/your/path/to/suexec&gt;</em>\"</code>
+    to your CFLAGS (or edit src/include/httpd.h) and recompile your
+    Apache server. See <a href="install.html">Compiling and
+    Installing Apache</a> (and the <samp>INSTALL</samp> file in the
+    source distribution) for more info on this process.</p>
+
+    <p align="LEFT"><strong>COPYING THE SUEXEC BINARY TO ITS PROPER
+    LOCATION</strong><br />
+     Copy the <strong><em>suexec</em></strong> executable created
+    in the exercise above to the defined location for
+    <strong>SUEXEC_BIN</strong>.</p>
+
+    <p align="LEFT"><strong><code>cp suexec
+    /usr/local/apache/sbin/suexec [ENTER]</code></strong></p>
+
+    <p align="LEFT">In order for the wrapper to set the user ID, it
+    must be installed as owner <strong><em>root</em></strong> and
+    must have the setuserid execution bit set for file modes. If
+    you are not running a <strong><em>root</em></strong> user
+    shell, do so now and execute the following commands.</p>
+
+    <p align="LEFT"><strong><code>chown root
+    /usr/local/apache/sbin/suexec [ENTER]</code></strong><br />
+     <strong><code>chmod 4711 /usr/local/apache/sbin/suexec
+    [ENTER]</code></strong></p>
+
+    <h3><a id="enable" name="enable">Enabling &amp; Disabling
+    suEXEC</a></h3>
+
+    <p align="LEFT">After properly installing the
+    <strong>suexec</strong> wrapper executable, you must kill and
+    restart the Apache server. A simple <strong><code>kill -1 `cat
+    httpd.pid`</code></strong> will not be enough. Upon startup of
+    the web-server, if Apache finds a properly configured
+    <strong>suexec</strong> wrapper, it will print the following
+    message to the console (Apache 1.2):</p>
+<pre>
+    Configuring Apache for use with suexec wrapper.
+</pre>
+    If you use Apache 1.3 the following message is printed to the
+    error log: 
+<pre>
+    [notice] suEXEC mechanism enabled (wrapper: <em>/path/to/suexec</em>)
+</pre>
+
+    <p align="LEFT">If you don't see this message at server
+    startup, the server is most likely not finding the wrapper
+    program where it expects it, or the executable is not installed
+    <strong><em>setuid root</em></strong>. Check your installation
+    and try again.</p>
+
+    <p align="CENTER"><strong><a href="suexec.html">BACK TO MAIN
+    PAGE</a></strong></p>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+
