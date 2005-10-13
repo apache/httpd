@@ -393,7 +393,26 @@ be passed through</description>
       module="core">SetInputFilter</directive>, <directive
       module="core">SetOutputFilter</directive>, and
       <module>mod_mime</module> Add* and Remove*
-      directives, <em>etc.</em>).</dd>
+      directives, <em>etc.</em>), document meta data (<directive
+      module="mod_headers">Header</directive>, <directive
+      module="mod_headers">RequestHeader</directive>, <directive
+      module="mod_setenvif">SetEnvIf</directive>, <directive
+      module="mod_setenvif">SetEnvIfNoCase</directive>, <directive
+      module="mod_setenvif">BrowserMatch</directive>, <directive
+      module="mod_usertrack">CookieExpires</directive>, <directive
+      module="mod_usertrack">CookieDomain</directive>, <directive
+      module="mod_usertrack">CookieStyle</directive>, <directive
+      module="mod_usertrack">CookieTracking</directive>, <directive
+      module="mod_usertrack">CookieName</directive>),
+      <module>mod_rewrite</module> directives <directive
+      module="mod_rewrite">RewriteEngine</directive>, <directive
+      module="mod_rewrite">RewriteOptions</directive>, <directive
+      module="mod_rewrite">RewriteBase</directive>, <directive
+      module="mod_rewrite">RewriteCond</directive>, <directive
+      module="mod_rewrite">RewriteRule</directive>) and
+      <directive module="mod_actions">Action</directive> from
+      <module>mod_actions</module>.
+      </dd>
 
       <dt>Indexes</dt>
 
