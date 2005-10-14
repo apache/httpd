@@ -12,6 +12,7 @@ dnl
 APACHE_MODULE(authn_file, file-based authentication control, , , yes)
 APACHE_MODULE(authn_dbm, DBM-based authentication control, , , most)
 APACHE_MODULE(authn_anon, anonymous user authentication control, , , most)
+APACHE_MODULE(authn_dbd, SQL-based authentication control, , , most)
 
 dnl - and just in case all of the above punt; a default handler to
 dnl keep the bad guys out.
