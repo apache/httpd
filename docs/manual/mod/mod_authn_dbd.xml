@@ -1,0 +1,104 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision: 151408 $ -->
+
+<!--
+ Copyright 2002-2005 The Apache Software Foundation or its licensors, as
+ applicable.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_authn_dbd.xml.meta">
+
+<name>mod_authn_dbd</name>
+<description>User authentication using an SQL database</description>
+<status>Extension</status>
+<sourcefile>mod_authn_dbd.c</sourcefile>
+<identifier>authn_dbd_module</identifier>
+<compatibility>Available in Apache 2.1 and later</compatibility>
+
+<summary>
+    <p>This module provides authentication front-ends such as
+    <module>mod_auth_digest</module> and <module>mod_auth_basic</module>
+    to authenticate users by looking up users in SQL tables.
+    Similar functionality is provided by, for example,
+    <module>mod_authn_file</module>.</p>
+    <p>This module relies on <module>mod_dbd</module> to specify
+    the backend database driver and connection parameters, and
+    manage the database connections.</p>
+
+    <p>When using <module>mod_auth_basic</module> or
+    <module>mod_auth_digest</module>, this module is invoked via the
+    <directive module="mod_auth_basic">AuthBasicProvider</directive> or
+    <directive module="mod_auth_digest">AuthDigestProvider</directive>
+    with the <code>dbd</code> value.</p>
+</summary>
+
+<seealso><directive module="core">AuthName</directive></seealso>
+<seealso><directive module="core">AuthType</directive></seealso>
+<seealso>
+  <directive module="mod_auth_basic">AuthBasicProvider</directive>
+</seealso>
+<seealso>
+  <directive module="mod_auth_digest">AuthDigestProvider</directive>
+</seealso>
+<seealso><directive module="mod_dbd">DBDriver</directive></seealso>
+<seealso><directive module="mod_dbd">DBDParams</directive></seealso>
+
+<directivesynopsis>
+<name>AuthDBDUserPWQuery</name>
+<description>SQL query to look up a password for a user</description>
+<syntax>AuthDBDUserPWQuery <var>query</var></syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>The <directive>AuthDBDUserPWQuery</directive> specifies an
+    SQL query to look up a password for a specified user.
+    The query must take a single string (typically SQL varchar)
+    argument (username), and return a single value (encrypted password).
+    </p>
+    <example>
+    AuthDBDUserPWQuery "SELECT password FROM authn WHERE username = %s"
+    </example>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthDBDUserRealmQuery</name>
+<description>SQL query to look up a password hash for a user and realm.
+</description>
+<syntax>AuthDBDUserRealmQuery <var>query</var></syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>The <directive>AuthDBDUserRealmPWQuery</directive> specifies an
+    SQL query to look up a password for a specified user and realm.
+    The query must take two string (typically SQL varchar) arguments
+    (username and realm), and return a single value (encrypted password).
+    </p>
+    <example>
+    AuthDBDUserRealmPWQuery "SELECT password FROM authn
+                                    WHERE username = %s AND realm = %s"
+    </example>
+
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

@@ -1,0 +1,230 @@
+/* Copyright 2000-2005 The Apache Software Foundation or its licensors, as
+ * applicable.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+#include "ap_provider.h"
+#include "httpd.h"
+#include "http_config.h"
+#include "http_log.h"
+#include "apr_dbd.h"
+#include "mod_dbd.h"
+#include "apr_strings.h"
+#include "mod_auth.h"
+#include "apr_md5.h"
+
+module AP_MODULE_DECLARE_DATA authn_dbd_module;
+
+typedef struct {
+    const char *user;
+    const char *realm;
+} authn_dbd_conf;
+typedef struct {
+    const char *label;
+    const char *query;
+} authn_dbd_rec;
+
+/* optional function - look it up once in post_config */
+static ap_dbd_t *(*authn_dbd_acquire_fn)(request_rec*) = NULL;
+static void (*authn_dbd_prepare_fn)(server_rec*, const char*, const char*) = NULL;
+
+static void *authn_dbd_cr_conf(apr_pool_t *pool, char *dummy)
+{
+    authn_dbd_conf *ret = apr_pcalloc(pool, sizeof(authn_dbd_conf));
+    return ret;
+}
+static void *authn_dbd_merge_conf(apr_pool_t *pool, void *BASE, void *ADD)
+{
+    authn_dbd_conf *add = ADD;
+    authn_dbd_conf *base = BASE;
+    authn_dbd_conf *ret = apr_palloc(pool, sizeof(authn_dbd_conf));
+    ret->user = (add->user == NULL) ? base->user : add->user;
+    ret->realm = (add->realm == NULL) ? base->realm : add->realm;
+    return ret;
+}
+static const char *authn_dbd_prepare(cmd_parms *cmd, void *cfg, const char *query)
+{
+    static unsigned int label_num = 0;
+    char *label;
+
+    if (authn_dbd_prepare_fn == NULL) {
+        authn_dbd_prepare_fn = APR_RETRIEVE_OPTIONAL_FN(ap_dbd_prepare);
+        if (authn_dbd_prepare_fn == NULL) {
+            return "You must load mod_dbd to enable AuthDBD functions";
+        }
+        authn_dbd_acquire_fn = APR_RETRIEVE_OPTIONAL_FN(ap_dbd_acquire);
+    }
+    label = apr_psprintf(cmd->pool, "authn_dbd_%d", ++label_num);
+
+    authn_dbd_prepare_fn(cmd->server, query, label);
+
+    /* save the label here for our own use */
+    *(void**)cfg = label;
+    return NULL;
+}
+static const command_rec authn_dbd_cmds[] =
+{
+    AP_INIT_TAKE1("AuthDBDUserPWQuery", authn_dbd_prepare,
+                  (void *)APR_OFFSETOF(authn_dbd_conf, user), OR_AUTHCFG,
+                  "Query used to fetch password for user"),
+    AP_INIT_TAKE1("AuthDBDUserRealmPWQuery", authn_dbd_prepare,
+                  (void *)APR_OFFSETOF(authn_dbd_conf, realm), OR_AUTHCFG,
+                  "Query used to fetch password for user+realm"),
+    {NULL}
+};
+static authn_status authn_dbd_password(request_rec *r, const char *user,
+                                       const char *password)
+{
+    apr_status_t rv;
+    const char *dbd_password = NULL;
+    char *colon_pw;
+    apr_dbd_prepared_t *statement;
+    apr_dbd_results_t *res = NULL;
+    apr_dbd_row_t *row = NULL;
+
+    authn_dbd_conf *conf = ap_get_module_config(r->per_dir_config,
+                                                &authn_dbd_module);
+    ap_dbd_t *dbd = authn_dbd_acquire_fn(r);
+    if (dbd == NULL) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                      "Error looking up %s in database", user);
+        return AUTH_GENERAL_ERROR;
+    }
+
+    if (conf->user == NULL) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "No DBD Authn configured!");
+        return AUTH_GENERAL_ERROR;
+    }
+
+    statement = apr_hash_get(dbd->prepared, conf->user, APR_HASH_KEY_STRING);
+    if (statement == NULL) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "No DBD Authn configured!");
+        return AUTH_GENERAL_ERROR;
+    }
+    if (apr_dbd_pvselect(dbd->driver, r->pool, dbd->handle, &res, statement,
+                              0, user, NULL) != 0) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                      "Error looking up %s in database", user);
+        return AUTH_GENERAL_ERROR;
+    }
+    for (rv = apr_dbd_get_row(dbd->driver, r->pool, res, &row, -1);
+         rv != -1;
+         rv = apr_dbd_get_row(dbd->driver, r->pool, res, &row, -1)) {
+        if (rv != 0) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                      "Error looking up %s in database", user);
+            return AUTH_GENERAL_ERROR;
+        }
+        if (dbd_password == NULL) {
+            dbd_password = apr_dbd_get_entry(dbd->driver, row, 0);
+        }
+	/* we can't break out here or row won't get cleaned up */
+    }
+
+    if (!dbd_password) {
+        return AUTH_USER_NOT_FOUND;
+    }
+
+    colon_pw = ap_strchr(dbd_password, ':');
+    if (colon_pw) {
+        *colon_pw = '\0';
+    }
+
+    rv = apr_password_validate(password, dbd_password);
+
+    if (rv != APR_SUCCESS) {
+        return AUTH_DENIED;
+    }
+
+    return AUTH_GRANTED;
+}
+static authn_status authn_dbd_realm(request_rec *r, const char *user,
+                                    const char *realm, char **rethash)
+{
+    apr_status_t rv;
+    const char *dbd_hash = NULL;
+    char *colon_hash;
+    apr_dbd_prepared_t *statement;
+    apr_dbd_results_t *res = NULL;
+    apr_dbd_row_t *row = NULL;
+
+    authn_dbd_conf *conf = ap_get_module_config(r->per_dir_config,
+                                                &authn_dbd_module);
+    ap_dbd_t *dbd = authn_dbd_acquire_fn(r);
+    if (dbd == NULL) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                      "Error looking up %s in database", user);
+        return AUTH_GENERAL_ERROR;
+    }
+    if (conf->realm == NULL) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "No DBD Authn configured!");
+        return AUTH_GENERAL_ERROR;
+    }
+    statement = apr_hash_get(dbd->prepared, conf->realm, APR_HASH_KEY_STRING);
+    if (statement == NULL) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "No DBD Authn configured!");
+        return AUTH_GENERAL_ERROR;
+    }
+    if (apr_dbd_pvselect(dbd->driver, r->pool, dbd->handle, &res, statement,
+                              0, user, realm, NULL) != 0) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                      "Error looking up %s:%s in database", user, realm);
+        return AUTH_GENERAL_ERROR;
+    }
+    for (rv = apr_dbd_get_row(dbd->driver, r->pool, res, &row, -1);
+         rv != -1;
+         rv = apr_dbd_get_row(dbd->driver, r->pool, res, &row, -1)) {
+        if (rv != 0) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                      "Error looking up %s in database", user);
+            return AUTH_GENERAL_ERROR;
+        }
+        if (dbd_hash == NULL) {
+            dbd_hash = apr_dbd_get_entry(dbd->driver, row, 0);
+        }
+	/* we can't break out here or row won't get cleaned up */
+    }
+
+    if (!dbd_hash) {
+        return AUTH_USER_NOT_FOUND;
+    }
+
+    colon_hash = ap_strchr(dbd_hash, ':');
+    if (colon_hash) {
+        *colon_hash = '\0';
+    }
+
+    *rethash = apr_pstrdup(r->pool, dbd_hash);
+
+    return AUTH_USER_FOUND;
+}
+static void authn_dbd_hooks(apr_pool_t *p)
+{
+    static const authn_provider authn_dbd_provider = {
+        &authn_dbd_password,
+        &authn_dbd_realm
+    };
+    
+    ap_register_provider(p, AUTHN_PROVIDER_GROUP, "dbd", "0", &authn_dbd_provider);
+}
+module AP_MODULE_DECLARE_DATA authn_dbd_module =
+{
+    STANDARD20_MODULE_STUFF,
+    authn_dbd_cr_conf,
+    authn_dbd_merge_conf,
+    NULL,
+    NULL,
+    authn_dbd_cmds,
+    authn_dbd_hooks
+};

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" /><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>mod_authn_dbd - Apache HTTP Server</title>
+<link title="Main stylesheet" type="text/css" media="all" rel="stylesheet" href="../style/css/manual.css" />
+<link title="No Sidebar - Default font size" type="text/css" media="all" rel="alternate stylesheet" href="../style/css/manual-loose-100pc.css" />
+<link type="text/css" media="print" rel="stylesheet" href="../style/css/manual-print.css" />
+<link rel="shortcut icon" href="../images/favicon.ico" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.1</p>
+<img src="../images/feather.gif" alt="" /></div>
+<div class="up"><a href="./"><img src="../images/left.gif" alt="&lt;-" title="&lt;-" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.1</a> &gt; <a href="./">Modules</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache Module mod_authn_dbd</h1>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_authn_dbd.html" title="English">&nbsp;en&nbsp;</a></p>
+</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>User authentication using an SQL database</td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>authn_dbd_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_authn_dbd.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.1 and later</td></tr></table>
+<h3>Summary</h3>
+
+    <p>This module provides authentication front-ends such as
+    <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code> and <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code>
+    to authenticate users by looking up users in SQL tables.
+    Similar functionality is provided by, for example,
+    <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code>.</p>
+    <p>This module relies on <code class="module"><a href="../mod/mod_dbd.html">mod_dbd</a></code> to specify
+    the backend database driver and connection parameters, and
+    manage the database connections.</p>
+
+    <p>When using <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> or
+    <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code>, this module is invoked via the
+    <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code> or
+    <code class="directive"><a href="../mod/mod_auth_digest.html#authdigestprovider">AuthDigestProvider</a></code>
+    with the <code>dbd</code> value.</p>
+</div>
+<div id="quickview"><h3 class="directives">Directives</h3>
+<ul id="toc">
+<li><img src="../images/down.gif" alt="" /> <a href="#authdbduserpwquery">AuthDBDUserPWQuery</a></li>
+<li><img src="../images/down.gif" alt="" /> <a href="#authdbduserrealmquery">AuthDBDUserRealmQuery</a></li>
+</ul>
+<h3>See also</h3>
+<ul class="seealso">
+<li><code class="directive"><a href="../mod/core.html#authname">AuthName</a></code></li>
+<li><code class="directive"><a href="../mod/core.html#authtype">AuthType</a></code></li>
+<li>
+  <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code>
+</li>
+<li>
+  <code class="directive"><a href="../mod/mod_auth_digest.html#authdigestprovider">AuthDigestProvider</a></code>
+</li>
+<li><code class="directive"><a href="../mod/mod_dbd.html#dbdriver">DBDriver</a></code></li>
+<li><code class="directive"><a href="../mod/mod_dbd.html#dbdparams">DBDParams</a></code></li>
+</ul></div>
+
+<div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div>
+<div class="directive-section"><h2><a id="AuthDBDUserPWQuery" name="AuthDBDUserPWQuery">AuthDBDUserPWQuery</a> <a id="authdbduserpwquery" name="authdbduserpwquery">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>SQL query to look up a password for a user</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthDBDUserPWQuery <var>query</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authn_dbd</td></tr>
+</table>
+    <p>The <code class="directive">AuthDBDUserPWQuery</code> specifies an
+    SQL query to look up a password for a specified user.
+    The query must take a single string (typically SQL varchar)
+    argument (username), and return a single value (encrypted password).
+    </p>
+    <div class="example"><p><code>
+    AuthDBDUserPWQuery "SELECT password FROM authn WHERE username = %s"
+    </code></p></div>
+
+
+</div>
+<div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div>
+<div class="directive-section"><h2><a id="AuthDBDUserRealmQuery" name="AuthDBDUserRealmQuery">AuthDBDUserRealmQuery</a> <a id="authdbduserrealmquery" name="authdbduserrealmquery">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>SQL query to look up a password hash for a user and realm.
+</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthDBDUserRealmQuery <var>query</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authn_dbd</td></tr>
+</table>
+    <p>The <code class="directive">AuthDBDUserRealmPWQuery</code> specifies an
+    SQL query to look up a password for a specified user and realm.
+    The query must take two string (typically SQL varchar) arguments
+    (username and realm), and return a single value (encrypted password).
+    </p>
+    <div class="example"><p><code>
+    AuthDBDUserRealmPWQuery "SELECT password FROM authn
+                                    WHERE username = %s AND realm = %s"
+    </code></p></div>
+
+
+</div>
+</div>
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_authn_dbd.html" title="English">&nbsp;en&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 1995-2005 The Apache Software Foundation or its licensors, as applicable.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>
