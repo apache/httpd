@@ -274,6 +274,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://people.apache.org/~wrowe/httpd-2.0-proto-timeout.patch
          +1: wrowe
 
+    *) Add missing va_end call
+         http://svn.apache.org/viewcvs?rev=321500&view=rev
+       +1: nd
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
