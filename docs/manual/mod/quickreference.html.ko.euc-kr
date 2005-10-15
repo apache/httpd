@@ -129,6 +129,9 @@ be passed through</td></tr>
 <tr><td><a href="mod_auth_basic.html#authbasicauthoritative">AuthBasicAuthoritative On|Off</a></td><td> On </td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">인증과 권한부여를 저수준 모듈에 넘겨줄지 결정한다</td></tr>
 <tr class="odd"><td><a href="mod_auth_basic.html#authbasicprovider">AuthBasicProvider On|Off|<var>provider-name</var>
 [<var>provider-name</var>] ...</a></td><td> On </td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">이 위치에 대한 인증제공자를 지정한다</td></tr>
+<tr><td><a href="mod_authn_dbd.html#authdbduserpwquery">AuthDBDUserPWQuery <var>query</var></a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">SQL query to look up a password for a user</td></tr>
+<tr class="odd"><td><a href="mod_authn_dbd.html#authdbduserrealmquery">AuthDBDUserRealmQuery <var>query</var></a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">SQL query to look up a password hash for a user and realm.
+</td></tr>
 <tr><td><a href="mod_authz_dbm.html#authdbmgroupfile">AuthDBMGroupFile <var>file-path</var></a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">인증에 사용할 사용자 그룹 목록을 저장하는 데이터베이스
 파일명을 지정한다</td></tr>
 <tr class="odd"><td><a href="mod_authn_dbm.html#authdbmtype">AuthDBMType default|SDBM|GDBM|NDBM|DB</a></td><td> default </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">암호를 저장하는 데이터베이스 파일 종류를

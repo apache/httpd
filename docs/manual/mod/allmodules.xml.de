@@ -9,6 +9,7 @@
   <modulefile>mod_auth_digest.xml</modulefile>
   <modulefile>mod_authn_alias.xml</modulefile>
   <modulefile>mod_authn_anon.xml</modulefile>
+  <modulefile>mod_authn_dbd.xml</modulefile>
   <modulefile>mod_authn_dbm.xml</modulefile>
   <modulefile>mod_authn_default.xml</modulefile>
   <modulefile>mod_authn_file.xml</modulefile>
