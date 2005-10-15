@@ -103,7 +103,8 @@ static int util_ldap_handler(request_rec *r)
         return DECLINED;
     }
 
-    r->content_type = "text/html";
+    ap_set_content_type(r, "text/html");
+
     if (r->header_only)
         return OK;
 
