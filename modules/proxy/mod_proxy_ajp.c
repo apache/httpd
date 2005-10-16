@@ -365,9 +365,6 @@ static int proxy_ajp_handler(request_rec *r, proxy_worker *worker,
      * of the connection when the socket was opened.
      */
     apr_pool_t *p = r->connection->pool;
-#if 0
-    conn_rec *c = r->connection;
-#endif
     apr_uri_t *uri = apr_palloc(r->connection->pool, sizeof(*uri));
 
     
@@ -378,17 +375,7 @@ static int proxy_ajp_handler(request_rec *r, proxy_worker *worker,
     }
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
              "proxy: AJP: serving URL %s", url);
-    
 
-    /* only use stored info for top-level pages. Sub requests don't share 
-     * in keepalives
-     */
-#if 0
-    if (!r->main) {
-        backend = (proxy_conn_rec *) ap_get_module_config(c->conn_config,
-                                                      &proxy_ajp_module);
-    }
-#endif
     /* create space for state information */
     if (!backend) {
         status = ap_proxy_acquire_connection(scheme, &backend, worker, r->server);
@@ -399,11 +386,6 @@ static int proxy_ajp_handler(request_rec *r, proxy_worker *worker,
             }
             return status;
         }
-#if 0
-        if (!r->main) {
-            ap_set_module_config(c->conn_config, &proxy_ajp_module, backend);
-        }
-#endif
     }
 
     backend->is_ssl = 0;
@@ -425,29 +407,12 @@ static int proxy_ajp_handler(request_rec *r, proxy_worker *worker,
         status = HTTP_SERVICE_UNAVAILABLE;
         goto cleanup;
     }
-#if 0
-    /* XXX: we don't need to create the bound client connection */
-
-    /* Step Three: Create conn_rec */
-    if (!backend->connection) {
-        status = ap_proxy_connection_create(scheme, backend, c, r->server);
-        if (status != OK)
-            goto cleanup;
-    }
-#endif
    
-   
-    /* Step Four: Process the Request */
+    /* Step Three: Process the Request */
     status = ap_proxy_ajp_request(p, r, backend, origin, dconf, uri, url,
                                   server_portstr);
-    if (status != OK)
-        goto cleanup;
 
 cleanup:
-#if 0
-    /* Clear the module config */
-    ap_set_module_config(c->conn_config, &proxy_ajp_module, NULL);
-#endif
     /* Do not close the socket */
     ap_proxy_release_connection(scheme, backend, r->server);
     return status;
