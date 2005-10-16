@@ -20,11 +20,12 @@
 #include "ajp.h"
 
 module AP_MODULE_DECLARE_DATA proxy_ajp_module;
+
 /*
  * Canonicalise http-like URLs.
- *  scheme is the scheme for the URL
- *  url    is the URL starting with the first '/'
- *  def_port is the default port for this scheme.
+ * scheme is the scheme for the URL
+ * url is the URL starting with the first '/'
+ * def_port is the default port for this scheme.
  */
 static int proxy_ajp_canon(request_rec *r, char *url)
 {
@@ -35,7 +36,7 @@ static int proxy_ajp_canon(request_rec *r, char *url)
     /* ap_port_of_scheme() */
     if (strncasecmp(url, "ajp:", 4) == 0) {
         url += 4;
-    }    
+    }
     else {
         return DECLINED;
     }
@@ -43,7 +44,8 @@ static int proxy_ajp_canon(request_rec *r, char *url)
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
              "proxy: AJP: canonicalising URL %s", url);
 
-    /* do syntatic check.
+    /*
+     * do syntactic check.
      * We break the URL into host, port, path, search
      */
     err = ap_proxy_canon_netloc(r->pool, &url, NULL, NULL, &host, &port);
@@ -54,10 +56,12 @@ static int proxy_ajp_canon(request_rec *r, char *url)
         return HTTP_BAD_REQUEST;
     }
 
-    /* now parse path/search args, according to rfc1738 */
-    /* N.B. if this isn't a true proxy request, then the URL _path_
-     * has already been decoded.  True proxy requests have r->uri
-     * == r->unparsed_uri, and no others have that property.
+    /*
+     * now parse path/search args, according to rfc1738
+     *
+     * N.B. if this isn't a true proxy request, then the URL _path_
+     * has already been decoded.  True proxy requests have
+     * r->uri == r->unparsed_uri, and no others have that property.
      */
     if (r->uri == r->unparsed_uri) {
         search = strchr(url, '?');
@@ -68,26 +72,29 @@ static int proxy_ajp_canon(request_rec *r, char *url)
         search = r->args;
 
     /* process path */
-    path = ap_proxy_canonenc(r->pool, url, strlen(url), enc_path, 0, r->proxyreq);
+    path = ap_proxy_canonenc(r->pool, url, strlen(url), enc_path, 0,
+                             r->proxyreq);
     if (path == NULL)
         return HTTP_BAD_REQUEST;
 
     apr_snprintf(sport, sizeof(sport), ":%d", port);
 
-    if (ap_strchr_c(host, ':')) { /* if literal IPv6 address */
+    if (ap_strchr_c(host, ':')) {
+        /* if literal IPv6 address */
         host = apr_pstrcat(r->pool, "[", host, "]", NULL);
     }
-    r->filename = apr_pstrcat(r->pool, "proxy:ajp://", host, sport, 
-            "/", path, (search) ? "?" : "", (search) ? search : "", NULL);
+    r->filename = apr_pstrcat(r->pool, "proxy:ajp://", host, sport,
+                              "/", path, (search) ? "?" : "",
+                              (search) ? search : "", NULL);
     return OK;
 }
 
 /*
- * process the request and write the respnse.
- */ 
+ * process the request and write the response.
+ */
 static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
-                                proxy_conn_rec *conn, 
-                                conn_rec *origin, 
+                                proxy_conn_rec *conn,
+                                conn_rec *origin,
                                 proxy_dir_conf *conf,
                                 apr_uri_t *uri,
                                 char *url, char *server_portstr)
@@ -131,18 +138,19 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                      "proxy: ajp_alloc_data_msg failed");
         return HTTP_INTERNAL_SERVER_ERROR;
     }
+
     /* read the first bloc of data */
     input_brigade = apr_brigade_create(p, r->connection->bucket_alloc);
     tenc = apr_table_get(r->headers_in, "Transfer-Encoding");
-    if (tenc && strcasecmp(tenc, "chunked")==0) {
-         /* The AJP protocol does not want body data yet */
+    if (tenc && (strcasecmp(tenc, "chunked") == 0)) {
+        /* The AJP protocol does not want body data yet */
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                      "proxy: request is chunked");
     } else {
         status = ap_get_brigade(r->input_filters, input_brigade,
                                 AP_MODE_READBYTES, APR_BLOCK_READ,
                                 AJP13_MAX_SEND_BODY_SZ);
- 
+
         if (status != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                          "proxy: ap_get_brigade failed");
@@ -200,14 +208,14 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     /* parse the reponse */
     result = ajp_parse_type(r, conn->data);
     output_brigade = apr_brigade_create(p, r->connection->bucket_alloc);
-    
+
     bufsiz = AJP13_MAX_SEND_BODY_SZ;
     while (isok) {
         switch (result) {
             case CMD_AJP13_GET_BODY_CHUNK:
                 if (havebody) {
                     if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(input_brigade))) {
-                        /* That is the end */
+                        /* This is the end */
                         bufsiz = 0;
                         havebody = 0;
                         ap_log_error(APLOG_MARK, APLOG_DEBUG, status, r->server,
@@ -231,7 +239,8 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                         }
                     }
 
-                    ajp_msg_reset(msg); /* will go in ajp_send_data_msg */
+                    ajp_msg_reset(msg);
+                    /* will go in ajp_send_data_msg */
                     status = ajp_send_data_msg(conn->sock, msg, bufsiz);
                     if (status != APR_SUCCESS) {
                         ap_log_error(APLOG_MARK, APLOG_DEBUG, status, r->server,
@@ -240,11 +249,12 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                     }
                     conn->worker->s->transferred += bufsiz;
                 } else {
-                    /* something is wrong TC asks for more body but we are
+                    /*
+                     * something is wrong TC asks for more body but we are
                      * already at the end of the body data
                      */
                     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                         "ap_proxy_ajp_request error read after end");
+                                 "ap_proxy_ajp_request error read after end");
                     isok = 0;
                 }
                 break;
@@ -252,7 +262,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                 /* AJP13_SEND_HEADERS: process them */
                 status = ajp_parse_header(r, conf, conn->data);
                 if (status != APR_SUCCESS) {
-                    isok=0;
+                    isok = 0;
                 }
                 break;
             case CMD_AJP13_SEND_BODY_CHUNK:
@@ -270,16 +280,16 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                 if (ap_pass_brigade(r->output_filters, output_brigade) != APR_SUCCESS) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                                   "proxy: error processing body");
-                    isok=0;
+                    isok = 0;
                 }
                 break;
             default:
-                isok=0;
+                isok = 0;
                 break;
         }
         if (!isok)
             break;
-        
+
         if (result == CMD_AJP13_END_RESPONSE)
             break;
 
@@ -287,7 +297,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
         status = ajp_read_header(conn->sock, r,
                                  (ajp_msg_t **)&(conn->data));
         if (status != APR_SUCCESS) {
-            isok=0;
+            isok = 0;
             ap_log_error(APLOG_MARK, APLOG_DEBUG, status, r->server,
                          "ajp_read_header failed");
             break;
@@ -330,17 +340,11 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
 }
 
 /*
- * This handles ajp:// URLs, and other URLs using a remote proxy over http
- * If proxyhost is NULL, then contact the server directly, otherwise
- * go via the proxy.
- * Note that if a proxy is used, then URLs other than http: can be accessed,
- * also, if we have trouble which is clearly specific to the proxy, then
- * we return DECLINED so that we can try another proxy. (Or the direct
- * route.)
+ * This handles ajp:// URLs
  */
 static int proxy_ajp_handler(request_rec *r, proxy_worker *worker,
                              proxy_server_conf *conf,
-                             char *url, const char *proxyname, 
+                             char *url, const char *proxyname,
                              apr_port_t proxyport)
 {
     int status;
@@ -351,7 +355,8 @@ static int proxy_ajp_handler(request_rec *r, proxy_worker *worker,
     proxy_dir_conf *dconf = ap_get_module_config(r->per_dir_config,
                                                  &proxy_module);
 
-    /* Note: Memory pool allocation.
+    /*
+     * Note: Memory pool allocation.
      * A downstream keepalive connection is always connected to the existence
      * (or not) of an upstream keepalive connection. If this is not done then
      * load balancing against multiple backend servers breaks (one backend
@@ -367,14 +372,14 @@ static int proxy_ajp_handler(request_rec *r, proxy_worker *worker,
     apr_pool_t *p = r->connection->pool;
     apr_uri_t *uri = apr_palloc(r->connection->pool, sizeof(*uri));
 
-    
+
     if (strncasecmp(url, "ajp:", 4) != 0) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                      "proxy: AJP: declining URL %s", url);
         return DECLINED;
     }
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-             "proxy: AJP: serving URL %s", url);
+                 "proxy: AJP: serving URL %s", url);
 
     /* create space for state information */
     if (!backend) {
@@ -399,15 +404,16 @@ static int proxy_ajp_handler(request_rec *r, proxy_worker *worker,
 
     if (status != OK)
         goto cleanup;
+
     /* Step Two: Make the Connection */
     if (ap_proxy_connect_backend(scheme, backend, worker, r->server)) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-          "proxy: AJP: failed to make connection to backend: %s",
-          backend->hostname);
+                     "proxy: AJP: failed to make connection to backend: %s",
+                     backend->hostname);
         status = HTTP_SERVICE_UNAVAILABLE;
         goto cleanup;
     }
-   
+
     /* Step Three: Process the Request */
     status = ap_proxy_ajp_request(p, r, backend, origin, dconf, uri, url,
                                   server_portstr);
@@ -426,11 +432,11 @@ static void ap_proxy_http_register_hook(apr_pool_t *p)
 
 module AP_MODULE_DECLARE_DATA proxy_ajp_module = {
     STANDARD20_MODULE_STUFF,
-    NULL,              /* create per-directory config structure */
-    NULL,              /* merge per-directory config structures */
-    NULL,              /* create per-server config structure */
-    NULL,              /* merge per-server config structures */
-    NULL,              /* command apr_table_t */
-    ap_proxy_http_register_hook/* register hooks */
+    NULL,                       /* create per-directory config structure */
+    NULL,                       /* merge per-directory config structures */
+    NULL,                       /* create per-server config structure */
+    NULL,                       /* merge per-server config structures */
+    NULL,                       /* command apr_table_t */
+    ap_proxy_http_register_hook /* register hooks */
 };
 
