@@ -159,6 +159,7 @@ TARGET_nlm = \
 	$(OBJDIR)/authndbm.nlm \
 	$(OBJDIR)/authndef.nlm \
 	$(OBJDIR)/authnfil.nlm \
+	$(OBJDIR)/authndbd.nlm \
 	$(OBJDIR)/authzdbm.nlm \
 	$(OBJDIR)/authzdef.nlm \
 	$(OBJDIR)/authzgrp.nlm \
