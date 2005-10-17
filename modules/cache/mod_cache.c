@@ -28,7 +28,9 @@ APR_OPTIONAL_FN_TYPE(ap_cache_generate_key) *cache_generate_key;
  * a name-to-function mapping on each request
  */
 static ap_filter_rec_t *cache_save_filter_handle;
+static ap_filter_rec_t *cache_save_subreq_filter_handle;
 static ap_filter_rec_t *cache_out_filter_handle;
+static ap_filter_rec_t *cache_out_subreq_filter_handle;
 static ap_filter_rec_t *cache_remove_url_filter_handle;
 
 /*
@@ -109,12 +111,27 @@ static int cache_url_handler(request_rec *r, int lookup)
     if (rv != OK) {
         if (rv == DECLINED) {
             if (!lookup) {
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r->server,
-                  "Adding CACHE_SAVE filter for %s", r->uri);
 
-                /* add cache_save filter to cache this request */
-                ap_add_output_filter_handle(cache_save_filter_handle, NULL, r,
-                                            r->connection);
+                /*
+                 * Add cache_save filter to cache this request. Choose
+                 * the correct filter by checking if we are a subrequest
+                 * or not.
+                 */
+                if (r->main) {
+                    ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS,
+                                 r->server,
+                                 "Adding CACHE_SAVE_SUBREQ filter for %s",
+                                 r->uri);
+                    ap_add_output_filter_handle(cache_save_subreq_filter_handle,
+                                                NULL, r, r->connection);
+                }
+                else {
+                    ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS,
+                                 r->server, "Adding CACHE_SAVE filter for %s",
+                                 r->uri);
+                    ap_add_output_filter_handle(cache_save_filter_handle, 
+                                                NULL, r, r->connection);
+                }
 
                 ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r->server,
                              "Adding CACHE_REMOVE_URL filter for %s", 
@@ -189,8 +206,20 @@ static int cache_url_handler(request_rec *r, int lookup)
      * filters have been set. So lets run the insert_filter hook.
      */
     ap_run_insert_filter(r);
-    ap_add_output_filter_handle(cache_out_filter_handle, NULL,
-                                r, r->connection);
+
+    /*
+     * Add cache_out filter to serve this request. Choose
+     * the correct filter by checking if we are a subrequest
+     * or not.
+     */
+    if (r->main) {
+        ap_add_output_filter_handle(cache_out_subreq_filter_handle, NULL,
+                                    r, r->connection);
+    }
+    else {
+        ap_add_output_filter_handle(cache_out_filter_handle, NULL,
+                                    r, r->connection);
+    }
 
     /* kick off the filter stack */
     out = apr_brigade_create(r->pool, r->connection->bucket_alloc);
@@ -1146,23 +1175,56 @@ static void register_hooks(apr_pool_t *p)
     /* cache filters 
      * XXX The cache filters need to run right after the handlers and before
      * any other filters. Consider creating AP_FTYPE_CACHE for this purpose.
-     * Make them AP_FTYPE_CONTENT for now.
-     * XXX ianhH:they should run AFTER all the other content filters.
+     *
+     * Depending on the type of request (subrequest / main request) they
+     * need to be run before AP_FTYPE_CONTENT_SET / after AP_FTYPE_CONTENT_SET
+     * filters. Thus create two filter handles for each type:
+     * cache_save_filter_handle / cache_out_filter_handle to be used by
+     * main requests and
+     * cache_save_subreq_filter_handle / cache_out_subreq_filter_handle
+     * to be run by subrequest
+     */
+    /*
+     * CACHE_SAVE must go into the filter chain after a possible DEFLATE
+     * filter to ensure that the compressed content is stored.
+     * Incrementing filter type by 1 ensures his happens.
      */
     cache_save_filter_handle = 
         ap_register_output_filter("CACHE_SAVE", 
                                   cache_save_filter, 
                                   NULL,
                                   AP_FTYPE_CONTENT_SET+1);
-    /* CACHE_OUT must go into the filter chain before SUBREQ_CORE to
-     * handle subrequsts. Decrementing filter type by 1 ensures this 
+    /*
+     * CACHE_SAVE_SUBREQ must go into the filter chain before SUBREQ_CORE to
+     * handle subrequsts. Decrementing filter type by 1 ensures this
      * happens.
+     */
+    cache_save_subreq_filter_handle =
+        ap_register_output_filter("CACHE_SAVE_SUBREQ",
+                                  cache_save_filter,
+                                  NULL,
+                                  AP_FTYPE_CONTENT_SET-1);
+    /*
+     * CACHE_OUT must go into the filter chain after a possible DEFLATE
+     * filter to ensure that already compressed cache objects do not
+     * get compressed again. Incrementing filter type by 1 ensures
+     * his happens.
      */
     cache_out_filter_handle = 
         ap_register_output_filter("CACHE_OUT", 
                                   cache_out_filter, 
                                   NULL,
                                   AP_FTYPE_CONTENT_SET+1);
+    /*
+     * CACHE_OUT_SUBREQ must go into the filter chain before SUBREQ_CORE to
+     * handle subrequsts. Decrementing filter type by 1 ensures this
+     * happens.
+     */
+    cache_out_subreq_filter_handle =
+        ap_register_output_filter("CACHE_OUT_SUBREQ",
+                                  cache_out_filter,
+                                  NULL,
+                                  AP_FTYPE_CONTENT_SET-1);
     /* CACHE_REMOVE_URL has to be a protocol filter to ensure that is
      * run even if the response is a canned error message, which
      * removes the content filters.
