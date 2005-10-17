@@ -163,9 +163,6 @@ ifeq "$(wildcard $(ZLIBSDK))" "$(ZLIBSDK)"
 TARGET_nlm += $(OBJDIR)/deflate.nlm \
 	       $(EOLIST)
 endif
-else
-TARGET_nlm += $(OBJDIR)/extfiltr.nlm \
-	       $(EOLIST)
 endif
 
 #
