@@ -222,18 +222,22 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                                      "proxy: APR_BUCKET_IS_EOS");
                     } else {
                         status = ap_get_brigade(r->input_filters, input_brigade,
-                                                AP_MODE_READBYTES, APR_BLOCK_READ,
+                                                AP_MODE_READBYTES,
+                                                APR_BLOCK_READ,
                                                 AJP13_MAX_SEND_BODY_SZ);
                         if (status != APR_SUCCESS) {
-                            ap_log_error(APLOG_MARK, APLOG_DEBUG, status, r->server,
+                            ap_log_error(APLOG_MARK, APLOG_DEBUG, status,
+                                         r->server,
                                          "ap_get_brigade failed");
                             break;
                         }
                         bufsiz = AJP13_MAX_SEND_BODY_SZ;
-                        status = apr_brigade_flatten(input_brigade, buff, &bufsiz);
+                        status = apr_brigade_flatten(input_brigade, buff,
+                                                     &bufsiz);
                         apr_brigade_cleanup(input_brigade);
                         if (status != APR_SUCCESS) {
-                            ap_log_error(APLOG_MARK, APLOG_DEBUG, status, r->server,
+                            ap_log_error(APLOG_MARK, APLOG_DEBUG, status,
+                                         r->server,
                                          "apr_brigade_flatten failed");
                             break;
                         }
@@ -383,7 +387,8 @@ static int proxy_ajp_handler(request_rec *r, proxy_worker *worker,
 
     /* create space for state information */
     if (!backend) {
-        status = ap_proxy_acquire_connection(scheme, &backend, worker, r->server);
+        status = ap_proxy_acquire_connection(scheme, &backend, worker,
+                                             r->server);
         if (status != OK) {
             if (backend) {
                 backend->close_on_recycle = 1;
