@@ -357,7 +357,7 @@ static const char *add_setenvif_core(cmd_parms *cmd, void *mconfig,
             /* Syntax check and extraction of the OID as a regex: */
             new->pnamereg = ap_pregcomp(cmd->pool,
                                         "^oid\\(\"?([0-9.]+)\"?\\)$",
-                                        (AP_REG_EXTENDED // | AP_REG_NOSUB
+                                        (AP_REG_EXTENDED /* | AP_REG_NOSUB */
                                          | AP_REG_ICASE));
             /* this can never happen, as long as pcre works:
               if (new->pnamereg == NULL)
