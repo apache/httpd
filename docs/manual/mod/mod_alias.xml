@@ -113,7 +113,11 @@ ignored.</p>
     </example>
 
     <p>A request for http://myserver/image/foo.gif would cause the
-    server to return the file /ftp/pub/image/foo.gif.</p>
+    server to return the file /ftp/pub/image/foo.gif.  Only complete
+    path segments are matched, so the above alias would not match a
+    request for http://myserver/imagefoo.gif.  For more complex
+    matching using regular expressions, see the <directive
+    module="mod_alias">AliasMatch</directive> directive.</p>
 
     <p>Note that if you include a trailing / on the
     <var>url-path</var> then the server will require a trailing / in
@@ -206,7 +210,12 @@ a different URL</description>
 
     <p>If the client requests http://example.com/service/foo.txt, it
     will be told to access http://foo2.example.com/service/foo.txt
-    instead.</p>
+    instead.  Only complete path segments are matched, so the above
+    example would not match a request for
+    http://example.com/servicefoo.txt.  For more complex matching
+    using regular expressions, see the <directive
+    module="mod_alias">RedirectMatch</directive> directive.</p>
+
 
 <note><title>Note</title> <p>Redirect directives take precedence over
 Alias and ScriptAlias directives, irrespective of their ordering in
