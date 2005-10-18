@@ -61,6 +61,7 @@ BEGIN {
     print "#LoadModule status_module modules/status.nlm"
     print "#LoadModule unique_id_module modules/uniqueid.nlm"
     print "#LoadModule usertrack_module modules/usertrk.nlm"
+    print "#LoadModule version_module modules/modversion.nlm"
     print "#LoadModule vhost_alias_module modules/vhost.nlm"
     print ""
     next

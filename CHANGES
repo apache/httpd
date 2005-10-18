@@ -1,7 +1,12 @@
                                                          -*- coding: utf-8 -*-
-Changes with Apache 2.0.56-dev
+Changes with Apache 2.0.56
 
+  *) Added new module mod_version, which provides version dependent
+     configuration containers.  [André Malo]
 
+  *) Add core version query function (ap_get_server_revision) and
+     accompanying ap_version_t structure (minor MMN bump).
+     [André Malo]
 
 Changes with Apache 2.0.55
 
