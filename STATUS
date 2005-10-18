@@ -147,11 +147,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
          modules/proxy/mod_proxy_ftp.c: r231044
        +1: minfrin, jim, nd
 
-    *) mod_version: New Module, Backport from trunk. Requires Minor MMN Bump.
-       http://svn.apache.org/repos/asf/httpd/httpd/branches/mod_version_for_2.0.x
-       +1: pquerna, nd, wrowe
-       Votes from before the integration branch: +1: jerenkrantz
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ please place SVN revisions from trunk here, so it is easy to
