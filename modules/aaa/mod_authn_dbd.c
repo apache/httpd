@@ -88,7 +88,6 @@ static authn_status authn_dbd_password(request_rec *r, const char *user,
 {
     apr_status_t rv;
     const char *dbd_password = NULL;
-    char *colon_pw;
     apr_dbd_prepared_t *statement;
     apr_dbd_results_t *res = NULL;
     apr_dbd_row_t *row = NULL;
@@ -136,11 +135,6 @@ static authn_status authn_dbd_password(request_rec *r, const char *user,
         return AUTH_USER_NOT_FOUND;
     }
 
-    colon_pw = ap_strchr(dbd_password, ':');
-    if (colon_pw) {
-        *colon_pw = '\0';
-    }
-
     rv = apr_password_validate(password, dbd_password);
 
     if (rv != APR_SUCCESS) {
@@ -154,7 +148,6 @@ static authn_status authn_dbd_realm(request_rec *r, const char *user,
 {
     apr_status_t rv;
     const char *dbd_hash = NULL;
-    char *colon_hash;
     apr_dbd_prepared_t *statement;
     apr_dbd_results_t *res = NULL;
     apr_dbd_row_t *row = NULL;
@@ -200,13 +193,7 @@ static authn_status authn_dbd_realm(request_rec *r, const char *user,
         return AUTH_USER_NOT_FOUND;
     }
 
-    colon_hash = ap_strchr(dbd_hash, ':');
-    if (colon_hash) {
-        *colon_hash = '\0';
-    }
-
     *rethash = apr_pstrdup(r->pool, dbd_hash);
-
     return AUTH_USER_FOUND;
 }
 static void authn_dbd_hooks(apr_pool_t *p)
