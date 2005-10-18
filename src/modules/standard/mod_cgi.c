@@ -337,13 +337,6 @@ static int cgi_handler(request_rec *r)
 
     struct cgi_child_stuff cld;
 
-    if (r->method_number == M_OPTIONS) {
-	/* 99 out of 100 CGI scripts, this is all they support */
-	r->allowed |= (1 << M_GET);
-	r->allowed |= (1 << M_POST);
-	return DECLINED;
-    }
-
     if ((argv0 = strrchr(r->filename, '/')) != NULL)
 	argv0++;
     else
