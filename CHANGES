@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.0.56
 
+  *) mod_cgi(d): Remove block on OPTIONS method so that scripts can
+     respond to OPTIONS directly rather than via server default.
+     [Roy Fielding] PR 15242
+
   *) Added new module mod_version, which provides version dependent
      configuration containers.  [André Malo]
 

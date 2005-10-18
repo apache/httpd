@@ -1261,13 +1261,6 @@ static int cgid_handler(request_rec *r)
     if (strcmp(r->handler,CGI_MAGIC_TYPE) && strcmp(r->handler,"cgi-script"))
         return DECLINED;
 
-    if (r->method_number == M_OPTIONS) { 
-        /* 99 out of 100 cgid scripts, this is all they support */ 
-        r->allowed |= (AP_METHOD_BIT << M_GET); 
-        r->allowed |= (AP_METHOD_BIT << M_POST); 
-        return DECLINED; 
-    } 
-
     conf = ap_get_module_config(r->server->module_config, &cgid_module); 
     is_included = !strcmp(r->protocol, "INCLUDED"); 
 
