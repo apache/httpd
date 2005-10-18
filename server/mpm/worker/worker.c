@@ -574,8 +574,7 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
     int process_slot = ti->pid;
     apr_pool_t *tpool = apr_thread_pool_get(thd);
     void *csd = NULL;
-    apr_pool_t *ptrans;                /* Pool for per-transaction stuff */
-    apr_pool_t *recycled_pool = NULL;
+    apr_pool_t *ptrans = NULL;            /* Pool for per-transaction stuff */
     int n;
     apr_pollfd_t *pollset;
     apr_status_t rv;
@@ -604,8 +603,11 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
         if (listener_may_exit) break;
 
         if (!have_idle_worker) {
+            /* the following pops a recycled ptrans pool off a stack
+             * if there is one, in addition to reserving a worker thread
+             */
             rv = ap_queue_info_wait_for_idler(worker_queue_info,
-                                              &recycled_pool);
+                                              &ptrans);
             if (APR_STATUS_IS_EOF(rv)) {
                 break; /* we've been signaled to die now */
             }
@@ -682,17 +684,15 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
         }
     got_fd:
         if (!listener_may_exit) {
-            /* create a new transaction pool for each accepted socket */
-            if (recycled_pool == NULL) {
+            if (ptrans == NULL) {
+                /* we can't use a recycled transaction pool this time.
+                 * create a new transaction pool */
                 apr_allocator_t *allocator;
 
                 apr_allocator_create(&allocator);
                 apr_allocator_max_free_set(allocator, ap_max_mem_free);
                 apr_pool_create_ex(&ptrans, NULL, NULL, allocator);
                 apr_allocator_owner_set(allocator, ptrans);
-            }
-            else {
-                ptrans = recycled_pool;
             }
             apr_pool_tag(ptrans, "transaction");
             rv = lr->accept_func(&csd, lr, ptrans);

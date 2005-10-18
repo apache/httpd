@@ -1,5 +1,5 @@
                                                          -*- coding: utf-8 -*-
-Changes with Apache 2.0.55
+Changes with Apache 2.0.56
 
   *) Added new module mod_version, which provides version dependent
      configuration containers.  [André Malo]
@@ -7,6 +7,16 @@ Changes with Apache 2.0.55
   *) Add core version query function (ap_get_server_revision) and
      accompanying ap_version_t structure (minor MMN bump).
      [André Malo]
+
+Changes with Apache 2.0.55
+
+  *) SECURITY: CAN-2005-2700 (cve.mitre.org)
+     mod_ssl: Fix a security issue where "SSLVerifyClient" was not
+     enforced in per-location context if "SSLVerifyClient optional"
+     was configured in the vhost configuration.  [Joe Orton]
+
+  *) worker MPM: Fix a memory leak which can occur after an aborted
+     connection in some limited circumstances.  [Greg Ames]
 
   *) mod_ldap: Fix PR 36563. Keep track of the number of attributes
      retrieved from LDAP so that all of the values can be properly 

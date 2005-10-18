@@ -23,7 +23,8 @@ Consult the trunk/ for all new development and documentation efforts:
 
 Release history:
 
-    2.0.55  : in development
+    2.0.56  : in development
+    2.0.55  : tagged October 9, 2005
     2.0.54  : released April 17, 2005 as GA.
     2.0.53  : released February 7, 2005 as GA.
     2.0.52  : released September 28, 2004 as GA.
@@ -99,7 +100,8 @@ CURRENT RELEASE NOTES:
 
     * All commits to branches/2.0.x must be reflected in SVN trunk,
       as well, if they apply.  Logical progression is commit to trunk,
-      get feedback and votes in STATUS, and then merge into branches/2.0.x.
+      get feedback and votes on list or in STATUS, then merge into 
+      branches/2.2.x, and finally merge into branches/2.0.x, as applicable.
 
 
 RELEASE SHOWSTOPPERS:
@@ -150,16 +152,11 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
        +1: pquerna, nd, wrowe
        Votes from before the integration branch: +1: jerenkrantz
 
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ please place SVN revisions from trunk here, so it is easy to
     identify exactly what the proposed changes are!  Add all new
     proposals to the end of this list. ]
-
-    *) Fix CAN-2005-2700, mod_ssl SSLVerifyClient bug
-         http://svn.apache.org/viewcvs?rev=264800&view=rev
-       test case: perl-framework/t/security/CAN-2005-2700.t
-       +1: jorton, wrowe
-       wrowe cautions to backport to 2.2.x branch as well.
 
     *) mod_headers: Support {...}s tag for SSL variable lookup.
        http://www.apache.org/~jorton/mod_headers-2.0-ssl.diff
@@ -229,11 +226,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         +1: pquerna, jerenkrantz, colm
         jerenkrantz notes: I do prefer the version from r190033 (own if check).
 
-     *) mod_ssl: Fix buffering in SSL output filter.
-        http://svn.apache.org/viewcvs?rev=189971&view=rev
-        PR: 35279
-        +1: jorton, jerenkrantz
-
      *) Reverse Proxy fixes: <Location> bug and Cookie support
         Patch is at
         http://marc.theaimsgroup.com/?l=apache-httpd-dev&m=112365629308138&q=p4
@@ -260,11 +252,31 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        code: http://svn.apache.org/viewcvs?view=rev&rev=157583
              http://svn.apache.org/viewcvs?rev=280401&view=rev
        docs: http://svn.apache.org/viewcvs?rev=280384&view=rev
-       +1: stas
+       +1: stas, trawick
        -0: colm
            colm: It's a useful feature, but TCP window size selection 
                  algorithims can be pretty "interesting", probably more
                  2.2. 
+           trawick: It is nevertheless true that POST performance can 
+                 sometimes improve dramatically by tweaking the receive
+                 buffer size, and this relatively simple patch lets that
+                 be controlled in a portable manner just for the web 
+                 server.  (old way: use system-specific configuration
+                 knobs that affect all applications.)
+
+    *) Fix all non-http protocol modules that were modeled after the
+       broken mod_echo.c example; remove the -initial- timeout setting
+       from NET_TIME (never inserted by non-request based protocols)
+       and move it to the core pre_connection logic, so every core
+       connection can read with timeout on Linux, Solaris, instead of
+       read (untimed) blocking on Linux, and failing read non-block on
+       Solaris.  Leaves NET_TIME intact until after the 2.0.x branch.
+         http://people.apache.org/~wrowe/httpd-2.0-proto-timeout.patch
+         +1: wrowe
+
+    *) Add missing va_end call
+         http://svn.apache.org/viewcvs?rev=321500&view=rev
+       +1: nd, trawick
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 

@@ -4493,9 +4493,10 @@ static conn_rec *core_create_conn(apr_pool_t *ptrans, server_rec *server,
 static int core_pre_connection(conn_rec *c, void *csd)
 {
     core_net_rec *net = apr_palloc(c->pool, sizeof(*net));
-    apr_status_t rv;
 
 #ifdef AP_MPM_DISABLE_NAGLE_ACCEPTED_SOCK
+    apr_status_t rv;
+
     /* BillS says perhaps this should be moved to the MPMs. Some OSes
      * allow listening socket attributes to be inherited by the
      * accept sockets which means this call only needs to be made
