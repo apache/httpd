@@ -896,6 +896,12 @@ Changes with Apache 2.1.1
   [Apache 2.1.0-dev includes those bug fixes and changes with the
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
+Changes with Apache 2.0.56
+
+  *) mod_cgi(d): Remove block on OPTIONS method so that scripts can
+     respond to OPTIONS directly rather than via server default.
+     [Roy Fielding] PR 15242
+
 Changes with Apache 2.0.55
 
   *) SECURITY: CAN-2005-2088 (cve.mitre.org)
