@@ -165,7 +165,8 @@ identifier for each request</dd>
 <dt><a href="mod_usertrack.html">mod_usertrack</a></dt><dd>
 <em>Clickstream</em> logging of user activity on a site
 </dd>
-<dt><a href="mod_vhost_alias.html" id="V" name="V">mod_vhost_alias</a></dt><dd>Provides for dynamically configured mass virtual
+<dt><a href="mod_version.html" id="V" name="V">mod_version</a></dt><dd>Version dependent configuration</dd>
+<dt><a href="mod_vhost_alias.html">mod_vhost_alias</a></dt><dd>Provides for dynamically configured mass virtual
 hosting</dd>
 </dl></div></div>
 <div class="bottomlang">
