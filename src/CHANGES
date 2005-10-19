@@ -28,7 +28,7 @@ Changes with Apache 1.3.34
 
 Changes with Apache 1.3.33
 
-  *) SECURITY: CAN-2004-0940 (cve.mitre.org)
+  *) SECURITY: CVE-2004-0940 (cve.mitre.org)
      mod_include: Fix potential buffer overflow with escaped characters
      in SSI tag string. [Martin Kraemer, Jim Jagielski]
 
@@ -71,7 +71,7 @@ Changes with Apache 1.3.32
   *) Win32: Improve error reporting after a failed attempt to spawn a 
      piped log process or rewrite map process.  [Jeff Trawick]
 
-  *) SECURITY: CAN-2004-0492 (cve.mitre.org)
+  *) SECURITY: CVE-2004-0492 (cve.mitre.org)
      Reject responses from a remote server if sent an invalid (negative) 
      Content-Length.  [Mark Cox]
 
@@ -94,7 +94,7 @@ Changes with Apache 1.3.32
 
 Changes with Apache 1.3.31
 
-  *) SECURITY: CAN-2003-0987 (cve.mitre.org)
+  *) SECURITY: CVE-2003-0987 (cve.mitre.org)
      Verification as to whether the nonce returned in the client response 
      is one we issued ourselves by means of a AuthDigestRealmSeed secret
      exposed as an md5(). See mod_digest documentation for more details.
@@ -112,7 +112,7 @@ Changes with Apache 1.3.30
      connections when invalid IPs are accessed. PR 27542.
      [Alexander Prohorenko <white extrasy.net>]
    
-  *) SECURITY: CAN-2004-0174 (cve.mitre.org)
+  *) SECURITY: CVE-2004-0174 (cve.mitre.org)
      Fix starvation issue on listening sockets where a short-lived
      connection on a rarely-accessed listening socket will cause a
      child to hold the accept mutex and block out new connections until
@@ -191,7 +191,7 @@ Changes with Apache 1.3.30
 
 Changes with Apache 1.3.29
 
-  *) SECURITY: CAN-2003-0542 (cve.mitre.org)
+  *) SECURITY: CVE-2003-0542 (cve.mitre.org)
      Fix buffer overflows in mod_alias and mod_rewrite which occurred if
      one configured a regular expression with more than 9 captures.
      [André Malo]
@@ -233,7 +233,7 @@ Changes with Apache 1.3.29
 
 Changes with Apache 1.3.28
 
-  *) SECURITY: CAN-2003-0460 (cve.mitre.org)
+  *) SECURITY: CVE-2003-0460 (cve.mitre.org)
      Fix the rotatelogs support program on Win32 and OS/2 to ignore
      special control characters received over the pipe.  Previously
      such characters could cause rotatelogs to quit logging and exit.
@@ -432,7 +432,7 @@ Changes with Apache 1.3.27
      UseCanonicalName is set to Off and a server is being run at
      a domain that allows wildcard DNS.  [Matthew Murphy]
 
-  *) SECURITY: CAN-2002-0843 (cve.mitre.org)
+  *) SECURITY: CVE-2002-0843 (cve.mitre.org)
      Fix some possible overflows in ab.c that could be exploited by
      a malicious server. Reported by David Wagner. [Jim Jagielski]
 
@@ -451,7 +451,7 @@ Changes with Apache 1.3.27
      cruft. This patch allows us to tailor/control this properly by
      allowing simple wildcards such as *.conf. [Dirk-Willem van Gulik]
 
-  *) SECURITY: CAN-2002-0839 (cve.mitre.org)
+  *) SECURITY: CVE-2002-0839 (cve.mitre.org)
      Add the new directive 'ShmemUIDisUser'. By default, Apache
      will no longer set the uid/gid of SysV shared memory scoreboard
      to User/Group, and it will therefore stay the uid/gid of
@@ -573,7 +573,7 @@ Changes with Apache 1.3.25
      Netscape-4.x Roaming Profiles (on a DAV-enabled server)
      [Martin Kraemer]
 
-  *) SECURITY: CAN-2003-0083 (cve.mitre.org)
+  *) SECURITY: CVE-2003-0083 (cve.mitre.org)
      Disallow anything but whitespace on the request line after the
      HTTP/x.y protocol string. That prevents arbitrary user input
      from ending up in the access_log and error_log. Also, special
@@ -1066,7 +1066,7 @@ Changes with Apache 1.3.21
   *) PORT: Some Cygwin changes, esp. improvements for dynamic loading,
      and cleanups. [Stipe Tolj <tolj wapme-systems.de>]
 
-  *) Win32 SECURITY: CAN-2001-0729 (cve.mitre.org)
+  *) Win32 SECURITY: CVE-2001-0729 (cve.mitre.org)
      The default installation could lead to mod_negotiation
      and mod_dir/mod_autoindex displaying a directory listing instead of
      the index.html.* files, if a very long path was created artificially
@@ -1369,7 +1369,7 @@ Changes with Apache 1.3.18 [not released]
   *) Apache on Win9x now ensures the service is stopped before removal.
      [William Rowe]
 
-  *) SECURITY: CAN-2001-0925 (cve.mitre.org)
+  *) SECURITY: CVE-2001-0925 (cve.mitre.org)
      The default installation could lead to mod_negotiation
      and mod_dir/mod_autoindex displaying a directory listing instead of
      the index.html.* files, if a very long path was created artificially
@@ -1759,7 +1759,7 @@ Changes with Apache 1.3.13 [not released]
      for modules and executables dynamically linked to the core.
      [William Rowe; Jim Patterson <jim-patterson ncf.ca>]
 
-  *) SECURITY: CAN-2000-1204 (cve.mitre.org)
+  *) SECURITY: CVE-2000-1204 (cve.mitre.org)
      Prevent the source code for CGIs from being revealed when 
      using mod_vhost_alias and the CGI directory is under the document root
      and a user makes a request like http://www.example.com//cgi-bin/cgi
@@ -2055,11 +2055,11 @@ Changes with Apache 1.3.12
      the given character set on any document that does not have one
      explicitly specified in the headers.  [Marc Slemko, Jim Jagielski]
 
-  *) SECURITY: CAN-2000-1205 (cve.mitre.org)
+  *) SECURITY: CVE-2000-1205 (cve.mitre.org)
      Properly escape various messages output to the client from a number
      of modules and places in the core code.  [Marc Slemko]
 
-  *) SECURITY: CAN-2000-1205 (cve.mitre.org)
+  *) SECURITY: CVE-2000-1205 (cve.mitre.org)
      Change mod_actions, mod_autoindex, mod_expires, and mod_log_config to
      not consider any parameters such as charset when making decisions 
      based on content type.  This does remove some functionality for 
@@ -2069,7 +2069,7 @@ Changes with Apache 1.3.12
      want to set things on a per charset basis is necessary in the future.  
      [Marc Slemko]
 
-  *) SECURITY: CAN-2000-1205 (cve.mitre.org)
+  *) SECURITY: CVE-2000-1205 (cve.mitre.org)
      mod_include now entity encodes output from "printenv" and "echo var"
      by default.  The encoding for "echo var" can be set to URL encoding
      or no encoding using the new "encoding" attribute to the echo tag.
@@ -2128,7 +2128,7 @@ Changes with Apache 1.3.10
   *) Add back support for UseCanonicalName in <Directory> containers
      [Manoj Kasichainula]
 
-  *) SECURITY: CAN-2000-1206 (cve.mitre.org)
+  *) SECURITY: CVE-2000-1206 (cve.mitre.org)
      More rigorous checking of Host: headers to fix security 
      problems with mass name-based virtual hosting (whether using mod_rewrite
      or mod_vhost_alias).
