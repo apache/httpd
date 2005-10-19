@@ -14,7 +14,7 @@ Changes with Apache 2.0.56
 
 Changes with Apache 2.0.55
 
-  *) SECURITY: CAN-2005-2700 (cve.mitre.org)
+  *) SECURITY: CVE-2005-2700 (cve.mitre.org)
      mod_ssl: Fix a security issue where "SSLVerifyClient" was not
      enforced in per-location context if "SSLVerifyClient optional"
      was configured in the vhost configuration.  [Joe Orton]
@@ -27,12 +27,12 @@ Changes with Apache 2.0.55
      cached even if the value is NULL. 
      [Brad Nicholes, Ondrej Sury <ondrej sury.org>]
        
-  *) SECURITY: CAN-2005-2491 (cve.mitre.org): 
+  *) SECURITY: CVE-2005-2491 (cve.mitre.org): 
      Fix integer overflows in PCRE in quantifier parsing which could
      be triggered by a local user through use of a carefully-crafted 
      regex in an .htaccess file.  [Philip Hazel]
 
-  *) SECURITY: CAN-2005-2088 (cve.mitre.org)
+  *) SECURITY: CVE-2005-2088 (cve.mitre.org)
      proxy: Correctly handle the Transfer-Encoding and Content-Length
      headers.  Discard the request Content-Length whenever T-E: chunked
      is used, always passing one of either C-L or T-E: chunked whenever 
@@ -70,7 +70,7 @@ Changes with Apache 2.0.55
      (or if it didn't succeed) for non-authoritative cases.
      [Jim Jagielski]
 
-  *) SECURITY: CAN-2005-2728 (cve.mitre.org)
+  *) SECURITY: CVE-2005-2728 (cve.mitre.org)
      Fix cases where the byterange filter would buffer responses
      into memory.  PR 29962.  [Joe Orton]
 
@@ -88,7 +88,7 @@ Changes with Apache 2.0.55
 
   *) mod_ssl: Fix build with OpenSSL 0.9.8.  PR 35757.  [William Rowe]
 
-  *) SECURITY: CAN-2005-2088 (cve.mitre.org)
+  *) SECURITY: CVE-2005-2088 (cve.mitre.org)
      core: If a request contains both Transfer-Encoding and Content-Length
      headers, remove the Content-Length, mitigating some HTTP Request 
      Splitting/Spoofing attacks.  [Paul Querna, Joe Orton]
@@ -101,7 +101,7 @@ Changes with Apache 2.0.55
   *) Prevent hangs of child processes when writing to piped loggers at
      the time of graceful restart.  PR 26467.  [Jeff Trawick]
 
-  *) SECURITY: CAN-2005-1268 (cve.mitre.org)
+  *) SECURITY: CVE-2005-1268 (cve.mitre.org)
      mod_ssl: Fix off-by-one overflow whilst printing CRL information
      at "LogLevel debug" which could be triggered if configured 
      to use a "malicious" CRL.  PR 35081.  [Marc Stern <mstern csc.com>]
@@ -141,7 +141,7 @@ Changes with Apache 2.0.54
      slow to exit.  [Joe Orton, Jeff Trawick]
 
   *) Remove formatting characters from ap_log_error() calls.  These
-     were escaped as fallout from CAN-2003-0020.
+     were escaped as fallout from CVE-2003-0020.
      [Eric Covener <ecovener gmail.com>]
 
   *) mod_ssl: If SSLUsername is used, set r->user earlier.  PR 31418.
@@ -230,11 +230,11 @@ Changes with Apache 2.0.53
      specified matches the value of the user object. PR 31913
      [Ryan Morgan <rmorgan pobox.com>]
 
-  *) SECURITY: CAN-2004-0942 (cve.mitre.org)
+  *) SECURITY: CVE-2004-0942 (cve.mitre.org)
      Fix for memory consumption DoS in handling of MIME folded request
      headers.  [Joe Orton]
 
-  *) SECURITY: CAN-2004-0885 (cve.mitre.org)
+  *) SECURITY: CVE-2004-0885 (cve.mitre.org)
      mod_ssl: Fix a bug which allowed an SSLCipherSuite setting to be
      bypassed during an SSL renegotiation.  PR 31505.  
      [Hartmut Keil <Hartmut.Keil adnovum.ch>, Joe Orton]
@@ -276,7 +276,7 @@ Changes with Apache 2.0.53
      is causing a potential problem with the LDAP shared memory cache.
      PR 31431 [Graham Leggett]
 
-  *) SECURITY: CAN-2004-1834 (cve.mitre.org)
+  *) SECURITY: CVE-2004-1834 (cve.mitre.org)
      mod_disk_cache: Do not store hop-by-hop headers.  [Justin Erenkrantz]
 
   *) Fix the re-linking issue when purging elements from the LDAP cache
@@ -299,7 +299,7 @@ Changes with Apache 2.0.52
   *) Fix a segfault in the LDAP cache when it is configured switched
      off. [Jess Holle <jessh ptc.com>]
 
-  *) SECURITY: CAN-2004-0811 (cve.mitre.org)
+  *) SECURITY: CVE-2004-0811 (cve.mitre.org)
      Fix merging of the Satisfy directive, which was applied to
      the surrounding context and could allow access despite configured
      authentication.  PR 31315.  [Rici Lake <rici ricilake.net>]
@@ -321,15 +321,15 @@ Changes with Apache 2.0.52
 
 Changes with Apache 2.0.51
 
-  *) SECURITY: CAN-2004-0786 (cve.mitre.org)
+  *) SECURITY: CVE-2004-0786 (cve.mitre.org)
      Fix an input validation issue in apr-util which could be
      triggered by malformed IPv6 literal addresses.  [Joe Orton]
 
-  *) SECURITY: CAN-2004-0747 (cve.mitre.org)
+  *) SECURITY: CVE-2004-0747 (cve.mitre.org)
      Fix buffer overflow in expansion of environment variables in
      configuration file parsing.  [André Malo]
 
-  *) SECURITY: CAN-2004-0809 (cve.mitre.org)
+  *) SECURITY: CVE-2004-0809 (cve.mitre.org)
      mod_dav_fs: Fix a segfault in the handling of an indirect lock
      refresh.  PR 31183.  [Joe Orton]
 
@@ -351,7 +351,7 @@ Changes with Apache 2.0.51
      server shutdown on these code paths.
      [Bill Stoddard]
 
-  *) SECURITY: CAN-2004-0751 (cve.mitre.org)
+  *) SECURITY: CVE-2004-0751 (cve.mitre.org)
      mod_ssl: Fix a segfault in the SSL input filter which could be
      triggered if using "speculative" mode, for instance by a 
      proxy request to an SSL server.  PR 30134.  [Joe Orton]
@@ -404,7 +404,7 @@ Changes with Apache 2.0.51
 
   *) mod_ssl: Build on RHEL 3.  PR 18989.  [Justin Erenkrantz]
 
-  *) SECURITY: CAN-2004-0748 (cve.mitre.org)
+  *) SECURITY: CVE-2004-0748 (cve.mitre.org)
      mod_ssl: Fix a potential infinite loop.  PR 29964.  [Joe Orton]
 
   *) mod_ssl: Avoid startup failure after unclean shutdown if using shmcb.
@@ -492,7 +492,7 @@ Changes with Apache 2.0.51
  
 Changes with Apache 2.0.50
 
-  *) SECURITY: CAN-2004-0493 (cve.mitre.org)
+  *) SECURITY: CVE-2004-0493 (cve.mitre.org)
      Close a denial of service vulnerability identified by Georgi
      Guninski which could lead to memory exhaustion with certain
      input data.  [Jeff Trawick]
@@ -522,7 +522,7 @@ Changes with Apache 2.0.50
   *) util_ldap: allow relative paths for LDAPTrustedCA to be resolved
      against ServerRoot PR#26602 [Brad Nicholes]
        
-  *) SECURITY: CAN-2004-0488 (cve.mitre.org)
+  *) SECURITY: CVE-2004-0488 (cve.mitre.org)
      mod_ssl: Fix a buffer overflow in the FakeBasicAuth code for a
      (trusted) client certificate subject DN which exceeds 6K in length.
      [Joe Orton]
@@ -669,7 +669,7 @@ Changes with Apache 2.0.50
 
 Changes with Apache 2.0.49
 
-  *) SECURITY: CAN-2004-0174 (cve.mitre.org)
+  *) SECURITY: CVE-2004-0174 (cve.mitre.org)
      Fix starvation issue on listening sockets where a short-lived
      connection on a rarely-accessed listening socket will cause a
      child to hold the accept mutex and block out new connections until
@@ -953,12 +953,12 @@ Changes with Apache 2.0.49
 
 Changes with Apache 2.0.48
 
-  *) SECURITY: CAN-2003-0789 (cve.mitre.org)
+  *) SECURITY: CVE-2003-0789 (cve.mitre.org)
      mod_cgid: Resolve some mishandling of the AF_UNIX socket used to
      communicate with the cgid daemon and the CGI script.
      [Jeff Trawick]
 
-  *) SECURITY: CAN-2003-0542 (cve.mitre.org)
+  *) SECURITY: CVE-2003-0542 (cve.mitre.org)
      Fix buffer overflows in mod_alias and mod_rewrite which occurred
      if one configured a regular expression with more than 9 captures.
      [André Malo]
@@ -1112,19 +1112,19 @@ Changes with Apache 2.0.48
 
 Changes with Apache 2.0.47
 
-  *) SECURITY: CAN-2003-0192 (cve.mitre.org)
+  *) SECURITY: CVE-2003-0192 (cve.mitre.org)
      Fixed a bug whereby certain sequences of per-directory
      renegotiations and the SSLCipherSuite directive being used to
      upgrade from a weak ciphersuite to a strong one could result in
      the weak ciphersuite being used in place of the strong one.  
      [Ben Laurie]
 
-  *) SECURITY: CAN-2003-0253 (cve.mitre.org)
+  *) SECURITY: CVE-2003-0253 (cve.mitre.org)
      Fixed a bug in prefork MPM causing temporary denial of service
      when accept() on a rarely accessed port returns certain errors.
      Reported by Saheed Akhtar <S.Akhtar talis.com>.  [Jeff Trawick]
 
-  *) SECURITY: CAN-2003-0254 (cve.mitre.org)
+  *) SECURITY: CVE-2003-0254 (cve.mitre.org)
      Fixed a bug in ftp proxy causing denial of service when target
      host is IPv6 but proxy server can't create IPv6 socket.  Fixed by
      the reporter.  [Yoshioka Tsuneo <tsuneo.yoshioka f-secure.com>]
@@ -1159,13 +1159,13 @@ Changes with Apache 2.0.47
 
 Changes with Apache 2.0.46
 
-  *) SECURITY: CAN-2003-0245 (cve.mitre.org)
+  *) SECURITY: CVE-2003-0245 (cve.mitre.org)
      Fixed a bug causing apr_pvsprintf() to crash by sending an overly
      long string.  This can be triggered remotely through mod_dav,
      mod_ssl, and other mechanisms.
      Reported by David Endler <DEndler iDefense.com>.  [Joe Orton]
 
-  *) SECURITY: CAN-2003-0189 (cve.mitre.org)
+  *) SECURITY: CVE-2003-0189 (cve.mitre.org)
      Fixed a denial-of-service vulnerability affecting basic
      authentication on Unix platforms related to thread-safety in
      apr_password_validate().
@@ -1297,13 +1297,13 @@ Changes with Apache 2.0.46
   *) Fixed a segfault when multiple ProxyBlock directives were used.
      PR: 19023 [Sami Tikka <sami.tikka f-secure.com>]
 
-  *) SECURITY: CAN-2003-0134 (cve.mitre.org)
+  *) SECURITY: CVE-2003-0134 (cve.mitre.org)
      OS2: Fix a Denial of Service vulnerability identified and
      reported by Robert Howard <rihoward rawbw.com> that where device
      names faulted the running OS2 worker process.  The fix is
      actually in APR 0.9.4.  [Brian Havard]
 
-  *) SECURITY: CAN-2003-0083 (cve.mitre.org)
+  *) SECURITY: CVE-2003-0083 (cve.mitre.org)
      Forward port: Escape special characters (especially control
      characters) in mod_log_config to make a clear distinction between
      client-supplied strings (with special characters) and server-side
@@ -1320,7 +1320,7 @@ Changes with Apache 2.0.45
   *) Fix possible segfaults under obscure error conditions within the
      cgid daemon.  [Jeff Trawick, William Rowe]
 
-  *) SECURITY: CAN-2003-0132 (cve.mitre.org)
+  *) SECURITY: CVE-2003-0132 (cve.mitre.org)
      Close a Denial of Service vulnerability identified by David
      Endler <DEndler iDefense.com> on all platforms.  An unlimited
      stream of newlines were acceptable between requests where each
@@ -1827,7 +1827,7 @@ Changes with Apache 2.0.43
 
 Changes with Apache 2.0.42
 
-  *) SECURITY: CAN-2002-1593 (cve.mitre.org) [CERT VU#406121]
+  *) SECURITY: CVE-2002-1593 (cve.mitre.org) [CERT VU#406121]
      mod_dav: Check for versioning hooks before using them.
      [Greg Stein]
 
@@ -1971,7 +1971,7 @@ Changes with Apache 2.0.41
 
 Changes with Apache 2.0.40
 
-  *) SECURITY: CAN-2002-0661 (cve.mitre.org) 
+  *) SECURITY: CVE-2002-0661 (cve.mitre.org) 
      Close a very significant security hole that 
      applies only to the Win32, OS2 and Netware platforms.  Unix was not 
      affected, Cygwin may be affected.  Certain URIs will bypass security
@@ -1983,7 +1983,7 @@ Changes with Apache 2.0.40
      Reported by Auriemma Luigi <bugtest sitoverde.com>.
      [Brad Nicholes]
 
-  *) SECURITY: CAN-2002-0654 (cve.mitre.org)
+  *) SECURITY: CVE-2002-0654 (cve.mitre.org)
      Close a path-revealing exposure in multiview type
      map negotiation (such as the default error documents) where the
      module would report the full path of the typemapped .var file when
@@ -1991,7 +1991,7 @@ Changes with Apache 2.0.40
      negotiation.  Reported by Auriemma Luigi <bugtest sitoverde.com>.
      [William Rowe]
 
-  *) SECURITY: CAN-2002-0654 (cve.mitre.org)
+  *) SECURITY: CVE-2002-0654 (cve.mitre.org)
      Close a path-revealing exposure in cgi/cgid when we 
      fail to invoke a script.  The modules would report "couldn't create 
      child process /path-to-script/script.pl" revealing the full path
@@ -2555,7 +2555,7 @@ Changes with Apache 2.0.36
 
   *) Fix AcceptPathInfo. PR 8234  [Cliff Woolley]
 
-  *) SECURITY: CAN-2002-1592 (cve.mitre.org) [CERT VU#165803]
+  *) SECURITY: CVE-2002-1592 (cve.mitre.org) [CERT VU#165803]
      Added the APLOG_TOCLIENT flag to ap_log_rerror() to
      explicitly tell the server that warning messages should be sent 
      to the client in addition to being recorded in the error log. 
@@ -6342,7 +6342,7 @@ Changes with Apache 2.0a5
      container is VirtualHost or Directory or whatever.
      [Jeff Trawick]
 
-  *) SECURITY: CAN-2000-1204 (cve.mitre.org)
+  *) SECURITY: CVE-2000-1204 (cve.mitre.org)
      Prevent the source code for CGIs from being revealed when 
      using mod_vhost_alias and the CGI directory is under the document root
      and a user makes a request like http://www.example.com//cgi-bin/cgi
