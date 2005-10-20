@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_cache: Create new filters CACHE_OUT_SUBREQ / CACHE_SAVE_SUBREQ which
+     only differ by the type from CACHE_OUT / CACHE_SAVE to ensure that
+     subrequests to non local resources work again. [Ruediger Pluem]
+
   *) New module: mod_authn_dbd [Nick Kew]
 
   *) mod_cgid: Refuse to work on Solaris 10 due to OS bugs.  PR 34264.
