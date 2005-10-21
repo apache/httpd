@@ -35,6 +35,7 @@
 #include "apr_buckets.h"
 #include "apr_md5.h"
 #include "apr_network_io.h"
+#include "apr_poll.h"
 #include "apr_pools.h"
 #include "apr_strings.h"
 #include "apr_uri.h"
@@ -185,6 +186,14 @@ apr_status_t ajp_msg_check_header(ajp_msg_t *msg, apr_size_t *len);
  * @return          APR_SUCCESS or error
  */
 apr_status_t ajp_msg_reset(ajp_msg_t *msg);
+
+/**
+ * Reuse an AJP Message
+ *
+ * @param msg       AJP Message to reuse
+ * @return          APR_SUCCESS or error
+ */
+apr_status_t ajp_msg_reuse(ajp_msg_t *msg);
 
 /**
  * Mark the end of an AJP Message
