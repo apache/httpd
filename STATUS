@@ -147,6 +147,16 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
          modules/proxy/mod_proxy_ftp.c: r231044
        +1: minfrin, jim, nd
 
+    *) Add missing va_end call
+         http://svn.apache.org/viewcvs?rev=321500&view=rev
+       +1: nd, trawick, colm
+
+    *) mod_cache: Fix handling of 'Vary: *". PR 16125.
+       Trunk: r180341
+       2.0.x Patch: http://issues.apache.org/bugzilla/attachment.cgi?id=15297
+       +1: pquerna, jerenkrantz, colm
+       jerenkrantz notes: I do prefer the version from r190033 (own if check).
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ please place SVN revisions from trunk here, so it is easy to
@@ -215,12 +225,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         +1: trawick, wrowe
          backported 280114 to 2.2.x branch already
 
-     *) mod_cache: Fix handling of 'Vary: *". PR 16125.
-        Trunk: r180341
-        2.0.x Patch: http://issues.apache.org/bugzilla/attachment.cgi?id=15297
-        +1: pquerna, jerenkrantz, colm
-        jerenkrantz notes: I do prefer the version from r190033 (own if check).
-
      *) Reverse Proxy fixes: <Location> bug and Cookie support
         Patch is at
         http://marc.theaimsgroup.com/?l=apache-httpd-dev&m=112365629308138&q=p4
@@ -275,10 +279,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        Solaris.  Leaves NET_TIME intact until after the 2.0.x branch.
          http://people.apache.org/~wrowe/httpd-2.0-proto-timeout.patch
          +1: wrowe
-
-    *) Add missing va_end call
-         http://svn.apache.org/viewcvs?rev=321500&view=rev
-       +1: nd, trawick, colm
 
     *) mod_proxy: Fix PR37145
        (data loss with httpd-2.0.55 reverse proxy method=post).
