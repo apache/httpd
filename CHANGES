@@ -27,6 +27,10 @@ Changes with Apache 2.3.0
 
 Changes with Apache 2.1.9
 
+  *) mod_proxy_http: Prevent data corruption of POST request bodies when
+     client accesses proxied resources with SSL. PR37145.
+     [Ruediger Pluem, William Rowe]
+
   *) mod_proxy_balancer: BalancerManager and proxies correctly handle
      member workers with paths. PR36816. [Ruediger Pluem, Jim Jagielski]
 
