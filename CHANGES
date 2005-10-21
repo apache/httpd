@@ -1,6 +1,10 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.1.9
 
+  *) mod_proxy_http: Prevent data corruption of POST request bodies when
+     client accesses proxied resources with SSL. PR37145.
+     [Ruediger Pluem, William Rowe]
+
   *) mod_ssl: Fix issue which could cause spurious warnings about use
      of name-based vhosts.  PR 37051.  [Joe Orton]
 
