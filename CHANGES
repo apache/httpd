@@ -2,9 +2,12 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) core: AddOutputFilterByType is ignored for proxied requests. PR31226.
+     [Joe Orton, Ruediger Pluem]
+
   *) Preserve the Content-Length header for a proxied HEAD request.
      PR 18757 [Greg Ames]
-  
+
   *) mod_cache: Create new filters CACHE_OUT_SUBREQ / CACHE_SAVE_SUBREQ which
      only differ by the type from CACHE_OUT / CACHE_SAVE to ensure that
      subrequests to non local resources work again. [Ruediger Pluem]
