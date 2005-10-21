@@ -271,7 +271,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     *) Add missing va_end call
          http://svn.apache.org/viewcvs?rev=321500&view=rev
-       +1: nd, trawick
+       +1: nd, trawick, colm
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
