@@ -273,6 +273,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewcvs?rev=321500&view=rev
        +1: nd, trawick, colm
 
+    *) mod_proxy: Fix PR37145
+       (data loss with httpd-2.0.55 reverse proxy method=post).
+       Trunk version of patch:
+          http://svn.apache.org/viewcvs.cgi?rev=327590&view=rev
+       Backport version for 2.0.x of patch:
+          http://issues.apache.org/bugzilla/attachment.cgi?id=16744
+       +1: rpluem
+
+
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
     *) Replace some of the mutex locking in the worker MPM with
