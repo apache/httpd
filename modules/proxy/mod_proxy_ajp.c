@@ -90,6 +90,32 @@ static int proxy_ajp_canon(request_rec *r, char *url)
 }
 
 /*
+ * XXX: Flushing bandaid
+ *
+ * When processing CMD_AJP13_SEND_BODY_CHUNK AJP messages we will do a poll
+ * with FLUSH_WAIT miliseconds timeout to determine if more data is currently
+ * available at the backend. If there is no more data available, we flush
+ * the data to the client by adding a flush bucket to the brigade we pass
+ * up the filter chain.
+ * This is only a bandaid to fix the AJP/1.3 protocol shortcoming of not
+ * sending (actually not having defined) a flush message, when the data
+ * should be flushed to the client. As soon as this protocol shortcoming is
+ * fixed this code should be removed.
+ *
+ * For further discussion see PR37100.
+ * http://issues.apache.org/bugzilla/show_bug.cgi?id=37100
+ */
+#define FLUSHING_BANDAID 1
+
+#ifdef FLUSHING_BANDAID
+/*
+ * Wait 10000 microseconds to find out if more data is currently
+ * available at the backend. Just an arbitrary choose.
+ */
+#define FLUSH_WAIT 10000
+#endif
+
+/*
  * process the request and write the response.
  */
 static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
@@ -112,6 +138,10 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     int havebody = 1;
     int isok = 1;
     apr_off_t bb_len;
+#ifdef FLUSHING_BANDAID
+    apr_int32_t conn_poll_fd;
+    apr_pollfd_t *conn_poll;
+#endif
 
     /*
      * Send the AJP request to the remote server
@@ -134,6 +164,8 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     /* allocate an AJP message to store the data of the buckets */
     status = ajp_alloc_data_msg(r->pool, &buff, &bufsiz, &msg);
     if (status != APR_SUCCESS) {
+        /* We had a failure: Close connection to backend */
+        conn->close++;
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                      "proxy: ajp_alloc_data_msg failed");
         return HTTP_INTERNAL_SERVER_ERROR;
@@ -171,6 +203,8 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
 
         status = apr_brigade_flatten(input_brigade, buff, &bufsiz);
         if (status != APR_SUCCESS) {
+            /* We had a failure: Close connection to backend */
+            conn->close++;
             apr_brigade_destroy(input_brigade);
             ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
                          "proxy: apr_brigade_flatten");
@@ -183,6 +217,8 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
         if (bufsiz > 0) {
             status = ajp_send_data_msg(conn->sock, msg, bufsiz);
             if (status != APR_SUCCESS) {
+                /* We had a failure: Close connection to backend */
+                conn->close++;
                 apr_brigade_destroy(input_brigade);
                 ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
                              "proxy: send failed to %pI (%s)",
@@ -195,9 +231,12 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     }
 
     /* read the response */
+    conn->data = NULL;
     status = ajp_read_header(conn->sock, r,
                              (ajp_msg_t **)&(conn->data));
     if (status != APR_SUCCESS) {
+        /* We had a failure: Close connection to backend */
+        conn->close++;
         apr_brigade_destroy(input_brigade);
         ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
                      "proxy: read response failed from %pI (%s)",
@@ -208,6 +247,18 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     /* parse the reponse */
     result = ajp_parse_type(r, conn->data);
     output_brigade = apr_brigade_create(p, r->connection->bucket_alloc);
+
+#ifdef FLUSHING_BANDAID
+    /*
+     * Prepare apr_pollfd_t struct for later check if there is currently
+     * data available from the backend (do not flush response to client)
+     * or not (flush response to client)
+     */
+    conn_poll = apr_pcalloc(p, sizeof(apr_pollfd_t));
+    conn_poll->reqevents = APR_POLLIN;
+    conn_poll->desc_type = APR_POLL_SOCKET;
+    conn_poll->desc.s = conn->sock;
+#endif
 
     bufsiz = AJP13_MAX_SEND_BODY_SZ;
     while (isok) {
@@ -272,16 +323,42 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
             case CMD_AJP13_SEND_BODY_CHUNK:
                 /* AJP13_SEND_BODY_CHUNK: piece of data */
                 status = ajp_parse_data(r, conn->data, &size, &buff);
-                e = apr_bucket_transient_create(buff, size,
-                                                r->connection->bucket_alloc);
-                APR_BRIGADE_INSERT_TAIL(output_brigade, e);
-                if (status != APR_SUCCESS)
+                if (status == APR_SUCCESS) {
+                    e = apr_bucket_transient_create(buff, size,
+                                                    r->connection->bucket_alloc);
+                    APR_BRIGADE_INSERT_TAIL(output_brigade, e);
+
+#ifdef FLUSHING_BANDAID
+                    /*
+                     * If there is no more data available from backend side
+                     * currently, flush response to client.
+                     */
+                    if (apr_poll(conn_poll, 1, &conn_poll_fd, FLUSH_WAIT)
+                        == APR_TIMEUP) {
+                        e = apr_bucket_flush_create(r->connection->bucket_alloc);
+                        APR_BRIGADE_INSERT_TAIL(output_brigade, e);
+                    }
+#endif
+                    apr_brigade_length(output_brigade, 0, &bb_len);
+                    if (bb_len != -1)
+                        conn->worker->s->read += bb_len;
+                    if (ap_pass_brigade(r->output_filters,
+                                        output_brigade) != APR_SUCCESS) {
+                        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                                      "proxy: error processing body");
+                        isok = 0;
+                    }
+                    apr_brigade_cleanup(output_brigade);
+                }
+                else {
                     isok = 0;
+                }
                 break;
             case CMD_AJP13_END_RESPONSE:
                 e = apr_bucket_eos_create(r->connection->bucket_alloc);
                 APR_BRIGADE_INSERT_TAIL(output_brigade, e);
-                if (ap_pass_brigade(r->output_filters, output_brigade) != APR_SUCCESS) {
+                if (ap_pass_brigade(r->output_filters,
+                                    output_brigade) != APR_SUCCESS) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                                   "proxy: error processing body");
                     isok = 0;
@@ -291,6 +368,19 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                 isok = 0;
                 break;
         }
+
+        /*
+         * If connection has been aborted by client: Stop working.
+         * Nevertheless, we regard our operation so far as a success:
+         * So do not set isok to 0 and set result to CMD_AJP13_END_RESPONSE
+         * But: Close this connection to the backend.
+         */
+        if (r->connection->aborted) {
+            conn->close++;
+            result = CMD_AJP13_END_RESPONSE;
+            break;
+        }
+
         if (!isok)
             break;
 
@@ -310,14 +400,11 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     }
     apr_brigade_destroy(input_brigade);
 
-    apr_brigade_length(output_brigade, 0, &bb_len);
-    if (bb_len != -1)
-        conn->worker->s->read += bb_len;
-
-    if (!isok)
-        apr_brigade_destroy(output_brigade);
+    apr_brigade_destroy(output_brigade);
 
     if (status != APR_SUCCESS) {
+        /* We had a failure: Close connection to backend */
+        conn->close++;
         ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
                      "proxy: send body failed to %pI (%s)",
                      conn->worker->cp->addr,
@@ -340,6 +427,8 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                  conn->worker->cp->addr,
                  conn->worker->hostname);
 
+    /* We had a failure: Close connection to backend */
+    conn->close++;
     return HTTP_SERVICE_UNAVAILABLE;
 }
 
