@@ -5,9 +5,6 @@ Changes with Apache 2.3.0
   *) mod_proxy_ajp: Do not spool the entire response from AJP backend before
      sending it up the filter chain. PR37100.  [Ruediger Pluem]
 
-  *) core: AddOutputFilterByType is ignored for proxied requests. PR31226.
-     [Joe Orton, Ruediger Pluem]
-
   *) Preserve the Content-Length header for a proxied HEAD request.
      PR 18757 [Greg Ames]
 
@@ -26,6 +23,9 @@ Changes with Apache 2.3.0
      [Martin Kraemer, David Reid]
 
 Changes with Apache 2.1.9
+
+  *) core: AddOutputFilterByType is ignored for proxied requests. PR31226.
+     [Joe Orton, Ruediger Pluem]
 
   *) mod_proxy_http: Prevent data corruption of POST request bodies when
      client accesses proxied resources with SSL. PR37145.
