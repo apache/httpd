@@ -891,7 +891,7 @@ static void *listener_thread(apr_thread_t * thd, void *dummy)
     /* Create the main pollset */
     rc = apr_pollset_create(&event_pollset,
                             ap_threads_per_child,
-                            tpool, APR_POLLSET_THREADSAFE);
+                            tpool, APR_POLLSET_THREADSAFE | APR_POLLSET_NOCOPY);
     if (rc != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rc, ap_server_conf,
                      "apr_pollset_create with Thread Safety failed. "
@@ -901,19 +901,19 @@ static void *listener_thread(apr_thread_t * thd, void *dummy)
     }
 
     for (lr = ap_listeners; lr != NULL; lr = lr->next) {
-        apr_pollfd_t pfd = { 0 };
+        apr_pollfd_t *pfd = apr_palloc(tpool, sizeof(*pfd));
         pt = apr_pcalloc(tpool, sizeof(*pt));
-        pfd.desc_type = APR_POLL_SOCKET;
-        pfd.desc.s = lr->sd;
-        pfd.reqevents = APR_POLLIN;
+        pfd->desc_type = APR_POLL_SOCKET;
+        pfd->desc.s = lr->sd;
+        pfd->reqevents = APR_POLLIN;
 
         pt->type = PT_ACCEPT;
         pt->baton = lr;
 
-        pfd.client_data = pt;
+        pfd->client_data = pt;
 
-        apr_socket_opt_set(pfd.desc.s, APR_SO_NONBLOCK, 1);
-        apr_pollset_add(event_pollset, &pfd);
+        apr_socket_opt_set(pfd->desc.s, APR_SO_NONBLOCK, 1);
+        apr_pollset_add(event_pollset, pfd);
     }
 
     /* Unblock the signal used to wake this thread up, and set a handler for
@@ -2201,7 +2201,7 @@ static int worker_pre_config(apr_pool_t * pconf, apr_pool_t * plog,
     if (restart_num++ == 1) {
         is_graceful = 0;
         rv = apr_pollset_create(&event_pollset, 1, plog,
-                                APR_POLLSET_THREADSAFE);
+                                APR_POLLSET_THREADSAFE | APR_POLLSET_NOCOPY);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
                          "Couldn't create a Thread Safe Pollset. "
