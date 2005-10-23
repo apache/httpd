@@ -58,7 +58,6 @@
 #include "mod_so.h" /* for ap_find_loaded_module_symbol */
 
 #define AP_MIN_SENDFILE_BYTES           (256)
-// #define APR_HAS_SENDFILE 0
 
 /**
  * Remove all zero length buckets from the brigade.
