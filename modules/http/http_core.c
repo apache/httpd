@@ -135,10 +135,12 @@ static int ap_process_http_async_connection(conn_rec *c)
             else if (!c->data_in_input_filters) {
                 cs->state = CONN_STATE_CHECK_REQUEST_LINE_READABLE;
             }
-
-            /* else we are pipelining.  Stay in READ_REQUEST_LINE state
-             *  and stay in the loop
-             */
+            else {
+                /* else we are pipelining.  Stay in READ_REQUEST_LINE state
+                 *  and stay in the loop
+                 */
+                cs->state = CONN_STATE_READ_REQUEST_LINE;
+            }
 
             apr_pool_destroy(r->pool);
         }
@@ -153,6 +155,7 @@ static int ap_process_http_async_connection(conn_rec *c)
 static int ap_process_http_connection(conn_rec *c)
 {
     request_rec *r;
+    conn_state_t *cs = c->cs;
     apr_socket_t *csd = NULL;
 
     /*
@@ -167,8 +170,10 @@ static int ap_process_http_connection(conn_rec *c)
         /* process the request if it was read without error */
  
         ap_update_child_status(c->sbh, SERVER_BUSY_WRITE, r);
-        if (r->status == HTTP_OK)
+        if (r->status == HTTP_OK) {
+            cs->state = CONN_STATE_HANDLER;
             ap_process_request(r);
+        }
  
         if (ap_extended_status)
             ap_increment_counts(c->sbh, r);
