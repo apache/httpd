@@ -1066,6 +1066,8 @@ struct conn_rec {
     conn_state_t *cs;
     /** Is there data pending in the input filters? */ 
     int data_in_input_filters;
+    /** Is there data pending in the output filters? */
+    int data_in_output_filters;
 };
 
 /** 
@@ -1198,11 +1200,9 @@ struct server_rec {
 };
 
 typedef struct core_output_filter_ctx {
-    apr_bucket_brigade *b;
-    /** subpool of c->pool used for resources 
-     * which may outlive the request
-     */
-    apr_pool_t *deferred_write_pool;
+    apr_bucket_brigade *buffered_bb;
+    apr_size_t bytes_in;
+    apr_size_t bytes_written;
 } core_output_filter_ctx_t;
  
 typedef struct core_filter_ctx {
