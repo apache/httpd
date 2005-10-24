@@ -315,7 +315,7 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
     $BNc$($P<!$NNc$N$h$&$K$G$9!#(B</p>
 
     <example>
-       Listen [fe80::a00:20ff:fea7:ccea]:80
+       Listen [2001:db8::a00:20ff:fea7:ccea]:80
     </example>
 
     <p><var>protocol</var> $B%*%W%7%g%s0z?t$ODL>o$N@_Dj$G$OI,MW$"$j$^$;$s!#(B

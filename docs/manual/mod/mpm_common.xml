@@ -329,7 +329,7 @@ The <var>protocol</var> argument was added in 2.1.5</compatibility>
     following example:</p>
 
     <example>
-      Listen [fe80::a00:20ff:fea7:ccea]:80
+      Listen [2001:db8::a00:20ff:fea7:ccea]:80
     </example>
 
     <p>The optional <var>protocol</var> argument is not required for most 
