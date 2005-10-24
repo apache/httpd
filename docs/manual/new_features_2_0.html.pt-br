@@ -82,7 +82,7 @@
       Apache Portable Runtime, o Apache monitora por padrão
       as interfaces IPv6. Em adição as diretrizes  <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>, <code class="directive"><a href="./mod/core.html#namevirtualhost">NameVirtualHost</a></code> e <code class="directive"><a href="./mod/core.html#virtualhost">VirtualHost</a></code>, suportam correntes (strings) de
       endereços numéricos do tipo IPv6. (ex. "<code>Listen
-      [fe80::1]:8080</code>").</dd>
+      [2001:db8::1]:8080</code>").</dd>
 
       <dt>Filtrando</dt>
 
