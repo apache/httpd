@@ -2166,7 +2166,7 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
     <p>IPV6 のアドレスは次の例のように角括弧で囲む必要があります:</p>
  
     <div class="example"><p><code>
-      NameVirtualHost [fe80::a00:20ff:fea7:ccea]:8080
+      NameVirtualHost [2001:db8::a00:20ff:fea7:ccea]:8080
     </code></p></div>
 
     <p>すべてのインタフェースへのリクエストを受け取るようにするためには、
@@ -3103,7 +3103,7 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
     角括弧で括って指定する必要があります。次は IPv6 の例です:</p>
 
     <div class="example"><p><code>
-      &lt;VirtualHost [fe80::a00:20ff:fea7:ccea]&gt;<br />
+      &lt;VirtualHost [2001:db8::a00:20ff:fea7:ccea]&gt;<br />
       <span class="indent">
         ServerAdmin webmaster@host.example.com<br />
         DocumentRoot /www/docs/host.example.com<br />

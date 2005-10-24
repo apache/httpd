@@ -88,7 +88,7 @@
       Runtime-Bibliothek IPv6 unterstützt, bekommt Apache
       standarmäßig IPv6 Listening Sockets. Zusätzlich
       unterstützen die Konfigurationsanweisungen <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>, <code class="directive"><a href="./mod/core.html#namevirtualhost">NameVirtualHost</a></code> und <code class="directive"><a href="./mod/core.html#virtualhost">VirtualHost</a></code> numerische IPv6-Adressangaben
-      (z.B., "<code>Listen [fe80::1]:8080</code>").</dd>
+      (z.B., "<code>Listen [2001:db8::1]:8080</code>").</dd>
 
       <dt><strong>Filterung</strong></dt>
 

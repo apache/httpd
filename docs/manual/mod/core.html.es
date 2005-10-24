@@ -2323,7 +2323,7 @@ persistente</td></tr>
     muestra en el siguiente ejemplo:</p>
 
     <div class="example"><p><code>
-      NameVirtualHost [fe80::a00:20ff:fea7:ccea]:8080
+      NameVirtualHost [2001:db8::a00:20ff:fea7:ccea]:8080
     </code></p></div>
 
     <p>Para recibir peticiones en todas las interfaces de red, puede
@@ -3341,7 +3341,7 @@ de host específico o dirección IP</td></tr>
     así. Un ejemplo de dirección IPv6 se mustra aquí abajo:</p>
 
     <div class="example"><p><code>
-      &lt;VirtualHost [fe80::a00:20ff:fea7:ccea]&gt;<br />
+      &lt;VirtualHost [2001:db8::a00:20ff:fea7:ccea]&gt;<br />
       <span class="indent">
         ServerAdmin webmaster@host.example.com<br />
         DocumentRoot /www/docs/host.example.com<br />

@@ -287,7 +287,7 @@ listens to</td></tr>
     following example:</p>
 
     <div class="example"><p><code>
-      Listen [fe80::a00:20ff:fea7:ccea]:80
+      Listen [2001:db8::a00:20ff:fea7:ccea]:80
     </code></p></div>
 
     <div class="note"><h3>Error condition</h3>

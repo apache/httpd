@@ -94,7 +94,7 @@ versión 1.3 a la 2.0</a></li></ul></div>
       Portable Runtime, Apache soporta IPv6 listening sockets por
       defecto. Además, las directivas <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>, <code class="directive"><a href="./mod/core.html#namevirtualhost">NameVirtualHost</a></code>, y <code class="directive"><a href="./mod/core.html#virtualhost">VirtualHost</a></code> soportan direcciones IPv6
       numéricas (por ejemplo, "<code>Listen
-      [fe80::1]:8080</code>").</dd>
+      [2001:db8::1]:8080</code>").</dd>
 
       <dt>Filtros</dt>
 

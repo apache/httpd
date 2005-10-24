@@ -164,8 +164,8 @@ server</td></tr>
     below:</p>
 
     <div class="example"><p><code>
-       Allow from fe80::a00:20ff:fea7:ccea<br />
-       Allow from fe80::a00:20ff:fea7:ccea/10
+       Allow from 2001:db8::a00:20ff:fea7:ccea<br />
+       Allow from 2001:db8::a00:20ff:fea7:ccea/10
     </code></p></div>
 
     <p>The third format of the arguments to the

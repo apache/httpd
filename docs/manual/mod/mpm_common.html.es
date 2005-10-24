@@ -315,7 +315,7 @@ peticiones</td></tr>
     el siguiente ejemplo:</p>
 
     <div class="example"><p><code>
-      Listen [fe80::a00:20ff:fea7:ccea]:80
+      Listen [2001:db8::a00:20ff:fea7:ccea]:80
     </code></p></div>
 
     <div class="note"><h3>Condición de error</h3> Varias directivas
