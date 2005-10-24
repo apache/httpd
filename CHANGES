@@ -2,6 +2,8 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) Asynchronous write completion for the Event MPM.  [Brian Pane]
+
   *) Added an End-Of-Request bucket type.  The logging of a request and
      the freeing of its pool are now done when the EOR bucket is destroyed.
      This has the effect of delaying the logging until right after the last
