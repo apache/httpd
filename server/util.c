@@ -1659,12 +1659,13 @@ AP_DECLARE(char *) ap_construct_server(apr_pool_t *p, const char *hostname,
  */
 static const char c2x_table[] = "0123456789abcdef";
 
-static APR_INLINE unsigned char *c2x(unsigned what, unsigned char *where)
+static APR_INLINE unsigned char *c2x(unsigned what, unsigned char prefix,
+                                     unsigned char *where)
 {
 #if APR_CHARSET_EBCDIC
     what = apr_xlate_conv_byte(ap_hdrs_to_ascii, (unsigned char)what);
 #endif /*APR_CHARSET_EBCDIC*/
-    *where++ = '%';
+    *where++ = prefix;
     *where++ = c2x_table[what >> 4];
     *where++ = c2x_table[what & 0xf];
     return where;
@@ -1694,7 +1695,7 @@ AP_DECLARE(char *) ap_escape_path_segment(apr_pool_t *p, const char *segment)
 
     while ((c = *s)) {
         if (TEST_CHAR(c, T_ESCAPE_PATH_SEGMENT)) {
-            d = c2x(c, d);
+            d = c2x(c, '%', d);
         }
         else {
             *d++ = c;
@@ -1723,7 +1724,7 @@ AP_DECLARE(char *) ap_os_escape_path(apr_pool_t *p, const char *path, int partia
     }
     while ((c = *s)) {
         if (TEST_CHAR(c, T_OS_ESCAPE_PATH)) {
-            d = c2x(c, d);
+            d = c2x(c, '%', d);
         }
         else {
             *d++ = c;
@@ -1810,8 +1811,7 @@ AP_DECLARE(char *) ap_escape_logitem(apr_pool_t *p, const char *str)
                 *d++ = *s;
                 break;
             default:
-                c2x(*s, d);
-                *d = 'x';
+                c2x(*s, 'x', d);
                 d += 3;
             }
         }
@@ -1874,8 +1874,7 @@ AP_DECLARE(apr_size_t) ap_escape_errorlog_item(char *dest, const char *source,
                     ep = --d; /* break the for loop as well */
                     break;
                 }
-                c2x(*s, d);
-                *d = 'x';
+                c2x(*s, 'x', d);
                 d += 3;
             }
         }
