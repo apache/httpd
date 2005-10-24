@@ -150,8 +150,8 @@
     있다:</p>
 
     <div class="example"><p><code>
-       Allow from fe80::a00:20ff:fea7:ccea<br />
-       Allow from fe80::a00:20ff:fea7:ccea/10
+       Allow from 2001:db8::a00:20ff:fea7:ccea<br />
+       Allow from 2001:db8::a00:20ff:fea7:ccea/10
     </code></p></div>
 
     <p><code class="directive">Allow</code> 지시어 아규먼트의 세번째
