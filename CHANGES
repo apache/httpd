@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) Rewrite of logresolve support utility: IPv6 addresses are now supported
+     and the format of statistical output has changed. [Colm MacCarthaigh]
+
   *) Rewrite of ap_coreoutput_filter to do nonblocking writes  [Brian Pane]
 
   *) Added new connection states for handler and write completion
