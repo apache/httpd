@@ -52,6 +52,12 @@
           has been introduced to cleanup <code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code>
           setups.</dd>
 
+      <dt>Configuration</dt>
+      <dd>The default configuration layout has been simplified and
+          modularised. Configuration snippets which assist with enabling 
+          commonly used features are now bundled and easily included in the 
+          main server configuration.</dd>
+
       <dt>Graceful stop</dt>
       <dd>The <code class="module"><a href="./mod/prefork.html">prefork</a></code>, <code class="module"><a href="./mod/worker.html">worker</a></code> and 
           <code class="module"><a href="./mod/event.html">event</a></code>  MPMs now allow <code class="program"><a href="./programs/httpd.html">httpd</a></code> 
