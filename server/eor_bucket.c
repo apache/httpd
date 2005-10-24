@@ -16,6 +16,7 @@
 
 #include "httpd.h"
 #include "http_request.h"
+#include "http_protocol.h"
 
 static apr_status_t eor_bucket_read(apr_bucket *b, const char **str, 
                                     apr_size_t *len, apr_read_type_e block)
