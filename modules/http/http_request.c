@@ -191,25 +191,24 @@ AP_DECLARE(void) ap_die(int type, request_rec *r)
     ap_send_error_response(r_1st_err, recursive_error);
 }
 
-static void check_pipeline_flush(request_rec *r)
+static void check_pipeline_flush(conn_rec *c)
 {
     apr_bucket *e;
     apr_bucket_brigade *bb;
-    conn_rec *c = r->connection;
+
     /* ### if would be nice if we could PEEK without a brigade. that would
        ### allow us to defer creation of the brigade to when we actually
        ### need to send a FLUSH. */
-    bb = apr_brigade_create(r->pool, c->bucket_alloc);
+    bb = apr_brigade_create(c->pool, c->bucket_alloc);
 
     /* Flush the filter contents if:
      *
      *   1) the connection will be closed
      *   2) there isn't a request ready to be read
      */
-    /* ### shouldn't this read from the connection input filters? */
     /* ### is zero correct? that means "read one line" */
-    if (r->connection->keepalive != AP_CONN_CLOSE) {
-        if (ap_get_brigade(r->input_filters, bb, AP_MODE_EATCRLF, 
+    if (c->keepalive != AP_CONN_CLOSE) {
+        if (ap_get_brigade(c->input_filters, bb, AP_MODE_EATCRLF, 
                        APR_NONBLOCK_READ, 0) != APR_SUCCESS) {
             c->data_in_input_filters = 0;  /* we got APR_EOF or an error */
         }
@@ -228,12 +227,16 @@ static void check_pipeline_flush(request_rec *r)
          * if something hasn't been sent to the network yet.
          */
         APR_BRIGADE_INSERT_HEAD(bb, e);
-        ap_pass_brigade(r->connection->output_filters, bb);
+        ap_pass_brigade(c->output_filters, bb);
 }
+
 
 void ap_process_request(request_rec *r)
 {
     int access_status;
+    apr_bucket_brigade *bb;
+    apr_bucket *b;
+    conn_rec *c = r->connection;
 
     /* Give quick handlers a shot at serving the request on the fast
      * path, bypassing all of the other Apache hooks.
@@ -270,19 +273,25 @@ void ap_process_request(request_rec *r)
     else {
         ap_die(access_status, r);
     }
-    
-    /*
-     * We want to flush the last packet if this isn't a pipelining connection
-     * *before* we start into logging.  Suppose that the logging causes a DNS
-     * lookup to occur, which may have a high latency.  If we hold off on
-     * this packet, then it'll appear like the link is stalled when really
-     * it's the application that's stalled.
+
+    /* Send an EOR bucket through the output filter chain.  When
+     * this bucket is destroyed, the request will be logged and
+     * its pool will be freed
      */
-    check_pipeline_flush(r);
-    ap_update_child_status(r->connection->sbh, SERVER_BUSY_LOG, r);
-    ap_run_log_transaction(r);
+    bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
+    b = ap_bucket_eor_create(r->connection->bucket_alloc, r);
+    APR_BRIGADE_INSERT_HEAD(bb, b);
+    ap_pass_brigade(r->connection->output_filters, bb);
+
+    /* From here onward, it is no longer safe to reference r
+     * or r->pool, because r->pool may have been destroyed
+     * already by the EOR bucket's cleanup function.
+     */
+
+    c->cs->state = CONN_STATE_WRITE_COMPLETION;
+    check_pipeline_flush(c);
     if (ap_extended_status)
-        ap_time_process_request(r->connection->sbh, STOP_PREQUEST);
+        ap_time_process_request(c->sbh, STOP_PREQUEST);
 }
 
 static apr_table_t *rename_original_env(apr_pool_t *p, apr_table_t *t)
