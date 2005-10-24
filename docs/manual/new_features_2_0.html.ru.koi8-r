@@ -91,7 +91,7 @@
       базовой библиотекой Apache Portable Runtime, Apache
       по умолчанию получает возможность слушать IPv6 сокеты
       (sockets). В добавок к этому директивы <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>, <code class="directive"><a href="./mod/core.html#namevirtualhost">NameVirtualHost</a></code> и <code class="directive"><a href="./mod/core.html#virtualhost">VirtualHost</a></code> могут работать с адресными строками,
-      заданными в формате IPv6 (т.е. например "Listen [fe80::1]:8080").</dd>
+      заданными в формате IPv6 (т.е. например "Listen [2001:db8::1]:8080").</dd>
 
       <dt>Использование фильтров</dt>
 
