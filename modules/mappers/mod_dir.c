@@ -151,10 +151,6 @@ static int fixup_dir(request_rec *r)
         return HTTP_MOVED_PERMANENTLY;
     }
 
-    if (strcmp(r->handler, DIR_MAGIC_TYPE)) {
-        return DECLINED;
-    }
-
     if (d->index_names) {
         names_ptr = (char **)d->index_names->elts;
         num_names = d->index_names->nelts;
