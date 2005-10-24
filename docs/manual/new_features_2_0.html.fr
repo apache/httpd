@@ -87,7 +87,7 @@
             de connexions IPv6. Les directives <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>, 
             <code class="directive"><a href="./mod/core.html#namevirtualhost">NameVirtualHost</a></code> et 
             <code class="directive"><a href="./mod/core.html#virtualhost">VirtualHost</a></code> supportent également 
-            les adresses IPv6 (comme par exemple, dans "<code>Listen[fe80::1]:8080</code>").</dd>
+            les adresses IPv6 (comme par exemple, dans "<code>Listen[2001:db8::1]:8080</code>").</dd>
 
             <dt>Filtering</dt>
 
