@@ -81,7 +81,7 @@
       >NameVirtualHost</directive> e <directive module="core"
       >VirtualHost</directive>, suportam correntes (strings) de
       endere&#231;os num&#233;ricos do tipo IPv6. (ex. "<code>Listen
-      [fe80::1]:8080</code>").</dd>
+      [2001:db8::1]:8080</code>").</dd>
 
       <dt>Filtrando</dt>
 

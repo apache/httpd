@@ -83,7 +83,7 @@
       >NameVirtualHost</directive>, and <directive module="core"
       >VirtualHost</directive> directives support
       IPv6 numeric address strings (e.g., "<code>Listen
-      [fe80::1]:8080</code>").</dd>
+      [2001:db8::1]:8080</code>").</dd>
 
       <dt>Filtering</dt>
 
