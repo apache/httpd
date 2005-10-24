@@ -2144,7 +2144,7 @@ hosting</description>
     in the following example:</p>
 
     <example>
-      NameVirtualHost [fe80::a00:20ff:fea7:ccea]:8080
+      NameVirtualHost [2001:db8::a00:20ff:fea7:ccea]:8080
     </example>
 
     <p>To receive requests on all interfaces, you can use an argument of
@@ -3119,7 +3119,7 @@ hostname or IP address</description>
     IPv6 example is shown below:</p>
 
     <example>
-      &lt;VirtualHost [fe80::a00:20ff:fea7:ccea]&gt;<br />
+      &lt;VirtualHost [2001:db8::a00:20ff:fea7:ccea]&gt;<br />
       <indent>
         ServerAdmin webmaster@host.example.com<br />
         DocumentRoot /www/docs/host.example.com<br />

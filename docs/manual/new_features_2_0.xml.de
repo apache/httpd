@@ -86,7 +86,7 @@
       module="mpm_common">Listen</directive>, <directive
       module="core">NameVirtualHost</directive> und <directive
       module="core">VirtualHost</directive> numerische IPv6-Adressangaben
-      (z.B., "<code>Listen [fe80::1]:8080</code>").</dd>
+      (z.B., "<code>Listen [2001:db8::1]:8080</code>").</dd>
 
       <dt><strong>Filterung</strong></dt>
 

@@ -2278,7 +2278,7 @@ virtueller Hosts</description>
     eckige Klammern eingeschlossen werden:</p>
 
     <example>
-      NameVirtualHost [fe80::a00:20ff:fea7:ccea]:8080
+      NameVirtualHost [2001:db8::a00:20ff:fea7:ccea]:8080
     </example>
 
     <p>Um an allen Schnittstellen Anfragen zu empfangen, k&ouml;nnen Sie
@@ -3275,7 +3275,7 @@ IP-Adressen angewendet werden</description>
     IPv6-Beispiel:</p>
 
     <example>
-      &lt;VirtualHost [fe80::a00:20ff:fea7:ccea]&gt;<br />
+      &lt;VirtualHost [2001:db8::a00:20ff:fea7:ccea]&gt;<br />
       <indent>
         ServerAdmin webmaster@host.example.com<br />
         DocumentRoot /www/docs/host.example.com<br />

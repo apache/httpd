@@ -91,7 +91,7 @@ versi&#243;n 1.3 a la 2.0</a></seealso>
       >NameVirtualHost</directive>, y <directive module="core"
       >VirtualHost</directive> soportan direcciones IPv6
       num&#233;ricas (por ejemplo, "<code>Listen
-      [fe80::1]:8080</code>").</dd>
+      [2001:db8::1]:8080</code>").</dd>
 
       <dt>Filtros</dt>
 

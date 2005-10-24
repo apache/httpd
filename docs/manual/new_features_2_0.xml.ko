@@ -75,7 +75,7 @@
       <directive module="core">NameVirtualHost</directive>,
       <directive module="core">VirtualHost</directive> 지시어가
       IPv6 숫자 주소를 지원한다. (예,
-      "<code>Listen [fe80::1]:8080</code>").</dd>
+      "<code>Listen [2001:db8::1]:8080</code>").</dd>
 
       <dt>필터링</dt>
 

@@ -92,7 +92,7 @@
     <p>Las direcciones IPv6 deben escribirse entre corchetes, como en el siguiente ejemplo:</p>
 
     <example>
-      Listen [fe80::a00:20ff:fea7:ccea]:80
+      Listen [2001:db8::a00:20ff:fea7:ccea]:80
     </example>
   </section>
 

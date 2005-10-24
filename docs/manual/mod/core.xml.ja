@@ -2118,7 +2118,7 @@ module="core">Directory</directive></seealso>
     <p>IPV6 のアドレスは次の例のように角括弧で囲む必要があります:</p>
  
     <example>
-      NameVirtualHost [fe80::a00:20ff:fea7:ccea]:8080
+      NameVirtualHost [2001:db8::a00:20ff:fea7:ccea]:8080
     </example>
 
     <p>すべてのインタフェースへのリクエストを受け取るようにするためには、
@@ -3036,7 +3036,7 @@ module="core">Directory</directive></seealso>
     角括弧で括って指定する必要があります。次は IPv6 の例です:</p>
 
     <example>
-      &lt;VirtualHost [fe80::a00:20ff:fea7:ccea]&gt;<br />
+      &lt;VirtualHost [2001:db8::a00:20ff:fea7:ccea]&gt;<br />
       <indent>
         ServerAdmin webmaster@host.example.com<br />
         DocumentRoot /www/docs/host.example.com<br />

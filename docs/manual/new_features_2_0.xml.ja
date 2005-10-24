@@ -84,7 +84,7 @@
       <directive module="core">VirtualHost</directive>
       の各ディレクティブが IPv6 のアドレスを
       サポートするようになりました (例えば、
-      "<code>Listen [fe80::1]:8080</code>")。</dd>
+      "<code>Listen [2001:db8::1]:8080</code>")。</dd>
 
       <dt>フィルタ</dt>
 

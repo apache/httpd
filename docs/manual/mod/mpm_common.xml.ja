@@ -323,7 +323,7 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
     $BNc$($P<!$NNc$N$h$&$K$G$9!#(B</p>
 
     <example>
-       Listen [fe80::a00:20ff:fea7:ccea]:80
+       Listen [2001:db8::a00:20ff:fea7:ccea]:80
     </example>
 
     <note><title>$B%(%i!<>r7o(B</title>

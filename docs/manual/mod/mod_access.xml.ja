@@ -158,8 +158,8 @@
     <p>IPv6 アドレスと IPv6 のサブネットは以下のように指定できます:</p>
 
     <example>
-       Allow from fe80::a00:20ff:fea7:ccea<br />
-       Allow from fe80::a00:20ff:fea7:ccea/10
+       Allow from 2001:db8::a00:20ff:fea7:ccea<br />
+       Allow from 2001:db8::a00:20ff:fea7:ccea/10
     </example>
 
     <p><directive>Allow</directive> ディレクティブの引数の三つ目の形式は、

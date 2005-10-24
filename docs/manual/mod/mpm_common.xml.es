@@ -346,7 +346,7 @@ el ID del proceso demonio de escucha (daemon)</description>
     el siguiente ejemplo:</p>
 
     <example>
-      Listen [fe80::a00:20ff:fea7:ccea]:80
+      Listen [2001:db8::a00:20ff:fea7:ccea]:80
     </example>
 
     <note><title>Condici&#243;n de error</title> Varias directivas

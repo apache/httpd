@@ -95,7 +95,7 @@
       module="mpm_common">Listen</directive>, <directive module="core"
       >NameVirtualHost</directive> и <directive module="core"
       >VirtualHost</directive> могут работать с адресными строками,
-      заданными в формате IPv6 (т.е. например "Listen [fe80::1]:8080").</dd>
+      заданными в формате IPv6 (т.е. например "Listen [2001:db8::1]:8080").</dd>
 
       <dt>Использование фильтров</dt>
 
