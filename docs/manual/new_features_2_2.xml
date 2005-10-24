@@ -48,6 +48,12 @@
           has been introduced to cleanup <module>mod_disk_cache</module>
           setups.</dd>
 
+      <dt>Configuration</dt>
+      <dd>The default configuration layout has been simplified and
+          modularised. Configuration snippets which assist with enabling 
+          commonly used features are now bundled and easily included in the 
+          main server configuration.</dd>
+
       <dt>Graceful stop</dt>
       <dd>The <module>prefork</module>, <module>worker</module> and 
           <module>event</module>  MPMs now allow <program>httpd</program> 
