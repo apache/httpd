@@ -286,7 +286,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           http://svn.apache.org/viewcvs.cgi?rev=327590&view=rev
        Backport version for 2.0.x of patch:
           http://issues.apache.org/bugzilla/attachment.cgi?id=16744
-       +1: rpluem
+       +1: rpluem, trawick
 
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
