@@ -126,25 +126,25 @@ static void usage(void)
  
 int main(int argc, const char * const argv[])
 {
-    apr_file_t         * outfile;
-    apr_file_t         * infile;
-    apr_file_t         * statsfile;
-    apr_sockaddr_t     * ip;
-    apr_sockaddr_t     * ipdouble;
-    apr_getopt_t       * o;
-    apr_pool_t         * pool;
-    apr_status_t         status;
-    const char         * arg;
-    char                 opt;
-    char               * stats = NULL;
-    char               * space;
-    char               * hostname;
+    apr_file_t * outfile;
+    apr_file_t * infile;
+    apr_file_t * statsfile;
+    apr_sockaddr_t * ip;
+    apr_sockaddr_t * ipdouble;
+    apr_getopt_t * o;
+    apr_pool_t * pool;
+    apr_status_t status;
+    const char * arg;
+    char opt;
+    char * stats = NULL;
+    char * space;
+    char * hostname;
 #if APR_MAJOR_VERSION > 1 || (APR_MAJOR_VERSION == 1 && APR_MINOR_VERSION >= 3) 
-    char               * inbuffer;
-    char               * outbuffer;
+    char * inbuffer;
+    char * outbuffer;
 #endif
-    char                 line[2048];
-    int                  doublelookups = 0;
+    char line[2048];
+    int doublelookups = 0;
     
     if (apr_app_initialize(&argc, &argv, NULL) != APR_SUCCESS) {
         return 1;
@@ -204,7 +204,7 @@ int main(int argc, const char * const argv[])
     
     cache = apr_hash_make(pool);
 
-    while(apr_file_gets(line, 2048, infile) == APR_SUCCESS) {
+    while (apr_file_gets(line, 2048, infile) == APR_SUCCESS) {
         if (line[0] == '\0') {
             continue;
         }
@@ -220,13 +220,12 @@ int main(int argc, const char * const argv[])
         }
         
         /* Terminate the line at the next space */
-        if((space = strchr(line, ' ')) != NULL) {
+        if ((space = strchr(line, ' ')) != NULL) {
             *space = '\0';
         }
 
         /* See if we have it in our cache */
-        hostname = (char *) apr_hash_get(cache, (const void *)line, 
-                                         strlen(line));
+        hostname = (char *) apr_hash_get(cache, line, APR_HASH_KEY_STRING);
         if (hostname) {
             apr_file_printf(outfile, "%s %s", hostname, space + 1);
 	        cachehits++;
@@ -238,7 +237,7 @@ int main(int argc, const char * const argv[])
         if (status != APR_SUCCESS) {
             /* Not an IP address */
 	        withname++;
-           *space = ' ';
+            *space = ' ';
             apr_file_puts(line, outfile);
             continue;
         }
@@ -264,8 +263,8 @@ int main(int argc, const char * const argv[])
 
             /* Add to cache */
             *space = '\0';
-            apr_hash_set(cache, (const void *) line, strlen(line), 
-                         (const void *) apr_pstrdup(pool, line));
+            apr_hash_set(cache, line, APR_HASH_KEY_STRING, 
+                         apr_pstrdup(pool, line));
             continue;
         }
 
@@ -285,8 +284,8 @@ int main(int argc, const char * const argv[])
 
                 /* Add to cache */
                 *space = '\0';
-                apr_hash_set(cache, (const void *) line, strlen(line), 
-                             (const void *) apr_pstrdup(pool, line));
+                apr_hash_set(cache, line, APR_HASH_KEY_STRING, 
+                             apr_pstrdup(pool, line));
                 continue;
             }
         }
@@ -295,8 +294,8 @@ int main(int argc, const char * const argv[])
         apr_file_printf(outfile, "%s %s", hostname, space + 1);
 
         /* Store it in the cache */
-        apr_hash_set(cache, (const void *) line, strlen(line), 
-                     (const void *) apr_pstrdup(pool, hostname));
+        apr_hash_set(cache, line, APR_HASH_KEY_STRING, 
+                     apr_pstrdup(pool, hostname));
     }
 
     /* Flush any remaining output */
