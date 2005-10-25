@@ -40,6 +40,9 @@ Changes with Apache 2.3.0
 
 Changes with Apache 2.1.9
 
+  *) mod_proxy: Do not lowercase the entire worker name of a BalancerMember
+     since this breaks case sensitive URI's. PR36906.  [Ruediger Pluem]
+
   *) core: AddOutputFilterByType is ignored for proxied requests. PR31226.
      [Joe Orton, Ruediger Pluem]
 

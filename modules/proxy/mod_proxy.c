@@ -1435,7 +1435,6 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
         return "BalancerMember must define remote proxy server";
     
     ap_str_tolower(path);   /* lowercase scheme://hostname */
-    ap_str_tolower(name);   /* lowercase scheme://hostname */
 
     /* Try to find existing worker */
     worker = ap_proxy_get_worker(cmd->temp_pool, conf, name);
