@@ -1290,6 +1290,7 @@ PROXY_DECLARE(const char *) ap_proxy_add_worker(proxy_worker **worker,
     }
 
     ap_str_tolower(uri.hostname);
+    ap_str_tolower(uri.scheme);
     *worker = apr_array_push(conf->workers);
     memset(*worker, 0, sizeof(proxy_worker));
     (*worker)->name = apr_uri_unparse(p, &uri, APR_URI_UNP_REVEALPASSWORD);
