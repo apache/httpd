@@ -342,7 +342,7 @@
           <module>mod_dir</module>.</dd>
 
         <dt><code>--disable-env</code></dt>
-        <dd>Enable setting and clearing of environment variables, which is
+        <dd>Disable setting and clearing of environment variables, which is
           provided by <module>mod_env</module>.</dd>
 
         <!-- configure mentions enable-http, but disable-http would make much
@@ -384,7 +384,7 @@
           which is provided by <module>mod_setenvif</module>.</dd>
 
         <dt><code>--disable-status</code></dt>
-        <dd>Enable the process/thread monitoring, which is provided by
+        <dd>Disable the process/thread monitoring, which is provided by
           <module>mod_status</module>.</dd>
 
         <dt><code>--disable-userdir</code></dt>

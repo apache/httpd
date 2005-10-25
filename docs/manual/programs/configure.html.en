@@ -339,7 +339,7 @@
           <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code>.</dd>
 
         <dt><code>--disable-env</code></dt>
-        <dd>Enable setting and clearing of environment variables, which is
+        <dd>Disable setting and clearing of environment variables, which is
           provided by <code class="module"><a href="../mod/mod_env.html">mod_env</a></code>.</dd>
 
         
@@ -380,7 +380,7 @@
           which is provided by <code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code>.</dd>
 
         <dt><code>--disable-status</code></dt>
-        <dd>Enable the process/thread monitoring, which is provided by
+        <dd>Disable the process/thread monitoring, which is provided by
           <code class="module"><a href="../mod/mod_status.html">mod_status</a></code>.</dd>
 
         <dt><code>--disable-userdir</code></dt>
