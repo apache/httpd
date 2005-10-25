@@ -18,15 +18,8 @@ Changes with Apache 2.3.0
   *) Added new connection states for handler and write completion
      [Brian Pane]
 
-  *) mod_proxy_ajp: Do not spool the entire response from AJP backend before
-     sending it up the filter chain. PR37100.  [Ruediger Pluem]
-
   *) Preserve the Content-Length header for a proxied HEAD request.
      PR 18757 [Greg Ames]
-
-  *) mod_cache: Create new filters CACHE_OUT_SUBREQ / CACHE_SAVE_SUBREQ which
-     only differ by the type from CACHE_OUT / CACHE_SAVE to ensure that
-     subrequests to non local resources work again. [Ruediger Pluem]
 
   *) New module: mod_authn_dbd [Nick Kew]
 
@@ -39,6 +32,13 @@ Changes with Apache 2.3.0
      [Martin Kraemer, David Reid]
 
 Changes with Apache 2.1.9
+
+  *) mod_proxy_ajp: Do not spool the entire response from AJP backend before
+     sending it up the filter chain. PR37100.  [Ruediger Pluem]
+
+  *) mod_cache: Create new filters CACHE_OUT_SUBREQ / CACHE_SAVE_SUBREQ which
+     only differ by the type from CACHE_OUT / CACHE_SAVE to ensure that
+     subrequests to non local resources work again. [Ruediger Pluem]
 
   *) mod_proxy: Do not lowercase the entire worker name of a BalancerMember
      since this breaks case sensitive URI's. PR36906.  [Ruediger Pluem]
