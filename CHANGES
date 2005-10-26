@@ -1,6 +1,8 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.1.9
 
+  *) Add mod_authn_dbd (SQL-based  authentication) [Nick Kew]
+
   *) mod_proxy_ajp: Do not spool the entire response from AJP backend before
      sending it up the filter chain.  PR 37100.  [Ruediger Pluem]
 
