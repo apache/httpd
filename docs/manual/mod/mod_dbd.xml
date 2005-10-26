@@ -24,7 +24,7 @@
 
 <name>mod_dbd</name>
 <description>Manages SQL database connections</description>
-<status>Experimental</status>
+<status>Extension</status>
 <sourcefile>mod_dbd.c</sourcefile>
 <identifier>dbd_module</identifier>
 <compatibility>Version 2.1 and higher</compatibility>
