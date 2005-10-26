@@ -24,7 +24,7 @@
 
 <name>mod_filter</name>
 <description>Context-sensitive smart filter configuration module</description>
-<status>Experimental</status>
+<status>Base</status>
 <sourcefile>mod_filter.c</sourcefile>
 <identifier>filter_module</identifier>
 <compatibility>Version 2.1 and higher</compatibility>
@@ -207,13 +207,21 @@
     details of filter implementation, reducing the complexity required of
     content filter modules. This is work-in-progress; the
     <directive module="mod_filter">FilterProtocol</directive> implements
-    some of this functionality, but there are no API calls yet.</p>
+    some of this functionality for back-compatibility with Apache 2.0
+    modules.  For httpd 2.1 and up, the
+    <code>ap_register_output_filter_protocol</code> and
+    <code>ap_filter_protocol</code> API enables filter modules to
+    declare their own behaviour.</p>
 
     <p>At the same time, <module>mod_filter</module> should not interfere
     with a filter that wants to handle all aspects of the protocol.  By
     default (i.e. in the absence of any <directive module="mod_filter"
     >FilterProtocol</directive> directives), <module>mod_filter</module>
     will leave the headers untouched.</p>
+
+    <p>At the time of writing, this feature is largely untested,
+    as modules in common use are designed to work with 2.0.
+    Modules using it should test it carefully.</p>
 </section>
 
 <directivesynopsis>
