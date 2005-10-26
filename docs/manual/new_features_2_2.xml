@@ -43,16 +43,16 @@
 
       <dt>Caching</dt>
       <dd><module>mod_cache</module>, <module>mod_disk_cache</module>, and
-          <module>mod_mem_cache</module> have undergone a lot of changes
+          <module>mod_mem_cache</module> have undergone a lot of changes, and
           are now considered production-quality. <program>htcacheclean</program>
-          has been introduced to cleanup <module>mod_disk_cache</module>
+          has been introduced to clean up <module>mod_disk_cache</module>
           setups.</dd>
 
       <dt>Configuration</dt>
       <dd>The default configuration layout has been simplified and
-          modularised. Configuration snippets which assist with enabling 
-          commonly used features are now bundled and easily included in the 
-          main server configuration.</dd>
+          modularised. Configuration snippets which can be used to 
+          enable commonly-used features are now bundled with Apache, and 
+          can be easily added to the main server config.</dd>
 
       <dt>Graceful stop</dt>
       <dd>The <module>prefork</module>, <module>worker</module> and 
@@ -88,8 +88,8 @@
 
       <dt>Large File Support</dt>
 
-      <dd>httpd is now built with support for files larger than 2Gb on
-          modern 32-bit Unix systems.  Support for handling &gt;2Gb request
+      <dd>httpd is now built with support for files larger than 2GB on
+          modern 32-bit Unix systems.  Support for handling &gt;2GB request
           bodies has also been added.</dd>
 
       <dt>Event MPM</dt>
