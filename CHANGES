@@ -2,20 +2,20 @@
 Changes with Apache 2.1.9
 
   *) mod_proxy_ajp: Do not spool the entire response from AJP backend before
-     sending it up the filter chain. PR37100.  [Ruediger Pluem]
+     sending it up the filter chain.  PR 37100.  [Ruediger Pluem]
 
   *) mod_cache: Create new filters CACHE_OUT_SUBREQ / CACHE_SAVE_SUBREQ which
      only differ by the type from CACHE_OUT / CACHE_SAVE to ensure that
-     subrequests to non local resources work again. [Ruediger Pluem]
+     subrequests to non-local resources work again.  [Ruediger Pluem]
 
   *) mod_proxy: Do not lowercase the entire worker name of a BalancerMember
-     since this breaks case sensitive URI's. PR36906.  [Ruediger Pluem]
+     since this breaks case sensitive URI's.  PR 36906.  [Ruediger Pluem]
 
-  *) core: AddOutputFilterByType is ignored for proxied requests. PR31226.
+  *) core: AddOutputFilterByType is ignored for proxied requests. PR 31226.
      [Joe Orton, Ruediger Pluem]
 
   *) mod_proxy_http: Prevent data corruption of POST request bodies when
-     client accesses proxied resources with SSL. PR37145.
+     client accesses proxied resources with SSL.  PR 37145.
      [Ruediger Pluem, William Rowe]
 
   *) mod_ssl: Fix issue which could cause spurious warnings about use
@@ -25,7 +25,7 @@ Changes with Apache 2.1.9
      PR 36966.  [Joe Orton]
 
   *) mod_proxy_balancer: BalancerManager and proxies correctly handle
-     member workers with paths. PR36816. [Ruediger Pluem, Jim Jagielski]
+     member workers with paths.  PR 36816. [Ruediger Pluem, Jim Jagielski]
 
   *) mod_log_config: %{hextid}P will log the thread id in hex with APR
      versions 1.2.0 or higher.  [Jeff Trawick]
@@ -33,19 +33,18 @@ Changes with Apache 2.1.9
   *) httpd.exe/apachectl -V: display the DYNAMIC_MODULE_LIMIT setting, as
      in 1.3.  [Jeff Trawick]
 
-  *) Support dbd connection tied to conn_rec in mod_dbd [Nick Kew]
+  *) Support dbd connection tied to conn_rec in mod_dbd.  [Nick Kew]
 
-  *) Fix use of pools in mod_dbd [Brian J France, Nick Kew]
+  *) Fix use of pools in mod_dbd.  [Brian J France, Nick Kew]
 
-  *) Move mod_dbd to modules/database [Nick Kew]
-
-  *) Move mod_filter and mod_charset_lite to modules/filters [Nick Kew]
+  *) Promote modules from "experimental": mod_dbd, mod_filter, 
+     mod_charset_lite.  [Nick Kew]
 
   *) mod_proxy_ajp: mod_proxy_ajp sends empty SSL attributes for non SSL
-     connections. PR36883.
+     connections.  PR 36883.
      [William Barker <william.barker wilshire.com>, Ruediger Pluem]
 
-  *) Elimiated the NET_TIME filter, restructuring the timeout logic.
+  *) Eliminated the NET_TIME filter, restructuring the timeout logic.
      This provides a working mod_echo on all platforms, and ensures any
      custom protocol module is at least given an initial timeout value
      based on the <VirtualHost > context's Timeout directive.
@@ -59,14 +58,14 @@ Changes with Apache 2.1.9
      trigger POLL_ERR or POLL_HUP on a terminated connection.  PR 36951.
      [Jeff Trawick, Ruediger Pluem]
 
-  *) mod_proxy_balancer: mod_proxy_balancer does not handle sticky sessions
-     with tomcat correctly. PR36507. [Ruediger Pluem]
+  *) mod_proxy_balancer: Fix handling of sticky sessions with Tomcat.
+     PR 36507.  [Ruediger Pluem]
 
   *) SECURITY: CVE-2005-2970 (cve.mitre.org)
      worker MPM: Fix a memory leak which can occur after an aborted
      connection in some limited circumstances.  [Greg Ames]
 
-  *) Doxygen fixup [Neale Ranns <neale ranns.org>, Ian Holsman]
+  *) Doxygen fixups.  [Neale Ranns <neale ranns.org>, Ian Holsman]
 
   *) mod_cache/mod_dir: Correct a subrequest lookup bug which was preventing
      mod_dir from serving indexes correctly with mod_cache enabled. 
