@@ -197,6 +197,7 @@ FILES_nlm_objs = \
 	$(OBJDIR)/core.o \
 	$(OBJDIR)/core_filters.o \
 	$(OBJDIR)/eoc_bucket.o \
+	$(OBJDIR)/eor_bucket.o \
 	$(OBJDIR)/error_bucket.o \
 	$(OBJDIR)/http_core.o \
 	$(OBJDIR)/http_protocol.o \
