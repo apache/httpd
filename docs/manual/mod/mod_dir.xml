@@ -114,7 +114,7 @@ a directory</description>
 
     <p>Typically if a user requests a resource without a trailing slash, which
     points to a directory, <module>mod_dir</module> redirects him to the same
-    ressource, but <em>with</em> trailing slash for some good reasons:</p>
+    resource, but <em>with</em> trailing slash for some good reasons:</p>
 
     <ul>
     <li>The user is finally requesting the canonical URL of the resource</li>
