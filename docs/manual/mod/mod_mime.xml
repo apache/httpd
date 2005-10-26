@@ -114,7 +114,7 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
 
     <p><a href="#charset-lang">Languages</a> and <a href="#contentencoding"
     >content encodings</a> are treated accumulative, because one can assign
-    more than one language or encoding to a particular ressource. For example,
+    more than one language or encoding to a particular resource. For example,
     the file <code>welcome.html.en.de</code> will be delivered with
     <code>Content-Language: en, de</code> and <code>Content-Type:
     text/html</code>.</p>
