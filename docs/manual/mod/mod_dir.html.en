@@ -123,7 +123,7 @@ a directory</td></tr>
 
     <p>Typically if a user requests a resource without a trailing slash, which
     points to a directory, <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code> redirects him to the same
-    ressource, but <em>with</em> trailing slash for some good reasons:</p>
+    resource, but <em>with</em> trailing slash for some good reasons:</p>
 
     <ul>
     <li>The user is finally requesting the canonical URL of the resource</li>
