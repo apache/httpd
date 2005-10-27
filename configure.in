@@ -87,11 +87,6 @@ APR_INCLUDEDIR=`$apr_config --includedir`
 APR_VERSION=`$apr_config --version`
 APR_CONFIG="$APR_BINDIR/apr-`echo ${APR_VERSION} | sed 's,\..*,,'`-config"
 
-if test "${apr_found}" = "yes"; then
-  # Require APR 1.2.x otherwise fail
-  APACHE_CHECK_APxVER([apr], 1, 2)
-fi
-
 echo $ac_n "${nl}Configuring Apache Portable Runtime Utility library...${nl}"
 
 APR_FIND_APU("$srcdir/srclib/apr-util", "./srclib/apr-util", 1, 1)
@@ -117,9 +112,6 @@ if test "$apu_found" = "reconfig"; then
   dnl We must be the last to build and the first to be cleaned
   AP_BUILD_SRCLIB_DIRS="$AP_BUILD_SRCLIB_DIRS apr-util"
   AP_CLEAN_SRCLIB_DIRS="apr-util $AP_CLEAN_SRCLIB_DIRS"
-else
-  # Require APR-util 1.2.x otherwise fail
-  APACHE_CHECK_APxVER([apu], 1, 2)
 fi
 
 APR_ADDTO(LDFLAGS, `$apu_config --ldflags`)
@@ -322,6 +314,18 @@ dnl various OS checks that apparently set required flags
 AC_AIX
 AC_ISC_POSIX
 AC_MINIX
+
+# Ensure that satisfactory versions of apr and apr-util are 
+# found if external copies are configured.
+if test "${apr_found}" = "yes"; then
+  # Require APR 1.2.x otherwise fail
+  APACHE_CHECK_APxVER([apr], 1, 2)
+fi
+
+if test "${apu_found}" = "yes"; then
+  # Require APR-util 1.2.x otherwise fail
+  APACHE_CHECK_APxVER([apu], 1, 2)
+fi
 
 dnl Check for what we can generate dependency files with
 APR_CHECK_DEPEND
