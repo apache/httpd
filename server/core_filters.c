@@ -355,10 +355,6 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
         apr_status_t rv;
         ctx = apr_pcalloc(c->pool, sizeof(*ctx));
         net->out_ctx = (core_output_filter_ctx_t *)ctx;
-        rv = apr_socket_timeout_set(net->client_socket, 0);
-        if (rv != APR_SUCCESS) {
-            return rv;
-        }
         rv = apr_socket_opt_set(net->client_socket, APR_SO_NONBLOCK, 1);
         if (rv != APR_SUCCESS) {
             return rv;
@@ -621,12 +617,7 @@ static apr_status_t send_brigade_blocking(apr_socket_t *s,
                                           apr_size_t *bytes_written,
                                           conn_rec *c)
 {
-    apr_status_t rv, arv;
-
-    rv = apr_socket_timeout_set(s, c->base_server->timeout);
-    if (rv != APR_SUCCESS) {
-        return rv;
-    }
+    apr_status_t rv;
 
     rv = APR_SUCCESS;
     while (!APR_BRIGADE_EMPTY(bb)) {
@@ -643,13 +634,7 @@ static apr_status_t send_brigade_blocking(apr_socket_t *s,
             }
         }
     }
-    arv = apr_socket_timeout_set(s, 0);
-    if (rv != APR_SUCCESS) {
-        return rv;
-    }
-    else {
-        return arv;
-    }
+    return rv;
 }
 
 static apr_status_t writev_nonblocking(apr_socket_t *s,
@@ -658,10 +643,20 @@ static apr_status_t writev_nonblocking(apr_socket_t *s,
                                        apr_size_t *cumulative_bytes_written,
                                        conn_rec *c)
 {
-    apr_status_t rv = APR_SUCCESS;
+    apr_status_t rv = APR_SUCCESS, arv;
     apr_size_t bytes_written = 0, bytes_to_write = 0;
     apr_size_t i, offset;
+    apr_interval_time_t old_timeout;
 
+    arv = apr_socket_timeout_get(s, &old_timeout);
+    if (arv != APR_SUCCESS) {
+        return arv;
+    }
+    arv = apr_socket_timeout_set(s, 0);
+    if (arv != APR_SUCCESS) {
+        return arv;
+    }
+    
     for (i = 0; i < nvec; i++) {
         bytes_to_write += vec[i].iov_len;
     }
@@ -701,7 +696,14 @@ static apr_status_t writev_nonblocking(apr_socket_t *s,
         logio_add_bytes_out(c, bytes_written);
     }
     *cumulative_bytes_written += bytes_written;
-    return rv;
+
+    arv = apr_socket_timeout_set(s, old_timeout);
+    if ((arv != APR_SUCCESS) && (rv == APR_SUCCESS)) {
+        return arv;
+    }
+    else {
+        return rv;
+    }
 }
 
 static apr_status_t sendfile_nonblocking(apr_socket_t *s,
@@ -729,10 +731,25 @@ static apr_status_t sendfile_nonblocking(apr_socket_t *s,
 
     if (bytes_written < file_length) {
         apr_size_t n = file_length - bytes_written;
+        apr_status_t arv;
+        apr_interval_time_t old_timeout;
+
+        arv = apr_socket_timeout_get(s, &old_timeout);
+        if (arv != APR_SUCCESS) {
+            return arv;
+        }
+        arv = apr_socket_timeout_set(s, 0);
+        if (arv != APR_SUCCESS) {
+            return arv;
+        }
         rv = apr_socket_sendfile(s, fd, NULL, &file_offset, &n, 0);
         if (rv == APR_SUCCESS) {
             bytes_written += n;
             file_offset += n;
+        }
+        arv = apr_socket_timeout_set(s, old_timeout);
+        if ((arv != APR_SUCCESS) && (rv == APR_SUCCESS)) {
+            rv = arv;
         }
     }
     if ((logio_add_bytes_out != NULL) && (bytes_written > 0)) {
