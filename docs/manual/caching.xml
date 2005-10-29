@@ -319,6 +319,31 @@ Vary: negotiate,accept-language,accept-charset
     <title>Security Considerations</title>
 
     <section>
+      <title>Authorisation, Access &amp; and Control</title>
+
+      <p>Using <module>mod_cache</module> is very much like having a built
+      in reverse-proxy. Requests will be served by the caching module unless
+      it determines that the backend should be queried. When caching local
+      resources, this drastically changes the security model of Apache.</p>
+
+      <p>As traversing a filesystem hierarchy to examine potential
+      <code>.htaccess</code> files would be a very expensive operation,
+      partially defeating the point of caching (to speed up requests),
+      <module>mod_cache</module> makes no decision about whether a cached
+      entity is authorised for serving. In other words; if
+      <module>mod_cache</module> has cached some content, it will be served
+      from the cache as long as that content has not expired.</p>
+
+      <p>If, for example, your configuration permits access to a resource by IP
+      address you should ensure that this content is not cached. You can do this by
+      using the <directive module="mod_cache">CacheDisable</directive>
+      directive, or <module>mod_expires</module>. Left unchecked,
+      <module>mod_cache</module> - very much like a reverse proxy - would cache
+      the content when served and then serve it to any client, on any IP
+      address.</p>        
+    </section>
+
+    <section>
       <title>Local exploits</title>
 
       <p>As requests to end-users can be served from the cache, the cache
