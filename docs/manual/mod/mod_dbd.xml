@@ -51,7 +51,7 @@
 </section>
 
 <section id="API"><title>Apache DBD API</title>
-    <p><module>mod_dbd</module> exports four functions for other modules
+    <p><module>mod_dbd</module> exports five functions for other modules
     to use. The API is as follows:</p>
 
     <example>
@@ -77,14 +77,21 @@ AP_DECLARE(void) ap_dbd_close(server_rec*, ap_dbd_t*);
  */
 AP_DECLARE(ap_dbd_t*) ap_dbd_acquire(request_rec*);
 
+/* acquire a connection that will have the lifetime of a connection
+ * and MUST NOT be explicitly closed.  Return NULL on error.
+ */
+AP_DECLARE(ap_dbd_t*) ap_dbd_cacquire(request_rec*);
+
 /* Prepare a statement for use by a client module */
 AP_DECLARE(void) ap_dbd_prepare(server_rec*, const char*, const char*);
 
 /* Also export them as optional functions for modules that prefer it */
 APR_DECLARE_OPTIONAL_FN(ap_dbd_t*, ap_dbd_open, (apr_pool_t*, server_rec*));
 APR_DECLARE_OPTIONAL_FN(void, ap_dbd_close, (server_rec*, ap_dbd_t*));
-APR_DECLARE_OPTIONAL_FN(ap_dbd_t*, ap_dbd_acquire, (request_rec*));</code></pre>
+APR_DECLARE_OPTIONAL_FN(ap_dbd_t*, ap_dbd_acquire, (request_rec*));
+APR_DECLARE_OPTIONAL_FN(ap_dbd_t*, ap_dbd_cacquire, (conn_rec*));
 APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const char*));
+</code></pre>
     </example>
 </section>
 
