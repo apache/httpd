@@ -254,7 +254,7 @@ void ap_process_async_request(request_rec *r)
      * this bucket is destroyed, the request will be logged and
      * its pool will be freed
      */
-    bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
+    bb = apr_brigade_create(r->connection->pool, r->connection->bucket_alloc);
     b = ap_bucket_eor_create(r->connection->bucket_alloc, r);
     APR_BRIGADE_INSERT_HEAD(bb, b);
     ap_pass_brigade(r->connection->output_filters, bb);
