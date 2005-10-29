@@ -31,6 +31,12 @@
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_cache.c</td></tr></table>
 <h3>Summary</h3>
 
+    <div class="warning">This module should be used with care and
+    can be used to circumvent <code class="directive"><a href="../mod/mod_authz_host.html#allow">Allow</a></code> and <code class="directive"><a href="../mod/mod_authz_host.html#deny">Deny</a></code> directives. You 
+    should not enable caching for any content to which you wish
+    to limit access by client host name, address or environment
+    variable.</div>  
+
     <p><code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> implements an <a href="http://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a> compliant HTTP
     content cache that can be used to cache either local or proxied content.
     <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> requires the services of one or more storage

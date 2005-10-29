@@ -307,7 +307,7 @@ The <var>protocol</var> argument was added in 2.1.5</td></tr>
        <code class="directive"><a href="../mod/core.html#acceptfilter">AcceptFilter</a></code> directive.</p>
 
     <p>You only need to set the protocol if you are running on non-standard 
-       ports.  For example, running an <code>https</code> site on port 443:</p>
+       ports.  For example, running an <code>https</code> site on port 8443:</p>
 
     <div class="example"><p><code>
       Listen 192.170.2.1:8443 https
