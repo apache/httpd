@@ -47,16 +47,16 @@
 
       <dt>Caching</dt>
       <dd><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>, <code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code>, and
-          <code class="module"><a href="./mod/mod_mem_cache.html">mod_mem_cache</a></code> have undergone a lot of changes
+          <code class="module"><a href="./mod/mod_mem_cache.html">mod_mem_cache</a></code> have undergone a lot of changes, and
           are now considered production-quality. <code class="program"><a href="./programs/htcacheclean.html">htcacheclean</a></code>
-          has been introduced to cleanup <code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code>
+          has been introduced to clean up <code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code>
           setups.</dd>
 
       <dt>Configuration</dt>
       <dd>The default configuration layout has been simplified and
-          modularised. Configuration snippets which assist with enabling 
-          commonly used features are now bundled and easily included in the 
-          main server configuration.</dd>
+          modularised. Configuration snippets which can be used to 
+          enable commonly-used features are now bundled with Apache, and 
+          can be easily added to the main server config.</dd>
 
       <dt>Graceful stop</dt>
       <dd>The <code class="module"><a href="./mod/prefork.html">prefork</a></code>, <code class="module"><a href="./mod/worker.html">worker</a></code> and 
@@ -91,8 +91,8 @@
 
       <dt>Large File Support</dt>
 
-      <dd>httpd is now built with support for files larger than 2Gb on
-          modern 32-bit Unix systems.  Support for handling &gt;2Gb request
+      <dd>httpd is now built with support for files larger than 2GB on
+          modern 32-bit Unix systems.  Support for handling &gt;2GB request
           bodies has also been added.</dd>
 
       <dt>Event MPM</dt>

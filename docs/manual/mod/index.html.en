@@ -83,6 +83,7 @@ HTTP headers</dd>
     providers based on actual providers</dd>
 <dt><a href="mod_authn_anon.html">mod_authn_anon</a></dt><dd>Allows "anonymous" user access to authenticated
     areas</dd>
+<dt><a href="mod_authn_dbd.html">mod_authn_dbd</a></dt><dd>User authentication using an SQL database</dd>
 <dt><a href="mod_authn_dbm.html">mod_authn_dbm</a></dt><dd>User authentication using DBM files</dd>
 <dt><a href="mod_authn_default.html">mod_authn_default</a></dt><dd>Authentication fallback module</dd>
 <dt><a href="mod_authn_file.html">mod_authn_file</a></dt><dd>User authentication using text files</dd>

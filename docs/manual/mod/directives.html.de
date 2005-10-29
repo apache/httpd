@@ -75,6 +75,8 @@
 <li><a href="perchild.html#assignuserid">AssignUserID</a></li>
 <li><a href="mod_auth_basic.html#authbasicauthoritative">AuthBasicAuthoritative</a></li>
 <li><a href="mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></li>
+<li><a href="mod_authn_dbd.html#authdbduserpwquery">AuthDBDUserPWQuery</a></li>
+<li><a href="mod_authn_dbd.html#authdbduserrealmquery">AuthDBDUserRealmQuery</a></li>
 <li><a href="mod_authz_dbm.html#authdbmgroupfile">AuthDBMGroupFile</a></li>
 <li><a href="mod_authn_dbm.html#authdbmtype">AuthDBMType</a></li>
 <li><a href="mod_authn_dbm.html#authdbmuserfile">AuthDBMUserFile</a></li>

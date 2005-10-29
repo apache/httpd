@@ -172,6 +172,7 @@
 <li><a href="mod/mod_auth_digest.html">아파치 모듈 mod_auth_digest</a></li>
 <li><a href="mod/mod_authn_alias.html">아파치 모듈 mod_authn_alias</a></li>
 <li><a href="mod/mod_authn_anon.html">아파치 모듈 mod_authn_anon</a></li>
+<li><a href="mod/mod_authn_dbd.html">아파치 모듈 mod_authn_dbd</a></li>
 <li><a href="mod/mod_authn_dbm.html">아파치 모듈 mod_authn_dbm</a></li>
 <li><a href="mod/mod_authn_default.html">아파치 모듈 mod_authn_default</a></li>
 <li><a href="mod/mod_authn_file.html">아파치 모듈 mod_authn_file</a></li>
