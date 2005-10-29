@@ -57,6 +57,44 @@
 <seealso><directive module="mod_dbd">DBDriver</directive></seealso>
 <seealso><directive module="mod_dbd">DBDParams</directive></seealso>
 
+<section id="example">
+<title>Configuration Example</title>
+<p>This simple example shows use of this module in the context of
+the Authentication and DBD frameworks.</p>
+<example><pre>
+#Database Management
+
+#Use the PostgreSQL driver
+<code>DBDriver pgsql</code>
+
+#Connection string: database name and login credentials
+<code>DBDParams "dbname=htpasswd user=apache pass=xxxxxx"</code>
+
+#Parameters for Connection Pool Management
+<code>DBDMin  1
+DBDKeep 2
+DBDMax  10
+DBDExptime 60</code>
+
+#Authentication Section
+<code>&lt;Directory /usr/www/myhost/private&gt;</code>
+
+    #mod_auth configuration for authn_dbd
+    <code>AuthType Basic
+    AuthName "My Server"
+    AuthBasicProvider dbd</code>
+
+    #authz configuration
+    <code>Require valid-user</code>
+
+    #SQL query to verify a user
+    #(note: DBD drivers recognise both stdio-like %s and native syntax)
+    <code>AuthDBDUserPWQuery "select password from authn where username = %s"
+&lt;/Directory&gt;</code>
+</pre>
+</example>
+</section>
+
 <directivesynopsis>
 <name>AuthDBDUserPWQuery</name>
 <description>SQL query to look up a password for a user</description>
