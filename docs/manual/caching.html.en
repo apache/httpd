@@ -297,6 +297,31 @@ Vary: negotiate,accept-language,accept-charset
 <h2><a name="security" id="security">Security Considerations</a></h2>
     
 
+    <h3>Authorisation, Access &amp; and Control</h3>
+      
+
+      <p>Using <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> is very much like having a built
+      in reverse-proxy. Requests will be served by the caching module unless
+      it determines that the backend should be queried. When caching local
+      resources, this drastically changes the security model of Apache.</p>
+
+      <p>As traversing a filesystem hierarchy to examine potential
+      <code>.htaccess</code> files would be a very expensive operation,
+      partially defeating the point of caching (to speed up requests),
+      <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> makes no decision about whether a cached
+      entity is authorised for serving. In other words; if
+      <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> has cached some content, it will be served
+      from the cache as long as that content has not expired.</p>
+
+      <p>If, for example, your configuration permits access to a resource by IP
+      address you should ensure that this content is not cached. You can do this by
+      using the <code class="directive"><a href="./mod/mod_cache.html#cachedisable">CacheDisable</a></code>
+      directive, or <code class="module"><a href="./mod/mod_expires.html">mod_expires</a></code>. Left unchecked,
+      <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> - very much like a reverse proxy - would cache
+      the content when served and then serve it to any client, on any IP
+      address.</p>        
+    
+
     <h3>Local exploits</h3>
       
 

@@ -219,12 +219,20 @@
     details of filter implementation, reducing the complexity required of
     content filter modules. This is work-in-progress; the
     <code class="directive"><a href="#filterprotocol">FilterProtocol</a></code> implements
-    some of this functionality, but there are no API calls yet.</p>
+    some of this functionality for back-compatibility with Apache 2.0
+    modules.  For httpd 2.1 and up, the
+    <code>ap_register_output_filter_protocol</code> and
+    <code>ap_filter_protocol</code> API enables filter modules to
+    declare their own behaviour.</p>
 
     <p>At the same time, <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code> should not interfere
     with a filter that wants to handle all aspects of the protocol.  By
     default (i.e. in the absence of any <code class="directive"><a href="#filterprotocol">FilterProtocol</a></code> directives), <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code>
     will leave the headers untouched.</p>
+
+    <p>At the time of writing, this feature is largely untested,
+    as modules in common use are designed to work with 2.0.
+    Modules using it should test it carefully.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="FilterChain" id="FilterChain">FilterChain</a> <a name="filterchain" id="filterchain">Directive</a></h2>
