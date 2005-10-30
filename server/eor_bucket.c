@@ -17,6 +17,7 @@
 #include "httpd.h"
 #include "http_request.h"
 #include "http_protocol.h"
+#include "scoreboard.h"
 
 static apr_status_t eor_bucket_read(apr_bucket *b, const char **str, 
                                     apr_size_t *len, apr_read_type_e block)
@@ -52,6 +53,9 @@ static void eor_bucket_destroy(void *data)
     request_rec *r = (request_rec *)data;
     if (r != NULL) {
         ap_run_log_transaction(r);
+        if (ap_extended_status) {
+            ap_increment_counts(r->connection->sbh, r);
+        }
         apr_pool_destroy(r->pool);
     }
 }
