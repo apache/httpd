@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" /><!--
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>mod_dbd - Apache HTTP Server</title>
-<link title="Main stylesheet" type="text/css" media="all" rel="stylesheet" href="../style/css/manual.css" />
-<link title="No Sidebar - Default font size" type="text/css" media="all" rel="alternate stylesheet" href="../style/css/manual-loose-100pc.css" />
-<link type="text/css" media="print" rel="stylesheet" href="../style/css/manual-print.css" />
-<link rel="shortcut icon" href="../images/favicon.ico" /></head>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
 <p class="apache">Apache HTTP Server Version 2.1</p>
-<img src="../images/feather.gif" alt="" /></div>
-<div class="up"><a href="./"><img src="../images/left.gif" alt="&lt;-" title="&lt;-" /></a></div>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.1</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
@@ -39,24 +39,24 @@
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
-<li><img src="../images/down.gif" alt="" /> <a href="#dbdexptime">DBDExptime</a></li>
-<li><img src="../images/down.gif" alt="" /> <a href="#dbdkeep">DBDKeep</a></li>
-<li><img src="../images/down.gif" alt="" /> <a href="#dbdmax">DBDMax</a></li>
-<li><img src="../images/down.gif" alt="" /> <a href="#dbdmin">DBDMin</a></li>
-<li><img src="../images/down.gif" alt="" /> <a href="#dbdparams">DBDParams</a></li>
-<li><img src="../images/down.gif" alt="" /> <a href="#dbdpersist">DBDPersist</a></li>
-<li><img src="../images/down.gif" alt="" /> <a href="#dbdpreparesql">DBDPrepareSQL</a></li>
-<li><img src="../images/down.gif" alt="" /> <a href="#dbdriver">DBDriver</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#dbdexptime">DBDExptime</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#dbdkeep">DBDKeep</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#dbdmax">DBDMax</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#dbdmin">DBDMin</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#dbdparams">DBDParams</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#dbdpersist">DBDPersist</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#dbdpreparesql">DBDPrepareSQL</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#dbdriver">DBDriver</a></li>
 </ul>
 <h3>Topics</h3>
 <ul id="topics">
-<li><img src="../images/down.gif" alt="" /> <a href="#pooling">Connection Pooling</a></li>
-<li><img src="../images/down.gif" alt="" /> <a href="#API">Apache DBD API</a></li>
-<li><img src="../images/down.gif" alt="" /> <a href="#prepared">SQL Prepared Statements</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#pooling">Connection Pooling</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#API">Apache DBD API</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#prepared">SQL Prepared Statements</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a id="pooling" name="pooling">Connection Pooling</a></h2>
+<h2><a name="pooling" id="pooling">Connection Pooling</a></h2>
     <p>This module manages database connections, in a manner
     optimised for the platform.  On non-threaded platforms,
     it provides a persistent connection in the manner of
@@ -65,9 +65,9 @@
     scalable and efficient <em>connection pool</em>, as
     described in <a href="http://www.apachetutor.org/dev/reslist">this article at ApacheTutor</a>. <code class="module"><a href="../mod/mod_dbd.html">mod_dbd</a></code> supersedes
     the modules presented in that article.</p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a id="API" name="API">Apache DBD API</a></h2>
+<h2><a name="API" id="API">Apache DBD API</a></h2>
     <p><code class="module"><a href="../mod/mod_dbd.html">mod_dbd</a></code> exports five functions for other modules
     to use. The API is as follows:</p>
 
@@ -108,9 +108,9 @@ APR_DECLARE_OPTIONAL_FN(ap_dbd_t*, ap_dbd_acquire, (request_rec*));
 APR_DECLARE_OPTIONAL_FN(ap_dbd_t*, ap_dbd_cacquire, (conn_rec*));
 APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const char*));
 </code></pre></div>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a id="prepared" name="prepared">SQL Prepared Statements</a></h2>
+<h2><a name="prepared" id="prepared">SQL Prepared Statements</a></h2>
     <p><code class="module"><a href="../mod/mod_dbd.html">mod_dbd</a></code> supports SQL prepared statements on behalf
     of modules that may wish to use them.  Each prepared statement
     must be assigned a name (label), and they are stored in a hash:
@@ -123,8 +123,8 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
     and document what statements can be specified in httpd.conf,
     or to provide their own directives and use <code>ap_dbd_prepare</code>.</p>
 </div>
-<div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div>
-<div class="directive-section"><h2><a id="DBDExptime" name="DBDExptime">DBDExptime</a> <a id="dbdexptime" name="dbdexptime">Directive</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="DBDExptime" id="DBDExptime">DBDExptime</a> <a name="dbdexptime" id="dbdexptime">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Keepalive time for idle connections</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DBDExptime <var>time-in-seconds</var></code></td></tr>
@@ -137,8 +137,8 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
     platforms only).</p>
 
 </div>
-<div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div>
-<div class="directive-section"><h2><a id="DBDKeep" name="DBDKeep">DBDKeep</a> <a id="dbdkeep" name="dbdkeep">Directive</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="DBDKeep" id="DBDKeep">DBDKeep</a> <a name="dbdkeep" id="dbdkeep">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum sustainednumber of connections</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DBDKeep <var>number</var></code></td></tr>
@@ -151,8 +151,8 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
     platforms only).</p>
 
 </div>
-<div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div>
-<div class="directive-section"><h2><a id="DBDMax" name="DBDMax">DBDMax</a> <a id="dbdmax" name="dbdmax">Directive</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="DBDMax" id="DBDMax">DBDMax</a> <a name="dbdmax" id="dbdmax">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum number of connections</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DBDMax <var>number</var></code></td></tr>
@@ -164,8 +164,8 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
     (threaded platforms only).</p>
 
 </div>
-<div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div>
-<div class="directive-section"><h2><a id="DBDMin" name="DBDMin">DBDMin</a> <a id="dbdmin" name="dbdmin">Directive</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="DBDMin" id="DBDMin">DBDMin</a> <a name="dbdmin" id="dbdmin">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Minimum number of connections</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DBDMin <var>number</var></code></td></tr>
@@ -177,8 +177,8 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
     platforms only).</p>
 
 </div>
-<div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div>
-<div class="directive-section"><h2><a id="DBDParams" name="DBDParams">DBDParams</a> <a id="dbdparams" name="dbdparams">Directive</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="DBDParams" id="DBDParams">DBDParams</a> <a name="dbdparams" id="dbdparams">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Parameters for database connection</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DBDParams
@@ -192,8 +192,8 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
     password, database name, hostname and port number for connection.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div>
-<div class="directive-section"><h2><a id="DBDPersist" name="DBDPersist">DBDPersist</a> <a id="dbdpersist" name="dbdpersist">Directive</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="DBDPersist" id="DBDPersist">DBDPersist</a> <a name="dbdpersist" id="dbdpersist">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Whether to use persistent connections</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DBDPersist 0|1</code></td></tr>
@@ -211,8 +211,8 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
     non-threaded server), and should almost always be used in operation.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div>
-<div class="directive-section"><h2><a id="DBDPrepareSQL" name="DBDPrepareSQL">DBDPrepareSQL</a> <a id="dbdpreparesql" name="dbdpreparesql">Directive</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="DBDPrepareSQL" id="DBDPrepareSQL">DBDPrepareSQL</a> <a name="dbdpreparesql" id="dbdpreparesql">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Define an SQL prepared statement</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DBDPrepareSQL <var>"SQL statement"</var> <var>label</var></code></td></tr>
@@ -226,8 +226,8 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
     This directive prepares an SQL statement and assigns it a label.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div>
-<div class="directive-section"><h2><a id="DBDriver" name="DBDriver">DBDriver</a> <a id="dbdriver" name="dbdriver">Directive</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="DBDriver" id="DBDriver">DBDriver</a> <a name="dbdriver" id="dbdriver">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specify an SQL driver</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DBDriver <var>name</var></code></td></tr>
