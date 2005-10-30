@@ -327,8 +327,8 @@
           option to disable CGI support.</dd>
          
         <dt><code>--disable-cgid</code></dt>
-        <dd>When using the threaded MPMs <module>worker</module> or
-          <module>perchild</module> support for CGI scripts is provided by
+        <dd>When using the threaded MPMs <module>worker</module>
+          support for CGI scripts is provided by
           <module>mod_cgid</module> by default. To disable CGI support use
           this option.</dd>
 
@@ -663,9 +663,9 @@
           exactly one <a href="../mpm.html">Multi-Processing Module</a>.
           Otherwise the <a href="../mpm.html#defaults">default MPM</a> for
           your operating system will be taken. Possible MPMs are
-          <module>beos</module>, <module>leader</module>,
-          <module>mpmt_os2</module>, <module>perchild</module>,
-          <module>prefork</module>, <module>threadpool</module> and
+          <module>beos</module>,
+          <module>mpmt_os2</module>,
+          <module>prefork</module>, and
           <module>worker</module>.</dd>
       </dl>
     </section>

@@ -1,5 +1,0 @@
-
-LTLIBRARY_NAME    = libthreadpool.la
-LTLIBRARY_SOURCES = threadpool.c pod.c
-
-include $(top_srcdir)/build/ltlib.mk
