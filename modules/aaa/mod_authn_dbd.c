@@ -76,10 +76,10 @@ static const char *authn_dbd_prepare(cmd_parms *cmd, void *cfg, const char *quer
 static const command_rec authn_dbd_cmds[] =
 {
     AP_INIT_TAKE1("AuthDBDUserPWQuery", authn_dbd_prepare,
-                  (void *)APR_OFFSETOF(authn_dbd_conf, user), OR_AUTHCFG,
+                  (void *)APR_OFFSETOF(authn_dbd_conf, user), ACCESS_CONF,
                   "Query used to fetch password for user"),
-    AP_INIT_TAKE1("AuthDBDUserRealmPWQuery", authn_dbd_prepare,
-                  (void *)APR_OFFSETOF(authn_dbd_conf, realm), OR_AUTHCFG,
+    AP_INIT_TAKE1("AuthDBDUserRealmQuery", authn_dbd_prepare,
+                  (void *)APR_OFFSETOF(authn_dbd_conf, realm), ACCESS_CONF,
                   "Query used to fetch password for user+realm"),
     {NULL}
 };
@@ -128,7 +128,7 @@ static authn_status authn_dbd_password(request_rec *r, const char *user,
         if (dbd_password == NULL) {
             dbd_password = apr_dbd_get_entry(dbd->driver, row, 0);
         }
-	/* we can't break out here or row won't get cleaned up */
+        /* we can't break out here or row won't get cleaned up */
     }
 
     if (!dbd_password) {
@@ -186,7 +186,7 @@ static authn_status authn_dbd_realm(request_rec *r, const char *user,
         if (dbd_hash == NULL) {
             dbd_hash = apr_dbd_get_entry(dbd->driver, row, 0);
         }
-	/* we can't break out here or row won't get cleaned up */
+        /* we can't break out here or row won't get cleaned up */
     }
 
     if (!dbd_hash) {
