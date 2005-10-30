@@ -125,10 +125,15 @@ static int ap_process_http_async_connection(conn_rec *c)
             if (r->status == HTTP_OK) {
                 cs->state = CONN_STATE_HANDLER;
                 ap_process_async_request(r);
+                /* After the call to ap_process_request, the
+                 * request pool may have been deleted.  We set
+                 * r=NULL here to ensure that any dereference
+                 * of r that might be added later in this function
+                 * will result in a segfault immediately instead
+                 * of nondeterministic failures later.
+                 */
+                r = NULL;
             }
-
-            if (ap_extended_status)
-                ap_increment_counts(c->sbh, r);
 
             if (cs->state != CONN_STATE_WRITE_COMPLETION) {
                 /* Something went wrong; close the connection */
@@ -164,15 +169,20 @@ static int ap_process_http_connection(conn_rec *c)
         if (r->status == HTTP_OK) {
             cs->state = CONN_STATE_HANDLER;
             ap_process_request(r);
+            /* After the call to ap_process_request, the
+             * request pool will have been deleted.  We set
+             * r=NULL here to ensure that any dereference
+             * of r that might be added later in this function
+             * will result in a segfault immediately instead
+             * of nondeterministic failures later.
+             */
+            r = NULL;
         }
- 
-        if (ap_extended_status)
-            ap_increment_counts(c->sbh, r);
- 
+
         if (c->keepalive != AP_CONN_KEEPALIVE || c->aborted)
             break;
  
-        ap_update_child_status(c->sbh, SERVER_BUSY_KEEPALIVE, r);
+        ap_update_child_status(c->sbh, SERVER_BUSY_KEEPALIVE, NULL);
  
         if (ap_graceful_stop_signalled())
             break;
