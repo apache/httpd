@@ -1,4 +1,9 @@
                                                         -*- coding: utf-8 -*-
+Changes with Apache 2.1.10
+
+  *) Strip out Experimental MPMs that have gone nowhere since 2.0
+     (perchild, threadpool, leader) [Nick Kew]
+
 Changes with Apache 2.1.9
 
   *) Add mod_authn_dbd (SQL-based  authentication) [Nick Kew]
