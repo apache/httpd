@@ -99,7 +99,7 @@ DBDExptime 60</code>
 <name>AuthDBDUserPWQuery</name>
 <description>SQL query to look up a password for a user</description>
 <syntax>AuthDBDUserPWQuery <var>query</var></syntax>
-<contextlist><context>directory</context><context>.htaccess</context>
+<contextlist><context>directory</context>
 </contextlist>
 <override>AuthConfig</override>
 
@@ -121,7 +121,7 @@ DBDExptime 60</code>
 <description>SQL query to look up a password hash for a user and realm.
 </description>
 <syntax>AuthDBDUserRealmQuery <var>query</var></syntax>
-<contextlist><context>directory</context><context>.htaccess</context>
+<contextlist><context>directory</context>
 </contextlist>
 <override>AuthConfig</override>
 
