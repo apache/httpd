@@ -539,11 +539,11 @@ static dav_error * dav_add_if_state(apr_pool_t *p, dav_if_header *ih,
 
         if ((err = (*locks_hooks->parse_locktoken)(p, state_token,
                                                    &new_sl->locktoken)) != NULL) {
-            /* In cases where the state token is invalid, we'll just skip
-             * it rather than return 400.
-             */
+            /* If the state token cannot be parsed, treat it as an
+             * unknown state; this will evaluate to "false" later
+             * during If header validation. */
             if (err->error_id == DAV_ERR_LOCK_UNK_STATE_TOKEN) {
-                return NULL;
+                new_sl->type = dav_if_unknown;
             }
             else {
                 /* ### maybe add a higher-level description */
@@ -1198,6 +1198,18 @@ static dav_error * dav_validate_resource_state(apr_pool_t *p,
                     goto state_list_failed;
                 }
 
+                break;
+
+            case dav_if_unknown:
+                /* Request is predicated on some unknown state token,
+                 * which must be presumed to *not* match, so fail
+                 * unless this is a Not condition. */
+                
+                if (state_list->condition == DAV_IF_COND_NORMAL) {
+                    reason = 
+                        "an unknown state token was supplied";
+                    goto state_list_failed;
+                }
                 break;
 
             } /* switch */

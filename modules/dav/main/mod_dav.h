@@ -686,7 +686,8 @@ DAV_DECLARE(const dav_provider *) dav_lookup_provider(const char *name);
 typedef enum
 {
     dav_if_etag,
-    dav_if_opaquelock
+    dav_if_opaquelock,
+    dav_if_unknown /* the "unknown" state type; always matches false. */   
 } dav_if_state_type;
 
 typedef struct dav_if_state_list
