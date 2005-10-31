@@ -167,7 +167,7 @@ FILES_nlm_objs = \
 # These will be added as a library command in the link.opt file.
 #
 FILES_nlm_libs = \
-	clibpre.o \
+	$(CLIB_PRELUDE) \
 	$(EOLIST)
 
 #

@@ -143,13 +143,13 @@ TARGET_nlm = \
 	$(OBJDIR)/CERNMeta.nlm \
 	$(OBJDIR)/Digest.nlm \
 	$(OBJDIR)/Expires.nlm \
-	$(OBJDIR)/Forensic.nlm \
+	$(OBJDIR)/forensic.nlm \
 	$(OBJDIR)/Headers.nlm \
 	$(OBJDIR)/Info.nlm \
 	$(OBJDIR)/Rewrite.nlm \
 	$(OBJDIR)/Speling.nlm \
 	$(OBJDIR)/Status.nlm \
-	$(OBJDIR)/Uniqueid.nlm \
+	$(OBJDIR)/uniqueid.nlm \
 	$(OBJDIR)/Usrtrack.nlm \
 	$(OBJDIR)/Vhost.nlm \
 	$(EOLIST)

@@ -163,9 +163,9 @@ FILES_nlm_objs = \
 # These will be added as a library command in the link.opt file.
 #
 FILES_nlm_libs = \
-	clibpre.o \
+	$(CLIB_PRELUDE) \
 	$(EOLIST)
-	
+
 #
 # These are the modules that the above NLM target depends on to load.
 # These will be added as a module command in the link.opt file.

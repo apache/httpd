@@ -113,6 +113,12 @@ LIB		= mwldnlm -type library -w nocmdline
 NOVI	= $(NWSDKDIR)\imports
 
 INCDIRS 	= $(NWSDKDIR)\include\nlm;$(NWSDKDIR)\include;$(NWSDKDIR)\include\winsock
+ifdef WS295SDK
+	INCDIRS += ;$(WS295SDK)\include
+endif
+ifndef CLIB_PRELUDE
+	CLIB_PRELUDE = clibpre.o
+endif
 
 DEFINES		= -DNETWARE
 
