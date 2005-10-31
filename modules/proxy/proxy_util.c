@@ -1216,6 +1216,7 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
     int max_match = 0;
     int url_length;
     int worker_name_length;
+    int sh_length;
     const char *c;
     int i;
 
@@ -1224,6 +1225,18 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
        return NULL;
 
     url_length = strlen(url);
+
+    /*
+     * We need to find the start of the path and
+     * therefore we know the length of the scheme://hostname/
+     * part.
+     */
+    c = ap_strchr_c(c+3, '/');
+    if (c)
+        sh_length = c - url;
+    else
+        sh_length = url_length;
+    
     worker = (proxy_worker *)conf->workers->elts;
 
     /*
@@ -1231,9 +1244,22 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
      * fits best to the URL.
      */
     for (i = 0; i < conf->workers->nelts; i++) {
-        if ( ((worker_name_length = strlen(worker->name)) <= url_length)
+        int prefix;
+        int bypass;
+        worker_name_length = strlen(worker->name);
+        if (worker_name_length <= sh_length) {
+            prefix = worker_name_length;
+            bypass = 1;
+        } else {
+            prefix = sh_length;
+            bypass = 0;
+        }
+        if ( (worker_name_length <= url_length)
            && (worker_name_length > max_match)
-           && (strncasecmp(url, worker->name, worker_name_length) == 0) ) {
+           && (strncasecmp(url, worker->name, prefix) == 0)
+           && (bypass || (strncmp(url + prefix, worker->name + prefix,
+                          worker_name_length - prefix) == 0)) )
+        {
             max_worker = worker;
             max_match = worker_name_length;
         }
