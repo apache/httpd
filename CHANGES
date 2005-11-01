@@ -19,7 +19,8 @@ Changes with Apache 2.0.55
      enforced in per-location context if "SSLVerifyClient optional"
      was configured in the vhost configuration.  [Joe Orton]
 
-  *) worker MPM: Fix a memory leak which can occur after an aborted
+  *) SECURITY: CVE-2005-2970 (cve.mitre.org)
+     worker MPM: Fix a memory leak which can occur after an aborted
      connection in some limited circumstances.  [Greg Ames]
 
   *) mod_ldap: Fix PR 36563. Keep track of the number of attributes
