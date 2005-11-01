@@ -4,7 +4,7 @@ Changes with Apache 2.3.0
 
   *) mod_proxy_balancer: When finding best worker, use case insensitive
      match for scheme and host, but case sensitive for the rest of
-     the path. [Jim Jagielski]
+     the path. [Jim Jagielski, Ruediger Pluem]
 
   *) Asynchronous write completion for the Event MPM.  [Brian Pane]
 
