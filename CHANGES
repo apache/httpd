@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) Fix DESTDIR=... installation when using bundled copy of APR.
+     [Torsten Foertsch <torsten.foertsch gmx.net>]
+
   *) mod_proxy_balancer: When finding best worker, use case insensitive
      match for scheme and host, but case sensitive for the rest of
      the path. [Jim Jagielski, Ruediger Pluem]

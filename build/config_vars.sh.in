@@ -21,8 +21,8 @@
 # installed.  Such a file cannot be generated at configure-time, since it
 # requires the output of the *installed* ap*-config scripts.
 
-APR_CONFIG=@APR_CONFIG@
-APU_CONFIG=@APU_CONFIG@
+APR_CONFIG=${DESTDIR}@APR_CONFIG@
+APU_CONFIG=${DESTDIR}@APU_CONFIG@
 
 APR_LIBTOOL="`${APR_CONFIG} --apr-libtool`"
 APR_INCLUDEDIR="`${APR_CONFIG} --includedir`"
