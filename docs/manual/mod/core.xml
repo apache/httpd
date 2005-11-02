@@ -914,6 +914,8 @@ Location</a></seealso>
     support.</li>
     <li>On Linux the use of sendfile triggers TCP-checksum
     offloading bugs on certain networking cards when using IPv6.</li>
+    <li>On Linux on Itanium, sendfile may be unable to handle files
+    over 2GB in size.</li>
     <li>With a network-mounted <directive
     module="core">DocumentRoot</directive> (e.g., NFS or SMB),
     the kernel may be unable to serve the network file through
