@@ -568,6 +568,7 @@ static apr_status_t serialize_table(cache_header_tbl_t **obj,
     /* Transfer the headers into a contiguous memory block */
     buf = malloc(len);
     if (!buf) {
+        free(*obj);
         *obj = NULL;
         return APR_ENOMEM;
     }
