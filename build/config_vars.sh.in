@@ -21,8 +21,19 @@
 # installed.  Such a file cannot be generated at configure-time, since it
 # requires the output of the *installed* ap*-config scripts.
 
-APR_CONFIG=${DESTDIR}@APR_CONFIG@
-APU_CONFIG=${DESTDIR}@APU_CONFIG@
+# For a DESTDIR=... installation using the bundled copies of 
+# apr/apr-util, the installed ap?-config scripts must be found 
+# in the DESTDIR-relocated install tree.  For a DESTDIR=... 
+# installation when using *external* copies of apr/apr-util,
+# the absolute path must be used, not DESTDIR-relocated.
+
+if test -f ${DESTDIR}@APR_CONFIG@; then
+   APR_CONFIG=${DESTDIR}@APR_CONFIG@
+   APU_CONFIG=${DESTDIR}@APU_CONFIG@
+else
+   APR_CONFIG=@APR_CONFIG@
+   APU_CONFIG=@APU_CONFIG@
+fi
 
 APR_LIBTOOL="`${APR_CONFIG} --apr-libtool`"
 APR_INCLUDEDIR="`${APR_CONFIG} --includedir`"
