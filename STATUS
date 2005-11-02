@@ -72,6 +72,23 @@ RELEASE SHOWSTOPPERS:
             implementation (you have suggested that) and once 2.2 is
             released you can't do that anymore. 
 
+    * mod_cache currently trumps mod_authz_host. When serving local content,
+      the directives: "Allow from 10.0.0.0/8\nDeny from all" become
+      meaningless, as any content cached will be served to any IP address.
+      Potential solutions:  
+        i.   mod_cache can be modified to (or be able to) run as a normal
+             handler (ie after the map to storage hook has been run) (presently
+             vetoed) 
+        ii.  mod_cache can be modified to run the map to storage hook.
+        iii. mod_authz_host needs to be re-designed to issue "Vary: *" or 
+             or set r->no_cache for content like this which should not be 
+             cached. However figuring out the situation in which there is an 
+             "Allow from all" tautalogy is non-trivial and error-prone due to
+             a) The common "Allow from all" which is set in all previously 
+             shipped default configs and b) if an admin adds a Deny while an 
+             entity is cached, it would have no effect.
+      References:
+      http://mail-archives.apache.org/mod_mbox/httpd-dev/200510.mbox/%3c20051006204601.GA6619@stdlib.net%3e
 
 CURRENT VOTES:
 
