@@ -2277,6 +2277,12 @@ directory</description>
     <code>-</code> are removed from the options currently in
     force. </p>
 
+    <note type="warning"><title>Warning</title>
+    <p>Mixing <directive>Options</directive> with a <code>+</code> or
+    <code>-</code> with those without is not valid syntax, and is likely
+    to cause unexpected results.</p>
+    </note>
+
     <p>For example, without any <code>+</code> and <code>-</code> symbols:</p>
 
     <example>

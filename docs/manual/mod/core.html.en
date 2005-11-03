@@ -2301,6 +2301,12 @@ directory</td></tr>
     <code>-</code> are removed from the options currently in
     force. </p>
 
+    <div class="warning"><h3>Warning</h3>
+    <p>Mixing <code class="directive">Options</code> with a <code>+</code> or
+    <code>-</code> with those without is not valid syntax, and is likely
+    to cause unexpected results.</p>
+    </div>
+
     <p>For example, without any <code>+</code> and <code>-</code> symbols:</p>
 
     <div class="example"><p><code>
