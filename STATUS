@@ -288,6 +288,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           http://issues.apache.org/bugzilla/attachment.cgi?id=16744
        +1: rpluem, trawick
 
+    *) mod_cache: Fix PR37347
+       (mod_disk_cache replaces HTTP Status 301 with 200)
+       Trunk version of patch:
+          http://svn.apache.org/viewcvs.cgi?rev=220038&view=rev
+       Backport version for 2.0.x of patch:
+          http://issues.apache.org/bugzilla/attachment.cgi?id=16870
+       +1: rpluem
+
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
