@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.1.10
 
+  *) Require use of APR >= 1.2.0 and APR-util >= 1.2.0 when configured 
+     to use external copies of the libraries.  [Joe Orton] 
+
   *) Fix DESTDIR=... installation when using bundled copy of APR.
      [Torsten Foertsch <torsten.foertsch gmx.net>]
 
