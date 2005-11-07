@@ -1,8 +1,11 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.1.10
 
+  *) mod_dav: Fix handling of unknown state tokens in If: headers.
+     PR: 37288.  [Joe Orton]
+
   *) Strip out Experimental MPMs that have gone nowhere since 2.0
-     (perchild, threadpool, leader) [Nick Kew]
+     (perchild, threadpool, leader).  [Nick Kew]
 
 Changes with Apache 2.1.9
 
