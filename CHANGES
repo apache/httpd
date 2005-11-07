@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.1.10
 
+  *) Fix DESTDIR=... installation when using bundled copy of APR.
+     [Torsten Foertsch <torsten.foertsch gmx.net>]
+
   *) mod_dav: Fix handling of unknown state tokens in If: headers.
      PR: 37288.  [Joe Orton]
 
