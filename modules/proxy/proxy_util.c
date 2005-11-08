@@ -1217,13 +1217,33 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
     int url_length;
     int worker_name_length;
     const char *c;
+    char *url_copy;
     int i;
 
     c = ap_strchr_c(url, ':');
     if (c == NULL || c[1] != '/' || c[2] != '/' || c[3] == '\0')
        return NULL;
 
+    url_copy = apr_pstrdup(p, url);
     url_length = strlen(url);
+
+    /*
+     * We need to find the start of the path and
+     * therefore we know the length of the scheme://hostname/
+     * part to we can force-lowercase everything up to
+     * the start of the path.
+     */
+    c = ap_strchr_c(c+3, '/');
+    if (c) {
+        char *pathstart;
+        pathstart = url_copy + (c - url);
+        *pathstart = '\0';
+        ap_str_tolower(url_copy);
+        *pathstart = '/';
+    } else {
+        ap_str_tolower(url_copy);
+    }
+    
     worker = (proxy_worker *)conf->workers->elts;
 
     /*
@@ -1233,7 +1253,7 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
     for (i = 0; i < conf->workers->nelts; i++) {
         if ( ((worker_name_length = strlen(worker->name)) <= url_length)
            && (worker_name_length > max_match)
-           && (strncasecmp(url, worker->name, worker_name_length) == 0) ) {
+           && (strncmp(url_copy, worker->name, worker_name_length) == 0) ) {
             max_worker = worker;
             max_match = worker_name_length;
         }

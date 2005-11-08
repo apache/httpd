@@ -1,6 +1,10 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.1.10
 
+  *) mod_proxy_balancer: When finding best worker, use case insensitive
+     match for scheme and host, but case sensitive for the rest of
+     the path. [Jim Jagielski, Ruediger Pluem]
+
   *) Require use of APR >= 1.2.0 and APR-util >= 1.2.0 when configured 
      to use external copies of the libraries.  [Joe Orton] 
 
