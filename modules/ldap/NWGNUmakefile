@@ -195,7 +195,6 @@ FILES_nlm_modules = \
 	libc \
 	lldapsdk \
 	lldapssl \
-	lldapx \
 	$(EOLIST)
 
 #
